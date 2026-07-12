@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>金融知识终极架构 · 分层</title>
+<meta name="description" content="金融知识终极架构 · 层级详情">
+<link rel="stylesheet" href="styles.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="page wide">
+    <header class="top">
+      <a class="back" href="index.html">← 架构总览</a>
+      <span class="crumb"><a href="../../">主页</a> / <a href="index.html">金融架构</a></span>
+    </header>
+
+    <!-- 层级导航 -->
+    <nav class="layer-nav" id="lnav"></nav>
+
+    <div id="main">
+      <div class="soon-box" style="margin-top:40px">正在加载…</div>
+    </div>
+
+    <footer>
+      金融知识终极架构 · © 2026 ooglex.com<br>
+      仅供学习交流，不构成任何投资建议
+    </footer>
+  </div>
+
+  <script src="arch.js"></script>
+  <script>
+    const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+    const id = new URLSearchParams(location.search).get("id") || "L1";
+    const layer = ARCH.findLayer(id) || ARCH.layers[0];
+    const idx = ARCH.layers.indexOf(layer);
+    document.title = `${layer.cn} · 金融知识终极架构`;
+    document.documentElement.style.setProperty("--mc", layer.accent);
+
+    // 层级导航条
+    document.getElementById("lnav").innerHTML = ARCH.layers.map((l) =>
+      `<a href="layer.html?id=${l.id}" class="lpill${l.id === layer.id ? " on" : ""}" style="--mc:${l.accent}">
+        <b>${l.id}</b><span>${esc(l.cn)}</span></a>`).join("");
+
+    // 主体
+    const terms = ARCH.layerTermCount(layer);
+    const modulesHtml = layer.modules.map((m, i) => {
+      const no = String(i + 1).padStart(2, "0");
+      const items = m.terms.map((t) =>
+        `<div class="term">
+          <div class="t-cn">${esc(t[0])}</div>
+          <div class="t-en">${esc(t[1])}</div>
+          ${t[2] ? `<div class="t-note">${esc(t[2])}</div>` : ""}
+        </div>`).join("");
+      return `<section class="mod-sec" id="${m.id}">
+        <div class="ms-head">
+          <span class="ms-no">${m.id}</span>
+          <h3>${esc(m.cn)}${m.isNew ? ` <span class="new-badge">v4.0 新增</span>` : ""}</h3>
+          <span class="ms-cnt">${m.terms.length} 项</span>
+        </div>
+        <div class="ms-en">${esc(m.en)}</div>
+        <div class="term-grid">${items}</div>
+      </section>`;
+    }).join("");
+
+    const prev = idx > 0 ? ARCH.layers[idx - 1] : null;
+    const next = idx < ARCH.layers.length - 1 ? ARCH.layers[idx + 1] : null;
+    const pager = `<div class="pager">
+      ${prev ? `<a class="prev" href="layer.html?id=${prev.id}"><span>← 上一层</span><b>${prev.id} ${esc(prev.cn)}</b></a>` : `<div class="empty"></div>`}
+      ${next ? `<a class="next" href="layer.html?id=${next.id}"><span>下一层 →</span><b>${next.id} ${esc(next.cn)}</b></a>` : `<div class="empty"></div>`}
+    </div>`;
+
+    document.getElementById("main").innerHTML = `
+      <section class="layer-hero" style="--mc:${layer.accent}">
+        <div class="lh-ic">${layer.icon}</div>
+        <div class="lh-body">
+          <div class="lh-id">LAYER ${layer.id}</div>
+          <h1>${esc(layer.cn)}</h1>
+          <div class="lh-en">${esc(layer.en)}</div>
+          <p>${esc(layer.tag)}</p>
+          <div class="lh-stats"><span>${layer.modules.length} 模块</span><span>${terms} 术语</span></div>
+        </div>
+      </section>
+      ${modulesHtml}
+      ${pager}
+    `;
+
+    // 若 URL 带模块锚点，平滑滚动并高亮
+    if (location.hash) {
+      const el = document.querySelector(location.hash);
+      if (el) { el.scrollIntoView({ behavior: "smooth", block: "start" }); el.classList.add("flash"); }
+    }
+  </script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+</body>
+</html>

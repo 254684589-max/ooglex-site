@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全球经济图谱 · 各国经济状况概览</title>
+<meta name="description" content="世界地图形态展示各国央行基准利率、通胀、失业、GDP增长、债务等经济指标，数据每日更新。">
+<link rel="canonical" href="https://www.ooglex.com/apps/world-economy/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="全球经济图谱 · 各国经济状况概览">
+<meta property="og:description" content="世界地图形态展示各国央行基准利率、通胀、失业、GDP增长、债务等经济指标，数据每日更新。">
+<meta property="og:url" content="https://www.ooglex.com/apps/world-economy/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#06080d; --panel:#0e1118; --panel2:#141823; --line:rgba(255,255,255,0.08);
+    --text:#eef1f6; --dim:#8b93a6; --accent:#f3b13d; --nodata:#222734;
+    --up:#ff5f6d; --down:#27c498;
+  }
+  body { min-height:100vh; color:var(--text); background:var(--bg);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    line-height:1.5; overflow-x:hidden; }
+  .page { max-width:1080px; margin:0 auto; padding:14px 16px 60px; }
+  .head { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .head a.back { color:var(--accent); text-decoration:none; font-size:0.9rem; }
+  .head a.back:hover { opacity:.8; }
+  .title h1 { font-size:1.7rem; font-weight:800; letter-spacing:.5px;
+    background:linear-gradient(92deg,#ffe6a8,#f3b13d 55%,#5fd07a);
+    -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .title p { color:var(--dim); font-size:0.82rem; margin-top:2px; }
+  .tools { display:flex; gap:8px; align-items:center; }
+  .iconbtn { width:38px; height:38px; border-radius:10px; cursor:pointer; border:1px solid var(--line);
+    background:var(--panel); color:var(--text); font-size:1.05rem; display:flex; align-items:center; justify-content:center; transition:all .18s; }
+  .iconbtn:hover { border-color:var(--accent); }
+  .iconbtn.on { color:#1a140a; background:linear-gradient(135deg,var(--accent),#e0922c); border-color:transparent; }
+
+  .tabs { display:flex; flex-wrap:wrap; gap:7px; margin:14px 0 6px; }
+  .tabs button { padding:7px 14px; border-radius:999px; cursor:pointer; font-family:inherit; font-size:0.88rem;
+    color:var(--dim); background:var(--panel); border:1px solid var(--line); transition:all .18s; }
+  .tabs button:hover { color:var(--text); }
+  .tabs button.on { color:#0b0a07; font-weight:700; border-color:transparent; }
+
+  .subhead { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin:8px 2px 4px; }
+  .subhead h2 { font-size:1.25rem; font-weight:800; }
+  .subhead .desc { color:var(--dim); font-size:0.82rem; }
+  .subhead .yr { color:var(--accent); font-size:0.78rem; border:1px solid var(--line); border-radius:999px; padding:2px 9px; }
+
+  .topstrip { display:flex; gap:8px; overflow-x:auto; padding:8px 0 10px; }
+  .topstrip .t { flex:none; background:var(--panel); border:1px solid var(--line); border-radius:11px; padding:8px 12px; min-width:120px; }
+  .topstrip .t .c { font-size:0.85rem; } .topstrip .t .v { font-size:1.15rem; font-weight:800; font-variant-numeric:tabular-nums; }
+  .topstrip .t .r { font-size:0.7rem; color:var(--dim); }
+
+  .mapwrap { position:relative; background:radial-gradient(900px 500px at 50% 0%, rgba(243,177,61,0.06), transparent 70%), var(--panel);
+    border:1px solid var(--line); border-radius:16px; padding:6px; margin-top:6px; }
+  #map { width:100%; height:62vh; min-height:380px; }
+  .maptip-note { position:absolute; right:12px; bottom:10px; color:var(--dim); font-size:0.72rem; }
+
+  .legend { display:flex; align-items:center; gap:10px; margin:12px 2px 2px; font-size:0.78rem; color:var(--dim); }
+  .legend .bar { flex:1; height:10px; border-radius:6px; max-width:420px; }
+  .legend .lab { font-variant-numeric:tabular-nums; }
+
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:14px; margin-top:16px; }
+  .panel .ph { display:flex; justify-content:space-between; align-items:center; padding:11px 14px; cursor:pointer; }
+  .panel .ph h3 { font-size:0.95rem; }
+  .panel .ph .cnt { color:var(--dim); font-size:0.78rem; }
+  table { width:100%; border-collapse:collapse; font-size:0.86rem; }
+  th, td { padding:8px 12px; text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
+  th { color:var(--dim); font-weight:600; cursor:pointer; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  th:first-child, td:first-child { text-align:left; }
+  tbody tr { border-bottom:1px solid rgba(255,255,255,0.05); }
+  tbody tr:hover { background:rgba(255,255,255,0.03); }
+  td .dot { display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:8px; vertical-align:middle; }
+
+  footer { margin-top:20px; text-align:center; color:var(--dim); font-size:0.78rem; line-height:1.8; }
+  .status { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:999px; border:1px solid var(--line); }
+  .status .sdot { width:7px; height:7px; border-radius:50%; }
+  .status.live { color:var(--down); } .status.live .sdot { background:var(--down); }
+  .status.demo { color:var(--accent); } .status.demo .sdot { background:var(--accent); }
+
+  /* jsVectorMap 提示框 / 缩放按钮（自带 CSS 未引入，这里自定义） */
+  .jvectormap-tip { position:absolute; border-radius:8px; background:#0b0e14; border:1px solid var(--accent);
+    color:#fff; padding:7px 11px; font-size:0.85rem; pointer-events:none; z-index:30; box-shadow:0 8px 24px rgba(0,0,0,.6); }
+  .jvectormap-zoomin, .jvectormap-zoomout { position:absolute; left:12px; width:24px; height:24px; border-radius:6px;
+    background:var(--panel2); border:1px solid var(--line); color:var(--text); cursor:pointer; line-height:22px;
+    text-align:center; font-size:15px; user-select:none; }
+  .jvectormap-zoomin { top:12px; } .jvectormap-zoomout { top:42px; }
+  .jvectormap-container { background:transparent !important; }
+
+  @media (max-width:560px){ .title h1 { font-size:1.35rem; } #map { height:52vh; } }
+</style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="page">
+    <div class="head">
+      <div>
+        <a class="back" href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a>
+        <div class="title" style="margin-top:5px">
+          <h1>🌐 全球经济图谱</h1>
+          <p>各国经济状况概览 · 央行利率 · 通胀 · 失业 · 增长 · 债务 · 每日更新</p>
+        </div>
+      </div>
+      <div class="tools">
+        <button class="iconbtn" id="music" title="背景音乐">🎵</button>
+        <button class="iconbtn" id="viewtoggle" title="切换地图 / 榜单">📋</button>
+      </div>
+    </div>
+
+    <div class="tabs" id="tabs"></div>
+
+    <div class="subhead">
+      <h2 id="indName">—</h2>
+      <span class="desc" id="indDesc"></span>
+      <span class="yr" id="indYear"></span>
+    </div>
+
+    <div class="topstrip" id="top"></div>
+
+    <div class="mapwrap" id="mapwrap">
+      <div id="map"></div>
+      <div class="maptip-note">悬停查看 · 滚轮缩放</div>
+    </div>
+
+    <div class="legend" id="legend"></div>
+
+    <div class="panel" id="tablepanel">
+      <div class="ph" id="tableHead"><h3 id="tableTitle">完整榜单</h3><span class="cnt" id="tableCnt"></span></div>
+      <div id="tableBox" style="overflow-x:auto; display:none"></div>
+    </div>
+
+    <footer id="foot"></footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jsvectormap" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsvectormap/dist/maps/world.js" defer></script>
+  <script src="app.js" defer></script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+
+<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于本页数据</h2><p style="margin:0;opacity:.85">本页以世界地图形态展示各国关键经济指标——央行基准利率、通胀率、失业率、GDP 增长、政府债务等，便于横向对比各国经济状况，数据每日更新。各国统计口径与公布频率不同，跨国对比时请注意可比性，本页仅供宏观了解参考。</p></section>
+</body>
+</html>

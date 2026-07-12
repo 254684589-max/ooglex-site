@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>房值罗盘 · 住宅价值参考估算</title>
+<meta name="description" content="输入中文地址，基于城市参考均价与区位系数估算房屋价值区间（参考工具，非实时行情）">
+<link rel="canonical" href="https://www.ooglex.com/apps/home-value/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="房值罗盘 · 住宅价值参考估算">
+<meta property="og:description" content="输入中文地址，基于城市参考均价与区位系数估算房屋价值区间（参考工具，非实时行情）">
+<meta property="og:url" content="https://www.ooglex.com/apps/home-value/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#101622; --card:rgba(255,255,255,0.06); --line:rgba(120,180,255,0.2);
+    --text:#e9eef7; --dim:#93a4be; --blue:#5aa8f0; --gold:#f0c060; --green:#5ad8a0; --warn:#f0b84d;
+  }
+  body {
+    min-height:100vh; color:var(--text); background:var(--bg);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    overflow-x:hidden;
+  }
+  #bg { position:fixed; inset:0; z-index:0; }
+  .page { position:relative; z-index:1; max-width:720px; margin:0 auto; padding:20px 18px 60px; }
+  header { display:flex; align-items:center; margin-bottom:20px; }
+  header a { color:var(--blue); text-decoration:none; font-size:0.95rem; }
+  header a:hover { text-decoration:underline; }
+  .title { text-align:center; margin-bottom:26px; }
+  .title h1 {
+    font-size:2.2rem; letter-spacing:6px;
+    background:linear-gradient(90deg,var(--blue),var(--gold));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .title p { color:var(--dim); margin-top:8px; letter-spacing:2px; }
+
+  .card {
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:24px; margin-bottom:16px; backdrop-filter:blur(8px);
+  }
+  .card h2 { color:var(--blue); letter-spacing:2px; font-size:1.15rem; margin-bottom:14px; }
+  label { display:block; color:var(--dim); margin:13px 0 6px; font-size:0.92rem; }
+  input, select {
+    width:100%; padding:12px 14px; border-radius:10px; font-size:1.05rem; font-family:inherit;
+    background:rgba(6,10,18,0.7); border:1px solid var(--line); color:var(--text);
+  }
+  input:focus, select:focus { outline:none; border-color:var(--blue); }
+  .row { display:flex; gap:12px; flex-wrap:wrap; }
+  .row > div { flex:1; min-width:140px; }
+  .toggles { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+  .tg {
+    border:1px solid var(--line); border-radius:999px; padding:9px 18px; cursor:pointer;
+    color:var(--dim); background:rgba(255,255,255,0.04); font-family:inherit; font-size:0.92rem;
+    transition:.2s;
+  }
+  .tg.on { color:#fff; border-color:var(--gold); background:rgba(240,192,96,0.18); }
+  .btn {
+    width:100%; margin-top:20px; padding:14px; border:none; border-radius:12px; cursor:pointer;
+    background:linear-gradient(135deg,#2a6ab8,#3a98d8); color:#fff;
+    font-size:1.15rem; letter-spacing:6px; font-family:inherit; transition:transform .15s;
+  }
+  .btn:hover { transform:translateY(-2px); }
+
+  #result { display:none; }
+  .locLine { color:var(--dim); font-size:0.92rem; margin-bottom:8px; }
+  .locLine b { color:var(--text); }
+  #gauge { display:block; margin:6px auto 4px; }
+  .priceBig { text-align:center; margin-bottom:6px; }
+  .priceBig .v { font-size:2.2rem; font-weight:700; color:var(--gold); }
+  .priceBig .u { color:var(--dim); font-size:0.95rem; }
+  .totalLine { text-align:center; font-size:1.15rem; margin-bottom:16px; }
+  .totalLine b { color:var(--green); font-size:1.5rem; }
+  .factors { margin-top:8px; }
+  .factors div { display:flex; justify-content:space-between; padding:7px 2px; border-bottom:1px dashed rgba(120,180,255,0.15); font-size:0.94rem; }
+  .factors span:last-child { color:var(--gold); }
+  .disclaim {
+    background:rgba(240,184,77,0.1); border:1px solid rgba(240,184,77,0.4); color:var(--warn);
+    border-radius:10px; padding:12px 14px; font-size:0.86rem; margin-top:16px; line-height:1.7;
+  }
+  .guide { line-height:1.95; color:var(--text); font-size:0.95rem; }
+  .guide li { margin-left:1.2em; }
+  .guide b { color:var(--gold); }
+  footer { text-align:center; color:var(--dim); font-size:0.84rem; margin-top:32px; letter-spacing:1px; line-height:1.8; }
+</style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="page">
+  <header><a href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a></header>
+  <div class="title">
+    <h1>🧭 房值罗盘</h1>
+    <p>输入地址 · 估一估房屋的价值量级</p>
+  </div>
+
+  <section class="card">
+    <h2>📍 房屋信息</h2>
+    <label>中文地址（写得越细，识别越准，如：浙江省杭州市西湖区文三街道××小区）</label>
+    <input id="addr" type="text" placeholder="例如：上海市浦东新区张江镇科苑路">
+    <div class="row">
+      <div><label>建筑面积（㎡）</label><input id="area" type="number" value="89"></div>
+      <div><label>房龄</label><select id="age">
+        <option value="1.1">5 年以内（次新）</option>
+        <option value="1.0" selected>5 ~ 15 年</option>
+        <option value="0.85">15 ~ 25 年</option>
+        <option value="0.7">25 年以上（老破小/大）</option>
+      </select></div>
+    </div>
+    <div class="row">
+      <div><label>装修情况</label><select id="deco">
+        <option value="1.1">豪华装修</option>
+        <option value="1.05" selected>精装修</option>
+        <option value="1.0">简单装修</option>
+        <option value="0.95">毛坯</option>
+      </select></div>
+      <div><label>楼层与电梯</label><select id="floor">
+        <option value="1.03">电梯房 · 中间楼层</option>
+        <option value="1.0" selected>电梯房 · 一般楼层</option>
+        <option value="0.95">楼梯房 · 低楼层</option>
+        <option value="0.88">楼梯房 · 高楼层</option>
+      </select></div>
+    </div>
+    <label>加分项（点选）</label>
+    <div class="toggles">
+      <button class="tg" data-f="1.15" id="tgSchool">🏫 优质学区</button>
+      <button class="tg" data-f="1.08" id="tgMetro">🚇 地铁 500 米内</button>
+      <button class="tg" data-f="1.06" id="tgPark">🌳 公园/江景</button>
+      <button class="tg" data-f="0.92" id="tgNoisy">🛣️ 临高架/铁路</button>
+    </div>
+    <button class="btn" id="goBtn">开 始 估 算</button>
+  </section>
+
+  <section class="card" id="result">
+    <h2>🧭 估算结果</h2>
+    <div class="locLine" id="locLine"></div>
+    <canvas id="gauge" width="320" height="180"></canvas>
+    <div class="priceBig"><span class="v" id="unitPrice"></span><span class="u"> 元/㎡（参考区间中值）</span></div>
+    <div class="totalLine">总价约 <b id="totalPrice"></b> <span style="color:var(--dim)" id="totalRange"></span></div>
+    <div class="factors" id="factors"></div>
+    <div class="disclaim">
+      ⚠️ 重要声明：本结果基于<b>内置静态参考均价 + 经验系数</b>计算，数据非实时、未必反映当前行情，与真实成交价可能有较大偏差，<b>不构成任何置业、投资建议</b>。买卖房屋请以下方真实渠道的成交数据为准。
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>✅ 怎么查真实房价（认真买房看这里）</h2>
+    <ul class="guide">
+      <li><b>看"成交价"而非"挂牌价"</b>——贝壳找房、链家 App 可查小区历史成交记录，比挂牌价真实得多。</li>
+      <li><b>多平台交叉对比</b>——安居客、我爱我家、当地中介门店报价相互印证。</li>
+      <li><b>官方渠道</b>——当地住建局/房产交易中心的网签备案数据、国家统计局 70 城房价指数看趋势。</li>
+      <li><b>实地走访</b>——同小区不同楼栋、楼层、朝向差价可达 10~20%，多看几套才有"盘感"。</li>
+      <li><b>留意挂牌周期</b>——挂了很久卖不掉的价格不是市场价；近 3 个月成交密集的价位才是。</li>
+    </ul>
+  </section>
+
+  <footer>房值罗盘 · 参考工具 · 托管于 GitHub Pages<br>数据为静态参考量级，请以真实成交为准</footer>
+</div>
+<script src="app.js"></script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+</body>
+</html>

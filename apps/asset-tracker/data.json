@@ -1,0 +1,428 @@
+{
+  "updatedAt": "2026-07-11T07:37:53Z",
+  "asOf": "2026-07-11",
+  "defaultPeriod": "ytd",
+  "source": "Yahoo Finance",
+  "note": "数据来自 Yahoo Finance 公开行情，每日自动更新；涨跌幅为各标的自身价格变动。LME 金属以全球期货代理、债券以国债 ETF 代理（详见各条备注）。仅供参考，非投资建议。",
+  "categories": [
+    {
+      "key": "equity",
+      "label": "股市",
+      "color": "#ff5d6c"
+    },
+    {
+      "key": "commodity",
+      "label": "商品",
+      "color": "#4aa3f0"
+    },
+    {
+      "key": "fx",
+      "label": "外汇",
+      "color": "#ffb13d"
+    },
+    {
+      "key": "bond",
+      "label": "债券",
+      "color": "#2ed1b0"
+    }
+  ],
+  "periods": [
+    {
+      "key": "d1",
+      "label": "今日"
+    },
+    {
+      "key": "w1",
+      "label": "近一周"
+    },
+    {
+      "key": "m1",
+      "label": "近一月"
+    },
+    {
+      "key": "ytd",
+      "label": "年初至今"
+    },
+    {
+      "key": "y1",
+      "label": "近一年"
+    }
+  ],
+  "assets": [
+    {
+      "name": "标普500",
+      "category": "equity",
+      "symbol": "^GSPC",
+      "price": 7575.3901,
+      "returns": {
+        "d1": 0.42,
+        "w1": 1.23,
+        "m1": 4.24,
+        "ytd": 10.66,
+        "y1": 21.02
+      }
+    },
+    {
+      "name": "日经225",
+      "category": "equity",
+      "symbol": "^N225",
+      "price": 68557.7266,
+      "returns": {
+        "d1": 1.2,
+        "w1": -1.7,
+        "m1": 6.82,
+        "ytd": 36.19,
+        "y1": 72.92
+      }
+    },
+    {
+      "name": "德国DAX",
+      "category": "equity",
+      "symbol": "^GDAXI",
+      "price": 25067.0898,
+      "returns": {
+        "d1": -0.2,
+        "w1": -2.76,
+        "m1": 3.6,
+        "ytd": 2.35,
+        "y1": 2.5
+      }
+    },
+    {
+      "name": "恒生指数",
+      "category": "equity",
+      "symbol": "^HSI",
+      "price": 24175.1191,
+      "returns": {
+        "d1": 0.6,
+        "w1": 3.53,
+        "m1": -0.95,
+        "ytd": -5.68,
+        "y1": 0.61
+      }
+    },
+    {
+      "name": "富时新加坡海峡指数",
+      "category": "equity",
+      "symbol": "^STI",
+      "price": 5469.29,
+      "returns": {
+        "d1": 0.65,
+        "w1": 4.29,
+        "m1": 10.29,
+        "ytd": 17.72,
+        "y1": 34.19
+      }
+    },
+    {
+      "name": "沪深300",
+      "category": "equity",
+      "symbol": "000300.SS",
+      "price": 4842.1699,
+      "returns": {
+        "d1": 0.62,
+        "w1": -0.54,
+        "m1": -1.96,
+        "ytd": 4.58,
+        "y1": 20.75
+      }
+    },
+    {
+      "name": "新西兰NZ50",
+      "category": "equity",
+      "symbol": "^NZ50",
+      "price": 13785.6699,
+      "returns": {
+        "d1": 0.0,
+        "w1": 1.23,
+        "m1": 4.01,
+        "ytd": 1.75,
+        "y1": 7.97
+      }
+    },
+    {
+      "name": "印度SENSEX30",
+      "category": "equity",
+      "symbol": "^BSESN",
+      "price": 77569.3906,
+      "returns": {
+        "d1": 1.08,
+        "w1": -0.25,
+        "m1": 4.85,
+        "ytd": -8.98,
+        "y1": -6.76
+      }
+    },
+    {
+      "name": "澳洲标普200",
+      "category": "equity",
+      "symbol": "^AXJO",
+      "price": 8806.0,
+      "returns": {
+        "d1": 0.5,
+        "w1": -0.43,
+        "m1": 1.76,
+        "ytd": 1.05,
+        "y1": 2.52
+      }
+    },
+    {
+      "name": "中证500",
+      "category": "equity",
+      "symbol": "000905.SS",
+      "price": null,
+      "returns": {
+        "d1": null,
+        "w1": null,
+        "m1": null,
+        "ytd": 8.7,
+        "y1": null
+      },
+      "stale": true
+    },
+    {
+      "name": "欧洲STOXX600",
+      "category": "equity",
+      "symbol": "^STOXX",
+      "price": 641.1,
+      "returns": {
+        "d1": 0.04,
+        "w1": -1.79,
+        "m1": 3.71,
+        "ytd": 8.15,
+        "y1": 15.95
+      }
+    },
+    {
+      "name": "英国富时100",
+      "category": "equity",
+      "symbol": "^FTSE",
+      "price": 10497.2998,
+      "returns": {
+        "d1": 0.24,
+        "w1": -1.7,
+        "m1": 2.36,
+        "ytd": 5.7,
+        "y1": 16.95
+      }
+    },
+    {
+      "name": "法国CAC40",
+      "category": "equity",
+      "symbol": "^FCHI",
+      "price": 8338.9697,
+      "returns": {
+        "d1": 0.15,
+        "w1": -1.99,
+        "m1": 2.17,
+        "ytd": 2.32,
+        "y1": 5.53
+      }
+    },
+    {
+      "name": "韩国综合指数",
+      "category": "equity",
+      "symbol": "^KS11",
+      "price": 7475.9399,
+      "returns": {
+        "d1": 2.52,
+        "w1": -7.57,
+        "m1": -3.3,
+        "ytd": 77.4,
+        "y1": 134.85
+      }
+    },
+    {
+      "name": "圣保罗IBOVESPA指数",
+      "category": "equity",
+      "symbol": "^BVSP",
+      "price": 177866.0,
+      "returns": {
+        "d1": 2.97,
+        "w1": 2.07,
+        "m1": 5.48,
+        "ytd": 10.39,
+        "y1": 30.07
+      }
+    },
+    {
+      "name": "COMEX黄金",
+      "category": "commodity",
+      "symbol": "GC=F",
+      "price": 4104.1001,
+      "returns": {
+        "d1": -0.64,
+        "w1": -0.21,
+        "m1": -0.1,
+        "ytd": -5.12,
+        "y1": 22.29
+      }
+    },
+    {
+      "name": "COMEX白银",
+      "category": "commodity",
+      "symbol": "SI=F",
+      "price": 59.809,
+      "returns": {
+        "d1": -0.94,
+        "w1": -1.38,
+        "m1": -7.41,
+        "ytd": -14.72,
+        "y1": 54.64
+      }
+    },
+    {
+      "name": "LME铝",
+      "category": "commodity",
+      "note": "以期货铝代理 LME 铝",
+      "symbol": "ALI=F",
+      "price": 3409.75,
+      "returns": {
+        "d1": -2.27,
+        "w1": -0.18,
+        "m1": -9.79,
+        "ytd": 17.32,
+        "y1": 36.87
+      }
+    },
+    {
+      "name": "LME铜",
+      "category": "commodity",
+      "note": "以 COMEX 铜代理 LME 铜",
+      "symbol": "HG=F",
+      "price": 6.2335,
+      "returns": {
+        "d1": 0.3,
+        "w1": 1.95,
+        "m1": -0.25,
+        "ytd": 10.72,
+        "y1": 12.07
+      }
+    },
+    {
+      "name": "NYMEX WTI原油",
+      "category": "commodity",
+      "symbol": "CL=F",
+      "price": 71.41,
+      "returns": {
+        "d1": -0.93,
+        "w1": 3.96,
+        "m1": -20.68,
+        "ytd": 24.36,
+        "y1": 4.32
+      }
+    },
+    {
+      "name": "ICE布油",
+      "category": "commodity",
+      "symbol": "BZ=F",
+      "price": 76.01,
+      "returns": {
+        "d1": -0.38,
+        "w1": 5.86,
+        "m1": -18.36,
+        "ytd": 24.91,
+        "y1": 8.03
+      }
+    },
+    {
+      "name": "美元兑日元",
+      "category": "fx",
+      "symbol": "USDJPY=X",
+      "price": 161.672,
+      "returns": {
+        "d1": -0.43,
+        "w1": 0.14,
+        "m1": 0.71,
+        "ytd": 3.36,
+        "y1": 10.65
+      }
+    },
+    {
+      "name": "美元指数",
+      "category": "fx",
+      "symbol": "DX-Y.NYB",
+      "price": 100.97,
+      "returns": {
+        "d1": 0.03,
+        "w1": 0.11,
+        "m1": 1.02,
+        "ytd": 2.74,
+        "y1": 3.19
+      }
+    },
+    {
+      "name": "美元兑人民币",
+      "category": "fx",
+      "symbol": "USDCNY=X",
+      "price": 6.7731,
+      "returns": {
+        "d1": -0.28,
+        "w1": -0.23,
+        "m1": -0.04,
+        "ytd": -3.19,
+        "y1": -5.67
+      }
+    },
+    {
+      "name": "英镑兑美元",
+      "category": "fx",
+      "symbol": "GBPUSD=X",
+      "price": 1.3398,
+      "returns": {
+        "d1": -0.13,
+        "w1": 0.45,
+        "m1": 0.27,
+        "ytd": -0.51,
+        "y1": -1.43
+      }
+    },
+    {
+      "name": "欧元兑美元",
+      "category": "fx",
+      "symbol": "EURUSD=X",
+      "price": 1.1419,
+      "returns": {
+        "d1": -0.12,
+        "w1": -0.03,
+        "m1": -1.01,
+        "ytd": -2.79,
+        "y1": -2.66
+      }
+    },
+    {
+      "name": "澳元兑美元",
+      "category": "fx",
+      "symbol": "AUDUSD=X",
+      "price": 0.6955,
+      "returns": {
+        "d1": 0.15,
+        "w1": 0.56,
+        "m1": -1.32,
+        "ytd": 3.84,
+        "y1": 6.41
+      }
+    },
+    {
+      "name": "中国国债",
+      "category": "bond",
+      "note": "以国债 ETF 代理（非中债-国债总财富指数）",
+      "symbol": "511260.SS",
+      "price": 134.937,
+      "returns": {
+        "d1": -0.01,
+        "w1": 0.15,
+        "m1": -0.53,
+        "ytd": 0.83,
+        "y1": -1.26
+      }
+    }
+  ],
+  "bdi": {
+    "price": 2944.0,
+    "changePct": 1.17,
+    "asOf": "2026-07-10",
+    "symbol": ".BADI",
+    "source": "CNBC"
+  }
+}

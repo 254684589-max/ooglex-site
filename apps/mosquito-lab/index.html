@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>声波驱蚊实验室 🦟</title>
+<meta name="description" content="一个可玩的声波频率发生器 + 关于超声波驱蚊的科学真相科普">
+<link rel="canonical" href="https://www.ooglex.com/apps/mosquito-lab/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="声波驱蚊实验室 🦟">
+<meta property="og:description" content="一个可玩的声波频率发生器 + 关于超声波驱蚊的科学真相科普">
+<meta property="og:url" content="https://www.ooglex.com/apps/mosquito-lab/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#08131a; --card:rgba(255,255,255,0.06); --line:rgba(120,220,200,0.22);
+    --text:#e6f4f1; --dim:#8fb0ab; --mint:#4fe0c0; --cyan:#3ec6e0; --warn:#f0b84d; --red:#f0796a;
+  }
+  body {
+    min-height:100vh; color:var(--text); background:var(--bg);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    overflow-x:hidden;
+  }
+  #bg { position:fixed; inset:0; z-index:0; }
+  .page { position:relative; z-index:1; max-width:760px; margin:0 auto; padding:20px 18px 70px; }
+  header { display:flex; align-items:center; margin-bottom:22px; }
+  header a { color:var(--mint); text-decoration:none; font-size:0.95rem; }
+  header a:hover { text-decoration:underline; }
+  .title { text-align:center; margin-bottom:28px; }
+  .title h1 {
+    font-size:2.3rem; letter-spacing:4px;
+    background:linear-gradient(90deg,var(--mint),var(--cyan));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .title p { color:var(--dim); margin-top:8px; letter-spacing:2px; }
+
+  .card {
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:24px; margin-bottom:18px; backdrop-filter:blur(8px);
+  }
+  .card h2 { letter-spacing:2px; margin-bottom:14px; color:var(--mint); font-size:1.2rem; }
+
+  /* 发生器 */
+  .freqDisp { text-align:center; margin:8px 0 18px; }
+  .freqDisp .num { font-size:3rem; font-weight:700; color:var(--cyan); }
+  .freqDisp .unit { font-size:1.1rem; color:var(--dim); }
+  .freqDisp .note { color:var(--dim); font-size:0.9rem; margin-top:4px; min-height:1.3em; }
+  input[type=range] { width:100%; accent-color:var(--mint); height:6px; }
+  .presets { display:flex; flex-wrap:wrap; gap:10px; margin:18px 0; }
+  .preset {
+    flex:1; min-width:130px; background:rgba(255,255,255,0.05); border:1px solid var(--line);
+    border-radius:12px; padding:12px; cursor:pointer; text-align:left; color:var(--text);
+    font-family:inherit; transition:border-color .2s, background .2s;
+  }
+  .preset:hover { border-color:var(--mint); background:rgba(255,255,255,0.1); }
+  .preset .pf { color:var(--cyan); font-weight:700; }
+  .preset .pn { font-size:0.82rem; color:var(--dim); margin-top:3px; }
+  .controls { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .playBtn {
+    flex:1; min-width:160px; padding:15px; border:none; border-radius:12px;
+    background:linear-gradient(135deg,#1f8a72,#2ea8c8); color:#fff;
+    font-size:1.15rem; letter-spacing:4px; cursor:pointer; font-family:inherit;
+    transition:transform .15s, box-shadow .2s;
+  }
+  .playBtn:hover { transform:translateY(-2px); box-shadow:0 8px 26px rgba(80,220,200,0.3); }
+  .playBtn.on { background:linear-gradient(135deg,#b03a2e,#e0796a); }
+  .vol { display:flex; align-items:center; gap:8px; min-width:150px; }
+  .vol span { color:var(--dim); font-size:0.85rem; white-space:nowrap; }
+  .warn {
+    background:rgba(240,184,77,0.1); border:1px solid rgba(240,184,77,0.4); color:var(--warn);
+    border-radius:10px; padding:10px 14px; font-size:0.88rem; margin-top:16px; line-height:1.6;
+  }
+
+  .verdict {
+    display:flex; align-items:center; gap:14px; background:rgba(240,121,106,0.1);
+    border:1px solid rgba(240,121,106,0.45); border-radius:12px; padding:16px; margin-bottom:16px;
+  }
+  .verdict .e { font-size:2.4rem; }
+  .verdict b { color:var(--red); }
+
+  details {
+    background:rgba(255,255,255,0.04); border:1px solid var(--line);
+    border-radius:10px; margin-bottom:10px; overflow:hidden;
+  }
+  details summary {
+    padding:14px 16px; cursor:pointer; list-style:none; font-weight:600; letter-spacing:1px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::after { content:'＋'; color:var(--mint); }
+  details[open] summary::after { content:'－'; }
+  details .body { padding:0 16px 16px; color:var(--dim); line-height:1.85; font-size:0.95rem; }
+  details .body b { color:var(--text); }
+
+  .real { line-height:2; color:var(--text); }
+  .real li { margin-left:1.2em; }
+  .src { font-size:0.82rem; color:var(--dim); line-height:1.9; }
+  .src a { color:var(--cyan); }
+  footer { text-align:center; color:var(--dim); font-size:0.84rem; margin-top:34px; letter-spacing:1px; line-height:1.8; }
+</style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="page">
+  <header><a href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a></header>
+  <div class="title">
+    <h1>🦟 声波驱蚊实验室</h1>
+    <p>一台真能响的频率发生器 · 一份不忽悠的科学说明</p>
+  </div>
+
+  <section class="card">
+    <h2>🔊 频率发生器</h2>
+    <div class="freqDisp">
+      <span class="num" id="fNum">18000</span><span class="unit"> Hz</span>
+      <div class="note" id="fNote">超高频，部分年轻人能听到</div>
+    </div>
+    <input type="range" id="fSlider" min="100" max="22000" value="18000" step="100">
+    <div class="presets" id="presets"></div>
+    <div class="controls">
+      <button class="playBtn" id="playBtn">▶ 播放</button>
+      <div class="vol"><span>🔈 音量</span><input type="range" id="volSlider" min="0" max="100" value="30"></div>
+    </div>
+    <div class="warn">
+      ⚠️ 安全提示：请从低音量开始，高频长时间大音量可能伤害听力，尤其勿靠近婴幼儿与宠物（猫狗能听到更高频率，可能引起不适）。这是一个声音实验工具，<b>不是医疗或驱虫器械</b>。
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>🔬 科学真相：声波真能驱蚊吗？</h2>
+    <div class="verdict">
+      <span class="e">❌</span>
+      <div>简短答案：<b>目前没有可靠科学证据表明声波/超声波能驱赶蚊子。</b> 多项严谨的野外与实验室研究都得出了否定结论，相关商业产品也屡遭监管处罚。</div>
+    </div>
+    <p style="color:var(--dim);line-height:1.85;margin-bottom:6px">下面是几种流行的"声波驱蚊"说法，以及它们为什么站不住脚 👇 点击展开：</p>
+    <div id="theories"></div>
+  </section>
+
+  <section class="card">
+    <h2>✅ 那么，什么才真正有效？</h2>
+    <ul class="real">
+      <li><b>含 DEET / 派卡瑞丁（Picaridin）/ 柠檬桉油（OLE）的驱蚊液</b>——经权威机构验证有效，涂抹在皮肤上。</li>
+      <li><b>蚊帐与纱窗</b>——物理隔离，最朴素也最可靠，尤其适合睡眠时段。</li>
+      <li><b>清除积水</b>——花盆托盘、废旧轮胎、瓶罐里的死水是蚊子的繁殖温床，定期倒掉。</li>
+      <li><b>电热蚊香液/盘（含拟除虫菊酯）</b>——在通风的室内有效，注意按说明使用。</li>
+      <li><b>风扇</b>——蚊子飞行能力弱，一台对着吹的风扇就能让它们难以靠近，意外地好用。</li>
+      <li><b>穿浅色长袖长裤</b>——减少暴露的皮肤面积，蚊子也更易被深色吸引。</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>📚 参考与延伸阅读</h2>
+    <p class="src">
+      • Enayati A, Hemingway J, Garner P. <i>Electronic mosquito repellents for preventing mosquito bites and malaria infection.</i> Cochrane Database of Systematic Reviews, 2007. —— 系统综述结论：电子驱蚊器无降低叮咬的证据。<br>
+      • 美国联邦贸易委员会（FTC）历年来对宣称"超声波驱虫/驱蚊"的产品提起过虚假广告诉讼。<br>
+      • 多家科普机构（如各国疾控中心、消费者权益组织）对超声波驱蚊持否定态度，建议采用上文的物理与化学防护方法。<br>
+      <span style="color:var(--warn)">注：以上为公开研究的概述，具体数据请查阅原文；本页面不构成医疗或健康建议。</span>
+    </p>
+  </section>
+
+  <footer>声波驱蚊实验室 · 科普向 · 托管于 GitHub Pages<br>做一个诚实又好玩的小工具 ☀️</footer>
+</div>
+<script src="app.js"></script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>游戏中心 · 原创网页小游戏合集</title>
+<meta name="description" content="原创网页小游戏合集：跳一跳、欢乐斗地主、像素大冒险、霓虹都市、军团冲锋，电脑手机都能玩。">
+<link rel="canonical" href="https://www.ooglex.com/games/hub/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="游戏中心 · 原创网页小游戏合集">
+<meta property="og:description" content="原创网页小游戏合集：跳一跳、欢乐斗地主、像素大冒险、霓虹都市、军团冲锋，电脑手机都能玩。">
+<meta property="og:url" content="https://www.ooglex.com/games/hub/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --bg:#0b0d16; --card:#161a28; --line:rgba(255,255,255,0.09); --text:#eef1f8; --dim:#99a0b8; --accent:#7c5cff; }
+  body { min-height:100vh; color:var(--text);
+    background:
+      radial-gradient(900px 460px at 14% -8%, rgba(124,92,255,.18), transparent 60%),
+      radial-gradient(820px 440px at 88% 2%, rgba(255,46,151,.12), transparent 60%),
+      radial-gradient(900px 560px at 50% 122%, rgba(126,217,87,.10), transparent 60%),
+      var(--bg);
+    background-attachment:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif; line-height:1.5; }
+  .page { max-width:1000px; margin:0 auto; padding:16px 16px 64px; }
+  header.top a.back { color:var(--accent); text-decoration:none; font-size:0.9rem; }
+  header.top a.back:hover { opacity:.8; }
+  .hero { text-align:center; margin:18px 0 24px; }
+  .hero h1 { font-size:2.1rem; font-weight:800; letter-spacing:1px;
+    background:linear-gradient(92deg,#a98bff,#ff6ec7 50%,#7ed957); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .hero p { color:var(--dim); margin-top:7px; font-size:0.92rem; }
+
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:18px; }
+  .game { display:flex; flex-direction:column; text-decoration:none; color:inherit; border-radius:18px; overflow:hidden;
+    background:var(--card); border:1px solid var(--line); box-shadow:0 22px 54px -34px rgba(0,0,0,.85);
+    transition:transform .18s, border-color .18s; }
+  .game:hover { transform:translateY(-4px); border-color:var(--ac); }
+  .cover { height:150px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+  .cover .ico { font-size:4.6rem; filter:drop-shadow(0 6px 16px rgba(0,0,0,.5)); z-index:2; }
+  .cover::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 55%, rgba(0,0,0,.35)); }
+  /* 像素大冒险：复古蓝天草地 */
+  .cv-pixel { background:linear-gradient(180deg,#56b9ff 0%,#8fd3ff 52%,#7ed957 52%,#5cb84a 100%); }
+  .cv-pixel::before { content:""; position:absolute; left:0; right:0; bottom:0; height:48%; z-index:1;
+    background-image:linear-gradient(90deg, rgba(0,0,0,.07) 1px, transparent 1px); background-size:18px 18px; }
+  /* 霓虹都市：合成波夕阳 */
+  .cv-neon { background:linear-gradient(180deg,#1a0938 0%,#5b1a8a 45%,#ff2e97 100%); }
+  .cv-neon::before { content:""; position:absolute; left:50%; top:26px; width:92px; height:92px; transform:translateX(-50%);
+    border-radius:50%; background:linear-gradient(180deg,#ffd24a,#ff5fa2); z-index:1; box-shadow:0 0 40px rgba(255,95,162,.6); }
+  /* 军团冲锋：竞技场 */
+  .cv-legion { background:linear-gradient(180deg,#16235c 0%,#274099 48%,#c0392b 100%); }
+  .cv-legion::before { content:""; position:absolute; inset:0; z-index:1;
+    background-image:linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px); background-size:26px 100%; transform:perspective(200px) rotateX(40deg) translateY(30%); }
+  /* 欢乐斗地主：牌桌绿绒 */
+  .cv-ddz { background:radial-gradient(120% 90% at 50% 16%, #15916f 0%, #0e6650 46%, #0a3f33 100%); }
+  .cv-ddz::before { content:"♠ ♥ ♣ ♦"; position:absolute; left:0; right:0; bottom:13px; z-index:1; text-align:center;
+    font-size:1.05rem; letter-spacing:9px; color:rgba(255,255,255,.24); }
+  /* 跳一跳：灰紫底 + 等距白方块 */
+  .cv-jump { background:linear-gradient(180deg,#e2e5f0 0%,#c2c7da 100%); }
+  .cv-jump::before { content:""; position:absolute; left:50%; bottom:14px; width:78px; height:78px; z-index:1;
+    transform:translateX(-50%) rotateX(58deg) rotateZ(45deg); border-radius:12px;
+    background:linear-gradient(135deg,#ffffff,#dfe2ef); box-shadow:0 16px 0 #9aa0b8, 0 30px 26px rgba(30,30,60,.4); }
+  .cv-jump .ico { margin-bottom:26px; font-size:3.6rem; }
+
+  .body { padding:15px 16px 17px; }
+  .body h3 { font-size:1.12rem; font-weight:800; }
+  .body p { color:var(--dim); font-size:0.84rem; margin-top:6px; line-height:1.55; }
+  .play { display:inline-block; margin-top:13px; padding:8px 18px; border-radius:999px; font-weight:700; font-size:0.88rem;
+    color:#fff; background:linear-gradient(135deg, var(--ac), var(--ac2)); }
+
+  footer { margin-top:24px; text-align:center; color:var(--dim); font-size:0.8rem; }
+  @media (max-width:480px){ .hero h1 { font-size:1.6rem; } }
+</style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="page">
+    <header class="top"><a class="back" href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a></header>
+    <div class="hero">
+      <h1>🎮 游戏中心</h1>
+      <p>原创网页小游戏合集 · 电脑手机都能玩 · 点击开玩</p>
+    </div>
+    <div class="grid">
+      <a class="game" href="../jump-jump/" style="--ac:#07c160;--ac2:#5a55c8">
+        <div class="cover cv-jump"><span class="ico">♟️</span></div>
+        <div class="body">
+          <h3>跳一跳</h3>
+          <p>按住蓄力、松手起跳：落在方块正中心触发连击，得分翻倍！等距 3D 画面、治愈系背景音乐与连击音效，单指即可上手。</p>
+          <span class="play">🎮 开始游戏 →</span>
+        </div>
+      </a>
+      <a class="game" href="../doudizhu/" style="--ac:#e8b53a;--ac2:#c0392b">
+        <div class="cover cv-ddz"><span class="ico">🃏</span></div>
+        <div class="body">
+          <h3>欢乐斗地主</h3>
+          <p>经典三人斗地主单机版：抢地主、叫牌、出牌全规则，配两个 AI 对手、精美牌桌、背景音乐与抢地主/炸弹音效。手机电脑都能玩。</p>
+          <span class="play">🎮 开始游戏 →</span>
+        </div>
+      </a>
+      <a class="game" href="../pixel-adventure/" style="--ac:#5cb84a;--ac2:#3a9a8f">
+        <div class="cover cv-pixel"><span class="ico">🦊</span></div>
+        <div class="body">
+          <h3>像素大冒险</h3>
+          <p>原创横版闯关小游戏：奔跑跳跃、踩扁怪物、顶问号砖、吃金币、冲向终点旗帜。</p>
+          <span class="play">🎮 开始游戏 →</span>
+        </div>
+      </a>
+      <a class="game" href="../neon-city/" style="--ac:#ff2e97;--ac2:#7c3bd6">
+        <div class="cover cv-neon"><span class="ico">🌴</span></div>
+        <div class="body">
+          <h3>霓虹都市</h3>
+          <p>80 年代复古风开放城市驾驶：飙车漂移、送货赚钱、躲避警察追捕，霓虹夜景配合成器音乐。</p>
+          <span class="play">🎮 开始游戏 →</span>
+        </div>
+      </a>
+      <a class="game" href="../legion-rush/" style="--ac:#3a6bd6;--ac2:#c0392b">
+        <div class="cover cv-legion"><span class="ico">⚔️</span></div>
+        <div class="body">
+          <h3>军团冲锋 · Legion Rush</h3>
+          <p>仿"数字闯关"爽感手游：操控蓝色军团穿过增益门壮大队伍，用数量碾碎巨人 BOSS。伪 3D 竞技场、无限关卡。</p>
+          <span class="play">🎮 开始游戏 →</span>
+        </div>
+      </a>
+      <a class="game" href="../billiards/" style="--ac:#1a5e3a;--ac2:#7c5cff">
+        <div class="cover" style="background:radial-gradient(circle at center, #1a5e3a 0%, #0a3f2a 100%)"><span class="ico">🎱</span></div>
+        <div class="body">
+          <h3>极简桌球</h3>
+          <p>手机适配的 H5 桌球小游戏：拖动白球反向蓄力，松手击球。支持进球统计与重置球局，极简物理引擎，流畅触屏操作。</p>
+          <span class="play">🎮 开始游戏 →</span>
+        </div>
+      </a>
+    </div>
+    <footer>原创网页小游戏 · 纯前端，无需安装</footer>
+  </div>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+</body>
+</html>

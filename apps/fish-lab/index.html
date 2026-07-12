@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>声波诱鱼实验室 🐟</title>
+<meta name="description" content="一个可玩的低频诱鱼音发生器 + 关于声波诱鱼的科学真相与实用钓鱼技巧">
+<link rel="canonical" href="https://www.ooglex.com/apps/fish-lab/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="声波诱鱼实验室 🐟">
+<meta property="og:description" content="一个可玩的低频诱鱼音发生器 + 关于声波诱鱼的科学真相与实用钓鱼技巧">
+<meta property="og:url" content="https://www.ooglex.com/apps/fish-lab/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#05161f; --card:rgba(255,255,255,0.06); --line:rgba(90,200,210,0.22);
+    --text:#e3f3f5; --dim:#86b3b8; --aqua:#3ed0d8; --teal:#2ea8a0; --gold:#e8c25a; --warn:#f0b84d; --green:#4dd98a;
+  }
+  body {
+    min-height:100vh; color:var(--text); background:var(--bg);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    overflow-x:hidden;
+  }
+  #bg { position:fixed; inset:0; z-index:0; }
+  .page { position:relative; z-index:1; max-width:760px; margin:0 auto; padding:20px 18px 70px; }
+  header { display:flex; align-items:center; margin-bottom:22px; }
+  header a { color:var(--aqua); text-decoration:none; font-size:0.95rem; }
+  header a:hover { text-decoration:underline; }
+  .title { text-align:center; margin-bottom:28px; }
+  .title h1 {
+    font-size:2.2rem; letter-spacing:4px;
+    background:linear-gradient(90deg,var(--aqua),var(--gold));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .title p { color:var(--dim); margin-top:8px; letter-spacing:2px; }
+
+  .card {
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:24px; margin-bottom:18px; backdrop-filter:blur(8px);
+  }
+  .card h2 { letter-spacing:2px; margin-bottom:14px; color:var(--aqua); font-size:1.2rem; }
+
+  .freqDisp { text-align:center; margin:8px 0 18px; }
+  .freqDisp .num { font-size:3rem; font-weight:700; color:var(--gold); }
+  .freqDisp .unit { font-size:1.1rem; color:var(--dim); }
+  .freqDisp .note { color:var(--dim); font-size:0.9rem; margin-top:4px; min-height:1.3em; }
+  input[type=range] { width:100%; accent-color:var(--aqua); height:6px; }
+  .presets { display:flex; flex-wrap:wrap; gap:10px; margin:18px 0; }
+  .preset {
+    flex:1; min-width:140px; background:rgba(255,255,255,0.05); border:1px solid var(--line);
+    border-radius:12px; padding:12px; cursor:pointer; text-align:left; color:var(--text);
+    font-family:inherit; transition:border-color .2s, background .2s;
+  }
+  .preset:hover { border-color:var(--aqua); background:rgba(255,255,255,0.1); }
+  .preset .pf { color:var(--gold); font-weight:700; }
+  .preset .pn { font-size:0.82rem; color:var(--dim); margin-top:3px; }
+  .controls { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .playBtn {
+    flex:1; min-width:160px; padding:15px; border:none; border-radius:12px;
+    background:linear-gradient(135deg,var(--teal),#2e88c8); color:#fff;
+    font-size:1.15rem; letter-spacing:4px; cursor:pointer; font-family:inherit;
+    transition:transform .15s, box-shadow .2s;
+  }
+  .playBtn:hover { transform:translateY(-2px); box-shadow:0 8px 26px rgba(60,200,210,0.3); }
+  .playBtn.on { background:linear-gradient(135deg,#b03a2e,#e0796a); }
+  .vol { display:flex; align-items:center; gap:8px; min-width:150px; }
+  .vol span { color:var(--dim); font-size:0.85rem; white-space:nowrap; }
+  .warn {
+    background:rgba(240,184,77,0.1); border:1px solid rgba(240,184,77,0.4); color:var(--warn);
+    border-radius:10px; padding:10px 14px; font-size:0.88rem; margin-top:16px; line-height:1.6;
+  }
+
+  .verdict {
+    display:flex; align-items:center; gap:14px; background:rgba(232,194,90,0.1);
+    border:1px solid rgba(232,194,90,0.45); border-radius:12px; padding:16px; margin-bottom:16px;
+  }
+  .verdict .e { font-size:2.4rem; }
+  .verdict b { color:var(--gold); }
+
+  details {
+    background:rgba(255,255,255,0.04); border:1px solid var(--line);
+    border-radius:10px; margin-bottom:10px; overflow:hidden;
+  }
+  details summary {
+    padding:14px 16px; cursor:pointer; list-style:none; font-weight:600; letter-spacing:1px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::after { content:'＋'; color:var(--aqua); }
+  details[open] summary::after { content:'－'; }
+  details .body { padding:0 16px 16px; color:var(--dim); line-height:1.85; font-size:0.95rem; }
+  details .body b { color:var(--text); }
+
+  .real { line-height:2; color:var(--text); }
+  .real li { margin-left:1.2em; }
+  .src { font-size:0.82rem; color:var(--dim); line-height:1.9; }
+  .src a { color:var(--aqua); }
+  footer { text-align:center; color:var(--dim); font-size:0.84rem; margin-top:34px; letter-spacing:1px; line-height:1.8; }
+</style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="page">
+  <header><a href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a></header>
+  <div class="title">
+    <h1>🐟 声波诱鱼实验室</h1>
+    <p>一台真能响的低频发生器 · 一份分得清真假的科学说明</p>
+  </div>
+
+  <section class="card">
+    <h2>🔊 诱鱼音发生器</h2>
+    <div class="freqDisp">
+      <span class="num" id="fNum">120</span><span class="unit"> Hz</span>
+      <div class="note" id="fNote">低频区，多数鱼类听觉最敏感的范围</div>
+    </div>
+    <input type="range" id="fSlider" min="20" max="2000" value="120" step="5">
+    <div class="presets" id="presets"></div>
+    <div class="controls">
+      <button class="playBtn" id="playBtn">▶ 播放</button>
+      <div class="vol"><span>🔈 音量</span><input type="range" id="volSlider" min="0" max="100" value="30"></div>
+    </div>
+    <div class="warn">
+      ⚠️ 关键前提：手机/电脑扬声器朝空气放声，<b>声音几乎进不了水</b>（空气与水的声阻抗相差约 3600 倍）。要真正作用于水下，需要<b>防水水下扬声器或换能器</b>。本工具是声音实验与科普演示，不是保证渔获的器械。
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>🔬 科学真相：声音真能诱鱼吗？</h2>
+    <div class="verdict">
+      <span class="e">🟡</span>
+      <div>简短答案：<b>部分成立，但有重要前提。</b> 鱼确实能感知声音、低频尤其敏感，"声学诱鱼"在科研里有正面证据；但效果因鱼种和场景而异，且必须把声音有效送入水中才谈得上，远没有商家宣传的那么神。</div>
+    </div>
+    <p style="color:var(--dim);line-height:1.85;margin-bottom:6px">点击展开，看看哪些说法靠谱、哪些被夸大了 👇</p>
+    <div id="theories"></div>
+  </section>
+
+  <section class="card">
+    <h2>🎣 真正能提高渔获的，是这些</h2>
+    <ul class="real">
+      <li><b>选对钓点与时段</b>——晨昏、水温适宜、有水草/结构/进出水口的地方，远比任何"神器"重要。</li>
+      <li><b>对路的饵料与打窝</b>——用目标鱼爱吃的饵，提前打窝聚鱼，是最经典也最有效的"诱鱼"。</li>
+      <li><b>看懂水情</b>——观察鱼星、水色、风向；下风口常聚集食物和鱼。</li>
+      <li><b>钓组与灵敏度</b>——线组、浮漂、钩号匹配鱼情，信号清晰才能抓口。</li>
+      <li><b>安静与隐蔽</b>——岸上的脚步声、说话声会通过地面传入水中惊鱼，保持安静往往比"放声"更有用。</li>
+      <li><b>遵守当地法规</b>——许多地区对电子诱鱼/声诱设备有限制甚至禁止，垂钓前务必了解当地渔业规定与禁渔期。</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>📚 参考与延伸阅读</h2>
+    <p class="src">
+      • Gordon TAC, et al. <i>Acoustic enrichment can enhance fish community development on degraded coral reef habitat.</i> Nature Communications, 2019. —— 播放健康礁石声音可使退化礁区聚集的鱼增加约一倍。<br>
+      • 大量研究表明，多数硬骨鱼的听觉敏感区集中在约 50–1000 Hz 的低频，侧线系统可感知约 200 Hz 以下的近场水流振动。<br>
+      • 水产养殖中"声音—投喂"条件反射训练（经典条件反射）已被广泛应用，可让鱼群听到特定声音便聚集。<br>
+      • 与此同时，市售"电子诱鱼器"的独立测评结果普遍参差，效果高度依赖鱼种、声音特性与水下传声条件。<br>
+      <span style="color:var(--warn)">注：以上为公开研究的概述，具体数据请查阅原文；本页面不构成渔获保证或法律建议，垂钓请遵守当地法规。</span>
+    </p>
+  </section>
+
+  <footer>声波诱鱼实验室 · 科普向 · 托管于 GitHub Pages<br>分得清"有依据"和"被夸大"，才玩得明白 🌊</footer>
+</div>
+<script src="app.js"></script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+</body>
+</html>

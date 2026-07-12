@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全球资产市值排行榜 · 前 250（不限品类）</title>
+<meta name="description" content="不限品类、只看市值的全球资产排行榜（前 250）：房地产、国债、煤炭、石油、黄金、白银、各国货币、上市公司、加密货币同台竞技，数据每日自动更新。">
+<link rel="canonical" href="https://www.ooglex.com/apps/asset-ranking/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="全球资产市值排行榜 · 前 250（不限品类）">
+<meta property="og:description" content="房地产、国债、煤炭、石油、黄金、货币、公司、加密货币同台按市值排名，每日自动更新。">
+<meta property="og:url" content="https://www.ooglex.com/apps/asset-ranking/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#0a0c12; --card:#141823; --line:rgba(255,255,255,0.09);
+    --text:#eef1f7; --dim:#9099ad; --accent:#6c8cff; --accent2:#9d6cff;
+    --up:#ff5d6c; --down:#28c79a; --track:rgba(255,255,255,0.05);
+  }
+  body {
+    min-height:100vh; color:var(--text);
+    background:
+      radial-gradient(900px 460px at 12% -8%, rgba(224,137,78,.14), transparent 60%),
+      radial-gradient(820px 440px at 90% 0%, rgba(243,201,105,.12), transparent 60%),
+      radial-gradient(900px 560px at 50% 122%, rgba(108,140,255,.12), transparent 60%),
+      var(--bg);
+    background-attachment:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    line-height:1.55; overflow-x:hidden;
+  }
+  .page { max-width:1000px; margin:0 auto; padding:16px 15px 72px; }
+
+  header.top { display:flex; align-items:center; }
+  header.top a.back { color:#8aa6ff; text-decoration:none; font-size:0.92rem; transition:opacity .2s; }
+  header.top a.back:hover { opacity:.75; }
+
+  .title { text-align:center; margin:16px 0 18px; }
+  .title h1 {
+    font-size:2rem; font-weight:800; letter-spacing:.5px;
+    background:linear-gradient(92deg,#f0a35e,#f3c969 42%,#8aa6ff);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .title p { color:var(--dim); margin-top:7px; font-size:0.9rem; }
+  .statusrow { display:flex; justify-content:center; margin-top:11px; }
+  .status {
+    display:inline-flex; align-items:center; gap:7px; font-size:0.77rem;
+    padding:4px 13px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,0.03);
+  }
+  .status .sdot { width:8px; height:8px; border-radius:50%; flex:none; }
+  .status.live { color:#74e9c4; } .status.live .sdot { background:#2ed1b0; animation:pulse 1.9s infinite; }
+  .status.demo { color:#f4c66e; } .status.demo .sdot { background:#ffb13d; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(46,209,176,.55)} 70%{box-shadow:0 0 0 7px rgba(46,209,176,0)} 100%{box-shadow:0 0 0 0 rgba(46,209,176,0)} }
+
+  /* —— 摘要 —— */
+  .summary { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:14px 0 12px; }
+  .summary span {
+    font-size:0.8rem; padding:5px 13px; border-radius:999px;
+    background:var(--card); border:1px solid var(--line); white-space:nowrap;
+  }
+  .summary .pill-i { color:var(--dim); } .summary .pill-i b { color:var(--text); }
+  .summary .big { font-size:0.98rem; font-weight:800; }
+  .summary .lead.up { color:var(--up); border-color:rgba(255,93,108,.32); }
+  .summary .lead.down { color:var(--down); border-color:rgba(40,199,154,.32); }
+
+  /* —— 控制区 —— */
+  .controls { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+  .chips { display:flex; flex-wrap:wrap; gap:7px; justify-content:center; }
+  .chip {
+    display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none;
+    padding:6px 13px; border-radius:999px; font-size:0.84rem; color:var(--dim);
+    background:var(--card); border:1px solid var(--line); transition:all .16s;
+  }
+  .chip:hover { color:var(--text); border-color:rgba(255,255,255,.22); }
+  .chip .cdot { width:9px; height:9px; border-radius:50%; box-shadow:0 0 8px currentColor; }
+  .chip.on { color:#fff; border-color:transparent; background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 8px 18px -8px rgba(108,140,255,.7); }
+  .chip.on .cdot { box-shadow:none; }
+  .toolbar { display:flex; gap:9px; align-items:center; flex-wrap:wrap; justify-content:center; }
+  .search { position:relative; flex:1; min-width:190px; max-width:340px; }
+  .search input {
+    width:100%; padding:9px 14px 9px 34px; border-radius:11px; font-family:inherit; font-size:0.9rem;
+    color:var(--text); background:var(--card); border:1px solid var(--line); outline:none; transition:border-color .16s;
+  }
+  .search input:focus { border-color:var(--accent); }
+  .search::before { content:"🔍"; position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:0.82rem; opacity:.6; }
+  .sorts { display:flex; gap:6px; }
+  .sorts button {
+    padding:8px 13px; border-radius:10px; cursor:pointer; font-family:inherit; font-size:0.84rem;
+    color:var(--dim); background:var(--card); border:1px solid var(--line); transition:all .16s;
+  }
+  .sorts button:hover { color:var(--text); border-color:var(--accent); }
+  .sorts button.on { color:#fff; border-color:transparent; background:linear-gradient(135deg,var(--accent),var(--accent2)); }
+
+  /* —— 列表 —— */
+  .list { display:flex; flex-direction:column; gap:7px; }
+  .rowcard {
+    position:relative; display:grid; align-items:center; gap:10px;
+    grid-template-columns:34px 40px 1fr auto; padding:11px 14px 15px;
+    border-radius:14px; overflow:hidden;
+    background:linear-gradient(180deg, rgba(22,26,38,.94), rgba(16,19,28,.94));
+    border:1px solid var(--line); box-shadow:0 16px 40px -34px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.04);
+    animation:rowIn .4s cubic-bezier(.22,.61,.36,1) both;
+  }
+  @keyframes rowIn { from{opacity:0; transform:translateY(7px)} to{opacity:1; transform:none} }
+  .rk { font-size:0.95rem; font-weight:800; color:var(--dim); text-align:center; font-variant-numeric:tabular-nums; }
+  .rk.top { color:#f3c969; }
+  .logo { width:40px; height:40px; border-radius:9px; overflow:hidden; display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,.05); border:1px solid var(--line); }
+  .logo img { width:100%; height:100%; object-fit:contain; }
+  .logo .ini, .logo .emo { font-size:1.35rem; font-weight:800; }
+  .logo .ini { font-size:1.05rem; color:var(--accent); }
+  .info { min-width:0; }
+  .nm { font-weight:700; font-size:0.98rem; display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+  .nm .en { color:var(--dim); font-weight:500; font-size:0.78rem; }
+  .ctag { font-size:0.68rem; padding:1px 7px; border-radius:999px; border:1px solid currentColor; opacity:.9; }
+  .meta { color:var(--dim); font-size:0.76rem; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .money { text-align:right; white-space:nowrap; }
+  .cap { font-size:1.02rem; font-weight:800; font-variant-numeric:tabular-nums; }
+  .px { font-size:0.78rem; color:var(--dim); margin-top:2px; font-variant-numeric:tabular-nums; }
+  .chg { font-weight:700; }
+  .up { color:var(--up); } .down { color:var(--down); } .flat { color:var(--dim); }
+  .wbarbg { position:absolute; left:0; right:0; bottom:0; height:3px; background:var(--track); }
+  .wbar { position:absolute; left:0; bottom:0; height:3px; width:0; border-radius:0 3px 3px 0;
+    transition:width .7s cubic-bezier(.22,.61,.36,1); }
+  .empty { text-align:center; color:var(--dim); padding:48px 0; font-size:0.92rem; }
+
+  footer { margin-top:22px; text-align:center; color:var(--dim); font-size:0.8rem; line-height:1.85; }
+  footer .src b { color:var(--text); font-weight:600; }
+
+  @media (max-width:560px) {
+    .title h1 { font-size:1.5rem; }
+    .rowcard { grid-template-columns:26px 34px 1fr auto; gap:8px; padding:10px 11px 14px; }
+    .logo { width:34px; height:34px; }
+    .nm { font-size:0.9rem; } .cap { font-size:0.94rem; }
+    .nm .en { display:none; }
+  }
+</style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="page">
+    <header class="top"><a class="back" href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a></header>
+
+    <div class="title">
+      <h1>🌐 全球资产市值排行榜</h1>
+      <p>不限品类 · 只看市值 · 房地产 / 国债 / 商品 / 货币 / 黄金 / 公司 / 加密货币 同台前 250</p>
+      <div class="statusrow"><span class="status" id="status"></span></div>
+    </div>
+
+    <div class="summary" id="summary"></div>
+
+    <div class="controls">
+      <div class="chips" id="chips"></div>
+      <div class="toolbar">
+        <div class="sorts" id="sorts">
+          <button data-sort="rank" class="on">市值排名</button>
+          <button data-sort="gain">今日涨幅</button>
+          <button data-sort="loss">今日跌幅</button>
+        </div>
+        <div class="search"><input id="q" type="text" placeholder="搜索资产 / 代码…" autocomplete="off"></div>
+      </div>
+    </div>
+
+    <div class="list" id="list"></div>
+
+    <footer id="foot"></footer>
+  </div>
+
+  <script src="app.js"></script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+
+<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于本榜</h2><p style="margin:0;opacity:.85">这是一张「不限品类、只看市值」的全球资产排行榜：把房地产、政府债券、煤炭、石油、天然气、铁矿石、铝、铜、黄金、白银、各国货币（广义货币 M2）、上市公司、加密货币放进同一张榜按美元市值从高到低排名，取前 250。计算方法与主流资产市值站一致——商品/贵金属按「储量或地面存量 × 实时行情」、货币按「广义货币 × 实时汇率」、公司与加密货币按实时市值；房地产、政府债务等慢变量采用权威机构存量估值。数据每日自动更新，来源 Yahoo Finance、CoinGecko 及世界黄金协会 / IMF / Savills 等公开估算，仅供参考，不构成任何投资建议。</p></section>
+</body>
+</html>

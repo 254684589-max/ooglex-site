@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# 发推流水线的临时产物（用完即删，不应入库）
+tweet_queue.txt
+tweet_media.txt
+card_*.png
+
+# YouTube Short 构建产物
+short_build/
+short.mp4
+short_meta.json
+slide_*.png
+client_secret.json

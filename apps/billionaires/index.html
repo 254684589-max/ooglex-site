@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全球富豪实时榜 · 前250身价追踪</title>
+<meta name="description" content="追踪全球最富有的前 250 人身价与当日变动，数据每日自动更新（来源 Forbes 实时富豪榜）。">
+<link rel="canonical" href="https://www.ooglex.com/apps/billionaires/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="全球富豪实时榜 · 前250身价追踪">
+<meta property="og:description" content="追踪全球最富有的前 250 人身价与当日变动，数据每日自动更新（来源 Forbes 实时富豪榜）。">
+<meta property="og:url" content="https://www.ooglex.com/apps/billionaires/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#0c0d14; --card:#17181f; --line:rgba(255,255,255,0.09);
+    --text:#f1ece0; --dim:#a9a596; --gold:#f3c969; --gold2:#e0a23c;
+    --up:#ff5d6c; --down:#28c79a; --track:rgba(255,255,255,0.05);
+  }
+  body {
+    min-height:100vh; color:var(--text);
+    background:
+      radial-gradient(820px 420px at 12% -8%, rgba(243,201,105,0.16), transparent 60%),
+      radial-gradient(720px 400px at 92% 2%, rgba(224,162,60,0.14), transparent 60%),
+      radial-gradient(900px 600px at 50% 118%, rgba(243,201,105,0.07), transparent 60%),
+      var(--bg);
+    background-attachment:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    line-height:1.55; overflow-x:hidden;
+  }
+  .page { max-width:760px; margin:0 auto; padding:18px 16px 72px; }
+
+  header { display:flex; align-items:center; margin-bottom:14px; }
+  header a { color:var(--gold); text-decoration:none; font-size:0.95rem; transition:opacity .2s; }
+  header a:hover { opacity:.75; }
+
+  .title { text-align:center; margin-bottom:18px; }
+  .title h1 {
+    font-size:1.95rem; letter-spacing:1px; font-weight:800;
+    background:linear-gradient(92deg,#ffe6a8,#f3c969 50%,#d99a32);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .title p { color:var(--dim); margin-top:6px; font-size:0.9rem; }
+  .statusrow { display:flex; justify-content:center; gap:9px; margin-top:10px; flex-wrap:wrap; }
+  .status { display:inline-flex; align-items:center; gap:7px; font-size:0.78rem; padding:4px 13px;
+    border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,0.03); }
+  .status .sdot { width:8px; height:8px; border-radius:50%; flex:none; }
+  .status.live { color:var(--gold); } .status.live .sdot { background:var(--gold); animation:pulse 1.9s infinite; }
+  .status.demo { color:#f4c66e; } .status.demo .sdot { background:#caa64a; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(243,201,105,.5);} 70%{box-shadow:0 0 0 7px rgba(243,201,105,0);} 100%{box-shadow:0 0 0 0 rgba(243,201,105,0);} }
+
+  .summary { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:14px; }
+  .summary span { font-size:0.82rem; padding:5px 13px; border-radius:999px;
+    background:var(--card); border:1px solid var(--line); white-space:nowrap; }
+  .summary .pill-i { color:var(--dim); }
+  .summary .big { color:var(--gold); font-weight:700; }
+  .summary .lead.up { color:var(--up); border-color:rgba(255,93,108,.35); }
+  .summary .lead.down { color:var(--down); border-color:rgba(40,199,154,.35); }
+
+  .controls { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+  .seg { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+  .seg button { padding:7px 15px; border-radius:999px; cursor:pointer; font-family:inherit;
+    font-size:0.88rem; color:var(--dim); background:var(--card); border:1px solid var(--line); transition:all .18s; }
+  .seg button:hover { color:var(--text); border-color:var(--gold); }
+  .seg button.on { color:#26210f; border-color:transparent; font-weight:700;
+    background:linear-gradient(135deg,var(--gold),var(--gold2)); box-shadow:0 8px 20px -8px rgba(243,201,105,.7); }
+  .search { display:flex; justify-content:center; }
+  .search input { width:100%; max-width:320px; padding:9px 15px; border-radius:999px; font-family:inherit;
+    font-size:0.9rem; color:var(--text); background:var(--card); border:1px solid var(--line); }
+  .search input:focus { outline:none; border-color:var(--gold); }
+
+  #list { display:flex; flex-direction:column; gap:9px; }
+  .rowcard {
+    display:grid; grid-template-columns:30px 46px 1fr auto; align-items:center; gap:11px;
+    padding:11px 14px; border-radius:14px; position:relative; overflow:hidden;
+    background:linear-gradient(180deg, rgba(24,25,33,.94), rgba(18,19,26,.94));
+    border:1px solid var(--line); box-shadow:0 16px 40px -30px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.04);
+    animation:rowIn .4s cubic-bezier(.22,.61,.36,1) both; transition:border-color .15s, transform .15s;
+  }
+  .rowcard:hover { border-color:rgba(243,201,105,.4); transform:translateY(-1px); }
+  @keyframes rowIn { from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
+  .rowcard .wbarbg { position:absolute; left:0; bottom:0; height:3px; width:100%; background:var(--track); }
+  .rowcard .wbar { position:absolute; left:0; bottom:0; height:3px; border-radius:0 2px 2px 0;
+    background:linear-gradient(90deg,var(--gold2),var(--gold)); box-shadow:0 0 8px rgba(243,201,105,.5);
+    transition:width .6s cubic-bezier(.22,.61,.36,1); }
+
+  .rk { font-size:1.05rem; font-weight:800; color:var(--dim); text-align:center; font-variant-numeric:tabular-nums; }
+  .rk.top { color:var(--gold); }
+  .ava { width:46px; height:46px; border-radius:50%; overflow:hidden; flex:none;
+    border:1px solid rgba(243,201,105,.35); background:#222; }
+  .ava img { width:100%; height:100%; object-fit:cover; display:block; }
+  .ava .ini { width:100%; height:100%; display:flex; align-items:center; justify-content:center;
+    font-weight:700; color:#1a1710; font-size:1.05rem; background:linear-gradient(135deg,var(--gold),var(--gold2)); }
+  .info { min-width:0; }
+  .nm { font-size:1rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .nm .en { color:var(--dim); font-weight:400; font-size:0.78rem; margin-left:6px; }
+  .meta { color:var(--dim); font-size:0.78rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
+  .money { text-align:right; white-space:nowrap; }
+  .worth { font-size:1.12rem; font-weight:800; font-variant-numeric:tabular-nums; }
+  .chg { font-size:0.78rem; font-weight:700; font-variant-numeric:tabular-nums; margin-top:1px; }
+  .chg.up { color:var(--up); } .chg.down { color:var(--down); } .chg.flat { color:var(--dim); }
+
+  .empty { text-align:center; color:var(--dim); padding:44px 0; font-size:0.92rem; }
+  footer { margin-top:20px; text-align:center; color:var(--dim); font-size:0.8rem; line-height:1.85; }
+  footer .src b { color:var(--text); font-weight:600; }
+
+  @media (max-width:560px) {
+    .title h1 { font-size:1.5rem; }
+    .rowcard { grid-template-columns:24px 40px 1fr auto; gap:9px; padding:10px 11px; }
+    .ava { width:40px; height:40px; }
+    .nm .en { display:none; }
+    .worth { font-size:1rem; }
+  }
+</style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="page">
+    <header><a href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a></header>
+
+    <div class="title">
+      <h1>🏆 全球富豪实时榜</h1>
+      <p>世界上最富有的前 250 人 · 身价与当日变动 · 每日自动更新</p>
+      <div class="statusrow"><span class="status" id="status"></span></div>
+    </div>
+
+    <div class="summary" id="summary"></div>
+
+    <div class="controls">
+      <div class="seg" id="sorts">
+        <button data-sort="rank" class="on">按身价</button>
+        <button data-sort="gain">今日涨幅</button>
+        <button data-sort="loss">今日跌幅</button>
+      </div>
+      <div class="search"><input id="q" type="search" placeholder="搜索姓名（中 / 英）…" autocomplete="off"></div>
+    </div>
+
+    <div id="list"></div>
+    <footer id="foot"></footer>
+  </div>
+
+  <script src="app.js"></script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+
+<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于本页数据</h2><p style="margin:0;opacity:.85">本页追踪全球身价最高的前 250 位富豪及其当日变动，数据来源 Forbes 实时富豪榜，每日自动更新。身价以美元计，主要随其持有的上市公司股价波动，因此「当日变动」更多反映市场行情，而非真实可动用现金。榜单仅供了解全球财富格局参考。</p></section>
+</body>
+</html>

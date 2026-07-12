@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>万象算集 · 计算器大全（金融·健康·数学·物理·化学·换算）</title>
+<meta name="description" content="70+ 免费在线计算器，按金融、健康、数学、单位换算、物理、化学、日常、工具八大分类，支持搜索。房贷、复利、个税、BMI、单位换算、进制、方程……生活与学习都用得上。">
+<link rel="canonical" href="https://www.ooglex.com/apps/calculators/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="万象算集 · 生活计算器大全">
+<meta property="og:description" content="科学计算、房贷、复利、个税、BMI、日期、单位换算……生活里用得上的计算器都在这里">
+<meta property="og:url" content="https://www.ooglex.com/apps/calculators/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --mist:#0e1f26; --card:rgba(255,255,255,0.07); --line:rgba(170,220,220,0.25);
+    --text:#e7f2f0; --dim:#9db8b4; --jade:#5fd4b0; --gold:#e8c878; --accent:#52b8d8;
+  }
+  body {
+    min-height:100vh; color:var(--text); background:var(--mist);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    overflow-x:hidden;
+  }
+  #bg { position:fixed; inset:0; z-index:0; }
+  .page { position:relative; z-index:1; max-width:880px; margin:0 auto; padding:20px 18px 70px; }
+
+  header { display:flex; align-items:center; margin-bottom:24px; }
+  header a { color:var(--jade); text-decoration:none; font-size:0.95rem; }
+  header a:hover { text-decoration:underline; }
+
+  .title { text-align:center; margin-bottom:34px; }
+  .title h1 {
+    font-size:2.6rem; letter-spacing:12px; text-indent:12px;
+    background:linear-gradient(90deg, var(--jade), var(--accent));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .title p { color:var(--dim); margin-top:10px; letter-spacing:5px; }
+
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(195px,1fr)); gap:14px; }
+  .tile {
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:20px 18px; cursor:pointer; backdrop-filter:blur(8px);
+    transition:transform .2s, border-color .2s, background .2s;
+  }
+  .tile:hover { transform:translateY(-4px); border-color:var(--jade); background:rgba(255,255,255,0.11); }
+  .tile .ic { font-size:1.9rem; }
+  .tile h3 { margin:10px 0 6px; font-size:1.05rem; letter-spacing:1px; }
+  .tile p { color:var(--dim); font-size:0.83rem; line-height:1.5; }
+
+  .panel {
+    background:var(--card); border:1px solid var(--line); border-radius:18px;
+    padding:26px; backdrop-filter:blur(10px); display:none;
+  }
+  .panel h2 { letter-spacing:3px; margin-bottom:4px; color:var(--jade); }
+  .panel .sub { color:var(--dim); font-size:0.88rem; margin-bottom:18px; }
+  .backBtn {
+    background:none; border:1px solid var(--line); color:var(--dim); border-radius:999px;
+    padding:7px 18px; cursor:pointer; font-family:inherit; margin-bottom:18px;
+  }
+  .backBtn:hover { color:var(--text); border-color:var(--jade); }
+
+  label { display:block; color:var(--dim); margin:14px 0 6px; font-size:0.92rem; }
+  input, select {
+    width:100%; padding:11px 13px; border-radius:10px; font-size:1.05rem;
+    background:rgba(8,18,22,0.7); border:1px solid var(--line); color:var(--text);
+    font-family:inherit;
+  }
+  input:focus, select:focus { outline:none; border-color:var(--jade); }
+  .row { display:flex; gap:12px; flex-wrap:wrap; }
+  .row > div { flex:1; min-width:130px; }
+  .calcBtn {
+    margin-top:20px; width:100%; padding:13px; border:none; border-radius:12px;
+    background:linear-gradient(135deg, #2e8a6e, #3aa8c8); color:#fff;
+    font-size:1.1rem; letter-spacing:6px; cursor:pointer; font-family:inherit;
+    transition:transform .15s, box-shadow .2s;
+  }
+  .calcBtn:hover { transform:translateY(-2px); box-shadow:0 8px 26px rgba(80,200,180,0.3); }
+  .out {
+    margin-top:20px; background:rgba(8,18,22,0.55); border:1px solid var(--line);
+    border-radius:12px; padding:18px; line-height:2; display:none;
+  }
+  .out b { color:var(--gold); font-size:1.15rem; }
+  .out .big { font-size:1.7rem; color:var(--jade); font-weight:700; }
+  .out table { width:100%; border-collapse:collapse; font-size:0.95rem; }
+  .out td { padding:5px 4px; border-bottom:1px dashed rgba(170,220,220,0.15); }
+  .out td:last-child { text-align:right; color:var(--gold); }
+
+  /* 搜索 + 面包屑 */
+  .search {
+    width:100%; padding:13px 16px; border-radius:14px; font-size:1.02rem; font-family:inherit;
+    background:rgba(8,18,22,0.7); border:1px solid var(--line); color:var(--text); margin-bottom:16px;
+  }
+  .search:focus { outline:none; border-color:var(--jade); }
+  .crumb { color:var(--dim); font-size:0.9rem; margin-bottom:18px; min-height:1.2em; }
+  .crumb a { color:var(--jade); cursor:pointer; text-decoration:none; }
+  .crumb a:hover { text-decoration:underline; }
+  .tile .cnt { color:var(--jade); font-size:0.82rem; margin-top:8px; }
+
+  /* 自动生成的表单 */
+  .form { display:flex; flex-wrap:wrap; gap:12px; }
+  .form .field { flex:1; min-width:150px; }
+  .form .field.full { flex-basis:100%; }
+  .form .field label { margin-top:0; }
+  textarea {
+    width:100%; padding:11px 13px; border-radius:10px; font-size:1rem; line-height:1.6; resize:vertical;
+    background:rgba(8,18,22,0.7); border:1px solid var(--line); color:var(--text); font-family:inherit;
+  }
+  textarea:focus { outline:none; border-color:var(--jade); }
+  .hint { color:var(--dim); font-size:0.85rem; margin-top:14px; line-height:1.6; }
+
+  /* 科学计算器 */
+  .sciDisp {
+    background:rgba(8,18,22,0.8); border:1px solid var(--line); border-radius:12px;
+    padding:14px 16px; text-align:right; margin-bottom:14px; min-height:84px;
+  }
+  .sciDisp .expr { color:var(--dim); font-size:0.95rem; min-height:1.4em; word-break:break-all; }
+  .sciDisp .val { font-size:2rem; color:var(--text); word-break:break-all; }
+  .keys { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+  .keys button {
+    padding:13px 0; border-radius:10px; border:1px solid var(--line);
+    background:rgba(255,255,255,0.06); color:var(--text); font-size:1.05rem;
+    cursor:pointer; font-family:inherit; transition:background .15s;
+  }
+  .keys button:hover { background:rgba(255,255,255,0.14); }
+  .keys .op { color:var(--jade); }
+  .keys .eq { background:linear-gradient(135deg,#2e8a6e,#3aa8c8); border:none; }
+  .keys .danger { color:#f08a7a; }
+
+  footer { text-align:center; color:var(--dim); font-size:0.85rem; margin-top:40px; letter-spacing:2px; }
+  @media (max-width:560px) { .title h1 { font-size:1.9rem; letter-spacing:7px; } }
+</style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="page">
+  <header><a href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a></header>
+  <div class="title">
+    <h1>万 象 算 集</h1>
+    <p>生活之数 · 尽在掌中</p>
+  </div>
+  <input id="q" class="search" placeholder="🔍 搜索计算器……（如 房贷、BMI、圆、汇率、进制）">
+  <div id="crumb" class="crumb"></div>
+  <div class="grid" id="home"></div>
+  <div class="panel" id="panel"></div>
+  <footer>万象算集 · 计算器大全 · 结果仅供参考 · 托管于 GitHub Pages</footer>
+</div>
+<script src="app.js"></script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+</body>
+</html>

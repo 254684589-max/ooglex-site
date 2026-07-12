@@ -1,0 +1,37 @@
+name: What's Latest
+
+# 刷新「最新消息是什么？」：聚合 Google News 中文要闻 + Yahoo 市场快照 → 写 apps/whats-latest/data.json。
+# 新闻时效性强，故每 6 小时跑一次（仍属每日多次更新）。数据源均免登录，无需任何密钥。
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 */6 * * *'   # 每 6 小时（00:15 / 06:15 / 12:15 / 18:15 UTC）
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: pip install requests feedparser
+
+      - name: Build news data
+        run: python scripts/whats-latest/build_news.py
+
+      - name: Commit data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase --autostash || true
+          git add apps/whats-latest/data.json
+          git diff --cached --quiet || (git commit -m "data: refresh latest news" && git push)

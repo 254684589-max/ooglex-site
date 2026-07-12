@@ -1,0 +1,43 @@
+name: Superinvestors & AAII Tracker
+
+# 每周刷新「超级投资者持仓 + AAII 情绪调查」：跑取数脚本 → 生成
+# apps/superinvestors/data.json → 提交回仓库。
+# 数据源：SEC EDGAR 13F（无需密钥）+ AAII 情绪调查（周四发布，故周五早上抓）。
+on:
+  workflow_dispatch:
+  schedule:
+    # 每周五 00:40 UTC（≈ 北京周五 08:40；AAII 周四发布后、与每日任务错开）
+    - cron: '40 0 * * 5'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: pip install requests xlrd
+
+      - name: Build superinvestors data
+        env:
+          # 国会议员交易数据（FMP 免费 Key）：仓库 Settings → Secrets → FMP_API_KEY
+          # 未配置时该节跳过并保留上次数据，其余板块不受影响
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+        run: python scripts/superinvestors/build_superinvestors.py
+
+      - name: Commit data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase --autostash || true
+          git add apps/superinvestors/data.json
+          git diff --cached --quiet || (git commit -m "data: refresh superinvestors + aaii sentiment" && git push)

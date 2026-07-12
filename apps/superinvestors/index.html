@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>超级投资者持仓 · 美国政治人物交易 · AAII 情绪 · 每周更新</title>
+<meta name="description" content="追踪约 60 位超级投资者的 SEC 13F 持仓、佩洛西等美国政治人物的国会 STOCK Act 股票交易披露（中英对照、含头像），同页附 AAII 投资者情绪调查，每周自动更新。">
+<link rel="canonical" href="https://www.ooglex.com/apps/superinvestors/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="超级投资者持仓 · 美国政治人物交易 · AAII 情绪 · 每周更新">
+<meta property="og:description" content="追踪约 60 位超级投资者的 13F 持仓与佩洛西等政治人物的股票交易披露（中英对照），附 AAII 情绪调查，每周自动更新。">
+<meta property="og:url" content="https://www.ooglex.com/apps/superinvestors/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#0b0e14; --card:#161a22; --line:rgba(255,255,255,0.09);
+    --text:#eaf0f3; --dim:#98a3b2; --accent:#8b7cf7; --gold:#f3c969;
+    --bull:#3a9d5d; --bear:#d3403b; --neu:#8b93a5;
+    --track:rgba(255,255,255,0.06);
+  }
+  body {
+    min-height:100vh; color:var(--text);
+    background:
+      radial-gradient(820px 420px at 12% -8%, rgba(139,124,247,0.15), transparent 60%),
+      radial-gradient(760px 400px at 92% 2%, rgba(243,201,105,0.09), transparent 60%),
+      radial-gradient(820px 540px at 50% 120%, rgba(58,157,93,0.08), transparent 60%),
+      var(--bg);
+    background-attachment:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    line-height:1.55; overflow-x:hidden;
+  }
+  .page { max-width:760px; margin:0 auto; padding:18px 16px 72px; }
+  header { display:flex; align-items:center; margin-bottom:12px; }
+  header a { color:var(--accent); text-decoration:none; font-size:0.95rem; }
+  header a:hover { opacity:.78; }
+
+  .title { text-align:center; margin-bottom:14px; }
+  .title h1 { font-size:1.8rem; letter-spacing:1px; font-weight:800;
+    background:linear-gradient(92deg,#b7abff,#8b7cf7 48%,#f3c969);
+    -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .title p { color:var(--dim); margin-top:6px; font-size:0.9rem; }
+  .statusrow { display:flex; justify-content:center; gap:9px; margin-top:9px; flex-wrap:wrap; }
+  .status { display:inline-flex; align-items:center; gap:7px; font-size:0.78rem; padding:4px 13px;
+    border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,0.03); }
+  .status .sdot { width:8px; height:8px; border-radius:50%; }
+  .status.live { color:#c4baff; } .status.live .sdot { background:var(--accent); animation:pulse 1.9s infinite; }
+  .status.demo { color:#f4c66e; } .status.demo .sdot { background:#caa64a; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(139,124,247,.5);} 70%{box-shadow:0 0 0 7px rgba(139,124,247,0);} 100%{box-shadow:0 0 0 0 rgba(139,124,247,0);} }
+  .jump { display:inline-flex; align-items:center; gap:6px; font-size:0.78rem; padding:4px 13px; border-radius:999px;
+    border:1px solid var(--line); background:rgba(255,255,255,0.03); color:var(--dim); text-decoration:none; }
+  .jump:hover { color:var(--text); border-color:rgba(255,255,255,.22); }
+
+  .glass { background:linear-gradient(180deg, rgba(24,28,38,.94), rgba(18,21,29,.94));
+    border:1px solid var(--line); border-radius:18px;
+    box-shadow:0 24px 60px -34px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.05); }
+  .sec-h { font-size:0.98rem; color:var(--text); margin:22px 2px 10px; letter-spacing:1px; font-weight:800; }
+  .sec-h small { color:var(--dim); font-weight:400; font-size:0.78rem; margin-left:8px; }
+
+  /* —— 投资者卡片 —— */
+  .inv { margin-bottom:10px; overflow:hidden; }
+  .invhead { display:flex; align-items:center; gap:12px; width:100%; padding:13px 14px;
+    background:none; border:none; color:inherit; font:inherit; text-align:left; cursor:pointer; }
+  .avatar { width:42px; height:42px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:1.05rem; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.4);
+    box-shadow:inset 0 -2px 6px rgba(0,0,0,.3), 0 2px 8px rgba(0,0,0,.35);
+    position:relative; overflow:hidden; }
+  .avatar img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:50%; }
+  .avatar.logo img { object-fit:contain; padding:8px; background:#fff; }
+  .avatar.ring-d { outline:2px solid rgba(90,140,255,.75); outline-offset:1.5px; }
+  .avatar.ring-r { outline:2px solid rgba(224,85,85,.75); outline-offset:1.5px; }
+  .trow { display:flex; align-items:center; gap:9px; padding:5.5px 0; font-size:0.82rem;
+    border-bottom:1px solid rgba(255,255,255,.045); }
+  .trow:last-of-type { border-bottom:none; }
+  .tdate { flex:0 0 78px; color:var(--dim); font-size:0.76rem; font-variant-numeric:tabular-nums; }
+  .tname { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tname .tk { color:var(--accent); font-weight:700; margin-right:5px; font-size:0.76rem; }
+  .trange { flex:0 0 86px; text-align:right; color:var(--dim); font-size:0.78rem; font-variant-numeric:tabular-nums; }
+  .who { flex:1; min-width:0; }
+  .who .nm { display:block; font-weight:800; font-size:0.99rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .who .nm small { color:var(--dim); font-weight:500; font-size:0.76rem; margin-left:7px; }
+  .who .meta { display:block; color:var(--dim); font-size:0.74rem; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .enm { color:var(--dim); font-weight:400; font-size:0.86em; margin-left:4px; }
+  #invSearch { width:100%; margin:0 0 12px; padding:11px 16px; border-radius:13px; font:inherit; font-size:0.9rem;
+    color:var(--text); background:var(--card); border:1px solid var(--line); outline:none; }
+  #invSearch:focus { border-color:rgba(139,124,247,.55); }
+  #invSearch::placeholder { color:var(--dim); }
+  .val { text-align:right; flex:none; }
+  .val .v { font-weight:800; font-size:1.06rem; font-variant-numeric:tabular-nums; color:var(--gold); }
+  .val .k { color:var(--dim); font-size:0.72rem; margin-top:1px; }
+  .chev { flex:none; color:var(--dim); transition:transform .25s; font-size:0.8rem; }
+  .inv.open .chev { transform:rotate(180deg); }
+  .invbody { display:none; padding:2px 14px 15px; border-top:1px solid rgba(255,255,255,0.06); }
+  .inv.open .invbody { display:block; }
+  .sub-h { color:var(--dim); font-size:0.78rem; letter-spacing:1px; margin:12px 0 8px; }
+
+  .hrow { display:flex; align-items:center; gap:10px; padding:5px 0; }
+  .hname { flex:0 0 38%; min-width:0; font-size:0.84rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .hname .tk { color:var(--accent); font-weight:700; margin-right:6px; font-size:0.78rem; }
+  .hbar { flex:1; height:8px; border-radius:5px; background:var(--track); position:relative; overflow:hidden; }
+  .hbar i { position:absolute; left:0; top:0; bottom:0; border-radius:0 4px 4px 0; background:var(--accent); }
+  .hpct { flex:0 0 52px; text-align:right; font-size:0.8rem; font-variant-numeric:tabular-nums; }
+  .hval { flex:0 0 64px; text-align:right; font-size:0.76rem; color:var(--dim); font-variant-numeric:tabular-nums; }
+  .chip { display:inline-block; font-size:0.68rem; font-weight:700; border-radius:6px; padding:1px 6px; margin-left:6px; vertical-align:1px; }
+  .c-new { background:rgba(58,157,93,.18); color:#7ed09b; }
+  .c-add { background:rgba(57,194,201,.14); color:#7fe3e8; }
+  .c-trim { background:rgba(232,131,58,.16); color:#f0a468; }
+  .c-exit { background:rgba(211,64,59,.16); color:#e88985; }
+
+  .moves { display:flex; flex-wrap:wrap; gap:7px; }
+  .move { font-size:0.76rem; padding:4px 10px; border-radius:9px; border:1px solid var(--line); background:rgba(255,255,255,0.03); }
+  .move b { font-weight:700; }
+  .move .d { color:var(--dim); margin-left:5px; font-variant-numeric:tabular-nums; }
+
+  /* —— 大佬共识 —— */
+  .duo { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; }
+  .duo .glass { padding:13px 14px 11px; }
+  .duo h3 { font-size:0.88rem; margin-bottom:9px; }
+  .orow { display:flex; align-items:center; gap:9px; padding:4px 0; font-size:0.82rem; }
+  .orow .n { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .orow .n .tk { color:var(--accent); font-weight:700; margin-right:5px; font-size:0.76rem; }
+  .orow .n small { color:var(--dim); margin-left:5px; font-size:0.72rem; }
+  .obar { flex:0 0 76px; height:7px; border-radius:5px; background:var(--track); position:relative; overflow:hidden; }
+  .obar i { position:absolute; left:0; top:0; bottom:0; border-radius:0 4px 4px 0; background:var(--gold); }
+  .ocnt { flex:0 0 58px; text-align:right; color:var(--dim); font-size:0.76rem; font-variant-numeric:tabular-nums; }
+
+  /* —— AAII —— */
+  .tiles { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:12px; }
+  .tile { padding:12px 8px 11px; border-radius:14px; text-align:center; background:var(--card); border:1px solid var(--line); }
+  .tile .k { color:var(--dim); font-size:0.76rem; }
+  .tile .v { font-size:1.7rem; font-weight:800; font-variant-numeric:tabular-nums; line-height:1.25; }
+  .tile .d { font-size:0.72rem; color:var(--dim); font-variant-numeric:tabular-nums; }
+  .aaiicard { padding:14px 14px 12px; }
+  .legend { display:flex; gap:14px; margin-bottom:10px; font-size:0.76rem; color:var(--dim); flex-wrap:wrap; }
+  .legend i { display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; vertical-align:-1px; }
+  .wrow { display:flex; align-items:center; gap:9px; padding:3.5px 0; }
+  .wrow .dt { flex:0 0 74px; font-size:0.76rem; color:var(--dim); font-variant-numeric:tabular-nums; }
+  .wrow.avg .dt { color:var(--text); font-weight:700; }
+  .wbar { flex:1; display:flex; height:20px; border-radius:5px; overflow:hidden; gap:2px; }
+  .wbar span { display:flex; align-items:center; justify-content:center; font-size:0.68rem; font-weight:700;
+    color:rgba(255,255,255,.92); min-width:0; overflow:hidden; white-space:nowrap; }
+  .wbar .b0 { background:var(--bull); border-radius:5px 0 0 5px; }
+  .wbar .b1 { background:var(--neu); }
+  .wbar .b2 { background:var(--bear); border-radius:0 5px 5px 0; }
+  .divider { border:none; border-top:1px dashed rgba(255,255,255,.14); margin:9px 0; }
+  .aaiifoot { color:var(--dim); font-size:0.76rem; margin-top:10px; line-height:1.7; }
+  .aaiifoot b.bu { color:#7ed09b; } .aaiifoot b.be { color:#e88985; }
+
+  footer { margin-top:20px; text-align:center; color:var(--dim); font-size:0.8rem; line-height:1.85; }
+  footer .src b { color:var(--text); font-weight:600; }
+  .empty { text-align:center; color:var(--dim); padding:44px 12px; }
+  .empty .big { font-size:2rem; margin-bottom:8px; }
+
+  @media (max-width:560px) {
+    .title h1 { font-size:1.42rem; }
+    .duo { grid-template-columns:minmax(0,1fr); }
+    .hname { flex-basis:44%; }
+    .hval { display:none; }
+    .tile .v { font-size:1.4rem; }
+    .wrow .dt { flex-basis:60px; font-size:0.7rem; }
+  }
+</style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="page">
+    <header><a href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a></header>
+    <div class="title">
+      <h1>💼 超级投资者 · 持仓与情绪</h1>
+      <p>约 60 位大佬 13F 持仓 · 佩洛西等政治人物交易 · 中英对照 · AAII 情绪 · 每周自动更新</p>
+      <div class="statusrow">
+        <span class="status" id="status"></span>
+        <a class="jump" href="#gurus">🏦 大佬持仓</a>
+        <a class="jump" href="#swf">🌐 主权基金</a>
+        <a class="jump" href="#pols">🏛 政治人物</a>
+        <a class="jump" href="#aaii">🌡 AAII 情绪</a>
+      </div>
+    </div>
+
+    <div id="main"></div>
+
+    <footer id="foot"></footer>
+  </div>
+  <script src="app.js"></script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+
+<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于本页数据</h2><p style="margin:0;opacity:.85">本页追踪巴菲特、达利欧、索罗斯、李录、伯里等约 60 位超级投资者与顶级机构（含桥水、城堡、文艺复兴、挪威主权基金等）向 SEC 提交的 13F 季度持仓报告，公司与机构名称均为中英对照：组合市值、前十大重仓与集中度、当季新建/加仓/减持/清仓动向，并聚合出"大佬共识"榜；新增「华盛顿·政治人物股票交易」板块：追踪佩洛西、万斯（参议员任期）等十余位美国政治人物按 STOCK Act 披露的股票买卖（金额为披露区间估算，滞后最长 45 天；总统等行政分支不在国会披露体系内）；同页附美国个人投资者协会（AAII）每周四发布的投资者情绪调查。人物头像来自维基百科自由许可图片与美国国会官方照片库。13F 只披露美股多头持仓且最长滞后 45 天，不含做空、债券与海外仓位；情绪调查为散户样本。以上均为公开信息整理，每周自动更新，仅供参考，不构成投资建议。</p></section>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全球主要国家房价走势 · 每日更新</title>
+<meta name="description" content="全球主要国家住宅房价指数走势：名义/实际同比、环比与季度走势迷你图，一图对比谁涨谁跌，数据每日自动更新（来源 OECD / BIS）。">
+<link rel="canonical" href="https://www.ooglex.com/apps/house-prices/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="全球主要国家房价走势 · 每日更新">
+<meta property="og:description" content="全球主要国家住宅房价指数：名义/实际同比、环比与季度走势，一图对比谁涨谁跌，每日更新。">
+<meta property="og:url" content="https://www.ooglex.com/apps/house-prices/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#0a0c12; --card:#141823; --line:rgba(255,255,255,0.09);
+    --text:#eef1f7; --dim:#9099ad; --accent:#6c8cff; --accent2:#9d6cff;
+    --up:#ff5d6c; --down:#28c79a; --track:rgba(255,255,255,0.05);
+  }
+  body {
+    min-height:100vh; color:var(--text);
+    background:
+      radial-gradient(900px 460px at 12% -8%, rgba(95,208,122,.13), transparent 60%),
+      radial-gradient(820px 440px at 90% 0%, rgba(108,140,255,.14), transparent 60%),
+      radial-gradient(900px 560px at 50% 122%, rgba(240,163,94,.10), transparent 60%),
+      var(--bg);
+    background-attachment:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    line-height:1.55; overflow-x:hidden;
+  }
+  .page { max-width:1000px; margin:0 auto; padding:16px 15px 72px; }
+
+  header.top { display:flex; align-items:center; }
+  header.top a.back { color:#8aa6ff; text-decoration:none; font-size:0.92rem; transition:opacity .2s; }
+  header.top a.back:hover { opacity:.75; }
+
+  .title { text-align:center; margin:16px 0 18px; }
+  .title h1 {
+    font-size:2rem; font-weight:800; letter-spacing:.5px;
+    background:linear-gradient(92deg,#6fe0c4,#8aa6ff 52%,#f0a35e);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .title p { color:var(--dim); margin-top:7px; font-size:0.9rem; }
+  .statusrow { display:flex; justify-content:center; margin-top:11px; }
+  .status {
+    display:inline-flex; align-items:center; gap:7px; font-size:0.77rem;
+    padding:4px 13px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,0.03);
+  }
+  .status .sdot { width:8px; height:8px; border-radius:50%; flex:none; }
+  .status.live { color:#74e9c4; } .status.live .sdot { background:#2ed1b0; animation:pulse 1.9s infinite; }
+  .status.demo { color:#f4c66e; } .status.demo .sdot { background:#ffb13d; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(46,209,176,.55)} 70%{box-shadow:0 0 0 7px rgba(46,209,176,0)} 100%{box-shadow:0 0 0 0 rgba(46,209,176,0)} }
+
+  .summary { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:14px 0 12px; }
+  .summary span {
+    font-size:0.8rem; padding:5px 13px; border-radius:999px;
+    background:var(--card); border:1px solid var(--line); white-space:nowrap;
+  }
+  .summary .pill-i { color:var(--dim); } .summary .pill-i b { color:var(--text); }
+  .summary .lead.up { color:var(--up); border-color:rgba(255,93,108,.32); }
+  .summary .lead.down { color:var(--down); border-color:rgba(40,199,154,.32); }
+
+  .controls { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+  .chips { display:flex; flex-wrap:wrap; gap:7px; justify-content:center; }
+  .chip {
+    display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none;
+    padding:6px 13px; border-radius:999px; font-size:0.84rem; color:var(--dim);
+    background:var(--card); border:1px solid var(--line); transition:all .16s;
+  }
+  .chip:hover { color:var(--text); border-color:rgba(255,255,255,.22); }
+  .chip .cdot { width:9px; height:9px; border-radius:50%; box-shadow:0 0 8px currentColor; }
+  .chip.on { color:#fff; border-color:transparent; background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 8px 18px -8px rgba(108,140,255,.7); }
+  .chip.on .cdot { box-shadow:none; }
+  .toolbar { display:flex; gap:9px; align-items:center; flex-wrap:wrap; justify-content:center; }
+  .search { position:relative; flex:1; min-width:190px; max-width:340px; }
+  .search input {
+    width:100%; padding:9px 14px 9px 34px; border-radius:11px; font-family:inherit; font-size:0.9rem;
+    color:var(--text); background:var(--card); border:1px solid var(--line); outline:none; transition:border-color .16s;
+  }
+  .search input:focus { border-color:var(--accent); }
+  .search::before { content:"🔍"; position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:0.82rem; opacity:.6; }
+  .sorts { display:flex; gap:6px; flex-wrap:wrap; }
+  .sorts button {
+    padding:8px 12px; border-radius:10px; cursor:pointer; font-family:inherit; font-size:0.83rem;
+    color:var(--dim); background:var(--card); border:1px solid var(--line); transition:all .16s;
+  }
+  .sorts button:hover { color:var(--text); border-color:var(--accent); }
+  .sorts button.on { color:#fff; border-color:transparent; background:linear-gradient(135deg,var(--accent),var(--accent2)); }
+
+  .list { display:flex; flex-direction:column; gap:7px; }
+  .item {
+    border-radius:14px; border:1px solid var(--line); overflow:hidden;
+    background:linear-gradient(180deg, rgba(22,26,38,.94), rgba(16,19,28,.94));
+    box-shadow:0 16px 40px -34px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.04);
+    animation:rowIn .4s cubic-bezier(.22,.61,.36,1) both;
+  }
+  @keyframes rowIn { from{opacity:0; transform:translateY(7px)} to{opacity:1; transform:none} }
+  .rowcard {
+    display:grid; align-items:center; gap:12px; cursor:pointer;
+    grid-template-columns:30px 34px 1fr 108px 96px 20px; padding:11px 14px; transition:background .15s;
+  }
+  .rowcard:hover { background:rgba(255,255,255,.025); }
+  .chev { color:var(--dim); font-size:0.82rem; text-align:center; transition:transform .28s, color .15s; }
+  .rowcard:hover .chev { color:var(--text); }
+  .item.open .chev { transform:rotate(180deg); color:var(--accent); }
+
+  /* —— 展开的近 20 年历史走势面板 —— */
+  .detail { display:none; padding:6px 14px 28px; border-top:1px solid var(--line); }
+  .item.open .detail { display:block; animation:fadeIn .3s ease both; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  .dnote { color:var(--dim); font-size:0.82rem; padding:20px 0; text-align:center; }
+  .dsrc { color:var(--dim); font-size:0.74rem; margin-top:10px; }
+  .hstats { display:flex; flex-wrap:wrap; gap:6px 16px; margin:8px 0 14px; font-size:0.8rem; color:var(--dim); }
+  .hstats b { color:var(--text); font-weight:700; font-variant-numeric:tabular-nums; }
+  .hstats b.up { color:var(--up); } .hstats b.down { color:var(--down); }
+  .chartbox { display:flex; gap:8px; }
+  .yaxis { position:relative; width:34px; flex:none; height:220px; }
+  .yaxis span { position:absolute; right:0; font-size:0.68rem; color:var(--dim); font-variant-numeric:tabular-nums; }
+  .plot { position:relative; flex:1; height:220px; }
+  .plot svg { position:absolute; inset:0; width:100%; height:100%; }
+  .plot .gl { stroke:rgba(255,255,255,.07); stroke-width:1; }
+  .xaxis { position:absolute; left:0; right:0; bottom:-18px; height:16px; }
+  .xaxis span { position:absolute; transform:translateX(-50%); font-size:0.68rem; color:var(--dim); }
+  .plot .cap { position:absolute; inset:0; cursor:crosshair; z-index:2; }
+  .plot .cross { position:absolute; top:0; bottom:0; width:1px; background:rgba(255,255,255,.3); display:none; pointer-events:none; }
+  .plot .hdot { position:absolute; width:8px; height:8px; margin:-4px; border-radius:50%; background:var(--accent);
+    box-shadow:0 0 0 3px rgba(108,140,255,.3); display:none; pointer-events:none; }
+  .plot .htip { position:absolute; top:2px; white-space:nowrap; display:none; pointer-events:none; z-index:3;
+    background:#0e1220; border:1px solid var(--line); border-radius:8px; padding:4px 9px; font-size:0.74rem;
+    color:var(--text); box-shadow:0 8px 20px -8px rgba(0,0,0,.8); }
+  .plot .htip .up { color:var(--up); } .plot .htip .down { color:var(--down); }
+  .rk { font-size:0.9rem; font-weight:800; color:var(--dim); text-align:center; font-variant-numeric:tabular-nums; }
+  .flag { font-size:1.7rem; text-align:center; line-height:1; }
+  .info { min-width:0; }
+  .nm { font-weight:700; font-size:0.98rem; display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+  .nm .en { color:var(--dim); font-weight:500; font-size:0.78rem; }
+  .rtag { font-size:0.68rem; padding:1px 7px; border-radius:999px; border:1px solid currentColor; opacity:.9; }
+  .meta { color:var(--dim); font-size:0.75rem; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .spark { width:96px; height:34px; }
+  .spark svg { display:block; width:100%; height:100%; overflow:visible; }
+  .money { text-align:right; white-space:nowrap; }
+  .yoy { font-size:1.12rem; font-weight:800; font-variant-numeric:tabular-nums; }
+  .sub { font-size:0.74rem; color:var(--dim); margin-top:2px; font-variant-numeric:tabular-nums; }
+  .sub .rl { font-weight:700; }
+  .up { color:var(--up); } .down { color:var(--down); } .flat { color:var(--dim); }
+  .empty { text-align:center; color:var(--dim); padding:48px 0; font-size:0.92rem; }
+
+  footer { margin-top:22px; text-align:center; color:var(--dim); font-size:0.8rem; line-height:1.85; }
+  footer .src b { color:var(--text); font-weight:600; }
+
+  @media (max-width:600px) {
+    .title h1 { font-size:1.5rem; }
+    .rowcard { grid-template-columns:24px 28px 1fr auto 18px; gap:9px; padding:10px 11px; }
+    .spark { display:none; }
+    .flag { font-size:1.4rem; } .nm { font-size:0.9rem; } .yoy { font-size:1rem; }
+    .nm .en { display:none; }
+    .detail { padding:6px 10px 28px; } .yaxis { width:26px; }
+    .hstats { font-size:0.74rem; gap:5px 12px; }
+  }
+</style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="page">
+    <header class="top"><a class="back" href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a></header>
+
+    <div class="title">
+      <h1>🏘️ 全球主要国家房价走势</h1>
+      <p>名义 / 实际同比 · 环比 · 点击国家看近 20 年走势 · 每周更新</p>
+      <div class="statusrow"><span class="status" id="status"></span></div>
+    </div>
+
+    <div class="summary" id="summary"></div>
+
+    <div class="controls">
+      <div class="chips" id="chips"></div>
+      <div class="toolbar">
+        <div class="sorts" id="sorts">
+          <button data-sort="nom" class="on">名义同比</button>
+          <button data-sort="real">实际同比</button>
+          <button data-sort="qoq">环比</button>
+        </div>
+        <div class="search"><input id="q" type="text" placeholder="搜索国家 / 地区…" autocomplete="off"></div>
+      </div>
+    </div>
+
+    <div class="list" id="list"></div>
+
+    <footer id="foot"></footer>
+  </div>
+
+  <script src="app.js"></script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+
+<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于本页数据</h2><p style="margin:0;opacity:.85">本页把全球主要国家的住宅房价放在同一张表横向对比：名义同比（当地货币现价涨跌）、实际同比（经通胀调整后的真实涨跌）、最近一季环比，以及近几年的季度走势迷你图，帮你快速看清「哪些国家房价在涨、哪些在跌」。点击任一国家可展开近 20 年（视各国可获取历史而定）的房价指数走势折线图，历史涨跌一目了然。数据来源 OECD 分析性房价指数与 BIS 住宅物业价格长序列，每周自动刷新；房价为季度数据，页面会自动接住各国最新已发布季度。各国统计口径与基期（2015=100）略有差异，且房价历史表现不代表未来，本页仅供参考，不构成任何投资建议。</p></section>
+</body>
+</html>

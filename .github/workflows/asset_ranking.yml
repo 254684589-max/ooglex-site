@@ -1,0 +1,37 @@
+name: Asset Ranking
+
+# 每日刷新「全球资产市值排行榜（前 250，不限品类）」→ 生成 apps/asset-ranking/data.json → 提交回仓库。
+# 商品/贵金属/汇率取 Yahoo Finance，加密货币取 CoinGecko，公司复用 apps/companies/data.json，均免密钥。
+# 排在 companies 工作流（23:10 UTC）之后运行，以复用当日最新的公司市值。
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '40 23 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Build asset ranking
+        run: python scripts/asset-ranking/build_ranking.py
+
+      - name: Commit data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add apps/asset-ranking/data.json
+          git diff --cached --quiet || (git commit -m "data: refresh global asset ranking" && git push)

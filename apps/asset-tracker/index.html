@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全球大类资产收益率 · 每日追踪</title>
+<meta name="description" content="一图追踪全球股市、商品、外汇、债券的收益率表现，数据每日自动更新（来源 Yahoo Finance）。">
+<link rel="canonical" href="https://www.ooglex.com/apps/asset-tracker/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="全球大类资产收益率 · 每日追踪">
+<meta property="og:description" content="一图追踪全球股市、商品、外汇、债券的收益率表现，数据每日自动更新（来源 Yahoo Finance）。">
+<meta property="og:url" content="https://www.ooglex.com/apps/asset-tracker/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#0c0f1c; --card:#161a2e; --line:rgba(255,255,255,0.09);
+    --text:#eef0fa; --dim:#9aa0bd; --accent:#6c8cff; --accent2:#9d6cff;
+    --up:#ff5d6c; --down:#28c79a;            /* 红涨绿跌（中国市场习惯） */
+    --track:rgba(255,255,255,0.045);
+  }
+  body {
+    min-height:100vh; color:var(--text);
+    background:
+      radial-gradient(820px 420px at 10% -8%, rgba(108,140,255,0.18), transparent 60%),
+      radial-gradient(720px 400px at 94% 4%, rgba(157,108,255,0.16), transparent 60%),
+      radial-gradient(900px 600px at 50% 116%, rgba(46,209,176,0.10), transparent 60%),
+      var(--bg);
+    background-attachment:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    line-height:1.6; overflow-x:hidden;
+  }
+  .page { max-width:900px; margin:0 auto; padding:18px 18px 72px; }
+
+  header { display:flex; align-items:center; margin-bottom:14px; }
+  header a { color:var(--accent); text-decoration:none; font-size:0.95rem; transition:color .2s; }
+  header a:hover { color:var(--text); }
+
+  .title { text-align:center; margin-bottom:20px; }
+  .title h1 {
+    font-size:2.05rem; letter-spacing:1px; font-weight:800;
+    background:linear-gradient(92deg,#8aa6ff,#c79dff 55%,#6fe0c4);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .title p { color:var(--dim); margin-top:7px; font-size:0.92rem; }
+  .statusrow { display:flex; justify-content:center; gap:9px; margin-top:11px; flex-wrap:wrap; }
+  .status {
+    display:inline-flex; align-items:center; gap:7px; font-size:0.78rem;
+    padding:4px 13px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,0.03);
+  }
+  .status .sdot { width:8px; height:8px; border-radius:50%; flex:none; }
+  .status.live { color:#74e9c4; } .status.live .sdot { background:#2ed1b0; animation:pulse 1.9s infinite; }
+  .status.demo { color:#f4c66e; } .status.demo .sdot { background:#ffb13d; }
+  @keyframes pulse {
+    0% { box-shadow:0 0 0 0 rgba(46,209,176,.55); } 70% { box-shadow:0 0 0 7px rgba(46,209,176,0); }
+    100% { box-shadow:0 0 0 0 rgba(46,209,176,0); }
+  }
+
+  /* —— 控制区 —— */
+  .controls { display:flex; flex-direction:column; gap:11px; margin-bottom:16px; }
+  .seg, .legend, .viewtabs { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+  .seg button {
+    padding:7px 16px; border-radius:999px; cursor:pointer; font-family:inherit;
+    font-size:0.9rem; color:var(--dim); background:var(--card);
+    border:1px solid var(--line); transition:all .18s;
+  }
+  .seg button:hover:not(:disabled) { color:var(--text); border-color:var(--accent); transform:translateY(-1px); }
+  .seg button.on {
+    color:#fff; border-color:transparent;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 8px 20px -7px rgba(108,140,255,.75);
+  }
+  .seg button:disabled { opacity:.32; cursor:not-allowed; }
+
+  .legend .chip {
+    display:inline-flex; align-items:center; gap:7px; cursor:pointer; user-select:none;
+    padding:5px 13px; border-radius:999px; font-size:0.86rem;
+    background:var(--card); border:1px solid var(--line); transition:all .18s;
+  }
+  .legend .chip:hover { border-color:rgba(255,255,255,0.22); }
+  .legend .chip .dot { width:11px; height:11px; border-radius:50%; box-shadow:0 0 9px currentColor; }
+  .legend .chip.off { opacity:.36; }
+  .legend .chip.off .dot { box-shadow:none; }
+
+  .viewtabs button {
+    padding:6px 16px; border-radius:10px; cursor:pointer; font-family:inherit;
+    font-size:0.88rem; color:var(--dim); background:transparent; border:1px solid var(--line); transition:all .18s;
+  }
+  .viewtabs button.on { color:var(--text); border-color:var(--accent); background:var(--card); }
+
+  /* —— 领涨领跌摘要 —— */
+  .summary { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:14px; }
+  .summary span {
+    font-size:0.82rem; padding:5px 13px; border-radius:999px;
+    background:var(--card); border:1px solid var(--line); white-space:nowrap;
+  }
+  .summary .pill-i { color:var(--dim); }
+  .summary .lead.up { color:var(--up); border-color:rgba(255,93,108,.35); }
+  .summary .lead.down { color:var(--down); border-color:rgba(40,199,154,.35); }
+
+  /* —— 卡片（玻璃质感）—— */
+  .glass {
+    background:linear-gradient(180deg, rgba(24,28,48,.94), rgba(18,21,38,.94));
+    border:1px solid var(--line); border-radius:18px;
+    box-shadow:0 26px 60px -34px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.05);
+  }
+  .chart { padding:18px 16px; }
+  .tablewrap { padding:8px 6px; overflow-x:auto; }
+
+  /* —— 条形图 —— */
+  .row {
+    display:grid; grid-template-columns:128px 1fr; align-items:center;
+    gap:10px; height:31px; animation:rowIn .42s cubic-bezier(.22,.61,.36,1) both;
+  }
+  @keyframes rowIn { from { opacity:0; transform:translateX(-10px); } to { opacity:1; transform:none; } }
+  .row .name {
+    text-align:right; color:var(--text); font-size:0.85rem;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:color .15s;
+  }
+  .row:hover .name { color:#fff; }
+  .track { position:relative; height:22px; background:var(--track); border-radius:6px; }
+  .zero { position:absolute; top:-5px; bottom:-5px; width:1px; background:rgba(255,255,255,0.16); }
+  .bar {
+    position:absolute; top:0; height:22px; min-width:3px; overflow:hidden;
+    transition:width .6s cubic-bezier(.22,.61,.36,1), left .6s cubic-bezier(.22,.61,.36,1), filter .15s;
+  }
+  .bar::before {
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,0) 52%, rgba(0,0,0,.16));
+  }
+  .row:hover .bar { filter:brightness(1.14) saturate(1.08); }
+  .val {
+    position:absolute; top:50%; transform:translateY(-50%); font-size:0.82rem; font-weight:700;
+    color:var(--text); white-space:nowrap; font-variant-numeric:tabular-nums; text-shadow:0 1px 3px rgba(0,0,0,.5);
+  }
+  .empty { text-align:center; color:var(--dim); padding:44px 0; font-size:0.92rem; }
+
+  /* —— 表格 —— */
+  table { width:100%; border-collapse:collapse; font-size:0.86rem; min-width:580px; }
+  th, td { padding:9px 9px; text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
+  th { color:var(--dim); font-weight:600; cursor:pointer; border-bottom:1px solid var(--line); transition:color .15s; }
+  th:hover { color:var(--text); }
+  th:first-child, td:first-child { text-align:left; }
+  th.sorted { color:var(--accent); }
+  tbody tr { border-bottom:1px solid rgba(255,255,255,0.04); transition:background .15s; }
+  tbody tr:hover { background:rgba(255,255,255,0.035); }
+  td .tag { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:7px; vertical-align:middle; box-shadow:0 0 8px currentColor; }
+  .pos { color:var(--up); } .neg { color:var(--down); } .na { color:var(--dim); }
+  .nm { display:inline-flex; align-items:center; }
+  .note-i { color:var(--dim); font-size:0.72rem; margin-left:4px; cursor:help; }
+
+  footer { margin-top:20px; text-align:center; color:var(--dim); font-size:0.8rem; line-height:1.85; }
+  footer .src b { color:var(--text); font-weight:600; }
+
+  @media (max-width:560px) {
+    .title h1 { font-size:1.55rem; }
+    .row { grid-template-columns:94px 1fr; }
+    .row .name { font-size:0.78rem; }
+    .val { font-size:0.75rem; }
+  }
+</style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="page">
+    <header><a href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a></header>
+
+    <div class="title">
+      <h1>🌍 全球大类资产收益率</h1>
+      <p>一图看尽 股市 · 商品 · 外汇 · 债券 的收益率表现</p>
+      <div class="statusrow"><span class="status" id="status"></span></div>
+    </div>
+
+    <div class="controls">
+      <div class="seg" id="periods"></div>
+      <div class="legend" id="legend"></div>
+      <div class="viewtabs" id="views">
+        <button data-view="chart" class="on">📊 图表</button>
+        <button data-view="table">📋 数据表</button>
+      </div>
+    </div>
+
+    <div class="summary" id="summary"></div>
+
+    <div id="chart" class="chart glass"></div>
+    <div id="table" class="tablewrap glass" style="display:none"></div>
+
+    <footer id="foot"></footer>
+  </div>
+
+  <script src="app.js"></script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+
+<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于本页数据</h2><p style="margin:0;opacity:.85">本页把全球主要大类资产——股票指数、商品、外汇、债券——的近期收益率放在同一张表里横向对比，帮你快速看清「最近什么在涨、什么在跌」。数值为区间涨跌幅，绿涨红跌；数据来源 Yahoo Finance，每日自动刷新。提示：历史收益率不代表未来表现，本页仅供参考，不构成任何投资建议。</p></section>
+</body>
+</html>

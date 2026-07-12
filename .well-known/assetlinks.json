@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.ooglex.radio",
+      "sha256_cert_fingerprints": [
+        "24:04:BF:B2:70:6E:FA:E9:1B:99:B6:F7:BE:64:E4:72:72:94:CE:02:38:21:5A:A8:01:EF:2C:D4:F1:A8:28:47"
+      ]
+    }
+  }
+]

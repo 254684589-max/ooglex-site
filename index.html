@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ooglex · 实时金融数据 · 实用工具 · 网页小游戏</title>
+  <meta name="description" content="Ooglex 聚合实时金融数据（宏观雷达、大类资产收益率、全球富豪榜、恐慌贪婪指数、经济日历）、几十款打开即用的在线工具与原创网页小游戏，数据每日自动更新，免注册、免下载。">
+  <link rel="canonical" href="https://www.ooglex.com/">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+  <meta name="theme-color" content="#0b0e13">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Ooglex · 实时金融数据 · 实用工具 · 网页小游戏">
+  <meta property="og:description" content="聚合实时金融数据、几十款实用工具与原创网页小游戏，每日自动更新，打开即用。">
+  <meta property="og:url" content="https://www.ooglex.com/">
+  <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      --bg: #0b0e13; --panel: #10141b; --panel2: #141924;
+      --line: rgba(255,255,255,.07);
+      --ink: #eef2f7; --dim: #98a2b3; --faint: #5b6472;
+      --blue: #3987e5; --up: #2fb583; --dn: #e66767; --amber: #e0a750; --green: #3fae7d;
+      --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--ink); line-height: 1.7; overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    .num { font-family: var(--mono); letter-spacing: -.02em; }
+    /* 品牌彩色渐变字（标题 + Logo） */
+    .grad-text {
+      background: linear-gradient(100deg, #22d3ee 0%, #4aa8ff 30%, #9d6cff 62%, #f472b6 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+
+    /* ── 实时行情带 ── */
+    .tape {
+      display: flex; align-items: center; height: 38px; overflow: hidden;
+      background: #090b10; border-bottom: 1px solid var(--line);
+      font-size: 12px; color: var(--dim); white-space: nowrap;
+    }
+    .tape-vp { flex: 1 1 auto; height: 100%; overflow: hidden; }
+    .tape-track {
+      display: flex; align-items: center; height: 100%; width: max-content;
+      will-change: transform; animation: tapeScroll 66s linear infinite;
+    }
+    .tape:hover .tape-track { animation-play-state: paused; }   /* 悬停暂停，方便看清 */
+    @keyframes tapeScroll { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+    @media (prefers-reduced-motion: reduce) {
+      .tape-track { animation: none; }
+      .tape-vp { overflow-x: auto; scrollbar-width: none; }
+      .tape-vp::-webkit-scrollbar { display: none; }
+    }
+    .tape .live {
+      display: flex; align-items: center; gap: 7px; padding: 0 16px; height: 100%;
+      color: var(--up); font-family: var(--mono); font-size: 11px; letter-spacing: .14em;
+      border-right: 1px solid var(--line); flex: 0 0 auto;
+    }
+    .tape .live i { width: 6px; height: 6px; border-radius: 50%; background: var(--up); box-shadow: 0 0 8px var(--up); animation: blink 2.4s infinite; }
+    @keyframes blink { 50% { opacity: .35; } }
+    @media (prefers-reduced-motion: reduce) { .tape .live i { animation: none; } }
+    .tape .it { display: inline-flex; align-items: center; gap: 8px; padding: 0 18px; height: 100%; border-right: 1px solid var(--line); flex: 0 0 auto; }
+    .tape .it b { color: var(--ink); font-weight: 600; font-size: 12px; }
+    .tape .u { color: var(--up); } .tape .d { color: var(--dn); }
+    .tape .tail { margin-left: auto; padding: 0 16px; font-family: var(--mono); font-size: 11px; color: var(--faint); letter-spacing: .08em; flex: 0 0 auto; }
+
+    /* ── 导航 ── */
+    nav {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(11,14,19,.88); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    nav .container { display: flex; align-items: center; height: 62px; max-width: 1200px; }
+    nav .logo { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; letter-spacing: .28em; }
+    nav .logo img { width: 24px; height: 24px; }
+    nav .logo .brand { padding-right: .06em; }
+    nav .links { display: flex; align-items: center; gap: 28px; margin-left: auto; font-size: 14px; color: var(--dim); }
+    nav .links a { white-space: nowrap; }
+    nav .links a:hover { color: var(--ink); }
+    #music-toggle {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1px solid var(--line); background: rgba(255,255,255,.03);
+      color: var(--dim); font-size: 14px; line-height: 1; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: transform .2s, border-color .2s, color .2s;
+    }
+    #music-toggle:hover { color: var(--ink); border-color: rgba(57,135,229,.5); transform: translateY(-1px); }
+    #music-toggle.playing { color: var(--blue); border-color: rgba(57,135,229,.6); box-shadow: 0 0 12px rgba(57,135,229,.3); }
+
+    /* ── HERO ── */
+    .hero { padding: 74px 0 64px; }
+    .hero .container { display: grid; grid-template-columns: 1fr 440px; gap: 64px; align-items: center; }
+    .hero .container > * { min-width: 0; }
+    .over { font-family: var(--mono); font-size: 12px; letter-spacing: .22em; color: var(--blue); margin-bottom: 20px; }
+    h1 { font-size: 52px; line-height: 1.18; font-weight: 800; letter-spacing: -.01em; }
+    .hero .en { margin-top: 16px; font-family: var(--mono); font-size: 13px; color: var(--dim); letter-spacing: .05em; }
+    .hero .sub { margin-top: 13px; font-size: 16px; line-height: 1.85; color: var(--dim); max-width: 560px; }
+    .ctas { display: flex; flex-wrap: wrap; gap: 13px; margin-top: 32px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px;
+      border-radius: 9px; font-size: 15px; font-weight: 600; transition: transform .2s, box-shadow .2s;
+    }
+    .btn.p { background: var(--blue); color: #fff; box-shadow: 0 8px 30px rgba(57,135,229,.32); }
+    .btn.g { border: 1px solid var(--line); color: var(--ink); background: rgba(255,255,255,.02); }
+    .btn:hover { transform: translateY(-2px); }
+    .trust { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 30px; font-size: 13px; color: var(--faint); }
+    .trust b { color: var(--dim); font-weight: 600; }
+
+    /* 雷达预览卡 */
+    .radar-card {
+      display: block; background: linear-gradient(180deg, var(--panel2), var(--panel));
+      border: 1px solid var(--line); border-radius: 16px; padding: 22px 22px 18px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.5);
+      transition: transform .2s, border-color .2s;
+    }
+    .radar-card:hover { transform: translateY(-3px); border-color: rgba(57,135,229,.4); }
+    .radar-card .hd { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 11px; letter-spacing: .18em; color: var(--faint); }
+    .radar-card .hd b { color: var(--dim); font-weight: 600; }
+    .radar-card .read { display: flex; align-items: baseline; gap: 13px; margin: 13px 0 4px; }
+    .radar-card .big { font-family: var(--mono); font-size: 52px; font-weight: 700; line-height: 1; color: var(--amber); }
+    .radar-card .lab { font-size: 15px; font-weight: 600; color: var(--amber); }
+    .radar-card .date { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--faint); }
+    .radar-card svg { display: block; width: 100%; max-width: 100%; height: auto; margin: 8px 0 2px; }
+    .sigs { display: grid; grid-template-columns: repeat(7,1fr); gap: 7px; margin-top: 12px; }
+    .sig { background: rgba(255,255,255,.03); border: 1px solid var(--line); border-radius: 8px; padding: 7px 4px 6px; text-align: center; min-width: 0; }
+    .sig .n { display: block; font-size: 10.5px; color: var(--faint); line-height: 1.4; }
+    .sig .v { display: block; font-family: var(--mono); font-size: 14px; font-weight: 700; margin-top: 1px; line-height: 1.3; }
+    .radar-card .ft { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; font-size: 12px; color: var(--faint); }
+    .radar-card .ft .go { color: var(--blue); }
+
+    /* ── 目录索引 ── */
+    section { padding: 46px 0 10px; }
+    .idx-hd { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px; margin-bottom: 6px; }
+    .idx-hd h2 { font-size: 21px; font-weight: 800; white-space: nowrap; }
+    .idx-hd .en { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; color: var(--faint); }
+    .idx-hd .cnt { margin-left: auto; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; color: var(--faint); }
+    .idx { border-top: 1px solid rgba(255,255,255,.16); }
+    .row {
+      display: flex; align-items: baseline; gap: 22px; padding: 19px 6px;
+      border-bottom: 1px solid var(--line); transition: background .15s;
+    }
+    .row:hover { background: rgba(255,255,255,.025); }
+    .row .no { font-family: var(--mono); font-size: 12px; color: var(--faint); width: 26px; flex: 0 0 auto; }
+    .row .name { font-size: 19px; font-weight: 700; flex: 0 0 auto; }
+    .row .name .emoji { margin-right: 9px; }
+    .row .en { font-family: var(--mono); font-size: 10.5px; letter-spacing: .16em; color: var(--faint); text-transform: uppercase; flex: 0 0 auto; }
+    .row .livedot { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: var(--dn); flex: 0 0 auto; }
+    .row .desc { margin-left: auto; font-size: 13px; color: var(--dim); text-align: right; max-width: 46%; line-height: 1.6; }
+    .row .arr { font-size: 17px; color: var(--faint); flex: 0 0 auto; transition: transform .15s, color .15s; }
+    .row:hover .arr { transform: translateX(4px); color: var(--ink); }
+    .row.plain:hover { background: none; }
+    .row.plain:hover .arr { transform: none; color: var(--faint); }
+
+    /* ── 联系 / 页脚 ── */
+    .contact { display: flex; flex-wrap: wrap; gap: 12px; padding: 10px 0 8px; }
+    .ctag {
+      padding: 8px 18px; border-radius: 999px; font-size: 13.5px;
+      background: var(--panel); border: 1px solid var(--line); color: var(--dim);
+      font-family: var(--mono);
+    }
+    footer {
+      margin-top: 54px; padding: 30px 0 42px; border-top: 1px solid var(--line);
+      color: var(--faint); font-size: 12.5px;
+    }
+    footer .container { display: flex; flex-wrap: wrap; gap: 8px 28px; }
+    footer a { color: var(--dim); }
+    footer a:hover { color: var(--ink); }
+    footer .r { margin-left: auto; }
+
+    /* ── 移动端 ── */
+    @media (max-width: 960px) {
+      nav .logo { letter-spacing: .16em; font-size: 15px; gap: 8px; }
+      nav .links { gap: 15px; font-size: 13px; }
+      .hero { padding: 46px 0 40px; }
+      .hero .container { grid-template-columns: 1fr; gap: 40px; }
+      h1 { font-size: 34px; }
+      .sigs { grid-template-columns: repeat(4,1fr); }
+      .row { flex-wrap: wrap; gap: 8px 14px; padding: 16px 2px; }
+      .row .desc { flex-basis: 100%; margin-left: 40px; text-align: left; max-width: none; order: 5; }
+      .row .arr { margin-left: auto; }
+      .row .name { font-size: 17px; }
+      .tape .tail { display: none; }
+    }
+  </style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- 实时行情带（JS 注入真数据；加载前显示静态占位） -->
+  <div class="tape" id="tape">
+    <span class="live"><i></i>LIVE</span>
+    <div class="tape-vp"><div class="tape-track" id="tape-track">
+      <span class="it" id="tape-fallback"><b>OOGLEX</b><span>全球金融数据 · 每日 06:20 自动更新</span></span>
+    </div></div>
+    <span class="tail" id="tape-tail">OOGLEX.COM</span>
+  </div>
+
+  <nav>
+    <div class="container">
+      <a class="logo" href="/"><img src="assets/favicon.svg" alt="" width="24" height="24"><span class="brand grad-text">OOGLEX</span></a>
+      <div class="links">
+        <a href="#apps">应用</a>
+        <a href="#tools">工具</a>
+        <a href="games/hub/">游戏</a>
+        <a href="#contact">联系</a>
+        <button id="music-toggle" type="button" aria-label="播放背景音乐" title="背景音乐 · 点击播放/静音">🔇</button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <div>
+        <div class="over">MARKET INTELLIGENCE — 每日 06:20 自动更新</div>
+        <h1 class="grad-text">全球市场实时数据，<br>更简单、更快、更智能。</h1>
+        <div class="en">Real-time global market data—simpler, faster, and smarter.</div>
+        <p class="sub">机制红绿灯、跨资产行情、恐慌贪婪、经济日历——20 多个每日自动更新的数据应用与工具，纯静态、免注册，打开即用。</p>
+        <div class="ctas">
+          <a class="btn p" href="apps/macro-radar/">进入宏观雷达 →</a>
+          <a class="btn g" href="#apps">浏览全部应用</a>
+        </div>
+        <div class="trust">
+          <span><b>20+</b> 数据应用与工具</span>
+          <span><b>2006→今</b> 危机回放</span>
+          <span><b>&lt;1s</b> 纯静态打开</span>
+        </div>
+      </div>
+
+      <a class="radar-card" href="apps/macro-radar/" id="radar-card">
+        <span class="hd"><b>宏观雷达 · MACRO RADAR</b><span>REGIME</span></span>
+        <span class="read">
+          <span class="big" id="rc-score">—</span>
+          <span class="lab" id="rc-label">加载中</span>
+          <span class="date num" id="rc-date"></span>
+        </span>
+        <svg id="rc-spark" viewBox="0 0 400 92" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="rcg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#3fae7d"/><stop offset=".5" stop-color="#e0a750"/><stop offset="1" stop-color="#e0554f"/>
+            </linearGradient>
+            <linearGradient id="rcf" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#3987e5" stop-opacity=".15"/><stop offset="1" stop-color="#3987e5" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line x1="0" y1="46" x2="400" y2="46" stroke="rgba(255,255,255,.06)"/>
+        </svg>
+        <span class="sigs" id="rc-sigs"></span>
+        <span class="ft"><span>Regime 时光机 · 重放 2006→今 每次危机</span><span class="go">打开 →</span></span>
+      </a>
+    </div>
+  </header>
+
+  <section id="apps">
+    <div class="container">
+      <div class="idx-hd"><h2>数据</h2><span class="en">DATA — UPDATED DAILY</span><span class="cnt" id="idx-stamp"></span></div>
+      <div class="idx">
+        <a class="row" href="apps/macro-radar/">
+          <span class="no">01</span><span class="name"><span class="emoji">📡</span>宏观雷达</span><span class="en">Macro Radar</span><span class="livedot">● LIVE</span>
+          <span class="desc">市场机制红绿灯 · 七大信号加权打分 · 2006→今危机回放时光机</span><span class="arr">→</span>
+        </a>
+        <a class="row" href="apps/data-hub/">
+          <span class="no">02</span><span class="name"><span class="emoji">📊</span>数据中心</span><span class="en">Data Hub</span>
+          <span class="desc">全球资产市值榜 · 大类资产收益率 · 富豪榜 · 公司市值 · 恐慌贪婪 · 经济日历，一站聚合</span><span class="arr">→</span>
+        </a>
+        <a class="row" href="apps/asset-ranking/">
+          <span class="no">03</span><span class="name"><span class="emoji">🌐</span>全球资产市值榜</span><span class="en">Asset Ranking</span><span class="livedot">● LIVE</span>
+          <span class="desc">不限品类只看市值 · 房产/国债/黄金/货币/公司/加密 同台前 250，每日更新</span><span class="arr">→</span>
+        </a>
+        <a class="row" href="apps/house-prices/">
+          <span class="no">04</span><span class="name"><span class="emoji">🏘️</span>全球房价走势</span><span class="en">House Prices</span><span class="livedot">● LIVE</span>
+          <span class="desc">全球主要国家房价 · 名义/实际同比 · 点击看近 20 年走势，每周更新</span><span class="arr">→</span>
+        </a>
+        <a class="row" href="apps/superinvestors/">
+          <span class="no">05</span><span class="name"><span class="emoji">💼</span>超级投资者</span><span class="en">Superinvestors</span>
+          <span class="desc">巴菲特们的 13F 持仓与国会交易披露 · AAII 情绪，每周更新</span><span class="arr">→</span>
+        </a>
+        <a class="row" href="apps/whats-latest/">
+          <span class="no">06</span><span class="name"><span class="emoji">📰</span>最新消息</span><span class="en">What's Latest</span>
+          <span class="desc">权威媒体要闻与市场快照，每日多次自动更新</span><span class="arr">→</span>
+        </a>
+        <a class="row" href="apps/finance-column/">
+          <span class="no">07</span><span class="name"><span class="emoji">💹</span>金融知识架构</span><span class="en">Finance Column</span>
+          <span class="desc">华尔街知识图谱：8 层级 · 48 模块 · 560+ 中英双语术语</span><span class="arr">→</span>
+        </a>
+        <a class="row" href="apps/movies/">
+          <span class="no">08</span><span class="name"><span class="emoji">🎬</span>全球电影榜</span><span class="en">Movies</span>
+          <span class="desc">Top 250 与全球新上映，评分海报俱全，每日更新</span><span class="arr">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="tools">
+    <div class="container">
+      <div class="idx-hd"><h2>工具与游戏</h2><span class="en">TOOLS &amp; PLAY</span></div>
+      <div class="idx">
+        <a class="row" href="games/hub/">
+          <span class="no">09</span><span class="name"><span class="emoji">🎮</span>游戏中心</span><span class="en">Games</span>
+          <span class="desc">桌球 · 跳一跳 · 斗地主 · 像素大冒险 · 霓虹都市，手机电脑都能玩</span><span class="arr">→</span>
+        </a>
+        <a class="row" href="apps/calculators/">
+          <span class="no">10</span><span class="name"><span class="emoji">🧮</span>万象算集</span><span class="en">Calculators</span>
+          <span class="desc">70+ 计算器：房贷 · 复利 · 个税 · BMI · 方程 · 进制，可搜索</span><span class="arr">→</span>
+        </a>
+        <a class="row" href="apps/radio/">
+          <span class="no">11</span><span class="name"><span class="emoji">🌍</span>环球电波</span><span class="en">Radio Globe</span>
+          <span class="desc">转动 3D 地球实时收听全球电台 · 可安装到手机</span><span class="arr">→</span>
+        </a>
+        <a class="row" href="apps/ai-chat/">
+          <span class="no">12</span><span class="name"><span class="emoji">✨</span>万象智聊</span><span class="en">AI Chat</span>
+          <span class="desc">接入 DeepSeek · GLM · Kimi · 通义，密钥本地保存，流式对话</span><span class="arr">→</span>
+        </a>
+        <a class="row" href="apps/telescope/">
+          <span class="no">13</span><span class="name"><span class="emoji">🔭</span>星瞳望远镜</span><span class="en">Telescope</span>
+          <span class="desc">手机摄像头变数码望远镜：混合变焦 · 夜视增强 · 罗盘瞄准</span><span class="arr">→</span>
+        </a>
+        <a class="row" href="apps/home-value/">
+          <span class="no">14</span><span class="name"><span class="emoji">🧭</span>房值罗盘</span><span class="en">Home Value</span>
+          <span class="desc">中文地址识别区位，估算房屋价值区间（参考工具）</span><span class="arr">→</span>
+        </a>
+        <a class="row" href="apps/name-fortune/">
+          <span class="no">15</span><span class="name"><span class="emoji">🏮</span>知命阁</span><span class="en">Name Fortune</span>
+          <span class="desc">姓名生辰八字与五行运势解读，水墨画风（仅供娱乐）</span><span class="arr">→</span>
+        </a>
+        <a class="row" href="apps/mosquito-lab/">
+          <span class="no">16</span><span class="name"><span class="emoji">🦟</span>声波驱蚊实验室</span><span class="en">Mosquito Lab</span>
+          <span class="desc">真能响的频率发生器 + 超声驱蚊科学辟谣</span><span class="arr">→</span>
+        </a>
+        <a class="row" href="apps/fish-lab/">
+          <span class="no">17</span><span class="name"><span class="emoji">🐟</span>声波诱鱼实验室</span><span class="en">Fish Lab</span>
+          <span class="desc">低频诱鱼音发生器 + 声波诱鱼科学辨析</span><span class="arr">→</span>
+        </a>
+        <span class="row plain">
+          <span class="no">18</span><span class="name"><span class="emoji">💡</span>你的想法</span><span class="en">Your Idea</span>
+          <span class="desc">有什么想做的，都可以从这里开始</span><span class="arr">·</span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="container">
+      <div class="idx-hd"><h2>联系</h2><span class="en">CONTACT</span></div>
+      <div class="contact">
+        <span class="ctag">📧 zlq6600e@outlook.com</span>
+        <a class="ctag" href="https://github.com/zlq6600e-cyber" target="_blank" rel="noopener">💻 github.com/zlq6600e-cyber</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <span>© 2026 Ooglex</span>
+      <a href="privacy/">隐私政策</a>
+      <a href="https://github.com/zlq6600e-cyber/ZLQ6600E" target="_blank" rel="noopener">源码 GitHub</a>
+      <span class="r">数据仅供研究，非投资建议</span>
+    </div>
+  </footer>
+
+  <script>
+  /* 实时行情带 + 宏观雷达预览卡：吃站内各应用每日构建的 data.json，全静态无后端。 */
+  (function () {
+    function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+    function isNum(x) { return typeof x === "number" && isFinite(x); }
+    function fmtPx(x) {
+      if (!isNum(x)) return "—";
+      return x >= 1000 ? x.toLocaleString("en-US", { maximumFractionDigits: 0 })
+           : x >= 100 ? x.toFixed(1) : x.toFixed(2);
+    }
+    function pctSpan(p) {
+      if (!isNum(p)) return "";
+      var cls = p >= 0 ? "u" : "d";
+      return "<span class='" + cls + " num'>" + (p >= 0 ? "+" : "") + p.toFixed(2) + "%</span>";
+    }
+    function bucket(x) {
+      if (!isNum(x)) return { zh: "—", col: "#8a97a6" };
+      if (x < 35) return { zh: "收紧 · 风险", col: "#e0554f" };
+      if (x < 48) return { zh: "中性偏紧", col: "#e0834a" };
+      if (x < 58) return { zh: "中性", col: "#e0a750" };
+      if (x < 68) return { zh: "中性偏松", col: "#7cba63" };
+      return { zh: "宽松 · 支持", col: "#3fae7d" };
+    }
+    function sigCol(s) { return !isNum(s) ? "#8a97a6" : (s < 40 ? "#e0554f" : (s <= 60 ? "#e0a750" : "#3fae7d")); }
+    function getJSON(url) {
+      return fetch(url).then(function (r) { if (!r.ok) throw new Error(url); return r.json(); });
+    }
+
+    var track = document.getElementById("tape-track");
+    var tail = document.getElementById("tape-tail");
+    var items = [];   // {order, html}
+    function renderTape() {
+      if (!items.length) return;
+      items.sort(function (a, b) { return a.order - b.order; });
+      var seq = items.map(function (it) { return "<span class='it'>" + it.html + "</span>"; }).join("");
+      track.innerHTML = seq + seq;   // 复制一份，实现无缝循环滚动
+      // 慢速：按内容宽度算动画时长（约 26px/s，从左往右缓缓流动）
+      requestAnimationFrame(function () {
+        var w = track.scrollWidth / 2;
+        if (w > 0) track.style.animationDuration = Math.max(45, Math.round(w / 26)) + "s";
+      });
+    }
+
+    /* 行情：大类资产 */
+    getJSON("apps/asset-tracker/data.json").then(function (d) {
+      var want = { "标普500": 1, "日经225": 2, "恒生指数": 3, "沪深300": 4, "德国DAX": 5,
+                   "COMEX黄金": 6, "NYMEX WTI原油": 7, "ICE布油": 8, "美元指数": 9 };
+      var zh = { "NYMEX WTI原油": "WTI原油", "COMEX黄金": "黄金", "ICE布油": "布伦特" };
+      (d.assets || []).forEach(function (a) {
+        var o = want[a.name];
+        if (!o || !isNum(a.price)) return;
+        var d1 = (a.returns || {}).d1;
+        items.push({ order: o, html: "<b>" + esc(zh[a.name] || a.name) + "</b><span class='num'>" + fmtPx(a.price) + "</span>" + pctSpan(d1) });
+      });
+      // BDI 波罗的海干散货指数（真实点位，来源 CNBC .BADI）
+      if (d.bdi && isNum(d.bdi.price)) {
+        items.push({ order: 10, html: "<b>BDI</b><span class='num'>" + fmtPx(d.bdi.price) + "</span>" + pctSpan(d.bdi.changePct) });
+      }
+      if (d.asOf && tail) tail.textContent = "UPDATED " + d.asOf;
+      renderTape();
+    }).catch(function () {});
+
+    /* 恐慌贪婪 */
+    getJSON("apps/fear-greed/data.json").then(function (d) {
+      if (!isNum(d.score)) return;
+      var col = d.score < 45 ? "#e0554f" : (d.score <= 55 ? "#e0a750" : "#3fae7d");
+      items.push({ order: 11, html: "<b>恐慌贪婪</b><span class='num' style='color:" + col + "'>" + d.score + "</span><span style='color:" + col + "'>" + esc(d.ratingZh || "") + "</span>" });
+      renderTape();
+    }).catch(function () {});
+
+    /* 宏观雷达：行情带一格 + 预览卡 */
+    getJSON("apps/macro-radar/data.json").then(function (d) {
+      var sc = (d.regime || {}).score, b = bucket(sc);
+      items.push({ order: 12, html: "<b>宏观机制</b><span class='num' style='color:" + b.col + "'>" + (isNum(sc) ? sc : "—") + "</span><span style='color:" + b.col + "'>" + esc((d.regime || {}).labelZh || b.zh) + "</span>" });
+      renderTape();
+
+      document.getElementById("rc-score").textContent = isNum(sc) ? sc : "—";
+      document.getElementById("rc-score").style.color = b.col;
+      var lb = document.getElementById("rc-label");
+      lb.textContent = (d.regime || {}).labelZh || b.zh; lb.style.color = b.col;
+      document.getElementById("rc-date").textContent = d.asOf || "";
+      var SIGSHORT = { liquidity: "流动性", volatility: "波动率", term: "期限", credit: "信用", growth: "增长", usd: "美元", breadth: "广度" };
+      var sigs = document.getElementById("rc-sigs");
+      (d.signals || []).slice(0, 7).forEach(function (s) {
+        var c = sigCol(s.score);
+        var nm = SIGSHORT[s.key] || (s.zh || "").slice(0, 3);
+        var box = el("span", "sig", "<span class='n'>" + esc(nm) + "</span><span class='v' style='color:" + c + "'>" + (isNum(s.score) ? s.score : "—") + "</span>");
+        sigs.appendChild(box);
+      });
+    }).catch(function () {
+      document.getElementById("rc-label").textContent = "打开查看";
+    });
+
+    /* 雷达卡迷你走势：history.json 最近 3 年 */
+    getJSON("apps/macro-radar/history.json").then(function (h) {
+      var R = (h.regime || []).slice(-156);
+      if (R.length < 20) return;
+      var svg = document.getElementById("rc-spark");
+      var W = 400, H = 92, T = 6, B = 4;
+      function X(i) { return W * i / (R.length - 1); }
+      function Y(v) { return T + (H - T - B) * (100 - v) / 100; }
+      var pts = [], i;
+      for (i = 0; i < R.length; i++) if (isNum(R[i])) pts.push(X(i).toFixed(1) + "," + Y(R[i]).toFixed(1));
+      if (pts.length < 2) return;
+      var ns = "http://www.w3.org/2000/svg";
+      var area = document.createElementNS(ns, "polygon");
+      area.setAttribute("points", pts[0].split(",")[0] + "," + H + " " + pts.join(" ") + " " + pts[pts.length - 1].split(",")[0] + "," + H);
+      area.setAttribute("fill", "url(#rcf)");
+      svg.appendChild(area);
+      var line = document.createElementNS(ns, "polyline");
+      line.setAttribute("points", pts.join(" "));
+      line.setAttribute("fill", "none"); line.setAttribute("stroke", "url(#rcg)");
+      line.setAttribute("stroke-width", "1.8"); line.setAttribute("stroke-linejoin", "round");
+      svg.appendChild(line);
+      var last = pts[pts.length - 1].split(",");
+      var dot = document.createElementNS(ns, "circle");
+      dot.setAttribute("cx", last[0]); dot.setAttribute("cy", last[1]); dot.setAttribute("r", "3.6");
+      dot.setAttribute("fill", "#eef2f7"); dot.setAttribute("stroke", "#0b0e13"); dot.setAttribute("stroke-width", "1.4");
+      svg.appendChild(dot);
+    }).catch(function () {});
+
+    /* 目录时间戳 */
+    getJSON("apps/macro-radar/data.json").then(function (d) {
+      var s = document.getElementById("idx-stamp");
+      if (s && d.asOf) s.textContent = "AS OF " + d.asOf;
+    }).catch(function () {});
+  })();
+  </script>
+
+  <script>
+  /* 背景音乐：用 Web Audio API 现场合成一段免版权的舒缓氛围循环（无音频文件、无版权问题）。
+     浏览器禁止带声音自动播放，故默认静音，由访客点击 🔊 开关用一次手势启动。 */
+  (function () {
+    var btn = document.getElementById('music-toggle');
+    if (!btn || !(window.AudioContext || window.webkitAudioContext)) { if (btn) btn.style.display = 'none'; return; }
+    var ctx, master, padGain, bellIn, started = false, playing = false, bellTimer;
+    var PAD = [110, 164.81, 220, 277.18, 329.63];            // A2 E3 A3 C#4 E4 —— 温暖的 A 大调铺底
+    var SHIMMER = [440, 554.37, 659.25, 880, 1108.73];       // A4 C#5 E5 A5 C#6 —— 五声点缀
+    function build() {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+      var filt = ctx.createBiquadFilter(); filt.type = 'lowpass'; filt.frequency.value = 950; filt.Q.value = 0.5;
+      padGain = ctx.createGain(); padGain.gain.value = 0.6;
+      filt.connect(padGain); padGain.connect(master);
+      PAD.forEach(function (f, i) {
+        [-7, 7].forEach(function (det) {
+          var o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = f; o.detune.value = det + i;
+          var g = ctx.createGain(); g.gain.value = 0.11 / PAD.length;
+          o.connect(g); g.connect(filt); o.start();
+        });
+      });
+      var lfo = ctx.createOscillator(); lfo.frequency.value = 0.06;   // 极慢「呼吸」
+      var lg = ctx.createGain(); lg.gain.value = 0.18;
+      lfo.connect(lg); lg.connect(padGain.gain); lfo.start();
+      var dl = ctx.createDelay(); dl.delayTime.value = 0.42;          // 空间回声
+      var fb = ctx.createGain(); fb.gain.value = 0.34;
+      dl.connect(fb); fb.connect(dl); dl.connect(master);
+      bellIn = ctx.createGain(); bellIn.connect(dl); bellIn.connect(master);
+      started = true;
+    }
+    function shimmer() {
+      if (!playing) return;
+      var f = SHIMMER[Math.floor(Math.random() * SHIMMER.length)];
+      var o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = f;
+      var g = ctx.createGain(); g.gain.value = 0.0001;
+      o.connect(g); g.connect(bellIn);
+      var t = ctx.currentTime;
+      g.gain.linearRampToValueAtTime(0.05, t + 0.7);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 4.5);
+      o.start(t); o.stop(t + 5);
+      bellTimer = setTimeout(shimmer, 5000 + Math.random() * 7000);
+    }
+    function play() {
+      if (!started) build();
+      ctx.resume();
+      playing = true;
+      master.gain.cancelScheduledValues(ctx.currentTime);
+      master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
+      master.gain.linearRampToValueAtTime(0.14, ctx.currentTime + 2.5);
+      btn.textContent = '🔊'; btn.classList.add('playing'); btn.setAttribute('aria-label', '静音背景音乐');
+      bellTimer = setTimeout(shimmer, 3500);
+    }
+    function mute() {
+      playing = false; clearTimeout(bellTimer);
+      master.gain.cancelScheduledValues(ctx.currentTime);
+      master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
+      master.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.2);
+      setTimeout(function () { if (!playing && ctx) ctx.suspend(); }, 1400);
+      btn.textContent = '🔇'; btn.classList.remove('playing'); btn.setAttribute('aria-label', '播放背景音乐');
+    }
+    btn.addEventListener('click', function () { playing ? mute() : play(); });
+  })();
+  </script>
+
+</body>
+</html>

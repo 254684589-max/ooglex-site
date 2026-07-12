@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知命阁 · 姓名测算</title>
+<meta name="description" content="输入中文姓名，测算生辰八字、运势、财运、爱情、事业与姓氏渊源（娱乐）">
+<link rel="canonical" href="https://www.ooglex.com/apps/name-fortune/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="知命阁 · 姓名测算">
+<meta property="og:description" content="输入中文姓名，测算生辰八字、运势、财运、爱情、事业与姓氏渊源（娱乐）">
+<meta property="og:url" content="https://www.ooglex.com/apps/name-fortune/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --gold:#d8b455; --gold-dim:#a8854a; --red:#b03a2e; --ink:#171310;
+    --paper:#211b15; --text:#efe6d4; --dim:#b3a385;
+  }
+  html { scroll-behavior:smooth; }
+  body {
+    background:var(--ink); color:var(--text); min-height:100vh;
+    font-family:"Kaiti SC","STKaiti","KaiTi","FangSong","PingFang SC",serif;
+    overflow-x:hidden;
+  }
+  #bg { position:fixed; inset:0; z-index:0; }
+  .page { position:relative; z-index:1; max-width:760px; margin:0 auto; padding:20px 18px 60px; }
+
+  header { display:flex; align-items:center; gap:12px; margin-bottom:26px; }
+  header a { color:var(--gold); text-decoration:none; font-size:0.95rem; white-space:nowrap; }
+  header a:hover { text-decoration:underline; }
+  header .sp { flex:1; }
+  #musicBtn {
+    background:rgba(216,180,85,0.12); border:1px solid var(--gold-dim); color:var(--gold);
+    border-radius:999px; padding:8px 18px; font-size:0.9rem; cursor:pointer;
+    font-family:inherit; transition:background .2s;
+  }
+  #musicBtn:hover { background:rgba(216,180,85,0.25); }
+
+  .title { text-align:center; margin-bottom:30px; }
+  .title h1 {
+    font-size:3rem; letter-spacing:14px; text-indent:14px; color:var(--gold);
+    text-shadow:0 0 30px rgba(216,180,85,0.45);
+  }
+  .title p { color:var(--dim); margin-top:10px; letter-spacing:4px; }
+
+  .card {
+    background:linear-gradient(160deg, rgba(48,38,26,0.92), rgba(28,22,16,0.92));
+    border:1px solid rgba(216,180,85,0.35); border-radius:14px;
+    padding:26px 26px 24px; margin-bottom:18px;
+    box-shadow:0 8px 40px rgba(0,0,0,0.45);
+    opacity:0; transform:translateY(24px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  .card.show { opacity:1; transform:none; }
+  .card h2 {
+    color:var(--gold); font-size:1.25rem; letter-spacing:6px; margin-bottom:14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .card h2::after { content:""; flex:1; height:1px; background:linear-gradient(90deg, rgba(216,180,85,0.5), transparent); }
+  .card p { line-height:1.95; color:var(--text); font-size:1.02rem; }
+  .card .stars { color:var(--gold); font-size:1.2rem; letter-spacing:3px; margin-bottom:8px; }
+
+  label { display:block; color:var(--dim); margin:16px 0 6px; letter-spacing:2px; }
+  input, select {
+    width:100%; padding:12px 14px; border-radius:10px;
+    background:rgba(15,12,9,0.8); border:1px solid rgba(216,180,85,0.4);
+    color:var(--text); font-size:1.1rem; font-family:inherit; letter-spacing:2px;
+  }
+  input:focus, select:focus { outline:none; border-color:var(--gold); box-shadow:0 0 12px rgba(216,180,85,0.3); }
+  .btn {
+    display:block; width:100%; margin-top:24px; padding:15px;
+    background:linear-gradient(135deg, #8c2d23, var(--red));
+    color:#ffe9c9; border:1px solid rgba(255,210,140,0.5); border-radius:12px;
+    font-size:1.25rem; letter-spacing:10px; text-indent:10px; cursor:pointer; font-family:inherit;
+    transition:transform .2s, box-shadow .2s;
+  }
+  .btn:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(176,58,46,0.5); }
+
+  #loading { text-align:center; padding:70px 0; display:none; }
+  .taiji {
+    width:90px; height:90px; margin:0 auto 26px; border-radius:50%;
+    background:linear-gradient(90deg, #efe6d4 50%, #171310 50%);
+    border:2px solid var(--gold); position:relative;
+    animation:spin 1.6s linear infinite;
+  }
+  .taiji::before, .taiji::after {
+    content:""; position:absolute; width:45px; height:45px; border-radius:50%;
+    left:50%; transform:translateX(-50%);
+  }
+  .taiji::before { top:0; background:radial-gradient(circle at center, #171310 8px, #efe6d4 9px); }
+  .taiji::after { bottom:0; background:radial-gradient(circle at center, #efe6d4 8px, #171310 9px); }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  #loading p { color:var(--gold); letter-spacing:6px; font-size:1.1rem; }
+
+  #result { display:none; }
+  .bigname {
+    text-align:center; font-size:3.4rem; color:var(--gold); letter-spacing:18px; text-indent:18px;
+    margin:6px 0 24px; text-shadow:0 0 40px rgba(216,180,85,0.5);
+  }
+  .pillars { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:14px 0 18px; }
+  .pillar {
+    text-align:center; background:rgba(15,12,9,0.65); border:1px solid rgba(216,180,85,0.4);
+    border-radius:12px; padding:12px 18px; min-width:86px;
+  }
+  .pillar .lab { color:var(--dim); font-size:0.85rem; letter-spacing:3px; margin-bottom:6px; }
+  .pillar .gz { font-size:1.7rem; letter-spacing:4px; }
+  .pillar .wx { font-size:0.85rem; margin-top:6px; }
+  .wuxing { margin-top:16px; }
+  .wxrow { display:flex; align-items:center; gap:10px; margin:7px 0; }
+  .wxrow .n { width:2em; text-align:center; font-size:1.05rem; }
+  .wxbar { flex:1; height:12px; background:rgba(255,255,255,0.07); border-radius:6px; overflow:hidden; }
+  .wxbar i { display:block; height:100%; border-radius:6px; transition:width 1.2s ease; }
+  .e金 { color:#e8e2cf; } .b金 { background:linear-gradient(90deg,#cfc9b4,#fff7e0); }
+  .e木 { color:#7fc97f; } .b木 { background:linear-gradient(90deg,#3f9e5f,#8fdf8f); }
+  .e水 { color:#7fb6e8; } .b水 { background:linear-gradient(90deg,#2f6fae,#8fc6f8); }
+  .e火 { color:#f08060; } .b火 { background:linear-gradient(90deg,#b03a2e,#ff9a70); }
+  .e土 { color:#d8b455; } .b土 { background:linear-gradient(90deg,#9a7a3a,#e8c878); }
+  .lucky { display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; }
+  .tag {
+    background:rgba(216,180,85,0.12); border:1px solid rgba(216,180,85,0.45);
+    border-radius:999px; padding:8px 18px; letter-spacing:2px;
+  }
+  .note { color:var(--dim); font-size:0.88rem; margin-top:10px; line-height:1.7; }
+  footer { text-align:center; color:var(--dim); font-size:0.85rem; margin-top:34px; letter-spacing:2px; line-height:1.8; }
+  @media (max-width:600px) {
+    .title h1 { font-size:2.2rem; letter-spacing:8px; }
+    .bigname { font-size:2.4rem; letter-spacing:10px; }
+  }
+</style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="page">
+  <header>
+    <a href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a>
+    <span class="sp"></span>
+    <button id="musicBtn">🎵 奏乐</button>
+  </header>
+
+  <div class="title">
+    <h1>知 命 阁</h1>
+    <p>一名一世界 · 一字一乾坤</p>
+  </div>
+
+  <section class="card show" id="formCard">
+    <h2>📜 报上名来</h2>
+    <label>中文姓名（必填）</label>
+    <input id="inName" type="text" maxlength="6" placeholder="例如：张三丰" autocomplete="off">
+    <label>出生日期（选填，填写后可排生辰八字）</label>
+    <input id="inDate" type="date" min="1920-01-01" max="2026-12-31">
+    <label>出生时辰（选填）</label>
+    <select id="inHour">
+      <option value="-1">不清楚</option>
+      <option value="0">子时 23:00–01:00</option>
+      <option value="1">丑时 01:00–03:00</option>
+      <option value="2">寅时 03:00–05:00</option>
+      <option value="3">卯时 05:00–07:00</option>
+      <option value="4">辰时 07:00–09:00</option>
+      <option value="5">巳时 09:00–11:00</option>
+      <option value="6">午时 11:00–13:00</option>
+      <option value="7">未时 13:00–15:00</option>
+      <option value="8">申时 15:00–17:00</option>
+      <option value="9">酉时 17:00–19:00</option>
+      <option value="10">戌时 19:00–21:00</option>
+      <option value="11">亥时 21:00–23:00</option>
+    </select>
+    <button class="btn" id="goBtn">开 始 测 算</button>
+  </section>
+
+  <section id="loading">
+    <div class="taiji"></div>
+    <p id="loadTxt">推演天干地支…</p>
+  </section>
+
+  <section id="result"></section>
+
+  <footer>
+    ✦ 本页面内容由程序生成，仅供娱乐，不构成任何现实建议 ✦<br>
+    知命阁 · 托管于 GitHub Pages
+  </footer>
+</div>
+<script src="app.js"></script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+</body>
+</html>

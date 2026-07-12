@@ -1,0 +1,56 @@
+name: Companies Tracker
+
+# 每日刷新「全球公司市值实时榜」：跑取数脚本 → 生成 apps/companies/data.json → 提交回仓库。
+# GitHub Pages 托管该 JSON，页面前端读取即时渲染。数据源 Yahoo Finance（v8/chart），零密钥。
+on:
+  workflow_dispatch:
+  schedule:
+    # 每天 23:10 UTC（美股收盘后；与其它每日工作流错峰，避免提交撞车）
+    - cron: '10 23 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Fetch company logos (本地化，墙内同源加载)
+        run: python scripts/companies/fetch_logos.py
+
+      - name: Build companies data
+        run: python scripts/companies/build_companies.py
+
+      - name: Commit data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A apps/companies
+          if git diff --cached --quiet; then
+            echo "无变化，跳过提交"
+            exit 0
+          fi
+          git commit -m "data: refresh companies market cap + logos"
+          # data.json 由本工作流独占生成。推送遇远端新提交时，rebase 始终以本次生成的版本为准（-X ours），
+          # 避免 `git pull --rebase --autostash` 在弹栈冲突时把 <<<<<<< 标记写进 JSON。
+          for i in 1 2 3 4 5; do
+            if git push origin "HEAD:$GITHUB_REF_NAME"; then
+              echo "已推送"; exit 0
+            fi
+            echo "推送被拒，拉取远端后以本地版本为准重试（$i）"
+            git fetch origin "$GITHUB_REF_NAME" || true
+            git rebase -X ours "origin/$GITHUB_REF_NAME" || git rebase --abort
+            sleep $((i * 3))
+          done
+          echo "推送多次失败"; exit 1

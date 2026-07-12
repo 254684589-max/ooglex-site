@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>极简桌球 Pro · Ooglex Games</title>
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+    <style>
+        :root {
+            --bg: #05070a;
+            --accent: #7c5cff;
+            --table-green: #0a4d2e;
+            --table-border: #2c1e16;
+            --text: #eef1f8;
+            --gold: #d4af37;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; -webkit-user-select: none; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-image: radial-gradient(circle at center, #1a1c2c 0%, #05070a 100%);
+        }
+        
+        .header {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+        }
+        .header h1 { 
+            font-size: 1.5rem; 
+            margin-bottom: 5px; 
+            font-weight: 900;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, #fff, #a98bff, #ff6ec7); 
+            -webkit-background-clip: text; 
+            color: transparent; 
+            text-shadow: 0 10px 20px rgba(124,92,255,0.3);
+        }
+        .header p { font-size: 0.85rem; color: #99a0b8; opacity: 0.8; }
+        
+        #game-wrapper {
+            position: relative;
+            padding: 20px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        #game-container {
+            position: relative;
+            width: 92vw;
+            max-width: 840px;
+            aspect-ratio: 2 / 1;
+            background: var(--table-green);
+            border: 16px solid var(--table-border);
+            border-radius: 20px;
+            box-shadow: 
+                0 0 0 4px rgba(0,0,0,0.5),
+                inset 0 0 120px rgba(0,0,0,0.6),
+                0 25px 50px rgba(0,0,0,0.7);
+            overflow: hidden;
+            background-image: radial-gradient(circle at center, #14633a 0%, #0a4d2e 100%);
+        }
+        
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .pocket {
+            position: absolute;
+            width: 36px;
+            height: 36px;
+            background: #000;
+            border-radius: 50%;
+            box-shadow: inset 0 5px 15px rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.5);
+            z-index: 5;
+        }
+        .p-tl { top: -8px; left: -8px; }
+        .p-tc { top: -14px; left: calc(50% - 18px); }
+        .p-tr { top: -8px; right: -8px; }
+        .p-bl { bottom: -8px; left: -8px; }
+        .p-bc { bottom: -14px; left: calc(50% - 18px); }
+        .p-br { bottom: -8px; right: -8px; }
+
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 12px 28px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            font-size: 0.95rem;
+            backdrop-filter: blur(10px);
+        }
+        .btn:hover { 
+            background: var(--accent); 
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(124,92,255,0.4);
+            border-color: transparent;
+        }
+        .btn:active { transform: translateY(-1px); }
+
+        .back-btn { position: absolute; top: 25px; left: 25px; z-index: 100; opacity: 0.6; }
+        .back-btn:hover { opacity: 1; }
+        
+        #hud {
+            position: absolute;
+            top: -45px;
+            right: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            color: var(--gold);
+            text-shadow: 0 0 10px rgba(212,175,55,0.5);
+        }
+
+        #power-meter {
+            position: absolute;
+            left: -40px;
+            bottom: 0;
+            width: 8px;
+            height: 0%;
+            background: linear-gradient(to top, #00ff00, #ffff00, #ff0000);
+            border-radius: 4px;
+            transition: height 0.1s;
+            box-shadow: 0 0 15px rgba(0,255,0,0.5);
+        }
+
+        .music-toggle {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.3s;
+        }
+        .music-toggle:hover { background: rgba(255,255,255,0.15); transform: scale(1.1); }
+        .music-toggle.off { opacity: 0.4; }
+    </style>
+</head>
+<body>
+    <a href="../hub/" class="btn back-btn">← 退出</a>
+    
+    <div class="header">
+        <h1>BILLIARDS PRO</h1>
+        <p>沉浸式 3D 质感 · 爵士背景乐 · 真实物理模拟</p>
+    </div>
+
+    <div id="game-wrapper">
+        <div id="hud">SCORE: <span id="score">000</span></div>
+        <div id="power-meter"></div>
+        <div id="game-container">
+            <div class="pocket p-tl"></div>
+            <div class="pocket p-tc"></div>
+            <div class="pocket p-tr"></div>
+            <div class="pocket p-bl"></div>
+            <div class="pocket p-bc"></div>
+            <div class="pocket p-br"></div>
+            <canvas id="poolCanvas"></canvas>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn" onclick="resetGame()">重新开局</button>
+        <div style="color: #666; font-size: 0.8rem;">长按白球反向拖拽</div>
+    </div>
+
+    <div id="music-btn" class="music-toggle" onclick="toggleMusic()">🎵</div>
+
+    <script>
+        const canvas = document.getElementById('poolCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const powerMeter = document.getElementById('power-meter');
+        
+        let width, height;
+        let balls = [];
+        let cueBall;
+        let isDragging = false;
+        let dragStart = { x: 0, y: 0 };
+        let dragEnd = { x: 0, y: 0 };
+        let score = 0;
+        let musicEnabled = false;
+        
+        // 伪音效系统（由于无法直接下载外部资源，使用 Web Audio API 合成声音）
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playHitSound(volume = 1) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(400 + Math.random() * 200, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.1 * volume, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+        function playPocketSound() {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.3);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        }
+
+        const BALL_RADIUS = 11;
+        const FRICTION = 0.988;
+        const WALL_BOUNCE = 0.6;
+
+        class Ball {
+            constructor(x, y, color, number = '', isCue = false) {
+                this.x = x;
+                this.y = y;
+                this.vx = 0;
+                this.vy = 0;
+                this.color = color;
+                this.number = number;
+                this.isCue = isCue;
+                this.inPocket = false;
+                this.scale = 1;
+            }
+
+            draw() {
+                if (this.inPocket && this.scale <= 0.1) return;
+                
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.scale(this.scale, this.scale);
+
+                // Shadow
+                ctx.beginPath();
+                ctx.ellipse(2, 4, BALL_RADIUS, BALL_RADIUS * 0.7, 0, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                ctx.fill();
+
+                // Main body
+                const grad = ctx.createRadialGradient(-BALL_RADIUS*0.3, -BALL_RADIUS*0.3, BALL_RADIUS*0.1, 0, 0, BALL_RADIUS);
+                grad.addColorStop(0, this.isCue ? '#fff' : this.color);
+                grad.addColorStop(1, this.isCue ? '#ddd' : '#000');
+                
+                ctx.beginPath();
+                ctx.arc(0, 0, BALL_RADIUS, 0, Math.PI * 2);
+                ctx.fillStyle = grad;
+                ctx.fill();
+
+                // Number circle
+                if (!this.isCue) {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, BALL_RADIUS * 0.5, 0, Math.PI * 2);
+                    ctx.fillStyle = '#fff';
+                    ctx.fill();
+                    ctx.fillStyle = '#000';
+                    ctx.font = `bold ${BALL_RADIUS * 0.6}px Arial`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(this.number, 0, 0);
+                }
+
+                // Top highlight
+                ctx.beginPath();
+                ctx.ellipse(-BALL_RADIUS*0.4, -BALL_RADIUS*0.4, BALL_RADIUS*0.3, BALL_RADIUS*0.2, Math.PI/4, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                ctx.fill();
+
+                ctx.restore();
+            }
+
+            update() {
+                if (this.inPocket) {
+                    this.scale *= 0.85;
+                    return;
+                }
+                
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vx *= FRICTION;
+                this.vy *= FRICTION;
+
+                if (Math.abs(this.vx) < 0.1) this.vx = 0;
+                if (Math.abs(this.vy) < 0.1) this.vy = 0;
+
+                // Wall collisions
+                if (this.x - BALL_RADIUS < 0) { 
+                    this.x = BALL_RADIUS; this.vx *= -WALL_BOUNCE; 
+                    if (Math.abs(this.vx) > 0.5) playHitSound(Math.abs(this.vx)/10);
+                }
+                if (this.x + BALL_RADIUS > width) { 
+                    this.x = width - BALL_RADIUS; this.vx *= -WALL_BOUNCE; 
+                    if (Math.abs(this.vx) > 0.5) playHitSound(Math.abs(this.vx)/10);
+                }
+                if (this.y - BALL_RADIUS < 0) { 
+                    this.y = BALL_RADIUS; this.vy *= -WALL_BOUNCE; 
+                    if (Math.abs(this.vy) > 0.5) playHitSound(Math.abs(this.vy)/10);
+                }
+                if (this.y + BALL_RADIUS > height) { 
+                    this.y = height - BALL_RADIUS; this.vy *= -WALL_BOUNCE; 
+                    if (Math.abs(this.vy) > 0.5) playHitSound(Math.abs(this.vy)/10);
+                }
+
+                // Pocket detection
+                const pockets = [
+                    {x: 0, y: 0}, {x: width/2, y: 0}, {x: width, y: 0},
+                    {x: 0, y: height}, {x: width/2, y: height}, {x: width, y: height}
+                ];
+                pockets.forEach(p => {
+                    const dist = Math.hypot(this.x - p.x, this.y - p.y);
+                    if (dist < 28) {
+                        if (this.isCue) {
+                            this.respawn();
+                        } else {
+                            this.inPocket = true;
+                            playPocketSound();
+                            score += 10;
+                            scoreEl.textContent = score.toString().padStart(3, '0');
+                        }
+                    }
+                });
+            }
+
+            respawn() {
+                this.x = width * 0.25;
+                this.y = height / 2;
+                this.vx = 0;
+                this.vy = 0;
+                this.scale = 1;
+                this.inPocket = false;
+            }
+        }
+
+        function init() {
+            width = canvas.width = canvas.offsetWidth;
+            height = canvas.height = canvas.offsetHeight;
+            balls = [];
+            score = 0;
+            scoreEl.textContent = '000';
+
+            cueBall = new Ball(width * 0.25, height / 2, '#fff', '', true);
+            balls.push(cueBall);
+
+            const startX = width * 0.65;
+            const startY = height / 2;
+            const colors = ['#f1c40f', '#2980b9', '#e74c3c', '#9b59b6', '#e67e22', '#27ae60', '#34495e', '#d35400', '#000'];
+            
+            let count = 1;
+            for (let i = 0; i < 5; i++) {
+                for (let j = 0; j <= i; j++) {
+                    const x = startX + i * (BALL_RADIUS * 2.1);
+                    const y = startY - (i * BALL_RADIUS * 1.05) + (j * BALL_RADIUS * 2.1);
+                    balls.push(new Ball(x, y, colors[(count-1) % colors.length], count));
+                    count++;
+                }
+            }
+        }
+
+        function resolveCollision(b1, b2) {
+            const dx = b2.x - b1.x;
+            const dy = b2.y - b1.y;
+            const distance = Math.hypot(dx, dy);
+
+            if (distance < BALL_RADIUS * 2) {
+                const overlap = BALL_RADIUS * 2 - distance;
+                const nx = dx / distance;
+                const ny = dy / distance;
+                b1.x -= nx * overlap / 2;
+                b1.y -= ny * overlap / 2;
+                b2.x += nx * overlap / 2;
+                b2.y += ny * overlap / 2;
+
+                const vRelativeX = b1.vx - b2.vx;
+                const vRelativeY = b1.vy - b2.vy;
+                const speed = vRelativeX * nx + vRelativeY * ny;
+
+                if (speed > 0) {
+                    const impulse = 1 * speed;
+                    b1.vx -= impulse * nx;
+                    b1.vy -= impulse * ny;
+                    b2.vx += impulse * nx;
+                    b2.vy += impulse * ny;
+                    
+                    if (speed > 0.5) playHitSound(speed / 10);
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Table pattern (Cloth texture effect)
+            ctx.fillStyle = 'rgba(0,0,0,0.05)';
+            for(let i=0; i<width; i+=4) {
+                ctx.fillRect(i, 0, 1, height);
+            }
+
+            for (let i = 0; i < balls.length; i++) {
+                const b1 = balls[i];
+                if (b1.inPocket && b1.scale < 0.1) continue;
+                for (let j = i + 1; j < balls.length; j++) {
+                    const b2 = balls[j];
+                    if (b2.inPocket) continue;
+                    resolveCollision(b1, b2);
+                }
+                b1.update();
+                b1.draw();
+            }
+
+            if (isDragging) {
+                const dx = dragStart.x - dragEnd.x;
+                const dy = dragStart.y - dragEnd.y;
+                const dist = Math.hypot(dx, dy);
+                const power = Math.min(dist / 10, 25);
+                
+                powerMeter.style.height = `${(power / 25) * 100}%`;
+                powerMeter.style.boxShadow = `0 0 15px rgba(${power*10}, ${255-power*10}, 0, 0.5)`;
+
+                // Trajectory line
+                ctx.beginPath();
+                ctx.moveTo(cueBall.x, cueBall.y);
+                ctx.lineTo(cueBall.x + dx * 2, cueBall.y + dy * 2);
+                ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                ctx.setLineDash([5, 8]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Aiming arrow
+                const angle = Math.atan2(dy, dx);
+                ctx.save();
+                ctx.translate(cueBall.x, cueBall.y);
+                ctx.rotate(angle);
+                ctx.beginPath();
+                ctx.moveTo(BALL_RADIUS + 5, 0);
+                ctx.lineTo(BALL_RADIUS + 15 + power * 2, 0);
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.restore();
+            } else {
+                powerMeter.style.height = '0%';
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        function handleStart(e) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = ((e.touches ? e.touches[0].clientX : e.clientX) - rect.left) * (width / rect.width);
+            const y = ((e.touches ? e.touches[0].clientY : e.clientY) - rect.top) * (height / rect.height);
+            
+            const dist = Math.hypot(x - cueBall.x, y - cueBall.y);
+            if (dist < 50 && cueBall.vx === 0 && cueBall.vy === 0) {
+                isDragging = true;
+                dragStart = { x, y };
+                dragEnd = { x, y };
+            }
+        }
+
+        function handleMove(e) {
+            if (!isDragging) return;
+            const rect = canvas.getBoundingClientRect();
+            dragEnd.x = ((e.touches ? e.touches[0].clientX : e.clientX) - rect.left) * (width / rect.width);
+            dragEnd.y = ((e.touches ? e.touches[0].clientY : e.clientY) - rect.top) * (height / rect.height);
+        }
+
+        function handleEnd() {
+            if (!isDragging) return;
+            isDragging = false;
+            
+            const dx = dragStart.x - dragEnd.x;
+            const dy = dragStart.y - dragEnd.y;
+            const power = Math.min(Math.hypot(dx, dy) / 10, 25);
+            const angle = Math.atan2(dy, dx);
+            
+            if (power > 1) {
+                cueBall.vx = Math.cos(angle) * power;
+                cueBall.vy = Math.sin(angle) * power;
+                playHitSound(power / 5);
+            }
+        }
+
+        function toggleMusic() {
+            const btn = document.getElementById('music-btn');
+            musicEnabled = !musicEnabled;
+            btn.classList.toggle('off', !musicEnabled);
+            // 这里可以添加真实的 BGM 播放逻辑
+        }
+
+        function resetGame() { init(); }
+
+        window.addEventListener('mousedown', handleStart);
+        window.addEventListener('mousemove', handleMove);
+        window.addEventListener('mouseup', handleEnd);
+        window.addEventListener('touchstart', handleStart, {passive: false});
+        window.addEventListener('touchmove', handleMove, {passive: false});
+        window.addEventListener('touchend', handleEnd, {passive: false});
+        window.addEventListener('resize', init);
+
+        init();
+        animate();
+    </script>
+</body>
+</html>

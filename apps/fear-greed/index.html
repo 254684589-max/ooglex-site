@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>市场恐慌与贪婪指数 · 每日追踪</title>
+<meta name="description" content="追踪 CNN 市场恐慌与贪婪指数（Fear & Greed），含仪表盘、7 大驱动指标与历史曲线，数据每日自动更新。">
+<link rel="canonical" href="https://www.ooglex.com/apps/fear-greed/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="市场恐慌与贪婪指数 · 每日追踪">
+<meta property="og:description" content="追踪 CNN 市场恐慌与贪婪指数（Fear & Greed），含仪表盘、7 大驱动指标与历史曲线，数据每日自动更新。">
+<meta property="og:url" content="https://www.ooglex.com/apps/fear-greed/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#0b0e14; --card:#161a22; --line:rgba(255,255,255,0.09);
+    --text:#eaf0f3; --dim:#98a3b2; --accent:#39c2c9;
+    --fear2:#d3403b; --fear:#e8833a; --neutral:#e4b53d; --greed:#7cb851; --greed2:#3a9d5d;
+    --track:rgba(255,255,255,0.06);
+  }
+  body {
+    min-height:100vh; color:var(--text);
+    background:
+      radial-gradient(820px 420px at 12% -8%, rgba(57,194,201,0.14), transparent 60%),
+      radial-gradient(760px 400px at 92% 2%, rgba(124,184,81,0.10), transparent 60%),
+      radial-gradient(820px 540px at 50% 120%, rgba(211,64,59,0.08), transparent 60%),
+      var(--bg);
+    background-attachment:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    line-height:1.55; overflow-x:hidden;
+  }
+  .page { max-width:680px; margin:0 auto; padding:18px 16px 72px; }
+  header { display:flex; align-items:center; margin-bottom:12px; }
+  header a { color:var(--accent); text-decoration:none; font-size:0.95rem; }
+  header a:hover { opacity:.78; }
+
+  .title { text-align:center; margin-bottom:14px; }
+  .title h1 { font-size:1.85rem; letter-spacing:1px; font-weight:800;
+    background:linear-gradient(92deg,#7fe3e8,#39c2c9 55%,#7cb851);
+    -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .title p { color:var(--dim); margin-top:6px; font-size:0.9rem; }
+  .statusrow { display:flex; justify-content:center; gap:9px; margin-top:9px; }
+  .status { display:inline-flex; align-items:center; gap:7px; font-size:0.78rem; padding:4px 13px;
+    border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,0.03); }
+  .status .sdot { width:8px; height:8px; border-radius:50%; }
+  .status.live { color:#7fe3e8; } .status.live .sdot { background:var(--accent); animation:pulse 1.9s infinite; }
+  .status.demo { color:#f4c66e; } .status.demo .sdot { background:#caa64a; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(57,194,201,.5);} 70%{box-shadow:0 0 0 7px rgba(57,194,201,0);} 100%{box-shadow:0 0 0 0 rgba(57,194,201,0);} }
+
+  .glass { background:linear-gradient(180deg, rgba(24,28,38,.94), rgba(18,21,29,.94));
+    border:1px solid var(--line); border-radius:18px;
+    box-shadow:0 24px 60px -34px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.05); }
+
+  .gaugecard { padding:14px 16px 18px; text-align:center; margin-bottom:14px; }
+  .gauge { width:100%; max-width:360px; height:auto; display:block; margin:0 auto; }
+  .gauge .tick { fill:var(--dim); font-size:12px; }
+  .gauge .needle { filter:drop-shadow(0 2px 4px rgba(0,0,0,.5)); }
+  .reading { margin-top:-6px; }
+  .reading .num { font-size:3.2rem; font-weight:800; line-height:1; font-variant-numeric:tabular-nums; }
+  .reading .lab { font-size:1.1rem; font-weight:700; letter-spacing:2px; margin-top:2px; }
+  .reading .sub { color:var(--dim); font-size:0.82rem; margin-top:4px; }
+
+  .refs { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:14px; }
+  .ref { padding:10px 6px; border-radius:13px; text-align:center; background:var(--card); border:1px solid var(--line); }
+  .ref .k { color:var(--dim); font-size:0.74rem; }
+  .ref .v { font-size:1.5rem; font-weight:800; font-variant-numeric:tabular-nums; line-height:1.2; }
+  .ref .r { font-size:0.72rem; font-weight:600; }
+
+  .sec-h { font-size:0.92rem; color:var(--dim); margin:4px 2px 9px; letter-spacing:1px; }
+  .histcard { padding:14px 14px 10px; margin-bottom:14px; }
+  .spark { width:100%; height:auto; display:block; }
+
+  .indcard { padding:6px 14px; margin-bottom:14px; }
+  .ind { padding:11px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+  .ind:last-child { border-bottom:none; }
+  .ind .top { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+  .ind .nm { font-weight:700; font-size:0.95rem; }
+  .ind .nm small { color:var(--dim); font-weight:400; font-size:0.74rem; margin-left:6px; }
+  .ind .rt { font-size:0.82rem; font-weight:700; white-space:nowrap; }
+  .ind .barwrap { position:relative; height:8px; border-radius:6px; margin-top:9px;
+    background:linear-gradient(90deg,var(--fear2) 0%,var(--fear) 24%,var(--neutral) 46%,var(--greed) 66%,var(--greed2) 100%); opacity:.92; }
+  .ind .mk { position:absolute; top:50%; width:14px; height:14px; border-radius:50%; background:#fff;
+    border:2px solid #0b0e14; transform:translate(-50%,-50%); box-shadow:0 1px 4px rgba(0,0,0,.6);
+    transition:left .6s cubic-bezier(.22,.61,.36,1); }
+
+  footer { margin-top:18px; text-align:center; color:var(--dim); font-size:0.8rem; line-height:1.85; }
+  footer .src b { color:var(--text); font-weight:600; }
+  .empty { text-align:center; color:var(--dim); padding:40px 0; }
+
+  @media (max-width:480px) {
+    .title h1 { font-size:1.5rem; }
+    .reading .num { font-size:2.6rem; }
+    .ref .v { font-size:1.25rem; }
+  }
+</style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="page">
+    <header><a href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a></header>
+    <div class="title">
+      <h1>🧭 市场恐慌与贪婪指数</h1>
+      <p>CNN Fear &amp; Greed · 0 = 极度恐惧 · 100 = 极度贪婪 · 每日自动更新</p>
+      <div class="statusrow"><span class="status" id="status"></span></div>
+    </div>
+
+    <div class="gaugecard glass">
+      <div id="gauge"></div>
+      <div class="reading" id="reading"></div>
+    </div>
+
+    <div class="refs" id="refs"></div>
+
+    <div class="histcard glass" id="histcard" style="display:none">
+      <div class="sec-h">📈 近一年走势</div>
+      <div id="hist"></div>
+    </div>
+
+    <div class="sec-h" style="margin-left:2px">7 个驱动指标</div>
+    <div class="indcard glass" id="indicators"></div>
+
+    <footer id="foot"></footer>
+  </div>
+  <script src="app.js"></script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+
+<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于本页数据</h2><p style="margin:0;opacity:.85">本页追踪 CNN 市场恐慌与贪婪指数（Fear & Greed Index），用 0–100 衡量市场情绪：越低越恐慌、越高越贪婪，并拆解 7 个驱动指标与历史曲线，每日自动更新。它是情绪参考而非买卖信号——极端恐慌或贪婪常被当作反向观察线索，但不应单独作为决策依据。</p></section>
+</body>
+</html>

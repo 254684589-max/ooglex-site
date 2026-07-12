@@ -1,0 +1,16 @@
+[
+  { "name": "SomaFM · Groove Salad", "country": "United States", "state": "San Francisco", "lat": 37.7749, "lng": -122.4194, "url": "https://ice1.somafm.com/groovesalad-128-mp3", "codec": "MP3", "fav": "", "votes": 900 },
+  { "name": "SomaFM · Drone Zone", "country": "United States", "state": "San Francisco", "lat": 37.7749, "lng": -122.4194, "url": "https://ice1.somafm.com/dronezone-128-mp3", "codec": "MP3", "fav": "", "votes": 800 },
+  { "name": "SomaFM · Lush", "country": "United States", "state": "San Francisco", "lat": 37.7749, "lng": -122.4194, "url": "https://ice1.somafm.com/lush-128-mp3", "codec": "MP3", "fav": "", "votes": 700 },
+  { "name": "SomaFM · Secret Agent", "country": "United States", "state": "San Francisco", "lat": 37.7749, "lng": -122.4194, "url": "https://ice1.somafm.com/secretagent-128-mp3", "codec": "MP3", "fav": "", "votes": 650 },
+  { "name": "SomaFM · Indie Pop Rocks", "country": "United States", "state": "San Francisco", "lat": 37.7749, "lng": -122.4194, "url": "https://ice1.somafm.com/indiepop-128-mp3", "codec": "MP3", "fav": "", "votes": 600 },
+  { "name": "SomaFM · Deep Space One", "country": "United States", "state": "San Francisco", "lat": 37.7749, "lng": -122.4194, "url": "https://ice1.somafm.com/deepspaceone-128-mp3", "codec": "MP3", "fav": "", "votes": 580 },
+  { "name": "Radio Paradise · Main Mix", "country": "United States", "state": "California", "lat": 39.7596, "lng": -121.6219, "url": "https://stream.radioparadise.com/mp3-128", "codec": "MP3", "fav": "", "votes": 850 },
+  { "name": "Radio Paradise · Mellow Mix", "country": "United States", "state": "California", "lat": 39.7596, "lng": -121.6219, "url": "https://stream.radioparadise.com/mellow-128", "codec": "MP3", "fav": "", "votes": 620 },
+  { "name": "Radio Paradise · Rock Mix", "country": "United States", "state": "California", "lat": 39.7596, "lng": -121.6219, "url": "https://stream.radioparadise.com/rock-128", "codec": "MP3", "fav": "", "votes": 560 },
+  { "name": "FIP", "country": "France", "state": "Paris", "lat": 48.8566, "lng": 2.3522, "url": "https://icecast.radiofrance.fr/fip-midfi.mp3", "codec": "MP3", "fav": "", "votes": 780 },
+  { "name": "FIP Jazz", "country": "France", "state": "Paris", "lat": 48.8566, "lng": 2.3522, "url": "https://icecast.radiofrance.fr/fipjazz-midfi.mp3", "codec": "MP3", "fav": "", "votes": 520 },
+  { "name": "FIP Rock", "country": "France", "state": "Paris", "lat": 48.8566, "lng": 2.3522, "url": "https://icecast.radiofrance.fr/fiprock-midfi.mp3", "codec": "MP3", "fav": "", "votes": 500 },
+  { "name": "France Inter", "country": "France", "state": "Paris", "lat": 48.8566, "lng": 2.3522, "url": "https://icecast.radiofrance.fr/franceinter-midfi.mp3", "codec": "MP3", "fav": "", "votes": 540 },
+  { "name": "France Musique", "country": "France", "state": "Paris", "lat": 48.8566, "lng": 2.3522, "url": "https://icecast.radiofrance.fr/francemusique-midfi.mp3", "codec": "MP3", "fav": "", "votes": 480 }
+]

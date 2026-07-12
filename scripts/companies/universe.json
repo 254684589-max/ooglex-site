@@ -1,0 +1,3952 @@
+[
+ {
+  "symbol": "FLEX",
+  "nameEn": "Flex Ltd.",
+  "sector": "Technology",
+  "country": "SG",
+  "shares": 366389554
+ },
+ {
+  "symbol": "MRVL",
+  "nameEn": "Marvell Technology, Inc.",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 874800000
+ },
+ {
+  "symbol": "FDXF",
+  "nameEn": "FedEx Freight Holding Company, Inc.",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 126529255
+ },
+ {
+  "symbol": "VEEV",
+  "nameEn": "Veeva Systems Inc.",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 162443291
+ },
+ {
+  "symbol": "CASY",
+  "nameEn": "Casey's General Stores, Inc.",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 37004914
+ },
+ {
+  "symbol": "COHR",
+  "nameEn": "Coherent, Inc.",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 158575118
+ },
+ {
+  "symbol": "LITE",
+  "nameEn": "Lumentum Holdings Inc.",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 77800000
+ },
+ {
+  "symbol": "SATS",
+  "nameEn": "EchoStar Corporation",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 288214948
+ },
+ {
+  "symbol": "VRT",
+  "nameEn": "Vertiv Holdings Co",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 384108816
+ },
+ {
+  "symbol": "CIEN",
+  "nameEn": "Ciena Corporation",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 141552922
+ },
+ {
+  "symbol": "CRH",
+  "nameEn": "CRH plc",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 668200216
+ },
+ {
+  "symbol": "CVNA",
+  "nameEn": "Carvana Co.",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 1096835667
+ },
+ {
+  "symbol": "FIX",
+  "nameEn": "Comfort Systems USA, Inc.",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 35202400
+ },
+ {
+  "symbol": "ARES",
+  "nameEn": "Ares Management Corporation",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 328414956
+ },
+ {
+  "symbol": "SNDK",
+  "nameEn": "Sandisk Corporation",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 148089750
+ },
+ {
+  "symbol": "Q",
+  "nameEn": "Qnity Electronics, Inc.",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 209339207
+ },
+ {
+  "symbol": "APP",
+  "nameEn": "AppLovin Corporation",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 335939527
+ },
+ {
+  "symbol": "EME",
+  "nameEn": "EMCOR Group, Inc.",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 44532568
+ },
+ {
+  "symbol": "HOOD",
+  "nameEn": "Robinhood Markets, Inc.",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 900505104
+ },
+ {
+  "symbol": "IBKR",
+  "nameEn": "Interactive Brokers Group",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 1719878628
+ },
+ {
+  "symbol": "XYZ",
+  "nameEn": "Block, Inc.",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 595181004
+ },
+ {
+  "symbol": "TTD",
+  "nameEn": "The Trade Desk, Inc.",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 470108366
+ },
+ {
+  "symbol": "DDOG",
+  "nameEn": "Datadog",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 355960183
+ },
+ {
+  "symbol": "COIN",
+  "nameEn": "Coinbase Global",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 263459493
+ },
+ {
+  "symbol": "DASH",
+  "nameEn": "DoorDash",
+  "sector": "Communication Services",
+  "country": "US",
+  "shares": 435718720
+ },
+ {
+  "symbol": "EXE",
+  "nameEn": "Expand Energy",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 239229000
+ },
+ {
+  "symbol": "TKO",
+  "nameEn": "TKO Group Holdings",
+  "sector": "Communication Services",
+  "country": "US",
+  "shares": 74967673
+ },
+ {
+  "symbol": "WSM",
+  "nameEn": "Williams-Sonoma",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 117746611
+ },
+ {
+  "symbol": "APO",
+  "nameEn": "Apollo Global Management",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 576517513
+ },
+ {
+  "symbol": "LII",
+  "nameEn": "Lennox International",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 34800000
+ },
+ {
+  "symbol": "WDAY",
+  "nameEn": "Workday, Inc.",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 261942107
+ },
+ {
+  "symbol": "TPL",
+  "nameEn": "Texas Pacific Land Corporation",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 68974400
+ },
+ {
+  "symbol": "DELL",
+  "nameEn": "Dell Technologies",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 664250943
+ },
+ {
+  "symbol": "ERIE",
+  "nameEn": "Erie Indemnity",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 46189068
+ },
+ {
+  "symbol": "PLTR",
+  "nameEn": "Palantir Technologies",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 2296070000
+ },
+ {
+  "symbol": "SW",
+  "nameEn": "Smurfit WestRock",
+  "sector": "Consumer Cyclical",
+  "country": "IE",
+  "shares": 524464050
+ },
+ {
+  "symbol": "CRWD",
+  "nameEn": "CrowdStrike",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 254564820
+ },
+ {
+  "symbol": "GDDY",
+  "nameEn": "GoDaddy",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 132409847
+ },
+ {
+  "symbol": "KKR",
+  "nameEn": "KKR",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 897872941
+ },
+ {
+  "symbol": "VST",
+  "nameEn": "Vistra Corp.",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 337182468
+ },
+ {
+  "symbol": "GEV",
+  "nameEn": "GE Vernova",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 268720000
+ },
+ {
+  "symbol": "SOLV",
+  "nameEn": "Solventum",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 173174712
+ },
+ {
+  "symbol": "DECK",
+  "nameEn": "Deckers Brands",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 138881000
+ },
+ {
+  "symbol": "SMCI",
+  "nameEn": "Supermicro",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 646873000
+ },
+ {
+  "symbol": "BLDR",
+  "nameEn": "Builders FirstSource",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 107560000
+ },
+ {
+  "symbol": "JBL",
+  "nameEn": "Jabil",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 105502622
+ },
+ {
+  "symbol": "UBER",
+  "nameEn": "Uber",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 2035599013
+ },
+ {
+  "symbol": "HUBB",
+  "nameEn": "Hubbell Incorporated",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 52841800
+ },
+ {
+  "symbol": "LULU",
+  "nameEn": "Lululemon Athletica",
+  "sector": "Consumer Cyclical",
+  "country": "CA",
+  "shares": 113553918
+ },
+ {
+  "symbol": "VLTO",
+  "nameEn": "Veralto",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 245599259
+ },
+ {
+  "symbol": "ABNB",
+  "nameEn": "Airbnb",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 593513629
+ },
+ {
+  "symbol": "BX",
+  "nameEn": "Blackstone Inc.",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 1201264408
+ },
+ {
+  "symbol": "KVUE",
+  "nameEn": "Kenvue",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 1920008668
+ },
+ {
+  "symbol": "PANW",
+  "nameEn": "Palo Alto Networks",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 681511324
+ },
+ {
+  "symbol": "AXON",
+  "nameEn": "Axon Enterprise",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 80602077
+ },
+ {
+  "symbol": "FICO",
+  "nameEn": "Fair Isaac",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 23190906
+ },
+ {
+  "symbol": "BG",
+  "nameEn": "Bunge Global",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 194018000
+ },
+ {
+  "symbol": "PODD",
+  "nameEn": "Insulet Corporation",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 69264674
+ },
+ {
+  "symbol": "GEHC",
+  "nameEn": "GE HealthCare",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 454891786
+ },
+ {
+  "symbol": "STLD",
+  "nameEn": "Steel Dynamics",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 144213000
+ },
+ {
+  "symbol": "FSLR",
+  "nameEn": "First Solar",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 107453000
+ },
+ {
+  "symbol": "ACGL",
+  "nameEn": "Arch Capital Group",
+  "sector": "Financial Services",
+  "country": "BM",
+  "shares": 349389588
+ },
+ {
+  "symbol": "TRGP",
+  "nameEn": "Targa Resources",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 214644000
+ },
+ {
+  "symbol": "EQT",
+  "nameEn": "EQT Corporation",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 625478000
+ },
+ {
+  "symbol": "PCG",
+  "nameEn": "PG&E Corporation",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 2202220000
+ },
+ {
+  "symbol": "CSGP",
+  "nameEn": "CoStar Group",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 408355715
+ },
+ {
+  "symbol": "INVH",
+  "nameEn": "Invitation Homes",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 594042000
+ },
+ {
+  "symbol": "KDP",
+  "nameEn": "Keurig Dr Pepper",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 1360559471
+ },
+ {
+  "symbol": "ON",
+  "nameEn": "ON Semiconductor",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 391903000
+ },
+ {
+  "symbol": "VICI",
+  "nameEn": "Vici Properties",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 1076780187
+ },
+ {
+  "symbol": "WBD",
+  "nameEn": "Warner Bros. Discovery",
+  "sector": "Communication Services",
+  "country": "US",
+  "shares": 2507136702
+ },
+ {
+  "symbol": "CPT",
+  "nameEn": "Camden Property Trust",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 100520000
+ },
+ {
+  "symbol": "NDSN",
+  "nameEn": "Nordson Corporation",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 55717948
+ },
+ {
+  "symbol": "CEG",
+  "nameEn": "Constellation Energy",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 359102020
+ },
+ {
+  "symbol": "FDS",
+  "nameEn": "FactSet",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 36431127
+ },
+ {
+  "symbol": "BRO",
+  "nameEn": "Brown & Brown",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 338948000
+ },
+ {
+  "symbol": "TECH",
+  "nameEn": "Bio-Techne",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 156568751
+ },
+ {
+  "symbol": "MRNA",
+  "nameEn": "Moderna",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 396786000
+ },
+ {
+  "symbol": "CRL",
+  "nameEn": "Charles River Laboratories",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 48167730
+ },
+ {
+  "symbol": "PTC",
+  "nameEn": "PTC Inc.",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 115506000
+ },
+ {
+  "symbol": "GNRC",
+  "nameEn": "Generac",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 58868681
+ },
+ {
+  "symbol": "NXPI",
+  "nameEn": "NXP Semiconductors",
+  "sector": "Technology",
+  "country": "NL",
+  "shares": 252471079
+ },
+ {
+  "symbol": "MPWR",
+  "nameEn": "Monolithic Power Systems",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 49130000
+ },
+ {
+  "symbol": "TRMB",
+  "nameEn": "Trimble Inc.",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 233111519
+ },
+ {
+  "symbol": "TSLA",
+  "nameEn": "Tesla, Inc.",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 3755720000
+ },
+ {
+  "symbol": "TER",
+  "nameEn": "Teradyne",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 156542162
+ },
+ {
+  "symbol": "TDY",
+  "nameEn": "Teledyne Technologies",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 46329100
+ },
+ {
+  "symbol": "TYL",
+  "nameEn": "Tyler Technologies",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 42167500
+ },
+ {
+  "symbol": "WST",
+  "nameEn": "West Pharmaceutical Services",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 70647600
+ },
+ {
+  "symbol": "DPZ",
+  "nameEn": "Domino's",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 33261899
+ },
+ {
+  "symbol": "DXCM",
+  "nameEn": "Dexcom",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 385872977
+ },
+ {
+  "symbol": "CARR",
+  "nameEn": "Carrier Global",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 830580423
+ },
+ {
+  "symbol": "OTIS",
+  "nameEn": "Otis Worldwide",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 383716076
+ },
+ {
+  "symbol": "IR",
+  "nameEn": "Ingersoll Rand",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 391336834
+ },
+ {
+  "symbol": "LYV",
+  "nameEn": "Live Nation Entertainment",
+  "sector": "Communication Services",
+  "country": "US",
+  "shares": 232712799
+ },
+ {
+  "symbol": "STE",
+  "nameEn": "Steris",
+  "sector": "Healthcare",
+  "country": "IE",
+  "shares": 97457700
+ },
+ {
+  "symbol": "ZBRA",
+  "nameEn": "Zebra Technologies",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 47633400
+ },
+ {
+  "symbol": "ODFL",
+  "nameEn": "Old Dominion",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 207968283
+ },
+ {
+  "symbol": "WRB",
+  "nameEn": "W. R. Berkley Corporation",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 372277000
+ },
+ {
+  "symbol": "NOW",
+  "nameEn": "ServiceNow",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 1031308000
+ },
+ {
+  "symbol": "LVS",
+  "nameEn": "Las Vegas Sands",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 662637325
+ },
+ {
+  "symbol": "NVR",
+  "nameEn": "NVR, Inc.",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 2699292
+ },
+ {
+  "symbol": "CDW",
+  "nameEn": "CDW",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 127753451
+ },
+ {
+  "symbol": "IEX",
+  "nameEn": "IDEX Corporation",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 74015052
+ },
+ {
+  "symbol": "LDOS",
+  "nameEn": "Leidos",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 125785466
+ },
+ {
+  "symbol": "TROW",
+  "nameEn": "T. Rowe Price",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 214267000
+ },
+ {
+  "symbol": "TMUS",
+  "nameEn": "T-Mobile US",
+  "sector": "Communication Services",
+  "country": "US",
+  "shares": 1082204717
+ },
+ {
+  "symbol": "AMCR",
+  "nameEn": "Amcor",
+  "sector": "Consumer Cyclical",
+  "country": "GB",
+  "shares": 462345690
+ },
+ {
+  "symbol": "CTVA",
+  "nameEn": "Corteva",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 668820000
+ },
+ {
+  "symbol": "DD",
+  "nameEn": "DuPont",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 135019400
+ },
+ {
+  "symbol": "DOW",
+  "nameEn": "Dow Inc.",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 720741000
+ },
+ {
+  "symbol": "FOXA",
+  "nameEn": "Fox Corporation (Class A)",
+  "sector": "Communication Services",
+  "country": "US",
+  "shares": 438504843
+ },
+ {
+  "symbol": "WAB",
+  "nameEn": "Wabtec",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 169677346
+ },
+ {
+  "symbol": "ATO",
+  "nameEn": "Atmos Energy",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 166919822
+ },
+ {
+  "symbol": "FANG",
+  "nameEn": "Diamondback Energy",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 281313000
+ },
+ {
+  "symbol": "JKHY",
+  "nameEn": "Jack Henry & Associates",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 71050780
+ },
+ {
+  "symbol": "KEYS",
+  "nameEn": "Keysight Technologies",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 170895368
+ },
+ {
+  "symbol": "FTNT",
+  "nameEn": "Fortinet",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 732648391
+ },
+ {
+  "symbol": "ROL",
+  "nameEn": "Rollins, Inc.",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 481464000
+ },
+ {
+  "symbol": "ANET",
+  "nameEn": "Arista Networks",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 1259169438
+ },
+ {
+  "symbol": "CPRT",
+  "nameEn": "Copart",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 925811482
+ },
+ {
+  "symbol": "CPAY",
+  "nameEn": "Corpay",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 65361919
+ },
+ {
+  "symbol": "BR",
+  "nameEn": "Broadridge Financial Solutions",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 115658297
+ },
+ {
+  "symbol": "EVRG",
+  "nameEn": "Evergy",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 230513000
+ },
+ {
+  "symbol": "MSCI",
+  "nameEn": "MSCI",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 72800000
+ },
+ {
+  "symbol": "TTWO",
+  "nameEn": "Take-Two Interactive",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 185666663
+ },
+ {
+  "symbol": "HII",
+  "nameEn": "Huntington Ingalls Industries",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 39404000
+ },
+ {
+  "symbol": "NCLH",
+  "nameEn": "Norwegian Cruise Line Holdings",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 459110000
+ },
+ {
+  "symbol": "CDNS",
+  "nameEn": "Cadence Design Systems",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 275816000
+ },
+ {
+  "symbol": "SBAC",
+  "nameEn": "SBA Communications",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 106063017
+ },
+ {
+  "symbol": "IQV",
+  "nameEn": "IQVIA",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 166900000
+ },
+ {
+  "symbol": "AOS",
+  "nameEn": "A. O. Smith",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 139706795
+ },
+ {
+  "symbol": "MGM",
+  "nameEn": "MGM Resorts",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 255851000
+ },
+ {
+  "symbol": "PKG",
+  "nameEn": "Packaging Corporation of America",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 89098700
+ },
+ {
+  "symbol": "RMD",
+  "nameEn": "ResMed",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 145056384
+ },
+ {
+  "symbol": "BKR",
+  "nameEn": "Baker Hughes",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 992068697
+ },
+ {
+  "symbol": "ALGN",
+  "nameEn": "Align Technology",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 71618127
+ },
+ {
+  "symbol": "EG",
+  "nameEn": "Everest Group",
+  "sector": "Financial Services",
+  "country": "BM",
+  "shares": 39571602
+ },
+ {
+  "symbol": "HLT",
+  "nameEn": "Hilton Worldwide",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 227648372
+ },
+ {
+  "symbol": "IT",
+  "nameEn": "Gartner",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 66951899
+ },
+ {
+  "symbol": "AMD",
+  "nameEn": "Advanced Micro Devices",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 1630600000
+ },
+ {
+  "symbol": "ARE",
+  "nameEn": "Alexandria Real Estate Equities",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 174269000
+ },
+ {
+  "symbol": "RJF",
+  "nameEn": "Raymond James Financial",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 194883034
+ },
+ {
+  "symbol": "SRE",
+  "nameEn": "Sempra",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 653690000
+ },
+ {
+  "symbol": "SNPS",
+  "nameEn": "Synopsys",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 191479325
+ },
+ {
+  "symbol": "REG",
+  "nameEn": "Regency Centers",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 183096790
+ },
+ {
+  "symbol": "CBOE",
+  "nameEn": "Cboe Global Markets",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 104654000
+ },
+ {
+  "symbol": "INCY",
+  "nameEn": "Incyte",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 199782155
+ },
+ {
+  "symbol": "IDXX",
+  "nameEn": "Idexx Laboratories",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 78883000
+ },
+ {
+  "symbol": "MAA",
+  "nameEn": "Mid-America Apartment Communities",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 116384802
+ },
+ {
+  "symbol": "D",
+  "nameEn": "Dominion Energy",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 879512484
+ },
+ {
+  "symbol": "HWM",
+  "nameEn": "Howmet Aerospace",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 400107483
+ },
+ {
+  "symbol": "COO",
+  "nameEn": "Cooper Companies (The)",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 195031000
+ },
+ {
+  "symbol": "CHTR",
+  "nameEn": "Charter Communications",
+  "sector": "Communication Services",
+  "country": "US",
+  "shares": 141178369
+ },
+ {
+  "symbol": "MTD",
+  "nameEn": "Mettler Toledo",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 20207601
+ },
+ {
+  "symbol": "ALB",
+  "nameEn": "Albemarle Corporation",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 117934651
+ },
+ {
+  "symbol": "FTV",
+  "nameEn": "Fortive",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 304861021
+ },
+ {
+  "symbol": "LNT",
+  "nameEn": "Alliant Energy",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 258277000
+ },
+ {
+  "symbol": "TDG",
+  "nameEn": "TransDigm Group",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 55933600
+ },
+ {
+  "symbol": "AJG",
+  "nameEn": "Arthur J. Gallagher & Co.",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 256942000
+ },
+ {
+  "symbol": "DLR",
+  "nameEn": "Digital Realty",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 351406000
+ },
+ {
+  "symbol": "GPN",
+  "nameEn": "Global Payments",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 236695114
+ },
+ {
+  "symbol": "ULTA",
+  "nameEn": "Ulta Beauty",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 42989311
+ },
+ {
+  "symbol": "CNC",
+  "nameEn": "Centene Corporation",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 493797000
+ },
+ {
+  "symbol": "UDR",
+  "nameEn": "UDR, Inc.",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 324916000
+ },
+ {
+  "symbol": "AWK",
+  "nameEn": "American Water Works",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 195280521
+ },
+ {
+  "symbol": "FRT",
+  "nameEn": "Federal Realty Investment Trust",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 86389197
+ },
+ {
+  "symbol": "CFG",
+  "nameEn": "Citizens Financial Group",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 422882000
+ },
+ {
+  "symbol": "EXR",
+  "nameEn": "Extra Space Storage",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 211260936
+ },
+ {
+  "symbol": "WTW",
+  "nameEn": "Willis Towers Watson",
+  "sector": "Financial Services",
+  "country": "GB",
+  "shares": 94447976
+ },
+ {
+  "symbol": "CHD",
+  "nameEn": "Church & Dwight",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 236943602
+ },
+ {
+  "symbol": "SYF",
+  "nameEn": "Synchrony Financial",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 336370242
+ },
+ {
+  "symbol": "HPE",
+  "nameEn": "Hewlett Packard Enterprise",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 1324203521
+ },
+ {
+  "symbol": "VRSK",
+  "nameEn": "Verisk Analytics",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 131021840
+ },
+ {
+  "symbol": "UAL",
+  "nameEn": "United Airlines Holdings",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 324570000
+ },
+ {
+  "symbol": "PYPL",
+  "nameEn": "PayPal",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 882105493
+ },
+ {
+  "symbol": "KHC",
+  "nameEn": "Kraft Heinz",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 1185777638
+ },
+ {
+  "symbol": "JBHT",
+  "nameEn": "J.B. Hunt",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 94299203
+ },
+ {
+  "symbol": "O",
+  "nameEn": "Realty Income",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 932492530
+ },
+ {
+  "symbol": "EQIX",
+  "nameEn": "Equinix",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 98624200
+ },
+ {
+  "symbol": "HSIC",
+  "nameEn": "Henry Schein",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 113917000
+ },
+ {
+  "symbol": "SWKS",
+  "nameEn": "Skyworks Solutions",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 150405963
+ },
+ {
+  "symbol": "HCA",
+  "nameEn": "HCA Healthcare",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 221839800
+ },
+ {
+  "symbol": "RCL",
+  "nameEn": "Royal Caribbean Group",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 268195000
+ },
+ {
+  "symbol": "UHS",
+  "nameEn": "Universal Health Services",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 62606336
+ },
+ {
+  "symbol": "URI",
+  "nameEn": "United Rentals",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 62646600
+ },
+ {
+  "symbol": "MLM",
+  "nameEn": "Martin Marietta Materials",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 60045900
+ },
+ {
+  "symbol": "AVGO",
+  "nameEn": "Broadcom",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 4757580000
+ },
+ {
+  "symbol": "GOOGL",
+  "nameEn": "Alphabet Inc. (Class A)",
+  "sector": "Communication Services",
+  "country": "US",
+  "shares": 12094870293
+ },
+ {
+  "symbol": "ESS",
+  "nameEn": "Essex Property Trust",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 64261739
+ },
+ {
+  "symbol": "TSCO",
+  "nameEn": "Tractor Supply",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 524450000
+ },
+ {
+  "symbol": "META",
+  "nameEn": "Meta Platforms",
+  "sector": "Communication Services",
+  "country": "US",
+  "shares": 2538423306
+ },
+ {
+  "symbol": "ALLE",
+  "nameEn": "Allegion",
+  "sector": "Industrials",
+  "country": "IE",
+  "shares": 85935861
+ },
+ {
+  "symbol": "AME",
+  "nameEn": "Ametek",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 229203000
+ },
+ {
+  "symbol": "VRTX",
+  "nameEn": "Vertex Pharmaceuticals",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 253805417
+ },
+ {
+  "symbol": "DAL",
+  "nameEn": "Delta Air Lines",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 656994340
+ },
+ {
+  "symbol": "NWSA",
+  "nameEn": "News Corp (Class A)",
+  "sector": "Communication Services",
+  "country": "US",
+  "shares": 561331887
+ },
+ {
+  "symbol": "ZTS",
+  "nameEn": "Zoetis",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 419228118
+ },
+ {
+  "symbol": "GM",
+  "nameEn": "General Motors",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 901665195
+ },
+ {
+  "symbol": "REGN",
+  "nameEn": "Regeneron Pharmaceuticals",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 103022000
+ },
+ {
+  "symbol": "ABBV",
+  "nameEn": "AbbVie",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 1766792821
+ },
+ {
+  "symbol": "APTV",
+  "nameEn": "Aptiv",
+  "sector": "Consumer Cyclical",
+  "country": "IE",
+  "shares": 211620527
+ },
+ {
+  "symbol": "GRMN",
+  "nameEn": "Garmin",
+  "sector": "Technology",
+  "country": "CH",
+  "shares": 192856206
+ },
+ {
+  "symbol": "HUM",
+  "nameEn": "Humana",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 120061500
+ },
+ {
+  "symbol": "DG",
+  "nameEn": "Dollar General",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 220586647
+ },
+ {
+  "symbol": "MDLZ",
+  "nameEn": "Mondelez International",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 1283649766
+ },
+ {
+  "symbol": "PNR",
+  "nameEn": "Pentair",
+  "sector": "Industrials",
+  "country": "GB",
+  "shares": 161605541
+ },
+ {
+  "symbol": "LYB",
+  "nameEn": "LyondellBasell",
+  "sector": "Basic Materials",
+  "country": "NL",
+  "shares": 322784773
+ },
+ {
+  "symbol": "STX",
+  "nameEn": "Seagate Technology",
+  "sector": "Technology",
+  "country": "IE",
+  "shares": 224229000
+ },
+ {
+  "symbol": "LRCX",
+  "nameEn": "Lam Research",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 1250570000
+ },
+ {
+  "symbol": "MNST",
+  "nameEn": "Monster Beverage",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 978008110
+ },
+ {
+  "symbol": "KMI",
+  "nameEn": "Kinder Morgan",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 2224825757
+ },
+ {
+  "symbol": "PSX",
+  "nameEn": "Phillips 66",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 400935020
+ },
+ {
+  "symbol": "CCI",
+  "nameEn": "Crown Castle",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 436451983
+ },
+ {
+  "symbol": "DLTR",
+  "nameEn": "Dollar Tree",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 192175000
+ },
+ {
+  "symbol": "XYL",
+  "nameEn": "Xylem Inc.",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 237693493
+ },
+ {
+  "symbol": "TEL",
+  "nameEn": "TE Connectivity",
+  "sector": "Technology",
+  "country": "IE",
+  "shares": 291895799
+ },
+ {
+  "symbol": "MOS",
+  "nameEn": "Mosaic Company (The)",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 317846644
+ },
+ {
+  "symbol": "ACN",
+  "nameEn": "Accenture",
+  "sector": "Technology",
+  "country": "IE",
+  "shares": 611942109
+ },
+ {
+  "symbol": "FCX",
+  "nameEn": "Freeport-McMoRan",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 1437559865
+ },
+ {
+  "symbol": "MPC",
+  "nameEn": "Marathon Petroleum",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 291937000
+ },
+ {
+  "symbol": "CMG",
+  "nameEn": "Chipotle Mexican Grill",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 1282734000
+ },
+ {
+  "symbol": "BLK",
+  "nameEn": "BlackRock",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 155233989
+ },
+ {
+  "symbol": "EW",
+  "nameEn": "Edwards Lifesciences",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 575800000
+ },
+ {
+  "symbol": "FFIV",
+  "nameEn": "F5, Inc.",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 56419247
+ },
+ {
+  "symbol": "NFLX",
+  "nameEn": "Netflix",
+  "sector": "Communication Services",
+  "country": "US",
+  "shares": 4210800000
+ },
+ {
+  "symbol": "TT",
+  "nameEn": "Trane Technologies",
+  "sector": "Industrials",
+  "country": "IE",
+  "shares": 221055477
+ },
+ {
+  "symbol": "JCI",
+  "nameEn": "Johnson Controls",
+  "sector": "Industrials",
+  "country": "IE",
+  "shares": 610115603
+ },
+ {
+  "symbol": "CB",
+  "nameEn": "Chubb Limited",
+  "sector": "Financial Services",
+  "country": "CH",
+  "shares": 387860106
+ },
+ {
+  "symbol": "OKE",
+  "nameEn": "ONEOK",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 630032852
+ },
+ {
+  "symbol": "BRK-B",
+  "nameEn": "Berkshire Hathaway",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 2156853661
+ },
+ {
+  "symbol": "NRG",
+  "nameEn": "NRG Energy",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 210986470
+ },
+ {
+  "symbol": "ROP",
+  "nameEn": "Roper Technologies",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 100917359
+ },
+ {
+  "symbol": "ROST",
+  "nameEn": "Ross Stores",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 320781076
+ },
+ {
+  "symbol": "V",
+  "nameEn": "Visa Inc.",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 1916826361
+ },
+ {
+  "symbol": "BKNG",
+  "nameEn": "Booking Holdings",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 774878436
+ },
+ {
+  "symbol": "ES",
+  "nameEn": "Eversource Energy",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 376080000
+ },
+ {
+  "symbol": "PWR",
+  "nameEn": "Quanta Services",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 150060000
+ },
+ {
+  "symbol": "WDC",
+  "nameEn": "Western Digital",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 344682000
+ },
+ {
+  "symbol": "ORLY",
+  "nameEn": "O'Reilly Auto Parts",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 828715079
+ },
+ {
+  "symbol": "HRL",
+  "nameEn": "Hormel Foods",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 550314959
+ },
+ {
+  "symbol": "VTR",
+  "nameEn": "Ventas",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 486169723
+ },
+ {
+  "symbol": "WELL",
+  "nameEn": "Welltower",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 705914000
+ },
+ {
+  "symbol": "IRM",
+  "nameEn": "Iron Mountain",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 297524681
+ },
+ {
+  "symbol": "RSG",
+  "nameEn": "Republic Services",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 307664087
+ },
+ {
+  "symbol": "WYNN",
+  "nameEn": "Wynn Resorts",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 103787000
+ },
+ {
+  "symbol": "SJM",
+  "nameEn": "J.M. Smucker Company (The)",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 106662000
+ },
+ {
+  "symbol": "WEC",
+  "nameEn": "WEC Energy Group",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 325725678
+ },
+ {
+  "symbol": "NDAQ",
+  "nameEn": "Nasdaq, Inc.",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 565541000
+ },
+ {
+  "symbol": "APH",
+  "nameEn": "Amphenol",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 1230230000
+ },
+ {
+  "symbol": "LHX",
+  "nameEn": "L3Harris",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 186295000
+ },
+ {
+  "symbol": "CRM",
+  "nameEn": "Salesforce",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 819000000
+ },
+ {
+  "symbol": "FAST",
+  "nameEn": "Fastenal",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 1148040000
+ },
+ {
+  "symbol": "CF",
+  "nameEn": "CF Industries",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 153629000
+ },
+ {
+  "symbol": "IVZ",
+  "nameEn": "Invesco",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 443296629
+ },
+ {
+  "symbol": "DVA",
+  "nameEn": "DaVita",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 64185000
+ },
+ {
+  "symbol": "MA",
+  "nameEn": "Mastercard",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 883583847
+ },
+ {
+  "symbol": "ISRG",
+  "nameEn": "Intuitive Surgical",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 354163000
+ },
+ {
+  "symbol": "DOC",
+  "nameEn": "Healthpeak Properties",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 689420000
+ },
+ {
+  "symbol": "PM",
+  "nameEn": "Philip Morris International",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 1558558846
+ },
+ {
+  "symbol": "AMT",
+  "nameEn": "American Tower",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 465893069
+ },
+ {
+  "symbol": "J",
+  "nameEn": "Jacobs Solutions",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 118080879
+ },
+ {
+  "symbol": "EXPD",
+  "nameEn": "Expeditors International",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 130791133
+ },
+ {
+  "symbol": "EXPE",
+  "nameEn": "Expedia Group",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 114499000
+ },
+ {
+  "symbol": "ICE",
+  "nameEn": "Intercontinental Exchange",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 565512495
+ },
+ {
+  "symbol": "MCHP",
+  "nameEn": "Microchip Technology",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 542079000
+ },
+ {
+  "symbol": "AKAM",
+  "nameEn": "Akamai Technologies",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 145385451
+ },
+ {
+  "symbol": "AIZ",
+  "nameEn": "Assurant",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 49547637
+ },
+ {
+  "symbol": "HST",
+  "nameEn": "Host Hotels & Resorts",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 684879281
+ },
+ {
+  "symbol": "CHRW",
+  "nameEn": "C.H. Robinson",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 117873042
+ },
+ {
+  "symbol": "RL",
+  "nameEn": "Ralph Lauren Corporation",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 60999812
+ },
+ {
+  "symbol": "AVB",
+  "nameEn": "AvalonBay Communities",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 141872000
+ },
+ {
+  "symbol": "CTSH",
+  "nameEn": "Cognizant",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 473869000
+ },
+ {
+  "symbol": "CBRE",
+  "nameEn": "CBRE Group",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 292816579
+ },
+ {
+  "symbol": "FIS",
+  "nameEn": "Fidelity National Information Services",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 516879151
+ },
+ {
+  "symbol": "CME",
+  "nameEn": "CME Group",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 362356000
+ },
+ {
+  "symbol": "KIM",
+  "nameEn": "Kimco Realty",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 674390000
+ },
+ {
+  "symbol": "BXP",
+  "nameEn": "BXP, Inc.",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 159477391
+ },
+ {
+  "symbol": "VRSN",
+  "nameEn": "Verisign",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 91000000
+ },
+ {
+  "symbol": "EL",
+  "nameEn": "Estée Lauder Companies (The)",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 361674642
+ },
+ {
+  "symbol": "AMZN",
+  "nameEn": "Amazon",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 10757100000
+ },
+ {
+  "symbol": "LEN",
+  "nameEn": "Lennar",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 248295271
+ },
+ {
+  "symbol": "AMP",
+  "nameEn": "Ameriprise Financial",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 89897100
+ },
+ {
+  "symbol": "PSA",
+  "nameEn": "Public Storage",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 175579656
+ },
+ {
+  "symbol": "TSN",
+  "nameEn": "Tyson Foods",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 355999457
+ },
+ {
+  "symbol": "STZ",
+  "nameEn": "Constellation Brands",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 171518739
+ },
+ {
+  "symbol": "DHI",
+  "nameEn": "D. R. Horton",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 283579613
+ },
+ {
+  "symbol": "LH",
+  "nameEn": "LabCorp",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 82000000
+ },
+ {
+  "symbol": "TPR",
+  "nameEn": "Tapestry, Inc.",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 202045000
+ },
+ {
+  "symbol": "TMO",
+  "nameEn": "Thermo Fisher Scientific",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 371621000
+ },
+ {
+  "symbol": "GILD",
+  "nameEn": "Gilead Sciences",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 1241569874
+ },
+ {
+  "symbol": "VTRS",
+  "nameEn": "Viatris",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 1164552654
+ },
+ {
+  "symbol": "MTB",
+  "nameEn": "M&T Bank",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 146445060
+ },
+ {
+  "symbol": "BIIB",
+  "nameEn": "Biogen",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 147637000
+ },
+ {
+  "symbol": "PLD",
+  "nameEn": "Prologis",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 932338000
+ },
+ {
+  "symbol": "GEN",
+  "nameEn": "Gen Digital",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 602434000
+ },
+ {
+  "symbol": "MKC",
+  "nameEn": "McCormick & Company",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 268851551
+ },
+ {
+  "symbol": "STT",
+  "nameEn": "State Street Corporation",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 276767033
+ },
+ {
+  "symbol": "VLO",
+  "nameEn": "Valero Energy",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 296933000
+ },
+ {
+  "symbol": "DGX",
+  "nameEn": "Quest Diagnostics",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 110696000
+ },
+ {
+  "symbol": "CMCSA",
+  "nameEn": "Comcast",
+  "sector": "Communication Services",
+  "country": "US",
+  "shares": 3572228552
+ },
+ {
+  "symbol": "TRV",
+  "nameEn": "Travelers Companies (The)",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 212644693
+ },
+ {
+  "symbol": "ELV",
+  "nameEn": "Elevance Health",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 217162380
+ },
+ {
+  "symbol": "EA",
+  "nameEn": "Electronic Arts",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 250751000
+ },
+ {
+  "symbol": "EBAY",
+  "nameEn": "eBay",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 444000000
+ },
+ {
+  "symbol": "GS",
+  "nameEn": "Goldman Sachs",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 295007421
+ },
+ {
+  "symbol": "PFG",
+  "nameEn": "Principal Financial Group",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 216012384
+ },
+ {
+  "symbol": "PRU",
+  "nameEn": "Prudential Financial",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 347325107
+ },
+ {
+  "symbol": "UPS",
+  "nameEn": "United Parcel Service",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 850006288
+ },
+ {
+  "symbol": "SPG",
+  "nameEn": "Simon Property Group",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 324282000
+ },
+ {
+  "symbol": "WAT",
+  "nameEn": "Waters Corporation",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 65183625
+ },
+ {
+  "symbol": "EQR",
+  "nameEn": "Equity Residential",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 374672000
+ },
+ {
+  "symbol": "NVDA",
+  "nameEn": "Nvidia",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 24221000000
+ },
+ {
+  "symbol": "PPL",
+  "nameEn": "PPL Corporation",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 752350362
+ },
+ {
+  "symbol": "COR",
+  "nameEn": "Cencora",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 194561060
+ },
+ {
+  "symbol": "ZBH",
+  "nameEn": "Zimmer Biomet",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 193462482
+ },
+ {
+  "symbol": "FISV",
+  "nameEn": "Fiserv, Inc.",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 533254000
+ },
+ {
+  "symbol": "TXN",
+  "nameEn": "Texas Instruments",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 910093000
+ },
+ {
+  "symbol": "CTAS",
+  "nameEn": "Cintas",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 400136881
+ },
+ {
+  "symbol": "SYK",
+  "nameEn": "Stryker Corporation",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 383360762
+ },
+ {
+  "symbol": "MET",
+  "nameEn": "MetLife",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 643436779
+ },
+ {
+  "symbol": "INTU",
+  "nameEn": "Intuit",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 273537000
+ },
+ {
+  "symbol": "EOG",
+  "nameEn": "EOG Resources",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 532629000
+ },
+ {
+  "symbol": "NI",
+  "nameEn": "NiSource",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 479439245
+ },
+ {
+  "symbol": "DVN",
+  "nameEn": "Devon Energy",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 621431111
+ },
+ {
+  "symbol": "SBUX",
+  "nameEn": "Starbucks",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 1139700000
+ },
+ {
+  "symbol": "A",
+  "nameEn": "Agilent Technologies",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 282432000
+ },
+ {
+  "symbol": "ROK",
+  "nameEn": "Rockwell Automation",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 111274000
+ },
+ {
+  "symbol": "USB",
+  "nameEn": "U.S. Bancorp",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 1552300000
+ },
+ {
+  "symbol": "ADI",
+  "nameEn": "Analog Devices",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 487087040
+ },
+ {
+  "symbol": "PNW",
+  "nameEn": "Pinnacle West",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 121187000
+ },
+ {
+  "symbol": "QCOM",
+  "nameEn": "Qualcomm",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 1054000000
+ },
+ {
+  "symbol": "VMC",
+  "nameEn": "Vulcan Materials Company",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 129755000
+ },
+ {
+  "symbol": "BBY",
+  "nameEn": "Best Buy",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 210767000
+ },
+ {
+  "symbol": "NTAP",
+  "nameEn": "NetApp",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 195920000
+ },
+ {
+  "symbol": "AFL",
+  "nameEn": "Aflac",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 508985000
+ },
+ {
+  "symbol": "MCK",
+  "nameEn": "McKesson Corporation",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 117078000
+ },
+ {
+  "symbol": "CCL",
+  "nameEn": "Carnival",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 1372000000
+ },
+ {
+  "symbol": "DHR",
+  "nameEn": "Danaher Corporation",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 707770627
+ },
+ {
+  "symbol": "AES",
+  "nameEn": "AES Corporation",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 713157713
+ },
+ {
+  "symbol": "PAYX",
+  "nameEn": "Paychex",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 358291000
+ },
+ {
+  "symbol": "WM",
+  "nameEn": "Waste Management",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 401576000
+ },
+ {
+  "symbol": "RF",
+  "nameEn": "Regions Financial Corporation",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 853380000
+ },
+ {
+  "symbol": "COF",
+  "nameEn": "Capital One",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 616020000
+ },
+ {
+  "symbol": "MCO",
+  "nameEn": "Moody's Corporation",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 174700000
+ },
+ {
+  "symbol": "MAR",
+  "nameEn": "Marriott International",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 263688623
+ },
+ {
+  "symbol": "BEN",
+  "nameEn": "Franklin Resources",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 519637162
+ },
+ {
+  "symbol": "NTRS",
+  "nameEn": "Northern Trust",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 185047258
+ },
+ {
+  "symbol": "OMC",
+  "nameEn": "Omnicom Group",
+  "sector": "Communication Services",
+  "country": "US",
+  "shares": 285006196
+ },
+ {
+  "symbol": "CINF",
+  "nameEn": "Cincinnati Financial",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 154687000
+ },
+ {
+  "symbol": "TFC",
+  "nameEn": "Truist Financial",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 1245879275
+ },
+ {
+  "symbol": "FE",
+  "nameEn": "FirstEnergy",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 578431000
+ },
+ {
+  "symbol": "YUM",
+  "nameEn": "Yum! Brands",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 275621202
+ },
+ {
+  "symbol": "KLAC",
+  "nameEn": "KLA Corporation",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 1306280000
+ },
+ {
+  "symbol": "HBAN",
+  "nameEn": "Huntington Bancshares",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 2027130000
+ },
+ {
+  "symbol": "PGR",
+  "nameEn": "Progressive Corporation",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 584337000
+ },
+ {
+  "symbol": "APA",
+  "nameEn": "APA Corporation",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 353470000
+ },
+ {
+  "symbol": "EFX",
+  "nameEn": "Equifax",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 120634602
+ },
+ {
+  "symbol": "SCHW",
+  "nameEn": "Charles Schwab Corporation",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 1739140000
+ },
+ {
+  "symbol": "CAH",
+  "nameEn": "Cardinal Health",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 234206000
+ },
+ {
+  "symbol": "ADBE",
+  "nameEn": "Adobe Inc.",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 397500000
+ },
+ {
+  "symbol": "AZO",
+  "nameEn": "AutoZone",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 16325399
+ },
+ {
+  "symbol": "AON",
+  "nameEn": "Aon",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 213576949
+ },
+ {
+  "symbol": "FITB",
+  "nameEn": "Fifth Third Bancorp",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 906311548
+ },
+ {
+  "symbol": "ALL",
+  "nameEn": "Allstate",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 257421000
+ },
+ {
+  "symbol": "DRI",
+  "nameEn": "Darden Restaurants",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 114535003
+ },
+ {
+  "symbol": "L",
+  "nameEn": "Loews Corporation",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 205768873
+ },
+ {
+  "symbol": "BNY",
+  "nameEn": "Bank of New York Mellon Corp",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 686379000
+ },
+ {
+  "symbol": "AMAT",
+  "nameEn": "Applied Materials",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 793959430
+ },
+ {
+  "symbol": "GLW",
+  "nameEn": "Corning Inc.",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 860637825
+ },
+ {
+  "symbol": "BSX",
+  "nameEn": "Boston Scientific",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 1486355179
+ },
+ {
+  "symbol": "PSKY",
+  "nameEn": "Paramount Skydance Corp",
+  "sector": "Communication Services",
+  "country": "US",
+  "shares": 1087672971
+ },
+ {
+  "symbol": "MU",
+  "nameEn": "Micron Technology",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 1129390000
+ },
+ {
+  "symbol": "LUV",
+  "nameEn": "Southwest Airlines",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 488774000
+ },
+ {
+  "symbol": "UNH",
+  "nameEn": "UnitedHealth Group",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 908144404
+ },
+ {
+  "symbol": "MSFT",
+  "nameEn": "Microsoft",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 7428430000
+ },
+ {
+  "symbol": "KEY",
+  "nameEn": "KeyCorp",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 1079370000
+ },
+ {
+  "symbol": "CSCO",
+  "nameEn": "Cisco",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 3941434665
+ },
+ {
+  "symbol": "COST",
+  "nameEn": "Costco",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 443479000
+ },
+ {
+  "symbol": "MS",
+  "nameEn": "Morgan Stanley",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 1577284817
+ },
+ {
+  "symbol": "LIN",
+  "nameEn": "Linde plc",
+  "sector": "Basic Materials",
+  "country": "GB",
+  "shares": 462600000
+ },
+ {
+  "symbol": "AMGN",
+  "nameEn": "Amgen",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 539708000
+ },
+ {
+  "symbol": "AEE",
+  "nameEn": "Ameren",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 276751616
+ },
+ {
+  "symbol": "ADSK",
+  "nameEn": "Autodesk",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 211145251
+ },
+ {
+  "symbol": "ORCL",
+  "nameEn": "Oracle Corporation",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 2880470000
+ },
+ {
+  "symbol": "GL",
+  "nameEn": "Globe Life",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 77644800
+ },
+ {
+  "symbol": "ECL",
+  "nameEn": "Ecolab",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 281437502
+ },
+ {
+  "symbol": "NKE",
+  "nameEn": "Nike, Inc.",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 1478375505
+ },
+ {
+  "symbol": "C",
+  "nameEn": "Citigroup",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 1705576955
+ },
+ {
+  "symbol": "PNC",
+  "nameEn": "PNC Financial Services",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 401565000
+ },
+ {
+  "symbol": "HD",
+  "nameEn": "Home Depot (The)",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 997116682
+ },
+ {
+  "symbol": "AVY",
+  "nameEn": "Avery Dennison",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 76490385
+ },
+ {
+  "symbol": "MRSH",
+  "nameEn": "Marsh & McLennan Companies, Inc.",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 481795000
+ },
+ {
+  "symbol": "SYY",
+  "nameEn": "Sysco",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 478182608
+ },
+ {
+  "symbol": "MDT",
+  "nameEn": "Medtronic",
+  "sector": "Healthcare",
+  "country": "IE",
+  "shares": 1280050000
+ },
+ {
+  "symbol": "ITW",
+  "nameEn": "Illinois Tool Works",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 287700000
+ },
+ {
+  "symbol": "PH",
+  "nameEn": "Parker Hannifin",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 126086389
+ },
+ {
+  "symbol": "DOV",
+  "nameEn": "Dover Corporation",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 134661414
+ },
+ {
+  "symbol": "TJX",
+  "nameEn": "TJX Companies",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 1104704446
+ },
+ {
+  "symbol": "CNP",
+  "nameEn": "CenterPoint Energy",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 654169480
+ },
+ {
+  "symbol": "RVTY",
+  "nameEn": "Revvity",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 111560000
+ },
+ {
+  "symbol": "APD",
+  "nameEn": "Air Products",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 222680686
+ },
+ {
+  "symbol": "NUE",
+  "nameEn": "Nucor",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 227741000
+ },
+ {
+  "symbol": "BALL",
+  "nameEn": "Ball Corporation",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 266246511
+ },
+ {
+  "symbol": "HAS",
+  "nameEn": "Hasbro",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 141491000
+ },
+ {
+  "symbol": "PHM",
+  "nameEn": "PulteGroup",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 190486353
+ },
+ {
+  "symbol": "LOW",
+  "nameEn": "Lowe's",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 560707000
+ },
+ {
+  "symbol": "T",
+  "nameEn": "AT&T",
+  "sector": "Communication Services",
+  "country": "US",
+  "shares": 6948340000
+ },
+ {
+  "symbol": "VZ",
+  "nameEn": "Verizon",
+  "sector": "Communication Services",
+  "country": "US",
+  "shares": 4175560000
+ },
+ {
+  "symbol": "CAG",
+  "nameEn": "Conagra Brands",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 478437000
+ },
+ {
+  "symbol": "AAPL",
+  "nameEn": "Apple Inc.",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 14687356000
+ },
+ {
+  "symbol": "BF-B",
+  "nameEn": "Brown–Forman",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 466342158
+ },
+ {
+  "symbol": "SNA",
+  "nameEn": "Snap-on",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 51801916
+ },
+ {
+  "symbol": "SWK",
+  "nameEn": "Stanley Black & Decker",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 155455564
+ },
+ {
+  "symbol": "WMT",
+  "nameEn": "Walmart",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 7958080000
+ },
+ {
+  "symbol": "GWW",
+  "nameEn": "W. W. Grainger",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 47213119
+ },
+ {
+  "symbol": "MAS",
+  "nameEn": "Masco",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 201734437
+ },
+ {
+  "symbol": "ADP",
+  "nameEn": "Automatic Data Processing",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 399734282
+ },
+ {
+  "symbol": "FDX",
+  "nameEn": "FedEx",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 238606756
+ },
+ {
+  "symbol": "PCAR",
+  "nameEn": "Paccar",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 526286229
+ },
+ {
+  "symbol": "AIG",
+  "nameEn": "American International Group",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 530206221
+ },
+ {
+  "symbol": "WY",
+  "nameEn": "Weyerhaeuser",
+  "sector": "Real Estate",
+  "country": "US",
+  "shares": 721042609
+ },
+ {
+  "symbol": "TXT",
+  "nameEn": "Textron",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 173889000
+ },
+ {
+  "symbol": "INTC",
+  "nameEn": "Intel",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 5026000000
+ },
+ {
+  "symbol": "TGT",
+  "nameEn": "Target Corporation",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 454191000
+ },
+ {
+  "symbol": "AXP",
+  "nameEn": "American Express",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 682326443
+ },
+ {
+  "symbol": "BAC",
+  "nameEn": "Bank of America",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 7096590651
+ },
+ {
+  "symbol": "CI",
+  "nameEn": "Cigna",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 264531999
+ },
+ {
+  "symbol": "DIS",
+  "nameEn": "Walt Disney Company (The)",
+  "sector": "Communication Services",
+  "country": "US",
+  "shares": 1736511424
+ },
+ {
+  "symbol": "DUK",
+  "nameEn": "Duke Energy",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 779596000
+ },
+ {
+  "symbol": "NEE",
+  "nameEn": "NextEra Energy",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 2085605313
+ },
+ {
+  "symbol": "TAP",
+  "nameEn": "Molson Coors Beverage Company",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 187551351
+ },
+ {
+  "symbol": "WFC",
+  "nameEn": "Wells Fargo",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 3060190000
+ },
+ {
+  "symbol": "IFF",
+  "nameEn": "International Flavors & Fragrances",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 255303473
+ },
+ {
+  "symbol": "JPM",
+  "nameEn": "JPMorgan Chase",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 2679511418
+ },
+ {
+  "symbol": "WMB",
+  "nameEn": "Williams Companies",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 1222998265
+ },
+ {
+  "symbol": "HPQ",
+  "nameEn": "HP Inc.",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 914523000
+ },
+ {
+  "symbol": "GPC",
+  "nameEn": "Genuine Parts Company",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 139122115
+ },
+ {
+  "symbol": "JNJ",
+  "nameEn": "Johnson & Johnson",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 2407216971
+ },
+ {
+  "symbol": "BAX",
+  "nameEn": "Baxter International",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 516469000
+ },
+ {
+  "symbol": "BDX",
+  "nameEn": "Becton Dickinson",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 362295101
+ },
+ {
+  "symbol": "LLY",
+  "nameEn": "Lilly (Eli)",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 941741000
+ },
+ {
+  "symbol": "MCD",
+  "nameEn": "McDonald's",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 710506000
+ },
+ {
+  "symbol": "NEM",
+  "nameEn": "Newmont",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 1067552764
+ },
+ {
+  "symbol": "CLX",
+  "nameEn": "Clorox",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 120921000
+ },
+ {
+  "symbol": "CMI",
+  "nameEn": "Cummins",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 137989067
+ },
+ {
+  "symbol": "EMR",
+  "nameEn": "Emerson Electric",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 560100000
+ },
+ {
+  "symbol": "SHW",
+  "nameEn": "Sherwin-Williams",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 246635621
+ },
+ {
+  "symbol": "ABT",
+  "nameEn": "Abbott Laboratories",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 1741810000
+ },
+ {
+  "symbol": "ADM",
+  "nameEn": "Archer Daniels Midland",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 481956527
+ },
+ {
+  "symbol": "AEP",
+  "nameEn": "American Electric Power",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 544105000
+ },
+ {
+  "symbol": "BA",
+  "nameEn": "Boeing",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 788302000
+ },
+ {
+  "symbol": "BMY",
+  "nameEn": "Bristol Myers Squibb",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 2042070000
+ },
+ {
+  "symbol": "CAT",
+  "nameEn": "Caterpillar Inc.",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 460637000
+ },
+ {
+  "symbol": "CL",
+  "nameEn": "Colgate-Palmolive",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 800189310
+ },
+ {
+  "symbol": "CMS",
+  "nameEn": "CMS Energy",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 308919602
+ },
+ {
+  "symbol": "COP",
+  "nameEn": "ConocoPhillips",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 1218294007
+ },
+ {
+  "symbol": "CSX",
+  "nameEn": "CSX Corporation",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 1858140000
+ },
+ {
+  "symbol": "CVS",
+  "nameEn": "CVS Health",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 1275927307
+ },
+ {
+  "symbol": "CVX",
+  "nameEn": "Chevron Corporation",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 1991600000
+ },
+ {
+  "symbol": "DE",
+  "nameEn": "Deere & Company",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 269937425
+ },
+ {
+  "symbol": "DTE",
+  "nameEn": "DTE Energy",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 208028000
+ },
+ {
+  "symbol": "ED",
+  "nameEn": "Consolidated Edison",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 368529705
+ },
+ {
+  "symbol": "EIX",
+  "nameEn": "Edison International",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 384793941
+ },
+ {
+  "symbol": "ETN",
+  "nameEn": "Eaton Corporation",
+  "sector": "Industrials",
+  "country": "IE",
+  "shares": 388300000
+ },
+ {
+  "symbol": "ETR",
+  "nameEn": "Entergy",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 457887000
+ },
+ {
+  "symbol": "EXC",
+  "nameEn": "Exelon",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 1023208142
+ },
+ {
+  "symbol": "F",
+  "nameEn": "Ford Motor Company",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 3913840554
+ },
+ {
+  "symbol": "GD",
+  "nameEn": "General Dynamics",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 270430187
+ },
+ {
+  "symbol": "GE",
+  "nameEn": "GE Aerospace",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 1044829647
+ },
+ {
+  "symbol": "GIS",
+  "nameEn": "General Mills",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 533681000
+ },
+ {
+  "symbol": "HAL",
+  "nameEn": "Halliburton",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 835397735
+ },
+ {
+  "symbol": "HIG",
+  "nameEn": "Hartford (The)",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 274130820
+ },
+ {
+  "symbol": "HON",
+  "nameEn": "Honeywell",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 633653000
+ },
+ {
+  "symbol": "HSY",
+  "nameEn": "Hershey Company (The)",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 202843383
+ },
+ {
+  "symbol": "IBM",
+  "nameEn": "IBM",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 939885000
+ },
+ {
+  "symbol": "IP",
+  "nameEn": "International Paper",
+  "sector": "Consumer Cyclical",
+  "country": "US",
+  "shares": 529516974
+ },
+ {
+  "symbol": "KMB",
+  "nameEn": "Kimberly-Clark",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 331940357
+ },
+ {
+  "symbol": "KO",
+  "nameEn": "Coca-Cola Company (The)",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 4302482418
+ },
+ {
+  "symbol": "KR",
+  "nameEn": "Kroger",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 616561000
+ },
+ {
+  "symbol": "LMT",
+  "nameEn": "Lockheed Martin",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 230563608
+ },
+ {
+  "symbol": "MMM",
+  "nameEn": "3M",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 521567261
+ },
+ {
+  "symbol": "MO",
+  "nameEn": "Altria",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 1669891235
+ },
+ {
+  "symbol": "MRK",
+  "nameEn": "Merck & Co.",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 2469824415
+ },
+ {
+  "symbol": "MSI",
+  "nameEn": "Motorola Solutions",
+  "sector": "Technology",
+  "country": "US",
+  "shares": 165996000
+ },
+ {
+  "symbol": "NOC",
+  "nameEn": "Northrop Grumman",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 142033000
+ },
+ {
+  "symbol": "NSC",
+  "nameEn": "Norfolk Southern Railway",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 224594001
+ },
+ {
+  "symbol": "OXY",
+  "nameEn": "Occidental Petroleum",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 994634701
+ },
+ {
+  "symbol": "PEG",
+  "nameEn": "Public Service Enterprise Group",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 498321402
+ },
+ {
+  "symbol": "PEP",
+  "nameEn": "PepsiCo",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 1366941005
+ },
+ {
+  "symbol": "PFE",
+  "nameEn": "Pfizer",
+  "sector": "Healthcare",
+  "country": "US",
+  "shares": 5699440000
+ },
+ {
+  "symbol": "PG",
+  "nameEn": "Procter & Gamble",
+  "sector": "Consumer Defensive",
+  "country": "US",
+  "shares": 2328598978
+ },
+ {
+  "symbol": "PPG",
+  "nameEn": "PPG Industries",
+  "sector": "Basic Materials",
+  "country": "US",
+  "shares": 222900000
+ },
+ {
+  "symbol": "RTX",
+  "nameEn": "RTX Corporation",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 1346680000
+ },
+ {
+  "symbol": "SLB",
+  "nameEn": "Schlumberger",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 1495057661
+ },
+ {
+  "symbol": "SO",
+  "nameEn": "Southern Company",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 1127300000
+ },
+ {
+  "symbol": "SPGI",
+  "nameEn": "S&P Global",
+  "sector": "Financial Services",
+  "country": "US",
+  "shares": 296000000
+ },
+ {
+  "symbol": "UNP",
+  "nameEn": "Union Pacific Corporation",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 593713000
+ },
+ {
+  "symbol": "XEL",
+  "nameEn": "Xcel Energy",
+  "sector": "Utilities",
+  "country": "US",
+  "shares": 624269560
+ },
+ {
+  "symbol": "XOM",
+  "nameEn": "ExxonMobil",
+  "sector": "Energy",
+  "country": "US",
+  "shares": 4144950000
+ },
+ {
+  "symbol": "TSM",
+  "nameEn": "Taiwan Semiconductor Manufacturing",
+  "sector": "Technology",
+  "country": "TW",
+  "shares": 5186480000
+ },
+ {
+  "symbol": "BABA",
+  "nameEn": "Alibaba Group",
+  "sector": "Consumer Cyclical",
+  "country": "CN",
+  "shares": 2400518956
+ },
+ {
+  "symbol": "ASML",
+  "nameEn": "ASML Holding",
+  "sector": "Technology",
+  "country": "NL",
+  "shares": 385417991
+ },
+ {
+  "symbol": "SAP",
+  "nameEn": "SAP SE",
+  "sector": "Technology",
+  "country": "DE",
+  "shares": 1165235164
+ },
+ {
+  "symbol": "TM",
+  "nameEn": "Toyota Motor",
+  "sector": "Consumer Cyclical",
+  "country": "JP",
+  "shares": 1184106605
+ },
+ {
+  "symbol": "AZN",
+  "nameEn": "AstraZeneca",
+  "sector": "Healthcare",
+  "country": "GB",
+  "shares": 1550862073
+ },
+ {
+  "symbol": "NVO",
+  "nameEn": "Novo Nordisk",
+  "sector": "Healthcare",
+  "country": "DK",
+  "shares": 4443781639
+ },
+ {
+  "symbol": "NVS",
+  "nameEn": "Novartis",
+  "sector": "Healthcare",
+  "country": "CH",
+  "shares": 1908091965
+ },
+ {
+  "symbol": "SHEL",
+  "nameEn": "Shell",
+  "sector": "Energy",
+  "country": "GB",
+  "shares": 2788095000
+ },
+ {
+  "symbol": "HSBC",
+  "nameEn": "HSBC Holdings",
+  "sector": "Financial Services",
+  "country": "GB",
+  "shares": 3436720000
+ },
+ {
+  "symbol": "BHP",
+  "nameEn": "BHP Group",
+  "sector": "Basic Materials",
+  "country": "AU",
+  "shares": 2540345092
+ },
+ {
+  "symbol": "TTE",
+  "nameEn": "TotalEnergies",
+  "sector": "Energy",
+  "country": "FR",
+  "shares": 2227002948
+ },
+ {
+  "symbol": "SONY",
+  "nameEn": "Sony Group",
+  "sector": "Technology",
+  "country": "JP",
+  "shares": 5889866554
+ },
+ {
+  "symbol": "BUD",
+  "nameEn": "Anheuser-Busch InBev",
+  "sector": "Consumer Defensive",
+  "country": "BE",
+  "shares": 1933698390
+ },
+ {
+  "symbol": "UL",
+  "nameEn": "Unilever",
+  "sector": "Consumer Defensive",
+  "country": "GB",
+  "shares": 2154500000
+ },
+ {
+  "symbol": "RY",
+  "nameEn": "Royal Bank of Canada",
+  "sector": "Financial Services",
+  "country": "CA",
+  "shares": 1389780000
+ },
+ {
+  "symbol": "TD",
+  "nameEn": "Toronto-Dominion Bank",
+  "sector": "Financial Services",
+  "country": "CA",
+  "shares": 1689500000
+ },
+ {
+  "symbol": "SAN",
+  "nameEn": "Banco Santander",
+  "sector": "Financial Services",
+  "country": "ES",
+  "shares": 14678222709
+ },
+ {
+  "symbol": "MUFG",
+  "nameEn": "Mitsubishi UFJ Financial",
+  "sector": "Financial Services",
+  "country": "JP",
+  "shares": 11287595009
+ },
+ {
+  "symbol": "SMFG",
+  "nameEn": "Sumitomo Mitsui Financial",
+  "sector": "Financial Services",
+  "country": "JP",
+  "shares": 3874264000
+ },
+ {
+  "symbol": "IBN",
+  "nameEn": "ICICI Bank",
+  "sector": "Financial Services",
+  "country": "IN",
+  "shares": 3586320312
+ },
+ {
+  "symbol": "HDB",
+  "nameEn": "HDFC Bank",
+  "sector": "Financial Services",
+  "country": "IN",
+  "shares": 5129338479
+ },
+ {
+  "symbol": "INFY",
+  "nameEn": "Infosys",
+  "sector": "Technology",
+  "country": "IN",
+  "shares": 4057260000
+ },
+ {
+  "symbol": "PDD",
+  "nameEn": "PDD Holdings",
+  "sector": "Consumer Cyclical",
+  "country": "CN",
+  "shares": 1423396449
+ },
+ {
+  "symbol": "JD",
+  "nameEn": "JD.com",
+  "sector": "Consumer Cyclical",
+  "country": "CN",
+  "shares": 1350500000
+ },
+ {
+  "symbol": "NTES",
+  "nameEn": "NetEase",
+  "sector": "Communication Services",
+  "country": "CN",
+  "shares": 638421334
+ },
+ {
+  "symbol": "BIDU",
+  "nameEn": "Baidu",
+  "sector": "Communication Services",
+  "country": "CN",
+  "shares": 340124775
+ },
+ {
+  "symbol": "SE",
+  "nameEn": "Sea Limited",
+  "sector": "Technology",
+  "country": "SG",
+  "shares": 612484571
+ },
+ {
+  "symbol": "RIO",
+  "nameEn": "Rio Tinto",
+  "sector": "Basic Materials",
+  "country": "GB",
+  "shares": 1624017316
+ },
+ {
+  "symbol": "GSK",
+  "nameEn": "GSK",
+  "sector": "Healthcare",
+  "country": "GB",
+  "shares": 2003865000
+ },
+ {
+  "symbol": "DEO",
+  "nameEn": "Diageo",
+  "sector": "Consumer Defensive",
+  "country": "GB",
+  "shares": 555899986
+ },
+ {
+  "symbol": "BP",
+  "nameEn": "BP",
+  "sector": "Energy",
+  "country": "GB",
+  "shares": 2622505000
+ },
+ {
+  "symbol": "SNY",
+  "nameEn": "Sanofi",
+  "sector": "Healthcare",
+  "country": "FR",
+  "shares": 2404274446
+ },
+ {
+  "symbol": "ARM",
+  "nameEn": "Arm Holdings",
+  "sector": "Technology",
+  "country": "GB",
+  "shares": 1064000000
+ },
+ {
+  "symbol": "SPOT",
+  "nameEn": "Spotify Technology",
+  "sector": "Communication Services",
+  "country": "SE",
+  "shares": 205620061
+ },
+ {
+  "symbol": "BTI",
+  "nameEn": "British American Tobacco",
+  "sector": "Consumer Defensive",
+  "country": "GB",
+  "shares": 2166400000
+ },
+ {
+  "symbol": "TRI",
+  "nameEn": "Thomson Reuters",
+  "sector": "Industrials",
+  "country": "CA",
+  "shares": 436538837
+ },
+ {
+  "symbol": "CNI",
+  "nameEn": "Canadian National Railway",
+  "sector": "Industrials",
+  "country": "CA",
+  "shares": 606600000
+ },
+ {
+  "symbol": "ENB",
+  "nameEn": "Enbridge",
+  "sector": "Energy",
+  "country": "CA",
+  "shares": 2183696415
+ },
+ {
+  "symbol": "MFG",
+  "nameEn": "Mizuho Financial",
+  "sector": "Financial Services",
+  "country": "JP",
+  "shares": 12182193852
+ },
+ {
+  "symbol": "STLA",
+  "nameEn": "Stellantis",
+  "sector": "Consumer Cyclical",
+  "country": "NL",
+  "shares": 2897507765
+ },
+ {
+  "symbol": "LYG",
+  "nameEn": "Lloyds Banking",
+  "sector": "Financial Services",
+  "country": "GB",
+  "shares": 14554116570
+ },
+ {
+  "symbol": "NGG",
+  "nameEn": "National Grid",
+  "sector": "Utilities",
+  "country": "GB",
+  "shares": 995142164
+ },
+ {
+  "symbol": "E",
+  "nameEn": "Eni",
+  "sector": "Energy",
+  "country": "IT",
+  "shares": 1462854491
+ },
+ {
+  "symbol": "RELX",
+  "nameEn": "RELX",
+  "sector": "Communication Services",
+  "country": "GB",
+  "shares": 1756218953
+ },
+ {
+  "symbol": "LVMUY",
+  "nameEn": "LVMH",
+  "sector": "Consumer Cyclical",
+  "country": "FR",
+  "shares": 2467860720
+ },
+ {
+  "symbol": "NSRGY",
+  "nameEn": "Nestle",
+  "sector": "Consumer Defensive",
+  "country": "CH",
+  "shares": 2572220000
+ },
+ {
+  "symbol": "RHHBY",
+  "nameEn": "Roche Holding",
+  "sector": "Healthcare",
+  "country": "CH",
+  "shares": 6440888442
+ },
+ {
+  "symbol": "TCEHY",
+  "nameEn": "Tencent Holdings",
+  "sector": "Communication Services",
+  "country": "CN",
+  "shares": 9027097386
+ },
+ {
+  "symbol": "SHOP",
+  "nameEn": "Shopify",
+  "sector": "Technology",
+  "country": "CA",
+  "shares": 1297654720
+ },
+ {
+  "symbol": "PHG",
+  "nameEn": "Koninklijke Philips",
+  "sector": "Healthcare",
+  "country": "NL",
+  "shares": 971253802
+ },
+ {
+  "symbol": "SIEGY",
+  "nameEn": "Siemens",
+  "sector": "Industrials",
+  "country": "DE",
+  "shares": 1538268513
+ },
+ {
+  "symbol": "VWAGY",
+  "nameEn": "Volkswagen",
+  "sector": "Consumer Cyclical",
+  "country": "DE",
+  "shares": 5012952615
+ },
+ {
+  "symbol": "MBGYY",
+  "nameEn": "Mercedes-Benz Group",
+  "sector": "Consumer Cyclical",
+  "country": "DE",
+  "shares": 3829321992
+ },
+ {
+  "symbol": "BASFY",
+  "nameEn": "BASF",
+  "sector": "Basic Materials",
+  "country": "DE",
+  "shares": 3542632212
+ },
+ {
+  "symbol": "ABBNY",
+  "nameEn": "ABB",
+  "sector": "Industrials",
+  "country": "CH",
+  "shares": 1814913558
+ },
+ {
+  "symbol": "UBS",
+  "nameEn": "UBS Group",
+  "sector": "Financial Services",
+  "country": "CH",
+  "shares": 3277804889
+ },
+ {
+  "symbol": "BCS",
+  "nameEn": "Barclays",
+  "sector": "Financial Services",
+  "country": "GB",
+  "shares": 3376850000
+ },
+ {
+  "symbol": "ING",
+  "nameEn": "ING Groep",
+  "sector": "Financial Services",
+  "country": "NL",
+  "shares": 2876650000
+ },
+ {
+  "symbol": "MFC",
+  "nameEn": "Manulife Financial",
+  "sector": "Financial Services",
+  "country": "CA",
+  "shares": 1668890000
+ },
+ {
+  "symbol": "BBVA",
+  "nameEn": "Banco Bilbao Vizcaya",
+  "sector": "Financial Services",
+  "country": "ES",
+  "shares": 5572010000
+ },
+ {
+  "symbol": "2222.SR",
+  "nameEn": "Saudi Aramco",
+  "sector": "Energy",
+  "country": "SA",
+  "cur": "SAR",
+  "shares": 241907400000
+ },
+ {
+  "symbol": "SPCX",
+  "nameEn": "SpaceX",
+  "sector": "Industrials",
+  "country": "US",
+  "shares": 13169744828
+ },
+ {
+  "symbol": "005930.KS",
+  "nameEn": "Samsung Electronics",
+  "sector": "Technology",
+  "country": "KR",
+  "cur": "KRW",
+  "shares": 6669997323
+ }
+]

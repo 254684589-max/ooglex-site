@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全球经济日历 · 央行决议 · CPI · 非农</title>
+<meta name="description" content="本周全球重要经济事件日历：央行利率决议、CPI、非农就业、PMI、GDP 等，含预测值与前值，按本地时区显示，每日自动更新（来源 Forex Factory）。">
+<link rel="canonical" href="https://www.ooglex.com/apps/econ-calendar/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="全球经济日历 · 央行决议 · CPI · 非农">
+<meta property="og:description" content="本周全球重要经济事件日历：央行利率决议、CPI、非农就业、PMI、GDP 等，含预测值与前值，按本地时区显示，每日自动更新（来源 Forex Factory）。">
+<meta property="og:url" content="https://www.ooglex.com/apps/econ-calendar/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --bg:#0a0b10; --panel:#151823; --line:rgba(255,255,255,0.09); --text:#eef1f7; --dim:#9099ad;
+    --hot:#e0729a; --high:#ff5d6c; --med:#e8a33d; --low:#9099ad; --hol:#8aa6ff; --act:#28c79a; }
+  body { min-height:100vh; color:var(--text);
+    background:radial-gradient(900px 460px at 50% -10%, rgba(224,114,154,.12), transparent 60%), var(--bg);
+    background-attachment:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif; line-height:1.5; }
+  .page { max-width:1000px; margin:0 auto; padding:14px 16px 64px; }
+  .head { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+  .head a.back { color:var(--hot); text-decoration:none; font-size:0.9rem; }
+  .head a.back:hover { opacity:.8; }
+
+  .title { margin:8px 0 4px; }
+  .title h1 { font-size:1.85rem; font-weight:900; letter-spacing:.5px; }
+  .title h1 .b { background:var(--hot); color:#1a0610; padding:0 8px; border-radius:5px; margin-right:8px; }
+  .title p { color:var(--dim); font-size:0.84rem; margin-top:5px; }
+  .statusrow { display:flex; gap:9px; margin-top:9px; flex-wrap:wrap; align-items:center; }
+  .status { display:inline-flex; align-items:center; gap:6px; font-size:0.78rem; padding:4px 12px; border-radius:999px; border:1px solid var(--line); }
+  .status .sdot { width:7px; height:7px; border-radius:50%; }
+  .status.live { color:#3fd08a; } .status.live .sdot { background:#3fd08a; animation:pulse 1.9s infinite; }
+  .status.demo { color:var(--med); } .status.demo .sdot { background:var(--med); }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(63,208,138,.5)} 70%{box-shadow:0 0 0 7px rgba(63,208,138,0)} 100%{box-shadow:0 0 0 0 rgba(63,208,138,0)} }
+  .weekinfo { font-size:0.82rem; color:var(--dim); }
+
+  .tabs { display:flex; gap:8px; margin:14px 0; flex-wrap:wrap; }
+  .tabs button { padding:8px 15px; border-radius:999px; cursor:pointer; font-family:inherit; font-size:0.88rem;
+    color:var(--dim); background:var(--panel); border:1px solid var(--line); transition:all .18s; }
+  .tabs button:hover { color:var(--text); }
+  .tabs button.on { color:#1a0610; font-weight:800; background:var(--hot); border-color:transparent; }
+
+  .day { margin-bottom:18px; }
+  .day .dh { font-size:0.86rem; font-weight:800; color:var(--text); padding:6px 2px; margin-bottom:6px;
+    border-bottom:1px solid var(--line); position:sticky; top:0; background:linear-gradient(180deg,var(--bg),rgba(10,11,16,.86)); backdrop-filter:blur(4px); z-index:2; }
+  .day.today .dh { color:var(--hot); }
+
+  .ev { display:grid; grid-template-columns:54px 116px 12px 1fr auto; align-items:center; gap:10px;
+    padding:10px 8px; border-radius:10px; border:1px solid transparent; animation:fade .35s both; }
+  .ev:hover { background:var(--panel); border-color:var(--line); }
+  @keyframes fade { from{opacity:0} to{opacity:1} }
+  .ev .tm { font-variant-numeric:tabular-nums; font-weight:700; font-size:0.9rem; color:var(--dim); }
+  .ev .cy { font-size:0.86rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ev .cy span { color:var(--dim); }
+  .ev .imp { width:9px; height:9px; border-radius:50%; justify-self:center; }
+  .ev .nm .t { font-weight:700; font-size:0.92rem; line-height:1.3; }
+  .ev .nm .en { color:var(--dim); font-size:0.72rem; margin-top:1px; }
+  .ev .vals { display:flex; gap:14px; justify-content:flex-end; }
+  .cell { display:flex; flex-direction:column; align-items:flex-end; min-width:52px; }
+  .cell .cl { color:var(--dim); font-size:0.66rem; }
+  .cell .cv { font-weight:700; font-size:0.9rem; font-variant-numeric:tabular-nums; }
+  .cell.act .cv { color:var(--act); }
+  .empty { text-align:center; color:var(--dim); padding:50px 0; }
+
+  .legend { display:flex; gap:14px; flex-wrap:wrap; color:var(--dim); font-size:0.74rem; margin:2px 2px 10px; }
+  .legend span { display:inline-flex; align-items:center; gap:5px; }
+  .legend i { width:8px; height:8px; border-radius:50%; display:inline-block; }
+
+  .nextbar { display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin:2px 0 14px; padding:10px 13px;
+    border:1px solid var(--line); border-radius:12px; background:var(--panel);
+    box-shadow:inset 3px 0 0 var(--hot); font-size:0.88rem; }
+  .nextbar .lab { color:var(--hot); font-weight:800; white-space:nowrap; }
+  .nextbar .dot { width:8px; height:8px; border-radius:50%; flex:0 0 auto; }
+  .nextbar .ev2 { font-weight:700; }
+  .nextbar .ev2 .cy2 { color:var(--dim); font-weight:600; }
+  .nextbar .when { color:var(--dim); margin-left:auto; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .nextbar .when b { color:var(--text); }
+
+  footer { margin-top:22px; text-align:center; color:var(--dim); font-size:0.78rem; line-height:1.8; }
+  @media (max-width:560px){
+    .title h1 { font-size:1.45rem; }
+    .ev { grid-template-columns:48px 1fr; grid-template-areas:"tm nm" "tm vals"; row-gap:6px; }
+    .ev .tm { grid-area:tm; align-self:start; }
+    .ev .cy { display:none; }
+    .ev .imp { display:none; }
+    .ev .nm { grid-area:nm; }
+    .ev .vals { grid-area:vals; justify-content:flex-start; gap:18px; }
+    .cell { align-items:flex-start; }
+  }
+</style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="page">
+    <div class="head">
+      <a class="back" href="../data-hub/">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a>
+    </div>
+    <div class="title">
+      <h1><span class="b">📅</span>全球经济日历</h1>
+      <p>央行利率决议 · CPI · 非农 · PMI · GDP —— 含预测值与前值，按你的本地时区显示</p>
+      <div class="statusrow">
+        <span class="status" id="status"></span>
+        <span class="weekinfo" id="weekinfo"></span>
+      </div>
+    </div>
+    <div class="legend">
+      <span><i style="background:var(--high)"></i>高影响</span>
+      <span><i style="background:var(--med)"></i>中影响</span>
+      <span><i style="background:var(--low)"></i>低影响</span>
+      <span><i style="background:var(--hol)"></i>假日</span>
+      <span style="color:var(--act)">绿色 = 已公布实际值</span>
+    </div>
+    <div class="nextbar" id="next" style="display:none"></div>
+    <div class="tabs" id="tabs"></div>
+    <div id="list"></div>
+    <footer id="foot"></footer>
+  </div>
+  <script src="app.js"></script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+
+<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于本页数据</h2><p style="margin:0;opacity:.85">本页汇总本周全球重要经济事件——央行利率决议、CPI、非农就业、PMI、GDP 等，并列出市场预测值与前值，按你所在时区显示，数据来源 Forex Factory，每日自动更新。实际公布值与预测之间的差异，往往是行情波动的触发点。事件时间偶有调整，请以官方公布为准。</p></section>
+</body>
+</html>

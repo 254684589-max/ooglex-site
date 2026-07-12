@@ -1,0 +1,58 @@
+{
+  "name": "环球电波 · 转动地球听世界",
+  "short_name": "环球电波",
+  "description": "转动 3D 地球，点亮世界各地电台，实时收听全球广播。国内直连优先、HTTPS 安全流、无需登录。",
+  "id": "/apps/radio/",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "categories": ["music", "entertainment", "news"],
+  "background_color": "#05070f",
+  "theme_color": "#05070f",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512-maskable.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/globe.jpg",
+      "type": "image/jpeg",
+      "sizes": "828x1792",
+      "form_factor": "narrow",
+      "label": "转动 3D 地球，点亮世界各地电台，实时收听全球广播"
+    },
+    {
+      "src": "screenshots/intro.jpg",
+      "type": "image/jpeg",
+      "sizes": "828x1792",
+      "form_factor": "narrow",
+      "label": "国内直连优先 · 无需登录，打开即用"
+    }
+  ]
+}

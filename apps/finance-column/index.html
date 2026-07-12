@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>金融知识终极架构 · 华尔街全市场知识图谱</title>
+<meta name="description" content="华尔街金融知识终极架构 v4.0：8 层级 · 48 模块 · 560+ 中英双语专业术语，从数理工具到监管合规的系统化知识图谱，支持全局检索。">
+<link rel="canonical" href="https://www.ooglex.com/apps/finance-column/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="金融知识终极架构 · 华尔街全市场知识图谱">
+<meta property="og:description" content="华尔街金融知识终极架构 v4.0：8 层级 · 48 模块 · 560+ 中英双语专业术语，从数理工具到监管合规的系统化知识图谱，支持全局检索。">
+<meta property="og:url" content="https://www.ooglex.com/apps/finance-column/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="styles.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="page wide">
+    <header class="top">
+      <a class="back" href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a>
+      <span class="crumb">金融专栏 · 终极架构</span>
+    </header>
+
+    <section class="hero">
+      <span class="kicker">Wall Street · Ultimate Knowledge Architecture v4.0</span>
+      <h1>金融知识终极架构</h1>
+      <p class="lead" id="lead"></p>
+      <div class="stats">
+        <div class="s"><b id="st-layer">8</b><span>层级 Layers</span></div>
+        <div class="s"><b id="st-mod">48</b><span>模块 Modules</span></div>
+        <div class="s"><b id="st-term">560</b><span>术语 Terms</span></div>
+        <div class="s"><b>双语</b><span>中英对照</span></div>
+      </div>
+    </section>
+
+    <!-- 全局检索 -->
+    <div class="search">
+      <input id="q" type="search" autocomplete="off" placeholder="🔍 检索 560+ 术语（中文 / English / 缩写，如 VaR、波动率、CLO、Basel…）">
+      <div id="results" class="results" hidden></div>
+    </div>
+
+    <!-- 因果推导图谱入口 -->
+    <a class="viz-banner" href="diagrams.html">
+      <span class="vb-ic">🧭</span>
+      <span class="vb-body">
+        <b>概念因果推导图谱</b>
+        <p>用箭头把一个体系内的概念按因果关系串起来——利率、流动性、国债、美元、杠杆…</p>
+      </span>
+      <span class="vb-go">进入图谱 →</span>
+    </a>
+
+    <div class="sec-title">
+      <h2>架构总览</h2>
+      <span class="en">The Map · L1 → L8</span>
+      <span class="line"></span>
+    </div>
+    <div class="intro-card" id="intro"></div>
+
+    <div class="layer-grid" id="layers" style="margin-top:18px"></div>
+
+    <footer>
+      金融知识终极架构 <span id="ver"></span> · 内容长期更新中<br>
+      校验坐标：CFA × FRM × SOA 精算 × 商学院 × Bloomberg × ISDA/BIS/IOSCO<br>
+      © 2026 ooglex.com · 仅供学习交流，不构成任何投资建议
+    </footer>
+  </div>
+
+  <script src="arch.js"></script>
+  <script>
+    const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+    document.getElementById("lead").textContent =
+      "一套自下而上、层层递进的金融认知地图——从数学基础到专业纵深与监管合规，覆盖华尔街前台 / 中台 / 后台、危机机制与认知元层的完整知识体系。";
+    document.getElementById("intro").textContent = ARCH.meta.intro;
+    document.getElementById("ver").textContent = ARCH.meta.version;
+    document.getElementById("st-layer").textContent = ARCH.layers.length;
+    document.getElementById("st-mod").textContent = ARCH.moduleCount();
+    document.getElementById("st-term").textContent = ARCH.termCount() + "+";
+
+    // 架构总览：8 个层级卡片
+    document.getElementById("layers").innerHTML = ARCH.layers.map((l) => {
+      const terms = ARCH.layerTermCount(l);
+      const mods = l.modules.map((m) =>
+        `<span class="mchip${m.isNew ? " new" : ""}">${esc(m.cn)}${m.isNew ? " ★" : ""}</span>`).join("");
+      return `<a class="layer-card" href="layer.html?id=${l.id}" style="--mc:${l.accent}">
+        <div class="lc-head">
+          <span class="lc-id">${l.id}</span>
+          <span class="lc-ic">${l.icon}</span>
+        </div>
+        <h3>${esc(l.cn)}</h3>
+        <div class="lc-en">${esc(l.en)}</div>
+        <p class="lc-tag">${esc(l.tag)}</p>
+        <div class="lc-mods">${mods}</div>
+        <div class="lc-foot">
+          <span>${l.modules.length} 模块 · ${terms} 术语</span>
+          <span class="go">展开 →</span>
+        </div>
+      </a>`;
+    }).join("");
+
+    // ---- 全局检索 ----
+    const FLAT = ARCH.flatTerms();
+    const q = document.getElementById("q");
+    const box = document.getElementById("results");
+    function hl(text, kw) {
+      if (!kw) return esc(text);
+      const i = text.toLowerCase().indexOf(kw.toLowerCase());
+      if (i < 0) return esc(text);
+      return esc(text.slice(0, i)) + "<mark>" + esc(text.slice(i, i + kw.length)) + "</mark>" + esc(text.slice(i + kw.length));
+    }
+    function search() {
+      const kw = q.value.trim();
+      if (!kw) { box.hidden = true; box.innerHTML = ""; return; }
+      const low = kw.toLowerCase();
+      const hits = FLAT.filter((t) =>
+        t.cn.toLowerCase().includes(low) || t.en.toLowerCase().includes(low) || t.note.toLowerCase().includes(low));
+      box.hidden = false;
+      if (!hits.length) { box.innerHTML = `<div class="no-hit">未找到「${esc(kw)}」相关术语</div>`; return; }
+      const shown = hits.slice(0, 40);
+      box.innerHTML =
+        `<div class="rcount">命中 ${hits.length} 条${hits.length > 40 ? "，显示前 40 条" : ""}</div>` +
+        shown.map((t) =>
+          `<a class="ritem" href="layer.html?id=${t.layer.id}#${t.module.id}" style="--mc:${t.layer.accent}">
+            <div class="r-main"><b>${hl(t.cn, kw)}</b> <span class="r-en">${hl(t.en, kw)}</span></div>
+            <div class="r-loc">${t.layer.icon} ${esc(t.layer.cn)} · ${esc(t.module.cn)}</div>
+          </a>`).join("");
+    }
+    q.addEventListener("input", search);
+    q.addEventListener("focus", search);
+  </script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全球电影榜 · 高分 Top 250 与最新上映</title>
+<meta name="description" content="高分电影 Top 250 与全球最新上映，含排名、评分、海报，数据每日自动更新（来自 TMDB）。">
+<link rel="canonical" href="https://www.ooglex.com/apps/movies/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="全球电影榜 · 高分 Top 250 与最新上映">
+<meta property="og:description" content="高分电影 Top 250 与全球最新上映，含排名、评分、海报，数据每日自动更新（来自 TMDB）。">
+<meta property="og:url" content="https://www.ooglex.com/apps/movies/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --bg:#0a0a0c; --panel:#161616; --line:rgba(255,255,255,0.1); --text:#f3f3f3; --dim:#9a9a9a; --gold:#f5c518; }
+  body { min-height:100vh; color:var(--text);
+    background:radial-gradient(900px 460px at 50% -10%, rgba(245,197,24,.10), transparent 60%), var(--bg);
+    background-attachment:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif; line-height:1.5; }
+  .page { max-width:1080px; margin:0 auto; padding:14px 16px 64px; }
+  .head { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+  .head a.back { color:var(--gold); text-decoration:none; font-size:0.9rem; }
+  .head a.back:hover { opacity:.8; }
+  .tools { display:flex; gap:8px; }
+  .iconbtn { width:38px; height:38px; border-radius:10px; cursor:pointer; border:1px solid var(--line); background:var(--panel);
+    color:var(--text); font-size:1.05rem; display:flex; align-items:center; justify-content:center; transition:all .18s; }
+  .iconbtn:hover { border-color:var(--gold); }
+  .iconbtn.on { color:#1a1500; background:var(--gold); border-color:transparent; }
+
+  .title { margin:8px 0 4px; }
+  .title h1 { font-size:1.85rem; font-weight:900; letter-spacing:.5px; }
+  .title h1 .b { background:var(--gold); color:#000; padding:0 8px; border-radius:5px; margin-right:8px; }
+  .title p { color:var(--dim); font-size:0.84rem; margin-top:5px; }
+  .statusrow { display:flex; gap:9px; margin-top:9px; flex-wrap:wrap; align-items:center; }
+  .status { display:inline-flex; align-items:center; gap:6px; font-size:0.78rem; padding:4px 12px; border-radius:999px; border:1px solid var(--line); }
+  .status .sdot { width:7px; height:7px; border-radius:50%; }
+  .status.live { color:#3fd08a; } .status.live .sdot { background:#3fd08a; animation:pulse 1.9s infinite; }
+  .status.demo { color:var(--gold); } .status.demo .sdot { background:var(--gold); }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(63,208,138,.5)} 70%{box-shadow:0 0 0 7px rgba(63,208,138,0)} 100%{box-shadow:0 0 0 0 rgba(63,208,138,0)} }
+  .avg { font-size:0.82rem; color:var(--dim); } .avg b { color:var(--gold); font-size:1rem; }
+
+  .tabs { display:flex; gap:8px; margin:14px 0; flex-wrap:wrap; }
+  .tabs button { padding:8px 16px; border-radius:999px; cursor:pointer; font-family:inherit; font-size:0.9rem;
+    color:var(--dim); background:var(--panel); border:1px solid var(--line); transition:all .18s; }
+  .tabs button:hover { color:var(--text); }
+  .tabs button.on { color:#1a1500; font-weight:800; background:var(--gold); border-color:transparent; }
+
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(146px,1fr)); gap:14px; }
+  .movie { position:relative; border-radius:12px; overflow:hidden; text-decoration:none; color:inherit;
+    background:var(--panel); border:1px solid var(--line); transition:transform .16s, border-color .16s; animation:fade .4s both; }
+  .movie:hover { transform:translateY(-4px); border-color:var(--gold); }
+  @keyframes fade { from{opacity:0} to{opacity:1} }
+  .poster { position:relative; aspect-ratio:2/3; background:linear-gradient(160deg,#2a2a30,#15151a); }
+  .poster img { width:100%; height:100%; object-fit:cover; display:block; }
+  .poster .ph { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center;
+    padding:10px; color:#6f6f7a; font-size:0.85rem; font-weight:700; }
+  .rk { position:absolute; top:7px; left:7px; background:rgba(0,0,0,.82); color:var(--gold); font-weight:900;
+    font-size:0.82rem; padding:2px 8px; border-radius:8px; }
+  .rate { position:absolute; bottom:7px; left:7px; background:rgba(0,0,0,.82); color:var(--gold); font-weight:800;
+    font-size:0.8rem; padding:2px 7px; border-radius:8px; }
+  .minfo { padding:8px 9px 10px; }
+  .minfo .t { font-weight:700; font-size:0.88rem; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .minfo .y { color:var(--dim); font-size:0.74rem; margin-top:3px; }
+  .empty { text-align:center; color:var(--dim); padding:50px 0; }
+
+  footer { margin-top:22px; text-align:center; color:var(--dim); font-size:0.78rem; line-height:1.8; }
+  @media (max-width:480px){ .title h1 { font-size:1.4rem; } .grid { grid-template-columns:repeat(auto-fill, minmax(108px,1fr)); gap:10px; } }
+</style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="page">
+    <div class="head">
+      <a class="back" href="../data-hub/">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a>
+      <div class="tools">
+        <button class="iconbtn" id="music" title="背景音乐">🎵</button>
+      </div>
+    </div>
+    <div class="title">
+      <h1><span class="b">TOP</span>全球电影榜</h1>
+      <p>高分电影 Top 250 · 全球最新上映 · 每日自动更新</p>
+      <div class="statusrow">
+        <span class="status" id="status"></span>
+        <span class="avg" id="avg"></span>
+      </div>
+    </div>
+    <div class="tabs" id="tabs"></div>
+    <div class="grid" id="grid"></div>
+    <footer id="foot"></footer>
+  </div>
+  <script src="app.js"></script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+
+<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于本页数据</h2><p style="margin:0;opacity:.85">本页汇总高分电影 Top 250 与全球最新上映，含排名、评分与海报，数据来源 TMDB，每日自动更新。评分为 TMDB 用户综合评分，会随投票动态变化；「最新上映」按档期排列。用来找片、追新都合适，海报与资料版权归 TMDB 及片方所有。</p></section>
+</body>
+</html>

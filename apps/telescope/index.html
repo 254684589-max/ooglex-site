@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#05070d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="description" content="星瞳望远镜 —— 把你的智能手机变成一台强大的数码望远镜，支持高倍变焦、拍照、夜视与瞄准辅助。" />
+<link rel="canonical" href="https://www.ooglex.com/apps/telescope/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="星瞳望远镜 · StarPupil Telescope">
+<meta property="og:description" content="星瞳望远镜 —— 把你的智能手机变成一台强大的数码望远镜，支持高倍变焦、拍照、夜视与瞄准辅助。">
+<meta property="og:url" content="https://www.ooglex.com/apps/telescope/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+  <title>星瞳望远镜 · StarPupil Telescope</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%2305070d' stroke='%2300e0ff' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='22' fill='none' stroke='%2300e0ff' stroke-width='4'/%3E%3Cline x1='50' y1='4' x2='50' y2='28' stroke='%2300e0ff' stroke-width='4'/%3E%3Cline x1='50' y1='72' x2='50' y2='96' stroke='%2300e0ff' stroke-width='4'/%3E%3Cline x1='4' y1='50' x2='28' y2='50' stroke='%2300e0ff' stroke-width='4'/%3E%3Cline x1='72' y1='50' x2='96' y2='50' stroke='%2300e0ff' stroke-width='4'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+  <!-- ===== 启动 / 欢迎页 ===== -->
+  <section id="welcome" class="welcome">
+    <div class="welcome-inner">
+      <div class="brand">
+        <svg class="brand-logo" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="3"/>
+          <circle cx="50" cy="50" r="22" fill="none" stroke="currentColor" stroke-width="3"/>
+          <line x1="50" y1="6" x2="50" y2="28" stroke="currentColor" stroke-width="3"/>
+          <line x1="50" y1="72" x2="50" y2="94" stroke="currentColor" stroke-width="3"/>
+          <line x1="6" y1="50" x2="28" y2="50" stroke="currentColor" stroke-width="3"/>
+          <line x1="72" y1="50" x2="94" y2="50" stroke="currentColor" stroke-width="3"/>
+        </svg>
+        <h1>星瞳望远镜</h1>
+        <p class="brand-sub">StarPupil · 把手机变成强大的数码望远镜</p>
+      </div>
+
+      <ul class="feature-list">
+        <li><span>🔭</span> 光学 + 数码混合变焦，远景近在眼前</li>
+        <li><span>📸</span> 一键拍照保存，内置取景相册</li>
+        <li><span>🌙</span> 夜视 / 增亮 / 锐化等画质增强</li>
+        <li><span>🧭</span> 电子罗盘 · 水平仪 · 网格瞄准辅助</li>
+        <li><span>🔦</span> 补光灯、十字准星、全屏沉浸取景</li>
+      </ul>
+
+      <button id="startBtn" class="primary-btn">
+        <span class="dot"></span> 开启望远镜
+      </button>
+      <p class="hint">需要允许摄像头权限 · 建议在 HTTPS / 本地环境下使用</p>
+      <a class="home-link" href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a>
+    </div>
+  </section>
+
+  <!-- ===== 主取景界面 ===== -->
+  <main id="viewer" class="viewer hidden">
+    <video id="video" playsinline autoplay muted></video>
+    <canvas id="snapCanvas" class="hidden"></canvas>
+
+    <!-- 取景叠加层 -->
+    <div id="overlay" class="overlay">
+      <!-- 网格 -->
+      <div id="grid" class="grid hidden">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <!-- 十字准星 -->
+      <div id="reticle" class="reticle hidden">
+        <div class="reticle-ring"></div>
+        <div class="reticle-h"></div>
+        <div class="reticle-v"></div>
+        <div class="reticle-dot"></div>
+      </div>
+      <!-- 水平仪 -->
+      <div id="level" class="level hidden">
+        <div class="level-bar"><i></i></div>
+      </div>
+    </div>
+
+    <!-- 顶部状态栏 -->
+    <header class="topbar">
+      <div class="top-left">
+        <span id="zoomReadout" class="readout">1.0×</span>
+        <span id="modeReadout" class="readout small">数码</span>
+      </div>
+      <div class="top-right">
+        <span id="compass" class="readout small hidden">🧭 --°</span>
+        <button id="fsBtn" class="icon-btn" title="全屏" aria-label="全屏">⛶</button>
+        <button id="closeBtn" class="icon-btn" title="退出" aria-label="退出">✕</button>
+      </div>
+    </header>
+
+    <!-- 右侧垂直变焦滑条 -->
+    <div class="zoom-rail">
+      <button id="zoomInBtn" class="rail-btn" aria-label="放大">＋</button>
+      <input id="zoomSlider" class="zoom-slider" type="range" min="1" max="40" step="0.1" value="1"
+             orient="vertical" aria-label="变焦" />
+      <button id="zoomOutBtn" class="rail-btn" aria-label="缩小">－</button>
+    </div>
+
+    <!-- 快捷倍率 -->
+    <div class="quick-zoom" id="quickZoom">
+      <button data-z="1">1×</button>
+      <button data-z="2">2×</button>
+      <button data-z="5">5×</button>
+      <button data-z="10">10×</button>
+      <button data-z="20">20×</button>
+    </div>
+
+    <!-- 底部控制台 -->
+    <footer class="dock">
+      <button id="galleryBtn" class="dock-btn" title="相册" aria-label="相册">
+        <span class="thumb-wrap" id="lastThumb"><span class="thumb-empty">相册</span></span>
+      </button>
+
+      <button id="shutterBtn" class="shutter" title="拍照" aria-label="拍照"><span></span></button>
+
+      <button id="toolsBtn" class="dock-btn" title="工具" aria-label="工具">⚙︎<small>工具</small></button>
+    </footer>
+
+    <!-- 工具抽屉 -->
+    <div id="toolsPanel" class="tools-panel hidden">
+      <div class="panel-grip"></div>
+      <h3>取景工具</h3>
+      <div class="toggle-grid">
+        <button class="toggle" data-tool="torch" id="torchToggle">🔦<small>补光灯</small></button>
+        <button class="toggle" data-tool="grid">▦<small>网格线</small></button>
+        <button class="toggle" data-tool="reticle">⊕<small>准星</small></button>
+        <button class="toggle" data-tool="level">⊿<small>水平仪</small></button>
+        <button class="toggle" data-tool="compass">🧭<small>罗盘</small></button>
+        <button class="toggle" data-tool="cam" id="camSwitch">🔄<small>切换镜头</small></button>
+      </div>
+
+      <h3>画质增强</h3>
+      <div class="sliders">
+        <label>夜视增益
+          <input type="range" id="brightness" min="50" max="220" value="100">
+        </label>
+        <label>对比度
+          <input type="range" id="contrast" min="50" max="200" value="100">
+        </label>
+        <label>锐度 / 清晰
+          <input type="range" id="sharpen" min="0" max="100" value="0">
+        </label>
+        <label>色温暖度
+          <input type="range" id="warmth" min="-60" max="60" value="0">
+        </label>
+        <div class="filter-presets">
+          <button data-preset="none">原始</button>
+          <button data-preset="night">夜视</button>
+          <button data-preset="vivid">鲜艳</button>
+          <button data-preset="mono">单色</button>
+          <button data-preset="reset">重置</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 相册抽屉 -->
+    <div id="galleryPanel" class="gallery-panel hidden">
+      <div class="panel-grip"></div>
+      <div class="gallery-head">
+        <h3>取景相册</h3>
+        <button id="galleryClose" class="text-btn">关闭</button>
+      </div>
+      <div id="galleryGrid" class="gallery-grid"></div>
+      <p class="gallery-empty" id="galleryEmpty">还没有照片，点击快门按钮开始拍摄 📸</p>
+    </div>
+
+    <!-- 快门闪白 -->
+    <div id="flash" class="flash"></div>
+
+    <!-- 提示气泡 -->
+    <div id="toast" class="toast hidden"></div>
+  </main>
+
+  <!-- 图片预览灯箱 -->
+  <div id="lightbox" class="lightbox hidden">
+    <img id="lightboxImg" alt="照片预览" />
+    <div class="lightbox-actions">
+      <a id="downloadLink" class="lb-btn" download>⬇ 保存</a>
+      <button id="deleteShot" class="lb-btn danger">🗑 删除</button>
+      <button id="lightboxClose" class="lb-btn">关闭</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念因果推导图谱 · 金融知识终极架构</title>
+<meta name="description" content="金融知识终极架构 · 概念因果推导图谱：用箭头把一个金融体系内的概念按因果关系串起来，网页原生绘制，可点击放大。">
+<link rel="stylesheet" href="styles.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="page wide">
+    <header class="top">
+      <a class="back" href="index.html">← 架构总览</a>
+      <span class="crumb"><a href="../../">主页</a> / <a href="index.html">金融架构</a> / 图谱</span>
+    </header>
+
+    <section class="hero">
+      <span class="kicker">Causal Maps · 因果推导图谱</span>
+      <h1>概念因果推导图谱</h1>
+      <p class="lead" id="lead"></p>
+      <div class="stats">
+        <div class="s"><b id="st-count">0</b><span>张图谱</span></div>
+        <div class="s"><b>原生</b><span>可缩放矢量</span></div>
+        <div class="s"><b>持续</b><span>更新中</span></div>
+      </div>
+    </section>
+
+    <div id="groups"></div>
+
+    <footer>
+      金融知识终极架构 · 概念因果推导图谱（网页原生矢量绘制）· 内容长期更新中<br>
+      © 2026 ooglex.com · 仅供学习交流，不构成任何投资建议
+    </footer>
+  </div>
+
+  <!-- 灯箱 -->
+  <div id="lightbox" class="lightbox" hidden>
+    <button class="lb-close" aria-label="关闭">✕</button>
+    <div class="lb-stage" id="lb-stage"></div>
+    <div class="lb-cap" id="lb-cap"></div>
+  </div>
+
+  <script src="diagrams.js"></script>
+  <script>
+    const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+    /* ---- 声明式流程图渲染器：节点用 foreignObject(可换行)，连线用带箭头 SVG 路径 ---- */
+    let FID = 0;
+    function anchor(n, side) {
+      switch (side) {
+        case "l": return [n.x, n.y + n.h / 2];
+        case "r": return [n.x + n.w, n.y + n.h / 2];
+        case "t": return [n.x + n.w / 2, n.y];
+        case "b": return [n.x + n.w / 2, n.y + n.h];
+        default: return [n.x + n.w / 2, n.y + n.h / 2];
+      }
+    }
+    function renderFlow(flow, accent) {
+      const id = "fl" + (++FID);
+      const map = {};
+      flow.nodes.forEach((n) => (map[n.id] = n));
+      const edges = flow.edges.map((e) => {
+        const a = anchor(map[e.from], e.fs);
+        const b = anchor(map[e.to], e.ts);
+        const pts = [a, ...(e.waypoints || []), b];
+        const d = "M " + pts.map((p) => p[0] + " " + p[1]).join(" L ");
+        let lbl = "";
+        if (e.label) {
+          const lp = e.lpos || [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+          const w = e.label.length * 15 + 16, h = 24;
+          lbl = `<foreignObject x="${lp[0] - w / 2}" y="${lp[1] - h / 2}" width="${w}" height="${h}">
+            <div xmlns="http://www.w3.org/1999/xhtml" class="fedge-label">${esc(e.label)}</div></foreignObject>`;
+        }
+        return `<path d="${d}" class="fedge" marker-end="url(#arw-${id})"${e.dash ? ' stroke-dasharray="6 5"' : ""}/>${lbl}`;
+      }).join("");
+      const nodes = flow.nodes.map((n) =>
+        `<foreignObject x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}">
+          <div xmlns="http://www.w3.org/1999/xhtml" class="fnode${n.hot ? " hot" : ""}">
+            <span class="fn-t">${esc(n.t)}</span>
+            ${n.s ? `<span class="fn-s">${esc(n.s)}</span>` : ""}
+          </div></foreignObject>`).join("");
+      return `<svg class="flow" viewBox="0 0 ${flow.w} ${flow.h}" style="--ac:${accent}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs><marker id="arw-${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" class="fedge-arrow"/></marker></defs>
+        <g>${edges}</g><g>${nodes}</g></svg>`;
+    }
+
+    document.getElementById("lead").textContent = DIAGRAMS.intro;
+    document.getElementById("st-count").textContent = DIAGRAMS.count();
+
+    const ACCENT = "#8aa6ff";
+    document.getElementById("groups").innerHTML = DIAGRAMS.groups.map((g) => {
+      const cards = g.items.map((it) => {
+        const tags = (it.nodes || []).map((n) => `<span class="dg-node">${esc(n)}</span>`).join("");
+        const svg = it.flow ? renderFlow(it.flow, ACCENT) : "";
+        return `<article class="dg-card">
+          <div class="dg-head">
+            <h3>${esc(it.title)}</h3>
+            <div class="dg-en">${esc(it.en || "")}</div>
+          </div>
+          <div class="dg-flow" data-title="${esc(it.title)}" title="点击放大">${svg}<div class="dg-zoom">🔍 点击放大</div></div>
+          ${it.chain ? `<div class="dg-chain"><b>因果链 ·</b> ${esc(it.chain)}</div>` : ""}
+          ${tags ? `<div class="dg-nodes">${tags}</div>` : ""}
+        </article>`;
+      }).join("");
+      return `<section class="dg-group">
+        <div class="sec-title">
+          <h2>${esc(g.title)}</h2>
+          <span class="en">${esc(g.en || "")}</span>
+          <span class="line"></span>
+        </div>
+        ${g.note ? `<p class="dg-note">${esc(g.note)}</p>` : ""}
+        <div class="dg-grid">${cards}</div>
+      </section>`;
+    }).join("");
+
+    /* ---- 灯箱：点击放大同一张 SVG ---- */
+    const lb = document.getElementById("lightbox");
+    const stage = document.getElementById("lb-stage");
+    const cap = document.getElementById("lb-cap");
+    document.getElementById("groups").addEventListener("click", (e) => {
+      const wrap = e.target.closest(".dg-flow");
+      if (!wrap) return;
+      const svg = wrap.querySelector("svg");
+      if (!svg) return;
+      stage.innerHTML = svg.outerHTML;
+      cap.textContent = wrap.dataset.title || "";
+      lb.hidden = false;
+    });
+    function closeLb() { lb.hidden = true; stage.innerHTML = ""; }
+    lb.addEventListener("click", (e) => { if (e.target.closest(".lb-stage")) return; closeLb(); });
+    document.querySelector(".lb-close").addEventListener("click", closeLb);
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeLb(); });
+  </script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+</body>
+</html>

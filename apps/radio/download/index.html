@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>下载「环球电波」安卓 App</title>
+<meta name="description" content="下载环球电波安卓 App（APK），转动 3D 地球，实时收听全球电台。">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="canonical" href="https://www.ooglex.com/apps/radio/download/">
+<meta name="theme-color" content="#05070f">
+<style>
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  :root{
+    --ink:#e9f2ff; --dim:#93a4c8; --green:#3dff9e; --blue:#5b8cff;
+    --panel:rgba(15,20,40,0.72); --line:rgba(120,150,220,0.22);
+  }
+  html,body{ min-height:100%; background:#05070f; }
+  body{
+    color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:
+      radial-gradient(1000px 700px at 74% 12%, rgba(91,140,255,0.16), transparent 60%),
+      radial-gradient(800px 600px at 18% 88%, rgba(157,108,255,0.14), transparent 60%),
+      radial-gradient(circle at 50% 30%, #0a1024 0%, #05070f 72%, #03040a 100%);
+    min-height:100vh; padding:28px 18px 48px;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .home{ align-self:flex-start; color:var(--dim); text-decoration:none; font-size:0.88rem; }
+  .home:hover{ color:var(--ink); }
+  .card{
+    width:100%; max-width:440px; margin-top:14px;
+    background:var(--panel); border:1px solid var(--line); border-radius:22px; backdrop-filter:blur(14px);
+    padding:30px 24px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.45);
+  }
+  .icon{ width:104px; height:104px; border-radius:24px; box-shadow:0 12px 34px rgba(0,0,0,0.5); }
+  h1{ font-size:1.5rem; letter-spacing:1px; margin-top:16px;
+    background:linear-gradient(90deg,var(--green),var(--blue)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .meta{ color:var(--dim); font-size:0.84rem; margin-top:6px; }
+  .lead{ color:var(--dim); font-size:0.9rem; line-height:1.7; margin-top:14px; }
+  .dl{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    margin-top:22px; width:100%; padding:15px; border-radius:14px; text-decoration:none;
+    background:linear-gradient(135deg,var(--green),var(--blue)); color:#04120b;
+    font-weight:800; font-size:1.08rem; letter-spacing:1px; border:none; cursor:pointer;
+  }
+  .dl:hover{ filter:brightness(1.05); }
+  .dl-sub{ font-size:0.76rem; color:var(--dim); margin-top:10px; }
+
+  .steps{ text-align:left; margin-top:24px; border-top:1px solid var(--line); padding-top:20px; }
+  .steps h2{ font-size:0.98rem; color:var(--ink); margin-bottom:10px; }
+  .steps ol{ padding-left:20px; color:var(--dim); font-size:0.88rem; line-height:1.95; }
+  .steps ol b{ color:var(--ink); }
+  .note{ margin-top:14px; font-size:0.8rem; color:var(--dim); line-height:1.7;
+    border:1px dashed var(--line); border-radius:12px; padding:11px 13px; }
+  .note b{ color:var(--green); }
+
+  .qr{ margin-top:24px; border-top:1px solid var(--line); padding-top:20px; }
+  .qr .q{ width:150px; height:150px; margin:8px auto 0; background:#fff; border-radius:12px; padding:8px; }
+  .qr .q svg{ width:100%; height:100%; display:block; }
+  .qr p{ color:var(--dim); font-size:0.8rem; margin-top:10px; }
+
+  .ios{ margin-top:20px; font-size:0.84rem; color:var(--dim); line-height:1.7; }
+  .ios a{ color:var(--blue); text-decoration:none; }
+  .foot{ margin-top:22px; }
+  .foot a{ color:var(--blue); text-decoration:none; font-size:0.9rem; }
+</style>
+</head>
+<body>
+  <a class="home" href="../">← 返回环球电波</a>
+  <div class="card">
+    <img class="icon" src="../icons/icon-512.png" alt="环球电波">
+    <h1>环球电波</h1>
+    <div class="meta">安卓 App · 版本 1.0 · Android 7.0+</div>
+    <p class="lead">转动 3D 地球，点亮世界各地电台，实时收听全球广播。<br>国内直连优先、无需登录。</p>
+
+    <a class="dl" id="dlBtn" href="ooglex-radio.apk" download="环球电波.apk">⬇️ 下载安卓 App（APK）</a>
+    <div class="dl-sub" id="dlSub">点击后开始下载，下载完成打开即可安装</div>
+
+    <div class="steps">
+      <h2>📥 安装步骤</h2>
+      <ol>
+        <li>用<b>手机浏览器</b>打开本页，点上方<b>下载</b></li>
+        <li>下载完成后<b>打开这个 APK 文件</b></li>
+        <li>若提示「未知来源」，点<b>允许本次安装 / 去设置里允许</b></li>
+        <li>点<b>安装</b> → 完成，桌面出现「环球电波」图标</li>
+      </ol>
+      <div class="note">📛 部分手机的 Play Protect 会提示「未知开发者」，这是所有非商店 APK 的正常提示——点<b>「仍然安装 / 详细信息 → 继续安装」</b>即可。安装后就是全屏 App，可离线打开。</div>
+    </div>
+
+    <div class="qr">
+      <div class="q"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31 31" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h31v31H0z"/><path stroke="#000000" d="M1 1.5h7m4 0h2m3 0h1m2 0h2m1 0h7M1 2.5h1m5 0h1m4 0h1m3 0h4m3 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m1 0h2m1 0h1m2 0h1m1 0h1m5 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h2m2 0h2m1 0h1m1 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m1 0h1m1 0h1m5 0h5m1 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m1 0h2m1 0h1m2 0h2m1 0h1m4 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M9 8.5h1m1 0h1m1 0h1m2 0h2M1 9.5h1m1 0h5m2 0h1m3 0h1m3 0h1m2 0h1m1 0h5M1 10.5h2m1 0h2m3 0h3m1 0h2m2 0h1m2 0h6m3 0h1M1 11.5h3m1 0h1m1 0h2m5 0h3m1 0h2m1 0h1m3 0h1M2 12.5h3m1 0h1m2 0h4m2 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h1M1 13.5h2m4 0h2m1 0h2m6 0h1m7 0h2M2 14.5h1m3 0h1m1 0h1m1 0h1m1 0h3m2 0h1m1 0h3m1 0h3m3 0h1M2 15.5h2m3 0h3m1 0h1m1 0h5m1 0h1m1 0h4m1 0h2M4 16.5h1m3 0h2m1 0h4m2 0h1m2 0h3m1 0h2m2 0h1M2 17.5h2m1 0h4m1 0h3m2 0h4m1 0h1m1 0h1m3 0h2M1 18.5h1m1 0h1m1 0h1m2 0h1m1 0h2m1 0h1m3 0h1m1 0h2m1 0h4m1 0h1m1 0h1M1 19.5h1m2 0h1m1 0h4m2 0h2m2 0h2m3 0h1m1 0h2m2 0h1M1 20.5h1m2 0h1m1 0h1m1 0h4m3 0h1m1 0h1m1 0h1m1 0h4m3 0h1M1 21.5h1m1 0h7m2 0h2m4 0h1m1 0h6m1 0h3M9 22.5h1m1 0h2m1 0h2m1 0h3m1 0h1m3 0h5M1 23.5h7m2 0h2m2 0h3m2 0h3m1 0h1m1 0h3M1 24.5h1m5 0h1m1 0h2m3 0h1m1 0h2m2 0h2m3 0h1m3 0h1M1 25.5h1m1 0h3m1 0h1m1 0h2m1 0h1m2 0h2m1 0h1m2 0h5m1 0h1M1 26.5h1m1 0h3m1 0h1m1 0h1m3 0h2m2 0h5m4 0h4M1 27.5h1m1 0h3m1 0h1m1 0h1m3 0h2m1 0h3m1 0h9M1 28.5h1m5 0h1m3 0h1m2 0h2m1 0h1m3 0h2m1 0h1m1 0h1m1 0h1M1 29.5h7m1 0h1m1 0h1m3 0h1m2 0h3m2 0h2m2 0h1"/></svg></div>
+      <p>扫码把本页发到手机上下载</p>
+    </div>
+
+    <div class="ios">
+      🍎 iPhone / iPad 用户：APK 仅限安卓。请用 <b>Safari</b> 打开
+      <a href="../">环球电波网页版</a>，点分享 ⬆️ →「添加到主屏幕」即可像 App 一样使用。
+    </div>
+    <div class="foot">
+      <a href="../">🌍 先在浏览器里打开体验 →</a>
+    </div>
+  </div>
+</body>
+</html>

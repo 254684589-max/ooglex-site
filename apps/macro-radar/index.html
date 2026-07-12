@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>宏观雷达 · Macro Radar · 每日市场机制仪表盘</title>
+<meta name="description" content="宏观雷达 Macro Radar：一眼看清市场机制红绿灯——流动性 / 波动率 / 期限溢价 / 信用 / 增长 / 美元 / 广度，附跨资产热力图与异动流，数据每日自动更新（FRED · Yahoo）。">
+<link rel="canonical" href="https://www.ooglex.com/apps/macro-radar/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="宏观雷达 · Macro Radar · 每日市场机制仪表盘">
+<meta property="og:description" content="市场机制红绿灯 + 跨资产热力图 + 异动流，7 大制度信号一屏看清，每日自动更新。">
+<meta property="og:url" content="https://www.ooglex.com/apps/macro-radar/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#080b0f; --panel:#0e1319; --panel2:#111823; --line:rgba(255,255,255,0.08);
+    --text:#e8eef2; --dim:#8a97a6; --faint:#5c6774;
+    --mint:#34e0c4; --mint2:#7ff0dd;
+    --red:#e0554f; --amber:#e0a750; --green:#3fae7d; --neutral:#e0a750;
+    --track:rgba(255,255,255,0.06);
+  }
+  html,body { overflow-x:hidden; }
+  body {
+    min-height:100vh; color:var(--text);
+    background:
+      radial-gradient(900px 460px at 8% -6%, rgba(52,224,196,0.10), transparent 60%),
+      radial-gradient(820px 440px at 96% 0%, rgba(63,174,125,0.08), transparent 60%),
+      radial-gradient(900px 620px at 60% 118%, rgba(224,85,79,0.06), transparent 62%),
+      var(--bg);
+    background-attachment:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    line-height:1.5; font-size:15px;
+  }
+  .wrap { max-width:1240px; margin:0 auto; padding:14px 20px 60px; position:relative; z-index:2; }
+
+  /* 顶栏 */
+  .bar { display:flex; align-items:center; justify-content:space-between; padding:6px 0 14px; }
+  .bar a.back { color:var(--mint); text-decoration:none; font-size:0.9rem; opacity:.9; }
+  .bar a.back:hover { opacity:.65; }
+  .bar .brand { color:var(--faint); font-size:0.78rem; letter-spacing:2px; }
+
+  /* 标题行 */
+  .head { display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:14px; margin-bottom:20px; }
+  .head .kicker { color:var(--mint); font-size:0.72rem; letter-spacing:3px; font-weight:600; opacity:.85; }
+  .head h1 { font-size:2.5rem; letter-spacing:2px; font-weight:800; line-height:1.05; margin-top:6px; }
+  .head h1 .cn { background:linear-gradient(96deg,#a9f5e7,#34e0c4 55%,#3fae7d);
+    -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .head h1 .en { color:var(--dim); font-size:1.05rem; font-weight:600; letter-spacing:4px; margin-left:10px; }
+  .badges { display:flex; align-items:center; gap:9px; }
+  .pill { display:inline-flex; align-items:center; gap:7px; font-size:0.74rem; padding:6px 13px;
+    border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,0.03); white-space:nowrap; }
+  .pill .d { width:7px; height:7px; border-radius:50%; }
+  .pill.live { color:#8ff0dd; border-color:rgba(52,224,196,.3); }
+  .pill.live .d { background:var(--mint); box-shadow:0 0 0 0 rgba(52,224,196,.6); animation:pulse 2s infinite; }
+  .pill.sample { color:#f0c778; border-color:rgba(224,167,80,.3); }
+  .pill.sample .d { background:var(--amber); }
+  .pill.clock { color:var(--dim); font-variant-numeric:tabular-nums; }
+  @keyframes pulse { 70%{box-shadow:0 0 0 6px rgba(52,224,196,0);} 100%{box-shadow:0 0 0 0 rgba(52,224,196,0);} }
+
+  .panel { position:relative; background:linear-gradient(180deg, rgba(17,24,35,.92), rgba(12,17,25,.92));
+    border:1px solid var(--line); border-radius:16px;
+    box-shadow:0 30px 70px -40px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.04); }
+  .corner::before, .corner::after { content:""; position:absolute; width:16px; height:16px; opacity:.5; }
+  .corner::before { top:10px; left:10px; border-top:1.5px solid var(--mint); border-left:1.5px solid var(--mint); }
+  .corner::after { bottom:10px; right:10px; border-bottom:1.5px solid var(--mint); border-right:1.5px solid var(--mint); }
+
+  .sectitle { display:flex; align-items:center; gap:12px; margin:26px 2px 13px; }
+  .sectitle b { font-size:0.98rem; font-weight:700; letter-spacing:1px; }
+  .sectitle span { color:var(--faint); font-size:0.72rem; letter-spacing:2px; }
+  .sectitle .ln { flex:1; height:1px; background:linear-gradient(90deg,var(--line),transparent); }
+
+  /* 机制总览 */
+  .regime { padding:26px 30px 22px; }
+  .regime .top { display:flex; align-items:baseline; gap:22px; flex-wrap:wrap; }
+  .regime .lab { color:var(--faint); font-size:0.72rem; letter-spacing:3px; }
+  .regime .big { font-size:2.9rem; font-weight:800; letter-spacing:2px; line-height:1; }
+  .regime .score { font-size:2.3rem; font-weight:800; font-variant-numeric:tabular-nums; }
+  .regime .score s { font-size:1rem; color:var(--faint); font-weight:600; text-decoration:none; }
+  .regime .desc { color:var(--dim); font-size:0.9rem; max-width:560px; margin-top:2px; }
+  .regime .row2 { display:flex; align-items:flex-end; gap:26px; flex-wrap:wrap; }
+  .scale { margin-top:24px; }
+  .scale .ticks { display:flex; justify-content:space-between; color:var(--faint); font-size:0.7rem; margin-bottom:6px; font-variant-numeric:tabular-nums; }
+  .scale .barwrap { position:relative; height:12px; }
+  .scale .track { height:9px; border-radius:999px; margin-top:1.5px;
+    background:linear-gradient(90deg,#d3403b 0%,#e0834a 26%,#e0c24a 50%,#7cba63 74%,#2f9d67 100%); }
+  .scale .mark { position:absolute; top:-4px; width:16px; height:16px; transform:translateX(-50%) rotate(45deg);
+    background:#fff; border:2px solid #0b0f14; border-radius:3px; box-shadow:0 2px 8px rgba(0,0,0,.5); }
+  .scale .ends { display:flex; justify-content:space-between; margin-top:9px; font-size:0.72rem; }
+  .scale .ends .l { color:#e0776f; } .scale .ends .c { color:var(--faint); } .scale .ends .r { color:#6fcea4; }
+
+  /* 信号卡片 */
+  .sgrid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
+  .sig { padding:14px 15px 13px; }
+  .sig .r1 { display:flex; align-items:center; justify-content:space-between; }
+  .sig .en { color:var(--faint); font-size:0.64rem; letter-spacing:1.5px; font-weight:600; }
+  .sig .dot { width:9px; height:9px; border-radius:50%; }
+  .sig h3 { font-size:1.18rem; font-weight:700; margin:9px 0 6px; letter-spacing:1px; }
+  .sig .sc { display:flex; align-items:baseline; gap:6px; }
+  .sig .sc b { font-size:1.7rem; font-weight:800; font-variant-numeric:tabular-nums; line-height:1; }
+  .sig .sc s { font-size:0.72rem; color:var(--faint); text-decoration:none; }
+  .sig .tag { font-size:0.66rem; padding:2px 8px; border-radius:6px; margin-left:auto; align-self:center; font-weight:600; }
+  .sig .spark { height:34px; margin:11px 0 9px; }
+  .sig .spark svg { width:100%; height:100%; display:block; }
+  .sig .d { color:var(--dim); font-size:0.76rem; line-height:1.45; min-height:2.2em; }
+  .tag.stress { color:#f0a09a; background:rgba(224,85,79,.14); }
+  .tag.neutral { color:#f0cb86; background:rgba(224,167,80,.14); }
+  .tag.support { color:#8fddb8; background:rgba(63,174,125,.16); }
+
+  /* 底部两栏 */
+  .cols { display:grid; grid-template-columns:1.55fr 1fr; gap:14px; align-items:start; }
+  .card-h { display:flex; align-items:center; gap:11px; padding:15px 18px 12px; }
+  .card-h b { font-size:0.92rem; font-weight:700; letter-spacing:1px; }
+  .card-h span { color:var(--faint); font-size:0.68rem; letter-spacing:2px; }
+
+  .htcols { display:flex; gap:22px; align-items:flex-start; }
+  .htcol { flex:1; min-width:0; }
+  .htable { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
+  .htwrap { overflow-x:auto; padding:2px 12px 14px; }
+  .htable th { color:var(--faint); font-size:0.68rem; font-weight:600; letter-spacing:1px; text-align:right; padding:6px 10px; border-bottom:1px solid var(--line); }
+  .htable th.a { text-align:left; }
+  .htable td { padding:0; text-align:right; }
+  .htable td.a { text-align:left; padding:7px 10px; white-space:nowrap; }
+  .htable td.a b { font-weight:600; font-size:0.9rem; }
+  .htable td.a s { color:var(--faint); font-size:0.66rem; text-decoration:none; margin-left:6px; letter-spacing:.5px; }
+  .htable .cell { display:block; margin:3px; padding:7px 10px; border-radius:6px; font-size:0.85rem; font-weight:600; }
+  .htable tbody tr:hover td.a { color:var(--mint2); }
+  .htable tr.grp td.ghead { text-align:left; padding:12px 10px 5px; color:var(--mint); font-size:0.7rem;
+    font-weight:700; letter-spacing:2px; border-bottom:1px solid rgba(52,224,196,.16); }
+
+  /* 市场异动 · 全红字提示 */
+  .mut-read { margin:0 16px 10px; padding:10px 14px; border-radius:10px;
+    background:rgba(224,85,79,.08); border:1px solid rgba(224,85,79,.28);
+    color:#ff6b5c; font-size:0.82rem; line-height:1.5; font-weight:600; }
+  .muts { padding:2px 16px 16px; display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:10px; }
+  .mut { display:flex; gap:11px; padding:11px 12px; border:1px solid rgba(224,85,79,.26); border-radius:10px;
+    background:rgba(224,85,79,.05); }
+  .mut .md { width:8px; height:8px; border-radius:50%; margin-top:6px; flex:none; background:#ff6b5c !important; }
+  .mut .mb { flex:1; }
+  .mut .mtop { display:flex; align-items:center; gap:8px; margin-bottom:2px; }
+  .mut .sig-chip { font-size:0.68rem; color:#ff8f83; border:1px solid rgba(224,85,79,.35); padding:1px 7px; border-radius:5px; }
+  .mut .time { color:#e0776f; font-size:0.68rem; font-variant-numeric:tabular-nums; margin-left:auto; }
+  .mut .mt { font-size:0.84rem; color:#ff6b5c; line-height:1.45; }
+  .mut .mt em { font-style:normal; font-weight:800; color:#ff5148; }
+
+  /* 宏观管道 · 分组（全部展开，标题醒目色） */
+  .macrogrid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; align-items:start; }
+  .mcat { background:linear-gradient(180deg, rgba(17,24,35,.92), rgba(12,17,25,.92));
+    border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .mcat .mhead { padding:12px 15px 10px; display:flex; align-items:center; gap:9px; }
+  .mcat .mhead b { font-size:1rem; font-weight:800; letter-spacing:.5px; }
+  .mcat .mhead .en { color:var(--faint); font-size:0.6rem; letter-spacing:1.5px; }
+  .mcat .mhead .src { margin-left:auto; font-size:0.58rem; color:var(--dim); border:1px solid var(--line);
+    padding:1px 6px; border-radius:5px; letter-spacing:1px; }
+  .mrows { padding:0 8px 10px; }
+  .mrow { display:flex; align-items:baseline; gap:8px; padding:7px 7px; border-top:1px solid rgba(255,255,255,.05); }
+  .mrow .mn { flex:1; font-size:0.82rem; color:var(--text); }
+  .mrow .mn s { display:block; color:var(--faint); font-size:0.6rem; text-decoration:none; letter-spacing:.5px; margin-top:1px; }
+  .mrow .mv { font-weight:700; font-size:0.9rem; font-variant-numeric:tabular-nums; }
+  .mrow .mc { font-size:0.72rem; font-variant-numeric:tabular-nums; min-width:52px; text-align:right; }
+  .mrow .mc.up { color:#5fd39a; } .mrow .mc.down { color:#e0776f; } .mrow .mc.flat { color:var(--faint); }
+
+  /* Regime 时光机 */
+  .tm-panel { padding:16px 18px 14px; }
+  .tm-top { display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
+  .tm-read { display:flex; align-items:baseline; gap:12px; }
+  .tm-read .tm-date { color:var(--dim); font-size:0.82rem; font-variant-numeric:tabular-nums; min-width:88px; }
+  .tm-read .tm-score { font-size:1.9rem; font-weight:800; font-variant-numeric:tabular-nums; line-height:1; }
+  .tm-read .tm-lab { font-size:0.95rem; font-weight:700; }
+  .tm-hint { color:var(--faint); font-size:0.7rem; letter-spacing:1px; }
+  .tm-chart { position:relative; height:230px; cursor:crosshair; touch-action:none; user-select:none; }
+  .tm-chart svg { width:100%; height:100%; display:block; }
+  .tm-sigbars { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin:12px 0 4px; }
+  .tm-sig { background:rgba(255,255,255,.025); border:1px solid var(--line); border-radius:9px; padding:7px 9px 8px; }
+  .tm-sig .n { color:var(--dim); font-size:0.66rem; letter-spacing:.5px; }
+  .tm-sig .v { font-size:1.02rem; font-weight:800; font-variant-numeric:tabular-nums; line-height:1.25; }
+  .tm-sig .bar { height:4px; border-radius:99px; background:var(--track); margin-top:5px; overflow:hidden; }
+  .tm-sig .bar i { display:block; height:100%; border-radius:99px; }
+  .tm-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .tm-chip { cursor:pointer; font-size:0.74rem; padding:5px 12px; border-radius:999px;
+    border:1px solid var(--line); background:rgba(255,255,255,.03); color:var(--dim);
+    font-family:inherit; transition:border-color .15s, color .15s; }
+  .tm-chip:hover { color:var(--text); border-color:rgba(224,85,79,.5); }
+  .tm-chip.on { color:#ff8f83; border-color:rgba(224,85,79,.6); background:rgba(224,85,79,.10); }
+  .tm-desc { margin-top:10px; padding:10px 14px; border-radius:10px; font-size:0.82rem; line-height:1.55;
+    background:rgba(224,85,79,.06); border:1px solid rgba(224,85,79,.22); color:#ffb0a8; }
+  .tm-desc b { color:#ff6b5c; }
+  .tm-note { margin-top:10px; color:var(--faint); font-size:0.68rem; }
+
+  footer { margin-top:26px; padding-top:16px; border-top:1px solid var(--line);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; color:var(--faint); font-size:0.72rem; }
+  footer a { color:var(--dim); text-decoration:none; }
+
+  @media (max-width:900px) {
+    .head h1 { font-size:2rem; } .head h1 .en { display:block; margin:6px 0 0; font-size:0.9rem; }
+    .sgrid { grid-template-columns:repeat(2,1fr); }
+    .cols { grid-template-columns:1fr; }
+    .macrogrid { grid-template-columns:1fr; }
+    .htcols { flex-direction:column; gap:0; }
+    .tm-sigbars { grid-template-columns:repeat(4,1fr); }
+    .tm-chart { height:190px; }
+    .regime { padding:20px 18px; } .regime .big { font-size:2.3rem; }
+    .wrap { padding:12px 14px 48px; }
+  }
+  @media (max-width:520px){
+    .sgrid { grid-template-columns:1fr 1fr; }
+    /* 热力图在手机上压紧，保证 5 个时间列完整显示、不被截断 */
+    .htwrap { padding:2px 4px 12px; }
+    .htable td.a s { display:none; }               /* 隐藏代码，让出宽度 */
+    .htable td.a { padding:6px 4px; max-width:108px; }
+    .htable td.a b { font-size:0.78rem; }
+    .htable th { padding:5px 2px; font-size:0.58rem; }
+    .htable .cell { margin:2px 1px; padding:5px 2px; font-size:0.72rem; }
+    .htable tr.grp td.ghead { padding:9px 4px 4px; letter-spacing:1px; }
+  }
+</style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <a class="back" href="../../">← <span style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a>
+      <span class="brand">黄河浮桥远航基金 · VOYAGER FUND</span>
+    </div>
+
+    <div class="head">
+      <div>
+        <div class="kicker">VOYAGER FUND · MACRO DASHBOARD</div>
+        <h1><span class="cn">宏观雷达</span><span class="en">MACRO RADAR</span></h1>
+      </div>
+      <div class="badges" id="badges"></div>
+    </div>
+
+    <!-- 机制总览 -->
+    <div class="panel corner regime" id="regime"></div>
+
+    <!-- 制度信号 -->
+    <div class="sectitle"><b>制度信号</b><span>REGIME SIGNALS</span><span class="ln"></span></div>
+    <div class="sgrid" id="signals"></div>
+
+    <!-- Regime 时光机 -->
+    <div id="tm-sec" hidden>
+      <div class="sectitle"><b>Regime 时光机</b><span>REGIME TIME MACHINE · 2006 → NOW</span><span class="ln"></span></div>
+      <div class="panel tm-panel">
+        <div class="tm-top">
+          <div class="tm-read">
+            <span class="tm-date" id="tm-date">—</span>
+            <span class="tm-score" id="tm-score">—</span>
+            <span class="tm-lab" id="tm-label">—</span>
+          </div>
+          <div class="tm-hint">◂ 拖动时间轴 · 点击下方危机事件自动重放 ▸</div>
+        </div>
+        <div class="tm-chart" id="tm-chart"></div>
+        <div class="tm-sigbars" id="tm-sigbars"></div>
+        <div class="tm-chips" id="tm-chips"></div>
+        <div class="tm-desc" id="tm-desc" hidden></div>
+        <div class="tm-note">历史机制为按当前方法学的周频回溯（滚动 2 年分位 · 同权重 · EMA 平滑），非当年实时发布值。数据每日自动重建、曲线右端随之延伸；未标注的连续压力段（读数 ≤35 持续两周以上）会自动画出 ⚠ 预警红区，用于监视未来危机。</div>
+      </div>
+    </div>
+
+    <!-- 宏观管道（分组，默认全部展开） -->
+    <div id="macro-sec" hidden>
+      <div class="sectitle"><b>宏观管道</b><span>MACRO PLUMBING · FED &amp; RATES</span><span class="ln"></span></div>
+      <div class="macrogrid" id="macro"></div>
+    </div>
+
+    <!-- 市场异动（页面最下方） -->
+    <div class="panel" style="margin-top:26px">
+      <div class="card-h"><b>市场异动</b><span>MARKET MUTATIONS</span></div>
+      <div class="mut-read" id="mut-read"></div>
+      <div class="muts" id="muts"></div>
+    </div>
+
+    <footer>
+      <span id="foot-left">数据更新 · —</span>
+      <span>数据源 · <span id="foot-src">Yahoo Finance / 交易所行情</span> · 仅供研究，非投资建议</span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+  <script src="../../assets/ambient.js"></script>
+</body>
+</html>
