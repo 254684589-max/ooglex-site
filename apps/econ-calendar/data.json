@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-07-13T11:45:02Z",
+  "updatedAt": "2026-07-13T18:22:52Z",
   "asOf": "2026-07-13",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-07-12 ~ 2026-07-17",
   "count": 98,
-  "highCount": 15,
+  "highCount": 14,
   "events": [
     {
       "ts": "2026-07-12T22:30:00Z",
@@ -62,7 +62,7 @@
       "title": "Federal Budget Balance",
       "titleEn": "Federal Budget Balance",
       "impact": "low",
-      "forecast": "-132.8B",
+      "forecast": "-135.8B",
       "previous": "-292.6B",
       "actual": null
     },
@@ -98,7 +98,7 @@
       "title": "零售销售 同比",
       "titleEn": "BRC Retail Sales Monitor y/y",
       "impact": "low",
-      "forecast": "2.9%",
+      "forecast": "2.6%",
       "previous": "3.4%",
       "actual": null
     },
@@ -134,7 +134,7 @@
       "title": "贸易帐",
       "titleEn": "Trade Balance",
       "impact": "low",
-      "forecast": "820B",
+      "forecast": "810B",
       "previous": "724B",
       "actual": null
     },
@@ -146,7 +146,7 @@
       "title": "贸易帐",
       "titleEn": "USD-Denominated Trade Balance",
       "impact": "low",
-      "forecast": "121.4B",
+      "forecast": "119.5B",
       "previous": "105.4B",
       "actual": null
     },
@@ -170,7 +170,7 @@
       "title": "German WPI m/m",
       "titleEn": "German WPI m/m",
       "impact": "low",
-      "forecast": "0.2%",
+      "forecast": "0.5%",
       "previous": "-0.6%",
       "actual": null
     },
@@ -229,7 +229,7 @@
       "flag": "🇬🇧",
       "title": "英央行行长讲话",
       "titleEn": "BOE Gov Bailey Speaks",
-      "impact": "high",
+      "impact": "medium",
       "forecast": null,
       "previous": null,
       "actual": null
@@ -242,7 +242,7 @@
       "title": "NFIB Small Business Index",
       "titleEn": "NFIB Small Business Index",
       "impact": "low",
-      "forecast": "95.6",
+      "forecast": "95.8",
       "previous": "95.3",
       "actual": null
     },
@@ -470,7 +470,7 @@
       "title": "工业产出 同比",
       "titleEn": "Industrial Production y/y",
       "impact": "low",
-      "forecast": "4.6%",
+      "forecast": "4.7%",
       "previous": "4.5%",
       "actual": null
     },
@@ -590,7 +590,7 @@
       "title": "核心 PPI 环比",
       "titleEn": "Core PPI m/m",
       "impact": "high",
-      "forecast": "0.3%",
+      "forecast": "0.4%",
       "previous": "0.4%",
       "actual": null
     },
@@ -614,7 +614,7 @@
       "title": "纽约联储制造业指数",
       "titleEn": "Empire State Manufacturing Index",
       "impact": "low",
-      "forecast": "8.7",
+      "forecast": "9.4",
       "previous": "5.7",
       "actual": null
     },
@@ -680,18 +680,6 @@
     },
     {
       "ts": "2026-07-15T14:30:00Z",
-      "ccy": "CAD",
-      "country": "加拿大",
-      "flag": "🇨🇦",
-      "title": "新闻发布会",
-      "titleEn": "BOC Press Conference",
-      "impact": "high",
-      "forecast": null,
-      "previous": null,
-      "actual": null
-    },
-    {
-      "ts": "2026-07-15T14:30:00Z",
       "ccy": "USD",
       "country": "美国",
       "flag": "🇺🇸",
@@ -700,6 +688,18 @@
       "impact": "low",
       "forecast": null,
       "previous": "3.0M",
+      "actual": null
+    },
+    {
+      "ts": "2026-07-15T14:45:00Z",
+      "ccy": "CAD",
+      "country": "加拿大",
+      "flag": "🇨🇦",
+      "title": "新闻发布会",
+      "titleEn": "BOC Press Conference",
+      "impact": "high",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
@@ -770,7 +770,7 @@
       "title": "GDP（国内生产总值） 环比",
       "titleEn": "GDP m/m",
       "impact": "high",
-      "forecast": "0.1%",
+      "forecast": "0.0%",
       "previous": "-0.1%",
       "actual": null
     },
@@ -794,7 +794,7 @@
       "title": "贸易帐",
       "titleEn": "Goods Trade Balance",
       "impact": "low",
-      "forecast": "-22.8B",
+      "forecast": "-23.1B",
       "previous": "-26.0B",
       "actual": null
     },
@@ -854,7 +854,7 @@
       "title": "贸易帐",
       "titleEn": "Italian Trade Balance",
       "impact": "low",
-      "forecast": "4.50B",
+      "forecast": "4.83B",
       "previous": "4.29B",
       "actual": null
     },
@@ -866,7 +866,7 @@
       "title": "贸易帐",
       "titleEn": "Trade Balance",
       "impact": "low",
-      "forecast": "2.5B",
+      "forecast": "2.8B",
       "previous": "1.3B",
       "actual": null
     },
@@ -890,7 +890,7 @@
       "title": "新屋开工",
       "titleEn": "Housing Starts",
       "impact": "low",
-      "forecast": "257K",
+      "forecast": "256K",
       "previous": "261K",
       "actual": null
     },
@@ -902,7 +902,7 @@
       "title": "核心零售销售 环比",
       "titleEn": "Core Retail Sales m/m",
       "impact": "medium",
-      "forecast": "-0.1%",
+      "forecast": "0.0%",
       "previous": "0.8%",
       "actual": null
     },
@@ -914,7 +914,7 @@
       "title": "Philly Fed Manufacturing Index",
       "titleEn": "Philly Fed Manufacturing Index",
       "impact": "medium",
-      "forecast": "12.1",
+      "forecast": "12.7",
       "previous": "10.3",
       "actual": null
     },
@@ -926,7 +926,7 @@
       "title": "零售销售 环比",
       "titleEn": "Retail Sales m/m",
       "impact": "medium",
-      "forecast": "0.3%",
+      "forecast": "0.2%",
       "previous": "0.9%",
       "actual": null
     },
@@ -938,7 +938,7 @@
       "title": "申请失业金人数",
       "titleEn": "Unemployment Claims",
       "impact": "medium",
-      "forecast": "215K",
+      "forecast": "216K",
       "previous": "215K",
       "actual": null
     },
@@ -974,7 +974,7 @@
       "title": "成屋签约销售 环比",
       "titleEn": "Pending Home Sales m/m",
       "impact": "low",
-      "forecast": "-0.3%",
+      "forecast": "-0.4%",
       "previous": "3.8%",
       "actual": null
     },
@@ -1058,7 +1058,7 @@
       "title": "经常账户",
       "titleEn": "Current Account",
       "impact": "low",
-      "forecast": "17.1B",
+      "forecast": "18.1B",
       "previous": "15.7B",
       "actual": null
     },
@@ -1118,7 +1118,7 @@
       "title": "新屋开工",
       "titleEn": "Housing Starts",
       "impact": "low",
-      "forecast": "1.32M",
+      "forecast": "1.31M",
       "previous": "1.18M",
       "actual": null
     },
@@ -1130,7 +1130,7 @@
       "title": "进口物价 环比",
       "titleEn": "Import Prices m/m",
       "impact": "low",
-      "forecast": "-0.4%",
+      "forecast": "-0.7%",
       "previous": "1.9%",
       "actual": null
     },
@@ -1166,7 +1166,7 @@
       "title": "消费者信心指数",
       "titleEn": "Prelim UoM Consumer Sentiment",
       "impact": "medium",
-      "forecast": "51.4",
+      "forecast": "51.0",
       "previous": "48.9",
       "actual": null
     },
