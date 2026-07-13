@@ -421,7 +421,13 @@ def build():
         return
 
     # —— 输出网格：T10Y3M 打分日期每 5 个取 1（≈周频），起点 START_OUT ——
-    grid = [d for d, _ in sl_p if d >= START_OUT][::5]
+    tail = [d for d, _ in sl_p if d >= START_OUT]
+    grid = tail[::5]
+    # 周频下采样会把最近不足 5 个交易日的一段丢掉，令曲线右端最多滞后约一周
+    # （表现为"停在上周某分数"）。补一个"最新交易日"点，让右端追到当前；
+    # 该点仍按同一 as-of + 2 年分位方法学计算，其余点保持周频回溯。
+    if tail and grid and grid[-1] != tail[-1]:
+        grid.append(tail[-1])
     if len(grid) < 200:
         print("输出网格过短（%d），保留旧 history.json。" % len(grid))
         return

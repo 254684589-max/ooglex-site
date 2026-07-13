@@ -32,7 +32,8 @@ import requests
 OUT_PATH = os.path.join("apps", "macro-radar", "data.json")
 UA = {"User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                      "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")}
-WIN = 504  # 分位窗口 ≈ 两年交易日
+WIN = 504    # 分位窗口 ≈ 两年「日频」交易日（VIX/OAS/曲线/汇率/比价等日频序列）
+WIN_W = 104  # 分位窗口 ≈ 两年「周频」（净流动性 WALCL 等周报序列；504 会拉成≈10 年）
 
 
 
@@ -71,14 +72,16 @@ def yahoo_series(symbols, rng="2y"):
 
 # ── 取数：FRED 免登录 CSV ───────────────────────────────────────────────
 # ── 工具 ────────────────────────────────────────────────────────────────
-def pct_rank(values, x=None):
-    """x 在 values（尾部窗口）中的百分位 0–100；x 缺省取最后一个。"""
-    win = [v for v in values[-WIN:] if v is not None]
-    if not win:
+def pct_rank(values, x=None, win=WIN):
+    """x 在 values（尾部窗口）中的百分位 0–100；x 缺省取最后一个。
+    win 缺省 WIN(≈2 年日频)；周频/月频序列须显式传入对应点数（如净流动性用
+    WIN_W=104），否则 504 点窗口会把周频拉成≈10 年、与方法学的『2 年分位』不符。"""
+    w = [v for v in values[-win:] if v is not None]
+    if not w:
         return None
-    x = win[-1] if x is None else x
-    below = sum(1 for v in win if v <= x)
-    return round(100.0 * below / len(win), 1)
+    x = w[-1] if x is None else x
+    below = sum(1 for v in w if v <= x)
+    return round(100.0 * below / len(w), 1)
 
 
 
@@ -359,7 +362,7 @@ def build():
     hit = 0  # 成功抓到的数据源计数，用于判断是否 LIVE
 
     # —— 底层序列（全部 Yahoo）——
-    vix = yahoo_series("^VIX", "1y")
+    vix = yahoo_series("^VIX", "2y")   # 2 年窗口：波动率分位与方法学/时光机(WIN=504)对齐
     vix3m = yahoo_series("^VIX3M", "1y")
     dxy = yahoo_series(["DX-Y.NYB", "DX=F"], "2y")
     hg = yahoo_series("HG=F", "2y")
@@ -404,11 +407,13 @@ def build():
     if netliq and len(netliq) > 14:
         nl = [v for _, v in netliq]
         comps = []  # (权重, 0–100 分)
-        level_p = pct_rank(nl)
+        # 净流动性为周频（WALCL 周报）：分位窗口用 WIN_W=104(≈2 年)，与时光机口径一致；
+        # 若沿用日频默认 504，会把窗口拉成≈10 年，令流动性分位系统性偏高、两块面板对不上。
+        level_p = pct_rank(nl, win=WIN_W)
         if level_p is not None:
             comps.append((0.35, level_p))
         imp = [nl[i] - nl[i - 13] for i in range(13, len(nl))]   # 13 周净流动性变化序列
-        imp_p = pct_rank(imp)
+        imp_p = pct_rank(imp, win=WIN_W)
         if imp_p is not None:
             comps.append((0.40, imp_p))
         sofr = fred_api("SOFR")
