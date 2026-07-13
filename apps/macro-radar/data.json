@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-07-13T10:38:53Z",
+  "updatedAt": "2026-07-13T12:56:31Z",
   "asOf": "2026-07-13",
-  "asOfSh": "2026-07-13 18:38",
+  "asOfSh": "2026-07-13 20:56",
   "live": true,
   "source": "FRED · Yahoo Finance · 交易所行情",
   "regime": {
-    "score": 62,
+    "score": 61,
     "labelZh": "中性偏松",
     "labelEn": "NEUTRAL-EASY",
     "desc": "市场广度、美元汇率走弱压制风险偏好；信用利差、增长动能相对稳健，尚未进入系统性压力区。"
@@ -15,10 +15,10 @@
       "key": "liquidity",
       "en": "LIQUIDITY",
       "zh": "流动性",
-      "score": 61,
-      "status": "support",
-      "statusZh": "支持",
-      "desc": "净流动性 5.96T，近 13 周 +13B（回升）；SOFR−IORB -12bp（充裕）",
+      "score": 60,
+      "status": "neutral",
+      "statusZh": "中性",
+      "desc": "净流动性 5.96T，近 13 周 +13B（回升）；SOFR−IORB -10bp（充裕）",
       "spark": [
         5989.749,
         6072.868,
@@ -66,7 +66,7 @@
       "key": "volatility",
       "en": "VOLATILITY",
       "zh": "波动率",
-      "score": 69,
+      "score": 64,
       "status": "support",
       "statusZh": "支持",
       "desc": "VIX 抬升，期限结构正向 (contango)",
@@ -219,7 +219,7 @@
       "key": "growth",
       "en": "GROWTH",
       "zh": "增长动能",
-      "score": 73,
+      "score": 74,
       "status": "support",
       "statusZh": "支持",
       "desc": "增长动能综合：铜金比 · 半导体/大盘(SOX) · 周期/防御(XLY/XLP)",
@@ -371,9 +371,9 @@
   ],
   "mutations": [
     {
-      "sig": "利率",
-      "status": "red",
-      "text": "3M 短端利率周环比 +3bp（加息定价升温、边际收紧）"
+      "sig": "期限溢价",
+      "status": "green",
+      "text": "收益率曲线周环比 +9bp（走陡）"
     },
     {
       "sig": "市场广度",
@@ -386,7 +386,7 @@
       "text": "高收益/投资级比价周环比 +1.1%，风险偏好回升"
     }
   ],
-  "mutSummary": "今日 3 条市场异动，避险情绪升温、结构偏承压；与机制读数 62（中性偏松）方向一致。",
+  "mutSummary": "今日 3 条市场异动，风险偏好占优、结构偏支持；与机制读数 61（中性偏松）方向一致。",
   "macro": [
     {
       "zh": "利率走廊",
@@ -402,10 +402,10 @@
           "id": "DFF"
         },
         {
-          "val": "3.53%",
-          "chg": "-5bp",
-          "tone": "down",
-          "asOf": "2026-07-09",
+          "val": "3.55%",
+          "chg": "+2bp",
+          "tone": "up",
+          "asOf": "2026-07-10",
           "name": "SOFR 担保隔夜融资利率",
           "id": "SOFR"
         },
@@ -421,7 +421,7 @@
           "val": "3.75%",
           "chg": "+0bp",
           "tone": "flat",
-          "asOf": "2026-07-12",
+          "asOf": "2026-07-13",
           "name": "联邦基金目标上限",
           "id": "DFEDTARU"
         },
@@ -429,7 +429,7 @@
           "val": "3.50%",
           "chg": "+0bp",
           "tone": "flat",
-          "asOf": "2026-07-12",
+          "asOf": "2026-07-13",
           "name": "联邦基金目标下限",
           "id": "DFEDTARL"
         },
@@ -654,32 +654,32 @@
         {
           "name": "铜/金 ×1000 (工业 vs 避险)",
           "id": "",
-          "val": "1.54",
-          "chg": "+1.2%",
+          "val": "1.55",
+          "chg": "+2.0%",
           "asOf": "2026-07-13",
           "tone": "up"
         },
         {
           "name": "金/银",
           "id": "",
-          "val": "69.3",
-          "chg": "+1.0%",
+          "val": "69.1",
+          "chg": "+0.8%",
           "asOf": "2026-07-13",
           "tone": "up"
         },
         {
           "name": "油/铜",
           "id": "",
-          "val": "11.77",
-          "chg": "+2.7%",
+          "val": "11.78",
+          "chg": "+2.9%",
           "asOf": "2026-07-13",
           "tone": "up"
         },
         {
           "name": "油/金 ×100",
           "id": "",
-          "val": "1.81",
-          "chg": "+4.0%",
+          "val": "1.83",
+          "chg": "+5.0%",
           "asOf": "2026-07-13",
           "tone": "up"
         }
@@ -693,9 +693,9 @@
         {
           "name": "SOFR − IORB",
           "id": "SOFR−IORB",
-          "val": "-12bp",
-          "chg": "-5bp",
-          "asOf": "2026-07-09",
+          "val": "-10bp",
+          "chg": "+2bp",
+          "asOf": "2026-07-10",
           "tone": "down"
         },
         {
@@ -732,8 +732,8 @@
         {
           "name": "VIX",
           "id": "VIX",
-          "val": "16.25",
-          "chg": "+8.1%",
+          "val": "16.48",
+          "chg": "+9.6%",
           "asOf": "2026-07-13",
           "tone": "up"
         },
@@ -772,7 +772,7 @@
         {
           "name": "VIX/VIX3M 期限结构",
           "id": "",
-          "val": "0.88",
+          "val": "0.89",
           "chg": "正向",
           "asOf": "",
           "tone": "up"
