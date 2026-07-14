@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-07-14T07:26:58Z",
+  "updatedAt": "2026-07-14T16:48:24Z",
   "asOf": "2026-07-14",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-07-12 ~ 2026-07-17",
-  "count": 98,
+  "count": 99,
   "highCount": 14,
   "events": [
     {
@@ -196,30 +196,6 @@
       "impact": "low",
       "forecast": "-0.5%",
       "previous": "-0.4%",
-      "actual": null
-    },
-    {
-      "ts": "2026-07-14T08:03:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "货币供应 同比",
-      "titleEn": "M2 Money Supply y/y",
-      "impact": "low",
-      "forecast": "8.5%",
-      "previous": "8.6%",
-      "actual": null
-    },
-    {
-      "ts": "2026-07-14T08:03:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "New Loans",
-      "titleEn": "New Loans",
-      "impact": "low",
-      "forecast": "1950B",
-      "previous": "520B",
       "actual": null
     },
     {
@@ -535,6 +511,30 @@
       "actual": null
     },
     {
+      "ts": "2026-07-15T09:33:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "货币供应 同比",
+      "titleEn": "M2 Money Supply y/y",
+      "impact": "low",
+      "forecast": "8.5%",
+      "previous": "8.6%",
+      "actual": null
+    },
+    {
+      "ts": "2026-07-15T09:33:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "New Loans",
+      "titleEn": "New Loans",
+      "impact": "low",
+      "forecast": "1950B",
+      "previous": "520B",
+      "actual": null
+    },
+    {
       "ts": "2026-07-15T09:34:00Z",
       "ccy": "EUR",
       "country": "欧元区",
@@ -686,7 +686,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": null,
+      "forecast": "-2.4M",
       "previous": "3.0M",
       "actual": null
     },
@@ -1046,6 +1046,18 @@
       "title": "美联储官员讲话",
       "titleEn": "FOMC Member Jefferson Speaks",
       "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-07-17T01:00:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "央行官员讲话",
+      "titleEn": "President Trump Speaks",
+      "impact": "medium",
       "forecast": null,
       "previous": null,
       "actual": null
