@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-13T18:22:52Z",
-  "asOf": "2026-07-13",
+  "updatedAt": "2026-07-14T07:26:58Z",
+  "asOf": "2026-07-14",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-07-12 ~ 2026-07-17",
   "count": 98,
@@ -43,6 +43,18 @@
       "actual": null
     },
     {
+      "ts": "2026-07-13T17:59:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "Federal Budget Balance",
+      "titleEn": "Federal Budget Balance",
+      "impact": "low",
+      "forecast": "-135.8B",
+      "previous": "-292.6B",
+      "actual": null
+    },
+    {
       "ts": "2026-07-13T18:00:00Z",
       "ccy": "GBP",
       "country": "英国",
@@ -52,18 +64,6 @@
       "impact": "low",
       "forecast": null,
       "previous": null,
-      "actual": null
-    },
-    {
-      "ts": "2026-07-13T18:00:00Z",
-      "ccy": "USD",
-      "country": "美国",
-      "flag": "🇺🇸",
-      "title": "Federal Budget Balance",
-      "titleEn": "Federal Budget Balance",
-      "impact": "low",
-      "forecast": "-135.8B",
-      "previous": "-292.6B",
       "actual": null
     },
     {
@@ -127,7 +127,7 @@
       "actual": null
     },
     {
-      "ts": "2026-07-14T02:03:00Z",
+      "ts": "2026-07-14T02:31:00Z",
       "ccy": "CNY",
       "country": "中国",
       "flag": "🇨🇳",
@@ -139,7 +139,7 @@
       "actual": null
     },
     {
-      "ts": "2026-07-14T02:04:00Z",
+      "ts": "2026-07-14T02:31:00Z",
       "ccy": "CNY",
       "country": "中国",
       "flag": "🇨🇳",
