@@ -1,20 +1,20 @@
 {
-  "updatedAt": "2026-07-13T10:42:50Z",
-  "asOf": "2026-07-13",
+  "updatedAt": "2026-07-14T07:20:05Z",
+  "asOf": "2026-07-14",
   "source": "CNN Business Fear & Greed Index",
-  "score": 49,
-  "rating": "neutral",
-  "ratingZh": "中性",
+  "score": 44,
+  "rating": "fear",
+  "ratingZh": "恐惧",
   "refs": {
     "now": {
-      "score": 49,
-      "rating": "neutral",
-      "ratingZh": "中性"
+      "score": 44,
+      "rating": "fear",
+      "ratingZh": "恐惧"
     },
     "close": {
-      "score": 49,
-      "rating": "neutral",
-      "ratingZh": "中性"
+      "score": 44,
+      "rating": "fear",
+      "ratingZh": "恐惧"
     },
     "week": {
       "score": 44,
@@ -27,22 +27,22 @@
       "ratingZh": "恐惧"
     },
     "year": {
-      "score": 75,
+      "score": 76,
       "rating": "extreme greed",
       "ratingZh": "极度贪婪"
     }
   },
   "indicators": [
     {
-      "score": 68,
-      "rating": "greed",
-      "ratingZh": "贪婪",
+      "score": 47,
+      "rating": "neutral",
+      "ratingZh": "中性",
       "key": "market_momentum_sp500",
       "name": "市场动能",
       "desc": "标普500 相对125日均线"
     },
     {
-      "score": 41,
+      "score": 37,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "stock_price_strength",
@@ -50,7 +50,7 @@
       "desc": "创52周新高 vs 新低个股"
     },
     {
-      "score": 27,
+      "score": 29,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "stock_price_breadth",
@@ -58,9 +58,9 @@
       "desc": "麦克莱伦成交量总和指数"
     },
     {
-      "score": 57,
-      "rating": "greed",
-      "ratingZh": "贪婪",
+      "score": 43,
+      "rating": "fear",
+      "ratingZh": "恐惧",
       "key": "put_call_options",
       "name": "看跌/看涨期权",
       "desc": "5日 Put/Call 比率"
@@ -74,7 +74,7 @@
       "desc": "VIX 及其50日均线"
     },
     {
-      "score": 67,
+      "score": 56,
       "rating": "greed",
       "ratingZh": "贪婪",
       "key": "safe_haven_demand",
@@ -82,7 +82,7 @@
       "desc": "股票 vs 国债 20日收益差"
     },
     {
-      "score": 38,
+      "score": 45,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "junk_bond_demand",
@@ -428,8 +428,8 @@
       "v": 46
     },
     {
-      "t": "2026-07-13",
-      "v": 49
+      "t": "2026-07-14",
+      "v": 44
     }
   ],
   "note": "数据来自 CNN 恐慌与贪婪指数：0 = 极度恐惧，100 = 极度贪婪，由 7 个市场情绪指标综合而成，每日自动更新。仅供参考，不构成建议。"
