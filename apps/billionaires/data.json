@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-07-15T02:45:15Z",
+  "updatedAt": "2026-07-15T06:38:28Z",
   "asOf": "2026-07-15",
   "source": "Forbes Real-Time Billionaires",
   "count": 250,
-  "totalWorth": 9879.3,
+  "totalWorth": 9874.2,
   "note": "数据来自 Forbes 实时富豪榜，每日自动更新；身价单位为十亿美元（B），当日变动为较上一参考时点的估算。仅供参考，不构成任何建议。",
   "people": [
     {
@@ -304,9 +304,9 @@
       "rank": 22,
       "name": "高塔姆·阿达尼",
       "nameEn": "Gautam Adani",
-      "worth": 91.13,
-      "change": 2.04,
-      "changePct": 2.29,
+      "worth": 90.24,
+      "change": 1.15,
+      "changePct": 1.29,
       "country": "印度",
       "flag": "🇮🇳",
       "source": "Infrastructure, commodities",
@@ -332,9 +332,9 @@
       "rank": 24,
       "name": "穆克什·安巴尼",
       "nameEn": "Mukesh Ambani",
-      "worth": 88.16,
-      "change": -0.52,
-      "changePct": -0.59,
+      "worth": 89.04,
+      "change": 0.36,
+      "changePct": 0.41,
       "country": "印度",
       "flag": "🇮🇳",
       "source": "Diversified",
@@ -360,9 +360,9 @@
       "rank": 26,
       "name": "孙正义",
       "nameEn": "Masayoshi Son",
-      "worth": 74.16,
-      "change": -0.02,
-      "changePct": -0.03,
+      "worth": 73.8,
+      "change": -0.39,
+      "changePct": -0.53,
       "country": "日本",
       "flag": "🇯🇵",
       "source": "Telecom, Investments",
@@ -416,9 +416,9 @@
       "rank": 30,
       "name": "柳井正及家族",
       "nameEn": "Tadashi Yanai & family",
-      "worth": 66.71,
-      "change": -1.12,
-      "changePct": -1.65,
+      "worth": 66.1,
+      "change": -1.73,
+      "changePct": -2.55,
       "country": "日本",
       "flag": "🇯🇵",
       "source": "Fashion retail",
@@ -458,9 +458,9 @@
       "rank": 33,
       "name": "钟睒睒",
       "nameEn": "Zhong Shanshan",
-      "worth": 59.48,
-      "change": 0.86,
-      "changePct": 1.47,
+      "worth": 59.34,
+      "change": 0.72,
+      "changePct": 1.23,
       "country": "中国",
       "flag": "🇨🇳",
       "source": "Beverages, pharmaceuticals",
@@ -472,9 +472,9 @@
       "rank": 34,
       "name": "曾毓群",
       "nameEn": "Robin Zeng",
-      "worth": 59.03,
-      "change": 2.64,
-      "changePct": 4.68,
+      "worth": 58.62,
+      "change": 2.23,
+      "changePct": 3.95,
       "country": "香港",
       "flag": "🇭🇰",
       "source": "Batteries",
@@ -500,9 +500,9 @@
       "rank": 36,
       "name": "马化腾",
       "nameEn": "Ma Huateng",
-      "worth": 49.11,
-      "change": 0.79,
-      "changePct": 1.63,
+      "worth": 49.83,
+      "change": 1.52,
+      "changePct": 3.15,
       "country": "中国",
       "flag": "🇨🇳",
       "source": "Online games",
@@ -514,9 +514,9 @@
       "rank": 37,
       "name": "李嘉诚",
       "nameEn": "Li Ka-shing",
-      "worth": 48.54,
-      "change": 0.49,
-      "changePct": 1.02,
+      "worth": 48.62,
+      "change": 0.57,
+      "changePct": 1.19,
       "country": "香港",
       "flag": "🇭🇰",
       "source": "Diversified",
@@ -752,9 +752,9 @@
       "rank": 54,
       "name": "萨维特里·金达尔及家族",
       "nameEn": "Savitri Jindal & family",
-      "worth": 38.29,
-      "change": 0.16,
-      "changePct": 0.42,
+      "worth": 38.07,
+      "change": -0.05,
+      "changePct": -0.13,
       "country": "印度",
       "flag": "🇮🇳",
       "source": "Steel",
@@ -820,20 +820,6 @@
     },
     {
       "rank": 59,
-      "name": "陈天石",
-      "nameEn": "Chen Tianshi",
-      "worth": 36.81,
-      "change": 0.11,
-      "changePct": 0.3,
-      "country": "中国",
-      "flag": "🇨🇳",
-      "source": "Semiconductors",
-      "industry": "科技",
-      "image": "https://specials-images.forbesimg.com/imageserve/690240ad85f168b25a40e248/416x416.jpg?background=000000&cropX1=316&cropX2=1020&cropY1=54&cropY2=758",
-      "age": 41
-    },
-    {
-      "rank": 60,
       "name": "亨利·萨穆埃利",
       "nameEn": "Henry Samueli",
       "worth": 36.75,
@@ -847,7 +833,7 @@
       "age": 72
     },
     {
-      "rank": 61,
+      "rank": 60,
       "name": "爱德华多·萨维林",
       "nameEn": "Eduardo Saverin",
       "worth": 36.58,
@@ -861,12 +847,26 @@
       "age": 44
     },
     {
+      "rank": 61,
+      "name": "陈天石",
+      "nameEn": "Chen Tianshi",
+      "worth": 35.78,
+      "change": -0.92,
+      "changePct": -2.51,
+      "country": "中国",
+      "flag": "🇨🇳",
+      "source": "Semiconductors",
+      "industry": "科技",
+      "image": "https://specials-images.forbesimg.com/imageserve/690240ad85f168b25a40e248/416x416.jpg?background=000000&cropX1=316&cropX2=1020&cropY1=54&cropY2=758",
+      "age": 41
+    },
+    {
       "rank": 62,
       "name": "何享健及家族",
       "nameEn": "He Xiangjian & family",
-      "worth": 33.98,
-      "change": 0.27,
-      "changePct": 0.8,
+      "worth": 34.41,
+      "change": 0.7,
+      "changePct": 2.08,
       "country": "中国",
       "flag": "🇨🇳",
       "source": "Home appliances",
@@ -892,9 +892,9 @@
       "rank": 64,
       "name": "范日旺",
       "nameEn": "Pham Nhat Vuong",
-      "worth": 33.45,
-      "change": -0.78,
-      "changePct": -2.28,
+      "worth": 33.54,
+      "change": -0.7,
+      "changePct": -2.04,
       "country": "越南",
       "flag": "🇻🇳",
       "source": "Diversified",
@@ -932,6 +932,20 @@
     },
     {
       "rank": 67,
+      "name": "李在镕",
+      "nameEn": "Jay Y. Lee",
+      "worth": 31.87,
+      "change": 1.99,
+      "changePct": 6.66,
+      "country": "韩国",
+      "flag": "🇰🇷",
+      "source": "Samsung",
+      "industry": "科技",
+      "image": "https://specials-images.forbesimg.com/imageserve/69d92071f818bcd1553283ed/416x416.jpg?background=000000&cropX1=141&cropX2=1440&cropY1=78&cropY2=1378",
+      "age": 58
+    },
+    {
+      "rank": 68,
       "name": "林达尔·斯蒂芬斯·格雷思及家族",
       "nameEn": "Lyndal Stephens Greth & family",
       "worth": 31.72,
@@ -945,7 +959,7 @@
       "age": 52
     },
     {
-      "rank": 68,
+      "rank": 69,
       "name": "罗伯特·佩拉",
       "nameEn": "Robert Pera",
       "worth": 31.67,
@@ -957,20 +971,6 @@
       "industry": "科技",
       "image": "//specials-images.forbesimg.com/imageserve/5f1f2df0e0da1e7313d9879a/416x416.jpg?background=000000&cropX1=217&cropX2=1125&cropY1=71&cropY2=980",
       "age": 48
-    },
-    {
-      "rank": 69,
-      "name": "李在镕",
-      "nameEn": "Jay Y. Lee",
-      "worth": 31.64,
-      "change": 1.76,
-      "changePct": 5.89,
-      "country": "韩国",
-      "flag": "🇰🇷",
-      "source": "Samsung",
-      "industry": "科技",
-      "image": "https://specials-images.forbesimg.com/imageserve/69d92071f818bcd1553283ed/416x416.jpg?background=000000&cropX1=141&cropX2=1440&cropY1=78&cropY2=1378",
-      "age": 58
     },
     {
       "rank": 70,
@@ -1086,20 +1086,6 @@
     },
     {
       "rank": 78,
-      "name": "王威秀及家族",
-      "nameEn": "Wang Weixiu & family",
-      "worth": 30.26,
-      "change": 2.37,
-      "changePct": 8.5,
-      "country": "中国",
-      "flag": "🇨🇳",
-      "source": "Machinery",
-      "industry": "制造业",
-      "image": "https://specials-images.forbesimg.com/imageserve/67250cfc37fcfbc89abf0fae/416x416.jpg?background=000000&cropX1=1&cropX2=799&cropY1=2&cropY2=800",
-      "age": 76
-    },
-    {
-      "rank": 79,
       "name": "梅琳达·弗伦奇·盖茨",
       "nameEn": "Melinda French Gates",
       "worth": 30.26,
@@ -1113,12 +1099,12 @@
       "age": 62
     },
     {
-      "rank": 80,
+      "rank": 79,
       "name": "维诺德·阿达尼",
       "nameEn": "Vinod Adani",
-      "worth": 30.19,
-      "change": 0.87,
-      "changePct": 2.97,
+      "worth": 30.0,
+      "change": 0.69,
+      "changePct": 2.35,
       "country": "塞浦路斯",
       "flag": "🇨🇾",
       "source": "Infrastructure, commodities",
@@ -1127,7 +1113,7 @@
       "age": 77
     },
     {
-      "rank": 81,
+      "rank": 80,
       "name": "弗拉基米尔·波塔宁",
       "nameEn": "Vladimir Potanin",
       "worth": 29.74,
@@ -1141,7 +1127,7 @@
       "age": 65
     },
     {
-      "rank": 82,
+      "rank": 81,
       "name": "小托马斯·弗里斯特及家族",
       "nameEn": "Thomas Frist Jr & family",
       "worth": 29.61,
@@ -1153,6 +1139,20 @@
       "industry": "医疗健康",
       "image": "//specials-images.forbesimg.com/imageserve/ee825ff539047091cda533423b10d65b/416x416.jpg?background=000000&cropX1=16&cropX2=947&cropY1=153&cropY2=1084",
       "age": 88
+    },
+    {
+      "rank": 82,
+      "name": "王威秀及家族",
+      "nameEn": "Wang Weixiu & family",
+      "worth": 29.59,
+      "change": 1.7,
+      "changePct": 6.1,
+      "country": "中国",
+      "flag": "🇨🇳",
+      "source": "Machinery",
+      "industry": "制造业",
+      "image": "https://specials-images.forbesimg.com/imageserve/67250cfc37fcfbc89abf0fae/416x416.jpg?background=000000&cropX1=1&cropX2=799&cropY1=2&cropY2=800",
+      "age": 76
     },
     {
       "rank": 83,
@@ -1184,25 +1184,11 @@
     },
     {
       "rank": 85,
-      "name": "刘德兵",
-      "nameEn": "Liu Debing",
-      "worth": 28.69,
-      "change": 2.62,
-      "changePct": 10.05,
-      "country": "中国",
-      "flag": "🇨🇳",
-      "source": "AI",
-      "industry": "科技",
-      "image": "https://specials-images.forbesimg.com/imageserve/69af13cf35ce876fefe219c9/416x416.jpg?background=000000&cropX1=440&cropX2=1437&cropY1=0&cropY2=996",
-      "age": 50
-    },
-    {
-      "rank": 86,
       "name": "赛勒斯·普纳瓦拉",
       "nameEn": "Cyrus Poonawalla",
-      "worth": 28.49,
-      "change": -0.09,
-      "changePct": -0.31,
+      "worth": 28.54,
+      "change": -0.04,
+      "changePct": -0.14,
       "country": "印度",
       "flag": "🇮🇳",
       "source": "Vaccines",
@@ -1211,7 +1197,7 @@
       "age": 85
     },
     {
-      "rank": 87,
+      "rank": 86,
       "name": "列昂尼德·米赫尔松及家族",
       "nameEn": "Leonid Mikhelson & family",
       "worth": 28.3,
@@ -1225,7 +1211,7 @@
       "age": 71
     },
     {
-      "rank": 88,
+      "rank": 87,
       "name": "彼得·蒂尔",
       "nameEn": "Peter Thiel",
       "worth": 28.08,
@@ -1239,12 +1225,12 @@
       "age": 59
     },
     {
-      "rank": 89,
+      "rank": 88,
       "name": "迪利普·桑哈维",
       "nameEn": "Dilip Shanghvi",
-      "worth": 27.37,
-      "change": 0.19,
-      "changePct": 0.7,
+      "worth": 27.66,
+      "change": 0.48,
+      "changePct": 1.77,
       "country": "印度",
       "flag": "🇮🇳",
       "source": "Pharmaceuticals",
@@ -1253,12 +1239,26 @@
       "age": 71
     },
     {
+      "rank": 89,
+      "name": "刘德兵",
+      "nameEn": "Liu Debing",
+      "worth": 27.35,
+      "change": 1.27,
+      "changePct": 4.87,
+      "country": "中国",
+      "flag": "🇨🇳",
+      "source": "AI",
+      "industry": "科技",
+      "image": "https://specials-images.forbesimg.com/imageserve/69af13cf35ce876fefe219c9/416x416.jpg?background=000000&cropX1=440&cropX2=1437&cropY1=0&cropY2=996",
+      "age": 50
+    },
+    {
       "rank": 90,
       "name": "黄世霖",
       "nameEn": "Huang Shilin",
-      "worth": 27.04,
-      "change": 1.2,
-      "changePct": 4.64,
+      "worth": 26.86,
+      "change": 1.01,
+      "changePct": 3.91,
       "country": "中国",
       "flag": "🇨🇳",
       "source": "Batteries",
@@ -1326,9 +1326,9 @@
       "rank": 95,
       "name": "希夫·纳达尔",
       "nameEn": "Shiv Nadar",
-      "worth": 25.78,
-      "change": -0.93,
-      "changePct": -3.48,
+      "worth": 25.85,
+      "change": -0.86,
+      "changePct": -3.22,
       "country": "印度",
       "flag": "🇮🇳",
       "source": "Software services",
@@ -1506,17 +1506,17 @@
     },
     {
       "rank": 108,
-      "name": "袁富根及家族",
-      "nameEn": "Yuan Fugen & family",
-      "worth": 23.54,
-      "change": 3.5,
-      "changePct": 17.47,
+      "name": "郑淑良及家族",
+      "nameEn": "Zheng Shuliang & family",
+      "worth": 23.53,
+      "change": 1.31,
+      "changePct": 5.9,
       "country": "中国",
       "flag": "🇨🇳",
-      "source": "Metal processing",
-      "industry": "制造业",
-      "image": "https://specials-images.forbesimg.com/imageserve/690249a4cd60fcd96fad99bc/416x416.jpg?background=000000&cropX1=0&cropX2=800&cropY1=0&cropY2=800",
-      "age": 76
+      "source": "Aluminum products",
+      "industry": "金属矿业",
+      "image": "https://specials-images.forbesimg.com/imageserve/6724f9cdf203631b720a86fe/416x416.jpg?background=000000&cropX1=2&cropX2=800&cropY1=1&cropY2=799",
+      "age": 80
     },
     {
       "rank": 109,
@@ -1576,20 +1576,6 @@
     },
     {
       "rank": 113,
-      "name": "郑淑良及家族",
-      "nameEn": "Zheng Shuliang & family",
-      "worth": 23.02,
-      "change": 0.79,
-      "changePct": 3.55,
-      "country": "中国",
-      "flag": "🇨🇳",
-      "source": "Aluminum products",
-      "industry": "金属矿业",
-      "image": "https://specials-images.forbesimg.com/imageserve/6724f9cdf203631b720a86fe/416x416.jpg?background=000000&cropX1=2&cropX2=800&cropY1=1&cropY2=799",
-      "age": 80
-    },
-    {
-      "rank": 114,
       "name": "史蒂夫·科恩",
       "nameEn": "Steve Cohen",
       "worth": 22.98,
@@ -1603,7 +1589,7 @@
       "age": 70
     },
     {
-      "rank": 115,
+      "rank": 114,
       "name": "约翰·杜尔",
       "nameEn": "John Doerr",
       "worth": 22.81,
@@ -1617,7 +1603,7 @@
       "age": 75
     },
     {
-      "rank": 116,
+      "rank": 115,
       "name": "哈里·特里古博夫",
       "nameEn": "Harry Triguboff",
       "worth": 22.75,
@@ -1631,12 +1617,12 @@
       "age": 93
     },
     {
-      "rank": 117,
+      "rank": 116,
       "name": "张虔生",
       "nameEn": "Jason Chang",
-      "worth": 22.47,
-      "change": 0.29,
-      "changePct": 1.31,
+      "worth": 22.7,
+      "change": 0.52,
+      "changePct": 2.34,
       "country": "新加坡",
       "flag": "🇸🇬",
       "source": "Semiconductors",
@@ -1645,12 +1631,26 @@
       "age": 82
     },
     {
+      "rank": 117,
+      "name": "泷崎武光",
+      "nameEn": "Takemitsu Takizaki",
+      "worth": 22.31,
+      "change": -0.13,
+      "changePct": -0.58,
+      "country": "日本",
+      "flag": "🇯🇵",
+      "source": "Sensors",
+      "industry": "制造业",
+      "image": "//specials-images.forbesimg.com/imageserve/5eaa4141ed706b0007e62bd7/416x416.jpg?background=000000&cropX1=1310&cropX2=2754&cropY1=224&cropY2=1667",
+      "age": 81
+    },
+    {
       "rank": 118,
       "name": "王传福",
       "nameEn": "Wang Chuanfu",
-      "worth": 22.42,
-      "change": 1.22,
-      "changePct": 5.75,
+      "worth": 22.3,
+      "change": 1.1,
+      "changePct": 5.19,
       "country": "中国",
       "flag": "🇨🇳",
       "source": "Batteries, automobiles",
@@ -1674,20 +1674,6 @@
     },
     {
       "rank": 120,
-      "name": "泷崎武光",
-      "nameEn": "Takemitsu Takizaki",
-      "worth": 22.27,
-      "change": -0.17,
-      "changePct": -0.76,
-      "country": "日本",
-      "flag": "🇯🇵",
-      "source": "Sensors",
-      "industry": "制造业",
-      "image": "//specials-images.forbesimg.com/imageserve/5eaa4141ed706b0007e62bd7/416x416.jpg?background=000000&cropX1=1310&cropX2=2754&cropY1=224&cropY2=1667",
-      "age": 81
-    },
-    {
-      "rank": 121,
       "name": "欧内斯特·加西亚二世",
       "nameEn": "Ernest Garcia II",
       "worth": 22.24,
@@ -1699,6 +1685,20 @@
       "industry": "汽车",
       "image": "//specials-images.forbesimg.com/imageserve/5ba3dab8a7ea434e4c693d17/416x416.jpg?background=000000&cropX1=263&cropX2=600&cropY1=192&cropY2=529",
       "age": 69
+    },
+    {
+      "rank": 121,
+      "name": "袁富根及家族",
+      "nameEn": "Yuan Fugen & family",
+      "worth": 22.2,
+      "change": 2.16,
+      "changePct": 10.78,
+      "country": "中国",
+      "flag": "🇨🇳",
+      "source": "Metal processing",
+      "industry": "制造业",
+      "image": "https://specials-images.forbesimg.com/imageserve/690249a4cd60fcd96fad99bc/416x416.jpg?background=000000&cropX1=0&cropX2=800&cropY1=0&cropY2=800",
+      "age": 76
     },
     {
       "rank": 122,
@@ -1747,8 +1747,8 @@
       "name": "小恩里克·拉松",
       "nameEn": "Enrique Razon Jr.",
       "worth": 21.8,
-      "change": 0.15,
-      "changePct": 0.69,
+      "change": 0.16,
+      "changePct": 0.74,
       "country": "菲律宾",
       "flag": "🇵🇭",
       "source": "Ports",
@@ -1758,20 +1758,6 @@
     },
     {
       "rank": 126,
-      "name": "陈泰铭",
-      "nameEn": "Pierre Chen",
-      "worth": 21.74,
-      "change": -0.37,
-      "changePct": -1.67,
-      "country": "台湾",
-      "flag": "🇹🇼",
-      "source": "Electronics",
-      "industry": "科技",
-      "image": "https://specials-images.forbesimg.com/imageserve/56cc361be4b062f6b59a4fe9/416x416.jpg?background=000000&cropX1=0&cropX2=744&cropY1=211&cropY2=955",
-      "age": 70
-    },
-    {
-      "rank": 127,
       "name": "黛安·亨德里克斯",
       "nameEn": "Diane Hendricks",
       "worth": 21.69,
@@ -1785,12 +1771,26 @@
       "age": 79
     },
     {
+      "rank": 127,
+      "name": "陈泰铭",
+      "nameEn": "Pierre Chen",
+      "worth": 21.69,
+      "change": -0.42,
+      "changePct": -1.9,
+      "country": "台湾",
+      "flag": "🇹🇼",
+      "source": "Electronics",
+      "industry": "科技",
+      "image": "https://specials-images.forbesimg.com/imageserve/56cc361be4b062f6b59a4fe9/416x416.jpg?background=000000&cropX1=0&cropX2=744&cropY1=211&cropY2=955",
+      "age": 70
+    },
+    {
       "rank": 128,
       "name": "库马尔·比尔拉",
       "nameEn": "Kumar Birla",
-      "worth": 21.61,
-      "change": -0.09,
-      "changePct": -0.41,
+      "worth": 21.6,
+      "change": -0.11,
+      "changePct": -0.51,
       "country": "印度",
       "flag": "🇮🇳",
       "source": "Diversified",
@@ -1802,9 +1802,9 @@
       "rank": 129,
       "name": "于泳",
       "nameEn": "Yu Yong",
-      "worth": 21.08,
-      "change": 0.94,
-      "changePct": 4.67,
+      "worth": 21.07,
+      "change": 0.93,
+      "changePct": 4.62,
       "country": "中国",
       "flag": "🇨🇳",
       "source": "Mining",
@@ -1842,6 +1842,20 @@
     },
     {
       "rank": 132,
+      "name": "雷军",
+      "nameEn": "Lei Jun",
+      "worth": 20.85,
+      "change": -0.01,
+      "changePct": -0.05,
+      "country": "中国",
+      "flag": "🇨🇳",
+      "source": "Smartphones, automobiles",
+      "industry": "科技",
+      "image": "https://specials-images.forbesimg.com/imageserve/69023e83755dddf7584780f9/416x416.jpg?background=000000&cropX1=527&cropX2=2213&cropY1=170&cropY2=1856",
+      "age": 57
+    },
+    {
+      "rank": 133,
       "name": "斯特凡·佩尔松",
       "nameEn": "Stefan Persson",
       "worth": 20.83,
@@ -1853,20 +1867,6 @@
       "industry": "时尚零售",
       "image": "https://specials-images.forbesimg.com/imageserve/5c721cd64bbe6f51818ab844/416x416.jpg?background=000000&cropX1=1176&cropX2=2731&cropY1=522&cropY2=2076",
       "age": 79
-    },
-    {
-      "rank": 133,
-      "name": "雷军",
-      "nameEn": "Lei Jun",
-      "worth": 20.6,
-      "change": -0.26,
-      "changePct": -1.25,
-      "country": "中国",
-      "flag": "🇨🇳",
-      "source": "Smartphones, automobiles",
-      "industry": "科技",
-      "image": "https://specials-images.forbesimg.com/imageserve/69023e83755dddf7584780f9/416x416.jpg?background=000000&cropX1=527&cropX2=2213&cropY1=170&cropY2=1856",
-      "age": 57
     },
     {
       "rank": 134,
@@ -1912,20 +1912,6 @@
     },
     {
       "rank": 137,
-      "name": "周群飞及家族",
-      "nameEn": "Zhou Qunfei & family",
-      "worth": 19.59,
-      "change": 0.37,
-      "changePct": 1.93,
-      "country": "香港",
-      "flag": "🇭🇰",
-      "source": "Smartphone screens",
-      "industry": "科技",
-      "image": "https://specials-images.forbesimg.com/imageserve/6724fc55963e6ec9e66025bc/416x416.jpg?background=000000&cropX1=366&cropX2=1023&cropY1=221&cropY2=878",
-      "age": null
-    },
-    {
-      "rank": 138,
       "name": "若热·保罗·莱曼及家族",
       "nameEn": "Jorge Paulo Lemann & family",
       "worth": 19.51,
@@ -1939,7 +1925,7 @@
       "age": 87
     },
     {
-      "rank": 139,
+      "rank": 138,
       "name": "蕾娜塔·凯尔纳罗娃及家族",
       "nameEn": "Renata Kellnerova & family",
       "worth": 19.48,
@@ -1953,7 +1939,7 @@
       "age": 59
     },
     {
-      "rank": 140,
+      "rank": 139,
       "name": "菲利普·安舒茨",
       "nameEn": "Philip Anschutz",
       "worth": 19.4,
@@ -1967,7 +1953,7 @@
       "age": 87
     },
     {
-      "rank": 141,
+      "rank": 140,
       "name": "唐纳德·布伦",
       "nameEn": "Donald Bren",
       "worth": 19.21,
@@ -1981,7 +1967,7 @@
       "age": 94
     },
     {
-      "rank": 142,
+      "rank": 141,
       "name": "布雷特·阿德科克",
       "nameEn": "Brett Adcock",
       "worth": 19.1,
@@ -1993,6 +1979,20 @@
       "industry": "科技",
       "image": "https://specials-images.forbesimg.com/imageserve/660c21fad6a07497a1384c08/416x416.jpg?background=000000&cropX1=312&cropX2=1301&cropY1=58&cropY2=1048",
       "age": 40
+    },
+    {
+      "rank": 142,
+      "name": "周群飞及家族",
+      "nameEn": "Zhou Qunfei & family",
+      "worth": 18.99,
+      "change": -0.24,
+      "changePct": -1.25,
+      "country": "香港",
+      "flag": "🇭🇰",
+      "source": "Smartphone screens",
+      "industry": "科技",
+      "image": "https://specials-images.forbesimg.com/imageserve/6724fc55963e6ec9e66025bc/416x416.jpg?background=000000&cropX1=366&cropX2=1023&cropY1=221&cropY2=878",
+      "age": null
     },
     {
       "rank": 143,
@@ -2040,9 +2040,9 @@
       "rank": 146,
       "name": "安德鲁·福里斯特及家族",
       "nameEn": "Andrew Forrest & family",
-      "worth": 18.54,
-      "change": 0.25,
-      "changePct": 1.37,
+      "worth": 18.48,
+      "change": 0.19,
+      "changePct": 1.04,
       "country": "澳大利亚",
       "flag": "🇦🇺",
       "source": "Mining",
@@ -2054,9 +2054,9 @@
       "rank": 147,
       "name": "陈建华",
       "nameEn": "Chen Jianhua",
-      "worth": 18.38,
-      "change": 0.0,
-      "changePct": 0.0,
+      "worth": 18.44,
+      "change": 0.06,
+      "changePct": 0.33,
       "country": "中国",
       "flag": "🇨🇳",
       "source": "Chemicals",
@@ -2066,25 +2066,25 @@
     },
     {
       "rank": 148,
-      "name": "钟慧娟",
-      "nameEn": "Zhong Huijuan",
-      "worth": 18.1,
-      "change": 0.61,
-      "changePct": 3.49,
-      "country": "中国",
-      "flag": "🇨🇳",
-      "source": "Pharmaceuticals",
-      "industry": "医疗健康",
-      "image": "//specials-images.forbesimg.com/imageserve/5e9f5b3df0b8cf0006295fec/416x416.jpg?background=000000&cropX1=1080&cropX2=1674&cropY1=936&cropY2=1530",
-      "age": 65
+      "name": "邝肖卿",
+      "nameEn": "Kwong Siu-hing",
+      "worth": 18.16,
+      "change": 0.48,
+      "changePct": 2.71,
+      "country": "香港",
+      "flag": "🇭🇰",
+      "source": "Real estate",
+      "industry": "房地产",
+      "image": "https://specials-images.forbesimg.com/imageserve/603522f7a9db4e55a215df75/416x416.jpg?background=000000&cropX1=144&cropX2=656&cropY1=1&cropY2=513",
+      "age": 97
     },
     {
       "rank": 149,
       "name": "秦英林",
       "nameEn": "Qin Yinglin",
-      "worth": 18.07,
-      "change": 0.42,
-      "changePct": 2.38,
+      "worth": 18.11,
+      "change": 0.46,
+      "changePct": 2.61,
       "country": "中国",
       "flag": "🇨🇳",
       "source": "Pig breeding",
@@ -2094,20 +2094,6 @@
     },
     {
       "rank": 150,
-      "name": "邝肖卿",
-      "nameEn": "Kwong Siu-hing",
-      "worth": 18.06,
-      "change": 0.37,
-      "changePct": 2.09,
-      "country": "香港",
-      "flag": "🇭🇰",
-      "source": "Real estate",
-      "industry": "房地产",
-      "image": "https://specials-images.forbesimg.com/imageserve/603522f7a9db4e55a215df75/416x416.jpg?background=000000&cropX1=144&cropX2=656&cropY1=1&cropY2=513",
-      "age": 97
-    },
-    {
-      "rank": 151,
       "name": "埃德温·陈",
       "nameEn": "Edwin Chen",
       "worth": 18.0,
@@ -2121,7 +2107,7 @@
       "age": 39
     },
     {
-      "rank": 152,
+      "rank": 151,
       "name": "南希·沃尔顿·劳里",
       "nameEn": "Nancy Walton Laurie",
       "worth": 18.0,
@@ -2135,7 +2121,7 @@
       "age": 75
     },
     {
-      "rank": 153,
+      "rank": 152,
       "name": "埃里克·斯米特",
       "nameEn": "Eric Smidt",
       "worth": 17.92,
@@ -2147,6 +2133,20 @@
       "industry": "时尚零售",
       "image": "https://specials-images.forbesimg.com/imageserve/68b7220cad0392b745d27d34/416x416.jpg?background=000000&cropX1=0&cropX2=589&cropY1=77&cropY2=666",
       "age": 66
+    },
+    {
+      "rank": 153,
+      "name": "钟慧娟",
+      "nameEn": "Zhong Huijuan",
+      "worth": 17.91,
+      "change": 0.42,
+      "changePct": 2.4,
+      "country": "中国",
+      "flag": "🇨🇳",
+      "source": "Pharmaceuticals",
+      "industry": "医疗健康",
+      "image": "//specials-images.forbesimg.com/imageserve/5e9f5b3df0b8cf0006295fec/416x416.jpg?background=000000&cropX1=1080&cropX2=1674&cropY1=936&cropY2=1530",
+      "age": 65
     },
     {
       "rank": 154,
@@ -2166,9 +2166,9 @@
       "rank": 155,
       "name": "吕向阳",
       "nameEn": "Lu Xiangyang",
-      "worth": 17.77,
-      "change": 0.87,
-      "changePct": 5.15,
+      "worth": 17.66,
+      "change": 0.75,
+      "changePct": 4.44,
       "country": "中国",
       "flag": "🇨🇳",
       "source": "Automobiles, batteries",
@@ -2208,9 +2208,9 @@
       "rank": 158,
       "name": "萨拉·拉塔纳瓦迪",
       "nameEn": "Sarath Ratanavadi",
-      "worth": 17.24,
-      "change": -0.07,
-      "changePct": -0.4,
+      "worth": 17.45,
+      "change": 0.13,
+      "changePct": 0.75,
       "country": "泰国",
       "flag": "🇹🇭",
       "source": "Energy",
@@ -2318,6 +2318,34 @@
     },
     {
       "rank": 166,
+      "name": "谢国民",
+      "nameEn": "Dhanin Chearavanont",
+      "worth": 16.82,
+      "change": 0.26,
+      "changePct": 1.57,
+      "country": "泰国",
+      "flag": "🇹🇭",
+      "source": "Diversified",
+      "industry": "多元化",
+      "image": "https://specials-images.forbesimg.com/imageserve/64a6e56a5b21dc15ce4c321c/416x416.jpg?background=000000&cropX1=5&cropX2=1894&cropY1=0&cropY2=1889",
+      "age": 87
+    },
+    {
+      "rank": 167,
+      "name": "林百里",
+      "nameEn": "Barry Lam",
+      "worth": 16.74,
+      "change": 0.1,
+      "changePct": 0.6,
+      "country": "台湾",
+      "flag": "🇹🇼",
+      "source": "Electronics",
+      "industry": "科技",
+      "image": "https://specials-images.forbesimg.com/imageserve/56cc32c1e4b062f6b59a4fdd/416x416.jpg?background=000000&cropX1=81&cropX2=596&cropY1=118&cropY2=634",
+      "age": 77
+    },
+    {
+      "rank": 168,
       "name": "安诺斯·霍尔希·波夫尔森",
       "nameEn": "Anders Holch Povlsen",
       "worth": 16.72,
@@ -2331,21 +2359,7 @@
       "age": 54
     },
     {
-      "rank": 167,
-      "name": "林百里",
-      "nameEn": "Barry Lam",
-      "worth": 16.7,
-      "change": 0.07,
-      "changePct": 0.42,
-      "country": "台湾",
-      "flag": "🇹🇼",
-      "source": "Electronics",
-      "industry": "科技",
-      "image": "https://specials-images.forbesimg.com/imageserve/56cc32c1e4b062f6b59a4fdd/416x416.jpg?background=000000&cropX1=81&cropX2=596&cropY1=118&cropY2=634",
-      "age": 77
-    },
-    {
-      "rank": 168,
+      "rank": 169,
       "name": "海梅·吉林斯基·巴卡尔",
       "nameEn": "Jaime Gilinski Bacal",
       "worth": 16.69,
@@ -2357,20 +2371,6 @@
       "industry": "金融投资",
       "image": "//specials-images.forbesimg.com/imageserve/4f07d582150616600588bf39ab92e054/416x416.jpg?background=000000&cropX1=0&cropX2=744&cropY1=66&cropY2=810",
       "age": 69
-    },
-    {
-      "rank": 169,
-      "name": "谢国民",
-      "nameEn": "Dhanin Chearavanont",
-      "worth": 16.66,
-      "change": 0.11,
-      "changePct": 0.66,
-      "country": "泰国",
-      "flag": "🇹🇭",
-      "source": "Diversified",
-      "industry": "多元化",
-      "image": "https://specials-images.forbesimg.com/imageserve/64a6e56a5b21dc15ce4c321c/416x416.jpg?background=000000&cropX1=5&cropX2=1894&cropY1=0&cropY2=1889",
-      "age": 87
     },
     {
       "rank": 170,
@@ -2430,20 +2430,6 @@
     },
     {
       "rank": 174,
-      "name": "邹志农及家族",
-      "nameEn": "Zou Zhinong & family",
-      "worth": 16.41,
-      "change": 0.55,
-      "changePct": 3.47,
-      "country": "中国",
-      "flag": "🇨🇳",
-      "source": "Telecom equipment",
-      "industry": "制造业",
-      "image": "https://specials-images.forbesimg.com/imageserve/6902486ac275c8fc3cb0ddcb/416x416.jpg?background=000000&cropX1=0&cropX2=800&cropY1=0&cropY2=800",
-      "age": 58
-    },
-    {
-      "rank": 175,
       "name": "米哈伊尔·弗里德曼",
       "nameEn": "Mikhail Fridman",
       "worth": 16.37,
@@ -2455,6 +2441,20 @@
       "industry": "能源",
       "image": "https://specials-images.forbesimg.com/imageserve/622a4eacebc226db357a752a/416x416.jpg?background=000000&cropX1=228&cropX2=1253&cropY1=0&cropY2=1025",
       "age": 62
+    },
+    {
+      "rank": 175,
+      "name": "埃里克·李",
+      "nameEn": "Eric Li",
+      "worth": 16.32,
+      "change": -0.02,
+      "changePct": -0.12,
+      "country": "中国",
+      "flag": "🇨🇳",
+      "source": "Automobiles",
+      "industry": "汽车",
+      "image": "https://specials-images.forbesimg.com/imageserve/69024198a0a2a4f9d2933da7/416x416.jpg?background=000000&cropX1=129&cropX2=1047&cropY1=7&cropY2=925",
+      "age": 63
     },
     {
       "rank": 176,
@@ -2472,20 +2472,6 @@
     },
     {
       "rank": 177,
-      "name": "埃里克·李",
-      "nameEn": "Eric Li",
-      "worth": 16.23,
-      "change": -0.11,
-      "changePct": -0.67,
-      "country": "中国",
-      "flag": "🇨🇳",
-      "source": "Automobiles",
-      "industry": "汽车",
-      "image": "https://specials-images.forbesimg.com/imageserve/69024198a0a2a4f9d2933da7/416x416.jpg?background=000000&cropX1=129&cropX2=1047&cropY1=7&cropY2=925",
-      "age": 63
-    },
-    {
-      "rank": 178,
       "name": "彼得·马卢克",
       "nameEn": "Peter Mallouk",
       "worth": 16.08,
@@ -2497,6 +2483,20 @@
       "industry": "金融投资",
       "image": "//specials-images.forbesimg.com/imageserve/5ab944eda7ea432fbc1d2d9c/416x416.jpg?background=000000&cropX1=0&cropX2=400&cropY1=0&cropY2=400",
       "age": 56
+    },
+    {
+      "rank": 178,
+      "name": "邹志农及家族",
+      "nameEn": "Zou Zhinong & family",
+      "worth": 15.97,
+      "change": 0.12,
+      "changePct": 0.76,
+      "country": "中国",
+      "flag": "🇨🇳",
+      "source": "Telecom equipment",
+      "industry": "制造业",
+      "image": "https://specials-images.forbesimg.com/imageserve/6902486ac275c8fc3cb0ddcb/416x416.jpg?background=000000&cropX1=0&cropX2=800&cropY1=0&cropY2=800",
+      "age": 58
     },
     {
       "rank": 179,
@@ -2542,20 +2542,6 @@
     },
     {
       "rank": 182,
-      "name": "裴振华",
-      "nameEn": "Pei Zhenhua",
-      "worth": 15.87,
-      "change": 0.56,
-      "changePct": 3.66,
-      "country": "中国",
-      "flag": "🇨🇳",
-      "source": "Batteries",
-      "industry": "能源",
-      "image": "https://specials-images.forbesimg.com/imageserve/6724fd2e068e56b31f39b825/416x416.jpg?background=000000&cropX1=2&cropX2=800&cropY1=1&cropY2=799",
-      "age": 67
-    },
-    {
-      "rank": 183,
       "name": "爱德华·约翰逊四世",
       "nameEn": "Edward Johnson IV",
       "worth": 15.72,
@@ -2567,6 +2553,20 @@
       "industry": "金融投资",
       "image": "",
       "age": 62
+    },
+    {
+      "rank": 183,
+      "name": "裴振华",
+      "nameEn": "Pei Zhenhua",
+      "worth": 15.66,
+      "change": 0.35,
+      "changePct": 2.29,
+      "country": "中国",
+      "flag": "🇨🇳",
+      "source": "Batteries",
+      "industry": "能源",
+      "image": "https://specials-images.forbesimg.com/imageserve/6724fd2e068e56b31f39b825/416x416.jpg?background=000000&cropX1=2&cropX2=800&cropY1=1&cropY2=799",
+      "age": 67
     },
     {
       "rank": 184,
@@ -2682,25 +2682,11 @@
     },
     {
       "rank": 192,
-      "name": "王丽萍及家族",
-      "nameEn": "Wang Liping & family",
-      "worth": 15.48,
-      "change": 0.8,
-      "changePct": 5.45,
-      "country": "中国",
-      "flag": "🇨🇳",
-      "source": "Hydraulic machinery",
-      "industry": "制造业",
-      "image": "https://specials-images.forbesimg.com/imageserve/6725006e5f4e9e8ea36f7cd7/416x416.jpg?background=000000&cropX1=1&cropX2=800&cropY1=1&cropY2=800",
-      "age": 60
-    },
-    {
-      "rank": 193,
       "name": "普拉约戈·班格斯图",
       "nameEn": "Prajogo Pangestu",
-      "worth": 15.47,
-      "change": 0.07,
-      "changePct": 0.45,
+      "worth": 15.49,
+      "change": 0.09,
+      "changePct": 0.58,
       "country": "印度尼西亚",
       "flag": "🇮🇩",
       "source": "Petrochemicals, energy",
@@ -2709,7 +2695,7 @@
       "age": 82
     },
     {
-      "rank": 194,
+      "rank": 193,
       "name": "瑞·达利欧",
       "nameEn": "Ray Dalio",
       "worth": 15.38,
@@ -2721,6 +2707,20 @@
       "industry": "金融投资",
       "image": "https://specials-images.forbesimg.com/imageserve/5ac959f74bbe6f2310f1e05c/416x416.jpg?background=000000&cropX1=657&cropX2=3206&cropY1=80&cropY2=2627",
       "age": 77
+    },
+    {
+      "rank": 194,
+      "name": "王卫",
+      "nameEn": "Wang Wei",
+      "worth": 15.29,
+      "change": 0.53,
+      "changePct": 3.59,
+      "country": "中国",
+      "flag": "🇨🇳",
+      "source": "Package delivery",
+      "industry": "服务业",
+      "image": "https://specials-images.forbesimg.com/imageserve/6902420314aab20d2b740f5e/416x416.jpg?background=000000&cropX1=55&cropX2=1136&cropY1=0&cropY2=1080",
+      "age": 56
     },
     {
       "rank": 195,
@@ -2738,6 +2738,20 @@
     },
     {
       "rank": 196,
+      "name": "布迪·哈托诺",
+      "nameEn": "R. Budi Hartono",
+      "worth": 15.26,
+      "change": -0.04,
+      "changePct": -0.26,
+      "country": "印度尼西亚",
+      "flag": "🇮🇩",
+      "source": "Banking, tobacco",
+      "industry": "金融投资",
+      "image": "https://specials-images.forbesimg.com/imageserve/6050f48ca1ab099ed6e290cc/416x416.jpg?background=000000&cropX1=0&cropX2=800&cropY1=0&cropY2=800",
+      "age": 86
+    },
+    {
+      "rank": 197,
       "name": "劳伦·鲍威尔·乔布斯",
       "nameEn": "Laurene Powell Jobs",
       "worth": 15.26,
@@ -2751,7 +2765,21 @@
       "age": 63
     },
     {
-      "rank": 197,
+      "rank": 198,
+      "name": "王丽萍及家族",
+      "nameEn": "Wang Liping & family",
+      "worth": 15.24,
+      "change": 0.57,
+      "changePct": 3.89,
+      "country": "中国",
+      "flag": "🇨🇳",
+      "source": "Hydraulic machinery",
+      "industry": "制造业",
+      "image": "https://specials-images.forbesimg.com/imageserve/6725006e5f4e9e8ea36f7cd7/416x416.jpg?background=000000&cropX1=1&cropX2=800&cropY1=1&cropY2=800",
+      "age": 60
+    },
+    {
+      "rank": 199,
       "name": "杰克·丹杰蒙德",
       "nameEn": "Jack Dangermond",
       "worth": 15.16,
@@ -2765,46 +2793,18 @@
       "age": 81
     },
     {
-      "rank": 198,
+      "rank": 200,
       "name": "拉达基尚·达马尼",
       "nameEn": "Radhakishan Damani",
       "worth": 15.14,
-      "change": -0.29,
-      "changePct": -1.88,
+      "change": -0.3,
+      "changePct": -1.94,
       "country": "印度",
       "flag": "🇮🇳",
       "source": "Retail, investments",
       "industry": "时尚零售",
       "image": "",
       "age": 71
-    },
-    {
-      "rank": 199,
-      "name": "布迪·哈托诺",
-      "nameEn": "R. Budi Hartono",
-      "worth": 15.11,
-      "change": -0.18,
-      "changePct": -1.18,
-      "country": "印度尼西亚",
-      "flag": "🇮🇩",
-      "source": "Banking, tobacco",
-      "industry": "金融投资",
-      "image": "https://specials-images.forbesimg.com/imageserve/6050f48ca1ab099ed6e290cc/416x416.jpg?background=000000&cropX1=0&cropX2=800&cropY1=0&cropY2=800",
-      "age": 86
-    },
-    {
-      "rank": 200,
-      "name": "王卫",
-      "nameEn": "Wang Wei",
-      "worth": 15.08,
-      "change": 0.32,
-      "changePct": 2.17,
-      "country": "中国",
-      "flag": "🇨🇳",
-      "source": "Package delivery",
-      "industry": "服务业",
-      "image": "https://specials-images.forbesimg.com/imageserve/6902420314aab20d2b740f5e/416x416.jpg?background=000000&cropX1=55&cropX2=1136&cropY1=0&cropY2=1080",
-      "age": 56
     },
     {
       "rank": 201,
@@ -2822,6 +2822,20 @@
     },
     {
       "rank": 202,
+      "name": "张志东",
+      "nameEn": "Zhang Zhidong",
+      "worth": 14.93,
+      "change": 0.44,
+      "changePct": 3.04,
+      "country": "中国",
+      "flag": "🇨🇳",
+      "source": "Online games",
+      "industry": "科技",
+      "image": "//specials-images.forbesimg.com/imageserve/5bcf8eec31358e5b4334465b/416x416.jpg?background=000000&cropX1=249&cropX2=943&cropY1=98&cropY2=793",
+      "age": 54
+    },
+    {
+      "rank": 203,
       "name": "弗里德黑尔姆·洛",
       "nameEn": "Friedhelm Loh",
       "worth": 14.93,
@@ -2835,7 +2849,7 @@
       "age": 80
     },
     {
-      "rank": 203,
+      "rank": 204,
       "name": "詹姆斯·戴森",
       "nameEn": "James Dyson",
       "worth": 14.88,
@@ -2849,26 +2863,12 @@
       "age": 79
     },
     {
-      "rank": 204,
-      "name": "张志东",
-      "nameEn": "Zhang Zhidong",
-      "worth": 14.72,
-      "change": 0.23,
-      "changePct": 1.59,
-      "country": "中国",
-      "flag": "🇨🇳",
-      "source": "Online games",
-      "industry": "科技",
-      "image": "//specials-images.forbesimg.com/imageserve/5bcf8eec31358e5b4334465b/416x416.jpg?background=000000&cropX1=249&cropX2=943&cropY1=98&cropY2=793",
-      "age": 54
-    },
-    {
       "rank": 205,
       "name": "郭台铭",
       "nameEn": "Terry Gou",
-      "worth": 14.65,
-      "change": 0.12,
-      "changePct": 0.83,
+      "worth": 14.64,
+      "change": 0.11,
+      "changePct": 0.76,
       "country": "台湾",
       "flag": "🇹🇼",
       "source": "Electronics",
@@ -2880,9 +2880,9 @@
       "rank": 206,
       "name": "朱义",
       "nameEn": "Zhu Yi",
-      "worth": 14.47,
-      "change": 1.23,
-      "changePct": 9.29,
+      "worth": 14.3,
+      "change": 1.06,
+      "changePct": 8.01,
       "country": "中国",
       "flag": "🇨🇳",
       "source": "Pharmaceuticals",
@@ -2920,25 +2920,11 @@
     },
     {
       "rank": 209,
-      "name": "王欣",
-      "nameEn": "Wang Xin",
-      "worth": 14.15,
-      "change": 1.56,
-      "changePct": 12.39,
-      "country": "中国",
-      "flag": "🇨🇳",
-      "source": "Manufacturing",
-      "industry": "制造业",
-      "image": "",
-      "age": 53
-    },
-    {
-      "rank": 210,
       "name": "阿利舍尔·乌斯马诺夫",
       "nameEn": "Alisher Usmanov",
-      "worth": 13.98,
-      "change": -0.02,
-      "changePct": -0.14,
+      "worth": 14.0,
+      "change": -0.0,
+      "changePct": -0.0,
       "country": "俄罗斯",
       "flag": "🇷🇺",
       "source": "Steel, telecom, investments",
@@ -2947,7 +2933,7 @@
       "age": 73
     },
     {
-      "rank": 211,
+      "rank": 210,
       "name": "伊丽莎白·约翰逊",
       "nameEn": "Elizabeth Johnson",
       "worth": 13.85,
@@ -2961,7 +2947,7 @@
       "age": 63
     },
     {
-      "rank": 212,
+      "rank": 211,
       "name": "罗伯特·克拉夫特",
       "nameEn": "Robert Kraft",
       "worth": 13.84,
@@ -2975,7 +2961,7 @@
       "age": 85
     },
     {
-      "rank": 213,
+      "rank": 212,
       "name": "安·沃尔顿·克伦克",
       "nameEn": "Ann Walton Kroenke",
       "worth": 13.78,
@@ -2989,7 +2975,7 @@
       "age": 78
     },
     {
-      "rank": 214,
+      "rank": 213,
       "name": "维诺德·科斯拉",
       "nameEn": "Vinod Khosla",
       "worth": 13.73,
@@ -3003,21 +2989,7 @@
       "age": 71
     },
     {
-      "rank": 215,
-      "name": "王来胜",
-      "nameEn": "Wang Laisheng",
-      "worth": 13.71,
-      "change": 0.44,
-      "changePct": 3.32,
-      "country": "香港",
-      "flag": "🇭🇰",
-      "source": "Electronics components",
-      "industry": "科技",
-      "image": "https://specials-images.forbesimg.com/imageserve/6050f48ca1ab099ed6e290cc/416x416.jpg?background=000000&cropX1=0&cropX2=800&cropY1=0&cropY2=800",
-      "age": 62
-    },
-    {
-      "rank": 216,
+      "rank": 214,
       "name": "阿卜杜勒萨马德·拉比乌",
       "nameEn": "Abdulsamad Rabiu",
       "worth": 13.68,
@@ -3031,7 +3003,21 @@
       "age": 66
     },
     {
-      "rank": 217,
+      "rank": 215,
+      "name": "苏尼尔·米塔尔",
+      "nameEn": "Sunil Mittal",
+      "worth": 13.67,
+      "change": 0.26,
+      "changePct": 1.94,
+      "country": "印度",
+      "flag": "🇮🇳",
+      "source": "Telecom",
+      "industry": "电信",
+      "image": "https://specials-images.forbesimg.com/imageserve/68e69504d678f93a6fd3b32e/416x416.jpg?background=000000&cropX1=343&cropX2=2458&cropY1=259&cropY2=2374",
+      "age": 69
+    },
+    {
+      "rank": 216,
       "name": "大卫·贝莱斯及家族",
       "nameEn": "David Velez & family",
       "worth": 13.65,
@@ -3045,21 +3031,7 @@
       "age": 45
     },
     {
-      "rank": 218,
-      "name": "苏尼尔·米塔尔",
-      "nameEn": "Sunil Mittal",
-      "worth": 13.63,
-      "change": 0.23,
-      "changePct": 1.72,
-      "country": "印度",
-      "flag": "🇮🇳",
-      "source": "Telecom",
-      "industry": "电信",
-      "image": "https://specials-images.forbesimg.com/imageserve/68e69504d678f93a6fd3b32e/416x416.jpg?background=000000&cropX1=343&cropX2=2458&cropY1=259&cropY2=2374",
-      "age": 69
-    },
-    {
-      "rank": 219,
+      "rank": 217,
       "name": "查尔斯·施瓦布",
       "nameEn": "Charles Schwab",
       "worth": 13.6,
@@ -3073,7 +3045,7 @@
       "age": 89
     },
     {
-      "rank": 220,
+      "rank": 218,
       "name": "Michal Strnad",
       "nameEn": "Michal Strnad",
       "worth": 13.59,
@@ -3087,7 +3059,21 @@
       "age": 34
     },
     {
-      "rank": 221,
+      "rank": 219,
+      "name": "王来胜",
+      "nameEn": "Wang Laisheng",
+      "worth": 13.57,
+      "change": 0.3,
+      "changePct": 2.26,
+      "country": "香港",
+      "flag": "🇭🇰",
+      "source": "Electronics components",
+      "industry": "科技",
+      "image": "https://specials-images.forbesimg.com/imageserve/6050f48ca1ab099ed6e290cc/416x416.jpg?background=000000&cropX1=0&cropX2=800&cropY1=0&cropY2=800",
+      "age": 62
+    },
+    {
+      "rank": 220,
       "name": "德米特里·布赫曼",
       "nameEn": "Dmitri Bukhman",
       "worth": 13.55,
@@ -3101,7 +3087,7 @@
       "age": 41
     },
     {
-      "rank": 221,
+      "rank": 220,
       "name": "伊戈尔·布赫曼",
       "nameEn": "Igor Bukhman",
       "worth": 13.55,
@@ -3115,21 +3101,21 @@
       "age": 44
     },
     {
-      "rank": 223,
-      "name": "王来春",
-      "nameEn": "Wang Laichun",
-      "worth": 13.43,
-      "change": 0.44,
-      "changePct": 3.39,
-      "country": "香港",
-      "flag": "🇭🇰",
-      "source": "Electronics components",
-      "industry": "科技",
-      "image": "https://specials-images.forbesimg.com/imageserve/6182c8e9e8b8313ec4e42480/416x416.jpg?background=000000&cropX1=410&cropX2=1685&cropY1=178&cropY2=1454",
-      "age": 59
+      "rank": 222,
+      "name": "王欣",
+      "nameEn": "Wang Xin",
+      "worth": 13.54,
+      "change": 0.95,
+      "changePct": 7.55,
+      "country": "中国",
+      "flag": "🇨🇳",
+      "source": "Manufacturing",
+      "industry": "制造业",
+      "image": "",
+      "age": 53
     },
     {
-      "rank": 224,
+      "rank": 223,
       "name": "巴巴·卡西",
       "nameEn": "Bubba Cathy",
       "worth": 13.4,
@@ -3143,7 +3129,7 @@
       "age": 72
     },
     {
-      "rank": 224,
+      "rank": 223,
       "name": "丹·卡西",
       "nameEn": "Dan Cathy",
       "worth": 13.4,
@@ -3157,7 +3143,7 @@
       "age": 73
     },
     {
-      "rank": 224,
+      "rank": 223,
       "name": "特鲁迪·卡西·怀特",
       "nameEn": "Trudy Cathy White",
       "worth": 13.4,
@@ -3171,12 +3157,12 @@
       "age": 71
     },
     {
-      "rank": 227,
+      "rank": 226,
       "name": "Kushal Pal Singh",
       "nameEn": "Kushal Pal Singh",
-      "worth": 13.37,
-      "change": -0.22,
-      "changePct": -1.62,
+      "worth": 13.39,
+      "change": -0.19,
+      "changePct": -1.4,
       "country": "印度",
       "flag": "🇮🇳",
       "source": "Real estate",
@@ -3185,7 +3171,7 @@
       "age": 95
     },
     {
-      "rank": 228,
+      "rank": 227,
       "name": "安东尼娅·阿克松·约翰逊及家族",
       "nameEn": "Antonia Ax:son Johnson & family",
       "worth": 13.33,
@@ -3199,7 +3185,7 @@
       "age": 83
     },
     {
-      "rank": 229,
+      "rank": 228,
       "name": "布拉德·雅各布斯",
       "nameEn": "Brad Jacobs",
       "worth": 13.33,
@@ -3213,7 +3199,7 @@
       "age": 70
     },
     {
-      "rank": 230,
+      "rank": 229,
       "name": "伊万·格拉森伯格",
       "nameEn": "Ivan Glasenberg",
       "worth": 13.32,
@@ -3225,6 +3211,20 @@
       "industry": "金属矿业",
       "image": "//specials-images.forbesimg.com/imageserve/5e77d02310380d0006fbc6b6/416x416.jpg?background=000000&cropX1=1345&cropX2=4926&cropY1=255&cropY2=3840",
       "age": 69
+    },
+    {
+      "rank": 230,
+      "name": "王来春",
+      "nameEn": "Wang Laichun",
+      "worth": 13.3,
+      "change": 0.3,
+      "changePct": 2.31,
+      "country": "香港",
+      "flag": "🇭🇰",
+      "source": "Electronics components",
+      "industry": "科技",
+      "image": "https://specials-images.forbesimg.com/imageserve/6182c8e9e8b8313ec4e42480/416x416.jpg?background=000000&cropX1=410&cropX2=1685&cropY1=178&cropY2=1454",
+      "age": 59
     },
     {
       "rank": 231,
@@ -3368,20 +3368,6 @@
     },
     {
       "rank": 241,
-      "name": "郑崇华",
-      "nameEn": "Bruce Cheng",
-      "worth": 13.0,
-      "change": 0.13,
-      "changePct": 1.01,
-      "country": "台湾",
-      "flag": "🇹🇼",
-      "source": "Electronics",
-      "industry": "科技",
-      "image": "//specials-images.forbesimg.com/imageserve/5e1e4ee9735f8c000799df1d/416x416.jpg?background=000000&cropX1=510&cropX2=1775&cropY1=299&cropY2=1564",
-      "age": 90
-    },
-    {
-      "rank": 242,
       "name": "理查德·金德",
       "nameEn": "Richard Kinder",
       "worth": 12.98,
@@ -3395,7 +3381,7 @@
       "age": 82
     },
     {
-      "rank": 243,
+      "rank": 242,
       "name": "利昂·布莱克",
       "nameEn": "Leon Black",
       "worth": 12.97,
@@ -3409,10 +3395,10 @@
       "age": 75
     },
     {
-      "rank": 244,
+      "rank": 243,
       "name": "郭鹤年",
       "nameEn": "Robert Kuok",
-      "worth": 12.96,
+      "worth": 12.97,
       "change": 0.03,
       "changePct": 0.23,
       "country": "马来西亚",
@@ -3423,7 +3409,35 @@
       "age": 103
     },
     {
+      "rank": 244,
+      "name": "李水荣及家族",
+      "nameEn": "Li Shuirong & family",
+      "worth": 12.94,
+      "change": 0.22,
+      "changePct": 1.73,
+      "country": "中国",
+      "flag": "🇨🇳",
+      "source": "Petrochemicals",
+      "industry": "制造业",
+      "image": "https://specials-images.forbesimg.com/imageserve/61a52212402ed8086d7a1ac9/416x416.jpg?background=000000&cropX1=0&cropX2=800&cropY1=0&cropY2=800",
+      "age": 70
+    },
+    {
       "rank": 245,
+      "name": "郑崇华",
+      "nameEn": "Bruce Cheng",
+      "worth": 12.86,
+      "change": 0.0,
+      "changePct": 0.0,
+      "country": "台湾",
+      "flag": "🇹🇼",
+      "source": "Electronics",
+      "industry": "科技",
+      "image": "//specials-images.forbesimg.com/imageserve/5e1e4ee9735f8c000799df1d/416x416.jpg?background=000000&cropX1=510&cropX2=1775&cropY1=299&cropY2=1564",
+      "age": 90
+    },
+    {
+      "rank": 246,
       "name": "Alexander Karp",
       "nameEn": "Alexander Karp",
       "worth": 12.84,
@@ -3437,7 +3451,7 @@
       "age": 59
     },
     {
-      "rank": 246,
+      "rank": 247,
       "name": "奥兰多·布拉沃",
       "nameEn": "Orlando Bravo",
       "worth": 12.83,
@@ -3451,21 +3465,21 @@
       "age": 56
     },
     {
-      "rank": 247,
-      "name": "李水荣及家族",
-      "nameEn": "Li Shuirong & family",
-      "worth": 12.8,
-      "change": 0.08,
-      "changePct": 0.63,
+      "rank": 248,
+      "name": "王宁及家族",
+      "nameEn": "Wang Ning & family",
+      "worth": 12.79,
+      "change": 0.4,
+      "changePct": 3.23,
       "country": "中国",
       "flag": "🇨🇳",
-      "source": "Petrochemicals",
-      "industry": "制造业",
-      "image": "https://specials-images.forbesimg.com/imageserve/61a52212402ed8086d7a1ac9/416x416.jpg?background=000000&cropX1=0&cropX2=800&cropY1=0&cropY2=800",
-      "age": 70
+      "source": "Toys",
+      "industry": "传媒娱乐",
+      "image": "https://specials-images.forbesimg.com/imageserve/606c82db99e962b0d731e4a3/416x416.jpg?background=000000&cropX1=585&cropX2=2019&cropY1=265&cropY2=1700",
+      "age": 39
     },
     {
-      "rank": 248,
+      "rank": 249,
       "name": "乌代·科塔克",
       "nameEn": "Uday Kotak",
       "worth": 12.76,
@@ -3479,7 +3493,7 @@
       "age": 67
     },
     {
-      "rank": 249,
+      "rank": 250,
       "name": "安德鲁·比尔",
       "nameEn": "Andrew Beal",
       "worth": 12.75,
@@ -3491,20 +3505,6 @@
       "industry": "金融投资",
       "image": "//specials-images.forbesimg.com/imageserve/572275fc31358e1869e2bbb5/416x416.jpg?background=000000&cropX1=23&cropX2=651&cropY1=24&cropY2=652",
       "age": 74
-    },
-    {
-      "rank": 250,
-      "name": "George Kurtz",
-      "nameEn": "George Kurtz",
-      "worth": 12.68,
-      "change": 1.04,
-      "changePct": 8.93,
-      "country": "美国",
-      "flag": "🇺🇸",
-      "source": "Security software",
-      "industry": "科技",
-      "image": "//specials-images.forbesimg.com/imageserve/5e5eec877d6f2600068e9a81/416x416.jpg?background=000000&cropX1=1192&cropX2=3840&cropY1=2641&cropY2=5291",
-      "age": 56
     }
   ]
 }
