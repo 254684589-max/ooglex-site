@@ -38,6 +38,22 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull --rebase --autostash || true
           git add apps/superinvestors/data.json
-          git diff --cached --quiet || (git commit -m "data: refresh superinvestors + aaii sentiment" && git push)
+          if git diff --cached --quiet; then
+            echo "数据无变化，跳过提交"
+            exit 0
+          fi
+          git commit -m "data: refresh superinvestors + aaii sentiment"
+          # 数据文件由本工作流独占生成。推送遇远端新提交时 rebase 重试，冲突以本次生成的版本为准
+          # （rebase 中 ours/theirs 语义互换，-X theirs 才是本地工作分支一侧）；不用
+          # `git pull --rebase --autostash`，避免弹栈冲突把 <<<<<<< 标记写进 JSON。
+          for i in 1 2 3 4 5; do
+            if git push origin "HEAD:$GITHUB_REF_NAME"; then
+              echo "已推送"; exit 0
+            fi
+            echo "推送被拒，拉取远端后重试（$i）"
+            git fetch origin "$GITHUB_REF_NAME" || true
+            git rebase -X theirs "origin/$GITHUB_REF_NAME" || git rebase --abort
+            sleep $((i * 3))
+          done
+          echo "推送多次失败"; exit 1
