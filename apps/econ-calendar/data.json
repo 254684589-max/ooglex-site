@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-15T07:31:38Z",
+  "updatedAt": "2026-07-15T16:55:16Z",
   "asOf": "2026-07-15",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-07-12 ~ 2026-07-17",
@@ -499,19 +499,7 @@
       "actual": null
     },
     {
-      "ts": "2026-07-15T09:00:00Z",
-      "ccy": "EUR",
-      "country": "欧元区",
-      "flag": "🇪🇺",
-      "title": "工业产出 环比",
-      "titleEn": "Industrial Production m/m",
-      "impact": "low",
-      "forecast": "0.3%",
-      "previous": "0.1%",
-      "actual": null
-    },
-    {
-      "ts": "2026-07-15T09:33:00Z",
+      "ts": "2026-07-15T07:00:00Z",
       "ccy": "CNY",
       "country": "中国",
       "flag": "🇨🇳",
@@ -523,7 +511,7 @@
       "actual": null
     },
     {
-      "ts": "2026-07-15T09:33:00Z",
+      "ts": "2026-07-15T07:01:00Z",
       "ccy": "CNY",
       "country": "中国",
       "flag": "🇨🇳",
@@ -532,6 +520,18 @@
       "impact": "low",
       "forecast": "1950B",
       "previous": "520B",
+      "actual": null
+    },
+    {
+      "ts": "2026-07-15T09:00:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "工业产出 环比",
+      "titleEn": "Industrial Production m/m",
+      "impact": "low",
+      "forecast": "0.3%",
+      "previous": "0.1%",
       "actual": null
     },
     {
