@@ -4,15 +4,16 @@
 构建「宏观雷达 · Macro Radar」数据：
 
 - 跨资产热力图：Yahoo Finance 免登录行情（1D/1W/1M/3M/YTD 收益）；
-- 7 大制度信号（0–100，越高越"宽松·支持"），全部取自 Yahoo（CI 上稳定、免 key）：
+- 8 大制度信号（0–100，越高越"宽松·支持"），Yahoo 免 key + FRED（需 key，缺则降级）：
     流动性  = 3M 短端利率(^IRX) —— 代理货币政策松紧
     波动率  = VIX 及其期限结构(^VIX / ^VIX3M)
     期限溢价 = 收益率曲线 10Y−3M(^TNX − ^IRX) —— 期限结构代理
+    实际利率 = 5Y TIPS 实际收益率(DFII5, FRED) —— 久期资产贴现率
     信用    = 高收益/投资级比价(HYG ÷ LQD) —— 信用风险偏好代理
     增长    = 铜金比(HG=F / GC=F) —— 增长动能代理
     美元    = 美元指数(DX-Y.NYB) + 离岸/在岸人民币基差
     广度    = 等权/市值加权(RSP / SPY) —— 市场广度代理
-- 综合机制读数 = 7 个信号加权平均；
+- 综合机制读数 = 8 个信号加权平均；
 - 异动流：从当日读数/穿越阈值自动生成（非人工编写）。
 
 注：FRED 官方 CSV 与其 DBnomics 镜像在 GitHub Actions runner 上均不可靠
@@ -148,6 +149,7 @@ FRED_CATS = [
     ]),
     ("实际利率与通胀预期", "RATES & INFLATION", [
         ("DGS10", "10 年期美债收益率", "pct"),
+        ("DFII5", "5 年期 TIPS 实际收益率", "pct"),
         ("DFII10", "10 年期 TIPS 实际收益率", "pct"),
         ("T10YIE", "10 年盈亏平衡通胀预期", "pct"),
         ("T5YIE", "5 年盈亏平衡通胀预期", "pct"),
@@ -474,6 +476,33 @@ def build():
             bp, "曲线陡峭" if slope[-1][1] > 0 else "曲线倒挂")
     add("term", "TERM PREMIUM", "期限溢价", term, term_desc, term_spark)
 
+    # 实际利率（5Y TIPS 实际收益率 DFII5：水平分位 0.5 + 63 日冲量分位 0.5，均反向计分）
+    #   实际利率是长久期资产（高估值成长股、无息的黄金白银）的贴现分母：水平量"限制性
+    #   多高"，冲量量"是否在急升"——杀估值的从来是急升（2013 缩减恐慌、2022 紧缩）。
+    #   与期限信号不重复：期限量曲线"形状"，这里量贴现率"水平"；与流动性互补：
+    #   流动性量钱的"数量"，这里量钱的"价格"。描述用 T5YIE 分解驱动：
+    #   实际升+通胀预期落=紧缩驱动（对风险资产最凶）；两者同升=增长驱动（较温和）。
+    rr = None
+    rr_desc = "5Y TIPS 实际收益率：久期资产贴现率"
+    rr_spark = []
+    dfii5 = fred_api("DFII5", 520)
+    if dfii5 and len(dfii5) > 64:
+        rv = [v for _, v in dfii5]
+        level_p = pct_rank(rv)
+        imp_p = pct_rank([rv[i] - rv[i - 63] for i in range(63, len(rv))])
+        comps = [(0.5, 100 - p) for p in (level_p, imp_p) if p is not None]
+        wsum = sum(w for w, _ in comps)
+        rr = sum(w * s for w, s in comps) / wsum if wsum else None
+        rr_spark = spark(dfii5)
+        d63 = round((rv[-1] - rv[-64]) * 100)
+        drive = ""
+        t5yie = fred_api("T5YIE")
+        if d63 > 0 and t5yie and len(t5yie) > 64:
+            ie63 = round((t5yie[-1][1] - t5yie[-64][1]) * 100)
+            drive = "（%s）" % ("紧缩驱动" if ie63 <= 0 else "增长驱动")
+        rr_desc = "5Y 实际利率 %.2f%%，近 13 周 %+dbp%s" % (rv[-1], d63, drive)
+    add("realrate", "REAL RATE", "实际利率", rr, rr_desc, rr_spark)
+
     # 信用（优先美银高收益债 OAS 权威口径：利差越窄越支持；取不到回退 HYG/LQD 比价）
     cred = None
     cred_desc = "高收益/投资级比价 (HYG÷LQD)"
@@ -541,10 +570,11 @@ def build():
     add("breadth", "BREADTH", "市场广度", brd, brd_desc, brd_spark)
 
     # —— 综合机制读数 ——
-    # 分块去相关：波动率+信用同属"风险定价"、高度相关，合计权重由 36% 压到 26%，避免重复计价；
-    # 货币/流动性(20%)与利率/期限(15%)权重上调。
-    W = {"liquidity": .20, "term": .15, "volatility": .13, "credit": .13,
-         "growth": .15, "usd": .12, "breadth": .12}
+    # 分块去相关：利率块 = 期限(曲线形状) + 实际利率(贴现率水平)合计 24%，主要从与
+    # 实际利率相关性最高的期限、美元、广度匀出权重；波动率+信用同属"风险定价"合计 24%；
+    # 货币的数量(流动性 18%)与价格(实际利率 12%)分开计量。
+    W = {"liquidity": .18, "term": .12, "realrate": .12, "volatility": .12,
+         "credit": .12, "growth": .14, "usd": .10, "breadth": .10}
     num = den = 0.0
     for s in signals:
         if s["score"] is not None:
@@ -610,6 +640,12 @@ def build():
             mrow("利率", "red" if dbp > 0 else "green",
                  "3M 短端利率周环比 %+dbp（%s）" % (
                      dbp, "加息定价升温、边际收紧" if dbp > 0 else "宽松定价升温"))
+    if dfii5 and len(dfii5) >= 6:
+        dbp5 = round((dfii5[-1][1] - dfii5[-6][1]) * 100)
+        if abs(dbp5) >= 10:
+            mrow("实际利率", "red" if dbp5 > 0 else "green",
+                 "5Y 实际利率周环比 %+dbp（%s）" % (
+                     dbp5, "贴现率急升、压制久期资产" if dbp5 > 0 else "贴现压力缓解"))
     if breadth:
         bp2 = pct_rank([v for _, v in breadth])
         if bp2 is not None and bp2 < 40:
@@ -664,6 +700,7 @@ def build():
         "note": ("制度信号为 0–100 相对分位读数，越高越偏『宽松·支持』；"
                  "信用/期限/流动性/增长/广度为市场化代理指标"
                  "（HYG÷LQD、10Y−3M 曲线、3M 短端利率、铜金比、等权·市值加权）；"
+                 "实际利率取 5 年期 TIPS 实际收益率（DFII5）；"
                  "宏观管道取自 FRED 官方数据。每日自动更新，仅供研究，非投资建议。"),
     }
     if prev and not macro and prev.get("macro"):

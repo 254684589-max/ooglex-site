@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 构建「Regime 时光机」历史数据 history.json：
-按当前宏观雷达的方法学，把 7 大制度信号与综合机制读数回溯到 2006 年（周频），
+按当前宏观雷达的方法学，把 8 大制度信号与综合机制读数回溯到 2006 年（周频），
 并标注历史危机事件窗口，供前端时间轴拖动重放。
 
 方法学与 build_radar.py 保持一致（滚动 2 年分位、同一权重、EMA 平滑）：
@@ -10,6 +10,7 @@
            + 融资验证 0.25（TED 利差 ←2022-01 / SOFR−IORB 2023→ 接力；空档归一化）
   波动率 = 100 − VIX(FRED VIXCLS) 分位
   期限   = 0.55·T10Y3M 分位 + 0.45·(100 − ACM 期限溢价分位)
+  实际利率 = 5Y TIPS(DFII5) 水平 0.5 + 63 日 impulse 0.5（均反向，越高越紧）
   信用   = 100 − 高收益债 OAS 分位
   增长   = mean(铜/金、SOX/SPY、XLY/XLP 分位)
   美元   = 100 − 美元指数分位
@@ -35,8 +36,8 @@ WIN_W = 104   # 周频 2 年分位窗口
 START_OUT = "2006-01-01"   # 输出起点（此前用于分位窗口热身）
 
 # 与 build_radar.py 相同的信号权重
-WEIGHTS = {"liquidity": .20, "term": .15, "volatility": .13, "credit": .13,
-           "growth": .15, "usd": .12, "breadth": .12}
+WEIGHTS = {"liquidity": .18, "term": .12, "realrate": .12, "volatility": .12,
+           "credit": .12, "growth": .14, "usd": .10, "breadth": .10}
 
 # 历史危机事件（Transmission 案例）：id/名称/窗口/峰值/一句话机制解读
 EPISODES = [
@@ -269,6 +270,7 @@ def build():
     vix = fred_full("VIXCLS")
     slope = fred_full("T10Y3M")
     tp = fred_full("THREEFYTP10")
+    dfii5 = fred_full("DFII5")   # 5Y TIPS 实际收益率，2003→
     hyoas = fred_full("BAMLH0A0HYM2")
     wal = fred_full("WALCL")
     tga = fred_full("WTREGEN")
@@ -278,8 +280,8 @@ def build():
     iorb = fred_full("IORB")
 
     for sid, s in [("VIXCLS", vix), ("T10Y3M", slope), ("THREEFYTP10", tp),
-                   ("BAMLH0A0HYM2", hyoas), ("WALCL", wal), ("WTREGEN", tga),
-                   ("RRPONTSYD", rrp), ("TEDRATE", ted)]:
+                   ("DFII5", dfii5), ("BAMLH0A0HYM2", hyoas), ("WALCL", wal),
+                   ("WTREGEN", tga), ("RRPONTSYD", rrp), ("TEDRATE", ted)]:
         print("%s: %d 点 %s→%s" % (sid, len(s), s[0][0] if s else "-", s[-1][0] if s else "-"))
 
     hg = equity_full("铜", "HG=F", "hg.f")
@@ -360,6 +362,21 @@ def build():
             t = g_tp(d)
             term.append((d, 0.55 * sp + 0.45 * t if t is not None else sp))
         sigs["term"] = term
+
+    # 实际利率：DFII5 水平 0.5 + 63 日 impulse 0.5，均反向（越高越紧）。
+    # DFII5 自 2003 年起，2 年分位热身后约 2005 年出分，覆盖 2006 输出起点；
+    # 2013 缩减恐慌、2022 紧缩周期正是该信号的历史验证样本。
+    if len(dfii5) > WIN_D + 63 + 5:
+        lvl = score_series(dfii5, WIN_D, invert=True)
+        imp = score_series(impulse(dfii5, 63), WIN_D, invert=True)
+        g_lvl = asof_factory(lvl, 10)
+        rr = []
+        for d, ip in imp:
+            lv = g_lvl(d)
+            if lv is None:
+                continue
+            rr.append((d, 0.5 * lv + 0.5 * ip))
+        sigs["realrate"] = rr
 
     # 信用：HY OAS 历史完整时用之；FRED API 对 ICE 授权序列只回近几年时，
     # 退回穆迪 Baa−10Y 利差（BAA10Y，1986→，无授权限制）保证全程覆盖。

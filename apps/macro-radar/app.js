@@ -1,6 +1,6 @@
 /* 宏观雷达 · Macro Radar · 前端渲染
  * 读取同目录 data.json（由 scripts/macro-radar/build_radar.py 每日生成），
- * 渲染：机制总览红绿灯 + 7 大制度信号 + 跨资产热力图 + 异动流。纯原生 JS。 */
+ * 渲染：机制总览红绿灯 + 8 大制度信号 + 跨资产热力图 + 异动流。纯原生 JS。 */
 (function () {
   "use strict";
   var $ = function (id) { return document.getElementById(id); };
@@ -150,10 +150,11 @@
 
   /* —— Regime 时光机 ——
    * 读取 history.json（周频回溯，2006→今），SVG 时间轴：拖动查看任意日期的
-   * 机制读数 + 7 信号；点击危机事件 chip 自动重放该窗口。缺文件则隐藏区块。 */
-  var SIGZH = { liquidity: "流动性", volatility: "波动率", term: "期限溢价",
+   * 机制读数 + 8 信号；点击危机事件 chip 自动重放该窗口。缺文件则隐藏区块。
+   * 旧 history.json 缺 realrate 时该列显示 "—"，不影响其余信号。 */
+  var SIGZH = { liquidity: "流动性", volatility: "波动率", term: "期限溢价", realrate: "实际利率",
     credit: "信用利差", growth: "增长动能", usd: "美元汇率", breadth: "市场广度" };
-  var SIGORDER = ["liquidity", "volatility", "term", "credit", "growth", "usd", "breadth"];
+  var SIGORDER = ["liquidity", "volatility", "term", "realrate", "credit", "growth", "usd", "breadth"];
   function regimeBucket(x) {
     if (!isNum(x)) return { zh: "—", col: "#8a97a6" };
     if (x < 35) return { zh: "收紧 · 风险", col: "#e0554f" };
