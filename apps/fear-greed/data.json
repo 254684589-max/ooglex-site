@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-07-15T02:53:07Z",
+  "updatedAt": "2026-07-15T07:24:12Z",
   "asOf": "2026-07-15",
   "source": "CNN Business Fear & Greed Index",
-  "score": 43,
+  "score": 44,
   "rating": "fear",
   "ratingZh": "恐惧",
   "refs": {
     "now": {
-      "score": 43,
+      "score": 44,
       "rating": "fear",
       "ratingZh": "恐惧"
     },
     "close": {
-      "score": 44,
+      "score": 43,
       "rating": "fear",
       "ratingZh": "恐惧"
     },
@@ -22,14 +22,14 @@
       "ratingZh": "恐惧"
     },
     "month": {
-      "score": 36,
+      "score": 42,
       "rating": "fear",
       "ratingZh": "恐惧"
     },
     "year": {
-      "score": 76,
-      "rating": "extreme greed",
-      "ratingZh": "极度贪婪"
+      "score": 73,
+      "rating": "greed",
+      "ratingZh": "贪婪"
     }
   },
   "indicators": [
@@ -42,7 +42,7 @@
       "desc": "标普500 相对125日均线"
     },
     {
-      "score": 37,
+      "score": 39,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "stock_price_strength",
@@ -50,7 +50,7 @@
       "desc": "创52周新高 vs 新低个股"
     },
     {
-      "score": 30,
+      "score": 32,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "stock_price_breadth",
@@ -82,7 +82,7 @@
       "desc": "股票 vs 国债 20日收益差"
     },
     {
-      "score": 46,
+      "score": 47,
       "rating": "neutral",
       "ratingZh": "中性",
       "key": "junk_bond_demand",
@@ -428,8 +428,8 @@
       "v": 48
     },
     {
-      "t": "2026-07-14",
-      "v": 43
+      "t": "2026-07-15",
+      "v": 44
     }
   ],
   "note": "数据来自 CNN 恐慌与贪婪指数：0 = 极度恐惧，100 = 极度贪婪，由 7 个市场情绪指标综合而成，每日自动更新。仅供参考，不构成建议。"
