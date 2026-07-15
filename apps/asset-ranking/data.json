@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-07-15T02:51:12Z",
+  "updatedAt": "2026-07-15T07:25:42Z",
   "asOf": "2026-07-15",
   "source": "Yahoo Finance · CoinGecko · 公开估算（世界黄金协会 / IMF / Savills 等）",
   "count": 250,
-  "totalMarketCap": 1080012.2,
+  "totalMarketCap": 1079842.2,
   "categories": [
     {
       "key": "real-estate",
@@ -104,9 +104,9 @@
       "unit": "桶（探明储量）",
       "qty": 1730000000000.0,
       "note": "全球石油探明储量 × WTI 油价（储量约 1.73 万亿桶，价格实时）",
-      "marketCap": 138815.2,
-      "price": 80.24,
-      "changePct": 11.32,
+      "marketCap": 138797.9,
+      "price": 80.23,
+      "changePct": 12.35,
       "static": false,
       "stale": false,
       "rank": 3
@@ -134,9 +134,9 @@
       "unit": "元（广义货币 M2）",
       "qty": 353670000000000.0,
       "note": "中国广义货币 M2（约 353 万亿元）× 美元汇率，汇率实时",
-      "marketCap": 52265.5,
-      "price": 0.14778,
-      "changePct": 0.53,
+      "marketCap": 52335.9,
+      "price": 0.147979,
+      "changePct": 0.66,
       "static": false,
       "stale": false,
       "rank": 5
@@ -164,9 +164,9 @@
       "unit": "盎司（地面存量）",
       "qty": 6720000000.0,
       "note": "全球地面黄金存量 × 金价（约 6.72 亿盎司/21.6 万吨，来源世界黄金协会，价格实时）",
-      "marketCap": 27173.0,
-      "price": 4043.6,
-      "changePct": -2.11,
+      "marketCap": 27115.2,
+      "price": 4035.0,
+      "changePct": -1.68,
       "static": false,
       "stale": false,
       "rank": 7
@@ -211,7 +211,7 @@
       "note": "全球铝储量 × 期货铝价（以 LME/COMEX 期货代理，价格实时）",
       "marketCap": 19428.5,
       "price": 3349.75,
-      "changePct": -3.99,
+      "changePct": -1.76,
       "static": false,
       "stale": false,
       "rank": 10
@@ -224,9 +224,9 @@
       "unit": "欧元（广义货币 M3）",
       "qty": 16380000000000.0,
       "note": "欧元区广义货币 M3（约 16.4 万亿欧元）× 美元汇率，汇率实时",
-      "marketCap": 18745.3,
-      "price": 1.1444,
-      "changePct": 0.19,
+      "marketCap": 18717.4,
+      "price": 1.1427,
+      "changePct": 0.04,
       "static": false,
       "stale": false,
       "rank": 11
@@ -239,9 +239,9 @@
       "unit": "磅（储量）",
       "qty": 2860000000000.0,
       "note": "全球铜储量 × COMEX 铜价（储量约 13 亿吨，价格实时）",
-      "marketCap": 18289.7,
-      "price": 6.395,
-      "changePct": 2.9,
+      "marketCap": 18175.3,
+      "price": 6.355,
+      "changePct": 1.94,
       "static": false,
       "stale": false,
       "rank": 12
@@ -254,9 +254,9 @@
       "unit": "日元（广义货币 M2）",
       "qty": 1250000000000000.0,
       "note": "日本广义货币 M2（约 1250 万亿日元）× 美元汇率，汇率实时",
-      "marketCap": 7712.7,
-      "price": 0.00617,
-      "changePct": 0.29,
+      "marketCap": 7702.3,
+      "price": 0.006162,
+      "changePct": 0.15,
       "static": false,
       "stale": false,
       "rank": 13
@@ -320,9 +320,9 @@
       "unit": "英镑（广义货币 M2）",
       "qty": 3000000000000.0,
       "note": "英国广义货币 M2（约 3 万亿英镑）× 美元汇率，汇率实时",
-      "marketCap": 4022.1,
-      "price": 1.3407,
-      "changePct": 0.08,
+      "marketCap": 4021.5,
+      "price": 1.3405,
+      "changePct": 0.07,
       "static": false,
       "stale": false,
       "rank": 17
@@ -335,9 +335,9 @@
       "unit": "盎司（地面存量）",
       "qty": 50000000000.0,
       "note": "全球地面白银存量 × 银价（约 500 亿盎司，价格实时）",
-      "marketCap": 2947.2,
-      "price": 58.945,
-      "changePct": -2.37,
+      "marketCap": 2932.8,
+      "price": 58.655,
+      "changePct": -1.93,
       "static": false,
       "stale": false,
       "rank": 18
@@ -484,9 +484,9 @@
       "category": "crypto",
       "emoji": "₿",
       "symbol": "BTC",
-      "marketCap": 1293.7,
-      "price": 64499,
-      "changePct": 3.23,
+      "marketCap": 1296.0,
+      "price": 64597,
+      "changePct": 3.27,
       "rank": 27
     },
     {
@@ -1549,9 +1549,9 @@
       "category": "crypto",
       "emoji": "₿",
       "symbol": "ETH",
-      "marketCap": 225.2,
-      "price": 1865.65,
-      "changePct": 4.77,
+      "marketCap": 225.6,
+      "price": 1869.34,
+      "changePct": 4.84,
       "rank": 90
     },
     {
@@ -1884,8 +1884,8 @@
       "emoji": "₿",
       "symbol": "USDT",
       "marketCap": 184.2,
-      "price": 0.999292,
-      "changePct": 0.04,
+      "price": 0.999343,
+      "changePct": 0.07,
       "rank": 110
     },
     {
@@ -3917,9 +3917,9 @@
       "category": "crypto",
       "emoji": "₿",
       "symbol": "BNB",
-      "marketCap": 78.1,
-      "price": 579.82,
-      "changePct": 1.89,
+      "marketCap": 77.9,
+      "price": 578.19,
+      "changePct": 1.63,
       "rank": 230
     },
     {
@@ -4217,9 +4217,9 @@
       "category": "crypto",
       "emoji": "₿",
       "symbol": "USDC",
-      "marketCap": 73.1,
-      "price": 0.99984,
-      "changePct": -0.0,
+      "marketCap": 73.0,
+      "price": 0.999796,
+      "changePct": -0.01,
       "rank": 248
     },
     {
