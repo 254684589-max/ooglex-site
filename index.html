@@ -128,7 +128,7 @@
     .radar-card .lab { font-size: 15px; font-weight: 600; color: var(--amber); }
     .radar-card .date { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--faint); }
     .radar-card svg { display: block; width: 100%; max-width: 100%; height: auto; margin: 8px 0 2px; }
-    .sigs { display: grid; grid-template-columns: repeat(7,1fr); gap: 7px; margin-top: 12px; }
+    .sigs { display: grid; grid-template-columns: repeat(4,1fr); gap: 7px; margin-top: 12px; }
     .sig { background: rgba(255,255,255,.03); border: 1px solid var(--line); border-radius: 8px; padding: 7px 4px 6px; text-align: center; min-width: 0; }
     .sig .n { display: block; font-size: 10.5px; color: var(--faint); line-height: 1.4; }
     .sig .v { display: block; font-family: var(--mono); font-size: 14px; font-weight: 700; margin-top: 1px; line-height: 1.3; }
@@ -446,9 +446,9 @@
       var lb = document.getElementById("rc-label");
       lb.textContent = (d.regime || {}).labelZh || b.zh; lb.style.color = b.col;
       document.getElementById("rc-date").textContent = d.asOf || "";
-      var SIGSHORT = { liquidity: "流动性", volatility: "波动率", term: "期限", credit: "信用", growth: "增长", usd: "美元", breadth: "广度" };
+      var SIGSHORT = { liquidity: "流动性", volatility: "波动率", term: "期限", realrate: "实际利率", credit: "信用", growth: "增长", usd: "美元", breadth: "广度" };
       var sigs = document.getElementById("rc-sigs");
-      (d.signals || []).slice(0, 7).forEach(function (s) {
+      (d.signals || []).slice(0, 8).forEach(function (s) {
         var c = sigCol(s.score);
         var nm = SIGSHORT[s.key] || (s.zh || "").slice(0, 3);
         var box = el("span", "sig", "<span class='n'>" + esc(nm) + "</span><span class='v' style='color:" + c + "'>" + (isNum(s.score) ? s.score : "—") + "</span>");
