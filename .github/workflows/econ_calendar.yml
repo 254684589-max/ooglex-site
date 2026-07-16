@@ -3,9 +3,11 @@ name: Econ Calendar
 # 刷新「全球经济日历」：抓 Forex Factory 公开周历 → 写 apps/econ-calendar/data.json。
 # 数据源免登录、无需密钥。每天跑两次，以便事件公布后回填实际值。
 on:
+  # 每日一跑由 scheduler.yml 在 21:00 UTC 窗口开启后统一触发；此处保留 12:30 UTC 一跑
+  # （允许被 GitHub 推迟，时效要求低），用于当天事件公布后回填实际值。
   workflow_dispatch:
   schedule:
-    - cron: '30 0,12 * * *'   # 每天 00:30 与 12:30 UTC（与其它工作流错开）
+    - cron: '30 12 * * *'
 
 permissions:
   contents: write

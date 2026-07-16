@@ -3,9 +3,8 @@ name: World Economy Map
 # 每日刷新「全球经济图谱」：抓世界银行多项宏观指标 + 整理的央行利率 → 写 apps/world-economy/data.json。
 # 数据源 World Bank Open Data，免登录、无需密钥。
 on:
+  # 定点 cron 会被 GitHub 推迟数小时，改由 scheduler.yml 每日在 21:00 UTC 窗口开启后统一触发。
   workflow_dispatch:
-  schedule:
-    - cron: '40 23 * * *'   # 每天 23:40 UTC（与其它每日工作流错开）
 
 permissions:
   contents: write

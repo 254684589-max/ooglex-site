@@ -1,0 +1,87 @@
+name: Daily Scheduler
+
+# 统一调度所有每日数据工作流。
+#
+# 背景：GitHub 对 schedule 触发只保证「尽力而为」，本仓库实测定点 cron 会被平台推迟 3~8 小时，
+# 导致每日数据更新时间完全不可控（用户期望北京时间 07:00 前看到当日数据）。
+#
+# 对策：本工作流每半小时醒一次。即使每个 tick 都被同样推迟，相邻 tick 依然大约每半小时到来一次，
+# 所以总有一个 tick 会落在每日更新窗口内。窗口从 21:00 UTC（美股收盘后、北京时间约 05:00）开启，
+# 进入窗口后把本窗口内尚未触发过的每日工作流用 workflow_dispatch 立即拉起——workflow_dispatch
+# 是即时触发，不受 schedule 的排队延迟影响，从而把数据更新压在北京时间 07:00 之前完成。
+#
+# asset_ranking 复用 companies 当日生成的市值数据，须等 companies 本窗口运行成功后，
+# 由后续 tick 再拉起（二者原本就以 23:10 / 23:40 UTC 先后错开，这里保留同样的依赖顺序）。
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '7,37 * * * *'   # 每半小时（避开整点高峰分钟）
+
+permissions:
+  actions: write
+
+concurrency:
+  group: daily-scheduler
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch daily workflows
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -u
+          # 窗口起点 = 最近一次 21:00 UTC；窗口开 16 小时（21:00 → 次日 13:00 UTC），
+          # 之后收手等下一个窗口，避免在美股盘中补跑收盘口径的数据。
+          if [ "$(date -u +%H)" -ge 21 ]; then
+            win_start=$(date -u -d 'today 21:00' +%s)
+          else
+            win_start=$(date -u -d 'yesterday 21:00' +%s)
+          fi
+          now=$(date -u +%s)
+          if [ $((now - win_start)) -gt $((16 * 3600)) ]; then
+            echo "不在更新窗口内，跳过"
+            exit 0
+          fi
+
+          # 取某工作流最近一次 workflow_dispatch 运行的「创建时间 + 结论」。
+          # 不用 API 的 created 范围过滤，直接取最新一条在本地比较，语义更稳。
+          latest_dispatch() {  # $1 = workflow 文件名 → 输出 "created_at conclusion"
+            gh api -X GET "repos/$GITHUB_REPOSITORY/actions/workflows/$1/runs" \
+              -f event=workflow_dispatch -f per_page=1 \
+              --jq '.workflow_runs[0] | if . == null then "none none" else "\(.created_at) \(.conclusion // "pending")" end'
+          }
+
+          ran_in_window() {  # $1 = workflow 文件名；本窗口已触发过则返回 0
+            read -r created _ <<< "$(latest_dispatch "$1")"
+            [ "$created" != "none" ] && [ "$(date -u -d "$created" +%s)" -ge "$win_start" ]
+          }
+
+          # 第一梯队：互不依赖的每日工作流
+          for wf in macro_radar.yml asset_tracker.yml billionaires.yml companies.yml \
+                    fear_greed.yml world_economy.yml movies.yml econ_calendar.yml; do
+            if ran_in_window "$wf"; then
+              echo "$wf 本窗口已触发，跳过"
+            else
+              echo "触发 $wf"
+              gh workflow run "$wf" --ref "$GITHUB_REF_NAME"
+              sleep 15   # 错开启动时间，减少并发 push 撞车（各工作流自身还有 rebase 重试兜底）
+            fi
+          done
+
+          # 第二梯队：asset_ranking 等 companies 本窗口成功完成后再触发
+          if ran_in_window asset_ranking.yml; then
+            echo "asset_ranking.yml 本窗口已触发，跳过"
+          else
+            read -r c_created c_concl <<< "$(latest_dispatch companies.yml)"
+            if [ "$c_created" != "none" ] \
+               && [ "$(date -u -d "$c_created" +%s)" -ge "$win_start" ] \
+               && [ "$c_concl" = "success" ]; then
+              echo "触发 asset_ranking.yml"
+              gh workflow run asset_ranking.yml --ref "$GITHUB_REF_NAME"
+            else
+              echo "companies 本窗口尚未成功完成（状态：$c_concl），asset_ranking 留待下个 tick"
+            fi
+          fi
