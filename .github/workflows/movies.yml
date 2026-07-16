@@ -4,9 +4,8 @@ name: Movies
 # 需在仓库 Settings → Secrets and variables → Actions 配置 TMDB_KEY（themoviedb.org 免费申请）。
 # 未配置或取数失败时，脚本会保留上次 data.json、绝不用空数据覆盖。
 on:
+  # 定点 cron 会被 GitHub 推迟数小时，改由 scheduler.yml 每日在 21:00 UTC 窗口开启后统一触发。
   workflow_dispatch:
-  schedule:
-    - cron: '20 0 * * *'   # 每天 00:20 UTC（与其它每日工作流错开）
 
 permissions:
   contents: write

@@ -3,10 +3,8 @@ name: Fear & Greed Tracker
 # 每日刷新「市场恐慌与贪婪指数」：跑取数脚本 → 生成 apps/fear-greed/data.json → 提交回仓库。
 # 数据源 CNN 恐慌与贪婪指数，需带浏览器 UA，无需任何密钥。
 on:
+  # 定点 cron 会被 GitHub 推迟数小时，改由 scheduler.yml 每日在 21:00 UTC 窗口开启后统一触发。
   workflow_dispatch:
-  schedule:
-    # 每天 23:10 UTC（≈ 北京次日 07:10；与 asset/billionaires 错开，避免提交撞车）
-    - cron: '10 23 * * *'
 
 permissions:
   contents: write

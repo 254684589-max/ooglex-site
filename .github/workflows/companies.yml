@@ -3,10 +3,8 @@ name: Companies Tracker
 # 每日刷新「全球公司市值实时榜」：跑取数脚本 → 生成 apps/companies/data.json → 提交回仓库。
 # GitHub Pages 托管该 JSON，页面前端读取即时渲染。数据源 Yahoo Finance（v8/chart），零密钥。
 on:
+  # 定点 cron 会被 GitHub 推迟数小时，改由 scheduler.yml 每日在 21:00 UTC 窗口开启后统一触发。
   workflow_dispatch:
-  schedule:
-    # 每天 23:10 UTC（美股收盘后；与其它每日工作流错峰，避免提交撞车）
-    - cron: '10 23 * * *'
 
 permissions:
   contents: write

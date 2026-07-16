@@ -2,11 +2,10 @@ name: Asset Ranking
 
 # 每日刷新「全球资产市值排行榜（前 250，不限品类）」→ 生成 apps/asset-ranking/data.json → 提交回仓库。
 # 商品/贵金属/汇率取 Yahoo Finance，加密货币取 CoinGecko，公司复用 apps/companies/data.json，均免密钥。
-# 排在 companies 工作流（23:10 UTC）之后运行，以复用当日最新的公司市值。
+# 排在 companies 工作流之后运行，以复用当日最新的公司市值（顺序由 scheduler.yml 保证）。
 on:
+  # 定点 cron 会被 GitHub 推迟数小时，改由 scheduler.yml 在 companies 当日运行成功后统一触发。
   workflow_dispatch:
-  schedule:
-    - cron: '40 23 * * *'
 
 permissions:
   contents: write

@@ -4,10 +4,8 @@ name: Macro Radar
 # 生成 apps/macro-radar/data.json → 提交回仓库。均无需 API Key。
 # 数据源全挂时脚本会保留上次 data.json 不覆盖。
 on:
+  # 定点 cron 会被 GitHub 推迟数小时，改由 scheduler.yml 每日在 21:00 UTC 窗口开启后统一触发。
   workflow_dispatch:
-  schedule:
-    # 每天 22:20 UTC（≈ 北京次日 06:20；美股收盘后、FRED 日更后，与其它每日工作流错开）
-    - cron: '20 22 * * *'
 
 permissions:
   contents: write
