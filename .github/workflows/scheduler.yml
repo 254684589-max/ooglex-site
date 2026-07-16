@@ -66,7 +66,9 @@ jobs:
               echo "$wf 本窗口已触发，跳过"
             else
               echo "触发 $wf"
-              gh workflow run "$wf" --ref "$GITHUB_REF_NAME"
+              # 不用 gh workflow run：它要求本地是 git 仓库，而本 job 未 checkout 代码
+              gh api -X POST "repos/$GITHUB_REPOSITORY/actions/workflows/$wf/dispatches" \
+                -f "ref=$GITHUB_REF_NAME"
               sleep 15   # 错开启动时间，减少并发 push 撞车（各工作流自身还有 rebase 重试兜底）
             fi
           done
@@ -80,7 +82,8 @@ jobs:
                && [ "$(date -u -d "$c_created" +%s)" -ge "$win_start" ] \
                && [ "$c_concl" = "success" ]; then
               echo "触发 asset_ranking.yml"
-              gh workflow run asset_ranking.yml --ref "$GITHUB_REF_NAME"
+              gh api -X POST "repos/$GITHUB_REPOSITORY/actions/workflows/asset_ranking.yml/dispatches" \
+                -f "ref=$GITHUB_REF_NAME"
             else
               echo "companies 本窗口尚未成功完成（状态：$c_concl），asset_ranking 留待下个 tick"
             fi
