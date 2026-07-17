@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-07-17T16:42:53Z",
+  "updatedAt": "2026-07-17T23:37:32Z",
   "asOf": "2026-07-17",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-07-12 ~ 2026-07-17",
-  "count": 99,
+  "count": 98,
   "highCount": 14,
   "events": [
     {
@@ -1180,18 +1180,6 @@
       "impact": "medium",
       "forecast": null,
       "previous": "4.6%",
-      "actual": null
-    },
-    {
-      "ts": "2026-07-17T20:30:00Z",
-      "ccy": "USD",
-      "country": "美国",
-      "flag": "🇺🇸",
-      "title": "Treasury Currency Report",
-      "titleEn": "Treasury Currency Report",
-      "impact": "low",
-      "forecast": null,
-      "previous": null,
       "actual": null
     }
   ],
