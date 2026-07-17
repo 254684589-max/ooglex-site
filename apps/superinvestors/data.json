@@ -1,6 +1,6 @@
 {
- "updatedAt": "2026-07-13T05:53:06Z",
- "asOf": "2026-07-13",
+ "updatedAt": "2026-07-17T07:55:01Z",
+ "asOf": "2026-07-17",
  "source": "SEC EDGAR 13F-HR · AAII Investor Sentiment Survey",
  "investors": [
   {
@@ -7346,7 +7346,7 @@
    "firm": "Duquesne Family Office",
    "firmZh": "杜肯家族办公室",
    "cik": "0001536411",
-   "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAJFBMVEVHcEwYHR8YHR8YHR8YHR8YHR8YHR8YHR8YHR8YHR8YHR8YHR9eMrKtAAAAC3RSTlMAoLjTjetRDDZzIIYTFTsAAAQhSURBVHic7ZzbktsgDIbNwQSc93/f2s5uJvrFSRh5Z7arm3Y6DnwWOgFWF+us8T6lsEuM27Y93rJ8/2X/1xiPB9Iu3htjrXW7rLvsf+wDpBC3ZUye82S1PsgxNrNOZNjFpgGIkIybCWGCmOHASDMZbBxAiDMJnqt/iAnag+5Wb63Z/eaQ3R1c1YKM1Bxsflb38rPSC9VMyMoQDB+g27FiyuMbyUIwMxRac+RvsIu/ACCb/2TI6GHt9ogAv3RygGV5+HEloB+aEYAlo8nn2mdK2/jqgXAtdJkTAqRhgOXBbKHnbR4j1CVBg3paOcBIPP8YDaNT26bnAnBLaBPAD0arnLegOzQJ4Hl5OkORRpZ1NgALLQ1LBIDr83OCujcqALBVqPq2BgCzxJppqwBgnbNWHnXdT4oE3qtiBkoAmGPKAU4JAM2gPLAWAC5CMc1aLQCMBqUQRzUwVJEVBDyhFBCtGgDaYSEY6GkA9xwFFehpgNUaeRUoAvRZge14ZlS6HEEToCsgqwJgVrwdoKfoVwUAJ88Ob1QBcA0yZqgL0LEGFGB0c1yU9hroaoDtlG4HwAKZV0bKS4A7Lx6LlDWAwZAnG20APEW7HQAjATMCbRvAjMiKU20ADEVsBm0AdANWd3ttADxcvx0AD+8wH6kDoB+iG6gDoB9iQrwdAP1QHQDTEWYDdYDWebw6AG4RMdrfDoD58PcDYDLAWPwH8Adwuxf8OMD/FwdaFyi3Z8PbkxEC1OuB+RuTn6+IcINerwkVNNCqirX3hnhGwvYFd++M2CuqawAA2AmFNgDGocb2fD4AhgH2wM0nJK0jmrn3BYeAE/DLM20AWAF+a6IMADaYuRZUBoBMkLmyoAATLy5fAoE4c2+lDEDnzylYFwBMIHeBrHZ3fApEgdwjtv3IBWmaoDIArEDHveFkADp4PtcDwIQPmT6kZ2xNABqFCsVOO1KMCz2lLTwE2erq53yfQkuB0kckVg+AKKAYYUADlz7ppEIVUHyzZsEwLEQB5U+p1ACIC1RCPACMf1cMQk9mKs4FANN2JsS4a3qFG5VZZXHoHrR5szkkZAHqOR4AJhUEZNR6eG9dag0JMYBGdEeAGcmAnDm0YivMPyMUJtF4CHA9EsnmZwCXA4FwfjxKvuwGpA7uyK0M4GJNRAJrj0HjSe41KyRVsOt6FQ5wIRgT9XcaU6bdbjQS0AKkV5GsL2U0HUSy+n3qPyTX8jiwCIFmdUEwyfdcJpErbJ7Gcyv5dbZZ7tChj33DxAQlzSpzo3zH4NdQztS6HpcteP5zaSjv6wB+9X1aY75aP4udn+JMMrXp1cljWJjYAm1Em6pHnNv5bCUvv/mpPdfPVdp1PXNy54M8e7rVnY3MR2d/OCWGSCW8W/9fzf/f3f9n+//5PwBY40NnpED5B9Jjv9oG+L4bAAAAAElFTkSuQmCC",
+   "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAbFBMVEX///8YHR8oLS8bICL8/Pzz8/T29vZbX2Cpq6zw8PDFxseusLFkZ2lNUFI5PT8eIyWWmJmgoqPIycl9gIEsMDJqbW4kKSqNj5C4urq+v8BCRkfa29twc3RUV1ne399KTk95fH0zODnQ0dGFh4jpUq7fAAABMklEQVQ4jYWT2bKCMBBE6SxAALNcCbKj8v//eAPFKoj91DVzkkoPg+f9Um2DxClobqVMSUZkcA8rtgFE21FKkZZNYutnnXQEVN202CB3AFZwzv1BXOQ2g5LxCjwcYDYHGG97iswul2gHhPuH8YJA3WbCOCDeAx6LFBCwFcg/w7EQoHoFikN8FgCkGm14CniRK9cLEB0BJt0V4gIY5xNfAYWrPwcTO/N3ArQuaXMFiBSQV4D/AtJLQP4C3A2vGThLIQhQDuZbzIoCyQycjHqsm9kcvqZTAqj2AhjGYEdnjhs1nSPvBTCHvih3C/P47Ps9aDB5vWzGpm9AG7EBuu2/5DGhoZKl1DtA5dxnk3yRN0j13GfMYlBX67iIoqgwNgWt2zVNL4lTpihV2WhIo6tj6q/6B4z6Dulyf6IjAAAAAElFTkSuQmCC",
    "imgAlt": "",
    "imgLogo": true,
    "period": "2026-03-31",
@@ -9499,9 +9499,9 @@
    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Charlie_Munger_%28cropped%29.jpg/250px-Charlie_Munger_%28cropped%29.jpg",
    "imgAlt": "",
    "imgLogo": false,
-   "period": "2026-03-31",
-   "filed": "2026-04-15",
-   "value": 240668825,
+   "period": "2026-06-30",
+   "filed": "2026-07-16",
+   "value": 256664220,
    "stocks": 4,
    "top10pct": 100.0,
    "holdings": [
@@ -9509,8 +9509,8 @@
      "name": "Wells Fargo & Co",
      "zh": "富国银行",
      "ticker": "WFC",
-     "value": 112488930,
-     "pct": 46.74,
+     "value": 116770320,
+     "pct": 45.5,
      "chg": "hold",
      "chgPct": null
     },
@@ -9518,8 +9518,8 @@
      "name": "Bank Of America Corp",
      "zh": "美国银行",
      "ticker": "BAC",
-     "value": 97500000,
-     "pct": 40.51,
+     "value": 113960000,
+     "pct": 44.4,
      "chg": "hold",
      "chgPct": null
     },
@@ -9527,8 +9527,8 @@
      "name": "Alibaba Group Holding Ltd",
      "zh": "阿里巴巴",
      "ticker": "BABA",
-     "value": 24464700,
-     "pct": 10.17,
+     "value": 18716100,
+     "pct": 7.29,
      "chg": "hold",
      "chgPct": null
     },
@@ -9536,8 +9536,8 @@
      "name": "Us Bancorp",
      "zh": "美国合众银行",
      "ticker": "USB",
-     "value": 6215195,
-     "pct": 2.58,
+     "value": 7217800,
+     "pct": 2.81,
      "chg": "hold",
      "chgPct": null
     }
@@ -12869,8 +12869,14 @@
   }
  ],
  "aaii": {
-  "asOf": "2026-07-09",
+  "asOf": "2026-07-16",
   "weeks": [
+   {
+    "date": "2026-07-16",
+    "bull": 44.9,
+    "neutral": 22.2,
+    "bear": 32.9
+   },
    {
     "date": "2026-07-09",
     "bull": 36.3,
@@ -12936,12 +12942,6 @@
     "bull": 38.1,
     "neutral": 22.2,
     "bear": 39.7
-   },
-   {
-    "date": "2026-04-23",
-    "bull": 46.0,
-    "neutral": 19.5,
-    "bear": 34.4
    }
   ],
   "avg": {
@@ -12949,7 +12949,7 @@
    "neutral": 31.0,
    "bear": 31.4
   },
-  "spread": -0.9,
+  "spread": 12.0,
   "hi52": {
    "bull": 49.5,
    "date": "2026-01-15"
