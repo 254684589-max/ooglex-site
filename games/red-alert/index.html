@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0d0605">
+  <meta name="description" content="红色警戒 2 网页版 —— 浏览器直接畅玩经典 RTS：单人战役、遭遇战、多人联机、天梯排位，内置共和国之辉 MOD，无需下载安装，手机电脑都能玩。">
+  <link rel="canonical" href="https://www.ooglex.com/games/red-alert/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="红色警戒 2 · 网页版 | Ooglex 游戏中心">
+  <meta property="og:description" content="浏览器直接畅玩红警 2：战役 · 遭遇战 · 联机对战 · 共和国之辉，无需下载安装。">
+  <meta property="og:url" content="https://www.ooglex.com/games/red-alert/">
+  <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>红色警戒 2 · 网页版 —— 浏览器在线玩</title>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #0d0605; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif; color: #f2ece6; }
+
+    #game-container { position: fixed; inset: 0; }
+    iframe { width: 100%; height: 100%; border: none; display: block; background: #0d0605; }
+
+    /* ── 加载遮罩 ── */
+    .loading-overlay {
+      position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 18px; text-align: center; padding: 0 24px;
+      background:
+        radial-gradient(800px 500px at 50% 20%, rgba(190, 40, 30, .22), transparent 65%),
+        radial-gradient(700px 500px at 50% 110%, rgba(90, 80, 30, .25), transparent 60%),
+        #0d0605;
+      transition: opacity .6s ease; opacity: 1;
+    }
+    .loading-overlay.hide { opacity: 0; pointer-events: none; }
+    .star {
+      width: 66px; height: 66px; color: #e03a2a;
+      filter: drop-shadow(0 0 18px rgba(224, 58, 42, .55));
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+    .loading-text { font-size: 1.24rem; font-weight: 800; letter-spacing: 2px; }
+    .loading-sub { color: #b8a89a; font-size: .85rem; line-height: 1.8; }
+    .loading-bar { width: min(280px, 70vw); height: 4px; border-radius: 99px; background: rgba(255,255,255,.1); overflow: hidden; }
+    .loading-bar i {
+      display: block; height: 100%; width: 40%; border-radius: 99px;
+      background: linear-gradient(90deg, #e03a2a, #ffb03a);
+      animation: slide 1.6s ease-in-out infinite;
+    }
+    @keyframes slide { 0% { margin-left: -40%; } 100% { margin-left: 100%; } }
+    .slow-tip {
+      display: none; margin-top: 6px; font-size: .85rem; color: #b8a89a;
+    }
+    .slow-tip.show { display: block; }
+    .slow-tip a {
+      color: #ffb03a; font-weight: 700; text-decoration: none;
+      border: 1px solid rgba(255,176,58,.45); border-radius: 99px; padding: 6px 16px; margin-left: 8px;
+      display: inline-block;
+    }
+
+    /* ── 顶栏 ── */
+    .top-bar { position: fixed; top: 10px; right: 10px; z-index: 60; display: flex; gap: 8px; }
+    .top-btn {
+      width: 38px; height: 38px; border-radius: 10px; border: 1px solid rgba(255,255,255,.14);
+      background: rgba(13, 6, 5, .62); backdrop-filter: blur(8px); color: #f2ece6;
+      font-size: 16px; display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; text-decoration: none; transition: background .2s, border-color .2s;
+    }
+    .top-btn:hover { background: rgba(224, 58, 42, .3); border-color: rgba(224, 58, 42, .55); }
+
+    /* ── 换源面板 ── */
+    .src-overlay {
+      position: fixed; inset: 0; z-index: 70; display: none; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
+    }
+    .src-overlay.show { display: flex; }
+    .src-panel {
+      width: min(360px, 88vw); border-radius: 16px; padding: 20px 22px;
+      background: #1a100d; border: 1px solid rgba(255,255,255,.12);
+    }
+    .src-panel h3 { font-size: 1.02rem; margin-bottom: 5px; }
+    .src-panel p { color: #b8a89a; font-size: .8rem; margin-bottom: 14px; }
+    .src-item {
+      display: block; width: 100%; text-align: left; cursor: pointer; margin-bottom: 9px;
+      padding: 12px 15px; border-radius: 11px; font-size: .92rem; font-weight: 700; color: #f2ece6;
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); font-family: inherit;
+    }
+    .src-item small { display: block; font-weight: 400; color: #b8a89a; margin-top: 3px; font-size: .76rem; }
+    .src-item.on { border-color: #e03a2a; background: rgba(224,58,42,.16); }
+
+    /* ── 底部提示 ── */
+    .tip-toast {
+      position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 55;
+      max-width: 92vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      background: rgba(13, 6, 5, .72); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.14); border-radius: 99px;
+      padding: 9px 18px; font-size: .8rem; color: #d8ccc0;
+      opacity: 0; transition: opacity .6s; pointer-events: none;
+    }
+    .tip-toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <iframe id="gameFrame"
+      allow="fullscreen; autoplay; gamepad; pointer-lock; screen-wake-lock; clipboard-write; encrypted-media"
+      loading="eager"></iframe>
+  </div>
+
+  <div class="loading-overlay" id="loader">
+    <svg class="star" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">
+      <path d="M50 6 L60.5 38 L94 38 L67 58 L77.5 90 L50 70 L22.5 90 L33 58 L6 38 L39.5 38 Z"/>
+    </svg>
+    <div class="loading-text">正在加载 红色警戒 2 网页版</div>
+    <div class="loading-sub">首次加载需下载游戏资源，可能需要 1–3 分钟<br>电脑体验最佳 · 手机建议横屏</div>
+    <div class="loading-bar"><i></i></div>
+    <div class="slow-tip" id="slowTip">加载较慢或没有反应？<a id="directLink" href="https://game.ra2web.com/" target="_blank" rel="noopener">新窗口直接打开 ↗</a></div>
+  </div>
+
+  <div class="top-bar">
+    <a class="top-btn" href="../hub/" title="返回游戏中心">🏠</a>
+    <button class="top-btn" onclick="toggleSrc()" title="切换游戏源">🔁</button>
+    <button class="top-btn" onclick="openDirect()" title="新窗口打开">↗</button>
+    <button class="top-btn" onclick="toggleFullscreen()" title="全屏">⛶</button>
+  </div>
+
+  <div class="src-overlay" id="srcOverlay" onclick="if(event.target===this)toggleSrc()">
+    <div class="src-panel">
+      <h3>🔁 切换游戏源</h3>
+      <p>不同源加载速度可能不同，哪个快用哪个</p>
+      <div id="srcList"></div>
+    </div>
+  </div>
+
+  <div class="tip-toast" id="tip">🎖️ 支持单人战役 · 遭遇战 · 多人联机 · 共和国之辉 MOD</div>
+
+  <script>
+    (function () {
+      'use strict';
+      var SOURCES = [
+        { id: 'ra2web', name: '红色井界（推荐）', desc: '红警 2 完整网页版 · 战役/遭遇战/联机/天梯', url: 'https://game.ra2web.com/' },
+        { id: 'ghzh', name: '共和国之辉', desc: '经典共辉 MOD 网页版', url: 'https://www.gongheguozhihui.com/' }
+      ];
+      var iframe = document.getElementById('gameFrame');
+      var loader = document.getElementById('loader');
+      var slowTip = document.getElementById('slowTip');
+      var direct = document.getElementById('directLink');
+      var cur = localStorage.getItem('ra-src') || 'ra2web';
+      if (!SOURCES.some(function (s) { return s.id === cur; })) cur = 'ra2web';
+
+      function srcOf(id) {
+        return SOURCES.filter(function (s) { return s.id === id; })[0] || SOURCES[0];
+      }
+      function load(id) {
+        cur = id;
+        localStorage.setItem('ra-src', id);
+        var s = srcOf(id);
+        loader.classList.remove('hide');
+        slowTip.classList.remove('show');
+        direct.href = s.url;
+        iframe.src = s.url;
+        renderSrc();
+        clearTimeout(window._slowT);
+        window._slowT = setTimeout(function () { slowTip.classList.add('show'); }, 18000);
+      }
+      iframe.addEventListener('load', function () {
+        if (!iframe.src) return;
+        setTimeout(function () { loader.classList.add('hide'); }, 900);
+        var tip = document.getElementById('tip');
+        tip.classList.add('show');
+        setTimeout(function () { tip.classList.remove('show'); }, 8000);
+      });
+
+      function renderSrc() {
+        document.getElementById('srcList').innerHTML = SOURCES.map(function (s) {
+          return "<button class='src-item" + (s.id === cur ? " on" : "") + "' data-id='" + s.id + "'>" +
+            s.name + (s.id === cur ? " ✓" : "") + "<small>" + s.desc + "</small></button>";
+        }).join('');
+        Array.prototype.forEach.call(document.querySelectorAll('.src-item'), function (el) {
+          el.onclick = function () { toggleSrc(); load(el.getAttribute('data-id')); };
+        });
+      }
+      window.toggleSrc = function () {
+        document.getElementById('srcOverlay').classList.toggle('show');
+      };
+      window.openDirect = function () {
+        window.open(srcOf(cur).url, '_blank', 'noopener');
+      };
+      window.toggleFullscreen = function () {
+        try {
+          if (document.fullscreenElement) document.exitFullscreen();
+          else document.documentElement.requestFullscreen();
+        } catch (e) {}
+      };
+      load(cur);
+    })();
+  </script>
+</body>
+</html>
