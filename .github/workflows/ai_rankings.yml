@@ -1,0 +1,50 @@
+name: AI Rankings
+
+# 每日刷新「AI 模型天梯」：跑取数脚本 → 生成 apps/ai-rankings/data.json → 提交回仓库。
+# 数据源 LMArena / LiveBench 免密钥；Artificial Analysis 为可选轴（配置免费密钥 AA_API_KEY 后启用）。
+on:
+  # 定点 cron 会被 GitHub 推迟数小时，改由 scheduler.yml 每日在 21:00 UTC 窗口开启后统一触发。
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Build AI rankings data
+        env:
+          AA_API_KEY: ${{ secrets.AA_API_KEY }}
+        run: python scripts/ai-rankings/build_rankings.py
+
+      - name: Commit data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- apps/ai-rankings/data.json; then
+            echo "data.json 无变化，跳过提交"
+            exit 0
+          fi
+          git add apps/ai-rankings/data.json
+          git commit -m "data: refresh ai model rankings"
+          # data.json 由本工作流独占生成。推送遇远端新提交时，rebase 始终以本次生成的版本为准
+          # （rebase 中 ours/theirs 语义互换，-X theirs 才是本地工作分支一侧）。
+          for i in 1 2 3 4 5; do
+            if git push origin "HEAD:$GITHUB_REF_NAME"; then
+              echo "已推送"; exit 0
+            fi
+            echo "推送被拒，拉取远端后以本地版本为准重试（$i）"
+            git fetch origin "$GITHUB_REF_NAME" || true
+            git rebase -X theirs "origin/$GITHUB_REF_NAME" || git rebase --abort
+            sleep $((i * 3))
+          done
+          echo "推送多次失败"; exit 1

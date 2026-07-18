@@ -1,0 +1,302 @@
+{
+  "updatedAt": "2026-07-17T00:00:00Z",
+  "asOf": "2026-07-17",
+  "seed": true,
+  "note": "上线内置快照：分数为整理自 LMArena / LiveBench / Artificial Analysis 公开榜单及媒体报道的近似值，仅供参考；合并到主分支后由每日自动任务抓取实时数据替换。各榜口径不同，不能跨榜直接比较绝对值。",
+  "sources": {
+    "arena": {
+      "name": "LMArena（竞技场 Elo）",
+      "url": "https://lmarena.ai/leaderboard",
+      "desc": "数百万用户匿名对战投票的 Elo 排名"
+    },
+    "livebench": {
+      "name": "LiveBench",
+      "url": "https://livebench.ai/",
+      "desc": "定期换题的客观评测：数学 · 推理 · 编程 · 数据分析 · 指令遵循"
+    },
+    "aa": {
+      "name": "Artificial Analysis 智能指数",
+      "url": "https://artificialanalysis.ai/",
+      "desc": "综合多项基准的智能指数，兼看速度与价格"
+    }
+  },
+  "extraSources": [
+    {
+      "name": "IntelligenceArena",
+      "url": "https://www.intelligencearena.ai/",
+      "desc": "每小时更新的模型热度与采用率趋势"
+    },
+    {
+      "name": "HF Open LLM Leaderboard",
+      "url": "https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard",
+      "desc": "开源模型评测榜（已归档，供参考）"
+    },
+    {
+      "name": "HELM（斯坦福）",
+      "url": "https://crfm.stanford.edu/helm/",
+      "desc": "强调公平可重复的学术评测平台"
+    }
+  ],
+  "models": [
+    {
+      "id": "claude-opus-4-8",
+      "name": "Claude Opus 4.8",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1510,
+      "livebench": 82.0,
+      "aa": 56.5,
+      "ctx": "200K",
+      "price": null
+    },
+    {
+      "id": "gemini-3-1-pro",
+      "name": "Gemini 3.1 Pro",
+      "org": "Google",
+      "orgCn": "谷歌",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1504,
+      "livebench": 81.4,
+      "aa": 56.8,
+      "ctx": "2M",
+      "price": null
+    },
+    {
+      "id": "claude-opus-4-7",
+      "name": "Claude Opus 4.7",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1503,
+      "livebench": 81.0,
+      "aa": 55.4,
+      "ctx": "200K",
+      "price": null
+    },
+    {
+      "id": "gpt-5-5-pro",
+      "name": "GPT-5.5 Pro",
+      "org": "OpenAI",
+      "orgCn": "OpenAI",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1502,
+      "livebench": 80.9,
+      "aa": 55.8,
+      "ctx": "400K",
+      "price": null
+    },
+    {
+      "id": "kimi-k3",
+      "name": "Kimi K3",
+      "org": "Moonshot AI",
+      "orgCn": "月之暗面",
+      "flag": "🇨🇳",
+      "open": true,
+      "arena": null,
+      "livebench": 79.0,
+      "aa": 57.1,
+      "ctx": "256K",
+      "price": null
+    },
+    {
+      "id": "qwen-3-7-max",
+      "name": "Qwen 3.7 Max",
+      "org": "Alibaba",
+      "orgCn": "阿里巴巴",
+      "flag": "🇨🇳",
+      "open": false,
+      "arena": 1497,
+      "livebench": 79.5,
+      "aa": 54.5,
+      "ctx": "1M",
+      "price": null
+    },
+    {
+      "id": "deepseek-v4",
+      "name": "DeepSeek V4 Pro",
+      "org": "DeepSeek",
+      "orgCn": "深度求索",
+      "flag": "🇨🇳",
+      "open": true,
+      "arena": 1496,
+      "livebench": 79.8,
+      "aa": 54.2,
+      "ctx": "128K",
+      "price": null
+    },
+    {
+      "id": "gpt-5-4",
+      "name": "GPT-5.4",
+      "org": "OpenAI",
+      "orgCn": "OpenAI",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1493,
+      "livebench": 80.3,
+      "aa": 54.0,
+      "ctx": "400K",
+      "price": null
+    },
+    {
+      "id": "grok-4-1",
+      "name": "Grok 4.1",
+      "org": "xAI",
+      "orgCn": "xAI",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1488,
+      "livebench": 78.5,
+      "aa": 53.5,
+      "ctx": "256K",
+      "price": null
+    },
+    {
+      "id": "qwen3-235b",
+      "name": "Qwen3-235B-A22B",
+      "org": "Alibaba",
+      "orgCn": "阿里巴巴",
+      "flag": "🇨🇳",
+      "open": true,
+      "arena": 1466,
+      "livebench": 77.1,
+      "aa": 50.5,
+      "ctx": "256K",
+      "price": null
+    },
+    {
+      "id": "gemini-3-flash",
+      "name": "Gemini 3 Flash",
+      "org": "Google",
+      "orgCn": "谷歌",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1470,
+      "livebench": 74.2,
+      "aa": 50.0,
+      "ctx": "1M",
+      "price": null
+    },
+    {
+      "id": "glm-4-7",
+      "name": "GLM-4.7",
+      "org": "Zhipu AI",
+      "orgCn": "智谱",
+      "flag": "🇨🇳",
+      "open": true,
+      "arena": 1462,
+      "livebench": 75.5,
+      "aa": 49.5,
+      "ctx": "128K",
+      "price": null
+    },
+    {
+      "id": "minimax-m2",
+      "name": "MiniMax M2",
+      "org": "MiniMax",
+      "orgCn": "MiniMax",
+      "flag": "🇨🇳",
+      "open": true,
+      "arena": null,
+      "livebench": 74.0,
+      "aa": 48.0,
+      "ctx": "1M",
+      "price": null
+    },
+    {
+      "id": "gpt-5-5-mini",
+      "name": "GPT-5.5 mini",
+      "org": "OpenAI",
+      "orgCn": "OpenAI",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1460,
+      "livebench": 73.8,
+      "aa": 48.5,
+      "ctx": "400K",
+      "price": null
+    },
+    {
+      "id": "mistral-large-3",
+      "name": "Mistral Large 3",
+      "org": "Mistral AI",
+      "orgCn": "Mistral",
+      "flag": "🇫🇷",
+      "open": true,
+      "arena": 1450,
+      "livebench": 72.5,
+      "aa": 46.5,
+      "ctx": "128K",
+      "price": null
+    },
+    {
+      "id": "claude-haiku-4-5",
+      "name": "Claude Haiku 4.5",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1452,
+      "livebench": 71.2,
+      "aa": 44.0,
+      "ctx": "200K",
+      "price": null
+    },
+    {
+      "id": "llama-4-maverick",
+      "name": "Llama 4 Maverick",
+      "org": "Meta",
+      "orgCn": "Meta",
+      "flag": "🇺🇸",
+      "open": true,
+      "arena": 1445,
+      "livebench": 70.0,
+      "aa": 45.0,
+      "ctx": "1M",
+      "price": null
+    },
+    {
+      "id": "claude-fable-5",
+      "name": "Claude Fable 5",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": null,
+      "livebench": null,
+      "aa": 59.9,
+      "ctx": "1M",
+      "price": null
+    },
+    {
+      "id": "gpt-5-6-sol",
+      "name": "GPT-5.6 Sol",
+      "org": "OpenAI",
+      "orgCn": "OpenAI",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": null,
+      "livebench": null,
+      "aa": 58.9,
+      "ctx": "400K",
+      "price": null
+    },
+    {
+      "id": "doubao-2-pro",
+      "name": "豆包 2.0 Pro",
+      "org": "ByteDance",
+      "orgCn": "字节跳动",
+      "flag": "🇨🇳",
+      "open": false,
+      "arena": null,
+      "livebench": null,
+      "aa": 48.2,
+      "ctx": "256K",
+      "price": null
+    }
+  ]
+}

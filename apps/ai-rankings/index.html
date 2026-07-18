@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 模型天梯 · 全球大模型实时排名</title>
+<meta name="description" content="全球 AI 大模型天梯榜：LMArena 竞技场 Elo、LiveBench 客观评测、Artificial Analysis 智能指数三榜合一，GPT、Claude、Gemini、Grok、DeepSeek、Qwen、Kimi、GLM 同台对比，每日自动更新。">
+<link rel="canonical" href="https://www.ooglex.com/apps/ai-rankings/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AI 模型天梯 · 全球大模型实时排名">
+<meta property="og:description" content="LMArena Elo · LiveBench · 智能指数三榜合一，中外大模型同台对比，每日自动更新。">
+<meta property="og:url" content="https://www.ooglex.com/apps/ai-rankings/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#0a0c12; --card:#141823; --line:rgba(255,255,255,0.09);
+    --text:#eef1f7; --dim:#9099ad; --accent:#6c8cff; --accent2:#9d6cff;
+    --cyan:#39d3e0; --track:rgba(255,255,255,0.05);
+    --arena:#8aa6ff; --lb:#5fd07a; --aa:#f3c969;
+  }
+  body {
+    min-height:100vh; color:var(--text);
+    background:
+      radial-gradient(900px 460px at 12% -8%, rgba(57,211,224,.13), transparent 60%),
+      radial-gradient(820px 440px at 90% 0%, rgba(157,108,255,.13), transparent 60%),
+      radial-gradient(900px 560px at 50% 122%, rgba(108,140,255,.12), transparent 60%),
+      var(--bg);
+    background-attachment:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    line-height:1.55; overflow-x:hidden;
+  }
+  .page { max-width:1000px; margin:0 auto; padding:16px 15px 72px; }
+
+  header.top { display:flex; align-items:center; }
+  header.top a.back { color:#8aa6ff; text-decoration:none; font-size:0.92rem; transition:opacity .2s; }
+  header.top a.back:hover { opacity:.75; }
+
+  .title { text-align:center; margin:16px 0 18px; }
+  .title h1 {
+    font-size:2rem; font-weight:800; letter-spacing:.5px;
+    background:linear-gradient(92deg,#39d3e0,#8aa6ff 45%,#c86cff);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .title p { color:var(--dim); margin-top:7px; font-size:0.9rem; }
+  .statusrow { display:flex; justify-content:center; margin-top:11px; }
+  .status {
+    display:inline-flex; align-items:center; gap:7px; font-size:0.77rem;
+    padding:4px 13px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,0.03);
+  }
+  .status .sdot { width:8px; height:8px; border-radius:50%; flex:none; }
+  .status.live { color:#74e9c4; } .status.live .sdot { background:#2ed1b0; animation:pulse 1.9s infinite; }
+  .status.demo { color:#f4c66e; } .status.demo .sdot { background:#ffb13d; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(46,209,176,.55)} 70%{box-shadow:0 0 0 7px rgba(46,209,176,0)} 100%{box-shadow:0 0 0 0 rgba(46,209,176,0)} }
+
+  .summary { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:14px 0 12px; }
+  .summary span {
+    font-size:0.8rem; padding:5px 13px; border-radius:999px;
+    background:var(--card); border:1px solid var(--line); white-space:nowrap; color:var(--dim);
+  }
+  .summary b { color:var(--text); }
+
+  .controls { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+  .chips { display:flex; flex-wrap:wrap; gap:7px; justify-content:center; }
+  .chip {
+    display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none;
+    padding:6px 13px; border-radius:999px; font-size:0.84rem; color:var(--dim);
+    background:var(--card); border:1px solid var(--line); transition:all .16s;
+  }
+  .chip:hover { color:var(--text); border-color:rgba(255,255,255,.22); }
+  .chip.on { color:#fff; border-color:transparent; background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 8px 18px -8px rgba(108,140,255,.7); }
+  .toolbar { display:flex; gap:9px; align-items:center; flex-wrap:wrap; justify-content:center; }
+  .search { position:relative; flex:1; min-width:190px; max-width:340px; }
+  .search input {
+    width:100%; padding:9px 14px 9px 34px; border-radius:11px; font-family:inherit; font-size:0.9rem;
+    color:var(--text); background:var(--card); border:1px solid var(--line); outline:none; transition:border-color .16s;
+  }
+  .search input:focus { border-color:var(--accent); }
+  .search::before { content:"🔍"; position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:0.82rem; opacity:.6; }
+
+  .list { display:flex; flex-direction:column; gap:7px; }
+  .rowcard {
+    position:relative; display:grid; align-items:center; gap:12px;
+    grid-template-columns:34px 42px minmax(0,1fr) 150px 92px; padding:12px 16px;
+    border-radius:14px; overflow:hidden;
+    background:linear-gradient(180deg, rgba(22,26,38,.94), rgba(16,19,28,.94));
+    border:1px solid var(--line); box-shadow:0 16px 40px -34px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.04);
+    animation:rowIn .4s cubic-bezier(.22,.61,.36,1) both;
+  }
+  @keyframes rowIn { from{opacity:0; transform:translateY(7px)} to{opacity:1; transform:none} }
+  .rk { font-size:0.95rem; font-weight:800; color:var(--dim); text-align:center; font-variant-numeric:tabular-nums; }
+  .rk.top { color:#f3c969; }
+  .logo {
+    width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,.05); border:1px solid var(--line);
+    font-weight:800; font-size:1.02rem;
+  }
+  .info { min-width:0; }
+  .nm { font-weight:700; font-size:0.97rem; display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+  .tag { font-size:0.66rem; padding:1px 7px; border-radius:999px; border:1px solid currentColor; opacity:.92; font-weight:600; }
+  .tag.open { color:#5fd07a; } .tag.closed { color:#9099ad; }
+  .meta { color:var(--dim); font-size:0.76rem; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  .bars { display:flex; flex-direction:column; gap:4px; }
+  .bar { display:grid; grid-template-columns:44px 1fr 40px; align-items:center; gap:7px; font-size:0.66rem; color:var(--dim); }
+  .bar .tk { height:5px; border-radius:99px; background:var(--track); overflow:hidden; }
+  .bar .tk i { display:block; height:100%; border-radius:99px; }
+  .bar .v { text-align:right; font-variant-numeric:tabular-nums; color:var(--text); }
+  .bar.na .v { color:var(--dim); }
+
+  .score { text-align:right; }
+  .score .big { font-size:1.25rem; font-weight:800; font-variant-numeric:tabular-nums; }
+  .score .lab { font-size:0.66rem; color:var(--dim); margin-top:1px; }
+
+  .empty { text-align:center; color:var(--dim); padding:40px 0; }
+
+  .srcs { margin-top:30px; }
+  .srcs h2 { font-size:1.02rem; margin-bottom:10px; color:var(--text); }
+  .srcgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:9px; }
+  .srccard {
+    display:block; text-decoration:none; color:var(--text);
+    background:var(--card); border:1px solid var(--line); border-radius:13px; padding:12px 15px;
+    transition:transform .16s, border-color .16s;
+  }
+  .srccard:hover { transform:translateY(-2px); border-color:rgba(108,140,255,.5); }
+  .srccard b { font-size:0.9rem; }
+  .srccard span { display:block; color:var(--dim); font-size:0.77rem; margin-top:3px; }
+  .foot { margin-top:22px; text-align:center; color:var(--dim); font-size:0.75rem; line-height:1.8; }
+
+  @media (max-width:680px) {
+    .rowcard { grid-template-columns:28px 38px minmax(0,1fr) 84px; padding:11px 12px; }
+    .bars { display:none; }
+    .title h1 { font-size:1.55rem; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header class="top"><a class="back" href="../../">← 返回 Ooglex</a></header>
+
+    <div class="title">
+      <h1>AI 模型天梯</h1>
+      <p>LMArena 竞技场 Elo · LiveBench 客观评测 · Artificial Analysis 智能指数 —— 三榜合一，每日自动更新</p>
+      <div class="statusrow"><span class="status demo" id="status"><span class="sdot"></span><span id="statusTxt">加载中…</span></span></div>
+    </div>
+
+    <div class="summary" id="summary"></div>
+
+    <div class="controls">
+      <div class="chips" id="tabs"></div>
+      <div class="toolbar">
+        <div class="search"><input id="q" type="search" placeholder="搜索模型 / 厂商（中英皆可）…"></div>
+      </div>
+    </div>
+
+    <div class="list" id="list"><div class="empty">加载中…</div></div>
+
+    <div class="srcs">
+      <h2>数据来源与延伸阅读</h2>
+      <div class="srcgrid" id="srcgrid"></div>
+    </div>
+
+    <p class="foot" id="foot">
+      各榜单口径不同（Elo 为相对对战胜率、LiveBench 为客观题得分、智能指数为综合基准），跨榜绝对值不可直接比较；<br>
+      「综合」列为本站将三榜归一化后的加权参考分，仅用于粗略排序。数据仅供参考，不构成任何建议。
+    </p>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

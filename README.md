@@ -23,6 +23,7 @@ ZLQ6600E/
 ├── assets/
 │   └── avatar.jpg          # 头像（网站静态资源）
 ├── apps/                   # 网页小应用
+│   ├── ai-rankings/        # 🤖 AI 模型天梯（LMArena Elo · LiveBench · 智能指数三榜合一，每日更新）
 │   ├── finance-column/     # 💹 金融知识终极架构（华尔街知识图谱 v4.0：8 层级·48 模块·560+ 双语术语，可检索）
 │   ├── data-hub/           # 📊 数据中心（聚合全部实时数据应用 + 实时小预览）
 │   ├── asset-ranking/      # 🌐 全球资产市值排行榜（不限品类·前 250·房产/国债/黄金/公司/加密，每日更新）
@@ -47,6 +48,8 @@ ZLQ6600E/
 │   ├── hub/                # 🎮 游戏中心（游戏合集入口）
 │   └── gta-vice-city/      # 🌆 GTA Vice City 网页版
 ├── scripts/
+│   ├── ai-rankings/        # AI 模型天梯取数脚本
+│   │   └── build_rankings.py    # 抓 LMArena/LiveBench/Artificial Analysis → 归一化合成综合分 → 写 data.json
 │   ├── asset-ranking/      # 全球资产市值排行榜取数脚本
 │   │   ├── build_ranking.py     # 合并 大类资产×实时行情 + 公司 + 加密货币 → 按市值排前 250 → 写 data.json
 │   │   └── baselines.py         # 各大类资产的储量/存量/M2 基准与分类定义（附来源）
@@ -76,9 +79,27 @@ ZLQ6600E/
 
 ## 数据中心
 
-`apps/data-hub/` 是一个聚合入口：一页汇总下面**全部 10 个实时数据应用**，每张卡片直接读取对应应用的
+`apps/data-hub/` 是一个聚合入口：一页汇总下面**全部 11 个实时数据应用**，每张卡片直接读取对应应用的
 `data.json` 渲染**实时小预览**（领涨领跌、富豪榜首、恐慌贪婪读数、今日头条、各国央行利率、本周经济大事…）并显示更新时间。
 纯前端、无需取数脚本与工作流——它复用各应用每日自动更新的数据，点击卡片即进入对应应用。
+
+## AI 模型天梯
+
+`apps/ai-rankings/`（数据中心成员）是一张「全球 AI 大模型天梯榜」：把 **LMArena 竞技场 Elo**（数百万用户
+匿名对战投票）、**LiveBench**（定期换题的客观评测：数学/推理/编程/数据分析/指令遵循）与
+**Artificial Analysis 智能指数**（综合多项基准，兼看速度与价格）三个业内公认榜单合到一张表，
+GPT、Claude、Gemini、Grok、DeepSeek、Qwen、Kimi、GLM 等中外模型同台，支持按综合/单榜排序、
+开源模型筛选与中英搜索，并链接 IntelligenceArena、HF Open LLM Leaderboard、HELM 供延伸阅读。
+
+- **综合参考分**：三榜口径不同（Elo 是相对胜率、LiveBench 是客观题得分、智能指数是综合基准），
+  绝对值不可跨榜比较；本站把各轴 min-max 归一化后按 0.4/0.3/0.3 加权得出「综合」列，仅用于粗略排序，页面已注明。
+- **数据每日自动更新**：`.github/workflows/ai_rankings.yml` 每日由 `scheduler.yml` 统一触发（北京时间 07:00 前）跑
+  `scripts/ai-rankings/build_rankings.py`，抓取 LMArena 页面内嵌 JSON 与 LiveBench 站点数据（均免密钥），
+  写入 `apps/ai-rankings/data.json` 提交回仓库；前端 `fetch` 即时渲染。
+- **可选第三轴**：Artificial Analysis 提供免费 API（[注册申请](https://artificialanalysis.ai/)），
+  把密钥存为仓库 Secret **`AA_API_KEY`** 即启用智能指数轴；未配置时该轴沿用内置快照/上次值。
+- **强容错**：三源相互独立，单源失败该轴沿用上次值；三源全失败则保留上次 `data.json` 不覆盖；
+  认不出厂商的长尾模型不进榜，榜面截前 40。首次合并前内置近似快照（页面标注），首跑后替换为实时数据。**仅供参考。**
 
 ## 全球资产市值排行榜
 

@@ -101,6 +101,15 @@
         }
         return h || "<div class='loading'>等待首次数据更新</div>";
       } },
+    { folder: "ai-rankings", emoji: "🤖", name: "AI 模型天梯", tag: "LMArena Elo · LiveBench · 智能指数", accent: "#39d3e0",
+      render: function (d) {
+        var ms = d.models || [];
+        if (!ms.length) return "<div class='loading'>暂无数据</div>";
+        var top = ms[0];
+        var open = ms.filter(function (m) { return m.open; })[0];
+        return row("综合第一", esc(top.name) + (top.flag ? " " + top.flag : "")) +
+          row("开源第一", open ? esc(open.name) + (open.flag ? " " + open.flag : "") : "—", "dim");
+      } },
     { folder: "econ-calendar", emoji: "📅", name: "全球经济日历", tag: "央行决议 · CPI · 非农", accent: "#e0729a",
       render: function (d) {
         var evs = d.events || [], now = Date.now();
