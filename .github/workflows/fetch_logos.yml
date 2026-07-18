@@ -1,0 +1,71 @@
+name: Fetch AI Vendor Logos
+
+# 一次性工具：把 AI 厂商 logo 下载到 apps/ai-rankings/logos/ 自托管（内地访问不依赖境外图标源）。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Download logos
+        run: |
+          python3 - <<'EOF'
+          import os, urllib.request
+          UA = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36'}
+          OUT = 'apps/ai-rankings/logos'
+          os.makedirs(OUT, exist_ok=True)
+          VENDORS = [
+              ('openai', 'openai.com'), ('anthropic', 'anthropic.com'), ('google', 'google.com'),
+              ('xai', 'x.ai'), ('meta', 'meta.com'), ('mistral', 'mistral.ai'),
+              ('deepseek', 'deepseek.com'), ('alibaba', 'alibabacloud.com'), ('moonshot', 'moonshot.cn'),
+              ('zhipu', 'z.ai'), ('minimax', 'minimaxi.com'), ('bytedance', 'bytedance.com'),
+              ('tencent', 'tencent.com'), ('baidu', 'baidu.com'), ('nvidia', 'nvidia.com'),
+              ('amazon', 'amazon.com'), ('cohere', 'cohere.com'), ('microsoft', 'microsoft.com'),
+              ('01ai', '01.ai'), ('reka', 'reka.ai'), ('ai21', 'ai21.com'),
+          ]
+          ok = 0
+          for slug, domain in VENDORS:
+              url = f'https://logo.clearbit.com/{domain}?size=128'
+              try:
+                  req = urllib.request.Request(url, headers=UA)
+                  with urllib.request.urlopen(req, timeout=20) as r:
+                      data = r.read()
+                  if len(data) > 500:
+                      with open(f'{OUT}/{slug}.png', 'wb') as f:
+                          f.write(data)
+                      ok += 1
+                      print(f'OK   {slug} <- {domain} ({len(data)} bytes)')
+                  else:
+                      print(f'SKIP {slug}: 响应过小')
+              except Exception as e:
+                  print(f'FAIL {slug}: {e}')
+          print(f'共下载 {ok}/{len(VENDORS)} 个 logo')
+          assert ok >= 12, '下载成功数过少，不提交'
+          EOF
+
+      - name: Commit logos
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add apps/ai-rankings/logos
+          if git diff --cached --quiet; then
+            echo "无变化，跳过提交"
+            exit 0
+          fi
+          git commit -m "assets: 自托管 AI 厂商 logo（ai-rankings）"
+          for i in 1 2 3 4 5; do
+            if git push origin "HEAD:$GITHUB_REF_NAME"; then
+              echo "已推送"; exit 0
+            fi
+            git fetch origin "$GITHUB_REF_NAME" || true
+            git rebase -X theirs "origin/$GITHUB_REF_NAME" || git rebase --abort
+            sleep $((i * 3))
+          done
+          echo "推送多次失败"; exit 1

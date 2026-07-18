@@ -15,14 +15,14 @@
     "DeepSeek": "#6c8cff", "Alibaba": "#ff8f4d", "Moonshot AI": "#b48cff", "Zhipu AI": "#58c4dd",
     "Meta": "#4a9df8", "Mistral AI": "#ffb13d", "MiniMax": "#ff6c8f", "ByteDance": "#59d0ff"
   };
-  /* 厂商 logo（Clearbit，与公司市值榜同方案；加载失败自动回退字母牌） */
-  var ORG_DOMAIN = {
-    "OpenAI": "openai.com", "Anthropic": "anthropic.com", "Google": "google.com", "xAI": "x.ai",
-    "Meta": "meta.com", "Mistral AI": "mistral.ai", "DeepSeek": "deepseek.com",
-    "Alibaba": "alibabacloud.com", "Moonshot AI": "moonshot.cn", "Zhipu AI": "z.ai",
-    "MiniMax": "minimaxi.com", "ByteDance": "bytedance.com", "Tencent": "tencent.com",
-    "Baidu": "baidu.com", "NVIDIA": "nvidia.com", "Amazon": "amazon.com", "Cohere": "cohere.com",
-    "Microsoft": "microsoft.com", "01.AI": "01.ai", "Reka AI": "reka.ai", "AI21 Labs": "ai21.com"
+  /* 厂商 logo：优先本站自托管（logos/*.png，内地可达），失败回退字母牌 */
+  var ORG_LOGO = {
+    "OpenAI": "openai", "Anthropic": "anthropic", "Google": "google", "xAI": "xai",
+    "Meta": "meta", "Mistral AI": "mistral", "DeepSeek": "deepseek",
+    "Alibaba": "alibaba", "Moonshot AI": "moonshot", "Zhipu AI": "zhipu",
+    "MiniMax": "minimax", "ByteDance": "bytedance", "Tencent": "tencent",
+    "Baidu": "baidu", "NVIDIA": "nvidia", "Amazon": "amazon", "Cohere": "cohere",
+    "Microsoft": "microsoft", "01.AI": "01ai", "Reka AI": "reka", "AI21 Labs": "ai21"
   };
   var TABS = [
     { key: "combo", label: "🏆 综合" },
@@ -95,9 +95,9 @@
     var html = ms.map(function (m, i) {
       var col = ORG[m.org] || "#8aa6ff";
       var ini = esc(m.org.replace(/ .*/, "").slice(0, 2));
-      var dom = ORG_DOMAIN[m.org];
-      var logo = dom
-        ? "<img src='https://logo.clearbit.com/" + dom + "' alt='' loading='lazy' " +
+      var slug = ORG_LOGO[m.org];
+      var logo = slug
+        ? "<img src='logos/" + slug + ".png' alt='' loading='lazy' " +
           "onerror=\"this.style.display='none';this.nextElementSibling.style.display='block'\">" +
           "<span class='ini' style='display:none'>" + ini + "</span>"
         : "<span class='ini'>" + ini + "</span>";
