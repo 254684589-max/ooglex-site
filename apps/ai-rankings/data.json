@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-18T03:26:26Z",
+  "updatedAt": "2026-07-18T21:14:37Z",
   "asOf": "2026-07-18",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
@@ -460,19 +460,6 @@
       "price": 3.0
     },
     {
-      "id": "gpt-5-5-instant",
-      "name": "GPT 5.5 Instant",
-      "org": "OpenAI",
-      "orgCn": "OpenAI",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1473,
-      "livebench": null,
-      "aa": null,
-      "ctx": "1.1M",
-      "price": 11.25
-    },
-    {
       "id": "claude-opus-4-5-20251101-32k",
       "name": "Claude Opus 4.5.20251101 32K",
       "org": "Anthropic",
@@ -484,6 +471,19 @@
       "aa": null,
       "ctx": "200K",
       "price": 10.0
+    },
+    {
+      "id": "gpt-5-5-instant",
+      "name": "GPT 5.5 Instant",
+      "org": "OpenAI",
+      "orgCn": "OpenAI",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1473,
+      "livebench": null,
+      "aa": null,
+      "ctx": "1.1M",
+      "price": 11.25
     },
     {
       "id": "claude-sonnet-4-6",
