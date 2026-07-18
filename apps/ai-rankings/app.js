@@ -9,11 +9,20 @@
   }
   function isNum(v) { return v !== null && v !== undefined && !isNaN(v); }
 
-  /* 厂商配色（logo 底字） */
+  /* 厂商配色（字母牌兜底） */
   var ORG = {
     "OpenAI": "#74d0a5", "Anthropic": "#e0997a", "Google": "#8ab4f8", "xAI": "#cbd5e1",
     "DeepSeek": "#6c8cff", "Alibaba": "#ff8f4d", "Moonshot AI": "#b48cff", "Zhipu AI": "#58c4dd",
     "Meta": "#4a9df8", "Mistral AI": "#ffb13d", "MiniMax": "#ff6c8f", "ByteDance": "#59d0ff"
+  };
+  /* 厂商 logo（Clearbit，与公司市值榜同方案；加载失败自动回退字母牌） */
+  var ORG_DOMAIN = {
+    "OpenAI": "openai.com", "Anthropic": "anthropic.com", "Google": "google.com", "xAI": "x.ai",
+    "Meta": "meta.com", "Mistral AI": "mistral.ai", "DeepSeek": "deepseek.com",
+    "Alibaba": "alibabacloud.com", "Moonshot AI": "moonshot.cn", "Zhipu AI": "z.ai",
+    "MiniMax": "minimaxi.com", "ByteDance": "bytedance.com", "Tencent": "tencent.com",
+    "Baidu": "baidu.com", "NVIDIA": "nvidia.com", "Amazon": "amazon.com", "Cohere": "cohere.com",
+    "Microsoft": "microsoft.com", "01.AI": "01.ai", "Reka AI": "reka.ai", "AI21 Labs": "ai21.com"
   };
   var TABS = [
     { key: "combo", label: "🏆 综合" },
@@ -86,6 +95,12 @@
     var html = ms.map(function (m, i) {
       var col = ORG[m.org] || "#8aa6ff";
       var ini = esc(m.org.replace(/ .*/, "").slice(0, 2));
+      var dom = ORG_DOMAIN[m.org];
+      var logo = dom
+        ? "<img src='https://logo.clearbit.com/" + dom + "' alt='' loading='lazy' " +
+          "onerror=\"this.style.display='none';this.nextElementSibling.style.display='block'\">" +
+          "<span class='ini' style='display:none'>" + ini + "</span>"
+        : "<span class='ini'>" + ini + "</span>";
       var bars = AXES.map(function (a) {
         var has = isNum(m[a.key]) && m._n[a.key] !== undefined;
         var w = has ? Math.max(4, m._n[a.key] * 100) : 0;
@@ -96,7 +111,7 @@
       var sc = mainScore(m);
       return "<div class='rowcard' style='animation-delay:" + Math.min(i * 22, 400) + "ms'>" +
         "<div class='rk" + (i < 3 ? " top" : "") + "'>" + (i + 1) + "</div>" +
-        "<div class='logo' style='color:" + col + "'>" + ini + "</div>" +
+        "<div class='logo' style='color:" + col + "'>" + logo + "</div>" +
         "<div class='info'><div class='nm'>" + esc(m.name) +
           " <span class='tag " + (m.open ? "open'>开源" : "closed'>闭源") + "</span></div>" +
           "<div class='meta'>" + (m.flag || "") + " " + esc(m.orgCn || m.org) +
