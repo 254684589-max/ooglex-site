@@ -1,0 +1,70 @@
+name: AI Rankings Probe
+
+# 临时调试工作流：探测 LMArena / LiveBench 的真实数据结构（打印到日志），修好解析器后即删除。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe leaderboard sources
+        run: |
+          python3 - <<'EOF'
+          import re, urllib.request
+          UA = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36'}
+          def get(u):
+              try:
+                  r = urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=30)
+                  b = r.read()
+                  print('GET', u, '->', getattr(r, 'status', '?'), len(b), 'bytes')
+                  return b.decode('utf-8', 'replace')
+              except Exception as e:
+                  print('GET', u, '-> ERR', e)
+                  return ''
+
+          print('===== LMArena =====')
+          h = get('https://lmarena.ai/leaderboard/text')
+          for tok in ('rating', 'modelDisplayName', 'model_display_name', 'arena_score', '"elo"', 'leaderboard'):
+              print('token', tok, ':', h.count(tok))
+          i = h.find('rating')
+          if i > 0:
+              print('--- around first "rating" ---')
+              print(repr(h[max(0, i-400):i+600]))
+          u = h.replace('\\"', '"')
+          pats = [
+              r'"(?:modelDisplayName|model_display_name)"\s*:\s*"([^"]+)"[^{}]*?"rating"\s*:\s*([0-9]{3,4}(?:\.[0-9]+)?)',
+              r'"(?:model|model_name|name)"\s*:\s*"([^"]+)"[^{}]*?"(?:rating|elo|arena_score)"\s*:\s*([0-9]{3,4}(?:\.[0-9]+)?)',
+          ]
+          for p in pats:
+              m = re.findall(p, u)
+              print('unescaped pattern hits:', len(m), m[:6])
+
+          print('===== LiveBench =====')
+          lb = get('https://livebench.ai/')
+          print('json/csv refs in html:', sorted(set(re.findall(r'[A-Za-z0-9_\-./]+\.(?:json|csv)', lb)))[:40])
+          js_urls = sorted(set(re.findall(r'(?:src|href)="([^"]+\.js[^"]*)"', lb)))[:8]
+          print('js bundles:', js_urls)
+          for js in js_urls:
+              if js.startswith('/'):
+                  js = 'https://livebench.ai' + js
+              elif not js.startswith('http'):
+                  js = 'https://livebench.ai/' + js
+              t = get(js)
+              refs = sorted(set(re.findall(r'[A-Za-z0-9_\-./]{3,120}\.(?:json|csv)', t)))
+              if refs:
+                  print('  refs:', refs[:50])
+              for tok in ('global_average', 'table_data', 'leaderboard', 'huggingface'):
+                  c = t.count(tok)
+                  if c:
+                      print('  token', tok, ':', c)
+                      j = t.find(tok)
+                      print('  ctx:', repr(t[max(0, j-200):j+260]))
+
+          print('===== HF arena mirrors =====')
+          get('https://huggingface.co/api/datasets/mathewhe/chatbot-arena-elo')
+          get('https://huggingface.co/datasets/mathewhe/chatbot-arena-elo/resolve/main/leaderboard.json')
+          EOF
