@@ -90,6 +90,42 @@
     .src-item small { display: block; font-weight: 400; color: #b8a89a; margin-top: 3px; font-size: .76rem; }
     .src-item.on { border-color: #e03a2a; background: rgba(224,58,42,.16); }
 
+    /* ── 新手引导（首次访问） ── */
+    .guide-overlay {
+      position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center;
+      padding: 20px;
+      background:
+        radial-gradient(800px 500px at 50% 15%, rgba(190, 40, 30, .25), transparent 65%),
+        rgba(13, 6, 5, .97);
+    }
+    .guide-overlay.show { display: flex; }
+    .guide-panel { width: min(420px, 94vw); max-height: 92vh; overflow-y: auto; }
+    .guide-panel h2 { font-size: 1.3rem; font-weight: 800; letter-spacing: 1px; text-align: center; }
+    .guide-panel .gsub { color: #b8a89a; font-size: .82rem; text-align: center; margin-top: 6px; }
+    .gstep {
+      display: flex; gap: 13px; align-items: flex-start; margin-top: 16px;
+      background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 13px; padding: 13px 15px;
+    }
+    .gstep .n {
+      flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; font-size: .82rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; color: #fff;
+      background: linear-gradient(135deg, #e03a2a, #ffb03a);
+    }
+    .gstep b { font-size: .92rem; }
+    .gstep p { color: #c9bcae; font-size: .8rem; line-height: 1.65; margin-top: 3px; }
+    .gstep .fakebtn {
+      display: inline-block; background: #a01e14; color: #ffe9c0; border: 1px solid #d8543e;
+      padding: 2px 10px; border-radius: 4px; font-size: .78rem; font-weight: 700;
+    }
+    .guide-go {
+      display: block; width: 100%; margin-top: 18px; cursor: pointer; font-family: inherit;
+      padding: 14px; border-radius: 12px; border: none; font-size: 1rem; font-weight: 800; color: #fff;
+      background: linear-gradient(135deg, #e03a2a, #ffb03a);
+      box-shadow: 0 10px 26px -10px rgba(224, 58, 42, .7);
+    }
+    .guide-skip { display: block; margin: 10px auto 0; background: none; border: none; color: #8a7c6e; font-size: .78rem; cursor: pointer; font-family: inherit; }
+
     /* ── 底部提示 ── */
     .tip-toast {
       position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 55;
@@ -134,7 +170,28 @@
     </div>
   </div>
 
-  <div class="tip-toast" id="tip">🎖️ 支持单人战役 · 遭遇战 · 多人联机 · 共和国之辉 MOD</div>
+  <div class="guide-overlay" id="guide">
+    <div class="guide-panel">
+      <h2>🚩 第一次玩？30 秒看懂</h2>
+      <p class="gsub">红警 2 网页版 · 免下载安装 · 以后打开直接进游戏</p>
+      <div class="gstep"><span class="n">1</span><div>
+        <b>游戏会先弹出「资源导入」页</b>
+        <p>黑底页面、不用害怕——直接点中间的红色按钮 <span class="fakebtn">点此自动导入</span>，游戏素材会自动下载导入，别的什么都不用填。</p>
+      </div></div>
+      <div class="gstep"><span class="n">2</span><div>
+        <b>等进度条走完（约 1–3 分钟）</b>
+        <p>资源包几百 MB，建议连 Wi-Fi。只有第一次需要，之后素材缓存在浏览器里，打开秒进。</p>
+      </div></div>
+      <div class="gstep"><span class="n">3</span><div>
+        <b>进入主菜单，开打！</b>
+        <p>单人战役 / 遭遇战 / 多人联机随便选。手机请<b>横屏</b>并点右上角 ⛶ 全屏，电脑体验最佳。</p>
+      </div></div>
+      <button class="guide-go" onclick="startGame()">我知道了，开始加载 →</button>
+      <button class="guide-skip" onclick="startGame()">跳过引导</button>
+    </div>
+  </div>
+
+  <div class="tip-toast" id="tip">🎖️ 首次进入请在导入页点「点此自动导入」· 支持战役/联机/共辉 MOD</div>
 
   <script>
     (function () {
@@ -194,7 +251,18 @@
           else document.documentElement.requestFullscreen();
         } catch (e) {}
       };
-      load(cur);
+      window.startGame = function () {
+        localStorage.setItem('ra-guide-v1', '1');
+        document.getElementById('guide').classList.remove('show');
+        load(cur);
+      };
+      /* 首次访问先给 30 秒新手引导（说明资源导入步骤），之后直接进游戏 */
+      if (localStorage.getItem('ra-guide-v1')) {
+        load(cur);
+      } else {
+        loader.classList.add('hide');
+        document.getElementById('guide').classList.add('show');
+      }
     })();
   </script>
 </body>
