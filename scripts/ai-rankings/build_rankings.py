@@ -119,8 +119,11 @@ def display_name(raw):
         if out and re.fullmatch(r"\d+", t) and re.fullmatch(r"\d+(\.\d+)?", out[-1].split(" ")[-1]):
             out[-1] = out[-1] + "." + t
             continue
+        mb = re.match(r"([a-z]+)(\d[\d.]*)$", t)
         if t in BRAND:
             out.append(BRAND[t])
+        elif mb and mb.group(1) in BRAND:
+            out.append(BRAND[mb.group(1)] + mb.group(2))  # qwen3 → Qwen3
         elif any(c.isdigit() for c in t) and any(c.isalpha() for c in t):
             out.append(t.upper())  # 235b → 235B / a22b → A22B / k3 → K3
         elif t.isalpha() and len(t) <= 2:
