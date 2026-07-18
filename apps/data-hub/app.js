@@ -101,7 +101,7 @@
         }
         return h || "<div class='loading'>等待首次数据更新</div>";
       } },
-    { folder: "ai-rankings", emoji: "🤖", name: "AI 模型天梯", tag: "LMArena Elo · LiveBench · 智能指数", accent: "#39d3e0",
+    { folder: "ai-rankings", emoji: "🤖", name: "全球大模型评测榜", tag: "LMArena Elo · LiveBench · 智能指数", accent: "#39d3e0",
       render: function (d) {
         var ms = d.models || [];
         if (!ms.length) return "<div class='loading'>暂无数据</div>";

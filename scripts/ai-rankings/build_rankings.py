@@ -110,8 +110,9 @@ def norm_name(raw):
 
 
 def display_name(raw):
-    """原始模型名 → 展示名：去后缀变体，分词美化（数字段用 . 连接）。"""
+    """原始模型名 → 展示名：去括号注记/后缀变体，分词美化（数字段用 . 连接）。"""
     s = str(raw or "").strip()
+    s = re.sub(r"\s*[（(].*?[)）]", "", s)
     s = re.sub(r"-?\d{8}$", "", s)
     s = re.sub(SUFFIX, "", s.lower())
     toks, out = [t for t in re.split(r"[-_\s]+", s) if t], []

@@ -1,4 +1,4 @@
-/* AI 模型天梯 · 读取 data.json 渲染三榜合一的大模型排名。纯原生 JS。 */
+/* 全球大模型评测榜 · 读取 data.json 渲染三榜合一的大模型排名。纯原生 JS。 */
 (function () {
   "use strict";
   var $ = function (id) { return document.getElementById(id); };
