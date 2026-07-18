@@ -24,7 +24,7 @@ jobs:
           VENDORS = [
               ('openai', 'openai.com'), ('anthropic', 'anthropic.com'), ('google', 'google.com'),
               ('xai', 'x.ai'), ('meta', 'meta.com'), ('mistral', 'mistral.ai'),
-              ('deepseek', 'deepseek.com'), ('alibaba', 'alibabacloud.com'), ('moonshot', 'moonshot.cn'),
+              ('deepseek', 'deepseek.com'), ('alibaba', 'qwen.ai'), ('moonshot', 'moonshot.cn'),
               ('zhipu', 'z.ai'), ('minimax', 'minimaxi.com'), ('bytedance', 'bytedance.com'),
               ('tencent', 'tencent.com'), ('baidu', 'baidu.com'), ('nvidia', 'nvidia.com'),
               ('amazon', 'amazon.com'), ('cohere', 'cohere.com'), ('microsoft', 'microsoft.com'),
