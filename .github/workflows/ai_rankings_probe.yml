@@ -14,7 +14,7 @@ jobs:
       - name: Probe leaderboard sources
         run: |
           python3 - <<'EOF'
-          import re, urllib.request
+          import re, json, urllib.request
           UA = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36'}
           def get(u):
               try:
@@ -26,45 +26,45 @@ jobs:
                   print('GET', u, '-> ERR', e)
                   return ''
 
-          print('===== LMArena =====')
+          print('===== LMArena 新解析器验证 =====')
           h = get('https://lmarena.ai/leaderboard/text')
-          for tok in ('rating', 'modelDisplayName', 'model_display_name', 'arena_score', '"elo"', 'leaderboard'):
-              print('token', tok, ':', h.count(tok))
-          i = h.find('rating')
-          if i > 0:
-              print('--- around first "rating" ---')
-              print(repr(h[max(0, i-400):i+600]))
-          u = h.replace('\\"', '"')
-          pats = [
-              r'"(?:modelDisplayName|model_display_name)"\s*:\s*"([^"]+)"[^{}]*?"rating"\s*:\s*([0-9]{3,4}(?:\.[0-9]+)?)',
-              r'"(?:model|model_name|name)"\s*:\s*"([^"]+)"[^{}]*?"(?:rating|elo|arena_score)"\s*:\s*([0-9]{3,4}(?:\.[0-9]+)?)',
-          ]
-          for p in pats:
-              m = re.findall(p, u)
-              print('unescaped pattern hits:', len(m), m[:6])
+          u = h.replace('\\\\"', '"').replace('\\"', '"')
+          rows = {}
+          for blk in re.findall(r'\{[^{}]+\}', u):
+              if '"rating":' not in blk or '"modelDisplayName":' not in blk:
+                  continue
+              try:
+                  o = json.loads(blk)
+              except Exception:
+                  continue
+              name = o.get('modelDisplayName')
+              r = o.get('rating')
+              if not name or not isinstance(r, (int, float)) or not (800 <= r <= 2000):
+                  continue
+              if name not in rows or r > rows[name]['rating']:
+                  rows[name] = o
+          print('解析出模型数：', len(rows))
+          top = sorted(rows.values(), key=lambda o: -o['rating'])[:15]
+          for o in top:
+              print(' ', o.get('modelDisplayName'), round(o['rating'], 1), o.get('modelOrganization'),
+                    o.get('license'), 'ctx=', o.get('contextLength'),
+                    'in=', o.get('inputPricePerMillion'), 'out=', o.get('outputPricePerMillion'),
+                    'votes=', o.get('votes'))
 
-          print('===== LiveBench =====')
+          print('===== LiveBench bundle 深挖 =====')
           lb = get('https://livebench.ai/')
-          print('json/csv refs in html:', sorted(set(re.findall(r'[A-Za-z0-9_\-./]+\.(?:json|csv)', lb)))[:40])
-          js_urls = sorted(set(re.findall(r'(?:src|href)="([^"]+\.js[^"]*)"', lb)))[:8]
-          print('js bundles:', js_urls)
-          for js in js_urls:
-              if js.startswith('/'):
-                  js = 'https://livebench.ai' + js
-              elif not js.startswith('http'):
-                  js = 'https://livebench.ai/' + js
-              t = get(js)
-              refs = sorted(set(re.findall(r'[A-Za-z0-9_\-./]{3,120}\.(?:json|csv)', t)))
-              if refs:
-                  print('  refs:', refs[:50])
-              for tok in ('global_average', 'table_data', 'leaderboard', 'huggingface'):
-                  c = t.count(tok)
-                  if c:
-                      print('  token', tok, ':', c)
-                      j = t.find(tok)
-                      print('  ctx:', repr(t[max(0, j-200):j+260]))
-
-          print('===== HF arena mirrors =====')
-          get('https://huggingface.co/api/datasets/mathewhe/chatbot-arena-elo')
-          get('https://huggingface.co/datasets/mathewhe/chatbot-arena-elo/resolve/main/leaderboard.json')
+          m = re.search(r'src="(\./static/js/[^"]+\.js)"', lb)
+          js = 'https://livebench.ai/' + m.group(1).lstrip('./') if m else ''
+          t = get(js)
+          print('url 字面量：', sorted(set(re.findall(r'https?://[A-Za-z0-9_\-./%?=&]+', t)))[:60])
+          for tok in ('average', 'Average', 'score', '.csv', 'csv', 'fetch(', 'datasets', 'results', 'api.'):
+              c = t.count(tok)
+              print('token', tok, ':', c)
+          for tok in ('.csv', 'fetch(', 'datasets/'):
+              j = 0
+              for _ in range(3):
+                  j = t.find(tok, j + 1)
+                  if j < 0:
+                      break
+                  print('ctx', tok, ':', repr(t[max(0, j-220):j+260]))
           EOF
