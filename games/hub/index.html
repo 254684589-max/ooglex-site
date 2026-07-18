@@ -7,11 +7,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>游戏中心 · 原创网页小游戏合集</title>
-<meta name="description" content="原创网页小游戏合集：跳一跳、欢乐斗地主、像素大冒险、霓虹都市、军团冲锋，电脑手机都能玩。">
+<meta name="description" content="网页小游戏合集：GTA Vice City 网页版、跳一跳、欢乐斗地主、像素大冒险、霓虹都市、军团冲锋，电脑手机都能玩。">
 <link rel="canonical" href="https://www.ooglex.com/games/hub/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="游戏中心 · 原创网页小游戏合集">
-<meta property="og:description" content="原创网页小游戏合集：跳一跳、欢乐斗地主、像素大冒险、霓虹都市、军团冲锋，电脑手机都能玩。">
+<meta property="og:description" content="网页小游戏合集：GTA Vice City 网页版、跳一跳、欢乐斗地主、像素大冒险、霓虹都市、军团冲锋，电脑手机都能玩。">
 <meta property="og:url" content="https://www.ooglex.com/games/hub/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -54,6 +54,11 @@
   .cv-legion { background:linear-gradient(180deg,#16235c 0%,#274099 48%,#c0392b 100%); }
   .cv-legion::before { content:""; position:absolute; inset:0; z-index:1;
     background-image:linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px); background-size:26px 100%; transform:perspective(200px) rotateX(40deg) translateY(30%); }
+  /* GTA Vice City：迈阿密霓虹夕阳 */
+  .cv-gta { background:linear-gradient(180deg,#2a0a4a 0%,#8a2a6a 40%,#ff6b35 78%,#ffd24a 100%); }
+  .cv-gta::before { content:""; position:absolute; left:0; right:0; bottom:0; height:44%; z-index:1;
+    background-image:linear-gradient(90deg, rgba(0,0,0,.28) 8px, transparent 8px); background-size:26px 100%;
+    -webkit-mask-image:linear-gradient(180deg, transparent, #000 55%); mask-image:linear-gradient(180deg, transparent, #000 55%); }
   /* 欢乐斗地主：牌桌绿绒 */
   .cv-ddz { background:radial-gradient(120% 90% at 50% 16%, #15916f 0%, #0e6650 46%, #0a3f33 100%); }
   .cv-ddz::before { content:"♠ ♥ ♣ ♦"; position:absolute; left:0; right:0; bottom:13px; z-index:1; text-align:center;
@@ -121,6 +126,14 @@
         <div class="body">
           <h3>军团冲锋 · Legion Rush</h3>
           <p>仿"数字闯关"爽感手游：操控蓝色军团穿过增益门壮大队伍，用数量碾碎巨人 BOSS。伪 3D 竞技场、无限关卡。</p>
+          <span class="play">🎮 开始游戏 →</span>
+        </div>
+      </a>
+      <a class="game" href="../gta-vice-city/" style="--ac:#ff6b35;--ac2:#ff2e97">
+        <div class="cover cv-gta"><span class="ico">🌆</span></div>
+        <div class="body">
+          <h3>GTA Vice City · 网页版</h3>
+          <p>浏览器直接畅玩罪恶都市：无需下载安装，支持全屏与强制横屏模式，内置作弊菜单（游戏内按 F3 开启）。首次加载需耐心等待。</p>
           <span class="play">🎮 开始游戏 →</span>
         </div>
       </a>

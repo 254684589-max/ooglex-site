@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+    <link rel="apple-touch-icon" href="/assets/favicon.svg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GTA Vice City - 网页版</title>
+    <meta name="description" content="GTA Vice City 网页版：无需下载，浏览器直接畅玩罪恶都市。支持全屏、强制横屏，手机电脑都能玩。">
+    <link rel="canonical" href="https://www.ooglex.com/games/gta-vice-city/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="GTA Vice City - 网页版">
+    <meta property="og:description" content="无需下载，浏览器直接畅玩罪恶都市。支持全屏、强制横屏，手机电脑都能玩。">
+    <meta property="og:url" content="https://www.ooglex.com/games/gta-vice-city/">
+    <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --accent: #ff6b35;
+            --accent-glow: rgba(255, 107, 53, 0.3);
+            --bg: #0a0a0a;
+            --panel-bg: rgba(20, 20, 20, 0.92);
+            --text: #e8e8e8;
+            --text-dim: #888;
+            --border: #333;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        #wrapper {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+        }
+
+        body.force-landscape #wrapper {
+            width: 100vh;
+            height: 100vw;
+            transform: rotate(90deg) translate(0, -100%);
+            transform-origin: 0 0;
+        }
+
+        #app {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #game-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: #000;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            width: 56px;
+            height: 56px;
+            border: 3px solid #222;
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: var(--text);
+            margin-top: 24px;
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 2px;
+        }
+
+        .loading-sub {
+            color: var(--text-dim);
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .loading-progress {
+            width: 160px;
+            height: 3px;
+            background: #222;
+            border-radius: 2px;
+            margin-top: 16px;
+            overflow: hidden;
+        }
+
+        .loading-progress-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            animation: progress 8s ease-out forwards;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        .top-bar {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .top-btn {
+            width: 42px;
+            height: 42px;
+            background: rgba(0,0,0,0.75);
+            border: 1px solid var(--border);
+            color: #fff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: all 0.25s ease;
+            user-select: none;
+        }
+
+        .top-btn:hover {
+            background: rgba(255,255,255,0.12);
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .top-btn:active {
+            transform: scale(0.92);
+        }
+
+        .settings-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 500;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .settings-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .settings-panel {
+            width: 100%;
+            max-width: 380px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px;
+            transform: translateY(20px) scale(0.96);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+        }
+
+        .settings-overlay.active .settings-panel {
+            transform: translateY(0) scale(1);
+        }
+
+        .settings-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .settings-title {
+            color: var(--text);
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-title .icon {
+            font-size: 22px;
+        }
+
+        .settings-close {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.08);
+            border: none;
+            border-radius: 8px;
+            color: var(--text-dim);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .settings-close:hover {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+        }
+
+        .settings-group {
+            margin-bottom: 20px;
+        }
+
+        .settings-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .setting-label {
+            color: var(--text);
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .setting-desc {
+            color: var(--text-dim);
+            font-size: 12px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 30px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #333;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            height: 24px;
+            width: 24px;
+            left: 3px;
+            bottom: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: var(--accent);
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(22px);
+        }
+
+        .controls-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 48px;
+            background: rgba(10,10,10,0.88);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            z-index: 100;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 0 12px;
+        }
+
+        .ctrl-btn {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text);
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .ctrl-btn:hover {
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(255,255,255,0.15);
+            transform: translateY(-1px);
+        }
+
+        .ctrl-btn:active {
+            transform: scale(0.95);
+        }
+
+        .ctrl-btn.primary {
+            background: rgba(255, 107, 53, 0.15);
+            border-color: rgba(255, 107, 53, 0.3);
+            color: #ffaa88;
+        }
+
+        .ctrl-btn.primary:hover {
+            background: rgba(255, 107, 53, 0.25);
+        }
+
+        .tip-toast {
+            position: absolute;
+            top: 64px;
+            right: 12px;
+            background: var(--panel-bg);
+            color: var(--text);
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 13px;
+            z-index: 100;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            max-width: 300px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .tip-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tip-toast kbd {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-family: 'SF Mono', monospace;
+            font-size: 12px;
+            color: var(--accent);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .landscape-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 100;
+            background: rgba(255, 107, 53, 0.15);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            color: #ffaa88;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            backdrop-filter: blur(8px);
+        }
+
+        .landscape-badge.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .back-btn {
+            text-decoration: none;
+        }
+
+        @media (max-width: 400px) {
+            .settings-panel {
+                padding: 22px;
+            }
+            .ctrl-btn {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="wrapper">
+        <div id="app">
+            <div id="game-container">
+                <iframe
+                    src="https://gtavc.armdev.cn"
+                    id="gameFrame"
+                    allow="fullscreen; autoplay; clipboard-write; encrypted-media; picture-in-picture"
+                    sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads"
+                    loading="eager">
+                </iframe>
+            </div>
+        </div>
+
+        <div class="loading-overlay" id="loader">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">正在加载 GTA Vice City</div>
+            <div class="loading-sub">首次加载可能需要几分钟，请耐心等待</div>
+            <div class="loading-progress">
+                <div class="loading-progress-bar"></div>
+            </div>
+        </div>
+
+        <div class="landscape-badge" id="landscapeBadge">⬌ 强制横屏模式</div>
+
+        <div class="top-bar">
+            <a class="top-btn back-btn" href="../hub/" title="返回游戏中心">🏠</a>
+            <button class="top-btn" onclick="toggleSettings()" title="设置">⚙️</button>
+            <button class="top-btn" onclick="toggleFullscreen()" title="全屏">⛶</button>
+        </div>
+
+        <div class="settings-overlay" id="settingsOverlay" onclick="closeSettingsOnOverlay(event)">
+            <div class="settings-panel" onclick="event.stopPropagation()">
+                <div class="settings-header">
+                    <div class="settings-title">
+                        <span class="icon">⚙️</span>
+                        <span>游戏设置</span>
+                    </div>
+                    <button class="settings-close" onclick="toggleSettings()">✕</button>
+                </div>
+
+                <div class="settings-group">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">🔄 强制横屏</div>
+                            <div class="setting-desc">将整个网页旋转为横屏并填满画面</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="forceLandscapeToggle" onchange="toggleForceLandscape()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">💡 显示操作提示</div>
+                            <div class="setting-desc">游戏内按 F3 显示/隐藏作弊菜单</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="showTipsToggle" checked onchange="saveSettings()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">🧹 清除缓存</div>
+                            <div class="setting-desc">清除游戏缓存并重新加载</div>
+                        </div>
+                        <button class="ctrl-btn primary" onclick="clearCache()" style="padding: 6px 14px;">执行</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip-toast" id="tip">
+            💡 提示：按 <kbd>F3</kbd> 显示/隐藏作弊菜单
+        </div>
+
+        <div class="controls-bar">
+            <button class="ctrl-btn" onclick="refreshGame()">🔄 刷新</button>
+            <button class="ctrl-btn" onclick="showTip()">💡 提示</button>
+            <button class="ctrl-btn" onclick="toggleSettings()">⚙️ 设置</button>
+        </div>
+    </div>
+
+    <script>
+        const iframe = document.getElementById('gameFrame');
+        const loader = document.getElementById('loader');
+        const tip = document.getElementById('tip');
+        const settingsOverlay = document.getElementById('settingsOverlay');
+        const forceLandscapeToggle = document.getElementById('forceLandscapeToggle');
+        const showTipsToggle = document.getElementById('showTipsToggle');
+        const landscapeBadge = document.getElementById('landscapeBadge');
+
+        iframe.onload = function() {
+            setTimeout(() => loader.classList.add('hidden'), 1200);
+        };
+        setTimeout(() => loader.classList.add('hidden'), 12000);
+
+        function loadSettings() {
+            try {
+                const saved = localStorage.getItem('gtavc_settings');
+                if (saved) {
+                    const settings = JSON.parse(saved);
+                    forceLandscapeToggle.checked = settings.forceLandscape || false;
+                    showTipsToggle.checked = settings.showTips !== false;
+                    if (settings.forceLandscape) {
+                        applyForceLandscape(true);
+                    }
+                }
+            } catch(e) {}
+        }
+
+        function saveSettings() {
+            try {
+                const settings = {
+                    forceLandscape: forceLandscapeToggle.checked,
+                    showTips: showTipsToggle.checked
+                };
+                localStorage.setItem('gtavc_settings', JSON.stringify(settings));
+            } catch(e) {}
+        }
+
+        function toggleForceLandscape() {
+            const enabled = forceLandscapeToggle.checked;
+            applyForceLandscape(enabled);
+            saveSettings();
+        }
+
+        function applyForceLandscape(enabled) {
+            if (enabled) {
+                document.body.classList.add('force-landscape');
+                landscapeBadge.classList.add('show');
+            } else {
+                document.body.classList.remove('force-landscape');
+                landscapeBadge.classList.remove('show');
+            }
+        }
+
+        function toggleSettings() {
+            settingsOverlay.classList.toggle('active');
+        }
+
+        function closeSettingsOnOverlay(e) {
+            if (e.target === settingsOverlay) {
+                settingsOverlay.classList.remove('active');
+            }
+        }
+
+        async function toggleFullscreen() {
+            try {
+                if (!document.fullscreenElement) {
+                    await document.documentElement.requestFullscreen();
+                } else {
+                    await document.exitFullscreen();
+                }
+            } catch(err) {}
+        }
+
+        function refreshGame() {
+            loader.classList.remove('hidden');
+            iframe.src = iframe.src;
+            setTimeout(() => loader.classList.add('hidden'), 3000);
+        }
+
+        function clearCache() {
+            try {
+                iframe.contentWindow.postMessage('clearCache', '*');
+            } catch(e) {}
+            setTimeout(refreshGame, 500);
+        }
+
+        function showTip() {
+            if (!showTipsToggle.checked) return;
+            tip.classList.add('show');
+            setTimeout(() => tip.classList.remove('show'), 4000);
+        }
+
+        setTimeout(() => {
+            if (showTipsToggle.checked) showTip();
+        }, 3500);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                settingsOverlay.classList.remove('active');
+            }
+        });
+
+        document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+        document.addEventListener('gesturestart', (e) => e.preventDefault());
+        document.addEventListener('dblclick', (e) => e.preventDefault());
+
+        loadSettings();
+    </script>
+
+</body>
+</html>
