@@ -45,9 +45,7 @@ ZLQ6600E/
 │   └── telescope/          # 🔭 星瞳望远镜（手机摄像头数码望远镜）
 ├── games/                  # 网页小游戏
 │   ├── hub/                # 🎮 游戏中心（游戏合集入口）
-│   ├── pixel-adventure/    # 🦊 像素大冒险（横版闯关）
-│   ├── neon-city/          # 🌴 霓虹都市（开放城市驾驶）
-│   └── legion-rush/        # ⚔️ 军团冲锋（数字闯关 · 军团碾压）
+│   └── gta-vice-city/      # 🌆 GTA Vice City 网页版
 ├── scripts/
 │   ├── asset-ranking/      # 全球资产市值排行榜取数脚本
 │   │   ├── build_ranking.py     # 合并 大类资产×实时行情 + 公司 + 加密货币 → 按市值排前 250 → 写 data.json
