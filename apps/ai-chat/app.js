@@ -577,7 +577,7 @@ async function readStream(res, bubble) {
 
 /* 三大脑自动降级：共享通道不可用 → 本地模型（已就绪才接手，不擅自下载几百 MB）→ 离线小智 */
 function degrade(conv, reason) {
-  if (navigator.gpu && llm) {
+  if (navigator.gpu && llm && llmModel) {
     addMsg('ai', '⚠️ ' + reason + '，已切换到**浏览器本地模型**继续回答 👇');
     replyWebLLM(conv);
     return;
@@ -604,8 +604,12 @@ async function replyWebLLM(conv) {
   $('sendBtn').textContent = '停止'; $('sendBtn').classList.add('stop');
   const bubble = addMsg('ai', '', true);
   let full = '';
+  // 本地模型模式用配置的模型；从其他模式降级接手时 cfg.model 不是 WebLLM
+  // 模型名，必须用已加载引擎的模型（llmModel），兜底用服务商默认值
+  const wllmDefault = PROVIDERS.find(p => p.id === 'webllm').model;
+  const useModel = (cfg.provider === 'webllm' ? cfg.model : llmModel) || wllmDefault;
   try {
-    const engine = await getEngine(cfg.model, p => {
+    const engine = await getEngine(useModel, p => {
       // 下载/编译进度：直接写在气泡里，完成后被正文覆盖
       const pct = p && p.progress ? Math.round(p.progress * 100) + '%' : '';
       bubble.innerHTML = md('⏳ **正在准备本地模型** ' + pct + '\n\n' + (p && p.text ? '`' + p.text.slice(0, 120) + '`' : '')
