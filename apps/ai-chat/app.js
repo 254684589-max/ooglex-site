@@ -32,18 +32,78 @@ const saveHist = () => localStorage.setItem('aichat_hist', JSON.stringify(hist.s
 
 /* ===================== 渲染 ===================== */
 function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function md(s) {
-  let h = esc(s);
-  h = h.replace(/```([\s\S]*?)```/g, (m, c) => '<pre><code>' + c.replace(/^\w*\n/, '') + '</code></pre>');
-  h = h.replace(/`([^`\n]+)`/g, '<code>$1</code>');
-  h = h.replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>');
+
+/* Markdown 渲染（零依赖）：整体先转义、代码先占位，再逐行成块，杜绝注入 */
+function mdInline(h) {
+  h = h.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+  h = h.replace(/(^|[^*])\*(\S(?:[^*\n]*?\S)?)\*(?!\*)/g, '$1<i>$2</i>');
+  h = h.replace(/\[([^\]\n]+)\]\((https?:\/\/[^)\s]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  return h;
+}
+function md(src) {
+  const blocks = [], spans = [];
+  let s = src.replace(/\r\n?/g, '\n');
+  // 围栏代码块：未闭合（流式输出中）也按代码块渲染
+  s = s.replace(/```[^\n`]*\n?([\s\S]*?)(?:```|$)/g, (m, body) => {
+    blocks.push('<pre><code>' + esc(body.replace(/\n$/, '')) + '</code></pre>');
+    return '\uE000' + (blocks.length - 1) + '\uE001';
+  });
+  s = esc(s);
+  s = s.replace(/`([^`\n]+)`/g, (m, c) => {
+    spans.push('<code>' + c + '</code>');
+    return '\uE002' + (spans.length - 1) + '\uE003';
+  });
+
+  const lines = s.split('\n'), out = [], para = [];
+  const flush = () => { if (para.length) { out.push('<p>' + para.map(mdInline).join('<br>') + '</p>'); para.length = 0; } };
+  const isSep = l => /^\s*\|?\s*:?-{2,}[-|:\s]*$/.test(l) && l.indexOf('-') >= 0;
+  for (let i = 0; i < lines.length; i++) {
+    const l = lines[i];
+    let m;
+    if (/^\s*$/.test(l)) { flush(); continue; }
+    if (/^\uE000\d+\uE001\s*$/.test(l.trim())) { flush(); out.push(l.trim()); continue; }
+    if ((m = l.match(/^(#{1,4})\s+(.*)$/))) { flush(); const n = m[1].length; out.push(`<h${n}>` + mdInline(m[2]) + `</h${n}>`); continue; }
+    if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(l)) { flush(); out.push('<hr>'); continue; }
+    if ((m = l.match(/^&gt;\s?(.*)$/))) {
+      flush(); const q = [m[1]];
+      while (i + 1 < lines.length && (m = lines[i + 1].match(/^&gt;\s?(.*)$/))) { q.push(m[1]); i++; }
+      out.push('<blockquote>' + q.map(mdInline).join('<br>') + '</blockquote>'); continue;
+    }
+    if (/^\s*(?:[-*+]|\d+[.)])\s+/.test(l)) {
+      flush();
+      const ordered = /^\s*\d/.test(l), items = [];
+      const re = ordered ? /^\s*\d+[.)]\s+(.*)$/ : /^\s*[-*+]\s+(.*)$/;
+      items.push(l.match(re)[1]);
+      while (i + 1 < lines.length && re.test(lines[i + 1])) { items.push(lines[i + 1].match(re)[1]); i++; }
+      const tag = ordered ? 'ol' : 'ul';
+      out.push(`<${tag}>` + items.map(x => '<li>' + mdInline(x) + '</li>').join('') + `</${tag}>`); continue;
+    }
+    if (l.indexOf('|') >= 0 && i + 1 < lines.length && isSep(lines[i + 1])) {
+      flush();
+      const row = x => x.replace(/^\s*\|/, '').replace(/\|\s*$/, '').split('|').map(c => mdInline(c.trim()));
+      const head = row(l); i++;
+      const body = [];
+      while (i + 1 < lines.length && lines[i + 1].indexOf('|') >= 0 && !/^\s*$/.test(lines[i + 1])) { body.push(row(lines[i + 1])); i++; }
+      out.push('<div class="tbl"><table><thead><tr>' + head.map(c => '<th>' + c + '</th>').join('') + '</tr></thead><tbody>'
+        + body.map(r => '<tr>' + r.map(c => '<td>' + c + '</td>').join('') + '</tr>').join('') + '</tbody></table></div>');
+      continue;
+    }
+    para.push(l);
+  }
+  flush();
+  let h = out.join('');
+  h = h.replace(/\uE002(\d+)\uE003/g, (m, n) => spans[n]);
+  h = h.replace(/\uE000(\d+)\uE001/g, (m, n) => blocks[n]);
   return h;
 }
 function addMsg(role, text, streaming) {
   const div = document.createElement('div');
   div.className = 'msg ' + (role === 'user' ? 'user' : 'ai');
+  // 用户消息按纯文本原样展示，只有 AI 回复走 Markdown
+  const body = role === 'user' ? esc(text) : md(text);
   div.innerHTML = `<div class="av">${role === 'user' ? '🙂' : '✨'}</div>
-    <div class="bubble${streaming ? ' cursor' : ''}">${md(text)}</div>`;
+    <div class="bubble${streaming ? ' cursor' : ''}">${body}</div>`;
   $('msgs').appendChild(div);
   $('chat').scrollTop = $('chat').scrollHeight;
   return div.querySelector('.bubble');
@@ -196,4 +256,14 @@ function autoSize() {
   i.style.height = Math.min(120, i.scrollHeight) + 'px';
 }
 $('inp').addEventListener('input', autoSize);
+
+/* ===================== 移动端细节 ===================== */
+// 窄屏用短占位文案，避免挤压
+if (matchMedia('(max-width:480px)').matches) $('inp').placeholder = '输入你的问题…';
+// 键盘弹起（视口缩小）时保持聊天贴底，不让最新消息被挡住
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', () => {
+    $('chat').scrollTop = $('chat').scrollHeight;
+  });
+}
 })();
