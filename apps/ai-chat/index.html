@@ -5,7 +5,7 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="theme-color" content="#0d1020">
 <link rel="manifest" href="manifest.webmanifest">
 <title>万象智聊 · AI 对话站</title>
@@ -24,11 +24,12 @@
     --text:#e8eaf6; --dim:#9aa3c0; --blue:#6c8cff; --purple:#9d6cff; --green:#4dd9a0;
   }
   body {
-    height:100vh; display:flex; flex-direction:column; background:var(--bg); color:var(--text);
+    height:100vh; height:100dvh; display:flex; flex-direction:column; background:var(--bg); color:var(--text);
     font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
   }
   header {
-    display:flex; align-items:center; gap:12px; padding:12px 16px;
+    display:flex; align-items:center; gap:12px;
+    padding:calc(12px + env(safe-area-inset-top)) 16px 12px;
     background:rgba(13,16,32,0.9); border-bottom:1px solid var(--line); flex-shrink:0;
   }
   header a { color:var(--blue); text-decoration:none; font-size:0.9rem; white-space:nowrap; }
@@ -57,10 +58,30 @@
   .msg.ai .av { background:linear-gradient(135deg,var(--blue),var(--purple)); }
   .bubble {
     max-width:82%; padding:12px 16px; border-radius:14px; line-height:1.8;
-    font-size:0.98rem; word-break:break-word; white-space:pre-wrap;
+    font-size:0.98rem; word-break:break-word; min-width:0;
   }
-  .msg.user .bubble { background:rgba(108,140,255,0.18); border:1px solid rgba(108,140,255,0.3); }
+  .msg.user .bubble { background:rgba(108,140,255,0.18); border:1px solid rgba(108,140,255,0.3); white-space:pre-wrap; }
   .msg.ai .bubble { background:var(--panel); border:1px solid var(--line); }
+  /* Markdown 块级元素 */
+  .bubble p { margin:0.4em 0; }
+  .bubble p:first-child, .bubble > :first-child { margin-top:0; }
+  .bubble p:last-child, .bubble > :last-child { margin-bottom:0; }
+  .bubble h1, .bubble h2, .bubble h3, .bubble h4 { margin:0.8em 0 0.4em; line-height:1.4; color:var(--text); }
+  .bubble h1 { font-size:1.2em; } .bubble h2 { font-size:1.12em; }
+  .bubble h3 { font-size:1.05em; } .bubble h4 { font-size:1em; color:var(--dim); }
+  .bubble ul, .bubble ol { margin:0.4em 0; padding-left:1.5em; }
+  .bubble li { margin:0.18em 0; }
+  .bubble blockquote {
+    border-left:3px solid var(--blue); margin:0.5em 0; padding:0.25em 0.9em;
+    color:var(--dim); background:rgba(108,140,255,0.07); border-radius:0 8px 8px 0;
+  }
+  .bubble a { color:var(--blue); text-decoration:underline; text-underline-offset:3px; }
+  .bubble hr { border:none; border-top:1px solid var(--line); margin:0.8em 0; }
+  .bubble .tbl { overflow-x:auto; margin:0.5em 0; }
+  .bubble table { border-collapse:collapse; font-size:0.92em; min-width:60%; }
+  .bubble th, .bubble td { border:1px solid var(--line); padding:6px 12px; text-align:left; }
+  .bubble th { background:rgba(108,140,255,0.12); font-weight:600; }
+  .bubble tr:nth-child(even) td { background:rgba(255,255,255,0.025); }
   .bubble code {
     background:rgba(0,0,0,0.4); padding:2px 6px; border-radius:5px;
     font-family:ui-monospace,Consolas,monospace; font-size:0.88em;
@@ -74,8 +95,8 @@
   @keyframes blink { 50% { opacity:0; } }
 
   #inputBar {
-    flex-shrink:0; padding:12px 14px 16px; background:rgba(13,16,32,0.95);
-    border-top:1px solid var(--line);
+    flex-shrink:0; padding:12px 14px calc(16px + env(safe-area-inset-bottom));
+    background:rgba(13,16,32,0.95); border-top:1px solid var(--line);
   }
   #inputBar .inner { display:flex; gap:10px; }
   #inp {
@@ -85,10 +106,12 @@
   }
   #inp:focus { outline:none; border-color:var(--blue); }
   #sendBtn {
-    width:84px; border:none; border-radius:12px; cursor:pointer; font-family:inherit;
+    width:84px; flex-shrink:0; white-space:nowrap;
+    border:none; border-radius:12px; cursor:pointer; font-family:inherit;
     background:linear-gradient(135deg,var(--blue),var(--purple)); color:#fff; font-size:1rem;
     letter-spacing:2px; transition:opacity .2s;
   }
+  @media (max-width:480px) { #sendBtn { width:64px; letter-spacing:1px; } }
   #sendBtn:disabled { opacity:0.5; cursor:default; }
   #sendBtn.stop { background:linear-gradient(135deg,#b03a2e,#e0796a); }
 
