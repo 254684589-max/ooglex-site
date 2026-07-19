@@ -25,10 +25,36 @@ const DEFAULT_SYS = '你是「万象智聊」里的AI助手，聪明伶俐、博
 /* ===================== 配置与历史 ===================== */
 let cfg = { provider: 'zhipu', base: PROVIDERS[0].base, model: PROVIDERS[0].model, key: '', sys: DEFAULT_SYS };
 try { Object.assign(cfg, JSON.parse(localStorage.getItem('aichat_cfg') || '{}')); } catch (e) {}
-let hist = [];
-try { hist = JSON.parse(localStorage.getItem('aichat_hist') || '[]'); } catch (e) {}
 const saveCfg = () => localStorage.setItem('aichat_cfg', JSON.stringify(cfg));
-const saveHist = () => localStorage.setItem('aichat_hist', JSON.stringify(hist.slice(-40)));
+
+/* ===================== 多会话存储 ===================== */
+const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+let convs = [];
+try { convs = JSON.parse(localStorage.getItem('aichat_convs') || '[]'); } catch (e) {}
+// 老版本的单会话历史迁移成一个会话
+try {
+  const old = JSON.parse(localStorage.getItem('aichat_hist') || 'null');
+  if (Array.isArray(old) && old.length) {
+    convs.unshift({ id: newId(), title: '', msgs: old, ts: Date.now() });
+  }
+  localStorage.removeItem('aichat_hist');
+} catch (e) {}
+if (!convs.length) convs = [{ id: newId(), title: '', msgs: [], ts: Date.now() }];
+let curId = localStorage.getItem('aichat_cur');
+if (!convs.some(c => c.id === curId)) curId = convs[0].id;
+const cur = () => convs.find(c => c.id === curId);
+function saveConvs() {
+  convs.sort((a, b) => b.ts - a.ts);
+  convs = convs.slice(0, 20);
+  convs.forEach(c => { c.msgs = c.msgs.slice(-60); });
+  localStorage.setItem('aichat_convs', JSON.stringify(convs));
+  localStorage.setItem('aichat_cur', curId);
+}
+function convTitle(c) {
+  if (c.title) return c.title;
+  const u = c.msgs.find(m => m.role === 'user');
+  return u ? u.content.slice(0, 24) : '新对话';
+}
 
 /* ===================== 渲染 ===================== */
 function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -116,12 +142,56 @@ function refreshStatus() {
   else setStatus('尚未配置密钥 —— 点右上角 ⚙️ 设置，几分钟即可接入');
 }
 
-/* ===================== 欢迎与历史回放 ===================== */
+/* ===================== 欢迎与会话切换 ===================== */
 function welcome() {
   addMsg('ai', '你好呀，我是万象智聊 ✨\n\n我可以接入 DeepSeek、智谱 GLM、Kimi、通义千问 等国内大模型（无需特殊网络，注册就送免费额度），也支持海外模型和自定义接口。\n\n**首次使用**：点右上角 ⚙️ 设置 → 选服务商 → 按提示申请一个免费 API 密钥填入即可。密钥只存在你自己的浏览器里。\n\n没有密钥也可以先选「离线小智」模式逗逗它 😄');
 }
-if (hist.length) hist.forEach(m => addMsg(m.role, m.content));
-else welcome();
+function renderConvs() {
+  $('convList').innerHTML = convs.map(c =>
+    `<div class="conv${c.id === curId ? ' cur' : ''}" data-id="${c.id}">
+      <span class="t">${esc(convTitle(c))}</span>
+      <button class="del" title="删除对话" data-del="${c.id}">✕</button>
+    </div>`).join('');
+}
+function openConv(id) {
+  curId = id;
+  localStorage.setItem('aichat_cur', curId);
+  $('msgs').innerHTML = '';
+  const c = cur();
+  if (c.msgs.length) c.msgs.forEach(m => addMsg(m.role, m.content));
+  else welcome();
+  renderConvs();
+}
+function newConv() {
+  const empty = convs.find(c => !c.msgs.length);
+  if (empty) { openConv(empty.id); return; }   // 已有空对话就直接用，不堆积
+  const c = { id: newId(), title: '', msgs: [], ts: Date.now() };
+  convs.unshift(c);
+  saveConvs();
+  openConv(c.id);
+}
+function delConv(id) {
+  const c = convs.find(x => x.id === id);
+  if (!c) return;
+  if (c.msgs.length && !confirm('删除对话「' + convTitle(c) + '」？')) return;
+  convs = convs.filter(x => x.id !== id);
+  if (!convs.length) convs = [{ id: newId(), title: '', msgs: [], ts: Date.now() }];
+  if (id === curId) curId = convs[0].id;
+  saveConvs();
+  openConv(curId);
+}
+const openDrawer = () => { renderConvs(); $('drawer').classList.add('open'); $('drawerMask').classList.add('show'); };
+const closeDrawer = () => { $('drawer').classList.remove('open'); $('drawerMask').classList.remove('show'); };
+$('convBtn').addEventListener('click', openDrawer);
+$('drawerMask').addEventListener('click', closeDrawer);
+$('newConvBtn').addEventListener('click', () => { newConv(); closeDrawer(); });
+$('convList').addEventListener('click', e => {
+  const del = e.target.closest('[data-del]');
+  if (del) { delConv(del.getAttribute('data-del')); return; }
+  const item = e.target.closest('.conv');
+  if (item) { openConv(item.getAttribute('data-id')); closeDrawer(); }
+});
+openConv(curId);
 refreshStatus();
 
 /* ===================== 设置面板 ===================== */
@@ -144,9 +214,6 @@ $('saveBtn').addEventListener('click', () => {
           model: $('cfgModel').value.trim(), key: $('cfgKey').value.trim(), sys: $('cfgSys').value.trim() || DEFAULT_SYS };
   saveCfg(); refreshStatus();
   $('mask').classList.remove('show');
-});
-$('clearBtn').addEventListener('click', () => {
-  hist = []; saveHist(); $('msgs').innerHTML = ''; welcome();
 });
 
 /* ===================== 离线小智（规则引擎玩具） ===================== */
@@ -176,13 +243,20 @@ async function send() {
   const q = $('inp').value.trim();
   if (!q) return;
   $('inp').value = ''; autoSize();
+  // 锁定当前会话对象：流式回复期间即使切换会话，答案也落回原会话
+  const conv = cur();
   addMsg('user', q);
-  hist.push({ role: 'user', content: q });
+  conv.msgs.push({ role: 'user', content: q });
+  conv.ts = Date.now();
 
   if (cfg.provider === 'offline') {
     const r = offlineReply(q);
-    setTimeout(() => { addMsg('ai', r); hist.push({ role: 'assistant', content: r }); saveHist(); }, 400);
-    saveHist(); return;
+    setTimeout(() => {
+      if (cur() === conv) addMsg('ai', r);
+      conv.msgs.push({ role: 'assistant', content: r });
+      saveConvs(); renderConvs();
+    }, 400);
+    saveConvs(); renderConvs(); return;
   }
   if (!cfg.key || !cfg.base) {
     addMsg('ai', '还没配置密钥哦～点右上角 **⚙️ 设置**，选一个国内服务商（推荐智谱 GLM，有免费模型），按提示申请密钥填入即可。');
@@ -200,7 +274,7 @@ async function send() {
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.key },
       body: JSON.stringify({
         model: cfg.model, stream: true,
-        messages: [{ role: 'system', content: cfg.sys }, ...hist.slice(-16)],
+        messages: [{ role: 'system', content: cfg.sys }, ...conv.msgs.slice(-16)],
       }),
     });
     if (!res.ok) {
@@ -241,8 +315,9 @@ async function send() {
   }
   bubble.classList.remove('cursor');
   bubble.innerHTML = md(full);
-  hist.push({ role: 'assistant', content: full });
-  saveHist();
+  conv.msgs.push({ role: 'assistant', content: full });
+  conv.ts = Date.now();
+  saveConvs(); renderConvs();
   busy = false; aborter = null;
   $('sendBtn').textContent = '发送'; $('sendBtn').classList.remove('stop');
 }

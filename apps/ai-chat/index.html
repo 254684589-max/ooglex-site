@@ -115,6 +115,42 @@
   #sendBtn:disabled { opacity:0.5; cursor:default; }
   #sendBtn.stop { background:linear-gradient(135deg,#b03a2e,#e0796a); }
 
+  /* 全局音乐悬浮钮（assets/ambient.js 注入）默认在右下角，会压住发送按钮：抬到输入栏上方 */
+  #music-toggle.amb-float { bottom:calc(96px + env(safe-area-inset-bottom)) !important; }
+
+  /* 会话抽屉 */
+  #drawerMask {
+    position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:19; display:none;
+  }
+  #drawerMask.show { display:block; }
+  #drawer {
+    position:fixed; top:0; left:0; bottom:0; width:272px; max-width:80vw; z-index:20;
+    background:var(--panel); border-right:1px solid var(--line);
+    transform:translateX(-105%); transition:transform 0.25s ease;
+    display:flex; flex-direction:column;
+    padding:calc(14px + env(safe-area-inset-top)) 12px calc(14px + env(safe-area-inset-bottom));
+  }
+  #drawer.open { transform:none; }
+  #newConvBtn {
+    flex-shrink:0; padding:12px; border:none; border-radius:10px; cursor:pointer;
+    background:linear-gradient(135deg,var(--blue),var(--purple)); color:#fff;
+    font-family:inherit; font-size:0.95rem; letter-spacing:1px;
+  }
+  #convList { flex:1; overflow-y:auto; margin-top:12px; }
+  .conv {
+    display:flex; align-items:center; gap:6px; padding:10px 8px 10px 12px;
+    border-radius:10px; cursor:pointer; color:var(--dim);
+    border:1px solid transparent; margin-bottom:4px;
+  }
+  .conv:hover { color:var(--text); background:rgba(255,255,255,0.04); }
+  .conv.cur { background:rgba(108,140,255,0.12); border-color:rgba(108,140,255,0.3); color:var(--text); }
+  .conv .t { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:0.92rem; }
+  .conv .del {
+    flex-shrink:0; border:none; background:none; color:inherit; cursor:pointer;
+    font-size:0.95rem; padding:2px 6px; opacity:0.45; border-radius:6px;
+  }
+  .conv .del:hover { opacity:1; color:#e0796a; }
+
   /* 设置面板 */
   #mask {
     position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none;
@@ -153,7 +189,7 @@
 <header>
   <a href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a>
   <h1>✨ 万象智聊</h1>
-  <button class="hbtn" id="clearBtn">🗑 清空</button>
+  <button class="hbtn" id="convBtn">💬 对话</button>
   <button class="hbtn" id="setBtn">⚙️ 设置</button>
 </header>
 <div id="status"></div>
@@ -164,6 +200,12 @@
     <button id="sendBtn">发送</button>
   </div>
 </div>
+
+<div id="drawerMask"></div>
+<aside id="drawer">
+  <button id="newConvBtn">＋ 新对话</button>
+  <div id="convList"></div>
+</aside>
 
 <div id="mask">
   <div id="setPanel">
