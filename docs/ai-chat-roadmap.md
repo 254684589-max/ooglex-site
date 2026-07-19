@@ -29,8 +29,10 @@ radio 电台……），成为「Ooglex 的 AI 导游 + 财经助手」。
 ## 阶段二：免密钥即用
 
 - [x] WebLLM 接入：浏览器内跑 Qwen 小模型（WebGPU 检测、下载进度、流式生成、可停止、国内镜像源）
-- [ ] Cloudflare Workers 免费代理：内置免费模型 key + 每日限额，访客零配置开聊
-- [ ] 三大脑自动降级策略：API → 浏览器内模型 → 离线小智
+- [x] Cloudflare Workers 免费代理：代码与部署指南就绪（`workers/ai-proxy/`）。
+      ⚠️ 待站长部署：按 README 十分钟部署后把 `apps/ai-chat/shared-config.json`
+      置 `enabled: true` 即全站生效
+- [x] 三大脑自动降级策略：共享通道 → 本地模型（已就绪才接手）→ 离线小智
 
 ## 阶段三：站内数据工具调用（独家能力）
 

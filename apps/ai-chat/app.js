@@ -17,6 +17,9 @@ const PROVIDERS = [
     help: '需要海外网络与账号：platform.openai.com。' },
   { id: 'custom', name: '自定义（任何兼容接口）', base: '', model: '',
     help: '填入任何 OpenAI 兼容服务的地址与模型名，例如自建的 Ollama（http://localhost:11434/v1）。' },
+  { id: 'shared', name: '站长共享通道（免费 · 限量 · 零配置）', base: '', model: '',
+    help: '本站代为转发的免费额度：<b>无需密钥、打开即聊</b>，每人每天限量，用完自动降级。'
+      + '密钥由站长持有，你的对话不经过本站服务器存储。' },
   { id: 'webllm', name: '浏览器本地模型（免密钥 · 实验）', base: '', model: 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC',
     help: '模型直接在你的设备上运行：<b>无需密钥、聊天内容不出本机、下载后离线可用</b>。首次使用需下载模型文件'
       + '（1.5B 约 900MB，手机可改填 <code>Qwen2.5-0.5B-Instruct-q4f16_1-MLC</code> 约 300MB），之后走本地缓存。'
@@ -28,7 +31,23 @@ const DEFAULT_SYS = '你是「万象智聊」里的AI助手，聪明伶俐、博
 
 /* ===================== 配置与历史 ===================== */
 let cfg = { provider: 'zhipu', base: PROVIDERS[0].base, model: PROVIDERS[0].model, key: '', sys: DEFAULT_SYS, src: 'hf' };
+const isFreshUser = !localStorage.getItem('aichat_cfg');
 try { Object.assign(cfg, JSON.parse(localStorage.getItem('aichat_cfg') || '{}')); } catch (e) {}
+
+/* 站长共享通道配置（部署 workers/ai-proxy 后在 shared-config.json 开通） */
+let SHARED = { enabled: false, base: '', model: '' };
+fetch('shared-config.json', { cache: 'no-cache' })
+  .then(r => (r.ok ? r.json() : null))
+  .then(j => {
+    if (!j) return;
+    SHARED = j;
+    // 新访客默认走共享通道：零配置开聊
+    if (isFreshUser && SHARED.enabled && cfg.provider === 'zhipu' && !cfg.key) {
+      cfg.provider = 'shared';
+      refreshStatus();
+    }
+  })
+  .catch(() => {});
 const saveCfg = () => localStorage.setItem('aichat_cfg', JSON.stringify(cfg));
 
 /* ===================== 多会话存储 ===================== */
@@ -234,6 +253,8 @@ function setStatus(t, ok) { $('status').innerHTML = ok ? `<span class="ok">${t}<
 function refreshStatus() {
   const p = PROVIDERS.find(x => x.id === cfg.provider) || PROVIDERS[0];
   if (cfg.provider === 'offline') setStatus('🤖 离线小智模式 · 无需密钥', true);
+  else if (cfg.provider === 'shared')
+    setStatus(SHARED.enabled ? '🎁 站长共享通道 · 免费限量 · 零配置' : '共享通道未开通 —— 点 ⚙️ 设置选择其他方式', SHARED.enabled);
   else if (cfg.provider === 'webllm')
     setStatus('🧠 浏览器本地模型 · ' + cfg.model + (llm && llmModel === cfg.model ? ' · 已就绪' : ' · 首次使用需下载'), true);
   else if (cfg.key) setStatus(`已连接：${p.name.split('（')[0]} · ${cfg.model}`, true);
@@ -297,7 +318,7 @@ refreshStatus();
 $('cfgProvider').innerHTML = PROVIDERS.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
 function toggleRows(pid) {
   $('srcRow').style.display = pid === 'webllm' ? '' : 'none';
-  $('keyRow').style.display = (pid === 'webllm' || pid === 'offline') ? 'none' : '';
+  $('keyRow').style.display = (pid === 'webllm' || pid === 'offline' || pid === 'shared') ? 'none' : '';
 }
 function fillPanel() {
   $('cfgProvider').value = cfg.provider;
@@ -376,22 +397,29 @@ async function reply(conv) {
     }, 400);
     return;
   }
-  if (!cfg.key || !cfg.base) {
+
+  const shared = cfg.provider === 'shared';
+  if (shared && !(SHARED.enabled && SHARED.base)) { degrade(conv, '共享通道当前未开通'); return; }
+  if (!shared && (!cfg.key || !cfg.base)) {
     addMsg('ai', '还没配置密钥哦～点右上角 **⚙️ 设置**，选一个国内服务商（推荐智谱 GLM，有免费模型），按提示申请密钥填入即可。也可以选「浏览器本地模型」，免密钥直接聊。');
     return;
   }
+  const base = shared ? SHARED.base.replace(/\/+$/, '') : cfg.base;
+  const model = shared ? SHARED.model : cfg.model;
+  const headers = { 'Content-Type': 'application/json' };
+  if (!shared) headers.Authorization = 'Bearer ' + cfg.key;
 
   busy = true; aborter = new AbortController();
   $('sendBtn').textContent = '停止'; $('sendBtn').classList.add('stop');
   const bubble = addMsg('ai', '', true);
   let full = '';
   try {
-    const res = await fetch(cfg.base + '/chat/completions', {
+    const res = await fetch(base + '/chat/completions', {
       method: 'POST',
       signal: aborter.signal,
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.key },
+      headers,
       body: JSON.stringify({
-        model: cfg.model, stream: true,
+        model, stream: true,
         messages: [{ role: 'system', content: cfg.sys }, ...conv.msgs.slice(-16)],
       }),
     });
@@ -428,6 +456,14 @@ async function reply(conv) {
   } catch (err) {
     if (err.name === 'AbortError') full += '\n\n（已停止）';
     else if (full === '') {
+      // 共享通道失败：撤下气泡走三大脑降级，不打错误脸
+      if (shared) {
+        const m = bubble.closest('.msg'); if (m) m.remove();
+        busy = false; aborter = null;
+        $('sendBtn').textContent = '发送'; $('sendBtn').classList.remove('stop');
+        degrade(conv, /429/.test(err.message) ? '今日共享额度已用完' : '共享通道暂时不可用');
+        return;
+      }
       full = `❌ 连接失败：${esc(err.message)}\n\n排查建议：\n1. 密钥是否正确、额度是否用完\n2. 模型名称是否拼写正确\n3. 个别服务商不允许网页直连（CORS 限制），可换 DeepSeek / 智谱试试`;
     }
   }
@@ -441,6 +477,23 @@ async function reply(conv) {
   if (cur() === conv) refreshActs();
   busy = false; aborter = null;
   $('sendBtn').textContent = '发送'; $('sendBtn').classList.remove('stop');
+}
+
+/* 三大脑自动降级：共享通道不可用 → 本地模型（已就绪才接手，不擅自下载几百 MB）→ 离线小智 */
+function degrade(conv, reason) {
+  if (navigator.gpu && llm) {
+    addMsg('ai', '⚠️ ' + reason + '，已切换到**浏览器本地模型**继续回答 👇');
+    replyWebLLM(conv);
+    return;
+  }
+  const lastUser = conv.msgs.filter(m => m.role === 'user').pop();
+  const r = '⚠️ ' + reason + '，先由离线小智应急——\n\n' + offlineReply(lastUser ? lastUser.content : '')
+    + '\n\n> 想要聪明回答：点 ⚙️ 设置，选「浏览器本地模型」（免密钥）或接入任一大模型密钥（智谱有免费模型）。';
+  addMsg('ai', r);
+  conv.msgs.push({ role: 'assistant', content: r });
+  conv.ts = Date.now();
+  saveConvs(); renderConvs();
+  if (cur() === conv) refreshActs();
 }
 
 /* 浏览器本地模型：加载（含下载进度）→ 流式生成 */
