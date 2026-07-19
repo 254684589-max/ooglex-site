@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bg" cx="0.36" cy="0.30" r="1.05">
+      <stop offset="0" stop-color="#171b36"/>
+      <stop offset="0.55" stop-color="#0d1020"/>
+      <stop offset="1" stop-color="#05060f"/>
+    </radialGradient>
+    <linearGradient id="bubble" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6c8cff"/>
+      <stop offset="1" stop-color="#9d6cff"/>
+    </linearGradient>
+    <linearGradient id="spark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#cfe0ff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- background -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+
+  <!-- faint stars -->
+  <g fill="#ffffff">
+    <circle cx="96"  cy="112" r="2.6" opacity=".6"/>
+    <circle cx="428" cy="92"  r="2.0" opacity=".5"/>
+    <circle cx="452" cy="300" r="2.4" opacity=".55"/>
+    <circle cx="72"  cy="330" r="1.8" opacity=".45"/>
+    <circle cx="150" cy="448" r="2.2" opacity=".5"/>
+    <circle cx="392" cy="430" r="1.8" opacity=".4"/>
+  </g>
+
+  <!-- small echo bubble behind -->
+  <g opacity="0.55">
+    <rect x="286" y="118" width="132" height="92" rx="34" fill="none" stroke="#4dd9a0" stroke-width="12"/>
+    <path d="M388 202 L406 236 L352 206 Z" fill="#4dd9a0"/>
+  </g>
+
+  <!-- main chat bubble -->
+  <g>
+    <rect x="92" y="158" width="268" height="196" rx="58" fill="url(#bubble)"/>
+    <path d="M150 344 L128 408 L214 350 Z" fill="#9d6cff"/>
+    <path d="M150 344 L128 408 L214 350 Z" fill="url(#bubble)" opacity="0.85"/>
+  </g>
+
+  <!-- sparkle inside bubble -->
+  <g fill="url(#spark)">
+    <path d="M226 190 C232 226 244 238 280 244 C244 250 232 262 226 298 C220 262 208 250 172 244 C208 238 220 226 226 190 Z"/>
+    <path d="M296 274 C299 291 305 297 322 300 C305 303 299 309 296 326 C293 309 287 303 270 300 C287 297 293 291 296 274 Z" opacity="0.9"/>
+  </g>
+</svg>
