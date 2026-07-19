@@ -1,0 +1,20 @@
+name = "ooglex-ai-proxy"
+main = "worker.js"
+compatibility_date = "2026-07-01"
+
+# 每 IP 每日限额计数（先执行 README 里的命令创建命名空间，再把 id 填进来）
+[[kv_namespaces]]
+binding = "QUOTA"
+id = "填入 wrangler kv namespace create QUOTA 输出的 id"
+
+[vars]
+# 允许调用的页面来源（逗号分隔）
+ALLOWED_ORIGINS = "https://www.ooglex.com,https://ooglex.com"
+# 锁定的免费模型与上游（智谱 glm-4-flash 免费）
+MODEL = "glm-4-flash"
+UPSTREAM = "https://open.bigmodel.cn/api/paas/v4"
+# 每 IP 每日次数
+DAILY_LIMIT = "30"
+
+# 密钥不要写在这里！用命令设置：
+#   wrangler secret put API_KEY

@@ -56,10 +56,19 @@
   .msg.user { flex-direction:row-reverse; }
   .msg.user .av { background:linear-gradient(135deg,#2e8a6e,#3aa8c8); }
   .msg.ai .av { background:linear-gradient(135deg,var(--blue),var(--purple)); }
+  .grp { max-width:82%; min-width:0; display:flex; flex-direction:column; align-items:flex-start; }
+  .msg.user .grp { align-items:flex-end; }
   .bubble {
-    max-width:82%; padding:12px 16px; border-radius:14px; line-height:1.8;
+    max-width:100%; padding:12px 16px; border-radius:14px; line-height:1.8;
     font-size:0.98rem; word-break:break-word; min-width:0;
   }
+  .acts { display:flex; gap:4px; margin-top:4px; opacity:0.55; transition:opacity 0.15s; }
+  .msg:hover .acts { opacity:1; }
+  .act {
+    border:none; background:none; color:var(--dim); cursor:pointer;
+    font-family:inherit; font-size:0.78rem; padding:3px 8px; border-radius:7px;
+  }
+  .act:hover { color:var(--text); background:rgba(255,255,255,0.07); }
   .msg.user .bubble { background:rgba(108,140,255,0.18); border:1px solid rgba(108,140,255,0.3); white-space:pre-wrap; }
   .msg.ai .bubble { background:var(--panel); border:1px solid var(--line); }
   /* Markdown 块级元素 */
@@ -115,6 +124,42 @@
   #sendBtn:disabled { opacity:0.5; cursor:default; }
   #sendBtn.stop { background:linear-gradient(135deg,#b03a2e,#e0796a); }
 
+  /* 全局音乐悬浮钮（assets/ambient.js 注入）默认在右下角，会压住发送按钮：抬到输入栏上方 */
+  #music-toggle.amb-float { bottom:calc(96px + env(safe-area-inset-bottom)) !important; }
+
+  /* 会话抽屉 */
+  #drawerMask {
+    position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:19; display:none;
+  }
+  #drawerMask.show { display:block; }
+  #drawer {
+    position:fixed; top:0; left:0; bottom:0; width:272px; max-width:80vw; z-index:20;
+    background:var(--panel); border-right:1px solid var(--line);
+    transform:translateX(-105%); transition:transform 0.25s ease;
+    display:flex; flex-direction:column;
+    padding:calc(14px + env(safe-area-inset-top)) 12px calc(14px + env(safe-area-inset-bottom));
+  }
+  #drawer.open { transform:none; }
+  #newConvBtn {
+    flex-shrink:0; padding:12px; border:none; border-radius:10px; cursor:pointer;
+    background:linear-gradient(135deg,var(--blue),var(--purple)); color:#fff;
+    font-family:inherit; font-size:0.95rem; letter-spacing:1px;
+  }
+  #convList { flex:1; overflow-y:auto; margin-top:12px; }
+  .conv {
+    display:flex; align-items:center; gap:6px; padding:10px 8px 10px 12px;
+    border-radius:10px; cursor:pointer; color:var(--dim);
+    border:1px solid transparent; margin-bottom:4px;
+  }
+  .conv:hover { color:var(--text); background:rgba(255,255,255,0.04); }
+  .conv.cur { background:rgba(108,140,255,0.12); border-color:rgba(108,140,255,0.3); color:var(--text); }
+  .conv .t { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:0.92rem; }
+  .conv .del {
+    flex-shrink:0; border:none; background:none; color:inherit; cursor:pointer;
+    font-size:0.95rem; padding:2px 6px; opacity:0.45; border-radius:6px;
+  }
+  .conv .del:hover { opacity:1; color:#e0796a; }
+
   /* 设置面板 */
   #mask {
     position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none;
@@ -153,7 +198,7 @@
 <header>
   <a href="../../">← <span class="ogx-wm" style="font-weight:700"><span style="color:#22d3ee">O</span><span style="color:#4aa8ff">o</span><span style="color:#6c8cff">g</span><span style="color:#9d6cff">l</span><span style="color:#c86cff">e</span><span style="color:#f472b6">x</span></span></a>
   <h1>✨ 万象智聊</h1>
-  <button class="hbtn" id="clearBtn">🗑 清空</button>
+  <button class="hbtn" id="convBtn">💬 对话</button>
   <button class="hbtn" id="setBtn">⚙️ 设置</button>
 </header>
 <div id="status"></div>
@@ -165,6 +210,12 @@
   </div>
 </div>
 
+<div id="drawerMask"></div>
+<aside id="drawer">
+  <button id="newConvBtn">＋ 新对话</button>
+  <div id="convList"></div>
+</aside>
+
 <div id="mask">
   <div id="setPanel">
     <h2>⚙️ 连接大模型</h2>
@@ -175,8 +226,17 @@
     <input id="cfgBase" type="text">
     <label>模型名称</label>
     <input id="cfgModel" type="text">
+    <div id="srcRow" style="display:none">
+      <label>模型下载源（国内网络请选镜像）</label>
+      <select id="cfgSrc">
+        <option value="hf">官方 HuggingFace（需海外网络）</option>
+        <option value="mirror">国内镜像 hf-mirror.com</option>
+      </select>
+    </div>
+    <div id="keyRow">
     <label>API 密钥（仅保存在你自己的浏览器里）</label>
     <input id="cfgKey" type="password" placeholder="sk-…">
+    </div>
     <label>AI 人设（系统提示词，可自由修改）</label>
     <textarea id="cfgSys"></textarea>
     <div class="safe">🔒 密钥只存于本机浏览器 localStorage，本站没有服务器，不会也无法上传你的密钥。代码开源可查。</div>
