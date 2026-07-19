@@ -458,10 +458,8 @@ async function reply(conv) {
 
   const shared = cfg.provider === 'shared';
   if (shared && !(SHARED.enabled && SHARED.base)) { degrade(conv, '共享通道当前未开通'); return; }
-  if (!shared && (!cfg.key || !cfg.base)) {
-    addMsg('ai', '还没配置密钥哦～点右上角 **⚙️ 设置**，选一个国内服务商（推荐智谱 GLM，有免费模型），按提示申请密钥填入即可。也可以选「浏览器本地模型」，免密钥直接聊。');
-    return;
-  }
+  // 没配密钥也不已读不回：走降级链给出应急回答 + 引导，并存入历史
+  if (!shared && (!cfg.key || !cfg.base)) { degrade(conv, '还没配置 AI 服务'); return; }
   const base = shared ? SHARED.base.replace(/\/+$/, '') : cfg.base;
   const model = shared ? SHARED.model : cfg.model;
   const headers = { 'Content-Type': 'application/json' };
