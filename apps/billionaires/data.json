@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-07-18T21:12:58Z",
-  "asOf": "2026-07-18",
+  "updatedAt": "2026-07-19T21:35:49Z",
+  "asOf": "2026-07-19",
   "source": "Forbes Real-Time Billionaires",
   "count": 250,
-  "totalWorth": 9717.9,
+  "totalWorth": 9717.7,
   "note": "数据来自 Forbes 实时富豪榜，每日自动更新；身价单位为十亿美元（B），当日变动为较上一参考时点的估算。仅供参考，不构成任何建议。",
   "people": [
     {
@@ -1562,20 +1562,6 @@
     },
     {
       "rank": 112,
-      "name": "阿尔瓦利德·本·塔拉勒亲王",
-      "nameEn": "Prince Alwaleed Bin Talal Alsaud",
-      "worth": 22.92,
-      "change": 0.0,
-      "changePct": 0.0,
-      "country": "沙特阿拉伯",
-      "flag": "🇸🇦",
-      "source": "investments",
-      "industry": "金融投资",
-      "image": "//specials-images.forbesimg.com/imageserve/5e779508d8e1ae0007b72f3e/416x416.jpg?background=000000&cropX1=950&cropX2=4271&cropY1=14&cropY2=3334",
-      "age": 71
-    },
-    {
-      "rank": 113,
       "name": "哈里·特里古博夫",
       "nameEn": "Harry Triguboff",
       "worth": 22.9,
@@ -1587,6 +1573,20 @@
       "industry": "房地产",
       "image": "https://specials-images.forbesimg.com/imageserve/63ea5408a2141a8698e3c457/416x416.jpg?background=000000&cropX1=0&cropX2=1080&cropY1=0&cropY2=1079",
       "age": 93
+    },
+    {
+      "rank": 113,
+      "name": "阿尔瓦利德·本·塔拉勒亲王",
+      "nameEn": "Prince Alwaleed Bin Talal Alsaud",
+      "worth": 22.73,
+      "change": -0.19,
+      "changePct": -0.83,
+      "country": "沙特阿拉伯",
+      "flag": "🇸🇦",
+      "source": "investments",
+      "industry": "金融投资",
+      "image": "//specials-images.forbesimg.com/imageserve/5e779508d8e1ae0007b72f3e/416x416.jpg?background=000000&cropX1=950&cropX2=4271&cropY1=14&cropY2=3334",
+      "age": 71
     },
     {
       "rank": 114,
@@ -1676,7 +1676,7 @@
       "rank": 120,
       "name": "小恩里克·拉松",
       "nameEn": "Enrique Razon Jr.",
-      "worth": 21.79,
+      "worth": 21.78,
       "change": 0.0,
       "changePct": 0.0,
       "country": "菲律宾",
@@ -2713,8 +2713,8 @@
       "name": "侯赛因·萨杰瓦尼",
       "nameEn": "Hussain Sajwani",
       "worth": 15.28,
-      "change": 0.0,
-      "changePct": 0.0,
+      "change": -0.0,
+      "changePct": -0.0,
       "country": "阿联酋",
       "flag": "🇦🇪",
       "source": "Real estate",
