@@ -36,10 +36,12 @@ radio 电台……），成为「Ooglex 的 AI 导游 + 财经助手」。
 
 ## 阶段三：站内数据工具调用（独家能力）
 
-- [ ] 工具调用框架（OpenAI function calling 格式，兼容各家 API）
-- [ ] 工具：今日要闻（whats-latest）
+- [x] 工具调用框架（OpenAI function calling，流式 tool_calls 拼装、多轮循环、
+      不支持 tools 的服务商自动去工具重试）
+- [x] 工具：今日要闻（whats-latest）
 - [ ] 工具：财经日历（econ-calendar）
-- [ ] 工具：市场情绪（fear-greed）与市值排行（companies / asset-ranking）
+- [x] 工具：市场情绪（fear-greed）
+- [ ] 工具：市值排行（companies / asset-ranking）
 - [ ] 工具：电台推荐（radio，可直接跳转播放）
 - [ ] 站内导航：AI 能介绍并带用户去任意小应用
 

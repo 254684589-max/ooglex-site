@@ -364,6 +364,64 @@ function offlineReply(q) {
   return '这个问题超出我这颗离线小脑袋的能力了 😅 我只会算算术（试试「23*45」）、报时间日期、讲笑话。点右上角 ⚙️ 接入真正的大模型，它什么都能聊！';
 }
 
+/* ===================== 站内数据工具（OpenAI function calling） ===================== */
+async function fetchJSON(path) {
+  const r = await fetch(path, { cache: 'no-cache' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+const TOOLS = [
+  {
+    label: '今日要闻',
+    def: { type: 'function', function: {
+      name: 'get_latest_news',
+      description: '获取今日全球要闻（本站每日更新的权威新闻聚合，含市场/科技/世界等分类）。用户询问新闻、时事、行情消息、"今天发生了什么"时调用。',
+      parameters: { type: 'object', properties: {}, required: [] },
+    } },
+    run: async () => {
+      const d = await fetchJSON('../whats-latest/data.json');
+      return JSON.stringify({
+        更新时间: d.asOf || d.updatedAt, 数据来源: d.source,
+        头条: d.highlight ? { 标题: d.highlight.title, 来源: d.highlight.source, 分类: d.highlight.category } : null,
+        分类要闻: (d.categories || []).map(c => ({
+          分类: c.name,
+          条目: (c.items || []).slice(0, 4).map(it => ({ 标题: it.title, 来源: it.source })),
+        })),
+      });
+    },
+  },
+  {
+    label: '市场情绪',
+    def: { type: 'function', function: {
+      name: 'get_market_sentiment',
+      description: '获取当前市场情绪：CNN 恐惧与贪婪指数（0-100，本站每日更新），含与昨收/一周前/一月前/一年前的对比。用户问市场情绪、恐慌贪婪指数、行情冷热时调用。',
+      parameters: { type: 'object', properties: {}, required: [] },
+    } },
+    run: async () => {
+      const d = await fetchJSON('../fear-greed/data.json');
+      const f = r => (r ? { 分数: r.score, 评级: r.ratingZh || r.rating } : null);
+      return JSON.stringify({
+        更新时间: d.asOf || d.updatedAt, 数据来源: d.source,
+        当前: { 分数: d.score, 评级: d.ratingZh || d.rating },
+        对比: { 昨收: f(d.refs && d.refs.close), 一周前: f(d.refs && d.refs.week),
+                一月前: f(d.refs && d.refs.month), 一年前: f(d.refs && d.refs.year) },
+      });
+    },
+  },
+];
+const TOOL_SYS = '\n\n你可以调用工具获取 Ooglex 站内每日更新的实时数据。涉及新闻、市场情绪等话题时优先调用工具拿到真实数据再回答，注明数据更新时间，不要编造数据。';
+async function runTool(tc) {
+  const t = TOOLS.find(x => x.def.function.name === (tc.function && tc.function.name));
+  if (!t) return '{"error":"未知工具"}';
+  try {
+    let args = {};
+    try { args = JSON.parse(tc.function.arguments || '{}'); } catch (e) {}
+    return String(await t.run(args)).slice(0, 6000);
+  } catch (e) {
+    return JSON.stringify({ error: '工具执行失败：' + String((e && e.message) || e) });
+  }
+}
+
 /* ===================== 发送与流式接收 ===================== */
 let busy = false, aborter = null;
 async function send() {
@@ -414,43 +472,38 @@ async function reply(conv) {
   const bubble = addMsg('ai', '', true);
   let full = '';
   try {
-    const res = await fetch(base + '/chat/completions', {
-      method: 'POST',
-      signal: aborter.signal,
-      headers,
-      body: JSON.stringify({
-        model, stream: true,
-        messages: [{ role: 'system', content: cfg.sys }, ...conv.msgs.slice(-16)],
-      }),
-    });
-    if (!res.ok) {
-      const t = await res.text();
-      throw new Error(`HTTP ${res.status}：${t.slice(0, 200)}`);
-    }
-    const reader = res.body.getReader();
-    const dec = new TextDecoder();
-    let buf = '';
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += dec.decode(value, { stream: true });
-      const lines = buf.split('\n');
-      buf = lines.pop();
-      for (const line of lines) {
-        const s = line.trim();
-        if (!s.startsWith('data:')) continue;
-        const data = s.slice(5).trim();
-        if (data === '[DONE]') continue;
-        try {
-          const j = JSON.parse(data);
-          const d = j.choices && j.choices[0] && j.choices[0].delta;
-          if (d && d.content) {
-            full += d.content;
-            bubble.innerHTML = md(full);
-            $('chat').scrollTop = $('chat').scrollHeight;
-          }
-        } catch (e) {}
+    const msgs = [{ role: 'system', content: cfg.sys + TOOL_SYS }, ...conv.msgs.slice(-16)];
+    let useTools = true;
+    // 工具循环：模型要求调用工具 → 本地执行 → 结果回传 → 再生成，最多 3 轮
+    for (let round = 0; round < 4; round++) {
+      const res = await fetch(base + '/chat/completions', {
+        method: 'POST',
+        signal: aborter.signal,
+        headers,
+        body: JSON.stringify(Object.assign(
+          { model, stream: true, messages: msgs },
+          useTools ? { tools: TOOLS.map(t => t.def) } : {}
+        )),
+      });
+      if (!res.ok) {
+        const t = await res.text();
+        // 个别服务商不认 tools 字段：去掉工具重试，保证基础聊天不受影响
+        if (useTools && res.status === 400 && round === 0) { useTools = false; round--; continue; }
+        throw new Error(`HTTP ${res.status}：${t.slice(0, 200)}`);
       }
+      const r = await readStream(res, bubble);
+      if (useTools && r.toolCalls.length && round < 3) {
+        msgs.push({ role: 'assistant', content: r.content || null, tool_calls: r.toolCalls });
+        for (const tc of r.toolCalls) {
+          const t = TOOLS.find(x => x.def.function.name === tc.function.name);
+          bubble.innerHTML = md('🔎 正在查询站内数据：**' + (t ? t.label : tc.function.name) + '** …');
+          $('chat').scrollTop = $('chat').scrollHeight;
+          msgs.push({ role: 'tool', tool_call_id: tc.id, content: await runTool(tc) });
+        }
+        continue;
+      }
+      full = r.content;
+      break;
     }
     if (!full) full = '（模型没有返回内容，请检查模型名称是否正确）';
   } catch (err) {
@@ -477,6 +530,47 @@ async function reply(conv) {
   if (cur() === conv) refreshActs();
   busy = false; aborter = null;
   $('sendBtn').textContent = '发送'; $('sendBtn').classList.remove('stop');
+}
+
+/* 解析一次 SSE 流：正文增量实时渲染，tool_calls 分片按 index 拼装 */
+async function readStream(res, bubble) {
+  const reader = res.body.getReader();
+  const dec = new TextDecoder();
+  let buf = '', content = '';
+  const calls = [];
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    const lines = buf.split('\n');
+    buf = lines.pop();
+    for (const line of lines) {
+      const s = line.trim();
+      if (!s.startsWith('data:')) continue;
+      const data = s.slice(5).trim();
+      if (data === '[DONE]') continue;
+      try {
+        const j = JSON.parse(data);
+        const d = j.choices && j.choices[0] && j.choices[0].delta;
+        if (!d) continue;
+        if (d.content) {
+          content += d.content;
+          bubble.innerHTML = md(content);
+          $('chat').scrollTop = $('chat').scrollHeight;
+        }
+        if (d.tool_calls) {
+          for (const tc of d.tool_calls) {
+            const i = tc.index || 0;
+            if (!calls[i]) calls[i] = { id: tc.id || ('call_' + i), type: 'function', function: { name: '', arguments: '' } };
+            if (tc.id) calls[i].id = tc.id;
+            if (tc.function && tc.function.name) calls[i].function.name = tc.function.name;
+            if (tc.function && tc.function.arguments) calls[i].function.arguments += tc.function.arguments;
+          }
+        }
+      } catch (e) {}
+    }
+  }
+  return { content, toolCalls: calls.filter(Boolean) };
 }
 
 /* 三大脑自动降级：共享通道不可用 → 本地模型（已就绪才接手，不擅自下载几百 MB）→ 离线小智 */
