@@ -517,6 +517,41 @@ $('plist').addEventListener('click', e => {
   if (row){ const s = list[+row.dataset.i]; if (s) playAt(s, true); }
 });
 
+/* ---------------- 全屏沉浸模式 ----------------
+   普通浏览器 / 快捷方式打开时，一键隐藏地址栏等浏览器界面；
+   开过一次后记住偏好，下次打开第一次触摸屏幕自动恢复全屏 */
+(function immersive(){
+  const btn = $('tFull');
+  if (!btn) return;
+  const isApp = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if (!document.fullscreenEnabled || isApp){ btn.style.display = 'none'; return; }   // 微信不支持；已装成 App 则无需
+  const FS_KEY = 'ooglex_radio_fs';
+  const fsOn = () => !!document.fullscreenElement;
+  function enterFs(){
+    const p = document.documentElement.requestFullscreen({ navigationUI: 'hide' });
+    if (p && p.catch) p.catch(() => {});
+  }
+  btn.onclick = () => {
+    if (fsOn()){
+      document.exitFullscreen().catch(() => {});
+      try{ localStorage.removeItem(FS_KEY); }catch(e){}
+    } else {
+      enterFs();
+      try{ localStorage.setItem(FS_KEY, '1'); }catch(e){}
+    }
+  };
+  document.addEventListener('fullscreenchange', () => {
+    btn.classList.toggle('on', fsOn());
+    btn.title = fsOn() ? '退出全屏' : '全屏沉浸模式：隐藏浏览器地址栏';
+  });
+  let wants = false;
+  try{ wants = localStorage.getItem(FS_KEY) === '1'; }catch(e){}
+  if (wants){
+    const once = () => { enterFs(); removeEventListener('pointerdown', once, true); };
+    addEventListener('pointerdown', once, true);
+  }
+})();
+
 /* ---------------- 工具按钮 ---------------- */
 $('tRandom').onclick = () => {
   if (!allStations.length) return;
