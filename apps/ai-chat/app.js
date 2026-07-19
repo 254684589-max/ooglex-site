@@ -129,10 +129,78 @@ function addMsg(role, text, streaming) {
   // 用户消息按纯文本原样展示，只有 AI 回复走 Markdown
   const body = role === 'user' ? esc(text) : md(text);
   div.innerHTML = `<div class="av">${role === 'user' ? '🙂' : '✨'}</div>
-    <div class="bubble${streaming ? ' cursor' : ''}">${body}</div>`;
+    <div class="grp">
+      <div class="bubble${streaming ? ' cursor' : ''}">${body}</div>
+      <div class="acts"></div>
+    </div>`;
+  div._raw = text;
   $('msgs').appendChild(div);
   $('chat').scrollTop = $('chat').scrollHeight;
   return div.querySelector('.bubble');
+}
+
+/* ===================== 消息操作：复制 / 重新生成 / 编辑重发 ===================== */
+function copyText(t, btn) {
+  const done = () => {
+    const o = btn.textContent;
+    btn.textContent = '已复制 ✓';
+    setTimeout(() => { btn.textContent = o; }, 1200);
+  };
+  const fallback = () => {
+    const ta = document.createElement('textarea');
+    ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
+    ta.remove();
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, fallback);
+  else fallback();
+}
+function refreshActs() {
+  const conv = cur();
+  const mk = (label, fn) => {
+    const b = document.createElement('button');
+    b.className = 'act'; b.type = 'button'; b.textContent = label;
+    b.addEventListener('click', fn);
+    return b;
+  };
+  const rows = $('msgs').querySelectorAll('.msg');
+  rows.forEach(el => {
+    const acts = el.querySelector('.acts');
+    acts.innerHTML = '';
+    acts.appendChild(mk('⧉ 复制', e => copyText(el._raw || '', e.target)));
+  });
+  // 最后一条 AI 回复可重新生成（欢迎语不入历史，不会命中）
+  if (conv.msgs.length && conv.msgs[conv.msgs.length - 1].role === 'assistant') {
+    const ai = $('msgs').querySelectorAll('.msg.ai');
+    if (ai.length) ai[ai.length - 1].querySelector('.acts').appendChild(mk('↻ 重新生成', regenerate));
+  }
+  // 最后一条用户消息可编辑重发
+  if (conv.msgs.some(m => m.role === 'user')) {
+    const us = $('msgs').querySelectorAll('.msg.user');
+    if (us.length) us[us.length - 1].querySelector('.acts').appendChild(mk('✎ 编辑重发', editLast));
+  }
+}
+function regenerate() {
+  if (busy) return;
+  const conv = cur();
+  if (!conv.msgs.length || conv.msgs[conv.msgs.length - 1].role !== 'assistant') return;
+  conv.msgs.pop();
+  const ai = $('msgs').querySelectorAll('.msg.ai');
+  if (ai.length) ai[ai.length - 1].remove();
+  saveConvs();
+  reply(conv);
+}
+function editLast() {
+  if (busy) return;
+  const conv = cur();
+  const li = conv.msgs.map(m => m.role).lastIndexOf('user');
+  if (li < 0) return;
+  const text = conv.msgs[li].content;
+  conv.msgs.splice(li);          // 该条及其后的回复一并撤下
+  saveConvs();
+  openConv(conv.id);
+  $('inp').value = text; autoSize(); $('inp').focus();
 }
 function setStatus(t, ok) { $('status').innerHTML = ok ? `<span class="ok">${t}</span>` : t; }
 function refreshStatus() {
@@ -161,6 +229,7 @@ function openConv(id) {
   if (c.msgs.length) c.msgs.forEach(m => addMsg(m.role, m.content));
   else welcome();
   renderConvs();
+  refreshActs();
 }
 function newConv() {
   const empty = convs.find(c => !c.msgs.length);
@@ -248,6 +317,14 @@ async function send() {
   addMsg('user', q);
   conv.msgs.push({ role: 'user', content: q });
   conv.ts = Date.now();
+  saveConvs(); renderConvs(); refreshActs();
+  reply(conv);
+}
+
+/* 基于会话现有历史请求一条 AI 回复（send 与「重新生成」共用） */
+async function reply(conv) {
+  const lastUser = conv.msgs.filter(m => m.role === 'user').pop();
+  const q = lastUser ? lastUser.content : '';
 
   if (cfg.provider === 'offline') {
     const r = offlineReply(q);
@@ -255,8 +332,9 @@ async function send() {
       if (cur() === conv) addMsg('ai', r);
       conv.msgs.push({ role: 'assistant', content: r });
       saveConvs(); renderConvs();
+      if (cur() === conv) refreshActs();
     }, 400);
-    saveConvs(); renderConvs(); return;
+    return;
   }
   if (!cfg.key || !cfg.base) {
     addMsg('ai', '还没配置密钥哦～点右上角 **⚙️ 设置**，选一个国内服务商（推荐智谱 GLM，有免费模型），按提示申请密钥填入即可。');
@@ -315,9 +393,12 @@ async function send() {
   }
   bubble.classList.remove('cursor');
   bubble.innerHTML = md(full);
+  const bubbleMsg = bubble.closest('.msg');
+  if (bubbleMsg) bubbleMsg._raw = full;
   conv.msgs.push({ role: 'assistant', content: full });
   conv.ts = Date.now();
   saveConvs(); renderConvs();
+  if (cur() === conv) refreshActs();
   busy = false; aborter = null;
   $('sendBtn').textContent = '发送'; $('sendBtn').classList.remove('stop');
 }

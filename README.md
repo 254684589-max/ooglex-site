@@ -38,7 +38,7 @@ ZLQ6600E/
 │   ├── econ-calendar/      # 📅 全球经济日历（央行决议/CPI/非农…预测值与前值，每日更新）
 │   ├── home-value/         # 🧭 房值罗盘（住宅价值参考估算）
 │   ├── fish-lab/           # 🐟 声波诱鱼实验室（低频发生器 + 科普）
-│   ├── ai-chat/            # ✨ 万象智聊（接入大模型的聊天站）
+│   ├── ai-chat/            # ✨ 万象智聊（大模型聊天 · 多会话 · Markdown · PWA 可安装）
 │   ├── mosquito-lab/       # 🦟 声波驱蚊实验室（频率发生器 + 科普）
 │   ├── calculators/        # 🧮 万象算集（计算器大全 · 分类+搜索 · 70+ 计算器）
 │   ├── radio/              # 🌍 环球电波（3D 地球听全球电台 · Radio Browser · 自托管 globe.gl）

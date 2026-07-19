@@ -56,10 +56,19 @@
   .msg.user { flex-direction:row-reverse; }
   .msg.user .av { background:linear-gradient(135deg,#2e8a6e,#3aa8c8); }
   .msg.ai .av { background:linear-gradient(135deg,var(--blue),var(--purple)); }
+  .grp { max-width:82%; min-width:0; display:flex; flex-direction:column; align-items:flex-start; }
+  .msg.user .grp { align-items:flex-end; }
   .bubble {
-    max-width:82%; padding:12px 16px; border-radius:14px; line-height:1.8;
+    max-width:100%; padding:12px 16px; border-radius:14px; line-height:1.8;
     font-size:0.98rem; word-break:break-word; min-width:0;
   }
+  .acts { display:flex; gap:4px; margin-top:4px; opacity:0.55; transition:opacity 0.15s; }
+  .msg:hover .acts { opacity:1; }
+  .act {
+    border:none; background:none; color:var(--dim); cursor:pointer;
+    font-family:inherit; font-size:0.78rem; padding:3px 8px; border-radius:7px;
+  }
+  .act:hover { color:var(--text); background:rgba(255,255,255,0.07); }
   .msg.user .bubble { background:rgba(108,140,255,0.18); border:1px solid rgba(108,140,255,0.3); white-space:pre-wrap; }
   .msg.ai .bubble { background:var(--panel); border:1px solid var(--line); }
   /* Markdown 块级元素 */
