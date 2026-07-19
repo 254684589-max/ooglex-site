@@ -100,11 +100,12 @@ const broken = new Set();          // 本次会话中连不上的电台（自动
 let selectPool = [], poolIdx = 0, watchdog = null;   // 失败自动跳到附近可用电台
 
 function initGlobe(){
-  world = Globe({ animateIn: true })($('globe'))
+  // waitForGlobeReady:false —— 不等贴图下载完就先显示地球（深蓝占位球 + 绿点），慢网络下不再黑屏
+  world = Globe({ animateIn: true, waitForGlobeReady: false })($('globe'))
     .backgroundColor('rgba(0,0,0,0)')
     .width(innerWidth).height(innerHeight)
     .globeImageUrl('vendor/earth-blue-marble.jpg')
-    .bumpImageUrl('vendor/earth-topology.png')
+    .bumpImageUrl('vendor/earth-topology.jpg')
     .showAtmosphere(true).atmosphereColor('#9ec9ff').atmosphereAltitude(0.28)
     .pointsData([])
     .pointLat('lat').pointLng('lng')
@@ -121,6 +122,19 @@ function initGlobe(){
     .ringMaxRadius(3.4).ringPropagationSpeed(1.7).ringRepeatPeriod(620);
 
   enhanceGlobe(world);
+
+  // 贴图下载完之前先给地球一个深海蓝底色：慢网络下也能立刻看到地球轮廓，而不是黑屏
+  try{
+    const gm = world.globeMaterial();
+    if (gm && gm.color && gm.color.setHex){
+      gm.color.setHex(0x14386b);
+      (function unveil(){
+        const ok = gm.map && gm.map.image && (gm.map.image.complete || gm.map.image.naturalWidth > 0);
+        if (ok){ if (gm.color && gm.color.setHex) gm.color.setHex(0xffffff); gm.needsUpdate = true; }
+        else setTimeout(unveil, 120);
+      })();
+    }
+  }catch(e){}
 
   const c = world.controls();
   c.autoRotate = false; c.autoRotateSpeed = 0.34;
@@ -228,7 +242,7 @@ function enhanceGlobe(world){
     if (gm.bumpMap){ gm.bumpMap.anisotropy = maxAniso; gm.bumpMap.needsUpdate = true; }
 
     // 海洋镜面高光：水面反射阳光、陆地哑光
-    texFromImg('vendor/earth-water.png', Ctor, null, t => {
+    texFromImg('vendor/earth-water.jpg', Ctor, null, t => {
       gm.specularMap = t;
       if (gm.specular && gm.specular.setHex) gm.specular.setHex(0x2b3f66);
       gm.shininess = 20; gm.needsUpdate = true;

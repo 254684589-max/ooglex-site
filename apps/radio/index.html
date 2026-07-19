@@ -10,6 +10,10 @@
 <meta name="description" content="转动地球，点亮世界各地的电台，实时收听全球广播。精美 3D 地球界面，自带国内直连优先，纯静态托管。">
 
 <!-- PWA：可安装到手机主屏、独立窗口运行、离线可启动 -->
+<!-- 关键资源预加载：地球贴图与 JS 并行下载，手机上更快看到地球 -->
+<link rel="preload" href="vendor/earth-blue-marble.jpg" as="image" fetchpriority="high">
+<link rel="preload" href="vendor/earth-topology.jpg" as="image">
+
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#05070f">
 <meta name="application-name" content="环球电波">
@@ -359,7 +363,7 @@
 </div>
 
 <script src="vendor/globe.gl.min.js"></script>
-<script src="app.js?v=11"></script>
+<script src="app.js?v=12"></script>
 <script>
 /* PWA：注册 Service Worker + 处理"安装到手机" */
 (function(){
