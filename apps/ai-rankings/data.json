@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-18T21:14:37Z",
-  "asOf": "2026-07-18",
+  "updatedAt": "2026-07-19T21:37:27Z",
+  "asOf": "2026-07-19",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -353,7 +353,7 @@
       "livebench": null,
       "aa": 48.0,
       "ctx": "205K",
-      "price": 0.45
+      "price": 0.52
     },
     {
       "id": "grok-4-3",
@@ -486,19 +486,6 @@
       "price": 11.25
     },
     {
-      "id": "claude-sonnet-4-6",
-      "name": "Claude Sonnet 4.6",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1471,
-      "livebench": null,
-      "aa": null,
-      "ctx": "1M",
-      "price": 6.0
-    },
-    {
       "id": "glm-5-1",
       "name": "GLM 5.1",
       "org": "Zhipu AI",
@@ -510,6 +497,19 @@
       "aa": null,
       "ctx": "203K",
       "price": 2.15
+    },
+    {
+      "id": "claude-sonnet-4-6",
+      "name": "Claude Sonnet 4.6",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1471,
+      "livebench": null,
+      "aa": null,
+      "ctx": "1M",
+      "price": 6.0
     },
     {
       "id": "grok-4-20-multi-agent-0309",
