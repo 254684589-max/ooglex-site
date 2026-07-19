@@ -354,10 +354,63 @@ function stopAudio(){
   setState('load', '已暂停');
   toggleBtn('▶ 播放');
 }
-audio.addEventListener('playing', () => { clearTimeout(watchdog); setState('ok', '♪ 正在收听'); toggleBtn('⏸ 暂停'); if (current) world.ringsData([current]); });
+audio.addEventListener('playing', () => { clearTimeout(watchdog); setState('ok', '♪ 正在收听'); toggleBtn('⏸ 暂停'); if (current) world.ringsData([current]); setPlaybackState('playing'); });
+audio.addEventListener('pause', () => setPlaybackState('paused'));
 audio.addEventListener('waiting', () => setState('load', '缓冲中…'));
 audio.addEventListener('stalled', () => setState('load', '缓冲中…'));
 audio.addEventListener('error', () => hop('该台无法播放'));
+
+/* ---------------- 上一台 / 下一台（屏幕按钮与方向盘 / 蓝牙按键共用） ---------------- */
+function stepPool(){
+  if (activeTab === 'fav' && favs.length > 1) return favs;   // 收藏页里就在收藏间切换
+  if (regionList.length > 1) return regionList;              // 否则在本区 / 搜索结果里切换
+  return null;                                               // 列表太小 → 全球随机
+}
+function stepStation(dir){
+  if (!allStations.length) return;
+  const list = stepPool();
+  let st = null;
+  if (list){
+    const idx = current ? list.findIndex(s => s.url === current.url) : -1;
+    st = idx >= 0 ? list[(idx + dir + list.length) % list.length]
+                  : list[dir > 0 ? 0 : list.length - 1];
+  } else {
+    st = allStations[Math.floor(Math.random() * allStations.length)];
+    if (st && (!current || st.url !== current.url)) setRegion(st.lat, st.lng);
+  }
+  if (!st || (current && st.url === current.url)) return;
+  playAt(st, true);
+}
+
+/* ---------------- 媒体会话：车机蓝牙(AVRCP) / 方向盘 / 耳机线控 ----------------
+   把上一曲 / 下一曲映射为上一台 / 下一台，车机屏幕同时显示台名与地区 */
+function updateMediaMeta(st){
+  if (!('mediaSession' in navigator)) return;
+  try{
+    const artwork = [
+      { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ];
+    if (st.fav && st.fav.startsWith('https://')) artwork.unshift({ src: st.fav, sizes: '96x96' });
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: st.name,
+      artist: [st.country, st.state].filter(Boolean).join(' · ') || '环球电波',
+      album: '环球电波 · 转动地球听世界',
+      artwork,
+    });
+  }catch(e){}
+}
+function setPlaybackState(s){
+  if ('mediaSession' in navigator){ try{ navigator.mediaSession.playbackState = s; }catch(e){} }
+}
+if ('mediaSession' in navigator){
+  const bind = (action, fn) => { try{ navigator.mediaSession.setActionHandler(action, fn); }catch(e){} };
+  bind('play', () => { if (current){ const p = audio.play(); if (p && p.catch) p.catch(() => {}); } });
+  bind('pause', () => stopAudio());
+  bind('stop', () => stopAudio());
+  bind('previoustrack', () => stepStation(-1));
+  bind('nexttrack', () => stepStation(1));
+}
 
 /* ---------------- 面板 ---------------- */
 function showPlayer(st){
@@ -368,6 +421,7 @@ function showPlayer(st){
   if (st.fav) fav.innerHTML = `<img src="${st.fav}" style="width:100%;height:100%;border-radius:12px;object-fit:cover" onerror="this.parentNode.textContent='📻'">`;
   else fav.textContent = '📻';
   setState('load', '连接中…');
+  updateMediaMeta(st);
 }
 function setState(cls, txt){ const e = $('pState'); e.className = 'state ' + cls; e.textContent = txt; }
 function toggleBtn(txt){ $('pToggle').textContent = txt; }
@@ -378,6 +432,8 @@ $('pToggle').onclick = () => {
   else stopAudio();
 };
 $('pVol').oninput = () => { audio.volume = $('pVol').value / 100; };
+$('pPrev').onclick = () => stepStation(-1);
+$('pNext').onclick = () => stepStation(1);
 
 /* ---------------- 收藏夹 + 本区电台列表 ---------------- */
 const FAV_KEY = 'ooglex_radio_favs';
