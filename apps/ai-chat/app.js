@@ -20,9 +20,13 @@ const PROVIDERS = [
   { id: 'shared', name: '站长共享通道（免费 · 限量 · 零配置）', base: '', model: '',
     help: '本站代为转发的免费额度：<b>无需密钥、打开即聊</b>，每人每天限量，用完自动降级。'
       + '密钥由站长持有，你的对话不经过本站服务器存储。' },
-  { id: 'webllm', name: '浏览器本地模型（免密钥 · 实验）', base: '', model: 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC',
+  { id: 'webllm', name: '浏览器本地模型（免密钥 · 实验）', base: '',
+    // 手机显存有限：移动端默认小模型，桌面端默认 1.5B
+    model: /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent)
+      ? 'Qwen2.5-0.5B-Instruct-q4f16_1-MLC' : 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC',
     help: '模型直接在你的设备上运行：<b>无需密钥、聊天内容不出本机、下载后离线可用</b>。首次使用需下载模型文件'
-      + '（1.5B 约 900MB，手机可改填 <code>Qwen2.5-0.5B-Instruct-q4f16_1-MLC</code> 约 300MB），之后走本地缓存。'
+      + '（0.5B 约 300MB / 1.5B 约 900MB），之后走本地缓存。手机建议用 0.5B，'
+      + '电脑可换 <code>Qwen2.5-1.5B-Instruct-q4f16_1-MLC</code> 更聪明。'
       + '需要较新的 Chrome / Edge（WebGPU）。国内网络请在下方把模型源切成镜像。' },
   { id: 'offline', name: '离线小智（无需密钥 · 应急玩具）', base: '', model: '内置规则引擎',
     help: '不联网、不要密钥的迷你应答机，只会算术、查日期、讲笑话等小本事，应急解闷用 😄' },
@@ -364,6 +368,64 @@ function offlineReply(q) {
   return '这个问题超出我这颗离线小脑袋的能力了 😅 我只会算算术（试试「23*45」）、报时间日期、讲笑话。点右上角 ⚙️ 接入真正的大模型，它什么都能聊！';
 }
 
+/* ===================== 站内数据工具（OpenAI function calling） ===================== */
+async function fetchJSON(path) {
+  const r = await fetch(path, { cache: 'no-cache' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+const TOOLS = [
+  {
+    label: '今日要闻',
+    def: { type: 'function', function: {
+      name: 'get_latest_news',
+      description: '获取今日全球要闻（本站每日更新的权威新闻聚合，含市场/科技/世界等分类）。用户询问新闻、时事、行情消息、"今天发生了什么"时调用。',
+      parameters: { type: 'object', properties: {}, required: [] },
+    } },
+    run: async () => {
+      const d = await fetchJSON('../whats-latest/data.json');
+      return JSON.stringify({
+        更新时间: d.asOf || d.updatedAt, 数据来源: d.source,
+        头条: d.highlight ? { 标题: d.highlight.title, 来源: d.highlight.source, 分类: d.highlight.category } : null,
+        分类要闻: (d.categories || []).map(c => ({
+          分类: c.name,
+          条目: (c.items || []).slice(0, 4).map(it => ({ 标题: it.title, 来源: it.source })),
+        })),
+      });
+    },
+  },
+  {
+    label: '市场情绪',
+    def: { type: 'function', function: {
+      name: 'get_market_sentiment',
+      description: '获取当前市场情绪：CNN 恐惧与贪婪指数（0-100，本站每日更新），含与昨收/一周前/一月前/一年前的对比。用户问市场情绪、恐慌贪婪指数、行情冷热时调用。',
+      parameters: { type: 'object', properties: {}, required: [] },
+    } },
+    run: async () => {
+      const d = await fetchJSON('../fear-greed/data.json');
+      const f = r => (r ? { 分数: r.score, 评级: r.ratingZh || r.rating } : null);
+      return JSON.stringify({
+        更新时间: d.asOf || d.updatedAt, 数据来源: d.source,
+        当前: { 分数: d.score, 评级: d.ratingZh || d.rating },
+        对比: { 昨收: f(d.refs && d.refs.close), 一周前: f(d.refs && d.refs.week),
+                一月前: f(d.refs && d.refs.month), 一年前: f(d.refs && d.refs.year) },
+      });
+    },
+  },
+];
+const TOOL_SYS = '\n\n你可以调用工具获取 Ooglex 站内每日更新的实时数据。涉及新闻、市场情绪等话题时优先调用工具拿到真实数据再回答，注明数据更新时间，不要编造数据。';
+async function runTool(tc) {
+  const t = TOOLS.find(x => x.def.function.name === (tc.function && tc.function.name));
+  if (!t) return '{"error":"未知工具"}';
+  try {
+    let args = {};
+    try { args = JSON.parse(tc.function.arguments || '{}'); } catch (e) {}
+    return String(await t.run(args)).slice(0, 6000);
+  } catch (e) {
+    return JSON.stringify({ error: '工具执行失败：' + String((e && e.message) || e) });
+  }
+}
+
 /* ===================== 发送与流式接收 ===================== */
 let busy = false, aborter = null;
 async function send() {
@@ -400,10 +462,8 @@ async function reply(conv) {
 
   const shared = cfg.provider === 'shared';
   if (shared && !(SHARED.enabled && SHARED.base)) { degrade(conv, '共享通道当前未开通'); return; }
-  if (!shared && (!cfg.key || !cfg.base)) {
-    addMsg('ai', '还没配置密钥哦～点右上角 **⚙️ 设置**，选一个国内服务商（推荐智谱 GLM，有免费模型），按提示申请密钥填入即可。也可以选「浏览器本地模型」，免密钥直接聊。');
-    return;
-  }
+  // 没配密钥也不已读不回：走降级链给出应急回答 + 引导，并存入历史
+  if (!shared && (!cfg.key || !cfg.base)) { degrade(conv, '还没配置 AI 服务'); return; }
   const base = shared ? SHARED.base.replace(/\/+$/, '') : cfg.base;
   const model = shared ? SHARED.model : cfg.model;
   const headers = { 'Content-Type': 'application/json' };
@@ -414,43 +474,38 @@ async function reply(conv) {
   const bubble = addMsg('ai', '', true);
   let full = '';
   try {
-    const res = await fetch(base + '/chat/completions', {
-      method: 'POST',
-      signal: aborter.signal,
-      headers,
-      body: JSON.stringify({
-        model, stream: true,
-        messages: [{ role: 'system', content: cfg.sys }, ...conv.msgs.slice(-16)],
-      }),
-    });
-    if (!res.ok) {
-      const t = await res.text();
-      throw new Error(`HTTP ${res.status}：${t.slice(0, 200)}`);
-    }
-    const reader = res.body.getReader();
-    const dec = new TextDecoder();
-    let buf = '';
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += dec.decode(value, { stream: true });
-      const lines = buf.split('\n');
-      buf = lines.pop();
-      for (const line of lines) {
-        const s = line.trim();
-        if (!s.startsWith('data:')) continue;
-        const data = s.slice(5).trim();
-        if (data === '[DONE]') continue;
-        try {
-          const j = JSON.parse(data);
-          const d = j.choices && j.choices[0] && j.choices[0].delta;
-          if (d && d.content) {
-            full += d.content;
-            bubble.innerHTML = md(full);
-            $('chat').scrollTop = $('chat').scrollHeight;
-          }
-        } catch (e) {}
+    const msgs = [{ role: 'system', content: cfg.sys + TOOL_SYS }, ...conv.msgs.slice(-16)];
+    let useTools = true;
+    // 工具循环：模型要求调用工具 → 本地执行 → 结果回传 → 再生成，最多 3 轮
+    for (let round = 0; round < 4; round++) {
+      const res = await fetch(base + '/chat/completions', {
+        method: 'POST',
+        signal: aborter.signal,
+        headers,
+        body: JSON.stringify(Object.assign(
+          { model, stream: true, messages: msgs },
+          useTools ? { tools: TOOLS.map(t => t.def) } : {}
+        )),
+      });
+      if (!res.ok) {
+        const t = await res.text();
+        // 个别服务商不认 tools 字段：去掉工具重试，保证基础聊天不受影响
+        if (useTools && res.status === 400 && round === 0) { useTools = false; round--; continue; }
+        throw new Error(`HTTP ${res.status}：${t.slice(0, 200)}`);
       }
+      const r = await readStream(res, bubble);
+      if (useTools && r.toolCalls.length && round < 3) {
+        msgs.push({ role: 'assistant', content: r.content || null, tool_calls: r.toolCalls });
+        for (const tc of r.toolCalls) {
+          const t = TOOLS.find(x => x.def.function.name === tc.function.name);
+          bubble.innerHTML = md('🔎 正在查询站内数据：**' + (t ? t.label : tc.function.name) + '** …');
+          $('chat').scrollTop = $('chat').scrollHeight;
+          msgs.push({ role: 'tool', tool_call_id: tc.id, content: await runTool(tc) });
+        }
+        continue;
+      }
+      full = r.content;
+      break;
     }
     if (!full) full = '（模型没有返回内容，请检查模型名称是否正确）';
   } catch (err) {
@@ -479,9 +534,50 @@ async function reply(conv) {
   $('sendBtn').textContent = '发送'; $('sendBtn').classList.remove('stop');
 }
 
+/* 解析一次 SSE 流：正文增量实时渲染，tool_calls 分片按 index 拼装 */
+async function readStream(res, bubble) {
+  const reader = res.body.getReader();
+  const dec = new TextDecoder();
+  let buf = '', content = '';
+  const calls = [];
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    const lines = buf.split('\n');
+    buf = lines.pop();
+    for (const line of lines) {
+      const s = line.trim();
+      if (!s.startsWith('data:')) continue;
+      const data = s.slice(5).trim();
+      if (data === '[DONE]') continue;
+      try {
+        const j = JSON.parse(data);
+        const d = j.choices && j.choices[0] && j.choices[0].delta;
+        if (!d) continue;
+        if (d.content) {
+          content += d.content;
+          bubble.innerHTML = md(content);
+          $('chat').scrollTop = $('chat').scrollHeight;
+        }
+        if (d.tool_calls) {
+          for (const tc of d.tool_calls) {
+            const i = tc.index || 0;
+            if (!calls[i]) calls[i] = { id: tc.id || ('call_' + i), type: 'function', function: { name: '', arguments: '' } };
+            if (tc.id) calls[i].id = tc.id;
+            if (tc.function && tc.function.name) calls[i].function.name = tc.function.name;
+            if (tc.function && tc.function.arguments) calls[i].function.arguments += tc.function.arguments;
+          }
+        }
+      } catch (e) {}
+    }
+  }
+  return { content, toolCalls: calls.filter(Boolean) };
+}
+
 /* 三大脑自动降级：共享通道不可用 → 本地模型（已就绪才接手，不擅自下载几百 MB）→ 离线小智 */
 function degrade(conv, reason) {
-  if (navigator.gpu && llm) {
+  if (navigator.gpu && llm && llmModel) {
     addMsg('ai', '⚠️ ' + reason + '，已切换到**浏览器本地模型**继续回答 👇');
     replyWebLLM(conv);
     return;
@@ -508,8 +604,12 @@ async function replyWebLLM(conv) {
   $('sendBtn').textContent = '停止'; $('sendBtn').classList.add('stop');
   const bubble = addMsg('ai', '', true);
   let full = '';
+  // 本地模型模式用配置的模型；从其他模式降级接手时 cfg.model 不是 WebLLM
+  // 模型名，必须用已加载引擎的模型（llmModel），兜底用服务商默认值
+  const wllmDefault = PROVIDERS.find(p => p.id === 'webllm').model;
+  const useModel = (cfg.provider === 'webllm' ? cfg.model : llmModel) || wllmDefault;
   try {
-    const engine = await getEngine(cfg.model, p => {
+    const engine = await getEngine(useModel, p => {
       // 下载/编译进度：直接写在气泡里，完成后被正文覆盖
       const pct = p && p.progress ? Math.round(p.progress * 100) + '%' : '';
       bubble.innerHTML = md('⏳ **正在准备本地模型** ' + pct + '\n\n' + (p && p.text ? '`' + p.text.slice(0, 120) + '`' : '')
@@ -535,8 +635,14 @@ async function replyWebLLM(conv) {
     if (stop.requested) full += (full ? '\n\n' : '') + '（已停止）';
     else if (!full) full = '（模型没有返回内容，请重试）';
   } catch (err) {
+    const emsg = String((err && err.message) || err);
+    // GPU 崩溃/显存不足（常见于手机跑大模型）：引擎已废，重置以便重试时干净重建
+    const gpuDied = /mapAsync|GPUBuffer|device.*lost|out of memory|OOM|Instance dropped/i.test(emsg);
+    if (gpuDied && llm) { try { llm.unload(); } catch (e) {} llm = null; llmModel = ''; refreshStatus(); }
     if (full === '') {
-      full = `❌ 本地模型加载失败：${esc(String(err && err.message || err)).slice(0, 300)}\n\n排查建议：\n1. 国内网络请在 ⚙️ 设置把「模型下载源」切成镜像\n2. 确认浏览器是最新版 Chrome / Edge（需要 WebGPU）\n3. 内存不足可改用小模型 \`Qwen2.5-0.5B-Instruct-q4f16_1-MLC\`\n4. 或选择其他服务商接入大模型`;
+      full = gpuDied
+        ? `❌ 你的设备显存扛不住这个模型（GPU 报错：\`${esc(emsg).slice(0, 120)}\`）\n\n**解决办法**：点 ⚙️ 设置，把模型名称改成小模型：\n\n\`Qwen2.5-0.5B-Instruct-q4f16_1-MLC\`\n\n（约 300MB，手机友好）保存后点下方「重新生成」即可。仍失败可试兼容性更好的 \`Qwen2.5-0.5B-Instruct-q4f32_1-MLC\`，或选择其他服务商。`
+        : `❌ 本地模型出错：${esc(emsg).slice(0, 300)}\n\n排查建议：\n1. 国内网络请在 ⚙️ 设置把「模型下载源」切成镜像\n2. 确认浏览器是最新版 Chrome / Edge（需要 WebGPU）\n3. 内存不足可改用小模型 \`Qwen2.5-0.5B-Instruct-q4f16_1-MLC\`\n4. 或选择其他服务商接入大模型`;
     } else full += '\n\n（生成中断）';
   }
   bubble.classList.remove('cursor');
