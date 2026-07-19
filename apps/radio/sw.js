@@ -4,7 +4,7 @@
      · 安装时只预缓存"外壳"（很小，秒装）；
      · 大文件（地球纹理、globe.gl、stations.json）首次用到时再缓存（离线可用）；
      · 跨域请求（电台音频流、radio-browser API、外站台标）一律直连、绝不拦截/缓存。 */
-const VERSION = 'radio-v6';
+const VERSION = 'radio-v7';
 const SHELL_CACHE = 'radio-shell-' + VERSION;
 const RUNTIME_CACHE = 'radio-runtime-' + VERSION;
 
