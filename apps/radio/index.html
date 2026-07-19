@@ -10,6 +10,9 @@
 <meta name="description" content="转动地球，点亮世界各地的电台，实时收听全球广播。精美 3D 地球界面，自带国内直连优先，纯静态托管。">
 
 <!-- PWA：可安装到手机主屏、独立窗口运行、离线可启动 -->
+<script>/* 以 App 形式打开（安装到主屏 / PWA 启动）时给根元素打标，隐藏网页式元素 */
+if (matchMedia('(display-mode: standalone)').matches || navigator.standalone || /[?&]source=pwa/.test(location.search)) document.documentElement.classList.add('app');</script>
+
 <!-- 关键资源预加载：地球贴图与 JS 并行下载，手机上更快看到地球 -->
 <link rel="preload" href="vendor/earth-blue-marble.jpg" as="image" fetchpriority="high">
 <link rel="preload" href="vendor/earth-topology.jpg" as="image">
@@ -62,6 +65,10 @@
   .brand .sub{ color:var(--dim); font-size:0.8rem; letter-spacing:2px; }
   .home{ color:var(--dim); text-decoration:none; font-size:0.85rem; margin-left:auto; }
   .home:hover{ color:var(--ink); }
+  /* 手机与已安装的 App 模式下去掉「返回主页」，界面更像原生 App */
+  @media (max-width:640px){ .home{ display:none; } }
+  @media (display-mode: standalone), (display-mode: fullscreen){ .home{ display:none; } }
+  html.app .home{ display:none; }
   .search{
     flex-basis:100%; max-width:420px; margin-top:4px; position:relative;
   }
