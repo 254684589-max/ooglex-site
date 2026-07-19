@@ -226,8 +226,17 @@
     <input id="cfgBase" type="text">
     <label>模型名称</label>
     <input id="cfgModel" type="text">
+    <div id="srcRow" style="display:none">
+      <label>模型下载源（国内网络请选镜像）</label>
+      <select id="cfgSrc">
+        <option value="hf">官方 HuggingFace（需海外网络）</option>
+        <option value="mirror">国内镜像 hf-mirror.com</option>
+      </select>
+    </div>
+    <div id="keyRow">
     <label>API 密钥（仅保存在你自己的浏览器里）</label>
     <input id="cfgKey" type="password" placeholder="sk-…">
+    </div>
     <label>AI 人设（系统提示词，可自由修改）</label>
     <textarea id="cfgSys"></textarea>
     <div class="safe">🔒 密钥只存于本机浏览器 localStorage，本站没有服务器，不会也无法上传你的密钥。代码开源可查。</div>
