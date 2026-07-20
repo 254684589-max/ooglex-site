@@ -117,6 +117,14 @@
         return "<div class='big'>" + (top.flag || "🌐") + "<small>#1 " + esc(top.cn || top.name) + "</small></div>" +
           row("综合前 " + (d.count || us.length), "QS/THE/ARWU/USN 平均位次", "dim");
       } },
+    { folder: "major-rankings", emoji: "🚀", name: "全球专业与就业前景榜", tag: "薪资 · 就业率 · 起薪 · AI 时代前景", accent: "#5fd07a",
+      render: function (d) {
+        var ms = d.majors || []; if (!ms.length) return "<div class='loading'>暂无数据</div>";
+        var byMid = ms.slice().sort(function (a, b) { return b.mid - a.mid; })[0];
+        var byFut = ms.slice().sort(function (a, b) { return b.future - a.future; })[0];
+        return row("薪资第一", esc(byMid.cn) + " $" + Math.round(byMid.mid / 1000) + "K") +
+          row("AI 前景第一", esc(byFut.cn), "dim");
+      } },
     { folder: "econ-calendar", emoji: "📅", name: "全球经济日历", tag: "央行决议 · CPI · 非农", accent: "#e0729a",
       render: function (d) {
         var evs = d.events || [], now = Date.now();
@@ -152,7 +160,7 @@
   function boot() {
     var grid = $("grid");
     APPS.forEach(function (app) { grid.appendChild(card(app)); });
-    $("foot").innerHTML = "各应用数据每日自动更新（来源 Yahoo Finance · CoinGecko · OECD · BIS · Forbes · CNN · Google News · World Bank · Forex Factory · QS · THE · ARWU · U.S. News）。仅供参考，不构成建议。";
+    $("foot").innerHTML = "各应用数据每日自动更新（来源 Yahoo Finance · CoinGecko · OECD · BIS · Forbes · CNN · Google News · World Bank · Forex Factory · QS · THE · ARWU · U.S. News · PayScale · NACE · BLS · WEF）。仅供参考，不构成建议。";
   }
   boot();
 })();
