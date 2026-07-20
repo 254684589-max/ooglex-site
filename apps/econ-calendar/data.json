@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-19T21:37:15Z",
-  "asOf": "2026-07-19",
+  "updatedAt": "2026-07-20T19:11:40Z",
+  "asOf": "2026-07-20",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-07-19 ~ 2026-07-24",
   "count": 69,
@@ -76,18 +76,6 @@
       "impact": "low",
       "forecast": "-0.2%",
       "previous": "0.3%",
-      "actual": null
-    },
-    {
-      "ts": "2026-07-20T06:02:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "Foreign Direct Investment ytd/y",
-      "titleEn": "Foreign Direct Investment ytd/y",
-      "impact": "low",
-      "forecast": null,
-      "previous": "-8.6%",
       "actual": null
     },
     {
@@ -170,7 +158,7 @@
       "title": "CPI（消费者物价指数） 季环比",
       "titleEn": "CPI q/q",
       "impact": "high",
-      "forecast": "1.5%",
+      "forecast": "1.4%",
       "previous": "0.9%",
       "actual": null
     },
@@ -182,7 +170,7 @@
       "title": "Claimant Count Change",
       "titleEn": "Claimant Count Change",
       "impact": "high",
-      "forecast": "28.3K",
+      "forecast": "29.4K",
       "previous": "31.2K",
       "actual": null
     },
@@ -206,7 +194,7 @@
       "title": "Public Sector Net Borrowing",
       "titleEn": "Public Sector Net Borrowing",
       "impact": "low",
-      "forecast": "18.2B",
+      "forecast": "17.8B",
       "previous": "23.3B",
       "actual": null
     },
@@ -223,6 +211,18 @@
       "actual": null
     },
     {
+      "ts": "2026-07-21T06:02:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "Foreign Direct Investment ytd/y",
+      "titleEn": "Foreign Direct Investment ytd/y",
+      "impact": "low",
+      "forecast": null,
+      "previous": "-8.6%",
+      "actual": null
+    },
+    {
       "ts": "2026-07-21T09:00:00Z",
       "ccy": "EUR",
       "country": "欧元区",
@@ -230,7 +230,7 @@
       "title": "ZEW Economic Sentiment",
       "titleEn": "ZEW Economic Sentiment",
       "impact": "low",
-      "forecast": "11.5",
+      "forecast": "11.2",
       "previous": "9.5",
       "actual": null
     },
@@ -242,7 +242,7 @@
       "title": "German ZEW Economic Sentiment",
       "titleEn": "German ZEW Economic Sentiment",
       "impact": "low",
-      "forecast": "15.7",
+      "forecast": "15.1",
       "previous": "10.5",
       "actual": null
     },
@@ -302,7 +302,7 @@
       "title": "贸易帐",
       "titleEn": "Trade Balance",
       "impact": "low",
-      "forecast": "-0.54T",
+      "forecast": "-0.56T",
       "previous": "-0.09T",
       "actual": null
     },
@@ -362,7 +362,7 @@
       "title": "PPI（生产者物价指数） 环比",
       "titleEn": "PPI Input m/m",
       "impact": "low",
-      "forecast": "-0.6%",
+      "forecast": "-0.7%",
       "previous": "0.2%",
       "actual": null
     },
@@ -374,7 +374,7 @@
       "title": "PPI（生产者物价指数） 环比",
       "titleEn": "PPI Output m/m",
       "impact": "low",
-      "forecast": "-0.3%",
+      "forecast": "-0.1%",
       "previous": "0.5%",
       "actual": null
     },
@@ -398,7 +398,7 @@
       "title": "房价指数 同比",
       "titleEn": "HPI y/y",
       "impact": "low",
-      "forecast": "3.9%",
+      "forecast": "3.2%",
       "previous": "3.8%",
       "actual": null
     },
@@ -422,7 +422,7 @@
       "title": "就业人数变化",
       "titleEn": "Employment Change",
       "impact": "high",
-      "forecast": "15.2K",
+      "forecast": "16.4K",
       "previous": "40.3K",
       "actual": null
     },
@@ -482,7 +482,7 @@
       "title": "核心零售销售 环比",
       "titleEn": "Core Retail Sales m/m",
       "impact": "low",
-      "forecast": "1.4%",
+      "forecast": "1.3%",
       "previous": "0.1%",
       "actual": null
     },
@@ -602,7 +602,7 @@
       "title": "消费者信心指数",
       "titleEn": "GfK Consumer Confidence",
       "impact": "low",
-      "forecast": "-21",
+      "forecast": "-22",
       "previous": "-23",
       "actual": null
     },
@@ -638,7 +638,7 @@
       "title": "German GfK Consumer Climate",
       "titleEn": "German GfK Consumer Climate",
       "impact": "low",
-      "forecast": "-28.5",
+      "forecast": "-28.7",
       "previous": "-29.2",
       "actual": null
     },
@@ -650,7 +650,7 @@
       "title": "零售销售 环比",
       "titleEn": "Retail Sales m/m",
       "impact": "medium",
-      "forecast": "-0.1%",
+      "forecast": "-0.3%",
       "previous": "1.2%",
       "actual": null
     },
@@ -662,7 +662,7 @@
       "title": "制造业 PMI 初值",
       "titleEn": "French Flash Manufacturing PMI",
       "impact": "medium",
-      "forecast": "51.2",
+      "forecast": "51.0",
       "previous": "50.7",
       "actual": null
     },
@@ -674,7 +674,7 @@
       "title": "服务业 PMI 初值",
       "titleEn": "French Flash Services PMI",
       "impact": "medium",
-      "forecast": "47.7",
+      "forecast": "47.5",
       "previous": "47.4",
       "actual": null
     },
@@ -686,7 +686,7 @@
       "title": "制造业 PMI 初值",
       "titleEn": "German Flash Manufacturing PMI",
       "impact": "medium",
-      "forecast": "50.5",
+      "forecast": "50.4",
       "previous": "50.0",
       "actual": null
     },
@@ -710,7 +710,7 @@
       "title": "制造业 PMI 初值",
       "titleEn": "Flash Manufacturing PMI",
       "impact": "low",
-      "forecast": "51.6",
+      "forecast": "51.5",
       "previous": "51.3",
       "actual": null
     },
@@ -734,7 +734,7 @@
       "title": "制造业 PMI 初值",
       "titleEn": "Flash Manufacturing PMI",
       "impact": "medium",
-      "forecast": "52.1",
+      "forecast": "52.0",
       "previous": "53.1",
       "actual": null
     },
@@ -782,7 +782,7 @@
       "title": "RMPI m/m",
       "titleEn": "RMPI m/m",
       "impact": "low",
-      "forecast": "-2.7%",
+      "forecast": "-1.5%",
       "previous": "0.7%",
       "actual": null
     },
@@ -806,7 +806,7 @@
       "title": "制造业 PMI 初值",
       "titleEn": "Flash Manufacturing PMI",
       "impact": "low",
-      "forecast": "54.5",
+      "forecast": "54.4",
       "previous": "55.7",
       "actual": null
     },
@@ -818,7 +818,7 @@
       "title": "服务业 PMI 初值",
       "titleEn": "Flash Services PMI",
       "impact": "low",
-      "forecast": "51.4",
+      "forecast": "51.3",
       "previous": "51.3",
       "actual": null
     },
@@ -830,7 +830,7 @@
       "title": "新屋销售",
       "titleEn": "New Home Sales",
       "impact": "low",
-      "forecast": "604K",
+      "forecast": "609K",
       "previous": "580K",
       "actual": null
     }
