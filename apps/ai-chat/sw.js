@@ -5,7 +5,7 @@
      · 其余同源静态资源首次用到时再缓存；
      · 跨域请求（大模型 API、广告等）一律直连、绝不拦截/缓存；
      · 只处理 GET，聊天的 POST 请求永远不经过缓存。 */
-const VERSION = 'aichat-v9';
+const VERSION = 'aichat-v10';
 const SHELL_CACHE = 'aichat-shell-' + VERSION;
 const RUNTIME_CACHE = 'aichat-runtime-' + VERSION;
 
@@ -72,7 +72,23 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 其余同源静态资源：stale-while-revalidate
+  // 代码与配置（app.js / sw 之外的脚本 / shared-config.json）：网络优先，
+  // 保证联网时总能拿到最新版，避免手机卡在旧缓存；断网才回退缓存。
+  const netFirst = /\.(js|json|webmanifest)$/.test(url.pathname);
+  if (netFirst) {
+    event.respondWith(
+      fetch(req).then((res) => {
+        if (res && res.ok) {
+          const copy = res.clone();
+          caches.open(RUNTIME_CACHE).then((c) => c.put(req, copy)).catch(() => {});
+        }
+        return res;
+      }).catch(() => caches.match(req, { ignoreSearch: true }))
+    );
+    return;
+  }
+
+  // 其余同源静态资源（图标等）：stale-while-revalidate
   event.respondWith(
     caches.match(req, { ignoreSearch: true }).then((cached) => {
       const network = fetch(req).then((res) => {
