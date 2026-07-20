@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-07-20T12:07:17Z",
+  "updatedAt": "2026-07-20T12:48:57Z",
   "asOf": "2026-07-20",
   "seed": true,
   "count": 209,
-  "note": "上线快照（近似值）：数值取自 QS / THE / ARWU / U.S. News 四大榜单近一期公开位次的整理；首次在 GitHub Actions 抓取成功后即为四榜实时数据。",
+  "note": "年度权威数据整理：综合 QS / THE / ARWU / U.S. News 四大权威世界大学排名近一期公开位次，按各校在各榜的平均位次（ARTU 式聚合）排序。各榜评价口径不同，数据以各榜官方公布为准，仅供参考。",
   "axisStatus": {
     "qs": false,
     "the": false,

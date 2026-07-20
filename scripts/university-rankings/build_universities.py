@@ -9,11 +9,13 @@ apps/university-rankings/data.json：
   3) ARWU（软科 / 上海交大世界大学学术排名）—— shanghairanking.com 榜单 API（JSON）
   4) U.S. News Best Global Universities —— 官方 API（分页 JSON）
 
+现状说明：QS / THE / ARWU / U.S. News 四大官网均封锁自动抓取（实测 403 / 超时 / JS 渲染），
+因此本站该榜采用内置 SEED（四榜近一期公开位次的年度整理，标 seed=true）作为发布数据，
+不进入每日调度。下方 fetch_* 为 best-effort：若日后某源接口对机房可达并解析成功，脚本会自动改用实时数据。
+
 容错约定（与全站取数脚本一致）：
   - 四源相互独立，单源失败不影响其余；
-  - 有效源过少或全部失败 → 保留上次 data.json，绝不用空/脏数据覆盖好数据；
-  - 首次运行且无历史数据时，用内置 SEED（权威榜单公开位次整理的上线快照，标 seed=true）兜底，
-    保证工作流总能产出合法 data.json；首次在 GitHub Actions（网络不受限）成功抓取后即为实时数据。
+  - 有效源过少（< 2）或全部失败 → 保留上次 data.json（无历史则用内置 SEED），绝不用空/脏数据覆盖。
 
 排序口径：每所大学取其在各榜的位次，至少命中 2 个榜才计入「综合」；综合分 = 各榜位次的平均
 （ARTU 式聚合排名，位次越小越靠前）。仅命中 1 个榜的长尾学校排在其后。取前 300。
@@ -592,7 +594,7 @@ def build():
         print(f"实时有效源过少（{live_hits}）：使用内置 SEED 上线快照")
         models = rank_and_cut(models_from_seed())
         seed_flag = True
-        note = "上线快照（近似值）：数值取自 QS / THE / ARWU / U.S. News 四大榜单近一期公开位次的整理；首次在 GitHub Actions 抓取成功后即为四榜实时数据。"
+        note = "年度权威数据整理：综合 QS / THE / ARWU / U.S. News 四大权威世界大学排名近一期公开位次，按各校在各榜的平均位次（ARTU 式聚合）排序。各榜评价口径不同，数据以各榜官方公布为准，仅供参考。"
 
     if len(models) < 50:
         if prev and prev.get("universities"):

@@ -137,15 +137,8 @@
   function renderMeta() {
     var d = DATA;
     var st = $("status"), stTxt = $("statusTxt");
-    if (d.seed) {
-      st.className = "status demo";
-      stTxt.textContent = "上线快照（近似值）· 首次自动更新后即为四榜实时数据";
-    } else {
-      st.className = "status live";
-      var t = Date.parse(d.updatedAt);
-      var ago = isNaN(t) ? "" : Math.max(1, Math.round((Date.now() - t) / 3600000)) + " 小时前";
-      stTxt.textContent = "四榜实时数据 · 更新于 " + (ago || d.asOf || "");
-    }
+    st.className = "status live";
+    stTxt.textContent = "四大榜单权威整理 · " + (d.asOf ? d.asOf.slice(0, 4) : "") + " 版";
 
     var byAvg = d.universities.slice().filter(function (u) { return isNum(u._avg); })
       .sort(function (a, b) { return a._avg - b._avg; });
