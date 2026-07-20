@@ -1,10 +1,10 @@
 name: University Rankings
 
-# 每日刷新「全球大学排名 300 强」：跑取数脚本 → 生成 apps/university-rankings/data.json → 提交回仓库。
-# 数据源 QS / THE / ARWU（软科） / U.S. News 四大公开榜单，均免密钥。
-# 有效源过少时脚本会保留上次 data.json（首次运行则用内置 SEED 上线快照），绝不用空/脏数据覆盖。
+# 「全球大学排名 300 强」取数脚本 → 生成 apps/university-rankings/data.json → 提交回仓库。
+# 说明：QS / THE / ARWU / U.S. News 四大排名官网均封锁自动抓取（实测 403 / 超时 / JS 渲染），
+# 因此本站该榜采用「年度权威数据整理」（四榜近一期公开位次的整理），不进入每日调度。
+# 本工作流仅保留手动触发：若日后官网接口对机房可达，脚本会自动改用实时数据；否则保留整理数据不覆盖。
 on:
-  # 定点 cron 会被 GitHub 推迟数小时，改由 scheduler.yml 每日在 21:00 UTC 窗口开启后统一触发。
   workflow_dispatch:
 
 permissions:
