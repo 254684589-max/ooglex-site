@@ -1,6 +1,6 @@
 {
-  "enabled": false,
-  "base": "",
+  "enabled": true,
+  "base": "https://ooglex-ai-proxy.zlq6600e.workers.dev/v1",
   "model": "glm-4-flash",
   "_说明": "部署 workers/ai-proxy 后把 enabled 改为 true、base 填 Worker 地址（含 /v1），访客即可零配置开聊"
 }
