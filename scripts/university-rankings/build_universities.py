@@ -127,6 +127,115 @@ COUNTRY = {
     "Iran": ("伊朗", "🇮🇷"), "Indonesia": ("印度尼西亚", "🇮🇩"),
 }
 
+# 规范英文名 → 官网域名（用于自托管 logo：fetch_logos.py 据此抓 favicon 存 logos/<slug>.png）
+UNIV_DOMAIN = {
+    "Massachusetts Institute of Technology": "mit.edu", "University of Oxford": "ox.ac.uk",
+    "Stanford University": "stanford.edu", "University of Cambridge": "cam.ac.uk",
+    "Harvard University": "harvard.edu", "California Institute of Technology": "caltech.edu",
+    "Imperial College London": "imperial.ac.uk", "ETH Zurich": "ethz.ch",
+    "University College London": "ucl.ac.uk", "Princeton University": "princeton.edu",
+    "University of California, Berkeley": "berkeley.edu", "Yale University": "yale.edu",
+    "University of Chicago": "uchicago.edu", "University of Pennsylvania": "upenn.edu",
+    "National University of Singapore": "nus.edu.sg", "Cornell University": "cornell.edu",
+    "Columbia University": "columbia.edu", "Johns Hopkins University": "jhu.edu",
+    "University of California, Los Angeles": "ucla.edu", "University of Toronto": "utoronto.ca",
+    "Tsinghua University": "tsinghua.edu.cn", "Peking University": "pku.edu.cn",
+    "University of Michigan": "umich.edu", "Nanyang Technological University": "ntu.edu.sg",
+    "University of Melbourne": "unimelb.edu.au", "EPFL": "epfl.ch", "University of Tokyo": "u-tokyo.ac.jp",
+    "University of Hong Kong": "hku.hk", "New York University": "nyu.edu",
+    "Northwestern University": "northwestern.edu", "University of Edinburgh": "ed.ac.uk",
+    "King's College London": "kcl.ac.uk", "Duke University": "duke.edu",
+    "University of California, San Diego": "ucsd.edu", "Carnegie Mellon University": "cmu.edu",
+    "Fudan University": "fudan.edu.cn", "Shanghai Jiao Tong University": "sjtu.edu.cn",
+    "Zhejiang University": "zju.edu.cn", "Australian National University": "anu.edu.au",
+    "University of British Columbia": "ubc.ca", "McGill University": "mcgill.ca",
+    "Kyoto University": "kyoto-u.ac.jp", "Seoul National University": "snu.ac.kr",
+    "Technical University of Munich": "tum.de", "University of Manchester": "manchester.ac.uk",
+    "PSL University": "psl.eu", "University of Washington": "washington.edu",
+    "Chinese University of Hong Kong": "cuhk.edu.hk", "Hong Kong University of Science and Technology": "hkust.edu.hk",
+    "University of Sydney": "sydney.edu.au", "University of New South Wales": "unsw.edu.au",
+    "Monash University": "monash.edu", "University of Queensland": "uq.edu.au",
+    "University of Amsterdam": "uva.nl", "Delft University of Technology": "tudelft.nl",
+    "Ludwig Maximilian University of Munich": "lmu.de", "Heidelberg University": "uni-heidelberg.de",
+    "KU Leuven": "kuleuven.be", "University of Copenhagen": "ku.dk", "Karolinska Institute": "ki.se",
+    "University of Wisconsin-Madison": "wisc.edu", "University of Texas at Austin": "utexas.edu",
+    "Georgia Institute of Technology": "gatech.edu", "University of Illinois Urbana-Champaign": "illinois.edu",
+    "Brown University": "brown.edu", "University of Bristol": "bristol.ac.uk",
+    "École Polytechnique": "polytechnique.edu", "Sorbonne University": "sorbonne-universite.fr",
+    "Utrecht University": "uu.nl", "Lund University": "lu.se", "University of Zurich": "uzh.ch",
+    "University of Warwick": "warwick.ac.uk", "London School of Economics and Political Science": "lse.ac.uk",
+    "University of Glasgow": "gla.ac.uk", "Michigan State University": "msu.edu",
+    "University of Southern California": "usc.edu", "University of North Carolina at Chapel Hill": "unc.edu",
+    "University of California, Davis": "ucdavis.edu", "Purdue University": "purdue.edu",
+    "University of Minnesota": "umn.edu", "Nanjing University": "nju.edu.cn",
+    "University of Science and Technology of China": "ustc.edu.cn", "Wuhan University": "whu.edu.cn",
+    "KAIST": "kaist.ac.kr", "Yonsei University": "yonsei.ac.kr", "Korea University": "korea.ac.kr",
+    "Osaka University": "osaka-u.ac.jp", "Tohoku University": "tohoku.ac.jp",
+    "Tokyo Institute of Technology": "titech.ac.jp", "National Taiwan University": "ntu.edu.tw",
+    "University of Malaya": "um.edu.my", "Trinity College Dublin": "tcd.ie",
+    "University of Auckland": "auckland.ac.nz", "Ghent University": "ugent.be",
+    "University of Helsinki": "helsinki.fi", "Uppsala University": "uu.se",
+    "KTH Royal Institute of Technology": "kth.se", "Leiden University": "universiteitleiden.nl",
+    "Erasmus University Rotterdam": "eur.nl", "University of Geneva": "unige.ch",
+    "Aarhus University": "au.dk", "University of Vienna": "univie.ac.at",
+    "Humboldt University of Berlin": "hu-berlin.de", "RWTH Aachen University": "rwth-aachen.de",
+    "University of Freiburg": "uni-freiburg.de", "University of Tübingen": "uni-tuebingen.de",
+    "University of Bonn": "uni-bonn.de", "Charité - Berlin": "charite.de",
+    "University of Barcelona": "ub.edu", "Autonomous University of Barcelona": "uab.cat",
+    "Sapienza University of Rome": "uniroma1.it", "University of Bologna": "unibo.it",
+    "Politecnico di Milano": "polimi.it", "University of Padua": "unipd.it",
+    "Pohang University of Science and Technology": "postech.ac.kr", "Sungkyunkwan University": "skku.edu",
+    "Indian Institute of Science": "iisc.ac.in", "Indian Institute of Technology Bombay": "iitb.ac.in",
+    "Indian Institute of Technology Delhi": "iitd.ac.in", "King Abdulaziz University": "kau.edu.sa",
+    "University of Sao Paulo": "usp.br", "Boston University": "bu.edu",
+    "Ohio State University": "osu.edu", "University of Maryland, College Park": "umd.edu",
+    "Pennsylvania State University": "psu.edu", "University of Pittsburgh": "pitt.edu",
+    "University of California, Irvine": "uci.edu", "University of California, Santa Barbara": "ucsb.edu",
+    "Rice University": "rice.edu", "Emory University": "emory.edu", "Vanderbilt University": "vanderbilt.edu",
+    "University of Notre Dame": "nd.edu", "Washington University in St. Louis": "wustl.edu",
+    "Rutgers University": "rutgers.edu", "University of Colorado Boulder": "colorado.edu",
+    "Arizona State University": "asu.edu", "University of Florida": "ufl.edu",
+    "Texas A&M University": "tamu.edu", "University of Virginia": "virginia.edu",
+    "Dartmouth College": "dartmouth.edu", "University of Sheffield": "sheffield.ac.uk",
+    "University of Nottingham": "nottingham.ac.uk", "University of Birmingham": "birmingham.ac.uk",
+    "University of Leeds": "leeds.ac.uk", "University of Southampton": "southampton.ac.uk",
+    "Durham University": "durham.ac.uk", "University of St Andrews": "st-andrews.ac.uk",
+    "Queen Mary University of London": "qmul.ac.uk", "University of York": "york.ac.uk",
+    "Lancaster University": "lancaster.ac.uk", "Cardiff University": "cardiff.ac.uk",
+    "University of Liverpool": "liverpool.ac.uk", "University of Aberdeen": "abdn.ac.uk",
+    "Newcastle University": "ncl.ac.uk", "University of Exeter": "exeter.ac.uk",
+    "University of Bath": "bath.ac.uk", "Sun Yat-sen University": "sysu.edu.cn",
+    "Huazhong University of Science and Technology": "hust.edu.cn", "Harbin Institute of Technology": "hit.edu.cn",
+    "Xi'an Jiaotong University": "xjtu.edu.cn", "Tongji University": "tongji.edu.cn",
+    "Beihang University": "buaa.edu.cn", "Wuhan University of Technology": "whut.edu.cn",
+    "Southern University of Science and Technology": "sustech.edu.cn", "Beijing Normal University": "bnu.edu.cn",
+    "Nankai University": "nankai.edu.cn", "Shandong University": "sdu.edu.cn",
+    "Sichuan University": "scu.edu.cn", "Central South University": "csu.edu.cn",
+    "City University of Hong Kong": "cityu.edu.hk", "Hong Kong Polytechnic University": "polyu.edu.hk",
+    "Nagoya University": "nagoya-u.ac.jp", "Kyushu University": "kyushu-u.ac.jp",
+    "Hokkaido University": "hokudai.ac.jp", "University of Basel": "unibas.ch",
+    "University of Bern": "unibe.ch", "Wageningen University & Research": "wur.nl",
+    "University of Groningen": "rug.nl", "Radboud University": "ru.nl",
+    "Eindhoven University of Technology": "tue.nl", "University of Oslo": "uio.no",
+    "University of Gothenburg": "gu.se", "Stockholm University": "su.se", "Aalto University": "aalto.fi",
+    "Technical University of Denmark": "dtu.dk", "University of Cape Town": "uct.ac.za",
+    "University of Buenos Aires": "uba.ar", "National Autonomous University of Mexico": "unam.mx",
+    "Lomonosov Moscow State University": "msu.ru", "Tel Aviv University": "tau.ac.il",
+    "Hebrew University of Jerusalem": "huji.ac.il", "Technion - Israel Institute of Technology": "technion.ac.il",
+    "Chalmers University of Technology": "chalmers.se", "Norwegian University of Science and Technology": "ntnu.edu",
+    "University of Adelaide": "adelaide.edu.au", "University of Western Australia": "uwa.edu.au",
+    "University of Technology Sydney": "uts.edu.au", "Macquarie University": "mq.edu.au",
+    "University of Waterloo": "uwaterloo.ca", "University of Alberta": "ualberta.ca",
+    "McMaster University": "mcmaster.ca", "Université de Montréal": "umontreal.ca",
+    "Western University": "uwo.ca", "University of Ottawa": "uottawa.ca", "University of Calgary": "ucalgary.ca",
+    "Aristotle University of Thessaloniki": "auth.gr", "Charles University": "cuni.cz",
+    "University of Warsaw": "uw.edu.pl", "University of Lisbon": "ulisboa.pt",
+}
+
+
+def logo_slug(domain):
+    return re.sub(r"[^a-z0-9]+", "-", str(domain).lower()).strip("-")
+
 # ---------------------------------------------------------------- 上线种子（权威榜单公开位次整理）
 # 字段：规范英文名, 中文名, 国家, QS, THE, ARWU, USNews（位次，未上榜/不确定填 None）。
 # 说明：这是「上线快照（近似值）」，用于首次自动更新前展示；数值取自四大榜单近一期公开位次的整理，
@@ -517,8 +626,10 @@ def merge_live(qs, the, arwu, usn):
         cn = seed[1] if seed else ""
         country = seed[2] if seed else any_part["country"]
         cn_name, flag = COUNTRY.get(country, (cn or country, "🌐"))
+        dom = UNIV_DOMAIN.get(name)
         models.append({
             "name": name, "cn": cn or cn_name, "country": country, "flag": flag,
+            "slug": logo_slug(dom) if dom else None,
             "qs": parts[0]["rank"] if parts[0] else None,
             "the": parts[1]["rank"] if parts[1] else None,
             "arwu": parts[2]["rank"] if parts[2] else None,
@@ -533,7 +644,9 @@ def models_from_seed():
         if not name or country not in COUNTRY:
             continue
         cn_name, flag = COUNTRY.get(country, (cn, "🌐"))
+        dom = UNIV_DOMAIN.get(name)
         out.append({"name": name, "cn": cn, "country": country, "flag": flag,
+                    "slug": logo_slug(dom) if dom else None,
                     "qs": qs, "the": the, "arwu": arwu, "usn": usn})
     return out
 

@@ -84,6 +84,11 @@
     if (!us.length) { list.innerHTML = "<div class='empty'>没有匹配的学校</div>"; return; }
     var html = us.map(function (u, i) {
       var ini = esc((u.cn || u.name || "?").slice(0, 1));
+      var logo = u.slug
+        ? "<img src='logos/" + esc(u.slug) + ".png' alt='' loading='lazy' " +
+          "onerror=\"this.style.display='none';this.nextElementSibling.style.display='flex'\">" +
+          "<span class='ini' style='display:none'>" + ini + "</span>"
+        : "<span class='ini'>" + ini + "</span>";
       var bars = AXES.map(function (a) {
         var has = isNum(u[a.key]);
         var w = has ? Math.max(5, (1 - Math.min(u[a.key], AXMAX) / AXMAX) * 100) : 0;
@@ -94,7 +99,7 @@
       var sc = mainScore(u);
       return "<div class='rowcard' style='animation-delay:" + Math.min(i * 18, 360) + "ms'>" +
         "<div class='rk" + (i < 3 ? " top" : "") + "'>" + (i + 1) + "</div>" +
-        "<div class='logo'>" + ini + "</div>" +
+        "<div class='logo'>" + logo + "</div>" +
         "<div class='info'><div class='nm'>" + esc(u.cn || u.name) + "</div>" +
           "<div class='meta'>" + (u.flag || "🌐") + " " + esc(cc(u.country)) +
           (u.cn && u.name ? " · " + esc(u.name) : "") + "</div></div>" +
