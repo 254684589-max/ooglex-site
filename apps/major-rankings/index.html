@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全球专业与就业前景榜 · 薪资 / 就业率 / 起薪 / AI 时代前景 Top 100</title>
+<meta name="description" content="全球专业与就业前景榜：一份权威数据支撑四张榜单——专业薪资 Top 100、就业率 Top 100、毕业起薪 Top 100，以及 AI 时代未来 10 年最有前景专业排名。数据整理自 PayScale、NACE、美国 BLS、WEF 未来就业报告等权威来源，可按学科大类筛选、中英文搜索。">
+<link rel="canonical" href="https://www.ooglex.com/apps/major-rankings/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="全球专业与就业前景榜 · 薪资 / 就业 / 起薪 / AI 前景">
+<meta property="og:description" content="专业薪资、就业率、毕业起薪与 AI 时代未来 10 年最有前景专业四榜合一，权威数据整理。">
+<meta property="og:url" content="https://www.ooglex.com/apps/major-rankings/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#0a0c12; --card:#141823; --line:rgba(255,255,255,0.09);
+    --text:#eef1f7; --dim:#9099ad; --accent:#5fd07a; --accent2:#6c8cff;
+    --track:rgba(255,255,255,0.05);
+    --c-start:#f3c969; --c-mid:#f3776c; --c-emp:#5fd07a; --c-future:#6c8cff;
+  }
+  body {
+    min-height:100vh; color:var(--text);
+    background:
+      radial-gradient(900px 460px at 12% -8%, rgba(95,208,122,.14), transparent 60%),
+      radial-gradient(820px 440px at 90% 0%, rgba(108,140,255,.12), transparent 60%),
+      radial-gradient(900px 560px at 50% 122%, rgba(243,201,105,.10), transparent 60%),
+      var(--bg);
+    background-attachment:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    line-height:1.55; overflow-x:hidden;
+  }
+  .page { max-width:1000px; margin:0 auto; padding:16px 15px 72px; }
+
+  header.top { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+  header.top a.back { color:#8aa6ff; text-decoration:none; font-size:0.92rem; transition:opacity .2s; }
+  header.top a.back:hover { opacity:.75; }
+
+  .title { text-align:center; margin:16px 0 18px; }
+  .title h1 {
+    font-size:2rem; font-weight:800; letter-spacing:.5px;
+    background:linear-gradient(92deg,#5fd07a,#f3c969 45%,#6c8cff);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .title p { color:var(--dim); margin-top:7px; font-size:0.9rem; }
+  .statusrow { display:flex; justify-content:center; margin-top:11px; }
+  .status {
+    display:inline-flex; align-items:center; gap:7px; font-size:0.77rem;
+    padding:4px 13px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,0.03);
+    color:#8fd0a6;
+  }
+  .status .sdot { width:8px; height:8px; border-radius:50%; flex:none; background:#5fd07a; animation:pulse 1.9s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(95,208,122,.55)} 70%{box-shadow:0 0 0 7px rgba(95,208,122,0)} 100%{box-shadow:0 0 0 0 rgba(95,208,122,0)} }
+
+  .summary { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:14px 0 12px; }
+  .summary span {
+    font-size:0.8rem; padding:5px 13px; border-radius:999px;
+    background:var(--card); border:1px solid var(--line); white-space:nowrap; color:var(--dim);
+  }
+  .summary b { color:var(--text); }
+
+  .controls { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+  .chips { display:flex; flex-wrap:wrap; gap:7px; justify-content:center; }
+  .chip {
+    display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none;
+    padding:6px 13px; border-radius:999px; font-size:0.84rem; color:var(--dim);
+    background:var(--card); border:1px solid var(--line); transition:all .16s;
+  }
+  .chip:hover { color:var(--text); border-color:rgba(255,255,255,.22); }
+  .chip.on { color:#fff; border-color:transparent; background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 8px 18px -8px rgba(95,208,122,.7); }
+
+  .chips2 { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
+  .chip2 {
+    cursor:pointer; user-select:none; padding:4px 11px; border-radius:999px; font-size:0.78rem;
+    color:var(--dim); background:rgba(255,255,255,0.03); border:1px solid var(--line); transition:all .16s;
+  }
+  .chip2:hover { color:var(--text); border-color:rgba(255,255,255,.22); }
+  .chip2.on { color:#fff; border-color:transparent; background:rgba(95,208,122,.30); }
+
+  .toolbar { display:flex; gap:9px; align-items:center; flex-wrap:wrap; justify-content:center; }
+  .search { position:relative; flex:1; min-width:190px; max-width:340px; }
+  .search input {
+    width:100%; padding:9px 14px 9px 34px; border-radius:11px; font-family:inherit; font-size:0.9rem;
+    color:var(--text); background:var(--card); border:1px solid var(--line); outline:none; transition:border-color .16s;
+  }
+  .search input:focus { border-color:var(--accent); }
+  .search::before { content:"🔍"; position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:0.82rem; opacity:.6; }
+
+  .list { display:flex; flex-direction:column; gap:7px; }
+  .rowcard {
+    position:relative; display:grid; align-items:center; gap:12px;
+    grid-template-columns:34px 42px minmax(0,1fr) 196px 104px; padding:12px 16px;
+    border-radius:14px; overflow:hidden;
+    background:linear-gradient(180deg, rgba(22,26,38,.94), rgba(16,19,28,.94));
+    border:1px solid var(--line); box-shadow:0 16px 40px -34px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.04);
+    animation:rowIn .4s cubic-bezier(.22,.61,.36,1) both;
+  }
+  @keyframes rowIn { from{opacity:0; transform:translateY(7px)} to{opacity:1; transform:none} }
+  .rk { font-size:0.95rem; font-weight:800; color:var(--dim); text-align:center; font-variant-numeric:tabular-nums; }
+  .rk.top { color:#f3c969; }
+  .logo {
+    width:42px; height:42px; border-radius:11px; display:flex; align-items:center; justify-content:center;
+    border:1px solid var(--line); font-size:1.3rem;
+  }
+  .info { min-width:0; }
+  .nm { font-weight:700; font-size:0.97rem; }
+  .meta { color:var(--dim); font-size:0.72rem; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tags { font-size:0.68rem; margin-top:3px; color:var(--dim); display:flex; flex-wrap:wrap; align-items:center; gap:2px; }
+  .tags .gw { color:#8fd0a6; } .tags .gw.dn { color:#f0857d; }
+  .ait { padding:0 6px; border-radius:999px; border:1px solid currentColor; font-weight:600; }
+  .ait.boost { color:#5fd07a; } .ait.risk { color:#f0857d; } .ait.neu { color:#9099ad; }
+
+  .bars { display:grid; grid-template-columns:1fr 1fr; gap:4px 12px; }
+  .bar { display:grid; grid-template-columns:26px 1fr 40px; align-items:center; gap:6px; font-size:0.64rem; color:var(--dim); }
+  .bar.act { color:var(--text); }
+  .bar .tk { height:5px; border-radius:99px; background:var(--track); overflow:hidden; }
+  .bar .tk i { display:block; height:100%; border-radius:99px; }
+  .bar.act .tk { box-shadow:0 0 0 1px rgba(255,255,255,.15); }
+  .bar .v { text-align:right; font-variant-numeric:tabular-nums; color:var(--text); }
+  .bar.na .v { color:var(--dim); }
+
+  .score { text-align:right; }
+  .score .big { font-size:1.2rem; font-weight:800; font-variant-numeric:tabular-nums; }
+  .score .lab { font-size:0.64rem; color:var(--dim); margin-top:1px; }
+
+  .empty { text-align:center; color:var(--dim); padding:40px 0; }
+
+  .srcs { margin-top:30px; }
+  .srcs h2 { font-size:1.02rem; margin-bottom:10px; color:var(--text); }
+  .srcgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:9px; }
+  .srccard {
+    display:block; text-decoration:none; color:var(--text);
+    background:var(--card); border:1px solid var(--line); border-radius:13px; padding:12px 15px;
+    transition:transform .16s, border-color .16s;
+  }
+  .srccard:hover { transform:translateY(-2px); border-color:rgba(95,208,122,.5); }
+  .srccard b { font-size:0.9rem; }
+  .srccard span { display:block; color:var(--dim); font-size:0.77rem; margin-top:3px; }
+  .foot { margin-top:22px; text-align:center; color:var(--dim); font-size:0.75rem; line-height:1.8; }
+
+  @media (max-width:680px) {
+    .rowcard { grid-template-columns:28px 38px minmax(0,1fr) 96px; padding:11px 12px; }
+    .bars { display:none; }
+    .title h1 { font-size:1.5rem; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header class="top">
+      <a class="back" href="../../">← 返回 Ooglex</a>
+      <a class="back" href="../university-rankings/">🎓 全球大学排名 300 强 →</a>
+    </header>
+
+    <div class="title">
+      <h1>全球专业与就业前景榜</h1>
+      <p>专业薪资 · 就业率 · 毕业起薪 · AI 时代未来 10 年最有前景专业 —— 四榜合一，权威数据整理</p>
+      <div class="statusrow"><span class="status" id="status"><span class="sdot"></span><span id="statusTxt">加载中…</span></span></div>
+    </div>
+
+    <div class="summary" id="summary"></div>
+
+    <div class="controls">
+      <div class="chips" id="tabs"></div>
+      <div class="chips2" id="cats"></div>
+      <div class="toolbar">
+        <div class="search"><input id="q" type="search" placeholder="搜索专业 / 学科（中英皆可）…"></div>
+      </div>
+    </div>
+
+    <div class="list" id="list"><div class="empty">加载中…</div></div>
+
+    <div class="srcs">
+      <h2>数据来源与延伸阅读</h2>
+      <div class="srcgrid" id="srcgrid"></div>
+    </div>
+
+    <p class="foot" id="foot">
+      本榜为<b>年度权威数据整理</b>（非每日实时）：薪资取自 PayScale 薪资报告与 NACE 起薪调查，就业率综合各国毕业生去向调查，<br>
+      未来 10 年就业增长取自美国 BLS 职业展望，AI 时代前景参考 WEF《未来就业报告 2025》；<br>
+      「AI 前景分」= 40%×十年增长 + 35%×AI 需求放大度 + 25%×(100−AI 替代度)。薪资以美元/年、美国市场为基准，仅供参考，不构成升学或就业建议。
+    </p>
+  </div>
+  <script src="app.js?v=1"></script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+
+<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于全球专业与就业前景榜</h2><p style="margin:0 0 8px;opacity:.85">本页用一份专业数据集支撑四张榜单：<b>专业薪资 Top 100</b>（职业中期年薪）、<b>毕业起薪 Top 100</b>（应届起薪）、<b>就业率 Top 100</b>（毕业生就业率），以及 <b>AI 时代未来 10 年最有前景专业排名</b>。薪资来自 PayScale 薪资报告与 NACE 起薪调查，就业率综合美国 NACE First-Destination、英国 HESA Graduate Outcomes 与 QS 毕业生就业力等各国毕业生去向调查，未来十年就业增长取自美国劳工统计局（BLS）职业展望，AI 时代前景参考世界经济论坛《未来就业报告 2025》。</p><p style="margin:0;opacity:.85">「AI 前景分」由三项加权合成：40% 看未来十年岗位增长、35% 看 AI 浪潮对该专业需求的放大度、25% 看其抗 AI 替代能力，因此人工智能、数据科学、网络安全、机器人、生物技术、可再生能源等既乘 AI 而上、又高增长的专业排名靠前。可按学科大类筛选、中英文搜索。数据为年度整理值、以美国市场为基准，仅供参考，不构成升学或就业建议。</p></section>
+</body>
+</html>
