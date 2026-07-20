@@ -110,6 +110,13 @@
         return row("综合第一", esc(top.name) + (top.flag ? " " + top.flag : "")) +
           row("开源第一", open ? esc(open.name) + (open.flag ? " " + open.flag : "") : "—", "dim");
       } },
+    { folder: "university-rankings", emoji: "🎓", name: "全球大学排名 300 强", tag: "QS · THE · ARWU · U.S. News 四榜合一", accent: "#8aa6ff",
+      render: function (d) {
+        var us = d.universities || []; if (!us.length) return "<div class='loading'>暂无数据</div>";
+        var top = us[0];
+        return "<div class='big'>" + (top.flag || "🌐") + "<small>#1 " + esc(top.cn || top.name) + "</small></div>" +
+          row("综合前 " + (d.count || us.length), "QS/THE/ARWU/USN 平均位次", "dim");
+      } },
     { folder: "econ-calendar", emoji: "📅", name: "全球经济日历", tag: "央行决议 · CPI · 非农", accent: "#e0729a",
       render: function (d) {
         var evs = d.events || [], now = Date.now();
@@ -145,7 +152,7 @@
   function boot() {
     var grid = $("grid");
     APPS.forEach(function (app) { grid.appendChild(card(app)); });
-    $("foot").innerHTML = "各应用数据每日自动更新（来源 Yahoo Finance · CoinGecko · OECD · BIS · Forbes · CNN · Google News · World Bank · Forex Factory）。仅供参考，不构成建议。";
+    $("foot").innerHTML = "各应用数据每日自动更新（来源 Yahoo Finance · CoinGecko · OECD · BIS · Forbes · CNN · Google News · World Bank · Forex Factory · QS · THE · ARWU · U.S. News）。仅供参考，不构成建议。";
   }
   boot();
 })();

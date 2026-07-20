@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全球大学排名 300 强 · QS/THE/ARWU/U.S. News 四榜合一</title>
+<meta name="description" content="全球大学排名 300 强：QS 世界大学排名、THE 泰晤士高等教育、ARWU 软科世界大学学术排名、U.S. News 全球最佳大学四大权威榜单合一，按各校在各榜的平均位次综合排序，可按国家/地区筛选、中英文搜索，每日自动更新。">
+<link rel="canonical" href="https://www.ooglex.com/apps/university-rankings/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="全球大学排名 300 强 · 四大权威榜单合一">
+<meta property="og:description" content="QS · THE 泰晤士 · ARWU 软科 · U.S. News 四榜合一，按平均位次综合排序，每日自动更新。">
+<meta property="og:url" content="https://www.ooglex.com/apps/university-rankings/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#0a0c12; --card:#141823; --line:rgba(255,255,255,0.09);
+    --text:#eef1f7; --dim:#9099ad; --accent:#6c8cff; --accent2:#c86cff;
+    --track:rgba(255,255,255,0.05);
+    --qs:#8aa6ff; --the:#f3776c; --arwu:#5fd07a; --usn:#f3c969;
+  }
+  body {
+    min-height:100vh; color:var(--text);
+    background:
+      radial-gradient(900px 460px at 12% -8%, rgba(138,166,255,.14), transparent 60%),
+      radial-gradient(820px 440px at 90% 0%, rgba(200,108,255,.12), transparent 60%),
+      radial-gradient(900px 560px at 50% 122%, rgba(95,208,122,.10), transparent 60%),
+      var(--bg);
+    background-attachment:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    line-height:1.55; overflow-x:hidden;
+  }
+  .page { max-width:1000px; margin:0 auto; padding:16px 15px 72px; }
+
+  header.top { display:flex; align-items:center; }
+  header.top a.back { color:#8aa6ff; text-decoration:none; font-size:0.92rem; transition:opacity .2s; }
+  header.top a.back:hover { opacity:.75; }
+
+  .title { text-align:center; margin:16px 0 18px; }
+  .title h1 {
+    font-size:2rem; font-weight:800; letter-spacing:.5px;
+    background:linear-gradient(92deg,#8aa6ff,#f3c969 45%,#c86cff);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .title p { color:var(--dim); margin-top:7px; font-size:0.9rem; }
+  .statusrow { display:flex; justify-content:center; margin-top:11px; }
+  .status {
+    display:inline-flex; align-items:center; gap:7px; font-size:0.77rem;
+    padding:4px 13px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,0.03);
+  }
+  .status .sdot { width:8px; height:8px; border-radius:50%; flex:none; }
+  .status.live { color:#74e9c4; } .status.live .sdot { background:#2ed1b0; animation:pulse 1.9s infinite; }
+  .status.demo { color:#f4c66e; } .status.demo .sdot { background:#ffb13d; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(46,209,176,.55)} 70%{box-shadow:0 0 0 7px rgba(46,209,176,0)} 100%{box-shadow:0 0 0 0 rgba(46,209,176,0)} }
+
+  .summary { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:14px 0 12px; }
+  .summary span {
+    font-size:0.8rem; padding:5px 13px; border-radius:999px;
+    background:var(--card); border:1px solid var(--line); white-space:nowrap; color:var(--dim);
+  }
+  .summary b { color:var(--text); }
+
+  .controls { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+  .chips { display:flex; flex-wrap:wrap; gap:7px; justify-content:center; }
+  .chip {
+    display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none;
+    padding:6px 13px; border-radius:999px; font-size:0.84rem; color:var(--dim);
+    background:var(--card); border:1px solid var(--line); transition:all .16s;
+  }
+  .chip:hover { color:var(--text); border-color:rgba(255,255,255,.22); }
+  .chip.on { color:#fff; border-color:transparent; background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 8px 18px -8px rgba(108,140,255,.7); }
+
+  .chips2 { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
+  .chip2 {
+    cursor:pointer; user-select:none; padding:4px 11px; border-radius:999px; font-size:0.78rem;
+    color:var(--dim); background:rgba(255,255,255,0.03); border:1px solid var(--line); transition:all .16s;
+  }
+  .chip2:hover { color:var(--text); border-color:rgba(255,255,255,.22); }
+  .chip2.on { color:#fff; border-color:transparent; background:rgba(108,140,255,.32); }
+
+  .toolbar { display:flex; gap:9px; align-items:center; flex-wrap:wrap; justify-content:center; }
+  .search { position:relative; flex:1; min-width:190px; max-width:340px; }
+  .search input {
+    width:100%; padding:9px 14px 9px 34px; border-radius:11px; font-family:inherit; font-size:0.9rem;
+    color:var(--text); background:var(--card); border:1px solid var(--line); outline:none; transition:border-color .16s;
+  }
+  .search input:focus { border-color:var(--accent); }
+  .search::before { content:"🔍"; position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:0.82rem; opacity:.6; }
+
+  .list { display:flex; flex-direction:column; gap:7px; }
+  .rowcard {
+    position:relative; display:grid; align-items:center; gap:12px;
+    grid-template-columns:34px 42px minmax(0,1fr) 196px 96px; padding:12px 16px;
+    border-radius:14px; overflow:hidden;
+    background:linear-gradient(180deg, rgba(22,26,38,.94), rgba(16,19,28,.94));
+    border:1px solid var(--line); box-shadow:0 16px 40px -34px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.04);
+    animation:rowIn .4s cubic-bezier(.22,.61,.36,1) both;
+  }
+  @keyframes rowIn { from{opacity:0; transform:translateY(7px)} to{opacity:1; transform:none} }
+  .rk { font-size:0.95rem; font-weight:800; color:var(--dim); text-align:center; font-variant-numeric:tabular-nums; }
+  .rk.top { color:#f3c969; }
+  .logo {
+    width:42px; height:42px; border-radius:11px; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,rgba(138,166,255,.22),rgba(200,108,255,.18));
+    border:1px solid var(--line); font-weight:800; font-size:1.15rem; overflow:hidden;
+  }
+  .info { min-width:0; }
+  .nm { font-weight:700; font-size:0.97rem; display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+  .meta { color:var(--dim); font-size:0.76rem; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  .bars { display:grid; grid-template-columns:1fr 1fr; gap:4px 12px; }
+  .bar { display:grid; grid-template-columns:34px 1fr 34px; align-items:center; gap:6px; font-size:0.64rem; color:var(--dim); }
+  .bar .tk { height:5px; border-radius:99px; background:var(--track); overflow:hidden; }
+  .bar .tk i { display:block; height:100%; border-radius:99px; }
+  .bar .v { text-align:right; font-variant-numeric:tabular-nums; color:var(--text); }
+  .bar.na .v { color:var(--dim); }
+
+  .score { text-align:right; }
+  .score .big { font-size:1.2rem; font-weight:800; font-variant-numeric:tabular-nums; }
+  .score .lab { font-size:0.64rem; color:var(--dim); margin-top:1px; }
+
+  .empty { text-align:center; color:var(--dim); padding:40px 0; }
+
+  .srcs { margin-top:30px; }
+  .srcs h2 { font-size:1.02rem; margin-bottom:10px; color:var(--text); }
+  .srcgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:9px; }
+  .srccard {
+    display:block; text-decoration:none; color:var(--text);
+    background:var(--card); border:1px solid var(--line); border-radius:13px; padding:12px 15px;
+    transition:transform .16s, border-color .16s;
+  }
+  .srccard:hover { transform:translateY(-2px); border-color:rgba(108,140,255,.5); }
+  .srccard b { font-size:0.9rem; }
+  .srccard span { display:block; color:var(--dim); font-size:0.77rem; margin-top:3px; }
+  .foot { margin-top:22px; text-align:center; color:var(--dim); font-size:0.75rem; line-height:1.8; }
+
+  @media (max-width:680px) {
+    .rowcard { grid-template-columns:28px 38px minmax(0,1fr) 92px; padding:11px 12px; }
+    .bars { display:none; }
+    .title h1 { font-size:1.55rem; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header class="top"><a class="back" href="../../">← 返回 Ooglex</a></header>
+
+    <div class="title">
+      <h1>全球大学排名 300 强</h1>
+      <p>QS · THE 泰晤士 · ARWU 软科 · U.S. News —— 四大权威榜单合一，按各校平均位次综合排序，每日自动更新</p>
+      <div class="statusrow"><span class="status demo" id="status"><span class="sdot"></span><span id="statusTxt">加载中…</span></span></div>
+    </div>
+
+    <div class="summary" id="summary"></div>
+
+    <div class="controls">
+      <div class="chips" id="tabs"></div>
+      <div class="chips2" id="countries"></div>
+      <div class="toolbar">
+        <div class="search"><input id="q" type="search" placeholder="搜索大学 / 国家（中英皆可）…"></div>
+      </div>
+    </div>
+
+    <div class="list" id="list"><div class="empty">加载中…</div></div>
+
+    <div class="srcs">
+      <h2>数据来源与延伸阅读</h2>
+      <div class="srcgrid" id="srcgrid"></div>
+    </div>
+
+    <p class="foot" id="foot">
+      数据每日自动更新一次（北京时间 07:00 前抓取 QS / THE / ARWU / U.S. News 最新公开榜单）；<br>
+      「综合」列为各校在四大榜单位次的平均值（ARTU 式聚合排名，至少命中两个榜才计入），位次越小越靠前；<br>
+      各榜评价口径不同（声誉、科研产出、引用、国际化侧重各异），跨榜绝对位次不可直接比较。数据仅供参考。
+    </p>
+  </div>
+  <script src="app.js?v=1"></script>
+  <script src="../../assets/particles.js"></script>
+  <script src="../../assets/ambient.js"></script>
+
+<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于全球大学排名 300 强</h2><p style="margin:0 0 8px;opacity:.85">本榜把四大权威世界大学排名合为一张表：<b>QS 世界大学排名</b>（侧重学术声誉、雇主声誉与国际化）、<b>THE 泰晤士高等教育世界大学排名</b>（18 项指标覆盖教学/研究/引用/产业/国际展望）、<b>ARWU 软科世界大学学术排名</b>（上海交大发起，重科研产出与顶级奖项）、<b>U.S. News 全球最佳大学</b>（以全球研究声誉与文献计量为主）。</p><p style="margin:0;opacity:.85">「综合」排名采用 ARTU 式聚合法，取每所大学在各榜位次的平均值排序（至少命中两个榜才计入综合），可切换查看任一单榜，并按国家/地区筛选、中英文搜索。数据每日自动抓取自各榜官方公开榜单，仅供参考，不构成升学建议。</p></section>
+</body>
+</html>

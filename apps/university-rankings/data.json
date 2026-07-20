@@ -1,0 +1,2131 @@
+{
+  "updatedAt": "2026-07-20T12:07:17Z",
+  "asOf": "2026-07-20",
+  "seed": true,
+  "count": 209,
+  "note": "上线快照（近似值）：数值取自 QS / THE / ARWU / U.S. News 四大榜单近一期公开位次的整理；首次在 GitHub Actions 抓取成功后即为四榜实时数据。",
+  "axisStatus": {
+    "qs": false,
+    "the": false,
+    "arwu": false,
+    "usn": false
+  },
+  "sources": [
+    {
+      "key": "qs",
+      "name": "QS 世界大学排名",
+      "url": "https://www.topuniversities.com/world-university-rankings",
+      "desc": "Quacquarelli Symonds，侧重学术声誉、雇主声誉与国际化"
+    },
+    {
+      "key": "the",
+      "name": "THE 泰晤士高等教育世界大学排名",
+      "url": "https://www.timeshighereducation.com/world-university-rankings",
+      "desc": "18 项指标，覆盖教学、研究、引用、产业与国际展望"
+    },
+    {
+      "key": "arwu",
+      "name": "ARWU 软科世界大学学术排名",
+      "url": "https://www.shanghairanking.com/rankings/arwu/",
+      "desc": "上海交大发起，重科研产出与顶级奖项（诺奖/菲尔兹/高被引）"
+    },
+    {
+      "key": "usn",
+      "name": "U.S. News 全球最佳大学",
+      "url": "https://www.usnews.com/education/best-global-universities",
+      "desc": "以全球研究声誉与文献计量表现为主"
+    }
+  ],
+  "universities": [
+    {
+      "name": "Massachusetts Institute of Technology",
+      "cn": "麻省理工学院",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 1,
+      "the": 2,
+      "arwu": 4,
+      "usn": 2
+    },
+    {
+      "name": "Harvard University",
+      "cn": "哈佛大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 5,
+      "the": 3,
+      "arwu": 1,
+      "usn": 1
+    },
+    {
+      "name": "Stanford University",
+      "cn": "斯坦福大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 6,
+      "the": 4,
+      "arwu": 2,
+      "usn": 3
+    },
+    {
+      "name": "University of Oxford",
+      "cn": "牛津大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 4,
+      "the": 1,
+      "arwu": 7,
+      "usn": 5
+    },
+    {
+      "name": "University of Cambridge",
+      "cn": "剑桥大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 6,
+      "the": 5,
+      "arwu": 4,
+      "usn": 8
+    },
+    {
+      "name": "University of California, Berkeley",
+      "cn": "加州大学伯克利分校",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 12,
+      "the": 8,
+      "arwu": 5,
+      "usn": 4
+    },
+    {
+      "name": "California Institute of Technology",
+      "cn": "加州理工学院",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 10,
+      "the": 7,
+      "arwu": 8,
+      "usn": 9
+    },
+    {
+      "name": "Princeton University",
+      "cn": "普林斯顿大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 22,
+      "the": 6,
+      "arwu": 6,
+      "usn": 16
+    },
+    {
+      "name": "Imperial College London",
+      "cn": "帝国理工学院",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 2,
+      "the": 9,
+      "arwu": 27,
+      "usn": 13
+    },
+    {
+      "name": "Yale University",
+      "cn": "耶鲁大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 23,
+      "the": 10,
+      "arwu": 11,
+      "usn": 11
+    },
+    {
+      "name": "University of Pennsylvania",
+      "cn": "宾夕法尼亚大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 11,
+      "the": 15,
+      "arwu": 16,
+      "usn": 14
+    },
+    {
+      "name": "ETH Zurich",
+      "cn": "苏黎世联邦理工学院",
+      "country": "Switzerland",
+      "flag": "🇨🇭",
+      "qs": 7,
+      "the": 11,
+      "arwu": 20,
+      "usn": 25
+    },
+    {
+      "name": "University College London",
+      "cn": "伦敦大学学院",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 9,
+      "the": 22,
+      "arwu": 17,
+      "usn": 15
+    },
+    {
+      "name": "University of Chicago",
+      "cn": "芝加哥大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 21,
+      "the": 14,
+      "arwu": 10,
+      "usn": 22
+    },
+    {
+      "name": "Cornell University",
+      "cn": "康奈尔大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 16,
+      "the": 20,
+      "arwu": 12,
+      "usn": 19
+    },
+    {
+      "name": "Columbia University",
+      "cn": "哥伦比亚大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 34,
+      "the": 19,
+      "arwu": 9,
+      "usn": 7
+    },
+    {
+      "name": "Johns Hopkins University",
+      "cn": "约翰斯·霍普金斯大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 28,
+      "the": 16,
+      "arwu": 15,
+      "usn": 10
+    },
+    {
+      "name": "Tsinghua University",
+      "cn": "清华大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 17,
+      "the": 12,
+      "arwu": 22,
+      "usn": 23
+    },
+    {
+      "name": "University of California, Los Angeles",
+      "cn": "加州大学洛杉矶分校",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 42,
+      "the": 18,
+      "arwu": 13,
+      "usn": 9
+    },
+    {
+      "name": "University of Toronto",
+      "cn": "多伦多大学",
+      "country": "Canada",
+      "flag": "🇨🇦",
+      "qs": 25,
+      "the": 21,
+      "arwu": 24,
+      "usn": 17
+    },
+    {
+      "name": "Peking University",
+      "cn": "北京大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 14,
+      "the": 13,
+      "arwu": 21,
+      "usn": 39
+    },
+    {
+      "name": "University of Washington",
+      "cn": "华盛顿大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 63,
+      "the": 26,
+      "arwu": 3,
+      "usn": 6
+    },
+    {
+      "name": "University of Michigan",
+      "cn": "密歇根大学安娜堡分校",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 44,
+      "the": 23,
+      "arwu": 26,
+      "usn": 18
+    },
+    {
+      "name": "University of Melbourne",
+      "cn": "墨尔本大学",
+      "country": "Australia",
+      "flag": "🇦🇺",
+      "qs": 19,
+      "the": 39,
+      "arwu": 32,
+      "usn": 27
+    },
+    {
+      "name": "New York University",
+      "cn": "纽约大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 30,
+      "the": 29,
+      "arwu": 30,
+      "usn": 29
+    },
+    {
+      "name": "National University of Singapore",
+      "cn": "新加坡国立大学",
+      "country": "Singapore",
+      "flag": "🇸🇬",
+      "qs": 8,
+      "the": 17,
+      "arwu": 71,
+      "usn": 26
+    },
+    {
+      "name": "University of Edinburgh",
+      "cn": "爱丁堡大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 27,
+      "the": 29,
+      "arwu": 38,
+      "usn": 34
+    },
+    {
+      "name": "Northwestern University",
+      "cn": "西北大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 50,
+      "the": 26,
+      "arwu": 34,
+      "usn": 24
+    },
+    {
+      "name": "Duke University",
+      "cn": "杜克大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 51,
+      "the": 32,
+      "arwu": 31,
+      "usn": 21
+    },
+    {
+      "name": "University of California, San Diego",
+      "cn": "加州大学圣地亚哥分校",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 72,
+      "the": 34,
+      "arwu": 18,
+      "usn": 20
+    },
+    {
+      "name": "King's College London",
+      "cn": "伦敦国王学院",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 31,
+      "the": 36,
+      "arwu": 47,
+      "usn": 33
+    },
+    {
+      "name": "PSL University",
+      "cn": "巴黎文理研究大学",
+      "country": "France",
+      "flag": "🇫🇷",
+      "qs": 24,
+      "the": 41,
+      "arwu": 39,
+      "usn": 44
+    },
+    {
+      "name": "Nanyang Technological University",
+      "cn": "南洋理工大学",
+      "country": "Singapore",
+      "flag": "🇸🇬",
+      "qs": 12,
+      "the": 30,
+      "arwu": 82,
+      "usn": 30
+    },
+    {
+      "name": "University of British Columbia",
+      "cn": "不列颠哥伦比亚大学",
+      "country": "Canada",
+      "flag": "🇨🇦",
+      "qs": 38,
+      "the": 41,
+      "arwu": 40,
+      "usn": 35
+    },
+    {
+      "name": "University of Tokyo",
+      "cn": "东京大学",
+      "country": "Japan",
+      "flag": "🇯🇵",
+      "qs": 32,
+      "the": 28,
+      "arwu": 27,
+      "usn": 73
+    },
+    {
+      "name": "Fudan University",
+      "cn": "复旦大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 30,
+      "the": 36,
+      "arwu": 33,
+      "usn": 61
+    },
+    {
+      "name": "EPFL",
+      "cn": "洛桑联邦理工学院",
+      "country": "Switzerland",
+      "flag": "🇨🇭",
+      "qs": 22,
+      "the": 33,
+      "arwu": 65,
+      "usn": 46
+    },
+    {
+      "name": "University of Sydney",
+      "cn": "悉尼大学",
+      "country": "Australia",
+      "flag": "🇦🇺",
+      "qs": 18,
+      "the": 61,
+      "arwu": 60,
+      "usn": 32
+    },
+    {
+      "name": "Karolinska Institute",
+      "cn": "卡罗林斯卡学院",
+      "country": "Sweden",
+      "flag": "🇸🇪",
+      "qs": null,
+      "the": 50,
+      "arwu": 42,
+      "usn": 37
+    },
+    {
+      "name": "Technical University of Munich",
+      "cn": "慕尼黑工业大学",
+      "country": "Germany",
+      "flag": "🇩🇪",
+      "qs": 22,
+      "the": 26,
+      "arwu": 52,
+      "usn": 78
+    },
+    {
+      "name": "Shanghai Jiao Tong University",
+      "cn": "上海交通大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 45,
+      "the": 45,
+      "arwu": 25,
+      "usn": 68
+    },
+    {
+      "name": "University of Texas at Austin",
+      "cn": "得克萨斯大学奥斯汀分校",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 66,
+      "the": 43,
+      "arwu": 41,
+      "usn": 38
+    },
+    {
+      "name": "Ludwig Maximilian University of Munich",
+      "cn": "慕尼黑大学",
+      "country": "Germany",
+      "flag": "🇩🇪",
+      "qs": 59,
+      "the": 38,
+      "arwu": 51,
+      "usn": 43
+    },
+    {
+      "name": "Zhejiang University",
+      "cn": "浙江大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 45,
+      "the": 47,
+      "arwu": 30,
+      "usn": 71
+    },
+    {
+      "name": "University of New South Wales",
+      "cn": "新南威尔士大学",
+      "country": "Australia",
+      "flag": "🇦🇺",
+      "qs": 20,
+      "the": 70,
+      "arwu": 64,
+      "usn": 40
+    },
+    {
+      "name": "McGill University",
+      "cn": "麦吉尔大学",
+      "country": "Canada",
+      "flag": "🇨🇦",
+      "qs": 27,
+      "the": 45,
+      "arwu": 78,
+      "usn": 51
+    },
+    {
+      "name": "University of Hong Kong",
+      "cn": "香港大学",
+      "country": "Hong Kong SAR",
+      "flag": "🇭🇰",
+      "qs": 11,
+      "the": 35,
+      "arwu": 90,
+      "usn": 66
+    },
+    {
+      "name": "University of Manchester",
+      "cn": "曼彻斯特大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 34,
+      "the": 53,
+      "arwu": 51,
+      "usn": 65
+    },
+    {
+      "name": "Carnegie Mellon University",
+      "cn": "卡内基梅隆大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 58,
+      "the": 24,
+      "arwu": 95,
+      "usn": 28
+    },
+    {
+      "name": "University of Queensland",
+      "cn": "昆士兰大学",
+      "country": "Australia",
+      "flag": "🇦🇺",
+      "qs": 40,
+      "the": 77,
+      "arwu": 53,
+      "usn": 36
+    },
+    {
+      "name": "Monash University",
+      "cn": "莫纳什大学",
+      "country": "Australia",
+      "flag": "🇦🇺",
+      "qs": 36,
+      "the": 58,
+      "arwu": 78,
+      "usn": 42
+    },
+    {
+      "name": "University of Illinois Urbana-Champaign",
+      "cn": "伊利诺伊大学香槟分校",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 69,
+      "the": 51,
+      "arwu": 45,
+      "usn": 53
+    },
+    {
+      "name": "Australian National University",
+      "cn": "澳大利亚国立大学",
+      "country": "Australia",
+      "flag": "🇦🇺",
+      "qs": 32,
+      "the": 73,
+      "arwu": 62,
+      "usn": 62
+    },
+    {
+      "name": "University of North Carolina at Chapel Hill",
+      "cn": "北卡罗来纳大学教堂山分校",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": null,
+      "the": 76,
+      "arwu": 44,
+      "usn": 55
+    },
+    {
+      "name": "Heidelberg University",
+      "cn": "海德堡大学",
+      "country": "Germany",
+      "flag": "🇩🇪",
+      "qs": 87,
+      "the": 47,
+      "arwu": 57,
+      "usn": 48
+    },
+    {
+      "name": "Sorbonne University",
+      "cn": "索邦大学",
+      "country": "France",
+      "flag": "🇫🇷",
+      "qs": 72,
+      "the": 75,
+      "arwu": 41,
+      "usn": 56
+    },
+    {
+      "name": "University of Copenhagen",
+      "cn": "哥本哈根大学",
+      "country": "Denmark",
+      "flag": "🇩🇰",
+      "qs": 82,
+      "the": 105,
+      "arwu": 30,
+      "usn": 31
+    },
+    {
+      "name": "University of Wisconsin-Madison",
+      "cn": "威斯康星大学麦迪逊分校",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 91,
+      "the": 82,
+      "arwu": 34,
+      "usn": 41
+    },
+    {
+      "name": "Chinese University of Hong Kong",
+      "cn": "香港中文大学",
+      "country": "Hong Kong SAR",
+      "flag": "🇭🇰",
+      "qs": 32,
+      "the": 44,
+      "arwu": 101,
+      "usn": 76
+    },
+    {
+      "name": "École Polytechnique",
+      "cn": "巴黎综合理工学院",
+      "country": "France",
+      "flag": "🇫🇷",
+      "qs": 57,
+      "the": 71,
+      "arwu": null,
+      "usn": null
+    },
+    {
+      "name": "Georgia Institute of Technology",
+      "cn": "佐治亚理工学院",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 76,
+      "the": 39,
+      "arwu": 82,
+      "usn": 60
+    },
+    {
+      "name": "Kyoto University",
+      "cn": "京都大学",
+      "country": "Japan",
+      "flag": "🇯🇵",
+      "qs": 43,
+      "the": 55,
+      "arwu": 39,
+      "usn": 121
+    },
+    {
+      "name": "University of Amsterdam",
+      "cn": "阿姆斯特丹大学",
+      "country": "Netherlands",
+      "flag": "🇳🇱",
+      "qs": 55,
+      "the": 60,
+      "arwu": 101,
+      "usn": 45
+    },
+    {
+      "name": "KU Leuven",
+      "cn": "鲁汶大学",
+      "country": "Belgium",
+      "flag": "🇧🇪",
+      "qs": 68,
+      "the": 45,
+      "arwu": 87,
+      "usn": 70
+    },
+    {
+      "name": "Utrecht University",
+      "cn": "乌得勒支大学",
+      "country": "Netherlands",
+      "flag": "🇳🇱",
+      "qs": 105,
+      "the": 71,
+      "arwu": 49,
+      "usn": 52
+    },
+    {
+      "name": "University of Southern California",
+      "cn": "南加州大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 121,
+      "the": 70,
+      "arwu": 55,
+      "usn": 47
+    },
+    {
+      "name": "University of Bristol",
+      "cn": "布里斯托大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 54,
+      "the": 78,
+      "arwu": 78,
+      "usn": 84
+    },
+    {
+      "name": "University of Zurich",
+      "cn": "苏黎世大学",
+      "country": "Switzerland",
+      "flag": "🇨🇭",
+      "qs": 92,
+      "the": 91,
+      "arwu": 59,
+      "usn": 54
+    },
+    {
+      "name": "Nanjing University",
+      "cn": "南京大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 89,
+      "the": 65,
+      "arwu": 51,
+      "usn": 91
+    },
+    {
+      "name": "Boston University",
+      "cn": "波士顿大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 108,
+      "the": 60,
+      "arwu": 82,
+      "usn": 57
+    },
+    {
+      "name": "Seoul National University",
+      "cn": "首尔国立大学",
+      "country": "South Korea",
+      "flag": "🇰🇷",
+      "qs": 31,
+      "the": 62,
+      "arwu": 89,
+      "usn": 130
+    },
+    {
+      "name": "Brown University",
+      "cn": "布朗大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 48,
+      "the": 64,
+      "arwu": 101,
+      "usn": 111
+    },
+    {
+      "name": "University of California, Davis",
+      "cn": "加州大学戴维斯分校",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 128,
+      "the": 59,
+      "arwu": 79,
+      "usn": 63
+    },
+    {
+      "name": "Delft University of Technology",
+      "cn": "代尔夫特理工大学",
+      "country": "Netherlands",
+      "flag": "🇳🇱",
+      "qs": 49,
+      "the": 48,
+      "arwu": 151,
+      "usn": 82
+    },
+    {
+      "name": "Purdue University",
+      "cn": "普渡大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 89,
+      "the": 105,
+      "arwu": 68,
+      "usn": 87
+    },
+    {
+      "name": "Washington University in St. Louis",
+      "cn": "圣路易斯华盛顿大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 116,
+      "the": 105,
+      "arwu": 34,
+      "usn": 100
+    },
+    {
+      "name": "University of Science and Technology of China",
+      "cn": "中国科学技术大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 133,
+      "the": 57,
+      "arwu": 62,
+      "usn": 105
+    },
+    {
+      "name": "University of Minnesota",
+      "cn": "明尼苏达大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 155,
+      "the": 108,
+      "arwu": 46,
+      "usn": 50
+    },
+    {
+      "name": "Hong Kong University of Science and Technology",
+      "cn": "香港科技大学",
+      "country": "Hong Kong SAR",
+      "flag": "🇭🇰",
+      "qs": 44,
+      "the": 66,
+      "arwu": 151,
+      "usn": 108
+    },
+    {
+      "name": "Pennsylvania State University",
+      "cn": "宾夕法尼亚州立大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 105,
+      "the": 118,
+      "arwu": 79,
+      "usn": 72
+    },
+    {
+      "name": "Ghent University",
+      "cn": "根特大学",
+      "country": "Belgium",
+      "flag": "🇧🇪",
+      "qs": 142,
+      "the": 89,
+      "arwu": 71,
+      "usn": 74
+    },
+    {
+      "name": "University of Helsinki",
+      "cn": "赫尔辛基大学",
+      "country": "Finland",
+      "flag": "🇫🇮",
+      "qs": 115,
+      "the": 101,
+      "arwu": 74,
+      "usn": 89
+    },
+    {
+      "name": "Lund University",
+      "cn": "隆德大学",
+      "country": "Sweden",
+      "flag": "🇸🇪",
+      "qs": 75,
+      "the": 116,
+      "arwu": 101,
+      "usn": 88
+    },
+    {
+      "name": "Leiden University",
+      "cn": "莱顿大学",
+      "country": "Netherlands",
+      "flag": "🇳🇱",
+      "qs": 136,
+      "the": 88,
+      "arwu": 88,
+      "usn": 77
+    },
+    {
+      "name": "Ohio State University",
+      "cn": "俄亥俄州立大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 156,
+      "the": 108,
+      "arwu": 68,
+      "usn": 58
+    },
+    {
+      "name": "University of Groningen",
+      "cn": "格罗宁根大学",
+      "country": "Netherlands",
+      "flag": "🇳🇱",
+      "qs": 139,
+      "the": 79,
+      "arwu": 79,
+      "usn": 94
+    },
+    {
+      "name": "University of Oslo",
+      "cn": "奥斯陆大学",
+      "country": "Norway",
+      "flag": "🇳🇴",
+      "qs": 117,
+      "the": 130,
+      "arwu": 67,
+      "usn": 89
+    },
+    {
+      "name": "Humboldt University of Berlin",
+      "cn": "柏林洪堡大学",
+      "country": "Germany",
+      "flag": "🇩🇪",
+      "qs": 126,
+      "the": 87,
+      "arwu": 101,
+      "usn": 92
+    },
+    {
+      "name": "King Abdulaziz University",
+      "cn": "阿卜杜勒阿齐兹国王大学",
+      "country": "Saudi Arabia",
+      "flag": "🇸🇦",
+      "qs": 143,
+      "the": 101,
+      "arwu": 101,
+      "usn": 62
+    },
+    {
+      "name": "Wageningen University & Research",
+      "cn": "瓦赫宁根大学",
+      "country": "Netherlands",
+      "flag": "🇳🇱",
+      "qs": 130,
+      "the": 66,
+      "arwu": 101,
+      "usn": 111
+    },
+    {
+      "name": "University of Birmingham",
+      "cn": "伯明翰大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 84,
+      "the": 105,
+      "arwu": 101,
+      "usn": 120
+    },
+    {
+      "name": "Aarhus University",
+      "cn": "奥胡斯大学",
+      "country": "Denmark",
+      "flag": "🇩🇰",
+      "qs": 152,
+      "the": 111,
+      "arwu": 73,
+      "usn": 79
+    },
+    {
+      "name": "Erasmus University Rotterdam",
+      "cn": "鹿特丹伊拉斯姆斯大学",
+      "country": "Netherlands",
+      "flag": "🇳🇱",
+      "qs": 176,
+      "the": 99,
+      "arwu": 79,
+      "usn": 64
+    },
+    {
+      "name": "University of Maryland, College Park",
+      "cn": "马里兰大学帕克分校",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 169,
+      "the": 130,
+      "arwu": 55,
+      "usn": 67
+    },
+    {
+      "name": "University of Western Australia",
+      "cn": "西澳大学",
+      "country": "Australia",
+      "flag": "🇦🇺",
+      "qs": 77,
+      "the": 149,
+      "arwu": 101,
+      "usn": 96
+    },
+    {
+      "name": "University of Pittsburgh",
+      "cn": "匹兹堡大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 168,
+      "the": 130,
+      "arwu": 68,
+      "usn": 59
+    },
+    {
+      "name": "University of California, Santa Barbara",
+      "cn": "加州大学圣塔芭芭拉分校",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 190,
+      "the": 105,
+      "arwu": 51,
+      "usn": 87
+    },
+    {
+      "name": "Uppsala University",
+      "cn": "乌普萨拉大学",
+      "country": "Sweden",
+      "flag": "🇸🇪",
+      "qs": 105,
+      "the": 140,
+      "arwu": 79,
+      "usn": 110
+    },
+    {
+      "name": "University of California, Irvine",
+      "cn": "加州大学欧文分校",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 195,
+      "the": 105,
+      "arwu": 68,
+      "usn": 69
+    },
+    {
+      "name": "University of Sheffield",
+      "cn": "谢菲尔德大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 105,
+      "the": 114,
+      "arwu": 101,
+      "usn": 119
+    },
+    {
+      "name": "University of Glasgow",
+      "cn": "格拉斯哥大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 76,
+      "the": 87,
+      "arwu": 151,
+      "usn": 129
+    },
+    {
+      "name": "University of Alberta",
+      "cn": "阿尔伯塔大学",
+      "country": "Canada",
+      "flag": "🇨🇦",
+      "qs": 96,
+      "the": 118,
+      "arwu": 101,
+      "usn": 130
+    },
+    {
+      "name": "Sapienza University of Rome",
+      "cn": "罗马大学",
+      "country": "Italy",
+      "flag": "🇮🇹",
+      "qs": 128,
+      "the": 132,
+      "arwu": 101,
+      "usn": 98
+    },
+    {
+      "name": "University of Southampton",
+      "cn": "南安普顿大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 80,
+      "the": 108,
+      "arwu": 151,
+      "usn": 121
+    },
+    {
+      "name": "Michigan State University",
+      "cn": "密歇根州立大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": null,
+      "the": 118,
+      "arwu": 101,
+      "usn": 132
+    },
+    {
+      "name": "Vanderbilt University",
+      "cn": "范德堡大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 154,
+      "the": 133,
+      "arwu": 101,
+      "usn": 81
+    },
+    {
+      "name": "University of Warwick",
+      "cn": "华威大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 69,
+      "the": 106,
+      "arwu": 151,
+      "usn": 148
+    },
+    {
+      "name": "University of Florida",
+      "cn": "佛罗里达大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 173,
+      "the": 151,
+      "arwu": 68,
+      "usn": 86
+    },
+    {
+      "name": "Tohoku University",
+      "cn": "东北大学",
+      "country": "Japan",
+      "flag": "🇯🇵",
+      "qs": 96,
+      "the": 130,
+      "arwu": 82,
+      "usn": 174
+    },
+    {
+      "name": "City University of Hong Kong",
+      "cn": "香港城市大学",
+      "country": "Hong Kong SAR",
+      "flag": "🇭🇰",
+      "qs": 62,
+      "the": 82,
+      "arwu": 201,
+      "usn": 138
+    },
+    {
+      "name": "Hong Kong Polytechnic University",
+      "cn": "香港理工大学",
+      "country": "Hong Kong SAR",
+      "flag": "🇭🇰",
+      "qs": 54,
+      "the": 84,
+      "arwu": 201,
+      "usn": 145
+    },
+    {
+      "name": "University of Bonn",
+      "cn": "波恩大学",
+      "country": "Germany",
+      "flag": "🇩🇪",
+      "qs": 239,
+      "the": 91,
+      "arwu": 70,
+      "usn": 85
+    },
+    {
+      "name": "University of Geneva",
+      "cn": "日内瓦大学",
+      "country": "Switzerland",
+      "flag": "🇨🇭",
+      "qs": 168,
+      "the": 160,
+      "arwu": 62,
+      "usn": 96
+    },
+    {
+      "name": "McMaster University",
+      "cn": "麦克马斯特大学",
+      "country": "Canada",
+      "flag": "🇨🇦",
+      "qs": 176,
+      "the": 116,
+      "arwu": 101,
+      "usn": 96
+    },
+    {
+      "name": "University of Vienna",
+      "cn": "维也纳大学",
+      "country": "Austria",
+      "flag": "🇦🇹",
+      "qs": 130,
+      "the": 130,
+      "arwu": 101,
+      "usn": 130
+    },
+    {
+      "name": "University of Sao Paulo",
+      "cn": "圣保罗大学",
+      "country": "Brazil",
+      "flag": "🇧🇷",
+      "qs": 92,
+      "the": 201,
+      "arwu": 101,
+      "usn": 108
+    },
+    {
+      "name": "Emory University",
+      "cn": "埃默里大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 158,
+      "the": 168,
+      "arwu": 101,
+      "usn": 75
+    },
+    {
+      "name": "University of Freiburg",
+      "cn": "弗莱堡大学",
+      "country": "Germany",
+      "flag": "🇩🇪",
+      "qs": 190,
+      "the": 111,
+      "arwu": 101,
+      "usn": 107
+    },
+    {
+      "name": "Osaka University",
+      "cn": "大阪大学",
+      "country": "Japan",
+      "flag": "🇯🇵",
+      "qs": 75,
+      "the": 175,
+      "arwu": 87,
+      "usn": 175
+    },
+    {
+      "name": "University of Adelaide",
+      "cn": "阿德莱德大学",
+      "country": "Australia",
+      "flag": "🇦🇺",
+      "qs": 82,
+      "the": 128,
+      "arwu": 151,
+      "usn": 152
+    },
+    {
+      "name": "Arizona State University",
+      "cn": "亚利桑那州立大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 179,
+      "the": 133,
+      "arwu": 101,
+      "usn": 101
+    },
+    {
+      "name": "Rice University",
+      "cn": "莱斯大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 141,
+      "the": 168,
+      "arwu": 101,
+      "usn": 105
+    },
+    {
+      "name": "University of Leeds",
+      "cn": "利兹大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 82,
+      "the": 128,
+      "arwu": 151,
+      "usn": 154
+    },
+    {
+      "name": "Sungkyunkwan University",
+      "cn": "成均馆大学",
+      "country": "South Korea",
+      "flag": "🇰🇷",
+      "qs": 123,
+      "the": 106,
+      "arwu": 101,
+      "usn": 187
+    },
+    {
+      "name": "University of Bern",
+      "cn": "伯尔尼大学",
+      "country": "Switzerland",
+      "flag": "🇨🇭",
+      "qs": 142,
+      "the": 130,
+      "arwu": 151,
+      "usn": 95
+    },
+    {
+      "name": "London School of Economics and Political Science",
+      "cn": "伦敦政治经济学院",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 56,
+      "the": 56,
+      "arwu": 151,
+      "usn": 258
+    },
+    {
+      "name": "Queen Mary University of London",
+      "cn": "伦敦玛丽女王大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 110,
+      "the": 110,
+      "arwu": 151,
+      "usn": 155
+    },
+    {
+      "name": "Stockholm University",
+      "cn": "斯德哥尔摩大学",
+      "country": "Sweden",
+      "flag": "🇸🇪",
+      "qs": 168,
+      "the": 176,
+      "arwu": 79,
+      "usn": 105
+    },
+    {
+      "name": "KAIST",
+      "cn": "韩国科学技术院",
+      "country": "South Korea",
+      "flag": "🇰🇷",
+      "qs": 53,
+      "the": 82,
+      "arwu": 201,
+      "usn": 205
+    },
+    {
+      "name": "University of Barcelona",
+      "cn": "巴塞罗那大学",
+      "country": "Spain",
+      "flag": "🇪🇸",
+      "qs": 149,
+      "the": 152,
+      "arwu": 151,
+      "usn": 90
+    },
+    {
+      "name": "University of Colorado Boulder",
+      "cn": "科罗拉多大学博尔德分校",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 234,
+      "the": 175,
+      "arwu": 55,
+      "usn": 82
+    },
+    {
+      "name": "Texas A&M University",
+      "cn": "得克萨斯农工大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 154,
+      "the": 178,
+      "arwu": 101,
+      "usn": 118
+    },
+    {
+      "name": "Radboud University",
+      "cn": "拉德堡德大学",
+      "country": "Netherlands",
+      "flag": "🇳🇱",
+      "qs": 233,
+      "the": 105,
+      "arwu": 101,
+      "usn": 116
+    },
+    {
+      "name": "University of Nottingham",
+      "cn": "诺丁汉大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 108,
+      "the": 158,
+      "arwu": 151,
+      "usn": 152
+    },
+    {
+      "name": "Technical University of Denmark",
+      "cn": "丹麦技术大学",
+      "country": "Denmark",
+      "flag": "🇩🇰",
+      "qs": 108,
+      "the": 191,
+      "arwu": 151,
+      "usn": 121
+    },
+    {
+      "name": "Université de Montréal",
+      "cn": "蒙特利尔大学",
+      "country": "Canada",
+      "flag": "🇨🇦",
+      "qs": 141,
+      "the": 141,
+      "arwu": 151,
+      "usn": 141
+    },
+    {
+      "name": "National Taiwan University",
+      "cn": "台湾大学",
+      "country": "Taiwan",
+      "flag": "🇹🇼",
+      "qs": 68,
+      "the": 172,
+      "arwu": 151,
+      "usn": 187
+    },
+    {
+      "name": "University of Bologna",
+      "cn": "博洛尼亚大学",
+      "country": "Italy",
+      "flag": "🇮🇹",
+      "qs": 133,
+      "the": 160,
+      "arwu": 151,
+      "usn": 137
+    },
+    {
+      "name": "University of Basel",
+      "cn": "巴塞尔大学",
+      "country": "Switzerland",
+      "flag": "🇨🇭",
+      "qs": 261,
+      "the": 130,
+      "arwu": 101,
+      "usn": 90
+    },
+    {
+      "name": "University of Tübingen",
+      "cn": "图宾根大学",
+      "country": "Germany",
+      "flag": "🇩🇪",
+      "qs": 226,
+      "the": 95,
+      "arwu": 151,
+      "usn": 122
+    },
+    {
+      "name": "University of Liverpool",
+      "cn": "利物浦大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 176,
+      "the": 178,
+      "arwu": 101,
+      "usn": 141
+    },
+    {
+      "name": "Politecnico di Milano",
+      "cn": "米兰理工大学",
+      "country": "Italy",
+      "flag": "🇮🇹",
+      "qs": 98,
+      "the": 152,
+      "arwu": 201,
+      "usn": null
+    },
+    {
+      "name": "RWTH Aachen University",
+      "cn": "亚琛工业大学",
+      "country": "Germany",
+      "flag": "🇩🇪",
+      "qs": 99,
+      "the": 90,
+      "arwu": 201,
+      "usn": 214
+    },
+    {
+      "name": "Wuhan University",
+      "cn": "武汉大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 194,
+      "the": 178,
+      "arwu": 101,
+      "usn": 133
+    },
+    {
+      "name": "University of Waterloo",
+      "cn": "滑铁卢大学",
+      "country": "Canada",
+      "flag": "🇨🇦",
+      "qs": 115,
+      "the": 158,
+      "arwu": 151,
+      "usn": 189
+    },
+    {
+      "name": "University of Technology Sydney",
+      "cn": "悉尼科技大学",
+      "country": "Australia",
+      "flag": "🇦🇺",
+      "qs": 88,
+      "the": 154,
+      "arwu": 201,
+      "usn": 172
+    },
+    {
+      "name": "Yonsei University",
+      "cn": "延世大学",
+      "country": "South Korea",
+      "flag": "🇰🇷",
+      "qs": 50,
+      "the": 106,
+      "arwu": 201,
+      "usn": 264
+    },
+    {
+      "name": "Sun Yat-sen University",
+      "cn": "中山大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 267,
+      "the": 201,
+      "arwu": 68,
+      "usn": 89
+    },
+    {
+      "name": "University of Auckland",
+      "cn": "奥克兰大学",
+      "country": "New Zealand",
+      "flag": "🇳🇿",
+      "qs": 65,
+      "the": 152,
+      "arwu": 201,
+      "usn": 208
+    },
+    {
+      "name": "University of Cape Town",
+      "cn": "开普敦大学",
+      "country": "South Africa",
+      "flag": "🇿🇦",
+      "qs": 171,
+      "the": 155,
+      "arwu": 201,
+      "usn": 111
+    },
+    {
+      "name": "University of Padua",
+      "cn": "帕多瓦大学",
+      "country": "Italy",
+      "flag": "🇮🇹",
+      "qs": 219,
+      "the": 210,
+      "arwu": 101,
+      "usn": 116
+    },
+    {
+      "name": "Eindhoven University of Technology",
+      "cn": "埃因霍温理工大学",
+      "country": "Netherlands",
+      "flag": "🇳🇱",
+      "qs": 124,
+      "the": 201,
+      "arwu": null,
+      "usn": null
+    },
+    {
+      "name": "KTH Royal Institute of Technology",
+      "cn": "皇家理工学院",
+      "country": "Sweden",
+      "flag": "🇸🇪",
+      "qs": 123,
+      "the": 155,
+      "arwu": 201,
+      "usn": 179
+    },
+    {
+      "name": "University of Gothenburg",
+      "cn": "哥德堡大学",
+      "country": "Sweden",
+      "flag": "🇸🇪",
+      "qs": 187,
+      "the": 191,
+      "arwu": 151,
+      "usn": 130
+    },
+    {
+      "name": "Nagoya University",
+      "cn": "名古屋大学",
+      "country": "Japan",
+      "flag": "🇯🇵",
+      "qs": 152,
+      "the": 201,
+      "arwu": 101,
+      "usn": 208
+    },
+    {
+      "name": "Korea University",
+      "cn": "高丽大学",
+      "country": "South Korea",
+      "flag": "🇰🇷",
+      "qs": 61,
+      "the": 104,
+      "arwu": 201,
+      "usn": 297
+    },
+    {
+      "name": "Cardiff University",
+      "cn": "卡迪夫大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 176,
+      "the": 178,
+      "arwu": 151,
+      "usn": 158
+    },
+    {
+      "name": "Newcastle University",
+      "cn": "纽卡斯尔大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 129,
+      "the": 168,
+      "arwu": 201,
+      "usn": 172
+    },
+    {
+      "name": "Tokyo Institute of Technology",
+      "cn": "东京工业大学",
+      "country": "Japan",
+      "flag": "🇯🇵",
+      "qs": 84,
+      "the": 191,
+      "arwu": 151,
+      "usn": 246
+    },
+    {
+      "name": "Autonomous University of Barcelona",
+      "cn": "巴塞罗那自治大学",
+      "country": "Spain",
+      "flag": "🇪🇸",
+      "qs": 154,
+      "the": 178,
+      "arwu": 201,
+      "usn": 145
+    },
+    {
+      "name": "Tel Aviv University",
+      "cn": "特拉维夫大学",
+      "country": "Israel",
+      "flag": "🇮🇱",
+      "qs": 218,
+      "the": 201,
+      "arwu": 151,
+      "usn": 111
+    },
+    {
+      "name": "Rutgers University",
+      "cn": "罗格斯大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 351,
+      "the": 178,
+      "arwu": 78,
+      "usn": 83
+    },
+    {
+      "name": "University of Virginia",
+      "cn": "弗吉尼亚大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 208,
+      "the": 151,
+      "arwu": 201,
+      "usn": 130
+    },
+    {
+      "name": "Hebrew University of Jerusalem",
+      "cn": "希伯来大学",
+      "country": "Israel",
+      "flag": "🇮🇱",
+      "qs": 224,
+      "the": 251,
+      "arwu": 101,
+      "usn": 121
+    },
+    {
+      "name": "University of Exeter",
+      "cn": "埃克塞特大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 169,
+      "the": 143,
+      "arwu": 201,
+      "usn": 189
+    },
+    {
+      "name": "Trinity College Dublin",
+      "cn": "都柏林圣三一学院",
+      "country": "Ireland",
+      "flag": "🇮🇪",
+      "qs": 87,
+      "the": 171,
+      "arwu": 201,
+      "usn": 244
+    },
+    {
+      "name": "Technion - Israel Institute of Technology",
+      "cn": "以色列理工学院",
+      "country": "Israel",
+      "flag": "🇮🇱",
+      "qs": 265,
+      "the": 201,
+      "arwu": 101,
+      "usn": 152
+    },
+    {
+      "name": "Huazhong University of Science and Technology",
+      "cn": "华中科技大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 300,
+      "the": 251,
+      "arwu": 82,
+      "usn": 96
+    },
+    {
+      "name": "Western University",
+      "cn": "西安大略大学",
+      "country": "Canada",
+      "flag": "🇨🇦",
+      "qs": 114,
+      "the": 201,
+      "arwu": 201,
+      "usn": 214
+    },
+    {
+      "name": "University of Ottawa",
+      "cn": "渥太华大学",
+      "country": "Canada",
+      "flag": "🇨🇦",
+      "qs": 189,
+      "the": 158,
+      "arwu": 201,
+      "usn": 189
+    },
+    {
+      "name": "Macquarie University",
+      "cn": "麦考瑞大学",
+      "country": "Australia",
+      "flag": "🇦🇺",
+      "qs": 130,
+      "the": 178,
+      "arwu": 201,
+      "usn": 235
+    },
+    {
+      "name": "University of York",
+      "cn": "约克大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 165,
+      "the": 147,
+      "arwu": 201,
+      "usn": 264
+    },
+    {
+      "name": "Southern University of Science and Technology",
+      "cn": "南方科技大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 285,
+      "the": 148,
+      "arwu": 151,
+      "usn": null
+    },
+    {
+      "name": "Lancaster University",
+      "cn": "兰卡斯特大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 128,
+      "the": 158,
+      "arwu": 301,
+      "usn": null
+    },
+    {
+      "name": "Lomonosov Moscow State University",
+      "cn": "莫斯科国立大学",
+      "country": "Russia",
+      "flag": "🇷🇺",
+      "qs": 87,
+      "the": 401,
+      "arwu": 101,
+      "usn": null
+    },
+    {
+      "name": "Harbin Institute of Technology",
+      "cn": "哈尔滨工业大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 252,
+      "the": 301,
+      "arwu": 101,
+      "usn": 133
+    },
+    {
+      "name": "Xi'an Jiaotong University",
+      "cn": "西安交通大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 288,
+      "the": 251,
+      "arwu": 101,
+      "usn": 148
+    },
+    {
+      "name": "University of Lisbon",
+      "cn": "里斯本大学",
+      "country": "Portugal",
+      "flag": "🇵🇹",
+      "qs": 253,
+      "the": 201,
+      "arwu": 151,
+      "usn": 189
+    },
+    {
+      "name": "University of Calgary",
+      "cn": "卡尔加里大学",
+      "country": "Canada",
+      "flag": "🇨🇦",
+      "qs": 182,
+      "the": 201,
+      "arwu": 201,
+      "usn": 214
+    },
+    {
+      "name": "Tongji University",
+      "cn": "同济大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 192,
+      "the": 301,
+      "arwu": 151,
+      "usn": 158
+    },
+    {
+      "name": "Nankai University",
+      "cn": "南开大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 320,
+      "the": 251,
+      "arwu": 101,
+      "usn": 145
+    },
+    {
+      "name": "Durham University",
+      "cn": "杜伦大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 89,
+      "the": 162,
+      "arwu": 301,
+      "usn": 273
+    },
+    {
+      "name": "Norwegian University of Science and Technology",
+      "cn": "挪威科技大学",
+      "country": "Norway",
+      "flag": "🇳🇴",
+      "qs": 292,
+      "the": 201,
+      "arwu": 151,
+      "usn": 189
+    },
+    {
+      "name": "Beijing Normal University",
+      "cn": "北京师范大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 271,
+      "the": 178,
+      "arwu": 201,
+      "usn": 187
+    },
+    {
+      "name": "Chalmers University of Technology",
+      "cn": "查尔姆斯理工大学",
+      "country": "Sweden",
+      "flag": "🇸🇪",
+      "qs": 129,
+      "the": 201,
+      "arwu": 301,
+      "usn": null
+    },
+    {
+      "name": "Indian Institute of Technology Bombay",
+      "cn": "印度理工孟买分校",
+      "country": "India",
+      "flag": "🇮🇳",
+      "qs": 129,
+      "the": 301,
+      "arwu": null,
+      "usn": null
+    },
+    {
+      "name": "University of Notre Dame",
+      "cn": "圣母大学",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 269,
+      "the": 191,
+      "arwu": 201,
+      "usn": 210
+    },
+    {
+      "name": "University of St Andrews",
+      "cn": "圣安德鲁斯大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 100,
+      "the": 105,
+      "arwu": 301,
+      "usn": 375
+    },
+    {
+      "name": "Aalto University",
+      "cn": "阿尔托大学",
+      "country": "Finland",
+      "flag": "🇫🇮",
+      "qs": 114,
+      "the": 251,
+      "arwu": 301,
+      "usn": null
+    },
+    {
+      "name": "Dartmouth College",
+      "cn": "达特茅斯学院",
+      "country": "United States",
+      "flag": "🇺🇸",
+      "qs": 226,
+      "the": 133,
+      "arwu": 301,
+      "usn": 246
+    },
+    {
+      "name": "Beihang University",
+      "cn": "北京航空航天大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 331,
+      "the": 251,
+      "arwu": 151,
+      "usn": 174
+    },
+    {
+      "name": "University of Bath",
+      "cn": "巴斯大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 179,
+      "the": 201,
+      "arwu": 301,
+      "usn": null
+    },
+    {
+      "name": "Sichuan University",
+      "cn": "四川大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 435,
+      "the": 251,
+      "arwu": 101,
+      "usn": 128
+    },
+    {
+      "name": "Kyushu University",
+      "cn": "九州大学",
+      "country": "Japan",
+      "flag": "🇯🇵",
+      "qs": 133,
+      "the": 351,
+      "arwu": 151,
+      "usn": 289
+    },
+    {
+      "name": "Pohang University of Science and Technology",
+      "cn": "浦项科技大学",
+      "country": "South Korea",
+      "flag": "🇰🇷",
+      "qs": 98,
+      "the": 151,
+      "arwu": 301,
+      "usn": 393
+    },
+    {
+      "name": "Indian Institute of Technology Delhi",
+      "cn": "印度理工德里分校",
+      "country": "India",
+      "flag": "🇮🇳",
+      "qs": 123,
+      "the": 351,
+      "arwu": null,
+      "usn": null
+    },
+    {
+      "name": "University of Malaya",
+      "cn": "马来亚大学",
+      "country": "Malaysia",
+      "flag": "🇲🇾",
+      "qs": 60,
+      "the": 251,
+      "arwu": 301,
+      "usn": 356
+    },
+    {
+      "name": "University of Aberdeen",
+      "cn": "阿伯丁大学",
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "qs": 236,
+      "the": 210,
+      "arwu": 301,
+      "usn": null
+    },
+    {
+      "name": "Central South University",
+      "cn": "中南大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 400,
+      "the": 301,
+      "arwu": 151,
+      "usn": 145
+    },
+    {
+      "name": "Hokkaido University",
+      "cn": "北海道大学",
+      "country": "Japan",
+      "flag": "🇯🇵",
+      "qs": 173,
+      "the": 351,
+      "arwu": 201,
+      "usn": 297
+    },
+    {
+      "name": "Shandong University",
+      "cn": "山东大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": 344,
+      "the": 351,
+      "arwu": 151,
+      "usn": 189
+    },
+    {
+      "name": "Charles University",
+      "cn": "查理大学",
+      "country": "Czech Republic",
+      "flag": "🇨🇿",
+      "qs": 246,
+      "the": 401,
+      "arwu": 201,
+      "usn": 214
+    },
+    {
+      "name": "Wuhan University of Technology",
+      "cn": "武汉理工大学",
+      "country": "China",
+      "flag": "🇨🇳",
+      "qs": null,
+      "the": 401,
+      "arwu": 201,
+      "usn": 214
+    },
+    {
+      "name": "Indian Institute of Science",
+      "cn": "印度科学理学院",
+      "country": "India",
+      "flag": "🇮🇳",
+      "qs": 219,
+      "the": 251,
+      "arwu": 401,
+      "usn": null
+    },
+    {
+      "name": "University of Warsaw",
+      "cn": "华沙大学",
+      "country": "Poland",
+      "flag": "🇵🇱",
+      "qs": 262,
+      "the": 401,
+      "arwu": 301,
+      "usn": null
+    },
+    {
+      "name": "University of Buenos Aires",
+      "cn": "布宜诺斯艾利斯大学",
+      "country": "Argentina",
+      "flag": "🇦🇷",
+      "qs": 84,
+      "the": 601,
+      "arwu": null,
+      "usn": null
+    },
+    {
+      "name": "National Autonomous University of Mexico",
+      "cn": "墨西哥国立自治大学",
+      "country": "Mexico",
+      "flag": "🇲🇽",
+      "qs": 94,
+      "the": 601,
+      "arwu": null,
+      "usn": null
+    },
+    {
+      "name": "Aristotle University of Thessaloniki",
+      "cn": "亚里士多德大学",
+      "country": "Greece",
+      "flag": "🇬🇷",
+      "qs": 411,
+      "the": 401,
+      "arwu": 301,
+      "usn": null
+    },
+    {
+      "name": "Charité - Berlin",
+      "cn": "柏林夏里特医学院",
+      "country": "Germany",
+      "flag": "🇩🇪",
+      "qs": null,
+      "the": 130,
+      "arwu": null,
+      "usn": null
+    }
+  ]
+}
