@@ -33,6 +33,32 @@
       "<path d='" + line + "' fill='none' stroke='" + color + "' stroke-width='1.6' stroke-linejoin='round' stroke-linecap='round' vector-effect='non-scaling-stroke'/>" +
       "<circle cx='" + e[0].toFixed(1) + "' cy='" + e[1].toFixed(1) + "' r='2' fill='" + color + "' vector-effect='non-scaling-stroke'/></svg>";
   }
+  // 排行迷你柱：全部为正，柱高按值比例，最高的一根实心、其余淡化
+  function colBars(vals, color, w, h) {
+    w = w || 200; h = h || 34; vals = (vals || []).filter(isNum); if (vals.length < 2) return "";
+    var max = Math.max.apply(null, vals) || 1, n = vals.length, gap = n > 8 ? 1.5 : 3, bw = (w - (n - 1) * gap) / n;
+    var s = "<svg viewBox='0 0 " + w + " " + h + "' preserveAspectRatio='none' aria-hidden='true'>";
+    vals.forEach(function (v, i) {
+      var bh = Math.max(1.5, v / max * (h - 3)), x = i * (bw + gap), y = h - bh;
+      s += "<rect x='" + x.toFixed(1) + "' y='" + y.toFixed(1) + "' width='" + bw.toFixed(1) + "' height='" + bh.toFixed(1) +
+        "' rx='1' fill='" + color + "' fill-opacity='" + (v === max ? 1 : 0.5) + "'/>";
+    });
+    return s + "</svg>";
+  }
+  // 涨跌迷你柱：以零轴为中线，正红负绿（国内习惯）
+  function signedBars(vals, w, h) {
+    w = w || 200; h = h || 34; vals = (vals || []).filter(isNum); if (vals.length < 2) return "";
+    var max = Math.max.apply(null, vals.map(function (v) { return Math.abs(v); })) || 1;
+    var mid = h / 2, n = vals.length, gap = 3, bw = (w - (n - 1) * gap) / n;
+    var s = "<svg viewBox='0 0 " + w + " " + h + "' preserveAspectRatio='none' aria-hidden='true'>" +
+      "<line x1='0' y1='" + mid + "' x2='" + w + "' y2='" + mid + "' stroke='rgba(255,255,255,.14)' stroke-width='1' vector-effect='non-scaling-stroke'/>";
+    vals.forEach(function (v, i) {
+      var bh = Math.max(1, Math.abs(v) / max * (mid - 1.5)), x = i * (bw + gap), y = v >= 0 ? mid - bh : mid;
+      s += "<rect x='" + x.toFixed(1) + "' y='" + y.toFixed(1) + "' width='" + bw.toFixed(1) + "' height='" + bh.toFixed(1) +
+        "' rx='1' fill='" + (v >= 0 ? "#ff5d6c" : "#28c79a") + "'/>";
+    });
+    return s + "</svg>";
+  }
   function relTime(iso) {
     if (!iso) return "—";
     var t = Date.parse(iso); if (isNaN(t)) return "—";
@@ -53,13 +79,6 @@
         return "<div class='big' style='color:" + col + "'>" + r.score +
           "<small style='color:" + col + "'>" + esc(r.labelZh || "") + "</small></div>" +
           row("偏弱信号", weak || "—", "dim");
-      },
-      spark: function (d) {
-        var col = radarColor((d.regime || {}).score);
-        return getJSON("../macro-radar/history.json").then(function (h) {
-          var reg = (h && h.regime) || [];
-          return { values: reg.slice(-42).filter(isNum), color: col };
-        });
       } },
     { folder: "asset-tracker", emoji: "🌍", name: "全球大类资产收益率", tag: "股市 · 商品 · 外汇 · 债券", accent: "#6c8cff",
       render: function (d) {
@@ -102,9 +121,6 @@
         if (!isNum(d.score)) return "<div class='loading'>暂无数据</div>";
         return "<div class='big' style='color:" + fgColor(d.score) + "'>" + d.score +
           "<small style='color:" + fgColor(d.score) + "'>" + esc(d.ratingZh || "") + "</small></div>";
-      },
-      spark: function (d) {
-        return { values: (d.history || []).map(function (x) { return x.v; }).filter(isNum), color: fgColor(d.score) };
       } },
     { folder: "world-economy", emoji: "🌐", name: "全球经济图谱", tag: "各国经济指标地图", accent: "#5fd07a",
       render: function (d) {
@@ -165,6 +181,70 @@
       } }
   ];
 
+  // 每个应用的迷你图（w=容器宽度）：有序列→走势线，排行→Top 柱，多周期→涨跌柱
+  var VIZ = {
+    "macro-radar": function (d, w) {
+      var col = radarColor((d.regime || {}).score);
+      return getJSON("../macro-radar/history.json").then(function (h) {
+        return sparkSVG(((h && h.regime) || []).slice(-42).filter(isNum), col, w, 34);
+      });
+    },
+    "fear-greed": function (d, w) {
+      return sparkSVG((d.history || []).map(function (x) { return x.v; }).filter(isNum), fgColor(d.score), w, 34);
+    },
+    "house-prices": function (d, w) {
+      var cs = (d.countries || []).filter(function (c) { return isNum(c.yoyNominal); })
+        .sort(function (a, b) { return b.yoyNominal - a.yoyNominal; });
+      var lead = cs[0]; if (!lead || !lead.trend) return "";
+      var vals = lead.trend.filter(function (t) { return t.p.indexOf("Q") >= 0; }).slice(-24).map(function (t) { return t.v; });
+      return "<div class='vlab'>" + esc(lead.name) + " 房价指数走势</div>" + sparkSVG(vals, "#5fd07a", w, 30);
+    },
+    "superinvestors": function (d, w) {
+      var wk = ((d.aaii || {}).weeks || []).slice().reverse().map(function (x) { return x.bull; }).filter(isNum);
+      return wk.length > 1 ? "<div class='vlab'>AAII 看涨情绪 · 近 " + wk.length + " 周</div>" + sparkSVG(wk, "#8b7cf7", w, 30) : "";
+    },
+    "asset-tracker": function (d, w) {
+      var a = (d.assets || []).filter(function (x) { return x.returns && isNum(x.returns.ytd); })
+        .sort(function (x, y) { return y.returns.ytd - x.returns.ytd; });
+      if (a.length < 4) return "";
+      var pick = a.slice(0, 3).concat(a.slice(-3));
+      return "<div class='vlab'>YTD 涨跌前三 / 后三</div>" + signedBars(pick.map(function (x) { return x.returns.ytd; }), w, 30);
+    },
+    "asset-ranking": function (d, w) {
+      return "<div class='vlab'>市值前 8</div>" + colBars((d.assets || []).slice(0, 8).map(function (a) { return a.marketCap; }), "#f0a35e", w, 30);
+    },
+    "billionaires": function (d, w) {
+      return "<div class='vlab'>身价前 8</div>" + colBars((d.people || []).slice(0, 8).map(function (p) { return p.worth; }), "#f3c969", w, 30);
+    },
+    "companies": function (d, w) {
+      return "<div class='vlab'>市值前 8</div>" + colBars((d.companies || []).slice(0, 8).map(function (c) { return c.marketCap; }), "#38bdf8", w, 30);
+    },
+    "world-economy": function (d, w) {
+      var pol = (d.indicators || []).filter(function (i) { return i.key === "policy"; })[0];
+      var v = (pol && pol.values) || {}, ks = ["US", "CN", "DE", "JP", "GB", "IN", "BR"];
+      var vals = ks.map(function (k) { return v[k]; }).filter(isNum);
+      return vals.length > 1 ? "<div class='vlab'>主要央行基准利率 %</div>" + colBars(vals, "#5fd07a", w, 30) : "";
+    },
+    "ai-rankings": function (d, w) {
+      var vals = (d.models || []).slice(0, 8).map(function (m) { return m.arena; }).filter(isNum);
+      return vals.length > 1 ? "<div class='vlab'>竞技场 Elo 前 8</div>" + colBars(vals, "#39d3e0", w, 30) : "";
+    },
+    "major-rankings": function (d, w) {
+      var top = (d.majors || []).slice().sort(function (a, b) { return b.mid - a.mid; }).slice(0, 8).map(function (m) { return m.mid; });
+      return top.length > 1 ? "<div class='vlab'>薪资前 8（中位年薪）</div>" + colBars(top, "#5fd07a", w, 30) : "";
+    },
+    "university-rankings": function (d, w) {
+      var cnt = {}; (d.universities || []).forEach(function (u) { var f = u.flag || "🌐"; cnt[f] = (cnt[f] || 0) + 1; });
+      var top = Object.keys(cnt).map(function (k) { return cnt[k]; }).sort(function (a, b) { return b - a; }).slice(0, 8);
+      return top.length > 1 ? "<div class='vlab'>各国上榜数（前 8 国）</div>" + colBars(top, "#8aa6ff", w, 30) : "";
+    },
+    "econ-calendar": function (d, w) {
+      var evs = d.events || [], c = { high: 0, medium: 0, low: 0 };
+      evs.forEach(function (e) { if (c[e.impact] != null) c[e.impact]++; });
+      return "<div class='vlab'>本周事件影响分布（高/中/低）</div>" + colBars([c.high, c.medium, c.low], "#e0729a", w, 30);
+    }
+  };
+
   // 各应用 data.json 只取一次，卡片与「今日市场总览」共用，避免重复请求
   var _cache = {};
   function getJSON(url) {
@@ -190,14 +270,11 @@
       .then(function (d) {
         try { body.innerHTML = app.render(d); } catch (e) { body.innerHTML = "<div class='loading'>预览不可用</div>"; }
         upd.textContent = relTime(d.updatedAt);
-        if (app.spark) {
-          Promise.resolve().then(function () { return app.spark(d); }).then(function (res) {
-            if (res && res.values && res.values.length > 1) {
-              var w = Math.max(120, body.clientWidth || 240);
-              var div = document.createElement("div"); div.className = "spk";
-              div.innerHTML = sparkSVG(res.values, res.color, w, 34);
-              body.appendChild(div);
-            }
+        var vf = VIZ[app.folder];
+        if (vf) {
+          var w = Math.max(120, body.clientWidth || 240);
+          Promise.resolve().then(function () { return vf(d, w); }).then(function (html) {
+            if (html) { var div = document.createElement("div"); div.className = "spk"; div.innerHTML = html; body.appendChild(div); }
           }).catch(function () {});
         }
       })
@@ -205,16 +282,17 @@
     return a;
   }
 
-  // 今日市场总览：从几个应用数据里取头条读数，摘要在前
-  function ovM(k, v, vcls, d, accent) {
+  // 今日市场总览：从几个应用数据里取头条读数，摘要在前，每项配一张迷你图
+  function ovM(k, v, vcls, d, accent, viz) {
     return "<div class='ov-m' style='--accent:" + accent + "'>" +
       "<div class='k'>" + k + "</div>" +
       "<div class='v " + (vcls || "") + "'>" + v + "</div>" +
-      "<div class='d dim'>" + d + "</div></div>";
+      "<div class='d dim'>" + d + "</div>" +
+      (viz ? "<div class='spk'>" + viz + "</div>" : "") + "</div>";
   }
   function buildOverview() {
     var box = $("ovMetrics"), sec = $("overview"); if (!box) return;
-    var parts = {};
+    var parts = {}, W = 200;
     function render() {
       var html = ["mood", "up", "down", "rich", "cap"].map(function (k) { return parts[k] || ""; }).join("");
       if (html) { box.innerHTML = html; sec.className = "overview show"; }
@@ -222,11 +300,8 @@
     getData("fear-greed").then(function (d) {
       if (isNum(d.score)) {
         var vals = (d.history || []).map(function (x) { return x.v; }).filter(isNum);
-        var spk = vals.length > 1 ? "<div class='spk'>" + sparkSVG(vals, fgColor(d.score), 200, 26) + "</div>" : "";
-        parts.mood = ovM("市场情绪",
-          "<span style='color:" + fgColor(d.score) + "'>" + d.score + "</span>", "", esc(d.ratingZh || ""), fgColor(d.score)) ;
-        // 把走势线塞进这块指标里
-        parts.mood = parts.mood.replace("</div></div>", "</div>" + spk + "</div>");
+        parts.mood = ovM("市场情绪", "<span style='color:" + fgColor(d.score) + "'>" + d.score + "</span>",
+          "", esc(d.ratingZh || ""), fgColor(d.score), sparkSVG(vals, fgColor(d.score), W, 24));
       }
       if (d.asOf) $("ovDate").textContent = d.asOf;
       render();
@@ -236,18 +311,27 @@
         .sort(function (x, y) { return y.returns.ytd - x.returns.ytd; });
       if (a.length) {
         var t = a[0], b = a[a.length - 1];
-        parts.up = ovM("YTD 领涨", pct(t.returns.ytd), "up", esc(t.name), "#ff5d6c");
-        parts.down = ovM("YTD 领跌", pct(b.returns.ytd), "down", esc(b.name), "#28c79a");
+        var per = function (x) { var r = x.returns; return signedBars([r.d1, r.w1, r.m1, r.ytd, r.y1], W, 24); };
+        parts.up = ovM("YTD 领涨", pct(t.returns.ytd), "up", esc(t.name), "#ff5d6c", per(t));
+        parts.down = ovM("YTD 领跌", pct(b.returns.ytd), "down", esc(b.name), "#28c79a", per(b));
         render();
       }
     }).catch(function () {});
     getData("billionaires").then(function (d) {
       var p = (d.people || [])[0];
-      if (p) { parts.rich = ovM("全球首富", worth(p.worth), "", esc(p.name), "#f3c969"); render(); }
+      if (p) {
+        parts.rich = ovM("全球首富", worth(p.worth), "", esc(p.name), "#f3c969",
+          colBars((d.people || []).slice(0, 8).map(function (x) { return x.worth; }), "#f3c969", W, 24));
+        render();
+      }
     }).catch(function () {});
     getData("companies").then(function (d) {
       var c = (d.companies || [])[0];
-      if (c) { parts.cap = ovM("市值 #1", worth(c.marketCap), "", esc(c.name), "#38bdf8"); render(); }
+      if (c) {
+        parts.cap = ovM("市值 #1", worth(c.marketCap), "", esc(c.name), "#38bdf8",
+          colBars((d.companies || []).slice(0, 8).map(function (x) { return x.marketCap; }), "#38bdf8", W, 24));
+        render();
+      }
     }).catch(function () {});
   }
 
