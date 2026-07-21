@@ -420,8 +420,103 @@ const TOOLS = [
       });
     },
   },
+  {
+    label: '市值排行',
+    def: { type: 'function', function: {
+      name: 'get_company_ranking',
+      description: '获取全球公司市值排行榜（本站每日更新，来源 Yahoo Finance，市值单位十亿美元）。用户问某公司市值/股价/涨跌、市值排名、"谁市值最高"、某国最大公司时调用。',
+      parameters: { type: 'object', properties: {
+        limit: { type: 'integer', description: '返回前几名，默认 10，最多 30' },
+        country: { type: 'string', description: '按国家中文名筛选（如 美国、中国），可选' },
+        query: { type: 'string', description: '按公司中/英文名或代码搜索（如 苹果、Apple、AAPL），可选' },
+      }, required: [] },
+    } },
+    run: async (a) => {
+      const d = await fetchJSON('../companies/data.json');
+      let list = d.companies || [];
+      if (a.country) list = list.filter(c => (c.country || '').includes(a.country));
+      if (a.query) {
+        const q = String(a.query).toLowerCase();
+        list = list.filter(c => [c.name, c.nameEn, c.symbol].some(x => (x || '').toLowerCase().includes(q)));
+      }
+      const n = Math.min(Math.max(parseInt(a.limit, 10) || 10, 1), 30);
+      return JSON.stringify({
+        更新时间: d.asOf || d.updatedAt, 数据来源: d.source, 单位: '十亿美元',
+        排行: list.slice(0, n).map((c, i) => ({
+          名次: (a.country || a.query) ? undefined : i + 1,
+          公司: c.name, 英文: c.nameEn, 代码: c.symbol, 国家: c.country,
+          市值: c.marketCap, 股价: c.price, 币种: c.priceCur, 当日涨跌百分比: c.changePct,
+        })),
+        命中数: list.length,
+      });
+    },
+  },
+  {
+    label: '财经日历',
+    def: { type: 'function', function: {
+      name: 'get_econ_calendar',
+      description: '获取本周全球重要财经事件日历（本站每日更新，来源 Forex Factory，含央行决议/CPI/非农等的预测值与前值）。用户问本周有什么经济数据/财经大事、某数据何时公布时调用。',
+      parameters: { type: 'object', properties: {
+        onlyHigh: { type: 'boolean', description: '只返回高影响事件，默认 true' },
+      }, required: [] },
+    } },
+    run: async (a) => {
+      const d = await fetchJSON('../econ-calendar/data.json');
+      const onlyHigh = a.onlyHigh !== false;
+      let ev = (d.events || []).filter(e => e.impact !== 'holiday');
+      if (onlyHigh) ev = ev.filter(e => e.impact === 'high');
+      return JSON.stringify({
+        更新时间: d.asOf || d.updatedAt, 数据来源: d.source, 本周: d.weekOf,
+        事件: ev.slice(0, 25).map(e => ({
+          时间UTC: e.ts, 国家: e.country, 货币: e.ccy, 事件: e.title,
+          影响: e.impact, 预测: e.forecast, 前值: e.previous, 实际: e.actual,
+        })),
+        事件数: ev.length,
+      });
+    },
+  },
+  {
+    label: '站内导航',
+    def: { type: 'function', function: {
+      name: 'navigate_ooglex',
+      description: '在 Ooglex 站内为用户找到合适的小应用并给出链接。用户想「听电台/收音机」「用计算器」「看电影榜」「查大学/专业排名」「看富豪榜/市值榜/房价/经济数据」「玩游戏」等站内功能时调用，返回应用名与相对链接，你据此引导用户点击前往。',
+      parameters: { type: 'object', properties: {
+        need: { type: 'string', description: '用户想做的事或关键词，如 听电台、计算器、电影、大学排名、富豪榜、游戏' },
+      }, required: ['need'] },
+    } },
+    run: async (a) => {
+      const APPS = [
+        { k: ['电台', '收音机', '广播', 'radio', '听'], name: '🌍 环球电波', link: '../radio/', desc: '转动 3D 地球听全球电台' },
+        { k: ['计算', '计算器', 'bmi', '房贷', '利率', '个税'], name: '🧮 万象算集', link: '../calculators/', desc: '70+ 计算器' },
+        { k: ['电影', '影片', 'movie'], name: '🎬 全球电影榜', link: '../movies/', desc: '高分 Top 250 + 最新上映' },
+        { k: ['大学', '院校', 'university'], name: '🎓 全球大学排名', link: '../university-rankings/', desc: '四大权威榜合一' },
+        { k: ['专业', '就业', '薪资', 'major'], name: '🚀 专业与就业前景榜', link: '../major-rankings/', desc: '薪资/就业率/AI 前景' },
+        { k: ['富豪', '首富', '有钱', 'billionaire'], name: '🏆 全球富豪榜', link: '../billionaires/', desc: '前 250 富豪身价' },
+        { k: ['市值', '公司', '股价', 'company'], name: '🏢 全球公司市值榜', link: '../companies/', desc: '全球 500 强市值' },
+        { k: ['资产', '排行', '黄金', '加密', '比特币'], name: '🌐 全球资产市值榜', link: '../asset-ranking/', desc: '不限品类前 250' },
+        { k: ['房价', '楼市', 'house'], name: '🏘️ 全球房价走势', link: '../house-prices/', desc: '各国房价同比' },
+        { k: ['恐慌', '贪婪', '情绪'], name: '😱 恐慌贪婪指数', link: '../fear-greed/', desc: 'CNN 市场情绪' },
+        { k: ['经济日历', '财经日历', '央行', 'cpi', '非农'], name: '📅 全球经济日历', link: '../econ-calendar/', desc: '本周财经大事' },
+        { k: ['新闻', '要闻', '时事'], name: '📰 最新消息', link: '../whats-latest/', desc: '权威要闻聚合' },
+        { k: ['大模型', 'ai 排', 'ai排', '模型榜'], name: '🤖 全球大模型榜', link: '../ai-rankings/', desc: 'LMArena/LiveBench 合一' },
+        { k: ['经济', '宏观', 'gdp', '各国'], name: '🌐 全球经济图谱', link: '../world-economy/', desc: '世界地图看经济' },
+        { k: ['望远镜', '摄像头', '变焦'], name: '🔭 星瞳望远镜', link: '../telescope/', desc: '手机数码望远镜' },
+        { k: ['姓名', '测名', '起名'], name: '🏮 知命阁', link: '../name-fortune/', desc: '姓名测算(娱乐)' },
+        { k: ['游戏', 'game', '玩'], name: '🎮 游戏中心', link: '../../games/hub/', desc: '网页小游戏合集' },
+        { k: ['数据', '中心', '汇总', '看板'], name: '📊 数据中心', link: '../data-hub/', desc: '全部实时数据一页看' },
+      ];
+      const need = String(a.need || '').toLowerCase();
+      const hits = APPS.filter(x => x.k.some(k => need.includes(k.toLowerCase())));
+      const pick = (hits.length ? hits : APPS.slice(0, 8));
+      return JSON.stringify({
+        提示: '把下面应用推荐给用户，用 Markdown 链接 [应用名](link) 形式给出可点击链接',
+        匹配应用: pick.map(x => ({ 应用: x.name, 简介: x.desc, 链接: x.link })),
+        全站首页: '../../',
+      });
+    },
+  },
 ];
-const TOOL_SYS = '\n\n你可以调用工具获取 Ooglex 站内每日更新的实时数据。涉及新闻、市场情绪等话题时优先调用工具拿到真实数据再回答，注明数据更新时间，不要编造数据。';
+const TOOL_SYS = '\n\n你可以调用工具获取 Ooglex 站内每日更新的实时数据、并为用户导航站内小应用。涉及新闻、市场情绪、公司市值、财经日历等话题时优先调用对应工具拿真实数据再回答，注明数据更新时间，不要编造数据；用户想用站内功能（听电台、计算器、各类榜单、游戏等）时调用 navigate_ooglex 并用 Markdown 链接引导。';
 async function runTool(tc) {
   const t = TOOLS.find(x => x.def.function.name === (tc.function && tc.function.name));
   if (!t) return '{"error":"未知工具"}';
