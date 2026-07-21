@@ -160,10 +160,16 @@ function md(src) {
   h = h.replace(/\uE000(\d+)\uE001/g, (m, n) => blocks[n]);
   return h;
 }
+/* 每个大脑的名字（标在头像下，让用户记住） */
+function brainName(brain) {
+  brain = brain || cfg.provider;
+  return brain === 'webllm' ? '小机灵' : brain === 'offline' ? '离线小智' : brain === 'custom' ? '自定义' : '大聪明';
+}
 /* 像素小怪物头像：大聪明=蓝紫 · 小机灵=橙 · 离线=灰 */
-function critterSVG() {
-  const c = cfg.provider === 'webllm' ? '#e07a4e'
-          : cfg.provider === 'offline' ? '#8a90a6' : '#7d7bff';
+function critterSVG(brain) {
+  brain = brain || cfg.provider;
+  const c = brain === 'webllm' ? '#e07a4e'
+          : brain === 'offline' ? '#8a90a6' : '#7d7bff';
   return '<svg viewBox="0 0 16 16" width="100%" height="100%" shape-rendering="crispEdges" aria-hidden="true">'
     + `<rect x="4" y="3" width="8" height="8" rx="0.6" fill="${c}"/>`
     + `<rect x="2" y="5" width="2" height="3" fill="${c}"/><rect x="12" y="5" width="2" height="3" fill="${c}"/>`
@@ -171,12 +177,14 @@ function critterSVG() {
     + '<rect x="5.9" y="5" width="1.5" height="1.7" fill="#0b0c16"/><rect x="8.6" y="5" width="1.5" height="1.7" fill="#0b0c16"/>'
     + '</svg>';
 }
-function addMsg(role, text, streaming) {
+function addMsg(role, text, streaming, brain) {
   const div = document.createElement('div');
   div.className = 'msg ' + (role === 'user' ? 'user' : 'ai');
   // 用户消息按纯文本原样展示，只有 AI 回复走 Markdown
   const body = role === 'user' ? esc(text) : md(text);
-  div.innerHTML = `<div class="av">${role === 'user' ? '🙂' : critterSVG()}</div>
+  const avatar = role === 'user' ? '🙂' : critterSVG(brain);
+  const name = role === 'user' ? '我' : brainName(brain);
+  div.innerHTML = `<div class="avc"><div class="av">${avatar}</div><div class="avname">${name}</div></div>
     <div class="grp">
       <div class="bubble${streaming ? ' cursor' : ''}">${body}</div>
       <div class="acts"></div>
@@ -277,7 +285,7 @@ function openConv(id) {
   localStorage.setItem('aichat_cur', curId);
   $('msgs').innerHTML = '';
   const c = cur();
-  if (c.msgs.length) c.msgs.forEach(m => addMsg(m.role, m.content));
+  if (c.msgs.length) c.msgs.forEach(m => addMsg(m.role, m.content, false, m.brain));
   else welcome();
   renderConvs();
   refreshActs();
@@ -452,8 +460,8 @@ async function reply(conv) {
   if (cfg.provider === 'offline') {
     const r = offlineReply(q);
     setTimeout(() => {
-      if (cur() === conv) addMsg('ai', r);
-      conv.msgs.push({ role: 'assistant', content: r });
+      if (cur() === conv) addMsg('ai', r, false, 'offline');
+      conv.msgs.push({ role: 'assistant', content: r, brain: 'offline' });
       saveConvs(); renderConvs();
       if (cur() === conv) refreshActs();
     }, 400);
@@ -471,7 +479,7 @@ async function reply(conv) {
 
   busy = true; aborter = new AbortController();
   $('sendBtn').textContent = '停止'; $('sendBtn').classList.add('stop');
-  const bubble = addMsg('ai', '', true);
+  const bubble = addMsg('ai', '', true, cfg.provider);
   let full = '';
   try {
     const msgs = [{ role: 'system', content: cfg.sys + TOOL_SYS }, ...conv.msgs.slice(-16)];
@@ -516,17 +524,17 @@ async function reply(conv) {
         const m = bubble.closest('.msg'); if (m) m.remove();
         busy = false; aborter = null;
         $('sendBtn').textContent = '发送'; $('sendBtn').classList.remove('stop');
-        degrade(conv, /429/.test(err.message) ? '今日共享额度已用完' : '共享通道暂时不可用');
+        degrade(conv, /429/.test(err.message) ? '大聪明今日额度已用完' : '大聪明暂时连不上（网络受限时可能这样）');
         return;
       }
-      full = `❌ 连接失败：${esc(err.message)}\n\n排查建议：\n1. 密钥是否正确、额度是否用完\n2. 模型名称是否拼写正确\n3. 个别服务商不允许网页直连（CORS 限制），可换 DeepSeek / 智谱试试`;
+      full = `❌ 连接失败：${esc(err.message)}\n\n排查建议：\n1. 密钥是否正确、额度是否用完\n2. 模型名称是否拼写正确\n3. 部分接口不允许网页直连（CORS 限制）`;
     }
   }
   bubble.classList.remove('cursor');
   bubble.innerHTML = md(full);
   const bubbleMsg = bubble.closest('.msg');
   if (bubbleMsg) bubbleMsg._raw = full;
-  conv.msgs.push({ role: 'assistant', content: full });
+  conv.msgs.push({ role: 'assistant', content: full, brain: cfg.provider });
   conv.ts = Date.now();
   saveConvs(); renderConvs();
   if (cur() === conv) refreshActs();
@@ -585,8 +593,8 @@ function degrade(conv, reason) {
   const lastUser = conv.msgs.filter(m => m.role === 'user').pop();
   const r = '⚠️ ' + reason + '，先由离线小智应急——\n\n' + offlineReply(lastUser ? lastUser.content : '')
     + '\n\n> 想要聪明回答：稍后再试**大聪明**（云端·免费），或在电脑上用**小机灵**（本机模型）。';
-  addMsg('ai', r);
-  conv.msgs.push({ role: 'assistant', content: r });
+  addMsg('ai', r, false, 'offline');
+  conv.msgs.push({ role: 'assistant', content: r, brain: 'offline' });
   conv.ts = Date.now();
   saveConvs(); renderConvs();
   if (cur() === conv) refreshActs();
@@ -602,7 +610,7 @@ async function replyWebLLM(conv) {
   const stop = { requested: false };
   aborter = { abort: () => { stop.requested = true; if (llm) { try { llm.interruptGenerate(); } catch (e) {} } } };
   $('sendBtn').textContent = '停止'; $('sendBtn').classList.add('stop');
-  const bubble = addMsg('ai', '', true);
+  const bubble = addMsg('ai', '', true, 'webllm');
   let full = '';
   // 本地模型模式用配置的模型；从其他模式降级接手时 cfg.model 不是 WebLLM
   // 模型名，必须用已加载引擎的模型（llmModel），兜底用服务商默认值
@@ -649,7 +657,7 @@ async function replyWebLLM(conv) {
   bubble.innerHTML = md(full);
   const bubbleMsg = bubble.closest('.msg');
   if (bubbleMsg) bubbleMsg._raw = full;
-  conv.msgs.push({ role: 'assistant', content: full });
+  conv.msgs.push({ role: 'assistant', content: full, brain: 'webllm' });
   conv.ts = Date.now();
   saveConvs(); renderConvs();
   if (cur() === conv) refreshActs();
