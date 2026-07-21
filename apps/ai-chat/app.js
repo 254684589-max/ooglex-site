@@ -40,6 +40,13 @@ fetch('shared-config.json', { cache: 'no-cache' })
   .catch(() => {});
 const saveCfg = () => localStorage.setItem('aichat_cfg', JSON.stringify(cfg));
 
+/* 国内网络提示条：默认展示，点「知道了」后记住不再弹 */
+if (!localStorage.getItem('aichat_nettip_ok')) $('netTip').style.display = '';
+$('netTipClose').addEventListener('click', () => {
+  $('netTip').style.display = 'none';
+  localStorage.setItem('aichat_nettip_ok', '1');
+});
+
 /* ===================== 多会话存储 ===================== */
 const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 let convs = [];
@@ -271,7 +278,7 @@ function refreshStatus() {
 
 /* ===================== 欢迎与会话切换 ===================== */
 function welcome() {
-  addMsg('ai', '你好呀，我是万象智聊 ✨\n\n默认用**大聪明**（云端模型）——**打开就能聊，不用配置，手机也能用**。\n\n想更私密？在 ⚙️ 设置里换**小机灵**：模型直接跑在你电脑上，聊天内容不出本机（需要电脑版 Chrome / Edge）。\n\n有什么想聊的，直接说 😄');
+  addMsg('ai', '你好呀，我是万象智聊 ✨\n\n默认用**大聪明**（云端模型），打开就能聊。\n\n> ⚠️ 国内提示：大聪明走海外线路，**建议开 VPN 或用 WiFi / 电脑**，否则可能连不上；断网可用**离线小智**；有 API 密钥可在 ⚙️ 设置选「自定义接口」填智谱 / DeepSeek，**免 VPN 稳定使用**。\n\n有什么想聊的，直接说 😄');
 }
 function renderConvs() {
   $('convList').innerHTML = convs.map(c =>
