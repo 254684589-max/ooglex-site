@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-19T21:37:27Z",
-  "asOf": "2026-07-19",
+  "updatedAt": "2026-07-21T00:18:17Z",
+  "asOf": "2026-07-21",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -353,7 +353,7 @@
       "livebench": null,
       "aa": 48.0,
       "ctx": "205K",
-      "price": 0.52
+      "price": 0.45
     },
     {
       "id": "grok-4-3",
@@ -447,19 +447,6 @@
       "price": null
     },
     {
-      "id": "grok-4-20-0309-reasoning",
-      "name": "Grok 4.20.0309 Reasoning",
-      "org": "xAI",
-      "orgCn": "xAI",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1473,
-      "livebench": null,
-      "aa": null,
-      "ctx": "2M",
-      "price": 3.0
-    },
-    {
       "id": "claude-opus-4-5-20251101-32k",
       "name": "Claude Opus 4.5.20251101 32K",
       "org": "Anthropic",
@@ -484,6 +471,19 @@
       "aa": null,
       "ctx": "1.1M",
       "price": 11.25
+    },
+    {
+      "id": "grok-4-20-0309-reasoning",
+      "name": "Grok 4.20.0309 Reasoning",
+      "org": "xAI",
+      "orgCn": "xAI",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1473,
+      "livebench": null,
+      "aa": null,
+      "ctx": "2M",
+      "price": 3.0
     },
     {
       "id": "glm-5-1",
