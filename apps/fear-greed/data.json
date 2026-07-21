@@ -1,28 +1,28 @@
 {
-  "updatedAt": "2026-07-19T21:36:21Z",
-  "asOf": "2026-07-19",
+  "updatedAt": "2026-07-21T00:17:10Z",
+  "asOf": "2026-07-21",
   "source": "CNN Business Fear & Greed Index",
-  "score": 37,
+  "score": 38,
   "rating": "fear",
   "ratingZh": "恐惧",
   "refs": {
     "now": {
-      "score": 37,
+      "score": 38,
       "rating": "fear",
       "ratingZh": "恐惧"
     },
     "close": {
-      "score": 42,
+      "score": 37,
       "rating": "fear",
       "ratingZh": "恐惧"
     },
     "week": {
-      "score": 47,
-      "rating": "neutral",
-      "ratingZh": "中性"
+      "score": 41,
+      "rating": "fear",
+      "ratingZh": "恐惧"
     },
     "month": {
-      "score": 33,
+      "score": 37,
       "rating": "fear",
       "ratingZh": "恐惧"
     },
@@ -34,7 +34,7 @@
   },
   "indicators": [
     {
-      "score": 35,
+      "score": 34,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "market_momentum_sp500",
@@ -50,7 +50,7 @@
       "desc": "创52周新高 vs 新低个股"
     },
     {
-      "score": 21,
+      "score": 19,
       "rating": "extreme fear",
       "ratingZh": "极度恐惧",
       "key": "stock_price_breadth",
@@ -58,7 +58,7 @@
       "desc": "麦克莱伦成交量总和指数"
     },
     {
-      "score": 36,
+      "score": 32,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "put_call_options",
@@ -74,7 +74,7 @@
       "desc": "VIX 及其50日均线"
     },
     {
-      "score": 45,
+      "score": 39,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "safe_haven_demand",
@@ -82,9 +82,9 @@
       "desc": "股票 vs 国债 20日收益差"
     },
     {
-      "score": 33,
-      "rating": "fear",
-      "ratingZh": "恐惧",
+      "score": 49,
+      "rating": "neutral",
+      "ratingZh": "中性",
       "key": "junk_bond_demand",
       "name": "垃圾债需求",
       "desc": "投资级 vs 垃圾债收益利差"
@@ -422,6 +422,10 @@
     {
       "t": "2026-07-16",
       "v": 41
+    },
+    {
+      "t": "2026-07-20",
+      "v": 38
     }
   ],
   "note": "数据来自 CNN 恐慌与贪婪指数：0 = 极度恐惧，100 = 极度贪婪，由 7 个市场情绪指标综合而成，每日自动更新。仅供参考，不构成建议。"
