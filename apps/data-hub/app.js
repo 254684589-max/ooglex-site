@@ -14,6 +14,25 @@
   function fgColor(s) { return !isNum(s) ? "#9099ad" : s < 25 ? "#d3403b" : s < 45 ? "#e8833a" : s < 55 ? "#e4b53d" : s < 75 ? "#7cb851" : "#3a9d5d"; }
   function radarColor(s) { return !isNum(s) ? "#9099ad" : s < 40 ? "#e0554f" : s <= 58 ? "#e0a750" : "#3fae7d"; }
   function row(l, v, c) { return "<div class='row'><span class='l'>" + l + "</span><span class='v " + (c || "") + "'>" + v + "</span></div>"; }
+  // 迷你走势线：真实数值序列 → 面积填充 + 折线 + 末端高亮点
+  function sparkSVG(vals, color, w, h) {
+    w = w || 200; h = h || 34; var pad = 3;
+    if (!vals || vals.length < 2) return "";
+    var min = Math.min.apply(null, vals), max = Math.max.apply(null, vals), rng = (max - min) || 1, n = vals.length;
+    var pts = vals.map(function (v, i) {
+      return [pad + i * (w - 2 * pad) / (n - 1), h - pad - (v - min) / rng * (h - 2 * pad)];
+    });
+    var line = pts.map(function (p, i) { return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" ");
+    var area = line + " L " + pts[n - 1][0].toFixed(1) + " " + (h - pad) + " L " + pad.toFixed(1) + " " + (h - pad) + " Z";
+    var id = "sp" + Math.random().toString(36).slice(2, 7), e = pts[n - 1];
+    return "<svg viewBox='0 0 " + w + " " + h + "' preserveAspectRatio='none' aria-hidden='true'>" +
+      "<defs><linearGradient id='" + id + "' x1='0' y1='0' x2='0' y2='1'>" +
+      "<stop offset='0' stop-color='" + color + "' stop-opacity='.30'/>" +
+      "<stop offset='1' stop-color='" + color + "' stop-opacity='0'/></linearGradient></defs>" +
+      "<path d='" + area + "' fill='url(#" + id + ")'/>" +
+      "<path d='" + line + "' fill='none' stroke='" + color + "' stroke-width='1.6' stroke-linejoin='round' stroke-linecap='round' vector-effect='non-scaling-stroke'/>" +
+      "<circle cx='" + e[0].toFixed(1) + "' cy='" + e[1].toFixed(1) + "' r='2' fill='" + color + "' vector-effect='non-scaling-stroke'/></svg>";
+  }
   function relTime(iso) {
     if (!iso) return "—";
     var t = Date.parse(iso); if (isNaN(t)) return "—";
@@ -34,6 +53,13 @@
         return "<div class='big' style='color:" + col + "'>" + r.score +
           "<small style='color:" + col + "'>" + esc(r.labelZh || "") + "</small></div>" +
           row("偏弱信号", weak || "—", "dim");
+      },
+      spark: function (d) {
+        var col = radarColor((d.regime || {}).score);
+        return getJSON("../macro-radar/history.json").then(function (h) {
+          var reg = (h && h.regime) || [];
+          return { values: reg.slice(-42).filter(isNum), color: col };
+        });
       } },
     { folder: "asset-tracker", emoji: "🌍", name: "全球大类资产收益率", tag: "股市 · 商品 · 外汇 · 债券", accent: "#6c8cff",
       render: function (d) {
@@ -71,12 +97,14 @@
         return "<div class='big'>" + worth(c.marketCap) + "<small>#1 " + esc(c.name) + "</small></div>" +
           row("前 " + (d.count || 0) + " 总市值", worth(d.totalMarketCap));
       } },
-    { folder: "fear-greed", emoji: "🧭", name: "恐慌与贪婪指数", tag: "CNN Fear & Greed", accent: "#39c2c9",
+    { folder: "fear-greed", emoji: "🧭", name: "恐慌与贪婪指数", tag: "CNN Fear & Greed · 近一年走势", accent: "#39c2c9",
       render: function (d) {
         if (!isNum(d.score)) return "<div class='loading'>暂无数据</div>";
         return "<div class='big' style='color:" + fgColor(d.score) + "'>" + d.score +
-          "<small style='color:" + fgColor(d.score) + "'>" + esc(d.ratingZh || "") + "</small></div>" +
-          row("区间", "0 极度恐惧 — 100 极度贪婪", "dim");
+          "<small style='color:" + fgColor(d.score) + "'>" + esc(d.ratingZh || "") + "</small></div>";
+      },
+      spark: function (d) {
+        return { values: (d.history || []).map(function (x) { return x.v; }).filter(isNum), color: fgColor(d.score) };
       } },
     { folder: "world-economy", emoji: "🌐", name: "全球经济图谱", tag: "各国经济指标地图", accent: "#5fd07a",
       render: function (d) {
@@ -139,13 +167,14 @@
 
   // 各应用 data.json 只取一次，卡片与「今日市场总览」共用，避免重复请求
   var _cache = {};
-  function getData(folder) {
-    if (!_cache[folder]) {
-      _cache[folder] = fetch("../" + folder + "/data.json?t=" + Date.now())
+  function getJSON(url) {
+    if (!_cache[url]) {
+      _cache[url] = fetch(url + (url.indexOf("?") < 0 ? "?t=" + Date.now() : ""))
         .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
     }
-    return _cache[folder];
+    return _cache[url];
   }
+  function getData(folder) { return getJSON("../" + folder + "/data.json"); }
 
   function card(app) {
     var a = document.createElement("a");
@@ -161,6 +190,16 @@
       .then(function (d) {
         try { body.innerHTML = app.render(d); } catch (e) { body.innerHTML = "<div class='loading'>预览不可用</div>"; }
         upd.textContent = relTime(d.updatedAt);
+        if (app.spark) {
+          Promise.resolve().then(function () { return app.spark(d); }).then(function (res) {
+            if (res && res.values && res.values.length > 1) {
+              var w = Math.max(120, body.clientWidth || 240);
+              var div = document.createElement("div"); div.className = "spk";
+              div.innerHTML = sparkSVG(res.values, res.color, w, 34);
+              body.appendChild(div);
+            }
+          }).catch(function () {});
+        }
       })
       .catch(function () { body.innerHTML = "<div class='loading'>数据暂不可用</div>"; });
     return a;
@@ -181,8 +220,14 @@
       if (html) { box.innerHTML = html; sec.className = "overview show"; }
     }
     getData("fear-greed").then(function (d) {
-      if (isNum(d.score)) parts.mood = ovM("市场情绪",
-        "<span style='color:" + fgColor(d.score) + "'>" + d.score + "</span>", "", esc(d.ratingZh || ""), fgColor(d.score));
+      if (isNum(d.score)) {
+        var vals = (d.history || []).map(function (x) { return x.v; }).filter(isNum);
+        var spk = vals.length > 1 ? "<div class='spk'>" + sparkSVG(vals, fgColor(d.score), 200, 26) + "</div>" : "";
+        parts.mood = ovM("市场情绪",
+          "<span style='color:" + fgColor(d.score) + "'>" + d.score + "</span>", "", esc(d.ratingZh || ""), fgColor(d.score)) ;
+        // 把走势线塞进这块指标里
+        parts.mood = parts.mood.replace("</div></div>", "</div>" + spk + "</div>");
+      }
       if (d.asOf) $("ovDate").textContent = d.asOf;
       render();
     }).catch(function () {});
