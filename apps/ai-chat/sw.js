@@ -5,7 +5,7 @@
      · 其余同源静态资源首次用到时再缓存；
      · 跨域请求（大模型 API、广告等）一律直连、绝不拦截/缓存；
      · 只处理 GET，聊天的 POST 请求永远不经过缓存。 */
-const VERSION = 'aichat-v10';
+const VERSION = 'aichat-v11';
 const SHELL_CACHE = 'aichat-shell-' + VERSION;
 const RUNTIME_CACHE = 'aichat-runtime-' + VERSION;
 

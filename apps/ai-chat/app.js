@@ -3,54 +3,40 @@
 'use strict';
 const $ = id => document.getElementById(id);
 
-/* ===================== 服务商预设（均为 OpenAI 兼容接口） ===================== */
+/* ===================== 两个大脑：大聪明（云端）· 小机灵（本机） ===================== */
+const MOBILE = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 const PROVIDERS = [
-  { id: 'zhipu', name: '智谱 GLM（国内 · 有免费模型）', base: 'https://open.bigmodel.cn/api/paas/v4', model: 'glm-4-flash',
-    help: '注册 <a href="https://open.bigmodel.cn" target="_blank">open.bigmodel.cn</a> → 控制台 → API 密钥。glm-4-flash 目前免费。' },
-  { id: 'deepseek', name: 'DeepSeek（国内 · 便宜好用）', base: 'https://api.deepseek.com/v1', model: 'deepseek-chat',
-    help: '注册 <a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a> → API Keys 创建密钥，充值几块钱能用很久。' },
-  { id: 'moonshot', name: 'Kimi 月之暗面（国内）', base: 'https://api.moonshot.cn/v1', model: 'moonshot-v1-8k',
-    help: '注册 <a href="https://platform.moonshot.cn" target="_blank">platform.moonshot.cn</a> → API Key 管理，新用户送免费额度。' },
-  { id: 'qwen', name: '通义千问（国内 · 阿里）', base: 'https://dashscope.aliyuncs.com/compatible-mode/v1', model: 'qwen-turbo',
-    help: '开通 <a href="https://dashscope.aliyun.com" target="_blank">dashscope.aliyun.com</a> → API-KEY 管理，有免费额度。' },
-  { id: 'openai', name: 'OpenAI（海外）', base: 'https://api.openai.com/v1', model: 'gpt-4o-mini',
-    help: '需要海外网络与账号：platform.openai.com。' },
-  { id: 'custom', name: '自定义（任何兼容接口）', base: '', model: '',
-    help: '填入任何 OpenAI 兼容服务的地址与模型名，例如自建的 Ollama（http://localhost:11434/v1）。' },
-  { id: 'shared', name: '站长共享通道（免费 · 限量 · 零配置）', base: '', model: '',
-    help: '本站代为转发的免费额度：<b>无需密钥、打开即聊</b>，每人每天限量，用完自动降级。'
-      + '密钥由站长持有，你的对话不经过本站服务器存储。' },
-  { id: 'webllm', name: '浏览器本地模型（免密钥 · 实验）', base: '',
-    // 手机显存有限：移动端默认小模型，桌面端默认 1.5B
-    model: /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent)
-      ? 'Qwen2.5-0.5B-Instruct-q4f16_1-MLC' : 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC',
-    help: '模型直接在你的设备上运行：<b>无需密钥、聊天内容不出本机、下载后离线可用</b>。首次使用需下载模型文件'
-      + '（0.5B 约 300MB / 1.5B 约 900MB），之后走本地缓存。手机建议用 0.5B，'
-      + '电脑可换 <code>Qwen2.5-1.5B-Instruct-q4f16_1-MLC</code> 更聪明。'
-      + '需要较新的 Chrome / Edge（WebGPU）。国内网络请在下方把模型源切成镜像。' },
-  { id: 'offline', name: '离线小智（无需密钥 · 应急玩具）', base: '', model: '内置规则引擎',
-    help: '不联网、不要密钥的迷你应答机，只会算术、查日期、讲笑话等小本事，应急解闷用 😄' },
+  { id: 'shared', name: '🧠 大聪明（云端 · 免费 · 打开即用）', base: '', model: '',
+    help: '本站为你转发的免费云端大模型：<b>无需密钥、打开就能聊，手机也能用</b>。'
+      + '每人每天限量，用完自动切到「小机灵」或应急模式。密钥由站长持有，你的对话不经过本站服务器存储。' },
+  { id: 'webllm', name: '🤖 小机灵（本机运行 · 免密钥 · 电脑用）', base: '',
+    // 手机显存/浏览器多半跑不动：移动端默认小模型，桌面端默认 1.5B
+    model: MOBILE ? 'Qwen2.5-0.5B-Instruct-q4f16_1-MLC' : 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC',
+    help: '模型直接在你的设备上跑：<b>无需密钥、聊天不出本机、下载后离线可用</b>。'
+      + '需要电脑版较新 Chrome / Edge（WebGPU）；<b>手机浏览器多不支持，请改用「大聪明」</b>。'
+      + '首次使用下载模型（0.5B 约 300MB / 1.5B 约 900MB），之后走缓存。国内网络请把下方下载源切成镜像。' },
+  { id: 'offline', name: '离线小智（断网应急 · 小玩具）', base: '', model: '内置规则引擎',
+    help: '不联网、不要密钥的迷你应答机，只会算术、查日期、讲笑话，断网时应急用 😄' },
+  { id: 'custom', name: '自定义接口（高级 · 自带密钥）', base: '', model: '',
+    help: '给会折腾的用户：填任何 OpenAI 兼容服务的地址、模型名与密钥。例如 '
+      + 'DeepSeek（https://api.deepseek.com/v1 · deepseek-chat）、智谱、Kimi、通义、或自建 Ollama。' },
 ];
-const DEFAULT_SYS = '你是「万象智聊」里的AI助手，聪明伶俐、博学多才。用中文回答，表达清晰友善，复杂问题分点说明，不确定时诚实说明。';
+const DEFAULT_SYS = '你是 Ooglex「万象智聊」里的 AI 助手，聪明伶俐、博学多才。用中文回答，表达清晰友善，复杂问题分点说明，不确定时诚实说明。';
 
 /* ===================== 配置与历史 ===================== */
-let cfg = { provider: 'zhipu', base: PROVIDERS[0].base, model: PROVIDERS[0].model, key: '', sys: DEFAULT_SYS, src: 'hf' };
-const isFreshUser = !localStorage.getItem('aichat_cfg');
+// 默认「大聪明」云端通道：新用户打开即聊，零配置
+let cfg = { provider: 'shared', base: '', model: '', key: '', sys: DEFAULT_SYS, src: 'hf' };
 try { Object.assign(cfg, JSON.parse(localStorage.getItem('aichat_cfg') || '{}')); } catch (e) {}
+// 迁移老版本：已下架的品牌服务商（zhipu/deepseek/…）→ 有自填密钥转「自定义」，否则回「大聪明」
+if (!PROVIDERS.some(p => p.id === cfg.provider)) {
+  cfg.provider = (cfg.key && cfg.base) ? 'custom' : 'shared';
+}
 
-/* 站长共享通道配置（部署 workers/ai-proxy 后在 shared-config.json 开通） */
+/* 大聪明云端配置（部署 workers/ai-proxy 后在 shared-config.json 开通） */
 let SHARED = { enabled: false, base: '', model: '' };
 fetch('shared-config.json', { cache: 'no-cache' })
   .then(r => (r.ok ? r.json() : null))
-  .then(j => {
-    if (!j) return;
-    SHARED = j;
-    // 新访客默认走共享通道：零配置开聊
-    if (isFreshUser && SHARED.enabled && cfg.provider === 'zhipu' && !cfg.key) {
-      cfg.provider = 'shared';
-      refreshStatus();
-    }
-  })
+  .then(j => { if (j) { SHARED = j; refreshStatus(); } })
   .catch(() => {});
 const saveCfg = () => localStorage.setItem('aichat_cfg', JSON.stringify(cfg));
 
@@ -174,12 +160,23 @@ function md(src) {
   h = h.replace(/\uE000(\d+)\uE001/g, (m, n) => blocks[n]);
   return h;
 }
+/* 像素小怪物头像：大聪明=蓝紫 · 小机灵=橙 · 离线=灰 */
+function critterSVG() {
+  const c = cfg.provider === 'webllm' ? '#e07a4e'
+          : cfg.provider === 'offline' ? '#8a90a6' : '#7d7bff';
+  return '<svg viewBox="0 0 16 16" width="100%" height="100%" shape-rendering="crispEdges" aria-hidden="true">'
+    + `<rect x="4" y="3" width="8" height="8" rx="0.6" fill="${c}"/>`
+    + `<rect x="2" y="5" width="2" height="3" fill="${c}"/><rect x="12" y="5" width="2" height="3" fill="${c}"/>`
+    + `<rect x="5" y="11" width="1.5" height="2.2" fill="${c}"/><rect x="7.25" y="11" width="1.5" height="2.2" fill="${c}"/><rect x="9.5" y="11" width="1.5" height="2.2" fill="${c}"/>`
+    + '<rect x="5.9" y="5" width="1.5" height="1.7" fill="#0b0c16"/><rect x="8.6" y="5" width="1.5" height="1.7" fill="#0b0c16"/>'
+    + '</svg>';
+}
 function addMsg(role, text, streaming) {
   const div = document.createElement('div');
   div.className = 'msg ' + (role === 'user' ? 'user' : 'ai');
   // 用户消息按纯文本原样展示，只有 AI 回复走 Markdown
   const body = role === 'user' ? esc(text) : md(text);
-  div.innerHTML = `<div class="av">${role === 'user' ? '🙂' : '✨'}</div>
+  div.innerHTML = `<div class="av">${role === 'user' ? '🙂' : critterSVG()}</div>
     <div class="grp">
       <div class="bubble${streaming ? ' cursor' : ''}">${body}</div>
       <div class="acts"></div>
@@ -255,19 +252,18 @@ function editLast() {
 }
 function setStatus(t, ok) { $('status').innerHTML = ok ? `<span class="ok">${t}</span>` : t; }
 function refreshStatus() {
-  const p = PROVIDERS.find(x => x.id === cfg.provider) || PROVIDERS[0];
-  if (cfg.provider === 'offline') setStatus('🤖 离线小智模式 · 无需密钥', true);
+  if (cfg.provider === 'offline') setStatus('😀 离线小智 · 断网应急', true);
   else if (cfg.provider === 'shared')
-    setStatus(SHARED.enabled ? '🎁 站长共享通道 · 免费限量 · 零配置' : '共享通道未开通 —— 点 ⚙️ 设置选择其他方式', SHARED.enabled);
+    setStatus(SHARED.enabled ? '🧠 大聪明 · 云端免费 · 打开即用' : '大聪明暂未开通 —— 点 ⚙️ 设置换「小机灵」', SHARED.enabled);
   else if (cfg.provider === 'webllm')
-    setStatus('🧠 浏览器本地模型 · ' + cfg.model + (llm && llmModel === cfg.model ? ' · 已就绪' : ' · 首次使用需下载'), true);
-  else if (cfg.key) setStatus(`已连接：${p.name.split('（')[0]} · ${cfg.model}`, true);
-  else setStatus('尚未配置密钥 —— 点右上角 ⚙️ 设置，几分钟即可接入');
+    setStatus('🤖 小机灵 · 本机运行' + (llm && llmModel === cfg.model ? ' · 已就绪' : ' · 首次使用需下载'), true);
+  else if (cfg.key) setStatus('🔧 自定义接口 · ' + (cfg.model || '未填模型'), true);
+  else setStatus('尚未配置 —— 点右上角 ⚙️ 设置');
 }
 
 /* ===================== 欢迎与会话切换 ===================== */
 function welcome() {
-  addMsg('ai', '你好呀，我是万象智聊 ✨\n\n我可以接入 DeepSeek、智谱 GLM、Kimi、通义千问 等国内大模型（无需特殊网络，注册就送免费额度），也支持海外模型和自定义接口。\n\n**首次使用**：点右上角 ⚙️ 设置 → 选服务商 → 按提示申请一个免费 API 密钥填入即可。密钥只存在你自己的浏览器里。\n\n没有密钥也可以先选「离线小智」模式逗逗它 😄');
+  addMsg('ai', '你好呀，我是万象智聊 ✨\n\n默认用**大聪明**（云端模型）——**打开就能聊，不用配置，手机也能用**。\n\n想更私密？在 ⚙️ 设置里换**小机灵**：模型直接跑在你电脑上，聊天内容不出本机（需要电脑版 Chrome / Edge）。\n\n有什么想聊的，直接说 😄');
 }
 function renderConvs() {
   $('convList').innerHTML = convs.map(c =>
@@ -321,8 +317,12 @@ refreshStatus();
 /* ===================== 设置面板 ===================== */
 $('cfgProvider').innerHTML = PROVIDERS.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
 function toggleRows(pid) {
+  // 大聪明/离线：什么都不用填。小机灵：只显示模型名+下载源。自定义：地址+模型+密钥。
+  $('baseRow').style.display = pid === 'custom' ? '' : 'none';
+  $('modelRow').style.display = (pid === 'custom' || pid === 'webllm') ? '' : 'none';
   $('srcRow').style.display = pid === 'webllm' ? '' : 'none';
-  $('keyRow').style.display = (pid === 'webllm' || pid === 'offline' || pid === 'shared') ? 'none' : '';
+  $('keyRow').style.display = pid === 'custom' ? '' : 'none';
+  $('safeNote').style.display = pid === 'custom' ? '' : 'none';
 }
 function fillPanel() {
   $('cfgProvider').value = cfg.provider;
@@ -461,7 +461,7 @@ async function reply(conv) {
   }
 
   const shared = cfg.provider === 'shared';
-  if (shared && !(SHARED.enabled && SHARED.base)) { degrade(conv, '共享通道当前未开通'); return; }
+  if (shared && !(SHARED.enabled && SHARED.base)) { degrade(conv, '大聪明当前不可用'); return; }
   // 没配密钥也不已读不回：走降级链给出应急回答 + 引导，并存入历史
   if (!shared && (!cfg.key || !cfg.base)) { degrade(conv, '还没配置 AI 服务'); return; }
   const base = shared ? SHARED.base.replace(/\/+$/, '') : cfg.base;
@@ -578,13 +578,13 @@ async function readStream(res, bubble) {
 /* 三大脑自动降级：共享通道不可用 → 本地模型（已就绪才接手，不擅自下载几百 MB）→ 离线小智 */
 function degrade(conv, reason) {
   if (navigator.gpu && llm && llmModel) {
-    addMsg('ai', '⚠️ ' + reason + '，已切换到**浏览器本地模型**继续回答 👇');
+    addMsg('ai', '⚠️ ' + reason + '，已切到**小机灵**（本机模型）继续 👇');
     replyWebLLM(conv);
     return;
   }
   const lastUser = conv.msgs.filter(m => m.role === 'user').pop();
   const r = '⚠️ ' + reason + '，先由离线小智应急——\n\n' + offlineReply(lastUser ? lastUser.content : '')
-    + '\n\n> 想要聪明回答：点 ⚙️ 设置，选「浏览器本地模型」（免密钥）或接入任一大模型密钥（智谱有免费模型）。';
+    + '\n\n> 想要聪明回答：稍后再试**大聪明**（云端·免费），或在电脑上用**小机灵**（本机模型）。';
   addMsg('ai', r);
   conv.msgs.push({ role: 'assistant', content: r });
   conv.ts = Date.now();
@@ -595,7 +595,7 @@ function degrade(conv, reason) {
 /* 浏览器本地模型：加载（含下载进度）→ 流式生成 */
 async function replyWebLLM(conv) {
   if (!navigator.gpu) {
-    addMsg('ai', '你的浏览器不支持 **WebGPU**，跑不动本地模型 😢\n\n建议：\n1. 换最新版 Chrome / Edge 浏览器再试\n2. 或在 ⚙️ 设置里选择其他服务商（如智谱 GLM，有免费模型）');
+    addMsg('ai', '😢 你的浏览器不支持 **WebGPU**，跑不了「小机灵」本机模型（手机浏览器基本都不支持）。\n\n**最省事**：点 ⚙️ 设置换成 **大聪明**（云端 · 免费 · 手机也能用），打开就能聊。\n\n想用小机灵请在电脑上换最新版 Chrome / Edge。');
     return;
   }
   busy = true;
@@ -641,8 +641,8 @@ async function replyWebLLM(conv) {
     if (gpuDied && llm) { try { llm.unload(); } catch (e) {} llm = null; llmModel = ''; refreshStatus(); }
     if (full === '') {
       full = gpuDied
-        ? `❌ 你的设备显存扛不住这个模型（GPU 报错：\`${esc(emsg).slice(0, 120)}\`）\n\n**解决办法**：点 ⚙️ 设置，把模型名称改成小模型：\n\n\`Qwen2.5-0.5B-Instruct-q4f16_1-MLC\`\n\n（约 300MB，手机友好）保存后点下方「重新生成」即可。仍失败可试兼容性更好的 \`Qwen2.5-0.5B-Instruct-q4f32_1-MLC\`，或选择其他服务商。`
-        : `❌ 本地模型出错：${esc(emsg).slice(0, 300)}\n\n排查建议：\n1. 国内网络请在 ⚙️ 设置把「模型下载源」切成镜像\n2. 确认浏览器是最新版 Chrome / Edge（需要 WebGPU）\n3. 内存不足可改用小模型 \`Qwen2.5-0.5B-Instruct-q4f16_1-MLC\`\n4. 或选择其他服务商接入大模型`;
+        ? `❌ 你的设备带不动「小机灵」本机模型（GPU 报错，手机浏览器基本都会这样）\n\n**最省事**：点 ⚙️ 设置换成 **大聪明**（云端 · 免费 · 手机也能用），打开就能聊。\n\n想继续用小机灵：在电脑上把模型名改成 \`Qwen2.5-0.5B-Instruct-q4f16_1-MLC\`（约 300MB）再点「重新生成」。`
+        : `❌ 小机灵出错：${esc(emsg).slice(0, 200)}\n\n换 **大聪明**（云端 · 免费）最省事；想用小机灵请确认电脑浏览器支持 WebGPU，国内网络把下载源切成镜像。`;
     } else full += '\n\n（生成中断）';
   }
   bubble.classList.remove('cursor');
