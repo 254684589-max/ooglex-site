@@ -137,6 +137,16 @@
       } }
   ];
 
+  // 各应用 data.json 只取一次，卡片与「今日市场总览」共用，避免重复请求
+  var _cache = {};
+  function getData(folder) {
+    if (!_cache[folder]) {
+      _cache[folder] = fetch("../" + folder + "/data.json?t=" + Date.now())
+        .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+    }
+    return _cache[folder];
+  }
+
   function card(app) {
     var a = document.createElement("a");
     a.className = "card"; a.href = "../" + app.folder + "/"; a.style.setProperty("--accent", app.accent);
@@ -147,8 +157,7 @@
       "<div class='body'><div class='loading'>加载中…</div></div>" +
       "<div class='cf'><span class='upd'>—</span><span class='go'>打开 →</span></div>";
     var body = a.querySelector(".body"), upd = a.querySelector(".upd");
-    fetch("../" + app.folder + "/data.json?t=" + Date.now())
-      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    getData(app.folder)
       .then(function (d) {
         try { body.innerHTML = app.render(d); } catch (e) { body.innerHTML = "<div class='loading'>预览不可用</div>"; }
         upd.textContent = relTime(d.updatedAt);
@@ -157,7 +166,48 @@
     return a;
   }
 
+  // 今日市场总览：从几个应用数据里取头条读数，摘要在前
+  function ovM(k, v, vcls, d, accent) {
+    return "<div class='ov-m' style='--accent:" + accent + "'>" +
+      "<div class='k'>" + k + "</div>" +
+      "<div class='v " + (vcls || "") + "'>" + v + "</div>" +
+      "<div class='d dim'>" + d + "</div></div>";
+  }
+  function buildOverview() {
+    var box = $("ovMetrics"), sec = $("overview"); if (!box) return;
+    var parts = {};
+    function render() {
+      var html = ["mood", "up", "down", "rich", "cap"].map(function (k) { return parts[k] || ""; }).join("");
+      if (html) { box.innerHTML = html; sec.className = "overview show"; }
+    }
+    getData("fear-greed").then(function (d) {
+      if (isNum(d.score)) parts.mood = ovM("市场情绪",
+        "<span style='color:" + fgColor(d.score) + "'>" + d.score + "</span>", "", esc(d.ratingZh || ""), fgColor(d.score));
+      if (d.asOf) $("ovDate").textContent = d.asOf;
+      render();
+    }).catch(function () {});
+    getData("asset-tracker").then(function (d) {
+      var a = (d.assets || []).filter(function (x) { return x.returns && isNum(x.returns.ytd); })
+        .sort(function (x, y) { return y.returns.ytd - x.returns.ytd; });
+      if (a.length) {
+        var t = a[0], b = a[a.length - 1];
+        parts.up = ovM("YTD 领涨", pct(t.returns.ytd), "up", esc(t.name), "#ff5d6c");
+        parts.down = ovM("YTD 领跌", pct(b.returns.ytd), "down", esc(b.name), "#28c79a");
+        render();
+      }
+    }).catch(function () {});
+    getData("billionaires").then(function (d) {
+      var p = (d.people || [])[0];
+      if (p) { parts.rich = ovM("全球首富", worth(p.worth), "", esc(p.name), "#f3c969"); render(); }
+    }).catch(function () {});
+    getData("companies").then(function (d) {
+      var c = (d.companies || [])[0];
+      if (c) { parts.cap = ovM("市值 #1", worth(c.marketCap), "", esc(c.name), "#38bdf8"); render(); }
+    }).catch(function () {});
+  }
+
   function boot() {
+    buildOverview();
     var grid = $("grid");
     APPS.forEach(function (app) { grid.appendChild(card(app)); });
     $("foot").innerHTML = "各应用数据每日自动更新（来源 Yahoo Finance · CoinGecko · OECD · BIS · Forbes · CNN · Google News · World Bank · Forex Factory · QS · THE · ARWU · U.S. News · PayScale · NACE · BLS · WEF）。仅供参考，不构成建议。";
