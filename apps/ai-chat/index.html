@@ -45,6 +45,18 @@
   .hbtn:hover { color:var(--text); border-color:var(--blue); }
   #status { font-size:0.78rem; color:var(--dim); text-align:center; padding:4px; flex-shrink:0; }
   #status .ok { color:var(--green); }
+  #netTip {
+    flex-shrink:0; background:rgba(224,167,80,0.10); border-bottom:1px solid rgba(224,167,80,0.28);
+    color:#e8d9b8; font-size:0.82rem; line-height:1.7; padding:10px 14px;
+  }
+  #netTip .inner { max-width:760px; margin:0 auto; }
+  #netTip b { color:#f0c987; }
+  #netTipClose {
+    display:inline-block; margin-top:6px; padding:4px 12px; border-radius:7px; cursor:pointer;
+    background:rgba(224,167,80,0.18); border:1px solid rgba(224,167,80,0.4); color:#f0c987;
+    font-family:inherit; font-size:0.8rem;
+  }
+  #netTipClose:hover { background:rgba(224,167,80,0.3); }
 
   #chat { flex:1; overflow-y:auto; padding:18px 14px 10px; }
   .inner { max-width:760px; margin:0 auto; }
@@ -205,6 +217,14 @@
   <button class="hbtn" id="setBtn">⚙️ 设置</button>
 </header>
 <div id="status"></div>
+<div id="netTip" style="display:none">
+  <div class="inner">
+    <b>📢 国内使用提示</b>：<b>大聪明</b>（云端）走海外线路，国内建议开 VPN 或用 WiFi/电脑，否则可能连不上；
+    <b>小机灵</b>（本机模型）需<b>电脑版 Chrome / Edge</b>，手机用不了，国内下载模型请在 ⚙️ 设置把「下载源」切成镜像；
+    断网可用<b>离线小智</b>。有 API 密钥可在设置选「自定义接口」填智谱 / DeepSeek 等国内模型，<b>免 VPN 稳定使用</b>。
+    <button id="netTipClose" title="知道了">知道了 ✕</button>
+  </div>
+</div>
 <div id="chat"><div class="inner" id="msgs"></div></div>
 <div id="inputBar">
   <div class="inner">
