@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-21T00:17:58Z",
+  "updatedAt": "2026-07-21T17:02:22Z",
   "asOf": "2026-07-21",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-07-19 ~ 2026-07-24",
@@ -211,15 +211,15 @@
       "actual": null
     },
     {
-      "ts": "2026-07-21T06:02:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "Foreign Direct Investment ytd/y",
-      "titleEn": "Foreign Direct Investment ytd/y",
+      "ts": "2026-07-21T09:00:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "German ZEW Economic Sentiment",
+      "titleEn": "German ZEW Economic Sentiment",
       "impact": "low",
-      "forecast": null,
-      "previous": "-8.6%",
+      "forecast": "15.1",
+      "previous": "10.5",
       "actual": null
     },
     {
@@ -232,18 +232,6 @@
       "impact": "low",
       "forecast": "11.2",
       "previous": "9.5",
-      "actual": null
-    },
-    {
-      "ts": "2026-07-21T09:00:00Z",
-      "ccy": "EUR",
-      "country": "欧元区",
-      "flag": "🇪🇺",
-      "title": "German ZEW Economic Sentiment",
-      "titleEn": "German ZEW Economic Sentiment",
-      "impact": "low",
-      "forecast": "15.1",
-      "previous": "10.5",
       "actual": null
     },
     {
@@ -271,7 +259,7 @@
       "actual": null
     },
     {
-      "ts": "2026-07-21T14:50:00Z",
+      "ts": "2026-07-21T15:16:00Z",
       "ccy": "NZD",
       "country": "新西兰",
       "flag": "🇳🇿",
@@ -391,6 +379,18 @@
       "actual": null
     },
     {
+      "ts": "2026-07-22T06:02:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "Foreign Direct Investment ytd/y",
+      "titleEn": "Foreign Direct Investment ytd/y",
+      "impact": "low",
+      "forecast": null,
+      "previous": "-8.6%",
+      "actual": null
+    },
+    {
       "ts": "2026-07-22T08:30:00Z",
       "ccy": "GBP",
       "country": "英国",
@@ -410,7 +410,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": null,
+      "forecast": "-2.0M",
       "previous": "-1.7M",
       "actual": null
     },
@@ -554,7 +554,7 @@
       "title": "天然气库存",
       "titleEn": "Natural Gas Storage",
       "impact": "low",
-      "forecast": null,
+      "forecast": "29B",
       "previous": "41B",
       "actual": null
     },
