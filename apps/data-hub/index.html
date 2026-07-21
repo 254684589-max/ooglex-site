@@ -67,6 +67,22 @@
   .cf .go { color:var(--accent); font-size:0.82rem; font-weight:700; }
 
   footer { margin-top:24px; text-align:center; color:var(--dim); font-size:0.8rem; line-height:1.8; }
+
+  /* 今日市场总览条（摘要在前） */
+  .overview { display:none; background:linear-gradient(180deg, rgba(24,28,42,.92), rgba(14,17,26,.92));
+    border:1px solid var(--line); border-radius:16px; padding:15px 18px; margin:0 0 18px;
+    box-shadow:0 20px 50px -34px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.04); }
+  .overview.show { display:block; }
+  .ov-lab { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:0.72rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--dim); margin-bottom:13px; }
+  .ov-metrics { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:16px; }
+  .ov-m { border-left:2px solid var(--accent,#8aa6ff); padding-left:12px; min-width:0; }
+  .ov-m .k { color:var(--dim); font-size:0.75rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ov-m .v { font-size:1.45rem; font-weight:800; line-height:1.2; margin-top:2px; font-variant-numeric:tabular-nums;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ov-m .d { font-size:0.74rem; margin-top:1px; font-variant-numeric:tabular-nums;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
   @media (max-width:480px){ .hero h1 { font-size:1.6rem; } }
 </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
@@ -78,6 +94,10 @@
       <h1>📊 数据中心</h1>
       <p>一个入口 · 13 个自动更新的实时数据应用 · 点击卡片进入</p>
     </div>
+    <section class="overview" id="overview">
+      <div class="ov-lab">今日市场总览 · <span id="ovDate">—</span></div>
+      <div class="ov-metrics" id="ovMetrics"></div>
+    </section>
     <div class="grid" id="grid"></div>
     <footer id="foot"></footer>
   </div>
