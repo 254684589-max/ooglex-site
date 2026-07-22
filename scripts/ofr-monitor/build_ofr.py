@@ -5,18 +5,17 @@
 「活动监视器」页面的五大监测工具，写入 apps/ofr-monitor/data.json 供静态页面渲染。
 
 五大监测（对应 https://www.financialresearch.gov/monitoring-tools/）：
-  1. 金融压力指数 (FSI)        每日   ← www.financialresearch.gov/.../fsi.csv（CSV，最稳）
-  2. 短期融资监测 (SOFR 等)    每日   ← STFM REST API 的 fnyr 数据集（纽约联储参考利率）
-  3. 货币市场基金 (MMF 规模)   每月   ← STFM REST API 的 mmf 数据集
-  4. 对冲基金监测              月/季  ← 季度报告，暂以直达卡片呈现（见文末 TODO）
-  5. 银行系统性风险监测        每季   ← 季度报告，暂以直达卡片呈现（见文末 TODO）
+  1. 金融压力指数 (FSI)        每日   ← www.financialresearch.gov/.../fsi.csv（CSV）
+  2. 短期融资监测 (SOFR 等)    每日   ← STFM API fnyr 数据集：FNYR-SOFR-A / FNYR-EFFR-A / FNYR-SOFR_UV-A
+  3. 货币市场基金 (MMF 规模)   每月   ← STFM API mmf 数据集：MMF-MMF_TOT-M（总规模）
+  4. 对冲基金监测 (GAV/NAV)    每季   ← HFM API fpf 数据集：FPF-ALLQHF_GAV_SUM / _NAV_SUM
+  5. 银行系统性风险监测        年度   ← 美联储核定的美国 G-SIB 附加资本（人工维护数据表）
 
 设计原则（沿用本仓库 fear-greed 脚本约定）：
 - 纯 requests + 硬超时，无需任何 API Key；
-- 五个来源各自独立 try/except，任一来源失败只影响该项，其余照常；
+- 各来源各自独立 try/except，任一来源失败只影响该项，其余照常；
 - 失败项回退到上一次 data.json 的对应值，绝不把半截/空数据覆盖上去；
-- STFM 各序列的助记符（mnemonic）无法在本机联网核对，脚本改用「取整个数据集 + 关键词/量级
-  启发式匹配」的方式自愈式定位序列，首跑后若某项仍为空，按 SOURCES 注释微调关键词即可。
+- STFM/HFM 各序列改用「取整个数据集 + 确切助记符」精确定位（助记符经诊断脚本核对，见文首常量）。
 
 由 .github/workflows/ofr_monitor.yml 每日定时运行，并把更新后的 data.json 提交回仓库。
 数据来源：U.S. Office of Financial Research（OFR），公开数据，仅供参考。
@@ -124,19 +123,8 @@ def deep_pairs(obj, best=None):
     return best
 
 
-def collect_strings(obj, out):
-    if isinstance(obj, str):
-        out.append(obj)
-    elif isinstance(obj, list):
-        for it in obj:
-            collect_strings(it, out)
-    elif isinstance(obj, dict):
-        for v in obj.values():
-            collect_strings(v, out)
-
-
 def dataset_roots(data):
-    """STFM 数据集响应可能是 {助记符: 序列}，也可能外面再包一层。两种都试。"""
+    """STFM/HFM 数据集响应可能是 {助记符: 序列}，也可能外面再包一层。两种都试。"""
     roots = []
     if isinstance(data, dict):
         roots.append(data)
@@ -146,26 +134,14 @@ def dataset_roots(data):
     return roots
 
 
-def scan_dataset(data, include, exclude=()):
-    """在数据集里按关键词匹配序列，返回 [(key, pairs)]；关键词同时对助记符键名与内嵌
-    的元数据名称/描述做匹配，因此即使不知道确切助记符也能定位。"""
-    inc = [norm(k) for k in include]
-    exc = [norm(k) for k in exclude]
-    seen, hits = set(), []
+def series_by_key(data, key):
+    """按确切助记符取序列的 [日期, 数值] 列表；取不到返回 None。"""
     for root in dataset_roots(data):
-        for key, val in root.items():
-            if not isinstance(val, (dict, list)) or key in seen:
-                continue
-            pairs = deep_pairs(val)
-            if not pairs:
-                continue
-            strs = [key]
-            collect_strings(val, strs)
-            hay = norm(" ".join(strs))
-            if all(k in hay for k in inc) and not any(x in hay for x in exc):
-                seen.add(key)
-                hits.append((key, pairs))
-    return hits
+        if isinstance(root, dict) and key in root:
+            pairs = deep_pairs(root[key])
+            if pairs:
+                return pairs
+    return None
 
 
 def latest(pairs):
@@ -177,8 +153,13 @@ def prior(pairs, n):
     return float(pairs[-1 - n][1]) if len(pairs) > n else None
 
 
-def spark(pairs, n=180):
-    return [round(float(v), 3) for _, v in pairs[-n:]]
+# 确切助记符（由 diag 打印的真实数据集结构确认；比关键词启发式稳）
+FNYR_SOFR = "FNYR-SOFR-A"        # SOFR 隔夜担保融资利率（volume-weighted median）
+FNYR_EFFR = "FNYR-EFFR-A"        # EFFR 有效联邦基金利率
+FNYR_SOFR_VOL = "FNYR-SOFR_UV-A"  # SOFR 成交量（美元）
+MMF_TOTAL = "MMF-MMF_TOT-M"       # 货币市场基金总规模（美元）
+FPF_GAV = "FPF-ALLQHF_GAV_SUM"    # 合格对冲基金 总资产 GAV（美元）
+FPF_NAV = "FPF-ALLQHF_NAV_SUM"    # 合格对冲基金 净资产 NAV（美元）
 
 
 # ── 1. 金融压力指数 FSI（每日）─────────────────────────────────────────────
@@ -250,37 +231,27 @@ def build_funding():
     data = get_json(STFM + "/series/dataset?dataset=fnyr")
     out = {"asOf": None, "url": LINKS["funding"]}
 
-    def pick_rate(include, exclude=()):
-        # 利率类：值域约 0~15；同名候选取助记符最短者（通常即基准利率而非分位数）
-        cands = [(k, p) for k, p in scan_dataset(data, include, exclude)
-                 if 0 <= latest(p)[1] <= 15]
-        if not cands:
+    def rate(key):
+        p = series_by_key(data, key)
+        if not p:
             return None
-        cands.sort(key=lambda kp: len(kp[0]))
-        k, p = cands[0]
         d, v = latest(p)
         out["asOf"] = out["asOf"] or d
         return {"value": round(v, 2), "change": None if prior(p, 1) is None else round(v - prior(p, 1), 2)}
 
-    sofr = pick_rate(["sofr"], ["percentile", "pctl", "1st", "25th", "75th", "99th", "volume", "vol"])
+    sofr = rate(FNYR_SOFR)
     if sofr:
         out["sofr"] = sofr
-    effr = pick_rate(["effr"]) or pick_rate(["effective", "federal", "funds"], ["percentile", "pctl"])
+    effr = rate(FNYR_EFFR)
     if effr:
         out["effr"] = effr
-
-    # SOFR 成交量：量级远大于利率，取带 volume/成交量 语义、且数值巨大的序列
-    vol_hits = scan_dataset(data, ["sofr", "volume"]) or scan_dataset(data, ["sofr", "vol"])
-    vol_hits = [(k, p) for k, p in vol_hits if latest(p)[1] > 1e4]
-    if not vol_hits:
-        vol_hits = [(k, p) for k, p in scan_dataset(data, ["sofr"]) if latest(p)[1] > 1e5]
-    if vol_hits:
-        vol_hits.sort(key=lambda kp: latest(kp[1])[1], reverse=True)
-        d, v = latest(vol_hits[0][1])
+    vol = series_by_key(data, FNYR_SOFR_VOL)
+    if vol:
+        d, v = latest(vol)
         out["sofrVol"] = round(to_trillions(v), 3)
         out["asOf"] = out["asOf"] or d
     if "sofr" not in out and "effr" not in out:
-        raise ValueError("fnyr 数据集未匹配到 SOFR/EFFR，需按 build_funding 注释调整关键词")
+        raise ValueError("fnyr 未取到 %s / %s" % (FNYR_SOFR, FNYR_EFFR))
     return out
 
 
@@ -299,22 +270,13 @@ def to_trillions(v):
 
 def build_mmf():
     data = get_json(STFM + "/series/dataset?dataset=mmf")
-    # 总规模：优先匹配 total/assets/aum/outstanding，再退化为「数值最大的序列」（总规模量级最大）
-    hits = (scan_dataset(data, ["total", "asset"]) or scan_dataset(data, ["total", "aum"])
-            or scan_dataset(data, ["total", "outstanding"]) or scan_dataset(data, ["total"]))
-    if not hits:
-        # 兜底：全数据集里挑最新值最大的序列
-        allhits = scan_dataset(data, [""])
-        hits = sorted(allhits, key=lambda kp: latest(kp[1])[1], reverse=True)[:1]
-    if not hits:
-        raise ValueError("mmf 数据集未匹配到总规模序列")
-    hits.sort(key=lambda kp: latest(kp[1])[1], reverse=True)
-    k, p = hits[0]
+    p = series_by_key(data, MMF_TOTAL)
+    if not p:
+        raise ValueError("mmf 未取到总规模序列 %s" % MMF_TOTAL)
     d, v = latest(p)
     prev_month = prior(p, 1)
-    total = to_trillions(v)
     return {
-        "total": round(total, 3),
+        "total": round(to_trillions(v), 3),
         "change": None if prev_month is None else round(to_trillions(v) - to_trillions(prev_month), 3),
         "asOf": d,
         "url": LINKS["mmf"],
@@ -326,29 +288,25 @@ def build_hedge():
     data = get_json(STFM_HF + "/series/dataset?dataset=fpf")
     out = {"note": "季度", "url": LINKS["hedge"]}
 
-    def pick_total(include, exclude=()):
-        # 规模类（GAV/NAV）：量级大，取匹配到的最大序列并折算为万亿
-        hits = [(k, p) for k, p in scan_dataset(data, include, exclude) if latest(p)[1] > 0]
-        if not hits:
+    def total(key):
+        p = series_by_key(data, key)
+        if not p:
             return None
-        hits.sort(key=lambda kp: latest(kp[1])[1], reverse=True)
-        d, v = latest(hits[0][1])
+        d, v = latest(p)
         out["asOf"] = out.get("asOf") or d
         return round(to_trillions(v), 2)
 
-    gav = pick_total(["gross", "asset"])
-    nav = pick_total(["net", "asset"])
+    gav = total(FPF_GAV)
+    nav = total(FPF_NAV)
     if gav:
         out["gav"] = gav
     if nav:
         out["nav"] = nav
-    # 杠杆倍数：小数值（约 1~10），取助记符最短的一条
-    lev = [(k, p) for k, p in scan_dataset(data, ["leverage"]) if 0 < latest(p)[1] < 100]
-    if lev:
-        lev.sort(key=lambda kp: len(kp[0]))
-        out["leverage"] = round(latest(lev[0][1])[1], 2)
+    # 总杠杆 = 总资产 / 净资产（合格对冲基金口径），比匹配单条杠杆序列更稳定
+    if gav and nav:
+        out["leverage"] = round(gav / nav, 2)
     if not (gav or nav):
-        raise ValueError("fpf 数据集未匹配到 GAV/NAV，需按 build_hedge 注释调整关键词")
+        raise ValueError("fpf 未取到 GAV/NAV（%s / %s）" % (FPF_GAV, FPF_NAV))
     return out
 
 
