@@ -122,6 +122,13 @@
           "<div class='rows'>" + rows + "</div>",
         upd: fu.asOf ? "截至 " + fu.asOf : ""
       }));
+    } else if (fu.effr && isNum(fu.effr.value)) {
+      var frows = isNum(fu.sofrVol) ? "<div class='r'><span class='l'>SOFR 成交量</span><span class='v'>$" + fnum(fu.sofrVol) + "T</span></div>" : "";
+      cards.push(monCard({
+        title: "短期融资监测", tag: "EFFR · 每日", link: fu.url,
+        body: "<div class='big'>" + fnum(fu.effr.value) + "<small>% EFFR 联邦基金利率</small></div><div class='rows'>" + frows + "</div>",
+        upd: fu.asOf ? "截至 " + fu.asOf : ""
+      }));
     } else {
       cards.push(monCard({ title: "短期融资监测", tag: "SOFR · 每日", link: fu.url,
         body: "<div class='desc'>隔夜担保融资利率（SOFR）、联邦基金利率与回购成交量。</div>" }));
@@ -149,7 +156,7 @@
       var bigLab = isNum(h.gav) ? "万亿 · 总资产 GAV" : "万亿 · 净资产 NAV";
       var hrows = "";
       if (isNum(h.gav) && isNum(h.nav)) hrows += "<div class='r'><span class='l'>净资产 NAV</span><span class='v'>$" + fnum(h.nav) + "T</span></div>";
-      if (isNum(h.leverage)) hrows += "<div class='r'><span class='l'>平均杠杆</span><span class='v'>" + fnum(h.leverage) + "×</span></div>";
+      if (isNum(h.leverage)) hrows += "<div class='r'><span class='l'>总杠杆 GAV/NAV</span><span class='v'>" + fnum(h.leverage) + "×</span></div>";
       cards.push(monCard({
         title: "对冲基金监测", tag: "Form PF · " + (h.note || "季度"), link: h.url,
         body: "<div class='big'>$" + fnum(big) + "<small>" + bigLab + "</small></div><div class='rows'>" + hrows + "</div>",
