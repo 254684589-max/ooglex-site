@@ -119,6 +119,38 @@ def usable(url):
     return u
 
 
+def load_pinned():
+    """读取手工精选台 channels-fallback.json，规范化为 8 字段并去重，作为置顶列表。
+    容错：文件缺失/损坏则返回空列表，不影响主流程。"""
+    path = "apps/tv/channels-fallback.json"
+    try:
+        with open(path, encoding="utf-8") as f:
+            raw = json.load(f)
+    except Exception as e:
+        print(f"  pinned list unavailable ({e}) — skip")
+        return []
+    seen, pinned = set(), []
+    for r in raw:
+        if not isinstance(r, list) or len(r) < 7:
+            continue
+        url = usable(r[3])
+        if not url or url in seen:
+            continue
+        try:
+            lat, lng = round(float(r[1]), 4), round(float(r[2]), 4)
+        except (TypeError, ValueError):
+            continue
+        name = str(r[0] or "").strip()[:60]
+        if not name:
+            continue
+        logo = r[7] if len(r) > 7 and isinstance(r[7], str) and r[7].startswith("https://") else ""
+        seen.add(url)
+        # [name, lat, lng, url, country, region, cc, logo]
+        pinned.append([name, lat, lng, url,
+                       str(r[4] or "")[:40], str(r[5] or "")[:40], str(r[6] or "").upper(), logo])
+    return pinned
+
+
 def main():
     print("Fetching channels …")
     channels = fetch("channels.json") or []
@@ -170,8 +202,15 @@ def main():
     if len(out) < 50:
         raise SystemExit("Too few channels (%d) — aborting, keep old file." % len(out))
 
-    # 排序：优先地区靠前，其余随后；再按 CAP 截断
+    # iptv-org 结果：优先地区靠前，其余随后
     out.sort(key=lambda r: PRIORITY.get(r[6], 999))
+
+    # 手工精选台（channels-fallback.json）：去重后**始终置顶合并**，保证 CGTN/凤凰/公视等一定在、一定靠前
+    pinned = load_pinned()
+    pinned_urls = {r[3] for r in pinned}
+    out = pinned + [r for r in out if r[3] not in pinned_urls]
+
+    # 按 CAP 截断（精选台在最前，绝不会被截掉）
     out = out[:CAP]
 
     os.makedirs("apps/tv", exist_ok=True)
@@ -179,7 +218,8 @@ def main():
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
 
     asia = sum(1 for r in out if r[6] in PRIORITY)
-    print(f"Wrote apps/tv/channels.json — {len(out)} channels (Asia/华语区 {asia}).")
+    print(f"Wrote apps/tv/channels.json — {len(out)} channels "
+          f"(pinned {len(pinned)}, Asia/华语区 {asia}).")
 
 
 if __name__ == "__main__":
