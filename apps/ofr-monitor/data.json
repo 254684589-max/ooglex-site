@@ -1,0 +1,48 @@
+{
+  "updatedAt": "2026-07-22T00:00:00Z",
+  "asOf": "2026-07-22",
+  "demo": true,
+  "source": "U.S. Office of Financial Research (OFR)",
+  "fsi": {
+    "value": -0.8,
+    "change": 0.12,
+    "yearAgo": -2.1,
+    "regions": { "us": -0.4, "oae": -0.2, "em": -0.2 },
+    "categories": [
+      { "name": "信用", "value": -0.25 },
+      { "name": "股票估值", "value": 0.1 },
+      { "name": "融资", "value": -0.3 },
+      { "name": "避险资产", "value": -0.2 },
+      { "name": "波动率", "value": -0.15 }
+    ],
+    "spark": [-2.1, -2.0, -1.9, -1.7, -1.6, -1.8, -1.5, -1.3, -1.4, -1.2, -1.1, -1.3, -1.0, -0.9, -1.1, -0.8, -0.7, -0.9, -0.8],
+    "asOf": "2026-07-21",
+    "url": "https://www.financialresearch.gov/financial-stress-index/"
+  },
+  "funding": {
+    "sofr": { "value": 4.31, "change": -0.01 },
+    "effr": { "value": 4.33, "change": 0.0 },
+    "sofrVol": 2.51,
+    "asOf": "2026-07-21",
+    "url": "https://www.financialresearch.gov/short-term-funding-monitor/"
+  },
+  "mmf": {
+    "total": 7.05,
+    "change": 0.04,
+    "asOf": "2026-06-30",
+    "url": "https://www.financialresearch.gov/money-market-funds/"
+  },
+  "hedge": {
+    "gav": 11.2,
+    "nav": 5.4,
+    "leverage": 2.1,
+    "asOf": "2026-03-31",
+    "note": "季度",
+    "url": "https://www.financialresearch.gov/hedge-fund-monitor/"
+  },
+  "bank": {
+    "asOf": null,
+    "note": "季度更新",
+    "url": "https://www.financialresearch.gov/bank-systemic-risk-monitor/"
+  }
+}

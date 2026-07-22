@@ -38,6 +38,7 @@ ZLQ6600E/
 │   ├── world-economy/      # 🌐 全球经济图谱（世界地图·各国经济指标，每日更新）
 │   ├── movies/             # 🎬 全球电影榜（高分 Top 250 + 最新上映，每日更新）
 │   ├── econ-calendar/      # 📅 全球经济日历（央行决议/CPI/非农…预测值与前值，每日更新）
+│   ├── ofr-monitor/        # 🏛️ 美国金融风险监测（OFR 五大监测：金融压力/短期融资 SOFR/货币基金/对冲基金/银行系统性风险）
 │   ├── home-value/         # 🧭 房值罗盘（住宅价值参考估算）
 │   ├── fish-lab/           # 🐟 声波诱鱼实验室（低频发生器 + 科普）
 │   ├── ai-chat/            # ✨ 万象智聊（大模型聊天 · 多会话 · Markdown · PWA 可安装）
@@ -80,14 +81,16 @@ ZLQ6600E/
 │   │   └── build_economy.py      # 取世界银行多项宏观指标 + 整理央行利率 → 写 data.json
 │   ├── movies/             # 全球电影榜取数脚本
 │   │   └── build_movies.py       # 从 TMDB API 取高分 Top 250 + 最新上映 → 写 data.json
-│   └── econ-calendar/      # 全球经济日历取数脚本
-│       └── build_calendar.py     # 取 Forex Factory 周历 → 整理中文/分级 → 写 data.json
+│   ├── econ-calendar/      # 全球经济日历取数脚本
+│   │   └── build_calendar.py     # 取 Forex Factory 周历 → 整理中文/分级 → 写 data.json
+│   └── ofr-monitor/        # 美国金融风险监测取数脚本
+│       └── build_ofr.py          # 取 OFR 金融压力指数 CSV + 短期融资/货币基金 STFM API → 写 data.json
 └── README.md               # 项目说明（就是本文件）
 ```
 
 ## 数据中心
 
-`apps/data-hub/` 是一个聚合入口：一页汇总下面**全部 11 个实时数据应用**，每张卡片直接读取对应应用的
+`apps/data-hub/` 是一个聚合入口：一页汇总下面**全部 14 个实时数据应用**，每张卡片直接读取对应应用的
 `data.json` 渲染**实时小预览**（领涨领跌、富豪榜首、恐慌贪婪读数、今日头条、各国央行利率、本周经济大事…）并显示更新时间。
 纯前端、无需取数脚本与工作流——它复用各应用每日自动更新的数据，点击卡片即进入对应应用。
 
