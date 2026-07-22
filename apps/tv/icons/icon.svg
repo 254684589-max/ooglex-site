@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bg" cx="0.36" cy="0.30" r="1.05">
+      <stop offset="0" stop-color="#141d3d"/>
+      <stop offset="0.55" stop-color="#0a1024"/>
+      <stop offset="1" stop-color="#04060e"/>
+    </radialGradient>
+    <radialGradient id="planet" cx="0.36" cy="0.30" r="0.95">
+      <stop offset="0" stop-color="#bff0ff"/>
+      <stop offset="0.34" stop-color="#4dc3ff"/>
+      <stop offset="0.72" stop-color="#5b8cff"/>
+      <stop offset="1" stop-color="#22224f"/>
+    </radialGradient>
+    <linearGradient id="wave" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4dc3ff"/>
+      <stop offset="1" stop-color="#2f95d1"/>
+    </linearGradient>
+    <linearGradient id="wave2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5b8cff"/>
+      <stop offset="1" stop-color="#4dc3ff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- background -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+
+  <!-- faint stars -->
+  <g fill="#ffffff">
+    <circle cx="96"  cy="120" r="2.4" opacity=".65"/>
+    <circle cx="430" cy="96"  r="2.0" opacity=".55"/>
+    <circle cx="408" cy="420" r="2.6" opacity=".6"/>
+    <circle cx="120" cy="404" r="1.8" opacity=".5"/>
+    <circle cx="470" cy="250" r="1.6" opacity=".45"/>
+  </g>
+
+  <!-- signal waves (left & right of globe) -->
+  <g fill="none" stroke-linecap="round">
+    <path d="M150 176 A150 150 0 0 0 150 336" stroke="url(#wave2)" stroke-width="11" opacity=".35"/>
+    <path d="M186 198 A112 112 0 0 0 186 314" stroke="url(#wave)"  stroke-width="12" opacity=".7"/>
+    <path d="M362 176 A150 150 0 0 1 362 336" stroke="url(#wave2)" stroke-width="11" opacity=".35"/>
+    <path d="M326 198 A112 112 0 0 1 326 314" stroke="url(#wave)"  stroke-width="12" opacity=".7"/>
+  </g>
+
+  <!-- globe -->
+  <g>
+    <circle cx="256" cy="256" r="96" fill="url(#planet)"/>
+    <!-- meridians / parallels -->
+    <g fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="2.4">
+      <ellipse cx="256" cy="256" rx="40" ry="96"/>
+      <ellipse cx="256" cy="256" rx="78" ry="96"/>
+      <line x1="160" y1="256" x2="352" y2="256"/>
+      <path d="M167 214 H345" opacity=".7"/>
+      <path d="M167 298 H345" opacity=".7"/>
+    </g>
+    <ellipse cx="228" cy="222" rx="30" ry="18" fill="#ffffff" opacity="0.22"/>
+    <circle cx="256" cy="256" r="96" fill="none" stroke="#4dc3ff" stroke-opacity="0.6" stroke-width="3"/>
+  </g>
+
+  <!-- play button (TV / live) -->
+  <circle cx="256" cy="256" r="42" fill="#04121b" opacity="0.55"/>
+  <path d="M242 232 L286 256 L242 280 Z" fill="#ffffff"/>
+  <path d="M242 232 L286 256 L242 280 Z" fill="none" stroke="#4dc3ff" stroke-width="2" stroke-linejoin="round"/>
+</svg>

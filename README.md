@@ -44,6 +44,7 @@ ZLQ6600E/
 │   ├── mosquito-lab/       # 🦟 声波驱蚊实验室（频率发生器 + 科普）
 │   ├── calculators/        # 🧮 万象算集（计算器大全 · 分类+搜索 · 70+ 计算器）
 │   ├── radio/              # 🌍 环球电波（3D 地球听全球电台 · Radio Browser · 自托管 globe.gl）
+│   ├── tv/                 # 📺 环球TV（3D 地球看全球电视直播 · iptv-org · HLS/hls.js · 自托管 globe.gl）
 │   ├── name-fortune/       # 🏮 知命阁（姓名测算 · 仅供娱乐）
 │   └── telescope/          # 🔭 星瞳望远镜（手机摄像头数码望远镜）
 ├── games/                  # 网页小游戏

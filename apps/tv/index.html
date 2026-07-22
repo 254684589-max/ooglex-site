@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>环球TV · 转动地球看世界</title>
+<meta name="description" content="转动地球，点亮世界各地的电视台，实时观看全球直播。精美 3D 地球界面，华语频道直连优先，HTTPS 安全流，纯静态托管、无需登录。">
+
+<!-- PWA：可安装到手机主屏、独立窗口运行、离线可启动 -->
+<script>/* 以 App 形式打开时给根元素打标，隐藏网页式元素 */
+if (matchMedia('(display-mode: standalone)').matches || navigator.standalone || /[?&]source=pwa/.test(location.search)) document.documentElement.classList.add('app');</script>
+
+<!-- 关键资源预加载：地球贴图与 JS 并行下载，手机上更快看到地球 -->
+<link rel="preload" href="vendor/earth-blue-marble.jpg" as="image" fetchpriority="high">
+<link rel="preload" href="vendor/earth-topology.jpg" as="image">
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#05070f">
+<meta name="application-name" content="环球TV">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="环球TV">
+<link rel="canonical" href="https://www.ooglex.com/apps/tv/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="环球TV · 转动地球看世界">
+<meta property="og:description" content="转动地球，点亮世界各地的电视台，实时观看全球直播。">
+<meta property="og:url" content="https://www.ooglex.com/apps/tv/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root{
+    --ink:#e9f2ff; --dim:#93a4c8; --cyan:#4dc3ff; --blue:#5b8cff; --violet:#9d6cff;
+    --panel:rgba(15,20,40,0.72); --line:rgba(120,150,220,0.22);
+  }
+  html,body{ height:100%; overflow:hidden; background:#05070f; }
+  body{
+    color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    position:relative;
+  }
+  #space{
+    position:fixed; inset:0; z-index:0;
+    background:
+      radial-gradient(1200px 700px at 72% 18%, rgba(91,140,255,0.18), transparent 60%),
+      radial-gradient(900px 600px at 20% 82%, rgba(157,108,255,0.15), transparent 60%),
+      radial-gradient(circle at 50% 50%, #0a1024 0%, #05070f 70%, #03040a 100%);
+  }
+  #stars{ position:fixed; inset:0; z-index:0; pointer-events:none; }
+  #globe{ position:fixed; inset:0; z-index:1; }
+
+  /* 顶部品牌 + 搜索 */
+  .top{
+    position:fixed; top:0; left:0; right:0; z-index:5;
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:16px 20px; pointer-events:none;
+  }
+  .top > *{ pointer-events:auto; }
+  .brand{ display:flex; align-items:baseline; gap:10px; text-decoration:none; }
+  .brand .logo{ font-size:1.25rem; font-weight:800; letter-spacing:2px;
+    background:linear-gradient(90deg,var(--cyan),var(--blue)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .brand .sub{ color:var(--dim); font-size:0.8rem; letter-spacing:2px; }
+  .home{ color:var(--dim); text-decoration:none; font-size:0.85rem; margin-left:auto; }
+  .home:hover{ color:var(--ink); }
+  @media (max-width:640px){ .home{ display:none; } }
+  @media (display-mode: standalone), (display-mode: fullscreen){ .home{ display:none; } }
+  html.app .home{ display:none; }
+  .search{ flex-basis:100%; max-width:420px; margin-top:4px; position:relative; }
+  .search input{
+    width:100%; padding:11px 16px 11px 40px; border-radius:999px; font-size:0.98rem; font-family:inherit;
+    background:var(--panel); border:1px solid var(--line); color:var(--ink); backdrop-filter:blur(12px);
+  }
+  .search input:focus{ outline:none; border-color:var(--cyan); }
+  .search::before{ content:"🔍"; position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:0.9rem; opacity:.7; }
+
+  /* 状态提示（加载/错误） */
+  #status{
+    position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:6;
+    background:var(--panel); border:1px solid var(--line); border-radius:14px; backdrop-filter:blur(12px);
+    padding:16px 22px; font-size:0.95rem; color:var(--dim); text-align:center; max-width:80vw; display:none;
+  }
+  #status .spin{ display:inline-block; width:16px; height:16px; margin-right:8px; vertical-align:-3px;
+    border:2px solid var(--line); border-top-color:var(--cyan); border-radius:50%; animation:sp 0.8s linear infinite; }
+  @keyframes sp{ to{ transform:rotate(360deg); } }
+
+  /* 正在观看 面板 */
+  #player{
+    position:fixed; left:18px; bottom:18px; z-index:6; width:min(380px, calc(100vw - 36px));
+    background:var(--panel); border:1px solid var(--line); border-radius:18px; backdrop-filter:blur(14px);
+    padding:10px 16px 16px; box-shadow:0 12px 40px rgba(0,0,0,0.45); display:none;
+    flex-direction:column; max-height:calc(100vh - 96px);
+  }
+  #player .phandle{ align-self:stretch; background:none; border:none; cursor:pointer; padding:2px 0 8px;
+    display:flex; align-items:center; justify-content:center; gap:8px; flex:0 0 auto; color:var(--dim); }
+  #player .phandle .grab{ width:40px; height:4px; border-radius:2px; background:rgba(150,170,220,0.45); }
+  #player .phandle .chev{ font-size:0.7rem; }
+  #player.min #stage, #player.min .plabel, #player.min .plist, #player.min .ctrl{ display:none; }
+  #player.min .ptabs{ margin-top:10px; }
+
+  /* 视频舞台 */
+  #stage{ position:relative; width:100%; aspect-ratio:16/9; background:#000; border-radius:12px; overflow:hidden;
+    flex:0 0 auto; border:1px solid rgba(120,150,220,0.18); }
+  #stage video{ width:100%; height:100%; object-fit:contain; background:#000; display:block; }
+  #stage .badge{ position:absolute; left:8px; top:8px; z-index:2; display:flex; align-items:center; gap:6px;
+    background:rgba(6,10,22,0.6); border-radius:999px; padding:3px 9px; font-size:0.72rem; backdrop-filter:blur(6px); }
+  #stage .badge .dot{ width:7px; height:7px; border-radius:50%; background:#ff5a5a; box-shadow:0 0 7px #ff5a5a; }
+
+  #player .row1{ display:flex; align-items:center; gap:12px; position:relative; padding-right:22px; flex:0 0 auto; margin-top:12px; }
+  #player .favbtn{ position:absolute; top:-3px; right:-3px; background:none; border:none; color:var(--dim);
+    font-size:1.35rem; line-height:1; cursor:pointer; padding:2px; }
+  #player .favbtn.is{ color:#ffcf4d; }
+  #player .logo{ width:44px; height:44px; border-radius:11px; flex:0 0 auto; overflow:hidden;
+    background:linear-gradient(135deg,var(--cyan),var(--blue)); display:flex; align-items:center; justify-content:center; font-size:1.3rem; }
+  #player .logo img{ width:100%; height:100%; object-fit:contain; background:#0a1024; }
+  #player .meta{ min-width:0; flex:1; }
+  #player .nm{ font-weight:700; font-size:1.02rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #player .loc{ color:var(--dim); font-size:0.82rem; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #player .state{ font-size:0.78rem; margin-top:2px; }
+  #player .state.ok{ color:var(--cyan); } #player .state.err{ color:#ff8a7a; } #player .state.load{ color:var(--dim); }
+  #player .ctrl{ display:flex; align-items:center; gap:10px; margin-top:14px; flex:0 0 auto; }
+  #player button{ border:1px solid var(--line); background:rgba(255,255,255,0.05); color:var(--ink);
+    border-radius:999px; padding:8px 14px; font-family:inherit; font-size:0.9rem; cursor:pointer;
+    white-space:nowrap; flex:0 0 auto; }
+  #player button:hover{ border-color:var(--cyan); }
+  #player button.play{ background:linear-gradient(135deg,var(--cyan),#2f95d1); color:#04121b; border:none; font-weight:700; }
+  #player button.skip{ padding:8px 12px; font-size:0.82rem; }
+  #player button.icon{ padding:8px 12px; }
+  #player button.icon.on{ border-color:var(--cyan); }
+  #player input[type=range]{ flex:1; min-width:40px; accent-color:var(--cyan); }
+  #player .ptabs{ display:flex; gap:8px; margin-top:14px; flex:0 0 auto; }
+  #player .ptab{ flex:1; border:1px solid var(--line); background:rgba(255,255,255,0.04); color:var(--dim);
+    border-radius:10px; padding:7px 6px; font-family:inherit; font-size:0.82rem; cursor:pointer; }
+  #player .ptab.on{ color:#04121b; background:linear-gradient(135deg,var(--cyan),#2f95d1); border-color:transparent; font-weight:700; }
+  #player .plabel{ font-size:0.72rem; color:var(--dim); margin:10px 2px 4px; opacity:.85; flex:0 0 auto; }
+  #player .plist{ flex:1 1 auto; min-height:56px; max-height:min(30vh,240px); overflow-y:auto; display:flex; flex-direction:column; gap:3px; }
+  @media (max-height:760px){ #player .plist{ max-height:22vh; } }
+  #player .prow{ display:flex; align-items:center; gap:8px; padding:7px 9px; border-radius:10px; cursor:pointer; border:1px solid transparent; }
+  #player .prow:hover{ background:rgba(255,255,255,0.05); }
+  #player .prow.on{ background:rgba(77,195,255,0.12); border-color:rgba(77,195,255,0.32); }
+  #player .pr-main{ min-width:0; flex:1; }
+  #player .pr-nm{ font-size:0.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #player .pr-sub{ font-size:0.72rem; color:var(--dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #player .pr-star{ flex:0 0 auto; background:none; border:none; color:var(--dim); font-size:1.05rem; cursor:pointer; padding:2px 4px; }
+  #player .pr-star.is{ color:#ffcf4d; }
+  #player .pempty{ font-size:0.82rem; color:var(--dim); padding:16px 8px; text-align:center; }
+  #player .plist::-webkit-scrollbar{ width:6px; }
+  #player .plist::-webkit-scrollbar-thumb{ background:rgba(130,150,220,0.3); border-radius:3px; }
+
+  /* 底部工具条 */
+  .tools{ position:fixed; right:18px; bottom:18px; z-index:6; display:flex; flex-direction:column; gap:10px; }
+  .tools button{ width:46px; height:46px; border-radius:50%; border:1px solid var(--line);
+    background:var(--panel); backdrop-filter:blur(12px); color:var(--ink); font-size:1.1rem; cursor:pointer; }
+  .tools button:hover{ border-color:var(--cyan); }
+
+  /* 中央照准圆圈 */
+  #reticle{
+    position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:4;
+    width:104px; height:104px; border-radius:50%; pointer-events:none;
+    border:2px solid rgba(255,255,255,0.85);
+    box-shadow:0 0 0 1px rgba(0,0,0,0.35), 0 0 22px rgba(255,255,255,0.25);
+    transition:border-color .3s, box-shadow .3s;
+  }
+  #reticle::after{
+    content:""; position:absolute; left:50%; top:50%; width:6px; height:6px; margin:-3px;
+    border-radius:50%; background:rgba(255,255,255,0.92); box-shadow:0 0 6px rgba(255,255,255,0.6);
+  }
+  #reticle.live{ border-color:var(--cyan); box-shadow:0 0 26px rgba(77,195,255,0.55); }
+  #reticle.live::after{ background:var(--cyan); box-shadow:0 0 8px var(--cyan); }
+  #rtip{
+    position:fixed; left:50%; top:calc(50% + 74px); transform:translateX(-50%); z-index:4;
+    white-space:nowrap; font-size:0.78rem; color:var(--dim); pointer-events:none;
+    background:rgba(8,12,26,0.55); padding:4px 12px; border-radius:999px; backdrop-filter:blur(6px);
+  }
+
+  /* 首次说明 */
+  #intro{
+    position:fixed; inset:0; z-index:20; display:flex; align-items:center; justify-content:center;
+    background:rgba(5,7,15,0.6); backdrop-filter:blur(6px);
+  }
+  #intro .box{ background:var(--panel); border:1px solid var(--line); border-radius:20px; backdrop-filter:blur(14px);
+    padding:28px 26px; max-width:440px; width:calc(100vw - 40px); box-shadow:0 20px 60px rgba(0,0,0,0.5); }
+  #intro h2{ font-size:1.35rem; margin-bottom:6px; letter-spacing:1px;
+    background:linear-gradient(90deg,var(--cyan),var(--blue)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  #intro p{ color:var(--dim); font-size:0.9rem; line-height:1.7; margin-top:10px; }
+  #intro .hintList{ margin-top:12px; font-size:0.86rem; color:var(--dim); line-height:1.9; }
+  #intro .hintList b{ color:var(--ink); font-weight:600; }
+  #intro .go{ margin-top:20px; width:100%; padding:12px; border:none; border-radius:12px; cursor:pointer;
+    background:linear-gradient(135deg,var(--cyan),var(--blue)); color:#04121b; font-weight:800; font-size:1rem; font-family:inherit; letter-spacing:2px; }
+  .tag{ display:inline-block; font-size:0.72rem; color:var(--cyan); border:1px solid var(--line); border-radius:999px; padding:2px 10px; margin-top:4px; }
+
+  /* 安装到手机 */
+  #installRow{ display:none; margin-top:12px; }
+  #installRow.show{ display:block; }
+  #installBtn{
+    width:100%; padding:11px; border:1px solid var(--cyan); border-radius:12px; cursor:pointer;
+    background:rgba(77,195,255,0.10); color:var(--cyan); font-weight:700; font-size:0.95rem;
+    font-family:inherit; letter-spacing:1px; display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  #installBtn:hover{ background:rgba(77,195,255,0.18); }
+  #iosHint{
+    display:none; margin-top:12px; font-size:0.82rem; color:var(--dim); line-height:1.7;
+    border:1px dashed var(--line); border-radius:12px; padding:12px 14px;
+  }
+  #iosHint.show{ display:block; }
+  #iosHint b{ color:var(--ink); }
+  #iosHint .sh{ display:inline-block; color:var(--blue); font-weight:700; }
+
+  /* 安装说明弹窗 */
+  #installModal{
+    position:fixed; inset:0; z-index:30; display:none; align-items:center; justify-content:center;
+    background:rgba(5,7,15,0.66); backdrop-filter:blur(6px);
+  }
+  #installModal.show{ display:flex; }
+  #installModal .imBox{
+    position:relative; background:var(--panel); border:1px solid var(--line); border-radius:20px; backdrop-filter:blur(14px);
+    padding:26px 24px; max-width:440px; width:calc(100vw - 40px); max-height:calc(100vh - 48px); overflow-y:auto;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  }
+  #installModal h2{ font-size:1.25rem; letter-spacing:1px;
+    background:linear-gradient(90deg,var(--cyan),var(--blue)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  #installModal .imLead{ color:var(--dim); font-size:0.88rem; line-height:1.7; margin:8px 0 16px; }
+  #installModal .imClose{ position:absolute; top:12px; right:12px; background:none; border:none; color:var(--dim);
+    font-size:1.1rem; cursor:pointer; padding:6px; line-height:1; }
+  #installModal .imClose:hover{ color:var(--ink); }
+  #imInstallNow{ display:none; width:100%; margin-bottom:16px; padding:12px; border:none; border-radius:12px; cursor:pointer;
+    background:linear-gradient(135deg,var(--cyan),var(--blue)); color:#04121b; font-weight:800; font-size:0.98rem; font-family:inherit; letter-spacing:1px; }
+  #imInstallNow.show{ display:block; }
+  .imSteps{ border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin-top:10px; }
+  .imSteps.hot{ border-color:rgba(77,195,255,0.5); background:rgba(77,195,255,0.06); }
+  .imSteps .imH{ font-size:0.92rem; font-weight:700; color:var(--ink); margin-bottom:6px; }
+  .imSteps.hot .imH{ color:var(--cyan); }
+  .imSteps ol{ margin:0; padding-left:20px; color:var(--dim); font-size:0.85rem; line-height:1.85; }
+  .imSteps ol b{ color:var(--ink); }
+
+  /* 微信/QQ 等内置浏览器：顶部引导"在浏览器打开" */
+  #inAppBar{
+    position:fixed; top:0; left:0; right:0; z-index:60; display:none;
+    padding:calc(11px + env(safe-area-inset-top,0)) 44px 11px 16px;
+    background:linear-gradient(180deg, rgba(9,14,32,0.99), rgba(9,14,32,0.95));
+    border-bottom:1px solid rgba(77,195,255,0.45); box-shadow:0 8px 24px rgba(0,0,0,0.5);
+    backdrop-filter:blur(10px); color:var(--ink); font-size:0.85rem; line-height:1.55;
+  }
+  #inAppBar.show{ display:block; }
+  #inAppBar b{ color:var(--cyan); }
+  #inAppBar .dots{ display:inline-block; padding:0 7px; margin:0 1px; border:1px solid var(--line);
+    border-radius:6px; color:var(--ink); font-weight:700; vertical-align:1px; }
+  #inAppBar .arrow{ position:absolute; top:calc(4px + env(safe-area-inset-top,0)); right:12px;
+    font-size:1.4rem; animation:iaBounce 1.1s ease-in-out infinite; }
+  #inAppBar .iaClose{ position:absolute; bottom:6px; right:12px; background:none; border:none;
+    color:var(--dim); font-size:0.78rem; cursor:pointer; padding:2px 4px; }
+  #inAppBar .iaClose:hover{ color:var(--ink); }
+  @keyframes iaBounce{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(3px,-4px); } }
+</style>
+</head>
+<body>
+<div id="inAppBar">
+  <span class="arrow">↗️</span>
+  微信内可能无法播放视频。请点右上角 <span class="dots">···</span> →「<b>在浏览器打开</b>」，体验更佳。
+  <button class="iaClose" id="iaClose" aria-label="关闭">知道了 ✕</button>
+</div>
+<div id="space"></div>
+<canvas id="stars"></canvas>
+<div id="globe"></div>
+<div id="reticle"></div>
+<div id="rtip">拖动地球，把电视台转进圈内即可观看</div>
+
+<div class="top">
+  <a class="brand" href="#">
+    <span class="logo">环球TV</span>
+    <span class="sub">GLOBAL TV · 转动地球看世界</span>
+  </a>
+  <a class="home" href="../../">← 返回主页</a>
+  <div class="search"><input id="q" placeholder="搜索频道 / 城市 / 国家（如 CGTN、NHK、凤凰）" autocomplete="off"></div>
+</div>
+
+<div id="status"></div>
+
+<div id="player">
+  <button class="phandle" id="pHandle" aria-label="展开或收起面板"><span class="grab"></span><span class="chev" id="pChev">▾ 收起</span></button>
+  <div id="stage">
+    <div class="badge"><span class="dot"></span>LIVE</div>
+    <video id="video" playsinline webkit-playsinline preload="none"></video>
+  </div>
+  <div class="row1">
+    <div class="logo" id="pLogo">📺</div>
+    <div class="meta">
+      <div class="nm" id="pName">选一座城市开始观看</div>
+      <div class="loc" id="pLoc">拖动地球把电视台转进圆圈，或点下方列表</div>
+      <div class="state load" id="pState">准备就绪</div>
+    </div>
+    <button class="favbtn" id="pStar" title="收藏当前频道" aria-label="收藏当前频道">☆</button>
+  </div>
+  <div class="ctrl">
+    <button class="skip" id="pPrev" title="上一台" aria-label="上一台">⏮</button>
+    <button class="play" id="pToggle">▶ 播放</button>
+    <button class="skip" id="pNext" title="下一台" aria-label="下一台">⏭</button>
+    <button class="icon on" id="pMute" title="静音">🔊</button>
+    <button class="icon" id="pFull" title="全屏观看">⛶</button>
+    <input type="range" id="pVol" min="0" max="100" value="100" title="音量">
+  </div>
+  <div class="ptabs">
+    <button class="ptab on" id="tabRegion">本区 <span id="cntRegion">0</span></button>
+    <button class="ptab" id="tabFav">⭐ 收藏 <span id="cntFav">0</span></button>
+  </div>
+  <div class="plabel" id="plabel"></div>
+  <div class="plist" id="plist"></div>
+</div>
+
+<div class="tools">
+  <button id="tFull" title="全屏沉浸模式：隐藏浏览器地址栏">⛶</button>
+  <button id="tInstall" title="安装到手机">📲</button>
+  <button id="tRandom" title="随机一台">🎲</button>
+  <button id="tHome" title="回到中国上空">🏠</button>
+  <button id="tRotate" title="开始/停止自转">↻</button>
+</div>
+
+<div id="installModal">
+  <div class="imBox">
+    <button class="imClose" id="imClose" aria-label="关闭">✕</button>
+    <h2>📲 安装到手机</h2>
+    <p class="imLead">把「环球TV」装到主屏，像 App 一样全屏打开，无需应用商店。</p>
+    <button id="imInstallNow">⬇️ 立即安装到本机</button>
+    <div class="imSteps" data-plat="android">
+      <div class="imH">🤖 安卓（Chrome / Edge / 三星等浏览器）</div>
+      <ol>
+        <li>点浏览器右上角菜单 <b>⋮</b></li>
+        <li>选择<b>「安装应用」</b>或<b>「添加到主屏幕」</b></li>
+        <li>确认后，桌面会出现「环球TV」图标</li>
+      </ol>
+    </div>
+    <div class="imSteps" data-plat="ios">
+      <div class="imH">🍎 iPhone / iPad（用 Safari 打开）</div>
+      <ol>
+        <li>点底部的<b>分享按钮 ⬆️</b></li>
+        <li>向下滑动，选择<b>「添加到主屏幕」</b></li>
+        <li>点右上角<b>「添加」</b>，主屏即出现 App 图标</li>
+      </ol>
+    </div>
+    <div class="imSteps" data-plat="inapp">
+      <div class="imH">💬 微信 / QQ / 其它内置浏览器</div>
+      <ol>
+        <li>内置浏览器<b>可能无法播放视频</b></li>
+        <li>点右上角 <b>···</b> → <b>「在浏览器打开」</b>（或用系统 Safari / Chrome 打开本页）</li>
+        <li>再按上面对应系统的步骤安装</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div id="intro">
+  <div class="box">
+    <h2>📺 环球TV</h2>
+    <span class="tag">华语频道直连优先 · 无需登录</span>
+    <p>转动地球，蓝点是一座座正在直播的电视台。点亮任意一个，就能实时观看当地的画面。</p>
+    <div class="hintList">
+      🎯 <b>拖动地球</b>，把想看的地方转进<b>中间的圆圈</b>，松手即自动观看<br>
+      🔵 也可直接<b>点击任意蓝点</b>观看该台<br>
+      🔍 顶部<b>搜索</b>城市 / 国家 / 频道名<br>
+      🎲 随机一台 · 🏠 回到中国上空 · ↻ 自转
+    </div>
+    <p style="font-size:0.8rem;margin-top:14px;">说明：仅收录 HTTPS 直连的公开直播源，华语区及多数亚洲频道可直接观看。<b style="color:var(--cyan)">连不上的台会自动跳到附近可用频道</b>；部分欧美频道服务器在墙外，国内需代理才行，属正常现象。</p>
+    <button class="go" id="introGo">进入 · 开始观看</button>
+    <div id="installRow">
+      <button id="installBtn">📲 安装到手机 · 查看安装方法</button>
+    </div>
+    <div id="iosHint">
+      📱 在 iPhone / iPad 上安装：点击 Safari 底部的<span class="sh">分享按钮 ⬆️</span>，
+      向下滑动选择<b>「添加到主屏幕」</b>，即可像 App 一样全屏打开。
+    </div>
+  </div>
+</div>
+
+<script src="vendor/globe.gl.min.js"></script>
+<script src="vendor/hls.min.js"></script>
+<script src="app.js?v=1"></script>
+<script>
+/* PWA：注册 Service Worker + 处理"安装到手机" */
+(function(){
+  'use strict';
+  var standalone = window.matchMedia('(display-mode: standalone)').matches ||
+                   window.matchMedia('(display-mode: minimal-ui)').matches ||
+                   window.navigator.standalone === true;
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('sw.js', { scope: './' }).catch(function(){});
+    });
+  }
+
+  var installRow = document.getElementById('installRow');
+  var installBtn = document.getElementById('installBtn');
+  var iosHint    = document.getElementById('iosHint');
+  var modal      = document.getElementById('installModal');
+  var imClose    = document.getElementById('imClose');
+  var imNow      = document.getElementById('imInstallNow');
+  var deferred   = null;
+
+  var ua = navigator.userAgent || '';
+  var isInApp = /MicroMessenger|QQ\/|QQBrowser|Weibo|DingTalk|baiduboxapp/i.test(ua);
+  var isIOS   = /iPad|iPhone|iPod/.test(ua) ||
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var platform = isInApp ? 'inapp' : (isIOS ? 'ios' : 'android');
+  var hot = modal && modal.querySelector('.imSteps[data-plat="' + platform + '"]');
+  if (hot) hot.classList.add('hot');
+
+  function triggerNativeInstall(after){
+    if (!deferred) return false;
+    deferred.prompt();
+    deferred.userChoice.finally(function(){ deferred = null; if (after) after(); });
+    return true;
+  }
+  function reflectDeferred(){ if (imNow) imNow.classList.toggle('show', !!deferred); }
+
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    deferred = e;
+    if (!standalone) installRow.classList.add('show');
+    reflectDeferred();
+  });
+
+  if (installBtn) installBtn.addEventListener('click', function(){
+    if (!triggerNativeInstall(function(){ installRow.classList.remove('show'); })) openModal();
+  });
+
+  function openModal(){ if (modal){ reflectDeferred(); modal.classList.add('show'); } }
+  function closeModal(){ if (modal) modal.classList.remove('show'); }
+  var tInstall = document.getElementById('tInstall');
+  if (tInstall) tInstall.addEventListener('click', openModal);
+  if (imClose) imClose.addEventListener('click', closeModal);
+  if (modal) modal.addEventListener('click', function(e){ if (e.target === modal) closeModal(); });
+  if (imNow) imNow.addEventListener('click', function(){ triggerNativeInstall(closeModal); });
+
+  window.addEventListener('appinstalled', function(){
+    installRow.classList.remove('show');
+    if (iosHint) iosHint.classList.remove('show');
+    if (tInstall) tInstall.style.display = 'none';
+    closeModal();
+  });
+
+  if (standalone && tInstall) tInstall.style.display = 'none';
+  if (!standalone && installRow) installRow.classList.add('show');
+  if (isIOS && !standalone && iosHint) iosHint.classList.add('show');
+
+  var inAppBar = document.getElementById('inAppBar');
+  var iaClose   = document.getElementById('iaClose');
+  if (isInApp && !standalone && inAppBar) inAppBar.classList.add('show');
+  if (iaClose) iaClose.addEventListener('click', function(){ inAppBar.classList.remove('show'); });
+
+  try {
+    var qs = new URLSearchParams(location.search);
+    if (!standalone && (qs.get('install') === '1' || location.hash === '#install')) {
+      setTimeout(openModal, 450);
+    }
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>
