@@ -1,0 +1,19 @@
+name: OFR Diag (temporary)
+
+# 临时诊断工作流：打印 OFR 数据集结构，用完即删。不提交任何文件。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - run: python scripts/ofr-monitor/diag.py
