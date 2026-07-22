@@ -287,12 +287,20 @@ function attachStream(url){
   const isHls = /\.m3u8(\?|$)/i.test(url);
   const nativeHls = video.canPlayType('application/vnd.apple.mpegurl');
   if (isHls && !nativeHls && window.Hls && Hls.isSupported()){
-    hls = new Hls({ maxBufferLength: 12, liveSyncDurationCount: 3, manifestLoadingTimeOut: 9000, fragLoadingTimeOut: 12000 });
+    // 更短的超时：拉不到清单/切片就尽快判失败去跳台，而不是长时间黑屏
+    hls = new Hls({ maxBufferLength: 12, liveSyncDurationCount: 3,
+      manifestLoadingTimeOut: 6000, manifestLoadingMaxRetry: 1,
+      levelLoadingTimeOut: 6000, fragLoadingTimeOut: 8000, fragLoadingMaxRetry: 1 });
+    let netRetry = 0;
     hls.loadSource(url);
     hls.attachMedia(video);
     hls.on(Hls.Events.ERROR, (evt, data) => {
       if (!data || !data.fatal) return;
-      if (data.type === Hls.ErrorTypes.NETWORK_ERROR){ try{ hls.startLoad(); }catch(e){ hop('信号中断'); } }
+      if (data.type === Hls.ErrorTypes.NETWORK_ERROR){
+        // 网络/CORS 类致命错误：只快速重试一次；仍不行就跳台，绝不无限重试卡黑屏
+        if (netRetry++ < 1){ try{ hls.startLoad(); }catch(e){ hop('信号中断'); } }
+        else hop('连不上（源已失效或无跨域许可）');
+      }
       else if (data.type === Hls.ErrorTypes.MEDIA_ERROR){ try{ hls.recoverMediaError(); }catch(e){ hop('解码失败'); } }
       else hop('该台无法播放');
     });
@@ -339,7 +347,7 @@ function playAt(st, fly){
 }
 function armWatchdog(){
   clearTimeout(watchdog);
-  watchdog = setTimeout(() => { if (video.paused || video.readyState < 2) hop('连接超时'); }, 9000);
+  watchdog = setTimeout(() => { if (video.paused || video.readyState < 2) hop('连接超时'); }, 6500);
 }
 function hop(reason){
   clearTimeout(watchdog);
