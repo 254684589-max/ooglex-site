@@ -288,30 +288,40 @@ function attachStream(url){
   const isHls = /\.m3u8(\?|$)/i.test(url);
   const nativeHls = video.canPlayType('application/vnd.apple.mpegurl');
   if (isHls && !nativeHls && window.Hls && Hls.isSupported()){
-    // 给"慢但在加载"的源足够耐心（国内连境外握手本就慢），但重试次数压低——
-    // 真正的死台 / CORS 会立刻报致命错误跳台，靠的是 error 事件而非硬掐超时。
-    hls = new Hls({ maxBufferLength: 12, liveSyncDurationCount: 3,
-      manifestLoadingTimeOut: 10000, manifestLoadingMaxRetry: 1,
-      levelLoadingTimeOut: 10000, levelLoadingMaxRetry: 2,
-      fragLoadingTimeOut: 14000, fragLoadingMaxRetry: 2 });
-    let netRetry = 0;
-    // 配了代理就走代理（替浏览器抓流 + 补 CORS，解决 Chrome/安卓 跨域黑屏）
-    const src = HLS_PROXY ? (HLS_PROXY + '/?url=' + encodeURIComponent(url)) : url;
-    hls.loadSource(src);
-    hls.attachMedia(video);
-    hls.on(Hls.Events.ERROR, (evt, data) => {
-      if (!data || !data.fatal) return;
-      if (data.type === Hls.ErrorTypes.NETWORK_ERROR){
-        // 网络/CORS 类致命错误：只快速重试一次；仍不行就跳台，绝不无限重试卡黑屏
-        if (netRetry++ < 1){ try{ hls.startLoad(); }catch(e){ hop('信号中断'); } }
-        else hop('连不上（源已失效或无跨域许可）');
-      }
-      else if (data.type === Hls.ErrorTypes.MEDIA_ERROR){ try{ hls.recoverMediaError(); }catch(e){ hop('解码失败'); } }
-      else hop('该台无法播放');
-    });
+    startHls(url, false);              // 先直连（快，跟最开始一样）；被跨域拦住再走代理
   } else {
-    video.src = url;   // Safari 原生 HLS，或 mp4 直链
+    video.src = url;                   // Safari 原生 HLS，或 mp4 直链
+    const p = video.play(); if (p && p.catch) p.catch(() => {});
   }
+}
+/* 直连优先、代理兜底：
+   viaProxy=false 先直连——能直连的台不绕境外代理，保持原本的速度；
+   直连报网络/CORS 致命错误且配了代理 → 自动改走代理再试一次（多半是跨域被拦）；
+   代理也不行才跳台。真正的死台靠 error 事件快速跳走，不靠硬掐超时。 */
+function startHls(url, viaProxy){
+  detachHls();
+  const src = (viaProxy && HLS_PROXY) ? (HLS_PROXY + '/?url=' + encodeURIComponent(url)) : url;
+  hls = new Hls({ maxBufferLength: 12, liveSyncDurationCount: 3,
+    manifestLoadingTimeOut: 10000, manifestLoadingMaxRetry: 1,
+    levelLoadingTimeOut: 10000, levelLoadingMaxRetry: 2,
+    fragLoadingTimeOut: 14000, fragLoadingMaxRetry: 2 });
+  let netRetry = 0;
+  hls.loadSource(src);
+  hls.attachMedia(video);
+  hls.on(Hls.Events.ERROR, (evt, data) => {
+    if (!data || !data.fatal) return;
+    if (data.type === Hls.ErrorTypes.NETWORK_ERROR){
+      if (!viaProxy && HLS_PROXY){        // 直连不通 + 有代理没试过 → 改走代理救一下
+        setState('load', '直连不通，改走代理…');
+        startHls(url, true);
+        return;
+      }
+      if (netRetry++ < 1){ try{ hls.startLoad(); }catch(e){ hop('信号中断'); } }
+      else hop('连不上（源已失效或无跨域许可）');
+    }
+    else if (data.type === Hls.ErrorTypes.MEDIA_ERROR){ try{ hls.recoverMediaError(); }catch(e){ hop('解码失败'); } }
+    else hop('该台无法播放');
+  });
   const p = video.play();
   if (p && p.catch) p.catch(() => {});
 }
