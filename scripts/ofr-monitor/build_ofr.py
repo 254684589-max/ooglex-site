@@ -32,7 +32,8 @@ import requests
 OUT_PATH = os.path.join("apps", "ofr-monitor", "data.json")
 
 FSI_CSV = "https://www.financialresearch.gov/financial-stress-index/data/fsi.csv"
-STFM = "https://data.financialresearch.gov/v1"
+STFM = "https://data.financialresearch.gov/v1"          # 短期融资监测 API
+STFM_HF = "https://data.financialresearch.gov/hf/v1"    # 对冲基金监测 API（结构与 STFM 一致）
 HEADERS = {
     "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                    "(KHTML, like Gecko) Chrome/123.0 Safari/537.36"),
@@ -303,9 +304,40 @@ def build_mmf():
     }
 
 
-# ── 4./5. 对冲基金 & 银行系统性风险（季度报告，暂以直达卡片呈现）────────────────
-# OFR 这两项没有像 STFM 那样的公开 REST 端点，均为季度更新的报告/图表。此处先做成
-# 「前往 OFR」直达卡片；若后续拿到确切的下载地址，可在此补上抓取逻辑填入数值。
+# ── 4. 对冲基金监测（季度，取自 Hedge Fund Monitor API 的 fpf/Form PF 数据集）──────
+def build_hedge():
+    data = get_json(STFM_HF + "/series/dataset?dataset=fpf")
+    out = {"note": "季度", "url": LINKS["hedge"]}
+
+    def pick_total(include, exclude=()):
+        # 规模类（GAV/NAV）：量级大，取匹配到的最大序列并折算为万亿
+        hits = [(k, p) for k, p in scan_dataset(data, include, exclude) if latest(p)[1] > 0]
+        if not hits:
+            return None
+        hits.sort(key=lambda kp: latest(kp[1])[1], reverse=True)
+        d, v = latest(hits[0][1])
+        out["asOf"] = out.get("asOf") or d
+        return round(to_trillions(v), 2)
+
+    gav = pick_total(["gross", "asset"])
+    nav = pick_total(["net", "asset"])
+    if gav:
+        out["gav"] = gav
+    if nav:
+        out["nav"] = nav
+    # 杠杆倍数：小数值（约 1~10），取助记符最短的一条
+    lev = [(k, p) for k, p in scan_dataset(data, ["leverage"]) if 0 < latest(p)[1] < 100]
+    if lev:
+        lev.sort(key=lambda kp: len(kp[0]))
+        out["leverage"] = round(latest(lev[0][1])[1], 2)
+    if not (gav or nav):
+        raise ValueError("fpf 数据集未匹配到 GAV/NAV，需按 build_hedge 注释调整关键词")
+    return out
+
+
+# ── 5. 银行系统性风险监测（季度）──────────────────────────────────────────────
+# OFR 银行系统性风险监测（BSRM）无公开 REST 接口，仅提供交互式图表与不定期静态文件
+# （如 gsib-scores-chart/files/*.xlsx），无法稳定按序列抓取，故保留为「前往 OFR」直达卡片。
 def build_report_card(key):
     return {"asOf": None, "note": "季度更新", "url": LINKS[key]}
 
@@ -323,23 +355,29 @@ def main():
         "fsi": keep.get("fsi"),
         "funding": keep.get("funding"),
         "mmf": keep.get("mmf"),
-        "hedge": build_report_card("hedge"),
+        "hedge": keep.get("hedge"),
         "bank": build_report_card("bank"),
     }
 
-    for name, fn in (("fsi", build_fsi), ("funding", build_funding), ("mmf", build_mmf)):
+    for name, fn in (("fsi", build_fsi), ("funding", build_funding),
+                     ("mmf", build_mmf), ("hedge", build_hedge)):
         try:
             out[name] = fn()
             print("[ok] %s" % name)
         except Exception as e:  # noqa: BLE001 — 单源失败不影响其余
             print("[skip] %s: %s（保留上次数据）" % (name, e))
 
+    # 对冲基金取数失败且无历史值时，回退到「前往 OFR」直达卡片
+    if not out.get("hedge"):
+        out["hedge"] = build_report_card("hedge")
+
     fsi = out.get("fsi") or {}
     if fsi.get("asOf"):
         out["asOf"] = fsi["asOf"]
 
-    if not any(out.get(k) for k in ("fsi", "funding", "mmf")):
-        # 三个数据源全灭且没有历史值：不覆盖已有文件，避免写入空壳
+    hedge_live = (out.get("hedge") or {}).get("gav") or (out.get("hedge") or {}).get("nav")
+    if not any([out.get("fsi"), out.get("funding"), out.get("mmf"), hedge_live]):
+        # 数据源全灭且没有历史值：不覆盖已有文件，避免写入空壳
         if prev:
             print("全部数据源失败且已有历史文件，跳过写入")
             return

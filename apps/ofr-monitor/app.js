@@ -142,13 +142,26 @@
         body: "<div class='desc'>美国货币市场基金总规模及资产结构。</div>" }));
     }
 
-    // 对冲基金监测（季度报告，直达）
+    // 对冲基金监测（季度，来自 Hedge Fund Monitor API 的 Form PF 数据）
     var h = d.hedge || {};
-    cards.push(monCard({
-      title: "对冲基金监测", tag: (h.note || "季度"), link: h.url,
-      body: "<div class='desc'>按规模、杠杆、交易对手、流动性、复杂性与风险管理六大维度跟踪对冲基金。</div>",
-      upd: h.asOf ? "截至 " + h.asOf : "季度更新"
-    }));
+    if (isNum(h.gav) || isNum(h.nav)) {
+      var big = isNum(h.gav) ? h.gav : h.nav;
+      var bigLab = isNum(h.gav) ? "万亿 · 总资产 GAV" : "万亿 · 净资产 NAV";
+      var hrows = "";
+      if (isNum(h.gav) && isNum(h.nav)) hrows += "<div class='r'><span class='l'>净资产 NAV</span><span class='v'>$" + fnum(h.nav) + "T</span></div>";
+      if (isNum(h.leverage)) hrows += "<div class='r'><span class='l'>平均杠杆</span><span class='v'>" + fnum(h.leverage) + "×</span></div>";
+      cards.push(monCard({
+        title: "对冲基金监测", tag: "Form PF · " + (h.note || "季度"), link: h.url,
+        body: "<div class='big'>$" + fnum(big) + "<small>" + bigLab + "</small></div><div class='rows'>" + hrows + "</div>",
+        upd: h.asOf ? "截至 " + h.asOf : "季度更新"
+      }));
+    } else {
+      cards.push(monCard({
+        title: "对冲基金监测", tag: (h.note || "季度"), link: h.url,
+        body: "<div class='desc'>按规模、杠杆、交易对手、流动性、复杂性与风险管理六大维度跟踪对冲基金（SEC Form PF）。</div>",
+        upd: h.asOf ? "截至 " + h.asOf : "季度更新"
+      }));
+    }
 
     // 银行系统性风险监测（季度报告，直达）
     var b = d.bank || {};

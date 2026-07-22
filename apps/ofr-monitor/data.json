@@ -33,8 +33,11 @@
     "url": "https://www.financialresearch.gov/money-market-funds/"
   },
   "hedge": {
-    "asOf": null,
-    "note": "季度更新",
+    "gav": 11.2,
+    "nav": 5.4,
+    "leverage": 2.1,
+    "asOf": "2026-03-31",
+    "note": "季度",
     "url": "https://www.financialresearch.gov/hedge-fund-monitor/"
   },
   "bank": {
