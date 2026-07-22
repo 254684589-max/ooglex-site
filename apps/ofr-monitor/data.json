@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-22T16:48:18Z",
+  "updatedAt": "2026-07-22T17:01:50Z",
   "asOf": "2026-07-20",
   "source": "U.S. Office of Financial Research (OFR)",
   "fsi": {
@@ -301,6 +301,10 @@
   "funding": {
     "asOf": "2026-07-20",
     "url": "https://www.financialresearch.gov/short-term-funding-monitor/",
+    "sofr": {
+      "value": 3.57,
+      "change": -0.02
+    },
     "effr": {
       "value": 3.63,
       "change": 0.0
@@ -308,8 +312,8 @@
     "sofrVol": 3.012
   },
   "mmf": {
-    "total": 1.208,
-    "change": 0.014,
+    "total": 8.401,
+    "change": -0.0,
     "asOf": "2026-06-30",
     "url": "https://www.financialresearch.gov/money-market-funds/"
   },
@@ -317,9 +321,9 @@
     "note": "季度",
     "url": "https://www.financialresearch.gov/hedge-fund-monitor/",
     "asOf": "2026-03-31",
-    "gav": 42.23,
-    "nav": 13.27,
-    "leverage": 26.1
+    "gav": 12.63,
+    "nav": 4.92,
+    "leverage": 2.57
   },
   "bank": {
     "note": "年度核定",
