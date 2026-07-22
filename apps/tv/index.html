@@ -11,7 +11,9 @@
 
 <!-- PWA：可安装到手机主屏、独立窗口运行、离线可启动 -->
 <script>/* 以 App 形式打开时给根元素打标，隐藏网页式元素 */
-if (matchMedia('(display-mode: standalone)').matches || navigator.standalone || /[?&]source=pwa/.test(location.search)) document.documentElement.classList.add('app');</script>
+if (matchMedia('(display-mode: standalone)').matches || navigator.standalone || /[?&]source=pwa/.test(location.search)) document.documentElement.classList.add('app');
+/* 访问密码门：已验证过就直接放行（避免刷新时闪一下密码框） */
+try{ if (localStorage.getItem('ooglex_tv_gate') === '1') document.documentElement.classList.add('unlocked'); }catch(e){}</script>
 
 <!-- 关键资源预加载：地球贴图与 JS 并行下载，手机上更快看到地球 -->
 <link rel="preload" href="vendor/earth-blue-marble.jpg" as="image" fetchpriority="high">
@@ -252,9 +254,71 @@ if (matchMedia('(display-mode: standalone)').matches || navigator.standalone || 
     color:var(--dim); font-size:0.78rem; cursor:pointer; padding:2px 4px; }
   #inAppBar .iaClose:hover{ color:var(--ink); }
   @keyframes iaBounce{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(3px,-4px); } }
+
+  /* 访问密码门 */
+  #gate{
+    position:fixed; inset:0; z-index:100; display:flex; align-items:center; justify-content:center;
+    background:
+      radial-gradient(1200px 700px at 72% 18%, rgba(91,140,255,0.12), transparent 60%),
+      radial-gradient(circle at 50% 50%, #0a1024 0%, #05070f 72%, #03040a 100%);
+  }
+  html.unlocked #gate, #gate.ok{ display:none; }
+  #gate .gbox{
+    background:var(--panel); border:1px solid var(--line); border-radius:20px; backdrop-filter:blur(14px);
+    padding:34px 26px 28px; max-width:400px; width:calc(100vw - 40px); text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  }
+  #gate .gicon{ font-size:2.4rem; line-height:1; }
+  #gate h2{ margin-top:12px; font-size:1.3rem; letter-spacing:2px;
+    background:linear-gradient(90deg,var(--cyan),var(--blue)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  #gate p{ color:var(--dim); font-size:0.9rem; line-height:1.85; margin-top:12px; }
+  #gate input{
+    width:100%; margin-top:20px; padding:12px 16px; border-radius:12px; font-size:1.05rem; font-family:inherit;
+    text-align:center; letter-spacing:4px; background:rgba(255,255,255,0.05); border:1px solid var(--line); color:var(--ink);
+  }
+  #gate input:focus{ outline:none; border-color:var(--cyan); }
+  #gate button{
+    width:100%; margin-top:14px; padding:12px; border:none; border-radius:12px; cursor:pointer;
+    background:linear-gradient(135deg,var(--cyan),var(--blue)); color:#04121b; font-weight:800; font-size:1rem; font-family:inherit; letter-spacing:3px;
+  }
+  #gate #gerr{ color:#ff8a7a; font-size:0.82rem; margin-top:12px; min-height:1.1em; }
 </style>
 </head>
 <body>
+<div id="gate">
+  <div class="gbox">
+    <div class="gicon">🔒</div>
+    <h2>无权访问</h2>
+    <p>因相关法律法规等原因，您暂无权访问本页面。<br>如已获授权，请输入访问密码后进入。</p>
+    <input id="gpass" type="password" inputmode="numeric" placeholder="请输入访问密码" autocomplete="off" maxlength="20">
+    <button id="gbtn">进　入</button>
+    <div id="gerr"></div>
+  </div>
+</div>
+<script>
+/* 访问密码门：校验通过才放行；用哈希比对，不在源码里放明文密码 */
+(function(){
+  var KEY = 'ooglex_tv_gate', HASH = 2154682680;
+  function h(s){ var x = 5381; for (var i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) >>> 0; return x; }
+  var gate = document.getElementById('gate');
+  try{ if (localStorage.getItem(KEY) === '1'){ gate.classList.add('ok'); return; } }catch(e){}
+  var pass = document.getElementById('gpass'), btn = document.getElementById('gbtn'), err = document.getElementById('gerr');
+  function unlock(){
+    if (h((pass.value || '').trim()) === HASH){
+      try{ localStorage.setItem(KEY, '1'); }catch(e){}
+      document.documentElement.classList.add('unlocked');
+      gate.classList.add('ok');
+    } else {
+      err.textContent = '密码错误，请重试';
+      pass.value = ''; pass.focus();
+    }
+  }
+  btn.addEventListener('click', unlock);
+  pass.addEventListener('keydown', function(e){ if (e.key === 'Enter') unlock(); });
+  setTimeout(function(){ try{ pass.focus(); }catch(e){} }, 100);
+})();
+</script>
+
 <div id="inAppBar">
   <span class="arrow">↗️</span>
   微信内可能无法播放视频。请点右上角 <span class="dots">···</span> →「<b>在浏览器打开</b>」，体验更佳。
