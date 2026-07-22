@@ -73,6 +73,7 @@ function nearest(lat, lng){
 /* ---------------- 地球 ---------------- */
 let world, current = null, allStations = [], rotating = false, cinematic = false;
 let HLS_PROXY = '';   // 站长部署 HLS 代理后填入 apps/tv/proxy.json；用于 Chrome/安卓 hls.js 补 CORS（Safari 原生播放不走代理）
+let proxying = false; // 当前台是否已切到代理（避免重复切、并用于状态标识）
 const SNAP_KM = 900;   // 吸附半径：圆圈中心此范围内的最近频道会被"吸"到正中并播放
 const broken = new Set();          // 本次会话中连不上的频道（自动跳过）
 let selectPool = [], poolIdx = 0, watchdog = null;   // 失败自动跳到附近可用频道
@@ -285,14 +286,24 @@ function detachHls(){
 function attachStream(url){
   detachHls();
   try{ video.pause(); }catch(e){}
+  proxying = false;                    // 新台从直连开始
   const isHls = /\.m3u8(\?|$)/i.test(url);
   const nativeHls = video.canPlayType('application/vnd.apple.mpegurl');
   if (isHls && !nativeHls && window.Hls && Hls.isSupported()){
-    startHls(url, false);              // 先直连（快，跟最开始一样）；被跨域拦住再走代理
+    startHls(url, false);              // 先直连（快，跟最开始一样）；连不上再走代理
   } else {
     video.src = url;                   // Safari 原生 HLS，或 mp4 直链
     const p = video.play(); if (p && p.catch) p.catch(() => {});
   }
+}
+// 切到代理重试当前台（供 hls 错误 和 看门狗超时 共用）；返回是否成功发起
+function switchToProxy(url){
+  if (!HLS_PROXY || proxying) return false;
+  proxying = true;
+  setState('load', '直连不通，改走代理…');
+  startHls(url, true);
+  armWatchdog();
+  return true;
 }
 /* 直连优先、代理兜底：
    viaProxy=false 先直连——能直连的台不绕境外代理，保持原本的速度；
@@ -311,11 +322,7 @@ function startHls(url, viaProxy){
   hls.on(Hls.Events.ERROR, (evt, data) => {
     if (!data || !data.fatal) return;
     if (data.type === Hls.ErrorTypes.NETWORK_ERROR){
-      if (!viaProxy && HLS_PROXY){        // 直连不通 + 有代理没试过 → 改走代理救一下
-        setState('load', '直连不通，改走代理…');
-        startHls(url, true);
-        return;
-      }
+      if (!viaProxy && switchToProxy(url)) return;   // 直连不通 → 改走代理救一下
       if (netRetry++ < 1){ try{ hls.startLoad(); }catch(e){ hop('信号中断'); } }
       else hop('连不上（源已失效或无跨域许可）');
     }
@@ -362,8 +369,12 @@ function playAt(st, fly){
 }
 function armWatchdog(){
   clearTimeout(watchdog);
-  // 兜底而非抢跑：给"慢但在加载"的源足够时间（12s）；死台由 hls error 事件早已跳走
-  watchdog = setTimeout(() => { if (video.paused || video.readyState < 2) hop('连接超时'); }, 12000);
+  // 直连超时（境外台常见）：先别急着跳台——若有代理没试过，改走代理再等；否则才跳台
+  watchdog = setTimeout(() => {
+    if (!(video.paused || video.readyState < 2)) return;   // 已在播，无需处理
+    if (current && switchToProxy(current.url)) return;      // 直连超时 → 转代理
+    hop('连接超时');
+  }, proxying ? 12000 : 9000);   // 直连阶段 9s 就转代理；代理阶段给足 12s
 }
 const MAX_HOPS = 5;   // 自动跳台上限：这一带都连不上时尽快收手给提示，而不是在十几个死台间反复横跳
 function hop(reason){
@@ -388,7 +399,7 @@ function stopVideo(){
   setState('load', '已暂停');
   toggleBtn('▶ 播放');
 }
-video.addEventListener('playing', () => { clearTimeout(watchdog); setState('ok', '● 正在直播'); toggleBtn('⏸ 暂停'); if (current) world.ringsData([current]); setPlaybackState('playing'); });
+video.addEventListener('playing', () => { clearTimeout(watchdog); setState('ok', '● 正在直播' + (proxying ? '（经代理）' : '')); toggleBtn('⏸ 暂停'); if (current) world.ringsData([current]); setPlaybackState('playing'); });
 video.addEventListener('pause', () => setPlaybackState('paused'));
 video.addEventListener('waiting', () => setState('load', '缓冲中…'));
 video.addEventListener('stalled', () => setState('load', '缓冲中…'));
