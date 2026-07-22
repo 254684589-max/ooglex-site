@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-07-22T00:12:00Z",
+  "updatedAt": "2026-07-22T17:02:59Z",
   "asOf": "2026-07-22",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-07-19 ~ 2026-07-24",
-  "count": 69,
+  "count": 70,
   "highCount": 11,
   "events": [
     {
@@ -215,11 +215,11 @@
       "ccy": "EUR",
       "country": "欧元区",
       "flag": "🇪🇺",
-      "title": "German ZEW Economic Sentiment",
-      "titleEn": "German ZEW Economic Sentiment",
+      "title": "ZEW Economic Sentiment",
+      "titleEn": "ZEW Economic Sentiment",
       "impact": "low",
-      "forecast": "15.1",
-      "previous": "10.5",
+      "forecast": "11.2",
+      "previous": "9.5",
       "actual": null
     },
     {
@@ -227,11 +227,11 @@
       "ccy": "EUR",
       "country": "欧元区",
       "flag": "🇪🇺",
-      "title": "ZEW Economic Sentiment",
-      "titleEn": "ZEW Economic Sentiment",
+      "title": "German ZEW Economic Sentiment",
+      "titleEn": "German ZEW Economic Sentiment",
       "impact": "low",
-      "forecast": "11.2",
-      "previous": "9.5",
+      "forecast": "15.1",
+      "previous": "10.5",
       "actual": null
     },
     {
@@ -307,7 +307,7 @@
       "actual": null
     },
     {
-      "ts": "2026-07-22T03:00:00Z",
+      "ts": "2026-07-22T03:03:00Z",
       "ccy": "NZD",
       "country": "新西兰",
       "flag": "🇳🇿",
@@ -379,18 +379,6 @@
       "actual": null
     },
     {
-      "ts": "2026-07-22T06:02:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "Foreign Direct Investment ytd/y",
-      "titleEn": "Foreign Direct Investment ytd/y",
-      "impact": "low",
-      "forecast": null,
-      "previous": "-8.6%",
-      "actual": null
-    },
-    {
       "ts": "2026-07-22T08:30:00Z",
       "ccy": "GBP",
       "country": "英国",
@@ -415,6 +403,18 @@
       "actual": null
     },
     {
+      "ts": "2026-07-22T19:00:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "央行官员讲话",
+      "titleEn": "President Trump Speaks",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
       "ts": "2026-07-23T01:30:00Z",
       "ccy": "AUD",
       "country": "澳大利亚",
@@ -436,6 +436,18 @@
       "impact": "high",
       "forecast": "4.4%",
       "previous": "4.4%",
+      "actual": null
+    },
+    {
+      "ts": "2026-07-23T06:02:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "Foreign Direct Investment ytd/y",
+      "titleEn": "Foreign Direct Investment ytd/y",
+      "impact": "low",
+      "forecast": null,
+      "previous": "-8.6%",
       "actual": null
     },
     {
