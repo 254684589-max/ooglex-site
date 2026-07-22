@@ -72,6 +72,7 @@ function nearest(lat, lng){
 
 /* ---------------- 地球 ---------------- */
 let world, current = null, allStations = [], rotating = false, cinematic = false;
+let HLS_PROXY = '';   // 站长部署 HLS 代理后填入 apps/tv/proxy.json；用于 Chrome/安卓 hls.js 补 CORS（Safari 原生播放不走代理）
 const SNAP_KM = 900;   // 吸附半径：圆圈中心此范围内的最近频道会被"吸"到正中并播放
 const broken = new Set();          // 本次会话中连不上的频道（自动跳过）
 let selectPool = [], poolIdx = 0, watchdog = null;   // 失败自动跳到附近可用频道
@@ -294,7 +295,9 @@ function attachStream(url){
       levelLoadingTimeOut: 10000, levelLoadingMaxRetry: 2,
       fragLoadingTimeOut: 14000, fragLoadingMaxRetry: 2 });
     let netRetry = 0;
-    hls.loadSource(url);
+    // 配了代理就走代理（替浏览器抓流 + 补 CORS，解决 Chrome/安卓 跨域黑屏）
+    const src = HLS_PROXY ? (HLS_PROXY + '/?url=' + encodeURIComponent(url)) : url;
+    hls.loadSource(src);
     hls.attachMedia(video);
     hls.on(Hls.Events.ERROR, (evt, data) => {
       if (!data || !data.fatal) return;
@@ -610,6 +613,11 @@ function rowToStation(r){
 }
 async function loadStations(){
   status('正在载入电视台…', true);
+  // 读取 HLS 代理配置（站长部署后在 proxy.json 里填 URL；留空则直连）
+  try{
+    const pj = await (await fetch('proxy.json?t=' + Date.now())).json();
+    if (pj && typeof pj.hls === 'string') HLS_PROXY = pj.hls.trim().replace(/\/+$/, '');
+  }catch(e){ /* 没有就直连 */ }
   let list = [];
   // 1) 本站自带频道库（同源托管 → 国内 / 手机 / 微信都能直达，不依赖外网 API）
   try{

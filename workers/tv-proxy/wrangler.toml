@@ -1,0 +1,15 @@
+name = "ooglex-tv-proxy"
+main = "worker.js"
+compatibility_date = "2026-07-01"
+
+# 每 IP 每日限额计数（可选：先执行 README 里的命令创建命名空间，再把 id 填进来；
+# 不想用限额就把整段 [[kv_namespaces]] 删掉）
+[[kv_namespaces]]
+binding = "QUOTA"
+id = "填入 wrangler kv namespace create QUOTA 输出的 id"
+
+[vars]
+# 允许调用本代理的页面来源（逗号分隔）——只有这些站点的页面能用，防止被别人白嫖带宽
+ALLOWED_ORIGINS = "https://www.ooglex.com,https://ooglex.com"
+# 每 IP 每日请求上限（直播切片请求多，给大些；不配 KV 则此项无效）
+DAILY_LIMIT = "20000"
