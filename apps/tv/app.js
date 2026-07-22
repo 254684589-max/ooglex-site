@@ -287,10 +287,12 @@ function attachStream(url){
   const isHls = /\.m3u8(\?|$)/i.test(url);
   const nativeHls = video.canPlayType('application/vnd.apple.mpegurl');
   if (isHls && !nativeHls && window.Hls && Hls.isSupported()){
-    // 更短的超时：拉不到清单/切片就尽快判失败去跳台，而不是长时间黑屏
+    // 给"慢但在加载"的源足够耐心（国内连境外握手本就慢），但重试次数压低——
+    // 真正的死台 / CORS 会立刻报致命错误跳台，靠的是 error 事件而非硬掐超时。
     hls = new Hls({ maxBufferLength: 12, liveSyncDurationCount: 3,
-      manifestLoadingTimeOut: 6000, manifestLoadingMaxRetry: 1,
-      levelLoadingTimeOut: 6000, fragLoadingTimeOut: 8000, fragLoadingMaxRetry: 1 });
+      manifestLoadingTimeOut: 10000, manifestLoadingMaxRetry: 1,
+      levelLoadingTimeOut: 10000, levelLoadingMaxRetry: 2,
+      fragLoadingTimeOut: 14000, fragLoadingMaxRetry: 2 });
     let netRetry = 0;
     hls.loadSource(url);
     hls.attachMedia(video);
@@ -347,21 +349,23 @@ function playAt(st, fly){
 }
 function armWatchdog(){
   clearTimeout(watchdog);
-  watchdog = setTimeout(() => { if (video.paused || video.readyState < 2) hop('连接超时'); }, 6500);
+  // 兜底而非抢跑：给"慢但在加载"的源足够时间（12s）；死台由 hls error 事件早已跳走
+  watchdog = setTimeout(() => { if (video.paused || video.readyState < 2) hop('连接超时'); }, 12000);
 }
+const MAX_HOPS = 5;   // 自动跳台上限：这一带都连不上时尽快收手给提示，而不是在十几个死台间反复横跳
 function hop(reason){
   clearTimeout(watchdog);
   const failed = selectPool[poolIdx];
   if (failed) broken.add(failed.url);
   poolIdx++;
   while (poolIdx < selectPool.length && broken.has(selectPool[poolIdx].url)) poolIdx++;
-  if (poolIdx < selectPool.length){
+  if (poolIdx < selectPool.length && poolIdx <= MAX_HOPS){
     const st = selectPool[poolIdx];
     focus(st, { fly: false, play: true });
     setState('load', (reason ? reason + ' · ' : '') + '自动跳到附近可用频道…');
     armWatchdog();
   } else {
-    setState('err', '附近电视台在当前网络下都连不上，换个地区或稍后再试');
+    setState('err', '这一带在当前网络下都连不上，试试 🏠 回中国上空，或换个地区');
     world.ringsData([]);
   }
 }

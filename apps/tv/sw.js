@@ -5,7 +5,7 @@
      · 大文件（地球纹理、globe.gl、hls.js）首次用到时再缓存（离线可用）；
      · 频道数据（channels.json / channels-fallback.json）网络优先：始终取最新，离线才回退缓存；
      · 跨域请求（电视直播流、外站台标）一律直连、绝不拦截/缓存。 */
-const VERSION = 'tv-v3';
+const VERSION = 'tv-v4';
 const SHELL_CACHE = 'tv-shell-' + VERSION;
 const RUNTIME_CACHE = 'tv-runtime-' + VERSION;
 
@@ -13,7 +13,7 @@ const RUNTIME_CACHE = 'tv-runtime-' + VERSION;
 const SHELL = [
   './',
   './index.html',
-  './app.js?v=2',
+  './app.js?v=3',
   './manifest.webmanifest',
   './icons/icon.svg',
   './icons/icon-192.png',
