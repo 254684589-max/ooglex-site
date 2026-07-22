@@ -61,7 +61,8 @@ jobs:
 
           # 第一梯队：互不依赖的每日工作流
           for wf in macro_radar.yml asset_tracker.yml billionaires.yml companies.yml \
-                    fear_greed.yml world_economy.yml movies.yml econ_calendar.yml ai_rankings.yml; do
+                    fear_greed.yml world_economy.yml movies.yml econ_calendar.yml ai_rankings.yml \
+                    ofr_monitor.yml; do
             if ran_in_window "$wf"; then
               echo "$wf 本窗口已触发，跳过"
             else

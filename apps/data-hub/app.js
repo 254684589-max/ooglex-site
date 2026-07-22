@@ -133,6 +133,18 @@
         return "<div class='news'>" + (ev.flag || "🌐") + " " + esc(ev.title) + "</div>" +
           "<div class='sub'>预测 " + esc(ev.forecast || "—") + " · 前值 " + esc(ev.previous || "—") +
           (isNum(d.count) ? " · 本周 " + d.count + " 项" : "") + "</div>";
+      } },
+    { folder: "ofr-monitor", en: "OFR Risk", name: "美国金融风险监测", tag: "OFR · 金融压力 · SOFR · 货币基金 · 系统性风险",
+      render: function (d) {
+        var f = d.fsi || {}; if (!isNum(f.value)) return "<div class='loading'>暂无数据</div>";
+        var col = f.value > 0.5 ? "#e0554f" : f.value < -0.5 ? "#3fae7d" : "#e4b53d";
+        var lab = f.value > 0.5 ? "高于平均压力" : f.value < -0.5 ? "低于平均压力" : "接近平均";
+        var h = "<div class='big' style='color:" + col + "'>" + f.value.toFixed(2) +
+          "<small style='color:" + col + "'>金融压力 · " + lab + "</small></div>";
+        var fu = d.funding || {};
+        if (fu.sofr && isNum(fu.sofr.value)) h += row("SOFR 隔夜利率", fu.sofr.value.toFixed(2) + "%");
+        if (d.mmf && isNum(d.mmf.total)) h += row("货币基金规模", "$" + d.mmf.total.toFixed(2) + "T");
+        return h;
       } }
   ];
 
@@ -222,7 +234,7 @@
     buildLead();
     var grid = $("grid");
     APPS.forEach(function (app) { grid.appendChild(card(app)); });
-    $("foot").innerHTML = "各应用数据每日自动更新（来源 Yahoo Finance · CoinGecko · OECD · BIS · Forbes · CNN · Google News · World Bank · Forex Factory · QS · THE · ARWU · U.S. News · PayScale · NACE · BLS · WEF）。仅供参考，不构成建议。";
+    $("foot").innerHTML = "各应用数据每日自动更新（来源 Yahoo Finance · CoinGecko · OECD · BIS · OFR · Forbes · CNN · Google News · World Bank · Forex Factory · QS · THE · ARWU · U.S. News · PayScale · NACE · BLS · WEF）。仅供参考，不构成建议。";
   }
   boot();
 })();
