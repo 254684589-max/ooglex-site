@@ -41,8 +41,19 @@
     "url": "https://www.financialresearch.gov/hedge-fund-monitor/"
   },
   "bank": {
-    "asOf": null,
-    "note": "季度更新",
-    "url": "https://www.financialresearch.gov/bank-systemic-risk-monitor/"
+    "note": "年度核定",
+    "asOf": "2025",
+    "effective": "适用 2025 年 · 美联储据 2023 年末数据核定",
+    "url": "https://www.financialresearch.gov/bank-systemic-risk-monitor/us-gsib-surcharges/",
+    "gsibs": [
+      { "bank": "JPMorgan Chase", "zh": "摩根大通", "surcharge": 4.5 },
+      { "bank": "Citigroup", "zh": "花旗集团", "surcharge": 3.5 },
+      { "bank": "Goldman Sachs", "zh": "高盛", "surcharge": 3.5 },
+      { "bank": "Bank of America", "zh": "美国银行", "surcharge": 3.0 },
+      { "bank": "Morgan Stanley", "zh": "摩根士丹利", "surcharge": 3.0 },
+      { "bank": "Wells Fargo", "zh": "富国银行", "surcharge": 1.5 },
+      { "bank": "Bank of New York Mellon", "zh": "纽约梅隆银行", "surcharge": 1.5 },
+      { "bank": "State Street", "zh": "道富银行", "surcharge": 1.0 }
+    ]
   }
 }
