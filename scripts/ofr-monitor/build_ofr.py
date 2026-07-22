@@ -58,8 +58,25 @@ LINKS = {
     "funding": "https://www.financialresearch.gov/short-term-funding-monitor/",
     "mmf": "https://www.financialresearch.gov/money-market-funds/",
     "hedge": "https://www.financialresearch.gov/hedge-fund-monitor/",
-    "bank": "https://www.financialresearch.gov/bank-systemic-risk-monitor/",
+    "bank": "https://www.financialresearch.gov/bank-systemic-risk-monitor/us-gsib-surcharges/",
 }
+
+# 美国 8 家 G-SIB 的系统性资本附加（%），衡量各行系统重要性 —— OFR 银行系统性风险监测
+# 「U.S. G-SIB Surcharges」页所呈现的核心指标。该指标由美联储核定、约年度更新，且 OFR
+# 未提供机器可读接口（仅交互图表），故此处以人工维护的权威数据表呈现。
+# 当前为「适用 2025 年」一档：由美联储 2024Q4 依据 2023-12-31 系统性风险指标核定。
+# 来源：Federal Reserve《Large Bank Capital Requirements》。美联储更新后，请同步修订下表与 GSIB_EFFECTIVE。
+GSIB_EFFECTIVE = "2025"
+US_GSIB_SURCHARGES = [
+    {"bank": "JPMorgan Chase", "zh": "摩根大通", "surcharge": 4.5},
+    {"bank": "Citigroup", "zh": "花旗集团", "surcharge": 3.5},
+    {"bank": "Goldman Sachs", "zh": "高盛", "surcharge": 3.5},
+    {"bank": "Bank of America", "zh": "美国银行", "surcharge": 3.0},
+    {"bank": "Morgan Stanley", "zh": "摩根士丹利", "surcharge": 3.0},
+    {"bank": "Wells Fargo", "zh": "富国银行", "surcharge": 1.5},
+    {"bank": "Bank of New York Mellon", "zh": "纽约梅隆银行", "surcharge": 1.5},
+    {"bank": "State Street", "zh": "道富银行", "surcharge": 1.0},
+]
 
 
 # ── 通用工具 ──────────────────────────────────────────────────────────────
@@ -335,9 +352,20 @@ def build_hedge():
     return out
 
 
-# ── 5. 银行系统性风险监测（季度）──────────────────────────────────────────────
-# OFR 银行系统性风险监测（BSRM）无公开 REST 接口，仅提供交互式图表与不定期静态文件
-# （如 gsib-scores-chart/files/*.xlsx），无法稳定按序列抓取，故保留为「前往 OFR」直达卡片。
+# ── 5. 银行系统性风险监测（美国 G-SIB 系统性资本附加，约年度更新）─────────────────
+# BSRM 无公开 REST 接口，此处呈现其核心指标「美国 G-SIB 附加资本」——权威、公开、变动
+# 缓慢（美联储约年度核定）。以 US_GSIB_SURCHARGES 人工维护数据表输出，附生效年份与来源。
+def build_bank():
+    return {
+        "note": "年度核定",
+        "asOf": GSIB_EFFECTIVE,
+        "effective": "适用 " + GSIB_EFFECTIVE + " 年 · 美联储据 2023 年末数据核定",
+        "url": LINKS["bank"],
+        "gsibs": [dict(x) for x in US_GSIB_SURCHARGES],
+    }
+
+
+# 抓取失败时的「前往 OFR」直达兜底卡片（供对冲基金等使用）
 def build_report_card(key):
     return {"asOf": None, "note": "季度更新", "url": LINKS[key]}
 
@@ -356,7 +384,7 @@ def main():
         "funding": keep.get("funding"),
         "mmf": keep.get("mmf"),
         "hedge": keep.get("hedge"),
-        "bank": build_report_card("bank"),
+        "bank": build_bank(),
     }
 
     for name, fn in (("fsi", build_fsi), ("funding", build_funding),

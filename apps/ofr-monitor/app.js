@@ -163,13 +163,26 @@
       }));
     }
 
-    // 银行系统性风险监测（季度报告，直达）
+    // 银行系统性风险监测：美国 8 家 G-SIB 系统性资本附加（年度核定）
     var b = d.bank || {};
-    cards.push(monCard({
-      title: "银行系统性风险", tag: (b.note || "季度"), link: b.url,
-      body: "<div class='desc'>大型银行系统重要性评分、OFR 传染指数等系统性风险关键指标。</div>",
-      upd: b.asOf ? "截至 " + b.asOf : "季度更新"
-    }));
+    if (b.gsibs && b.gsibs.length) {
+      var brows = b.gsibs.map(function (g) {
+        return "<div class='r'><span class='l'>" + esc(g.zh || g.bank) + "</span><span class='v'>" +
+          fnum(g.surcharge, 1) + "%</span></div>";
+      }).join("");
+      cards.push(monCard({
+        title: "银行系统性风险", tag: "G-SIB · 年度", link: b.url,
+        body: "<div class='big'>" + b.gsibs.length + "<small>家美国 G-SIB · 系统性资本附加</small></div>" +
+          "<div class='rows'>" + brows + "</div>",
+        upd: b.effective || (b.asOf ? "适用 " + b.asOf : "年度核定")
+      }));
+    } else {
+      cards.push(monCard({
+        title: "银行系统性风险", tag: (b.note || "季度"), link: b.url,
+        body: "<div class='desc'>大型银行系统重要性评分、OFR 传染指数等系统性风险关键指标。</div>",
+        upd: b.asOf ? "截至 " + b.asOf : "季度更新"
+      }));
+    }
 
     $("grid").innerHTML = cards.join("");
   }
