@@ -2,9 +2,10 @@
    目标：让应用可安装、可离线启动。
    策略：
      · 安装时只预缓存"外壳"（很小，秒装）；
-     · 大文件（地球纹理、globe.gl、hls.js、channels.json）首次用到时再缓存（离线可用）；
+     · 大文件（地球纹理、globe.gl、hls.js）首次用到时再缓存（离线可用）；
+     · 频道数据（channels.json / channels-fallback.json）网络优先：始终取最新，离线才回退缓存；
      · 跨域请求（电视直播流、外站台标）一律直连、绝不拦截/缓存。 */
-const VERSION = 'tv-v1';
+const VERSION = 'tv-v2';
 const SHELL_CACHE = 'tv-shell-' + VERSION;
 const RUNTIME_CACHE = 'tv-runtime-' + VERSION;
 
@@ -54,6 +55,21 @@ self.addEventListener('fetch', (event) => {
 
   // 只处理本应用作用域内的资源
   if (!url.pathname.startsWith('/apps/tv/')) return;
+
+  // 频道数据：网络优先，始终拿最新的 channels.json（用去查询串的干净键缓存，离线才回退）
+  if (/\/channels(-fallback)?\.json$/.test(url.pathname)) {
+    const key = url.origin + url.pathname;   // 忽略 ?t=… ，避免每次刷新都新增一份缓存
+    event.respondWith(
+      fetch(req).then((res) => {
+        if (res && res.ok) {
+          const copy = res.clone();
+          caches.open(RUNTIME_CACHE).then((c) => c.put(key, copy)).catch(() => {});
+        }
+        return res;
+      }).catch(() => caches.match(key))
+    );
+    return;
+  }
 
   // 页面导航：网络优先，断网回退到缓存的外壳，保证离线也能打开
   if (req.mode === 'navigate') {
