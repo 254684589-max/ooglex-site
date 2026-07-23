@@ -623,9 +623,9 @@ def ia_find(orig, year):
         if not ident or "trailer" in ident.lower():
             continue
         ok, iy, secs = ia_meta(ident)
-        if not ok or secs < 2400:
-            continue
-        if iy and abs(iy - int(year)) > 2:
+        # 严格口径：必须有年份且匹配。缺年份的条目宁可放弃——曾出现同名子串碰撞
+        # （搜 The Kid 命中 Billy the Kid in Texas）甚至误配到有版权的现代片。
+        if not ok or secs < 2400 or iy is None or abs(iy - int(year)) > 2:
             continue
         return ident
     return None
@@ -648,12 +648,18 @@ def classics_list(prev):
     """公版经典榜单：并行校验 / 搜寻 Internet Archive 片源（优先沿用上次已验证的标识），
     用 TMDB 补中文片名、海报与评分，最后按加权评分排序取前 CLASSICS_MAX 部。"""
     def resolve(c):
-        for ident in dict.fromkeys([prev.get((c["orig"], c["year"])), c["ia"]]):
-            if not ident or "trailer" in ident.lower():
-                continue
-            ok, iy, _ = ia_meta(ident)
-            if ok and (iy is None or abs(iy - int(c["year"])) <= 2):
-                return ident
+        year = int(c["year"])
+        # 手工固化的标识可信度高：存在、可播、年份不冲突（缺年份不算冲突）即可
+        if c["ia"] and "trailer" not in c["ia"].lower():
+            ok, iy, _ = ia_meta(c["ia"])
+            if ok and (iy is None or abs(iy - year) <= 2):
+                return c["ia"]
+        # 上次搜索沿用的标识按严格口径复核（必须有年份且匹配、片长达标），坏源自然淘汰
+        p = prev.get((c["orig"], c["year"]))
+        if p and p != c["ia"] and "trailer" not in p.lower():
+            ok, iy, secs = ia_meta(p)
+            if ok and secs >= 2400 and iy is not None and abs(iy - year) <= 2:
+                return p
         return ia_find(c["orig"], c["year"])
 
     def build_one(c):
