@@ -1,0 +1,55 @@
+name: Deploy TV Proxy
+
+# 自动部署「环球TV」HLS 代理（Cloudflare Worker）：
+# main 分支上 worker 代码/配置有改动就自动 wrangler deploy，不用再本地手动部署。
+# 一次性配置：仓库 Settings → Secrets and variables → Actions 添加 CLOUDFLARE_API_TOKEN
+#（创建方法见 workers/tv-proxy/README.md）。也可在 Actions 页面手动运行本工作流。
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'workers/tv-proxy/worker.js'
+      - 'workers/tv-proxy/wrangler.toml'
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: 检查 API Token 是否已配置
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::未配置 CLOUDFLARE_API_TOKEN。请到仓库 Settings → Secrets and variables → Actions 添加（创建方法见 workers/tv-proxy/README.md），再重跑本工作流。"
+            exit 1
+          fi
+
+      - name: 处理 KV 限额配置
+        env:
+          KV_ID: ${{ secrets.CLOUDFLARE_KV_QUOTA_ID }}
+        run: |
+          cd workers/tv-proxy
+          if [ -n "$KV_ID" ]; then
+            # 配了 KV Secret：替换占位 id，部署带每日限额的版本
+            sed -i "s|^id = .*|id = \"$KV_ID\"|" wrangler.toml
+          elif grep -q '填入' wrangler.toml; then
+            # 未配 KV：删掉整段 [[kv_namespaces]]，按无限额模式部署（其余功能不受影响）
+            sed -i '/^\[\[kv_namespaces\]\]/,/^id = /d' wrangler.toml
+          fi
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          workingDirectory: workers/tv-proxy
+        env:
+          # 可选：API Token 能访问多个 Cloudflare 账号时才需要配这个 Secret
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

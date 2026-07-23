@@ -13,7 +13,25 @@
   - 看**国内台（CCTV 等）**：请求要绕一圈境外边缘再回国内源，**可能反而更慢、甚至被源站拒绝境外 IP**。国内台仍以「直连能通」为主。
 - 💸 **耗流量**：直播视频每几秒拉一个切片，都会过代理。Cloudflare Workers 免费版每天 10 万次请求，人一多就会触顶。
 
-## 部署步骤（约 10 分钟，一次性）
+## 自动部署（推荐：一次配置，以后永不手动）
+
+仓库已带 `.github/workflows/deploy-tv-proxy.yml`：main 分支上 `worker.js` / `wrangler.toml`
+有改动就自动 `wrangler deploy`。只需一次性配好 API Token：
+
+1. **创建 Cloudflare API Token**：
+   [dash.cloudflare.com](https://dash.cloudflare.com) → 右上角头像 → **My Profile → API Tokens →
+   Create Token** → 选模板 **Edit Cloudflare Workers** → 按默认生成，复制 Token。
+2. **加到仓库 Secrets**：GitHub 仓库 → **Settings → Secrets and variables → Actions →
+   New repository secret**，名字填 `CLOUDFLARE_API_TOKEN`，值粘贴刚才的 Token。
+3. **首次部署**：Actions 页面 → **Deploy TV Proxy** → **Run workflow** 跑一次即可。
+   之后每次 worker 代码有改动合入 main 都会自动部署。
+
+可选 Secrets（一般不用配）：
+- `CLOUDFLARE_ACCOUNT_ID`：Token 能访问多个 Cloudflare 账号时才需要。
+- `CLOUDFLARE_KV_QUOTA_ID`：想启用每 IP 每日限额时，填 KV 命名空间的 id
+  （`wrangler kv namespace create QUOTA` 的输出）；不配则按无限额模式部署。
+
+## 手动部署（备选，约 10 分钟）
 
 需要一个 [Cloudflare](https://dash.cloudflare.com) 账号（免费版即可）。
 
@@ -55,8 +73,9 @@
 ## 已部署过的注意：升级后要重新 deploy 一次
 
 频道库现在会收录**无 `.m3u8` 后缀**的 HLS 清单（前端走代理时会带 `?m3u8=1` 提示参数，
-Worker 据此改写清单）。旧版 Worker 不认识这个参数——已部署过的请在 `workers/tv-proxy`
-目录重新执行一次 `wrangler deploy` 更新到最新代码，否则这类源走代理会失败（其余源不受影响）。
+Worker 据此改写清单）。旧版 Worker 不认识这个参数——已部署过的请按上面「自动部署」
+配好 Token 后跑一次 **Deploy TV Proxy** 工作流（或本地重新 `wrangler deploy`），
+否则这类源走代理会失败（其余源不受影响）。
 
 ## 安全与限额
 
