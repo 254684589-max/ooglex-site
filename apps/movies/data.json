@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-23T14:50:04Z",
+  "updatedAt": "2026-07-23T14:56:17Z",
   "asOf": "2026-07-23",
   "source": "TMDB · The Movie Database",
   "avgRating": 8.2,
@@ -2631,6 +2631,47 @@
         },
         {
           "rank": 68,
+          "title": "摩登时代",
+          "orig": "Modern Times",
+          "year": "1936",
+          "rating": 8.3,
+          "votes": 4123,
+          "poster": "https://image.tmdb.org/t/p/w342/3OR9kt3TIjGoiMtv7OGwM6LGavC.jpg",
+          "id": 3082,
+          "link": "https://www.themoviedb.org/movie/3082",
+          "trailer": "NNznUyDmSFc",
+          "watch": [
+            {
+              "region": "HK",
+              "names": [
+                "LINE TV"
+              ],
+              "link": "https://www.themoviedb.org/movie/3082-modern-times/watch?locale=HK"
+            },
+            {
+              "region": "TW",
+              "names": [
+                "LINE TV",
+                "Apple TV Store"
+              ],
+              "link": "https://www.themoviedb.org/movie/3082-modern-times/watch?locale=TW"
+            },
+            {
+              "region": "US",
+              "names": [
+                "Amazon Prime Video",
+                "HBO Max Amazon Channel",
+                "YouTube TV",
+                "Criterion Channel",
+                "HBO Max",
+                "Amazon Prime Video with Ads"
+              ],
+              "link": "https://www.themoviedb.org/movie/3082-modern-times/watch?locale=US"
+            }
+          ]
+        },
+        {
+          "rank": 69,
           "title": "绿皮书",
           "orig": "Green Book",
           "year": "2018",
@@ -2668,47 +2709,6 @@
                 "YouTube"
               ],
               "link": "https://www.themoviedb.org/movie/490132-green-book/watch?locale=US"
-            }
-          ]
-        },
-        {
-          "rank": 69,
-          "title": "摩登时代",
-          "orig": "Modern Times",
-          "year": "1936",
-          "rating": 8.3,
-          "votes": 4123,
-          "poster": "https://image.tmdb.org/t/p/w342/3OR9kt3TIjGoiMtv7OGwM6LGavC.jpg",
-          "id": 3082,
-          "link": "https://www.themoviedb.org/movie/3082",
-          "trailer": "NNznUyDmSFc",
-          "watch": [
-            {
-              "region": "HK",
-              "names": [
-                "LINE TV"
-              ],
-              "link": "https://www.themoviedb.org/movie/3082-modern-times/watch?locale=HK"
-            },
-            {
-              "region": "TW",
-              "names": [
-                "LINE TV",
-                "Apple TV Store"
-              ],
-              "link": "https://www.themoviedb.org/movie/3082-modern-times/watch?locale=TW"
-            },
-            {
-              "region": "US",
-              "names": [
-                "Amazon Prime Video",
-                "HBO Max Amazon Channel",
-                "YouTube TV",
-                "Criterion Channel",
-                "HBO Max",
-                "Amazon Prime Video with Ads"
-              ],
-              "link": "https://www.themoviedb.org/movie/3082-modern-times/watch?locale=US"
             }
           ]
         },
@@ -3351,39 +3351,6 @@
         },
         {
           "rank": 86,
-          "title": "非常嫌疑犯",
-          "orig": "The Usual Suspects",
-          "year": "1995",
-          "rating": 8.2,
-          "votes": 11523,
-          "poster": "https://image.tmdb.org/t/p/w342/7HDY0yZxiM1uMTM1wLm6R0AuW4Z.jpg",
-          "id": 629,
-          "link": "https://www.themoviedb.org/movie/629",
-          "trailer": "jM3jrHGAsIE",
-          "watch": [
-            {
-              "region": "HK",
-              "names": [
-                "Netflix"
-              ],
-              "link": "https://www.themoviedb.org/movie/629-the-usual-suspects/watch?locale=HK"
-            },
-            {
-              "region": "US",
-              "names": [
-                "HBO Max Amazon Channel",
-                "YouTube TV",
-                "Cinemax Amazon Channel",
-                "HBO Max",
-                "Cinemax Apple TV Channel",
-                "Hoopla"
-              ],
-              "link": "https://www.themoviedb.org/movie/629-the-usual-suspects/watch?locale=US"
-            }
-          ]
-        },
-        {
-          "rank": 87,
           "title": "光荣之路",
           "orig": "Paths of Glory",
           "year": "1957",
@@ -3424,6 +3391,39 @@
                 "Fandango At Home"
               ],
               "link": "https://www.themoviedb.org/movie/975-paths-of-glory/watch?locale=US"
+            }
+          ]
+        },
+        {
+          "rank": 87,
+          "title": "非常嫌疑犯",
+          "orig": "The Usual Suspects",
+          "year": "1995",
+          "rating": 8.2,
+          "votes": 11523,
+          "poster": "https://image.tmdb.org/t/p/w342/7HDY0yZxiM1uMTM1wLm6R0AuW4Z.jpg",
+          "id": 629,
+          "link": "https://www.themoviedb.org/movie/629",
+          "trailer": "jM3jrHGAsIE",
+          "watch": [
+            {
+              "region": "HK",
+              "names": [
+                "Netflix"
+              ],
+              "link": "https://www.themoviedb.org/movie/629-the-usual-suspects/watch?locale=HK"
+            },
+            {
+              "region": "US",
+              "names": [
+                "HBO Max Amazon Channel",
+                "YouTube TV",
+                "Cinemax Amazon Channel",
+                "HBO Max",
+                "Cinemax Apple TV Channel",
+                "Hoopla"
+              ],
+              "link": "https://www.themoviedb.org/movie/629-the-usual-suspects/watch?locale=US"
             }
           ]
         },
@@ -4247,48 +4247,6 @@
         },
         {
           "rank": 111,
-          "title": "迷魂记",
-          "orig": "Vertigo",
-          "year": "1958",
-          "rating": 8.1,
-          "votes": 6394,
-          "poster": "https://image.tmdb.org/t/p/w342/wGXmQULogvpC7P62O2EFxOY2y3B.jpg",
-          "id": 426,
-          "link": "https://www.themoviedb.org/movie/426",
-          "trailer": "UHhsEYDg8GI",
-          "watch": [
-            {
-              "region": "HK",
-              "names": [
-                "LINE TV",
-                "Apple TV Store"
-              ],
-              "link": "https://www.themoviedb.org/movie/426-vertigo/watch?locale=HK"
-            },
-            {
-              "region": "TW",
-              "names": [
-                "LINE TV",
-                "Apple TV Store"
-              ],
-              "link": "https://www.themoviedb.org/movie/426-vertigo/watch?locale=TW"
-            },
-            {
-              "region": "US",
-              "names": [
-                "TCM",
-                "Amazon Video",
-                "Apple TV Store",
-                "Google Play Movies",
-                "YouTube",
-                "Fandango At Home"
-              ],
-              "link": "https://www.themoviedb.org/movie/426-vertigo/watch?locale=US"
-            }
-          ]
-        },
-        {
-          "rank": 112,
           "title": "卡萨布兰卡",
           "orig": "Casablanca",
           "year": "1943",
@@ -4326,6 +4284,48 @@
                 "Apple TV Store"
               ],
               "link": "https://www.themoviedb.org/movie/289-casablanca/watch?locale=US"
+            }
+          ]
+        },
+        {
+          "rank": 112,
+          "title": "迷魂记",
+          "orig": "Vertigo",
+          "year": "1958",
+          "rating": 8.1,
+          "votes": 6394,
+          "poster": "https://image.tmdb.org/t/p/w342/wGXmQULogvpC7P62O2EFxOY2y3B.jpg",
+          "id": 426,
+          "link": "https://www.themoviedb.org/movie/426",
+          "trailer": "UHhsEYDg8GI",
+          "watch": [
+            {
+              "region": "HK",
+              "names": [
+                "LINE TV",
+                "Apple TV Store"
+              ],
+              "link": "https://www.themoviedb.org/movie/426-vertigo/watch?locale=HK"
+            },
+            {
+              "region": "TW",
+              "names": [
+                "LINE TV",
+                "Apple TV Store"
+              ],
+              "link": "https://www.themoviedb.org/movie/426-vertigo/watch?locale=TW"
+            },
+            {
+              "region": "US",
+              "names": [
+                "TCM",
+                "Amazon Video",
+                "Apple TV Store",
+                "Google Play Movies",
+                "YouTube",
+                "Fandango At Home"
+              ],
+              "link": "https://www.themoviedb.org/movie/426-vertigo/watch?locale=US"
             }
           ]
         },
@@ -4715,6 +4715,32 @@
         },
         {
           "rank": 124,
+          "title": "第七封印",
+          "orig": "Det sjunde inseglet",
+          "year": "1957",
+          "rating": 8.1,
+          "votes": 3385,
+          "poster": "https://image.tmdb.org/t/p/w342/7XDQToHu2JXK4aJjNV0ij1nllRM.jpg",
+          "id": 490,
+          "link": "https://www.themoviedb.org/movie/490",
+          "trailer": "vZucwtdSvJ8",
+          "watch": [
+            {
+              "region": "US",
+              "names": [
+                "HBO Max Amazon Channel",
+                "YouTube TV",
+                "Criterion Channel",
+                "HBO Max",
+                "Kanopy",
+                "YouTube Free"
+              ],
+              "link": "https://www.themoviedb.org/movie/490-det-sjunde-inseglet/watch?locale=US"
+            }
+          ]
+        },
+        {
+          "rank": 125,
           "title": "暖暖内含光",
           "orig": "Eternal Sunshine of the Spotless Mind",
           "year": "2004",
@@ -4751,32 +4777,6 @@
                 "Fandango At Home"
               ],
               "link": "https://www.themoviedb.org/movie/38-eternal-sunshine-of-the-spotless-mind/watch?locale=US"
-            }
-          ]
-        },
-        {
-          "rank": 125,
-          "title": "第七封印",
-          "orig": "Det sjunde inseglet",
-          "year": "1957",
-          "rating": 8.1,
-          "votes": 3385,
-          "poster": "https://image.tmdb.org/t/p/w342/7XDQToHu2JXK4aJjNV0ij1nllRM.jpg",
-          "id": 490,
-          "link": "https://www.themoviedb.org/movie/490",
-          "trailer": "vZucwtdSvJ8",
-          "watch": [
-            {
-              "region": "US",
-              "names": [
-                "HBO Max Amazon Channel",
-                "YouTube TV",
-                "Criterion Channel",
-                "HBO Max",
-                "Kanopy",
-                "YouTube Free"
-              ],
-              "link": "https://www.themoviedb.org/movie/490-det-sjunde-inseglet/watch?locale=US"
             }
           ]
         },
@@ -5566,46 +5566,6 @@
         },
         {
           "rank": 149,
-          "title": "看不见的客人",
-          "orig": "Contratiempo",
-          "year": "2017",
-          "rating": 8.1,
-          "votes": 5050,
-          "poster": "https://image.tmdb.org/t/p/w342/xh32R4QAARCgazSQUgVd0NdrnIk.jpg",
-          "id": 411088,
-          "link": "https://www.themoviedb.org/movie/411088",
-          "trailer": "epCg2RbyF80",
-          "watch": [
-            {
-              "region": "HK",
-              "names": [
-                "Apple TV Store",
-                "Google Play Movies"
-              ],
-              "link": "https://www.themoviedb.org/movie/411088-contratiempo/watch?locale=HK"
-            },
-            {
-              "region": "TW",
-              "names": [
-                "Catchplay"
-              ],
-              "link": "https://www.themoviedb.org/movie/411088-contratiempo/watch?locale=TW"
-            },
-            {
-              "region": "US",
-              "names": [
-                "Amazon Video",
-                "Apple TV Store",
-                "Google Play Movies",
-                "YouTube",
-                "Fandango At Home"
-              ],
-              "link": "https://www.themoviedb.org/movie/411088-contratiempo/watch?locale=US"
-            }
-          ]
-        },
-        {
-          "rank": 150,
           "title": "困在时间里的父亲",
           "orig": "The Father",
           "year": "2020",
@@ -5643,6 +5603,46 @@
                 "Fandango At Home"
               ],
               "link": "https://www.themoviedb.org/movie/600354-the-father/watch?locale=US"
+            }
+          ]
+        },
+        {
+          "rank": 150,
+          "title": "看不见的客人",
+          "orig": "Contratiempo",
+          "year": "2017",
+          "rating": 8.1,
+          "votes": 5050,
+          "poster": "https://image.tmdb.org/t/p/w342/xh32R4QAARCgazSQUgVd0NdrnIk.jpg",
+          "id": 411088,
+          "link": "https://www.themoviedb.org/movie/411088",
+          "trailer": "epCg2RbyF80",
+          "watch": [
+            {
+              "region": "HK",
+              "names": [
+                "Apple TV Store",
+                "Google Play Movies"
+              ],
+              "link": "https://www.themoviedb.org/movie/411088-contratiempo/watch?locale=HK"
+            },
+            {
+              "region": "TW",
+              "names": [
+                "Catchplay"
+              ],
+              "link": "https://www.themoviedb.org/movie/411088-contratiempo/watch?locale=TW"
+            },
+            {
+              "region": "US",
+              "names": [
+                "Amazon Video",
+                "Apple TV Store",
+                "Google Play Movies",
+                "YouTube",
+                "Fandango At Home"
+              ],
+              "link": "https://www.themoviedb.org/movie/411088-contratiempo/watch?locale=US"
             }
           ]
         },
@@ -5775,32 +5775,6 @@
         },
         {
           "rank": 154,
-          "title": "精英部队",
-          "orig": "Tropa de Elite",
-          "year": "2007",
-          "rating": 8.1,
-          "votes": 2748,
-          "poster": "https://image.tmdb.org/t/p/w342/9dOFkUhFGD3HcZvBHdlWFlcTXbS.jpg",
-          "id": 7347,
-          "link": "https://www.themoviedb.org/movie/7347",
-          "trailer": "WNrC-vLpTGI",
-          "watch": [
-            {
-              "region": "US",
-              "names": [
-                "BFI Player Amazon Channel",
-                "Plex",
-                "Tubi TV",
-                "Amazon Video",
-                "Google Play Movies",
-                "YouTube"
-              ],
-              "link": "https://www.themoviedb.org/movie/7347-tropa-de-elite/watch?locale=US"
-            }
-          ]
-        },
-        {
-          "rank": 155,
           "title": "Palmer",
           "orig": "Palmer",
           "year": "2021",
@@ -5838,6 +5812,32 @@
                 "YouTube"
               ],
               "link": "https://www.themoviedb.org/movie/458220-palmer/watch?locale=US"
+            }
+          ]
+        },
+        {
+          "rank": 155,
+          "title": "精英部队",
+          "orig": "Tropa de Elite",
+          "year": "2007",
+          "rating": 8.1,
+          "votes": 2748,
+          "poster": "https://image.tmdb.org/t/p/w342/9dOFkUhFGD3HcZvBHdlWFlcTXbS.jpg",
+          "id": 7347,
+          "link": "https://www.themoviedb.org/movie/7347",
+          "trailer": "WNrC-vLpTGI",
+          "watch": [
+            {
+              "region": "US",
+              "names": [
+                "BFI Player Amazon Channel",
+                "Plex",
+                "Tubi TV",
+                "Amazon Video",
+                "Google Play Movies",
+                "YouTube"
+              ],
+              "link": "https://www.themoviedb.org/movie/7347-tropa-de-elite/watch?locale=US"
             }
           ]
         },
@@ -8559,6 +8559,46 @@
         },
         {
           "rank": 232,
+          "title": "天气之子",
+          "orig": "天気の子",
+          "year": "2019",
+          "rating": 8.0,
+          "votes": 2658,
+          "poster": "https://image.tmdb.org/t/p/w342/e5dY456pcoBBNBnlSsTsbypGMj1.jpg",
+          "id": 568160,
+          "link": "https://www.themoviedb.org/movie/568160",
+          "trailer": "gVFDCLSSQVM",
+          "watch": [
+            {
+              "region": "HK",
+              "names": [
+                "Apple TV Store"
+              ],
+              "link": "https://www.themoviedb.org/movie/568160/watch?locale=HK"
+            },
+            {
+              "region": "TW",
+              "names": [
+                "Apple TV Store"
+              ],
+              "link": "https://www.themoviedb.org/movie/568160/watch?locale=TW"
+            },
+            {
+              "region": "US",
+              "names": [
+                "HBO Max Amazon Channel",
+                "YouTube TV",
+                "HBO Max",
+                "Hoopla",
+                "Amazon Video",
+                "Apple TV Store"
+              ],
+              "link": "https://www.themoviedb.org/movie/568160/watch?locale=US"
+            }
+          ]
+        },
+        {
+          "rank": 233,
           "title": "1917",
           "orig": "1917",
           "year": "2019",
@@ -8595,46 +8635,6 @@
                 "YouTube"
               ],
               "link": "https://www.themoviedb.org/movie/530915-1917/watch?locale=US"
-            }
-          ]
-        },
-        {
-          "rank": 233,
-          "title": "天气之子",
-          "orig": "天気の子",
-          "year": "2019",
-          "rating": 8.0,
-          "votes": 2658,
-          "poster": "https://image.tmdb.org/t/p/w342/e5dY456pcoBBNBnlSsTsbypGMj1.jpg",
-          "id": 568160,
-          "link": "https://www.themoviedb.org/movie/568160",
-          "trailer": "gVFDCLSSQVM",
-          "watch": [
-            {
-              "region": "HK",
-              "names": [
-                "Apple TV Store"
-              ],
-              "link": "https://www.themoviedb.org/movie/568160/watch?locale=HK"
-            },
-            {
-              "region": "TW",
-              "names": [
-                "Apple TV Store"
-              ],
-              "link": "https://www.themoviedb.org/movie/568160/watch?locale=TW"
-            },
-            {
-              "region": "US",
-              "names": [
-                "HBO Max Amazon Channel",
-                "YouTube TV",
-                "HBO Max",
-                "Hoopla",
-                "Amazon Video",
-                "Apple TV Store"
-              ],
-              "link": "https://www.themoviedb.org/movie/568160/watch?locale=US"
             }
           ]
         },
@@ -8926,6 +8926,18 @@
         },
         {
           "rank": 242,
+          "title": "奥德赛",
+          "orig": "The Odyssey",
+          "year": "2026",
+          "rating": 7.9,
+          "votes": 1091,
+          "poster": "https://image.tmdb.org/t/p/w342/Aj0Uykxj0vhwVsyrRJka0aM3SP1.jpg",
+          "id": 1368337,
+          "link": "https://www.themoviedb.org/movie/1368337",
+          "trailer": "AyIZ9tiiN8I"
+        },
+        {
+          "rank": 243,
           "title": "绝境盟约",
           "orig": "La sociedad de la nieve",
           "year": "2023",
@@ -8961,7 +8973,7 @@
           ]
         },
         {
-          "rank": 243,
+          "rank": 244,
           "title": "木乃伊",
           "orig": "Lee Cronin's The Mummy",
           "year": "2026",
@@ -9004,7 +9016,7 @@
           ]
         },
         {
-          "rank": 244,
+          "rank": 245,
           "title": "天空之城",
           "orig": "天空の城ラピュタ",
           "year": "1986",
@@ -9048,7 +9060,7 @@
           ]
         },
         {
-          "rank": 245,
+          "rank": 246,
           "title": "猎鹿人",
           "orig": "The Deer Hunter",
           "year": "1978",
@@ -9081,7 +9093,7 @@
           ]
         },
         {
-          "rank": 246,
+          "rank": 247,
           "title": "猫鼠游戏",
           "orig": "Catch Me If You Can",
           "year": "2002",
@@ -9121,18 +9133,6 @@
               "link": "https://www.themoviedb.org/movie/640-catch-me-if-you-can/watch?locale=US"
             }
           ]
-        },
-        {
-          "rank": 247,
-          "title": "奥德赛",
-          "orig": "The Odyssey",
-          "year": "2026",
-          "rating": 7.9,
-          "votes": 1056,
-          "poster": "https://image.tmdb.org/t/p/w342/Aj0Uykxj0vhwVsyrRJka0aM3SP1.jpg",
-          "id": 1368337,
-          "link": "https://www.themoviedb.org/movie/1368337",
-          "trailer": "AyIZ9tiiN8I"
         },
         {
           "rank": 248,
@@ -10265,8 +10265,8 @@
           "votes": 1859,
           "poster": "https://image.tmdb.org/t/p/w342/goMzQWlEtSmxETuWY3GMTujGD45.jpg",
           "id": 962,
-          "link": "https://archive.org/details/murphy-brown-s03E05-the-gold-rush",
-          "video": "murphy-brown-s03E05-the-gold-rush"
+          "link": "https://archive.org/details/the-gold-rush-film-1925",
+          "video": "the-gold-rush-film-1925"
         },
         {
           "rank": 6,
@@ -10373,8 +10373,8 @@
           "votes": 1561,
           "poster": "https://image.tmdb.org/t/p/w342/xUPBa1hkgN83m35Ahta1mR7CjSH.jpg",
           "id": 4808,
-          "link": "https://archive.org/details/Charade_1953",
-          "video": "Charade_1953"
+          "link": "https://archive.org/details/charade-stanley-donen-1963-cary-grant-audrey-hepburn-comedie-policiere",
+          "video": "charade-stanley-donen-1963-cary-grant-audrey-hepburn-comedie-policiere"
         },
         {
           "rank": 15,
@@ -10385,8 +10385,8 @@
           "votes": 2769,
           "poster": "https://image.tmdb.org/t/p/w342/uS38rpWLlA4L34bf9CqyfCNV2y0.jpg",
           "id": 10331,
-          "link": "https://archive.org/details/NightOfTheLivingDeadTrailer",
-          "video": "NightOfTheLivingDeadTrailer"
+          "link": "https://archive.org/details/Night.Of.The.Living.Dead_1080p",
+          "video": "Night.Of.The.Living.Dead_1080p"
         }
       ]
     }
