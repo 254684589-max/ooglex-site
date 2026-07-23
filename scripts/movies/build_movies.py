@@ -23,6 +23,7 @@
 """
 import json
 import os
+import re
 import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
@@ -607,8 +608,14 @@ def ia_meta(identifier):
     return playable, year, longest
 
 
+def ia_ident_bad(ident):
+    """排除预告片条目与上色版（colorized 的上色部分可能附带新版权）。"""
+    s = str(ident or "").lower()
+    return "trailer" in s or "colorized" in s or "colourized" in s
+
+
 def ia_find(orig, year):
-    """按片名搜 Internet Archive 影片区做兜底。挡同名杂项：排除 trailer 条目、
+    """按片名搜 Internet Archive 影片区做兜底。挡同名杂项：排除 trailer/上色版条目、
     要求视频 ≥ 40 分钟（挡预告片/剧集单集）、条目标注年份需接近上映年。"""
     try:
         js = ia_get("/advancedsearch.php",
@@ -620,7 +627,7 @@ def ia_find(orig, year):
         return None
     for d in docs:
         ident = d.get("identifier") or ""
-        if not ident or "trailer" in ident.lower():
+        if not ident or ia_ident_bad(ident):
             continue
         ok, iy, secs = ia_meta(ident)
         # 严格口径：必须有年份且匹配。缺年份的条目宁可放弃——曾出现同名子串碰撞
@@ -650,13 +657,13 @@ def classics_list(prev):
     def resolve(c):
         year = int(c["year"])
         # 手工固化的标识可信度高：存在、可播、年份不冲突（缺年份不算冲突）即可
-        if c["ia"] and "trailer" not in c["ia"].lower():
+        if c["ia"] and not ia_ident_bad(c["ia"]):
             ok, iy, _ = ia_meta(c["ia"])
             if ok and (iy is None or abs(iy - year) <= 2):
                 return c["ia"]
         # 上次搜索沿用的标识按严格口径复核（必须有年份且匹配、片长达标），坏源自然淘汰
         p = prev.get((c["orig"], c["year"]))
-        if p and p != c["ia"] and "trailer" not in p.lower():
+        if p and p != c["ia"] and not ia_ident_bad(p):
             ok, iy, secs = ia_meta(p)
             if ok and secs >= 2400 and iy is not None and abs(iy - year) <= 2:
                 return p
@@ -676,11 +683,20 @@ def classics_list(prev):
             "link": "https://archive.org/details/%s" % ident,
             "video": ident,
         }
+        # TMDB 补充：先筛年份匹配（±2）的候选，精确同名优先，否则取票数最高者，
+        # 防止同名子串碰撞（如 Street Angel 误配同年的 Side Street Angel）。
+        def norm(s):
+            return re.sub(r"[^a-z0-9一-鿿]+", "", str(s or "").lower())
         try:
-            for m in (tmdb("/search/movie", query=c["orig"]).get("results") or [])[:5]:
-                y = (m.get("release_date") or "")[:4]
-                if not (y.isdigit() and abs(int(y) - int(c["year"])) <= 2):
-                    continue
+            res = (tmdb("/search/movie", query=c["orig"]).get("results") or [])[:10]
+            cands = [m for m in res
+                     if (m.get("release_date") or "")[:4].isdigit()
+                     and abs(int(m["release_date"][:4]) - int(c["year"])) <= 2]
+            exact = [m for m in cands
+                     if norm(c["orig"]) in (norm(m.get("title")), norm(m.get("original_title")))]
+            pick = exact or sorted(cands, key=lambda x: x.get("vote_count") or 0, reverse=True)
+            if pick:
+                m = pick[0]
                 it["title"] = m.get("title") or it["title"]
                 if m.get("poster_path"):
                     it["poster"] = IMG + m["poster_path"]
@@ -688,7 +704,6 @@ def classics_list(prev):
                 it["rating"] = round(float(va), 1) if va else None
                 it["votes"] = m.get("vote_count")
                 it["id"] = m.get("id")
-                break
         except Exception as e:
             print("[..] TMDB 检索失败 %s：%s" % (c["orig"], str(e)[:60]))
         return it
