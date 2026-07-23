@@ -107,7 +107,9 @@ export default {
     }
 
     const ct = (up.headers.get('Content-Type') || '').toLowerCase();
-    const isManifest = /mpegurl|vnd\.apple/.test(ct) || /\.m3u8($|\?)/i.test(tu.pathname + tu.search);
+    // m3u8=1：前端对无 .m3u8 后缀的 HLS 清单加的提示参数（这类源的 Content-Type 常不规范）
+    const isManifest = /mpegurl|vnd\.apple/.test(ct) || /\.m3u8($|\?)/i.test(tu.pathname + tu.search)
+      || reqUrl.searchParams.get('m3u8') === '1';
 
     if (isManifest) {
       const text = await up.text();

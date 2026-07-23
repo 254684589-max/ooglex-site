@@ -1,11 +1,12 @@
 name: TV Channels
 
-# 生成「环球TV」频道库：抓取 iptv-org 公开数据（channels + streams）中的 HTTPS 直播源 → 写 apps/tv/channels.json。
+# 生成「环球TV」频道库：抓取 iptv-org 公开数据（channels + streams）中的 HTTPS 直播源，
+# 并发探活后只收录能连上的源（每台最多 1 主源 + 2 备用源）→ 写 apps/tv/channels.json。
 # 网页只读同源的 channels.json，避免国内（尤其手机/微信）直连外网 API 不稳。数据源免登录、无需密钥。
 on:
   workflow_dispatch:
   schedule:
-    - cron: '45 4 * * 1'   # 每周一 04:45 UTC 刷新一次
+    - cron: '45 4 * * 1,4'   # 每周一、周四 04:45 UTC 刷新（勤刷可及时清掉刚死的源）
 
 permissions:
   contents: write
@@ -13,6 +14,7 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 45   # 存活探测要请求上万个源，给足并发探测时间
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6

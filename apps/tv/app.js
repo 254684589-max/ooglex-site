@@ -43,9 +43,12 @@ if (typeof Globe !== 'function'){
 }
 
 /* ---------------- 频道数据工具 ---------------- */
+// 频道库在构建时已按内容探活验证过（含无 .m3u8 后缀的 HLS 清单），这里只做基本校验
 function playableUrl(u){
-  return typeof u === 'string' && u.startsWith('https://')
-    && /\.(m3u8|mp4)(\?|$)/i.test(u);
+  return typeof u === 'string' && u.startsWith('https://');
+}
+function stationUrls(st){
+  return (st && st.urls && st.urls.length) ? st.urls : (st && st.url ? [st.url] : []);
 }
 function playable(s){
   return playableUrl(s.url)
@@ -74,6 +77,9 @@ function nearest(lat, lng){
 let world, current = null, allStations = [], rotating = false, cinematic = false;
 let HLS_PROXY = '';   // 站长部署 HLS 代理后填入 apps/tv/proxy.json；用于 Chrome/安卓 hls.js 补 CORS（Safari 原生播放不走代理）
 let proxying = false; // 当前台是否已切到代理（避免重复切、并用于状态标识）
+let srcIdx = 0;       // 当前台正在尝试第几个信号源（频道库每台最多带 1 主源 + 2 备用源）
+let tries = 0;        // 当前台已发起的连接尝试数（直连/代理各算一次），超过上限就跳台
+const MAX_TRIES = 5;  // 每台尝试上限：3 个源 × 直连+代理 最多试到第 5 次，避免在一个台上耗太久
 const SNAP_KM = 900;   // 吸附半径：圆圈中心此范围内的最近频道会被"吸"到正中并播放
 const broken = new Set();          // 本次会话中连不上的频道（自动跳过）
 let selectPool = [], poolIdx = 0, watchdog = null;   // 失败自动跳到附近可用频道
@@ -286,48 +292,69 @@ function detachHls(){
 function attachStream(url){
   detachHls();
   try{ video.pause(); }catch(e){}
-  proxying = false;                    // 新台从直连开始
-  const isHls = /\.m3u8(\?|$)/i.test(url);
+  proxying = false;                    // 新源从直连开始
+  const isMp4 = /\.mp4(\?|$)/i.test(url);
   const nativeHls = video.canPlayType('application/vnd.apple.mpegurl');
-  if (isHls && !nativeHls && window.Hls && Hls.isSupported()){
+  if (!isMp4 && !nativeHls && window.Hls && Hls.isSupported()){
     startHls(url, false);              // 先直连（快，跟最开始一样）；连不上再走代理
   } else {
+    tries++;
     video.src = url;                   // Safari 原生 HLS，或 mp4 直链
     const p = video.play(); if (p && p.catch) p.catch(() => {});
   }
 }
-// 切到代理重试当前台（供 hls 错误 和 看门狗超时 共用）；返回是否成功发起
+// 切到代理重试当前源（供 hls 错误 和 看门狗超时 共用）；返回是否成功发起
 function switchToProxy(url){
-  if (!HLS_PROXY || proxying) return false;
+  if (!HLS_PROXY || proxying || tries >= MAX_TRIES) return false;
   proxying = true;
   setState('load', '直连不通，改走代理…');
   startHls(url, true);
   armWatchdog();
   return true;
 }
-/* 直连优先、代理兜底：
-   viaProxy=false 先直连——能直连的台不绕境外代理，保持原本的速度；
-   直连报网络/CORS 致命错误且配了代理 → 自动改走代理再试一次（多半是跨域被拦）；
-   代理也不行才跳台。真正的死台靠 error 事件快速跳走，不靠硬掐超时。 */
+// 当前源（直连+代理）都不行 → 切到本台下一个备用源；没有备用源了返回 false（该跳台了）
+function nextSource(reason){
+  const urls = stationUrls(current);
+  if (srcIdx + 1 >= urls.length || tries >= MAX_TRIES) return false;
+  srcIdx++;
+  setState('load', (reason ? reason + ' · ' : '') + '切换备用信号源 ' + (srcIdx + 1) + '/' + urls.length + '…');
+  attachStream(urls[srcIdx]);
+  armWatchdog();
+  return true;
+}
+/* 直连优先、代理兜底、备用源续命：
+   viaProxy=false 先直连——能直连的源不绕境外代理，保持原本的速度；
+   直连报网络/CORS 致命错误且配了代理 → 自动改走代理再试（多半是跨域被拦）；
+   代理也不行 → 换本台备用源再来一轮；全部源耗尽才跳台。 */
 function startHls(url, viaProxy){
   detachHls();
-  const src = (viaProxy && HLS_PROXY) ? (HLS_PROXY + '/?url=' + encodeURIComponent(url)) : url;
+  tries++;
+  // 无 .m3u8 后缀的 HLS 清单走代理时带上提示参数，代理才知道要改写清单内容
+  const src = (viaProxy && HLS_PROXY)
+    ? (HLS_PROXY + '/?url=' + encodeURIComponent(url) + (/\.m3u8(\?|$)/i.test(url) ? '' : '&m3u8=1'))
+    : url;
   hls = new Hls({ maxBufferLength: 12, liveSyncDurationCount: 3,
-    manifestLoadingTimeOut: 10000, manifestLoadingMaxRetry: 1,
-    levelLoadingTimeOut: 10000, levelLoadingMaxRetry: 2,
-    fragLoadingTimeOut: 14000, fragLoadingMaxRetry: 2 });
-  let netRetry = 0;
+    manifestLoadingTimeOut: 8000, manifestLoadingMaxRetry: 1,
+    levelLoadingTimeOut: 8000, levelLoadingMaxRetry: 2,
+    fragLoadingTimeOut: 12000, fragLoadingMaxRetry: 2 });
+  let netRetry = 0, mediaRetry = 0;
   hls.loadSource(src);
   hls.attachMedia(video);
   hls.on(Hls.Events.ERROR, (evt, data) => {
     if (!data || !data.fatal) return;
     if (data.type === Hls.ErrorTypes.NETWORK_ERROR){
       if (!viaProxy && switchToProxy(url)) return;   // 直连不通 → 改走代理救一下
-      if (netRetry++ < 1){ try{ hls.startLoad(); }catch(e){ hop('信号中断'); } }
-      else hop('连不上（源已失效或无跨域许可）');
+      // 已经播出画面的台掉线多半是抖动，原地重连一次；从没连上的直接换源，别浪费时间
+      if (video.readyState >= 2 && netRetry++ < 1){
+        try{ hls.startLoad(); return; }catch(e){}
+      }
+      if (!nextSource('连不上')) hop('连不上（源已失效或无跨域许可）');
     }
-    else if (data.type === Hls.ErrorTypes.MEDIA_ERROR){ try{ hls.recoverMediaError(); }catch(e){ hop('解码失败'); } }
-    else hop('该台无法播放');
+    else if (data.type === Hls.ErrorTypes.MEDIA_ERROR){
+      if (mediaRetry++ < 2){ try{ hls.recoverMediaError(); return; }catch(e){} }
+      if (!nextSource('解码失败')) hop('解码失败');
+    }
+    else if (!nextSource('无法播放')) hop('该台无法播放');
   });
   const p = video.play();
   if (p && p.catch) p.catch(() => {});
@@ -346,7 +373,8 @@ function focus(st, opt){
   if (opt.play){
     world.ringsData([st]);
     showPlayer(st);
-    attachStream(st.url);
+    srcIdx = 0; tries = 0;             // 新台重置信号源游标与尝试预算
+    attachStream(stationUrls(st)[0]);
   } else {
     world.ringsData([]);
     $('rtip').textContent = '松手 / 点击即可观看：' + st.name;
@@ -369,12 +397,14 @@ function playAt(st, fly){
 }
 function armWatchdog(){
   clearTimeout(watchdog);
-  // 直连超时（境外台常见）：先别急着跳台——若有代理没试过，改走代理再等；否则才跳台
+  // 连接超时：先转代理，再换本台备用源，全耗尽才跳台
   watchdog = setTimeout(() => {
     if (!(video.paused || video.readyState < 2)) return;   // 已在播，无需处理
-    if (current && switchToProxy(current.url)) return;      // 直连超时 → 转代理
+    const url = current && stationUrls(current)[srcIdx];
+    if (url && switchToProxy(url)) return;                  // 直连超时 → 转代理
+    if (nextSource('连接超时')) return;                     // 代理也超时 → 换备用源
     hop('连接超时');
-  }, proxying ? 12000 : 9000);   // 直连阶段 9s 就转代理；代理阶段给足 12s
+  }, proxying ? 10000 : 8000);   // 直连阶段 8s 就转代理；代理阶段给 10s
 }
 const MAX_HOPS = 5;   // 自动跳台上限：这一带都连不上时尽快收手给提示，而不是在十几个死台间反复横跳
 function hop(reason){
@@ -403,8 +433,10 @@ video.addEventListener('playing', () => { clearTimeout(watchdog); setState('ok',
 video.addEventListener('pause', () => setPlaybackState('paused'));
 video.addEventListener('waiting', () => setState('load', '缓冲中…'));
 video.addEventListener('stalled', () => setState('load', '缓冲中…'));
-// 仅在确有 MediaError（真正无法播放）时跳台；切台/复位过程中的 emptied/abort 不误触发
-video.addEventListener('error', () => { if (video.error) hop('该台无法播放'); });
+// 仅在确有 MediaError（真正无法播放）时换源/跳台；切台/复位过程中的 emptied/abort 不误触发
+video.addEventListener('error', () => {
+  if (video.error && !nextSource('无法播放')) hop('该台无法播放');
+});
 
 /* ---------------- 上一台 / 下一台 ---------------- */
 function stepPool(){
@@ -506,7 +538,7 @@ function toggleFav(st){
   if (!st) return;
   const i = favs.findIndex(f => f.url === st.url);
   if (i >= 0) favs.splice(i, 1);
-  else favs.unshift({ name: st.name, country: st.country, state: st.state, lat: st.lat, lng: st.lng, url: st.url, cc: st.cc, logo: st.logo });
+  else favs.unshift({ name: st.name, country: st.country, state: st.state, lat: st.lat, lng: st.lng, url: st.url, urls: stationUrls(st), cc: st.cc, logo: st.logo });
   saveFavs(); updateCounts(); renderList(); updateStar();
 }
 function esc(s){ return (s || '').replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
@@ -627,10 +659,12 @@ function doSearch(){
 }
 
 /* ---------------- 载入频道 ---------------- */
-// channels.json 里的紧凑数组 [name,lat,lng,url,country,state,cc,logo?] → 频道对象
+// channels.json 里的紧凑数组 [name,lat,lng,url,country,state,cc,logo?,alts?] → 频道对象
+// alts = 备用信号源列表（构建时探活验证过）；url 恒为主源，作为收藏/去重的稳定标识
 function rowToStation(r){
-  return { name: (r[0] || '').slice(0, 60), lat: +r[1], lng: +r[2], url: r[3] || '',
-           country: r[4] || '', state: r[5] || '', cc: r[6] || '', logo: r[7] || '' };
+  const urls = [r[3] || ''].concat(Array.isArray(r[8]) ? r[8] : []).filter(playableUrl);
+  return { name: (r[0] || '').slice(0, 60), lat: +r[1], lng: +r[2], url: urls[0] || '',
+           urls, country: r[4] || '', state: r[5] || '', cc: r[6] || '', logo: r[7] || '' };
 }
 async function loadStations(){
   status('正在载入电视台…', true);

@@ -3,11 +3,28 @@
 # HTTPS 直播源（HLS / mp4），按国家 / 行政区就近落到经纬度，写入 apps/tv/channels.json
 #（同源托管，规避国内直连外网 API 不稳的问题）。
 # 在 GitHub Actions 上运行（GitHub 服务器可正常访问 iptv-org）。仅用标准库，无需密钥。
-import json, os, ssl, random, urllib.request
+#
+# 存活探测：iptv-org 库里大量直播源早已失效，全部收录会让用户满屏「打不开」。
+# 这里在构建时并发 GET 每个候选源：HLS 必须真的返回 #EXTM3U 才算活，同时记录是否带
+# CORS 头（浏览器 hls.js 直连必需）。每台保留最多 1 主源 + 2 备用源，活源在前。
+# 注意：中国大陆/港澳台的源常对境外 IP 做地域封锁，GitHub 服务器探不准 → 华语区频道
+# 即使探测失败也保留（排序靠后由前端自动跳台兜底），其它地区只收录探活的源。
+import json, os, ssl, random, urllib.request, zlib
+from concurrent.futures import ThreadPoolExecutor
 
 API = "https://iptv-org.github.io/api"
 CTX = ssl.create_default_context()
-CAP = 6000  # 最多收录频道数（兼顾移动端性能）
+CAP = 6000       # 最多收录频道数（兼顾移动端性能）
+MAX_SRC = 4      # 每台最多探测的候选源数
+MAX_ALT = 2      # 每台随主源附带的备用源上限
+PROBE_TIMEOUT = 12
+PROBE_WORKERS = 64
+UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+      "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
+# 探测阶段总体活源少于此数，视为 CI 网络异常：中止并保留旧文件，避免把频道库清空
+MIN_ALIVE = 500
+# 华语区：境外服务器探测结果不可信（地域封锁），探不活也保留
+CN_KEEP = {"CN", "HK", "MO", "TW"}
 
 # 优先地区（华语区 + 亚洲）：排序时靠前，确保被 CAP 截断时优先保留
 PRIORITY = {cc: i for i, cc in enumerate(
@@ -109,14 +126,63 @@ def geocode(cc, subdivision):
     return None
 
 
+# 浏览器（hls.js / <video>）播不了的格式，直接排除
+BAD_EXT = (".mpd", ".flv", ".mp3", ".aac", ".ts", ".m3u", ".mkv", ".avi")
+
+
 def usable(url):
+    """接受任意 HTTPS 直播源地址（不再要求 .m3u8 后缀——无后缀的 HLS 清单
+    由存活探测按内容验证），仅排除明确播不了的格式。"""
     u = (url or "").strip()
     if not u.startswith("https://"):
         return None
-    low = u.lower()
-    if ".m3u8" not in low and ".mp4" not in low:
+    path = u.split("?", 1)[0].split("#", 1)[0].lower()
+    if path.endswith(BAD_EXT):
         return None
     return u
+
+
+def probe(url):
+    """探测单个直播源：返回 (alive, cors)。
+    HLS 清单必须真的以 #EXTM3U 开头才算活（顺带覆盖无 .m3u8 后缀的源）；
+    .mp4 只要能拿到 2xx/3xx 就算活。cors = 响应带 Access-Control-Allow-Origin
+    （hls.js 跨域直连必需；没有的源浏览器里只能走代理）。"""
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
+    try:
+        with urllib.request.urlopen(req, timeout=PROBE_TIMEOUT, context=CTX) as r:
+            if getattr(r, "status", 200) >= 400:
+                return False, False
+            if not (r.geturl() or url).startswith("https://"):
+                return False, False   # 重定向落到 http:// 的，浏览器会拦（混合内容）
+            cors = bool(r.headers.get("Access-Control-Allow-Origin"))
+            if url.split("?", 1)[0].lower().endswith(".mp4"):
+                return True, cors
+            head = r.read(4096) or b""
+            if (r.headers.get("Content-Encoding") or "").lower() == "gzip":
+                try:
+                    head = zlib.decompressobj(16 + zlib.MAX_WBITS).decompress(head)
+                except Exception:
+                    pass
+            return (head.strip().startswith(b"#EXTM3U"), cors)
+    except Exception:
+        return False, False
+
+
+def probe_all(urls):
+    """并发探测一批地址 → {url: (alive, cors)}"""
+    res = {}
+    urls = list(urls)
+    print(f"Probing {len(urls)} stream urls …")
+    with ThreadPoolExecutor(max_workers=PROBE_WORKERS) as ex:
+        for i, (u, ok) in enumerate(zip(urls, ex.map(probe, urls))):
+            res[u] = ok
+            if (i + 1) % 1000 == 0:
+                alive = sum(1 for v in res.values() if v[0])
+                print(f"  {i + 1}/{len(urls)} probed, alive {alive}")
+    alive = sum(1 for v in res.values() if v[0])
+    cors = sum(1 for v in res.values() if v[0] and v[1])
+    print(f"  done: alive {alive}/{len(urls)} (with CORS {cors})")
+    return res
 
 
 def load_pinned():
@@ -166,18 +232,37 @@ def main():
 
     chan = {c["id"]: c for c in channels if c.get("id")}
 
-    # 每个频道取第一个可用的 HTTPS 直播源
-    picked = {}
+    # 每个频道收集最多 MAX_SRC 个候选 HTTPS 源（跳过要求特殊 Referer/UA 的——浏览器带不了这类头）
+    cands = {}
     for s in streams:
         cid = s.get("channel")
-        if not cid or cid in picked or cid not in chan:
+        if not cid or cid not in chan:
+            continue
+        if s.get("referrer") or s.get("user_agent"):
             continue
         u = usable(s.get("url"))
-        if u:
-            picked[cid] = u
+        if not u:
+            continue
+        lst = cands.setdefault(cid, [])
+        if u not in lst and len(lst) < MAX_SRC:
+            lst.append(u)
+
+    # 并发探测所有候选源的存活性与 CORS
+    uniq = []
+    seen_u = set()
+    for lst in cands.values():
+        for u in lst:
+            if u not in seen_u:
+                seen_u.add(u)
+                uniq.append(u)
+    res = probe_all(uniq)
+    alive_total = sum(1 for v in res.values() if v[0])
+    if alive_total < MIN_ALIVE:
+        raise SystemExit("Too few alive streams (%d) — probe env broken? aborting, keep old file."
+                         % alive_total)
 
     out = []
-    for cid, url in picked.items():
+    for cid, urls in cands.items():
         c = chan[cid]
         if c.get("is_nsfw"):
             continue
@@ -187,6 +272,16 @@ def main():
         pos = geocode(cc, c.get("subdivision"))
         if not pos:
             continue
+        # 候选源排序：活且带 CORS（浏览器可直连）优先，其次活但无 CORS（走代理可用）；
+        # 探不活的丢弃——仅华语区例外（境外探测不可信），保留原序垫底
+        alive_cors = [u for u in urls if res.get(u) == (True, True)]
+        alive_rest = [u for u in urls if res.get(u, (False, False))[0] and u not in alive_cors]
+        ordered = alive_cors + alive_rest
+        if not ordered:
+            if cc in CN_KEEP:
+                ordered = urls
+            else:
+                continue
         lat, lng = pos
         name = (c.get("name") or "").strip().replace("\n", " ")[:60]
         if not name:
@@ -195,11 +290,15 @@ def main():
         logo = c.get("logo") or ""
         if logo and not logo.startswith("https://"):
             logo = ""
-        # [name, lat, lng, url, country_name, region, cc, logo]
-        out.append([name, round(lat, 4), round(lng, 4), url,
-                    cc_name.get(cc, cc), str(region)[:40], cc, logo])
+        # [name, lat, lng, url, country_name, region, cc, logo, alts?]
+        row = [name, round(lat, 4), round(lng, 4), ordered[0],
+               cc_name.get(cc, cc), str(region)[:40], cc, logo]
+        alts = ordered[1:1 + MAX_ALT]
+        if alts:
+            row.append(alts)
+        out.append(row)
 
-    if len(out) < 50:
+    if len(out) < 500:
         raise SystemExit("Too few channels (%d) — aborting, keep old file." % len(out))
 
     # iptv-org 结果：优先地区靠前，其余随后
@@ -218,8 +317,9 @@ def main():
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
 
     asia = sum(1 for r in out if r[6] in PRIORITY)
+    with_alt = sum(1 for r in out if len(r) > 8 and r[8])
     print(f"Wrote apps/tv/channels.json — {len(out)} channels "
-          f"(pinned {len(pinned)}, Asia/华语区 {asia}).")
+          f"(pinned {len(pinned)}, Asia/华语区 {asia}, 带备用源 {with_alt}).")
 
 
 if __name__ == "__main__":
