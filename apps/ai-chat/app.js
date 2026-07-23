@@ -493,7 +493,7 @@ const TOOLS = [
     } },
     run: async (a) => {
       const APPS = [
-        { k: ['电台', '收音机', '广播', 'radio', '听'], name: '🌍 环球电波', link: '../radio/', desc: '转动 3D 地球听全球电台' },
+        { k: ['电台', '收音机', '广播', 'radio', '听', '音乐', 'music'], name: '🌍 环球Music', link: '../radio/', desc: '转动 3D 地球听全球电台与音乐' },
         { k: ['计算', '计算器', 'bmi', '房贷', '利率', '个税'], name: '🧮 万象算集', link: '../calculators/', desc: '70+ 计算器' },
         { k: ['电影', '影片', 'movie'], name: '🎬 全球电影榜', link: '../movies/', desc: '高分 Top 250 + 最新上映' },
         { k: ['大学', '院校', 'university'], name: '🎓 全球大学排名', link: '../university-rankings/', desc: '四大权威榜合一' },
