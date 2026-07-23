@@ -694,10 +694,13 @@ def classics_list(prev):
                      and abs(int(m["release_date"][:4]) - int(c["year"])) <= 2]
             exact = [m for m in cands
                      if norm(c["orig"]) in (norm(m.get("title")), norm(m.get("original_title")))]
-            pick = exact or sorted(cands, key=lambda x: x.get("vote_count") or 0, reverse=True)
+            # 非精确匹配要求至少 5 票，免得冷门同名片（如 1 票的 Side Street Angel）顶掉正主
+            pick = exact or [m for m in sorted(cands, key=lambda x: x.get("vote_count") or 0, reverse=True)
+                             if (m.get("vote_count") or 0) >= 5]
             if pick:
                 m = pick[0]
-                it["title"] = m.get("title") or it["title"]
+                if re.search(r"[一-鿿]", m.get("title") or ""):
+                    it["title"] = m["title"]          # TMDB 无中文译名时保留手工中文片名
                 if m.get("poster_path"):
                     it["poster"] = IMG + m["poster_path"]
                 va = m.get("vote_average")
