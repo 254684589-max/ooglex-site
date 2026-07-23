@@ -3426,7 +3426,193 @@
           "link": "https://www.themoviedb.org/movie/19738"
         }
       ]
+    },
+    {
+      "key": "classics",
+      "name": "公版经典 · 免费正片",
+      "items": [
+        {
+          "rank": 1,
+          "title": "月球旅行记",
+          "orig": "A Trip to the Moon",
+          "year": "1902",
+          "rating": null,
+          "votes": null,
+          "poster": "https://archive.org/services/img/Levoyagedanslalune",
+          "id": null,
+          "link": "https://archive.org/details/Levoyagedanslalune",
+          "video": "Levoyagedanslalune"
+        },
+        {
+          "rank": 2,
+          "title": "卡里加里博士的小屋",
+          "orig": "The Cabinet of Dr. Caligari",
+          "year": "1920",
+          "rating": null,
+          "votes": null,
+          "poster": "https://archive.org/services/img/TheCabinetOfDrCaligari",
+          "id": null,
+          "link": "https://archive.org/details/TheCabinetOfDrCaligari",
+          "video": "TheCabinetOfDrCaligari"
+        },
+        {
+          "rank": 3,
+          "title": "诺斯费拉图",
+          "orig": "Nosferatu",
+          "year": "1922",
+          "rating": null,
+          "votes": null,
+          "poster": "https://archive.org/services/img/Nosferatu_1922",
+          "id": null,
+          "link": "https://archive.org/details/Nosferatu_1922",
+          "video": "Nosferatu_1922"
+        },
+        {
+          "rank": 4,
+          "title": "战舰波将金号",
+          "orig": "Battleship Potemkin",
+          "year": "1925",
+          "rating": null,
+          "votes": null,
+          "poster": "https://archive.org/services/img/BattleshipPotemkin",
+          "id": null,
+          "link": "https://archive.org/details/BattleshipPotemkin",
+          "video": "BattleshipPotemkin"
+        },
+        {
+          "rank": 5,
+          "title": "淘金记",
+          "orig": "The Gold Rush",
+          "year": "1925",
+          "rating": null,
+          "votes": null,
+          "poster": "https://archive.org/services/img/TheGoldRush_1925",
+          "id": null,
+          "link": "https://archive.org/details/TheGoldRush_1925",
+          "video": "TheGoldRush_1925"
+        },
+        {
+          "rank": 6,
+          "title": "将军号",
+          "orig": "The General",
+          "year": "1926",
+          "rating": null,
+          "votes": null,
+          "poster": "https://archive.org/services/img/TheGeneral",
+          "id": null,
+          "link": "https://archive.org/details/TheGeneral",
+          "video": "TheGeneral"
+        },
+        {
+          "rank": 7,
+          "title": "大都会",
+          "orig": "Metropolis",
+          "year": "1927",
+          "rating": null,
+          "votes": null,
+          "poster": "https://archive.org/services/img/Metropolis_1927",
+          "id": null,
+          "link": "https://archive.org/details/Metropolis_1927",
+          "video": "Metropolis_1927"
+        },
+        {
+          "rank": 8,
+          "title": "圣女贞德蒙难记",
+          "orig": "The Passion of Joan of Arc",
+          "year": "1928",
+          "rating": null,
+          "votes": null,
+          "poster": "https://archive.org/services/img/ThePassionOfJoanOfArc",
+          "id": null,
+          "link": "https://archive.org/details/ThePassionOfJoanOfArc",
+          "video": "ThePassionOfJoanOfArc"
+        },
+        {
+          "rank": 9,
+          "title": "女友礼拜五",
+          "orig": "His Girl Friday",
+          "year": "1940",
+          "rating": null,
+          "votes": null,
+          "poster": "https://archive.org/services/img/his_girl_friday",
+          "id": null,
+          "link": "https://archive.org/details/his_girl_friday",
+          "video": "his_girl_friday"
+        },
+        {
+          "rank": 10,
+          "title": "绕道",
+          "orig": "Detour",
+          "year": "1945",
+          "rating": null,
+          "votes": null,
+          "poster": "https://archive.org/services/img/Detour",
+          "id": null,
+          "link": "https://archive.org/details/Detour",
+          "video": "Detour"
+        },
+        {
+          "rank": 11,
+          "title": "外太空九号计划",
+          "orig": "Plan 9 from Outer Space",
+          "year": "1959",
+          "rating": null,
+          "votes": null,
+          "poster": "https://archive.org/services/img/Plan_9_from_Outer_Space_1959",
+          "id": null,
+          "link": "https://archive.org/details/Plan_9_from_Outer_Space_1959",
+          "video": "Plan_9_from_Outer_Space_1959"
+        },
+        {
+          "rank": 12,
+          "title": "恐怖小店",
+          "orig": "The Little Shop of Horrors",
+          "year": "1960",
+          "rating": null,
+          "votes": null,
+          "poster": "https://archive.org/services/img/the_little_shop_of_horrors",
+          "id": null,
+          "link": "https://archive.org/details/the_little_shop_of_horrors",
+          "video": "the_little_shop_of_horrors"
+        },
+        {
+          "rank": 13,
+          "title": "惊魂夜",
+          "orig": "Carnival of Souls",
+          "year": "1962",
+          "rating": null,
+          "votes": null,
+          "poster": "https://archive.org/services/img/carnival_of_souls",
+          "id": null,
+          "link": "https://archive.org/details/carnival_of_souls",
+          "video": "carnival_of_souls"
+        },
+        {
+          "rank": 14,
+          "title": "谜中谜",
+          "orig": "Charade",
+          "year": "1963",
+          "rating": null,
+          "votes": null,
+          "poster": "https://archive.org/services/img/Charade_1963",
+          "id": null,
+          "link": "https://archive.org/details/Charade_1963",
+          "video": "Charade_1963"
+        },
+        {
+          "rank": 15,
+          "title": "活死人之夜",
+          "orig": "Night of the Living Dead",
+          "year": "1968",
+          "rating": null,
+          "votes": null,
+          "poster": "https://archive.org/services/img/night_of_the_living_dead",
+          "id": null,
+          "link": "https://archive.org/details/night_of_the_living_dead",
+          "video": "night_of_the_living_dead"
+        }
+      ]
     }
   ],
-  "note": "数据来自 TMDB（The Movie Database）公开 API：高分电影 Top 250（按票数加权排序、经典优先）与全球最新上映，含海报与中文片名，每日自动更新。（IMDb 官方禁止服务器抓取，故采用 TMDB。）评分为 TMDB 用户评分，仅供参考。"
+  "note": "数据来自 TMDB（The Movie Database）公开 API：高分电影 Top 250（按票数加权排序、经典优先）与全球最新上映，含海报与中文片名，每日自动更新。点击海报可在线看官方预告片（YouTube），「公版经典」为美国公有领域影片、正片由 Internet Archive 提供；观看渠道数据来自 TMDB × JustWatch。评分为 TMDB 用户评分，仅供参考。"
 }
