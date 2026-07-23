@@ -48,7 +48,7 @@ CLASSICS = [
     {"title": "卡里加里博士的小屋", "orig": "The Cabinet of Dr. Caligari", "year": "1920", "ia": "DasKabinettdesDoktorCaligariTheCabinetofDrCaligari"},
     {"title": "诺斯费拉图",         "orig": "Nosferatu",                   "year": "1922", "ia": "Nosferatu_most_complete_version_93_mins."},
     {"title": "战舰波将金号",       "orig": "Battleship Potemkin",         "year": "1925", "ia": "BattleshipPotemkin"},
-    {"title": "淘金记",             "orig": "The Gold Rush",               "year": "1925", "ia": "CC_1925_06_26_TheGoldRush"},
+    {"title": "淘金记",             "orig": "The Gold Rush",               "year": "1925", "ia": "the-gold-rush-film-1925"},
     {"title": "将军号",             "orig": "The General",                 "year": "1926", "ia": "TheGeneral"},
     {"title": "大都会",             "orig": "Metropolis",                  "year": "1927", "ia": "Metropolis1927EnglishVersion"},
     {"title": "圣女贞德蒙难记",     "orig": "The Passion of Joan of Arc",  "year": "1928", "ia": "the-passion-of-joan-of-arc"},
@@ -57,8 +57,8 @@ CLASSICS = [
     {"title": "外太空九号计划",     "orig": "Plan 9 from Outer Space",     "year": "1959", "ia": "774-plan-9-from-outer-space"},
     {"title": "恐怖小店",           "orig": "The Little Shop of Horrors",  "year": "1960", "ia": "Little_ShopOf_Horrors.avi"},
     {"title": "惊魂夜",             "orig": "Carnival of Souls",           "year": "1962", "ia": "carnival_of_souls"},
-    {"title": "谜中谜",             "orig": "Charade",                     "year": "1963", "ia": "Charade_1963"},
-    {"title": "活死人之夜",         "orig": "Night of the Living Dead",    "year": "1968", "ia": "night_of_the_living_dead"},
+    {"title": "谜中谜",             "orig": "Charade",                     "year": "1963", "ia": "charade-stanley-donen-1963-cary-grant-audrey-hepburn-comedie-policiere"},
+    {"title": "活死人之夜",         "orig": "Night of the Living Dead",    "year": "1968", "ia": "Night.Of.The.Living.Dead_1080p"},
 ]
 
 
