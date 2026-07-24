@@ -1,6 +1,6 @@
 {
- "updatedAt": "2026-07-17T07:55:01Z",
- "asOf": "2026-07-17",
+ "updatedAt": "2026-07-24T09:43:47Z",
+ "asOf": "2026-07-24",
  "source": "SEC EDGAR 13F-HR · AAII Investor Sentiment Survey",
  "investors": [
   {
@@ -10507,7 +10507,7 @@
    "firm": "Saudi PIF",
    "firmZh": "沙特公共投资基金",
    "cik": "0001767640",
-   "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAARVBMVEVHcEwBXE0BXU0CXU0BXU0BXU0BXE0BW00BXU0EXE0BXU3EmE8BXE0CXU3HmU8BXU0CXU3HmU/MnE/FmE/GmU8CXU3GmU+HiDV4AAAAF3RSTlMAbpq/iyNgezUQRPRQ6luo/qMZisTZMigRxksAAAF7SURBVCiRbVLZluUgCEQBQeOWmOT/P3Uwy7m3e7qeOEBBsQB8I8YIf0L9USYw/JegRyGNzJEDdv8z5nuA4ERIsipj169WB8aYvU855SAYIFvui8MDmp9EjCzqmnLPb00EIm4JtjoqRKKAzP2WpR1Ikomoi2GfuoNnOe6iOaJOgesVrABMQaCkSSwRU5tZw6L7vpmVjRpwdiRIIV01xrmO7ZahMc6uh830Tr2tjxHMeRijsKj8DrJzmRzEovgJ7u9aRJsjC7JLstV1rXCOpcI21vWMAu4KRko0WWOvdanrnAVYJmZPBXqKrudS78Vk5Wb7tT0DPSccy3kb01HYVCOjXtRtjHEVtf06z2UaPUqSecDNai7XMI1bbhfBN22pMYyr37Kfth8jPmfpmRr4vN5a9tqUrKh7/qez8zlL4BhZxandpOH7CaFrsLY6/yBpQAft+DxR7g4cenJCiJS5IHwhHiVEoztOrL47+ImMHck5aaXQH28fkyMyVR/PP0ixEKBBWi/lAAAAAElFTkSuQmCC",
+   "img": "data:image/png;base64,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",
    "imgAlt": "",
    "imgLogo": true,
    "period": "2026-03-31",
@@ -10575,98 +10575,98 @@
    "img": "data:image/png;base64,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",
    "imgAlt": "",
    "imgLogo": true,
-   "period": "2026-03-31",
-   "filed": "2026-05-15",
-   "value": 2697128585,
-   "stocks": 11,
-   "top10pct": 100.0,
+   "period": "2026-06-30",
+   "filed": "2026-07-23",
+   "value": 2255890135,
+   "stocks": 15,
+   "top10pct": 99.9,
    "holdings": [
-    {
-     "name": "Invesco Exchange Traded Fd T",
-     "zh": "",
-     "ticker": "",
-     "value": 1049782440,
-     "pct": 38.92,
-     "chg": "hold",
-     "chgPct": null
-    },
     {
      "name": "Ssga Active Tr",
      "zh": "",
      "ticker": "",
-     "value": 743048340,
-     "pct": 27.55,
-     "chg": "new",
+     "value": 741551980,
+     "pct": 32.87,
+     "chg": "hold",
      "chgPct": null
     },
     {
      "name": "Morgan Stanley ETF Trust",
      "zh": "摩根士丹利",
      "ticker": "",
-     "value": 723094450,
-     "pct": 26.81,
+     "value": 727973611,
+     "pct": 32.27,
      "chg": "hold",
      "chgPct": null
+    },
+    {
+     "name": "Invesco Exchange Traded Fd T",
+     "zh": "",
+     "ticker": "",
+     "value": 628457898,
+     "pct": 27.86,
+     "chg": "trim",
+     "chgPct": -46.0
     },
     {
      "name": "Tidal Trust Iii",
      "zh": "",
      "ticker": "",
-     "value": 106429531,
-     "pct": 3.95,
+     "value": 121004606,
+     "pct": 5.36,
      "chg": "hold",
      "chgPct": null
-    },
-    {
-     "name": "Spdr Series Trust",
-     "zh": "",
-     "ticker": "",
-     "value": 30877190,
-     "pct": 1.14,
-     "chg": "trim",
-     "chgPct": -82.6
     },
     {
      "name": "State Str Spdr S&P 500 ETF T",
      "zh": "标普500 ETF",
      "ticker": "SPY",
-     "value": 26364784,
-     "pct": 0.98,
-     "chg": "add",
-     "chgPct": 12.5
+     "value": 30274056,
+     "pct": 1.34,
+     "chg": "hold",
+     "chgPct": null
     },
     {
-     "name": "Spdr Series Trust",
+     "name": "Digital Rlty Tr Inc",
      "zh": "",
      "ticker": "",
-     "value": 15100000,
-     "pct": 0.56,
-     "chg": "trim",
-     "chgPct": -82.7
+     "value": 2693700,
+     "pct": 0.12,
+     "chg": "new",
+     "chgPct": null
     },
     {
-     "name": "Forgent Power Solutions Inc",
+     "name": "Vishay Intertechnology Inc",
      "zh": "",
      "ticker": "",
-     "value": 878100,
+     "value": 978581,
+     "pct": 0.04,
+     "chg": "new",
+     "chgPct": null
+    },
+    {
+     "name": "Legend Biotech Corp",
+     "zh": "",
+     "ticker": "",
+     "value": 670854,
      "pct": 0.03,
      "chg": "new",
      "chgPct": null
     },
     {
-     "name": "Solv Energy Inc",
+     "name": "Torm PLC",
      "zh": "",
      "ticker": "",
-     "value": 750750,
+     "value": 629401,
      "pct": 0.03,
      "chg": "new",
      "chgPct": null
     },
     {
-     "name": "Equipmentshare Inc",
+     "name": "Arxis Inc",
      "zh": "",
      "ticker": "",
-     "value": 509250,
+     "value": 461400,
      "pct": 0.02,
      "chg": "new",
      "chgPct": null
@@ -10674,39 +10674,47 @@
    ],
    "moves": [
     {
-     "type": "new",
-     "name": "Ssga Active Tr",
+     "type": "trim",
+     "name": "Invesco Exchange Traded Fd T",
      "zh": "",
      "ticker": "",
-     "value": 743048340,
+     "value": 421324542,
+     "delta": -46.0
+    },
+    {
+     "type": "exit",
+     "name": "Spdr Series Trust",
+     "zh": "",
+     "ticker": "",
+     "value": 30877190,
      "delta": null
     },
     {
-     "type": "trim",
+     "type": "exit",
      "name": "Spdr Series Trust",
      "zh": "",
      "ticker": "",
-     "value": 142521739,
-     "delta": -82.6
-    },
-    {
-     "type": "trim",
-     "name": "Spdr Series Trust",
-     "zh": "",
-     "ticker": "",
-     "value": 69744857,
-     "delta": -82.7
-    },
-    {
-     "type": "add",
-     "name": "State Str Spdr S&P 500 ETF T",
-     "zh": "标普500 ETF",
-     "ticker": "SPY",
-     "value": 1788387,
-     "delta": 12.5
+     "value": 15100000,
+     "delta": null
     },
     {
      "type": "new",
+     "name": "Digital Rlty Tr Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 2693700,
+     "delta": null
+    },
+    {
+     "type": "new",
+     "name": "Vishay Intertechnology Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 978581,
+     "delta": null
+    },
+    {
+     "type": "exit",
      "name": "Forgent Power Solutions Inc",
      "zh": "",
      "ticker": "",
@@ -10714,7 +10722,7 @@
      "delta": null
     },
     {
-     "type": "new",
+     "type": "exit",
      "name": "Solv Energy Inc",
      "zh": "",
      "ticker": "",
@@ -10723,18 +10731,10 @@
     },
     {
      "type": "new",
-     "name": "Equipmentshare Inc",
+     "name": "Legend Biotech Corp",
      "zh": "",
      "ticker": "",
-     "value": 509250,
-     "delta": null
-    },
-    {
-     "type": "new",
-     "name": "Bobs Disc Furniture Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 293750,
+     "value": 670854,
      "delta": null
     }
    ],
@@ -11815,7 +11815,7 @@
    "partyZh": "共和党",
    "roleZh": "参议院",
    "stateZh": "阿拉巴马",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Tommy_tuberville.jpg/250px-Tommy_tuberville.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Sen._Tommy_Tuberville_%28R-AL%29%2C_Official_Portrait%2C_118th_Congress.jpg/250px-Sen._Tommy_Tuberville_%28R-AL%29%2C_Official_Portrait%2C_118th_Congress.jpg",
    "bioguide": "T000278",
    "count": 1212,
    "volume": 944000,
@@ -12869,8 +12869,14 @@
   }
  ],
  "aaii": {
-  "asOf": "2026-07-16",
+  "asOf": "2026-07-23",
   "weeks": [
+   {
+    "date": "2026-07-23",
+    "bull": 29.6,
+    "neutral": 28.1,
+    "bear": 42.3
+   },
    {
     "date": "2026-07-16",
     "bull": 44.9,
@@ -12936,12 +12942,6 @@
     "bull": 38.3,
     "neutral": 28.7,
     "bear": 33.0
-   },
-   {
-    "date": "2026-04-30",
-    "bull": 38.1,
-    "neutral": 22.2,
-    "bear": 39.7
    }
   ],
   "avg": {
@@ -12949,7 +12949,7 @@
    "neutral": 31.0,
    "bear": 31.4
   },
-  "spread": 12.0,
+  "spread": -12.7,
   "hi52": {
    "bull": 49.5,
    "date": "2026-01-15"
