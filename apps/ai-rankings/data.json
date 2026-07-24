@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-23T00:14:32Z",
-  "asOf": "2026-07-23",
+  "updatedAt": "2026-07-24T00:17:12Z",
+  "asOf": "2026-07-24",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -261,7 +261,7 @@
       "arena": 1445,
       "livebench": 72.7,
       "aa": null,
-      "ctx": "524K",
+      "ctx": "1M",
       "price": 1.76
     },
     {
@@ -473,32 +473,6 @@
       "price": null
     },
     {
-      "id": "gpt-5-5-instant",
-      "name": "GPT 5.5 Instant",
-      "org": "OpenAI",
-      "orgCn": "OpenAI",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1473,
-      "livebench": null,
-      "aa": null,
-      "ctx": "1.1M",
-      "price": 11.25
-    },
-    {
-      "id": "claude-sonnet-4-6",
-      "name": "Claude Sonnet 4.6",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1473,
-      "livebench": null,
-      "aa": null,
-      "ctx": "1M",
-      "price": 6.0
-    },
-    {
       "id": "claude-opus-4-5-20251101-32k",
       "name": "Claude Opus 4.5.20251101 32K",
       "org": "Anthropic",
@@ -512,6 +486,19 @@
       "price": 10.0
     },
     {
+      "id": "gpt-5-5-instant",
+      "name": "GPT 5.5 Instant",
+      "org": "OpenAI",
+      "orgCn": "OpenAI",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1473,
+      "livebench": null,
+      "aa": null,
+      "ctx": "1.1M",
+      "price": 11.25
+    },
+    {
       "id": "grok-4-20-0309-reasoning",
       "name": "Grok 4.20.0309 Reasoning",
       "org": "xAI",
@@ -523,6 +510,19 @@
       "aa": null,
       "ctx": "2M",
       "price": 3.0
+    },
+    {
+      "id": "claude-sonnet-4-6",
+      "name": "Claude Sonnet 4.6",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1473,
+      "livebench": null,
+      "aa": null,
+      "ctx": "1M",
+      "price": 6.0
     },
     {
       "id": "grok-4-20-multi-agent-0309",
