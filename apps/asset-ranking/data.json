@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-07-25T07:35:31Z",
-  "asOf": "2026-07-25",
+  "updatedAt": "2026-07-26T09:02:16Z",
+  "asOf": "2026-07-26",
   "source": "Yahoo Finance · CoinGecko · 公开估算（世界黄金协会 / IMF / Savills 等）",
   "count": 250,
-  "totalMarketCap": 1094200.9,
+  "totalMarketCap": 1094212.6,
   "categories": [
     {
       "key": "real-estate",
@@ -91,7 +91,7 @@
       "note": "全球石油探明储量 × WTI 油价（储量约 1.73 万亿桶，价格实时）",
       "marketCap": 154506.3,
       "price": 89.31,
-      "changePct": 7.31,
+      "changePct": 5.18,
       "static": false,
       "stale": false,
       "rank": 2
@@ -166,7 +166,7 @@
       "note": "全球地面黄金存量 × 金价（约 6.72 亿盎司/21.6 万吨，来源世界黄金协会，价格实时）",
       "marketCap": 27355.8,
       "price": 4070.8,
-      "changePct": 1.51,
+      "changePct": -0.01,
       "static": false,
       "stale": false,
       "rank": 7
@@ -196,7 +196,7 @@
       "note": "全球铝储量 × 期货铝价（以 LME/COMEX 期货代理，价格实时）",
       "marketCap": 20002.8,
       "price": 3448.75,
-      "changePct": -2.38,
+      "changePct": -3.65,
       "static": false,
       "stale": false,
       "rank": 9
@@ -241,7 +241,7 @@
       "note": "全球铜储量 × COMEX 铜价（储量约 13 亿吨，价格实时）",
       "marketCap": 18182.5,
       "price": 6.3575,
-      "changePct": 0.93,
+      "changePct": -2.36,
       "static": false,
       "stale": false,
       "rank": 12
@@ -303,9 +303,9 @@
       "unit": "英镑（广义货币 M2）",
       "qty": 3000000000000.0,
       "note": "英国广义货币 M2（约 3 万亿英镑）× 美元汇率，汇率实时",
-      "marketCap": 3995.7,
-      "price": 1.3319,
-      "changePct": -0.94,
+      "marketCap": 3996.3,
+      "price": 1.3321,
+      "changePct": -0.93,
       "static": false,
       "stale": false,
       "rank": 16
@@ -337,7 +337,7 @@
       "note": "全球地面白银存量 × 银价（约 500 亿盎司，价格实时）",
       "marketCap": 2945.3,
       "price": 58.906,
-      "changePct": 3.7,
+      "changePct": 0.12,
       "static": false,
       "stale": false,
       "rank": 18
@@ -467,9 +467,9 @@
       "category": "crypto",
       "emoji": "₿",
       "symbol": "BTC",
-      "marketCap": 1283.0,
-      "price": 63959,
-      "changePct": -2.45,
+      "marketCap": 1292.4,
+      "price": 64424,
+      "changePct": 0.95,
       "rank": 26
     },
     {
@@ -493,7 +493,7 @@
       "name": "三星电子",
       "nameEn": "Samsung Electronics",
       "category": "company",
-      "marketCap": 1140.3,
+      "marketCap": 1138.2,
       "price": 249500.0,
       "priceCur": "KRW",
       "changePct": -2.16,
@@ -714,10 +714,10 @@
       "name": "腾讯",
       "nameEn": "Tencent Holdings",
       "category": "company",
-      "marketCap": 501.9,
-      "price": 55.6,
+      "marketCap": 501.7,
+      "price": 55.58,
       "priceCur": "USD",
-      "changePct": -5.86,
+      "changePct": -5.89,
       "country": "中国",
       "flag": "🇨🇳",
       "sector": "通信服务",
@@ -1340,23 +1340,6 @@
       "rank": 77
     },
     {
-      "name": "路威酩轩",
-      "nameEn": "LVMH",
-      "category": "company",
-      "marketCap": 258.5,
-      "price": 104.74,
-      "priceCur": "USD",
-      "changePct": -7.45,
-      "country": "法国",
-      "flag": "🇫🇷",
-      "sector": "可选消费",
-      "symbol": "LVMUY",
-      "logo": "../companies/logos/lvmh.com.png",
-      "private": null,
-      "lastRound": null,
-      "rank": 78
-    },
-    {
       "name": "三菱日联",
       "nameEn": "Mitsubishi UFJ Financial",
       "category": "company",
@@ -1369,6 +1352,23 @@
       "sector": "金融",
       "symbol": "MUFG",
       "logo": "../companies/logos/mufg.jp.png",
+      "private": null,
+      "lastRound": null,
+      "rank": 78
+    },
+    {
+      "name": "路威酩轩",
+      "nameEn": "LVMH",
+      "category": "company",
+      "marketCap": 258.3,
+      "price": 104.68,
+      "priceCur": "USD",
+      "changePct": -7.5,
+      "country": "法国",
+      "flag": "🇫🇷",
+      "sector": "可选消费",
+      "symbol": "LVMUY",
+      "logo": "../companies/logos/lvmh.com.png",
       "private": null,
       "lastRound": null,
       "rank": 79
@@ -1394,10 +1394,10 @@
       "name": "雀巢",
       "nameEn": "Nestle",
       "category": "company",
-      "marketCap": 253.0,
-      "price": 98.36,
+      "marketCap": 253.4,
+      "price": 98.52,
       "priceCur": "USD",
-      "changePct": -6.44,
+      "changePct": -6.29,
       "country": "瑞士",
       "flag": "🇨🇭",
       "sector": "必需消费",
@@ -1445,10 +1445,10 @@
       "name": "西门子",
       "nameEn": "Siemens",
       "category": "company",
-      "marketCap": 236.9,
-      "price": 154.03,
+      "marketCap": 236.8,
+      "price": 153.91,
       "priceCur": "USD",
-      "changePct": 1.63,
+      "changePct": 1.55,
       "country": "德国",
       "flag": "🇩🇪",
       "sector": "工业",
@@ -1457,6 +1457,17 @@
       "private": null,
       "lastRound": null,
       "rank": 84
+    },
+    {
+      "name": "以太坊",
+      "nameEn": "Ethereum",
+      "category": "crypto",
+      "emoji": "₿",
+      "symbol": "ETH",
+      "marketCap": 226.9,
+      "price": 1879.73,
+      "changePct": 1.51,
+      "rank": 85
     },
     {
       "name": "花旗",
@@ -1473,17 +1484,6 @@
       "logo": "../companies/logos/citigroup.com.png",
       "private": null,
       "lastRound": null,
-      "rank": 85
-    },
-    {
-      "name": "以太坊",
-      "nameEn": "Ethereum",
-      "category": "crypto",
-      "emoji": "₿",
-      "symbol": "ETH",
-      "marketCap": 223.9,
-      "price": 1855.42,
-      "changePct": -2.27,
       "rank": 86
     },
     {
@@ -1850,8 +1850,8 @@
       "emoji": "₿",
       "symbol": "USDT",
       "marketCap": 184.0,
-      "price": 0.999096,
-      "changePct": -0.02,
+      "price": 0.999098,
+      "changePct": 0.01,
       "rank": 108
     },
     {
@@ -1977,10 +1977,10 @@
       "name": "ABB",
       "nameEn": "ABB",
       "category": "company",
-      "marketCap": 175.0,
-      "price": 96.44,
+      "marketCap": 174.9,
+      "price": 96.36,
       "priceCur": "USD",
-      "changePct": -1.88,
+      "changePct": -1.96,
       "country": "瑞士",
       "flag": "🇨🇭",
       "sector": "工业",
@@ -4133,6 +4133,17 @@
       "rank": 242
     },
     {
+      "name": "币安币",
+      "nameEn": "BNB",
+      "category": "crypto",
+      "emoji": "₿",
+      "symbol": "BNB",
+      "marketCap": 76.1,
+      "price": 571.17,
+      "changePct": 1.26,
+      "rank": 243
+    },
+    {
       "name": "艺康",
       "nameEn": "Ecolab",
       "category": "company",
@@ -4147,7 +4158,7 @@
       "logo": "../companies/logos/sym_ECL.png",
       "private": null,
       "lastRound": null,
-      "rank": 243
+      "rank": 244
     },
     {
       "name": "DoorDash",
@@ -4164,7 +4175,7 @@
       "logo": "../companies/logos/sym_DASH.png",
       "private": null,
       "lastRound": null,
-      "rank": 244
+      "rank": 245
     },
     {
       "name": "联邦快递",
@@ -4181,17 +4192,6 @@
       "logo": "../companies/logos/sym_FDX.png",
       "private": null,
       "lastRound": null,
-      "rank": 245
-    },
-    {
-      "name": "币安币",
-      "nameEn": "BNB",
-      "category": "crypto",
-      "emoji": "₿",
-      "symbol": "BNB",
-      "marketCap": 75.1,
-      "price": 563.69,
-      "changePct": -1.07,
       "rank": 246
     },
     {
