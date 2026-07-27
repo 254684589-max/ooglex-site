@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-26T23:48:33Z",
-  "asOf": "2026-07-26",
+  "updatedAt": "2026-07-27T22:35:30Z",
+  "asOf": "2026-07-27",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -50,7 +50,7 @@
       "orgCn": "Anthropic",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1507,
+      "arena": 1508,
       "livebench": null,
       "aa": 59.9,
       "ctx": "1M",
@@ -122,19 +122,6 @@
       "price": 6.0
     },
     {
-      "id": "muse-spark-1-1",
-      "name": "Muse Spark 1.1",
-      "org": "Meta",
-      "orgCn": "Meta",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1495,
-      "livebench": 76.9,
-      "aa": null,
-      "ctx": null,
-      "price": 2.0
-    },
-    {
       "id": "gemini-3-1-pro",
       "name": "Gemini 3.1 Pro",
       "org": "Google",
@@ -146,6 +133,19 @@
       "aa": 56.8,
       "ctx": "1M",
       "price": 4.5
+    },
+    {
+      "id": "muse-spark-1-1",
+      "name": "Muse Spark 1.1",
+      "org": "Meta",
+      "orgCn": "Meta",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1491,
+      "livebench": 76.9,
+      "aa": null,
+      "ctx": null,
+      "price": 2.0
     },
     {
       "id": "grok-4-5",
@@ -167,7 +167,7 @@
       "orgCn": "OpenAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1478,
+      "arena": 1477,
       "livebench": 78.8,
       "aa": 54.0,
       "ctx": "1.1M",
@@ -193,7 +193,7 @@
       "orgCn": "谷歌",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1485,
+      "arena": 1482,
       "livebench": 74.5,
       "aa": null,
       "ctx": "1M",
@@ -258,7 +258,7 @@
       "orgCn": "Thinky",
       "flag": "🌐",
       "open": true,
-      "arena": 1445,
+      "arena": 1443,
       "livebench": 72.7,
       "aa": null,
       "ctx": "1M",
@@ -310,7 +310,7 @@
       "orgCn": "阿里巴巴",
       "flag": "🇨🇳",
       "open": false,
-      "arena": 1444,
+      "arena": 1443,
       "livebench": 69.0,
       "aa": null,
       "ctx": "1M",
@@ -336,7 +336,7 @@
       "orgCn": "深度求索",
       "flag": "🇨🇳",
       "open": true,
-      "arena": 1439,
+      "arena": 1438,
       "livebench": 66.1,
       "aa": null,
       "ctx": "200K",
@@ -362,7 +362,7 @@
       "orgCn": "谷歌",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1459,
+      "arena": 1460,
       "livebench": 63.8,
       "aa": null,
       "ctx": "1M",
@@ -388,7 +388,7 @@
       "orgCn": "xAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1442,
+      "arena": 1443,
       "livebench": 63.3,
       "aa": null,
       "ctx": "1M",
@@ -415,6 +415,19 @@
       "flag": "🇺🇸",
       "open": false,
       "arena": 1505,
+      "livebench": null,
+      "aa": null,
+      "ctx": "1M",
+      "price": 10.0
+    },
+    {
+      "id": "claude-opus-5",
+      "name": "Claude Opus 5",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1495,
       "livebench": null,
       "aa": null,
       "ctx": "1M",
@@ -473,8 +486,8 @@
       "price": null
     },
     {
-      "id": "claude-sonnet-4-6",
-      "name": "Claude Sonnet 4.6",
+      "id": "claude-opus-4-5-20251101-32k",
+      "name": "Claude Opus 4.5.20251101 32K",
       "org": "Anthropic",
       "orgCn": "Anthropic",
       "flag": "🇺🇸",
@@ -482,8 +495,8 @@
       "arena": 1473,
       "livebench": null,
       "aa": null,
-      "ctx": "1M",
-      "price": 6.0
+      "ctx": "200K",
+      "price": 10.0
     },
     {
       "id": "gpt-5-5-instant",
@@ -499,30 +512,30 @@
       "price": 11.25
     },
     {
-      "id": "claude-opus-4-5-20251101-32k",
-      "name": "Claude Opus 4.5.20251101 32K",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1473,
-      "livebench": null,
-      "aa": null,
-      "ctx": "200K",
-      "price": 10.0
-    },
-    {
       "id": "grok-4-20-0309-reasoning",
       "name": "Grok 4.20.0309 Reasoning",
       "org": "xAI",
       "orgCn": "xAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1473,
+      "arena": 1472,
       "livebench": null,
       "aa": null,
       "ctx": "2M",
       "price": 3.0
+    },
+    {
+      "id": "claude-sonnet-4-6",
+      "name": "Claude Sonnet 4.6",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1472,
+      "livebench": null,
+      "aa": null,
+      "ctx": "1M",
+      "price": 6.0
     },
     {
       "id": "grok-4-20-multi-agent-0309",
@@ -544,24 +557,11 @@
       "orgCn": "智谱",
       "flag": "🇨🇳",
       "open": true,
-      "arena": 1470,
+      "arena": 1469,
       "livebench": null,
       "aa": null,
       "ctx": "203K",
       "price": 2.15
-    },
-    {
-      "id": "claude-opus-4-5",
-      "name": "Claude Opus 4.5",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1469,
-      "livebench": null,
-      "aa": null,
-      "ctx": "200K",
-      "price": 10.0
     }
   ]
 }
