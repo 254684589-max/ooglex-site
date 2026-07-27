@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-20T13:15:49Z",
+  "updatedAt": "2026-07-27T13:56:52Z",
   "asOf": "2026-Q2",
   "source": "OECD 分析性房价指数 · 各国官方统计（中国国家统计局 70 城 / 香港差饷署 等）· BIS（每周自动刷新）",
   "seed": false,
@@ -6229,7 +6229,7 @@
       "base": "2015=100",
       "index": 205.1,
       "yoyNominal": 6.8,
-      "yoyReal": -1.4,
+      "yoyReal": 3.7,
       "qoq": 1.5,
       "asOf": "2026-Q1",
       "trend": [
