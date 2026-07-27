@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-07-26T23:48:10Z",
-  "asOf": "2026-07-26",
+  "updatedAt": "2026-07-27T18:12:09Z",
+  "asOf": "2026-07-27",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-07-26 ~ 2026-07-31",
-  "count": 90,
+  "count": 91,
   "highCount": 18,
   "events": [
     {
@@ -100,6 +100,18 @@
       "impact": "low",
       "forecast": "1.6%",
       "previous": "-4.5%",
+      "actual": null
+    },
+    {
+      "ts": "2026-07-27T18:50:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "央行官员讲话",
+      "titleEn": "President Trump Speaks",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
