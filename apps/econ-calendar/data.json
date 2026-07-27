@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-07-27T18:12:09Z",
+  "updatedAt": "2026-07-27T22:35:04Z",
   "asOf": "2026-07-27",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-07-26 ~ 2026-07-31",
-  "count": 91,
-  "highCount": 18,
+  "count": 92,
+  "highCount": 19,
   "events": [
     {
       "ts": "2026-07-26T23:50:00Z",
@@ -122,7 +122,7 @@
       "title": "BRC 店铺价格指数 同比",
       "titleEn": "BRC Shop Price Index y/y",
       "impact": "low",
-      "forecast": "1.2%",
+      "forecast": "1.1%",
       "previous": "1.2%",
       "actual": null
     },
@@ -158,12 +158,12 @@
       "title": "失业率",
       "titleEn": "Spanish Unemployment Rate",
       "impact": "low",
-      "forecast": "10.7%",
+      "forecast": "10.1%",
       "previous": "10.8%",
       "actual": null
     },
     {
-      "ts": "2026-07-28T10:03:00Z",
+      "ts": "2026-07-28T10:00:00Z",
       "ccy": "EUR",
       "country": "欧元区",
       "flag": "🇪🇺",
@@ -194,7 +194,7 @@
       "title": "贸易帐",
       "titleEn": "Goods Trade Balance",
       "impact": "low",
-      "forecast": "-98.0B",
+      "forecast": "-100.3B",
       "previous": "-105.8B",
       "actual": null
     },
@@ -206,7 +206,7 @@
       "title": "Prelim Wholesale Inventories m/m",
       "titleEn": "Prelim Wholesale Inventories m/m",
       "impact": "low",
-      "forecast": "0.2%",
+      "forecast": "0.4%",
       "previous": "0.3%",
       "actual": null
     },
@@ -218,7 +218,7 @@
       "title": "房价指数 环比",
       "titleEn": "HPI m/m",
       "impact": "low",
-      "forecast": "0.2%",
+      "forecast": "0.1%",
       "previous": "-0.1%",
       "actual": null
     },
@@ -230,7 +230,7 @@
       "title": "标普/CS 20 城房价指数 同比",
       "titleEn": "S&P/CS Composite-20 HPI y/y",
       "impact": "low",
-      "forecast": "0.8%",
+      "forecast": "1.3%",
       "previous": "1.1%",
       "actual": null
     },
@@ -242,7 +242,7 @@
       "title": "消费者信心指数",
       "titleEn": "CB Consumer Confidence",
       "impact": "medium",
-      "forecast": "92.1",
+      "forecast": "92.4",
       "previous": "91.2",
       "actual": null
     },
@@ -254,7 +254,7 @@
       "title": "Richmond Manufacturing Index",
       "titleEn": "Richmond Manufacturing Index",
       "impact": "low",
-      "forecast": null,
+      "forecast": "7",
       "previous": "4",
       "actual": null
     },
@@ -302,7 +302,7 @@
       "title": "CPI（消费者物价指数） 环比",
       "titleEn": "Trimmed Mean CPI m/m",
       "impact": "high",
-      "forecast": "0.4%",
+      "forecast": "0.3%",
       "previous": "0.4%",
       "actual": null
     },
@@ -314,7 +314,7 @@
       "title": "德国进口物价 环比",
       "titleEn": "German Import Prices m/m",
       "impact": "low",
-      "forecast": "-0.8%",
+      "forecast": "-0.7%",
       "previous": "0.7%",
       "actual": null
     },
@@ -350,7 +350,7 @@
       "title": "抵押贷款批准数",
       "titleEn": "Mortgage Approvals",
       "impact": "low",
-      "forecast": "56K",
+      "forecast": "57K",
       "previous": "56K",
       "actual": null
     },
@@ -386,7 +386,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": null,
+      "forecast": "-1.7M",
       "previous": "2.0M",
       "actual": null
     },
@@ -470,7 +470,7 @@
       "title": "建筑许可 环比",
       "titleEn": "Building Approvals m/m",
       "impact": "low",
-      "forecast": "-0.5%",
+      "forecast": "-0.7%",
       "previous": "-1.1%",
       "actual": null
     },
@@ -554,7 +554,7 @@
       "title": "KOF 经济晴雨表",
       "titleEn": "KOF Economic Barometer",
       "impact": "low",
-      "forecast": "100.7",
+      "forecast": "100.9",
       "previous": "101.2",
       "actual": null
     },
@@ -566,7 +566,7 @@
       "title": "CPI（消费者物价指数） 同比",
       "titleEn": "Spanish Flash CPI y/y",
       "impact": "low",
-      "forecast": "3.1%",
+      "forecast": "3.2%",
       "previous": "3.2%",
       "actual": null
     },
@@ -614,7 +614,7 @@
       "title": "失业率",
       "titleEn": "Italian Monthly Unemployment Rate",
       "impact": "low",
-      "forecast": "5.1%",
+      "forecast": "5.0%",
       "previous": "5.0%",
       "actual": null
     },
@@ -651,7 +651,7 @@
       "titleEn": "Italian 10-y Bond Auction",
       "impact": "low",
       "forecast": null,
-      "previous": null,
+      "previous": "3.63|1.7",
       "actual": null
     },
     {
@@ -703,6 +703,18 @@
       "actual": null
     },
     {
+      "ts": "2026-07-30T11:30:00Z",
+      "ccy": "GBP",
+      "country": "英国",
+      "flag": "🇬🇧",
+      "title": "英央行行长讲话",
+      "titleEn": "BOE Gov Bailey Speaks",
+      "impact": "high",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
       "ts": "2026-07-30T12:30:00Z",
       "ccy": "USD",
       "country": "美国",
@@ -710,7 +722,7 @@
       "title": "GDP 初值 季环比",
       "titleEn": "Advance GDP q/q",
       "impact": "high",
-      "forecast": "2.3%",
+      "forecast": "2.0%",
       "previous": "2.0%",
       "actual": null
     },
@@ -722,7 +734,7 @@
       "title": "核心 PCE 物价指数 环比",
       "titleEn": "Core PCE Price Index m/m",
       "impact": "high",
-      "forecast": "0.1%",
+      "forecast": "0.2%",
       "previous": "0.3%",
       "actual": null
     },
@@ -734,7 +746,7 @@
       "title": "GDP 初值 季环比",
       "titleEn": "Advance GDP Price Index q/q",
       "impact": "medium",
-      "forecast": "3.7%",
+      "forecast": "4.1%",
       "previous": "3.6%",
       "actual": null
     },
@@ -746,7 +758,7 @@
       "title": "申请失业金人数",
       "titleEn": "Unemployment Claims",
       "impact": "medium",
-      "forecast": "206K",
+      "forecast": "201K",
       "previous": "187K",
       "actual": null
     },
@@ -818,7 +830,7 @@
       "title": "工业产出 环比",
       "titleEn": "Prelim Industrial Production m/m",
       "impact": "low",
-      "forecast": "0.7%",
+      "forecast": "1.0%",
       "previous": "0.5%",
       "actual": null
     },
@@ -830,7 +842,7 @@
       "title": "零售销售 同比",
       "titleEn": "Retail Sales y/y",
       "impact": "low",
-      "forecast": "2.8%",
+      "forecast": "3.1%",
       "previous": "5.3%",
       "actual": null
     },
@@ -842,7 +854,7 @@
       "title": "PPI（生产者物价指数） 季环比",
       "titleEn": "PPI q/q",
       "impact": "low",
-      "forecast": "0.3%",
+      "forecast": "0.5%",
       "previous": "0.4%",
       "actual": null
     },
@@ -866,7 +878,7 @@
       "title": "制造业 PMI",
       "titleEn": "Manufacturing PMI",
       "impact": "low",
-      "forecast": "49.9",
+      "forecast": "50.1",
       "previous": "50.3",
       "actual": null
     },
@@ -926,7 +938,7 @@
       "title": "新屋开工 同比",
       "titleEn": "Housing Starts y/y",
       "impact": "low",
-      "forecast": "13.2%",
+      "forecast": "12.7%",
       "previous": "33.9%",
       "actual": null
     },
@@ -950,7 +962,7 @@
       "title": "全国房价指数（Nationwide） 环比",
       "titleEn": "Nationwide HPI m/m",
       "impact": "low",
-      "forecast": null,
+      "forecast": "0.1%",
       "previous": "0.0%",
       "actual": null
     },
@@ -962,7 +974,7 @@
       "title": "零售销售 同比",
       "titleEn": "Retail Sales y/y",
       "impact": "low",
-      "forecast": "3.2%",
+      "forecast": "3.1%",
       "previous": "3.5%",
       "actual": null
     },
@@ -1022,7 +1034,7 @@
       "title": "CPI（消费者物价指数） 环比",
       "titleEn": "Italian Prelim CPI m/m",
       "impact": "low",
-      "forecast": "0.1%",
+      "forecast": "0.3%",
       "previous": "0.0%",
       "actual": null
     },
@@ -1070,7 +1082,7 @@
       "title": "芝加哥 PMI",
       "titleEn": "Chicago PMI",
       "impact": "low",
-      "forecast": "57.5",
+      "forecast": "55.9",
       "previous": "56.7",
       "actual": null
     },
@@ -1082,7 +1094,7 @@
       "title": "消费者信心指数",
       "titleEn": "Revised UoM Consumer Sentiment",
       "impact": "medium",
-      "forecast": "54.2",
+      "forecast": "53.9",
       "previous": "54.4",
       "actual": null
     },
