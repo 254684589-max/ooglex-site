@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-27T22:35:04Z",
-  "asOf": "2026-07-27",
+  "updatedAt": "2026-07-28T17:48:55Z",
+  "asOf": "2026-07-28",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-07-26 ~ 2026-07-31",
   "count": 92,
@@ -386,7 +386,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": "-1.7M",
+      "forecast": "0.7M",
       "previous": "2.0M",
       "actual": null
     },
@@ -722,7 +722,7 @@
       "title": "GDP 初值 季环比",
       "titleEn": "Advance GDP q/q",
       "impact": "high",
-      "forecast": "2.0%",
+      "forecast": "2.1%",
       "previous": "2.0%",
       "actual": null
     },
@@ -794,7 +794,7 @@
       "title": "天然气库存",
       "titleEn": "Natural Gas Storage",
       "impact": "low",
-      "forecast": null,
+      "forecast": "37B",
       "previous": "32B",
       "actual": null
     },
