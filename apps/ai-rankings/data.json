@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-29T00:15:40Z",
-  "asOf": "2026-07-29",
+  "updatedAt": "2026-07-30T00:09:57Z",
+  "asOf": "2026-07-30",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -525,19 +525,6 @@
       "price": 10.0
     },
     {
-      "id": "grok-4-20-0309-reasoning",
-      "name": "Grok 4.20.0309 Reasoning",
-      "org": "xAI",
-      "orgCn": "xAI",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1472,
-      "livebench": null,
-      "aa": null,
-      "ctx": "2M",
-      "price": 3.0
-    },
-    {
       "id": "claude-sonnet-4-6",
       "name": "Claude Sonnet 4.6",
       "org": "Anthropic",
@@ -549,6 +536,19 @@
       "aa": null,
       "ctx": "1M",
       "price": 6.0
+    },
+    {
+      "id": "grok-4-20-0309-reasoning",
+      "name": "Grok 4.20.0309 Reasoning",
+      "org": "xAI",
+      "orgCn": "xAI",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1472,
+      "livebench": null,
+      "aa": null,
+      "ctx": "2M",
+      "price": 3.0
     },
     {
       "id": "grok-4-20-multi-agent-0309",
