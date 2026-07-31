@@ -1,6 +1,6 @@
 {
- "updatedAt": "2026-07-24T09:43:47Z",
- "asOf": "2026-07-24",
+ "updatedAt": "2026-07-31T10:30:22Z",
+ "asOf": "2026-07-31",
  "source": "SEC EDGAR 13F-HR · AAII Investor Sentiment Survey",
  "investors": [
   {
@@ -7346,7 +7346,7 @@
    "firm": "Duquesne Family Office",
    "firmZh": "杜肯家族办公室",
    "cik": "0001536411",
-   "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAbFBMVEX///8YHR8oLS8bICL8/Pzz8/T29vZbX2Cpq6zw8PDFxseusLFkZ2lNUFI5PT8eIyWWmJmgoqPIycl9gIEsMDJqbW4kKSqNj5C4urq+v8BCRkfa29twc3RUV1ne399KTk95fH0zODnQ0dGFh4jpUq7fAAABMklEQVQ4jYWT2bKCMBBE6SxAALNcCbKj8v//eAPFKoj91DVzkkoPg+f9Um2DxClobqVMSUZkcA8rtgFE21FKkZZNYutnnXQEVN202CB3AFZwzv1BXOQ2g5LxCjwcYDYHGG97iswul2gHhPuH8YJA3WbCOCDeAx6LFBCwFcg/w7EQoHoFikN8FgCkGm14CniRK9cLEB0BJt0V4gIY5xNfAYWrPwcTO/N3ArQuaXMFiBSQV4D/AtJLQP4C3A2vGThLIQhQDuZbzIoCyQycjHqsm9kcvqZTAqj2AhjGYEdnjhs1nSPvBTCHvih3C/P47Ps9aDB5vWzGpm9AG7EBuu2/5DGhoZKl1DtA5dxnk3yRN0j13GfMYlBX67iIoqgwNgWt2zVNL4lTpihV2WhIo6tj6q/6B4z6Dulyf6IjAAAAAElFTkSuQmCC",
+   "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAJFBMVEVHcEwYHR8YHR8YHR8YHR8YHR8YHR8YHR8YHR8YHR8YHR8YHR9eMrKtAAAAC3RSTlMAoLjTjetRDDZzIIYTFTsAAAQhSURBVHic7ZzbktsgDIbNwQSc93/f2s5uJvrFSRh5Z7arm3Y6DnwWOgFWF+us8T6lsEuM27Y93rJ8/2X/1xiPB9Iu3htjrXW7rLvsf+wDpBC3ZUye82S1PsgxNrNOZNjFpgGIkIybCWGCmOHASDMZbBxAiDMJnqt/iAnag+5Wb63Z/eaQ3R1c1YKM1Bxsflb38rPSC9VMyMoQDB+g27FiyuMbyUIwMxRac+RvsIu/ACCb/2TI6GHt9ogAv3RygGV5+HEloB+aEYAlo8nn2mdK2/jqgXAtdJkTAqRhgOXBbKHnbR4j1CVBg3paOcBIPP8YDaNT26bnAnBLaBPAD0arnLegOzQJ4Hl5OkORRpZ1NgALLQ1LBIDr83OCujcqALBVqPq2BgCzxJppqwBgnbNWHnXdT4oE3qtiBkoAmGPKAU4JAM2gPLAWAC5CMc1aLQCMBqUQRzUwVJEVBDyhFBCtGgDaYSEY6GkA9xwFFehpgNUaeRUoAvRZge14ZlS6HEEToCsgqwJgVrwdoKfoVwUAJ88Ob1QBcA0yZqgL0LEGFGB0c1yU9hroaoDtlG4HwAKZV0bKS4A7Lx6LlDWAwZAnG20APEW7HQAjATMCbRvAjMiKU20ADEVsBm0AdANWd3ttADxcvx0AD+8wH6kDoB+iG6gDoB9iQrwdAP1QHQDTEWYDdYDWebw6AG4RMdrfDoD58PcDYDLAWPwH8Adwuxf8OMD/FwdaFyi3Z8PbkxEC1OuB+RuTn6+IcINerwkVNNCqirX3hnhGwvYFd++M2CuqawAA2AmFNgDGocb2fD4AhgH2wM0nJK0jmrn3BYeAE/DLM20AWAF+a6IMADaYuRZUBoBMkLmyoAATLy5fAoE4c2+lDEDnzylYFwBMIHeBrHZ3fApEgdwjtv3IBWmaoDIArEDHveFkADp4PtcDwIQPmT6kZ2xNABqFCsVOO1KMCz2lLTwE2erq53yfQkuB0kckVg+AKKAYYUADlz7ppEIVUHyzZsEwLEQB5U+p1ACIC1RCPACMf1cMQk9mKs4FANN2JsS4a3qFG5VZZXHoHrR5szkkZAHqOR4AJhUEZNR6eG9dag0JMYBGdEeAGcmAnDm0YivMPyMUJtF4CHA9EsnmZwCXA4FwfjxKvuwGpA7uyK0M4GJNRAJrj0HjSe41KyRVsOt6FQ5wIRgT9XcaU6bdbjQS0AKkV5GsL2U0HUSy+n3qPyTX8jiwCIFmdUEwyfdcJpErbJ7Gcyv5dbZZ7tChj33DxAQlzSpzo3zH4NdQztS6HpcteP5zaSjv6wB+9X1aY75aP4udn+JMMrXp1cljWJjYAm1Em6pHnNv5bCUvv/mpPdfPVdp1PXNy54M8e7rVnY3MR2d/OCWGSCW8W/9fzf/f3f9n+//5PwBY40NnpED5B9Jjv9oG+L4bAAAAAElFTkSuQmCC",
    "imgAlt": "",
    "imgLogo": true,
    "period": "2026-03-31",
@@ -8343,7 +8343,7 @@
    "firm": "Fairholme Capital",
    "firmZh": "费尔霍姆资本",
    "cik": "0001056831",
-   "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAMAAABHPGVmAAAAjVBMVEUhKF3////6+vseJVskK18vNWfu7/MbIliys8P5+fslLGAgJ1wVHFQdJFkRGFEUG1QXH1ZlaYvZ2uHn5+xKT3g7QW6Sla309PaztMTMzdeEh6KKjqno6e10eJibnrR+gZ+8vszR0tuipLg/RXFdYohwdJTBw89TWH41O2taX4NNUnuqrL9iZ4k9Q2+Qkqwnqe7oAAAEmElEQVRoge2Za3OqMBCGCawEQoQI3tCKt2Jt6/H//7yTC9pzWnNRJl867ky/dCBvbvvsuxgEvzEy7woAmIBnjYzlrzXxu5aMnHbhYehVA9jbZlE3ud/9ysgwr9vC96FEx2qPPWsAPZUk8ixC8uWBedbgK5lPc+JZJAu2I+/njicvE//n/lr7Z1dGBr4leET+Gfx7I3KI3vs7cIme6yDlLLZFmvQqP4DHIbJFiM69MATFCqWhLdCI9sEQ0AaJUcyR9sRQVnMRVCWmmDfQ63pFg1iINPkQm6LXOoC9c40UrQqP9YXka37uKBxjj/UF2KcQqbyW/AxKlKZo49Xq4clMnPvSp9UDOkL9c80mkp/FQmZ35Rp04fzCcCOOpHTPNcgwpbkIijM3oYhUiGfJJ3ObFgSMBpPRenk+L9ftmDCa2V+UCOYia0fGMvwxreMr0MrPEaF2EYVg9O6yEsDsfSNIGqZhykNCtWyxLY0VgtHLwCEVgU4SPm76hexQCm2OVlhIBNcux05HL92wKC639bZKEZKlppyYVS4IdjDGbIlU3SmnpyMhQAbjda3+tTVuxAXBDl0Xm6pp1/yoKTcvWRbhIljF8v2d6Ug7BKdWBANdytFmi6D4Sg4I8nElD+nDoNIh2Np1QaHgU30UwX+jkeItFSmwM1CpQ/Cc6U2d1MD7WAxV7en3dCJ5oyqF/upIBKfoHFk83fAgRnoZ/5wv15cUf9PuV4fgUO/tZjWHGtCVIvXNCq18yEp7dRSCDXYoRAmfYTQo9fsObIdmM16PtFwSCDZZuhQtcgJ0Ibd9cLMaEFUr9AYzEwg2+zpezLhXFiKL2xsC7HXXNLtX3ZkA+wglVJK5ztMlx4gUrbiBlTareXmhVFvzBIJD4YYKva/jI2NZ1qbaTDBXyQ7B/I6b8h1PeI7wmTiWtZ9Ri1tjdkOq4qDtgwoXBJ+NbkhcUf7Q9MEPGArBNjckyNPDMnUItrih6CiOZPbnQVsPLLG7Ibnc1M5pXXQITozXBmgrlls/JnFFsNkNQb6QxeDR3epcsNkNkXwpVmIqSkYRRbbY7IYE//hKHv6+KxFs2+1OZKoVMTtvhWDbRojtMj0l6FhoneoFwSvzRoBIJi16gI0bHgtdFlwQbDIzgbrCoTaZgH6KQbQ9wReCTRqd7Uezm9/DhYsQxvVNv+XSAFh/exB1kT+3vgVIsZDU5KSdEBxc/V99YzKks3zaT8wXBFtd8LVz/fEgsL28n7f0u1nk0oLc3uv/IiMSceXgm18m7FhKQ2XwdQLBoUtDCsVaNmMb+FdFeO1SenB98b+6YAfwZVBLlcO+wBfXEBXZWnUNm8zggv9IBC8cGlKecWq8+DwZFgXP8Hw4aGX/k/L+R991XI7z5NSQ0lGoTGB8OK/adrWcV10ndzBoXBF8dCp4QE/xN9PMV8GFm8DYPfFmgMfW8bcHoHvxvPDN8i+VevU7i4weRH4LDhtXxwZ42B7Sf01yvBkF1rdlh3OPPSiG40WyrXjTUpWHpp1gGlhnePcHeAhwjomaW0bFbb7j5bt0Lo3kHZ+hnvGMZzzjGc94hv/4C8JrShPDTFJkAAAAAElFTkSuQmCC",
+   "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAMAAABHPGVmAAAANlBMVEUhKF3////7+/wkK18eJVsTGlIZIVcxN2ju7/OxssNobI6GiaX29/mbnbTT1NxJTnjCw9Dj4+lf8XZfAAADo0lEQVRoge1Z0XakIAxVAqiAiP//sxsITKfdIeB46EPPpC/tWfGShFzudafpL4YcjgCgAUaDaGU8DM4FzC7CWAzQR7BhV2PrBSCVN4NB8Ggt56EHY4Ay5+i+I4gNoxNBkG1032P8Tt+XX+h7mMZXazxxYcjxHPx3Q/bEXZClJ25igHdrK8R2a67wdhFzK8RsbzEETuYsmjHfoyFQewRppOJu0hAEBJnPjY39HkXIZZ2Fm3cldT3kzTx0akmqef3nZuAlGaslDj2QM0FvqSVjr3zwEWTslS8XF0HuzVoj8ijenLUmSOq7W660BHJ0L5BpFH3/ApikyqFlJxCcEWTrPMCApmNajLW7tdYcgH+1FyYKvtB3rY/drw9COzcDqg2S+941iqC1CZFJcYVzjkjVGykbayMFOzGvPX0HtWwiIRTKpl/D0tqhpFHsOVvoBArCevrgT5dhfAPlQcHtamkr6N7xu1nSCT6sTzCIwm3ymYJbeex529hqRdoFj5ZZ0/qdS6WMYrPv9CA+aSf1pXFhUgeVkHtBLwWXQ3geP+YC1JGoj603UfCmeU2H07TOhPHzXaQQ2G0WCpYNTUfcs/6P8UilXq9Shbq2cwFaTE1DUKeM3M66HCJSQ1/G1F3jODuOl6gMdUmXFucjeL4ehtwUpvOJglldhyWSRNSVveKo7Rim1pNCwYERdYukjtQSifVKV0s1D1ouDkbXxZcEvh78Lfk446yqS/R2Q5f1UHBO17+HkPfYuhUT8/Tx9OvlfRSc0n1XMj3UECseqSXXJNMzCFEwr4Yo3RtSuVAw2xLqe3gTAp11hwrONX3X+z64tZGJjXLm7cNFe2yooQTy/gkuKri9FRakobyBuyW+gTBPkfiurs4U3JiyXNQK9eBLIs9b/uptEl+hrtcPgdrYKeiQGXmvYk7K7PU/OoHC+4XAyNGpgrl7MSdSf0dWwU1jksnn1YuafrNbBdffhMU6+US+VDCPMRWKO3/6A9CLb+hgqoI4Oxxf2o6bAzy/LGptT4qeqUWh4CbIRNcWlgUFR1ENUk2WXAN3ci58iMhyG2nOLtld68X44rLqjrGPgr8eJpk5rwGNNRrs7cxOjvWLfRT8hLL+EM3pL7FPrPPtouAnlCNka50kMtlrbzTvrtO3YMF6vW+Pa2mCexbJazBT0wQmh3NFHmh52M2faFrQX6MB7vnicfn7e/ysosveVDzNV1ZfwSlG8lf+k+cTn/jEJz7xiU/0xj+nWyj5/BJ8iAAAAABJRU5ErkJggg==",
    "imgAlt": "",
    "imgLogo": true,
    "period": "2026-03-31",
@@ -11815,7 +11815,7 @@
    "partyZh": "共和党",
    "roleZh": "参议院",
    "stateZh": "阿拉巴马",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Sen._Tommy_Tuberville_%28R-AL%29%2C_Official_Portrait%2C_118th_Congress.jpg/250px-Sen._Tommy_Tuberville_%28R-AL%29%2C_Official_Portrait%2C_118th_Congress.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Tommy_tuberville.jpg/250px-Tommy_tuberville.jpg",
    "bioguide": "T000278",
    "count": 1212,
    "volume": 944000,
@@ -12869,8 +12869,14 @@
   }
  ],
  "aaii": {
-  "asOf": "2026-07-23",
+  "asOf": "2026-07-30",
   "weeks": [
+   {
+    "date": "2026-07-30",
+    "bull": 31.0,
+    "neutral": 26.9,
+    "bear": 42.1
+   },
    {
     "date": "2026-07-23",
     "bull": 29.6,
@@ -12936,12 +12942,6 @@
     "bull": 39.3,
     "neutral": 24.1,
     "bear": 36.6
-   },
-   {
-    "date": "2026-05-07",
-    "bull": 38.3,
-    "neutral": 28.7,
-    "bear": 33.0
    }
   ],
   "avg": {
@@ -12949,7 +12949,7 @@
    "neutral": 31.0,
    "bear": 31.4
   },
-  "spread": -12.7,
+  "spread": -11.1,
   "hi52": {
    "bull": 49.5,
    "date": "2026-01-15"
