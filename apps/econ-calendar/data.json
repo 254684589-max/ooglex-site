@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-30T17:57:03Z",
-  "asOf": "2026-07-30",
+  "updatedAt": "2026-07-31T08:13:13Z",
+  "asOf": "2026-07-31",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-07-26 ~ 2026-07-31",
   "count": 92,
@@ -895,7 +895,19 @@
       "actual": null
     },
     {
-      "ts": "2026-07-31T02:30:00Z",
+      "ts": "2026-07-31T03:11:00Z",
+      "ccy": "JPY",
+      "country": "日本",
+      "flag": "🇯🇵",
+      "title": "BOJ Outlook Report",
+      "titleEn": "BOJ Outlook Report",
+      "impact": "high",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-07-31T03:11:00Z",
       "ccy": "JPY",
       "country": "日本",
       "flag": "🇯🇵",
@@ -907,24 +919,12 @@
       "actual": null
     },
     {
-      "ts": "2026-07-31T02:30:00Z",
+      "ts": "2026-07-31T03:11:00Z",
       "ccy": "JPY",
       "country": "日本",
       "flag": "🇯🇵",
       "title": "货币政策声明",
       "titleEn": "Monetary Policy Statement",
-      "impact": "high",
-      "forecast": null,
-      "previous": null,
-      "actual": null
-    },
-    {
-      "ts": "2026-07-31T02:31:00Z",
-      "ccy": "JPY",
-      "country": "日本",
-      "flag": "🇯🇵",
-      "title": "BOJ Outlook Report",
-      "titleEn": "BOJ Outlook Report",
       "impact": "high",
       "forecast": null,
       "previous": null,
@@ -940,18 +940,6 @@
       "impact": "low",
       "forecast": "12.7%",
       "previous": "33.9%",
-      "actual": null
-    },
-    {
-      "ts": "2026-07-31T05:30:00Z",
-      "ccy": "JPY",
-      "country": "日本",
-      "flag": "🇯🇵",
-      "title": "新闻发布会",
-      "titleEn": "BOJ Press Conference",
-      "impact": "high",
-      "forecast": null,
-      "previous": null,
       "actual": null
     },
     {
@@ -976,6 +964,18 @@
       "impact": "low",
       "forecast": "3.1%",
       "previous": "3.5%",
+      "actual": null
+    },
+    {
+      "ts": "2026-07-31T06:30:00Z",
+      "ccy": "JPY",
+      "country": "日本",
+      "flag": "🇯🇵",
+      "title": "新闻发布会",
+      "titleEn": "BOJ Press Conference",
+      "impact": "high",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
