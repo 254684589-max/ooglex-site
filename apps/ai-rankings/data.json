@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-31T08:13:14Z",
-  "asOf": "2026-07-31",
+  "updatedAt": "2026-08-01T00:17:28Z",
+  "asOf": "2026-08-01",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -54,7 +54,7 @@
       "livebench": null,
       "aa": 59.9,
       "ctx": "1M",
-      "price": 10.0
+      "price": 20.0
     },
     {
       "id": "gpt-5-6-sol",
@@ -80,7 +80,7 @@
       "livebench": 80.8,
       "aa": null,
       "ctx": "1.1M",
-      "price": 5.62
+      "price": 11.25
     },
     {
       "id": "claude-opus-4-8",
@@ -93,7 +93,7 @@
       "livebench": null,
       "aa": 56.5,
       "ctx": "1M",
-      "price": 5.0
+      "price": 10.0
     },
     {
       "id": "kimi-k3",
@@ -145,7 +145,7 @@
       "livebench": 78.0,
       "aa": 56.8,
       "ctx": "1M",
-      "price": 2.25
+      "price": 4.5
     },
     {
       "id": "muse-spark-1-1",
@@ -197,7 +197,7 @@
       "livebench": 75.4,
       "aa": null,
       "ctx": "1M",
-      "price": 1.69
+      "price": 3.38
     },
     {
       "id": "grok-4-1",
@@ -223,7 +223,7 @@
       "livebench": 74.5,
       "aa": null,
       "ctx": "1M",
-      "price": 1.5
+      "price": 3.0
     },
     {
       "id": "qwen3-7",
@@ -392,7 +392,7 @@
       "livebench": 63.8,
       "aa": null,
       "ctx": "1M",
-      "price": 0.42
+      "price": 0.85
     },
     {
       "id": "minimax-m2",
@@ -457,7 +457,7 @@
       "livebench": null,
       "aa": null,
       "ctx": "1M",
-      "price": 5.0
+      "price": 10.0
     },
     {
       "id": "claude-opus-5",
@@ -548,20 +548,20 @@
       "livebench": null,
       "aa": null,
       "ctx": "1.1M",
-      "price": 5.62
+      "price": 11.25
     },
     {
-      "id": "claude-sonnet-4-6",
-      "name": "Claude Sonnet 4.6",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
+      "id": "grok-4-20-0309-reasoning",
+      "name": "Grok 4.20.0309 Reasoning",
+      "org": "xAI",
+      "orgCn": "xAI",
       "flag": "🇺🇸",
       "open": false,
       "arena": 1472,
       "livebench": null,
       "aa": null,
-      "ctx": "1M",
-      "price": 6.0
+      "ctx": "2M",
+      "price": 3.0
     }
   ]
 }
