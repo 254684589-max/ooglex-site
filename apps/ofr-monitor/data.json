@@ -1,14 +1,14 @@
 {
-  "updatedAt": "2026-07-31T08:13:28Z",
-  "asOf": "2026-07-28",
+  "updatedAt": "2026-08-01T00:17:35Z",
+  "asOf": "2026-07-29",
   "source": "U.S. Office of Financial Research (OFR)",
   "fsi": {
-    "value": -2.16,
+    "value": -1.92,
     "change": 0.24,
-    "yearAgo": -2.14,
+    "yearAgo": -2.11,
     "regions": {
-      "us": -1.23,
-      "oae": -0.43,
+      "us": -1.02,
+      "oae": -0.4,
       "em": -0.5
     },
     "categories": [
@@ -18,23 +18,22 @@
       },
       {
         "name": "股票估值",
-        "value": -0.51
+        "value": -0.49
       },
       {
         "name": "融资",
-        "value": -0.14
+        "value": -0.04
       },
       {
         "name": "避险资产",
-        "value": -0.33
+        "value": -0.32
       },
       {
         "name": "波动率",
-        "value": -0.05
+        "value": 0.05
       }
     ],
     "spark": [
-      -2.295,
       -2.259,
       -1.744,
       -1.801,
@@ -293,9 +292,10 @@
       -2.331,
       -2.417,
       -2.4,
-      -2.157
+      -2.157,
+      -1.921
     ],
-    "asOf": "2026-07-28",
+    "asOf": "2026-07-29",
     "url": "https://www.financialresearch.gov/financial-stress-index/"
   },
   "funding": {
