@@ -93,6 +93,19 @@
     }
     #music-toggle:hover { color: var(--ink); border-color: rgba(57,135,229,.5); transform: translateY(-1px); }
     #music-toggle.playing { color: var(--blue); border-color: rgba(57,135,229,.6); box-shadow: 0 0 12px rgba(57,135,229,.3); }
+    #language-toggle {
+      min-height: 36px; padding: 0 15px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.03);
+      color: var(--ink); font: inherit; font-size: 13px; line-height: 1; white-space: nowrap;
+      cursor: pointer; transition: transform .2s, border-color .2s, background .2s;
+    }
+    #language-toggle:hover { border-color: rgba(57,135,229,.55); background: rgba(57,135,229,.08); transform: translateY(-1px); }
+    #language-toggle:focus-visible, #music-toggle:focus-visible {
+      outline: 2px solid var(--blue); outline-offset: 3px;
+    }
+    html[data-lang="en"] .hero .en,
+    html[data-lang="en"] .idx-hd > .en,
+    html[data-lang="en"] .row > .en { display: none; }
 
     /* ── HERO ── */
     .hero { padding: 74px 0 64px; }
@@ -188,6 +201,13 @@
       .row .name { font-size: 17px; }
       .tape .tail { display: none; }
     }
+    @media (max-width: 520px) {
+      nav .container { position: relative; height: auto; min-height: 62px; flex-wrap: wrap; padding-top: 9px; padding-bottom: 9px; }
+      nav .logo { min-height: 36px; }
+      nav .links { flex: 0 0 100%; order: 2; justify-content: flex-end; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+      #language-toggle { position: absolute; top: 9px; right: 28px; padding: 0 8px; font-size: 12.5px; }
+      html[data-lang="en"] .row .name { flex: 1 1 calc(100% - 40px); min-width: 0; overflow-wrap: anywhere; }
+    }
   </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
 </head>
@@ -197,7 +217,7 @@
   <div class="tape" id="tape">
     <span class="live"><i></i>LIVE</span>
     <div class="tape-vp"><div class="tape-track" id="tape-track">
-      <span class="it" id="tape-fallback"><b>OOGLEX</b><span>全球金融数据 · 每日 06:20 自动更新</span></span>
+      <span class="it" id="tape-fallback"><b>OOGLEX</b><span data-i18n="tape.fallback">全球金融数据 · 每日 06:20 自动更新</span></span>
     </div></div>
     <span class="tail" id="tape-tail">OOGLEX.COM</span>
   </div>
@@ -206,11 +226,12 @@
     <div class="container">
       <a class="logo" href="/"><img src="assets/favicon.svg" alt="" width="24" height="24"><span class="brand grad-text">OOGLEX</span></a>
       <div class="links">
-        <a href="#apps">应用</a>
-        <a href="#tools">工具</a>
-        <a href="games/hub/">游戏</a>
-        <a href="#contact">联系</a>
+        <a href="#apps" data-i18n="nav.apps">应用</a>
+        <a href="#tools" data-i18n="nav.tools">工具</a>
+        <a href="games/hub/" data-i18n="nav.games">游戏</a>
+        <a href="#contact" data-i18n="nav.contact">联系</a>
         <button id="music-toggle" type="button" aria-label="播放背景音乐" title="背景音乐 · 点击播放/静音">🔇</button>
+        <button id="language-toggle" type="button" aria-label="Switch to English" title="Switch to English"><span lang="en">English</span> / <span lang="zh-CN">中文</span></button>
       </div>
     </div>
   </nav>
@@ -218,26 +239,26 @@
   <header class="hero">
     <div class="container">
       <div>
-        <div class="over">MARKET INTELLIGENCE — 每日 06:20 自动更新</div>
-        <h1 class="grad-text">全球市场实时数据，<br>更简单、更快、更智能。</h1>
-        <div class="en">Real-time global market data—simpler, faster, and smarter.</div>
-        <p class="sub">机制红绿灯、跨资产行情、恐慌贪婪、经济日历——十余个每日自动更新的数据应用与工具，纯静态、免注册，打开即用。</p>
+        <div class="over" data-i18n="hero.over">MARKET INTELLIGENCE — 每日 06:20 自动更新</div>
+        <h1 class="grad-text" data-i18n-html="hero.title">全球市场实时数据，<br>更简单、更快、更智能。</h1>
+        <div class="en" data-i18n="hero.tagline">Real-time global market data—simpler, faster, and smarter.</div>
+        <p class="sub" data-i18n="hero.description">机制红绿灯、跨资产行情、恐慌贪婪、经济日历——十余个每日自动更新的数据应用与工具，纯静态、免注册，打开即用。</p>
         <div class="ctas">
-          <a class="btn p" href="apps/macro-radar/">进入宏观雷达 →</a>
-          <a class="btn g" href="#apps">浏览全部应用</a>
+          <a class="btn p" href="apps/macro-radar/" data-i18n="hero.primaryCta">进入宏观雷达 →</a>
+          <a class="btn g" href="#apps" data-i18n="hero.secondaryCta">浏览全部应用</a>
         </div>
         <div class="trust">
-          <span><b>16+</b> 数据应用与工具</span>
-          <span><b>2006→今</b> 危机回放</span>
-          <span><b>&lt;1s</b> 纯静态打开</span>
+          <span data-i18n-html="hero.trustApps"><b>16+</b> 数据应用与工具</span>
+          <span data-i18n-html="hero.trustHistory"><b>2006→今</b> 危机回放</span>
+          <span data-i18n-html="hero.trustSpeed"><b>&lt;1s</b> 纯静态打开</span>
         </div>
       </div>
 
       <a class="radar-card" href="apps/macro-radar/" id="radar-card">
-        <span class="hd"><b>宏观雷达 · MACRO RADAR</b><span>REGIME</span></span>
+        <span class="hd"><b data-i18n="radar.title">宏观雷达 · MACRO RADAR</b><span>REGIME</span></span>
         <span class="read">
           <span class="big" id="rc-score">—</span>
-          <span class="lab" id="rc-label">加载中</span>
+          <span class="lab" id="rc-label" data-i18n="radar.loading">加载中</span>
           <span class="date num" id="rc-date"></span>
         </span>
         <svg id="rc-spark" viewBox="0 0 400 92" preserveAspectRatio="none" aria-hidden="true">
@@ -252,62 +273,62 @@
           <line x1="0" y1="46" x2="400" y2="46" stroke="rgba(255,255,255,.06)"/>
         </svg>
         <span class="sigs" id="rc-sigs"></span>
-        <span class="ft"><span>Regime 时光机 · 重放 2006→今 每次危机</span><span class="go">打开 →</span></span>
+        <span class="ft"><span data-i18n="radar.history">Regime 时光机 · 重放 2006→今 每次危机</span><span class="go" data-i18n="radar.open">打开 →</span></span>
       </a>
     </div>
   </header>
 
   <section id="apps">
     <div class="container">
-      <div class="idx-hd"><h2>数据</h2><span class="en">DATA — UPDATED DAILY</span><span class="cnt" id="idx-stamp"></span></div>
+      <div class="idx-hd"><h2 data-i18n="section.data">数据</h2><span class="en">DATA — UPDATED DAILY</span><span class="cnt" id="idx-stamp"></span></div>
       <div class="idx">
         <a class="row" href="apps/macro-radar/">
-          <span class="no">01</span><span class="name"><span class="emoji">📡</span>宏观雷达</span><span class="en">Macro Radar</span><span class="livedot">● LIVE</span>
-          <span class="desc">市场机制红绿灯 · 七大信号加权打分 · 2006→今危机回放时光机</span><span class="arr">→</span>
+          <span class="no">01</span><span class="name" data-i18n-html="item.macro.name"><span class="emoji">📡</span>宏观雷达</span><span class="en">Macro Radar</span><span class="livedot">● LIVE</span>
+          <span class="desc" data-i18n="item.macro.desc">市场机制红绿灯 · 七大信号加权打分 · 2006→今危机回放时光机</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/data-hub/">
-          <span class="no">02</span><span class="name"><span class="emoji">📊</span>数据中心</span><span class="en">Data Hub</span>
-          <span class="desc">全球资产市值榜 · 大类资产收益率 · 富豪榜 · 公司市值 · 恐慌贪婪 · 经济日历，一站聚合</span><span class="arr">→</span>
+          <span class="no">02</span><span class="name" data-i18n-html="item.dataHub.name"><span class="emoji">📊</span>数据中心</span><span class="en">Data Hub</span>
+          <span class="desc" data-i18n="item.dataHub.desc">全球资产市值榜 · 大类资产收益率 · 富豪榜 · 公司市值 · 恐慌贪婪 · 经济日历，一站聚合</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/asset-ranking/">
-          <span class="no">03</span><span class="name"><span class="emoji">🌐</span>全球资产市值榜</span><span class="en">Asset Ranking</span><span class="livedot">● LIVE</span>
-          <span class="desc">不限品类只看市值 · 房产/国债/黄金/货币/公司/加密 同台前 250，每日更新</span><span class="arr">→</span>
+          <span class="no">03</span><span class="name" data-i18n-html="item.assetRanking.name"><span class="emoji">🌐</span>全球资产市值榜</span><span class="en">Asset Ranking</span><span class="livedot">● LIVE</span>
+          <span class="desc" data-i18n="item.assetRanking.desc">不限品类只看市值 · 房产/国债/黄金/货币/公司/加密 同台前 250，每日更新</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/house-prices/">
-          <span class="no">04</span><span class="name"><span class="emoji">🏘️</span>全球房价走势</span><span class="en">House Prices</span><span class="livedot">● LIVE</span>
-          <span class="desc">全球主要国家房价 · 名义/实际同比 · 点击看近 20 年走势，每周更新</span><span class="arr">→</span>
+          <span class="no">04</span><span class="name" data-i18n-html="item.housePrices.name"><span class="emoji">🏘️</span>全球房价走势</span><span class="en">House Prices</span><span class="livedot">● LIVE</span>
+          <span class="desc" data-i18n="item.housePrices.desc">全球主要国家房价 · 名义/实际同比 · 点击看近 20 年走势，每周更新</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/superinvestors/">
-          <span class="no">05</span><span class="name"><span class="emoji">💼</span>超级投资者</span><span class="en">Superinvestors</span>
-          <span class="desc">巴菲特们的 13F 持仓与国会交易披露 · AAII 情绪，每周更新</span><span class="arr">→</span>
+          <span class="no">05</span><span class="name" data-i18n-html="item.superinvestors.name"><span class="emoji">💼</span>超级投资者</span><span class="en">Superinvestors</span>
+          <span class="desc" data-i18n="item.superinvestors.desc">巴菲特们的 13F 持仓与国会交易披露 · AAII 情绪，每周更新</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/whats-latest/">
-          <span class="no">06</span><span class="name"><span class="emoji">📰</span>最新消息</span><span class="en">What's Latest</span>
-          <span class="desc">权威媒体要闻与市场快照，每日多次自动更新</span><span class="arr">→</span>
+          <span class="no">06</span><span class="name" data-i18n-html="item.latest.name"><span class="emoji">📰</span>最新消息</span><span class="en">What's Latest</span>
+          <span class="desc" data-i18n="item.latest.desc">权威媒体要闻与市场快照，每日多次自动更新</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/finance-column/">
-          <span class="no">07</span><span class="name"><span class="emoji">💹</span>金融知识架构</span><span class="en">Finance Column</span>
-          <span class="desc">华尔街知识图谱：8 层级 · 48 模块 · 560+ 中英双语术语</span><span class="arr">→</span>
+          <span class="no">07</span><span class="name" data-i18n-html="item.finance.name"><span class="emoji">💹</span>金融知识架构</span><span class="en">Finance Column</span>
+          <span class="desc" data-i18n="item.finance.desc">华尔街知识图谱：8 层级 · 48 模块 · 560+ 中英双语术语</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/movies/">
-          <span class="no">08</span><span class="name"><span class="emoji">🎬</span>全球电影榜</span><span class="en">Movies</span>
-          <span class="desc">Top 250 与全球新上映，评分海报俱全，每日更新</span><span class="arr">→</span>
+          <span class="no">08</span><span class="name" data-i18n-html="item.movies.name"><span class="emoji">🎬</span>全球电影榜</span><span class="en">Movies</span>
+          <span class="desc" data-i18n="item.movies.desc">Top 250 与全球新上映，评分海报俱全，每日更新</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/ai-rankings/">
-          <span class="no">09</span><span class="name"><span class="emoji">🤖</span>全球大模型评测榜</span><span class="en">AI Rankings</span>
-          <span class="desc">LMArena Elo · LiveBench · 智能指数三榜合一，中外大模型同台，每日更新</span><span class="arr">→</span>
+          <span class="no">09</span><span class="name" data-i18n-html="item.ai.name"><span class="emoji">🤖</span>全球大模型评测榜</span><span class="en">AI Rankings</span>
+          <span class="desc" data-i18n="item.ai.desc">LMArena Elo · LiveBench · 智能指数三榜合一，中外大模型同台，每日更新</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/university-rankings/">
-          <span class="no">10</span><span class="name"><span class="emoji">🎓</span>全球大学排名 300 强</span><span class="en">University Rankings</span>
-          <span class="desc">QS · THE 泰晤士 · ARWU 软科 · U.S. News 四榜合一，按平均位次综合排序（年度权威整理）</span><span class="arr">→</span>
+          <span class="no">10</span><span class="name" data-i18n-html="item.university.name"><span class="emoji">🎓</span>全球大学排名 300 强</span><span class="en">University Rankings</span>
+          <span class="desc" data-i18n="item.university.desc">QS · THE 泰晤士 · ARWU 软科 · U.S. News 四榜合一，按平均位次综合排序（年度权威整理）</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/major-rankings/">
-          <span class="no">11</span><span class="name"><span class="emoji">🚀</span>全球专业与就业前景榜</span><span class="en">Major Rankings</span>
-          <span class="desc">专业薪资 · 就业率 · 毕业起薪 · AI 时代未来 10 年最有前景专业，四榜合一</span><span class="arr">→</span>
+          <span class="no">11</span><span class="name" data-i18n-html="item.majors.name"><span class="emoji">🚀</span>全球专业与就业前景榜</span><span class="en">Major Rankings</span>
+          <span class="desc" data-i18n="item.majors.desc">专业薪资 · 就业率 · 毕业起薪 · AI 时代未来 10 年最有前景专业，四榜合一</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/ofr-monitor/">
-          <span class="no">12</span><span class="name"><span class="emoji">🏛️</span>美国金融风险监测</span><span class="en">OFR Monitor</span><span class="livedot">● LIVE</span>
-          <span class="desc">OFR 五大监测：金融压力指数 · 短期融资 SOFR · 货币基金规模 · 对冲基金 · 银行系统性风险，每日更新</span><span class="arr">→</span>
+          <span class="no">12</span><span class="name" data-i18n-html="item.ofr.name"><span class="emoji">🏛️</span>美国金融风险监测</span><span class="en">OFR Monitor</span><span class="livedot">● LIVE</span>
+          <span class="desc" data-i18n="item.ofr.desc">OFR 五大监测：金融压力指数 · 短期融资 SOFR · 货币基金规模 · 对冲基金 · 银行系统性风险，每日更新</span><span class="arr">→</span>
         </a>
       </div>
     </div>
@@ -315,35 +336,35 @@
 
   <section id="tools">
     <div class="container">
-      <div class="idx-hd"><h2>工具与游戏</h2><span class="en">TOOLS &amp; PLAY</span></div>
+      <div class="idx-hd"><h2 data-i18n="section.tools">工具与游戏</h2><span class="en">TOOLS &amp; PLAY</span></div>
       <div class="idx">
         <a class="row" href="games/hub/">
-          <span class="no">13</span><span class="name"><span class="emoji">🎮</span>游戏中心</span><span class="en">Games</span>
-          <span class="desc">GTA 罪恶都市 · 红警 2 网页版，无需下载，浏览器直接畅玩</span><span class="arr">→</span>
+          <span class="no">13</span><span class="name" data-i18n-html="item.games.name"><span class="emoji">🎮</span>游戏中心</span><span class="en">Games</span>
+          <span class="desc" data-i18n="item.games.desc">GTA 罪恶都市 · 红警 2 网页版，无需下载，浏览器直接畅玩</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/calculators/">
-          <span class="no">14</span><span class="name"><span class="emoji">🧮</span>万象算集</span><span class="en">Calculators</span>
-          <span class="desc">70+ 计算器：房贷 · 复利 · 个税 · BMI · 方程 · 进制，可搜索</span><span class="arr">→</span>
+          <span class="no">14</span><span class="name" data-i18n-html="item.calculators.name"><span class="emoji">🧮</span>万象算集</span><span class="en">Calculators</span>
+          <span class="desc" data-i18n="item.calculators.desc">70+ 计算器：房贷 · 复利 · 个税 · BMI · 方程 · 进制，可搜索</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/radio/">
-          <span class="no">15</span><span class="name"><span class="emoji">🌍</span>环球Music</span><span class="en">Global Music</span>
-          <span class="desc">转动 3D 地球实时收听全球电台 · 可安装到手机</span><span class="arr">→</span>
+          <span class="no">15</span><span class="name" data-i18n-html="item.music.name"><span class="emoji">🌍</span>环球Music</span><span class="en">Global Music</span>
+          <span class="desc" data-i18n="item.music.desc">转动 3D 地球实时收听全球电台 · 可安装到手机</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/tv/">
-          <span class="no">16</span><span class="name"><span class="emoji">📺</span>环球TV</span><span class="en">Global TV</span>
-          <span class="desc">转动 3D 地球实时观看全球电视直播，华语频道直连优先 · 可安装到手机</span><span class="arr">→</span>
+          <span class="no">16</span><span class="name" data-i18n-html="item.tv.name"><span class="emoji">📺</span>环球TV</span><span class="en">Global TV</span>
+          <span class="desc" data-i18n="item.tv.desc">转动 3D 地球实时观看全球电视直播，华语频道直连优先 · 可安装到手机</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/ai-chat/">
-          <span class="no">17</span><span class="name"><span class="emoji">✨</span>万象智聊</span><span class="en">AI Chat</span>
-          <span class="desc">接入 DeepSeek · GLM · Kimi · 通义，多会话 · Markdown · 可安装到手机</span><span class="arr">→</span>
+          <span class="no">17</span><span class="name" data-i18n-html="item.aiChat.name"><span class="emoji">✨</span>万象智聊</span><span class="en">AI Chat</span>
+          <span class="desc" data-i18n="item.aiChat.desc">接入 DeepSeek · GLM · Kimi · 通义，多会话 · Markdown · 可安装到手机</span><span class="arr">→</span>
         </a>
         <a class="row" href="apps/name-fortune/">
-          <span class="no">18</span><span class="name"><span class="emoji">🏮</span>知命阁</span><span class="en">Name Fortune</span>
-          <span class="desc">姓名生辰八字与五行运势解读，水墨画风（仅供娱乐）</span><span class="arr">→</span>
+          <span class="no">18</span><span class="name" data-i18n-html="item.fortune.name"><span class="emoji">🏮</span>知命阁</span><span class="en">Name Fortune</span>
+          <span class="desc" data-i18n="item.fortune.desc">姓名生辰八字与五行运势解读，水墨画风（仅供娱乐）</span><span class="arr">→</span>
         </a>
         <span class="row plain">
-          <span class="no">19</span><span class="name"><span class="emoji">💡</span>你的想法</span><span class="en">Your Idea</span>
-          <span class="desc">有什么想做的，都可以从这里开始</span><span class="arr">·</span>
+          <span class="no">19</span><span class="name" data-i18n-html="item.idea.name"><span class="emoji">💡</span>你的想法</span><span class="en">Your Idea</span>
+          <span class="desc" data-i18n="item.idea.desc">有什么想做的，都可以从这里开始</span><span class="arr">·</span>
         </span>
       </div>
     </div>
@@ -351,7 +372,7 @@
 
   <section id="contact">
     <div class="container">
-      <div class="idx-hd"><h2>联系</h2><span class="en">CONTACT</span></div>
+      <div class="idx-hd"><h2 data-i18n="section.contact">联系</h2><span class="en">CONTACT</span></div>
       <div class="contact">
         <span class="ctag">📧 zlq6600e@outlook.com</span>
         <a class="ctag" href="https://github.com/254684589-max" target="_blank" rel="noopener">💻 github.com/254684589-max</a>
@@ -362,11 +383,146 @@
   <footer>
     <div class="container">
       <span>© 2026 Ooglex</span>
-      <a href="privacy/">隐私政策</a>
-      <a href="https://github.com/254684589-max" target="_blank" rel="noopener">源码 GitHub</a>
-      <span class="r">数据仅供研究，非投资建议</span>
+      <a href="privacy/" data-i18n="footer.privacy">隐私政策</a>
+      <a href="https://github.com/254684589-max" target="_blank" rel="noopener" data-i18n="footer.github">源码 GitHub</a>
+      <span class="r" data-i18n="footer.disclaimer">数据仅供研究，非投资建议</span>
     </div>
   </footer>
+
+  <script>
+  /* 首页中英文切换：默认中文，记住访客选择，不依赖第三方翻译服务。 */
+  (function () {
+    var STORAGE_KEY = "ooglex.language";
+    var EN = {
+      "tape.fallback": "Global financial data · Updated daily at 06:20",
+      "nav.apps": "Apps", "nav.tools": "Tools", "nav.games": "Games", "nav.contact": "Contact",
+      "hero.over": "MARKET INTELLIGENCE — UPDATED DAILY AT 06:20",
+      "hero.title": "Real-time global market data,<br>simpler, faster, smarter.",
+      "hero.tagline": "Real-time global market data—simpler, faster, and smarter.",
+      "hero.description": "Macro regime signals, cross-asset markets, Fear & Greed, and the economic calendar—more than a dozen data apps and tools, updated daily. Static, registration-free, and ready to use.",
+      "hero.primaryCta": "Open Macro Radar →", "hero.secondaryCta": "Browse All Apps",
+      "hero.trustApps": "<b>16+</b> data apps & tools",
+      "hero.trustHistory": "<b>2006→present</b> crisis replay",
+      "hero.trustSpeed": "<b>&lt;1s</b> static page load",
+      "radar.title": "MACRO RADAR", "radar.loading": "Loading",
+      "radar.history": "Regime Time Machine · Replay every crisis since 2006", "radar.open": "Open →",
+      "section.data": "Data", "section.tools": "Tools & Games", "section.contact": "Contact",
+      "item.macro.name": "<span class=\"emoji\">📡</span>Macro Radar",
+      "item.macro.desc": "Market regime traffic light · Seven weighted signals · Replay every crisis since 2006",
+      "item.dataHub.name": "<span class=\"emoji\">📊</span>Data Hub",
+      "item.dataHub.desc": "Global asset market caps · Asset-class returns · Billionaires · Company values · Fear & Greed · Economic calendar, all in one place",
+      "item.assetRanking.name": "<span class=\"emoji\">🌐</span>Global Asset Ranking",
+      "item.assetRanking.desc": "Market cap across categories · Real estate, sovereign debt, gold, currencies, companies and crypto · Top 250, updated daily",
+      "item.housePrices.name": "<span class=\"emoji\">🏘️</span>Global House Prices",
+      "item.housePrices.desc": "Major economies · Nominal and real year-over-year growth · Nearly 20 years of history, updated weekly",
+      "item.superinvestors.name": "<span class=\"emoji\">💼</span>Superinvestors",
+      "item.superinvestors.desc": "13F holdings and congressional trade disclosures from Buffett and peers · AAII sentiment, updated weekly",
+      "item.latest.name": "<span class=\"emoji\">📰</span>What's Latest",
+      "item.latest.desc": "Headlines from trusted media and a market snapshot, updated several times a day",
+      "item.finance.name": "<span class=\"emoji\">💹</span>Finance Knowledge Map",
+      "item.finance.desc": "A Wall Street knowledge graph: 8 levels · 48 modules · 560+ bilingual Chinese-English terms",
+      "item.movies.name": "<span class=\"emoji\">🎬</span>Global Movie Rankings",
+      "item.movies.desc": "Top 250 and new worldwide releases, with ratings and posters, updated daily",
+      "item.ai.name": "<span class=\"emoji\">🤖</span>Global AI Model Rankings",
+      "item.ai.desc": "LMArena Elo · LiveBench · Intelligence Index—three rankings in one, comparing models worldwide, updated daily",
+      "item.university.name": "<span class=\"emoji\">🎓</span>Top 300 Global Universities",
+      "item.university.desc": "QS · THE · ARWU · U.S. News—four rankings combined by average position (annual authoritative compilation)",
+      "item.majors.name": "<span class=\"emoji\">🚀</span>Global Majors & Career Outlook",
+      "item.majors.desc": "Salary · Employment rate · Starting pay · The most promising majors for the next 10 years of AI—four rankings in one",
+      "item.ofr.name": "<span class=\"emoji\">🏛️</span>U.S. Financial Risk Monitor",
+      "item.ofr.desc": "Five OFR monitors: Financial Stress Index · SOFR short-term funding · Money market funds · Hedge funds · Systemic banking risk, updated daily",
+      "item.games.name": "<span class=\"emoji\">🎮</span>Game Center",
+      "item.games.desc": "GTA: Vice City · Red Alert 2 in your browser—no download required",
+      "item.calculators.name": "<span class=\"emoji\">🧮</span>Calculator Collection",
+      "item.calculators.desc": "70+ searchable calculators: mortgages · Compound interest · Taxes · BMI · Equations · Number bases",
+      "item.music.name": "<span class=\"emoji\">🌍</span>Global Music",
+      "item.music.desc": "Spin a 3D globe and tune into radio stations worldwide · Installable on mobile",
+      "item.tv.name": "<span class=\"emoji\">📺</span>Global TV",
+      "item.tv.desc": "Spin a 3D globe and watch live television worldwide · Direct Chinese-language channels prioritized · Installable on mobile",
+      "item.aiChat.name": "<span class=\"emoji\">✨</span>AI Chat",
+      "item.aiChat.desc": "DeepSeek · GLM · Kimi · Qwen · Multiple conversations · Markdown · Installable on mobile",
+      "item.fortune.name": "<span class=\"emoji\">🏮</span>Name Fortune",
+      "item.fortune.desc": "An ink-wash interpretation of names, birth data, the Five Elements, and personal fortune (for entertainment only)",
+      "item.idea.name": "<span class=\"emoji\">💡</span>Your Idea",
+      "item.idea.desc": "Whatever you want to make can start here",
+      "footer.privacy": "Privacy Policy", "footer.github": "Source on GitHub",
+      "footer.disclaimer": "For research only. Not investment advice."
+    };
+    var META_EN = {
+      title: "Ooglex · Real-Time Financial Data · Useful Tools · Browser Games",
+      description: "Ooglex brings together real-time financial data, dozens of useful online tools, and original browser games. Updated daily, with no registration or download required.",
+      ogTitle: "Ooglex · Real-Time Financial Data · Useful Tools · Browser Games",
+      ogDescription: "Real-time financial data, useful online tools, and original browser games—updated daily and ready to use."
+    };
+    var RUNTIME = {
+      zh: {
+        "audio.play": "播放背景音乐", "audio.mute": "静音背景音乐", "audio.title": "背景音乐 · 点击播放/静音",
+        "language.switch": "Switch to English", "radar.loading": "加载中", "radar.openDetails": "打开查看"
+      },
+      en: {
+        "audio.play": "Play background music", "audio.mute": "Mute background music", "audio.title": "Background music · Click to play or mute",
+        "language.switch": "切换至中文", "radar.loading": "Loading", "radar.openDetails": "View details"
+      }
+    };
+    var metaDescription = document.querySelector('meta[name="description"]');
+    var ogTitle = document.querySelector('meta[property="og:title"]');
+    var ogDescription = document.querySelector('meta[property="og:description"]');
+    var META_ZH = {
+      title: document.title,
+      description: metaDescription ? metaDescription.content : "",
+      ogTitle: ogTitle ? ogTitle.content : "",
+      ogDescription: ogDescription ? ogDescription.content : ""
+    };
+    document.querySelectorAll("[data-i18n]").forEach(function (node) { node.__zhText = node.textContent; });
+    document.querySelectorAll("[data-i18n-html]").forEach(function (node) { node.__zhHtml = node.innerHTML; });
+
+    var language = "zh";
+    try { if (localStorage.getItem(STORAGE_KEY) === "en") language = "en"; } catch (e) {}
+
+    function t(key) { return (RUNTIME[language] && RUNTIME[language][key]) || key; }
+    function applyLanguage(next, announce) {
+      language = next === "en" ? "en" : "zh";
+      document.documentElement.lang = language === "en" ? "en" : "zh-CN";
+      document.documentElement.dataset.lang = language;
+      document.querySelectorAll("[data-i18n]").forEach(function (node) {
+        node.textContent = language === "en" && EN[node.dataset.i18n] != null ? EN[node.dataset.i18n] : node.__zhText;
+      });
+      document.querySelectorAll("[data-i18n-html]").forEach(function (node) {
+        node.innerHTML = language === "en" && EN[node.dataset.i18nHtml] != null ? EN[node.dataset.i18nHtml] : node.__zhHtml;
+      });
+      var meta = language === "en" ? META_EN : META_ZH;
+      document.title = meta.title;
+      if (metaDescription) metaDescription.content = meta.description;
+      if (ogTitle) ogTitle.content = meta.ogTitle;
+      if (ogDescription) ogDescription.content = meta.ogDescription;
+      var languageButton = document.getElementById("language-toggle");
+      if (languageButton) {
+        languageButton.setAttribute("aria-label", t("language.switch"));
+        languageButton.title = t("language.switch");
+      }
+      var musicButton = document.getElementById("music-toggle");
+      if (musicButton) {
+        musicButton.setAttribute("aria-label", t(musicButton.classList.contains("playing") ? "audio.mute" : "audio.play"));
+        musicButton.title = t("audio.title");
+      }
+      if (announce) document.dispatchEvent(new CustomEvent("ooglex:languagechange", { detail: { language: language } }));
+    }
+
+    window.OoglexI18n = {
+      getLanguage: function () { return language; },
+      t: t,
+      setLanguage: function (next) {
+        try { localStorage.setItem(STORAGE_KEY, next === "en" ? "en" : "zh"); } catch (e) {}
+        applyLanguage(next, true);
+      }
+    };
+    applyLanguage(language, false);
+    var toggle = document.getElementById("language-toggle");
+    if (toggle) toggle.addEventListener("click", function () {
+      window.OoglexI18n.setLanguage(language === "zh" ? "en" : "zh");
+    });
+  })();
+  </script>
 
   <script>
   /* 实时行情带 + 宏观雷达预览卡：吃站内各应用每日构建的 data.json，全静态无后端。 */
@@ -384,13 +540,15 @@
       var cls = p >= 0 ? "u" : "d";
       return "<span class='" + cls + " num'>" + (p >= 0 ? "+" : "") + p.toFixed(2) + "%</span>";
     }
+    function isEnglish() { return window.OoglexI18n && window.OoglexI18n.getLanguage() === "en"; }
+    function choose(zh, en) { return isEnglish() ? en : zh; }
     function bucket(x) {
-      if (!isNum(x)) return { zh: "—", col: "#8a97a6" };
-      if (x < 35) return { zh: "收紧 · 风险", col: "#e0554f" };
-      if (x < 48) return { zh: "中性偏紧", col: "#e0834a" };
-      if (x < 58) return { zh: "中性", col: "#e0a750" };
-      if (x < 68) return { zh: "中性偏松", col: "#7cba63" };
-      return { zh: "宽松 · 支持", col: "#3fae7d" };
+      if (!isNum(x)) return { zh: "—", en: "—", col: "#8a97a6" };
+      if (x < 35) return { zh: "收紧 · 风险", en: "TIGHT · RISK", col: "#e0554f" };
+      if (x < 48) return { zh: "中性偏紧", en: "NEUTRAL-TIGHT", col: "#e0834a" };
+      if (x < 58) return { zh: "中性", en: "NEUTRAL", col: "#e0a750" };
+      if (x < 68) return { zh: "中性偏松", en: "NEUTRAL-EASY", col: "#7cba63" };
+      return { zh: "宽松 · 支持", en: "EASY · SUPPORT", col: "#3fae7d" };
     }
     function sigCol(s) { return !isNum(s) ? "#8a97a6" : (s < 40 ? "#e0554f" : (s <= 60 ? "#e0a750" : "#3fae7d")); }
     function getJSON(url) {
@@ -399,8 +557,17 @@
 
     var track = document.getElementById("tape-track");
     var tail = document.getElementById("tape-tail");
-    var items = [];   // {order, html}
-    function renderTape() {
+    var assetData = null, fearData = null, macroData = null, macroFailed = false;
+    var ASSET_ORDER = { "标普500": 1, "日经225": 2, "恒生指数": 3, "沪深300": 4, "德国DAX": 5,
+                        "COMEX黄金": 6, "NYMEX WTI原油": 7, "ICE布油": 8, "美元指数": 9 };
+    var ASSET_ZH = { "NYMEX WTI原油": "WTI原油", "COMEX黄金": "黄金", "ICE布油": "布伦特" };
+    var ASSET_EN = { "标普500": "S&P 500", "日经225": "Nikkei 225", "恒生指数": "Hang Seng", "沪深300": "CSI 300",
+                     "德国DAX": "DAX", "COMEX黄金": "Gold", "NYMEX WTI原油": "WTI Crude", "ICE布油": "Brent", "美元指数": "U.S. Dollar Index" };
+    var FEAR_EN = { "extreme fear": "Extreme Fear", fear: "Fear", neutral: "Neutral", greed: "Greed", "extreme greed": "Extreme Greed" };
+    var SIGSHORT_ZH = { liquidity: "流动性", volatility: "波动率", term: "期限", realrate: "实际利率", credit: "信用", growth: "增长", usd: "美元", breadth: "广度" };
+    var SIGSHORT_EN = { liquidity: "Liquidity", volatility: "Volatility", term: "Term", realrate: "Real rate", credit: "Credit", growth: "Growth", usd: "USD", breadth: "Breadth" };
+
+    function renderTape(items) {
       if (!items.length) return;
       items.sort(function (a, b) { return a.order - b.order; });
       var seq = items.map(function (it) { return "<span class='it'>" + it.html + "</span>"; }).join("");
@@ -412,55 +579,63 @@
       });
     }
 
-    /* 行情：大类资产 */
-    getJSON("apps/asset-tracker/data.json").then(function (d) {
-      var want = { "标普500": 1, "日经225": 2, "恒生指数": 3, "沪深300": 4, "德国DAX": 5,
-                   "COMEX黄金": 6, "NYMEX WTI原油": 7, "ICE布油": 8, "美元指数": 9 };
-      var zh = { "NYMEX WTI原油": "WTI原油", "COMEX黄金": "黄金", "ICE布油": "布伦特" };
-      (d.assets || []).forEach(function (a) {
-        var o = want[a.name];
-        if (!o || !isNum(a.price)) return;
-        var d1 = (a.returns || {}).d1;
-        items.push({ order: o, html: "<b>" + esc(zh[a.name] || a.name) + "</b><span class='num'>" + fmtPx(a.price) + "</span>" + pctSpan(d1) });
-      });
-      // BDI 波罗的海干散货指数（真实点位，来源 CNBC .BADI）
-      if (d.bdi && isNum(d.bdi.price)) {
-        items.push({ order: 10, html: "<b>BDI</b><span class='num'>" + fmtPx(d.bdi.price) + "</span>" + pctSpan(d.bdi.changePct) });
-      }
-      if (d.asOf && tail) tail.textContent = "UPDATED " + d.asOf;
-      renderTape();
-    }).catch(function () {});
-
-    /* 恐慌贪婪 */
-    getJSON("apps/fear-greed/data.json").then(function (d) {
-      if (!isNum(d.score)) return;
-      var col = d.score < 45 ? "#e0554f" : (d.score <= 55 ? "#e0a750" : "#3fae7d");
-      items.push({ order: 11, html: "<b>恐慌贪婪</b><span class='num' style='color:" + col + "'>" + d.score + "</span><span style='color:" + col + "'>" + esc(d.ratingZh || "") + "</span>" });
-      renderTape();
-    }).catch(function () {});
-
-    /* 宏观雷达：行情带一格 + 预览卡 */
-    getJSON("apps/macro-radar/data.json").then(function (d) {
+    function renderRadar(d) {
       var sc = (d.regime || {}).score, b = bucket(sc);
-      items.push({ order: 12, html: "<b>宏观机制</b><span class='num' style='color:" + b.col + "'>" + (isNum(sc) ? sc : "—") + "</span><span style='color:" + b.col + "'>" + esc((d.regime || {}).labelZh || b.zh) + "</span>" });
-      renderTape();
-
       document.getElementById("rc-score").textContent = isNum(sc) ? sc : "—";
       document.getElementById("rc-score").style.color = b.col;
       var lb = document.getElementById("rc-label");
-      lb.textContent = (d.regime || {}).labelZh || b.zh; lb.style.color = b.col;
+      lb.textContent = choose((d.regime || {}).labelZh || b.zh, (d.regime || {}).labelEn || b.en); lb.style.color = b.col;
       document.getElementById("rc-date").textContent = d.asOf || "";
-      var SIGSHORT = { liquidity: "流动性", volatility: "波动率", term: "期限", realrate: "实际利率", credit: "信用", growth: "增长", usd: "美元", breadth: "广度" };
       var sigs = document.getElementById("rc-sigs");
+      sigs.innerHTML = "";
       (d.signals || []).slice(0, 8).forEach(function (s) {
         var c = sigCol(s.score);
-        var nm = SIGSHORT[s.key] || (s.zh || "").slice(0, 3);
+        var nm = isEnglish() ? (SIGSHORT_EN[s.key] || s.en || "") : (SIGSHORT_ZH[s.key] || (s.zh || "").slice(0, 3));
         var box = el("span", "sig", "<span class='n'>" + esc(nm) + "</span><span class='v' style='color:" + c + "'>" + (isNum(s.score) ? s.score : "—") + "</span>");
         sigs.appendChild(box);
       });
-    }).catch(function () {
-      document.getElementById("rc-label").textContent = "打开查看";
-    });
+    }
+
+    function renderLocalizedData() {
+      var items = [];
+      if (assetData) {
+        (assetData.assets || []).forEach(function (a) {
+          var order = ASSET_ORDER[a.name];
+          if (!order || !isNum(a.price)) return;
+          var name = isEnglish() ? (ASSET_EN[a.name] || a.name) : (ASSET_ZH[a.name] || a.name);
+          items.push({ order: order, html: "<b>" + esc(name) + "</b><span class='num'>" + fmtPx(a.price) + "</span>" + pctSpan((a.returns || {}).d1) });
+        });
+        if (assetData.bdi && isNum(assetData.bdi.price)) {
+          items.push({ order: 10, html: "<b>BDI</b><span class='num'>" + fmtPx(assetData.bdi.price) + "</span>" + pctSpan(assetData.bdi.changePct) });
+        }
+        if (assetData.asOf && tail) tail.textContent = "UPDATED " + assetData.asOf;
+      }
+      if (fearData && isNum(fearData.score)) {
+        var fearCol = fearData.score < 45 ? "#e0554f" : (fearData.score <= 55 ? "#e0a750" : "#3fae7d");
+        var ratingEn = FEAR_EN[String(fearData.rating || "").toLowerCase()] || fearData.rating || "";
+        items.push({ order: 11, html: "<b>" + choose("恐慌贪婪", "Fear & Greed") + "</b><span class='num' style='color:" + fearCol + "'>" + fearData.score + "</span><span style='color:" + fearCol + "'>" + esc(choose(fearData.ratingZh || "", ratingEn)) + "</span>" });
+      }
+      if (macroData) {
+        var score = (macroData.regime || {}).score, regime = bucket(score);
+        var regimeLabel = choose((macroData.regime || {}).labelZh || regime.zh, (macroData.regime || {}).labelEn || regime.en);
+        items.push({ order: 12, html: "<b>" + choose("宏观机制", "Macro Regime") + "</b><span class='num' style='color:" + regime.col + "'>" + (isNum(score) ? score : "—") + "</span><span style='color:" + regime.col + "'>" + esc(regimeLabel) + "</span>" });
+        renderRadar(macroData);
+      } else if (macroFailed) {
+        document.getElementById("rc-label").textContent = window.OoglexI18n ? window.OoglexI18n.t("radar.openDetails") : "打开查看";
+      }
+      renderTape(items);
+    }
+
+    /* 行情：大类资产 */
+    getJSON("apps/asset-tracker/data.json").then(function (d) { assetData = d; renderLocalizedData(); }).catch(function () {});
+
+    /* 恐慌贪婪 */
+    getJSON("apps/fear-greed/data.json").then(function (d) { fearData = d; renderLocalizedData(); }).catch(function () {});
+
+    /* 宏观雷达：行情带一格 + 预览卡 */
+    getJSON("apps/macro-radar/data.json").then(function (d) { macroData = d; renderLocalizedData(); }).catch(function () { macroFailed = true; renderLocalizedData(); });
+
+    document.addEventListener("ooglex:languagechange", renderLocalizedData);
 
     /* 雷达卡迷你走势：history.json 最近 3 年 */
     getJSON("apps/macro-radar/history.json").then(function (h) {
@@ -505,6 +680,7 @@
     var btn = document.getElementById('music-toggle');
     if (!btn || !(window.AudioContext || window.webkitAudioContext)) { if (btn) btn.style.display = 'none'; return; }
     var ctx, master, padGain, bellIn, started = false, playing = false, bellTimer;
+    function audioText(key, fallback) { return window.OoglexI18n ? window.OoglexI18n.t(key) : fallback; }
     var PAD = [110, 164.81, 220, 277.18, 329.63];            // A2 E3 A3 C#4 E4 —— 温暖的 A 大调铺底
     var SHIMMER = [440, 554.37, 659.25, 880, 1108.73];       // A4 C#5 E5 A5 C#6 —— 五声点缀
     function build() {
@@ -548,7 +724,7 @@
       master.gain.cancelScheduledValues(ctx.currentTime);
       master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
       master.gain.linearRampToValueAtTime(0.14, ctx.currentTime + 2.5);
-      btn.textContent = '🔊'; btn.classList.add('playing'); btn.setAttribute('aria-label', '静音背景音乐');
+      btn.textContent = '🔊'; btn.classList.add('playing'); btn.setAttribute('aria-label', audioText('audio.mute', '静音背景音乐'));
       bellTimer = setTimeout(shimmer, 3500);
     }
     function mute() {
@@ -557,7 +733,7 @@
       master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
       master.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.2);
       setTimeout(function () { if (!playing && ctx) ctx.suspend(); }, 1400);
-      btn.textContent = '🔇'; btn.classList.remove('playing'); btn.setAttribute('aria-label', '播放背景音乐');
+      btn.textContent = '🔇'; btn.classList.remove('playing'); btn.setAttribute('aria-label', audioText('audio.play', '播放背景音乐'));
     }
     btn.addEventListener('click', function () { playing ? mute() : play(); });
   })();
