@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-08-01T23:50:13Z",
-  "asOf": "2026-08-01",
+  "updatedAt": "2026-08-02T23:47:44Z",
+  "asOf": "2026-08-02",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -525,19 +525,6 @@
       "price": null
     },
     {
-      "id": "claude-opus-4-5-20251101-32k",
-      "name": "Claude Opus 4.5.20251101 32K",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1473,
-      "livebench": null,
-      "aa": null,
-      "ctx": "200K",
-      "price": 10.0
-    },
-    {
       "id": "gpt-5-5-instant",
       "name": "GPT 5.5 Instant",
       "org": "OpenAI",
@@ -551,17 +538,30 @@
       "price": 11.25
     },
     {
-      "id": "grok-4-20-0309-reasoning",
-      "name": "Grok 4.20.0309 Reasoning",
-      "org": "xAI",
-      "orgCn": "xAI",
+      "id": "claude-opus-4-5-20251101-32k",
+      "name": "Claude Opus 4.5.20251101 32K",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1473,
+      "livebench": null,
+      "aa": null,
+      "ctx": "200K",
+      "price": 10.0
+    },
+    {
+      "id": "claude-sonnet-4-6",
+      "name": "Claude Sonnet 4.6",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
       "flag": "🇺🇸",
       "open": false,
       "arena": 1472,
       "livebench": null,
       "aa": null,
-      "ctx": "2M",
-      "price": 3.0
+      "ctx": "1M",
+      "price": 6.0
     }
   ]
 }
