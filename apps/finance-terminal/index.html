@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ooglex金融终端 · 全球市场总览（演示）</title>
+  <meta name="description" content="Ooglex金融终端全球市场总览MVP：以明确标注的演示数据展示美国股指、国债收益率、美元、黄金、原油与比特币。">
+  <link rel="canonical" href="https://www.ooglex.com/apps/finance-terminal/">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+  <meta name="theme-color" content="#070a0f">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Ooglex金融终端 · 全球市场总览（演示）">
+  <meta property="og:description" content="专业、简洁的全球市场总览MVP。当前全部数值均为演示数据。">
+  <meta property="og:url" content="https://www.ooglex.com/apps/finance-terminal/">
+  <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070a0f;
+      --panel: #0c1119;
+      --panel-strong: #101722;
+      --line: rgba(151, 169, 196, 0.15);
+      --line-strong: rgba(151, 169, 196, 0.28);
+      --ink: #f1f5f9;
+      --muted: #8c98aa;
+      --faint: #566273;
+      --cyan: #54d8ff;
+      --cyan-soft: rgba(84, 216, 255, 0.12);
+      --amber: #f2bd5c;
+      --amber-soft: rgba(242, 189, 92, 0.12);
+      --up: #52d69a;
+      --up-soft: rgba(82, 214, 154, 0.10);
+      --down: #ff7d86;
+      --down-soft: rgba(255, 125, 134, 0.10);
+      --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+      --sans: Inter, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--bg); }
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 480px at 88% -10%, rgba(84, 216, 255, 0.08), transparent 64%),
+        radial-gradient(760px 520px at -8% 110%, rgba(89, 104, 255, 0.07), transparent 64%),
+        var(--bg);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+    }
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      content: "";
+      pointer-events: none;
+      opacity: 0.16;
+      background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to bottom, black, transparent 78%);
+    }
+    a { color: inherit; text-decoration: none; }
+    .shell { width: min(1440px, 100%); margin: 0 auto; padding: 0 28px 48px; }
+
+    .terminal-bar {
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      border-bottom: 1px solid var(--line);
+      font-family: var(--mono);
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+    }
+    .brand-mark {
+      display: grid;
+      width: 24px;
+      height: 24px;
+      place-items: center;
+      border: 1px solid rgba(84, 216, 255, 0.55);
+      border-radius: 5px;
+      background: var(--cyan-soft);
+      color: var(--cyan);
+      font-size: 12px;
+      box-shadow: inset 0 0 18px rgba(84, 216, 255, 0.08);
+    }
+    .desk-code { color: var(--faint); font-size: 11px; letter-spacing: 0.12em; }
+    .bar-spacer { flex: 1; }
+    .market-state {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--amber);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+    }
+    .market-state::before {
+      width: 6px;
+      height: 6px;
+      content: "";
+      border-radius: 50%;
+      background: var(--amber);
+      box-shadow: 0 0 10px rgba(242, 189, 92, 0.8);
+    }
+    .back-link {
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      transition: border-color 160ms ease, color 160ms ease;
+    }
+    .back-link:hover { border-color: var(--line-strong); color: var(--ink); }
+    .back-link:focus-visible, .asset-card:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    .demo-banner {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 14px;
+      align-items: center;
+      margin: 18px 0 0;
+      padding: 11px 14px;
+      border: 1px solid rgba(242, 189, 92, 0.34);
+      border-radius: 8px;
+      background: linear-gradient(90deg, var(--amber-soft), rgba(242, 189, 92, 0.04));
+      color: #f7d896;
+      font-size: 13px;
+    }
+    .demo-label {
+      padding: 4px 7px;
+      border-radius: 4px;
+      background: var(--amber);
+      color: #18130a;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+    }
+    .demo-banner strong { color: #ffe8b6; }
+    .demo-note { color: rgba(247, 216, 150, 0.7); font-family: var(--mono); font-size: 10px; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(420px, 0.8fr);
+      gap: 56px;
+      align-items: end;
+      padding: 56px 0 34px;
+    }
+    .eyebrow {
+      margin: 0 0 13px;
+      color: var(--cyan);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 64px);
+      line-height: 0.98;
+      letter-spacing: -0.045em;
+      text-wrap: balance;
+    }
+    .hero-copy {
+      max-width: 680px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      border-top: 1px solid var(--line-strong);
+      border-left: 1px solid var(--line);
+    }
+    .meta-item {
+      min-height: 70px;
+      padding: 13px 15px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: rgba(12, 17, 25, 0.64);
+    }
+    .meta-key {
+      display: block;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .meta-value {
+      display: block;
+      overflow: hidden;
+      margin-top: 7px;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 12px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .meta-value.demo { color: var(--amber); }
+
+    .board-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 15px 0 11px;
+      border-bottom: 1px solid var(--line-strong);
+    }
+    .board-title { margin: 0; font-size: 15px; letter-spacing: 0.08em; }
+    .board-subtitle { color: var(--faint); font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; }
+
+    .market-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-left: 1px solid var(--line);
+    }
+    .asset-card {
+      position: relative;
+      min-width: 0;
+      min-height: 230px;
+      padding: 19px 19px 16px;
+      overflow: hidden;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(150deg, rgba(16, 23, 34, 0.94), rgba(10, 15, 23, 0.88));
+      transition: background 160ms ease, transform 160ms ease;
+    }
+    .asset-card:hover {
+      z-index: 1;
+      background: linear-gradient(150deg, rgba(20, 29, 43, 0.98), rgba(11, 17, 26, 0.96));
+      transform: translateY(-2px);
+    }
+    .asset-card::after {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      content: "";
+      background: var(--faint);
+      opacity: 0.45;
+    }
+    .asset-card.positive::after { background: var(--up); }
+    .asset-card.negative::after { background: var(--down); }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .asset-name { margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.02em; }
+    .asset-en { display: block; margin-top: 3px; color: var(--faint); font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; }
+    .asset-symbol {
+      padding: 4px 6px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      color: var(--cyan);
+      background: var(--cyan-soft);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+    .asset-price {
+      margin-top: 28px;
+      overflow: hidden;
+      font-family: var(--mono);
+      font-size: clamp(25px, 2.3vw, 34px);
+      font-weight: 650;
+      letter-spacing: -0.055em;
+      font-variant-numeric: tabular-nums;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .change-row { display: flex; align-items: baseline; gap: 8px; margin-top: 8px; }
+    .asset-change {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .positive .asset-change { color: var(--up); }
+    .negative .asset-change { color: var(--down); }
+    .change-word { color: var(--faint); font-size: 10px; }
+    .sparkline { display: block; width: 100%; height: 42px; margin: 14px 0 12px; overflow: visible; }
+    .sparkline .base { stroke: var(--line); stroke-width: 1; }
+    .sparkline .line { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+    .positive .sparkline .line { stroke: var(--up); }
+    .negative .sparkline .line { stroke: var(--down); }
+    .asset-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.04em;
+    }
+    .asset-footer time { white-space: nowrap; }
+    .demo-chip { color: var(--amber); font-weight: 800; letter-spacing: 0.1em; }
+
+    .skeleton { min-height: 230px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--panel); }
+    .load-error {
+      grid-column: 1 / -1;
+      padding: 28px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: var(--down-soft);
+      color: #ffc2c7;
+      line-height: 1.7;
+    }
+
+    .method {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 28px;
+      margin-top: 24px;
+      padding: 22px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .method h2 { margin: 0; color: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: 0.13em; }
+    .method p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.8; }
+    .method strong { color: var(--ink); }
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 20px 0 0;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 1040px) {
+      .hero { grid-template-columns: 1fr; gap: 30px; }
+      .meta-grid { max-width: 720px; }
+      .market-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .asset-price { font-size: 32px; }
+    }
+    @media (max-width: 620px) {
+      .shell { padding: 0 16px 34px; }
+      .terminal-bar { gap: 11px; }
+      .desk-code, .market-state { display: none; }
+      .back-link { margin-left: auto; }
+      .demo-banner { grid-template-columns: auto 1fr; }
+      .demo-note { grid-column: 1 / -1; padding-left: 1px; }
+      .hero { padding: 38px 0 26px; }
+      h1 { font-size: clamp(36px, 12vw, 48px); }
+      .hero-copy { font-size: 14px; }
+      .meta-grid { grid-template-columns: 1fr; }
+      .meta-item { min-height: 58px; }
+      .board-heading { align-items: flex-start; flex-direction: column; }
+      .market-grid { grid-template-columns: 1fr; }
+      .asset-card { min-height: 214px; }
+      .asset-price { font-size: 34px; }
+      .method { grid-template-columns: 1fr; gap: 10px; }
+      footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+      .asset-card:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="terminal-bar">
+      <a class="brand" href="../../" aria-label="返回Ooglex首页">
+        <span class="brand-mark" aria-hidden="true">OX</span>
+        <span>OOGLEX</span>
+      </a>
+      <span class="desk-code">FT / MARKET OVERVIEW</span>
+      <span class="bar-spacer"></span>
+      <span class="market-state">DEMO MODE</span>
+      <a class="back-link" href="../../">返回主页</a>
+    </header>
+
+    <div class="demo-banner" role="status" aria-live="polite">
+      <span class="demo-label">DEMO</span>
+      <span><strong>当前为演示数据</strong>，全部价格与涨跌幅仅用于页面设计测试，不代表真实市场行情。</span>
+      <span class="demo-note">NO LIVE FEED · NOT FOR TRADING</span>
+    </div>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Ooglex Finance Terminal · MVP 01</p>
+          <h1 id="page-title">全球市场总览</h1>
+          <p class="hero-copy">用一张清晰的市场面板观察美国股指、利率、美元、黄金、原油与比特币。第一版只验证终端的信息结构、视觉系统与跨设备体验。</p>
+        </div>
+        <div class="meta-grid" aria-label="数据说明">
+          <div class="meta-item"><span class="meta-key">Data status</span><span class="meta-value demo" id="data-status">演示模式</span></div>
+          <div class="meta-item"><span class="meta-key">Updated</span><time class="meta-value" id="page-updated">加载中</time></div>
+          <div class="meta-item"><span class="meta-key">Source</span><span class="meta-value" id="page-source">Ooglex演示数据</span></div>
+          <div class="meta-item"><span class="meta-key">Coverage</span><span class="meta-value" id="asset-count">8项全球核心资产</span></div>
+        </div>
+      </section>
+
+      <section aria-labelledby="market-heading">
+        <div class="board-heading">
+          <h2 class="board-title" id="market-heading">核心资产</h2>
+          <span class="board-subtitle">PRICE · CHANGE · UPDATED TIME</span>
+        </div>
+        <div class="market-grid" id="market-grid" aria-live="polite" aria-busy="true">
+          <div class="skeleton" aria-hidden="true"></div><div class="skeleton" aria-hidden="true"></div>
+          <div class="skeleton" aria-hidden="true"></div><div class="skeleton" aria-hidden="true"></div>
+          <div class="skeleton" aria-hidden="true"></div><div class="skeleton" aria-hidden="true"></div>
+          <div class="skeleton" aria-hidden="true"></div><div class="skeleton" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="method" aria-labelledby="method-title">
+        <h2 id="method-title">数据说明 / METHODOLOGY</h2>
+        <p><strong>本页暂未连接任何真实API。</strong> 数据文件包含机器可识别的 <code>demo: true</code> 标记，页面首屏及每张资产卡片均显示演示状态。后续接入真实数据时，必须继续标明数据来源、实际对应时间、更新频率与延迟情况。</p>
+      </section>
+    </main>
+
+    <footer>
+      <span>Ooglex Finance Terminal · Prototype</span>
+      <span>仅供产品测试 · 非投资建议</span>
+    </footer>
+  </div>
+
+  <noscript><div class="load-error">此页面需要启用JavaScript才能读取演示数据。</div></noscript>
+  <script src="app.js"></script>
+</body>
+</html>
