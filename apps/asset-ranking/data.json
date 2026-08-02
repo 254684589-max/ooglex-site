@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-08-01T08:57:17Z",
-  "asOf": "2026-08-01",
+  "updatedAt": "2026-08-02T07:56:15Z",
+  "asOf": "2026-08-02",
   "source": "Yahoo Finance · CoinGecko · 公开估算（世界黄金协会 / IMF / Savills 等）",
   "count": 250,
-  "totalMarketCap": 1087806.7,
+  "totalMarketCap": 1087818.6,
   "categories": [
     {
       "key": "real-estate",
@@ -106,7 +106,7 @@
       "note": "全球石油探明储量 × WTI 油价（储量约 1.73 万亿桶，价格实时）",
       "marketCap": 146479.1,
       "price": 84.67,
-      "changePct": 2.49,
+      "changePct": 6.83,
       "static": false,
       "stale": false,
       "rank": 3
@@ -166,7 +166,7 @@
       "note": "全球地面黄金存量 × 金价（约 6.72 亿盎司/21.6 万吨，来源世界黄金协会，价格实时）",
       "marketCap": 27599.0,
       "price": 4107.0,
-      "changePct": 0.8,
+      "changePct": 1.75,
       "static": false,
       "stale": false,
       "rank": 7
@@ -211,7 +211,7 @@
       "note": "全球铝储量 × 期货铝价（以 LME/COMEX 期货代理，价格实时）",
       "marketCap": 19512.7,
       "price": 3364.25,
-      "changePct": -5.02,
+      "changePct": -3.63,
       "static": false,
       "stale": false,
       "rank": 10
@@ -241,7 +241,7 @@
       "note": "全球铜储量 × COMEX 铜价（储量约 13 亿吨，价格实时）",
       "marketCap": 18491.3,
       "price": 6.4655,
-      "changePct": 2.0,
+      "changePct": 2.27,
       "static": false,
       "stale": false,
       "rank": 12
@@ -371,7 +371,7 @@
       "note": "全球地面白银存量 × 银价（约 500 亿盎司，价格实时）",
       "marketCap": 2889.3,
       "price": 57.786,
-      "changePct": -1.17,
+      "changePct": 0.86,
       "static": false,
       "stale": false,
       "rank": 20
@@ -467,16 +467,16 @@
       "category": "crypto",
       "emoji": "₿",
       "symbol": "BTC",
-      "marketCap": 1265.5,
-      "price": 63073,
-      "changePct": -1.8,
+      "marketCap": 1273.0,
+      "price": 63443,
+      "changePct": 0.7,
       "rank": 26
     },
     {
       "name": "三星电子",
       "nameEn": "Samsung Electronics",
       "category": "company",
-      "marketCap": 1214.1,
+      "marketCap": 1218.8,
       "price": 262500.0,
       "priceCur": "KRW",
       "changePct": 5.21,
@@ -714,10 +714,10 @@
       "name": "腾讯",
       "nameEn": "Tencent Holdings",
       "category": "company",
-      "marketCap": 554.6,
-      "price": 61.44,
+      "marketCap": 554.5,
+      "price": 61.43,
       "priceCur": "USD",
-      "changePct": 10.54,
+      "changePct": 10.53,
       "country": "中国",
       "flag": "🇨🇳",
       "sector": "通信服务",
@@ -1020,10 +1020,10 @@
       "name": "罗氏",
       "nameEn": "Roche Holding",
       "category": "company",
-      "marketCap": 351.9,
-      "price": 54.64,
+      "marketCap": 352.1,
+      "price": 54.67,
       "priceCur": "USD",
-      "changePct": -0.11,
+      "changePct": -0.05,
       "country": "瑞士",
       "flag": "🇨🇭",
       "sector": "医疗健康",
@@ -1241,10 +1241,10 @@
       "name": "路威酩轩",
       "nameEn": "LVMH",
       "category": "company",
-      "marketCap": 271.1,
-      "price": 109.86,
+      "marketCap": 270.3,
+      "price": 109.54,
       "priceCur": "USD",
-      "changePct": 4.95,
+      "changePct": 4.64,
       "country": "法国",
       "flag": "🇫🇷",
       "sector": "可选消费",
@@ -1327,9 +1327,9 @@
       "nameEn": "Nestle",
       "category": "company",
       "marketCap": 257.1,
-      "price": 99.94,
+      "price": 99.95,
       "priceCur": "USD",
-      "changePct": 1.44,
+      "changePct": 1.45,
       "country": "瑞士",
       "flag": "🇨🇭",
       "sector": "必需消费",
@@ -1476,6 +1476,17 @@
       "rank": 85
     },
     {
+      "name": "以太坊",
+      "nameEn": "Ethereum",
+      "category": "crypto",
+      "emoji": "₿",
+      "symbol": "ETH",
+      "marketCap": 226.2,
+      "price": 1874.66,
+      "changePct": 0.6,
+      "rank": 86
+    },
+    {
       "name": "Palo Alto",
       "nameEn": "Palo Alto Networks",
       "category": "company",
@@ -1490,7 +1501,7 @@
       "logo": "../companies/logos/paloaltonetworks.com.png",
       "private": null,
       "lastRound": null,
-      "rank": 86
+      "rank": 87
     },
     {
       "name": "花旗",
@@ -1507,17 +1518,6 @@
       "logo": "../companies/logos/citigroup.com.png",
       "private": null,
       "lastRound": null,
-      "rank": 87
-    },
-    {
-      "name": "以太坊",
-      "nameEn": "Ethereum",
-      "category": "crypto",
-      "emoji": "₿",
-      "symbol": "ETH",
-      "marketCap": 225.3,
-      "price": 1866.91,
-      "changePct": -1.7,
       "rank": 88
     },
     {
@@ -1850,7 +1850,7 @@
       "emoji": "₿",
       "symbol": "USDT",
       "marketCap": 183.3,
-      "price": 0.999098,
+      "price": 0.99915,
       "changePct": 0.0,
       "rank": 108
     },
@@ -1906,23 +1906,6 @@
       "rank": 111
     },
     {
-      "name": "ABB",
-      "nameEn": "ABB",
-      "category": "company",
-      "marketCap": 179.4,
-      "price": 98.84,
-      "priceCur": "USD",
-      "changePct": 2.57,
-      "country": "瑞士",
-      "flag": "🇨🇭",
-      "sector": "工业",
-      "symbol": "ABBNY",
-      "logo": "../companies/logos/sym_ABBNY.png",
-      "private": null,
-      "lastRound": null,
-      "rank": 112
-    },
-    {
       "name": "亚德诺",
       "nameEn": "Analog Devices",
       "category": "company",
@@ -1935,6 +1918,23 @@
       "sector": "科技",
       "symbol": "ADI",
       "logo": "../companies/logos/sym_ADI.png",
+      "private": null,
+      "lastRound": null,
+      "rank": 112
+    },
+    {
+      "name": "ABB",
+      "nameEn": "ABB",
+      "category": "company",
+      "marketCap": 179.0,
+      "price": 98.62,
+      "priceCur": "USD",
+      "changePct": 2.35,
+      "country": "瑞士",
+      "flag": "🇨🇭",
+      "sector": "工业",
+      "symbol": "ABBNY",
+      "logo": "../companies/logos/sym_ABBNY.png",
       "private": null,
       "lastRound": null,
       "rank": 113
@@ -4087,9 +4087,9 @@
       "category": "crypto",
       "emoji": "₿",
       "symbol": "BNB",
-      "marketCap": 78.0,
-      "price": 585.86,
-      "changePct": -0.4,
+      "marketCap": 77.9,
+      "price": 584.86,
+      "changePct": -1.0,
       "rank": 240
     },
     {
