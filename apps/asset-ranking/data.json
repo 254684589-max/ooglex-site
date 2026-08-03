@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-08-02T07:56:15Z",
-  "asOf": "2026-08-02",
+  "updatedAt": "2026-08-03T12:41:56Z",
+  "asOf": "2026-08-03",
   "source": "Yahoo Finance · CoinGecko · 公开估算（世界黄金协会 / IMF / Savills 等）",
   "count": 250,
-  "totalMarketCap": 1087818.6,
+  "totalMarketCap": 1078310.7,
   "categories": [
     {
       "key": "real-estate",
@@ -104,9 +104,9 @@
       "unit": "桶（探明储量）",
       "qty": 1730000000000.0,
       "note": "全球石油探明储量 × WTI 油价（储量约 1.73 万亿桶，价格实时）",
-      "marketCap": 146479.1,
-      "price": 84.67,
-      "changePct": 6.83,
+      "marketCap": 136618.1,
+      "price": 78.97,
+      "changePct": -6.5,
       "static": false,
       "stale": false,
       "rank": 3
@@ -134,9 +134,9 @@
       "unit": "元（广义货币 M2）",
       "qty": 353670000000000.0,
       "note": "中国广义货币 M2（约 353 万亿元）× 美元汇率，汇率实时",
-      "marketCap": 52391.7,
-      "price": 0.148137,
-      "changePct": 0.32,
+      "marketCap": 52468.6,
+      "price": 0.148355,
+      "changePct": 0.37,
       "static": false,
       "stale": false,
       "rank": 5
@@ -164,9 +164,9 @@
       "unit": "盎司（地面存量）",
       "qty": 6720000000.0,
       "note": "全球地面黄金存量 × 金价（约 6.72 亿盎司/21.6 万吨，来源世界黄金协会，价格实时）",
-      "marketCap": 27599.0,
-      "price": 4107.0,
-      "changePct": 1.75,
+      "marketCap": 27586.3,
+      "price": 4105.1,
+      "changePct": 1.74,
       "static": false,
       "stale": false,
       "rank": 7
@@ -187,6 +187,21 @@
       "rank": 8
     },
     {
+      "name": "铝",
+      "nameEn": "Aluminum",
+      "category": "commodity",
+      "emoji": "🔩",
+      "unit": "吨（储量）",
+      "qty": 5800000000.0,
+      "note": "全球铝储量 × 期货铝价（以 LME/COMEX 期货代理，价格实时）",
+      "marketCap": 19749.0,
+      "price": 3405.0,
+      "changePct": -1.45,
+      "static": false,
+      "stale": false,
+      "rank": 9
+    },
+    {
       "name": "铁矿石",
       "nameEn": "Iron Ore",
       "category": "commodity",
@@ -199,21 +214,6 @@
       "changePct": null,
       "static": true,
       "stale": false,
-      "rank": 9
-    },
-    {
-      "name": "铝",
-      "nameEn": "Aluminum",
-      "category": "commodity",
-      "emoji": "🔩",
-      "unit": "吨（储量）",
-      "qty": 5800000000.0,
-      "note": "全球铝储量 × 期货铝价（以 LME/COMEX 期货代理，价格实时）",
-      "marketCap": 19512.7,
-      "price": 3364.25,
-      "changePct": -3.63,
-      "static": false,
-      "stale": false,
       "rank": 10
     },
     {
@@ -224,9 +224,9 @@
       "unit": "欧元（广义货币 M3）",
       "qty": 16380000000000.0,
       "note": "欧元区广义货币 M3（约 16.4 万亿欧元）× 美元汇率，汇率实时",
-      "marketCap": 18881.2,
-      "price": 1.1527,
-      "changePct": 1.16,
+      "marketCap": 18886.1,
+      "price": 1.153,
+      "changePct": 1.42,
       "static": false,
       "stale": false,
       "rank": 11
@@ -239,9 +239,9 @@
       "unit": "磅（储量）",
       "qty": 2860000000000.0,
       "note": "全球铜储量 × COMEX 铜价（储量约 13 亿吨，价格实时）",
-      "marketCap": 18491.3,
-      "price": 6.4655,
-      "changePct": 2.27,
+      "marketCap": 18527.1,
+      "price": 6.478,
+      "changePct": 3.26,
       "static": false,
       "stale": false,
       "rank": 12
@@ -254,9 +254,9 @@
       "unit": "日元（广义货币 M2）",
       "qty": 1250000000000000.0,
       "note": "日本广义货币 M2（约 1250 万亿日元）× 美元汇率，汇率实时",
-      "marketCap": 7941.6,
-      "price": 0.006353,
-      "changePct": 3.95,
+      "marketCap": 7971.4,
+      "price": 0.006377,
+      "changePct": 4.44,
       "static": false,
       "stale": false,
       "rank": 13
@@ -320,9 +320,9 @@
       "unit": "英镑（广义货币 M2）",
       "qty": 3000000000000.0,
       "note": "英国广义货币 M2（约 3 万亿英镑）× 美元汇率，汇率实时",
-      "marketCap": 4044.6,
-      "price": 1.3482,
-      "changePct": 0.98,
+      "marketCap": 4039.5,
+      "price": 1.3465,
+      "changePct": 1.32,
       "static": false,
       "stale": false,
       "rank": 17
@@ -369,9 +369,9 @@
       "unit": "盎司（地面存量）",
       "qty": 50000000000.0,
       "note": "全球地面白银存量 × 银价（约 500 亿盎司，价格实时）",
-      "marketCap": 2889.3,
-      "price": 57.786,
-      "changePct": 0.86,
+      "marketCap": 2893.0,
+      "price": 57.86,
+      "changePct": -0.01,
       "static": false,
       "stale": false,
       "rank": 20
@@ -414,10 +414,10 @@
       "name": "沙特阿美",
       "nameEn": "Saudi Aramco",
       "category": "company",
-      "marketCap": 1708.2,
-      "price": 26.48,
+      "marketCap": 1714.7,
+      "price": 26.58,
       "priceCur": "SAR",
-      "changePct": -0.45,
+      "changePct": 0.08,
       "country": "沙特",
       "flag": "🇸🇦",
       "sector": "能源",
@@ -467,16 +467,16 @@
       "category": "crypto",
       "emoji": "₿",
       "symbol": "BTC",
-      "marketCap": 1273.0,
-      "price": 63443,
-      "changePct": 0.7,
+      "marketCap": 1255.4,
+      "price": 62554,
+      "changePct": -1.0,
       "rank": 26
     },
     {
       "name": "三星电子",
       "nameEn": "Samsung Electronics",
       "category": "company",
-      "marketCap": 1218.8,
+      "marketCap": 1217.4,
       "price": 262500.0,
       "priceCur": "KRW",
       "changePct": 5.21,
@@ -1476,17 +1476,6 @@
       "rank": 85
     },
     {
-      "name": "以太坊",
-      "nameEn": "Ethereum",
-      "category": "crypto",
-      "emoji": "₿",
-      "symbol": "ETH",
-      "marketCap": 226.2,
-      "price": 1874.66,
-      "changePct": 0.6,
-      "rank": 86
-    },
-    {
       "name": "Palo Alto",
       "nameEn": "Palo Alto Networks",
       "category": "company",
@@ -1501,7 +1490,7 @@
       "logo": "../companies/logos/paloaltonetworks.com.png",
       "private": null,
       "lastRound": null,
-      "rank": 87
+      "rank": 86
     },
     {
       "name": "花旗",
@@ -1518,7 +1507,7 @@
       "logo": "../companies/logos/citigroup.com.png",
       "private": null,
       "lastRound": null,
-      "rank": 88
+      "rank": 87
     },
     {
       "name": "丰田",
@@ -1535,6 +1524,17 @@
       "logo": "../companies/logos/toyota.com.png",
       "private": null,
       "lastRound": null,
+      "rank": 88
+    },
+    {
+      "name": "以太坊",
+      "nameEn": "Ethereum",
+      "category": "crypto",
+      "emoji": "₿",
+      "symbol": "ETH",
+      "marketCap": 222.1,
+      "price": 1839.61,
+      "changePct": -1.5,
       "rank": 89
     },
     {
@@ -1849,8 +1849,8 @@
       "category": "crypto",
       "emoji": "₿",
       "symbol": "USDT",
-      "marketCap": 183.3,
-      "price": 0.99915,
+      "marketCap": 183.2,
+      "price": 0.998931,
       "changePct": 0.0,
       "rank": 108
     },
@@ -4065,6 +4065,17 @@
       "rank": 238
     },
     {
+      "name": "币安币",
+      "nameEn": "BNB",
+      "category": "crypto",
+      "emoji": "₿",
+      "symbol": "BNB",
+      "marketCap": 78.1,
+      "price": 586.41,
+      "changePct": 0.4,
+      "rank": 239
+    },
+    {
       "name": "艺康",
       "nameEn": "Ecolab",
       "category": "company",
@@ -4079,17 +4090,6 @@
       "logo": "../companies/logos/sym_ECL.png",
       "private": null,
       "lastRound": null,
-      "rank": 239
-    },
-    {
-      "name": "币安币",
-      "nameEn": "BNB",
-      "category": "crypto",
-      "emoji": "₿",
-      "symbol": "BNB",
-      "marketCap": 77.9,
-      "price": 584.86,
-      "changePct": -1.0,
       "rank": 240
     },
     {
