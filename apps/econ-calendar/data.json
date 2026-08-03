@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-08-02T23:47:26Z",
-  "asOf": "2026-08-02",
+  "updatedAt": "2026-08-03T18:29:40Z",
+  "asOf": "2026-08-03",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-02 ~ 2026-08-09",
-  "count": 95,
+  "count": 98,
   "highCount": 8,
   "events": [
     {
@@ -523,6 +523,18 @@
       "actual": null
     },
     {
+      "ts": "2026-08-05T00:15:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Schmid Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
       "ts": "2026-08-05T01:00:00Z",
       "ccy": "NZD",
       "country": "新西兰",
@@ -697,6 +709,18 @@
       "flag": "🇺🇸",
       "title": "美联储官员讲话",
       "titleEn": "FOMC Member Cook Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-08-06T00:35:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Daly Speaks",
       "impact": "low",
       "forecast": null,
       "previous": null,
@@ -1120,6 +1144,18 @@
       "impact": "low",
       "forecast": "12.1B",
       "previous": "-0.2B",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-08T16:45:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Bowman Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
