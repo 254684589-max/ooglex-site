@@ -1,6 +1,6 @@
 {
- "updatedAt": "2026-07-31T10:30:22Z",
- "asOf": "2026-07-31",
+ "updatedAt": "2026-08-07T06:04:47Z",
+ "asOf": "2026-08-07",
  "source": "SEC EDGAR 13F-HR · AAII Investor Sentiment Survey",
  "investors": [
   {
@@ -9,7 +9,7 @@
    "firm": "Citadel Advisors",
    "firmZh": "城堡投资",
    "cik": "0001423053",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Kenneth_C._Griffin_photo.jpg/250px-Kenneth_C._Griffin_photo.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Kenneth_C._Griffin_photo.jpg/250px-Kenneth_C._Griffin_photo.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -185,18 +185,18 @@
    "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAAY1BMVEUASj3///8ASTwARzqOr6kGTkGTs621y8e4zMlplY3N3NkOVEh9o5xplI1lkoqrw7/y9vUtal8dXlPf6Ofs8vGcuLM4cmgZXFBbioJwmpNvmZHV4d/c5uQybWOpwr7H19RPgnm8HYK9AAABQElEQVRIie2U2XKEIBBF6VbABcUNXCYu//+VwaV0gk6CT6mpmusLdPXBpoFLyEfvLfRs/QyilU8b0YZpmiahUbJ8NWIu2s4Ew06IwiJoKkswekRGj68MoMoReyarOVoOvg0QJL0hxiKeVWuVGYAgksmwpZ5HZw0AAcVFHlVZPudgHAFIer1tNgPbxNOlXhalAYB60Sf/CcCYbwAHYFf1WAAhxTp0B7YkV2DviiOAhb4HeIJTR2A9ByKl2x/Gej3pqVJuQLbepTLbk/4AKuUzxpS5iI7AtgeiXUvaz2Fw3PTe1kS5tnWbxPXNku5ejUP/C5gnOp6B10+USIAothZbTIBfmAAi1cZmsok+G4qJNovNUNtmsPb5YmQVV+kR7VmwGhm3jQzrVsymmIataI5oLkRnDDRpz1Z5bbu/mPFHb6ZvExoQvDnSX3cAAAAASUVORK5CYII=",
    "imgAlt": "",
    "imgLogo": true,
-   "period": "2026-03-31",
-   "filed": "2026-05-05",
-   "value": 294892645875,
-   "stocks": 841,
-   "top10pct": 34.1,
+   "period": "2026-06-30",
+   "filed": "2026-08-04",
+   "value": 335827609549,
+   "stocks": 865,
+   "top10pct": 36.3,
    "holdings": [
     {
      "name": "Nvidia Corp",
      "zh": "英伟达",
      "ticker": "NVDA",
-     "value": 15444789113,
-     "pct": 5.24,
+     "value": 18195373846,
+     "pct": 5.42,
      "chg": "hold",
      "chgPct": null
     },
@@ -204,17 +204,17 @@
      "name": "Ishares Core Us Aggregate Bond",
      "zh": "安硕ETF",
      "ticker": "IVV",
-     "value": 15442672748,
-     "pct": 5.24,
-     "chg": "hold",
-     "chgPct": null
+     "value": 16714399245,
+     "pct": 4.98,
+     "chg": "add",
+     "chgPct": 8.0
     },
     {
      "name": "Apple Inc",
      "zh": "苹果",
      "ticker": "AAPL",
-     "value": 14321456572,
-     "pct": 4.86,
+     "value": 16670059955,
+     "pct": 4.96,
      "chg": "hold",
      "chgPct": null
     },
@@ -222,35 +222,8 @@
      "name": "Alphabet Inc A类",
      "zh": "谷歌",
      "ticker": "GOOG",
-     "value": 11723486393,
-     "pct": 3.98,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Microsoft Corp",
-     "zh": "微软",
-     "ticker": "MSFT",
-     "value": 9602800248,
-     "pct": 3.26,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Vanguard Scottsdale Fds Long T",
-     "zh": "先锋ETF",
-     "ticker": "",
-     "value": 7612760243,
-     "pct": 2.58,
-     "chg": "add",
-     "chgPct": 5.7
-    },
-    {
-     "name": "Amazon Inc",
-     "zh": "亚马逊",
-     "ticker": "AMZN",
-     "value": 7119805455,
-     "pct": 2.41,
+     "value": 14889605021,
+     "pct": 4.43,
      "chg": "hold",
      "chgPct": null
     },
@@ -258,17 +231,17 @@
      "name": "Caterpillar Inc",
      "zh": "卡特彼勒",
      "ticker": "CAT",
-     "value": 6925871728,
-     "pct": 2.35,
+     "value": 10587791364,
+     "pct": 3.15,
      "chg": "hold",
      "chgPct": null
     },
     {
-     "name": "Taiwan Semiconductor Manuf ADR",
-     "zh": "台积电",
-     "ticker": "TSM",
-     "value": 6291848786,
-     "pct": 2.13,
+     "name": "Microsoft Corp",
+     "zh": "微软",
+     "ticker": "MSFT",
+     "value": 9926707366,
+     "pct": 2.96,
      "chg": "hold",
      "chgPct": null
     },
@@ -276,76 +249,103 @@
      "name": "Asml Hldg Nv Nys",
      "zh": "阿斯麦",
      "ticker": "ASML",
-     "value": 6076495515,
-     "pct": 2.06,
+     "value": 9425199953,
+     "pct": 2.81,
      "chg": "hold",
      "chgPct": null
+    },
+    {
+     "name": "Taiwan Semiconductor Manuf ADR",
+     "zh": "台积电",
+     "ticker": "TSM",
+     "value": 9009930721,
+     "pct": 2.68,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Amazon Inc",
+     "zh": "亚马逊",
+     "ticker": "AMZN",
+     "value": 8336759712,
+     "pct": 2.48,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Vanguard Scottsdale Fds Lg Ter",
+     "zh": "先锋ETF",
+     "ticker": "",
+     "value": 8138627564,
+     "pct": 2.42,
+     "chg": "add",
+     "chgPct": 7.0
     }
    ],
    "moves": [
     {
-     "type": "new",
-     "name": "Astrazeneca PLC",
-     "zh": "阿斯利康",
-     "ticker": "",
-     "value": 2138990626,
-     "delta": null
-    },
-    {
-     "type": "exit",
-     "name": "Astrazeneca PLC ADR",
-     "zh": "阿斯利康",
-     "ticker": "",
-     "value": 1985819827,
-     "delta": null
+     "type": "add",
+     "name": "Ge Aerospace",
+     "zh": "通用电气",
+     "ticker": "GE",
+     "value": 4326354117,
+     "delta": 73850.5
     },
     {
      "type": "add",
-     "name": "Abbvie Inc",
-     "zh": "艾伯维",
-     "ticker": "ABBV",
-     "value": 1833861779,
-     "delta": 1347.0
-    },
-    {
-     "type": "new",
-     "name": "Pbb Global Oil Gas Ep ETF",
-     "zh": "",
+     "name": "Ge Vernova Inc",
+     "zh": "GE维诺瓦(能源)",
      "ticker": "",
-     "value": 1828795773,
-     "delta": null
-    },
-    {
-     "type": "add",
-     "name": "Pfizer Inc",
-     "zh": "辉瑞",
-     "ticker": "",
-     "value": 1653793657,
-     "delta": 102.0
-    },
-    {
-     "type": "trim",
-     "name": "Adobe Inc",
-     "zh": "奥多比",
-     "ticker": "ADBE",
-     "value": 1356247662,
-     "delta": -96.8
-    },
-    {
-     "type": "trim",
-     "name": "Abbott Laboratories",
-     "zh": "雅培",
-     "ticker": "ABT",
-     "value": 1356130980,
-     "delta": -93.4
+     "value": 4178442530,
+     "delta": 90036.2
     },
     {
      "type": "add",
      "name": "Cisco Sys Inc",
      "zh": "思科",
      "ticker": "CSCO",
-     "value": 1096867952,
-     "delta": 442.7
+     "value": 2582228901,
+     "delta": 93.1
+    },
+    {
+     "type": "add",
+     "name": "Unitedhealth Group Inc",
+     "zh": "联合健康",
+     "ticker": "UNH",
+     "value": 2357593969,
+     "delta": 73.4
+    },
+    {
+     "type": "trim",
+     "name": "Canadian Nat Res Ltd Med Term",
+     "zh": "",
+     "ticker": "",
+     "value": 2128264790,
+     "delta": -96.3
+    },
+    {
+     "type": "add",
+     "name": "Palo Alto Networks Inc",
+     "zh": "派拓网络",
+     "ticker": "",
+     "value": 1921759638,
+     "delta": 2142.6
+    },
+    {
+     "type": "trim",
+     "name": "Conocophillips",
+     "zh": "康菲石油",
+     "ticker": "COP",
+     "value": 1911003652,
+     "delta": -93.8
+    },
+    {
+     "type": "add",
+     "name": "Merck Co Inc",
+     "zh": "默沙东",
+     "ticker": "MRK",
+     "value": 1769319220,
+     "delta": 45.7
     }
    ]
   },
@@ -355,7 +355,7 @@
    "firm": "Berkshire Hathaway",
    "firmZh": "伯克希尔·哈撒韦",
    "cik": "0001067983",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Warren_Buffett_at_the_2015_SelectUSA_Investment_Summit_%28cropped%29.jpg/250px-Warren_Buffett_at_the_2015_SelectUSA_Investment_Summit_%28cropped%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Warren_Buffett_at_the_2015_SelectUSA_Investment_Summit_%28cropped%29.jpg/250px-Warren_Buffett_at_the_2015_SelectUSA_Investment_Summit_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -528,7 +528,7 @@
    "firm": "Millennium Management",
    "firmZh": "千禧管理",
    "cik": "0001273087",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Millennium_Management_logo_2024.png/250px-Millennium_Management_logo_2024.png",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Millennium_Management_logo_2024.png/250px-Millennium_Management_logo_2024.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -701,7 +701,7 @@
    "firm": "AQR Capital",
    "firmZh": "AQR资本",
    "cik": "0001167557",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Cliff-asness-by-bill-cramer.jpg/250px-Cliff-asness-by-bill-cramer.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Cliff-asness-by-bill-cramer.jpg/250px-Cliff-asness-by-bill-cramer.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -874,7 +874,7 @@
    "firm": "D.E. Shaw & Co",
    "firmZh": "德劭集团",
    "cik": "0001009207",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/D._E._Shaw_%26_Co._Headquarters.png/250px-D._E._Shaw_%26_Co._Headquarters.png",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/D._E._Shaw_%26_Co._Headquarters.png/250px-D._E._Shaw_%26_Co._Headquarters.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -1047,7 +1047,7 @@
    "firm": "Two Sigma Investments",
    "firmZh": "双西格玛投资",
    "cik": "0001179392",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Watts_St_6th_Av_td_%282018-11-07%29_03_-_100_6th_Avenue.jpg/250px-Watts_St_6th_Av_td_%282018-11-07%29_03_-_100_6th_Avenue.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Watts_St_6th_Av_td_%282018-11-07%29_03_-_100_6th_Avenue.jpg/250px-Watts_St_6th_Av_td_%282018-11-07%29_03_-_100_6th_Avenue.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -1215,12 +1215,185 @@
    ]
   },
   {
+   "zh": "柏基投资",
+   "en": "Baillie Gifford",
+   "firm": "Baillie Gifford & Co",
+   "firmZh": "柏基投资",
+   "cik": "0001088875",
+   "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAALVBMVEX///AAAABEREC7u7CIiIDu7uAiIiBmZmCZmZAzMzDd3dARERDMzMB3d3BVVVC47uQeAAAAXklEQVQYla2PSw6AMAhEBwZKP+r9jyttauLaOAtIHp8B4A8dJHtmr1YXUEmd8JKp+QJkGQipsCxsoBjt2bFGAqKgZJgA2X+Ugm4bmDVxk2BsIDLS8Jou+j6o0799cgPPDwGN1xCL3wAAAABJRU5ErkJggg==",
+   "imgAlt": "",
+   "imgLogo": true,
+   "period": "2026-06-30",
+   "filed": "2026-08-06",
+   "value": 110225053010,
+   "stocks": 269,
+   "top10pct": 44.7,
+   "holdings": [
+    {
+     "name": "Space Exploration Technologies Corp",
+     "zh": "",
+     "ticker": "",
+     "value": 8781829133,
+     "pct": 7.97,
+     "chg": "new",
+     "chgPct": null
+    },
+    {
+     "name": "Nvidia",
+     "zh": "英伟达",
+     "ticker": "NVDA",
+     "value": 8381531192,
+     "pct": 7.6,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Amazon.",
+     "zh": "亚马逊",
+     "ticker": "AMZN",
+     "value": 6415604182,
+     "pct": 5.82,
+     "chg": "trim",
+     "chgPct": -4.2
+    },
+    {
+     "name": "Mercadolibre",
+     "zh": "美客多",
+     "ticker": "MELI",
+     "value": 5160761529,
+     "pct": 4.68,
+     "chg": "trim",
+     "chgPct": -6.0
+    },
+    {
+     "name": "Sea Ltd ADR",
+     "zh": "冬海集团",
+     "ticker": "SE",
+     "value": 3680771365,
+     "pct": 3.34,
+     "chg": "trim",
+     "chgPct": -3.1
+    },
+    {
+     "name": "Spotify Technology SA",
+     "zh": "声田",
+     "ticker": "",
+     "value": 3640189707,
+     "pct": 3.3,
+     "chg": "trim",
+     "chgPct": -3.5
+    },
+    {
+     "name": "Cloudflare Inc",
+     "zh": "克利夫兰-克利夫斯",
+     "ticker": "CLF",
+     "value": 3580743136,
+     "pct": 3.25,
+     "chg": "trim",
+     "chgPct": -8.3
+    },
+    {
+     "name": "Applovin",
+     "zh": "",
+     "ticker": "",
+     "value": 3334370197,
+     "pct": 3.03,
+     "chg": "trim",
+     "chgPct": -3.4
+    },
+    {
+     "name": "Shopify 'A'",
+     "zh": "Shopify",
+     "ticker": "SHOP",
+     "value": 3243123464,
+     "pct": 2.94,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Nu Holdings Ltd.",
+     "zh": "Nu控股",
+     "ticker": "",
+     "value": 3071869222,
+     "pct": 2.79,
+     "chg": "trim",
+     "chgPct": -6.7
+    }
+   ],
+   "moves": [
+    {
+     "type": "new",
+     "name": "Space Exploration Technologies Corp",
+     "zh": "",
+     "ticker": "",
+     "value": 8781829133,
+     "delta": null
+    },
+    {
+     "type": "trim",
+     "name": "Netflix Inc",
+     "zh": "奈飞",
+     "ticker": "NFLX",
+     "value": 941804113,
+     "delta": -25.8
+    },
+    {
+     "type": "trim",
+     "name": "Coupang",
+     "zh": "酷澎",
+     "ticker": "",
+     "value": 910212006,
+     "delta": -34.7
+    },
+    {
+     "type": "trim",
+     "name": "Pdd Holdings Inc",
+     "zh": "拼多多",
+     "ticker": "PDD",
+     "value": 868488526,
+     "delta": -6.2
+    },
+    {
+     "type": "add",
+     "name": "The Royal Bank Of Canada",
+     "zh": "",
+     "ticker": "",
+     "value": 740137941,
+     "delta": 3803766.0
+    },
+    {
+     "type": "add",
+     "name": "Axon Enterprise Inc",
+     "zh": "艾克森企业",
+     "ticker": "AXON",
+     "value": 670557547,
+     "delta": 24.4
+    },
+    {
+     "type": "trim",
+     "name": "Applovin",
+     "zh": "",
+     "ticker": "",
+     "value": 667717661,
+     "delta": -3.4
+    },
+    {
+     "type": "add",
+     "name": "Crh PLC",
+     "zh": "",
+     "ticker": "",
+     "value": 641407342,
+     "delta": 1294698.3
+    }
+   ]
+  },
+  {
    "zh": "马歇尔·韦斯",
    "en": "Marshall Wace",
    "firm": "Marshall Wace",
    "firmZh": "马歇尔·韦斯",
    "cik": "0001318757",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Paul_Marshall_speaking_at_ARC_Forum_2023%2C_30_October_2023_%28cropped%29.jpg/250px-Paul_Marshall_speaking_at_ARC_Forum_2023%2C_30_October_2023_%28cropped%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Paul_Marshall_speaking_at_ARC_Forum_2023%2C_30_October_2023_%28cropped%29.jpg/250px-Paul_Marshall_speaking_at_ARC_Forum_2023%2C_30_October_2023_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -1388,185 +1561,12 @@
    ]
   },
   {
-   "zh": "柏基投资",
-   "en": "Baillie Gifford",
-   "firm": "Baillie Gifford & Co",
-   "firmZh": "柏基投资",
-   "cik": "0001088875",
-   "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAALVBMVEX///AAAABEREC7u7CIiIDu7uAiIiBmZmCZmZAzMzDd3dARERDMzMB3d3BVVVC47uQeAAAAXklEQVQYla2PSw6AMAhEBwZKP+r9jyttauLaOAtIHp8B4A8dJHtmr1YXUEmd8JKp+QJkGQipsCxsoBjt2bFGAqKgZJgA2X+Ugm4bmDVxk2BsIDLS8Jou+j6o0799cgPPDwGN1xCL3wAAAABJRU5ErkJggg==",
-   "imgAlt": "",
-   "imgLogo": true,
-   "period": "2026-03-31",
-   "filed": "2026-05-08",
-   "value": 97893043995,
-   "stocks": 267,
-   "top10pct": 42.5,
-   "holdings": [
-    {
-     "name": "Nvidia",
-     "zh": "英伟达",
-     "ticker": "NVDA",
-     "value": 7106567176,
-     "pct": 7.26,
-     "chg": "trim",
-     "chgPct": -7.1
-    },
-    {
-     "name": "Amazon.",
-     "zh": "亚马逊",
-     "ticker": "AMZN",
-     "value": 5850762287,
-     "pct": 5.98,
-     "chg": "trim",
-     "chgPct": -4.4
-    },
-    {
-     "name": "Mercadolibre",
-     "zh": "美客多",
-     "ticker": "MELI",
-     "value": 5590369475,
-     "pct": 5.71,
-     "chg": "trim",
-     "chgPct": -7.1
-    },
-    {
-     "name": "Spotify Technology SA",
-     "zh": "声田",
-     "ticker": "",
-     "value": 3985088817,
-     "pct": 4.07,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Nu Holdings Ltd.",
-     "zh": "Nu控股",
-     "ticker": "",
-     "value": 3543131204,
-     "pct": 3.62,
-     "chg": "trim",
-     "chgPct": -4.2
-    },
-    {
-     "name": "Shopify 'A'",
-     "zh": "Shopify",
-     "ticker": "SHOP",
-     "value": 3442570051,
-     "pct": 3.52,
-     "chg": "trim",
-     "chgPct": -7.0
-    },
-    {
-     "name": "Cloudflare Inc",
-     "zh": "克利夫兰-克利夫斯",
-     "ticker": "CLF",
-     "value": 3285845442,
-     "pct": 3.36,
-     "chg": "trim",
-     "chgPct": -5.3
-    },
-    {
-     "name": "Sea Ltd ADR",
-     "zh": "冬海集团",
-     "ticker": "SE",
-     "value": 3283753702,
-     "pct": 3.35,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Pdd Holdings Inc",
-     "zh": "拼多多",
-     "ticker": "PDD",
-     "value": 2897119656,
-     "pct": 2.96,
-     "chg": "trim",
-     "chgPct": -8.6
-    },
-    {
-     "name": "Applovin",
-     "zh": "",
-     "ticker": "",
-     "value": 2666652536,
-     "pct": 2.72,
-     "chg": "add",
-     "chgPct": 8.7
-    }
-   ],
-   "moves": [
-    {
-     "type": "trim",
-     "name": "Shopify 'A'",
-     "zh": "Shopify",
-     "ticker": "SHOP",
-     "value": 1580697681,
-     "delta": -7.0
-    },
-    {
-     "type": "add",
-     "name": "Applovin",
-     "zh": "",
-     "ticker": "",
-     "value": 1488356748,
-     "delta": 8.7
-    },
-    {
-     "type": "trim",
-     "name": "Mercadolibre",
-     "zh": "美客多",
-     "ticker": "MELI",
-     "value": 1422403614,
-     "delta": -7.1
-    },
-    {
-     "type": "trim",
-     "name": "Netflix Inc",
-     "zh": "奈飞",
-     "ticker": "NFLX",
-     "value": 1366882607,
-     "delta": -41.0
-    },
-    {
-     "type": "trim",
-     "name": "Microsoft",
-     "zh": "微软",
-     "ticker": "MSFT",
-     "value": 1246065043,
-     "delta": -30.1
-    },
-    {
-     "type": "trim",
-     "name": "Coupang",
-     "zh": "酷澎",
-     "ticker": "",
-     "value": 1169030348,
-     "delta": -17.4
-    },
-    {
-     "type": "trim",
-     "name": "Nvidia",
-     "zh": "英伟达",
-     "ticker": "NVDA",
-     "value": 1074759808,
-     "delta": -7.1
-    },
-    {
-     "type": "trim",
-     "name": "Amazon.",
-     "zh": "亚马逊",
-     "ticker": "AMZN",
-     "value": 932361210,
-     "delta": -4.4
-    }
-   ]
-  },
-  {
    "zh": "史蒂夫·科恩",
    "en": "Steve Cohen",
    "firm": "Point72",
    "firmZh": "Point72资产管理",
    "cik": "0001603466",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Steve_baseball_4_%281%29_%28cropped%29.jpg/250px-Steve_baseball_4_%281%29_%28cropped%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Steve_baseball_4_%281%29_%28cropped%29.jpg/250px-Steve_baseball_4_%281%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -1912,7 +1912,7 @@
    "firm": "Renaissance Technologies",
    "firmZh": "文艺复兴科技(西蒙斯)",
    "cik": "0001037389",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Jim_Simons_at_MSRI.jpg/250px-Jim_Simons_at_MSRI.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Jim_Simons_at_MSRI.jpg/250px-Jim_Simons_at_MSRI.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -2085,7 +2085,7 @@
    "firm": "Tudor Investment",
    "firmZh": "都铎投资",
    "cik": "0000923093",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Paul_Tudor_Jones_2006.jpg/250px-Paul_Tudor_Jones_2006.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Paul_Tudor_Jones_2006.jpg/250px-Paul_Tudor_Jones_2006.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -2258,7 +2258,7 @@
    "firm": "TCI Fund Management",
    "firmZh": "英国儿童投资基金",
    "cik": "0001647251",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Chris_Hohn_GFSS_2023.jpg/250px-Chris_Hohn_GFSS_2023.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Chris_Hohn_GFSS_2023.jpg/250px-Chris_Hohn_GFSS_2023.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -2398,7 +2398,7 @@
    "firm": "Viking Global",
    "firmZh": "维京环球",
    "cik": "0001103804",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Viking_Global_Investors_logo.png/250px-Viking_Global_Investors_logo.png",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Viking_Global_Investors_logo.png/250px-Viking_Global_Investors_logo.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -2744,7 +2744,7 @@
    "firm": "B&M Gates Foundation Trust",
    "firmZh": "盖茨基金会信托",
    "cik": "0001166559",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Bill_Gates_at_the_European_Commission_-_P067383-987995_%28cropped%29_5.jpg/250px-Bill_Gates_at_the_European_Commission_-_P067383-987995_%28cropped%29_5.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Bill_Gates_at_the_European_Commission_-_P067383-987995_%28cropped%29_5.jpg/250px-Bill_Gates_at_the_European_Commission_-_P067383-987995_%28cropped%29_5.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -2877,7 +2877,7 @@
    "firm": "Pzena Investment",
    "firmZh": "普泽纳投资管理",
    "cik": "0001027796",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Pzena_Logo.png/250px-Pzena_Logo.png",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Pzena_Logo.png/250px-Pzena_Logo.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -3050,7 +3050,7 @@
    "firm": "Coatue Management",
    "firmZh": "蔻图资本",
    "cik": "0001135730",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Solow_Building_%2853872707559%29.jpg/250px-Solow_Building_%2853872707559%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Solow_Building_%2853872707559%29.jpg/250px-Solow_Building_%2853872707559%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -3223,7 +3223,7 @@
    "firm": "Tiger Global",
    "firmZh": "老虎环球基金",
    "cik": "0001167483",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Solow_Building_%2853872707559%29.jpg/250px-Solow_Building_%2853872707559%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Solow_Building_%2853872707559%29.jpg/250px-Solow_Building_%2853872707559%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -3396,7 +3396,7 @@
    "firm": "Bridgewater Associates",
    "firmZh": "桥水基金",
    "cik": "0001350694",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Web_Summit_2018_-_Forum_-_Day_2%2C_November_7_HM1_7481_%2844858045925%29.jpg/250px-Web_Summit_2018_-_Forum_-_Day_2%2C_November_7_HM1_7481_%2844858045925%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Web_Summit_2018_-_Forum_-_Day_2%2C_November_7_HM1_7481_%2844858045925%29.jpg/250px-Web_Summit_2018_-_Forum_-_Day_2%2C_November_7_HM1_7481_%2844858045925%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -3569,7 +3569,7 @@
    "firm": "Elliott Management",
    "firmZh": "埃利奥特投资管理",
    "cik": "0001791786",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/The_Global_Financial_Context_Paul_Singer_%28cropped%29.jpg/250px-The_Global_Financial_Context_Paul_Singer_%28cropped%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/The_Global_Financial_Context_Paul_Singer_%28cropped%29.jpg/250px-The_Global_Financial_Context_Paul_Singer_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -3742,7 +3742,7 @@
    "firm": "Farallon Capital",
    "firmZh": "法拉龙资本",
    "cik": "0000909661",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/One_Maritime_Plaza_Corner.jpg/250px-One_Maritime_Plaza_Corner.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/One_Maritime_Plaza_Corner.jpg/250px-One_Maritime_Plaza_Corner.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -3910,185 +3910,12 @@
    ]
   },
   {
-   "zh": "波伦资本",
-   "en": "Polen Capital",
-   "firm": "Polen Capital",
-   "firmZh": "波伦资本",
-   "cik": "0001034524",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Polen_Capital_Logo.svg/250px-Polen_Capital_Logo.svg.png",
-   "imgAlt": "",
-   "imgLogo": false,
-   "period": "2026-03-31",
-   "filed": "2026-05-14",
-   "value": 14456164077,
-   "stocks": 219,
-   "top10pct": 56.4,
-   "holdings": [
-    {
-     "name": "Microsoft Corp",
-     "zh": "微软",
-     "ticker": "MSFT",
-     "value": 1053462402,
-     "pct": 7.29,
-     "chg": "trim",
-     "chgPct": -27.2
-    },
-    {
-     "name": "Alphabet Inc",
-     "zh": "谷歌",
-     "ticker": "GOOG",
-     "value": 853380096,
-     "pct": 5.9,
-     "chg": "trim",
-     "chgPct": -26.5
-    },
-    {
-     "name": "Eli Lilly & Co",
-     "zh": "礼来",
-     "ticker": "LLY",
-     "value": 841181778,
-     "pct": 5.82,
-     "chg": "trim",
-     "chgPct": -26.6
-    },
-    {
-     "name": "Broadcom Inc",
-     "zh": "博通",
-     "ticker": "AVGO",
-     "value": 834924015,
-     "pct": 5.78,
-     "chg": "trim",
-     "chgPct": -23.6
-    },
-    {
-     "name": "Amazon Inc",
-     "zh": "亚马逊",
-     "ticker": "AMZN",
-     "value": 811573863,
-     "pct": 5.61,
-     "chg": "trim",
-     "chgPct": -55.0
-    },
-    {
-     "name": "Mastercard Incorporated",
-     "zh": "万事达",
-     "ticker": "MA",
-     "value": 770169816,
-     "pct": 5.33,
-     "chg": "trim",
-     "chgPct": -27.7
-    },
-    {
-     "name": "Servicenow Inc",
-     "zh": "ServiceNow",
-     "ticker": "",
-     "value": 760021232,
-     "pct": 5.26,
-     "chg": "add",
-     "chgPct": 28.0
-    },
-    {
-     "name": "Shopify Inc",
-     "zh": "Shopify",
-     "ticker": "SHOP",
-     "value": 748105429,
-     "pct": 5.17,
-     "chg": "trim",
-     "chgPct": -12.4
-    },
-    {
-     "name": "Visa Inc",
-     "zh": "维萨",
-     "ticker": "V",
-     "value": 739206345,
-     "pct": 5.11,
-     "chg": "trim",
-     "chgPct": -27.5
-    },
-    {
-     "name": "Oracle Corp",
-     "zh": "甲骨文",
-     "ticker": "ORCL",
-     "value": 739118451,
-     "pct": 5.11,
-     "chg": "trim",
-     "chgPct": -30.1
-    }
-   ],
-   "moves": [
-    {
-     "type": "trim",
-     "name": "Amazon Inc",
-     "zh": "亚马逊",
-     "ticker": "AMZN",
-     "value": 1185877961,
-     "delta": -55.0
-    },
-    {
-     "type": "trim",
-     "name": "Microsoft Corp",
-     "zh": "微软",
-     "ticker": "MSFT",
-     "value": 837484835,
-     "delta": -27.2
-    },
-    {
-     "type": "trim",
-     "name": "Oracle Corp",
-     "zh": "甲骨文",
-     "ticker": "ORCL",
-     "value": 661406641,
-     "delta": -30.1
-    },
-    {
-     "type": "trim",
-     "name": "Eli Lilly & Co",
-     "zh": "礼来",
-     "ticker": "LLY",
-     "value": 497966213,
-     "delta": -26.6
-    },
-    {
-     "type": "trim",
-     "name": "Abbott Laboratories",
-     "zh": "雅培",
-     "ticker": "ABT",
-     "value": 494879446,
-     "delta": -99.6
-    },
-    {
-     "type": "trim",
-     "name": "Adobe Inc",
-     "zh": "奥多比",
-     "ticker": "ADBE",
-     "value": 468057449,
-     "delta": -99.1
-    },
-    {
-     "type": "trim",
-     "name": "Mastercard Incorporated",
-     "zh": "万事达",
-     "ticker": "MA",
-     "value": 446790114,
-     "delta": -27.7
-    },
-    {
-     "type": "trim",
-     "name": "Visa Inc",
-     "zh": "维萨",
-     "ticker": "V",
-     "value": 444559844,
-     "delta": -27.5
-    }
-   ]
-  },
-  {
    "zh": "比尔·阿克曼",
    "en": "Bill Ackman",
    "firm": "Pershing Square",
    "firmZh": "潘兴广场资本",
    "cik": "0001336528",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Valeant_Pharmaceuticals%27_Business_Model_%28headshot%29.jpg/250px-Valeant_Pharmaceuticals%27_Business_Model_%28headshot%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Valeant_Pharmaceuticals%27_Business_Model_%28headshot%29.jpg/250px-Valeant_Pharmaceuticals%27_Business_Model_%28headshot%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -4224,12 +4051,185 @@
    ]
   },
   {
+   "zh": "汤姆·盖纳",
+   "en": "Tom Gayner",
+   "firm": "Markel Group",
+   "firmZh": "马克尔集团",
+   "cik": "0001096343",
+   "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAFVBMVEVHcEz/TgD/TgD/TgD/TgD/TgD/TgDicejYAAAABnRSTlMAMbpjid5Bk5HxAAABL0lEQVR4nO3YWw7CMAxEUdK02f+SKVRAX3n8eEZC1wvAZ6QSW348rJWytX1eyuTrnqaylg2Qy1YewBbeBpjLruSAXXgDIM3lXEpAni7thYCb8ErAbXgZoBZeBFif21YFA5rh4wGd8NGAbvhgQBrq/5eAeclGwHvW2ABp3j57E+A3aB2AT3gT4DRrxIBDeD3gbtDqANfwUkB1y5AAKuFVgPqKpQC0wgsAA1tGIKAbPhiQ+z8YCxjbskIAOTkBr0HrA6Tts3cBvluGB7D70xkAx1uGGnB5cbSA8yFHC7h/bmWA2qDVABqzRgFobhnhgN4tIxjQXrGiAf1DTihg5JATChjrDwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMQBnnF9F/4ODRRpAAAAAElFTkSuQmCC",
+   "imgAlt": "",
+   "imgLogo": true,
+   "period": "2026-06-30",
+   "filed": "2026-07-31",
+   "value": 13130490727,
+   "stocks": 127,
+   "top10pct": 47.1,
+   "holdings": [
+    {
+     "name": "Berkshire Hathaway Inc",
+     "zh": "伯克希尔·哈撒韦",
+     "ticker": "BRK.B",
+     "value": 1600801869,
+     "pct": 12.19,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Alphabet Inc",
+     "zh": "谷歌",
+     "ticker": "GOOG",
+     "value": 1176023673,
+     "pct": 8.96,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Deere & Co",
+     "zh": "迪尔",
+     "ticker": "DE",
+     "value": 556878306,
+     "pct": 4.24,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Brookfield Corp",
+     "zh": "布鲁克菲尔德",
+     "ticker": "",
+     "value": 556805009,
+     "pct": 4.24,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Amazon Inc",
+     "zh": "亚马逊",
+     "ticker": "AMZN",
+     "value": 484011339,
+     "pct": 3.69,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Analog Devices Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 397039330,
+     "pct": 3.02,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Goldman Sachs Group Inc",
+     "zh": "高盛",
+     "ticker": "GS",
+     "value": 363445924,
+     "pct": 2.77,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Apple Inc",
+     "zh": "苹果",
+     "ticker": "AAPL",
+     "value": 355128634,
+     "pct": 2.7,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Caterpillar Inc",
+     "zh": "卡特彼勒",
+     "ticker": "CAT",
+     "value": 349979385,
+     "pct": 2.67,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Visa Inc",
+     "zh": "维萨",
+     "ticker": "V",
+     "value": 347863069,
+     "pct": 2.65,
+     "chg": "hold",
+     "chgPct": null
+    }
+   ],
+   "moves": [
+    {
+     "type": "add",
+     "name": "Mercadolibre Inc",
+     "zh": "美客多",
+     "ticker": "MELI",
+     "value": 31314202,
+     "delta": 340.4
+    },
+    {
+     "type": "add",
+     "name": "Franco Nev Corp",
+     "zh": "",
+     "ticker": "",
+     "value": 13806586,
+     "delta": 9.2
+    },
+    {
+     "type": "add",
+     "name": "Enterprise Prods Partners L",
+     "zh": "",
+     "ticker": "",
+     "value": 13272760,
+     "delta": 181.7
+    },
+    {
+     "type": "add",
+     "name": "Linde PLC",
+     "zh": "林德",
+     "ticker": "",
+     "value": 10450968,
+     "delta": 5.4
+    },
+    {
+     "type": "exit",
+     "name": "Scotts Miracle-Gro Co",
+     "zh": "",
+     "ticker": "",
+     "value": 10216081,
+     "delta": null
+    },
+    {
+     "type": "trim",
+     "name": "Meta Platforms Inc",
+     "zh": "Meta平台",
+     "ticker": "META",
+     "value": 10159919,
+     "delta": -5.7
+    },
+    {
+     "type": "trim",
+     "name": "Comcast Corp",
+     "zh": "康卡斯特",
+     "ticker": "CMCSA",
+     "value": 7924657,
+     "delta": -16.6
+    },
+    {
+     "type": "add",
+     "name": "Union Pac Corp",
+     "zh": "联合太平洋",
+     "ticker": "UNP",
+     "value": 7339168,
+     "delta": 7.2
+    }
+   ]
+  },
+  {
    "zh": "凯茜·伍德",
    "en": "Cathie Wood",
    "firm": "ARK Invest",
    "firmZh": "方舟投资",
    "cik": "0001697748",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Cathie_Wood_ARK_Invest_Photo.jpg/250px-Cathie_Wood_ARK_Invest_Photo.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Cathie_Wood_ARK_Invest_Photo.jpg/250px-Cathie_Wood_ARK_Invest_Photo.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -4575,7 +4575,7 @@
    "firm": "Lone Pine Capital",
    "firmZh": "孤松资本",
    "cik": "0001061165",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Two_Greenwich_Plaza_1.jpg/250px-Two_Greenwich_Plaza_1.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Two_Greenwich_Plaza_1.jpg/250px-Two_Greenwich_Plaza_1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -4743,175 +4743,175 @@
    ]
   },
   {
-   "zh": "汤姆·盖纳",
-   "en": "Tom Gayner",
-   "firm": "Markel Group",
-   "firmZh": "马克尔集团",
-   "cik": "0001096343",
-   "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAFVBMVEVHcEz/TgD/TgD/TgD/TgD/TgD/TgDicejYAAAABnRSTlMAMbpjid5Bk5HxAAABL0lEQVR4nO3YWw7CMAxEUdK02f+SKVRAX3n8eEZC1wvAZ6QSW348rJWytX1eyuTrnqaylg2Qy1YewBbeBpjLruSAXXgDIM3lXEpAni7thYCb8ErAbXgZoBZeBFif21YFA5rh4wGd8NGAbvhgQBrq/5eAeclGwHvW2ABp3j57E+A3aB2AT3gT4DRrxIBDeD3gbtDqANfwUkB1y5AAKuFVgPqKpQC0wgsAA1tGIKAbPhiQ+z8YCxjbskIAOTkBr0HrA6Tts3cBvluGB7D70xkAx1uGGnB5cbSA8yFHC7h/bmWA2qDVABqzRgFobhnhgN4tIxjQXrGiAf1DTihg5JATChjrDwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMQBnnF9F/4ODRRpAAAAAElFTkSuQmCC",
+   "zh": "波伦资本",
+   "en": "Polen Capital",
+   "firm": "Polen Capital",
+   "firmZh": "波伦资本",
+   "cik": "0001034524",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Polen_Capital_Logo.svg/250px-Polen_Capital_Logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
-   "imgLogo": true,
-   "period": "2026-03-31",
-   "filed": "2026-05-01",
-   "value": 11938885174,
-   "stocks": 126,
-   "top10pct": 45.9,
+   "imgLogo": false,
+   "period": "2026-06-30",
+   "filed": "2026-08-04",
+   "value": 11610786601,
+   "stocks": 215,
+   "top10pct": 58.8,
    "holdings": [
     {
-     "name": "Berkshire Hathaway Inc",
-     "zh": "伯克希尔·哈撒韦",
-     "ticker": "BRK.B",
-     "value": 1534128463,
-     "pct": 12.85,
-     "chg": "hold",
-     "chgPct": null
+     "name": "Eli Lilly & Co",
+     "zh": "礼来",
+     "ticker": "LLY",
+     "value": 799914391,
+     "pct": 6.89,
+     "chg": "trim",
+     "chgPct": -27.1
+    },
+    {
+     "name": "Nvidia Corporation",
+     "zh": "英伟达",
+     "ticker": "NVDA",
+     "value": 796047269,
+     "pct": 6.86,
+     "chg": "trim",
+     "chgPct": -3.1
+    },
+    {
+     "name": "Microsoft Corp",
+     "zh": "微软",
+     "ticker": "MSFT",
+     "value": 782824321,
+     "pct": 6.74,
+     "chg": "trim",
+     "chgPct": -26.3
     },
     {
      "name": "Alphabet Inc",
      "zh": "谷歌",
      "ticker": "GOOG",
-     "value": 953309160,
-     "pct": 7.98,
-     "chg": "hold",
-     "chgPct": null
+     "value": 774974899,
+     "pct": 6.67,
+     "chg": "trim",
+     "chgPct": -26.3
     },
     {
-     "name": "Brookfield Corp",
-     "zh": "布鲁克菲尔德",
-     "ticker": "",
-     "value": 529088957,
-     "pct": 4.43,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Deere & Co",
-     "zh": "迪尔",
-     "ticker": "DE",
-     "value": 494521070,
-     "pct": 4.14,
-     "chg": "hold",
-     "chgPct": null
+     "name": "Broadcom Inc",
+     "zh": "博通",
+     "ticker": "AVGO",
+     "value": 740468936,
+     "pct": 6.38,
+     "chg": "trim",
+     "chgPct": -27.3
     },
     {
      "name": "Amazon Inc",
      "zh": "亚马逊",
      "ticker": "AMZN",
-     "value": 422946385,
-     "pct": 3.54,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Analog Devices Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 325535164,
-     "pct": 2.73,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Apple Inc",
-     "zh": "苹果",
-     "ticker": "AAPL",
-     "value": 311473930,
-     "pct": 2.61,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Goldman Sachs Group Inc",
-     "zh": "高盛",
-     "ticker": "GS",
-     "value": 304014965,
-     "pct": 2.55,
-     "chg": "hold",
-     "chgPct": null
+     "value": 669724194,
+     "pct": 5.77,
+     "chg": "trim",
+     "chgPct": -27.9
     },
     {
      "name": "Visa Inc",
      "zh": "维萨",
      "ticker": "V",
-     "value": 303549001,
-     "pct": 2.54,
-     "chg": "hold",
-     "chgPct": null
+     "value": 619489263,
+     "pct": 5.34,
+     "chg": "trim",
+     "chgPct": -26.2
     },
     {
-     "name": "Home Depot Inc",
-     "zh": "家得宝",
-     "ticker": "HD",
-     "value": 302578801,
-     "pct": 2.53,
-     "chg": "hold",
-     "chgPct": null
+     "name": "Mastercard Incorporated",
+     "zh": "万事达",
+     "ticker": "MA",
+     "value": 586509275,
+     "pct": 5.05,
+     "chg": "trim",
+     "chgPct": -25.9
+    },
+    {
+     "name": "Servicenow Inc",
+     "zh": "ServiceNow",
+     "ticker": "",
+     "value": 533150641,
+     "pct": 4.59,
+     "chg": "trim",
+     "chgPct": -26.1
+    },
+    {
+     "name": "Oracle Corp",
+     "zh": "甲骨文",
+     "ticker": "ORCL",
+     "value": 523807723,
+     "pct": 4.51,
+     "chg": "trim",
+     "chgPct": -28.9
     }
    ],
    "moves": [
     {
-     "type": "new",
-     "name": "Sunbelt Rentals Holdings Inc",
+     "type": "trim",
+     "name": "Zoetis Inc",
      "zh": "",
      "ticker": "",
-     "value": 62705167,
-     "delta": null
-    },
-    {
-     "type": "add",
-     "name": "Franco Nev Corp",
-     "zh": "",
-     "ticker": "",
-     "value": 33359046,
-     "delta": 3.7
+     "value": 476184422,
+     "delta": -92.4
     },
     {
      "type": "trim",
-     "name": "S&P Global Inc",
-     "zh": "标普全球",
-     "ticker": "SPGI",
-     "value": 28690823,
-     "delta": -21.9
+     "name": "Aon PLC",
+     "zh": "怡安",
+     "ticker": "",
+     "value": 382652390,
+     "delta": -87.9
     },
     {
-     "type": "exit",
-     "name": "Target Corp",
-     "zh": "塔吉特",
-     "ticker": "TGT",
-     "value": 13000750,
-     "delta": null
+     "type": "trim",
+     "name": "Microsoft Corp",
+     "zh": "微软",
+     "ticker": "MSFT",
+     "value": 270638081,
+     "delta": -26.3
     },
     {
-     "type": "exit",
-     "name": "Choice Hotels Intl Inc",
+     "type": "trim",
+     "name": "Costar Group Inc",
      "zh": "",
      "ticker": "",
-     "value": 11002530,
-     "delta": null
+     "value": 259024892,
+     "delta": -30.3
     },
     {
      "type": "new",
-     "name": "Mercadolibre Inc",
-     "zh": "美客多",
-     "ticker": "MELI",
-     "value": 9423159,
+     "name": "Ge Aerospace",
+     "zh": "通用电气",
+     "ticker": "GE",
+     "value": 258058054,
      "delta": null
+    },
+    {
+     "type": "trim",
+     "name": "Accenture PLC Ireland",
+     "zh": "",
+     "ticker": "",
+     "value": 249618554,
+     "delta": -88.7
+    },
+    {
+     "type": "trim",
+     "name": "Synopsys Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 247722118,
+     "delta": -93.9
     },
     {
      "type": "new",
-     "name": "Enterprise Prods Partners L",
-     "zh": "",
+     "name": "Ge Vernova Inc",
+     "zh": "GE维诺瓦(能源)",
      "ticker": "",
-     "value": 7643680,
+     "value": 230991228,
      "delta": null
-    },
-    {
-     "type": "add",
-     "name": "Factset Resh Sys Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 5991088,
-     "delta": 11.1
     }
    ]
   },
@@ -4921,7 +4921,7 @@
    "firm": "D1 Capital",
    "firmZh": "D1资本",
    "cik": "0001747057",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Solow_Building_%2853872707559%29.jpg/250px-Solow_Building_%2853872707559%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Solow_Building_%2853872707559%29.jpg/250px-Solow_Building_%2853872707559%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -5094,7 +5094,7 @@
    "firm": "Soros Fund Management",
    "firmZh": "索罗斯基金管理",
    "cik": "0001029160",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/George_Soros%2C_Founder_and_Chairman_of_the_Open_Society_Foundations%2C_visits_the_EC_%283x4_cropped%29.jpg/250px-George_Soros%2C_Founder_and_Chairman_of_the_Open_Society_Foundations%2C_visits_the_EC_%283x4_cropped%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/George_Soros%2C_Founder_and_Chairman_of_the_Open_Society_Foundations%2C_visits_the_EC_%283x4_cropped%29.jpg/250px-George_Soros%2C_Founder_and_Chairman_of_the_Open_Society_Foundations%2C_visits_the_EC_%283x4_cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -5267,7 +5267,7 @@
    "firm": "Ariel Investments",
    "firmZh": "爱瑞尔投资",
    "cik": "0000936753",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/20120721_John_W._Rogers%2C_Jr.JPG/250px-20120721_John_W._Rogers%2C_Jr.JPG",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/20120721_John_W._Rogers%2C_Jr.JPG/250px-20120721_John_W._Rogers%2C_Jr.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -5440,7 +5440,7 @@
    "firm": "Icahn Capital",
    "firmZh": "伊坎资本",
    "cik": "0000921669",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Carl_Icahn%2C_1980s.jpg/250px-Carl_Icahn%2C_1980s.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Carl_Icahn%2C_1980s.jpg/250px-Carl_Icahn%2C_1980s.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -5565,7 +5565,7 @@
    "firm": "Gardner Russo & Quinn",
    "firmZh": "加德纳·鲁索",
    "cik": "0000860643",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Thomas_A._Russo.JPG/250px-Thomas_A._Russo.JPG",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Thomas_A._Russo.JPG/250px-Thomas_A._Russo.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -5911,7 +5911,7 @@
    "firm": "Oaktree Capital",
    "firmZh": "橡树资本",
    "cik": "0000949509",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Howard_Marks_2.17.12_%28cropped%29.jpg/250px-Howard_Marks_2.17.12_%28cropped%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Howard_Marks_2.17.12_%28cropped%29.jpg/250px-Howard_Marks_2.17.12_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -6257,7 +6257,7 @@
    "firm": "Appaloosa",
    "firmZh": "阿帕卢萨管理",
    "cik": "0001656456",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/David_Tepper_01.jpg/250px-David_Tepper_01.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/David_Tepper_01.jpg/250px-David_Tepper_01.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -6603,7 +6603,7 @@
    "firm": "Altimeter Capital",
    "firmZh": "阿尔提米特资本",
    "cik": "0001541617",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Brad_Gerstner_at_the_White_House_2025_%2854581192563%29.jpg/250px-Brad_Gerstner_at_the_White_House_2025_%2854581192563%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Brad_Gerstner_at_the_White_House_2025_%2854581192563%29.jpg/250px-Brad_Gerstner_at_the_White_House_2025_%2854581192563%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -6776,7 +6776,7 @@
    "firm": "Baupost Group",
    "firmZh": "包普斯特集团",
    "cik": "0001061768",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Seth_Klarman_at_147th_Preakness_Stakes.jpg/250px-Seth_Klarman_at_147th_Preakness_Stakes.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Seth_Klarman_at_147th_Preakness_Stakes.jpg/250px-Seth_Klarman_at_147th_Preakness_Stakes.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -7074,7 +7074,7 @@
    "firm": "Starboard Value",
    "firmZh": "星板价值",
    "cik": "0001517137",
-   "img": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9d/Starboard_Value_logo.svg/250px-Starboard_Value_logo.svg.png",
+   "img": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9d/Starboard_Value_logo.svg/250px-Starboard_Value_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -8170,7 +8170,7 @@
    "firm": "Fairfax Financial",
    "firmZh": "枫信金融",
    "cik": "0000915191",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Prem_Watsa.jpg/250px-Prem_Watsa.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Prem_Watsa.jpg/250px-Prem_Watsa.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -9008,7 +9008,7 @@
    "firm": "Kahn Brothers Group",
    "firmZh": "卡恩兄弟集团",
    "cik": "0001039565",
-   "img": "https://upload.wikimedia.org/wikipedia/en/thumb/f/f7/Irving_Kahn_photo.jpg/250px-Irving_Kahn_photo.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/en/thumb/f/f7/Irving_Kahn_photo.jpg/250px-Irving_Kahn_photo.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -9496,7 +9496,7 @@
    "firm": "Daily Journal Corp",
    "firmZh": "每日期刊公司",
    "cik": "0000783412",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Charlie_Munger_%28cropped%29.jpg/250px-Charlie_Munger_%28cropped%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Charlie_Munger_%28cropped%29.jpg/250px-Charlie_Munger_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-06-30",
@@ -9551,70 +9551,70 @@
    "zh": "谷歌",
    "ticker": "GOOG",
    "gurus": 39,
-   "value": 62397543238
+   "value": 66238999685
   },
   {
    "name": "Microsoft Corporation",
    "zh": "微软",
    "ticker": "MSFT",
    "gurus": 33,
-   "value": 31376537880
+   "value": 31008069068
   },
   {
    "name": "Amazon Inc",
    "zh": "亚马逊",
    "ticker": "AMZN",
    "gurus": 31,
-   "value": 37228983543
-  },
-  {
-   "name": "Meta Platforms Inc",
-   "zh": "Meta平台",
-   "ticker": "META",
-   "gurus": 29,
-   "value": 21497873639
+   "value": 38929994980
   },
   {
    "name": "Taiwan Semiconductor Manufacturing Co Ltd - Us ADR",
    "zh": "台积电",
    "ticker": "TSM",
    "gurus": 29,
-   "value": 20936972208
+   "value": 23860862470
+  },
+  {
+   "name": "Meta Platforms Inc",
+   "zh": "Meta平台",
+   "ticker": "META",
+   "gurus": 29,
+   "value": 20861026568
   },
   {
    "name": "Visa Inc. A类",
    "zh": "维萨",
    "ticker": "V",
    "gurus": 27,
-   "value": 19795123686
+   "value": 20050372726
   },
   {
    "name": "Nvidia Corporation",
    "zh": "英伟达",
    "ticker": "NVDA",
    "gurus": 24,
-   "value": 49978866508
+   "value": 54084681751
   },
   {
    "name": "Broadcom Inc - Us",
    "zh": "博通",
    "ticker": "AVGO",
    "gurus": 24,
-   "value": 18082056734
+   "value": 19639807765
   },
   {
    "name": "Berkshire Hathaway Inc",
    "zh": "伯克希尔·哈撒韦",
    "ticker": "BRK.B",
-   "gurus": 23,
-   "value": 15409244028
+   "gurus": 24,
+   "value": 15489004643
   },
   {
    "name": "Mastercard Incorporated A类",
    "zh": "万事达",
    "ticker": "MA",
    "gurus": 23,
-   "value": 9021650173
+   "value": 9080665312
   }
  ],
  "biggest": [
@@ -9647,6 +9647,13 @@
    "value": 25039178044
   },
   {
+   "name": "Nvidia Corp",
+   "zh": "英伟达",
+   "ticker": "NVDA",
+   "investor": "肯·费雪",
+   "value": 18195373846
+  },
+  {
    "name": "Chevron Corporation",
    "zh": "雪佛龙",
    "ticker": "CVX",
@@ -9661,32 +9668,25 @@
    "value": 17286591775
   },
   {
-   "name": "Nvidia Corp",
-   "zh": "英伟达",
-   "ticker": "NVDA",
-   "investor": "肯·费雪",
-   "value": 15444789113
-  },
-  {
    "name": "Ishares Core Us Aggregate Bond",
    "zh": "安硕ETF",
    "ticker": "IVV",
    "investor": "肯·费雪",
-   "value": 15442672748
+   "value": 16714399245
   },
   {
    "name": "Apple Inc",
    "zh": "苹果",
    "ticker": "AAPL",
    "investor": "肯·费雪",
-   "value": 14321456572
+   "value": 16670059955
   },
   {
-   "name": "Ge Aerospace",
-   "zh": "通用电气",
-   "ticker": "GE",
-   "investor": "克里斯·霍恩",
-   "value": 13482035005
+   "name": "Alphabet Inc A类",
+   "zh": "谷歌",
+   "ticker": "GOOG",
+   "investor": "肯·费雪",
+   "value": 14889605021
   }
  ],
  "swfs": [
@@ -10892,7 +10892,7 @@
    "partyZh": "民主党",
    "roleZh": "众议院",
    "stateZh": "加利福尼亚",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Official_photo_of_Speaker_Nancy_Pelosi_in_2019.jpg/250px-Official_photo_of_Speaker_Nancy_Pelosi_in_2019.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Official_photo_of_Speaker_Nancy_Pelosi_in_2019.jpg/250px-Official_photo_of_Speaker_Nancy_Pelosi_in_2019.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "bioguide": "P000197",
    "count": 128,
    "volume": 75515500,
@@ -11017,7 +11017,7 @@
    "partyZh": "共和党",
    "roleZh": "参议院",
    "stateZh": "佛罗里达",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Official_Portrait_of_Senator_Rick_Scott_%28R-FL%29.jpg/250px-Official_Portrait_of_Senator_Rick_Scott_%28R-FL%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Official_Portrait_of_Senator_Rick_Scott_%28R-FL%29.jpg/250px-Official_Portrait_of_Senator_Rick_Scott_%28R-FL%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "bioguide": "S001217",
    "count": 110,
    "volume": 13775000,
@@ -11142,7 +11142,7 @@
    "partyZh": "共和党",
    "roleZh": "参议院",
    "stateZh": "宾夕法尼亚",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/McCormick_Portrait_%28HR%29.jpg/250px-McCormick_Portrait_%28HR%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/McCormick_Portrait_%28HR%29.jpg/250px-McCormick_Portrait_%28HR%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "bioguide": "M001243",
    "count": 123,
    "volume": 11415000,
@@ -11267,7 +11267,7 @@
    "partyZh": "民主党",
    "roleZh": "众议院",
    "stateZh": "华盛顿州",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Rep._Suzan_DelBene_Official_Portrait.jpg/250px-Rep._Suzan_DelBene_Official_Portrait.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Rep._Suzan_DelBene_Official_Portrait.jpg/250px-Rep._Suzan_DelBene_Official_Portrait.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "bioguide": "D000617",
    "count": 470,
    "volume": 3926001,
@@ -11392,7 +11392,7 @@
    "partyZh": "共和党",
    "roleZh": "副总统(前参议员)",
    "stateZh": "俄亥俄",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/March_2026_Official_Vice_Presidential_Portrait_of_JD_Vance_%28head-and-shoulders_cropped%29.jpg/250px-March_2026_Official_Vice_Presidential_Portrait_of_JD_Vance_%28head-and-shoulders_cropped%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/March_2026_Official_Vice_Presidential_Portrait_of_JD_Vance_%28head-and-shoulders_cropped%29.jpg/250px-March_2026_Official_Vice_Presidential_Portrait_of_JD_Vance_%28head-and-shoulders_cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "bioguide": "V000137",
    "count": 3,
    "volume": 3250000,
@@ -11440,7 +11440,7 @@
    "partyZh": "民主党",
    "roleZh": "众议院",
    "stateZh": "新泽西",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Josh_Gottheimer%2C_official_portrait%2C_115th_Congress_%28cropped%29.jpg/250px-Josh_Gottheimer%2C_official_portrait%2C_115th_Congress_%28cropped%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Josh_Gottheimer%2C_official_portrait%2C_115th_Congress_%28cropped%29.jpg/250px-Josh_Gottheimer%2C_official_portrait%2C_115th_Congress_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "bioguide": "G000583",
    "count": 2896,
    "volume": 2458000,
@@ -11565,7 +11565,7 @@
    "partyZh": "民主党",
    "roleZh": "众议院",
    "stateZh": "路易斯安那",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Fields_Cleo_119th_Congress_%284x5_cropped%29.jpg/250px-Fields_Cleo_119th_Congress_%284x5_cropped%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Fields_Cleo_119th_Congress_%284x5_cropped%29.jpg/250px-Fields_Cleo_119th_Congress_%284x5_cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "bioguide": "F000110",
    "count": 218,
    "volume": 1383500,
@@ -11690,7 +11690,7 @@
    "partyZh": "共和党",
    "roleZh": "参议院",
    "stateZh": "俄克拉荷马",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/DHS_Secretary_Markwayne_Mullin_Official_Portrait_%2855166865268%29.jpg/250px-DHS_Secretary_Markwayne_Mullin_Official_Portrait_%2855166865268%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/DHS_Secretary_Markwayne_Mullin_Official_Portrait_%2855166865268%29.jpg/250px-DHS_Secretary_Markwayne_Mullin_Official_Portrait_%2855166865268%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "bioguide": "M001190",
    "count": 574,
    "volume": 1011000,
@@ -11815,7 +11815,7 @@
    "partyZh": "共和党",
    "roleZh": "参议院",
    "stateZh": "阿拉巴马",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Tommy_tuberville.jpg/250px-Tommy_tuberville.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Sen._Tommy_Tuberville_Official_Portrait%2C_118th_Congress_%28cropped%29.jpg/250px-Sen._Tommy_Tuberville_Official_Portrait%2C_118th_Congress_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "bioguide": "T000278",
    "count": 1212,
    "volume": 944000,
@@ -11940,7 +11940,7 @@
    "partyZh": "共和党",
    "roleZh": "众议院",
    "stateZh": "威斯康星",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Representative_Tony_Wied_Official_Portrait.jpg/250px-Representative_Tony_Wied_Official_Portrait.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Representative_Tony_Wied_Official_Portrait.jpg/250px-Representative_Tony_Wied_Official_Portrait.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "bioguide": "W000829",
    "count": 14,
    "volume": 870500,
@@ -12065,7 +12065,7 @@
    "partyZh": "共和党",
    "roleZh": "众议院",
    "stateZh": "得克萨斯",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Rep._Michael_McCaul%2C_official_portrait%2C_118th_Congress.jpg/250px-Rep._Michael_McCaul%2C_official_portrait%2C_118th_Congress.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Rep._Michael_McCaul%2C_official_portrait%2C_118th_Congress.jpg/250px-Rep._Michael_McCaul%2C_official_portrait%2C_118th_Congress.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "bioguide": "M001157",
    "count": 5432,
    "volume": 460500,
@@ -12190,7 +12190,7 @@
    "partyZh": "共和党",
    "roleZh": "众议院",
    "stateZh": "佐治亚",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Marjorie_Taylor_Greene_%28cropped%29.jpg/250px-Marjorie_Taylor_Greene_%28cropped%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Marjorie_Taylor_Greene_%28cropped%29.jpg/250px-Marjorie_Taylor_Greene_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "bioguide": "G000596",
    "count": 493,
    "volume": 313500,
@@ -12315,7 +12315,7 @@
    "partyZh": "共和党",
    "roleZh": "众议院",
    "stateZh": "密歇根",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Rep._Lisa_McClain.jpg/250px-Rep._Lisa_McClain.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Rep._Lisa_McClain.jpg/250px-Rep._Lisa_McClain.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "bioguide": "M001136",
    "count": 1035,
    "volume": 313500,
@@ -12440,7 +12440,7 @@
    "partyZh": "共和党",
    "roleZh": "众议院",
    "stateZh": "得克萨斯",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Rep._Dan_Crenshaw%2C_official_portrait%2C_118th_Congress.jpg/250px-Rep._Dan_Crenshaw%2C_official_portrait%2C_118th_Congress.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Rep._Dan_Crenshaw%2C_official_portrait%2C_118th_Congress.jpg/250px-Rep._Dan_Crenshaw%2C_official_portrait%2C_118th_Congress.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "bioguide": "C001120",
    "count": 33,
    "volume": 289000,
@@ -12565,7 +12565,7 @@
    "partyZh": "民主党",
    "roleZh": "众议院",
    "stateZh": "加利福尼亚",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Gil_Cisneros_119th_Congress_2.jpg/250px-Gil_Cisneros_119th_Congress_2.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Gil_Cisneros_119th_Congress_2.jpg/250px-Gil_Cisneros_119th_Congress_2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "bioguide": "C001123",
    "count": 2123,
    "volume": 289000,
@@ -12690,7 +12690,7 @@
    "partyZh": "民主党",
    "roleZh": "众议院",
    "stateZh": "加利福尼亚",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Ro_Khanna%2C_official_portrait%2C_115th_Congress_%283x4%29.jpg/250px-Ro_Khanna%2C_official_portrait%2C_115th_Congress_%283x4%29.jpg",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Ro_Khanna%2C_official_portrait%2C_115th_Congress_%283x4%29.jpg/250px-Ro_Khanna%2C_official_portrait%2C_115th_Congress_%283x4%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "bioguide": "K000389",
    "count": 12831,
    "volume": 240000,
@@ -12869,8 +12869,14 @@
   }
  ],
  "aaii": {
-  "asOf": "2026-07-30",
+  "asOf": "2026-08-06",
   "weeks": [
+   {
+    "date": "2026-08-06",
+    "bull": 37.0,
+    "neutral": 25.0,
+    "bear": 38.0
+   },
    {
     "date": "2026-07-30",
     "bull": 31.0,
@@ -12936,12 +12942,6 @@
     "bull": 31.7,
     "neutral": 24.7,
     "bear": 43.6
-   },
-   {
-    "date": "2026-05-14",
-    "bull": 39.3,
-    "neutral": 24.1,
-    "bear": 36.6
    }
   ],
   "avg": {
@@ -12949,7 +12949,7 @@
    "neutral": 31.0,
    "bear": 31.4
   },
-  "spread": -11.1,
+  "spread": -1.0,
   "hi52": {
    "bull": 49.5,
    "date": "2026-01-15"
