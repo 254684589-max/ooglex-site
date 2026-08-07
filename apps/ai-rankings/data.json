@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-08-05T22:36:50Z",
-  "asOf": "2026-08-05",
+  "updatedAt": "2026-08-07T01:47:05Z",
+  "asOf": "2026-08-07",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -50,7 +50,7 @@
       "orgCn": "Anthropic",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1509,
+      "arena": 1507,
       "livebench": null,
       "aa": 59.9,
       "ctx": "1M",
@@ -63,7 +63,7 @@
       "orgCn": "OpenAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1483,
+      "arena": 1482,
       "livebench": 81.6,
       "aa": 58.9,
       "ctx": "400K",
@@ -80,7 +80,7 @@
       "livebench": 80.8,
       "aa": null,
       "ctx": "1.1M",
-      "price": 11.25
+      "price": 5.62
     },
     {
       "id": "qwen3-8",
@@ -89,7 +89,7 @@
       "orgCn": "阿里巴巴",
       "flag": "🇨🇳",
       "open": false,
-      "arena": 1496,
+      "arena": 1497,
       "livebench": 79.5,
       "aa": null,
       "ctx": "1M",
@@ -102,11 +102,11 @@
       "orgCn": "Anthropic",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1484,
+      "arena": 1483,
       "livebench": null,
       "aa": 56.5,
       "ctx": "1M",
-      "price": 10.0
+      "price": 5.0
     },
     {
       "id": "claude-opus-4-7",
@@ -141,7 +141,7 @@
       "orgCn": "OpenAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1468,
+      "arena": 1467,
       "livebench": 78.6,
       "aa": null,
       "ctx": null,
@@ -154,11 +154,11 @@
       "orgCn": "谷歌",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1485,
+      "arena": 1487,
       "livebench": 78.0,
       "aa": 56.8,
       "ctx": "1M",
-      "price": 4.5
+      "price": 2.25
     },
     {
       "id": "grok-4-5",
@@ -167,7 +167,7 @@
       "orgCn": "xAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1469,
+      "arena": 1468,
       "livebench": 77.1,
       "aa": null,
       "ctx": "500K",
@@ -180,7 +180,7 @@
       "orgCn": "Meta",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1490,
+      "arena": 1487,
       "livebench": 76.0,
       "aa": null,
       "ctx": null,
@@ -210,7 +210,7 @@
       "livebench": 75.4,
       "aa": null,
       "ctx": "1M",
-      "price": 3.38
+      "price": 1.69
     },
     {
       "id": "gemini-3-6-flash",
@@ -219,11 +219,11 @@
       "orgCn": "谷歌",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1483,
+      "arena": 1485,
       "livebench": 74.5,
       "aa": null,
       "ctx": "1M",
-      "price": 3.0
+      "price": 1.5
     },
     {
       "id": "grok-4-1",
@@ -258,7 +258,7 @@
       "orgCn": "智谱",
       "flag": "🇨🇳",
       "open": true,
-      "arena": 1469,
+      "arena": 1471,
       "livebench": 73.4,
       "aa": null,
       "ctx": "1M",
@@ -284,7 +284,7 @@
       "orgCn": "深度求索",
       "flag": "🇨🇳",
       "open": true,
-      "arena": 1458,
+      "arena": 1457,
       "livebench": 72.6,
       "aa": null,
       "ctx": "1M",
@@ -297,11 +297,11 @@
       "orgCn": "Thinky",
       "flag": "🌐",
       "open": true,
-      "arena": 1441,
+      "arena": 1442,
       "livebench": 72.9,
       "aa": null,
-      "ctx": "1M",
-      "price": 1.76
+      "ctx": "524K",
+      "price": 0.88
     },
     {
       "id": "gemini-3-flash",
@@ -349,7 +349,7 @@
       "orgCn": "阿里巴巴",
       "flag": "🇨🇳",
       "open": false,
-      "arena": 1444,
+      "arena": 1443,
       "livebench": 69.0,
       "aa": null,
       "ctx": "1M",
@@ -401,11 +401,11 @@
       "orgCn": "谷歌",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1457,
+      "arena": 1459,
       "livebench": 63.8,
       "aa": null,
       "ctx": "1M",
-      "price": 0.85
+      "price": 0.42
     },
     {
       "id": "minimax-m2",
@@ -470,7 +470,7 @@
       "livebench": null,
       "aa": null,
       "ctx": "1M",
-      "price": 10.0
+      "price": 5.0
     },
     {
       "id": "claude-opus-5",
@@ -479,7 +479,7 @@
       "orgCn": "Anthropic",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1492,
+      "arena": 1493,
       "livebench": null,
       "aa": null,
       "ctx": "1M",
@@ -544,11 +544,11 @@
       "orgCn": "OpenAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1473,
+      "arena": 1474,
       "livebench": null,
       "aa": null,
       "ctx": "1.1M",
-      "price": 11.25
+      "price": 5.62
     },
     {
       "id": "claude-opus-4-5-20251101-32k",
