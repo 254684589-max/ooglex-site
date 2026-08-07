@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-07T01:47:05Z",
+  "updatedAt": "2026-08-07T22:26:47Z",
   "asOf": "2026-08-07",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
@@ -67,7 +67,7 @@
       "livebench": 81.6,
       "aa": 58.9,
       "ctx": "400K",
-      "price": null
+      "price": 11.25
     },
     {
       "id": "gpt-5-5",
@@ -94,6 +94,19 @@
       "aa": null,
       "ctx": "1M",
       "price": 3.0
+    },
+    {
+      "id": "muse-spark-1-2",
+      "name": "Muse Spark 1.2",
+      "org": "Meta",
+      "orgCn": "Meta",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1498,
+      "livebench": 78.9,
+      "aa": null,
+      "ctx": null,
+      "price": 2.0
     },
     {
       "id": "claude-opus-4-8",
@@ -145,7 +158,7 @@
       "livebench": 78.6,
       "aa": null,
       "ctx": null,
-      "price": null
+      "price": 5.62
     },
     {
       "id": "gemini-3-1-pro",
@@ -275,7 +288,7 @@
       "livebench": 73.7,
       "aa": null,
       "ctx": null,
-      "price": null
+      "price": 2.25
     },
     {
       "id": "deepseek-v4-pro",
@@ -525,19 +538,6 @@
       "price": 4.81
     },
     {
-      "id": "grok-4-20-beta1",
-      "name": "Grok 4.20 BETA1",
-      "org": "xAI",
-      "orgCn": "xAI",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1474,
-      "livebench": null,
-      "aa": null,
-      "ctx": null,
-      "price": null
-    },
-    {
       "id": "gpt-5-5-instant",
       "name": "GPT 5.5 Instant",
       "org": "OpenAI",
@@ -551,17 +551,17 @@
       "price": 5.62
     },
     {
-      "id": "claude-opus-4-5-20251101-32k",
-      "name": "Claude Opus 4.5.20251101 32K",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
+      "id": "grok-4-20-beta1",
+      "name": "Grok 4.20 BETA1",
+      "org": "xAI",
+      "orgCn": "xAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1473,
+      "arena": 1474,
       "livebench": null,
       "aa": null,
-      "ctx": "200K",
-      "price": 10.0
+      "ctx": null,
+      "price": null
     }
   ]
 }
