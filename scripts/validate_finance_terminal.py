@@ -511,6 +511,29 @@ assert.strictEqual(dgs10.change, Number(match.row.chg.toLowerCase().replace("bp"
 assert.strictEqual(dgs10.asOf, match.row.asOf);
 assert.strictEqual(dgs10.updatedAt, macro.updatedAt);
 assert.strictEqual(dgs10.source.seriesId, "DGS10");
+assert.strictEqual(dgs10.observationTrend.count, match.row.observations.length);
+assert.strictEqual(dgs10.observationTrend.targetCount, 8);
+assert.deepStrictEqual(dgs10.observationTrend.values, match.row.observations.map((item) => item.value));
+assert.strictEqual(dgs10.observationTrend.changeUnit, "bp");
+assert.strictEqual(dgs10.observationTrend.change, null);
+const dgsWindow = JSON.parse(JSON.stringify(macro));
+const dgsWindowRow = adapter.findDgs10Row(dgsWindow).row;
+dgsWindowRow.previousAsOf = "2026-08-05";
+dgsWindowRow.previousPrice = 4.63;
+dgsWindowRow.observations = [
+  { asOf: "2026-08-05", value: 4.63 },
+  { asOf: "2026-08-06", value: 4.69 }
+];
+const dgsWindowAsset = adapter.adaptDgs10(
+  config.assets.find((asset) => asset.id === "us10y"), dgsWindow, currentNow
+);
+assert.strictEqual(dgsWindowAsset.observationTrend.count, 2);
+assert.strictEqual(dgsWindowAsset.observationTrend.change, 6);
+const tamperedDgsWindow = JSON.parse(JSON.stringify(dgsWindow));
+adapter.findDgs10Row(tamperedDgsWindow).row.observations[1].value = 4.68;
+assert.throws(() => adapter.adaptDgs10(
+  config.assets.find((asset) => asset.id === "us10y"), tamperedDgsWindow, currentNow
+));
 const dgs10Health = adapter.adaptOfficialSourceHealth(macroHealth, macro, dgs10, "DGS10", currentNow);
 assert.strictEqual(dgs10Health.seriesId, "DGS10");
 assert.strictEqual(dgs10Health.status, "unknown");
@@ -657,6 +680,7 @@ trackedDgs.status = "ok";
 trackedDgs.asOf = "2026-08-07";
 trackedDgs.updatedAt = "2026-08-07T21:00:00Z";
 trackedDgs.lastAttemptAt = trackedDgs.updatedAt;
+trackedDgs.observations = [{ asOf: trackedDgs.asOf, value: trackedDgs.price }];
 const independentlyFreshDgs = adapter.buildPageData(config, trackedDgsMacro, currentNow).assets.find((asset) => asset.id === "us10y");
 assert.strictEqual(independentlyFreshDgs.status, "ok");
 assert.strictEqual(independentlyFreshDgs.updatedAt, trackedDgs.updatedAt);
@@ -676,6 +700,7 @@ assert.strictEqual(freshOil.delayLabel, "日频现货 · 自动更新");
 const staleMacro = JSON.parse(JSON.stringify(macro));
 const staleMatch = adapter.findDgs10Row(staleMacro);
 staleMatch.row.asOf = "2026-07-20";
+staleMatch.row.observations = [{ asOf: staleMatch.row.asOf, value: staleMatch.row.price }];
 staleMacro.referenceSeries.DTWEXBGS.asOf = "2026-07-20";
 staleMacro.referenceSeries.DTWEXBGS.previousAsOf = "2026-07-17";
 staleMacro.referenceSeries.RWTC.status = "ok";
@@ -1527,6 +1552,11 @@ def main() -> None:
 
     category, row = find_dgs10(macro)
     require(category.get("src") == "FRED", "宏观雷达DGS10来源必须为FRED")
+    dgs10_observations = row.get("observations")
+    require(isinstance(dgs10_observations, list) and len(dgs10_observations) == 1,
+            "当前DGS10旧快照只能保留1个有日期的官方观测点")
+    require(dgs10_observations[0] == {"asOf": row["asOf"], "value": row["price"]},
+            "DGS10观测窗口末值必须与当前官方记录一致")
     require(re.fullmatch(r"-?\d+(?:\.\d+)?%", row.get("val", "")) is not None, "DGS10收益率格式无效")
     require(re.fullmatch(r"[+-]?\d+(?:\.\d+)?bp", row.get("chg", ""), flags=re.I) is not None, "DGS10变化必须使用bp")
     parse_date(row["asOf"])

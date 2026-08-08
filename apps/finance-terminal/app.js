@@ -1051,6 +1051,59 @@
     return null;
   }
 
+  function normalizeOfficialObservations(record) {
+    var source = record && Array.isArray(record.observations) ? record.observations : null;
+    var candidates = source ? source.slice() : [];
+    if (!source && record) {
+      if (record.previousAsOf && isNumber(record.previousPrice)) {
+        candidates.push({ asOf: record.previousAsOf, value: record.previousPrice });
+      }
+      if (record.asOf && isNumber(record.price)) {
+        candidates.push({ asOf: record.asOf, value: record.price });
+      }
+    }
+    if (candidates.length > 8) throw new Error("官方观测窗口超过8项");
+    var previousDate = null;
+    var observations = candidates.map(function (item) {
+      var observed = parseIsoDate(item && item.asOf);
+      if (!observed || !isNumber(item && item.value) || item.value <= 0
+          || (previousDate && observed <= previousDate)) {
+        throw new Error("官方观测窗口包含无效或非递增记录");
+      }
+      previousDate = observed;
+      return { asOf: item.asOf, value: item.value };
+    });
+    if (observations.length && record) {
+      var last = observations[observations.length - 1];
+      if (last.asOf !== record.asOf || !isNumber(record.price)
+          || Math.abs(last.value - record.price) > 1e-9) {
+        throw new Error("官方观测窗口末值与当前记录不一致");
+      }
+    }
+    return observations;
+  }
+
+  function buildOfficialObservationTrend(record, changeUnit) {
+    var observations = normalizeOfficialObservations(record);
+    var first = observations[0] || null;
+    var last = observations[observations.length - 1] || null;
+    var change = null;
+    if (first && last && observations.length >= 2) {
+      change = changeUnit === "bp"
+        ? Math.round((last.value - first.value) * 10000) / 100
+        : (last.value / first.value - 1) * 100;
+    }
+    return {
+      count: observations.length,
+      targetCount: 8,
+      startAsOf: first && first.asOf,
+      endAsOf: last && last.asOf,
+      values: observations.map(function (item) { return item.value; }),
+      change: change,
+      changeUnit: changeUnit
+    };
+  }
+
   function adaptDgs10(template, macroData, now) {
     var match = findDgs10Row(macroData);
     if (!match) throw new Error("宏观雷达未提供DGS10记录");
@@ -1089,6 +1142,7 @@
 
     var refreshFailed = recordStatus === "stale";
     var stale = refreshFailed || age > DGS10_MAX_BUSINESS_DAYS;
+    var observationTrend = buildOfficialObservationTrend(match.row, "bp");
     var note = "日频官方数据；变化为相对上一观测值的基点数。";
     if (refreshFailed) {
       note = "本轮FRED自动更新失败，保留上次有效DGS10观测值并标记为过期。";
@@ -1111,7 +1165,8 @@
         seriesId: "DGS10"
       },
       note: note,
-      spark: []
+      spark: observationTrend.values,
+      observationTrend: observationTrend
     });
   }
 
@@ -2380,6 +2435,7 @@
     adaptMacroRegime: adaptMacroRegime,
     adaptOfrFsi: adaptOfrFsi,
     adaptRwtc: adaptRwtc,
+    buildOfficialObservationTrend: buildOfficialObservationTrend,
     adaptSourceHealth: adaptSourceHealth,
     adaptSupportingSourceHealth: adaptSupportingSourceHealth,
     buildPageData: buildPageData,
@@ -2392,6 +2448,7 @@
     findDgs10Row: findDgs10Row,
     findDtwexbgsReference: findDtwexbgsReference,
     findRwtcReference: findRwtcReference,
+    normalizeOfficialObservations: normalizeOfficialObservations,
     isUsBusinessDay: isUsBusinessDay,
     isSafeOfrUrl: isSafeOfrUrl,
     isSafeGoogleNewsUrl: isSafeGoogleNewsUrl,
@@ -2495,12 +2552,13 @@
   }
 
   function makeSparkline(values, direction) {
+    var ariaLabel = arguments.length > 2 ? arguments[2] : null;
     var svg = document.createElementNS(SVG_NS, "svg");
     svg.setAttribute("class", "sparkline");
     svg.setAttribute("viewBox", "0 0 240 42");
     svg.setAttribute("preserveAspectRatio", "none");
     svg.setAttribute("role", "img");
-    svg.setAttribute("aria-label", direction === "positive" ? "演示走势向上" : "演示走势向下");
+    svg.setAttribute("aria-label", ariaLabel || (direction === "positive" ? "演示走势向上" : "演示走势向下"));
 
     var base = document.createElementNS(SVG_NS, "line");
     base.setAttribute("class", "base");
@@ -2525,6 +2583,43 @@
     line.setAttribute("points", points);
     svg.appendChild(line);
     return svg;
+  }
+
+  function formatTrendChange(trend) {
+    if (!trend || !isNumber(trend.change)) return "区间变化待补足";
+    var sign = trend.change > 0 ? "+" : trend.change < 0 ? "−" : "";
+    var decimals = trend.changeUnit === "bp" && Number.isInteger(trend.change) ? 0 : 2;
+    return "区间 " + sign + Math.abs(trend.change).toFixed(decimals)
+      + (trend.changeUnit === "bp" ? " bp" : "%");
+  }
+
+  function makeOfficialTrend(trend) {
+    var direction = !trend || !isNumber(trend.change) || trend.change === 0
+      ? "neutral" : trend.change > 0 ? "positive" : "negative";
+    var box = document.createElement("div");
+    box.className = "official-trend trend-" + direction;
+    box.setAttribute("aria-label", "最近官方观测趋势");
+    var head = document.createElement("div");
+    head.className = "official-trend-head";
+    appendText(head, "span", "official-trend-label", "RECENT OBSERVATIONS");
+    appendText(head, "span", "official-trend-count", (trend ? trend.count : 0) + " / 8");
+    box.appendChild(head);
+    if (!trend || trend.count < 2) {
+      appendText(box, "p", "official-trend-empty", trend && trend.count === 1
+        ? "当前仅1个可追溯观测点，等待下次官方刷新补足。"
+        : "暂无可追溯观测窗口，等待官方刷新。"
+      );
+      return box;
+    }
+    var aria = "最近" + trend.count + "个官方观测点，" + trend.startAsOf + "至" + trend.endAsOf
+      + "，" + formatTrendChange(trend);
+    box.appendChild(makeSparkline(trend.values, direction, aria));
+    var meta = document.createElement("div");
+    meta.className = "official-trend-meta";
+    appendText(meta, "span", "", trend.startAsOf + " → " + trend.endAsOf);
+    appendText(meta, "span", "", formatTrendChange(trend));
+    box.appendChild(meta);
+    return box;
   }
 
   function statusLabel(asset) {
@@ -3337,6 +3432,7 @@
     if (asset.demo) {
       card.appendChild(makeSparkline(asset.spark, direction));
     } else {
+      if (asset.observationTrend) card.appendChild(makeOfficialTrend(asset.observationTrend));
       var officialNote = appendText(card, "p", "official-note", asset.note || "日频官方数据");
       officialNote.title = asset.note || "";
       if (asset.updateHealth) appendOfficialUpdateHealth(card, asset.updateHealth);

@@ -355,11 +355,29 @@
     .sparkline .line { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
     .positive .sparkline .line { stroke: var(--up); }
     .negative .sparkline .line { stroke: var(--down); }
+    .official-trend {
+      min-height: 94px;
+      margin: 14px 0 0;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: rgba(140, 152, 170, 0.035);
+    }
+    .official-trend-head,
+    .official-trend-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .official-trend-label { color: var(--faint); font: 8px var(--mono); letter-spacing: 0.08em; }
+    .official-trend-count { color: var(--cyan); font: 700 9px var(--mono); }
+    .official-trend .sparkline { height: 32px; margin: 7px 0 4px; }
+    .official-trend.trend-positive .sparkline .line { stroke: var(--up); }
+    .official-trend.trend-negative .sparkline .line { stroke: var(--down); }
+    .official-trend.trend-neutral .sparkline .line { stroke: var(--muted); }
+    .official-trend-meta { color: var(--faint); font: 8px var(--mono); font-variant-numeric: tabular-nums; }
+    .official-trend-empty { margin: 15px 0 0; color: var(--muted); font-size: 9px; line-height: 1.5; }
     .official-note {
       display: flex;
       min-height: 42px;
       align-items: center;
-      margin: 14px 0 12px;
+      margin: 8px 0 12px;
       padding: 8px 10px;
       overflow: hidden;
       border: 1px solid rgba(84, 216, 255, 0.18);

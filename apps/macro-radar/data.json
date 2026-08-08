@@ -558,6 +558,12 @@
             "url": "https://fred.stlouisfed.org/series/DGS10",
             "seriesId": "DGS10"
           },
+          "observations": [
+            {
+              "asOf": "2026-08-06",
+              "value": 4.69
+            }
+          ],
           "note": "本轮FRED自动更新失败，保留上次有效DGS10观测值。"
         },
         {

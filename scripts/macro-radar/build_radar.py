@@ -287,6 +287,50 @@ def _positive_number(value):
             and math.isfinite(value) and value > 0)
 
 
+def normalize_official_observations(series, limit=8):
+    """Validate an ascending official observation window without inventing dates or values."""
+    try:
+        maximum = max(2, min(8, int(limit)))
+    except (TypeError, ValueError):
+        maximum = 8
+    observations = []
+    previous_date = None
+    for item in series or []:
+        if not isinstance(item, (list, tuple)) or len(item) != 2:
+            return []
+        observed, value = item
+        parsed = _parse_observation_date(observed)
+        if parsed is None or not _positive_number(value) \
+                or (previous_date is not None and parsed <= previous_date):
+            return []
+        observations.append({"asOf": observed, "value": float(value)})
+        previous_date = parsed
+    return observations[-maximum:]
+
+
+def retained_official_observations(record):
+    """Reuse a valid window, or seed only the dated observations an old record proves."""
+    existing = record.get("observations") if isinstance(record, dict) else None
+    if isinstance(existing, list) and existing:
+        pairs = [(item.get("asOf"), item.get("value")) for item in existing if isinstance(item, dict)]
+        normalized = normalize_official_observations(pairs)
+        if len(normalized) == len(existing):
+            return normalized
+
+    if not isinstance(record, dict):
+        return []
+    pairs = []
+    previous_as_of = record.get("previousAsOf")
+    previous_price = record.get("previousPrice")
+    as_of = record.get("asOf")
+    price = record.get("price")
+    if _parse_observation_date(previous_as_of) and _positive_number(previous_price):
+        pairs.append((previous_as_of, previous_price))
+    if _parse_observation_date(as_of) and _positive_number(price):
+        pairs.append((as_of, price))
+    return normalize_official_observations(pairs)
+
+
 def _find_dgs10_row(data):
     for category in (data or {}).get("macro") or []:
         if not isinstance(category, dict):
@@ -324,7 +368,7 @@ def previous_dgs10_reference(previous_data):
     previous_price = row.get("previousPrice")
     if not _positive_number(previous_price):
         previous_price = price - float(change_bps) / 100
-    return {
+    retained = {
         **copy.deepcopy(row),
         "id": DGS10_ID,
         "name": "10 年期美债收益率",
@@ -339,6 +383,8 @@ def previous_dgs10_reference(previous_data):
         "lastAttemptAt": row.get("lastAttemptAt") or updated_at,
         "source": dict(DGS10_SOURCE),
     }
+    retained["observations"] = retained_official_observations(retained)
+    return retained
 
 
 def build_dgs10_reference(previous_data, updated_at, fetcher=None):
@@ -348,9 +394,10 @@ def build_dgs10_reference(previous_data, updated_at, fetcher=None):
         series = fetch(DGS10_ID, 8) or []
     except Exception:
         series = []
-    if len(series) >= 2:
-        previous_as_of, previous_price = series[-2]
-        as_of, price = series[-1]
+    observations = normalize_official_observations(series)
+    if len(observations) >= 2:
+        previous_as_of, previous_price = observations[-2]["asOf"], observations[-2]["value"]
+        as_of, price = observations[-1]["asOf"], observations[-1]["value"]
         if _parse_observation_date(previous_as_of) and _parse_observation_date(as_of) \
                 and previous_as_of < as_of and _positive_number(previous_price) and _positive_number(price):
             change_bps = round((price - previous_price) * 100)
@@ -370,6 +417,7 @@ def build_dgs10_reference(previous_data, updated_at, fetcher=None):
                 "updatedAt": updated_at,
                 "lastAttemptAt": updated_at,
                 "source": dict(DGS10_SOURCE),
+                "observations": observations,
                 "note": "FRED官方日频数据；变化为相对上一观测值的基点数。",
             }
     old = previous_dgs10_reference(previous_data)
@@ -395,6 +443,7 @@ def build_dgs10_reference(previous_data, updated_at, fetcher=None):
         "updatedAt": None,
         "lastAttemptAt": updated_at,
         "source": dict(DGS10_SOURCE),
+        "observations": [],
         "note": "FRED自动更新失败，且没有可保留的历史DGS10观测值。",
     }
 
