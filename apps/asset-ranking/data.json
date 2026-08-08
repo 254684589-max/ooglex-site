@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-08-08T12:27:08Z",
+  "updatedAt": "2026-08-08T17:16:14Z",
   "asOf": "2026-08-08",
   "frequency": "daily",
   "status": "partial",
   "source": "Yahoo Finance · CoinGecko · 公开估算（世界黄金协会 / IMF / Savills 等）",
   "count": 250,
-  "totalMarketCap": 1080616.7,
+  "totalMarketCap": 1082322.9,
   "categories": [
     {
       "key": "real-estate",
@@ -63,8 +63,8 @@
     "bond": 1,
     "currency": 5,
     "metal": 2,
-    "company": 229,
-    "crypto": 6
+    "company": 231,
+    "crypto": 4
   },
   "note": "全球资产不限品类按市值排名（前 250）。商品/贵金属以储量或地面存量×日频行情、货币以广义货币 M2×日频汇率、公司/加密货币以最新市值快照计；房地产、政府债务、煤炭、天然气为权威机构存量估值（慢变量，静态基准）。每日自动更新，仅供参考，不构成投资建议。",
   "assets": [
@@ -86,7 +86,7 @@
         "status": "partial",
         "source": "Savills",
         "asOf": null,
-        "updatedAt": "2026-08-08T12:27:08Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
         "frequency": "irregular",
         "note": "慢变量或静态存量估值；原报告日期未结构化。"
       },
@@ -110,7 +110,7 @@
         "status": "partial",
         "source": "公开存量基准（原始来源未结构化）",
         "asOf": null,
-        "updatedAt": "2026-08-08T12:27:08Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
         "frequency": "irregular",
         "note": "慢变量或静态存量估值；原报告日期未结构化。"
       },
@@ -124,19 +124,19 @@
       "unit": "桶（探明储量）",
       "qty": 1730000000000.0,
       "note": "全球石油探明储量 × WTI 油价（储量约 1.73 万亿桶，价格为日频快照）",
-      "marketCap": 133348.4,
-      "price": 77.08,
-      "changePct": -4.06,
+      "marketCap": 135251.4,
+      "price": 78.18,
+      "changePct": -2.69,
       "static": false,
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
+        "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
-        "asOf": null,
-        "updatedAt": null,
+        "asOf": "2026-08-07T20:59:59Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
         "frequency": "daily",
-        "note": "本轮请求失败，沿用旧版快照；旧文件未记录精确逐条时间。"
+        "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
       "rank": 3
     },
@@ -158,7 +158,7 @@
         "status": "partial",
         "source": "IMF《财政监测》",
         "asOf": null,
-        "updatedAt": "2026-08-08T12:27:08Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
         "frequency": "irregular",
         "note": "慢变量或静态存量估值；原报告日期未结构化。"
       },
@@ -176,15 +176,15 @@
       "price": 0.14843,
       "changePct": 0.2,
       "static": false,
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
+        "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
-        "asOf": null,
-        "updatedAt": null,
+        "asOf": "2026-08-08T16:05:08Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
         "frequency": "daily",
-        "note": "本轮请求失败，沿用旧版快照；旧文件未记录精确逐条时间。"
+        "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
       "rank": 5
     },
@@ -206,7 +206,7 @@
         "status": "partial",
         "source": "公开存量基准（原始来源未结构化）",
         "asOf": null,
-        "updatedAt": "2026-08-08T12:27:08Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
         "frequency": "irregular",
         "note": "慢变量或静态存量估值；原报告日期未结构化。"
       },
@@ -220,19 +220,19 @@
       "unit": "盎司（地面存量）",
       "qty": 6720000000.0,
       "note": "全球地面黄金存量 × 金价（约 6.72 亿盎司/21.6 万吨，来源世界黄金协会，价格为日频快照）",
-      "marketCap": 29576.7,
-      "price": 4401.3,
-      "changePct": 9.11,
+      "marketCap": 29566.0,
+      "price": 4399.7,
+      "changePct": 9.07,
       "static": false,
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
+        "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 世界黄金协会",
-        "asOf": null,
-        "updatedAt": null,
+        "asOf": "2026-08-07T20:59:55Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
         "frequency": "daily",
-        "note": "本轮请求失败，沿用旧版快照；旧文件未记录精确逐条时间。"
+        "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
       "rank": 7
     },
@@ -254,7 +254,7 @@
         "status": "partial",
         "source": "公开存量基准（原始来源未结构化）",
         "asOf": null,
-        "updatedAt": "2026-08-08T12:27:08Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
         "frequency": "irregular",
         "note": "慢变量或静态存量估值；原报告日期未结构化。"
       },
@@ -268,19 +268,19 @@
       "unit": "吨（储量）",
       "qty": 5800000000.0,
       "note": "全球铝储量 × 期货铝价（以 LME/COMEX 期货代理，价格为日频快照）",
-      "marketCap": 19904.2,
-      "price": 3431.75,
-      "changePct": 0.78,
+      "marketCap": 19773.7,
+      "price": 3409.25,
+      "changePct": 0.12,
       "static": false,
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
+        "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
-        "asOf": null,
-        "updatedAt": null,
+        "asOf": "2026-08-07T20:59:41Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
         "frequency": "daily",
-        "note": "本轮请求失败，沿用旧版快照；旧文件未记录精确逐条时间。"
+        "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
       "rank": 9
     },
@@ -302,7 +302,7 @@
         "status": "partial",
         "source": "公开存量基准（原始来源未结构化）",
         "asOf": null,
-        "updatedAt": "2026-08-08T12:27:08Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
         "frequency": "irregular",
         "note": "慢变量或静态存量估值；原报告日期未结构化。"
       },
@@ -320,15 +320,15 @@
       "price": 1.1562,
       "changePct": 0.16,
       "static": false,
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
+        "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
-        "asOf": null,
-        "updatedAt": null,
+        "asOf": "2026-08-07T21:29:57Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
         "frequency": "daily",
-        "note": "本轮请求失败，沿用旧版快照；旧文件未记录精确逐条时间。"
+        "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
       "rank": 11
     },
@@ -340,19 +340,19 @@
       "unit": "磅（储量）",
       "qty": 2860000000000.0,
       "note": "全球铜储量 × COMEX 铜价（储量约 13 亿吨，价格为日频快照）",
-      "marketCap": 18833.1,
-      "price": 6.585,
-      "changePct": 1.09,
+      "marketCap": 18850.3,
+      "price": 6.591,
+      "changePct": 1.18,
       "static": false,
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
+        "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
-        "asOf": null,
-        "updatedAt": null,
+        "asOf": "2026-08-07T20:59:57Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
         "frequency": "daily",
-        "note": "本轮请求失败，沿用旧版快照；旧文件未记录精确逐条时间。"
+        "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
       "rank": 12
     },
@@ -368,15 +368,15 @@
       "price": 0.006339,
       "changePct": -0.1,
       "static": false,
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
+        "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
-        "asOf": null,
-        "updatedAt": null,
+        "asOf": "2026-08-07T20:59:57Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
         "frequency": "daily",
-        "note": "本轮请求失败，沿用旧版快照；旧文件未记录精确逐条时间。"
+        "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
       "rank": 13
     },
@@ -397,13 +397,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 14
     },
@@ -424,13 +423,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 15
     },
@@ -451,13 +449,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 16
     },
@@ -469,19 +466,19 @@
       "unit": "英镑（广义货币 M2）",
       "qty": 3000000000000.0,
       "note": "英国广义货币 M2（约 3 万亿英镑）× 美元汇率，汇率为日频快照",
-      "marketCap": 4047.9,
-      "price": 1.3493,
-      "changePct": 0.01,
+      "marketCap": 4047.6,
+      "price": 1.3492,
+      "changePct": 0.0,
       "static": false,
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
+        "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
-        "asOf": null,
-        "updatedAt": null,
+        "asOf": "2026-08-08T16:19:56Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
         "frequency": "daily",
-        "note": "本轮请求失败，沿用旧版快照；旧文件未记录精确逐条时间。"
+        "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
       "rank": 17
     },
@@ -502,13 +499,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 18
     },
@@ -520,19 +516,19 @@
       "unit": "盎司（地面存量）",
       "qty": 50000000000.0,
       "note": "全球地面白银存量 × 银价（约 500 亿盎司，价格为日频快照）",
-      "marketCap": 3190.0,
-      "price": 63.8,
-      "changePct": 10.64,
+      "marketCap": 3174.9,
+      "price": 63.499,
+      "changePct": 10.11,
       "static": false,
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
+        "mode": "market",
         "status": "partial",
         "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
-        "asOf": null,
-        "updatedAt": null,
+        "asOf": "2026-08-07T20:59:56Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
         "frequency": "daily",
-        "note": "本轮请求失败，沿用旧版快照；旧文件未记录精确逐条时间。"
+        "note": "价格为本轮行情；存量基准的原报告日期尚未结构化。"
       },
       "rank": 19
     },
@@ -553,13 +549,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 20
     },
@@ -580,13 +575,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 21
     },
@@ -607,13 +601,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 22
     },
@@ -634,13 +627,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 23
     },
@@ -661,13 +653,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-06T12:19:43Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 24
     },
@@ -688,13 +679,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 25
     },
@@ -704,18 +694,17 @@
       "category": "crypto",
       "emoji": "₿",
       "symbol": "BTC",
-      "stale": true,
-      "marketCap": 1302.0,
-      "price": 64875,
-      "changePct": 0.9,
+      "marketCap": 1305.5,
+      "price": 65055,
+      "changePct": 0.2,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "partial",
-        "source": "CoinGecko · Yahoo Finance",
-        "asOf": null,
-        "updatedAt": null,
-        "frequency": "daily",
-        "note": "本轮请求失败，沿用旧版快照；旧文件未记录精确逐条时间。"
+        "mode": "market",
+        "status": "ok",
+        "source": "CoinGecko",
+        "asOf": "2026-08-08T17:13:20.000Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
+        "frequency": "daily"
       },
       "rank": 26
     },
@@ -736,13 +725,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 27
     },
@@ -763,13 +751,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 28
     },
@@ -790,13 +777,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:02:30Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 29
     },
@@ -817,13 +803,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T06:30:20Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 30
     },
@@ -844,13 +829,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 31
     },
@@ -875,7 +859,7 @@
         "status": "ok",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": "2026-05-01",
-        "updatedAt": "2026-08-07T22:21:59Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
         "frequency": "irregular",
         "note": "最近一轮公开估值，非交易行情。"
       },
@@ -898,13 +882,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 33
     },
@@ -925,13 +908,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 34
     },
@@ -956,7 +938,7 @@
         "status": "ok",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": "2026-04-01",
-        "updatedAt": "2026-08-07T22:21:59Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
         "frequency": "irregular",
         "note": "最近一轮公开估值，非交易行情。"
       },
@@ -979,13 +961,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 36
     },
@@ -1006,13 +987,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 37
     },
@@ -1033,13 +1013,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 38
     },
@@ -1060,13 +1039,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:03:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 39
     },
@@ -1087,13 +1065,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 40
     },
@@ -1114,13 +1091,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 41
     },
@@ -1141,13 +1117,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 42
     },
@@ -1172,7 +1147,7 @@
         "status": "partial",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
         "frequency": "irregular",
         "note": "未记录可核验的最近融资月份。"
       },
@@ -1195,13 +1170,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 44
     },
@@ -1226,7 +1200,7 @@
         "status": "ok",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": "2025-11-01",
-        "updatedAt": "2026-08-07T22:21:59Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
         "frequency": "irregular",
         "note": "最近一轮公开估值，非交易行情。"
       },
@@ -1249,13 +1223,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 46
     },
@@ -1276,13 +1249,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 47
     },
@@ -1303,13 +1275,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:02:52Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 48
     },
@@ -1330,13 +1301,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 49
     },
@@ -1357,13 +1327,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:04:24Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 50
     },
@@ -1384,13 +1353,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 51
     },
@@ -1411,13 +1379,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 52
     },
@@ -1438,13 +1405,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 53
     },
@@ -1465,13 +1431,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 54
     },
@@ -1492,13 +1457,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 55
     },
@@ -1519,13 +1483,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 56
     },
@@ -1546,13 +1509,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:03:59Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 57
     },
@@ -1573,13 +1535,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 58
     },
@@ -1600,13 +1561,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 59
     },
@@ -1627,13 +1587,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 60
     },
@@ -1654,13 +1613,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 61
     },
@@ -1681,13 +1639,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:03:19Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 62
     },
@@ -1708,13 +1665,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:03:11Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 63
     },
@@ -1735,13 +1691,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:03:15Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 64
     },
@@ -1762,13 +1717,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 65
     },
@@ -1789,13 +1743,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:01:37Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 66
     },
@@ -1816,13 +1769,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 67
     },
@@ -1843,13 +1795,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:04:05Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 68
     },
@@ -1870,13 +1821,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 69
     },
@@ -1897,13 +1847,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 70
     },
@@ -1924,13 +1873,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 71
     },
@@ -1951,13 +1899,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 72
     },
@@ -1978,13 +1925,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 73
     },
@@ -1992,10 +1938,10 @@
       "name": "路威酩轩",
       "nameEn": "LVMH",
       "category": "company",
-      "marketCap": 273.9,
-      "price": 111.0,
+      "marketCap": 274.3,
+      "price": 111.16,
       "priceCur": "USD",
-      "changePct": 1.33,
+      "changePct": 1.48,
       "country": "法国",
       "flag": "🇫🇷",
       "sector": "可选消费",
@@ -2005,13 +1951,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 74
     },
@@ -2032,13 +1977,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:02:54Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 75
     },
@@ -2059,13 +2003,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:01:31Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 76
     },
@@ -2086,13 +2029,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 77
     },
@@ -2113,13 +2055,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 78
     },
@@ -2127,10 +2068,10 @@
       "name": "雀巢",
       "nameEn": "Nestle",
       "category": "company",
-      "marketCap": 258.5,
-      "price": 100.51,
+      "marketCap": 258.3,
+      "price": 100.41,
       "priceCur": "USD",
-      "changePct": 0.56,
+      "changePct": 0.46,
       "country": "瑞士",
       "flag": "🇨🇭",
       "sector": "必需消费",
@@ -2140,13 +2081,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 79
     },
@@ -2167,13 +2107,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 80
     },
@@ -2194,13 +2133,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 81
     },
@@ -2208,10 +2146,10 @@
       "name": "西门子",
       "nameEn": "Siemens",
       "category": "company",
-      "marketCap": 248.9,
-      "price": 161.82,
+      "marketCap": 249.1,
+      "price": 161.95,
       "priceCur": "USD",
-      "changePct": -0.66,
+      "changePct": -0.58,
       "country": "德国",
       "flag": "🇩🇪",
       "sector": "工业",
@@ -2221,13 +2159,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 82
     },
@@ -2248,13 +2185,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 83
     },
@@ -2275,13 +2211,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 84
     },
@@ -2302,13 +2237,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 85
     },
@@ -2329,13 +2263,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 86
     },
@@ -2356,13 +2289,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 87
     },
@@ -2372,18 +2304,17 @@
       "category": "crypto",
       "emoji": "₿",
       "symbol": "ETH",
-      "stale": true,
-      "marketCap": 230.9,
-      "price": 1912.8,
-      "changePct": 0.5,
+      "marketCap": 231.9,
+      "price": 1921.43,
+      "changePct": 0.2,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "partial",
-        "source": "CoinGecko · Yahoo Finance",
-        "asOf": null,
-        "updatedAt": null,
-        "frequency": "daily",
-        "note": "本轮请求失败，沿用旧版快照；旧文件未记录精确逐条时间。"
+        "mode": "market",
+        "status": "ok",
+        "source": "CoinGecko",
+        "asOf": "2026-08-08T17:13:20.000Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
+        "frequency": "daily"
       },
       "rank": 88
     },
@@ -2404,13 +2335,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:04:21Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 89
     },
@@ -2431,13 +2361,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 90
     },
@@ -2458,13 +2387,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 91
     },
@@ -2485,13 +2413,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 92
     },
@@ -2512,13 +2439,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 93
     },
@@ -2539,13 +2465,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 94
     },
@@ -2566,13 +2491,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 95
     },
@@ -2593,13 +2517,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 96
     },
@@ -2620,13 +2543,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 97
     },
@@ -2647,13 +2569,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 98
     },
@@ -2674,13 +2595,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 99
     },
@@ -2701,13 +2621,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 100
     },
@@ -2728,13 +2647,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 101
     },
@@ -2755,13 +2673,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 102
     },
@@ -2782,13 +2699,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 103
     },
@@ -2809,13 +2725,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 104
     },
@@ -2836,13 +2751,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 105
     },
@@ -2863,13 +2777,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 106
     },
@@ -2890,13 +2803,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 107
     },
@@ -2917,13 +2829,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:03:22Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 108
     },
@@ -2944,13 +2855,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 109
     },
@@ -2971,13 +2881,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 110
     },
@@ -2987,18 +2896,17 @@
       "category": "crypto",
       "emoji": "₿",
       "symbol": "USDT",
-      "stale": true,
-      "marketCap": 183.4,
-      "price": 0.999497,
+      "marketCap": 183.1,
+      "price": 0.999402,
       "changePct": 0.0,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "partial",
-        "source": "CoinGecko · Yahoo Finance",
-        "asOf": null,
-        "updatedAt": null,
-        "frequency": "daily",
-        "note": "本轮请求失败，沿用旧版快照；旧文件未记录精确逐条时间。"
+        "mode": "market",
+        "status": "ok",
+        "source": "CoinGecko",
+        "asOf": "2026-08-08T17:13:20.000Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
+        "frequency": "daily"
       },
       "rank": 111
     },
@@ -3006,10 +2914,10 @@
       "name": "ABB",
       "nameEn": "ABB",
       "category": "company",
-      "marketCap": 182.4,
-      "price": 100.5,
+      "marketCap": 183.1,
+      "price": 100.86,
       "priceCur": "USD",
-      "changePct": 1.91,
+      "changePct": 2.27,
       "country": "瑞士",
       "flag": "🇨🇭",
       "sector": "工业",
@@ -3019,13 +2927,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 112
     },
@@ -3046,13 +2953,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 113
     },
@@ -3073,13 +2979,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:03:06Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 114
     },
@@ -3100,13 +3005,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 115
     },
@@ -3127,13 +3031,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:02:20Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 116
     },
@@ -3154,13 +3057,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 117
     },
@@ -3181,13 +3083,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 118
     },
@@ -3208,13 +3109,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 119
     },
@@ -3235,13 +3135,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 120
     },
@@ -3262,13 +3161,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 121
     },
@@ -3289,13 +3187,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 122
     },
@@ -3316,13 +3213,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 123
     },
@@ -3343,13 +3239,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 124
     },
@@ -3370,13 +3265,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 125
     },
@@ -3397,13 +3291,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 126
     },
@@ -3424,13 +3317,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:03:54Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 127
     },
@@ -3451,13 +3343,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:02:23Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 128
     },
@@ -3478,13 +3369,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 129
     },
@@ -3505,13 +3395,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 130
     },
@@ -3536,7 +3425,7 @@
         "status": "ok",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": "2026-02-01",
-        "updatedAt": "2026-08-07T22:21:59Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
         "frequency": "irregular",
         "note": "最近一轮公开估值，非交易行情。"
       },
@@ -3559,13 +3448,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 132
     },
@@ -3586,13 +3474,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 133
     },
@@ -3613,13 +3500,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 134
     },
@@ -3640,13 +3526,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 135
     },
@@ -3667,13 +3552,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:04:04Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 136
     },
@@ -3694,13 +3578,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 137
     },
@@ -3725,7 +3608,7 @@
         "status": "ok",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": "2018-06-01",
-        "updatedAt": "2026-08-07T22:21:59Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
         "frequency": "irregular",
         "note": "最近一轮公开估值，非交易行情。"
       },
@@ -3748,13 +3631,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 139
     },
@@ -3775,13 +3657,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:02:49Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 140
     },
@@ -3802,13 +3683,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 141
     },
@@ -3829,13 +3709,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:04:09Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 142
     },
@@ -3856,13 +3735,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 143
     },
@@ -3883,13 +3761,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 144
     },
@@ -3910,13 +3787,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:02:30Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 145
     },
@@ -3937,13 +3813,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 146
     },
@@ -3964,13 +3839,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 147
     },
@@ -3991,13 +3865,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 148
     },
@@ -4018,13 +3891,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 149
     },
@@ -4049,7 +3921,7 @@
         "status": "ok",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": "2025-12-01",
-        "updatedAt": "2026-08-07T22:21:59Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
         "frequency": "irregular",
         "note": "最近一轮公开估值，非交易行情。"
       },
@@ -4072,13 +3944,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 151
     },
@@ -4099,13 +3970,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 152
     },
@@ -4126,13 +3996,12 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 153
     },
@@ -4153,36 +4022,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 154
-    },
-    {
-      "name": "瑞波币",
-      "nameEn": "XRP",
-      "category": "crypto",
-      "emoji": "₿",
-      "symbol": "XRP",
-      "marketCap": 130.0,
-      "price": null,
-      "changePct": null,
-      "stale": false,
-      "dataMeta": {
-        "mode": "estimate",
-        "status": "partial",
-        "source": "静态加密市值基准（原始来源未结构化）",
-        "asOf": null,
-        "updatedAt": "2026-08-08T12:27:08Z",
-        "frequency": "irregular",
-        "note": "CoinGecko与Yahoo均不可用，且无历史快照。"
-      },
-      "rank": 155
     },
     {
       "name": "史赛克",
@@ -4201,15 +4048,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 156
+      "rank": 155
     },
     {
       "name": "ServiceNow",
@@ -4228,15 +4074,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 157
+      "rank": 156
     },
     {
       "name": "英美烟草",
@@ -4255,15 +4100,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 158
+      "rank": 157
     },
     {
       "name": "Waymo",
@@ -4286,11 +4130,11 @@
         "status": "ok",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": "2026-02-01",
-        "updatedAt": "2026-08-07T22:21:59Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
         "frequency": "irregular",
         "note": "最近一轮公开估值，非交易行情。"
       },
-      "rank": 159
+      "rank": 158
     },
     {
       "name": "福泰制药",
@@ -4309,15 +4153,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 160
+      "rank": 159
     },
     {
       "name": "前进保险",
@@ -4336,15 +4179,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 161
+      "rank": 160
     },
     {
       "name": "劳氏",
@@ -4363,15 +4205,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:02:25Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 162
+      "rank": 161
     },
     {
       "name": "CVS Health",
@@ -4390,15 +4231,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 163
+      "rank": 162
     },
     {
       "name": "HDFC银行",
@@ -4417,15 +4257,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 164
+      "rank": 163
     },
     {
       "name": "标普全球",
@@ -4444,15 +4283,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 165
+      "rank": 164
     },
     {
       "name": "纽蒙特",
@@ -4471,15 +4309,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 166
+      "rank": 165
     },
     {
       "name": "星巴克",
@@ -4498,15 +4335,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 167
+      "rank": 166
     },
     {
       "name": "飞塔",
@@ -4525,15 +4361,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 168
+      "rank": 167
     },
     {
       "name": "AppLovin Corporation",
@@ -4552,15 +4387,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 169
+      "rank": 168
     },
     {
       "name": "奥驰亚",
@@ -4579,15 +4413,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 170
+      "rank": 169
     },
     {
       "name": "豪梅特航空",
@@ -4606,15 +4439,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 171
+      "rank": 170
     },
     {
       "name": "Enbridge",
@@ -4633,15 +4465,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 172
+      "rank": 171
     },
     {
       "name": "美敦力",
@@ -4660,15 +4491,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 173
+      "rank": 172
     },
     {
       "name": "BP",
@@ -4687,15 +4517,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 174
+      "rank": 173
     },
     {
       "name": "Automatic Data Processing",
@@ -4714,15 +4543,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 175
+      "rank": 174
     },
     {
       "name": "ICICI银行",
@@ -4741,15 +4569,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 176
+      "rank": 175
     },
     {
       "name": "纽约梅隆银行",
@@ -4768,15 +4595,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:03:42Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 177
+      "rank": 176
     },
     {
       "name": "埃森哲",
@@ -4795,15 +4621,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 178
+      "rank": 177
     },
     {
       "name": "特灵科技",
@@ -4822,15 +4647,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 179
+      "rank": 178
     },
     {
       "name": "葛兰素史克",
@@ -4849,15 +4673,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 180
+      "rank": 179
     },
     {
       "name": "通用动力",
@@ -4876,15 +4699,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 181
+      "rank": 180
     },
     {
       "name": "爱彼迎",
@@ -4903,15 +4725,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 182
+      "rank": 181
     },
     {
       "name": "Adobe",
@@ -4930,15 +4751,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 183
+      "rank": 182
     },
     {
       "name": "维谛技术",
@@ -4957,15 +4777,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 184
+      "rank": 183
     },
     {
       "name": "南方公司",
@@ -4984,15 +4803,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 185
+      "rank": 184
     },
     {
       "name": "赛诺菲",
@@ -5011,15 +4829,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 186
+      "rank": 185
     },
     {
       "name": "Equinix",
@@ -5038,15 +4855,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 187
+      "rank": 186
     },
     {
       "name": "ING 集团",
@@ -5065,15 +4881,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 188
+      "rank": 187
     },
     {
       "name": "麦克森",
@@ -5092,15 +4907,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 189
+      "rank": 188
     },
     {
       "name": "PNC 金融服务",
@@ -5119,15 +4933,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 190
+      "rank": 189
     },
     {
       "name": "信实零售",
@@ -5150,11 +4963,11 @@
         "status": "ok",
         "source": "multiples.vc（公开融资估值汇总）",
         "asOf": "2023-10-01",
-        "updatedAt": "2026-08-07T22:21:59Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
         "frequency": "irregular",
         "note": "最近一轮公开估值，非交易行情。"
       },
-      "rank": 191
+      "rank": 190
     },
     {
       "name": "Quanta Services",
@@ -5173,15 +4986,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 192
+      "rank": 191
     },
     {
       "name": "Spotify",
@@ -5200,15 +5012,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 193
+      "rank": 192
     },
     {
       "name": "自由港麦克莫兰",
@@ -5227,15 +5038,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 194
+      "rank": 193
     },
     {
       "name": "三井住友金融",
@@ -5254,15 +5064,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 195
+      "rank": 194
     },
     {
       "name": "美国合众银行",
@@ -5281,15 +5090,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 196
+      "rank": 195
     },
     {
       "name": "杜克能源",
@@ -5308,15 +5116,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 197
+      "rank": 196
     },
     {
       "name": "星座能源",
@@ -5335,15 +5142,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 198
+      "rank": 197
     },
     {
       "name": "芝商所",
@@ -5362,15 +5168,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 199
+      "rank": 198
     },
     {
       "name": "3M",
@@ -5389,15 +5194,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:03:43Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 200
+      "rank": 199
     },
     {
       "name": "巴克莱",
@@ -5416,15 +5220,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 201
+      "rank": 200
     },
     {
       "name": "DoorDash",
@@ -5443,15 +5246,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 202
+      "rank": 201
     },
     {
       "name": "楷登电子",
@@ -5470,15 +5272,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 203
+      "rank": 202
     },
     {
       "name": "CSX 运输",
@@ -5497,15 +5298,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 204
+      "rank": 203
     },
     {
       "name": "万豪国际",
@@ -5524,15 +5324,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 205
+      "rank": 204
     },
     {
       "name": "江森自控",
@@ -5551,15 +5350,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 206
+      "rank": 205
     },
     {
       "name": "KKR",
@@ -5578,15 +5376,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 207
+      "rank": 206
     },
     {
       "name": "威达信集团",
@@ -5605,15 +5402,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 208
+      "rank": 207
     },
     {
       "name": "HCA 医疗",
@@ -5632,15 +5428,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 209
+      "rank": 208
     },
     {
       "name": "废物管理公司",
@@ -5659,15 +5454,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 210
+      "rank": 209
     },
     {
       "name": "劳埃德银行",
@@ -5686,15 +5480,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 211
+      "rank": 210
     },
     {
       "name": "宣伟",
@@ -5713,15 +5506,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 212
+      "rank": 211
     },
     {
       "name": "康卡斯特",
@@ -5740,15 +5532,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 213
+      "rank": 212
     },
     {
       "name": "Intuit",
@@ -5767,15 +5558,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 214
+      "rank": 213
     },
     {
       "name": "康明斯",
@@ -5794,15 +5584,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 215
+      "rank": 214
     },
     {
       "name": "UPS",
@@ -5821,15 +5610,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:03:46Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 216
+      "rank": 215
     },
     {
       "name": "瓦莱罗能源",
@@ -5848,15 +5636,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 217
+      "rank": 216
     },
     {
       "name": "艾默生",
@@ -5875,15 +5662,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 218
+      "rank": 217
     },
     {
       "name": "怪物饮料",
@@ -5902,15 +5688,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 219
+      "rank": 218
     },
     {
       "name": "马拉松石油",
@@ -5929,15 +5714,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 220
+      "rank": 219
     },
     {
       "name": "威廉姆斯公司",
@@ -5956,15 +5740,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 221
+      "rank": 220
     },
     {
       "name": "皇家加勒比",
@@ -5983,15 +5766,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 222
+      "rank": 221
     },
     {
       "name": "Elevance Health",
@@ -6010,15 +5792,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 223
+      "rank": 222
     },
     {
       "name": "伊利诺伊工具",
@@ -6037,36 +5818,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 224
-    },
-    {
-      "name": "Solana",
-      "nameEn": "Solana",
-      "category": "crypto",
-      "emoji": "₿",
-      "symbol": "SOL",
-      "marketCap": 85.0,
-      "price": null,
-      "changePct": null,
-      "stale": false,
-      "dataMeta": {
-        "mode": "estimate",
-        "status": "partial",
-        "source": "静态加密市值基准（原始来源未结构化）",
-        "asOf": null,
-        "updatedAt": "2026-08-08T12:27:08Z",
-        "frequency": "irregular",
-        "note": "CoinGecko与Yahoo均不可用，且无历史快照。"
-      },
-      "rank": 225
+      "rank": 223
     },
     {
       "name": "洲际交易所",
@@ -6085,15 +5844,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 226
+      "rank": 224
     },
     {
       "name": "网易",
@@ -6112,15 +5870,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 227
+      "rank": 225
     },
     {
       "name": "罗宾汉",
@@ -6139,15 +5896,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 228
+      "rank": 226
     },
     {
       "name": "穆迪",
@@ -6166,15 +5922,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 229
+      "rank": 227
     },
     {
       "name": "Datadog",
@@ -6193,15 +5948,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 230
+      "rank": 228
     },
     {
       "name": "罗斯百货",
@@ -6220,15 +5974,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 231
+      "rank": 229
     },
     {
       "name": "菲利普斯66",
@@ -6247,15 +6000,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 232
+      "rank": 230
     },
     {
       "name": "旅行者保险",
@@ -6274,15 +6026,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 233
+      "rank": 231
     },
     {
       "name": "Cintas",
@@ -6301,15 +6052,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 234
+      "rank": 232
     },
     {
       "name": "诺斯罗普·格鲁曼",
@@ -6328,15 +6078,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 235
+      "rank": 233
     },
     {
       "name": "再生元",
@@ -6355,15 +6104,34 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 236
+      "rank": 234
+    },
+    {
+      "name": "币安币",
+      "nameEn": "BNB",
+      "category": "crypto",
+      "emoji": "₿",
+      "symbol": "BNB",
+      "marketCap": 80.6,
+      "price": 605.15,
+      "changePct": 2.2,
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "CoinGecko",
+        "asOf": "2026-08-08T17:13:20.000Z",
+        "updatedAt": "2026-08-08T17:16:14Z",
+        "frequency": "daily"
+      },
+      "rank": 235
     },
     {
       "name": "英国国家电网",
@@ -6382,15 +6150,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 237
+      "rank": 236
     },
     {
       "name": "亿滋国际",
@@ -6409,15 +6176,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 238
+      "rank": 237
     },
     {
       "name": "美国电塔",
@@ -6436,15 +6202,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 239
+      "rank": 238
     },
     {
       "name": "艺康",
@@ -6463,15 +6228,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 240
+      "rank": 239
     },
     {
       "name": "新思科技",
@@ -6490,15 +6254,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:00Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 241
+      "rank": 240
     },
     {
       "name": "通用汽车",
@@ -6517,36 +6280,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 242
-    },
-    {
-      "name": "币安币",
-      "nameEn": "BNB",
-      "category": "crypto",
-      "emoji": "₿",
-      "symbol": "BNB",
-      "stale": true,
-      "marketCap": 78.9,
-      "price": 592.11,
-      "changePct": 0.1,
-      "dataMeta": {
-        "mode": "fallback",
-        "status": "partial",
-        "source": "CoinGecko · Yahoo Finance",
-        "asOf": null,
-        "updatedAt": null,
-        "frequency": "daily",
-        "note": "本轮请求失败，沿用旧版快照；旧文件未记录精确逐条时间。"
-      },
-      "rank": 243
+      "rank": 241
     },
     {
       "name": "埃尼",
@@ -6565,15 +6306,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 244
+      "rank": 242
     },
     {
       "name": "Carvana Co.",
@@ -6592,15 +6332,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:02:19Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 245
+      "rank": 243
     },
     {
       "name": "摩托罗拉系统",
@@ -6619,15 +6358,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 246
+      "rank": 244
     },
     {
       "name": "奥莱利汽配",
@@ -6646,15 +6384,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:01Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 247
+      "rank": 245
     },
     {
       "name": "加拿大国家铁路",
@@ -6673,15 +6410,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 248
+      "rank": 246
     },
     {
       "name": "怡安",
@@ -6700,15 +6436,14 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:03Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
-      "rank": 249
+      "rank": 247
     },
     {
       "name": "联邦快递",
@@ -6727,13 +6462,64 @@
       "lastRound": null,
       "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:21:59Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
+      },
+      "rank": 248
+    },
+    {
+      "name": "斯伦贝谢",
+      "nameEn": "Schlumberger",
+      "category": "company",
+      "marketCap": 75.5,
+      "price": 50.53,
+      "priceCur": "USD",
+      "changePct": 1.9,
+      "country": "美国",
+      "flag": "🇺🇸",
+      "sector": "能源",
+      "symbol": "SLB",
+      "logo": "../companies/logos/sym_SLB.png",
+      "private": null,
+      "lastRound": null,
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "Yahoo Finance",
+        "asOf": "2026-08-07T20:00:02Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
+      },
+      "rank": 249
+    },
+    {
+      "name": "诺福克南方铁路",
+      "nameEn": "Norfolk Southern Railway",
+      "category": "company",
+      "marketCap": 75.1,
+      "price": 334.36,
+      "priceCur": "USD",
+      "changePct": -0.33,
+      "country": "美国",
+      "flag": "🇺🇸",
+      "sector": "工业",
+      "symbol": "NSC",
+      "logo": "../companies/logos/sym_NSC.png",
+      "private": null,
+      "lastRound": null,
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "Yahoo Finance",
+        "asOf": "2026-08-07T20:01:17Z",
+        "updatedAt": "2026-08-08T17:13:44Z",
+        "frequency": "daily"
       },
       "rank": 250
     }
@@ -6743,16 +6529,16 @@
     "status": "partial",
     "total": 250,
     "counts": {
-      "market": 0,
-      "fallback": 13,
-      "estimate": 17,
-      "unknown": 220,
+      "market": 235,
+      "fallback": 0,
+      "estimate": 15,
+      "unknown": 0,
       "unavailable": 0
     },
     "sources": [
       {
         "name": "Yahoo Finance",
-        "count": 220
+        "count": 222
       },
       {
         "name": "multiples.vc（公开融资估值汇总）",
@@ -6763,16 +6549,12 @@
         "count": 8
       },
       {
-        "name": "CoinGecko · Yahoo Finance",
+        "name": "CoinGecko",
         "count": 4
       },
       {
         "name": "公开存量基准（原始来源未结构化）",
         "count": 4
-      },
-      {
-        "name": "静态加密市值基准（原始来源未结构化）",
-        "count": 2
       },
       {
         "name": "IMF《财政监测》",

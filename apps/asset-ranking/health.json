@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "asset-ranking",
-  "generatedAt": "2026-08-08T12:27:08Z",
+  "generatedAt": "2026-08-08T17:16:14Z",
   "status": "degraded",
-  "historyStatus": "migrated",
-  "lastAttemptAt": "2026-08-08T12:27:08Z",
-  "lastSuccessfulAt": "2026-08-08T12:27:08Z",
-  "consecutiveFailures": null,
-  "publishedSnapshotAt": "2026-08-08T12:27:08Z",
+  "historyStatus": "tracked",
+  "lastAttemptAt": "2026-08-08T17:16:14Z",
+  "lastSuccessfulAt": "2026-08-08T17:16:14Z",
+  "consecutiveFailures": 0,
+  "publishedSnapshotAt": "2026-08-08T17:16:14Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -15,26 +15,26 @@
     "publishedRecords": 250,
     "dynamicRecords": 235,
     "counts": {
-      "market": 0,
-      "fallback": 13,
-      "estimate": 17,
-      "unknown": 220,
+      "market": 235,
+      "fallback": 0,
+      "estimate": 15,
+      "unknown": 0,
       "unavailable": 0
     },
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 0.0,
-    "verifiedCoveragePct": 12.0,
+    "freshCoveragePct": 100.0,
+    "verifiedCoveragePct": 100.0,
     "availableCoveragePct": 100.0
   },
   "attempt": {
-    "status": "unknown",
+    "status": "success",
     "published": true,
     "producedRecords": 250,
     "counts": {
-      "market": 0,
-      "fallback": 13,
-      "estimate": 17,
-      "unknown": 220,
+      "market": 235,
+      "fallback": 0,
+      "estimate": 15,
+      "unknown": 0,
       "unavailable": 0
     }
   },
@@ -44,52 +44,52 @@
       "name": "Yahoo Finance",
       "role": "primary",
       "status": "degraded",
-      "records": 233,
+      "records": 231,
       "counts": {
-        "market": 0,
-        "fallback": 13,
+        "market": 231,
+        "fallback": 0,
         "estimate": 0,
-        "unknown": 220,
+        "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": null
+      "lastSuccessAt": "2026-08-08T17:16:14Z"
     },
     {
       "id": "coingecko",
       "name": "CoinGecko",
       "role": "primary",
-      "status": "degraded",
+      "status": "healthy",
       "records": 4,
       "counts": {
-        "market": 0,
-        "fallback": 4,
+        "market": 4,
+        "fallback": 0,
         "estimate": 0,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": null
+      "lastSuccessAt": "2026-08-08T17:16:14Z"
     },
     {
       "id": "companies-upstream",
       "name": "companies/data.json上游快照",
       "role": "upstream",
       "status": "degraded",
-      "records": 229,
+      "records": 231,
       "counts": {
-        "market": 0,
+        "market": 222,
         "fallback": 0,
         "estimate": 9,
-        "unknown": 220,
+        "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-07T22:21:59Z",
+      "lastSuccessAt": "2026-08-08T17:13:44Z",
       "upstream": {
         "dataset": "companies",
         "contractKnown": true,
         "status": "degraded",
-        "lastAttemptAt": "2026-08-07T22:21:59Z",
-        "lastSuccessfulAt": "2026-08-07T22:21:59Z",
-        "consecutiveFailures": null,
+        "lastAttemptAt": "2026-08-08T17:13:44Z",
+        "lastSuccessfulAt": "2026-08-08T17:13:44Z",
+        "consecutiveFailures": 0,
         "snapshotPreserved": false,
         "snapshotAligned": true
       }
@@ -99,15 +99,15 @@
       "name": "公开存量与融资估值",
       "role": "reference",
       "status": "degraded",
-      "records": 26,
+      "records": 24,
       "counts": {
-        "market": 0,
-        "fallback": 9,
-        "estimate": 17,
+        "market": 9,
+        "fallback": 0,
+        "estimate": 15,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-08T12:27:08Z"
+      "lastSuccessAt": "2026-08-08T17:16:14Z"
     }
   ],
   "recovery": {
