@@ -910,6 +910,16 @@
         "url": "https://www.eia.gov/dnav/pet/hist/rwtcd.htm",
         "seriesId": "RWTC"
       },
+      "observations": [
+        {
+          "asOf": "2026-07-24",
+          "value": 91.74
+        },
+        {
+          "asOf": "2026-07-27",
+          "value": 84.25
+        }
+      ],
       "note": "初始保留值核对自EIA官方历史页；本地未配置EIA_API_KEY，等待自动更新。"
     }
   },

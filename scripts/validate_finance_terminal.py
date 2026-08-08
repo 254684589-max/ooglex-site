@@ -357,6 +357,9 @@ def run_rwtc_pipeline_tests() -> None:
     expected_change = (84.25 / 91.74 - 1) * 100
     require(abs(fresh["changePct"] - expected_change) < 1e-12, "RWTC涨跌幅计算错误")
     require(fresh["updatedAt"] == attempt and fresh["lastAttemptAt"] == attempt, "RWTC成功更新时间错误")
+    require(fresh["observations"] == [
+        {"asOf": observed, "value": value} for observed, value in observations
+    ], "RWTC最近观测窗口映射错误")
     require(builder.valid_rwtc_reference(fresh), "RWTC成功记录未通过结构校验")
 
     old = {"referenceSeries": {"RWTC": fresh}}
@@ -366,11 +369,13 @@ def run_rwtc_pipeline_tests() -> None:
     require(fallback["price"] == fresh["price"] and fallback["asOf"] == fresh["asOf"], "RWTC失败不得覆盖历史有效值")
     require(fallback["updatedAt"] == fresh["updatedAt"], "RWTC失败时不得伪造成功更新时间")
     require(fallback["lastAttemptAt"] == failed_at, "RWTC失败尝试时间必须单独记录")
+    require(fallback["observations"] == fresh["observations"], "RWTC失败回退必须完整保留观测窗口")
     require(fresh["status"] == "ok", "RWTC失败回退不得原地修改上一份记录")
 
     unavailable = builder.build_rwtc_reference({}, failed_at, lambda _limit: [])
     require(unavailable["status"] == "error", "RWTC无新值也无历史值时必须标记error")
     require(unavailable["price"] is None and unavailable["updatedAt"] is None, "RWTC失败时不得写入默认数值")
+    require(unavailable["observations"] == [], "无历史RWTC时观测窗口必须为空")
 
     invalid = builder.build_rwtc_reference(
         old,
@@ -610,6 +615,15 @@ assert.strictEqual(oil.asOf, oilReference.asOf);
 assert.strictEqual(oil.updatedAt, oilReference.updatedAt);
 assert.strictEqual(oil.source.seriesId, "RWTC");
 assert(Math.abs(oil.changePct - ((oilReference.price / oilReference.previousPrice - 1) * 100)) < 1e-12);
+assert.strictEqual(oil.observationTrend.count, oilReference.observations.length);
+assert.deepStrictEqual(oil.observationTrend.values, oilReference.observations.map((item) => item.value));
+assert.strictEqual(oil.observationTrend.startAsOf, oilReference.observations[0].asOf);
+assert.strictEqual(oil.observationTrend.endAsOf, oilReference.asOf);
+assert(Math.abs(oil.observationTrend.change
+  - ((oilReference.price / oilReference.observations[0].value - 1) * 100)) < 1e-12);
+const tamperedOilWindow = JSON.parse(JSON.stringify(macro));
+tamperedOilWindow.referenceSeries.RWTC.observations.reverse();
+assert.throws(() => adapter.adaptRwtc(oilConfig, tamperedOilWindow, currentNow));
 const oilHealth = adapter.adaptOfficialSourceHealth(macroHealth, macro, oil, "RWTC", currentNow);
 assert.strictEqual(oilHealth.status, "stale");
 assert.strictEqual(oilHealth.historyKnown, false);
@@ -727,6 +741,10 @@ staleMacro.referenceSeries.DTWEXBGS.observations = [
 staleMacro.referenceSeries.RWTC.status = "ok";
 staleMacro.referenceSeries.RWTC.asOf = "2026-07-20";
 staleMacro.referenceSeries.RWTC.previousAsOf = "2026-07-17";
+staleMacro.referenceSeries.RWTC.observations = [
+  { asOf: "2026-07-17", value: staleMacro.referenceSeries.RWTC.previousPrice },
+  { asOf: "2026-07-20", value: staleMacro.referenceSeries.RWTC.price }
+];
 const stale = adapter.buildPageData(config, staleMacro, new Date("2026-07-27T23:59:59Z"));
 assert.strictEqual(stale.assets.find((asset) => asset.id === "us10y").status, "stale");
 assert.strictEqual(stale.assets.find((asset) => asset.id === "dxy").status, "stale");
@@ -787,6 +805,10 @@ const oilFallbackMacro = JSON.parse(JSON.stringify(macro));
 oilFallbackMacro.referenceSeries.RWTC.status = "stale";
 oilFallbackMacro.referenceSeries.RWTC.asOf = "2026-08-03";
 oilFallbackMacro.referenceSeries.RWTC.previousAsOf = "2026-07-31";
+oilFallbackMacro.referenceSeries.RWTC.observations = [
+  { asOf: "2026-07-31", value: oilFallbackMacro.referenceSeries.RWTC.previousPrice },
+  { asOf: "2026-08-03", value: oilFallbackMacro.referenceSeries.RWTC.price }
+];
 const oilFallback = adapter.buildPageData(config, oilFallbackMacro, currentNow).assets.find((asset) => asset.id === "wti");
 assert.strictEqual(oilFallback.status, "stale");
 assert(oilFallback.note.includes("自动更新未成功"));
@@ -1623,6 +1645,13 @@ def main() -> None:
     parse_iso(wti_reference["updatedAt"])
     parse_iso(wti_reference["lastAttemptAt"])
     require(wti_reference["source"].get("seriesId") == "RWTC", "RWTC自动更新来源不准确")
+    wti_observations = wti_reference.get("observations")
+    require(isinstance(wti_observations, list) and len(wti_observations) == 2,
+            "当前RWTC快照应保留两个可追溯官方观测点")
+    require(wti_observations[-1] == {"asOf": wti_reference["asOf"], "value": wti_reference["price"]}
+            and wti_observations[0] == {
+                "asOf": wti_reference["previousAsOf"], "value": wti_reference["previousPrice"]
+            }, "RWTC观测窗口必须与当前值和前值一致")
     expected_wti_change = (wti_reference["price"] / wti_reference["previousPrice"] - 1) * 100
     require(abs(wti_reference["changePct"] - expected_wti_change) < 1e-12, "RWTC自动更新涨跌幅不可复现")
 

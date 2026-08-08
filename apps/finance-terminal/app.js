@@ -1307,6 +1307,7 @@
     }
     var refreshFailed = record.status === "stale";
     var stale = refreshFailed || age > RWTC_MAX_BUSINESS_DAYS;
+    var observationTrend = buildOfficialObservationTrend(record, "percent");
     var note = "EIA官方日频WTI现货数据；变化为相对上一发布观测值的百分比。";
     if (refreshFailed) {
       note = "本轮EIA自动更新未成功，保留上次有效现货观测值并标记为过期。";
@@ -1326,7 +1327,8 @@
         seriesId: "RWTC"
       },
       note: note,
-      spark: []
+      spark: observationTrend.values,
+      observationTrend: observationTrend
     });
   }
 
