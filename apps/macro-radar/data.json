@@ -879,6 +879,16 @@
         "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
         "seriesId": "DTWEXBGS"
       },
+      "observations": [
+        {
+          "asOf": "2026-07-23",
+          "value": 120.9075
+        },
+        {
+          "asOf": "2026-07-24",
+          "value": 120.7105
+        }
+      ],
       "note": "FRED官方日频数据；等待宏观雷达任务下次自动更新。"
     },
     "RWTC": {

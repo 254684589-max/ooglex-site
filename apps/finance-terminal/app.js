@@ -1226,6 +1226,7 @@
     }
     var refreshFailed = record.status === "stale";
     var stale = refreshFailed || age > DTWEXBGS_MAX_BUSINESS_DAYS;
+    var observationTrend = buildOfficialObservationTrend(record, "percent");
     var note = "FRED官方日频数据；变化为相对上一观测值的百分比。";
     if (refreshFailed) {
       note = "本轮FRED自动更新失败，保留上次有效观测值并标记为过期。";
@@ -1244,7 +1245,8 @@
         seriesId: "DTWEXBGS"
       },
       note: note,
-      spark: []
+      spark: observationTrend.values,
+      observationTrend: observationTrend
     });
   }
 

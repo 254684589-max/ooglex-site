@@ -254,7 +254,10 @@ def load_macro_builder():
 def run_dtwexbgs_pipeline_tests() -> None:
     builder = load_macro_builder()
     attempt = "2026-08-03T12:00:00Z"
-    observations = [("2026-07-23", 120.9075), ("2026-07-24", 120.7105)]
+    observations = [
+        ("2026-07-21", 120.5210), ("2026-07-22", 120.6500),
+        ("2026-07-23", 120.9075), ("2026-07-24", 120.7105),
+    ]
     fresh = builder.build_dtwexbgs_reference({}, attempt, lambda _series_id, _limit: observations)
     require(fresh["status"] == "ok", "DTWEXBGS成功更新必须标记ok")
     require(fresh["price"] == 120.7105 and fresh["previousPrice"] == 120.9075, "DTWEXBGS观测值映射错误")
@@ -262,6 +265,9 @@ def run_dtwexbgs_pipeline_tests() -> None:
     expected_change = (120.7105 / 120.9075 - 1) * 100
     require(abs(fresh["changePct"] - expected_change) < 1e-12, "DTWEXBGS涨跌幅计算错误")
     require(fresh["updatedAt"] == attempt and fresh["lastAttemptAt"] == attempt, "DTWEXBGS成功更新时间错误")
+    require(fresh["observations"] == [
+        {"asOf": observed, "value": value} for observed, value in observations
+    ], "DTWEXBGS最近观测窗口映射错误")
     require(builder.valid_dtwexbgs_reference(fresh), "成功记录未通过结构校验")
 
     old = {"referenceSeries": {"DTWEXBGS": fresh}}
@@ -271,11 +277,13 @@ def run_dtwexbgs_pipeline_tests() -> None:
     require(fallback["price"] == fresh["price"] and fallback["asOf"] == fresh["asOf"], "更新失败不得覆盖历史有效值")
     require(fallback["updatedAt"] == fresh["updatedAt"], "失败时不得伪造成功更新时间")
     require(fallback["lastAttemptAt"] == failed_at, "失败尝试时间必须单独记录")
+    require(fallback["observations"] == fresh["observations"], "失败回退必须完整保留DTWEXBGS观测窗口")
     require(fresh["status"] == "ok", "失败回退不得原地修改上一份记录")
 
     unavailable = builder.build_dtwexbgs_reference({}, failed_at, lambda _series_id, _limit: [])
     require(unavailable["status"] == "error", "无新值也无历史值时必须标记error")
     require(unavailable["price"] is None and unavailable["updatedAt"] is None, "失败时不得写入默认数值或伪更新时间")
+    require(unavailable["observations"] == [], "无历史DTWEXBGS时观测窗口必须为空")
 
     invalid = builder.build_dtwexbgs_reference(
         old,
@@ -565,6 +573,15 @@ assert.strictEqual(dollar.asOf, reference.asOf);
 assert.strictEqual(dollar.updatedAt, reference.updatedAt);
 assert.strictEqual(dollar.source.seriesId, "DTWEXBGS");
 assert(Math.abs(dollar.changePct - ((reference.price / reference.previousPrice - 1) * 100)) < 1e-12);
+assert.strictEqual(dollar.observationTrend.count, reference.observations.length);
+assert.deepStrictEqual(dollar.observationTrend.values, reference.observations.map((item) => item.value));
+assert.strictEqual(dollar.observationTrend.startAsOf, reference.observations[0].asOf);
+assert.strictEqual(dollar.observationTrend.endAsOf, reference.asOf);
+assert(Math.abs(dollar.observationTrend.change
+  - ((reference.price / reference.observations[0].value - 1) * 100)) < 1e-12);
+const tamperedDollarWindow = JSON.parse(JSON.stringify(macro));
+tamperedDollarWindow.referenceSeries.DTWEXBGS.observations[1].value += 1;
+assert.throws(() => adapter.adaptDtwexbgs(dollarConfig, tamperedDollarWindow, currentNow));
 const dollarHealth = adapter.adaptOfficialSourceHealth(
   macroHealth, macro, dollar, "DTWEXBGS", currentNow
 );
@@ -703,6 +720,10 @@ staleMatch.row.asOf = "2026-07-20";
 staleMatch.row.observations = [{ asOf: staleMatch.row.asOf, value: staleMatch.row.price }];
 staleMacro.referenceSeries.DTWEXBGS.asOf = "2026-07-20";
 staleMacro.referenceSeries.DTWEXBGS.previousAsOf = "2026-07-17";
+staleMacro.referenceSeries.DTWEXBGS.observations = [
+  { asOf: "2026-07-17", value: staleMacro.referenceSeries.DTWEXBGS.previousPrice },
+  { asOf: "2026-07-20", value: staleMacro.referenceSeries.DTWEXBGS.price }
+];
 staleMacro.referenceSeries.RWTC.status = "ok";
 staleMacro.referenceSeries.RWTC.asOf = "2026-07-20";
 staleMacro.referenceSeries.RWTC.previousAsOf = "2026-07-17";
@@ -753,6 +774,10 @@ const fallbackMacro = JSON.parse(JSON.stringify(macro));
 fallbackMacro.referenceSeries.DTWEXBGS.status = "stale";
 fallbackMacro.referenceSeries.DTWEXBGS.asOf = "2026-08-03";
 fallbackMacro.referenceSeries.DTWEXBGS.previousAsOf = "2026-07-31";
+fallbackMacro.referenceSeries.DTWEXBGS.observations = [
+  { asOf: "2026-07-31", value: fallbackMacro.referenceSeries.DTWEXBGS.previousPrice },
+  { asOf: "2026-08-03", value: fallbackMacro.referenceSeries.DTWEXBGS.price }
+];
 const fallback = adapter.buildPageData(config, fallbackMacro, currentNow);
 const fallbackDollar = fallback.assets.find((asset) => asset.id === "dxy");
 assert.strictEqual(fallbackDollar.status, "stale");
@@ -1575,6 +1600,13 @@ def main() -> None:
     parse_iso(dollar_reference["updatedAt"])
     parse_iso(dollar_reference["lastAttemptAt"])
     require(dollar_reference["source"].get("seriesId") == "DTWEXBGS", "DTWEXBGS自动更新来源不准确")
+    dollar_observations = dollar_reference.get("observations")
+    require(isinstance(dollar_observations, list) and len(dollar_observations) == 2,
+            "当前DTWEXBGS快照应保留两个可追溯官方观测点")
+    require(dollar_observations[-1] == {"asOf": dollar_reference["asOf"], "value": dollar_reference["price"]}
+            and dollar_observations[0] == {
+                "asOf": dollar_reference["previousAsOf"], "value": dollar_reference["previousPrice"]
+            }, "DTWEXBGS观测窗口必须与当前值和前值一致")
     expected_change = (dollar_reference["price"] / dollar_reference["previousPrice"] - 1) * 100
     require(abs(dollar_reference["changePct"] - expected_change) < 1e-12, "DTWEXBGS自动更新涨跌幅不可复现")
 

@@ -539,12 +539,24 @@ def valid_dtwexbgs_reference(record):
     observed = _parse_observation_date(record.get("asOf"))
     previous = _parse_observation_date(record.get("previousAsOf"))
     updated = _parse_utc_timestamp(record.get("updatedAt"))
+    raw_observations = record.get("observations")
+    observations_valid = True
+    if raw_observations is not None:
+        observations = retained_official_observations(record)
+        observations_valid = bool(
+            isinstance(raw_observations, list)
+            and len(observations) == len(raw_observations)
+            and observations
+            and observations[-1]["asOf"] == record.get("asOf")
+            and abs(observations[-1]["value"] - record.get("price", 0)) <= 1e-9
+        )
     return bool(
         record.get("status") in ("ok", "stale")
         and _positive_number(record.get("price"))
         and _positive_number(record.get("previousPrice"))
         and observed and previous and previous < observed
         and updated and updated.tzinfo is not None
+        and observations_valid
     )
 
 
@@ -560,9 +572,10 @@ def build_dtwexbgs_reference(previous_data, updated_at, fetcher=None):
     except Exception:
         series = []
 
-    if len(series) >= 2:
-        previous_as_of, previous_price = series[-2]
-        as_of, price = series[-1]
+    observations = normalize_official_observations(series)
+    if len(observations) >= 2:
+        previous_as_of, previous_price = observations[-2]["asOf"], observations[-2]["value"]
+        as_of, price = observations[-1]["asOf"], observations[-1]["value"]
         record = {
             "id": DTWEXBGS_ID,
             "name": "美联储广义美元指数",
@@ -578,6 +591,7 @@ def build_dtwexbgs_reference(previous_data, updated_at, fetcher=None):
             "updatedAt": updated_at,
             "lastAttemptAt": updated_at,
             "source": dict(DTWEXBGS_SOURCE),
+            "observations": observations,
             "note": "FRED官方日频数据；由宏观雷达任务自动更新。",
         }
         if valid_dtwexbgs_reference(record):
@@ -606,6 +620,7 @@ def build_dtwexbgs_reference(previous_data, updated_at, fetcher=None):
         "updatedAt": None,
         "lastAttemptAt": updated_at,
         "source": dict(DTWEXBGS_SOURCE),
+        "observations": [],
         "note": "FRED自动更新失败，且没有可保留的历史有效值。",
     }
 
