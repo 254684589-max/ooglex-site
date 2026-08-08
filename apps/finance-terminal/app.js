@@ -3662,11 +3662,13 @@
         }),
       officialObservationTrends: officialTrendPanels.length === 3
         && officialTrendPanels.every(function (panel) {
-          return panel.textContent.indexOf("RECENT OBSERVATIONS") !== -1;
-        })
-        && officialTrendPanels.filter(function (panel) {
-          return panel.querySelector(".sparkline");
-        }).length === 2,
+          var count = panel.querySelector(".official-trend-count");
+          var match = count && count.textContent.match(/^(\d+)\s*\/\s*8$/);
+          var observationCount = match ? Number(match[1]) : null;
+          return panel.textContent.indexOf("RECENT OBSERVATIONS") !== -1
+            && observationCount !== null && observationCount >= 1 && observationCount <= 8
+            && Boolean(panel.querySelector(".sparkline")) === (observationCount >= 2);
+        }),
       cardCounts: document.querySelectorAll(".asset-card").length === 8
         && document.querySelectorAll(".risk-card").length === 3
         && document.querySelectorAll(".research-card").length === 3

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import math
 import re
 import subprocess
 import sys
@@ -82,6 +83,82 @@ def parse_iso(value: str) -> None:
 
 def parse_date(value: str) -> None:
     date.fromisoformat(value)
+
+
+def validate_official_observations(record: dict, label: str) -> list[dict]:
+    """校验成功刷新后会从迁移点逐步扩展到8点的官方观测窗口。"""
+    observations = record.get("observations")
+    require(isinstance(observations, list) and 1 <= len(observations) <= 8,
+            f"{label}观测窗口必须包含1至8个官方观测点")
+    parsed_dates = []
+    for index, observation in enumerate(observations):
+        require(isinstance(observation, dict)
+                and set(observation) == {"asOf", "value"},
+                f"{label}第{index + 1}个观测点结构无效")
+        try:
+            observed_date = date.fromisoformat(observation["asOf"])
+        except (TypeError, ValueError) as exc:
+            raise AssertionError(f"{label}第{index + 1}个观测日期无效") from exc
+        value = observation["value"]
+        require(isinstance(value, (int, float)) and not isinstance(value, bool)
+                and math.isfinite(value) and value > 0,
+                f"{label}第{index + 1}个观测值必须是正有限数")
+        parsed_dates.append(observed_date)
+    require(all(previous < current for previous, current in zip(parsed_dates, parsed_dates[1:])),
+            f"{label}观测日期必须严格递增且不可重复")
+    require(observations[-1] == {"asOf": record.get("asOf"), "value": record.get("price")},
+            f"{label}观测窗口末值必须与当前官方记录一致")
+    if len(observations) >= 2:
+        require(observations[-2] == {
+            "asOf": record.get("previousAsOf"), "value": record.get("previousPrice")
+        }, f"{label}观测窗口倒数第二项必须与前值记录一致")
+    return observations
+
+
+def run_official_observation_contract_tests() -> None:
+    one_point = {
+        "asOf": "2026-08-06", "price": 4.69,
+        "previousAsOf": "2026-08-05", "previousPrice": 4.63,
+        "observations": [{"asOf": "2026-08-06", "value": 4.69}],
+    }
+    require(len(validate_official_observations(one_point, "迁移序列")) == 1,
+            "单点迁移窗口应保持有效")
+    full_window = {
+        "asOf": "2026-08-08", "price": 108.0,
+        "previousAsOf": "2026-08-07", "previousPrice": 107.0,
+        "observations": [
+            {"asOf": f"2026-08-{day:02d}", "value": 100.0 + day}
+            for day in range(1, 9)
+        ],
+    }
+    require(len(validate_official_observations(full_window, "完整序列")) == 8,
+            "八点完整窗口应保持有效")
+
+    invalid_cases = []
+    too_long = json.loads(json.dumps(full_window))
+    too_long["observations"].insert(0, {"asOf": "2026-07-31", "value": 99.0})
+    invalid_cases.append(too_long)
+    reversed_window = json.loads(json.dumps(full_window))
+    reversed_window["observations"].reverse()
+    invalid_cases.append(reversed_window)
+    duplicate_date = json.loads(json.dumps(full_window))
+    duplicate_date["observations"][1]["asOf"] = duplicate_date["observations"][0]["asOf"]
+    invalid_cases.append(duplicate_date)
+    wrong_tail = json.loads(json.dumps(full_window))
+    wrong_tail["observations"][-1]["value"] = 999.0
+    invalid_cases.append(wrong_tail)
+    wrong_previous = json.loads(json.dumps(full_window))
+    wrong_previous["observations"][-2]["value"] = 999.0
+    invalid_cases.append(wrong_previous)
+    non_positive = json.loads(json.dumps(full_window))
+    non_positive["observations"][0]["value"] = 0
+    invalid_cases.append(non_positive)
+    for invalid in invalid_cases:
+        try:
+            validate_official_observations(invalid, "异常序列")
+        except AssertionError:
+            continue
+        raise AssertionError("无效官方观测窗口未被拒绝")
 
 
 def css_hex_variable(styles: str, name: str) -> str:
@@ -528,7 +605,9 @@ assert.strictEqual(dgs10.observationTrend.count, match.row.observations.length);
 assert.strictEqual(dgs10.observationTrend.targetCount, 8);
 assert.deepStrictEqual(dgs10.observationTrend.values, match.row.observations.map((item) => item.value));
 assert.strictEqual(dgs10.observationTrend.changeUnit, "bp");
-assert.strictEqual(dgs10.observationTrend.change, null);
+assert.strictEqual(dgs10.observationTrend.change, match.row.observations.length < 2 ? null
+  : Math.round((match.row.observations[match.row.observations.length - 1].value
+    - match.row.observations[0].value) * 10000) / 100);
 const dgsWindow = JSON.parse(JSON.stringify(macro));
 const dgsWindowRow = adapter.findDgs10Row(dgsWindow).row;
 dgsWindowRow.previousAsOf = "2026-08-05";
@@ -548,10 +627,13 @@ assert.throws(() => adapter.adaptDgs10(
   config.assets.find((asset) => asset.id === "us10y"), tamperedDgsWindow, currentNow
 ));
 const dgs10Health = adapter.adaptOfficialSourceHealth(macroHealth, macro, dgs10, "DGS10", currentNow);
+const dgs10HealthRecord = macroHealth.sources.find((source) => source.id === "DGS10");
 assert.strictEqual(dgs10Health.seriesId, "DGS10");
-assert.strictEqual(dgs10Health.status, "unknown");
-assert.strictEqual(dgs10Health.historyKnown, false);
-assert.strictEqual(dgs10Health.refreshLabel, "历史待建立");
+assert.strictEqual(dgs10Health.status, dgs10HealthRecord.status);
+assert.strictEqual(dgs10Health.historyKnown, macroHealth.historyStatus === "tracked");
+assert.strictEqual(dgs10Health.refreshLabel, {
+  market: "已刷新", fallback: "保留旧值", unavailable: "不可用", unknown: "历史待建立"
+}[dgs10HealthRecord.mode]);
 const dgs10WithStaleHealth = adapter.buildPageData(
   config, macro, expiredOfficialHealthNow, null, { data: macroHealth, error: null }
 ).assets.find((asset) => asset.id === "us10y");
@@ -585,14 +667,19 @@ assert.strictEqual(dollar.observationTrend.endAsOf, reference.asOf);
 assert(Math.abs(dollar.observationTrend.change
   - ((reference.price / reference.observations[0].value - 1) * 100)) < 1e-12);
 const tamperedDollarWindow = JSON.parse(JSON.stringify(macro));
-tamperedDollarWindow.referenceSeries.DTWEXBGS.observations[1].value += 1;
+tamperedDollarWindow.referenceSeries.DTWEXBGS.observations[
+  tamperedDollarWindow.referenceSeries.DTWEXBGS.observations.length - 1
+].value += 1;
 assert.throws(() => adapter.adaptDtwexbgs(dollarConfig, tamperedDollarWindow, currentNow));
 const dollarHealth = adapter.adaptOfficialSourceHealth(
   macroHealth, macro, dollar, "DTWEXBGS", currentNow
 );
-assert.strictEqual(dollarHealth.status, "stale");
-assert.strictEqual(dollarHealth.historyKnown, false);
-assert.strictEqual(dollarHealth.refreshLabel, "历史待建立");
+const dollarHealthRecord = macroHealth.sources.find((source) => source.id === "DTWEXBGS");
+assert.strictEqual(dollarHealth.status, dollarHealthRecord.status);
+assert.strictEqual(dollarHealth.historyKnown, macroHealth.historyStatus === "tracked");
+assert.strictEqual(dollarHealth.refreshLabel, {
+  market: "已刷新", fallback: "保留旧值", unavailable: "不可用", unknown: "历史待建立"
+}[dollarHealthRecord.mode]);
 const dollarWithStaleHealth = adapter.buildPageData(
   config, macro, expiredOfficialHealthNow, null, { data: macroHealth, error: null }
 ).assets.find((asset) => asset.id === "dxy");
@@ -625,9 +712,12 @@ const tamperedOilWindow = JSON.parse(JSON.stringify(macro));
 tamperedOilWindow.referenceSeries.RWTC.observations.reverse();
 assert.throws(() => adapter.adaptRwtc(oilConfig, tamperedOilWindow, currentNow));
 const oilHealth = adapter.adaptOfficialSourceHealth(macroHealth, macro, oil, "RWTC", currentNow);
-assert.strictEqual(oilHealth.status, "stale");
-assert.strictEqual(oilHealth.historyKnown, false);
-assert.strictEqual(oilHealth.refreshLabel, "历史待建立");
+const oilHealthRecord = macroHealth.sources.find((source) => source.id === "RWTC");
+assert.strictEqual(oilHealth.status, oilHealthRecord.status);
+assert.strictEqual(oilHealth.historyKnown, macroHealth.historyStatus === "tracked");
+assert.strictEqual(oilHealth.refreshLabel, {
+  market: "已刷新", fallback: "保留旧值", unavailable: "不可用", unknown: "历史待建立"
+}[oilHealthRecord.mode]);
 const oilWithStaleHealth = adapter.buildPageData(
   config, macro, expiredOfficialHealthNow, null, { data: macroHealth, error: null }
 ).assets.find((asset) => asset.id === "wti");
@@ -716,14 +806,18 @@ const independentlyFreshDgs = adapter.buildPageData(config, trackedDgsMacro, cur
 assert.strictEqual(independentlyFreshDgs.status, "ok");
 assert.strictEqual(independentlyFreshDgs.updatedAt, trackedDgs.updatedAt);
 
-const freshDollar = adapter.adaptDtwexbgs(dollarConfig, macro, new Date("2026-07-27T23:59:59Z"));
+const freshDollar = adapter.adaptDtwexbgs(
+  dollarConfig, macro, new Date(reference.asOf + "T23:59:59Z")
+);
 assert.strictEqual(freshDollar.status, "ok");
 assert.strictEqual(freshDollar.demo, false);
 assert.strictEqual(freshDollar.delayLabel, "日频 · 自动更新");
 
 const freshOilMacro = JSON.parse(JSON.stringify(macro));
 freshOilMacro.referenceSeries.RWTC.status = "ok";
-const freshOil = adapter.adaptRwtc(oilConfig, freshOilMacro, new Date("2026-07-31T23:59:59Z"));
+const freshOil = adapter.adaptRwtc(
+  oilConfig, freshOilMacro, new Date(oilReference.asOf + "T23:59:59Z")
+);
 assert.strictEqual(freshOil.status, "ok");
 assert.strictEqual(freshOil.demo, false);
 assert.strictEqual(freshOil.delayLabel, "日频现货 · 自动更新");
@@ -948,9 +1042,9 @@ assert.strictEqual(macroOperationHealth.dataset, "macro-radar");
 assert.strictEqual(macroOperationHealth.status, "degraded");
 assert.strictEqual(macroOperationHealth.pipelineStatus, "degraded");
 assert.strictEqual(macroOperationHealth.availableCoveragePct, 100);
-assert.strictEqual(macroOperationHealth.freshCoveragePct, 0);
-assert.strictEqual(macroOperationHealth.historyKnown, false);
-assert.strictEqual(macroOperationHealth.consecutiveFailures, null);
+assert.strictEqual(macroOperationHealth.freshCoveragePct, macroHealth.coverage.freshCoveragePct);
+assert.strictEqual(macroOperationHealth.historyKnown, macroHealth.historyStatus === "tracked");
+assert.strictEqual(macroOperationHealth.consecutiveFailures, macroHealth.consecutiveFailures);
 assert.strictEqual(macroOperationHealth.reportStale, false);
 
 const operationSources = {
@@ -978,7 +1072,9 @@ assert.deepStrictEqual(operationCards.map((card) => card.freshCoveragePct), [
   companiesHealth.coverage.freshCoveragePct,
   assetRankingHealth.coverage.freshCoveragePct
 ]);
-assert(operationCards.every((card) => card.historyKnown === false));
+assert.deepStrictEqual(operationCards.map((card) => card.historyKnown), [
+  macroHealth, assetTrackerHealth, companiesHealth, assetRankingHealth
+].map((health) => health.historyStatus === "tracked"));
 
 const staleOperationCards = adapter.buildOperationsCards(operationSources, expiredOfficialHealthNow);
 assert(staleOperationCards.every((card) => card.status === "stale"));
@@ -1021,8 +1117,8 @@ assert.strictEqual(crossAsset.quality.declaredValid, true);
 assert.strictEqual(crossAsset.quality.contractKnown, true);
 assert.strictEqual(crossAsset.sourceHealth.status, "degraded");
 assert.strictEqual(crossAsset.sourceHealth.freshCoveragePct, assetTrackerHealth.coverage.freshCoveragePct);
-assert.strictEqual(crossAsset.sourceHealth.historyKnown, false);
-assert.strictEqual(crossAsset.sourceHealth.consecutiveFailures, null);
+assert.strictEqual(crossAsset.sourceHealth.historyKnown, assetTrackerHealth.historyStatus === "tracked");
+assert.strictEqual(crossAsset.sourceHealth.consecutiveFailures, assetTrackerHealth.consecutiveFailures);
 assert.strictEqual(crossAsset.sourceHealth.reportStale, false);
 const expiredTrackerHealth = adapter.adaptSourceHealth(
   assetTrackerHealth, "asset-tracker", assetTracker, expiredOfficialHealthNow
@@ -1154,10 +1250,9 @@ assert.deepStrictEqual(globalAssets.quality.counts, assetRanking.dataQuality.cou
 assert.strictEqual(globalAssets.quality.declaredValid, true);
 assert.strictEqual(globalAssets.sourceHealth.status, "degraded");
 assert.strictEqual(globalAssets.sourceHealth.freshCoveragePct,
-  Math.round(assetRanking.dataQuality.counts.market / assetRanking.count * 10000) / 100);
+  assetRankingHealth.coverage.freshCoveragePct);
 assert.strictEqual(globalAssets.sourceHealth.verifiedCoveragePct,
-  Math.round((assetRanking.dataQuality.counts.market + assetRanking.dataQuality.counts.fallback
-    + assetRanking.dataQuality.counts.estimate) / assetRanking.count * 10000) / 100);
+  assetRankingHealth.coverage.verifiedCoveragePct);
 assert(globalAssets.assets[0].dataLabel.includes("静态估算") && globalAssets.assets[0].dataLabel.includes("Savills"));
 globalAssets.assets.forEach((asset, index) => {
   const mode = assetRanking.assets[index].dataMeta.mode;
@@ -1165,7 +1260,9 @@ globalAssets.assets.forEach((asset, index) => {
   if (mode === "fallback") assert(asset.dataLabel.includes("历史回退"));
   if (mode === "unknown") assert.strictEqual(asset.dataLabel, "来源待确认");
 });
-assert(globalAssets.note.includes(assetRanking.dataQuality.counts.unknown + "项旧快照"));
+if (assetRanking.dataQuality.counts.unknown > 0) {
+  assert(globalAssets.note.includes(assetRanking.dataQuality.counts.unknown + "项旧快照"));
+}
 
 const freshAssetRanking = JSON.parse(JSON.stringify(assetRanking));
 freshAssetRanking.updatedAt = "2026-08-08T20:00:00Z";
@@ -1251,6 +1348,10 @@ assert.strictEqual(failedRankingResearch[1].status, "error");
 
 const companyLeaders = adapter.adaptCompanies(companies, currentNow, companiesHealth);
 const listedCompanies = companies.companies.filter((company) => !company.private);
+const eligibleCompanyMovers = listedCompanies.filter((company) => company.stale !== true
+  && company.dataMeta && company.dataMeta.mode === "market" && company.dataMeta.status === "ok"
+  && Number.isFinite(company.changePct) && company.changePct >= -100 && company.changePct <= 1000)
+  .slice().sort((a, b) => a.changePct - b.changePct);
 assert.strictEqual(companyLeaders.id, "company-leaders");
 assert.strictEqual(companyLeaders.status, "partial");
 assert.strictEqual(companyLeaders.listedCount, companies.listedCount);
@@ -1259,18 +1360,27 @@ assert.strictEqual(companyLeaders.asOf, companies.asOf);
 assert.strictEqual(companyLeaders.updatedAt, companies.updatedAt);
 assert(companyLeaders.source.name.includes("Yahoo Finance") && companyLeaders.source.name.includes("multiples.vc"));
 assert.deepStrictEqual(companyLeaders.topCompanies.map((company) => company.symbol), listedCompanies.slice(0, 3).map((company) => company.symbol));
-assert.strictEqual(companyLeaders.gainer, null);
-assert.strictEqual(companyLeaders.laggard, null);
-assert.strictEqual(companyLeaders.moverCoverage, 0);
-assert.strictEqual(companyLeaders.quality.counts.market, 0);
-assert.strictEqual(companyLeaders.quality.counts.estimate, 50);
-assert.strictEqual(companyLeaders.quality.counts.unknown, 450);
+assert.strictEqual(companyLeaders.gainer && companyLeaders.gainer.symbol,
+  eligibleCompanyMovers.length >= 20 ? eligibleCompanyMovers[eligibleCompanyMovers.length - 1].symbol : null);
+assert.strictEqual(companyLeaders.laggard && companyLeaders.laggard.symbol,
+  eligibleCompanyMovers.length >= 20 ? eligibleCompanyMovers[0].symbol : null);
+assert.strictEqual(companyLeaders.moverCoverage, eligibleCompanyMovers.length);
+assert.deepStrictEqual(companyLeaders.quality.counts, companies.dataQuality.counts);
 assert.strictEqual(companyLeaders.quality.declaredValid, true);
 assert.strictEqual(companyLeaders.sourceHealth.status, "degraded");
-assert.strictEqual(companyLeaders.sourceHealth.freshCoveragePct, 0);
-assert.strictEqual(companyLeaders.sourceHealth.verifiedCoveragePct, 10);
-assert(companyLeaders.note.includes("暂停当日领涨与领跌"));
-assert(companyLeaders.topCompanies.every((company) => company.dataLabel === "来源待确认"));
+assert.strictEqual(companyLeaders.sourceHealth.freshCoveragePct,
+  companiesHealth.coverage.freshCoveragePct);
+assert.strictEqual(companyLeaders.sourceHealth.verifiedCoveragePct,
+  companiesHealth.coverage.verifiedCoveragePct);
+if (companies.dataQuality.counts.unknown + companies.dataQuality.counts.unavailable > 0) {
+  assert(companyLeaders.note.includes("暂停当日领涨与领跌"));
+}
+companyLeaders.topCompanies.forEach((company, index) => {
+  const mode = listedCompanies[index].dataMeta.mode;
+  if (mode === "market") assert(company.dataLabel.includes("行情"));
+  if (mode === "fallback") assert(company.dataLabel.includes("历史回退"));
+  if (mode === "unknown") assert.strictEqual(company.dataLabel, "来源待确认");
+});
 assert(Math.abs(companyLeaders.listedMarketCap - listedCompanies.reduce((sum, company) => sum + company.marketCap, 0)) < 1e-9);
 const monitoredResearch = adapter.buildResearchCards({
   assetTracker: { data: assetTracker, error: null },
@@ -1599,11 +1709,7 @@ def main() -> None:
 
     category, row = find_dgs10(macro)
     require(category.get("src") == "FRED", "宏观雷达DGS10来源必须为FRED")
-    dgs10_observations = row.get("observations")
-    require(isinstance(dgs10_observations, list) and len(dgs10_observations) == 1,
-            "当前DGS10旧快照只能保留1个有日期的官方观测点")
-    require(dgs10_observations[0] == {"asOf": row["asOf"], "value": row["price"]},
-            "DGS10观测窗口末值必须与当前官方记录一致")
+    validate_official_observations(row, "DGS10")
     require(re.fullmatch(r"-?\d+(?:\.\d+)?%", row.get("val", "")) is not None, "DGS10收益率格式无效")
     require(re.fullmatch(r"[+-]?\d+(?:\.\d+)?bp", row.get("chg", ""), flags=re.I) is not None, "DGS10变化必须使用bp")
     parse_date(row["asOf"])
@@ -1622,13 +1728,7 @@ def main() -> None:
     parse_iso(dollar_reference["updatedAt"])
     parse_iso(dollar_reference["lastAttemptAt"])
     require(dollar_reference["source"].get("seriesId") == "DTWEXBGS", "DTWEXBGS自动更新来源不准确")
-    dollar_observations = dollar_reference.get("observations")
-    require(isinstance(dollar_observations, list) and len(dollar_observations) == 2,
-            "当前DTWEXBGS快照应保留两个可追溯官方观测点")
-    require(dollar_observations[-1] == {"asOf": dollar_reference["asOf"], "value": dollar_reference["price"]}
-            and dollar_observations[0] == {
-                "asOf": dollar_reference["previousAsOf"], "value": dollar_reference["previousPrice"]
-            }, "DTWEXBGS观测窗口必须与当前值和前值一致")
+    validate_official_observations(dollar_reference, "DTWEXBGS")
     expected_change = (dollar_reference["price"] / dollar_reference["previousPrice"] - 1) * 100
     require(abs(dollar_reference["changePct"] - expected_change) < 1e-12, "DTWEXBGS自动更新涨跌幅不可复现")
 
@@ -1645,13 +1745,7 @@ def main() -> None:
     parse_iso(wti_reference["updatedAt"])
     parse_iso(wti_reference["lastAttemptAt"])
     require(wti_reference["source"].get("seriesId") == "RWTC", "RWTC自动更新来源不准确")
-    wti_observations = wti_reference.get("observations")
-    require(isinstance(wti_observations, list) and len(wti_observations) == 2,
-            "当前RWTC快照应保留两个可追溯官方观测点")
-    require(wti_observations[-1] == {"asOf": wti_reference["asOf"], "value": wti_reference["price"]}
-            and wti_observations[0] == {
-                "asOf": wti_reference["previousAsOf"], "value": wti_reference["previousPrice"]
-            }, "RWTC观测窗口必须与当前值和前值一致")
+    validate_official_observations(wti_reference, "RWTC")
     expected_wti_change = (wti_reference["price"] / wti_reference["previousPrice"] - 1) * 100
     require(abs(wti_reference["changePct"] - expected_wti_change) < 1e-12, "RWTC自动更新涨跌幅不可复现")
 
@@ -2280,6 +2374,7 @@ def main() -> None:
     run_market_data_quality_contract_tests()
     run_company_builder_contract_tests()
     run_asset_ranking_builder_contract_tests()
+    run_official_observation_contract_tests()
     run_dtwexbgs_pipeline_tests()
     run_rwtc_pipeline_tests()
     run_js_adapter_tests()
