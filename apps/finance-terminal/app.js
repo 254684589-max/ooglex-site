@@ -3618,6 +3618,9 @@
     var officialHealthPanels = Array.prototype.slice.call(document.querySelectorAll(
       "#market-grid .official-update-health"
     ));
+    var officialTrendPanels = Array.prototype.slice.call(document.querySelectorAll(
+      "#market-grid .official-trend"
+    ));
     var undersizedTargets = targetElements.map(function (element) {
       var rect = element.getBoundingClientRect();
       return {
@@ -3657,6 +3660,13 @@
         && officialHealthPanels.every(function (panel) {
           return panel.textContent.indexOf("逐源更新链健康不可用") === -1;
         }),
+      officialObservationTrends: officialTrendPanels.length === 3
+        && officialTrendPanels.every(function (panel) {
+          return panel.textContent.indexOf("RECENT OBSERVATIONS") !== -1;
+        })
+        && officialTrendPanels.filter(function (panel) {
+          return panel.querySelector(".sparkline");
+        }).length === 2,
       cardCounts: document.querySelectorAll(".asset-card").length === 8
         && document.querySelectorAll(".risk-card").length === 3
         && document.querySelectorAll(".research-card").length === 3
@@ -3704,6 +3714,7 @@
       targetCount: targetElements.length,
       supportingHealthPanelCount: supportingHealthPanels.length,
       officialHealthPanelCount: officialHealthPanels.length,
+      officialObservationTrendCount: officialTrendPanels.length,
       undersizedTargets: undersizedTargets,
       layout: {
         market: renderedGridColumns(grid),

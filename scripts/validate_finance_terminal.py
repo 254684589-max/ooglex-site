@@ -1947,6 +1947,10 @@ def main() -> None:
     require("official-update-health" in app and "adaptOfficialSourceHealth" in app
             and "三张官方行情卡片" in page and "逐源健康快照" in page,
             "页面未展示或解释三项官方行情逐源更新链健康")
+    require("official-trend" in page and "buildOfficialObservationTrend" in app
+            and "normalizeOfficialObservations" in app and "RECENT OBSERVATIONS" in app
+            and "最多8项" in page and "不以演示走势填充" in page,
+            "页面未校验或展示三项官方行情最近观测趋势")
     require('src="app.js"' in page, "页面未加载本地app.js")
     compact_page = re.sub(r"\s+", "", page)
     require(contrast_ratio(css_hex_variable(page, "faint"), css_hex_variable(page, "panel")) >= 4.5,
@@ -2097,7 +2101,8 @@ def main() -> None:
     require('setAttribute("aria-pressed"' not in app, "标签页不得混用aria-pressed按钮模式")
     require("runBrowserRegressionProbe" in app and "finance-terminal-regression-result" in app
             and "supportingHealthResources" in app and "supportingHealthPanelCount" in app
-            and "officialHealthResources" in app and "officialHealthPanelCount" in app,
+            and "officialHealthResources" in app and "officialHealthPanelCount" in app
+            and "officialObservationTrends" in app and "officialObservationTrendCount" in app,
             "页面缺少浏览器、官方逐源或辅助来源资源回归探针")
     require("noHorizontalOverflow" in app and "responsiveColumns" in app and "targetSizes" in app
             and "keyboardTabs" in app, "浏览器回归探针未覆盖溢出、布局、触控与键盘交互")
@@ -2128,7 +2133,8 @@ def main() -> None:
     require(BROWSER_VALIDATOR.exists(), "缺少金融终端真实浏览器回归脚本")
     browser_validator = BROWSER_VALIDATOR.read_text(encoding="utf-8")
     require("[360, 768, 1280]" in browser_validator and "Page.captureScreenshot" in browser_validator
-            and "Runtime.evaluate" in browser_validator, "浏览器回归脚本未覆盖三档宽度、渲染DOM和截图")
+            and "Runtime.evaluate" in browser_validator and "officialObservationTrendCount" in browser_validator,
+            "浏览器回归脚本未覆盖三档宽度、官方趋势、渲染DOM和截图")
     require(QUALITY_WORKFLOW.exists(), "缺少金融终端只读质量工作流")
     quality_workflow = QUALITY_WORKFLOW.read_text(encoding="utf-8")
     require("permissions:\n  contents: read" in quality_workflow, "金融终端质量工作流权限必须只读")
