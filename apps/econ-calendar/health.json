@@ -1,34 +1,34 @@
 {
   "contractVersion": 1,
   "dataset": "econ-calendar",
-  "generatedAt": "2026-08-07T22:26:40Z",
-  "status": "unknown",
-  "historyStatus": "migrated",
-  "lastAttemptAt": null,
-  "lastSuccessfulAt": "2026-08-07T22:26:40Z",
-  "consecutiveFailures": null,
-  "publishedSnapshotAt": "2026-08-07T22:26:40Z",
-  "snapshotPreserved": null,
+  "generatedAt": "2026-08-08T14:18:05Z",
+  "status": "healthy",
+  "historyStatus": "tracked",
+  "lastAttemptAt": "2026-08-08T14:18:05Z",
+  "lastSuccessfulAt": "2026-08-08T14:18:05Z",
+  "consecutiveFailures": 0,
+  "publishedSnapshotAt": "2026-08-08T14:18:05Z",
+  "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
     "expectedComponents": 1,
     "publishedComponents": 1,
-    "refreshedComponents": 0,
+    "refreshedComponents": 1,
     "fallbackComponents": 0,
     "unavailableComponents": 0,
-    "unknownComponents": 1,
+    "unknownComponents": 0,
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 0.0
+    "freshCoveragePct": 100.0
   },
   "attempt": {
-    "status": "unknown",
-    "published": null,
-    "refreshedComponents": [],
+    "status": "success",
+    "published": true,
+    "refreshedComponents": [
+      "weekly-calendar"
+    ],
     "fallbackComponents": [],
     "unavailableComponents": [],
-    "unknownComponents": [
-      "weekly-calendar"
-    ]
+    "unknownComponents": []
   },
   "components": [
     {
@@ -37,11 +37,11 @@
       "role": "primary",
       "frequency": "daily",
       "requiredForTerminal": true,
-      "status": "unknown",
-      "mode": "unknown",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": null,
-      "lastSuccessAt": "2026-08-07T22:26:40Z"
+      "lastAttemptAt": "2026-08-08T14:18:05Z",
+      "lastSuccessAt": "2026-08-08T14:18:05Z"
     }
   ],
   "policy": {
