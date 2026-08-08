@@ -1,6 +1,8 @@
 {
-  "updatedAt": "2026-08-07T22:19:58Z",
-  "asOf": "2026-08-07",
+  "updatedAt": "2026-08-08T17:13:41Z",
+  "asOf": "2026-08-08",
+  "frequency": "daily",
+  "status": "partial",
   "defaultPeriod": "ytd",
   "source": "Yahoo Finance",
   "note": "数据来自 Yahoo Finance 公开行情，每日自动更新；涨跌幅为各标的自身价格变动。LME 金属以全球期货代理、债券以国债 ETF 代理（详见各条备注）。仅供参考，非投资建议。",
@@ -61,108 +63,103 @@
         "ytd": 13.32,
         "y1": 21.41
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "日经225",
       "category": "equity",
       "symbol": "^N225",
-      "price": 65683.2578,
+      "price": 65606.7109,
       "returns": {
-        "d1": -0.93,
-        "w1": 6.17,
-        "m1": -3.77,
-        "ytd": 30.48,
-        "y1": 59.97
+        "d1": -0.12,
+        "w1": 1.93,
+        "m1": -1.81,
+        "ytd": 30.33,
+        "y1": 59.79
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "德国DAX",
       "category": "equity",
       "symbol": "^GDAXI",
-      "price": 26140.1309,
+      "price": 26319.4492,
       "returns": {
-        "d1": 0.05,
-        "w1": 2.06,
-        "m1": 2.65,
-        "ytd": 6.74,
-        "y1": 8.05
+        "d1": 0.69,
+        "w1": 2.69,
+        "m1": 5.71,
+        "ytd": 7.47,
+        "y1": 8.79
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "恒生指数",
       "category": "equity",
       "symbol": "^HSI",
-      "price": 25530.2793,
+      "price": 25668.0293,
       "returns": {
-        "d1": -1.49,
-        "w1": -1.27,
-        "m1": 8.65,
-        "ytd": -0.39,
-        "y1": 1.79
+        "d1": 0.54,
+        "w1": -0.84,
+        "m1": 6.07,
+        "ytd": 0.15,
+        "y1": 2.34
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "富时新加坡海峡指数",
       "category": "equity",
       "symbol": "^STI",
-      "price": 5638.9902,
+      "price": 5698.4302,
       "returns": {
-        "d1": 1.03,
-        "w1": -0.61,
-        "m1": 5.55,
-        "ytd": 21.37,
-        "y1": 32.43
+        "d1": 1.05,
+        "w1": 1.24,
+        "m1": 6.12,
+        "ytd": 22.65,
+        "y1": 33.82
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "沪深300",
@@ -176,16 +173,15 @@
         "ytd": -2.18,
         "y1": 10.07
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-07-17",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "新西兰NZ50",
@@ -193,68 +189,65 @@
       "symbol": "^NZ50",
       "price": 13824.1299,
       "returns": {
-        "d1": -0.96,
+        "d1": 0.0,
         "w1": 0.91,
         "m1": 0.28,
         "ytd": 2.03,
         "y1": 7.27
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "印度SENSEX30",
       "category": "equity",
       "symbol": "^BSESN",
-      "price": 78954.7578,
+      "price": 78499.1719,
       "returns": {
-        "d1": 0.48,
-        "w1": 1.32,
-        "m1": 0.99,
-        "ytd": -7.35,
-        "y1": -2.07
+        "d1": -0.58,
+        "w1": 0.52,
+        "m1": 2.61,
+        "ytd": -7.89,
+        "y1": -2.63
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "澳洲标普200",
       "category": "equity",
       "symbol": "^AXJO",
-      "price": 9271.5996,
+      "price": 9263.5996,
       "returns": {
-        "d1": 0.47,
-        "w1": 3.39,
-        "m1": 5.31,
-        "ytd": 6.4,
-        "y1": 4.98
+        "d1": -0.09,
+        "w1": 3.19,
+        "m1": 5.45,
+        "ytd": 6.3,
+        "y1": 4.89
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "中证500",
@@ -276,37 +269,36 @@
         "asOf": null,
         "updatedAt": "2026-08-07T22:19:58Z",
         "frequency": "daily",
-        "note": "线上旧版快照已将本条标为回退，但未保存可验证的精确逐条行情日期。"
+        "note": "本轮请求失败，沿用旧快照；上一份记录缺少可验证的精确逐条时间。"
       }
     },
     {
       "name": "欧洲STOXX600",
       "category": "equity",
       "symbol": "^STOXX",
-      "price": 658.19,
+      "price": 660.25,
       "returns": {
-        "d1": 0.16,
-        "w1": 1.27,
-        "m1": 1.84,
-        "ytd": 11.03,
-        "y1": 20.54
+        "d1": 0.31,
+        "w1": 1.7,
+        "m1": 3.83,
+        "ytd": 11.38,
+        "y1": 20.91
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "英国富时100",
       "category": "equity",
       "symbol": "^FTSE",
-      "price": 10901.0898,
+      "price": 10901.0996,
       "returns": {
         "d1": 0.31,
         "w1": 0.3,
@@ -314,68 +306,65 @@
         "ytd": 9.76,
         "y1": 19.78
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "法国CAC40",
       "category": "equity",
       "symbol": "^FCHI",
-      "price": 8699.71,
+      "price": 8714.9297,
       "returns": {
-        "d1": 0.35,
-        "w1": 2.52,
-        "m1": 3.12,
-        "ytd": 6.75,
-        "y1": 12.85
+        "d1": 0.17,
+        "w1": 2.41,
+        "m1": 5.6,
+        "ytd": 6.94,
+        "y1": 13.04
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "韩国综合指数",
       "category": "equity",
       "symbol": "^KS11",
-      "price": 6296.3799,
+      "price": 6258.77,
       "returns": {
-        "d1": -4.58,
-        "w1": 12.56,
-        "m1": -17.76,
-        "ytd": 49.41,
-        "y1": 95.07
+        "d1": -0.6,
+        "w1": -5.1,
+        "m1": -13.63,
+        "ytd": 48.52,
+        "y1": 93.91
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "圣保罗IBOVESPA指数",
       "category": "equity",
       "symbol": "^BVSP",
-      "price": 172513.4219,
+      "price": 172513.0,
       "returns": {
         "d1": -1.73,
         "w1": -3.08,
@@ -383,156 +372,149 @@
         "ytd": 7.07,
         "y1": 26.36
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "COMEX黄金",
       "category": "commodity",
       "symbol": "GC=F",
-      "price": 4401.2998,
+      "price": 4340.7002,
       "returns": {
-        "d1": 3.76,
-        "w1": 8.7,
-        "m1": 8.12,
-        "ytd": 1.75,
-        "y1": 29.44
+        "d1": 2.33,
+        "w1": 7.2,
+        "m1": 6.63,
+        "ytd": 0.35,
+        "y1": 26.22
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "COMEX白银",
       "category": "commodity",
       "symbol": "SI=F",
-      "price": 63.8,
+      "price": 63.332,
       "returns": {
-        "d1": 3.84,
-        "w1": 10.78,
-        "m1": 9.69,
-        "ytd": -9.03,
-        "y1": 67.2
+        "d1": 3.08,
+        "w1": 9.97,
+        "m1": 8.89,
+        "ytd": -9.7,
+        "y1": 64.85
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "LME铝",
       "category": "commodity",
       "note": "以期货铝代理 LME 铝",
       "symbol": "ALI=F",
-      "price": 3431.75,
+      "price": 3359.0,
       "returns": {
-        "d1": 1.98,
-        "w1": 2.91,
-        "m1": -0.1,
-        "ytd": 18.08,
-        "y1": 37.27
+        "d1": -0.18,
+        "w1": 0.73,
+        "m1": -2.22,
+        "ytd": 15.58,
+        "y1": 34.27
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "LME铜",
       "category": "commodity",
       "note": "以 COMEX 铜代理 LME 铜",
       "symbol": "HG=F",
-      "price": 6.585,
+      "price": 6.5705,
       "returns": {
-        "d1": -1.53,
-        "w1": 2.32,
-        "m1": 8.76,
-        "ytd": 16.96,
-        "y1": 50.39
+        "d1": -1.74,
+        "w1": 2.09,
+        "m1": 8.52,
+        "ytd": 16.71,
+        "y1": 47.47
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "NYMEX WTI原油",
       "category": "commodity",
       "symbol": "CL=F",
-      "price": 77.08,
+      "price": 78.18,
       "returns": {
-        "d1": -0.27,
-        "w1": -8.96,
-        "m1": 4.84,
-        "ytd": 34.24,
-        "y1": 20.66
+        "d1": 1.15,
+        "w1": -7.67,
+        "m1": 6.34,
+        "ytd": 36.15,
+        "y1": 22.39
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "ICE布油",
       "category": "commodity",
       "symbol": "BZ=F",
-      "price": 82.27,
+      "price": 83.55,
       "returns": {
-        "d1": -0.27,
-        "w1": -8.71,
-        "m1": 5.45,
-        "ytd": 35.2,
-        "y1": 23.84
+        "d1": 1.29,
+        "w1": -7.29,
+        "m1": 7.09,
+        "ytd": 37.3,
+        "y1": 25.47
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "美元兑日元",
@@ -546,39 +528,37 @@
         "ytd": 0.85,
         "y1": 7.17
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "美元指数",
       "category": "fx",
       "symbol": "DX-Y.NYB",
-      "price": 99.604,
+      "price": 99.6,
       "returns": {
         "d1": -0.37,
         "w1": -0.2,
         "m1": -1.43,
-        "ytd": 1.35,
-        "y1": 1.22
+        "ytd": 1.34,
+        "y1": 1.45
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "美元兑人民币",
@@ -588,43 +568,41 @@
       "returns": {
         "d1": -0.17,
         "w1": -0.26,
-        "m1": -0.96,
+        "m1": -0.81,
         "ytd": -3.7,
         "y1": -6.2
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-08",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "英镑兑美元",
       "category": "fx",
       "symbol": "GBPUSD=X",
-      "price": 1.3493,
+      "price": 1.3492,
       "returns": {
         "d1": 0.28,
-        "w1": 0.24,
-        "m1": 0.72,
+        "w1": 0.23,
+        "m1": 0.57,
         "ytd": 0.19,
         "y1": 1.01
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-08",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "欧元兑美元",
@@ -638,16 +616,15 @@
         "ytd": -1.58,
         "y1": -0.87
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "澳元兑美元",
@@ -657,63 +634,53 @@
       "returns": {
         "d1": 0.53,
         "w1": 0.65,
-        "m1": 1.94,
+        "m1": 1.82,
         "ytd": 5.56,
         "y1": 8.78
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-08",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     },
     {
       "name": "中国国债",
       "category": "bond",
       "note": "以国债 ETF 代理（非中债-国债总财富指数）",
       "symbol": "511260.SS",
-      "price": 135.448,
+      "price": 135.513,
       "returns": {
-        "d1": -0.01,
-        "w1": 0.14,
+        "d1": 0.05,
+        "w1": 0.1,
         "m1": 0.44,
-        "ytd": 1.21,
-        "y1": -0.75
+        "ytd": 1.26,
+        "y1": -0.71
       },
+      "stale": false,
       "dataMeta": {
-        "mode": "unknown",
-        "status": "partial",
+        "mode": "market",
+        "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-07T22:19:58Z",
-        "frequency": "daily",
-        "note": "线上旧版任务已更新本条，但未记录本轮行情或历史回退路径；等待新版任务确认。"
-      },
-      "stale": false
+        "asOf": "2026-08-07",
+        "updatedAt": "2026-08-08T17:13:41Z",
+        "frequency": "daily"
+      }
     }
   ],
-  "bdi": {
-    "price": 3057.0,
-    "changePct": -0.2,
-    "asOf": "2026-08-06",
-    "symbol": ".BADI",
-    "source": "CNBC"
-  },
-  "frequency": "daily",
   "dataQuality": {
     "contractVersion": 1,
     "status": "partial",
     "total": 28,
     "counts": {
-      "market": 0,
+      "market": 27,
       "fallback": 1,
       "estimate": 0,
-      "unknown": 27,
+      "unknown": 0,
       "unavailable": 0
     },
     "sources": [
@@ -723,5 +690,11 @@
       }
     ]
   },
-  "status": "partial"
+  "bdi": {
+    "price": 3089.0,
+    "changePct": 1.05,
+    "asOf": "2026-08-07",
+    "symbol": ".BADI",
+    "source": "CNBC"
+  }
 }
