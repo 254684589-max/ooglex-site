@@ -1,0 +1,132 @@
+{
+  "contractVersion": 1,
+  "dataset": "macro-radar",
+  "generatedAt": "2026-08-07T22:19:45Z",
+  "status": "degraded",
+  "historyStatus": "migrated",
+  "lastAttemptAt": "2026-08-07T22:19:45Z",
+  "lastSuccessfulAt": "2026-08-07T22:19:45Z",
+  "consecutiveFailures": null,
+  "publishedSnapshotAt": "2026-08-07T22:19:45Z",
+  "snapshotPreserved": null,
+  "failureReason": null,
+  "coverage": {
+    "expectedSeries": 3,
+    "publishedSeries": 3,
+    "counts": {
+      "market": 0,
+      "fallback": 0,
+      "unavailable": 0,
+      "unknown": 3
+    },
+    "freshCoveragePct": 0.0,
+    "availableCoveragePct": 100.0
+  },
+  "attempt": {
+    "status": "unknown",
+    "refreshedSeries": [],
+    "failedSeries": [],
+    "unknownSeries": [
+      "DGS10",
+      "DTWEXBGS",
+      "RWTC"
+    ]
+  },
+  "sources": [
+    {
+      "id": "DGS10",
+      "name": "FRED DGS10",
+      "provider": "FRED / Federal Reserve H.15",
+      "role": "primary",
+      "status": "unknown",
+      "mode": "unknown",
+      "historyStatus": "migrated",
+      "frequency": "daily",
+      "maxBusinessDays": 3,
+      "changeUnit": "bp",
+      "published": true,
+      "asOf": "2026-08-06",
+      "publishedUpdatedAt": "2026-08-07T22:19:45Z",
+      "lastAttemptAt": "2026-08-07T22:19:45Z",
+      "lastSuccessfulAt": "2026-08-07T22:19:45Z",
+      "consecutiveFailures": null,
+      "snapshotPreserved": null,
+      "failureReason": null,
+      "source": {
+        "name": "FRED / Federal Reserve H.15",
+        "url": "https://fred.stlouisfed.org/series/DGS10",
+        "seriesId": "DGS10"
+      }
+    },
+    {
+      "id": "DTWEXBGS",
+      "name": "FRED DTWEXBGS",
+      "provider": "FRED / Federal Reserve H.10",
+      "role": "primary",
+      "status": "unknown",
+      "mode": "unknown",
+      "historyStatus": "migrated",
+      "frequency": "daily",
+      "maxBusinessDays": 3,
+      "changeUnit": "percent",
+      "published": true,
+      "asOf": "2026-07-24",
+      "publishedUpdatedAt": "2026-07-27T20:23:00Z",
+      "lastAttemptAt": "2026-07-27T20:23:00Z",
+      "lastSuccessfulAt": "2026-07-27T20:23:00Z",
+      "consecutiveFailures": null,
+      "snapshotPreserved": null,
+      "failureReason": null,
+      "source": {
+        "name": "FRED / Federal Reserve H.10",
+        "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
+        "seriesId": "DTWEXBGS"
+      }
+    },
+    {
+      "id": "RWTC",
+      "name": "EIA RWTC",
+      "provider": "U.S. EIA / Cushing WTI Spot",
+      "role": "primary",
+      "status": "unknown",
+      "mode": "unknown",
+      "historyStatus": "migrated",
+      "frequency": "daily",
+      "maxBusinessDays": 4,
+      "changeUnit": "percent",
+      "published": true,
+      "asOf": "2026-07-27",
+      "publishedUpdatedAt": "2026-08-02T19:26:59Z",
+      "lastAttemptAt": "2026-08-02T19:26:59Z",
+      "lastSuccessfulAt": "2026-08-02T19:26:59Z",
+      "consecutiveFailures": null,
+      "snapshotPreserved": null,
+      "failureReason": null,
+      "source": {
+        "name": "U.S. EIA / Cushing WTI Spot",
+        "url": "https://www.eia.gov/dnav/pet/hist/rwtcd.htm",
+        "seriesId": "RWTC"
+      }
+    }
+  ],
+  "recovery": {
+    "preservesLastValidSnapshot": true,
+    "steps": [
+      {
+        "id": "request-retry",
+        "kind": "same-source-retry",
+        "label": "各官方接口独立重试，不以另一标的替代"
+      },
+      {
+        "id": "previous-observation",
+        "kind": "previous-record",
+        "label": "单一序列失败时保留其最后有效观测并标记回退"
+      },
+      {
+        "id": "independent-health",
+        "kind": "health-snapshot",
+        "label": "数据快照与健康快照分开更新，持续记录真实失败"
+      }
+    ]
+  }
+}

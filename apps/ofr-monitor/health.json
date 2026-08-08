@@ -1,0 +1,125 @@
+{
+  "contractVersion": 1,
+  "dataset": "ofr-monitor",
+  "generatedAt": "2026-08-07T22:26:42Z",
+  "status": "unknown",
+  "historyStatus": "migrated",
+  "lastAttemptAt": null,
+  "lastSuccessfulAt": "2026-08-07T22:26:42Z",
+  "consecutiveFailures": null,
+  "publishedSnapshotAt": "2026-08-07T22:26:42Z",
+  "snapshotPreserved": null,
+  "failureReason": null,
+  "coverage": {
+    "expectedComponents": 5,
+    "publishedComponents": 5,
+    "refreshedComponents": 0,
+    "fallbackComponents": 0,
+    "unavailableComponents": 0,
+    "unknownComponents": 5,
+    "publishedCoveragePct": 100.0,
+    "freshCoveragePct": 0.0
+  },
+  "attempt": {
+    "status": "unknown",
+    "published": null,
+    "refreshedComponents": [],
+    "fallbackComponents": [],
+    "unavailableComponents": [],
+    "unknownComponents": [
+      "fsi",
+      "funding",
+      "mmf",
+      "hedge",
+      "bank"
+    ]
+  },
+  "components": [
+    {
+      "id": "fsi",
+      "name": "OFR Financial Stress Index",
+      "role": "primary",
+      "frequency": "daily",
+      "requiredForTerminal": true,
+      "status": "unknown",
+      "mode": "unknown",
+      "published": true,
+      "lastAttemptAt": null,
+      "lastSuccessAt": "2026-08-07T22:26:42Z"
+    },
+    {
+      "id": "funding",
+      "name": "OFR Short-term Funding",
+      "role": "primary",
+      "frequency": "daily",
+      "requiredForTerminal": false,
+      "status": "unknown",
+      "mode": "unknown",
+      "published": true,
+      "lastAttemptAt": null,
+      "lastSuccessAt": "2026-08-07T22:26:42Z"
+    },
+    {
+      "id": "mmf",
+      "name": "OFR Money Market Funds",
+      "role": "primary",
+      "frequency": "monthly",
+      "requiredForTerminal": false,
+      "status": "unknown",
+      "mode": "unknown",
+      "published": true,
+      "lastAttemptAt": null,
+      "lastSuccessAt": "2026-08-07T22:26:42Z"
+    },
+    {
+      "id": "hedge",
+      "name": "OFR Hedge Fund Monitor",
+      "role": "primary",
+      "frequency": "quarterly",
+      "requiredForTerminal": false,
+      "status": "unknown",
+      "mode": "unknown",
+      "published": true,
+      "lastAttemptAt": null,
+      "lastSuccessAt": "2026-08-07T22:26:42Z"
+    },
+    {
+      "id": "bank",
+      "name": "Federal Reserve U.S. G-SIB Surcharges",
+      "role": "reference",
+      "frequency": "annual",
+      "requiredForTerminal": false,
+      "status": "unknown",
+      "mode": "unknown",
+      "published": true,
+      "lastAttemptAt": null,
+      "lastSuccessAt": "2026-08-07T22:26:42Z"
+    }
+  ],
+  "policy": {
+    "maxReportAgeHours": 72,
+    "terminalRequiredComponents": [
+      "fsi"
+    ]
+  },
+  "recovery": {
+    "preservesLastValidSnapshot": true,
+    "steps": [
+      {
+        "id": "component-isolation",
+        "kind": "partial-publish",
+        "label": "五项组件独立刷新，单项失败不拖累其余组件"
+      },
+      {
+        "id": "previous-component",
+        "kind": "previous-record",
+        "label": "单项失败时沿用上一份同组件有效值"
+      },
+      {
+        "id": "previous-snapshot",
+        "kind": "previous-snapshot",
+        "label": "全部动态来源失败时保留完整旧快照"
+      }
+    ]
+  }
+}

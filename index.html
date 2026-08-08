@@ -164,7 +164,9 @@
     .row .name { font-size: 19px; font-weight: 700; flex: 0 0 auto; }
     .row .name .emoji { margin-right: 9px; }
     .row .en { font-family: var(--mono); font-size: 10.5px; letter-spacing: .16em; color: var(--faint); text-transform: uppercase; flex: 0 0 auto; }
-    .row .livedot { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: var(--dn); flex: 0 0 auto; }
+    .row .livedot, .row .demodot { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; flex: 0 0 auto; }
+    .row .livedot { color: var(--dn); }
+    .row .demodot { color: var(--amber); }
     .row .desc { margin-left: auto; font-size: 13px; color: var(--dim); text-align: right; max-width: 46%; line-height: 1.6; }
     .row .arr { font-size: 17px; color: var(--faint); flex: 0 0 auto; transition: transform .15s, color .15s; }
     .row:hover .arr { transform: translateX(4px); color: var(--ink); }
@@ -245,6 +247,7 @@
         <p class="sub" data-i18n="hero.description">机制红绿灯、跨资产行情、恐慌贪婪、经济日历——十余个每日自动更新的数据应用与工具，纯静态、免注册，打开即用。</p>
         <div class="ctas">
           <a class="btn p" href="apps/macro-radar/" data-i18n="hero.primaryCta">进入宏观雷达 →</a>
+          <a class="btn g" href="apps/finance-terminal/" data-i18n="hero.terminalCta">金融终端（演示）</a>
           <a class="btn g" href="#apps" data-i18n="hero.secondaryCta">浏览全部应用</a>
         </div>
         <div class="trust">
@@ -282,6 +285,10 @@
     <div class="container">
       <div class="idx-hd"><h2 data-i18n="section.data">数据</h2><span class="en">DATA — UPDATED DAILY</span><span class="cnt" id="idx-stamp"></span></div>
       <div class="idx">
+        <a class="row" href="apps/finance-terminal/">
+          <span class="no">FT</span><span class="name" data-i18n-html="item.terminal.name"><span class="emoji">⌁</span>Ooglex金融终端</span><span class="en">Finance Terminal</span><span class="demodot">● DEMO</span>
+          <span class="desc" data-i18n="item.terminal.desc">全球股指 · 利率 · 美元 · 黄金 · 原油 · 比特币，一页查看（当前为演示数据）</span><span class="arr">→</span>
+        </a>
         <a class="row" href="apps/macro-radar/">
           <span class="no">01</span><span class="name" data-i18n-html="item.macro.name"><span class="emoji">📡</span>宏观雷达</span><span class="en">Macro Radar</span><span class="livedot">● LIVE</span>
           <span class="desc" data-i18n="item.macro.desc">市场机制红绿灯 · 七大信号加权打分 · 2006→今危机回放时光机</span><span class="arr">→</span>
@@ -400,13 +407,15 @@
       "hero.title": "Real-time global market data,<br>simpler, faster, smarter.",
       "hero.tagline": "Real-time global market data—simpler, faster, and smarter.",
       "hero.description": "Macro regime signals, cross-asset markets, Fear & Greed, and the economic calendar—more than a dozen data apps and tools, updated daily. Static, registration-free, and ready to use.",
-      "hero.primaryCta": "Open Macro Radar →", "hero.secondaryCta": "Browse All Apps",
+      "hero.primaryCta": "Open Macro Radar →", "hero.terminalCta": "Finance Terminal (Demo)", "hero.secondaryCta": "Browse All Apps",
       "hero.trustApps": "<b>16+</b> data apps & tools",
       "hero.trustHistory": "<b>2006→present</b> crisis replay",
       "hero.trustSpeed": "<b>&lt;1s</b> static page load",
       "radar.title": "MACRO RADAR", "radar.loading": "Loading",
       "radar.history": "Regime Time Machine · Replay every crisis since 2006", "radar.open": "Open →",
       "section.data": "Data", "section.tools": "Tools & Games", "section.contact": "Contact",
+      "item.terminal.name": "<span class=\"emoji\">⌁</span>Ooglex Finance Terminal",
+      "item.terminal.desc": "Global indexes · Rates · U.S. dollar · Gold · Crude oil · Bitcoin, in one view (demo data)",
       "item.macro.name": "<span class=\"emoji\">📡</span>Macro Radar",
       "item.macro.desc": "Market regime traffic light · Seven weighted signals · Replay every crisis since 2006",
       "item.dataHub.name": "<span class=\"emoji\">📊</span>Data Hub",

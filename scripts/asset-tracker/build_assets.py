@@ -17,12 +17,28 @@ GitHub Pages 直接托管该 JSON，页面前端 fetch 后即时渲染。
 """
 import json
 import os
+import sys
 import time
 from datetime import datetime, timezone, timedelta
 
 import requests
 
+HERE = os.path.dirname(os.path.abspath(__file__))
+SCRIPTS_DIR = os.path.dirname(HERE)
+sys.path.insert(0, SCRIPTS_DIR)
+from market_data_quality import (  # noqa: E402
+    fallback_data_meta,
+    make_data_meta,
+    summarize_data_quality,
+)
+from market_source_health import (  # noqa: E402
+    load_json as load_health_json,
+    make_source_health,
+    write_health,
+)
+
 OUT_PATH = os.path.join("apps", "asset-tracker", "data.json")
+HEALTH_PATH = os.path.join("apps", "asset-tracker", "health.json")
 
 # 四大品类：key / 中文名 / 颜色（沿用示例图语义：股市红、商品蓝、外汇橙、债券青，精修为更通透的配色）
 CATEGORIES = [
@@ -163,14 +179,13 @@ def _first_sym(a):
     return c["sym"] if isinstance(c, dict) else c
 
 
-def load_prev():
-    """读取上次的 data.json，按标的名建索引，用于失败时兜底沿用。"""
+def load_prev_data():
+    """读取上次的完整 data.json，保留旧文件级时间供兼容迁移。"""
     try:
         with open(OUT_PATH, encoding="utf-8") as f:
-            prev = json.load(f)
-        return {a["name"]: a for a in prev.get("assets", [])}
+            return json.load(f)
     except Exception:
-        return {}
+        return None
 
 
 def fetch_bdi():
@@ -211,8 +226,11 @@ def prev_bdi():
 
 
 def build():
-    prev = load_prev()
+    prev_data = load_prev_data()
+    prev_health = load_health_json(HEALTH_PATH)
+    prev = {a["name"]: a for a in (prev_data or {}).get("assets", []) if a.get("name")}
     assets_out, as_of, ok = [], "", 0
+    run_updated_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     for a in ASSETS:
         rec = {"name": a["name"], "category": a["cat"]}
@@ -240,7 +258,19 @@ def build():
 
         if chosen:
             sym, note, returns, price, last_date = chosen
-            rec.update({"symbol": sym, "price": price, "returns": returns})
+            rec.update({
+                "symbol": sym,
+                "price": price,
+                "returns": returns,
+                "stale": False,
+                "dataMeta": make_data_meta(
+                    "market",
+                    "Yahoo Finance",
+                    as_of=last_date,
+                    updated_at=run_updated_at,
+                    frequency="daily",
+                ),
+            })
             if note:
                 rec["note"] = note
             as_of = max(as_of, last_date); ok += 1
@@ -250,7 +280,22 @@ def build():
             sym, note, returns, price, last_date, bad = suspect
             for k in bad:
                 returns[k] = None
-            rec.update({"symbol": sym, "price": price, "returns": returns, "suspect": True})
+            rec.update({
+                "symbol": sym,
+                "price": price,
+                "returns": returns,
+                "stale": False,
+                "suspect": True,
+                "dataMeta": make_data_meta(
+                    "market",
+                    "Yahoo Finance",
+                    as_of=last_date,
+                    updated_at=run_updated_at,
+                    frequency="daily",
+                    status="partial",
+                    note="部分周期越过异常值护栏，已隐藏异常值。",
+                ),
+            })
             rec["note"] = (note + "；" if note else "") + "部分周期数据异常，已隐藏"
             as_of = max(as_of, last_date); ok += 1
             print(f"[~~] {a['name']:<16} {sym:<12} 仅保留正常周期，隐藏 {bad}")
@@ -260,24 +305,53 @@ def build():
             if old and old.get("returns", {}).get("ytd") is not None:
                 rec.update({"symbol": old.get("symbol", _first_sym(a)),
                             "price": old.get("price"),
-                            "returns": old["returns"], "stale": True})
+                            "returns": old["returns"], "stale": True,
+                            "dataMeta": fallback_data_meta(
+                                old,
+                                source="Yahoo Finance",
+                                frequency="daily",
+                                legacy_updated_at=(prev_data or {}).get("updatedAt"),
+                            )})
                 print(f"[==] {a['name']} 本轮失败，沿用上次数据（stale）")
             else:
                 rec.update({"symbol": _first_sym(a), "price": None,
-                            "returns": {p["key"]: None for p in PERIODS}})
+                            "returns": {p["key"]: None for p in PERIODS},
+                            "stale": False,
+                            "dataMeta": make_data_meta(
+                                "unavailable",
+                                "Yahoo Finance",
+                                as_of=None,
+                                updated_at=run_updated_at,
+                                frequency="daily",
+                                note="本轮所有候选代码均未返回有效行情。",
+                            )})
                 print(f"[XX] {a['name']} 全部候选失败，留空")
         assets_out.append(rec)
         time.sleep(0.4)   # 轻微限速，降低 Yahoo 429 概率
 
     if ok == 0:
+        health = make_source_health(
+            "asset-tracker",
+            published_rows=(prev_data or {}).get("assets", []),
+            attempted_rows=assets_out,
+            attempted_at=run_updated_at,
+            published_snapshot_at=(prev_data or {}).get("updatedAt"),
+            published=False,
+            previous_health=prev_health,
+            failure_reason="28项Yahoo候选代码本轮均未返回可发布行情，本轮未发布新快照。",
+        )
+        write_health(HEALTH_PATH, health)
         print("\n本轮 0 个标的成功（可能整源被限流），保留上次的 data.json，不覆盖。")
         return
 
     bdi = fetch_bdi() or prev_bdi()   # 真实 BDI 点位（CNBC .BADI），失败则沿用上次
 
+    data_quality = summarize_data_quality(assets_out)
     data = {
-        "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "updatedAt": run_updated_at,
         "asOf": as_of,
+        "frequency": "daily",
+        "status": data_quality["status"],
         "defaultPeriod": "ytd",
         "source": "Yahoo Finance",
         "note": ("数据来自 Yahoo Finance 公开行情，每日自动更新；涨跌幅为各标的自身价格变动。"
@@ -285,11 +359,22 @@ def build():
         "categories": CATEGORIES,
         "periods": PERIODS,
         "assets": assets_out,
+        "dataQuality": data_quality,
         "bdi": bdi,
     }
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+    health = make_source_health(
+        "asset-tracker",
+        published_rows=assets_out,
+        attempted_rows=assets_out,
+        attempted_at=run_updated_at,
+        published_snapshot_at=run_updated_at,
+        published=True,
+        previous_health=prev_health,
+    )
+    write_health(HEALTH_PATH, health)
     print(f"\n写入 {OUT_PATH}：{ok}/{len(ASSETS)} 个标的成功，as_of={as_of}")
 
 

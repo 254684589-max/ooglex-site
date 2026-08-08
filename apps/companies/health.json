@@ -1,0 +1,98 @@
+{
+  "contractVersion": 1,
+  "dataset": "companies",
+  "generatedAt": "2026-08-07T22:21:59Z",
+  "status": "degraded",
+  "historyStatus": "migrated",
+  "lastAttemptAt": "2026-08-07T22:21:59Z",
+  "lastSuccessfulAt": "2026-08-07T22:21:59Z",
+  "consecutiveFailures": null,
+  "publishedSnapshotAt": "2026-08-07T22:21:59Z",
+  "snapshotPreserved": false,
+  "failureReason": null,
+  "coverage": {
+    "expectedRecords": 500,
+    "publishedRecords": 500,
+    "dynamicRecords": 450,
+    "counts": {
+      "market": 0,
+      "fallback": 0,
+      "estimate": 50,
+      "unknown": 450,
+      "unavailable": 0
+    },
+    "publishedCoveragePct": 100.0,
+    "freshCoveragePct": 0.0,
+    "verifiedCoveragePct": 10.0,
+    "availableCoveragePct": 100.0
+  },
+  "attempt": {
+    "status": "unknown",
+    "published": true,
+    "producedRecords": 500,
+    "counts": {
+      "market": 0,
+      "fallback": 0,
+      "estimate": 50,
+      "unknown": 450,
+      "unavailable": 0
+    }
+  },
+  "sources": [
+    {
+      "id": "yahoo-finance",
+      "name": "Yahoo Finance",
+      "role": "primary",
+      "status": "unknown",
+      "records": 450,
+      "counts": {
+        "market": 0,
+        "fallback": 0,
+        "estimate": 0,
+        "unknown": 450,
+        "unavailable": 0
+      },
+      "lastSuccessAt": null
+    },
+    {
+      "id": "multiples-vc",
+      "name": "multiples.vc公开融资估值汇总",
+      "role": "reference",
+      "status": "degraded",
+      "records": 50,
+      "counts": {
+        "market": 0,
+        "fallback": 0,
+        "estimate": 50,
+        "unknown": 0,
+        "unavailable": 0
+      },
+      "lastSuccessAt": "2026-08-07T22:21:59Z"
+    }
+  ],
+  "recovery": {
+    "preservesLastValidSnapshot": true,
+    "steps": [
+      {
+        "id": "yahoo-mirror",
+        "kind": "mirror",
+        "label": "切换Yahoo Finance备用域名query2"
+      },
+      {
+        "id": "static-fx",
+        "kind": "static-baseline",
+        "label": "KRW换汇失败时使用已披露静态汇率并降级"
+      },
+      {
+        "id": "previous-record",
+        "kind": "previous-record",
+        "label": "单家公司失败时沿用上一份逐条有效值"
+      },
+      {
+        "id": "previous-snapshot",
+        "kind": "previous-snapshot",
+        "label": "有效报价低于50%或体检失败时保留完整旧快照"
+      }
+    ]
+  }
+}

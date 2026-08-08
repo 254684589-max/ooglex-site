@@ -1,0 +1,68 @@
+{
+  "contractVersion": 1,
+  "dataset": "econ-calendar",
+  "generatedAt": "2026-08-07T22:26:40Z",
+  "status": "unknown",
+  "historyStatus": "migrated",
+  "lastAttemptAt": null,
+  "lastSuccessfulAt": "2026-08-07T22:26:40Z",
+  "consecutiveFailures": null,
+  "publishedSnapshotAt": "2026-08-07T22:26:40Z",
+  "snapshotPreserved": null,
+  "failureReason": null,
+  "coverage": {
+    "expectedComponents": 1,
+    "publishedComponents": 1,
+    "refreshedComponents": 0,
+    "fallbackComponents": 0,
+    "unavailableComponents": 0,
+    "unknownComponents": 1,
+    "publishedCoveragePct": 100.0,
+    "freshCoveragePct": 0.0
+  },
+  "attempt": {
+    "status": "unknown",
+    "published": null,
+    "refreshedComponents": [],
+    "fallbackComponents": [],
+    "unavailableComponents": [],
+    "unknownComponents": [
+      "weekly-calendar"
+    ]
+  },
+  "components": [
+    {
+      "id": "weekly-calendar",
+      "name": "Forex Factory Weekly Calendar",
+      "role": "primary",
+      "frequency": "daily",
+      "requiredForTerminal": true,
+      "status": "unknown",
+      "mode": "unknown",
+      "published": true,
+      "lastAttemptAt": null,
+      "lastSuccessAt": "2026-08-07T22:26:40Z"
+    }
+  ],
+  "policy": {
+    "maxReportAgeHours": 36,
+    "terminalRequiredComponents": [
+      "weekly-calendar"
+    ]
+  },
+  "recovery": {
+    "preservesLastValidSnapshot": true,
+    "steps": [
+      {
+        "id": "same-source-retry",
+        "kind": "retry",
+        "label": "重试同一公开周历接口"
+      },
+      {
+        "id": "previous-snapshot",
+        "kind": "previous-snapshot",
+        "label": "失败或空周历时保留上一份完整事件快照"
+      }
+    ]
+  }
+}

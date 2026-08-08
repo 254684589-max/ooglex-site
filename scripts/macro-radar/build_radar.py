@@ -16,21 +16,54 @@
 - 综合机制读数 = 8 个信号加权平均；
 - 异动流：从当日读数/穿越阈值自动生成（非人工编写）。
 
-注：FRED 官方 CSV 与其 DBnomics 镜像在 GitHub Actions runner 上均不可靠
-（读取挂起 / 404），故信用、期限、流动性改用上述市场化 Yahoo 代理指标。
+注：FRED与EIA数据通过官方API读取，分别需要工作流中的 FRED_API_KEY 与 EIA_API_KEY；
+缺失或失败时各项独立降级。
+信用、期限、流动性仍保留上述市场化Yahoo代理指标作为部分场景的回退。
 
 设计原则：每个数据源独立 try，单点失败只降级该项、不拖垮整份文件；
-整源全挂时保留上次 data.json 不覆盖。纯 requests，无需任何 API Key。
+整源全挂时保留上次有效数据；日志不得输出API密钥或带密钥的请求URL。
 由 .github/workflows/macro_radar.yml 每日定时运行并提交回仓库。
 """
+import copy
 import json
+import math
 import os
+import sys
 import time
 from datetime import datetime, timezone, timedelta
 
 import requests
 
+HERE = os.path.dirname(os.path.abspath(__file__))
+SCRIPTS_DIR = os.path.dirname(HERE)
+sys.path.insert(0, SCRIPTS_DIR)
+from macro_source_health import (  # noqa: E402
+    load_json as load_health_json,
+    make_macro_health,
+    write_macro_health,
+)
+
 OUT_PATH = os.path.join("apps", "macro-radar", "data.json")
+DGS10_ID = "DGS10"
+DGS10_SOURCE = {
+    "name": "FRED / Federal Reserve H.15",
+    "url": "https://fred.stlouisfed.org/series/DGS10",
+    "seriesId": DGS10_ID,
+}
+DTWEXBGS_ID = "DTWEXBGS"
+DTWEXBGS_SOURCE = {
+    "name": "FRED / Federal Reserve H.10",
+    "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
+    "seriesId": DTWEXBGS_ID,
+}
+RWTC_ID = "RWTC"
+RWTC_SOURCE = {
+    "name": "U.S. EIA / Cushing WTI Spot",
+    "url": "https://www.eia.gov/dnav/pet/hist/rwtcd.htm",
+    "seriesId": RWTC_ID,
+}
+EIA_API_URL = "https://api.eia.gov/v2/petroleum/pri/spt/data/"
+HEALTH_PATH = os.path.join("apps", "macro-radar", "health.json")
 UA = {"User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                      "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")}
 WIN = 504    # 分位窗口 ≈ 两年「日频」交易日（VIX/OAS/曲线/汇率/比价等日频序列）
@@ -71,7 +104,6 @@ def yahoo_series(symbols, rng="2y"):
     return []
 
 
-# ── 取数：FRED 免登录 CSV ───────────────────────────────────────────────
 # ── 工具 ────────────────────────────────────────────────────────────────
 def pct_rank(values, x=None, win=WIN):
     """x 在 values（尾部窗口）中的百分位 0–100；x 缺省取最后一个。
@@ -195,12 +227,18 @@ def fred_api(series_id, limit=8):
     if not key:
         return []
     n = max(limit, 520)  # 统一取足够历史，一次缓存供打分(2y 分位)与展示复用
-    url = ("https://api.stlouisfed.org/fred/series/observations?series_id=%s"
-           "&api_key=%s&file_type=json&sort_order=desc&limit=%d" % (series_id, key, n))
+    url = "https://api.stlouisfed.org/fred/series/observations"
+    params = {
+        "series_id": series_id,
+        "api_key": key,
+        "file_type": "json",
+        "sort_order": "desc",
+        "limit": n,
+    }
     last = ""
     for attempt in range(2):
         try:
-            r = requests.get(url, headers=UA, timeout=(8, 15))
+            r = requests.get(url, params=params, headers=UA, timeout=(8, 15))
             r.raise_for_status()
             obs = (r.json() or {}).get("observations") or []
             out = []
@@ -218,11 +256,389 @@ def fred_api(series_id, limit=8):
                 return out
             last = "空数据"
         except Exception as e:
-            last = repr(e)[:100]
+            status = getattr(getattr(e, "response", None), "status_code", None)
+            last = "%s%s" % (type(e).__name__, " HTTP %s" % status if status else "")
         time.sleep(1.0)
     print("FRED-API %s 失败：%s" % (series_id, last))
     _FRED_CACHE[series_id] = []  # 同一 run 内一致降级，避免打分/展示各拿到不同快照
     return []
+
+
+def _parse_utc_timestamp(value):
+    if not isinstance(value, str):
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def _parse_observation_date(value):
+    if not isinstance(value, str):
+        return None
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+
+def _positive_number(value):
+    return (isinstance(value, (int, float)) and not isinstance(value, bool)
+            and math.isfinite(value) and value > 0)
+
+
+def _find_dgs10_row(data):
+    for category in (data or {}).get("macro") or []:
+        if not isinstance(category, dict):
+            continue
+        for row in category.get("rows") or []:
+            if isinstance(row, dict) and row.get("id") == DGS10_ID:
+                return category, row
+    return None, None
+
+
+def _unit_number(value, suffix):
+    text = str(value or "").strip()
+    if not text.lower().endswith(suffix.lower()):
+        return None
+    try:
+        return float(text[:-len(suffix)].strip())
+    except (TypeError, ValueError):
+        return None
+
+
+def previous_dgs10_reference(previous_data):
+    """兼容旧宏观行并补成可保留的DGS10逐源记录，不伪造前值日期。"""
+    category, row = _find_dgs10_row(previous_data or {})
+    if not isinstance(category, dict) or not isinstance(row, dict) \
+            or str(category.get("src", "")).upper() != "FRED":
+        return None
+    price = row.get("price") if _positive_number(row.get("price")) else _unit_number(row.get("val"), "%")
+    change_bps = row.get("changeBps") if isinstance(row.get("changeBps"), (int, float)) \
+        else _unit_number(row.get("chg"), "bp")
+    as_of = row.get("asOf")
+    updated_at = row.get("updatedAt") or (previous_data or {}).get("updatedAt")
+    if not _positive_number(price) or not isinstance(change_bps, (int, float)) \
+            or _parse_observation_date(as_of) is None or _parse_utc_timestamp(updated_at) is None:
+        return None
+    previous_price = row.get("previousPrice")
+    if not _positive_number(previous_price):
+        previous_price = price - float(change_bps) / 100
+    return {
+        **copy.deepcopy(row),
+        "id": DGS10_ID,
+        "name": "10 年期美债收益率",
+        "frequency": "daily",
+        "status": row.get("status") if row.get("status") in ("ok", "stale") else "ok",
+        "price": float(price),
+        "previousPrice": float(previous_price),
+        "changeBps": float(change_bps),
+        "asOf": as_of,
+        "previousAsOf": row.get("previousAsOf"),
+        "updatedAt": updated_at,
+        "lastAttemptAt": row.get("lastAttemptAt") or updated_at,
+        "source": dict(DGS10_SOURCE),
+    }
+
+
+def build_dgs10_reference(previous_data, updated_at, fetcher=None):
+    """独立刷新DGS10；失败时保留旧值，并记录本轮失败时间。"""
+    fetch = fetcher or fred_api
+    try:
+        series = fetch(DGS10_ID, 8) or []
+    except Exception:
+        series = []
+    if len(series) >= 2:
+        previous_as_of, previous_price = series[-2]
+        as_of, price = series[-1]
+        if _parse_observation_date(previous_as_of) and _parse_observation_date(as_of) \
+                and previous_as_of < as_of and _positive_number(previous_price) and _positive_number(price):
+            change_bps = round((price - previous_price) * 100)
+            return {
+                "id": DGS10_ID,
+                "name": "10 年期美债收益率",
+                "frequency": "daily",
+                "status": "ok",
+                "val": "%.2f%%" % price,
+                "chg": "%+dbp" % change_bps,
+                "tone": "flat" if price == previous_price else ("up" if price > previous_price else "down"),
+                "price": float(price),
+                "previousPrice": float(previous_price),
+                "changeBps": change_bps,
+                "asOf": as_of,
+                "previousAsOf": previous_as_of,
+                "updatedAt": updated_at,
+                "lastAttemptAt": updated_at,
+                "source": dict(DGS10_SOURCE),
+                "note": "FRED官方日频数据；变化为相对上一观测值的基点数。",
+            }
+    old = previous_dgs10_reference(previous_data)
+    if old:
+        fallback = copy.deepcopy(old)
+        fallback["status"] = "stale"
+        fallback["lastAttemptAt"] = updated_at
+        fallback["note"] = "本轮FRED自动更新失败，保留上次有效DGS10观测值。"
+        return fallback
+    return {
+        "id": DGS10_ID,
+        "name": "10 年期美债收益率",
+        "frequency": "daily",
+        "status": "error",
+        "val": None,
+        "chg": None,
+        "tone": "flat",
+        "price": None,
+        "previousPrice": None,
+        "changeBps": None,
+        "asOf": None,
+        "previousAsOf": None,
+        "updatedAt": None,
+        "lastAttemptAt": updated_at,
+        "source": dict(DGS10_SOURCE),
+        "note": "FRED自动更新失败，且没有可保留的历史DGS10观测值。",
+    }
+
+
+def upsert_dgs10_macro(categories, record):
+    """在不改变宏观页面旧结构的前提下，替换或移除DGS10逐条记录。"""
+    output = copy.deepcopy(categories or [])
+    target = None
+    for category in output:
+        if not isinstance(category, dict):
+            continue
+        rows = category.get("rows")
+        if not isinstance(rows, list):
+            continue
+        category["rows"] = [row for row in rows if not (isinstance(row, dict) and row.get("id") == DGS10_ID)]
+        if str(category.get("src", "")).upper() == "FRED" \
+                and category.get("zh") == "实际利率与通胀预期":
+            target = category
+    if record.get("status") == "error":
+        return [category for category in output if not isinstance(category, dict) or category.get("rows")]
+    if target is None:
+        target = {"zh": "实际利率与通胀预期", "en": "RATES & INFLATION", "src": "FRED", "rows": []}
+        output.append(target)
+    target.setdefault("rows", []).insert(0, copy.deepcopy(record))
+    return output
+
+
+def parse_eia_rwtc_rows(payload):
+    """Parse and source-check EIA API v2 RWTC rows into ascending observations."""
+    response = payload.get("response") if isinstance(payload, dict) else None
+    if not isinstance(response, dict) or response.get("frequency") not in (None, "daily"):
+        return []
+    observations = {}
+    for row in response.get("data") or []:
+        if not isinstance(row, dict) or row.get("series") != RWTC_ID:
+            continue
+        observed = row.get("period")
+        if _parse_observation_date(observed) is None:
+            continue
+        units = str(row.get("value-units") or "").lower()
+        if units and not ("dollar" in units and "barrel" in units):
+            continue
+        try:
+            value = float(row.get("value"))
+        except (TypeError, ValueError):
+            continue
+        if _positive_number(value):
+            observations[observed] = value
+    return sorted(observations.items())
+
+
+def eia_rwtc_api(limit=8, requester=None, api_key=None):
+    """EIA API v2 daily RWTC observations; missing key or failure returns []."""
+    key = api_key if api_key is not None else os.environ.get("EIA_API_KEY")
+    if not key:
+        return []
+    params = {
+        "api_key": key,
+        "frequency": "daily",
+        "data[0]": "value",
+        "facets[series][]": RWTC_ID,
+        "sort[0][column]": "period",
+        "sort[0][direction]": "desc",
+        "offset": 0,
+        "length": max(2, int(limit)),
+    }
+    get = requester or requests.get
+    last = ""
+    for attempt in range(2):
+        try:
+            response = get(EIA_API_URL, params=params, headers=UA, timeout=(8, 15))
+            response.raise_for_status()
+            out = parse_eia_rwtc_rows(response.json() or {})
+            if len(out) >= 2:
+                return out
+            last = "有效观测不足"
+        except Exception as exc:
+            status = getattr(getattr(exc, "response", None), "status_code", None)
+            last = "%s%s" % (type(exc).__name__, " HTTP %s" % status if status else "")
+        if attempt == 0:
+            time.sleep(1.0)
+    print("EIA-API %s 失败：%s" % (RWTC_ID, last))
+    return []
+
+
+def valid_dtwexbgs_reference(record):
+    """Return True only for a reusable, source-verified DTWEXBGS observation pair."""
+    if not isinstance(record, dict) or record.get("id") != DTWEXBGS_ID:
+        return False
+    source = record.get("source") or {}
+    if source.get("seriesId") != DTWEXBGS_ID or not str(source.get("name", "")).startswith("FRED"):
+        return False
+    observed = _parse_observation_date(record.get("asOf"))
+    previous = _parse_observation_date(record.get("previousAsOf"))
+    updated = _parse_utc_timestamp(record.get("updatedAt"))
+    return bool(
+        record.get("status") in ("ok", "stale")
+        and _positive_number(record.get("price"))
+        and _positive_number(record.get("previousPrice"))
+        and observed and previous and previous < observed
+        and updated and updated.tzinfo is not None
+    )
+
+
+def build_dtwexbgs_reference(previous_data, updated_at, fetcher=None):
+    """Build the finance-terminal DTWEXBGS record from the shared FRED client.
+
+    A failed refresh never replaces a valid observation with zero, null, or demo data.
+    The last successful timestamp is retained and the failed attempt is exposed separately.
+    """
+    fetch = fetcher or fred_api
+    try:
+        series = fetch(DTWEXBGS_ID, 8) or []
+    except Exception:
+        series = []
+
+    if len(series) >= 2:
+        previous_as_of, previous_price = series[-2]
+        as_of, price = series[-1]
+        record = {
+            "id": DTWEXBGS_ID,
+            "name": "美联储广义美元指数",
+            "nameEn": "Nominal Broad U.S. Dollar Index",
+            "frequency": "daily",
+            "demo": False,
+            "status": "ok",
+            "price": price,
+            "previousPrice": previous_price,
+            "changePct": (price / previous_price - 1) * 100 if previous_price else None,
+            "asOf": as_of,
+            "previousAsOf": previous_as_of,
+            "updatedAt": updated_at,
+            "lastAttemptAt": updated_at,
+            "source": dict(DTWEXBGS_SOURCE),
+            "note": "FRED官方日频数据；由宏观雷达任务自动更新。",
+        }
+        if valid_dtwexbgs_reference(record):
+            return record
+
+    old = (((previous_data or {}).get("referenceSeries") or {}).get(DTWEXBGS_ID))
+    if valid_dtwexbgs_reference(old):
+        fallback = copy.deepcopy(old)
+        fallback["status"] = "stale"
+        fallback["lastAttemptAt"] = updated_at
+        fallback["note"] = "本轮FRED自动更新失败，保留上次有效观测值。"
+        return fallback
+
+    return {
+        "id": DTWEXBGS_ID,
+        "name": "美联储广义美元指数",
+        "nameEn": "Nominal Broad U.S. Dollar Index",
+        "frequency": "daily",
+        "demo": False,
+        "status": "error",
+        "price": None,
+        "previousPrice": None,
+        "changePct": None,
+        "asOf": None,
+        "previousAsOf": None,
+        "updatedAt": None,
+        "lastAttemptAt": updated_at,
+        "source": dict(DTWEXBGS_SOURCE),
+        "note": "FRED自动更新失败，且没有可保留的历史有效值。",
+    }
+
+
+def valid_rwtc_reference(record):
+    """Return True only for a reusable, source-verified EIA RWTC observation pair."""
+    if not isinstance(record, dict) or record.get("id") != RWTC_ID:
+        return False
+    source = record.get("source") or {}
+    if source.get("seriesId") != RWTC_ID or "EIA" not in str(source.get("name", "")):
+        return False
+    observed = _parse_observation_date(record.get("asOf"))
+    previous = _parse_observation_date(record.get("previousAsOf"))
+    updated = _parse_utc_timestamp(record.get("updatedAt"))
+    return bool(
+        record.get("status") in ("ok", "stale")
+        and _positive_number(record.get("price"))
+        and _positive_number(record.get("previousPrice"))
+        and observed and previous and previous < observed
+        and updated and updated.tzinfo is not None
+    )
+
+
+def build_rwtc_reference(previous_data, updated_at, fetcher=None):
+    """Build the finance-terminal WTI spot record from EIA series RWTC.
+
+    A failed refresh retains the last valid observation pair and exposes the failed attempt.
+    """
+    fetch = fetcher or eia_rwtc_api
+    try:
+        series = fetch(8) or []
+    except Exception:
+        series = []
+
+    if len(series) >= 2:
+        previous_as_of, previous_price = series[-2]
+        as_of, price = series[-1]
+        record = {
+            "id": RWTC_ID,
+            "name": "库欣WTI原油现货",
+            "nameEn": "Cushing WTI Spot Price FOB",
+            "frequency": "daily",
+            "demo": False,
+            "status": "ok",
+            "price": price,
+            "previousPrice": previous_price,
+            "changePct": (price / previous_price - 1) * 100 if previous_price else None,
+            "asOf": as_of,
+            "previousAsOf": previous_as_of,
+            "updatedAt": updated_at,
+            "lastAttemptAt": updated_at,
+            "source": dict(RWTC_SOURCE),
+            "note": "EIA官方日频现货数据；由宏观雷达任务自动更新。",
+        }
+        if valid_rwtc_reference(record):
+            return record
+
+    old = (((previous_data or {}).get("referenceSeries") or {}).get(RWTC_ID))
+    if valid_rwtc_reference(old):
+        fallback = copy.deepcopy(old)
+        fallback["status"] = "stale"
+        fallback["lastAttemptAt"] = updated_at
+        fallback["note"] = "本轮EIA自动更新失败，保留上次有效观测值。"
+        return fallback
+
+    return {
+        "id": RWTC_ID,
+        "name": "库欣WTI原油现货",
+        "nameEn": "Cushing WTI Spot Price FOB",
+        "frequency": "daily",
+        "demo": False,
+        "status": "error",
+        "price": None,
+        "previousPrice": None,
+        "changePct": None,
+        "asOf": None,
+        "previousAsOf": None,
+        "updatedAt": None,
+        "lastAttemptAt": updated_at,
+        "source": dict(RWTC_SOURCE),
+        "note": "EIA自动更新失败，且没有可保留的历史有效值。",
+    }
 
 
 def fetch_net_liquidity():
@@ -360,6 +776,7 @@ def build():
             prev = json.load(f)
     except Exception:
         pass
+    prev_health = load_health_json(HEALTH_PATH)
 
     hit = 0  # 成功抓到的数据源计数，用于判断是否 LIVE
 
@@ -672,31 +1089,53 @@ def build():
         mut_summary = "今日 %d 条市场异动，%s；与机制读数 %d（%s）方向一致。" % (
             len(mut), lean, regime_score, lz)
 
+    now = datetime.now(timezone.utc)
+    now_iso = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    dgs10_reference = build_dgs10_reference(prev, now_iso)
+    reference_series = {
+        DTWEXBGS_ID: build_dtwexbgs_reference(prev, now_iso),
+        RWTC_ID: build_rwtc_reference(prev, now_iso),
+    }
+
     live = hit >= 6  # 至少 6 个 Yahoo 底层序列命中才算 LIVE，否则保留上次
     if not live and prev:
-        print("有效数据源不足（hit=%d），保留上次 data.json 不覆盖。" % hit)
+        fallback_out = copy.deepcopy(prev)
+        fallback_out["macro"] = upsert_dgs10_macro(fallback_out.get("macro"), dgs10_reference)
+        fallback_out["referenceSeries"] = reference_series
+        os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
+        with open(OUT_PATH, "w", encoding="utf-8") as f:
+            json.dump(fallback_out, f, ensure_ascii=False, indent=2)
+        health = make_macro_health(
+            fallback_out, attempted_at=now_iso, previous_health=prev_health,
+        )
+        write_macro_health(HEALTH_PATH, health)
+        print("有效Yahoo数据源不足（hit=%d），保留原面板；仅更新DGS10/DTWEXBGS/RWTC逐源状态。" % hit)
         return
 
     # —— 宏观管道（FRED 需 key；波动率全景 Yahoo）——
-    macro = build_macro()
+    macro = upsert_dgs10_macro(build_macro(), dgs10_reference)
     macro_series = sum(len(c["rows"]) for c in macro)
-    has_fred = any(c["src"] == "FRED" for c in macro)
+    has_fred = (any(c["src"] == "FRED" for c in macro)
+                or reference_series[DTWEXBGS_ID]["status"] in ("ok", "stale"))
+    has_eia = reference_series[RWTC_ID]["status"] in ("ok", "stale")
 
-    now = datetime.now(timezone.utc)
     sh = now + timedelta(hours=8)
     out = {
-        "updatedAt": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "updatedAt": now_iso,
         "asOf": now.strftime("%Y-%m-%d"),
         "asOfSh": sh.strftime("%Y-%m-%d %H:%M"),
         "live": live,
-        "source": ("FRED · Yahoo Finance · 交易所行情" if has_fred
-                   else "Yahoo Finance · 交易所行情"),
+        "source": ("FRED · EIA · Yahoo Finance · 交易所行情" if has_fred and has_eia else
+                   "FRED · Yahoo Finance · 交易所行情" if has_fred else
+                   "EIA · Yahoo Finance · 交易所行情" if has_eia else
+                   "Yahoo Finance · 交易所行情"),
         "regime": {"score": regime_score, "labelZh": lz, "labelEn": le,
                    "desc": regime_desc},
         "signals": signals,
         "mutations": mut,
         "mutSummary": mut_summary,
         "macro": macro,
+        "referenceSeries": reference_series,
         "note": ("制度信号为 0–100 相对分位读数，越高越偏『宽松·支持』；"
                  "信用/期限/流动性/增长/广度为市场化代理指标"
                  "（HYG÷LQD、10Y−3M 曲线、3M 短端利率、铜金比、等权·市值加权）；"
@@ -708,6 +1147,8 @@ def build():
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
+    health = make_macro_health(out, attempted_at=now_iso, previous_health=prev_health)
+    write_macro_health(HEALTH_PATH, health)
     print("写入 %s：机制 %s(%s)，信号 %d，异动 %d，宏观 %d 项(FRED=%s)，LIVE=%s"
           % (OUT_PATH, regime_score, lz, len(signals), len(mut),
              macro_series, has_fred, live))

@@ -2,8 +2,8 @@
 """
 「全球资产市值排行榜」的静态基准数据（不限品类，只看市值）。
 
-方法论（与 assetmarketcap / 8marketcap 等站一致，可每日实时更新）：
-    某类资产市值 = 数量(储量/地面存量/广义货币M2) × 单位价格(实时行情/汇率)
+方法论（与 assetmarketcap / 8marketcap 等站一致，可每日更新）：
+    某类资产市值 = 数量(储量/地面存量/广义货币M2) × 单位价格(日频行情/汇率)
 
 因此绝大多数大类资产的市值会随金价、油价、铜价、汇率每日浮动；只有房地产、煤炭、
 政府债务、天然气这类「慢变量」用权威机构的存量估值作静态基准（附来源，定期人工校准）。
@@ -11,10 +11,14 @@
 字段说明（AGGREGATES 每一项）：
     name/nameEn  中英文名           cat 分类键（见 CATEGORIES）
     qty          数量（以 price 的计价单位计）  unit 数量单位（展示用）
-    symbol       Yahoo 实时价代码（有则市值随行情浮动；无则 basePrice 视为固定基准）
+    symbol       Yahoo 行情代码（有则市值随日频快照浮动；无则 basePrice 视为固定基准）
     basePrice    离线/兜底单位价格（美元）      invert 汇率是否取倒数（USD/本币 → 本币/USD）
     note         口径与来源说明（展示在条目备注里）
 数量 × 价格 得到美元市值；本模块统一以「十亿美元」为单位输出，与公司榜口径一致。
+
+静态数量与存量基准目前没有统一保存原报告日期。下方 ``BASELINE_PROVENANCE``
+只把现有注释中能够证明的来源结构化；无法证明的项目明确写为“原始来源未结构化”，
+不得由每日文件更新时间反推成基准数据日。
 """
 
 # —— 分类：键 / 中文 / 英文 / emoji / 颜色 ——（红涨绿跌沿用全站习惯，颜色仅用于分类标签）
@@ -29,7 +33,7 @@ CATEGORIES = [
 ]
 
 # —— 大类资产（房地产 / 大宗商品 / 贵金属 / 货币 / 债券）——
-# 数量取自公开权威估算（探明储量、地面存量、广义货币 M2/M3），价格尽量接实时行情。
+# 数量取自公开估算（探明储量、地面存量、广义货币 M2/M3），价格尽量接日频行情。
 AGGREGATES = [
     # 房地产：全球住宅+商业+土地总值，慢变量，静态基准（Savills 全球房地产总值估算）
     {"name": "全球房地产", "nameEn": "Real Estate", "cat": "real-estate", "emoji": "🏠",
@@ -41,13 +45,13 @@ AGGREGATES = [
      "qty": None, "unit": "全球公共债务余额", "symbol": None, "basePrice": None, "baseCap": 97000.0,
      "note": "全球政府债务余额，来源 IMF《财政监测》（约 97 万亿美元，慢变量）"},
 
-    # 大宗商品：储量 × 价格（能取到实时价的用 Yahoo 期货代理，取不到则静态）
+    # 大宗商品：储量 × 价格（能取到日频价的用 Yahoo 期货代理，取不到则静态）
     {"name": "煤炭", "nameEn": "Coal", "cat": "commodity", "emoji": "🪨",
      "qty": 1.166e12, "unit": "吨（探明储量）", "symbol": None, "basePrice": 130.0,
      "note": "全球煤炭探明储量 × 均价（储量约 1.17 万亿吨，静态基准）"},
     {"name": "石油", "nameEn": "Crude Oil", "cat": "commodity", "emoji": "🛢️",
      "qty": 1.73e12, "unit": "桶（探明储量）", "symbol": "CL=F", "basePrice": 68.0,
-     "note": "全球石油探明储量 × WTI 油价（储量约 1.73 万亿桶，价格实时）"},
+     "note": "全球石油探明储量 × WTI 油价（储量约 1.73 万亿桶，价格为日频快照）"},
     {"name": "天然气", "nameEn": "Natural Gas", "cat": "commodity", "emoji": "💨",
      "qty": None, "unit": "探明储量估值", "symbol": None, "basePrice": None, "baseCap": 40000.0,
      "note": "全球天然气探明储量估值（约 40 万亿美元，静态基准）"},
@@ -56,38 +60,46 @@ AGGREGATES = [
      "note": "全球铁矿石储量 × 到岸价（储量约 2000 亿吨，静态基准）"},
     {"name": "铝", "nameEn": "Aluminum", "cat": "commodity", "emoji": "🔩",
      "qty": 5.8e9, "unit": "吨（储量）", "symbol": "ALI=F", "basePrice": 2500.0,
-     "note": "全球铝储量 × 期货铝价（以 LME/COMEX 期货代理，价格实时）"},
+     "note": "全球铝储量 × 期货铝价（以 LME/COMEX 期货代理，价格为日频快照）"},
     {"name": "铜", "nameEn": "Copper", "cat": "commodity", "emoji": "🟤",
      "qty": 2.86e12, "unit": "磅（储量）", "symbol": "HG=F", "basePrice": 4.4,
-     "note": "全球铜储量 × COMEX 铜价（储量约 13 亿吨，价格实时）"},
+     "note": "全球铜储量 × COMEX 铜价（储量约 13 亿吨，价格为日频快照）"},
 
-    # 贵金属：地面存量 × 现货价（价格实时）
+    # 贵金属：地面存量 × 现货价（日频行情快照）
     {"name": "黄金", "nameEn": "Gold", "cat": "metal", "emoji": "🥇",
      "qty": 6.72e9, "unit": "盎司（地面存量）", "symbol": "GC=F", "basePrice": 3000.0,
-     "note": "全球地面黄金存量 × 金价（约 6.72 亿盎司/21.6 万吨，来源世界黄金协会，价格实时）"},
+     "note": "全球地面黄金存量 × 金价（约 6.72 亿盎司/21.6 万吨，来源世界黄金协会，价格为日频快照）"},
     {"name": "白银", "nameEn": "Silver", "cat": "metal", "emoji": "🥈",
      "qty": 5.0e10, "unit": "盎司（地面存量）", "symbol": "SI=F", "basePrice": 33.0,
-     "note": "全球地面白银存量 × 银价（约 500 亿盎司，价格实时）"},
+     "note": "全球地面白银存量 × 银价（约 500 亿盎司，价格为日频快照）"},
 
     # 货币：广义货币 M2/M3 × 汇率（qty 为本币金额，symbol 为 Yahoo 汇率代码）
     {"name": "人民币", "nameEn": "Chinese Yuan (M2)", "cat": "currency", "emoji": "🇨🇳",
      "qty": 353.67e12, "unit": "元（广义货币 M2）", "symbol": "CNY=X", "invert": True, "basePrice": 0.140,
-     "note": "中国广义货币 M2（约 353 万亿元）× 美元汇率，汇率实时"},
+     "note": "中国广义货币 M2（约 353 万亿元）× 美元汇率，汇率为日频快照"},
     {"name": "美元", "nameEn": "US Dollar (M2)", "cat": "currency", "emoji": "🇺🇸",
      "qty": 22.80e12, "unit": "美元（广义货币 M2）", "symbol": None, "basePrice": 1.0,
      "note": "美国广义货币 M2（约 22.8 万亿美元）"},
     {"name": "欧元", "nameEn": "Euro (M3)", "cat": "currency", "emoji": "🇪🇺",
      "qty": 16.38e12, "unit": "欧元（广义货币 M3）", "symbol": "EURUSD=X", "invert": False, "basePrice": 1.15,
-     "note": "欧元区广义货币 M3（约 16.4 万亿欧元）× 美元汇率，汇率实时"},
+     "note": "欧元区广义货币 M3（约 16.4 万亿欧元）× 美元汇率，汇率为日频快照"},
     {"name": "日元", "nameEn": "Japanese Yen (M2)", "cat": "currency", "emoji": "🇯🇵",
      "qty": 1250e12, "unit": "日元（广义货币 M2）", "symbol": "JPY=X", "invert": True, "basePrice": 0.0064,
-     "note": "日本广义货币 M2（约 1250 万亿日元）× 美元汇率，汇率实时"},
+     "note": "日本广义货币 M2（约 1250 万亿日元）× 美元汇率，汇率为日频快照"},
     {"name": "英镑", "nameEn": "British Pound (M2)", "cat": "currency", "emoji": "🇬🇧",
      "qty": 3.0e12, "unit": "英镑（广义货币 M2）", "symbol": "GBPUSD=X", "invert": False, "basePrice": 1.28,
-     "note": "英国广义货币 M2（约 3 万亿英镑）× 美元汇率，汇率实时"},
+     "note": "英国广义货币 M2（约 3 万亿英镑）× 美元汇率，汇率为日频快照"},
 ]
 
-# —— 主要加密货币（个体计入排行；实时市值来自 CoinGecko，取不到则用此基准 + BTC/ETH 现价推算）——
+
+BASELINE_PROVENANCE = {
+    "全球房地产": {"source": "Savills", "asOf": None},
+    "政府债券": {"source": "IMF《财政监测》", "asOf": None},
+    "黄金": {"source": "世界黄金协会", "asOf": None},
+}
+DEFAULT_BASELINE_PROVENANCE = {"source": "公开存量基准（原始来源未结构化）", "asOf": None}
+
+# —— 主要加密货币（个体计入排行；最新市值来自 CoinGecko，取不到则用此基准 + BTC/ETH 现价推算）——
 # id 为 CoinGecko 币种 id；yf 为 Yahoo 代码（价格兜底）；baseCap 十亿美元。
 CRYPTO = [
     {"name": "比特币",   "nameEn": "Bitcoin",   "id": "bitcoin",     "yf": "BTC-USD", "supply": 19_900_000,      "baseCap": 2000.0, "symbol": "BTC"},
