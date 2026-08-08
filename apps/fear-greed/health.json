@@ -1,0 +1,68 @@
+{
+  "contractVersion": 1,
+  "dataset": "fear-greed",
+  "generatedAt": "2026-08-07T22:23:55Z",
+  "status": "unknown",
+  "historyStatus": "migrated",
+  "lastAttemptAt": null,
+  "lastSuccessfulAt": "2026-08-07T22:23:55Z",
+  "consecutiveFailures": null,
+  "publishedSnapshotAt": "2026-08-07T22:23:55Z",
+  "snapshotPreserved": null,
+  "failureReason": null,
+  "coverage": {
+    "expectedComponents": 1,
+    "publishedComponents": 1,
+    "refreshedComponents": 0,
+    "fallbackComponents": 0,
+    "unavailableComponents": 0,
+    "unknownComponents": 1,
+    "publishedCoveragePct": 100.0,
+    "freshCoveragePct": 0.0
+  },
+  "attempt": {
+    "status": "unknown",
+    "published": null,
+    "refreshedComponents": [],
+    "fallbackComponents": [],
+    "unavailableComponents": [],
+    "unknownComponents": [
+      "cnn-index"
+    ]
+  },
+  "components": [
+    {
+      "id": "cnn-index",
+      "name": "CNN Fear & Greed Index",
+      "role": "primary",
+      "frequency": "daily",
+      "requiredForTerminal": true,
+      "status": "unknown",
+      "mode": "unknown",
+      "published": true,
+      "lastAttemptAt": null,
+      "lastSuccessAt": "2026-08-07T22:23:55Z"
+    }
+  ],
+  "policy": {
+    "maxReportAgeHours": 72,
+    "terminalRequiredComponents": [
+      "cnn-index"
+    ]
+  },
+  "recovery": {
+    "preservesLastValidSnapshot": true,
+    "steps": [
+      {
+        "id": "same-source-retry",
+        "kind": "retry",
+        "label": "重试同一CNN公开接口"
+      },
+      {
+        "id": "previous-snapshot",
+        "kind": "previous-snapshot",
+        "label": "失败时保留上一份完整指数快照"
+      }
+    ]
+  }
+}

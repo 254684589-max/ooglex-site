@@ -1,0 +1,138 @@
+{
+  "contractVersion": 1,
+  "dataset": "whats-latest",
+  "generatedAt": "2026-08-08T08:08:34Z",
+  "status": "unknown",
+  "historyStatus": "migrated",
+  "lastAttemptAt": null,
+  "lastSuccessfulAt": "2026-08-08T08:08:34Z",
+  "consecutiveFailures": null,
+  "publishedSnapshotAt": "2026-08-08T08:08:34Z",
+  "snapshotPreserved": null,
+  "failureReason": null,
+  "coverage": {
+    "expectedComponents": 6,
+    "publishedComponents": 6,
+    "refreshedComponents": 0,
+    "fallbackComponents": 0,
+    "unavailableComponents": 0,
+    "unknownComponents": 6,
+    "publishedCoveragePct": 100.0,
+    "freshCoveragePct": 0.0
+  },
+  "attempt": {
+    "status": "unknown",
+    "published": null,
+    "refreshedComponents": [],
+    "fallbackComponents": [],
+    "unavailableComponents": [],
+    "unknownComponents": [
+      "markets-news",
+      "tech-news",
+      "ent-news",
+      "sports-news",
+      "world-news",
+      "market-quotes"
+    ]
+  },
+  "components": [
+    {
+      "id": "markets-news",
+      "name": "Google News 市场",
+      "role": "primary",
+      "frequency": "intraday",
+      "requiredForTerminal": true,
+      "status": "unknown",
+      "mode": "unknown",
+      "published": true,
+      "lastAttemptAt": null,
+      "lastSuccessAt": "2026-08-08T08:08:34Z"
+    },
+    {
+      "id": "tech-news",
+      "name": "Google News 科技",
+      "role": "secondary",
+      "frequency": "intraday",
+      "requiredForTerminal": false,
+      "status": "unknown",
+      "mode": "unknown",
+      "published": true,
+      "lastAttemptAt": null,
+      "lastSuccessAt": "2026-08-08T08:08:34Z"
+    },
+    {
+      "id": "ent-news",
+      "name": "Google News 娱乐",
+      "role": "secondary",
+      "frequency": "intraday",
+      "requiredForTerminal": false,
+      "status": "unknown",
+      "mode": "unknown",
+      "published": true,
+      "lastAttemptAt": null,
+      "lastSuccessAt": "2026-08-08T08:08:34Z"
+    },
+    {
+      "id": "sports-news",
+      "name": "Google News 体育",
+      "role": "secondary",
+      "frequency": "intraday",
+      "requiredForTerminal": false,
+      "status": "unknown",
+      "mode": "unknown",
+      "published": true,
+      "lastAttemptAt": null,
+      "lastSuccessAt": "2026-08-08T08:08:34Z"
+    },
+    {
+      "id": "world-news",
+      "name": "Google News 国际",
+      "role": "secondary",
+      "frequency": "intraday",
+      "requiredForTerminal": false,
+      "status": "unknown",
+      "mode": "unknown",
+      "published": true,
+      "lastAttemptAt": null,
+      "lastSuccessAt": "2026-08-08T08:08:34Z"
+    },
+    {
+      "id": "market-quotes",
+      "name": "Yahoo Finance 市场快照",
+      "role": "auxiliary",
+      "frequency": "daily",
+      "requiredForTerminal": false,
+      "status": "unknown",
+      "mode": "unknown",
+      "published": true,
+      "lastAttemptAt": null,
+      "lastSuccessAt": "2026-08-08T08:08:34Z"
+    }
+  ],
+  "policy": {
+    "maxReportAgeHours": 12,
+    "terminalRequiredComponents": [
+      "markets-news"
+    ]
+  },
+  "recovery": {
+    "preservesLastValidSnapshot": true,
+    "steps": [
+      {
+        "id": "category-isolation",
+        "kind": "partial-publish",
+        "label": "新闻板块独立刷新，失败板块沿用上一份同板块内容"
+      },
+      {
+        "id": "yahoo-mirror",
+        "kind": "mirror",
+        "label": "市场快照在Yahoo同提供方备用域名间重试"
+      },
+      {
+        "id": "previous-snapshot",
+        "kind": "previous-snapshot",
+        "label": "全部新闻板块失败时保留完整旧快照"
+      }
+    ]
+  }
+}

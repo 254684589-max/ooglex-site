@@ -1,0 +1,51 @@
+name: Finance Terminal Beta Gate
+
+# 只读汇总四条生产数据管道的本地快照和远端运行证据。
+# 报告状态可以是PASS/WARN/BLOCKED，但观察工作流本身不会因BLOCKED而隐藏Artifact。
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 14 * * *'
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: finance-terminal-beta-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  readiness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate release gate contracts
+        run: python scripts/validate_finance_terminal_release_gate.py
+
+      - name: Generate Beta and stable V1 readiness reports
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          READINESS_BRANCH: ${{ github.ref_name }}
+        run: |
+          python scripts/finance_terminal_release_gate.py \
+            --report-json /tmp/finance-terminal-readiness/readiness.json \
+            --report-md /tmp/finance-terminal-readiness/readiness.md
+          cat /tmp/finance-terminal-readiness/readiness.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload readiness evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: finance-terminal-readiness-${{ github.run_attempt }}
+          path: /tmp/finance-terminal-readiness/
+          if-no-files-found: error
+          retention-days: 14

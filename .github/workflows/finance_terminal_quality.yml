@@ -1,0 +1,186 @@
+name: Finance Terminal Quality
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'agent/finance-terminal-*'
+    paths:
+      - 'apps/finance-terminal/**'
+      - 'apps/asset-tracker/data.json'
+      - 'apps/asset-tracker/health.json'
+      - 'apps/asset-ranking/data.json'
+      - 'apps/asset-ranking/health.json'
+      - 'apps/companies/data.json'
+      - 'apps/companies/health.json'
+      - 'apps/econ-calendar/data.json'
+      - 'apps/econ-calendar/health.json'
+      - 'apps/fear-greed/data.json'
+      - 'apps/fear-greed/health.json'
+      - 'apps/macro-radar/data.json'
+      - 'apps/macro-radar/health.json'
+      - 'apps/ofr-monitor/data.json'
+      - 'apps/ofr-monitor/health.json'
+      - 'apps/whats-latest/data.json'
+      - 'apps/whats-latest/health.json'
+      - 'scripts/validate_finance_terminal.py'
+      - 'scripts/validate_finance_terminal_browser.mjs'
+      - 'scripts/market_data_quality.py'
+      - 'scripts/validate_market_data_quality.py'
+      - 'scripts/market_source_health.py'
+      - 'scripts/validate_market_source_health.py'
+      - 'scripts/macro_source_health.py'
+      - 'scripts/validate_macro_source_health.py'
+      - 'scripts/supporting_source_health.py'
+      - 'scripts/validate_supporting_source_health.py'
+      - 'scripts/validate_supporting_source_builders.py'
+      - 'scripts/market_workflow_governance.py'
+      - 'scripts/validate_market_workflow_governance.py'
+      - 'scripts/finance_terminal_release_gate.py'
+      - 'scripts/validate_finance_terminal_release_gate.py'
+      - 'scripts/asset-tracker/build_assets.py'
+      - 'scripts/companies/build_companies.py'
+      - 'scripts/asset-ranking/**'
+      - 'scripts/macro-radar/**'
+      - 'scripts/fear-greed/build_fear_greed.py'
+      - 'scripts/ofr-monitor/build_ofr.py'
+      - 'scripts/econ-calendar/build_calendar.py'
+      - 'scripts/whats-latest/build_news.py'
+      - '.github/workflows/macro_radar.yml'
+      - '.github/workflows/asset_tracker.yml'
+      - '.github/workflows/companies.yml'
+      - '.github/workflows/asset_ranking.yml'
+      - '.github/workflows/fear_greed.yml'
+      - '.github/workflows/ofr_monitor.yml'
+      - '.github/workflows/econ_calendar.yml'
+      - '.github/workflows/whats_latest.yml'
+      - '.github/workflows/finance_terminal_beta_gate.yml'
+      - '.github/workflows/finance_terminal_quality.yml'
+      - '.github/ISSUE_TEMPLATE/finance-terminal-data.yml'
+      - 'docs/FINANCE_TERMINAL_OPERATIONS_RUNBOOK.md'
+      - 'docs/SUPPORTING_SOURCE_HEALTH.md'
+  pull_request:
+    paths:
+      - 'apps/finance-terminal/**'
+      - 'apps/asset-tracker/data.json'
+      - 'apps/asset-tracker/health.json'
+      - 'apps/asset-ranking/data.json'
+      - 'apps/asset-ranking/health.json'
+      - 'apps/companies/data.json'
+      - 'apps/companies/health.json'
+      - 'apps/econ-calendar/data.json'
+      - 'apps/econ-calendar/health.json'
+      - 'apps/fear-greed/data.json'
+      - 'apps/fear-greed/health.json'
+      - 'apps/macro-radar/data.json'
+      - 'apps/macro-radar/health.json'
+      - 'apps/ofr-monitor/data.json'
+      - 'apps/ofr-monitor/health.json'
+      - 'apps/whats-latest/data.json'
+      - 'apps/whats-latest/health.json'
+      - 'scripts/validate_finance_terminal.py'
+      - 'scripts/validate_finance_terminal_browser.mjs'
+      - 'scripts/market_data_quality.py'
+      - 'scripts/validate_market_data_quality.py'
+      - 'scripts/market_source_health.py'
+      - 'scripts/validate_market_source_health.py'
+      - 'scripts/macro_source_health.py'
+      - 'scripts/validate_macro_source_health.py'
+      - 'scripts/supporting_source_health.py'
+      - 'scripts/validate_supporting_source_health.py'
+      - 'scripts/validate_supporting_source_builders.py'
+      - 'scripts/market_workflow_governance.py'
+      - 'scripts/validate_market_workflow_governance.py'
+      - 'scripts/finance_terminal_release_gate.py'
+      - 'scripts/validate_finance_terminal_release_gate.py'
+      - 'scripts/asset-tracker/build_assets.py'
+      - 'scripts/companies/build_companies.py'
+      - 'scripts/asset-ranking/**'
+      - 'scripts/macro-radar/**'
+      - 'scripts/fear-greed/build_fear_greed.py'
+      - 'scripts/ofr-monitor/build_ofr.py'
+      - 'scripts/econ-calendar/build_calendar.py'
+      - 'scripts/whats-latest/build_news.py'
+      - '.github/workflows/macro_radar.yml'
+      - '.github/workflows/asset_tracker.yml'
+      - '.github/workflows/companies.yml'
+      - '.github/workflows/asset_ranking.yml'
+      - '.github/workflows/fear_greed.yml'
+      - '.github/workflows/ofr_monitor.yml'
+      - '.github/workflows/econ_calendar.yml'
+      - '.github/workflows/whats_latest.yml'
+      - '.github/workflows/finance_terminal_beta_gate.yml'
+      - '.github/workflows/finance_terminal_quality.yml'
+      - '.github/ISSUE_TEMPLATE/finance-terminal-data.yml'
+      - 'docs/FINANCE_TERMINAL_OPERATIONS_RUNBOOK.md'
+      - 'docs/SUPPORTING_SOURCE_HEALTH.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: finance-terminal-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Validate data and adapters
+        run: python scripts/validate_finance_terminal.py
+
+      - name: Validate per-record market data quality
+        run: python scripts/validate_market_data_quality.py --dataset all
+
+      - name: Validate source health and write diagnostics
+        run: python scripts/validate_market_source_health.py --dataset all --report /tmp/finance-terminal-health/source-health.json
+
+      - name: Validate macro source health and write diagnostics
+        run: python scripts/validate_macro_source_health.py --report /tmp/finance-terminal-health/macro-source-health.json
+
+      - name: Validate supporting source health and write diagnostics
+        run: python scripts/validate_supporting_source_health.py --dataset all --report /tmp/finance-terminal-health/supporting-source-health.json
+
+      - name: Validate supporting source failure retention
+        run: python scripts/validate_supporting_source_builders.py
+
+      - name: Validate market workflow governance
+        run: python scripts/validate_market_workflow_governance.py --dataset all
+
+      - name: Validate Beta release gate contracts
+        run: python scripts/validate_finance_terminal_release_gate.py
+
+      - name: Validate rendered page in Chrome
+        run: node scripts/validate_finance_terminal_browser.mjs --artifacts-dir /tmp/finance-terminal-browser
+
+      - name: Upload responsive screenshots
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: finance-terminal-responsive-${{ github.run_attempt }}
+          path: /tmp/finance-terminal-browser/*.png
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Upload source health diagnostics
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: finance-terminal-source-health-${{ github.run_attempt }}
+          path: /tmp/finance-terminal-health/*.json
+          if-no-files-found: error
+          retention-days: 14

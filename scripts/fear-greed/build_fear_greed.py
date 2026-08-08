@@ -12,12 +12,24 @@
 """
 import json
 import os
+import sys
 import time
 from datetime import datetime, timezone
 
 import requests
 
+SCRIPTS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, SCRIPTS_DIR)
+from supporting_source_health import (  # noqa: E402
+    load_json as load_health_json,
+    make_health,
+    validate_health,
+    write_health,
+    write_json_atomic,
+)
+
 OUT_PATH = os.path.join("apps", "fear-greed", "data.json")
+HEALTH_PATH = os.path.join("apps", "fear-greed", "health.json")
 API = "https://production.dataviz.cnn.io/index/fearandgreed/graphdata"
 HEADERS = {
     "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -80,21 +92,47 @@ def load_prev():
         return None
 
 
+def utc_now():
+    return datetime.now(timezone.utc)
+
+
+def record_failure(prev_file, prev_health, attempted_at, reason):
+    if not prev_file:
+        print("没有可保留的data.json，无法生成匹配的健康快照。")
+        return
+    health = make_health(
+        "fear-greed",
+        data=prev_file,
+        attempted_at=attempted_at,
+        component_modes={"cnn-index": "unavailable"},
+        published=False,
+        previous_health=prev_health,
+        failure_reason=reason,
+    )
+    validate_health("fear-greed", prev_file, health)
+    write_health(HEALTH_PATH, health)
+
+
 def build():
     prev_file = load_prev()
+    prev_health = load_health_json(HEALTH_PATH)
+    now = utc_now()
+    attempted_at = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     try:
         d = fetch()
     except Exception as e:
         print(f"CNN 抓取失败：{str(e)[:120]}")
         if prev_file:
             print("保留上次的 data.json，不覆盖。")
-        return
+        record_failure(prev_file, prev_health, attempted_at, "CNN取数失败：" + type(e).__name__)
+        return False
 
     fg = d.get("fear_and_greed", {}) or {}
     cur = pack(fg.get("score"), fg.get("rating"))
     if not cur:
         print("无当前读数，跳过（不覆盖）。")
-        return
+        record_failure(prev_file, prev_health, attempted_at, "CNN响应缺少有效当前读数")
+        return False
 
     refs = {
         "now": cur,
@@ -127,19 +165,28 @@ def build():
                 continue
 
     out = {
-        "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "asOf": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        "updatedAt": attempted_at,
+        "asOf": now.strftime("%Y-%m-%d"),
         "source": "CNN Business Fear & Greed Index",
         "score": cur["score"], "rating": cur["rating"], "ratingZh": cur["ratingZh"],
         "refs": refs, "indicators": inds, "history": hist,
         "note": ("数据来自 CNN 恐慌与贪婪指数：0 = 极度恐惧，100 = 极度贪婪，"
                  "由 7 个市场情绪指标综合而成，每日自动更新。仅供参考，不构成建议。"),
     }
-    os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
-    with open(OUT_PATH, "w", encoding="utf-8") as f:
-        json.dump(out, f, ensure_ascii=False, indent=2)
+    health = make_health(
+        "fear-greed",
+        data=out,
+        attempted_at=attempted_at,
+        component_modes={"cnn-index": "fresh"},
+        published=True,
+        previous_health=prev_health,
+    )
+    validate_health("fear-greed", out, health)
+    write_json_atomic(OUT_PATH, out)
+    write_health(HEALTH_PATH, health)
     print(f"写入 {OUT_PATH}：score={cur['score']} {cur['rating']}，"
           f"指标 {len(inds)} 个，历史 {len(hist)} 点")
+    return True
 
 
 if __name__ == "__main__":

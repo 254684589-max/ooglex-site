@@ -1,0 +1,83 @@
+{
+  "contractVersion": 1,
+  "dataset": "asset-tracker",
+  "generatedAt": "2026-08-07T22:19:58Z",
+  "status": "degraded",
+  "historyStatus": "migrated",
+  "lastAttemptAt": "2026-08-07T22:19:58Z",
+  "lastSuccessfulAt": "2026-08-07T22:19:58Z",
+  "consecutiveFailures": null,
+  "publishedSnapshotAt": "2026-08-07T22:19:58Z",
+  "snapshotPreserved": false,
+  "failureReason": null,
+  "coverage": {
+    "expectedRecords": 28,
+    "publishedRecords": 28,
+    "dynamicRecords": 28,
+    "counts": {
+      "market": 0,
+      "fallback": 1,
+      "estimate": 0,
+      "unknown": 27,
+      "unavailable": 0
+    },
+    "publishedCoveragePct": 100.0,
+    "freshCoveragePct": 0.0,
+    "verifiedCoveragePct": 3.57,
+    "availableCoveragePct": 100.0
+  },
+  "attempt": {
+    "status": "unknown",
+    "published": true,
+    "producedRecords": 28,
+    "counts": {
+      "market": 0,
+      "fallback": 1,
+      "estimate": 0,
+      "unknown": 27,
+      "unavailable": 0
+    }
+  },
+  "sources": [
+    {
+      "id": "yahoo-finance",
+      "name": "Yahoo Finance",
+      "role": "primary",
+      "status": "degraded",
+      "records": 28,
+      "counts": {
+        "market": 0,
+        "fallback": 1,
+        "estimate": 0,
+        "unknown": 27,
+        "unavailable": 0
+      },
+      "lastSuccessAt": null
+    }
+  ],
+  "recovery": {
+    "preservesLastValidSnapshot": true,
+    "steps": [
+      {
+        "id": "yahoo-mirror",
+        "kind": "mirror",
+        "label": "切换Yahoo Finance备用域名query2"
+      },
+      {
+        "id": "alternate-symbol",
+        "kind": "alternate-symbol",
+        "label": "按标的使用已登记候选代码或明确代理"
+      },
+      {
+        "id": "previous-record",
+        "kind": "previous-record",
+        "label": "单项失败时沿用上一份逐条有效值"
+      },
+      {
+        "id": "previous-snapshot",
+        "kind": "previous-snapshot",
+        "label": "整源失败时保留上一份完整data.json"
+      }
+    ]
+  }
+}

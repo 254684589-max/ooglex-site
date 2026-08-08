@@ -15,13 +15,25 @@ apps/whats-latest/data.json，供静态页面渲染。
 import json
 import os
 import re
+import sys
 import time
 from datetime import datetime, timezone
 from urllib.parse import quote
 
 import requests
 
+SCRIPTS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, SCRIPTS_DIR)
+from supporting_source_health import (  # noqa: E402
+    load_json as load_health_json,
+    make_health,
+    validate_health,
+    write_health,
+    write_json_atomic,
+)
+
 OUT_PATH = os.path.join("apps", "whats-latest", "data.json")
+HEALTH_PATH = os.path.join("apps", "whats-latest", "health.json")
 PER_CAT = 7
 
 GN = "https://news.google.com/rss"
@@ -37,6 +49,13 @@ CATS = [
     {"key": "sports",  "name": "体育",        "q": "体育 OR 足球 OR 篮球 OR NBA OR 网球 OR 奥运 OR 世界杯"},
     {"key": "world",   "name": "国际",        "q": "国际 OR 全球 OR 海外 OR 中东 OR 欧洲 OR 联合国 OR 太空 OR 灾害"},
 ]
+CATEGORY_COMPONENTS = {
+    "markets": "markets-news",
+    "tech": "tech-news",
+    "ent": "ent-news",
+    "sports": "sports-news",
+    "world": "world-news",
+}
 
 # 政治说教/党政类过滤：标题命中即剔除（领导人、党建、官场、外事会见、两会等），让信息流远离硬政治。
 POLITICS_RE = re.compile(
@@ -131,6 +150,21 @@ def load_prev():
         return None
 
 
+def utc_now():
+    return datetime.now(timezone.utc)
+
+
+def previous_categories(prev_file):
+    if not isinstance(prev_file, dict) or not isinstance(prev_file.get("categories"), list):
+        return {}
+    return {
+        category.get("key"): category
+        for category in prev_file["categories"]
+        if isinstance(category, dict) and category.get("key") in CATEGORY_COMPONENTS
+        and isinstance(category.get("items"), list) and category["items"]
+    }
+
+
 def title_sig(title):
     """标题的 4-gram 指纹，用于识别不同来源的同一条新闻（近重复）。"""
     t = re.sub(r"[^\w]", "", title)
@@ -139,7 +173,13 @@ def title_sig(title):
 
 def build():
     prev_file = load_prev()
+    prev_health = load_health_json(HEALTH_PATH)
+    previous = previous_categories(prev_file)
+    now = utc_now()
+    attempted_at = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     seen, sigs, cats_out, total = set(), [], [], 0
+    modes = {}
+    fresh_categories = 0
     for c in CATS:
         items = []
         try:
@@ -156,12 +196,39 @@ def build():
         if items:
             cats_out.append({"key": c["key"], "name": c["name"], "items": items})
             total += len(items)
+            fresh_categories += 1
+            modes[CATEGORY_COMPONENTS[c["key"]]] = "fresh"
             print(f"[OK] {c['name']}：{len(items)} 条")
+        elif c["key"] in previous:
+            fallback = previous[c["key"]]
+            cats_out.append({
+                "key": c["key"],
+                "name": fallback.get("name") or c["name"],
+                "items": list(fallback["items"]),
+            })
+            total += len(fallback["items"])
+            modes[CATEGORY_COMPONENTS[c["key"]]] = "fallback"
+            print(f"[fallback] {c['name']}：沿用 {len(fallback['items'])} 条旧新闻")
+        else:
+            modes[CATEGORY_COMPONENTS[c["key"]]] = "unavailable"
         time.sleep(0.3)
 
-    if total == 0:
-        print("本轮 0 条新闻，保留上次 data.json，不覆盖。")
-        return
+    if fresh_categories == 0:
+        modes["market-quotes"] = "fallback" if prev_file and prev_file.get("markets") else "unavailable"
+        print("本轮没有新闻板块成功刷新，保留上次 data.json，不覆盖。")
+        if prev_file:
+            health = make_health(
+                "whats-latest",
+                data=prev_file,
+                attempted_at=attempted_at,
+                component_modes=modes,
+                published=False,
+                previous_health=prev_health,
+                failure_reason="Google News五个板块均未刷新",
+            )
+            validate_health("whats-latest", prev_file, health)
+            write_health(HEALTH_PATH, health)
+        return False
 
     markets = []
     for m in MARKETS:
@@ -170,6 +237,13 @@ def build():
             markets.append({"name": m["name"], "symbol": m["sym"],
                             "price": price, "changePct": pct, "fmt": m["fmt"]})
         time.sleep(0.25)
+    if markets:
+        modes["market-quotes"] = "fresh"
+    elif prev_file and isinstance(prev_file.get("markets"), list) and prev_file["markets"]:
+        markets = list(prev_file["markets"])
+        modes["market-quotes"] = "fallback"
+    else:
+        modes["market-quotes"] = "unavailable"
 
     highlight = None
     pool = [(it, c["name"]) for c in cats_out for it in c["items"]]
@@ -178,8 +252,8 @@ def build():
         highlight = {**top, "category": cat_name}
 
     data = {
-        "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "asOf": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        "updatedAt": attempted_at,
+        "asOf": now.strftime("%Y-%m-%d"),
         "source": "Google News · Yahoo Finance",
         "highlight": highlight,
         "categories": cats_out,
@@ -187,10 +261,19 @@ def build():
         "note": ("新闻聚合自 Google News 收录的权威媒体，每条均链接回原文，仅作信息聚合，不代表本站观点；"
                  "市场快照来自 Yahoo Finance。仅供参考。"),
     }
-    os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
-    with open(OUT_PATH, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+    health = make_health(
+        "whats-latest",
+        data=data,
+        attempted_at=attempted_at,
+        component_modes=modes,
+        published=True,
+        previous_health=prev_health,
+    )
+    validate_health("whats-latest", data, health)
+    write_json_atomic(OUT_PATH, data)
+    write_health(HEALTH_PATH, health)
     print(f"写入 {OUT_PATH}：{total} 条新闻 / {len(cats_out)} 板块 / {len(markets)} 个行情")
+    return True
 
 
 if __name__ == "__main__":

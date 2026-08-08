@@ -80,12 +80,17 @@ def fred_full(series_id, start="2001-01-01"):
     key = os.environ.get("FRED_API_KEY")
     if not key:
         return []
-    url = ("https://api.stlouisfed.org/fred/series/observations?series_id=%s"
-           "&api_key=%s&file_type=json&observation_start=%s&limit=100000"
-           % (series_id, key, start))
+    url = "https://api.stlouisfed.org/fred/series/observations"
+    params = {
+        "series_id": series_id,
+        "api_key": key,
+        "file_type": "json",
+        "observation_start": start,
+        "limit": 100000,
+    }
     for attempt in range(2):
         try:
-            r = requests.get(url, headers=UA, timeout=(8, 30))
+            r = requests.get(url, params=params, headers=UA, timeout=(8, 30))
             r.raise_for_status()
             out = []
             for o in (r.json() or {}).get("observations") or []:
@@ -98,8 +103,11 @@ def fred_full(series_id, start="2001-01-01"):
                     continue
             if out:
                 return out
-        except Exception as e:
-            print("FRED %s: %s" % (series_id, repr(e)[:90]))
+        except Exception as error:
+            status = getattr(getattr(error, "response", None), "status_code", None)
+            print("FRED %s: %s%s" % (
+                series_id, type(error).__name__, " HTTP %s" % status if status else ""
+            ))
         time.sleep(1.0)
     return []
 

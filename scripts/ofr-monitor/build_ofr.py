@@ -24,11 +24,23 @@ import csv
 import io
 import json
 import os
+import sys
 from datetime import datetime, timezone
 
 import requests
 
+SCRIPTS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, SCRIPTS_DIR)
+from supporting_source_health import (  # noqa: E402
+    load_json as load_health_json,
+    make_health,
+    validate_health,
+    write_health,
+    write_json_atomic,
+)
+
 OUT_PATH = os.path.join("apps", "ofr-monitor", "data.json")
+HEALTH_PATH = os.path.join("apps", "ofr-monitor", "health.json")
 
 FSI_CSV = "https://www.financialresearch.gov/financial-stress-index/data/fsi.csv"
 STFM = "https://data.financialresearch.gov/v1"          # 短期融资监测 API
@@ -96,6 +108,10 @@ def load_prev():
             return json.load(f)
     except Exception:
         return {}
+
+
+def utc_now():
+    return datetime.now(timezone.utc)
 
 
 def get_json(url):
@@ -331,11 +347,13 @@ def build_report_card(key):
 # ── 汇总 ──────────────────────────────────────────────────────────────────
 def main():
     prev = load_prev()
+    prev_health = load_health_json(HEALTH_PATH)
     # 上一份是示例数据时，失败来源不要沿用示例数值（否则会把示例当真实值展示），置空更诚实
     keep = {} if prev.get("demo") else prev
-    now = datetime.now(timezone.utc)
+    now = utc_now()
+    attempted_at = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     out = {
-        "updatedAt": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "updatedAt": attempted_at,
         "asOf": now.strftime("%Y-%m-%d"),
         "source": "U.S. Office of Financial Research (OFR)",
         "fsi": keep.get("fsi"),
@@ -344,33 +362,60 @@ def main():
         "hedge": keep.get("hedge"),
         "bank": build_bank(),
     }
+    modes = {"bank": "fresh"}
 
     for name, fn in (("fsi", build_fsi), ("funding", build_funding),
                      ("mmf", build_mmf), ("hedge", build_hedge)):
         try:
             out[name] = fn()
+            modes[name] = "fresh"
             print("[ok] %s" % name)
         except Exception as e:  # noqa: BLE001 — 单源失败不影响其余
+            modes[name] = "fallback" if keep.get(name) else "unavailable"
             print("[skip] %s: %s（保留上次数据）" % (name, e))
 
     # 对冲基金取数失败且无历史值时，回退到「前往 OFR」直达卡片
     if not out.get("hedge"):
         out["hedge"] = build_report_card("hedge")
+        modes["hedge"] = "fallback"
 
     fsi = out.get("fsi") or {}
     if fsi.get("asOf"):
         out["asOf"] = fsi["asOf"]
 
-    hedge_live = (out.get("hedge") or {}).get("gav") or (out.get("hedge") or {}).get("nav")
-    if not any([out.get("fsi"), out.get("funding"), out.get("mmf"), hedge_live]):
-        # 数据源全灭且没有历史值：不覆盖已有文件，避免写入空壳
-        if prev:
-            print("全部数据源失败且已有历史文件，跳过写入")
-            return
-    os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
-    with open(OUT_PATH, "w", encoding="utf-8") as f:
-        json.dump(out, f, ensure_ascii=False, indent=2)
+    dynamic_fresh = any(modes.get(name) == "fresh" for name in ("fsi", "funding", "mmf", "hedge"))
+    if not dynamic_fresh:
+        # 不能用重新生成的时间戳把纯旧值伪装成本轮成功；只更新健康快照。
+        if prev and not prev.get("demo"):
+            health = make_health(
+                "ofr-monitor",
+                data=prev,
+                attempted_at=attempted_at,
+                component_modes=modes,
+                published=False,
+                previous_health=prev_health,
+                failure_reason="OFR四项动态来源均未刷新",
+            )
+            validate_health("ofr-monitor", prev, health)
+            write_health(HEALTH_PATH, health)
+            print("全部动态来源失败，保留旧data.json并记录失败健康快照")
+        else:
+            print("全部动态来源失败且没有可保留的真实快照")
+        return False
+
+    health = make_health(
+        "ofr-monitor",
+        data=out,
+        attempted_at=attempted_at,
+        component_modes=modes,
+        published=True,
+        previous_health=prev_health,
+    )
+    validate_health("ofr-monitor", out, health)
+    write_json_atomic(OUT_PATH, out)
+    write_health(HEALTH_PATH, health)
     print("已写入 " + OUT_PATH)
+    return True
 
 
 if __name__ == "__main__":

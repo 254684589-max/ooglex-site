@@ -1,0 +1,86 @@
+name: 金融终端数据问题
+description: 报告Ooglex金融终端的数据、来源、时效或运行状态问题
+title: "[金融终端数据] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢帮助核对金融终端数据。请只提供可公开复核的信息；不要填写API密钥、访问令牌、账号、持仓或其他敏感资料。
+
+  - type: dropdown
+    id: pipeline
+    attributes:
+      label: 数据管道
+      description: 请选择最接近问题的生产数据管道。
+      options:
+        - 宏观官方序列（DGS10 / DTWEXBGS / RWTC）
+        - 跨资产强弱（asset-tracker）
+        - 全球公司榜（companies）
+        - 全球资产榜（asset-ranking）
+    validations:
+      required: true
+
+  - type: dropdown
+    id: problem_type
+    attributes:
+      label: 问题类型
+      options:
+        - 数值或单位疑似错误
+        - 涨跌计算疑似错误
+        - 来源或标的口径疑似错误
+        - 更新时间或过期状态疑似错误
+        - 页面加载失败
+        - 页面布局或无障碍问题
+        - 其他
+    validations:
+      required: true
+
+  - type: input
+    id: page_url
+    attributes:
+      label: 页面地址
+      description: 请粘贴发生问题的Ooglex页面地址。
+      placeholder: https://www.ooglex.com/apps/finance-terminal/
+    validations:
+      required: true
+
+  - type: input
+    id: observed_at
+    attributes:
+      label: 发现时间
+      description: 请注明时区，便于核对数据快照和任务记录。
+      placeholder: 2026-08-08 17:30 UTC+8
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际看到的内容
+      description: 请写明数值、单位、状态标签、数据日期和更新时间；可附公开截图。
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期或核对依据
+      description: 请说明你认为正确的结果，并附FRED、EIA或其他可公开核验的来源链接。
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 复现步骤与设备
+      description: 可填写浏览器、设备宽度和稳定复现步骤；请勿包含账号或隐私信息。
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: 提交确认
+      options:
+        - label: 我确认未提交API密钥、令牌、账号、持仓或其他敏感信息。
+          required: true
+        - label: 我理解该终端仅供研究参考，不提供交易执行或确定性投资建议。
+          required: true

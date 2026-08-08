@@ -13,11 +13,23 @@
 """
 import json
 import os
+import sys
 from datetime import datetime, timezone
 
 import requests
 
+SCRIPTS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, SCRIPTS_DIR)
+from supporting_source_health import (  # noqa: E402
+    load_json as load_health_json,
+    make_health,
+    validate_health,
+    write_health,
+    write_json_atomic,
+)
+
 OUT_PATH = os.path.join("apps", "econ-calendar", "data.json")
+HEALTH_PATH = os.path.join("apps", "econ-calendar", "health.json")
 FEED = "https://nfs.faireconomy.media/ff_calendar_thisweek.json"
 # 该源会拒绝非浏览器 UA，给一个浏览器样式的 UA
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; personal-site-econ-calendar/1.0)"}
@@ -205,8 +217,32 @@ def load_prev():
         return None
 
 
+def utc_now():
+    return datetime.now(timezone.utc)
+
+
+def record_failure(prev, prev_health, attempted_at, reason):
+    if not prev:
+        print("没有可保留的经济日历快照，无法生成匹配的健康文件。")
+        return
+    health = make_health(
+        "econ-calendar",
+        data=prev,
+        attempted_at=attempted_at,
+        component_modes={"weekly-calendar": "unavailable"},
+        published=False,
+        previous_health=prev_health,
+        failure_reason=reason,
+    )
+    validate_health("econ-calendar", prev, health)
+    write_health(HEALTH_PATH, health)
+
+
 def build():
     prev = load_prev()
+    prev_health = load_health_json(HEALTH_PATH)
+    now = utc_now()
+    attempted_at = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     try:
         r = requests.get(FEED, headers=HEADERS, timeout=25)
         r.raise_for_status()
@@ -215,7 +251,8 @@ def build():
         print(f"[..] 取数失败：{str(e)[:90]}")
         if prev:
             print("保留上次 data.json，不覆盖。")
-        return
+        record_failure(prev, prev_health, attempted_at, "Forex Factory取数失败：" + type(e).__name__)
+        return False
 
     events = []
     for it in raw if isinstance(raw, list) else []:
@@ -238,15 +275,16 @@ def build():
     if not events:
         if prev:
             print("未取到事件，保留上次 data.json，不覆盖。")
-        return
+        record_failure(prev, prev_health, attempted_at, "Forex Factory响应没有有效事件")
+        return False
 
     events.sort(key=lambda e: e["ts"])
     days = sorted({e["ts"][:10] for e in events})
     highs = sum(1 for e in events if e["impact"] == "high")
 
     data = {
-        "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "asOf": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        "updatedAt": attempted_at,
+        "asOf": now.strftime("%Y-%m-%d"),
         "source": "Forex Factory 经济日历",
         "weekOf": (days[0] + " ~ " + days[-1]) if days else "",
         "count": len(events),
@@ -255,10 +293,19 @@ def build():
         "note": ("经济日历来自 Forex Factory 公开周历（免登录），含央行利率决议、CPI、非农、PMI、GDP 等"
                  "重要事件的预测值与前值；时间为 UTC，事件公布后会回填实际值。仅供参考，不构成投资建议。"),
     }
-    os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
-    with open(OUT_PATH, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+    health = make_health(
+        "econ-calendar",
+        data=data,
+        attempted_at=attempted_at,
+        component_modes={"weekly-calendar": "fresh"},
+        published=True,
+        previous_health=prev_health,
+    )
+    validate_health("econ-calendar", data, health)
+    write_json_atomic(OUT_PATH, data)
+    write_health(HEALTH_PATH, health)
     print(f"写入 {OUT_PATH}：{len(events)} 条事件（{highs} 条高影响），{len(days)} 天")
+    return True
 
 
 if __name__ == "__main__":

@@ -6,17 +6,17 @@
 一张榜把所有大类资产按美元市值横向拉通排名：房地产、政府债券、煤炭、石油、天然气、
 铁矿石、铝、铜、黄金、白银、各国货币（广义货币 M2）、上市公司、加密货币……只看市值。
 
-方法论（与 assetmarketcap / 8marketcap 同款，可每日实时更新）：
-    市值 = 数量(储量/地面存量/M2) × 单位价格(实时行情/汇率)
+方法论（与 assetmarketcap / 8marketcap 同款，可每日更新）：
+    市值 = 数量(储量/地面存量/M2) × 单位价格(日频行情/汇率)
   · 商品/贵金属：储量或地面存量 × Yahoo 期货/现货价（每日随行情浮动）
-  · 货币：广义货币 M2/M3 × 实时汇率
+  · 货币：广义货币 M2/M3 × 日频汇率快照
   · 公司：直接复用每日刷新的 apps/companies/data.json（Yahoo Finance）
-  · 加密货币：CoinGecko 实时市值（兜底 Yahoo 现价 × 流通量）
+  · 加密货币：CoinGecko 最新市值快照（兜底 Yahoo 现价 × 流通量）
   · 房地产/政府债务/煤炭/天然气：权威机构存量估值（慢变量，静态基准）
 
 稳健性（沿用本仓库取数风格）：
   · 纯 requests + 硬超时、逐项 try/except、主备双域名，单点失败不影响整体；
-  · 某项实时价取不到时回退：上次 data.json 的值(stale) → 静态基准，绝不掉榜/闪烁；
+  · 某项行情价取不到时回退：上次 data.json 的值(stale) → 静态基准，绝不掉榜/闪烁；
   · 体检（榜首量级、条目数）不过则保留上次 data.json，不用空/脏数据覆盖好数据。
 由 .github/workflows/asset_ranking.yml 每日运行并提交回仓库。
 """
@@ -29,11 +29,32 @@ from datetime import datetime, timezone
 import requests
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+SCRIPTS_DIR = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
-from baselines import CATEGORIES, AGGREGATES, CRYPTO  # noqa: E402
+sys.path.insert(0, SCRIPTS_DIR)
+from baselines import (  # noqa: E402
+    AGGREGATES,
+    BASELINE_PROVENANCE,
+    CATEGORIES,
+    CRYPTO,
+    DEFAULT_BASELINE_PROVENANCE,
+)
+from market_data_quality import (  # noqa: E402
+    fallback_data_meta,
+    make_data_meta,
+    summarize_data_quality,
+)
+from market_source_health import (  # noqa: E402
+    attach_upstream_health,
+    load_json as load_health_json,
+    make_source_health,
+    write_health,
+)
 
 OUT_PATH = os.path.join("apps", "asset-ranking", "data.json")
+HEALTH_PATH = os.path.join("apps", "asset-ranking", "health.json")
 COMPANIES_PATH = os.path.join("apps", "companies", "data.json")
+COMPANIES_HEALTH_PATH = os.path.join("apps", "companies", "health.json")
 TOP_N = 250
 YF_HOSTS = ["query1.finance.yahoo.com", "query2.finance.yahoo.com"]
 YF_HEADERS = {"User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -44,7 +65,7 @@ CG_URL = ("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=
 
 # ————————————————————— 取数工具 —————————————————————
 def yf_price(session, symbol):
-    """取单个 Yahoo 代码的最新价与上一收盘；失败返回 None。"""
+    """取单个Yahoo代码的最新价、上一收盘与行情时点；失败返回None。"""
     sym = requests.utils.quote(symbol)
     for host in YF_HOSTS:
         try:
@@ -54,8 +75,11 @@ def yf_price(session, symbol):
             meta = (r.json().get("chart", {}).get("result") or [{}])[0].get("meta") or {}
             price = meta.get("regularMarketPrice")
             prev = meta.get("chartPreviousClose") or meta.get("previousClose")
-            if isinstance(price, (int, float)) and price > 0:
-                return float(price), (float(prev) if isinstance(prev, (int, float)) and prev > 0 else None)
+            market_time = meta.get("regularMarketTime")
+            if isinstance(price, (int, float)) and price > 0 \
+                    and isinstance(market_time, (int, float)) and market_time > 0:
+                as_of = datetime.fromtimestamp(market_time, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+                return float(price), (float(prev) if isinstance(prev, (int, float)) and prev > 0 else None), as_of
         except Exception:
             continue
     return None
@@ -75,20 +99,37 @@ def pct(cur, base):
     return round((cur / base - 1.0) * 100, 2)
 
 
+def valid_iso(value):
+    if not isinstance(value, str) or not value:
+        return False
+    try:
+        datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return True
+    except ValueError:
+        return False
+
+
+def baseline_provenance(asset):
+    return BASELINE_PROVENANCE.get(asset["name"], DEFAULT_BASELINE_PROVENANCE)
+
+
 # ————————————————————— 各品类构建 —————————————————————
-def build_aggregates(session, prev_rows):
-    """房地产 / 大宗商品 / 贵金属 / 货币 / 债券：数量 × 实时价（或静态基准）。"""
+def build_aggregates(session, prev_rows, run_updated_at):
+    """房地产 / 大宗商品 / 贵金属 / 货币 / 债券：数量 × 行情价（或静态基准）。"""
     out = []
     for a in AGGREGATES:
         row = {"name": a["name"], "nameEn": a["nameEn"], "category": a["cat"], "emoji": a["emoji"],
                "unit": a.get("unit"), "qty": a.get("qty"), "note": a.get("note")}
         cap_b = price_disp = change = None
         stale = False
+        baseline = baseline_provenance(a)
+        combined_source = "Yahoo Finance · " + baseline["source"]
+        row_meta = None
 
-        if a.get("symbol"):                         # 有实时代码：数量 × 实时单价
+        if a.get("symbol"):                         # 有行情代码：数量 × 本轮行情单价
             res = yf_price(session, a["symbol"])
             if res:
-                raw, raw_prev = res
+                raw, raw_prev, quote_as_of = res
                 if a["cat"] == "currency":          # 汇率 → 本币兑美元单价（invert 时取倒数）
                     unit_usd = (1.0 / raw) if a.get("invert") else raw
                     prev_usd = (1.0 / raw_prev) if (a.get("invert") and raw_prev) else raw_prev
@@ -99,13 +140,37 @@ def build_aggregates(session, prev_rows):
                     price_disp = round(raw, 4)
                     change = pct(raw, raw_prev)
                     cap_b = a["qty"] * raw / 1e9
-            else:                                   # 实时价取不到 → 沿用上次(stale) → 静态基准
+                row_meta = make_data_meta(
+                    "market",
+                    combined_source,
+                    as_of=quote_as_of,
+                    updated_at=run_updated_at,
+                    frequency="daily",
+                    status="partial" if not baseline.get("asOf") else "ok",
+                    note="价格为本轮行情；存量基准的原报告日期尚未结构化。" if not baseline.get("asOf") else None,
+                )
+            else:                                   # 行情价取不到 → 沿用上次(stale) → 静态基准
                 p = prev_rows.get(a["name"])
                 if p and p.get("marketCap"):
                     cap_b = p["marketCap"]; price_disp = p.get("price"); change = p.get("changePct"); stale = True
+                    row_meta = fallback_data_meta(
+                        p,
+                        source=combined_source,
+                        frequency="daily",
+                        legacy_updated_at=p.get("dataMeta", {}).get("updatedAt") if isinstance(p.get("dataMeta"), dict) else None,
+                    )
                 else:
                     price_disp = a.get("basePrice")
                     cap_b = (a["qty"] * a["basePrice"] / 1e9) if (a.get("qty") and a.get("basePrice")) else a.get("baseCap")
+                    row_meta = make_data_meta(
+                        "estimate",
+                        baseline["source"],
+                        as_of=baseline.get("asOf"),
+                        updated_at=run_updated_at,
+                        frequency="irregular",
+                        status="partial",
+                        note="行情请求失败且无历史快照，使用静态基准值。",
+                    )
         elif a.get("baseCap") is not None:          # 纯静态基准（房地产/政府债/天然气）
             cap_b = a["baseCap"]
         elif a.get("qty") and a.get("basePrice"):   # 静态：储量 × 固定基准价（煤炭/铁矿石/美元 M2）
@@ -113,14 +178,24 @@ def build_aggregates(session, prev_rows):
 
         if not cap_b:
             continue
+        if row_meta is None:
+            row_meta = make_data_meta(
+                "estimate",
+                baseline["source"],
+                as_of=baseline.get("asOf"),
+                updated_at=run_updated_at,
+                frequency="irregular",
+                status="partial" if not baseline.get("asOf") else "ok",
+                note="慢变量或静态存量估值；原报告日期未结构化。" if not baseline.get("asOf") else None,
+            )
         row.update({"marketCap": round(cap_b, 1), "price": price_disp, "changePct": change,
-                    "static": a.get("symbol") is None, "stale": stale})
+                    "static": a.get("symbol") is None, "stale": stale, "dataMeta": row_meta})
         out.append(row)
     return out
 
 
-def build_crypto(session, prev_rows):
-    """加密货币：优先 CoinGecko 实时市值；兜底 Yahoo 现价 × 流通量；再兜底基准。"""
+def build_crypto(session, prev_rows, run_updated_at):
+    """加密货币：优先CoinGecko最新市值；兜底Yahoo现价×流通量；再兜底基准。"""
     out = []
     cg = {}
     try:
@@ -132,35 +207,68 @@ def build_crypto(session, prev_rows):
     except Exception:
         cg = {}
     if cg:
-        print(f"CoinGecko 实时市值：{len(cg)} 币")
+        print(f"CoinGecko 市值快照：{len(cg)} 币")
 
     for c in CRYPTO:
         row = {"name": c["name"], "nameEn": c["nameEn"], "category": "crypto", "emoji": "₿",
                "symbol": c["symbol"]}
         cap_b = price_disp = change = None
+        row_meta = None
         m = cg.get(c["id"])
-        if m and m.get("market_cap"):
+        if m and m.get("market_cap") and valid_iso(m.get("last_updated")):
             cap_b = m["market_cap"] / 1e9
             price_disp = m.get("current_price")
             change = round(m["price_change_percentage_24h"], 2) if isinstance(
                 m.get("price_change_percentage_24h"), (int, float)) else None
+            row_meta = make_data_meta(
+                "market",
+                "CoinGecko",
+                as_of=m["last_updated"],
+                updated_at=run_updated_at,
+                frequency="daily",
+            )
         elif c.get("yf") and c.get("supply"):        # Yahoo 现价 × 流通量
             res = yf_price(session, c["yf"])
             if res:
-                raw, raw_prev = res
+                raw, raw_prev, quote_as_of = res
                 cap_b = raw * c["supply"] / 1e9; price_disp = raw; change = pct(raw, raw_prev)
+                row_meta = make_data_meta(
+                    "market",
+                    "Yahoo Finance · 静态流通量基准",
+                    as_of=quote_as_of,
+                    updated_at=run_updated_at,
+                    frequency="daily",
+                    status="partial",
+                    note="价格为本轮行情，流通量为静态兜底基准。",
+                )
         if cap_b is None:                            # 沿用上次 → 基准
             p = prev_rows.get(c["name"])
             if p and p.get("marketCap"):
                 cap_b = p["marketCap"]; price_disp = p.get("price"); change = p.get("changePct"); row["stale"] = True
+                row_meta = fallback_data_meta(
+                    p,
+                    source="CoinGecko · Yahoo Finance",
+                    frequency="daily",
+                    legacy_updated_at=p.get("dataMeta", {}).get("updatedAt") if isinstance(p.get("dataMeta"), dict) else None,
+                )
             else:
                 cap_b = c["baseCap"]
-        row.update({"marketCap": round(cap_b, 1), "price": price_disp, "changePct": change})
+                row_meta = make_data_meta(
+                    "estimate",
+                    "静态加密市值基准（原始来源未结构化）",
+                    as_of=None,
+                    updated_at=run_updated_at,
+                    frequency="irregular",
+                    status="partial",
+                    note="CoinGecko与Yahoo均不可用，且无历史快照。",
+                )
+        row.update({"marketCap": round(cap_b, 1), "price": price_disp, "changePct": change,
+                    "stale": row.get("stale") is True, "dataMeta": row_meta})
         out.append(row)
     return out
 
 
-def build_companies():
+def build_companies(run_updated_at):
     """直接复用每日刷新的 apps/companies/data.json（Yahoo Finance）。"""
     d = load_json(COMPANIES_PATH)
     if not d or not d.get("companies"):
@@ -170,6 +278,16 @@ def build_companies():
     for c in d["companies"]:
         if not c.get("marketCap"):
             continue
+        company_meta = c.get("dataMeta")
+        if not isinstance(company_meta, dict):
+            company_meta = make_data_meta(
+                "unknown",
+                "Yahoo Finance" if c.get("private") is not True else "公开融资估值（旧快照）",
+                as_of=None,
+                updated_at=d.get("updatedAt") or run_updated_at,
+                frequency="daily" if c.get("private") is not True else "irregular",
+                note="上游公司榜旧快照未提供逐条来源状态。",
+            )
         out.append({
             "name": c["name"], "nameEn": c.get("nameEn"), "category": "company",
             "marketCap": c["marketCap"], "price": c.get("price"), "priceCur": c.get("priceCur"),
@@ -178,6 +296,7 @@ def build_companies():
             # 公司 logo 存放在 apps/companies/logos/，本页用相对上级路径引用，无需复制文件
             "logo": ("../companies/" + c["logo"]) if c.get("logo") else None,
             "private": c.get("private"), "lastRound": c.get("lastRound"),
+            "stale": c.get("stale") is True, "dataMeta": dict(company_meta),
         })
     print(f"复用公司榜 {len(out)} 家")
     return out
@@ -186,17 +305,40 @@ def build_companies():
 # ————————————————————— 主流程 —————————————————————
 def build():
     prev_data = load_json(OUT_PATH)
+    prev_health = load_health_json(HEALTH_PATH)
     prev_rows = {r["name"]: r for r in (prev_data or {}).get("assets", []) if r.get("name")}
+    run_updated_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    def keep(msg):
+    def with_companies_health(health):
+        companies_data = load_json(COMPANIES_PATH) or {}
+        return attach_upstream_health(
+            health,
+            source_id="companies-upstream",
+            upstream_dataset="companies",
+            upstream_health=load_health_json(COMPANIES_HEALTH_PATH),
+            upstream_snapshot_at=companies_data.get("updatedAt"),
+        )
+
+    def keep(msg, attempted_rows=None):
+        health = make_source_health(
+            "asset-ranking",
+            published_rows=(prev_data or {}).get("assets", []),
+            attempted_rows=attempted_rows or [],
+            attempted_at=run_updated_at,
+            published_snapshot_at=(prev_data or {}).get("updatedAt"),
+            published=False,
+            previous_health=prev_health,
+            failure_reason=msg + "；本轮未发布新快照。",
+        )
+        write_health(HEALTH_PATH, with_companies_health(health))
         print(msg + ("（保留上次 data.json，不覆盖）" if prev_data else "（且无历史快照，跳过）"))
 
     session = requests.Session()
     session.headers.update(YF_HEADERS)
 
-    aggregates = build_aggregates(session, prev_rows)
-    crypto = build_crypto(session, prev_rows)
-    companies = build_companies()
+    aggregates = build_aggregates(session, prev_rows, run_updated_at)
+    crypto = build_crypto(session, prev_rows, run_updated_at)
+    companies = build_companies(run_updated_at)
 
     assets = aggregates + crypto + companies
     assets = [a for a in assets if a.get("marketCap")]
@@ -207,31 +349,47 @@ def build():
 
     # —— 体检：条目足够、榜首量级合理（房地产/债券在 5 万亿~200 万亿美元区间）——
     if len(assets) < 100 or not assets:
-        keep(f"条目过少（{len(assets)}）"); return
+        keep(f"条目过少（{len(assets)}）", assets); return
     top_cap_t = assets[0]["marketCap"] / 1000
     if not (50 <= top_cap_t <= 2000):
-        keep(f"体检未过：榜首市值 ${top_cap_t:.1f}T"); return
+        keep(f"体检未过：榜首市值 ${top_cap_t:.1f}T", assets); return
 
     cat_count = {}
     for r in assets:
         cat_count[r["category"]] = cat_count.get(r["category"], 0) + 1
 
+    data_quality = summarize_data_quality(assets)
+    market_as_of = [r["dataMeta"]["asOf"] for r in assets
+                    if r.get("dataMeta", {}).get("mode") == "market" and r["dataMeta"].get("asOf")]
     data = {
-        "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "asOf": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        "updatedAt": run_updated_at,
+        "asOf": max(market_as_of)[:10] if market_as_of else run_updated_at[:10],
+        "frequency": "daily",
+        "status": data_quality["status"],
         "source": "Yahoo Finance · CoinGecko · 公开估算（世界黄金协会 / IMF / Savills 等）",
         "count": len(assets),
         "totalMarketCap": round(sum(r["marketCap"] for r in assets), 1),
         "categories": CATEGORIES,
         "categoryCount": cat_count,
-        "note": ("全球资产不限品类按市值排名（前 250）。商品/贵金属以储量或地面存量×实时行情、"
-                 "货币以广义货币 M2×实时汇率、公司/加密货币以实时市值计；房地产、政府债务、煤炭、"
+        "note": ("全球资产不限品类按市值排名（前 250）。商品/贵金属以储量或地面存量×日频行情、"
+                 "货币以广义货币 M2×日频汇率、公司/加密货币以最新市值快照计；房地产、政府债务、煤炭、"
                  "天然气为权威机构存量估值（慢变量，静态基准）。每日自动更新，仅供参考，不构成投资建议。"),
         "assets": assets,
+        "dataQuality": data_quality,
     }
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+    health = make_source_health(
+        "asset-ranking",
+        published_rows=assets,
+        attempted_rows=assets,
+        attempted_at=run_updated_at,
+        published_snapshot_at=run_updated_at,
+        published=True,
+        previous_health=prev_health,
+    )
+    write_health(HEALTH_PATH, with_companies_health(health))
     print(f"写入 {OUT_PATH}：{len(assets)} 项，榜首 {assets[0]['name']} "
           f"${top_cap_t:.1f}T，总市值 ${data['totalMarketCap'] / 1000:.1f}T，分类 {cat_count}")
 

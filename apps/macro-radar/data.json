@@ -3,7 +3,7 @@
   "asOf": "2026-08-07",
   "asOfSh": "2026-08-08 06:19",
   "live": true,
-  "source": "FRED · Yahoo Finance · 交易所行情",
+  "source": "FRED · EIA · Yahoo Finance · 交易所行情",
   "regime": {
     "score": 55,
     "labelZh": "中性",
@@ -544,7 +544,21 @@
           "tone": "up",
           "asOf": "2026-08-06",
           "name": "10 年期美债收益率",
-          "id": "DGS10"
+          "id": "DGS10",
+          "frequency": "daily",
+          "status": "stale",
+          "price": 4.69,
+          "previousPrice": 4.630000000000001,
+          "changeBps": 6.0,
+          "previousAsOf": null,
+          "updatedAt": "2026-08-07T22:19:45Z",
+          "lastAttemptAt": "2026-08-07T22:19:45Z",
+          "source": {
+            "name": "FRED / Federal Reserve H.15",
+            "url": "https://fred.stlouisfed.org/series/DGS10",
+            "seriesId": "DGS10"
+          },
+          "note": "本轮FRED自动更新失败，保留上次有效DGS10观测值。"
         },
         {
           "val": "2.17%",
@@ -839,5 +853,49 @@
       ]
     }
   ],
+  "referenceSeries": {
+    "DTWEXBGS": {
+      "id": "DTWEXBGS",
+      "name": "美联储广义美元指数",
+      "nameEn": "Nominal Broad U.S. Dollar Index",
+      "frequency": "daily",
+      "demo": false,
+      "status": "ok",
+      "price": 120.7105,
+      "previousPrice": 120.9075,
+      "changePct": -0.16293447470173694,
+      "asOf": "2026-07-24",
+      "previousAsOf": "2026-07-23",
+      "updatedAt": "2026-07-27T20:23:00Z",
+      "lastAttemptAt": "2026-07-27T20:23:00Z",
+      "source": {
+        "name": "FRED / Federal Reserve H.10",
+        "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
+        "seriesId": "DTWEXBGS"
+      },
+      "note": "FRED官方日频数据；等待宏观雷达任务下次自动更新。"
+    },
+    "RWTC": {
+      "id": "RWTC",
+      "name": "库欣WTI原油现货",
+      "nameEn": "Cushing WTI Spot Price FOB",
+      "frequency": "daily",
+      "demo": false,
+      "status": "stale",
+      "price": 84.25,
+      "previousPrice": 91.74,
+      "changePct": -8.164377588838011,
+      "asOf": "2026-07-27",
+      "previousAsOf": "2026-07-24",
+      "updatedAt": "2026-08-02T19:26:59Z",
+      "lastAttemptAt": "2026-08-02T19:26:59Z",
+      "source": {
+        "name": "U.S. EIA / Cushing WTI Spot",
+        "url": "https://www.eia.gov/dnav/pet/hist/rwtcd.htm",
+        "seriesId": "RWTC"
+      },
+      "note": "初始保留值核对自EIA官方历史页；本地未配置EIA_API_KEY，等待自动更新。"
+    }
+  },
   "note": "制度信号为 0–100 相对分位读数，越高越偏『宽松·支持』；信用/期限/流动性/增长/广度为市场化代理指标（HYG÷LQD、10Y−3M 曲线、3M 短端利率、铜金比、等权·市值加权）；实际利率取 5 年期 TIPS 实际收益率（DFII5）；宏观管道取自 FRED 官方数据。每日自动更新，仅供研究，非投资建议。"
 }

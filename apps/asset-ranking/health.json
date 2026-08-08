@@ -1,0 +1,138 @@
+{
+  "contractVersion": 1,
+  "dataset": "asset-ranking",
+  "generatedAt": "2026-08-08T12:27:08Z",
+  "status": "degraded",
+  "historyStatus": "migrated",
+  "lastAttemptAt": "2026-08-08T12:27:08Z",
+  "lastSuccessfulAt": "2026-08-08T12:27:08Z",
+  "consecutiveFailures": null,
+  "publishedSnapshotAt": "2026-08-08T12:27:08Z",
+  "snapshotPreserved": false,
+  "failureReason": null,
+  "coverage": {
+    "expectedRecords": 250,
+    "publishedRecords": 250,
+    "dynamicRecords": 235,
+    "counts": {
+      "market": 0,
+      "fallback": 13,
+      "estimate": 17,
+      "unknown": 220,
+      "unavailable": 0
+    },
+    "publishedCoveragePct": 100.0,
+    "freshCoveragePct": 0.0,
+    "verifiedCoveragePct": 12.0,
+    "availableCoveragePct": 100.0
+  },
+  "attempt": {
+    "status": "unknown",
+    "published": true,
+    "producedRecords": 250,
+    "counts": {
+      "market": 0,
+      "fallback": 13,
+      "estimate": 17,
+      "unknown": 220,
+      "unavailable": 0
+    }
+  },
+  "sources": [
+    {
+      "id": "yahoo-finance",
+      "name": "Yahoo Finance",
+      "role": "primary",
+      "status": "degraded",
+      "records": 233,
+      "counts": {
+        "market": 0,
+        "fallback": 13,
+        "estimate": 0,
+        "unknown": 220,
+        "unavailable": 0
+      },
+      "lastSuccessAt": null
+    },
+    {
+      "id": "coingecko",
+      "name": "CoinGecko",
+      "role": "primary",
+      "status": "degraded",
+      "records": 4,
+      "counts": {
+        "market": 0,
+        "fallback": 4,
+        "estimate": 0,
+        "unknown": 0,
+        "unavailable": 0
+      },
+      "lastSuccessAt": null
+    },
+    {
+      "id": "companies-upstream",
+      "name": "companies/data.json上游快照",
+      "role": "upstream",
+      "status": "degraded",
+      "records": 229,
+      "counts": {
+        "market": 0,
+        "fallback": 0,
+        "estimate": 9,
+        "unknown": 220,
+        "unavailable": 0
+      },
+      "lastSuccessAt": "2026-08-07T22:21:59Z",
+      "upstream": {
+        "dataset": "companies",
+        "contractKnown": true,
+        "status": "degraded",
+        "lastAttemptAt": "2026-08-07T22:21:59Z",
+        "lastSuccessfulAt": "2026-08-07T22:21:59Z",
+        "consecutiveFailures": null,
+        "snapshotPreserved": false,
+        "snapshotAligned": true
+      }
+    },
+    {
+      "id": "public-estimates",
+      "name": "公开存量与融资估值",
+      "role": "reference",
+      "status": "degraded",
+      "records": 26,
+      "counts": {
+        "market": 0,
+        "fallback": 9,
+        "estimate": 17,
+        "unknown": 0,
+        "unavailable": 0
+      },
+      "lastSuccessAt": "2026-08-08T12:27:08Z"
+    }
+  ],
+  "recovery": {
+    "preservesLastValidSnapshot": true,
+    "steps": [
+      {
+        "id": "yahoo-mirror",
+        "kind": "mirror",
+        "label": "Yahoo行情切换备用域名query2"
+      },
+      {
+        "id": "crypto-yahoo",
+        "kind": "secondary-source",
+        "label": "CoinGecko失败时以Yahoo价格×已披露静态流通量兜底"
+      },
+      {
+        "id": "upstream-company",
+        "kind": "upstream-snapshot",
+        "label": "公司条目复用已校验的companies快照与健康状态"
+      },
+      {
+        "id": "previous-or-baseline",
+        "kind": "previous-snapshot",
+        "label": "单项沿用旧值或静态基准；整榜体检失败时保留旧快照"
+      }
+    ]
+  }
+}
