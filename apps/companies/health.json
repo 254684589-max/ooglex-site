@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "companies",
-  "generatedAt": "2026-08-07T22:21:59Z",
+  "generatedAt": "2026-08-08T21:02:16Z",
   "status": "degraded",
-  "historyStatus": "migrated",
-  "lastAttemptAt": "2026-08-07T22:21:59Z",
-  "lastSuccessfulAt": "2026-08-07T22:21:59Z",
-  "consecutiveFailures": null,
-  "publishedSnapshotAt": "2026-08-07T22:21:59Z",
+  "historyStatus": "tracked",
+  "lastAttemptAt": "2026-08-08T21:02:16Z",
+  "lastSuccessfulAt": "2026-08-08T21:02:16Z",
+  "consecutiveFailures": 0,
+  "publishedSnapshotAt": "2026-08-08T21:02:16Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -15,26 +15,26 @@
     "publishedRecords": 500,
     "dynamicRecords": 450,
     "counts": {
-      "market": 0,
+      "market": 450,
       "fallback": 0,
       "estimate": 50,
-      "unknown": 450,
+      "unknown": 0,
       "unavailable": 0
     },
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 0.0,
-    "verifiedCoveragePct": 10.0,
+    "freshCoveragePct": 100.0,
+    "verifiedCoveragePct": 100.0,
     "availableCoveragePct": 100.0
   },
   "attempt": {
-    "status": "unknown",
+    "status": "success",
     "published": true,
     "producedRecords": 500,
     "counts": {
-      "market": 0,
+      "market": 450,
       "fallback": 0,
       "estimate": 50,
-      "unknown": 450,
+      "unknown": 0,
       "unavailable": 0
     }
   },
@@ -43,16 +43,16 @@
       "id": "yahoo-finance",
       "name": "Yahoo Finance",
       "role": "primary",
-      "status": "unknown",
+      "status": "healthy",
       "records": 450,
       "counts": {
-        "market": 0,
+        "market": 450,
         "fallback": 0,
         "estimate": 0,
-        "unknown": 450,
+        "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": null
+      "lastSuccessAt": "2026-08-08T21:02:16Z"
     },
     {
       "id": "multiples-vc",
@@ -67,7 +67,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-07T22:21:59Z"
+      "lastSuccessAt": "2026-08-08T21:02:16Z"
     }
   ],
   "recovery": {
