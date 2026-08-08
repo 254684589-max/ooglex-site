@@ -274,10 +274,8 @@ async function main() {
   const baseUrl = `http://127.0.0.1:${server.address().port}`;
   const logs = { value: "" };
   const browser = spawn(browserPath, [
-    "--headless",
+    "--headless=new",
     "--no-sandbox",
-    "--no-zygote",
-    "--single-process",
     "--disable-dev-shm-usage",
     "--disable-background-networking",
     "--disable-extensions",
@@ -294,12 +292,20 @@ async function main() {
   browser.stderr.on("data", (chunk) => {
     logs.value = (logs.value + chunk.toString()).slice(-6000);
   });
+  browser.once("exit", (code, signal) => {
+    if (code !== 0 && code !== null) {
+      logs.value = `${logs.value}\nChrome exited with code ${code}${signal ? ` (${signal})` : ""}`.slice(-6000);
+    }
+  });
 
   let client;
   try {
     const timeoutMs = options.timeout * 1000;
     const port = await waitForDevTools(profile, browser, logs, timeoutMs);
     client = new CdpClient(await pageWebSocket(port, timeoutMs), timeoutMs);
+    client.socket.addEventListener("close", () => {
+      if (browser.exitCode !== null && logs.value.trim()) console.error(logs.value.trim());
+    }, { once: true });
     await client.open();
     await Promise.all([client.send("Page.enable"), client.send("Runtime.enable")]);
     const results = [];
