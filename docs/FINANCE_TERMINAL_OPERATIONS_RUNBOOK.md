@@ -56,7 +56,7 @@ node scripts/validate_finance_terminal_browser.mjs
 4. 四条任务结束后重新签出同一开发分支的最新提交，运行完整数据、来源健康、回退、治理、门禁和360/768/1280像素浏览器检查。
 5. 上传`qualification.json/.md`、`readiness.json/.md`、健康诊断与响应式截图；证据保留7至14天，不进入Git历史。
 
-需要单项恢复时仍可按原顺序手动运行：先运行`Finance Terminal Quality`，再运行宏观雷达、跨资产与公司榜；公司榜成功后运行资产榜，最后运行Beta门禁。资格工作流失败不允许强行跳过依赖或修改时间戳，只能修复首个可操作问题后重跑。
+需要单项恢复时仍可按原顺序手动运行：先运行`Finance Terminal Quality`，再运行宏观雷达与跨资产；运行`Companies Tracker`并等待成功后，才运行`Asset Ranking`，最后运行Beta门禁。资格工作流失败不允许强行跳过依赖或修改时间戳，只能修复首个可操作问题后重跑。
 
 同一UTC日更窗口内的重跑只算一个周期；失败后重跑成功不会虚增连续周期。Beta至少观察3个周期，稳定V1至少观察7个周期。
 
