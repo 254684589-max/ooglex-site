@@ -1,34 +1,34 @@
 {
   "contractVersion": 1,
   "dataset": "fear-greed",
-  "generatedAt": "2026-08-07T22:23:55Z",
-  "status": "unknown",
-  "historyStatus": "migrated",
-  "lastAttemptAt": null,
-  "lastSuccessfulAt": "2026-08-07T22:23:55Z",
-  "consecutiveFailures": null,
-  "publishedSnapshotAt": "2026-08-07T22:23:55Z",
-  "snapshotPreserved": null,
+  "generatedAt": "2026-08-08T21:02:27Z",
+  "status": "healthy",
+  "historyStatus": "tracked",
+  "lastAttemptAt": "2026-08-08T21:02:27Z",
+  "lastSuccessfulAt": "2026-08-08T21:02:27Z",
+  "consecutiveFailures": 0,
+  "publishedSnapshotAt": "2026-08-08T21:02:27Z",
+  "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
     "expectedComponents": 1,
     "publishedComponents": 1,
-    "refreshedComponents": 0,
+    "refreshedComponents": 1,
     "fallbackComponents": 0,
     "unavailableComponents": 0,
-    "unknownComponents": 1,
+    "unknownComponents": 0,
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 0.0
+    "freshCoveragePct": 100.0
   },
   "attempt": {
-    "status": "unknown",
-    "published": null,
-    "refreshedComponents": [],
+    "status": "success",
+    "published": true,
+    "refreshedComponents": [
+      "cnn-index"
+    ],
     "fallbackComponents": [],
     "unavailableComponents": [],
-    "unknownComponents": [
-      "cnn-index"
-    ]
+    "unknownComponents": []
   },
   "components": [
     {
@@ -37,11 +37,11 @@
       "role": "primary",
       "frequency": "daily",
       "requiredForTerminal": true,
-      "status": "unknown",
-      "mode": "unknown",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": null,
-      "lastSuccessAt": "2026-08-07T22:23:55Z"
+      "lastAttemptAt": "2026-08-08T21:02:27Z",
+      "lastSuccessAt": "2026-08-08T21:02:27Z"
     }
   ],
   "policy": {
