@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from pathlib import Path
 
 from finance_terminal_qualification import (
     DATA_WORKFLOWS,
@@ -18,6 +19,7 @@ from finance_terminal_qualification import (
 
 NOW = datetime(2026, 8, 9, 12, 0, tzinfo=timezone.utc)
 BRANCH = "agent/finance-terminal-v1-qualification"
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def require(condition: bool, message: str) -> None:
@@ -90,6 +92,27 @@ def test_workflow_contract() -> None:
             "四条管道不得共享工作流文件")
 
 
+def test_github_workflow_safety() -> None:
+    workflow_path = ROOT / ".github" / "workflows" / "finance_terminal_v1_qualification.yml"
+    quality_path = ROOT / ".github" / "workflows" / "finance_terminal_quality.yml"
+    workflow = workflow_path.read_text(encoding="utf-8")
+    quality = quality_path.read_text(encoding="utf-8")
+    require("branches:\n      - 'agent/finance-terminal-*'" in workflow,
+            "资格工作流必须只由金融终端开发分支推送触发")
+    require("actions: write" in workflow and "contents: read" in workflow,
+            "资格工作流必须使用最小Actions写入和内容只读权限")
+    require("pages: write" not in workflow and "deploy" not in workflow.lower(),
+            "资格工作流不得包含Pages或部署步骤")
+    require("--fail-on-blocked" in workflow and "if: always()" in workflow,
+            "资格失败必须阻断，同时仍上传诊断证据")
+    require("ref: ${{ github.ref_name }}" in workflow,
+            "最终门禁必须重新读取资格运行后的最新开发分支")
+    require("scripts/validate_finance_terminal_qualification.py" in quality,
+            "质量CI必须运行资格编排契约测试")
+    require(".github/workflows/finance_terminal_v1_qualification.yml" in quality,
+            "资格工作流变更必须触发质量CI")
+
+
 def test_success_order_and_report() -> None:
     executor = FakeExecutor()
     report = run_qualification(executor, BRANCH, "main", generated_at=NOW)
@@ -145,6 +168,7 @@ def test_timeout_is_explicit() -> None:
 def main() -> None:
     test_branch_guard()
     test_workflow_contract()
+    test_github_workflow_safety()
     test_success_order_and_report()
     test_company_failure_blocks_only_dependency()
     test_one_dispatch_failure_does_not_cancel_others()

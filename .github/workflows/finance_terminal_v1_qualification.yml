@@ -1,0 +1,159 @@
+name: Finance Terminal V1 Qualification
+run-name: Stable V1 qualification · ${{ github.ref_name }}
+
+# 只在金融终端开发分支编排四条核心数据管道。新增脚本首次推送会自动运行；
+# 以后仍可在工作流进入默认分支后手动运行。不会合并main或触发Pages部署。
+on:
+  push:
+    branches:
+      - 'agent/finance-terminal-*'
+    paths:
+      - 'scripts/finance_terminal_qualification.py'
+      - 'scripts/validate_finance_terminal_qualification.py'
+      - '.github/workflows/finance_terminal_v1_qualification.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: finance-terminal-v1-qualification-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  qualify-data-pipelines:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - name: Checkout qualification source
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate qualification orchestration contract
+        run: python scripts/validate_finance_terminal_qualification.py
+
+      - name: Run four-pipeline development qualification
+        id: qualification
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python scripts/finance_terminal_qualification.py \
+            --branch "$GITHUB_REF_NAME" \
+            --timeout-minutes 55 \
+            --report-json /tmp/finance-terminal-qualification/qualification.json \
+            --report-md /tmp/finance-terminal-qualification/qualification.md \
+            --fail-on-blocked
+
+      - name: Add qualification summary
+        if: always()
+        run: |
+          if [ -f /tmp/finance-terminal-qualification/qualification.md ]; then
+            cat /tmp/finance-terminal-qualification/qualification.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "资格验收未生成报告。" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload qualification evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: finance-terminal-v1-qualification-${{ github.run_attempt }}
+          path: /tmp/finance-terminal-qualification/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Fail blocked qualification
+        if: steps.qualification.outcome != 'success'
+        run: |
+          echo "至少一条核心数据管道未成功，稳定V1资格验收保持阻断。"
+          exit 1
+
+  refresh-readiness-report:
+    needs: qualify-data-pipelines
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout latest qualified branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Validate latest qualified branch
+        id: final-quality
+        continue-on-error: true
+        run: |
+          python scripts/validate_finance_terminal.py
+          python scripts/validate_market_data_quality.py --dataset all
+          python scripts/validate_market_source_health.py --dataset all \
+            --report /tmp/finance-terminal-health/source-health.json
+          python scripts/validate_macro_source_health.py \
+            --report /tmp/finance-terminal-health/macro-source-health.json
+          python scripts/validate_supporting_source_health.py --dataset all \
+            --report /tmp/finance-terminal-health/supporting-source-health.json
+          python scripts/validate_supporting_source_builders.py
+          python scripts/validate_market_workflow_governance.py --dataset all
+          python scripts/validate_finance_terminal_release_gate.py
+          python scripts/validate_finance_terminal_qualification.py
+          node scripts/validate_finance_terminal_browser.mjs \
+            --artifacts-dir /tmp/finance-terminal-browser
+
+      - name: Generate updated Beta and stable V1 report
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          READINESS_BRANCH: ${{ github.ref_name }}
+        run: |
+          python scripts/finance_terminal_release_gate.py \
+            --report-json /tmp/finance-terminal-readiness/readiness.json \
+            --report-md /tmp/finance-terminal-readiness/readiness.md
+          cat /tmp/finance-terminal-readiness/readiness.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload updated readiness evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: finance-terminal-v1-readiness-${{ github.run_attempt }}
+          path: /tmp/finance-terminal-readiness/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload final responsive screenshots
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: finance-terminal-v1-responsive-${{ github.run_attempt }}
+          path: /tmp/finance-terminal-browser/*.png
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Upload final source health diagnostics
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: finance-terminal-v1-source-health-${{ github.run_attempt }}
+          path: /tmp/finance-terminal-health/*.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Fail invalid qualified branch
+        if: steps.final-quality.outcome != 'success'
+        run: |
+          echo "资格运行后的开发分支未通过完整质量检查。"
+          exit 1

@@ -38,6 +38,8 @@ on:
       - 'scripts/validate_market_workflow_governance.py'
       - 'scripts/finance_terminal_release_gate.py'
       - 'scripts/validate_finance_terminal_release_gate.py'
+      - 'scripts/finance_terminal_qualification.py'
+      - 'scripts/validate_finance_terminal_qualification.py'
       - 'scripts/asset-tracker/build_assets.py'
       - 'scripts/companies/build_companies.py'
       - 'scripts/asset-ranking/**'
@@ -55,6 +57,7 @@ on:
       - '.github/workflows/econ_calendar.yml'
       - '.github/workflows/whats_latest.yml'
       - '.github/workflows/finance_terminal_beta_gate.yml'
+      - '.github/workflows/finance_terminal_v1_qualification.yml'
       - '.github/workflows/finance_terminal_quality.yml'
       - '.github/ISSUE_TEMPLATE/finance-terminal-data.yml'
       - 'docs/FINANCE_TERMINAL_OPERATIONS_RUNBOOK.md'
@@ -93,6 +96,8 @@ on:
       - 'scripts/validate_market_workflow_governance.py'
       - 'scripts/finance_terminal_release_gate.py'
       - 'scripts/validate_finance_terminal_release_gate.py'
+      - 'scripts/finance_terminal_qualification.py'
+      - 'scripts/validate_finance_terminal_qualification.py'
       - 'scripts/asset-tracker/build_assets.py'
       - 'scripts/companies/build_companies.py'
       - 'scripts/asset-ranking/**'
@@ -110,6 +115,7 @@ on:
       - '.github/workflows/econ_calendar.yml'
       - '.github/workflows/whats_latest.yml'
       - '.github/workflows/finance_terminal_beta_gate.yml'
+      - '.github/workflows/finance_terminal_v1_qualification.yml'
       - '.github/workflows/finance_terminal_quality.yml'
       - '.github/ISSUE_TEMPLATE/finance-terminal-data.yml'
       - 'docs/FINANCE_TERMINAL_OPERATIONS_RUNBOOK.md'
@@ -163,6 +169,9 @@ jobs:
 
       - name: Validate Beta release gate contracts
         run: python scripts/validate_finance_terminal_release_gate.py
+
+      - name: Validate stable V1 qualification orchestration
+        run: python scripts/validate_finance_terminal_qualification.py
 
       - name: Validate rendered page in Chrome
         run: node scripts/validate_finance_terminal_browser.mjs --artifacts-dir /tmp/finance-terminal-browser
