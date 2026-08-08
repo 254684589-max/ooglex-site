@@ -1,39 +1,39 @@
 {
   "contractVersion": 1,
   "dataset": "whats-latest",
-  "generatedAt": "2026-08-08T08:08:34Z",
-  "status": "unknown",
-  "historyStatus": "migrated",
-  "lastAttemptAt": null,
-  "lastSuccessfulAt": "2026-08-08T08:08:34Z",
-  "consecutiveFailures": null,
-  "publishedSnapshotAt": "2026-08-08T08:08:34Z",
-  "snapshotPreserved": null,
+  "generatedAt": "2026-08-08T14:08:56Z",
+  "status": "healthy",
+  "historyStatus": "tracked",
+  "lastAttemptAt": "2026-08-08T14:08:56Z",
+  "lastSuccessfulAt": "2026-08-08T14:08:56Z",
+  "consecutiveFailures": 0,
+  "publishedSnapshotAt": "2026-08-08T14:08:56Z",
+  "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
     "expectedComponents": 6,
     "publishedComponents": 6,
-    "refreshedComponents": 0,
+    "refreshedComponents": 6,
     "fallbackComponents": 0,
     "unavailableComponents": 0,
-    "unknownComponents": 6,
+    "unknownComponents": 0,
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 0.0
+    "freshCoveragePct": 100.0
   },
   "attempt": {
-    "status": "unknown",
-    "published": null,
-    "refreshedComponents": [],
-    "fallbackComponents": [],
-    "unavailableComponents": [],
-    "unknownComponents": [
+    "status": "success",
+    "published": true,
+    "refreshedComponents": [
       "markets-news",
       "tech-news",
       "ent-news",
       "sports-news",
       "world-news",
       "market-quotes"
-    ]
+    ],
+    "fallbackComponents": [],
+    "unavailableComponents": [],
+    "unknownComponents": []
   },
   "components": [
     {
@@ -42,11 +42,11 @@
       "role": "primary",
       "frequency": "intraday",
       "requiredForTerminal": true,
-      "status": "unknown",
-      "mode": "unknown",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": null,
-      "lastSuccessAt": "2026-08-08T08:08:34Z"
+      "lastAttemptAt": "2026-08-08T14:08:56Z",
+      "lastSuccessAt": "2026-08-08T14:08:56Z"
     },
     {
       "id": "tech-news",
@@ -54,11 +54,11 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "unknown",
-      "mode": "unknown",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": null,
-      "lastSuccessAt": "2026-08-08T08:08:34Z"
+      "lastAttemptAt": "2026-08-08T14:08:56Z",
+      "lastSuccessAt": "2026-08-08T14:08:56Z"
     },
     {
       "id": "ent-news",
@@ -66,11 +66,11 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "unknown",
-      "mode": "unknown",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": null,
-      "lastSuccessAt": "2026-08-08T08:08:34Z"
+      "lastAttemptAt": "2026-08-08T14:08:56Z",
+      "lastSuccessAt": "2026-08-08T14:08:56Z"
     },
     {
       "id": "sports-news",
@@ -78,11 +78,11 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "unknown",
-      "mode": "unknown",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": null,
-      "lastSuccessAt": "2026-08-08T08:08:34Z"
+      "lastAttemptAt": "2026-08-08T14:08:56Z",
+      "lastSuccessAt": "2026-08-08T14:08:56Z"
     },
     {
       "id": "world-news",
@@ -90,11 +90,11 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "unknown",
-      "mode": "unknown",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": null,
-      "lastSuccessAt": "2026-08-08T08:08:34Z"
+      "lastAttemptAt": "2026-08-08T14:08:56Z",
+      "lastSuccessAt": "2026-08-08T14:08:56Z"
     },
     {
       "id": "market-quotes",
@@ -102,11 +102,11 @@
       "role": "auxiliary",
       "frequency": "daily",
       "requiredForTerminal": false,
-      "status": "unknown",
-      "mode": "unknown",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": null,
-      "lastSuccessAt": "2026-08-08T08:08:34Z"
+      "lastAttemptAt": "2026-08-08T14:08:56Z",
+      "lastSuccessAt": "2026-08-08T14:08:56Z"
     }
   ],
   "policy": {
