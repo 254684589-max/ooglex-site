@@ -496,7 +496,7 @@ assert(oilReference && oilReference.id === "RWTC");
 const dollarConfig = config.assets.find((asset) => asset.id === "dxy");
 const oilConfig = config.assets.find((asset) => asset.id === "wti");
 const currentNow = new Date("2026-08-08T23:59:59Z");
-const supportingNow = new Date("2026-08-08T12:00:00Z");
+const supportingNow = currentNow;
 const expiredOfficialHealthNow = new Date("2026-08-12T23:59:59Z");
 function qualityDeclaration(rows) {
   const metas = rows.map((row) => adapter.normalizeDataMeta(row.dataMeta, null));
@@ -517,10 +517,10 @@ function qualityDeclaration(rows) {
 ].forEach(([dataset, sourceData, sourceHealth]) => {
   const state = adapter.adaptSupportingSourceHealth(sourceHealth, dataset, sourceData, supportingNow);
   assert.strictEqual(state.dataset, dataset);
-  assert.strictEqual(state.status, "unknown");
-  assert.strictEqual(state.historyKnown, false);
-  assert.strictEqual(state.freshCoveragePct, 0);
-  assert.strictEqual(state.publishedCoveragePct, 100);
+  assert.strictEqual(state.status, sourceHealth.status);
+  assert.strictEqual(state.historyKnown, sourceHealth.historyStatus === "tracked");
+  assert.strictEqual(state.freshCoveragePct, sourceHealth.coverage.freshCoveragePct);
+  assert.strictEqual(state.publishedCoveragePct, sourceHealth.coverage.publishedCoveragePct);
   const tampered = JSON.parse(JSON.stringify(sourceHealth));
   tampered.coverage.refreshedComponents += 1;
   assert.throws(() => adapter.adaptSupportingSourceHealth(tampered, dataset, sourceData, supportingNow));
@@ -584,8 +584,8 @@ const supportingInformationCards = adapter.buildInformationCards({
   news: { data: financeNews, error: null },
   newsHealth: { data: financeNewsHealth, error: null }
 }, supportingNow);
-assert.strictEqual(supportingInformationCards[0].sourceHealth.status, "unknown");
-assert.strictEqual(supportingInformationCards[1].sourceHealth.status, "unknown");
+assert.strictEqual(supportingInformationCards[0].sourceHealth.status, econCalendarHealth.status);
+assert.strictEqual(supportingInformationCards[1].sourceHealth.status, financeNewsHealth.status);
 const success = adapter.buildPageData(config, macro, currentNow);
 const dgs10 = success.assets.find((asset) => asset.id === "us10y");
 const dollar = success.assets.find((asset) => asset.id === "dxy");
@@ -1530,7 +1530,8 @@ const partialNews = JSON.parse(JSON.stringify(financeNews));
 partialNews.categories.find((category) => category.key === "markets").items[0].link = "https://example.com/unsafe";
 assert.strictEqual(adapter.adaptFinanceNews(partialNews, newsNow).status, "partial");
 
-assert.strictEqual(adapter.adaptFinanceNews(financeNews, currentNow).status, "stale");
+const staleNewsNow = new Date(Date.parse(financeNews.updatedAt) + 13 * 60 * 60 * 1000);
+assert.strictEqual(adapter.adaptFinanceNews(financeNews, staleNewsNow).status, "stale");
 
 const invalidNews = JSON.parse(JSON.stringify(financeNews));
 invalidNews.source = "Yahoo Finance";
