@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-08-07T22:19:45Z",
-  "asOf": "2026-08-07",
-  "asOfSh": "2026-08-08 06:19",
+  "updatedAt": "2026-08-08T21:01:43Z",
+  "asOf": "2026-08-08",
+  "asOfSh": "2026-08-09 05:01",
   "live": true,
   "source": "FRED · EIA · Yahoo Finance · 交易所行情",
   "regime": {
@@ -270,7 +270,7 @@
       "key": "growth",
       "en": "GROWTH",
       "zh": "增长动能",
-      "score": 70,
+      "score": 71,
       "status": "support",
       "statusZh": "支持",
       "desc": "增长动能综合：铜金比 · 半导体/大盘(SOX) · 周期/防御(XLY/XLP)",
@@ -472,7 +472,7 @@
           "val": "3.75%",
           "chg": "+0bp",
           "tone": "flat",
-          "asOf": "2026-08-07",
+          "asOf": "2026-08-08",
           "name": "联邦基金目标上限",
           "id": "DFEDTARU"
         },
@@ -480,7 +480,7 @@
           "val": "3.50%",
           "chg": "+0bp",
           "tone": "flat",
-          "asOf": "2026-08-07",
+          "asOf": "2026-08-08",
           "name": "联邦基金目标下限",
           "id": "DFEDTARL"
         },
@@ -539,26 +539,26 @@
       "src": "FRED",
       "rows": [
         {
+          "id": "DGS10",
+          "name": "10 年期美债收益率",
+          "frequency": "daily",
+          "status": "ok",
           "val": "4.69%",
           "chg": "+6bp",
           "tone": "up",
-          "asOf": "2026-08-06",
-          "name": "10 年期美债收益率",
-          "id": "DGS10",
-          "frequency": "daily",
-          "status": "stale",
           "price": 4.69,
-          "previousPrice": 4.630000000000001,
-          "changeBps": 6.0,
-          "previousAsOf": null,
-          "updatedAt": "2026-08-07T22:19:45Z",
-          "lastAttemptAt": "2026-08-07T22:19:45Z",
+          "previousPrice": 4.63,
+          "changeBps": 6,
+          "asOf": "2026-08-06",
+          "previousAsOf": "2026-08-05",
+          "updatedAt": "2026-08-08T21:01:43Z",
+          "lastAttemptAt": "2026-08-08T21:01:43Z",
           "source": {
             "name": "FRED / Federal Reserve H.15",
             "url": "https://fred.stlouisfed.org/series/DGS10",
             "seriesId": "DGS10"
           },
-          "note": "本轮FRED自动更新失败，保留上次有效DGS10观测值。"
+          "note": "FRED官方日频数据；变化为相对上一观测值的基点数。"
         },
         {
           "val": "2.17%",
@@ -727,32 +727,32 @@
         {
           "name": "铜/金 ×1000 (工业 vs 避险)",
           "id": "",
-          "val": "1.50",
-          "chg": "-5.1%",
+          "val": "1.51",
+          "chg": "-4.0%",
           "asOf": "2026-08-07",
           "tone": "down"
         },
         {
           "name": "金/银",
           "id": "",
-          "val": "69.0",
-          "chg": "-0.1%",
+          "val": "68.5",
+          "chg": "-0.7%",
           "asOf": "2026-08-07",
           "tone": "down"
         },
         {
           "name": "油/铜",
           "id": "",
-          "val": "11.71",
-          "chg": "+1.3%",
+          "val": "11.90",
+          "chg": "+2.9%",
           "asOf": "2026-08-07",
           "tone": "up"
         },
         {
           "name": "油/金 ×100",
           "id": "",
-          "val": "1.75",
-          "chg": "-3.9%",
+          "val": "1.80",
+          "chg": "-1.1%",
           "asOf": "2026-08-07",
           "tone": "down"
         }
@@ -789,18 +789,18 @@
         {
           "name": "MOVE 债券波动率",
           "id": "MOVE",
-          "val": "72.03",
-          "chg": "+1.6%",
-          "asOf": "2026-08-07",
+          "val": "70.88",
+          "chg": "+4.0%",
+          "asOf": "2026-07-17",
           "tone": "up"
         },
         {
           "name": "VIX 9 日",
           "id": "VIX9D",
-          "val": "11.96",
-          "chg": "-29.0%",
-          "asOf": "2026-08-07",
-          "tone": "down"
+          "val": "16.85",
+          "chg": "+20.5%",
+          "asOf": "2026-07-17",
+          "tone": "up"
         },
         {
           "name": "VIX",
@@ -813,18 +813,18 @@
         {
           "name": "VIX 3 月",
           "id": "VIX3M",
-          "val": "18.72",
-          "chg": "-8.9%",
-          "asOf": "2026-08-07",
-          "tone": "down"
+          "val": "20.54",
+          "chg": "+5.3%",
+          "asOf": "2026-07-17",
+          "tone": "up"
         },
         {
           "name": "VIX 6 月",
           "id": "VIX6M",
-          "val": "21.02",
-          "chg": "-5.7%",
-          "asOf": "2026-08-07",
-          "tone": "down"
+          "val": "22.28",
+          "chg": "+2.8%",
+          "asOf": "2026-07-17",
+          "tone": "up"
         },
         {
           "name": "SKEW 偏度",
@@ -845,7 +845,7 @@
         {
           "name": "VIX/VIX3M 期限结构",
           "id": "",
-          "val": "0.80",
+          "val": "0.73",
           "chg": "正向",
           "asOf": "",
           "tone": "up"
@@ -861,19 +861,19 @@
       "frequency": "daily",
       "demo": false,
       "status": "ok",
-      "price": 120.7105,
-      "previousPrice": 120.9075,
-      "changePct": -0.16293447470173694,
-      "asOf": "2026-07-24",
-      "previousAsOf": "2026-07-23",
-      "updatedAt": "2026-07-27T20:23:00Z",
-      "lastAttemptAt": "2026-07-27T20:23:00Z",
+      "price": 119.7034,
+      "previousPrice": 119.6753,
+      "changePct": 0.02348020017497454,
+      "asOf": "2026-07-31",
+      "previousAsOf": "2026-07-30",
+      "updatedAt": "2026-08-08T21:01:43Z",
+      "lastAttemptAt": "2026-08-08T21:01:43Z",
       "source": {
         "name": "FRED / Federal Reserve H.10",
         "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
         "seriesId": "DTWEXBGS"
       },
-      "note": "FRED官方日频数据；等待宏观雷达任务下次自动更新。"
+      "note": "FRED官方日频数据；由宏观雷达任务自动更新。"
     },
     "RWTC": {
       "id": "RWTC",
@@ -888,13 +888,13 @@
       "asOf": "2026-07-27",
       "previousAsOf": "2026-07-24",
       "updatedAt": "2026-08-02T19:26:59Z",
-      "lastAttemptAt": "2026-08-02T19:26:59Z",
+      "lastAttemptAt": "2026-08-08T21:01:43Z",
       "source": {
         "name": "U.S. EIA / Cushing WTI Spot",
         "url": "https://www.eia.gov/dnav/pet/hist/rwtcd.htm",
         "seriesId": "RWTC"
       },
-      "note": "初始保留值核对自EIA官方历史页；本地未配置EIA_API_KEY，等待自动更新。"
+      "note": "本轮EIA自动更新失败，保留上次有效观测值。"
     }
   },
   "note": "制度信号为 0–100 相对分位读数，越高越偏『宽松·支持』；信用/期限/流动性/增长/广度为市场化代理指标（HYG÷LQD、10Y−3M 曲线、3M 短端利率、铜金比、等权·市值加权）；实际利率取 5 年期 TIPS 实际收益率（DFII5）；宏观管道取自 FRED 官方数据。每日自动更新，仅供研究，非投资建议。"
