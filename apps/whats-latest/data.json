@@ -1,13 +1,13 @@
 {
-  "updatedAt": "2026-08-08T19:46:31Z",
-  "asOf": "2026-08-08",
+  "updatedAt": "2026-08-09T04:48:28Z",
+  "asOf": "2026-08-09",
   "source": "Google News · Yahoo Finance",
   "highlight": {
-    "title": "王源为什么决定暂停巡演？",
+    "title": "OpenAI 用 1 年时间证明，你并不用为 AI 换浏览器",
     "source": "新浪网",
-    "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBGSDRMS3hWeVUxcEhPeDRRREg0UkpDbzk5dEZZSmFxMDdoaXpmTW1XZmQwWXctemVPYVlNOG1qOUlyVzN5bWdiY2Z2eHlUdUJLTmw5R3lyUkpaYmdNVHhqSm42ZmRuWE9MRXlPa1dCV0w?oc=5",
-    "published": 1786217189,
-    "category": "娱乐"
+    "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1kZ3hVaUpQMVRWQl9xbzFHNG5OZ2U5WTVmaXRPT1Jmcm5rOWdheUJHQ2gxbmFNcW9IbGdpZjVXVkVLREZWN3ZpMVlnYVMyaGJJSUd1eWZvZ1R2bFNBYU1Qa3BnQlMzRWdPVThHTFpQdmFJSXhYOHMxTEh1VmVlS1k?oc=5",
+    "published": 1786250405,
+    "category": "人工智能·科技"
   },
   "categories": [
     {
@@ -15,46 +15,46 @@
       "name": "市场",
       "items": [
         {
+          "title": "中国经济底子越扎实，人民币越有公信力",
+          "source": "21财经",
+          "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOLXh2WExELW5ZcUh3ckQ3UnhGTUl3dXItR29UMmtrbFFEbVFWUlVzZmNUMGV2TlJDeldWY2JHb3dhX0NRMGN5UWtSV2txOEZkYzB4MVFhaTc4VDVDZ01kWkVkXzItdmdqUUN4eGdJVmlCZVlUUkRQVGFXbUVzeXJiZGc5b21fZFU0bWdnYw?oc=5",
+          "published": 1786248000
+        },
+        {
+          "title": "“探索海洋技术，赋能蓝色经济” 厦门大学“嘉庚号”科考船首次停靠马来西亚沙巴",
+          "source": "中国日报网",
+          "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE5yRC1PYWhYRlFVVFhnYURJdHBMd2JNZjFYYXlzem9HWmtsQ3I0NWtXQmVPZWY2M3hlRDBfcm9KOE1jNlQ3TUZxa05pZWMtR29ZRzlsaFVQZzFUcWhIWXVybkpFUnk3ZTlVaHZqMFNKc1BFT1ktbWJDNDRON3I?oc=5",
+          "published": 1786248190
+        },
+        {
           "title": "中国经济面面观丨向善而行：人工智能时代如何迈向全球治理",
           "source": "新华网",
           "link": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1oalpwVVZINFNXX2ZIZnFmeFpneVhVUWxvekQ4bk5NcVotQ2hBZlFyWUlPUnZFYnhES2h5YVJ0eVpBNlFMMkIxODR3LUtLZ0RLRmtXRFN5cElfZmZ5UEVtclJ4NXVSVWh0TlpDWXdPSk1MZXZnYzJZ?oc=5",
           "published": 1786197444
         },
         {
-          "title": "9分钟 强势封板！股市“吹哨人”突然改口！市场风向变了？",
+          "title": "一见·三个关键词，读懂中国经济“半年答卷”",
+          "source": "politics.people.com.cn",
+          "link": "https://news.google.com/rss/articles/CBMickFVX3lxTE5xRUVxZThLSVVZNEg0RXN5LVBkdVFJS2JQME5ZZ2ZGdkY3WnpyWU82LXRSZ0tYYVY2cDZYTUNyU2Rsc0RPNDRraXNrQXNRZlpxYnNiTHl5NC00T1pvenZ6QUlENXBYQUp4bGtjcThFVklZUQ?oc=5",
+          "published": 1786190940
+        },
+        {
+          "title": "“电影+文旅”深度融合 光影经济撬动暑期消费新蓝海",
+          "source": "中国科技网",
+          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTFB0cjdYQkl1VFc5enlXRHo0RWsxZHpvMTRQaUwteE5YZUhVSHNrbHhOMzRnR01KejIzV1dXYWpLMnhYN0RESTdyS055bGxJNWNLVjQ0WFFYNnRWLVFpMVBXSjQ4RE9RNS1sbWs5QlAtUlc?oc=5",
+          "published": 1786235430
+        },
+        {
+          "title": "多赛道跑出“加速度” 一组数据读懂中国经济底气",
+          "source": "中国经济网",
+          "link": "https://news.google.com/rss/articles/CBMib0FVX3lxTE5KQmFJSi1vVXFJZHFCSWEyYjJCTi11ZzQxbUhpc2dnMjk5SHpUQ0JJOHlkekZwc0V1WTBqSllMLWp2ZGk3dGRPRHczS3FPTEtCZTFJNVZDb2pIbXhZcnNOcWhxb2lmZVlMR21OQTBhdw?oc=5",
+          "published": 1786235220
+        },
+        {
+          "title": "环球下周看点：美股创新高后迎关键考验 7月通胀数据或决定美联储9月政策走向",
           "source": "东方财富",
-          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE04cDJtZllYS2tSblVTZUlmZDM2QnoxcE5ISVFvRkpaSWFyUWxvMGJ3eU5rbVQydDVTd1lxTXgtTzBoTnd2bmpndHBZZVFad3RzLXA1R05KT0pILTdQTFVHcQ?oc=5",
-          "published": 1786192616
-        },
-        {
-          "title": "上半年我国经营主体结构持续优化",
-          "source": "经济频道",
-          "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTFBtOFVrUDdIQTE0SFJXd29pTEhNcVY1QlNkcVNzTnplTUFNN05xaUlGS044ejF6QlZtOGpZaFRBSkZUWnN6aDN5dEVETXZwTFlLNWczQms5VzFnZHRsZFcxdWdKN2lFVkFUVUFNV3JTV1hXbjVsUEViWjhqVQ?oc=5",
-          "published": 1786191360
-        },
-        {
-          "title": "全球媒体聚焦 | 外媒：外贸强劲增长凸显中国经济韧性",
-          "source": "紫牛新闻",
-          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE03V3JPYi1xNllsT0N6YzNUM2ZfNE5BVTBOMUJ2Z0toZzNmN3Q3ZXo5VmM0R3haWk5iT2JfaFRqcEhrMlNnejZ1RXdIWDV3eG8tN2pCTnlNOVREYkRMc3lPTmRsT0s2aklL?oc=5",
-          "published": 1786195860
-        },
-        {
-          "title": "夏日经济乘“热”而上 消费市场向“新”而行",
-          "source": "xinhuanet.com",
-          "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxONGNObURSS1Q5SjhFdzhJVFhtSFlnMGtiMVgzUVV3ZU9oVWN4RXM0bkRRNWhwWUU0U01CREg3ZHl4S0Q0UHc1QjRQSTJWV3FPTm8td1NTNDUwSzFzYmlCY1dwLTcySlRIUV84WHFNMF9qZXRlNVdsM0hhbmdlRkotdlgzU0dMOU1P?oc=5",
-          "published": 1786174578
-        },
-        {
-          "title": "7月高频数据折射经济向新向好",
-          "source": "新浪财经",
-          "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQUWNxNkhVRVNXLVZFRVlEM284LXE4QlczcXZONzNiWEFxSUxHQnlRZm1GSzdoVW9ZbkNLS0xQeWc3WUU5WXVKM0VGRHRVWmdnNkJ6eU1FN2FNMHA0ZUNpdXlXVEFMR2RPREd2N2dZS2E0Z0doOGRTYzJ1YWRJYkJXZmR6amwwckotWEFlT1g5WUZFM3JlUC1SNA?oc=5",
-          "published": 1786212115
-        },
-        {
-          "title": "共享制造，生产也能“拼单”（经济新方位·制造业新趋势）",
-          "source": "peopleapp.com",
-          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE1wZE14UUpRM2xJQ1MyV3k0TWVMYnR5Q2llUUF1d1l5dU1nZC1IcF84UC04TVd2SkdzbTN3a0tscU5CVEkzVnNVRExRNGxUNXI0bkhjdElLM3U4Y0JnRW1oR19aOGFzTzl3?oc=5",
-          "published": 1786118400
+          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE5Sdk84a0RzYVR6RHJRUFgxWXBYcHFqV3pFSWNHVnllb0h6NGlpeTJ2dElMUjJNeUxVZXppSkxhMEVKTWZoazhNdE81SGlKUlhlTUlRbWprWlJFQ1VXcW9LaQ?oc=5",
+          "published": 1786156561
         }
       ]
     },
@@ -63,40 +63,34 @@
       "name": "人工智能·科技",
       "items": [
         {
-          "title": "AI时代就业新观察丨孵化AI训练师",
-          "source": "中国之声",
-          "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTE0yY21TWDBjWjh4MlRkbHloZ0hzcWJBTlAzSmtoSzZmTERIQmtQNHo2QVRwSElRaERPZkhvcW04bWVZV2I1ZUIzdDJxRnJabk5zY3pIckNDMVNiZFdXeUc0OVREemkzOTUxT25jTA?oc=5",
-          "published": 1786184447
+          "title": "以科技塑造更美好出行，全新深蓝S05让15万级车型智能体验实现跨越式升级",
+          "source": "新华网",
+          "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE5FZF93QW1ndG8xbmZqS0NONXZKTUF1Y0lwa2ZTU2wyNVlhLVgtNms1Uzc0NlBqa244UG5EdXBtY2JObEVmZENCQkVWYl8zaGg3MzFPSmJkSktJb2JZaTl6d2F4WVZGNTBEcGR5c1E4SlYwNGVpaFZZS0tFaGE1Zw?oc=5",
+          "published": 1786241873
         },
         {
-          "title": "AI失控了？Meta人工智能“闯入”别家公司系统",
-          "source": "dw.com",
-          "link": "https://news.google.com/rss/articles/CBMihAJBVV95cUxNVDhxMU5oRktYZjRzR1F3QUxNZGRmTXhKV0Y4a0xmekpqYmEtQXI4dU5tTURyWXgtOTBOcWl5U0xKV1Z5T2lDNjJHMzB1X0Vxd0x5aXVaYWxDR012T3UweWYyN0w3Q2h4SEZOLVhxZFNxSUJQLTFLZGhVaVM3Q3JObE5URnlLU0tvQXNzNkUyR3UySmllSEVYV1FuemZWLTNqMnhjVXFQQnFhX3lURk1tdmpERWREbmt3Nkdzb2tvY0w1V0RlZ1dmYW0zcURfSW04SkNfdXdzS0E5WXIzMnVfVk9PT1JXZHBfV2duNmlEanNZTVNYUXhxV0tjZzh5Z1VmaC1DONIBhAJBVV95cUxNVDhxMU5oRktYZjRzR1F3QUxNZGRmTXhKV0Y4a0xmekpqYmEtQXI4dU5tTURyWXgtOTBOcWl5U0xKV1Z5T2lDNjJHMzB1X0Vxd0x5aXVaYWxDR012T3UweWYyN0w3Q2h4SEZOLVhxZFNxSUJQLTFLZGhVaVM3Q3JObE5URnlLU0tvQXNzNkUyR3UySmllSEVYV1FuemZWLTNqMnhjVXFQQnFhX3lURk1tdmpERWREbmt3Nkdzb2tvY0w1V0RlZ1dmYW0zcURfSW04SkNfdXdzS0E5WXIzMnVfVk9PT1JXZHBfV2duNmlEanNZTVNYUXhxV0tjZzh5Z1VmaC1DOA?oc=5",
-          "published": 1786174099
+          "title": "人工智能被用于设计全新病毒",
+          "source": "BBC",
+          "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE00STJoYnJWYV9QY3VaMUJ1QmxsZWFyUFVxazNXV1IxNXdoZDZndlNNZ1UtVzVqZTBza3pxaVdNSkloNjE5d1F5Y2ROX3JUU2hUWTRYWGRDOHloRnhIeVY5X0hlOWc5Z9IBa0FVX3lxTE1wVWV1U0JlbzFsV0dmOTJRcXMyaEtNSGlERjdhQkV3TDl0elVJRXc4eVI4dmF5eW1Vc0d3NGxkVlpaY2lSMEVVRmhhb0UwbDU1ODdLU1YxZDBGRXZiOUxIdEo1YzZSUkpib09v?oc=5",
+          "published": 1786095030
         },
         {
-          "title": "省科技厅召开2026年上半年“比武打擂” 暨总结述职会",
-          "source": "山东省科学技术厅",
-          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE9sbDFaRnllOXVPZUs2dEdsZlVROHpoVk5ZQVpEU2djbjkwa2cyS1U5VHpjTXNHWTRsUVNNQzI5UDZMb0FHRGRLME1YTE1xTm5odTduWVNpeVFTRmFOS3NkQ0Jnejh3WGJsSmczR2EyRng?oc=5",
-          "published": 1786157820
+          "title": "对话S级AI漫剧制作人黄楚杰：AI短剧已是红海，如何走向精品化",
+          "source": "thepaper.cn",
+          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE11bVJUc2NwdmNONVJHRXQxZGxFd0JrWUQySHl2NXBOS2ZSSzFNZ254Y1F2QVRBWERnX2d1alJValV3ZG5PbkhlOUFkbk9UR2p3OGt5a0tNQldGXzZhdkVkbQ?oc=5",
+          "published": 1786246500
         },
         {
-          "title": "吴声：联想AI把绿茵场变成了技术组织能力竞技场",
-          "source": "finance.sina.com.cn",
-          "link": "https://news.google.com/rss/articles/CBMieEFVX3lxTE1YSlhfVFIwTVpmWTRxZzRqUzBoclJhdkFfeU9XS0xLQTRVWmN4RjhMMWJYY0dUYlBlNXh4dXh1VTM0cW1vQkVyUTZ4Mi0yRnRNU1RxSWl3VlhZcWhOdURRN0dQRDhKUVhQX1pUTVVqTUFmTkl5bDRROA?oc=5",
-          "published": 1786194300
+          "title": "Edge AI Daily 早报（8月9日）",
+          "source": "钛媒体",
+          "link": "https://news.google.com/rss/articles/CBMiTEFVX3lxTFBQUDc5bFpqZTg1bzlKMkt0d3RjTGJUbDhobjlvV1l3MEtTUWE2VkdIQ1BVam5QdlBXbERpMGVKUkdjcVRwZEJiNVY3RUU?oc=5",
+          "published": 1786235280
         },
         {
-          "title": "“图风行动”启动：北航发布全国高校首个“空天+AI”原创科幻IP",
-          "source": "北航新闻网",
-          "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE9ZOFNScnRkV3N3SmRtVDFGSW96eXFSVWZucW53eGVGaERJUEhzUjFyUEk2NkY1b21UTHpTd01uMmxpdnhaOG5SN3FOdTNqR2JmX0RnUTBWSQ?oc=5",
-          "published": 1786191234
-        },
-        {
-          "title": "让AI给AI硬件做体检：超音速人工智能的感知进化论",
-          "source": "21财经",
-          "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNVjVZUG5qQWdfSDNRT01KVklzdzNxckVzVHl1MWZCTWhjSllWX1JfUG5UaHdqTkNDVGFjSlpyZmxxYjRkaF9fclM4bjU2UnFfcnZMRFpLSVpRbDBTUF8xblNMMkN4N0VzRjdQcWZEYmVDZllUUDNQcE1MRElPWTBIMmlPRWxNVXFNLVh0SA?oc=5",
-          "published": 1786187760
+          "title": "OpenAI 用 1 年时间证明，你并不用为 AI 换浏览器",
+          "source": "新浪网",
+          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1kZ3hVaUpQMVRWQl9xbzFHNG5OZ2U5WTVmaXRPT1Jmcm5rOWdheUJHQ2gxbmFNcW9IbGdpZjVXVkVLREZWN3ZpMVlnYVMyaGJJSUd1eWZvZ1R2bFNBYU1Qa3BnQlMzRWdPVThHTFpQdmFJSXhYOHMxTEh1VmVlS1k?oc=5",
+          "published": 1786250405
         }
       ]
     },
@@ -105,46 +99,46 @@
       "name": "娱乐",
       "items": [
         {
-          "title": "哈尔滨缘何成为中国电影先行地？",
-          "source": "搜狐网",
-          "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQTXF4NGljMlYzUnMyd0tYTXJtTC1XU1pmWjFKNWpXR2gxajBYSE1pSFVyVTRUckJtVWlqN3duQjZiLXpGaHBUOEdBazhnNTJTaE5LVF9PYkEyQUJRV3N6dmFrUzE4ckxFa2dRUEJoRGh2MmlfUEhKdUFpYkJvaXd6eVY4SXB0ZENP?oc=5",
-          "published": 1786204919
+          "title": "《唱响非洲》第二季在内罗毕启动 聚焦女性音乐人才",
+          "source": "中国日报网",
+          "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTFA0QUdYNDZfMFNFN2ZBZFpHTTFENTczV3V1X2stMl9UWEtfXzl4akNLdGZoT0RoQzN5dV8zeDBzTDZMR0NLbnVfejRKczZCXzIyMFVBNE9KYmdKV3M3djBZLTd4Nk5KTDIxRExoRF9HWktNM3BKTlFuZHRISkI?oc=5",
+          "published": 1786239124
         },
         {
-          "title": "第三十八届大众电影百花奖系列活动开幕",
-          "source": "人民日报",
-          "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxQb2RuUWwwNlBVTmhDcGx0Vk1iVnBFZHlQSGpkM3FCNDJDSi1PZnVWSnlBWGZabGZwdWo4cVVFeFl1QW1saGlIcml3dUlIUE9SdGl2SzNPN3hWZ3NwemVSOWY1MGFaSzZvTjk4LWxjMGpBV082YkQ0OEZFUF85Q3ZmVw?oc=5",
-          "published": 1786147989
+          "title": "【文化中国行】贵州梯田变身天然舞台 聆听音乐与大地的合唱",
+          "source": "光明网",
+          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE50LU9PTjgxb0M2WlBiMUxOSEl0a1RyTnJZN2FrMjRwXzBXOVF2YUtVTFJVTmdianlralNCVmc0bUpNVjdaWFJYeVFkbl9naU1sS0NPMjN5dmYzaXlzdEJZXw?oc=5",
+          "published": 1786215600
         },
         {
-          "title": "王源为什么决定暂停巡演？",
-          "source": "新浪网",
-          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBGSDRMS3hWeVUxcEhPeDRRREg0UkpDbzk5dEZZSmFxMDdoaXpmTW1XZmQwWXctemVPYVlNOG1qOUlyVzN5bWdiY2Z2eHlUdUJLTmw5R3lyUkpaYmdNVHhqSm42ZmRuWE9MRXlPa1dCV0w?oc=5",
-          "published": 1786217189
+          "title": "杭州各景区临时关闭 多场演唱会取消",
+          "source": "新蓝网",
+          "link": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE5BVGF0U1A2NFl0azVyQU15VjdkeU9IYzRkS2xzVXNkVEQ0dV9rWEd0aE12Q21fNUJzQ2h4NUVNM0EyM0VZVlFVZ0o2UGpOS3M?oc=5",
+          "published": 1786248060
         },
         {
-          "title": "“林听美好”，石门国家森林公园森林花海音乐会精彩开幕",
-          "source": "广州日报新花城",
-          "link": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNb290c0ZkeFFQSmhxZ2x6eXhfZldfajNLMDZEcl9TQUVpRlVwVHBtMDZZNW9nRXN3WWFsQl95OHM0UVBlamlRRm40djAtTFlWVXExZVpfRVVraXBmRWVxVm1IRmNDazhTamE2Tlcxdno0VEdtY3hhMGt4YjNFd2tIQU1ET0ZVQmF6aEE?oc=5",
-          "published": 1786191819
+          "title": "电影《大唐妖探》西安见面会反响热烈 全龄观众共赏机关长安城",
+          "source": "华商网",
+          "link": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE9sN002QncyZkxjNkFjdHpCM2pGeE1fVzN5d2Q3RmZVVmVGSzk4Z3ZlMXBaRjRrQjlIOE9BQ1l0aVh4dW1aVUhDU2ZESndaTE9WbVR1M2x1QkRRYk1yQ1BB?oc=5",
+          "published": 1786248070
         },
         {
-          "title": "2026年度电影总票房突破240亿！",
-          "source": "紫牛新闻",
-          "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTFBGTnBRUW5lbnJybzNfNHp5QzlnSFZTSzJ5SW5tVlp6TzFvSWVXdGstZFJmQ0VrYzVxOWU1RWduOWRrd3BfMkNWcWpzT3RoXzk0Ym14cWpGVVl3RW1xS1FSeF9lbEZWb21uMGc?oc=5",
-          "published": 1786185720
+          "title": "多地航班、多场明星演唱会取消",
+          "source": "21财经",
+          "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQYzc5Y0hna09TNDZmTGdjR08yYS1UdGowTE5mZkpNSl9pR3laSG9oTnN6RWltNGlHODdyWkFaRTVIaWlKZW9ScVRXNTBGZUNpNFZ3bnNjYXk5WHVSaEtPclZSUVRuenEyRk9mc21mZjBpVE9hVDJxcUg4cnNWUFhJT2FaS0NQV3VvWEM5SQ?oc=5",
+          "published": 1786248360
         },
         {
-          "title": "多名艺人演唱会紧急取消",
-          "source": "新浪财经",
-          "link": "https://news.google.com/rss/articles/CBMigwFBVV95cUxQRTRhLUxwdDNfMXFaTC1yNEp5V3AxdzgxNGYzX09iZ1pnbDBPZkN1WVRDdC1uVjdUZEE3OEVhcFM5X05IYzJ5ajFQLW9TRmRUbDAzT2F3WjRXN0hocGxlcFFGbW5xYzF1REN1bXlaQlljTG1KelgxQXlqbHlDd0tXbTJvUQ?oc=5",
-          "published": 1786197077
+          "title": "第38届大众电影百花奖系列活动开幕",
+          "source": "新华网",
+          "link": "https://news.google.com/rss/articles/CBMigwFBVV95cUxOUWhzb2JnNHFZSTN2akl4MHFWeTFkcHZDYlBncG1oUWhTbm5CS3pManpLeFRfVXdDTURLeXM4NkJaS0Nkbks4bnZyZUlWRjZ6NXF0VHVaOXQ0WDBfaXBMdDNLTXQ5N3FRS3hOZkJEd3NmZHhJM1E2ZHJCZUZHMHNXSGNfUQ?oc=5",
+          "published": 1786113298
         },
         {
-          "title": "2026国际音乐沉浸周闭幕式暨艺术家回家音乐会举行",
-          "source": "青岛新闻网",
-          "link": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9fcktXcEZ3MUYxVk5HS2dQT0VUbWpOWjQ4d1d2d1dyZFY2Q2FPZFRlVWxPc2dIYnJ0dzNNLXlEb3B5U0FNNjdsVWs1Wmo1SFRDQ2NsZklNSWZMbTRTaW9ucEVPTjdMUGtYUE05VU5INnNIdjJGT25R?oc=5",
-          "published": 1786198860
+          "title": "【高雅音乐工程】夏季特辑——西洋音乐中的夏日时光（一）_山东各地_山东新闻_新闻",
+          "source": "齐鲁网",
+          "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTFA0YUNHV21GcG9kbjdzNDE1Tm9nNUNhbTFveHdHZ1NyMkVMb01vUXZralU0TnFjNnlDVzRHZVg5M3RBeW9RQk4wUkx4bWNKd1otZ3JQVnpPeHdMbG44NEtVTHliUG1nUDVlUVBZaDNsZ0liQ1RIMFE?oc=5",
+          "published": 1786242488
         }
       ]
     },
@@ -153,46 +147,34 @@
       "name": "体育",
       "items": [
         {
-          "title": "韩国足协就世界杯失利及系列争议发布致歉信",
+          "title": "2026北京市青少年篮球俱乐部联赛通州赛区正式开赛",
+          "source": "中国日报网",
+          "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE5xTy1GT2NPSlo5SHNZd1dRTHgyOWhBTVByUnJXRTg3bEJLRjJpbF9hYnQteUtaZU9vTFRxMldOanlRUzF2TUJhbEdURlVjNF9KeWE0dWRpOTlxeU1qSXRQSDJSSmw4bExKSnUyQTlYVkRadU1EYjlpUS04RXc?oc=5",
+          "published": 1786248387
+        },
+        {
+          "title": "第十七届北京奥运城市体育文化节开幕 五大板块活动丰富首都体育文化供给",
+          "source": "人民网",
+          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE9yeWMwWUszQzcxMlNLWmlldVVGaG1sczAwekVNejZzcXM5MUNCVDM5N21hY3RlNVN2bXd4aHk1VkdKQkNqUnU4Rzl1bHFJWG0yUjkxOU5xWVFWSmMzYzNRYjFXTXVMU3JH?oc=5",
+          "published": 1786238460
+        },
+        {
+          "title": "全民健身——北京孩子的“世界杯”开赛",
           "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTFA2YmpEZll6MEt3cVFqQ1ZXVGUta0lCdFlIRkU0cTVkY0Y2bE1nMDJaRi1jTDh2U1I1YkhRNmp1Q1R4aUZRU29jeWZwdzlHdHZCSzRfLXFZRDlTSWNuQUJwN1hRQ2FwNVZnb2hkMWRJSklkckdpS3BENVpkbncxZlk?oc=5",
-          "published": 1786174168
+          "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTE94ZVhHNHBnZDU5YUVteTk5UEZqd0tLNVJJRThZd0tHMndYa2Z2SkxBRkhYT1lOYW1TUHJWNV9jOEhNeWFpMUVxbEJvLS16b1BEU2Nmbk5iUkNWa19sUWlucFA2TmktSTR0eVdZWUtENmhCZ2p2MWFyVURyZw?oc=5",
+          "published": 1786238807
         },
         {
-          "title": "第十七届北京奥运城市体育文化节开幕 推出二十余项活动",
-          "source": "中国网",
-          "link": "https://news.google.com/rss/articles/CBMib0FVX3lxTE9mOFh4UHdDSFI4SG5tYzRCVDJXMzhhYzdGUWZvY3hJME9DWVM5YmoyWGxLMk9mX2VZQ2VTZjNUNkF4dEZGbFREem5FcDdBX2phcG0xd2NtOFVsNUFzNEZNQWJrS0VHdHg2dER4MFV3aw?oc=5",
-          "published": 1786212240
-        },
-        {
-          "title": "北京市第十二届民族传统体育运动会开幕",
-          "source": "新京报",
-          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE9DeVpqLWppamZ0OW0wWTY2NG9TdWY2MjNmeW5wRjBmQUpBdHZId0xzQS14Z2F1Vi1ybnUtU0wxbzZuaTNmRlZ6ZVF6ZFhTNDZXUEFqMWxnTFJBRWVYQkZwcHA4MUY?oc=5",
-          "published": 1786202040
-        },
-        {
-          "title": "深圳街超50+足球锦标赛开赛 补齐全民体育赛事版图",
-          "source": "央广网",
-          "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE01VUI0bmxjWjdmOUFPWFR2WDV6UENrZlVCUmJ6SmRHU2FYZ0RQRzhRLVlDWkF6RTI2d2xwT29UZkNkalFEaUhwV1hHQ2tuMGYtZmsxdkFaTkZxbTlvMThjMV83eVJtZw?oc=5",
-          "published": 1786199944
-        },
-        {
-          "title": "焦点访谈｜小球赛撬动大消费 体育赛事激活城市发展新动能",
-          "source": "光明网",
-          "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFB6aXBuWm9SYnNrczl3THdsMklUVmV4Y2lOR3ZaVld6dF9HQ2NDb3Z6NUNIMUNZZmRSQUMxQ1VubXQtcGV6ZUVoMEhnczNreFlpdS1qWlJfdF9DZVFfM09PLXpZdWxLdw?oc=5",
-          "published": 1786166760
-        },
-        {
-          "title": "奥运冠军杨维走进粤澳训练营 点燃湾区青少年体育梦",
-          "source": "gd.chinanews.com.cn",
-          "link": "https://news.google.com/rss/articles/CBMia0FVX3lxTE5QN2RPQ1BTcVZGWV9fOTRVTXJqWFBqRkpseGFuOHRSZFdIWnJueWt6dEp2bWg1bHItcjhScjhZOGctRjZrdzRDVWpkVzQwY25uTVRNeFhxUW04Q3pPazgxRWg2QUlPelAtRXFn?oc=5",
-          "published": 1786191960
+          "title": "从“班超”出圈，看乡村体育破局之道",
+          "source": "山东宣传网",
+          "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTE16aE9jMHRpVGp1c3FhWGJDbjdMTkhvRGdKV0NhRUxuU1JNMGZqOUVKaVBCYnd5SmJUZENnZ1U3QmFyVXA0dGtjZFZOeGpLSFhKejByVmVScmR1NEhxcGx6MFdKQlBLVF8zeTFBbnBn?oc=5",
+          "published": 1786241580
         },
         {
           "title": "述评：以全民健身托举健康中国",
-          "source": "新华网客户端",
-          "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPZXVqR3ZBZVFrMXBHQ3BhVjFJSktIclVuRTcxdF9iUXA0QUZtWWZSNDJnbW45ZFFvNlB4QnpmTHA3SmVzTDFpTXA5QUdMWTFRZFc3bTFfZE1UTjJoWjNpRFlEbVZDQzB2LUpmQVVsd3RoZnNnTkZkQk9VXzhaN1hjX2xGS3RicTZLbWFGeTVFazF2WldnQV9xZTFB?oc=5",
-          "published": 1786193494
+          "source": "求是",
+          "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE8zZnZXUVpKbzFDeS1LOHlnUHh2OTQ1SG9JMmFaMWhMZmdmWXZ1dFE2Rkt0c25ZRkpybWhvSWsyMkdhbDcxOElWMU5NVVNWbmtFQjZzYXZ5R0VwYjV2VmFKdTBabVZGQUxTamNHYl96OFFCVWVwbmxIRnVfMWQ?oc=5",
+          "published": 1786239996
         }
       ]
     },
@@ -201,46 +183,40 @@
       "name": "国际",
       "items": [
         {
-          "title": "防灾减灾救灾一线见闻丨防灾害强田管 多地秋粮生产一线见闻",
+          "title": "中国代表队首次参加国际核科学奥赛 获一金三银",
           "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMigwFBVV95cUxOMTluWjhIaVY4Vm90cEZnUzhaYnZRallZUjd0cm44U3FGd3gtOUg1cFl0SmF6ZlMxVXlUTlRSYUtiZURYSmpRZkFKdmlGQzczUl83WnhBWG82MnNmM21tZEFBeXRma25zTF9HeGNaeXg3S2s0WFhQU0M0V0pUTXllQktTbw?oc=5",
-          "published": 1786171899
+          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTFB0d2pkM21pdC1obWxIb0tzcFI0YnYwbVhXX0otVktPM0s0YUNISkFZbmdNUkNpbDhaNDd4YWJPei13dE41T0R1LWhJRFJXa24wYk5Ya0lrbWdqUG5jdEpjaS16dTFNYjk5RzZMZnNPcGlmWVEwZ05WU01qWHNTNXc?oc=5",
+          "published": 1786225628
         },
         {
-          "title": "山洪灾害预警：浙江东部部分地区发生山洪灾害可能性大",
-          "source": "天气网",
-          "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9wQ0JFV3RQUE9vUmZ6RC1Hc254R01acGMza0M2Nk1HV3VNZHdZeGR5VFU0eFZhaVF2RTRwa0l6S0VzdHVLcURDdXp1dUx4V3R6aDBJdUozWGJ1VF90?oc=5",
-          "published": 1786183521
+          "title": "未来五年 地质灾害防范会有哪些变化？",
+          "source": "21财经",
+          "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPWjBFZGNkRndiTXVVeWUwZUJxN1gyRTJubllsb2ZVWjhKbWpxVkdVQzdxQ2FWZVdIV3FZWXJmVnQzSWtZSmRfVGQ4ek83MHR1alU2WXY3c19TNVgzcG9yZXNGZW5ZdTBSRnQyV294SmdHemlIV0J1NjlLNUxBWm92bEZac0JrWHBxR25fXw?oc=5",
+          "published": 1786244400
         },
         {
-          "title": "红色山洪灾害气象预警：浙江局地发生山洪灾害可能性很大",
-          "source": "东方财富",
-          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFBnbzRsRS1CNTVfWndBTkdDQlNLb0hrbW9nSzBqUk9Ya2hhTzJDU0lEQUM4a21iNXNMb0lXNEZxMmtGdF9Fc3kzWTU5ejV5UFltWUZHWWowREE4MDVELXVsSA?oc=5",
-          "published": 1786183767
-        },
-        {
-          "title": "崖州湾凭啥成全球智慧“强磁场”？",
-          "source": "中国农业大学新闻网",
-          "link": "https://news.google.com/rss/articles/CBMid0FVX3lxTFA3MF9wYUZBRjltWmR1M1NsZ2MwdFFieklCMkdmTUJDYjM5d2pYdVR6WHpFZWMtTjRWRktlOWZXbmFWNE9Mb2xHN0J3UFJtSlo2MTZIRW1pNGxrc3JMQlJzUW96VHh1TE5FbUZmOWhfZGZsSWFPVHB3?oc=5",
-          "published": 1786196177
-        },
-        {
-          "title": "水利部和中国气象局联合发布红色山洪灾害气象预警",
-          "source": "中国日报网",
-          "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE0xd25FWDhoZUttUE91WnFkQnc3NmRNVGJfeVlvRVFSbHpfZW1ONlNraS1nZ3pmY3JUamR3dDNQWnpWeG42Qms0cHdPS2h3UmVHZ3hzZElmQi1uYldZTXJxNjIyRmQxMXlxZHVibml1NzF4dWJ4dG1adVp2S3k?oc=5",
-          "published": 1786187202
-        },
-        {
-          "title": "浙江大面积红色预警，请警惕山洪灾害！",
-          "source": "浙江新闻",
-          "link": "https://news.google.com/rss/articles/CBMickFVX3lxTE8yWUt5a282S0VCQXBxZ3FDSlkyMnlCLVEtNWs1cnM5bjdNMG1STmNlN2NjWTNNZjZfZEg2cmUyYlNoOVlvN3ZGMDlNS1RJdXdMUUxIYmNUbnVIRkpxalVZdGI4aU1WVHIxZzZxczlRTmREUQ?oc=5",
-          "published": 1786187840
-        },
-        {
-          "title": "应急管理部针对安徽启动国家地质灾害四级应急响应",
+          "title": "外出请注意！北京这些山区道路沿线有崩塌风险",
           "source": "新京报",
-          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTFBfazlvTjVJR1lfRGNjN3VjQm9LT2pXZFpQQjNhZUUtMUlSemg1RzNlVTE1Nmt6OHVCT2ZlRFFXX3N2LTUyNXBHREszbG5MMHdYUi15RDJUR0pONlpNaTktOUpFX28?oc=5",
-          "published": 1786186088
+          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE82WDZxb2NYa2ZJWGhmcTVaMHVKd0VLbHV2NHVaX3Qwc0l4OURuTFdZYl9OOTNxeFpjNW5Kcm5ic3pGYnZVZU9ZellPamRscHJnZkYwQ3d1Z0F2NjFqRWczU2lXTS0?oc=5",
+          "published": 1786245526
+        },
+        {
+          "title": "海外博主看中国 | 中国“人造太阳”正在点亮外网",
+          "source": "国际在线",
+          "link": "https://news.google.com/rss/articles/CBMiekFVX3lxTE9mTVZxakkzVDh5anFHU3JpbzlzZUNYRlQ1RkIwdjVNRDVNajFOTUo1TTM1NnZpU0FMbmtQWVMzUk95VFFqYUpFOHI4bWhZdjY2WTVDVVRQZlBJYlpkNmxJM2xIdlFSUVNjakVuNG0wcERvdUhwMEplU3l3?oc=5",
+          "published": 1786233605
+        },
+        {
+          "title": "架起巴西和中国人民相知相亲的桥梁（国际论坛） --国际",
+          "source": "人民网",
+          "link": "https://news.google.com/rss/articles/CBMia0FVX3lxTE9pWjluaGNfbWZPc0lHOWc2OGJ2VVZiUkN1bU94UlU2YXdtRkZGOUtwaW92Mk9fY0k0bnV1SXVBTm11bTlfV0NSWGJjR0ZEWm9pT1dNa25sSlFpWjNsRzJwU2pOVllYcHA5Njln?oc=5",
+          "published": 1786225440
+        },
+        {
+          "title": "自然资源部与中国气象局联合发布橙色地质灾害气象风险预警",
+          "source": "四川在线",
+          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE9ta0IwWGczWGY5c256ZEJfLTNTRExqUDlvY3I2N2NDQ0xydUJpc2lXb2tKMTV3ZTJwY2dGSWxXMXFnN1FQR3NJVkVWeUpvQlctTmd2RFBtNkNqMm5NTnBOMw?oc=5",
+          "published": 1786242575
         }
       ]
     }
@@ -277,8 +253,8 @@
     {
       "name": "黄金",
       "symbol": "GC=F",
-      "price": 4340.7,
-      "changePct": 2.33,
+      "price": 4399.7,
+      "changePct": 3.72,
       "fmt": "usd"
     },
     {
