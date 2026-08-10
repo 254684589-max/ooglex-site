@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-08-09T21:07:21Z",
-  "asOf": "2026-08-09",
+  "updatedAt": "2026-08-10T15:43:01Z",
+  "asOf": "2026-08-10",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-09 ~ 2026-08-14",
-  "count": 73,
+  "count": 74,
   "highCount": 11,
   "events": [
     {
@@ -67,7 +67,7 @@
       "actual": null
     },
     {
-      "ts": "2026-08-10T13:48:00Z",
+      "ts": "2026-08-10T13:45:00Z",
       "ccy": "USD",
       "country": "美国",
       "flag": "🇺🇸",
@@ -76,6 +76,18 @@
       "impact": "low",
       "forecast": null,
       "previous": "3.7%",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-10T19:00:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Hammack Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
