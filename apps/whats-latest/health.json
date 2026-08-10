@@ -1,30 +1,29 @@
 {
   "contractVersion": 1,
   "dataset": "whats-latest",
-  "generatedAt": "2026-08-09T19:52:00Z",
-  "status": "failed",
+  "generatedAt": "2026-08-10T05:11:19Z",
+  "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-08-09T19:52:00Z",
-  "lastSuccessfulAt": "2026-08-09T14:18:49Z",
-  "consecutiveFailures": 1,
-  "publishedSnapshotAt": "2026-08-09T14:18:49Z",
-  "snapshotPreserved": true,
-  "failureReason": "Google News五个板块均未刷新",
+  "lastAttemptAt": "2026-08-10T05:11:19Z",
+  "lastSuccessfulAt": "2026-08-10T05:11:19Z",
+  "consecutiveFailures": 0,
+  "publishedSnapshotAt": "2026-08-10T05:11:19Z",
+  "snapshotPreserved": false,
+  "failureReason": null,
   "coverage": {
     "expectedComponents": 6,
     "publishedComponents": 6,
-    "refreshedComponents": 0,
-    "fallbackComponents": 6,
+    "refreshedComponents": 6,
+    "fallbackComponents": 0,
     "unavailableComponents": 0,
     "unknownComponents": 0,
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 0.0
+    "freshCoveragePct": 100.0
   },
   "attempt": {
-    "status": "failed",
-    "published": false,
-    "refreshedComponents": [],
-    "fallbackComponents": [
+    "status": "success",
+    "published": true,
+    "refreshedComponents": [
       "markets-news",
       "tech-news",
       "ent-news",
@@ -32,6 +31,7 @@
       "world-news",
       "market-quotes"
     ],
+    "fallbackComponents": [],
     "unavailableComponents": [],
     "unknownComponents": []
   },
@@ -42,11 +42,11 @@
       "role": "primary",
       "frequency": "intraday",
       "requiredForTerminal": true,
-      "status": "degraded",
-      "mode": "fallback",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-08-09T19:52:00Z",
-      "lastSuccessAt": "2026-08-09T14:18:49Z"
+      "lastAttemptAt": "2026-08-10T05:11:19Z",
+      "lastSuccessAt": "2026-08-10T05:11:19Z"
     },
     {
       "id": "tech-news",
@@ -54,11 +54,11 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "degraded",
-      "mode": "fallback",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-08-09T19:52:00Z",
-      "lastSuccessAt": "2026-08-09T14:18:49Z"
+      "lastAttemptAt": "2026-08-10T05:11:19Z",
+      "lastSuccessAt": "2026-08-10T05:11:19Z"
     },
     {
       "id": "ent-news",
@@ -66,11 +66,11 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "degraded",
-      "mode": "fallback",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-08-09T19:52:00Z",
-      "lastSuccessAt": "2026-08-09T14:18:49Z"
+      "lastAttemptAt": "2026-08-10T05:11:19Z",
+      "lastSuccessAt": "2026-08-10T05:11:19Z"
     },
     {
       "id": "sports-news",
@@ -78,11 +78,11 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "degraded",
-      "mode": "fallback",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-08-09T19:52:00Z",
-      "lastSuccessAt": "2026-08-09T14:18:49Z"
+      "lastAttemptAt": "2026-08-10T05:11:19Z",
+      "lastSuccessAt": "2026-08-10T05:11:19Z"
     },
     {
       "id": "world-news",
@@ -90,11 +90,11 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "degraded",
-      "mode": "fallback",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-08-09T19:52:00Z",
-      "lastSuccessAt": "2026-08-09T14:18:49Z"
+      "lastAttemptAt": "2026-08-10T05:11:19Z",
+      "lastSuccessAt": "2026-08-10T05:11:19Z"
     },
     {
       "id": "market-quotes",
@@ -102,11 +102,11 @@
       "role": "auxiliary",
       "frequency": "daily",
       "requiredForTerminal": false,
-      "status": "degraded",
-      "mode": "fallback",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-08-09T19:52:00Z",
-      "lastSuccessAt": "2026-08-09T14:18:49Z"
+      "lastAttemptAt": "2026-08-10T05:11:19Z",
+      "lastSuccessAt": "2026-08-10T05:11:19Z"
     }
   ],
   "policy": {
