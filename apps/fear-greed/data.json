@@ -1,13 +1,13 @@
 {
-  "updatedAt": "2026-08-10T21:11:26Z",
-  "asOf": "2026-08-10",
+  "updatedAt": "2026-08-11T21:58:18Z",
+  "asOf": "2026-08-11",
   "source": "CNN Business Fear & Greed Index",
-  "score": 64,
+  "score": 61,
   "rating": "greed",
   "ratingZh": "贪婪",
   "refs": {
     "now": {
-      "score": 64,
+      "score": 61,
       "rating": "greed",
       "ratingZh": "贪婪"
     },
@@ -17,9 +17,9 @@
       "ratingZh": "贪婪"
     },
     "week": {
-      "score": 51,
-      "rating": "neutral",
-      "ratingZh": "中性"
+      "score": 60,
+      "rating": "greed",
+      "ratingZh": "贪婪"
     },
     "month": {
       "score": 47,
@@ -34,15 +34,15 @@
   },
   "indicators": [
     {
-      "score": 77,
-      "rating": "extreme greed",
-      "ratingZh": "极度贪婪",
+      "score": 68,
+      "rating": "greed",
+      "ratingZh": "贪婪",
       "key": "market_momentum_sp500",
       "name": "市场动能",
       "desc": "标普500 相对125日均线"
     },
     {
-      "score": 32,
+      "score": 31,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "stock_price_strength",
@@ -50,17 +50,17 @@
       "desc": "创52周新高 vs 新低个股"
     },
     {
-      "score": 44,
-      "rating": "fear",
-      "ratingZh": "恐惧",
+      "score": 49,
+      "rating": "neutral",
+      "ratingZh": "中性",
       "key": "stock_price_breadth",
       "name": "股价广度",
       "desc": "麦克莱伦成交量总和指数"
     },
     {
-      "score": 77,
-      "rating": "extreme greed",
-      "ratingZh": "极度贪婪",
+      "score": 62,
+      "rating": "greed",
+      "ratingZh": "贪婪",
       "key": "put_call_options",
       "name": "看跌/看涨期权",
       "desc": "5日 Put/Call 比率"
@@ -74,7 +74,7 @@
       "desc": "VIX 及其50日均线"
     },
     {
-      "score": 72,
+      "score": 67,
       "rating": "greed",
       "ratingZh": "贪婪",
       "key": "safe_haven_demand",
@@ -424,8 +424,8 @@
       "v": 59
     },
     {
-      "t": "2026-08-10",
-      "v": 64
+      "t": "2026-08-11",
+      "v": 61
     }
   ],
   "note": "数据来自 CNN 恐慌与贪婪指数：0 = 极度恐惧，100 = 极度贪婪，由 7 个市场情绪指标综合而成，每日自动更新。仅供参考，不构成建议。"
