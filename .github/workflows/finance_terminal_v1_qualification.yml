@@ -10,6 +10,12 @@ on:
     paths:
       - 'scripts/finance_terminal_qualification.py'
       - 'scripts/validate_finance_terminal_qualification.py'
+      - 'scripts/asset-tracker/build_assets.py'
+      - 'scripts/market_data_quality.py'
+      - 'scripts/validate_market_data_quality.py'
+      - 'scripts/market_source_health.py'
+      - 'scripts/validate_market_source_health.py'
+      - '.github/workflows/asset_tracker.yml'
       - '.github/workflows/finance_terminal_v1_qualification.yml'
   workflow_dispatch:
 
