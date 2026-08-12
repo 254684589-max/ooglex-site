@@ -495,9 +495,30 @@ const oilReference = adapter.findRwtcReference(macro);
 assert(oilReference && oilReference.id === "RWTC");
 const dollarConfig = config.assets.find((asset) => asset.id === "dxy");
 const oilConfig = config.assets.find((asset) => asset.id === "wti");
-const currentNow = new Date("2026-08-08T23:59:59Z");
-const supportingNow = currentNow;
-const expiredOfficialHealthNow = new Date("2026-08-12T23:59:59Z");
+const currentLatestMs = Math.max(...[
+  macro.updatedAt,
+  fearGreed.updatedAt,
+  ofr.updatedAt,
+  assetTracker.updatedAt,
+  assetRanking.updatedAt,
+  companies.updatedAt
+].map(Date.parse));
+assert(Number.isFinite(currentLatestMs));
+const currentNow = new Date(currentLatestMs + 6 * 60 * 60 * 1000);
+const currentAttemptAt = new Date(currentNow.getTime() - 60 * 60 * 1000).toISOString();
+const currentAttemptDate = currentAttemptAt.slice(0, 10);
+const supportingSnapshots = [
+  [fearGreed, fearGreedHealth],
+  [ofr, ofrHealth],
+  [econCalendar, econCalendarHealth],
+  [financeNews, financeNewsHealth]
+];
+const supportingLatestMs = Math.max(...supportingSnapshots.flatMap(([data, health]) => [
+  Date.parse(data.updatedAt), Date.parse(health.generatedAt)
+]));
+assert(Number.isFinite(supportingLatestMs));
+const supportingNow = new Date(supportingLatestMs + 60 * 60 * 1000);
+const expiredOfficialHealthNow = new Date(Date.parse(macroHealth.generatedAt) + 96 * 60 * 60 * 1000);
 function qualityDeclaration(rows) {
   const metas = rows.map((row) => adapter.normalizeDataMeta(row.dataMeta, null));
   const quality = adapter.summarizeRowQuality(metas, null);
@@ -516,8 +537,12 @@ function qualityDeclaration(rows) {
   ["whats-latest", financeNews, financeNewsHealth]
 ].forEach(([dataset, sourceData, sourceHealth]) => {
   const state = adapter.adaptSupportingSourceHealth(sourceHealth, dataset, sourceData, supportingNow);
+  const reportAgeHours = (supportingNow.getTime() - Date.parse(sourceHealth.generatedAt)) / (60 * 60 * 1000);
+  const expectedStatus = sourceHealth.historyStatus !== "migrated"
+    && reportAgeHours > sourceHealth.policy.maxReportAgeHours
+    && sourceHealth.status !== "failed" ? "stale" : sourceHealth.status;
   assert.strictEqual(state.dataset, dataset);
-  assert.strictEqual(state.status, sourceHealth.status);
+  assert.strictEqual(state.status, expectedStatus);
   assert.strictEqual(state.historyKnown, sourceHealth.historyStatus === "tracked");
   assert.strictEqual(state.freshCoveragePct, sourceHealth.coverage.freshCoveragePct);
   assert.strictEqual(state.publishedCoveragePct, sourceHealth.coverage.publishedCoveragePct);
@@ -559,15 +584,17 @@ function trackedSupportingHealth(sourceHealth, attemptedAt, overrides = {}, publ
   tracked.status = tracked.attempt.status === "success" ? "healthy" : published ? "degraded" : "failed";
   return tracked;
 }
-const trackedFear = trackedSupportingHealth(fearGreedHealth, "2026-08-08T11:00:00Z");
+const supportingAttemptAt = new Date(supportingNow.getTime() - 60 * 60 * 1000).toISOString();
+const supportingStaleAt = new Date(supportingNow.getTime() - 96 * 60 * 60 * 1000).toISOString();
+const trackedFear = trackedSupportingHealth(fearGreedHealth, supportingAttemptAt);
 assert.strictEqual(adapter.adaptSupportingSourceHealth(trackedFear, "fear-greed", fearGreed, supportingNow).status, "healthy");
-const fallbackFear = trackedSupportingHealth(fearGreedHealth, "2026-08-08T11:00:00Z", { "cnn-index": "fallback" });
+const fallbackFear = trackedSupportingHealth(fearGreedHealth, supportingAttemptAt, { "cnn-index": "fallback" });
 const fallbackFearState = adapter.adaptSupportingSourceHealth(fallbackFear, "fear-greed", fearGreed, supportingNow);
 assert.strictEqual(fallbackFearState.status, "degraded");
 assert.strictEqual(fallbackFearState.terminalStatus, "degraded");
-const failedFear = trackedSupportingHealth(fearGreedHealth, "2026-08-08T11:00:00Z", { "cnn-index": "fallback" }, false);
+const failedFear = trackedSupportingHealth(fearGreedHealth, supportingAttemptAt, { "cnn-index": "fallback" }, false);
 assert.strictEqual(adapter.adaptSupportingSourceHealth(failedFear, "fear-greed", fearGreed, supportingNow).status, "failed");
-const staleFearHealth = trackedSupportingHealth(fearGreedHealth, "2026-08-01T11:00:00Z");
+const staleFearHealth = trackedSupportingHealth(fearGreedHealth, supportingStaleAt);
 assert.strictEqual(adapter.adaptSupportingSourceHealth(staleFearHealth, "fear-greed", fearGreed, supportingNow).status, "stale");
 const supportingRiskCards = adapter.buildRiskCards({
   macro: { data: macro, error: null },
@@ -576,22 +603,27 @@ const supportingRiskCards = adapter.buildRiskCards({
   ofr: { data: ofr, error: null },
   ofrHealth: { data: ofrHealth, error: null }
 }, supportingNow);
-assert.strictEqual(supportingRiskCards[1].sourceHealth.status, "unknown");
-assert.strictEqual(supportingRiskCards[2].sourceHealth.status, "unknown");
+assert.strictEqual(supportingRiskCards[1].sourceHealth.status,
+  adapter.adaptSupportingSourceHealth(fearGreedHealth, "fear-greed", fearGreed, supportingNow).status);
+assert.strictEqual(supportingRiskCards[2].sourceHealth.status,
+  adapter.adaptSupportingSourceHealth(ofrHealth, "ofr-monitor", ofr, supportingNow).status);
 const supportingInformationCards = adapter.buildInformationCards({
   calendar: { data: econCalendar, error: null },
   calendarHealth: { data: econCalendarHealth, error: null },
   news: { data: financeNews, error: null },
   newsHealth: { data: financeNewsHealth, error: null }
 }, supportingNow);
-assert.strictEqual(supportingInformationCards[0].sourceHealth.status, econCalendarHealth.status);
-assert.strictEqual(supportingInformationCards[1].sourceHealth.status, financeNewsHealth.status);
+assert.strictEqual(supportingInformationCards[0].sourceHealth.status,
+  adapter.adaptSupportingSourceHealth(econCalendarHealth, "econ-calendar", econCalendar, supportingNow).status);
+assert.strictEqual(supportingInformationCards[1].sourceHealth.status,
+  adapter.adaptSupportingSourceHealth(financeNewsHealth, "whats-latest", financeNews, supportingNow).status);
 const success = adapter.buildPageData(config, macro, currentNow);
 const dgs10 = success.assets.find((asset) => asset.id === "us10y");
 const dollar = success.assets.find((asset) => asset.id === "dxy");
 const oil = success.assets.find((asset) => asset.id === "wti");
 assert.strictEqual(dgs10.demo, false);
-assert.strictEqual(dgs10.status, match.row.status === "ok" ? "ok" : "stale");
+assert.strictEqual(dgs10.status, match.row.status === "ok"
+  && adapter.businessDaysSince(match.row.asOf, currentNow) <= 3 ? "ok" : "stale");
 assert.strictEqual(dgs10.symbol, "DGS10");
 assert.strictEqual(dgs10.changeUnit, "bp");
 assert(Number.isFinite(dgs10.price));
@@ -610,11 +642,14 @@ assert.strictEqual(dgs10.observationTrend.change, match.row.observations.length 
     - match.row.observations[0].value) * 10000) / 100);
 const dgsWindow = JSON.parse(JSON.stringify(macro));
 const dgsWindowRow = adapter.findDgs10Row(dgsWindow).row;
-dgsWindowRow.previousAsOf = "2026-08-05";
-dgsWindowRow.previousPrice = 4.63;
+const dgsWindowPrice = Number(dgsWindowRow.val.replace("%", ""));
+dgsWindowRow.price = dgsWindowPrice;
+dgsWindowRow.previousPrice = Math.round((dgsWindowPrice - 0.06) * 100) / 100;
+dgsWindowRow.changeBps = 6;
+dgsWindowRow.chg = "6bp";
 dgsWindowRow.observations = [
-  { asOf: "2026-08-05", value: 4.63 },
-  { asOf: "2026-08-06", value: 4.69 }
+  { asOf: dgsWindowRow.previousAsOf, value: dgsWindowRow.previousPrice },
+  { asOf: dgsWindowRow.asOf, value: dgsWindowPrice }
 ];
 const dgsWindowAsset = adapter.adaptDgs10(
   config.assets.find((asset) => asset.id === "us10y"), dgsWindow, currentNow
@@ -652,7 +687,8 @@ assert.strictEqual(dgs10WithMissingHealth.status, dgs10.status);
 assert.strictEqual(dgs10WithMissingHealth.price, dgs10.price);
 assert.strictEqual(dgs10WithMissingHealth.updateHealth.status, "unknown");
 assert.strictEqual(dollar.demo, false);
-assert.strictEqual(dollar.status, "stale");
+assert.strictEqual(dollar.status, reference.status === "ok"
+  && adapter.businessDaysSince(reference.asOf, currentNow) <= 3 ? "ok" : "stale");
 assert.strictEqual(dollar.symbol, "DTWEXBGS");
 assert.strictEqual(dollar.price, reference.price);
 assert.strictEqual(dollar.previousPrice, reference.previousPrice);
@@ -694,7 +730,8 @@ assert.strictEqual(isolatedDollarHealth.assets.find((asset) => asset.id === "dxy
 assert.strictEqual(isolatedDollarHealth.assets.find((asset) => asset.id === "dxy").price, dollar.price);
 assert.strictEqual(isolatedDollarHealth.assets.find((asset) => asset.id === "us10y").updateHealth.status, "stale");
 assert.strictEqual(oil.demo, false);
-assert.strictEqual(oil.status, "stale");
+assert.strictEqual(oil.status, oilReference.status === "ok"
+  && adapter.businessDaysSince(oilReference.asOf, currentNow) <= 4 ? "ok" : "stale");
 assert.strictEqual(oil.symbol, "WTI");
 assert.strictEqual(oil.price, oilReference.price);
 assert.strictEqual(oil.previousPrice, oilReference.previousPrice);
@@ -745,7 +782,7 @@ function trackedOfficialHealth(base, seriesId, attemptedAt, mode) {
   if (mode === "market") source.lastSuccessfulAt = attemptedAt;
   return tracked;
 }
-const healthyDgsHealth = trackedOfficialHealth(macroHealth, "DGS10", "2026-08-08T12:00:00Z", "market");
+const healthyDgsHealth = trackedOfficialHealth(macroHealth, "DGS10", currentAttemptAt, "market");
 const healthyDgsMacro = JSON.parse(JSON.stringify(macro));
 adapter.findDgs10Row(healthyDgsMacro).row.status = "ok";
 const healthyDgsAsset = adapter.buildPageData(config, healthyDgsMacro, currentNow)
@@ -758,7 +795,7 @@ const fallbackDollarMacro = JSON.parse(JSON.stringify(macro));
 fallbackDollarMacro.referenceSeries.DTWEXBGS.status = "stale";
 const fallbackDollarAsset = adapter.adaptDtwexbgs(dollarConfig, fallbackDollarMacro, currentNow);
 const trackedDollarFallback = trackedOfficialHealth(
-  macroHealth, "DTWEXBGS", "2026-08-08T12:00:00Z", "fallback"
+  macroHealth, "DTWEXBGS", currentAttemptAt, "fallback"
 );
 assert.strictEqual(adapter.adaptOfficialSourceHealth(
   trackedDollarFallback, fallbackDollarMacro, fallbackDollarAsset, "DTWEXBGS", currentNow
@@ -770,7 +807,7 @@ const unavailableOilAsset = Object.assign({}, oilConfig, {
   price: null, previousPrice: null, changePct: null, asOf: null, updatedAt: null, demo: false, status: "error"
 });
 const trackedOilFailure = trackedOfficialHealth(
-  macroHealth, "RWTC", "2026-08-08T12:00:00Z", "unavailable"
+  macroHealth, "RWTC", currentAttemptAt, "unavailable"
 );
 const trackedOilSource = trackedOilFailure.sources.find((source) => source.id === "RWTC");
 trackedOilSource.published = false;
@@ -851,8 +888,8 @@ missingMacro.macro.forEach((category) => {
 });
 const missing = adapter.buildPageData(config, missingMacro, currentNow);
 assert.strictEqual(missing.assets.find((asset) => asset.id === "us10y").status, "error");
-assert.strictEqual(missing.assets.find((asset) => asset.id === "dxy").status, "stale");
-assert.strictEqual(missing.assets.find((asset) => asset.id === "wti").status, "stale");
+assert.strictEqual(missing.assets.find((asset) => asset.id === "dxy").status, dollar.status);
+assert.strictEqual(missing.assets.find((asset) => asset.id === "wti").status, oil.status);
 
 const invalidMacro = JSON.parse(JSON.stringify(macro));
 adapter.findDgs10Row(invalidMacro).row.chg = "+1%";
@@ -1129,8 +1166,8 @@ assert.strictEqual(expiredTrackerHealth.reportStale, true);
 assert(expiredTrackerHealth.note.includes("不代表当前行情新鲜度"));
 const failedTrackerHealth = JSON.parse(JSON.stringify(assetTrackerHealth));
 Object.assign(failedTrackerHealth, {
-  generatedAt: "2026-08-08T20:00:00Z",
-  lastAttemptAt: "2026-08-08T20:00:00Z",
+  generatedAt: currentAttemptAt,
+  lastAttemptAt: currentAttemptAt,
   status: "failed",
   historyStatus: "tracked",
   consecutiveFailures: 1,
@@ -1171,8 +1208,8 @@ assert.strictEqual(adapter.periodTabTargetIndex(2, "End", 5), 4);
 assert.strictEqual(adapter.periodTabTargetIndex(2, "Enter", 5), 2);
 
 const freshAssetTracker = JSON.parse(JSON.stringify(assetTracker));
-freshAssetTracker.updatedAt = "2026-08-08T20:00:00Z";
-freshAssetTracker.asOf = "2026-08-08";
+freshAssetTracker.updatedAt = currentAttemptAt;
+freshAssetTracker.asOf = currentAttemptDate;
 freshAssetTracker.status = "ok";
 freshAssetTracker.assets.forEach((asset) => {
   asset.stale = false;
@@ -1265,8 +1302,8 @@ if (assetRanking.dataQuality.counts.unknown > 0) {
 }
 
 const freshAssetRanking = JSON.parse(JSON.stringify(assetRanking));
-freshAssetRanking.updatedAt = "2026-08-08T20:00:00Z";
-freshAssetRanking.asOf = "2026-08-08";
+freshAssetRanking.updatedAt = currentAttemptAt;
+freshAssetRanking.asOf = currentAttemptDate;
 freshAssetRanking.status = "ok";
 freshAssetRanking.assets.forEach((asset) => {
   asset.stale = false;
@@ -1275,7 +1312,7 @@ freshAssetRanking.assets.forEach((asset) => {
     mode: estimate ? "estimate" : "market",
     status: "ok",
     source: asset.dataMeta.source,
-    asOf: estimate ? "2026-08-01" : "2026-08-08T20:00:00Z",
+    asOf: estimate ? "2026-08-01" : currentAttemptAt,
     updatedAt: freshAssetRanking.updatedAt,
     frequency: estimate ? "irregular" : "daily"
   };
@@ -1394,14 +1431,14 @@ assert.strictEqual(monitoredResearch.length, 3);
 assert(monitoredResearch.every((card) => card.sourceHealth.contractKnown));
 
 const freshCompanies = JSON.parse(JSON.stringify(companies));
-freshCompanies.updatedAt = "2026-08-08T20:00:00Z";
-freshCompanies.asOf = "2026-08-08";
+freshCompanies.updatedAt = currentAttemptAt;
+freshCompanies.asOf = currentAttemptDate;
 freshCompanies.companies.forEach((company) => {
   if (!company.private) {
     if (!Number.isFinite(company.changePct)) company.changePct = 0;
     company.stale = false;
     company.dataMeta = {
-      mode: "market", status: "ok", source: "Yahoo Finance", asOf: "2026-08-08T20:00:00Z",
+      mode: "market", status: "ok", source: "Yahoo Finance", asOf: currentAttemptAt,
       updatedAt: freshCompanies.updatedAt, frequency: "daily"
     };
   }
@@ -1465,7 +1502,8 @@ assert.strictEqual(failedCompanyResearch[0].status, "partial");
 assert.strictEqual(failedCompanyResearch[1].status, "partial");
 assert.strictEqual(failedCompanyResearch[2].status, "error");
 
-const calendar = adapter.adaptEconomicCalendar(econCalendar, currentNow);
+const calendarNow = new Date(Date.parse(econCalendar.updatedAt) + 60 * 60 * 1000);
+const calendar = adapter.adaptEconomicCalendar(econCalendar, calendarNow);
 assert.strictEqual(calendar.id, "economic-calendar");
 assert.strictEqual(calendar.status, "ok");
 assert.strictEqual(calendar.count, econCalendar.events.length);
@@ -1476,36 +1514,36 @@ assert.strictEqual(calendar.source.name, "Forex Factory 经济日历");
 assert(calendar.events.length > 0 && calendar.events.length <= 4);
 assert(calendar.events.every((event) => ["high", "medium"].includes(event.impact)));
 if (calendar.selectionLabel === "接下来重要事件") {
-  assert(calendar.events.every((event) => Date.parse(event.ts) >= currentNow.getTime()));
+  assert(calendar.events.every((event) => Date.parse(event.ts) >= calendarNow.getTime()));
   assert(calendar.events.every((event, index) => index === 0
     || event.timestamp >= calendar.events[index - 1].timestamp));
 } else {
   assert.strictEqual(calendar.selectionLabel, "最近重要事件");
-  assert(calendar.events.every((event) => Date.parse(event.ts) < currentNow.getTime()));
+  assert(calendar.events.every((event) => Date.parse(event.ts) < calendarNow.getTime()));
   assert(calendar.events.every((event, index) => index === 0
     || event.timestamp <= calendar.events[index - 1].timestamp));
 }
 
 const partialCalendar = JSON.parse(JSON.stringify(econCalendar));
 partialCalendar.count += 1;
-assert.strictEqual(adapter.adaptEconomicCalendar(partialCalendar, currentNow).status, "partial");
+assert.strictEqual(adapter.adaptEconomicCalendar(partialCalendar, calendarNow).status, "partial");
 
 const staleCalendar = JSON.parse(JSON.stringify(econCalendar));
 staleCalendar.updatedAt = "2026-07-31T12:00:00Z";
-assert.strictEqual(adapter.adaptEconomicCalendar(staleCalendar, currentNow).status, "stale");
+assert.strictEqual(adapter.adaptEconomicCalendar(staleCalendar, calendarNow).status, "stale");
 
 const invalidCalendar = JSON.parse(JSON.stringify(econCalendar));
 invalidCalendar.source = "Unknown calendar";
 const invalidInformation = adapter.buildInformationCards({
   calendar: { data: invalidCalendar, error: null }
-}, currentNow);
+}, calendarNow);
 assert.strictEqual(invalidInformation.length, 1);
 assert.strictEqual(invalidInformation[0].status, "error");
 assert.strictEqual(invalidInformation[0].events.length, 0);
 
 const failedInformation = adapter.buildInformationCards({
   calendar: { data: null, error: new Error("HTTP 503") }
-}, currentNow);
+}, calendarNow);
 assert.strictEqual(failedInformation.length, 1);
 assert.strictEqual(failedInformation[0].status, "error");
 assert.strictEqual(failedInformation[0].events.length, 0);
