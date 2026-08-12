@@ -68,7 +68,17 @@ ASSETS = [
     {"name": "德国DAX",          "cat": "equity",    "syms": ["^GDAXI"]},
     {"name": "恒生指数",         "cat": "equity",    "syms": ["^HSI"]},
     {"name": "富时新加坡海峡指数", "cat": "equity",   "syms": ["^STI"]},
-    {"name": "沪深300",          "cat": "equity",    "syms": ["000300.SS"]},
+    {"name": "沪深300",          "cat": "equity",    "syms": [
+        "000300.SS",
+        {"sym": "510300.SS", "proxy": {
+            "type": "etf",
+            "targetSymbol": "000300.SS",
+            "instrumentName": "沪深300ETF",
+            "currency": "CNY",
+            "returnBasis": "price",
+            "note": "以人民币沪深300ETF价格收益率代理；可能存在跟踪误差、分红与费用差异。",
+        }},
+    ]},
     {"name": "新西兰NZ50",       "cat": "equity",    "syms": ["^NZ50"]},
     {"name": "印度SENSEX30",     "cat": "equity",    "syms": ["^BSESN"]},
     {"name": "澳洲标普200",      "cat": "equity",    "syms": ["^AXJO"]},

@@ -297,6 +297,28 @@ def run_asset_tracker_builder_contract_tests() -> None:
             "中证500ETF代理契约无效")
     print("Asset tracker CSI 500 fallback: PASS")
 
+    csi300 = next(item for item in module.ASSETS if item["name"] == "沪深300")
+    require(csi300["syms"][0] == "000300.SS", "沪深300必须优先尝试原指数代码")
+    require(csi300["syms"][1].get("sym") == "510300.SS", "沪深300ETF代理代码无效")
+    csi300_attempts = []
+
+    def fake_csi300_fetch(symbol):
+        csi300_attempts.append(symbol)
+        if symbol == "000300.SS":
+            raise ValueError("模拟原指数失败")
+        return [("2025-08-11", 100.0), ("2026-08-10", 105.0), ("2026-08-11", 106.0)]
+
+    csi300_chosen, csi300_suspect = module.select_candidate(csi300, fake_csi300_fetch)
+    require(csi300_attempts == ["000300.SS", "510300.SS"], "沪深300候选回退顺序无效")
+    require(csi300_suspect is None and csi300_chosen and csi300_chosen[0] == "510300.SS",
+            "沪深300ETF代理未被选中")
+    require(csi300_chosen[2]["targetSymbol"] == "000300.SS"
+            and csi300_chosen[2]["instrumentSymbol"] == "510300.SS"
+            and csi300_chosen[2]["currency"] == "CNY"
+            and csi300_chosen[2]["returnBasis"] == "price",
+            "沪深300ETF代理契约无效")
+    print("Asset tracker CSI 300 fallback: PASS")
+
 
 def run_asset_ranking_builder_contract_tests() -> None:
     spec = importlib.util.spec_from_file_location("asset_ranking_builder", ASSET_RANKING_BUILD)
