@@ -1028,8 +1028,8 @@ assert.strictEqual(retainedDgs.updatedAt, trackedDgs.updatedAt);
 assert(retainedDgs.note.includes("自动更新失败"));
 
 trackedDgs.status = "ok";
-trackedDgs.asOf = "2026-08-07";
-trackedDgs.updatedAt = "2026-08-07T21:00:00Z";
+trackedDgs.asOf = currentAttemptDate;
+trackedDgs.updatedAt = currentAttemptAt;
 trackedDgs.lastAttemptAt = trackedDgs.updatedAt;
 trackedDgs.observations = [{ asOf: trackedDgs.asOf, value: trackedDgs.price }];
 const independentlyFreshDgs = adapter.buildPageData(config, trackedDgsMacro, currentNow).assets.find((asset) => asset.id === "us10y");
