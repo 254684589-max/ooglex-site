@@ -66,7 +66,7 @@
     "asset-tracker": {
       name: "跨资产强弱", nameEn: "Cross-Asset Strength", symbol: "28 ASSETS",
       expectedRecords: 28, unit: "项资产", detailUrl: "../asset-tracker/",
-      workflow: "asset_tracker.yml", readinessEnabled: false
+      workflow: "asset_tracker.yml", readinessEnabled: true
     },
     companies: {
       name: "全球公司榜", nameEn: "Global Companies", symbol: "500 COMPANIES",
