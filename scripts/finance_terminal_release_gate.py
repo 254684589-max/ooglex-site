@@ -23,6 +23,10 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 from macro_source_health import validate_macro_health
+from finance_terminal_market_licenses import (
+    authorization_summary,
+    validate_market_source_readiness,
+)
 from market_source_health import validate_source_health
 
 
@@ -31,6 +35,9 @@ DEFAULT_CONFIG_PATH = ROOT / "apps" / "finance-terminal" / "data.json"
 DEFAULT_MACRO_PATH = ROOT / "apps" / "macro-radar" / "data.json"
 DEFAULT_MACRO_HEALTH_PATH = ROOT / "apps" / "macro-radar" / "health.json"
 DEFAULT_PAGE_PATH = ROOT / "apps" / "finance-terminal" / "index.html"
+DEFAULT_MARKET_SOURCE_READINESS_PATH = (
+    ROOT / "apps" / "finance-terminal" / "market-source-readiness.json"
+)
 AGGREGATE_DATASETS = {
     "asset-tracker": {
         "data": ROOT / "apps" / "asset-tracker" / "data.json",
@@ -267,7 +274,11 @@ def validate_config(config: dict[str, Any]) -> tuple[list[dict[str, Any]], list[
     return assets, errors
 
 
-def evaluate_demo_policy(config: dict[str, Any], page_html: str) -> dict[str, Any]:
+def evaluate_demo_policy(
+    config: dict[str, Any],
+    page_html: str,
+    market_source_readiness: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     assets, errors = validate_config(config)
     if config.get("demo") is not True or config.get("status") != "partial":
         errors.append("仍有演示资产时，文件级demo必须为true且status必须为partial")
@@ -287,6 +298,31 @@ def evaluate_demo_policy(config: dict[str, Any], page_html: str) -> dict[str, An
         errors.append("页面缺少必须公开的演示/来源说明：" + "、".join(missing_markers))
 
     demo_count = sum(1 for asset in assets if asset.get("demo") is True)
+    license_summary: dict[str, Any] = {}
+    license_details: list[str] = []
+    if market_source_readiness is not None:
+        license_errors = validate_market_source_readiness(market_source_readiness)
+        errors.extend(license_errors)
+        if not license_errors:
+            license_summary = authorization_summary(market_source_readiness)
+            readiness_by_id = {
+                asset["id"]: asset
+                for asset in market_source_readiness["assets"]
+            }
+            for asset_id in sorted(EXPECTED_DEMOS):
+                readiness = readiness_by_id[asset_id]
+                authorization = readiness["authorization"]
+                if authorization["status"] == "blocked":
+                    license_details.append(
+                        f"{asset_id}：{authorization['reasonCode']}；保持演示数据。"
+                    )
+                else:
+                    license_details.append(f"{asset_id}：公开展示授权已登记，等待正式接入。")
+    metrics = {
+        "demoAssets": demo_count,
+        "officialAssets": len(assets) - demo_count,
+        **license_summary,
+    }
     if errors:
         return make_check(
             "market-demo-policy",
@@ -294,7 +330,7 @@ def evaluate_demo_policy(config: dict[str, Any], page_html: str) -> dict[str, An
             "BLOCKED",
             "演示/真实数据边界或公开说明不符合上线规则。",
             details=errors,
-            metrics={"demoAssets": demo_count, "officialAssets": len(assets) - demo_count},
+            metrics=metrics,
         )
     return make_check(
         "market-demo-policy",
@@ -302,8 +338,9 @@ def evaluate_demo_policy(config: dict[str, Any], page_html: str) -> dict[str, An
         "WARN" if demo_count else "PASS",
         (f"{demo_count}项资产仍为明确标注的演示数据；Beta可观察，稳定V1仍需替换。"
          if demo_count else "全部核心资产均为真实数据配置。"),
-        details=["三大股指与黄金许可及正式接入尚未确认。"] if demo_count else [],
-        metrics={"demoAssets": demo_count, "officialAssets": len(assets) - demo_count},
+        details=(license_details or ["三大股指与黄金许可及正式接入尚未确认。"])
+        if demo_count else [],
+        metrics=metrics,
     )
 
 
@@ -545,10 +582,14 @@ def evaluate_bitcoin_market(
 
 
 def evaluate_core_market(
-    config: dict[str, Any], macro: dict[str, Any], page_html: str, now: datetime
+    config: dict[str, Any],
+    macro: dict[str, Any],
+    page_html: str,
+    now: datetime,
+    market_source_readiness: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     return [
-        evaluate_demo_policy(config, page_html),
+        evaluate_demo_policy(config, page_html, market_source_readiness),
         evaluate_dgs10(macro, now),
         evaluate_reference_series(macro, "DTWEXBGS", "FRED DTWEXBGS", "FRED", 3, now),
         evaluate_reference_series(macro, "RWTC", "EIA RWTC", "EIA", 4, now),
@@ -968,8 +1009,9 @@ def build_report(
     aggregate_inputs: dict[str, dict[str, dict[str, Any]]] | None = None,
     workflow_evidence: dict[str, Any] | None = None,
     macro_health: dict[str, Any] | None = None,
+    market_source_readiness: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    checks = evaluate_core_market(config, macro, page_html, now)
+    checks = evaluate_core_market(config, macro, page_html, now, market_source_readiness)
     if macro_health is not None:
         checks.append(evaluate_macro_pipeline(macro, macro_health, now))
     if aggregate_inputs is not None:
@@ -1013,6 +1055,7 @@ def build_report(
         "scope": {
             "officialSeries": ["DGS10", "DTWEXBGS", "RWTC"],
             "marketAssets": ["BTC/USD"],
+            "marketSourceReadiness": market_source_readiness is not None,
             "macroSourceHealth": macro_health is not None,
             "aggregatePipelines": list(AGGREGATE_DATASETS) if aggregate_inputs is not None else [],
             "remoteWorkflows": list(WORKFLOW_SPECS) if workflow_evidence is not None else [],
@@ -1163,6 +1206,8 @@ def main() -> None:
     parser.add_argument("--macro", type=Path, default=DEFAULT_MACRO_PATH)
     parser.add_argument("--macro-health", type=Path, default=DEFAULT_MACRO_HEALTH_PATH)
     parser.add_argument("--page", type=Path, default=DEFAULT_PAGE_PATH)
+    parser.add_argument("--market-source-readiness", type=Path,
+                        default=DEFAULT_MARKET_SOURCE_READINESS_PATH)
     parser.add_argument("--now", help="测试/复核用UTC ISO 8601时间")
     parser.add_argument("--report-json", type=Path)
     parser.add_argument("--report-md", type=Path)
@@ -1200,6 +1245,7 @@ def main() -> None:
             None if args.skip_aggregate_health else load_aggregate_inputs(),
             workflow_evidence,
             load_json(args.macro_health),
+            load_json(args.market_source_readiness),
         )
     except (GateInputError, OSError) as exc:
         raise SystemExit(f"上线门禁输入无效：{exc}") from exc

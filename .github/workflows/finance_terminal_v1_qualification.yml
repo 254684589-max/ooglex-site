@@ -13,6 +13,9 @@ on:
       - 'scripts/finance_terminal_readiness_snapshot.py'
       - 'scripts/validate_finance_terminal_readiness_snapshot.py'
       - 'scripts/validate_finance_terminal.py'
+      - 'scripts/finance_terminal_market_licenses.py'
+      - 'scripts/validate_finance_terminal_market_licenses.py'
+      - 'apps/finance-terminal/market-source-readiness.json'
       - 'scripts/asset-tracker/build_assets.py'
       - 'scripts/market_data_quality.py'
       - 'scripts/validate_market_data_quality.py'
@@ -130,6 +133,7 @@ jobs:
         continue-on-error: true
         run: |
           python scripts/validate_finance_terminal.py
+          python scripts/validate_finance_terminal_market_licenses.py
           python scripts/validate_market_data_quality.py --dataset all
           python scripts/validate_market_source_health.py --dataset all \
             --report /tmp/finance-terminal-health/source-health.json

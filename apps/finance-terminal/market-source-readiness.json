@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "reviewedOn": "2026-08-13",
+  "displayScope": "public-web",
+  "policy": "精确原标的只有在公开展示授权可验证后才能替换演示数据；ETF或期货代理必须先取得产品决定并同步改名。",
+  "blockedAssetCount": 4,
+  "assets": [
+    {
+      "id": "sp500",
+      "targetSymbol": "SPX",
+      "targetInstrument": "S&P 500 Price Index",
+      "candidateSource": {
+        "provider": "FRED / S&P Dow Jones Indices",
+        "seriesId": "SP500",
+        "url": "https://fred.stlouisfed.org/series/SP500"
+      },
+      "authorization": {
+        "status": "blocked",
+        "publicDisplayAuthorized": false,
+        "licenseOwner": "S&P Dow Jones Indices",
+        "reasonCode": "owner-preapproval-required",
+        "evidenceUrl": "https://fred.stlouisfed.org/series/SP500",
+        "termsUrl": "https://fred.stlouisfed.org/docs/api/terms_of_use.html"
+      },
+      "productionAction": "keep-demo",
+      "proxyAlternative": {
+        "symbol": "SPY",
+        "instrument": "SPDR S&P 500 ETF Trust",
+        "instrumentType": "etf-proxy",
+        "isSameInstrument": false,
+        "requiresProductApproval": true
+      }
+    },
+    {
+      "id": "nasdaq100",
+      "targetSymbol": "NDX",
+      "targetInstrument": "Nasdaq-100 Price Index",
+      "candidateSource": {
+        "provider": "FRED / Nasdaq",
+        "seriesId": "NASDAQ100",
+        "url": "https://fred.stlouisfed.org/series/NASDAQ100"
+      },
+      "authorization": {
+        "status": "blocked",
+        "publicDisplayAuthorized": false,
+        "licenseOwner": "Nasdaq",
+        "reasonCode": "owner-preapproval-required",
+        "evidenceUrl": "https://fred.stlouisfed.org/series/NASDAQ100",
+        "termsUrl": "https://fred.stlouisfed.org/docs/api/terms_of_use.html"
+      },
+      "productionAction": "keep-demo",
+      "proxyAlternative": {
+        "symbol": "QQQ",
+        "instrument": "Invesco QQQ Trust",
+        "instrumentType": "etf-proxy",
+        "isSameInstrument": false,
+        "requiresProductApproval": true
+      }
+    },
+    {
+      "id": "dow",
+      "targetSymbol": "DJI",
+      "targetInstrument": "Dow Jones Industrial Average",
+      "candidateSource": {
+        "provider": "FRED / S&P Dow Jones Indices",
+        "seriesId": "DJIA",
+        "url": "https://fred.stlouisfed.org/series/DJIA"
+      },
+      "authorization": {
+        "status": "blocked",
+        "publicDisplayAuthorized": false,
+        "licenseOwner": "S&P Dow Jones Indices",
+        "reasonCode": "owner-preapproval-required",
+        "evidenceUrl": "https://fred.stlouisfed.org/series/DJIA",
+        "termsUrl": "https://fred.stlouisfed.org/docs/api/terms_of_use.html"
+      },
+      "productionAction": "keep-demo",
+      "proxyAlternative": {
+        "symbol": "DIA",
+        "instrument": "SPDR Dow Jones Industrial Average ETF Trust",
+        "instrumentType": "etf-proxy",
+        "isSameInstrument": false,
+        "requiresProductApproval": true
+      }
+    },
+    {
+      "id": "gold",
+      "targetSymbol": "XAU/USD",
+      "targetInstrument": "USD gold spot or licensed daily benchmark",
+      "candidateSource": {
+        "provider": "LBMA / ICE Benchmark Administration",
+        "seriesId": "LBMA-GOLD-PRICE",
+        "url": "https://www.lbma.org.uk/prices-and-data/lbma-gold-price/lbma-gold-price"
+      },
+      "authorization": {
+        "status": "blocked",
+        "publicDisplayAuthorized": false,
+        "licenseOwner": "ICE Benchmark Administration",
+        "reasonCode": "redistribution-license-required",
+        "evidenceUrl": "https://www.lbma.org.uk/prices-and-data/lbma-gold-price/lbma-gold-price",
+        "termsUrl": "https://www.lbma.org.uk/prices-and-data/lbma-precious-metal-prices"
+      },
+      "productionAction": "keep-demo",
+      "proxyAlternative": {
+        "symbol": "GLD",
+        "instrument": "SPDR Gold Shares",
+        "instrumentType": "etf-proxy",
+        "isSameInstrument": false,
+        "requiresProductApproval": true
+      }
+    }
+  ]
+}

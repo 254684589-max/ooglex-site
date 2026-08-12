@@ -377,6 +377,30 @@ def test_missing_disclosure_and_demo_flag_are_blocked() -> None:
     require(any("公开" in detail or "演示" in detail for detail in check["details"]), "阻断原因不清楚")
 
 
+def test_machine_readable_market_license_gate() -> None:
+    readiness = json.loads(
+        (ROOT / "apps/finance-terminal/market-source-readiness.json").read_text(encoding="utf-8")
+    )
+    report = build_report(
+        make_config(), make_macro(), PAGE, NOW, market_source_readiness=readiness,
+    )
+    check = by_id(report)["market-demo-policy"]
+    require(check["status"] == "WARN", "合法的授权阻塞契约不得把明确演示Beta误报为BLOCKED")
+    require(check["metrics"]["blockedAssets"] == 4
+            and check["metrics"]["approvedAssets"] == 0,
+            "门禁没有逐项汇总四项授权状态")
+    require(len(check["details"]) == 4 and all("保持演示数据" in item for item in check["details"]),
+            "门禁没有输出四项可审计授权阻塞原因")
+
+    tampered = deepcopy(readiness)
+    tampered["assets"][0]["productionAction"] = "publish-anyway"
+    blocked = build_report(
+        make_config(), make_macro(), PAGE, NOW, market_source_readiness=tampered,
+    )
+    require(by_id(blocked)["market-demo-policy"]["status"] == "BLOCKED",
+            "绕过授权发布的动作未被上线门禁阻断")
+
+
 def test_future_observation_is_blocked() -> None:
     macro = make_macro()
     macro["macro"][0]["rows"][0]["asOf"] = "2026-08-10"
@@ -745,6 +769,7 @@ def main() -> None:
     test_dgs10_source_attempt_status_is_independent()
     test_wrong_instrument_and_change_are_blocked()
     test_missing_disclosure_and_demo_flag_are_blocked()
+    test_machine_readable_market_license_gate()
     test_future_observation_is_blocked()
     test_bitcoin_source_and_fallback_contract()
     test_us_business_day_contract()

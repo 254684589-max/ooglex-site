@@ -24,6 +24,8 @@ on:
       - 'apps/whats-latest/data.json'
       - 'apps/whats-latest/health.json'
       - 'scripts/validate_finance_terminal.py'
+      - 'scripts/finance_terminal_market_licenses.py'
+      - 'scripts/validate_finance_terminal_market_licenses.py'
       - 'scripts/validate_finance_terminal_browser.mjs'
       - 'scripts/market_data_quality.py'
       - 'scripts/validate_market_data_quality.py'
@@ -66,6 +68,8 @@ on:
       - '.github/workflows/finance_terminal_quality.yml'
       - '.github/ISSUE_TEMPLATE/finance-terminal-data.yml'
       - 'docs/FINANCE_TERMINAL_OPERATIONS_RUNBOOK.md'
+      - 'docs/FINANCE_TERMINAL_RELEASE_GATE.md'
+      - 'docs/MARKET_DATA_SOURCES.md'
       - 'docs/SUPPORTING_SOURCE_HEALTH.md'
   pull_request:
     paths:
@@ -87,6 +91,8 @@ on:
       - 'apps/whats-latest/data.json'
       - 'apps/whats-latest/health.json'
       - 'scripts/validate_finance_terminal.py'
+      - 'scripts/finance_terminal_market_licenses.py'
+      - 'scripts/validate_finance_terminal_market_licenses.py'
       - 'scripts/validate_finance_terminal_browser.mjs'
       - 'scripts/market_data_quality.py'
       - 'scripts/validate_market_data_quality.py'
@@ -129,6 +135,8 @@ on:
       - '.github/workflows/finance_terminal_quality.yml'
       - '.github/ISSUE_TEMPLATE/finance-terminal-data.yml'
       - 'docs/FINANCE_TERMINAL_OPERATIONS_RUNBOOK.md'
+      - 'docs/FINANCE_TERMINAL_RELEASE_GATE.md'
+      - 'docs/MARKET_DATA_SOURCES.md'
       - 'docs/SUPPORTING_SOURCE_HEALTH.md'
 
 permissions:
@@ -179,6 +187,9 @@ jobs:
 
       - name: Validate Beta release gate contracts
         run: python scripts/validate_finance_terminal_release_gate.py
+
+      - name: Validate market public-display authorization contracts
+        run: python scripts/validate_finance_terminal_market_licenses.py
 
       - name: Validate static stable V1 evidence snapshot
         run: python scripts/validate_finance_terminal_readiness_snapshot.py

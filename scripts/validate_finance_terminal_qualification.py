@@ -119,6 +119,11 @@ def test_github_workflow_safety() -> None:
             "质量CI必须运行资格编排契约测试")
     require("scripts/validate_finance_terminal_readiness_snapshot.py" in quality,
             "质量CI必须运行稳定V1证据快照契约测试")
+    require("scripts/validate_finance_terminal_market_licenses.py" in workflow
+            and "scripts/validate_finance_terminal_market_licenses.py" in quality,
+            "资格与质量CI必须共同验证四项行情授权契约")
+    require("apps/finance-terminal/market-source-readiness.json" in workflow,
+            "行情授权结论变化必须触发开发分支资格验收")
     require(".github/workflows/finance_terminal_v1_qualification.yml" in quality,
             "资格工作流变更必须触发质量CI")
 
