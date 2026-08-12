@@ -1,7 +1,7 @@
 name: Finance Terminal Supporting Qualification
 run-name: Supporting source qualification · ${{ github.ref_name }}
 
-# 只在金融终端开发分支建立CNN、OFR与经济日历的真实远端运行证据。
+# 只在金融终端开发分支建立CNN、OFR、经济日历与财经资讯的真实远端运行证据。
 on:
   push:
     branches:
@@ -36,7 +36,7 @@ jobs:
       - name: Validate supporting qualification contract
         run: python scripts/validate_finance_terminal_supporting_qualification.py
 
-      - name: Run CNN, OFR and econ calendar development qualification
+      - name: Run four supporting source qualifications
         id: qualification
         continue-on-error: true
         env:
@@ -70,7 +70,7 @@ jobs:
       - name: Fail blocked supporting qualification
         if: steps.qualification.outcome != 'success'
         run: |
-          echo "CNN、OFR或经济日历未成功，辅助来源资格验收保持阻断。"
+          echo "CNN、OFR、经济日历或财经资讯未成功，辅助来源资格验收保持阻断。"
           exit 1
 
   validate-qualified-branch:

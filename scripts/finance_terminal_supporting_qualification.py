@@ -43,6 +43,11 @@ SUPPORTING_WORKFLOWS: dict[str, dict[str, Any]] = {
         "file": "econ_calendar.yml",
         "sources": ["Forex Factory公开周历"],
     },
+    "whats-latest": {
+        "name": "Google News财经资讯",
+        "file": "whats_latest.yml",
+        "sources": ["Google News RSS", "Yahoo Finance公开行情接口"],
+    },
 }
 FIRST_WAVE = tuple(SUPPORTING_WORKFLOWS)
 
