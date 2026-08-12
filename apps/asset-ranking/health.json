@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "asset-ranking",
-  "generatedAt": "2026-08-12T08:11:56Z",
-  "status": "degraded",
+  "generatedAt": "2026-08-12T11:58:52Z",
+  "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-08-12T08:11:56Z",
-  "lastSuccessfulAt": "2026-08-12T08:11:56Z",
+  "lastAttemptAt": "2026-08-12T11:58:52Z",
+  "lastSuccessfulAt": "2026-08-12T11:58:52Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-08-12T08:11:56Z",
+  "publishedSnapshotAt": "2026-08-12T11:58:52Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -43,7 +43,7 @@
       "id": "yahoo-finance",
       "name": "Yahoo Finance",
       "role": "primary",
-      "status": "degraded",
+      "status": "healthy",
       "records": 231,
       "counts": {
         "market": 231,
@@ -52,7 +52,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-12T08:11:56Z"
+      "lastSuccessAt": "2026-08-12T11:58:52Z"
     },
     {
       "id": "coingecko",
@@ -67,13 +67,13 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-12T08:11:56Z"
+      "lastSuccessAt": "2026-08-12T11:58:52Z"
     },
     {
       "id": "companies-upstream",
       "name": "companies/data.json上游快照",
       "role": "upstream",
-      "status": "degraded",
+      "status": "healthy",
       "records": 231,
       "counts": {
         "market": 222,
@@ -82,13 +82,13 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-12T08:09:51Z",
+      "lastSuccessAt": "2026-08-12T11:56:31Z",
       "upstream": {
         "dataset": "companies",
         "contractKnown": true,
-        "status": "degraded",
-        "lastAttemptAt": "2026-08-12T08:09:51Z",
-        "lastSuccessfulAt": "2026-08-12T08:09:51Z",
+        "status": "healthy",
+        "lastAttemptAt": "2026-08-12T11:56:31Z",
+        "lastSuccessfulAt": "2026-08-12T11:56:31Z",
         "consecutiveFailures": 0,
         "snapshotPreserved": false,
         "snapshotAligned": true
@@ -98,16 +98,16 @@
       "id": "public-estimates",
       "name": "公开存量与融资估值",
       "role": "reference",
-      "status": "degraded",
-      "records": 24,
+      "status": "healthy",
+      "records": 15,
       "counts": {
-        "market": 9,
+        "market": 0,
         "fallback": 0,
         "estimate": 15,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-12T08:11:56Z"
+      "lastSuccessAt": "2026-08-12T11:58:52Z"
     }
   ],
   "recovery": {
