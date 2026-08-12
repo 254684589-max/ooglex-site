@@ -62,7 +62,7 @@ node scripts/validate_finance_terminal_browser.mjs
 
 ### 3. 辅助来源资格闭环
 
-CNN恐慌与贪婪、OFR金融压力、经济日历和财经新闻各自维护独立健康快照。经济日历与财经新闻已经由真实生产任务建立`tracked`历史；CNN与OFR应优先使用开发分支上的`Finance Terminal Supporting Qualification`消除迁移`UNKNOWN`：
+CNN恐慌与贪婪、OFR金融压力、经济日历和财经新闻各自维护独立健康快照。四源均已由真实远端任务建立`tracked`历史；2026-08-12辅助资格确认CNN 1/1组件、OFR 5/5组件全部刷新并显示`HEALTHY`。以后出现`UNKNOWN`、`STALE`或失败时，继续使用开发分支上的`Finance Terminal Supporting Qualification`复核：
 
 1. 资格流程同时启动CNN与OFR，单源失败不得取消另一个来源。
 2. 完成后重新读取开发分支最新快照，运行四源健康、生成器失败保留、路径守卫、终端数据与360/768/1280像素页面检查。
