@@ -1350,7 +1350,7 @@ assert.strictEqual(failedOperationCards[0].status, macroHealth.status);
 
 const crossAsset = adapter.adaptCrossAsset(assetTracker, currentNow, assetTrackerHealth);
 assert.strictEqual(crossAsset.id, "cross-asset");
-assert.strictEqual(crossAsset.status, "partial");
+assert.strictEqual(crossAsset.status, assetTracker.status);
 assert.strictEqual(crossAsset.asOf, assetTracker.asOf);
 assert.strictEqual(crossAsset.updatedAt, assetTracker.updatedAt);
 assert.strictEqual(crossAsset.source.name, "Yahoo Finance");
@@ -1359,7 +1359,7 @@ assert.strictEqual(crossAsset.assets.length, assetTracker.assets.length);
 assert.deepStrictEqual(crossAsset.quality.counts, assetTracker.dataQuality.counts);
 assert.strictEqual(crossAsset.quality.declaredValid, true);
 assert.strictEqual(crossAsset.quality.contractKnown, true);
-assert.strictEqual(crossAsset.sourceHealth.status, "degraded");
+assert.strictEqual(crossAsset.sourceHealth.status, assetTrackerHealth.status);
 assert.strictEqual(crossAsset.sourceHealth.freshCoveragePct, assetTrackerHealth.coverage.freshCoveragePct);
 assert.strictEqual(crossAsset.sourceHealth.historyKnown, assetTrackerHealth.historyStatus === "tracked");
 assert.strictEqual(crossAsset.sourceHealth.consecutiveFailures, assetTrackerHealth.consecutiveFailures);
@@ -1368,7 +1368,7 @@ const expiredTrackerHealth = adapter.adaptSourceHealth(
   assetTrackerHealth, "asset-tracker", assetTracker, expiredOfficialHealthNow
 );
 assert.strictEqual(expiredTrackerHealth.status, "stale");
-assert.strictEqual(expiredTrackerHealth.pipelineStatus, "degraded");
+assert.strictEqual(expiredTrackerHealth.pipelineStatus, assetTrackerHealth.status);
 assert.strictEqual(expiredTrackerHealth.reportStale, true);
 assert(expiredTrackerHealth.note.includes("不代表当前行情新鲜度"));
 const failedTrackerHealth = JSON.parse(JSON.stringify(assetTrackerHealth));
@@ -1395,7 +1395,20 @@ mismatchedTrackerHealth.publishedSnapshotAt = "2026-07-31T00:00:00Z";
 const unverifiedTrackerHealth = adapter.adaptCrossAsset(assetTracker, currentNow, mismatchedTrackerHealth).sourceHealth;
 assert.strictEqual(unverifiedTrackerHealth.status, "unknown");
 assert.strictEqual(unverifiedTrackerHealth.contractKnown, false);
-const fallbackAsset = crossAsset.assets.find((asset) => asset.dataMeta.mode === "fallback");
+const fallbackTracker = JSON.parse(JSON.stringify(assetTracker));
+const fallbackRow = fallbackTracker.assets[0];
+fallbackRow.stale = true;
+fallbackRow.suspect = false;
+fallbackRow.dataMeta = {
+  mode: "fallback", status: "partial", source: "Yahoo Finance", asOf: null,
+  updatedAt: fallbackTracker.updatedAt, frequency: "daily",
+  note: "测试夹具：本轮请求失败，沿用上一份逐条有效值。"
+};
+fallbackTracker.status = "partial";
+fallbackTracker.dataQuality = qualityDeclaration(fallbackTracker.assets);
+const fallbackCrossAsset = adapter.adaptCrossAsset(fallbackTracker, currentNow);
+assert.strictEqual(fallbackCrossAsset.status, "partial");
+const fallbackAsset = fallbackCrossAsset.assets.find((asset) => asset.dataMeta.mode === "fallback");
 assert(fallbackAsset && fallbackAsset.dataMeta.asOf === null);
 assert(fallbackAsset.dataLabel.includes("历史回退"));
 const proxyTracker = JSON.parse(JSON.stringify(assetTracker));
@@ -1469,6 +1482,13 @@ assert.strictEqual(staleCrossAsset.status, "stale");
 assert.strictEqual(adapter.rankCrossAssetPeriod(staleCrossAsset, "d1").paused, true);
 assert.strictEqual(adapter.rankCrossAssetPeriod(staleCrossAsset, "ytd").paused, false);
 
+const baselineResearch = adapter.buildResearchCards({
+  assetTracker: { data: assetTracker, error: null },
+  assetRanking: { data: assetRanking, error: null },
+  companies: { data: companies, error: null }
+}, currentNow);
+assert.strictEqual(baselineResearch.length, 3);
+
 const invalidAssetTracker = JSON.parse(JSON.stringify(assetTracker));
 invalidAssetTracker.source = "Unknown feed";
 const invalidResearch = adapter.buildResearchCards({
@@ -1479,8 +1499,8 @@ const invalidResearch = adapter.buildResearchCards({
 assert.strictEqual(invalidResearch.length, 3);
 assert.strictEqual(invalidResearch[0].status, "error");
 assert.strictEqual(invalidResearch[0].assets.length, 0);
-assert.strictEqual(invalidResearch[1].status, "partial");
-assert.strictEqual(invalidResearch[2].status, "partial");
+assert.strictEqual(invalidResearch[1].status, baselineResearch[1].status);
+assert.strictEqual(invalidResearch[2].status, baselineResearch[2].status);
 
 const failedResearch = adapter.buildResearchCards({
   assetTracker: { data: null, error: new Error("HTTP 503") },
@@ -1490,12 +1510,12 @@ const failedResearch = adapter.buildResearchCards({
 assert.strictEqual(failedResearch.length, 3);
 assert.strictEqual(failedResearch[0].status, "error");
 assert.strictEqual(failedResearch[0].assets.length, 0);
-assert.strictEqual(failedResearch[1].status, "partial");
-assert.strictEqual(failedResearch[2].status, "partial");
+assert.strictEqual(failedResearch[1].status, baselineResearch[1].status);
+assert.strictEqual(failedResearch[2].status, baselineResearch[2].status);
 
 const globalAssets = adapter.adaptAssetRanking(assetRanking, currentNow, assetRankingHealth);
 assert.strictEqual(globalAssets.id, "asset-ranking");
-assert.strictEqual(globalAssets.status, "partial");
+assert.strictEqual(globalAssets.status, assetRanking.status);
 assert.strictEqual(globalAssets.count, assetRanking.count);
 assert.strictEqual(globalAssets.totalMarketCap, assetRanking.totalMarketCap);
 assert.strictEqual(globalAssets.asOf, assetRanking.asOf);
@@ -1507,7 +1527,7 @@ assert(globalAssets.assets.some((asset) => asset.static));
 assert(globalAssets.assets.some((asset) => !asset.static));
 assert.deepStrictEqual(globalAssets.quality.counts, assetRanking.dataQuality.counts);
 assert.strictEqual(globalAssets.quality.declaredValid, true);
-assert.strictEqual(globalAssets.sourceHealth.status, "healthy");
+assert.strictEqual(globalAssets.sourceHealth.status, assetRankingHealth.status);
 assert.strictEqual(globalAssets.sourceHealth.freshCoveragePct,
   assetRankingHealth.coverage.freshCoveragePct);
 assert.strictEqual(globalAssets.sourceHealth.verifiedCoveragePct,
@@ -1585,7 +1605,7 @@ const invalidRankingResearch = adapter.buildResearchCards({
   assetRanking: { data: invalidAssetRanking, error: null },
   companies: { data: companies, error: null }
 }, currentNow);
-assert.strictEqual(invalidRankingResearch[0].status, "partial");
+assert.strictEqual(invalidRankingResearch[0].status, baselineResearch[0].status);
 assert.strictEqual(invalidRankingResearch[1].status, "error");
 assert.strictEqual(invalidRankingResearch[1].totalMarketCap, null);
 
@@ -1596,7 +1616,7 @@ const brokenTopResearch = adapter.buildResearchCards({
   assetRanking: { data: brokenTopRanking, error: null },
   companies: { data: companies, error: null }
 }, currentNow);
-assert.strictEqual(brokenTopResearch[0].status, "partial");
+assert.strictEqual(brokenTopResearch[0].status, baselineResearch[0].status);
 assert.strictEqual(brokenTopResearch[1].status, "error");
 
 const failedRankingResearch = adapter.buildResearchCards({
@@ -1604,7 +1624,7 @@ const failedRankingResearch = adapter.buildResearchCards({
   assetRanking: { data: null, error: new Error("HTTP 503") },
   companies: { data: companies, error: null }
 }, currentNow);
-assert.strictEqual(failedRankingResearch[0].status, "partial");
+assert.strictEqual(failedRankingResearch[0].status, baselineResearch[0].status);
 assert.strictEqual(failedRankingResearch[1].status, "error");
 
 const companyLeaders = adapter.adaptCompanies(companies, currentNow, companiesHealth);
@@ -1614,7 +1634,7 @@ const eligibleCompanyMovers = listedCompanies.filter((company) => company.stale 
   && Number.isFinite(company.changePct) && company.changePct >= -100 && company.changePct <= 1000)
   .slice().sort((a, b) => a.changePct - b.changePct);
 assert.strictEqual(companyLeaders.id, "company-leaders");
-assert.strictEqual(companyLeaders.status, "partial");
+assert.strictEqual(companyLeaders.status, companies.status);
 assert.strictEqual(companyLeaders.listedCount, companies.listedCount);
 assert.strictEqual(companyLeaders.privateCount, companies.privateCount);
 assert.strictEqual(companyLeaders.asOf, companies.asOf);
@@ -1628,7 +1648,7 @@ assert.strictEqual(companyLeaders.laggard && companyLeaders.laggard.symbol,
 assert.strictEqual(companyLeaders.moverCoverage, eligibleCompanyMovers.length);
 assert.deepStrictEqual(companyLeaders.quality.counts, companies.dataQuality.counts);
 assert.strictEqual(companyLeaders.quality.declaredValid, true);
-assert.strictEqual(companyLeaders.sourceHealth.status, "healthy");
+assert.strictEqual(companyLeaders.sourceHealth.status, companiesHealth.status);
 assert.strictEqual(companyLeaders.sourceHealth.freshCoveragePct,
   companiesHealth.coverage.freshCoveragePct);
 assert.strictEqual(companyLeaders.sourceHealth.verifiedCoveragePct,
@@ -1722,8 +1742,8 @@ const invalidCompanyResearch = adapter.buildResearchCards({
   assetRanking: { data: assetRanking, error: null },
   companies: { data: invalidCompanies, error: null }
 }, currentNow);
-assert.strictEqual(invalidCompanyResearch[0].status, "partial");
-assert.strictEqual(invalidCompanyResearch[1].status, "partial");
+assert.strictEqual(invalidCompanyResearch[0].status, baselineResearch[0].status);
+assert.strictEqual(invalidCompanyResearch[1].status, baselineResearch[1].status);
 assert.strictEqual(invalidCompanyResearch[2].status, "error");
 assert.strictEqual(invalidCompanyResearch[2].listedMarketCap, null);
 
@@ -1741,8 +1761,8 @@ const failedCompanyResearch = adapter.buildResearchCards({
   assetRanking: { data: assetRanking, error: null },
   companies: { data: null, error: new Error("HTTP 503") }
 }, currentNow);
-assert.strictEqual(failedCompanyResearch[0].status, "partial");
-assert.strictEqual(failedCompanyResearch[1].status, "partial");
+assert.strictEqual(failedCompanyResearch[0].status, baselineResearch[0].status);
+assert.strictEqual(failedCompanyResearch[1].status, baselineResearch[1].status);
 assert.strictEqual(failedCompanyResearch[2].status, "error");
 
 const calendarNow = new Date(Date.parse(econCalendar.updatedAt) + 60 * 60 * 1000);
