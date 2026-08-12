@@ -184,19 +184,21 @@ class WorkflowExecutor:
         self,
         client: GitHubActionsClient,
         *,
+        workflow_specs: dict[str, dict[str, Any]] | None = None,
         timeout_seconds: int = 3600,
         poll_seconds: int = 15,
         sleep: Callable[[float], None] = time.sleep,
         monotonic: Callable[[], float] = time.monotonic,
     ) -> None:
         self.client = client
+        self.workflow_specs = workflow_specs or DATA_WORKFLOWS
         self.timeout_seconds = timeout_seconds
         self.poll_seconds = poll_seconds
         self.sleep = sleep
         self.monotonic = monotonic
 
     def start(self, workflow_id: str, branch: str) -> PendingRun:
-        spec = DATA_WORKFLOWS[workflow_id]
+        spec = self.workflow_specs[workflow_id]
         workflow_file = spec["file"]
         previous_ids = {
             run.get("id")
