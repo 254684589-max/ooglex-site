@@ -38,6 +38,11 @@ SUPPORTING_WORKFLOWS: dict[str, dict[str, Any]] = {
         "file": "ofr_monitor.yml",
         "sources": ["OFR Financial Stress Index", "OFR STFM公开接口"],
     },
+    "econ-calendar": {
+        "name": "Forex Factory经济日历",
+        "file": "econ_calendar.yml",
+        "sources": ["Forex Factory公开周历"],
+    },
 }
 FIRST_WAVE = tuple(SUPPORTING_WORKFLOWS)
 

@@ -65,10 +65,11 @@ class FakeExecutor:
 
 
 def test_cnn_contract() -> None:
-    require(tuple(SUPPORTING_WORKFLOWS) == ("fear-greed", "ofr-monitor"),
-            "辅助资格必须恰好覆盖CNN与OFR")
-    require(FIRST_WAVE == ("fear-greed", "ofr-monitor"),
-            "CNN与OFR必须同时处于独立来源第一波")
+    require(tuple(SUPPORTING_WORKFLOWS) == (
+        "fear-greed", "ofr-monitor", "econ-calendar"
+    ), "辅助资格必须恰好覆盖CNN、OFR与经济日历")
+    require(FIRST_WAVE == tuple(SUPPORTING_WORKFLOWS),
+            "全部辅助来源必须同时处于独立来源第一波")
     spec = SUPPORTING_WORKFLOWS["fear-greed"]
     require(spec["file"] == "fear_greed.yml" and "CNN" in spec["sources"][0],
             "CNN资格工作流或来源登记错误")
@@ -80,8 +81,16 @@ def test_ofr_contract() -> None:
     require(spec["sources"] == [
         "OFR Financial Stress Index", "OFR STFM公开接口"
     ], "OFR两类公开来源登记错误")
-    require(len({item["file"] for item in SUPPORTING_WORKFLOWS.values()}) == 2,
-            "CNN与OFR不得共享工作流文件")
+    require(len({item["file"] for item in SUPPORTING_WORKFLOWS.values()}) == 3,
+            "CNN、OFR与经济日历不得共享工作流文件")
+
+
+def test_econ_calendar_contract() -> None:
+    spec = SUPPORTING_WORKFLOWS["econ-calendar"]
+    require(spec["file"] == "econ_calendar.yml",
+            "经济日历资格工作流登记错误")
+    require(spec["sources"] == ["Forex Factory公开周历"],
+            "经济日历公开来源登记错误")
 
 
 def test_github_workflow_safety() -> None:
@@ -101,7 +110,9 @@ def test_github_workflow_safety() -> None:
             "辅助资格失败必须阻断且仍上传诊断")
     require("ref: ${{ github.ref_name }}" in workflow,
             "最终检查必须重新读取辅助任务写入后的最新开发分支")
-    require("fear_greed.yml" not in workflow and "ofr_monitor.yml" not in workflow,
+    require(all(name not in workflow for name in (
+        "fear_greed.yml", "ofr_monitor.yml", "econ_calendar.yml"
+    )),
             "辅助资格CI必须经编排器触发来源，不得复制取数步骤")
     require("scripts/validate_finance_terminal_supporting_qualification.py" in quality,
             "质量CI必须运行辅助资格契约测试")
@@ -114,18 +125,18 @@ def test_success_and_report() -> None:
     report = run_supporting_qualification(
         executor, BRANCH, "main", generated_at=NOW
     )
-    require(report["status"] == "PASS", "CNN与OFR成功后资格验收必须PASS")
-    require(report["summary"] == {"total": 2, "successful": 2, "blocked": 0},
+    require(report["status"] == "PASS", "三条辅助来源成功后资格验收必须PASS")
+    require(report["summary"] == {"total": 3, "successful": 3, "blocked": 0},
             "辅助资格汇总不可复算")
     first_wait = next(
         index for index, event in enumerate(executor.events) if event[0] == "wait"
     )
     require(
         [event[1] for event in executor.events[:first_wait]] == list(FIRST_WAVE),
-        "必须先启动CNN与OFR再等待任一结果",
+        "必须先启动全部辅助来源再等待任一结果",
     )
     markdown = render_markdown(report)
-    require("状态：**PASS**" in markdown and "成功：2/2" in markdown,
+    require("状态：**PASS**" in markdown and "成功：3/3" in markdown,
             "辅助资格Markdown报告缺少结论")
     require(report["safety"]["oldRunsExcludedByIdBaseline"] is True,
             "资格报告必须声明隔离旧运行")
@@ -159,16 +170,32 @@ def test_ofr_dispatch_failure_does_not_cancel_cnn() -> None:
             "CNN独立成功结论必须保留")
 
 
+def test_econ_failure_does_not_cancel_other_sources() -> None:
+    executor = FakeExecutor(wait_failures={"econ-calendar"})
+    report = run_supporting_qualification(
+        executor, BRANCH, "main", generated_at=NOW
+    )
+    require(report["status"] == "BLOCKED",
+            "经济日历远端失败必须阻断辅助资格")
+    require(report["workflows"]["econ-calendar"]["conclusion"] == "failure",
+            "经济日历失败结论必须独立记录")
+    require(report["workflows"]["fear-greed"]["conclusion"] == "success"
+            and report["workflows"]["ofr-monitor"]["conclusion"] == "success",
+            "经济日历失败不得取消CNN或OFR")
+
+
 def main() -> None:
     test_cnn_contract()
     test_ofr_contract()
+    test_econ_calendar_contract()
     test_github_workflow_safety()
     test_success_and_report()
     test_failure_is_explicit()
     test_ofr_dispatch_failure_does_not_cancel_cnn()
+    test_econ_failure_does_not_cancel_other_sources()
     print("Finance terminal supporting qualification: PASS")
-    print("- CNN/OFR workflow identity and old-run isolation: PASS")
-    print("- both independent sources start before waiting: PASS")
+    print("- CNN/OFR/econ workflow identity and old-run isolation: PASS")
+    print("- all independent sources start before waiting: PASS")
     print("- development-branch safety inherited from core qualification: PASS")
     print("- isolated failure continuation, timeout and report contract: PASS")
 
