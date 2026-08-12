@@ -10,6 +10,7 @@ on:
     paths:
       - 'scripts/finance_terminal_qualification.py'
       - 'scripts/validate_finance_terminal_qualification.py'
+      - 'scripts/validate_finance_terminal.py'
       - 'scripts/asset-tracker/build_assets.py'
       - 'scripts/market_data_quality.py'
       - 'scripts/validate_market_data_quality.py'
