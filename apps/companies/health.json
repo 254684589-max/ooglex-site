@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "companies",
-  "generatedAt": "2026-08-12T08:09:51Z",
-  "status": "degraded",
+  "generatedAt": "2026-08-12T11:56:31Z",
+  "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-08-12T08:09:51Z",
-  "lastSuccessfulAt": "2026-08-12T08:09:51Z",
+  "lastAttemptAt": "2026-08-12T11:56:31Z",
+  "lastSuccessfulAt": "2026-08-12T11:56:31Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-08-12T08:09:51Z",
+  "publishedSnapshotAt": "2026-08-12T11:56:31Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -52,13 +52,13 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-12T08:09:51Z"
+      "lastSuccessAt": "2026-08-12T11:56:31Z"
     },
     {
       "id": "multiples-vc",
       "name": "multiples.vc公开融资估值汇总",
       "role": "reference",
-      "status": "degraded",
+      "status": "healthy",
       "records": 50,
       "counts": {
         "market": 0,
@@ -67,7 +67,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-12T08:09:51Z"
+      "lastSuccessAt": "2026-08-12T11:56:31Z"
     }
   ],
   "recovery": {
