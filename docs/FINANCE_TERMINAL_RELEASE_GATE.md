@@ -34,6 +34,7 @@
 - `RWTC`必须来自EIA库欣WTI现货，不能用`CL=F`近月期货替代；超过4个美国工作日或上游标记`stale`时为`WARN`。
 - `BTC/USD`必须复用全球资产榜中唯一的Bitcoin/BTC记录：CoinGecko本轮日度快照为`PASS`；Yahoo `BTC-USD`同标的降级必须显示“较前收盘”并为`WARN`；保留旧快照或超过36小时同样为`WARN`。
 - BTC/USD不得读取静态估值、未知或不可用记录；逐条更新时间、行情时点、正数价格、涨跌范围、CoinGecko署名或Yahoo降级披露任一无效均为`BLOCKED`。
+- BTC/USD还必须与资产榜`health.json`中的逐源证据同批对齐：CoinGecko或Yahoo来源计数、来源状态和最后成功时间任一缺失或错配均为`BLOCKED`；健康报告超过72小时或最近整批失败为`WARN`，不会把仍可读取的旧价格描述为更新链健康。
 - 来源、单位、日期、涨跌计算或标的错误，以及未来观测日期，均直接`BLOCKED`。
 
 ### 宏观雷达逐源健康

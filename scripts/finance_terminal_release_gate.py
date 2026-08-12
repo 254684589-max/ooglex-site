@@ -426,7 +426,9 @@ def evaluate_reference_series(
     )
 
 
-def evaluate_bitcoin_market(data: dict[str, Any], now: datetime) -> dict[str, Any]:
+def evaluate_bitcoin_market(
+    data: dict[str, Any], now: datetime, health: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """验证资产榜中可供终端发布的唯一BTC/USD逐条行情。"""
     errors: list[str] = []
     warnings: list[str] = []
@@ -434,6 +436,8 @@ def evaluate_bitcoin_market(data: dict[str, Any], now: datetime) -> dict[str, An
     mode: str | None = None
     status: str | None = None
     age_hours: float | None = None
+    evidence_source: dict[str, Any] | None = None
+    health_age_hours: float | None = None
     rows = data.get("assets")
     if not isinstance(rows, list):
         errors.append("全球资产榜缺少assets数组")
@@ -482,12 +486,50 @@ def evaluate_bitcoin_market(data: dict[str, Any], now: datetime) -> dict[str, An
             warnings.append("资产榜已把BTC/USD逐条记录标记为过期。")
         if age_hours is not None and age_hours > BITCOIN_MAX_AGE_HOURS:
             warnings.append("BTC/USD逐条行情超过36小时。")
+        if health is not None:
+            health_errors = validate_source_health(
+                health,
+                dataset="asset-ranking",
+                published_rows=rows if isinstance(rows, list) else [],
+                published_snapshot_at=data.get("updatedAt"),
+            )
+            errors.extend(f"资产榜健康：{item}" for item in health_errors)
+            try:
+                health_age_hours = hours_since(health.get("lastAttemptAt"), now)
+            except GateInputError as exc:
+                errors.append(str(exc))
+            source_id = "coingecko" if coin_gecko else "yahoo-finance" if yahoo else None
+            candidates = [item for item in (health.get("sources") or []) if isinstance(item, dict)]
+            if source_id:
+                evidence_source = next((item for item in candidates if item.get("id") == source_id), None)
+                if not evidence_source or (evidence_source.get("counts") or {}).get("market", 0) < 1:
+                    errors.append("BTC/USD缺少对应市场来源的同批健康计数")
+                elif evidence_source.get("lastSuccessAt") != meta.get("updatedAt"):
+                    errors.append("BTC/USD逐条更新时间与来源最后成功时间不一致")
+                elif coin_gecko and evidence_source.get("status") != "healthy":
+                    errors.append("CoinGecko BTC/USD没有健康的同批来源证据")
+                elif yahoo and evidence_source.get("status") not in {"healthy", "degraded"}:
+                    errors.append("Yahoo BTC-USD降级来源健康状态无效")
+            else:
+                evidence_source = next((item for item in candidates
+                                        if item.get("id") in {"coingecko", "yahoo-finance"}
+                                        and (item.get("counts") or {}).get("fallback", 0) > 0), None)
+                if evidence_source is None:
+                    errors.append("BTC/USD历史回退缺少逐源健康证据")
+            if health.get("status") == "failed":
+                warnings.append("资产榜最近一次整批任务失败，BTC/USD仅保留可验证旧快照。")
+            if health_age_hours is not None and health_age_hours > AGGREGATE_HEALTH_MAX_AGE_HOURS:
+                warnings.append("资产榜健康证据超过72小时。")
     metrics = {
         "source": source_name,
         "mode": mode,
         "pipelineStatus": status,
         "ageHours": round(age_hours, 2) if age_hours is not None else None,
         "maxAgeHours": BITCOIN_MAX_AGE_HOURS,
+        "healthEvidence": health is not None,
+        "healthSource": evidence_source.get("id") if evidence_source else None,
+        "healthSourceStatus": evidence_source.get("status") if evidence_source else None,
+        "healthAgeHours": round(health_age_hours, 2) if health_age_hours is not None else None,
     }
     if errors:
         return make_check(
@@ -861,8 +903,13 @@ def build_report(
     if macro_health is not None:
         checks.append(evaluate_macro_pipeline(macro, macro_health, now))
     if aggregate_inputs is not None:
-        ranking_data = (aggregate_inputs.get("asset-ranking") or {}).get("data")
-        checks.append(evaluate_bitcoin_market(ranking_data if isinstance(ranking_data, dict) else {}, now))
+        ranking_pair = aggregate_inputs.get("asset-ranking") or {}
+        ranking_data = ranking_pair.get("data")
+        ranking_health = ranking_pair.get("health")
+        checks.append(evaluate_bitcoin_market(
+            ranking_data if isinstance(ranking_data, dict) else {}, now,
+            ranking_health if isinstance(ranking_health, dict) else None,
+        ))
         checks.extend(evaluate_aggregate_pipelines(aggregate_inputs, now))
     if workflow_evidence is not None:
         checks.extend(evaluate_workflow_evidence(workflow_evidence, now))

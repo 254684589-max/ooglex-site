@@ -1989,6 +1989,128 @@
     });
   }
 
+  function unavailableBitcoinSourceHealth(error) {
+    return {
+      seriesId: "BTC/USD",
+      status: "unknown",
+      pipelineStatus: "unknown",
+      label: "UNKNOWN",
+      mode: "unknown",
+      refreshLabel: "不可验证",
+      accessMethodLabel: "不可验证",
+      historyKnown: false,
+      reportStale: false,
+      consecutiveFailures: null,
+      lastAttemptAt: null,
+      lastSuccessfulAt: null,
+      snapshotPreserved: null,
+      failureReason: null,
+      note: "BTC/USD逐源更新链健康不可用。" + (error && error.message ? " " + error.message : "")
+    };
+  }
+
+  function validateBitcoinHealthSource(source, expectedMode) {
+    if (!source || ["healthy", "degraded", "failed", "unknown"].indexOf(source.status) === -1
+      || !Number.isInteger(source.records) || source.records < 0 || !source.counts
+      || !DATA_MODES.every(function (mode) {
+        return Number.isInteger(source.counts[mode]) && source.counts[mode] >= 0;
+      }) || DATA_MODES.reduce(function (sum, mode) {
+        return sum + source.counts[mode];
+      }, 0) !== source.records || source.counts[expectedMode] < 1) {
+      throw new Error("BTC/USD逐源健康计数无效");
+    }
+    return source;
+  }
+
+  function adaptBitcoinSourceHealth(health, data, asset, now) {
+    var pipeline = adaptSourceHealth(health, "asset-ranking", data, now);
+    var row = findBitcoinAsset(data);
+    var meta = normalizeDataMeta(row.dataMeta, null);
+    if (!asset || asset.id !== "bitcoin" || asset.asOf !== meta.asOf || asset.updatedAt !== meta.updatedAt) {
+      throw new Error("BTC/USD行情与资产榜健康输入不一致");
+    }
+    var source;
+    var refreshLabel;
+    var accessMethodLabel;
+    if (meta.mode === "market" && meta.source === "CoinGecko") {
+      source = validateBitcoinHealthSource(health.sources.filter(function (item) {
+        return item && item.id === "coingecko";
+      })[0], "market");
+      if (source.status !== "healthy" || source.lastSuccessAt !== meta.updatedAt) {
+        throw new Error("CoinGecko BTC/USD缺少同批成功证据");
+      }
+      refreshLabel = "已刷新";
+      accessMethodLabel = "CoinGecko";
+    } else if (meta.mode === "market" && /^Yahoo Finance · 静态流通量基准$/.test(meta.source)) {
+      source = validateBitcoinHealthSource(health.sources.filter(function (item) {
+        return item && item.id === "yahoo-finance";
+      })[0], "market");
+      if (["healthy", "degraded"].indexOf(source.status) === -1 || source.lastSuccessAt !== meta.updatedAt) {
+        throw new Error("Yahoo BTC-USD缺少同批降级证据");
+      }
+      refreshLabel = "明确降级";
+      accessMethodLabel = "Yahoo BTC-USD";
+    } else if (meta.mode === "fallback") {
+      source = health.sources.filter(function (item) {
+        return item && (item.id === "coingecko" || item.id === "yahoo-finance")
+          && item.counts && item.counts.fallback > 0;
+      })[0];
+      validateBitcoinHealthSource(source, "fallback");
+      refreshLabel = "保留旧值";
+      accessMethodLabel = "历史快照";
+    } else {
+      throw new Error("BTC/USD健康证据不支持当前逐条模式");
+    }
+
+    var status = pipeline.reportStale ? "stale"
+      : health.status === "failed" ? "failed"
+        : meta.mode === "market" && meta.source === "CoinGecko" ? "healthy" : "degraded";
+    return {
+      seriesId: "BTC/USD",
+      status: status,
+      pipelineStatus: health.status,
+      label: status.toUpperCase(),
+      mode: meta.mode,
+      refreshLabel: refreshLabel,
+      accessMethodLabel: accessMethodLabel,
+      historyKnown: health.historyStatus === "tracked",
+      reportStale: pipeline.reportStale,
+      consecutiveFailures: health.consecutiveFailures,
+      lastAttemptAt: health.lastAttemptAt,
+      lastSuccessfulAt: source.lastSuccessAt || health.lastSuccessfulAt,
+      snapshotPreserved: health.snapshotPreserved,
+      failureReason: health.failureReason,
+      note: status === "healthy"
+        ? "BTC/USD逐条行情与资产榜同批来源健康证据一致。"
+        : status === "degraded"
+          ? "BTC/USD当前使用已披露降级或历史回退路径，未冒充CoinGecko新鲜行情。"
+          : status === "stale"
+            ? "资产榜健康证据已超过72小时，价格快照与更新链状态分开显示。"
+            : "资产榜最近一次整批任务失败，页面仅保留可验证旧快照。"
+    };
+  }
+
+  function attachBitcoinSourceHealth(asset, dataSource, healthSource, now) {
+    var state;
+    if (!dataSource || dataSource.error || !dataSource.data || !healthSource
+      || healthSource.error || !healthSource.data || asset.status === "error") {
+      state = unavailableBitcoinSourceHealth(
+        (dataSource && dataSource.error) || (healthSource && healthSource.error) || new Error("BTC/USD健康输入缺失")
+      );
+    } else {
+      try {
+        state = adaptBitcoinSourceHealth(healthSource.data, dataSource.data, asset, now);
+      } catch (error) {
+        state = unavailableBitcoinSourceHealth(error);
+      }
+    }
+    asset.updateHealth = state;
+    if (asset.status === "ok" && (state.status === "failed" || state.status === "stale")) {
+      asset.status = "stale";
+    }
+    return asset;
+  }
+
   function adaptCompanies(data, now, health, healthError) {
     if (!data || data.source !== "Yahoo Finance") throw new Error("公司榜数据来源不是Yahoo Finance");
     var age = hoursSince(data.updatedAt, now);
@@ -2462,7 +2584,9 @@
     }
   }
 
-  function buildPageData(config, macroData, now, macroError, macroHealthSource, assetRankingSource) {
+  function buildPageData(
+    config, macroData, now, macroError, macroHealthSource, assetRankingSource, assetRankingHealthSource
+  ) {
     validateConfig(config);
     var assets = config.assets.map(function (asset) {
       if (asset.id === "us10y") {
@@ -2509,9 +2633,12 @@
       }
       if (asset.id === "bitcoin") {
         var ranking = assetRankingSource || {};
-        if (ranking.error || !ranking.data) return unavailableBitcoin(asset, ranking.error || new Error("资产榜数据缺失"));
-        try { return adaptBitcoin(asset, ranking.data, now); }
-        catch (error) { return unavailableBitcoin(asset, error); }
+        var rankingHealth = assetRankingHealthSource || {};
+        if (ranking.error || !ranking.data) return attachBitcoinSourceHealth(
+          unavailableBitcoin(asset, ranking.error || new Error("资产榜数据缺失")), ranking, rankingHealth, now
+        );
+        try { return attachBitcoinSourceHealth(adaptBitcoin(asset, ranking.data, now), ranking, rankingHealth, now); }
+        catch (error) { return attachBitcoinSourceHealth(unavailableBitcoin(asset, error), ranking, rankingHealth, now); }
       }
       return Object.assign({}, asset);
     });
@@ -2524,8 +2651,12 @@
     });
   }
 
-  function buildPageDataWithMacroError(config, error, now, macroHealthSource, assetRankingSource) {
-    return buildPageData(config, null, now, error, macroHealthSource, assetRankingSource);
+  function buildPageDataWithMacroError(
+    config, error, now, macroHealthSource, assetRankingSource, assetRankingHealthSource
+  ) {
+    return buildPageData(
+      config, null, now, error, macroHealthSource, assetRankingSource, assetRankingHealthSource
+    );
   }
 
   var testApi = {
@@ -2544,6 +2675,7 @@
     adaptOfrFsi: adaptOfrFsi,
     adaptRwtc: adaptRwtc,
     adaptBitcoin: adaptBitcoin,
+    adaptBitcoinSourceHealth: adaptBitcoinSourceHealth,
     findBitcoinAsset: findBitcoinAsset,
     buildOfficialObservationTrend: buildOfficialObservationTrend,
     adaptSourceHealth: adaptSourceHealth,
@@ -2578,6 +2710,7 @@
     unavailableMacroRegime: unavailableMacroRegime,
     unavailableOfrFsi: unavailableOfrFsi,
     unavailableOfficialSourceHealth: unavailableOfficialSourceHealth,
+    unavailableBitcoinSourceHealth: unavailableBitcoinSourceHealth,
     unavailableSourceHealth: unavailableSourceHealth,
     unavailableSupportingHealth: unavailableSupportingHealth
   };
@@ -3780,7 +3913,7 @@
         && supportingHealthPanels.every(function (panel) {
           return panel.textContent.indexOf("更新链健康不可用") === -1;
         }),
-      officialHealthResources: officialHealthPanels.length === 3
+      officialHealthResources: officialHealthPanels.length === 4
         && officialHealthPanels.every(function (panel) {
           return panel.textContent.indexOf("逐源更新链健康不可用") === -1;
         }),
@@ -3912,8 +4045,12 @@
         var newsSource = sources[14];
         var newsHealthSource = sources[15];
         var marketData = macroSource.error
-          ? buildPageDataWithMacroError(config, macroSource.error, undefined, macroHealthSource, assetRankingSource)
-          : buildPageData(config, macroSource.data, undefined, null, macroHealthSource, assetRankingSource);
+          ? buildPageDataWithMacroError(
+            config, macroSource.error, undefined, macroHealthSource, assetRankingSource, assetRankingHealthSource
+          )
+          : buildPageData(
+            config, macroSource.data, undefined, null, macroHealthSource, assetRankingSource, assetRankingHealthSource
+          );
         return {
           market: marketData,
           risks: buildRiskCards({

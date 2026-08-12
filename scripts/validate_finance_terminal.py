@@ -555,6 +555,7 @@ const oilConfig = config.assets.find((asset) => asset.id === "wti");
 const bitcoinConfig = config.assets.find((asset) => asset.id === "bitcoin");
 const bitcoinRow = assetRanking.assets.find((asset) => asset.symbol === "BTC");
 const rankingSource = { data: assetRanking, error: null };
+const rankingHealthSource = { data: assetRankingHealth, error: null };
 const currentLatestMs = Math.max(...[
   macro.updatedAt,
   fearGreed.updatedAt,
@@ -677,7 +678,9 @@ assert.strictEqual(supportingInformationCards[0].sourceHealth.status,
   adapter.adaptSupportingSourceHealth(econCalendarHealth, "econ-calendar", econCalendar, supportingNow).status);
 assert.strictEqual(supportingInformationCards[1].sourceHealth.status,
   adapter.adaptSupportingSourceHealth(financeNewsHealth, "whats-latest", financeNews, supportingNow).status);
-const success = adapter.buildPageData(config, macro, currentNow, null, null, rankingSource);
+const success = adapter.buildPageData(
+  config, macro, currentNow, null, null, rankingSource, rankingHealthSource
+);
 const dgs10 = success.assets.find((asset) => asset.id === "us10y");
 const dollar = success.assets.find((asset) => asset.id === "dxy");
 const oil = success.assets.find((asset) => asset.id === "wti");
@@ -824,8 +827,11 @@ assert.strictEqual(oilWithStaleHealth.updateHealth.seriesId, "RWTC");
 const allOfficialHealth = adapter.buildPageData(
   config, macro, expiredOfficialHealthNow, null, { data: macroHealth, error: null }
 ).assets.filter((asset) => asset.updateHealth);
-assert.deepStrictEqual(allOfficialHealth.map((asset) => asset.updateHealth.seriesId), ["DGS10", "DTWEXBGS", "RWTC"]);
+assert.deepStrictEqual(allOfficialHealth.map((asset) => asset.updateHealth.seriesId), [
+  "DGS10", "DTWEXBGS", "RWTC", "BTC/USD"
+]);
 assert.strictEqual(allOfficialHealth.filter((asset) => asset.updateHealth.status === "stale").length, 3);
+assert.strictEqual(allOfficialHealth.filter((asset) => asset.updateHealth.status === "unknown").length, 1);
 
 function trackedOfficialHealth(base, seriesId, attemptedAt, mode) {
   const tracked = JSON.parse(JSON.stringify(base));
@@ -886,13 +892,25 @@ assert.strictEqual(bitcoin.updatedAt, bitcoinRow.dataMeta.updatedAt);
 assert.strictEqual(bitcoin.source.name, "Powered by CoinGecko");
 assert.strictEqual(bitcoin.changePeriod, "24_hours");
 assert(bitcoin.note.includes("不宣称实时"));
+assert.strictEqual(bitcoin.updateHealth.status, "healthy");
+assert.strictEqual(bitcoin.updateHealth.accessMethodLabel, "CoinGecko");
+assert.strictEqual(bitcoin.updateHealth.lastSuccessfulAt, bitcoin.updatedAt);
+const tamperedBitcoinHealth = JSON.parse(JSON.stringify(assetRankingHealth));
+tamperedBitcoinHealth.sources.find((source) => source.id === "coingecko").lastSuccessAt = "2026-08-01T00:00:00Z";
+assert.throws(() => adapter.adaptBitcoinSourceHealth(
+  tamperedBitcoinHealth, assetRanking, bitcoin, currentNow
+), /同批/);
 const yahooRanking = JSON.parse(JSON.stringify(assetRanking));
 const yahooBitcoin = adapter.findBitcoinAsset(yahooRanking);
 yahooBitcoin.dataMeta.mode = "market";
 yahooBitcoin.dataMeta.status = "partial";
 yahooBitcoin.dataMeta.source = "Yahoo Finance · 静态流通量基准";
-assert.strictEqual(adapter.adaptBitcoin(bitcoinConfig, yahooRanking, currentNow).status, "partial");
-assert.strictEqual(adapter.adaptBitcoin(bitcoinConfig, yahooRanking, currentNow).changePeriod, "previous_close");
+const yahooBitcoinCard = adapter.adaptBitcoin(bitcoinConfig, yahooRanking, currentNow);
+assert.strictEqual(yahooBitcoinCard.status, "partial");
+assert.strictEqual(yahooBitcoinCard.changePeriod, "previous_close");
+assert.strictEqual(adapter.adaptBitcoinSourceHealth(
+  assetRankingHealth, yahooRanking, yahooBitcoinCard, currentNow
+).accessMethodLabel, "Yahoo BTC-USD");
 const retainedRanking = JSON.parse(JSON.stringify(assetRanking));
 const retainedBitcoin = adapter.findBitcoinAsset(retainedRanking);
 retainedBitcoin.dataMeta.mode = "fallback";
@@ -2570,7 +2588,7 @@ def main() -> None:
     print("- economic calendar counts / impact / local-time input / freshness / independent failure states: PASS")
     print("- finance news market-only / latest-five / safe links / freshness / independent failure states: PASS")
     print("- four supporting feeds / migrated health / partial fallback / retained snapshot / workflow governance: PASS")
-    print("- three official card update chains / single-source isolation / stale evidence: PASS")
+    print("- four real-asset update chains / single-source isolation / stale evidence: PASS")
     print("- no external script dependencies: PASS")
     print("- browser regression probe / read-only CI contract: PASS")
 

@@ -385,7 +385,8 @@ def test_future_observation_is_blocked() -> None:
 
 
 def test_bitcoin_source_and_fallback_contract() -> None:
-    ranking = make_aggregate_inputs()["asset-ranking"]["data"]
+    pair = make_aggregate_inputs()["asset-ranking"]
+    ranking = pair["data"]
     check = evaluate_bitcoin_market(ranking, NOW)
     require(check["status"] == "PASS" and check["metrics"]["source"] == "CoinGecko",
             "新鲜CoinGecko BTC/USD应通过")
@@ -406,6 +407,17 @@ def test_bitcoin_source_and_fallback_contract() -> None:
     require(evaluate_bitcoin_market(estimate, NOW)["status"] == "BLOCKED",
             "估值记录不得冒充BTC/USD行情")
 
+    evidenced = evaluate_bitcoin_market(ranking, NOW, pair["health"])
+    require(evidenced["status"] == "PASS"
+            and evidenced["metrics"]["healthSource"] == "coingecko"
+            and evidenced["metrics"]["healthSourceStatus"] == "healthy",
+            "CoinGecko BTC/USD必须与资产榜同批健康证据一致")
+    tampered_health = deepcopy(pair["health"])
+    coingecko = next(source for source in tampered_health["sources"] if source["id"] == "coingecko")
+    coingecko["lastSuccessAt"] = "2026-08-01T00:00:00Z"
+    require(evaluate_bitcoin_market(ranking, NOW, tampered_health)["status"] == "BLOCKED",
+            "BTC/USD来源成功时间与逐条行情错配必须阻断")
+
 
 def test_us_business_day_contract() -> None:
     # 2026-07-03 is the observed Independence Day holiday; weekend and holiday do not age data.
@@ -422,6 +434,8 @@ def test_fresh_aggregate_pipelines_pass() -> None:
         require(check["status"] == "PASS", f"{dataset}新鲜健康快照应通过：{check}")
         require(check["metrics"]["freshCoveragePct"] == 100.0, f"{dataset}行情覆盖率错误")
     require(len(report["checks"]) == 8, "核心、BTC/USD与三条聚合门禁应合并为8项检查")
+    require(checks["official-bitcoin"]["metrics"]["healthEvidence"] is True,
+            "完整门禁必须读取BTC/USD逐源健康证据")
     require(report["scope"]["aggregatePipelines"] == list(AGGREGATE_DATASETS), "聚合范围未登记")
 
 
