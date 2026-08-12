@@ -1,13 +1,13 @@
 {
-  "updatedAt": "2026-08-12T11:56:33Z",
+  "updatedAt": "2026-08-12T21:24:35Z",
   "asOf": "2026-08-12",
   "source": "CNN Business Fear & Greed Index",
-  "score": 61,
+  "score": 62,
   "rating": "greed",
   "ratingZh": "贪婪",
   "refs": {
     "now": {
-      "score": 61,
+      "score": 62,
       "rating": "greed",
       "ratingZh": "贪婪"
     },
@@ -34,7 +34,7 @@
   },
   "indicators": [
     {
-      "score": 68,
+      "score": 71,
       "rating": "greed",
       "ratingZh": "贪婪",
       "key": "market_momentum_sp500",
@@ -58,7 +58,7 @@
       "desc": "麦克莱伦成交量总和指数"
     },
     {
-      "score": 62,
+      "score": 64,
       "rating": "greed",
       "ratingZh": "贪婪",
       "key": "put_call_options",
@@ -74,7 +74,7 @@
       "desc": "VIX 及其50日均线"
     },
     {
-      "score": 67,
+      "score": 71,
       "rating": "greed",
       "ratingZh": "贪婪",
       "key": "safe_haven_demand",
@@ -425,7 +425,7 @@
     },
     {
       "t": "2026-08-12",
-      "v": 61
+      "v": 62
     }
   ],
   "note": "数据来自 CNN 恐慌与贪婪指数：0 = 极度恐惧，100 = 极度贪婪，由 7 个市场情绪指标综合而成，每日自动更新。仅供参考，不构成建议。"
