@@ -3,7 +3,7 @@
 """Ooglex金融终端Beta/稳定V1只读上线门禁。
 
 门禁只读取仓库快照和GitHub Actions运行证据，不调用行情API，也不改写生产
-数据。第一层检查三项官方核心行情、五项演示资产及页面必须展示的来源说明。
+数据。第一层检查四项真实核心行情、四项演示资产及页面必须展示的来源说明。
 后续层在同一报告中追加聚合管道健康和远端日更周期证据。
 """
 
@@ -89,8 +89,15 @@ EXPECTED_OFFICIAL = {
         "maxBusinessDays": 4,
         "sourceKind": "EIA",
     },
+    "bitcoin": {
+        "symbol": "BTC/USD",
+        "assetId": "bitcoin",
+        "sourceKind": "CoinGecko",
+    },
 }
-EXPECTED_DEMOS = {"sp500", "nasdaq100", "dow", "gold", "bitcoin"}
+EXPECTED_DEMOS = {"sp500", "nasdaq100", "dow", "gold"}
+BITCOIN_MAX_AGE_HOURS = 36
+RWTC_ACCESS_METHODS = {"EIA API v2", "EIA public history page"}
 
 
 class GateInputError(ValueError):
@@ -237,9 +244,9 @@ def validate_config(config: dict[str, Any]) -> tuple[list[dict[str, Any]], list[
     official = [asset for asset in assets if isinstance(asset, dict) and asset.get("demo") is False]
     demos = [asset for asset in assets if isinstance(asset, dict) and asset.get("demo") is True]
     if {asset.get("id") for asset in official} != set(EXPECTED_OFFICIAL):
-        errors.append("真实数据配置必须且只能是DGS10、DTWEXBGS与RWTC")
+        errors.append("真实数据配置必须且只能是DGS10、DTWEXBGS、RWTC与BTC/USD")
     if {asset.get("id") for asset in demos} != EXPECTED_DEMOS:
-        errors.append("演示数据配置必须且只能是三大股指、黄金与比特币")
+        errors.append("演示数据配置必须且只能是三大股指与黄金")
     for asset in demos:
         if asset.get("status") != "demo" or "演示" not in str((asset.get("source") or {}).get("name", "")):
             errors.append(f"{asset.get('id')}未同时以状态和来源标记为演示数据")
@@ -248,7 +255,12 @@ def validate_config(config: dict[str, Any]) -> tuple[list[dict[str, Any]], list[
         source = asset.get("source") or {}
         if asset.get("symbol") != spec.get("symbol"):
             errors.append(f"{asset.get('id')}代码与约定标的不一致")
-        if source.get("seriesId") != spec.get("series"):
+        if asset.get("id") == "bitcoin":
+            if source.get("assetId") != spec.get("assetId") or "CoinGecko" not in str(source.get("name", "")):
+                errors.append("bitcoin来源资产与约定标的不一致")
+            if asset.get("dataRef") != "../asset-ranking/data.json#assets[Bitcoin]":
+                errors.append("bitcoin未复用全球资产榜逐条行情")
+        elif source.get("seriesId") != spec.get("series"):
             errors.append(f"{asset.get('id')}来源序列与约定标的不一致")
         if asset.get("status") != "loading" or asset.get("price") is not None:
             errors.append(f"{asset.get('id')}静态配置必须等待上游适配且不得内置真实数值")
@@ -262,10 +274,12 @@ def evaluate_demo_policy(config: dict[str, Any], page_html: str) -> dict[str, An
 
     required_page_markers = (
         "当前为部分演示数据",
-        "其余5项仍为演示数据",
+        "其余4项仍为演示数据",
         "FRED API使用条款",
         "本产品未获圣路易斯联储认可或认证",
         "EIA RWTC官方序列",
+        "Powered by CoinGecko",
+        "Yahoo BTC-USD",
         "非投资建议",
     )
     missing_markers = [marker for marker in required_page_markers if marker not in page_html]
@@ -288,7 +302,7 @@ def evaluate_demo_policy(config: dict[str, Any], page_html: str) -> dict[str, An
         "WARN" if demo_count else "PASS",
         (f"{demo_count}项资产仍为明确标注的演示数据；Beta可观察，稳定V1仍需替换。"
          if demo_count else "全部核心资产均为真实数据配置。"),
-        details=["三大股指与黄金许可未确认；比特币尚未接入并完成署名。"] if demo_count else [],
+        details=["三大股指与黄金许可及正式接入尚未确认。"] if demo_count else [],
         metrics={"demoAssets": demo_count, "officialAssets": len(assets) - demo_count},
     )
 
@@ -372,6 +386,9 @@ def evaluate_reference_series(
         errors.append(f"{series_id}状态必须为ok或stale")
     if source_kind not in str(source.get("name", "")):
         errors.append(f"{series_id}来源不是{source_kind}")
+    access_method = source.get("accessMethod") if series_id == "RWTC" else None
+    if access_method is not None and access_method not in RWTC_ACCESS_METHODS:
+        errors.append("RWTC实际访问路径无效")
     if not finite_number(record.get("price")) or not finite_number(record.get("previousPrice")):
         errors.append(f"{series_id}当前值或前值无效")
     try:
@@ -395,7 +412,8 @@ def evaluate_reference_series(
             f"official-{series_id.lower()}", display_name, "BLOCKED",
             f"{series_id}无法安全用于Beta。", details=errors,
             metrics={"asOf": record.get("asOf"), "businessDaysOld": age,
-                     "maxBusinessDays": max_business_days, "pipelineStatus": record.get("status")},
+                     "maxBusinessDays": max_business_days, "pipelineStatus": record.get("status"),
+                     "accessMethod": access_method},
         )
     stale = record.get("status") == "stale" or (age is not None and age > max_business_days)
     return make_check(
@@ -403,7 +421,126 @@ def evaluate_reference_series(
         (f"{series_id}观测或最近更新状态已过期，页面应继续标记STALE。"
          if stale else f"{series_id}来源、数值、涨跌计算和时效通过。"),
         metrics={"asOf": record.get("asOf"), "businessDaysOld": age,
-                 "maxBusinessDays": max_business_days, "pipelineStatus": record.get("status")},
+                 "maxBusinessDays": max_business_days, "pipelineStatus": record.get("status"),
+                 "accessMethod": access_method},
+    )
+
+
+def evaluate_bitcoin_market(
+    data: dict[str, Any], now: datetime, health: dict[str, Any] | None = None
+) -> dict[str, Any]:
+    """验证资产榜中可供终端发布的唯一BTC/USD逐条行情。"""
+    errors: list[str] = []
+    warnings: list[str] = []
+    source_name: str | None = None
+    mode: str | None = None
+    status: str | None = None
+    age_hours: float | None = None
+    evidence_source: dict[str, Any] | None = None
+    health_age_hours: float | None = None
+    rows = data.get("assets")
+    if not isinstance(rows, list):
+        errors.append("全球资产榜缺少assets数组")
+        matches: list[dict[str, Any]] = []
+    else:
+        matches = [row for row in rows if isinstance(row, dict)
+                   and row.get("category") == "crypto" and row.get("symbol") == "BTC"
+                   and (row.get("nameEn") == "Bitcoin" or row.get("name") == "比特币")]
+    if len(matches) != 1:
+        errors.append("全球资产榜必须且只能包含一条Bitcoin/BTC记录")
+    top_source = data.get("source")
+    if not isinstance(top_source, str) or "CoinGecko" not in top_source or "Yahoo Finance" not in top_source:
+        errors.append("全球资产榜未同时声明CoinGecko主要来源与Yahoo Finance降级来源")
+    if matches:
+        row = matches[0]
+        meta = row.get("dataMeta") if isinstance(row.get("dataMeta"), dict) else {}
+        source_name = meta.get("source")
+        mode = meta.get("mode")
+        status = meta.get("status")
+        if not finite_number(row.get("price")) or row["price"] <= 0:
+            errors.append("BTC/USD价格必须为正有限数")
+        if not finite_number(row.get("changePct")) or not -100 <= row["changePct"] <= 10000:
+            errors.append("BTC/USD涨跌幅无效")
+        if meta.get("frequency") != "daily":
+            errors.append("BTC/USD逐条频率必须为daily")
+        coin_gecko = mode == "market" and status == "ok" and source_name == "CoinGecko"
+        yahoo = mode == "market" and status == "partial" \
+            and source_name == "Yahoo Finance · 静态流通量基准"
+        retained = mode == "fallback" and status in {"stale", "partial"} \
+            and isinstance(source_name, str) and re.search(r"CoinGecko|Yahoo Finance", source_name)
+        if not (coin_gecko or yahoo or retained):
+            errors.append("BTC/USD不得使用估值、未知或不可用记录冒充行情")
+        try:
+            age_hours = hours_since(meta.get("asOf"), now)
+            hours_since(meta.get("updatedAt"), now)
+            hours_since(data.get("updatedAt"), now)
+        except GateInputError as exc:
+            errors.append(str(exc))
+        if mode == "market" and meta.get("updatedAt") != data.get("updatedAt"):
+            errors.append("BTC/USD逐条更新时间与资产榜快照不一致")
+        if yahoo:
+            warnings.append("CoinGecko本轮不可用，当前明确降级为Yahoo BTC-USD较前收盘口径。")
+        if retained:
+            warnings.append("CoinGecko与Yahoo本轮均未形成新值，当前保留同标的历史快照。")
+        if row.get("stale") is True:
+            warnings.append("资产榜已把BTC/USD逐条记录标记为过期。")
+        if age_hours is not None and age_hours > BITCOIN_MAX_AGE_HOURS:
+            warnings.append("BTC/USD逐条行情超过36小时。")
+        if health is not None:
+            health_errors = validate_source_health(
+                health,
+                dataset="asset-ranking",
+                published_rows=rows if isinstance(rows, list) else [],
+                published_snapshot_at=data.get("updatedAt"),
+            )
+            errors.extend(f"资产榜健康：{item}" for item in health_errors)
+            try:
+                health_age_hours = hours_since(health.get("lastAttemptAt"), now)
+            except GateInputError as exc:
+                errors.append(str(exc))
+            source_id = "coingecko" if coin_gecko else "yahoo-finance" if yahoo else None
+            candidates = [item for item in (health.get("sources") or []) if isinstance(item, dict)]
+            if source_id:
+                evidence_source = next((item for item in candidates if item.get("id") == source_id), None)
+                if not evidence_source or (evidence_source.get("counts") or {}).get("market", 0) < 1:
+                    errors.append("BTC/USD缺少对应市场来源的同批健康计数")
+                elif evidence_source.get("lastSuccessAt") != meta.get("updatedAt"):
+                    errors.append("BTC/USD逐条更新时间与来源最后成功时间不一致")
+                elif coin_gecko and evidence_source.get("status") != "healthy":
+                    errors.append("CoinGecko BTC/USD没有健康的同批来源证据")
+                elif yahoo and evidence_source.get("status") not in {"healthy", "degraded"}:
+                    errors.append("Yahoo BTC-USD降级来源健康状态无效")
+            else:
+                evidence_source = next((item for item in candidates
+                                        if item.get("id") in {"coingecko", "yahoo-finance"}
+                                        and (item.get("counts") or {}).get("fallback", 0) > 0), None)
+                if evidence_source is None:
+                    errors.append("BTC/USD历史回退缺少逐源健康证据")
+            if health.get("status") == "failed":
+                warnings.append("资产榜最近一次整批任务失败，BTC/USD仅保留可验证旧快照。")
+            if health_age_hours is not None and health_age_hours > AGGREGATE_HEALTH_MAX_AGE_HOURS:
+                warnings.append("资产榜健康证据超过72小时。")
+    metrics = {
+        "source": source_name,
+        "mode": mode,
+        "pipelineStatus": status,
+        "ageHours": round(age_hours, 2) if age_hours is not None else None,
+        "maxAgeHours": BITCOIN_MAX_AGE_HOURS,
+        "healthEvidence": health is not None,
+        "healthSource": evidence_source.get("id") if evidence_source else None,
+        "healthSourceStatus": evidence_source.get("status") if evidence_source else None,
+        "healthAgeHours": round(health_age_hours, 2) if health_age_hours is not None else None,
+    }
+    if errors:
+        return make_check(
+            "official-bitcoin", "CoinGecko BTC/USD", "BLOCKED",
+            "BTC/USD无法安全用于Beta。", details=errors, metrics=metrics,
+        )
+    return make_check(
+        "official-bitcoin", "CoinGecko BTC/USD", "WARN" if warnings else "PASS",
+        ("BTC/USD来源契约通过，但当前处于明确降级或过期状态。"
+         if warnings else "BTC/USD来源、数值、涨跌口径和时效通过。"),
+        details=warnings, metrics=metrics,
     )
 
 
@@ -512,8 +649,61 @@ def evaluate_aggregate_pipeline(
         errors.append(str(exc))
 
     coverage = health.get("coverage") if isinstance(health.get("coverage"), dict) else {}
+    slow_frequencies = {"weekly", "monthly", "quarterly", "annual", "irregular"}
+    dynamic_total = 0
+    dynamic_market = 0
+    dynamic_proxies = 0
+    slow_total = 0
+    slow_estimates = 0
+    for row in rows:
+        current = row if isinstance(row, dict) else {}
+        meta = current.get("dataMeta") if isinstance(current.get("dataMeta"), dict) else None
+        dynamic = dataset == "asset-tracker" or (
+            dataset == "companies" and current.get("private") is not True
+        ) or (
+            dataset == "asset-ranking" and current.get("static") is not True and current.get("private") is not True
+        )
+        if dynamic:
+            dynamic_total += 1
+            source_name = str((meta or {}).get("source") or "")
+            registered_proxy = bool(
+                dataset == "asset-ranking" and isinstance(meta, dict)
+                and meta.get("mode") == "market" and meta.get("status") == "partial"
+                and any(token in source_name for token in ("公开存量基准", "世界黄金协会"))
+            )
+            if isinstance(meta, dict) and meta.get("mode") == "market" \
+                    and (meta.get("status") == "ok" or registered_proxy):
+                dynamic_market += 1
+                if registered_proxy:
+                    dynamic_proxies += 1
+        else:
+            slow_total += 1
+            if isinstance(meta, dict) and meta.get("mode") == "estimate" \
+                    and meta.get("status") in {"ok", "partial"} \
+                    and meta.get("frequency") in slow_frequencies:
+                slow_estimates += 1
+    dynamic_issues = dynamic_total - dynamic_market
+    slow_issues = slow_total - slow_estimates
+    source_failures = [
+        source.get("id") for source in (health.get("sources") or [])
+        if isinstance(source, dict) and source.get("status") in {"failed", "unknown"}
+    ]
+    expected_slow_only = bool(
+        dynamic_issues == 0 and slow_issues == 0 and not source_failures
+        and coverage.get("counts", {}).get("fallback") == 0
+        and coverage.get("counts", {}).get("unknown") == 0
+        and coverage.get("counts", {}).get("unavailable") == 0
+    )
+    normalized_pipeline_status = (
+        "healthy" if health.get("status") == "degraded" and expected_slow_only
+        and health.get("historyStatus") == "tracked"
+        and (health.get("attempt") or {}).get("status") == "success"
+        and health.get("consecutiveFailures") == 0
+        else health.get("status")
+    )
     metrics = {
-        "pipelineStatus": health.get("status"),
+        "pipelineStatus": normalized_pipeline_status,
+        "reportedPipelineStatus": health.get("status"),
         "historyStatus": health.get("historyStatus"),
         "lastAttemptAt": health.get("lastAttemptAt"),
         "lastSuccessfulAt": health.get("lastSuccessfulAt"),
@@ -524,6 +714,14 @@ def evaluate_aggregate_pipeline(
         "availableCoveragePct": coverage.get("availableCoveragePct"),
         "consecutiveFailures": health.get("consecutiveFailures"),
         "snapshotPreserved": health.get("snapshotPreserved"),
+        "dynamicRecords": dynamic_total,
+        "dynamicMarketRecords": dynamic_market,
+        "dynamicProxyRecords": dynamic_proxies,
+        "dynamicIssueRecords": dynamic_issues,
+        "slowRecords": slow_total,
+        "slowEstimateRecords": slow_estimates,
+        "slowIssueRecords": slow_issues,
+        "expectedSlowOnly": expected_slow_only,
     }
     if errors:
         return make_check(
@@ -545,8 +743,14 @@ def evaluate_aggregate_pipeline(
         )
 
     warnings: list[str] = []
-    if health.get("status") == "degraded":
-        warnings.append("管道包含回退、估值、未知或部分数据。")
+    if health.get("status") == "degraded" and not expected_slow_only:
+        warnings.append("管道包含动态回退、未知、不可用或未登记的慢频数据。")
+    if dynamic_issues:
+        warnings.append(f"{dynamic_issues}项动态记录未形成正常市场行情。")
+    if slow_issues:
+        warnings.append(f"{slow_issues}项慢频记录未按已登记估值口径披露。")
+    if source_failures:
+        warnings.append("来源健康异常：" + "、".join(source_failures))
     if health.get("historyStatus") != "tracked":
         warnings.append("连续成功/失败历史尚未由真实远端运行建立。")
     if coverage.get("freshCoveragePct") == 0 and coverage.get("dynamicRecords", 0) > 0:
@@ -554,7 +758,10 @@ def evaluate_aggregate_pipeline(
     status = "WARN" if warnings else "PASS"
     summary = (
         f"{dataset}快照与健康契约通过，但仍有降级或历史待建立状态。"
-        if warnings else f"{dataset}快照、来源健康和最近尝试时效通过。"
+        if warnings else (
+            f"{dataset}动态行情与已披露慢频估值分层通过。"
+            if slow_total else f"{dataset}快照、来源健康和最近尝试时效通过。"
+        )
     )
     return make_check(
         f"pipeline-{dataset}", spec["name"], status, summary,
@@ -766,6 +973,13 @@ def build_report(
     if macro_health is not None:
         checks.append(evaluate_macro_pipeline(macro, macro_health, now))
     if aggregate_inputs is not None:
+        ranking_pair = aggregate_inputs.get("asset-ranking") or {}
+        ranking_data = ranking_pair.get("data")
+        ranking_health = ranking_pair.get("health")
+        checks.append(evaluate_bitcoin_market(
+            ranking_data if isinstance(ranking_data, dict) else {}, now,
+            ranking_health if isinstance(ranking_health, dict) else None,
+        ))
         checks.extend(evaluate_aggregate_pipelines(aggregate_inputs, now))
     if workflow_evidence is not None:
         checks.extend(evaluate_workflow_evidence(workflow_evidence, now))
@@ -798,6 +1012,7 @@ def build_report(
         },
         "scope": {
             "officialSeries": ["DGS10", "DTWEXBGS", "RWTC"],
+            "marketAssets": ["BTC/USD"],
             "macroSourceHealth": macro_health is not None,
             "aggregatePipelines": list(AGGREGATE_DATASETS) if aggregate_inputs is not None else [],
             "remoteWorkflows": list(WORKFLOW_SPECS) if workflow_evidence is not None else [],
@@ -952,7 +1167,7 @@ def main() -> None:
     parser.add_argument("--report-json", type=Path)
     parser.add_argument("--report-md", type=Path)
     parser.add_argument("--skip-aggregate-health", action="store_true",
-                        help="仅用于隔离测试三项官方行情；正常门禁不得跳过")
+                        help="仅用于隔离测试三项宏观官方行情；正常门禁不得跳过")
     parser.add_argument("--repository", help="GitHub owner/name；默认读取GITHUB_REPOSITORY")
     parser.add_argument("--branch", help="待观察分支；默认读取READINESS_BRANCH或GitHub环境")
     parser.add_argument("--github-token-env", default="GITHUB_TOKEN",

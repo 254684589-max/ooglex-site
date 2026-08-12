@@ -1,6 +1,6 @@
 name: Macro Radar
 
-# 每日刷新「宏观雷达 · Macro Radar」：跑取数脚本（Yahoo行情 + FRED/EIA官方API）→
+# 每日刷新「宏观雷达 · Macro Radar」：跑取数脚本（Yahoo行情 + FRED/EIA官方源）→
 # 生成 apps/macro-radar/data.json → 提交回仓库。密钥只从仓库Secrets注入。
 # 数据源失败时保留上次有效值，并在数据中记录降级状态。
 on:
@@ -44,7 +44,7 @@ jobs:
       - name: Build macro radar data
         env:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}   # 可选：有则接入 FRED 宏观管道
-          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}     # 可选：有则更新 EIA RWTC 现货数据
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}     # 可选：有则优先API；缺失时使用EIA公开历史页
         run: python scripts/macro-radar/build_radar.py
 
       - name: Build regime history (时光机)

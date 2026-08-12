@@ -46,7 +46,7 @@ def reference(series_id: str, provider: str, price: float, previous: float, *, s
 
 
 def fixture(attempted_at: str = "2026-08-05T22:00:00Z") -> dict:
-    return {
+    data = {
         "updatedAt": attempted_at,
         "macro": [{
             "zh": "实际利率与通胀预期",
@@ -55,6 +55,10 @@ def fixture(attempted_at: str = "2026-08-05T22:00:00Z") -> dict:
                 "id": "DGS10", "name": "10 年期美债收益率", "val": "4.25%", "chg": "+2bp",
                 "tone": "up", "price": 4.25, "previousPrice": 4.23, "changeBps": 2,
                 "asOf": "2026-08-05", "previousAsOf": "2026-08-04", "frequency": "daily",
+                "observations": [
+                    {"asOf": "2026-08-04", "value": 4.23},
+                    {"asOf": "2026-08-05", "value": 4.25},
+                ],
                 "status": "ok", "updatedAt": attempted_at, "lastAttemptAt": attempted_at,
                 "source": {"name": SERIES_SPECS["DGS10"]["provider"],
                            "url": SERIES_SPECS["DGS10"]["url"], "seriesId": "DGS10"},
@@ -67,6 +71,8 @@ def fixture(attempted_at: str = "2026-08-05T22:00:00Z") -> dict:
                               attempted_at=attempted_at),
         },
     }
+    data["referenceSeries"]["RWTC"]["source"]["accessMethod"] = "EIA public history page"
+    return data
 
 
 def load_build_radar():
@@ -91,18 +97,32 @@ def test_builder_contract() -> None:
     builder = load_build_radar()
     attempted_at = "2026-08-06T22:00:00Z"
     current = fixture("2026-08-05T22:00:00Z")
-    success = builder.build_dgs10_reference(
-        current, attempted_at, fetcher=lambda *_: [("2026-08-05", 4.25), ("2026-08-06", 4.28)]
-    )
+    observations = [
+        ("2026-08-01", 4.20), ("2026-08-04", 4.23),
+        ("2026-08-05", 4.25), ("2026-08-06", 4.28),
+    ]
+    success = builder.build_dgs10_reference(current, attempted_at, fetcher=lambda *_: observations)
     require(success["status"] == "ok" and success["changeBps"] == 3
             and success["updatedAt"] == attempted_at, "DGS10成功刷新语义错误")
+    require(success["observations"] == [
+        {"asOf": observed, "value": value} for observed, value in observations
+    ], "DGS10最近观测窗口映射错误")
     fallback = builder.build_dgs10_reference(current, attempted_at, fetcher=lambda *_: [])
     require(fallback["status"] == "stale" and fallback["asOf"] == "2026-08-05"
             and fallback["updatedAt"] == "2026-08-05T22:00:00Z"
             and fallback["lastAttemptAt"] == attempted_at, "DGS10失败回退未保留成功时间")
+    require(fallback["observations"] == current["macro"][0]["rows"][0]["observations"],
+            "DGS10失败回退必须完整保留最近观测窗口")
     unavailable = builder.build_dgs10_reference({}, attempted_at, fetcher=lambda *_: [])
     require(unavailable["status"] == "error" and unavailable["price"] is None,
             "无历史DGS10时不得生成默认值")
+    require(unavailable["observations"] == [], "无历史DGS10时观测窗口必须为空")
+    invalid = builder.build_dgs10_reference(
+        current, attempted_at, fetcher=lambda *_: [("2026-08-06", 4.28), ("2026-08-05", 4.25)]
+    )
+    require(invalid["status"] == "stale"
+            and invalid["observations"] == current["macro"][0]["rows"][0]["observations"],
+            "DGS10非递增观测必须回退旧窗口")
     patched = builder.upsert_dgs10_macro(current["macro"], success)
     rows = [row for category in patched for row in category.get("rows", []) if row.get("id") == "DGS10"]
     require(len(rows) == 1 and rows[0]["asOf"] == "2026-08-06", "DGS10宏观行应精确替换")
@@ -119,6 +139,9 @@ def run_contract_tests() -> None:
     require(healthy["status"] == "healthy" and healthy["attempt"]["status"] == "success",
             "三源成功应生成healthy")
     require(healthy["coverage"]["freshCoveragePct"] == 100.0, "三源成功覆盖率应为100%")
+    rwtc_health = next(source for source in healthy["sources"] if source["id"] == "RWTC")
+    require(rwtc_health["source"]["accessMethod"] == "EIA public history page",
+            "RWTC健康证据必须保留实际访问路径")
     require(not validate_macro_health(healthy, data), "健康三源契约应通过")
 
     second_at = "2026-08-06T22:00:00Z"
@@ -165,6 +188,9 @@ def run_contract_tests() -> None:
     tampered["coverage"]["freshCoveragePct"] = 100
     tampered["sources"][1]["source"]["seriesId"] = "DXY"
     require(validate_macro_health(tampered, partial_data), "篡改覆盖率或序列ID必须失败")
+    tampered_path = deepcopy(healthy)
+    tampered_path["sources"][2]["source"]["accessMethod"] = "unregistered mirror"
+    require(validate_macro_health(tampered_path, data), "篡改RWTC访问路径必须失败")
 
 
 def load(path: Path) -> dict:

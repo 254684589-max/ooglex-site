@@ -25,6 +25,7 @@
   var OFR_FSI_MAX_BUSINESS_DAYS = 5;
   var ASSET_TRACKER_MAX_AGE_HOURS = 72;
   var ASSET_RANKING_MAX_AGE_HOURS = 72;
+  var BITCOIN_MAX_AGE_HOURS = 36;
   var COMPANIES_MAX_AGE_HOURS = 72;
   var SOURCE_HEALTH_MAX_AGE_HOURS = {
     "macro-radar": 72,
@@ -42,6 +43,7 @@
   var PIPELINE_HISTORY_STATUSES = ["tracked", "migrated"];
   var MACRO_HEALTH_MODES = ["market", "fallback", "unavailable", "unknown"];
   var MACRO_HEALTH_SOURCE_STATUSES = ["healthy", "degraded", "failed", "unknown"];
+  var RWTC_ACCESS_METHODS = ["EIA API v2", "EIA public history page"];
   var OFFICIAL_SOURCE_HEALTH_SPECS = {
     DGS10: {
       provider: "FRED / Federal Reserve H.15", maxBusinessDays: 3, changeUnit: "bp"
@@ -273,6 +275,10 @@
       freshCoveragePct: null,
       verifiedCoveragePct: null,
       availableCoveragePct: null,
+      dynamicIssueRecords: null,
+      dynamicProxyRecords: null,
+      slowRecords: null,
+      slowEstimateRecords: null,
       consecutiveFailures: null,
       lastAttemptAt: null,
       lastSuccessfulAt: null,
@@ -300,6 +306,48 @@
 
   function sourceHealthPercent(numerator, denominator) {
     return denominator > 0 ? Math.round(numerator / denominator * 10000) / 100 : 0;
+  }
+
+  function sourceHealthClassification(dataset, rows, health) {
+    var slowFrequencies = ["weekly", "monthly", "quarterly", "annual", "irregular"];
+    var dynamicRecords = 0;
+    var dynamicMarketRecords = 0;
+    var dynamicProxyRecords = 0;
+    var slowRecords = 0;
+    var slowEstimateRecords = 0;
+    rows.forEach(function (row) {
+      var current = row && typeof row === "object" ? row : {};
+      var meta = current.dataMeta && typeof current.dataMeta === "object" ? current.dataMeta : {};
+      var dynamic = dataset === "asset-tracker"
+        || (dataset === "companies" && current.private !== true)
+        || (dataset === "asset-ranking" && current.static !== true && current.private !== true);
+      if (dynamic) {
+        dynamicRecords += 1;
+        var registeredProxy = dataset === "asset-ranking" && meta.mode === "market" && meta.status === "partial"
+          && (/公开存量基准/.test(meta.source || "") || /世界黄金协会/.test(meta.source || ""));
+        if (meta.mode === "market" && (meta.status === "ok" || registeredProxy)) {
+          dynamicMarketRecords += 1;
+          if (registeredProxy) dynamicProxyRecords += 1;
+        }
+      } else {
+        slowRecords += 1;
+        if (meta.mode === "estimate" && ["ok", "partial"].indexOf(meta.status) !== -1
+          && slowFrequencies.indexOf(meta.frequency) !== -1) slowEstimateRecords += 1;
+      }
+    });
+    var sourceFailures = (health.sources || []).filter(function (source) {
+      return source && (source.status === "failed" || source.status === "unknown");
+    }).map(function (source) { return source.id; });
+    return {
+      dynamicRecords: dynamicRecords,
+      dynamicMarketRecords: dynamicMarketRecords,
+      dynamicIssueRecords: dynamicRecords - dynamicMarketRecords,
+      dynamicProxyRecords: dynamicProxyRecords,
+      slowRecords: slowRecords,
+      slowEstimateRecords: slowEstimateRecords,
+      slowIssueRecords: slowRecords - slowEstimateRecords,
+      sourceFailures: sourceFailures
+    };
   }
 
   function adaptSourceHealth(health, dataset, data, now) {
@@ -371,13 +419,24 @@
     if (attemptTotal !== health.attempt.producedRecords
       || health.attempt.published !== (health.status !== "failed")) throw new Error("健康尝试汇总不一致");
 
+    var classification = sourceHealthClassification(dataset, rows, health);
+    var countsHaveNoFailures = counts.fallback === 0 && counts.unknown === 0 && counts.unavailable === 0;
+    var expectedSlowOnly = classification.dynamicIssueRecords === 0
+      && classification.slowIssueRecords === 0 && classification.sourceFailures.length === 0
+      && countsHaveNoFailures;
+    var normalizedPipelineStatus = health.status === "degraded" && expectedSlowOnly
+      && health.historyStatus === "tracked" && health.attempt.status === "success"
+      && health.consecutiveFailures === 0 ? "healthy" : health.status;
     var reportStale = attemptAgeHours > SOURCE_HEALTH_MAX_AGE_HOURS[dataset];
-    var displayStatus = reportStale && health.status !== "failed" ? "stale" : health.status;
-    var note = health.status === "failed"
+    var displayStatus = reportStale && normalizedPipelineStatus !== "failed" ? "stale" : normalizedPipelineStatus;
+    var note = normalizedPipelineStatus === "failed"
       ? "本轮取数失败，页面继续使用最后有效快照。"
       : health.historyStatus === "migrated"
         ? "健康历史从当前快照开始建立；此前连续失败次数未知。"
-        : "来源健康、覆盖率与恢复状态已跟踪。";
+        : expectedSlowOnly && classification.slowRecords
+          ? "动态行情（含" + classification.dynamicProxyRecords + "项已披露市值代理）与"
+            + classification.slowEstimateRecords + "项慢频估值分层通过；慢变量不冒充每日行情。"
+          : "来源健康、覆盖率与恢复状态已跟踪。";
     if (reportStale) {
       note = health.status === "failed"
         ? "健康报告已超过" + SOURCE_HEALTH_MAX_AGE_HOURS[dataset] + "小时；上次记录为取数失败，页面继续使用最后有效快照。"
@@ -386,7 +445,8 @@
     return {
       dataset: dataset,
       status: displayStatus,
-      pipelineStatus: health.status,
+      pipelineStatus: normalizedPipelineStatus,
+      reportedPipelineStatus: health.status,
       label: displayStatus.toUpperCase(),
       contractKnown: true,
       historyKnown: health.historyStatus === "tracked",
@@ -395,6 +455,10 @@
       freshCoveragePct: coverage.freshCoveragePct,
       verifiedCoveragePct: coverage.verifiedCoveragePct,
       availableCoveragePct: coverage.availableCoveragePct,
+      dynamicIssueRecords: classification.dynamicIssueRecords,
+      dynamicProxyRecords: classification.dynamicProxyRecords,
+      slowRecords: classification.slowRecords,
+      slowEstimateRecords: classification.slowEstimateRecords,
       consecutiveFailures: health.consecutiveFailures,
       lastAttemptAt: health.lastAttemptAt,
       lastSuccessfulAt: health.lastSuccessfulAt,
@@ -654,7 +718,8 @@
         published: oil.status !== "error",
         asOf: oil.status === "error" ? null : oil.asOf,
         updatedAt: oil.status === "error" ? null : oil.updatedAt,
-        status: oil.status
+        status: oil.status,
+        accessMethod: oil.source && oil.source.accessMethod || null
       } : null
     };
   }
@@ -889,6 +954,13 @@
       || asset.updatedAt !== published.updatedAt) {
       throw new Error(seriesId + "逐源健康与发布快照不一致");
     }
+    if (seriesId === "RWTC") {
+      var accessMethod = source.source.accessMethod || null;
+      if (accessMethod !== published.accessMethod || accessMethod !== (asset.source.accessMethod || null)
+        || (accessMethod !== null && RWTC_ACCESS_METHODS.indexOf(accessMethod) === -1)) {
+        throw new Error("RWTC实际访问路径与健康证据不一致");
+      }
+    }
     var sourceAttemptAgeHours = hoursSince(source.lastAttemptAt, now);
     if (sourceAttemptAgeHours === null
       || (source.lastSuccessfulAt !== null && hoursSince(source.lastSuccessfulAt, now) === null)) {
@@ -958,6 +1030,11 @@
       lastSuccessfulAt: source.lastSuccessfulAt,
       snapshotPreserved: source.snapshotPreserved,
       failureReason: source.failureReason,
+      accessMethod: seriesId === "RWTC" ? source.source.accessMethod || null : null,
+      accessMethodLabel: seriesId === "RWTC"
+        ? source.source.accessMethod === "EIA API v2" ? "API v2"
+          : source.source.accessMethod === "EIA public history page" ? "官方历史页" : "待记录"
+        : null,
       note: note
     };
   }
@@ -1051,6 +1128,59 @@
     return null;
   }
 
+  function normalizeOfficialObservations(record) {
+    var source = record && Array.isArray(record.observations) ? record.observations : null;
+    var candidates = source ? source.slice() : [];
+    if (!source && record) {
+      if (record.previousAsOf && isNumber(record.previousPrice)) {
+        candidates.push({ asOf: record.previousAsOf, value: record.previousPrice });
+      }
+      if (record.asOf && isNumber(record.price)) {
+        candidates.push({ asOf: record.asOf, value: record.price });
+      }
+    }
+    if (candidates.length > 8) throw new Error("官方观测窗口超过8项");
+    var previousDate = null;
+    var observations = candidates.map(function (item) {
+      var observed = parseIsoDate(item && item.asOf);
+      if (!observed || !isNumber(item && item.value) || item.value <= 0
+          || (previousDate && observed <= previousDate)) {
+        throw new Error("官方观测窗口包含无效或非递增记录");
+      }
+      previousDate = observed;
+      return { asOf: item.asOf, value: item.value };
+    });
+    if (observations.length && record) {
+      var last = observations[observations.length - 1];
+      if (last.asOf !== record.asOf || !isNumber(record.price)
+          || Math.abs(last.value - record.price) > 1e-9) {
+        throw new Error("官方观测窗口末值与当前记录不一致");
+      }
+    }
+    return observations;
+  }
+
+  function buildOfficialObservationTrend(record, changeUnit) {
+    var observations = normalizeOfficialObservations(record);
+    var first = observations[0] || null;
+    var last = observations[observations.length - 1] || null;
+    var change = null;
+    if (first && last && observations.length >= 2) {
+      change = changeUnit === "bp"
+        ? Math.round((last.value - first.value) * 10000) / 100
+        : (last.value / first.value - 1) * 100;
+    }
+    return {
+      count: observations.length,
+      targetCount: 8,
+      startAsOf: first && first.asOf,
+      endAsOf: last && last.asOf,
+      values: observations.map(function (item) { return item.value; }),
+      change: change,
+      changeUnit: changeUnit
+    };
+  }
+
   function adaptDgs10(template, macroData, now) {
     var match = findDgs10Row(macroData);
     if (!match) throw new Error("宏观雷达未提供DGS10记录");
@@ -1089,6 +1219,7 @@
 
     var refreshFailed = recordStatus === "stale";
     var stale = refreshFailed || age > DGS10_MAX_BUSINESS_DAYS;
+    var observationTrend = buildOfficialObservationTrend(match.row, "bp");
     var note = "日频官方数据；变化为相对上一观测值的基点数。";
     if (refreshFailed) {
       note = "本轮FRED自动更新失败，保留上次有效DGS10观测值并标记为过期。";
@@ -1111,7 +1242,8 @@
         seriesId: "DGS10"
       },
       note: note,
-      spark: []
+      spark: observationTrend.values,
+      observationTrend: observationTrend
     });
   }
 
@@ -1171,6 +1303,7 @@
     }
     var refreshFailed = record.status === "stale";
     var stale = refreshFailed || age > DTWEXBGS_MAX_BUSINESS_DAYS;
+    var observationTrend = buildOfficialObservationTrend(record, "percent");
     var note = "FRED官方日频数据；变化为相对上一观测值的百分比。";
     if (refreshFailed) {
       note = "本轮FRED自动更新失败，保留上次有效观测值并标记为过期。";
@@ -1189,7 +1322,8 @@
         seriesId: "DTWEXBGS"
       },
       note: note,
-      spark: []
+      spark: observationTrend.values,
+      observationTrend: observationTrend
     });
   }
 
@@ -1234,6 +1368,9 @@
     if (!source || source.seriesId !== "RWTC" || !/EIA/.test(source.name || "")) {
       throw new Error("RWTC来源不是EIA");
     }
+    if (source.accessMethod !== undefined && RWTC_ACCESS_METHODS.indexOf(source.accessMethod) === -1) {
+      throw new Error("RWTC实际访问路径无效");
+    }
     if (!isNumber(record.price) || record.price <= 0 || !isNumber(record.previousPrice) || record.previousPrice <= 0) {
       throw new Error("RWTC当前值或前值无效");
     }
@@ -1250,6 +1387,7 @@
     }
     var refreshFailed = record.status === "stale";
     var stale = refreshFailed || age > RWTC_MAX_BUSINESS_DAYS;
+    var observationTrend = buildOfficialObservationTrend(record, "percent");
     var note = "EIA官方日频WTI现货数据；变化为相对上一发布观测值的百分比。";
     if (refreshFailed) {
       note = "本轮EIA自动更新未成功，保留上次有效现货观测值并标记为过期。";
@@ -1266,10 +1404,12 @@
       source: {
         name: "U.S. EIA / Cushing WTI Spot",
         url: "https://www.eia.gov/dnav/pet/hist/rwtcd.htm",
-        seriesId: "RWTC"
+        seriesId: "RWTC",
+        accessMethod: source.accessMethod || null
       },
       note: note,
-      spark: []
+      spark: observationTrend.values,
+      observationTrend: observationTrend
     });
   }
 
@@ -1835,6 +1975,204 @@
     };
   }
 
+  function findBitcoinAsset(data) {
+    var matches = Array.isArray(data && data.assets) ? data.assets.filter(function (asset) {
+      return asset && asset.category === "crypto" && asset.symbol === "BTC"
+        && (asset.nameEn === "Bitcoin" || asset.name === "比特币");
+    }) : [];
+    if (matches.length !== 1) throw new Error("资产榜必须且只能包含一条比特币记录");
+    return matches[0];
+  }
+
+  function adaptBitcoin(config, data, now) {
+    if (!config || config.id !== "bitcoin" || config.demo !== false || config.symbol !== "BTC/USD") {
+      throw new Error("比特币卡片配置无效");
+    }
+    if (!data || typeof data.source !== "string" || !/CoinGecko/.test(data.source)
+      || !/Yahoo Finance/.test(data.source)) throw new Error("比特币上游来源声明不完整");
+    var row = findBitcoinAsset(data);
+    if (!isNumber(row.price) || row.price <= 0) throw new Error("比特币价格无效");
+    if (!isNumber(row.changePct) || row.changePct < -100 || row.changePct > 10000) {
+      throw new Error("比特币涨跌幅无效");
+    }
+    var meta = normalizeDataMeta(row.dataMeta, null);
+    if (!meta.contractKnown || meta.frequency !== "daily" || !meta.asOf || !meta.updatedAt) {
+      throw new Error("比特币逐条来源或时间契约无效");
+    }
+    var isCoinGecko = meta.mode === "market" && meta.status === "ok" && meta.source === "CoinGecko";
+    var isYahoo = meta.mode === "market" && meta.status === "partial"
+      && /^Yahoo Finance · 静态流通量基准$/.test(meta.source);
+    var isRetained = meta.mode === "fallback" && ["stale", "partial"].indexOf(meta.status) !== -1
+      && /CoinGecko|Yahoo Finance/.test(meta.source);
+    if (!isCoinGecko && !isYahoo && !isRetained) {
+      throw new Error("比特币不得使用估值、未知或不可用记录冒充行情");
+    }
+    var age = hoursSince(meta.asOf, now);
+    var updateAge = hoursSince(meta.updatedAt, now);
+    if (age === null || updateAge === null) throw new Error("比特币行情时间无效或晚于当前时间");
+    if (meta.mode === "market" && meta.updatedAt !== data.updatedAt) {
+      throw new Error("比特币逐条更新时间与资产榜快照不一致");
+    }
+    var stale = age > BITCOIN_MAX_AGE_HOURS || isRetained || row.stale === true;
+    var status = stale ? "stale" : isYahoo ? "partial" : "ok";
+    var source = isCoinGecko
+      ? { name: "Powered by CoinGecko", url: "https://www.coingecko.com/" }
+      : { name: meta.source, url: "https://finance.yahoo.com/quote/BTC-USD/" };
+    return Object.assign({}, config, {
+      demo: false,
+      status: status,
+      price: row.price,
+      changePct: row.changePct,
+      asOf: meta.asOf,
+      updatedAt: meta.updatedAt,
+      delayLabel: isCoinGecko ? "日度快照 · 24小时涨跌"
+        : isYahoo ? "日频报价 · 较前收盘" : "日频快照 · 历史回退",
+      changePeriod: isCoinGecko ? "24_hours" : isYahoo ? "previous_close" : "retained_snapshot",
+      source: source,
+      note: stale
+        ? "CoinGecko与Yahoo本轮均未形成可发布新值，保留资产榜上一份同标的行情并标记过期。"
+        : isYahoo
+          ? "CoinGecko本轮不可用；使用Yahoo BTC-USD报价作为明确降级，涨跌为较前收盘。"
+          : "复用资产榜CoinGecko日度快照；涨跌为上游返回的过去24小时变化，不宣称实时。"
+    });
+  }
+
+  function unavailableBitcoin(config, error) {
+    return Object.assign({}, config, {
+      demo: false,
+      status: "error",
+      price: null,
+      changePct: null,
+      asOf: null,
+      updatedAt: null,
+      delayLabel: "日度行情不可用",
+      source: { name: "CoinGecko · Yahoo Finance", url: "../asset-ranking/" },
+      note: "无法从资产榜读取可验证的BTC/USD行情。" + (error && error.message ? " " + error.message : "")
+    });
+  }
+
+  function unavailableBitcoinSourceHealth(error) {
+    return {
+      seriesId: "BTC/USD",
+      status: "unknown",
+      pipelineStatus: "unknown",
+      label: "UNKNOWN",
+      mode: "unknown",
+      refreshLabel: "不可验证",
+      accessMethodLabel: "不可验证",
+      historyKnown: false,
+      reportStale: false,
+      consecutiveFailures: null,
+      lastAttemptAt: null,
+      lastSuccessfulAt: null,
+      snapshotPreserved: null,
+      failureReason: null,
+      note: "BTC/USD逐源更新链健康不可用。" + (error && error.message ? " " + error.message : "")
+    };
+  }
+
+  function validateBitcoinHealthSource(source, expectedMode) {
+    if (!source || ["healthy", "degraded", "failed", "unknown"].indexOf(source.status) === -1
+      || !Number.isInteger(source.records) || source.records < 0 || !source.counts
+      || !DATA_MODES.every(function (mode) {
+        return Number.isInteger(source.counts[mode]) && source.counts[mode] >= 0;
+      }) || DATA_MODES.reduce(function (sum, mode) {
+        return sum + source.counts[mode];
+      }, 0) !== source.records || source.counts[expectedMode] < 1) {
+      throw new Error("BTC/USD逐源健康计数无效");
+    }
+    return source;
+  }
+
+  function adaptBitcoinSourceHealth(health, data, asset, now) {
+    var pipeline = adaptSourceHealth(health, "asset-ranking", data, now);
+    var row = findBitcoinAsset(data);
+    var meta = normalizeDataMeta(row.dataMeta, null);
+    if (!asset || asset.id !== "bitcoin" || asset.asOf !== meta.asOf || asset.updatedAt !== meta.updatedAt) {
+      throw new Error("BTC/USD行情与资产榜健康输入不一致");
+    }
+    var source;
+    var refreshLabel;
+    var accessMethodLabel;
+    if (meta.mode === "market" && meta.source === "CoinGecko") {
+      source = validateBitcoinHealthSource(health.sources.filter(function (item) {
+        return item && item.id === "coingecko";
+      })[0], "market");
+      if (source.status !== "healthy" || source.lastSuccessAt !== meta.updatedAt) {
+        throw new Error("CoinGecko BTC/USD缺少同批成功证据");
+      }
+      refreshLabel = "已刷新";
+      accessMethodLabel = "CoinGecko";
+    } else if (meta.mode === "market" && /^Yahoo Finance · 静态流通量基准$/.test(meta.source)) {
+      source = validateBitcoinHealthSource(health.sources.filter(function (item) {
+        return item && item.id === "yahoo-finance";
+      })[0], "market");
+      if (["healthy", "degraded"].indexOf(source.status) === -1 || source.lastSuccessAt !== meta.updatedAt) {
+        throw new Error("Yahoo BTC-USD缺少同批降级证据");
+      }
+      refreshLabel = "明确降级";
+      accessMethodLabel = "Yahoo BTC-USD";
+    } else if (meta.mode === "fallback") {
+      source = health.sources.filter(function (item) {
+        return item && (item.id === "coingecko" || item.id === "yahoo-finance")
+          && item.counts && item.counts.fallback > 0;
+      })[0];
+      validateBitcoinHealthSource(source, "fallback");
+      refreshLabel = "保留旧值";
+      accessMethodLabel = "历史快照";
+    } else {
+      throw new Error("BTC/USD健康证据不支持当前逐条模式");
+    }
+
+    var status = pipeline.reportStale ? "stale"
+      : health.status === "failed" ? "failed"
+        : meta.mode === "market" && meta.source === "CoinGecko" ? "healthy" : "degraded";
+    return {
+      seriesId: "BTC/USD",
+      status: status,
+      pipelineStatus: health.status,
+      label: status.toUpperCase(),
+      mode: meta.mode,
+      refreshLabel: refreshLabel,
+      accessMethodLabel: accessMethodLabel,
+      historyKnown: health.historyStatus === "tracked",
+      reportStale: pipeline.reportStale,
+      consecutiveFailures: health.consecutiveFailures,
+      lastAttemptAt: health.lastAttemptAt,
+      lastSuccessfulAt: source.lastSuccessAt || health.lastSuccessfulAt,
+      snapshotPreserved: health.snapshotPreserved,
+      failureReason: health.failureReason,
+      note: status === "healthy"
+        ? "BTC/USD逐条行情与资产榜同批来源健康证据一致。"
+        : status === "degraded"
+          ? "BTC/USD当前使用已披露降级或历史回退路径，未冒充CoinGecko新鲜行情。"
+          : status === "stale"
+            ? "资产榜健康证据已超过72小时，价格快照与更新链状态分开显示。"
+            : "资产榜最近一次整批任务失败，页面仅保留可验证旧快照。"
+    };
+  }
+
+  function attachBitcoinSourceHealth(asset, dataSource, healthSource, now) {
+    var state;
+    if (!dataSource || dataSource.error || !dataSource.data || !healthSource
+      || healthSource.error || !healthSource.data || asset.status === "error") {
+      state = unavailableBitcoinSourceHealth(
+        (dataSource && dataSource.error) || (healthSource && healthSource.error) || new Error("BTC/USD健康输入缺失")
+      );
+    } else {
+      try {
+        state = adaptBitcoinSourceHealth(healthSource.data, dataSource.data, asset, now);
+      } catch (error) {
+        state = unavailableBitcoinSourceHealth(error);
+      }
+    }
+    asset.updateHealth = state;
+    if (asset.status === "ok" && (state.status === "failed" || state.status === "stale")) {
+      asset.status = "stale";
+    }
+    return asset;
+  }
+
   function adaptCompanies(data, now, health, healthError) {
     if (!data || data.source !== "Yahoo Finance") throw new Error("公司榜数据来源不是Yahoo Finance");
     var age = hoursSince(data.updatedAt, now);
@@ -2283,10 +2621,12 @@
     var dgs10 = assets.filter(function (asset) { return asset.id === "us10y"; })[0];
     var dollar = assets.filter(function (asset) { return asset.id === "dxy"; })[0];
     var wti = assets.filter(function (asset) { return asset.id === "wti"; })[0];
+    var bitcoin = assets.filter(function (asset) { return asset.id === "bitcoin"; })[0];
     var parts = [];
     parts.push(dgs10 && dgs10.status !== "error" ? "FRED H.15（DGS10）" : "DGS10暂不可用");
     parts.push(dollar && dollar.status !== "error" ? "FRED H.10（DTWEXBGS自动更新）" : "DTWEXBGS暂不可用");
     parts.push(wti && wti.status !== "error" ? "U.S. EIA（RWTC现货）" : "RWTC暂不可用");
+    parts.push(bitcoin && bitcoin.status !== "error" ? bitcoin.source.name + "（BTC/USD）" : "BTC/USD暂不可用");
     parts.push("Ooglex演示数据");
     return parts.join(" · ");
   }
@@ -2300,12 +2640,15 @@
     }
     var officialIds = config.assets.filter(function (asset) { return asset.demo === false; }).map(function (asset) { return asset.id; });
     var demoCount = config.assets.filter(function (asset) { return asset.demo === true; }).length;
-    if (officialIds.length !== 3 || officialIds.indexOf("us10y") === -1 || officialIds.indexOf("dxy") === -1 || officialIds.indexOf("wti") === -1 || demoCount !== 5) {
-      throw new Error("DGS10、DTWEXBGS、RWTC真实卡片与5项演示卡片的配置不一致");
+    if (officialIds.length !== 4 || officialIds.indexOf("us10y") === -1 || officialIds.indexOf("dxy") === -1
+      || officialIds.indexOf("wti") === -1 || officialIds.indexOf("bitcoin") === -1 || demoCount !== 4) {
+      throw new Error("DGS10、DTWEXBGS、RWTC、BTC/USD真实卡片与4项演示卡片的配置不一致");
     }
   }
 
-  function buildPageData(config, macroData, now, macroError, macroHealthSource) {
+  function buildPageData(
+    config, macroData, now, macroError, macroHealthSource, assetRankingSource, assetRankingHealthSource
+  ) {
     validateConfig(config);
     var assets = config.assets.map(function (asset) {
       if (asset.id === "us10y") {
@@ -2350,6 +2693,15 @@
           );
         }
       }
+      if (asset.id === "bitcoin") {
+        var ranking = assetRankingSource || {};
+        var rankingHealth = assetRankingHealthSource || {};
+        if (ranking.error || !ranking.data) return attachBitcoinSourceHealth(
+          unavailableBitcoin(asset, ranking.error || new Error("资产榜数据缺失")), ranking, rankingHealth, now
+        );
+        try { return attachBitcoinSourceHealth(adaptBitcoin(asset, ranking.data, now), ranking, rankingHealth, now); }
+        catch (error) { return attachBitcoinSourceHealth(unavailableBitcoin(asset, error), ranking, rankingHealth, now); }
+      }
       return Object.assign({}, asset);
     });
     var hasStale = assets.some(function (asset) { return !asset.demo && asset.status === "stale"; });
@@ -2361,8 +2713,12 @@
     });
   }
 
-  function buildPageDataWithMacroError(config, error, now, macroHealthSource) {
-    return buildPageData(config, null, now, error, macroHealthSource);
+  function buildPageDataWithMacroError(
+    config, error, now, macroHealthSource, assetRankingSource, assetRankingHealthSource
+  ) {
+    return buildPageData(
+      config, null, now, error, macroHealthSource, assetRankingSource, assetRankingHealthSource
+    );
   }
 
   var testApi = {
@@ -2380,6 +2736,10 @@
     adaptMacroRegime: adaptMacroRegime,
     adaptOfrFsi: adaptOfrFsi,
     adaptRwtc: adaptRwtc,
+    adaptBitcoin: adaptBitcoin,
+    adaptBitcoinSourceHealth: adaptBitcoinSourceHealth,
+    findBitcoinAsset: findBitcoinAsset,
+    buildOfficialObservationTrend: buildOfficialObservationTrend,
     adaptSourceHealth: adaptSourceHealth,
     adaptSupportingSourceHealth: adaptSupportingSourceHealth,
     buildPageData: buildPageData,
@@ -2392,6 +2752,7 @@
     findDgs10Row: findDgs10Row,
     findDtwexbgsReference: findDtwexbgsReference,
     findRwtcReference: findRwtcReference,
+    normalizeOfficialObservations: normalizeOfficialObservations,
     isUsBusinessDay: isUsBusinessDay,
     isSafeOfrUrl: isSafeOfrUrl,
     isSafeGoogleNewsUrl: isSafeGoogleNewsUrl,
@@ -2411,6 +2772,7 @@
     unavailableMacroRegime: unavailableMacroRegime,
     unavailableOfrFsi: unavailableOfrFsi,
     unavailableOfficialSourceHealth: unavailableOfficialSourceHealth,
+    unavailableBitcoinSourceHealth: unavailableBitcoinSourceHealth,
     unavailableSourceHealth: unavailableSourceHealth,
     unavailableSupportingHealth: unavailableSupportingHealth
   };
@@ -2495,12 +2857,13 @@
   }
 
   function makeSparkline(values, direction) {
+    var ariaLabel = arguments.length > 2 ? arguments[2] : null;
     var svg = document.createElementNS(SVG_NS, "svg");
     svg.setAttribute("class", "sparkline");
     svg.setAttribute("viewBox", "0 0 240 42");
     svg.setAttribute("preserveAspectRatio", "none");
     svg.setAttribute("role", "img");
-    svg.setAttribute("aria-label", direction === "positive" ? "演示走势向上" : "演示走势向下");
+    svg.setAttribute("aria-label", ariaLabel || (direction === "positive" ? "演示走势向上" : "演示走势向下"));
 
     var base = document.createElementNS(SVG_NS, "line");
     base.setAttribute("class", "base");
@@ -2527,13 +2890,52 @@
     return svg;
   }
 
+  function formatTrendChange(trend) {
+    if (!trend || !isNumber(trend.change)) return "区间变化待补足";
+    var sign = trend.change > 0 ? "+" : trend.change < 0 ? "−" : "";
+    var decimals = trend.changeUnit === "bp" && Number.isInteger(trend.change) ? 0 : 2;
+    return "区间 " + sign + Math.abs(trend.change).toFixed(decimals)
+      + (trend.changeUnit === "bp" ? " bp" : "%");
+  }
+
+  function makeOfficialTrend(trend) {
+    var direction = !trend || !isNumber(trend.change) || trend.change === 0
+      ? "neutral" : trend.change > 0 ? "positive" : "negative";
+    var box = document.createElement("div");
+    box.className = "official-trend trend-" + direction;
+    box.setAttribute("aria-label", "最近官方观测趋势");
+    var head = document.createElement("div");
+    head.className = "official-trend-head";
+    appendText(head, "span", "official-trend-label", "RECENT OBSERVATIONS");
+    appendText(head, "span", "official-trend-count", (trend ? trend.count : 0) + " / 8");
+    box.appendChild(head);
+    if (!trend || trend.count < 2) {
+      appendText(box, "p", "official-trend-empty", trend && trend.count === 1
+        ? "当前仅1个可追溯观测点，等待下次官方刷新补足。"
+        : "暂无可追溯观测窗口，等待官方刷新。"
+      );
+      return box;
+    }
+    var aria = "最近" + trend.count + "个官方观测点，" + trend.startAsOf + "至" + trend.endAsOf
+      + "，" + formatTrendChange(trend);
+    box.appendChild(makeSparkline(trend.values, direction, aria));
+    var meta = document.createElement("div");
+    meta.className = "official-trend-meta";
+    appendText(meta, "span", "", trend.startAsOf + " → " + trend.endAsOf);
+    appendText(meta, "span", "", formatTrendChange(trend));
+    box.appendChild(meta);
+    return box;
+  }
+
   function statusLabel(asset) {
     if (asset.demo) return { className: "demo-chip", text: "DEMO" };
     if (asset.status === "stale") return { className: "stale-chip", text: "STALE" };
     if (asset.status === "error") return { className: "error-chip", text: "ERROR" };
+    if (asset.status === "partial") return { className: "partial-chip", text: "PARTIAL" };
     if (asset.source && asset.source.seriesId === "RWTC") {
       return { className: "official-chip", text: "EIA · DAILY" };
     }
+    if (asset.id === "bitcoin") return { className: "official-chip", text: "BTC · DAILY" };
     return { className: "official-chip", text: "FRED · DAILY" };
   }
 
@@ -2773,6 +3175,9 @@
     var metrics = document.createElement("div");
     metrics.className = "pipeline-health-metrics";
     appendText(metrics, "span", "", "本轮更新 " + (state.refreshLabel || "不可验证"));
+    if (state.accessMethodLabel) {
+      appendText(metrics, "span", "", "访问路径 " + state.accessMethodLabel);
+    }
     appendText(metrics, "span", "", "连续失败 " + (state.historyKnown ? state.consecutiveFailures + "次" : "历史待建立"));
     appendText(metrics, "span", "", "最近尝试 " + formatTimestamp(state.lastAttemptAt, false));
     appendText(metrics, "span", "", "最后成功 " + formatTimestamp(state.lastSuccessfulAt, false));
@@ -3256,12 +3661,15 @@
 
     var metrics = document.createElement("div");
     metrics.className = "operation-metrics";
-    [
+    var coverageMetrics = [
       ["可用覆盖", formatHealthCoverage(card.availableCoveragePct)],
       ["本轮新鲜", formatHealthCoverage(card.freshCoveragePct)],
-      ["已验证覆盖", formatHealthCoverage(card.verifiedCoveragePct)],
+      [card.slowRecords ? "慢频估值" : "已验证覆盖", card.slowRecords
+        ? (card.slowEstimateRecords + " / " + card.slowRecords)
+        : formatHealthCoverage(card.verifiedCoveragePct)],
       ["连续失败", operationFailureLabel(card)]
-    ].forEach(function (item) {
+    ];
+    coverageMetrics.forEach(function (item) {
       var metric = document.createElement("span");
       metric.className = "operation-metric";
       appendText(metric, "span", "operation-metric-label", item[0]);
@@ -3337,6 +3745,7 @@
     if (asset.demo) {
       card.appendChild(makeSparkline(asset.spark, direction));
     } else {
+      if (asset.observationTrend) card.appendChild(makeOfficialTrend(asset.observationTrend));
       var officialNote = appendText(card, "p", "official-note", asset.note || "日频官方数据");
       officialNote.title = asset.note || "";
       if (asset.updateHealth) appendOfficialUpdateHealth(card, asset.updateHealth);
@@ -3366,32 +3775,45 @@
     var official = data.assets.filter(function (asset) { return asset.demo === false; });
     var demos = data.assets.filter(function (asset) { return asset.demo === true; });
     var ok = official.filter(function (asset) { return asset.status === "ok"; });
+    var partial = official.filter(function (asset) { return asset.status === "partial"; });
     var stale = official.filter(function (asset) { return asset.status === "stale"; });
     var errors = official.filter(function (asset) { return asset.status === "error"; });
-    var breakdown = ok.length + "项官方正常 · " + stale.length + "项过期 · " + errors.length + "项不可用 · " + demos.length + "项演示";
+    var breakdown = ok.length + "项真实正常 · " + partial.length + "项降级 · " + stale.length
+      + "项过期 · " + errors.length + "项不可用 · " + demos.length + "项演示";
 
     if (errors.length > 0) {
       banner.className = "data-banner status-error";
       bannerLabel.textContent = "PARTIAL";
-      bannerTitle.textContent = "部分官方数据暂不可用";
+      bannerTitle.textContent = "部分真实数据暂不可用";
       bannerCopy.textContent = errors.map(function (asset) { return asset.symbol; }).join("、") + "已隐藏无效数值；其他卡片保留各自的来源和状态。";
-      bannerNote.textContent = ok.length + " OFFICIAL · " + stale.length + " STALE · " + errors.length + " ERROR · " + demos.length + " DEMO";
+      bannerNote.textContent = ok.length + " REAL · " + partial.length + " PARTIAL · " + stale.length
+        + " STALE · " + errors.length + " ERROR · " + demos.length + " DEMO";
       dataStatus.textContent = breakdown;
       marketState.textContent = "PARTIAL DATA";
     } else if (stale.length > 0) {
       banner.className = "data-banner status-stale";
       bannerLabel.textContent = "STALE";
-      bannerTitle.textContent = stale.length === 1 ? stale[0].symbol + "数据已过期" : "部分官方数据已过期";
-      bannerCopy.textContent = "页面保留最后一项官方观测值并醒目标记；没有使用演示值冒充真实行情。";
-      bannerNote.textContent = ok.length + " OFFICIAL · " + stale.length + " STALE · " + demos.length + " DEMO";
+      bannerTitle.textContent = stale.length === 1 ? stale[0].symbol + "数据已过期" : "部分真实数据已过期";
+      bannerCopy.textContent = "页面保留同一标的最后有效值并醒目标记；没有使用演示值冒充真实行情。";
+      bannerNote.textContent = ok.length + " REAL · " + partial.length + " PARTIAL · " + stale.length
+        + " STALE · " + demos.length + " DEMO";
       dataStatus.textContent = breakdown;
       marketState.textContent = "STALE DATA";
+    } else if (partial.length > 0) {
+      banner.className = "data-banner status-stale";
+      bannerLabel.textContent = "PARTIAL";
+      bannerTitle.textContent = "部分真实数据使用明确降级来源";
+      bannerCopy.textContent = partial.map(function (asset) { return asset.symbol; }).join("、")
+        + "已在卡片内同步显示来源、时间与涨跌口径；没有静默切换。";
+      bannerNote.textContent = ok.length + " REAL · " + partial.length + " PARTIAL · " + demos.length + " DEMO";
+      dataStatus.textContent = breakdown;
+      marketState.textContent = "PARTIAL DATA";
     } else {
       banner.className = "data-banner";
       bannerLabel.textContent = "PARTIAL";
       bannerTitle.textContent = "当前为部分演示数据";
-      bannerCopy.textContent = "DGS10、DTWEXBGS与EIA RWTC均通过宏观雷达任务自动更新；其余5项仍为演示数据。";
-      bannerNote.textContent = "3 OFFICIAL · 5 DEMO";
+      bannerCopy.textContent = "DGS10、DTWEXBGS、EIA RWTC与BTC/USD均读取站内每日数据；其余4项仍为演示数据。";
+      bannerNote.textContent = "4 REAL · 4 DEMO";
       dataStatus.textContent = breakdown;
       marketState.textContent = "PARTIAL DATA";
     }
@@ -3406,7 +3828,7 @@
       grid.appendChild(makeCard(asset));
     });
     grid.setAttribute("aria-busy", "false");
-    pageUpdated.textContent = data.updatedAt ? formatTimestamp(data.updatedAt, false) : "官方数据更新时间不可用";
+    pageUpdated.textContent = data.updatedAt ? formatTimestamp(data.updatedAt, false) : "真实数据更新时间不可用";
     if (data.updatedAt) pageUpdated.dateTime = data.updatedAt;
     pageSource.textContent = data.source;
     assetCount.textContent = "8项资产 · " + (official.length - unavailable.length) + "项官方可用 / " + unavailable.length + "项不可用 / " + demos.length + "项演示";
@@ -3518,6 +3940,9 @@
     var officialHealthPanels = Array.prototype.slice.call(document.querySelectorAll(
       "#market-grid .official-update-health"
     ));
+    var officialTrendPanels = Array.prototype.slice.call(document.querySelectorAll(
+      "#market-grid .official-trend"
+    ));
     var undersizedTargets = targetElements.map(function (element) {
       var rect = element.getBoundingClientRect();
       return {
@@ -3553,9 +3978,18 @@
         && supportingHealthPanels.every(function (panel) {
           return panel.textContent.indexOf("更新链健康不可用") === -1;
         }),
-      officialHealthResources: officialHealthPanels.length === 3
+      officialHealthResources: officialHealthPanels.length === 4
         && officialHealthPanels.every(function (panel) {
           return panel.textContent.indexOf("逐源更新链健康不可用") === -1;
+        }),
+      officialObservationTrends: officialTrendPanels.length === 3
+        && officialTrendPanels.every(function (panel) {
+          var count = panel.querySelector(".official-trend-count");
+          var match = count && count.textContent.match(/^(\d+)\s*\/\s*8$/);
+          var observationCount = match ? Number(match[1]) : null;
+          return panel.textContent.indexOf("RECENT OBSERVATIONS") !== -1
+            && observationCount !== null && observationCount >= 1 && observationCount <= 8
+            && Boolean(panel.querySelector(".sparkline")) === (observationCount >= 2);
         }),
       cardCounts: document.querySelectorAll(".asset-card").length === 8
         && document.querySelectorAll(".risk-card").length === 3
@@ -3604,6 +4038,7 @@
       targetCount: targetElements.length,
       supportingHealthPanelCount: supportingHealthPanels.length,
       officialHealthPanelCount: officialHealthPanels.length,
+      officialObservationTrendCount: officialTrendPanels.length,
       undersizedTargets: undersizedTargets,
       layout: {
         market: renderedGridColumns(grid),
@@ -3675,8 +4110,12 @@
         var newsSource = sources[14];
         var newsHealthSource = sources[15];
         var marketData = macroSource.error
-          ? buildPageDataWithMacroError(config, macroSource.error, undefined, macroHealthSource)
-          : buildPageData(config, macroSource.data, undefined, null, macroHealthSource);
+          ? buildPageDataWithMacroError(
+            config, macroSource.error, undefined, macroHealthSource, assetRankingSource, assetRankingHealthSource
+          )
+          : buildPageData(
+            config, macroSource.data, undefined, null, macroHealthSource, assetRankingSource, assetRankingHealthSource
+          );
         return {
           market: marketData,
           risks: buildRiskCards({

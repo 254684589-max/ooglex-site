@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import math
 import re
 import subprocess
 import sys
@@ -82,6 +83,82 @@ def parse_iso(value: str) -> None:
 
 def parse_date(value: str) -> None:
     date.fromisoformat(value)
+
+
+def validate_official_observations(record: dict, label: str) -> list[dict]:
+    """校验成功刷新后会从迁移点逐步扩展到8点的官方观测窗口。"""
+    observations = record.get("observations")
+    require(isinstance(observations, list) and 1 <= len(observations) <= 8,
+            f"{label}观测窗口必须包含1至8个官方观测点")
+    parsed_dates = []
+    for index, observation in enumerate(observations):
+        require(isinstance(observation, dict)
+                and set(observation) == {"asOf", "value"},
+                f"{label}第{index + 1}个观测点结构无效")
+        try:
+            observed_date = date.fromisoformat(observation["asOf"])
+        except (TypeError, ValueError) as exc:
+            raise AssertionError(f"{label}第{index + 1}个观测日期无效") from exc
+        value = observation["value"]
+        require(isinstance(value, (int, float)) and not isinstance(value, bool)
+                and math.isfinite(value) and value > 0,
+                f"{label}第{index + 1}个观测值必须是正有限数")
+        parsed_dates.append(observed_date)
+    require(all(previous < current for previous, current in zip(parsed_dates, parsed_dates[1:])),
+            f"{label}观测日期必须严格递增且不可重复")
+    require(observations[-1] == {"asOf": record.get("asOf"), "value": record.get("price")},
+            f"{label}观测窗口末值必须与当前官方记录一致")
+    if len(observations) >= 2:
+        require(observations[-2] == {
+            "asOf": record.get("previousAsOf"), "value": record.get("previousPrice")
+        }, f"{label}观测窗口倒数第二项必须与前值记录一致")
+    return observations
+
+
+def run_official_observation_contract_tests() -> None:
+    one_point = {
+        "asOf": "2026-08-06", "price": 4.69,
+        "previousAsOf": "2026-08-05", "previousPrice": 4.63,
+        "observations": [{"asOf": "2026-08-06", "value": 4.69}],
+    }
+    require(len(validate_official_observations(one_point, "迁移序列")) == 1,
+            "单点迁移窗口应保持有效")
+    full_window = {
+        "asOf": "2026-08-08", "price": 108.0,
+        "previousAsOf": "2026-08-07", "previousPrice": 107.0,
+        "observations": [
+            {"asOf": f"2026-08-{day:02d}", "value": 100.0 + day}
+            for day in range(1, 9)
+        ],
+    }
+    require(len(validate_official_observations(full_window, "完整序列")) == 8,
+            "八点完整窗口应保持有效")
+
+    invalid_cases = []
+    too_long = json.loads(json.dumps(full_window))
+    too_long["observations"].insert(0, {"asOf": "2026-07-31", "value": 99.0})
+    invalid_cases.append(too_long)
+    reversed_window = json.loads(json.dumps(full_window))
+    reversed_window["observations"].reverse()
+    invalid_cases.append(reversed_window)
+    duplicate_date = json.loads(json.dumps(full_window))
+    duplicate_date["observations"][1]["asOf"] = duplicate_date["observations"][0]["asOf"]
+    invalid_cases.append(duplicate_date)
+    wrong_tail = json.loads(json.dumps(full_window))
+    wrong_tail["observations"][-1]["value"] = 999.0
+    invalid_cases.append(wrong_tail)
+    wrong_previous = json.loads(json.dumps(full_window))
+    wrong_previous["observations"][-2]["value"] = 999.0
+    invalid_cases.append(wrong_previous)
+    non_positive = json.loads(json.dumps(full_window))
+    non_positive["observations"][0]["value"] = 0
+    invalid_cases.append(non_positive)
+    for invalid in invalid_cases:
+        try:
+            validate_official_observations(invalid, "异常序列")
+        except AssertionError:
+            continue
+        raise AssertionError("无效官方观测窗口未被拒绝")
 
 
 def css_hex_variable(styles: str, name: str) -> str:
@@ -254,7 +331,10 @@ def load_macro_builder():
 def run_dtwexbgs_pipeline_tests() -> None:
     builder = load_macro_builder()
     attempt = "2026-08-03T12:00:00Z"
-    observations = [("2026-07-23", 120.9075), ("2026-07-24", 120.7105)]
+    observations = [
+        ("2026-07-21", 120.5210), ("2026-07-22", 120.6500),
+        ("2026-07-23", 120.9075), ("2026-07-24", 120.7105),
+    ]
     fresh = builder.build_dtwexbgs_reference({}, attempt, lambda _series_id, _limit: observations)
     require(fresh["status"] == "ok", "DTWEXBGS成功更新必须标记ok")
     require(fresh["price"] == 120.7105 and fresh["previousPrice"] == 120.9075, "DTWEXBGS观测值映射错误")
@@ -262,6 +342,9 @@ def run_dtwexbgs_pipeline_tests() -> None:
     expected_change = (120.7105 / 120.9075 - 1) * 100
     require(abs(fresh["changePct"] - expected_change) < 1e-12, "DTWEXBGS涨跌幅计算错误")
     require(fresh["updatedAt"] == attempt and fresh["lastAttemptAt"] == attempt, "DTWEXBGS成功更新时间错误")
+    require(fresh["observations"] == [
+        {"asOf": observed, "value": value} for observed, value in observations
+    ], "DTWEXBGS最近观测窗口映射错误")
     require(builder.valid_dtwexbgs_reference(fresh), "成功记录未通过结构校验")
 
     old = {"referenceSeries": {"DTWEXBGS": fresh}}
@@ -271,11 +354,13 @@ def run_dtwexbgs_pipeline_tests() -> None:
     require(fallback["price"] == fresh["price"] and fallback["asOf"] == fresh["asOf"], "更新失败不得覆盖历史有效值")
     require(fallback["updatedAt"] == fresh["updatedAt"], "失败时不得伪造成功更新时间")
     require(fallback["lastAttemptAt"] == failed_at, "失败尝试时间必须单独记录")
+    require(fallback["observations"] == fresh["observations"], "失败回退必须完整保留DTWEXBGS观测窗口")
     require(fresh["status"] == "ok", "失败回退不得原地修改上一份记录")
 
     unavailable = builder.build_dtwexbgs_reference({}, failed_at, lambda _series_id, _limit: [])
     require(unavailable["status"] == "error", "无新值也无历史值时必须标记error")
     require(unavailable["price"] is None and unavailable["updatedAt"] is None, "失败时不得写入默认数值或伪更新时间")
+    require(unavailable["observations"] == [], "无历史DTWEXBGS时观测窗口必须为空")
 
     invalid = builder.build_dtwexbgs_reference(
         old,
@@ -342,6 +427,63 @@ def run_rwtc_pipeline_tests() -> None:
     require(captured["params"]["facets[series][]"] == "RWTC", "RWTC API请求序列筛选错误")
     require(observations == [("2026-07-24", 91.74), ("2026-07-27", 84.25)], "EIA返回值解析或排序错误")
 
+    history_page = """
+    <html><body><table>
+      <tr><th colspan="6">Cushing, OK WTI Spot Price FOB (Dollars per Barrel)</th></tr>
+      <tr><th>Week Of</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th></tr>
+      <tr><td>2025 Dec-29 to Jan- 2</td><td>57.89</td><td>57.79</td><td>57.26</td><td></td><td>57.21</td></tr>
+      <tr><td>2026 Jul-27 to Jul-31</td><td>84.25</td><td>80.91</td><td>86.08</td><td>85.15</td><td>86.16</td></tr>
+      <tr><td>2026 Aug- 3 to Aug- 7</td><td>81.96</td><td></td><td></td><td></td><td></td></tr>
+    </table></body></html>
+    """
+    expected_history = [
+        ("2026-07-29", 86.08), ("2026-07-30", 85.15),
+        ("2026-07-31", 86.16), ("2026-08-03", 81.96),
+    ]
+    require(builder.parse_eia_rwtc_history_html(history_page, 4) == expected_history,
+            "EIA公开历史页日期、空值或跨周解析错误")
+    require(builder.parse_eia_rwtc_history_html("<table><tr><td>2026 Aug- 3 to Aug- 7</td>"
+                                                "<td>81.96</td></tr></table>") == [],
+            "EIA公开历史页必须验证标题与单位")
+
+    history_captured = {}
+
+    class FakeHistoryResponse:
+        text = history_page
+
+        @staticmethod
+        def raise_for_status():
+            return None
+
+    def history_requester(url, **kwargs):
+        history_captured["url"] = url
+        history_captured["params"] = kwargs.get("params")
+        return FakeHistoryResponse()
+
+    history_observations = builder.eia_rwtc_history(4, requester=history_requester)
+    require(history_captured["url"] == builder.EIA_HISTORY_URL,
+            "RWTC无密钥回退必须使用EIA官方日频历史页")
+    require(history_captured["params"] is None, "EIA公开历史页不得拼接或传递API密钥")
+    require(history_observations == expected_history, "EIA公开历史页请求结果映射错误")
+
+    original_api = builder.eia_rwtc_api
+    original_history = builder.eia_rwtc_history
+    try:
+        builder.eia_rwtc_api = lambda _limit: []
+        builder.eia_rwtc_history = lambda _limit: history_observations
+        history_fresh = builder.build_rwtc_reference({}, attempt)
+    finally:
+        builder.eia_rwtc_api = original_api
+        builder.eia_rwtc_history = original_history
+    require(history_fresh["status"] == "ok" and history_fresh["asOf"] == "2026-08-03",
+            "EIA API不可用时官方历史页应恢复RWTC")
+    require(history_fresh["source"].get("accessMethod") == "EIA public history page",
+            "RWTC必须披露实际官方访问路径")
+    require(builder.valid_rwtc_reference(history_fresh), "带访问路径的RWTC记录必须通过结构校验")
+    invalid_access = dict(history_fresh)
+    invalid_access["source"] = dict(history_fresh["source"], accessMethod="unregistered mirror")
+    require(not builder.valid_rwtc_reference(invalid_access), "未登记RWTC访问路径必须被拒绝")
+
     fresh = builder.build_rwtc_reference({}, attempt, lambda _limit: observations)
     require(fresh["status"] == "ok", "RWTC成功更新必须标记ok")
     require(fresh["price"] == 84.25 and fresh["previousPrice"] == 91.74, "RWTC观测值映射错误")
@@ -349,6 +491,9 @@ def run_rwtc_pipeline_tests() -> None:
     expected_change = (84.25 / 91.74 - 1) * 100
     require(abs(fresh["changePct"] - expected_change) < 1e-12, "RWTC涨跌幅计算错误")
     require(fresh["updatedAt"] == attempt and fresh["lastAttemptAt"] == attempt, "RWTC成功更新时间错误")
+    require(fresh["observations"] == [
+        {"asOf": observed, "value": value} for observed, value in observations
+    ], "RWTC最近观测窗口映射错误")
     require(builder.valid_rwtc_reference(fresh), "RWTC成功记录未通过结构校验")
 
     old = {"referenceSeries": {"RWTC": fresh}}
@@ -358,11 +503,13 @@ def run_rwtc_pipeline_tests() -> None:
     require(fallback["price"] == fresh["price"] and fallback["asOf"] == fresh["asOf"], "RWTC失败不得覆盖历史有效值")
     require(fallback["updatedAt"] == fresh["updatedAt"], "RWTC失败时不得伪造成功更新时间")
     require(fallback["lastAttemptAt"] == failed_at, "RWTC失败尝试时间必须单独记录")
+    require(fallback["observations"] == fresh["observations"], "RWTC失败回退必须完整保留观测窗口")
     require(fresh["status"] == "ok", "RWTC失败回退不得原地修改上一份记录")
 
     unavailable = builder.build_rwtc_reference({}, failed_at, lambda _limit: [])
     require(unavailable["status"] == "error", "RWTC无新值也无历史值时必须标记error")
     require(unavailable["price"] is None and unavailable["updatedAt"] is None, "RWTC失败时不得写入默认数值")
+    require(unavailable["observations"] == [], "无历史RWTC时观测窗口必须为空")
 
     invalid = builder.build_rwtc_reference(
         old,
@@ -371,7 +518,7 @@ def run_rwtc_pipeline_tests() -> None:
     )
     require(invalid["status"] == "stale" and invalid["price"] == fresh["price"], "RWTC日期倒序必须回退历史值")
     print("RWTC EIA pipeline states: PASS")
-    print("- API contract / success / failed-refresh fallback / no-history error / invalid-observation: PASS")
+    print("- API contract / official history fallback / success / retained snapshot / invalid observation: PASS")
 
 
 def run_js_adapter_tests() -> None:
@@ -405,9 +552,34 @@ const oilReference = adapter.findRwtcReference(macro);
 assert(oilReference && oilReference.id === "RWTC");
 const dollarConfig = config.assets.find((asset) => asset.id === "dxy");
 const oilConfig = config.assets.find((asset) => asset.id === "wti");
-const currentNow = new Date("2026-08-08T23:59:59Z");
-const supportingNow = new Date("2026-08-08T12:00:00Z");
-const expiredOfficialHealthNow = new Date("2026-08-12T23:59:59Z");
+const bitcoinConfig = config.assets.find((asset) => asset.id === "bitcoin");
+const bitcoinRow = assetRanking.assets.find((asset) => asset.symbol === "BTC");
+const rankingSource = { data: assetRanking, error: null };
+const rankingHealthSource = { data: assetRankingHealth, error: null };
+const currentLatestMs = Math.max(...[
+  macro.updatedAt,
+  fearGreed.updatedAt,
+  ofr.updatedAt,
+  assetTracker.updatedAt,
+  assetRanking.updatedAt,
+  companies.updatedAt
+].map(Date.parse));
+assert(Number.isFinite(currentLatestMs));
+const currentNow = new Date(currentLatestMs + 6 * 60 * 60 * 1000);
+const currentAttemptAt = new Date(currentNow.getTime() - 60 * 60 * 1000).toISOString();
+const currentAttemptDate = currentAttemptAt.slice(0, 10);
+const supportingSnapshots = [
+  [fearGreed, fearGreedHealth],
+  [ofr, ofrHealth],
+  [econCalendar, econCalendarHealth],
+  [financeNews, financeNewsHealth]
+];
+const supportingLatestMs = Math.max(...supportingSnapshots.flatMap(([data, health]) => [
+  Date.parse(data.updatedAt), Date.parse(health.generatedAt)
+]));
+assert(Number.isFinite(supportingLatestMs));
+const supportingNow = new Date(supportingLatestMs + 60 * 60 * 1000);
+const expiredOfficialHealthNow = new Date(Date.parse(macroHealth.generatedAt) + 96 * 60 * 60 * 1000);
 function qualityDeclaration(rows) {
   const metas = rows.map((row) => adapter.normalizeDataMeta(row.dataMeta, null));
   const quality = adapter.summarizeRowQuality(metas, null);
@@ -426,11 +598,15 @@ function qualityDeclaration(rows) {
   ["whats-latest", financeNews, financeNewsHealth]
 ].forEach(([dataset, sourceData, sourceHealth]) => {
   const state = adapter.adaptSupportingSourceHealth(sourceHealth, dataset, sourceData, supportingNow);
+  const reportAgeHours = (supportingNow.getTime() - Date.parse(sourceHealth.generatedAt)) / (60 * 60 * 1000);
+  const expectedStatus = sourceHealth.historyStatus !== "migrated"
+    && reportAgeHours > sourceHealth.policy.maxReportAgeHours
+    && sourceHealth.status !== "failed" ? "stale" : sourceHealth.status;
   assert.strictEqual(state.dataset, dataset);
-  assert.strictEqual(state.status, "unknown");
-  assert.strictEqual(state.historyKnown, false);
-  assert.strictEqual(state.freshCoveragePct, 0);
-  assert.strictEqual(state.publishedCoveragePct, 100);
+  assert.strictEqual(state.status, expectedStatus);
+  assert.strictEqual(state.historyKnown, sourceHealth.historyStatus === "tracked");
+  assert.strictEqual(state.freshCoveragePct, sourceHealth.coverage.freshCoveragePct);
+  assert.strictEqual(state.publishedCoveragePct, sourceHealth.coverage.publishedCoveragePct);
   const tampered = JSON.parse(JSON.stringify(sourceHealth));
   tampered.coverage.refreshedComponents += 1;
   assert.throws(() => adapter.adaptSupportingSourceHealth(tampered, dataset, sourceData, supportingNow));
@@ -469,15 +645,17 @@ function trackedSupportingHealth(sourceHealth, attemptedAt, overrides = {}, publ
   tracked.status = tracked.attempt.status === "success" ? "healthy" : published ? "degraded" : "failed";
   return tracked;
 }
-const trackedFear = trackedSupportingHealth(fearGreedHealth, "2026-08-08T11:00:00Z");
+const supportingAttemptAt = new Date(supportingNow.getTime() - 60 * 60 * 1000).toISOString();
+const supportingStaleAt = new Date(supportingNow.getTime() - 96 * 60 * 60 * 1000).toISOString();
+const trackedFear = trackedSupportingHealth(fearGreedHealth, supportingAttemptAt);
 assert.strictEqual(adapter.adaptSupportingSourceHealth(trackedFear, "fear-greed", fearGreed, supportingNow).status, "healthy");
-const fallbackFear = trackedSupportingHealth(fearGreedHealth, "2026-08-08T11:00:00Z", { "cnn-index": "fallback" });
+const fallbackFear = trackedSupportingHealth(fearGreedHealth, supportingAttemptAt, { "cnn-index": "fallback" });
 const fallbackFearState = adapter.adaptSupportingSourceHealth(fallbackFear, "fear-greed", fearGreed, supportingNow);
 assert.strictEqual(fallbackFearState.status, "degraded");
 assert.strictEqual(fallbackFearState.terminalStatus, "degraded");
-const failedFear = trackedSupportingHealth(fearGreedHealth, "2026-08-08T11:00:00Z", { "cnn-index": "fallback" }, false);
+const failedFear = trackedSupportingHealth(fearGreedHealth, supportingAttemptAt, { "cnn-index": "fallback" }, false);
 assert.strictEqual(adapter.adaptSupportingSourceHealth(failedFear, "fear-greed", fearGreed, supportingNow).status, "failed");
-const staleFearHealth = trackedSupportingHealth(fearGreedHealth, "2026-08-01T11:00:00Z");
+const staleFearHealth = trackedSupportingHealth(fearGreedHealth, supportingStaleAt);
 assert.strictEqual(adapter.adaptSupportingSourceHealth(staleFearHealth, "fear-greed", fearGreed, supportingNow).status, "stale");
 const supportingRiskCards = adapter.buildRiskCards({
   macro: { data: macro, error: null },
@@ -486,22 +664,30 @@ const supportingRiskCards = adapter.buildRiskCards({
   ofr: { data: ofr, error: null },
   ofrHealth: { data: ofrHealth, error: null }
 }, supportingNow);
-assert.strictEqual(supportingRiskCards[1].sourceHealth.status, "unknown");
-assert.strictEqual(supportingRiskCards[2].sourceHealth.status, "unknown");
+assert.strictEqual(supportingRiskCards[1].sourceHealth.status,
+  adapter.adaptSupportingSourceHealth(fearGreedHealth, "fear-greed", fearGreed, supportingNow).status);
+assert.strictEqual(supportingRiskCards[2].sourceHealth.status,
+  adapter.adaptSupportingSourceHealth(ofrHealth, "ofr-monitor", ofr, supportingNow).status);
 const supportingInformationCards = adapter.buildInformationCards({
   calendar: { data: econCalendar, error: null },
   calendarHealth: { data: econCalendarHealth, error: null },
   news: { data: financeNews, error: null },
   newsHealth: { data: financeNewsHealth, error: null }
 }, supportingNow);
-assert.strictEqual(supportingInformationCards[0].sourceHealth.status, "unknown");
-assert.strictEqual(supportingInformationCards[1].sourceHealth.status, "unknown");
-const success = adapter.buildPageData(config, macro, currentNow);
+assert.strictEqual(supportingInformationCards[0].sourceHealth.status,
+  adapter.adaptSupportingSourceHealth(econCalendarHealth, "econ-calendar", econCalendar, supportingNow).status);
+assert.strictEqual(supportingInformationCards[1].sourceHealth.status,
+  adapter.adaptSupportingSourceHealth(financeNewsHealth, "whats-latest", financeNews, supportingNow).status);
+const success = adapter.buildPageData(
+  config, macro, currentNow, null, null, rankingSource, rankingHealthSource
+);
 const dgs10 = success.assets.find((asset) => asset.id === "us10y");
 const dollar = success.assets.find((asset) => asset.id === "dxy");
 const oil = success.assets.find((asset) => asset.id === "wti");
+const bitcoin = success.assets.find((asset) => asset.id === "bitcoin");
 assert.strictEqual(dgs10.demo, false);
-assert.strictEqual(dgs10.status, match.row.status === "ok" ? "ok" : "stale");
+assert.strictEqual(dgs10.status, match.row.status === "ok"
+  && adapter.businessDaysSince(match.row.asOf, currentNow) <= 3 ? "ok" : "stale");
 assert.strictEqual(dgs10.symbol, "DGS10");
 assert.strictEqual(dgs10.changeUnit, "bp");
 assert(Number.isFinite(dgs10.price));
@@ -511,11 +697,42 @@ assert.strictEqual(dgs10.change, Number(match.row.chg.toLowerCase().replace("bp"
 assert.strictEqual(dgs10.asOf, match.row.asOf);
 assert.strictEqual(dgs10.updatedAt, macro.updatedAt);
 assert.strictEqual(dgs10.source.seriesId, "DGS10");
+assert.strictEqual(dgs10.observationTrend.count, match.row.observations.length);
+assert.strictEqual(dgs10.observationTrend.targetCount, 8);
+assert.deepStrictEqual(dgs10.observationTrend.values, match.row.observations.map((item) => item.value));
+assert.strictEqual(dgs10.observationTrend.changeUnit, "bp");
+assert.strictEqual(dgs10.observationTrend.change, match.row.observations.length < 2 ? null
+  : Math.round((match.row.observations[match.row.observations.length - 1].value
+    - match.row.observations[0].value) * 10000) / 100);
+const dgsWindow = JSON.parse(JSON.stringify(macro));
+const dgsWindowRow = adapter.findDgs10Row(dgsWindow).row;
+const dgsWindowPrice = Number(dgsWindowRow.val.replace("%", ""));
+dgsWindowRow.price = dgsWindowPrice;
+dgsWindowRow.previousPrice = Math.round((dgsWindowPrice - 0.06) * 100) / 100;
+dgsWindowRow.changeBps = 6;
+dgsWindowRow.chg = "6bp";
+dgsWindowRow.observations = [
+  { asOf: dgsWindowRow.previousAsOf, value: dgsWindowRow.previousPrice },
+  { asOf: dgsWindowRow.asOf, value: dgsWindowPrice }
+];
+const dgsWindowAsset = adapter.adaptDgs10(
+  config.assets.find((asset) => asset.id === "us10y"), dgsWindow, currentNow
+);
+assert.strictEqual(dgsWindowAsset.observationTrend.count, 2);
+assert.strictEqual(dgsWindowAsset.observationTrend.change, 6);
+const tamperedDgsWindow = JSON.parse(JSON.stringify(dgsWindow));
+adapter.findDgs10Row(tamperedDgsWindow).row.observations[1].value = 4.68;
+assert.throws(() => adapter.adaptDgs10(
+  config.assets.find((asset) => asset.id === "us10y"), tamperedDgsWindow, currentNow
+));
 const dgs10Health = adapter.adaptOfficialSourceHealth(macroHealth, macro, dgs10, "DGS10", currentNow);
+const dgs10HealthRecord = macroHealth.sources.find((source) => source.id === "DGS10");
 assert.strictEqual(dgs10Health.seriesId, "DGS10");
-assert.strictEqual(dgs10Health.status, "unknown");
-assert.strictEqual(dgs10Health.historyKnown, false);
-assert.strictEqual(dgs10Health.refreshLabel, "历史待建立");
+assert.strictEqual(dgs10Health.status, dgs10HealthRecord.status);
+assert.strictEqual(dgs10Health.historyKnown, macroHealth.historyStatus === "tracked");
+assert.strictEqual(dgs10Health.refreshLabel, {
+  market: "已刷新", fallback: "保留旧值", unavailable: "不可用", unknown: "历史待建立"
+}[dgs10HealthRecord.mode]);
 const dgs10WithStaleHealth = adapter.buildPageData(
   config, macro, expiredOfficialHealthNow, null, { data: macroHealth, error: null }
 ).assets.find((asset) => asset.id === "us10y");
@@ -534,7 +751,8 @@ assert.strictEqual(dgs10WithMissingHealth.status, dgs10.status);
 assert.strictEqual(dgs10WithMissingHealth.price, dgs10.price);
 assert.strictEqual(dgs10WithMissingHealth.updateHealth.status, "unknown");
 assert.strictEqual(dollar.demo, false);
-assert.strictEqual(dollar.status, "stale");
+assert.strictEqual(dollar.status, reference.status === "ok"
+  && adapter.businessDaysSince(reference.asOf, currentNow) <= 3 ? "ok" : "stale");
 assert.strictEqual(dollar.symbol, "DTWEXBGS");
 assert.strictEqual(dollar.price, reference.price);
 assert.strictEqual(dollar.previousPrice, reference.previousPrice);
@@ -542,12 +760,26 @@ assert.strictEqual(dollar.asOf, reference.asOf);
 assert.strictEqual(dollar.updatedAt, reference.updatedAt);
 assert.strictEqual(dollar.source.seriesId, "DTWEXBGS");
 assert(Math.abs(dollar.changePct - ((reference.price / reference.previousPrice - 1) * 100)) < 1e-12);
+assert.strictEqual(dollar.observationTrend.count, reference.observations.length);
+assert.deepStrictEqual(dollar.observationTrend.values, reference.observations.map((item) => item.value));
+assert.strictEqual(dollar.observationTrend.startAsOf, reference.observations[0].asOf);
+assert.strictEqual(dollar.observationTrend.endAsOf, reference.asOf);
+assert(Math.abs(dollar.observationTrend.change
+  - ((reference.price / reference.observations[0].value - 1) * 100)) < 1e-12);
+const tamperedDollarWindow = JSON.parse(JSON.stringify(macro));
+tamperedDollarWindow.referenceSeries.DTWEXBGS.observations[
+  tamperedDollarWindow.referenceSeries.DTWEXBGS.observations.length - 1
+].value += 1;
+assert.throws(() => adapter.adaptDtwexbgs(dollarConfig, tamperedDollarWindow, currentNow));
 const dollarHealth = adapter.adaptOfficialSourceHealth(
   macroHealth, macro, dollar, "DTWEXBGS", currentNow
 );
-assert.strictEqual(dollarHealth.status, "stale");
-assert.strictEqual(dollarHealth.historyKnown, false);
-assert.strictEqual(dollarHealth.refreshLabel, "历史待建立");
+const dollarHealthRecord = macroHealth.sources.find((source) => source.id === "DTWEXBGS");
+assert.strictEqual(dollarHealth.status, dollarHealthRecord.status);
+assert.strictEqual(dollarHealth.historyKnown, macroHealth.historyStatus === "tracked");
+assert.strictEqual(dollarHealth.refreshLabel, {
+  market: "已刷新", fallback: "保留旧值", unavailable: "不可用", unknown: "历史待建立"
+}[dollarHealthRecord.mode]);
 const dollarWithStaleHealth = adapter.buildPageData(
   config, macro, expiredOfficialHealthNow, null, { data: macroHealth, error: null }
 ).assets.find((asset) => asset.id === "dxy");
@@ -562,7 +794,8 @@ assert.strictEqual(isolatedDollarHealth.assets.find((asset) => asset.id === "dxy
 assert.strictEqual(isolatedDollarHealth.assets.find((asset) => asset.id === "dxy").price, dollar.price);
 assert.strictEqual(isolatedDollarHealth.assets.find((asset) => asset.id === "us10y").updateHealth.status, "stale");
 assert.strictEqual(oil.demo, false);
-assert.strictEqual(oil.status, "stale");
+assert.strictEqual(oil.status, oilReference.status === "ok"
+  && adapter.businessDaysSince(oilReference.asOf, currentNow) <= 4 ? "ok" : "stale");
 assert.strictEqual(oil.symbol, "WTI");
 assert.strictEqual(oil.price, oilReference.price);
 assert.strictEqual(oil.previousPrice, oilReference.previousPrice);
@@ -570,10 +803,22 @@ assert.strictEqual(oil.asOf, oilReference.asOf);
 assert.strictEqual(oil.updatedAt, oilReference.updatedAt);
 assert.strictEqual(oil.source.seriesId, "RWTC");
 assert(Math.abs(oil.changePct - ((oilReference.price / oilReference.previousPrice - 1) * 100)) < 1e-12);
+assert.strictEqual(oil.observationTrend.count, oilReference.observations.length);
+assert.deepStrictEqual(oil.observationTrend.values, oilReference.observations.map((item) => item.value));
+assert.strictEqual(oil.observationTrend.startAsOf, oilReference.observations[0].asOf);
+assert.strictEqual(oil.observationTrend.endAsOf, oilReference.asOf);
+assert(Math.abs(oil.observationTrend.change
+  - ((oilReference.price / oilReference.observations[0].value - 1) * 100)) < 1e-12);
+const tamperedOilWindow = JSON.parse(JSON.stringify(macro));
+tamperedOilWindow.referenceSeries.RWTC.observations.reverse();
+assert.throws(() => adapter.adaptRwtc(oilConfig, tamperedOilWindow, currentNow));
 const oilHealth = adapter.adaptOfficialSourceHealth(macroHealth, macro, oil, "RWTC", currentNow);
-assert.strictEqual(oilHealth.status, "stale");
-assert.strictEqual(oilHealth.historyKnown, false);
-assert.strictEqual(oilHealth.refreshLabel, "历史待建立");
+const oilHealthRecord = macroHealth.sources.find((source) => source.id === "RWTC");
+assert.strictEqual(oilHealth.status, oilHealthRecord.status);
+assert.strictEqual(oilHealth.historyKnown, macroHealth.historyStatus === "tracked");
+assert.strictEqual(oilHealth.refreshLabel, {
+  market: "已刷新", fallback: "保留旧值", unavailable: "不可用", unknown: "历史待建立"
+}[oilHealthRecord.mode]);
 const oilWithStaleHealth = adapter.buildPageData(
   config, macro, expiredOfficialHealthNow, null, { data: macroHealth, error: null }
 ).assets.find((asset) => asset.id === "wti");
@@ -581,9 +826,12 @@ assert.strictEqual(oilWithStaleHealth.updateHealth.status, "stale");
 assert.strictEqual(oilWithStaleHealth.updateHealth.seriesId, "RWTC");
 const allOfficialHealth = adapter.buildPageData(
   config, macro, expiredOfficialHealthNow, null, { data: macroHealth, error: null }
-).assets.filter((asset) => asset.demo === false);
-assert.deepStrictEqual(allOfficialHealth.map((asset) => asset.updateHealth.seriesId), ["DGS10", "DTWEXBGS", "RWTC"]);
+).assets.filter((asset) => asset.updateHealth);
+assert.deepStrictEqual(allOfficialHealth.map((asset) => asset.updateHealth.seriesId), [
+  "DGS10", "DTWEXBGS", "RWTC", "BTC/USD"
+]);
 assert.strictEqual(allOfficialHealth.filter((asset) => asset.updateHealth.status === "stale").length, 3);
+assert.strictEqual(allOfficialHealth.filter((asset) => asset.updateHealth.status === "unknown").length, 1);
 
 function trackedOfficialHealth(base, seriesId, attemptedAt, mode) {
   const tracked = JSON.parse(JSON.stringify(base));
@@ -601,7 +849,7 @@ function trackedOfficialHealth(base, seriesId, attemptedAt, mode) {
   if (mode === "market") source.lastSuccessfulAt = attemptedAt;
   return tracked;
 }
-const healthyDgsHealth = trackedOfficialHealth(macroHealth, "DGS10", "2026-08-08T12:00:00Z", "market");
+const healthyDgsHealth = trackedOfficialHealth(macroHealth, "DGS10", currentAttemptAt, "market");
 const healthyDgsMacro = JSON.parse(JSON.stringify(macro));
 adapter.findDgs10Row(healthyDgsMacro).row.status = "ok";
 const healthyDgsAsset = adapter.buildPageData(config, healthyDgsMacro, currentNow)
@@ -614,7 +862,7 @@ const fallbackDollarMacro = JSON.parse(JSON.stringify(macro));
 fallbackDollarMacro.referenceSeries.DTWEXBGS.status = "stale";
 const fallbackDollarAsset = adapter.adaptDtwexbgs(dollarConfig, fallbackDollarMacro, currentNow);
 const trackedDollarFallback = trackedOfficialHealth(
-  macroHealth, "DTWEXBGS", "2026-08-08T12:00:00Z", "fallback"
+  macroHealth, "DTWEXBGS", currentAttemptAt, "fallback"
 );
 assert.strictEqual(adapter.adaptOfficialSourceHealth(
   trackedDollarFallback, fallbackDollarMacro, fallbackDollarAsset, "DTWEXBGS", currentNow
@@ -626,7 +874,7 @@ const unavailableOilAsset = Object.assign({}, oilConfig, {
   price: null, previousPrice: null, changePct: null, asOf: null, updatedAt: null, demo: false, status: "error"
 });
 const trackedOilFailure = trackedOfficialHealth(
-  macroHealth, "RWTC", "2026-08-08T12:00:00Z", "unavailable"
+  macroHealth, "RWTC", currentAttemptAt, "unavailable"
 );
 const trackedOilSource = trackedOilFailure.sources.find((source) => source.id === "RWTC");
 trackedOilSource.published = false;
@@ -635,8 +883,58 @@ trackedOilSource.publishedUpdatedAt = null;
 assert.strictEqual(adapter.adaptOfficialSourceHealth(
   trackedOilFailure, unavailableOilMacro, unavailableOilAsset, "RWTC", currentNow
 ).status, "failed");
-assert.strictEqual(success.assets.filter((asset) => asset.demo === false).length, 3);
-assert.strictEqual(success.assets.filter((asset) => asset.demo === true).length, 5);
+assert.strictEqual(bitcoin.demo, false);
+assert.strictEqual(bitcoin.status, "ok");
+assert.strictEqual(bitcoin.price, bitcoinRow.price);
+assert.strictEqual(bitcoin.changePct, bitcoinRow.changePct);
+assert.strictEqual(bitcoin.asOf, bitcoinRow.dataMeta.asOf);
+assert.strictEqual(bitcoin.updatedAt, bitcoinRow.dataMeta.updatedAt);
+assert.strictEqual(bitcoin.source.name, "Powered by CoinGecko");
+assert.strictEqual(bitcoin.changePeriod, "24_hours");
+assert(bitcoin.note.includes("不宣称实时"));
+assert.strictEqual(bitcoin.updateHealth.status, "healthy");
+assert.strictEqual(bitcoin.updateHealth.accessMethodLabel, "CoinGecko");
+assert.strictEqual(bitcoin.updateHealth.lastSuccessfulAt, bitcoin.updatedAt);
+const tamperedBitcoinHealth = JSON.parse(JSON.stringify(assetRankingHealth));
+tamperedBitcoinHealth.sources.find((source) => source.id === "coingecko").lastSuccessAt = "2026-08-01T00:00:00Z";
+assert.throws(() => adapter.adaptBitcoinSourceHealth(
+  tamperedBitcoinHealth, assetRanking, bitcoin, currentNow
+), /同批/);
+const yahooRanking = JSON.parse(JSON.stringify(assetRanking));
+const yahooBitcoin = adapter.findBitcoinAsset(yahooRanking);
+yahooBitcoin.dataMeta.mode = "market";
+yahooBitcoin.dataMeta.status = "partial";
+yahooBitcoin.dataMeta.source = "Yahoo Finance · 静态流通量基准";
+const yahooBitcoinCard = adapter.adaptBitcoin(bitcoinConfig, yahooRanking, currentNow);
+assert.strictEqual(yahooBitcoinCard.status, "partial");
+assert.strictEqual(yahooBitcoinCard.changePeriod, "previous_close");
+assert.strictEqual(adapter.adaptBitcoinSourceHealth(
+  assetRankingHealth, yahooRanking, yahooBitcoinCard, currentNow
+).accessMethodLabel, "Yahoo BTC-USD");
+const retainedRanking = JSON.parse(JSON.stringify(assetRanking));
+const retainedBitcoin = adapter.findBitcoinAsset(retainedRanking);
+retainedBitcoin.dataMeta.mode = "fallback";
+retainedBitcoin.dataMeta.status = "stale";
+retainedBitcoin.dataMeta.source = "CoinGecko · Yahoo Finance";
+assert.strictEqual(adapter.adaptBitcoin(bitcoinConfig, retainedRanking, currentNow).status, "stale");
+const estimatedRanking = JSON.parse(JSON.stringify(assetRanking));
+const estimatedBitcoin = adapter.findBitcoinAsset(estimatedRanking);
+estimatedBitcoin.dataMeta.mode = "estimate";
+estimatedBitcoin.dataMeta.status = "partial";
+assert.throws(() => adapter.adaptBitcoin(bitcoinConfig, estimatedRanking, currentNow), /不得使用估值/);
+const duplicateBitcoin = JSON.parse(JSON.stringify(assetRanking));
+duplicateBitcoin.assets.push(JSON.parse(JSON.stringify(bitcoinRow)));
+assert.throws(() => adapter.findBitcoinAsset(duplicateBitcoin), /只能包含一条/);
+const missingBitcoin = JSON.parse(JSON.stringify(assetRanking));
+missingBitcoin.assets = missingBitcoin.assets.filter((asset) => asset.symbol !== "BTC");
+assert.throws(() => adapter.findBitcoinAsset(missingBitcoin), /只能包含一条/);
+const unavailableBitcoinPage = adapter.buildPageData(
+  config, macro, currentNow, null, null, { data: null, error: new Error("HTTP 503") }
+);
+assert.strictEqual(unavailableBitcoinPage.assets.find((asset) => asset.id === "bitcoin").status, "error");
+assert.strictEqual(unavailableBitcoinPage.assets.find((asset) => asset.id === "us10y").price, dgs10.price);
+assert.strictEqual(success.assets.filter((asset) => asset.demo === false).length, 4);
+assert.strictEqual(success.assets.filter((asset) => asset.demo === true).length, 4);
 assert.strictEqual(success.status, "stale");
 
 const trackedDgsMacro = JSON.parse(JSON.stringify(macro));
@@ -657,30 +955,57 @@ trackedDgs.status = "ok";
 trackedDgs.asOf = "2026-08-07";
 trackedDgs.updatedAt = "2026-08-07T21:00:00Z";
 trackedDgs.lastAttemptAt = trackedDgs.updatedAt;
+trackedDgs.observations = [{ asOf: trackedDgs.asOf, value: trackedDgs.price }];
 const independentlyFreshDgs = adapter.buildPageData(config, trackedDgsMacro, currentNow).assets.find((asset) => asset.id === "us10y");
 assert.strictEqual(independentlyFreshDgs.status, "ok");
 assert.strictEqual(independentlyFreshDgs.updatedAt, trackedDgs.updatedAt);
 
-const freshDollar = adapter.adaptDtwexbgs(dollarConfig, macro, new Date("2026-07-27T23:59:59Z"));
+const freshDollar = adapter.adaptDtwexbgs(
+  dollarConfig, macro, new Date(reference.asOf + "T23:59:59Z")
+);
 assert.strictEqual(freshDollar.status, "ok");
 assert.strictEqual(freshDollar.demo, false);
 assert.strictEqual(freshDollar.delayLabel, "日频 · 自动更新");
 
 const freshOilMacro = JSON.parse(JSON.stringify(macro));
 freshOilMacro.referenceSeries.RWTC.status = "ok";
-const freshOil = adapter.adaptRwtc(oilConfig, freshOilMacro, new Date("2026-07-31T23:59:59Z"));
+freshOilMacro.referenceSeries.RWTC.source.accessMethod = "EIA public history page";
+const freshOil = adapter.adaptRwtc(
+  oilConfig, freshOilMacro, new Date(oilReference.asOf + "T23:59:59Z")
+);
 assert.strictEqual(freshOil.status, "ok");
 assert.strictEqual(freshOil.demo, false);
 assert.strictEqual(freshOil.delayLabel, "日频现货 · 自动更新");
+assert.strictEqual(freshOil.source.accessMethod, "EIA public history page");
+const pathAwareHealth = trackedOfficialHealth(macroHealth, "RWTC", currentAttemptAt, "market");
+pathAwareHealth.sources.find((source) => source.id === "RWTC").source.accessMethod = "EIA public history page";
+const pathAwareState = adapter.adaptOfficialSourceHealth(
+  pathAwareHealth, freshOilMacro, freshOil, "RWTC", currentNow
+);
+assert.strictEqual(pathAwareState.accessMethodLabel, "官方历史页");
+const tamperedPathHealth = JSON.parse(JSON.stringify(pathAwareHealth));
+tamperedPathHealth.sources.find((source) => source.id === "RWTC").source.accessMethod = "EIA API v2";
+assert.throws(() => adapter.adaptOfficialSourceHealth(
+  tamperedPathHealth, freshOilMacro, freshOil, "RWTC", currentNow
+), /访问路径/);
 
 const staleMacro = JSON.parse(JSON.stringify(macro));
 const staleMatch = adapter.findDgs10Row(staleMacro);
 staleMatch.row.asOf = "2026-07-20";
+staleMatch.row.observations = [{ asOf: staleMatch.row.asOf, value: staleMatch.row.price }];
 staleMacro.referenceSeries.DTWEXBGS.asOf = "2026-07-20";
 staleMacro.referenceSeries.DTWEXBGS.previousAsOf = "2026-07-17";
+staleMacro.referenceSeries.DTWEXBGS.observations = [
+  { asOf: "2026-07-17", value: staleMacro.referenceSeries.DTWEXBGS.previousPrice },
+  { asOf: "2026-07-20", value: staleMacro.referenceSeries.DTWEXBGS.price }
+];
 staleMacro.referenceSeries.RWTC.status = "ok";
 staleMacro.referenceSeries.RWTC.asOf = "2026-07-20";
 staleMacro.referenceSeries.RWTC.previousAsOf = "2026-07-17";
+staleMacro.referenceSeries.RWTC.observations = [
+  { asOf: "2026-07-17", value: staleMacro.referenceSeries.RWTC.previousPrice },
+  { asOf: "2026-07-20", value: staleMacro.referenceSeries.RWTC.price }
+];
 const stale = adapter.buildPageData(config, staleMacro, new Date("2026-07-27T23:59:59Z"));
 assert.strictEqual(stale.assets.find((asset) => asset.id === "us10y").status, "stale");
 assert.strictEqual(stale.assets.find((asset) => asset.id === "dxy").status, "stale");
@@ -693,8 +1018,8 @@ missingMacro.macro.forEach((category) => {
 });
 const missing = adapter.buildPageData(config, missingMacro, currentNow);
 assert.strictEqual(missing.assets.find((asset) => asset.id === "us10y").status, "error");
-assert.strictEqual(missing.assets.find((asset) => asset.id === "dxy").status, "stale");
-assert.strictEqual(missing.assets.find((asset) => asset.id === "wti").status, "stale");
+assert.strictEqual(missing.assets.find((asset) => asset.id === "dxy").status, dollar.status);
+assert.strictEqual(missing.assets.find((asset) => asset.id === "wti").status, oil.status);
 
 const invalidMacro = JSON.parse(JSON.stringify(macro));
 adapter.findDgs10Row(invalidMacro).row.chg = "+1%";
@@ -728,6 +1053,10 @@ const fallbackMacro = JSON.parse(JSON.stringify(macro));
 fallbackMacro.referenceSeries.DTWEXBGS.status = "stale";
 fallbackMacro.referenceSeries.DTWEXBGS.asOf = "2026-08-03";
 fallbackMacro.referenceSeries.DTWEXBGS.previousAsOf = "2026-07-31";
+fallbackMacro.referenceSeries.DTWEXBGS.observations = [
+  { asOf: "2026-07-31", value: fallbackMacro.referenceSeries.DTWEXBGS.previousPrice },
+  { asOf: "2026-08-03", value: fallbackMacro.referenceSeries.DTWEXBGS.price }
+];
 const fallback = adapter.buildPageData(config, fallbackMacro, currentNow);
 const fallbackDollar = fallback.assets.find((asset) => asset.id === "dxy");
 assert.strictEqual(fallbackDollar.status, "stale");
@@ -737,6 +1066,10 @@ const oilFallbackMacro = JSON.parse(JSON.stringify(macro));
 oilFallbackMacro.referenceSeries.RWTC.status = "stale";
 oilFallbackMacro.referenceSeries.RWTC.asOf = "2026-08-03";
 oilFallbackMacro.referenceSeries.RWTC.previousAsOf = "2026-07-31";
+oilFallbackMacro.referenceSeries.RWTC.observations = [
+  { asOf: "2026-07-31", value: oilFallbackMacro.referenceSeries.RWTC.previousPrice },
+  { asOf: "2026-08-03", value: oilFallbackMacro.referenceSeries.RWTC.price }
+];
 const oilFallback = adapter.buildPageData(config, oilFallbackMacro, currentNow).assets.find((asset) => asset.id === "wti");
 assert.strictEqual(oilFallback.status, "stale");
 assert(oilFallback.note.includes("自动更新未成功"));
@@ -876,9 +1209,9 @@ assert.strictEqual(macroOperationHealth.dataset, "macro-radar");
 assert.strictEqual(macroOperationHealth.status, "degraded");
 assert.strictEqual(macroOperationHealth.pipelineStatus, "degraded");
 assert.strictEqual(macroOperationHealth.availableCoveragePct, 100);
-assert.strictEqual(macroOperationHealth.freshCoveragePct, 0);
-assert.strictEqual(macroOperationHealth.historyKnown, false);
-assert.strictEqual(macroOperationHealth.consecutiveFailures, null);
+assert.strictEqual(macroOperationHealth.freshCoveragePct, macroHealth.coverage.freshCoveragePct);
+assert.strictEqual(macroOperationHealth.historyKnown, macroHealth.historyStatus === "tracked");
+assert.strictEqual(macroOperationHealth.consecutiveFailures, macroHealth.consecutiveFailures);
 assert.strictEqual(macroOperationHealth.reportStale, false);
 
 const operationSources = {
@@ -896,7 +1229,9 @@ assert.strictEqual(operationCards.length, 4);
 assert.deepStrictEqual(operationCards.map((card) => card.id), [
   "macro-radar", "asset-tracker", "companies", "asset-ranking"
 ]);
-assert(operationCards.every((card) => card.status === "degraded"));
+assert.deepStrictEqual(operationCards.map((card) => card.status), [
+  "degraded", "degraded", "healthy", "healthy"
+]);
 assert.deepStrictEqual(operationCards.map((card) => card.publishedRecords), [3, 28, 500, 250]);
 assert.deepStrictEqual(operationCards.map((card) => card.expectedRecords), [3, 28, 500, 250]);
 assert.deepStrictEqual(operationCards.map((card) => card.availableCoveragePct), [100, 100, 100, 100]);
@@ -906,7 +1241,9 @@ assert.deepStrictEqual(operationCards.map((card) => card.freshCoveragePct), [
   companiesHealth.coverage.freshCoveragePct,
   assetRankingHealth.coverage.freshCoveragePct
 ]);
-assert(operationCards.every((card) => card.historyKnown === false));
+assert.deepStrictEqual(operationCards.map((card) => card.historyKnown), [
+  macroHealth, assetTrackerHealth, companiesHealth, assetRankingHealth
+].map((health) => health.historyStatus === "tracked"));
 
 const staleOperationCards = adapter.buildOperationsCards(operationSources, expiredOfficialHealthNow);
 assert(staleOperationCards.every((card) => card.status === "stale"));
@@ -922,7 +1259,9 @@ const tamperedOperationSources = Object.assign({}, operationSources, {
 const tamperedOperationCards = adapter.buildOperationsCards(tamperedOperationSources, currentNow);
 assert.strictEqual(tamperedOperationCards[0].status, "unknown");
 assert.strictEqual(tamperedOperationCards[0].contractKnown, false);
-assert(tamperedOperationCards.slice(1).every((card) => card.status === "degraded"));
+assert.deepStrictEqual(tamperedOperationCards.slice(1).map((card) => card.status), [
+  "degraded", "healthy", "healthy"
+]);
 
 const mismatchedMacroSnapshot = JSON.parse(JSON.stringify(macro));
 mismatchedMacroSnapshot.updatedAt = "2026-08-03T22:00:00Z";
@@ -949,8 +1288,8 @@ assert.strictEqual(crossAsset.quality.declaredValid, true);
 assert.strictEqual(crossAsset.quality.contractKnown, true);
 assert.strictEqual(crossAsset.sourceHealth.status, "degraded");
 assert.strictEqual(crossAsset.sourceHealth.freshCoveragePct, assetTrackerHealth.coverage.freshCoveragePct);
-assert.strictEqual(crossAsset.sourceHealth.historyKnown, false);
-assert.strictEqual(crossAsset.sourceHealth.consecutiveFailures, null);
+assert.strictEqual(crossAsset.sourceHealth.historyKnown, assetTrackerHealth.historyStatus === "tracked");
+assert.strictEqual(crossAsset.sourceHealth.consecutiveFailures, assetTrackerHealth.consecutiveFailures);
 assert.strictEqual(crossAsset.sourceHealth.reportStale, false);
 const expiredTrackerHealth = adapter.adaptSourceHealth(
   assetTrackerHealth, "asset-tracker", assetTracker, expiredOfficialHealthNow
@@ -961,8 +1300,8 @@ assert.strictEqual(expiredTrackerHealth.reportStale, true);
 assert(expiredTrackerHealth.note.includes("不代表当前行情新鲜度"));
 const failedTrackerHealth = JSON.parse(JSON.stringify(assetTrackerHealth));
 Object.assign(failedTrackerHealth, {
-  generatedAt: "2026-08-08T20:00:00Z",
-  lastAttemptAt: "2026-08-08T20:00:00Z",
+  generatedAt: currentAttemptAt,
+  lastAttemptAt: currentAttemptAt,
   status: "failed",
   historyStatus: "tracked",
   consecutiveFailures: 1,
@@ -1003,8 +1342,8 @@ assert.strictEqual(adapter.periodTabTargetIndex(2, "End", 5), 4);
 assert.strictEqual(adapter.periodTabTargetIndex(2, "Enter", 5), 2);
 
 const freshAssetTracker = JSON.parse(JSON.stringify(assetTracker));
-freshAssetTracker.updatedAt = "2026-08-08T20:00:00Z";
-freshAssetTracker.asOf = "2026-08-08";
+freshAssetTracker.updatedAt = currentAttemptAt;
+freshAssetTracker.asOf = currentAttemptDate;
 freshAssetTracker.status = "ok";
 freshAssetTracker.assets.forEach((asset) => {
   asset.stale = false;
@@ -1080,12 +1419,13 @@ assert(globalAssets.assets.some((asset) => asset.static));
 assert(globalAssets.assets.some((asset) => !asset.static));
 assert.deepStrictEqual(globalAssets.quality.counts, assetRanking.dataQuality.counts);
 assert.strictEqual(globalAssets.quality.declaredValid, true);
-assert.strictEqual(globalAssets.sourceHealth.status, "degraded");
+assert.strictEqual(globalAssets.sourceHealth.status, "healthy");
 assert.strictEqual(globalAssets.sourceHealth.freshCoveragePct,
-  Math.round(assetRanking.dataQuality.counts.market / assetRanking.count * 10000) / 100);
+  assetRankingHealth.coverage.freshCoveragePct);
 assert.strictEqual(globalAssets.sourceHealth.verifiedCoveragePct,
-  Math.round((assetRanking.dataQuality.counts.market + assetRanking.dataQuality.counts.fallback
-    + assetRanking.dataQuality.counts.estimate) / assetRanking.count * 10000) / 100);
+  assetRankingHealth.coverage.verifiedCoveragePct);
+assert.strictEqual(globalAssets.sourceHealth.slowEstimateRecords, assetRanking.dataQuality.counts.estimate);
+assert.strictEqual(globalAssets.sourceHealth.dynamicIssueRecords, 0);
 assert(globalAssets.assets[0].dataLabel.includes("静态估算") && globalAssets.assets[0].dataLabel.includes("Savills"));
 globalAssets.assets.forEach((asset, index) => {
   const mode = assetRanking.assets[index].dataMeta.mode;
@@ -1093,11 +1433,13 @@ globalAssets.assets.forEach((asset, index) => {
   if (mode === "fallback") assert(asset.dataLabel.includes("历史回退"));
   if (mode === "unknown") assert.strictEqual(asset.dataLabel, "来源待确认");
 });
-assert(globalAssets.note.includes(assetRanking.dataQuality.counts.unknown + "项旧快照"));
+if (assetRanking.dataQuality.counts.unknown > 0) {
+  assert(globalAssets.note.includes(assetRanking.dataQuality.counts.unknown + "项旧快照"));
+}
 
 const freshAssetRanking = JSON.parse(JSON.stringify(assetRanking));
-freshAssetRanking.updatedAt = "2026-08-08T20:00:00Z";
-freshAssetRanking.asOf = "2026-08-08";
+freshAssetRanking.updatedAt = currentAttemptAt;
+freshAssetRanking.asOf = currentAttemptDate;
 freshAssetRanking.status = "ok";
 freshAssetRanking.assets.forEach((asset) => {
   asset.stale = false;
@@ -1106,7 +1448,7 @@ freshAssetRanking.assets.forEach((asset) => {
     mode: estimate ? "estimate" : "market",
     status: "ok",
     source: asset.dataMeta.source,
-    asOf: estimate ? "2026-08-01" : "2026-08-08T20:00:00Z",
+    asOf: estimate ? "2026-08-01" : currentAttemptAt,
     updatedAt: freshAssetRanking.updatedAt,
     frequency: estimate ? "irregular" : "daily"
   };
@@ -1179,6 +1521,10 @@ assert.strictEqual(failedRankingResearch[1].status, "error");
 
 const companyLeaders = adapter.adaptCompanies(companies, currentNow, companiesHealth);
 const listedCompanies = companies.companies.filter((company) => !company.private);
+const eligibleCompanyMovers = listedCompanies.filter((company) => company.stale !== true
+  && company.dataMeta && company.dataMeta.mode === "market" && company.dataMeta.status === "ok"
+  && Number.isFinite(company.changePct) && company.changePct >= -100 && company.changePct <= 1000)
+  .slice().sort((a, b) => a.changePct - b.changePct);
 assert.strictEqual(companyLeaders.id, "company-leaders");
 assert.strictEqual(companyLeaders.status, "partial");
 assert.strictEqual(companyLeaders.listedCount, companies.listedCount);
@@ -1187,19 +1533,47 @@ assert.strictEqual(companyLeaders.asOf, companies.asOf);
 assert.strictEqual(companyLeaders.updatedAt, companies.updatedAt);
 assert(companyLeaders.source.name.includes("Yahoo Finance") && companyLeaders.source.name.includes("multiples.vc"));
 assert.deepStrictEqual(companyLeaders.topCompanies.map((company) => company.symbol), listedCompanies.slice(0, 3).map((company) => company.symbol));
-assert.strictEqual(companyLeaders.gainer, null);
-assert.strictEqual(companyLeaders.laggard, null);
-assert.strictEqual(companyLeaders.moverCoverage, 0);
-assert.strictEqual(companyLeaders.quality.counts.market, 0);
-assert.strictEqual(companyLeaders.quality.counts.estimate, 50);
-assert.strictEqual(companyLeaders.quality.counts.unknown, 450);
+assert.strictEqual(companyLeaders.gainer && companyLeaders.gainer.symbol,
+  eligibleCompanyMovers.length >= 20 ? eligibleCompanyMovers[eligibleCompanyMovers.length - 1].symbol : null);
+assert.strictEqual(companyLeaders.laggard && companyLeaders.laggard.symbol,
+  eligibleCompanyMovers.length >= 20 ? eligibleCompanyMovers[0].symbol : null);
+assert.strictEqual(companyLeaders.moverCoverage, eligibleCompanyMovers.length);
+assert.deepStrictEqual(companyLeaders.quality.counts, companies.dataQuality.counts);
 assert.strictEqual(companyLeaders.quality.declaredValid, true);
-assert.strictEqual(companyLeaders.sourceHealth.status, "degraded");
-assert.strictEqual(companyLeaders.sourceHealth.freshCoveragePct, 0);
-assert.strictEqual(companyLeaders.sourceHealth.verifiedCoveragePct, 10);
-assert(companyLeaders.note.includes("暂停当日领涨与领跌"));
-assert(companyLeaders.topCompanies.every((company) => company.dataLabel === "来源待确认"));
+assert.strictEqual(companyLeaders.sourceHealth.status, "healthy");
+assert.strictEqual(companyLeaders.sourceHealth.freshCoveragePct,
+  companiesHealth.coverage.freshCoveragePct);
+assert.strictEqual(companyLeaders.sourceHealth.verifiedCoveragePct,
+  companiesHealth.coverage.verifiedCoveragePct);
+assert.strictEqual(companyLeaders.sourceHealth.slowEstimateRecords, companies.dataQuality.counts.estimate);
+assert.strictEqual(companyLeaders.sourceHealth.dynamicIssueRecords, 0);
+if (companies.dataQuality.counts.unknown + companies.dataQuality.counts.unavailable > 0) {
+  assert(companyLeaders.note.includes("暂停当日领涨与领跌"));
+}
+companyLeaders.topCompanies.forEach((company, index) => {
+  const mode = listedCompanies[index].dataMeta.mode;
+  if (mode === "market") assert(company.dataLabel.includes("行情"));
+  if (mode === "fallback") assert(company.dataLabel.includes("历史回退"));
+  if (mode === "unknown") assert.strictEqual(company.dataLabel, "来源待确认");
+});
 assert(Math.abs(companyLeaders.listedMarketCap - listedCompanies.reduce((sum, company) => sum + company.marketCap, 0)) < 1e-9);
+const dynamicFallbackCompanies = JSON.parse(JSON.stringify(companies));
+dynamicFallbackCompanies.companies.find((company) => !company.private).dataMeta = {
+  mode: "fallback", status: "stale", source: "Yahoo Finance",
+  asOf: "2026-08-01T00:00:00Z", updatedAt: "2026-08-01T00:00:00Z", frequency: "daily"
+};
+dynamicFallbackCompanies.dataQuality = qualityDeclaration(dynamicFallbackCompanies.companies);
+const dynamicFallbackHealth = JSON.parse(JSON.stringify(companiesHealth));
+dynamicFallbackHealth.status = "degraded";
+dynamicFallbackHealth.coverage.counts = dynamicFallbackCompanies.dataQuality.counts;
+dynamicFallbackHealth.coverage.freshCoveragePct = Math.round(
+  dynamicFallbackCompanies.dataQuality.counts.market / companies.listedCount * 10000
+) / 100;
+dynamicFallbackHealth.coverage.verifiedCoveragePct = 100;
+dynamicFallbackHealth.attempt.counts = dynamicFallbackCompanies.dataQuality.counts;
+assert.strictEqual(adapter.adaptSourceHealth(
+  dynamicFallbackHealth, "companies", dynamicFallbackCompanies, currentNow
+).status, "degraded");
 const monitoredResearch = adapter.buildResearchCards({
   assetTracker: { data: assetTracker, error: null },
   assetTrackerHealth: { data: assetTrackerHealth, error: null },
@@ -1212,14 +1586,14 @@ assert.strictEqual(monitoredResearch.length, 3);
 assert(monitoredResearch.every((card) => card.sourceHealth.contractKnown));
 
 const freshCompanies = JSON.parse(JSON.stringify(companies));
-freshCompanies.updatedAt = "2026-08-08T20:00:00Z";
-freshCompanies.asOf = "2026-08-08";
+freshCompanies.updatedAt = currentAttemptAt;
+freshCompanies.asOf = currentAttemptDate;
 freshCompanies.companies.forEach((company) => {
   if (!company.private) {
     if (!Number.isFinite(company.changePct)) company.changePct = 0;
     company.stale = false;
     company.dataMeta = {
-      mode: "market", status: "ok", source: "Yahoo Finance", asOf: "2026-08-08T20:00:00Z",
+      mode: "market", status: "ok", source: "Yahoo Finance", asOf: currentAttemptAt,
       updatedAt: freshCompanies.updatedAt, frequency: "daily"
     };
   }
@@ -1283,7 +1657,8 @@ assert.strictEqual(failedCompanyResearch[0].status, "partial");
 assert.strictEqual(failedCompanyResearch[1].status, "partial");
 assert.strictEqual(failedCompanyResearch[2].status, "error");
 
-const calendar = adapter.adaptEconomicCalendar(econCalendar, currentNow);
+const calendarNow = new Date(Date.parse(econCalendar.updatedAt) + 60 * 60 * 1000);
+const calendar = adapter.adaptEconomicCalendar(econCalendar, calendarNow);
 assert.strictEqual(calendar.id, "economic-calendar");
 assert.strictEqual(calendar.status, "ok");
 assert.strictEqual(calendar.count, econCalendar.events.length);
@@ -1294,36 +1669,36 @@ assert.strictEqual(calendar.source.name, "Forex Factory 经济日历");
 assert(calendar.events.length > 0 && calendar.events.length <= 4);
 assert(calendar.events.every((event) => ["high", "medium"].includes(event.impact)));
 if (calendar.selectionLabel === "接下来重要事件") {
-  assert(calendar.events.every((event) => Date.parse(event.ts) >= currentNow.getTime()));
+  assert(calendar.events.every((event) => Date.parse(event.ts) >= calendarNow.getTime()));
   assert(calendar.events.every((event, index) => index === 0
     || event.timestamp >= calendar.events[index - 1].timestamp));
 } else {
   assert.strictEqual(calendar.selectionLabel, "最近重要事件");
-  assert(calendar.events.every((event) => Date.parse(event.ts) < currentNow.getTime()));
+  assert(calendar.events.every((event) => Date.parse(event.ts) < calendarNow.getTime()));
   assert(calendar.events.every((event, index) => index === 0
     || event.timestamp <= calendar.events[index - 1].timestamp));
 }
 
 const partialCalendar = JSON.parse(JSON.stringify(econCalendar));
 partialCalendar.count += 1;
-assert.strictEqual(adapter.adaptEconomicCalendar(partialCalendar, currentNow).status, "partial");
+assert.strictEqual(adapter.adaptEconomicCalendar(partialCalendar, calendarNow).status, "partial");
 
 const staleCalendar = JSON.parse(JSON.stringify(econCalendar));
 staleCalendar.updatedAt = "2026-07-31T12:00:00Z";
-assert.strictEqual(adapter.adaptEconomicCalendar(staleCalendar, currentNow).status, "stale");
+assert.strictEqual(adapter.adaptEconomicCalendar(staleCalendar, calendarNow).status, "stale");
 
 const invalidCalendar = JSON.parse(JSON.stringify(econCalendar));
 invalidCalendar.source = "Unknown calendar";
 const invalidInformation = adapter.buildInformationCards({
   calendar: { data: invalidCalendar, error: null }
-}, currentNow);
+}, calendarNow);
 assert.strictEqual(invalidInformation.length, 1);
 assert.strictEqual(invalidInformation[0].status, "error");
 assert.strictEqual(invalidInformation[0].events.length, 0);
 
 const failedInformation = adapter.buildInformationCards({
   calendar: { data: null, error: new Error("HTTP 503") }
-}, currentNow);
+}, calendarNow);
 assert.strictEqual(failedInformation.length, 1);
 assert.strictEqual(failedInformation[0].status, "error");
 assert.strictEqual(failedInformation[0].events.length, 0);
@@ -1348,7 +1723,8 @@ const partialNews = JSON.parse(JSON.stringify(financeNews));
 partialNews.categories.find((category) => category.key === "markets").items[0].link = "https://example.com/unsafe";
 assert.strictEqual(adapter.adaptFinanceNews(partialNews, newsNow).status, "partial");
 
-assert.strictEqual(adapter.adaptFinanceNews(financeNews, currentNow).status, "stale");
+const staleNewsNow = new Date(Date.parse(financeNews.updatedAt) + 13 * 60 * 60 * 1000);
+assert.strictEqual(adapter.adaptFinanceNews(financeNews, staleNewsNow).status, "stale");
 
 const invalidNews = JSON.parse(JSON.stringify(financeNews));
 invalidNews.source = "Yahoo Finance";
@@ -1393,7 +1769,7 @@ console.log("- migrated history / coverage / failed-attempt retention / snapshot
 console.log("Economic calendar adapter states: PASS");
 console.log("- event counts / impact filter / local-time input / partial / stale / invalid-source / request-error: PASS");
 console.log("Finance news adapter states: PASS");
-console.log("- market-only / latest-five / safe links / partial / stale / invalid-source / request-error: PASS");
+console.log("- BTC market/fallback + market-only / latest-five / safe links / failure isolation: PASS");
 """
     result = subprocess.run(
         ["node", "-e", script],
@@ -1402,7 +1778,7 @@ console.log("- market-only / latest-five / safe links / partial / stale / invali
         capture_output=True,
         text=True,
     )
-    require(result.returncode == 0, f"DGS10、DTWEXBGS与RWTC JavaScript适配测试失败：\n{result.stdout}{result.stderr}")
+    require(result.returncode == 0, f"DGS10、DTWEXBGS、RWTC与BTC/USD JavaScript适配测试失败：\n{result.stdout}{result.stderr}")
     print(result.stdout.strip())
 
 
@@ -1459,8 +1835,9 @@ def main() -> None:
     require(data.get("status") == "partial", "混合数据配置状态必须为partial")
     require(
         "DGS10" in data.get("source", "") and "DTWEXBGS" in data.get("source", "")
-        and "RWTC" in data.get("source", "") and "演示" in data.get("source", ""),
-        "总来源必须同时标注DGS10、DTWEXBGS、RWTC与演示数据",
+        and "RWTC" in data.get("source", "") and "CoinGecko" in data.get("source", "")
+        and "Yahoo Finance" in data.get("source", "") and "演示" in data.get("source", ""),
+        "总来源必须同时标注DGS10、DTWEXBGS、RWTC、BTC/USD与演示数据",
     )
     parse_iso(data["updatedAt"])
 
@@ -1471,8 +1848,9 @@ def main() -> None:
 
     demo_assets = [asset for asset in assets if asset.get("demo") is True]
     real_configs = [asset for asset in assets if asset.get("demo") is False]
-    require(len(demo_assets) == 5, "除DGS10、DTWEXBGS与RWTC外必须恰有5项演示资产")
-    require({asset.get("id") for asset in real_configs} == {"us10y", "dxy", "wti"}, "真实数据配置必须是us10y、dxy与wti")
+    require(len(demo_assets) == 4, "三大股指与黄金必须恰有4项演示资产")
+    require({asset.get("id") for asset in real_configs} == {"us10y", "dxy", "wti", "bitcoin"},
+            "真实数据配置必须是us10y、dxy、wti与bitcoin")
 
     for asset in assets:
         missing = COMMON_ASSET_FIELDS - asset.keys()
@@ -1525,8 +1903,24 @@ def main() -> None:
         "RWTC必须指向宏观雷达自动更新记录",
     )
 
+    bitcoin_config = real_by_id["bitcoin"]
+    require(bitcoin_config["symbol"] == "BTC/USD", "比特币卡片代码必须为BTC/USD")
+    require(bitcoin_config["status"] == "loading", "BTC/USD配置必须以loading状态等待适配")
+    require(bitcoin_config.get("price") is None and bitcoin_config.get("changePct") is None,
+            "BTC/USD价格与涨跌不得留在终端配置中")
+    require(bitcoin_config.get("asOf") is None and bitcoin_config.get("updatedAt") is None,
+            "BTC/USD时间不得留在终端配置中")
+    require(bitcoin_config["source"].get("assetId") == "bitcoin"
+            and "CoinGecko" in bitcoin_config["source"].get("name", ""),
+            "BTC/USD来源必须指向CoinGecko资产记录")
+    require(bitcoin_config["source"].get("url") == "https://www.coingecko.com/",
+            "BTC/USD主要来源链接不准确")
+    require(bitcoin_config.get("dataRef") == "../asset-ranking/data.json#assets[Bitcoin]",
+            "BTC/USD必须复用全球资产榜逐条行情")
+
     category, row = find_dgs10(macro)
     require(category.get("src") == "FRED", "宏观雷达DGS10来源必须为FRED")
+    validate_official_observations(row, "DGS10")
     require(re.fullmatch(r"-?\d+(?:\.\d+)?%", row.get("val", "")) is not None, "DGS10收益率格式无效")
     require(re.fullmatch(r"[+-]?\d+(?:\.\d+)?bp", row.get("chg", ""), flags=re.I) is not None, "DGS10变化必须使用bp")
     parse_date(row["asOf"])
@@ -1545,6 +1939,7 @@ def main() -> None:
     parse_iso(dollar_reference["updatedAt"])
     parse_iso(dollar_reference["lastAttemptAt"])
     require(dollar_reference["source"].get("seriesId") == "DTWEXBGS", "DTWEXBGS自动更新来源不准确")
+    validate_official_observations(dollar_reference, "DTWEXBGS")
     expected_change = (dollar_reference["price"] / dollar_reference["previousPrice"] - 1) * 100
     require(abs(dollar_reference["changePct"] - expected_change) < 1e-12, "DTWEXBGS自动更新涨跌幅不可复现")
 
@@ -1561,6 +1956,7 @@ def main() -> None:
     parse_iso(wti_reference["updatedAt"])
     parse_iso(wti_reference["lastAttemptAt"])
     require(wti_reference["source"].get("seriesId") == "RWTC", "RWTC自动更新来源不准确")
+    validate_official_observations(wti_reference, "RWTC")
     expected_wti_change = (wti_reference["price"] / wti_reference["previousPrice"] - 1) * 100
     require(abs(wti_reference["changePct"] - expected_wti_change) < 1e-12, "RWTC自动更新涨跌幅不可复现")
 
@@ -1814,7 +2210,9 @@ def main() -> None:
     require("DTWEXBGS" in page and "不是ICE DXY" in page and "自动更新失败" in page, "页面未准确解释广义美元指数与回退规则")
     require("RWTC" in page and "不是 <code>CL=F</code>" in page and "EIA API文档" in page, "页面未准确解释WTI现货来源与口径")
     require("官方静态快照" not in page, "页面不得继续把DTWEXBGS描述为静态快照")
-    require("其余5项" in page, "页面演示资产数量说明不准确")
+    require("其余4项" in page, "页面演示资产数量说明不准确")
+    require("Powered by CoinGecko" in page and "Yahoo BTC-USD" in page,
+            "页面未披露BTC/USD主要来源、署名或降级口径")
     require('id="data-banner"' in page and 'id="market-grid"' in page, "页面缺少数据状态或卡片容器")
     require('id="risk-grid"' in page and 'id="risk-summary"' in page and "市场状态" in page, "页面缺少市场状态模块")
     require('id="research-grid"' in page and 'id="research-summary"' in page and "市场强弱与领袖" in page, "页面缺少市场研究模块")
@@ -1836,12 +2234,13 @@ def main() -> None:
     require(page.count('role="list"') >= 5, "五个动态卡片容器必须使用列表语义")
     require("跨资产强弱" in page and "今日、近一周、近一月、年初至今和近一年" in page, "页面未说明跨资产排行周期")
     require("ETF或期货代理" in page and "超过72小时" in page, "页面未披露跨资产代理口径或过期规则")
-    require("全球资产市值" in page and "data.json" in page
-            and "无法逐条证明本轮行情路径的记录保持`PARTIAL`" in page
-            and "不会用文件更新时间代替" in page, "页面未说明全球资产市值逐条来源限制")
+    require("全球资产市值" in page
+            and "已披露市值代理" in page and "不会用文件更新时间代替" in page
+            and "未登记`PARTIAL`路径仍会明确降级" in page,
+            "页面未说明全球资产市值逐条来源限制")
     require("全球公司领袖" in page and "未上市估值不参与涨跌排序" in page, "页面未说明公司领袖的上市范围")
-    require("无法逐只证明450家上市公司是本轮成功还是历史回退" in page
-            and "暂停“今日领涨/领跌”" in page, "页面未披露公司数据逐项新鲜度限制")
+    require("动态行情和慢频估值分层" in page and "不会单独被当作更新失败" in page,
+            "页面未披露公司数据逐项新鲜度限制")
     require("CNN恐慌与贪婪分数" in page and "0–100" in page, "页面未说明CNN恐慌与贪婪指标口径")
     require("OFR金融压力指数以0为历史平均" in page and "正值高于平均压力" in page, "页面未说明OFR金融压力口径")
     require("经济日历复用Forex Factory公开周历" in page and "超过36小时" in page and "设备本地时区" in page,
@@ -1856,6 +2255,10 @@ def main() -> None:
     require("official-update-health" in app and "adaptOfficialSourceHealth" in app
             and "三张官方行情卡片" in page and "逐源健康快照" in page,
             "页面未展示或解释三项官方行情逐源更新链健康")
+    require("official-trend" in page and "buildOfficialObservationTrend" in app
+            and "normalizeOfficialObservations" in app and "RECENT OBSERVATIONS" in app
+            and "最多8项" in page and "不以演示走势填充" in page,
+            "页面未校验或展示三项官方行情最近观测趋势")
     require('src="app.js"' in page, "页面未加载本地app.js")
     compact_page = re.sub(r"\s+", "", page)
     require(contrast_ratio(css_hex_variable(page, "faint"), css_hex_variable(page, "panel")) >= 4.5,
@@ -2006,7 +2409,8 @@ def main() -> None:
     require('setAttribute("aria-pressed"' not in app, "标签页不得混用aria-pressed按钮模式")
     require("runBrowserRegressionProbe" in app and "finance-terminal-regression-result" in app
             and "supportingHealthResources" in app and "supportingHealthPanelCount" in app
-            and "officialHealthResources" in app and "officialHealthPanelCount" in app,
+            and "officialHealthResources" in app and "officialHealthPanelCount" in app
+            and "officialObservationTrends" in app and "officialObservationTrendCount" in app,
             "页面缺少浏览器、官方逐源或辅助来源资源回归探针")
     require("noHorizontalOverflow" in app and "responsiveColumns" in app and "targetSizes" in app
             and "keyboardTabs" in app, "浏览器回归探针未覆盖溢出、布局、触控与键盘交互")
@@ -2037,7 +2441,8 @@ def main() -> None:
     require(BROWSER_VALIDATOR.exists(), "缺少金融终端真实浏览器回归脚本")
     browser_validator = BROWSER_VALIDATOR.read_text(encoding="utf-8")
     require("[360, 768, 1280]" in browser_validator and "Page.captureScreenshot" in browser_validator
-            and "Runtime.evaluate" in browser_validator, "浏览器回归脚本未覆盖三档宽度、渲染DOM和截图")
+            and "Runtime.evaluate" in browser_validator and "officialObservationTrendCount" in browser_validator,
+            "浏览器回归脚本未覆盖三档宽度、官方趋势、渲染DOM和截图")
     require(QUALITY_WORKFLOW.exists(), "缺少金融终端只读质量工作流")
     quality_workflow = QUALITY_WORKFLOW.read_text(encoding="utf-8")
     require("permissions:\n  contents: read" in quality_workflow, "金融终端质量工作流权限必须只读")
@@ -2091,6 +2496,8 @@ def main() -> None:
         require(command in runbook, f"四管道运行手册缺少本地检查：{command}")
     require("build_dtwexbgs_reference" in build_script and '"referenceSeries": reference_series' in build_script, "宏观雷达脚本未生成DTWEXBGS参考序列")
     require("build_rwtc_reference" in build_script and '"facets[series][]": RWTC_ID' in build_script, "宏观雷达脚本未按EIA RWTC口径生成参考序列")
+    require("parse_eia_rwtc_history_html" in build_script and "EIA_HISTORY_URL" in build_script,
+            "宏观雷达脚本缺少EIA官方历史页无密钥回退")
     require("requests.get(url, params=params" in build_script, "FRED请求必须把密钥放在参数对象而非日志字符串中")
     require("response = get(EIA_API_URL, params=params" in build_script, "EIA请求必须把密钥放在参数对象而非URL字符串中")
     require("repr(e)" not in build_script and "repr(exc)" not in build_script, "异常日志不得输出可能含密钥的完整请求URL")
@@ -2183,13 +2590,14 @@ def main() -> None:
     run_market_data_quality_contract_tests()
     run_company_builder_contract_tests()
     run_asset_ranking_builder_contract_tests()
+    run_official_observation_contract_tests()
     run_dtwexbgs_pipeline_tests()
     run_rwtc_pipeline_tests()
     run_js_adapter_tests()
 
-    print("Finance Terminal DGS10 + DTWEXBGS + RWTC validation: PASS")
-    print("- two FRED-backed cards, one EIA-backed card and five explicit demo cards: PASS")
-    print("- yield percent / change bp / broad-dollar and WTI spot change percent: PASS")
+    print("Finance Terminal DGS10 + DTWEXBGS + RWTC + BTC/USD validation: PASS")
+    print("- two FRED-backed, one EIA-backed, one CoinGecko/Yahoo card and four explicit demos: PASS")
+    print("- yield bp / broad-dollar and WTI percent / BTC 24h or previous-close change: PASS")
     print("- FRED and EIA refresh success / retained fallback / no-history error: PASS")
     print("- source / as-of / updated-at / stale / unavailable states: PASS")
     print("- homepage route and local data dependency: PASS")
@@ -2206,7 +2614,7 @@ def main() -> None:
     print("- economic calendar counts / impact / local-time input / freshness / independent failure states: PASS")
     print("- finance news market-only / latest-five / safe links / freshness / independent failure states: PASS")
     print("- four supporting feeds / migrated health / partial fallback / retained snapshot / workflow governance: PASS")
-    print("- three official card update chains / single-source isolation / stale evidence: PASS")
+    print("- four real-asset update chains / single-source isolation / stale evidence: PASS")
     print("- no external script dependencies: PASS")
     print("- browser regression probe / read-only CI contract: PASS")
 

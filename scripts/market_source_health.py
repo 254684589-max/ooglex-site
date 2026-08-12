@@ -35,6 +35,7 @@ DATASET_SPECS: dict[str, dict[str, Any]] = {
                 "name": "Yahoo Finance",
                 "role": "primary",
                 "matches": ["Yahoo Finance"],
+                "recordModes": ["market", "fallback", "unknown", "unavailable"],
                 "successModes": ["market"],
             },
         ],
@@ -53,6 +54,7 @@ DATASET_SPECS: dict[str, dict[str, Any]] = {
                 "name": "Yahoo Finance",
                 "role": "primary",
                 "matches": ["Yahoo Finance"],
+                "recordModes": ["market", "fallback", "unknown", "unavailable"],
                 "successModes": ["market"],
             },
             {
@@ -60,7 +62,9 @@ DATASET_SPECS: dict[str, dict[str, Any]] = {
                 "name": "multiples.vc公开融资估值汇总",
                 "role": "reference",
                 "matches": ["multiples.vc"],
+                "recordModes": ["estimate"],
                 "successModes": ["estimate"],
+                "successStatuses": ["ok", "partial"],
             },
         ],
         "recovery": [
@@ -78,13 +82,16 @@ DATASET_SPECS: dict[str, dict[str, Any]] = {
                 "name": "Yahoo Finance",
                 "role": "primary",
                 "matches": ["Yahoo Finance"],
+                "recordModes": ["market", "fallback", "unknown", "unavailable"],
                 "successModes": ["market"],
+                "partialSuccessMatches": ["公开存量基准", "世界黄金协会"],
             },
             {
                 "id": "coingecko",
                 "name": "CoinGecko",
                 "role": "primary",
                 "matches": ["CoinGecko"],
+                "recordModes": ["market", "fallback", "unknown", "unavailable"],
                 "successModes": ["market"],
             },
             {
@@ -93,13 +100,16 @@ DATASET_SPECS: dict[str, dict[str, Any]] = {
                 "role": "upstream",
                 "categories": ["company"],
                 "successModes": ["market", "estimate"],
+                "successStatuses": ["ok", "partial"],
             },
             {
                 "id": "public-estimates",
                 "name": "公开存量与融资估值",
                 "role": "reference",
                 "matches": ["Savills", "IMF", "世界黄金协会", "公开存量基准", "multiples.vc", "静态加密市值基准"],
+                "recordModes": ["estimate"],
                 "successModes": ["estimate"],
+                "successStatuses": ["ok", "partial"],
             },
         ],
         "recovery": [
@@ -144,6 +154,46 @@ def _dynamic_records(dataset: str, rows: list[dict[str, Any]]) -> int:
     raise ValueError(f"未知数据集：{dataset}")
 
 
+def _row_is_dynamic(dataset: str, row: dict[str, Any]) -> bool:
+    if dataset == "asset-tracker":
+        return True
+    if dataset == "companies":
+        return row.get("private") is not True
+    if dataset == "asset-ranking":
+        return row.get("static") is not True and row.get("private") is not True
+    raise ValueError(f"未知数据集：{dataset}")
+
+
+def _dynamic_market_success(dataset: str, meta: dict[str, Any]) -> bool:
+    if meta.get("mode") != "market":
+        return False
+    if meta.get("status") == "ok":
+        return True
+    source = str(meta.get("source") or "")
+    return bool(
+        dataset == "asset-ranking" and meta.get("status") == "partial"
+        and any(token in source for token in ("公开存量基准", "世界黄金协会"))
+    )
+
+
+def _snapshot_is_healthy(dataset: str, rows: list[dict[str, Any]]) -> bool:
+    """区分动态行情失败与已披露慢频估值，不把两者混成同一种降级。"""
+    if len(rows) != DATASET_SPECS[dataset]["expectedRecords"]:
+        return False
+    slow_frequencies = {"weekly", "monthly", "quarterly", "annual", "irregular"}
+    for row in rows:
+        if not isinstance(row, dict) or not isinstance(row.get("dataMeta"), dict):
+            return False
+        meta = row["dataMeta"]
+        if _row_is_dynamic(dataset, row):
+            if not _dynamic_market_success(dataset, meta):
+                return False
+        elif meta.get("mode") != "estimate" or meta.get("status") not in {"ok", "partial"} \
+                or meta.get("frequency") not in slow_frequencies:
+            return False
+    return True
+
+
 def _coverage(dataset: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
     expected = DATASET_SPECS[dataset]["expectedRecords"]
     quality = summarize_data_quality(rows)
@@ -174,7 +224,8 @@ def _source_observations(dataset: str, rows: list[dict[str, Any]]) -> list[dict[
             source_match = not source.get("matches") or (
                 source_name and any(token in source_name for token in source["matches"])
             )
-            if isinstance(meta, dict) and category_match and source_match:
+            mode_match = not source.get("recordModes") or (meta or {}).get("mode") in source["recordModes"]
+            if isinstance(meta, dict) and category_match and source_match and mode_match:
                 matched.append(meta)
         counts = Counter(meta.get("mode") for meta in matched if meta.get("mode") in DATA_MODES)
         last_successes = [
@@ -185,8 +236,18 @@ def _source_observations(dataset: str, rows: list[dict[str, Any]]) -> list[dict[
             status = "unknown"
         elif all(meta.get("mode") == "unavailable" for meta in matched):
             status = "failed"
-        elif any(meta.get("mode") in ("fallback", "unknown", "unavailable")
-                 or meta.get("status") != "ok" for meta in matched):
+        elif any(
+            meta.get("mode") not in source["successModes"]
+            or (
+                meta.get("status") not in source.get("successStatuses", ["ok"])
+                and not (
+                    meta.get("status") == "partial"
+                    and any(token in str(meta.get("source") or "")
+                            for token in source.get("partialSuccessMatches", []))
+                )
+            )
+            for meta in matched
+        ):
             status = "degraded"
         else:
             status = "healthy"
@@ -245,8 +306,7 @@ def make_source_health(
 
     if not published:
         pipeline_status = "failed"
-    elif summarize_data_quality(published_rows)["status"] == "ok" \
-            and coverage["publishedRecords"] == coverage["expectedRecords"]:
+    elif _snapshot_is_healthy(dataset, published_rows):
         pipeline_status = "healthy"
     else:
         pipeline_status = "degraded"

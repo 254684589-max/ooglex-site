@@ -48,13 +48,28 @@ node scripts/validate_finance_terminal_browser.mjs
 
 ### 2. 远端开发分支运行
 
-1. 先运行`Finance Terminal Quality`，确认代码、数据契约、四份健康快照和响应式页面均通过。
-2. 运行`Macro Radar`与`Asset Tracker`。
-3. 运行`Companies Tracker`并等待成功。
-4. 公司榜成功后运行`Asset Ranking`，确保读取同一分支的最新公司快照。
-5. 最后运行`Finance Terminal Beta Gate`并下载`readiness.json`与`readiness.md`。
+优先使用开发分支上的`Finance Terminal V1 Qualification`：
+
+1. 资格脚本或工作流首次推送时自动启动，且只接受`agent/finance-terminal-*`分支；默认生产分支会被硬阻断。
+2. `Macro Radar`、`Asset Tracker`与`Companies Tracker`先全部启动，单源失败不取消另外两条独立任务。
+3. 只有`Companies Tracker`成功后才启动`Asset Ranking`，避免资产榜读取旧公司快照。
+4. 四条任务结束后重新签出同一开发分支的最新提交，运行完整数据、来源健康、回退、治理、门禁和360/768/1280像素浏览器检查。
+5. 上传`qualification.json/.md`、`readiness.json/.md`、健康诊断与响应式截图；证据保留7至14天，不进入Git历史。
+
+需要单项恢复时仍可按原顺序手动运行：先运行`Finance Terminal Quality`，再运行宏观雷达与跨资产；运行`Companies Tracker`并等待成功后，才运行`Asset Ranking`，最后运行Beta门禁。资格工作流失败不允许强行跳过依赖或修改时间戳，只能修复首个可操作问题后重跑。
 
 同一UTC日更窗口内的重跑只算一个周期；失败后重跑成功不会虚增连续周期。Beta至少观察3个周期，稳定V1至少观察7个周期。
+
+### 3. 辅助来源资格闭环
+
+CNN恐慌与贪婪、OFR金融压力、经济日历和财经新闻各自维护独立健康快照。四源均已由真实远端任务建立`tracked`历史；2026-08-12辅助资格确认CNN 1/1组件、OFR 5/5组件全部刷新并显示`HEALTHY`。以后出现`UNKNOWN`、`STALE`或失败时，继续使用开发分支上的`Finance Terminal Supporting Qualification`复核：
+
+1. 资格流程同时启动CNN与OFR，单源失败不得取消另一个来源。
+2. 完成后重新读取开发分支最新快照，运行四源健康、生成器失败保留、路径守卫、终端数据与360/768/1280像素页面检查。
+3. CNN整源失败时保留旧指数；OFR允许逐组件回退，但全部动态来源失败时不得重写旧数据时间。
+4. 辅助来源异常进入自己的`HEALTHY / DEGRADED / FAILED / UNKNOWN / STALE`状态，不得计入或替代核心四管道的3/7周期证据。
+
+辅助资格报告只保存14天诊断，不合并`main`、不创建发布、不部署。修复失败来源时必须运行其原数据工作流，不能手工只改`health.json`或时间戳。
 
 ## 状态分诊
 
@@ -72,10 +87,10 @@ node scripts/validate_finance_terminal_browser.mjs
 ### 宏观官方序列
 
 1. 查看`macro-radar-source-health.json`，按`DGS10`、`DTWEXBGS`、`RWTC`逐源确认状态。
-2. FRED或EIA单源失败时，只保留该序列的最后有效观测；另外两项继续独立更新。
+2. FRED单源失败时只保留该序列的最后有效观测；EIA API失败时先尝试同一`RWTC`官方公开历史页，两条访问路径都失败后才保留旧值。
 3. 核对3/3/4个美国工作日的不同过期阈值、DGS10的bp变化和另外两项的百分比变化。
 4. 不得用ICE DXY替代`DTWEXBGS`，不得用`CL=F`替代`RWTC`。
-5. 若FRED/EIA Secret缺失或失效，只在GitHub仓库设置中处理；不得把密钥写入命令、Issue、日志或聊天。
+5. FRED Secret缺失或失效时只在GitHub仓库设置中处理；EIA Secret可提升API可用性，但不是RWTC公开历史页回退的前置条件。任何密钥都不得写入命令、Issue、日志或聊天。
 
 ### 跨资产强弱
 

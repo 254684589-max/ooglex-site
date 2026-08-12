@@ -16,8 +16,8 @@
 - 综合机制读数 = 8 个信号加权平均；
 - 异动流：从当日读数/穿越阈值自动生成（非人工编写）。
 
-注：FRED与EIA数据通过官方API读取，分别需要工作流中的 FRED_API_KEY 与 EIA_API_KEY；
-缺失或失败时各项独立降级。
+注：FRED通过官方API读取并使用 FRED_API_KEY；EIA优先使用带 EIA_API_KEY 的API v2，
+密钥缺失或接口失败时改读同一RWTC标的的EIA公开日频历史页。各项独立降级。
 信用、期限、流动性仍保留上述市场化Yahoo代理指标作为部分场景的回退。
 
 设计原则：每个数据源独立 try，单点失败只降级该项、不拖垮整份文件；
@@ -28,9 +28,11 @@ import copy
 import json
 import math
 import os
+import re
 import sys
 import time
 from datetime import datetime, timezone, timedelta
+from html.parser import HTMLParser
 
 import requests
 
@@ -57,12 +59,14 @@ DTWEXBGS_SOURCE = {
     "seriesId": DTWEXBGS_ID,
 }
 RWTC_ID = "RWTC"
+RWTC_ACCESS_METHODS = ("EIA API v2", "EIA public history page")
 RWTC_SOURCE = {
     "name": "U.S. EIA / Cushing WTI Spot",
     "url": "https://www.eia.gov/dnav/pet/hist/rwtcd.htm",
     "seriesId": RWTC_ID,
 }
 EIA_API_URL = "https://api.eia.gov/v2/petroleum/pri/spt/data/"
+EIA_HISTORY_URL = "https://www.eia.gov/dnav/pet/hist/RWTCD.htm"
 HEALTH_PATH = os.path.join("apps", "macro-radar", "health.json")
 UA = {"User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                      "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")}
@@ -287,6 +291,50 @@ def _positive_number(value):
             and math.isfinite(value) and value > 0)
 
 
+def normalize_official_observations(series, limit=8):
+    """Validate an ascending official observation window without inventing dates or values."""
+    try:
+        maximum = max(2, min(8, int(limit)))
+    except (TypeError, ValueError):
+        maximum = 8
+    observations = []
+    previous_date = None
+    for item in series or []:
+        if not isinstance(item, (list, tuple)) or len(item) != 2:
+            return []
+        observed, value = item
+        parsed = _parse_observation_date(observed)
+        if parsed is None or not _positive_number(value) \
+                or (previous_date is not None and parsed <= previous_date):
+            return []
+        observations.append({"asOf": observed, "value": float(value)})
+        previous_date = parsed
+    return observations[-maximum:]
+
+
+def retained_official_observations(record):
+    """Reuse a valid window, or seed only the dated observations an old record proves."""
+    existing = record.get("observations") if isinstance(record, dict) else None
+    if isinstance(existing, list) and existing:
+        pairs = [(item.get("asOf"), item.get("value")) for item in existing if isinstance(item, dict)]
+        normalized = normalize_official_observations(pairs)
+        if len(normalized) == len(existing):
+            return normalized
+
+    if not isinstance(record, dict):
+        return []
+    pairs = []
+    previous_as_of = record.get("previousAsOf")
+    previous_price = record.get("previousPrice")
+    as_of = record.get("asOf")
+    price = record.get("price")
+    if _parse_observation_date(previous_as_of) and _positive_number(previous_price):
+        pairs.append((previous_as_of, previous_price))
+    if _parse_observation_date(as_of) and _positive_number(price):
+        pairs.append((as_of, price))
+    return normalize_official_observations(pairs)
+
+
 def _find_dgs10_row(data):
     for category in (data or {}).get("macro") or []:
         if not isinstance(category, dict):
@@ -324,7 +372,7 @@ def previous_dgs10_reference(previous_data):
     previous_price = row.get("previousPrice")
     if not _positive_number(previous_price):
         previous_price = price - float(change_bps) / 100
-    return {
+    retained = {
         **copy.deepcopy(row),
         "id": DGS10_ID,
         "name": "10 年期美债收益率",
@@ -339,6 +387,8 @@ def previous_dgs10_reference(previous_data):
         "lastAttemptAt": row.get("lastAttemptAt") or updated_at,
         "source": dict(DGS10_SOURCE),
     }
+    retained["observations"] = retained_official_observations(retained)
+    return retained
 
 
 def build_dgs10_reference(previous_data, updated_at, fetcher=None):
@@ -348,9 +398,10 @@ def build_dgs10_reference(previous_data, updated_at, fetcher=None):
         series = fetch(DGS10_ID, 8) or []
     except Exception:
         series = []
-    if len(series) >= 2:
-        previous_as_of, previous_price = series[-2]
-        as_of, price = series[-1]
+    observations = normalize_official_observations(series)
+    if len(observations) >= 2:
+        previous_as_of, previous_price = observations[-2]["asOf"], observations[-2]["value"]
+        as_of, price = observations[-1]["asOf"], observations[-1]["value"]
         if _parse_observation_date(previous_as_of) and _parse_observation_date(as_of) \
                 and previous_as_of < as_of and _positive_number(previous_price) and _positive_number(price):
             change_bps = round((price - previous_price) * 100)
@@ -370,6 +421,7 @@ def build_dgs10_reference(previous_data, updated_at, fetcher=None):
                 "updatedAt": updated_at,
                 "lastAttemptAt": updated_at,
                 "source": dict(DGS10_SOURCE),
+                "observations": observations,
                 "note": "FRED官方日频数据；变化为相对上一观测值的基点数。",
             }
     old = previous_dgs10_reference(previous_data)
@@ -395,6 +447,7 @@ def build_dgs10_reference(previous_data, updated_at, fetcher=None):
         "updatedAt": None,
         "lastAttemptAt": updated_at,
         "source": dict(DGS10_SOURCE),
+        "observations": [],
         "note": "FRED自动更新失败，且没有可保留的历史DGS10观测值。",
     }
 
@@ -480,6 +533,121 @@ def eia_rwtc_api(limit=8, requester=None, api_key=None):
     return []
 
 
+class _EiaHistoryTableParser(HTMLParser):
+    """Collect table cells without depending on EIA's presentation classes."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.rows = []
+        self._row = None
+        self._cell = None
+
+    def handle_starttag(self, tag, attrs):
+        del attrs
+        if tag.lower() == "tr":
+            self._row = []
+        elif tag.lower() in ("td", "th") and self._row is not None:
+            self._cell = []
+
+    def handle_data(self, data):
+        if self._cell is not None:
+            self._cell.append(data)
+
+    def handle_endtag(self, tag):
+        lowered = tag.lower()
+        if lowered in ("td", "th") and self._row is not None and self._cell is not None:
+            value = re.sub(r"\s+", " ", "".join(self._cell).replace("\xa0", " ")).strip()
+            self._row.append(value)
+            self._cell = None
+        elif lowered == "tr" and self._row is not None:
+            if self._row:
+                self.rows.append(self._row)
+            self._row = None
+            self._cell = None
+
+
+_EIA_WEEK_LABEL = re.compile(
+    r"^(\d{4})\s+([A-Z][a-z]{2})-\s*(\d{1,2})\s+to\s+([A-Z][a-z]{2})-\s*(\d{1,2})$"
+)
+_MONTH_NUMBER = {
+    name: index for index, name in enumerate(
+        ("", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+    ) if name
+}
+
+
+def parse_eia_rwtc_history_html(page, limit=8):
+    """Parse EIA's public daily RWTC history table into ascending observations."""
+    if not isinstance(page, str) or len(page) > 8_000_000:
+        return []
+    parser = _EiaHistoryTableParser()
+    try:
+        parser.feed(page)
+        parser.close()
+    except (TypeError, ValueError):
+        return []
+    page_text = " ".join(cell for row in parser.rows for cell in row)
+    if "Cushing, OK WTI Spot Price FOB" not in page_text or "Dollars per Barrel" not in page_text:
+        return []
+
+    observations = {}
+    for row in parser.rows:
+        if len(row) < 6:
+            continue
+        match = _EIA_WEEK_LABEL.fullmatch(row[0])
+        if not match:
+            continue
+        year, start_month, start_day, end_month, end_day = match.groups()
+        start_month_number = _MONTH_NUMBER.get(start_month)
+        end_month_number = _MONTH_NUMBER.get(end_month)
+        if not start_month_number or not end_month_number:
+            continue
+        start_year = int(year)
+        end_year = start_year + (1 if end_month_number < start_month_number else 0)
+        try:
+            week_start = datetime(start_year, start_month_number, int(start_day), tzinfo=timezone.utc)
+            week_end = datetime(end_year, end_month_number, int(end_day), tzinfo=timezone.utc)
+        except ValueError:
+            continue
+        if week_end != week_start + timedelta(days=4) or week_start.weekday() != 0:
+            continue
+        for offset, raw_value in enumerate(row[1:6]):
+            try:
+                value = float(raw_value.replace(",", ""))
+            except (AttributeError, TypeError, ValueError):
+                continue
+            if _positive_number(value):
+                observed = (week_start + timedelta(days=offset)).strftime("%Y-%m-%d")
+                observations[observed] = value
+    try:
+        maximum = max(2, min(8, int(limit)))
+    except (TypeError, ValueError):
+        maximum = 8
+    return sorted(observations.items())[-maximum:]
+
+
+def eia_rwtc_history(limit=8, requester=None):
+    """Read the official public EIA RWTC history page when API credentials are unavailable."""
+    get = requester or requests.get
+    last = ""
+    for attempt in range(2):
+        try:
+            response = get(EIA_HISTORY_URL, headers=UA, timeout=(8, 20))
+            response.raise_for_status()
+            out = parse_eia_rwtc_history_html(response.text, limit)
+            if len(out) >= 2:
+                return out
+            last = "有效观测不足"
+        except Exception as exc:
+            status = getattr(getattr(exc, "response", None), "status_code", None)
+            last = "%s%s" % (type(exc).__name__, " HTTP %s" % status if status else "")
+        if attempt == 0:
+            time.sleep(1.0)
+    print("EIA-HISTORY %s 失败：%s" % (RWTC_ID, last))
+    return []
+
+
 def valid_dtwexbgs_reference(record):
     """Return True only for a reusable, source-verified DTWEXBGS observation pair."""
     if not isinstance(record, dict) or record.get("id") != DTWEXBGS_ID:
@@ -490,12 +658,24 @@ def valid_dtwexbgs_reference(record):
     observed = _parse_observation_date(record.get("asOf"))
     previous = _parse_observation_date(record.get("previousAsOf"))
     updated = _parse_utc_timestamp(record.get("updatedAt"))
+    raw_observations = record.get("observations")
+    observations_valid = True
+    if raw_observations is not None:
+        observations = retained_official_observations(record)
+        observations_valid = bool(
+            isinstance(raw_observations, list)
+            and len(observations) == len(raw_observations)
+            and observations
+            and observations[-1]["asOf"] == record.get("asOf")
+            and abs(observations[-1]["value"] - record.get("price", 0)) <= 1e-9
+        )
     return bool(
         record.get("status") in ("ok", "stale")
         and _positive_number(record.get("price"))
         and _positive_number(record.get("previousPrice"))
         and observed and previous and previous < observed
         and updated and updated.tzinfo is not None
+        and observations_valid
     )
 
 
@@ -511,9 +691,10 @@ def build_dtwexbgs_reference(previous_data, updated_at, fetcher=None):
     except Exception:
         series = []
 
-    if len(series) >= 2:
-        previous_as_of, previous_price = series[-2]
-        as_of, price = series[-1]
+    observations = normalize_official_observations(series)
+    if len(observations) >= 2:
+        previous_as_of, previous_price = observations[-2]["asOf"], observations[-2]["value"]
+        as_of, price = observations[-1]["asOf"], observations[-1]["value"]
         record = {
             "id": DTWEXBGS_ID,
             "name": "美联储广义美元指数",
@@ -529,6 +710,7 @@ def build_dtwexbgs_reference(previous_data, updated_at, fetcher=None):
             "updatedAt": updated_at,
             "lastAttemptAt": updated_at,
             "source": dict(DTWEXBGS_SOURCE),
+            "observations": observations,
             "note": "FRED官方日频数据；由宏观雷达任务自动更新。",
         }
         if valid_dtwexbgs_reference(record):
@@ -557,6 +739,7 @@ def build_dtwexbgs_reference(previous_data, updated_at, fetcher=None):
         "updatedAt": None,
         "lastAttemptAt": updated_at,
         "source": dict(DTWEXBGS_SOURCE),
+        "observations": [],
         "note": "FRED自动更新失败，且没有可保留的历史有效值。",
     }
 
@@ -568,15 +751,29 @@ def valid_rwtc_reference(record):
     source = record.get("source") or {}
     if source.get("seriesId") != RWTC_ID or "EIA" not in str(source.get("name", "")):
         return False
+    if source.get("accessMethod") is not None and source.get("accessMethod") not in RWTC_ACCESS_METHODS:
+        return False
     observed = _parse_observation_date(record.get("asOf"))
     previous = _parse_observation_date(record.get("previousAsOf"))
     updated = _parse_utc_timestamp(record.get("updatedAt"))
+    raw_observations = record.get("observations")
+    observations_valid = True
+    if raw_observations is not None:
+        observations = retained_official_observations(record)
+        observations_valid = bool(
+            isinstance(raw_observations, list)
+            and len(observations) == len(raw_observations)
+            and observations
+            and observations[-1]["asOf"] == record.get("asOf")
+            and abs(observations[-1]["value"] - record.get("price", 0)) <= 1e-9
+        )
     return bool(
         record.get("status") in ("ok", "stale")
         and _positive_number(record.get("price"))
         and _positive_number(record.get("previousPrice"))
         and observed and previous and previous < observed
         and updated and updated.tzinfo is not None
+        and observations_valid
     )
 
 
@@ -585,15 +782,28 @@ def build_rwtc_reference(previous_data, updated_at, fetcher=None):
 
     A failed refresh retains the last valid observation pair and exposes the failed attempt.
     """
-    fetch = fetcher or eia_rwtc_api
+    access_method = None
     try:
-        series = fetch(8) or []
+        if fetcher is not None:
+            series = fetcher(8) or []
+        else:
+            series = eia_rwtc_api(8) or []
+            if series:
+                access_method = "EIA API v2"
+            else:
+                series = eia_rwtc_history(8) or []
+                if series:
+                    access_method = "EIA public history page"
     except Exception:
         series = []
 
-    if len(series) >= 2:
-        previous_as_of, previous_price = series[-2]
-        as_of, price = series[-1]
+    observations = normalize_official_observations(series)
+    if len(observations) >= 2:
+        previous_as_of, previous_price = observations[-2]["asOf"], observations[-2]["value"]
+        as_of, price = observations[-1]["asOf"], observations[-1]["value"]
+        source = dict(RWTC_SOURCE)
+        if access_method:
+            source["accessMethod"] = access_method
         record = {
             "id": RWTC_ID,
             "name": "库欣WTI原油现货",
@@ -608,8 +818,10 @@ def build_rwtc_reference(previous_data, updated_at, fetcher=None):
             "previousAsOf": previous_as_of,
             "updatedAt": updated_at,
             "lastAttemptAt": updated_at,
-            "source": dict(RWTC_SOURCE),
-            "note": "EIA官方日频现货数据；由宏观雷达任务自动更新。",
+            "source": source,
+            "observations": observations,
+            "note": ("EIA官方日频现货数据；通过%s自动更新。" % access_method
+                     if access_method else "EIA官方日频现货数据；由宏观雷达任务自动更新。"),
         }
         if valid_rwtc_reference(record):
             return record
@@ -637,6 +849,7 @@ def build_rwtc_reference(previous_data, updated_at, fetcher=None):
         "updatedAt": None,
         "lastAttemptAt": updated_at,
         "source": dict(RWTC_SOURCE),
+        "observations": [],
         "note": "EIA自动更新失败，且没有可保留的历史有效值。",
     }
 

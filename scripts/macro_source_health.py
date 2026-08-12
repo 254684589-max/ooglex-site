@@ -24,6 +24,7 @@ DATASET = "macro-radar"
 PIPELINE_STATUSES = ("healthy", "degraded", "failed")
 ATTEMPT_STATUSES = ("success", "partial", "failed", "unknown")
 SOURCE_STATUSES = ("healthy", "degraded", "failed", "unknown")
+RWTC_ACCESS_METHODS = ("EIA API v2", "EIA public history page")
 SOURCE_MODES = ("market", "fallback", "unavailable", "unknown")
 HISTORY_STATUSES = ("tracked", "migrated")
 
@@ -163,6 +164,9 @@ def _published_reference(data: dict[str, Any], series_id: str) -> dict[str, Any]
         errors.append(f"{series_id}序列ID无效")
     if expected_provider not in str(source.get("name", "")):
         errors.append(f"{series_id}提供方无效")
+    access_method = source.get("accessMethod") if series_id == "RWTC" else None
+    if access_method is not None and access_method not in RWTC_ACCESS_METHODS:
+        errors.append("RWTC实际访问路径无效")
     status = record.get("status")
     if status not in ("ok", "stale", "error"):
         errors.append(f"{series_id}状态无效")
@@ -197,6 +201,7 @@ def _published_reference(data: dict[str, Any], series_id: str) -> dict[str, Any]
         "lastAttemptAt": record.get("lastAttemptAt"),
         "price": record.get("price"),
         "change": record.get("changePct"),
+        "accessMethod": access_method,
         "errors": errors,
         "source": {"name": spec["provider"], "url": spec["url"], "seriesId": series_id},
     }
@@ -286,6 +291,9 @@ def make_macro_health(
             last_successful_at = record.get("updatedAt") or attempted_at
         else:
             last_successful_at = previous.get("lastSuccessfulAt") or record.get("updatedAt")
+        source_registration = {"name": spec["provider"], "url": spec["url"], "seriesId": series_id}
+        if series_id == "RWTC" and record.get("accessMethod") in RWTC_ACCESS_METHODS:
+            source_registration["accessMethod"] = record["accessMethod"]
         sources.append({
             "id": series_id,
             "name": spec["name"],
@@ -305,7 +313,7 @@ def make_macro_health(
             "consecutiveFailures": consecutive,
             "snapshotPreserved": snapshot_preserved,
             "failureReason": failure_reason,
-            "source": {"name": spec["provider"], "url": spec["url"], "seriesId": series_id},
+            "source": source_registration,
         })
 
     coverage = _coverage(sources)
@@ -410,6 +418,8 @@ def validate_macro_health(health: dict[str, Any], data: dict[str, Any]) -> list[
             if source.get("changeUnit") != spec["changeUnit"]:
                 errors.append(f"{series_id}变化单位无效")
             expected_source = {"name": spec["provider"], "url": spec["url"], "seriesId": series_id}
+            if series_id == "RWTC" and record.get("accessMethod") in RWTC_ACCESS_METHODS:
+                expected_source["accessMethod"] = record["accessMethod"]
             if source.get("source") != expected_source:
                 errors.append(f"{series_id}来源登记无效")
             if source.get("published") is not (record.get("published") is True):
