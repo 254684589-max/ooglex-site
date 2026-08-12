@@ -1000,8 +1000,8 @@
 
     <div class="data-banner status-loading" id="data-banner" role="region" aria-labelledby="banner-title" aria-describedby="banner-copy banner-note">
       <span class="data-label" id="banner-label">PARTIAL</span>
-      <span><strong id="banner-title">当前为部分演示数据</strong><span class="banner-copy" id="banner-copy">正在校验DGS10、DTWEXBGS与EIA RWTC自动更新数据；其余5项仍为演示数据。</span></span>
-      <span class="data-note" id="banner-note">LOADING 3 OFFICIAL · 5 DEMO</span>
+      <span><strong id="banner-title">当前为部分演示数据</strong><span class="banner-copy" id="banner-copy">正在校验DGS10、DTWEXBGS、EIA RWTC与BTC/USD每日数据；其余4项仍为演示数据。</span></span>
+      <span class="data-note" id="banner-note">LOADING 4 REAL · 4 DEMO</span>
     </div>
 
     <main id="main-content" tabindex="-1">
@@ -1009,12 +1009,12 @@
         <div>
           <p class="eyebrow">Ooglex Finance Terminal · MVP 01</p>
           <h1 id="page-title">全球市场总览</h1>
-          <p class="hero-copy">用一张清晰的市场面板观察美国股指、利率、美元、黄金、原油与比特币，并通过站内宏观雷达读取当前市场状态。美国10年期国债收益率、美联储广义美元指数与库欣WTI原油现货均读取每日生成的数据，其余5项继续以演示数据验证页面体验。</p>
+          <p class="hero-copy">用一张清晰的市场面板观察美国股指、利率、美元、黄金、原油与比特币，并通过站内宏观雷达读取当前市场状态。美国10年期国债收益率、美联储广义美元指数、库欣WTI原油现货与BTC/USD均读取站内每日生成的数据，其余4项继续以演示数据验证页面体验。</p>
         </div>
         <div class="meta-grid" aria-label="数据说明">
-          <div class="meta-item"><span class="meta-key">Data status</span><span class="meta-value partial" id="data-status">正在校验3项官方数据</span></div>
+          <div class="meta-item"><span class="meta-key">Data status</span><span class="meta-value partial" id="data-status">正在校验4项真实数据</span></div>
           <div class="meta-item"><span class="meta-key">Updated</span><time class="meta-value" id="page-updated">加载中</time></div>
-          <div class="meta-item"><span class="meta-key">Source</span><span class="meta-value" id="page-source">FRED（DGS10 · DTWEXBGS）· EIA（RWTC）· Ooglex演示数据</span></div>
+          <div class="meta-item"><span class="meta-key">Source</span><span class="meta-value" id="page-source">FRED（DGS10 · DTWEXBGS）· EIA（RWTC）· CoinGecko / Yahoo Finance（BTC/USD）· Ooglex演示数据</span></div>
           <div class="meta-item"><span class="meta-key">Coverage</span><span class="meta-value" id="asset-count">8项全球核心资产</span></div>
         </div>
       </section>
@@ -1090,14 +1090,14 @@
       <section class="method" aria-labelledby="method-title">
         <h2 id="method-title">数据说明 / METHODOLOGY</h2>
         <p>
-          <strong>DGS10、DTWEXBGS、RWTC、三项市场状态、跨资产强弱、全球资产市值、全球公司领袖、经济日历和财经新闻均不在浏览器中调用外部API，而是读取站内任务生成的静态数据。</strong>
+          <strong>DGS10、DTWEXBGS、RWTC、BTC/USD、三项市场状态、跨资产强弱、全球资产市值、全球公司领袖、经济日历和财经新闻均不在浏览器中调用外部API，而是读取站内任务生成的静态数据。</strong>
           CNN恐慌与贪婪、OFR、Forex Factory经济日历和Google News市场资讯分别读取独立 <code>health.json</code>；卡片中的“UPDATE HEALTH”只表示最近更新任务证据，与内容本身的数据日分开。首次迁移无法追溯旧任务时显示 <code>UNKNOWN</code>，报告超出各来源12/36/72小时阈值时显示 <code>STALE</code>，失败时继续保留同一来源的最后有效内容，不用空值或新时间戳覆盖。
           经济日历复用Forex Factory公开周历，筛选接下来的高、中影响事件，按设备本地时区展示；文件超过36小时未更新或离开当前周范围时标记`STALE`，实际值、预测值和前值缺失时显示“—”，不补造数值。财经新闻只读取“最新消息”数据中的 <code>markets</code> 市场板块，按发布时间展示最新5条；同文件的Yahoo行情快照不参与终端行情，新闻文件超过12小时未更新或最新文章超过36小时时标记`STALE`，标题点击后经Google News跳转原媒体。
           跨资产强弱读取28项全球资产的自身价格回报，按今日、近一周、近一月、年初至今和近一年分别排序；每项附带行情、历史回退、来源、数据日和更新时间状态，历史回退、异常或缺值标的不参与排行，旧快照无法反推出精确逐条日期时保持`PARTIAL`。整个文件超过72小时未更新时暂停“今日”排行。债券与部分金属含ETF或期货代理，不冒充对应现货或收益率，具体口径以详情页为准。
           全球资产市值以十亿美元为统一单位，逐项区分行情、历史回退、静态估值和待确认状态，并展示逐条来源；房地产、政府债务等慢变量估值若未保存原报告日期，不会用文件更新时间代替。可确认数量由当前 <code>data.json</code> 动态汇总，无法逐条证明本轮行情路径的记录保持`PARTIAL`，下一次自动刷新后写入行情时点或明确回退。全球公司领袖逐公司区分Yahoo行情、历史回退和未上市静态估值；未上市估值不参与涨跌排序。现有旧快照无法逐只证明450家上市公司是本轮成功还是历史回退，因此统一显示“待确认”并暂停“今日领涨/领跌”，下一次自动刷新写入精确状态后再恢复。
           宏观状态沿用宏观雷达已有的0–100制度信号分数，数值越高越偏“宽松·支持”；CNN恐慌与贪婪分数表示从“极度恐惧”到“极度贪婪”；OFR金融压力指数以0为历史平均，正值高于平均压力、负值低于平均压力。三者口径不同，不合成为新的总分。DGS10收益率显示为百分比，变化显示为相对上一观测值的基点（bp）。
           DGS10、DTWEXBGS与RWTC三张官方行情卡片分别交叉校验同一份宏观数据和逐源健康快照，并在卡内显示独立 <code>UPDATE HEALTH</code>：本轮刷新或回退、连续失败、最近尝试与最后成功均不与行情数据日混用。每张卡另显示最多8项严格按日期递增的最近官方观测；DGS10区间变化使用bp，DTWEXBGS与RWTC使用百分比，历史不足时不以演示走势填充。单个来源健康字段异常时只把对应健康栏降为 <code>UNKNOWN</code>，不会隐藏仍可验证的行情，也不会拖累另外两张官方卡片；健康证据超过72小时显示 <code>STALE</code>。
-          <strong>DTWEXBGS是美联储H.10广义贸易加权美元指数，不是ICE DXY；RWTC是EIA库欣WTI现货，不是 <code>CL=F</code> 近月期货。</strong> WTI以美元/桶显示，涨跌按前后两个有效观测值计算；美元或WTI自动更新失败时保留最后有效值，RWTC超过4个美国工作日未发布新观测值时标记“STALE”。其余5项保留 <code>demo: true</code> 并逐卡显示“DEMO”。查看 <a href="https://fred.stlouisfed.org/series/DTWEXBGS" target="_blank" rel="noopener noreferrer">DTWEXBGS官方序列</a>、<a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html" target="_blank" rel="noopener noreferrer">FRED API使用条款</a>、<a href="https://www.eia.gov/dnav/pet/hist/rwtcd.htm" target="_blank" rel="noopener noreferrer">EIA RWTC官方序列</a>和<a href="https://www.eia.gov/opendata/documentation.php" target="_blank" rel="noopener noreferrer">EIA API文档</a>；本产品未获圣路易斯联储认可或认证。
+          <strong>DTWEXBGS是美联储H.10广义贸易加权美元指数，不是ICE DXY；RWTC是EIA库欣WTI现货，不是 <code>CL=F</code> 近月期货。</strong> WTI以美元/桶显示，涨跌按前后两个有效观测值计算；美元或WTI自动更新失败时保留最后有效值，RWTC超过4个美国工作日未发布新观测值时标记“STALE”。BTC/USD优先复用资产榜CoinGecko日度快照并显示“Powered by CoinGecko”；若明确降级至Yahoo BTC-USD，卡片同步改为“较前收盘”口径。三大股指与黄金共4项保留 <code>demo: true</code> 并逐卡显示“DEMO”。查看 <a href="https://fred.stlouisfed.org/series/DTWEXBGS" target="_blank" rel="noopener noreferrer">DTWEXBGS官方序列</a>、<a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html" target="_blank" rel="noopener noreferrer">FRED API使用条款</a>、<a href="https://www.eia.gov/dnav/pet/hist/rwtcd.htm" target="_blank" rel="noopener noreferrer">EIA RWTC官方序列</a>、<a href="https://www.eia.gov/opendata/documentation.php" target="_blank" rel="noopener noreferrer">EIA API文档</a>和<a href="https://www.coingecko.com/" target="_blank" rel="noopener noreferrer">CoinGecko</a>；本产品未获圣路易斯联储认可或认证。
         </p>
       </section>
     </main>

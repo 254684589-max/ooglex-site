@@ -25,6 +25,7 @@
   var OFR_FSI_MAX_BUSINESS_DAYS = 5;
   var ASSET_TRACKER_MAX_AGE_HOURS = 72;
   var ASSET_RANKING_MAX_AGE_HOURS = 72;
+  var BITCOIN_MAX_AGE_HOURS = 36;
   var COMPANIES_MAX_AGE_HOURS = 72;
   var SOURCE_HEALTH_MAX_AGE_HOURS = {
     "macro-radar": 72,
@@ -1894,6 +1895,82 @@
     };
   }
 
+  function findBitcoinAsset(data) {
+    var matches = Array.isArray(data && data.assets) ? data.assets.filter(function (asset) {
+      return asset && asset.category === "crypto" && asset.symbol === "BTC"
+        && (asset.nameEn === "Bitcoin" || asset.name === "比特币");
+    }) : [];
+    if (matches.length !== 1) throw new Error("资产榜必须且只能包含一条比特币记录");
+    return matches[0];
+  }
+
+  function adaptBitcoin(config, data, now) {
+    if (!config || config.id !== "bitcoin" || config.demo !== false || config.symbol !== "BTC/USD") {
+      throw new Error("比特币卡片配置无效");
+    }
+    if (!data || typeof data.source !== "string" || !/CoinGecko/.test(data.source)
+      || !/Yahoo Finance/.test(data.source)) throw new Error("比特币上游来源声明不完整");
+    var row = findBitcoinAsset(data);
+    if (!isNumber(row.price) || row.price <= 0) throw new Error("比特币价格无效");
+    if (!isNumber(row.changePct) || row.changePct < -100 || row.changePct > 10000) {
+      throw new Error("比特币涨跌幅无效");
+    }
+    var meta = normalizeDataMeta(row.dataMeta, null);
+    if (!meta.contractKnown || meta.frequency !== "daily" || !meta.asOf || !meta.updatedAt) {
+      throw new Error("比特币逐条来源或时间契约无效");
+    }
+    var isCoinGecko = meta.mode === "market" && meta.status === "ok" && meta.source === "CoinGecko";
+    var isYahoo = meta.mode === "market" && meta.status === "partial"
+      && /^Yahoo Finance · 静态流通量基准$/.test(meta.source);
+    var isRetained = meta.mode === "fallback" && ["stale", "partial"].indexOf(meta.status) !== -1
+      && /CoinGecko|Yahoo Finance/.test(meta.source);
+    if (!isCoinGecko && !isYahoo && !isRetained) {
+      throw new Error("比特币不得使用估值、未知或不可用记录冒充行情");
+    }
+    var age = hoursSince(meta.asOf, now);
+    var updateAge = hoursSince(meta.updatedAt, now);
+    if (age === null || updateAge === null) throw new Error("比特币行情时间无效或晚于当前时间");
+    if (meta.mode === "market" && meta.updatedAt !== data.updatedAt) {
+      throw new Error("比特币逐条更新时间与资产榜快照不一致");
+    }
+    var stale = age > BITCOIN_MAX_AGE_HOURS || isRetained || row.stale === true;
+    var status = stale ? "stale" : isYahoo ? "partial" : "ok";
+    var source = isCoinGecko
+      ? { name: "Powered by CoinGecko", url: "https://www.coingecko.com/" }
+      : { name: meta.source, url: "https://finance.yahoo.com/quote/BTC-USD/" };
+    return Object.assign({}, config, {
+      demo: false,
+      status: status,
+      price: row.price,
+      changePct: row.changePct,
+      asOf: meta.asOf,
+      updatedAt: meta.updatedAt,
+      delayLabel: isCoinGecko ? "日度快照 · 24小时涨跌"
+        : isYahoo ? "日频报价 · 较前收盘" : "日频快照 · 历史回退",
+      changePeriod: isCoinGecko ? "24_hours" : isYahoo ? "previous_close" : "retained_snapshot",
+      source: source,
+      note: stale
+        ? "CoinGecko与Yahoo本轮均未形成可发布新值，保留资产榜上一份同标的行情并标记过期。"
+        : isYahoo
+          ? "CoinGecko本轮不可用；使用Yahoo BTC-USD报价作为明确降级，涨跌为较前收盘。"
+          : "复用资产榜CoinGecko日度快照；涨跌为上游返回的过去24小时变化，不宣称实时。"
+    });
+  }
+
+  function unavailableBitcoin(config, error) {
+    return Object.assign({}, config, {
+      demo: false,
+      status: "error",
+      price: null,
+      changePct: null,
+      asOf: null,
+      updatedAt: null,
+      delayLabel: "日度行情不可用",
+      source: { name: "CoinGecko · Yahoo Finance", url: "../asset-ranking/" },
+      note: "无法从资产榜读取可验证的BTC/USD行情。" + (error && error.message ? " " + error.message : "")
+    });
+  }
+
   function adaptCompanies(data, now, health, healthError) {
     if (!data || data.source !== "Yahoo Finance") throw new Error("公司榜数据来源不是Yahoo Finance");
     var age = hoursSince(data.updatedAt, now);
@@ -2342,10 +2419,12 @@
     var dgs10 = assets.filter(function (asset) { return asset.id === "us10y"; })[0];
     var dollar = assets.filter(function (asset) { return asset.id === "dxy"; })[0];
     var wti = assets.filter(function (asset) { return asset.id === "wti"; })[0];
+    var bitcoin = assets.filter(function (asset) { return asset.id === "bitcoin"; })[0];
     var parts = [];
     parts.push(dgs10 && dgs10.status !== "error" ? "FRED H.15（DGS10）" : "DGS10暂不可用");
     parts.push(dollar && dollar.status !== "error" ? "FRED H.10（DTWEXBGS自动更新）" : "DTWEXBGS暂不可用");
     parts.push(wti && wti.status !== "error" ? "U.S. EIA（RWTC现货）" : "RWTC暂不可用");
+    parts.push(bitcoin && bitcoin.status !== "error" ? bitcoin.source.name + "（BTC/USD）" : "BTC/USD暂不可用");
     parts.push("Ooglex演示数据");
     return parts.join(" · ");
   }
@@ -2359,12 +2438,13 @@
     }
     var officialIds = config.assets.filter(function (asset) { return asset.demo === false; }).map(function (asset) { return asset.id; });
     var demoCount = config.assets.filter(function (asset) { return asset.demo === true; }).length;
-    if (officialIds.length !== 3 || officialIds.indexOf("us10y") === -1 || officialIds.indexOf("dxy") === -1 || officialIds.indexOf("wti") === -1 || demoCount !== 5) {
-      throw new Error("DGS10、DTWEXBGS、RWTC真实卡片与5项演示卡片的配置不一致");
+    if (officialIds.length !== 4 || officialIds.indexOf("us10y") === -1 || officialIds.indexOf("dxy") === -1
+      || officialIds.indexOf("wti") === -1 || officialIds.indexOf("bitcoin") === -1 || demoCount !== 4) {
+      throw new Error("DGS10、DTWEXBGS、RWTC、BTC/USD真实卡片与4项演示卡片的配置不一致");
     }
   }
 
-  function buildPageData(config, macroData, now, macroError, macroHealthSource) {
+  function buildPageData(config, macroData, now, macroError, macroHealthSource, assetRankingSource) {
     validateConfig(config);
     var assets = config.assets.map(function (asset) {
       if (asset.id === "us10y") {
@@ -2409,6 +2489,12 @@
           );
         }
       }
+      if (asset.id === "bitcoin") {
+        var ranking = assetRankingSource || {};
+        if (ranking.error || !ranking.data) return unavailableBitcoin(asset, ranking.error || new Error("资产榜数据缺失"));
+        try { return adaptBitcoin(asset, ranking.data, now); }
+        catch (error) { return unavailableBitcoin(asset, error); }
+      }
       return Object.assign({}, asset);
     });
     var hasStale = assets.some(function (asset) { return !asset.demo && asset.status === "stale"; });
@@ -2420,8 +2506,8 @@
     });
   }
 
-  function buildPageDataWithMacroError(config, error, now, macroHealthSource) {
-    return buildPageData(config, null, now, error, macroHealthSource);
+  function buildPageDataWithMacroError(config, error, now, macroHealthSource, assetRankingSource) {
+    return buildPageData(config, null, now, error, macroHealthSource, assetRankingSource);
   }
 
   var testApi = {
@@ -2439,6 +2525,8 @@
     adaptMacroRegime: adaptMacroRegime,
     adaptOfrFsi: adaptOfrFsi,
     adaptRwtc: adaptRwtc,
+    adaptBitcoin: adaptBitcoin,
+    findBitcoinAsset: findBitcoinAsset,
     buildOfficialObservationTrend: buildOfficialObservationTrend,
     adaptSourceHealth: adaptSourceHealth,
     adaptSupportingSourceHealth: adaptSupportingSourceHealth,
@@ -2630,9 +2718,11 @@
     if (asset.demo) return { className: "demo-chip", text: "DEMO" };
     if (asset.status === "stale") return { className: "stale-chip", text: "STALE" };
     if (asset.status === "error") return { className: "error-chip", text: "ERROR" };
+    if (asset.status === "partial") return { className: "partial-chip", text: "PARTIAL" };
     if (asset.source && asset.source.seriesId === "RWTC") {
       return { className: "official-chip", text: "EIA · DAILY" };
     }
+    if (asset.id === "bitcoin") return { className: "official-chip", text: "BTC · DAILY" };
     return { className: "official-chip", text: "FRED · DAILY" };
   }
 
@@ -3466,32 +3556,45 @@
     var official = data.assets.filter(function (asset) { return asset.demo === false; });
     var demos = data.assets.filter(function (asset) { return asset.demo === true; });
     var ok = official.filter(function (asset) { return asset.status === "ok"; });
+    var partial = official.filter(function (asset) { return asset.status === "partial"; });
     var stale = official.filter(function (asset) { return asset.status === "stale"; });
     var errors = official.filter(function (asset) { return asset.status === "error"; });
-    var breakdown = ok.length + "项官方正常 · " + stale.length + "项过期 · " + errors.length + "项不可用 · " + demos.length + "项演示";
+    var breakdown = ok.length + "项真实正常 · " + partial.length + "项降级 · " + stale.length
+      + "项过期 · " + errors.length + "项不可用 · " + demos.length + "项演示";
 
     if (errors.length > 0) {
       banner.className = "data-banner status-error";
       bannerLabel.textContent = "PARTIAL";
-      bannerTitle.textContent = "部分官方数据暂不可用";
+      bannerTitle.textContent = "部分真实数据暂不可用";
       bannerCopy.textContent = errors.map(function (asset) { return asset.symbol; }).join("、") + "已隐藏无效数值；其他卡片保留各自的来源和状态。";
-      bannerNote.textContent = ok.length + " OFFICIAL · " + stale.length + " STALE · " + errors.length + " ERROR · " + demos.length + " DEMO";
+      bannerNote.textContent = ok.length + " REAL · " + partial.length + " PARTIAL · " + stale.length
+        + " STALE · " + errors.length + " ERROR · " + demos.length + " DEMO";
       dataStatus.textContent = breakdown;
       marketState.textContent = "PARTIAL DATA";
     } else if (stale.length > 0) {
       banner.className = "data-banner status-stale";
       bannerLabel.textContent = "STALE";
-      bannerTitle.textContent = stale.length === 1 ? stale[0].symbol + "数据已过期" : "部分官方数据已过期";
-      bannerCopy.textContent = "页面保留最后一项官方观测值并醒目标记；没有使用演示值冒充真实行情。";
-      bannerNote.textContent = ok.length + " OFFICIAL · " + stale.length + " STALE · " + demos.length + " DEMO";
+      bannerTitle.textContent = stale.length === 1 ? stale[0].symbol + "数据已过期" : "部分真实数据已过期";
+      bannerCopy.textContent = "页面保留同一标的最后有效值并醒目标记；没有使用演示值冒充真实行情。";
+      bannerNote.textContent = ok.length + " REAL · " + partial.length + " PARTIAL · " + stale.length
+        + " STALE · " + demos.length + " DEMO";
       dataStatus.textContent = breakdown;
       marketState.textContent = "STALE DATA";
+    } else if (partial.length > 0) {
+      banner.className = "data-banner status-stale";
+      bannerLabel.textContent = "PARTIAL";
+      bannerTitle.textContent = "部分真实数据使用明确降级来源";
+      bannerCopy.textContent = partial.map(function (asset) { return asset.symbol; }).join("、")
+        + "已在卡片内同步显示来源、时间与涨跌口径；没有静默切换。";
+      bannerNote.textContent = ok.length + " REAL · " + partial.length + " PARTIAL · " + demos.length + " DEMO";
+      dataStatus.textContent = breakdown;
+      marketState.textContent = "PARTIAL DATA";
     } else {
       banner.className = "data-banner";
       bannerLabel.textContent = "PARTIAL";
       bannerTitle.textContent = "当前为部分演示数据";
-      bannerCopy.textContent = "DGS10、DTWEXBGS与EIA RWTC均通过宏观雷达任务自动更新；其余5项仍为演示数据。";
-      bannerNote.textContent = "3 OFFICIAL · 5 DEMO";
+      bannerCopy.textContent = "DGS10、DTWEXBGS、EIA RWTC与BTC/USD均读取站内每日数据；其余4项仍为演示数据。";
+      bannerNote.textContent = "4 REAL · 4 DEMO";
       dataStatus.textContent = breakdown;
       marketState.textContent = "PARTIAL DATA";
     }
@@ -3506,7 +3609,7 @@
       grid.appendChild(makeCard(asset));
     });
     grid.setAttribute("aria-busy", "false");
-    pageUpdated.textContent = data.updatedAt ? formatTimestamp(data.updatedAt, false) : "官方数据更新时间不可用";
+    pageUpdated.textContent = data.updatedAt ? formatTimestamp(data.updatedAt, false) : "真实数据更新时间不可用";
     if (data.updatedAt) pageUpdated.dateTime = data.updatedAt;
     pageSource.textContent = data.source;
     assetCount.textContent = "8项资产 · " + (official.length - unavailable.length) + "项官方可用 / " + unavailable.length + "项不可用 / " + demos.length + "项演示";
@@ -3788,8 +3891,8 @@
         var newsSource = sources[14];
         var newsHealthSource = sources[15];
         var marketData = macroSource.error
-          ? buildPageDataWithMacroError(config, macroSource.error, undefined, macroHealthSource)
-          : buildPageData(config, macroSource.data, undefined, null, macroHealthSource);
+          ? buildPageDataWithMacroError(config, macroSource.error, undefined, macroHealthSource, assetRankingSource)
+          : buildPageData(config, macroSource.data, undefined, null, macroHealthSource, assetRankingSource);
         return {
           market: marketData,
           risks: buildRiskCards({

@@ -548,6 +548,9 @@ const oilReference = adapter.findRwtcReference(macro);
 assert(oilReference && oilReference.id === "RWTC");
 const dollarConfig = config.assets.find((asset) => asset.id === "dxy");
 const oilConfig = config.assets.find((asset) => asset.id === "wti");
+const bitcoinConfig = config.assets.find((asset) => asset.id === "bitcoin");
+const bitcoinRow = assetRanking.assets.find((asset) => asset.symbol === "BTC");
+const rankingSource = { data: assetRanking, error: null };
 const currentLatestMs = Math.max(...[
   macro.updatedAt,
   fearGreed.updatedAt,
@@ -670,10 +673,11 @@ assert.strictEqual(supportingInformationCards[0].sourceHealth.status,
   adapter.adaptSupportingSourceHealth(econCalendarHealth, "econ-calendar", econCalendar, supportingNow).status);
 assert.strictEqual(supportingInformationCards[1].sourceHealth.status,
   adapter.adaptSupportingSourceHealth(financeNewsHealth, "whats-latest", financeNews, supportingNow).status);
-const success = adapter.buildPageData(config, macro, currentNow);
+const success = adapter.buildPageData(config, macro, currentNow, null, null, rankingSource);
 const dgs10 = success.assets.find((asset) => asset.id === "us10y");
 const dollar = success.assets.find((asset) => asset.id === "dxy");
 const oil = success.assets.find((asset) => asset.id === "wti");
+const bitcoin = success.assets.find((asset) => asset.id === "bitcoin");
 assert.strictEqual(dgs10.demo, false);
 assert.strictEqual(dgs10.status, match.row.status === "ok"
   && adapter.businessDaysSince(match.row.asOf, currentNow) <= 3 ? "ok" : "stale");
@@ -815,7 +819,7 @@ assert.strictEqual(oilWithStaleHealth.updateHealth.status, "stale");
 assert.strictEqual(oilWithStaleHealth.updateHealth.seriesId, "RWTC");
 const allOfficialHealth = adapter.buildPageData(
   config, macro, expiredOfficialHealthNow, null, { data: macroHealth, error: null }
-).assets.filter((asset) => asset.demo === false);
+).assets.filter((asset) => asset.updateHealth);
 assert.deepStrictEqual(allOfficialHealth.map((asset) => asset.updateHealth.seriesId), ["DGS10", "DTWEXBGS", "RWTC"]);
 assert.strictEqual(allOfficialHealth.filter((asset) => asset.updateHealth.status === "stale").length, 3);
 
@@ -869,8 +873,46 @@ trackedOilSource.publishedUpdatedAt = null;
 assert.strictEqual(adapter.adaptOfficialSourceHealth(
   trackedOilFailure, unavailableOilMacro, unavailableOilAsset, "RWTC", currentNow
 ).status, "failed");
-assert.strictEqual(success.assets.filter((asset) => asset.demo === false).length, 3);
-assert.strictEqual(success.assets.filter((asset) => asset.demo === true).length, 5);
+assert.strictEqual(bitcoin.demo, false);
+assert.strictEqual(bitcoin.status, "ok");
+assert.strictEqual(bitcoin.price, bitcoinRow.price);
+assert.strictEqual(bitcoin.changePct, bitcoinRow.changePct);
+assert.strictEqual(bitcoin.asOf, bitcoinRow.dataMeta.asOf);
+assert.strictEqual(bitcoin.updatedAt, bitcoinRow.dataMeta.updatedAt);
+assert.strictEqual(bitcoin.source.name, "Powered by CoinGecko");
+assert.strictEqual(bitcoin.changePeriod, "24_hours");
+assert(bitcoin.note.includes("不宣称实时"));
+const yahooRanking = JSON.parse(JSON.stringify(assetRanking));
+const yahooBitcoin = adapter.findBitcoinAsset(yahooRanking);
+yahooBitcoin.dataMeta.mode = "market";
+yahooBitcoin.dataMeta.status = "partial";
+yahooBitcoin.dataMeta.source = "Yahoo Finance · 静态流通量基准";
+assert.strictEqual(adapter.adaptBitcoin(bitcoinConfig, yahooRanking, currentNow).status, "partial");
+assert.strictEqual(adapter.adaptBitcoin(bitcoinConfig, yahooRanking, currentNow).changePeriod, "previous_close");
+const retainedRanking = JSON.parse(JSON.stringify(assetRanking));
+const retainedBitcoin = adapter.findBitcoinAsset(retainedRanking);
+retainedBitcoin.dataMeta.mode = "fallback";
+retainedBitcoin.dataMeta.status = "stale";
+retainedBitcoin.dataMeta.source = "CoinGecko · Yahoo Finance";
+assert.strictEqual(adapter.adaptBitcoin(bitcoinConfig, retainedRanking, currentNow).status, "stale");
+const estimatedRanking = JSON.parse(JSON.stringify(assetRanking));
+const estimatedBitcoin = adapter.findBitcoinAsset(estimatedRanking);
+estimatedBitcoin.dataMeta.mode = "estimate";
+estimatedBitcoin.dataMeta.status = "partial";
+assert.throws(() => adapter.adaptBitcoin(bitcoinConfig, estimatedRanking, currentNow), /不得使用估值/);
+const duplicateBitcoin = JSON.parse(JSON.stringify(assetRanking));
+duplicateBitcoin.assets.push(JSON.parse(JSON.stringify(bitcoinRow)));
+assert.throws(() => adapter.findBitcoinAsset(duplicateBitcoin), /只能包含一条/);
+const missingBitcoin = JSON.parse(JSON.stringify(assetRanking));
+missingBitcoin.assets = missingBitcoin.assets.filter((asset) => asset.symbol !== "BTC");
+assert.throws(() => adapter.findBitcoinAsset(missingBitcoin), /只能包含一条/);
+const unavailableBitcoinPage = adapter.buildPageData(
+  config, macro, currentNow, null, null, { data: null, error: new Error("HTTP 503") }
+);
+assert.strictEqual(unavailableBitcoinPage.assets.find((asset) => asset.id === "bitcoin").status, "error");
+assert.strictEqual(unavailableBitcoinPage.assets.find((asset) => asset.id === "us10y").price, dgs10.price);
+assert.strictEqual(success.assets.filter((asset) => asset.demo === false).length, 4);
+assert.strictEqual(success.assets.filter((asset) => asset.demo === true).length, 4);
 assert.strictEqual(success.status, "stale");
 
 const trackedDgsMacro = JSON.parse(JSON.stringify(macro));
@@ -1667,7 +1709,7 @@ console.log("- migrated history / coverage / failed-attempt retention / snapshot
 console.log("Economic calendar adapter states: PASS");
 console.log("- event counts / impact filter / local-time input / partial / stale / invalid-source / request-error: PASS");
 console.log("Finance news adapter states: PASS");
-console.log("- market-only / latest-five / safe links / partial / stale / invalid-source / request-error: PASS");
+console.log("- BTC market/fallback + market-only / latest-five / safe links / failure isolation: PASS");
 """
     result = subprocess.run(
         ["node", "-e", script],
@@ -1676,7 +1718,7 @@ console.log("- market-only / latest-five / safe links / partial / stale / invali
         capture_output=True,
         text=True,
     )
-    require(result.returncode == 0, f"DGS10、DTWEXBGS与RWTC JavaScript适配测试失败：\n{result.stdout}{result.stderr}")
+    require(result.returncode == 0, f"DGS10、DTWEXBGS、RWTC与BTC/USD JavaScript适配测试失败：\n{result.stdout}{result.stderr}")
     print(result.stdout.strip())
 
 
@@ -1733,8 +1775,9 @@ def main() -> None:
     require(data.get("status") == "partial", "混合数据配置状态必须为partial")
     require(
         "DGS10" in data.get("source", "") and "DTWEXBGS" in data.get("source", "")
-        and "RWTC" in data.get("source", "") and "演示" in data.get("source", ""),
-        "总来源必须同时标注DGS10、DTWEXBGS、RWTC与演示数据",
+        and "RWTC" in data.get("source", "") and "CoinGecko" in data.get("source", "")
+        and "Yahoo Finance" in data.get("source", "") and "演示" in data.get("source", ""),
+        "总来源必须同时标注DGS10、DTWEXBGS、RWTC、BTC/USD与演示数据",
     )
     parse_iso(data["updatedAt"])
 
@@ -1745,8 +1788,9 @@ def main() -> None:
 
     demo_assets = [asset for asset in assets if asset.get("demo") is True]
     real_configs = [asset for asset in assets if asset.get("demo") is False]
-    require(len(demo_assets) == 5, "除DGS10、DTWEXBGS与RWTC外必须恰有5项演示资产")
-    require({asset.get("id") for asset in real_configs} == {"us10y", "dxy", "wti"}, "真实数据配置必须是us10y、dxy与wti")
+    require(len(demo_assets) == 4, "三大股指与黄金必须恰有4项演示资产")
+    require({asset.get("id") for asset in real_configs} == {"us10y", "dxy", "wti", "bitcoin"},
+            "真实数据配置必须是us10y、dxy、wti与bitcoin")
 
     for asset in assets:
         missing = COMMON_ASSET_FIELDS - asset.keys()
@@ -1798,6 +1842,21 @@ def main() -> None:
         wti_config.get("dataRef") == "../macro-radar/data.json#referenceSeries.RWTC",
         "RWTC必须指向宏观雷达自动更新记录",
     )
+
+    bitcoin_config = real_by_id["bitcoin"]
+    require(bitcoin_config["symbol"] == "BTC/USD", "比特币卡片代码必须为BTC/USD")
+    require(bitcoin_config["status"] == "loading", "BTC/USD配置必须以loading状态等待适配")
+    require(bitcoin_config.get("price") is None and bitcoin_config.get("changePct") is None,
+            "BTC/USD价格与涨跌不得留在终端配置中")
+    require(bitcoin_config.get("asOf") is None and bitcoin_config.get("updatedAt") is None,
+            "BTC/USD时间不得留在终端配置中")
+    require(bitcoin_config["source"].get("assetId") == "bitcoin"
+            and "CoinGecko" in bitcoin_config["source"].get("name", ""),
+            "BTC/USD来源必须指向CoinGecko资产记录")
+    require(bitcoin_config["source"].get("url") == "https://www.coingecko.com/",
+            "BTC/USD主要来源链接不准确")
+    require(bitcoin_config.get("dataRef") == "../asset-ranking/data.json#assets[Bitcoin]",
+            "BTC/USD必须复用全球资产榜逐条行情")
 
     category, row = find_dgs10(macro)
     require(category.get("src") == "FRED", "宏观雷达DGS10来源必须为FRED")
@@ -2091,7 +2150,9 @@ def main() -> None:
     require("DTWEXBGS" in page and "不是ICE DXY" in page and "自动更新失败" in page, "页面未准确解释广义美元指数与回退规则")
     require("RWTC" in page and "不是 <code>CL=F</code>" in page and "EIA API文档" in page, "页面未准确解释WTI现货来源与口径")
     require("官方静态快照" not in page, "页面不得继续把DTWEXBGS描述为静态快照")
-    require("其余5项" in page, "页面演示资产数量说明不准确")
+    require("其余4项" in page, "页面演示资产数量说明不准确")
+    require("Powered by CoinGecko" in page and "Yahoo BTC-USD" in page,
+            "页面未披露BTC/USD主要来源、署名或降级口径")
     require('id="data-banner"' in page and 'id="market-grid"' in page, "页面缺少数据状态或卡片容器")
     require('id="risk-grid"' in page and 'id="risk-summary"' in page and "市场状态" in page, "页面缺少市场状态模块")
     require('id="research-grid"' in page and 'id="research-summary"' in page and "市场强弱与领袖" in page, "页面缺少市场研究模块")
@@ -2473,9 +2534,9 @@ def main() -> None:
     run_rwtc_pipeline_tests()
     run_js_adapter_tests()
 
-    print("Finance Terminal DGS10 + DTWEXBGS + RWTC validation: PASS")
-    print("- two FRED-backed cards, one EIA-backed card and five explicit demo cards: PASS")
-    print("- yield percent / change bp / broad-dollar and WTI spot change percent: PASS")
+    print("Finance Terminal DGS10 + DTWEXBGS + RWTC + BTC/USD validation: PASS")
+    print("- two FRED-backed, one EIA-backed, one CoinGecko/Yahoo card and four explicit demos: PASS")
+    print("- yield bp / broad-dollar and WTI percent / BTC 24h or previous-close change: PASS")
     print("- FRED and EIA refresh success / retained fallback / no-history error: PASS")
     print("- source / as-of / updated-at / stale / unavailable states: PASS")
     print("- homepage route and local data dependency: PASS")

@@ -1,12 +1,12 @@
 # 全球市场总览：真实数据接入规范
 
-> 状态：已制定，尚未接入API
+> 状态：4/8项已接入真实上游，4项等待公开展示许可
 >
 > 适用页面：`/apps/finance-terminal/`
 >
 > 适用资产：标普500、纳斯达克100、道琼斯指数、美国10年期国债收益率、美元指数、黄金、WTI原油、比特币
 >
-> 资料核对日期：2026-08-03
+> 资料核对日期：2026-08-12
 
 ## 1. 本次结论
 
@@ -15,7 +15,7 @@
 8项资产不能简单使用同一个免费接口：
 
 - 美国10年期国债收益率、美联储广义美元指数和EIA WTI现货具有较清晰的官方公共来源。
-- 比特币可先使用CoinGecko API的日度快照，但必须遵守套餐、缓存、署名及用户条款要求。
+- 比特币已复用现有全球资产榜的CoinGecko日度快照，并沿用同一管道的Yahoo `BTC-USD`明确降级；终端不新增浏览器请求、依赖或密钥。
 - 标普500、纳斯达克100、道琼斯指数和LBMA黄金基准涉及第三方版权或再分发许可。技术上能取到数据，不等于可以在公开网站展示。
 - ICE美元指数（DXY）也是专有基准。推荐第一版改用美联储广义美元指数并准确改名；如果必须显示DXY，则应先取得允许公开展示的数据许可。
 - 许可未确认的资产继续使用明显标注的演示数据，不用来源不明的真实数值替换。
@@ -64,7 +64,7 @@
 | `dxy` | 美联储广义美元指数 `DTWEXBGS` | 名义广义贸易加权美元指数 | FRED `DTWEXBGS` | 日频；日频官方数据 | 上一观测值 | 超过3个美国工作日 | **可实施，需改名** |
 | `gold` | 黄金现货 `XAU/USD` | 美元计价黄金现货或明确的日度黄金基准 | 具有外部展示权的授权供应商 | 日频；日终基准 | 上一伦敦工作日 | 超过2个伦敦工作日 | **需许可** |
 | `wti` | WTI现货 `WTI` | Cushing, Oklahoma WTI Spot | EIA API v2，序列 `RWTC` | 日频；日频现货数据 | 上一发布观测值 | 超过4个美国工作日 | **可实施** |
-| `bitcoin` | 比特币 `BTC/USD` | CoinGecko聚合的BTC美元价格 | CoinGecko `/simple/price`，ID为 `bitcoin` | 每日一次；日度快照 | API返回的过去24小时变化 | 超过36小时 | **可实施，须署名** |
+| `bitcoin` | 比特币 `BTC/USD` | CoinGecko聚合的BTC美元价格 | 复用全球资产榜CoinGecko逐条行情；Yahoo `BTC-USD`为明确降级 | 每日一次；日度快照 | CoinGecko为过去24小时；Yahoo为较前收盘 | 超过36小时 | **已实施并署名** |
 
 “公开展示状态”只表示当前是否具备清晰的接入路径，不构成法律意见。数据供应商条款改变时必须重新检查。
 
@@ -128,24 +128,18 @@ LBMA页面明确说明，LBMA Gold Price由ICE Benchmark Administration管理，
 
 ### 4.6 比特币
 
-推荐使用CoinGecko的聚合BTC美元价格，而不是单一交易所成交价。请求应包含：
-
-```text
-ids=bitcoin
-vs_currencies=usd
-include_24hr_change=true
-include_last_updated_at=true
-```
+终端复用`apps/asset-ranking/data.json`中唯一的`Bitcoin` / `BTC`逐条记录，不在页面或终端工作流新增一次CoinGecko调用。资产榜当前优先读取CoinGecko聚合BTC美元价格，失败时读取Yahoo `BTC-USD`价格；两者都失败才保留同标的上次快照。
 
 实施规则：
 
 - 第一版每天服务器端更新一次，因此页面显示“日度快照 · 24小时涨跌”，不显示“实时”。
-- `last_updated_at`转换为 `asOf`；若API返回的24小时变化为 `null`，该资产不得标记为正常。
-- Demo套餐当前要求署名；页面需显示“Powered by CoinGecko”，并满足其字号和链接要求。
+- CoinGecko逐条记录必须是`mode: market`、`status: ok`、`frequency: daily`，价格为正数且24小时变化为有限数；否则终端拒绝把它标记为正常。
+- 页面显示“Powered by CoinGecko”并链接到CoinGecko；署名不得被统一的文件来源摘要吞掉。
 - Demo套餐不作为商业授权依据；若网站收费、商业化或用途超出所选套餐，应先切换至允许相应用途的套餐。
 - 如果页面提供给其他用户使用，应同步准备适用的用户条款和隐私政策。
-- API密钥放入GitHub Actions Secret或未来的Cloudflare Secret，不进入浏览器。
-- CoinGecko失败时可以评估Coinbase `BTC-USD` 24小时统计作为备源，但必须把来源和方法变更显示出来，并标记 `partial`，不能静默切换。
+- 当前资产榜路径免密钥；本批不新增或假设任何Secret。未来若供应商要求密钥，只能放入GitHub Actions Secret或Cloudflare Secret，不进入浏览器。
+- CoinGecko失败且Yahoo成功时，卡片来源切换为`Yahoo Finance · 静态流通量基准`、状态为`PARTIAL`，涨跌标签改为“较前收盘”；不得继续写“24小时涨跌”。
+- CoinGecko与Yahoo都失败时，只接受`fallback`的同标的历史快照并标记`STALE`；估值、未知、不可用、重复BTC记录、未来时间或逐条时间与资产榜快照不一致均拒绝展示精确值。
 
 ## 5. 推荐的数据结构
 
@@ -261,8 +255,8 @@ flowchart TD
 1. 先只把美国10年期国债收益率接入真实数据，复用现有 `DGS10`，同时让页面支持bp变化和逐卡状态。
 2. 单独把美元卡片改为“美联储广义美元指数”并接入 `DTWEXBGS`。
 3. 单独接入EIA WTI现货。
-4. 单独接入CoinGecko比特币，并补齐署名、用户条款和隐私要求。
-5. 确认股票指数和黄金的外部展示许可后，再逐项替换演示数据。
+4. 已完成：复用资产榜接入CoinGecko比特币，并补齐署名、Yahoo降级、过期与失败隔离。
+5. 下一步：确认股票指数和黄金的外部展示许可后，再逐项替换演示数据。
 
 如果项目所有者不接受把DXY改为广义美元指数，应在第2步前暂停，由项目所有者选择“取得DXY许可”或“保留演示数据”。
 
@@ -283,11 +277,10 @@ flowchart TD
 - [CoinGecko Simple Price接口](https://docs.coingecko.com/reference/simple-price)
 - [CoinGecko API使用条款](https://www.coingecko.com/en/api_terms)
 - [CoinGecko API套餐与数据新鲜度](https://www.coingecko.com/en/api/pricing)
-- [Coinbase BTC-USD 24小时统计备源文档](https://docs.cdp.coinbase.com/api-reference/exchange-api/rest-api/products/get-product-stats)
 
-## 11. 本次未做事项
+## 11. 当前边界
 
-- 未调用或接入任何真实行情API。
-- 未新增API密钥或GitHub Secret。
-- 未修改演示页面、演示数据、脚本或工作流。
-- 未修改生产配置，未部署网站。
+- 终端页面不直接调用任何外部行情API；四项真实资产均读取站内静态数据管道。
+- BTC/USD复用既有资产榜结果，不新增API密钥、GitHub Secret或运行依赖。
+- 三大股票指数与黄金仍为醒目标注的演示数据，未用ETF、期货或来源不明的数值替换。
+- 未合并`main`、未修改生产部署配置、未部署网站。

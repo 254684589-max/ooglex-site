@@ -18,6 +18,7 @@ from finance_terminal_release_gate import (
     business_days_since,
     collect_workflow_evidence,
     evaluate_aggregate_pipeline,
+    evaluate_bitcoin_market,
     evaluate_macro_pipeline,
     evaluate_workflow_runs,
     load_aggregate_inputs,
@@ -33,10 +34,12 @@ ROOT = Path(__file__).resolve().parents[1]
 NOW = datetime(2026, 8, 7, 12, 0, tzinfo=timezone.utc)
 PAGE = " ".join((
     "当前为部分演示数据",
-    "其余5项仍为演示数据",
+    "其余4项仍为演示数据",
     "FRED API使用条款",
     "本产品未获圣路易斯联储认可或认证",
     "EIA RWTC官方序列",
+    "Powered by CoinGecko",
+    "Yahoo BTC-USD",
     "非投资建议",
 ))
 
@@ -58,13 +61,16 @@ def demo_asset(asset_id: str) -> dict:
 
 
 def official_asset(asset_id: str, symbol: str, series: str) -> dict:
+    source = ({"name": "CoinGecko via Ooglex Asset Ranking", "assetId": "bitcoin"}
+              if asset_id == "bitcoin" else {"name": "官方来源", "seriesId": series})
     return {
         "id": asset_id,
         "symbol": symbol,
         "demo": False,
         "status": "loading",
         "price": None,
-        "source": {"name": "官方来源", "seriesId": series},
+        "source": source,
+        **({"dataRef": "../asset-ranking/data.json#assets[Bitcoin]"} if asset_id == "bitcoin" else {}),
     }
 
 
@@ -78,6 +84,7 @@ def make_config() -> dict:
             official_asset("us10y", "DGS10", "DGS10"),
             official_asset("dxy", "DTWEXBGS", "DTWEXBGS"),
             official_asset("wti", "WTI", "RWTC"),
+            official_asset("bitcoin", "BTC/USD", "bitcoin"),
         ],
     }
 
@@ -179,7 +186,18 @@ def make_aggregate_inputs(snapshot_at: str = "2026-08-06T01:00:00Z") -> dict:
             "dataMeta": market_meta("Yahoo Finance", snapshot_at),
         }
         for index in range(200)
-    ] + [
+    ] + [{
+        "name": "比特币",
+        "nameEn": "Bitcoin",
+        "symbol": "BTC",
+        "category": "crypto",
+        "private": False,
+        "static": False,
+        "price": 63776,
+        "changePct": -0.3,
+        "stale": False,
+        "dataMeta": market_meta("CoinGecko", snapshot_at),
+    }] + [
         {
             "name": f"加密资产{index}",
             "category": "crypto",
@@ -187,7 +205,7 @@ def make_aggregate_inputs(snapshot_at: str = "2026-08-06T01:00:00Z") -> dict:
             "static": False,
             "dataMeta": market_meta("CoinGecko", snapshot_at),
         }
-        for index in range(4)
+        for index in range(3)
     ] + [
         {
             "name": f"其他行情资产{index}",
@@ -237,7 +255,11 @@ def make_aggregate_inputs(snapshot_at: str = "2026-08-06T01:00:00Z") -> dict:
             "health": companies_health,
         },
         "asset-ranking": {
-            "data": {"updatedAt": snapshot_at, "assets": ranking_rows},
+            "data": {
+                "updatedAt": snapshot_at,
+                "source": "Yahoo Finance · CoinGecko · 公开估算",
+                "assets": ranking_rows,
+            },
             "health": ranking_health,
         },
     }
@@ -287,7 +309,7 @@ def make_workflow_evidence(cycles: int = 3, *, latest_conclusion: str = "success
 def test_fresh_core_with_explicit_demos() -> None:
     report = build_report(make_config(), make_macro(), PAGE, NOW)
     checks = by_id(report)
-    require(report["status"] == "WARN", "5项明确演示数据应使Beta报告为WARN")
+    require(report["status"] == "WARN", "4项明确演示数据应使Beta报告为WARN")
     require(checks["market-demo-policy"]["status"] == "WARN", "演示资产策略状态错误")
     require(checks["official-dgs10"]["status"] == "PASS", "新鲜DGS10应通过")
     require(checks["official-dtwexbgs"]["status"] == "PASS", "新鲜DTWEXBGS应通过")
@@ -354,6 +376,29 @@ def test_future_observation_is_blocked() -> None:
     require(check["status"] == "BLOCKED", "未来观测日期必须阻断")
 
 
+def test_bitcoin_source_and_fallback_contract() -> None:
+    ranking = make_aggregate_inputs()["asset-ranking"]["data"]
+    check = evaluate_bitcoin_market(ranking, NOW)
+    require(check["status"] == "PASS" and check["metrics"]["source"] == "CoinGecko",
+            "新鲜CoinGecko BTC/USD应通过")
+
+    yahoo = deepcopy(ranking)
+    yahoo_row = next(row for row in yahoo["assets"] if row.get("symbol") == "BTC")
+    yahoo_row["dataMeta"].update({
+        "status": "partial",
+        "source": "Yahoo Finance · 静态流通量基准",
+    })
+    yahoo_check = evaluate_bitcoin_market(yahoo, NOW)
+    require(yahoo_check["status"] == "WARN" and any("较前收盘" in item for item in yahoo_check["details"]),
+            "Yahoo BTC-USD降级必须告警并披露不同涨跌口径")
+
+    estimate = deepcopy(ranking)
+    estimate_row = next(row for row in estimate["assets"] if row.get("symbol") == "BTC")
+    estimate_row["dataMeta"].update({"mode": "estimate", "status": "partial"})
+    require(evaluate_bitcoin_market(estimate, NOW)["status"] == "BLOCKED",
+            "估值记录不得冒充BTC/USD行情")
+
+
 def test_us_business_day_contract() -> None:
     # 2026-07-03 is the observed Independence Day holiday; weekend and holiday do not age data.
     age = business_days_since(date(2026, 7, 2), datetime(2026, 7, 6, 12, tzinfo=timezone.utc))
@@ -368,7 +413,7 @@ def test_fresh_aggregate_pipelines_pass() -> None:
         check = checks[f"pipeline-{dataset}"]
         require(check["status"] == "PASS", f"{dataset}新鲜健康快照应通过：{check}")
         require(check["metrics"]["freshCoveragePct"] == 100.0, f"{dataset}行情覆盖率错误")
-    require(len(report["checks"]) == 7, "核心与三条聚合门禁应合并为7项检查")
+    require(len(report["checks"]) == 8, "核心、BTC/USD与三条聚合门禁应合并为8项检查")
     require(report["scope"]["aggregatePipelines"] == list(AGGREGATE_DATASETS), "聚合范围未登记")
 
 
@@ -580,7 +625,7 @@ def test_repository_snapshot_and_cli_outputs() -> None:
     full_report = build_report(
         config, macro, page, NOW, load_aggregate_inputs(), macro_health=macro_health,
     )
-    require(len(full_report["checks"]) == 8, "仓库完整门禁缺少宏观或聚合管道检查")
+    require(len(full_report["checks"]) == 9, "仓库完整门禁缺少BTC/USD、宏观或聚合管道检查")
     require(full_report["status"] == "BLOCKED", "当前过期聚合健康报告必须阻断Beta")
 
 
@@ -591,6 +636,7 @@ def main() -> None:
     test_wrong_instrument_and_change_are_blocked()
     test_missing_disclosure_and_demo_flag_are_blocked()
     test_future_observation_is_blocked()
+    test_bitcoin_source_and_fallback_contract()
     test_us_business_day_contract()
     test_macro_source_health_gate()
     test_fresh_aggregate_pipelines_pass()
@@ -606,8 +652,8 @@ def main() -> None:
     test_read_only_workflow_contract()
     test_repository_snapshot_and_cli_outputs()
     print("Finance terminal release gate core contract: PASS")
-    print("- DGS10 / DTWEXBGS / RWTC source, unit, calculation and freshness: PASS")
-    print("- five explicit demos and required public disclosures: PASS")
+    print("- DGS10 / DTWEXBGS / RWTC / BTC/USD source, unit, calculation and freshness: PASS")
+    print("- four explicit demos and required public disclosures: PASS")
     print("- stale, future, wrong-instrument and malformed states: PASS")
     print("- macro source health alignment, fallback history and 72h freshness: PASS")
     print("- aggregate snapshot alignment, 72h freshness, coverage and failure states: PASS")
