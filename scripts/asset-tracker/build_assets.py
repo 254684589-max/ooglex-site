@@ -72,7 +72,17 @@ ASSETS = [
     {"name": "新西兰NZ50",       "cat": "equity",    "syms": ["^NZ50"]},
     {"name": "印度SENSEX30",     "cat": "equity",    "syms": ["^BSESN"]},
     {"name": "澳洲标普200",      "cat": "equity",    "syms": ["^AXJO"]},
-    {"name": "中证500",          "cat": "equity",    "syms": ["000905.SS"]},
+    {"name": "中证500",          "cat": "equity",    "syms": [
+        "000905.SS",
+        {"sym": "510500.SS", "proxy": {
+            "type": "etf",
+            "targetSymbol": "000905.SS",
+            "instrumentName": "中证500ETF",
+            "currency": "CNY",
+            "returnBasis": "price",
+            "note": "以人民币中证500ETF价格收益率代理；可能存在跟踪误差、分红与费用差异。",
+        }},
+    ]},
     {"name": "欧洲STOXX600",     "cat": "equity",    "syms": ["^STOXX"]},
     {"name": "英国富时100",      "cat": "equity",    "syms": ["^FTSE"]},
     {"name": "法国CAC40",        "cat": "equity",    "syms": ["^FCHI"]},
@@ -196,6 +206,31 @@ def candidate_proxy(cand, symbol):
     )
 
 
+def select_candidate(asset, fetcher=fetch_series):
+    """按登记顺序选取首个通过数据点与异常值护栏的直接标的或显式代理。"""
+    chosen = None
+    suspect = None
+    caps = {**SANE_CAPS, **asset.get("caps", {})}
+    for cand in asset["syms"]:
+        sym = cand["sym"] if isinstance(cand, dict) else cand
+        proxy = candidate_proxy(cand, sym)
+        note = cand.get("note") if isinstance(cand, dict) else None
+        note = note or (proxy or {}).get("note")
+        try:
+            returns, last_date, price = compute_returns(fetcher(sym))
+        except Exception as exc:
+            print(f"[..] {asset['name']} {sym} 取数失败：{str(exc)[:50]}")
+            continue
+        bad = breached_periods(returns, caps)
+        if not bad:
+            chosen = (sym, note, proxy, returns, price, last_date)
+            break
+        print(f"[!!] {asset['name']} {sym} 异常周期 {bad}（ytd={returns.get('ytd')}），改用下一个候选")
+        if suspect is None:
+            suspect = (sym, note, proxy, returns, price, last_date, bad)
+    return chosen, suspect
+
+
 def load_prev_data():
     """读取上次的完整 data.json，保留旧文件级时间供兼容迁移。"""
     try:
@@ -254,25 +289,7 @@ def build():
         if a.get("note"):
             rec["note"] = a["note"]
 
-        chosen = None        # 通过护栏的干净候选
-        suspect = None       # 第一个越界候选（所有候选都越界时的兜底）
-        caps = {**SANE_CAPS, **a.get("caps", {})}   # 支持按标的放宽/收紧护栏
-        for cand in a["syms"]:
-            sym = cand["sym"] if isinstance(cand, dict) else cand
-            note = cand.get("note") if isinstance(cand, dict) else None
-            proxy = candidate_proxy(cand, sym)
-            try:
-                returns, last_date, price = compute_returns(fetch_series(sym))
-            except Exception as e:
-                print(f"[..] {a['name']} {sym} 取数失败：{str(e)[:50]}")
-                continue
-            bad = breached_periods(returns, caps)
-            if not bad:
-                chosen = (sym, note, proxy, returns, price, last_date)
-                break
-            print(f"[!!] {a['name']} {sym} 异常周期 {bad}（ytd={returns.get('ytd')}），改用下一个候选")
-            if suspect is None:
-                suspect = (sym, note, proxy, returns, price, last_date, bad)
+        chosen, suspect = select_candidate(a)
 
         if chosen:
             sym, note, proxy, returns, price, last_date = chosen

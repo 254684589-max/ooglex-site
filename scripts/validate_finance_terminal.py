@@ -36,6 +36,7 @@ OFR_DATA = ROOT / "apps" / "ofr-monitor" / "data.json"
 OFR_HEALTH = ROOT / "apps" / "ofr-monitor" / "health.json"
 ASSET_TRACKER_DATA = ROOT / "apps" / "asset-tracker" / "data.json"
 ASSET_TRACKER_HEALTH = ROOT / "apps" / "asset-tracker" / "health.json"
+ASSET_TRACKER_BUILD = ROOT / "scripts" / "asset-tracker" / "build_assets.py"
 ASSET_RANKING_DATA = ROOT / "apps" / "asset-ranking" / "data.json"
 ASSET_RANKING_HEALTH = ROOT / "apps" / "asset-ranking" / "health.json"
 ASSET_RANKING_BUILD = ROOT / "scripts" / "asset-ranking" / "build_ranking.py"
@@ -257,6 +258,44 @@ def run_company_builder_contract_tests() -> None:
     require(module.last_round_as_of("May 2026") == "2026-05-01", "融资月份规范化错误")
     require(module.last_round_as_of(None) is None, "缺失融资月份不得生成默认日期")
     print("Company per-record provenance builder: PASS")
+
+
+def run_asset_tracker_builder_contract_tests() -> None:
+    spec = importlib.util.spec_from_file_location("asset_tracker_builder", ASSET_TRACKER_BUILD)
+    require(spec is not None and spec.loader is not None, "无法加载跨资产构建脚本")
+    module = importlib.util.module_from_spec(spec)
+    inserted_stub = "requests" not in sys.modules
+    if inserted_stub:
+        requests_stub = types.ModuleType("requests")
+        requests_stub.utils = types.SimpleNamespace(quote=lambda value: value)
+        sys.modules["requests"] = requests_stub
+    try:
+        spec.loader.exec_module(module)
+    finally:
+        if inserted_stub:
+            sys.modules.pop("requests", None)
+
+    asset = next(item for item in module.ASSETS if item["name"] == "中证500")
+    require(asset["syms"][0] == "000905.SS", "中证500必须优先尝试原指数代码")
+    proxy_candidate = asset["syms"][1]
+    require(proxy_candidate.get("sym") == "510500.SS", "中证500ETF代理代码无效")
+    attempts = []
+
+    def fake_fetch(symbol):
+        attempts.append(symbol)
+        if symbol == "000905.SS":
+            raise ValueError("行情数据点不足")
+        return [("2025-08-11", 100.0), ("2026-08-10", 110.0), ("2026-08-11", 111.0)]
+
+    chosen, suspect = module.select_candidate(asset, fake_fetch)
+    require(attempts == ["000905.SS", "510500.SS"], "中证500候选回退顺序无效")
+    require(suspect is None and chosen and chosen[0] == "510500.SS", "中证500ETF代理未被选中")
+    require(chosen[2]["targetSymbol"] == "000905.SS"
+            and chosen[2]["instrumentSymbol"] == "510500.SS"
+            and chosen[2]["currency"] == "CNY"
+            and chosen[2]["returnBasis"] == "price",
+            "中证500ETF代理契约无效")
+    print("Asset tracker CSI 500 fallback: PASS")
 
 
 def run_asset_ranking_builder_contract_tests() -> None:
@@ -2617,6 +2656,7 @@ def main() -> None:
             "财经新闻工作流缺少独立并发或短期诊断")
     require("cron: '15 */6 * * *'" in finance_news_workflow, "财经新闻工作流必须保持每6小时更新")
     run_market_data_quality_contract_tests()
+    run_asset_tracker_builder_contract_tests()
     run_company_builder_contract_tests()
     run_asset_ranking_builder_contract_tests()
     run_official_observation_contract_tests()
