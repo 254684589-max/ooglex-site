@@ -33,6 +33,11 @@ SUPPORTING_WORKFLOWS: dict[str, dict[str, Any]] = {
         "file": "fear_greed.yml",
         "sources": ["CNN Fear & Greed公开接口"],
     },
+    "ofr-monitor": {
+        "name": "OFR金融压力",
+        "file": "ofr_monitor.yml",
+        "sources": ["OFR Financial Stress Index", "OFR STFM公开接口"],
+    },
 }
 FIRST_WAVE = tuple(SUPPORTING_WORKFLOWS)
 

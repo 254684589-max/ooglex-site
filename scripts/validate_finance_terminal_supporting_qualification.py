@@ -63,12 +63,23 @@ class FakeExecutor:
 
 
 def test_cnn_contract() -> None:
-    require(tuple(SUPPORTING_WORKFLOWS) == ("fear-greed",),
-            "首项资格来源必须是CNN恐慌与贪婪")
-    require(FIRST_WAVE == ("fear-greed",), "CNN必须处于独立来源第一波")
+    require(tuple(SUPPORTING_WORKFLOWS) == ("fear-greed", "ofr-monitor"),
+            "辅助资格必须恰好覆盖CNN与OFR")
+    require(FIRST_WAVE == ("fear-greed", "ofr-monitor"),
+            "CNN与OFR必须同时处于独立来源第一波")
     spec = SUPPORTING_WORKFLOWS["fear-greed"]
     require(spec["file"] == "fear_greed.yml" and "CNN" in spec["sources"][0],
             "CNN资格工作流或来源登记错误")
+
+
+def test_ofr_contract() -> None:
+    spec = SUPPORTING_WORKFLOWS["ofr-monitor"]
+    require(spec["file"] == "ofr_monitor.yml", "OFR资格工作流登记错误")
+    require(spec["sources"] == [
+        "OFR Financial Stress Index", "OFR STFM公开接口"
+    ], "OFR两类公开来源登记错误")
+    require(len({item["file"] for item in SUPPORTING_WORKFLOWS.values()}) == 2,
+            "CNN与OFR不得共享工作流文件")
 
 
 def test_success_and_report() -> None:
@@ -76,13 +87,18 @@ def test_success_and_report() -> None:
     report = run_supporting_qualification(
         executor, BRANCH, "main", generated_at=NOW
     )
-    require(report["status"] == "PASS", "CNN成功后资格验收必须PASS")
-    require(report["summary"] == {"total": 1, "successful": 1, "blocked": 0},
-            "CNN资格汇总不可复算")
-    require(executor.events == [("start", "fear-greed"), ("wait", "fear-greed")],
-            "CNN资格启动与等待顺序错误")
+    require(report["status"] == "PASS", "CNN与OFR成功后资格验收必须PASS")
+    require(report["summary"] == {"total": 2, "successful": 2, "blocked": 0},
+            "辅助资格汇总不可复算")
+    first_wait = next(
+        index for index, event in enumerate(executor.events) if event[0] == "wait"
+    )
+    require(
+        [event[1] for event in executor.events[:first_wait]] == list(FIRST_WAVE),
+        "必须先启动CNN与OFR再等待任一结果",
+    )
     markdown = render_markdown(report)
-    require("状态：**PASS**" in markdown and "成功：1/1" in markdown,
+    require("状态：**PASS**" in markdown and "成功：2/2" in markdown,
             "辅助资格Markdown报告缺少结论")
     require(report["safety"]["oldRunsExcludedByIdBaseline"] is True,
             "资格报告必须声明隔离旧运行")
@@ -99,16 +115,34 @@ def test_failure_is_explicit() -> None:
     require(report["status"] == "BLOCKED" and item["conclusion"] == "failure",
             "CNN远端失败必须阻断辅助资格")
     require("timed out" in item["error"], "CNN超时必须明确进入报告")
+    require(report["workflows"]["ofr-monitor"]["conclusion"] == "success",
+            "CNN失败不得取消OFR独立来源")
+
+
+def test_ofr_dispatch_failure_does_not_cancel_cnn() -> None:
+    executor = FakeExecutor(start_failures={"ofr-monitor"})
+    report = run_supporting_qualification(
+        executor, BRANCH, "main", generated_at=NOW
+    )
+    require(report["status"] == "BLOCKED", "OFR触发失败必须阻断辅助资格")
+    require(("start", "fear-greed") in executor.events
+            and ("wait", "fear-greed") in executor.events,
+            "OFR触发失败不得取消CNN运行")
+    require(report["workflows"]["fear-greed"]["conclusion"] == "success",
+            "CNN独立成功结论必须保留")
 
 
 def main() -> None:
     test_cnn_contract()
+    test_ofr_contract()
     test_success_and_report()
     test_failure_is_explicit()
+    test_ofr_dispatch_failure_does_not_cancel_cnn()
     print("Finance terminal supporting qualification: PASS")
-    print("- CNN workflow identity and old-run isolation: PASS")
+    print("- CNN/OFR workflow identity and old-run isolation: PASS")
+    print("- both independent sources start before waiting: PASS")
     print("- development-branch safety inherited from core qualification: PASS")
-    print("- success, timeout and machine-readable report: PASS")
+    print("- isolated failure continuation, timeout and report contract: PASS")
 
 
 if __name__ == "__main__":
