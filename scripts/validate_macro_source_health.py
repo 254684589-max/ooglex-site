@@ -46,7 +46,7 @@ def reference(series_id: str, provider: str, price: float, previous: float, *, s
 
 
 def fixture(attempted_at: str = "2026-08-05T22:00:00Z") -> dict:
-    return {
+    data = {
         "updatedAt": attempted_at,
         "macro": [{
             "zh": "实际利率与通胀预期",
@@ -71,6 +71,8 @@ def fixture(attempted_at: str = "2026-08-05T22:00:00Z") -> dict:
                               attempted_at=attempted_at),
         },
     }
+    data["referenceSeries"]["RWTC"]["source"]["accessMethod"] = "EIA public history page"
+    return data
 
 
 def load_build_radar():
@@ -137,6 +139,9 @@ def run_contract_tests() -> None:
     require(healthy["status"] == "healthy" and healthy["attempt"]["status"] == "success",
             "三源成功应生成healthy")
     require(healthy["coverage"]["freshCoveragePct"] == 100.0, "三源成功覆盖率应为100%")
+    rwtc_health = next(source for source in healthy["sources"] if source["id"] == "RWTC")
+    require(rwtc_health["source"]["accessMethod"] == "EIA public history page",
+            "RWTC健康证据必须保留实际访问路径")
     require(not validate_macro_health(healthy, data), "健康三源契约应通过")
 
     second_at = "2026-08-06T22:00:00Z"
@@ -183,6 +188,9 @@ def run_contract_tests() -> None:
     tampered["coverage"]["freshCoveragePct"] = 100
     tampered["sources"][1]["source"]["seriesId"] = "DXY"
     require(validate_macro_health(tampered, partial_data), "篡改覆盖率或序列ID必须失败")
+    tampered_path = deepcopy(healthy)
+    tampered_path["sources"][2]["source"]["accessMethod"] = "unregistered mirror"
+    require(validate_macro_health(tampered_path, data), "篡改RWTC访问路径必须失败")
 
 
 def load(path: Path) -> dict:

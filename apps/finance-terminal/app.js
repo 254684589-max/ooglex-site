@@ -43,6 +43,7 @@
   var PIPELINE_HISTORY_STATUSES = ["tracked", "migrated"];
   var MACRO_HEALTH_MODES = ["market", "fallback", "unavailable", "unknown"];
   var MACRO_HEALTH_SOURCE_STATUSES = ["healthy", "degraded", "failed", "unknown"];
+  var RWTC_ACCESS_METHODS = ["EIA API v2", "EIA public history page"];
   var OFFICIAL_SOURCE_HEALTH_SPECS = {
     DGS10: {
       provider: "FRED / Federal Reserve H.15", maxBusinessDays: 3, changeUnit: "bp"
@@ -655,7 +656,8 @@
         published: oil.status !== "error",
         asOf: oil.status === "error" ? null : oil.asOf,
         updatedAt: oil.status === "error" ? null : oil.updatedAt,
-        status: oil.status
+        status: oil.status,
+        accessMethod: oil.source && oil.source.accessMethod || null
       } : null
     };
   }
@@ -890,6 +892,13 @@
       || asset.updatedAt !== published.updatedAt) {
       throw new Error(seriesId + "逐源健康与发布快照不一致");
     }
+    if (seriesId === "RWTC") {
+      var accessMethod = source.source.accessMethod || null;
+      if (accessMethod !== published.accessMethod || accessMethod !== (asset.source.accessMethod || null)
+        || (accessMethod !== null && RWTC_ACCESS_METHODS.indexOf(accessMethod) === -1)) {
+        throw new Error("RWTC实际访问路径与健康证据不一致");
+      }
+    }
     var sourceAttemptAgeHours = hoursSince(source.lastAttemptAt, now);
     if (sourceAttemptAgeHours === null
       || (source.lastSuccessfulAt !== null && hoursSince(source.lastSuccessfulAt, now) === null)) {
@@ -959,6 +968,11 @@
       lastSuccessfulAt: source.lastSuccessfulAt,
       snapshotPreserved: source.snapshotPreserved,
       failureReason: source.failureReason,
+      accessMethod: seriesId === "RWTC" ? source.source.accessMethod || null : null,
+      accessMethodLabel: seriesId === "RWTC"
+        ? source.source.accessMethod === "EIA API v2" ? "API v2"
+          : source.source.accessMethod === "EIA public history page" ? "官方历史页" : "待记录"
+        : null,
       note: note
     };
   }
@@ -1292,6 +1306,9 @@
     if (!source || source.seriesId !== "RWTC" || !/EIA/.test(source.name || "")) {
       throw new Error("RWTC来源不是EIA");
     }
+    if (source.accessMethod !== undefined && RWTC_ACCESS_METHODS.indexOf(source.accessMethod) === -1) {
+      throw new Error("RWTC实际访问路径无效");
+    }
     if (!isNumber(record.price) || record.price <= 0 || !isNumber(record.previousPrice) || record.previousPrice <= 0) {
       throw new Error("RWTC当前值或前值无效");
     }
@@ -1325,7 +1342,8 @@
       source: {
         name: "U.S. EIA / Cushing WTI Spot",
         url: "https://www.eia.gov/dnav/pet/hist/rwtcd.htm",
-        seriesId: "RWTC"
+        seriesId: "RWTC",
+        accessMethod: source.accessMethod || null
       },
       note: note,
       spark: observationTrend.values,
@@ -2962,6 +2980,9 @@
     var metrics = document.createElement("div");
     metrics.className = "pipeline-health-metrics";
     appendText(metrics, "span", "", "本轮更新 " + (state.refreshLabel || "不可验证"));
+    if (state.accessMethodLabel) {
+      appendText(metrics, "span", "", "访问路径 " + state.accessMethodLabel);
+    }
     appendText(metrics, "span", "", "连续失败 " + (state.historyKnown ? state.consecutiveFailures + "次" : "历史待建立"));
     appendText(metrics, "span", "", "最近尝试 " + formatTimestamp(state.lastAttemptAt, false));
     appendText(metrics, "span", "", "最后成功 " + formatTimestamp(state.lastSuccessfulAt, false));

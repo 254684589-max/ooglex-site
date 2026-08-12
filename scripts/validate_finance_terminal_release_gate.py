@@ -307,13 +307,17 @@ def make_workflow_evidence(cycles: int = 3, *, latest_conclusion: str = "success
 
 
 def test_fresh_core_with_explicit_demos() -> None:
-    report = build_report(make_config(), make_macro(), PAGE, NOW)
+    macro = make_macro()
+    macro["referenceSeries"]["RWTC"]["source"]["accessMethod"] = "EIA public history page"
+    report = build_report(make_config(), macro, PAGE, NOW)
     checks = by_id(report)
     require(report["status"] == "WARN", "4项明确演示数据应使Beta报告为WARN")
     require(checks["market-demo-policy"]["status"] == "WARN", "演示资产策略状态错误")
     require(checks["official-dgs10"]["status"] == "PASS", "新鲜DGS10应通过")
     require(checks["official-dtwexbgs"]["status"] == "PASS", "新鲜DTWEXBGS应通过")
     require(checks["official-rwtc"]["status"] == "PASS", "新鲜RWTC应通过")
+    require(checks["official-rwtc"]["metrics"]["accessMethod"] == "EIA public history page",
+            "RWTC门禁必须保留实际访问路径")
     require(report["summary"] == {"PASS": 3, "WARN": 1, "BLOCKED": 0}, "门禁汇总不可复算")
     markdown = render_markdown(report)
     require("Beta状态：**WARN**" in markdown and "| FRED DGS10 | PASS |" in markdown,
@@ -358,6 +362,10 @@ def test_wrong_instrument_and_change_are_blocked() -> None:
     checks = by_id(build_report(make_config(), macro, PAGE, NOW))
     require(checks["official-rwtc"]["status"] == "BLOCKED", "期货不得冒充RWTC现货")
     require(checks["official-dtwexbgs"]["status"] == "BLOCKED", "不可复算涨跌幅必须阻断")
+    macro = make_macro()
+    macro["referenceSeries"]["RWTC"]["source"]["accessMethod"] = "unregistered mirror"
+    require(by_id(build_report(make_config(), macro, PAGE, NOW))["official-rwtc"]["status"] == "BLOCKED",
+            "未登记RWTC访问路径必须阻断")
 
 
 def test_missing_disclosure_and_demo_flag_are_blocked() -> None:

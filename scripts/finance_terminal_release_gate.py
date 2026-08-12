@@ -97,6 +97,7 @@ EXPECTED_OFFICIAL = {
 }
 EXPECTED_DEMOS = {"sp500", "nasdaq100", "dow", "gold"}
 BITCOIN_MAX_AGE_HOURS = 36
+RWTC_ACCESS_METHODS = {"EIA API v2", "EIA public history page"}
 
 
 class GateInputError(ValueError):
@@ -385,6 +386,9 @@ def evaluate_reference_series(
         errors.append(f"{series_id}状态必须为ok或stale")
     if source_kind not in str(source.get("name", "")):
         errors.append(f"{series_id}来源不是{source_kind}")
+    access_method = source.get("accessMethod") if series_id == "RWTC" else None
+    if access_method is not None and access_method not in RWTC_ACCESS_METHODS:
+        errors.append("RWTC实际访问路径无效")
     if not finite_number(record.get("price")) or not finite_number(record.get("previousPrice")):
         errors.append(f"{series_id}当前值或前值无效")
     try:
@@ -408,7 +412,8 @@ def evaluate_reference_series(
             f"official-{series_id.lower()}", display_name, "BLOCKED",
             f"{series_id}无法安全用于Beta。", details=errors,
             metrics={"asOf": record.get("asOf"), "businessDaysOld": age,
-                     "maxBusinessDays": max_business_days, "pipelineStatus": record.get("status")},
+                     "maxBusinessDays": max_business_days, "pipelineStatus": record.get("status"),
+                     "accessMethod": access_method},
         )
     stale = record.get("status") == "stale" or (age is not None and age > max_business_days)
     return make_check(
@@ -416,7 +421,8 @@ def evaluate_reference_series(
         (f"{series_id}观测或最近更新状态已过期，页面应继续标记STALE。"
          if stale else f"{series_id}来源、数值、涨跌计算和时效通过。"),
         metrics={"asOf": record.get("asOf"), "businessDaysOld": age,
-                 "maxBusinessDays": max_business_days, "pipelineStatus": record.get("status")},
+                 "maxBusinessDays": max_business_days, "pipelineStatus": record.get("status"),
+                 "accessMethod": access_method},
     )
 
 

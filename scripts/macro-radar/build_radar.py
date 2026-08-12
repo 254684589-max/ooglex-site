@@ -59,6 +59,7 @@ DTWEXBGS_SOURCE = {
     "seriesId": DTWEXBGS_ID,
 }
 RWTC_ID = "RWTC"
+RWTC_ACCESS_METHODS = ("EIA API v2", "EIA public history page")
 RWTC_SOURCE = {
     "name": "U.S. EIA / Cushing WTI Spot",
     "url": "https://www.eia.gov/dnav/pet/hist/rwtcd.htm",
@@ -749,6 +750,8 @@ def valid_rwtc_reference(record):
         return False
     source = record.get("source") or {}
     if source.get("seriesId") != RWTC_ID or "EIA" not in str(source.get("name", "")):
+        return False
+    if source.get("accessMethod") is not None and source.get("accessMethod") not in RWTC_ACCESS_METHODS:
         return False
     observed = _parse_observation_date(record.get("asOf"))
     previous = _parse_observation_date(record.get("previousAsOf"))

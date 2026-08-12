@@ -479,6 +479,10 @@ def run_rwtc_pipeline_tests() -> None:
             "EIA API不可用时官方历史页应恢复RWTC")
     require(history_fresh["source"].get("accessMethod") == "EIA public history page",
             "RWTC必须披露实际官方访问路径")
+    require(builder.valid_rwtc_reference(history_fresh), "带访问路径的RWTC记录必须通过结构校验")
+    invalid_access = dict(history_fresh)
+    invalid_access["source"] = dict(history_fresh["source"], accessMethod="unregistered mirror")
+    require(not builder.valid_rwtc_reference(invalid_access), "未登记RWTC访问路径必须被拒绝")
 
     fresh = builder.build_rwtc_reference({}, attempt, lambda _limit: observations)
     require(fresh["status"] == "ok", "RWTC成功更新必须标记ok")
@@ -947,12 +951,25 @@ assert.strictEqual(freshDollar.delayLabel, "日频 · 自动更新");
 
 const freshOilMacro = JSON.parse(JSON.stringify(macro));
 freshOilMacro.referenceSeries.RWTC.status = "ok";
+freshOilMacro.referenceSeries.RWTC.source.accessMethod = "EIA public history page";
 const freshOil = adapter.adaptRwtc(
   oilConfig, freshOilMacro, new Date(oilReference.asOf + "T23:59:59Z")
 );
 assert.strictEqual(freshOil.status, "ok");
 assert.strictEqual(freshOil.demo, false);
 assert.strictEqual(freshOil.delayLabel, "日频现货 · 自动更新");
+assert.strictEqual(freshOil.source.accessMethod, "EIA public history page");
+const pathAwareHealth = trackedOfficialHealth(macroHealth, "RWTC", currentAttemptAt, "market");
+pathAwareHealth.sources.find((source) => source.id === "RWTC").source.accessMethod = "EIA public history page";
+const pathAwareState = adapter.adaptOfficialSourceHealth(
+  pathAwareHealth, freshOilMacro, freshOil, "RWTC", currentNow
+);
+assert.strictEqual(pathAwareState.accessMethodLabel, "官方历史页");
+const tamperedPathHealth = JSON.parse(JSON.stringify(pathAwareHealth));
+tamperedPathHealth.sources.find((source) => source.id === "RWTC").source.accessMethod = "EIA API v2";
+assert.throws(() => adapter.adaptOfficialSourceHealth(
+  tamperedPathHealth, freshOilMacro, freshOil, "RWTC", currentNow
+), /访问路径/);
 
 const staleMacro = JSON.parse(JSON.stringify(macro));
 const staleMatch = adapter.findDgs10Row(staleMacro);
