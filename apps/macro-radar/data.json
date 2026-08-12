@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-08-12T08:09:55Z",
+  "updatedAt": "2026-08-12T11:56:33Z",
   "asOf": "2026-08-12",
-  "asOfSh": "2026-08-12 16:09",
+  "asOfSh": "2026-08-12 19:56",
   "live": true,
   "source": "FRED · EIA · Yahoo Finance · 交易所行情",
   "regime": {
@@ -66,7 +66,7 @@
       "key": "volatility",
       "en": "VOLATILITY",
       "zh": "波动率",
-      "score": 85,
+      "score": 84,
       "status": "support",
       "statusZh": "支持",
       "desc": "VIX 回落，期限结构正向 (contango)",
@@ -321,10 +321,10 @@
       "key": "usd",
       "en": "USD / FX",
       "zh": "美元汇率",
-      "score": 47,
+      "score": 48,
       "status": "neutral",
       "statusZh": "中性",
-      "desc": "美元指数 99.9（走强偏紧）",
+      "desc": "美元指数 99.8（走强偏紧）",
       "spark": [
         97.8,
         97.7,
@@ -546,8 +546,8 @@
           "changeBps": 7,
           "asOf": "2026-08-10",
           "previousAsOf": "2026-08-07",
-          "updatedAt": "2026-08-12T08:09:55Z",
-          "lastAttemptAt": "2026-08-12T08:09:55Z",
+          "updatedAt": "2026-08-12T11:56:33Z",
+          "lastAttemptAt": "2026-08-12T11:56:33Z",
           "source": {
             "name": "FRED / Federal Reserve H.15",
             "url": "https://fred.stlouisfed.org/series/DGS10",
@@ -757,31 +757,31 @@
           "name": "铜/金 ×1000 (工业 vs 避险)",
           "id": "",
           "val": "1.49",
-          "chg": "-0.9%",
+          "chg": "-1.0%",
           "asOf": "2026-08-12",
           "tone": "down"
         },
         {
           "name": "金/银",
           "id": "",
-          "val": "67.4",
-          "chg": "-0.4%",
+          "val": "67.3",
+          "chg": "-0.6%",
           "asOf": "2026-08-12",
           "tone": "down"
         },
         {
           "name": "油/铜",
           "id": "",
-          "val": "12.57",
-          "chg": "-0.1%",
+          "val": "12.50",
+          "chg": "-0.6%",
           "asOf": "2026-08-12",
           "tone": "down"
         },
         {
           "name": "油/金 ×100",
           "id": "",
-          "val": "1.88",
-          "chg": "-1.0%",
+          "val": "1.87",
+          "chg": "-1.7%",
           "asOf": "2026-08-12",
           "tone": "down"
         }
@@ -824,10 +824,18 @@
           "tone": "up"
         },
         {
+          "name": "VIX 9 日",
+          "id": "VIX9D",
+          "val": "16.85",
+          "chg": "+20.5%",
+          "asOf": "2026-07-17",
+          "tone": "up"
+        },
+        {
           "name": "VIX",
           "id": "VIX",
-          "val": "15.34",
-          "chg": "+0.4%",
+          "val": "15.39",
+          "chg": "+0.7%",
           "asOf": "2026-08-12",
           "tone": "up"
         },
@@ -887,8 +895,8 @@
       "changePct": -0.37352116494424603,
       "asOf": "2026-08-07",
       "previousAsOf": "2026-08-06",
-      "updatedAt": "2026-08-12T08:09:55Z",
-      "lastAttemptAt": "2026-08-12T08:09:55Z",
+      "updatedAt": "2026-08-12T11:56:33Z",
+      "lastAttemptAt": "2026-08-12T11:56:33Z",
       "source": {
         "name": "FRED / Federal Reserve H.10",
         "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
@@ -936,20 +944,25 @@
       "nameEn": "Cushing WTI Spot Price FOB",
       "frequency": "daily",
       "demo": false,
-      "status": "stale",
-      "price": 84.25,
-      "previousPrice": 91.74,
-      "changePct": -8.164377588838011,
-      "asOf": "2026-07-27",
-      "previousAsOf": "2026-07-24",
-      "updatedAt": "2026-08-02T19:26:59Z",
-      "lastAttemptAt": "2026-08-12T08:09:55Z",
+      "status": "ok",
+      "price": 81.96,
+      "previousPrice": 86.16,
+      "changePct": -4.874651810584963,
+      "asOf": "2026-08-03",
+      "previousAsOf": "2026-07-31",
+      "updatedAt": "2026-08-12T11:56:33Z",
+      "lastAttemptAt": "2026-08-12T11:56:33Z",
       "source": {
         "name": "U.S. EIA / Cushing WTI Spot",
         "url": "https://www.eia.gov/dnav/pet/hist/rwtcd.htm",
-        "seriesId": "RWTC"
+        "seriesId": "RWTC",
+        "accessMethod": "EIA public history page"
       },
       "observations": [
+        {
+          "asOf": "2026-07-23",
+          "value": 93.08
+        },
         {
           "asOf": "2026-07-24",
           "value": 91.74
@@ -957,9 +970,29 @@
         {
           "asOf": "2026-07-27",
           "value": 84.25
+        },
+        {
+          "asOf": "2026-07-28",
+          "value": 80.91
+        },
+        {
+          "asOf": "2026-07-29",
+          "value": 86.08
+        },
+        {
+          "asOf": "2026-07-30",
+          "value": 85.15
+        },
+        {
+          "asOf": "2026-07-31",
+          "value": 86.16
+        },
+        {
+          "asOf": "2026-08-03",
+          "value": 81.96
         }
       ],
-      "note": "本轮EIA自动更新失败，保留上次有效观测值。"
+      "note": "EIA官方日频现货数据；通过EIA public history page自动更新。"
     }
   },
   "note": "制度信号为 0–100 相对分位读数，越高越偏『宽松·支持』；信用/期限/流动性/增长/广度为市场化代理指标（HYG÷LQD、10Y−3M 曲线、3M 短端利率、铜金比、等权·市值加权）；实际利率取 5 年期 TIPS 实际收益率（DFII5）；宏观管道取自 FRED 官方数据。每日自动更新，仅供研究，非投资建议。"
