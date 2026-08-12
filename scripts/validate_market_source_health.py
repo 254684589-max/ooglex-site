@@ -11,7 +11,12 @@ import json
 from pathlib import Path
 
 from market_data_quality import make_data_meta
-from market_source_health import DATASET_SPECS, make_source_health, validate_source_health
+from market_source_health import (
+    DATASET_SPECS,
+    attach_upstream_health,
+    make_source_health,
+    validate_source_health,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -109,6 +114,102 @@ def run_contract_tests() -> None:
     assert validate_source_health(
         tampered, dataset="asset-tracker", published_rows=rows, published_snapshot_at=snapshot_at
     )
+
+    company_rows = [{
+        "name": f"上市公司{index}",
+        "private": False,
+        "dataMeta": make_data_meta(
+            "market", "Yahoo Finance", as_of="2026-08-01", updated_at=snapshot_at, frequency="daily"
+        ),
+    } for index in range(450)] + [{
+        "name": f"未上市公司{index}",
+        "private": True,
+        "dataMeta": make_data_meta(
+            "estimate", "multiples.vc公开融资估值汇总", as_of=None,
+            updated_at=snapshot_at, frequency="irregular", status="partial" if index == 0 else "ok",
+        ),
+    } for index in range(50)]
+    company_health = make_source_health(
+        "companies", published_rows=company_rows, attempted_rows=company_rows,
+        attempted_at=snapshot_at, published_snapshot_at=snapshot_at, published=True,
+    )
+    assert company_health["status"] == "healthy"
+    assert all(source["status"] == "healthy" for source in company_health["sources"])
+    assert not validate_source_health(
+        company_health, dataset="companies", published_rows=company_rows,
+        published_snapshot_at=snapshot_at,
+    )
+
+    ranking_rows = [{
+        "name": f"公司资产{index}", "category": "company", "private": False, "static": False,
+        "dataMeta": make_data_meta(
+            "market", "Yahoo Finance", as_of="2026-08-01", updated_at=snapshot_at, frequency="daily"
+        ),
+    } for index in range(200)] + [{
+        "name": f"其他行情{index}", "category": "commodity", "private": False, "static": False,
+        "dataMeta": make_data_meta(
+            "market", "Yahoo Finance", as_of="2026-08-01", updated_at=snapshot_at, frequency="daily"
+        ),
+    } for index in range(31)] + [{
+        "name": f"加密资产{index}", "category": "crypto", "private": False, "static": False,
+        "dataMeta": make_data_meta(
+            "market", "CoinGecko", as_of="2026-08-01", updated_at=snapshot_at, frequency="daily"
+        ),
+    } for index in range(4)] + [{
+        "name": f"公开估值{index}", "category": "real-estate", "private": False, "static": True,
+        "dataMeta": make_data_meta(
+            "estimate", "公开存量基准", as_of=None, updated_at=snapshot_at,
+            frequency="irregular", status="partial" if index < 7 else "ok",
+        ),
+    } for index in range(15)]
+    ranking_health = make_source_health(
+        "asset-ranking", published_rows=ranking_rows, attempted_rows=ranking_rows,
+        attempted_at=snapshot_at, published_snapshot_at=snapshot_at, published=True,
+    )
+    attach_upstream_health(
+        ranking_health, source_id="companies-upstream", upstream_dataset="companies",
+        upstream_health=company_health, upstream_snapshot_at=snapshot_at,
+    )
+    assert ranking_health["status"] == "healthy"
+    assert all(source["status"] == "healthy" for source in ranking_health["sources"])
+    assert not validate_source_health(
+        ranking_health, dataset="asset-ranking", published_rows=ranking_rows,
+        published_snapshot_at=snapshot_at,
+    )
+
+    proxy_rows = deepcopy(ranking_rows)
+    proxy_rows[0]["dataMeta"].update({
+        "status": "partial", "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
+    })
+    proxy_health = make_source_health(
+        "asset-ranking", published_rows=proxy_rows, attempted_rows=proxy_rows,
+        attempted_at=snapshot_at, published_snapshot_at=snapshot_at, published=True,
+    )
+    attach_upstream_health(
+        proxy_health, source_id="companies-upstream", upstream_dataset="companies",
+        upstream_health=company_health, upstream_snapshot_at=snapshot_at,
+    )
+    assert proxy_health["status"] == "healthy"
+    unregistered_proxy_rows = deepcopy(proxy_rows)
+    unregistered_proxy_rows[0]["dataMeta"]["source"] = "Yahoo Finance · 静态流通量基准"
+    unregistered_proxy_health = make_source_health(
+        "asset-ranking", published_rows=unregistered_proxy_rows,
+        attempted_rows=unregistered_proxy_rows, attempted_at=snapshot_at,
+        published_snapshot_at=snapshot_at, published=True,
+    )
+    assert unregistered_proxy_health["status"] == "degraded"
+
+    dynamic_fallback = deepcopy(company_rows)
+    dynamic_fallback[0]["dataMeta"] = make_data_meta(
+        "fallback", "Yahoo Finance", as_of="2026-07-31", updated_at="2026-07-31T00:00:00Z",
+        frequency="daily",
+    )
+    degraded = make_source_health(
+        "companies", published_rows=dynamic_fallback, attempted_rows=dynamic_fallback,
+        attempted_at=next_attempt, published_snapshot_at=next_attempt, published=True,
+        previous_health=company_health,
+    )
+    assert degraded["status"] == "degraded"
 
 
 def read_json(path: Path):

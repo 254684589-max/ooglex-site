@@ -1229,7 +1229,9 @@ assert.strictEqual(operationCards.length, 4);
 assert.deepStrictEqual(operationCards.map((card) => card.id), [
   "macro-radar", "asset-tracker", "companies", "asset-ranking"
 ]);
-assert(operationCards.every((card) => card.status === "degraded"));
+assert.deepStrictEqual(operationCards.map((card) => card.status), [
+  "degraded", "degraded", "healthy", "healthy"
+]);
 assert.deepStrictEqual(operationCards.map((card) => card.publishedRecords), [3, 28, 500, 250]);
 assert.deepStrictEqual(operationCards.map((card) => card.expectedRecords), [3, 28, 500, 250]);
 assert.deepStrictEqual(operationCards.map((card) => card.availableCoveragePct), [100, 100, 100, 100]);
@@ -1257,7 +1259,9 @@ const tamperedOperationSources = Object.assign({}, operationSources, {
 const tamperedOperationCards = adapter.buildOperationsCards(tamperedOperationSources, currentNow);
 assert.strictEqual(tamperedOperationCards[0].status, "unknown");
 assert.strictEqual(tamperedOperationCards[0].contractKnown, false);
-assert(tamperedOperationCards.slice(1).every((card) => card.status === "degraded"));
+assert.deepStrictEqual(tamperedOperationCards.slice(1).map((card) => card.status), [
+  "degraded", "healthy", "healthy"
+]);
 
 const mismatchedMacroSnapshot = JSON.parse(JSON.stringify(macro));
 mismatchedMacroSnapshot.updatedAt = "2026-08-03T22:00:00Z";
@@ -1415,11 +1419,13 @@ assert(globalAssets.assets.some((asset) => asset.static));
 assert(globalAssets.assets.some((asset) => !asset.static));
 assert.deepStrictEqual(globalAssets.quality.counts, assetRanking.dataQuality.counts);
 assert.strictEqual(globalAssets.quality.declaredValid, true);
-assert.strictEqual(globalAssets.sourceHealth.status, "degraded");
+assert.strictEqual(globalAssets.sourceHealth.status, "healthy");
 assert.strictEqual(globalAssets.sourceHealth.freshCoveragePct,
   assetRankingHealth.coverage.freshCoveragePct);
 assert.strictEqual(globalAssets.sourceHealth.verifiedCoveragePct,
   assetRankingHealth.coverage.verifiedCoveragePct);
+assert.strictEqual(globalAssets.sourceHealth.slowEstimateRecords, assetRanking.dataQuality.counts.estimate);
+assert.strictEqual(globalAssets.sourceHealth.dynamicIssueRecords, 0);
 assert(globalAssets.assets[0].dataLabel.includes("静态估算") && globalAssets.assets[0].dataLabel.includes("Savills"));
 globalAssets.assets.forEach((asset, index) => {
   const mode = assetRanking.assets[index].dataMeta.mode;
@@ -1534,11 +1540,13 @@ assert.strictEqual(companyLeaders.laggard && companyLeaders.laggard.symbol,
 assert.strictEqual(companyLeaders.moverCoverage, eligibleCompanyMovers.length);
 assert.deepStrictEqual(companyLeaders.quality.counts, companies.dataQuality.counts);
 assert.strictEqual(companyLeaders.quality.declaredValid, true);
-assert.strictEqual(companyLeaders.sourceHealth.status, "degraded");
+assert.strictEqual(companyLeaders.sourceHealth.status, "healthy");
 assert.strictEqual(companyLeaders.sourceHealth.freshCoveragePct,
   companiesHealth.coverage.freshCoveragePct);
 assert.strictEqual(companyLeaders.sourceHealth.verifiedCoveragePct,
   companiesHealth.coverage.verifiedCoveragePct);
+assert.strictEqual(companyLeaders.sourceHealth.slowEstimateRecords, companies.dataQuality.counts.estimate);
+assert.strictEqual(companyLeaders.sourceHealth.dynamicIssueRecords, 0);
 if (companies.dataQuality.counts.unknown + companies.dataQuality.counts.unavailable > 0) {
   assert(companyLeaders.note.includes("暂停当日领涨与领跌"));
 }
@@ -1549,6 +1557,23 @@ companyLeaders.topCompanies.forEach((company, index) => {
   if (mode === "unknown") assert.strictEqual(company.dataLabel, "来源待确认");
 });
 assert(Math.abs(companyLeaders.listedMarketCap - listedCompanies.reduce((sum, company) => sum + company.marketCap, 0)) < 1e-9);
+const dynamicFallbackCompanies = JSON.parse(JSON.stringify(companies));
+dynamicFallbackCompanies.companies.find((company) => !company.private).dataMeta = {
+  mode: "fallback", status: "stale", source: "Yahoo Finance",
+  asOf: "2026-08-01T00:00:00Z", updatedAt: "2026-08-01T00:00:00Z", frequency: "daily"
+};
+dynamicFallbackCompanies.dataQuality = qualityDeclaration(dynamicFallbackCompanies.companies);
+const dynamicFallbackHealth = JSON.parse(JSON.stringify(companiesHealth));
+dynamicFallbackHealth.status = "degraded";
+dynamicFallbackHealth.coverage.counts = dynamicFallbackCompanies.dataQuality.counts;
+dynamicFallbackHealth.coverage.freshCoveragePct = Math.round(
+  dynamicFallbackCompanies.dataQuality.counts.market / companies.listedCount * 10000
+) / 100;
+dynamicFallbackHealth.coverage.verifiedCoveragePct = 100;
+dynamicFallbackHealth.attempt.counts = dynamicFallbackCompanies.dataQuality.counts;
+assert.strictEqual(adapter.adaptSourceHealth(
+  dynamicFallbackHealth, "companies", dynamicFallbackCompanies, currentNow
+).status, "degraded");
 const monitoredResearch = adapter.buildResearchCards({
   assetTracker: { data: assetTracker, error: null },
   assetTrackerHealth: { data: assetTrackerHealth, error: null },
@@ -2209,12 +2234,13 @@ def main() -> None:
     require(page.count('role="list"') >= 5, "五个动态卡片容器必须使用列表语义")
     require("跨资产强弱" in page and "今日、近一周、近一月、年初至今和近一年" in page, "页面未说明跨资产排行周期")
     require("ETF或期货代理" in page and "超过72小时" in page, "页面未披露跨资产代理口径或过期规则")
-    require("全球资产市值" in page and "data.json" in page
-            and "无法逐条证明本轮行情路径的记录保持`PARTIAL`" in page
-            and "不会用文件更新时间代替" in page, "页面未说明全球资产市值逐条来源限制")
+    require("全球资产市值" in page
+            and "已披露市值代理" in page and "不会用文件更新时间代替" in page
+            and "未登记`PARTIAL`路径仍会明确降级" in page,
+            "页面未说明全球资产市值逐条来源限制")
     require("全球公司领袖" in page and "未上市估值不参与涨跌排序" in page, "页面未说明公司领袖的上市范围")
-    require("无法逐只证明450家上市公司是本轮成功还是历史回退" in page
-            and "暂停“今日领涨/领跌”" in page, "页面未披露公司数据逐项新鲜度限制")
+    require("动态行情和慢频估值分层" in page and "不会单独被当作更新失败" in page,
+            "页面未披露公司数据逐项新鲜度限制")
     require("CNN恐慌与贪婪分数" in page and "0–100" in page, "页面未说明CNN恐慌与贪婪指标口径")
     require("OFR金融压力指数以0为历史平均" in page and "正值高于平均压力" in page, "页面未说明OFR金融压力口径")
     require("经济日历复用Forex Factory公开周历" in page and "超过36小时" in page and "设备本地时区" in page,

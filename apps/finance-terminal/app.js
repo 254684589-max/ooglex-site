@@ -275,6 +275,10 @@
       freshCoveragePct: null,
       verifiedCoveragePct: null,
       availableCoveragePct: null,
+      dynamicIssueRecords: null,
+      dynamicProxyRecords: null,
+      slowRecords: null,
+      slowEstimateRecords: null,
       consecutiveFailures: null,
       lastAttemptAt: null,
       lastSuccessfulAt: null,
@@ -302,6 +306,48 @@
 
   function sourceHealthPercent(numerator, denominator) {
     return denominator > 0 ? Math.round(numerator / denominator * 10000) / 100 : 0;
+  }
+
+  function sourceHealthClassification(dataset, rows, health) {
+    var slowFrequencies = ["weekly", "monthly", "quarterly", "annual", "irregular"];
+    var dynamicRecords = 0;
+    var dynamicMarketRecords = 0;
+    var dynamicProxyRecords = 0;
+    var slowRecords = 0;
+    var slowEstimateRecords = 0;
+    rows.forEach(function (row) {
+      var current = row && typeof row === "object" ? row : {};
+      var meta = current.dataMeta && typeof current.dataMeta === "object" ? current.dataMeta : {};
+      var dynamic = dataset === "asset-tracker"
+        || (dataset === "companies" && current.private !== true)
+        || (dataset === "asset-ranking" && current.static !== true && current.private !== true);
+      if (dynamic) {
+        dynamicRecords += 1;
+        var registeredProxy = dataset === "asset-ranking" && meta.mode === "market" && meta.status === "partial"
+          && (/公开存量基准/.test(meta.source || "") || /世界黄金协会/.test(meta.source || ""));
+        if (meta.mode === "market" && (meta.status === "ok" || registeredProxy)) {
+          dynamicMarketRecords += 1;
+          if (registeredProxy) dynamicProxyRecords += 1;
+        }
+      } else {
+        slowRecords += 1;
+        if (meta.mode === "estimate" && ["ok", "partial"].indexOf(meta.status) !== -1
+          && slowFrequencies.indexOf(meta.frequency) !== -1) slowEstimateRecords += 1;
+      }
+    });
+    var sourceFailures = (health.sources || []).filter(function (source) {
+      return source && (source.status === "failed" || source.status === "unknown");
+    }).map(function (source) { return source.id; });
+    return {
+      dynamicRecords: dynamicRecords,
+      dynamicMarketRecords: dynamicMarketRecords,
+      dynamicIssueRecords: dynamicRecords - dynamicMarketRecords,
+      dynamicProxyRecords: dynamicProxyRecords,
+      slowRecords: slowRecords,
+      slowEstimateRecords: slowEstimateRecords,
+      slowIssueRecords: slowRecords - slowEstimateRecords,
+      sourceFailures: sourceFailures
+    };
   }
 
   function adaptSourceHealth(health, dataset, data, now) {
@@ -373,13 +419,24 @@
     if (attemptTotal !== health.attempt.producedRecords
       || health.attempt.published !== (health.status !== "failed")) throw new Error("健康尝试汇总不一致");
 
+    var classification = sourceHealthClassification(dataset, rows, health);
+    var countsHaveNoFailures = counts.fallback === 0 && counts.unknown === 0 && counts.unavailable === 0;
+    var expectedSlowOnly = classification.dynamicIssueRecords === 0
+      && classification.slowIssueRecords === 0 && classification.sourceFailures.length === 0
+      && countsHaveNoFailures;
+    var normalizedPipelineStatus = health.status === "degraded" && expectedSlowOnly
+      && health.historyStatus === "tracked" && health.attempt.status === "success"
+      && health.consecutiveFailures === 0 ? "healthy" : health.status;
     var reportStale = attemptAgeHours > SOURCE_HEALTH_MAX_AGE_HOURS[dataset];
-    var displayStatus = reportStale && health.status !== "failed" ? "stale" : health.status;
-    var note = health.status === "failed"
+    var displayStatus = reportStale && normalizedPipelineStatus !== "failed" ? "stale" : normalizedPipelineStatus;
+    var note = normalizedPipelineStatus === "failed"
       ? "本轮取数失败，页面继续使用最后有效快照。"
       : health.historyStatus === "migrated"
         ? "健康历史从当前快照开始建立；此前连续失败次数未知。"
-        : "来源健康、覆盖率与恢复状态已跟踪。";
+        : expectedSlowOnly && classification.slowRecords
+          ? "动态行情（含" + classification.dynamicProxyRecords + "项已披露市值代理）与"
+            + classification.slowEstimateRecords + "项慢频估值分层通过；慢变量不冒充每日行情。"
+          : "来源健康、覆盖率与恢复状态已跟踪。";
     if (reportStale) {
       note = health.status === "failed"
         ? "健康报告已超过" + SOURCE_HEALTH_MAX_AGE_HOURS[dataset] + "小时；上次记录为取数失败，页面继续使用最后有效快照。"
@@ -388,7 +445,8 @@
     return {
       dataset: dataset,
       status: displayStatus,
-      pipelineStatus: health.status,
+      pipelineStatus: normalizedPipelineStatus,
+      reportedPipelineStatus: health.status,
       label: displayStatus.toUpperCase(),
       contractKnown: true,
       historyKnown: health.historyStatus === "tracked",
@@ -397,6 +455,10 @@
       freshCoveragePct: coverage.freshCoveragePct,
       verifiedCoveragePct: coverage.verifiedCoveragePct,
       availableCoveragePct: coverage.availableCoveragePct,
+      dynamicIssueRecords: classification.dynamicIssueRecords,
+      dynamicProxyRecords: classification.dynamicProxyRecords,
+      slowRecords: classification.slowRecords,
+      slowEstimateRecords: classification.slowEstimateRecords,
       consecutiveFailures: health.consecutiveFailures,
       lastAttemptAt: health.lastAttemptAt,
       lastSuccessfulAt: health.lastSuccessfulAt,
@@ -3599,12 +3661,15 @@
 
     var metrics = document.createElement("div");
     metrics.className = "operation-metrics";
-    [
+    var coverageMetrics = [
       ["可用覆盖", formatHealthCoverage(card.availableCoveragePct)],
       ["本轮新鲜", formatHealthCoverage(card.freshCoveragePct)],
-      ["已验证覆盖", formatHealthCoverage(card.verifiedCoveragePct)],
+      [card.slowRecords ? "慢频估值" : "已验证覆盖", card.slowRecords
+        ? (card.slowEstimateRecords + " / " + card.slowRecords)
+        : formatHealthCoverage(card.verifiedCoveragePct)],
       ["连续失败", operationFailureLabel(card)]
-    ].forEach(function (item) {
+    ];
+    coverageMetrics.forEach(function (item) {
       var metric = document.createElement("span");
       metric.className = "operation-metric";
       appendText(metric, "span", "operation-metric-label", item[0]);

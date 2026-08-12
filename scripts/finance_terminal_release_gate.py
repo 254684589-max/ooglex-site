@@ -649,8 +649,61 @@ def evaluate_aggregate_pipeline(
         errors.append(str(exc))
 
     coverage = health.get("coverage") if isinstance(health.get("coverage"), dict) else {}
+    slow_frequencies = {"weekly", "monthly", "quarterly", "annual", "irregular"}
+    dynamic_total = 0
+    dynamic_market = 0
+    dynamic_proxies = 0
+    slow_total = 0
+    slow_estimates = 0
+    for row in rows:
+        current = row if isinstance(row, dict) else {}
+        meta = current.get("dataMeta") if isinstance(current.get("dataMeta"), dict) else None
+        dynamic = dataset == "asset-tracker" or (
+            dataset == "companies" and current.get("private") is not True
+        ) or (
+            dataset == "asset-ranking" and current.get("static") is not True and current.get("private") is not True
+        )
+        if dynamic:
+            dynamic_total += 1
+            source_name = str((meta or {}).get("source") or "")
+            registered_proxy = bool(
+                dataset == "asset-ranking" and isinstance(meta, dict)
+                and meta.get("mode") == "market" and meta.get("status") == "partial"
+                and any(token in source_name for token in ("公开存量基准", "世界黄金协会"))
+            )
+            if isinstance(meta, dict) and meta.get("mode") == "market" \
+                    and (meta.get("status") == "ok" or registered_proxy):
+                dynamic_market += 1
+                if registered_proxy:
+                    dynamic_proxies += 1
+        else:
+            slow_total += 1
+            if isinstance(meta, dict) and meta.get("mode") == "estimate" \
+                    and meta.get("status") in {"ok", "partial"} \
+                    and meta.get("frequency") in slow_frequencies:
+                slow_estimates += 1
+    dynamic_issues = dynamic_total - dynamic_market
+    slow_issues = slow_total - slow_estimates
+    source_failures = [
+        source.get("id") for source in (health.get("sources") or [])
+        if isinstance(source, dict) and source.get("status") in {"failed", "unknown"}
+    ]
+    expected_slow_only = bool(
+        dynamic_issues == 0 and slow_issues == 0 and not source_failures
+        and coverage.get("counts", {}).get("fallback") == 0
+        and coverage.get("counts", {}).get("unknown") == 0
+        and coverage.get("counts", {}).get("unavailable") == 0
+    )
+    normalized_pipeline_status = (
+        "healthy" if health.get("status") == "degraded" and expected_slow_only
+        and health.get("historyStatus") == "tracked"
+        and (health.get("attempt") or {}).get("status") == "success"
+        and health.get("consecutiveFailures") == 0
+        else health.get("status")
+    )
     metrics = {
-        "pipelineStatus": health.get("status"),
+        "pipelineStatus": normalized_pipeline_status,
+        "reportedPipelineStatus": health.get("status"),
         "historyStatus": health.get("historyStatus"),
         "lastAttemptAt": health.get("lastAttemptAt"),
         "lastSuccessfulAt": health.get("lastSuccessfulAt"),
@@ -661,6 +714,14 @@ def evaluate_aggregate_pipeline(
         "availableCoveragePct": coverage.get("availableCoveragePct"),
         "consecutiveFailures": health.get("consecutiveFailures"),
         "snapshotPreserved": health.get("snapshotPreserved"),
+        "dynamicRecords": dynamic_total,
+        "dynamicMarketRecords": dynamic_market,
+        "dynamicProxyRecords": dynamic_proxies,
+        "dynamicIssueRecords": dynamic_issues,
+        "slowRecords": slow_total,
+        "slowEstimateRecords": slow_estimates,
+        "slowIssueRecords": slow_issues,
+        "expectedSlowOnly": expected_slow_only,
     }
     if errors:
         return make_check(
@@ -682,8 +743,14 @@ def evaluate_aggregate_pipeline(
         )
 
     warnings: list[str] = []
-    if health.get("status") == "degraded":
-        warnings.append("管道包含回退、估值、未知或部分数据。")
+    if health.get("status") == "degraded" and not expected_slow_only:
+        warnings.append("管道包含动态回退、未知、不可用或未登记的慢频数据。")
+    if dynamic_issues:
+        warnings.append(f"{dynamic_issues}项动态记录未形成正常市场行情。")
+    if slow_issues:
+        warnings.append(f"{slow_issues}项慢频记录未按已登记估值口径披露。")
+    if source_failures:
+        warnings.append("来源健康异常：" + "、".join(source_failures))
     if health.get("historyStatus") != "tracked":
         warnings.append("连续成功/失败历史尚未由真实远端运行建立。")
     if coverage.get("freshCoveragePct") == 0 and coverage.get("dynamicRecords", 0) > 0:
@@ -691,7 +758,10 @@ def evaluate_aggregate_pipeline(
     status = "WARN" if warnings else "PASS"
     summary = (
         f"{dataset}快照与健康契约通过，但仍有降级或历史待建立状态。"
-        if warnings else f"{dataset}快照、来源健康和最近尝试时效通过。"
+        if warnings else (
+            f"{dataset}动态行情与已披露慢频估值分层通过。"
+            if slow_total else f"{dataset}快照、来源健康和最近尝试时效通过。"
+        )
     )
     return make_check(
         f"pipeline-{dataset}", spec["name"], status, summary,

@@ -439,6 +439,94 @@ def test_fresh_aggregate_pipelines_pass() -> None:
     require(report["scope"]["aggregatePipelines"] == list(AGGREGATE_DATASETS), "聚合范围未登记")
 
 
+def test_slow_estimates_are_separate_from_dynamic_failures() -> None:
+    aggregate = make_aggregate_inputs()
+    snapshot_at = aggregate["companies"]["data"]["updatedAt"]
+    company_rows = aggregate["companies"]["data"]["companies"]
+    estimate = next(row for row in company_rows if row.get("private") is True)
+    estimate["dataMeta"]["status"] = "partial"
+    company_health = make_source_health(
+        "companies", published_rows=company_rows, attempted_rows=company_rows,
+        attempted_at=snapshot_at, published_snapshot_at=snapshot_at, published=True,
+    )
+    aggregate["companies"]["health"] = company_health
+
+    ranking_rows = aggregate["asset-ranking"]["data"]["assets"]
+    ranking_estimate = next(row for row in ranking_rows if row.get("static") is True)
+    ranking_estimate["dataMeta"]["status"] = "partial"
+    ranking_health = make_source_health(
+        "asset-ranking", published_rows=ranking_rows, attempted_rows=ranking_rows,
+        attempted_at=snapshot_at, published_snapshot_at=snapshot_at, published=True,
+    )
+    attach_upstream_health(
+        ranking_health, source_id="companies-upstream", upstream_dataset="companies",
+        upstream_health=company_health, upstream_snapshot_at=snapshot_at,
+    )
+    aggregate["asset-ranking"]["health"] = ranking_health
+
+    companies_check = evaluate_aggregate_pipeline(
+        "companies", aggregate["companies"]["data"], company_health, NOW,
+    )
+    ranking_check = evaluate_aggregate_pipeline(
+        "asset-ranking", aggregate["asset-ranking"]["data"], ranking_health, NOW,
+    )
+    require(companies_check["status"] == "PASS" and companies_check["metrics"]["slowEstimateRecords"] == 50,
+            "公司榜慢频估值不得误报为动态行情失败")
+    require(ranking_check["status"] == "PASS" and ranking_check["metrics"]["slowEstimateRecords"] == 16,
+            "资产榜慢频估值不得误报为动态行情失败")
+
+    proxy_rows = deepcopy(ranking_rows)
+    proxy_rows[0]["dataMeta"].update({
+        "status": "partial",
+        "source": "Yahoo Finance · 公开存量基准（原始来源未结构化）",
+    })
+    proxy_health = make_source_health(
+        "asset-ranking", published_rows=proxy_rows, attempted_rows=proxy_rows,
+        attempted_at=snapshot_at, published_snapshot_at=snapshot_at, published=True,
+    )
+    attach_upstream_health(
+        proxy_health, source_id="companies-upstream", upstream_dataset="companies",
+        upstream_health=company_health, upstream_snapshot_at=snapshot_at,
+    )
+    proxy_check = evaluate_aggregate_pipeline(
+        "asset-ranking", {"updatedAt": snapshot_at, "assets": proxy_rows}, proxy_health, NOW,
+    )
+    require(proxy_check["status"] == "PASS" and proxy_check["metrics"]["dynamicProxyRecords"] == 1,
+            "已登记的动态市值代理应单独披露而非误报为取数失败")
+
+    unregistered_proxy_rows = deepcopy(proxy_rows)
+    unregistered_proxy_rows[0]["dataMeta"]["source"] = "Yahoo Finance · 静态流通量基准"
+    unregistered_proxy_health = make_source_health(
+        "asset-ranking", published_rows=unregistered_proxy_rows,
+        attempted_rows=unregistered_proxy_rows, attempted_at=snapshot_at,
+        published_snapshot_at=snapshot_at, published=True,
+    )
+    attach_upstream_health(
+        unregistered_proxy_health, source_id="companies-upstream", upstream_dataset="companies",
+        upstream_health=company_health, upstream_snapshot_at=snapshot_at,
+    )
+    unregistered_proxy_check = evaluate_aggregate_pipeline(
+        "asset-ranking", {"updatedAt": snapshot_at, "assets": unregistered_proxy_rows},
+        unregistered_proxy_health, NOW,
+    )
+    require(unregistered_proxy_check["status"] == "WARN",
+            "未登记的动态partial路径仍必须告警")
+
+    fallback_rows = deepcopy(company_rows)
+    fallback_rows[0]["dataMeta"] = make_data_meta(
+        "fallback", "Yahoo Finance", as_of="2026-08-05", updated_at=snapshot_at,
+        frequency="daily",
+    )
+    fallback_health = make_source_health(
+        "companies", published_rows=fallback_rows, attempted_rows=fallback_rows,
+        attempted_at=snapshot_at, published_snapshot_at=snapshot_at, published=True,
+    )
+    fallback_data = {"updatedAt": snapshot_at, "companies": fallback_rows}
+    fallback_check = evaluate_aggregate_pipeline("companies", fallback_data, fallback_health, NOW)
+    require(fallback_check["status"] == "WARN" and fallback_check["metrics"]["dynamicIssueRecords"] == 1,
+            "动态行情回退仍必须与慢频估值分开告警")
+
+
 def test_macro_source_health_gate() -> None:
     macro, health = make_macro_health_fixture()
     check = evaluate_macro_pipeline(macro, health, NOW)
@@ -662,6 +750,7 @@ def main() -> None:
     test_us_business_day_contract()
     test_macro_source_health_gate()
     test_fresh_aggregate_pipelines_pass()
+    test_slow_estimates_are_separate_from_dynamic_failures()
     test_stale_aggregate_health_blocks_beta()
     test_tampered_coverage_blocks_beta()
     test_failed_pipeline_with_snapshot_blocks_beta()
