@@ -427,6 +427,59 @@ def run_rwtc_pipeline_tests() -> None:
     require(captured["params"]["facets[series][]"] == "RWTC", "RWTC API请求序列筛选错误")
     require(observations == [("2026-07-24", 91.74), ("2026-07-27", 84.25)], "EIA返回值解析或排序错误")
 
+    history_page = """
+    <html><body><table>
+      <tr><th colspan="6">Cushing, OK WTI Spot Price FOB (Dollars per Barrel)</th></tr>
+      <tr><th>Week Of</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th></tr>
+      <tr><td>2025 Dec-29 to Jan- 2</td><td>57.89</td><td>57.79</td><td>57.26</td><td></td><td>57.21</td></tr>
+      <tr><td>2026 Jul-27 to Jul-31</td><td>84.25</td><td>80.91</td><td>86.08</td><td>85.15</td><td>86.16</td></tr>
+      <tr><td>2026 Aug- 3 to Aug- 7</td><td>81.96</td><td></td><td></td><td></td><td></td></tr>
+    </table></body></html>
+    """
+    expected_history = [
+        ("2026-07-29", 86.08), ("2026-07-30", 85.15),
+        ("2026-07-31", 86.16), ("2026-08-03", 81.96),
+    ]
+    require(builder.parse_eia_rwtc_history_html(history_page, 4) == expected_history,
+            "EIA公开历史页日期、空值或跨周解析错误")
+    require(builder.parse_eia_rwtc_history_html("<table><tr><td>2026 Aug- 3 to Aug- 7</td>"
+                                                "<td>81.96</td></tr></table>") == [],
+            "EIA公开历史页必须验证标题与单位")
+
+    history_captured = {}
+
+    class FakeHistoryResponse:
+        text = history_page
+
+        @staticmethod
+        def raise_for_status():
+            return None
+
+    def history_requester(url, **kwargs):
+        history_captured["url"] = url
+        history_captured["params"] = kwargs.get("params")
+        return FakeHistoryResponse()
+
+    history_observations = builder.eia_rwtc_history(4, requester=history_requester)
+    require(history_captured["url"] == builder.EIA_HISTORY_URL,
+            "RWTC无密钥回退必须使用EIA官方日频历史页")
+    require(history_captured["params"] is None, "EIA公开历史页不得拼接或传递API密钥")
+    require(history_observations == expected_history, "EIA公开历史页请求结果映射错误")
+
+    original_api = builder.eia_rwtc_api
+    original_history = builder.eia_rwtc_history
+    try:
+        builder.eia_rwtc_api = lambda _limit: []
+        builder.eia_rwtc_history = lambda _limit: history_observations
+        history_fresh = builder.build_rwtc_reference({}, attempt)
+    finally:
+        builder.eia_rwtc_api = original_api
+        builder.eia_rwtc_history = original_history
+    require(history_fresh["status"] == "ok" and history_fresh["asOf"] == "2026-08-03",
+            "EIA API不可用时官方历史页应恢复RWTC")
+    require(history_fresh["source"].get("accessMethod") == "EIA public history page",
+            "RWTC必须披露实际官方访问路径")
+
     fresh = builder.build_rwtc_reference({}, attempt, lambda _limit: observations)
     require(fresh["status"] == "ok", "RWTC成功更新必须标记ok")
     require(fresh["price"] == 84.25 and fresh["previousPrice"] == 91.74, "RWTC观测值映射错误")
@@ -461,7 +514,7 @@ def run_rwtc_pipeline_tests() -> None:
     )
     require(invalid["status"] == "stale" and invalid["price"] == fresh["price"], "RWTC日期倒序必须回退历史值")
     print("RWTC EIA pipeline states: PASS")
-    print("- API contract / success / failed-refresh fallback / no-history error / invalid-observation: PASS")
+    print("- API contract / official history fallback / success / retained snapshot / invalid observation: PASS")
 
 
 def run_js_adapter_tests() -> None:
@@ -2321,6 +2374,8 @@ def main() -> None:
         require(command in runbook, f"四管道运行手册缺少本地检查：{command}")
     require("build_dtwexbgs_reference" in build_script and '"referenceSeries": reference_series' in build_script, "宏观雷达脚本未生成DTWEXBGS参考序列")
     require("build_rwtc_reference" in build_script and '"facets[series][]": RWTC_ID' in build_script, "宏观雷达脚本未按EIA RWTC口径生成参考序列")
+    require("parse_eia_rwtc_history_html" in build_script and "EIA_HISTORY_URL" in build_script,
+            "宏观雷达脚本缺少EIA官方历史页无密钥回退")
     require("requests.get(url, params=params" in build_script, "FRED请求必须把密钥放在参数对象而非日志字符串中")
     require("response = get(EIA_API_URL, params=params" in build_script, "EIA请求必须把密钥放在参数对象而非URL字符串中")
     require("repr(e)" not in build_script and "repr(exc)" not in build_script, "异常日志不得输出可能含密钥的完整请求URL")

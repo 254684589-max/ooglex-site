@@ -87,10 +87,10 @@ CNN恐慌与贪婪、OFR金融压力、经济日历和财经新闻各自维护�
 ### 宏观官方序列
 
 1. 查看`macro-radar-source-health.json`，按`DGS10`、`DTWEXBGS`、`RWTC`逐源确认状态。
-2. FRED或EIA单源失败时，只保留该序列的最后有效观测；另外两项继续独立更新。
+2. FRED单源失败时只保留该序列的最后有效观测；EIA API失败时先尝试同一`RWTC`官方公开历史页，两条访问路径都失败后才保留旧值。
 3. 核对3/3/4个美国工作日的不同过期阈值、DGS10的bp变化和另外两项的百分比变化。
 4. 不得用ICE DXY替代`DTWEXBGS`，不得用`CL=F`替代`RWTC`。
-5. 若FRED/EIA Secret缺失或失效，只在GitHub仓库设置中处理；不得把密钥写入命令、Issue、日志或聊天。
+5. FRED Secret缺失或失效时只在GitHub仓库设置中处理；EIA Secret可提升API可用性，但不是RWTC公开历史页回退的前置条件。任何密钥都不得写入命令、Issue、日志或聊天。
 
 ### 跨资产强弱
 

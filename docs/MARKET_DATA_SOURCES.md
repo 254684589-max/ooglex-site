@@ -121,8 +121,9 @@ LBMA页面明确说明，LBMA Gold Price由ICE Benchmark Administration管理，
 实施规则：
 
 - 在接入前使用EIA API查询工具再次确认API v2路由和 `RWTC`字段，不凭猜测写死URL。
-- API密钥使用新的GitHub Actions Secret，例如 `EIA_API_KEY`；不得放入前端、仓库或完整请求日志。
-- EIA API失败时，可尝试EIA官方批量下载或历史下载作为同标的备源。
+- API密钥使用GitHub Actions Secret `EIA_API_KEY`；不得放入前端、仓库或完整请求日志。
+- EIA API密钥缺失或接口失败时，读取EIA官方公开日频历史页`RWTCD.htm`；只解析标题、美元/桶单位、周日期和最多8个最新观测点，页面结构或单位不符即拒绝发布。
+- API与公开历史页属于同一EIA `RWTC`标的的两条访问路径，不得把后者描述成独立数据提供方；两者均失败时保留上一份有效值。
 - EIA数据可能比交易日滞后，不以自然日统一判定过期。
 
 ### 4.6 比特币
