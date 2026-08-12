@@ -882,7 +882,8 @@ assert.strictEqual(adapter.adaptOfficialSourceHealth(
 const unavailableOilMacro = JSON.parse(JSON.stringify(macro));
 unavailableOilMacro.referenceSeries.RWTC.status = "error";
 const unavailableOilAsset = Object.assign({}, oilConfig, {
-  price: null, previousPrice: null, changePct: null, asOf: null, updatedAt: null, demo: false, status: "error"
+  price: null, previousPrice: null, changePct: null, asOf: null, updatedAt: null, demo: false, status: "error",
+  source: Object.assign({}, oilConfig.source, { accessMethod: oilReference.source.accessMethod })
 });
 const trackedOilFailure = trackedOfficialHealth(
   macroHealth, "RWTC", currentAttemptAt, "unavailable"
@@ -1217,8 +1218,8 @@ assert.strictEqual(riskCardsWithOfrFailure[2].status, "error");
 
 const macroOperationHealth = adapter.adaptMacroSourceHealth(macroHealth, macro, currentNow);
 assert.strictEqual(macroOperationHealth.dataset, "macro-radar");
-assert.strictEqual(macroOperationHealth.status, "degraded");
-assert.strictEqual(macroOperationHealth.pipelineStatus, "degraded");
+assert.strictEqual(macroOperationHealth.status, macroHealth.status);
+assert.strictEqual(macroOperationHealth.pipelineStatus, macroHealth.status);
 assert.strictEqual(macroOperationHealth.availableCoveragePct, 100);
 assert.strictEqual(macroOperationHealth.freshCoveragePct, macroHealth.coverage.freshCoveragePct);
 assert.strictEqual(macroOperationHealth.historyKnown, macroHealth.historyStatus === "tracked");
@@ -1241,7 +1242,7 @@ assert.deepStrictEqual(operationCards.map((card) => card.id), [
   "macro-radar", "asset-tracker", "companies", "asset-ranking"
 ]);
 assert.deepStrictEqual(operationCards.map((card) => card.status), [
-  "degraded", "degraded", "healthy", "healthy"
+  macroHealth.status, assetTrackerHealth.status, companiesHealth.status, assetRankingHealth.status
 ]);
 assert.deepStrictEqual(operationCards.map((card) => card.publishedRecords), [3, 28, 500, 250]);
 assert.deepStrictEqual(operationCards.map((card) => card.expectedRecords), [3, 28, 500, 250]);
@@ -1262,7 +1263,7 @@ assert(staleOperationCards.every((card) => card.reportStale === true));
 assert(staleOperationCards[0].note.includes("不代表当前任务仍在正常运行"));
 
 const tamperedMacroHealth = JSON.parse(JSON.stringify(macroHealth));
-tamperedMacroHealth.coverage.freshCoveragePct = 100;
+tamperedMacroHealth.coverage.freshCoveragePct = macroHealth.coverage.freshCoveragePct === 100 ? 99 : 100;
 assert.throws(() => adapter.adaptMacroSourceHealth(tamperedMacroHealth, macro, currentNow), /覆盖率/);
 const tamperedOperationSources = Object.assign({}, operationSources, {
   macroHealth: { data: tamperedMacroHealth, error: null }
@@ -1271,7 +1272,7 @@ const tamperedOperationCards = adapter.buildOperationsCards(tamperedOperationSou
 assert.strictEqual(tamperedOperationCards[0].status, "unknown");
 assert.strictEqual(tamperedOperationCards[0].contractKnown, false);
 assert.deepStrictEqual(tamperedOperationCards.slice(1).map((card) => card.status), [
-  "degraded", "healthy", "healthy"
+  assetTrackerHealth.status, companiesHealth.status, assetRankingHealth.status
 ]);
 
 const mismatchedMacroSnapshot = JSON.parse(JSON.stringify(macro));
@@ -1284,7 +1285,7 @@ const failedOperationCards = adapter.buildOperationsCards(failedOperationSources
 assert.strictEqual(failedOperationCards[2].status, "unknown");
 assert.strictEqual(failedOperationCards[2].publishedRecords, null);
 assert(failedOperationCards[2].note.includes("HTTP 503"));
-assert.strictEqual(failedOperationCards[0].status, "degraded");
+assert.strictEqual(failedOperationCards[0].status, macroHealth.status);
 
 const crossAsset = adapter.adaptCrossAsset(assetTracker, currentNow, assetTrackerHealth);
 assert.strictEqual(crossAsset.id, "cross-asset");
