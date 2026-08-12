@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-08-12T13:43:49Z",
+  "updatedAt": "2026-08-12T19:17:54Z",
   "asOf": "2026-08-12",
   "source": "Google News · Yahoo Finance",
   "highlight": {
-    "title": "美股三大指数集体高开 纳指涨幅接近1%",
-    "source": "东方财富",
-    "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFB6MWZhU0JiRnJhbXZ0eERIVTlFR0laVTlHR1dSVk1XamdUdWVWUUI2T2RiYjU5M0NjM05WR3BkQXRUVmF3Yjcyc2xEMjRIRjQ1UkNhcnUwclhLTFJERjExeA?oc=5",
-    "published": 1786541546,
+    "title": "朱镕基逝世：推动中国经济改革的“铁腕总理”是谁？",
+    "source": "BBC",
+    "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE15SDdJNE5zMmtNY01iODV4ZnNwaUQwYVFCNm1tRTVYS2xZdk55a2hjZlhkUUxfcEp6SlR5VUhaeF83OXhMN2xqcnVhWGF3aWFVQlFiN2VQYlBpU1NJZnZYMWVzdDM5UdIBa0FVX3lxTE4tV3RsM2xLc0lZdl9ULTlpc3hCOVpaYmtJbmtQUmhYVm1ZUDlPMm00NzYxMVpvaHNpSjI2elFBYnNkSkVRZ2NJREpoX05IT1R2Nm04RVVKWnZ2ajJmdzBvSnM2cUo3cWljcmQw?oc=5",
+    "published": 1786559915,
     "category": "市场"
   },
   "categories": [
@@ -15,10 +15,22 @@
       "name": "市场",
       "items": [
         {
+          "title": "朱镕基逝世：推动中国经济改革的“铁腕总理”是谁？",
+          "source": "BBC",
+          "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE15SDdJNE5zMmtNY01iODV4ZnNwaUQwYVFCNm1tRTVYS2xZdk55a2hjZlhkUUxfcEp6SlR5VUhaeF83OXhMN2xqcnVhWGF3aWFVQlFiN2VQYlBpU1NJZnZYMWVzdDM5UdIBa0FVX3lxTE4tV3RsM2xLc0lZdl9ULTlpc3hCOVpaYmtJbmtQUmhYVm1ZUDlPMm00NzYxMVpvaHNpSjI2elFBYnNkSkVRZ2NJREpoX05IT1R2Nm04RVVKWnZ2ajJmdzBvSnM2cUo3cWljcmQw?oc=5",
+          "published": 1786559915
+        },
+        {
           "title": "美股三大指数集体高开 纳指涨幅接近1%",
           "source": "东方财富",
           "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFB6MWZhU0JiRnJhbXZ0eERIVTlFR0laVTlHR1dSVk1XamdUdWVWUUI2T2RiYjU5M0NjM05WR3BkQXRUVmF3Yjcyc2xEMjRIRjQ1UkNhcnUwclhLTFJERjExeA?oc=5",
           "published": 1786541546
+        },
+        {
+          "title": "清凉经济丨16℃避暑秘境，970公里矿道的“凉”转型",
+          "source": "新华网",
+          "link": "https://news.google.com/rss/articles/CBMid0FVX3lxTFBZTXpPZXBWTkVONEFCNFNQYnYxQi1QNTMxRTlMajA3TDhxYUhKQ3NiVzExMDBMazROWVlrQVhzZ09qUzJxcTNHY0Z5dVJFaG9LTDBVbDdjeWhRTmZEUEZEbDNNM0pHZGR6WkY0N1BPd1laZVZEUkNn?oc=5",
+          "published": 1786544793
         },
         {
           "title": "央行推动短端利率调控框架 综合运用、适时调整货币政策工具",
@@ -27,34 +39,22 @@
           "published": 1786539000
         },
         {
-          "title": "10675亿元、29.9%……透过活力数据感知经济发展“稳”“进”“好”",
-          "source": "中国日报网",
-          "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTFBqaTBUVGwwZm9ITVllaUFDajk1MHZKSndIQjZkT1N3b0tvNVUyX2VkbnVxTE1OdGtOX1hTN2FlYjBBRFQ2UVRJdEJyM3JUZHJRS3o1NGltaGtUMllnZnQyS25jQ21aZWlyVVczNzUwd0MyRXF1WEpFajRlUQ?oc=5",
-          "published": 1786525418
-        },
-        {
-          "title": "美联储柯林斯：战争加剧通胀挤压低收入群体 9月加息或箭在弦上",
+          "title": "美国7月CPI通胀全面符合预期 美联储9月加息预期进一步降温 金价刷新日内高点",
           "source": "财联社",
-          "link": "https://news.google.com/rss/articles/CBMiRkFVX3lxTE54S2JHVTVtVElScEpoVUNnd2E0YnE4NV9KbGhjWjNjRThJU1JycE96N3NyYzB6MmZsT0dKalZQc3BPd25aSWc?oc=5",
-          "published": 1786530876
+          "link": "https://news.google.com/rss/articles/CBMiSEFVX3lxTFB6eDBGamdFQzBxMmhQV0ZzRVFVMVpFNXNRVEszcXIxa0ZTS01Fc3dEaW80eEFBRjNCaldYU1hZYkNlLW5UZG5vZg?oc=5",
+          "published": 1786541427
         },
         {
-          "title": "央行：平稳有序推动货币政策操作框架改革完善",
-          "source": "观点网",
-          "link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTFBwZ2RuNVZKZGI2SjIxTjJ1Q1p5UXg3OFNaUTlrNWpKc3paZE9vMTJOTndVMmplXzZwT19kYTJUU1hySTMtR1FtNkJ2M1luMTlrc2R0SGVrQk4tTWdjdzlKdkNn?oc=5",
-          "published": 1786533407
+          "title": "未来五年怎么干？央行划定了这些重点……",
+          "source": "新京报",
+          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE5mVXUxVGRrZ0hORlhpRFRFTGgwNjRYRU93S2RmN3JLb3VJaWU5X3lVUTJkaS1DdkI5T19ucDl6TFJrdFpIYTdQamotTUJldjhpRDMzQ1pQQlFVYkNSZ0w1UzdJMkY?oc=5",
+          "published": 1786531440
         },
         {
-          "title": "养老金融助力银发经济发展",
-          "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5zZjJzT2tNTW5IUTBtR2xVcXNLZEdXejJyc1VJNmxWcG9oNE5tdGpFQk0yWWsxSDZvS3ZzVk1mbzJnUkRoNmVicHJCQUM5TXhHdTlqWUtPNUpiLVNScEJYZS1lbldVZml0ZnZ2dEFGZ2doSUpxOWc?oc=5",
-          "published": 1786525905
-        },
-        {
-          "title": "平安银行杭州分行首笔多边央行数字货币桥跨境支付业务落地 科技赋能跨境结算创新",
-          "source": "新华网浙江",
-          "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOdGxJeHNyck1GbFJoNmZQYXBvX29YRVM2OWdJeUk4X1Z3cjYwVmFTd1g1YTFpSTRXUWphMXNta1ZhV0VMQ01BM3g1OUt6RmRIOFA4bmhfcTg0QlU3UHhNUkoyTDhKUlUyZFRpa0JiUWZiRHVITm1UUWVHdnFCaXZ6ZUtn?oc=5",
-          "published": 1786533783
+          "title": "经济高质量发展里的“心”与“新”｜稳价惠民 向新而行",
+          "source": "央广网",
+          "link": "https://news.google.com/rss/articles/CBMickFVX3lxTE4yeEJYY2l5YlRLNDduNWU0Z1BhRWhVRHYya3hoU3Bodkw2VUJ6Q3dtRHc5anRvenYtWHhiQ1BrLXV5NHlrQkhOYjRSUjRJVGczQ21sS3lraTY4dlJCRC1VY1FneVk0UmFLczFMQ0ZMYVlvUQ?oc=5",
+          "published": 1786541792
         }
       ]
     },
@@ -63,46 +63,46 @@
       "name": "人工智能·科技",
       "items": [
         {
-          "title": "中国方案，如何让AI行稳致远",
-          "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPemYyRnlXZ1lKZll6akl2R0pkOXZQS05uUDZRY1NHZHVMUmhYMmlLMkszX2hLejRZNi1YMDRzMEExTHdOR3pIMmR2SFdhY1pydm5IMll6LWEyelFyU3NQMjdYOEczdkJQdGx6R0xNTU5YSXB5ZVZYWUhVNm8tMWpnMXZB?oc=5",
-          "published": 1786522843
+          "title": "协办WCET年度研讨会，海亮人工智能教育探索AI与基础教育深度融合",
+          "source": "新华网浙江",
+          "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxNUmNzOHlRQW91R2hpS3ZQeC1NcHVxOXhaX0N0OHA0WG9oMVpXamFpUl9NYWNzRkRxOVcxeFk4dmxNOGN4ZmdlSVZrNEpzVDZNV0NXd0xYWGtlSkN3M0FiNUpqQUZSRGhxbUZVdGpkbmhHcFFCUTh5OS1iVDloZlRiUlFn?oc=5",
+          "published": 1786533826
         },
         {
-          "title": "活力中国调研行丨下一代芯片封装基板理想材料2027年小规模量产",
+          "title": "费加罗报：中国AI产业突飞猛进，从芯片到机器人无不颠覆硅谷的格局",
+          "source": "RFI",
+          "link": "https://news.google.com/rss/articles/CBMivwNBVV95cUxPZ0hyUFVXWWIwLVFWZm5rc1V6dGFkemlYamF0eExzWmE5emtxd2RNNGJLcVdBYnh1bGZ6ejBaZTdiOFJmakFiYzNvWkRDV1o3OTNHR28xaWItQ0daaHBrS3lIWFJzc2FXV1hZRmE4cHlxand0UlJpal9JNFFwZzRxTTROTHo4Qzk4ZnFjVWpxdG0xcG4xMEZFcGN4akFqYVFQZlZSUTBza0trLVFacWxCSWFBZHYwN1JyYXVmUy1ENk9rX1lUQVcwVWRMUnlNVVBsdTRpaGxLempuclFNTnJFdEJNajBuN19tYndYU1BQUmRzNVlsWmZoX1hid3JHbXdBT09qcWI4MU9wTms5OVRPcmstcEU5dW82cG9yYXplY1hsMHZhNEpRVW1yenF3Y1hPWU1OaTgza0t1RjhYb2dNUjE5RGsxQmRlMVpOQXhpZ2ozLUxUVktnQ2ZnUU81Rmt4eDN3MXFLQ210VFRGeDZJQlFHOUVFanpfenR1VGVWb1ZQVXZEdmttLVAwOXRLQnZnQlhUSFQtM24yQkQ2Z2RLVDg1Vy1BS3dqT0t4WnhDbmprZWRhVGdiOVNPdHVtcVE?oc=5",
+          "published": 1786545454
+        },
+        {
+          "title": "量化推波助澜？芯片股的“完美对冲”浮现了！",
+          "source": "财联社",
+          "link": "https://news.google.com/rss/articles/CBMiSEFVX3lxTFBwdm90YXZVN0p0YTBIMW1uOEJnbnMxSjRONUtEdktSeDdYWlN1SFZNMW0zaFdnYUlZWmdIWkpNOUtScE5hRS1pbw?oc=5",
+          "published": 1786504688
+        },
+        {
+          "title": "国务院国资委：围绕云计算、网络、人工智能、量子等根技术，加力关键核心技术攻关",
+          "source": "东方财富",
+          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE0wN25tX2ZVcmttRk1pR21td0hmd3FNWEM5UTFXaVM4YTg2T1hhRzllMGFZelpOSDJTaDVsZ1JQQ3hYQ0Z0Wm1EeXhNV3NUenF3V2Q1bGk2RDJuTjEyWE0xSQ?oc=5",
+          "published": 1786546500
+        },
+        {
+          "title": "首届“AURORA・AI for BUSINESS”人工智能应用与科技金融大会举行汇聚三方资源打造科技金融交流高地",
+          "source": "新浪财经",
+          "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTFA0NUFqa0dWcXVuSG4yWm9oVHFpaGJ4NDF0el81R3hnWmtObDQ1SWphMEgzVkR3OW1aUmY5akRBWDNoOXVjSGwxRjNVekgwdE4yVmN5UzB0LWdHYWlHV3NyX3pXZTdFU04zeDBaRHRhWGtBbjJ5X2F4NkxtLU8?oc=5",
+          "published": 1786550640
+        },
+        {
+          "title": "科技日报看四川·宜宾篇丨宜宾市科技局局长杨璐菡：以科技创新引领新质生产力发展 打造区域特色创新高地",
           "source": "中国科技网",
-          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5WeW80TkJxdGUxbVZxXzNKakpCTzZzUlpDQmt4S2otTnNXY2hDLWY1RTNpQUh0cTk0MkROanBEcHo3VENiZ293WE1FdjZhVkZySllCa3pHWDU4Vk5GdGlwbDZxY3Uyb1FfVkN3ZUpWVjM?oc=5",
-          "published": 1786520844
+          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1NN0FBcDRrUU9uSTl0TG5OZFhpQTNUUTdaaFdMdTBkMmlTVndzLUNxVUxXREZGU2JUalBScnJ6MklhRmlUZmd1bzdkQzdWNExHTFJoSHhGUEE0X3k3Qm1FOGRnRW95N0RtOGprTkUzZXY?oc=5",
+          "published": 1786539215
         },
         {
-          "title": "永远在线的“AI搭子”，可能让孩子越聊越孤独",
-          "source": "新华网客户端",
-          "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPN3QydE1WZC1xWmFtakVzaU9sUGpaNEdKclB3NUVnbS1yRXRxaGdhaVN5aGpPVmFiOHlTeUpsek94UFdFbUZUS0FxNTFMYk1ya0xOSm1pLWU0ZmdlNDlCUk9Hc2xyc0dURjdueEk4ZmExdEUwSzFucERuNUlFS005T19HeUhMU21VU0hZZVFNd3ZoM3E2YWIyQmZ3?oc=5",
-          "published": 1786527860
-        },
-        {
-          "title": "让知产AI“触手可及”②｜研发界的“最强大脑”：智慧芽Eureka如何让创新快人一步？",
-          "source": "中国江苏网",
-          "link": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxPNExMeXlCV05sRWZIcTc5SUpEVkhBQmF6ZVRobHpqTHQ3amd5YVhDUFdsZ01UdWllZHo1Z242LXFWUml2bmIxZWI2M3FCbUNJLUY3QThHTGRnS0FGLWF6RjFZd3pSTEFBUWktMzdzWTFVazFEQ2dCdnNfQnA0OFdHWFpjenM0RXZVdGg0?oc=5",
-          "published": 1786527540
-        },
-        {
-          "title": "AI交易热情重燃，美股存储芯片股盘前普涨，CoreWeave涨约16%，油价延续升势，焦点转向美国CPI",
-          "source": "华尔街见闻",
-          "link": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE1RS21kNzhZb1FWSFotS3JvMVpsSU9iS00xNmh5OHJ3Y003aHlweVZTYzc4Nmw1OEt2aTQzWGYzU0U4VlMtQ210MEQtaUFoMXJYbzZV?oc=5",
-          "published": 1786535882
-        },
-        {
-          "title": "我的AI新搭档丨② AI助企转型 激活数智产业",
-          "source": "河北广播电视台",
-          "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBCX3lpaHpFSU1ENHJiRzFJaFo3TUtwN29YVGNtQWZOTzd6RG9wTXJFQW5vdDZhR2szWGVON0xfSXZ4UkNGVzlMSEF2VXN2Z1JYRDJLNnhQenlJdjJ3NFZHUWkyVkdqYU1QNFY3Rg?oc=5",
-          "published": 1786532853
-        },
-        {
-          "title": "法国兴业银行：人工智能可能加速K型经济 扩大贫富差距",
-          "source": "观点网",
-          "link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE9RNEFKQTR2Z2xZUDRWbUJQSTdKaEpiT05tdXVrN2VSalhybjJtS0lRcEZMc2MtQXltT3ZwenRJVXo5WVBuMXl0TENtWFQwcEpnVkU0aFNSSWY3cmRtMlJYV01n?oc=5",
-          "published": 1786536454
+          "title": "同星科技：目前公司与宇树机器人暂无业务合作",
+          "source": "新京报",
+          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTFBhdnd5MXhnZnluQWdKSThoWngzdzZCSUJvaGxKYjhpRWVfbHhwcGF6OUl2bF8zMEREV2hNYWg0bHMwZkd6RFNrWkEtX1NuOVJhS3FmbFB1Y2ZRcTRjaWlZVVBfR08?oc=5",
+          "published": 1786546500
         }
       ]
     },
@@ -111,46 +111,46 @@
       "name": "娱乐",
       "items": [
         {
-          "title": "“OMG 你吓到我了”火遍全网，AI音乐发展得怎么样了？|平台监管|人格权|翻唱|AI音频生成|训练_手机新浪网",
-          "source": "新浪财经",
-          "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQRDVPM2xwYUw1Z05OZkJCR1ZNX2dBUGNadVFtZ29wOWRfMDlvNFVycXMwOE5vOUVQYWljN01ZYmdma0ZibXhBT21pQjIxOG1VRkZsejBIYnNqWnFDdVQ2YW5Td2NhZmhTYnFvUlhyQUY3ajhSN1p5dkt6VjY5U3UxLTJUZ2kyeWtaSTdYSUpBYkpoRjIwM2VzQ0UzeGhmWFNhSkhpMm1Td3Z0MjBKRkFHUHd3?oc=5",
-          "published": 1786538045
+          "title": "看展还能参加夜派对、音乐会，上海电影博物馆承包今夏光影浪漫",
+          "source": "shobserver.com",
+          "link": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE15R2N0RnlOcmFVY0k1aER3dVotTC12NmZNZnJia01LU1BPTDhMUmUxazAyN090QnFrUTIwRTE3LVBHTUxCYk1wd2wwRW5PQUJEXzY0TFpBUzNCQzZZZlE?oc=5",
+          "published": 1786548420
         },
         {
-          "title": "永恒的歌曲 致敬经典——电影《上甘岭》主题曲",
-          "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE5KencyWF81STlKZkw4d2RrejJ2S1NhU19peEJfc19oRDlpcWxnZFJzaUQ2S2ZGNFk2M0FneWFGTERVNG1vNXBGVVJjRUpIdkc5RVhFVlctbnI0RFlneGpaenRwTzZzN0hZQk90X2o5dXgyaERzMGdRcTZWYTk?oc=5",
-          "published": 1786518646
+          "title": "音乐剧《风声》重新出发，阿云嘎这次演“吴志国”",
+          "source": "finance.sina.cn",
+          "link": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxOZW9kTVlOekZvODJBYUs2VUJNOWI1LXdYdFUyMkh2RE9jZ19NVUhULWk0NDBqcGVLR2p5ZXowSmN4YU9rX25oWm5tckJucTFxVkpWVURscmJUVjYzc0hZMFNucjgzWXRhejNoTnphUzBIQWhoajR0ZTN5Ri1tMGNNeDZHOFRwZFVFaXBB?oc=5",
+          "published": 1786547375
         },
         {
-          "title": "周杰伦青岛演唱会最新消息：开票时间公布！",
-          "source": "青岛日报",
-          "link": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE5tNnlKX3ZHTGdDRmpHQzJmMUpxZ0hWNEpzUENHVS1Mc1lKczNPWG9iUFZfUXJjckhDUmtaRTVzM1BaOFBZUi1FM2hzWW1OT2M5RGFKQ2RZTnk?oc=5",
-          "published": 1786538209
+          "title": "祖龙娱乐预期中期亏损扩大至6500万至7500万元",
+          "source": "观点网",
+          "link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE1Kd0F0TUNpNlV0MExPeXgzbzN3bjlUZHhQNk9vNmhaZnBxeExTRW5PV2pIdGlyYmN2emJqSDliZG96eV83dHRDUEZCLWphY0w5UF9GdldNMXhvcjllSGdjZzRn?oc=5",
+          "published": 1786546885
         },
         {
-          "title": "快手“音乐燎原计划”是如何捧红海伦的？",
+          "title": "张译邀你免费看电影！哈尔滨电影双周打卡攻略",
           "source": "新浪网",
-          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE42WU1DQ0hOOURacVBBQUhndllxZzBfeERTYTZaNFRtdnJQVThoSF9XR1RCVmY5SlpBbU9TdEdVeDQ2LVdxQmQzTmhhYkYxQ1A2OXZjQTEwV1pmU3FrbG8yTkI0UE4zeW04clVwR05TN2U?oc=5",
-          "published": 1786537680
+          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE9VUERFa2cteWwySk1JMjFRcHNRcXd3RGZ2Z0pJUmVyclZMQVpmdDdFSlhSZXotb0lseW9JX1NSZXZKczJtaVRYSEt5NEhUdG15djJLQldlWENLYU1jVzluT241QXdoWE1UZVZ3VlV5ekE?oc=5",
+          "published": 1786557346
         },
         {
-          "title": "现身支持沈腾新电影，贾冰顺便回应酒局风波",
-          "source": "紫牛新闻",
-          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBsbmVZZGh3UVJELWlvd21BdXd1X3ZSX1p2ZFdERlRybzVwVHl2QUlUNlRlbVdfazdLY0Myd1ZRbzAyRjE5UjQ5eVBfYVJNZzJyT290QjlreFdjVlR3V1FDN0JvclczQk5o?oc=5",
-          "published": 1786534080
-        },
-        {
-          "title": "儒意电影涨停，押注“沈腾含量”影片又显灵？",
+          "title": "全名单！第38届大众电影百花奖揭晓",
           "source": "新京报",
-          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTFBwVi1OYTJiNkdZdFJOQ0t5YnJ0QzFUTVFKTC1qc3RyMXBZcmRJbHhNXzFabjNRLXJDbVF1QzR5NXl3TnZsTjNkV200MURfTHdYUmVOVU5vM1dHemFsSlJ3cDNTSzE?oc=5",
-          "published": 1786366620
+          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE0tdi1haG1EV3g2UmVoWVpKeHNnZXBVX2ZILTNJaFJnNnBtblFhRDQwSnNJVDljaEJxaWNvbHJVdVVvcE1YSHF1cUJrV1hvNk5rOFE3QWp0NWo1bWlBS05hQ0t1UXY?oc=5",
+          "published": 1786369800
         },
         {
-          "title": "港股收盘 | 三大指数集体走弱 腾讯音乐绩后重挫超12%",
-          "source": "东方财富",
-          "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBpVmJKZVhuVFNMOE1IbXY2M0FPbUZTdDEwbFlTQ0hXTFVqV1pvSmhya2hPa0k4NmF5Z3hlV284b0FNY21oZjZkWFBEdVc1aHRDb0tIdFVpSUZDcTBPZ1dudGZDemwzZw?oc=5",
-          "published": 1786484583
+          "title": "第三十八届大众电影百花奖颁奖典礼举行",
+          "source": "人民日报",
+          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTFA5WkNDOHJ0cHBTNndhVUdZc1BEZHlKU1VxU0UycnVkMjJmNXdPaDF1T2JidTBUUmVueVpMVl85ZG0xLTlOQ3Jna3dkcHdmT01QbExPWVE5MmJocGYxN0ZnTjB5RDNKeVBqUFJFcjN2eFdpY0x1LXFMa0ZGUlhnanc?oc=5",
+          "published": 1786404591
+        },
+        {
+          "title": "2026暑期档票房破80亿！“电影+”持续激发消费新活力",
+          "source": "中国日报网",
+          "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE4tSmxBMDU5dTQ4OFdPdkhoWGxKMU5NTnloQzNSaFdzNURUNXFVMnJPUGs5eW8zS0NYeFJIYm43OFdsVnRPT0hMRGtjeXBlQ2ZnNGlraE5RSW83TFI5dVBZWno3cUxROTBPVExtUlZiZkh1Z3JEVGVFVXhnWmQ?oc=5",
+          "published": 1786088398
         }
       ]
     },
@@ -177,28 +177,28 @@
           "published": 1786497576
         },
         {
-          "title": "新赛季NBA圣诞大战的剧本，好到不像巧合",
-          "source": "紫牛新闻",
-          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5vd1lFWVJQakpJek4zN2dHNGdVOER5N0JRdExSdlhRaE9VWWM0YU91cDlyZXNyek9welFMT2tTRnpCUExvMEdzMW5DaUFPNkFWeVduajctN2hRaVBQbTZidnhfQ2diZXZR?oc=5",
-          "published": 1786516080
-        },
-        {
-          "title": "通往洛杉矶2028之路：马术三项赛奥运资格体系详解",
-          "source": "olympics.com",
-          "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxQWDB0LTV0WFIybUxFRXgyYzI5dUNVQ0NvTnZ2dWFDSmNiYWhMdnlMejhSNXJwcHY2Zzc4NElvakxDSEgzRENnVGRUQTlqaXBydEFSZm9GNXFHMExGWnFVSG81amt2Rng5Z3UzbGRjamlRS1NqNmJQb0hGdjJBb3MwMjFnR3FKenliZEdrWmZpX1BZdkV5ZEtwdi1YUzQ5MTd6Wk81YkxDWDR0WFp0UGY1eVdyZU1Rbmc4LTlWRzhHc2Q?oc=5",
-          "published": 1786503540
-        },
-        {
-          "title": "城市足球联赛为何能扎根福建，苏超和闽超还有这么一段故事",
-          "source": "thepaper.cn",
-          "link": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE9kQ19QcEtTMVdvZnZVamFjSjA4cDBIelFJV1VZZzZYb0xrWF9wUUhSV3gxOWxNNmR1V0pNbEdzUVQ3dk5McFk1c09mUjZNMGc1SV95M0lUSmlSZDd6WFE?oc=5",
-          "published": 1786537380
+          "title": "“赣超”篮球盛会激发夜经济",
+          "source": "js.cnr.cn",
+          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5zUTd0UVJwRlQ4ZU9DYk9yXzhHeE1qOEpCWVg4TlB2LXhhN2h6T0xTdXBwTDNQTFhOVDV4Z2Fkc0p5M3M5eG15NTJvcVotSlRacUY4YzRGdUdwQ0tDQ1JubThySVdRR0FF?oc=5",
+          "published": 1786525900
         },
         {
           "title": "深耕篮球赛道 伊利成为中国篮球之队官方合作伙伴",
           "source": "eeo.com.cn",
           "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE84cUhhMG0tNkVRR21XRTB1WTNCVEdDMTVPYkRscFduWWVuOXhJeEZBVEdXYng3VVFlYkVTLW8tdXBsWTdJOGdyMVZ2ekRUR3diZ2I5TjdLUQ?oc=5",
           "published": 1786512278
+        },
+        {
+          "title": "公派留法足球教师归国十周年成果交流活动在溧阳举行",
+          "source": "紫牛新闻",
+          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE9FdmhsV3p2RmdwT0JreHlHZldGeWprZ3lIYjZLZG1rN085T3J6RkFWUWFkX1prTXg0N0RMRmREeEw2T242TzBsZzRqSDI2NWxiZm45S3pkOTdWUldYcXRpWEp3Qmh6YmtV?oc=5",
+          "published": 1786500960
+        },
+        {
+          "title": "通往洛杉矶2028之路：马术三项赛奥运资格体系详解",
+          "source": "olympics.com",
+          "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxQWDB0LTV0WFIybUxFRXgyYzI5dUNVQ0NvTnZ2dWFDSmNiYWhMdnlMejhSNXJwcHY2Zzc4NElvakxDSEgzRENnVGRUQTlqaXBydEFSZm9GNXFHMExGWnFVSG81amt2Rng5Z3UzbGRjamlRS1NqNmJQb0hGdjJBb3MwMjFnR3FKenliZEdrWmZpX1BZdkV5ZEtwdi1YUzQ5MTd6Wk81YkxDWDR0WFp0UGY1eVdyZU1Rbmc4LTlWRzhHc2Q?oc=5",
+          "published": 1786503540
         }
       ]
     },
@@ -207,40 +207,40 @@
       "name": "国际",
       "items": [
         {
-          "title": "现场：C919首条国际航线开通",
+          "title": "C919首条国际航线开通",
           "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMid0FVX3lxTFBpSHhjajloT1RDb3lpZ3ZWSExGWi1ZLUllRnRsMEJ0ZGZhby05dFpITGM0OWlrTDhCRDhzREhFbGVOcUw4cmo4UWNFQV9QRGM3djVkMS1KcFBfSWdieHdXLXZqNU1EQmhJVnZ1LWlpbk5rbmlpLXZv?oc=5",
-          "published": 1786526459
+          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1mY01kczlaRE4yR3hPTUQ5WlI0VTJkRVliOVpCcTI2OVNSSVJDaEdMQk1KVl92MExTM2xyZDZGeVRUdV9IY3BncnZDbl9teFdWbV85WXRFQnhNbElISW1ycWFHMGlhZXdsU1BqOG9ZSzI0bEtVUGNtYmg4eW16QXc?oc=5",
+          "published": 1786543491
         },
         {
-          "title": "河南许昌需注意防范次生灾害",
+          "title": "“乒乓外交”续写友谊新篇——访联合国乒乓球俱乐部主席黄武耀及其队友",
+          "source": "news.un.org",
+          "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE1JUHlreVNJQllBTDdRR0RwVWxJRUM3UmgxekQ0VkpfeFFGbWtubVFmRERVQU5FMWFKc2lJdC1nUF9aX0ZmeTR2UHoyTHZQanNpTUo4N0J0RQ?oc=5",
+          "published": 1786549968
+        },
+        {
+          "title": "山洪灾害气象预警：河南湖北等部分地区发生山洪灾害可能性较大",
           "source": "天气网",
-          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE9lUlF6Yk93TmFrWVphZnpKUGxIMkp4ck1yV0xhSGh6MlpCaDFadGNlSnoyVWRhVlBJMVFkTFM1WUVjdWtIX3V3OUhVQTNGc2NwZlhUVGV1bDVhdjFlV2FBTHk2UWI?oc=5",
-          "published": 1786531882
+          "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE5zTlBSNnZuT0JqOFZuVDhtSW5jVm9vS0JMYk1aSDI4cDBWb2dubkEyalBacXdrRndqNzFwZGNTdFVycExxenNiR1Y4RU90WEV0ek1hMy1hSXhLVjMy?oc=5",
+          "published": 1786529121
         },
         {
-          "title": "C919圆满完成首次国际商业航班飞行",
-          "source": "新华网客户端",
-          "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxONmdZU2V6QnhJTDJvRDhDMW5DQzJwYmk3VmVRTVVkUlRUQ2IzcExBWDh6ck5ObUlpWGpTOGc5N2tpM1hWek9NN2NwNmpHS2QxajdyRDQ3cE9mNE9FR29yQ0JxN1VycE9zZnVyR3RzRFZjNEJrSWl4dE1HaXphSm9EbU8tUlZkWnhfUm1jUXNrQXlxWlE5LVNmeklR?oc=5",
-          "published": 1786528675
+          "title": "联合国官员：中国重视青年发展为发展中国家提供重要借鉴",
+          "source": "chinanews.com.cn",
+          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE81SE5sUDZha1RGSnhuZjN6T2JvM3FZTl9LQzBVdllwQm1pMHpIdzRQanVoWmk2THlTMVFhVnhPRHVaLUVocHdxZVllU3NHdXNCdFN3eHZGNkYteXlmZE5wdjdkVjYyQjEz?oc=5",
+          "published": 1786544116
         },
         {
-          "title": "北京降级发布地质灾害气象风险黄色预警",
-          "source": "新京报",
-          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE5oMXY4NnktSDhMVEREZzRpQ0p1M2JXQ3VMM0ZPSFU5WVZ1U3R2a1BNNHBDS19COWcwck5oc3g2QUFINkVidkFWSnNUQ200aGVLTnloTDFnSmxQb0tFS05iMmNoUmk?oc=5",
-          "published": 1786534286
+          "title": "全球首款机器人手机在广州发布",
+          "source": "广州日报新花城",
+          "link": "https://news.google.com/rss/articles/CBMiigFBVV95cUxOb3dJUm4tNERrb3cySUtBX0xNWHhsR1NiZ3hVX3VrVXZJSmxWUTVfZnFrNXZhSUVUTDdIZDNJczJuc3BUaDJfTDNielRJeVRuZUQtdE9zSjRMbXh5dFRPUWVxVERMTnoxdTVFY0hDUXA5ak5aV19VNEFZckoxZDIwdEQ0WHVzMlhTclE?oc=5",
+          "published": 1786545189
         },
         {
-          "title": "重磅！华大基因NIFTY®获CE-IVDR证书",
-          "source": "bgi.com",
-          "link": "https://news.google.com/rss/articles/CBMiS0FVX3lxTE9WM1JmdjNIbElralhsWG1lNjFQN1lrRFJhVjBvdDVUMjQwaWV1ZmRNYVZWN1U5SGJ6RGFRaWoxWUJGSUhIVDRNRjFFaw?oc=5",
-          "published": 1786536934
-        },
-        {
-          "title": "活力中国调研行丨湖南长沙：科创企业从产品出海迈向体系全球化",
-          "source": "中国科技网",
-          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE12OWc1cFFFZUYzZ2Q2NU4zaVlEVlFFVzUxSFlaN0g2S1loNC1wa0xxWjZpWkNOTEQyd2xqT1d6NV9ZZy0yZVd5a0w4a3RZLTdhUEdSb3k1NkozTGdOX3d1RWhsRjU2NGZSMktGZk5ZeHU?oc=5",
-          "published": 1786526094
+          "title": "C919完成首次国际商业航线飞行",
+          "source": "中国民航网",
+          "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9vY1dBanY3LXk4UG5hbTJkSTRwRFZDLWNwdTdFeHZnN0R0SWw4TnpJT3pFOVZWbUFCemo1RlMzRjVma3psUWxSS1NxUldTZWJXelhwclZrdFdGRklJZUFxYUJPVzl4MkR3WndSSg?oc=5",
+          "published": 1786541040
         }
       ]
     }
@@ -249,43 +249,43 @@
     {
       "name": "标普500",
       "symbol": "^GSPC",
-      "price": 7751.84,
-      "changePct": 0.31,
+      "price": 7754.4,
+      "changePct": 0.34,
       "fmt": "idx"
     },
     {
       "name": "纳斯达克",
       "symbol": "^IXIC",
-      "price": 26603.06,
-      "changePct": 0.6,
+      "price": 26620.06,
+      "changePct": 0.66,
       "fmt": "idx"
     },
     {
       "name": "布伦特原油",
       "symbol": "BZ=F",
-      "price": 88.52,
-      "changePct": -0.44,
+      "price": 88.79,
+      "changePct": -0.13,
       "fmt": "usd"
     },
     {
       "name": "WTI原油",
       "symbol": "CL=F",
-      "price": 82.92,
-      "changePct": -0.34,
+      "price": 83.1,
+      "changePct": -0.12,
       "fmt": "usd"
     },
     {
       "name": "黄金",
       "symbol": "GC=F",
-      "price": 4476.7,
-      "changePct": 2.14,
+      "price": 4476.3,
+      "changePct": 2.13,
       "fmt": "usd"
     },
     {
       "name": "美元指数",
       "symbol": "DX-Y.NYB",
-      "price": 99.67,
-      "changePct": -0.15,
+      "price": 100.01,
+      "changePct": 0.19,
       "fmt": "idx"
     }
   ],
