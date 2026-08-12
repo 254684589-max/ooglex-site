@@ -23,6 +23,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 from macro_source_health import validate_macro_health
+from finance_terminal_cycle_trigger import workflow_cycle_date
 from finance_terminal_market_licenses import (
     authorization_summary,
     validate_market_source_readiness,
@@ -826,11 +827,6 @@ def evaluate_aggregate_pipelines(
         else:
             checks.append(evaluate_aggregate_pipeline(dataset, data, health, now))
     return checks
-
-
-def workflow_cycle_date(created_at: datetime) -> str:
-    """将21:00 UTC至次日窗口内的运行归入同一个调度日。"""
-    return (created_at.astimezone(timezone.utc) - timedelta(hours=21)).date().isoformat()
 
 
 def normalize_workflow_runs(

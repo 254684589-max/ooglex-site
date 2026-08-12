@@ -1,8 +1,8 @@
 name: Finance Terminal V1 Qualification
 run-name: Stable V1 qualification · ${{ github.ref_name }}
 
-# 只在金融终端开发分支编排四条核心数据管道。新增脚本首次推送会自动运行；
-# 以后仍可在工作流进入默认分支后手动运行。不会合并main或触发Pages部署。
+# 只在金融终端开发分支编排四条核心数据管道。新增脚本或跨日周期标记推送会运行；
+# 标记只负责开发观察触发，周期仍按远端workflow_dispatch证据复算。不会合并main或部署。
 on:
   push:
     branches:
@@ -10,6 +10,9 @@ on:
     paths:
       - 'scripts/finance_terminal_qualification.py'
       - 'scripts/validate_finance_terminal_qualification.py'
+      - 'scripts/finance_terminal_cycle_trigger.py'
+      - 'scripts/validate_finance_terminal_cycle_trigger.py'
+      - '.github/finance-terminal-v1-cycle.json'
       - 'scripts/finance_terminal_readiness_snapshot.py'
       - 'scripts/validate_finance_terminal_readiness_snapshot.py'
       - 'scripts/validate_finance_terminal.py'
@@ -47,7 +50,9 @@ jobs:
           python-version: '3.12'
 
       - name: Validate qualification orchestration contract
-        run: python scripts/validate_finance_terminal_qualification.py
+        run: |
+          python scripts/validate_finance_terminal_qualification.py
+          python scripts/validate_finance_terminal_cycle_trigger.py
 
       - name: Run four-pipeline development qualification
         id: qualification
@@ -145,6 +150,7 @@ jobs:
           python scripts/validate_market_workflow_governance.py --dataset all
           python scripts/validate_finance_terminal_release_gate.py
           python scripts/validate_finance_terminal_qualification.py
+          python scripts/validate_finance_terminal_cycle_trigger.py
           python scripts/validate_finance_terminal_readiness_snapshot.py
           python scripts/finance_terminal_readiness_snapshot.py \
             --validate-only apps/finance-terminal/readiness.json

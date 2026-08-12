@@ -122,6 +122,10 @@ def test_github_workflow_safety() -> None:
     require("scripts/validate_finance_terminal_market_licenses.py" in workflow
             and "scripts/validate_finance_terminal_market_licenses.py" in quality,
             "资格与质量CI必须共同验证四项行情授权契约")
+    require(".github/finance-terminal-v1-cycle.json" in workflow
+            and "scripts/validate_finance_terminal_cycle_trigger.py" in workflow
+            and "scripts/validate_finance_terminal_cycle_trigger.py" in quality,
+            "跨日周期标记及其契约必须纳入资格与质量CI")
     require("apps/finance-terminal/market-source-readiness.json" in workflow,
             "行情授权结论变化必须触发开发分支资格验收")
     require(".github/workflows/finance_terminal_v1_qualification.yml" in quality,

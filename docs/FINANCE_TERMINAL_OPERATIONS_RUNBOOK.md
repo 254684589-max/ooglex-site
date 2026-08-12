@@ -60,6 +60,8 @@ node scripts/validate_finance_terminal_browser.mjs
 
 同一UTC日更窗口内的重跑只算一个周期；失败后重跑成功不会虚增连续周期。Beta至少观察3个周期，稳定V1至少观察7个周期。
 
+开发分支观察期间使用`.github/finance-terminal-v1-cycle.json`作为受控触发标记：外部日程任务在每日21:00 UTC窗口开启后读取目标开发分支；若标记已属于当前周期或四条管道均达到7/7则不写入，否则只更新该标记的`requestedAt`、`requestedCycleDate`和`requestedBy`。推送会触发资格工作流，但标记不作为成功证据；周期数仍由四条数据工作流的远端完成记录复算。任务不得修改`main`、其他文件、生产数据、发布或部署配置。
+
 ### 3. 辅助来源资格闭环
 
 CNN恐慌与贪婪、OFR金融压力、经济日历和财经新闻各自维护独立健康快照。四源均已由真实远端任务建立`tracked`历史；2026-08-12辅助资格确认CNN 1/1组件、OFR 5/5组件全部刷新并显示`HEALTHY`。以后出现`UNKNOWN`、`STALE`或失败时，继续使用开发分支上的`Finance Terminal Supporting Qualification`复核：

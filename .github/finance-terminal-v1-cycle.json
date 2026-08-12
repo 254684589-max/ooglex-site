@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "targetBranch": "agent/finance-terminal-supporting-qualification",
+  "requestedCycleDate": "2026-08-11",
+  "requestedAt": "2026-08-12T18:13:01Z",
+  "triggerKind": "distinct-cycle-observation",
+  "requestedBy": "repository-bootstrap",
+  "stableTargetCycles": 7,
+  "safety": {
+    "doesNotMergeMain": true,
+    "doesNotDeploy": true,
+    "doesNotRelease": true,
+    "markerOnly": true
+  }
+}

@@ -115,6 +115,8 @@
 
 资格工作流自身成功只表示“本轮四条管道均成功并生成了最新门禁报告”。Beta仍需3个不同日更周期，稳定V1仍需7个周期且核心行情不得包含演示数据。
 
+开发分支尚未进入默认分支时，GitHub的定时工作流不会自动从该分支执行。为持续建立真实观察证据，`.github/finance-terminal-v1-cycle.json`可由受控外部任务在21:00 UTC之后每天最多更新一次；其推送只触发上述开发分支资格工作流。标记本身不计入成功周期，门禁仍只统计四条真实数据工作流的`workflow_dispatch`完成记录，并按21:00 UTC边界去重。同周期标记不得重复更新，达到7/7后应停止触发。
+
 ## 辅助来源资格验收
 
 `.github/workflows/finance_terminal_supporting_qualification.yml`并行触发CNN Fear & Greed与OFR两条独立工作流，用于把迁移`UNKNOWN`转为本轮真实的成功、回退或失败证据。它同样只允许`agent/finance-terminal-*`开发分支，并在取数后重新读取最新分支，验证四个辅助来源健康契约、失败保留、路径治理和三档页面回归。
