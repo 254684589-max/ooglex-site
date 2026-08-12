@@ -1,0 +1,134 @@
+name: Finance Terminal Supporting Qualification
+run-name: Supporting source qualification · ${{ github.ref_name }}
+
+# 只在金融终端开发分支建立CNN与OFR的真实远端运行证据。
+on:
+  push:
+    branches:
+      - 'agent/finance-terminal-*'
+    paths:
+      - 'scripts/finance_terminal_supporting_qualification.py'
+      - 'scripts/validate_finance_terminal_supporting_qualification.py'
+      - '.github/workflows/finance_terminal_supporting_qualification.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: finance-terminal-supporting-qualification-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  qualify-supporting-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - name: Checkout qualification source
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate supporting qualification contract
+        run: python scripts/validate_finance_terminal_supporting_qualification.py
+
+      - name: Run CNN and OFR development qualification
+        id: qualification
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python scripts/finance_terminal_supporting_qualification.py \
+            --branch "$GITHUB_REF_NAME" \
+            --timeout-minutes 35 \
+            --report-json /tmp/finance-terminal-supporting/qualification.json \
+            --report-md /tmp/finance-terminal-supporting/qualification.md \
+            --fail-on-blocked
+
+      - name: Add qualification summary
+        if: always()
+        run: |
+          if [ -f /tmp/finance-terminal-supporting/qualification.md ]; then
+            cat /tmp/finance-terminal-supporting/qualification.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "辅助来源资格验收未生成报告。" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload supporting qualification evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: finance-terminal-supporting-qualification-${{ github.run_attempt }}
+          path: /tmp/finance-terminal-supporting/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Fail blocked supporting qualification
+        if: steps.qualification.outcome != 'success'
+        run: |
+          echo "CNN或OFR未成功，辅助来源资格验收保持阻断。"
+          exit 1
+
+  validate-qualified-branch:
+    needs: qualify-supporting-sources
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout latest qualified branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Validate latest supporting snapshots and page
+        id: final-quality
+        continue-on-error: true
+        run: |
+          python scripts/validate_supporting_source_health.py --dataset all \
+            --report /tmp/finance-terminal-supporting-health/source-health.json
+          python scripts/validate_supporting_source_builders.py
+          python scripts/validate_market_workflow_governance.py --dataset all
+          python scripts/validate_finance_terminal_supporting_qualification.py
+          python scripts/validate_finance_terminal.py
+          python scripts/validate_finance_terminal_release_gate.py
+          node scripts/validate_finance_terminal_browser.mjs \
+            --artifacts-dir /tmp/finance-terminal-supporting-browser
+
+      - name: Upload final supporting health diagnostics
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: finance-terminal-supporting-health-${{ github.run_attempt }}
+          path: /tmp/finance-terminal-supporting-health/*.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload final responsive screenshots
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: finance-terminal-supporting-responsive-${{ github.run_attempt }}
+          path: /tmp/finance-terminal-supporting-browser/*.png
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Fail invalid supporting snapshots
+        if: steps.final-quality.outcome != 'success'
+        run: |
+          echo "辅助来源运行后的开发分支未通过完整质量检查。"
+          exit 1

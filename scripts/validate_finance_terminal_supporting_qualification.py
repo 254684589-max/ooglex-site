@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from pathlib import Path
 
 from finance_terminal_qualification import QualificationError
 from finance_terminal_supporting_qualification import (
@@ -17,6 +18,7 @@ from finance_terminal_supporting_qualification import (
 
 NOW = datetime(2026, 8, 12, 6, 0, tzinfo=timezone.utc)
 BRANCH = "agent/finance-terminal-supporting-qualification"
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def require(condition: bool, message: str) -> None:
@@ -82,6 +84,31 @@ def test_ofr_contract() -> None:
             "CNN与OFR不得共享工作流文件")
 
 
+def test_github_workflow_safety() -> None:
+    workflow = (ROOT / ".github" / "workflows"
+                / "finance_terminal_supporting_qualification.yml").read_text(
+                    encoding="utf-8"
+                )
+    quality = (ROOT / ".github" / "workflows"
+               / "finance_terminal_quality.yml").read_text(encoding="utf-8")
+    require("branches:\n      - 'agent/finance-terminal-*'" in workflow,
+            "辅助资格工作流必须只由金融终端开发分支触发")
+    require("actions: write" in workflow and "contents: read" in workflow,
+            "辅助资格工作流必须使用Actions写入与内容只读权限")
+    require("pages: write" not in workflow and "environment:" not in workflow,
+            "辅助资格工作流不得取得发布权限或环境")
+    require("--fail-on-blocked" in workflow and "if: always()" in workflow,
+            "辅助资格失败必须阻断且仍上传诊断")
+    require("ref: ${{ github.ref_name }}" in workflow,
+            "最终检查必须重新读取辅助任务写入后的最新开发分支")
+    require("fear_greed.yml" not in workflow and "ofr_monitor.yml" not in workflow,
+            "辅助资格CI必须经编排器触发来源，不得复制取数步骤")
+    require("scripts/validate_finance_terminal_supporting_qualification.py" in quality,
+            "质量CI必须运行辅助资格契约测试")
+    require(".github/workflows/finance_terminal_supporting_qualification.yml" in quality,
+            "辅助资格工作流变更必须触发质量CI")
+
+
 def test_success_and_report() -> None:
     executor = FakeExecutor()
     report = run_supporting_qualification(
@@ -135,6 +162,7 @@ def test_ofr_dispatch_failure_does_not_cancel_cnn() -> None:
 def main() -> None:
     test_cnn_contract()
     test_ofr_contract()
+    test_github_workflow_safety()
     test_success_and_report()
     test_failure_is_explicit()
     test_ofr_dispatch_failure_does_not_cancel_cnn()
