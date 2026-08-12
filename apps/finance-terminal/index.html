@@ -632,7 +632,18 @@
     .rank-row { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
     .rank-identity { min-width: 0; }
     .rank-name { display: block; overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
-    .rank-symbol { display: block; margin-top: 2px; overflow: hidden; color: var(--faint); font: 8px var(--mono); text-overflow: ellipsis; white-space: nowrap; }
+    .rank-provenance { display: flex; min-width: 0; align-items: center; gap: 5px; margin-top: 2px; }
+    .rank-symbol { display: block; min-width: 0; overflow: hidden; color: var(--faint); font: 8px var(--mono); text-overflow: ellipsis; white-space: nowrap; }
+    .proxy-badge {
+      flex: 0 0 auto;
+      padding: 1px 4px;
+      border: 1px solid rgba(84, 216, 255, 0.42);
+      border-radius: 3px;
+      color: var(--cyan);
+      background: var(--cyan-soft);
+      font: 700 7px var(--mono);
+      letter-spacing: 0.06em;
+    }
     .rank-value { flex: 0 0 auto; font: 700 10px var(--mono); font-variant-numeric: tabular-nums; }
     .coverage-note { margin: 10px 0 0; color: var(--faint); font: 8px var(--mono); }
     .marketcap-body { margin-top: 15px; }

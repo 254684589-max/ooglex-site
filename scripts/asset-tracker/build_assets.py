@@ -29,6 +29,7 @@ sys.path.insert(0, SCRIPTS_DIR)
 from market_data_quality import (  # noqa: E402
     fallback_data_meta,
     make_data_meta,
+    make_proxy_meta,
     summarize_data_quality,
 )
 from market_source_health import (  # noqa: E402
@@ -179,6 +180,22 @@ def _first_sym(a):
     return c["sym"] if isinstance(c, dict) else c
 
 
+def candidate_proxy(cand, symbol):
+    """把候选中的简写代理配置扩展为可供前端和校验器复核的完整契约。"""
+    raw = cand.get("proxy") if isinstance(cand, dict) else None
+    if not isinstance(raw, dict):
+        return None
+    return make_proxy_meta(
+        raw.get("type"),
+        raw.get("targetSymbol"),
+        raw.get("instrumentName"),
+        symbol,
+        currency=raw.get("currency"),
+        return_basis=raw.get("returnBasis"),
+        note=raw.get("note"),
+    )
+
+
 def load_prev_data():
     """读取上次的完整 data.json，保留旧文件级时间供兼容迁移。"""
     try:
@@ -243,6 +260,7 @@ def build():
         for cand in a["syms"]:
             sym = cand["sym"] if isinstance(cand, dict) else cand
             note = cand.get("note") if isinstance(cand, dict) else None
+            proxy = candidate_proxy(cand, sym)
             try:
                 returns, last_date, price = compute_returns(fetch_series(sym))
             except Exception as e:
@@ -250,14 +268,14 @@ def build():
                 continue
             bad = breached_periods(returns, caps)
             if not bad:
-                chosen = (sym, note, returns, price, last_date)
+                chosen = (sym, note, proxy, returns, price, last_date)
                 break
             print(f"[!!] {a['name']} {sym} 异常周期 {bad}（ytd={returns.get('ytd')}），改用下一个候选")
             if suspect is None:
-                suspect = (sym, note, returns, price, last_date, bad)
+                suspect = (sym, note, proxy, returns, price, last_date, bad)
 
         if chosen:
-            sym, note, returns, price, last_date = chosen
+            sym, note, proxy, returns, price, last_date = chosen
             rec.update({
                 "symbol": sym,
                 "price": price,
@@ -269,15 +287,18 @@ def build():
                     as_of=last_date,
                     updated_at=run_updated_at,
                     frequency="daily",
+                    note=note,
                 ),
             })
             if note:
                 rec["note"] = note
+            if proxy:
+                rec["proxy"] = proxy
             as_of = max(as_of, last_date); ok += 1
             print(f"[OK] {a['name']:<16} {sym:<12} ytd={returns['ytd']}")
         elif suspect:
             # 所有候选都越界：隐藏越界周期、只保留正常周期，并标注 suspect
-            sym, note, returns, price, last_date, bad = suspect
+            sym, note, proxy, returns, price, last_date, bad = suspect
             for k in bad:
                 returns[k] = None
             rec.update({
@@ -297,6 +318,8 @@ def build():
                 ),
             })
             rec["note"] = (note + "；" if note else "") + "部分周期数据异常，已隐藏"
+            if proxy:
+                rec["proxy"] = proxy
             as_of = max(as_of, last_date); ok += 1
             print(f"[~~] {a['name']:<16} {sym:<12} 仅保留正常周期，隐藏 {bad}")
         else:
@@ -312,6 +335,9 @@ def build():
                                 frequency="daily",
                                 legacy_updated_at=(prev_data or {}).get("updatedAt"),
                             )})
+                for field in ("note", "proxy"):
+                    if old.get(field):
+                        rec[field] = old[field]
                 print(f"[==] {a['name']} 本轮失败，沿用上次数据（stale）")
             else:
                 rec.update({"symbol": _first_sym(a), "price": None,

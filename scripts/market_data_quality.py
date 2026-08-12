@@ -9,6 +9,7 @@
 
 from collections import Counter
 from datetime import datetime
+import re
 from typing import Any
 
 
@@ -25,6 +26,8 @@ FREQUENCIES = (
     "annual",
     "irregular",
 )
+PROXY_TYPES = ("etf", "futures", "index")
+PROXY_RETURN_BASES = ("price", "total-return")
 
 
 def _text(value: Any) -> str | None:
@@ -68,6 +71,75 @@ def make_data_meta(
         "frequency": frequency,
         **({"note": _text(note)} if _text(note) else {}),
     }
+
+
+def make_proxy_meta(
+    proxy_type: str,
+    target_symbol: str,
+    instrument_name: str,
+    instrument_symbol: str,
+    *,
+    currency: str,
+    return_basis: str,
+    note: str,
+) -> dict[str, str]:
+    """生成显式代理契约，避免把ETF、期货或另一指数静默当成目标标的。"""
+    values = {
+        "targetSymbol": _text(target_symbol),
+        "instrumentName": _text(instrument_name),
+        "instrumentSymbol": _text(instrument_symbol),
+        "currency": _text(currency),
+        "note": _text(note),
+    }
+    if proxy_type not in PROXY_TYPES:
+        raise ValueError(f"不支持的代理类型：{proxy_type}")
+    if return_basis not in PROXY_RETURN_BASES:
+        raise ValueError(f"不支持的代理回报口径：{return_basis}")
+    if not all(values.values()):
+        raise ValueError("代理契约的目标、实际工具、币种和说明不能为空")
+    if values["targetSymbol"] == values["instrumentSymbol"]:
+        raise ValueError("代理工具代码不能与目标标的代码相同")
+    if not re.fullmatch(r"[A-Z]{3}", values["currency"] or ""):
+        raise ValueError("代理工具币种必须为三位大写ISO代码")
+    return {
+        "type": proxy_type,
+        "targetSymbol": values["targetSymbol"],
+        "instrumentName": values["instrumentName"],
+        "instrumentSymbol": values["instrumentSymbol"],
+        "currency": values["currency"],
+        "returnBasis": return_basis,
+        "note": values["note"],
+    }
+
+
+def validate_proxy_meta(row: dict[str, Any]) -> list[str]:
+    """校验可选代理契约；无代理字段的直接行情保持向后兼容。"""
+    proxy = row.get("proxy") if isinstance(row, dict) else None
+    if proxy is None:
+        return []
+    if not isinstance(proxy, dict):
+        return ["proxy必须为对象"]
+    required = {
+        "type", "targetSymbol", "instrumentName", "instrumentSymbol",
+        "currency", "returnBasis", "note",
+    }
+    errors = []
+    if set(proxy) != required:
+        errors.append("proxy字段不完整或含未登记字段")
+    if proxy.get("type") not in PROXY_TYPES:
+        errors.append("proxy.type无效")
+    if proxy.get("returnBasis") not in PROXY_RETURN_BASES:
+        errors.append("proxy.returnBasis无效")
+    for key in ("targetSymbol", "instrumentName", "instrumentSymbol", "note"):
+        if not _text(proxy.get(key)):
+            errors.append(f"proxy.{key}缺失")
+    if not re.fullmatch(r"[A-Z]{3}", _text(proxy.get("currency")) or ""):
+        errors.append("proxy.currency无效")
+    if _text(proxy.get("instrumentSymbol")) != _text(row.get("symbol")):
+        errors.append("proxy.instrumentSymbol必须与实际行情代码一致")
+    if _text(proxy.get("targetSymbol")) == _text(proxy.get("instrumentSymbol")):
+        errors.append("代理工具代码不得冒充目标标的代码")
+    return errors
 
 
 def fallback_data_meta(
@@ -187,6 +259,7 @@ def validate_data_quality(rows: list[dict[str, Any]], summary: dict[str, Any]) -
             errors.append(prefix + "行情模式缺少有效asOf")
         if meta.get("mode") == "market" and not _parse_iso(meta.get("updatedAt")):
             errors.append(prefix + "行情模式缺少有效updatedAt")
+        errors.extend(prefix + error for error in validate_proxy_meta(row))
 
     expected = summarize_data_quality(rows)
     if summary != expected:

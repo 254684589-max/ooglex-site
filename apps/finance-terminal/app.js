@@ -1708,6 +1708,40 @@
     return cards;
   }
 
+  function normalizeAssetProxy(asset) {
+    var proxy = asset && asset.proxy;
+    if (proxy === undefined || proxy === null) return null;
+    var expectedKeys = [
+      "currency", "instrumentName", "instrumentSymbol", "note",
+      "returnBasis", "targetSymbol", "type"
+    ];
+    var actualKeys = proxy && typeof proxy === "object" && !Array.isArray(proxy)
+      ? Object.keys(proxy).sort() : [];
+    var validText = function (value) { return typeof value === "string" && value.trim(); };
+    if (!proxy || typeof proxy !== "object" || Array.isArray(proxy)
+      || actualKeys.length !== expectedKeys.length
+      || expectedKeys.some(function (key, index) { return actualKeys[index] !== key; })
+      || ["etf", "futures", "index"].indexOf(proxy.type) === -1
+      || ["price", "total-return"].indexOf(proxy.returnBasis) === -1
+      || !validText(proxy.targetSymbol) || !validText(proxy.instrumentName)
+      || !validText(proxy.instrumentSymbol) || !validText(proxy.note)
+      || !/^[A-Z]{3}$/.test(proxy.currency)
+      || !asset || !validText(asset.symbol)
+      || proxy.instrumentSymbol.trim() !== asset.symbol.trim()
+      || proxy.targetSymbol.trim() === proxy.instrumentSymbol.trim()) {
+      throw new Error("跨资产代理标的契约无效");
+    }
+    return {
+      type: proxy.type,
+      targetSymbol: proxy.targetSymbol.trim(),
+      instrumentName: proxy.instrumentName.trim(),
+      instrumentSymbol: proxy.instrumentSymbol.trim(),
+      currency: proxy.currency,
+      returnBasis: proxy.returnBasis,
+      note: proxy.note.trim()
+    };
+  }
+
   function adaptCrossAsset(data, now, health, healthError) {
     if (!data || data.source !== "Yahoo Finance") throw new Error("跨资产数据来源不是Yahoo Finance");
     var age = hoursSince(data.updatedAt, now);
@@ -1752,6 +1786,7 @@
         returns[key] = isNumber(value) && value >= -100 && value <= 10000 ? value : null;
       });
       if (!expectedPeriods.some(function (key) { return isNumber(returns[key]); })) return null;
+      var proxy = normalizeAssetProxy(asset);
       return {
         name: asset.name.trim(),
         symbol: asset.symbol.trim(),
@@ -1759,8 +1794,10 @@
         returns: returns,
         stale: rowMetas[index].mode === "fallback" || asset.stale === true,
         suspect: asset.suspect === true || rowMetas[index].status === "partial" && rowMetas[index].mode === "market",
+        proxy: proxy,
+        note: typeof asset.note === "string" && asset.note.trim() ? asset.note.trim() : null,
         dataMeta: rowMetas[index],
-        dataLabel: dataModeLabel(rowMetas[index])
+        dataLabel: (proxy ? "PROXY · " : "") + dataModeLabel(rowMetas[index])
       };
     }).filter(Boolean);
     if (assets.length < 8) throw new Error("跨资产有效样本数量不足");
@@ -2760,6 +2797,7 @@
     parseUnitValue: parseUnitValue,
     rankCrossAssetPeriod: rankCrossAssetPeriod,
     normalizeDataMeta: normalizeDataMeta,
+    normalizeAssetProxy: normalizeAssetProxy,
     summarizeRowQuality: summarizeRowQuality,
     dataModeLabel: dataModeLabel,
     periodTabTargetIndex: periodTabTargetIndex,
@@ -3198,7 +3236,14 @@
       var identity = document.createElement("span");
       identity.className = "rank-identity";
       appendText(identity, "span", "rank-name", asset.name);
-      appendText(identity, "span", "rank-symbol", asset.symbol + " · " + asset.dataLabel);
+      var provenance = document.createElement("span");
+      provenance.className = "rank-provenance";
+      if (asset.proxy) {
+        var proxyBadge = appendText(provenance, "span", "proxy-badge", "PROXY");
+        proxyBadge.title = asset.proxy.note;
+      }
+      appendText(provenance, "span", "rank-symbol", asset.symbol + " · " + asset.dataLabel.replace("PROXY · ", ""));
+      identity.appendChild(provenance);
       item.appendChild(identity);
       appendText(item, "strong", "rank-value", formatSignedPercent(asset.returns[periodKey]));
       list.appendChild(item);

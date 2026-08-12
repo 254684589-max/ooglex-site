@@ -41,6 +41,10 @@ def validate_dataset(name):
                     f"{row.get('name')}回退模式与stale字段不一致", errors)
             if row.get("suspect") is True:
                 require(meta.get("status") == "partial", f"{row.get('name')}异常值未标记partial", errors)
+            if row.get("proxy"):
+                require("代理" in row["proxy"].get("note", "")
+                        and "误差" in row["proxy"].get("note", ""),
+                        f"{row.get('name')}代理说明未披露代理性质或误差", errors)
 
     if name == "companies":
         require(len(rows) == data.get("count") == 500, "公司榜数量元数据不一致", errors)

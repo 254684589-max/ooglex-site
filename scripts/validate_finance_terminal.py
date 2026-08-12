@@ -16,8 +16,10 @@ from pathlib import Path
 from market_data_quality import (
     fallback_data_meta,
     make_data_meta,
+    make_proxy_meta,
     summarize_data_quality,
     validate_data_quality,
+    validate_proxy_meta,
 )
 from market_source_health import validate_source_health
 from supporting_source_health import validate_health as validate_supporting_health
@@ -206,6 +208,15 @@ def run_market_data_quality_contract_tests() -> None:
             "逐条数据质量计数错误")
     require(summary["status"] == "partial" and not validate_data_quality(rows, summary),
             "逐条数据质量摘要或结构校验错误")
+    proxy = make_proxy_meta(
+        "etf", "000905.SS", "中证500ETF", "510500.SS",
+        currency="CNY", return_basis="price", note="ETF收益率代理，可能存在跟踪误差。",
+    )
+    proxy_row = {"name": "中证500", "symbol": "510500.SS", "dataMeta": market, "proxy": proxy}
+    require(not validate_proxy_meta(proxy_row), "有效ETF代理契约不应被拒绝")
+    invalid_proxy_row = json.loads(json.dumps(proxy_row))
+    invalid_proxy_row["proxy"]["instrumentSymbol"] = "000905.SS"
+    require(validate_proxy_meta(invalid_proxy_row), "实际代码错配的代理契约必须被拒绝")
     print("Market data per-record contract: PASS")
 
 
@@ -1325,6 +1336,21 @@ assert.strictEqual(unverifiedTrackerHealth.contractKnown, false);
 const fallbackAsset = crossAsset.assets.find((asset) => asset.dataMeta.mode === "fallback");
 assert(fallbackAsset && fallbackAsset.dataMeta.asOf === null);
 assert(fallbackAsset.dataLabel.includes("历史回退"));
+const proxyTracker = JSON.parse(JSON.stringify(assetTracker));
+const proxyRow = proxyTracker.assets.find((asset) => asset.name === "中证500");
+proxyRow.symbol = "510500.SS";
+proxyRow.proxy = {
+  type: "etf", targetSymbol: "000905.SS", instrumentName: "中证500ETF",
+  instrumentSymbol: "510500.SS", currency: "CNY", returnBasis: "price",
+  note: "ETF收益率代理，可能存在跟踪误差。"
+};
+const proxyCrossAsset = adapter.adaptCrossAsset(proxyTracker, currentNow, assetTrackerHealth);
+const adaptedProxy = proxyCrossAsset.assets.find((asset) => asset.name === "中证500");
+assert(adaptedProxy.proxy && adaptedProxy.proxy.instrumentSymbol === "510500.SS");
+assert(adaptedProxy.dataLabel.startsWith("PROXY · "));
+const invalidProxyTracker = JSON.parse(JSON.stringify(proxyTracker));
+invalidProxyTracker.assets.find((asset) => asset.name === "中证500").proxy.currency = "人民币";
+assert.throws(() => adapter.adaptCrossAsset(invalidProxyTracker, currentNow), /代理标的契约无效/);
 const ytdRanking = adapter.rankCrossAssetPeriod(crossAsset, "ytd");
 const expectedYtd = assetTracker.assets
   .filter((asset) => !asset.stale && !asset.suspect && Number.isFinite(asset.returns.ytd))
@@ -2377,6 +2403,8 @@ def main() -> None:
     require("asset.stale" in app and "asset.suspect" in app and "paused" in app, "跨资产排行未排除异常行或暂停过期今日排行")
     require("normalizeDataMeta" in app and "summarizeRowQuality" in app and "appendQualitySummary" in app,
             "跨资产卡片未读取或展示逐条数据状态")
+    require("normalizeAssetProxy" in app and "proxy-badge" in page and "PROXY" in app,
+            "跨资产页面未校验或显式展示代理标的")
     require("quality-strip" in page and "quality.counts.fallback" in app and "历史回退" in app,
             "页面缺少行情、回退、估算与待确认覆盖信息")
     require("ASSET_RANKING_DATA_URL" in app and "ASSET_RANKING_MAX_AGE_HOURS" in app, "app.js未读取现有全球资产市值数据")

@@ -18,6 +18,15 @@
   function isNum(v) { return v !== null && v !== undefined && !isNaN(v); }
   function cls(v) { return !isNum(v) ? "na" : (v >= 0 ? "pos" : "neg"); }
 
+  function appendProxyTag(parent, asset) {
+    if (!asset || !asset.proxy) return;
+    var tag = document.createElement("span");
+    tag.className = "proxy-tag";
+    tag.textContent = "PROXY";
+    tag.title = asset.proxy.note || asset.note || "代理标的";
+    parent.appendChild(tag);
+  }
+
   /* #rrggbb -> rgba()，用于条形发光阴影 */
   function rgba(hex, a) {
     var h = (hex || "#888888").replace("#", "");
@@ -105,6 +114,7 @@
 
       var name = document.createElement("div");
       name.className = "name"; name.textContent = (a.suspect ? "⚠️ " : "") + a.name;
+      appendProxyTag(name, a);
       name.title = a.name + (a.note ? "（" + a.note + "）" : "") + (isNum(a.price) ? " · 现价 " + a.price : "");
 
       var track = document.createElement("div"); track.className = "track";
@@ -160,9 +170,20 @@
     rows.forEach(function (a) {
       var tr = document.createElement("tr"), c = catMap[a.category] || {};
       var td0 = document.createElement("td");
-      td0.innerHTML = '<span class="nm"><span class="tag" style="background:' + (c.color || "#888") + ";color:" + (c.color || "#888") + '"></span>' +
-        a.name + (a.note ? '<span class="note-i" title="' + a.note + '">ⓘ</span>' : "") +
-        (a.suspect ? '<span class="note-i" title="部分周期数据异常，已隐藏">⚠️</span>' : "") + "</span>";
+      var identity = document.createElement("span"); identity.className = "nm";
+      var tag = document.createElement("span"); tag.className = "tag";
+      tag.style.background = c.color || "#888"; tag.style.color = c.color || "#888";
+      identity.appendChild(tag); identity.appendChild(document.createTextNode(a.name));
+      appendProxyTag(identity, a);
+      if (a.note) {
+        var note = document.createElement("span"); note.className = "note-i";
+        note.title = a.note; note.textContent = "ⓘ"; identity.appendChild(note);
+      }
+      if (a.suspect) {
+        var warning = document.createElement("span"); warning.className = "note-i";
+        warning.title = "部分周期数据异常，已隐藏"; warning.textContent = "⚠️"; identity.appendChild(warning);
+      }
+      td0.appendChild(identity);
       tr.appendChild(td0);
       DATA.periods.forEach(function (p) {
         var v = a.returns ? a.returns[p.key] : null, td = document.createElement("td");
