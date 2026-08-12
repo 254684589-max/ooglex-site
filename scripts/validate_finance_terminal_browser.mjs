@@ -312,7 +312,7 @@ async function main() {
     for (const width of WIDTHS) results.push(await runWidth(client, baseUrl, artifacts, width, options.height, timeoutMs));
     for (const result of results) {
       const layout = result.layout;
-      console.log(`${result.viewport.width}px: PASS · cards 8/3/3/2/4 · official trends ${result.officialObservationTrendCount}/3 · official health ${result.officialHealthPanelCount}/3 · support health ${result.supportingHealthPanelCount}/4 · columns ${layout.market}/${layout.risk}/${layout.research}/${layout.information}/${layout.operations} · focusable ${result.focusableCount} · targets ${result.targetCount}`);
+      console.log(`${result.viewport.width}px: PASS · cards 8/3/3/2/4 · official trends ${result.officialObservationTrendCount}/3 · official health ${result.officialHealthPanelCount}/4 · support health ${result.supportingHealthPanelCount}/4 · V1 evidence ${result.readinessEvidencePanelCount}/4 · columns ${layout.market}/${layout.risk}/${layout.research}/${layout.information}/${layout.operations} · focusable ${result.focusableCount} · targets ${result.targetCount}`);
     }
     console.log(`Finance Terminal browser regression: PASS (${WIDTHS.join(", ")}px)`);
     if (options.artifactsDir) console.log(`Screenshots: ${artifacts}`);

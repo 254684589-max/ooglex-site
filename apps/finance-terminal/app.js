@@ -76,7 +76,7 @@
     "asset-ranking": {
       name: "全球资产榜", nameEn: "Global Asset Ranking", symbol: "250 ASSETS",
       expectedRecords: 250, unit: "项资产", detailUrl: "../asset-ranking/",
-      workflow: "asset_ranking.yml", readinessEnabled: false
+      workflow: "asset_ranking.yml", readinessEnabled: true
     }
   };
   var SUPPORTING_HEALTH_SPECS = {
@@ -4152,7 +4152,7 @@
     )).filter(elementIsRendered);
     var targetMinimum = width <= 620 ? 44 : 24;
     var targetElements = Array.prototype.slice.call(document.querySelectorAll(
-      ".brand, .back-link, .period-tab, .source-link, .detail-link, .news-link, .operation-action"
+      ".brand, .back-link, .period-tab, .source-link, .detail-link, .news-link, .operation-action, .operation-readiness-link"
     )).filter(elementIsRendered);
     var supportingHealthPanels = Array.prototype.slice.call(document.querySelectorAll(
       "#risk-grid .pipeline-health, #information-grid .pipeline-health"
@@ -4162,6 +4162,9 @@
     ));
     var officialTrendPanels = Array.prototype.slice.call(document.querySelectorAll(
       "#market-grid .official-trend"
+    ));
+    var readinessEvidencePanels = Array.prototype.slice.call(document.querySelectorAll(
+      "#operations-grid .operation-readiness"
     ));
     var undersizedTargets = targetElements.map(function (element) {
       var rect = element.getBoundingClientRect();
@@ -4211,6 +4214,14 @@
             && observationCount !== null && observationCount >= 1 && observationCount <= 8
             && Boolean(panel.querySelector(".sparkline")) === (observationCount >= 2);
         }),
+      readinessEvidenceResources: readinessEvidencePanels.length === 4
+        && readinessEvidencePanels.every(function (panel) {
+          var progress = panel.querySelector('[role="progressbar"]');
+          var value = progress ? Number(progress.getAttribute("aria-valuenow")) : null;
+          return panel.textContent.indexOf("STABLE V1 EVIDENCE") !== -1
+            && panel.textContent.indexOf("UNKNOWN") === -1
+            && Number.isInteger(value) && value >= 0 && value <= 7;
+        }),
       cardCounts: document.querySelectorAll(".asset-card").length === 8
         && document.querySelectorAll(".risk-card").length === 3
         && document.querySelectorAll(".research-card").length === 3
@@ -4259,6 +4270,7 @@
       supportingHealthPanelCount: supportingHealthPanels.length,
       officialHealthPanelCount: officialHealthPanels.length,
       officialObservationTrendCount: officialTrendPanels.length,
+      readinessEvidencePanelCount: readinessEvidencePanels.length,
       undersizedTargets: undersizedTargets,
       layout: {
         market: renderedGridColumns(grid),

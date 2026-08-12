@@ -1330,7 +1330,9 @@ assert.strictEqual(operationCards[1].readiness.consecutiveSuccessfulCycles, 1);
 assert.strictEqual(operationCards[1].readiness.latestCycleDate, "2026-08-11");
 assert.strictEqual(operationCards[2].readiness.consecutiveSuccessfulCycles, 1);
 assert.strictEqual(operationCards[2].readiness.latestCycleDate, "2026-08-11");
-assert(operationCards.slice(3).every((card) => card.readiness === undefined));
+assert.strictEqual(operationCards[3].readiness.consecutiveSuccessfulCycles, 1);
+assert.strictEqual(operationCards[3].readiness.latestCycleDate, "2026-08-11");
+assert(operationCards.every((card) => card.readiness.status === "progress"));
 const staleReadiness = adapter.adaptReadinessSnapshot(
   readiness, new Date(Date.parse(readiness.generatedAt) + 73 * 60 * 60 * 1000)
 );
@@ -2580,8 +2582,9 @@ def main() -> None:
     require(BROWSER_VALIDATOR.exists(), "缺少金融终端真实浏览器回归脚本")
     browser_validator = BROWSER_VALIDATOR.read_text(encoding="utf-8")
     require("[360, 768, 1280]" in browser_validator and "Page.captureScreenshot" in browser_validator
-            and "Runtime.evaluate" in browser_validator and "officialObservationTrendCount" in browser_validator,
-            "浏览器回归脚本未覆盖三档宽度、官方趋势、渲染DOM和截图")
+            and "Runtime.evaluate" in browser_validator and "officialObservationTrendCount" in browser_validator
+            and "readinessEvidencePanelCount" in browser_validator,
+            "浏览器回归脚本未覆盖三档宽度、官方趋势、稳定V1证据、渲染DOM和截图")
     require(QUALITY_WORKFLOW.exists(), "缺少金融终端只读质量工作流")
     quality_workflow = QUALITY_WORKFLOW.read_text(encoding="utf-8")
     require("permissions:\n  contents: read" in quality_workflow, "金融终端质量工作流权限必须只读")
@@ -2751,7 +2754,7 @@ def main() -> None:
     print("- global asset top-five / total / per-record provenance / mixed-frequency / failure states: PASS")
     print("- company per-row market/fallback/estimate / mover gating / private exclusion / failure states: PASS")
     print("- aggregate source health / coverage / consecutive failure / retained snapshot / diagnostics: PASS")
-    print("- four-pipeline Beta operations / macro cross-check / stale snapshot isolation: PASS")
+    print("- four-pipeline stable V1 evidence / macro cross-check / stale snapshot isolation: PASS")
     print("- Beta gate link / structured data feedback / sensitive-input warning: PASS")
     print("- economic calendar counts / impact / local-time input / freshness / independent failure states: PASS")
     print("- finance news market-only / latest-five / safe links / freshness / independent failure states: PASS")

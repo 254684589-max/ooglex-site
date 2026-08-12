@@ -157,7 +157,7 @@
       transition: border-color 160ms ease, color 160ms ease;
     }
     .back-link:hover { border-color: var(--line-strong); color: var(--ink); }
-    .back-link:focus-visible, .brand:focus-visible, .period-tab:focus-visible, .source-link:focus-visible, .detail-link:focus-visible, .news-link:focus-visible, .operation-action:focus-visible, .method a:focus-visible {
+    .back-link:focus-visible, .brand:focus-visible, .period-tab:focus-visible, .source-link:focus-visible, .detail-link:focus-visible, .news-link:focus-visible, .operation-action:focus-visible, .operation-readiness-link:focus-visible, .method a:focus-visible {
       outline: 2px solid var(--cyan);
       outline-offset: 3px;
     }
@@ -894,7 +894,7 @@
     .operation-readiness-progress { height: 4px; overflow: hidden; border-radius: 99px; background: rgba(140, 152, 170, 0.16); }
     .operation-readiness-progress span { display: block; height: 100%; border-radius: inherit; background: var(--cyan); }
     .operation-readiness-note { margin: 0; color: var(--muted); font: 8px/1.5 var(--mono); }
-    .operation-readiness-link { color: var(--cyan); font: 8px var(--mono); }
+    .operation-readiness-link { display: inline-flex; min-height: 24px; align-items: center; color: var(--cyan); font: 8px var(--mono); }
     .operation-readiness-link:hover { color: var(--ink); }
     .operation-readiness.evidence-qualified { border-color: rgba(70, 225, 160, 0.3); background: rgba(70, 225, 160, 0.045); }
     .operation-readiness.evidence-qualified .operation-readiness-state,
@@ -977,6 +977,7 @@
       .operations-notice { grid-template-columns: 1fr; }
       .operations-actions { justify-content: flex-start; }
       .operation-action { min-width: 44px; min-height: 44px; }
+      .operation-readiness-link { min-height: 44px; }
       .information-overview { align-items: flex-start; flex-direction: column; }
       .information-context { text-align: left; }
       .event-row { grid-template-columns: 48px minmax(0, 1fr); gap: 7px 9px; }
@@ -1013,8 +1014,8 @@
       .status-chip, .period-tab, .back-link, .operation-action { border-width: 2px; }
     }
     @media (forced-colors: active) {
-      .asset-card, .risk-card, .research-card, .information-card, .operation-card, .data-banner, .pipeline-health { border: 1px solid CanvasText; }
-      .status-chip, .period-tab, .back-link, .skip-link, .operation-action { forced-color-adjust: auto; }
+      .asset-card, .risk-card, .research-card, .information-card, .operation-card, .data-banner, .pipeline-health, .operation-readiness { border: 1px solid CanvasText; }
+      .status-chip, .period-tab, .back-link, .skip-link, .operation-action, .operation-readiness-link { forced-color-adjust: auto; }
       .asset-card::after, .risk-card::after, .research-card::after, .information-card::after, .operation-card::after { background: CanvasText; }
     }
   </style>
