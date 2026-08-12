@@ -17,6 +17,7 @@
   var ECON_CALENDAR_HEALTH_URL = "../econ-calendar/health.json";
   var FINANCE_NEWS_DATA_URL = "../whats-latest/data.json";
   var FINANCE_NEWS_HEALTH_URL = "../whats-latest/health.json";
+  var READINESS_DATA_URL = "readiness.json";
   var DGS10_MAX_BUSINESS_DAYS = 3;
   var DTWEXBGS_MAX_BUSINESS_DAYS = 3;
   var RWTC_MAX_BUSINESS_DAYS = 4;
@@ -36,6 +37,7 @@
   var ECON_CALENDAR_MAX_AGE_HOURS = 36;
   var FINANCE_NEWS_MAX_AGE_HOURS = 12;
   var FINANCE_NEWS_ITEM_MAX_AGE_HOURS = 36;
+  var READINESS_MAX_AGE_HOURS = 72;
   var DATA_MODES = ["market", "fallback", "estimate", "unknown", "unavailable"];
   var DATA_STATUSES = ["ok", "partial", "stale", "error"];
   var DATA_FREQUENCIES = ["realtime", "delayed", "daily", "weekly", "monthly", "quarterly", "annual", "irregular"];
@@ -58,19 +60,23 @@
   var PIPELINE_OPERATION_SPECS = {
     "macro-radar": {
       name: "宏观官方序列", nameEn: "Macro Official Series", symbol: "3 SERIES",
-      expectedRecords: 3, unit: "项官方序列", detailUrl: "../macro-radar/"
+      expectedRecords: 3, unit: "项官方序列", detailUrl: "../macro-radar/",
+      workflow: "macro_radar.yml", readinessEnabled: true
     },
     "asset-tracker": {
       name: "跨资产强弱", nameEn: "Cross-Asset Strength", symbol: "28 ASSETS",
-      expectedRecords: 28, unit: "项资产", detailUrl: "../asset-tracker/"
+      expectedRecords: 28, unit: "项资产", detailUrl: "../asset-tracker/",
+      workflow: "asset_tracker.yml", readinessEnabled: false
     },
     companies: {
       name: "全球公司榜", nameEn: "Global Companies", symbol: "500 COMPANIES",
-      expectedRecords: 500, unit: "家公司", detailUrl: "../companies/"
+      expectedRecords: 500, unit: "家公司", detailUrl: "../companies/",
+      workflow: "companies.yml", readinessEnabled: false
     },
     "asset-ranking": {
       name: "全球资产榜", nameEn: "Global Asset Ranking", symbol: "250 ASSETS",
-      expectedRecords: 250, unit: "项资产", detailUrl: "../asset-ranking/"
+      expectedRecords: 250, unit: "项资产", detailUrl: "../asset-ranking/",
+      workflow: "asset_ranking.yml", readinessEnabled: false
     }
   };
   var SUPPORTING_HEALTH_SPECS = {
@@ -1093,7 +1099,128 @@
     return pipelineOperationCard(dataset, state, data, health);
   }
 
+  function unavailableReadinessEvidence(error) {
+    return {
+      status: "unknown",
+      sourceStatus: "unknown",
+      label: "UNKNOWN",
+      consecutiveSuccessfulCycles: null,
+      stableRequiredSuccessfulCycles: 7,
+      remainingStableCycles: null,
+      latestCreatedAt: null,
+      latestCycleDate: null,
+      latestRunUrl: null,
+      reportStale: true,
+      note: "稳定V1远端证据不可用。" + (error && error.message ? " " + error.message : "")
+    };
+  }
+
+  function safeReadinessRunUrl(value) {
+    return typeof value === "string"
+      && /^https:\/\/github\.com\/[^/\s]+\/[^/\s]+\/actions\/runs\/\d+$/.test(value)
+      ? value : null;
+  }
+
+  function adaptReadinessSnapshot(snapshot, now) {
+    if (!snapshot || snapshot.schemaVersion !== 1) throw new Error("稳定V1证据版本无效");
+    if (typeof snapshot.targetBranch !== "string"
+      || !/^agent\/finance-terminal-[A-Za-z0-9._-]+$/.test(snapshot.targetBranch)) {
+      throw new Error("稳定V1证据分支无效");
+    }
+    var targetStatuses = ["PASS", "WARN", "BLOCKED"];
+    if (!snapshot.targets || targetStatuses.indexOf(snapshot.targets.beta) === -1
+      || targetStatuses.indexOf(snapshot.targets.stableV1) === -1) {
+      throw new Error("稳定V1目标结论无效");
+    }
+    if (snapshot.doesNotCallMarketApis !== true || snapshot.doesNotDeploy !== true) {
+      throw new Error("稳定V1证据缺少只读安全声明");
+    }
+    if (snapshot.source !== "GitHub Actions workflow_dispatch / Finance Terminal release gate") {
+      throw new Error("稳定V1证据来源无效");
+    }
+    var reportAgeHours = hoursSince(snapshot.generatedAt, now);
+    if (reportAgeHours === null) throw new Error("稳定V1证据生成时间无效");
+    var reportStale = reportAgeHours > READINESS_MAX_AGE_HOURS;
+    var ids = Object.keys(PIPELINE_OPERATION_SPECS);
+    if (!Array.isArray(snapshot.pipelines) || snapshot.pipelines.length !== ids.length) {
+      throw new Error("稳定V1证据必须包含四条核心管道");
+    }
+    var allowedStatuses = ["progress", "qualified", "blocked"];
+    var pipelines = {};
+    snapshot.pipelines.forEach(function (item, index) {
+      var id = ids[index];
+      var spec = PIPELINE_OPERATION_SPECS[id];
+      if (!item || item.id !== id || item.name !== spec.name || item.workflow !== spec.workflow) {
+        throw new Error("稳定V1证据管道身份无效");
+      }
+      var cycles = item.consecutiveSuccessfulCycles;
+      if (!Number.isInteger(cycles) || cycles < 0 || item.betaRequiredSuccessfulCycles !== 3
+        || item.stableRequiredSuccessfulCycles !== 7
+        || item.remainingStableCycles !== Math.max(0, 7 - cycles)
+        || allowedStatuses.indexOf(item.status) === -1
+        || targetStatuses.indexOf(item.checkStatus) === -1) {
+        throw new Error(id + "稳定V1周期证据不可复算");
+      }
+      var expectedStatus = cycles >= 7 && item.checkStatus === "PASS" ? "qualified"
+        : cycles > 0 && item.latestConclusion === "success" ? "progress" : "blocked";
+      if (item.status !== expectedStatus) throw new Error(id + "稳定V1状态不可复算");
+      if (!Array.isArray(item.cycleDates) || item.cycleDates.length > 7
+        || item.cycleDates.some(function (date) { return !/^\d{4}-\d{2}-\d{2}$/.test(date); })
+        || new Set(item.cycleDates).size !== item.cycleDates.length
+        || item.cycleDates.join("|") !== item.cycleDates.slice().sort().reverse().join("|")) {
+        throw new Error(id + "稳定V1周期日期无效");
+      }
+      if (item.latestCreatedAt !== null && item.latestCreatedAt !== undefined
+        && Number.isNaN(new Date(item.latestCreatedAt).getTime())) {
+        throw new Error(id + "最近远端运行时间无效");
+      }
+      var displayStatus = reportStale ? "stale" : item.status;
+      pipelines[id] = {
+        status: displayStatus,
+        sourceStatus: item.status,
+        label: displayStatus.toUpperCase(),
+        consecutiveSuccessfulCycles: cycles,
+        stableRequiredSuccessfulCycles: 7,
+        remainingStableCycles: item.remainingStableCycles,
+        latestCreatedAt: item.latestCreatedAt || null,
+        latestCycleDate: item.cycleDates.length ? item.cycleDates[0] : null,
+        latestRunUrl: safeReadinessRunUrl(item.latestRunUrl),
+        reportStale: reportStale,
+        note: reportStale ? "稳定V1证据快照已超过72小时，请以远端门禁为准。"
+          : cycles + "/7个独立日更周期已验证；同周期重跑不会重复累计。"
+      };
+    });
+    var minimum = Math.min.apply(null, ids.map(function (id) {
+      return pipelines[id].consecutiveSuccessfulCycles;
+    }));
+    var qualified = ids.filter(function (id) { return pipelines[id].sourceStatus === "qualified"; }).length;
+    var expectedSummary = snapshot.summary;
+    if (!expectedSummary || expectedSummary.pipelineCount !== 4
+      || expectedSummary.qualifiedPipelines !== qualified
+      || expectedSummary.minimumConsecutiveSuccessfulCycles !== minimum
+      || expectedSummary.stableRequiredSuccessfulCycles !== 7
+      || expectedSummary.remainingStableCycles !== Math.max(0, 7 - minimum)) {
+      throw new Error("稳定V1证据汇总不可复算");
+    }
+    return {
+      generatedAt: snapshot.generatedAt,
+      reportAgeHours: reportAgeHours,
+      reportStale: reportStale,
+      targets: snapshot.targets,
+      pipelines: pipelines
+    };
+  }
+
   function buildOperationsCards(sources, now) {
+    var readiness = null;
+    var readinessError = sources && sources.readiness && sources.readiness.error;
+    if (sources && sources.readiness && !readinessError) {
+      try {
+        readiness = adaptReadinessSnapshot(sources.readiness.data, now);
+      } catch (error) {
+        readinessError = error;
+      }
+    }
     var definitions = [
       ["macro-radar", sources && sources.macro, sources && sources.macroHealth],
       ["asset-tracker", sources && sources.assetTracker, sources && sources.assetTrackerHealth],
@@ -1104,13 +1231,19 @@
       var dataset = definition[0];
       var dataSource = definition[1] || {};
       var healthSource = definition[2] || {};
-      if (dataSource.error) return unavailablePipelineOperation(dataset, dataSource.error);
-      if (healthSource.error) return unavailablePipelineOperation(dataset, healthSource.error);
+      var card;
+      if (dataSource.error) card = unavailablePipelineOperation(dataset, dataSource.error);
+      else if (healthSource.error) card = unavailablePipelineOperation(dataset, healthSource.error);
       try {
-        return adaptPipelineOperation(dataset, dataSource.data, healthSource.data, now);
+        if (!card) card = adaptPipelineOperation(dataset, dataSource.data, healthSource.data, now);
       } catch (error) {
-        return unavailablePipelineOperation(dataset, error);
+        card = unavailablePipelineOperation(dataset, error);
       }
+      if (PIPELINE_OPERATION_SPECS[dataset].readinessEnabled) {
+        card.readiness = readiness
+          ? readiness.pipelines[dataset] : unavailableReadinessEvidence(readinessError);
+      }
+      return card;
     });
   }
 
@@ -2764,6 +2897,7 @@
     adaptMacroSourceHealth: adaptMacroSourceHealth,
     adaptOfficialSourceHealth: adaptOfficialSourceHealth,
     adaptPipelineOperation: adaptPipelineOperation,
+    adaptReadinessSnapshot: adaptReadinessSnapshot,
     adaptCrossAsset: adaptCrossAsset,
     adaptEconomicCalendar: adaptEconomicCalendar,
     adaptFinanceNews: adaptFinanceNews,
@@ -3736,6 +3870,42 @@
       times.appendChild(row);
     });
     article.appendChild(times);
+    if (card.readiness) {
+      var evidence = document.createElement("div");
+      evidence.className = "operation-readiness evidence-" + card.readiness.status;
+      var evidenceHead = document.createElement("div");
+      evidenceHead.className = "operation-readiness-head";
+      appendText(evidenceHead, "span", "operation-readiness-label", "STABLE V1 EVIDENCE");
+      appendText(evidenceHead, "strong", "operation-readiness-state", card.readiness.label);
+      evidence.appendChild(evidenceHead);
+      var evidenceValue = Number.isInteger(card.readiness.consecutiveSuccessfulCycles)
+        ? card.readiness.consecutiveSuccessfulCycles + " / 7 DAYS" : "— / 7 DAYS";
+      appendText(evidence, "strong", "operation-readiness-value", evidenceValue);
+      var progress = document.createElement("div");
+      progress.className = "operation-readiness-progress";
+      progress.setAttribute("role", "progressbar");
+      progress.setAttribute("aria-label", card.name + "稳定V1连续成功周期");
+      progress.setAttribute("aria-valuemin", "0");
+      progress.setAttribute("aria-valuemax", "7");
+      progress.setAttribute("aria-valuenow", Number.isInteger(card.readiness.consecutiveSuccessfulCycles)
+        ? String(Math.min(7, card.readiness.consecutiveSuccessfulCycles)) : "0");
+      var progressFill = document.createElement("span");
+      progressFill.style.width = Number.isInteger(card.readiness.consecutiveSuccessfulCycles)
+        ? Math.min(100, card.readiness.consecutiveSuccessfulCycles / 7 * 100) + "%" : "0%";
+      progress.appendChild(progressFill);
+      evidence.appendChild(progress);
+      appendText(evidence, "p", "operation-readiness-note", card.readiness.note);
+      if (card.readiness.latestCycleDate) {
+        appendText(evidence, "span", "operation-readiness-date", "最近周期 " + card.readiness.latestCycleDate);
+      }
+      if (card.readiness.latestRunUrl) {
+        var runLink = appendText(evidence, "a", "operation-readiness-link", "查看本轮运行 ↗");
+        runLink.href = card.readiness.latestRunUrl;
+        runLink.target = "_blank";
+        runLink.rel = "noopener noreferrer";
+      }
+      article.appendChild(evidence);
+    }
     appendText(article, "p", "operation-note", card.note || "运行状态说明不可用。");
 
     var footer = document.createElement("div");
@@ -3759,8 +3929,13 @@
     var stale = cards.filter(function (card) { return card.status === "stale"; }).length;
     var failed = cards.filter(function (card) { return card.status === "failed"; }).length;
     var unknown = cards.filter(function (card) { return card.status === "unknown"; }).length;
+    var evidenceCards = cards.filter(function (card) { return card.readiness; });
+    var evidenceSummary = evidenceCards.length ? " · V1 " + Math.min.apply(null, evidenceCards.map(function (card) {
+      return Number.isInteger(card.readiness.consecutiveSuccessfulCycles)
+        ? card.readiness.consecutiveSuccessfulCycles : 0;
+    })) + "/7" : "";
     operationsSummary.textContent = healthy + " HEALTHY · " + degraded + " DEGRADED · "
-      + stale + " STALE · " + failed + " FAILED · " + unknown + " UNKNOWN";
+      + stale + " STALE · " + failed + " FAILED · " + unknown + " UNKNOWN" + evidenceSummary;
   }
 
   function makeCard(asset) {
@@ -4136,7 +4311,8 @@
         fetchSource(ECON_CALENDAR_DATA_URL),
         fetchSource(ECON_CALENDAR_HEALTH_URL),
         fetchSource(FINANCE_NEWS_DATA_URL),
-        fetchSource(FINANCE_NEWS_HEALTH_URL)
+        fetchSource(FINANCE_NEWS_HEALTH_URL),
+        fetchSource(READINESS_DATA_URL)
       ]).then(function (sources) {
         var macroSource = sources[0];
         var macroHealthSource = sources[1];
@@ -4154,6 +4330,7 @@
         var calendarHealthSource = sources[13];
         var newsSource = sources[14];
         var newsHealthSource = sources[15];
+        var readinessSource = sources[16];
         var marketData = macroSource.error
           ? buildPageDataWithMacroError(
             config, macroSource.error, undefined, macroHealthSource, assetRankingSource, assetRankingHealthSource
@@ -4192,7 +4369,8 @@
             companies: companiesSource,
             companiesHealth: companiesHealthSource,
             assetRanking: assetRankingSource,
-            assetRankingHealth: assetRankingHealthSource
+            assetRankingHealth: assetRankingHealthSource,
+            readiness: readinessSource
           })
         };
       });

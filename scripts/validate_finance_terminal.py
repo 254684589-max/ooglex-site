@@ -23,12 +23,14 @@ from market_data_quality import (
 )
 from market_source_health import validate_source_health
 from supporting_source_health import validate_health as validate_supporting_health
+from finance_terminal_readiness_snapshot import validate_snapshot as validate_readiness_snapshot
 
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGE = ROOT / "apps" / "finance-terminal" / "index.html"
 APP = ROOT / "apps" / "finance-terminal" / "app.js"
 DATA = ROOT / "apps" / "finance-terminal" / "data.json"
+READINESS_DATA = ROOT / "apps" / "finance-terminal" / "readiness.json"
 MACRO_DATA = ROOT / "apps" / "macro-radar" / "data.json"
 FEAR_GREED_DATA = ROOT / "apps" / "fear-greed" / "data.json"
 FEAR_GREED_HEALTH = ROOT / "apps" / "fear-greed" / "health.json"
@@ -615,6 +617,7 @@ const econCalendar = JSON.parse(fs.readFileSync("./apps/econ-calendar/data.json"
 const econCalendarHealth = JSON.parse(fs.readFileSync("./apps/econ-calendar/health.json", "utf8"));
 const financeNews = JSON.parse(fs.readFileSync("./apps/whats-latest/data.json", "utf8"));
 const financeNewsHealth = JSON.parse(fs.readFileSync("./apps/whats-latest/health.json", "utf8"));
+const readiness = JSON.parse(fs.readFileSync("./apps/finance-terminal/readiness.json", "utf8"));
 
 const match = adapter.findDgs10Row(macro);
 assert(match && match.row.id === "DGS10");
@@ -1295,7 +1298,8 @@ const operationSources = {
   companies: { data: companies, error: null },
   companiesHealth: { data: companiesHealth, error: null },
   assetRanking: { data: assetRanking, error: null },
-  assetRankingHealth: { data: assetRankingHealth, error: null }
+  assetRankingHealth: { data: assetRankingHealth, error: null },
+  readiness: { data: readiness, error: null }
 };
 const operationCards = adapter.buildOperationsCards(operationSources, currentNow);
 assert.strictEqual(operationCards.length, 4);
@@ -1317,6 +1321,19 @@ assert.deepStrictEqual(operationCards.map((card) => card.freshCoveragePct), [
 assert.deepStrictEqual(operationCards.map((card) => card.historyKnown), [
   macroHealth, assetTrackerHealth, companiesHealth, assetRankingHealth
 ].map((health) => health.historyStatus === "tracked"));
+const readinessState = adapter.adaptReadinessSnapshot(readiness, currentNow);
+assert.strictEqual(readinessState.pipelines["macro-radar"].consecutiveSuccessfulCycles, 1);
+assert.strictEqual(readinessState.pipelines["macro-radar"].status, "progress");
+assert.strictEqual(operationCards[0].readiness.consecutiveSuccessfulCycles, 1);
+assert.strictEqual(operationCards[0].readiness.latestCycleDate, "2026-08-11");
+assert(operationCards.slice(1).every((card) => card.readiness === undefined));
+const staleReadiness = adapter.adaptReadinessSnapshot(
+  readiness, new Date(Date.parse(readiness.generatedAt) + 73 * 60 * 60 * 1000)
+);
+assert(Object.values(staleReadiness.pipelines).every((pipeline) => pipeline.status === "stale"));
+const tamperedReadiness = JSON.parse(JSON.stringify(readiness));
+tamperedReadiness.summary.minimumConsecutiveSuccessfulCycles += 1;
+assert.throws(() => adapter.adaptReadinessSnapshot(tamperedReadiness, currentNow), /不可复算/);
 
 const staleOperationCards = adapter.buildOperationsCards(operationSources, expiredOfficialHealthNow);
 assert(staleOperationCards.every((card) => card.status === "stale"));
@@ -1892,7 +1909,7 @@ console.log("- BTC market/fallback + market-only / latest-five / safe links / fa
 
 def main() -> None:
     for path in (
-        PAGE, APP, DATA, MACRO_DATA, FEAR_GREED_DATA, FEAR_GREED_HEALTH, OFR_DATA, OFR_HEALTH,
+        PAGE, APP, DATA, READINESS_DATA, MACRO_DATA, FEAR_GREED_DATA, FEAR_GREED_HEALTH, OFR_DATA, OFR_HEALTH,
         ASSET_TRACKER_DATA, ASSET_TRACKER_HEALTH, ASSET_RANKING_DATA, ASSET_RANKING_HEALTH,
         COMPANIES_DATA, COMPANIES_HEALTH,
         ECON_CALENDAR_DATA, ECON_CALENDAR_HEALTH, FINANCE_NEWS_DATA, FINANCE_NEWS_HEALTH,
@@ -1904,6 +1921,8 @@ def main() -> None:
         require(path.is_file(), f"缺少文件：{path.relative_to(ROOT)}")
 
     data = json.loads(DATA.read_text(encoding="utf-8"))
+    readiness = json.loads(READINESS_DATA.read_text(encoding="utf-8"))
+    validate_readiness_snapshot(readiness)
     macro = json.loads(MACRO_DATA.read_text(encoding="utf-8"))
     fear_greed = json.loads(FEAR_GREED_DATA.read_text(encoding="utf-8"))
     fear_greed_health = json.loads(FEAR_GREED_HEALTH.read_text(encoding="utf-8"))
@@ -2326,9 +2345,10 @@ def main() -> None:
     require('id="research-grid"' in page and 'id="research-summary"' in page and "市场强弱与领袖" in page, "页面缺少市场研究模块")
     require('id="information-grid"' in page and 'id="information-summary"' in page and "今日事件与资讯" in page,
             "页面缺少事件资讯模块")
-    require('id="operations-grid"' in page and 'id="operations-summary"' in page and "Beta数据运行状态" in page,
-            "页面缺少四管道Beta运行状态模块")
-    require("健康快照不等于上线门禁通过" in page and "连续成功至少3个日更周期" in page,
+    require('id="operations-grid"' in page and 'id="operations-summary"' in page and "稳定V1运行证据" in page,
+            "页面缺少四管道稳定V1运行证据模块")
+    require("健康快照与连续周期证据是两套独立信号" in page
+            and "Beta需四条管道各满3个周期" in page,
             "页面未区分仓库健康快照与远端Beta门禁证据")
     require("finance_terminal_beta_gate.yml" in page and "finance-terminal-data.yml" in page
             and "报告数据问题" in page, "页面缺少远端门禁或结构化数据反馈入口")
@@ -2476,6 +2496,11 @@ def main() -> None:
     require("adaptMacroSourceHealth" in app and "buildOperationsCards" in app
             and "renderOperationsCards" in app and "makeOperationCard" in app,
             "app.js未校验或渲染四管道Beta运行状态")
+    require("READINESS_DATA_URL" in app and "adaptReadinessSnapshot" in app
+            and "operation-readiness" in app and "STABLE V1 EVIDENCE" in app,
+            "app.js未读取、校验或渲染稳定V1连续周期证据")
+    require("稳定V1运行证据" in page and "同一日更周期重跑不会重复累计" in page,
+            "页面未区分健康快照与稳定V1周期门禁")
     require("可用覆盖" in app and "本轮新鲜" in app and "已验证覆盖" in app
             and "失败回退" in app, "运行状态卡片缺少覆盖率、时效或回退说明")
     require("pipeline-health" in page and "本轮行情" in app and "连续失败" in app
@@ -2571,6 +2596,8 @@ def main() -> None:
             "金融终端质量工作流未生成或保留四管道健康诊断")
     require("validate_market_workflow_governance.py --dataset all" in quality_workflow,
             "金融终端质量工作流未统一校验生产与辅助任务治理契约")
+    require("validate_finance_terminal_readiness_snapshot.py" in quality_workflow,
+            "金融终端质量工作流未校验稳定V1静态证据")
     require("validate_supporting_source_health.py --dataset all --report" in quality_workflow
             and "validate_supporting_source_builders.py" in quality_workflow,
             "金融终端质量工作流未校验四个辅助来源健康与离线回退")

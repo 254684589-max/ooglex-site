@@ -878,6 +878,32 @@
     .operation-times { display: grid; gap: 5px; margin-top: 13px; color: var(--faint); font: 8px/1.45 var(--mono); }
     .operation-times span { display: flex; justify-content: space-between; gap: 8px; }
     .operation-times strong { overflow: hidden; color: var(--muted); font-weight: 500; text-align: right; text-overflow: ellipsis; white-space: nowrap; }
+    .operation-readiness {
+      display: grid;
+      gap: 7px;
+      margin-top: 13px;
+      padding: 9px;
+      border: 1px solid rgba(84, 216, 255, 0.22);
+      border-radius: 4px;
+      background: rgba(84, 216, 255, 0.045);
+    }
+    .operation-readiness-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .operation-readiness-label, .operation-readiness-date { color: var(--faint); font: 8px var(--mono); letter-spacing: 0.06em; }
+    .operation-readiness-state { color: var(--cyan); font: 700 8px var(--mono); letter-spacing: 0.07em; }
+    .operation-readiness-value { color: var(--ink); font: 700 13px var(--mono); font-variant-numeric: tabular-nums; }
+    .operation-readiness-progress { height: 4px; overflow: hidden; border-radius: 99px; background: rgba(140, 152, 170, 0.16); }
+    .operation-readiness-progress span { display: block; height: 100%; border-radius: inherit; background: var(--cyan); }
+    .operation-readiness-note { margin: 0; color: var(--muted); font: 8px/1.5 var(--mono); }
+    .operation-readiness-link { color: var(--cyan); font: 8px var(--mono); }
+    .operation-readiness-link:hover { color: var(--ink); }
+    .operation-readiness.evidence-qualified { border-color: rgba(70, 225, 160, 0.3); background: rgba(70, 225, 160, 0.045); }
+    .operation-readiness.evidence-qualified .operation-readiness-state,
+    .operation-readiness.evidence-qualified .operation-readiness-link { color: var(--up); }
+    .operation-readiness.evidence-qualified .operation-readiness-progress span { background: var(--up); }
+    .operation-readiness.evidence-blocked, .operation-readiness.evidence-stale { border-color: rgba(244, 192, 92, 0.3); background: rgba(244, 192, 92, 0.045); }
+    .operation-readiness.evidence-blocked .operation-readiness-state,
+    .operation-readiness.evidence-stale .operation-readiness-state { color: var(--amber); }
+    .operation-readiness.evidence-unknown .operation-readiness-state { color: var(--faint); }
     .operation-note { margin: 13px 0 0; color: var(--muted); font-size: 10px; line-height: 1.6; }
     .operation-footer {
       display: flex;
@@ -1080,11 +1106,11 @@
 
       <section class="operations-section" aria-labelledby="operations-heading">
         <div class="board-heading">
-          <h2 class="board-title" id="operations-heading">Beta数据运行状态</h2>
+          <h2 class="board-title" id="operations-heading">稳定V1运行证据</h2>
           <span class="board-subtitle" id="operations-summary">LOADING PIPELINES</span>
         </div>
         <div class="operations-notice" id="operations-notice">
-          <p><strong>当前为Beta预览版，尚未达到稳定V1标准；健康快照不等于上线门禁通过。</strong> 此处只展示四条生产数据管道最近写入仓库的运行证据；报告超过72小时会标记为`STALE`。正式Beta门禁仍需四条远端任务分别连续成功至少3个日更周期。</p>
+          <p><strong>当前仍未达到稳定V1标准；健康快照与连续周期证据是两套独立信号。</strong> 卡片同时展示仓库内的更新健康和远端任务连续成功周期；稳定V1证据超过72小时会标记为`STALE`，同一日更周期重跑不会重复累计。Beta需四条管道各满3个周期，稳定V1需各满7个周期。</p>
           <div class="operations-actions" aria-label="Beta运行与反馈">
             <a class="operation-action" href="https://github.com/254684589-max/ooglex-site/actions/workflows/finance_terminal_beta_gate.yml" target="_blank" rel="noopener noreferrer">查看远端门禁 ↗</a>
             <a class="operation-action" href="https://github.com/254684589-max/ooglex-site/issues/new?template=finance-terminal-data.yml" target="_blank" rel="noopener noreferrer">报告数据问题 ↗</a>

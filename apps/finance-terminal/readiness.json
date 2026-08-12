@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-12T14:41:18Z",
+  "targetBranch": "agent/finance-terminal-supporting-qualification",
+  "targets": {
+    "beta": "BLOCKED",
+    "stableV1": "BLOCKED"
+  },
+  "summary": {
+    "pipelineCount": 4,
+    "qualifiedPipelines": 0,
+    "minimumConsecutiveSuccessfulCycles": 1,
+    "stableRequiredSuccessfulCycles": 7,
+    "remainingStableCycles": 6
+  },
+  "pipelines": [
+    {
+      "id": "macro-radar",
+      "name": "宏观官方序列",
+      "workflow": "macro_radar.yml",
+      "status": "progress",
+      "checkStatus": "BLOCKED",
+      "consecutiveSuccessfulCycles": 1,
+      "betaRequiredSuccessfulCycles": 3,
+      "stableRequiredSuccessfulCycles": 7,
+      "remainingStableCycles": 6,
+      "latestConclusion": "success",
+      "latestCreatedAt": "2026-08-12T14:38:21Z",
+      "cycleDates": [
+        "2026-08-11"
+      ],
+      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/31607883574"
+    },
+    {
+      "id": "asset-tracker",
+      "name": "跨资产强弱",
+      "workflow": "asset_tracker.yml",
+      "status": "progress",
+      "checkStatus": "BLOCKED",
+      "consecutiveSuccessfulCycles": 1,
+      "betaRequiredSuccessfulCycles": 3,
+      "stableRequiredSuccessfulCycles": 7,
+      "remainingStableCycles": 6,
+      "latestConclusion": "success",
+      "latestCreatedAt": "2026-08-12T14:38:22Z",
+      "cycleDates": [
+        "2026-08-11"
+      ],
+      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/31607886008"
+    },
+    {
+      "id": "companies",
+      "name": "全球公司榜",
+      "workflow": "companies.yml",
+      "status": "progress",
+      "checkStatus": "BLOCKED",
+      "consecutiveSuccessfulCycles": 1,
+      "betaRequiredSuccessfulCycles": 3,
+      "stableRequiredSuccessfulCycles": 7,
+      "remainingStableCycles": 6,
+      "latestConclusion": "success",
+      "latestCreatedAt": "2026-08-12T14:38:24Z",
+      "cycleDates": [
+        "2026-08-11"
+      ],
+      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/31607889253"
+    },
+    {
+      "id": "asset-ranking",
+      "name": "全球资产榜",
+      "workflow": "asset_ranking.yml",
+      "status": "progress",
+      "checkStatus": "BLOCKED",
+      "consecutiveSuccessfulCycles": 1,
+      "betaRequiredSuccessfulCycles": 3,
+      "stableRequiredSuccessfulCycles": 7,
+      "remainingStableCycles": 6,
+      "latestConclusion": "success",
+      "latestCreatedAt": "2026-08-12T14:41:00Z",
+      "cycleDates": [
+        "2026-08-11"
+      ],
+      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/31608131380"
+    }
+  ],
+  "source": "GitHub Actions workflow_dispatch / Finance Terminal release gate",
+  "doesNotCallMarketApis": true,
+  "doesNotDeploy": true
+}

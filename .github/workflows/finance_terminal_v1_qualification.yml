@@ -10,6 +10,8 @@ on:
     paths:
       - 'scripts/finance_terminal_qualification.py'
       - 'scripts/validate_finance_terminal_qualification.py'
+      - 'scripts/finance_terminal_readiness_snapshot.py'
+      - 'scripts/validate_finance_terminal_readiness_snapshot.py'
       - 'scripts/validate_finance_terminal.py'
       - 'scripts/asset-tracker/build_assets.py'
       - 'scripts/market_data_quality.py'
@@ -22,7 +24,7 @@ on:
 
 permissions:
   actions: write
-  contents: read
+  contents: write
 
 concurrency:
   group: finance-terminal-v1-qualification-${{ github.ref }}
@@ -103,6 +105,26 @@ jobs:
         with:
           node-version: '24'
 
+      - name: Generate updated Beta and stable V1 report
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          READINESS_BRANCH: ${{ github.ref_name }}
+        run: |
+          python scripts/finance_terminal_release_gate.py \
+            --report-json /tmp/finance-terminal-readiness/readiness.json \
+            --report-md /tmp/finance-terminal-readiness/readiness.md
+          cat /tmp/finance-terminal-readiness/readiness.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Build static stable V1 evidence snapshot
+        id: readiness-snapshot
+        run: |
+          python scripts/finance_terminal_readiness_snapshot.py \
+            --source-report /tmp/finance-terminal-readiness/readiness.json \
+            --output apps/finance-terminal/readiness.json \
+            --github-output "$GITHUB_OUTPUT"
+          cp apps/finance-terminal/readiness.json \
+            /tmp/finance-terminal-readiness/readiness-snapshot.json
+
       - name: Validate latest qualified branch
         id: final-quality
         continue-on-error: true
@@ -119,18 +141,28 @@ jobs:
           python scripts/validate_market_workflow_governance.py --dataset all
           python scripts/validate_finance_terminal_release_gate.py
           python scripts/validate_finance_terminal_qualification.py
+          python scripts/validate_finance_terminal_readiness_snapshot.py
+          python scripts/finance_terminal_readiness_snapshot.py \
+            --validate-only apps/finance-terminal/readiness.json
           node scripts/validate_finance_terminal_browser.mjs \
             --artifacts-dir /tmp/finance-terminal-browser
 
-      - name: Generate updated Beta and stable V1 report
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          READINESS_BRANCH: ${{ github.ref_name }}
+      - name: Commit verified stable V1 evidence snapshot
+        if: steps.final-quality.outcome == 'success' && steps.readiness-snapshot.outputs.changed == 'true'
         run: |
-          python scripts/finance_terminal_release_gate.py \
-            --report-json /tmp/finance-terminal-readiness/readiness.json \
-            --report-md /tmp/finance-terminal-readiness/readiness.md
-          cat /tmp/finance-terminal-readiness/readiness.md >> "$GITHUB_STEP_SUMMARY"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- apps/finance-terminal/readiness.json
+          test "$(git diff --cached --name-only)" = "apps/finance-terminal/readiness.json"
+          git commit -m "data(finance): refresh stable V1 evidence"
+          for attempt in 1 2 3; do
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              exit 0
+            fi
+            git pull --rebase origin "$GITHUB_REF_NAME"
+          done
+          echo "稳定V1证据快照推送失败。"
+          exit 1
 
       - name: Upload updated readiness evidence
         if: always()

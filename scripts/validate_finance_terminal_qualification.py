@@ -99,16 +99,26 @@ def test_github_workflow_safety() -> None:
     quality = quality_path.read_text(encoding="utf-8")
     require("branches:\n      - 'agent/finance-terminal-*'" in workflow,
             "资格工作流必须只由金融终端开发分支推送触发")
-    require("actions: write" in workflow and "contents: read" in workflow,
-            "资格工作流必须使用最小Actions写入和内容只读权限")
+    require("actions: write" in workflow and "contents: write" in workflow,
+            "资格工作流必须使用Actions调度与证据快照写入权限")
     require("pages: write" not in workflow and "deploy" not in workflow.lower(),
             "资格工作流不得包含Pages或部署步骤")
+    require("finance_terminal_readiness_snapshot.py" in workflow
+            and "--validate-only apps/finance-terminal/readiness.json" in workflow,
+            "资格工作流必须生成并复验稳定V1静态证据")
+    require('git add -- apps/finance-terminal/readiness.json' in workflow
+            and 'test "$(git diff --cached --name-only)" = "apps/finance-terminal/readiness.json"' in workflow,
+            "资格工作流只能精确提交稳定V1证据快照")
+    require("apps/finance-terminal/readiness.json" not in workflow.split("permissions:", 1)[0],
+            "证据快照提交不得递归触发资格工作流")
     require("--fail-on-blocked" in workflow and "if: always()" in workflow,
             "资格失败必须阻断，同时仍上传诊断证据")
     require("ref: ${{ github.ref_name }}" in workflow,
             "最终门禁必须重新读取资格运行后的最新开发分支")
     require("scripts/validate_finance_terminal_qualification.py" in quality,
             "质量CI必须运行资格编排契约测试")
+    require("scripts/validate_finance_terminal_readiness_snapshot.py" in quality,
+            "质量CI必须运行稳定V1证据快照契约测试")
     require(".github/workflows/finance_terminal_v1_qualification.yml" in quality,
             "资格工作流变更必须触发质量CI")
 
