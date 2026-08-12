@@ -1328,7 +1328,9 @@ assert.strictEqual(operationCards[0].readiness.consecutiveSuccessfulCycles, 1);
 assert.strictEqual(operationCards[0].readiness.latestCycleDate, "2026-08-11");
 assert.strictEqual(operationCards[1].readiness.consecutiveSuccessfulCycles, 1);
 assert.strictEqual(operationCards[1].readiness.latestCycleDate, "2026-08-11");
-assert(operationCards.slice(2).every((card) => card.readiness === undefined));
+assert.strictEqual(operationCards[2].readiness.consecutiveSuccessfulCycles, 1);
+assert.strictEqual(operationCards[2].readiness.latestCycleDate, "2026-08-11");
+assert(operationCards.slice(3).every((card) => card.readiness === undefined));
 const staleReadiness = adapter.adaptReadinessSnapshot(
   readiness, new Date(Date.parse(readiness.generatedAt) + 73 * 60 * 60 * 1000)
 );

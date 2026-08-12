@@ -71,7 +71,7 @@
     companies: {
       name: "全球公司榜", nameEn: "Global Companies", symbol: "500 COMPANIES",
       expectedRecords: 500, unit: "家公司", detailUrl: "../companies/",
-      workflow: "companies.yml", readinessEnabled: false
+      workflow: "companies.yml", readinessEnabled: true
     },
     "asset-ranking": {
       name: "全球资产榜", nameEn: "Global Asset Ranking", symbol: "250 ASSETS",
