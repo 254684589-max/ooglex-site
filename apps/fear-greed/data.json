@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-12T15:12:19Z",
+  "updatedAt": "2026-08-12T21:24:35Z",
   "asOf": "2026-08-12",
   "source": "CNN Business Fear & Greed Index",
   "score": 62,
@@ -34,7 +34,7 @@
   },
   "indicators": [
     {
-      "score": 69,
+      "score": 71,
       "rating": "greed",
       "ratingZh": "贪婪",
       "key": "market_momentum_sp500",
@@ -42,7 +42,7 @@
       "desc": "标普500 相对125日均线"
     },
     {
-      "score": 31,
+      "score": 30,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "stock_price_strength",
@@ -50,7 +50,7 @@
       "desc": "创52周新高 vs 新低个股"
     },
     {
-      "score": 50,
+      "score": 51,
       "rating": "neutral",
       "ratingZh": "中性",
       "key": "stock_price_breadth",
@@ -58,7 +58,7 @@
       "desc": "麦克莱伦成交量总和指数"
     },
     {
-      "score": 68,
+      "score": 64,
       "rating": "greed",
       "ratingZh": "贪婪",
       "key": "put_call_options",
@@ -74,7 +74,7 @@
       "desc": "VIX 及其50日均线"
     },
     {
-      "score": 70,
+      "score": 71,
       "rating": "greed",
       "ratingZh": "贪婪",
       "key": "safe_haven_demand",
