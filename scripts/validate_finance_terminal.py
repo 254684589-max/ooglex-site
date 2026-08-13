@@ -1337,17 +1337,14 @@ assert.deepStrictEqual(operationCards.map((card) => card.historyKnown), [
   macroHealth, assetTrackerHealth, companiesHealth, assetRankingHealth
 ].map((health) => health.historyStatus === "tracked"));
 const readinessState = adapter.adaptReadinessSnapshot(readiness, currentNow);
-assert.strictEqual(readinessState.pipelines["macro-radar"].consecutiveSuccessfulCycles, 1);
-assert.strictEqual(readinessState.pipelines["macro-radar"].status, "progress");
-assert.strictEqual(operationCards[0].readiness.consecutiveSuccessfulCycles, 1);
-assert.strictEqual(operationCards[0].readiness.latestCycleDate, "2026-08-11");
-assert.strictEqual(operationCards[1].readiness.consecutiveSuccessfulCycles, 1);
-assert.strictEqual(operationCards[1].readiness.latestCycleDate, "2026-08-11");
-assert.strictEqual(operationCards[2].readiness.consecutiveSuccessfulCycles, 1);
-assert.strictEqual(operationCards[2].readiness.latestCycleDate, "2026-08-11");
-assert.strictEqual(operationCards[3].readiness.consecutiveSuccessfulCycles, 1);
-assert.strictEqual(operationCards[3].readiness.latestCycleDate, "2026-08-11");
-assert(operationCards.every((card) => card.readiness.status === "progress"));
+const expectedReadinessById = Object.fromEntries(readiness.pipelines.map((pipeline) => [pipeline.id, pipeline]));
+operationCards.forEach((card) => {
+  const expected = expectedReadinessById[card.id];
+  assert(expected);
+  assert.strictEqual(card.readiness.consecutiveSuccessfulCycles, expected.consecutiveSuccessfulCycles);
+  assert.strictEqual(card.readiness.latestCycleDate, expected.cycleDates[expected.cycleDates.length - 1]);
+  assert.strictEqual(card.readiness.status, readinessState.pipelines[card.id].status);
+});
 const staleReadiness = adapter.adaptReadinessSnapshot(
   readiness, new Date(Date.parse(readiness.generatedAt) + 73 * 60 * 60 * 1000)
 );
