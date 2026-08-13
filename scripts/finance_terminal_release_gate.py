@@ -3,7 +3,7 @@
 """Ooglex金融终端Beta/稳定V1只读上线门禁。
 
 门禁只读取仓库快照和GitHub Actions运行证据，不调用行情API，也不改写生产
-数据。第一层检查四项真实核心行情、四项演示资产及页面必须展示的来源说明。
+数据。第一层检查四项站内真实行情、四项免费嵌入代理及页面必须展示的来源说明。
 后续层在同一报告中追加聚合管道健康和远端日更周期证据。
 """
 
@@ -103,7 +103,12 @@ EXPECTED_OFFICIAL = {
         "sourceKind": "CoinGecko",
     },
 }
-EXPECTED_DEMOS = {"sp500", "nasdaq100", "dow", "gold"}
+EXPECTED_PROXIES = {
+    "sp500": {"symbol": "SPY", "proxyFor": "SPX", "widgetSymbol": "AMEX:SPY"},
+    "nasdaq100": {"symbol": "QQQ", "proxyFor": "NDX", "widgetSymbol": "NASDAQ:QQQ"},
+    "dow": {"symbol": "DIA", "proxyFor": "DJIA", "widgetSymbol": "AMEX:DIA"},
+    "gold": {"symbol": "GLD", "proxyFor": "LBMA-GOLD-PM-USD", "widgetSymbol": "AMEX:GLD"},
+}
 BITCOIN_MAX_AGE_HOURS = 36
 RWTC_ACCESS_METHODS = {"EIA API v2", "EIA public history page"}
 
@@ -249,16 +254,22 @@ def validate_config(config: dict[str, Any]) -> tuple[list[dict[str, Any]], list[
     ids = [asset.get("id") for asset in assets if isinstance(asset, dict)]
     if len(assets) != 8 or len(ids) != 8 or set(ids) != EXPECTED_ASSET_IDS:
         errors.append("核心资产必须恰为约定的8项且ID唯一")
-    official = [asset for asset in assets if isinstance(asset, dict) and asset.get("demo") is False]
     demos = [asset for asset in assets if isinstance(asset, dict) and asset.get("demo") is True]
-    if {asset.get("id") for asset in official} != set(EXPECTED_OFFICIAL):
-        errors.append("真实数据配置必须且只能是DGS10、DTWEXBGS、RWTC与BTC/USD")
-    if {asset.get("id") for asset in demos} != EXPECTED_DEMOS:
-        errors.append("演示数据配置必须且只能是三大股指与黄金")
-    for asset in demos:
-        if asset.get("status") != "demo" or "演示" not in str((asset.get("source") or {}).get("name", "")):
-            errors.append(f"{asset.get('id')}未同时以状态和来源标记为演示数据")
-    for asset in official:
+    if demos:
+        errors.append("免费代理策略下核心资产不得保留演示数据")
+    local_assets = [
+        asset for asset in assets
+        if isinstance(asset, dict) and asset.get("id") in EXPECTED_OFFICIAL
+    ]
+    proxies = [
+        asset for asset in assets
+        if isinstance(asset, dict) and asset.get("id") in EXPECTED_PROXIES
+    ]
+    if {asset.get("id") for asset in local_assets} != set(EXPECTED_OFFICIAL):
+        errors.append("站内真实数据必须恰好包含DGS10、DTWEXBGS、RWTC与BTC/USD")
+    if {asset.get("id") for asset in proxies} != set(EXPECTED_PROXIES):
+        errors.append("免费代理必须恰好包含三大股指与黄金四项")
+    for asset in local_assets:
         spec = EXPECTED_OFFICIAL.get(asset.get("id")) or {}
         source = asset.get("source") or {}
         if asset.get("symbol") != spec.get("symbol"):
@@ -272,6 +283,29 @@ def validate_config(config: dict[str, Any]) -> tuple[list[dict[str, Any]], list[
             errors.append(f"{asset.get('id')}来源序列与约定标的不一致")
         if asset.get("status") != "loading" or asset.get("price") is not None:
             errors.append(f"{asset.get('id')}静态配置必须等待上游适配且不得内置真实数值")
+    for asset in proxies:
+        asset_id = asset.get("id")
+        spec = EXPECTED_PROXIES.get(asset_id) or {}
+        external = asset.get("externalDisplay")
+        proxy_for = asset.get("proxyFor")
+        source = asset.get("source")
+        if asset.get("symbol") != spec.get("symbol") or asset.get("instrument") != "etf-proxy":
+            errors.append(f"{asset_id}免费ETF代理代码或类型无效")
+        if asset.get("status") != "provider" or asset.get("frequency") != "provider-managed":
+            errors.append(f"{asset_id}必须由外部提供方管理行情状态与频率")
+        if any(asset.get(key) is not None for key in ("price", "changePct", "asOf", "updatedAt")):
+            errors.append(f"{asset_id}不得在仓库中保存免费组件行情数值或时间戳")
+        if not isinstance(external, dict) or external.get("provider") != "TradingView" \
+                or external.get("widget") != "tv-mini-chart" \
+                or external.get("widgetSymbol") != spec.get("widgetSymbol") \
+                or external.get("rawDataStored") is not False:
+            errors.append(f"{asset_id}TradingView免费组件配置无效")
+        if not isinstance(proxy_for, dict) or proxy_for.get("symbol") != spec.get("proxyFor") \
+                or proxy_for.get("isSameInstrument") is not False:
+            errors.append(f"{asset_id}没有明确披露代理与原标的不同")
+        if not isinstance(source, dict) or "TradingView" not in str(source.get("name", "")) \
+                or not str(source.get("url", "")).startswith("https://www.tradingview.com/symbols/"):
+            errors.append(f"{asset_id}缺少TradingView官方标的链接")
     return assets, errors
 
 
@@ -281,24 +315,30 @@ def evaluate_demo_policy(
     market_source_readiness: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     assets, errors = validate_config(config)
-    if config.get("demo") is not True or config.get("status") != "partial":
-        errors.append("仍有演示资产时，文件级demo必须为true且status必须为partial")
+    if config.get("schemaVersion") != 3 or config.get("demo") is not False \
+            or config.get("status") != "ok":
+        errors.append("免费代理配置必须使用schemaVersion 3、demo false与status ok")
 
     required_page_markers = (
-        "当前为部分演示数据",
-        "其余4项仍为演示数据",
+        "4项站内真实数据与4项TradingView免费ETF代理",
+        "SPY、QQQ、DIA与GLD分别仅作为SPX、NDX、DJIA与LBMA Gold Price PM的免费ETF代理",
+        "Ooglex不抓取、不导出、不保存这些组件中的原始行情",
+        "组件加载失败时只保留对应TradingView来源链接",
         "FRED API使用条款",
-        "本产品未获圣路易斯联储认可或认证",
+        "本产品未获圣路易斯联储、EIA或TradingView认可或认证",
         "EIA RWTC官方序列",
         "Powered by CoinGecko",
         "Yahoo BTC-USD",
+        "TradingView组件文档",
+        "TradingView数据说明",
         "非投资建议",
     )
     missing_markers = [marker for marker in required_page_markers if marker not in page_html]
     if missing_markers:
-        errors.append("页面缺少必须公开的演示/来源说明：" + "、".join(missing_markers))
+        errors.append("页面缺少必须公开的免费代理/来源说明：" + "、".join(missing_markers))
 
     demo_count = sum(1 for asset in assets if asset.get("demo") is True)
+    proxy_count = sum(1 for asset in assets if asset.get("id") in EXPECTED_PROXIES)
     license_summary: dict[str, Any] = {}
     license_details: list[str] = []
     if market_source_readiness is not None:
@@ -306,43 +346,35 @@ def evaluate_demo_policy(
         errors.extend(license_errors)
         if not license_errors:
             license_summary = authorization_summary(market_source_readiness)
-            readiness_by_id = {
-                asset["id"]: asset
-                for asset in market_source_readiness["assets"]
-            }
-            for asset_id in sorted(EXPECTED_DEMOS):
+            readiness_by_id = {asset["id"]: asset for asset in market_source_readiness["assets"]}
+            for asset_id in sorted(EXPECTED_PROXIES):
                 readiness = readiness_by_id[asset_id]
-                authorization = readiness["authorization"]
-                procurement = readiness["procurement"]
-                if authorization["status"] == "blocked":
-                    license_details.append(
-                        f"{asset_id}：{authorization['reasonCode']}；"
-                        f"询价状态{procurement['status']}；保持演示数据。"
-                    )
-                else:
-                    license_details.append(f"{asset_id}：公开展示授权已登记，等待正式接入。")
+                proxy = readiness["proxy"]
+                license_details.append(
+                    f"{asset_id}：{proxy['symbol']}代理{readiness['original']['symbol']}；"
+                    "由TradingView官方免费组件展示，不保存原始行情。"
+                )
     metrics = {
         "demoAssets": demo_count,
-        "officialAssets": len(assets) - demo_count,
+        "officialAssets": len(EXPECTED_OFFICIAL),
+        "proxyAssets": proxy_count,
         **license_summary,
     }
     if errors:
         return make_check(
             "market-demo-policy",
-            "演示数据与公开说明",
+            "免费代理与公开说明",
             "BLOCKED",
-            "演示/真实数据边界或公开说明不符合上线规则。",
+            "免费代理/站内数据边界或公开说明不符合上线规则。",
             details=errors,
             metrics=metrics,
         )
     return make_check(
         "market-demo-policy",
-        "演示数据与公开说明",
-        "WARN" if demo_count else "PASS",
-        (f"{demo_count}项资产仍为明确标注的演示数据；Beta可观察，稳定V1仍需替换。"
-         if demo_count else "全部核心资产均为真实数据配置。"),
-        details=(license_details or ["三大股指与黄金许可及正式接入尚未确认。"])
-        if demo_count else [],
+        "免费代理与公开说明",
+        "PASS",
+        "4项站内真实数据与4项免费嵌入代理均无演示数值。",
+        details=(license_details or ["三大股指与黄金均使用明确披露的免费ETF代理。"]),
         metrics=metrics,
     )
 

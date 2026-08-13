@@ -12,7 +12,7 @@ import tempfile
 
 from finance_terminal_release_gate import (
     AGGREGATE_DATASETS,
-    EXPECTED_DEMOS,
+    EXPECTED_PROXIES,
     WORKFLOW_SPECS,
     build_report,
     business_days_since,
@@ -33,13 +33,17 @@ from market_source_health import attach_upstream_health, make_source_health
 ROOT = Path(__file__).resolve().parents[1]
 NOW = datetime(2026, 8, 7, 12, 0, tzinfo=timezone.utc)
 PAGE = " ".join((
-    "当前为部分演示数据",
-    "其余4项仍为演示数据",
+    "4项站内真实数据与4项TradingView免费ETF代理",
+    "SPY、QQQ、DIA与GLD分别仅作为SPX、NDX、DJIA与LBMA Gold Price PM的免费ETF代理",
+    "Ooglex不抓取、不导出、不保存这些组件中的原始行情",
+    "组件加载失败时只保留对应TradingView来源链接",
     "FRED API使用条款",
-    "本产品未获圣路易斯联储认可或认证",
+    "本产品未获圣路易斯联储、EIA或TradingView认可或认证",
     "EIA RWTC官方序列",
     "Powered by CoinGecko",
     "Yahoo BTC-USD",
+    "TradingView组件文档",
+    "TradingView数据说明",
     "非投资建议",
 ))
 
@@ -49,14 +53,30 @@ def require(condition: bool, message: str) -> None:
         raise AssertionError(message)
 
 
-def demo_asset(asset_id: str) -> dict:
+def proxy_asset(asset_id: str) -> dict:
+    spec = EXPECTED_PROXIES[asset_id]
     return {
         "id": asset_id,
-        "symbol": asset_id.upper(),
-        "demo": True,
-        "status": "demo",
-        "price": 100,
-        "source": {"name": "Ooglex演示数据"},
+        "symbol": spec["symbol"],
+        "demo": False,
+        "status": "provider",
+        "frequency": "provider-managed",
+        "instrument": "etf-proxy",
+        "price": None,
+        "changePct": None,
+        "asOf": None,
+        "updatedAt": None,
+        "source": {
+            "name": "TradingView免费组件",
+            "url": "https://www.tradingview.com/symbols/" + spec["widgetSymbol"].replace(":", "-") + "/",
+        },
+        "externalDisplay": {
+            "provider": "TradingView",
+            "widget": "tv-mini-chart",
+            "widgetSymbol": spec["widgetSymbol"],
+            "rawDataStored": False,
+        },
+        "proxyFor": {"symbol": spec["proxyFor"], "isSameInstrument": False},
     }
 
 
@@ -76,11 +96,11 @@ def official_asset(asset_id: str, symbol: str, series: str) -> dict:
 
 def make_config() -> dict:
     return {
-        "schemaVersion": 2,
-        "demo": True,
-        "status": "partial",
+        "schemaVersion": 3,
+        "demo": False,
+        "status": "ok",
         "assets": [
-            *(demo_asset(asset_id) for asset_id in sorted(EXPECTED_DEMOS)),
+            *(proxy_asset(asset_id) for asset_id in sorted(EXPECTED_PROXIES)),
             official_asset("us10y", "DGS10", "DGS10"),
             official_asset("dxy", "DTWEXBGS", "DTWEXBGS"),
             official_asset("wti", "WTI", "RWTC"),
@@ -306,21 +326,21 @@ def make_workflow_evidence(cycles: int = 3, *, latest_conclusion: str = "success
     }
 
 
-def test_fresh_core_with_explicit_demos() -> None:
+def test_fresh_core_with_free_proxies() -> None:
     macro = make_macro()
     macro["referenceSeries"]["RWTC"]["source"]["accessMethod"] = "EIA public history page"
     report = build_report(make_config(), macro, PAGE, NOW)
     checks = by_id(report)
-    require(report["status"] == "WARN", "4项明确演示数据应使Beta报告为WARN")
-    require(checks["market-demo-policy"]["status"] == "WARN", "演示资产策略状态错误")
+    require(report["status"] == "PASS", "4项合规免费代理不应使Beta报告降级")
+    require(checks["market-demo-policy"]["status"] == "PASS", "免费代理策略状态错误")
     require(checks["official-dgs10"]["status"] == "PASS", "新鲜DGS10应通过")
     require(checks["official-dtwexbgs"]["status"] == "PASS", "新鲜DTWEXBGS应通过")
     require(checks["official-rwtc"]["status"] == "PASS", "新鲜RWTC应通过")
     require(checks["official-rwtc"]["metrics"]["accessMethod"] == "EIA public history page",
             "RWTC门禁必须保留实际访问路径")
-    require(report["summary"] == {"PASS": 3, "WARN": 1, "BLOCKED": 0}, "门禁汇总不可复算")
+    require(report["summary"] == {"PASS": 4, "WARN": 0, "BLOCKED": 0}, "门禁汇总不可复算")
     markdown = render_markdown(report)
-    require("Beta状态：**WARN**" in markdown and "| FRED DGS10 | PASS |" in markdown,
+    require("Beta状态：**PASS**" in markdown and "| FRED DGS10 | PASS |" in markdown,
             "Markdown报告缺少关键状态")
 
 
@@ -368,13 +388,13 @@ def test_wrong_instrument_and_change_are_blocked() -> None:
             "未登记RWTC访问路径必须阻断")
 
 
-def test_missing_disclosure_and_demo_flag_are_blocked() -> None:
+def test_missing_disclosure_and_proxy_boundary_are_blocked() -> None:
     config = make_config()
     config["assets"][0]["source"]["name"] = "未知来源"
-    report = build_report(config, make_macro(), "当前为部分演示数据", NOW)
+    report = build_report(config, make_macro(), "只有不完整的免费代理说明", NOW)
     check = by_id(report)["market-demo-policy"]
-    require(check["status"] == "BLOCKED", "缺少演示来源或页面披露必须阻断")
-    require(any("公开" in detail or "演示" in detail for detail in check["details"]), "阻断原因不清楚")
+    require(check["status"] == "BLOCKED", "缺少代理来源或页面披露必须阻断")
+    require(any("公开" in detail or "代理" in detail for detail in check["details"]), "阻断原因不清楚")
 
 
 def test_machine_readable_market_license_gate() -> None:
@@ -385,12 +405,13 @@ def test_machine_readable_market_license_gate() -> None:
         make_config(), make_macro(), PAGE, NOW, market_source_readiness=readiness,
     )
     check = by_id(report)["market-demo-policy"]
-    require(check["status"] == "WARN", "合法的授权阻塞契约不得把明确演示Beta误报为BLOCKED")
-    require(check["metrics"]["blockedAssets"] == 4
-            and check["metrics"]["approvedAssets"] == 0,
-            "门禁没有逐项汇总四项授权状态")
-    require(len(check["details"]) == 4 and all("保持演示数据" in item for item in check["details"]),
-            "门禁没有输出四项可审计授权阻塞原因")
+    require(check["status"] == "PASS", "合法免费嵌入代理契约应通过来源策略门禁")
+    require(check["metrics"]["proxyAssets"] == 4
+            and check["metrics"]["freeDisplayAssets"] == 4
+            and check["metrics"]["rawMarketDataStored"] is False,
+            "门禁没有逐项汇总四项免费代理状态")
+    require(len(check["details"]) == 4 and all("TradingView官方免费组件" in item for item in check["details"]),
+            "门禁没有输出四项可审计免费代理说明")
 
     tampered = deepcopy(readiness)
     tampered["assets"][0]["productionAction"] = "publish-anyway"
@@ -398,7 +419,7 @@ def test_machine_readable_market_license_gate() -> None:
         make_config(), make_macro(), PAGE, NOW, market_source_readiness=tampered,
     )
     require(by_id(blocked)["market-demo-policy"]["status"] == "BLOCKED",
-            "绕过授权发布的动作未被上线门禁阻断")
+            "绕过免费组件边界的动作未被上线门禁阻断")
 
 
 def test_future_observation_is_blocked() -> None:
@@ -666,10 +687,10 @@ def test_three_remote_cycles_pass_beta_evidence() -> None:
         require(check["status"] == "PASS", f"{workflow_id}三次连续成功应通过Beta证据门槛")
         require(check["metrics"]["consecutiveSuccessfulCycles"] == 3,
                 f"{workflow_id}连续周期计数错误")
-    require(report["status"] == "WARN" and report["targets"]["beta"]["canLaunch"] is True,
-            "远端证据通过后，明确演示数据应使Beta可上线但带WARN")
+    require(report["status"] == "PASS" and report["targets"]["beta"]["canLaunch"] is True,
+            "远端证据与免费代理门禁通过后Beta应可上线")
     require(report["targets"]["stableV1"]["status"] == "BLOCKED",
-            "仍有演示数据和不足7周期时不得宣称稳定V1")
+            "不足7周期时不得宣称稳定V1")
     require(report["scope"]["workflowEvidenceSource"] == "fixture", "运行证据来源未登记")
 
 
@@ -764,11 +785,11 @@ def test_repository_snapshot_and_cli_outputs() -> None:
 
 
 def main() -> None:
-    test_fresh_core_with_explicit_demos()
+    test_fresh_core_with_free_proxies()
     test_stale_is_warn_not_silent_pass()
     test_dgs10_source_attempt_status_is_independent()
     test_wrong_instrument_and_change_are_blocked()
-    test_missing_disclosure_and_demo_flag_are_blocked()
+    test_missing_disclosure_and_proxy_boundary_are_blocked()
     test_machine_readable_market_license_gate()
     test_future_observation_is_blocked()
     test_bitcoin_source_and_fallback_contract()
@@ -789,7 +810,7 @@ def main() -> None:
     test_repository_snapshot_and_cli_outputs()
     print("Finance terminal release gate core contract: PASS")
     print("- DGS10 / DTWEXBGS / RWTC / BTC/USD source, unit, calculation and freshness: PASS")
-    print("- four explicit demos and required public disclosures: PASS")
+    print("- four free TradingView ETF proxies / no stored raw values / disclosures: PASS")
     print("- stale, future, wrong-instrument and malformed states: PASS")
     print("- macro source health alignment, fallback history and 72h freshness: PASS")
     print("- aggregate snapshot alignment, 72h freshness, coverage and failure states: PASS")
