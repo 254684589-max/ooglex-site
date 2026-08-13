@@ -1934,6 +1934,63 @@ console.log("- BTC market/fallback + market-only / latest-five / safe links / fa
     print(result.stdout.strip())
 
 
+def run_provider_widget_runtime_tests() -> None:
+    script = r"""
+const assert = require("assert");
+const adapter = require("./apps/finance-terminal/app.js");
+
+(async () => {
+  const missing = await adapter.waitForProviderWidgetRegistration(null, "tv-mini-chart", 5);
+  assert.deepStrictEqual(missing, {
+    status: "unavailable", reason: "custom-elements-unavailable"
+  });
+
+  const alreadyRegistered = await adapter.waitForProviderWidgetRegistration({
+    get: (tag) => tag === "tv-mini-chart" ? function Widget() {} : undefined,
+    whenDefined: () => Promise.resolve()
+  }, "tv-mini-chart", 5);
+  assert.deepStrictEqual(alreadyRegistered, {
+    status: "registered", reason: "custom-element-registered"
+  });
+
+  let resolveRegistration;
+  const registration = new Promise((resolve) => { resolveRegistration = resolve; });
+  setTimeout(resolveRegistration, 0);
+  const delayed = await adapter.waitForProviderWidgetRegistration({
+    get: () => undefined,
+    whenDefined: () => registration
+  }, "tv-mini-chart", 50);
+  assert.deepStrictEqual(delayed, {
+    status: "registered", reason: "custom-element-registered"
+  });
+
+  const timedOut = await adapter.waitForProviderWidgetRegistration({
+    get: () => undefined,
+    whenDefined: () => new Promise(() => {})
+  }, "tv-mini-chart", 5);
+  assert.deepStrictEqual(timedOut, {
+    status: "unavailable", reason: "registration-timeout"
+  });
+
+  console.log("TradingView proxy runtime registration states: PASS");
+  console.log("- missing / pre-registered / delayed / timeout fallback: PASS");
+})().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
+"""
+    result = subprocess.run(
+        ["node", "-e", script],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    require(result.returncode == 0,
+            f"TradingView代理运行时状态测试失败：\n{result.stdout}{result.stderr}")
+    print(result.stdout.strip())
+
+
 def main() -> None:
     for path in (
         PAGE, APP, DATA, READINESS_DATA, MARKET_LICENSE_READINESS,
@@ -2612,6 +2669,16 @@ def main() -> None:
             "页面缺少浏览器、官方逐源或辅助来源资源回归探针")
     require("marketLicenseReadiness" in app and "providerWidgetCount" in app,
             "浏览器回归探针未覆盖免费代理状态或四项提供方组件")
+    require("waitForProviderWidgetRegistration" in app and "monitorProviderWidgets" in app
+            and "providerWidgetRuntime" in app and "providerWidgetRuntimeStates" in app,
+            "页面未验证或回归四项免费组件的运行时注册状态")
+    require('data-provider-state", "loading"' in app
+            and "组件已注册 · 行情时效见组件" in app
+            and "组件未加载 · 使用来源链接" in app,
+            "四项免费组件缺少加载、注册或官方链接回退状态")
+    require('.provider-widget-shell[data-provider-state="registered"]' in page
+            and "visibility: hidden" in page and ".provider-runtime-status" in page,
+            "免费组件加载失败时没有隐藏空组件或保留可见状态")
     require("noHorizontalOverflow" in app and "responsiveColumns" in app and "targetSizes" in app
             and "keyboardTabs" in app, "浏览器回归探针未覆盖溢出、布局、触控与键盘交互")
     require('document.querySelectorAll(".operation-card").length === 4' in app
@@ -2801,6 +2868,7 @@ def main() -> None:
     run_dtwexbgs_pipeline_tests()
     run_rwtc_pipeline_tests()
     run_js_adapter_tests()
+    run_provider_widget_runtime_tests()
 
     print("Finance Terminal DGS10 + DTWEXBGS + RWTC + BTC/USD validation: PASS")
     print("- four local data cards plus four explicit free TradingView ETF proxies / zero demos: PASS")
@@ -2823,6 +2891,7 @@ def main() -> None:
     print("- four supporting feeds / migrated health / partial fallback / retained snapshot / workflow governance: PASS")
     print("- four real-asset update chains / single-source isolation / stale evidence: PASS")
     print("- one allowlisted TradingView free widget dependency / explicit proxy fallback: PASS")
+    print("- proxy widget registration / timeout / late-recovery state contract: PASS")
     print("- browser regression probe / read-only CI contract: PASS")
 
 
