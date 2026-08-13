@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-12T14:41:18Z",
+  "generatedAt": "2026-08-13T04:04:09.398088Z",
   "targetBranch": "agent/finance-terminal-supporting-qualification",
   "targets": {
     "beta": "BLOCKED",
@@ -9,9 +9,9 @@
   "summary": {
     "pipelineCount": 4,
     "qualifiedPipelines": 0,
-    "minimumConsecutiveSuccessfulCycles": 1,
+    "minimumConsecutiveSuccessfulCycles": 2,
     "stableRequiredSuccessfulCycles": 7,
-    "remainingStableCycles": 6
+    "remainingStableCycles": 5
   },
   "pipelines": [
     {
@@ -20,16 +20,17 @@
       "workflow": "macro_radar.yml",
       "status": "progress",
       "checkStatus": "BLOCKED",
-      "consecutiveSuccessfulCycles": 1,
+      "consecutiveSuccessfulCycles": 2,
       "betaRequiredSuccessfulCycles": 3,
       "stableRequiredSuccessfulCycles": 7,
-      "remainingStableCycles": 6,
+      "remainingStableCycles": 5,
       "latestConclusion": "success",
-      "latestCreatedAt": "2026-08-12T14:38:21Z",
+      "latestCreatedAt": "2026-08-13T03:59:53Z",
       "cycleDates": [
+        "2026-08-12",
         "2026-08-11"
       ],
-      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/31607883574"
+      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/31665605919"
     },
     {
       "id": "asset-tracker",
@@ -37,16 +38,17 @@
       "workflow": "asset_tracker.yml",
       "status": "progress",
       "checkStatus": "BLOCKED",
-      "consecutiveSuccessfulCycles": 1,
+      "consecutiveSuccessfulCycles": 2,
       "betaRequiredSuccessfulCycles": 3,
       "stableRequiredSuccessfulCycles": 7,
-      "remainingStableCycles": 6,
+      "remainingStableCycles": 5,
       "latestConclusion": "success",
-      "latestCreatedAt": "2026-08-12T14:38:22Z",
+      "latestCreatedAt": "2026-08-13T03:59:55Z",
       "cycleDates": [
+        "2026-08-12",
         "2026-08-11"
       ],
-      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/31607886008"
+      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/31665607530"
     },
     {
       "id": "companies",
@@ -54,16 +56,17 @@
       "workflow": "companies.yml",
       "status": "progress",
       "checkStatus": "BLOCKED",
-      "consecutiveSuccessfulCycles": 1,
+      "consecutiveSuccessfulCycles": 2,
       "betaRequiredSuccessfulCycles": 3,
       "stableRequiredSuccessfulCycles": 7,
-      "remainingStableCycles": 6,
+      "remainingStableCycles": 5,
       "latestConclusion": "success",
-      "latestCreatedAt": "2026-08-12T14:38:24Z",
+      "latestCreatedAt": "2026-08-13T03:59:57Z",
       "cycleDates": [
+        "2026-08-12",
         "2026-08-11"
       ],
-      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/31607889253"
+      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/31665609048"
     },
     {
       "id": "asset-ranking",
@@ -71,16 +74,17 @@
       "workflow": "asset_ranking.yml",
       "status": "progress",
       "checkStatus": "BLOCKED",
-      "consecutiveSuccessfulCycles": 1,
+      "consecutiveSuccessfulCycles": 2,
       "betaRequiredSuccessfulCycles": 3,
       "stableRequiredSuccessfulCycles": 7,
-      "remainingStableCycles": 6,
+      "remainingStableCycles": 5,
       "latestConclusion": "success",
-      "latestCreatedAt": "2026-08-12T14:41:00Z",
+      "latestCreatedAt": "2026-08-13T04:03:21Z",
       "cycleDates": [
+        "2026-08-12",
         "2026-08-11"
       ],
-      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/31608131380"
+      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/31665797607"
     }
   ],
   "source": "GitHub Actions workflow_dispatch / Finance Terminal release gate",
