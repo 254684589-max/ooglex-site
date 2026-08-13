@@ -15,6 +15,8 @@ on:
       - '.github/finance-terminal-v1-cycle.json'
       - 'scripts/finance_terminal_readiness_snapshot.py'
       - 'scripts/validate_finance_terminal_readiness_snapshot.py'
+      - 'scripts/finance_terminal_release_gate.py'
+      - 'scripts/validate_finance_terminal_release_gate.py'
       - 'scripts/validate_finance_terminal.py'
       - 'apps/finance-terminal/app.js'
       - 'apps/finance-terminal/index.html'
