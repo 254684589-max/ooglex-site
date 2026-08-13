@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""四项待授权核心行情的离线契约测试。"""
+"""四项免费嵌入代理行情的离线契约测试。"""
 
 from __future__ import annotations
 
@@ -26,63 +26,66 @@ def require(condition: bool, message: str) -> None:
 
 def main() -> None:
     readiness = json.loads(READINESS_PATH.read_text(encoding="utf-8"))
-    require(not validate_market_source_readiness(readiness), "仓库行情授权契约无效")
+    require(not validate_market_source_readiness(readiness), "仓库免费代理行情契约无效")
     summary = authorization_summary(readiness)
-    require(summary["blockedAssets"] == 4 and summary["approvedAssets"] == 0,
-            "四项精确原标的必须继续保持授权阻塞")
-    require(summary["strategy"] == "exact-original"
-            and summary["preparedInquiries"] == 4,
-            "四项精确原标的必须完成询价准备且不得切换代理")
-    require(set(summary["authorizationStatuses"]) == set(EXPECTED_ASSETS),
-            "授权状态没有完整覆盖三大股指与黄金")
+    require(summary["proxyAssets"] == 4 and summary["freeDisplayAssets"] == 4,
+            "四项代理必须全部使用免费嵌入展示")
+    require(summary["strategy"] == "free-embedded-proxy"
+            and summary["provider"] == "TradingView"
+            and summary["cost"] == "free",
+            "免费代理策略、提供方或费用状态无效")
+    require(summary["rawMarketDataStored"] is False,
+            "官方组件路径不得保存或再分发原始行情")
+    require(set(summary["proxySymbols"]) == set(EXPECTED_ASSETS),
+            "代理状态没有完整覆盖三大股指与黄金")
 
     tampered = deepcopy(readiness)
-    tampered["blockedAssetCount"] = 0
-    require(any("blockedAssetCount" in error
+    tampered["proxyAssetCount"] = 0
+    require(any("proxyAssetCount" in error
                 for error in validate_market_source_readiness(tampered)),
-            "授权阻塞计数篡改未被拒绝")
+            "代理计数篡改未被拒绝")
 
-    silently_proxied = deepcopy(readiness)
-    silently_proxied["assets"][0]["proxyAlternative"]["isSameInstrument"] = True
-    require(any("同一原标的" in error
-                for error in validate_market_source_readiness(silently_proxied)),
-            "ETF静默冒充指数未被拒绝")
+    same_instrument = deepcopy(readiness)
+    same_instrument["assets"][0]["proxy"]["isSameInstrument"] = True
+    require(any("不是原标的" in error
+                for error in validate_market_source_readiness(same_instrument)),
+            "ETF代理静默冒充原指数未被拒绝")
 
-    selected_proxy = deepcopy(readiness)
-    selected_proxy["assets"][0]["proxyAlternative"]["selected"] = True
-    require(any("不得选择ETF代理" in error
-                for error in validate_market_source_readiness(selected_proxy)),
-            "所有者选择精确原标的后仍可启用ETF代理")
+    unselected = deepcopy(readiness)
+    unselected["assets"][0]["proxy"]["selected"] = False
+    require(any("显式选定" in error
+                for error in validate_market_source_readiness(unselected)),
+            "未由所有者选定的代理仍可通过")
 
     commercialized = deepcopy(readiness)
     commercialized["useCase"]["advertising"] = True
     require(any("advertising" in error
                 for error in validate_market_source_readiness(commercialized)),
-            "非商业询价范围被静默扩大")
+            "免费非商业范围被静默扩大")
 
-    fake_submission = deepcopy(readiness)
-    fake_submission["assets"][0]["procurement"]["status"] = "submitted"
-    fake_submission["assets"][0]["procurement"]["submittedAt"] = "2026-08-13T08:00:00Z"
-    require(any("可审计编号" in error
-                for error in validate_market_source_readiness(fake_submission)),
-            "无审计编号的已提交询价未被拒绝")
+    raw_storage = deepcopy(readiness)
+    raw_storage["useCase"]["rawMarketDataStored"] = True
+    require(any("rawMarketDataStored" in error
+                for error in validate_market_source_readiness(raw_storage)),
+            "免费组件原始行情可被静默保存")
 
-    fake_approval = deepcopy(readiness)
-    fake_approval["assets"][0]["authorization"].update({
-        "status": "approved",
-        "publicDisplayAuthorized": True,
-    })
-    fake_approval["assets"][0]["productionAction"] = "integrate-authorized-source"
-    fake_approval["blockedAssetCount"] = 3
-    require(any("授权编号" in error
-                for error in validate_market_source_readiness(fake_approval)),
-            "无可审计授权编号的approved状态未被拒绝")
+    fake_api = deepcopy(readiness)
+    fake_api["provider"]["delivery"] = "scraped-api"
+    require(any("delivery" in error
+                for error in validate_market_source_readiness(fake_api)),
+            "未经授权的抓取接口冒充官方嵌入组件")
 
-    print("Finance terminal market license readiness: PASS")
-    print("- exact SPX / NDX / DJIA / LBMA Gold PM authorization boundary: PASS")
-    print("- individual non-commercial delayed-display scope: PASS")
-    print("- official inquiry routes and auditable submission states: PASS")
-    print("- owner-selected no-proxy guard: PASS")
+    paid = deepcopy(readiness)
+    paid["provider"]["cost"] = "paid"
+    require(any("cost" in error
+                for error in validate_market_source_readiness(paid)),
+            "付费来源可在免费优先策略下静默启用")
+
+    print("Finance terminal free proxy readiness: PASS")
+    print("- SPY / QQQ / DIA / GLD explicit ETF proxy boundary: PASS")
+    print("- TradingView official free web-component delivery: PASS")
+    print("- no API key / raw storage / scraping / paid source: PASS")
+    print("- individual non-commercial public display scope: PASS")
 
 
 if __name__ == "__main__":

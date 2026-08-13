@@ -1,13 +1,14 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "reviewedOn": "2026-08-13",
   "displayScope": "public-web",
-  "policy": "稳定V1已选择精确原标的；只有公开展示授权可验证后才能替换演示数据，当前不得以ETF或期货代理替代。",
+  "policy": "稳定V1采用免费优先的官方嵌入展示路径；SPY、QQQ、DIA和GLD均为显式ETF代理，不冒充SPX、NDX、DJIA或黄金现货/基准，且不抓取、导出或再分发TradingView原始数据。",
   "selection": {
-    "strategy": "exact-original",
+    "strategy": "free-embedded-proxy",
     "decidedOn": "2026-08-13",
     "decidedBy": "project-owner",
-    "proxySubstitutionAllowed": false
+    "proxySubstitutionAllowed": true,
+    "exactBenchmarkProcurementPaused": true
   },
   "useCase": {
     "operatorType": "individual-hobbyist",
@@ -16,159 +17,81 @@
     "subscriptions": false,
     "otherRevenue": false,
     "domain": "ooglex.com",
-    "displayLatency": "daily-delayed",
     "displayPurpose": "personal-financial-research",
     "publicApiRedistribution": false,
+    "rawMarketDataStored": false,
     "tradingExecution": false,
     "investmentProduct": false,
-    "quoteAcceptance": "owner-confirmation-required"
+    "costPolicy": "free-only"
   },
-  "blockedAssetCount": 4,
-  "inquiryReadyAssetCount": 4,
+  "provider": {
+    "name": "TradingView",
+    "delivery": "official-free-web-component",
+    "widget": "tv-mini-chart",
+    "scriptUrl": "https://www.tradingview-widget.com/w/en/tv-mini-chart.js",
+    "documentationUrl": "https://www.tradingview.com/widget-docs/widgets/charts/mini-chart/",
+    "marketAvailabilityUrl": "https://www.tradingview.com/widget-docs/markets/",
+    "dataFaqUrl": "https://www.tradingview.com/widget-docs/faq/data/",
+    "cost": "free",
+    "credentialsRequired": false,
+    "attributionRequired": true,
+    "exportAllowed": false,
+    "providerControlsDelay": true
+  },
+  "proxyAssetCount": 4,
+  "freeDisplayAssetCount": 4,
   "assets": [
     {
       "id": "sp500",
-      "targetSymbol": "SPX",
-      "targetInstrument": "S&P 500 Price Index",
-      "candidateSource": {
-        "provider": "S&P Dow Jones Indices",
-        "seriesId": "SPX",
-        "url": "https://www.spglobal.com/spdji/en/about-us/data-index-licensing/"
-      },
-      "authorization": {
-        "status": "blocked",
-        "publicDisplayAuthorized": false,
-        "licenseOwner": "S&P Dow Jones Indices",
-        "reasonCode": "owner-license-required",
-        "evidenceUrl": "https://www.spglobal.com/spdji/en/about-us/data-index-licensing/",
-        "termsUrl": "https://www.spglobal.com/en/terms-of-use"
-      },
-      "procurement": {
-        "status": "prepared",
-        "requestGroup": "sp-dji-index-display",
-        "contact": "index_services@spglobal.com",
-        "contactUrl": "https://www.spglobal.com/spdji/en/about-us/data-index-licensing/",
-        "requestedLicense": "daily or delayed public website display",
-        "delivery": "S&P DJI or an authorized data vendor",
-        "submittedAt": null
-      },
-      "productionAction": "keep-demo",
-      "proxyAlternative": {
+      "original": {"symbol": "SPX", "instrument": "S&P 500 Price Index"},
+      "proxy": {
         "symbol": "SPY",
+        "widgetSymbol": "AMEX:SPY",
         "instrument": "SPDR S&P 500 ETF Trust",
         "instrumentType": "etf-proxy",
         "isSameInstrument": false,
-        "requiresProductApproval": true,
-        "selected": false
-      }
+        "selected": true
+      },
+      "productionAction": "embed-provider-widget"
     },
     {
       "id": "nasdaq100",
-      "targetSymbol": "NDX",
-      "targetInstrument": "Nasdaq-100 Price Index",
-      "candidateSource": {
-        "provider": "Nasdaq Global Index Data Service",
-        "seriesId": "NDX",
-        "url": "https://www.nasdaq.com/solutions/global-indexes/data/gids"
-      },
-      "authorization": {
-        "status": "blocked",
-        "publicDisplayAuthorized": false,
-        "licenseOwner": "Nasdaq",
-        "reasonCode": "owner-license-required",
-        "evidenceUrl": "https://www.nasdaq.com/solutions/global-indexes/licensing-and-etps",
-        "termsUrl": "https://www.nasdaq.com/legal"
-      },
-      "procurement": {
-        "status": "prepared",
-        "requestGroup": "nasdaq-index-display",
-        "contact": "DataSales@nasdaq.com",
-        "contactUrl": "https://www.nasdaqtrader.com/Trader.aspx?id=DPGlobaldata",
-        "requestedLicense": "daily or delayed public website display",
-        "delivery": "GIDS cloud or an authorized data vendor",
-        "submittedAt": null
-      },
-      "productionAction": "keep-demo",
-      "proxyAlternative": {
+      "original": {"symbol": "NDX", "instrument": "Nasdaq-100 Price Index"},
+      "proxy": {
         "symbol": "QQQ",
+        "widgetSymbol": "NASDAQ:QQQ",
         "instrument": "Invesco QQQ Trust",
         "instrumentType": "etf-proxy",
         "isSameInstrument": false,
-        "requiresProductApproval": true,
-        "selected": false
-      }
+        "selected": true
+      },
+      "productionAction": "embed-provider-widget"
     },
     {
       "id": "dow",
-      "targetSymbol": "DJIA",
-      "targetInstrument": "Dow Jones Industrial Average",
-      "candidateSource": {
-        "provider": "S&P Dow Jones Indices",
-        "seriesId": "DJIA",
-        "url": "https://www.spglobal.com/spdji/en/about-us/data-index-licensing/"
-      },
-      "authorization": {
-        "status": "blocked",
-        "publicDisplayAuthorized": false,
-        "licenseOwner": "S&P Dow Jones Indices",
-        "reasonCode": "owner-license-required",
-        "evidenceUrl": "https://www.spglobal.com/spdji/en/about-us/data-index-licensing/",
-        "termsUrl": "https://www.spglobal.com/en/terms-of-use"
-      },
-      "procurement": {
-        "status": "prepared",
-        "requestGroup": "sp-dji-index-display",
-        "contact": "index_services@spglobal.com",
-        "contactUrl": "https://www.spglobal.com/spdji/en/about-us/data-index-licensing/",
-        "requestedLicense": "daily or delayed public website display",
-        "delivery": "S&P DJI or an authorized data vendor",
-        "submittedAt": null
-      },
-      "productionAction": "keep-demo",
-      "proxyAlternative": {
+      "original": {"symbol": "DJIA", "instrument": "Dow Jones Industrial Average"},
+      "proxy": {
         "symbol": "DIA",
+        "widgetSymbol": "AMEX:DIA",
         "instrument": "SPDR Dow Jones Industrial Average ETF Trust",
         "instrumentType": "etf-proxy",
         "isSameInstrument": false,
-        "requiresProductApproval": true,
-        "selected": false
-      }
+        "selected": true
+      },
+      "productionAction": "embed-provider-widget"
     },
     {
       "id": "gold",
-      "targetSymbol": "LBMA-GOLD-PM-USD",
-      "targetInstrument": "LBMA Gold Price PM in USD per troy ounce",
-      "candidateSource": {
-        "provider": "ICE Benchmark Administration",
-        "seriesId": "LBMA-GOLD-PRICE-PM-USD",
-        "url": "https://www.ice.com/iba/lbma-precious-metals"
-      },
-      "authorization": {
-        "status": "blocked",
-        "publicDisplayAuthorized": false,
-        "licenseOwner": "ICE Benchmark Administration",
-        "reasonCode": "redistribution-license-required",
-        "evidenceUrl": "https://www.lbma.org.uk/prices-and-data/lbma-gold-price/lbma-gold-price",
-        "termsUrl": "https://www.ice.com/iba/about"
-      },
-      "procurement": {
-        "status": "prepared",
-        "requestGroup": "iba-lbma-gold-display",
-        "contact": "iba-licensing@theice.com",
-        "contactUrl": "https://www.ice.com/iba/lbma-precious-metals",
-        "requestedLicense": "daily delayed public website display after midnight London time",
-        "delivery": "IBA or an authorized redistribution partner",
-        "submittedAt": null
-      },
-      "productionAction": "keep-demo",
-      "proxyAlternative": {
+      "original": {"symbol": "LBMA-GOLD-PM-USD", "instrument": "LBMA Gold Price PM in USD per troy ounce"},
+      "proxy": {
         "symbol": "GLD",
+        "widgetSymbol": "AMEX:GLD",
         "instrument": "SPDR Gold Shares",
         "instrumentType": "etf-proxy",
         "isSameInstrument": false,
-        "requiresProductApproval": true,
-        "selected": false
-      }
+        "selected": true
+      },
+      "productionAction": "embed-provider-widget"
     }
   ]
 }
