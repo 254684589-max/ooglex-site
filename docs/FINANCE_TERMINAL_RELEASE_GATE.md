@@ -52,7 +52,7 @@ Ooglex不得抓取、导出、缓存或再分发组件中的原始行情，不�
 
 `apps/finance-terminal/market-source-readiness.json`逐项保存原目标、选定ETF、TradingView代码、免费非商业范围和禁止原始数据存储边界。上线门禁复算4项代理、提供方脚本白名单、零密钥、零收费源与零本地行情值；任何代理冒充原标的、改成抓取/API交付或加入仓库数值都会`BLOCKED`。
 
-每次Chrome资格检查使用与生产页面相同的完整8秒注册窗口，在360、768和1280像素分别记录SPY、QQQ、DIA与GLD的`mounted / unavailable`状态与受控原因，并输出`finance-terminal-browser-evidence.json`和对应截图Artifact。证据还通过Chrome DevTools Network事件只观察白名单脚本`tv-mini-chart.js`是否请求、收到受控HTTP响应、使用缓存、被阻断或仍在等待；不保存响应正文、任意控制台文本或其他网络请求。机器证据只含固定脚本URL、传输状态、HTTP状态码、缓存布尔值、代理代码、宿主状态和原因，不读取或保存组件报价；它用于跨日复核第三方组件可用性与官方链接回退，不会替代或增加四条数据工作流的3/7成功周期。普通快速回归可以使用短超时，但不得被保存为稳定V1运行证据。
+每次Chrome资格检查使用与生产页面相同的完整8秒注册窗口，在360、768和1280像素分别记录SPY、QQQ、DIA与GLD的`mounted / unavailable`状态与受控原因，并输出`finance-terminal-browser-evidence.json`、同内容的人类可读Markdown摘要和对应截图Artifact。证据还通过Chrome DevTools Network事件只观察白名单脚本`tv-mini-chart.js`是否请求、收到受控HTTP响应、使用缓存、被阻断或仍在等待；不保存响应正文、任意控制台文本或其他网络请求。逐视口关联诊断区分脚本传输失败、响应等待、脚本成功但组件注册超时、浏览器运行时不可用、部分宿主挂载和宿主验证失败。机器证据只含固定脚本URL、传输状态、HTTP状态码、缓存布尔值、代理代码、宿主状态和受控诊断，不读取或保存组件报价；它用于跨日复核第三方组件可用性与官方链接回退，不会替代或增加四条数据工作流的3/7成功周期。普通快速回归可以使用短超时，但不得被保存为稳定V1运行证据。
 
 ### 三条聚合管道
 

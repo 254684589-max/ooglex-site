@@ -30,6 +30,18 @@ const ALLOWED_SCRIPT_REASONS = new Set([
   "not-requested"
 ]);
 const DOES_NOT_ASSERT = ["quote-rendered", "quote-freshness", "market-open"];
+const ALLOWED_DIAGNOSIS_STATES = new Set(["healthy", "degraded", "unavailable", "unknown"]);
+const ALLOWED_DIAGNOSIS_REASONS = new Set([
+  "all-hosts-mounted",
+  "partial-host-mount",
+  "provider-script-transport-failure",
+  "provider-script-response-pending",
+  "provider-script-not-observed",
+  "component-registration-timeout",
+  "component-registration-failed",
+  "browser-runtime-unavailable",
+  "component-host-verification-failure"
+]);
 
 function exactKeys(record, expected) {
   return record && typeof record === "object" && !Array.isArray(record)
@@ -40,12 +52,37 @@ function require(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+export function buildViewportDiagnosis(providerScript, proxies) {
+  const mounted = proxies.filter((proxy) => proxy.state === "mounted").length;
+  if (providerScript.state === "failed") {
+    return { state: "unavailable", reason: "provider-script-transport-failure" };
+  }
+  if (providerScript.state === "pending") {
+    return { state: "unknown", reason: "provider-script-response-pending" };
+  }
+  if (providerScript.state === "not-observed") {
+    return { state: "unavailable", reason: "provider-script-not-observed" };
+  }
+  if (mounted === proxies.length) return { state: "healthy", reason: "all-hosts-mounted" };
+  if (mounted > 0) return { state: "degraded", reason: "partial-host-mount" };
+  if (proxies.every((proxy) => proxy.reason === "registration-timeout")) {
+    return { state: "unavailable", reason: "component-registration-timeout" };
+  }
+  if (proxies.every((proxy) => proxy.reason === "registration-failed")) {
+    return { state: "unavailable", reason: "component-registration-failed" };
+  }
+  if (proxies.every((proxy) => ["custom-elements-unavailable", "runtime-contract-unavailable"].includes(proxy.reason))) {
+    return { state: "unavailable", reason: "browser-runtime-unavailable" };
+  }
+  return { state: "unavailable", reason: "component-host-verification-failure" };
+}
+
 export function validateBrowserEvidence(evidence) {
   require(exactKeys(evidence, [
     "schemaVersion", "generatedAt", "scope", "source", "viewports", "summary",
     "doesNotAssert", "doesNotReadOrStoreQuotes"
   ]), "浏览器证据顶层字段无效");
-  require(evidence.schemaVersion === 2, "浏览器证据版本无效");
+  require(evidence.schemaVersion === 3, "浏览器证据版本无效");
   require(typeof evidence.generatedAt === "string"
     && /(?:Z|[+-]\d{2}:\d{2})$/.test(evidence.generatedAt)
     && Number.isFinite(Date.parse(evidence.generatedAt)), "浏览器证据时间无效");
@@ -63,8 +100,9 @@ export function validateBrowserEvidence(evidence) {
   let providerScriptFailedViewports = 0;
   let providerScriptPendingViewports = 0;
   let providerScriptNotObservedViewports = 0;
+  const diagnosisCounts = { healthy: 0, degraded: 0, unavailable: 0, unknown: 0 };
   evidence.viewports.forEach((viewport, index) => {
-    require(exactKeys(viewport, ["width", "status", "screenshot", "providerScript", "proxies"]),
+    require(exactKeys(viewport, ["width", "status", "screenshot", "providerScript", "proxies", "diagnosis"]),
       "浏览器视口证据字段无效");
     require(viewport.width === EXPECTED_WIDTHS[index], "浏览器视口顺序或宽度无效");
     require(viewport.status === "pass", `${viewport.width}px浏览器证据未通过`);
@@ -114,6 +152,13 @@ export function validateBrowserEvidence(evidence) {
         fallbackObservations += 1;
       }
     });
+    require(exactKeys(viewport.diagnosis, ["state", "reason"])
+      && ALLOWED_DIAGNOSIS_STATES.has(viewport.diagnosis.state)
+      && ALLOWED_DIAGNOSIS_REASONS.has(viewport.diagnosis.reason),
+    `${viewport.width}px关联诊断字段无效`);
+    require(JSON.stringify(viewport.diagnosis) === JSON.stringify(buildViewportDiagnosis(script, viewport.proxies)),
+      `${viewport.width}px关联诊断不可由脚本传输与宿主状态复算`);
+    diagnosisCounts[viewport.diagnosis.state] += 1;
   });
 
   const expectedSummary = {
@@ -126,6 +171,7 @@ export function validateBrowserEvidence(evidence) {
     providerScriptFailedViewports,
     providerScriptPendingViewports,
     providerScriptNotObservedViewports,
+    diagnosisCounts,
     allViewportsPassed: true
   };
   require(JSON.stringify(evidence.summary) === JSON.stringify(expectedSummary),
@@ -135,20 +181,24 @@ export function validateBrowserEvidence(evidence) {
 
 export function buildBrowserEvidence(results, generatedAt = new Date().toISOString()) {
   require(Array.isArray(results), "浏览器回归结果必须是数组");
-  const viewports = results.map((result) => ({
-    width: result.viewport?.width,
-    status: result.status,
-    screenshot: path.basename(result.screenshot || ""),
-    providerScript: result.providerScriptTransport,
-    proxies: (result.providerWidgetRuntimeEvidence || []).map((proxy) => ({
+  const viewports = results.map((result) => {
+    const proxies = (result.providerWidgetRuntimeEvidence || []).map((proxy) => ({
       symbol: proxy.symbol,
       state: proxy.state,
       reason: proxy.reason
-    }))
-  }));
+    }));
+    return {
+      width: result.viewport?.width,
+      status: result.status,
+      screenshot: path.basename(result.screenshot || ""),
+      providerScript: result.providerScriptTransport,
+      proxies,
+      diagnosis: buildViewportDiagnosis(result.providerScriptTransport, proxies)
+    };
+  });
   const observations = viewports.flatMap((viewport) => viewport.proxies);
   const evidence = {
-    schemaVersion: 2,
+    schemaVersion: 3,
     generatedAt,
     scope: "finance-terminal-free-proxy-runtime",
     source: "Chrome DevTools Protocol / static branch checkout",
@@ -163,10 +213,39 @@ export function buildBrowserEvidence(results, generatedAt = new Date().toISOStri
       providerScriptFailedViewports: viewports.filter((item) => item.providerScript?.state === "failed").length,
       providerScriptPendingViewports: viewports.filter((item) => item.providerScript?.state === "pending").length,
       providerScriptNotObservedViewports: viewports.filter((item) => item.providerScript?.state === "not-observed").length,
+      diagnosisCounts: {
+        healthy: viewports.filter((item) => item.diagnosis.state === "healthy").length,
+        degraded: viewports.filter((item) => item.diagnosis.state === "degraded").length,
+        unavailable: viewports.filter((item) => item.diagnosis.state === "unavailable").length,
+        unknown: viewports.filter((item) => item.diagnosis.state === "unknown").length
+      },
       allViewportsPassed: viewports.every((item) => item.status === "pass")
     },
     doesNotAssert: DOES_NOT_ASSERT,
     doesNotReadOrStoreQuotes: true
   };
   return validateBrowserEvidence(evidence);
+}
+
+export function renderBrowserEvidenceSummary(evidence) {
+  validateBrowserEvidence(evidence);
+  const lines = [
+    "# Finance Terminal free-proxy runtime evidence",
+    "",
+    `Generated: ${evidence.generatedAt}`,
+    "",
+    "This report describes only the allowlisted provider script transport and component-host state. It does not read quotes or assert quote rendering, freshness, or market-open state.",
+    "",
+    "| Viewport | Provider script | Host diagnosis | Mounted hosts |",
+    "|---:|---|---|---:|"
+  ];
+  evidence.viewports.forEach((viewport) => {
+    const mounted = viewport.proxies.filter((proxy) => proxy.state === "mounted").length;
+    const status = viewport.providerScript.httpStatus === null
+      ? viewport.providerScript.reason
+      : `${viewport.providerScript.reason} / HTTP ${viewport.providerScript.httpStatus}`;
+    lines.push(`| ${viewport.width}px | ${status} | ${viewport.diagnosis.state} / ${viewport.diagnosis.reason} | ${mounted}/${viewport.proxies.length} |`);
+  });
+  lines.push("");
+  return `${lines.join("\n")}\n`;
 }

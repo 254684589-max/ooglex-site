@@ -2765,6 +2765,9 @@ def main() -> None:
             and "EXPECTED_PROVIDER_SCRIPT" in browser_evidence
             and "providerScriptLoadedViewports" in browser_evidence
             and "providerScriptFailedViewports" in browser_evidence
+            and "buildViewportDiagnosis" in browser_evidence
+            and "renderBrowserEvidenceSummary" in browser_evidence
+            and "diagnosisCounts" in browser_evidence
             and "doesNotReadOrStoreQuotes" in browser_evidence
             and "connected-defined-element-with-layout" in browser_evidence,
             "浏览器证据未覆盖四项代理、三档视口或禁止行情读取边界")
@@ -2784,6 +2787,7 @@ def main() -> None:
     require("validate_finance_terminal_browser.mjs" in quality_workflow
             and "validate_finance_terminal_browser_evidence.mjs" in quality_workflow
             and "finance-terminal-browser-evidence.json" in quality_workflow
+            and "finance-terminal-browser-evidence.md" in quality_workflow
             and "finance-terminal-proxy-runtime" in quality_workflow
             and "validate_finance_terminal.py" in quality_workflow,
             "金融终端质量工作流未运行静态与浏览器回归")

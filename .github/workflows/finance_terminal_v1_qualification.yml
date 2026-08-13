@@ -205,7 +205,9 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: finance-terminal-v1-proxy-runtime-${{ github.run_attempt }}
-          path: /tmp/finance-terminal-browser/finance-terminal-browser-evidence.json
+          path: |
+            /tmp/finance-terminal-browser/finance-terminal-browser-evidence.json
+            /tmp/finance-terminal-browser/finance-terminal-browser-evidence.md
           if-no-files-found: error
           retention-days: 14
 

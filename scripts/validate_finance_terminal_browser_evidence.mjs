@@ -2,7 +2,11 @@
 /** Offline contract tests for the bounded free-proxy browser evidence artifact. */
 
 import assert from "node:assert/strict";
-import { buildBrowserEvidence, validateBrowserEvidence } from "./finance_terminal_browser_evidence.mjs";
+import {
+  buildBrowserEvidence,
+  renderBrowserEvidenceSummary,
+  validateBrowserEvidence
+} from "./finance_terminal_browser_evidence.mjs";
 
 const symbols = ["SPY", "QQQ", "DIA", "GLD"];
 const widths = [360, 768, 1280];
@@ -51,7 +55,18 @@ assert.equal(evidence.summary.providerScriptLoadedViewports, 1);
 assert.equal(evidence.summary.providerScriptFailedViewports, 1);
 assert.equal(evidence.summary.providerScriptPendingViewports, 1);
 assert.equal(evidence.summary.providerScriptNotObservedViewports, 0);
+assert.deepEqual(evidence.summary.diagnosisCounts, {
+  healthy: 0,
+  degraded: 1,
+  unavailable: 1,
+  unknown: 1
+});
 assert.equal(validateBrowserEvidence(evidence), evidence);
+const markdown = renderBrowserEvidenceSummary(evidence);
+assert.match(markdown, /Provider script/);
+assert.match(markdown, /HTTP 200/);
+assert.match(markdown, /partial-host-mount/);
+assert.match(markdown, /does not read quotes/);
 
 const quoteLeak = structuredClone(evidence);
 quoteLeak.viewports[0].proxies[0].price = 123.45;
@@ -85,8 +100,13 @@ const falseHttpSuccess = structuredClone(evidence);
 falseHttpSuccess.viewports[0].providerScript.httpStatus = 503;
 assert.throws(() => validateBrowserEvidence(falseHttpSuccess), /脚本成功证据无效/);
 
+const forgedDiagnosis = structuredClone(evidence);
+forgedDiagnosis.viewports[0].diagnosis = { state: "healthy", reason: "all-hosts-mounted" };
+assert.throws(() => validateBrowserEvidence(forgedDiagnosis), /关联诊断不可由脚本传输与宿主状态复算/);
+
 console.log("Finance Terminal proxy browser evidence contract: PASS");
 console.log("- 360 / 768 / 1280px · SPY / QQQ / DIA / GLD: PASS");
 console.log("- mounted vs official-link fallback reasons: PASS");
 console.log("- allowlisted provider script request / response / cache / failure states: PASS");
+console.log("- transport-to-host diagnosis and bounded Markdown summary: PASS");
 console.log("- no quote fields / no false rendering or freshness claims: PASS");

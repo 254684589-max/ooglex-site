@@ -8,7 +8,11 @@ import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildBrowserEvidence, EXPECTED_PROVIDER_SCRIPT } from "./finance_terminal_browser_evidence.mjs";
+import {
+  buildBrowserEvidence,
+  EXPECTED_PROVIDER_SCRIPT,
+  renderBrowserEvidenceSummary
+} from "./finance_terminal_browser_evidence.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const WIDTHS = [360, 768, 1280];
@@ -395,6 +399,8 @@ async function main() {
     const evidence = buildBrowserEvidence(results);
     const evidencePath = path.join(artifacts, "finance-terminal-browser-evidence.json");
     await writeFile(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`);
+    const evidenceSummaryPath = path.join(artifacts, "finance-terminal-browser-evidence.md");
+    await writeFile(evidenceSummaryPath, renderBrowserEvidenceSummary(evidence));
     for (const result of results) {
       const layout = result.layout;
       const mounted = result.providerWidgetRuntimeEvidence.filter((item) => item.state === "mounted").length;
@@ -403,6 +409,7 @@ async function main() {
     }
     console.log(`Finance Terminal browser regression: PASS (${WIDTHS.join(", ")}px)`);
     console.log(`Proxy runtime evidence: ${evidence.summary.mountedObservations}/${evidence.summary.observationCount} mounted observations; ${evidence.summary.fallbackObservations} official-link fallbacks`);
+    console.log(`Proxy diagnosis: ${JSON.stringify(evidence.summary.diagnosisCounts)}`);
     if (options.artifactsDir) console.log(`Screenshots: ${artifacts}`);
     return 0;
   } finally {

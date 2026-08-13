@@ -131,6 +131,7 @@ def test_github_workflow_safety() -> None:
     require("scripts/validate_finance_terminal_browser_evidence.mjs" in workflow
             and "finance-terminal-v1-proxy-runtime" in workflow
             and "finance-terminal-browser-evidence.json" in workflow
+            and "finance-terminal-browser-evidence.md" in workflow
             and "retention-days: 14" in workflow,
             "稳定V1资格必须保留四项代理的机器可读浏览器证据")
     require("scripts/finance_terminal_browser_evidence.mjs" in quality
