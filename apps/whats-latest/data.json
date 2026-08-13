@@ -1,13 +1,13 @@
 {
-  "updatedAt": "2026-08-13T14:57:28Z",
+  "updatedAt": "2026-08-13T15:02:36Z",
   "asOf": "2026-08-13",
   "source": "Google News · Yahoo Finance",
   "highlight": {
-    "title": "关于同意对安捷伦科技（上海）有限公司8860B、8890B型气相色谱仪最终用户使用活动实行豁免管理的复函",
-    "source": "中华人民共和国生态环境部",
-    "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE5XOUpkdG56TVcwMjdVZ2VHWFh6MXhMMGFBeWN1Wm5LS3ZpZnNhc1F5b3JzMTVNclJndEU2bW1LdkFpRkFnWTlIa2d5MTl2T0hLR0xoSWxfRHVEQXZyRVNEaTBRLTEtWUpmLWdzRnc4YUd1S1B4QzJhSDNFZVFNdw?oc=5",
-    "published": 1786629509,
-    "category": "人工智能·科技"
+    "title": "百花为大众盛开",
+    "source": "新浪财经",
+    "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxObFdJVE5sRWxTdUhLOUlUaVNqNHBTWUFKQ05KNndBYTM5b21nYkQ5am4zUURmcGxYWVdYNVZpS2NJRVFtZldtc2NHUVRNU2dKY19iNVRSNnJPc3A3ZVNjdzRsVWVtU1NyTk45UDV3Uzh0c2FPenpfQldCeC11N1ZEMFZ3?oc=5",
+    "published": 1786632525,
+    "category": "娱乐"
   },
   "categories": [
     {
@@ -25,6 +25,12 @@
           "source": "新浪财经",
           "link": "https://news.google.com/rss/articles/CBMieEFVX3lxTE1NTl8yalhQVnM5eldMcGZDZ3YzUE1HX3BQRzVWOUdOQWl0cVgxMm1vRUdjbzBvNzFib2tmTk5yM2hwMUItc1hiV0c5cjQtUS1FOUpWNElxbV9kVnVVMHh5TnJ3X1VCZkpTdE5BbEQ3WVpSYkc0OUI3OA?oc=5",
           "published": 1786625520
+        },
+        {
+          "title": "【环球财经】英国6月份经济环比增长0.3%",
+          "source": "eeo.com.cn",
+          "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE1tS2EtWUg1WWt2eGEtbWtqQWpRa0xkVEEtejhPa1ZGSnpuS0NmcVlwVXZ2R0tFVlFReWtkRjBRUTBGcFpjS2x3OVo4ZnNMckYxNFhGRERpOA?oc=5",
+          "published": 1786632481
         },
         {
           "title": "朱镕基逝世：推动中国经济改革的“铁腕总理”是谁？",
@@ -49,12 +55,6 @@
           "source": "Shangbao Indonesia",
           "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNLTU3MmtWMk9PNzlDUXQ4RE9YYVRuRVdIaGwtR2FGVTl0MUI3Z0dSM1NXcmxvRkYtUHZiOWZuNUYtWEdSdnhmenpCbFotWVEzTE9kNUxUbTJLeTcxY0tYQXRleTlZejdjTEZDeGx3cEI2c0VSNE9Gdi0zR1NVaVF0UkJGX1g?oc=5",
           "published": 1786625280
-        },
-        {
-          "title": "经济政策一线微观察丨流水线变风景线，暑期“工厂游”火了",
-          "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOcEplVnp5YWlrNUFyc01fTE5FUnlHcUtuQ2FjRVZxSnJoYlZQREpjakJ0djRzdzdvVzhkcElkY2JKcTBCSllnWlNmZHhxaWUxNjVfWTdNNWxyTFlFeHQ1VVB4bmRDTXg2X2szcS1NWG4xSG5TUWVzenR6c3ZBYUNZUHg2aUVabVhy?oc=5",
-          "published": 1786609833
         }
       ]
     },
@@ -62,6 +62,12 @@
       "key": "tech",
       "name": "人工智能·科技",
       "items": [
+        {
+          "title": "佳话现场丨专访李开复：热爱与担当，是AI永远无法复刻的内核",
+          "source": "央广网",
+          "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5QcGo0MGhrQllYV3FmSFdLTW1SdEZwbWxKS1BIQ29NdGlrQVN6S0FBOU5pdDdVVExBWGkxM3ZoTGVyeWUwVlgtelBDd3lmX2ZfeElmaVNRNVBwTEIxTVJjczhZc1B4M19NU21BN1M5bzBUZjlGb0E?oc=5",
+          "published": 1786626074
+        },
         {
           "title": "美国拟投资5000万美元严控AI芯片溯源，防止对华出口管制遭规避，巴拿马成首个试点",
           "source": "RFI",
@@ -81,28 +87,22 @@
           "published": 1786579823
         },
         {
-          "title": "佳话现场丨专访李开复：热爱与担当，是AI永远无法复刻的内核",
-          "source": "央广网",
-          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE14RlN5cHhrYkgyeW40OGRrNDNjZ1kxeGFTRjJxTFBkYi1STWNDdHVxUmRBNG1ySmFvaVVodVBVa3J6TUhBQzVaTFZxMDM5aUs4RVFXX0JMb2Mxcno1TEhxd29jZmZqYjZJ?oc=5",
-          "published": 1786626074
-        },
-        {
           "title": "关于同意对安捷伦科技（上海）有限公司8860B、8890B型气相色谱仪最终用户使用活动实行豁免管理的复函",
           "source": "中华人民共和国生态环境部",
           "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE5XOUpkdG56TVcwMjdVZ2VHWFh6MXhMMGFBeWN1Wm5LS3ZpZnNhc1F5b3JzMTVNclJndEU2bW1LdkFpRkFnWTlIa2d5MTl2T0hLR0xoSWxfRHVEQXZyRVNEaTBRLTEtWUpmLWdzRnc4YUd1S1B4QzJhSDNFZVFNdw?oc=5",
           "published": 1786629509
         },
         {
-          "title": "预览 GPT-5.6 Sol：新一代模型",
-          "source": "OpenAI",
-          "link": "https://news.google.com/rss/articles/CBMia0FVX3lxTE9DYVdnUFM0M3pOQjFTd0RHdG1fbms3aDdfUjJVcW44VEdjYUxLR2xnUU51YXBTTDQtc2JuRTZYRjd2N3pUQmpaSmxHbzJ1bGd5ZnBqWEpKbW4waTZmOTRZdGFrcHJMU1RQcTN3?oc=5",
-          "published": 1786431600
-        },
-        {
           "title": "台湾称遭AI辅助网攻 政府机关成目标",
           "source": "DW.com",
           "link": "https://news.google.com/rss/articles/CBMigAJBVV95cUxOTl9mVXV0X2I0SVA3aUk1UGhIVzE2Nkl3dy0xSHk4bV8wTGZNRC16alhtWF9SS2kxbk5Zd2trNUY2aFlzd0N1NG5qTHRsLWpkQW9JTV9Qa0w0QTM5RzV6QVZfeVJXY25KSVhrMDhiZGpyMjFOWDNJdDNHcF90dVdLTkhmM3ZHWm0yeFhmYWVWRzZLR2JFdGtoOGNDUk1JM0FfU1NaaXliU2laTU9tdllnYkgtNlpPNm5zTEFMVlB6d1pXNVhoTEthc2NlMDRuQVdQSFVDYTY0MnBlVW9rTFZxTG5Uc0lXU3NKeFgwZFZZSGVUYXE3Zl81TzFHc1pQRTV30gGAAkFVX3lxTFB3dzgtd1ViUDBCc0J2ZlJMa1dyN2FFLXhUWDBGMkxONU5EaWxxSnBfbG10QmFPRGZYWWllQU5FTFU1X0FxdkFQYkptNXBTUXZNZ3hsNnJqb043bWJ2Rzh3bVdzbllpSWJxd0hCdWJRbVJlSG1Ga2Jzbm9PcGNfaFpmcmFxVVdPUnk0V1hDbm1aQzUwc3VxTDdRbkdHSmpRZ3R3UGNOU1dKUk5HQzBpeWRMLW0tM3Q3TENIbDBIaTVydVBSRl9UcnlyNUs2SURaVGEzX3hFODdZX3A4bW5FN3hDaEc4RXhrSlA4UkNBZFNvNkdJSzR3bUczc2pHaEpJSDM?oc=5",
           "published": 1786621967
+        },
+        {
+          "title": "东盟八国科创骨干拥抱广西AI之约",
+          "source": "广西新闻网",
+          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE43RGF1NlotUzhla2t6dTAybXZCbGVHLXJSNXBLZEZ1Q3RyMC1wY2tHNGV5UFI0eDlQRV9wbFZfY19weUxKZk5UWmR5aV9ySDJiSkcwMzk0M2VlMzJKU2Q1QzFGaXJuSzA3ZXA3RUl2dmRuSFdUaGJFcHdTaEFWcFU?oc=5",
+          "published": 1786626840
         }
       ]
     },
@@ -142,15 +142,15 @@
         },
         {
           "title": "电影《冬旅人》导演鲁丹：金鸡创投对于青年导演来说是一次历练的机会",
-          "source": "新华网",
+          "source": "news.cn",
           "link": "https://news.google.com/rss/articles/CBMiekFVX3lxTE53cmJsTFFBY2ZnYktPVklBMTlnUXplcFg3cmdIRE45cy1HZ1ZZMnR4ODhJVjJGbkVMNWYtUi14UnpHSUZzRTMwal9zOXpYNy1YTmpSLXhxSDNwZUtWWmhFNlI1U0NnQTZCRm43ZFd3X3dPcGJiTDVuc1RR?oc=5",
           "published": 1786613557
         },
         {
-          "title": "沈腾、文牧野、蒋奇明、奥马尔来武汉了！电影《欢迎来龙餐馆》主创团队亮相路演- 湖北日报新闻客户端",
-          "source": "湖北日报传媒集团",
-          "link": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE9IcjZPZV9WU0k3TFd5bktVSTEzc0h2bXc3X212dnZ6cW0xTFNlZS01ajNHT0xHbVZ0emxvTDVOTzEteTlfak5obXhnSHlVd3IweGpUN2ZUWVE?oc=5",
-          "published": 1786622430
+          "title": "百花为大众盛开",
+          "source": "新浪财经",
+          "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxObFdJVE5sRWxTdUhLOUlUaVNqNHBTWUFKQ05KNndBYTM5b21nYkQ5am4zUURmcGxYWVdYNVZpS2NJRVFtZldtc2NHUVRNU2dKY19iNVRSNnJPc3A3ZVNjdzRsVWVtU1NyTk45UDV3Uzh0c2FPenpfQldCeC11N1ZEMFZ3?oc=5",
+          "published": 1786632525
         }
       ]
     },
@@ -160,7 +160,7 @@
       "items": [
         {
           "title": "追光丨从杭州出发，亚洲高校篮球舰队驶向更多可能",
-          "source": "新华网",
+          "source": "news.cn",
           "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxNOTE1Z09leFg5eWpmRDNpbHAwQkY5YW9wWnhEaWsyRG56b28xNUxtb0h4aEExM0RpUl9JN0xKaHNsZVFsZjN2M3ZsTWVvc3IyU28wWXNWSktyWE9LdzRvMEtaWTlNZXhyWDFaaHRvMHhuLXJnLW1WbU9TWXlLQmdEdA?oc=5",
           "published": 1786614859
         },
@@ -207,16 +207,16 @@
       "name": "国际",
       "items": [
         {
-          "title": "C919首条国际航线开通引关注 海外网友喊话“快飞到我这来！”",
-          "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE15SUxYcUVvVnQwOUVfcE1xUXhPeDJONlRzQ2piQ19BZTJQRDZSak1iLUt5QWIwN0MxcFJ4UnZLcHVMWlRLZHB2b0U5em5LVTI1NkpGTnd2WkhvWUlUaFNxOWVEMnJSM0tSZ2ZSME1ZM3diZGxTaFBwcFIxeUNYekU?oc=5",
-          "published": 1786615247
-        },
-        {
           "title": "三预警齐发，多个区域发生地质灾害风险较高",
           "source": "中国科技网",
           "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1tM01UbzJkNWNsejU5aXJvTmQ1T3FVYWJEcE9LWHpmaWFkRV8xTTZhblpEajYxeWd1a2VzVXJIMjdRMTF1SEFWa3JzRFVMdWtmbHduOFVCUXp5WVJUeGQwRkNmZi1Ta1ZQNlBVRVhUbjk?oc=5",
           "published": 1786623782
+        },
+        {
+          "title": "C919首条国际航线开通引关注 海外网友喊话“快飞到我这来！”",
+          "source": "news.cn",
+          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE15SUxYcUVvVnQwOUVfcE1xUXhPeDJONlRzQ2piQ19BZTJQRDZSak1iLUt5QWIwN0MxcFJ4UnZLcHVMWlRLZHB2b0U5em5LVTI1NkpGTnd2WkhvWUlUaFNxOWVEMnJSM0tSZ2ZSME1ZM3diZGxTaFBwcFIxeUNYekU?oc=5",
+          "published": 1786615247
         },
         {
           "title": "【中国那些事儿】全球南方媒体热议全球发展倡议五周年：从理念到落地的南南合作实践",
@@ -226,13 +226,13 @@
         },
         {
           "title": "研究提出全球海洋智能预报大模型“琅琊”",
-          "source": "cas.cn",
+          "source": "中国科学院",
           "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTFAyWWRocWRPenV5blNkd1ptbkVWR1M2c1ZlUTE2N3NBUmE3bW5fV3JNU0dlejN2Ui1KQkotdHpDdWVYc0xIMXVfeTFsQ0xkYzV6cE1oeEl5TVMtbmFidXZZTGZjRnc?oc=5",
           "published": 1786589569
         },
         {
           "title": "哈工大承办中国国际大学生创新大赛（2026）巴西区域赛",
-          "source": "news.hit.edu.cn",
+          "source": "哈尔滨工业大学",
           "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTFA5QnM1UmxKZHNEUTQyZ1otTy1JbURsMXptaFFuTG9sX3pzYWlIOTJheU5GMjJzcXRrX3laT21FWGgtM2JRQXV5ZXd6TmhFbi1TLWFNNzczMW1ybWRkZFFzS0xLTlI?oc=5",
           "published": 1786626257
         },
@@ -255,43 +255,43 @@
     {
       "name": "标普500",
       "symbol": "^GSPC",
-      "price": 7799.97,
-      "changePct": 0.66,
+      "price": 7803.06,
+      "changePct": 0.7,
       "fmt": "idx"
     },
     {
       "name": "纳斯达克",
       "symbol": "^IXIC",
-      "price": 26818.33,
-      "changePct": 0.86,
+      "price": 26825.73,
+      "changePct": 0.89,
       "fmt": "idx"
     },
     {
       "name": "布伦特原油",
       "symbol": "BZ=F",
-      "price": 86.72,
-      "changePct": -2.54,
+      "price": 86.81,
+      "changePct": -2.44,
       "fmt": "usd"
     },
     {
       "name": "WTI原油",
       "symbol": "CL=F",
-      "price": 81.07,
-      "changePct": -2.64,
+      "price": 81.12,
+      "changePct": -2.58,
       "fmt": "usd"
     },
     {
       "name": "黄金",
       "symbol": "GC=F",
-      "price": 4441.2,
-      "changePct": 0.73,
+      "price": 4443.5,
+      "changePct": 0.78,
       "fmt": "usd"
     },
     {
       "name": "美元指数",
       "symbol": "DX-Y.NYB",
-      "price": 99.84,
-      "changePct": -0.17,
+      "price": 99.83,
+      "changePct": -0.18,
       "fmt": "idx"
     }
   ],
