@@ -31,6 +31,7 @@ PAGE = ROOT / "apps" / "finance-terminal" / "index.html"
 APP = ROOT / "apps" / "finance-terminal" / "app.js"
 DATA = ROOT / "apps" / "finance-terminal" / "data.json"
 READINESS_DATA = ROOT / "apps" / "finance-terminal" / "readiness.json"
+MARKET_LICENSE_READINESS = ROOT / "apps" / "finance-terminal" / "market-source-readiness.json"
 MACRO_DATA = ROOT / "apps" / "macro-radar" / "data.json"
 FEAR_GREED_DATA = ROOT / "apps" / "fear-greed" / "data.json"
 FEAR_GREED_HEALTH = ROOT / "apps" / "fear-greed" / "health.json"
@@ -618,6 +619,7 @@ const econCalendarHealth = JSON.parse(fs.readFileSync("./apps/econ-calendar/heal
 const financeNews = JSON.parse(fs.readFileSync("./apps/whats-latest/data.json", "utf8"));
 const financeNewsHealth = JSON.parse(fs.readFileSync("./apps/whats-latest/health.json", "utf8"));
 const readiness = JSON.parse(fs.readFileSync("./apps/finance-terminal/readiness.json", "utf8"));
+const marketLicenseReadiness = JSON.parse(fs.readFileSync("./apps/finance-terminal/market-source-readiness.json", "utf8"));
 
 const match = adapter.findDgs10Row(macro);
 assert(match && match.row.id === "DGS10");
@@ -641,6 +643,19 @@ const currentLatestMs = Math.max(...[
 ].map(Date.parse));
 assert(Number.isFinite(currentLatestMs));
 const currentNow = new Date(currentLatestMs + 6 * 60 * 60 * 1000);
+const marketLicenseState = adapter.adaptMarketLicenseReadiness(marketLicenseReadiness);
+assert.strictEqual(marketLicenseState.status, "prepared");
+assert.strictEqual(marketLicenseState.strategy, "exact-original");
+assert.strictEqual(marketLicenseState.blockedAssets, 4);
+assert.strictEqual(marketLicenseState.approvedAssets, 0);
+assert.strictEqual(marketLicenseState.procurement.prepared, 4);
+assert.deepStrictEqual(marketLicenseState.targets, ["SPX", "NDX", "DJIA", "LBMA Gold Price PM"]);
+const selectedMarketProxy = JSON.parse(JSON.stringify(marketLicenseReadiness));
+selectedMarketProxy.assets[0].proxyAlternative.selected = true;
+assert.throws(() => adapter.adaptMarketLicenseReadiness(selectedMarketProxy), /授权或询价状态无效/);
+const fakeMarketInquiry = JSON.parse(JSON.stringify(marketLicenseReadiness));
+fakeMarketInquiry.assets[0].procurement.status = "submitted";
+assert.throws(() => adapter.adaptMarketLicenseReadiness(fakeMarketInquiry), /可审计编号或时间/);
 const currentAttemptAt = new Date(currentNow.getTime() - 60 * 60 * 1000).toISOString();
 const currentAttemptDate = currentAttemptAt.slice(0, 10);
 const supportingSnapshots = [
@@ -1915,7 +1930,8 @@ console.log("- BTC market/fallback + market-only / latest-five / safe links / fa
 
 def main() -> None:
     for path in (
-        PAGE, APP, DATA, READINESS_DATA, MACRO_DATA, FEAR_GREED_DATA, FEAR_GREED_HEALTH, OFR_DATA, OFR_HEALTH,
+        PAGE, APP, DATA, READINESS_DATA, MARKET_LICENSE_READINESS,
+        MACRO_DATA, FEAR_GREED_DATA, FEAR_GREED_HEALTH, OFR_DATA, OFR_HEALTH,
         ASSET_TRACKER_DATA, ASSET_TRACKER_HEALTH, ASSET_RANKING_DATA, ASSET_RANKING_HEALTH,
         COMPANIES_DATA, COMPANIES_HEALTH,
         ECON_CALENDAR_DATA, ECON_CALENDAR_HEALTH, FINANCE_NEWS_DATA, FINANCE_NEWS_HEALTH,
@@ -1929,6 +1945,10 @@ def main() -> None:
     data = json.loads(DATA.read_text(encoding="utf-8"))
     readiness = json.loads(READINESS_DATA.read_text(encoding="utf-8"))
     validate_readiness_snapshot(readiness)
+    market_license_readiness = json.loads(MARKET_LICENSE_READINESS.read_text(encoding="utf-8"))
+    require(market_license_readiness.get("schemaVersion") == 2
+            and market_license_readiness.get("blockedAssetCount") == 4,
+            "精确原标的授权契约版本或阻塞计数无效")
     macro = json.loads(MACRO_DATA.read_text(encoding="utf-8"))
     fear_greed = json.loads(FEAR_GREED_DATA.read_text(encoding="utf-8"))
     fear_greed_health = json.loads(FEAR_GREED_HEALTH.read_text(encoding="utf-8"))
@@ -2346,7 +2366,14 @@ def main() -> None:
     require("其余4项" in page, "页面演示资产数量说明不准确")
     require("Powered by CoinGecko" in page and "Yahoo BTC-USD" in page,
             "页面未披露BTC/USD主要来源、署名或降级口径")
+    require("SPX、NDX、DJIA与LBMA Gold Price PM精确原标的" in page
+            and "不得自动切换SPY、QQQ、DIA或GLD" in page,
+            "页面未披露项目所有者的精确原标的决定")
     require('id="data-banner"' in page and 'id="market-grid"' in page, "页面缺少数据状态或卡片容器")
+    require('id="license-notice" role="region"' in page
+            and 'aria-labelledby="license-title"' in page
+            and "精确原标的授权决策" in page,
+            "页面缺少精确原标的授权进度区域")
     require('id="risk-grid"' in page and 'id="risk-summary"' in page and "市场状态" in page, "页面缺少市场状态模块")
     require('id="research-grid"' in page and 'id="research-summary"' in page and "市场强弱与领袖" in page, "页面缺少市场研究模块")
     require('id="information-grid"' in page and 'id="information-summary"' in page and "今日事件与资讯" in page,
@@ -2505,6 +2532,9 @@ def main() -> None:
     require("READINESS_DATA_URL" in app and "adaptReadinessSnapshot" in app
             and "operation-readiness" in app and "STABLE V1 EVIDENCE" in app,
             "app.js未读取、校验或渲染稳定V1连续周期证据")
+    require("MARKET_LICENSE_READINESS_URL" in app and "adaptMarketLicenseReadiness" in app
+            and "renderMarketLicenseNotice" in app and "INQUIRY READY" in app,
+            "app.js未读取、校验或渲染精确原标的询价状态")
     require("稳定V1运行证据" in page and "同一日更周期重跑不会重复累计" in page,
             "页面未区分健康快照与稳定V1周期门禁")
     require("可用覆盖" in app and "本轮新鲜" in app and "已验证覆盖" in app
@@ -2553,6 +2583,8 @@ def main() -> None:
             and "officialHealthResources" in app and "officialHealthPanelCount" in app
             and "officialObservationTrends" in app and "officialObservationTrendCount" in app,
             "页面缺少浏览器、官方逐源或辅助来源资源回归探针")
+    require("marketLicenseReadiness" in app,
+            "浏览器回归探针未覆盖精确原标的授权状态")
     require("noHorizontalOverflow" in app and "responsiveColumns" in app and "targetSizes" in app
             and "keyboardTabs" in app, "浏览器回归探针未覆盖溢出、布局、触控与键盘交互")
     require('document.querySelectorAll(".operation-card").length === 4' in app

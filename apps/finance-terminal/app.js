@@ -18,6 +18,7 @@
   var FINANCE_NEWS_DATA_URL = "../whats-latest/data.json";
   var FINANCE_NEWS_HEALTH_URL = "../whats-latest/health.json";
   var READINESS_DATA_URL = "readiness.json";
+  var MARKET_LICENSE_READINESS_URL = "market-source-readiness.json";
   var DGS10_MAX_BUSINESS_DAYS = 3;
   var DTWEXBGS_MAX_BUSINESS_DAYS = 3;
   var RWTC_MAX_BUSINESS_DAYS = 4;
@@ -2891,6 +2892,110 @@
     );
   }
 
+  function adaptMarketLicenseReadiness(data) {
+    var expectedTargets = {
+      sp500: "SPX",
+      nasdaq100: "NDX",
+      dow: "DJIA",
+      gold: "LBMA-GOLD-PM-USD"
+    };
+    if (!data || data.schemaVersion !== 2 || data.displayScope !== "public-web"
+      || !data.selection || data.selection.strategy !== "exact-original"
+      || data.selection.proxySubstitutionAllowed !== false) {
+      throw new Error("精确原标的授权决策无效");
+    }
+    var useCase = data.useCase;
+    if (!useCase || useCase.operatorType !== "individual-hobbyist"
+      || useCase.domain !== "ooglex.com" || useCase.displayLatency !== "daily-delayed"
+      || useCase.commercial !== false || useCase.advertising !== false
+      || useCase.subscriptions !== false || useCase.otherRevenue !== false
+      || useCase.publicApiRedistribution !== false || useCase.tradingExecution !== false
+      || useCase.investmentProduct !== false
+      || useCase.quoteAcceptance !== "owner-confirmation-required") {
+      throw new Error("非商业授权使用范围无效");
+    }
+    if (!Array.isArray(data.assets) || data.assets.length !== 4) {
+      throw new Error("待授权原标的数量无效");
+    }
+    var counts = { prepared: 0, submitted: 0, quoted: 0, licensed: 0, blocked: 0, approved: 0 };
+    var seen = {};
+    data.assets.forEach(function (asset) {
+      if (!asset || expectedTargets[asset.id] !== asset.targetSymbol || seen[asset.id]) {
+        throw new Error("待授权原标的标识无效");
+      }
+      seen[asset.id] = true;
+      var authorization = asset.authorization;
+      var procurement = asset.procurement;
+      var proxy = asset.proxyAlternative;
+      if (!authorization || ["blocked", "approved"].indexOf(authorization.status) === -1
+        || !procurement || ["prepared", "submitted", "quoted", "licensed"].indexOf(procurement.status) === -1
+        || !proxy || proxy.selected !== false || proxy.isSameInstrument !== false) {
+        throw new Error("授权或询价状态无效");
+      }
+      if (authorization.status === "blocked") {
+        if (authorization.publicDisplayAuthorized !== false || asset.productionAction !== "keep-demo"
+          || procurement.status === "licensed") {
+          throw new Error("未授权原标的不得退出演示状态");
+        }
+        counts.blocked += 1;
+      } else {
+        if (authorization.publicDisplayAuthorized !== true
+          || asset.productionAction !== "integrate-authorized-source"
+          || procurement.status !== "licensed"
+          || typeof authorization.approvalReference !== "string"
+          || !authorization.approvalReference.trim()) {
+          throw new Error("已授权原标的状态不可复算");
+        }
+        counts.approved += 1;
+      }
+      if (procurement.status === "prepared" && procurement.submittedAt !== null) {
+        throw new Error("未提交询价不得包含提交时间");
+      }
+      if (["submitted", "quoted"].indexOf(procurement.status) !== -1
+        && (typeof procurement.submittedAt !== "string"
+          || !/(?:Z|[+-]\d{2}:\d{2})$/.test(procurement.submittedAt)
+          || Number.isNaN(new Date(procurement.submittedAt).getTime())
+          || typeof procurement.inquiryReference !== "string"
+          || !procurement.inquiryReference.trim())) {
+        throw new Error("已提交询价缺少可审计编号或时间");
+      }
+      counts[procurement.status] += 1;
+    });
+    if (Object.keys(expectedTargets).some(function (id) { return !seen[id]; })
+      || data.blockedAssetCount !== counts.blocked
+      || data.inquiryReadyAssetCount !== 4) {
+      throw new Error("授权与询价计数不可复算");
+    }
+    var status = counts.licensed === 4 ? "licensed"
+      : counts.quoted > 0 ? "quoted"
+        : counts.submitted > 0 ? "submitted" : "prepared";
+    return {
+      status: status,
+      strategy: data.selection.strategy,
+      targets: ["SPX", "NDX", "DJIA", "LBMA Gold Price PM"],
+      blockedAssets: counts.blocked,
+      approvedAssets: counts.approved,
+      procurement: {
+        prepared: counts.prepared,
+        submitted: counts.submitted,
+        quoted: counts.quoted,
+        licensed: counts.licensed
+      }
+    };
+  }
+
+  function unavailableMarketLicenseReadiness(error) {
+    return {
+      status: "unknown",
+      strategy: "unknown",
+      targets: [],
+      blockedAssets: 4,
+      approvedAssets: 0,
+      procurement: { prepared: 0, submitted: 0, quoted: 0, licensed: 0 },
+      error: error && error.message ? error.message : "授权状态不可用"
+    };
+  }
+
   var testApi = {
     adaptDgs10: adaptDgs10,
     adaptDtwexbgs: adaptDtwexbgs,
@@ -2898,6 +3003,7 @@
     adaptOfficialSourceHealth: adaptOfficialSourceHealth,
     adaptPipelineOperation: adaptPipelineOperation,
     adaptReadinessSnapshot: adaptReadinessSnapshot,
+    adaptMarketLicenseReadiness: adaptMarketLicenseReadiness,
     adaptCrossAsset: adaptCrossAsset,
     adaptEconomicCalendar: adaptEconomicCalendar,
     adaptFinanceNews: adaptFinanceNews,
@@ -2962,6 +3068,10 @@
   var bannerTitle = document.getElementById("banner-title");
   var bannerCopy = document.getElementById("banner-copy");
   var bannerNote = document.getElementById("banner-note");
+  var licenseNotice = document.getElementById("license-notice");
+  var licenseLabel = document.getElementById("license-label");
+  var licenseTitle = document.getElementById("license-title");
+  var licenseCopy = document.getElementById("license-copy");
   var riskGrid = document.getElementById("risk-grid");
   var riskSummary = document.getElementById("risk-summary");
   var researchGrid = document.getElementById("research-grid");
@@ -3938,6 +4048,32 @@
       + stale + " STALE · " + failed + " FAILED · " + unknown + " UNKNOWN" + evidenceSummary;
   }
 
+  function renderMarketLicenseNotice(state) {
+    if (!licenseNotice || !licenseLabel || !licenseTitle || !licenseCopy) return;
+    licenseNotice.className = "license-notice status-" + state.status;
+    if (state.status === "licensed") {
+      licenseLabel.textContent = "LICENSED";
+      licenseTitle.textContent = "精确原标的公开展示授权已登记";
+      licenseCopy.textContent = "SPX、NDX、DJIA与LBMA Gold Price PM许可已登记；真实数据仍需通过接入验收后才能替换DEMO。";
+    } else if (state.status === "quoted") {
+      licenseLabel.textContent = "QUOTE RECEIVED";
+      licenseTitle.textContent = "精确原标的报价待所有者确认";
+      licenseCopy.textContent = state.procurement.quoted + "项已取得报价；合同、付款和用途不得自动接受，授权前继续DEMO。";
+    } else if (state.status === "submitted") {
+      licenseLabel.textContent = "INQUIRY SENT";
+      licenseTitle.textContent = "精确原标的授权询价已提交";
+      licenseCopy.textContent = state.procurement.submitted + "项已提交并登记审计编号；这不等于已获公开展示授权，四项继续DEMO。";
+    } else if (state.status === "prepared") {
+      licenseLabel.textContent = "INQUIRY READY";
+      licenseTitle.textContent = "精确原标的已锁定";
+      licenseCopy.textContent = "SPX、NDX、DJIA与LBMA Gold Price PM的非商业延迟展示询价材料已准备，尚未提交或获授权；四项继续DEMO。";
+    } else {
+      licenseLabel.textContent = "LICENSE UNKNOWN";
+      licenseTitle.textContent = "授权状态暂不可核验";
+      licenseCopy.textContent = "无法读取或验证机器授权契约；为避免误用，三大股指与黄金继续保持DEMO。";
+    }
+  }
+
   function makeCard(asset) {
     var direction = directionOf(asset);
     var card = document.createElement("article");
@@ -4089,6 +4225,7 @@
     operationsMessage.setAttribute("role", "alert");
     operationsGrid.setAttribute("aria-busy", "false");
     operationsSummary.textContent = "PIPELINES UNAVAILABLE";
+    renderMarketLicenseNotice(unavailableMarketLicenseReadiness(error));
     if (pageAnnouncer) {
       pageAnnouncer.setAttribute("aria-live", "assertive");
       pageAnnouncer.textContent = "金融终端加载失败，页面未显示任何默认数值。";
@@ -4214,6 +4351,9 @@
             && observationCount !== null && observationCount >= 1 && observationCount <= 8
             && Boolean(panel.querySelector(".sparkline")) === (observationCount >= 2);
         }),
+      marketLicenseReadiness: licenseNotice && !licenseNotice.classList.contains("status-unknown")
+        && licenseNotice.textContent.indexOf("精确原标的") !== -1
+        && licenseNotice.textContent.indexOf("DEMO") !== -1,
       readinessEvidenceResources: readinessEvidencePanels.length === 4
         && readinessEvidencePanels.every(function (panel) {
           var progress = panel.querySelector('[role="progressbar"]');
@@ -4324,7 +4464,8 @@
         fetchSource(ECON_CALENDAR_HEALTH_URL),
         fetchSource(FINANCE_NEWS_DATA_URL),
         fetchSource(FINANCE_NEWS_HEALTH_URL),
-        fetchSource(READINESS_DATA_URL)
+        fetchSource(READINESS_DATA_URL),
+        fetchSource(MARKET_LICENSE_READINESS_URL)
       ]).then(function (sources) {
         var macroSource = sources[0];
         var macroHealthSource = sources[1];
@@ -4343,6 +4484,14 @@
         var newsSource = sources[14];
         var newsHealthSource = sources[15];
         var readinessSource = sources[16];
+        var marketLicenseSource = sources[17];
+        var marketLicenseState;
+        try {
+          if (marketLicenseSource.error) throw marketLicenseSource.error;
+          marketLicenseState = adaptMarketLicenseReadiness(marketLicenseSource.data);
+        } catch (marketLicenseError) {
+          marketLicenseState = unavailableMarketLicenseReadiness(marketLicenseError);
+        }
         var marketData = macroSource.error
           ? buildPageDataWithMacroError(
             config, macroSource.error, undefined, macroHealthSource, assetRankingSource, assetRankingHealthSource
@@ -4383,7 +4532,8 @@
             assetRanking: assetRankingSource,
             assetRankingHealth: assetRankingHealthSource,
             readiness: readinessSource
-          })
+          }),
+          marketLicense: marketLicenseState
         };
       });
     })
@@ -4393,6 +4543,7 @@
       renderResearchCards(experience.research);
       renderInformationCards(experience.information);
       renderOperationsCards(experience.operations);
+      renderMarketLicenseNotice(experience.marketLicense);
       announceExperience(experience);
       window.setTimeout(runBrowserRegressionProbe, 0);
     })

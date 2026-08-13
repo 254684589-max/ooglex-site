@@ -203,6 +203,40 @@
     .status-stale .data-note { color: rgba(247, 216, 150, 0.72); }
     .status-error .data-note { color: rgba(255, 194, 199, 0.72); }
 
+    .license-notice {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      margin-top: 10px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(11, 18, 27, 0.78);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .license-notice.status-quoted { border-color: rgba(242, 189, 92, 0.42); }
+    .license-notice.status-licensed { border-color: rgba(72, 217, 164, 0.42); }
+    .license-notice.status-unknown { border-color: rgba(255, 125, 134, 0.4); }
+    .license-label {
+      padding: 4px 7px;
+      border: 1px solid rgba(84, 216, 255, 0.32);
+      border-radius: 4px;
+      color: var(--cyan);
+      background: var(--cyan-soft);
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      white-space: nowrap;
+    }
+    .status-quoted .license-label { border-color: rgba(242, 189, 92, 0.4); color: var(--amber); background: var(--amber-soft); }
+    .status-licensed .license-label { border-color: rgba(72, 217, 164, 0.4); color: var(--up); background: var(--up-soft); }
+    .status-unknown .license-label { border-color: rgba(255, 125, 134, 0.4); color: var(--down); background: var(--down-soft); }
+    .license-notice strong { color: var(--ink); }
+    .license-copy { margin-left: 0.35em; }
+
     .hero {
       display: grid;
       grid-template-columns: minmax(0, 1.2fr) minmax(420px, 0.8fr);
@@ -787,7 +821,7 @@
     }
     .information-source { grid-column: 1 / -1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .information-skeleton { min-height: 402px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--panel); }
-    .banner-copy, .risk-note, .research-note, .information-note, .operation-note, .operations-notice, .method p, .load-error { overflow-wrap: anywhere; }
+    .banner-copy, .license-copy, .risk-note, .research-note, .information-note, .operation-note, .operations-notice, .method p, .load-error { overflow-wrap: anywhere; }
 
     .operations-section { margin-top: 34px; }
     .operations-notice {
@@ -963,6 +997,8 @@
       .back-link { margin-left: auto; }
       .data-banner { grid-template-columns: auto 1fr; }
       .data-note { grid-column: 1 / -1; padding-left: 1px; }
+      .license-notice { grid-template-columns: minmax(0, 1fr); }
+      .license-label { justify-self: start; }
       .hero { padding: 38px 0 26px; }
       h1 { font-size: clamp(36px, 12vw, 48px); }
       .hero-copy { font-size: 14px; }
@@ -1014,7 +1050,7 @@
       .status-chip, .period-tab, .back-link, .operation-action { border-width: 2px; }
     }
     @media (forced-colors: active) {
-      .asset-card, .risk-card, .research-card, .information-card, .operation-card, .data-banner, .pipeline-health, .operation-readiness { border: 1px solid CanvasText; }
+      .asset-card, .risk-card, .research-card, .information-card, .operation-card, .data-banner, .license-notice, .pipeline-health, .operation-readiness { border: 1px solid CanvasText; }
       .status-chip, .period-tab, .back-link, .skip-link, .operation-action, .operation-readiness-link { forced-color-adjust: auto; }
       .asset-card::after, .risk-card::after, .research-card::after, .information-card::after, .operation-card::after { background: CanvasText; }
     }
@@ -1040,6 +1076,11 @@
       <span class="data-label" id="banner-label">PARTIAL</span>
       <span><strong id="banner-title">当前为部分演示数据</strong><span class="banner-copy" id="banner-copy">正在校验DGS10、DTWEXBGS、EIA RWTC与BTC/USD每日数据；其余4项仍为演示数据。</span></span>
       <span class="data-note" id="banner-note">LOADING 4 REAL · 4 DEMO</span>
+    </div>
+
+    <div class="license-notice status-loading" id="license-notice" role="region" aria-labelledby="license-title" aria-describedby="license-copy">
+      <span class="license-label" id="license-label">LICENSE CHECK</span>
+      <span><strong id="license-title">正在读取精确原标的授权决策</strong><span class="license-copy" id="license-copy">三大股指与黄金在授权状态通过机器校验前继续保持DEMO。</span></span>
     </div>
 
     <main id="main-content" tabindex="-1">
@@ -1135,7 +1176,7 @@
           全球资产市值以十亿美元为统一单位，逐项区分行情、已披露市值代理、历史回退、静态估值和待确认状态，并展示逐条来源；房地产、政府债务等慢变量估值若未保存原报告日期，不会用文件更新时间代替。公司榜与资产榜运行状态把动态行情和慢频估值分层：已登记的慢频估值不会冒充每日行情，也不会单独被当作更新失败；动态回退、未知、不可用或未登记`PARTIAL`路径仍会明确降级。全球公司领袖逐公司区分Yahoo行情、历史回退和未上市静态估值；未上市估值不参与涨跌排序。
           宏观状态沿用宏观雷达已有的0–100制度信号分数，数值越高越偏“宽松·支持”；CNN恐慌与贪婪分数表示从“极度恐惧”到“极度贪婪”；OFR金融压力指数以0为历史平均，正值高于平均压力、负值低于平均压力。三者口径不同，不合成为新的总分。DGS10收益率显示为百分比，变化显示为相对上一观测值的基点（bp）。
           DGS10、DTWEXBGS与RWTC三张官方行情卡片分别交叉校验同一份宏观数据和逐源健康快照；BTC/USD另与资产榜中的CoinGecko/Yahoo逐源证据对齐。四张真实行情卡片都在卡内显示独立 <code>UPDATE HEALTH</code>：本轮刷新、明确降级或回退、连续失败、最近尝试与最后成功均不与行情数据日混用。前三张官方卡片另显示最多8项严格按日期递增的最近官方观测；DGS10区间变化使用bp，DTWEXBGS与RWTC使用百分比，历史不足时不以演示走势填充。单个来源健康字段异常时只把对应健康栏降为 <code>UNKNOWN</code>，不会隐藏仍可验证的行情，也不会拖累其他卡片；健康证据超过72小时显示 <code>STALE</code>。
-          <strong>DTWEXBGS是美联储H.10广义贸易加权美元指数，不是ICE DXY；RWTC是EIA库欣WTI现货，不是 <code>CL=F</code> 近月期货。</strong> WTI以美元/桶显示，涨跌按前后两个有效观测值计算；美元或WTI自动更新失败时保留最后有效值，RWTC超过4个美国工作日未发布新观测值时标记“STALE”。BTC/USD优先复用资产榜CoinGecko日度快照并显示“Powered by CoinGecko”；若明确降级至Yahoo BTC-USD，卡片同步改为“较前收盘”口径。三大股指与黄金共4项保留 <code>demo: true</code> 并逐卡显示“DEMO”。查看 <a href="https://fred.stlouisfed.org/series/DTWEXBGS" target="_blank" rel="noopener noreferrer">DTWEXBGS官方序列</a>、<a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html" target="_blank" rel="noopener noreferrer">FRED API使用条款</a>、<a href="https://www.eia.gov/dnav/pet/hist/rwtcd.htm" target="_blank" rel="noopener noreferrer">EIA RWTC官方序列</a>、<a href="https://www.eia.gov/opendata/documentation.php" target="_blank" rel="noopener noreferrer">EIA API文档</a>和<a href="https://www.coingecko.com/" target="_blank" rel="noopener noreferrer">CoinGecko</a>；本产品未获圣路易斯联储认可或认证。
+          <strong>DTWEXBGS是美联储H.10广义贸易加权美元指数，不是ICE DXY；RWTC是EIA库欣WTI现货，不是 <code>CL=F</code> 近月期货。</strong> WTI以美元/桶显示，涨跌按前后两个有效观测值计算；美元或WTI自动更新失败时保留最后有效值，RWTC超过4个美国工作日未发布新观测值时标记“STALE”。BTC/USD优先复用资产榜CoinGecko日度快照并显示“Powered by CoinGecko”；若明确降级至Yahoo BTC-USD，卡片同步改为“较前收盘”口径。项目所有者已选择SPX、NDX、DJIA与LBMA Gold Price PM精确原标的，非商业延迟展示询价材料已准备但尚未提交或获授权；四项继续保留 <code>demo: true</code> 并逐卡显示“DEMO”，不得自动切换SPY、QQQ、DIA或GLD。查看 <a href="https://fred.stlouisfed.org/series/DTWEXBGS" target="_blank" rel="noopener noreferrer">DTWEXBGS官方序列</a>、<a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html" target="_blank" rel="noopener noreferrer">FRED API使用条款</a>、<a href="https://www.eia.gov/dnav/pet/hist/rwtcd.htm" target="_blank" rel="noopener noreferrer">EIA RWTC官方序列</a>、<a href="https://www.eia.gov/opendata/documentation.php" target="_blank" rel="noopener noreferrer">EIA API文档</a>和<a href="https://www.coingecko.com/" target="_blank" rel="noopener noreferrer">CoinGecko</a>；本产品未获圣路易斯联储认可或认证。
         </p>
       </section>
     </main>
