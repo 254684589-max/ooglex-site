@@ -16,8 +16,13 @@ on:
       - 'scripts/finance_terminal_readiness_snapshot.py'
       - 'scripts/validate_finance_terminal_readiness_snapshot.py'
       - 'scripts/validate_finance_terminal.py'
+      - 'apps/finance-terminal/app.js'
+      - 'apps/finance-terminal/index.html'
       - 'scripts/finance_terminal_market_licenses.py'
       - 'scripts/validate_finance_terminal_market_licenses.py'
+      - 'scripts/validate_finance_terminal_browser.mjs'
+      - 'scripts/finance_terminal_browser_evidence.mjs'
+      - 'scripts/validate_finance_terminal_browser_evidence.mjs'
       - 'apps/finance-terminal/market-source-readiness.json'
       - 'scripts/asset-tracker/build_assets.py'
       - 'scripts/market_data_quality.py'
@@ -154,6 +159,7 @@ jobs:
           python scripts/validate_finance_terminal_readiness_snapshot.py
           python scripts/finance_terminal_readiness_snapshot.py \
             --validate-only apps/finance-terminal/readiness.json
+          node scripts/validate_finance_terminal_browser_evidence.mjs
           node scripts/validate_finance_terminal_browser.mjs \
             --artifacts-dir /tmp/finance-terminal-browser
 
@@ -191,6 +197,15 @@ jobs:
           path: /tmp/finance-terminal-browser/*.png
           if-no-files-found: warn
           retention-days: 7
+
+      - name: Upload final proxy runtime evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: finance-terminal-v1-proxy-runtime-${{ github.run_attempt }}
+          path: /tmp/finance-terminal-browser/finance-terminal-browser-evidence.json
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Upload final source health diagnostics
         if: always()

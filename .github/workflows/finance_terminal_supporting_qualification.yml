@@ -106,6 +106,7 @@ jobs:
           python scripts/validate_finance_terminal_supporting_qualification.py
           python scripts/validate_finance_terminal.py
           python scripts/validate_finance_terminal_release_gate.py
+          node scripts/validate_finance_terminal_browser_evidence.mjs
           node scripts/validate_finance_terminal_browser.mjs \
             --artifacts-dir /tmp/finance-terminal-supporting-browser
 
@@ -126,6 +127,15 @@ jobs:
           path: /tmp/finance-terminal-supporting-browser/*.png
           if-no-files-found: warn
           retention-days: 7
+
+      - name: Upload final proxy runtime evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: finance-terminal-supporting-proxy-runtime-${{ github.run_attempt }}
+          path: /tmp/finance-terminal-supporting-browser/finance-terminal-browser-evidence.json
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Fail invalid supporting snapshots
         if: steps.final-quality.outcome != 'success'

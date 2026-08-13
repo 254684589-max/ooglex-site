@@ -64,6 +64,8 @@ FINANCE_NEWS_WORKFLOW = ROOT / ".github" / "workflows" / "whats_latest.yml"
 SCHEDULER_WORKFLOW = ROOT / ".github" / "workflows" / "scheduler.yml"
 QUALITY_WORKFLOW = ROOT / ".github" / "workflows" / "finance_terminal_quality.yml"
 BROWSER_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_browser.mjs"
+BROWSER_EVIDENCE = ROOT / "scripts" / "finance_terminal_browser_evidence.mjs"
+BROWSER_EVIDENCE_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_browser_evidence.mjs"
 DATA_ISSUE_FORM = ROOT / ".github" / "ISSUE_TEMPLATE" / "finance-terminal-data.yml"
 OPERATIONS_RUNBOOK = ROOT / "docs" / "FINANCE_TERMINAL_OPERATIONS_RUNBOOK.md"
 SOURCE_HEALTH_VALIDATOR = ROOT / "scripts" / "validate_market_source_health.py"
@@ -2029,7 +2031,8 @@ def main() -> None:
         MACRO_BUILD, MACRO_WORKFLOW, FEAR_GREED_WORKFLOW, OFR_WORKFLOW, ASSET_TRACKER_WORKFLOW,
         ASSET_RANKING_WORKFLOW, COMPANIES_WORKFLOW, ECON_CALENDAR_WORKFLOW, FINANCE_NEWS_WORKFLOW,
         SCHEDULER_WORKFLOW, SOURCE_HEALTH_VALIDATOR, SOURCE_HEALTH_DOC,
-        SUPPORTING_HEALTH_VALIDATOR, SUPPORTING_HEALTH_DOC, HOME,
+        SUPPORTING_HEALTH_VALIDATOR, SUPPORTING_HEALTH_DOC,
+        BROWSER_VALIDATOR, BROWSER_EVIDENCE, BROWSER_EVIDENCE_VALIDATOR, HOME,
     ):
         require(path.is_file(), f"缺少文件：{path.relative_to(ROOT)}")
 
@@ -2739,12 +2742,19 @@ def main() -> None:
     econ_calendar_workflow = ECON_CALENDAR_WORKFLOW.read_text(encoding="utf-8")
     finance_news_workflow = FINANCE_NEWS_WORKFLOW.read_text(encoding="utf-8")
     scheduler = SCHEDULER_WORKFLOW.read_text(encoding="utf-8")
-    require(BROWSER_VALIDATOR.exists(), "缺少金融终端真实浏览器回归脚本")
     browser_validator = BROWSER_VALIDATOR.read_text(encoding="utf-8")
     require("[360, 768, 1280]" in browser_validator and "Page.captureScreenshot" in browser_validator
             and "Runtime.evaluate" in browser_validator and "officialObservationTrendCount" in browser_validator
-            and "readinessEvidencePanelCount" in browser_validator,
+            and "readinessEvidencePanelCount" in browser_validator
+            and "finance-terminal-browser-evidence.json" in browser_validator
+            and "buildBrowserEvidence" in browser_validator,
             "浏览器回归脚本未覆盖三档宽度、官方趋势、稳定V1证据、渲染DOM和截图")
+    browser_evidence = BROWSER_EVIDENCE.read_text(encoding="utf-8")
+    require("EXPECTED_WIDTHS = [360, 768, 1280]" in browser_evidence
+            and 'EXPECTED_SYMBOLS = ["SPY", "QQQ", "DIA", "GLD"]' in browser_evidence
+            and "doesNotReadOrStoreQuotes" in browser_evidence
+            and "connected-defined-element-with-layout" in browser_evidence,
+            "浏览器证据未覆盖四项代理、三档视口或禁止行情读取边界")
     require(QUALITY_WORKFLOW.exists(), "缺少金融终端只读质量工作流")
     quality_workflow = QUALITY_WORKFLOW.read_text(encoding="utf-8")
     require("permissions:\n  contents: read" in quality_workflow, "金融终端质量工作流权限必须只读")
@@ -2752,7 +2762,11 @@ def main() -> None:
             "金融终端质量工作流未覆盖数据反馈表单变更")
     require("docs/FINANCE_TERMINAL_OPERATIONS_RUNBOOK.md" in quality_workflow,
             "金融终端质量工作流未覆盖四管道运行手册变更")
-    require("validate_finance_terminal_browser.mjs" in quality_workflow and "validate_finance_terminal.py" in quality_workflow,
+    require("validate_finance_terminal_browser.mjs" in quality_workflow
+            and "validate_finance_terminal_browser_evidence.mjs" in quality_workflow
+            and "finance-terminal-browser-evidence.json" in quality_workflow
+            and "finance-terminal-proxy-runtime" in quality_workflow
+            and "validate_finance_terminal.py" in quality_workflow,
             "金融终端质量工作流未运行静态与浏览器回归")
     require("validate_market_data_quality.py --dataset all" in quality_workflow,
             "金融终端质量工作流未统一校验三条逐项来源契约")

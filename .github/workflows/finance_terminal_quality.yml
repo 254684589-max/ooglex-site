@@ -29,6 +29,8 @@ on:
       - 'scripts/finance_terminal_market_licenses.py'
       - 'scripts/validate_finance_terminal_market_licenses.py'
       - 'scripts/validate_finance_terminal_browser.mjs'
+      - 'scripts/finance_terminal_browser_evidence.mjs'
+      - 'scripts/validate_finance_terminal_browser_evidence.mjs'
       - 'scripts/market_data_quality.py'
       - 'scripts/validate_market_data_quality.py'
       - 'scripts/market_source_health.py'
@@ -98,6 +100,8 @@ on:
       - 'scripts/finance_terminal_market_licenses.py'
       - 'scripts/validate_finance_terminal_market_licenses.py'
       - 'scripts/validate_finance_terminal_browser.mjs'
+      - 'scripts/finance_terminal_browser_evidence.mjs'
+      - 'scripts/validate_finance_terminal_browser_evidence.mjs'
       - 'scripts/market_data_quality.py'
       - 'scripts/validate_market_data_quality.py'
       - 'scripts/market_source_health.py'
@@ -208,7 +212,9 @@ jobs:
         run: python scripts/validate_finance_terminal_supporting_qualification.py
 
       - name: Validate rendered page in Chrome
-        run: node scripts/validate_finance_terminal_browser.mjs --artifacts-dir /tmp/finance-terminal-browser
+        run: |
+          node scripts/validate_finance_terminal_browser_evidence.mjs
+          node scripts/validate_finance_terminal_browser.mjs --artifacts-dir /tmp/finance-terminal-browser
 
       - name: Upload responsive screenshots
         if: always()
@@ -218,6 +224,15 @@ jobs:
           path: /tmp/finance-terminal-browser/*.png
           if-no-files-found: warn
           retention-days: 7
+
+      - name: Upload proxy runtime evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: finance-terminal-proxy-runtime-${{ github.run_attempt }}
+          path: /tmp/finance-terminal-browser/finance-terminal-browser-evidence.json
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Upload source health diagnostics
         if: always()

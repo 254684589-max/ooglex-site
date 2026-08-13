@@ -119,6 +119,10 @@ def test_github_workflow_safety() -> None:
             "辅助资格失败必须阻断且仍上传诊断")
     require("ref: ${{ github.ref_name }}" in workflow,
             "最终检查必须重新读取辅助任务写入后的最新开发分支")
+    require("scripts/validate_finance_terminal_browser_evidence.mjs" in workflow
+            and "finance-terminal-supporting-proxy-runtime" in workflow
+            and "finance-terminal-browser-evidence.json" in workflow,
+            "辅助资格完整页面检查必须保留四项代理运行时证据")
     require(all(name not in workflow for name in (
         "fear_greed.yml", "ofr_monitor.yml", "econ_calendar.yml",
         "whats_latest.yml",

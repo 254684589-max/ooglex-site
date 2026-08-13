@@ -8,6 +8,7 @@ import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { buildBrowserEvidence } from "./finance_terminal_browser_evidence.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const WIDTHS = [360, 768, 1280];
@@ -310,11 +311,16 @@ async function main() {
     await Promise.all([client.send("Page.enable"), client.send("Runtime.enable")]);
     const results = [];
     for (const width of WIDTHS) results.push(await runWidth(client, baseUrl, artifacts, width, options.height, timeoutMs));
+    const evidence = buildBrowserEvidence(results);
+    const evidencePath = path.join(artifacts, "finance-terminal-browser-evidence.json");
+    await writeFile(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`);
     for (const result of results) {
       const layout = result.layout;
-      console.log(`${result.viewport.width}px: PASS · cards 8/3/3/2/4 · official trends ${result.officialObservationTrendCount}/3 · official health ${result.officialHealthPanelCount}/4 · support health ${result.supportingHealthPanelCount}/4 · V1 evidence ${result.readinessEvidencePanelCount}/4 · columns ${layout.market}/${layout.risk}/${layout.research}/${layout.information}/${layout.operations} · focusable ${result.focusableCount} · targets ${result.targetCount}`);
+      const mounted = result.providerWidgetRuntimeEvidence.filter((item) => item.state === "mounted").length;
+      console.log(`${result.viewport.width}px: PASS · cards 8/3/3/2/4 · proxy hosts ${mounted}/4 mounted · official trends ${result.officialObservationTrendCount}/3 · official health ${result.officialHealthPanelCount}/4 · support health ${result.supportingHealthPanelCount}/4 · V1 evidence ${result.readinessEvidencePanelCount}/4 · columns ${layout.market}/${layout.risk}/${layout.research}/${layout.information}/${layout.operations} · focusable ${result.focusableCount} · targets ${result.targetCount}`);
     }
     console.log(`Finance Terminal browser regression: PASS (${WIDTHS.join(", ")}px)`);
+    console.log(`Proxy runtime evidence: ${evidence.summary.mountedObservations}/${evidence.summary.observationCount} mounted observations; ${evidence.summary.fallbackObservations} official-link fallbacks`);
     if (options.artifactsDir) console.log(`Screenshots: ${artifacts}`);
     return 0;
   } finally {
