@@ -132,11 +132,19 @@ def test_github_workflow_safety() -> None:
             and "finance-terminal-v1-proxy-runtime" in workflow
             and "finance-terminal-browser-evidence.json" in workflow
             and "finance-terminal-browser-evidence.md" in workflow
+            and "validate_finance_terminal_proxy_runtime_history.py" in workflow
+            and "finance_terminal_proxy_runtime_history.py" in workflow
+            and "finance-terminal-proxy-runtime-history.json" in workflow
+            and "finance-terminal-proxy-runtime-history.md" in workflow
+            and "GITHUB_TOKEN: ${{ github.token }}" in workflow
+            and "GITHUB_STEP_SUMMARY" in workflow
             and "retention-days: 14" in workflow,
-            "稳定V1资格必须保留四项代理的机器可读浏览器证据")
+            "稳定V1资格必须保留四项代理的浏览器证据、趋势与运维评估")
     require("scripts/finance_terminal_browser_evidence.mjs" in quality
-            and "scripts/validate_finance_terminal_browser_evidence.mjs" in quality,
-            "浏览器证据生成或契约变化必须触发质量CI")
+            and "scripts/validate_finance_terminal_browser_evidence.mjs" in quality
+            and "scripts/finance_terminal_proxy_runtime_history.py" in quality
+            and "scripts/validate_finance_terminal_proxy_runtime_history.py" in quality,
+            "浏览器证据或趋势生成与契约变化必须触发质量CI")
     require(".github/workflows/finance_terminal_v1_qualification.yml" in quality,
             "资格工作流变更必须触发质量CI")
 
