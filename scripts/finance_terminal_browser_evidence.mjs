@@ -4,7 +4,7 @@ import path from "node:path";
 
 export const EXPECTED_WIDTHS = [360, 768, 1280];
 export const EXPECTED_SYMBOLS = ["SPY", "QQQ", "DIA", "GLD"];
-export const EXPECTED_PROVIDER_SCRIPT = "https://www.tradingview-widget.com/w/en/tv-mini-chart.js";
+export const EXPECTED_PROVIDER_SCRIPT = "https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js";
 export const EXPECTED_FALLBACK_URLS = {
   SPY: "https://www.tradingview.com/symbols/AMEX-SPY/",
   QQQ: "https://www.tradingview.com/symbols/NASDAQ-QQQ/",

@@ -23,7 +23,7 @@ const results = widths.map((width, widthIndex) => ({
   screenshot: `/tmp/runtime/finance-terminal-${width}.png`,
   providerScriptTransport: widthIndex === 0
     ? {
-        url: "https://www.tradingview-widget.com/w/en/tv-mini-chart.js",
+        url: "https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js",
         state: "loaded",
         reason: "response-ok",
         httpStatus: 200,
@@ -32,7 +32,7 @@ const results = widths.map((width, widthIndex) => ({
       }
     : widthIndex === 1
       ? {
-          url: "https://www.tradingview-widget.com/w/en/tv-mini-chart.js",
+          url: "https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js",
           state: "failed",
           reason: "request-blocked",
           httpStatus: null,
@@ -40,7 +40,7 @@ const results = widths.map((width, widthIndex) => ({
           failureCategory: "blocked"
         }
       : {
-          url: "https://www.tradingview-widget.com/w/en/tv-mini-chart.js",
+          url: "https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js",
           state: "pending",
           reason: "response-pending",
           httpStatus: null,

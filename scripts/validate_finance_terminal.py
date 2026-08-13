@@ -2739,8 +2739,10 @@ def main() -> None:
     require("apps/finance-terminal/" in home, "首页缺少金融终端入口")
 
     external_scripts = re.findall(r'<script[^>]+src=["\'](https?://[^"\']+)', page, flags=re.I)
-    require(external_scripts == ["https://www.tradingview-widget.com/w/en/tv-mini-chart.js"],
+    require(external_scripts == ["https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js"],
             "金融终端只能引入已登记的TradingView免费组件脚本")
+    require("www.tradingview-widget.com" not in page and "www.tradingview-widget.com" not in app,
+            "金融终端不得回退到会拒绝组件请求的旧www脚本主机")
     require('type="module"' in page and page.index("tv-mini-chart.js") < page.index('src="app.js"'),
             "TradingView组件必须以模块脚本在本地应用前加载")
     build_script = MACRO_BUILD.read_text(encoding="utf-8")

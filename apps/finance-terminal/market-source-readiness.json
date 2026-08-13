@@ -28,7 +28,7 @@
     "name": "TradingView",
     "delivery": "official-free-web-component",
     "widget": "tv-mini-chart",
-    "scriptUrl": "https://www.tradingview-widget.com/w/en/tv-mini-chart.js",
+    "scriptUrl": "https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js",
     "documentationUrl": "https://www.tradingview.com/widget-docs/widgets/charts/mini-chart/",
     "marketAvailabilityUrl": "https://www.tradingview.com/widget-docs/markets/",
     "dataFaqUrl": "https://www.tradingview.com/widget-docs/faq/data/",

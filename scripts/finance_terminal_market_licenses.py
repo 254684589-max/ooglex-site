@@ -9,8 +9,8 @@ from typing import Any
 from urllib.parse import urlparse
 
 
-TRADINGVIEW_HOSTS = {"www.tradingview.com", "www.tradingview-widget.com"}
-WIDGET_SCRIPT_URL = "https://www.tradingview-widget.com/w/en/tv-mini-chart.js"
+TRADINGVIEW_HOSTS = {"www.tradingview.com", "widgets.tradingview-widget.com"}
+WIDGET_SCRIPT_URL = "https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js"
 EXPECTED_ASSETS = {
     "sp500": {"originalSymbol": "SPX", "proxySymbol": "SPY", "widgetSymbol": "AMEX:SPY"},
     "nasdaq100": {"originalSymbol": "NDX", "proxySymbol": "QQQ", "widgetSymbol": "NASDAQ:QQQ"},

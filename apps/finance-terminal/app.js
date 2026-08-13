@@ -2951,7 +2951,7 @@
     if (!provider || provider.name !== "TradingView"
       || provider.delivery !== "official-free-web-component"
       || provider.widget !== "tv-mini-chart"
-      || provider.scriptUrl !== "https://www.tradingview-widget.com/w/en/tv-mini-chart.js"
+      || provider.scriptUrl !== "https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js"
       || provider.cost !== "free" || provider.credentialsRequired !== false
       || provider.attributionRequired !== true || provider.exportAllowed !== false
       || provider.providerControlsDelay !== true) {
