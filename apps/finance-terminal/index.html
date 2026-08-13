@@ -218,6 +218,7 @@
     }
     .license-notice.status-quoted { border-color: rgba(242, 189, 92, 0.42); }
     .license-notice.status-licensed { border-color: rgba(72, 217, 164, 0.42); }
+    .license-notice.status-free { border-color: rgba(72, 217, 164, 0.42); }
     .license-notice.status-unknown { border-color: rgba(255, 125, 134, 0.4); }
     .license-label {
       padding: 4px 7px;
@@ -233,6 +234,7 @@
     }
     .status-quoted .license-label { border-color: rgba(242, 189, 92, 0.4); color: var(--amber); background: var(--amber-soft); }
     .status-licensed .license-label { border-color: rgba(72, 217, 164, 0.4); color: var(--up); background: var(--up-soft); }
+    .status-free .license-label { border-color: rgba(72, 217, 164, 0.4); color: var(--up); background: var(--up-soft); }
     .status-unknown .license-label { border-color: rgba(255, 125, 134, 0.4); color: var(--down); background: var(--down-soft); }
     .license-notice strong { color: var(--ink); }
     .license-copy { margin-left: 0.35em; }
@@ -348,6 +350,7 @@
     .asset-card.negative::after { background: var(--down); }
     .asset-card.status-stale::after { background: var(--amber); opacity: 0.9; }
     .asset-card.status-error::after { background: var(--down); opacity: 0.9; }
+    .asset-card.provider-widget-card { min-height: 340px; }
     .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
     .asset-name { margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.02em; }
     .asset-en { display: block; margin-top: 3px; color: var(--faint); font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; }
@@ -423,6 +426,37 @@
     }
     .status-stale .official-note { border-color: rgba(242, 189, 92, 0.24); background: var(--amber-soft); color: #e7ca8c; }
     .status-error .official-note { border-color: rgba(255, 125, 134, 0.24); background: var(--down-soft); color: #efadb2; }
+    .provider-widget-shell {
+      position: relative;
+      min-height: 176px;
+      margin: 14px 0 10px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(7, 10, 15, 0.52);
+    }
+    .provider-widget-shell tv-mini-chart { display: block; width: 100%; height: 176px; }
+    .provider-widget-fallback {
+      display: grid;
+      position: absolute;
+      inset: 0;
+      place-content: center;
+      gap: 6px;
+      padding: 18px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 10px;
+      line-height: 1.55;
+    }
+    .provider-widget-fallback strong { color: var(--ink); font-family: var(--mono); font-size: 12px; }
+    tv-mini-chart:defined + .provider-widget-fallback { display: none; }
+    .proxy-note {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.5;
+    }
+    .proxy-chip { color: var(--up); }
     .asset-details {
       display: flex;
       align-items: center;
@@ -1074,13 +1108,13 @@
 
     <div class="data-banner status-loading" id="data-banner" role="region" aria-labelledby="banner-title" aria-describedby="banner-copy banner-note">
       <span class="data-label" id="banner-label">PARTIAL</span>
-      <span><strong id="banner-title">当前为部分演示数据</strong><span class="banner-copy" id="banner-copy">正在校验DGS10、DTWEXBGS、EIA RWTC与BTC/USD每日数据；其余4项仍为演示数据。</span></span>
-      <span class="data-note" id="banner-note">LOADING 4 REAL · 4 DEMO</span>
+      <span><strong id="banner-title">正在校验免费数据覆盖</strong><span class="banner-copy" id="banner-copy">4项站内真实数据与4项TradingView免费ETF代理均不使用演示数值。</span></span>
+      <span class="data-note" id="banner-note">LOADING 4 REAL · 4 FREE PROXY · 0 DEMO</span>
     </div>
 
     <div class="license-notice status-loading" id="license-notice" role="region" aria-labelledby="license-title" aria-describedby="license-copy">
       <span class="license-label" id="license-label">LICENSE CHECK</span>
-      <span><strong id="license-title">正在读取精确原标的授权决策</strong><span class="license-copy" id="license-copy">三大股指与黄金在授权状态通过机器校验前继续保持DEMO。</span></span>
+      <span><strong id="license-title">正在读取免费代理行情策略</strong><span class="license-copy" id="license-copy">三大指数与黄金使用明确披露的SPY、QQQ、DIA、GLD官方嵌入组件。</span></span>
     </div>
 
     <main id="main-content" tabindex="-1">
@@ -1088,12 +1122,12 @@
         <div>
           <p class="eyebrow">Ooglex Finance Terminal · BETA PREVIEW</p>
           <h1 id="page-title">全球市场总览</h1>
-          <p class="hero-copy">用一张清晰的市场面板观察美国股指、利率、美元、黄金、原油与比特币，并通过站内宏观雷达读取当前市场状态。美国10年期国债收益率、美联储广义美元指数、库欣WTI原油现货与BTC/USD均读取站内每日生成的数据，其余4项继续以演示数据验证页面体验。</p>
+          <p class="hero-copy">用一张清晰的市场面板观察美国股指、利率、美元、黄金、原油与比特币，并通过站内宏观雷达读取当前市场状态。美国10年期国债收益率、美联储广义美元指数、库欣WTI原油现货与BTC/USD读取站内每日数据；三大指数与黄金改用SPY、QQQ、DIA、GLD免费ETF代理并在卡片中明确披露。</p>
         </div>
         <div class="meta-grid" aria-label="数据说明">
           <div class="meta-item"><span class="meta-key">Data status</span><span class="meta-value partial" id="data-status">正在校验4项真实数据</span></div>
           <div class="meta-item"><span class="meta-key">Updated</span><time class="meta-value" id="page-updated">加载中</time></div>
-          <div class="meta-item"><span class="meta-key">Source</span><span class="meta-value" id="page-source">FRED（DGS10 · DTWEXBGS）· EIA（RWTC）· CoinGecko / Yahoo Finance（BTC/USD）· Ooglex演示数据</span></div>
+          <div class="meta-item"><span class="meta-key">Source</span><span class="meta-value" id="page-source">FRED（DGS10 · DTWEXBGS）· EIA（RWTC）· CoinGecko / Yahoo Finance（BTC/USD）· TradingView免费嵌入（SPY · QQQ · DIA · GLD代理）</span></div>
           <div class="meta-item"><span class="meta-key">Coverage</span><span class="meta-value" id="asset-count">8项全球核心资产</span></div>
         </div>
       </section>
@@ -1169,14 +1203,14 @@
       <section class="method" aria-labelledby="method-title">
         <h2 id="method-title">数据说明 / METHODOLOGY</h2>
         <p>
-          <strong>DGS10、DTWEXBGS、RWTC、BTC/USD、三项市场状态、跨资产强弱、全球资产市值、全球公司领袖、经济日历和财经新闻均不在浏览器中调用外部API，而是读取站内任务生成的静态数据。</strong>
+          <strong>DGS10、DTWEXBGS、RWTC、BTC/USD、三项市场状态、跨资产强弱、全球资产市值、全球公司领袖、经济日历和财经新闻均不在浏览器中调用外部API，而是读取站内任务生成的静态数据；仅四项免费ETF代理由TradingView官方组件在浏览器中直接展示。</strong>
           CNN恐慌与贪婪、OFR、Forex Factory经济日历和Google News市场资讯分别读取独立 <code>health.json</code>；卡片中的“UPDATE HEALTH”只表示最近更新任务证据，与内容本身的数据日分开。首次迁移无法追溯旧任务时显示 <code>UNKNOWN</code>，报告超出各来源12/36/72小时阈值时显示 <code>STALE</code>，失败时继续保留同一来源的最后有效内容，不用空值或新时间戳覆盖。
           经济日历复用Forex Factory公开周历，筛选接下来的高、中影响事件，按设备本地时区展示；文件超过36小时未更新或离开当前周范围时标记`STALE`，实际值、预测值和前值缺失时显示“—”，不补造数值。财经新闻只读取“最新消息”数据中的 <code>markets</code> 市场板块，按发布时间展示最新5条；同文件的Yahoo行情快照不参与终端行情，新闻文件超过12小时未更新或最新文章超过36小时时标记`STALE`，标题点击后经Google News跳转原媒体。
           跨资产强弱读取28项全球资产的自身价格回报，按今日、近一周、近一月、年初至今和近一年分别排序；每项附带行情、历史回退、来源、数据日和更新时间状态，历史回退、异常或缺值标的不参与排行，旧快照无法反推出精确逐条日期时保持`PARTIAL`。整个文件超过72小时未更新时暂停“今日”排行。债券与部分金属含ETF或期货代理，不冒充对应现货或收益率，具体口径以详情页为准。
           全球资产市值以十亿美元为统一单位，逐项区分行情、已披露市值代理、历史回退、静态估值和待确认状态，并展示逐条来源；房地产、政府债务等慢变量估值若未保存原报告日期，不会用文件更新时间代替。公司榜与资产榜运行状态把动态行情和慢频估值分层：已登记的慢频估值不会冒充每日行情，也不会单独被当作更新失败；动态回退、未知、不可用或未登记`PARTIAL`路径仍会明确降级。全球公司领袖逐公司区分Yahoo行情、历史回退和未上市静态估值；未上市估值不参与涨跌排序。
           宏观状态沿用宏观雷达已有的0–100制度信号分数，数值越高越偏“宽松·支持”；CNN恐慌与贪婪分数表示从“极度恐惧”到“极度贪婪”；OFR金融压力指数以0为历史平均，正值高于平均压力、负值低于平均压力。三者口径不同，不合成为新的总分。DGS10收益率显示为百分比，变化显示为相对上一观测值的基点（bp）。
           DGS10、DTWEXBGS与RWTC三张官方行情卡片分别交叉校验同一份宏观数据和逐源健康快照；BTC/USD另与资产榜中的CoinGecko/Yahoo逐源证据对齐。四张真实行情卡片都在卡内显示独立 <code>UPDATE HEALTH</code>：本轮刷新、明确降级或回退、连续失败、最近尝试与最后成功均不与行情数据日混用。前三张官方卡片另显示最多8项严格按日期递增的最近官方观测；DGS10区间变化使用bp，DTWEXBGS与RWTC使用百分比，历史不足时不以演示走势填充。单个来源健康字段异常时只把对应健康栏降为 <code>UNKNOWN</code>，不会隐藏仍可验证的行情，也不会拖累其他卡片；健康证据超过72小时显示 <code>STALE</code>。
-          <strong>DTWEXBGS是美联储H.10广义贸易加权美元指数，不是ICE DXY；RWTC是EIA库欣WTI现货，不是 <code>CL=F</code> 近月期货。</strong> WTI以美元/桶显示，涨跌按前后两个有效观测值计算；美元或WTI自动更新失败时保留最后有效值，RWTC超过4个美国工作日未发布新观测值时标记“STALE”。BTC/USD优先复用资产榜CoinGecko日度快照并显示“Powered by CoinGecko”；若明确降级至Yahoo BTC-USD，卡片同步改为“较前收盘”口径。项目所有者已选择SPX、NDX、DJIA与LBMA Gold Price PM精确原标的，非商业延迟展示询价材料已准备但尚未提交或获授权；四项继续保留 <code>demo: true</code> 并逐卡显示“DEMO”，不得自动切换SPY、QQQ、DIA或GLD。查看 <a href="https://fred.stlouisfed.org/series/DTWEXBGS" target="_blank" rel="noopener noreferrer">DTWEXBGS官方序列</a>、<a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html" target="_blank" rel="noopener noreferrer">FRED API使用条款</a>、<a href="https://www.eia.gov/dnav/pet/hist/rwtcd.htm" target="_blank" rel="noopener noreferrer">EIA RWTC官方序列</a>、<a href="https://www.eia.gov/opendata/documentation.php" target="_blank" rel="noopener noreferrer">EIA API文档</a>和<a href="https://www.coingecko.com/" target="_blank" rel="noopener noreferrer">CoinGecko</a>；本产品未获圣路易斯联储认可或认证。
+          <strong>DTWEXBGS是美联储H.10广义贸易加权美元指数，不是ICE DXY；RWTC是EIA库欣WTI现货，不是 <code>CL=F</code> 近月期货。</strong> WTI以美元/桶显示，涨跌按前后两个有效观测值计算；美元或WTI自动更新失败时保留最后有效值，RWTC超过4个美国工作日未发布新观测值时标记“STALE”。BTC/USD优先复用资产榜CoinGecko日度快照并显示“Powered by CoinGecko”；若明确降级至Yahoo BTC-USD，卡片同步改为“较前收盘”口径。SPY、QQQ、DIA与GLD分别仅作为SPX、NDX、DJIA与LBMA Gold Price PM的免费ETF代理，不是同一原标的；行情、延迟、交易状态与更新时间由TradingView组件直接标示，Ooglex不抓取、不导出、不保存这些组件中的原始行情。组件加载失败时只保留对应TradingView来源链接，不用缓存值或演示值顶替。查看 <a href="https://fred.stlouisfed.org/series/DTWEXBGS" target="_blank" rel="noopener noreferrer">DTWEXBGS官方序列</a>、<a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html" target="_blank" rel="noopener noreferrer">FRED API使用条款</a>、<a href="https://www.eia.gov/dnav/pet/hist/rwtcd.htm" target="_blank" rel="noopener noreferrer">EIA RWTC官方序列</a>、<a href="https://www.eia.gov/opendata/documentation.php" target="_blank" rel="noopener noreferrer">EIA API文档</a>、<a href="https://www.coingecko.com/" target="_blank" rel="noopener noreferrer">CoinGecko</a>、<a href="https://www.tradingview.com/widget-docs/" target="_blank" rel="noopener noreferrer">TradingView组件文档</a>和<a href="https://www.tradingview.com/widget-docs/faq/data/" target="_blank" rel="noopener noreferrer">TradingView数据说明</a>；本产品未获圣路易斯联储、EIA或TradingView认可或认证。
         </p>
       </section>
     </main>
@@ -1187,7 +1221,8 @@
     </footer>
   </div>
 
-  <noscript><div class="load-error">此页面需要启用JavaScript才能校验核心资产、三项官方行情逐源更新链、宏观状态、市场情绪、金融压力、跨资产强弱、全球资产市值、全球公司领袖、经济日历、财经新闻、四条生产管道与四个辅助来源健康和演示数据。</div></noscript>
+  <noscript><div class="load-error">此页面需要启用JavaScript才能校验核心资产、四项免费ETF代理、三项官方行情逐源更新链、宏观状态、市场情绪、金融压力、跨资产强弱、全球资产市值、全球公司领袖、经济日历、财经新闻、四条生产管道与四个辅助来源健康。</div></noscript>
+  <script type="module" src="https://www.tradingview-widget.com/w/en/tv-mini-chart.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

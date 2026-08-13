@@ -24,6 +24,7 @@ from market_data_quality import (
 from market_source_health import validate_source_health
 from supporting_source_health import validate_health as validate_supporting_health
 from finance_terminal_readiness_snapshot import validate_snapshot as validate_readiness_snapshot
+from finance_terminal_market_licenses import validate_market_source_readiness
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -71,7 +72,13 @@ SUPPORTING_HEALTH_VALIDATOR = ROOT / "scripts" / "validate_supporting_source_hea
 SUPPORTING_HEALTH_DOC = ROOT / "docs" / "SUPPORTING_SOURCE_HEALTH.md"
 HOME = ROOT / "index.html"
 
-EXPECTED_SYMBOLS = {"SPX", "NDX", "DJI", "DGS10", "DTWEXBGS", "XAU/USD", "WTI", "BTC/USD"}
+EXPECTED_SYMBOLS = {"SPY", "QQQ", "DIA", "DGS10", "DTWEXBGS", "GLD", "WTI", "BTC/USD"}
+EXPECTED_PROXIES = {
+    "sp500": ("SPY", "SPX", "AMEX:SPY"),
+    "nasdaq100": ("QQQ", "NDX", "NASDAQ:QQQ"),
+    "dow": ("DIA", "DJIA", "AMEX:DIA"),
+    "gold": ("GLD", "LBMA-GOLD-PM-USD", "AMEX:GLD"),
+}
 COMMON_ASSET_FIELDS = {
     "id", "name", "nameEn", "symbol", "category", "demo", "status", "frequency",
     "delayLabel", "price", "asOf", "updatedAt", "source", "spark",
@@ -644,18 +651,19 @@ const currentLatestMs = Math.max(...[
 assert(Number.isFinite(currentLatestMs));
 const currentNow = new Date(currentLatestMs + 6 * 60 * 60 * 1000);
 const marketLicenseState = adapter.adaptMarketLicenseReadiness(marketLicenseReadiness);
-assert.strictEqual(marketLicenseState.status, "prepared");
-assert.strictEqual(marketLicenseState.strategy, "exact-original");
-assert.strictEqual(marketLicenseState.blockedAssets, 4);
-assert.strictEqual(marketLicenseState.approvedAssets, 0);
-assert.strictEqual(marketLicenseState.procurement.prepared, 4);
-assert.deepStrictEqual(marketLicenseState.targets, ["SPX", "NDX", "DJIA", "LBMA Gold Price PM"]);
-const selectedMarketProxy = JSON.parse(JSON.stringify(marketLicenseReadiness));
-selectedMarketProxy.assets[0].proxyAlternative.selected = true;
-assert.throws(() => adapter.adaptMarketLicenseReadiness(selectedMarketProxy), /授权或询价状态无效/);
-const fakeMarketInquiry = JSON.parse(JSON.stringify(marketLicenseReadiness));
-fakeMarketInquiry.assets[0].procurement.status = "submitted";
-assert.throws(() => adapter.adaptMarketLicenseReadiness(fakeMarketInquiry), /可审计编号或时间/);
+assert.strictEqual(marketLicenseState.status, "free");
+assert.strictEqual(marketLicenseState.strategy, "free-embedded-proxy");
+assert.strictEqual(marketLicenseState.proxyAssets, 4);
+assert.strictEqual(marketLicenseState.provider, "TradingView");
+assert.strictEqual(marketLicenseState.cost, "free");
+assert.strictEqual(marketLicenseState.rawMarketDataStored, false);
+assert.deepStrictEqual(marketLicenseState.targets, ["SPY", "QQQ", "DIA", "GLD"]);
+const disguisedMarketProxy = JSON.parse(JSON.stringify(marketLicenseReadiness));
+disguisedMarketProxy.assets[0].proxy.isSameInstrument = true;
+assert.throws(() => adapter.adaptMarketLicenseReadiness(disguisedMarketProxy), /冒充原标的/);
+const scrapedMarketProxy = JSON.parse(JSON.stringify(marketLicenseReadiness));
+scrapedMarketProxy.provider.delivery = "scraped-api";
+assert.throws(() => adapter.adaptMarketLicenseReadiness(scrapedMarketProxy), /免费嵌入配置无效/);
 const currentAttemptAt = new Date(currentNow.getTime() - 60 * 60 * 1000).toISOString();
 const currentAttemptDate = currentAttemptAt.slice(0, 10);
 const supportingSnapshots = [
@@ -1024,8 +1032,9 @@ const unavailableBitcoinPage = adapter.buildPageData(
 );
 assert.strictEqual(unavailableBitcoinPage.assets.find((asset) => asset.id === "bitcoin").status, "error");
 assert.strictEqual(unavailableBitcoinPage.assets.find((asset) => asset.id === "us10y").price, dgs10.price);
-assert.strictEqual(success.assets.filter((asset) => asset.demo === false).length, 4);
-assert.strictEqual(success.assets.filter((asset) => asset.demo === true).length, 4);
+assert.strictEqual(success.assets.filter((asset) => asset.demo === false).length, 8);
+assert.strictEqual(success.assets.filter((asset) => asset.externalDisplay).length, 4);
+assert.strictEqual(success.assets.filter((asset) => asset.demo === true).length, 0);
 assert.strictEqual(success.status, "stale");
 
 const trackedDgsMacro = JSON.parse(JSON.stringify(macro));
@@ -1943,9 +1952,9 @@ def main() -> None:
     readiness = json.loads(READINESS_DATA.read_text(encoding="utf-8"))
     validate_readiness_snapshot(readiness)
     market_license_readiness = json.loads(MARKET_LICENSE_READINESS.read_text(encoding="utf-8"))
-    require(market_license_readiness.get("schemaVersion") == 2
-            and market_license_readiness.get("blockedAssetCount") == 4,
-            "精确原标的授权契约版本或阻塞计数无效")
+    market_source_errors = validate_market_source_readiness(market_license_readiness)
+    require(not market_source_errors,
+            "免费代理行情契约无效：" + "；".join(market_source_errors))
     macro = json.loads(MACRO_DATA.read_text(encoding="utf-8"))
     fear_greed = json.loads(FEAR_GREED_DATA.read_text(encoding="utf-8"))
     fear_greed_health = json.loads(FEAR_GREED_HEALTH.read_text(encoding="utf-8"))
@@ -1980,14 +1989,15 @@ def main() -> None:
         ("whats-latest", finance_news, finance_news_health),
     ):
         validate_supporting_health(dataset_name, dataset, health)
-    require(data.get("schemaVersion") == 2, "data.json schemaVersion必须为2")
-    require(data.get("demo") is True, "仍含演示资产时，data.json必须包含demo: true")
-    require(data.get("status") == "partial", "混合数据配置状态必须为partial")
+    require(data.get("schemaVersion") == 3, "data.json schemaVersion必须为3")
+    require(data.get("demo") is False, "免费代理策略下data.json必须包含demo: false")
+    require(data.get("status") == "ok", "无演示值的混合展示配置状态必须为ok")
     require(
         "DGS10" in data.get("source", "") and "DTWEXBGS" in data.get("source", "")
         and "RWTC" in data.get("source", "") and "CoinGecko" in data.get("source", "")
-        and "Yahoo Finance" in data.get("source", "") and "演示" in data.get("source", ""),
-        "总来源必须同时标注DGS10、DTWEXBGS、RWTC、BTC/USD与演示数据",
+        and "Yahoo Finance" in data.get("source", "") and "TradingView" in data.get("source", "")
+        and "SPY" in data.get("source", "") and "GLD" in data.get("source", ""),
+        "总来源必须同时标注四项站内行情与TradingView免费代理",
     )
     parse_iso(data["updatedAt"])
 
@@ -1997,23 +2007,39 @@ def main() -> None:
     require(len({asset.get("id") for asset in assets}) == 8, "资产ID必须唯一")
 
     demo_assets = [asset for asset in assets if asset.get("demo") is True]
-    real_configs = [asset for asset in assets if asset.get("demo") is False]
-    require(len(demo_assets) == 4, "三大股指与黄金必须恰有4项演示资产")
-    require({asset.get("id") for asset in real_configs} == {"us10y", "dxy", "wti", "bitcoin"},
-            "真实数据配置必须是us10y、dxy、wti与bitcoin")
+    require(not demo_assets, "四项免费代理接入后不得保留演示资产")
+    proxy_configs = [asset for asset in assets if asset.get("id") in EXPECTED_PROXIES]
+    real_configs = [asset for asset in assets if asset.get("id") in {"us10y", "dxy", "wti", "bitcoin"}]
+    require(len(proxy_configs) == 4, "三大股指与黄金必须恰有4项免费ETF代理")
+    require(len(real_configs) == 4, "站内真实数据配置必须是us10y、dxy、wti与bitcoin")
 
     for asset in assets:
         missing = COMMON_ASSET_FIELDS - asset.keys()
         require(not missing, f"{asset.get('symbol', 'unknown')} 缺少字段：{sorted(missing)}")
         require(isinstance(asset["source"], dict) and asset["source"].get("name"), f"{asset['symbol']} 缺少结构化数据来源")
-        if asset["demo"] is True:
-            require(asset["status"] == "demo", f"{asset['symbol']} 演示状态必须为demo")
-            require(isinstance(asset["price"], (int, float)), f"{asset['symbol']} price必须为数值")
-            require(isinstance(asset.get("changePct"), (int, float)), f"{asset['symbol']} changePct必须为数值")
-            require(isinstance(asset["spark"], list) and len(asset["spark"]) >= 2, f"{asset['symbol']} 缺少演示走势")
-            require("演示" in asset["source"]["name"], f"{asset['symbol']} 来源必须明确标注为演示")
-            parse_date(asset["asOf"])
-            parse_iso(asset["updatedAt"])
+    for asset in proxy_configs:
+        expected_symbol, expected_original, expected_widget = EXPECTED_PROXIES[asset["id"]]
+        external = asset.get("externalDisplay") or {}
+        proxy_for = asset.get("proxyFor") or {}
+        require(asset["symbol"] == expected_symbol and asset.get("instrument") == "etf-proxy",
+                f"{asset['id']}免费ETF代理代码或类型无效")
+        require(asset["status"] == "provider" and asset["frequency"] == "provider-managed",
+                f"{asset['id']}必须由TradingView管理行情状态和频率")
+        require(asset.get("price") is None and asset.get("changePct") is None
+                and asset.get("asOf") is None and asset.get("updatedAt") is None,
+                f"{asset['id']}不得保存免费组件中的行情值或时间戳")
+        require(external == {
+            "provider": "TradingView", "widget": "tv-mini-chart",
+            "widgetSymbol": expected_widget, "rawDataStored": False,
+        }, f"{asset['id']}TradingView组件配置无效")
+        require(proxy_for.get("symbol") == expected_original
+                and proxy_for.get("isSameInstrument") is False,
+                f"{asset['id']}必须明确代理不是原标的")
+        require("TradingView" in asset["source"]["name"]
+                and asset["source"]["url"].startswith("https://www.tradingview.com/symbols/"),
+                f"{asset['id']}缺少TradingView官方来源")
+        require(isinstance(asset["spark"], list) and not asset["spark"],
+                f"{asset['id']}不得使用本地演示走势")
 
     real_by_id = {asset["id"]: asset for asset in real_configs}
     dgs10_config = real_by_id["us10y"]
@@ -2355,22 +2381,26 @@ def main() -> None:
     page = PAGE.read_text(encoding="utf-8")
     app = APP.read_text(encoding="utf-8")
     home = HOME.read_text(encoding="utf-8")
-    require("当前为部分演示数据" in page, "页面首屏缺少部分演示数据提示")
-    require("FRED API使用条款" in page and "未获圣路易斯联储认可或认证" in page, "页面缺少FRED说明与条款入口")
+    require("4项站内真实数据与4项TradingView免费ETF代理" in page,
+            "页面首屏缺少免费数据覆盖提示")
+    require("FRED API使用条款" in page
+            and "未获圣路易斯联储、EIA或TradingView认可或认证" in page,
+            "页面缺少来源说明与条款入口")
     require("DTWEXBGS" in page and "不是ICE DXY" in page and "自动更新失败" in page, "页面未准确解释广义美元指数与回退规则")
     require("RWTC" in page and "不是 <code>CL=F</code>" in page and "EIA API文档" in page, "页面未准确解释WTI现货来源与口径")
     require("官方静态快照" not in page, "页面不得继续把DTWEXBGS描述为静态快照")
-    require("其余4项" in page, "页面演示资产数量说明不准确")
+    require("0 DEMO" in page, "页面未明确披露零演示行情")
     require("Powered by CoinGecko" in page and "Yahoo BTC-USD" in page,
             "页面未披露BTC/USD主要来源、署名或降级口径")
-    require("SPX、NDX、DJIA与LBMA Gold Price PM精确原标的" in page
-            and "不得自动切换SPY、QQQ、DIA或GLD" in page,
-            "页面未披露项目所有者的精确原标的决定")
+    require("SPY、QQQ、DIA与GLD分别仅作为SPX、NDX、DJIA与LBMA Gold Price PM的免费ETF代理" in page
+            and "不是同一原标的" in page
+            and "不抓取、不导出、不保存" in page,
+            "页面未披露免费ETF代理与原标的边界")
     require('id="data-banner"' in page and 'id="market-grid"' in page, "页面缺少数据状态或卡片容器")
     require('id="license-notice" role="region"' in page
             and 'aria-labelledby="license-title"' in page
-            and "精确原标的授权决策" in page,
-            "页面缺少精确原标的授权进度区域")
+            and "免费代理行情策略" in page,
+            "页面缺少免费代理行情策略区域")
     require('id="risk-grid"' in page and 'id="risk-summary"' in page and "市场状态" in page, "页面缺少市场状态模块")
     require('id="research-grid"' in page and 'id="research-summary"' in page and "市场强弱与领袖" in page, "页面缺少市场研究模块")
     require('id="information-grid"' in page and 'id="information-summary"' in page and "今日事件与资讯" in page,
@@ -2530,8 +2560,8 @@ def main() -> None:
             and "operation-readiness" in app and "STABLE V1 EVIDENCE" in app,
             "app.js未读取、校验或渲染稳定V1连续周期证据")
     require("MARKET_LICENSE_READINESS_URL" in app and "adaptMarketLicenseReadiness" in app
-            and "renderMarketLicenseNotice" in app and "INQUIRY READY" in app,
-            "app.js未读取、校验或渲染精确原标的询价状态")
+            and "renderMarketLicenseNotice" in app and "FREE DATA" in app,
+            "app.js未读取、校验或渲染免费代理行情状态")
     require("稳定V1运行证据" in page and "同一日更周期重跑不会重复累计" in page,
             "页面未区分健康快照与稳定V1周期门禁")
     require("可用覆盖" in app and "本轮新鲜" in app and "已验证覆盖" in app
@@ -2580,8 +2610,8 @@ def main() -> None:
             and "officialHealthResources" in app and "officialHealthPanelCount" in app
             and "officialObservationTrends" in app and "officialObservationTrendCount" in app,
             "页面缺少浏览器、官方逐源或辅助来源资源回归探针")
-    require("marketLicenseReadiness" in app,
-            "浏览器回归探针未覆盖精确原标的授权状态")
+    require("marketLicenseReadiness" in app and "providerWidgetCount" in app,
+            "浏览器回归探针未覆盖免费代理状态或四项提供方组件")
     require("noHorizontalOverflow" in app and "responsiveColumns" in app and "targetSizes" in app
             and "keyboardTabs" in app, "浏览器回归探针未覆盖溢出、布局、触控与键盘交互")
     require('document.querySelectorAll(".operation-card").length === 4' in app
@@ -2595,8 +2625,11 @@ def main() -> None:
     require("changeUnit" in app and '"bp"' in app, "app.js未按bp显示收益率变化")
     require("apps/finance-terminal/" in home, "首页缺少金融终端入口")
 
-    external_scripts = re.findall(r'<script[^>]+src=["\']https?://', page, flags=re.I)
-    require(not external_scripts, "金融终端页面不得引入外部脚本依赖")
+    external_scripts = re.findall(r'<script[^>]+src=["\'](https?://[^"\']+)', page, flags=re.I)
+    require(external_scripts == ["https://www.tradingview-widget.com/w/en/tv-mini-chart.js"],
+            "金融终端只能引入已登记的TradingView免费组件脚本")
+    require('type="module"' in page and page.index("tv-mini-chart.js") < page.index('src="app.js"'),
+            "TradingView组件必须以模块脚本在本地应用前加载")
     build_script = MACRO_BUILD.read_text(encoding="utf-8")
     history_build_script = MACRO_HISTORY_BUILD.read_text(encoding="utf-8")
     workflow = MACRO_WORKFLOW.read_text(encoding="utf-8")
@@ -2770,7 +2803,7 @@ def main() -> None:
     run_js_adapter_tests()
 
     print("Finance Terminal DGS10 + DTWEXBGS + RWTC + BTC/USD validation: PASS")
-    print("- two FRED-backed, one EIA-backed, one CoinGecko/Yahoo card and four explicit demos: PASS")
+    print("- four local data cards plus four explicit free TradingView ETF proxies / zero demos: PASS")
     print("- yield bp / broad-dollar and WTI percent / BTC 24h or previous-close change: PASS")
     print("- FRED and EIA refresh success / retained fallback / no-history error: PASS")
     print("- source / as-of / updated-at / stale / unavailable states: PASS")
@@ -2789,7 +2822,7 @@ def main() -> None:
     print("- finance news market-only / latest-five / safe links / freshness / independent failure states: PASS")
     print("- four supporting feeds / migrated health / partial fallback / retained snapshot / workflow governance: PASS")
     print("- four real-asset update chains / single-source isolation / stale evidence: PASS")
-    print("- no external script dependencies: PASS")
+    print("- one allowlisted TradingView free widget dependency / explicit proxy fallback: PASS")
     print("- browser regression probe / read-only CI contract: PASS")
 
 

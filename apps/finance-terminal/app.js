@@ -2798,23 +2798,52 @@
     parts.push(dollar && dollar.status !== "error" ? "FRED H.10（DTWEXBGS自动更新）" : "DTWEXBGS暂不可用");
     parts.push(wti && wti.status !== "error" ? "U.S. EIA（RWTC现货）" : "RWTC暂不可用");
     parts.push(bitcoin && bitcoin.status !== "error" ? bitcoin.source.name + "（BTC/USD）" : "BTC/USD暂不可用");
-    parts.push("Ooglex演示数据");
+    parts.push("TradingView免费组件（SPY / QQQ / DIA / GLD代理）");
     return parts.join(" · ");
   }
 
   function validateConfig(config) {
-    if (!config || config.schemaVersion !== 2 || config.demo !== true) {
-      throw new Error("页面数据配置无效或演示标记缺失");
+    if (!config || config.schemaVersion !== 3 || config.demo !== false) {
+      throw new Error("页面数据配置无效或免费代理标记缺失");
     }
     if (!Array.isArray(config.assets) || config.assets.length !== 8) {
       throw new Error("核心资产配置不完整");
     }
-    var officialIds = config.assets.filter(function (asset) { return asset.demo === false; }).map(function (asset) { return asset.id; });
+    var officialIds = config.assets.filter(function (asset) {
+      return asset.demo === false && !asset.externalDisplay;
+    }).map(function (asset) { return asset.id; });
+    var proxyAssets = config.assets.filter(function (asset) { return Boolean(asset.externalDisplay); });
     var demoCount = config.assets.filter(function (asset) { return asset.demo === true; }).length;
     if (officialIds.length !== 4 || officialIds.indexOf("us10y") === -1 || officialIds.indexOf("dxy") === -1
-      || officialIds.indexOf("wti") === -1 || officialIds.indexOf("bitcoin") === -1 || demoCount !== 4) {
-      throw new Error("DGS10、DTWEXBGS、RWTC、BTC/USD真实卡片与4项演示卡片的配置不一致");
+      || officialIds.indexOf("wti") === -1 || officialIds.indexOf("bitcoin") === -1
+      || proxyAssets.length !== 4 || demoCount !== 0) {
+      throw new Error("4项站内行情与4项免费嵌入代理的配置不一致");
     }
+    var expectedProxies = {
+      sp500: ["SPY", "AMEX:SPY", "SPX"],
+      nasdaq100: ["QQQ", "NASDAQ:QQQ", "NDX"],
+      dow: ["DIA", "AMEX:DIA", "DJIA"],
+      gold: ["GLD", "AMEX:GLD", "LBMA-GOLD-PM-USD"]
+    };
+    proxyAssets.forEach(function (asset) {
+      var expected = expectedProxies[asset.id];
+      if (!expected || asset.demo !== false || asset.status !== "provider"
+        || asset.instrument !== "etf-proxy" || asset.frequency !== "provider-managed"
+        || asset.symbol !== expected[0]
+        || asset.externalDisplay.provider !== "TradingView"
+        || asset.externalDisplay.widget !== "tv-mini-chart"
+        || asset.externalDisplay.widgetSymbol !== expected[1]
+        || asset.externalDisplay.rawDataStored !== false
+        || !asset.proxyFor || asset.proxyFor.symbol !== expected[2]
+        || asset.proxyFor.isSameInstrument !== false
+        || !asset.source || asset.source.name !== "TradingView免费组件"
+        || typeof asset.source.url !== "string"
+        || asset.source.url.indexOf("https://www.tradingview.com/symbols/") !== 0
+        || asset.price !== null || asset.changePct !== null
+        || asset.asOf !== null || asset.updatedAt !== null) {
+        throw new Error("免费代理配置不得冒充原标的、保存原始行情或内置数值");
+      }
+    });
   }
 
   function buildPageData(
@@ -2875,10 +2904,12 @@
       }
       return Object.assign({}, asset);
     });
-    var hasStale = assets.some(function (asset) { return !asset.demo && asset.status === "stale"; });
+    var hasStale = assets.some(function (asset) {
+      return !asset.externalDisplay && !asset.demo && asset.status === "stale";
+    });
     return Object.assign({}, config, {
       assets: assets,
-      status: hasStale ? "stale" : "partial",
+      status: hasStale ? "stale" : "ok",
       updatedAt: latestOfficialUpdate(assets),
       source: sourceSummary(assets)
     });
@@ -2893,94 +2924,66 @@
   }
 
   function adaptMarketLicenseReadiness(data) {
-    var expectedTargets = {
-      sp500: "SPX",
-      nasdaq100: "NDX",
-      dow: "DJIA",
-      gold: "LBMA-GOLD-PM-USD"
+    var expected = {
+      sp500: ["SPX", "SPY", "AMEX:SPY"],
+      nasdaq100: ["NDX", "QQQ", "NASDAQ:QQQ"],
+      dow: ["DJIA", "DIA", "AMEX:DIA"],
+      gold: ["LBMA-GOLD-PM-USD", "GLD", "AMEX:GLD"]
     };
-    if (!data || data.schemaVersion !== 2 || data.displayScope !== "public-web"
-      || !data.selection || data.selection.strategy !== "exact-original"
-      || data.selection.proxySubstitutionAllowed !== false) {
-      throw new Error("精确原标的授权决策无效");
+    if (!data || data.schemaVersion !== 3 || data.displayScope !== "public-web"
+      || !data.selection || data.selection.strategy !== "free-embedded-proxy"
+      || data.selection.proxySubstitutionAllowed !== true
+      || data.selection.exactBenchmarkProcurementPaused !== true) {
+      throw new Error("免费嵌入代理决策无效");
     }
     var useCase = data.useCase;
     if (!useCase || useCase.operatorType !== "individual-hobbyist"
-      || useCase.domain !== "ooglex.com" || useCase.displayLatency !== "daily-delayed"
-      || useCase.commercial !== false || useCase.advertising !== false
-      || useCase.subscriptions !== false || useCase.otherRevenue !== false
-      || useCase.publicApiRedistribution !== false || useCase.tradingExecution !== false
-      || useCase.investmentProduct !== false
-      || useCase.quoteAcceptance !== "owner-confirmation-required") {
-      throw new Error("非商业授权使用范围无效");
+      || useCase.domain !== "ooglex.com" || useCase.commercial !== false
+      || useCase.advertising !== false || useCase.subscriptions !== false
+      || useCase.otherRevenue !== false || useCase.publicApiRedistribution !== false
+      || useCase.rawMarketDataStored !== false || useCase.tradingExecution !== false
+      || useCase.investmentProduct !== false || useCase.costPolicy !== "free-only") {
+      throw new Error("免费非商业使用范围无效");
+    }
+    var provider = data.provider;
+    if (!provider || provider.name !== "TradingView"
+      || provider.delivery !== "official-free-web-component"
+      || provider.widget !== "tv-mini-chart"
+      || provider.scriptUrl !== "https://www.tradingview-widget.com/w/en/tv-mini-chart.js"
+      || provider.cost !== "free" || provider.credentialsRequired !== false
+      || provider.attributionRequired !== true || provider.exportAllowed !== false
+      || provider.providerControlsDelay !== true) {
+      throw new Error("TradingView免费嵌入配置无效");
     }
     if (!Array.isArray(data.assets) || data.assets.length !== 4) {
-      throw new Error("待授权原标的数量无效");
+      throw new Error("免费代理标的数量无效");
     }
-    var counts = { prepared: 0, submitted: 0, quoted: 0, licensed: 0, blocked: 0, approved: 0 };
     var seen = {};
+    var proxies = [];
     data.assets.forEach(function (asset) {
-      if (!asset || expectedTargets[asset.id] !== asset.targetSymbol || seen[asset.id]) {
-        throw new Error("待授权原标的标识无效");
+      var spec = asset && expected[asset.id];
+      var proxy = asset && asset.proxy;
+      if (!spec || seen[asset.id] || !asset.original || asset.original.symbol !== spec[0]
+        || !proxy || proxy.symbol !== spec[1] || proxy.widgetSymbol !== spec[2]
+        || proxy.instrumentType !== "etf-proxy" || proxy.isSameInstrument !== false
+        || proxy.selected !== true || asset.productionAction !== "embed-provider-widget") {
+        throw new Error("免费ETF代理配置无效或冒充原标的");
       }
       seen[asset.id] = true;
-      var authorization = asset.authorization;
-      var procurement = asset.procurement;
-      var proxy = asset.proxyAlternative;
-      if (!authorization || ["blocked", "approved"].indexOf(authorization.status) === -1
-        || !procurement || ["prepared", "submitted", "quoted", "licensed"].indexOf(procurement.status) === -1
-        || !proxy || proxy.selected !== false || proxy.isSameInstrument !== false) {
-        throw new Error("授权或询价状态无效");
-      }
-      if (authorization.status === "blocked") {
-        if (authorization.publicDisplayAuthorized !== false || asset.productionAction !== "keep-demo"
-          || procurement.status === "licensed") {
-          throw new Error("未授权原标的不得退出演示状态");
-        }
-        counts.blocked += 1;
-      } else {
-        if (authorization.publicDisplayAuthorized !== true
-          || asset.productionAction !== "integrate-authorized-source"
-          || procurement.status !== "licensed"
-          || typeof authorization.approvalReference !== "string"
-          || !authorization.approvalReference.trim()) {
-          throw new Error("已授权原标的状态不可复算");
-        }
-        counts.approved += 1;
-      }
-      if (procurement.status === "prepared" && procurement.submittedAt !== null) {
-        throw new Error("未提交询价不得包含提交时间");
-      }
-      if (["submitted", "quoted"].indexOf(procurement.status) !== -1
-        && (typeof procurement.submittedAt !== "string"
-          || !/(?:Z|[+-]\d{2}:\d{2})$/.test(procurement.submittedAt)
-          || Number.isNaN(new Date(procurement.submittedAt).getTime())
-          || typeof procurement.inquiryReference !== "string"
-          || !procurement.inquiryReference.trim())) {
-        throw new Error("已提交询价缺少可审计编号或时间");
-      }
-      counts[procurement.status] += 1;
+      proxies.push(proxy.symbol);
     });
-    if (Object.keys(expectedTargets).some(function (id) { return !seen[id]; })
-      || data.blockedAssetCount !== counts.blocked
-      || data.inquiryReadyAssetCount !== 4) {
-      throw new Error("授权与询价计数不可复算");
+    if (Object.keys(expected).some(function (id) { return !seen[id]; })
+      || data.proxyAssetCount !== 4 || data.freeDisplayAssetCount !== 4) {
+      throw new Error("免费代理计数不可复算");
     }
-    var status = counts.licensed === 4 ? "licensed"
-      : counts.quoted > 0 ? "quoted"
-        : counts.submitted > 0 ? "submitted" : "prepared";
     return {
-      status: status,
+      status: "free",
       strategy: data.selection.strategy,
-      targets: ["SPX", "NDX", "DJIA", "LBMA Gold Price PM"],
-      blockedAssets: counts.blocked,
-      approvedAssets: counts.approved,
-      procurement: {
-        prepared: counts.prepared,
-        submitted: counts.submitted,
-        quoted: counts.quoted,
-        licensed: counts.licensed
-      }
+      targets: proxies,
+      proxyAssets: 4,
+      provider: provider.name,
+      cost: provider.cost,
+      rawMarketDataStored: useCase.rawMarketDataStored
     };
   }
 
@@ -2989,10 +2992,11 @@
       status: "unknown",
       strategy: "unknown",
       targets: [],
-      blockedAssets: 4,
-      approvedAssets: 0,
-      procurement: { prepared: 0, submitted: 0, quoted: 0, licensed: 0 },
-      error: error && error.message ? error.message : "授权状态不可用"
+      proxyAssets: 0,
+      provider: "unknown",
+      cost: "unknown",
+      rawMarketDataStored: null,
+      error: error && error.message ? error.message : "免费代理状态不可用"
     };
   }
 
@@ -3211,6 +3215,7 @@
 
   function statusLabel(asset) {
     if (asset.demo) return { className: "demo-chip", text: "DEMO" };
+    if (asset.status === "provider") return { className: "proxy-chip", text: "FREE · PROXY" };
     if (asset.status === "stale") return { className: "stale-chip", text: "STALE" };
     if (asset.status === "error") return { className: "error-chip", text: "ERROR" };
     if (asset.status === "partial") return { className: "partial-chip", text: "PARTIAL" };
@@ -4051,27 +4056,35 @@
   function renderMarketLicenseNotice(state) {
     if (!licenseNotice || !licenseLabel || !licenseTitle || !licenseCopy) return;
     licenseNotice.className = "license-notice status-" + state.status;
-    if (state.status === "licensed") {
-      licenseLabel.textContent = "LICENSED";
-      licenseTitle.textContent = "精确原标的公开展示授权已登记";
-      licenseCopy.textContent = "SPX、NDX、DJIA与LBMA Gold Price PM许可已登记；真实数据仍需通过接入验收后才能替换DEMO。";
-    } else if (state.status === "quoted") {
-      licenseLabel.textContent = "QUOTE RECEIVED";
-      licenseTitle.textContent = "精确原标的报价待所有者确认";
-      licenseCopy.textContent = state.procurement.quoted + "项已取得报价；合同、付款和用途不得自动接受，授权前继续DEMO。";
-    } else if (state.status === "submitted") {
-      licenseLabel.textContent = "INQUIRY SENT";
-      licenseTitle.textContent = "精确原标的授权询价已提交";
-      licenseCopy.textContent = state.procurement.submitted + "项已提交并登记审计编号；这不等于已获公开展示授权，四项继续DEMO。";
-    } else if (state.status === "prepared") {
-      licenseLabel.textContent = "INQUIRY READY";
-      licenseTitle.textContent = "精确原标的已锁定";
-      licenseCopy.textContent = "SPX、NDX、DJIA与LBMA Gold Price PM的非商业延迟展示询价材料已准备，尚未提交或获授权；四项继续DEMO。";
+    if (state.status === "free") {
+      licenseLabel.textContent = "FREE DATA";
+      licenseTitle.textContent = "四项免费ETF代理已启用";
+      licenseCopy.textContent = "SPY、QQQ、DIA与GLD由TradingView官方免费组件直接展示；均明确标为代理，不保存、导出或再分发原始行情，也不需要API密钥。";
     } else {
-      licenseLabel.textContent = "LICENSE UNKNOWN";
-      licenseTitle.textContent = "授权状态暂不可核验";
-      licenseCopy.textContent = "无法读取或验证机器授权契约；为避免误用，三大股指与黄金继续保持DEMO。";
+      licenseLabel.textContent = "SOURCE UNKNOWN";
+      licenseTitle.textContent = "免费代理状态暂不可核验";
+      licenseCopy.textContent = "无法读取或验证免费嵌入契约；页面不会用来源不明的数值替代SPY、QQQ、DIA或GLD组件。";
     }
+  }
+
+  function makeProviderWidget(asset) {
+    var shell = document.createElement("div");
+    shell.className = "provider-widget-shell";
+    var widget = document.createElement("tv-mini-chart");
+    widget.setAttribute("symbol", asset.externalDisplay.widgetSymbol);
+    widget.setAttribute("theme", "dark");
+    widget.setAttribute("transparent", "");
+    widget.setAttribute("aria-label", asset.symbol + "免费代理行情，由TradingView提供");
+    shell.appendChild(widget);
+    var fallback = document.createElement("p");
+    fallback.className = "provider-widget-fallback";
+    fallback.appendChild(document.createTextNode("免费行情组件加载中；若持续不可用，"));
+    var link = appendText(fallback, "a", "source-link", "前往TradingView查看 " + asset.symbol);
+    link.href = asset.source.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    shell.appendChild(fallback);
+    return shell;
   }
 
   function makeCard(asset) {
@@ -4088,6 +4101,29 @@
     top.appendChild(titleBox);
     appendText(top, "span", "asset-symbol", asset.symbol);
     card.appendChild(top);
+
+    if (asset.externalDisplay) {
+      card.classList.add("provider-widget-card");
+      card.appendChild(makeProviderWidget(asset));
+      var proxyNote = appendText(card, "p", "official-note", asset.note);
+      proxyNote.title = asset.note;
+      var proxyDetails = document.createElement("div");
+      proxyDetails.className = "asset-details";
+      appendText(proxyDetails, "span", "", "代理原标的 · " + asset.proxyFor.symbol);
+      appendText(proxyDetails, "span", "", asset.delayLabel);
+      card.appendChild(proxyDetails);
+      var proxyFooter = document.createElement("div");
+      proxyFooter.className = "asset-footer";
+      var proxySource = document.createElement("div");
+      proxySource.className = "asset-source";
+      appendSource(proxySource, asset);
+      proxyFooter.appendChild(proxySource);
+      appendText(proxyFooter, "span", "provider-time", "时效与市场状态见组件");
+      var proxyChip = statusLabel(asset);
+      appendText(proxyFooter, "span", "status-chip " + proxyChip.className, proxyChip.text);
+      card.appendChild(proxyFooter);
+      return card;
+    }
 
     appendText(card, "div", "asset-price", formatPrice(asset));
     var changeRow = document.createElement("div");
@@ -4128,14 +4164,17 @@
   }
 
   function updateSummary(data) {
-    var official = data.assets.filter(function (asset) { return asset.demo === false; });
+    var proxies = data.assets.filter(function (asset) { return Boolean(asset.externalDisplay); });
+    var official = data.assets.filter(function (asset) {
+      return asset.demo === false && !asset.externalDisplay;
+    });
     var demos = data.assets.filter(function (asset) { return asset.demo === true; });
     var ok = official.filter(function (asset) { return asset.status === "ok"; });
     var partial = official.filter(function (asset) { return asset.status === "partial"; });
     var stale = official.filter(function (asset) { return asset.status === "stale"; });
     var errors = official.filter(function (asset) { return asset.status === "error"; });
-    var breakdown = ok.length + "项真实正常 · " + partial.length + "项降级 · " + stale.length
-      + "项过期 · " + errors.length + "项不可用 · " + demos.length + "项演示";
+    var breakdown = ok.length + "项站内真实正常 · " + proxies.length + "项免费嵌入代理 · "
+      + partial.length + "项降级 · " + stale.length + "项过期 · " + errors.length + "项不可用";
 
     if (errors.length > 0) {
       banner.className = "data-banner status-error";
@@ -4143,7 +4182,7 @@
       bannerTitle.textContent = "部分真实数据暂不可用";
       bannerCopy.textContent = errors.map(function (asset) { return asset.symbol; }).join("、") + "已隐藏无效数值；其他卡片保留各自的来源和状态。";
       bannerNote.textContent = ok.length + " REAL · " + partial.length + " PARTIAL · " + stale.length
-        + " STALE · " + errors.length + " ERROR · " + demos.length + " DEMO";
+        + " STALE · " + errors.length + " ERROR · " + proxies.length + " FREE PROXY";
       dataStatus.textContent = breakdown;
       marketState.textContent = "PARTIAL DATA";
     } else if (stale.length > 0) {
@@ -4152,7 +4191,7 @@
       bannerTitle.textContent = stale.length === 1 ? stale[0].symbol + "数据已过期" : "部分真实数据已过期";
       bannerCopy.textContent = "页面保留同一标的最后有效值并醒目标记；没有使用演示值冒充真实行情。";
       bannerNote.textContent = ok.length + " REAL · " + partial.length + " PARTIAL · " + stale.length
-        + " STALE · " + demos.length + " DEMO";
+        + " STALE · " + proxies.length + " FREE PROXY";
       dataStatus.textContent = breakdown;
       marketState.textContent = "STALE DATA";
     } else if (partial.length > 0) {
@@ -4161,22 +4200,26 @@
       bannerTitle.textContent = "部分真实数据使用明确降级来源";
       bannerCopy.textContent = partial.map(function (asset) { return asset.symbol; }).join("、")
         + "已在卡片内同步显示来源、时间与涨跌口径；没有静默切换。";
-      bannerNote.textContent = ok.length + " REAL · " + partial.length + " PARTIAL · " + demos.length + " DEMO";
+      bannerNote.textContent = ok.length + " REAL · " + partial.length + " PARTIAL · "
+        + proxies.length + " FREE PROXY";
       dataStatus.textContent = breakdown;
       marketState.textContent = "PARTIAL DATA";
     } else {
       banner.className = "data-banner";
-      bannerLabel.textContent = "PARTIAL";
-      bannerTitle.textContent = "当前为部分演示数据";
-      bannerCopy.textContent = "DGS10、DTWEXBGS、EIA RWTC与BTC/USD均读取站内每日数据；其余4项仍为演示数据。";
-      bannerNote.textContent = "4 REAL · 4 DEMO";
+      bannerLabel.textContent = "FREE";
+      bannerTitle.textContent = "核心资产已取消演示数值";
+      bannerCopy.textContent = "DGS10、DTWEXBGS、EIA RWTC与BTC/USD读取站内每日数据；SPY、QQQ、DIA与GLD由TradingView免费组件直接展示，并明确标注ETF代理关系。";
+      bannerNote.textContent = "4 REAL · 4 FREE PROXY · 0 DEMO";
       dataStatus.textContent = breakdown;
-      marketState.textContent = "PARTIAL DATA";
+      marketState.textContent = "FREE DATA";
     }
   }
 
   function render(data) {
-    var official = data.assets.filter(function (asset) { return asset.demo === false; });
+    var proxies = data.assets.filter(function (asset) { return Boolean(asset.externalDisplay); });
+    var official = data.assets.filter(function (asset) {
+      return asset.demo === false && !asset.externalDisplay;
+    });
     var demos = data.assets.filter(function (asset) { return asset.demo === true; });
     var unavailable = official.filter(function (asset) { return asset.status === "error"; });
     grid.textContent = "";
@@ -4187,7 +4230,9 @@
     pageUpdated.textContent = data.updatedAt ? formatTimestamp(data.updatedAt, false) : "真实数据更新时间不可用";
     if (data.updatedAt) pageUpdated.dateTime = data.updatedAt;
     pageSource.textContent = data.source;
-    assetCount.textContent = "8项资产 · " + (official.length - unavailable.length) + "项官方可用 / " + unavailable.length + "项不可用 / " + demos.length + "项演示";
+    assetCount.textContent = "8项资产 · " + (official.length - unavailable.length)
+      + "项站内真实可用 / " + unavailable.length + "项不可用 / "
+      + proxies.length + "项免费嵌入代理 / " + demos.length + "项演示";
     updateSummary(data);
   }
 
@@ -4242,7 +4287,10 @@
 
   function announceExperience(experience) {
     if (!pageAnnouncer) return;
-    var official = experience.market.assets.filter(function (asset) { return asset.demo === false; });
+    var official = experience.market.assets.filter(function (asset) {
+      return asset.demo === false && !asset.externalDisplay;
+    });
+    var proxies = experience.market.assets.filter(function (asset) { return Boolean(asset.externalDisplay); });
     var marketIssues = official.filter(function (asset) { return asset.status !== "ok"; }).length;
     var grouped = [experience.risks, experience.research, experience.information].reduce(function (total, cards) {
       var counts = countStatuses(cards);
@@ -4254,7 +4302,7 @@
     var operationIssues = experience.operations.filter(function (card) { return card.status !== "healthy"; }).length;
     pageAnnouncer.setAttribute("aria-live", "polite");
     pageAnnouncer.textContent = "金融终端加载完成。8项核心资产，"
-      + marketIssues + "项官方行情需要注意；其他模块中"
+      + proxies.length + "项免费嵌入代理，" + marketIssues + "项站内行情需要注意；其他模块中"
       + grouped.partial + "项部分数据，" + grouped.stale + "项过期，"
       + grouped.error + "项不可用；四条数据管道中" + operationIssues + "条需要注意。";
   }
@@ -4299,6 +4347,9 @@
     ));
     var officialTrendPanels = Array.prototype.slice.call(document.querySelectorAll(
       "#market-grid .official-trend"
+    ));
+    var providerWidgets = Array.prototype.slice.call(document.querySelectorAll(
+      "#market-grid tv-mini-chart"
     ));
     var readinessEvidencePanels = Array.prototype.slice.call(document.querySelectorAll(
       "#operations-grid .operation-readiness"
@@ -4352,8 +4403,14 @@
             && Boolean(panel.querySelector(".sparkline")) === (observationCount >= 2);
         }),
       marketLicenseReadiness: licenseNotice && !licenseNotice.classList.contains("status-unknown")
-        && licenseNotice.textContent.indexOf("精确原标的") !== -1
-        && licenseNotice.textContent.indexOf("DEMO") !== -1,
+        && licenseNotice.textContent.indexOf("免费ETF代理") !== -1
+        && licenseNotice.textContent.indexOf("API密钥") !== -1,
+      providerWidgetContracts: providerWidgets.length === 4
+        && providerWidgets.every(function (widget) {
+          return /^(AMEX:(SPY|DIA|GLD)|NASDAQ:QQQ)$/.test(widget.getAttribute("symbol") || "")
+            && widget.getAttribute("theme") === "dark";
+        })
+        && document.querySelectorAll(".provider-widget-fallback").length === 4,
       readinessEvidenceResources: readinessEvidencePanels.length === 4
         && readinessEvidencePanels.every(function (panel) {
           var progress = panel.querySelector('[role="progressbar"]');
@@ -4410,6 +4467,7 @@
       supportingHealthPanelCount: supportingHealthPanels.length,
       officialHealthPanelCount: officialHealthPanels.length,
       officialObservationTrendCount: officialTrendPanels.length,
+      providerWidgetCount: providerWidgets.length,
       readinessEvidencePanelCount: readinessEvidencePanels.length,
       undersizedTargets: undersizedTargets,
       layout: {
