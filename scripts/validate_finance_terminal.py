@@ -2710,6 +2710,12 @@ def main() -> None:
             and "组件宿主已挂载 · 报价状态见组件" in app
             and "组件未加载 · 使用来源链接" in app,
             "四项免费组件缺少加载、注册、宿主挂载或官方链接回退状态")
+    require("providerWidgetUnavailableCopy" in app
+            and "组件加载超时 · 使用来源链接" in app
+            and "组件注册失败 · 使用来源链接" in app
+            and "组件验证不可用 · 使用来源链接" in app
+            and "组件挂载异常 · 使用来源链接" in app,
+            "免费代理卡未按注册超时、注册失败、验证不可用和宿主异常显示分层回退原因")
     require('params.get("runtimeEvidence") === "1"' in app
             and "useProductionEvidenceWindow" in app,
             "机器浏览器证据没有使用与生产页面一致的完整组件等待窗口")

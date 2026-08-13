@@ -4391,13 +4391,14 @@
   function setProviderWidgetShellState(shell, state) {
     shell.setAttribute("data-provider-state", state.status);
     shell.setAttribute("data-provider-reason", state.reason);
+    var unavailableCopy = providerWidgetUnavailableCopy(state.reason);
     var copy = shell.querySelector(".provider-widget-fallback-copy");
     if (copy) {
       copy.textContent = state.status === "mounted"
         ? "免费行情组件宿主已挂载；"
         : state.status === "registered"
           ? "组件代码已注册，正在验证挂载；"
-          : "免费行情组件暂不可用；";
+          : unavailableCopy.fallback;
     }
     var card = shell.closest(".asset-card");
     var runtimeStatus = card && card.querySelector(".provider-runtime-status");
@@ -4406,8 +4407,46 @@
         ? "组件宿主已挂载 · 报价状态见组件"
         : state.status === "registered"
           ? "组件已注册 · 正在验证宿主"
-          : "组件未加载 · 使用来源链接";
+          : unavailableCopy.status;
     }
+  }
+
+  function providerWidgetUnavailableCopy(reason) {
+    if (reason === "registration-timeout") {
+      return {
+        fallback: "免费行情组件加载超时；",
+        status: "组件加载超时 · 使用来源链接"
+      };
+    }
+    if (reason === "registration-failed") {
+      return {
+        fallback: "免费行情组件注册失败；",
+        status: "组件注册失败 · 使用来源链接"
+      };
+    }
+    if (reason === "custom-elements-unavailable" || reason === "runtime-contract-unavailable") {
+      return {
+        fallback: "当前浏览器无法验证免费行情组件；",
+        status: "组件验证不可用 · 使用来源链接"
+      };
+    }
+    if ([
+      "component-host-missing",
+      "component-host-tag-mismatch",
+      "component-host-disconnected",
+      "component-host-not-defined",
+      "component-host-layout-unavailable",
+      "component-host-empty-layout"
+    ].indexOf(reason) !== -1) {
+      return {
+        fallback: "免费行情组件宿主验证失败；",
+        status: "组件挂载异常 · 使用来源链接"
+      };
+    }
+    return {
+      fallback: "免费行情组件暂不可用；",
+      status: "组件未加载 · 使用来源链接"
+    };
   }
 
   function applyProviderWidgetState(state) {
@@ -4567,7 +4606,9 @@
           var status = shell.closest(".asset-card").querySelector(".provider-runtime-status");
           return (state === "mounted" || state === "unavailable")
             && reason
-            && status && status.textContent.indexOf(state === "mounted" ? "组件宿主已挂载" : "组件未加载") !== -1
+            && status && status.textContent === (state === "mounted"
+              ? "组件宿主已挂载 · 报价状态见组件"
+              : providerWidgetUnavailableCopy(reason).status)
             && (state === "mounted" ? !elementIsRendered(fallback) : elementIsRendered(fallback))
             && (state === "mounted" ? elementIsRendered(widget) : !elementIsRendered(widget));
         }),
