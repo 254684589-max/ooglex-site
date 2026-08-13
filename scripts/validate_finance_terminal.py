@@ -2710,6 +2710,9 @@ def main() -> None:
             and "组件宿主已挂载 · 报价状态见组件" in app
             and "组件未加载 · 使用来源链接" in app,
             "四项免费组件缺少加载、注册、宿主挂载或官方链接回退状态")
+    require('params.get("runtimeEvidence") === "1"' in app
+            and "useProductionEvidenceWindow" in app,
+            "机器浏览器证据没有使用与生产页面一致的完整组件等待窗口")
     require('.provider-widget-shell[data-provider-state="mounted"]' in page
             and "visibility: hidden" in page and ".provider-runtime-status" in page,
             "免费组件宿主未挂载时没有隐藏空组件或保留可见状态")
@@ -2747,7 +2750,8 @@ def main() -> None:
             and "Runtime.evaluate" in browser_validator and "officialObservationTrendCount" in browser_validator
             and "readinessEvidencePanelCount" in browser_validator
             and "finance-terminal-browser-evidence.json" in browser_validator
-            and "buildBrowserEvidence" in browser_validator,
+            and "buildBrowserEvidence" in browser_validator
+            and "runtimeEvidence=1" in browser_validator,
             "浏览器回归脚本未覆盖三档宽度、官方趋势、稳定V1证据、渲染DOM和截图")
     browser_evidence = BROWSER_EVIDENCE.read_text(encoding="utf-8")
     require("EXPECTED_WIDTHS = [360, 768, 1280]" in browser_evidence

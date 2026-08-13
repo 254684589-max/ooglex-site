@@ -52,7 +52,7 @@ Ooglex不得抓取、导出、缓存或再分发组件中的原始行情，不�
 
 `apps/finance-terminal/market-source-readiness.json`逐项保存原目标、选定ETF、TradingView代码、免费非商业范围和禁止原始数据存储边界。上线门禁复算4项代理、提供方脚本白名单、零密钥、零收费源与零本地行情值；任何代理冒充原标的、改成抓取/API交付或加入仓库数值都会`BLOCKED`。
 
-每次Chrome资格检查在360、768和1280像素分别记录SPY、QQQ、DIA与GLD的`mounted / unavailable`状态与受控原因，并输出`finance-terminal-browser-evidence.json`和对应截图Artifact。机器证据只含代理代码、宿主状态和原因，不读取或保存组件报价；它用于跨日复核第三方组件可用性与官方链接回退，不会替代或增加四条数据工作流的3/7成功周期。
+每次Chrome资格检查使用与生产页面相同的完整8秒注册窗口，在360、768和1280像素分别记录SPY、QQQ、DIA与GLD的`mounted / unavailable`状态与受控原因，并输出`finance-terminal-browser-evidence.json`和对应截图Artifact。机器证据只含代理代码、宿主状态和原因，不读取或保存组件报价；它用于跨日复核第三方组件可用性与官方链接回退，不会替代或增加四条数据工作流的3/7成功周期。普通快速回归可以使用短超时，但不得被保存为稳定V1运行证据。
 
 ### 三条聚合管道
 

@@ -4440,7 +4440,8 @@
       return Promise.resolve(contractFailure);
     }
     var params = new URLSearchParams(window.location.search);
-    var timeoutMs = params.get("regression") === "1"
+    var useProductionEvidenceWindow = params.get("runtimeEvidence") === "1";
+    var timeoutMs = params.get("regression") === "1" && !useProductionEvidenceWindow
       ? PROVIDER_WIDGET_REGRESSION_TIMEOUT_MS
       : runtime.registrationTimeoutMs;
     return waitForProviderWidgetRegistration(window.customElements, runtime.registrationTag, timeoutMs)

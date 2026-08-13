@@ -221,7 +221,9 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
     screenHeight: height
   });
   const loaded = client.event("Page.loadEventFired");
-  await client.send("Page.navigate", { url: `${baseUrl}/apps/finance-terminal/?regression=1&width=${width}&run=${randomUUID()}` });
+  await client.send("Page.navigate", {
+    url: `${baseUrl}/apps/finance-terminal/?regression=1&runtimeEvidence=1&width=${width}&run=${randomUUID()}`
+  });
   await loaded;
   const result = await waitForRegression(client, timeoutMs);
   if (Math.abs((result.viewport?.width ?? 0) - width) > 1) {
