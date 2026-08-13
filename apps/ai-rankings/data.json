@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-08-12T21:25:46Z",
-  "asOf": "2026-08-12",
+  "updatedAt": "2026-08-13T21:56:35Z",
+  "asOf": "2026-08-13",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -50,7 +50,7 @@
       "orgCn": "Anthropic",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1507,
+      "arena": 1506,
       "livebench": null,
       "aa": 59.9,
       "ctx": "1M",
@@ -83,6 +83,19 @@
       "price": 5.62
     },
     {
+      "id": "gemini-3-7-flash",
+      "name": "Gemini 3.7 Flash",
+      "org": "Google",
+      "orgCn": "谷歌",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1490,
+      "livebench": 79.9,
+      "aa": null,
+      "ctx": null,
+      "price": 1.5
+    },
+    {
       "id": "qwen3-8",
       "name": "Qwen3.8",
       "org": "Alibaba",
@@ -102,7 +115,7 @@
       "orgCn": "Meta",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1499,
+      "arena": 1498,
       "livebench": 78.9,
       "aa": null,
       "ctx": null,
@@ -115,11 +128,11 @@
       "orgCn": "Anthropic",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1482,
+      "arena": 1481,
       "livebench": null,
       "aa": 56.5,
       "ctx": "1M",
-      "price": 5.0
+      "price": 10.0
     },
     {
       "id": "kimi-k3",
@@ -148,13 +161,26 @@
       "price": 10.0
     },
     {
+      "id": "grok-4-6",
+      "name": "Grok 4.6",
+      "org": "xAI",
+      "orgCn": "xAI",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1464,
+      "livebench": 79.0,
+      "aa": null,
+      "ctx": "500K",
+      "price": 3.0
+    },
+    {
       "id": "gpt-5-6-terra",
       "name": "GPT 5.6 Terra",
       "org": "OpenAI",
       "orgCn": "OpenAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1465,
+      "arena": 1464,
       "livebench": 78.6,
       "aa": null,
       "ctx": null,
@@ -180,7 +206,7 @@
       "orgCn": "xAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1468,
+      "arena": 1469,
       "livebench": 77.1,
       "aa": null,
       "ctx": "500K",
@@ -200,19 +226,6 @@
       "price": 2.0
     },
     {
-      "id": "gpt-5-4",
-      "name": "GPT 5.4",
-      "org": "OpenAI",
-      "orgCn": "OpenAI",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1477,
-      "livebench": 78.8,
-      "aa": 54.0,
-      "ctx": "1.1M",
-      "price": 5.62
-    },
-    {
       "id": "gemini-3-5-flash",
       "name": "Gemini 3.5 Flash",
       "org": "Google",
@@ -226,6 +239,19 @@
       "price": 1.69
     },
     {
+      "id": "gpt-5-4",
+      "name": "GPT 5.4",
+      "org": "OpenAI",
+      "orgCn": "OpenAI",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1476,
+      "livebench": 78.8,
+      "aa": 54.0,
+      "ctx": "1.1M",
+      "price": 5.62
+    },
+    {
       "id": "gemini-3-6-flash",
       "name": "Gemini 3.6 Flash",
       "org": "Google",
@@ -236,7 +262,7 @@
       "livebench": 74.5,
       "aa": null,
       "ctx": "1M",
-      "price": 1.5
+      "price": 0.75
     },
     {
       "id": "grok-4-1",
@@ -245,7 +271,7 @@
       "orgCn": "xAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1465,
+      "arena": 1466,
       "livebench": null,
       "aa": 53.5,
       "ctx": "256K",
@@ -284,7 +310,7 @@
       "orgCn": "OpenAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1451,
+      "arena": 1450,
       "livebench": 73.7,
       "aa": null,
       "ctx": null,
@@ -297,7 +323,7 @@
       "orgCn": "深度求索",
       "flag": "🇨🇳",
       "open": true,
-      "arena": 1458,
+      "arena": 1465,
       "livebench": 72.6,
       "aa": null,
       "ctx": "1M",
@@ -362,7 +388,7 @@
       "orgCn": "阿里巴巴",
       "flag": "🇨🇳",
       "open": false,
-      "arena": 1443,
+      "arena": 1444,
       "livebench": 69.0,
       "aa": null,
       "ctx": "1M",
@@ -375,7 +401,7 @@
       "orgCn": "MiniMax",
       "flag": "🇨🇳",
       "open": true,
-      "arena": 1443,
+      "arena": 1444,
       "livebench": 67.5,
       "aa": null,
       "ctx": null,
@@ -440,7 +466,7 @@
       "orgCn": "xAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1441,
+      "arena": 1442,
       "livebench": 63.3,
       "aa": null,
       "ctx": "1M",
@@ -483,7 +509,7 @@
       "livebench": null,
       "aa": null,
       "ctx": "1M",
-      "price": 5.0
+      "price": 10.0
     },
     {
       "id": "claude-opus-5",
@@ -492,7 +518,7 @@
       "orgCn": "Anthropic",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1494,
+      "arena": 1493,
       "livebench": null,
       "aa": null,
       "ctx": "1M",
@@ -536,32 +562,6 @@
       "aa": null,
       "ctx": "128K",
       "price": 4.81
-    },
-    {
-      "id": "grok-4-20-beta1",
-      "name": "Grok 4.20 BETA1",
-      "org": "xAI",
-      "orgCn": "xAI",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1475,
-      "livebench": null,
-      "aa": null,
-      "ctx": null,
-      "price": null
-    },
-    {
-      "id": "claude-opus-4-5-20251101-32k",
-      "name": "Claude Opus 4.5.20251101 32K",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1473,
-      "livebench": null,
-      "aa": null,
-      "ctx": "200K",
-      "price": 10.0
     }
   ]
 }
