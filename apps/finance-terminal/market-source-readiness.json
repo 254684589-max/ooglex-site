@@ -36,7 +36,15 @@
     "credentialsRequired": false,
     "attributionRequired": true,
     "exportAllowed": false,
-    "providerControlsDelay": true
+    "providerControlsDelay": true,
+    "runtimeVerification": {
+      "registrationTag": "tv-mini-chart",
+      "registrationTimeoutMs": 8000,
+      "successEvidence": "custom-element-registered",
+      "successDoesNotAssert": ["quote-rendered", "quote-freshness", "market-open"],
+      "failureFallback": "official-symbol-link",
+      "lateRegistrationRecovery": true
+    }
   },
   "proxyAssetCount": 4,
   "freeDisplayAssetCount": 4,

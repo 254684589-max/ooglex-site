@@ -107,6 +107,21 @@ def validate_market_source_readiness(readiness: dict[str, Any]) -> list[str]:
     for key in ("documentationUrl", "marketAvailabilityUrl", "dataFaqUrl"):
         if not _is_https_url(provider.get(key), {"www.tradingview.com"}):
             errors.append(f"TradingView免费嵌入缺少官方{key}")
+    runtime_verification = provider.get("runtimeVerification")
+    expected_runtime_verification = {
+        "registrationTag": "tv-mini-chart",
+        "registrationTimeoutMs": 8000,
+        "successEvidence": "custom-element-registered",
+        "successDoesNotAssert": ["quote-rendered", "quote-freshness", "market-open"],
+        "failureFallback": "official-symbol-link",
+        "lateRegistrationRecovery": True,
+    }
+    if not isinstance(runtime_verification, dict):
+        errors.append("TradingView免费嵌入缺少运行时验证边界")
+    else:
+        for key, expected in expected_runtime_verification.items():
+            if runtime_verification.get(key) != expected:
+                errors.append(f"TradingView运行时验证{key}无效")
 
     assets = readiness.get("assets")
     if not isinstance(assets, list):
@@ -171,4 +186,5 @@ def authorization_summary(readiness: dict[str, Any]) -> dict[str, Any]:
         "delivery": (readiness.get("provider") or {}).get("delivery"),
         "cost": (readiness.get("provider") or {}).get("cost"),
         "rawMarketDataStored": (readiness.get("useCase") or {}).get("rawMarketDataStored"),
+        "runtimeVerification": (readiness.get("provider") or {}).get("runtimeVerification"),
     }

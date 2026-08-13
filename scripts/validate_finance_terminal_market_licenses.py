@@ -36,6 +36,16 @@ def main() -> None:
             "免费代理策略、提供方或费用状态无效")
     require(summary["rawMarketDataStored"] is False,
             "官方组件路径不得保存或再分发原始行情")
+    runtime_verification = summary["runtimeVerification"]
+    require(runtime_verification["registrationTag"] == "tv-mini-chart"
+            and runtime_verification["registrationTimeoutMs"] == 8000
+            and runtime_verification["successEvidence"] == "custom-element-registered",
+            "组件运行时登记验证契约无效")
+    require(runtime_verification["successDoesNotAssert"]
+            == ["quote-rendered", "quote-freshness", "market-open"]
+            and runtime_verification["failureFallback"] == "official-symbol-link"
+            and runtime_verification["lateRegistrationRecovery"] is True,
+            "组件登记不得冒充行情渲染、新鲜度或开市状态")
     require(set(summary["proxySymbols"]) == set(EXPECTED_ASSETS),
             "代理状态没有完整覆盖三大股指与黄金")
 
@@ -81,11 +91,24 @@ def main() -> None:
                 for error in validate_market_source_readiness(paid)),
             "付费来源可在免费优先策略下静默启用")
 
+    false_freshness = deepcopy(readiness)
+    false_freshness["provider"]["runtimeVerification"]["successDoesNotAssert"] = ["market-open"]
+    require(any("successDoesNotAssert" in error
+                for error in validate_market_source_readiness(false_freshness)),
+            "组件登记可被静默误报为行情已渲染或新鲜")
+
+    unsafe_fallback = deepcopy(readiness)
+    unsafe_fallback["provider"]["runtimeVerification"]["failureFallback"] = "cached-quote"
+    require(any("failureFallback" in error
+                for error in validate_market_source_readiness(unsafe_fallback)),
+            "组件失败后可用缓存行情冒充实时数据")
+
     print("Finance terminal free proxy readiness: PASS")
     print("- SPY / QQQ / DIA / GLD explicit ETF proxy boundary: PASS")
     print("- TradingView official free web-component delivery: PASS")
     print("- no API key / raw storage / scraping / paid source: PASS")
     print("- individual non-commercial public display scope: PASS")
+    print("- registration-only runtime evidence / official-link fallback: PASS")
 
 
 if __name__ == "__main__":
