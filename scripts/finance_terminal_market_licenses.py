@@ -111,7 +111,9 @@ def validate_market_source_readiness(readiness: dict[str, Any]) -> list[str]:
     expected_runtime_verification = {
         "registrationTag": "tv-mini-chart",
         "registrationTimeoutMs": 8000,
-        "successEvidence": "custom-element-registered",
+        "registrationEvidence": "custom-element-registered",
+        "hostCheckDelayMs": 100,
+        "successEvidence": "connected-defined-element-with-layout",
         "successDoesNotAssert": ["quote-rendered", "quote-freshness", "market-open"],
         "failureFallback": "official-symbol-link",
         "lateRegistrationRecovery": True,

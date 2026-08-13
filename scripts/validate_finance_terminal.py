@@ -1972,8 +1972,36 @@ const adapter = require("./apps/finance-terminal/app.js");
     status: "unavailable", reason: "registration-timeout"
   });
 
-  console.log("TradingView proxy runtime registration states: PASS");
+  const mountedHost = {
+    localName: "tv-mini-chart",
+    isConnected: true,
+    matches: (selector) => selector === ":defined",
+    getBoundingClientRect: () => ({ width: 320, height: 176 })
+  };
+  assert.deepStrictEqual(adapter.inspectProviderWidgetHost(
+    mountedHost, "tv-mini-chart", "connected-defined-element-with-layout"
+  ), {
+    status: "mounted", reason: "connected-defined-element-with-layout"
+  });
+  assert.deepStrictEqual(adapter.inspectProviderWidgetHost({
+    ...mountedHost, isConnected: false
+  }, "tv-mini-chart", "connected-defined-element-with-layout"), {
+    status: "unavailable", reason: "component-host-disconnected"
+  });
+  assert.deepStrictEqual(adapter.inspectProviderWidgetHost({
+    ...mountedHost, matches: () => false
+  }, "tv-mini-chart", "connected-defined-element-with-layout"), {
+    status: "unavailable", reason: "component-host-not-defined"
+  });
+  assert.deepStrictEqual(adapter.inspectProviderWidgetHost({
+    ...mountedHost, getBoundingClientRect: () => ({ width: 0, height: 176 })
+  }, "tv-mini-chart", "connected-defined-element-with-layout"), {
+    status: "unavailable", reason: "component-host-empty-layout"
+  });
+
+  console.log("TradingView proxy runtime registration and host states: PASS");
   console.log("- missing / pre-registered / delayed / timeout fallback: PASS");
+  console.log("- connected / defined / non-empty host layout boundary: PASS");
 })().catch((error) => {
   console.error(error);
   process.exitCode = 1;
@@ -2669,16 +2697,19 @@ def main() -> None:
             "页面缺少浏览器、官方逐源或辅助来源资源回归探针")
     require("marketLicenseReadiness" in app and "providerWidgetCount" in app,
             "浏览器回归探针未覆盖免费代理状态或四项提供方组件")
-    require("waitForProviderWidgetRegistration" in app and "monitorProviderWidgets" in app
-            and "providerWidgetRuntime" in app and "providerWidgetRuntimeStates" in app,
-            "页面未验证或回归四项免费组件的运行时注册状态")
+    require("waitForProviderWidgetRegistration" in app and "inspectProviderWidgetHost" in app
+            and "verifyProviderWidgetHosts" in app and "monitorProviderWidgets" in app
+            and "providerWidgetRuntime" in app and "providerWidgetRuntimeStates" in app
+            and "providerWidgetRuntimeEvidence" in app,
+            "页面未验证或回归四项免费组件的注册与宿主挂载状态")
     require('data-provider-state", "loading"' in app
-            and "组件已注册 · 行情时效见组件" in app
+            and "组件已注册 · 正在验证宿主" in app
+            and "组件宿主已挂载 · 报价状态见组件" in app
             and "组件未加载 · 使用来源链接" in app,
-            "四项免费组件缺少加载、注册或官方链接回退状态")
-    require('.provider-widget-shell[data-provider-state="registered"]' in page
+            "四项免费组件缺少加载、注册、宿主挂载或官方链接回退状态")
+    require('.provider-widget-shell[data-provider-state="mounted"]' in page
             and "visibility: hidden" in page and ".provider-runtime-status" in page,
-            "免费组件加载失败时没有隐藏空组件或保留可见状态")
+            "免费组件宿主未挂载时没有隐藏空组件或保留可见状态")
     require("noHorizontalOverflow" in app and "responsiveColumns" in app and "targetSizes" in app
             and "keyboardTabs" in app, "浏览器回归探针未覆盖溢出、布局、触控与键盘交互")
     require('document.querySelectorAll(".operation-card").length === 4' in app
@@ -2891,7 +2922,7 @@ def main() -> None:
     print("- four supporting feeds / migrated health / partial fallback / retained snapshot / workflow governance: PASS")
     print("- four real-asset update chains / single-source isolation / stale evidence: PASS")
     print("- one allowlisted TradingView free widget dependency / explicit proxy fallback: PASS")
-    print("- proxy widget registration / timeout / late-recovery state contract: PASS")
+    print("- proxy widget registration / host mount / timeout / late-recovery contract: PASS")
     print("- browser regression probe / read-only CI contract: PASS")
 
 

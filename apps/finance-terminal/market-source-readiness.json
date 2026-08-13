@@ -40,7 +40,9 @@
     "runtimeVerification": {
       "registrationTag": "tv-mini-chart",
       "registrationTimeoutMs": 8000,
-      "successEvidence": "custom-element-registered",
+      "registrationEvidence": "custom-element-registered",
+      "hostCheckDelayMs": 100,
+      "successEvidence": "connected-defined-element-with-layout",
       "successDoesNotAssert": ["quote-rendered", "quote-freshness", "market-open"],
       "failureFallback": "official-symbol-link",
       "lateRegistrationRecovery": true

@@ -39,8 +39,12 @@ def main() -> None:
     runtime_verification = summary["runtimeVerification"]
     require(runtime_verification["registrationTag"] == "tv-mini-chart"
             and runtime_verification["registrationTimeoutMs"] == 8000
-            and runtime_verification["successEvidence"] == "custom-element-registered",
+            and runtime_verification["registrationEvidence"] == "custom-element-registered",
             "组件运行时登记验证契约无效")
+    require(runtime_verification["hostCheckDelayMs"] == 100
+            and runtime_verification["successEvidence"]
+            == "connected-defined-element-with-layout",
+            "组件宿主挂载验证契约无效")
     require(runtime_verification["successDoesNotAssert"]
             == ["quote-rendered", "quote-freshness", "market-open"]
             and runtime_verification["failureFallback"] == "official-symbol-link"
@@ -97,6 +101,18 @@ def main() -> None:
                 for error in validate_market_source_readiness(false_freshness)),
             "组件登记可被静默误报为行情已渲染或新鲜")
 
+    registration_only = deepcopy(readiness)
+    registration_only["provider"]["runtimeVerification"]["successEvidence"] = "custom-element-registered"
+    require(any("successEvidence" in error
+                for error in validate_market_source_readiness(registration_only)),
+            "组件只注册但没有挂载证据仍可通过")
+
+    missing_layout_delay = deepcopy(readiness)
+    del missing_layout_delay["provider"]["runtimeVerification"]["hostCheckDelayMs"]
+    require(any("hostCheckDelayMs" in error
+                for error in validate_market_source_readiness(missing_layout_delay)),
+            "组件宿主挂载检查缺少稳定布局等待仍可通过")
+
     unsafe_fallback = deepcopy(readiness)
     unsafe_fallback["provider"]["runtimeVerification"]["failureFallback"] = "cached-quote"
     require(any("failureFallback" in error
@@ -108,7 +124,7 @@ def main() -> None:
     print("- TradingView official free web-component delivery: PASS")
     print("- no API key / raw storage / scraping / paid source: PASS")
     print("- individual non-commercial public display scope: PASS")
-    print("- registration-only runtime evidence / official-link fallback: PASS")
+    print("- registration + connected defined host layout / official-link fallback: PASS")
 
 
 if __name__ == "__main__":

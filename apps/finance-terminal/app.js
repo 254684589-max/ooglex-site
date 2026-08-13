@@ -2961,7 +2961,9 @@
     if (!runtimeVerification
       || runtimeVerification.registrationTag !== PROVIDER_WIDGET_TAG
       || runtimeVerification.registrationTimeoutMs !== 8000
-      || runtimeVerification.successEvidence !== "custom-element-registered"
+      || runtimeVerification.registrationEvidence !== "custom-element-registered"
+      || runtimeVerification.hostCheckDelayMs !== 100
+      || runtimeVerification.successEvidence !== "connected-defined-element-with-layout"
       || JSON.stringify(runtimeVerification.successDoesNotAssert)
         !== JSON.stringify(["quote-rendered", "quote-freshness", "market-open"])
       || runtimeVerification.failureFallback !== "official-symbol-link"
@@ -3059,6 +3061,7 @@
     summarizeRowQuality: summarizeRowQuality,
     dataModeLabel: dataModeLabel,
     periodTabTargetIndex: periodTabTargetIndex,
+    inspectProviderWidgetHost: inspectProviderWidgetHost,
     waitForProviderWidgetRegistration: waitForProviderWidgetRegistration,
     unavailableCrossAsset: unavailableCrossAsset,
     unavailableAssetRanking: unavailableAssetRanking,
@@ -4086,6 +4089,7 @@
     var shell = document.createElement("div");
     shell.className = "provider-widget-shell";
     shell.setAttribute("data-provider-state", "loading");
+    shell.setAttribute("data-provider-symbol", asset.symbol);
     var widget = document.createElement("tv-mini-chart");
     widget.setAttribute("symbol", asset.externalDisplay.widgetSymbol);
     widget.setAttribute("theme", "dark");
@@ -4363,22 +4367,68 @@
     });
   }
 
+  function inspectProviderWidgetHost(widget, tagName, successEvidence) {
+    if (!widget) return { status: "unavailable", reason: "component-host-missing" };
+    if (String(widget.localName || "").toLowerCase() !== tagName) {
+      return { status: "unavailable", reason: "component-host-tag-mismatch" };
+    }
+    if (widget.isConnected !== true) {
+      return { status: "unavailable", reason: "component-host-disconnected" };
+    }
+    if (typeof widget.matches !== "function" || !widget.matches(":defined")) {
+      return { status: "unavailable", reason: "component-host-not-defined" };
+    }
+    if (typeof widget.getBoundingClientRect !== "function") {
+      return { status: "unavailable", reason: "component-host-layout-unavailable" };
+    }
+    var rect = widget.getBoundingClientRect();
+    if (!rect || !(rect.width > 0) || !(rect.height > 0)) {
+      return { status: "unavailable", reason: "component-host-empty-layout" };
+    }
+    return { status: "mounted", reason: successEvidence };
+  }
+
+  function setProviderWidgetShellState(shell, state) {
+    shell.setAttribute("data-provider-state", state.status);
+    shell.setAttribute("data-provider-reason", state.reason);
+    var copy = shell.querySelector(".provider-widget-fallback-copy");
+    if (copy) {
+      copy.textContent = state.status === "mounted"
+        ? "免费行情组件宿主已挂载；"
+        : state.status === "registered"
+          ? "组件代码已注册，正在验证挂载；"
+          : "免费行情组件暂不可用；";
+    }
+    var card = shell.closest(".asset-card");
+    var runtimeStatus = card && card.querySelector(".provider-runtime-status");
+    if (runtimeStatus) {
+      runtimeStatus.textContent = state.status === "mounted"
+        ? "组件宿主已挂载 · 报价状态见组件"
+        : state.status === "registered"
+          ? "组件已注册 · 正在验证宿主"
+          : "组件未加载 · 使用来源链接";
+    }
+  }
+
   function applyProviderWidgetState(state) {
     Array.prototype.slice.call(document.querySelectorAll(".provider-widget-shell")).forEach(function (shell) {
-      shell.setAttribute("data-provider-state", state.status);
-      shell.setAttribute("data-provider-reason", state.reason);
-      var copy = shell.querySelector(".provider-widget-fallback-copy");
-      if (copy) {
-        copy.textContent = state.status === "registered"
-          ? "免费行情组件已注册；"
-          : "免费行情组件暂不可用；";
-      }
-      var runtimeStatus = shell.closest(".asset-card").querySelector(".provider-runtime-status");
-      if (runtimeStatus) {
-        runtimeStatus.textContent = state.status === "registered"
-          ? "组件已注册 · 行情时效见组件"
-          : "组件未加载 · 使用来源链接";
-      }
+      setProviderWidgetShellState(shell, state);
+    });
+  }
+
+  function verifyProviderWidgetHosts(runtime) {
+    return new Promise(function (resolve) {
+      window.setTimeout(resolve, runtime.hostCheckDelayMs);
+    }).then(function () {
+      return Array.prototype.slice.call(document.querySelectorAll(".provider-widget-shell")).map(function (shell) {
+        var state = inspectProviderWidgetHost(
+          shell.querySelector(runtime.registrationTag),
+          runtime.registrationTag,
+          runtime.successEvidence
+        );
+        setProviderWidgetShellState(shell, state);
+        return state;
+      });
     });
   }
 
@@ -4396,9 +4446,14 @@
     return waitForProviderWidgetRegistration(window.customElements, runtime.registrationTag, timeoutMs)
       .then(function (state) {
         applyProviderWidgetState(state);
-        if (state.status === "unavailable" && runtime.lateRegistrationRecovery) {
+        if (state.status === "registered") {
+          return verifyProviderWidgetHosts(runtime);
+        }
+        if (state.status === "unavailable" && runtime.lateRegistrationRecovery
+          && window.customElements && typeof window.customElements.whenDefined === "function") {
           window.customElements.whenDefined(runtime.registrationTag).then(function () {
             applyProviderWidgetState({ status: "registered", reason: "late-custom-element-registration" });
+            return verifyProviderWidgetHosts(runtime);
           }).catch(function () {
             // The official-link fallback remains available.
           });
@@ -4505,13 +4560,15 @@
       providerWidgetRuntime: providerWidgetShells.length === 4
         && providerWidgetShells.every(function (shell) {
           var state = shell.getAttribute("data-provider-state");
+          var reason = shell.getAttribute("data-provider-reason");
           var fallback = shell.querySelector(".provider-widget-fallback");
           var widget = shell.querySelector("tv-mini-chart");
           var status = shell.closest(".asset-card").querySelector(".provider-runtime-status");
-          return (state === "registered" || state === "unavailable")
-            && status && status.textContent.indexOf(state === "registered" ? "组件已注册" : "组件未加载") !== -1
-            && (state === "registered" ? !elementIsRendered(fallback) : elementIsRendered(fallback))
-            && (state === "registered" ? elementIsRendered(widget) : !elementIsRendered(widget));
+          return (state === "mounted" || state === "unavailable")
+            && reason
+            && status && status.textContent.indexOf(state === "mounted" ? "组件宿主已挂载" : "组件未加载") !== -1
+            && (state === "mounted" ? !elementIsRendered(fallback) : elementIsRendered(fallback))
+            && (state === "mounted" ? elementIsRendered(widget) : !elementIsRendered(widget));
         }),
       readinessEvidenceResources: readinessEvidencePanels.length === 4
         && readinessEvidencePanels.every(function (panel) {
@@ -4572,6 +4629,13 @@
       providerWidgetCount: providerWidgets.length,
       providerWidgetRuntimeStates: providerWidgetShells.map(function (shell) {
         return shell.getAttribute("data-provider-state");
+      }),
+      providerWidgetRuntimeEvidence: providerWidgetShells.map(function (shell) {
+        return {
+          symbol: shell.getAttribute("data-provider-symbol"),
+          state: shell.getAttribute("data-provider-state"),
+          reason: shell.getAttribute("data-provider-reason")
+        };
       }),
       readinessEvidencePanelCount: readinessEvidencePanels.length,
       undersizedTargets: undersizedTargets,
