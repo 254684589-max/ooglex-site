@@ -58,6 +58,8 @@ node scripts/validate_finance_terminal_browser.mjs
 
 代理运行Artifact同时包含JSON与Markdown摘要。先查看逐视口`providerScript`：`failed`表示白名单脚本请求本身失败或被阻断，`failureCategory`只以`dns / tls / connection / timeout / blocked / other`受控枚举进一步分诊，原始Chrome错误文本不得写入证据；`loaded`表示只确认固定脚本收到2xx/3xx响应。再查看`diagnosis`区分组件注册超时、宿主验证失败、部分挂载或全部宿主挂载。每个代理还必须精确记录登记的TradingView官方标的链接，并满足`unavailable`时可见、`mounted`时隐藏；证据不主动访问该外链，避免将外部站点可达性误写成页面回退契约。`loaded`和`all-hosts-mounted`都不证明报价已渲染、数据新鲜或市场开市，不得据此补写行情。
 
+质量工作流同一Artifact还包含`finance-terminal-proxy-runtime-history.json`和Markdown趋势摘要。趋势只读取目标开发分支最近14天内的既有代理证据，按21:00 UTC边界对同周期重跑取最新一份，最多保留7个周期；旧证据格式会跳过。GitHub API或只读令牌暂不可用时，`collection`必须标记`partial`并只保留本次真实证据，不伪造旧周期、不阻断生产数据，也不增加四条核心管道的3/7成功计数。
+
 需要单项恢复时仍可按原顺序手动运行：先运行`Finance Terminal Quality`，再运行宏观雷达与跨资产；运行`Companies Tracker`并等待成功后，才运行`Asset Ranking`，最后运行Beta门禁。资格工作流失败不允许强行跳过依赖或修改时间戳，只能修复首个可操作问题后重跑。
 
 同一UTC日更窗口内的重跑只算一个周期；失败后重跑成功不会虚增连续周期。Beta至少观察3个周期，稳定V1至少观察7个周期。

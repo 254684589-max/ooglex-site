@@ -31,6 +31,8 @@ on:
       - 'scripts/validate_finance_terminal_browser.mjs'
       - 'scripts/finance_terminal_browser_evidence.mjs'
       - 'scripts/validate_finance_terminal_browser_evidence.mjs'
+      - 'scripts/finance_terminal_proxy_runtime_history.py'
+      - 'scripts/validate_finance_terminal_proxy_runtime_history.py'
       - 'scripts/market_data_quality.py'
       - 'scripts/validate_market_data_quality.py'
       - 'scripts/market_source_health.py'
@@ -102,6 +104,8 @@ on:
       - 'scripts/validate_finance_terminal_browser.mjs'
       - 'scripts/finance_terminal_browser_evidence.mjs'
       - 'scripts/validate_finance_terminal_browser_evidence.mjs'
+      - 'scripts/finance_terminal_proxy_runtime_history.py'
+      - 'scripts/validate_finance_terminal_proxy_runtime_history.py'
       - 'scripts/market_data_quality.py'
       - 'scripts/validate_market_data_quality.py'
       - 'scripts/market_source_health.py'
@@ -148,6 +152,7 @@ on:
       - 'docs/SUPPORTING_SOURCE_HEALTH.md'
 
 permissions:
+  actions: read
   contents: read
 
 concurrency:
@@ -211,10 +216,24 @@ jobs:
       - name: Validate supporting source qualification orchestration
         run: python scripts/validate_finance_terminal_supporting_qualification.py
 
+      - name: Validate proxy runtime history contracts
+        run: python scripts/validate_finance_terminal_proxy_runtime_history.py
+
       - name: Validate rendered page in Chrome
         run: |
           node scripts/validate_finance_terminal_browser_evidence.mjs
           node scripts/validate_finance_terminal_browser.mjs --artifacts-dir /tmp/finance-terminal-browser
+
+      - name: Build bounded proxy runtime history
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python scripts/finance_terminal_proxy_runtime_history.py \
+            --repository "$GITHUB_REPOSITORY" \
+            --branch "$GITHUB_REF_NAME" \
+            --current-evidence /tmp/finance-terminal-browser/finance-terminal-browser-evidence.json \
+            --output-json /tmp/finance-terminal-browser/finance-terminal-proxy-runtime-history.json \
+            --output-markdown /tmp/finance-terminal-browser/finance-terminal-proxy-runtime-history.md
 
       - name: Upload responsive screenshots
         if: always()
@@ -233,6 +252,8 @@ jobs:
           path: |
             /tmp/finance-terminal-browser/finance-terminal-browser-evidence.json
             /tmp/finance-terminal-browser/finance-terminal-browser-evidence.md
+            /tmp/finance-terminal-browser/finance-terminal-proxy-runtime-history.json
+            /tmp/finance-terminal-browser/finance-terminal-proxy-runtime-history.md
           if-no-files-found: error
           retention-days: 14
 

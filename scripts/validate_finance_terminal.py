@@ -66,6 +66,8 @@ QUALITY_WORKFLOW = ROOT / ".github" / "workflows" / "finance_terminal_quality.ym
 BROWSER_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_browser.mjs"
 BROWSER_EVIDENCE = ROOT / "scripts" / "finance_terminal_browser_evidence.mjs"
 BROWSER_EVIDENCE_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_browser_evidence.mjs"
+PROXY_RUNTIME_HISTORY = ROOT / "scripts" / "finance_terminal_proxy_runtime_history.py"
+PROXY_RUNTIME_HISTORY_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_proxy_runtime_history.py"
 DATA_ISSUE_FORM = ROOT / ".github" / "ISSUE_TEMPLATE" / "finance-terminal-data.yml"
 OPERATIONS_RUNBOOK = ROOT / "docs" / "FINANCE_TERMINAL_OPERATIONS_RUNBOOK.md"
 SOURCE_HEALTH_VALIDATOR = ROOT / "scripts" / "validate_market_source_health.py"
@@ -2032,7 +2034,8 @@ def main() -> None:
         ASSET_RANKING_WORKFLOW, COMPANIES_WORKFLOW, ECON_CALENDAR_WORKFLOW, FINANCE_NEWS_WORKFLOW,
         SCHEDULER_WORKFLOW, SOURCE_HEALTH_VALIDATOR, SOURCE_HEALTH_DOC,
         SUPPORTING_HEALTH_VALIDATOR, SUPPORTING_HEALTH_DOC,
-        BROWSER_VALIDATOR, BROWSER_EVIDENCE, BROWSER_EVIDENCE_VALIDATOR, HOME,
+        BROWSER_VALIDATOR, BROWSER_EVIDENCE, BROWSER_EVIDENCE_VALIDATOR,
+        PROXY_RUNTIME_HISTORY, PROXY_RUNTIME_HISTORY_VALIDATOR, HOME,
     ):
         require(path.is_file(), f"缺少文件：{path.relative_to(ROOT)}")
 
@@ -2777,9 +2780,19 @@ def main() -> None:
             and 'client.subscribe("Network.responseReceived"' in browser_validator
             and 'client.subscribe("Network.loadingFailed"' in browser_validator,
             "浏览器回归未记录白名单提供方脚本的请求、响应和受控失败状态")
+    proxy_history = PROXY_RUNTIME_HISTORY.read_text(encoding="utf-8")
+    require("MAX_CYCLES = 7" in proxy_history
+            and "ARTIFACT_LOOKBACK_DAYS = 14" in proxy_history
+            and 'cycleBoundaryUtc": "21:00"' in proxy_history
+            and "finance-terminal-proxy-runtime-" in proxy_history
+            and "doesNotReadOrStoreQuotes" in proxy_history
+            and "token-unavailable" in proxy_history
+            and "api-unavailable" in proxy_history,
+            "代理运行趋势未限制7周期、21:00 UTC边界、14天Artifact或诚实降级")
     require(QUALITY_WORKFLOW.exists(), "缺少金融终端只读质量工作流")
     quality_workflow = QUALITY_WORKFLOW.read_text(encoding="utf-8")
-    require("permissions:\n  contents: read" in quality_workflow, "金融终端质量工作流权限必须只读")
+    require("permissions:\n  actions: read\n  contents: read" in quality_workflow,
+            "金融终端质量工作流权限必须限制为Actions与内容只读")
     require(".github/ISSUE_TEMPLATE/finance-terminal-data.yml" in quality_workflow,
             "金融终端质量工作流未覆盖数据反馈表单变更")
     require("docs/FINANCE_TERMINAL_OPERATIONS_RUNBOOK.md" in quality_workflow,
@@ -2788,6 +2801,11 @@ def main() -> None:
             and "validate_finance_terminal_browser_evidence.mjs" in quality_workflow
             and "finance-terminal-browser-evidence.json" in quality_workflow
             and "finance-terminal-browser-evidence.md" in quality_workflow
+            and "validate_finance_terminal_proxy_runtime_history.py" in quality_workflow
+            and "finance_terminal_proxy_runtime_history.py" in quality_workflow
+            and "finance-terminal-proxy-runtime-history.json" in quality_workflow
+            and "finance-terminal-proxy-runtime-history.md" in quality_workflow
+            and "GITHUB_TOKEN: ${{ github.token }}" in quality_workflow
             and "finance-terminal-proxy-runtime" in quality_workflow
             and "validate_finance_terminal.py" in quality_workflow,
             "金融终端质量工作流未运行静态与浏览器回归")
