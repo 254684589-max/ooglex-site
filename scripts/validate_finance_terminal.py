@@ -1342,7 +1342,7 @@ operationCards.forEach((card) => {
   const expected = expectedReadinessById[card.id];
   assert(expected);
   assert.strictEqual(card.readiness.consecutiveSuccessfulCycles, expected.consecutiveSuccessfulCycles);
-  assert.strictEqual(card.readiness.latestCycleDate, expected.cycleDates[expected.cycleDates.length - 1]);
+  assert.strictEqual(card.readiness.latestCycleDate, expected.cycleDates.slice().sort().at(-1));
   assert.strictEqual(card.readiness.status, readinessState.pipelines[card.id].status);
 });
 const staleReadiness = adapter.adaptReadinessSnapshot(
