@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-08-12T21:25:25Z",
-  "asOf": "2026-08-12",
+  "updatedAt": "2026-08-13T13:56:49Z",
+  "asOf": "2026-08-13",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-09 ~ 2026-08-14",
   "count": 74,
@@ -535,18 +535,6 @@
       "actual": null
     },
     {
-      "ts": "2026-08-13T06:02:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "Foreign Direct Investment ytd/y",
-      "titleEn": "Foreign Direct Investment ytd/y",
-      "impact": "low",
-      "forecast": null,
-      "previous": "-5.0%",
-      "actual": null
-    },
-    {
       "ts": "2026-08-13T06:30:00Z",
       "ccy": "CHF",
       "country": "瑞士",
@@ -556,30 +544,6 @@
       "impact": "low",
       "forecast": "-0.2%",
       "previous": "-0.3%",
-      "actual": null
-    },
-    {
-      "ts": "2026-08-13T08:03:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "货币供应 同比",
-      "titleEn": "M2 Money Supply y/y",
-      "impact": "low",
-      "forecast": "7.9%",
-      "previous": "8.0%",
-      "actual": null
-    },
-    {
-      "ts": "2026-08-13T08:03:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "New Loans",
-      "titleEn": "New Loans",
-      "impact": "low",
-      "forecast": "-50B",
-      "previous": "1610B",
       "actual": null
     },
     {
@@ -667,7 +631,7 @@
       "actual": null
     },
     {
-      "ts": "2026-08-13T14:00:00Z",
+      "ts": "2026-08-13T14:15:00Z",
       "ccy": "USD",
       "country": "美国",
       "flag": "🇺🇸",
@@ -763,6 +727,18 @@
       "actual": null
     },
     {
+      "ts": "2026-08-14T06:02:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "Foreign Direct Investment ytd/y",
+      "titleEn": "Foreign Direct Investment ytd/y",
+      "impact": "low",
+      "forecast": null,
+      "previous": "-5.0%",
+      "actual": null
+    },
+    {
       "ts": "2026-08-14T06:45:00Z",
       "ccy": "EUR",
       "country": "欧元区",
@@ -808,6 +784,30 @@
       "impact": "low",
       "forecast": "-2.2B",
       "previous": "-5.0B",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-14T09:03:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "货币供应 同比",
+      "titleEn": "M2 Money Supply y/y",
+      "impact": "low",
+      "forecast": "7.9%",
+      "previous": "8.0%",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-14T09:03:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "New Loans",
+      "titleEn": "New Loans",
+      "impact": "low",
+      "forecast": "-50B",
+      "previous": "1610B",
       "actual": null
     },
     {
