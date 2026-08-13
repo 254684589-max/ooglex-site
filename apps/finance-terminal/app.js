@@ -39,6 +39,8 @@
   var FINANCE_NEWS_MAX_AGE_HOURS = 12;
   var FINANCE_NEWS_ITEM_MAX_AGE_HOURS = 36;
   var READINESS_MAX_AGE_HOURS = 72;
+  var PROVIDER_WIDGET_TAG = "tv-mini-chart";
+  var PROVIDER_WIDGET_REGRESSION_TIMEOUT_MS = 150;
   var DATA_MODES = ["market", "fallback", "estimate", "unknown", "unavailable"];
   var DATA_STATUSES = ["ok", "partial", "stale", "error"];
   var DATA_FREQUENCIES = ["realtime", "delayed", "daily", "weekly", "monthly", "quarterly", "annual", "irregular"];
@@ -2955,6 +2957,17 @@
       || provider.providerControlsDelay !== true) {
       throw new Error("TradingView免费嵌入配置无效");
     }
+    var runtimeVerification = provider.runtimeVerification;
+    if (!runtimeVerification
+      || runtimeVerification.registrationTag !== PROVIDER_WIDGET_TAG
+      || runtimeVerification.registrationTimeoutMs !== 8000
+      || runtimeVerification.successEvidence !== "custom-element-registered"
+      || JSON.stringify(runtimeVerification.successDoesNotAssert)
+        !== JSON.stringify(["quote-rendered", "quote-freshness", "market-open"])
+      || runtimeVerification.failureFallback !== "official-symbol-link"
+      || runtimeVerification.lateRegistrationRecovery !== true) {
+      throw new Error("TradingView组件运行时验证边界无效");
+    }
     if (!Array.isArray(data.assets) || data.assets.length !== 4) {
       throw new Error("免费代理标的数量无效");
     }
@@ -2983,7 +2996,8 @@
       proxyAssets: 4,
       provider: provider.name,
       cost: provider.cost,
-      rawMarketDataStored: useCase.rawMarketDataStored
+      rawMarketDataStored: useCase.rawMarketDataStored,
+      runtimeVerification: runtimeVerification
     };
   }
 
@@ -3045,6 +3059,7 @@
     summarizeRowQuality: summarizeRowQuality,
     dataModeLabel: dataModeLabel,
     periodTabTargetIndex: periodTabTargetIndex,
+    waitForProviderWidgetRegistration: waitForProviderWidgetRegistration,
     unavailableCrossAsset: unavailableCrossAsset,
     unavailableAssetRanking: unavailableAssetRanking,
     unavailableCompanies: unavailableCompanies,
@@ -4070,6 +4085,7 @@
   function makeProviderWidget(asset) {
     var shell = document.createElement("div");
     shell.className = "provider-widget-shell";
+    shell.setAttribute("data-provider-state", "loading");
     var widget = document.createElement("tv-mini-chart");
     widget.setAttribute("symbol", asset.externalDisplay.widgetSymbol);
     widget.setAttribute("theme", "dark");
@@ -4078,7 +4094,7 @@
     shell.appendChild(widget);
     var fallback = document.createElement("p");
     fallback.className = "provider-widget-fallback";
-    fallback.appendChild(document.createTextNode("免费行情组件加载中；若持续不可用，"));
+    appendText(fallback, "span", "provider-widget-fallback-copy", "免费行情组件加载中；若持续不可用，");
     var link = appendText(fallback, "a", "source-link", "前往TradingView查看 " + asset.symbol);
     link.href = asset.source.url;
     link.target = "_blank";
@@ -4118,7 +4134,7 @@
       proxySource.className = "asset-source";
       appendSource(proxySource, asset);
       proxyFooter.appendChild(proxySource);
-      appendText(proxyFooter, "span", "provider-time", "时效与市场状态见组件");
+      appendText(proxyFooter, "span", "provider-time provider-runtime-status", "组件加载中 · 行情时效见组件");
       var proxyChip = statusLabel(asset);
       appendText(proxyFooter, "span", "status-chip " + proxyChip.className, proxyChip.text);
       card.appendChild(proxyFooter);
@@ -4319,6 +4335,78 @@
     return window.getComputedStyle(element).gridTemplateColumns.split(/\s+/).filter(Boolean).length;
   }
 
+  function waitForProviderWidgetRegistration(registry, tagName, timeoutMs) {
+    if (!registry || typeof registry.get !== "function" || typeof registry.whenDefined !== "function") {
+      return Promise.resolve({ status: "unavailable", reason: "custom-elements-unavailable" });
+    }
+    if (registry.get(tagName)) {
+      return Promise.resolve({ status: "registered", reason: "custom-element-registered" });
+    }
+    return new Promise(function (resolve) {
+      var settled = false;
+      var timer = setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        resolve({ status: "unavailable", reason: "registration-timeout" });
+      }, timeoutMs);
+      registry.whenDefined(tagName).then(function () {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve({ status: "registered", reason: "custom-element-registered" });
+      }).catch(function () {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve({ status: "unavailable", reason: "registration-failed" });
+      });
+    });
+  }
+
+  function applyProviderWidgetState(state) {
+    Array.prototype.slice.call(document.querySelectorAll(".provider-widget-shell")).forEach(function (shell) {
+      shell.setAttribute("data-provider-state", state.status);
+      shell.setAttribute("data-provider-reason", state.reason);
+      var copy = shell.querySelector(".provider-widget-fallback-copy");
+      if (copy) {
+        copy.textContent = state.status === "registered"
+          ? "免费行情组件已注册；"
+          : "免费行情组件暂不可用；";
+      }
+      var runtimeStatus = shell.closest(".asset-card").querySelector(".provider-runtime-status");
+      if (runtimeStatus) {
+        runtimeStatus.textContent = state.status === "registered"
+          ? "组件已注册 · 行情时效见组件"
+          : "组件未加载 · 使用来源链接";
+      }
+    });
+  }
+
+  function monitorProviderWidgets(marketLicenseState) {
+    var runtime = marketLicenseState && marketLicenseState.runtimeVerification;
+    if (!runtime || marketLicenseState.status !== "free") {
+      var contractFailure = { status: "unavailable", reason: "runtime-contract-unavailable" };
+      applyProviderWidgetState(contractFailure);
+      return Promise.resolve(contractFailure);
+    }
+    var params = new URLSearchParams(window.location.search);
+    var timeoutMs = params.get("regression") === "1"
+      ? PROVIDER_WIDGET_REGRESSION_TIMEOUT_MS
+      : runtime.registrationTimeoutMs;
+    return waitForProviderWidgetRegistration(window.customElements, runtime.registrationTag, timeoutMs)
+      .then(function (state) {
+        applyProviderWidgetState(state);
+        if (state.status === "unavailable" && runtime.lateRegistrationRecovery) {
+          window.customElements.whenDefined(runtime.registrationTag).then(function () {
+            applyProviderWidgetState({ status: "registered", reason: "late-custom-element-registration" });
+          }).catch(function () {
+            // The official-link fallback remains available.
+          });
+        }
+        return state;
+      });
+  }
+
   function runBrowserRegressionProbe() {
     var params = new URLSearchParams(window.location.search);
     if (params.get("regression") !== "1") return;
@@ -4350,6 +4438,9 @@
     ));
     var providerWidgets = Array.prototype.slice.call(document.querySelectorAll(
       "#market-grid tv-mini-chart"
+    ));
+    var providerWidgetShells = Array.prototype.slice.call(document.querySelectorAll(
+      "#market-grid .provider-widget-shell"
     ));
     var readinessEvidencePanels = Array.prototype.slice.call(document.querySelectorAll(
       "#operations-grid .operation-readiness"
@@ -4411,6 +4502,17 @@
             && widget.getAttribute("theme") === "dark";
         })
         && document.querySelectorAll(".provider-widget-fallback").length === 4,
+      providerWidgetRuntime: providerWidgetShells.length === 4
+        && providerWidgetShells.every(function (shell) {
+          var state = shell.getAttribute("data-provider-state");
+          var fallback = shell.querySelector(".provider-widget-fallback");
+          var widget = shell.querySelector("tv-mini-chart");
+          var status = shell.closest(".asset-card").querySelector(".provider-runtime-status");
+          return (state === "registered" || state === "unavailable")
+            && status && status.textContent.indexOf(state === "registered" ? "组件已注册" : "组件未加载") !== -1
+            && (state === "registered" ? !elementIsRendered(fallback) : elementIsRendered(fallback))
+            && (state === "registered" ? elementIsRendered(widget) : !elementIsRendered(widget));
+        }),
       readinessEvidenceResources: readinessEvidencePanels.length === 4
         && readinessEvidencePanels.every(function (panel) {
           var progress = panel.querySelector('[role="progressbar"]');
@@ -4468,6 +4570,9 @@
       officialHealthPanelCount: officialHealthPanels.length,
       officialObservationTrendCount: officialTrendPanels.length,
       providerWidgetCount: providerWidgets.length,
+      providerWidgetRuntimeStates: providerWidgetShells.map(function (shell) {
+        return shell.getAttribute("data-provider-state");
+      }),
       readinessEvidencePanelCount: readinessEvidencePanels.length,
       undersizedTargets: undersizedTargets,
       layout: {
@@ -4603,7 +4708,9 @@
       renderOperationsCards(experience.operations);
       renderMarketLicenseNotice(experience.marketLicense);
       announceExperience(experience);
-      window.setTimeout(runBrowserRegressionProbe, 0);
+      return monitorProviderWidgets(experience.marketLicense).then(function () {
+        window.setTimeout(runBrowserRegressionProbe, 0);
+      });
     })
     .catch(function (error) {
       renderError(error);
