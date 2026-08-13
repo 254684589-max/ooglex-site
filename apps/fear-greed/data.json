@@ -1,13 +1,13 @@
 {
-  "updatedAt": "2026-08-13T12:42:16Z",
+  "updatedAt": "2026-08-13T14:57:23Z",
   "asOf": "2026-08-13",
   "source": "CNN Business Fear & Greed Index",
-  "score": 62,
+  "score": 67,
   "rating": "greed",
   "ratingZh": "贪婪",
   "refs": {
     "now": {
-      "score": 62,
+      "score": 67,
       "rating": "greed",
       "ratingZh": "贪婪"
     },
@@ -34,15 +34,15 @@
   },
   "indicators": [
     {
-      "score": 71,
-      "rating": "greed",
-      "ratingZh": "贪婪",
+      "score": 80,
+      "rating": "extreme greed",
+      "ratingZh": "极度贪婪",
       "key": "market_momentum_sp500",
       "name": "市场动能",
       "desc": "标普500 相对125日均线"
     },
     {
-      "score": 29,
+      "score": 30,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "stock_price_strength",
@@ -50,7 +50,7 @@
       "desc": "创52周新高 vs 新低个股"
     },
     {
-      "score": 52,
+      "score": 54,
       "rating": "neutral",
       "ratingZh": "中性",
       "key": "stock_price_breadth",
@@ -58,9 +58,9 @@
       "desc": "麦克莱伦成交量总和指数"
     },
     {
-      "score": 64,
-      "rating": "greed",
-      "ratingZh": "贪婪",
+      "score": 76,
+      "rating": "extreme greed",
+      "ratingZh": "极度贪婪",
       "key": "put_call_options",
       "name": "看跌/看涨期权",
       "desc": "5日 Put/Call 比率"
@@ -74,15 +74,15 @@
       "desc": "VIX 及其50日均线"
     },
     {
-      "score": 71,
-      "rating": "greed",
-      "ratingZh": "贪婪",
+      "score": 79,
+      "rating": "extreme greed",
+      "ratingZh": "极度贪婪",
       "key": "safe_haven_demand",
       "name": "避险需求",
       "desc": "股票 vs 国债 20日收益差"
     },
     {
-      "score": 98,
+      "score": 96,
       "rating": "extreme greed",
       "ratingZh": "极度贪婪",
       "key": "junk_bond_demand",
@@ -425,7 +425,7 @@
     },
     {
       "t": "2026-08-13",
-      "v": 62
+      "v": 67
     }
   ],
   "note": "数据来自 CNN 恐慌与贪婪指数：0 = 极度恐惧，100 = 极度贪婪，由 7 个市场情绪指标综合而成，每日自动更新。仅供参考，不构成建议。"
