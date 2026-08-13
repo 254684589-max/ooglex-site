@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 EVIDENCE_SCHEMA_VERSION = 5
 MAX_CYCLES = 7
 ARTIFACT_LOOKBACK_DAYS = 14
@@ -29,6 +29,19 @@ DOES_NOT_ASSERT = ["quote-rendered", "quote-freshness", "market-open"]
 FAILURE_CATEGORIES = ["dns", "tls", "connection", "timeout", "blocked", "other"]
 DIAGNOSIS_STATES = ["healthy", "degraded", "unavailable", "unknown"]
 COLLECTION_REASONS = {None, "token-unavailable", "api-unavailable"}
+WARNING_THRESHOLD_CYCLES = 2
+ASSESSMENT_STATES = {"healthy", "watch", "warn", "unknown"}
+ASSESSMENT_REASONS = {
+    "collection-partial",
+    "no-compatible-cycles",
+    "insufficient-history",
+    "consecutive-full-fallback",
+    "consecutive-provider-script-failure",
+    "recovered-after-warning",
+    "two-cycle-all-hosts-mounted",
+    "latest-cycle-partial-hosts",
+    "latest-cycle-not-fully-mounted",
+}
 
 
 class ContractError(ValueError):
@@ -77,6 +90,69 @@ def cycle_date(value: str) -> str:
 
 def nonnegative_integer(value: Any, maximum: int) -> bool:
     return isinstance(value, int) and not isinstance(value, bool) and 0 <= value <= maximum
+
+
+def consecutive_cycles(cycles: list[dict[str, Any]], predicate) -> int:
+    count = 0
+    for item in cycles:
+        if not predicate(item["summary"]):
+            break
+        count += 1
+    return count
+
+
+def assess_runtime(cycles: list[dict[str, Any]], collection: dict[str, Any]) -> dict[str, Any]:
+    full_fallback = consecutive_cycles(cycles, lambda summary: summary["fallbackObservations"] == 12)
+    script_failure = consecutive_cycles(
+        cycles, lambda summary: summary["providerScriptFailedViewports"] > 0
+    )
+    all_hosts_mounted = consecutive_cycles(
+        cycles, lambda summary: summary["mountedObservations"] == 12
+    )
+    all_scripts_loaded = consecutive_cycles(
+        cycles, lambda summary: summary["providerScriptLoadedViewports"] == 3
+    )
+    latest_cycle_date = cycles[0]["cycleDate"] if cycles else None
+    assessment = {
+        "state": "unknown",
+        "reason": "no-compatible-cycles",
+        "warningThresholdCycles": WARNING_THRESHOLD_CYCLES,
+        "consecutiveFullFallbackCycles": full_fallback,
+        "consecutiveProviderScriptFailureCycles": script_failure,
+        "consecutiveAllHostsMountedCycles": all_hosts_mounted,
+        "consecutiveAllProviderScriptsLoadedCycles": all_scripts_loaded,
+        "latestCycleDate": latest_cycle_date,
+    }
+    if collection["status"] != "complete":
+        assessment.update(state="unknown", reason="collection-partial")
+        return assessment
+    if not cycles:
+        return assessment
+    if full_fallback >= WARNING_THRESHOLD_CYCLES:
+        assessment.update(state="warn", reason="consecutive-full-fallback")
+        return assessment
+    if script_failure >= WARNING_THRESHOLD_CYCLES:
+        assessment.update(state="warn", reason="consecutive-provider-script-failure")
+        return assessment
+    if len(cycles) < WARNING_THRESHOLD_CYCLES:
+        assessment.update(state="watch", reason="insufficient-history")
+        return assessment
+    latest = cycles[0]["summary"]
+    previous = cycles[1]["summary"]
+    latest_healthy = latest["mountedObservations"] == 12 \
+        and latest["providerScriptLoadedViewports"] == 3
+    previous_warning = previous["fallbackObservations"] == 12 \
+        or previous["providerScriptFailedViewports"] > 0
+    if latest_healthy and previous_warning:
+        assessment.update(state="watch", reason="recovered-after-warning")
+    elif all_hosts_mounted >= WARNING_THRESHOLD_CYCLES \
+            and all_scripts_loaded >= WARNING_THRESHOLD_CYCLES:
+        assessment.update(state="healthy", reason="two-cycle-all-hosts-mounted")
+    elif 0 < latest["mountedObservations"] < 12:
+        assessment.update(state="watch", reason="latest-cycle-partial-hosts")
+    else:
+        assessment.update(state="watch", reason="latest-cycle-not-fully-mounted")
+    return assessment
 
 
 def summarize_evidence(evidence: Any) -> dict[str, Any]:
@@ -190,6 +266,7 @@ def build_history(
         "collection": collection,
         "cycles": cycles,
         "summary": summary,
+        "assessment": assess_runtime(cycles, collection),
         "doesNotAssert": DOES_NOT_ASSERT,
         "doesNotReadOrStoreQuotes": True,
     }
@@ -199,7 +276,8 @@ def build_history(
 def validate_history(history: Any) -> dict[str, Any]:
     require(exact_keys(history, {
         "schemaVersion", "generatedAt", "scope", "source", "targetBranch", "window",
-        "collection", "cycles", "summary", "doesNotAssert", "doesNotReadOrStoreQuotes",
+        "collection", "cycles", "summary", "assessment", "doesNotAssert",
+        "doesNotReadOrStoreQuotes",
     }), "代理趋势顶层字段无效")
     require(history["schemaVersion"] == SCHEMA_VERSION, "代理趋势版本无效")
     parse_timestamp(history["generatedAt"])
@@ -271,6 +349,18 @@ def validate_history(history: Any) -> dict[str, Any]:
         },
     }
     require(history["summary"] == expected_summary, "代理趋势总览不可由周期复算")
+    assessment = history["assessment"]
+    require(exact_keys(assessment, {
+        "state", "reason", "warningThresholdCycles", "consecutiveFullFallbackCycles",
+        "consecutiveProviderScriptFailureCycles", "consecutiveAllHostsMountedCycles",
+        "consecutiveAllProviderScriptsLoadedCycles", "latestCycleDate",
+    }), "代理趋势运维评估字段无效")
+    require(assessment["state"] in ASSESSMENT_STATES
+            and assessment["reason"] in ASSESSMENT_REASONS
+            and assessment["warningThresholdCycles"] == WARNING_THRESHOLD_CYCLES,
+            "代理趋势运维评估状态无效")
+    require(history["assessment"] == assess_runtime(cycles, collection),
+            "代理趋势运维评估不可由周期与收集状态复算")
     require(history["doesNotAssert"] == DOES_NOT_ASSERT
             and history["doesNotReadOrStoreQuotes"] is True, "代理趋势行情边界无效")
     return history
@@ -369,6 +459,7 @@ def render_markdown(history: dict[str, Any]) -> str:
         f"Branch: `{history['targetBranch']}`",
         f"Collection: {collection['status']}"
         + (f" / {collection['reason']}" if collection["reason"] else ""),
+        f"Assessment: **{history['assessment']['state'].upper()}** / {history['assessment']['reason']}",
         "",
         "This bounded report groups the latest schema-v5 host evidence by the 21:00 UTC daily cycle. It does not read quotes or assert quote rendering, freshness, or market-open state.",
         "",
@@ -419,6 +510,7 @@ def main() -> int:
         f"{history['summary']['observedCycles']}/{MAX_CYCLES} cycles · "
         f"collection {collection['status']}"
         + (f"/{collection['reason']}" if collection["reason"] else "")
+        + f" · assessment {history['assessment']['state']}/{history['assessment']['reason']}"
     )
     return 0
 

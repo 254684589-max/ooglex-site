@@ -115,6 +115,9 @@ require(history["summary"]["observedCycles"] == 7, "历史必须限制为7个周
 require(history["cycles"][0]["cycleDate"] == "2026-08-13", "最新周期顺序错误")
 require(history["cycles"][0]["summary"]["mountedObservations"] == 6, "同周期未保留最新证据")
 require(history["summary"]["mixedHostCycles"] == 1, "混合宿主周期复算错误")
+require(history["assessment"]["state"] == "watch"
+        and history["assessment"]["reason"] == "latest-cycle-partial-hosts",
+        "最新周期部分挂载应进入观察状态")
 require(validate_history(history) is history, "历史契约验证应返回原对象")
 markdown = render_markdown(history)
 require("21:00 UTC daily cycle" in markdown and "does not read quotes" in markdown,
@@ -129,6 +132,54 @@ partial = build_history([records[-1]], "agent/finance-terminal-supporting-qualif
                             "remoteArtifactsSkipped": 0,
                         })
 require(partial["summary"]["observedCycles"] == 1, "API失败时必须保留当前真实证据")
+require(partial["assessment"]["state"] == "unknown"
+        and partial["assessment"]["reason"] == "collection-partial",
+        "API失败时运维评估必须诚实标记UNKNOWN")
+
+warning_fallback = build_history([
+    evidence("2026-08-12T22:00:00Z", 0, 0, 3, "other"),
+    evidence("2026-08-13T22:00:00Z", 0, 0, 3, "other"),
+], "agent/finance-terminal-supporting-qualification", "2026-08-13T23:00:00Z", {
+    "status": "complete", "reason": None, "remoteArtifactsSeen": 1,
+    "remoteArtifactsAccepted": 1, "remoteArtifactsSkipped": 0,
+})
+require(warning_fallback["assessment"]["state"] == "warn"
+        and warning_fallback["assessment"]["reason"] == "consecutive-full-fallback"
+        and warning_fallback["assessment"]["consecutiveFullFallbackCycles"] == 2,
+        "连续两周期全回退必须告警")
+
+warning_script = build_history([
+    evidence("2026-08-12T22:00:00Z", 6, 0, 3, "connection"),
+    evidence("2026-08-13T22:00:00Z", 6, 0, 3, "connection"),
+], "agent/finance-terminal-supporting-qualification", "2026-08-13T23:00:00Z", {
+    "status": "complete", "reason": None, "remoteArtifactsSeen": 1,
+    "remoteArtifactsAccepted": 1, "remoteArtifactsSkipped": 0,
+})
+require(warning_script["assessment"]["state"] == "warn"
+        and warning_script["assessment"]["reason"] == "consecutive-provider-script-failure",
+        "连续两周期脚本失败必须告警")
+
+healthy = build_history([
+    evidence("2026-08-12T22:00:00Z", 12, 3, 0, None),
+    evidence("2026-08-13T22:00:00Z", 12, 3, 0, None),
+], "agent/finance-terminal-supporting-qualification", "2026-08-13T23:00:00Z", {
+    "status": "complete", "reason": None, "remoteArtifactsSeen": 1,
+    "remoteArtifactsAccepted": 1, "remoteArtifactsSkipped": 0,
+})
+require(healthy["assessment"]["state"] == "healthy"
+        and healthy["assessment"]["reason"] == "two-cycle-all-hosts-mounted",
+        "连续两周期脚本加载且宿主全挂载才可标记HEALTHY")
+
+recovered = build_history([
+    evidence("2026-08-12T22:00:00Z", 0, 0, 3, "timeout"),
+    evidence("2026-08-13T22:00:00Z", 12, 3, 0, None),
+], "agent/finance-terminal-supporting-qualification", "2026-08-13T23:00:00Z", {
+    "status": "complete", "reason": None, "remoteArtifactsSeen": 1,
+    "remoteArtifactsAccepted": 1, "remoteArtifactsSkipped": 0,
+})
+require(recovered["assessment"]["state"] == "watch"
+        and recovered["assessment"]["reason"] == "recovered-after-warning",
+        "单周期恢复必须继续观察")
 
 old_schema = evidence("2026-08-13T22:00:00Z", 0, 0, 3, "dns")
 old_schema["schemaVersion"] = 4
@@ -137,6 +188,10 @@ expect_error(lambda: summarize_evidence(old_schema), "旧格式证据必须跳�
 forged_summary = copy.deepcopy(history)
 forged_summary["summary"]["fullyMountedCycles"] = 7
 expect_error(lambda: validate_history(forged_summary), "不可复算趋势汇总必须拒绝")
+
+forged_assessment = copy.deepcopy(history)
+forged_assessment["assessment"]["state"] = "healthy"
+expect_error(lambda: validate_history(forged_assessment), "不可复算运维评估必须拒绝")
 
 quote_leak = copy.deepcopy(history)
 quote_leak["cycles"][0]["summary"]["price"] = 123.45
@@ -179,6 +234,9 @@ with tempfile.TemporaryDirectory(prefix="finance-proxy-history-") as temporary_d
             "无令牌CLI必须只保留当前证据并标记partial")
     require("partial / token-unavailable" in markdown_path.read_text(encoding="utf-8"),
             "无令牌Markdown必须公开降级原因")
+    require(cli_history["schemaVersion"] == 2
+            and cli_history["assessment"]["reason"] == "collection-partial",
+            "CLI必须输出v2运维评估")
 
 print("Finance Terminal proxy runtime history contract: PASS")
 print("- 21:00 UTC cycle grouping / same-cycle latest evidence / 7-cycle bound: PASS")
@@ -187,3 +245,4 @@ print("- schema-v5 summary normalization / incompatible evidence rejection: PASS
 print("- no quote fields / no raw transport error / derived summary: PASS")
 print("- cross-host artifact redirect strips GitHub authorization: PASS")
 print("- no-token CLI writes a current-only partial artifact: PASS")
+print("- two-cycle warning / recovery watch / healthy host assessment: PASS")

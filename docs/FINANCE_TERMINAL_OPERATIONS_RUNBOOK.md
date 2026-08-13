@@ -60,6 +60,8 @@ node scripts/validate_finance_terminal_browser.mjs
 
 质量工作流同一Artifact还包含`finance-terminal-proxy-runtime-history.json`和Markdown趋势摘要。趋势只读取目标开发分支最近14天内的既有代理证据，按21:00 UTC边界对同周期重跑取最新一份，最多保留7个周期；旧证据格式会跳过。GitHub API或只读令牌暂不可用时，`collection`必须标记`partial`并只保留本次真实证据，不伪造旧周期、不阻断生产数据，也不增加四条核心管道的3/7成功计数。
 
+趋势的`assessment`只评价脚本传输和组件宿主，不评价行情。`HEALTHY`要求最近连续两个周期三档脚本均加载且12个宿主观测全部挂载；单周期、部分挂载或告警后的首个恢复周期为`WATCH`；连续两个周期存在脚本传输失败，或连续两个周期12/12均回退时为`WARN`；历史API或令牌不可用时为`UNKNOWN`。这些状态用于运维和统一上线复核，不替代四条核心数据管道的3/7与7/7门槛。
+
 需要单项恢复时仍可按原顺序手动运行：先运行`Finance Terminal Quality`，再运行宏观雷达与跨资产；运行`Companies Tracker`并等待成功后，才运行`Asset Ranking`，最后运行Beta门禁。资格工作流失败不允许强行跳过依赖或修改时间戳，只能修复首个可操作问题后重跑。
 
 同一UTC日更窗口内的重跑只算一个周期；失败后重跑成功不会虚增连续周期。Beta至少观察3个周期，稳定V1至少观察7个周期。
