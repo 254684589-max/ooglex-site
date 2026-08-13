@@ -30,6 +30,9 @@ def main() -> None:
     summary = authorization_summary(readiness)
     require(summary["blockedAssets"] == 4 and summary["approvedAssets"] == 0,
             "四项精确原标的必须继续保持授权阻塞")
+    require(summary["strategy"] == "exact-original"
+            and summary["preparedInquiries"] == 4,
+            "四项精确原标的必须完成询价准备且不得切换代理")
     require(set(summary["authorizationStatuses"]) == set(EXPECTED_ASSETS),
             "授权状态没有完整覆盖三大股指与黄金")
 
@@ -45,6 +48,25 @@ def main() -> None:
                 for error in validate_market_source_readiness(silently_proxied)),
             "ETF静默冒充指数未被拒绝")
 
+    selected_proxy = deepcopy(readiness)
+    selected_proxy["assets"][0]["proxyAlternative"]["selected"] = True
+    require(any("不得选择ETF代理" in error
+                for error in validate_market_source_readiness(selected_proxy)),
+            "所有者选择精确原标的后仍可启用ETF代理")
+
+    commercialized = deepcopy(readiness)
+    commercialized["useCase"]["advertising"] = True
+    require(any("advertising" in error
+                for error in validate_market_source_readiness(commercialized)),
+            "非商业询价范围被静默扩大")
+
+    fake_submission = deepcopy(readiness)
+    fake_submission["assets"][0]["procurement"]["status"] = "submitted"
+    fake_submission["assets"][0]["procurement"]["submittedAt"] = "2026-08-13T08:00:00Z"
+    require(any("可审计编号" in error
+                for error in validate_market_source_readiness(fake_submission)),
+            "无审计编号的已提交询价未被拒绝")
+
     fake_approval = deepcopy(readiness)
     fake_approval["assets"][0]["authorization"].update({
         "status": "approved",
@@ -57,9 +79,10 @@ def main() -> None:
             "无可审计授权编号的approved状态未被拒绝")
 
     print("Finance terminal market license readiness: PASS")
-    print("- exact SPX / NDX / DJI / gold authorization boundary: PASS")
-    print("- official evidence links and public-display scope: PASS")
-    print("- explicit ETF proxy product-decision guard: PASS")
+    print("- exact SPX / NDX / DJIA / LBMA Gold PM authorization boundary: PASS")
+    print("- individual non-commercial delayed-display scope: PASS")
+    print("- official inquiry routes and auditable submission states: PASS")
+    print("- owner-selected no-proxy guard: PASS")
 
 
 if __name__ == "__main__":

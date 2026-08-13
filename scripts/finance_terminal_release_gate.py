@@ -313,9 +313,11 @@ def evaluate_demo_policy(
             for asset_id in sorted(EXPECTED_DEMOS):
                 readiness = readiness_by_id[asset_id]
                 authorization = readiness["authorization"]
+                procurement = readiness["procurement"]
                 if authorization["status"] == "blocked":
                     license_details.append(
-                        f"{asset_id}：{authorization['reasonCode']}；保持演示数据。"
+                        f"{asset_id}：{authorization['reasonCode']}；"
+                        f"询价状态{procurement['status']}；保持演示数据。"
                     )
                 else:
                     license_details.append(f"{asset_id}：公开展示授权已登记，等待正式接入。")

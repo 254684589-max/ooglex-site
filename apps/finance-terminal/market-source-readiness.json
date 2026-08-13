@@ -1,26 +1,56 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "reviewedOn": "2026-08-13",
   "displayScope": "public-web",
-  "policy": "精确原标的只有在公开展示授权可验证后才能替换演示数据；ETF或期货代理必须先取得产品决定并同步改名。",
+  "policy": "稳定V1已选择精确原标的；只有公开展示授权可验证后才能替换演示数据，当前不得以ETF或期货代理替代。",
+  "selection": {
+    "strategy": "exact-original",
+    "decidedOn": "2026-08-13",
+    "decidedBy": "project-owner",
+    "proxySubstitutionAllowed": false
+  },
+  "useCase": {
+    "operatorType": "individual-hobbyist",
+    "commercial": false,
+    "advertising": false,
+    "subscriptions": false,
+    "otherRevenue": false,
+    "domain": "ooglex.com",
+    "displayLatency": "daily-delayed",
+    "displayPurpose": "personal-financial-research",
+    "publicApiRedistribution": false,
+    "tradingExecution": false,
+    "investmentProduct": false,
+    "quoteAcceptance": "owner-confirmation-required"
+  },
   "blockedAssetCount": 4,
+  "inquiryReadyAssetCount": 4,
   "assets": [
     {
       "id": "sp500",
       "targetSymbol": "SPX",
       "targetInstrument": "S&P 500 Price Index",
       "candidateSource": {
-        "provider": "FRED / S&P Dow Jones Indices",
-        "seriesId": "SP500",
-        "url": "https://fred.stlouisfed.org/series/SP500"
+        "provider": "S&P Dow Jones Indices",
+        "seriesId": "SPX",
+        "url": "https://www.spglobal.com/spdji/en/about-us/data-index-licensing/"
       },
       "authorization": {
         "status": "blocked",
         "publicDisplayAuthorized": false,
         "licenseOwner": "S&P Dow Jones Indices",
-        "reasonCode": "owner-preapproval-required",
-        "evidenceUrl": "https://fred.stlouisfed.org/series/SP500",
-        "termsUrl": "https://fred.stlouisfed.org/docs/api/terms_of_use.html"
+        "reasonCode": "owner-license-required",
+        "evidenceUrl": "https://www.spglobal.com/spdji/en/about-us/data-index-licensing/",
+        "termsUrl": "https://www.spglobal.com/en/terms-of-use"
+      },
+      "procurement": {
+        "status": "prepared",
+        "requestGroup": "sp-dji-index-display",
+        "contact": "index_services@spglobal.com",
+        "contactUrl": "https://www.spglobal.com/spdji/en/about-us/data-index-licensing/",
+        "requestedLicense": "daily or delayed public website display",
+        "delivery": "S&P DJI or an authorized data vendor",
+        "submittedAt": null
       },
       "productionAction": "keep-demo",
       "proxyAlternative": {
@@ -28,7 +58,8 @@
         "instrument": "SPDR S&P 500 ETF Trust",
         "instrumentType": "etf-proxy",
         "isSameInstrument": false,
-        "requiresProductApproval": true
+        "requiresProductApproval": true,
+        "selected": false
       }
     },
     {
@@ -36,17 +67,26 @@
       "targetSymbol": "NDX",
       "targetInstrument": "Nasdaq-100 Price Index",
       "candidateSource": {
-        "provider": "FRED / Nasdaq",
-        "seriesId": "NASDAQ100",
-        "url": "https://fred.stlouisfed.org/series/NASDAQ100"
+        "provider": "Nasdaq Global Index Data Service",
+        "seriesId": "NDX",
+        "url": "https://www.nasdaq.com/solutions/global-indexes/data/gids"
       },
       "authorization": {
         "status": "blocked",
         "publicDisplayAuthorized": false,
         "licenseOwner": "Nasdaq",
-        "reasonCode": "owner-preapproval-required",
-        "evidenceUrl": "https://fred.stlouisfed.org/series/NASDAQ100",
-        "termsUrl": "https://fred.stlouisfed.org/docs/api/terms_of_use.html"
+        "reasonCode": "owner-license-required",
+        "evidenceUrl": "https://www.nasdaq.com/solutions/global-indexes/licensing-and-etps",
+        "termsUrl": "https://www.nasdaq.com/legal"
+      },
+      "procurement": {
+        "status": "prepared",
+        "requestGroup": "nasdaq-index-display",
+        "contact": "DataSales@nasdaq.com",
+        "contactUrl": "https://www.nasdaqtrader.com/Trader.aspx?id=DPGlobaldata",
+        "requestedLicense": "daily or delayed public website display",
+        "delivery": "GIDS cloud or an authorized data vendor",
+        "submittedAt": null
       },
       "productionAction": "keep-demo",
       "proxyAlternative": {
@@ -54,25 +94,35 @@
         "instrument": "Invesco QQQ Trust",
         "instrumentType": "etf-proxy",
         "isSameInstrument": false,
-        "requiresProductApproval": true
+        "requiresProductApproval": true,
+        "selected": false
       }
     },
     {
       "id": "dow",
-      "targetSymbol": "DJI",
+      "targetSymbol": "DJIA",
       "targetInstrument": "Dow Jones Industrial Average",
       "candidateSource": {
-        "provider": "FRED / S&P Dow Jones Indices",
+        "provider": "S&P Dow Jones Indices",
         "seriesId": "DJIA",
-        "url": "https://fred.stlouisfed.org/series/DJIA"
+        "url": "https://www.spglobal.com/spdji/en/about-us/data-index-licensing/"
       },
       "authorization": {
         "status": "blocked",
         "publicDisplayAuthorized": false,
         "licenseOwner": "S&P Dow Jones Indices",
-        "reasonCode": "owner-preapproval-required",
-        "evidenceUrl": "https://fred.stlouisfed.org/series/DJIA",
-        "termsUrl": "https://fred.stlouisfed.org/docs/api/terms_of_use.html"
+        "reasonCode": "owner-license-required",
+        "evidenceUrl": "https://www.spglobal.com/spdji/en/about-us/data-index-licensing/",
+        "termsUrl": "https://www.spglobal.com/en/terms-of-use"
+      },
+      "procurement": {
+        "status": "prepared",
+        "requestGroup": "sp-dji-index-display",
+        "contact": "index_services@spglobal.com",
+        "contactUrl": "https://www.spglobal.com/spdji/en/about-us/data-index-licensing/",
+        "requestedLicense": "daily or delayed public website display",
+        "delivery": "S&P DJI or an authorized data vendor",
+        "submittedAt": null
       },
       "productionAction": "keep-demo",
       "proxyAlternative": {
@@ -80,17 +130,18 @@
         "instrument": "SPDR Dow Jones Industrial Average ETF Trust",
         "instrumentType": "etf-proxy",
         "isSameInstrument": false,
-        "requiresProductApproval": true
+        "requiresProductApproval": true,
+        "selected": false
       }
     },
     {
       "id": "gold",
-      "targetSymbol": "XAU/USD",
-      "targetInstrument": "USD gold spot or licensed daily benchmark",
+      "targetSymbol": "LBMA-GOLD-PM-USD",
+      "targetInstrument": "LBMA Gold Price PM in USD per troy ounce",
       "candidateSource": {
-        "provider": "LBMA / ICE Benchmark Administration",
-        "seriesId": "LBMA-GOLD-PRICE",
-        "url": "https://www.lbma.org.uk/prices-and-data/lbma-gold-price/lbma-gold-price"
+        "provider": "ICE Benchmark Administration",
+        "seriesId": "LBMA-GOLD-PRICE-PM-USD",
+        "url": "https://www.ice.com/iba/lbma-precious-metals"
       },
       "authorization": {
         "status": "blocked",
@@ -98,7 +149,16 @@
         "licenseOwner": "ICE Benchmark Administration",
         "reasonCode": "redistribution-license-required",
         "evidenceUrl": "https://www.lbma.org.uk/prices-and-data/lbma-gold-price/lbma-gold-price",
-        "termsUrl": "https://www.lbma.org.uk/prices-and-data/lbma-precious-metal-prices"
+        "termsUrl": "https://www.ice.com/iba/about"
+      },
+      "procurement": {
+        "status": "prepared",
+        "requestGroup": "iba-lbma-gold-display",
+        "contact": "iba-licensing@theice.com",
+        "contactUrl": "https://www.ice.com/iba/lbma-precious-metals",
+        "requestedLicense": "daily delayed public website display after midnight London time",
+        "delivery": "IBA or an authorized redistribution partner",
+        "submittedAt": null
       },
       "productionAction": "keep-demo",
       "proxyAlternative": {
@@ -106,7 +166,8 @@
         "instrument": "SPDR Gold Shares",
         "instrumentType": "etf-proxy",
         "isSameInstrument": false,
-        "requiresProductApproval": true
+        "requiresProductApproval": true,
+        "selected": false
       }
     }
   ]
