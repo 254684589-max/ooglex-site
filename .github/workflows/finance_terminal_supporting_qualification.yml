@@ -9,6 +9,8 @@ on:
     paths:
       - 'scripts/finance_terminal_supporting_qualification.py'
       - 'scripts/validate_finance_terminal_supporting_qualification.py'
+      - 'scripts/finance_terminal_proxy_runtime_history.py'
+      - 'scripts/validate_finance_terminal_proxy_runtime_history.py'
       - '.github/workflows/finance_terminal_supporting_qualification.yml'
   workflow_dispatch:
 
@@ -106,9 +108,24 @@ jobs:
           python scripts/validate_finance_terminal_supporting_qualification.py
           python scripts/validate_finance_terminal.py
           python scripts/validate_finance_terminal_release_gate.py
+          python scripts/validate_finance_terminal_proxy_runtime_history.py
           node scripts/validate_finance_terminal_browser_evidence.mjs
           node scripts/validate_finance_terminal_browser.mjs \
             --artifacts-dir /tmp/finance-terminal-supporting-browser
+
+      - name: Build final bounded proxy runtime history
+        if: steps.final-quality.outcome == 'success'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python scripts/finance_terminal_proxy_runtime_history.py \
+            --repository "$GITHUB_REPOSITORY" \
+            --branch "$GITHUB_REF_NAME" \
+            --current-evidence /tmp/finance-terminal-supporting-browser/finance-terminal-browser-evidence.json \
+            --output-json /tmp/finance-terminal-supporting-browser/finance-terminal-proxy-runtime-history.json \
+            --output-markdown /tmp/finance-terminal-supporting-browser/finance-terminal-proxy-runtime-history.md
+          cat /tmp/finance-terminal-supporting-browser/finance-terminal-proxy-runtime-history.md \
+            >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload final supporting health diagnostics
         if: always()
@@ -136,6 +153,8 @@ jobs:
           path: |
             /tmp/finance-terminal-supporting-browser/finance-terminal-browser-evidence.json
             /tmp/finance-terminal-supporting-browser/finance-terminal-browser-evidence.md
+            /tmp/finance-terminal-supporting-browser/finance-terminal-proxy-runtime-history.json
+            /tmp/finance-terminal-supporting-browser/finance-terminal-proxy-runtime-history.md
           if-no-files-found: error
           retention-days: 14
 

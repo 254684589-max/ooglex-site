@@ -122,8 +122,14 @@ def test_github_workflow_safety() -> None:
     require("scripts/validate_finance_terminal_browser_evidence.mjs" in workflow
             and "finance-terminal-supporting-proxy-runtime" in workflow
             and "finance-terminal-browser-evidence.json" in workflow
-            and "finance-terminal-browser-evidence.md" in workflow,
-            "辅助资格完整页面检查必须保留四项代理运行时证据")
+            and "finance-terminal-browser-evidence.md" in workflow
+            and "validate_finance_terminal_proxy_runtime_history.py" in workflow
+            and "finance_terminal_proxy_runtime_history.py" in workflow
+            and "finance-terminal-proxy-runtime-history.json" in workflow
+            and "finance-terminal-proxy-runtime-history.md" in workflow
+            and "GITHUB_TOKEN: ${{ github.token }}" in workflow
+            and "GITHUB_STEP_SUMMARY" in workflow,
+            "辅助资格完整页面检查必须保留四项代理运行证据、趋势与运维评估")
     require(all(name not in workflow for name in (
         "fear_greed.yml", "ofr_monitor.yml", "econ_calendar.yml",
         "whats_latest.yml",
@@ -131,6 +137,9 @@ def test_github_workflow_safety() -> None:
             "辅助资格CI必须经编排器触发来源，不得复制取数步骤")
     require("scripts/validate_finance_terminal_supporting_qualification.py" in quality,
             "质量CI必须运行辅助资格契约测试")
+    require("scripts/finance_terminal_proxy_runtime_history.py" in quality
+            and "scripts/validate_finance_terminal_proxy_runtime_history.py" in quality,
+            "代理趋势变化必须同时触发质量与辅助资格检查")
     require(".github/workflows/finance_terminal_supporting_qualification.yml" in quality,
             "辅助资格工作流变更必须触发质量CI")
 
