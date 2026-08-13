@@ -22,9 +22,9 @@
 
 因此，后续应分资产渐进接入，而不是一次性把8张卡片全部切成真实数据。
 
-四项待授权资产的当前决定已结构化保存在`apps/finance-terminal/market-source-readiness.json`，并由离线验证器和稳定V1门禁共同检查。2026-08-13复核结论为：FRED的`SP500`、`NASDAQ100`和`DJIA`页面均明确提示第三方版权/预先批准边界，FRED API访问本身不授予第三方再分发权；LBMA说明黄金基准再分发可能需要ICE Benchmark Administration许可。因此四项当前生产动作均为`keep-demo`，不是“接口尚未写完”。
+四项待授权资产的当前决定已结构化保存在`apps/finance-terminal/market-source-readiness.json`，并由离线验证器和稳定V1门禁共同检查。2026-08-13项目所有者已选择精确原标的：`SPX`、`NDX`、`DJIA`与`LBMA Gold Price PM (USD/oz)`，不采用ETF代理。申请范围限定为个人爱好者、无广告/订阅/其他收入、日频或延迟公开网页展示；正式询价材料见`docs/FINANCE_TERMINAL_MARKET_LICENSE_INTAKE.md`。在取得可验证书面许可前，四项生产动作仍为`keep-demo`，不是“接口尚未写完”。
 
-`SPY`、`QQQ`、`DIA`和`GLD`只登记为显式ETF代理候选。采用任一代理都会改变页面所称标的、代码与收益口径，属于产品决定；在项目所有者选择前，代码不得自动切换。
+`SPY`、`QQQ`、`DIA`和`GLD`只保留为未选择的显式ETF代理候选。采用任一代理都会改变页面所称标的、代码与收益口径；除非项目所有者另行撤销当前决定，代码不得自动切换。
 
 ## 2. 必须先统一的展示口径
 
@@ -61,12 +61,12 @@
 
 | ID | 推荐的最终名称与代码 | 目标标的 | 首选工程来源 | 第一版频率与标签 | 变化口径 | 过期判定 | 公开展示状态 |
 |---|---|---|---|---|---|---|---|
-| `sp500` | 标普500 `SPX` | S&P 500价格指数 | FRED `SP500`，或具有外部展示权的授权供应商 | 日频；日终收盘 | 上一交易日收盘 | 超过2个美国交易日 | **需许可** |
-| `nasdaq100` | 纳斯达克100 `NDX` | Nasdaq-100价格指数 | FRED `NASDAQ100`，或具有外部展示权的授权供应商 | 日频；日终收盘 | 上一交易日收盘 | 超过2个美国交易日 | **需许可** |
-| `dow` | 道琼斯工业平均指数 `DJIA` | DJIA价格指数 | FRED `DJIA`，或具有外部展示权的授权供应商 | 日频；日终收盘 | 上一交易日收盘 | 超过2个美国交易日 | **需许可** |
+| `sp500` | 标普500 `SPX` | S&P 500价格指数 | S&P DJI或其指定授权供应商 | 日频；日终或延迟 | 上一交易日收盘 | 超过2个美国交易日 | **询价已准备，需许可** |
+| `nasdaq100` | 纳斯达克100 `NDX` | Nasdaq-100价格指数 | Nasdaq GIDS云接口或其指定授权供应商 | 日频；日终或延迟 | 上一交易日收盘 | 超过2个美国交易日 | **询价已准备，需许可** |
+| `dow` | 道琼斯工业平均指数 `DJIA` | DJIA价格指数 | S&P DJI或其指定授权供应商 | 日频；日终或延迟 | 上一交易日收盘 | 超过2个美国交易日 | **询价已准备，需许可** |
 | `us10y` | 美国10年期国债收益率 `DGS10` | 10年期恒定期限国债收益率 | 复用现有宏观雷达的FRED `DGS10` 数据管道 | 日频；日频官方数据 | 上一观测值，单位bp | 超过3个美国工作日 | **可实施** |
 | `dxy` | 美联储广义美元指数 `DTWEXBGS` | 名义广义贸易加权美元指数 | FRED `DTWEXBGS` | 日频；日频官方数据 | 上一观测值 | 超过3个美国工作日 | **可实施，需改名** |
-| `gold` | 黄金现货 `XAU/USD` | 美元计价黄金现货或明确的日度黄金基准 | 具有外部展示权的授权供应商 | 日频；日终基准 | 上一伦敦工作日 | 超过2个伦敦工作日 | **需许可** |
+| `gold` | LBMA Gold Price PM `LBMA-GOLD-PM-USD` | 美元/金衡盎司下午基准 | ICE IBA或其指定授权再分发商 | 日频；伦敦午夜后延迟 | 上一伦敦工作日 | 超过2个伦敦工作日 | **询价已准备，需许可** |
 | `wti` | WTI现货 `WTI` | Cushing, Oklahoma WTI Spot | EIA API v2，序列 `RWTC` | 日频；日频现货数据 | 上一发布观测值 | 超过4个美国工作日 | **可实施** |
 | `bitcoin` | 比特币 `BTC/USD` | CoinGecko聚合的BTC美元价格 | 复用全球资产榜CoinGecko逐条行情；Yahoo `BTC-USD`为明确降级 | 每日一次；日度快照 | CoinGecko为过去24小时；Yahoo为较前收盘 | 超过36小时 | **已实施并署名** |
 
@@ -76,7 +76,7 @@
 
 ### 4.1 三大美国股票指数
 
-FRED提供 `SP500`、`NASDAQ100` 和 `DJIA` 的日终收盘序列，可以作为工程验证来源。但相关序列来自S&P Dow Jones Indices或Nasdaq，并带有版权说明；FRED API本身不会替使用者取得第三方公开再分发权。
+FRED的历史页面可以帮助核对序列口径，但不作为本次许可与生产交付依据。精确原标的改为直接向S&P DJI申请`SPX`与`DJIA`公开展示权，并向Nasdaq申请`NDX`公开展示权；最终数据由权利人或其书面指定的授权供应商交付。
 
 实施规则：
 
@@ -110,11 +110,11 @@ FRED提供 `SP500`、`NASDAQ100` 和 `DJIA` 的日终收盘序列，可以作为
 
 ### 4.4 黄金
 
-LBMA页面明确说明，LBMA Gold Price由ICE Benchmark Administration管理，取得、使用或再分发实时及历史基准数据需要相应许可。当前仓库使用的 `GC=F`是COMEX黄金期货，不能直接给“Gold Spot / XAU/USD”卡片使用。
+LBMA页面明确说明，LBMA Gold Price由ICE Benchmark Administration管理，向第三方再分发可能需要相应许可。项目所有者已选择`LBMA Gold Price PM`美元/金衡盎司基准，并采用伦敦午夜后的延迟口径。当前仓库使用的`GC=F`是COMEX黄金期货，不能直接给该基准卡片使用。
 
 实施规则：
 
-- 在选定具有外部展示权的黄金现货或日度基准供应商前，继续显示演示数据。
+- 在ICE IBA或其授权再分发商书面批准公开网页展示前，继续显示演示数据。
 - 如果未来决定使用COMEX近月期货，卡片必须改名为“COMEX黄金期货”，代码改为对应合约，并说明换月方法。
 - 黄金现货失败时不得自动降级为期货或GLD ETF；只能保留上一份相同标的的有效数据并标记过期。
 
@@ -261,7 +261,7 @@ flowchart TD
 2. 单独把美元卡片改为“美联储广义美元指数”并接入 `DTWEXBGS`。
 3. 单独接入EIA WTI现货。
 4. 已完成：复用资产榜接入CoinGecko比特币，并补齐署名、Yahoo降级、过期与失败隔离。
-5. 下一步：确认股票指数和黄金的外部展示许可后，再逐项替换演示数据。
+5. 已完成产品决定与三组询价材料；下一步由项目所有者补充真实法定姓名、居住国家/地区和联系邮箱并提交询价，取得书面展示许可后再逐项接入。
 
 如果项目所有者不接受把DXY改为广义美元指数，应在第2步前暂停，由项目所有者选择“取得DXY许可”或“保留演示数据”。
 
@@ -272,12 +272,16 @@ flowchart TD
 - [FRED：S&P 500（SP500）](https://fred.stlouisfed.org/series/SP500)
 - [FRED：NASDAQ-100（NASDAQ100）](https://fred.stlouisfed.org/series/NASDAQ100)
 - [FRED：Dow Jones Industrial Average（DJIA）](https://fred.stlouisfed.org/series/DJIA)
+- [S&P DJI数据与指数许可](https://www.spglobal.com/spdji/en/about-us/data-index-licensing/)
+- [Nasdaq GIDS](https://www.nasdaq.com/solutions/global-indexes/data/gids)
+- [Nasdaq Global Data联系页](https://www.nasdaqtrader.com/Trader.aspx?id=DPGlobaldata)
 - [FRED：10-Year Treasury Yield（DGS10）](https://fred.stlouisfed.org/series/DGS10)
 - [FRED：Nominal Broad U.S. Dollar Index（DTWEXBGS）](https://fred.stlouisfed.org/series/DTWEXBGS)
 - [EIA：Cushing WTI Spot Price](https://www.eia.gov/dnav/pet/hist/rwtcd.htm)
 - [EIA API技术文档](https://www.eia.gov/opendata/documentation.php)
 - [EIA版权与复用说明](https://www.eia.gov/about/copyrights_reuse.php)
 - [LBMA贵金属价格与许可说明](https://www.lbma.org.uk/prices-and-data/lbma-precious-metal-prices)
+- [ICE IBA LBMA贵金属基准](https://www.ice.com/iba/lbma-precious-metals)
 - [ICE U.S. Dollar Index Futures](https://www.ice.com/products/194/us-dollar-index-futures)
 - [CoinGecko Simple Price接口](https://docs.coingecko.com/reference/simple-price)
 - [CoinGecko API使用条款](https://www.coingecko.com/en/api_terms)
