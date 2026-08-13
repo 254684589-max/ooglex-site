@@ -48,7 +48,7 @@
 
 `SPY`、`QQQ`、`DIA`与`GLD`分别作为`SPX`、`NDX`、`DJIA`与`LBMA Gold Price PM`的ETF代理，通过TradingView官方免费Web Component展示。四项均为`demo: false`，但必须明确显示代理代码、原目标和“不是同一标的”的边界。
 
-Ooglex不得抓取、导出、缓存或再分发组件中的原始行情，不得把组件值写入仓库JSON，也不得用免费API读取权冒充公开展示权。组件加载失败时只显示TradingView官方标的链接，不用缓存值或演示值顶替。BTC/USD仍复用现有免密钥资产榜更新链并完成页面署名。
+Ooglex不得抓取、导出、缓存或再分发组件中的原始行情，不得把组件值写入仓库JSON，也不得用免费API读取权冒充公开展示权。组件最多等待8秒完成Custom Element注册；注册只证明组件代码可用，不证明报价已渲染、数据新鲜或市场开市。超时只显示TradingView官方标的链接，不用缓存值或演示值顶替；脚本晚到注册时允许自动恢复。BTC/USD仍复用现有免密钥资产榜更新链并完成页面署名。
 
 `apps/finance-terminal/market-source-readiness.json`逐项保存原目标、选定ETF、TradingView代码、免费非商业范围和禁止原始数据存储边界。上线门禁复算4项代理、提供方脚本白名单、零密钥、零收费源与零本地行情值；任何代理冒充原标的、改成抓取/API交付或加入仓库数值都会`BLOCKED`。
 
