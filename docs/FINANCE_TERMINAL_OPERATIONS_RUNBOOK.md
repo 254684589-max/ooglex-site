@@ -56,7 +56,7 @@ node scripts/validate_finance_terminal_browser.mjs
 4. 四条任务结束后重新签出同一开发分支的最新提交，运行完整数据、来源健康、回退、治理、门禁和360/768/1280像素浏览器检查。
 5. 上传`qualification.json/.md`、`readiness.json/.md`、健康诊断、响应式截图及四项免费代理的机器可读浏览器证据；代理证据只记录代码、宿主状态和受控原因，不保存报价。证据保留7至14天，不进入Git历史。
 
-代理运行Artifact同时包含JSON与Markdown摘要。先查看逐视口`providerScript`：`failed`表示白名单脚本请求本身失败或被阻断，`failureCategory`只以`dns / tls / connection / timeout / blocked / other`受控枚举进一步分诊，原始Chrome错误文本不得写入证据；`loaded`表示只确认固定脚本收到2xx/3xx响应。再查看`diagnosis`区分组件注册超时、宿主验证失败、部分挂载或全部宿主挂载。`loaded`和`all-hosts-mounted`都不证明报价已渲染、数据新鲜或市场开市，不得据此补写行情。
+代理运行Artifact同时包含JSON与Markdown摘要。先查看逐视口`providerScript`：`failed`表示白名单脚本请求本身失败或被阻断，`failureCategory`只以`dns / tls / connection / timeout / blocked / other`受控枚举进一步分诊，原始Chrome错误文本不得写入证据；`loaded`表示只确认固定脚本收到2xx/3xx响应。再查看`diagnosis`区分组件注册超时、宿主验证失败、部分挂载或全部宿主挂载。每个代理还必须精确记录登记的TradingView官方标的链接，并满足`unavailable`时可见、`mounted`时隐藏；证据不主动访问该外链，避免将外部站点可达性误写成页面回退契约。`loaded`和`all-hosts-mounted`都不证明报价已渲染、数据新鲜或市场开市，不得据此补写行情。
 
 需要单项恢复时仍可按原顺序手动运行：先运行`Finance Terminal Quality`，再运行宏观雷达与跨资产；运行`Companies Tracker`并等待成功后，才运行`Asset Ranking`，最后运行Beta门禁。资格工作流失败不允许强行跳过依赖或修改时间戳，只能修复首个可操作问题后重跑。
 

@@ -5,6 +5,12 @@ import path from "node:path";
 export const EXPECTED_WIDTHS = [360, 768, 1280];
 export const EXPECTED_SYMBOLS = ["SPY", "QQQ", "DIA", "GLD"];
 export const EXPECTED_PROVIDER_SCRIPT = "https://www.tradingview-widget.com/w/en/tv-mini-chart.js";
+export const EXPECTED_FALLBACK_URLS = {
+  SPY: "https://www.tradingview.com/symbols/AMEX-SPY/",
+  QQQ: "https://www.tradingview.com/symbols/NASDAQ-QQQ/",
+  DIA: "https://www.tradingview.com/symbols/AMEX-DIA/",
+  GLD: "https://www.tradingview.com/symbols/AMEX-GLD/"
+};
 
 const ALLOWED_STATES = new Set(["mounted", "unavailable"]);
 const ALLOWED_UNAVAILABLE_REASONS = new Set([
@@ -97,7 +103,7 @@ export function validateBrowserEvidence(evidence) {
     "schemaVersion", "generatedAt", "scope", "source", "viewports", "summary",
     "doesNotAssert", "doesNotReadOrStoreQuotes"
   ]), "浏览器证据顶层字段无效");
-  require(evidence.schemaVersion === 4, "浏览器证据版本无效");
+  require(evidence.schemaVersion === 5, "浏览器证据版本无效");
   require(typeof evidence.generatedAt === "string"
     && /(?:Z|[+-]\d{2}:\d{2})$/.test(evidence.generatedAt)
     && Number.isFinite(Date.parse(evidence.generatedAt)), "浏览器证据时间无效");
@@ -159,16 +165,22 @@ export function validateBrowserEvidence(evidence) {
     require(Array.isArray(viewport.proxies) && viewport.proxies.length === EXPECTED_SYMBOLS.length,
       `${viewport.width}px代理证据数量无效`);
     viewport.proxies.forEach((proxy, proxyIndex) => {
-      require(exactKeys(proxy, ["symbol", "state", "reason"]),
+      require(exactKeys(proxy, ["symbol", "state", "reason", "fallbackUrl", "fallbackVisible"]),
         `${viewport.width}px代理证据含有未允许字段`);
       require(proxy.symbol === EXPECTED_SYMBOLS[proxyIndex],
         `${viewport.width}px代理顺序或代码无效`);
+      require(proxy.fallbackUrl === EXPECTED_FALLBACK_URLS[proxy.symbol],
+        `${proxy.symbol}官方回退链接无效`);
+      require(typeof proxy.fallbackVisible === "boolean",
+        `${proxy.symbol}官方回退可见性无效`);
       require(ALLOWED_STATES.has(proxy.state), `${proxy.symbol}运行时状态无效`);
       if (proxy.state === "mounted") {
         require(proxy.reason === MOUNTED_REASON, `${proxy.symbol}宿主挂载证据无效`);
+        require(proxy.fallbackVisible === false, `${proxy.symbol}宿主挂载时不得显示回退链接`);
         mountedObservations += 1;
       } else {
         require(ALLOWED_UNAVAILABLE_REASONS.has(proxy.reason), `${proxy.symbol}失败回退原因无效`);
+        require(proxy.fallbackVisible === true, `${proxy.symbol}不可用时必须显示官方回退链接`);
         fallbackObservations += 1;
       }
     });
@@ -187,6 +199,8 @@ export function validateBrowserEvidence(evidence) {
     observationCount: EXPECTED_WIDTHS.length * EXPECTED_SYMBOLS.length,
     mountedObservations,
     fallbackObservations,
+    verifiedFallbackObservations: fallbackObservations,
+    hiddenFallbackObservations: mountedObservations,
     providerScriptLoadedViewports,
     providerScriptFailedViewports,
     providerScriptPendingViewports,
@@ -209,7 +223,9 @@ export function buildBrowserEvidence(results, generatedAt = new Date().toISOStri
     const proxies = (result.providerWidgetRuntimeEvidence || []).map((proxy) => ({
       symbol: proxy.symbol,
       state: proxy.state,
-      reason: proxy.reason
+      reason: proxy.reason,
+      fallbackUrl: proxy.fallbackUrl,
+      fallbackVisible: proxy.fallbackVisible
     }));
     return {
       width: result.viewport?.width,
@@ -222,7 +238,7 @@ export function buildBrowserEvidence(results, generatedAt = new Date().toISOStri
   });
   const observations = viewports.flatMap((viewport) => viewport.proxies);
   const evidence = {
-    schemaVersion: 4,
+    schemaVersion: 5,
     generatedAt,
     scope: "finance-terminal-free-proxy-runtime",
     source: "Chrome DevTools Protocol / static branch checkout",
@@ -233,6 +249,10 @@ export function buildBrowserEvidence(results, generatedAt = new Date().toISOStri
       observationCount: observations.length,
       mountedObservations: observations.filter((item) => item.state === "mounted").length,
       fallbackObservations: observations.filter((item) => item.state === "unavailable").length,
+      verifiedFallbackObservations: observations.filter((item) => item.state === "unavailable"
+        && item.fallbackVisible === true).length,
+      hiddenFallbackObservations: observations.filter((item) => item.state === "mounted"
+        && item.fallbackVisible === false).length,
       providerScriptLoadedViewports: viewports.filter((item) => item.providerScript?.state === "loaded").length,
       providerScriptFailedViewports: viewports.filter((item) => item.providerScript?.state === "failed").length,
       providerScriptPendingViewports: viewports.filter((item) => item.providerScript?.state === "pending").length,
@@ -264,15 +284,17 @@ export function renderBrowserEvidenceSummary(evidence) {
     "",
     "This report describes only the allowlisted provider script transport and component-host state. It does not read quotes or assert quote rendering, freshness, or market-open state.",
     "",
-    "| Viewport | Provider script | Host diagnosis | Mounted hosts |",
-    "|---:|---|---|---:|"
+    "| Viewport | Provider script | Host diagnosis | Mounted hosts | Verified fallbacks |",
+    "|---:|---|---|---:|---:|"
   ];
   evidence.viewports.forEach((viewport) => {
     const mounted = viewport.proxies.filter((proxy) => proxy.state === "mounted").length;
     const status = viewport.providerScript.httpStatus === null
       ? `${viewport.providerScript.reason}${viewport.providerScript.failureCategory ? ` / ${viewport.providerScript.failureCategory}` : ""}`
       : `${viewport.providerScript.reason} / HTTP ${viewport.providerScript.httpStatus}`;
-    lines.push(`| ${viewport.width}px | ${status} | ${viewport.diagnosis.state} / ${viewport.diagnosis.reason} | ${mounted}/${viewport.proxies.length} |`);
+    const verifiedFallbacks = viewport.proxies.filter((proxy) => proxy.state === "unavailable"
+      && proxy.fallbackVisible).length;
+    lines.push(`| ${viewport.width}px | ${status} | ${viewport.diagnosis.state} / ${viewport.diagnosis.reason} | ${mounted}/${viewport.proxies.length} | ${verifiedFallbacks}/${viewport.proxies.length} |`);
   });
   lines.push("");
   return `${lines.join("\n")}\n`;

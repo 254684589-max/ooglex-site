@@ -4673,10 +4673,14 @@
         return shell.getAttribute("data-provider-state");
       }),
       providerWidgetRuntimeEvidence: providerWidgetShells.map(function (shell) {
+        var fallback = shell.querySelector(".provider-widget-fallback");
+        var fallbackLink = fallback && fallback.querySelector("a.source-link");
         return {
           symbol: shell.getAttribute("data-provider-symbol"),
           state: shell.getAttribute("data-provider-state"),
-          reason: shell.getAttribute("data-provider-reason")
+          reason: shell.getAttribute("data-provider-reason"),
+          fallbackUrl: fallbackLink ? fallbackLink.href : null,
+          fallbackVisible: Boolean(fallback && elementIsRendered(fallback))
         };
       }),
       readinessEvidencePanelCount: readinessEvidencePanels.length,
