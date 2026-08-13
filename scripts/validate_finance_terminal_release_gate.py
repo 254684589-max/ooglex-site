@@ -36,7 +36,7 @@ PAGE = " ".join((
     "4项站内真实数据与4项TradingView免费ETF代理",
     "SPY、QQQ、DIA与GLD分别仅作为SPX、NDX、DJIA与LBMA Gold Price PM的免费ETF代理",
     "Ooglex不抓取、不导出、不保存这些组件中的原始行情",
-    "组件加载失败时只保留对应TradingView来源链接",
+    "任一卡验证失败只保留对应TradingView来源链接",
     "FRED API使用条款",
     "本产品未获圣路易斯联储、EIA或TradingView认可或认证",
     "EIA RWTC官方序列",
