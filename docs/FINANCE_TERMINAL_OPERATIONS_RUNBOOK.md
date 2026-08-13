@@ -56,7 +56,7 @@ node scripts/validate_finance_terminal_browser.mjs
 4. 四条任务结束后重新签出同一开发分支的最新提交，运行完整数据、来源健康、回退、治理、门禁和360/768/1280像素浏览器检查。
 5. 上传`qualification.json/.md`、`readiness.json/.md`、健康诊断、响应式截图及四项免费代理的机器可读浏览器证据；代理证据只记录代码、宿主状态和受控原因，不保存报价。证据保留7至14天，不进入Git历史。
 
-代理运行Artifact同时包含JSON与Markdown摘要。先查看逐视口`providerScript`：`failed`表示白名单脚本请求本身失败或被阻断，`loaded`表示只确认固定脚本收到2xx/3xx响应；再查看`diagnosis`区分组件注册超时、宿主验证失败、部分挂载或全部宿主挂载。`loaded`和`all-hosts-mounted`都不证明报价已渲染、数据新鲜或市场开市，不得据此补写行情。
+代理运行Artifact同时包含JSON与Markdown摘要。先查看逐视口`providerScript`：`failed`表示白名单脚本请求本身失败或被阻断，`failureCategory`只以`dns / tls / connection / timeout / blocked / other`受控枚举进一步分诊，原始Chrome错误文本不得写入证据；`loaded`表示只确认固定脚本收到2xx/3xx响应。再查看`diagnosis`区分组件注册超时、宿主验证失败、部分挂载或全部宿主挂载。`loaded`和`all-hosts-mounted`都不证明报价已渲染、数据新鲜或市场开市，不得据此补写行情。
 
 需要单项恢复时仍可按原顺序手动运行：先运行`Finance Terminal Quality`，再运行宏观雷达与跨资产；运行`Companies Tracker`并等待成功后，才运行`Asset Ranking`，最后运行Beta门禁。资格工作流失败不允许强行跳过依赖或修改时间戳，只能修复首个可操作问题后重跑。
 
@@ -85,7 +85,7 @@ CNN恐慌与贪婪、OFR金融压力、经济日历和财经新闻各自维护�
 | `UNKNOWN` / `BLOCKED` | 健康文件缺失、契约无效或与数据快照错配 | 运行相应验证器，查找第一个不一致字段 | 放宽验证器或手工对齐两个文件时间 |
 | 路径守卫失败 | 生成任务改动了不归本管道所有的路径 | 检查意外差异与脚本副作用，只修复越权来源 | 扩大`git add`范围绕过守卫 |
 | 推送冲突 | 其他管道刚向同一分支写入 | 让工作流完成内置fetch/rebase重试；失败后从最新分支重新运行 | 强推、重写连续历史或删除其他管道提交 |
-| 免费代理脚本传输失败 | `providerScript.failed`或`request-blocked` | 核对固定脚本URL、HTTP状态与Runner网络，保留官方链接回退 | 读取响应正文、抓取组件报价或加入未登记镜像 |
+| 免费代理脚本传输失败 | `providerScript.failed`或`request-blocked`，结合受控`failureCategory` | 按DNS、TLS、连接、超时或阻断分类核对固定脚本URL与Runner网络，保留官方链接回退 | 保存原始网络错误、读取响应正文、抓取组件报价或加入未登记镜像 |
 | 脚本成功但组件未注册 | `response-ok`配合`component-registration-timeout` | 检查第三方组件版本、浏览器控制台和跨日证据，继续保留逐卡回退 | 把HTTP成功描述为报价可用或缩短生产8秒窗口 |
 
 ## 四管道恢复步骤

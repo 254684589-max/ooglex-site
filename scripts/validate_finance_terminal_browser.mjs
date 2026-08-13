@@ -10,6 +10,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   buildBrowserEvidence,
+  classifyProviderScriptFailure,
   EXPECTED_PROVIDER_SCRIPT,
   renderBrowserEvidenceSummary
 } from "./finance_terminal_browser_evidence.mjs";
@@ -224,7 +225,8 @@ function trackProviderScriptTransport(client) {
     state: "not-observed",
     reason: "not-requested",
     httpStatus: null,
-    fromCache: null
+    fromCache: null,
+    failureCategory: null
   };
   const subscriptions = [
     client.subscribe("Network.requestWillBeSent", (event) => {
@@ -235,7 +237,8 @@ function trackProviderScriptTransport(client) {
         state: "pending",
         reason: "response-pending",
         httpStatus: null,
-        fromCache: false
+        fromCache: false,
+        failureCategory: null
       };
     }),
     client.subscribe("Network.requestServedFromCache", (event) => {
@@ -251,7 +254,8 @@ function trackProviderScriptTransport(client) {
         state: status >= 200 && status < 400 ? "loaded" : "failed",
         reason: status >= 200 && status < 400 ? "response-ok" : "http-error",
         httpStatus: status,
-        fromCache
+        fromCache,
+        failureCategory: null
       };
     }),
     client.subscribe("Network.loadingFailed", (event) => {
@@ -261,7 +265,8 @@ function trackProviderScriptTransport(client) {
         state: "failed",
         reason: event.blockedReason ? "request-blocked" : "loading-failed",
         httpStatus: null,
-        fromCache: null
+        fromCache: null,
+        failureCategory: classifyProviderScriptFailure(event)
       };
     })
   ];

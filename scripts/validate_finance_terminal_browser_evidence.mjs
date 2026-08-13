@@ -4,6 +4,7 @@
 import assert from "node:assert/strict";
 import {
   buildBrowserEvidence,
+  classifyProviderScriptFailure,
   renderBrowserEvidenceSummary,
   validateBrowserEvidence
 } from "./finance_terminal_browser_evidence.mjs";
@@ -20,7 +21,8 @@ const results = widths.map((width, widthIndex) => ({
         state: "loaded",
         reason: "response-ok",
         httpStatus: 200,
-        fromCache: false
+        fromCache: false,
+        failureCategory: null
       }
     : widthIndex === 1
       ? {
@@ -28,14 +30,16 @@ const results = widths.map((width, widthIndex) => ({
           state: "failed",
           reason: "request-blocked",
           httpStatus: null,
-          fromCache: null
+          fromCache: null,
+          failureCategory: "blocked"
         }
       : {
           url: "https://www.tradingview-widget.com/w/en/tv-mini-chart.js",
           state: "pending",
           reason: "response-pending",
           httpStatus: null,
-          fromCache: true
+          fromCache: true,
+          failureCategory: null
         },
   providerWidgetRuntimeEvidence: symbols.map((symbol, symbolIndex) => {
     const mounted = (widthIndex + symbolIndex) % 2 === 0;
@@ -55,6 +59,14 @@ assert.equal(evidence.summary.providerScriptLoadedViewports, 1);
 assert.equal(evidence.summary.providerScriptFailedViewports, 1);
 assert.equal(evidence.summary.providerScriptPendingViewports, 1);
 assert.equal(evidence.summary.providerScriptNotObservedViewports, 0);
+assert.deepEqual(evidence.summary.providerScriptFailureCategories, {
+  dns: 0,
+  tls: 0,
+  connection: 0,
+  timeout: 0,
+  blocked: 1,
+  other: 0
+});
 assert.deepEqual(evidence.summary.diagnosisCounts, {
   healthy: 0,
   degraded: 1,
@@ -67,6 +79,15 @@ assert.match(markdown, /Provider script/);
 assert.match(markdown, /HTTP 200/);
 assert.match(markdown, /partial-host-mount/);
 assert.match(markdown, /does not read quotes/);
+assert.match(markdown, /request-blocked \/ blocked/);
+
+assert.equal(classifyProviderScriptFailure({ errorText: "net::ERR_NAME_NOT_RESOLVED" }), "dns");
+assert.equal(classifyProviderScriptFailure({ errorText: "net::ERR_CERT_AUTHORITY_INVALID" }), "tls");
+assert.equal(classifyProviderScriptFailure({ errorText: "net::ERR_CONNECTION_REFUSED" }), "connection");
+assert.equal(classifyProviderScriptFailure({ errorText: "net::ERR_TIMED_OUT" }), "timeout");
+assert.equal(classifyProviderScriptFailure({ errorText: "net::ERR_BLOCKED_BY_CLIENT" }), "blocked");
+assert.equal(classifyProviderScriptFailure({ errorText: "net::ERR_FAILED" }), "other");
+assert.equal(classifyProviderScriptFailure({ blockedReason: "inspector", errorText: "secret detail" }), "blocked");
 
 const quoteLeak = structuredClone(evidence);
 quoteLeak.viewports[0].proxies[0].price = 123.45;
@@ -100,6 +121,14 @@ const falseHttpSuccess = structuredClone(evidence);
 falseHttpSuccess.viewports[0].providerScript.httpStatus = 503;
 assert.throws(() => validateBrowserEvidence(falseHttpSuccess), /脚本成功证据无效/);
 
+const rawTransportFailure = structuredClone(evidence);
+rawTransportFailure.viewports[1].providerScript.errorText = "net::ERR_BLOCKED_BY_CLIENT";
+assert.throws(() => validateBrowserEvidence(rawTransportFailure), /脚本证据字段无效/);
+
+const falseFailureCategory = structuredClone(evidence);
+falseFailureCategory.viewports[1].providerScript.failureCategory = "proxy-auth-required";
+assert.throws(() => validateBrowserEvidence(falseFailureCategory), /脚本失败证据无效/);
+
 const forgedDiagnosis = structuredClone(evidence);
 forgedDiagnosis.viewports[0].diagnosis = { state: "healthy", reason: "all-hosts-mounted" };
 assert.throws(() => validateBrowserEvidence(forgedDiagnosis), /关联诊断不可由脚本传输与宿主状态复算/);
@@ -108,5 +137,6 @@ console.log("Finance Terminal proxy browser evidence contract: PASS");
 console.log("- 360 / 768 / 1280px · SPY / QQQ / DIA / GLD: PASS");
 console.log("- mounted vs official-link fallback reasons: PASS");
 console.log("- allowlisted provider script request / response / cache / failure states: PASS");
+console.log("- bounded DNS / TLS / connection / timeout / blocked / other failure categories: PASS");
 console.log("- transport-to-host diagnosis and bounded Markdown summary: PASS");
 console.log("- no quote fields / no false rendering or freshness claims: PASS");

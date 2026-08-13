@@ -29,6 +29,8 @@ const ALLOWED_SCRIPT_REASONS = new Set([
   "response-pending",
   "not-requested"
 ]);
+const SCRIPT_FAILURE_CATEGORIES = ["dns", "tls", "connection", "timeout", "blocked", "other"];
+const ALLOWED_SCRIPT_FAILURE_CATEGORIES = new Set(SCRIPT_FAILURE_CATEGORIES);
 const DOES_NOT_ASSERT = ["quote-rendered", "quote-freshness", "market-open"];
 const ALLOWED_DIAGNOSIS_STATES = new Set(["healthy", "degraded", "unavailable", "unknown"]);
 const ALLOWED_DIAGNOSIS_REASONS = new Set([
@@ -50,6 +52,19 @@ function exactKeys(record, expected) {
 
 function require(condition, message) {
   if (!condition) throw new Error(message);
+}
+
+export function classifyProviderScriptFailure(event = {}) {
+  if (event.blockedReason) return "blocked";
+  const errorText = typeof event.errorText === "string" ? event.errorText.toLowerCase() : "";
+  if (/name_not_resolved|dns|resolve/.test(errorText)) return "dns";
+  if (/ssl|tls|certificate|cert_/.test(errorText)) return "tls";
+  if (/timed_out|timeout/.test(errorText)) return "timeout";
+  if (/blocked|access_denied/.test(errorText)) return "blocked";
+  if (/connection|internet_disconnected|network_changed|address_unreachable/.test(errorText)) {
+    return "connection";
+  }
+  return "other";
 }
 
 export function buildViewportDiagnosis(providerScript, proxies) {
@@ -82,7 +97,7 @@ export function validateBrowserEvidence(evidence) {
     "schemaVersion", "generatedAt", "scope", "source", "viewports", "summary",
     "doesNotAssert", "doesNotReadOrStoreQuotes"
   ]), "浏览器证据顶层字段无效");
-  require(evidence.schemaVersion === 3, "浏览器证据版本无效");
+  require(evidence.schemaVersion === 4, "浏览器证据版本无效");
   require(typeof evidence.generatedAt === "string"
     && /(?:Z|[+-]\d{2}:\d{2})$/.test(evidence.generatedAt)
     && Number.isFinite(Date.parse(evidence.generatedAt)), "浏览器证据时间无效");
@@ -109,7 +124,7 @@ export function validateBrowserEvidence(evidence) {
     require(viewport.screenshot === `finance-terminal-${viewport.width}.png`,
       `${viewport.width}px截图名称无效`);
     const script = viewport.providerScript;
-    require(exactKeys(script, ["url", "state", "reason", "httpStatus", "fromCache"]),
+    require(exactKeys(script, ["url", "state", "reason", "httpStatus", "fromCache", "failureCategory"]),
       `${viewport.width}px提供方脚本证据字段无效`);
     require(script.url === EXPECTED_PROVIDER_SCRIPT, `${viewport.width}px提供方脚本URL无效`);
     require(ALLOWED_SCRIPT_STATES.has(script.state), `${viewport.width}px提供方脚本状态无效`);
@@ -117,22 +132,27 @@ export function validateBrowserEvidence(evidence) {
     if (script.state === "loaded") {
       require(script.reason === "response-ok"
         && Number.isInteger(script.httpStatus) && script.httpStatus >= 200 && script.httpStatus < 400
-        && typeof script.fromCache === "boolean", `${viewport.width}px提供方脚本成功证据无效`);
+        && typeof script.fromCache === "boolean" && script.failureCategory === null,
+      `${viewport.width}px提供方脚本成功证据无效`);
       providerScriptLoadedViewports += 1;
     } else if (script.state === "failed") {
       const httpFailure = script.reason === "http-error"
         && Number.isInteger(script.httpStatus) && script.httpStatus >= 400 && script.httpStatus < 600
-        && typeof script.fromCache === "boolean";
+        && typeof script.fromCache === "boolean" && script.failureCategory === null;
       const transportFailure = ["loading-failed", "request-blocked"].includes(script.reason)
-        && script.httpStatus === null && script.fromCache === null;
+        && script.httpStatus === null && script.fromCache === null
+        && ALLOWED_SCRIPT_FAILURE_CATEGORIES.has(script.failureCategory)
+        && (script.reason !== "request-blocked" || script.failureCategory === "blocked");
       require(httpFailure || transportFailure, `${viewport.width}px提供方脚本失败证据无效`);
       providerScriptFailedViewports += 1;
     } else if (script.state === "pending") {
       require(script.reason === "response-pending" && script.httpStatus === null
-        && typeof script.fromCache === "boolean", `${viewport.width}px提供方脚本等待证据无效`);
+        && typeof script.fromCache === "boolean" && script.failureCategory === null,
+      `${viewport.width}px提供方脚本等待证据无效`);
       providerScriptPendingViewports += 1;
     } else {
-      require(script.reason === "not-requested" && script.httpStatus === null && script.fromCache === null,
+      require(script.reason === "not-requested" && script.httpStatus === null && script.fromCache === null
+        && script.failureCategory === null,
         `${viewport.width}px提供方脚本未观察证据无效`);
       providerScriptNotObservedViewports += 1;
     }
@@ -171,6 +191,10 @@ export function validateBrowserEvidence(evidence) {
     providerScriptFailedViewports,
     providerScriptPendingViewports,
     providerScriptNotObservedViewports,
+    providerScriptFailureCategories: Object.fromEntries(SCRIPT_FAILURE_CATEGORIES.map((category) => [
+      category,
+      evidence.viewports.filter((viewport) => viewport.providerScript.failureCategory === category).length
+    ])),
     diagnosisCounts,
     allViewportsPassed: true
   };
@@ -198,7 +222,7 @@ export function buildBrowserEvidence(results, generatedAt = new Date().toISOStri
   });
   const observations = viewports.flatMap((viewport) => viewport.proxies);
   const evidence = {
-    schemaVersion: 3,
+    schemaVersion: 4,
     generatedAt,
     scope: "finance-terminal-free-proxy-runtime",
     source: "Chrome DevTools Protocol / static branch checkout",
@@ -213,6 +237,10 @@ export function buildBrowserEvidence(results, generatedAt = new Date().toISOStri
       providerScriptFailedViewports: viewports.filter((item) => item.providerScript?.state === "failed").length,
       providerScriptPendingViewports: viewports.filter((item) => item.providerScript?.state === "pending").length,
       providerScriptNotObservedViewports: viewports.filter((item) => item.providerScript?.state === "not-observed").length,
+      providerScriptFailureCategories: Object.fromEntries(SCRIPT_FAILURE_CATEGORIES.map((category) => [
+        category,
+        viewports.filter((item) => item.providerScript?.failureCategory === category).length
+      ])),
       diagnosisCounts: {
         healthy: viewports.filter((item) => item.diagnosis.state === "healthy").length,
         degraded: viewports.filter((item) => item.diagnosis.state === "degraded").length,
@@ -242,7 +270,7 @@ export function renderBrowserEvidenceSummary(evidence) {
   evidence.viewports.forEach((viewport) => {
     const mounted = viewport.proxies.filter((proxy) => proxy.state === "mounted").length;
     const status = viewport.providerScript.httpStatus === null
-      ? viewport.providerScript.reason
+      ? `${viewport.providerScript.reason}${viewport.providerScript.failureCategory ? ` / ${viewport.providerScript.failureCategory}` : ""}`
       : `${viewport.providerScript.reason} / HTTP ${viewport.providerScript.httpStatus}`;
     lines.push(`| ${viewport.width}px | ${status} | ${viewport.diagnosis.state} / ${viewport.diagnosis.reason} | ${mounted}/${viewport.proxies.length} |`);
   });
