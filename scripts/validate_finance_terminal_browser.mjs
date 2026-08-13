@@ -8,7 +8,7 @@ import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildBrowserEvidence } from "./finance_terminal_browser_evidence.mjs";
+import { buildBrowserEvidence, EXPECTED_PROVIDER_SCRIPT } from "./finance_terminal_browser_evidence.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const WIDTHS = [360, 768, 1280];
@@ -148,6 +148,7 @@ class CdpClient {
     this.sequence = 0;
     this.pending = new Map();
     this.waiters = new Map();
+    this.observers = new Map();
   }
 
   async open() {
@@ -176,6 +177,9 @@ class CdpClient {
       if (!this.waiters.get(message.method).length) this.waiters.delete(message.method);
       waiter(message.params || {});
     }
+    if (message.method && this.observers.has(message.method)) {
+      for (const observer of this.observers.get(message.method)) observer(message.params || {});
+    }
   }
 
   send(method, params = {}) {
@@ -194,9 +198,77 @@ class CdpClient {
     }), this.timeoutMs, method);
   }
 
+  subscribe(method, observer) {
+    const observers = this.observers.get(method) || new Set();
+    observers.add(observer);
+    this.observers.set(method, observers);
+    return () => {
+      observers.delete(observer);
+      if (!observers.size) this.observers.delete(method);
+    };
+  }
+
   close() {
     this.socket.close();
   }
+}
+
+function trackProviderScriptTransport(client) {
+  const requestIds = new Set();
+  let transport = {
+    url: EXPECTED_PROVIDER_SCRIPT,
+    state: "not-observed",
+    reason: "not-requested",
+    httpStatus: null,
+    fromCache: null
+  };
+  const subscriptions = [
+    client.subscribe("Network.requestWillBeSent", (event) => {
+      if (event.type !== "Script" || event.request?.url !== EXPECTED_PROVIDER_SCRIPT) return;
+      requestIds.add(event.requestId);
+      transport = {
+        url: EXPECTED_PROVIDER_SCRIPT,
+        state: "pending",
+        reason: "response-pending",
+        httpStatus: null,
+        fromCache: false
+      };
+    }),
+    client.subscribe("Network.requestServedFromCache", (event) => {
+      if (requestIds.has(event.requestId) && transport.state === "pending") transport.fromCache = true;
+    }),
+    client.subscribe("Network.responseReceived", (event) => {
+      if (!requestIds.has(event.requestId) || event.response?.url !== EXPECTED_PROVIDER_SCRIPT) return;
+      const status = Math.round(Number(event.response.status));
+      const fromCache = Boolean(event.response.fromDiskCache
+        || event.response.fromServiceWorker || event.response.fromPrefetchCache || transport.fromCache);
+      transport = {
+        url: EXPECTED_PROVIDER_SCRIPT,
+        state: status >= 200 && status < 400 ? "loaded" : "failed",
+        reason: status >= 200 && status < 400 ? "response-ok" : "http-error",
+        httpStatus: status,
+        fromCache
+      };
+    }),
+    client.subscribe("Network.loadingFailed", (event) => {
+      if (!requestIds.has(event.requestId)) return;
+      transport = {
+        url: EXPECTED_PROVIDER_SCRIPT,
+        state: "failed",
+        reason: event.blockedReason ? "request-blocked" : "loading-failed",
+        httpStatus: null,
+        fromCache: null
+      };
+    })
+  ];
+  return {
+    snapshot() {
+      return { ...transport };
+    },
+    stop() {
+      subscriptions.forEach((unsubscribe) => unsubscribe());
+    }
+  };
 }
 
 async function waitForRegression(client, timeoutMs) {
@@ -220,12 +292,19 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
     screenWidth: width,
     screenHeight: height
   });
-  const loaded = client.event("Page.loadEventFired");
-  await client.send("Page.navigate", {
-    url: `${baseUrl}/apps/finance-terminal/?regression=1&runtimeEvidence=1&width=${width}&run=${randomUUID()}`
-  });
-  await loaded;
-  const result = await waitForRegression(client, timeoutMs);
+  const scriptTransport = trackProviderScriptTransport(client);
+  let result;
+  try {
+    const loaded = client.event("Page.loadEventFired");
+    await client.send("Page.navigate", {
+      url: `${baseUrl}/apps/finance-terminal/?regression=1&runtimeEvidence=1&width=${width}&run=${randomUUID()}`
+    });
+    await loaded;
+    result = await waitForRegression(client, timeoutMs);
+    result.providerScriptTransport = scriptTransport.snapshot();
+  } finally {
+    scriptTransport.stop();
+  }
   if (Math.abs((result.viewport?.width ?? 0) - width) > 1) {
     throw new Error(`${width}px请求得到异常视口宽度：${result.viewport?.width}`);
   }
@@ -310,7 +389,7 @@ async function main() {
       if (browser.exitCode !== null && logs.value.trim()) console.error(logs.value.trim());
     }, { once: true });
     await client.open();
-    await Promise.all([client.send("Page.enable"), client.send("Runtime.enable")]);
+    await Promise.all([client.send("Page.enable"), client.send("Runtime.enable"), client.send("Network.enable")]);
     const results = [];
     for (const width of WIDTHS) results.push(await runWidth(client, baseUrl, artifacts, width, options.height, timeoutMs));
     const evidence = buildBrowserEvidence(results);
@@ -319,7 +398,8 @@ async function main() {
     for (const result of results) {
       const layout = result.layout;
       const mounted = result.providerWidgetRuntimeEvidence.filter((item) => item.state === "mounted").length;
-      console.log(`${result.viewport.width}px: PASS · cards 8/3/3/2/4 · proxy hosts ${mounted}/4 mounted · official trends ${result.officialObservationTrendCount}/3 · official health ${result.officialHealthPanelCount}/4 · support health ${result.supportingHealthPanelCount}/4 · V1 evidence ${result.readinessEvidencePanelCount}/4 · columns ${layout.market}/${layout.risk}/${layout.research}/${layout.information}/${layout.operations} · focusable ${result.focusableCount} · targets ${result.targetCount}`);
+      const script = result.providerScriptTransport;
+      console.log(`${result.viewport.width}px: PASS · cards 8/3/3/2/4 · provider script ${script.state}/${script.reason} · proxy hosts ${mounted}/4 mounted · official trends ${result.officialObservationTrendCount}/3 · official health ${result.officialHealthPanelCount}/4 · support health ${result.supportingHealthPanelCount}/4 · V1 evidence ${result.readinessEvidencePanelCount}/4 · columns ${layout.market}/${layout.risk}/${layout.research}/${layout.information}/${layout.operations} · focusable ${result.focusableCount} · targets ${result.targetCount}`);
     }
     console.log(`Finance Terminal browser regression: PASS (${WIDTHS.join(", ")}px)`);
     console.log(`Proxy runtime evidence: ${evidence.summary.mountedObservations}/${evidence.summary.observationCount} mounted observations; ${evidence.summary.fallbackObservations} official-link fallbacks`);

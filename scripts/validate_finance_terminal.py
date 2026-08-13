@@ -2762,9 +2762,18 @@ def main() -> None:
     browser_evidence = BROWSER_EVIDENCE.read_text(encoding="utf-8")
     require("EXPECTED_WIDTHS = [360, 768, 1280]" in browser_evidence
             and 'EXPECTED_SYMBOLS = ["SPY", "QQQ", "DIA", "GLD"]' in browser_evidence
+            and "EXPECTED_PROVIDER_SCRIPT" in browser_evidence
+            and "providerScriptLoadedViewports" in browser_evidence
+            and "providerScriptFailedViewports" in browser_evidence
             and "doesNotReadOrStoreQuotes" in browser_evidence
             and "connected-defined-element-with-layout" in browser_evidence,
             "浏览器证据未覆盖四项代理、三档视口或禁止行情读取边界")
+    require('client.send("Network.enable")' in browser_validator
+            and "trackProviderScriptTransport" in browser_validator
+            and 'client.subscribe("Network.requestWillBeSent"' in browser_validator
+            and 'client.subscribe("Network.responseReceived"' in browser_validator
+            and 'client.subscribe("Network.loadingFailed"' in browser_validator,
+            "浏览器回归未记录白名单提供方脚本的请求、响应和受控失败状态")
     require(QUALITY_WORKFLOW.exists(), "缺少金融终端只读质量工作流")
     quality_workflow = QUALITY_WORKFLOW.read_text(encoding="utf-8")
     require("permissions:\n  contents: read" in quality_workflow, "金融终端质量工作流权限必须只读")

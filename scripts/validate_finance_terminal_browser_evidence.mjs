@@ -10,6 +10,29 @@ const results = widths.map((width, widthIndex) => ({
   status: "pass",
   viewport: { width, height: 1400 },
   screenshot: `/tmp/runtime/finance-terminal-${width}.png`,
+  providerScriptTransport: widthIndex === 0
+    ? {
+        url: "https://www.tradingview-widget.com/w/en/tv-mini-chart.js",
+        state: "loaded",
+        reason: "response-ok",
+        httpStatus: 200,
+        fromCache: false
+      }
+    : widthIndex === 1
+      ? {
+          url: "https://www.tradingview-widget.com/w/en/tv-mini-chart.js",
+          state: "failed",
+          reason: "request-blocked",
+          httpStatus: null,
+          fromCache: null
+        }
+      : {
+          url: "https://www.tradingview-widget.com/w/en/tv-mini-chart.js",
+          state: "pending",
+          reason: "response-pending",
+          httpStatus: null,
+          fromCache: true
+        },
   providerWidgetRuntimeEvidence: symbols.map((symbol, symbolIndex) => {
     const mounted = (widthIndex + symbolIndex) % 2 === 0;
     return {
@@ -24,6 +47,10 @@ const evidence = buildBrowserEvidence(results, "2026-08-13T08:00:00Z");
 assert.equal(evidence.summary.observationCount, 12);
 assert.equal(evidence.summary.mountedObservations, 6);
 assert.equal(evidence.summary.fallbackObservations, 6);
+assert.equal(evidence.summary.providerScriptLoadedViewports, 1);
+assert.equal(evidence.summary.providerScriptFailedViewports, 1);
+assert.equal(evidence.summary.providerScriptPendingViewports, 1);
+assert.equal(evidence.summary.providerScriptNotObservedViewports, 0);
 assert.equal(validateBrowserEvidence(evidence), evidence);
 
 const quoteLeak = structuredClone(evidence);
@@ -46,7 +73,20 @@ const forgedSummary = structuredClone(evidence);
 forgedSummary.summary.mountedObservations = 12;
 assert.throws(() => validateBrowserEvidence(forgedSummary), /汇总不可由逐视口状态复算/);
 
+const scriptLeak = structuredClone(evidence);
+scriptLeak.viewports[0].providerScript.responseBody = "not allowed";
+assert.throws(() => validateBrowserEvidence(scriptLeak), /脚本证据字段无效/);
+
+const wrongScript = structuredClone(evidence);
+wrongScript.viewports[0].providerScript.url = "https://example.com/widget.js";
+assert.throws(() => validateBrowserEvidence(wrongScript), /脚本URL无效/);
+
+const falseHttpSuccess = structuredClone(evidence);
+falseHttpSuccess.viewports[0].providerScript.httpStatus = 503;
+assert.throws(() => validateBrowserEvidence(falseHttpSuccess), /脚本成功证据无效/);
+
 console.log("Finance Terminal proxy browser evidence contract: PASS");
 console.log("- 360 / 768 / 1280px · SPY / QQQ / DIA / GLD: PASS");
 console.log("- mounted vs official-link fallback reasons: PASS");
+console.log("- allowlisted provider script request / response / cache / failure states: PASS");
 console.log("- no quote fields / no false rendering or freshness claims: PASS");
