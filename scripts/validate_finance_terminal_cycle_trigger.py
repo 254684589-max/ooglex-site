@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import json
 from pathlib import Path
 
@@ -32,24 +32,27 @@ def utc(value: str) -> datetime:
 
 def main() -> None:
     marker = json.loads(MARKER_PATH.read_text(encoding="utf-8"))
+    marker_requested_at = utc(marker["requestedAt"])
     require(not validate_cycle_marker(marker, expected_branch=BRANCH,
-                                      now=utc("2026-08-12T18:14:00Z")),
+                                      now=marker_requested_at + timedelta(minutes=1)),
             "仓库跨日周期标记无效")
 
     require(workflow_cycle_date(utc("2026-08-12T20:59:59Z")) == "2026-08-11",
             "21:00 UTC前必须仍属于上一日更周期")
     require(workflow_cycle_date(utc("2026-08-12T21:00:00Z")) == "2026-08-12",
             "21:00 UTC必须开启新日更周期")
-    require(not should_advance_cycle(marker, utc("2026-08-12T20:59:59Z")),
+    require(not should_advance_cycle(marker, marker_requested_at),
             "同一周期不得再次更新标记")
-    require(should_advance_cycle(marker, utc("2026-08-12T21:15:00Z")),
+    require(should_advance_cycle(marker, marker_requested_at + timedelta(days=1)),
             "进入新周期后必须允许更新标记")
 
     production = deepcopy(marker)
     production["targetBranch"] = "main"
     require(validate_cycle_marker(production), "生产分支周期触发未被拒绝")
     mismatch = deepcopy(marker)
-    mismatch["requestedCycleDate"] = "2026-08-12"
+    mismatch["requestedCycleDate"] = workflow_cycle_date(
+        marker_requested_at - timedelta(days=1)
+    )
     require(any("周期边界" in error for error in validate_cycle_marker(mismatch)),
             "伪造周期日期未被拒绝")
     unsafe = deepcopy(marker)
