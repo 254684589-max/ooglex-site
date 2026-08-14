@@ -1,13 +1,13 @@
 {
-  "updatedAt": "2026-08-13T15:02:36Z",
+  "updatedAt": "2026-08-13T19:18:00Z",
   "asOf": "2026-08-13",
   "source": "Google News · Yahoo Finance",
   "highlight": {
-    "title": "百花为大众盛开",
-    "source": "新浪财经",
-    "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxObFdJVE5sRWxTdUhLOUlUaVNqNHBTWUFKQ05KNndBYTM5b21nYkQ5am4zUURmcGxYWVdYNVZpS2NJRVFtZldtc2NHUVRNU2dKY19iNVRSNnJPc3A3ZVNjdzRsVWVtU1NyTk45UDV3Uzh0c2FPenpfQldCeC11N1ZEMFZ3?oc=5",
-    "published": 1786632525,
-    "category": "娱乐"
+    "title": "AI驱动半导体景气度高涨 两大晶圆厂第二季度收入均创新高",
+    "source": "eastmoney.com",
+    "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFA3ZDdDMk5LMjZrWmQtQ2ZqT25SLXdQOWJTak5LX1FnTHYzY2E4S2NlWTJrbzd4eGpqbnNaSExvazVvcnJOTmxrSGdOZ3RYcHZTTW9vUEpBb0JkWGdQUEtuSg?oc=5",
+    "published": 1786647674,
+    "category": "人工智能·科技"
   },
   "categories": [
     {
@@ -15,28 +15,28 @@
       "name": "市场",
       "items": [
         {
-          "title": "央行：8月14日开展10000亿元买断式逆回购操作",
-          "source": "东方财富",
-          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFBSdFlrbTF4QlpxYXJrcVVna3RFOVpWTmZ6R3BRd1pscnRtNWdkczhfMVVVenltQWFlNmIzTUNiT2JlVDRHVFlVeTZlZi11UDlZSmZ5SkpqaVZWaVRhTkZWQQ?oc=5",
-          "published": 1786620230
+          "title": "央行：将在8月14日、8月17日至8月19日开展隔夜逆回购操作 每日操作量不超过6000亿元",
+          "source": "eastmoney.com",
+          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE1FSEdqY2R0ZXozYWEtOGZNUy02bkRBWjdnT255eG5mQWNKeDdOUGRXUGdLV1VtYUVURmU4c0tyTWhLUlNCcWhrcnN2QXp2LW1ETkVnVngtNTdmcEhKV01kTw?oc=5",
+          "published": 1786637376
         },
         {
-          "title": "央行详解货币政策思路：把握力度、节奏和时机，增量政策在路上",
-          "source": "新浪财经",
-          "link": "https://news.google.com/rss/articles/CBMieEFVX3lxTE1NTl8yalhQVnM5eldMcGZDZ3YzUE1HX3BQRzVWOUdOQWl0cVgxMm1vRUdjbzBvNzFib2tmTk5yM2hwMUItc1hiV0c5cjQtUS1FOUpWNElxbV9kVnVVMHh5TnJ3X1VCZkpTdE5BbEQ3WVpSYkc0OUI3OA?oc=5",
-          "published": 1786625520
+          "title": "美国7月PPI通胀不及预期 美联储9月加息预期进一步降温",
+          "source": "财联社",
+          "link": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE5ucG9lUjRVNXA5S0tyREp3NEdfVE1BSGxqNjc4aENMWlA1cVFPaHh1NzVQZ1VUdU1aLVo4LWxpdVh0NDFsQjgtUQ?oc=5",
+          "published": 1786630476
         },
         {
-          "title": "【环球财经】英国6月份经济环比增长0.3%",
-          "source": "eeo.com.cn",
-          "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE1tS2EtWUg1WWt2eGEtbWtqQWpRa0xkVEEtejhPa1ZGSnpuS0NmcVlwVXZ2R0tFVlFReWtkRjBRUTBGcFpjS2x3OVo4ZnNMckYxNFhGRERpOA?oc=5",
-          "published": 1786632481
+          "title": "油价下跌、通胀降温，市场不再完全押注美联储年内加息",
+          "source": "华尔街见闻",
+          "link": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE5UbkhoVkpILVRCZlQ0d3NxWmw4ZXM0Zm90UnVLc0dKbnVVQ1U2eWRhZkhRalZ6dlIxRzRWdVdIWmR5YmtlUW9sbGF5T3N2bFRFelY4?oc=5",
+          "published": 1786633338
         },
         {
-          "title": "朱镕基逝世：推动中国经济改革的“铁腕总理”是谁？",
-          "source": "BBC",
-          "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE15SDdJNE5zMmtNY01iODV4ZnNwaUQwYVFCNm1tRTVYS2xZdk55a2hjZlhkUUxfcEp6SlR5VUhaeF83OXhMN2xqcnVhWGF3aWFVQlFiN2VQYlBpU1NJZnZYMWVzdDM5UdIBa0FVX3lxTE4tV3RsM2xLc0lZdl9ULTlpc3hCOVpaYmtJbmtQUmhYVm1ZUDlPMm00NzYxMVpvaHNpSjI2elFBYnNkSkVRZ2NJREpoX05IT1R2Nm04RVVKWnZ2ajJmdzBvSnM2cUo3cWljcmQw?oc=5",
-          "published": 1786559915
+          "title": "想不到的中国经济｜来看沙漠边上的“海鲜”",
+          "source": "peopleapp.com",
+          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE1MS19KZFczNDZJd3U1OWdydkZLaTZfRGtkcGQ4MkVTam1lR09QUWFMeWlhaGIyUk9DRE5IZmh3VURwNnNUSWtwcVlWWTZFMnMxenhvS0RGeXdHaU1rMmVvUjhRMU4teU9K?oc=5",
+          "published": 1786596360
         },
         {
           "title": "金融服务实体经济质效不断提升",
@@ -45,16 +45,16 @@
           "published": 1786621740
         },
         {
-          "title": "韩国股市总市值重回6000万亿韩元",
-          "source": "chinanews.com.cn",
-          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5OU2JDZzBFRkVpTGtyTFFSMm11UGVpX3RkVVZFOWs5WUN6OEFtM2tSUnQyTXhEY1oyYUxLSzVDRnRwVlljbGV1LXp2dGpLdGlWSzBYanhLcjdTUUFzdE1Vc1RjeTZacUNR?oc=5",
-          "published": 1786625331
+          "title": "债市正在释放股市前景堪忧的信号",
+          "source": "新浪财经",
+          "link": "https://news.google.com/rss/articles/CBMihwFBVV95cUxPZ210eEdjd0hnRWszM0EzUXdwLWVPekgxRVhaZ003NjJ3SGlhR2d2Z2RCLXpVRUtRVjNYT09iRVFMSkVpb21NMm13SEZ0YkZvbml4azFVTU01UWZfUHJXcVB5VGVEd19vVE5LNmY5MXhfazNEbE5xSFpXUHFyb2FCZUN0c0ZsZEk?oc=5",
+          "published": 1786640700
         },
         {
-          "title": "中国央行将开展1万亿元人民币买断式逆回购操作",
-          "source": "Shangbao Indonesia",
-          "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNLTU3MmtWMk9PNzlDUXQ4RE9YYVRuRVdIaGwtR2FGVTl0MUI3Z0dSM1NXcmxvRkYtUHZiOWZuNUYtWEdSdnhmenpCbFotWVEzTE9kNUxUbTJLeTcxY0tYQXRleTlZejdjTEZDeGx3cEI2c0VSNE9Gdi0zR1NVaVF0UkJGX1g?oc=5",
-          "published": 1786625280
+          "title": "经济政策一线微观察丨流水线变风景线，暑期“工厂游”火了",
+          "source": "新华网",
+          "link": "https://news.google.com/rss/articles/CBMid0FVX3lxTFB1TnNxRTVoSTlCTjl2RFd0T2wzbXY4U0RFUzh3azZzM0VxTEdVTnNTbkRTVDJ3NVZwRW1XS044LWNYZ3FkWm5aNTc4NnBBYkhLVFZTcFNIa2V4Z2pZdWF3aVBhZDg3czdFZWQ5b2xjY0haYVc3ZG13?oc=5",
+          "published": 1786609848
         }
       ]
     },
@@ -62,6 +62,12 @@
       "key": "tech",
       "name": "人工智能·科技",
       "items": [
+        {
+          "title": "AI驱动半导体景气度高涨 两大晶圆厂第二季度收入均创新高",
+          "source": "eastmoney.com",
+          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFA3ZDdDMk5LMjZrWmQtQ2ZqT25SLXdQOWJTak5LX1FnTHYzY2E4S2NlWTJrbzd4eGpqbnNaSExvazVvcnJOTmxrSGdOZ3RYcHZTTW9vUEpBb0JkWGdQUEtuSg?oc=5",
+          "published": 1786647674
+        },
         {
           "title": "佳话现场丨专访李开复：热爱与担当，是AI永远无法复刻的内核",
           "source": "央广网",
@@ -75,10 +81,16 @@
           "published": 1786574340
         },
         {
-          "title": "京东研发投入上半年同比增长53.2% 物理AI深度嵌入供应链各环节",
-          "source": "东方财富",
-          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE9qRGlqWktGeXV3M2dFLTdyYzdhN0owRmVhUmNMZllHMnlGcE1CSVdMdUN3cTdEUXpRVm1iRmthYXM2eE00QkEzcDJjLTVqTWZFV0ZBRjR5YlVFSEdaN3Jobw?oc=5",
-          "published": 1786628946
+          "title": "AI手机竞速，荣耀抛出“机器人手机”",
+          "source": "bjnews.com.cn",
+          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE9sQ1RPRE96LTkwTGF3SUZJeUp5OVdrcTFSd284OVNfOFY3X05PcUY0bWQ0N0dvSWFTODIzbHF2N25DR05HM3hCZUVqOXIxSWo0d3FUQzlkY3MyYTBIMmdsejlwR24?oc=5",
+          "published": 1786630500
+        },
+        {
+          "title": "AI交易降温后银行股受益 华尔街押注金融板块延续上涨",
+          "source": "财联社",
+          "link": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE9jSnFNdUU1NGZ0dHpCOWUzQk4zZjU0V2VfSjhWblVmc0psSFlselkyUlAwakppQ1Bpb2taSkZKUFdLRTl0ZnZMYw?oc=5",
+          "published": 1786630140
         },
         {
           "title": "AI撰写论文：“大学指控我学术不端，但明明那都是我自己写的。”",
@@ -87,22 +99,10 @@
           "published": 1786579823
         },
         {
-          "title": "关于同意对安捷伦科技（上海）有限公司8860B、8890B型气相色谱仪最终用户使用活动实行豁免管理的复函",
-          "source": "中华人民共和国生态环境部",
-          "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE5XOUpkdG56TVcwMjdVZ2VHWFh6MXhMMGFBeWN1Wm5LS3ZpZnNhc1F5b3JzMTVNclJndEU2bW1LdkFpRkFnWTlIa2d5MTl2T0hLR0xoSWxfRHVEQXZyRVNEaTBRLTEtWUpmLWdzRnc4YUd1S1B4QzJhSDNFZVFNdw?oc=5",
-          "published": 1786629509
-        },
-        {
-          "title": "台湾称遭AI辅助网攻 政府机关成目标",
-          "source": "DW.com",
-          "link": "https://news.google.com/rss/articles/CBMigAJBVV95cUxOTl9mVXV0X2I0SVA3aUk1UGhIVzE2Nkl3dy0xSHk4bV8wTGZNRC16alhtWF9SS2kxbk5Zd2trNUY2aFlzd0N1NG5qTHRsLWpkQW9JTV9Qa0w0QTM5RzV6QVZfeVJXY25KSVhrMDhiZGpyMjFOWDNJdDNHcF90dVdLTkhmM3ZHWm0yeFhmYWVWRzZLR2JFdGtoOGNDUk1JM0FfU1NaaXliU2laTU9tdllnYkgtNlpPNm5zTEFMVlB6d1pXNVhoTEthc2NlMDRuQVdQSFVDYTY0MnBlVW9rTFZxTG5Uc0lXU3NKeFgwZFZZSGVUYXE3Zl81TzFHc1pQRTV30gGAAkFVX3lxTFB3dzgtd1ViUDBCc0J2ZlJMa1dyN2FFLXhUWDBGMkxONU5EaWxxSnBfbG10QmFPRGZYWWllQU5FTFU1X0FxdkFQYkptNXBTUXZNZ3hsNnJqb043bWJ2Rzh3bVdzbllpSWJxd0hCdWJRbVJlSG1Ga2Jzbm9PcGNfaFpmcmFxVVdPUnk0V1hDbm1aQzUwc3VxTDdRbkdHSmpRZ3R3UGNOU1dKUk5HQzBpeWRMLW0tM3Q3TENIbDBIaTVydVBSRl9UcnlyNUs2SURaVGEzX3hFODdZX3A4bW5FN3hDaEc4RXhrSlA4UkNBZFNvNkdJSzR3bUczc2pHaEpJSDM?oc=5",
-          "published": 1786621967
-        },
-        {
-          "title": "东盟八国科创骨干拥抱广西AI之约",
-          "source": "广西新闻网",
-          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE43RGF1NlotUzhla2t6dTAybXZCbGVHLXJSNXBLZEZ1Q3RyMC1wY2tHNGV5UFI0eDlQRV9wbFZfY19weUxKZk5UWmR5aV9ySDJiSkcwMzk0M2VlMzJKU2Q1QzFGaXJuSzA3ZXA3RUl2dmRuSFdUaGJFcHdTaEFWcFU?oc=5",
-          "published": 1786626840
+          "title": "费城半导体指数即将重回“牛市”，分析师泼冷水",
+          "source": "华尔街见闻",
+          "link": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE41WWF5SzY5dm81LWxmbzhQNzBFOTk4M2lkTTJSWVE0NHNuWTZaWkxPei02bWpYTjN2WWtYb3c3ekt2R01yYnJublhaU090NkNETmF3?oc=5",
+          "published": 1786623124
         }
       ]
     },
@@ -123,34 +123,34 @@
           "published": 1786626960
         },
         {
-          "title": "广州音乐公园8月25日开园 占地10万平方米",
-          "source": "观点网",
-          "link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE1veWkydnp5WDBCbURlUWRTMjc2SFduS3FiVEplRllpR0dzcUQ0OW8xYnlmN09Ec0pab1VqRGE0MHJ6Wms3TGNpQmxDb3hRajVtZ1R5UnI0WGd6YmQxNzBwZE1n?oc=5",
-          "published": 1786627645
-        },
-        {
-          "title": "暑期档票房突破92亿！《欢迎来龙餐馆》破4亿",
-          "source": "新华网客户端",
-          "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOWUUtb1AtQ3RZMndHYjFhQTFlb0hnRTJkakg4cWVTYXVuZWV1VURzUEJhRmQ1TkhpVGxDV2d2SmhZX2RRdmlYck9XTEtSM3JOZElzcGRTVVZwV21LNE5FQ3dNNDZkM0V4OXVoR3pxZFRkVFF0WkJNVFRCNHRBVmUyNC1sdVlzcXc4SGQ5YmEtN2NLbXdjWk9ZdzFn?oc=5",
-          "published": 1786626523
-        },
-        {
-          "title": "摩天轮音乐会、簋街小龙虾，东城夏夜“新玩法”点燃京城夜经济",
-          "source": "新京报",
-          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTFBkQ2dIY1p3T2VLd3dpYkQyeXFXaTFZaW4wcHF2T2d5VVR3WF9wMDdic0k1OWM4eFh5NEV1WldxWURINnVLZGFaNUQtZmNYblJ2dG1RTjlGYWdVODRnWjlKbllLbWI?oc=5",
-          "published": 1786627320
-        },
-        {
-          "title": "电影《冬旅人》导演鲁丹：金鸡创投对于青年导演来说是一次历练的机会",
-          "source": "news.cn",
-          "link": "https://news.google.com/rss/articles/CBMiekFVX3lxTE53cmJsTFFBY2ZnYktPVklBMTlnUXplcFg3cmdIRE45cy1HZ1ZZMnR4ODhJVjJGbkVMNWYtUi14UnpHSUZzRTMwal9zOXpYNy1YTmpSLXhxSDNwZUtWWmhFNlI1U0NnQTZCRm43ZFd3X3dPcGJiTDVuc1RR?oc=5",
-          "published": 1786613557
+          "title": "《冬旅人》导演鲁丹谈电影主题：即便有些缺席我们无法改变但我们可以学会和遗憾相处",
+          "source": "新华网",
+          "link": "https://news.google.com/rss/articles/CBMiekFVX3lxTE1URmw5b2RaOU9mak5TZEtZa1g2TXJTa2ZQZFZiNUxnbUhWc0daeDVPem84Z0hZb3pZa1N3TF9tclZEcEh5UEZNWGpVdWpnd3YxRzhlN2RydXVBTDFjMi1jMHZaUGVKdWM3UkZ3ckpLLUJKN2ZRM2pIQUtB?oc=5",
+          "published": 1786613397
         },
         {
           "title": "百花为大众盛开",
           "source": "新浪财经",
-          "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxObFdJVE5sRWxTdUhLOUlUaVNqNHBTWUFKQ05KNndBYTM5b21nYkQ5am4zUURmcGxYWVdYNVZpS2NJRVFtZldtc2NHUVRNU2dKY19iNVRSNnJPc3A3ZVNjdzRsVWVtU1NyTk45UDV3Uzh0c2FPenpfQldCeC11N1ZEMFZ3?oc=5",
-          "published": 1786632525
+          "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOUkxiS21xb3EzcVN2QlVRSi1WZHRacW13OEg3c21sQzFVMlJwOW42ZUEycHFnZk9zc0VFU3Z4ZzFwVzFBR0tIRnFha2JwU3JjNFozY1VwMnFJaWhmaFhUMHJfNTA5Wnk2ZWRTNUVpUHdYV3BNSklMT0dQWFMzNWZuQWJzemdEaV85bEJ1TWV3Sm5jWm9G?oc=5",
+          "published": 1786635376
+        },
+        {
+          "title": "沈腾、文牧野、蒋奇明、奥马尔来武汉了！电影《欢迎来龙餐馆》主创团队亮相路演- 湖北日报新闻客户端",
+          "source": "湖北日报传媒集团",
+          "link": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE9IcjZPZV9WU0k3TFd5bktVSTEzc0h2bXc3X212dnZ6cW0xTFNlZS01ajNHT0xHbVZ0emxvTDVOTzEteTlfak5obXhnSHlVd3IweGpUN2ZUWVE?oc=5",
+          "published": 1786622430
+        },
+        {
+          "title": "蔡依林广州演唱会首日火爆开演，座无虚席",
+          "source": "新浪网",
+          "link": "https://news.google.com/rss/articles/CBMic0FVX3lxTE9uRDdFcHZUUnp0VE83M1lDb3dvd19ESVNFQ1pDRG9DVi1wNjV4V1BYa0JOUFk5dTN1MUlkM015WU9tTmhVcDN1NWhiYXRhRW02Sm9nclE2QXUxYlBPSUxTZ0JodTkycVp5QXZodFE4RldFaEk?oc=5",
+          "published": 1786647061
+        },
+        {
+          "title": "电影暑期档票房超91亿 今年全产业链产值突破3900亿",
+          "source": "新浪财经",
+          "link": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxPLVhwZzVDU0tfQjQzWDE3TTQxbEZUSFJHQnQ3TTl1dGxWM1lwSldDeFZzbHdTZDNMMUN1clJjZ0tQTmxoOWpMTE5QWmpva01RZUFUMWFzeF9rdEVTQTBSZ19RdkZ1dHFGMlVfcUoyZzBtVzFabzd2azBkYlNMMkJtaTRiVjhxb2llSzNB?oc=5",
+          "published": 1786638009
         }
       ]
     },
@@ -160,7 +160,7 @@
       "items": [
         {
           "title": "追光丨从杭州出发，亚洲高校篮球舰队驶向更多可能",
-          "source": "news.cn",
+          "source": "新华网",
           "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxNOTE1Z09leFg5eWpmRDNpbHAwQkY5YW9wWnhEaWsyRG56b28xNUxtb0h4aEExM0RpUl9JN0xKaHNsZVFsZjN2M3ZsTWVvc3IyU28wWXNWSktyWE9LdzRvMEtaWTlNZXhyWDFaaHRvMHhuLXJnLW1WbU9TWXlLQmdEdA?oc=5",
           "published": 1786614859
         },
@@ -177,28 +177,28 @@
           "published": 1786588823
         },
         {
+          "title": "2025-2026国际篮联少年三人篮球总决赛收官",
+          "source": "chinanews.com.cn",
+          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5ESzZQb0VqeVlMSmtzbFNKeGh5XzAwOUxaUHdtclZFMDdjbm1LMzF0TVdybU4xUTBmLXhybmFXTkp0MWJPS1BWMkpGRjhTeTVfTjBBWEtsbWVpMUVPNExRc1hseGFkZlNB?oc=5",
+          "published": 1786634483
+        },
+        {
           "title": "浙BA“漫”记丨篮球托起体育 “丰收季”",
           "source": "新蓝网",
           "link": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE1ndEV6RFdyQWR1MVdIdVZTN1hQay1qZ28zOXlWMHhsVld6M3BRR05zdk1PN0w2cWFEZmJzR3pOSXAyWmlGcHJ3VFBYRm5wdTA?oc=5",
           "published": 1786613520
         },
         {
-          "title": "2026年NBA杯：赛程、分组、赛制及直播观看方式",
-          "source": "olympics.com",
-          "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOZWdoZXdwWVpWUm03djRtUGdGamlkNHA3azlvbk90U3RZbS03dFhJSHl2ZHQyRHp1aHFSNVVObWx6S3hCU3pSU0lsZEQ4QnZJZkY0andVb3JOTHlVYWhXT0hOeXdtODU3MTlqeXRfVFREQ0VJWkRjbDdkMmJnV2pPeV8zMk9NYTg5ZlVZZg?oc=5",
-          "published": 1786621200
+          "title": "🎂真挚的祝福！祝前NBA球星“考神”考辛斯36岁生日快乐！",
+          "source": "Sina Sports",
+          "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOZW9aZEJYNDB5UkR2TUl0TGM5cEFmc0p0b3FOU2NjbVQxMEFXbkZPaFlXcXY2cVFWNGk2RFdjblBSLWlrQlpxa2dDSzB0dDlSM2Y3N2htU1BkTGFHd2RvVHRfcGgyTXU5c3ZLX3ZwRV82VmkzTVJHeTI1enM5SkhPVWpGdzM?oc=5",
+          "published": 1786638240
         },
         {
-          "title": "125亿美元天价易手！洛杉矶湖人队刷新职业体育最高估值纪录",
-          "source": "东方财富",
-          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE1jOUtKS1JCaDM1emZGTjZ5XzRxaG13RFlFRVB2cHpXY01aLWZyWDRVcHNUdUthUTIzWjlZWFBtNjRJVmdrT3RDeEFZNnIzRVJyNG5UTDRtUExZV3FXR0ZzSA?oc=5",
-          "published": 1786581897
-        },
-        {
-          "title": "2026环阿尔泰山体育旅游交流大会漂流项目开赛",
-          "source": "altxw.com",
-          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTFBkYnFieFQ2X25zSXJqczNCXzJNeVNiUm1rYXF0Mll3SnoxWFBCUXRQYV9JZHpFMGRTTTE2VU82VDVwaXJwMjJkTHBNaWRhd0docE1kM0QzR0Yydy1TT0VySndsdDA?oc=5",
-          "published": 1786616160
+          "title": "“小篮球”转动“大和谐” 花园社区上演夏日温情",
+          "source": "央广网",
+          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE11cGJIM2pCVkQwTll5Vk9aeXEwTVpTc2kwVjJocU9VbXhaZ3Z6R2RxSXd5eHhNa2g4dkUyaWh4aFM1ak4wMVhmSWdtOHhfVzBNM1FkWGF1UTlfQWFDYlpkTVRFZzVFRnQ5?oc=5",
+          "published": 1786615482
         }
       ]
     },
@@ -207,28 +207,16 @@
       "name": "国际",
       "items": [
         {
+          "title": "安理会：联合国警告也门重陷大规模冲突风险加剧 人道主义危机持续恶化",
+          "source": "UN News",
+          "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE1STmJZRmQxOUFXYXlZWk5lZk1rX0lWUlczZ1RONGJHbTY1QzA2VmUtcll3WlNiTjNza0x1LXhCNWFlbklUNFdwamdWR2xNTkNqMzBWbW03Yw?oc=5",
+          "published": 1786633837
+        },
+        {
           "title": "三预警齐发，多个区域发生地质灾害风险较高",
           "source": "中国科技网",
           "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1tM01UbzJkNWNsejU5aXJvTmQ1T3FVYWJEcE9LWHpmaWFkRV8xTTZhblpEajYxeWd1a2VzVXJIMjdRMTF1SEFWa3JzRFVMdWtmbHduOFVCUXp5WVJUeGQwRkNmZi1Ta1ZQNlBVRVhUbjk?oc=5",
           "published": 1786623782
-        },
-        {
-          "title": "C919首条国际航线开通引关注 海外网友喊话“快飞到我这来！”",
-          "source": "news.cn",
-          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE15SUxYcUVvVnQwOUVfcE1xUXhPeDJONlRzQ2piQ19BZTJQRDZSak1iLUt5QWIwN0MxcFJ4UnZLcHVMWlRLZHB2b0U5em5LVTI1NkpGTnd2WkhvWUlUaFNxOWVEMnJSM0tSZ2ZSME1ZM3diZGxTaFBwcFIxeUNYekU?oc=5",
-          "published": 1786615247
-        },
-        {
-          "title": "【中国那些事儿】全球南方媒体热议全球发展倡议五周年：从理念到落地的南南合作实践",
-          "source": "中国日报网",
-          "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE1iOXpvb04zcHlXcm1LMVltOUhPVi0ydGJ2M1RiVHNwR2lGS0lkLWxPVnp6M0h1ZEs0SHNka3BPQzdWekFfV1RnRmVEeEVqLTNOUDFpa1o3d19CNWV3bFdFQ2U3ZUcweTZ1RjdHZTJYdXdMLXN3dWtFYnVQX20?oc=5",
-          "published": 1786613810
-        },
-        {
-          "title": "研究提出全球海洋智能预报大模型“琅琊”",
-          "source": "中国科学院",
-          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTFAyWWRocWRPenV5blNkd1ptbkVWR1M2c1ZlUTE2N3NBUmE3bW5fV3JNU0dlejN2Ui1KQkotdHpDdWVYc0xIMXVfeTFsQ0xkYzV6cE1oeEl5TVMtbmFidXZZTGZjRnc?oc=5",
-          "published": 1786589569
         },
         {
           "title": "哈工大承办中国国际大学生创新大赛（2026）巴西区域赛",
@@ -237,16 +225,28 @@
           "published": 1786626257
         },
         {
-          "title": "山洪灾害气象预警：吉林黑龙江等7省区部分地区可能发生山洪灾害",
-          "source": "天气网",
-          "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE4xWll4YUVGRzRjbVF4ODl1cl9taS16TG5TbVlxVTZYSWFfY1o3VUZ6VE1pckNfTGwwTXBFS0s1Y1VuSE5uVm5uSldOcFlPWDYyempaQ2pRUzB5VExI?oc=5",
-          "published": 1786615506
+          "title": "C919首条国际航线开通引关注 海外网友喊话“快飞到我这来！”",
+          "source": "新华网",
+          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE15SUxYcUVvVnQwOUVfcE1xUXhPeDJONlRzQ2piQ19BZTJQRDZSak1iLUt5QWIwN0MxcFJ4UnZLcHVMWlRLZHB2b0U5em5LVTI1NkpGTnd2WkhvWUlUaFNxOWVEMnJSM0tSZ2ZSME1ZM3diZGxTaFBwcFIxeUNYekU?oc=5",
+          "published": 1786615247
         },
         {
-          "title": "中国世界语代表团参加第111届国际世界语大会并举办“中国日”主题活动",
-          "source": "cicg.org.cn",
-          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE1HOXhSb1RHYnl3NGhhT2Vhb3FxdWJYRkNDWmxHcnZDNHY5MWZiWjdFbGZjTGlnWTRRQzNWUVhYX2ZCenRKXzFIT2ZhNjh6VFlaRE5IUURvR29Ya25GVjdBWkJYRTQ?oc=5",
-          "published": 1786607011
+          "title": "海外研选 | 富兰克林邓普顿：SpaceX推动商业航天进入万亿美元市场",
+          "source": "财联社",
+          "link": "https://news.google.com/rss/articles/CBMiSEFVX3lxTFBxSEVpRVRqSmVzNHdMVlpjM0F0OEZnd0VWVlJpWTlQWkd2TlV3ZUVsdVZYWldtNFVLN2VOR2FtYjdXQlRpc1MzMg?oc=5",
+          "published": 1786624393
+        },
+        {
+          "title": "【中国那些事儿】全球南方媒体热议全球发展倡议五周年：从理念到落地的南南合作实践",
+          "source": "中国日报网",
+          "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE1iOXpvb04zcHlXcm1LMVltOUhPVi0ydGJ2M1RiVHNwR2lGS0lkLWxPVnp6M0h1ZEs0SHNka3BPQzdWekFfV1RnRmVEeEVqLTNOUDFpa1o3d19CNWV3bFdFQ2U3ZUcweTZ1RjdHZTJYdXdMLXN3dWtFYnVQX20?oc=5",
+          "published": 1786613810
+        },
+        {
+          "title": "尽管霍尔木兹海峡纷扰不断，全球航运公司仍报告出口强劲",
+          "source": "美国之音",
+          "link": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxNVXRTeHlxQUdSaHlpN3RFbDhGUGtEb09JVnZyZ0pkeTRHY2JDTVRxSHk2UTMwc1YtQUliSHQtdTZUUy16dkd6UU1BSXVNcDJ3Nlo3bVpmY01RVzFjOEVCWEV0Tl8wVVJIdWp4Qmg5eDl2eTVrSmhnYVdmWWMxdktGVl9DeDhFMXV5cDE1UW40QVNVa29XbFphMmEtV0dvR05KTlFSZ0NxQUxqdVRlQmtpcGoyV2Jkbm5wS08zcGhwa0M4WGPSAcYBQVVfeXFMUEFwaDJwWmRwRWZyUFhwUUI3UGs3ZW1pZEtrNVFVV2dhdVhBdjk0V3Q2emR5cGZZT3c2cjdQcXphbnZPcXI1T0hqQ0VFOVI4cVQ3bUJSUVlNbThLV3BQY3Z0dDNBM0kwWnVtUXJYUUtuQkkwelY3bW5md1M5cEcyQnlubDJzbks4V2g1RGFpdXdmMDkxQzRsWDRfSE12V25LR0NSOS1Qa2owVUVGdHYtTnE4czZ6TzY0UXhzSS1HOHRwNXV4bnZR?oc=5",
+          "published": 1786640870
         }
       ]
     }
@@ -255,43 +255,43 @@
     {
       "name": "标普500",
       "symbol": "^GSPC",
-      "price": 7803.06,
-      "changePct": 0.7,
+      "price": 7802.11,
+      "changePct": 0.69,
       "fmt": "idx"
     },
     {
       "name": "纳斯达克",
       "symbol": "^IXIC",
-      "price": 26825.73,
-      "changePct": 0.89,
+      "price": 26829.56,
+      "changePct": 0.91,
       "fmt": "idx"
     },
     {
       "name": "布伦特原油",
       "symbol": "BZ=F",
-      "price": 86.81,
-      "changePct": -2.44,
+      "price": 86.91,
+      "changePct": -2.33,
       "fmt": "usd"
     },
     {
       "name": "WTI原油",
       "symbol": "CL=F",
-      "price": 81.12,
-      "changePct": -2.58,
+      "price": 81.05,
+      "changePct": -2.67,
       "fmt": "usd"
     },
     {
       "name": "黄金",
       "symbol": "GC=F",
-      "price": 4443.5,
-      "changePct": 0.78,
+      "price": 4411.8,
+      "changePct": 0.07,
       "fmt": "usd"
     },
     {
       "name": "美元指数",
       "symbol": "DX-Y.NYB",
-      "price": 99.83,
-      "changePct": -0.18,
+      "price": 99.96,
+      "changePct": -0.05,
       "fmt": "idx"
     }
   ],
