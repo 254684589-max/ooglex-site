@@ -823,7 +823,8 @@ const dgsWindowAsset = adapter.adaptDgs10(
 assert.strictEqual(dgsWindowAsset.observationTrend.count, 2);
 assert.strictEqual(dgsWindowAsset.observationTrend.change, 6);
 const tamperedDgsWindow = JSON.parse(JSON.stringify(dgsWindow));
-adapter.findDgs10Row(tamperedDgsWindow).row.observations[1].value = 4.68;
+adapter.findDgs10Row(tamperedDgsWindow).row.observations[1].value =
+  Math.round((dgsWindowPrice + 0.01) * 100) / 100;
 assert.throws(() => adapter.adaptDgs10(
   config.assets.find((asset) => asset.id === "us10y"), tamperedDgsWindow, currentNow
 ));
