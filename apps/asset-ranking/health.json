@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "asset-ranking",
-  "generatedAt": "2026-08-14T01:38:37Z",
+  "generatedAt": "2026-08-14T01:44:23Z",
   "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-08-14T01:38:37Z",
-  "lastSuccessfulAt": "2026-08-14T01:38:37Z",
+  "lastAttemptAt": "2026-08-14T01:44:23Z",
+  "lastSuccessfulAt": "2026-08-14T01:44:23Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-08-14T01:38:37Z",
+  "publishedSnapshotAt": "2026-08-14T01:44:23Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -52,7 +52,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-14T01:38:37Z"
+      "lastSuccessAt": "2026-08-14T01:44:23Z"
     },
     {
       "id": "coingecko",
@@ -67,7 +67,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-14T01:38:37Z"
+      "lastSuccessAt": "2026-08-14T01:44:23Z"
     },
     {
       "id": "companies-upstream",
@@ -82,13 +82,13 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-14T01:36:09Z",
+      "lastSuccessAt": "2026-08-14T01:41:57Z",
       "upstream": {
         "dataset": "companies",
         "contractKnown": true,
         "status": "healthy",
-        "lastAttemptAt": "2026-08-14T01:36:09Z",
-        "lastSuccessfulAt": "2026-08-14T01:36:09Z",
+        "lastAttemptAt": "2026-08-14T01:41:57Z",
+        "lastSuccessfulAt": "2026-08-14T01:41:57Z",
         "consecutiveFailures": 0,
         "snapshotPreserved": false,
         "snapshotAligned": true
@@ -107,7 +107,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-14T01:38:37Z"
+      "lastSuccessAt": "2026-08-14T01:44:23Z"
     }
   ],
   "recovery": {
