@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-08-13T21:56:35Z",
-  "asOf": "2026-08-13",
+  "updatedAt": "2026-08-14T21:35:08Z",
+  "asOf": "2026-08-14",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -92,7 +92,7 @@
       "arena": 1490,
       "livebench": 79.9,
       "aa": null,
-      "ctx": null,
+      "ctx": "1M",
       "price": 1.5
     },
     {
