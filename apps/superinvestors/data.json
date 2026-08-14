@@ -1,6 +1,6 @@
 {
- "updatedAt": "2026-08-07T06:04:47Z",
- "asOf": "2026-08-07",
+ "updatedAt": "2026-08-14T06:10:53Z",
+ "asOf": "2026-08-14",
  "source": "SEC EDGAR 13F-HR · AAII Investor Sentiment Survey",
  "investors": [
   {
@@ -9,7 +9,7 @@
    "firm": "Citadel Advisors",
    "firmZh": "城堡投资",
    "cik": "0001423053",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Kenneth_C._Griffin_photo.jpg/250px-Kenneth_C._Griffin_photo.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Kenneth_C._Griffin.jpg/250px-Kenneth_C._Griffin.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
    "period": "2026-03-31",
@@ -1042,6 +1042,179 @@
    ]
   },
   {
+   "zh": "马歇尔·韦斯",
+   "en": "Marshall Wace",
+   "firm": "Marshall Wace",
+   "firmZh": "马歇尔·韦斯",
+   "cik": "0001318757",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Paul_Marshall_speaking_at_ARC_Forum_2023%2C_30_October_2023_%28cropped%29.jpg/250px-Paul_Marshall_speaking_at_ARC_Forum_2023%2C_30_October_2023_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "imgAlt": "",
+   "imgLogo": false,
+   "period": "2026-06-30",
+   "filed": "2026-08-13",
+   "value": 126697578778,
+   "stocks": 2974,
+   "top10pct": 37.9,
+   "holdings": [
+    {
+     "name": "Ishares Expanded",
+     "zh": "安硕ETF",
+     "ticker": "IVV",
+     "value": 30013708672,
+     "pct": 23.69,
+     "chg": "add",
+     "chgPct": 52.4
+    },
+    {
+     "name": "Spdr Nyse Techno",
+     "zh": "",
+     "ticker": "",
+     "value": 4166174715,
+     "pct": 3.29,
+     "chg": "trim",
+     "chgPct": -5.3
+    },
+    {
+     "name": "Apple Inc",
+     "zh": "苹果",
+     "ticker": "AAPL",
+     "value": 2628626416,
+     "pct": 2.07,
+     "chg": "add",
+     "chgPct": 8.4
+    },
+    {
+     "name": "Amazon. Inc",
+     "zh": "亚马逊",
+     "ticker": "AMZN",
+     "value": 2267614698,
+     "pct": 1.79,
+     "chg": "add",
+     "chgPct": 7.5
+    },
+    {
+     "name": "Adv Micro Device",
+     "zh": "超威半导体",
+     "ticker": "AMD",
+     "value": 2264384440,
+     "pct": 1.79,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Nvidia Corp",
+     "zh": "英伟达",
+     "ticker": "NVDA",
+     "value": 1728060793,
+     "pct": 1.36,
+     "chg": "trim",
+     "chgPct": -36.8
+    },
+    {
+     "name": "Micron Tech",
+     "zh": "美光科技",
+     "ticker": "MU",
+     "value": 1556805046,
+     "pct": 1.23,
+     "chg": "add",
+     "chgPct": 49.6
+    },
+    {
+     "name": "Microsoft Corp",
+     "zh": "微软",
+     "ticker": "MSFT",
+     "value": 1245972969,
+     "pct": 0.98,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Googl 6.25 05/15/29 A",
+     "zh": "谷歌",
+     "ticker": "GOOG",
+     "value": 1100744564,
+     "pct": 0.87,
+     "chg": "trim",
+     "chgPct": -13.1
+    },
+    {
+     "name": "Costco Wholesale",
+     "zh": "开市客",
+     "ticker": "COST",
+     "value": 1098677711,
+     "pct": 0.87,
+     "chg": "add",
+     "chgPct": 345.3
+    }
+   ],
+   "moves": [
+    {
+     "type": "add",
+     "name": "Ishares Expanded",
+     "zh": "安硕ETF",
+     "ticker": "IVV",
+     "value": 12727116897,
+     "delta": 52.4
+    },
+    {
+     "type": "add",
+     "name": "Micron Tech",
+     "zh": "美光科技",
+     "ticker": "MU",
+     "value": 1252263907,
+     "delta": 49.6
+    },
+    {
+     "type": "add",
+     "name": "Costco Wholesale",
+     "zh": "开市客",
+     "ticker": "COST",
+     "value": 835878267,
+     "delta": 345.3
+    },
+    {
+     "type": "add",
+     "name": "Abbvie Inc",
+     "zh": "艾伯维",
+     "ticker": "ABBV",
+     "value": 752301683,
+     "delta": 281757.9
+    },
+    {
+     "type": "trim",
+     "name": "Nvidia Corp",
+     "zh": "英伟达",
+     "ticker": "NVDA",
+     "value": 654236682,
+     "delta": -36.8
+    },
+    {
+     "type": "add",
+     "name": "Jp Morgan Chase",
+     "zh": "摩根大通",
+     "ticker": "JPM",
+     "value": 642457401,
+     "delta": 11481.2
+    },
+    {
+     "type": "add",
+     "name": "Bank Of America",
+     "zh": "美国银行",
+     "ticker": "BAC",
+     "value": 622054885,
+     "delta": 581.8
+    },
+    {
+     "type": "trim",
+     "name": "Mercadolibre Inc",
+     "zh": "美客多",
+     "ticker": "MELI",
+     "value": 534885441,
+     "delta": -98.3
+    }
+   ]
+  },
+  {
    "zh": "双西格玛",
    "en": "Two Sigma",
    "firm": "Two Sigma Investments",
@@ -1384,179 +1557,6 @@
      "ticker": "",
      "value": 641407342,
      "delta": 1294698.3
-    }
-   ]
-  },
-  {
-   "zh": "马歇尔·韦斯",
-   "en": "Marshall Wace",
-   "firm": "Marshall Wace",
-   "firmZh": "马歇尔·韦斯",
-   "cik": "0001318757",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Paul_Marshall_speaking_at_ARC_Forum_2023%2C_30_October_2023_%28cropped%29.jpg/250px-Paul_Marshall_speaking_at_ARC_Forum_2023%2C_30_October_2023_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-   "imgAlt": "",
-   "imgLogo": false,
-   "period": "2026-03-31",
-   "filed": "2026-05-15",
-   "value": 100406703814,
-   "stocks": 3013,
-   "top10pct": 32.5,
-   "holdings": [
-    {
-     "name": "Ishares China La",
-     "zh": "安硕ETF",
-     "ticker": "IVV",
-     "value": 17286591775,
-     "pct": 17.22,
-     "chg": "trim",
-     "chgPct": -19.5
-    },
-    {
-     "name": "Spdr Portfolio L",
-     "zh": "",
-     "ticker": "",
-     "value": 3825804107,
-     "pct": 3.81,
-     "chg": "add",
-     "chgPct": 2495.3
-    },
-    {
-     "name": "Nvidia Corp",
-     "zh": "英伟达",
-     "ticker": "NVDA",
-     "value": 2382297475,
-     "pct": 2.37,
-     "chg": "trim",
-     "chgPct": -5.5
-    },
-    {
-     "name": "Apple Inc",
-     "zh": "苹果",
-     "ticker": "AAPL",
-     "value": 2127546694,
-     "pct": 2.12,
-     "chg": "add",
-     "chgPct": 25.9
-    },
-    {
-     "name": "Amazon. Inc",
-     "zh": "亚马逊",
-     "ticker": "AMZN",
-     "value": 1843771613,
-     "pct": 1.84,
-     "chg": "trim",
-     "chgPct": -26.2
-    },
-    {
-     "name": "Alphabet Inc-A",
-     "zh": "谷歌",
-     "ticker": "GOOG",
-     "value": 1474485624,
-     "pct": 1.47,
-     "chg": "trim",
-     "chgPct": -16.6
-    },
-    {
-     "name": "Microsoft Corp",
-     "zh": "微软",
-     "ticker": "MSFT",
-     "value": 1247620227,
-     "pct": 1.24,
-     "chg": "trim",
-     "chgPct": -10.1
-    },
-    {
-     "name": "Chevron Corp",
-     "zh": "雪佛龙",
-     "ticker": "CVX",
-     "value": 863737361,
-     "pct": 0.86,
-     "chg": "add",
-     "chgPct": 224.5
-    },
-    {
-     "name": "Tesla Inc",
-     "zh": "特斯拉",
-     "ticker": "TSLA",
-     "value": 776088252,
-     "pct": 0.77,
-     "chg": "add",
-     "chgPct": 9.5
-    },
-    {
-     "name": "Adv Micro Device",
-     "zh": "超威半导体",
-     "ticker": "AMD",
-     "value": 771403712,
-     "pct": 0.77,
-     "chg": "trim",
-     "chgPct": -20.0
-    }
-   ],
-   "moves": [
-    {
-     "type": "trim",
-     "name": "Ishares China La",
-     "zh": "安硕ETF",
-     "ticker": "IVV",
-     "value": 5135145878,
-     "delta": -19.5
-    },
-    {
-     "type": "add",
-     "name": "Spdr Portfolio L",
-     "zh": "",
-     "ticker": "",
-     "value": 3691850121,
-     "delta": 2495.3
-    },
-    {
-     "type": "exit",
-     "name": "Vanguard Ex Mk E",
-     "zh": "先锋标普500 ETF",
-     "ticker": "VOO",
-     "value": 2875048246,
-     "delta": null
-    },
-    {
-     "type": "trim",
-     "name": "Amazon. Inc",
-     "zh": "亚马逊",
-     "ticker": "AMZN",
-     "value": 924609838,
-     "delta": -26.2
-    },
-    {
-     "type": "trim",
-     "name": "Eli Lilly & Co",
-     "zh": "礼来",
-     "ticker": "LLY",
-     "value": 768627702,
-     "delta": -52.3
-    },
-    {
-     "type": "trim",
-     "name": "Walmart Inc",
-     "zh": "沃尔玛",
-     "ticker": "WMT",
-     "value": 727150671,
-     "delta": -76.2
-    },
-    {
-     "type": "add",
-     "name": "Chevron Corp",
-     "zh": "雪佛龙",
-     "ticker": "CVX",
-     "value": 667672717,
-     "delta": 224.5
-    },
-    {
-     "type": "trim",
-     "name": "Microsoft Corp",
-     "zh": "微软",
-     "ticker": "MSFT",
-     "value": 566363433,
-     "delta": -10.1
     }
    ]
   },
@@ -1915,167 +1915,167 @@
    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Jim_Simons_at_MSRI.jpg/250px-Jim_Simons_at_MSRI.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
    "imgAlt": "",
    "imgLogo": false,
-   "period": "2026-03-31",
-   "filed": "2026-05-14",
-   "value": 63929893013,
-   "stocks": 3020,
-   "top10pct": 11.2,
+   "period": "2026-06-30",
+   "filed": "2026-08-13",
+   "value": 72617871974,
+   "stocks": 2931,
+   "top10pct": 12.8,
    "holdings": [
+    {
+     "name": "Nvidia Corporation",
+     "zh": "英伟达",
+     "ticker": "NVDA",
+     "value": 1418869170,
+     "pct": 1.95,
+     "chg": "add",
+     "chgPct": 180.6
+    },
+    {
+     "name": "Alphabet Inc",
+     "zh": "谷歌",
+     "ticker": "GOOG",
+     "value": 1384957364,
+     "pct": 1.91,
+     "chg": "add",
+     "chgPct": 423.7
+    },
+    {
+     "name": "Meta Platforms Inc",
+     "zh": "Meta平台",
+     "ticker": "META",
+     "value": 1139611745,
+     "pct": 1.57,
+     "chg": "add",
+     "chgPct": 698.5
+    },
+    {
+     "name": "Intel Corp",
+     "zh": "英特尔",
+     "ticker": "INTC",
+     "value": 1022356867,
+     "pct": 1.41,
+     "chg": "hold",
+     "chgPct": null
+    },
     {
      "name": "United Therapeutics Corp",
      "zh": "",
      "ticker": "",
-     "value": 1059666527,
-     "pct": 1.66,
+     "value": 925846052,
+     "pct": 1.27,
      "chg": "trim",
-     "chgPct": -6.4
+     "chgPct": -4.4
     },
     {
      "name": "Palantir Technologies Inc",
      "zh": "帕兰提尔",
      "ticker": "",
-     "value": 1021901255,
-     "pct": 1.6,
-     "chg": "trim",
-     "chgPct": -20.6
-    },
-    {
-     "name": "Apple Inc",
-     "zh": "苹果",
-     "ticker": "AAPL",
-     "value": 780569445,
+     "value": 883001728,
      "pct": 1.22,
-     "chg": "new",
-     "chgPct": null
-    },
-    {
-     "name": "Kinross Gold Corp",
-     "zh": "",
-     "ticker": "",
-     "value": 779676525,
-     "pct": 1.22,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Micron Technology Inc",
-     "zh": "美光科技",
-     "ticker": "MU",
-     "value": 730739401,
-     "pct": 1.14,
-     "chg": "trim",
-     "chgPct": -28.2
-    },
-    {
-     "name": "Verisign Inc",
-     "zh": "威瑞信",
-     "ticker": "",
-     "value": 699915982,
-     "pct": 1.09,
-     "chg": "hold",
-     "chgPct": null
+     "chg": "add",
+     "chgPct": 8.3
     },
     {
      "name": "Exelixis Inc",
      "zh": "",
      "ticker": "",
-     "value": 588750730,
-     "pct": 0.92,
+     "value": 730617099,
+     "pct": 1.01,
      "chg": "hold",
      "chgPct": null
     },
     {
-     "name": "Franco Nev Corp",
-     "zh": "",
+     "name": "Verisign Inc",
+     "zh": "威瑞信",
      "ticker": "",
-     "value": 548183692,
-     "pct": 0.86,
+     "value": 616264393,
+     "pct": 0.85,
      "chg": "trim",
-     "chgPct": -10.5
+     "chgPct": -13.1
     },
     {
-     "name": "Sandisk Corp",
+     "name": "Kinross Gold Corp",
      "zh": "",
      "ticker": "",
-     "value": 507997533,
+     "value": 584529171,
+     "pct": 0.8,
+     "chg": "trim",
+     "chgPct": -3.1
+    },
+    {
+     "name": "Crowdstrike Hldgs Inc",
+     "zh": "卡骆驰",
+     "ticker": "CROX",
+     "value": 571561334,
      "pct": 0.79,
-     "chg": "trim",
-     "chgPct": -33.9
-    },
-    {
-     "name": "Nvidia Corporation",
-     "zh": "英伟达",
-     "ticker": "NVDA",
-     "value": 440696066,
-     "pct": 0.69,
-     "chg": "add",
-     "chgPct": 190.0
+     "chg": "new",
+     "chgPct": null
     }
    ],
    "moves": [
     {
+     "type": "add",
+     "name": "Alphabet Inc",
+     "zh": "谷歌",
+     "ticker": "GOOG",
+     "value": 1171306434,
+     "delta": 423.7
+    },
+    {
+     "type": "add",
+     "name": "Meta Platforms Inc",
+     "zh": "Meta平台",
+     "ticker": "META",
+     "value": 994650366,
+     "delta": 698.5
+    },
+    {
+     "type": "add",
+     "name": "Nvidia Corporation",
+     "zh": "英伟达",
+     "ticker": "NVDA",
+     "value": 978173104,
+     "delta": 180.6
+    },
+    {
      "type": "new",
-     "name": "Apple Inc",
-     "zh": "苹果",
-     "ticker": "AAPL",
-     "value": 780569445,
+     "name": "Crowdstrike Hldgs Inc",
+     "zh": "卡骆驰",
+     "ticker": "CROX",
+     "value": 571561334,
+     "delta": null
+    },
+    {
+     "type": "new",
+     "name": "Amazon Inc",
+     "zh": "亚马逊",
+     "ticker": "AMZN",
+     "value": 545974975,
      "delta": null
     },
     {
      "type": "trim",
+     "name": "Sandisk Corp",
+     "zh": "",
+     "ticker": "",
+     "value": 496674358,
+     "delta": -99.4
+    },
+    {
+     "type": "trim",
+     "name": "Micron Technology Inc",
+     "zh": "美光科技",
+     "ticker": "MU",
+     "value": 486514723,
+     "delta": -90.2
+    },
+    {
+     "type": "add",
      "name": "Netflix Inc.",
      "zh": "奈飞",
      "ticker": "NFLX",
-     "value": 672800587,
-     "delta": -100.0
-    },
-    {
-     "type": "trim",
-     "name": "Costco Wholesale Corporation",
-     "zh": "开市客",
-     "ticker": "COST",
-     "value": 578216773,
-     "delta": -97.2
-    },
-    {
-     "type": "trim",
-     "name": "Palantir Technologies Inc",
-     "zh": "帕兰提尔",
-     "ticker": "",
-     "value": 541716969,
-     "delta": -20.6
-    },
-    {
-     "type": "trim",
-     "name": "Tesla Inc",
-     "zh": "特斯拉",
-     "ticker": "TSLA",
-     "value": 534036003,
-     "delta": -84.5
-    },
-    {
-     "type": "exit",
-     "name": "Procter And Gamble Co",
-     "zh": "宝洁",
-     "ticker": "PG",
-     "value": 427932474,
-     "delta": null
-    },
-    {
-     "type": "trim",
-     "name": "Microsoft Corp",
-     "zh": "微软",
-     "ticker": "MSFT",
-     "value": 329271903,
-     "delta": -98.6
-    },
-    {
-     "type": "exit",
-     "name": "Ford Mtr Co",
-     "zh": "福特汽车",
-     "ticker": "",
-     "value": 324468778,
-     "delta": null
+     "value": 484420461,
+     "delta": 275718.1
     }
    ]
   },
@@ -2566,6 +2566,179 @@
    ]
   },
   {
+   "zh": "理查德·普泽纳",
+   "en": "Richard Pzena",
+   "firm": "Pzena Investment",
+   "firmZh": "普泽纳投资管理",
+   "cik": "0001027796",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Pzena_Logo.png/250px-Pzena_Logo.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "imgAlt": "",
+   "imgLogo": false,
+   "period": "2026-06-30",
+   "filed": "2026-08-07",
+   "value": 34066282976,
+   "stocks": 161,
+   "top10pct": 37.6,
+   "holdings": [
+    {
+     "name": "Magna Intl Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 2227312133,
+     "pct": 6.54,
+     "chg": "trim",
+     "chgPct": -5.7
+    },
+    {
+     "name": "Humana Inc",
+     "zh": "哈门那",
+     "ticker": "HUM",
+     "value": 1749013682,
+     "pct": 5.13,
+     "chg": "trim",
+     "chgPct": -19.5
+    },
+    {
+     "name": "Baxter Intl Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 1392097779,
+     "pct": 4.09,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Cvs Health Corp",
+     "zh": "CVS健康",
+     "ticker": "CVS",
+     "value": 1217558500,
+     "pct": 3.57,
+     "chg": "trim",
+     "chgPct": -14.5
+    },
+    {
+     "name": "Dollar Gen Corp",
+     "zh": "",
+     "ticker": "",
+     "value": 1176661326,
+     "pct": 3.45,
+     "chg": "add",
+     "chgPct": 48.2
+    },
+    {
+     "name": "Skyworks Solutions Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 1082972112,
+     "pct": 3.18,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Cognizant Technology Solutio",
+     "zh": "",
+     "ticker": "",
+     "value": 1027474831,
+     "pct": 3.02,
+     "chg": "add",
+     "chgPct": 30.9
+    },
+    {
+     "name": "Bristol-Myers Squibb Co",
+     "zh": "百时美施贵宝",
+     "ticker": "BMY",
+     "value": 979945875,
+     "pct": 2.88,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Tyson Foods Inc",
+     "zh": "TJX折扣百货",
+     "ticker": "TJX",
+     "value": 974203270,
+     "pct": 2.86,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Corebridge Finl Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 967399884,
+     "pct": 2.84,
+     "chg": "add",
+     "chgPct": 24.9
+    }
+   ],
+   "moves": [
+    {
+     "type": "trim",
+     "name": "Humana Inc",
+     "zh": "哈门那",
+     "ticker": "HUM",
+     "value": 800400113,
+     "delta": -19.5
+    },
+    {
+     "type": "trim",
+     "name": "Dow Hldgs Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 446975802,
+     "delta": -34.0
+    },
+    {
+     "type": "trim",
+     "name": "Nokia Corp",
+     "zh": "",
+     "ticker": "",
+     "value": 443396327,
+     "delta": -92.1
+    },
+    {
+     "type": "add",
+     "name": "Dollar Gen Corp",
+     "zh": "",
+     "ticker": "",
+     "value": 357716283,
+     "delta": 48.2
+    },
+    {
+     "type": "add",
+     "name": "Corebridge Finl Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 322087239,
+     "delta": 24.9
+    },
+    {
+     "type": "trim",
+     "name": "Magna Intl Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 259474526,
+     "delta": -5.7
+    },
+    {
+     "type": "new",
+     "name": "Workday Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 241322874,
+     "delta": null
+    },
+    {
+     "type": "add",
+     "name": "Cdw Corp",
+     "zh": "",
+     "ticker": "",
+     "value": 236132851,
+     "delta": 136.6
+    }
+   ]
+  },
+  {
    "zh": "乔尔·格林布拉特",
    "en": "Joel Greenblatt",
    "firm": "Gotham Asset Management",
@@ -2868,179 +3041,6 @@
      "ticker": "WM",
      "value": 5230492,
      "delta": -4.5
-    }
-   ]
-  },
-  {
-   "zh": "理查德·普泽纳",
-   "en": "Richard Pzena",
-   "firm": "Pzena Investment",
-   "firmZh": "普泽纳投资管理",
-   "cik": "0001027796",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Pzena_Logo.png/250px-Pzena_Logo.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-   "imgAlt": "",
-   "imgLogo": false,
-   "period": "2026-03-31",
-   "filed": "2026-04-24",
-   "value": 30796447662,
-   "stocks": 158,
-   "top10pct": 35.7,
-   "holdings": [
-    {
-     "name": "Magna Intl Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 1967837607,
-     "pct": 6.39,
-     "chg": "trim",
-     "chgPct": -13.0
-    },
-    {
-     "name": "Cognizant Technology Solutio",
-     "zh": "",
-     "ticker": "",
-     "value": 1243095908,
-     "pct": 4.04,
-     "chg": "add",
-     "chgPct": 14.9
-    },
-    {
-     "name": "Tyson Foods Inc",
-     "zh": "TJX折扣百货",
-     "ticker": "TJX",
-     "value": 1099166532,
-     "pct": 3.57,
-     "chg": "add",
-     "chgPct": 12.1
-    },
-    {
-     "name": "Baxter Intl Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 1084067427,
-     "pct": 3.52,
-     "chg": "trim",
-     "chgPct": -7.9
-    },
-    {
-     "name": "Bristol-Myers Squibb Co",
-     "zh": "百时美施贵宝",
-     "ticker": "BMY",
-     "value": 1036856085,
-     "pct": 3.37,
-     "chg": "trim",
-     "chgPct": -4.7
-    },
-    {
-     "name": "Cvs Health Corp",
-     "zh": "CVS健康",
-     "ticker": "CVS",
-     "value": 989180667,
-     "pct": 3.21,
-     "chg": "trim",
-     "chgPct": -11.6
-    },
-    {
-     "name": "Humana Inc",
-     "zh": "哈门那",
-     "ticker": "HUM",
-     "value": 948613569,
-     "pct": 3.08,
-     "chg": "add",
-     "chgPct": 34.3
-    },
-    {
-     "name": "Citigroup Inc",
-     "zh": "花旗集团",
-     "ticker": "C",
-     "value": 927168031,
-     "pct": 3.01,
-     "chg": "trim",
-     "chgPct": -23.0
-    },
-    {
-     "name": "Skyworks Solutions Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 862590790,
-     "pct": 2.8,
-     "chg": "add",
-     "chgPct": 27.6
-    },
-    {
-     "name": "Capital One Finl Corp",
-     "zh": "",
-     "ticker": "",
-     "value": 835551292,
-     "pct": 2.71,
-     "chg": "trim",
-     "chgPct": -8.8
-    }
-   ],
-   "moves": [
-    {
-     "type": "trim",
-     "name": "Dollar Gen Corp",
-     "zh": "",
-     "ticker": "",
-     "value": 598616747,
-     "delta": -35.4
-    },
-    {
-     "type": "trim",
-     "name": "Capital One Finl Corp",
-     "zh": "",
-     "ticker": "",
-     "value": 381302641,
-     "delta": -8.8
-    },
-    {
-     "type": "trim",
-     "name": "Citigroup Inc",
-     "zh": "花旗集团",
-     "ticker": "C",
-     "value": 311511956,
-     "delta": -23.0
-    },
-    {
-     "type": "trim",
-     "name": "Ubs Group Ag",
-     "zh": "",
-     "ticker": "",
-     "value": 284760177,
-     "delta": -10.8
-    },
-    {
-     "type": "trim",
-     "name": "Baxter Intl Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 254516430,
-     "delta": -7.9
-    },
-    {
-     "type": "trim",
-     "name": "Cvs Health Corp",
-     "zh": "CVS健康",
-     "ticker": "CVS",
-     "value": 247351856,
-     "delta": -11.6
-    },
-    {
-     "type": "trim",
-     "name": "Ss&C Tech Hldgs",
-     "zh": "",
-     "ticker": "",
-     "value": 246234340,
-     "delta": -6.0
-    },
-    {
-     "type": "trim",
-     "name": "Wells Fargo & Co",
-     "zh": "富国银行",
-     "ticker": "WFC",
-     "value": 231767581,
-     "delta": -12.1
     }
    ]
   },
@@ -5435,6 +5435,179 @@
    ]
   },
   {
+   "zh": "汤姆·鲁索",
+   "en": "Tom Russo",
+   "firm": "Gardner Russo & Quinn",
+   "firmZh": "加德纳·鲁索",
+   "cik": "0000860643",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Thomas_A._Russo.JPG/250px-Thomas_A._Russo.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "imgAlt": "",
+   "imgLogo": false,
+   "period": "2026-06-30",
+   "filed": "2026-08-13",
+   "value": 8925889600,
+   "stocks": 82,
+   "top10pct": 84.6,
+   "holdings": [
+    {
+     "name": "Berkshire Hathaway Inc A类",
+     "zh": "伯克希尔·哈撒韦",
+     "ticker": "BRK.B",
+     "value": 1612456152,
+     "pct": 18.06,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Alphabet Inc A类",
+     "zh": "谷歌",
+     "ticker": "GOOG",
+     "value": 1080948856,
+     "pct": 12.11,
+     "chg": "trim",
+     "chgPct": -9.0
+    },
+    {
+     "name": "Philip Morris International In",
+     "zh": "菲利普莫里斯",
+     "ticker": "PM",
+     "value": 819675318,
+     "pct": 9.18,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Mastercard Inc A类",
+     "zh": "万事达",
+     "ticker": "MA",
+     "value": 781901965,
+     "pct": 8.76,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Compagnie Financiere Richemont",
+     "zh": "",
+     "ticker": "",
+     "value": 773661807,
+     "pct": 8.67,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Heineken Holding Nv",
+     "zh": "",
+     "ticker": "",
+     "value": 679639647,
+     "pct": 7.61,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Nestle SA ADR",
+     "zh": "",
+     "ticker": "",
+     "value": 545786866,
+     "pct": 6.11,
+     "chg": "trim",
+     "chgPct": -3.0
+    },
+    {
+     "name": "Sunbelt Rentals Holdings Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 441216288,
+     "pct": 4.94,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Netflix Inc",
+     "zh": "奈飞",
+     "ticker": "NFLX",
+     "value": 407700283,
+     "pct": 4.57,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Martin Marietta Materials",
+     "zh": "",
+     "ticker": "",
+     "value": 406784959,
+     "pct": 4.56,
+     "chg": "hold",
+     "chgPct": null
+    }
+   ],
+   "moves": [
+    {
+     "type": "trim",
+     "name": "Alphabet Inc A类",
+     "zh": "谷歌",
+     "ticker": "GOOG",
+     "value": 116532612,
+     "delta": -9.0
+    },
+    {
+     "type": "add",
+     "name": "Eurofins Scientific",
+     "zh": "",
+     "ticker": "",
+     "value": 97358793,
+     "delta": 32.2
+    },
+    {
+     "type": "add",
+     "name": "Doordash Inc A类",
+     "zh": "",
+     "ticker": "",
+     "value": 68542342,
+     "delta": 18.5
+    },
+    {
+     "type": "trim",
+     "name": "J.P. Morgan Chase",
+     "zh": "摩根大通",
+     "ticker": "JPM",
+     "value": 35679150,
+     "delta": -83.4
+    },
+    {
+     "type": "exit",
+     "name": "Exxon Mobil Corp",
+     "zh": "埃克森美孚",
+     "ticker": "XOM",
+     "value": 32905526,
+     "delta": null
+    },
+    {
+     "type": "new",
+     "name": "Exxon Mobil Corp",
+     "zh": "埃克森美孚",
+     "ticker": "",
+     "value": 24773668,
+     "delta": null
+    },
+    {
+     "type": "trim",
+     "name": "Pernod Ricard",
+     "zh": "",
+     "ticker": "",
+     "value": 11804901,
+     "delta": -5.2
+    },
+    {
+     "type": "trim",
+     "name": "Nestle SA ADR",
+     "zh": "",
+     "ticker": "",
+     "value": 2548986,
+     "delta": -3.0
+    }
+   ]
+  },
+  {
    "zh": "卡尔·伊坎",
    "en": "Carl Icahn",
    "firm": "Icahn Capital",
@@ -5560,179 +5733,6 @@
    ]
   },
   {
-   "zh": "汤姆·鲁索",
-   "en": "Tom Russo",
-   "firm": "Gardner Russo & Quinn",
-   "firmZh": "加德纳·鲁索",
-   "cik": "0000860643",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Thomas_A._Russo.JPG/250px-Thomas_A._Russo.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-   "imgAlt": "",
-   "imgLogo": false,
-   "period": "2026-03-31",
-   "filed": "2026-05-13",
-   "value": 8496278296,
-   "stocks": 83,
-   "top10pct": 85.0,
-   "holdings": [
-    {
-     "name": "Berkshire Hathaway Inc A类",
-     "zh": "伯克希尔·哈撒韦",
-     "ticker": "BRK.B",
-     "value": 1580601977,
-     "pct": 18.6,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Alphabet Inc A类",
-     "zh": "谷歌",
-     "ticker": "GOOG",
-     "value": 964416244,
-     "pct": 11.35,
-     "chg": "trim",
-     "chgPct": -14.8
-    },
-    {
-     "name": "Mastercard Inc A类",
-     "zh": "万事达",
-     "ticker": "MA",
-     "value": 777041820,
-     "pct": 9.15,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Philip Morris International In",
-     "zh": "菲利普莫里斯",
-     "ticker": "PM",
-     "value": 761402140,
-     "pct": 8.96,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Heineken Holding Nv",
-     "zh": "",
-     "ticker": "",
-     "value": 643363987,
-     "pct": 7.57,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Compagnie Financiere Richemont",
-     "zh": "",
-     "ticker": "",
-     "value": 594389414,
-     "pct": 7.0,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Nestle SA ADR",
-     "zh": "",
-     "ticker": "",
-     "value": 543237880,
-     "pct": 6.39,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Netflix Inc",
-     "zh": "奈飞",
-     "ticker": "NFLX",
-     "value": 539465536,
-     "pct": 6.35,
-     "chg": "add",
-     "chgPct": 12.1
-    },
-    {
-     "name": "Martin Marietta Materials",
-     "zh": "",
-     "ticker": "",
-     "value": 421148042,
-     "pct": 4.96,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Sunbelt Rentals Holdings Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 393738067,
-     "pct": 4.63,
-     "chg": "new",
-     "chgPct": null
-    }
-   ],
-   "moves": [
-    {
-     "type": "exit",
-     "name": "Ashtead Group PLC",
-     "zh": "",
-     "ticker": "",
-     "value": 418100738,
-     "delta": null
-    },
-    {
-     "type": "new",
-     "name": "Sunbelt Rentals Holdings Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 393738067,
-     "delta": null
-    },
-    {
-     "type": "trim",
-     "name": "Alphabet Inc A类",
-     "zh": "谷歌",
-     "ticker": "GOOG",
-     "value": 273862083,
-     "delta": -14.8
-    },
-    {
-     "type": "new",
-     "name": "Eurofins Scientific",
-     "zh": "",
-     "ticker": "",
-     "value": 223550621,
-     "delta": null
-    },
-    {
-     "type": "trim",
-     "name": "J.P. Morgan Chase",
-     "zh": "摩根大通",
-     "ticker": "JPM",
-     "value": 126624994,
-     "delta": -71.9
-    },
-    {
-     "type": "add",
-     "name": "Netflix Inc",
-     "zh": "奈飞",
-     "ticker": "NFLX",
-     "value": 70218770,
-     "delta": 12.1
-    },
-    {
-     "type": "add",
-     "name": "Doordash Inc A类",
-     "zh": "",
-     "ticker": "",
-     "value": 60402737,
-     "delta": 7.6
-    },
-    {
-     "type": "trim",
-     "name": "Visa Inc A类",
-     "zh": "维萨",
-     "ticker": "V",
-     "value": 9809822,
-     "delta": -13.8
-    }
-   ]
-  },
-  {
    "zh": "雅克曼资产管理",
    "en": "Yacktman AM",
    "firm": "Yacktman Asset Management",
@@ -5741,72 +5741,36 @@
    "img": "data:image/jpeg;base64,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",
    "imgAlt": "",
    "imgLogo": true,
-   "period": "2026-03-31",
-   "filed": "2026-05-01",
-   "value": 7499157453,
-   "stocks": 73,
-   "top10pct": 48.3,
+   "period": "2026-06-30",
+   "filed": "2026-08-11",
+   "value": 8089240584,
+   "stocks": 71,
+   "top10pct": 49.2,
    "holdings": [
     {
      "name": "Canadian Natural Resources Limited",
      "zh": "",
      "ticker": "",
-     "value": 806072071,
-     "pct": 10.75,
-     "chg": "trim",
-     "chgPct": -11.9
+     "value": 650269066,
+     "pct": 8.04,
+     "chg": "hold",
+     "chgPct": null
     },
     {
-     "name": "Microsoft Corporation",
-     "zh": "微软",
-     "ticker": "MSFT",
-     "value": 367547716,
-     "pct": 4.9,
+     "name": "Berkshire Hathaway Inc.",
+     "zh": "伯克希尔·哈撒韦",
+     "ticker": "BRK.B",
+     "value": 581217997,
+     "pct": 7.19,
      "chg": "add",
-     "chgPct": 3.0
+     "chgPct": 268.8
     },
     {
-     "name": "Charles Schwab Corp",
-     "zh": "嘉信理财",
-     "ticker": "SCHW",
-     "value": 366978367,
-     "pct": 4.89,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Fox Corporation A类",
-     "zh": "福克斯",
-     "ticker": "",
-     "value": 364983148,
-     "pct": 4.87,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Alphabet Inc. A类",
+     "name": "Alphabet Inc.",
      "zh": "谷歌",
      "ticker": "GOOG",
-     "value": 323157543,
-     "pct": 4.31,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Pepsico, Inc.",
-     "zh": "百事",
-     "ticker": "PEP",
-     "value": 314922995,
-     "pct": 4.2,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Johnson & Johnson",
-     "zh": "强生",
-     "ticker": "JNJ",
-     "value": 305405536,
-     "pct": 4.07,
+     "value": 398955150,
+     "pct": 4.93,
      "chg": "hold",
      "chgPct": null
     },
@@ -5814,94 +5778,130 @@
      "name": "U-Haul Holding Company",
      "zh": "",
      "ticker": "",
-     "value": 285725077,
-     "pct": 3.81,
+     "value": 378871622,
+     "pct": 4.68,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Charles Schwab Corp",
+     "zh": "嘉信理财",
+     "ticker": "SCHW",
+     "value": 378450203,
+     "pct": 4.68,
      "chg": "add",
-     "chgPct": 4.2
+     "chgPct": 5.0
+    },
+    {
+     "name": "Microsoft Corporation",
+     "zh": "微软",
+     "ticker": "MSFT",
+     "value": 376483118,
+     "pct": 4.65,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Fox Corporation",
+     "zh": "福克斯",
+     "ticker": "",
+     "value": 326452186,
+     "pct": 4.04,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Johnson & Johnson",
+     "zh": "强生",
+     "ticker": "JNJ",
+     "value": 319996359,
+     "pct": 3.96,
+     "chg": "hold",
+     "chgPct": null
     },
     {
      "name": "Procter & Gamble Company",
      "zh": "宝洁",
      "ticker": "PG",
-     "value": 278932562,
-     "pct": 3.72,
+     "value": 287925880,
+     "pct": 3.56,
      "chg": "hold",
      "chgPct": null
     },
     {
-     "name": "Reliance, Inc.",
-     "zh": "",
-     "ticker": "",
-     "value": 210654854,
-     "pct": 2.81,
+     "name": "Pepsico, Inc.",
+     "zh": "百事",
+     "ticker": "PEP",
+     "value": 280662942,
+     "pct": 3.47,
      "chg": "hold",
      "chgPct": null
     }
    ],
    "moves": [
     {
-     "type": "trim",
-     "name": "Canadian Natural Resources Limited",
-     "zh": "",
+     "type": "add",
+     "name": "Berkshire Hathaway Inc.",
+     "zh": "伯克希尔·哈撒韦",
+     "ticker": "BRK.B",
+     "value": 430279102,
+     "delta": 268.8
+    },
+    {
+     "type": "add",
+     "name": "Intuit Inc.",
+     "zh": "财捷",
      "ticker": "",
-     "value": 170524104,
-     "delta": -11.9
+     "value": 125034755,
+     "delta": 6561.4
     },
     {
      "type": "new",
-     "name": "Paypal Holdings, Inc.",
-     "zh": "贝宝",
-     "ticker": "PYPL",
-     "value": 103605738,
+     "name": "Broadridge Financial Solutions, Inc.",
+     "zh": "",
+     "ticker": "",
+     "value": 120313588,
      "delta": null
     },
     {
      "type": "add",
-     "name": "Microsoft Corporation",
-     "zh": "微软",
-     "ticker": "MSFT",
-     "value": 98577331,
-     "delta": 3.0
-    },
-    {
-     "type": "exit",
-     "name": "Warner Bros. Discovery, Inc.",
-     "zh": "华纳兄弟探索",
-     "ticker": "",
-     "value": 51382025,
-     "delta": null
-    },
-    {
-     "type": "new",
-     "name": "Factset Research Systems Inc.",
+     "name": "Cognizant Technology Solutions Corporation",
      "zh": "",
      "ticker": "",
-     "value": 49012399,
-     "delta": null
+     "value": 62527884,
+     "delta": 4.7
     },
     {
      "type": "add",
-     "name": "Olin Corporation",
-     "zh": "",
-     "ticker": "",
-     "value": 39959549,
-     "delta": 4.3
-    },
-    {
-     "type": "new",
-     "name": "Avantor, Inc.",
-     "zh": "",
-     "ticker": "",
-     "value": 37200800,
-     "delta": null
-    },
-    {
-     "type": "new",
      "name": "Bellring Brands, Inc.",
      "zh": "",
      "ticker": "",
-     "value": 24102820,
-     "delta": null
+     "value": 44000400,
+     "delta": 251.3
+    },
+    {
+     "type": "trim",
+     "name": "Bank Of York Mellon Corp",
+     "zh": "纽约梅隆银行",
+     "ticker": "BK",
+     "value": 33120830,
+     "delta": -82.0
+    },
+    {
+     "type": "add",
+     "name": "Sysco Corporation",
+     "zh": "",
+     "ticker": "",
+     "value": 20031071,
+     "delta": 4.8
+    },
+    {
+     "type": "add",
+     "name": "Embecta Corporation",
+     "zh": "",
+     "ticker": "",
+     "value": 18389389,
+     "delta": 17.5
     }
    ]
   },
@@ -6771,179 +6771,6 @@
    ]
   },
   {
-   "zh": "赛斯·卡拉曼",
-   "en": "Seth Klarman",
-   "firm": "Baupost Group",
-   "firmZh": "包普斯特集团",
-   "cik": "0001061768",
-   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Seth_Klarman_at_147th_Preakness_Stakes.jpg/250px-Seth_Klarman_at_147th_Preakness_Stakes.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-   "imgAlt": "",
-   "imgLogo": false,
-   "period": "2026-03-31",
-   "filed": "2026-05-14",
-   "value": 5115380000,
-   "stocks": 22,
-   "top10pct": 73.9,
-   "holdings": [
-    {
-     "name": "Amazon Inc",
-     "zh": "亚马逊",
-     "ticker": "AMZN",
-     "value": 649543000,
-     "pct": 12.7,
-     "chg": "add",
-     "chgPct": 47.0
-    },
-    {
-     "name": "Restaurant Brands Intl Inc",
-     "zh": "餐饮品牌国际",
-     "ticker": "",
-     "value": 597208000,
-     "pct": 11.67,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Wesco Intl Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 393159000,
-     "pct": 7.69,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Union Pac Corp",
-     "zh": "联合太平洋",
-     "ticker": "UNP",
-     "value": 373876000,
-     "pct": 7.31,
-     "chg": "trim",
-     "chgPct": -5.3
-    },
-    {
-     "name": "Elevance Health Inc Formerly",
-     "zh": "",
-     "ticker": "",
-     "value": 373301000,
-     "pct": 7.3,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Alphabet Inc",
-     "zh": "谷歌",
-     "ticker": "GOOG",
-     "value": 338819000,
-     "pct": 6.62,
-     "chg": "add",
-     "chgPct": 8.6
-    },
-    {
-     "name": "Ferguson Enterprises Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 336457000,
-     "pct": 6.58,
-     "chg": "add",
-     "chgPct": 26.9
-    },
-    {
-     "name": "Willis Towers Watson PLC Ltd",
-     "zh": "",
-     "ticker": "",
-     "value": 259632000,
-     "pct": 5.08,
-     "chg": "trim",
-     "chgPct": -34.2
-    },
-    {
-     "name": "Aon PLC",
-     "zh": "怡安",
-     "ticker": "",
-     "value": 248218000,
-     "pct": 4.85,
-     "chg": "new",
-     "chgPct": null
-    },
-    {
-     "name": "Visa Inc",
-     "zh": "维萨",
-     "ticker": "V",
-     "value": 211978000,
-     "pct": 4.14,
-     "chg": "new",
-     "chgPct": null
-    }
-   ],
-   "moves": [
-    {
-     "type": "exit",
-     "name": "Fidelity Natl Information Sv",
-     "zh": "",
-     "ticker": "",
-     "value": 299323000,
-     "delta": null
-    },
-    {
-     "type": "exit",
-     "name": "Dollar Gen Corp",
-     "zh": "",
-     "ticker": "",
-     "value": 273881000,
-     "delta": null
-    },
-    {
-     "type": "new",
-     "name": "Aon PLC",
-     "zh": "怡安",
-     "ticker": "",
-     "value": 248218000,
-     "delta": null
-    },
-    {
-     "type": "new",
-     "name": "Visa Inc",
-     "zh": "维萨",
-     "ticker": "V",
-     "value": 211978000,
-     "delta": null
-    },
-    {
-     "type": "new",
-     "name": "Teleflex Incorporated",
-     "zh": "",
-     "ticker": "",
-     "value": 190778000,
-     "delta": null
-    },
-    {
-     "type": "trim",
-     "name": "Willis Towers Watson PLC Ltd",
-     "zh": "",
-     "ticker": "",
-     "value": 186476000,
-     "delta": -34.2
-    },
-    {
-     "type": "add",
-     "name": "Amazon Inc",
-     "zh": "亚马逊",
-     "ticker": "AMZN",
-     "value": 159884000,
-     "delta": 47.0
-    },
-    {
-     "type": "exit",
-     "name": "Fiserv Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 147774000,
-     "delta": null
-    }
-   ]
-  },
-  {
    "zh": "大卫·艾布拉姆斯",
    "en": "David Abrams",
    "firm": "Abrams Capital",
@@ -6952,9 +6779,9 @@
    "img": "data:image/png;base64,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",
    "imgAlt": "",
    "imgLogo": true,
-   "period": "2026-03-31",
-   "filed": "2026-05-14",
-   "value": 4638238227,
+   "period": "2026-06-30",
+   "filed": "2026-08-13",
+   "value": 5479746142,
    "stocks": 10,
    "top10pct": 100.0,
    "holdings": [
@@ -6962,8 +6789,8 @@
      "name": "Loar Holdings Inc",
      "zh": "",
      "ticker": "",
-     "value": 1836158250,
-     "pct": 39.59,
+     "value": 2583569846,
+     "pct": 47.15,
      "chg": "hold",
      "chgPct": null
     },
@@ -6971,8 +6798,8 @@
      "name": "Lithia Mtrs Inc",
      "zh": "",
      "ticker": "",
-     "value": 621936150,
-     "pct": 13.41,
+     "value": 723475222,
+     "pct": 13.2,
      "chg": "hold",
      "chgPct": null
     },
@@ -6980,17 +6807,17 @@
      "name": "Alphabet Inc",
      "zh": "谷歌",
      "ticker": "GOOG",
-     "value": 536520246,
-     "pct": 11.57,
-     "chg": "hold",
-     "chgPct": null
+     "value": 489773798,
+     "pct": 8.94,
+     "chg": "trim",
+     "chgPct": -26.5
     },
     {
      "name": "Somnigroup International Inc",
      "zh": "",
      "ticker": "",
-     "value": 428645522,
-     "pct": 9.24,
+     "value": 454624038,
+     "pct": 8.3,
      "chg": "hold",
      "chgPct": null
     },
@@ -6998,8 +6825,8 @@
      "name": "Asbury Automotive Group Inc",
      "zh": "",
      "ticker": "",
-     "value": 421204692,
-     "pct": 9.08,
+     "value": 433426331,
+     "pct": 7.91,
      "chg": "hold",
      "chgPct": null
     },
@@ -7007,26 +6834,8 @@
      "name": "Coupang Inc",
      "zh": "酷澎",
      "ticker": "",
-     "value": 245779160,
-     "pct": 5.3,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Willis Towers Watson PLC Ltd",
-     "zh": "",
-     "ticker": "",
-     "value": 209530455,
-     "pct": 4.52,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Meta Platforms Inc",
-     "zh": "Meta平台",
-     "ticker": "META",
-     "value": 186030930,
-     "pct": 4.01,
+     "value": 226122035,
+     "pct": 4.13,
      "chg": "hold",
      "chgPct": null
     },
@@ -7034,8 +6843,26 @@
      "name": "U Haul Holding Company",
      "zh": "",
      "ticker": "",
-     "value": 146982360,
-     "pct": 3.17,
+     "value": 189991842,
+     "pct": 3.47,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Willis Towers Watson PLC Ltd",
+     "zh": "",
+     "ticker": "",
+     "value": 188390007,
+     "pct": 3.44,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Meta Platforms Inc",
+     "zh": "Meta平台",
+     "ticker": "META",
+     "value": 183156560,
+     "pct": 3.34,
      "chg": "hold",
      "chgPct": null
     },
@@ -7043,28 +6870,193 @@
      "name": "Nuvation Bio Inc",
      "zh": "",
      "ticker": "",
-     "value": 5450462,
-     "pct": 0.12,
+     "value": 7216463,
+     "pct": 0.13,
+     "chg": "hold",
+     "chgPct": null
+    }
+   ],
+   "moves": [
+    {
+     "type": "trim",
+     "name": "Alphabet Inc",
+     "zh": "谷歌",
+     "ticker": "GOOG",
+     "value": 46746448,
+     "delta": -26.5
+    }
+   ]
+  },
+  {
+   "zh": "赛斯·卡拉曼",
+   "en": "Seth Klarman",
+   "firm": "Baupost Group",
+   "firmZh": "包普斯特集团",
+   "cik": "0001061768",
+   "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Seth_Klarman_at_147th_Preakness_Stakes.jpg/250px-Seth_Klarman_at_147th_Preakness_Stakes.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+   "imgAlt": "",
+   "imgLogo": false,
+   "period": "2026-06-30",
+   "filed": "2026-08-13",
+   "value": 5415853000,
+   "stocks": 23,
+   "top10pct": 74.9,
+   "holdings": [
+    {
+     "name": "Amazon Inc",
+     "zh": "亚马逊",
+     "ticker": "AMZN",
+     "value": 892310000,
+     "pct": 16.48,
+     "chg": "add",
+     "chgPct": 20.0
+    },
+    {
+     "name": "Elevance Health Inc Formerly",
+     "zh": "",
+     "ticker": "",
+     "value": 493140000,
+     "pct": 9.11,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Restaurant Brands Intl Inc",
+     "zh": "餐饮品牌国际",
+     "ticker": "",
+     "value": 489612000,
+     "pct": 9.04,
      "chg": "trim",
-     "chgPct": -66.7
+     "chgPct": -16.4
+    },
+    {
+     "name": "Alphabet Inc",
+     "zh": "谷歌",
+     "ticker": "GOOG",
+     "value": 484744000,
+     "pct": 8.95,
+     "chg": "add",
+     "chgPct": 16.2
+    },
+    {
+     "name": "Ferguson Enterprises Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 344269000,
+     "pct": 6.36,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Genuine Parts Co",
+     "zh": "",
+     "ticker": "",
+     "value": 332253000,
+     "pct": 6.13,
+     "chg": "add",
+     "chgPct": 89.0
+    },
+    {
+     "name": "Union Pac Corp",
+     "zh": "联合太平洋",
+     "ticker": "UNP",
+     "value": 322427000,
+     "pct": 5.95,
+     "chg": "trim",
+     "chgPct": -23.1
+    },
+    {
+     "name": "Visa Inc",
+     "zh": "维萨",
+     "ticker": "V",
+     "value": 240628000,
+     "pct": 4.44,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Wesco Intl Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 228979000,
+     "pct": 4.23,
+     "chg": "trim",
+     "chgPct": -53.9
+    },
+    {
+     "name": "Aon PLC",
+     "zh": "怡安",
+     "ticker": "",
+     "value": 227871000,
+     "pct": 4.21,
+     "chg": "trim",
+     "chgPct": -10.7
     }
    ],
    "moves": [
     {
      "type": "exit",
-     "name": "Energy Transfer L P",
+     "name": "Willis Towers Watson PLC Ltd",
      "zh": "",
      "ticker": "",
-     "value": 100843226,
+     "value": 259632000,
+     "delta": null
+    },
+    {
+     "type": "add",
+     "name": "Amazon Inc",
+     "zh": "亚马逊",
+     "ticker": "AMZN",
+     "value": 242767000,
+     "delta": 20.0
+    },
+    {
+     "type": "add",
+     "name": "Genuine Parts Co",
+     "zh": "",
+     "ticker": "",
+     "value": 174649000,
+     "delta": 89.0
+    },
+    {
+     "type": "trim",
+     "name": "Wesco Intl Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 164180000,
+     "delta": -53.9
+    },
+    {
+     "type": "add",
+     "name": "Alphabet Inc",
+     "zh": "谷歌",
+     "ticker": "GOOG",
+     "value": 145925000,
+     "delta": 16.2
+    },
+    {
+     "type": "new",
+     "name": "Cme Group Inc",
+     "zh": "芝商所",
+     "ticker": "CME",
+     "value": 136694000,
      "delta": null
     },
     {
      "type": "trim",
-     "name": "Nuvation Bio Inc",
+     "name": "Restaurant Brands Intl Inc",
+     "zh": "餐饮品牌国际",
+     "ticker": "",
+     "value": 107596000,
+     "delta": -16.4
+    },
+    {
+     "type": "add",
+     "name": "Norwegian Cruise Line Hldgs",
      "zh": "",
      "ticker": "",
-     "value": 28700694,
-     "delta": -66.7
+     "value": 95299000,
+     "delta": 112.9
     }
    ]
   },
@@ -7250,36 +7242,36 @@
    "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACAElEQVQ4jWP8//8/AyWAiZCC56/fqZFtwJ+/f9nqFx7p/v3nLxvJBrz9+FVi89HrEafuvddZvOtqBskGtCw/0fT60x8BBgYWhrolp2ref/4uSrQB1x+9Npi183YcAwMDw79//xiefvon2r7iVCNRBvz7/5+hZt7Rzu+/mdgZGP4z/GdgYGBg/M8wedv1lJuP3+oRNODQxQfeG86+cPnP+BeiGRrLP38zsVbMOdyL14A/f/+xlcw93v3vPyMTAwMTVC+C3HT2hcvO0/eCcBqweO+V1LP3P2nC+IwMjAyN0SYNKiKczyCG/GconXu08+evP5wYBnz6+lOwbvG5egYGRgYGhv8MLIx//4oLcr7Ukhe9PL/QPqk5QruLh4Pl+9Wn31VmbruQj2FA7+qTtU8+/BJlYvjP4KAhdGpPk2fgmVsvLQ0K1pxyrt2+9dWn32KHOn1dIm3l1neuPFvx6v1XSUj4/v/P8PDFe1W97NWXhHhZP7XEmdSwszD9LF9wuv3e6+9SDAzMDAwM/xkY//9nkOBnfdedaFYlK8b/8MHTVzpxniY9jP///2fInrRtuRAf/3MfC8XNzUtPNmy/8NLuP0QbWpj/Z2BiYGCw0RA5MyHNKt9QVeoY4/cfP3levPssx87C9H3ezivJX3/9x5nuEcYwMnCyMPyJc9FYykhpdgYAfc7hrRte4IsAAAAASUVORK5CYII=",
    "imgAlt": "",
    "imgLogo": true,
-   "period": "2026-03-31",
-   "filed": "2026-05-15",
-   "value": 3859778188,
+   "period": "2026-06-30",
+   "filed": "2026-08-12",
+   "value": 4230905202,
    "stocks": 8,
    "top10pct": 100.0,
    "holdings": [
     {
-     "name": "Janus Henderson Group PLC",
-     "zh": "",
-     "ticker": "",
-     "value": 1637048886,
-     "pct": 42.41,
+     "name": "Ge Aerospace",
+     "zh": "通用电气",
+     "ticker": "GE",
+     "value": 1506417803,
+     "pct": 35.61,
      "chg": "hold",
      "chgPct": null
     },
     {
-     "name": "Ge Aerospace",
-     "zh": "通用电气",
-     "ticker": "GE",
-     "value": 1143810184,
-     "pct": 29.63,
-     "chg": "hold",
-     "chgPct": null
+     "name": "Janus Henderson Group PLC",
+     "zh": "",
+     "ticker": "",
+     "value": 1334027864,
+     "pct": 31.53,
+     "chg": "trim",
+     "chgPct": -19.5
     },
     {
      "name": "Solventum Corporation",
      "zh": "",
      "ticker": "",
-     "value": 537859971,
-     "pct": 13.93,
+     "value": 635465494,
+     "pct": 15.02,
      "chg": "hold",
      "chgPct": null
     },
@@ -7287,8 +7279,8 @@
      "name": "Ferguson PLC",
      "zh": "",
      "ticker": "",
-     "value": 253403634,
-     "pct": 6.57,
+     "value": 257825107,
+     "pct": 6.09,
      "chg": "hold",
      "chgPct": null
     },
@@ -7296,47 +7288,63 @@
      "name": "Wendys Co.",
      "zh": "",
      "ticker": "",
-     "value": 211599853,
-     "pct": 5.48,
+     "value": 252583318,
+     "pct": 5.97,
      "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Invesco Ltd.",
-     "zh": "",
-     "ticker": "",
-     "value": 72164230,
-     "pct": 1.87,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Magnum Ice Cream Co Nv",
-     "zh": "",
-     "ticker": "",
-     "value": 3603578,
-     "pct": 0.09,
-     "chg": "new",
      "chgPct": null
     },
     {
      "name": "Ge Healthcare Technologies Inc.",
      "zh": "GE医疗",
      "ticker": "",
-     "value": 287852,
-     "pct": 0.01,
+     "value": 197492869,
+     "pct": 4.67,
+     "chg": "add",
+     "chgPct": 76194.4
+    },
+    {
+     "name": "Invesco Ltd.",
+     "zh": "",
+     "ticker": "",
+     "value": 42896206,
+     "pct": 1.01,
+     "chg": "trim",
+     "chgPct": -45.3
+    },
+    {
+     "name": "Magnum Ice Cream Co Nv",
+     "zh": "",
+     "ticker": "",
+     "value": 4196541,
+     "pct": 0.1,
      "chg": "hold",
      "chgPct": null
     }
    ],
    "moves": [
     {
-     "type": "new",
-     "name": "Magnum Ice Cream Co Nv",
+     "type": "trim",
+     "name": "Janus Henderson Group PLC",
      "zh": "",
      "ticker": "",
-     "value": 3603578,
-     "delta": null
+     "value": 303021022,
+     "delta": -19.5
+    },
+    {
+     "type": "add",
+     "name": "Ge Healthcare Technologies Inc.",
+     "zh": "GE医疗",
+     "ticker": "",
+     "value": 197205017,
+     "delta": 76194.4
+    },
+    {
+     "type": "trim",
+     "name": "Invesco Ltd.",
+     "zh": "",
+     "ticker": "",
+     "value": 29268024,
+     "delta": -45.3
     }
    ]
   },
@@ -8510,167 +8518,167 @@
    "img": "data:image/png;base64,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",
    "imgAlt": "",
    "imgLogo": true,
-   "period": "2026-03-31",
-   "filed": "2026-05-14",
-   "value": 1432543452,
-   "stocks": 48,
-   "top10pct": 54.6,
+   "period": "2026-06-30",
+   "filed": "2026-08-12",
+   "value": 1444222377,
+   "stocks": 49,
+   "top10pct": 55.0,
    "holdings": [
     {
-     "name": "Berkshire Hathaway Inc",
+     "name": "Berkshire Hathaway B类 Ord",
      "zh": "伯克希尔·哈撒韦",
      "ticker": "BRK.B",
-     "value": 133624920,
-     "pct": 9.33,
+     "value": 135905924,
+     "pct": 9.41,
      "chg": "hold",
      "chgPct": null
     },
     {
-     "name": "Alphabet Inc",
+     "name": "Alphabet C类 Ord",
      "zh": "谷歌",
      "ticker": "GOOG",
-     "value": 93731505,
-     "pct": 6.54,
+     "value": 94727773,
+     "pct": 6.56,
      "chg": "trim",
-     "chgPct": -6.1
+     "chgPct": -17.9
     },
     {
-     "name": "Danaher Corporation",
+     "name": "Danaher Ord",
      "zh": "丹纳赫",
      "ticker": "DHR",
-     "value": 90581400,
-     "pct": 6.32,
-     "chg": "trim",
-     "chgPct": -7.0
+     "value": 93239960,
+     "pct": 6.46,
+     "chg": "hold",
+     "chgPct": null
     },
     {
-     "name": "Visa Inc",
+     "name": "Visa A类 Ord",
      "zh": "维萨",
      "ticker": "V",
-     "value": 80193339,
-     "pct": 5.6,
+     "value": 91032070,
+     "pct": 6.3,
      "chg": "hold",
      "chgPct": null
     },
     {
-     "name": "Mastercard Incorporated",
+     "name": "Mastercard A类 Ord",
      "zh": "万事达",
      "ticker": "MA",
-     "value": 73450020,
-     "pct": 5.13,
-     "chg": "trim",
-     "chgPct": -5.7
-    },
-    {
-     "name": "Aon PLC",
-     "zh": "怡安",
-     "ticker": "",
-     "value": 69029731,
-     "pct": 4.82,
+     "value": 74651760,
+     "pct": 5.17,
      "chg": "hold",
      "chgPct": null
     },
     {
-     "name": "Microsoft Corp",
-     "zh": "微软",
-     "ticker": "MSFT",
-     "value": 62725307,
-     "pct": 4.38,
-     "chg": "add",
-     "chgPct": 16.1
-    },
-    {
-     "name": "Meta Platforms Inc",
-     "zh": "Meta平台",
-     "ticker": "META",
-     "value": 60479862,
-     "pct": 4.22,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Thermo Fisher Scientific Inc",
-     "zh": "赛默飞世尔",
-     "ticker": "TMO",
-     "value": 59475130,
-     "pct": 4.15,
-     "chg": "trim",
-     "chgPct": -10.3
-    },
-    {
-     "name": "Vulcan Matls Co",
+     "name": "Aon A类 Ord",
      "zh": "",
      "ticker": "",
-     "value": 58326660,
-     "pct": 4.07,
+     "value": 70935223,
+     "pct": 4.91,
      "chg": "hold",
      "chgPct": null
+    },
+    {
+     "name": "Vulcan Materials Ord",
+     "zh": "",
+     "ticker": "",
+     "value": 60123038,
+     "pct": 4.16,
+     "chg": "trim",
+     "chgPct": -4.9
+    },
+    {
+     "name": "Meta Platforms A类 Ord",
+     "zh": "Meta平台",
+     "ticker": "META",
+     "value": 57996338,
+     "pct": 4.02,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Thermo Fisher Scientific Ord",
+     "zh": "赛默飞世尔",
+     "ticker": "TMO",
+     "value": 57756672,
+     "pct": 4.0,
+     "chg": "trim",
+     "chgPct": -4.8
+    },
+    {
+     "name": "Idex Ord",
+     "zh": "",
+     "ticker": "",
+     "value": 57282180,
+     "pct": 3.97,
+     "chg": "trim",
+     "chgPct": -4.5
     }
    ],
    "moves": [
     {
-     "type": "trim",
-     "name": "Costar Group Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 27545925,
-     "delta": -28.2
-    },
-    {
-     "type": "trim",
-     "name": "Danaher Corporation",
-     "zh": "丹纳赫",
-     "ticker": "DHR",
-     "value": 27072034,
-     "delta": -7.0
-    },
-    {
-     "type": "trim",
-     "name": "Idex Corp",
-     "zh": "",
-     "ticker": "",
-     "value": 19560997,
-     "delta": -32.5
-    },
-    {
-     "type": "trim",
-     "name": "Thermo Fisher Scientific Inc",
-     "zh": "赛默飞世尔",
-     "ticker": "TMO",
-     "value": 18721648,
-     "delta": -10.3
-    },
-    {
-     "type": "trim",
-     "name": "Global Pmts Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 16541500,
-     "delta": -33.7
-    },
-    {
      "type": "exit",
-     "name": "Roper Technologies Inc",
+     "name": "Old Dominion Freight Line In",
      "zh": "",
      "ticker": "",
-     "value": 16269502,
+     "value": 25792800,
      "delta": null
     },
     {
      "type": "trim",
-     "name": "Mastercard Incorporated",
-     "zh": "万事达",
-     "ticker": "MA",
-     "value": 15550172,
-     "delta": -5.7
+     "name": "Accenture A类 Ord",
+     "zh": "",
+     "ticker": "",
+     "value": 18952635,
+     "delta": -29.9
+    },
+    {
+     "type": "add",
+     "name": "Heico A类 Ord",
+     "zh": "",
+     "ticker": "",
+     "value": 12845602,
+     "delta": 8.2
+    },
+    {
+     "type": "new",
+     "name": "Netflix Ord",
+     "zh": "奈飞",
+     "ticker": "NFLX",
+     "value": 10510080,
+     "delta": null
     },
     {
      "type": "trim",
-     "name": "Alphabet Inc",
-     "zh": "谷歌",
-     "ticker": "GOOG",
-     "value": 15439515,
-     "delta": -6.1
+     "name": "Costar Group Ord",
+     "zh": "",
+     "ticker": "",
+     "value": 8872303,
+     "delta": -18.2
+    },
+    {
+     "type": "new",
+     "name": "Capital One Financial Ord",
+     "zh": "",
+     "ticker": "",
+     "value": 8024800,
+     "delta": null
+    },
+    {
+     "type": "trim",
+     "name": "Texas Instruments Ord",
+     "zh": "德州仪器",
+     "ticker": "TXN",
+     "value": 7862161,
+     "delta": -51.3
+    },
+    {
+     "type": "trim",
+     "name": "Salesforce Ord",
+     "zh": "赛富时",
+     "ticker": "CRM",
+     "value": 7490267,
+     "delta": -39.5
     }
    ]
   },
@@ -8838,18 +8846,18 @@
    "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADs0lEQVRYhc2XX2ibZRTGf0/STPvPTjtF1CaiFsrYJqJjOhMFcbNfERziUEHwRvxz5c1Eqbeyi11YpnjjLoZsFwqCdmjSC8FtqXMobgN1g1LtEkXdVimpYktn8niRpHbp1zSNdfrAB9/5853zvIfzve974D+GwpSJ/pSAqEKtK4cNhmJ+JOtaW8sStDYAuwyxVWEg5hB7gNMNETDcLPEENoivQaeBmRq3O4DNlfcvgZM1QVoR6w0bMSXMgYYJSLRjisAQZi/i11w6W5x3iIhEf3JwAYEPc+ns7oUxEkEqCnQLXkF+FhMNy7VUBdqBb0Bv5DPZ82E+yyGXyRaB8/GB1JugbYK2ML9ImFIQBR8DN5X8UjgPHLFoD7OGV8A+hjgu0xEfSN4e4jfHJStyW3wg1QdcAKby6WypasmnR4vxILkPuBiWq+6PlghSVwPbEHcDTxp3AQaOC40Bz1cIHDRsECoZPgW/C5zMp0eLS8WuIrQxqiiM52cL4/lv1/YmjmBvkbRRcFHwolGn4IGK6yHBQdBmweOgfqzvunoTY4XxfF0CoT1Qi1w6Owv8WJZUAk0LSn97aCZS0kfAC8C4IC4YlLxuudgNEYi0REEs2sUWYmIka9tnsD8BsOgz6l0VAo0iP/JZCWkCQLBG0HFZCcSDZAvQVxGngXP/PgFjcDEepKIyD2ICyv3xMTC23Ofhh1H9jFHgLhA2h4CSTLvEHsNO4RmsIfDrucxo7fmxGgRYAzyF+V0QQ3RjbQWuAf4EDSOGQZONBKu7D1ShSISuW3sC0BbgD6xnEBPgBNIk4h2b9yRiwMPADuyr1vbGTxXG83Wr0EQPCMQscCPSI8AOoDOfyR4APw3eD6wDXjLsSgyk6lZ5Vf+CXHp0GthvPIXUgnjM+IbLRgDA6GfQVFnQdVh1CTTThHUhHANiIIRngN8uG4Ge/nsEbAJdC2A4A/zwjwn0bN8aAVcvFMK01B7k8SB1BfhOw8uCVuxJibdUijRfgXiQioGvx94E3FdJ2mp4TjACvF329AXEPsx2oBPzuWFIZvjsyNG6h9hyFegG7TS+CXQYc7iiLxgmBV9V5F8EPxn2Yp0wPhGRJs+mF88Btag/egSBmJ0tTxYLUSoR7/Cg4LWywq/m0qO7FwdYHvUrkMmEriDxUEqw4JJphV44G0Fz+0CENsz6eVm+LTGQvLKZUCua/hJB8hbD/YJ7jR6lWgW5gPU+8IXko7n06PeNxlzRPmCYA50zfED5qRjm12E7/Pr9v8Vf8LdMjLpRTnkAAAAASUVORK5CYII=",
    "imgAlt": "",
    "imgLogo": true,
-   "period": "2026-03-31",
-   "filed": "2026-05-06",
-   "value": 1258817374,
-   "stocks": 92,
-   "top10pct": 72.4,
+   "period": "2026-06-30",
+   "filed": "2026-08-07",
+   "value": 1319974933,
+   "stocks": 90,
+   "top10pct": 72.1,
    "holdings": [
     {
      "name": "Cnh Industrial Nv",
      "zh": "",
      "ticker": "",
-     "value": 221653938,
-     "pct": 17.61,
+     "value": 225901366,
+     "pct": 17.11,
      "chg": "hold",
      "chgPct": null
     },
@@ -8857,17 +8865,17 @@
      "name": "Ionis Pharmaceuticals Inc.",
      "zh": "",
      "ticker": "",
-     "value": 170876681,
-     "pct": 13.57,
-     "chg": "trim",
-     "chgPct": -7.7
+     "value": 180805859,
+     "pct": 13.7,
+     "chg": "hold",
+     "chgPct": null
     },
     {
      "name": "Berkshire Hathaway Inc B类",
      "zh": "伯克希尔·哈撒韦",
      "ticker": "BRK.B",
-     "value": 150089115,
-     "pct": 11.92,
+     "value": 156684974,
+     "pct": 11.87,
      "chg": "hold",
      "chgPct": null
     },
@@ -8875,129 +8883,129 @@
      "name": "Coca Cola Femsa",
      "zh": "可口可乐FEMSA",
      "ticker": "",
-     "value": 114136036,
-     "pct": 9.07,
+     "value": 123310563,
+     "pct": 9.34,
      "chg": "hold",
      "chgPct": null
+    },
+    {
+     "name": "Johnson & Johnson",
+     "zh": "强生",
+     "ticker": "JNJ",
+     "value": 51211527,
+     "pct": 3.88,
+     "chg": "trim",
+     "chgPct": -8.1
     },
     {
      "name": "Alphabet Inc-A类",
      "zh": "谷歌",
      "ticker": "GOOG",
-     "value": 57034938,
-     "pct": 4.53,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Johnson & Johnson",
-     "zh": "强生",
-     "ticker": "JNJ",
-     "value": 53652136,
-     "pct": 4.26,
+     "value": 50489948,
+     "pct": 3.83,
      "chg": "trim",
-     "chgPct": -7.0
-    },
-    {
-     "name": "Wells Fargo & Co",
-     "zh": "富国银行",
-     "ticker": "WFC",
-     "value": 41072391,
-     "pct": 3.26,
-     "chg": "trim",
-     "chgPct": -7.8
+     "chgPct": -28.8
     },
     {
      "name": "Autoliv Inc.",
      "zh": "",
      "ticker": "",
-     "value": 40338535,
-     "pct": 3.2,
+     "value": 44529587,
+     "pct": 3.37,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Wells Fargo & Co",
+     "zh": "富国银行",
+     "ticker": "WFC",
+     "value": 41072989,
+     "pct": 3.11,
      "chg": "trim",
-     "chgPct": -4.3
+     "chgPct": -3.7
+    },
+    {
+     "name": "Zoetis, Inc.",
+     "zh": "",
+     "ticker": "",
+     "value": 39958184,
+     "pct": 3.03,
+     "chg": "new",
+     "chgPct": null
     },
     {
      "name": "Envista Holdings Corp",
      "zh": "",
      "ticker": "",
-     "value": 36451134,
-     "pct": 2.9,
+     "value": 37818785,
+     "pct": 2.87,
      "chg": "hold",
      "chgPct": null
-    },
-    {
-     "name": "Fedex Corp.",
-     "zh": "联邦快递",
-     "ticker": "FDX",
-     "value": 26369786,
-     "pct": 2.09,
-     "chg": "trim",
-     "chgPct": -34.3
     }
    ],
    "moves": [
     {
-     "type": "trim",
-     "name": "Ionis Pharmaceuticals Inc.",
-     "zh": "",
-     "ticker": "",
-     "value": 24123931,
-     "delta": -7.7
-    },
-    {
      "type": "new",
-     "name": "Jazz Pharmaceuticals PLC",
+     "name": "Zoetis, Inc.",
      "zh": "",
      "ticker": "",
-     "value": 11382511,
+     "value": 39958184,
      "delta": null
-    },
-    {
-     "type": "trim",
-     "name": "Wells Fargo & Co",
-     "zh": "富国银行",
-     "ticker": "WFC",
-     "value": 11060613,
-     "delta": -7.8
-    },
-    {
-     "type": "trim",
-     "name": "Autoliv Inc.",
-     "zh": "",
-     "ticker": "",
-     "value": 7251144,
-     "delta": -4.3
     },
     {
      "type": "trim",
      "name": "Fedex Corp.",
      "zh": "联邦快递",
      "ticker": "FDX",
-     "value": 6198312,
-     "delta": -34.3
-    },
-    {
-     "type": "trim",
-     "name": "Johnson & Johnson",
-     "zh": "强生",
-     "ticker": "JNJ",
-     "value": 4796415,
-     "delta": -7.0
-    },
-    {
-     "type": "add",
-     "name": "Stonex Group, Inc.",
-     "zh": "",
-     "ticker": "",
-     "value": 2200714,
-     "delta": 138.3
+     "value": 22996123,
+     "delta": -85.4
     },
     {
      "type": "exit",
-     "name": "Atmus Filtration Technologies",
+     "name": "Sealed Air Corporation",
      "zh": "",
      "ticker": "",
-     "value": 2104950,
+     "value": 18013688,
+     "delta": null
+    },
+    {
+     "type": "trim",
+     "name": "Alphabet Inc-A类",
+     "zh": "谷歌",
+     "ticker": "GOOG",
+     "value": 6544990,
+     "delta": -28.8
+    },
+    {
+     "type": "exit",
+     "name": "Stonex Group, Inc.",
+     "zh": "",
+     "ticker": "",
+     "value": 4357882,
+     "delta": null
+    },
+    {
+     "type": "new",
+     "name": "Disney Walt Company Holding Co",
+     "zh": "迪士尼",
+     "ticker": "DIS",
+     "value": 4328844,
+     "delta": null
+    },
+    {
+     "type": "new",
+     "name": "Bank Of Nova Scotia",
+     "zh": "",
+     "ticker": "",
+     "value": 3690845,
+     "delta": null
+    },
+    {
+     "type": "exit",
+     "name": "Noble Corp PLC",
+     "zh": "",
+     "ticker": "",
+     "value": 2671076,
      "delta": null
     }
    ]
@@ -9176,76 +9184,6 @@
    ]
   },
   {
-   "zh": "莫尼什·帕伯莱",
-   "en": "Mohnish Pabrai",
-   "firm": "Dalal Street",
-   "firmZh": "达拉尔街",
-   "cik": "0001549575",
-   "img": "data:image/png;base64,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",
-   "imgAlt": "",
-   "imgLogo": true,
-   "period": "2026-03-31",
-   "filed": "2026-05-14",
-   "value": 422885142,
-   "stocks": 3,
-   "top10pct": 100.0,
-   "holdings": [
-    {
-     "name": "Warrior Met Coal Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 168678908,
-     "pct": 39.89,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Transocean Ltd",
-     "zh": "",
-     "ticker": "",
-     "value": 135203415,
-     "pct": 31.97,
-     "chg": "trim",
-     "chgPct": -24.6
-    },
-    {
-     "name": "Alpha Metallurgical Resour I",
-     "zh": "",
-     "ticker": "",
-     "value": 119002819,
-     "pct": 28.14,
-     "chg": "add",
-     "chgPct": 6.8
-    }
-   ],
-   "moves": [
-    {
-     "type": "trim",
-     "name": "Transocean Ltd",
-     "zh": "",
-     "ticker": "",
-     "value": 23527666,
-     "delta": -24.6
-    },
-    {
-     "type": "exit",
-     "name": "Valaris Ltd",
-     "zh": "",
-     "ticker": "",
-     "value": 23138539,
-     "delta": null
-    },
-    {
-     "type": "add",
-     "name": "Alpha Metallurgical Resour I",
-     "zh": "",
-     "ticker": "",
-     "value": 10467979,
-     "delta": 6.8
-    }
-   ]
-  },
-  {
    "zh": "比尔·米勒",
    "en": "Bill Miller",
    "firm": "Miller Value Partners",
@@ -9419,6 +9357,85 @@
    ]
   },
   {
+   "zh": "莫尼什·帕伯莱",
+   "en": "Mohnish Pabrai",
+   "firm": "Dalal Street",
+   "firmZh": "达拉尔街",
+   "cik": "0001549575",
+   "img": "data:image/png;base64,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",
+   "imgAlt": "",
+   "imgLogo": true,
+   "period": "2026-06-30",
+   "filed": "2026-08-13",
+   "value": 326749980,
+   "stocks": 4,
+   "top10pct": 100.0,
+   "holdings": [
+    {
+     "name": "Warrior Met Coal Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 141547098,
+     "pct": 43.32,
+     "chg": "trim",
+     "chgPct": -3.7
+    },
+    {
+     "name": "Transocean Ltd",
+     "zh": "",
+     "ticker": "",
+     "value": 99749443,
+     "pct": 30.53,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Alpha Metallurgical Resour I",
+     "zh": "",
+     "ticker": "",
+     "value": 85305978,
+     "pct": 26.11,
+     "chg": "trim",
+     "chgPct": -10.8
+    },
+    {
+     "name": "Kaspi Kz Jsc",
+     "zh": "",
+     "ticker": "",
+     "value": 147461,
+     "pct": 0.05,
+     "chg": "new",
+     "chgPct": null
+    }
+   ],
+   "moves": [
+    {
+     "type": "trim",
+     "name": "Alpha Metallurgical Resour I",
+     "zh": "",
+     "ticker": "",
+     "value": 33696841,
+     "delta": -10.8
+    },
+    {
+     "type": "trim",
+     "name": "Warrior Met Coal Inc",
+     "zh": "",
+     "ticker": "",
+     "value": 27131810,
+     "delta": -3.7
+    },
+    {
+     "type": "new",
+     "name": "Kaspi Kz Jsc",
+     "zh": "",
+     "ticker": "",
+     "value": 147461,
+     "delta": null
+    }
+   ]
+  },
+  {
    "zh": "诺伯特·卢",
    "en": "Norbert Lou",
    "firm": "Punch Card Management",
@@ -9551,70 +9568,70 @@
    "zh": "谷歌",
    "ticker": "GOOG",
    "gurus": 39,
-   "value": 66238999685
+   "value": 67334473578
   },
   {
    "name": "Microsoft Corporation",
    "zh": "微软",
    "ticker": "MSFT",
    "gurus": 33,
-   "value": 31008069068
+   "value": 31008527776
   },
   {
    "name": "Amazon Inc",
    "zh": "亚马逊",
    "ticker": "AMZN",
-   "gurus": 31,
-   "value": 38929994980
+   "gurus": 32,
+   "value": 40148085400
   },
   {
    "name": "Taiwan Semiconductor Manufacturing Co Ltd - Us ADR",
    "zh": "台积电",
    "ticker": "TSM",
    "gurus": 29,
-   "value": 23860862470
+   "value": 24180295641
   },
   {
    "name": "Meta Platforms Inc",
    "zh": "Meta平台",
    "ticker": "META",
    "gurus": 29,
-   "value": 20861026568
+   "value": 21798659742
   },
   {
-   "name": "Visa Inc. A类",
+   "name": "Visa Inc-A类",
    "zh": "维萨",
    "ticker": "V",
    "gurus": 27,
-   "value": 20050372726
+   "value": 19815989776
   },
   {
    "name": "Nvidia Corporation",
    "zh": "英伟达",
    "ticker": "NVDA",
-   "gurus": 24,
-   "value": 54084681751
+   "gurus": 25,
+   "value": 54409806453
   },
   {
    "name": "Broadcom Inc - Us",
    "zh": "博通",
    "ticker": "AVGO",
    "gurus": 24,
-   "value": 19639807765
+   "value": 19399177600
   },
   {
    "name": "Berkshire Hathaway Inc",
    "zh": "伯克希尔·哈撒韦",
    "ticker": "BRK.B",
    "gurus": 24,
-   "value": 15489004643
+   "value": 15952772878
   },
   {
-   "name": "Mastercard Incorporated A类",
-   "zh": "万事达",
-   "ticker": "MA",
-   "gurus": 23,
-   "value": 9080665312
+   "name": "Apple Inc - Us",
+   "zh": "苹果",
+   "ticker": "AAPL",
+   "gurus": 22,
+   "value": 90066987425
   }
  ],
  "biggest": [
@@ -9640,6 +9657,13 @@
    "value": 30420000000
   },
   {
+   "name": "Ishares Expanded",
+   "zh": "安硕ETF",
+   "ticker": "IVV",
+   "investor": "马歇尔·韦斯",
+   "value": 30013708672
+  },
+  {
    "name": "Bank America Corp",
    "zh": "美国银行",
    "ticker": "BAC",
@@ -9659,13 +9683,6 @@
    "ticker": "CVX",
    "investor": "沃伦·巴菲特",
    "value": 17457364606
-  },
-  {
-   "name": "Ishares China La",
-   "zh": "安硕ETF",
-   "ticker": "IVV",
-   "investor": "马歇尔·韦斯",
-   "value": 17286591775
   },
   {
    "name": "Ishares Core Us Aggregate Bond",
@@ -9696,18 +9713,38 @@
    "firm": "Norges Bank",
    "firmZh": "挪威主权基金",
    "cik": "0001374170",
-   "period": "2025-12-31",
-   "filed": "2026-02-10",
-   "value": 935000000000,
-   "stocks": 1577,
-   "top10pct": 28.9,
-   "manual": true,
+   "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAbFBMVEUAFTj///8AAC2utL4AGD7Cx84AEjYABTFVX3T5+foAGT4AADIADzWFjZ3GytK+wssAETpBTWUGHD59hZRaZXng4+cUI0OiqbUAACfp6+5MVmzY2+AaKkqorrmTmaXy8/UlNVFocoQuO1ZweowTchTkAAACDElEQVR4nO3a25KCMAyA4aSuLUIRFVTwxMH3f8dldFVAijuyJnuR/5rBbzRGmSmAJEmSJEmSJEmSJP3v9LVfXOJuzOv7/ledvxi4iYbLNe58//3XD8L59JKyzmvsMpoONg+DtwFqgteilfM9MB6+aKLGA2ax8ybGmxEAEBPXXagA68rwAjDa9A8iGQC3KTMAY9X3VSAEZLu+LzQhAPeHnjGgBODRPH8IpAA82ScBLSD3nm5GC8Cs6O4jYgDOu/uIGoCnzjYgB2DZvh89INu1bkgPwH3VHAMGAE7SxhhwADAMHgIWQF4+tgELALPVXcADaOwjJgBubz9LXIDZOeUFYL40vADcF5YXgJPLNmAEYKiYAXlSvwecAMzqQWQFYJSCSV5c81EAJgbSiBEw8+rPYJnxAnSQ5KyA+rKQGaCD4YX1cQDYYs8LqAdxYAwoAJCe3euIBKDtlhcAdjPnBYBZufYREQBM6RhEKoAOHPuICgA6dTzJUQHAVr37iA4Aatc3iIQAUCUzQKsTL6B3H5ECwBRPY0ALAOV19xExQNvuGBADQJsjLwDsob2PyAEQtPcRPUCrmBdQ/0Nr/j/iANhN43mNAwCmWvMCQD0emnkAoOLbH/WPPp67AXp1G4MRgPsBBlfRcuBkgxp/gOHnCMfA8QwYOtyx8Mce4Rh5QuUPDrFIkiRJkiRJkiRJEkHfO80mydf0fjUAAAAASUVORK5CYII=",
+   "imgAlt": "",
+   "imgLogo": true,
+   "period": "2026-06-30",
+   "filed": "2026-08-12",
+   "value": 1003234964718,
+   "stocks": 1602,
+   "top10pct": 33.7,
    "holdings": [
     {
-     "name": "NVIDIA Corp",
+     "name": "Nvidia Corporation",
      "zh": "英伟达",
      "ticker": "NVDA",
-     "value": 51400000000,
+     "value": 65219682456,
+     "pct": 6.5,
+     "chg": null,
+     "chgPct": null
+    },
+    {
+     "name": "Alphabet Inc",
+     "zh": "谷歌",
+     "ticker": "GOOG",
+     "value": 55347576248,
+     "pct": 5.52,
+     "chg": null,
+     "chgPct": null
+    },
+    {
+     "name": "Apple Inc",
+     "zh": "苹果",
+     "ticker": "AAPL",
+     "value": 55188725946,
      "pct": 5.5,
      "chg": null,
      "chgPct": null
@@ -9716,44 +9753,17 @@
      "name": "Microsoft Corp",
      "zh": "微软",
      "ticker": "MSFT",
-     "value": 50500000000,
-     "pct": 5.4,
+     "value": 38321447247,
+     "pct": 3.82,
      "chg": null,
      "chgPct": null
     },
     {
-     "name": "Apple Inc",
-     "zh": "苹果",
-     "ticker": "AAPL",
-     "value": 38900000000,
-     "pct": 4.16,
-     "chg": null,
-     "chgPct": null
-    },
-    {
-     "name": "Amazon.com Inc",
+     "name": "Amazon Inc",
      "zh": "亚马逊",
      "ticker": "AMZN",
-     "value": 27400000000,
-     "pct": 2.93,
-     "chg": null,
-     "chgPct": null
-    },
-    {
-     "name": "Meta Platforms",
-     "zh": "Meta平台",
-     "ticker": "META",
-     "value": 23200000000,
-     "pct": 2.48,
-     "chg": null,
-     "chgPct": null
-    },
-    {
-     "name": "Alphabet Inc A",
-     "zh": "谷歌-A",
-     "ticker": "GOOGL",
-     "value": 20000000000,
-     "pct": 2.14,
+     "value": 33502405342,
+     "pct": 3.34,
      "chg": null,
      "chgPct": null
     },
@@ -9761,17 +9771,35 @@
      "name": "Broadcom Inc",
      "zh": "博通",
      "ticker": "AVGO",
-     "value": 19000000000,
-     "pct": 2.03,
+     "value": 24920540717,
+     "pct": 2.48,
      "chg": null,
      "chgPct": null
     },
     {
-     "name": "Alphabet Inc C",
-     "zh": "谷歌-C",
-     "ticker": "GOOG",
-     "value": 16000000000,
-     "pct": 1.71,
+     "name": "Meta Platforms Inc",
+     "zh": "Meta平台",
+     "ticker": "META",
+     "value": 18434737191,
+     "pct": 1.84,
+     "chg": null,
+     "chgPct": null
+    },
+    {
+     "name": "Micron Technology Inc",
+     "zh": "美光科技",
+     "ticker": "MU",
+     "value": 17523095266,
+     "pct": 1.75,
+     "chg": null,
+     "chgPct": null
+    },
+    {
+     "name": "Tesla Inc",
+     "zh": "特斯拉",
+     "ticker": "TSLA",
+     "value": 16324504693,
+     "pct": 1.63,
      "chg": null,
      "chgPct": null
     },
@@ -9779,27 +9807,15 @@
      "name": "Eli Lilly & Co",
      "zh": "礼来",
      "ticker": "LLY",
-     "value": 13000000000,
-     "pct": 1.39,
-     "chg": null,
-     "chgPct": null
-    },
-    {
-     "name": "JPMorgan Chase",
-     "zh": "摩根大通",
-     "ticker": "JPM",
-     "value": 11000000000,
-     "pct": 1.18,
+     "value": 13759156895,
+     "pct": 1.37,
      "chg": null,
      "chgPct": null
     }
    ],
    "moves": [],
    "countryZh": "挪威",
-   "flag": "🇳🇴",
-   "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAbFBMVEUAFTj///8AAC2utL4AGD7Cx84AEjYABTFVX3T5+foAGT4AADIADzWFjZ3GytK+wssAETpBTWUGHD59hZRaZXng4+cUI0OiqbUAACfp6+5MVmzY2+AaKkqorrmTmaXy8/UlNVFocoQuO1ZweowTchTkAAACDElEQVR4nO3a25KCMAyA4aSuLUIRFVTwxMH3f8dldFVAijuyJnuR/5rBbzRGmSmAJEmSJEmSJEmSJP3v9LVfXOJuzOv7/ledvxi4iYbLNe58//3XD8L59JKyzmvsMpoONg+DtwFqgteilfM9MB6+aKLGA2ax8ybGmxEAEBPXXagA68rwAjDa9A8iGQC3KTMAY9X3VSAEZLu+LzQhAPeHnjGgBODRPH8IpAA82ScBLSD3nm5GC8Cs6O4jYgDOu/uIGoCnzjYgB2DZvh89INu1bkgPwH3VHAMGAE7SxhhwADAMHgIWQF4+tgELALPVXcADaOwjJgBubz9LXIDZOeUFYL40vADcF5YXgJPLNmAEYKiYAXlSvwecAMzqQWQFYJSCSV5c81EAJgbSiBEw8+rPYJnxAnSQ5KyA+rKQGaCD4YX1cQDYYs8LqAdxYAwoAJCe3euIBKDtlhcAdjPnBYBZufYREQBM6RhEKoAOHPuICgA6dTzJUQHAVr37iA4Aatc3iIQAUCUzQKsTL6B3H5ECwBRPY0ALAOV19xExQNvuGBADQJsjLwDsob2PyAEQtPcRPUCrmBdQ/0Nr/j/iANhN43mNAwCmWvMCQD0emnkAoOLbH/WPPp67AXp1G4MRgPsBBlfRcuBkgxp/gOHnCMfA8QwYOtyx8Mce4Rh5QuUPDrFIkiRJkiRJkiRJEkHfO80mydf0fjUAAAAASUVORK5CYII=",
-   "imgAlt": "",
-   "imgLogo": true
+   "flag": "🇳🇴"
   },
   {
    "zh": "加拿大养老基金",
@@ -9985,167 +10001,167 @@
    "img": "",
    "imgAlt": "",
    "imgLogo": true,
-   "period": "2026-03-31",
-   "filed": "2026-05-13",
-   "value": 48269700182,
-   "stocks": 669,
-   "top10pct": 36.5,
+   "period": "2026-06-30",
+   "filed": "2026-08-12",
+   "value": 52659999903,
+   "stocks": 660,
+   "top10pct": 37.2,
    "holdings": [
     {
      "name": "Nvidia Corporation",
      "zh": "英伟达",
      "ticker": "NVDA",
-     "value": 3163113030,
-     "pct": 6.55,
+     "value": 3290676138,
+     "pct": 6.25,
      "chg": "trim",
-     "chgPct": -3.8
-    },
-    {
-     "name": "Apple Inc",
-     "zh": "苹果",
-     "ticker": "AAPL",
-     "value": 2730904757,
-     "pct": 5.66,
-     "chg": "trim",
-     "chgPct": -3.6
+     "chgPct": -9.3
     },
     {
      "name": "Ishares Tr",
      "zh": "安硕ETF",
      "ticker": "IVV",
-     "value": 2623263925,
-     "pct": 5.43,
+     "value": 3246024763,
+     "pct": 6.16,
      "chg": "add",
-     "chgPct": 10.1
+     "chgPct": 7.9
+    },
+    {
+     "name": "Apple Inc",
+     "zh": "苹果",
+     "ticker": "AAPL",
+     "value": 2998806377,
+     "pct": 5.69,
+     "chg": "trim",
+     "chgPct": -3.7
     },
     {
      "name": "Alphabet Inc",
      "zh": "谷歌",
      "ticker": "GOOG",
-     "value": 2269648225,
-     "pct": 4.7,
-     "chg": "hold",
-     "chgPct": null
+     "value": 2645300777,
+     "pct": 5.02,
+     "chg": "trim",
+     "chgPct": -5.8
     },
     {
      "name": "Microsoft Corp",
      "zh": "微软",
      "ticker": "MSFT",
-     "value": 1921873407,
-     "pct": 3.98,
+     "value": 1873751826,
+     "pct": 3.56,
      "chg": "trim",
-     "chgPct": -3.8
+     "chgPct": -3.2
     },
     {
      "name": "Amazon Inc",
      "zh": "亚马逊",
      "ticker": "AMZN",
-     "value": 1519574784,
-     "pct": 3.15,
-     "chg": "hold",
-     "chgPct": null
+     "value": 1666166060,
+     "pct": 3.16,
+     "chg": "trim",
+     "chgPct": -4.2
     },
     {
      "name": "Broadcom Inc",
      "zh": "博通",
      "ticker": "AVGO",
-     "value": 1020273407,
-     "pct": 2.11,
+     "value": 1211452938,
+     "pct": 2.3,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Micron Technology Inc",
+     "zh": "美光科技",
+     "ticker": "MU",
+     "value": 946019147,
+     "pct": 1.8,
      "chg": "trim",
-     "chgPct": -5.7
+     "chgPct": -3.7
     },
     {
      "name": "Meta Platforms Inc",
      "zh": "Meta平台",
      "ticker": "META",
-     "value": 922329629,
-     "pct": 1.91,
-     "chg": "trim",
-     "chgPct": -4.7
+     "value": 883082125,
+     "pct": 1.68,
+     "chg": "hold",
+     "chgPct": null
     },
     {
      "name": "Tesla Inc",
      "zh": "特斯拉",
      "ticker": "TSLA",
-     "value": 779584657,
-     "pct": 1.62,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Eli Lilly & Co",
-     "zh": "礼来",
-     "ticker": "LLY",
-     "value": 654281149,
-     "pct": 1.36,
-     "chg": "hold",
-     "chgPct": null
+     "value": 835835247,
+     "pct": 1.59,
+     "chg": "trim",
+     "chgPct": -5.2
     }
    ],
    "moves": [
     {
      "type": "trim",
-     "name": "Microsoft Corp",
-     "zh": "微软",
-     "ticker": "MSFT",
-     "value": 688622720,
-     "delta": -3.8
-    },
-    {
-     "type": "trim",
-     "name": "Nvidia Corporation",
-     "zh": "英伟达",
-     "ticker": "NVDA",
-     "value": 354359030,
-     "delta": -3.8
-    },
-    {
-     "type": "trim",
-     "name": "Apple Inc",
-     "zh": "苹果",
-     "ticker": "AAPL",
-     "value": 302244331,
-     "delta": -3.6
-    },
-    {
-     "type": "new",
-     "name": "Astrazeneca PLC",
-     "zh": "阿斯利康",
-     "ticker": "",
-     "value": 260573814,
-     "delta": null
-    },
-    {
-     "type": "trim",
-     "name": "Meta Platforms Inc",
-     "zh": "Meta平台",
-     "ticker": "META",
-     "value": 194700413,
-     "delta": -4.7
-    },
-    {
-     "type": "trim",
-     "name": "Broadcom Inc",
-     "zh": "博通",
-     "ticker": "AVGO",
-     "value": 189124935,
-     "delta": -5.7
+     "name": "Micron Technology Inc",
+     "zh": "美光科技",
+     "ticker": "MU",
+     "value": 658547375,
+     "delta": -3.7
     },
     {
      "type": "add",
      "name": "Ishares Tr",
      "zh": "安硕ETF",
      "ticker": "IVV",
-     "value": 123872659,
-     "delta": 10.1
+     "value": 622760838,
+     "delta": 7.9
+    },
+    {
+     "type": "trim",
+     "name": "Advanced Micro Devices Inc",
+     "zh": "超威半导体",
+     "ticker": "AMD",
+     "value": 427806422,
+     "delta": -3.6
+    },
+    {
+     "type": "trim",
+     "name": "Alphabet Inc",
+     "zh": "谷歌",
+     "ticker": "GOOG",
+     "value": 375652552,
+     "delta": -5.8
+    },
+    {
+     "type": "trim",
+     "name": "Apple Inc",
+     "zh": "苹果",
+     "ticker": "AAPL",
+     "value": 267901620,
+     "delta": -3.7
+    },
+    {
+     "type": "trim",
+     "name": "Applied Matls Inc",
+     "zh": "应用材料",
+     "ticker": "AMAT",
+     "value": 208016736,
+     "delta": -6.3
+    },
+    {
+     "type": "trim",
+     "name": "Lam Research Corp",
+     "zh": "泛林集团",
+     "ticker": "LRCX",
+     "value": 175920397,
+     "delta": -11.0
     },
     {
      "type": "trim",
      "name": "Exxon Mobil Corp",
      "zh": "埃克森美孚",
      "ticker": "XOM",
-     "value": 122729221,
-     "delta": -5.7
+     "value": 154196842,
+     "delta": -14.5
     }
    ],
    "countryZh": "韩国",
@@ -10160,45 +10176,18 @@
    "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAhFBMVEU8EFP///87DVJML1vz8PVcQm0uAEi8ssKyobo3AE84A1D28/djSXQ6ClFFIVrc1OCMdZj7+ftXQ2I9CVVzWoInAERUMmdVN2jRxtebh6aXgqOGbZPTzNi5q8G3rL5yVYLn4elfQHCfjqpTLWd8ZIuomrFOI2RFHVuPfpucj6Wqn7HFuszYqIOEAAACUklEQVR4nO3b0XaiMBAG4DGy0QFToAqiogbqLra8//sV1nbPWie7JEC5mf8WTvIhcyB4JvA8nzTPMFdiwqg5zAVMGMEABjCAATTAHyeqM+DHONk+TkUC1FPsjZEgg4e5DIDZOAkZwIA+AC9f7vbRRw45cUZ2+Dwc7XfHMB4QEIens0yklPiRZEEAlsnnYWxOTTCq9UAAHaUS786QJEDeD41YlMEAgLiu5NdnaBdAE18WYX/AEfDrCV0BAJj+XS1OgGxNvEI6AwBfvH4AXTxevw0A5CXoBSip+W0AArI+gFCSyxULQFMGXg/Anh7UBgDy6A7Qqd8fgBt3wE+yAiwBqgpdAd5mCABg6QrI14YVsx3AL7QjwHQHLAFinTkCXugStAWALN0AOjGOaAdQv9wApfmS7AAgtQsguJhKwB6wcwHowlQC1gC8vZEsAHEcNy9i42erLUBtw2bIWd4RIODarixNTyEHAIhNO+KFOEB+nIrb0tI8njUATCM6/j9gDzCFAQxgAAMYwAAGMIABDGAAAxjAAAYwgAEMYAADGMAABjCAAQxgAAMYwABHANYE4Ph9gD99OXcJjT0vgwP8NCQAMTr8lm4AvBI9u6bew0EBQiiFmKw8av6ZPieIqt24NTxAtL3CiKJ62q4Oy4Ccv7kJx8Nqm1bg4+8e5AEBotpcX99OizrLtWn2WwIdZvXidHoro3OnK+sGUCnVy/3vxLW5DcgBQJX9f2JsBmSAEyAPbDNoDQAUK+sQm3p6ABRah+hJ7wEYKwxgAAMY0AKm3vw+9fb/dwfFRfR5ULcsAAAAAElFTkSuQmCC",
    "imgAlt": "",
    "imgLogo": true,
-   "period": "2026-03-31",
-   "filed": "2026-05-12",
-   "value": 30484854533,
-   "stocks": 150,
-   "top10pct": 52.6,
+   "period": "2026-06-30",
+   "filed": "2026-08-07",
+   "value": 37253810301,
+   "stocks": 195,
+   "top10pct": 53.3,
    "holdings": [
     {
      "name": "Blackrock Inc",
      "zh": "贝莱德",
      "ticker": "",
-     "value": 5126387461,
-     "pct": 16.82,
-     "chg": "add",
-     "chgPct": 4.7
-    },
-    {
-     "name": "Visa Inc",
-     "zh": "维萨",
-     "ticker": "V",
-     "value": 2016432847,
-     "pct": 6.61,
-     "chg": "hold",
-     "chgPct": null
-    },
-    {
-     "name": "Mastercard Incorporated",
-     "zh": "万事达",
-     "ticker": "MA",
-     "value": 1608261138,
-     "pct": 5.28,
-     "chg": "add",
-     "chgPct": 16.2
-    },
-    {
-     "name": "Nvidia Corporation",
-     "zh": "英伟达",
-     "ticker": "NVDA",
-     "value": 1552649715,
-     "pct": 5.09,
+     "value": 4995462857,
+     "pct": 13.41,
      "chg": "hold",
      "chgPct": null
     },
@@ -10206,8 +10195,44 @@
      "name": "Alphabet Inc",
      "zh": "谷歌",
      "ticker": "GOOG",
-     "value": 1354892640,
-     "pct": 4.44,
+     "value": 3235545206,
+     "pct": 8.69,
+     "chg": "add",
+     "chgPct": 93.0
+    },
+    {
+     "name": "Visa Inc",
+     "zh": "维萨",
+     "ticker": "V",
+     "value": 2263438151,
+     "pct": 6.08,
+     "chg": "hold",
+     "chgPct": null
+    },
+    {
+     "name": "Nvidia Corporation",
+     "zh": "英伟达",
+     "ticker": "NVDA",
+     "value": 1681701025,
+     "pct": 4.51,
+     "chg": "trim",
+     "chgPct": -5.6
+    },
+    {
+     "name": "Space Exploration Techn Corp",
+     "zh": "",
+     "ticker": "",
+     "value": 1679886123,
+     "pct": 4.51,
+     "chg": "new",
+     "chgPct": null
+    },
+    {
+     "name": "Mastercard Incorporated",
+     "zh": "万事达",
+     "ticker": "MA",
+     "value": 1671049987,
+     "pct": 4.49,
      "chg": "hold",
      "chgPct": null
     },
@@ -10215,112 +10240,103 @@
      "name": "Broadcom Inc",
      "zh": "博通",
      "ticker": "AVGO",
-     "value": 1095860391,
-     "pct": 3.59,
+     "value": 1413077001,
+     "pct": 3.79,
      "chg": "add",
-     "chgPct": 41.8
+     "chgPct": 5.7
+    },
+    {
+     "name": "Amazon Inc",
+     "zh": "亚马逊",
+     "ticker": "AMZN",
+     "value": 1089257655,
+     "pct": 2.92,
+     "chg": "hold",
+     "chgPct": null
     },
     {
      "name": "Microsoft Corp",
      "zh": "微软",
      "ticker": "MSFT",
-     "value": 987273374,
-     "pct": 3.24,
+     "value": 985699009,
+     "pct": 2.65,
      "chg": "hold",
      "chgPct": null
-    },
-    {
-     "name": "Amazon Inc",
-     "zh": "亚马逊",
-     "ticker": "AMZN",
-     "value": 933897675,
-     "pct": 3.06,
-     "chg": "trim",
-     "chgPct": -15.6
     },
     {
      "name": "Icici Bank Limited",
      "zh": "",
      "ticker": "",
-     "value": 756170935,
-     "pct": 2.48,
+     "value": 847553755,
+     "pct": 2.28,
      "chg": "hold",
      "chgPct": null
-    },
-    {
-     "name": "S&P Global Inc",
-     "zh": "标普全球",
-     "ticker": "SPGI",
-     "value": 593966894,
-     "pct": 1.95,
-     "chg": "add",
-     "chgPct": 7.4
     }
    ],
    "moves": [
     {
      "type": "add",
-     "name": "Blackrock Inc",
-     "zh": "贝莱德",
-     "ticker": "",
-     "value": 324666850,
-     "delta": 4.7
+     "name": "Alphabet Inc",
+     "zh": "谷歌",
+     "ticker": "GOOG",
+     "value": 1880652566,
+     "delta": 93.0
     },
     {
-     "type": "trim",
-     "name": "Amazon Inc",
-     "zh": "亚马逊",
-     "ticker": "AMZN",
-     "value": 292512461,
-     "delta": -15.6
+     "type": "new",
+     "name": "Space Exploration Techn Corp",
+     "zh": "",
+     "ticker": "",
+     "value": 1679886123,
+     "delta": null
     },
     {
      "type": "add",
      "name": "Broadcom Inc",
      "zh": "博通",
      "ticker": "AVGO",
-     "value": 231899267,
-     "delta": 41.8
+     "value": 317216610,
+     "delta": 5.7
+    },
+    {
+     "type": "trim",
+     "name": "Pdd Holdings Inc",
+     "zh": "拼多多",
+     "ticker": "PDD",
+     "value": 226984609,
+     "delta": -26.5
     },
     {
      "type": "new",
-     "name": "Lam Research Corp",
-     "zh": "泛林集团",
-     "ticker": "LRCX",
-     "value": 162453176,
+     "name": "Asml Hldg Nv",
+     "zh": "阿斯麦",
+     "ticker": "ASML",
+     "value": 222974446,
+     "delta": null
+    },
+    {
+     "type": "exit",
+     "name": "Salesforce Inc",
+     "zh": "赛富时",
+     "ticker": "CRM",
+     "value": 151184033,
      "delta": null
     },
     {
      "type": "add",
-     "name": "Kkr & Co Inc",
-     "zh": "KKR",
-     "ticker": "",
-     "value": 155985376,
-     "delta": 164.4
-    },
-    {
-     "type": "add",
-     "name": "Tpg Inc",
+     "name": "Sterling Infrastructure Inc",
      "zh": "",
      "ticker": "",
-     "value": 155015916,
-     "delta": 14.1
+     "value": 138595610,
+     "delta": 228.6
     },
     {
      "type": "add",
-     "name": "Apollo Global Mgmt Inc",
-     "zh": "阿波罗全球",
-     "ticker": "",
-     "value": 154805809,
-     "delta": 214.4
-    },
-    {
-     "type": "add",
-     "name": "Cadence Design System Inc",
-     "zh": "",
-     "ticker": "",
-     "value": 152336743,
-     "delta": 319.5
+     "name": "Micron Technology Inc",
+     "zh": "美光科技",
+     "ticker": "MU",
+     "value": 130936135,
+     "delta": 98.9
     }
    ],
    "countryZh": "新加坡",
@@ -10507,7 +10523,7 @@
    "firm": "Saudi PIF",
    "firmZh": "沙特公共投资基金",
    "cik": "0001767640",
-   "img": "data:image/png;base64,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",
+   "img": "data:image/png;base64,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",
    "imgAlt": "",
    "imgLogo": true,
    "period": "2026-03-31",
@@ -12869,8 +12885,14 @@
   }
  ],
  "aaii": {
-  "asOf": "2026-08-06",
+  "asOf": "2026-08-13",
   "weeks": [
+   {
+    "date": "2026-08-13",
+    "bull": 34.7,
+    "neutral": 27.4,
+    "bear": 37.9
+   },
    {
     "date": "2026-08-06",
     "bull": 37.0,
@@ -12936,12 +12958,6 @@
     "bull": 35.6,
     "neutral": 22.6,
     "bear": 41.9
-   },
-   {
-    "date": "2026-05-21",
-    "bull": 31.7,
-    "neutral": 24.7,
-    "bear": 43.6
    }
   ],
   "avg": {
@@ -12949,7 +12965,7 @@
    "neutral": 31.0,
    "bear": 31.4
   },
-  "spread": -1.0,
+  "spread": -3.2,
   "hi52": {
    "bull": 49.5,
    "date": "2026-01-15"
