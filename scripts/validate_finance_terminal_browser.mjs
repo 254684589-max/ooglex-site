@@ -292,6 +292,63 @@ async function waitForRegression(client, timeoutMs) {
   throw new Error("页面未在限定时间内生成浏览器回归结果");
 }
 
+async function waitForLoadState(client, predicate, timeoutMs) {
+  const deadline = Date.now() + timeoutMs;
+  const expression = `JSON.stringify({
+    state: window.__financeTerminalLoadState || null,
+    critical: document.documentElement.getAttribute("data-critical-data-state"),
+    deferred: document.documentElement.getAttribute("data-deferred-data-state"),
+    informationBusy: document.getElementById("information-grid")?.getAttribute("aria-busy")
+  })`;
+  while (Date.now() < deadline) {
+    const evaluation = await client.send("Runtime.evaluate", { expression, returnByValue: true });
+    const payload = evaluation.result?.value;
+    if (typeof payload === "string") {
+      const snapshot = JSON.parse(payload);
+      if (predicate(snapshot)) return snapshot;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  throw new Error("页面未在限定时间内达到分区加载状态");
+}
+
+async function validateDeferredLoading(client, baseUrl, timeoutMs) {
+  await client.send("Emulation.setDeviceMetricsOverride", {
+    width: 360,
+    height: 640,
+    deviceScaleFactor: 1,
+    mobile: false,
+    screenWidth: 360,
+    screenHeight: 640
+  });
+  const loaded = client.event("Page.loadEventFired");
+  await client.send("Page.navigate", {
+    url: `${baseUrl}/apps/finance-terminal/?deferredProbe=1&run=${randomUUID()}`
+  });
+  await loaded;
+  const critical = await waitForLoadState(client, (snapshot) => {
+    return snapshot.critical === "ready" && snapshot.state?.criticalSourceRequestCount === 5;
+  }, timeoutMs);
+  if (critical.state.mode !== "deferred" || critical.state.sourceRequestCount !== 5
+    || critical.state.loadedSections.length !== 0) {
+    throw new Error(`首屏延迟加载边界无效：${JSON.stringify(critical.state)}`);
+  }
+  await client.send("Runtime.evaluate", {
+    expression: `document.querySelector('.section-nav a[href="#information-section"]')?.click()`
+  });
+  const information = await waitForLoadState(client, (snapshot) => {
+    return snapshot.state?.loadedSections?.includes("information")
+      && snapshot.informationBusy === "false";
+  }, timeoutMs);
+  if (information.state.sourceRequestCount !== 9) {
+    throw new Error(`资讯分区请求复用边界无效：${JSON.stringify(information.state)}`);
+  }
+  return {
+    criticalSourceRequestCount: critical.state.sourceRequestCount,
+    informationSourceRequestCount: information.state.sourceRequestCount
+  };
+}
+
 async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
   await client.send("Emulation.setDeviceMetricsOverride", {
     width,
@@ -399,6 +456,8 @@ async function main() {
     }, { once: true });
     await client.open();
     await Promise.all([client.send("Page.enable"), client.send("Runtime.enable"), client.send("Network.enable")]);
+    const deferredProbe = await validateDeferredLoading(client, baseUrl, timeoutMs);
+    console.log(`Deferred section loading: PASS · sources ${deferredProbe.criticalSourceRequestCount} → ${deferredProbe.informationSourceRequestCount}`);
     const results = [];
     for (const width of WIDTHS) results.push(await runWidth(client, baseUrl, artifacts, width, options.height, timeoutMs));
     const evidence = buildBrowserEvidence(results);

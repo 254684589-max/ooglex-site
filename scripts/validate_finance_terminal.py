@@ -30,6 +30,8 @@ from finance_terminal_market_licenses import validate_market_source_readiness
 ROOT = Path(__file__).resolve().parents[1]
 PAGE = ROOT / "apps" / "finance-terminal" / "index.html"
 APP = ROOT / "apps" / "finance-terminal" / "app.js"
+LOADER = ROOT / "apps" / "finance-terminal" / "finance-terminal-loader.mjs"
+REGRESSION_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-regression.mjs"
 TERMS_PAGE = ROOT / "apps" / "finance-terminal" / "terms.html"
 PRIVACY_PAGE = ROOT / "apps" / "finance-terminal" / "privacy.html"
 LEGAL_CSS = ROOT / "apps" / "finance-terminal" / "legal.css"
@@ -69,6 +71,7 @@ QUALITY_WORKFLOW = ROOT / ".github" / "workflows" / "finance_terminal_quality.ym
 BROWSER_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_browser.mjs"
 BROWSER_EVIDENCE = ROOT / "scripts" / "finance_terminal_browser_evidence.mjs"
 BROWSER_EVIDENCE_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_browser_evidence.mjs"
+LOADER_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_loader.mjs"
 PROXY_RUNTIME_HISTORY = ROOT / "scripts" / "finance_terminal_proxy_runtime_history.py"
 PROXY_RUNTIME_HISTORY_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_proxy_runtime_history.py"
 DATA_ISSUE_FORM = ROOT / ".github" / "ISSUE_TEMPLATE" / "finance-terminal-data.yml"
@@ -2475,6 +2478,15 @@ def main() -> None:
 
     page = PAGE.read_text(encoding="utf-8")
     app = APP.read_text(encoding="utf-8")
+    loader = LOADER.read_text(encoding="utf-8")
+    regression_module = REGRESSION_MODULE.read_text(encoding="utf-8")
+    compact_loader = re.sub(r"\s+", "", loader)
+    require(APP.stat().st_size <= 220_000, "金融终端生产入口脚本超过220KB性能预算")
+    require(LOADER.stat().st_size <= 14_000, "金融终端分区加载模块超过14KB性能预算")
+    require(APP.stat().st_size + LOADER.stat().st_size <= 230_000,
+            "金融终端常规加载JavaScript超过230KB性能预算")
+    require(REGRESSION_MODULE.stat().st_size <= 15_000,
+            "仅回归模式加载的浏览器探针超过15KB性能预算")
     terms_page = TERMS_PAGE.read_text(encoding="utf-8")
     privacy_page = PRIVACY_PAGE.read_text(encoding="utf-8")
     legal_css = LEGAL_CSS.read_text(encoding="utf-8")
@@ -2570,6 +2582,20 @@ def main() -> None:
             and "最多8项" in page and "不以演示走势填充" in page,
             "页面未校验或展示三项官方行情最近观测趋势")
     require('src="app.js"' in page, "页面未加载本地app.js")
+    require('rel="modulepreload" href="finance-terminal-loader.mjs"' in page
+            and 'import("./finance-terminal-loader.mjs")' in app,
+            "页面未预加载或动态导入原生分区加载模块")
+    require('critical:Object.freeze(["macro","macroHealth","assetRanking","assetRankingHealth","marketLicense"])'
+            in compact_loader and "criticalSourceCount:RESOURCE_GROUPS.critical.length" in compact_loader,
+            "首屏资源契约必须固定为宏观、资产榜及许可5份资源")
+    require("requests=newMap()" in compact_loader and "if(!requests.has(key))" in compact_loader
+            and "createDeferredSectionScheduler" in loader and "IntersectionObserver" in loader
+            and "navigationLinks" in loader,
+            "分区加载器缺少共享请求缓存、视口观察或导航触发契约")
+    require('loader.loadGroup("critical")' in loader and "data-critical-data-state" in loader
+            and "data-deferred-data-state" in loader and "criticalSourceRequestCount" in loader
+            and "stagedDataLoading" in regression_module,
+            "页面未区分首屏与延迟分区加载状态")
     compact_page = re.sub(r"\s+", "", page)
     require(contrast_ratio(css_hex_variable(page, "faint"), css_hex_variable(page, "panel")) >= 4.5,
             "最弱正文色与卡片背景对比度必须达到WCAG AA 4.5:1")
@@ -2660,30 +2686,38 @@ def main() -> None:
             "页面未完整尊重减少动画偏好")
     require("@media(prefers-contrast:more)" in compact_page and "@media(forced-colors:active)" in compact_page,
             "页面缺少高对比偏好或系统强制颜色支持")
-    require('MACRO_DATA_URL="../macro-radar/data.json"' in re.sub(r"\s+", "", app), "app.js未读取现有宏观雷达数据")
-    require('MACRO_HEALTH_URL="../macro-radar/health.json"' in re.sub(r"\s+", "", app),
-            "app.js未读取宏观雷达逐源健康快照")
+    require('macro:"../macro-radar/data.json"' in compact_loader, "分区加载器未读取现有宏观雷达数据")
+    require('macroHealth:"../macro-radar/health.json"' in compact_loader,
+            "分区加载器未读取宏观雷达逐源健康快照")
     require("businessDaysSince" in app and "DGS10_MAX_BUSINESS_DAYS" in app and '"stale"' in app, "app.js未实现DGS10过期判断")
     require("DTWEXBGS_MAX_BUSINESS_DAYS" in app and "findDtwexbgsReference" in app, "app.js未读取DTWEXBGS自动更新记录")
     require("record.price / record.previousPrice" in app and "refreshFailed" in app, "DTWEXBGS涨跌幅或失败回退不可复现")
     require("RWTC_MAX_BUSINESS_DAYS" in app and "findRwtcReference" in app and "adaptRwtc" in app, "app.js未读取RWTC自动更新记录")
     require("MACRO_REGIME_MAX_BUSINESS_DAYS" in app and "adaptMacroRegime" in app and "buildRiskCards" in app, "app.js未接入宏观状态适配层")
-    require("FEAR_GREED_DATA_URL" in app and "FEAR_GREED_MAX_BUSINESS_DAYS" in app and "adaptFearGreed" in app, "app.js未接入CNN恐慌与贪婪数据")
-    require("OFR_DATA_URL" in app and "OFR_FSI_MAX_BUSINESS_DAYS" in app and "adaptOfrFsi" in app, "app.js未接入OFR金融压力数据")
-    require("ASSET_TRACKER_DATA_URL" in app and "ASSET_TRACKER_MAX_AGE_HOURS" in app, "app.js未读取现有跨资产数据")
-    require("ASSET_TRACKER_HEALTH_URL" in app and "ASSET_RANKING_HEALTH_URL" in app
-            and "COMPANIES_HEALTH_URL" in app, "app.js未读取三条聚合管道健康文件")
+    require('fearGreed:"../fear-greed/data.json"' in compact_loader
+            and "FEAR_GREED_MAX_BUSINESS_DAYS" in app and "adaptFearGreed" in app,
+            "金融终端未接入CNN恐慌与贪婪数据")
+    require('ofr:"../ofr-monitor/data.json"' in compact_loader
+            and "OFR_FSI_MAX_BUSINESS_DAYS" in app and "adaptOfrFsi" in app,
+            "金融终端未接入OFR金融压力数据")
+    require('assetTracker:"../asset-tracker/data.json"' in compact_loader
+            and "ASSET_TRACKER_MAX_AGE_HOURS" in app, "金融终端未读取现有跨资产数据")
+    require('assetTrackerHealth:"../asset-tracker/health.json"' in compact_loader
+            and 'assetRankingHealth:"../asset-ranking/health.json"' in compact_loader
+            and 'companiesHealth:"../companies/health.json"' in compact_loader,
+            "分区加载器未读取三条聚合管道健康文件")
     require("adaptSourceHealth" in app and "safeSourceHealth" in app and "appendSourceHealth" in app,
             "app.js未校验或展示来源健康状态")
     require("adaptMacroSourceHealth" in app and "buildOperationsCards" in app
             and "renderOperationsCards" in app and "makeOperationCard" in app,
             "app.js未校验或渲染四管道Beta运行状态")
-    require("READINESS_DATA_URL" in app and "adaptReadinessSnapshot" in app
+    require('readiness:"readiness.json"' in compact_loader and "adaptReadinessSnapshot" in app
             and "operation-readiness" in app and "STABLE V1 EVIDENCE" in app,
-            "app.js未读取、校验或渲染稳定V1连续周期证据")
-    require("MARKET_LICENSE_READINESS_URL" in app and "adaptMarketLicenseReadiness" in app
+            "金融终端未读取、校验或渲染稳定V1连续周期证据")
+    require('marketLicense:"market-source-readiness.json"' in compact_loader
+            and "adaptMarketLicenseReadiness" in app
             and "renderMarketLicenseNotice" in app and "FREE DATA" in app,
-            "app.js未读取、校验或渲染免费代理行情状态")
+            "金融终端未读取、校验或渲染免费代理行情状态")
     require("稳定V1运行证据" in page and "同一日更周期重跑不会重复累计" in page,
             "页面未区分健康快照与稳定V1周期门禁")
     require("可用覆盖" in app and "本轮新鲜" in app and "已验证覆盖" in app
@@ -2699,19 +2733,22 @@ def main() -> None:
             "跨资产页面未校验或显式展示代理标的")
     require("quality-strip" in page and "quality.counts.fallback" in app and "历史回退" in app,
             "页面缺少行情、回退、估算与待确认覆盖信息")
-    require("ASSET_RANKING_DATA_URL" in app and "ASSET_RANKING_MAX_AGE_HOURS" in app, "app.js未读取现有全球资产市值数据")
+    require('assetRanking:"../asset-ranking/data.json"' in compact_loader
+            and "ASSET_RANKING_MAX_AGE_HOURS" in app, "金融终端未读取现有全球资产市值数据")
     require("adaptAssetRanking" in app and "formatMarketCapBillions" in app
             and "asset.dataLabel" in app and "summarizeRowQuality(rowMetas, data.dataQuality)" in app,
             "app.js未实现全球资产市值逐条来源适配或口径标签")
-    require("COMPANIES_DATA_URL" in app and "COMPANIES_MAX_AGE_HOURS" in app, "app.js未读取现有公司榜数据")
+    require('companies:"../companies/data.json"' in compact_loader
+            and "COMPANIES_MAX_AGE_HOURS" in app, "金融终端未读取现有公司榜数据")
     require("adaptCompanies" in app and "company.private" in app and "freshnessKnown" in app, "app.js未实现上市公司筛选或逐项新鲜度状态")
     require("gainer" in app and "laggard" in app and "listedMarketCap" in app, "app.js未生成公司领涨、领跌和上市市值")
     require("moverCoverage" in app and "暂停当日领涨与领跌" in app and "company.dataLabel" in app,
             "公司榜未按逐条状态暂停或恢复每日涨跌排行")
-    require("ECON_CALENDAR_DATA_URL" in app and "ECON_CALENDAR_MAX_AGE_HOURS" in app, "app.js未读取现有经济日历数据")
+    require('calendar:"../econ-calendar/data.json"' in compact_loader
+            and "ECON_CALENDAR_MAX_AGE_HOURS" in app, "金融终端未读取现有经济日历数据")
     require("adaptEconomicCalendar" in app and "buildInformationCards" in app and "normalizeCalendarEvent" in app,
             "app.js未实现经济日历适配、校验或独立状态")
-    require("FINANCE_NEWS_DATA_URL" in app and "FINANCE_NEWS_MAX_AGE_HOURS" in app
+    require('news:"../whats-latest/data.json"' in compact_loader and "FINANCE_NEWS_MAX_AGE_HOURS" in app
             and "FINANCE_NEWS_ITEM_MAX_AGE_HOURS" in app, "app.js未读取现有财经新闻或缺少新鲜度规则")
     require("adaptFinanceNews" in app and "isSafeGoogleNewsUrl" in app and "makeFinanceNewsCard" in app,
             "app.js未实现财经新闻适配、安全链接或渲染")
@@ -2727,19 +2764,22 @@ def main() -> None:
     require('setAttribute("aria-selected"' in app and 'setAttribute("aria-controls"' in app,
             "跨资产周期标签页状态或面板关联缺失")
     require('setAttribute("aria-pressed"' not in app, "标签页不得混用aria-pressed按钮模式")
-    require("runBrowserRegressionProbe" in app and "finance-terminal-regression-result" in app
-            and "supportingHealthResources" in app and "supportingHealthPanelCount" in app
-            and "officialHealthResources" in app and "officialHealthPanelCount" in app
-            and "officialObservationTrends" in app and "officialObservationTrendCount" in app,
-            "页面缺少浏览器、官方逐源或辅助来源资源回归探针")
-    require("marketLicenseReadiness" in app and "providerWidgetCount" in app,
+    require('import("./finance-terminal-regression.mjs")' in app
+            and "runBrowserRegressionProbe" in regression_module
+            and "finance-terminal-regression-result" in regression_module
+            and "stagedDataLoading" in regression_module
+            and "supportingHealthResources" in regression_module and "supportingHealthPanelCount" in regression_module
+            and "officialHealthResources" in regression_module and "officialHealthPanelCount" in regression_module
+            and "officialObservationTrends" in regression_module and "officialObservationTrendCount" in regression_module,
+            "页面缺少浏览器、分区加载、官方逐源或辅助来源资源回归探针")
+    require("marketLicenseReadiness" in regression_module and "providerWidgetCount" in regression_module,
             "浏览器回归探针未覆盖免费代理状态或四项提供方组件")
-    require("providerAttribution" in app and "poweredByCoinGeckoLinks" in app,
+    require("providerAttribution" in regression_module and "poweredByCoinGeckoLinks" in regression_module,
             "浏览器回归探针未核对CoinGecko署名文本、样式或最小字号")
     require("waitForProviderWidgetRegistration" in app and "inspectProviderWidgetHost" in app
             and "verifyProviderWidgetHosts" in app and "monitorProviderWidgets" in app
-            and "providerWidgetRuntime" in app and "providerWidgetRuntimeStates" in app
-            and "providerWidgetRuntimeEvidence" in app,
+            and "providerWidgetRuntime" in regression_module and "providerWidgetRuntimeStates" in regression_module
+            and "providerWidgetRuntimeEvidence" in regression_module,
             "页面未验证或回归四项免费组件的注册与宿主挂载状态")
     require('data-provider-state", "loading"' in app
             and "组件已注册 · 正在验证宿主" in app
@@ -2758,10 +2798,12 @@ def main() -> None:
     require('.provider-widget-shell[data-provider-state="mounted"]' in page
             and "visibility: hidden" in page and ".provider-runtime-status" in page,
             "免费组件宿主未挂载时没有隐藏空组件或保留可见状态")
-    require("noHorizontalOverflow" in app and "responsiveColumns" in app and "targetSizes" in app
-            and "keyboardTabs" in app, "浏览器回归探针未覆盖溢出、布局、触控与键盘交互")
+    require("noHorizontalOverflow" in regression_module and "responsiveColumns" in regression_module
+            and "targetSizes" in regression_module and "keyboardTabs" in regression_module,
+            "浏览器回归探针未覆盖溢出、布局、触控与键盘交互")
     require('class="section-nav"' in page and page.count('class="section-nav"') == 1
-            and "sectionNavigation" in app and 'document.querySelector("details.method > summary")' in app,
+            and "sectionNavigation" in regression_module
+            and 'document.querySelector("details.method > summary")' in regression_module,
             "页面缺少分区导航、锚点契约或可折叠数据说明")
     require("STALE DATA" not in app and "compactStatus.join(\"／\")" in app,
             "顶部状态必须显示逐类数量，不能以全局STALE DATA误导用户")
@@ -2772,11 +2814,11 @@ def main() -> None:
     require(".section-nav a { min-width: 44px; min-height: 44px;" in page
             and ".legal-links a { min-width: 44px; min-height: 44px;" in page,
             "移动端分区导航与法律链接必须同时满足44px宽高触控下限")
-    require('document.querySelectorAll(".operation-card").length === 4' in app
-            and "renderedGridColumns(operationsGrid)" in app,
+    require('document.querySelectorAll(".operation-card").length === 4' in regression_module
+            and "renderedGridColumns(operationsGrid)" in regression_module,
             "浏览器回归探针未覆盖四张运行状态卡片或其响应式列数")
-    require("undersizedTargets" in app, "浏览器回归结果必须列出尺寸不足的触控目标")
-    require(".operation-action" in app, "浏览器回归探针未检查Beta运行与反馈触控目标")
+    require("undersizedTargets" in regression_module, "浏览器回归结果必须列出尺寸不足的触控目标")
+    require(".operation-action" in regression_module, "浏览器回归探针未检查Beta运行与反馈触控目标")
     require("data.markets" not in app and ".markets" not in app, "终端财经新闻不得读取同文件的Yahoo行情快照")
     require('card.status === "partial"' in app and 'text: "PARTIAL"' in app, "市场状态卡片未区分部分数据")
     require("buildPageDataWithMacroError" in app and "unavailableDtwexbgs" in app and "unavailableRwtc" in app and 'status: "error"' in app, "app.js未覆盖官方数据文件失败状态")
@@ -2805,6 +2847,9 @@ def main() -> None:
     require("[360, 768, 1280]" in browser_validator and "Page.captureScreenshot" in browser_validator
             and "Runtime.evaluate" in browser_validator and "officialObservationTrendCount" in browser_validator
             and "readinessEvidencePanelCount" in browser_validator
+            and "validateDeferredLoading" in browser_validator
+            and "criticalSourceRequestCount" in browser_validator
+            and "informationSourceRequestCount" in browser_validator
             and "finance-terminal-browser-evidence.json" in browser_validator
             and "buildBrowserEvidence" in browser_validator
             and "runtimeEvidence=1" in browser_validator,
@@ -2837,6 +2882,7 @@ def main() -> None:
             and "api-unavailable" in proxy_history,
             "代理运行趋势未限制7周期、21:00 UTC边界、14天Artifact或诚实降级")
     require(QUALITY_WORKFLOW.exists(), "缺少金融终端只读质量工作流")
+    require(LOADER_VALIDATOR.exists(), "缺少金融终端分区加载器独立契约测试")
     quality_workflow = QUALITY_WORKFLOW.read_text(encoding="utf-8")
     require("permissions:\n  actions: read\n  contents: read" in quality_workflow,
             "金融终端质量工作流权限必须限制为Actions与内容只读")
@@ -2854,7 +2900,8 @@ def main() -> None:
             and "finance-terminal-proxy-runtime-history.md" in quality_workflow
             and "GITHUB_TOKEN: ${{ github.token }}" in quality_workflow
             and "finance-terminal-proxy-runtime" in quality_workflow
-            and "validate_finance_terminal.py" in quality_workflow,
+            and "validate_finance_terminal.py" in quality_workflow
+            and "node scripts/validate_finance_terminal_loader.mjs" in quality_workflow,
             "金融终端质量工作流未运行静态与浏览器回归")
     require("validate_market_data_quality.py --dataset all" in quality_workflow,
             "金融终端质量工作流未统一校验三条逐项来源契约")

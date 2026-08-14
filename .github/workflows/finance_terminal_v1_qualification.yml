@@ -18,7 +18,10 @@ on:
       - 'scripts/finance_terminal_release_gate.py'
       - 'scripts/validate_finance_terminal_release_gate.py'
       - 'scripts/validate_finance_terminal.py'
+      - 'scripts/validate_finance_terminal_loader.mjs'
       - 'apps/finance-terminal/app.js'
+      - 'apps/finance-terminal/finance-terminal-loader.mjs'
+      - 'apps/finance-terminal/finance-terminal-regression.mjs'
       - 'apps/finance-terminal/index.html'
       - 'apps/finance-terminal/legal.css'
       - 'apps/finance-terminal/terms.html'
@@ -150,6 +153,7 @@ jobs:
         continue-on-error: true
         run: |
           python scripts/validate_finance_terminal.py
+          node scripts/validate_finance_terminal_loader.mjs
           python scripts/validate_finance_terminal_market_licenses.py
           python scripts/validate_market_data_quality.py --dataset all
           python scripts/validate_market_source_health.py --dataset all \
