@@ -2769,6 +2769,9 @@ def main() -> None:
             "金融终端页脚版本名称必须统一为Public Beta")
     require("Dense metadata remains readable" in page and "footer { font-size: 11px; }" in page,
             "金融终端辅助文字缺少11px正常缩放可读性下限")
+    require(".section-nav a { min-width: 44px; min-height: 44px;" in page
+            and ".legal-links a { min-width: 44px; min-height: 44px;" in page,
+            "移动端分区导航与法律链接必须同时满足44px宽高触控下限")
     require('document.querySelectorAll(".operation-card").length === 4' in app
             and "renderedGridColumns(operationsGrid)" in app,
             "浏览器回归探针未覆盖四张运行状态卡片或其响应式列数")

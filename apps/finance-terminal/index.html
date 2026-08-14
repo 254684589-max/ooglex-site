@@ -1101,7 +1101,7 @@
       .desk-code, .market-state { display: none; }
       .back-link { margin-left: auto; }
       .section-nav { margin-inline: -4px; }
-      .section-nav a { min-height: 44px; }
+      .section-nav a { min-width: 44px; min-height: 44px; justify-content: center; }
       .data-banner { grid-template-columns: auto 1fr; }
       .data-note { grid-column: 1 / -1; padding-left: 1px; }
       .license-notice { grid-template-columns: minmax(0, 1fr); }
@@ -1145,7 +1145,7 @@
       .method summary::after { grid-column: 2; grid-row: 1; }
       footer { flex-direction: column; }
       .legal-links { justify-content: flex-start; }
-      .legal-links a { min-height: 44px; }
+      .legal-links a { min-width: 44px; min-height: 44px; justify-content: center; padding-inline: 7px; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
