@@ -2871,6 +2871,8 @@ def main() -> None:
     require("market_workflow_governance.py stage --dataset macro-radar" in workflow
             and "validate_macro_source_health.py --report" in workflow,
             "宏观雷达工作流未使用逐源健康校验与精确路径守卫")
+    require('-f event=workflow_dispatch -f "branch=$GITHUB_REF_NAME" -f per_page=1' in scheduler,
+            "每日调度器必须按当前分支查询最近运行，不能让开发分支资格运行抑制main生产调度")
     require("macro_radar.yml" in scheduler, "每日调度器未触发宏观雷达工作流")
     require("python scripts/fear-greed/build_fear_greed.py" in fear_greed_workflow, "恐慌与贪婪工作流未运行既有取数脚本")
     require("validate_supporting_source_health.py --dataset fear-greed" in fear_greed_workflow
