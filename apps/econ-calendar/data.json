@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-14T04:42:12Z",
+  "updatedAt": "2026-08-14T13:52:43Z",
   "asOf": "2026-08-14",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-09 ~ 2026-08-14",
@@ -727,18 +727,6 @@
       "actual": null
     },
     {
-      "ts": "2026-08-14T06:02:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "Foreign Direct Investment ytd/y",
-      "titleEn": "Foreign Direct Investment ytd/y",
-      "impact": "low",
-      "forecast": null,
-      "previous": "-5.0%",
-      "actual": null
-    },
-    {
       "ts": "2026-08-14T06:45:00Z",
       "ccy": "EUR",
       "country": "欧元区",
@@ -748,6 +736,30 @@
       "impact": "low",
       "forecast": "0.6%",
       "previous": "0.6%",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-14T08:01:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "货币供应 同比",
+      "titleEn": "M2 Money Supply y/y",
+      "impact": "low",
+      "forecast": "7.9%",
+      "previous": "8.0%",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-14T08:02:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "New Loans",
+      "titleEn": "New Loans",
+      "impact": "low",
+      "forecast": "-50B",
+      "previous": "1610B",
       "actual": null
     },
     {
@@ -784,30 +796,6 @@
       "impact": "low",
       "forecast": "-2.2B",
       "previous": "-5.0B",
-      "actual": null
-    },
-    {
-      "ts": "2026-08-14T09:03:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "货币供应 同比",
-      "titleEn": "M2 Money Supply y/y",
-      "impact": "low",
-      "forecast": "7.9%",
-      "previous": "8.0%",
-      "actual": null
-    },
-    {
-      "ts": "2026-08-14T09:03:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "New Loans",
-      "titleEn": "New Loans",
-      "impact": "low",
-      "forecast": "-50B",
-      "previous": "1610B",
       "actual": null
     },
     {
@@ -892,6 +880,18 @@
       "impact": "low",
       "forecast": "0.2%",
       "previous": "0.3%",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-14T19:00:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "央行官员讲话",
+      "titleEn": "President Trump Speaks",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
       "actual": null
     }
   ],
