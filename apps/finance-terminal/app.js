@@ -4195,6 +4195,13 @@
     var errors = official.filter(function (asset) { return asset.status === "error"; });
     var breakdown = ok.length + "项站内真实正常 · " + proxies.length + "项免费嵌入代理 · "
       + partial.length + "项降级 · " + stale.length + "项过期 · " + errors.length + "项不可用";
+    var compactStatus = [ok.length + "正常"];
+    if (partial.length > 0) compactStatus.push(partial.length + "降级");
+    if (stale.length > 0) compactStatus.push(stale.length + "过期");
+    if (errors.length > 0) compactStatus.push(errors.length + "不可用");
+    compactStatus.push(proxies.length + "提供方代理");
+    marketState.textContent = compactStatus.join("／");
+    marketState.setAttribute("aria-label", "核心资产状态：" + compactStatus.join("，"));
 
     if (errors.length > 0) {
       banner.className = "data-banner status-error";
@@ -4204,7 +4211,6 @@
       bannerNote.textContent = ok.length + " REAL · " + partial.length + " PARTIAL · " + stale.length
         + " STALE · " + errors.length + " ERROR · " + proxies.length + " FREE PROXY";
       dataStatus.textContent = breakdown;
-      marketState.textContent = "PARTIAL DATA";
     } else if (stale.length > 0) {
       banner.className = "data-banner status-stale";
       bannerLabel.textContent = "STALE";
@@ -4213,7 +4219,6 @@
       bannerNote.textContent = ok.length + " REAL · " + partial.length + " PARTIAL · " + stale.length
         + " STALE · " + proxies.length + " FREE PROXY";
       dataStatus.textContent = breakdown;
-      marketState.textContent = "STALE DATA";
     } else if (partial.length > 0) {
       banner.className = "data-banner status-stale";
       bannerLabel.textContent = "PARTIAL";
@@ -4223,7 +4228,6 @@
       bannerNote.textContent = ok.length + " REAL · " + partial.length + " PARTIAL · "
         + proxies.length + " FREE PROXY";
       dataStatus.textContent = breakdown;
-      marketState.textContent = "PARTIAL DATA";
     } else {
       banner.className = "data-banner";
       bannerLabel.textContent = "FREE";
@@ -4231,7 +4235,6 @@
       bannerCopy.textContent = "DGS10、DTWEXBGS、EIA RWTC与BTC/USD读取站内每日数据；SPY、QQQ、DIA与GLD由TradingView免费组件直接展示，并明确标注ETF代理关系。";
       bannerNote.textContent = "4 REAL · 4 FREE PROXY · 0 DEMO";
       dataStatus.textContent = breakdown;
-      marketState.textContent = "FREE DATA";
     }
   }
 
@@ -4520,8 +4523,9 @@
     )).filter(elementIsRendered);
     var targetMinimum = width <= 620 ? 44 : 24;
     var targetElements = Array.prototype.slice.call(document.querySelectorAll(
-      ".brand, .back-link, .period-tab, .source-link, .detail-link, .news-link, .operation-action, .operation-readiness-link"
+      ".brand, .back-link, .section-nav a, .method summary, .period-tab, .source-link, .detail-link, .news-link, .operation-action, .operation-readiness-link"
     )).filter(elementIsRendered);
+    var sectionLinks = Array.prototype.slice.call(document.querySelectorAll(".section-nav a"));
     var supportingHealthPanels = Array.prototype.slice.call(document.querySelectorAll(
       "#risk-grid .pipeline-health, #information-grid .pipeline-health"
     ));
@@ -4640,6 +4644,11 @@
         && !focusables.some(function (element) {
           return element.matches(".asset-card, .risk-card, .research-card, .information-card, .operation-card");
         }),
+      sectionNavigation: sectionLinks.length === 7
+        && sectionLinks.every(function (link) {
+          return link.hash && document.getElementById(link.hash.slice(1));
+        })
+        && Boolean(document.querySelector("details.method > summary")),
       keyboardTabs: keyboardTabs,
       tabSemantics: tabs.length === 5
         && tabs.filter(function (tab) { return tab.tabIndex === 0; }).length === 1

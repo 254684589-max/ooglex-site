@@ -2728,6 +2728,15 @@ def main() -> None:
             "免费组件宿主未挂载时没有隐藏空组件或保留可见状态")
     require("noHorizontalOverflow" in app and "responsiveColumns" in app and "targetSizes" in app
             and "keyboardTabs" in app, "浏览器回归探针未覆盖溢出、布局、触控与键盘交互")
+    require('class="section-nav"' in page and page.count('class="section-nav"') == 1
+            and "sectionNavigation" in app and 'document.querySelector("details.method > summary")' in app,
+            "页面缺少分区导航、锚点契约或可折叠数据说明")
+    require("STALE DATA" not in app and "compactStatus.join(\"／\")" in app,
+            "顶部状态必须显示逐类数量，不能以全局STALE DATA误导用户")
+    require("Prototype" not in page and "Ooglex Finance Terminal · Public Beta" in page,
+            "金融终端页脚版本名称必须统一为Public Beta")
+    require("Dense metadata remains readable" in page and "footer { font-size: 11px; }" in page,
+            "金融终端辅助文字缺少11px正常缩放可读性下限")
     require('document.querySelectorAll(".operation-card").length === 4' in app
             and "renderedGridColumns(operationsGrid)" in app,
             "浏览器回归探针未覆盖四张运行状态卡片或其响应式列数")
