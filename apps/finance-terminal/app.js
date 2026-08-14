@@ -1,24 +1,6 @@
 (function (root) {
   "use strict";
 
-  var MACRO_DATA_URL = "../macro-radar/data.json";
-  var MACRO_HEALTH_URL = "../macro-radar/health.json";
-  var FEAR_GREED_DATA_URL = "../fear-greed/data.json";
-  var FEAR_GREED_HEALTH_URL = "../fear-greed/health.json";
-  var OFR_DATA_URL = "../ofr-monitor/data.json";
-  var OFR_HEALTH_URL = "../ofr-monitor/health.json";
-  var ASSET_TRACKER_DATA_URL = "../asset-tracker/data.json";
-  var ASSET_TRACKER_HEALTH_URL = "../asset-tracker/health.json";
-  var ASSET_RANKING_DATA_URL = "../asset-ranking/data.json";
-  var ASSET_RANKING_HEALTH_URL = "../asset-ranking/health.json";
-  var COMPANIES_DATA_URL = "../companies/data.json";
-  var COMPANIES_HEALTH_URL = "../companies/health.json";
-  var ECON_CALENDAR_DATA_URL = "../econ-calendar/data.json";
-  var ECON_CALENDAR_HEALTH_URL = "../econ-calendar/health.json";
-  var FINANCE_NEWS_DATA_URL = "../whats-latest/data.json";
-  var FINANCE_NEWS_HEALTH_URL = "../whats-latest/health.json";
-  var READINESS_DATA_URL = "readiness.json";
-  var MARKET_LICENSE_READINESS_URL = "market-source-readiness.json";
   var DGS10_MAX_BUSINESS_DAYS = 3;
   var DTWEXBGS_MAX_BUSINESS_DAYS = 3;
   var RWTC_MAX_BUSINESS_DAYS = 4;
@@ -3256,6 +3238,7 @@
       link.target = "_blank";
       link.rel = "noopener noreferrer";
       link.setAttribute("aria-label", (source.name || "查看来源") + "（在新窗口打开）");
+      if (source.name === "Powered by CoinGecko") link.classList.add("coingecko-attribution");
       return;
     }
     appendText(parent, "span", "source-name", source.name || "来源未提供");
@@ -4195,6 +4178,13 @@
     var errors = official.filter(function (asset) { return asset.status === "error"; });
     var breakdown = ok.length + "项站内真实正常 · " + proxies.length + "项免费嵌入代理 · "
       + partial.length + "项降级 · " + stale.length + "项过期 · " + errors.length + "项不可用";
+    var compactStatus = [ok.length + "正常"];
+    if (partial.length > 0) compactStatus.push(partial.length + "降级");
+    if (stale.length > 0) compactStatus.push(stale.length + "过期");
+    if (errors.length > 0) compactStatus.push(errors.length + "不可用");
+    compactStatus.push(proxies.length + "提供方代理");
+    marketState.textContent = compactStatus.join("／");
+    marketState.setAttribute("aria-label", "核心资产状态：" + compactStatus.join("，"));
 
     if (errors.length > 0) {
       banner.className = "data-banner status-error";
@@ -4204,7 +4194,6 @@
       bannerNote.textContent = ok.length + " REAL · " + partial.length + " PARTIAL · " + stale.length
         + " STALE · " + errors.length + " ERROR · " + proxies.length + " FREE PROXY";
       dataStatus.textContent = breakdown;
-      marketState.textContent = "PARTIAL DATA";
     } else if (stale.length > 0) {
       banner.className = "data-banner status-stale";
       bannerLabel.textContent = "STALE";
@@ -4213,7 +4202,6 @@
       bannerNote.textContent = ok.length + " REAL · " + partial.length + " PARTIAL · " + stale.length
         + " STALE · " + proxies.length + " FREE PROXY";
       dataStatus.textContent = breakdown;
-      marketState.textContent = "STALE DATA";
     } else if (partial.length > 0) {
       banner.className = "data-banner status-stale";
       bannerLabel.textContent = "PARTIAL";
@@ -4223,7 +4211,6 @@
       bannerNote.textContent = ok.length + " REAL · " + partial.length + " PARTIAL · "
         + proxies.length + " FREE PROXY";
       dataStatus.textContent = breakdown;
-      marketState.textContent = "PARTIAL DATA";
     } else {
       banner.className = "data-banner";
       bannerLabel.textContent = "FREE";
@@ -4231,7 +4218,6 @@
       bannerCopy.textContent = "DGS10、DTWEXBGS、EIA RWTC与BTC/USD读取站内每日数据；SPY、QQQ、DIA与GLD由TradingView免费组件直接展示，并明确标注ETF代理关系。";
       bannerNote.textContent = "4 REAL · 4 FREE PROXY · 0 DEMO";
       dataStatus.textContent = breakdown;
-      marketState.textContent = "FREE DATA";
     }
   }
 
@@ -4327,17 +4313,17 @@
       + grouped.error + "项不可用；四条数据管道中" + operationIssues + "条需要注意。";
   }
 
-  function elementIsRendered(element) {
-    if (!element) return false;
-    var style = window.getComputedStyle(element);
-    var rect = element.getBoundingClientRect();
-    return style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+  function announceMarketReady(market) {
+    if (!pageAnnouncer) return;
+    var official = market.assets.filter(function (asset) {
+      return asset.demo === false && !asset.externalDisplay;
+    });
+    var issues = official.filter(function (asset) { return asset.status !== "ok"; }).length;
+    pageAnnouncer.setAttribute("aria-live", "polite");
+    pageAnnouncer.textContent = "金融终端首屏加载完成。8项核心资产中"
+      + issues + "项站内行情需要注意；首屏以下分区将在接近视口时继续加载。";
   }
 
-  function renderedGridColumns(element) {
-    if (!element) return 0;
-    return window.getComputedStyle(element).gridTemplateColumns.split(/\s+/).filter(Boolean).length;
-  }
 
   function waitForProviderWidgetRegistration(registry, tagName, timeoutMs) {
     if (!registry || typeof registry.get !== "function" || typeof registry.whenDefined !== "function") {
@@ -4502,328 +4488,112 @@
       });
   }
 
-  function runBrowserRegressionProbe() {
-    var params = new URLSearchParams(window.location.search);
-    if (params.get("regression") !== "1") return;
 
-    var width = window.innerWidth;
-    var expectedColumns = width <= 620
-      ? { market: 1, risk: 1, research: 1, information: 1, operations: 1 }
-      : width <= 1040
-        ? { market: 2, risk: 2, research: 2, information: 1, operations: 2 }
-        : { market: 4, risk: 3, research: 3, information: 2, operations: 4 };
-    var cards = Array.prototype.slice.call(document.querySelectorAll(
-      ".asset-card, .risk-card, .research-card, .information-card, .operation-card"
-    ));
-    var focusables = Array.prototype.slice.call(document.querySelectorAll(
-      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-    )).filter(elementIsRendered);
-    var targetMinimum = width <= 620 ? 44 : 24;
-    var targetElements = Array.prototype.slice.call(document.querySelectorAll(
-      ".brand, .back-link, .period-tab, .source-link, .detail-link, .news-link, .operation-action, .operation-readiness-link"
-    )).filter(elementIsRendered);
-    var supportingHealthPanels = Array.prototype.slice.call(document.querySelectorAll(
-      "#risk-grid .pipeline-health, #information-grid .pipeline-health"
-    ));
-    var officialHealthPanels = Array.prototype.slice.call(document.querySelectorAll(
-      "#market-grid .official-update-health"
-    ));
-    var officialTrendPanels = Array.prototype.slice.call(document.querySelectorAll(
-      "#market-grid .official-trend"
-    ));
-    var providerWidgets = Array.prototype.slice.call(document.querySelectorAll(
-      "#market-grid tv-mini-chart"
-    ));
-    var providerWidgetShells = Array.prototype.slice.call(document.querySelectorAll(
-      "#market-grid .provider-widget-shell"
-    ));
-    var readinessEvidencePanels = Array.prototype.slice.call(document.querySelectorAll(
-      "#operations-grid .operation-readiness"
-    ));
-    var undersizedTargets = targetElements.map(function (element) {
-      var rect = element.getBoundingClientRect();
-      return {
-        selector: element.className,
-        text: element.textContent.trim().slice(0, 60),
-        width: Math.round(rect.width * 10) / 10,
-        height: Math.round(rect.height * 10) / 10
-      };
-    }).filter(function (target) {
-      return target.width + 0.5 < targetMinimum || target.height + 0.5 < targetMinimum;
-    });
-    var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
-    var selectedBefore = tabs.filter(function (tab) { return tab.getAttribute("aria-selected") === "true"; });
-    var keyboardTabs = selectedBefore.length === 1;
-    if (keyboardTabs) {
-      var previousId = selectedBefore[0].id;
-      selectedBefore[0].focus();
-      selectedBefore[0].dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
-      var moved = document.activeElement;
-      keyboardTabs = moved && moved.getAttribute("role") === "tab"
-        && moved.id !== previousId && moved.getAttribute("aria-selected") === "true";
-      if (keyboardTabs) {
-        moved.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true }));
-        keyboardTabs = document.activeElement && document.activeElement.id === previousId;
-      }
-    }
-
-    var checks = {
-      dataLoaded: [grid, riskGrid, researchGrid, informationGrid, operationsGrid].every(function (item) {
-        return item && item.getAttribute("aria-busy") === "false";
-      }) && !document.querySelector(".load-error"),
-      supportingHealthResources: supportingHealthPanels.length === 4
-        && supportingHealthPanels.every(function (panel) {
-          return panel.textContent.indexOf("更新链健康不可用") === -1;
-        }),
-      officialHealthResources: officialHealthPanels.length === 4
-        && officialHealthPanels.every(function (panel) {
-          return panel.textContent.indexOf("逐源更新链健康不可用") === -1;
-        }),
-      officialObservationTrends: officialTrendPanels.length === 3
-        && officialTrendPanels.every(function (panel) {
-          var count = panel.querySelector(".official-trend-count");
-          var match = count && count.textContent.match(/^(\d+)\s*\/\s*8$/);
-          var observationCount = match ? Number(match[1]) : null;
-          return panel.textContent.indexOf("RECENT OBSERVATIONS") !== -1
-            && observationCount !== null && observationCount >= 1 && observationCount <= 8
-            && Boolean(panel.querySelector(".sparkline")) === (observationCount >= 2);
-        }),
-      marketLicenseReadiness: licenseNotice && !licenseNotice.classList.contains("status-unknown")
-        && licenseNotice.textContent.indexOf("免费ETF代理") !== -1
-        && licenseNotice.textContent.indexOf("API密钥") !== -1,
-      providerWidgetContracts: providerWidgets.length === 4
-        && providerWidgets.every(function (widget) {
-          return /^(AMEX:(SPY|DIA|GLD)|NASDAQ:QQQ)$/.test(widget.getAttribute("symbol") || "")
-            && widget.getAttribute("theme") === "dark";
-        })
-        && document.querySelectorAll(".provider-widget-fallback").length === 4,
-      providerWidgetRuntime: providerWidgetShells.length === 4
-        && providerWidgetShells.every(function (shell) {
-          var state = shell.getAttribute("data-provider-state");
-          var reason = shell.getAttribute("data-provider-reason");
-          var fallback = shell.querySelector(".provider-widget-fallback");
-          var widget = shell.querySelector("tv-mini-chart");
-          var status = shell.closest(".asset-card").querySelector(".provider-runtime-status");
-          return (state === "mounted" || state === "unavailable")
-            && reason
-            && status && status.textContent === (state === "mounted"
-              ? "组件宿主已挂载 · 报价状态见组件"
-              : providerWidgetUnavailableCopy(reason).status)
-            && (state === "mounted" ? !elementIsRendered(fallback) : elementIsRendered(fallback))
-            && (state === "mounted" ? elementIsRendered(widget) : !elementIsRendered(widget));
-        }),
-      readinessEvidenceResources: readinessEvidencePanels.length === 4
-        && readinessEvidencePanels.every(function (panel) {
-          var progress = panel.querySelector('[role="progressbar"]');
-          var value = progress ? Number(progress.getAttribute("aria-valuenow")) : null;
-          return panel.textContent.indexOf("STABLE V1 EVIDENCE") !== -1
-            && panel.textContent.indexOf("UNKNOWN") === -1
-            && Number.isInteger(value) && value >= 0 && value <= 7;
-        }),
-      cardCounts: document.querySelectorAll(".asset-card").length === 8
-        && document.querySelectorAll(".risk-card").length === 3
-        && document.querySelectorAll(".research-card").length === 3
-        && document.querySelectorAll(".information-card").length === 2
-        && document.querySelectorAll(".operation-card").length === 4,
-      noHorizontalOverflow: document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1
-        && cards.every(function (card) {
-          var rect = card.getBoundingClientRect();
-          return rect.left >= -1 && rect.right <= document.documentElement.clientWidth + 1;
-        }),
-      responsiveColumns: renderedGridColumns(grid) === expectedColumns.market
-        && renderedGridColumns(riskGrid) === expectedColumns.risk
-        && renderedGridColumns(researchGrid) === expectedColumns.research
-        && renderedGridColumns(informationGrid) === expectedColumns.information
-        && renderedGridColumns(operationsGrid) === expectedColumns.operations,
-      focusOrder: focusables.length > 6
-        && focusables[0].classList.contains("skip-link")
-        && !focusables.some(function (element) {
-          return element.matches(".asset-card, .risk-card, .research-card, .information-card, .operation-card");
-        }),
-      keyboardTabs: keyboardTabs,
-      tabSemantics: tabs.length === 5
-        && tabs.filter(function (tab) { return tab.tabIndex === 0; }).length === 1
-        && tabs.every(function (tab) {
-          var panel = document.getElementById(tab.getAttribute("aria-controls"));
-          return panel && panel.getAttribute("role") === "tabpanel";
-        }),
-      targetSizes: targetElements.length > 8 && undersizedTargets.length === 0,
-      externalLinkSafety: Array.prototype.slice.call(document.querySelectorAll('a[target="_blank"]')).every(function (link) {
-        return /(^|\s)noopener(\s|$)/.test(link.rel) && /(^|\s)noreferrer(\s|$)/.test(link.rel);
-      }),
-      liveSummary: pageAnnouncer && pageAnnouncer.textContent.indexOf("金融终端加载完成") === 0,
-      uniqueIds: (function () {
-        var ids = Array.prototype.slice.call(document.querySelectorAll("[id]")).map(function (element) { return element.id; });
-        return ids.length === new Set(ids).size;
-      })()
+  function renderDeferredSectionError(name, error) {
+    var specs = {
+      risk: [riskGrid, riskSummary, "市场状态", "SIGNALS UNAVAILABLE"],
+      research: [researchGrid, researchSummary, "市场研究", "RESEARCH UNAVAILABLE"],
+      information: [informationGrid, informationSummary, "事件资讯", "INFORMATION UNAVAILABLE"],
+      operations: [operationsGrid, operationsSummary, "数据运行状态", "PIPELINES UNAVAILABLE"]
     };
-    var failures = Object.keys(checks).filter(function (name) { return !checks[name]; });
-    var result = {
-      status: failures.length ? "fail" : "pass",
-      requestedWidth: Number(params.get("width")) || null,
-      viewport: { width: width, height: window.innerHeight },
-      scrollWidth: document.documentElement.scrollWidth,
-      focusableCount: focusables.length,
-      targetCount: targetElements.length,
-      supportingHealthPanelCount: supportingHealthPanels.length,
-      officialHealthPanelCount: officialHealthPanels.length,
-      officialObservationTrendCount: officialTrendPanels.length,
-      providerWidgetCount: providerWidgets.length,
-      providerWidgetRuntimeStates: providerWidgetShells.map(function (shell) {
-        return shell.getAttribute("data-provider-state");
-      }),
-      providerWidgetRuntimeEvidence: providerWidgetShells.map(function (shell) {
-        var fallback = shell.querySelector(".provider-widget-fallback");
-        var fallbackLink = fallback && fallback.querySelector("a.source-link");
-        return {
-          symbol: shell.getAttribute("data-provider-symbol"),
-          state: shell.getAttribute("data-provider-state"),
-          reason: shell.getAttribute("data-provider-reason"),
-          fallbackUrl: fallbackLink ? fallbackLink.href : null,
-          fallbackVisible: Boolean(fallback && elementIsRendered(fallback))
-        };
-      }),
-      readinessEvidencePanelCount: readinessEvidencePanels.length,
-      undersizedTargets: undersizedTargets,
-      layout: {
-        market: renderedGridColumns(grid),
-        risk: renderedGridColumns(riskGrid),
-        research: renderedGridColumns(researchGrid),
-        information: renderedGridColumns(informationGrid),
-        operations: renderedGridColumns(operationsGrid)
-      },
-      checks: checks,
-      failures: failures
-    };
-    var output = document.createElement("pre");
-    output.id = "finance-terminal-regression-result";
-    output.hidden = true;
-    output.textContent = JSON.stringify(result);
-    document.body.appendChild(output);
-    document.documentElement.setAttribute("data-regression-status", result.status);
+    var spec = specs[name];
+    if (!spec) return;
+    spec[0].textContent = "";
+    var message = appendText(spec[0], "div", "load-error", spec[2] + "暂不可用：" + error.message);
+    message.setAttribute("role", "alert");
+    spec[0].setAttribute("aria-busy", "false");
+    spec[1].textContent = spec[3];
   }
 
-  function fetchJson(path) {
-    return fetch(path + "?t=" + Date.now(), { cache: "no-store" }).then(function (response) {
-      if (!response.ok) throw new Error("HTTP " + response.status);
-      return response.json();
-    });
-  }
-
-  function fetchSource(path) {
-    return fetchJson(path).then(function (data) {
-      return { data: data, error: null };
+  function startFinanceTerminal() {
+    var root = document.documentElement;
+    return import("./finance-terminal-loader.mjs").then(function (loaderModule) {
+      return loaderModule.startFinanceTerminal({
+        buildCritical: function (config, sources) {
+          var marketLicenseState;
+          try {
+            if (sources.marketLicense.error) throw sources.marketLicense.error;
+            marketLicenseState = adaptMarketLicenseReadiness(sources.marketLicense.data);
+          } catch (marketLicenseError) {
+            marketLicenseState = unavailableMarketLicenseReadiness(marketLicenseError);
+          }
+          var marketData = sources.macro.error
+            ? buildPageDataWithMacroError(
+              config, sources.macro.error, undefined, sources.macroHealth,
+              sources.assetRanking, sources.assetRankingHealth
+            )
+            : buildPageData(
+              config, sources.macro.data, undefined, null, sources.macroHealth,
+              sources.assetRanking, sources.assetRankingHealth
+            );
+          return {
+            market: marketData,
+            marketLicense: marketLicenseState,
+            risks: [],
+            research: [],
+            information: [],
+            operations: []
+          };
+        },
+        buildSection: function (name, group) {
+          if (name === "risk") return buildRiskCards(group);
+          if (name === "research") return buildResearchCards(group);
+          if (name === "information") return buildInformationCards(group);
+          if (name === "operations") return buildOperationsCards(group);
+          throw new Error("未知金融终端分区：" + name);
+        },
+        renderCritical: function (experience) {
+          render(experience.market);
+          renderMarketLicenseNotice(experience.marketLicense);
+        },
+        renderSection: function (name, cards) {
+          if (name === "risk") renderRiskCards(cards);
+          if (name === "research") renderResearchCards(cards);
+          if (name === "information") renderInformationCards(cards);
+          if (name === "operations") renderOperationsCards(cards);
+        },
+        renderSectionError: renderDeferredSectionError,
+        announceCritical: function (experience) { announceMarketReady(experience.market); },
+        announceComplete: announceExperience,
+        monitorProvider: function (marketLicense) { return monitorProviderWidgets(marketLicense); },
+        runRegression: function () {
+          return import("./finance-terminal-regression.mjs").then(function (regressionModule) {
+            return regressionModule.runBrowserRegressionProbe({
+              providerWidgetUnavailableCopy: providerWidgetUnavailableCopy
+            });
+          });
+        },
+        experienceKeys: {
+          risk: "risks",
+          research: "research",
+          information: "information",
+          operations: "operations"
+        },
+        sections: {
+          risk: document.getElementById("risk-section"),
+          research: document.getElementById("research-section"),
+          information: document.getElementById("information-section"),
+          operations: document.getElementById("operations-section")
+        },
+        navigationLinks: document.querySelectorAll(".section-nav a")
+      });
     }).catch(function (error) {
-      return { data: null, error: error };
+      root.setAttribute("data-critical-data-state", "error");
+      renderError(error);
+      if (new URLSearchParams(window.location.search).get("regression") === "1") {
+        var output = document.createElement("pre");
+        output.id = "finance-terminal-regression-result";
+        output.hidden = true;
+        output.textContent = JSON.stringify({
+          status: "fail",
+          failures: ["bootFailure"],
+          error: error && error.message ? error.message : "金融终端启动失败"
+        });
+        document.body.appendChild(output);
+        root.setAttribute("data-regression-status", "fail");
+      }
     });
   }
 
-  fetchJson("data.json")
-    .then(function (config) {
-      return Promise.all([
-        fetchSource(MACRO_DATA_URL),
-        fetchSource(MACRO_HEALTH_URL),
-        fetchSource(FEAR_GREED_DATA_URL),
-        fetchSource(FEAR_GREED_HEALTH_URL),
-        fetchSource(OFR_DATA_URL),
-        fetchSource(OFR_HEALTH_URL),
-        fetchSource(ASSET_TRACKER_DATA_URL),
-        fetchSource(ASSET_TRACKER_HEALTH_URL),
-        fetchSource(ASSET_RANKING_DATA_URL),
-        fetchSource(ASSET_RANKING_HEALTH_URL),
-        fetchSource(COMPANIES_DATA_URL),
-        fetchSource(COMPANIES_HEALTH_URL),
-        fetchSource(ECON_CALENDAR_DATA_URL),
-        fetchSource(ECON_CALENDAR_HEALTH_URL),
-        fetchSource(FINANCE_NEWS_DATA_URL),
-        fetchSource(FINANCE_NEWS_HEALTH_URL),
-        fetchSource(READINESS_DATA_URL),
-        fetchSource(MARKET_LICENSE_READINESS_URL)
-      ]).then(function (sources) {
-        var macroSource = sources[0];
-        var macroHealthSource = sources[1];
-        var fearGreedSource = sources[2];
-        var fearGreedHealthSource = sources[3];
-        var ofrSource = sources[4];
-        var ofrHealthSource = sources[5];
-        var assetTrackerSource = sources[6];
-        var assetTrackerHealthSource = sources[7];
-        var assetRankingSource = sources[8];
-        var assetRankingHealthSource = sources[9];
-        var companiesSource = sources[10];
-        var companiesHealthSource = sources[11];
-        var calendarSource = sources[12];
-        var calendarHealthSource = sources[13];
-        var newsSource = sources[14];
-        var newsHealthSource = sources[15];
-        var readinessSource = sources[16];
-        var marketLicenseSource = sources[17];
-        var marketLicenseState;
-        try {
-          if (marketLicenseSource.error) throw marketLicenseSource.error;
-          marketLicenseState = adaptMarketLicenseReadiness(marketLicenseSource.data);
-        } catch (marketLicenseError) {
-          marketLicenseState = unavailableMarketLicenseReadiness(marketLicenseError);
-        }
-        var marketData = macroSource.error
-          ? buildPageDataWithMacroError(
-            config, macroSource.error, undefined, macroHealthSource, assetRankingSource, assetRankingHealthSource
-          )
-          : buildPageData(
-            config, macroSource.data, undefined, null, macroHealthSource, assetRankingSource, assetRankingHealthSource
-          );
-        return {
-          market: marketData,
-          risks: buildRiskCards({
-            macro: macroSource,
-            fearGreed: fearGreedSource,
-            fearGreedHealth: fearGreedHealthSource,
-            ofr: ofrSource,
-            ofrHealth: ofrHealthSource
-          }),
-          research: buildResearchCards({
-            assetTracker: assetTrackerSource,
-            assetTrackerHealth: assetTrackerHealthSource,
-            assetRanking: assetRankingSource,
-            assetRankingHealth: assetRankingHealthSource,
-            companies: companiesSource,
-            companiesHealth: companiesHealthSource
-          }),
-          information: buildInformationCards({
-            calendar: calendarSource,
-            calendarHealth: calendarHealthSource,
-            news: newsSource,
-            newsHealth: newsHealthSource
-          }),
-          operations: buildOperationsCards({
-            macro: macroSource,
-            macroHealth: macroHealthSource,
-            assetTracker: assetTrackerSource,
-            assetTrackerHealth: assetTrackerHealthSource,
-            companies: companiesSource,
-            companiesHealth: companiesHealthSource,
-            assetRanking: assetRankingSource,
-            assetRankingHealth: assetRankingHealthSource,
-            readiness: readinessSource
-          }),
-          marketLicense: marketLicenseState
-        };
-      });
-    })
-    .then(function (experience) {
-      render(experience.market);
-      renderRiskCards(experience.risks);
-      renderResearchCards(experience.research);
-      renderInformationCards(experience.information);
-      renderOperationsCards(experience.operations);
-      renderMarketLicenseNotice(experience.marketLicense);
-      announceExperience(experience);
-      return monitorProviderWidgets(experience.marketLicense).then(function () {
-        window.setTimeout(runBrowserRegressionProbe, 0);
-      });
-    })
-    .catch(function (error) {
-      renderError(error);
-      window.setTimeout(runBrowserRegressionProbe, 0);
-    });
+  startFinanceTerminal();
 })(typeof globalThis !== "undefined" ? globalThis : this);

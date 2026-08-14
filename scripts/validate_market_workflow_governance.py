@@ -231,6 +231,8 @@ def validate_workflow(dataset: str) -> None:
 
 def validate_cross_pipeline_contract() -> None:
     scheduler = SCHEDULER.read_text(encoding="utf-8")
+    require('-f event=workflow_dispatch -f "branch=$GITHUB_REF_NAME" -f per_page=1' in scheduler,
+            "调度器查询最近运行时必须按当前分支隔离，开发分支资格运行不得抑制main生产调度")
     require("latest_dispatch companies.yml" in scheduler and 'c_concl" = "success"' in scheduler
             and "workflows/asset_ranking.yml/dispatches" in scheduler,
             "调度器必须在公司榜本窗口成功后才触发资产总榜")

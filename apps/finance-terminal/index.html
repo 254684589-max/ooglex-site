@@ -8,6 +8,7 @@
   <link rel="canonical" href="https://www.ooglex.com/apps/finance-terminal/">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/favicon.svg">
+  <link rel="modulepreload" href="finance-terminal-loader.mjs">
   <meta name="theme-color" content="#070a0f">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Ooglex金融终端 · 全球市场总览">
@@ -38,7 +39,7 @@
     }
 
     * { box-sizing: border-box; }
-    html { background: var(--bg); }
+    html { scroll-behavior: smooth; background: var(--bg); }
     body {
       min-width: 320px;
       min-height: 100vh;
@@ -157,7 +158,7 @@
       transition: border-color 160ms ease, color 160ms ease;
     }
     .back-link:hover { border-color: var(--line-strong); color: var(--ink); }
-    .back-link:focus-visible, .brand:focus-visible, .period-tab:focus-visible, .source-link:focus-visible, .detail-link:focus-visible, .news-link:focus-visible, .operation-action:focus-visible, .operation-readiness-link:focus-visible, .method a:focus-visible {
+    .back-link:focus-visible, .brand:focus-visible, .period-tab:focus-visible, .source-link:focus-visible, .detail-link:focus-visible, .news-link:focus-visible, .operation-action:focus-visible, .operation-readiness-link:focus-visible, .section-nav a:focus-visible, .method summary:focus-visible, .method a:focus-visible, .legal-links a:focus-visible {
       outline: 2px solid var(--cyan);
       outline-offset: 3px;
     }
@@ -238,6 +239,37 @@
     .status-unknown .license-label { border-color: rgba(255, 125, 134, 0.4); color: var(--down); background: var(--down-soft); }
     .license-notice strong { color: var(--ink); }
     .license-copy { margin-left: 0.35em; }
+
+    .section-nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      padding: 7px;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(7, 10, 15, 0.92);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+      scrollbar-width: thin;
+      backdrop-filter: blur(14px);
+    }
+    .section-nav a {
+      display: inline-flex;
+      min-height: 38px;
+      flex: 0 0 auto;
+      align-items: center;
+      padding: 8px 11px;
+      border: 1px solid transparent;
+      border-radius: 5px;
+      color: var(--muted);
+      font: 700 11px var(--mono);
+      white-space: nowrap;
+    }
+    .section-nav a:hover { border-color: var(--line-strong); color: var(--cyan); background: var(--cyan-soft); }
+    main > section, .method { scroll-margin-top: 66px; }
 
     .hero {
       display: grid;
@@ -496,6 +528,7 @@
       white-space: nowrap;
     }
     .source-link { color: #8fdff5; text-decoration: underline; text-decoration-color: rgba(143, 223, 245, 0.35); text-underline-offset: 2px; }
+    .coingecko-attribution { color: var(--cyan); font-family: Arial, var(--sans); font-size: 11px; font-weight: 700; }
     .source-link:hover { color: var(--cyan); }
     .source-link, .detail-link { display: inline-flex; min-height: 24px; align-items: center; }
     .asset-footer time { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -994,15 +1027,27 @@
     .operation-skeleton { min-height: 320px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--panel); }
 
     .method {
-      display: grid;
-      grid-template-columns: 170px 1fr;
-      gap: 28px;
       margin-top: 24px;
       padding: 22px 0;
       border-top: 1px solid var(--line);
       border-bottom: 1px solid var(--line);
     }
-    .method h2 { margin: 0; color: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: 0.13em; }
+    .method summary {
+      display: grid;
+      min-height: 44px;
+      grid-template-columns: minmax(180px, auto) minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      color: var(--muted);
+      cursor: pointer;
+      list-style: none;
+    }
+    .method summary::-webkit-details-marker { display: none; }
+    .method summary::after { color: var(--cyan); content: "+"; font: 700 18px var(--mono); }
+    .method[open] summary::after { content: "−"; }
+    .method-title { color: var(--ink); font: 700 12px var(--mono); letter-spacing: 0.1em; }
+    .method-summary { font-size: 12px; line-height: 1.6; }
+    .method-body { margin-top: 16px; padding-top: 18px; border-top: 1px solid var(--line); }
     .method p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.8; }
     .method strong { color: var(--ink); }
     .method a { color: var(--cyan); text-decoration: underline; text-decoration-color: rgba(84, 216, 255, 0.35); text-underline-offset: 3px; }
@@ -1017,6 +1062,26 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
+    .legal-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px 14px; }
+    .legal-links a { display: inline-flex; min-height: 24px; align-items: center; color: var(--cyan); text-decoration: underline; text-underline-offset: 3px; }
+
+    /* Dense metadata remains readable at normal browser zoom. */
+    .market-state, .data-label, .data-note, .license-label, .meta-key, .board-subtitle,
+    .asset-en, .asset-symbol, .change-word, .official-trend-label, .official-trend-count,
+    .official-trend-meta, .official-trend-empty, .official-note, .provider-widget-fallback,
+    .proxy-note, .asset-details, .asset-footer, .risk-en, .risk-symbol, .risk-change,
+    .meter-labels, .risk-meta, .risk-footer, .research-en, .research-symbol, .quality-value,
+    .quality-label, .pipeline-health-label, .pipeline-health-state, .pipeline-health-metrics,
+    .pipeline-health-note, .period-tab, .rank-title, .rank-symbol, .proxy-badge, .rank-value,
+    .coverage-note, .research-kpi-label, .marketcap-rank, .marketcap-category, .marketcap-value,
+    .mover-label, .mover-symbol, .research-note, .research-meta, .research-footer,
+    .information-en, .information-symbol, .information-context, .event-impact, .event-time,
+    .event-country, .event-values, .news-meta, .information-note, .information-meta,
+    .information-footer, .operation-action, .operation-en, .operation-symbol,
+    .operation-kpi-label, .operation-metric-label, .operation-metric-value, .operation-times,
+    .operation-readiness-label, .operation-readiness-date, .operation-readiness-state,
+    .operation-readiness-note, .operation-readiness-link, .operation-note, .operation-footer,
+    footer { font-size: 11px; }
 
     @media (max-width: 1040px) {
       .hero { grid-template-columns: minmax(0, 1fr); gap: 30px; }
@@ -1036,6 +1101,8 @@
       .terminal-bar { gap: 11px; }
       .desk-code, .market-state { display: none; }
       .back-link { margin-left: auto; }
+      .section-nav { margin-inline: -4px; }
+      .section-nav a { min-width: 44px; min-height: 44px; justify-content: center; }
       .data-banner { grid-template-columns: auto 1fr; }
       .data-note { grid-column: 1 / -1; padding-left: 1px; }
       .license-notice { grid-template-columns: minmax(0, 1fr); }
@@ -1074,8 +1141,12 @@
       .news-link { min-height: 44px; }
       .asset-card { min-height: 276px; }
       .asset-price { font-size: 34px; }
-      .method { grid-template-columns: 1fr; gap: 10px; }
+      .method summary { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; }
+      .method-summary { grid-column: 1 / -1; grid-row: 2; }
+      .method summary::after { grid-column: 2; grid-row: 1; }
       footer { flex-direction: column; }
+      .legal-links { justify-content: flex-start; }
+      .legal-links a { min-width: 44px; min-height: 44px; justify-content: center; padding-inline: 7px; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -1088,11 +1159,11 @@
     }
     @media (prefers-contrast: more) {
       :root { --line: rgba(241, 245, 249, 0.34); --line-strong: rgba(241, 245, 249, 0.58); --muted: #b8c3d1; --faint: #a8b4c4; }
-      .status-chip, .period-tab, .back-link, .operation-action { border-width: 2px; }
+      .status-chip, .period-tab, .back-link, .operation-action, .section-nav a { border-width: 2px; }
     }
     @media (forced-colors: active) {
-      .asset-card, .risk-card, .research-card, .information-card, .operation-card, .data-banner, .license-notice, .pipeline-health, .operation-readiness { border: 1px solid CanvasText; }
-      .status-chip, .period-tab, .back-link, .skip-link, .operation-action, .operation-readiness-link { forced-color-adjust: auto; }
+      .asset-card, .risk-card, .research-card, .information-card, .operation-card, .data-banner, .license-notice, .section-nav, .pipeline-health, .operation-readiness { border: 1px solid CanvasText; }
+      .status-chip, .period-tab, .back-link, .skip-link, .section-nav a, .operation-action, .operation-readiness-link { forced-color-adjust: auto; }
       .asset-card::after, .risk-card::after, .research-card::after, .information-card::after, .operation-card::after { background: CanvasText; }
     }
   </style>
@@ -1107,7 +1178,7 @@
       </a>
       <span class="desk-code">FT / MARKET OVERVIEW</span>
       <span class="bar-spacer"></span>
-      <span class="market-state" id="market-state">PARTIAL DATA</span>
+      <span class="market-state" id="market-state">正在校验</span>
       <a class="back-link" href="../../">返回主页</a>
     </header>
 
@@ -1124,8 +1195,18 @@
       <span><strong id="license-title">正在读取免费代理行情策略</strong><span class="license-copy" id="license-copy">三大指数与黄金使用明确披露的SPY、QQQ、DIA、GLD官方嵌入组件。</span></span>
     </div>
 
+    <nav class="section-nav" aria-label="页面分区">
+      <a href="#overview-section">总览</a>
+      <a href="#market-section">核心资产</a>
+      <a href="#risk-section">市场状态</a>
+      <a href="#research-section">强弱与领袖</a>
+      <a href="#information-section">事件与资讯</a>
+      <a href="#operations-section">V1运行证据</a>
+      <a href="#method-section">数据说明</a>
+    </nav>
+
     <main id="main-content" tabindex="-1">
-      <section class="hero" aria-labelledby="page-title">
+      <section class="hero" id="overview-section" aria-labelledby="page-title">
         <div>
           <p class="eyebrow">Ooglex Finance Terminal · BETA PREVIEW</p>
           <h1 id="page-title">全球市场总览</h1>
@@ -1139,7 +1220,7 @@
         </div>
       </section>
 
-      <section aria-labelledby="market-heading">
+      <section id="market-section" aria-labelledby="market-heading">
         <div class="board-heading">
           <h2 class="board-title" id="market-heading">核心资产</h2>
           <span class="board-subtitle">PRICE · CHANGE · UPDATED TIME</span>
@@ -1152,7 +1233,7 @@
         </div>
       </section>
 
-      <section class="risk-section" aria-labelledby="risk-heading">
+      <section class="risk-section" id="risk-section" aria-labelledby="risk-heading">
         <div class="board-heading">
           <h2 class="board-title" id="risk-heading">市场状态</h2>
           <span class="board-subtitle" id="risk-summary">LOADING SIGNALS</span>
@@ -1164,7 +1245,7 @@
         </div>
       </section>
 
-      <section class="research-section" aria-labelledby="research-heading">
+      <section class="research-section" id="research-section" aria-labelledby="research-heading">
         <div class="board-heading">
           <h2 class="board-title" id="research-heading">市场强弱与领袖</h2>
           <span class="board-subtitle" id="research-summary">LOADING RESEARCH</span>
@@ -1176,7 +1257,7 @@
         </div>
       </section>
 
-      <section class="information-section" aria-labelledby="information-heading">
+      <section class="information-section" id="information-section" aria-labelledby="information-heading">
         <div class="board-heading">
           <h2 class="board-title" id="information-heading">今日事件与资讯</h2>
           <span class="board-subtitle" id="information-summary">LOADING INFORMATION</span>
@@ -1187,7 +1268,7 @@
         </div>
       </section>
 
-      <section class="operations-section" aria-labelledby="operations-heading">
+      <section class="operations-section" id="operations-section" aria-labelledby="operations-heading">
         <div class="board-heading">
           <h2 class="board-title" id="operations-heading">稳定V1运行证据</h2>
           <span class="board-subtitle" id="operations-summary">LOADING PIPELINES</span>
@@ -1207,9 +1288,13 @@
         </div>
       </section>
 
-      <section class="method" aria-labelledby="method-title">
-        <h2 id="method-title">数据说明 / METHODOLOGY</h2>
-        <p>
+      <details class="method" id="method-section">
+        <summary id="method-title">
+          <span class="method-title">数据与许可说明 / METHODOLOGY</span>
+          <span class="method-summary">摘要：站内快照与提供方组件分开标示来源、数据日、更新时间、回退和过期状态；展开查看完整口径与许可链接。</span>
+        </summary>
+        <div class="method-body">
+          <p>
           <strong>DGS10、DTWEXBGS、RWTC、BTC/USD、三项市场状态、跨资产强弱、全球资产市值、全球公司领袖、经济日历和财经新闻均不在浏览器中调用外部API，而是读取站内任务生成的静态数据；仅四项免费ETF代理由TradingView官方组件在浏览器中直接展示。</strong>
           CNN恐慌与贪婪、OFR、Forex Factory经济日历和Google News市场资讯分别读取独立 <code>health.json</code>；卡片中的“UPDATE HEALTH”只表示最近更新任务证据，与内容本身的数据日分开。首次迁移无法追溯旧任务时显示 <code>UNKNOWN</code>，报告超出各来源12/36/72小时阈值时显示 <code>STALE</code>，失败时继续保留同一来源的最后有效内容，不用空值或新时间戳覆盖。
           经济日历复用Forex Factory公开周历，筛选接下来的高、中影响事件，按设备本地时区展示；文件超过36小时未更新或离开当前周范围时标记`STALE`，实际值、预测值和前值缺失时显示“—”，不补造数值。财经新闻只读取“最新消息”数据中的 <code>markets</code> 市场板块，按发布时间展示最新5条；同文件的Yahoo行情快照不参与终端行情，新闻文件超过12小时未更新或最新文章超过36小时时标记`STALE`，标题点击后经Google News跳转原媒体。
@@ -1217,14 +1302,19 @@
           全球资产市值以十亿美元为统一单位，逐项区分行情、已披露市值代理、历史回退、静态估值和待确认状态，并展示逐条来源；房地产、政府债务等慢变量估值若未保存原报告日期，不会用文件更新时间代替。公司榜与资产榜运行状态把动态行情和慢频估值分层：已登记的慢频估值不会冒充每日行情，也不会单独被当作更新失败；动态回退、未知、不可用或未登记`PARTIAL`路径仍会明确降级。全球公司领袖逐公司区分Yahoo行情、历史回退和未上市静态估值；未上市估值不参与涨跌排序。
           宏观状态沿用宏观雷达已有的0–100制度信号分数，数值越高越偏“宽松·支持”；CNN恐慌与贪婪分数表示从“极度恐惧”到“极度贪婪”；OFR金融压力指数以0为历史平均，正值高于平均压力、负值低于平均压力。三者口径不同，不合成为新的总分。DGS10收益率显示为百分比，变化显示为相对上一观测值的基点（bp）。
           DGS10、DTWEXBGS与RWTC三张官方行情卡片分别交叉校验同一份宏观数据和逐源健康快照；BTC/USD另与资产榜中的CoinGecko/Yahoo逐源证据对齐。四张真实行情卡片都在卡内显示独立 <code>UPDATE HEALTH</code>：本轮刷新、明确降级或回退、连续失败、最近尝试与最后成功均不与行情数据日混用。前三张官方卡片另显示最多8项严格按日期递增的最近官方观测；DGS10区间变化使用bp，DTWEXBGS与RWTC使用百分比，历史不足时不以演示走势填充。单个来源健康字段异常时只把对应健康栏降为 <code>UNKNOWN</code>，不会隐藏仍可验证的行情，也不会拖累其他卡片；健康证据超过72小时显示 <code>STALE</code>。
-          <strong>DTWEXBGS是美联储H.10广义贸易加权美元指数，不是ICE DXY；RWTC是EIA库欣WTI现货，不是 <code>CL=F</code> 近月期货。</strong> WTI以美元/桶显示，涨跌按前后两个有效观测值计算；美元或WTI自动更新失败时保留最后有效值，RWTC超过4个美国工作日未发布新观测值时标记“STALE”。BTC/USD优先复用资产榜CoinGecko日度快照并显示“Powered by CoinGecko”；若明确降级至Yahoo BTC-USD，卡片同步改为“较前收盘”口径。SPY、QQQ、DIA与GLD分别仅作为SPX、NDX、DJIA与LBMA Gold Price PM的免费ETF代理，不是同一原标的；行情、延迟、交易状态与更新时间由TradingView组件直接标示，Ooglex不抓取、不导出、不保存这些组件中的原始行情。页面最多等待8秒验证Web Component注册，再逐卡确认组件元素已连接、已定义且具有非空布局；只有完成宿主挂载才显示组件。“组件宿主已挂载”仍不代表报价已经渲染、数据新鲜或市场开市；任一卡验证失败只保留对应TradingView来源链接，不用缓存值或演示值顶替，脚本稍后注册时可自动恢复。查看 <a href="https://fred.stlouisfed.org/series/DTWEXBGS" target="_blank" rel="noopener noreferrer">DTWEXBGS官方序列</a>、<a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html" target="_blank" rel="noopener noreferrer">FRED API使用条款</a>、<a href="https://www.eia.gov/dnav/pet/hist/rwtcd.htm" target="_blank" rel="noopener noreferrer">EIA RWTC官方序列</a>、<a href="https://www.eia.gov/opendata/documentation.php" target="_blank" rel="noopener noreferrer">EIA API文档</a>、<a href="https://www.coingecko.com/" target="_blank" rel="noopener noreferrer">CoinGecko</a>、<a href="https://www.tradingview.com/widget-docs/" target="_blank" rel="noopener noreferrer">TradingView组件文档</a>和<a href="https://www.tradingview.com/widget-docs/faq/data/" target="_blank" rel="noopener noreferrer">TradingView数据说明</a>；本产品未获圣路易斯联储、EIA或TradingView认可或认证。
-        </p>
-      </section>
+          <strong>DTWEXBGS是美联储H.10广义贸易加权美元指数，不是ICE DXY；RWTC是EIA库欣WTI现货，不是 <code>CL=F</code> 近月期货。</strong> WTI以美元/桶显示，涨跌按前后两个有效观测值计算；美元或WTI自动更新失败时保留最后有效值，RWTC超过4个美国工作日未发布新观测值时标记“STALE”。BTC/USD优先复用资产榜CoinGecko日度快照并显示“Powered by CoinGecko”；若明确降级至Yahoo BTC-USD，卡片同步改为“较前收盘”口径。SPY、QQQ、DIA与GLD分别仅作为SPX、NDX、DJIA与LBMA Gold Price PM的免费ETF代理，不是同一原标的；行情、延迟、交易状态与更新时间由TradingView组件直接标示，Ooglex不抓取、不导出、不保存这些组件中的原始行情。页面最多等待8秒验证Web Component注册，再逐卡确认组件元素已连接、已定义且具有非空布局；只有完成宿主挂载才显示组件。“组件宿主已挂载”仍不代表报价已经渲染、数据新鲜或市场开市；任一卡验证失败只保留对应TradingView来源链接，不用缓存值或演示值顶替，脚本稍后注册时可自动恢复。查看 <a href="https://fred.stlouisfed.org/series/DTWEXBGS" target="_blank" rel="noopener noreferrer">DTWEXBGS官方序列</a>、<a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html" target="_blank" rel="noopener noreferrer">FRED API使用条款</a>、<a href="https://www.eia.gov/dnav/pet/hist/rwtcd.htm" target="_blank" rel="noopener noreferrer">EIA RWTC官方序列</a>、<a href="https://www.eia.gov/opendata/documentation.php" target="_blank" rel="noopener noreferrer">EIA API文档</a>、<a href="https://www.coingecko.com/en/api_terms" target="_blank" rel="noopener noreferrer">CoinGecko API使用条款</a>、<a href="https://www.tradingview.com/widget-docs/" target="_blank" rel="noopener noreferrer">TradingView组件文档</a>和<a href="https://www.tradingview.com/widget-docs/faq/data/" target="_blank" rel="noopener noreferrer">TradingView数据说明</a>；本产品未获圣路易斯联储、EIA或TradingView认可或认证，也未获CoinGecko认可或赞助。
+          </p>
+        </div>
+      </details>
     </main>
 
     <footer>
-      <span>Ooglex Finance Terminal · Prototype</span>
-      <span>仅供产品测试 · 非投资建议</span>
+      <span>Ooglex Finance Terminal · Public Beta</span>
+      <nav class="legal-links" aria-label="产品法律与隐私">
+        <span>仅供产品测试 · 非投资建议</span>
+        <a href="terms.html">使用条款</a>
+        <a href="privacy.html">隐私政策</a>
+      </nav>
     </footer>
   </div>
 

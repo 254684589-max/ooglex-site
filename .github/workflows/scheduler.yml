@@ -46,11 +46,12 @@ jobs:
             exit 0
           fi
 
-          # 取某工作流最近一次 workflow_dispatch 运行的「创建时间 + 结论」。
+          # 取当前调度分支上某工作流最近一次 workflow_dispatch 运行的「创建时间 + 结论」。
+          # branch 过滤不可省略：开发分支资格运行不得让 main 调度器误判为本窗口已完成。
           # 不用 API 的 created 范围过滤，直接取最新一条在本地比较，语义更稳。
           latest_dispatch() {  # $1 = workflow 文件名 → 输出 "created_at conclusion"
             gh api -X GET "repos/$GITHUB_REPOSITORY/actions/workflows/$1/runs" \
-              -f event=workflow_dispatch -f per_page=1 \
+              -f event=workflow_dispatch -f "branch=$GITHUB_REF_NAME" -f per_page=1 \
               --jq '.workflow_runs[0] | if . == null then "none none" else "\(.created_at) \(.conclusion // "pending")" end'
           }
 
