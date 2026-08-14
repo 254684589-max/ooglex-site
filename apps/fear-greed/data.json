@@ -1,13 +1,13 @@
 {
-  "updatedAt": "2026-08-14T04:42:10Z",
+  "updatedAt": "2026-08-14T21:33:55Z",
   "asOf": "2026-08-14",
   "source": "CNN Business Fear & Greed Index",
-  "score": 66,
+  "score": 65,
   "rating": "greed",
   "ratingZh": "贪婪",
   "refs": {
     "now": {
-      "score": 66,
+      "score": 65,
       "rating": "greed",
       "ratingZh": "贪婪"
     },
@@ -34,15 +34,15 @@
   },
   "indicators": [
     {
-      "score": 79,
-      "rating": "extreme greed",
-      "ratingZh": "极度贪婪",
+      "score": 75,
+      "rating": "greed",
+      "ratingZh": "贪婪",
       "key": "market_momentum_sp500",
       "name": "市场动能",
       "desc": "标普500 相对125日均线"
     },
     {
-      "score": 30,
+      "score": 29,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "stock_price_strength",
@@ -50,15 +50,15 @@
       "desc": "创52周新高 vs 新低个股"
     },
     {
-      "score": 54,
-      "rating": "neutral",
-      "ratingZh": "中性",
+      "score": 58,
+      "rating": "greed",
+      "ratingZh": "贪婪",
       "key": "stock_price_breadth",
       "name": "股价广度",
       "desc": "麦克莱伦成交量总和指数"
     },
     {
-      "score": 73,
+      "score": 66,
       "rating": "greed",
       "ratingZh": "贪婪",
       "key": "put_call_options",
@@ -74,7 +74,7 @@
       "desc": "VIX 及其50日均线"
     },
     {
-      "score": 80,
+      "score": 79,
       "rating": "extreme greed",
       "ratingZh": "极度贪婪",
       "key": "safe_haven_demand",
@@ -82,7 +82,7 @@
       "desc": "股票 vs 国债 20日收益差"
     },
     {
-      "score": 97,
+      "score": 99,
       "rating": "extreme greed",
       "ratingZh": "极度贪婪",
       "key": "junk_bond_demand",
@@ -425,7 +425,7 @@
     },
     {
       "t": "2026-08-14",
-      "v": 66
+      "v": 65
     }
   ],
   "note": "数据来自 CNN 恐慌与贪婪指数：0 = 极度恐惧，100 = 极度贪婪，由 7 个市场情绪指标综合而成，每日自动更新。仅供参考，不构成建议。"
