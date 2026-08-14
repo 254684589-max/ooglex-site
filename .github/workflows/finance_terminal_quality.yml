@@ -24,6 +24,7 @@ on:
       - 'apps/whats-latest/data.json'
       - 'apps/whats-latest/health.json'
       - 'scripts/validate_finance_terminal.py'
+      - 'scripts/validate_finance_terminal_loader.mjs'
       - 'scripts/finance_terminal_cycle_trigger.py'
       - 'scripts/validate_finance_terminal_cycle_trigger.py'
       - 'scripts/finance_terminal_market_licenses.py'
@@ -97,6 +98,7 @@ on:
       - 'apps/whats-latest/data.json'
       - 'apps/whats-latest/health.json'
       - 'scripts/validate_finance_terminal.py'
+      - 'scripts/validate_finance_terminal_loader.mjs'
       - 'scripts/finance_terminal_cycle_trigger.py'
       - 'scripts/validate_finance_terminal_cycle_trigger.py'
       - 'scripts/finance_terminal_market_licenses.py'
@@ -179,6 +181,9 @@ jobs:
 
       - name: Validate data and adapters
         run: python scripts/validate_finance_terminal.py
+
+      - name: Validate staged data loading
+        run: node scripts/validate_finance_terminal_loader.mjs
 
       - name: Validate per-record market data quality
         run: python scripts/validate_market_data_quality.py --dataset all

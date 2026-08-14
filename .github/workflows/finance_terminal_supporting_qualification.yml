@@ -107,6 +107,7 @@ jobs:
           python scripts/validate_market_workflow_governance.py --dataset all
           python scripts/validate_finance_terminal_supporting_qualification.py
           python scripts/validate_finance_terminal.py
+          node scripts/validate_finance_terminal_loader.mjs
           python scripts/validate_finance_terminal_release_gate.py
           python scripts/validate_finance_terminal_proxy_runtime_history.py
           node scripts/validate_finance_terminal_browser_evidence.mjs
