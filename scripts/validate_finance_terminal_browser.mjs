@@ -22,6 +22,7 @@ const MIME = {
   ".css": "text/css; charset=utf-8",
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
+  ".mjs": "text/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
   ".png": "image/png",
   ".svg": "image/svg+xml"
@@ -298,13 +299,17 @@ async function waitForLoadState(client, predicate, timeoutMs) {
     state: window.__financeTerminalLoadState || null,
     critical: document.documentElement.getAttribute("data-critical-data-state"),
     deferred: document.documentElement.getAttribute("data-deferred-data-state"),
-    informationBusy: document.getElementById("information-grid")?.getAttribute("aria-busy")
+    informationBusy: document.getElementById("information-grid")?.getAttribute("aria-busy"),
+    error: document.querySelector(".load-error")?.textContent || null
   })`;
   while (Date.now() < deadline) {
     const evaluation = await client.send("Runtime.evaluate", { expression, returnByValue: true });
     const payload = evaluation.result?.value;
     if (typeof payload === "string") {
       const snapshot = JSON.parse(payload);
+      if (snapshot.critical === "error") {
+        throw new Error(`金融终端首屏启动失败：${snapshot.error || "unknown"}`);
+      }
       if (predicate(snapshot)) return snapshot;
     }
     await new Promise((resolve) => setTimeout(resolve, 50));

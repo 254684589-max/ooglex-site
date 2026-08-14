@@ -2845,6 +2845,7 @@ def main() -> None:
     scheduler = SCHEDULER_WORKFLOW.read_text(encoding="utf-8")
     browser_validator = BROWSER_VALIDATOR.read_text(encoding="utf-8")
     require("[360, 768, 1280]" in browser_validator and "Page.captureScreenshot" in browser_validator
+            and '\".mjs\": \"text/javascript; charset=utf-8\"' in browser_validator
             and "Runtime.evaluate" in browser_validator and "officialObservationTrendCount" in browser_validator
             and "readinessEvidencePanelCount" in browser_validator
             and "validateDeferredLoading" in browser_validator
