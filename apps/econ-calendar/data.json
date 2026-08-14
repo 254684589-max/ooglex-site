@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-08-13T21:56:14Z",
-  "asOf": "2026-08-13",
+  "updatedAt": "2026-08-14T04:42:12Z",
+  "asOf": "2026-08-14",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-09 ~ 2026-08-14",
-  "count": 75,
+  "count": 74,
   "highCount": 11,
   "events": [
     {
@@ -712,18 +712,6 @@
       "impact": "low",
       "forecast": null,
       "previous": "-2.4%",
-      "actual": null
-    },
-    {
-      "ts": "2026-08-13T23:30:00Z",
-      "ccy": "AUD",
-      "country": "澳大利亚",
-      "flag": "🇦🇺",
-      "title": "澳央行行长讲话",
-      "titleEn": "RBA Gov Bullock Speaks",
-      "impact": "medium",
-      "forecast": null,
-      "previous": null,
       "actual": null
     },
     {
