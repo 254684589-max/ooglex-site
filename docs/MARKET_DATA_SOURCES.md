@@ -140,6 +140,7 @@ LBMA Gold Price由ICE Benchmark Administration管理，向第三方再分发可�
 - CoinGecko逐条记录必须是`mode: market`、`status: ok`、`frequency: daily`，价格为正数且24小时变化为有限数；否则终端拒绝把它标记为正常。
 - BTC/USD卡片同时读取`asset-ranking/health.json`：CoinGecko行情必须能对应`coingecko`来源的同批`market`计数和最后成功时间；Yahoo降级必须对应`yahoo-finance`来源证据；历史回退必须存在逐源`fallback`计数。价格快照可读但健康证据缺失或错配时，卡片显示`UNKNOWN`，上线门禁直接阻断。
 - 页面显示“Powered by CoinGecko”并链接到CoinGecko；署名不得被统一的文件来源摘要吞掉。
+- “Powered by CoinGecko”使用独立可机器识别样式，计算字号不得小于10px；公开终端页脚必须提供产品使用条款与隐私政策，至少披露CoinGecko所有权、保护性用户限制、CoinGecko责任排除、加密资产波动风险、数据处理目的与第三方组件边界。
 - Demo套餐不作为商业授权依据；若网站收费、商业化或用途超出所选套餐，应先切换至允许相应用途的套餐。
 - 如果页面提供给其他用户使用，应同步准备适用的用户条款和隐私政策。
 - 当前资产榜路径免密钥；本批不新增或假设任何Secret。未来若供应商要求密钥，只能放入GitHub Actions Secret或Cloudflare Secret，不进入浏览器。

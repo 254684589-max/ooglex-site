@@ -30,6 +30,9 @@ from finance_terminal_market_licenses import validate_market_source_readiness
 ROOT = Path(__file__).resolve().parents[1]
 PAGE = ROOT / "apps" / "finance-terminal" / "index.html"
 APP = ROOT / "apps" / "finance-terminal" / "app.js"
+TERMS_PAGE = ROOT / "apps" / "finance-terminal" / "terms.html"
+PRIVACY_PAGE = ROOT / "apps" / "finance-terminal" / "privacy.html"
+LEGAL_CSS = ROOT / "apps" / "finance-terminal" / "legal.css"
 DATA = ROOT / "apps" / "finance-terminal" / "data.json"
 READINESS_DATA = ROOT / "apps" / "finance-terminal" / "readiness.json"
 MARKET_LICENSE_READINESS = ROOT / "apps" / "finance-terminal" / "market-source-readiness.json"
@@ -2472,6 +2475,9 @@ def main() -> None:
 
     page = PAGE.read_text(encoding="utf-8")
     app = APP.read_text(encoding="utf-8")
+    terms_page = TERMS_PAGE.read_text(encoding="utf-8")
+    privacy_page = PRIVACY_PAGE.read_text(encoding="utf-8")
+    legal_css = LEGAL_CSS.read_text(encoding="utf-8")
     home = HOME.read_text(encoding="utf-8")
     require("4项站内真实数据与4项TradingView免费ETF代理" in page,
             "页面首屏缺少免费数据覆盖提示")
@@ -2484,6 +2490,30 @@ def main() -> None:
     require("0 DEMO" in page, "页面未明确披露零演示行情")
     require("Powered by CoinGecko" in page and "Yahoo BTC-USD" in page,
             "页面未披露BTC/USD主要来源、署名或降级口径")
+    require('if (source.name === "Powered by CoinGecko") link.classList.add("coingecko-attribution")' in app
+            and ".coingecko-attribution" in page and "font-size: 11px" in page,
+            "CoinGecko署名必须使用可机器识别且不小于10px的醒目样式")
+    require('href="terms.html"' in page and 'href="privacy.html"' in page
+            and 'class="legal-links"' in page,
+            "金融终端页脚缺少易访问的使用条款或隐私政策")
+    require("CoinGecko API及相关数据、品牌和知识产权属于Gecko Labs" in terms_page
+            and "出售、出租、转授权、再分发" in terms_page
+            and "CoinGecko不负责本产品" in terms_page
+            and "加密资产价格高度波动" in terms_page
+            and "https://www.coingecko.com/en/api_terms" in terms_page,
+            "用户条款缺少CoinGecko所有权、保护性限制、责任排除或加密资产风险披露")
+    require("无需注册的静态Public Beta" in privacy_page
+            and "TradingView官方组件" in privacy_page
+            and "终端应用代码当前不使用本地存储" in privacy_page
+            and "https://www.coingecko.com/en/privacy" in privacy_page,
+            "隐私政策缺少当前收集范围、第三方组件、本地存储或CoinGecko隐私入口")
+    require("font-size: 16px" in legal_css and "min-width: 320px" in legal_css
+            and "<script" not in terms_page and "<script" not in privacy_page,
+            "法律页面必须保持移动端可读且不得新增追踪脚本")
+    for legal_page in (terms_page, privacy_page):
+        require(all('rel="noopener noreferrer"' in tag
+                    for tag in re.findall(r'<a[^>]+target="_blank"[^>]*>', legal_page)),
+                "法律页面外链必须隔离新窗口上下文")
     require("SPY、QQQ、DIA与GLD分别仅作为SPX、NDX、DJIA与LBMA Gold Price PM的免费ETF代理" in page
             and "不是同一原标的" in page
             and "不抓取、不导出、不保存" in page,
@@ -2704,6 +2734,8 @@ def main() -> None:
             "页面缺少浏览器、官方逐源或辅助来源资源回归探针")
     require("marketLicenseReadiness" in app and "providerWidgetCount" in app,
             "浏览器回归探针未覆盖免费代理状态或四项提供方组件")
+    require("providerAttribution" in app and "poweredByCoinGeckoLinks" in app,
+            "浏览器回归探针未核对CoinGecko署名文本、样式或最小字号")
     require("waitForProviderWidgetRegistration" in app and "inspectProviderWidgetHost" in app
             and "verifyProviderWidgetHosts" in app and "monitorProviderWidgets" in app
             and "providerWidgetRuntime" in app and "providerWidgetRuntimeStates" in app

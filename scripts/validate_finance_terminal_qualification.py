@@ -128,6 +128,11 @@ def test_github_workflow_safety() -> None:
             "跨日周期标记及其契约必须纳入资格与质量CI")
     require("apps/finance-terminal/market-source-readiness.json" in workflow,
             "行情授权结论变化必须触发开发分支资格验收")
+    require(all(path in workflow for path in (
+        "apps/finance-terminal/legal.css",
+        "apps/finance-terminal/terms.html",
+        "apps/finance-terminal/privacy.html",
+    )), "金融终端法律与隐私页面变化必须触发开发分支资格验收")
     require("scripts/validate_finance_terminal_browser_evidence.mjs" in workflow
             and "finance-terminal-v1-proxy-runtime" in workflow
             and "finance-terminal-browser-evidence.json" in workflow

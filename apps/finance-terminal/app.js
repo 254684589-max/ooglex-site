@@ -3256,6 +3256,7 @@
       link.target = "_blank";
       link.rel = "noopener noreferrer";
       link.setAttribute("aria-label", (source.name || "查看来源") + "（在新窗口打开）");
+      if (source.name === "Powered by CoinGecko") link.classList.add("coingecko-attribution");
       return;
     }
     appendText(parent, "span", "source-name", source.name || "来源未提供");
@@ -4523,7 +4524,7 @@
     )).filter(elementIsRendered);
     var targetMinimum = width <= 620 ? 44 : 24;
     var targetElements = Array.prototype.slice.call(document.querySelectorAll(
-      ".brand, .back-link, .section-nav a, .method summary, .period-tab, .source-link, .detail-link, .news-link, .operation-action, .operation-readiness-link"
+      ".brand, .back-link, .section-nav a, .method summary, .period-tab, .source-link, .detail-link, .news-link, .operation-action, .operation-readiness-link, .legal-links a"
     )).filter(elementIsRendered);
     var sectionLinks = Array.prototype.slice.call(document.querySelectorAll(".section-nav a"));
     var supportingHealthPanels = Array.prototype.slice.call(document.querySelectorAll(
@@ -4544,6 +4545,10 @@
     var readinessEvidencePanels = Array.prototype.slice.call(document.querySelectorAll(
       "#operations-grid .operation-readiness"
     ));
+    var poweredByCoinGeckoLinks = Array.prototype.slice.call(document.querySelectorAll(
+      ".asset-source a.source-link"
+    )).filter(function (link) { return link.textContent.trim() === "Powered by CoinGecko"; });
+    var coinGeckoAttributions = Array.prototype.slice.call(document.querySelectorAll(".coingecko-attribution"));
     var undersizedTargets = targetElements.map(function (element) {
       var rect = element.getBoundingClientRect();
       return {
@@ -4601,6 +4606,11 @@
             && widget.getAttribute("theme") === "dark";
         })
         && document.querySelectorAll(".provider-widget-fallback").length === 4,
+      providerAttribution: poweredByCoinGeckoLinks.length === coinGeckoAttributions.length
+        && coinGeckoAttributions.every(function (link) {
+        return link.textContent.trim() === "Powered by CoinGecko"
+          && Number.parseFloat(window.getComputedStyle(link).fontSize) >= 10;
+        }),
       providerWidgetRuntime: providerWidgetShells.length === 4
         && providerWidgetShells.every(function (shell) {
           var state = shell.getAttribute("data-provider-state");
