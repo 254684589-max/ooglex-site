@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-08-15T21:29:01Z",
-  "asOf": "2026-08-15",
+  "updatedAt": "2026-08-16T21:28:06Z",
+  "asOf": "2026-08-16",
   "source": "Forbes Real-Time Billionaires",
   "count": 250,
-  "totalWorth": 10036.5,
+  "totalWorth": 10028.2,
   "note": "数据来自 Forbes 实时富豪榜，每日自动更新；身价单位为十亿美元（B），当日变动为较上一参考时点的估算。仅供参考，不构成任何建议。",
   "people": [
     {
@@ -512,34 +512,6 @@
     },
     {
       "rank": 37,
-      "name": "詹路易吉·阿庞特",
-      "nameEn": "Gianluigi Aponte",
-      "worth": 48.72,
-      "change": -0.0,
-      "changePct": -0.0,
-      "country": "瑞士",
-      "flag": "🇨🇭",
-      "source": "Shipping",
-      "industry": "物流",
-      "image": "//specials-images.forbesimg.com/imageserve/5e77ceeac7b02d000666de20/416x416.jpg?background=000000&cropX1=1096&cropX2=5302&cropY1=46&cropY2=4249",
-      "age": 86
-    },
-    {
-      "rank": 37,
-      "name": "拉法埃拉·阿庞特-迪亚曼特",
-      "nameEn": "Rafaela Aponte-Diamant",
-      "worth": 48.72,
-      "change": -0.0,
-      "changePct": -0.0,
-      "country": "瑞士",
-      "flag": "🇨🇭",
-      "source": "Shipping",
-      "industry": "物流",
-      "image": "",
-      "age": 81
-    },
-    {
-      "rank": 39,
       "name": "乔瓦尼·费列罗",
       "nameEn": "Giovanni Ferrero",
       "worth": 47.82,
@@ -553,7 +525,7 @@
       "age": 62
     },
     {
-      "rank": 40,
+      "rank": 38,
       "name": "卢卡斯·沃尔顿",
       "nameEn": "Lukas Walton",
       "worth": 46.79,
@@ -567,7 +539,7 @@
       "age": 40
     },
     {
-      "rank": 41,
+      "rank": 39,
       "name": "马化腾",
       "nameEn": "Ma Huateng",
       "worth": 46.76,
@@ -581,7 +553,7 @@
       "age": 55
     },
     {
-      "rank": 42,
+      "rank": 40,
       "name": "伊里斯·丰特沃纳及家族",
       "nameEn": "Iris Fontbona & family",
       "worth": 46.69,
@@ -595,7 +567,7 @@
       "age": 83
     },
     {
-      "rank": 43,
+      "rank": 41,
       "name": "苏世民",
       "nameEn": "Stephen Schwarzman",
       "worth": 45.54,
@@ -609,7 +581,7 @@
       "age": 79
     },
     {
-      "rank": 44,
+      "rank": 42,
       "name": "马克·马特希茨",
       "nameEn": "Mark Mateschitz",
       "worth": 44.91,
@@ -621,6 +593,34 @@
       "industry": "食品饮料",
       "image": "https://specials-images.forbesimg.com/imageserve/642b2ae09caa113a6ce1c15e/416x416.jpg?background=000000&cropX1=898&cropX2=3376&cropY1=239&cropY2=2714",
       "age": 34
+    },
+    {
+      "rank": 43,
+      "name": "詹路易吉·阿庞特",
+      "nameEn": "Gianluigi Aponte",
+      "worth": 44.47,
+      "change": -0.0,
+      "changePct": -0.0,
+      "country": "瑞士",
+      "flag": "🇨🇭",
+      "source": "Shipping",
+      "industry": "物流",
+      "image": "//specials-images.forbesimg.com/imageserve/5e77ceeac7b02d000666de20/416x416.jpg?background=000000&cropX1=1096&cropX2=5302&cropY1=46&cropY2=4249",
+      "age": 86
+    },
+    {
+      "rank": 43,
+      "name": "拉法埃拉·阿庞特-迪亚曼特",
+      "nameEn": "Rafaela Aponte-Diamant",
+      "worth": 44.47,
+      "change": -0.0,
+      "changePct": -0.0,
+      "country": "瑞士",
+      "flag": "🇨🇭",
+      "source": "Shipping",
+      "industry": "物流",
+      "image": "",
+      "age": 81
     },
     {
       "rank": 45,
@@ -1422,6 +1422,20 @@
     },
     {
       "rank": 102,
+      "name": "阿尔瓦利德·本·塔拉勒亲王",
+      "nameEn": "Prince Alwaleed Bin Talal Alsaud",
+      "worth": 24.8,
+      "change": 0.15,
+      "changePct": 0.61,
+      "country": "沙特阿拉伯",
+      "flag": "🇸🇦",
+      "source": "investments",
+      "industry": "金融投资",
+      "image": "//specials-images.forbesimg.com/imageserve/5e779508d8e1ae0007b72f3e/416x416.jpg?background=000000&cropX1=950&cropX2=4271&cropY1=14&cropY2=3334",
+      "age": 71
+    },
+    {
+      "rank": 103,
       "name": "维琪·萨夫拉及家族",
       "nameEn": "Vicky Safra & family",
       "worth": 24.72,
@@ -1435,7 +1449,7 @@
       "age": 74
     },
     {
-      "rank": 103,
+      "rank": 104,
       "name": "斯图尔特·赫格纳",
       "nameEn": "Stuart Hoegner",
       "worth": 24.7,
@@ -1447,20 +1461,6 @@
       "industry": "金融投资",
       "image": "",
       "age": null
-    },
-    {
-      "rank": 104,
-      "name": "阿尔瓦利德·本·塔拉勒亲王",
-      "nameEn": "Prince Alwaleed Bin Talal Alsaud",
-      "worth": 24.65,
-      "change": -0.0,
-      "changePct": -0.0,
-      "country": "沙特阿拉伯",
-      "flag": "🇸🇦",
-      "source": "investments",
-      "industry": "金融投资",
-      "image": "//specials-images.forbesimg.com/imageserve/5e779508d8e1ae0007b72f3e/416x416.jpg?background=000000&cropX1=950&cropX2=4271&cropY1=14&cropY2=3334",
-      "age": 71
     },
     {
       "rank": 105,
