@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-16T13:09:27Z",
+  "updatedAt": "2026-08-16T21:29:31Z",
   "asOf": "2026-08-16",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-16 ~ 2026-08-21",
@@ -79,66 +79,6 @@
       "actual": null
     },
     {
-      "ts": "2026-08-17T02:00:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "Fixed Asset Investment ytd/y",
-      "titleEn": "Fixed Asset Investment ytd/y",
-      "impact": "low",
-      "forecast": "-6.2%",
-      "previous": "-5.7%",
-      "actual": null
-    },
-    {
-      "ts": "2026-08-17T02:00:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "工业产出 同比",
-      "titleEn": "Industrial Production y/y",
-      "impact": "low",
-      "forecast": "5.0%",
-      "previous": "5.3%",
-      "actual": null
-    },
-    {
-      "ts": "2026-08-17T02:00:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "新闻发布会",
-      "titleEn": "NBS Press Conference",
-      "impact": "low",
-      "forecast": null,
-      "previous": null,
-      "actual": null
-    },
-    {
-      "ts": "2026-08-17T02:00:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "零售销售 同比",
-      "titleEn": "Retail Sales y/y",
-      "impact": "low",
-      "forecast": "1.5%",
-      "previous": "1.0%",
-      "actual": null
-    },
-    {
-      "ts": "2026-08-17T02:00:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "失业率",
-      "titleEn": "Unemployment Rate",
-      "impact": "low",
-      "forecast": "5.1%",
-      "previous": "5.0%",
-      "actual": null
-    },
-    {
       "ts": "2026-08-17T04:30:00Z",
       "ccy": "JPY",
       "country": "日本",
@@ -172,6 +112,66 @@
       "impact": "low",
       "forecast": null,
       "previous": "-5.0%",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-17T07:00:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "Fixed Asset Investment ytd/y",
+      "titleEn": "Fixed Asset Investment ytd/y",
+      "impact": "low",
+      "forecast": "-6.2%",
+      "previous": "-5.7%",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-17T07:00:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "工业产出 同比",
+      "titleEn": "Industrial Production y/y",
+      "impact": "low",
+      "forecast": "5.0%",
+      "previous": "5.3%",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-17T07:00:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "新闻发布会",
+      "titleEn": "NBS Press Conference",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-08-17T07:00:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "零售销售 同比",
+      "titleEn": "Retail Sales y/y",
+      "impact": "low",
+      "forecast": "1.5%",
+      "previous": "1.0%",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-17T07:00:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "失业率",
+      "titleEn": "Unemployment Rate",
+      "impact": "low",
+      "forecast": "5.1%",
+      "previous": "5.0%",
       "actual": null
     },
     {
