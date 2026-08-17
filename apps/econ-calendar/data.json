@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-08-16T21:29:31Z",
-  "asOf": "2026-08-16",
+  "updatedAt": "2026-08-17T13:20:50Z",
+  "asOf": "2026-08-17",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-16 ~ 2026-08-21",
   "count": 96,
@@ -67,18 +67,6 @@
       "actual": null
     },
     {
-      "ts": "2026-08-17T01:30:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "New Home Prices m/m",
-      "titleEn": "New Home Prices m/m",
-      "impact": "low",
-      "forecast": null,
-      "previous": "-0.15%",
-      "actual": null
-    },
-    {
       "ts": "2026-08-17T04:30:00Z",
       "ccy": "JPY",
       "country": "日本",
@@ -100,18 +88,6 @@
       "impact": "low",
       "forecast": "-0.9%",
       "previous": "1.1%",
-      "actual": null
-    },
-    {
-      "ts": "2026-08-17T06:02:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "Foreign Direct Investment ytd/y",
-      "titleEn": "Foreign Direct Investment ytd/y",
-      "impact": "low",
-      "forecast": null,
-      "previous": "-5.0%",
       "actual": null
     },
     {
@@ -148,6 +124,18 @@
       "impact": "low",
       "forecast": null,
       "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-08-17T07:00:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "New Home Prices m/m",
+      "titleEn": "New Home Prices m/m",
+      "impact": "low",
+      "forecast": null,
+      "previous": "-0.15%",
       "actual": null
     },
     {
@@ -227,18 +215,6 @@
       "ccy": "CAD",
       "country": "加拿大",
       "flag": "🇨🇦",
-      "title": "核心 CPI 环比",
-      "titleEn": "Core CPI m/m",
-      "impact": "low",
-      "forecast": null,
-      "previous": "0.1%",
-      "actual": null
-    },
-    {
-      "ts": "2026-08-17T12:30:00Z",
-      "ccy": "CAD",
-      "country": "加拿大",
-      "flag": "🇨🇦",
       "title": "Foreign Securities Purchases",
       "titleEn": "Foreign Securities Purchases",
       "impact": "low",
@@ -256,6 +232,18 @@
       "impact": "low",
       "forecast": "10.6",
       "previous": "15.6",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-17T12:32:00Z",
+      "ccy": "CAD",
+      "country": "加拿大",
+      "flag": "🇨🇦",
+      "title": "核心 CPI 环比",
+      "titleEn": "Core CPI m/m",
+      "impact": "low",
+      "forecast": null,
+      "previous": "0.1%",
       "actual": null
     },
     {
@@ -328,6 +316,18 @@
       "impact": "low",
       "forecast": "4.8%",
       "previous": "4.9%",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-18T06:02:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "Foreign Direct Investment ytd/y",
+      "titleEn": "Foreign Direct Investment ytd/y",
+      "impact": "low",
+      "forecast": null,
+      "previous": "-5.0%",
       "actual": null
     },
     {
