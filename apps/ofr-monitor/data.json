@@ -1,24 +1,24 @@
 {
-  "updatedAt": "2026-08-16T21:30:04Z",
-  "asOf": "2026-08-12",
+  "updatedAt": "2026-08-17T21:35:24Z",
+  "asOf": "2026-08-13",
   "source": "U.S. Office of Financial Research (OFR)",
   "fsi": {
-    "value": -2.74,
-    "change": 0.17,
-    "yearAgo": -2.31,
+    "value": -2.78,
+    "change": -0.04,
+    "yearAgo": -2.25,
     "regions": {
       "us": -1.37,
-      "oae": -0.82,
+      "oae": -0.86,
       "em": -0.55
     },
     "categories": [
       {
         "name": "信用",
-        "value": -1.17
+        "value": -1.16
       },
       {
         "name": "股票估值",
-        "value": -0.6
+        "value": -0.61
       },
       {
         "name": "融资",
@@ -30,11 +30,10 @@
       },
       {
         "name": "波动率",
-        "value": -0.53
+        "value": -0.57
       }
     ],
     "spark": [
-      -2.315,
       -2.313,
       -2.35,
       -2.343,
@@ -293,13 +292,14 @@
       -2.764,
       -2.863,
       -2.907,
-      -2.74
+      -2.74,
+      -2.782
     ],
-    "asOf": "2026-08-12",
+    "asOf": "2026-08-13",
     "url": "https://www.financialresearch.gov/financial-stress-index/"
   },
   "funding": {
-    "asOf": "2026-08-13",
+    "asOf": "2026-08-14",
     "url": "https://www.financialresearch.gov/short-term-funding-monitor/",
     "sofr": {
       "value": 3.62,
@@ -309,12 +309,12 @@
       "value": 3.63,
       "change": 0.0
     },
-    "sofrVol": 2.932
+    "sofrVol": 2.957
   },
   "mmf": {
-    "total": 8.401,
-    "change": -0.0,
-    "asOf": "2026-06-30",
+    "total": 8.412,
+    "change": 0.011,
+    "asOf": "2026-07-31",
     "url": "https://www.financialresearch.gov/money-market-funds/"
   },
   "hedge": {
