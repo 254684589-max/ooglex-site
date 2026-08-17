@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-17T13:20:50Z",
+  "updatedAt": "2026-08-17T21:34:53Z",
   "asOf": "2026-08-17",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-16 ~ 2026-08-21",
@@ -290,7 +290,7 @@
       "title": "Claimant Count Change",
       "titleEn": "Claimant Count Change",
       "impact": "high",
-      "forecast": "11.2K",
+      "forecast": "16.5K",
       "previous": "6.7K",
       "actual": null
     },
@@ -338,7 +338,7 @@
       "title": "ZEW Economic Sentiment",
       "titleEn": "ZEW Economic Sentiment",
       "impact": "low",
-      "forecast": "25.4",
+      "forecast": "25.9",
       "previous": "23.4",
       "actual": null
     },
@@ -350,7 +350,7 @@
       "title": "German ZEW Economic Sentiment",
       "titleEn": "German ZEW Economic Sentiment",
       "impact": "low",
-      "forecast": "30.0",
+      "forecast": "30.1",
       "previous": "26.3",
       "actual": null
     },
@@ -410,7 +410,7 @@
       "title": "新屋开工",
       "titleEn": "Housing Starts",
       "impact": "low",
-      "forecast": "1.35M",
+      "forecast": "1.34M",
       "previous": "1.43M",
       "actual": null
     },
@@ -494,7 +494,7 @@
       "title": "PPI（生产者物价指数） 季环比",
       "titleEn": "PPI Input q/q",
       "impact": "low",
-      "forecast": "0.5%",
+      "forecast": "1.3%",
       "previous": "1.4%",
       "actual": null
     },
@@ -506,7 +506,7 @@
       "title": "PPI（生产者物价指数） 季环比",
       "titleEn": "PPI Output q/q",
       "impact": "low",
-      "forecast": "0.4%",
+      "forecast": "0.8%",
       "previous": "0.8%",
       "actual": null
     },
@@ -518,7 +518,7 @@
       "title": "Core Machinery Orders m/m",
       "titleEn": "Core Machinery Orders m/m",
       "impact": "low",
-      "forecast": "7.6%",
+      "forecast": "7.2%",
       "previous": "-12.4%",
       "actual": null
     },
@@ -578,7 +578,7 @@
       "title": "PPI（生产者物价指数） 环比",
       "titleEn": "PPI Input m/m",
       "impact": "low",
-      "forecast": "-0.5%",
+      "forecast": "0.0%",
       "previous": "-2.0%",
       "actual": null
     },
@@ -590,7 +590,7 @@
       "title": "PPI（生产者物价指数） 环比",
       "titleEn": "PPI Output m/m",
       "impact": "low",
-      "forecast": "0.3%",
+      "forecast": "0.2%",
       "previous": "0.0%",
       "actual": null
     },
@@ -626,7 +626,7 @@
       "title": "经常账户",
       "titleEn": "Current Account",
       "impact": "low",
-      "forecast": "22.1B",
+      "forecast": "26.8B",
       "previous": "25.1B",
       "actual": null
     },
@@ -638,7 +638,7 @@
       "title": "房价指数 同比",
       "titleEn": "HPI y/y",
       "impact": "low",
-      "forecast": "2.5%",
+      "forecast": "1.9%",
       "previous": "2.7%",
       "actual": null
     },
@@ -758,7 +758,7 @@
       "title": "就业人数变化",
       "titleEn": "Employment Change",
       "impact": "high",
-      "forecast": "11.4K",
+      "forecast": "11.7K",
       "previous": "76.3K",
       "actual": null
     },
@@ -788,18 +788,6 @@
     },
     {
       "ts": "2026-08-20T10:00:00Z",
-      "ccy": "GBP",
-      "country": "英国",
-      "flag": "🇬🇧",
-      "title": "CBI Industrial Order Expectations",
-      "titleEn": "CBI Industrial Order Expectations",
-      "impact": "low",
-      "forecast": "-40",
-      "previous": "-45",
-      "actual": null
-    },
-    {
-      "ts": "2026-08-20T10:00:00Z",
       "ccy": "EUR",
       "country": "欧元区",
       "flag": "🇪🇺",
@@ -811,6 +799,18 @@
       "actual": null
     },
     {
+      "ts": "2026-08-20T10:00:00Z",
+      "ccy": "GBP",
+      "country": "英国",
+      "flag": "🇬🇧",
+      "title": "CBI Industrial Order Expectations",
+      "titleEn": "CBI Industrial Order Expectations",
+      "impact": "low",
+      "forecast": "-40",
+      "previous": "-45",
+      "actual": null
+    },
+    {
       "ts": "2026-08-20T12:30:00Z",
       "ccy": "CAD",
       "country": "加拿大",
@@ -818,7 +818,7 @@
       "title": "PPI（生产者物价指数） 环比",
       "titleEn": "IPPI m/m",
       "impact": "low",
-      "forecast": null,
+      "forecast": "-0.4%",
       "previous": "-1.4%",
       "actual": null
     },
@@ -830,7 +830,7 @@
       "title": "房价指数 环比",
       "titleEn": "NHPI m/m",
       "impact": "low",
-      "forecast": null,
+      "forecast": "0.0%",
       "previous": "-0.1%",
       "actual": null
     },
@@ -842,7 +842,7 @@
       "title": "RMPI m/m",
       "titleEn": "RMPI m/m",
       "impact": "low",
-      "forecast": null,
+      "forecast": "-1.8%",
       "previous": "-6.9%",
       "actual": null
     },
@@ -854,7 +854,7 @@
       "title": "Philly Fed Manufacturing Index",
       "titleEn": "Philly Fed Manufacturing Index",
       "impact": "medium",
-      "forecast": "24.3",
+      "forecast": "24.1",
       "previous": "41.4",
       "actual": null
     },
@@ -902,7 +902,7 @@
       "title": "贸易帐",
       "titleEn": "Trade Balance",
       "impact": "low",
-      "forecast": "320M",
+      "forecast": "-175M",
       "previous": "23M",
       "actual": null
     },
@@ -938,7 +938,7 @@
       "title": "消费者信心指数",
       "titleEn": "GfK Consumer Confidence",
       "impact": "low",
-      "forecast": "-17",
+      "forecast": "-18",
       "previous": "-17",
       "actual": null
     },
@@ -986,7 +986,7 @@
       "title": "零售销售 环比",
       "titleEn": "Retail Sales m/m",
       "impact": "medium",
-      "forecast": "-0.4%",
+      "forecast": "-0.5%",
       "previous": "1.0%",
       "actual": null
     },
@@ -998,7 +998,7 @@
       "title": "Public Sector Net Borrowing",
       "titleEn": "Public Sector Net Borrowing",
       "impact": "low",
-      "forecast": "-0.1B",
+      "forecast": "0.0B",
       "previous": "16.0B",
       "actual": null
     },
@@ -1034,7 +1034,7 @@
       "title": "制造业 PMI 初值",
       "titleEn": "German Flash Manufacturing PMI",
       "impact": "medium",
-      "forecast": "52.0",
+      "forecast": "52.1",
       "previous": "52.2",
       "actual": null
     },
@@ -1046,7 +1046,7 @@
       "title": "服务业 PMI 初值",
       "titleEn": "German Flash Services PMI",
       "impact": "medium",
-      "forecast": "50.2",
+      "forecast": "50.1",
       "previous": "49.6",
       "actual": null
     },
@@ -1094,7 +1094,7 @@
       "title": "服务业 PMI 初值",
       "titleEn": "Flash Services PMI",
       "impact": "medium",
-      "forecast": "51.9",
+      "forecast": "51.8",
       "previous": "51.8",
       "actual": null
     },
@@ -1106,7 +1106,7 @@
       "title": "核心零售销售 环比",
       "titleEn": "Core Retail Sales m/m",
       "impact": "low",
-      "forecast": "0.0%",
+      "forecast": "0.2%",
       "previous": "1.2%",
       "actual": null
     },
@@ -1130,7 +1130,7 @@
       "title": "制造业 PMI 初值",
       "titleEn": "Flash Manufacturing PMI",
       "impact": "low",
-      "forecast": "54.0",
+      "forecast": "53.9",
       "previous": "53.8",
       "actual": null
     },
@@ -1142,7 +1142,7 @@
       "title": "服务业 PMI 初值",
       "titleEn": "Flash Services PMI",
       "impact": "low",
-      "forecast": "53.9",
+      "forecast": "54.0",
       "previous": "53.6",
       "actual": null
     },
