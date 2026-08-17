@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-08-16T21:29:50Z",
-  "asOf": "2026-08-16",
+  "updatedAt": "2026-08-17T21:35:13Z",
+  "asOf": "2026-08-17",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -418,7 +418,7 @@
       "livebench": 66.1,
       "aa": null,
       "ctx": "1M",
-      "price": 0.18
+      "price": 0.66
     },
     {
       "id": "mistral-large-3",
