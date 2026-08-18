@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-08-17T21:34:53Z",
-  "asOf": "2026-08-17",
+  "updatedAt": "2026-08-18T13:23:35Z",
+  "asOf": "2026-08-18",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-16 ~ 2026-08-21",
   "count": 96,
@@ -319,18 +319,6 @@
       "actual": null
     },
     {
-      "ts": "2026-08-18T06:02:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "Foreign Direct Investment ytd/y",
-      "titleEn": "Foreign Direct Investment ytd/y",
-      "impact": "low",
-      "forecast": null,
-      "previous": "-5.0%",
-      "actual": null
-    },
-    {
       "ts": "2026-08-18T09:00:00Z",
       "ccy": "EUR",
       "country": "欧元区",
@@ -355,7 +343,7 @@
       "actual": null
     },
     {
-      "ts": "2026-08-18T09:33:00Z",
+      "ts": "2026-08-18T09:02:00Z",
       "ccy": "GBP",
       "country": "英国",
       "flag": "🇬🇧",
@@ -463,7 +451,7 @@
       "actual": null
     },
     {
-      "ts": "2026-08-18T14:50:00Z",
+      "ts": "2026-08-18T14:51:00Z",
       "ccy": "NZD",
       "country": "新西兰",
       "flag": "🇳🇿",
@@ -1000,6 +988,18 @@
       "impact": "low",
       "forecast": "0.0B",
       "previous": "16.0B",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-21T06:02:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "Foreign Direct Investment ytd/y",
+      "titleEn": "Foreign Direct Investment ytd/y",
+      "impact": "low",
+      "forecast": null,
+      "previous": "-5.0%",
       "actual": null
     },
     {
