@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-08-18T13:23:35Z",
+  "updatedAt": "2026-08-18T21:33:09Z",
   "asOf": "2026-08-18",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-16 ~ 2026-08-21",
-  "count": 96,
+  "count": 97,
   "highCount": 8,
   "events": [
     {
@@ -451,7 +451,7 @@
       "actual": null
     },
     {
-      "ts": "2026-08-18T14:51:00Z",
+      "ts": "2026-08-18T15:31:00Z",
       "ccy": "NZD",
       "country": "新西兰",
       "flag": "🇳🇿",
@@ -667,6 +667,18 @@
       "actual": null
     },
     {
+      "ts": "2026-08-19T10:15:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "欧央行行长讲话",
+      "titleEn": "ECB President Lagarde Speaks",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
       "ts": "2026-08-19T14:30:00Z",
       "ccy": "USD",
       "country": "美国",
@@ -674,7 +686,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": null,
+      "forecast": "0.2M",
       "previous": "17.4M",
       "actual": null
     },
@@ -878,7 +890,7 @@
       "title": "天然气库存",
       "titleEn": "Natural Gas Storage",
       "impact": "low",
-      "forecast": null,
+      "forecast": "15B",
       "previous": "36B",
       "actual": null
     },
