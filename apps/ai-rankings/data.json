@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-08-17T21:35:13Z",
-  "asOf": "2026-08-17",
+  "updatedAt": "2026-08-18T21:33:31Z",
+  "asOf": "2026-08-18",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -122,19 +122,6 @@
       "price": 2.0
     },
     {
-      "id": "claude-opus-4-8",
-      "name": "Claude Opus 4.8",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1481,
-      "livebench": null,
-      "aa": 56.5,
-      "ctx": "1M",
-      "price": 10.0
-    },
-    {
       "id": "kimi-k3",
       "name": "Kimi K3",
       "org": "Moonshot AI",
@@ -148,15 +135,15 @@
       "price": 6.0
     },
     {
-      "id": "claude-opus-4-7",
-      "name": "Claude Opus 4.7",
+      "id": "claude-opus-4-8",
+      "name": "Claude Opus 4.8",
       "org": "Anthropic",
       "orgCn": "Anthropic",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1502,
+      "arena": 1481,
       "livebench": null,
-      "aa": 55.4,
+      "aa": 56.5,
       "ctx": "1M",
       "price": 10.0
     },
@@ -172,6 +159,19 @@
       "aa": null,
       "ctx": "500K",
       "price": 3.0
+    },
+    {
+      "id": "claude-opus-4-7",
+      "name": "Claude Opus 4.7",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1502,
+      "livebench": null,
+      "aa": 55.4,
+      "ctx": "1M",
+      "price": 10.0
     },
     {
       "id": "gpt-5-6-terra",
@@ -200,19 +200,6 @@
       "price": 2.25
     },
     {
-      "id": "grok-4-5",
-      "name": "Grok 4.5",
-      "org": "xAI",
-      "orgCn": "xAI",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1469,
-      "livebench": 77.1,
-      "aa": null,
-      "ctx": "500K",
-      "price": 3.0
-    },
-    {
       "id": "muse-spark-1-1",
       "name": "Muse Spark 1.1",
       "org": "Meta",
@@ -224,6 +211,19 @@
       "aa": null,
       "ctx": null,
       "price": 2.0
+    },
+    {
+      "id": "grok-4-5",
+      "name": "Grok 4.5",
+      "org": "xAI",
+      "orgCn": "xAI",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1469,
+      "livebench": 77.1,
+      "aa": null,
+      "ctx": "500K",
+      "price": 3.0
     },
     {
       "id": "gemini-3-5-flash",
@@ -239,19 +239,6 @@
       "price": 1.69
     },
     {
-      "id": "gpt-5-4",
-      "name": "GPT 5.4",
-      "org": "OpenAI",
-      "orgCn": "OpenAI",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1476,
-      "livebench": 78.8,
-      "aa": 54.0,
-      "ctx": "1.1M",
-      "price": 5.62
-    },
-    {
       "id": "gemini-3-6-flash",
       "name": "Gemini 3.6 Flash",
       "org": "Google",
@@ -265,17 +252,17 @@
       "price": 0.75
     },
     {
-      "id": "grok-4-1",
-      "name": "Grok 4.1",
-      "org": "xAI",
-      "orgCn": "xAI",
+      "id": "gpt-5-4",
+      "name": "GPT 5.4",
+      "org": "OpenAI",
+      "orgCn": "OpenAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1466,
-      "livebench": null,
-      "aa": 53.5,
-      "ctx": "256K",
-      "price": null
+      "arena": 1476,
+      "livebench": 78.8,
+      "aa": 54.0,
+      "ctx": "1.1M",
+      "price": 5.62
     },
     {
       "id": "qwen3-7",
@@ -289,6 +276,19 @@
       "aa": null,
       "ctx": "1M",
       "price": 2.21
+    },
+    {
+      "id": "grok-4-1",
+      "name": "Grok 4.1",
+      "org": "xAI",
+      "orgCn": "xAI",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1466,
+      "livebench": null,
+      "aa": 53.5,
+      "ctx": "256K",
+      "price": null
     },
     {
       "id": "glm-5-2",
@@ -327,7 +327,7 @@
       "livebench": 72.6,
       "aa": null,
       "ctx": "1M",
-      "price": 1.46
+      "price": 1.98
     },
     {
       "id": "inkling",
@@ -340,20 +340,7 @@
       "livebench": 72.9,
       "aa": null,
       "ctx": "524K",
-      "price": 0.88
-    },
-    {
-      "id": "gemini-3-flash",
-      "name": "Gemini 3 Flash",
-      "org": "Google",
-      "orgCn": "谷歌",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1473,
-      "livebench": null,
-      "aa": 50.0,
-      "ctx": "1M",
-      "price": 1.12
+      "price": 1.76
     },
     {
       "id": "kimi-k2-6",
@@ -369,17 +356,17 @@
       "price": 1.71
     },
     {
-      "id": "glm-4-7",
-      "name": "GLM 4.7",
-      "org": "Zhipu AI",
-      "orgCn": "智谱",
-      "flag": "🇨🇳",
-      "open": true,
-      "arena": 1442,
+      "id": "gemini-3-flash",
+      "name": "Gemini 3 Flash",
+      "org": "Google",
+      "orgCn": "谷歌",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1473,
       "livebench": null,
-      "aa": 49.5,
-      "ctx": "205K",
-      "price": 0.74
+      "aa": 50.0,
+      "ctx": "1M",
+      "price": 1.12
     },
     {
       "id": "qwen3-6-plus",
@@ -393,6 +380,19 @@
       "aa": null,
       "ctx": "1M",
       "price": 0.73
+    },
+    {
+      "id": "glm-4-7",
+      "name": "GLM 4.7",
+      "org": "Zhipu AI",
+      "orgCn": "智谱",
+      "flag": "🇨🇳",
+      "open": true,
+      "arena": 1442,
+      "livebench": null,
+      "aa": 49.5,
+      "ctx": "205K",
+      "price": 0.74
     },
     {
       "id": "minimax-m3",
@@ -421,19 +421,6 @@
       "price": 0.66
     },
     {
-      "id": "mistral-large-3",
-      "name": "Mistral Large 3",
-      "org": "Mistral AI",
-      "orgCn": "Mistral",
-      "flag": "🇫🇷",
-      "open": true,
-      "arena": 1415,
-      "livebench": null,
-      "aa": 46.5,
-      "ctx": "128K",
-      "price": 0.75
-    },
-    {
       "id": "gemini-3-5-flash-lite",
       "name": "Gemini 3.5 Flash Lite",
       "org": "Google",
@@ -447,19 +434,6 @@
       "price": 0.42
     },
     {
-      "id": "minimax-m2",
-      "name": "MiniMax M2",
-      "org": "MiniMax",
-      "orgCn": "MiniMax",
-      "flag": "🇨🇳",
-      "open": true,
-      "arena": 1346,
-      "livebench": null,
-      "aa": 48.0,
-      "ctx": "205K",
-      "price": 0.45
-    },
-    {
       "id": "grok-4-3",
       "name": "Grok 4.3",
       "org": "xAI",
@@ -471,6 +445,32 @@
       "aa": null,
       "ctx": "1M",
       "price": 1.56
+    },
+    {
+      "id": "mistral-large-3",
+      "name": "Mistral Large 3",
+      "org": "Mistral AI",
+      "orgCn": "Mistral",
+      "flag": "🇫🇷",
+      "open": true,
+      "arena": 1415,
+      "livebench": null,
+      "aa": 46.5,
+      "ctx": "128K",
+      "price": 0.75
+    },
+    {
+      "id": "minimax-m2",
+      "name": "MiniMax M2",
+      "org": "MiniMax",
+      "orgCn": "MiniMax",
+      "flag": "🇨🇳",
+      "open": true,
+      "arena": 1346,
+      "livebench": null,
+      "aa": 48.0,
+      "ctx": "205K",
+      "price": 0.45
     },
     {
       "id": "claude-haiku-4-5",
