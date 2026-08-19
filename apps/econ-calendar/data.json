@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-08-18T21:33:09Z",
-  "asOf": "2026-08-18",
+  "updatedAt": "2026-08-19T13:24:39Z",
+  "asOf": "2026-08-19",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-16 ~ 2026-08-21",
-  "count": 97,
+  "count": 98,
   "highCount": 8,
   "events": [
     {
@@ -655,7 +655,7 @@
       "actual": null
     },
     {
-      "ts": "2026-08-19T09:42:00Z",
+      "ts": "2026-08-19T09:34:00Z",
       "ccy": "EUR",
       "country": "欧元区",
       "flag": "🇪🇺",
@@ -698,6 +698,18 @@
       "title": "FOMC 会议纪要",
       "titleEn": "FOMC Meeting Minutes",
       "impact": "high",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-08-19T18:30:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "央行官员讲话",
+      "titleEn": "President Trump Speaks",
+      "impact": "medium",
       "forecast": null,
       "previous": null,
       "actual": null
