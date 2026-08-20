@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-08-19T21:35:21Z",
-  "asOf": "2026-08-19",
+  "updatedAt": "2026-08-20T21:37:59Z",
+  "asOf": "2026-08-20",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -323,7 +323,7 @@
       "orgCn": "深度求索",
       "flag": "🇨🇳",
       "open": true,
-      "arena": 1465,
+      "arena": 1462,
       "livebench": 72.6,
       "aa": null,
       "ctx": "1M",
