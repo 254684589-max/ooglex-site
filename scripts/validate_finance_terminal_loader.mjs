@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import {
   createDeferredSectionScheduler,
   createResourceLoader,
-  financeTerminalResourceContract
+  financeTerminalResourceContract,
+  startFinanceTerminal,
+  waitForCriticalPaint
 } from "../apps/finance-terminal/finance-terminal-loader.mjs";
 import { runBrowserRegressionProbe } from "../apps/finance-terminal/finance-terminal-regression.mjs";
 
@@ -107,6 +109,62 @@ async function validateDeferredScheduler() {
   scheduler.disconnect();
 }
 
+async function validateCriticalPaintBarrier() {
+  const frames = [];
+  let resolved = false;
+  const barrier = waitForCriticalPaint({
+    requestAnimationFrame(callback) { frames.push(callback); }
+  }).then((result) => {
+    resolved = true;
+    return result;
+  });
+  assert.equal(frames.length, 1, "首帧回调必须先登记");
+  frames.shift()();
+  assert.equal(resolved, false, "单帧不能冒充关键内容已经完成一次绘制");
+  assert.equal(frames.length, 1, "首帧后必须登记第二帧边界");
+  frames.shift()();
+  assert.deepEqual(await barrier, {
+    status: "yielded", strategy: "double-animation-frame", frameCount: 2
+  });
+
+  const phases = [];
+  const attributes = new Map();
+  const doc = {
+    documentElement: {
+      setAttribute(name, value) { attributes.set(name, value); }
+    }
+  };
+  const win = { location: { search: "" } };
+  await startFinanceTerminal({
+    document: doc,
+    window: win,
+    loaderOptions: {
+      cacheKey: "paint",
+      fetchImpl: async (url) => fakeResponse({ url })
+    },
+    buildCritical: () => ({ marketLicense: {}, sections: [] }),
+    renderCritical: () => { phases.push("critical-rendered"); },
+    announceCritical: () => {},
+    monitorProvider: () => Promise.resolve(),
+    yieldAfterCritical: () => { phases.push("paint-yielded"); },
+    buildSection: () => [],
+    renderSection: () => {},
+    sections: {},
+    navigationLinks: []
+  });
+  assert.deepEqual(phases, ["critical-rendered", "paint-yielded"]);
+  assert.deepEqual(win.__financeTerminalLoadState.startupOrder, [
+    "critical-rendered", "critical-paint-yielded", "deferred-scheduler-started"
+  ]);
+  assert.deepEqual(
+    win.__financeTerminalLoadState.requestedKeysAtSchedulerStart,
+    win.__financeTerminalLoadState.requestedKeysAfterCritical,
+    "延迟调度器启动前不得夹带首屏以下请求"
+  );
+  assert.equal(win.__financeTerminalLoadState.criticalPaintBarrier.strategy, "injected");
+  assert.equal(attributes.get("data-critical-data-state"), "ready");
+}
+
 async function main() {
   assert.equal(financeTerminalResourceContract.criticalSourceCount, 5);
   assert.equal(financeTerminalResourceContract.upstreamSourceCount, 16);
@@ -115,10 +173,12 @@ async function main() {
   await validateResourceStages();
   await validateFailureIsolation();
   await validateDeferredScheduler();
+  await validateCriticalPaintBarrier();
   console.log("Finance Terminal staged loader contract: PASS");
   console.log("- 5 critical sources / 13 deferred sources / 18 unique source requests: PASS");
   console.log("- viewport and section-navigation activation / shared request cache: PASS");
   console.log("- per-source HTTP failure isolation / no-store snapshots: PASS");
+  console.log("- critical render / paint yield / deferred scheduler order: PASS");
 }
 
 main().catch((error) => {

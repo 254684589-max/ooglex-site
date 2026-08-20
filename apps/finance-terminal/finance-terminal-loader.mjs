@@ -48,6 +48,32 @@ function errorMessage(error) {
   return error && typeof error.message === "string" ? error.message : String(error || "请求失败");
 }
 
+export function waitForCriticalPaint(win, yieldImpl) {
+  if (typeof yieldImpl === "function") {
+    return Promise.resolve().then(() => yieldImpl()).then(() => ({
+      status: "yielded",
+      strategy: "injected",
+      frameCount: null
+    }));
+  }
+  if (!win || typeof win.requestAnimationFrame !== "function") {
+    return Promise.resolve({
+      status: "yielded",
+      strategy: "animation-frame-unavailable",
+      frameCount: 0
+    });
+  }
+  return new Promise((resolve) => {
+    win.requestAnimationFrame(() => {
+      win.requestAnimationFrame(() => resolve({
+        status: "yielded",
+        strategy: "double-animation-frame",
+        frameCount: 2
+      }));
+    });
+  });
+}
+
 export function createResourceLoader(options = {}) {
   const fetchImpl = options.fetchImpl || globalThis.fetch;
   if (typeof fetchImpl !== "function") throw new Error("当前环境不支持静态数据请求");
@@ -225,7 +251,9 @@ export async function startFinanceTerminal(options = {}) {
     requestedKeysAfterCritical: criticalSnapshot.requestedKeys,
     requestedKeys: criticalSnapshot.requestedKeys,
     sourceRequestCount: criticalSnapshot.sourceRequestCount,
-    loadedSections: []
+    loadedSections: [],
+    criticalPaintBarrier: { status: "pending", strategy: null, frameCount: null },
+    startupOrder: ["critical-rendered"]
   };
   win.__financeTerminalLoadState = loadState;
 
@@ -264,8 +292,12 @@ export async function startFinanceTerminal(options = {}) {
       updateLoadSnapshot(state.loaded);
     }
   });
-  scheduler.start();
   const providerReady = Promise.resolve(options.monitorProvider(experience.marketLicense));
+  loadState.criticalPaintBarrier = await waitForCriticalPaint(win, options.yieldAfterCritical);
+  loadState.startupOrder.push("critical-paint-yielded");
+  loadState.requestedKeysAtSchedulerStart = loader.snapshot().requestedKeys;
+  loadState.startupOrder.push("deferred-scheduler-started");
+  scheduler.start();
   scheduler.allLoaded.then(() => {
     if (typeof options.announceComplete === "function") options.announceComplete(experience);
     updateLoadSnapshot(scheduler.loadedSections());
