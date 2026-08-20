@@ -1,38 +1,37 @@
 {
   "contractVersion": 1,
   "dataset": "whats-latest",
-  "generatedAt": "2026-08-19T18:51:28Z",
-  "status": "degraded",
+  "generatedAt": "2026-08-20T01:49:47Z",
+  "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-08-19T18:51:28Z",
-  "lastSuccessfulAt": "2026-08-19T18:51:28Z",
+  "lastAttemptAt": "2026-08-20T01:49:47Z",
+  "lastSuccessfulAt": "2026-08-20T01:49:47Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-08-19T18:51:28Z",
+  "publishedSnapshotAt": "2026-08-20T01:49:47Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
     "expectedComponents": 6,
     "publishedComponents": 6,
-    "refreshedComponents": 5,
-    "fallbackComponents": 1,
+    "refreshedComponents": 6,
+    "fallbackComponents": 0,
     "unavailableComponents": 0,
     "unknownComponents": 0,
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 83.33
+    "freshCoveragePct": 100.0
   },
   "attempt": {
-    "status": "partial",
+    "status": "success",
     "published": true,
     "refreshedComponents": [
       "markets-news",
+      "tech-news",
       "ent-news",
       "sports-news",
       "world-news",
       "market-quotes"
     ],
-    "fallbackComponents": [
-      "tech-news"
-    ],
+    "fallbackComponents": [],
     "unavailableComponents": [],
     "unknownComponents": []
   },
@@ -46,8 +45,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-08-19T18:51:28Z",
-      "lastSuccessAt": "2026-08-19T18:51:28Z"
+      "lastAttemptAt": "2026-08-20T01:49:47Z",
+      "lastSuccessAt": "2026-08-20T01:49:47Z"
     },
     {
       "id": "tech-news",
@@ -55,11 +54,11 @@
       "role": "secondary",
       "frequency": "intraday",
       "requiredForTerminal": false,
-      "status": "degraded",
-      "mode": "fallback",
+      "status": "healthy",
+      "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-08-19T18:51:28Z",
-      "lastSuccessAt": "2026-08-19T13:06:49Z"
+      "lastAttemptAt": "2026-08-20T01:49:47Z",
+      "lastSuccessAt": "2026-08-20T01:49:47Z"
     },
     {
       "id": "ent-news",
@@ -70,8 +69,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-08-19T18:51:28Z",
-      "lastSuccessAt": "2026-08-19T18:51:28Z"
+      "lastAttemptAt": "2026-08-20T01:49:47Z",
+      "lastSuccessAt": "2026-08-20T01:49:47Z"
     },
     {
       "id": "sports-news",
@@ -82,8 +81,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-08-19T18:51:28Z",
-      "lastSuccessAt": "2026-08-19T18:51:28Z"
+      "lastAttemptAt": "2026-08-20T01:49:47Z",
+      "lastSuccessAt": "2026-08-20T01:49:47Z"
     },
     {
       "id": "world-news",
@@ -94,8 +93,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-08-19T18:51:28Z",
-      "lastSuccessAt": "2026-08-19T18:51:28Z"
+      "lastAttemptAt": "2026-08-20T01:49:47Z",
+      "lastSuccessAt": "2026-08-20T01:49:47Z"
     },
     {
       "id": "market-quotes",
@@ -106,8 +105,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-08-19T18:51:28Z",
-      "lastSuccessAt": "2026-08-19T18:51:28Z"
+      "lastAttemptAt": "2026-08-20T01:49:47Z",
+      "lastSuccessAt": "2026-08-20T01:49:47Z"
     }
   ],
   "policy": {
