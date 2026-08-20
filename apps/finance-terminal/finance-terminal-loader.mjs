@@ -148,23 +148,44 @@ export function createDeferredSectionScheduler(options = {}) {
   const rootMargin = options.rootMargin || "480px 0px";
   const inFlight = new Map();
   const loaded = new Set();
+  const failed = new Set();
+  const settled = new Set();
   let observer = null;
   const navigationListeners = [];
   let resolveAll;
   let rejectAll;
+  let resolveSettled;
+  let firstError = null;
   const allLoaded = new Promise((resolve, reject) => {
     resolveAll = resolve;
     rejectAll = reject;
   });
+  const allSettled = new Promise((resolve) => {
+    resolveSettled = resolve;
+  });
 
   function notify(name, state) {
     if (typeof options.onStateChange === "function") {
-      options.onStateChange({ name, state, loaded: Array.from(loaded) });
+      options.onStateChange({
+        name,
+        state,
+        loaded: Array.from(loaded),
+        failed: Array.from(failed),
+        settled: Array.from(settled)
+      });
     }
   }
 
   function maybeComplete() {
-    if (loaded.size === names.length) resolveAll(Array.from(loaded));
+    if (settled.size !== names.length) return;
+    const summary = {
+      loaded: Array.from(loaded),
+      failed: Array.from(failed),
+      settled: Array.from(settled)
+    };
+    resolveSettled(summary);
+    if (failed.size) rejectAll(firstError || new Error("延迟加载分区失败"));
+    else resolveAll(summary.loaded);
   }
 
   function load(name) {
@@ -175,12 +196,16 @@ export function createDeferredSectionScheduler(options = {}) {
     notify(name, "loading");
     const task = Promise.resolve().then(() => handlers[name]()).then((value) => {
       loaded.add(name);
+      settled.add(name);
       notify(name, "ready");
       maybeComplete();
       return value;
     }).catch((error) => {
+      failed.add(name);
+      settled.add(name);
+      if (!firstError) firstError = error;
       notify(name, "error");
-      rejectAll(error);
+      maybeComplete();
       throw error;
     });
     inFlight.set(name, task);
@@ -190,11 +215,12 @@ export function createDeferredSectionScheduler(options = {}) {
   function start() {
     if (names.length === 0) {
       resolveAll([]);
-      return { mode: "empty", allLoaded };
+      resolveSettled({ loaded: [], failed: [], settled: [] });
+      return { mode: "empty", allLoaded, allSettled };
     }
     if (eager || typeof Observer !== "function") {
       Promise.all(names.map((name) => load(name))).catch(() => {});
-      return { mode: "eager", allLoaded };
+      return { mode: "eager", allLoaded, allSettled };
     }
     observer = new Observer((entries) => {
       entries.forEach((entry) => {
@@ -218,7 +244,7 @@ export function createDeferredSectionScheduler(options = {}) {
       link.addEventListener("click", listener, { passive: true });
       navigationListeners.push([link, listener]);
     });
-    return { mode: "deferred", allLoaded };
+    return { mode: "deferred", allLoaded, allSettled };
   }
 
   function disconnect() {
@@ -226,7 +252,16 @@ export function createDeferredSectionScheduler(options = {}) {
     navigationListeners.forEach(([link, listener]) => link.removeEventListener("click", listener));
   }
 
-  return { start, load, allLoaded, disconnect, loadedSections: () => Array.from(loaded) };
+  return {
+    start,
+    load,
+    allLoaded,
+    allSettled,
+    disconnect,
+    loadedSections: () => Array.from(loaded),
+    failedSections: () => Array.from(failed),
+    settledSections: () => Array.from(settled)
+  };
 }
 
 export async function startFinanceTerminal(options = {}) {
@@ -252,16 +287,20 @@ export async function startFinanceTerminal(options = {}) {
     requestedKeys: criticalSnapshot.requestedKeys,
     sourceRequestCount: criticalSnapshot.sourceRequestCount,
     loadedSections: [],
+    failedSections: [],
+    settledSections: [],
     criticalPaintBarrier: { status: "pending", strategy: null, frameCount: null },
     startupOrder: ["critical-rendered"]
   };
   win.__financeTerminalLoadState = loadState;
 
-  function updateLoadSnapshot(loadedSections) {
+  function updateLoadSnapshot(loadedSections, failedSections = [], settledSections = []) {
     const snapshot = loader.snapshot();
     loadState.requestedKeys = snapshot.requestedKeys;
     loadState.sourceRequestCount = snapshot.sourceRequestCount;
     loadState.loadedSections = loadedSections.slice();
+    loadState.failedSections = failedSections.slice();
+    loadState.settledSections = settledSections.slice();
   }
 
   const handlers = Object.keys(options.sections).reduce((result, name) => {
@@ -283,13 +322,13 @@ export async function startFinanceTerminal(options = {}) {
     navigationLinks: options.navigationLinks,
     rootMargin: options.rootMargin,
     onStateChange(state) {
-      if (state.state === "loading") root.setAttribute("data-deferred-data-state", "loading");
-      if (state.state === "error") root.setAttribute("data-deferred-data-state", "error");
-      if (state.state === "ready") {
-        root.setAttribute("data-loaded-sections", state.loaded.join(" "));
-        root.setAttribute("data-deferred-data-state", state.loaded.length === 4 ? "ready" : "partial");
-      }
-      updateLoadSnapshot(state.loaded);
+      const complete = state.settled.length === Object.keys(options.sections).length;
+      root.setAttribute("data-loaded-sections", state.loaded.join(" "));
+      root.setAttribute("data-failed-sections", state.failed.join(" "));
+      root.setAttribute("data-deferred-data-state", complete
+        ? (state.failed.length ? "partial" : "ready")
+        : (state.failed.length ? "partial" : "loading"));
+      updateLoadSnapshot(state.loaded, state.failed, state.settled);
     }
   });
   const providerReady = Promise.resolve(options.monitorProvider(experience.marketLicense));
@@ -298,12 +337,13 @@ export async function startFinanceTerminal(options = {}) {
   loadState.requestedKeysAtSchedulerStart = loader.snapshot().requestedKeys;
   loadState.startupOrder.push("deferred-scheduler-started");
   scheduler.start();
-  scheduler.allLoaded.then(() => {
+  scheduler.allLoaded.catch(() => {
+    // allSettled below records partial completion without hiding successful sections.
+  });
+  scheduler.allSettled.then((summary) => {
     if (typeof options.announceComplete === "function") options.announceComplete(experience);
-    updateLoadSnapshot(scheduler.loadedSections());
-    root.setAttribute("data-deferred-data-state", "ready");
-  }).catch(() => {
-    // Each failed section exposes its own visible and machine-readable state.
+    updateLoadSnapshot(summary.loaded, summary.failed, summary.settled);
+    root.setAttribute("data-deferred-data-state", summary.failed.length ? "partial" : "ready");
   });
   if (eager) {
     await Promise.all([providerReady, scheduler.allLoaded]);

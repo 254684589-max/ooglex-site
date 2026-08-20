@@ -105,8 +105,50 @@ async function validateDeferredScheduler() {
   links[1].click();
   await Promise.all([scheduler.load("information"), scheduler.load("operations")]);
   await scheduler.allLoaded;
+  assert.deepEqual(await scheduler.allSettled, {
+    loaded: ["risk", "research", "information", "operations"],
+    failed: [],
+    settled: ["risk", "research", "information", "operations"]
+  });
   assert.deepEqual(new Set(loaded), new Set(["risk", "research", "information", "operations"]));
   scheduler.disconnect();
+}
+
+async function validateDeferredFailureIsolation() {
+  const completed = [];
+  const transitions = [];
+  const scheduler = createDeferredSectionScheduler({
+    eager: true,
+    handlers: {
+      risk: async () => { throw new Error("risk adapter unavailable"); },
+      research: async () => { completed.push("research"); },
+      information: async () => { completed.push("information"); },
+      operations: async () => { completed.push("operations"); }
+    },
+    sections: {},
+    onStateChange(state) {
+      transitions.push({
+        name: state.name,
+        state: state.state,
+        loaded: state.loaded.slice(),
+        failed: state.failed.slice(),
+        settled: state.settled.slice()
+      });
+    }
+  });
+  scheduler.start();
+  const rejected = assert.rejects(scheduler.allLoaded, /risk adapter unavailable/);
+  const summary = await scheduler.allSettled;
+  await rejected;
+  assert.deepEqual(new Set(completed), new Set(["research", "information", "operations"]),
+    "单个分区失败后其余分区仍必须完成");
+  assert.deepEqual(summary.failed, ["risk"]);
+  assert.deepEqual(new Set(summary.loaded), new Set(["research", "information", "operations"]));
+  assert.deepEqual(new Set(summary.settled),
+    new Set(["risk", "research", "information", "operations"]));
+  assert.deepEqual(scheduler.failedSections(), ["risk"]);
+  assert.equal(transitions.filter((item) => item.state === "error").length, 1);
+  assert.equal(transitions.filter((item) => item.state === "ready").length, 3);
 }
 
 async function validateCriticalPaintBarrier() {
@@ -173,12 +215,14 @@ async function main() {
   await validateResourceStages();
   await validateFailureIsolation();
   await validateDeferredScheduler();
+  await validateDeferredFailureIsolation();
   await validateCriticalPaintBarrier();
   console.log("Finance Terminal staged loader contract: PASS");
   console.log("- 5 critical sources / 13 deferred sources / 18 unique source requests: PASS");
   console.log("- viewport and section-navigation activation / shared request cache: PASS");
   console.log("- per-source HTTP failure isolation / no-store snapshots: PASS");
   console.log("- critical render / paint yield / deferred scheduler order: PASS");
+  console.log("- one-section failure / three-section continuation / partial completion: PASS");
 }
 
 main().catch((error) => {
