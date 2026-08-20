@@ -1,3 +1,24 @@
+const CRITICAL_REQUEST_KEYS = Object.freeze([
+  "$config", "macro", "macroHealth", "assetRanking", "assetRankingHealth", "marketLicense"
+]);
+const DEFERRED_SECTION_NAMES = Object.freeze(["risk", "research", "information", "operations"]);
+const EXPECTED_GROUP_SEQUENCE = Object.freeze(["critical", ...DEFERRED_SECTION_NAMES]);
+
+function sameSequence(actual, expected) {
+  return Array.isArray(actual) && actual.length === expected.length
+    && actual.every((value, index) => value === expected[index]);
+}
+
+function hasCompleteSectionTransitions(transitions) {
+  if (!Array.isArray(transitions) || transitions.length !== DEFERRED_SECTION_NAMES.length * 2) return false;
+  return DEFERRED_SECTION_NAMES.every((name) => {
+    const loadingIndex = transitions.findIndex((item) => item.name === name && item.state === "loading");
+    const readyIndex = transitions.findIndex((item) => item.name === name && item.state === "ready");
+    return loadingIndex !== -1 && readyIndex > loadingIndex
+      && !transitions.some((item) => item.name === name && item.state === "error");
+  });
+}
+
 function elementIsRendered(element) {
   if (!element) return false;
   const style = window.getComputedStyle(element);
@@ -53,6 +74,8 @@ export function runBrowserRegressionProbe(options = {}) {
     .filter((link) => link.textContent.trim() === "Powered by CoinGecko");
   const coinGeckoAttributions = Array.from(document.querySelectorAll(".coingecko-attribution"));
   const stagedLoad = window.__financeTerminalLoadState || {};
+  const requestStates = stagedLoad.requestStates && typeof stagedLoad.requestStates === "object"
+    ? Object.values(stagedLoad.requestStates) : [];
   const undersizedTargets = targetElements.map((element) => {
     const rect = element.getBoundingClientRect();
     return {
@@ -87,8 +110,20 @@ export function runBrowserRegressionProbe(options = {}) {
     stagedDataLoading: stagedLoad.mode === "eager"
       && stagedLoad.criticalSourceRequestCount === 5
       && stagedLoad.sourceRequestCount === 18
-      && Array.isArray(stagedLoad.loadedSections)
-      && stagedLoad.loadedSections.length === 4,
+      && stagedLoad.requestCount === 19
+      && stagedLoad.criticalPaintBarrier?.status === "yielded"
+      && sameSequence(stagedLoad.startupOrder,
+        ["critical-rendered", "critical-paint-yielded", "deferred-scheduler-started"])
+      && sameSequence(stagedLoad.requestedKeysAfterCritical, CRITICAL_REQUEST_KEYS)
+      && sameSequence(stagedLoad.requestedKeysAtSchedulerStart, CRITICAL_REQUEST_KEYS)
+      && sameSequence(stagedLoad.groupLoadSequence, EXPECTED_GROUP_SEQUENCE)
+      && Array.isArray(stagedLoad.loadedSections) && stagedLoad.loadedSections.length === 4
+      && Array.isArray(stagedLoad.failedSections) && stagedLoad.failedSections.length === 0
+      && Array.isArray(stagedLoad.settledSections) && stagedLoad.settledSections.length === 4
+      && stagedLoad.networkRequestCount === 19
+      && stagedLoad.duplicateNetworkRequestCount === 0
+      && requestStates.length === 19 && requestStates.every((state) => state === "ready")
+      && hasCompleteSectionTransitions(stagedLoad.sectionTransitions),
     supportingHealthResources: supportingHealthPanels.length === 4
       && supportingHealthPanels.every((panel) => panel.textContent.indexOf("更新链健康不可用") === -1),
     officialHealthResources: officialHealthPanels.length === 4
@@ -201,12 +236,7 @@ export function runBrowserRegressionProbe(options = {}) {
       };
     }),
     readinessEvidencePanelCount: readinessEvidencePanels.length,
-    stagedDataLoading: {
-      mode: stagedLoad.mode || "unknown",
-      criticalSourceRequestCount: stagedLoad.criticalSourceRequestCount || 0,
-      sourceRequestCount: stagedLoad.sourceRequestCount || 0,
-      loadedSectionCount: Array.isArray(stagedLoad.loadedSections) ? stagedLoad.loadedSections.length : 0
-    },
+    stagedDataLoading: stagedLoad,
     undersizedTargets,
     layout: {
       market: renderedGridColumns(grid),

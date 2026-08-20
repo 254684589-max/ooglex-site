@@ -38,10 +38,17 @@ async function validateResourceStages() {
   await loader.loadGroup("operations");
   assert.equal(loader.snapshot().sourceRequestCount, 10, "运行证据区应复用宏观、资产榜、跨资产与公司资源");
   await Promise.all([loader.loadGroup("risk"), loader.loadGroup("information")]);
-  assert.equal(loader.snapshot().sourceRequestCount, 18, "全页最终应覆盖16份上游与2份本地证据资源");
+  const snapshot = loader.snapshot();
+  assert.equal(snapshot.sourceRequestCount, 18, "全页最终应覆盖16份上游与2份本地证据资源");
   assert.equal(calls.length, 19, "同一资源不得因跨分区复用而重复请求");
   assert.equal(new Set(calls.map((call) => call.url)).size, calls.length, "请求URL必须唯一");
   assert.ok(calls.every((call) => call.options.cache === "no-store"), "静态金融快照必须保留no-store请求契约");
+  assert.deepEqual(snapshot.groupLoadSequence,
+    ["critical", "research", "operations", "risk", "information"],
+    "加载证据必须保留实际分区启动顺序");
+  assert.equal(snapshot.networkRequestCount, 19);
+  assert.equal(snapshot.duplicateNetworkRequestCount, 0, "共享资源不得产生重复网络请求");
+  assert.ok(Object.values(snapshot.requestStates).every((state) => state === "ready"));
 }
 
 async function validateFailureIsolation() {
@@ -55,6 +62,11 @@ async function validateFailureIsolation() {
   assert.equal(risk.macro.error, null);
   assert.match(risk.ofr.error.message, /^HTTP 503$/);
   assert.match(risk.ofrHealth.error.message, /^HTTP 503$/);
+  const snapshot = loader.snapshot();
+  assert.equal(snapshot.requestStates.macro, "ready");
+  assert.equal(snapshot.requestStates.ofr, "error");
+  assert.equal(snapshot.requestStates.ofrHealth, "error");
+  assert.equal(snapshot.duplicateNetworkRequestCount, 0);
 }
 
 async function validateDeferredScheduler() {
@@ -204,6 +216,10 @@ async function validateCriticalPaintBarrier() {
     "延迟调度器启动前不得夹带首屏以下请求"
   );
   assert.equal(win.__financeTerminalLoadState.criticalPaintBarrier.strategy, "injected");
+  assert.deepEqual(win.__financeTerminalLoadState.groupLoadSequence, ["critical"]);
+  assert.equal(win.__financeTerminalLoadState.duplicateNetworkRequestCount, 0);
+  assert.ok(Object.values(win.__financeTerminalLoadState.requestStates)
+    .every((state) => state === "ready"));
   assert.equal(attributes.get("data-critical-data-state"), "ready");
 }
 
@@ -223,6 +239,7 @@ async function main() {
   console.log("- per-source HTTP failure isolation / no-store snapshots: PASS");
   console.log("- critical render / paint yield / deferred scheduler order: PASS");
   console.log("- one-section failure / three-section continuation / partial completion: PASS");
+  console.log("- per-request state / network de-duplication / section transition evidence: PASS");
 }
 
 main().catch((error) => {

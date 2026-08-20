@@ -2594,7 +2594,9 @@ def main() -> None:
             "分区加载器缺少共享请求缓存、视口观察或导航触发契约")
     require('loader.loadGroup("critical")' in loader and "data-critical-data-state" in loader
             and "data-deferred-data-state" in loader and "criticalSourceRequestCount" in loader
-            and "stagedDataLoading" in regression_module,
+            and "criticalPaintBarrier" in loader and "requestedKeysAtSchedulerStart" in loader
+            and "networkRequestCount" in loader and "duplicateNetworkRequestCount" in loader
+            and "sectionTransitions" in loader and "stagedDataLoading" in regression_module,
             "页面未区分首屏与延迟分区加载状态")
     compact_page = re.sub(r"\s+", "", page)
     require(contrast_ratio(css_hex_variable(page, "faint"), css_hex_variable(page, "panel")) >= 4.5,
@@ -2851,6 +2853,9 @@ def main() -> None:
             and "validateDeferredLoading" in browser_validator
             and "criticalSourceRequestCount" in browser_validator
             and "informationSourceRequestCount" in browser_validator
+            and "groupLoadSequence" in browser_validator
+            and "duplicateNetworkRequestCount" in browser_validator
+            and "informationTransitions" in browser_validator
             and "finance-terminal-browser-evidence.json" in browser_validator
             and "buildBrowserEvidence" in browser_validator
             and "runtimeEvidence=1" in browser_validator,

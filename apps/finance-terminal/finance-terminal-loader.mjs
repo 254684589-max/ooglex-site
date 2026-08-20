@@ -82,20 +82,31 @@ export function createResourceLoader(options = {}) {
   const groups = options.groups || RESOURCE_GROUPS;
   const requests = new Map();
   const requestedKeys = [];
+  let networkRequestCount = 0;
+  const requestStates = new Map();
+  const groupLoadSequence = [];
 
-  function fetchJson(path) {
+  function fetchJson(path, key) {
+    networkRequestCount += 1;
+    requestStates.set(key, "pending");
     return fetchImpl(resourceUrl(path, cacheKey), { cache: "no-store" }).then((response) => {
       if (!response || response.ok !== true) {
         throw new Error(`HTTP ${response && Number.isInteger(response.status) ? response.status : "ERROR"}`);
       }
       return response.json();
+    }).then((data) => {
+      requestStates.set(key, "ready");
+      return data;
+    }).catch((error) => {
+      requestStates.set(key, "error");
+      throw error;
     });
   }
 
   function loadConfig() {
     if (!requests.has("$config")) {
       requestedKeys.push("$config");
-      requests.set("$config", fetchJson("data.json"));
+      requests.set("$config", fetchJson("data.json", "$config"));
     }
     return requests.get("$config");
   }
@@ -106,7 +117,7 @@ export function createResourceLoader(options = {}) {
     }
     if (!requests.has(key)) {
       requestedKeys.push(key);
-      requests.set(key, fetchJson(paths[key]).then(
+      requests.set(key, fetchJson(paths[key], key).then(
         (data) => ({ data, error: null }),
         (error) => ({ data: null, error: new Error(errorMessage(error)) })
       ));
@@ -117,6 +128,7 @@ export function createResourceLoader(options = {}) {
   function loadGroup(name) {
     const keys = groups[name];
     if (!Array.isArray(keys)) return Promise.reject(new Error(`未知金融终端分区：${name}`));
+    groupLoadSequence.push(name);
     return Promise.all(keys.map((key) => loadSource(key))).then((values) => {
       return keys.reduce((result, key, index) => {
         result[key] = values[index];
@@ -129,7 +141,11 @@ export function createResourceLoader(options = {}) {
     return {
       requestedKeys: requestedKeys.slice(),
       requestCount: requestedKeys.length,
-      sourceRequestCount: requestedKeys.filter((key) => key !== "$config").length
+      sourceRequestCount: requestedKeys.filter((key) => key !== "$config").length,
+      networkRequestCount,
+      requestStates: Object.fromEntries(requestStates),
+      duplicateNetworkRequestCount: Math.max(0, networkRequestCount - requestedKeys.length),
+      groupLoadSequence: groupLoadSequence.slice()
     };
   }
 
@@ -281,23 +297,21 @@ export async function startFinanceTerminal(options = {}) {
   root.setAttribute("data-critical-data-state", "ready");
   const criticalSnapshot = loader.snapshot();
   const loadState = {
+    ...criticalSnapshot,
     mode: eager ? "eager" : "deferred",
     criticalSourceRequestCount: criticalSnapshot.sourceRequestCount,
     requestedKeysAfterCritical: criticalSnapshot.requestedKeys,
-    requestedKeys: criticalSnapshot.requestedKeys,
-    sourceRequestCount: criticalSnapshot.sourceRequestCount,
     loadedSections: [],
     failedSections: [],
     settledSections: [],
+    sectionTransitions: [],
     criticalPaintBarrier: { status: "pending", strategy: null, frameCount: null },
     startupOrder: ["critical-rendered"]
   };
   win.__financeTerminalLoadState = loadState;
 
   function updateLoadSnapshot(loadedSections, failedSections = [], settledSections = []) {
-    const snapshot = loader.snapshot();
-    loadState.requestedKeys = snapshot.requestedKeys;
-    loadState.sourceRequestCount = snapshot.sourceRequestCount;
+    Object.assign(loadState, loader.snapshot());
     loadState.loadedSections = loadedSections.slice();
     loadState.failedSections = failedSections.slice();
     loadState.settledSections = settledSections.slice();
@@ -322,6 +336,7 @@ export async function startFinanceTerminal(options = {}) {
     navigationLinks: options.navigationLinks,
     rootMargin: options.rootMargin,
     onStateChange(state) {
+      loadState.sectionTransitions.push({ name: state.name, state: state.state });
       const complete = state.settled.length === Object.keys(options.sections).length;
       root.setAttribute("data-loaded-sections", state.loaded.join(" "));
       root.setAttribute("data-failed-sections", state.failed.join(" "));

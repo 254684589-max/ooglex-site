@@ -18,6 +18,9 @@ import {
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const WIDTHS = [360, 768, 1280];
 const RESULT_ID = "finance-terminal-regression-result";
+const CRITICAL_REQUEST_KEYS = [
+  "$config", "macro", "macroHealth", "assetRanking", "assetRankingHealth", "marketLicense"
+];
 const MIME = {
   ".css": "text/css; charset=utf-8",
   ".html": "text/html; charset=utf-8",
@@ -332,10 +335,23 @@ async function validateDeferredLoading(client, baseUrl, timeoutMs) {
   });
   await loaded;
   const critical = await waitForLoadState(client, (snapshot) => {
-    return snapshot.critical === "ready" && snapshot.state?.criticalSourceRequestCount === 5;
+    return snapshot.critical === "ready"
+      && snapshot.state?.criticalSourceRequestCount === 5
+      && snapshot.state?.criticalPaintBarrier?.status === "yielded"
+      && snapshot.state?.startupOrder?.at(-1) === "deferred-scheduler-started";
   }, timeoutMs);
   if (critical.state.mode !== "deferred" || critical.state.sourceRequestCount !== 5
-    || critical.state.loadedSections.length !== 0) {
+    || critical.state.requestCount !== 6
+    || critical.state.loadedSections.length !== 0
+    || JSON.stringify(critical.state.startupOrder) !== JSON.stringify([
+      "critical-rendered", "critical-paint-yielded", "deferred-scheduler-started"
+    ])
+    || JSON.stringify(critical.state.requestedKeysAfterCritical) !== JSON.stringify(CRITICAL_REQUEST_KEYS)
+    || JSON.stringify(critical.state.requestedKeysAtSchedulerStart) !== JSON.stringify(CRITICAL_REQUEST_KEYS)
+    || JSON.stringify(critical.state.groupLoadSequence) !== JSON.stringify(["critical"])
+    || critical.state.networkRequestCount !== 6
+    || critical.state.duplicateNetworkRequestCount !== 0
+    || Object.values(critical.state.requestStates).some((state) => state !== "ready")) {
     throw new Error(`首屏延迟加载边界无效：${JSON.stringify(critical.state)}`);
   }
   await client.send("Runtime.evaluate", {
@@ -345,12 +361,26 @@ async function validateDeferredLoading(client, baseUrl, timeoutMs) {
     return snapshot.state?.loadedSections?.includes("information")
       && snapshot.informationBusy === "false";
   }, timeoutMs);
-  if (information.state.sourceRequestCount !== 9) {
+  const informationTransitions = information.state.sectionTransitions
+    .filter((item) => item.name === "information").map((item) => item.state);
+  if (information.state.sourceRequestCount !== 9
+    || information.state.requestCount !== 10
+    || JSON.stringify(information.state.groupLoadSequence) !== JSON.stringify(["critical", "information"])
+    || JSON.stringify(informationTransitions) !== JSON.stringify(["loading", "ready"])
+    || information.state.failedSections.length !== 0
+    || information.state.networkRequestCount !== 10
+    || information.state.duplicateNetworkRequestCount !== 0
+    || Object.values(information.state.requestStates).some((state) => state !== "ready")) {
     throw new Error(`资讯分区请求复用边界无效：${JSON.stringify(information.state)}`);
   }
   return {
     criticalSourceRequestCount: critical.state.sourceRequestCount,
-    informationSourceRequestCount: information.state.sourceRequestCount
+    informationSourceRequestCount: information.state.sourceRequestCount,
+    startupOrder: critical.state.startupOrder,
+    criticalPaintBarrier: critical.state.criticalPaintBarrier,
+    groupLoadSequence: information.state.groupLoadSequence,
+    informationTransitions,
+    duplicateNetworkRequestCount: information.state.duplicateNetworkRequestCount
   };
 }
 
@@ -462,7 +492,7 @@ async function main() {
     await client.open();
     await Promise.all([client.send("Page.enable"), client.send("Runtime.enable"), client.send("Network.enable")]);
     const deferredProbe = await validateDeferredLoading(client, baseUrl, timeoutMs);
-    console.log(`Deferred section loading: PASS · sources ${deferredProbe.criticalSourceRequestCount} → ${deferredProbe.informationSourceRequestCount}`);
+    console.log(`Deferred section loading: PASS · sources ${deferredProbe.criticalSourceRequestCount} → ${deferredProbe.informationSourceRequestCount} · groups ${deferredProbe.groupLoadSequence.join(" → ")} · duplicates ${deferredProbe.duplicateNetworkRequestCount}`);
     const results = [];
     for (const width of WIDTHS) results.push(await runWidth(client, baseUrl, artifacts, width, options.height, timeoutMs));
     const evidence = buildBrowserEvidence(results);
