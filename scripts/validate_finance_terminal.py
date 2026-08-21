@@ -2864,6 +2864,16 @@ def main() -> None:
     require("buildPageDataWithMacroError" in app and "unavailableDtwexbgs" in app and "unavailableRwtc" in app and 'status: "error"' in app, "app.js未覆盖官方数据文件失败状态")
     require("changeUnit" in app and '"bp"' in app, "app.js未按bp显示收益率变化")
     require("apps/finance-terminal/" in home, "首页缺少金融终端入口")
+    require("金融终端 Public Beta" in home
+            and "4项站内真实数据、4项免费ETF代理、0项演示" in home
+            and "Finance Terminal Public Beta" in home
+            and "4 first-party data cards, 4 free ETF proxies, 0 demo" in home,
+            "首页金融终端入口未同步Public Beta真实数据与免费代理口径")
+    require("金融终端（演示）" not in home
+            and "4项演示数据" not in home
+            and "Finance Terminal (Demo)" not in home
+            and "4 real, 4 demo" not in home,
+            "首页仍残留金融终端演示版文案")
 
     external_scripts = re.findall(r'<script[^>]+src=["\'](https?://[^"\']+)', page, flags=re.I)
     require(external_scripts == ["https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js"],
