@@ -2544,6 +2544,10 @@ def main() -> None:
             and "prefers-reduced-motion" in vision_css
             and "forced-colors" in vision_css,
             "科幻视觉层缺少桌面、平板、手机、减少动画或强制颜色规则")
+    require(".section-nav a { min-width: 44px; min-height: 44px; justify-content: center; }" in vision_css
+            and ".global-risk-map-layout > *" in vision_css
+            and ".pipeline-command > *" in vision_css,
+            "科幻视觉层缺少360px触控目标或复杂网格安全收缩边界")
     terms_page = TERMS_PAGE.read_text(encoding="utf-8")
     privacy_page = PRIVACY_PAGE.read_text(encoding="utf-8")
     legal_css = LEGAL_CSS.read_text(encoding="utf-8")

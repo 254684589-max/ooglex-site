@@ -261,6 +261,15 @@ body::after {
   padding: 12px 0 10px;
 }
 
+.shell > *,
+.command-hero > *,
+.orbit-panel > *,
+.hero-telemetry > *,
+.global-risk-map-layout > *,
+.pipeline-command > * {
+  min-width: 0;
+}
+
 .orbit-panel,
 .telemetry-card {
   position: relative;
@@ -1017,6 +1026,7 @@ body::after {
 @media (max-width: 620px) {
   body::after { display: none; }
   .shell { padding: 0 10px 42px; }
+  .section-nav a { min-width: 44px; min-height: 44px; justify-content: center; }
   .brand span:last-child { max-width: 156px; overflow: hidden; text-overflow: ellipsis; }
   .public-beta-chip { display: none; }
   .stable-v1-chip { min-height: 44px; }

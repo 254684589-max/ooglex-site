@@ -459,7 +459,8 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
   }
   if (result.status !== "pass") {
     const targets = result.undersizedTargets?.length ? `；触控目标=${JSON.stringify(result.undersizedTargets)}` : "";
-    throw new Error(`${width}px浏览器检查失败：${(result.failures || ["unknown"]).join(", ")}${targets}`);
+    const boundary = `；视口=${result.viewport?.width ?? "?"}，文档宽度=${result.scrollWidth ?? "?"}`;
+    throw new Error(`${width}px浏览器检查失败：${(result.failures || ["unknown"]).join(", ")}${boundary}${targets}`);
   }
 
   const layout = await client.send("Page.getLayoutMetrics");
