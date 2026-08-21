@@ -3471,6 +3471,9 @@
       });
     }
     researchView.render(cards);
+    return terminalVisualsPromise.then(function (visuals) {
+      if (visuals) visuals.renderGlobalRiskHeatmap(cards);
+    });
   }
 
   var informationView = null;
@@ -3513,6 +3516,9 @@
       });
     }
     operationsView.render(cards);
+    return terminalVisualsPromise.then(function (visuals) {
+      if (visuals) visuals.renderPipelineOverview(cards);
+    });
   }
 
   function renderMarketLicenseNotice(state) {
@@ -3970,6 +3976,13 @@
     message.setAttribute("role", "alert");
     spec[0].setAttribute("aria-busy", "false");
     spec[1].textContent = spec[3];
+    if (name === "research" || name === "operations") {
+      terminalVisualsPromise.then(function (visuals) {
+        if (!visuals) return;
+        if (name === "research") visuals.renderGlobalRiskHeatmap([]);
+        if (name === "operations") visuals.renderPipelineOverview([]);
+      });
+    }
   }
 
   function startFinanceTerminal() {
@@ -4030,19 +4043,22 @@
           renderMarketLicenseNotice(experience.marketLicense);
         },
         renderSection: function (name, cards) {
-          if (name === "risk") renderRiskCards(cards, sectionViewModules.risk);
-          if (name === "research") renderResearchCards(cards, sectionViewModules.research);
-          if (name === "information") renderInformationCards(cards, sectionViewModules.information);
-          if (name === "operations") renderOperationsCards(cards, sectionViewModules.operations);
+          if (name === "risk") return renderRiskCards(cards, sectionViewModules.risk);
+          if (name === "research") return renderResearchCards(cards, sectionViewModules.research);
+          if (name === "information") return renderInformationCards(cards, sectionViewModules.information);
+          if (name === "operations") return renderOperationsCards(cards, sectionViewModules.operations);
+          return undefined;
         },
         renderSectionError: renderDeferredSectionError,
         announceCritical: function (experience) { announceMarketReady(experience.market); },
         announceComplete: announceExperience,
         monitorProvider: function (marketLicense) { return monitorProviderWidgets(marketLicense); },
         runRegression: function () {
-          return import("./finance-terminal-regression.mjs").then(function (regressionModule) {
-            return regressionModule.runBrowserRegressionProbe({
-              providerWidgetUnavailableCopy: providerWidgetUnavailableCopy
+          return terminalVisualsPromise.then(function () {
+            return import("./finance-terminal-regression.mjs").then(function (regressionModule) {
+              return regressionModule.runBrowserRegressionProbe({
+                providerWidgetUnavailableCopy: providerWidgetUnavailableCopy
+              });
             });
           });
         },

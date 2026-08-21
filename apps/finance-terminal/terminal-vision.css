@@ -553,12 +553,429 @@ body::after {
   background: linear-gradient(150deg, rgba(10, 34, 52, 0.98), rgba(4, 16, 26, 0.98));
 }
 
+.risk-card {
+  align-items: stretch;
+}
+
+.risk-hud-gauge {
+  --risk-hud-progress: 0deg;
+  position: relative;
+  display: grid;
+  width: 164px;
+  max-width: 72%;
+  aspect-ratio: 1;
+  place-items: center;
+  align-self: center;
+  margin: 22px auto 12px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(69, 212, 255, 0.08) 0 46%, transparent 47%),
+    repeating-conic-gradient(from -90deg, rgba(69, 212, 255, 0.3) 0 1deg, transparent 1deg 10deg);
+  box-shadow: 0 0 30px rgba(69, 212, 255, 0.08), inset 0 0 28px rgba(69, 212, 255, 0.06);
+}
+
+.risk-hud-percent {
+  background:
+    radial-gradient(circle at 50% 50%, #06131f 0 54%, transparent 55%),
+    conic-gradient(from -90deg, var(--vision-cyan) 0 var(--risk-hud-progress), rgba(69, 212, 255, 0.1) var(--risk-hud-progress) 360deg);
+}
+
+.risk-hud-gauge::before,
+.risk-hud-gauge::after {
+  position: absolute;
+  content: "";
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.risk-hud-gauge::before {
+  inset: 10px;
+  border: 1px solid rgba(69, 212, 255, 0.22);
+  box-shadow: inset 0 0 24px rgba(69, 212, 255, 0.09);
+}
+
+.risk-hud-gauge::after {
+  inset: 25%;
+  border: 1px dashed rgba(69, 212, 255, 0.16);
+}
+
+.risk-card.status-stale .risk-hud-gauge,
+.risk-card.status-partial .risk-hud-gauge {
+  filter: sepia(0.22);
+}
+
+.risk-hud-gauge .risk-value-row {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  max-width: 120px;
+  gap: 5px;
+  margin: 0;
+  text-align: center;
+}
+
+.risk-hud-gauge .risk-value {
+  font-size: clamp(27px, 2.5vw, 38px);
+}
+
+.risk-hud-gauge .risk-assessment {
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.risk-hud-scale {
+  position: absolute;
+  z-index: 2;
+  bottom: 26px;
+  color: var(--faint);
+  font: 8px var(--mono);
+  letter-spacing: 0.09em;
+}
+
+.signal-meter-labels-only {
+  margin-top: 0;
+}
+
+.signal-meter-labels-only .meter-labels {
+  padding-top: 7px;
+  border-top: 1px solid var(--vision-line);
+}
+
+.global-risk-map {
+  position: relative;
+  margin-top: 10px;
+  overflow: hidden;
+  border: 1px solid var(--vision-line);
+  border-radius: 5px;
+  background:
+    radial-gradient(620px 310px at 35% 48%, rgba(23, 109, 154, 0.12), transparent 72%),
+    linear-gradient(145deg, rgba(7, 25, 39, 0.95), rgba(3, 12, 20, 0.95));
+}
+
+.global-risk-map::before,
+.global-risk-map::after,
+.pipeline-command::before,
+.pipeline-command::after {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  content: "";
+  pointer-events: none;
+}
+
+.global-risk-map::before,
+.pipeline-command::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid var(--vision-cyan);
+  border-left: 1px solid var(--vision-cyan);
+}
+
+.global-risk-map::after,
+.pipeline-command::after {
+  right: -1px;
+  bottom: -1px;
+  border-right: 1px solid var(--vision-cyan);
+  border-bottom: 1px solid var(--vision-cyan);
+}
+
+.global-risk-map-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px 17px 11px;
+  border-bottom: 1px solid var(--vision-line);
+}
+
+.global-risk-map-head h3 {
+  margin: 0;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+}
+
+.global-risk-map-head div > span {
+  display: block;
+  margin-top: 4px;
+  color: var(--faint);
+  font: 8px var(--mono);
+  letter-spacing: 0.1em;
+}
+
+.global-risk-map-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(240px, 0.7fr);
+  min-height: 360px;
+}
+
+.risk-map-figure {
+  position: relative;
+  min-width: 0;
+  margin: 0;
+  padding: 8px 10px 12px;
+  border-right: 1px solid var(--vision-line);
+}
+
+.risk-map-svg {
+  display: block;
+  width: 100%;
+  height: 315px;
+}
+
+.risk-map-grid path {
+  fill: none;
+  stroke: rgba(69, 212, 255, 0.07);
+  stroke-width: 1;
+}
+
+.risk-region path {
+  fill: rgba(45, 112, 148, 0.18);
+  stroke: rgba(109, 206, 241, 0.58);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  transition: fill 180ms ease, stroke 180ms ease, filter 180ms ease;
+}
+
+.risk-region.region-pressure-positive path {
+  fill: rgba(48, 191, 139, 0.24);
+  stroke: rgba(82, 214, 154, 0.76);
+}
+
+.risk-region.region-pressure-neutral path {
+  fill: rgba(45, 130, 173, 0.28);
+  stroke: rgba(99, 211, 248, 0.78);
+}
+
+.risk-region.region-pressure-watch path {
+  fill: rgba(244, 182, 75, 0.38);
+  stroke: rgba(255, 208, 118, 0.92);
+  filter: drop-shadow(0 0 7px rgba(244, 182, 75, 0.18));
+}
+
+.risk-region.region-pressure-high path {
+  fill: rgba(239, 119, 74, 0.5);
+  stroke: rgba(255, 186, 93, 0.96);
+  filter: drop-shadow(0 0 10px rgba(244, 150, 75, 0.26));
+}
+
+.risk-region.region-no-data path {
+  fill: rgba(97, 113, 126, 0.08);
+  stroke: rgba(122, 145, 158, 0.28);
+  stroke-dasharray: 4 4;
+}
+
+.risk-map-labels text {
+  fill: rgba(195, 232, 245, 0.68);
+  font: 9px var(--mono);
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+}
+
+.risk-map-figure figcaption {
+  display: grid;
+  grid-template-columns: auto minmax(80px, 180px) auto;
+  gap: 8px;
+  align-items: center;
+  color: var(--faint);
+  font: 8px var(--mono);
+}
+
+.risk-legend-bar {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--up), var(--vision-cyan) 38%, var(--vision-amber) 72%, #ef774a);
+}
+
+.risk-region-list {
+  display: grid;
+  align-content: start;
+  min-width: 0;
+  padding: 10px 14px;
+}
+
+.risk-region-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 41px;
+  border-bottom: 1px solid rgba(61, 190, 231, 0.12);
+}
+
+.risk-region-row > span {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.risk-region-row b {
+  color: var(--ink);
+  font-size: 11px;
+}
+
+.risk-region-row small {
+  overflow: hidden;
+  color: var(--faint);
+  font: 8px var(--mono);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.risk-region-row strong {
+  color: var(--vision-cyan);
+  font: 750 12px var(--mono);
+}
+
+.risk-region-row.region-pressure-positive strong { color: var(--up); }
+.risk-region-row.region-pressure-watch strong { color: var(--vision-amber); }
+.risk-region-row.region-pressure-high strong { color: #ff9d70; }
+.risk-region-row.region-no-data strong { color: var(--faint); }
+
+.risk-map-source {
+  margin: 10px 0 0;
+  color: var(--faint);
+  font: 8px/1.55 var(--mono);
+}
+
+.global-risk-map-note {
+  margin: 0;
+  padding: 10px 16px;
+  border-top: 1px solid var(--vision-line);
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.pipeline-command {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(220px, 0.72fr) minmax(460px, 1.5fr);
+  gap: 22px;
+  align-items: center;
+  margin: 10px 0;
+  padding: 18px 20px;
+  overflow: hidden;
+  border: 1px solid var(--vision-line);
+  border-radius: 5px;
+  background:
+    linear-gradient(90deg, rgba(8, 30, 47, 0.9), rgba(3, 13, 21, 0.94)),
+    var(--vision-panel);
+}
+
+.stable-v1-ring {
+  --stable-progress: 0deg;
+  position: relative;
+  display: grid;
+  width: 132px;
+  aspect-ratio: 1;
+  place-content: center;
+  gap: 5px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #06131f 0 54%, transparent 55%),
+    conic-gradient(from -90deg, var(--vision-cyan) 0 var(--stable-progress), rgba(69, 212, 255, 0.1) var(--stable-progress) 360deg);
+  box-shadow: 0 0 30px rgba(69, 212, 255, 0.1), inset 0 0 24px rgba(69, 212, 255, 0.07);
+  text-align: center;
+}
+
+.stable-v1-ring::before {
+  position: absolute;
+  inset: 9px;
+  content: "";
+  border: 1px solid rgba(69, 212, 255, 0.24);
+  border-radius: 50%;
+}
+
+.stable-v1-ring > span {
+  color: var(--faint);
+  font: 8px var(--mono);
+  letter-spacing: 0.09em;
+}
+
+.stable-v1-ring > strong {
+  color: var(--ink);
+  font: 750 24px var(--mono);
+}
+
+.stable-v1-ring > small {
+  color: var(--vision-cyan);
+  font: 8px var(--mono);
+}
+
+.stable-v1-ring.status-stale > small,
+.stable-v1-ring.status-progress > small { color: var(--vision-amber); }
+.stable-v1-ring.status-ready > small { color: var(--up); }
+
+.pipeline-command-copy {
+  display: grid;
+  gap: 7px;
+}
+
+.pipeline-command-copy > span {
+  color: var(--vision-cyan);
+  font: 8px var(--mono);
+  letter-spacing: 0.12em;
+}
+
+.pipeline-command-copy > strong {
+  font: 700 15px var(--mono);
+}
+
+.pipeline-command-copy p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.pipeline-nodes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.pipeline-nodes > span {
+  position: relative;
+  display: grid;
+  min-height: 66px;
+  place-content: center;
+  gap: 7px;
+  border: 1px solid var(--vision-line);
+  border-radius: 4px;
+  color: var(--ink);
+  background: rgba(6, 21, 33, 0.76);
+  font-size: 10px;
+  text-align: center;
+}
+
+.pipeline-nodes > span:not(:last-child)::after {
+  position: absolute;
+  top: 50%;
+  right: -9px;
+  width: 9px;
+  height: 1px;
+  content: "";
+  background: var(--vision-line-strong);
+}
+
+.pipeline-nodes i {
+  color: var(--faint);
+  font: normal 8px var(--mono);
+}
+
+.pipeline-node-healthy i { color: var(--up); }
+.pipeline-node-degraded i,
+.pipeline-node-stale i { color: var(--vision-amber); }
+.pipeline-node-failed i,
+.pipeline-node-unknown i { color: var(--down); }
+
 @media (max-width: 1240px) {
   .shell { padding-left: 72px; }
   .command-hero { grid-template-columns: minmax(0, 1.75fr) minmax(248px, 0.72fr); }
   .orbit-panel { grid-template-columns: minmax(225px, 0.68fr) minmax(360px, 1.32fr); }
   .orbit-copy { padding-left: 24px; }
   .orbit-copy .hero-copy { font-size: 12px; }
+  .pipeline-command { grid-template-columns: auto minmax(0, 0.65fr) minmax(390px, 1.3fr); gap: 16px; }
 }
 
 @media (max-width: 1040px) {
@@ -568,6 +985,9 @@ body::after {
   .hero-telemetry { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto; }
   .hero-telemetry .meta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .telemetry-integrity { min-height: 120px; }
+  .global-risk-map-layout { grid-template-columns: minmax(0, 1.35fr) minmax(230px, 0.65fr); }
+  .pipeline-command { grid-template-columns: auto minmax(0, 1fr); }
+  .pipeline-nodes { grid-column: 1 / -1; }
 }
 
 @media (max-width: 780px) {
@@ -588,6 +1008,10 @@ body::after {
   .hero-telemetry .meta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .telemetry-scan,
   .telemetry-integrity { min-height: 105px; }
+  .global-risk-map-layout { grid-template-columns: 1fr; }
+  .risk-map-figure { border-right: 0; border-bottom: 1px solid var(--vision-line); }
+  .pipeline-command { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .pipeline-nodes { width: 100%; }
 }
 
 @media (max-width: 620px) {
@@ -609,6 +1033,14 @@ body::after {
   .market-orbit figcaption { text-align: left; }
   .hero-telemetry .meta-grid { grid-template-columns: 1fr; }
   .telemetry-card { padding: 13px; }
+  .global-risk-map-head { align-items: flex-start; flex-direction: column; }
+  .risk-map-svg { height: 250px; }
+  .risk-map-labels text { display: none; }
+  .risk-map-figure figcaption { grid-template-columns: auto minmax(50px, 1fr) auto; }
+  .pipeline-command { padding-inline: 14px; }
+  .pipeline-nodes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pipeline-nodes > span:nth-child(2)::after { display: none; }
+  .risk-hud-gauge { width: 150px; }
 }
 
 @media (prefers-reduced-motion: no-preference) {

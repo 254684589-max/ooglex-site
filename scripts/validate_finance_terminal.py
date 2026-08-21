@@ -31,6 +31,8 @@ ROOT = Path(__file__).resolve().parents[1]
 PAGE = ROOT / "apps" / "finance-terminal" / "index.html"
 APP = ROOT / "apps" / "finance-terminal" / "app.js"
 LOADER = ROOT / "apps" / "finance-terminal" / "finance-terminal-loader.mjs"
+TERMINAL_VISUALS = ROOT / "apps" / "finance-terminal" / "finance-terminal-visuals.mjs"
+VISION_CSS = ROOT / "apps" / "finance-terminal" / "terminal-vision.css"
 REGRESSION_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-regression.mjs"
 RISK_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-view.mjs"
 RESEARCH_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-research-view.mjs"
@@ -2036,7 +2038,7 @@ const adapter = require("./apps/finance-terminal/app.js");
 
 def main() -> None:
     for path in (
-        PAGE, APP, DATA, READINESS_DATA, MARKET_LICENSE_READINESS,
+        PAGE, APP, LOADER, TERMINAL_VISUALS, VISION_CSS, DATA, READINESS_DATA, MARKET_LICENSE_READINESS,
         MACRO_DATA, FEAR_GREED_DATA, FEAR_GREED_HEALTH, OFR_DATA, OFR_HEALTH,
         ASSET_TRACKER_DATA, ASSET_TRACKER_HEALTH, ASSET_RANKING_DATA, ASSET_RANKING_HEALTH,
         COMPANIES_DATA, COMPANIES_HEALTH,
@@ -2483,6 +2485,8 @@ def main() -> None:
     page = PAGE.read_text(encoding="utf-8")
     app = APP.read_text(encoding="utf-8")
     loader = LOADER.read_text(encoding="utf-8")
+    terminal_visuals = TERMINAL_VISUALS.read_text(encoding="utf-8")
+    vision_css = VISION_CSS.read_text(encoding="utf-8")
     regression_module = REGRESSION_MODULE.read_text(encoding="utf-8")
     risk_view_module = RISK_VIEW_MODULE.read_text(encoding="utf-8")
     research_view_module = RESEARCH_VIEW_MODULE.read_text(encoding="utf-8")
@@ -2493,10 +2497,12 @@ def main() -> None:
     compact_loader = re.sub(r"\s+", "", loader)
     require(APP.stat().st_size <= 220_000, "金融终端生产入口脚本超过220KB性能预算")
     require(LOADER.stat().st_size <= 14_000, "金融终端分区加载模块超过14KB性能预算")
-    require(APP.stat().st_size + LOADER.stat().st_size <= 230_000,
+    require(TERMINAL_VISUALS.stat().st_size <= 16_000, "金融终端视觉数据模块超过16KB性能预算")
+    require(VISION_CSS.stat().st_size <= 28_000, "金融终端科幻视觉样式超过28KB性能预算")
+    require(APP.stat().st_size + LOADER.stat().st_size + TERMINAL_VISUALS.stat().st_size <= 230_000,
             "金融终端常规加载JavaScript超过230KB性能预算")
-    require(REGRESSION_MODULE.stat().st_size <= 15_000,
-            "仅回归模式加载的浏览器探针超过15KB性能预算")
+    require(REGRESSION_MODULE.stat().st_size <= 18_000,
+            "仅回归模式加载的浏览器探针超过18KB性能预算")
     require(RISK_VIEW_MODULE.stat().st_size <= 6_000,
             "按需加载的市场状态视图超过6KB性能预算")
     require('import("./finance-terminal-risk-view.mjs")' in app
@@ -2521,6 +2527,22 @@ def main() -> None:
             and "createOperationsView" in operations_view_module
             and "finance-terminal-operations-view.mjs" not in page,
             "稳定V1运行证据视图必须保持按需导入且不得在首屏预加载")
+    require('<link rel="stylesheet" href="terminal-vision.css">' in page
+            and 'import("./finance-terminal-visuals.mjs")' in app
+            and "createTerminalVisuals" in terminal_visuals,
+            "科幻终端视觉层缺少本地样式或数据模块")
+    require("innerHTML" not in terminal_visuals
+            and "REGION_SPECS" in terminal_visuals
+            and "Yahoo Finance" in terminal_visuals
+            and "renderGlobalRiskHeatmap" in terminal_visuals
+            and "renderPipelineOverview" in terminal_visuals,
+            "终端视觉数据模块缺少安全文本渲染、区域代理或资格进度逻辑")
+    require('@media (max-width: 1040px)' in vision_css
+            and '@media (max-width: 780px)' in vision_css
+            and '@media (max-width: 620px)' in vision_css
+            and "prefers-reduced-motion" in vision_css
+            and "forced-colors" in vision_css,
+            "科幻视觉层缺少桌面、平板、手机、减少动画或强制颜色规则")
     terms_page = TERMS_PAGE.read_text(encoding="utf-8")
     privacy_page = PRIVACY_PAGE.read_text(encoding="utf-8")
     legal_css = LEGAL_CSS.read_text(encoding="utf-8")
@@ -2575,6 +2597,17 @@ def main() -> None:
             "页面缺少事件资讯模块")
     require('id="operations-grid"' in page and 'id="operations-summary"' in page and "稳定V1运行证据" in page,
             "页面缺少四管道稳定V1运行证据模块")
+    require('id="market-tape"' in page and 'class="market-orbit-svg"' in page
+            and page.count('data-market-time=') == 4
+            and "非资金流向图" in page,
+            "页面缺少核心资产行情带、全息地球时区或非资金流向说明")
+    require('id="global-risk-map"' in page and page.count('data-risk-region=') == 8
+            and "区域代表性股票指数的当日价格跌幅作为市场压力代理" in page
+            and "不是国家风险评分" in page,
+            "全球风险热力图缺少区域路径、压力代理口径或风险边界说明")
+    require('id="stable-v1-ring" role="progressbar"' in page
+            and 'aria-valuemax="7"' in page and 'id="pipeline-nodes"' in page,
+            "页面缺少稳定V1 7周期HUD或四管线节点")
     require("健康快照与连续周期证据是两套独立信号" in page
             and "Beta需四条管道各满3个周期" in page,
             "页面未区分仓库健康快照与远端Beta门禁证据")
@@ -2814,6 +2847,12 @@ def main() -> None:
             "页面缺少浏览器、分区加载、官方逐源或辅助来源资源回归探针")
     require("marketLicenseReadiness" in regression_module and "providerWidgetCount" in regression_module,
             "浏览器回归探针未覆盖免费代理状态或四项提供方组件")
+    require("orbitalTerminalVisuals" in regression_module
+            and "riskHudVisuals" in regression_module
+            and "globalRiskHeatmap" in regression_module
+            and "stableV1Hud" in regression_module
+            and "minimumReadinessCycle" in regression_module,
+            "浏览器回归探针未覆盖行情带、时区地球、风险HUD、区域热力图或动态V1资格")
     require("providerAttribution" in regression_module and "poweredByCoinGeckoLinks" in regression_module,
             "浏览器回归探针未核对CoinGecko署名文本、样式或最小字号")
     require("waitForProviderWidgetRegistration" in app and "inspectProviderWidgetHost" in app

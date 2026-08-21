@@ -38,6 +38,7 @@ export function createRiskView(dependencies = {}) {
     const card = document.createElement("article");
     card.className = "risk-card status-" + signal.status;
     card.setAttribute("role", "listitem");
+    card.setAttribute("data-signal-id", signal.id);
 
     const head = document.createElement("div");
     head.className = "risk-card-head";
@@ -48,29 +49,32 @@ export function createRiskView(dependencies = {}) {
     appendText(head, "span", "risk-symbol", signal.symbol);
     card.appendChild(head);
 
+    const gauge = document.createElement("div");
+    gauge.className = "risk-hud-gauge" + (isNumber(signal.meterPercent) ? " risk-hud-percent" : " risk-hud-raw");
+    if (isNumber(signal.meterPercent)) {
+      const percent = Math.max(0, Math.min(100, signal.meterPercent));
+      gauge.style.setProperty("--risk-hud-progress", `${percent * 3.6}deg`);
+      gauge.setAttribute("role", "progressbar");
+      gauge.setAttribute("aria-valuemin", "0");
+      gauge.setAttribute("aria-valuemax", "100");
+      gauge.setAttribute("aria-valuenow", String(percent));
+      gauge.setAttribute("aria-label", signal.name + "分数");
+    } else {
+      gauge.setAttribute("aria-label", signal.name + "原始指数读数，未归一化");
+    }
     const valueRow = document.createElement("div");
     valueRow.className = "risk-value-row";
     appendText(valueRow, "span", "risk-value", formatRiskValue(signal));
     appendText(valueRow, "span", "risk-assessment", signal.assessment);
-    card.appendChild(valueRow);
+    gauge.appendChild(valueRow);
+    appendText(gauge, "span", "risk-hud-scale", isNumber(signal.meterPercent) ? "0 — 100" : "RAW INDEX");
+    card.appendChild(gauge);
     appendText(card, "div", "risk-change", signal.changeText || "暂无可比变化");
 
     if (isNumber(signal.meterPercent) && Array.isArray(signal.meterLabels)
       && signal.meterLabels.length === 3) {
       const meter = document.createElement("div");
-      meter.className = "signal-meter";
-      const track = document.createElement("div");
-      track.className = "meter-track";
-      track.setAttribute("role", "progressbar");
-      track.setAttribute("aria-valuemin", "0");
-      track.setAttribute("aria-valuemax", "100");
-      track.setAttribute("aria-valuenow", String(signal.meterPercent));
-      track.setAttribute("aria-label", signal.name + "分数");
-      const fill = document.createElement("div");
-      fill.className = "meter-fill";
-      fill.style.width = Math.max(0, Math.min(100, signal.meterPercent)) + "%";
-      track.appendChild(fill);
-      meter.appendChild(track);
+      meter.className = "signal-meter signal-meter-labels-only";
       const labels = document.createElement("div");
       labels.className = "meter-labels";
       signal.meterLabels.forEach((label) => { appendText(labels, "span", "", label); });
