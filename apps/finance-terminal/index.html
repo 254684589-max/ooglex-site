@@ -1169,6 +1169,7 @@
   </style>
   <link rel="stylesheet" href="terminal-vision.css">
   <link rel="stylesheet" href="terminal-command-center.css">
+  <link rel="stylesheet" href="terminal-visual-fidelity.css">
 </head>
 <body data-terminal-view="overview">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -1243,6 +1244,25 @@
                   <feGaussianBlur stdDeviation="3" result="blur"></feGaussianBlur>
                   <feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
                 </filter>
+                <filter id="earth-atmosphere" x="-55%" y="-55%" width="210%" height="210%">
+                  <feGaussianBlur stdDeviation="7" result="atmosphere"></feGaussianBlur>
+                  <feMerge><feMergeNode in="atmosphere"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+                </filter>
+                <linearGradient id="earth-ocean" x1="18%" y1="5%" x2="82%" y2="95%">
+                  <stop offset="0" stop-color="#167bb7" stop-opacity="0.78"></stop>
+                  <stop offset="0.48" stop-color="#073e69" stop-opacity="0.92"></stop>
+                  <stop offset="1" stop-color="#020b18" stop-opacity="0.98"></stop>
+                </linearGradient>
+                <radialGradient id="earth-daylight" cx="32%" cy="26%" r="74%">
+                  <stop offset="0" stop-color="#d7f7ff" stop-opacity="0.3"></stop>
+                  <stop offset="0.38" stop-color="#48cfff" stop-opacity="0.09"></stop>
+                  <stop offset="1" stop-color="#00101e" stop-opacity="0"></stop>
+                </radialGradient>
+                <pattern id="city-lights" width="17" height="13" patternUnits="userSpaceOnUse">
+                  <circle cx="3" cy="4" r="0.9" fill="#ffd47a" opacity="0.9"></circle>
+                  <circle cx="12" cy="9" r="0.65" fill="#7de6ff" opacity="0.8"></circle>
+                </pattern>
+                <clipPath id="earth-clip"><circle r="132"></circle></clipPath>
               </defs>
               <g class="orbit-grid" aria-hidden="true">
                 <path d="M24 74H696M24 150H696M24 226H696M24 302H696"></path>
@@ -1254,14 +1274,24 @@
                 <path class="orbit-arc orbit-arc-cyan" d="M222 116C355 38 502 104 548 235"></path>
               </g>
               <g class="globe" transform="translate(360 196)">
+                <circle class="globe-atmosphere" r="139" filter="url(#earth-atmosphere)"></circle>
                 <circle class="globe-halo" r="146"></circle>
-                <circle class="globe-sphere" r="132" fill="url(#orbit-fill)"></circle>
-                <ellipse class="globe-line" rx="132" ry="45"></ellipse>
-                <ellipse class="globe-line" rx="132" ry="86"></ellipse>
-                <ellipse class="globe-line" rx="55" ry="132"></ellipse>
-                <ellipse class="globe-line" rx="98" ry="132"></ellipse>
-                <path class="globe-line" d="M-132 0H132M0-132V132"></path>
-                <path class="globe-land" d="M-112-56l24-22 31 2 18 16 21 4 11 18-18 17-9 24-21 7-10 27-20-3-8-31-19-19 8-18-8-22zm66 89 25 9 16 27-7 31-17 33-19-17-7-35 7-38zm76-98 25-18 42 5 19 18 31 11 17 28-16 17-26-8-22 14-17-8-26 16-18-13-8-24 17-16zm55 77 28 10 15 27-18 17-25-8-16-20 13-22zm31 60 30 5 16 24-11 20-31-6-11-24z"></path>
+                <circle class="globe-sphere" r="132" fill="url(#earth-ocean)"></circle>
+                <g class="globe-surface" clip-path="url(#earth-clip)">
+                  <path class="globe-land globe-land-base" d="M-112-56l24-22 31 2 18 16 21 4 11 18-18 17-9 24-21 7-10 27-20-3-8-31-19-19 8-18-8-22zm66 89 25 9 16 27-7 31-17 33-19-17-7-35 7-38zm76-98 25-18 42 5 19 18 31 11 17 28-16 17-26-8-22 14-17-8-26 16-18-13-8-24 17-16zm55 77 28 10 15 27-18 17-25-8-16-20 13-22zm31 60 30 5 16 24-11 20-31-6-11-24z"></path>
+                  <path class="globe-city-texture" d="M-112-56l24-22 31 2 18 16 21 4 11 18-18 17-9 24-21 7-10 27-20-3-8-31-19-19 8-18-8-22zm66 89 25 9 16 27-7 31-17 33-19-17-7-35 7-38zm76-98 25-18 42 5 19 18 31 11 17 28-16 17-26-8-22 14-17-8-26 16-18-13-8-24 17-16zm55 77 28 10 15 27-18 17-25-8-16-20 13-22zm31 60 30 5 16 24-11 20-31-6-11-24z" fill="url(#city-lights)"></path>
+                  <circle r="132" fill="url(#earth-daylight)"></circle>
+                  <g class="globe-graticule">
+                    <ellipse rx="132" ry="38"></ellipse><ellipse rx="132" ry="78"></ellipse>
+                    <ellipse rx="45" ry="132"></ellipse><ellipse rx="88" ry="132"></ellipse>
+                    <path d="M-132 0H132M0-132V132"></path>
+                  </g>
+                  <g class="earth-lights">
+                    <circle cx="-84" cy="-40" r="2.3"></circle><circle cx="-68" cy="-23" r="1.5"></circle>
+                    <circle cx="48" cy="-39" r="2"></circle><circle cx="77" cy="-24" r="1.7"></circle>
+                    <circle cx="103" cy="-10" r="2.2"></circle><circle cx="29" cy="7" r="1.3"></circle>
+                  </g>
+                </g>
                 <circle class="globe-core" r="5" filter="url(#orbit-glow)"></circle>
               </g>
               <g class="market-node" transform="translate(126 226)"><circle r="5"></circle><circle class="node-pulse" r="12"></circle></g>
@@ -1295,6 +1325,33 @@
             <strong>来源、时点、频率、回退独立显示</strong>
             <span>视觉层不改变任何行情口径</span>
           </div>
+        </aside>
+
+        <aside class="risk-radar-panel" aria-labelledby="risk-radar-title" aria-describedby="risk-radar-note">
+          <div class="risk-radar-head">
+            <div><span>RISK RADAR</span><h2 id="risk-radar-title">风险雷达</h2></div>
+            <strong id="risk-radar-state">LOADING</strong>
+          </div>
+          <svg class="risk-radar-chart" viewBox="0 0 260 218" role="img" aria-label="由现有市场状态信号归一化生成的六维风险雷达">
+            <g class="risk-radar-grid" aria-hidden="true">
+              <polygon points="130,22 213,70 213,166 130,214 47,166 47,70"></polygon>
+              <polygon points="130,51 188,84 188,152 130,185 72,152 72,84"></polygon>
+              <polygon points="130,80 163,99 163,137 130,156 97,137 97,99"></polygon>
+              <path d="M130 22V214M47 70L213 166M213 70L47 166"></path>
+            </g>
+            <polygon class="risk-radar-fill" id="risk-radar-polygon" points="130,118 130,118 130,118 130,118 130,118 130,118"></polygon>
+            <g class="risk-radar-points" id="risk-radar-points" aria-hidden="true">
+              <circle r="3"></circle><circle r="3"></circle><circle r="3"></circle>
+              <circle r="3"></circle><circle r="3"></circle><circle r="3"></circle>
+            </g>
+            <g class="risk-radar-labels" aria-hidden="true">
+              <text x="130" y="13">利率风险</text><text x="224" y="66">通胀风险</text>
+              <text x="226" y="178">汇率风险</text><text x="130" y="217">波动率风险</text>
+              <text x="37" y="178">信用风险</text><text x="35" y="66">流动性风险</text>
+            </g>
+          </svg>
+          <div class="risk-radar-score"><span>风险合评分</span><strong id="risk-radar-score">—</strong><small>/10</small></div>
+          <p id="risk-radar-note">由宏观状态、恐慌贪婪与OFR压力三项现有信号归一化映射，仅作风险结构可视化。</p>
         </aside>
       </section>
 

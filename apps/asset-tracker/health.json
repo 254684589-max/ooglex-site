@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "asset-tracker",
-  "generatedAt": "2026-08-21T15:16:01Z",
+  "generatedAt": "2026-08-21T18:03:09Z",
   "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-08-21T15:16:01Z",
-  "lastSuccessfulAt": "2026-08-21T15:16:01Z",
+  "lastAttemptAt": "2026-08-21T18:03:09Z",
+  "lastSuccessfulAt": "2026-08-21T18:03:09Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-08-21T15:16:01Z",
+  "publishedSnapshotAt": "2026-08-21T18:03:09Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -52,7 +52,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-21T15:16:01Z"
+      "lastSuccessAt": "2026-08-21T18:03:09Z"
     }
   ],
   "recovery": {
