@@ -1168,6 +1168,7 @@
     }
   </style>
   <link rel="stylesheet" href="terminal-vision.css">
+  <link rel="stylesheet" href="terminal-operational-radar.css">
   <link rel="stylesheet" href="terminal-command-center.css">
 </head>
 <body data-terminal-view="overview">
@@ -1232,42 +1233,73 @@
             <p class="hero-copy">用一张清晰的市场面板观察美国股指、利率、美元、黄金、原油与比特币。全息地球仅用于展示全球市场时区与连接关系，不表示资金流向；价格、来源、更新时间和回退状态仍以资产卡片为准。</p>
           </div>
           <figure class="market-orbit" aria-labelledby="orbit-caption">
-            <svg class="market-orbit-svg" viewBox="0 0 720 380" role="img" aria-label="全球市场时区连接示意图">
+            <svg class="market-orbit-svg" viewBox="0 0 900 430" role="img" aria-label="缓慢自转的全息地球与全球市场时区连接示意图">
               <defs>
-                <radialGradient id="orbit-fill" cx="50%" cy="42%" r="62%">
-                  <stop offset="0" stop-color="#1a79ad" stop-opacity="0.42"></stop>
-                  <stop offset="0.72" stop-color="#0a3556" stop-opacity="0.28"></stop>
-                  <stop offset="1" stop-color="#03111d" stop-opacity="0"></stop>
+                <radialGradient id="orbit-fill" cx="42%" cy="34%" r="68%">
+                  <stop offset="0" stop-color="#8ee8ff" stop-opacity="0.22"></stop>
+                  <stop offset="0.42" stop-color="#1267a0" stop-opacity="0.22"></stop>
+                  <stop offset="0.78" stop-color="#041a2b" stop-opacity="0.58"></stop>
+                  <stop offset="1" stop-color="#01070d" stop-opacity="0.96"></stop>
                 </radialGradient>
+                <radialGradient id="orbit-shade" cx="32%" cy="26%" r="72%">
+                  <stop offset="0" stop-color="#d5f7ff" stop-opacity="0.18"></stop>
+                  <stop offset="0.48" stop-color="#47cfff" stop-opacity="0.04"></stop>
+                  <stop offset="0.78" stop-color="#00111e" stop-opacity="0.18"></stop>
+                  <stop offset="1" stop-color="#00050a" stop-opacity="0.84"></stop>
+                </radialGradient>
+                <linearGradient id="orbit-scan" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#45d4ff" stop-opacity="0"></stop>
+                  <stop offset="0.5" stop-color="#b9f2ff" stop-opacity="0.42"></stop>
+                  <stop offset="1" stop-color="#45d4ff" stop-opacity="0"></stop>
+                </linearGradient>
+                <clipPath id="globe-clip"><circle cx="450" cy="224" r="162"></circle></clipPath>
                 <filter id="orbit-glow" x="-40%" y="-40%" width="180%" height="180%">
                   <feGaussianBlur stdDeviation="3" result="blur"></feGaussianBlur>
                   <feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
                 </filter>
+                <filter id="earth-hologram" x="-20%" y="-20%" width="140%" height="140%">
+                  <feColorMatrix type="matrix" values="0.15 0 0 0 0.02  0 0.62 0 0 0.16  0 0 1.18 0 0.42  0 0 0 1 0"></feColorMatrix>
+                  <feComponentTransfer><feFuncR type="gamma" amplitude="1.05" exponent="0.8"></feFuncR><feFuncG type="gamma" amplitude="1.08" exponent="0.78"></feFuncG><feFuncB type="gamma" amplitude="1.12" exponent="0.74"></feFuncB></feComponentTransfer>
+                </filter>
               </defs>
               <g class="orbit-grid" aria-hidden="true">
-                <path d="M24 74H696M24 150H696M24 226H696M24 302H696"></path>
-                <path d="M120 22V358M240 22V358M360 22V358M480 22V358M600 22V358"></path>
+                <path d="M18 70H882M18 142H882M18 214H882M18 286H882M18 358H882"></path>
+                <path d="M90 18V412M210 18V412M330 18V412M450 18V412M570 18V412M690 18V412M810 18V412"></path>
+              </g>
+              <g class="orbit-starfield" aria-hidden="true">
+                <circle cx="80" cy="78" r="1"></circle><circle cx="167" cy="302" r="1"></circle><circle cx="242" cy="61" r="1.4"></circle>
+                <circle cx="312" cy="336" r="1"></circle><circle cx="574" cy="48" r="1"></circle><circle cx="682" cy="326" r="1.4"></circle>
+                <circle cx="780" cy="81" r="1"></circle><circle cx="846" cy="258" r="1"></circle><circle cx="528" cy="382" r="1"></circle>
+              </g>
+              <ellipse class="globe-floor" cx="450" cy="392" rx="270" ry="31"></ellipse>
+              <g class="globe-visual" aria-hidden="true">
+                <circle class="globe-halo globe-halo-outer" cx="450" cy="224" r="176"></circle>
+                <circle class="globe-halo" cx="450" cy="224" r="166"></circle>
+                <circle class="globe-sphere" cx="450" cy="224" r="162" fill="url(#orbit-fill)"></circle>
+                <g class="globe-texture-track" clip-path="url(#globe-clip)" filter="url(#earth-hologram)">
+                  <image href="../tv/vendor/earth-blue-marble.jpg" x="126" y="62" width="648" height="324" preserveAspectRatio="none"></image>
+                  <image href="../tv/vendor/earth-blue-marble.jpg" x="774" y="62" width="648" height="324" preserveAspectRatio="none"></image>
+                </g>
+                <circle class="globe-shade" cx="450" cy="224" r="162" fill="url(#orbit-shade)"></circle>
+                <g class="globe-grid-lines" transform="translate(450 224)">
+                  <ellipse rx="162" ry="54"></ellipse><ellipse rx="162" ry="105"></ellipse>
+                  <ellipse rx="67" ry="162"></ellipse><ellipse rx="120" ry="162"></ellipse>
+                  <path d="M-162 0H162M0-162V162"></path>
+                </g>
+                <rect class="globe-scan" x="304" y="63" width="292" height="3" fill="url(#orbit-scan)" clip-path="url(#globe-clip)"></rect>
+                <circle class="globe-core" cx="450" cy="224" r="4" filter="url(#orbit-glow)"></circle>
               </g>
               <g class="orbit-arcs" aria-hidden="true">
-                <path class="orbit-arc orbit-arc-cyan" d="M125 226C250 88 460 76 625 210"></path>
-                <path class="orbit-arc orbit-arc-amber" d="M135 230C298 322 500 305 626 210"></path>
-                <path class="orbit-arc orbit-arc-cyan" d="M222 116C355 38 502 104 548 235"></path>
+                <ellipse class="orbit-ring orbit-ring-cyan" cx="450" cy="224" rx="288" ry="93" transform="rotate(-8 450 224)"></ellipse>
+                <ellipse class="orbit-ring orbit-ring-amber" cx="450" cy="224" rx="245" ry="126" transform="rotate(13 450 224)"></ellipse>
+                <path class="orbit-arc orbit-arc-cyan" d="M146 252C290 92 596 83 753 247"></path>
+                <path class="orbit-arc orbit-arc-amber" d="M150 252C316 367 621 343 753 247"></path>
+                <path class="orbit-arc orbit-arc-cyan" d="M290 118C420 34 621 94 655 267"></path>
               </g>
-              <g class="globe" transform="translate(360 196)">
-                <circle class="globe-halo" r="146"></circle>
-                <circle class="globe-sphere" r="132" fill="url(#orbit-fill)"></circle>
-                <ellipse class="globe-line" rx="132" ry="45"></ellipse>
-                <ellipse class="globe-line" rx="132" ry="86"></ellipse>
-                <ellipse class="globe-line" rx="55" ry="132"></ellipse>
-                <ellipse class="globe-line" rx="98" ry="132"></ellipse>
-                <path class="globe-line" d="M-132 0H132M0-132V132"></path>
-                <path class="globe-land" d="M-112-56l24-22 31 2 18 16 21 4 11 18-18 17-9 24-21 7-10 27-20-3-8-31-19-19 8-18-8-22zm66 89 25 9 16 27-7 31-17 33-19-17-7-35 7-38zm76-98 25-18 42 5 19 18 31 11 17 28-16 17-26-8-22 14-17-8-26 16-18-13-8-24 17-16zm55 77 28 10 15 27-18 17-25-8-16-20 13-22zm31 60 30 5 16 24-11 20-31-6-11-24z"></path>
-                <circle class="globe-core" r="5" filter="url(#orbit-glow)"></circle>
-              </g>
-              <g class="market-node" transform="translate(126 226)"><circle r="5"></circle><circle class="node-pulse" r="12"></circle></g>
-              <g class="market-node market-node-amber" transform="translate(222 116)"><circle r="5"></circle><circle class="node-pulse" r="12"></circle></g>
-              <g class="market-node" transform="translate(548 235)"><circle r="5"></circle><circle class="node-pulse" r="12"></circle></g>
-              <g class="market-node market-node-amber" transform="translate(625 210)"><circle r="5"></circle><circle class="node-pulse" r="12"></circle></g>
+              <g class="market-node" transform="translate(146 252)"><circle r="5"></circle><circle class="node-pulse" r="13"></circle></g>
+              <g class="market-node market-node-amber" transform="translate(290 118)"><circle r="5"></circle><circle class="node-pulse" r="13"></circle></g>
+              <g class="market-node" transform="translate(655 267)"><circle r="5"></circle><circle class="node-pulse" r="13"></circle></g>
+              <g class="market-node market-node-amber" transform="translate(753 247)"><circle r="5"></circle><circle class="node-pulse" r="13"></circle></g>
             </svg>
             <span class="orbit-clock clock-new-york"><b>NEW YORK</b><time data-market-time="America/New_York">--:--</time></span>
             <span class="orbit-clock clock-london"><b>LONDON</b><time data-market-time="Europe/London">--:--</time></span>
@@ -1296,6 +1328,42 @@
             <span>视觉层不改变任何行情口径</span>
           </div>
         </aside>
+
+        <section class="hero-risk-radar" aria-labelledby="operational-radar-title">
+          <div class="hero-risk-radar-head">
+            <div><span>RISK RADAR</span><h2 id="operational-radar-title">风险雷达</h2></div>
+            <strong id="operational-radar-status">等待六轴数据</strong>
+          </div>
+          <svg class="operational-radar-svg" viewBox="0 0 280 246" role="img" aria-label="由六项独立真实市场与运行信号构成的雷达图，不合成为投资评分">
+            <g class="operational-radar-grid" aria-hidden="true">
+              <polygon points="140,30 227,80 227,180 140,230 53,180 53,80"></polygon>
+              <polygon points="140,55 205,92 205,168 140,205 75,168 75,92"></polygon>
+              <polygon points="140,80 183,105 183,155 140,180 97,155 97,105"></polygon>
+              <path d="M140 30V230M53 80L227 180M227 80L53 180"></path>
+            </g>
+            <polygon class="operational-radar-shape" id="operational-radar-shape" points="140,130 140,130 140,130 140,130 140,130 140,130"></polygon>
+            <g class="operational-radar-points" aria-hidden="true">
+              <circle data-radar-point="macro" cx="140" cy="130" r="3"></circle>
+              <circle data-radar-point="sentiment" cx="140" cy="130" r="3"></circle>
+              <circle data-radar-point="stress" cx="140" cy="130" r="3"></circle>
+              <circle data-radar-point="data-health" cx="140" cy="130" r="3"></circle>
+              <circle data-radar-point="readiness" cx="140" cy="130" r="3"></circle>
+              <circle data-radar-point="regional-pressure" cx="140" cy="130" r="3"></circle>
+            </g>
+            <g class="operational-radar-labels">
+              <text x="140" y="14" text-anchor="middle">宏观支持</text><text data-radar-value="macro" x="140" y="26" text-anchor="middle">—</text>
+              <text x="267" y="70" text-anchor="end">情绪位置</text><text data-radar-value="sentiment" x="267" y="82" text-anchor="end">—</text>
+              <text x="267" y="195" text-anchor="end">金融压力</text><text data-radar-value="stress" x="267" y="207" text-anchor="end">—</text>
+              <text x="140" y="240" text-anchor="middle">数据健康</text><text data-radar-value="data-health" x="140" y="228" text-anchor="middle">—</text>
+              <text x="13" y="195">稳定资格</text><text data-radar-value="readiness" x="13" y="207">—</text>
+              <text x="13" y="70">区域压力</text><text data-radar-value="regional-pressure" x="13" y="82">—</text>
+            </g>
+          </svg>
+          <div class="hero-risk-radar-foot">
+            <strong id="operational-radar-coverage">0 / 6 AXES</strong>
+            <span>各轴独立显示 · 不生成口径不明的投资总分</span>
+          </div>
+        </section>
       </section>
 
       <section id="market-section" aria-labelledby="market-heading">
@@ -1313,7 +1381,7 @@
 
       <section class="risk-section" id="risk-section" aria-labelledby="risk-heading">
         <div class="board-heading">
-          <h2 class="board-title" id="risk-heading">市场状态</h2>
+          <h2 class="board-title" id="risk-heading">市场聚合指标</h2>
           <span class="board-subtitle" id="risk-summary">LOADING SIGNALS</span>
         </div>
         <div class="risk-grid" id="risk-grid" role="list" aria-label="市场状态数据卡片" aria-describedby="risk-summary" aria-busy="true">
@@ -1339,42 +1407,59 @@
           <div class="global-risk-map-layout">
             <figure class="risk-map-figure">
               <svg class="risk-map-svg" viewBox="0 0 900 430" role="img" aria-label="由区域代表性股票指数当日价格回报构成的市场压力代理地图">
+                <defs>
+                  <linearGradient id="risk-ocean" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#0b3450" stop-opacity="0.34"></stop>
+                    <stop offset="1" stop-color="#02101b" stop-opacity="0.72"></stop>
+                  </linearGradient>
+                  <filter id="risk-map-glow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="2" result="blur"></feGaussianBlur>
+                    <feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+                  </filter>
+                </defs>
+                <rect class="risk-map-ocean" x="20" y="24" width="860" height="382" rx="8" fill="url(#risk-ocean)"></rect>
                 <g class="risk-map-grid" aria-hidden="true">
                   <path d="M20 86H880M20 172H880M20 258H880M20 344H880"></path>
                   <path d="M120 24V406M280 24V406M450 24V406M620 24V406M780 24V406"></path>
                 </g>
+                <image class="risk-map-texture" href="../tv/vendor/earth-blue-marble.jpg" x="20" y="45" width="860" height="342" preserveAspectRatio="none" aria-hidden="true"></image>
+                <g class="risk-map-coastline" aria-hidden="true" filter="url(#risk-map-glow)">
+                  <path d="M62 113l38-35 45-13 39-20 77 9 49 30 23 34-20 28-39-6-32 24-16 46-43 23-24-23-41-8-26-29 17-27-19-14zM274 220l42 8 34 40-9 53-20 35-8 50-30-37-17-58-13-46z"></path>
+                  <path d="M409 121l38-32 53-6 24 23 35 5 24 31 45-21 63-19 55 19 58 23 37 42-14 35-54 12-42-12-46 27-43-18-42 4-32-35-32 4-17-41-35-8-33 10-29-27z"></path>
+                  <path d="M450 177l53-19 50 23 21 45-13 65-33 71-37-25-29-54-12-49-28-24zM730 287l54-20 58 26 18 36-31 36-61-2-42-29z"></path>
+                </g>
                 <g class="risk-region region-north-america" data-risk-region="north-america">
-                  <path d="M88 96l45-37 83-22 79 24 30 40-24 27-52-9-33 21-19 48-51 19-36-35-36-19 20-35z"></path>
+                  <path d="M76 113l35-33 42-14 33-18 72 9 45 28 24 32-22 25-43-5-28 23-16 44-39 22-24-22-39-8-25-27 16-25-18-14z"></path>
                 </g>
                 <g class="risk-region region-south-america" data-risk-region="south-america">
-                  <path d="M252 205l47 15 28 37-13 42-20 24-9 57-31-28-14-48-18-42z"></path>
+                  <path d="M271 214l43 11 35 40-10 53-21 37-8 47-29-37-15-55-12-44z"></path>
                 </g>
                 <g class="risk-region region-europe" data-risk-region="europe">
-                  <path d="M407 93l43-27 53 13 19 32-25 25-39-8-31 17-29-19z"></path>
+                  <path d="M423 119l31-29 47-5 24 21 27 7 19 25-25 22-35-8-27 15-32-10z"></path>
                 </g>
                 <g class="risk-region region-africa region-no-data" data-risk-region="africa">
-                  <path d="M417 163l65-18 59 29 19 57-26 78-49 43-35-46-21-66-31-39z"></path>
+                  <path d="M447 174l54-16 51 23 22 48-14 62-34 69-36-24-28-52-12-48-27-25z"></path>
                 </g>
                 <g class="risk-region region-south-asia" data-risk-region="south-asia">
-                  <path d="M590 179l41 6 23 38-18 55-31-19-19-51z"></path>
+                  <path d="M594 188l42 5 25 34-16 48-30-18-24-41z"></path>
                 </g>
                 <g class="risk-region region-greater-china" data-risk-region="greater-china">
-                  <path d="M579 101l81-25 78 21 32 44-32 37-58-4-35 26-55-21-26-43z"></path>
+                  <path d="M581 127l69-24 72 18 43 34-24 39-54 2-36 27-53-18-24-39z"></path>
                 </g>
                 <g class="risk-region region-japan" data-risk-region="japan">
-                  <path d="M777 126l14-17 9 24-8 37-12-5 7-22z"></path>
+                  <path d="M777 143l13-15 10 22-8 34-13-3 6-22z"></path>
                 </g>
                 <g class="risk-region region-oceania" data-risk-region="oceania">
-                  <path d="M720 285l56-24 69 23 20 45-38 36-66-8-45-34z"></path>
+                  <path d="M727 290l55-22 60 26 18 35-31 35-61-2-43-30z"></path>
                 </g>
                 <g class="risk-map-labels" aria-hidden="true">
-                  <text x="170" y="127">NORTH AMERICA</text>
-                  <text x="254" y="273">SOUTH AMERICA</text>
-                  <text x="431" y="112">EUROPE</text>
-                  <text x="455" y="235">NO TRACKED INDEX</text>
-                  <text x="590" y="129">GREATER CHINA</text>
-                  <text x="588" y="219">SOUTH ASIA</text>
-                  <text x="760" y="318">OCEANIA</text>
+                  <text x="184" y="128">NORTH AMERICA</text>
+                  <text x="300" y="285">SOUTH AMERICA</text>
+                  <text x="475" y="123">EUROPE</text>
+                  <text x="510" y="245">NO TRACKED INDEX</text>
+                  <text x="661" y="151">GREATER CHINA</text>
+                  <text x="621" y="221">SOUTH ASIA</text>
+                  <text x="792" y="322">OCEANIA</text>
                 </g>
               </svg>
               <figcaption>

@@ -173,17 +173,17 @@
   }
 
   body[data-terminal-view="overview"] #research-section {
-    grid-column: 1 / 5;
+    grid-column: 1 / 6;
     grid-row: 3;
   }
 
   body[data-terminal-view="overview"] #risk-section {
-    grid-column: 5 / 9;
+    grid-column: 6 / 10;
     grid-row: 3;
   }
 
   body[data-terminal-view="overview"] #operations-section {
-    grid-column: 9 / 13;
+    grid-column: 10 / 13;
     grid-row: 3;
   }
 
@@ -213,7 +213,7 @@
   }
 
   body[data-terminal-view="overview"] .command-hero {
-    grid-template-columns: minmax(0, 4fr) minmax(190px, 0.92fr);
+    grid-template-columns: minmax(0, 4fr) minmax(145px, 0.9fr) minmax(185px, 1.34fr);
     gap: 6px;
     align-items: stretch;
     padding: 0;
@@ -274,6 +274,36 @@
   body[data-terminal-view="overview"] .hero-telemetry {
     grid-template-rows: minmax(0, 0.95fr) minmax(0, 1.05fr);
     gap: 6px;
+  }
+
+  body[data-terminal-view="overview"] .hero-risk-radar {
+    height: 100%;
+    min-height: 0;
+  }
+
+  body[data-terminal-view="overview"] .hero-risk-radar-head {
+    padding: 9px 9px 0;
+  }
+
+  body[data-terminal-view="overview"] .hero-risk-radar-head h2 {
+    font-size: 13px;
+  }
+
+  body[data-terminal-view="overview"] .hero-risk-radar-head > strong {
+    max-width: 45%;
+    font-size: 7px;
+  }
+
+  body[data-terminal-view="overview"] .operational-radar-svg {
+    min-height: 0;
+  }
+
+  body[data-terminal-view="overview"] .hero-risk-radar-foot {
+    padding: 5px 8px 7px;
+  }
+
+  body[data-terminal-view="overview"] .hero-risk-radar-foot span {
+    font-size: 6px;
   }
 
   body[data-terminal-view="overview"] .telemetry-card {
@@ -484,9 +514,9 @@
   }
 
   body[data-terminal-view="overview"] .risk-hud-gauge {
-    width: min(88px, 82%);
+    width: min(104px, 88%);
     max-width: none;
-    margin: 4px auto 2px;
+    margin: 5px auto 3px;
   }
 
   body[data-terminal-view="overview"] .risk-hud-gauge::before {
@@ -494,7 +524,7 @@
   }
 
   body[data-terminal-view="overview"] .risk-hud-gauge .risk-value {
-    font-size: clamp(18px, 1.8vw, 25px);
+    font-size: clamp(19px, 1.8vw, 27px);
   }
 
   body[data-terminal-view="overview"] .risk-hud-gauge .risk-assessment {
@@ -514,6 +544,15 @@
     text-align: center;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  body[data-terminal-view="overview"] .risk-card::before {
+    position: absolute;
+    inset: 7px;
+    content: "";
+    border: 1px solid rgba(69, 212, 255, 0.08);
+    border-radius: 50%;
+    pointer-events: none;
   }
 
   body[data-terminal-view="overview"] .signal-meter,
@@ -564,6 +603,10 @@
   body[data-terminal-view="overview"] .risk-map-svg {
     width: 100%;
     height: 100%;
+  }
+
+  body[data-terminal-view="overview"] .risk-map-texture {
+    opacity: 0.5;
   }
 
   body[data-terminal-view="overview"] .risk-map-figure figcaption {

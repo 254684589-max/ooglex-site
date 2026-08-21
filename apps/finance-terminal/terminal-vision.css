@@ -255,7 +255,7 @@ body::after {
 }
 
 .command-hero {
-  grid-template-columns: minmax(0, 2.15fr) minmax(270px, 0.72fr);
+  grid-template-columns: minmax(0, 2.15fr) minmax(230px, 0.62fr) minmax(260px, 0.78fr);
   gap: 10px;
   align-items: stretch;
   padding: 12px 0 10px;
@@ -265,6 +265,7 @@ body::after {
 .command-hero > *,
 .orbit-panel > *,
 .hero-telemetry > *,
+.hero-risk-radar > *,
 .global-risk-map-layout > *,
 .pipeline-command > * {
   min-width: 0;
@@ -354,21 +355,55 @@ body::after {
   stroke-width: 1;
 }
 
+.orbit-starfield circle {
+  fill: rgba(142, 232, 255, 0.76);
+  filter: drop-shadow(0 0 4px rgba(69, 212, 255, 0.8));
+}
+
+.globe-floor {
+  fill: none;
+  stroke: rgba(69, 212, 255, 0.25);
+  stroke-width: 1;
+  stroke-dasharray: 4 7;
+  filter: drop-shadow(0 0 8px rgba(69, 212, 255, 0.28));
+}
+
 .globe-halo {
   fill: none;
-  stroke: rgba(83, 210, 255, 0.13);
-  stroke-width: 10;
+  stroke: rgba(83, 210, 255, 0.3);
+  stroke-width: 5;
+  filter: drop-shadow(0 0 10px rgba(69, 212, 255, 0.44));
+}
+
+.globe-halo-outer {
+  stroke: rgba(69, 212, 255, 0.1);
+  stroke-width: 18;
 }
 
 .globe-sphere {
-  stroke: rgba(91, 220, 255, 0.66);
-  stroke-width: 1.4;
+  stroke: rgba(147, 232, 255, 0.88);
+  stroke-width: 1.8;
+  filter: drop-shadow(0 0 16px rgba(69, 212, 255, 0.34));
 }
 
+.globe-grid-lines ellipse,
+.globe-grid-lines path,
 .globe-line {
   fill: none;
-  stroke: rgba(79, 198, 240, 0.24);
-  stroke-width: 0.8;
+  stroke: rgba(118, 218, 250, 0.2);
+  stroke-width: 0.75;
+  stroke-dasharray: 3 4;
+}
+
+.globe-texture-track image {
+  opacity: 0.78;
+}
+
+.globe-shade { pointer-events: none; }
+
+.globe-scan {
+  opacity: 0.65;
+  filter: drop-shadow(0 0 7px rgba(69, 212, 255, 0.8));
 }
 
 .globe-land {
@@ -388,6 +423,19 @@ body::after {
   stroke-width: 1.35;
   stroke-linecap: round;
   stroke-dasharray: 5 7;
+}
+
+.orbit-ring {
+  fill: none;
+  stroke-width: 1.15;
+  stroke-dasharray: 3 7;
+}
+
+.orbit-ring-cyan { stroke: rgba(69, 212, 255, 0.48); }
+
+.orbit-ring-amber {
+  stroke: rgba(244, 182, 75, 0.56);
+  filter: drop-shadow(0 0 3px rgba(244, 182, 75, 0.28));
 }
 
 .orbit-arc-cyan { stroke: rgba(69, 212, 255, 0.66); }
@@ -993,6 +1041,7 @@ body::after {
   .terminal-rail { display: none; }
   .command-hero { grid-template-columns: minmax(0, 1fr); gap: 8px; padding-top: 10px; }
   .hero-telemetry { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto; }
+  .hero-risk-radar { min-height: 390px; }
   .hero-telemetry .meta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .telemetry-integrity { min-height: 120px; }
   .global-risk-map-layout { grid-template-columns: minmax(0, 1.35fr) minmax(230px, 0.65fr); }
@@ -1015,6 +1064,7 @@ body::after {
   .market-orbit { min-height: 340px; }
   .market-orbit-svg { min-height: 340px; }
   .hero-telemetry { grid-template-columns: 1fr; }
+  .hero-risk-radar { min-height: 380px; }
   .hero-telemetry .meta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .telemetry-scan,
   .telemetry-integrity { min-height: 105px; }
@@ -1044,6 +1094,8 @@ body::after {
   .market-orbit figcaption { text-align: left; }
   .hero-telemetry .meta-grid { grid-template-columns: minmax(0, 1fr); }
   .telemetry-card { padding: 13px; }
+  .hero-risk-radar { min-height: 360px; }
+  .operational-radar-svg { min-height: 250px; }
   .global-risk-map-head { align-items: flex-start; flex-direction: column; }
   .risk-map-svg { height: 250px; }
   .risk-map-labels text { display: none; }
@@ -1057,6 +1109,13 @@ body::after {
 @media (prefers-reduced-motion: no-preference) {
   .orbit-arc-cyan { animation: orbit-dash 12s linear infinite; }
   .orbit-arc-amber { animation: orbit-dash 18s linear infinite reverse; }
+  .orbit-ring-cyan { animation: orbit-ring-dash 16s linear infinite; }
+  .orbit-ring-amber { animation: orbit-ring-dash 22s linear infinite reverse; }
+  .globe-texture-track image { animation: globe-texture-rotate 72s linear infinite; }
+  .globe-scan { animation: globe-scan-sweep 5.8s ease-in-out infinite; }
+  .globe-halo { animation: globe-atmosphere 3.8s ease-in-out infinite; }
+  .globe-grid-lines ellipse,
+  .globe-grid-lines path { animation: globe-grid-drift 18s linear infinite; }
   .market-node .node-pulse { animation: orbit-pulse 2.8s ease-out infinite; transform-box: fill-box; transform-origin: center; }
   .market-node:nth-of-type(2) .node-pulse { animation-delay: 0.6s; }
   .market-node:nth-of-type(3) .node-pulse { animation-delay: 1.2s; }
@@ -1067,6 +1126,21 @@ body::after {
   to { stroke-dashoffset: -72; }
 }
 
+@keyframes orbit-ring-dash { to { stroke-dashoffset: -90; } }
+
+@keyframes globe-texture-rotate { to { transform: translateX(-648px); } }
+
+@keyframes globe-scan-sweep {
+  0%, 10% { opacity: 0; transform: translateY(0); }
+  25% { opacity: 0.72; }
+  80% { opacity: 0.48; transform: translateY(318px); }
+  100% { opacity: 0; transform: translateY(318px); }
+}
+
+@keyframes globe-atmosphere { 0%, 100% { opacity: 0.68; } 50% { opacity: 1; } }
+
+@keyframes globe-grid-drift { to { stroke-dashoffset: -42; } }
+
 @keyframes orbit-pulse {
   0% { opacity: 0.8; transform: scale(0.62); }
   75%, 100% { opacity: 0; transform: scale(1.55); }
@@ -1074,6 +1148,12 @@ body::after {
 
 @media (prefers-reduced-motion: reduce) {
   .orbit-arc,
+  .orbit-ring,
+  .globe-texture-track image,
+  .globe-scan,
+  .globe-halo,
+  .globe-grid-lines ellipse,
+  .globe-grid-lines path,
   .market-node .node-pulse { animation: none !important; }
 }
 
