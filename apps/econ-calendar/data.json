@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-08-20T21:37:37Z",
-  "asOf": "2026-08-20",
+  "updatedAt": "2026-08-21T13:26:10Z",
+  "asOf": "2026-08-21",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-16 ~ 2026-08-21",
   "count": 99,
@@ -1027,18 +1027,6 @@
       "actual": null
     },
     {
-      "ts": "2026-08-21T06:02:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "Foreign Direct Investment ytd/y",
-      "titleEn": "Foreign Direct Investment ytd/y",
-      "impact": "low",
-      "forecast": null,
-      "previous": "-5.0%",
-      "actual": null
-    },
-    {
       "ts": "2026-08-21T07:15:00Z",
       "ccy": "EUR",
       "country": "欧元区",
@@ -1192,6 +1180,18 @@
       "impact": "low",
       "forecast": "-16",
       "previous": "-16",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-21T23:00:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "央行官员讲话",
+      "titleEn": "President Trump Speaks",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
       "actual": null
     }
   ],
