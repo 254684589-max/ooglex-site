@@ -33,6 +33,7 @@ APP = ROOT / "apps" / "finance-terminal" / "app.js"
 LOADER = ROOT / "apps" / "finance-terminal" / "finance-terminal-loader.mjs"
 REGRESSION_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-regression.mjs"
 RISK_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-view.mjs"
+RESEARCH_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-research-view.mjs"
 TERMS_PAGE = ROOT / "apps" / "finance-terminal" / "terms.html"
 PRIVACY_PAGE = ROOT / "apps" / "finance-terminal" / "privacy.html"
 LEGAL_CSS = ROOT / "apps" / "finance-terminal" / "legal.css"
@@ -2482,6 +2483,8 @@ def main() -> None:
     loader = LOADER.read_text(encoding="utf-8")
     regression_module = REGRESSION_MODULE.read_text(encoding="utf-8")
     risk_view_module = RISK_VIEW_MODULE.read_text(encoding="utf-8")
+    research_view_module = RESEARCH_VIEW_MODULE.read_text(encoding="utf-8")
+    terminal_views = app + "\n" + risk_view_module + "\n" + research_view_module
     compact_loader = re.sub(r"\s+", "", loader)
     require(APP.stat().st_size <= 220_000, "金融终端生产入口脚本超过220KB性能预算")
     require(LOADER.stat().st_size <= 14_000, "金融终端分区加载模块超过14KB性能预算")
@@ -2495,6 +2498,12 @@ def main() -> None:
             and "createRiskView" in risk_view_module
             and "finance-terminal-risk-view.mjs" not in page,
             "市场状态视图必须保持按需导入且不得在首屏预加载")
+    require(RESEARCH_VIEW_MODULE.stat().st_size <= 14_000,
+            "按需加载的市场研究视图超过14KB性能预算")
+    require('import("./finance-terminal-research-view.mjs")' in app
+            and "createResearchView" in research_view_module
+            and "finance-terminal-research-view.mjs" not in page,
+            "市场研究视图必须保持按需导入且不得在首屏预加载")
     terms_page = TERMS_PAGE.read_text(encoding="utf-8")
     privacy_page = PRIVACY_PAGE.read_text(encoding="utf-8")
     legal_css = LEGAL_CSS.read_text(encoding="utf-8")
@@ -2745,14 +2754,14 @@ def main() -> None:
             "页面缺少行情、回退、估算与待确认覆盖信息")
     require('assetRanking:"../asset-ranking/data.json"' in compact_loader
             and "ASSET_RANKING_MAX_AGE_HOURS" in app, "金融终端未读取现有全球资产市值数据")
-    require("adaptAssetRanking" in app and "formatMarketCapBillions" in app
-            and "asset.dataLabel" in app and "summarizeRowQuality(rowMetas, data.dataQuality)" in app,
+    require("adaptAssetRanking" in app and "formatMarketCapBillions" in terminal_views
+            and "asset.dataLabel" in terminal_views and "summarizeRowQuality(rowMetas, data.dataQuality)" in app,
             "app.js未实现全球资产市值逐条来源适配或口径标签")
     require('companies:"../companies/data.json"' in compact_loader
             and "COMPANIES_MAX_AGE_HOURS" in app, "金融终端未读取现有公司榜数据")
     require("adaptCompanies" in app and "company.private" in app and "freshnessKnown" in app, "app.js未实现上市公司筛选或逐项新鲜度状态")
     require("gainer" in app and "laggard" in app and "listedMarketCap" in app, "app.js未生成公司领涨、领跌和上市市值")
-    require("moverCoverage" in app and "暂停当日领涨与领跌" in app and "company.dataLabel" in app,
+    require("moverCoverage" in app and "暂停当日领涨与领跌" in app and "company.dataLabel" in terminal_views,
             "公司榜未按逐条状态暂停或恢复每日涨跌排行")
     require('calendar:"../econ-calendar/data.json"' in compact_loader
             and "ECON_CALENDAR_MAX_AGE_HOURS" in app, "金融终端未读取现有经济日历数据")
@@ -2762,18 +2771,18 @@ def main() -> None:
             and "FINANCE_NEWS_ITEM_MAX_AGE_HOURS" in app, "app.js未读取现有财经新闻或缺少新鲜度规则")
     require("adaptFinanceNews" in app and "isSafeGoogleNewsUrl" in app and "makeFinanceNewsCard" in app,
             "app.js未实现财经新闻适配、安全链接或渲染")
-    require('setAttribute("role", "listitem")' in app, "动态卡片缺少列表项语义")
-    require("card.tabIndex = 0" not in app and "article.tabIndex = 0" not in app,
+    require('setAttribute("role", "listitem")' in terminal_views, "动态卡片缺少列表项语义")
+    require("card.tabIndex = 0" not in terminal_views and "article.tabIndex = 0" not in terminal_views,
             "非交互卡片不得进入键盘Tab顺序")
     require("announceExperience" in app and "pageAnnouncer.textContent" in app,
             "页面未集中播报异步加载结果")
-    require('setAttribute("role", "tablist")' in app and 'setAttribute("role", "tab")' in app
-            and 'setAttribute("role", "tabpanel")' in app, "跨资产周期未使用标准标签页语义")
-    require("periodTabTargetIndex" in app and 'event.key' in app and 'nextButton.focus()' in app,
+    require('setAttribute("role", "tablist")' in terminal_views and 'setAttribute("role", "tab")' in terminal_views
+            and 'setAttribute("role", "tabpanel")' in terminal_views, "跨资产周期未使用标准标签页语义")
+    require("periodTabTargetIndex" in app and 'event.key' in terminal_views and 'nextButton.focus()' in terminal_views,
             "跨资产周期未支持方向键、Home和End键盘导航")
-    require('setAttribute("aria-selected"' in app and 'setAttribute("aria-controls"' in app,
+    require('setAttribute("aria-selected"' in terminal_views and 'setAttribute("aria-controls"' in terminal_views,
             "跨资产周期标签页状态或面板关联缺失")
-    require('setAttribute("aria-pressed"' not in app, "标签页不得混用aria-pressed按钮模式")
+    require('setAttribute("aria-pressed"' not in terminal_views, "标签页不得混用aria-pressed按钮模式")
     require('import("./finance-terminal-regression.mjs")' in app
             and "runBrowserRegressionProbe" in regression_module
             and "finance-terminal-regression-result" in regression_module

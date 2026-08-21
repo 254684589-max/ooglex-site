@@ -407,8 +407,10 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
       returnByValue: true
     });
     result.sectionModules = sectionModules.result.value;
-    if (JSON.stringify(result.sectionModules?.requested) !== JSON.stringify(["risk"])
-      || result.sectionModules?.states?.risk !== "ready") {
+    if (JSON.stringify(result.sectionModules?.requested?.slice().sort())
+        !== JSON.stringify(["research", "risk"])
+      || result.sectionModules?.states?.risk !== "ready"
+      || result.sectionModules?.states?.research !== "ready") {
       throw new Error(`${width}px按需区块模块证据无效：${JSON.stringify(result.sectionModules)}`);
     }
     result.providerScriptTransport = scriptTransport.snapshot();
