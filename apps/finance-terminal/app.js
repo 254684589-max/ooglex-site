@@ -3087,17 +3087,24 @@
   var pageAnnouncer = document.getElementById("page-announcer");
   var sectionViewImports = {};
   var sectionViewModules = {};
-  var sectionViewEvidence = { requested: [], states: { risk: "idle", research: "idle" } };
+  var sectionViewEvidence = {
+    requested: [], states: { risk: "idle", research: "idle", information: "idle" }
+  };
   root.__financeTerminalSectionModules = sectionViewEvidence;
 
   function importSectionView(name) {
     if (name === "risk") return import("./finance-terminal-risk-view.mjs");
     if (name === "research") return import("./finance-terminal-research-view.mjs");
+    if (name === "information") return import("./finance-terminal-information-view.mjs");
     return Promise.resolve(null);
   }
 
   function loadSectionView(name) {
-    var factoryNames = { risk: "createRiskView", research: "createResearchView" };
+    var factoryNames = {
+      risk: "createRiskView",
+      research: "createResearchView",
+      information: "createInformationView"
+    };
     if (!factoryNames[name]) return Promise.resolve(null);
     if (!sectionViewImports[name]) {
       sectionViewEvidence.requested.push(name);
@@ -3456,192 +3463,26 @@
     researchView.render(cards);
   }
 
-  function informationStatusLabel(card) {
-    if (card.status === "stale") return { className: "stale-chip", text: "STALE" };
-    if (card.status === "error") return { className: "error-chip", text: "ERROR" };
-    if (card.status === "partial") return { className: "partial-chip", text: "PARTIAL" };
-    return { className: "official-chip", text: "ACTIVE" };
-  }
+  var informationView = null;
 
-  function appendInformationFooter(card, parent) {
-    var meta = document.createElement("div");
-    meta.className = "information-meta";
-    appendText(meta, "span", "", "数据日 · " + formatDate(card.asOf, false));
-    appendText(meta, "span", "", card.frequency || "频率未提供");
-    parent.appendChild(meta);
-
-    var footer = document.createElement("div");
-    footer.className = "information-footer";
-    var sourceBox = document.createElement("div");
-    sourceBox.className = "information-source";
-    appendSource(sourceBox, card);
-    footer.appendChild(sourceBox);
-    var time = appendText(footer, "time", "", "更新 · " + formatTimestamp(card.updatedAt, false));
-    if (card.updatedAt) time.dateTime = card.updatedAt;
-    var chip = informationStatusLabel(card);
-    appendText(footer, "span", "status-chip " + chip.className, chip.text);
-    if (isSafeHref(card.detailUrl)) {
-      var detail = appendText(footer, "a", "detail-link", "查看完整页面 →");
-      detail.href = card.detailUrl;
+  function renderInformationCards(cards, viewModule) {
+    if (!viewModule || typeof viewModule.createInformationView !== "function") {
+      throw new Error("事件资讯视图模块契约无效");
     }
-    parent.appendChild(footer);
-  }
-
-  function formatEventTime(value) {
-    var time = new Date(value);
-    if (Number.isNaN(time.getTime())) return "时间不可用";
-    return new Intl.DateTimeFormat("zh-CN", {
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false
-    }).format(time) + " 本地";
-  }
-
-  function eventImpactLabel(value) {
-    if (value === "high") return "高影响";
-    if (value === "medium") return "中影响";
-    if (value === "holiday") return "假日";
-    return "低影响";
-  }
-
-  function makeEconomicCalendarCard(card) {
-    var article = document.createElement("article");
-    article.className = "information-card calendar-card status-" + card.status;
-    article.setAttribute("role", "listitem");
-
-    var head = document.createElement("div");
-    head.className = "information-card-head";
-    var titleBox = document.createElement("div");
-    appendText(titleBox, "h3", "information-name", card.name);
-    appendText(titleBox, "span", "information-en", card.nameEn);
-    head.appendChild(titleBox);
-    appendText(head, "span", "information-symbol", card.symbol);
-    article.appendChild(head);
-
-    var overview = document.createElement("div");
-    overview.className = "information-overview";
-    appendText(overview, "strong", "information-kpi", card.highCount + "项高影响");
-    appendText(overview, "span", "information-context", card.selectionLabel + " · 本周共" + card.count + "项");
-    article.appendChild(overview);
-
-    var body = document.createElement("div");
-    body.className = "information-body";
-    if (card.status === "error" || !card.events.length) {
-      appendText(body, "div", "information-empty", "经济日历不可用，未显示事件或默认值。");
-    } else {
-      var list = document.createElement("ol");
-      list.className = "event-list";
-      card.events.forEach(function (event) {
-        var row = document.createElement("li");
-        row.className = "event-row impact-" + event.impact;
-        var marker = appendText(row, "span", "event-impact", eventImpactLabel(event.impact));
-        marker.setAttribute("aria-label", eventImpactLabel(event.impact));
-        var time = appendText(row, "time", "event-time", formatEventTime(event.ts));
-        time.dateTime = event.ts;
-        var identity = document.createElement("span");
-        identity.className = "event-identity";
-        appendText(identity, "strong", "event-title", event.title);
-        appendText(identity, "span", "event-country", (event.flag || "🌐") + " " + event.country + " · " + event.ccy);
-        row.appendChild(identity);
-        var values = document.createElement("span");
-        values.className = "event-values";
-        appendText(values, "span", event.actual ? "actual" : "", "实际 " + (event.actual || "—"));
-        appendText(values, "span", "", "预测 " + (event.forecast || "—"));
-        appendText(values, "span", "", "前值 " + (event.previous || "—"));
-        row.appendChild(values);
-        list.appendChild(row);
+    if (!informationView) {
+      informationView = viewModule.createInformationView({
+        document: document,
+        grid: informationGrid,
+        summary: informationSummary,
+        appendText: appendText,
+        formatDate: formatDate,
+        appendSource: appendSource,
+        formatTimestamp: formatTimestamp,
+        isSafeHref: isSafeHref,
+        appendSupportingHealth: appendSupportingHealth
       });
-      body.appendChild(list);
     }
-    article.appendChild(body);
-    appendText(article, "p", "information-note", card.note);
-    if (card.sourceHealth) appendSupportingHealth(article, card.sourceHealth);
-    appendInformationFooter(card, article);
-    return article;
-  }
-
-  function formatNewsTime(value) {
-    var time = new Date(value);
-    if (Number.isNaN(time.getTime())) return "时间不可用";
-    return new Intl.DateTimeFormat("zh-CN", {
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false
-    }).format(time) + " 本地";
-  }
-
-  function makeFinanceNewsCard(card) {
-    var article = document.createElement("article");
-    article.className = "information-card news-card status-" + card.status;
-    article.setAttribute("role", "listitem");
-
-    var head = document.createElement("div");
-    head.className = "information-card-head";
-    var titleBox = document.createElement("div");
-    appendText(titleBox, "h3", "information-name", card.name);
-    appendText(titleBox, "span", "information-en", card.nameEn);
-    head.appendChild(titleBox);
-    appendText(head, "span", "information-symbol", card.symbol);
-    article.appendChild(head);
-
-    var overview = document.createElement("div");
-    overview.className = "information-overview";
-    appendText(overview, "strong", "information-kpi", card.articles.length + "条最新市场新闻");
-    appendText(overview, "span", "information-context", "有效市场板块共" + card.count + "条 · 按发布时间排序");
-    article.appendChild(overview);
-
-    var body = document.createElement("div");
-    body.className = "information-body";
-    if (card.status === "error" || !card.articles.length) {
-      appendText(body, "div", "information-empty", "财经新闻不可用，未显示标题或默认内容。");
-    } else {
-      var list = document.createElement("ol");
-      list.className = "news-list";
-      card.articles.forEach(function (item) {
-        var row = document.createElement("li");
-        row.className = "news-row";
-        var link = document.createElement("a");
-        link.className = "news-link";
-        link.href = item.link;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        link.setAttribute("aria-label", item.title + "（" + item.sourceName + "，在新窗口打开）");
-        appendText(link, "strong", "news-title", item.title);
-        var meta = document.createElement("span");
-        meta.className = "news-meta";
-        appendText(meta, "span", "news-source-name", item.sourceName);
-        var time = appendText(meta, "time", "", formatNewsTime(item.publishedAt));
-        time.dateTime = item.publishedAt;
-        link.appendChild(meta);
-        row.appendChild(link);
-        list.appendChild(row);
-      });
-      body.appendChild(list);
-    }
-    article.appendChild(body);
-    appendText(article, "p", "information-note", card.note);
-    if (card.sourceHealth) appendSupportingHealth(article, card.sourceHealth);
-    appendInformationFooter(card, article);
-    return article;
-  }
-
-  function renderInformationCards(cards) {
-    informationGrid.textContent = "";
-    cards.forEach(function (card) {
-      if (card.id === "economic-calendar") informationGrid.appendChild(makeEconomicCalendarCard(card));
-      if (card.id === "finance-news") informationGrid.appendChild(makeFinanceNewsCard(card));
-    });
-    informationGrid.classList.toggle("single", cards.length === 1);
-    informationGrid.setAttribute("aria-busy", "false");
-    var ok = cards.filter(function (card) { return card.status === "ok"; }).length;
-    var partial = cards.filter(function (card) { return card.status === "partial"; }).length;
-    var stale = cards.filter(function (card) { return card.status === "stale"; }).length;
-    var errors = cards.filter(function (card) { return card.status === "error"; }).length;
-    informationSummary.textContent = ok + " ACTIVE · " + partial + " PARTIAL · " + stale + " STALE · " + errors + " ERROR";
+    informationView.render(cards);
   }
 
   function operationStatusLabel(card) {
@@ -4281,7 +4122,11 @@
               return buildResearchCards(group);
             });
           }
-          if (name === "information") return buildInformationCards(group);
+          if (name === "information") {
+            return loadSectionView(name).then(function () {
+              return buildInformationCards(group);
+            });
+          }
           if (name === "operations") return buildOperationsCards(group);
           throw new Error("未知金融终端分区：" + name);
         },
@@ -4292,7 +4137,7 @@
         renderSection: function (name, cards) {
           if (name === "risk") renderRiskCards(cards, sectionViewModules.risk);
           if (name === "research") renderResearchCards(cards, sectionViewModules.research);
-          if (name === "information") renderInformationCards(cards);
+          if (name === "information") renderInformationCards(cards, sectionViewModules.information);
           if (name === "operations") renderOperationsCards(cards);
         },
         renderSectionError: renderDeferredSectionError,

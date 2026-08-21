@@ -34,6 +34,7 @@ LOADER = ROOT / "apps" / "finance-terminal" / "finance-terminal-loader.mjs"
 REGRESSION_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-regression.mjs"
 RISK_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-view.mjs"
 RESEARCH_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-research-view.mjs"
+INFORMATION_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-information-view.mjs"
 TERMS_PAGE = ROOT / "apps" / "finance-terminal" / "terms.html"
 PRIVACY_PAGE = ROOT / "apps" / "finance-terminal" / "privacy.html"
 LEGAL_CSS = ROOT / "apps" / "finance-terminal" / "legal.css"
@@ -2484,7 +2485,9 @@ def main() -> None:
     regression_module = REGRESSION_MODULE.read_text(encoding="utf-8")
     risk_view_module = RISK_VIEW_MODULE.read_text(encoding="utf-8")
     research_view_module = RESEARCH_VIEW_MODULE.read_text(encoding="utf-8")
-    terminal_views = app + "\n" + risk_view_module + "\n" + research_view_module
+    information_view_module = INFORMATION_VIEW_MODULE.read_text(encoding="utf-8")
+    terminal_views = (app + "\n" + risk_view_module + "\n" + research_view_module
+                      + "\n" + information_view_module)
     compact_loader = re.sub(r"\s+", "", loader)
     require(APP.stat().st_size <= 220_000, "金融终端生产入口脚本超过220KB性能预算")
     require(LOADER.stat().st_size <= 14_000, "金融终端分区加载模块超过14KB性能预算")
@@ -2504,6 +2507,12 @@ def main() -> None:
             and "createResearchView" in research_view_module
             and "finance-terminal-research-view.mjs" not in page,
             "市场研究视图必须保持按需导入且不得在首屏预加载")
+    require(INFORMATION_VIEW_MODULE.stat().st_size <= 10_000,
+            "按需加载的事件资讯视图超过10KB性能预算")
+    require('import("./finance-terminal-information-view.mjs")' in app
+            and "createInformationView" in information_view_module
+            and "finance-terminal-information-view.mjs" not in page,
+            "事件资讯视图必须保持按需导入且不得在首屏预加载")
     terms_page = TERMS_PAGE.read_text(encoding="utf-8")
     privacy_page = PRIVACY_PAGE.read_text(encoding="utf-8")
     legal_css = LEGAL_CSS.read_text(encoding="utf-8")
@@ -2769,7 +2778,8 @@ def main() -> None:
             "app.js未实现经济日历适配、校验或独立状态")
     require('news:"../whats-latest/data.json"' in compact_loader and "FINANCE_NEWS_MAX_AGE_HOURS" in app
             and "FINANCE_NEWS_ITEM_MAX_AGE_HOURS" in app, "app.js未读取现有财经新闻或缺少新鲜度规则")
-    require("adaptFinanceNews" in app and "isSafeGoogleNewsUrl" in app and "makeFinanceNewsCard" in app,
+    require("adaptFinanceNews" in app and "isSafeGoogleNewsUrl" in app
+            and "makeFinanceNewsCard" in terminal_views,
             "app.js未实现财经新闻适配、安全链接或渲染")
     require('setAttribute("role", "listitem")' in terminal_views, "动态卡片缺少列表项语义")
     require("card.tabIndex = 0" not in terminal_views and "article.tabIndex = 0" not in terminal_views,

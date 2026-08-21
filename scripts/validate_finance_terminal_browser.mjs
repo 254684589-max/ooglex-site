@@ -303,6 +303,7 @@ async function waitForLoadState(client, predicate, timeoutMs) {
     critical: document.documentElement.getAttribute("data-critical-data-state"),
     deferred: document.documentElement.getAttribute("data-deferred-data-state"),
     informationBusy: document.getElementById("information-grid")?.getAttribute("aria-busy"),
+    modules: window.__financeTerminalSectionModules || null,
     error: document.querySelector(".load-error")?.textContent || null
   })`;
   while (Date.now() < deadline) {
@@ -349,6 +350,8 @@ async function validateDeferredLoading(client, baseUrl, timeoutMs) {
     || JSON.stringify(critical.state.requestedKeysAfterCritical) !== JSON.stringify(CRITICAL_REQUEST_KEYS)
     || JSON.stringify(critical.state.requestedKeysAtSchedulerStart) !== JSON.stringify(CRITICAL_REQUEST_KEYS)
     || JSON.stringify(critical.state.groupLoadSequence) !== JSON.stringify(["critical"])
+    || critical.modules?.requested?.length !== 0
+    || Object.values(critical.modules?.states || {}).some((state) => state !== "idle")
     || critical.state.networkRequestCount !== 6
     || critical.state.duplicateNetworkRequestCount !== 0
     || Object.values(critical.state.requestStates).some((state) => state !== "ready")) {
@@ -367,6 +370,10 @@ async function validateDeferredLoading(client, baseUrl, timeoutMs) {
     || information.state.requestCount !== 10
     || JSON.stringify(information.state.groupLoadSequence) !== JSON.stringify(["critical", "information"])
     || JSON.stringify(informationTransitions) !== JSON.stringify(["loading", "ready"])
+    || JSON.stringify(information.modules?.requested) !== JSON.stringify(["information"])
+    || information.modules?.states?.information !== "ready"
+    || information.modules?.states?.risk !== "idle"
+    || information.modules?.states?.research !== "idle"
     || information.state.failedSections.length !== 0
     || information.state.networkRequestCount !== 10
     || information.state.duplicateNetworkRequestCount !== 0
@@ -408,9 +415,10 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
     });
     result.sectionModules = sectionModules.result.value;
     if (JSON.stringify(result.sectionModules?.requested?.slice().sort())
-        !== JSON.stringify(["research", "risk"])
+        !== JSON.stringify(["information", "research", "risk"])
       || result.sectionModules?.states?.risk !== "ready"
-      || result.sectionModules?.states?.research !== "ready") {
+      || result.sectionModules?.states?.research !== "ready"
+      || result.sectionModules?.states?.information !== "ready") {
       throw new Error(`${width}px按需区块模块证据无效：${JSON.stringify(result.sectionModules)}`);
     }
     result.providerScriptTransport = scriptTransport.snapshot();
