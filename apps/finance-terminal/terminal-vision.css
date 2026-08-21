@@ -495,11 +495,12 @@ body::after {
 .telemetry-radar i:nth-child(4) { top: 0; right: auto; bottom: 0; left: 50%; width: 1px; border: 0; background: rgba(69, 212, 255, 0.2); }
 
 .hero-telemetry .meta-grid {
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   border-color: var(--vision-line);
 }
 
 .hero-telemetry .meta-item {
+  min-width: 0;
   min-height: 54px;
   padding: 10px 12px;
   border-color: var(--vision-line);
@@ -1041,7 +1042,7 @@ body::after {
   .clock-shanghai { right: 5%; }
   .orbit-clock { min-width: 68px; padding: 4px 5px; }
   .market-orbit figcaption { text-align: left; }
-  .hero-telemetry .meta-grid { grid-template-columns: 1fr; }
+  .hero-telemetry .meta-grid { grid-template-columns: minmax(0, 1fr); }
   .telemetry-card { padding: 13px; }
   .global-risk-map-head { align-items: flex-start; flex-direction: column; }
   .risk-map-svg { height: 250px; }
