@@ -144,7 +144,9 @@ export function createTerminalVisuals(dependencies = {}) {
       const symbol = document.createElement("b");
       symbol.textContent = asset.symbol || "—";
       const value = document.createElement("span");
-      value.textContent = `${displayPrice(asset)} · ${displayChange(asset)}`;
+      value.textContent = asset.externalDisplay
+        ? "组件报价"
+        : `${displayPrice(asset)} · ${displayChange(asset)}`;
       item.append(symbol, value);
       track.appendChild(item);
     });

@@ -89,6 +89,10 @@
     font-size: 8px;
   }
 
+  body[data-terminal-view="overview"] .market-tape-item b {
+    margin-right: 4px;
+  }
+
   body[data-terminal-view="overview"] .data-banner,
   body[data-terminal-view="overview"] .license-notice {
     position: absolute;
