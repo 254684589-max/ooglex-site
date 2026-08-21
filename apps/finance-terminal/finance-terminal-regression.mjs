@@ -50,7 +50,7 @@ export function runBrowserRegressionProbe(options = {}) {
     ? { market: 1, risk: 1, research: 1, information: 1, operations: 1 }
     : width <= 1040
       ? { market: 2, risk: 2, research: 2, information: 1, operations: 2 }
-      : { market: 4, risk: 3, research: 3, information: 2, operations: 4 };
+      : { market: 4, risk: 3, research: 3, information: 1, operations: 4 };
   const cards = Array.from(document.querySelectorAll(
     ".asset-card, .risk-card, .research-card, .information-card, .operation-card"
   ));
