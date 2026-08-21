@@ -322,6 +322,38 @@ async function waitForLoadState(client, predicate, timeoutMs) {
   throw new Error("页面未在限定时间内达到分区加载状态");
 }
 
+async function validateDesktopViews(client, width) {
+  if (width <= 1040) return [];
+  const evaluation = await client.send("Runtime.evaluate", {
+    expression: `(async () => {
+      const views = ["market", "risk", "research", "information", "operations", "method"];
+      const evidence = [];
+      for (const view of views) {
+        document.querySelector('.section-nav a[href="#' + view + '-section"]')?.click();
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        const target = document.getElementById(view + "-section");
+        evidence.push({
+          view,
+          active: document.body.dataset.terminalView,
+          current: document.querySelector('.section-nav a[aria-current="page"]')?.hash,
+          visible: getComputedStyle(target).display !== "none" && target.getBoundingClientRect().height > 0
+        });
+      }
+      document.querySelector('.section-nav a[href="#overview-section"]')?.click();
+      return evidence;
+    })()`,
+    awaitPromise: true,
+    returnByValue: true
+  });
+  const evidence = evaluation.result?.value || [];
+  if (evidence.length !== 6 || evidence.some((item) => {
+    return item.active !== item.view || item.current !== `#${item.view}-section` || !item.visible;
+  })) {
+    throw new Error(`${width}px桌面分区切换失败：${JSON.stringify(evidence)}`);
+  }
+  return evidence;
+}
+
 async function validateDeferredLoading(client, baseUrl, timeoutMs) {
   await client.send("Emulation.setDeviceMetricsOverride", {
     width: 360,
@@ -437,6 +469,7 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
     });
     await loaded;
     result = await waitForRegression(client, timeoutMs);
+    result.desktopViewEvidence = await validateDesktopViews(client, width);
     const sectionModules = await client.send("Runtime.evaluate", {
       expression: "window.__financeTerminalSectionModules || null",
       returnByValue: true
