@@ -303,6 +303,7 @@ async function waitForLoadState(client, predicate, timeoutMs) {
     critical: document.documentElement.getAttribute("data-critical-data-state"),
     deferred: document.documentElement.getAttribute("data-deferred-data-state"),
     informationBusy: document.getElementById("information-grid")?.getAttribute("aria-busy"),
+    operationsBusy: document.getElementById("operations-grid")?.getAttribute("aria-busy"),
     modules: window.__financeTerminalSectionModules || null,
     error: document.querySelector(".load-error")?.textContent || null
   })`;
@@ -374,20 +375,47 @@ async function validateDeferredLoading(client, baseUrl, timeoutMs) {
     || information.modules?.states?.information !== "ready"
     || information.modules?.states?.risk !== "idle"
     || information.modules?.states?.research !== "idle"
+    || information.modules?.states?.operations !== "idle"
     || information.state.failedSections.length !== 0
     || information.state.networkRequestCount !== 10
     || information.state.duplicateNetworkRequestCount !== 0
     || Object.values(information.state.requestStates).some((state) => state !== "ready")) {
     throw new Error(`资讯分区请求复用边界无效：${JSON.stringify(information.state)}`);
   }
+  await client.send("Runtime.evaluate", {
+    expression: `document.querySelector('.section-nav a[href="#operations-section"]')?.click()`
+  });
+  const operations = await waitForLoadState(client, (snapshot) => {
+    return snapshot.state?.loadedSections?.includes("operations")
+      && snapshot.operationsBusy === "false";
+  }, timeoutMs);
+  const operationsTransitions = operations.state.sectionTransitions
+    .filter((item) => item.name === "operations").map((item) => item.state);
+  if (operations.state.sourceRequestCount !== 14
+    || operations.state.requestCount !== 15
+    || JSON.stringify(operations.state.groupLoadSequence)
+      !== JSON.stringify(["critical", "information", "operations"])
+    || JSON.stringify(operationsTransitions) !== JSON.stringify(["loading", "ready"])
+    || JSON.stringify(operations.modules?.requested) !== JSON.stringify(["information", "operations"])
+    || operations.modules?.states?.operations !== "ready"
+    || operations.modules?.states?.risk !== "idle"
+    || operations.modules?.states?.research !== "idle"
+    || operations.state.failedSections.length !== 0
+    || operations.state.networkRequestCount !== 15
+    || operations.state.duplicateNetworkRequestCount !== 0
+    || Object.values(operations.state.requestStates).some((state) => state !== "ready")) {
+    throw new Error(`运行证据分区请求复用边界无效：${JSON.stringify(operations.state)}`);
+  }
   return {
     criticalSourceRequestCount: critical.state.sourceRequestCount,
     informationSourceRequestCount: information.state.sourceRequestCount,
+    operationsSourceRequestCount: operations.state.sourceRequestCount,
     startupOrder: critical.state.startupOrder,
     criticalPaintBarrier: critical.state.criticalPaintBarrier,
-    groupLoadSequence: information.state.groupLoadSequence,
+    groupLoadSequence: operations.state.groupLoadSequence,
     informationTransitions,
-    duplicateNetworkRequestCount: information.state.duplicateNetworkRequestCount
+    operationsTransitions,
+    duplicateNetworkRequestCount: operations.state.duplicateNetworkRequestCount
   };
 }
 
@@ -415,10 +443,11 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
     });
     result.sectionModules = sectionModules.result.value;
     if (JSON.stringify(result.sectionModules?.requested?.slice().sort())
-        !== JSON.stringify(["information", "research", "risk"])
+        !== JSON.stringify(["information", "operations", "research", "risk"])
       || result.sectionModules?.states?.risk !== "ready"
       || result.sectionModules?.states?.research !== "ready"
-      || result.sectionModules?.states?.information !== "ready") {
+      || result.sectionModules?.states?.information !== "ready"
+      || result.sectionModules?.states?.operations !== "ready") {
       throw new Error(`${width}px按需区块模块证据无效：${JSON.stringify(result.sectionModules)}`);
     }
     result.providerScriptTransport = scriptTransport.snapshot();
@@ -511,7 +540,7 @@ async function main() {
     await client.open();
     await Promise.all([client.send("Page.enable"), client.send("Runtime.enable"), client.send("Network.enable")]);
     const deferredProbe = await validateDeferredLoading(client, baseUrl, timeoutMs);
-    console.log(`Deferred section loading: PASS · sources ${deferredProbe.criticalSourceRequestCount} → ${deferredProbe.informationSourceRequestCount} · groups ${deferredProbe.groupLoadSequence.join(" → ")} · duplicates ${deferredProbe.duplicateNetworkRequestCount}`);
+    console.log(`Deferred section loading: PASS · sources ${deferredProbe.criticalSourceRequestCount} → ${deferredProbe.informationSourceRequestCount} → ${deferredProbe.operationsSourceRequestCount} · groups ${deferredProbe.groupLoadSequence.join(" → ")} · duplicates ${deferredProbe.duplicateNetworkRequestCount}`);
     const results = [];
     for (const width of WIDTHS) results.push(await runWidth(client, baseUrl, artifacts, width, options.height, timeoutMs));
     const evidence = buildBrowserEvidence(results);

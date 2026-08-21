@@ -10,6 +10,7 @@ import { runBrowserRegressionProbe } from "../apps/finance-terminal/finance-term
 import { createRiskView } from "../apps/finance-terminal/finance-terminal-risk-view.mjs";
 import { createResearchView } from "../apps/finance-terminal/finance-terminal-research-view.mjs";
 import { createInformationView } from "../apps/finance-terminal/finance-terminal-information-view.mjs";
+import { createOperationsView } from "../apps/finance-terminal/finance-terminal-operations-view.mjs";
 
 function fakeResponse(payload, status = 200) {
   return {
@@ -337,6 +338,28 @@ function validateInformationViewContract() {
   assert.equal(summary.textContent, "0 ACTIVE · 0 PARTIAL · 0 STALE · 0 ERROR");
 }
 
+function validateOperationsViewContract() {
+  assert.throws(() => createOperationsView({}), /稳定V1运行证据视图缺少依赖：document/);
+  const grid = {
+    textContent: "loading",
+    appendChild() {},
+    setAttribute(name, value) { this[name] = value; }
+  };
+  const summary = { textContent: "" };
+  const noop = () => {};
+  const view = createOperationsView({
+    document: {}, grid, summary,
+    appendText: noop,
+    formatHealthCoverage: noop,
+    formatTimestamp: noop,
+    isSafeHref: noop
+  });
+  view.render([]);
+  assert.equal(grid["aria-busy"], "false");
+  assert.equal(summary.textContent,
+    "0 HEALTHY · 0 DEGRADED · 0 STALE · 0 FAILED · 0 UNKNOWN");
+}
+
 async function main() {
   assert.equal(financeTerminalResourceContract.criticalSourceCount, 5);
   assert.equal(financeTerminalResourceContract.upstreamSourceCount, 16);
@@ -351,6 +374,7 @@ async function main() {
   validateRiskViewContract();
   validateResearchViewContract();
   validateInformationViewContract();
+  validateOperationsViewContract();
   console.log("Finance Terminal staged loader contract: PASS");
   console.log("- 5 critical sources / 13 deferred sources / 18 unique source requests: PASS");
   console.log("- viewport and section-navigation activation / shared request cache: PASS");
@@ -358,7 +382,7 @@ async function main() {
   console.log("- critical render / paint yield / deferred scheduler order: PASS");
   console.log("- one-section failure / three-section continuation / partial completion: PASS");
   console.log("- per-request state / network de-duplication / section transition evidence: PASS");
-  console.log("- async section module barrier / risk + research + information view contracts: PASS");
+  console.log("- async section module barrier / risk + research + information + operations view contracts: PASS");
 }
 
 main().catch((error) => {

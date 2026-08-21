@@ -3088,7 +3088,7 @@
   var sectionViewImports = {};
   var sectionViewModules = {};
   var sectionViewEvidence = {
-    requested: [], states: { risk: "idle", research: "idle", information: "idle" }
+    requested: [], states: { risk: "idle", research: "idle", information: "idle", operations: "idle" }
   };
   root.__financeTerminalSectionModules = sectionViewEvidence;
 
@@ -3096,6 +3096,7 @@
     if (name === "risk") return import("./finance-terminal-risk-view.mjs");
     if (name === "research") return import("./finance-terminal-research-view.mjs");
     if (name === "information") return import("./finance-terminal-information-view.mjs");
+    if (name === "operations") return import("./finance-terminal-operations-view.mjs");
     return Promise.resolve(null);
   }
 
@@ -3103,7 +3104,8 @@
     var factoryNames = {
       risk: "createRiskView",
       research: "createResearchView",
-      information: "createInformationView"
+      information: "createInformationView",
+      operations: "createOperationsView"
     };
     if (!factoryNames[name]) return Promise.resolve(null);
     if (!sectionViewImports[name]) {
@@ -3485,149 +3487,24 @@
     informationView.render(cards);
   }
 
-  function operationStatusLabel(card) {
-    if (card.status === "healthy") return { className: "official-chip", text: "HEALTHY" };
-    if (card.status === "degraded") return { className: "partial-chip", text: "DEGRADED" };
-    if (card.status === "stale") return { className: "stale-chip", text: "STALE" };
-    if (card.status === "failed") return { className: "error-chip", text: "FAILED" };
-    return { className: "error-chip", text: "UNKNOWN" };
-  }
+  var operationsView = null;
 
-  function operationCountLabel(card) {
-    var published = Number.isInteger(card.publishedRecords) ? card.publishedRecords : "—";
-    return published + " / " + card.expectedRecords;
-  }
-
-  function operationFailureLabel(card) {
-    return card.historyKnown && Number.isInteger(card.consecutiveFailures)
-      ? card.consecutiveFailures + "次" : "历史待建立";
-  }
-
-  function operationSnapshotLabel(card) {
-    if (!card.historyKnown) return "历史待建立";
-    if (card.snapshotPreserved === true) return "已保留旧快照";
-    if (card.snapshotPreserved === false) return "本轮未触发";
-    return "状态不可用";
-  }
-
-  function makeOperationCard(card) {
-    var article = document.createElement("article");
-    article.className = "operation-card status-" + card.status;
-    article.setAttribute("role", "listitem");
-
-    var head = document.createElement("div");
-    head.className = "operation-card-head";
-    var titleBox = document.createElement("div");
-    appendText(titleBox, "h3", "operation-name", card.name);
-    appendText(titleBox, "span", "operation-en", card.nameEn);
-    head.appendChild(titleBox);
-    appendText(head, "span", "operation-symbol", card.symbol);
-    article.appendChild(head);
-
-    var kpi = document.createElement("div");
-    kpi.className = "operation-kpi";
-    appendText(kpi, "strong", "operation-kpi-value", operationCountLabel(card));
-    appendText(kpi, "span", "operation-kpi-label", "可展示" + card.unit);
-    article.appendChild(kpi);
-
-    var metrics = document.createElement("div");
-    metrics.className = "operation-metrics";
-    var coverageMetrics = [
-      ["可用覆盖", formatHealthCoverage(card.availableCoveragePct)],
-      ["本轮新鲜", formatHealthCoverage(card.freshCoveragePct)],
-      [card.slowRecords ? "慢频估值" : "已验证覆盖", card.slowRecords
-        ? (card.slowEstimateRecords + " / " + card.slowRecords)
-        : formatHealthCoverage(card.verifiedCoveragePct)],
-      ["连续失败", operationFailureLabel(card)]
-    ];
-    coverageMetrics.forEach(function (item) {
-      var metric = document.createElement("span");
-      metric.className = "operation-metric";
-      appendText(metric, "span", "operation-metric-label", item[0]);
-      appendText(metric, "strong", "operation-metric-value", item[1]);
-      metrics.appendChild(metric);
-    });
-    article.appendChild(metrics);
-
-    var times = document.createElement("div");
-    times.className = "operation-times";
-    [
-      ["最近尝试", formatTimestamp(card.lastAttemptAt, false)],
-      ["最后成功", formatTimestamp(card.lastSuccessfulAt, false)],
-      ["失败回退", operationSnapshotLabel(card)]
-    ].forEach(function (item) {
-      var row = document.createElement("span");
-      appendText(row, "span", "", item[0]);
-      appendText(row, "strong", "", item[1]);
-      times.appendChild(row);
-    });
-    article.appendChild(times);
-    if (card.readiness) {
-      var evidence = document.createElement("div");
-      evidence.className = "operation-readiness evidence-" + card.readiness.status;
-      var evidenceHead = document.createElement("div");
-      evidenceHead.className = "operation-readiness-head";
-      appendText(evidenceHead, "span", "operation-readiness-label", "STABLE V1 EVIDENCE");
-      appendText(evidenceHead, "strong", "operation-readiness-state", card.readiness.label);
-      evidence.appendChild(evidenceHead);
-      var evidenceValue = Number.isInteger(card.readiness.consecutiveSuccessfulCycles)
-        ? card.readiness.consecutiveSuccessfulCycles + " / 7 DAYS" : "— / 7 DAYS";
-      appendText(evidence, "strong", "operation-readiness-value", evidenceValue);
-      var progress = document.createElement("div");
-      progress.className = "operation-readiness-progress";
-      progress.setAttribute("role", "progressbar");
-      progress.setAttribute("aria-label", card.name + "稳定V1连续成功周期");
-      progress.setAttribute("aria-valuemin", "0");
-      progress.setAttribute("aria-valuemax", "7");
-      progress.setAttribute("aria-valuenow", Number.isInteger(card.readiness.consecutiveSuccessfulCycles)
-        ? String(Math.min(7, card.readiness.consecutiveSuccessfulCycles)) : "0");
-      var progressFill = document.createElement("span");
-      progressFill.style.width = Number.isInteger(card.readiness.consecutiveSuccessfulCycles)
-        ? Math.min(100, card.readiness.consecutiveSuccessfulCycles / 7 * 100) + "%" : "0%";
-      progress.appendChild(progressFill);
-      evidence.appendChild(progress);
-      appendText(evidence, "p", "operation-readiness-note", card.readiness.note);
-      if (card.readiness.latestCycleDate) {
-        appendText(evidence, "span", "operation-readiness-date", "最近周期 " + card.readiness.latestCycleDate);
-      }
-      if (card.readiness.latestRunUrl) {
-        var runLink = appendText(evidence, "a", "operation-readiness-link", "查看本轮运行 ↗");
-        runLink.href = card.readiness.latestRunUrl;
-        runLink.target = "_blank";
-        runLink.rel = "noopener noreferrer";
-      }
-      article.appendChild(evidence);
+  function renderOperationsCards(cards, viewModule) {
+    if (!viewModule || typeof viewModule.createOperationsView !== "function") {
+      throw new Error("稳定V1运行证据视图模块契约无效");
     }
-    appendText(article, "p", "operation-note", card.note || "运行状态说明不可用。");
-
-    var footer = document.createElement("div");
-    footer.className = "operation-footer";
-    var chip = operationStatusLabel(card);
-    appendText(footer, "span", "status-chip " + chip.className, chip.text);
-    if (isSafeHref(card.detailUrl)) {
-      var detail = appendText(footer, "a", "detail-link", "查看数据页面 →");
-      detail.href = card.detailUrl;
+    if (!operationsView) {
+      operationsView = viewModule.createOperationsView({
+        document: document,
+        grid: operationsGrid,
+        summary: operationsSummary,
+        appendText: appendText,
+        formatHealthCoverage: formatHealthCoverage,
+        formatTimestamp: formatTimestamp,
+        isSafeHref: isSafeHref
+      });
     }
-    article.appendChild(footer);
-    return article;
-  }
-
-  function renderOperationsCards(cards) {
-    operationsGrid.textContent = "";
-    cards.forEach(function (card) { operationsGrid.appendChild(makeOperationCard(card)); });
-    operationsGrid.setAttribute("aria-busy", "false");
-    var healthy = cards.filter(function (card) { return card.status === "healthy"; }).length;
-    var degraded = cards.filter(function (card) { return card.status === "degraded"; }).length;
-    var stale = cards.filter(function (card) { return card.status === "stale"; }).length;
-    var failed = cards.filter(function (card) { return card.status === "failed"; }).length;
-    var unknown = cards.filter(function (card) { return card.status === "unknown"; }).length;
-    var evidenceCards = cards.filter(function (card) { return card.readiness; });
-    var evidenceSummary = evidenceCards.length ? " · V1 " + Math.min.apply(null, evidenceCards.map(function (card) {
-      return Number.isInteger(card.readiness.consecutiveSuccessfulCycles)
-        ? card.readiness.consecutiveSuccessfulCycles : 0;
-    })) + "/7" : "";
-    operationsSummary.textContent = healthy + " HEALTHY · " + degraded + " DEGRADED · "
-      + stale + " STALE · " + failed + " FAILED · " + unknown + " UNKNOWN" + evidenceSummary;
+    operationsView.render(cards);
   }
 
   function renderMarketLicenseNotice(state) {
@@ -4127,7 +4004,11 @@
               return buildInformationCards(group);
             });
           }
-          if (name === "operations") return buildOperationsCards(group);
+          if (name === "operations") {
+            return loadSectionView(name).then(function () {
+              return buildOperationsCards(group);
+            });
+          }
           throw new Error("未知金融终端分区：" + name);
         },
         renderCritical: function (experience) {
@@ -4138,7 +4019,7 @@
           if (name === "risk") renderRiskCards(cards, sectionViewModules.risk);
           if (name === "research") renderResearchCards(cards, sectionViewModules.research);
           if (name === "information") renderInformationCards(cards, sectionViewModules.information);
-          if (name === "operations") renderOperationsCards(cards);
+          if (name === "operations") renderOperationsCards(cards, sectionViewModules.operations);
         },
         renderSectionError: renderDeferredSectionError,
         announceCritical: function (experience) { announceMarketReady(experience.market); },
