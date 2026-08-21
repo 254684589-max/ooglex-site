@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-21T13:51:46.100883Z",
-  "targetBranch": "agent/finance-terminal-sci-fi-dashboard",
+  "generatedAt": "2026-08-21T18:06:34.339007Z",
+  "targetBranch": "agent/finance-terminal-visual-fidelity",
   "targets": {
     "beta": "PASS",
     "stableV1": "BLOCKED"
@@ -25,7 +25,7 @@
       "stableRequiredSuccessfulCycles": 7,
       "remainingStableCycles": 2,
       "latestConclusion": "success",
-      "latestCreatedAt": "2026-08-21T13:48:32Z",
+      "latestCreatedAt": "2026-08-21T18:02:56Z",
       "cycleDates": [
         "2026-08-20",
         "2026-08-19",
@@ -33,7 +33,7 @@
         "2026-08-12",
         "2026-08-11"
       ],
-      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/32488777608"
+      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/32511325513"
     },
     {
       "id": "asset-tracker",
@@ -46,7 +46,7 @@
       "stableRequiredSuccessfulCycles": 7,
       "remainingStableCycles": 2,
       "latestConclusion": "success",
-      "latestCreatedAt": "2026-08-21T13:48:34Z",
+      "latestCreatedAt": "2026-08-21T18:02:57Z",
       "cycleDates": [
         "2026-08-20",
         "2026-08-19",
@@ -54,7 +54,7 @@
         "2026-08-12",
         "2026-08-11"
       ],
-      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/32488780361"
+      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/32511327331"
     },
     {
       "id": "companies",
@@ -67,7 +67,7 @@
       "stableRequiredSuccessfulCycles": 7,
       "remainingStableCycles": 2,
       "latestConclusion": "success",
-      "latestCreatedAt": "2026-08-21T13:48:35Z",
+      "latestCreatedAt": "2026-08-21T18:02:58Z",
       "cycleDates": [
         "2026-08-20",
         "2026-08-19",
@@ -75,7 +75,7 @@
         "2026-08-12",
         "2026-08-11"
       ],
-      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/32488783217"
+      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/32511329472"
     },
     {
       "id": "asset-ranking",
@@ -88,7 +88,7 @@
       "stableRequiredSuccessfulCycles": 7,
       "remainingStableCycles": 2,
       "latestConclusion": "success",
-      "latestCreatedAt": "2026-08-21T13:50:58Z",
+      "latestCreatedAt": "2026-08-21T18:05:48Z",
       "cycleDates": [
         "2026-08-20",
         "2026-08-19",
@@ -96,7 +96,7 @@
         "2026-08-12",
         "2026-08-11"
       ],
-      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/32488989828"
+      "latestRunUrl": "https://github.com/254684589-max/ooglex-site/actions/runs/32511577288"
     }
   ],
   "source": "GitHub Actions workflow_dispatch / Finance Terminal release gate",
