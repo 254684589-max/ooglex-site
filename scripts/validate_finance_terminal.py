@@ -2995,6 +2995,7 @@ def main() -> None:
     require("validate_finance_terminal_browser.mjs" in quality_workflow
             and "validate_finance_terminal_visuals.mjs" in quality_workflow
             and "validate_finance_terminal_browser_evidence.mjs" in quality_workflow
+            and "fonts-noto-cjk" in quality_workflow
             and "finance-terminal-browser-evidence.json" in quality_workflow
             and "finance-terminal-browser-evidence.md" in quality_workflow
             and "validate_finance_terminal_proxy_runtime_history.py" in quality_workflow

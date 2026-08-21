@@ -226,6 +226,13 @@ jobs:
       - name: Validate proxy runtime history contracts
         run: python scripts/validate_finance_terminal_proxy_runtime_history.py
 
+      - name: Ensure CJK font for readable screenshots
+        run: |
+          if ! fc-list :lang=zh | grep -q .; then
+            sudo apt-get update -qq
+            sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+          fi
+
       - name: Validate rendered page in Chrome
         run: |
           node scripts/validate_finance_terminal_browser_evidence.mjs
