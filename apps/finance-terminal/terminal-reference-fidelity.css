@@ -177,6 +177,22 @@
     grid-template-rows: 28px minmax(148px, .72fr) minmax(0, 2.28fr);
   }
 
+  body[data-terminal-view="overview"] #information-section > *,
+  body[data-terminal-view="overview"] .market-insight-card > *,
+  body[data-terminal-view="overview"] .information-card > *,
+  body[data-terminal-view="overview"] .information-card-head > *,
+  body[data-terminal-view="overview"] .information-overview > * {
+    min-width: 0;
+  }
+
+  body[data-terminal-view="overview"] #information-section > .board-heading,
+  body[data-terminal-view="overview"] .market-insight-card,
+  body[data-terminal-view="overview"] .information-grid,
+  body[data-terminal-view="overview"] .information-card {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
   body[data-terminal-view="overview"] .orbit-panel {
     background:
       radial-gradient(420px 230px at 52% 54%, rgba(23, 133, 188, .2), transparent 70%),
