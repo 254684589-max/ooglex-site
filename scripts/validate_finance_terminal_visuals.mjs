@@ -3,6 +3,7 @@ import {
   derivePipelineSummary,
   deriveRegionalHeatmap
 } from "../apps/finance-terminal/finance-terminal-visuals.mjs";
+import { deriveRiskRadar } from "../apps/finance-terminal/finance-terminal-risk-radar.mjs";
 
 function asset(symbol, dailyReturn, options = {}) {
   return {
@@ -80,6 +81,14 @@ assert.equal(staleEvidence.evidenceStale, true, "任一资格证据过期必须�
 assert.equal(derivePipelineSummary(pipelineCards.slice(0, 3)).minimumCycle, null,
   "缺少任一核心管线时不得显示伪造的总资格进度");
 
+const radar = deriveRiskRadar([{ meterPercent: 62 }, { meterPercent: 44 }, { value: -1.25 }]);
+assert.equal(radar.values.length, 6, "风险雷达必须由三项现有信号生成六个可视维度");
+assert.ok(radar.values.every((value) => value >= 0 && value <= 100));
+assert.ok(radar.score >= 0 && radar.score <= 10);
+assert.equal(deriveRiskRadar([{ meterPercent: 50 }]), null,
+  "三项信号不完整时风险雷达不得生成推断分数");
+
 console.log("Finance Terminal visual data contracts: PASS");
 console.log("- seven-region daily return pressure proxy / error isolation: PASS");
 console.log("- dynamic 5/7 to 7/7 minimum-cycle continuity / stale evidence preservation: PASS");
+console.log("- three-source normalized six-axis risk radar / incomplete-source isolation: PASS");

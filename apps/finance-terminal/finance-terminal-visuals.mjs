@@ -1,3 +1,5 @@
+import { renderRiskRadar } from "./finance-terminal-risk-radar.mjs";
+
 function finiteNumber(value) {
   return typeof value === "number" && Number.isFinite(value);
 }
@@ -311,6 +313,7 @@ export function createTerminalVisuals(dependencies = {}) {
     renderGlobalRiskHeatmap,
     renderMarketOverview,
     renderPipelineOverview,
+    renderRiskRadar: (cards) => renderRiskRadar(document, cards),
     updateMarketClocks
   });
 }

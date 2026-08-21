@@ -3313,6 +3313,9 @@
       });
     }
     riskView.render(cards);
+    return terminalVisualsPromise.then(function (visuals) {
+      if (visuals) visuals.renderRiskRadar(cards);
+    });
   }
 
   function formatSignedPercent(value) {

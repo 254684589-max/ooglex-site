@@ -32,7 +32,9 @@ PAGE = ROOT / "apps" / "finance-terminal" / "index.html"
 APP = ROOT / "apps" / "finance-terminal" / "app.js"
 LOADER = ROOT / "apps" / "finance-terminal" / "finance-terminal-loader.mjs"
 TERMINAL_VISUALS = ROOT / "apps" / "finance-terminal" / "finance-terminal-visuals.mjs"
+RISK_RADAR_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-radar.mjs"
 VISION_CSS = ROOT / "apps" / "finance-terminal" / "terminal-vision.css"
+VISUAL_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-visual-fidelity.css"
 COMMAND_CENTER_CSS = ROOT / "apps" / "finance-terminal" / "terminal-command-center.css"
 COMMAND_CENTER_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-command-center.mjs"
 REGRESSION_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-regression.mjs"
@@ -2489,6 +2491,7 @@ def main() -> None:
     app = APP.read_text(encoding="utf-8")
     loader = LOADER.read_text(encoding="utf-8")
     terminal_visuals = TERMINAL_VISUALS.read_text(encoding="utf-8")
+    risk_radar_module = RISK_RADAR_MODULE.read_text(encoding="utf-8")
     vision_css = VISION_CSS.read_text(encoding="utf-8")
     command_center_css = COMMAND_CENTER_CSS.read_text(encoding="utf-8")
     command_center_module = COMMAND_CENTER_MODULE.read_text(encoding="utf-8")
@@ -2503,8 +2506,10 @@ def main() -> None:
     require(APP.stat().st_size <= 220_000, "金融终端生产入口脚本超过220KB性能预算")
     require(LOADER.stat().st_size <= 14_000, "金融终端分区加载模块超过14KB性能预算")
     require(TERMINAL_VISUALS.stat().st_size <= 16_000, "金融终端视觉数据模块超过16KB性能预算")
+    require(RISK_RADAR_MODULE.stat().st_size <= 3_000, "金融终端风险雷达模块超过3KB性能预算")
     require(VISION_CSS.stat().st_size <= 28_000, "金融终端科幻视觉样式超过28KB性能预算")
     require(COMMAND_CENTER_CSS.stat().st_size <= 20_000, "金融终端单屏指挥中心样式超过20KB性能预算")
+    require(VISUAL_FIDELITY_CSS.stat().st_size <= 6_000, "金融终端高保真视觉层超过6KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
     require(APP.stat().st_size + LOADER.stat().st_size + TERMINAL_VISUALS.stat().st_size
             + COMMAND_CENTER_MODULE.stat().st_size <= 230_000,
@@ -2537,6 +2542,7 @@ def main() -> None:
             "稳定V1运行证据视图必须保持按需导入且不得在首屏预加载")
     require('<link rel="stylesheet" href="terminal-vision.css">' in page
             and '<link rel="stylesheet" href="terminal-command-center.css">' in page
+            and '<link rel="stylesheet" href="terminal-visual-fidelity.css">' in page
             and 'src="finance-terminal-command-center.mjs"' in page
             and 'import("./finance-terminal-visuals.mjs")' in app
             and "createTerminalVisuals" in terminal_visuals,
@@ -2556,6 +2562,11 @@ def main() -> None:
             and "renderGlobalRiskHeatmap" in terminal_visuals
             and "renderPipelineOverview" in terminal_visuals,
             "终端视觉数据模块缺少安全文本渲染、区域代理或资格进度逻辑")
+    require("innerHTML" not in risk_radar_module
+            and 'from "./finance-terminal-risk-radar.mjs"' in terminal_visuals
+            and "deriveRiskRadar" in risk_radar_module
+            and "renderRiskRadar" in risk_radar_module,
+            "高保真风险雷达必须使用独立受预算约束的真实信号视觉层")
     require('@media (max-width: 1040px)' in vision_css
             and '@media (max-width: 780px)' in vision_css
             and '@media (max-width: 620px)' in vision_css
