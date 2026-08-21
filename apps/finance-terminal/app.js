@@ -3091,6 +3091,14 @@
     requested: [], states: { risk: "idle", research: "idle", information: "idle", operations: "idle" }
   };
   root.__financeTerminalSectionModules = sectionViewEvidence;
+  var terminalVisualsPromise = import("./finance-terminal-visuals.mjs").then(function (visualModule) {
+    if (!visualModule || typeof visualModule.createTerminalVisuals !== "function") {
+      throw new Error("终端视觉层缺少工厂函数");
+    }
+    return visualModule.createTerminalVisuals({ document: document, window: window });
+  }).catch(function () {
+    return null;
+  });
 
   function importSectionView(name) {
     if (name === "risk") return import("./finance-terminal-risk-view.mjs");
@@ -3693,6 +3701,9 @@
       + "项站内真实可用 / " + unavailable.length + "项不可用 / "
       + proxies.length + "项免费嵌入代理 / " + demos.length + "项演示";
     updateSummary(data);
+    terminalVisualsPromise.then(function (visuals) {
+      if (visuals) visuals.renderMarketOverview(data);
+    });
   }
 
   function renderError(error) {
@@ -3709,6 +3720,9 @@
     bannerTitle.textContent = "页面数据不可用";
     bannerCopy.textContent = "基础配置加载失败，页面已停止展示数值。";
     bannerNote.textContent = "NO DATA DISPLAYED";
+    terminalVisualsPromise.then(function (visuals) {
+      if (visuals) visuals.renderCriticalError(error && error.message);
+    });
     riskGrid.textContent = "";
     var riskMessage = appendText(riskGrid, "div", "load-error", "市场状态暂不可用：基础配置加载失败。");
     riskMessage.setAttribute("role", "alert");
