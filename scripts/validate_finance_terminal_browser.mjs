@@ -18,6 +18,9 @@ import {
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const WIDTHS = [360, 768, 1280];
 const RESULT_ID = "finance-terminal-regression-result";
+const CRITICAL_REQUEST_KEYS = [
+  "$config", "macro", "macroHealth", "assetRanking", "assetRankingHealth", "marketLicense"
+];
 const MIME = {
   ".css": "text/css; charset=utf-8",
   ".html": "text/html; charset=utf-8",
@@ -300,6 +303,8 @@ async function waitForLoadState(client, predicate, timeoutMs) {
     critical: document.documentElement.getAttribute("data-critical-data-state"),
     deferred: document.documentElement.getAttribute("data-deferred-data-state"),
     informationBusy: document.getElementById("information-grid")?.getAttribute("aria-busy"),
+    operationsBusy: document.getElementById("operations-grid")?.getAttribute("aria-busy"),
+    modules: window.__financeTerminalSectionModules || null,
     error: document.querySelector(".load-error")?.textContent || null
   })`;
   while (Date.now() < deadline) {
@@ -332,10 +337,25 @@ async function validateDeferredLoading(client, baseUrl, timeoutMs) {
   });
   await loaded;
   const critical = await waitForLoadState(client, (snapshot) => {
-    return snapshot.critical === "ready" && snapshot.state?.criticalSourceRequestCount === 5;
+    return snapshot.critical === "ready"
+      && snapshot.state?.criticalSourceRequestCount === 5
+      && snapshot.state?.criticalPaintBarrier?.status === "yielded"
+      && snapshot.state?.startupOrder?.at(-1) === "deferred-scheduler-started";
   }, timeoutMs);
   if (critical.state.mode !== "deferred" || critical.state.sourceRequestCount !== 5
-    || critical.state.loadedSections.length !== 0) {
+    || critical.state.requestCount !== 6
+    || critical.state.loadedSections.length !== 0
+    || JSON.stringify(critical.state.startupOrder) !== JSON.stringify([
+      "critical-rendered", "critical-paint-yielded", "deferred-scheduler-started"
+    ])
+    || JSON.stringify(critical.state.requestedKeysAfterCritical) !== JSON.stringify(CRITICAL_REQUEST_KEYS)
+    || JSON.stringify(critical.state.requestedKeysAtSchedulerStart) !== JSON.stringify(CRITICAL_REQUEST_KEYS)
+    || JSON.stringify(critical.state.groupLoadSequence) !== JSON.stringify(["critical"])
+    || critical.modules?.requested?.length !== 0
+    || Object.values(critical.modules?.states || {}).some((state) => state !== "idle")
+    || critical.state.networkRequestCount !== 6
+    || critical.state.duplicateNetworkRequestCount !== 0
+    || Object.values(critical.state.requestStates).some((state) => state !== "ready")) {
     throw new Error(`首屏延迟加载边界无效：${JSON.stringify(critical.state)}`);
   }
   await client.send("Runtime.evaluate", {
@@ -345,12 +365,57 @@ async function validateDeferredLoading(client, baseUrl, timeoutMs) {
     return snapshot.state?.loadedSections?.includes("information")
       && snapshot.informationBusy === "false";
   }, timeoutMs);
-  if (information.state.sourceRequestCount !== 9) {
+  const informationTransitions = information.state.sectionTransitions
+    .filter((item) => item.name === "information").map((item) => item.state);
+  if (information.state.sourceRequestCount !== 9
+    || information.state.requestCount !== 10
+    || JSON.stringify(information.state.groupLoadSequence) !== JSON.stringify(["critical", "information"])
+    || JSON.stringify(informationTransitions) !== JSON.stringify(["loading", "ready"])
+    || JSON.stringify(information.modules?.requested) !== JSON.stringify(["information"])
+    || information.modules?.states?.information !== "ready"
+    || information.modules?.states?.risk !== "idle"
+    || information.modules?.states?.research !== "idle"
+    || information.modules?.states?.operations !== "idle"
+    || information.state.failedSections.length !== 0
+    || information.state.networkRequestCount !== 10
+    || information.state.duplicateNetworkRequestCount !== 0
+    || Object.values(information.state.requestStates).some((state) => state !== "ready")) {
     throw new Error(`资讯分区请求复用边界无效：${JSON.stringify(information.state)}`);
+  }
+  await client.send("Runtime.evaluate", {
+    expression: `document.querySelector('.section-nav a[href="#operations-section"]')?.click()`
+  });
+  const operations = await waitForLoadState(client, (snapshot) => {
+    return snapshot.state?.loadedSections?.includes("operations")
+      && snapshot.operationsBusy === "false";
+  }, timeoutMs);
+  const operationsTransitions = operations.state.sectionTransitions
+    .filter((item) => item.name === "operations").map((item) => item.state);
+  if (operations.state.sourceRequestCount !== 14
+    || operations.state.requestCount !== 15
+    || JSON.stringify(operations.state.groupLoadSequence)
+      !== JSON.stringify(["critical", "information", "operations"])
+    || JSON.stringify(operationsTransitions) !== JSON.stringify(["loading", "ready"])
+    || JSON.stringify(operations.modules?.requested) !== JSON.stringify(["information", "operations"])
+    || operations.modules?.states?.operations !== "ready"
+    || operations.modules?.states?.risk !== "idle"
+    || operations.modules?.states?.research !== "idle"
+    || operations.state.failedSections.length !== 0
+    || operations.state.networkRequestCount !== 15
+    || operations.state.duplicateNetworkRequestCount !== 0
+    || Object.values(operations.state.requestStates).some((state) => state !== "ready")) {
+    throw new Error(`运行证据分区请求复用边界无效：${JSON.stringify(operations.state)}`);
   }
   return {
     criticalSourceRequestCount: critical.state.sourceRequestCount,
-    informationSourceRequestCount: information.state.sourceRequestCount
+    informationSourceRequestCount: information.state.sourceRequestCount,
+    operationsSourceRequestCount: operations.state.sourceRequestCount,
+    startupOrder: critical.state.startupOrder,
+    criticalPaintBarrier: critical.state.criticalPaintBarrier,
+    groupLoadSequence: operations.state.groupLoadSequence,
+    informationTransitions,
+    operationsTransitions,
+    duplicateNetworkRequestCount: operations.state.duplicateNetworkRequestCount
   };
 }
 
@@ -372,6 +437,19 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
     });
     await loaded;
     result = await waitForRegression(client, timeoutMs);
+    const sectionModules = await client.send("Runtime.evaluate", {
+      expression: "window.__financeTerminalSectionModules || null",
+      returnByValue: true
+    });
+    result.sectionModules = sectionModules.result.value;
+    if (JSON.stringify(result.sectionModules?.requested?.slice().sort())
+        !== JSON.stringify(["information", "operations", "research", "risk"])
+      || result.sectionModules?.states?.risk !== "ready"
+      || result.sectionModules?.states?.research !== "ready"
+      || result.sectionModules?.states?.information !== "ready"
+      || result.sectionModules?.states?.operations !== "ready") {
+      throw new Error(`${width}px按需区块模块证据无效：${JSON.stringify(result.sectionModules)}`);
+    }
     result.providerScriptTransport = scriptTransport.snapshot();
   } finally {
     scriptTransport.stop();
@@ -462,7 +540,7 @@ async function main() {
     await client.open();
     await Promise.all([client.send("Page.enable"), client.send("Runtime.enable"), client.send("Network.enable")]);
     const deferredProbe = await validateDeferredLoading(client, baseUrl, timeoutMs);
-    console.log(`Deferred section loading: PASS · sources ${deferredProbe.criticalSourceRequestCount} → ${deferredProbe.informationSourceRequestCount}`);
+    console.log(`Deferred section loading: PASS · sources ${deferredProbe.criticalSourceRequestCount} → ${deferredProbe.informationSourceRequestCount} → ${deferredProbe.operationsSourceRequestCount} · groups ${deferredProbe.groupLoadSequence.join(" → ")} · duplicates ${deferredProbe.duplicateNetworkRequestCount}`);
     const results = [];
     for (const width of WIDTHS) results.push(await runWidth(client, baseUrl, artifacts, width, options.height, timeoutMs));
     const evidence = buildBrowserEvidence(results);

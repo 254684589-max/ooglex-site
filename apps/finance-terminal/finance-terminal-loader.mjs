@@ -48,6 +48,32 @@ function errorMessage(error) {
   return error && typeof error.message === "string" ? error.message : String(error || "请求失败");
 }
 
+export function waitForCriticalPaint(win, yieldImpl) {
+  if (typeof yieldImpl === "function") {
+    return Promise.resolve().then(() => yieldImpl()).then(() => ({
+      status: "yielded",
+      strategy: "injected",
+      frameCount: null
+    }));
+  }
+  if (!win || typeof win.requestAnimationFrame !== "function") {
+    return Promise.resolve({
+      status: "yielded",
+      strategy: "animation-frame-unavailable",
+      frameCount: 0
+    });
+  }
+  return new Promise((resolve) => {
+    win.requestAnimationFrame(() => {
+      win.requestAnimationFrame(() => resolve({
+        status: "yielded",
+        strategy: "double-animation-frame",
+        frameCount: 2
+      }));
+    });
+  });
+}
+
 export function createResourceLoader(options = {}) {
   const fetchImpl = options.fetchImpl || globalThis.fetch;
   if (typeof fetchImpl !== "function") throw new Error("当前环境不支持静态数据请求");
@@ -56,20 +82,31 @@ export function createResourceLoader(options = {}) {
   const groups = options.groups || RESOURCE_GROUPS;
   const requests = new Map();
   const requestedKeys = [];
+  let networkRequestCount = 0;
+  const requestStates = new Map();
+  const groupLoadSequence = [];
 
-  function fetchJson(path) {
+  function fetchJson(path, key) {
+    networkRequestCount += 1;
+    requestStates.set(key, "pending");
     return fetchImpl(resourceUrl(path, cacheKey), { cache: "no-store" }).then((response) => {
       if (!response || response.ok !== true) {
         throw new Error(`HTTP ${response && Number.isInteger(response.status) ? response.status : "ERROR"}`);
       }
       return response.json();
+    }).then((data) => {
+      requestStates.set(key, "ready");
+      return data;
+    }).catch((error) => {
+      requestStates.set(key, "error");
+      throw error;
     });
   }
 
   function loadConfig() {
     if (!requests.has("$config")) {
       requestedKeys.push("$config");
-      requests.set("$config", fetchJson("data.json"));
+      requests.set("$config", fetchJson("data.json", "$config"));
     }
     return requests.get("$config");
   }
@@ -80,7 +117,7 @@ export function createResourceLoader(options = {}) {
     }
     if (!requests.has(key)) {
       requestedKeys.push(key);
-      requests.set(key, fetchJson(paths[key]).then(
+      requests.set(key, fetchJson(paths[key], key).then(
         (data) => ({ data, error: null }),
         (error) => ({ data: null, error: new Error(errorMessage(error)) })
       ));
@@ -91,6 +128,7 @@ export function createResourceLoader(options = {}) {
   function loadGroup(name) {
     const keys = groups[name];
     if (!Array.isArray(keys)) return Promise.reject(new Error(`未知金融终端分区：${name}`));
+    groupLoadSequence.push(name);
     return Promise.all(keys.map((key) => loadSource(key))).then((values) => {
       return keys.reduce((result, key, index) => {
         result[key] = values[index];
@@ -103,7 +141,11 @@ export function createResourceLoader(options = {}) {
     return {
       requestedKeys: requestedKeys.slice(),
       requestCount: requestedKeys.length,
-      sourceRequestCount: requestedKeys.filter((key) => key !== "$config").length
+      sourceRequestCount: requestedKeys.filter((key) => key !== "$config").length,
+      networkRequestCount,
+      requestStates: Object.fromEntries(requestStates),
+      duplicateNetworkRequestCount: Math.max(0, networkRequestCount - requestedKeys.length),
+      groupLoadSequence: groupLoadSequence.slice()
     };
   }
 
@@ -122,23 +164,44 @@ export function createDeferredSectionScheduler(options = {}) {
   const rootMargin = options.rootMargin || "480px 0px";
   const inFlight = new Map();
   const loaded = new Set();
+  const failed = new Set();
+  const settled = new Set();
   let observer = null;
   const navigationListeners = [];
   let resolveAll;
   let rejectAll;
+  let resolveSettled;
+  let firstError = null;
   const allLoaded = new Promise((resolve, reject) => {
     resolveAll = resolve;
     rejectAll = reject;
   });
+  const allSettled = new Promise((resolve) => {
+    resolveSettled = resolve;
+  });
 
   function notify(name, state) {
     if (typeof options.onStateChange === "function") {
-      options.onStateChange({ name, state, loaded: Array.from(loaded) });
+      options.onStateChange({
+        name,
+        state,
+        loaded: Array.from(loaded),
+        failed: Array.from(failed),
+        settled: Array.from(settled)
+      });
     }
   }
 
   function maybeComplete() {
-    if (loaded.size === names.length) resolveAll(Array.from(loaded));
+    if (settled.size !== names.length) return;
+    const summary = {
+      loaded: Array.from(loaded),
+      failed: Array.from(failed),
+      settled: Array.from(settled)
+    };
+    resolveSettled(summary);
+    if (failed.size) rejectAll(firstError || new Error("延迟加载分区失败"));
+    else resolveAll(summary.loaded);
   }
 
   function load(name) {
@@ -149,12 +212,16 @@ export function createDeferredSectionScheduler(options = {}) {
     notify(name, "loading");
     const task = Promise.resolve().then(() => handlers[name]()).then((value) => {
       loaded.add(name);
+      settled.add(name);
       notify(name, "ready");
       maybeComplete();
       return value;
     }).catch((error) => {
+      failed.add(name);
+      settled.add(name);
+      if (!firstError) firstError = error;
       notify(name, "error");
-      rejectAll(error);
+      maybeComplete();
       throw error;
     });
     inFlight.set(name, task);
@@ -164,11 +231,12 @@ export function createDeferredSectionScheduler(options = {}) {
   function start() {
     if (names.length === 0) {
       resolveAll([]);
-      return { mode: "empty", allLoaded };
+      resolveSettled({ loaded: [], failed: [], settled: [] });
+      return { mode: "empty", allLoaded, allSettled };
     }
     if (eager || typeof Observer !== "function") {
       Promise.all(names.map((name) => load(name))).catch(() => {});
-      return { mode: "eager", allLoaded };
+      return { mode: "eager", allLoaded, allSettled };
     }
     observer = new Observer((entries) => {
       entries.forEach((entry) => {
@@ -192,7 +260,7 @@ export function createDeferredSectionScheduler(options = {}) {
       link.addEventListener("click", listener, { passive: true });
       navigationListeners.push([link, listener]);
     });
-    return { mode: "deferred", allLoaded };
+    return { mode: "deferred", allLoaded, allSettled };
   }
 
   function disconnect() {
@@ -200,7 +268,16 @@ export function createDeferredSectionScheduler(options = {}) {
     navigationListeners.forEach(([link, listener]) => link.removeEventListener("click", listener));
   }
 
-  return { start, load, allLoaded, disconnect, loadedSections: () => Array.from(loaded) };
+  return {
+    start,
+    load,
+    allLoaded,
+    allSettled,
+    disconnect,
+    loadedSections: () => Array.from(loaded),
+    failedSections: () => Array.from(failed),
+    settledSections: () => Array.from(settled)
+  };
 }
 
 export async function startFinanceTerminal(options = {}) {
@@ -220,28 +297,33 @@ export async function startFinanceTerminal(options = {}) {
   root.setAttribute("data-critical-data-state", "ready");
   const criticalSnapshot = loader.snapshot();
   const loadState = {
+    ...criticalSnapshot,
     mode: eager ? "eager" : "deferred",
     criticalSourceRequestCount: criticalSnapshot.sourceRequestCount,
     requestedKeysAfterCritical: criticalSnapshot.requestedKeys,
-    requestedKeys: criticalSnapshot.requestedKeys,
-    sourceRequestCount: criticalSnapshot.sourceRequestCount,
-    loadedSections: []
+    loadedSections: [],
+    failedSections: [],
+    settledSections: [],
+    sectionTransitions: [],
+    criticalPaintBarrier: { status: "pending", strategy: null, frameCount: null },
+    startupOrder: ["critical-rendered"]
   };
   win.__financeTerminalLoadState = loadState;
 
-  function updateLoadSnapshot(loadedSections) {
-    const snapshot = loader.snapshot();
-    loadState.requestedKeys = snapshot.requestedKeys;
-    loadState.sourceRequestCount = snapshot.sourceRequestCount;
+  function updateLoadSnapshot(loadedSections, failedSections = [], settledSections = []) {
+    Object.assign(loadState, loader.snapshot());
     loadState.loadedSections = loadedSections.slice();
+    loadState.failedSections = failedSections.slice();
+    loadState.settledSections = settledSections.slice();
   }
 
   const handlers = Object.keys(options.sections).reduce((result, name) => {
     result[name] = () => loader.loadGroup(name).then((group) => {
-      const value = options.buildSection(name, group);
-      const key = options.experienceKeys[name] || name;
-      experience[key] = value;
-      options.renderSection(name, value);
+      return Promise.resolve(options.buildSection(name, group)).then((value) => {
+        const key = options.experienceKeys[name] || name;
+        experience[key] = value;
+        return options.renderSection(name, value);
+      });
     }).catch((error) => {
       if (typeof options.renderSectionError === "function") options.renderSectionError(name, error);
       throw error;
@@ -255,23 +337,29 @@ export async function startFinanceTerminal(options = {}) {
     navigationLinks: options.navigationLinks,
     rootMargin: options.rootMargin,
     onStateChange(state) {
-      if (state.state === "loading") root.setAttribute("data-deferred-data-state", "loading");
-      if (state.state === "error") root.setAttribute("data-deferred-data-state", "error");
-      if (state.state === "ready") {
-        root.setAttribute("data-loaded-sections", state.loaded.join(" "));
-        root.setAttribute("data-deferred-data-state", state.loaded.length === 4 ? "ready" : "partial");
-      }
-      updateLoadSnapshot(state.loaded);
+      loadState.sectionTransitions.push({ name: state.name, state: state.state });
+      const complete = state.settled.length === Object.keys(options.sections).length;
+      root.setAttribute("data-loaded-sections", state.loaded.join(" "));
+      root.setAttribute("data-failed-sections", state.failed.join(" "));
+      root.setAttribute("data-deferred-data-state", complete
+        ? (state.failed.length ? "partial" : "ready")
+        : (state.failed.length ? "partial" : "loading"));
+      updateLoadSnapshot(state.loaded, state.failed, state.settled);
     }
   });
-  scheduler.start();
   const providerReady = Promise.resolve(options.monitorProvider(experience.marketLicense));
-  scheduler.allLoaded.then(() => {
+  loadState.criticalPaintBarrier = await waitForCriticalPaint(win, options.yieldAfterCritical);
+  loadState.startupOrder.push("critical-paint-yielded");
+  loadState.requestedKeysAtSchedulerStart = loader.snapshot().requestedKeys;
+  loadState.startupOrder.push("deferred-scheduler-started");
+  scheduler.start();
+  scheduler.allLoaded.catch(() => {
+    // allSettled below records partial completion without hiding successful sections.
+  });
+  scheduler.allSettled.then((summary) => {
     if (typeof options.announceComplete === "function") options.announceComplete(experience);
-    updateLoadSnapshot(scheduler.loadedSections());
-    root.setAttribute("data-deferred-data-state", "ready");
-  }).catch(() => {
-    // Each failed section exposes its own visible and machine-readable state.
+    updateLoadSnapshot(summary.loaded, summary.failed, summary.settled);
+    root.setAttribute("data-deferred-data-state", summary.failed.length ? "partial" : "ready");
   });
   if (eager) {
     await Promise.all([providerReady, scheduler.allLoaded]);

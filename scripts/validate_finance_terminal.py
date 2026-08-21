@@ -32,6 +32,10 @@ PAGE = ROOT / "apps" / "finance-terminal" / "index.html"
 APP = ROOT / "apps" / "finance-terminal" / "app.js"
 LOADER = ROOT / "apps" / "finance-terminal" / "finance-terminal-loader.mjs"
 REGRESSION_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-regression.mjs"
+RISK_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-view.mjs"
+RESEARCH_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-research-view.mjs"
+INFORMATION_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-information-view.mjs"
+OPERATIONS_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-operations-view.mjs"
 TERMS_PAGE = ROOT / "apps" / "finance-terminal" / "terms.html"
 PRIVACY_PAGE = ROOT / "apps" / "finance-terminal" / "privacy.html"
 LEGAL_CSS = ROOT / "apps" / "finance-terminal" / "legal.css"
@@ -2480,6 +2484,12 @@ def main() -> None:
     app = APP.read_text(encoding="utf-8")
     loader = LOADER.read_text(encoding="utf-8")
     regression_module = REGRESSION_MODULE.read_text(encoding="utf-8")
+    risk_view_module = RISK_VIEW_MODULE.read_text(encoding="utf-8")
+    research_view_module = RESEARCH_VIEW_MODULE.read_text(encoding="utf-8")
+    information_view_module = INFORMATION_VIEW_MODULE.read_text(encoding="utf-8")
+    operations_view_module = OPERATIONS_VIEW_MODULE.read_text(encoding="utf-8")
+    terminal_views = (app + "\n" + risk_view_module + "\n" + research_view_module
+                      + "\n" + information_view_module + "\n" + operations_view_module)
     compact_loader = re.sub(r"\s+", "", loader)
     require(APP.stat().st_size <= 220_000, "金融终端生产入口脚本超过220KB性能预算")
     require(LOADER.stat().st_size <= 14_000, "金融终端分区加载模块超过14KB性能预算")
@@ -2487,6 +2497,30 @@ def main() -> None:
             "金融终端常规加载JavaScript超过230KB性能预算")
     require(REGRESSION_MODULE.stat().st_size <= 15_000,
             "仅回归模式加载的浏览器探针超过15KB性能预算")
+    require(RISK_VIEW_MODULE.stat().st_size <= 6_000,
+            "按需加载的市场状态视图超过6KB性能预算")
+    require('import("./finance-terminal-risk-view.mjs")' in app
+            and "createRiskView" in risk_view_module
+            and "finance-terminal-risk-view.mjs" not in page,
+            "市场状态视图必须保持按需导入且不得在首屏预加载")
+    require(RESEARCH_VIEW_MODULE.stat().st_size <= 14_000,
+            "按需加载的市场研究视图超过14KB性能预算")
+    require('import("./finance-terminal-research-view.mjs")' in app
+            and "createResearchView" in research_view_module
+            and "finance-terminal-research-view.mjs" not in page,
+            "市场研究视图必须保持按需导入且不得在首屏预加载")
+    require(INFORMATION_VIEW_MODULE.stat().st_size <= 10_000,
+            "按需加载的事件资讯视图超过10KB性能预算")
+    require('import("./finance-terminal-information-view.mjs")' in app
+            and "createInformationView" in information_view_module
+            and "finance-terminal-information-view.mjs" not in page,
+            "事件资讯视图必须保持按需导入且不得在首屏预加载")
+    require(OPERATIONS_VIEW_MODULE.stat().st_size <= 9_000,
+            "按需加载的稳定V1运行证据视图超过9KB性能预算")
+    require('import("./finance-terminal-operations-view.mjs")' in app
+            and "createOperationsView" in operations_view_module
+            and "finance-terminal-operations-view.mjs" not in page,
+            "稳定V1运行证据视图必须保持按需导入且不得在首屏预加载")
     terms_page = TERMS_PAGE.read_text(encoding="utf-8")
     privacy_page = PRIVACY_PAGE.read_text(encoding="utf-8")
     legal_css = LEGAL_CSS.read_text(encoding="utf-8")
@@ -2594,7 +2628,9 @@ def main() -> None:
             "分区加载器缺少共享请求缓存、视口观察或导航触发契约")
     require('loader.loadGroup("critical")' in loader and "data-critical-data-state" in loader
             and "data-deferred-data-state" in loader and "criticalSourceRequestCount" in loader
-            and "stagedDataLoading" in regression_module,
+            and "criticalPaintBarrier" in loader and "requestedKeysAtSchedulerStart" in loader
+            and "networkRequestCount" in loader and "duplicateNetworkRequestCount" in loader
+            and "sectionTransitions" in loader and "stagedDataLoading" in regression_module,
             "页面未区分首屏与延迟分区加载状态")
     compact_page = re.sub(r"\s+", "", page)
     require(contrast_ratio(css_hex_variable(page, "faint"), css_hex_variable(page, "panel")) >= 4.5,
@@ -2709,10 +2745,11 @@ def main() -> None:
     require("adaptSourceHealth" in app and "safeSourceHealth" in app and "appendSourceHealth" in app,
             "app.js未校验或展示来源健康状态")
     require("adaptMacroSourceHealth" in app and "buildOperationsCards" in app
-            and "renderOperationsCards" in app and "makeOperationCard" in app,
+            and "renderOperationsCards" in app and "makeOperationCard" in operations_view_module,
             "app.js未校验或渲染四管道Beta运行状态")
     require('readiness:"readiness.json"' in compact_loader and "adaptReadinessSnapshot" in app
-            and "operation-readiness" in app and "STABLE V1 EVIDENCE" in app,
+            and "operation-readiness" in operations_view_module
+            and "STABLE V1 EVIDENCE" in operations_view_module,
             "金融终端未读取、校验或渲染稳定V1连续周期证据")
     require('marketLicense:"market-source-readiness.json"' in compact_loader
             and "adaptMarketLicenseReadiness" in app
@@ -2720,10 +2757,12 @@ def main() -> None:
             "金融终端未读取、校验或渲染免费代理行情状态")
     require("稳定V1运行证据" in page and "同一日更周期重跑不会重复累计" in page,
             "页面未区分健康快照与稳定V1周期门禁")
-    require("可用覆盖" in app and "本轮新鲜" in app and "已验证覆盖" in app
-            and "失败回退" in app, "运行状态卡片缺少覆盖率、时效或回退说明")
-    require("pipeline-health" in page and "本轮行情" in app and "连续失败" in app
-            and "最近尝试" in app and "最后成功" in app and "健康报告已超过" in app,
+    require("可用覆盖" in operations_view_module and "本轮新鲜" in operations_view_module
+            and "已验证覆盖" in operations_view_module and "失败回退" in operations_view_module,
+            "运行状态卡片缺少覆盖率、时效或回退说明")
+    require("pipeline-health" in page and "本轮行情" in app and "连续失败" in operations_view_module
+            and "最近尝试" in operations_view_module and "最后成功" in operations_view_module
+            and "健康报告已超过" in app,
             "页面缺少管道状态、本轮覆盖、尝试时间、过期提示或最后成功信息")
     require("adaptCrossAsset" in app and "rankCrossAssetPeriod" in app and "buildResearchCards" in app, "app.js未实现跨资产适配和排行")
     require("asset.stale" in app and "asset.suspect" in app and "paused" in app, "跨资产排行未排除异常行或暂停过期今日排行")
@@ -2735,14 +2774,14 @@ def main() -> None:
             "页面缺少行情、回退、估算与待确认覆盖信息")
     require('assetRanking:"../asset-ranking/data.json"' in compact_loader
             and "ASSET_RANKING_MAX_AGE_HOURS" in app, "金融终端未读取现有全球资产市值数据")
-    require("adaptAssetRanking" in app and "formatMarketCapBillions" in app
-            and "asset.dataLabel" in app and "summarizeRowQuality(rowMetas, data.dataQuality)" in app,
+    require("adaptAssetRanking" in app and "formatMarketCapBillions" in terminal_views
+            and "asset.dataLabel" in terminal_views and "summarizeRowQuality(rowMetas, data.dataQuality)" in app,
             "app.js未实现全球资产市值逐条来源适配或口径标签")
     require('companies:"../companies/data.json"' in compact_loader
             and "COMPANIES_MAX_AGE_HOURS" in app, "金融终端未读取现有公司榜数据")
     require("adaptCompanies" in app and "company.private" in app and "freshnessKnown" in app, "app.js未实现上市公司筛选或逐项新鲜度状态")
     require("gainer" in app and "laggard" in app and "listedMarketCap" in app, "app.js未生成公司领涨、领跌和上市市值")
-    require("moverCoverage" in app and "暂停当日领涨与领跌" in app and "company.dataLabel" in app,
+    require("moverCoverage" in app and "暂停当日领涨与领跌" in app and "company.dataLabel" in terminal_views,
             "公司榜未按逐条状态暂停或恢复每日涨跌排行")
     require('calendar:"../econ-calendar/data.json"' in compact_loader
             and "ECON_CALENDAR_MAX_AGE_HOURS" in app, "金融终端未读取现有经济日历数据")
@@ -2750,20 +2789,21 @@ def main() -> None:
             "app.js未实现经济日历适配、校验或独立状态")
     require('news:"../whats-latest/data.json"' in compact_loader and "FINANCE_NEWS_MAX_AGE_HOURS" in app
             and "FINANCE_NEWS_ITEM_MAX_AGE_HOURS" in app, "app.js未读取现有财经新闻或缺少新鲜度规则")
-    require("adaptFinanceNews" in app and "isSafeGoogleNewsUrl" in app and "makeFinanceNewsCard" in app,
+    require("adaptFinanceNews" in app and "isSafeGoogleNewsUrl" in app
+            and "makeFinanceNewsCard" in terminal_views,
             "app.js未实现财经新闻适配、安全链接或渲染")
-    require('setAttribute("role", "listitem")' in app, "动态卡片缺少列表项语义")
-    require("card.tabIndex = 0" not in app and "article.tabIndex = 0" not in app,
+    require('setAttribute("role", "listitem")' in terminal_views, "动态卡片缺少列表项语义")
+    require("card.tabIndex = 0" not in terminal_views and "article.tabIndex = 0" not in terminal_views,
             "非交互卡片不得进入键盘Tab顺序")
     require("announceExperience" in app and "pageAnnouncer.textContent" in app,
             "页面未集中播报异步加载结果")
-    require('setAttribute("role", "tablist")' in app and 'setAttribute("role", "tab")' in app
-            and 'setAttribute("role", "tabpanel")' in app, "跨资产周期未使用标准标签页语义")
-    require("periodTabTargetIndex" in app and 'event.key' in app and 'nextButton.focus()' in app,
+    require('setAttribute("role", "tablist")' in terminal_views and 'setAttribute("role", "tab")' in terminal_views
+            and 'setAttribute("role", "tabpanel")' in terminal_views, "跨资产周期未使用标准标签页语义")
+    require("periodTabTargetIndex" in app and 'event.key' in terminal_views and 'nextButton.focus()' in terminal_views,
             "跨资产周期未支持方向键、Home和End键盘导航")
-    require('setAttribute("aria-selected"' in app and 'setAttribute("aria-controls"' in app,
+    require('setAttribute("aria-selected"' in terminal_views and 'setAttribute("aria-controls"' in terminal_views,
             "跨资产周期标签页状态或面板关联缺失")
-    require('setAttribute("aria-pressed"' not in app, "标签页不得混用aria-pressed按钮模式")
+    require('setAttribute("aria-pressed"' not in terminal_views, "标签页不得混用aria-pressed按钮模式")
     require('import("./finance-terminal-regression.mjs")' in app
             and "runBrowserRegressionProbe" in regression_module
             and "finance-terminal-regression-result" in regression_module
@@ -2851,6 +2891,11 @@ def main() -> None:
             and "validateDeferredLoading" in browser_validator
             and "criticalSourceRequestCount" in browser_validator
             and "informationSourceRequestCount" in browser_validator
+            and "operationsSourceRequestCount" in browser_validator
+            and "groupLoadSequence" in browser_validator
+            and "duplicateNetworkRequestCount" in browser_validator
+            and "informationTransitions" in browser_validator
+            and "operationsTransitions" in browser_validator
             and "finance-terminal-browser-evidence.json" in browser_validator
             and "buildBrowserEvidence" in browser_validator
             and "runtimeEvidence=1" in browser_validator,

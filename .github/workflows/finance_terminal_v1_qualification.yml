@@ -22,6 +22,7 @@ on:
       - 'apps/finance-terminal/app.js'
       - 'apps/finance-terminal/finance-terminal-loader.mjs'
       - 'apps/finance-terminal/finance-terminal-regression.mjs'
+      - 'apps/finance-terminal/finance-terminal-*-view.mjs'
       - 'apps/finance-terminal/index.html'
       - 'apps/finance-terminal/legal.css'
       - 'apps/finance-terminal/terms.html'
