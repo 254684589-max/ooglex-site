@@ -546,15 +546,6 @@
     white-space: nowrap;
   }
 
-  body[data-terminal-view="overview"] .risk-card::before {
-    position: absolute;
-    inset: 7px;
-    content: "";
-    border: 1px solid rgba(69, 212, 255, 0.08);
-    border-radius: 50%;
-    pointer-events: none;
-  }
-
   body[data-terminal-view="overview"] .signal-meter,
   body[data-terminal-view="overview"] .risk-note,
   body[data-terminal-view="overview"] .risk-card .pipeline-health,

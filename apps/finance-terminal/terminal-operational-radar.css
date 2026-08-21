@@ -132,6 +132,13 @@
   line-height: 1.4;
 }
 
+.risk-card[data-signal-id="ofr-fsi"] .risk-hud-raw {
+  background:
+    radial-gradient(circle at 50% 50%, #06131f 0 52%, transparent 53%),
+    repeating-conic-gradient(from -90deg, rgba(244, 182, 75, 0.72) 0 1deg, rgba(244, 182, 75, 0.08) 1deg 10deg);
+  box-shadow: 0 0 30px rgba(244, 182, 75, 0.08), inset 0 0 28px rgba(244, 182, 75, 0.05);
+}
+
 .risk-map-ocean { stroke: rgba(69, 212, 255, 0.12); stroke-width: 1; }
 
 .risk-map-texture {

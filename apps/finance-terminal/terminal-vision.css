@@ -397,6 +397,7 @@ body::after {
 
 .globe-texture-track image {
   opacity: 0.88;
+  clip-path: inset(0 0 14% 0);
   filter: saturate(1.22) brightness(0.72) contrast(1.48) hue-rotate(8deg);
 }
 
@@ -636,7 +637,7 @@ body::after {
 .risk-hud-percent {
   background:
     radial-gradient(circle at 50% 50%, #06131f 0 54%, transparent 55%),
-    conic-gradient(from -90deg, var(--vision-cyan) 0 var(--risk-hud-progress), rgba(69, 212, 255, 0.1) var(--risk-hud-progress) 360deg);
+    conic-gradient(from -90deg, var(--vision-cyan) 0 var(--risk-hud-progress), rgba(69, 212, 255, 0.18) var(--risk-hud-progress) 360deg);
 }
 
 .risk-hud-gauge::before,
