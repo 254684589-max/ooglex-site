@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-08-21T13:26:10Z",
+  "updatedAt": "2026-08-21T21:34:00Z",
   "asOf": "2026-08-21",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-16 ~ 2026-08-21",
-  "count": 99,
+  "count": 100,
   "highCount": 8,
   "events": [
     {
@@ -1120,6 +1120,18 @@
       "impact": "medium",
       "forecast": "51.8",
       "previous": "51.8",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-21T09:03:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "Foreign Direct Investment ytd/y",
+      "titleEn": "Foreign Direct Investment ytd/y",
+      "impact": "low",
+      "forecast": null,
+      "previous": "-5.0%",
       "actual": null
     },
     {
