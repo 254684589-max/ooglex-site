@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-08-21T11:10:08Z",
+  "updatedAt": "2026-08-21T13:19:48Z",
   "asOf": "2026-08-21",
-  "asOfSh": "2026-08-21 19:10",
+  "asOfSh": "2026-08-21 21:19",
   "live": true,
   "source": "FRED · EIA · Yahoo Finance · 交易所行情",
   "regime": {
@@ -15,10 +15,10 @@
       "key": "liquidity",
       "en": "LIQUIDITY",
       "zh": "流动性",
-      "score": 32,
+      "score": 31,
       "status": "stress",
       "statusZh": "承压",
-      "desc": "净流动性 5.79T，近 13 周 -116B（收缩）；SOFR−IORB -3bp（充裕）",
+      "desc": "净流动性 5.79T，近 13 周 -116B（收缩）；SOFR−IORB -2bp（充裕）",
       "spark": [
         5917.741,
         5958.882,
@@ -66,10 +66,10 @@
       "key": "volatility",
       "en": "VOLATILITY",
       "zh": "波动率",
-      "score": 80,
+      "score": 82,
       "status": "support",
       "statusZh": "支持",
-      "desc": "VIX 水平与期限结构",
+      "desc": "VIX 抬升，期限结构正向 (contango)",
       "spark": [
         21.15,
         25.5,
@@ -270,9 +270,9 @@
       "key": "growth",
       "en": "GROWTH",
       "zh": "增长动能",
-      "score": 60,
-      "status": "neutral",
-      "statusZh": "中性",
+      "score": 61,
+      "status": "support",
+      "statusZh": "支持",
       "desc": "增长动能综合：铜金比 · 半导体/大盘(SOX) · 周期/防御(XLY/XLP)",
       "spark": [
         11.8555,
@@ -321,10 +321,10 @@
       "key": "usd",
       "en": "USD / FX",
       "zh": "美元汇率",
-      "score": 72,
+      "score": 70,
       "status": "support",
       "statusZh": "支持",
-      "desc": "美元指数 98.7（走弱、流动性顺风）",
+      "desc": "美元指数 98.8（走弱、流动性顺风）",
       "spark": [
         99.05,
         98.99,
@@ -443,10 +443,10 @@
           "id": "DFF"
         },
         {
-          "val": "3.62%",
-          "chg": "-3bp",
-          "tone": "down",
-          "asOf": "2026-08-19",
+          "val": "3.63%",
+          "chg": "+1bp",
+          "tone": "up",
+          "asOf": "2026-08-20",
           "name": "SOFR 担保隔夜融资利率",
           "id": "SOFR"
         },
@@ -462,7 +462,7 @@
           "val": "3.75%",
           "chg": "+0bp",
           "tone": "flat",
-          "asOf": "2026-08-20",
+          "asOf": "2026-08-21",
           "name": "联邦基金目标上限",
           "id": "DFEDTARU"
         },
@@ -470,7 +470,7 @@
           "val": "3.50%",
           "chg": "+0bp",
           "tone": "flat",
-          "asOf": "2026-08-20",
+          "asOf": "2026-08-21",
           "name": "联邦基金目标下限",
           "id": "DFEDTARL"
         },
@@ -541,8 +541,8 @@
           "changeBps": -6,
           "asOf": "2026-08-19",
           "previousAsOf": "2026-08-18",
-          "updatedAt": "2026-08-21T11:10:08Z",
-          "lastAttemptAt": "2026-08-21T11:10:08Z",
+          "updatedAt": "2026-08-21T13:19:48Z",
+          "lastAttemptAt": "2026-08-21T13:19:48Z",
           "source": {
             "name": "FRED / Federal Reserve H.15",
             "url": "https://fred.stlouisfed.org/series/DGS10",
@@ -752,23 +752,23 @@
           "name": "铜/金 ×1000 (工业 vs 避险)",
           "id": "",
           "val": "1.42",
-          "chg": "-0.9%",
+          "chg": "-0.8%",
           "asOf": "2026-08-21",
           "tone": "down"
         },
         {
           "name": "金/银",
           "id": "",
-          "val": "66.8",
-          "chg": "+0.6%",
+          "val": "66.7",
+          "chg": "+0.5%",
           "asOf": "2026-08-21",
           "tone": "up"
         },
         {
           "name": "油/铜",
           "id": "",
-          "val": "13.22",
-          "chg": "-2.8%",
+          "val": "13.18",
+          "chg": "-3.1%",
           "asOf": "2026-08-21",
           "tone": "down"
         },
@@ -776,7 +776,7 @@
           "name": "油/金 ×100",
           "id": "",
           "val": "1.87",
-          "chg": "-3.6%",
+          "chg": "-3.8%",
           "asOf": "2026-08-21",
           "tone": "down"
         }
@@ -790,9 +790,9 @@
         {
           "name": "SOFR − IORB",
           "id": "SOFR−IORB",
-          "val": "-3bp",
-          "chg": "-3bp",
-          "asOf": "2026-08-19",
+          "val": "-2bp",
+          "chg": "+1bp",
+          "asOf": "2026-08-20",
           "tone": "down"
         },
         {
@@ -821,8 +821,8 @@
         {
           "name": "VIX",
           "id": "VIX",
-          "val": "15.67",
-          "chg": "-2.1%",
+          "val": "15.42",
+          "chg": "-3.7%",
           "asOf": "2026-08-21",
           "tone": "down"
         },
@@ -858,8 +858,8 @@
       "changePct": -0.23660735261543664,
       "asOf": "2026-08-14",
       "previousAsOf": "2026-08-13",
-      "updatedAt": "2026-08-21T11:10:08Z",
-      "lastAttemptAt": "2026-08-21T11:10:08Z",
+      "updatedAt": "2026-08-21T13:19:48Z",
+      "lastAttemptAt": "2026-08-21T13:19:48Z",
       "source": {
         "name": "FRED / Federal Reserve H.10",
         "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
@@ -913,8 +913,8 @@
       "changePct": 0.5113900511390046,
       "asOf": "2026-08-18",
       "previousAsOf": "2026-08-17",
-      "updatedAt": "2026-08-21T11:10:08Z",
-      "lastAttemptAt": "2026-08-21T11:10:08Z",
+      "updatedAt": "2026-08-21T13:19:48Z",
+      "lastAttemptAt": "2026-08-21T13:19:48Z",
       "source": {
         "name": "U.S. EIA / Cushing WTI Spot",
         "url": "https://www.eia.gov/dnav/pet/hist/rwtcd.htm",
