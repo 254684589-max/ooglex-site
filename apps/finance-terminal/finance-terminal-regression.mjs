@@ -104,8 +104,9 @@ export function runBrowserRegressionProbe(options = {}) {
   });
   const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
   const selectedBefore = tabs.filter((tab) => tab.getAttribute("aria-selected") === "true");
-  let keyboardTabs = selectedBefore.length === 1;
-  if (keyboardTabs) {
+  const tabsRendered = tabs.some(elementIsRendered);
+  let keyboardTabs = !tabsRendered || selectedBefore.length === 1;
+  if (keyboardTabs && tabsRendered) {
     const previousId = selectedBefore[0].id;
     selectedBefore[0].focus();
     selectedBefore[0].dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));

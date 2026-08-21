@@ -724,7 +724,7 @@
   }
 
   body[data-terminal-view="overview"] .information-footer .detail-link {
-    min-height: 18px;
+    min-height: 24px;
   }
 
   body[data-terminal-view]:not([data-terminal-view="overview"]) #main-content > section,

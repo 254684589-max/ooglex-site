@@ -32,7 +32,7 @@ const MIME = {
 };
 
 function parseArgs(argv) {
-  const options = { browser: null, artifactsDir: null, height: 1400, timeout: 40 };
+  const options = { browser: null, artifactsDir: null, height: 925, timeout: 40 };
   for (let index = 0; index < argv.length; index += 1) {
     const key = argv[index];
     if (key === "--help" || key === "-h") {
