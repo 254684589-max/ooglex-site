@@ -736,12 +736,12 @@
     display: none;
   }
 
-  body[data-terminal-view="market"] #market-section,
-  body[data-terminal-view="risk"] #risk-section,
-  body[data-terminal-view="research"] #research-section,
-  body[data-terminal-view="information"] #information-section,
-  body[data-terminal-view="operations"] #operations-section,
-  body[data-terminal-view="method"] #method-section {
+  body[data-terminal-view="market"] #main-content > #market-section,
+  body[data-terminal-view="risk"] #main-content > #risk-section,
+  body[data-terminal-view="research"] #main-content > #research-section,
+  body[data-terminal-view="information"] #main-content > #information-section,
+  body[data-terminal-view="operations"] #main-content > #operations-section,
+  body[data-terminal-view="method"] #main-content > #method-section {
     display: block;
   }
 
