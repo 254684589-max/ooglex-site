@@ -50,7 +50,7 @@ export function runBrowserRegressionProbe(options = {}) {
     ? { market: 1, risk: 1, research: 1, information: 1, operations: 1 }
     : width <= 1040
       ? { market: 2, risk: 2, research: 2, information: 1, operations: 2 }
-      : { market: 4, risk: 3, research: 3, information: 2, operations: 4 };
+      : { market: 4, risk: 3, research: 3, information: 1, operations: 4 };
   const cards = Array.from(document.querySelectorAll(
     ".asset-card, .risk-card, .research-card, .information-card, .operation-card"
   ));
@@ -59,7 +59,7 @@ export function runBrowserRegressionProbe(options = {}) {
   )).filter(elementIsRendered);
   const targetMinimum = width <= 620 ? 44 : 24;
   const targetElements = Array.from(document.querySelectorAll(
-    ".brand, .back-link, .section-nav a, .method summary, .period-tab, .source-link, .detail-link, .news-link, .operation-action, .operation-readiness-link, .legal-links a"
+    ".brand, .back-link, .terminal-rail a, .stable-v1-chip, .section-nav a, .method summary, .period-tab, .source-link, .detail-link, .news-link, .operation-action, .operation-readiness-link, .legal-links a"
   )).filter(elementIsRendered);
   const sectionLinks = Array.from(document.querySelectorAll(".section-nav a"));
   const supportingHealthPanels = Array.from(document.querySelectorAll(
@@ -70,6 +70,21 @@ export function runBrowserRegressionProbe(options = {}) {
   const providerWidgets = Array.from(document.querySelectorAll("#market-grid tv-mini-chart"));
   const providerWidgetShells = Array.from(document.querySelectorAll("#market-grid .provider-widget-shell"));
   const readinessEvidencePanels = Array.from(document.querySelectorAll("#operations-grid .operation-readiness"));
+  const marketTapeItems = Array.from(document.querySelectorAll("#market-tape .market-tape-item"));
+  const marketClocks = Array.from(document.querySelectorAll("[data-market-time]"));
+  const riskHudGauges = Array.from(document.querySelectorAll("#risk-grid .risk-hud-gauge"));
+  const globalRiskMap = document.getElementById("global-risk-map");
+  const riskRegionRows = Array.from(document.querySelectorAll("#risk-region-list .risk-region-row"));
+  const pipelineCommand = document.getElementById("pipeline-command");
+  const stableV1Ring = document.getElementById("stable-v1-ring");
+  const stableV1Chip = document.getElementById("stable-v1-chip");
+  const readinessCycleValues = readinessEvidencePanels.map((panel) => {
+    const progress = panel.querySelector('[role="progressbar"]');
+    return progress ? Number(progress.getAttribute("aria-valuenow")) : null;
+  });
+  const minimumReadinessCycle = readinessCycleValues.length === 4
+    && readinessCycleValues.every((value) => Number.isInteger(value) && value >= 0 && value <= 7)
+    ? Math.min(...readinessCycleValues) : null;
   const poweredByCoinGeckoLinks = Array.from(document.querySelectorAll(".asset-source a.source-link"))
     .filter((link) => link.textContent.trim() === "Powered by CoinGecko");
   const coinGeckoAttributions = Array.from(document.querySelectorAll(".coingecko-attribution"));
@@ -89,8 +104,9 @@ export function runBrowserRegressionProbe(options = {}) {
   });
   const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
   const selectedBefore = tabs.filter((tab) => tab.getAttribute("aria-selected") === "true");
-  let keyboardTabs = selectedBefore.length === 1;
-  if (keyboardTabs) {
+  const tabsRendered = tabs.some(elementIsRendered);
+  let keyboardTabs = !tabsRendered || selectedBefore.length === 1;
+  if (keyboardTabs && tabsRendered) {
     const previousId = selectedBefore[0].id;
     selectedBefore[0].focus();
     selectedBefore[0].dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
@@ -172,6 +188,25 @@ export function runBrowserRegressionProbe(options = {}) {
           && panel.textContent.indexOf("UNKNOWN") === -1
           && Number.isInteger(value) && value >= 0 && value <= 7;
       }),
+    orbitalTerminalVisuals: marketTapeItems.length === 8
+      && marketTapeItems.every((item) => item.textContent.trim().length > 4)
+      && marketTapeItems.filter((item) => item.textContent.includes("组件报价")).length === 4
+      && marketClocks.length === 4
+      && marketClocks.every((clock) => /^\d{2}:\d{2}$/.test(clock.textContent.trim()))
+      && Boolean(document.querySelector(".market-orbit-svg .globe-sphere")),
+    riskHudVisuals: riskHudGauges.length === 3
+      && riskHudGauges.filter((gauge) => gauge.getAttribute("role") === "progressbar").length === 2
+      && riskHudGauges.filter((gauge) => gauge.classList.contains("risk-hud-raw")).length === 1,
+    globalRiskHeatmap: globalRiskMap && globalRiskMap.getAttribute("aria-busy") === "false"
+      && !globalRiskMap.classList.contains("status-loading")
+      && riskRegionRows.length === 7
+      && riskRegionRows.every((row) => row.querySelector("strong")?.textContent.trim() !== "—")
+      && globalRiskMap.textContent.includes("压力代理")
+      && globalRiskMap.textContent.includes("Yahoo Finance"),
+    stableV1Hud: pipelineCommand && pipelineCommand.getAttribute("aria-busy") === "false"
+      && stableV1Ring && Number(stableV1Ring.getAttribute("aria-valuenow")) === minimumReadinessCycle
+      && stableV1Chip && stableV1Chip.textContent.includes(`${minimumReadinessCycle} / 7`)
+      && document.querySelectorAll("#pipeline-nodes [data-pipeline-node]").length === 4,
     cardCounts: document.querySelectorAll(".asset-card").length === 8
       && document.querySelectorAll(".risk-card").length === 3
       && document.querySelectorAll(".research-card").length === 3
@@ -212,6 +247,15 @@ export function runBrowserRegressionProbe(options = {}) {
     })()
   };
   const failures = Object.keys(checks).filter((name) => !checks[name]);
+  const overflowCandidates = Array.from(document.querySelectorAll("body *")).map((element) => {
+    const rect = element.getBoundingClientRect();
+    return {
+      selector: element.id ? `#${element.id}` : `.${String(element.className).trim().split(/\s+/).filter(Boolean).join(".")}`,
+      left: Math.round(rect.left),
+      right: Math.round(rect.right),
+      width: Math.round(rect.width)
+    };
+  }).filter((item) => item.left < -1 || item.right > width + 1).slice(0, 20);
   const result = {
     status: failures.length ? "fail" : "pass",
     requestedWidth: Number(params.get("width")) || null,
@@ -238,6 +282,7 @@ export function runBrowserRegressionProbe(options = {}) {
     readinessEvidencePanelCount: readinessEvidencePanels.length,
     stagedDataLoading: stagedLoad,
     undersizedTargets,
+    overflowCandidates,
     layout: {
       market: renderedGridColumns(grid),
       risk: renderedGridColumns(riskGrid),

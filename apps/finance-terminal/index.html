@@ -1167,20 +1167,38 @@
       .asset-card::after, .risk-card::after, .research-card::after, .information-card::after, .operation-card::after { background: CanvasText; }
     }
   </style>
+  <link rel="stylesheet" href="terminal-vision.css">
+  <link rel="stylesheet" href="terminal-command-center.css">
 </head>
-<body>
+<body data-terminal-view="overview">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
   <div class="shell">
+    <aside class="terminal-rail" aria-label="终端快捷导航">
+      <a href="#overview-section" aria-label="全球市场总览"><span aria-hidden="true">01</span><b>总览</b></a>
+      <a href="#market-section" aria-label="核心资产"><span aria-hidden="true">02</span><b>资产</b></a>
+      <a href="#risk-section" aria-label="市场状态"><span aria-hidden="true">03</span><b>风险</b></a>
+      <a href="#research-section" aria-label="全球风险热力图与市场研究"><span aria-hidden="true">04</span><b>地图</b></a>
+      <a href="#information-section" aria-label="事件与资讯"><span aria-hidden="true">05</span><b>资讯</b></a>
+      <a href="#operations-section" aria-label="稳定V1运行证据"><span aria-hidden="true">06</span><b>管线</b></a>
+    </aside>
     <header class="terminal-bar">
       <a class="brand" href="../../" aria-label="返回Ooglex首页">
         <span class="brand-mark" aria-hidden="true">OX</span>
-        <span>OOGLEX</span>
+        <span>OOGLEX FINANCE TERMINAL</span>
       </a>
-      <span class="desk-code">FT / MARKET OVERVIEW</span>
+      <span class="public-beta-chip">PUBLIC BETA</span>
       <span class="bar-spacer"></span>
       <span class="market-state" id="market-state">正在校验</span>
+      <span class="stable-v1-chip status-loading" id="stable-v1-chip" aria-label="稳定V1资格正在加载">STABLE V1 · — / 7</span>
       <a class="back-link" href="../../">返回主页</a>
     </header>
+
+    <div class="market-tape" role="region" aria-label="核心资产行情带">
+      <span class="market-tape-label">MARKET TAPE</span>
+      <div class="market-tape-track" id="market-tape" aria-live="off">
+        <span class="market-tape-loading">正在读取8项核心资产状态</span>
+      </div>
+    </div>
 
     <p class="sr-only" id="page-announcer" role="status" aria-live="polite" aria-atomic="true">正在加载金融终端数据</p>
 
@@ -1206,18 +1224,78 @@
     </nav>
 
     <main id="main-content" tabindex="-1">
-      <section class="hero" id="overview-section" aria-labelledby="page-title">
-        <div>
-          <p class="eyebrow">Ooglex Finance Terminal · BETA PREVIEW</p>
-          <h1 id="page-title">全球市场总览</h1>
-          <p class="hero-copy">用一张清晰的市场面板观察美国股指、利率、美元、黄金、原油与比特币，并通过站内宏观雷达读取当前市场状态。美国10年期国债收益率、美联储广义美元指数、库欣WTI原油现货与BTC/USD读取站内每日数据；三大指数与黄金改用SPY、QQQ、DIA、GLD免费ETF代理并在卡片中明确披露。</p>
-        </div>
-        <div class="meta-grid" aria-label="数据说明">
-          <div class="meta-item"><span class="meta-key">Data status</span><span class="meta-value partial" id="data-status">正在校验4项真实数据</span></div>
-          <div class="meta-item"><span class="meta-key">Updated</span><time class="meta-value" id="page-updated">加载中</time></div>
-          <div class="meta-item"><span class="meta-key">Source</span><span class="meta-value" id="page-source">FRED（DGS10 · DTWEXBGS）· EIA（RWTC）· CoinGecko / Yahoo Finance（BTC/USD）· TradingView免费嵌入（SPY · QQQ · DIA · GLD代理）</span></div>
-          <div class="meta-item"><span class="meta-key">Coverage</span><span class="meta-value" id="asset-count">8项全球核心资产</span></div>
-        </div>
+      <section class="hero command-hero" id="overview-section" aria-labelledby="page-title">
+        <article class="orbit-panel">
+          <div class="orbit-copy">
+            <p class="eyebrow">GLOBAL MARKET ORBIT · VERIFIED SOURCES</p>
+            <h1 id="page-title">全球市场总览</h1>
+            <p class="hero-copy">用一张清晰的市场面板观察美国股指、利率、美元、黄金、原油与比特币。全息地球仅用于展示全球市场时区与连接关系，不表示资金流向；价格、来源、更新时间和回退状态仍以资产卡片为准。</p>
+          </div>
+          <figure class="market-orbit" aria-labelledby="orbit-caption">
+            <svg class="market-orbit-svg" viewBox="0 0 720 380" role="img" aria-label="全球市场时区连接示意图">
+              <defs>
+                <radialGradient id="orbit-fill" cx="50%" cy="42%" r="62%">
+                  <stop offset="0" stop-color="#1a79ad" stop-opacity="0.42"></stop>
+                  <stop offset="0.72" stop-color="#0a3556" stop-opacity="0.28"></stop>
+                  <stop offset="1" stop-color="#03111d" stop-opacity="0"></stop>
+                </radialGradient>
+                <filter id="orbit-glow" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur stdDeviation="3" result="blur"></feGaussianBlur>
+                  <feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+                </filter>
+              </defs>
+              <g class="orbit-grid" aria-hidden="true">
+                <path d="M24 74H696M24 150H696M24 226H696M24 302H696"></path>
+                <path d="M120 22V358M240 22V358M360 22V358M480 22V358M600 22V358"></path>
+              </g>
+              <g class="orbit-arcs" aria-hidden="true">
+                <path class="orbit-arc orbit-arc-cyan" d="M125 226C250 88 460 76 625 210"></path>
+                <path class="orbit-arc orbit-arc-amber" d="M135 230C298 322 500 305 626 210"></path>
+                <path class="orbit-arc orbit-arc-cyan" d="M222 116C355 38 502 104 548 235"></path>
+              </g>
+              <g class="globe" transform="translate(360 196)">
+                <circle class="globe-halo" r="146"></circle>
+                <circle class="globe-sphere" r="132" fill="url(#orbit-fill)"></circle>
+                <ellipse class="globe-line" rx="132" ry="45"></ellipse>
+                <ellipse class="globe-line" rx="132" ry="86"></ellipse>
+                <ellipse class="globe-line" rx="55" ry="132"></ellipse>
+                <ellipse class="globe-line" rx="98" ry="132"></ellipse>
+                <path class="globe-line" d="M-132 0H132M0-132V132"></path>
+                <path class="globe-land" d="M-112-56l24-22 31 2 18 16 21 4 11 18-18 17-9 24-21 7-10 27-20-3-8-31-19-19 8-18-8-22zm66 89 25 9 16 27-7 31-17 33-19-17-7-35 7-38zm76-98 25-18 42 5 19 18 31 11 17 28-16 17-26-8-22 14-17-8-26 16-18-13-8-24 17-16zm55 77 28 10 15 27-18 17-25-8-16-20 13-22zm31 60 30 5 16 24-11 20-31-6-11-24z"></path>
+                <circle class="globe-core" r="5" filter="url(#orbit-glow)"></circle>
+              </g>
+              <g class="market-node" transform="translate(126 226)"><circle r="5"></circle><circle class="node-pulse" r="12"></circle></g>
+              <g class="market-node market-node-amber" transform="translate(222 116)"><circle r="5"></circle><circle class="node-pulse" r="12"></circle></g>
+              <g class="market-node" transform="translate(548 235)"><circle r="5"></circle><circle class="node-pulse" r="12"></circle></g>
+              <g class="market-node market-node-amber" transform="translate(625 210)"><circle r="5"></circle><circle class="node-pulse" r="12"></circle></g>
+            </svg>
+            <span class="orbit-clock clock-new-york"><b>NEW YORK</b><time data-market-time="America/New_York">--:--</time></span>
+            <span class="orbit-clock clock-london"><b>LONDON</b><time data-market-time="Europe/London">--:--</time></span>
+            <span class="orbit-clock clock-shanghai"><b>SHANGHAI</b><time data-market-time="Asia/Shanghai">--:--</time></span>
+            <span class="orbit-clock clock-tokyo"><b>TOKYO</b><time data-market-time="Asia/Tokyo">--:--</time></span>
+            <figcaption id="orbit-caption">全球市场连接示意 · 城市时间按设备当前时刻换算 · 非资金流向图</figcaption>
+          </figure>
+        </article>
+
+        <aside class="hero-telemetry" aria-label="终端数据状态">
+          <div class="telemetry-card telemetry-scan">
+            <span class="telemetry-label">MARKET STATUS</span>
+            <strong id="orbit-market-status">正在校验数据</strong>
+            <span id="orbit-market-note">状态来自核心资产数据契约</span>
+            <div class="telemetry-radar" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="meta-grid" aria-label="数据说明">
+            <div class="meta-item"><span class="meta-key">Data status</span><span class="meta-value partial" id="data-status">正在校验4项真实数据</span></div>
+            <div class="meta-item"><span class="meta-key">Updated</span><time class="meta-value" id="page-updated">加载中</time></div>
+            <div class="meta-item"><span class="meta-key">Source</span><span class="meta-value" id="page-source">FRED · EIA · CoinGecko / Yahoo · TradingView</span></div>
+            <div class="meta-item"><span class="meta-key">Coverage</span><span class="meta-value" id="asset-count">8项全球核心资产</span></div>
+          </div>
+          <div class="telemetry-card telemetry-integrity">
+            <span class="telemetry-label">DATA INTEGRITY</span>
+            <strong>来源、时点、频率、回退独立显示</strong>
+            <span>视觉层不改变任何行情口径</span>
+          </div>
+        </aside>
       </section>
 
       <section id="market-section" aria-labelledby="market-heading">
@@ -1250,6 +1328,67 @@
           <h2 class="board-title" id="research-heading">市场强弱与领袖</h2>
           <span class="board-subtitle" id="research-summary">LOADING RESEARCH</span>
         </div>
+        <article class="global-risk-map status-loading" id="global-risk-map" aria-labelledby="global-risk-map-title" aria-describedby="global-risk-map-note" aria-busy="true">
+          <div class="global-risk-map-head">
+            <div>
+              <h3 id="global-risk-map-title">全球风险热力图</h3>
+              <span>GLOBAL RISK HEATMAP · REGIONAL EQUITY PRESSURE PROXY</span>
+            </div>
+            <span class="status-chip partial-chip" id="global-risk-map-status">LOADING</span>
+          </div>
+          <div class="global-risk-map-layout">
+            <figure class="risk-map-figure">
+              <svg class="risk-map-svg" viewBox="0 0 900 430" role="img" aria-label="由区域代表性股票指数当日价格回报构成的市场压力代理地图">
+                <g class="risk-map-grid" aria-hidden="true">
+                  <path d="M20 86H880M20 172H880M20 258H880M20 344H880"></path>
+                  <path d="M120 24V406M280 24V406M450 24V406M620 24V406M780 24V406"></path>
+                </g>
+                <g class="risk-region region-north-america" data-risk-region="north-america">
+                  <path d="M88 96l45-37 83-22 79 24 30 40-24 27-52-9-33 21-19 48-51 19-36-35-36-19 20-35z"></path>
+                </g>
+                <g class="risk-region region-south-america" data-risk-region="south-america">
+                  <path d="M252 205l47 15 28 37-13 42-20 24-9 57-31-28-14-48-18-42z"></path>
+                </g>
+                <g class="risk-region region-europe" data-risk-region="europe">
+                  <path d="M407 93l43-27 53 13 19 32-25 25-39-8-31 17-29-19z"></path>
+                </g>
+                <g class="risk-region region-africa region-no-data" data-risk-region="africa">
+                  <path d="M417 163l65-18 59 29 19 57-26 78-49 43-35-46-21-66-31-39z"></path>
+                </g>
+                <g class="risk-region region-south-asia" data-risk-region="south-asia">
+                  <path d="M590 179l41 6 23 38-18 55-31-19-19-51z"></path>
+                </g>
+                <g class="risk-region region-greater-china" data-risk-region="greater-china">
+                  <path d="M579 101l81-25 78 21 32 44-32 37-58-4-35 26-55-21-26-43z"></path>
+                </g>
+                <g class="risk-region region-japan" data-risk-region="japan">
+                  <path d="M777 126l14-17 9 24-8 37-12-5 7-22z"></path>
+                </g>
+                <g class="risk-region region-oceania" data-risk-region="oceania">
+                  <path d="M720 285l56-24 69 23 20 45-38 36-66-8-45-34z"></path>
+                </g>
+                <g class="risk-map-labels" aria-hidden="true">
+                  <text x="170" y="127">NORTH AMERICA</text>
+                  <text x="254" y="273">SOUTH AMERICA</text>
+                  <text x="431" y="112">EUROPE</text>
+                  <text x="455" y="235">NO TRACKED INDEX</text>
+                  <text x="590" y="129">GREATER CHINA</text>
+                  <text x="588" y="219">SOUTH ASIA</text>
+                  <text x="760" y="318">OCEANIA</text>
+                </g>
+              </svg>
+              <figcaption>
+                <span>LOW PRESSURE</span>
+                <i class="risk-legend-bar" aria-hidden="true"></i>
+                <span>HIGH PRESSURE</span>
+              </figcaption>
+            </figure>
+            <div class="risk-region-list" id="risk-region-list" aria-label="区域市场压力代理明细">
+              <p>正在读取Yahoo Finance区域代表指数……</p>
+            </div>
+          </div>
+          <p class="global-risk-map-note" id="global-risk-map-note">仅以区域代表性股票指数的当日价格跌幅作为市场压力代理，不是国家风险评分；代理标的、来源、数据日与更新时间会随明细显示。</p>
+        </article>
         <div class="research-grid" id="research-grid" role="list" aria-label="市场研究数据卡片" aria-describedby="research-summary" aria-busy="true">
           <div class="research-skeleton" aria-hidden="true"></div>
           <div class="research-skeleton" aria-hidden="true"></div>
@@ -1278,6 +1417,24 @@
           <div class="operations-actions" aria-label="Beta运行与反馈">
             <a class="operation-action" href="https://github.com/254684589-max/ooglex-site/actions/workflows/finance_terminal_beta_gate.yml" target="_blank" rel="noopener noreferrer">查看远端门禁 ↗</a>
             <a class="operation-action" href="https://github.com/254684589-max/ooglex-site/issues/new?template=finance-terminal-data.yml" target="_blank" rel="noopener noreferrer">报告数据问题 ↗</a>
+          </div>
+        </div>
+        <div class="pipeline-command" id="pipeline-command" aria-label="稳定V1资格与四条核心数据管线摘要" aria-busy="true">
+          <div class="stable-v1-ring status-loading" id="stable-v1-ring" role="progressbar" aria-label="稳定V1连续成功周期" aria-valuemin="0" aria-valuemax="7" aria-valuenow="0">
+            <span>STABLE V1</span>
+            <strong id="stable-v1-ring-value">— / 7</strong>
+            <small id="stable-v1-ring-state">LOADING</small>
+          </div>
+          <div class="pipeline-command-copy">
+            <span>CORE DATA PIPELINES</span>
+            <strong id="pipeline-command-title">正在读取四条生产数据管线</strong>
+            <p id="pipeline-command-note">资格证据与更新健康分别校验，不因视觉改版清空或重新计算。</p>
+          </div>
+          <div class="pipeline-nodes" id="pipeline-nodes" aria-label="管线健康节点">
+            <span data-pipeline-node="macro-radar">宏观<i>LOADING</i></span>
+            <span data-pipeline-node="asset-tracker">跨资产<i>LOADING</i></span>
+            <span data-pipeline-node="companies">公司榜<i>LOADING</i></span>
+            <span data-pipeline-node="asset-ranking">资产榜<i>LOADING</i></span>
           </div>
         </div>
         <div class="operations-grid" id="operations-grid" role="list" aria-label="四条生产数据管道运行状态" aria-describedby="operations-summary operations-notice" aria-busy="true">
@@ -1320,6 +1477,7 @@
 
   <noscript><div class="load-error">此页面需要启用JavaScript才能校验核心资产、四项免费ETF代理、三项官方行情逐源更新链、宏观状态、市场情绪、金融压力、跨资产强弱、全球资产市值、全球公司领袖、经济日历、财经新闻、四条生产管道与四个辅助来源健康。</div></noscript>
   <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js"></script>
+  <script type="module" src="finance-terminal-command-center.mjs"></script>
   <script src="app.js"></script>
 </body>
 </html>
