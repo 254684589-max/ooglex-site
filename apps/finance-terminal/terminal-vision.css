@@ -396,7 +396,8 @@ body::after {
 }
 
 .globe-texture-track image {
-  opacity: 0.78;
+  opacity: 0.88;
+  filter: saturate(1.22) brightness(0.72) contrast(1.48) hue-rotate(8deg);
 }
 
 .globe-shade { pointer-events: none; }

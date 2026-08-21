@@ -1257,10 +1257,6 @@
                   <feGaussianBlur stdDeviation="3" result="blur"></feGaussianBlur>
                   <feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
                 </filter>
-                <filter id="earth-hologram" x="-20%" y="-20%" width="140%" height="140%">
-                  <feColorMatrix type="matrix" values="0.15 0 0 0 0.02  0 0.62 0 0 0.16  0 0 1.18 0 0.42  0 0 0 1 0"></feColorMatrix>
-                  <feComponentTransfer><feFuncR type="gamma" amplitude="1.05" exponent="0.8"></feFuncR><feFuncG type="gamma" amplitude="1.08" exponent="0.78"></feFuncG><feFuncB type="gamma" amplitude="1.12" exponent="0.74"></feFuncB></feComponentTransfer>
-                </filter>
               </defs>
               <g class="orbit-grid" aria-hidden="true">
                 <path d="M18 70H882M18 142H882M18 214H882M18 286H882M18 358H882"></path>
@@ -1276,7 +1272,7 @@
                 <circle class="globe-halo globe-halo-outer" cx="450" cy="224" r="176"></circle>
                 <circle class="globe-halo" cx="450" cy="224" r="166"></circle>
                 <circle class="globe-sphere" cx="450" cy="224" r="162" fill="url(#orbit-fill)"></circle>
-                <g class="globe-texture-track" clip-path="url(#globe-clip)" filter="url(#earth-hologram)">
+                <g class="globe-texture-track" clip-path="url(#globe-clip)">
                   <image href="../tv/vendor/earth-blue-marble.jpg" x="126" y="62" width="648" height="324" preserveAspectRatio="none"></image>
                   <image href="../tv/vendor/earth-blue-marble.jpg" x="774" y="62" width="648" height="324" preserveAspectRatio="none"></image>
                 </g>

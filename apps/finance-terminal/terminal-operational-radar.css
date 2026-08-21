@@ -136,6 +136,7 @@
 
 .risk-map-texture {
   opacity: 0.42;
+  clip-path: inset(0 0 12% 0);
   filter: grayscale(0.76) saturate(1.7) hue-rotate(153deg) brightness(0.72) contrast(1.38);
   mix-blend-mode: screen;
 }
