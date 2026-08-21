@@ -254,12 +254,59 @@ def semantic_signature(snapshot: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def carry_forward_recorded_cycles(current: dict[str, Any], incoming: dict[str, Any]) -> dict[str, Any]:
+    """Move verified UTC-day evidence to the latest complete development branch.
+
+    A visual or code branch migration must not erase already published successful
+    days. Incoming branch evidence can add a new distinct UTC day, while same-day
+    reruns remain deduplicated. Current-run health and links always come from the
+    incoming report, so carried evidence cannot hide a new pipeline failure.
+    """
+    validate_snapshot(current)
+    validate_snapshot(incoming)
+    prior_by_id = {item["id"]: item for item in current["pipelines"]}
+    merged = json.loads(json.dumps(incoming))
+    for item in merged["pipelines"]:
+        prior = prior_by_id[item["id"]]
+        prior_dates = prior["cycleDates"][:prior["consecutiveSuccessfulCycles"]]
+        incoming_dates = item["cycleDates"][:item["consecutiveSuccessfulCycles"]] \
+            if item["latestConclusion"] == "success" else []
+        dates = sorted(set(prior_dates + incoming_dates), reverse=True)[:STABLE_CYCLES]
+        cycles = len(dates)
+        item["cycleDates"] = dates
+        item["consecutiveSuccessfulCycles"] = cycles
+        item["remainingStableCycles"] = max(0, STABLE_CYCLES - cycles)
+        item["checkStatus"] = "PASS" if cycles >= BETA_CYCLES else item["checkStatus"]
+        item["status"] = "qualified" if cycles >= STABLE_CYCLES \
+            and item["checkStatus"] == "PASS" else \
+            "progress" if cycles > 0 and item["latestConclusion"] == "success" else "blocked"
+
+    minimum = min(item["consecutiveSuccessfulCycles"] for item in merged["pipelines"])
+    all_current_runs_succeeded = all(
+        item["latestConclusion"] == "success" for item in merged["pipelines"]
+    )
+    merged["targets"] = {
+        "beta": "PASS" if minimum >= BETA_CYCLES and all_current_runs_succeeded else "BLOCKED",
+        "stableV1": "PASS" if minimum >= STABLE_CYCLES and all_current_runs_succeeded else "BLOCKED",
+    }
+    merged["summary"] = {
+        "pipelineCount": len(PIPELINES),
+        "qualifiedPipelines": sum(item["status"] == "qualified" for item in merged["pipelines"]),
+        "minimumConsecutiveSuccessfulCycles": minimum,
+        "stableRequiredSuccessfulCycles": STABLE_CYCLES,
+        "remainingStableCycles": max(0, STABLE_CYCLES - minimum),
+    }
+    validate_snapshot(merged)
+    return merged
+
+
 def write_snapshot(output: Path, snapshot: dict[str, Any]) -> bool:
     validate_snapshot(snapshot)
     if output.exists():
         try:
             current = json.loads(output.read_text(encoding="utf-8"))
             validate_snapshot(current)
+            snapshot = carry_forward_recorded_cycles(current, snapshot)
             if semantic_signature(current) == semantic_signature(snapshot):
                 return False
         except (OSError, json.JSONDecodeError, SnapshotError):
