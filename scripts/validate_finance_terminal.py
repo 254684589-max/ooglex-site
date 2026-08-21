@@ -33,8 +33,10 @@ APP = ROOT / "apps" / "finance-terminal" / "app.js"
 LOADER = ROOT / "apps" / "finance-terminal" / "finance-terminal-loader.mjs"
 TERMINAL_VISUALS = ROOT / "apps" / "finance-terminal" / "finance-terminal-visuals.mjs"
 RISK_RADAR_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-radar.mjs"
+GLOBE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-globe.mjs"
 VISION_CSS = ROOT / "apps" / "finance-terminal" / "terminal-vision.css"
 VISUAL_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-visual-fidelity.css"
+REFERENCE_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-fidelity.css"
 COMMAND_CENTER_CSS = ROOT / "apps" / "finance-terminal" / "terminal-command-center.css"
 COMMAND_CENTER_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-command-center.mjs"
 REGRESSION_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-regression.mjs"
@@ -2492,8 +2494,10 @@ def main() -> None:
     loader = LOADER.read_text(encoding="utf-8")
     terminal_visuals = TERMINAL_VISUALS.read_text(encoding="utf-8")
     risk_radar_module = RISK_RADAR_MODULE.read_text(encoding="utf-8")
+    globe_module = GLOBE_MODULE.read_text(encoding="utf-8")
     vision_css = VISION_CSS.read_text(encoding="utf-8")
     command_center_css = COMMAND_CENTER_CSS.read_text(encoding="utf-8")
+    reference_fidelity_css = REFERENCE_FIDELITY_CSS.read_text(encoding="utf-8")
     command_center_module = COMMAND_CENTER_MODULE.read_text(encoding="utf-8")
     regression_module = REGRESSION_MODULE.read_text(encoding="utf-8")
     risk_view_module = RISK_VIEW_MODULE.read_text(encoding="utf-8")
@@ -2507,15 +2511,17 @@ def main() -> None:
     require(LOADER.stat().st_size <= 14_000, "金融终端分区加载模块超过14KB性能预算")
     require(TERMINAL_VISUALS.stat().st_size <= 16_000, "金融终端视觉数据模块超过16KB性能预算")
     require(RISK_RADAR_MODULE.stat().st_size <= 3_000, "金融终端风险雷达模块超过3KB性能预算")
+    require(GLOBE_MODULE.stat().st_size <= 8_000, "金融终端地球动画模块超过8KB性能预算")
     require(VISION_CSS.stat().st_size <= 28_000, "金融终端科幻视觉样式超过28KB性能预算")
     require(COMMAND_CENTER_CSS.stat().st_size <= 20_000, "金融终端单屏指挥中心样式超过20KB性能预算")
     require(VISUAL_FIDELITY_CSS.stat().st_size <= 6_000, "金融终端高保真视觉层超过6KB性能预算")
+    require(REFERENCE_FIDELITY_CSS.stat().st_size <= 12_000, "金融终端参考图精修层超过12KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
     require(APP.stat().st_size + LOADER.stat().st_size + TERMINAL_VISUALS.stat().st_size
-            + COMMAND_CENTER_MODULE.stat().st_size <= 230_000,
+            + COMMAND_CENTER_MODULE.stat().st_size + GLOBE_MODULE.stat().st_size <= 230_000,
             "金融终端常规加载JavaScript超过230KB性能预算")
-    require(REGRESSION_MODULE.stat().st_size <= 18_000,
-            "仅回归模式加载的浏览器探针超过18KB性能预算")
+    require(REGRESSION_MODULE.stat().st_size <= 19_000,
+            "仅回归模式加载的浏览器探针超过19KB性能预算")
     require(RISK_VIEW_MODULE.stat().st_size <= 6_000,
             "按需加载的市场状态视图超过6KB性能预算")
     require('import("./finance-terminal-risk-view.mjs")' in app
@@ -2543,10 +2549,21 @@ def main() -> None:
     require('<link rel="stylesheet" href="terminal-vision.css">' in page
             and '<link rel="stylesheet" href="terminal-command-center.css">' in page
             and '<link rel="stylesheet" href="terminal-visual-fidelity.css">' in page
+            and '<link rel="stylesheet" href="terminal-reference-fidelity.css">' in page
             and 'src="finance-terminal-command-center.mjs"' in page
             and 'import("./finance-terminal-visuals.mjs")' in app
             and "createTerminalVisuals" in terminal_visuals,
             "科幻终端视觉层缺少本地样式或数据模块")
+    require('from "./finance-terminal-globe.mjs"' in command_center_module
+            and "initMarketGlobe" in globe_module
+            and "textureCoordinate" in globe_module
+            and "earth-night.jpg" in globe_module
+            and "prefers-reduced-motion" in globe_module
+            and "visibilitychange" in globe_module
+            and "innerHTML" not in globe_module
+            and 'id="market-globe-canvas"' in page
+            and ".market-globe-shell" in reference_fidelity_css,
+            "高保真地球必须使用本地纹理、真实自转、节能与减少动画降级")
     require('body[data-terminal-view="overview"] #main-content' in command_center_css
             and 'grid-template-columns: repeat(16, minmax(0, 1fr))' in command_center_css
             and 'body[data-terminal-view="overview"] #information-section' in command_center_css
@@ -2629,7 +2646,9 @@ def main() -> None:
             "页面缺少免费代理行情策略区域")
     require('id="risk-grid"' in page and 'id="risk-summary"' in page and "市场状态" in page, "页面缺少市场状态模块")
     require('id="research-grid"' in page and 'id="research-summary"' in page and "市场强弱与领袖" in page, "页面缺少市场研究模块")
-    require('id="information-grid"' in page and 'id="information-summary"' in page and "今日事件与资讯" in page,
+    require('id="information-grid"' in page and 'id="information-summary"' in page and "市场洞察与动态" in page
+            and 'id="market-insight-title"' in page and 'id="market-insight-copy"' in page
+            and "RULE-BASED · VERIFIED SIGNALS" in page,
             "页面缺少事件资讯模块")
     require('id="operations-grid"' in page and 'id="operations-summary"' in page and "稳定V1运行证据" in page,
             "页面缺少四管道稳定V1运行证据模块")

@@ -4,6 +4,7 @@ import {
   deriveRegionalHeatmap
 } from "../apps/finance-terminal/finance-terminal-visuals.mjs";
 import { deriveRiskRadar } from "../apps/finance-terminal/finance-terminal-risk-radar.mjs";
+import { textureCoordinate } from "../apps/finance-terminal/finance-terminal-globe.mjs";
 
 function asset(symbol, dailyReturn, options = {}) {
   return {
@@ -88,7 +89,12 @@ assert.ok(radar.score >= 0 && radar.score <= 10);
 assert.equal(deriveRiskRadar([{ meterPercent: 50 }]), null,
   "三项信号不完整时风险雷达不得生成推断分数");
 
+assert.equal(textureCoordinate(0, 0), .5, "地球中央经线必须映射到纹理中央");
+assert.equal(textureCoordinate(0, 1), .75, "地球右侧边缘必须映射到东经90度");
+assert.equal(textureCoordinate(0, -1), .25, "地球左侧边缘必须映射到西经90度");
+
 console.log("Finance Terminal visual data contracts: PASS");
 console.log("- seven-region daily return pressure proxy / error isolation: PASS");
 console.log("- dynamic 5/7 to 7/7 minimum-cycle continuity / stale evidence preservation: PASS");
 console.log("- three-source normalized six-axis risk radar / incomplete-source isolation: PASS");
+console.log("- rotating globe longitude projection / texture wrap contract: PASS");

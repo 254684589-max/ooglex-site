@@ -1,0 +1,278 @@
+/* Reference-fidelity layer. Presentation only: no market value, source or readiness semantics change. */
+
+.market-orbit-svg {
+  position: relative;
+  z-index: 2;
+}
+
+.market-globe-shell {
+  position: absolute;
+  top: 51.5%;
+  left: 50%;
+  z-index: 1;
+  width: min(43%, 372px);
+  aspect-ratio: 1;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: opacity 280ms ease;
+}
+
+.market-globe-shell::before,
+.market-globe-shell::after {
+  position: absolute;
+  content: "";
+  pointer-events: none;
+}
+
+.market-globe-shell::before {
+  inset: 2.8%;
+  z-index: 2;
+  border: 1px solid rgba(105, 226, 255, .58);
+  border-radius: 50%;
+  box-shadow: 0 0 18px rgba(69, 212, 255, .42), inset 0 0 20px rgba(69, 212, 255, .2);
+}
+
+.market-globe-shell::after {
+  right: -28%;
+  bottom: -9%;
+  left: -28%;
+  height: 19%;
+  border: 1px solid rgba(57, 183, 235, .32);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(38, 157, 212, .2), transparent 70%);
+  box-shadow: 0 0 18px rgba(31, 147, 201, .18);
+  transform: perspective(120px) rotateX(68deg);
+}
+
+.market-globe-canvas {
+  display: block;
+  max-width: 100%;
+  border-radius: 50%;
+  filter: contrast(1.16) saturate(1.35) brightness(1.16);
+}
+
+.globe-canvas-ready .market-globe-shell { opacity: 1; }
+.globe-canvas-ready .market-orbit-svg .globe { opacity: 0; }
+
+.risk-radar-values text {
+  fill: #d3f5ff;
+  font: 700 8px var(--mono);
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: rgba(2, 11, 18, .86);
+  stroke-width: 2px;
+}
+
+.risk-map-texture {
+  opacity: .68;
+  filter: brightness(1.25) contrast(1.22) saturate(1.55) hue-rotate(3deg);
+  mix-blend-mode: screen;
+}
+
+.risk-region-glow {
+  fill: rgba(55, 194, 245, .18);
+  opacity: .5;
+  filter: blur(13px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.risk-region.region-pressure-positive .risk-region-glow { fill: rgba(82, 214, 154, .34); }
+.risk-region.region-pressure-neutral .risk-region-glow { fill: rgba(69, 212, 255, .26); }
+.risk-region.region-pressure-watch .risk-region-glow { fill: rgba(255, 184, 72, .58); opacity: .74; }
+.risk-region.region-pressure-high .risk-region-glow { fill: rgba(255, 133, 61, .72); opacity: .84; }
+.risk-region.region-no-data .risk-region-glow { opacity: 0; }
+
+.risk-map-labels text {
+  paint-order: stroke;
+  stroke: rgba(2, 10, 17, .9);
+  stroke-width: 2px;
+}
+
+.risk-card { --hud-accent: var(--vision-cyan); }
+.risk-card[data-signal-id="fear-greed"] { --hud-accent: #f2bd57; }
+.risk-card[data-signal-id="ofr-fsi"] { --hud-accent: #ff9d4d; }
+
+.risk-card .risk-hud-percent {
+  background:
+    radial-gradient(circle at 50% 50%, #06131f 0 54%, transparent 55%),
+    conic-gradient(from -90deg, var(--hud-accent) 0 var(--risk-hud-progress), rgba(69, 212, 255, .1) var(--risk-hud-progress) 360deg);
+  box-shadow: 0 0 28px color-mix(in srgb, var(--hud-accent) 22%, transparent), inset 0 0 28px rgba(69, 212, 255, .06);
+}
+
+.risk-card .risk-hud-gauge::before { border-color: color-mix(in srgb, var(--hud-accent) 42%, transparent); }
+
+.risk-card .risk-assessment {
+  width: fit-content;
+  margin: 0 auto;
+  padding: 2px 7px;
+  border: 1px solid color-mix(in srgb, var(--hud-accent) 48%, transparent);
+  border-radius: 2px;
+  color: var(--hud-accent);
+  background: color-mix(in srgb, var(--hud-accent) 8%, transparent);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.market-insight-card {
+  display: grid;
+  min-height: 0;
+  align-content: start;
+  gap: 9px;
+  padding: 12px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--vision-line-strong);
+  background:
+    radial-gradient(240px 150px at 82% 0, rgba(244, 182, 75, .09), transparent 70%),
+    linear-gradient(150deg, rgba(8, 26, 39, .98), rgba(2, 11, 19, .98));
+}
+
+.market-insight-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--vision-cyan);
+  font: 8px var(--mono);
+  letter-spacing: .09em;
+}
+
+.market-insight-head small { color: var(--faint); font-size: 6px; }
+
+.market-insight-copy {
+  padding: 10px;
+  border: 1px solid rgba(244, 182, 75, .34);
+  border-radius: 3px;
+  background: rgba(244, 182, 75, .035);
+  box-shadow: inset 0 0 24px rgba(244, 182, 75, .025);
+}
+
+.market-insight-copy strong {
+  display: block;
+  color: var(--vision-amber);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.market-insight-copy p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.65;
+}
+
+.market-insight-foot { color: var(--faint); font: 6px var(--mono); }
+
+@media (min-width: 1041px) {
+  body[data-terminal-view="overview"] #overview-section,
+  body[data-terminal-view="overview"] #market-section { grid-column: 1 / 14; }
+
+  body[data-terminal-view="overview"] #research-section { grid-column: 1 / 6; }
+  body[data-terminal-view="overview"] #risk-section { grid-column: 6 / 10; }
+  body[data-terminal-view="overview"] #operations-section { grid-column: 10 / 14; }
+  body[data-terminal-view="overview"] #information-section { grid-column: 14 / 17; }
+
+  body[data-terminal-view="overview"] #information-section {
+    grid-template-rows: 28px minmax(148px, .72fr) minmax(0, 2.28fr);
+  }
+
+  body[data-terminal-view="overview"] .orbit-panel {
+    background:
+      radial-gradient(420px 230px at 52% 54%, rgba(23, 133, 188, .2), transparent 70%),
+      linear-gradient(135deg, rgba(6, 25, 41, .95), rgba(2, 11, 19, .96));
+  }
+
+  body[data-terminal-view="overview"] .orbit-copy { max-width: 340px; }
+  body[data-terminal-view="overview"] .market-orbit::before { inset: 3% 12% 7%; }
+  body[data-terminal-view="overview"] .market-globe-shell { width: min(44%, 368px); }
+
+  body[data-terminal-view="overview"] .orbit-arc {
+    stroke-width: 1.8;
+    stroke-dasharray: 7 7;
+    filter: drop-shadow(0 0 4px currentColor);
+  }
+
+  body[data-terminal-view="overview"] .risk-radar-panel {
+    border-color: rgba(62, 199, 244, .34);
+    background:
+      radial-gradient(circle at 50% 48%, rgba(21, 120, 164, .13), transparent 62%),
+      linear-gradient(rgba(69, 212, 255, .028) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(69, 212, 255, .028) 1px, transparent 1px),
+      rgba(2, 12, 21, .92);
+    background-size: auto, 18px 18px, 18px 18px, auto;
+  }
+
+  body[data-terminal-view="overview"] .risk-radar-grid polygon,
+  body[data-terminal-view="overview"] .risk-radar-grid path { stroke: rgba(75, 210, 255, .31); }
+
+  body[data-terminal-view="overview"] .risk-radar-fill {
+    fill: rgba(30, 203, 239, .23);
+    stroke-width: 1.8;
+    filter: drop-shadow(0 0 9px rgba(48, 214, 255, .68));
+  }
+
+  body[data-terminal-view="overview"] .risk-radar-score {
+    padding-top: 3px;
+    border-top: 1px solid rgba(69, 212, 255, .13);
+  }
+
+  body[data-terminal-view="overview"] .risk-radar-score strong { font-size: 23px; }
+
+  body[data-terminal-view="overview"] #risk-section .board-heading::after {
+    margin-left: 7px;
+    color: var(--faint);
+    content: "3 VERIFIED SIGNALS · NO SYNTHETIC DATA";
+    font: 6px var(--mono);
+    letter-spacing: .06em;
+  }
+
+  body[data-terminal-view="overview"] .risk-card {
+    background:
+      radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--hud-accent) 8%, transparent), transparent 55%),
+      linear-gradient(180deg, rgba(6, 23, 36, .98), rgba(2, 11, 19, .96));
+  }
+
+  body[data-terminal-view="overview"] .risk-hud-gauge {
+    width: min(108px, 88%);
+    margin-top: 3px;
+  }
+
+  body[data-terminal-view="overview"] .risk-hud-gauge .risk-value { font-size: clamp(22px, 2vw, 30px); }
+  body[data-terminal-view="overview"] .risk-hud-gauge .risk-assessment { font-size: 6px; }
+  body[data-terminal-view="overview"] .risk-change { color: #9cb8c6; }
+
+  body[data-terminal-view="overview"] .risk-map-figure {
+    background: radial-gradient(ellipse at 45% 48%, rgba(27, 136, 188, .16), transparent 70%);
+  }
+
+  body[data-terminal-view="overview"] .risk-map-svg {
+    transform: scale(1.04);
+    transform-origin: 50% 52%;
+  }
+
+  body[data-terminal-view="overview"] #global-risk-map-status {
+    padding: 3px 6px;
+    border-color: rgba(69, 212, 255, .48);
+    color: var(--vision-cyan);
+    font-size: 10px;
+    letter-spacing: .08em;
+  }
+
+  body[data-terminal-view="overview"] .information-grid { grid-template-rows: minmax(0, .92fr) minmax(0, 1.08fr); }
+  body[data-terminal-view="overview"] .information-card { padding: 10px 11px; }
+}
+
+@media (max-width: 1040px) {
+  .market-globe-shell { width: min(56%, 360px); }
+  .risk-map-texture { opacity: .56; }
+}
+
+@media (max-width: 620px) {
+  .market-globe-shell { top: 52%; width: min(66%, 330px); }
+  .risk-radar-values text { font-size: 7px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .market-globe-shell { transition: none; }
+}
