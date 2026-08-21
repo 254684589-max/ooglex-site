@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "companies",
-  "generatedAt": "2026-08-21T13:27:37Z",
+  "generatedAt": "2026-08-21T13:32:03Z",
   "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-08-21T13:27:37Z",
-  "lastSuccessfulAt": "2026-08-21T13:27:37Z",
+  "lastAttemptAt": "2026-08-21T13:32:03Z",
+  "lastSuccessfulAt": "2026-08-21T13:32:03Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-08-21T13:27:37Z",
+  "publishedSnapshotAt": "2026-08-21T13:32:03Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -52,7 +52,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-21T13:27:37Z"
+      "lastSuccessAt": "2026-08-21T13:32:03Z"
     },
     {
       "id": "multiples-vc",
@@ -67,7 +67,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-21T13:27:37Z"
+      "lastSuccessAt": "2026-08-21T13:32:03Z"
     }
   ],
   "recovery": {
