@@ -3085,6 +3085,30 @@
   var operationsGrid = document.getElementById("operations-grid");
   var operationsSummary = document.getElementById("operations-summary");
   var pageAnnouncer = document.getElementById("page-announcer");
+  var sectionViewImports = {};
+  var sectionViewModules = {};
+  var sectionViewEvidence = { requested: [], states: { risk: "idle" } };
+  root.__financeTerminalSectionModules = sectionViewEvidence;
+
+  function loadSectionView(name) {
+    if (name !== "risk") return Promise.resolve(null);
+    if (!sectionViewImports[name]) {
+      sectionViewEvidence.requested.push(name);
+      sectionViewEvidence.states[name] = "loading";
+      sectionViewImports[name] = import("./finance-terminal-risk-view.mjs").then(function (viewModule) {
+        if (typeof viewModule.createRiskView !== "function") {
+          throw new Error("市场状态视图模块缺少工厂函数");
+        }
+        sectionViewModules[name] = viewModule;
+        sectionViewEvidence.states[name] = "ready";
+        return viewModule;
+      }).catch(function (error) {
+        sectionViewEvidence.states[name] = "error";
+        throw error;
+      });
+    }
+    return sectionViewImports[name];
+  }
 
   function formatTimestamp(value, demo) {
     if (!value) return demo ? "演示时间未提供" : "更新时间不可用";
@@ -3244,100 +3268,27 @@
     appendText(parent, "span", "source-name", source.name || "来源未提供");
   }
 
-  function formatRiskValue(card) {
-    if (!isNumber(card.value)) return "—";
-    var decimals = Number.isInteger(card.decimals) ? card.decimals : 2;
-    return (card.prefix || "") + card.value.toLocaleString("en-US", {
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals
-    }) + (card.suffix || "");
-  }
+  var riskView = null;
 
-  function riskStatusLabel(card) {
-    if (card.status === "stale") return { className: "stale-chip", text: "STALE" };
-    if (card.status === "error") return { className: "error-chip", text: "ERROR" };
-    if (card.status === "partial") return { className: "partial-chip", text: "PARTIAL" };
-    return { className: "official-chip", text: "ACTIVE" };
-  }
-
-  function makeRiskCard(signal) {
-    var card = document.createElement("article");
-    card.className = "risk-card status-" + signal.status;
-    card.setAttribute("role", "listitem");
-
-    var head = document.createElement("div");
-    head.className = "risk-card-head";
-    var titleBox = document.createElement("div");
-    appendText(titleBox, "h3", "risk-name", signal.name);
-    appendText(titleBox, "span", "risk-en", signal.nameEn);
-    head.appendChild(titleBox);
-    appendText(head, "span", "risk-symbol", signal.symbol);
-    card.appendChild(head);
-
-    var valueRow = document.createElement("div");
-    valueRow.className = "risk-value-row";
-    appendText(valueRow, "span", "risk-value", formatRiskValue(signal));
-    appendText(valueRow, "span", "risk-assessment", signal.assessment);
-    card.appendChild(valueRow);
-    appendText(card, "div", "risk-change", signal.changeText || "暂无可比变化");
-
-    if (isNumber(signal.meterPercent) && Array.isArray(signal.meterLabels) && signal.meterLabels.length === 3) {
-      var meter = document.createElement("div");
-      meter.className = "signal-meter";
-      var track = document.createElement("div");
-      track.className = "meter-track";
-      track.setAttribute("role", "progressbar");
-      track.setAttribute("aria-valuemin", "0");
-      track.setAttribute("aria-valuemax", "100");
-      track.setAttribute("aria-valuenow", String(signal.meterPercent));
-      track.setAttribute("aria-label", signal.name + "分数");
-      var fill = document.createElement("div");
-      fill.className = "meter-fill";
-      fill.style.width = Math.max(0, Math.min(100, signal.meterPercent)) + "%";
-      track.appendChild(fill);
-      meter.appendChild(track);
-      var labels = document.createElement("div");
-      labels.className = "meter-labels";
-      signal.meterLabels.forEach(function (label) { appendText(labels, "span", "", label); });
-      meter.appendChild(labels);
-      card.appendChild(meter);
+  function renderRiskCards(cards, viewModule) {
+    if (!viewModule || typeof viewModule.createRiskView !== "function") {
+      throw new Error("市场状态视图模块契约无效");
     }
-
-    appendText(card, "p", "risk-note", signal.note);
-    if (signal.sourceHealth) appendSupportingHealth(card, signal.sourceHealth);
-    var meta = document.createElement("div");
-    meta.className = "risk-meta";
-    appendText(meta, "span", "", "数据日 · " + formatDate(signal.asOf, false));
-    appendText(meta, "span", "", signal.frequency || "频率未提供");
-    card.appendChild(meta);
-
-    var footer = document.createElement("div");
-    footer.className = "risk-footer";
-    var sourceBox = document.createElement("div");
-    sourceBox.className = "risk-source";
-    appendSource(sourceBox, signal);
-    footer.appendChild(sourceBox);
-    var time = appendText(footer, "time", "", "更新 · " + formatTimestamp(signal.updatedAt, false));
-    if (signal.updatedAt) time.dateTime = signal.updatedAt;
-    var chip = riskStatusLabel(signal);
-    appendText(footer, "span", "status-chip " + chip.className, chip.text);
-    if (isSafeHref(signal.detailUrl)) {
-      var detail = appendText(footer, "a", "detail-link", "查看完整页面 →");
-      detail.href = signal.detailUrl;
+    if (!riskView) {
+      riskView = viewModule.createRiskView({
+        document: document,
+        grid: riskGrid,
+        summary: riskSummary,
+        isNumber: isNumber,
+        appendText: appendText,
+        appendSupportingHealth: appendSupportingHealth,
+        formatDate: formatDate,
+        appendSource: appendSource,
+        formatTimestamp: formatTimestamp,
+        isSafeHref: isSafeHref
+      });
     }
-    card.appendChild(footer);
-    return card;
-  }
-
-  function renderRiskCards(cards) {
-    riskGrid.textContent = "";
-    cards.forEach(function (card) { riskGrid.appendChild(makeRiskCard(card)); });
-    riskGrid.setAttribute("aria-busy", "false");
-    var ok = cards.filter(function (card) { return card.status === "ok"; }).length;
-    var partial = cards.filter(function (card) { return card.status === "partial"; }).length;
-    var stale = cards.filter(function (card) { return card.status === "stale"; }).length;
-    var errors = cards.filter(function (card) { return card.status === "error"; }).length;
-    riskSummary.textContent = ok + " ACTIVE · " + partial + " PARTIAL · " + stale + " STALE · " + errors + " ERROR";
+    riskView.render(cards);
   }
 
   function formatSignedPercent(value) {
@@ -4536,7 +4487,11 @@
           };
         },
         buildSection: function (name, group) {
-          if (name === "risk") return buildRiskCards(group);
+          if (name === "risk") {
+            return loadSectionView(name).then(function () {
+              return buildRiskCards(group);
+            });
+          }
           if (name === "research") return buildResearchCards(group);
           if (name === "information") return buildInformationCards(group);
           if (name === "operations") return buildOperationsCards(group);
@@ -4547,7 +4502,7 @@
           renderMarketLicenseNotice(experience.marketLicense);
         },
         renderSection: function (name, cards) {
-          if (name === "risk") renderRiskCards(cards);
+          if (name === "risk") renderRiskCards(cards, sectionViewModules.risk);
           if (name === "research") renderResearchCards(cards);
           if (name === "information") renderInformationCards(cards);
           if (name === "operations") renderOperationsCards(cards);

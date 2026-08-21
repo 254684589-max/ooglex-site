@@ -402,6 +402,15 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
     });
     await loaded;
     result = await waitForRegression(client, timeoutMs);
+    const sectionModules = await client.send("Runtime.evaluate", {
+      expression: "window.__financeTerminalSectionModules || null",
+      returnByValue: true
+    });
+    result.sectionModules = sectionModules.result.value;
+    if (JSON.stringify(result.sectionModules?.requested) !== JSON.stringify(["risk"])
+      || result.sectionModules?.states?.risk !== "ready") {
+      throw new Error(`${width}px按需区块模块证据无效：${JSON.stringify(result.sectionModules)}`);
+    }
     result.providerScriptTransport = scriptTransport.snapshot();
   } finally {
     scriptTransport.stop();

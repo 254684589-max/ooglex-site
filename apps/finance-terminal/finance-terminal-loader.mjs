@@ -319,10 +319,11 @@ export async function startFinanceTerminal(options = {}) {
 
   const handlers = Object.keys(options.sections).reduce((result, name) => {
     result[name] = () => loader.loadGroup(name).then((group) => {
-      const value = options.buildSection(name, group);
-      const key = options.experienceKeys[name] || name;
-      experience[key] = value;
-      options.renderSection(name, value);
+      return Promise.resolve(options.buildSection(name, group)).then((value) => {
+        const key = options.experienceKeys[name] || name;
+        experience[key] = value;
+        return options.renderSection(name, value);
+      });
     }).catch((error) => {
       if (typeof options.renderSectionError === "function") options.renderSectionError(name, error);
       throw error;

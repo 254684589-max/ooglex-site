@@ -7,6 +7,7 @@ import {
   waitForCriticalPaint
 } from "../apps/finance-terminal/finance-terminal-loader.mjs";
 import { runBrowserRegressionProbe } from "../apps/finance-terminal/finance-terminal-regression.mjs";
+import { createRiskView } from "../apps/finance-terminal/finance-terminal-risk-view.mjs";
 
 function fakeResponse(payload, status = 200) {
   return {
@@ -223,6 +224,68 @@ async function validateCriticalPaintBarrier() {
   assert.equal(attributes.get("data-critical-data-state"), "ready");
 }
 
+async function validateAsyncSectionBuild() {
+  const attributes = new Map();
+  const phases = [];
+  const doc = {
+    documentElement: {
+      setAttribute(name, value) { attributes.set(name, value); }
+    }
+  };
+  const win = { location: { search: "?loadAll=1" } };
+  const result = await startFinanceTerminal({
+    document: doc,
+    window: win,
+    loaderOptions: {
+      cacheKey: "async-section",
+      fetchImpl: async (url) => fakeResponse({ url })
+    },
+    buildCritical: () => ({ marketLicense: {}, risks: [] }),
+    renderCritical: () => {},
+    monitorProvider: () => Promise.resolve(),
+    yieldAfterCritical: () => {},
+    buildSection: async (name) => {
+      phases.push(`${name}-module-ready`);
+      return [{ id: name }];
+    },
+    renderSection: (name, cards) => {
+      assert.equal(cards[0].id, name);
+      phases.push(`${name}-rendered`);
+    },
+    experienceKeys: { risk: "risks" },
+    sections: { risk: { id: "risk-section" } },
+    navigationLinks: []
+  });
+  assert.deepEqual(phases, ["risk-module-ready", "risk-rendered"],
+    "延迟区块必须等待异步视图模块后再渲染");
+  assert.deepEqual(result.experience.risks, [{ id: "risk" }]);
+  assert.equal(attributes.get("data-deferred-data-state"), "ready");
+}
+
+function validateRiskViewContract() {
+  assert.throws(() => createRiskView({}), /市场状态视图缺少依赖：document/);
+  const grid = {
+    textContent: "loading",
+    appendChild() {},
+    setAttribute(name, value) { this[name] = value; }
+  };
+  const summary = { textContent: "" };
+  const noop = () => {};
+  const view = createRiskView({
+    document: {}, grid, summary,
+    isNumber: Number.isFinite,
+    appendText: noop,
+    appendSupportingHealth: noop,
+    formatDate: noop,
+    appendSource: noop,
+    formatTimestamp: noop,
+    isSafeHref: noop
+  });
+  view.render([]);
+  assert.equal(grid["aria-busy"], "false");
+  assert.equal(summary.textContent, "0 ACTIVE · 0 PARTIAL · 0 STALE · 0 ERROR");
+}
+
 async function main() {
   assert.equal(financeTerminalResourceContract.criticalSourceCount, 5);
   assert.equal(financeTerminalResourceContract.upstreamSourceCount, 16);
@@ -233,6 +296,8 @@ async function main() {
   await validateDeferredScheduler();
   await validateDeferredFailureIsolation();
   await validateCriticalPaintBarrier();
+  await validateAsyncSectionBuild();
+  validateRiskViewContract();
   console.log("Finance Terminal staged loader contract: PASS");
   console.log("- 5 critical sources / 13 deferred sources / 18 unique source requests: PASS");
   console.log("- viewport and section-navigation activation / shared request cache: PASS");
@@ -240,6 +305,7 @@ async function main() {
   console.log("- critical render / paint yield / deferred scheduler order: PASS");
   console.log("- one-section failure / three-section continuation / partial completion: PASS");
   console.log("- per-request state / network de-duplication / section transition evidence: PASS");
+  console.log("- async section module barrier / risk view contract: PASS");
 }
 
 main().catch((error) => {

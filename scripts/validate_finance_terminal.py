@@ -32,6 +32,7 @@ PAGE = ROOT / "apps" / "finance-terminal" / "index.html"
 APP = ROOT / "apps" / "finance-terminal" / "app.js"
 LOADER = ROOT / "apps" / "finance-terminal" / "finance-terminal-loader.mjs"
 REGRESSION_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-regression.mjs"
+RISK_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-view.mjs"
 TERMS_PAGE = ROOT / "apps" / "finance-terminal" / "terms.html"
 PRIVACY_PAGE = ROOT / "apps" / "finance-terminal" / "privacy.html"
 LEGAL_CSS = ROOT / "apps" / "finance-terminal" / "legal.css"
@@ -2480,6 +2481,7 @@ def main() -> None:
     app = APP.read_text(encoding="utf-8")
     loader = LOADER.read_text(encoding="utf-8")
     regression_module = REGRESSION_MODULE.read_text(encoding="utf-8")
+    risk_view_module = RISK_VIEW_MODULE.read_text(encoding="utf-8")
     compact_loader = re.sub(r"\s+", "", loader)
     require(APP.stat().st_size <= 220_000, "金融终端生产入口脚本超过220KB性能预算")
     require(LOADER.stat().st_size <= 14_000, "金融终端分区加载模块超过14KB性能预算")
@@ -2487,6 +2489,12 @@ def main() -> None:
             "金融终端常规加载JavaScript超过230KB性能预算")
     require(REGRESSION_MODULE.stat().st_size <= 15_000,
             "仅回归模式加载的浏览器探针超过15KB性能预算")
+    require(RISK_VIEW_MODULE.stat().st_size <= 6_000,
+            "按需加载的市场状态视图超过6KB性能预算")
+    require('import("./finance-terminal-risk-view.mjs")' in app
+            and "createRiskView" in risk_view_module
+            and "finance-terminal-risk-view.mjs" not in page,
+            "市场状态视图必须保持按需导入且不得在首屏预加载")
     terms_page = TERMS_PAGE.read_text(encoding="utf-8")
     privacy_page = PRIVACY_PAGE.read_text(encoding="utf-8")
     legal_css = LEGAL_CSS.read_text(encoding="utf-8")
