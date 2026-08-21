@@ -34,6 +34,7 @@ LOADER = ROOT / "apps" / "finance-terminal" / "finance-terminal-loader.mjs"
 TERMINAL_VISUALS = ROOT / "apps" / "finance-terminal" / "finance-terminal-visuals.mjs"
 VISION_CSS = ROOT / "apps" / "finance-terminal" / "terminal-vision.css"
 REGRESSION_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-regression.mjs"
+VISUALS_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_visuals.mjs"
 RISK_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-view.mjs"
 RESEARCH_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-research-view.mjs"
 INFORMATION_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-information-view.mjs"
@@ -2047,7 +2048,7 @@ def main() -> None:
         ASSET_RANKING_WORKFLOW, COMPANIES_WORKFLOW, ECON_CALENDAR_WORKFLOW, FINANCE_NEWS_WORKFLOW,
         SCHEDULER_WORKFLOW, SOURCE_HEALTH_VALIDATOR, SOURCE_HEALTH_DOC,
         SUPPORTING_HEALTH_VALIDATOR, SUPPORTING_HEALTH_DOC,
-        BROWSER_VALIDATOR, BROWSER_EVIDENCE, BROWSER_EVIDENCE_VALIDATOR,
+        BROWSER_VALIDATOR, BROWSER_EVIDENCE, BROWSER_EVIDENCE_VALIDATOR, VISUALS_VALIDATOR,
         PROXY_RUNTIME_HISTORY, PROXY_RUNTIME_HISTORY_VALIDATOR, HOME,
     ):
         require(path.is_file(), f"缺少文件：{path.relative_to(ROOT)}")
@@ -2986,6 +2987,7 @@ def main() -> None:
     require("docs/FINANCE_TERMINAL_OPERATIONS_RUNBOOK.md" in quality_workflow,
             "金融终端质量工作流未覆盖四管道运行手册变更")
     require("validate_finance_terminal_browser.mjs" in quality_workflow
+            and "validate_finance_terminal_visuals.mjs" in quality_workflow
             and "validate_finance_terminal_browser_evidence.mjs" in quality_workflow
             and "finance-terminal-browser-evidence.json" in quality_workflow
             and "finance-terminal-browser-evidence.md" in quality_workflow
@@ -3146,6 +3148,16 @@ def main() -> None:
     run_rwtc_pipeline_tests()
     run_js_adapter_tests()
     run_provider_widget_runtime_tests()
+    visual_contracts = subprocess.run(
+        ["node", str(VISUALS_VALIDATOR)],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    require(visual_contracts.returncode == 0,
+            f"科幻终端视觉数据契约失败：\n{visual_contracts.stdout}{visual_contracts.stderr}")
+    print(visual_contracts.stdout.strip())
 
     print("Finance Terminal DGS10 + DTWEXBGS + RWTC + BTC/USD validation: PASS")
     print("- four local data cards plus four explicit free TradingView ETF proxies / zero demos: PASS")

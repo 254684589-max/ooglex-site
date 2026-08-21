@@ -77,6 +77,24 @@ function pressureClass(value) {
   return "region-pressure-positive";
 }
 
+export function deriveRegionalHeatmap(card) {
+  if (!card || card.status === "error" || !Array.isArray(card.assets)) return [];
+  return REGION_SPECS.map((spec) => regionSnapshot(card, spec));
+}
+
+export function derivePipelineSummary(cards) {
+  const rows = Array.isArray(cards) ? cards : [];
+  const cycles = rows.map((card) => card?.readiness?.consecutiveSuccessfulCycles)
+    .filter((value) => Number.isInteger(value) && value >= 0 && value <= 7);
+  return Object.freeze({
+    minimumCycle: cycles.length === 4 ? Math.min(...cycles) : null,
+    evidenceStale: rows.some((card) => card?.readiness?.reportStale === true),
+    healthy: rows.filter((card) => card.status === "healthy").length,
+    degraded: rows.filter((card) => card.status === "degraded" || card.status === "stale").length,
+    failed: rows.filter((card) => card.status === "failed" || card.status === "unknown").length
+  });
+}
+
 export function createTerminalVisuals(dependencies = {}) {
   const document = dependencies.document;
   const window = dependencies.window;
@@ -182,7 +200,7 @@ export function createTerminalVisuals(dependencies = {}) {
       return;
     }
 
-    const regions = REGION_SPECS.map((spec) => regionSnapshot(card, spec));
+    const regions = deriveRegionalHeatmap(card);
     regions.forEach((region) => {
       const shape = panel.querySelector(`[data-risk-region="${region.id}"]`);
       if (shape) shape.setAttribute("class", `risk-region ${pressureClass(region.value)}`);
@@ -237,13 +255,9 @@ export function createTerminalVisuals(dependencies = {}) {
       const state = node.querySelector("i");
       if (state) state.textContent = "UNKNOWN";
     });
-    const cycles = rows.map((card) => card?.readiness?.consecutiveSuccessfulCycles)
-      .filter((value) => Number.isInteger(value) && value >= 0 && value <= 7);
-    const minimum = cycles.length === 4 ? Math.min(...cycles) : null;
-    const evidenceStale = rows.some((card) => card?.readiness?.reportStale === true);
-    const healthy = rows.filter((card) => card.status === "healthy").length;
-    const degraded = rows.filter((card) => card.status === "degraded" || card.status === "stale").length;
-    const failed = rows.filter((card) => card.status === "failed" || card.status === "unknown").length;
+    const summary = derivePipelineSummary(rows);
+    const minimum = summary.minimumCycle;
+    const evidenceStale = summary.evidenceStale;
 
     command.setAttribute("aria-busy", "false");
     ring.className = "stable-v1-ring";
@@ -269,7 +283,7 @@ export function createTerminalVisuals(dependencies = {}) {
       ring.style.setProperty("--stable-progress", `${minimum / 7 * 360}deg`);
     }
 
-    title.textContent = `${healthy}/4 HEALTHY · ${degraded} DEGRADED · ${failed} FAILED/UNKNOWN`;
+    title.textContent = `${summary.healthy}/4 HEALTHY · ${summary.degraded} DEGRADED · ${summary.failed} FAILED/UNKNOWN`;
     note.textContent = evidenceStale
       ? "现有周期记录完整保留，但资格快照已超过72小时；请以远端门禁为准，不重新计算已有记录。"
       : "资格证据与更新健康分别校验；视觉改版不会清空、补造或重复累计已有周期。";
