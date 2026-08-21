@@ -1,3 +1,5 @@
+import { initMarketGlobe } from "./finance-terminal-globe.mjs";
+
 const DESKTOP_QUERY = "(min-width: 1041px)";
 const VIEW_BY_ID = Object.freeze({
   "overview-section": "overview",
@@ -53,3 +55,4 @@ navigation.forEach((link) => {
 window.addEventListener("popstate", () => applyView(viewFromHash(), true));
 desktop.addEventListener("change", () => applyView(viewFromHash(), desktop.matches));
 applyView(viewFromHash());
+initMarketGlobe({ document, window });

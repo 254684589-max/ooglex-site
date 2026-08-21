@@ -73,6 +73,8 @@ export function runBrowserRegressionProbe(options = {}) {
   const marketTapeItems = Array.from(document.querySelectorAll("#market-tape .market-tape-item"));
   const marketClocks = Array.from(document.querySelectorAll("[data-market-time]"));
   const riskHudGauges = Array.from(document.querySelectorAll("#risk-grid .risk-hud-gauge"));
+  const marketGlobe = document.getElementById("market-globe-canvas");
+  const radarAxisValues = Array.from(document.querySelectorAll("#risk-radar-values text"));
   const globalRiskMap = document.getElementById("global-risk-map");
   const riskRegionRows = Array.from(document.querySelectorAll("#risk-region-list .risk-region-row"));
   const pipelineCommand = document.getElementById("pipeline-command");
@@ -193,16 +195,23 @@ export function runBrowserRegressionProbe(options = {}) {
       && marketTapeItems.filter((item) => item.textContent.includes("组件报价")).length === 4
       && marketClocks.length === 4
       && marketClocks.every((clock) => /^\d{2}:\d{2}$/.test(clock.textContent.trim()))
-      && Boolean(document.querySelector(".market-orbit-svg .globe-sphere")),
+      && Boolean(document.querySelector(".market-orbit.globe-canvas-ready"))
+      && marketGlobe && marketGlobe.width >= 220 && marketGlobe.height >= 220,
     riskHudVisuals: riskHudGauges.length === 3
       && riskHudGauges.filter((gauge) => gauge.getAttribute("role") === "progressbar").length === 2
-      && riskHudGauges.filter((gauge) => gauge.classList.contains("risk-hud-raw")).length === 1,
+      && riskHudGauges.filter((gauge) => gauge.classList.contains("risk-hud-raw")).length === 1
+      && radarAxisValues.length === 6
+      && radarAxisValues.every((value) => /^\d+\.\d$/.test(value.textContent.trim())),
     globalRiskHeatmap: globalRiskMap && globalRiskMap.getAttribute("aria-busy") === "false"
       && !globalRiskMap.classList.contains("status-loading")
       && riskRegionRows.length === 7
       && riskRegionRows.every((row) => row.querySelector("strong")?.textContent.trim() !== "—")
+      && document.querySelectorAll(".risk-region-glow").length === 7
+      && document.querySelector('.risk-map-texture[href="../tv/vendor/earth-night.jpg"]')
       && globalRiskMap.textContent.includes("压力代理")
       && globalRiskMap.textContent.includes("Yahoo Finance"),
+    marketInsight: !document.getElementById("market-insight-title")?.textContent.includes("正在读取")
+      && document.getElementById("market-insight-copy")?.textContent.includes("/10"),
     stableV1Hud: pipelineCommand && pipelineCommand.getAttribute("aria-busy") === "false"
       && stableV1Ring && Number(stableV1Ring.getAttribute("aria-valuenow")) === minimumReadinessCycle
       && stableV1Chip && stableV1Chip.textContent.includes(`${minimumReadinessCycle} / 7`)

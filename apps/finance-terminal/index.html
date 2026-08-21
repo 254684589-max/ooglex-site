@@ -1170,6 +1170,7 @@
   <link rel="stylesheet" href="terminal-vision.css">
   <link rel="stylesheet" href="terminal-command-center.css">
   <link rel="stylesheet" href="terminal-visual-fidelity.css">
+  <link rel="stylesheet" href="terminal-reference-fidelity.css">
 </head>
 <body data-terminal-view="overview">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -1233,6 +1234,9 @@
             <p class="hero-copy">用一张清晰的市场面板观察美国股指、利率、美元、黄金、原油与比特币。全息地球仅用于展示全球市场时区与连接关系，不表示资金流向；价格、来源、更新时间和回退状态仍以资产卡片为准。</p>
           </div>
           <figure class="market-orbit" aria-labelledby="orbit-caption">
+            <div class="market-globe-shell" id="market-globe" aria-hidden="true">
+              <canvas class="market-globe-canvas" id="market-globe-canvas" width="420" height="420"></canvas>
+            </div>
             <svg class="market-orbit-svg" viewBox="0 0 720 380" role="img" aria-label="全球市场时区连接示意图">
               <defs>
                 <radialGradient id="orbit-fill" cx="50%" cy="42%" r="62%">
@@ -1335,8 +1339,10 @@
           <svg class="risk-radar-chart" viewBox="0 0 260 218" role="img" aria-label="由现有市场状态信号归一化生成的六维风险雷达">
             <g class="risk-radar-grid" aria-hidden="true">
               <polygon points="130,22 213,70 213,166 130,214 47,166 47,70"></polygon>
-              <polygon points="130,51 188,84 188,152 130,185 72,152 72,84"></polygon>
+              <polygon points="130,41 196,79 196,157 130,195 64,157 64,79"></polygon>
+              <polygon points="130,61 180,89 180,147 130,175 80,147 80,89"></polygon>
               <polygon points="130,80 163,99 163,137 130,156 97,137 97,99"></polygon>
+              <polygon points="130,99 147,109 147,128 130,137 113,128 113,109"></polygon>
               <path d="M130 22V214M47 70L213 166M213 70L47 166"></path>
             </g>
             <polygon class="risk-radar-fill" id="risk-radar-polygon" points="130,118 130,118 130,118 130,118 130,118 130,118"></polygon>
@@ -1348,6 +1354,11 @@
               <text x="130" y="13">利率风险</text><text x="224" y="66">通胀风险</text>
               <text x="226" y="178">汇率风险</text><text x="130" y="217">波动率风险</text>
               <text x="37" y="178">信用风险</text><text x="35" y="66">流动性风险</text>
+            </g>
+            <g class="risk-radar-values" id="risk-radar-values" aria-hidden="true">
+              <text x="130" y="34">—</text><text x="199" y="78">—</text>
+              <text x="199" y="161">—</text><text x="130" y="198">—</text>
+              <text x="61" y="161">—</text><text x="61" y="78">—</text>
             </g>
           </svg>
           <div class="risk-radar-score"><span>风险合评分</span><strong id="risk-radar-score">—</strong><small>/10</small></div>
@@ -1370,7 +1381,7 @@
 
       <section class="risk-section" id="risk-section" aria-labelledby="risk-heading">
         <div class="board-heading">
-          <h2 class="board-title" id="risk-heading">市场状态</h2>
+          <h2 class="board-title" id="risk-heading">市场聚合指标</h2>
           <span class="board-subtitle" id="risk-summary">LOADING SIGNALS</span>
         </div>
         <div class="risk-grid" id="risk-grid" role="list" aria-label="市场状态数据卡片" aria-describedby="risk-summary" aria-busy="true">
@@ -1396,33 +1407,41 @@
           <div class="global-risk-map-layout">
             <figure class="risk-map-figure">
               <svg class="risk-map-svg" viewBox="0 0 900 430" role="img" aria-label="由区域代表性股票指数当日价格回报构成的市场压力代理地图">
+                <image class="risk-map-texture" href="../tv/vendor/earth-night.jpg" x="0" y="0" width="900" height="430" preserveAspectRatio="none"></image>
                 <g class="risk-map-grid" aria-hidden="true">
                   <path d="M20 86H880M20 172H880M20 258H880M20 344H880"></path>
                   <path d="M120 24V406M280 24V406M450 24V406M620 24V406M780 24V406"></path>
                 </g>
                 <g class="risk-region region-north-america" data-risk-region="north-america">
                   <path d="M88 96l45-37 83-22 79 24 30 40-24 27-52-9-33 21-19 48-51 19-36-35-36-19 20-35z"></path>
+                  <circle class="risk-region-glow" cx="190" cy="130" r="54"></circle>
                 </g>
                 <g class="risk-region region-south-america" data-risk-region="south-america">
                   <path d="M252 205l47 15 28 37-13 42-20 24-9 57-31-28-14-48-18-42z"></path>
+                  <circle class="risk-region-glow" cx="276" cy="284" r="36"></circle>
                 </g>
                 <g class="risk-region region-europe" data-risk-region="europe">
                   <path d="M407 93l43-27 53 13 19 32-25 25-39-8-31 17-29-19z"></path>
+                  <circle class="risk-region-glow" cx="461" cy="112" r="40"></circle>
                 </g>
                 <g class="risk-region region-africa region-no-data" data-risk-region="africa">
                   <path d="M417 163l65-18 59 29 19 57-26 78-49 43-35-46-21-66-31-39z"></path>
                 </g>
                 <g class="risk-region region-south-asia" data-risk-region="south-asia">
                   <path d="M590 179l41 6 23 38-18 55-31-19-19-51z"></path>
+                  <circle class="risk-region-glow" cx="620" cy="220" r="31"></circle>
                 </g>
                 <g class="risk-region region-greater-china" data-risk-region="greater-china">
                   <path d="M579 101l81-25 78 21 32 44-32 37-58-4-35 26-55-21-26-43z"></path>
+                  <circle class="risk-region-glow" cx="681" cy="139" r="48"></circle>
                 </g>
                 <g class="risk-region region-japan" data-risk-region="japan">
                   <path d="M777 126l14-17 9 24-8 37-12-5 7-22z"></path>
+                  <circle class="risk-region-glow" cx="789" cy="142" r="22"></circle>
                 </g>
                 <g class="risk-region region-oceania" data-risk-region="oceania">
                   <path d="M720 285l56-24 69 23 20 45-38 36-66-8-45-34z"></path>
+                  <circle class="risk-region-glow" cx="796" cy="319" r="42"></circle>
                 </g>
                 <g class="risk-map-labels" aria-hidden="true">
                   <text x="170" y="127">NORTH AMERICA</text>
@@ -1455,9 +1474,20 @@
 
       <section class="information-section" id="information-section" aria-labelledby="information-heading">
         <div class="board-heading">
-          <h2 class="board-title" id="information-heading">今日事件与资讯</h2>
+          <h2 class="board-title" id="information-heading">市场洞察与动态</h2>
           <span class="board-subtitle" id="information-summary">LOADING INFORMATION</span>
         </div>
+        <article class="market-insight-card" aria-labelledby="market-insight-title">
+          <div class="market-insight-head">
+            <span>MARKET INSIGHT</span>
+            <small>RULE-BASED · VERIFIED SIGNALS</small>
+          </div>
+          <div class="market-insight-copy">
+            <strong id="market-insight-title">正在读取三项独立风险信号</strong>
+            <p id="market-insight-copy">只依据已校验的宏观状态、恐慌贪婪与OFR压力生成规则摘要，不新增行情事实。</p>
+          </div>
+          <span class="market-insight-foot">非投资建议 · 不作为新的数据源或交易信号</span>
+        </article>
         <div class="information-grid" id="information-grid" role="list" aria-label="经济事件与财经资讯卡片" aria-describedby="information-summary" aria-busy="true">
           <div class="information-skeleton" aria-hidden="true"></div>
           <div class="information-skeleton" aria-hidden="true"></div>
