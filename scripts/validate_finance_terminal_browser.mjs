@@ -457,12 +457,6 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
   if (Math.abs((result.viewport?.width ?? 0) - width) > 1) {
     throw new Error(`${width}px请求得到异常视口宽度：${result.viewport?.width}`);
   }
-  if (result.status !== "pass") {
-    const targets = result.undersizedTargets?.length ? `；触控目标=${JSON.stringify(result.undersizedTargets)}` : "";
-    const boundary = `；视口=${result.viewport?.width ?? "?"}，文档宽度=${result.scrollWidth ?? "?"}`;
-    throw new Error(`${width}px浏览器检查失败：${(result.failures || ["unknown"]).join(", ")}${boundary}${targets}`);
-  }
-
   const layout = await client.send("Page.getLayoutMetrics");
   const content = layout.cssContentSize || layout.contentSize;
   const screenshot = await client.send("Page.captureScreenshot", {
@@ -476,6 +470,12 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
   const screenshotStat = await stat(screenshotPath);
   if (screenshotStat.size < 1000) throw new Error(`${width}px截图文件异常`);
   result.screenshot = screenshotPath;
+  if (result.status !== "pass") {
+    const targets = result.undersizedTargets?.length ? `；触控目标=${JSON.stringify(result.undersizedTargets)}` : "";
+    const boundary = `；视口=${result.viewport?.width ?? "?"}，文档宽度=${result.scrollWidth ?? "?"}`;
+    const overflow = result.overflowCandidates?.length ? `；越界元素=${JSON.stringify(result.overflowCandidates)}` : "";
+    throw new Error(`${width}px浏览器检查失败：${(result.failures || ["unknown"]).join(", ")}${boundary}${targets}${overflow}`);
+  }
   return result;
 }
 

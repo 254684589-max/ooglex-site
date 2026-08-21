@@ -246,6 +246,15 @@ export function runBrowserRegressionProbe(options = {}) {
     })()
   };
   const failures = Object.keys(checks).filter((name) => !checks[name]);
+  const overflowCandidates = Array.from(document.querySelectorAll("body *")).map((element) => {
+    const rect = element.getBoundingClientRect();
+    return {
+      selector: element.id ? `#${element.id}` : `.${String(element.className).trim().split(/\s+/).filter(Boolean).join(".")}`,
+      left: Math.round(rect.left),
+      right: Math.round(rect.right),
+      width: Math.round(rect.width)
+    };
+  }).filter((item) => item.left < -1 || item.right > width + 1).slice(0, 20);
   const result = {
     status: failures.length ? "fail" : "pass",
     requestedWidth: Number(params.get("width")) || null,
@@ -272,6 +281,7 @@ export function runBrowserRegressionProbe(options = {}) {
     readinessEvidencePanelCount: readinessEvidencePanels.length,
     stagedDataLoading: stagedLoad,
     undersizedTargets,
+    overflowCandidates,
     layout: {
       market: renderedGridColumns(grid),
       risk: renderedGridColumns(riskGrid),
