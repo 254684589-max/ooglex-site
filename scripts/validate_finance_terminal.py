@@ -32,7 +32,9 @@ PAGE = ROOT / "apps" / "finance-terminal" / "index.html"
 APP = ROOT / "apps" / "finance-terminal" / "app.js"
 LOADER = ROOT / "apps" / "finance-terminal" / "finance-terminal-loader.mjs"
 TERMINAL_VISUALS = ROOT / "apps" / "finance-terminal" / "finance-terminal-visuals.mjs"
+OPERATIONAL_RADAR_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-operational-radar.mjs"
 VISION_CSS = ROOT / "apps" / "finance-terminal" / "terminal-vision.css"
+OPERATIONAL_RADAR_CSS = ROOT / "apps" / "finance-terminal" / "terminal-operational-radar.css"
 COMMAND_CENTER_CSS = ROOT / "apps" / "finance-terminal" / "terminal-command-center.css"
 COMMAND_CENTER_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-command-center.mjs"
 REGRESSION_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-regression.mjs"
@@ -2041,7 +2043,8 @@ const adapter = require("./apps/finance-terminal/app.js");
 
 def main() -> None:
     for path in (
-        PAGE, APP, LOADER, TERMINAL_VISUALS, VISION_CSS, DATA, READINESS_DATA, MARKET_LICENSE_READINESS,
+        PAGE, APP, LOADER, TERMINAL_VISUALS, OPERATIONAL_RADAR_MODULE, VISION_CSS,
+        OPERATIONAL_RADAR_CSS, DATA, READINESS_DATA, MARKET_LICENSE_READINESS,
         MACRO_DATA, FEAR_GREED_DATA, FEAR_GREED_HEALTH, OFR_DATA, OFR_HEALTH,
         ASSET_TRACKER_DATA, ASSET_TRACKER_HEALTH, ASSET_RANKING_DATA, ASSET_RANKING_HEALTH,
         COMPANIES_DATA, COMPANIES_HEALTH,
@@ -2489,7 +2492,9 @@ def main() -> None:
     app = APP.read_text(encoding="utf-8")
     loader = LOADER.read_text(encoding="utf-8")
     terminal_visuals = TERMINAL_VISUALS.read_text(encoding="utf-8")
+    operational_radar_module = OPERATIONAL_RADAR_MODULE.read_text(encoding="utf-8")
     vision_css = VISION_CSS.read_text(encoding="utf-8")
+    operational_radar_css = OPERATIONAL_RADAR_CSS.read_text(encoding="utf-8")
     command_center_css = COMMAND_CENTER_CSS.read_text(encoding="utf-8")
     command_center_module = COMMAND_CENTER_MODULE.read_text(encoding="utf-8")
     regression_module = REGRESSION_MODULE.read_text(encoding="utf-8")
@@ -2503,12 +2508,21 @@ def main() -> None:
     require(APP.stat().st_size <= 220_000, "金融终端生产入口脚本超过220KB性能预算")
     require(LOADER.stat().st_size <= 14_000, "金融终端分区加载模块超过14KB性能预算")
     require(TERMINAL_VISUALS.stat().st_size <= 16_000, "金融终端视觉数据模块超过16KB性能预算")
+    require(OPERATIONAL_RADAR_MODULE.stat().st_size <= 6_000, "金融终端六轴风险雷达模块超过6KB性能预算")
     require(VISION_CSS.stat().st_size <= 28_000, "金融终端科幻视觉样式超过28KB性能预算")
+    require(OPERATIONAL_RADAR_CSS.stat().st_size <= 4_000, "金融终端高细节风险组件样式超过4KB性能预算")
     require(COMMAND_CENTER_CSS.stat().st_size <= 20_000, "金融终端单屏指挥中心样式超过20KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
     require(APP.stat().st_size + LOADER.stat().st_size + TERMINAL_VISUALS.stat().st_size
+            + OPERATIONAL_RADAR_MODULE.stat().st_size
             + COMMAND_CENTER_MODULE.stat().st_size <= 230_000,
             "金融终端常规加载JavaScript超过230KB性能预算")
+    require('import { createOperationalRadarRenderer } from "./finance-terminal-operational-radar.mjs";'
+            in terminal_visuals and "deriveOperationalRadar" in operational_radar_module,
+            "六轴风险雷达必须由独立视觉模块提供且保持可测试派生契约")
+    require('<link rel="stylesheet" href="terminal-operational-radar.css">' in page
+            and ".operational-radar-shape" in operational_radar_css,
+            "六轴风险雷达高细节样式必须由页面显式加载")
     require(REGRESSION_MODULE.stat().st_size <= 18_000,
             "仅回归模式加载的浏览器探针超过18KB性能预算")
     require(RISK_VIEW_MODULE.stat().st_size <= 6_000,

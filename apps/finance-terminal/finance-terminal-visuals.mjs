@@ -1,3 +1,5 @@
+import { createOperationalRadarRenderer } from "./finance-terminal-operational-radar.mjs";
+
 function finiteNumber(value) {
   return typeof value === "number" && Number.isFinite(value);
 }
@@ -101,6 +103,7 @@ export function createTerminalVisuals(dependencies = {}) {
   if (!document || !window) throw new Error("终端视觉层需要浏览器文档环境");
 
   let clockTimer = null;
+  const operationalRadar = createOperationalRadarRenderer(document);
 
   function updateMarketClocks() {
     const now = new Date();
@@ -154,6 +157,7 @@ export function createTerminalVisuals(dependencies = {}) {
 
   function renderMarketOverview(data) {
     const assets = data && Array.isArray(data.assets) ? data.assets : [];
+    operationalRadar.render({ marketAssets: assets });
     renderMarketTape(assets);
     const official = assets.filter((asset) => asset.demo === false && !asset.externalDisplay);
     const proxies = assets.filter((asset) => Boolean(asset.externalDisplay));
@@ -186,6 +190,7 @@ export function createTerminalVisuals(dependencies = {}) {
     const list = document.getElementById("risk-region-list");
     if (!panel || !status || !list) return;
     const card = Array.isArray(cards) ? cards.find((item) => item.id === "cross-asset") : null;
+    operationalRadar.render({ regionalRegions: deriveRegionalHeatmap(card) });
     list.textContent = "";
     panel.className = "global-risk-map";
     if (!card || card.status === "error" || !Array.isArray(card.assets)) {
@@ -258,6 +263,7 @@ export function createTerminalVisuals(dependencies = {}) {
       if (state) state.textContent = "UNKNOWN";
     });
     const summary = derivePipelineSummary(rows);
+    operationalRadar.render({ pipelineSummary: summary });
     const minimum = summary.minimumCycle;
     const evidenceStale = summary.evidenceStale;
 
@@ -304,6 +310,10 @@ export function createTerminalVisuals(dependencies = {}) {
     setText(document.getElementById("orbit-market-note"), message || "未显示未经校验的数据");
   }
 
+  function renderRiskRadar(cards) {
+    operationalRadar.render({ riskCards: Array.isArray(cards) ? cards : [] });
+  }
+
   startMarketClocks();
 
   return Object.freeze({
@@ -311,6 +321,7 @@ export function createTerminalVisuals(dependencies = {}) {
     renderGlobalRiskHeatmap,
     renderMarketOverview,
     renderPipelineOverview,
+    renderRiskRadar,
     updateMarketClocks
   });
 }
