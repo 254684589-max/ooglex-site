@@ -18,13 +18,14 @@ export function createRiskView(dependencies = {}) {
   const formatTimestamp = requireDependency(dependencies, "formatTimestamp");
   const isSafeHref = requireDependency(dependencies, "isSafeHref");
 
+  /* 只返回读数本身；量纲后缀（如 / 100）单独成行，避免在圆环内被截断。 */
   function formatRiskValue(card) {
     if (!isNumber(card.value)) return "—";
     const decimals = Number.isInteger(card.decimals) ? card.decimals : 2;
     return (card.prefix || "") + card.value.toLocaleString("en-US", {
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals
-    }) + (card.suffix || "");
+    });
   }
 
   function riskStatusLabel(card) {
@@ -65,6 +66,7 @@ export function createRiskView(dependencies = {}) {
     const valueRow = document.createElement("div");
     valueRow.className = "risk-value-row";
     appendText(valueRow, "span", "risk-value", formatRiskValue(signal));
+    if (signal.suffix) appendText(valueRow, "span", "risk-value-suffix", signal.suffix.trim());
     appendText(valueRow, "span", "risk-assessment", signal.assessment);
     gauge.appendChild(valueRow);
     appendText(gauge, "span", "risk-hud-scale", isNumber(signal.meterPercent) ? "0 — 100" : "RAW INDEX");

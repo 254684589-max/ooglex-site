@@ -1,4 +1,5 @@
 import { renderRiskRadar } from "./finance-terminal-risk-radar.mjs";
+import { renderWorldHeatmap } from "./finance-terminal-worldmap.mjs";
 
 function finiteNumber(value) {
   return typeof value === "number" && Number.isFinite(value);
@@ -109,11 +110,14 @@ export function createTerminalVisuals(dependencies = {}) {
     document.querySelectorAll("[data-market-time]").forEach((element) => {
       const timeZone = element.getAttribute("data-market-time");
       try {
-        element.textContent = new Intl.DateTimeFormat("en-GB", {
+        /* 按时区选locale才能得到正确缩写（伦敦BST需en-GB、纽约EDT需en-US）；
+           其余时区回退为准确的GMT偏移，不硬编码会随夏令时改变的缩写。 */
+        element.textContent = new Intl.DateTimeFormat(timeZone.startsWith("America/") ? "en-US" : "en-GB", {
           timeZone,
           hour: "2-digit",
           minute: "2-digit",
-          hour12: false
+          hour12: false,
+          timeZoneName: "short"
         }).format(now);
         element.dateTime = now.toISOString();
       } catch {
@@ -205,6 +209,8 @@ export function createTerminalVisuals(dependencies = {}) {
     }
 
     const regions = deriveRegionalHeatmap(card);
+    /* 点阵大陆按同一组回报值着色；画布不可用时保留下方SVG区块作为降级。 */
+    renderWorldHeatmap(document.getElementById("risk-map-canvas"), regions, { document, window });
     regions.forEach((region) => {
       const shape = panel.querySelector(`[data-risk-region="${region.id}"]`);
       if (shape) shape.setAttribute("class", `risk-region ${pressureClass(region.value)}`);
