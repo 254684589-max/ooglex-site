@@ -1,5 +1,6 @@
 import { renderRiskRadar } from "./finance-terminal-risk-radar.mjs";
 import { renderWorldHeatmap } from "./finance-terminal-worldmap.mjs";
+import { sessionState } from "./finance-terminal-sessions.mjs";
 
 function finiteNumber(value) {
   return typeof value === "number" && Number.isFinite(value);
@@ -124,6 +125,11 @@ export function createTerminalVisuals(dependencies = {}) {
         element.textContent = "--:--";
         element.removeAttribute("datetime");
       }
+    });
+    document.querySelectorAll("[data-market-session]").forEach((element) => {
+      const { state, label, detail } = sessionState(element.getAttribute("data-market-session"), now);
+      element.className = `orbit-session session-${state}`;
+      element.textContent = detail ? `${label} · ${detail}` : label;
     });
   }
 

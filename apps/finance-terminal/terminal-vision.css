@@ -425,6 +425,23 @@ body::after {
 }
 
 .orbit-clock time { color: var(--vision-amber); }
+
+/* 交易时段：颜色之外同时用符号与文字区分，颜色不作为唯一信号。 */
+.orbit-session {
+  display: block;
+  color: var(--faint);
+  font-size: 7px;
+  font-style: normal;
+  white-space: nowrap;
+}
+
+.orbit-session::before { margin-right: 3px; content: "○"; }
+.orbit-session.session-open { color: #6de2a6; }
+.orbit-session.session-open::before { content: "●"; }
+.orbit-session.session-lunch,
+.orbit-session.session-pre { color: var(--vision-amber); }
+.orbit-session.session-lunch::before,
+.orbit-session.session-pre::before { content: "◐"; }
 .clock-new-york { top: 49%; left: 4%; }
 .clock-london { top: 12%; left: 25%; }
 .clock-shanghai { top: 27%; right: 13%; }

@@ -34,6 +34,7 @@ LOADER = ROOT / "apps" / "finance-terminal" / "finance-terminal-loader.mjs"
 TERMINAL_VISUALS = ROOT / "apps" / "finance-terminal" / "finance-terminal-visuals.mjs"
 RISK_RADAR_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-radar.mjs"
 WORLDMAP_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-worldmap.mjs"
+SESSIONS_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-sessions.mjs"
 GLOBE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-globe.mjs"
 VISION_CSS = ROOT / "apps" / "finance-terminal" / "terminal-vision.css"
 VISUAL_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-visual-fidelity.css"
@@ -2496,6 +2497,7 @@ def main() -> None:
     terminal_visuals = TERMINAL_VISUALS.read_text(encoding="utf-8")
     risk_radar_module = RISK_RADAR_MODULE.read_text(encoding="utf-8")
     worldmap_module = WORLDMAP_MODULE.read_text(encoding="utf-8")
+    sessions_module = SESSIONS_MODULE.read_text(encoding="utf-8")
     globe_module = GLOBE_MODULE.read_text(encoding="utf-8")
     vision_css = VISION_CSS.read_text(encoding="utf-8")
     command_center_css = COMMAND_CENTER_CSS.read_text(encoding="utf-8")
@@ -2514,6 +2516,7 @@ def main() -> None:
     require(TERMINAL_VISUALS.stat().st_size <= 16_000, "金融终端视觉数据模块超过16KB性能预算")
     require(RISK_RADAR_MODULE.stat().st_size <= 3_000, "金融终端风险雷达模块超过3KB性能预算")
     require(WORLDMAP_MODULE.stat().st_size <= 5_000, "金融终端点阵世界地图模块超过5KB性能预算")
+    require(SESSIONS_MODULE.stat().st_size <= 3_500, "金融终端交易时段模块超过3.5KB性能预算")
     require(GLOBE_MODULE.stat().st_size <= 8_000, "金融终端地球动画模块超过8KB性能预算")
     require(VISION_CSS.stat().st_size <= 28_000, "金融终端科幻视觉样式超过28KB性能预算")
     require(COMMAND_CENTER_CSS.stat().st_size <= 20_000, "金融终端单屏指挥中心样式超过20KB性能预算")
@@ -2587,6 +2590,14 @@ def main() -> None:
             and "deriveRiskRadar" in risk_radar_module
             and "renderRiskRadar" in risk_radar_module,
             "高保真风险雷达必须使用独立受预算约束的真实信号视觉层")
+    require("innerHTML" not in sessions_module
+            and 'from "./finance-terminal-sessions.mjs"' in terminal_visuals
+            and "sessionState" in sessions_module
+            and "localClock" in sessions_module
+            and "未计入交易所假日" in page
+            and ".orbit-session" in vision_css
+            and "session-open" in vision_css,
+            "交易时段状态必须为纯日历计算、披露未计假日并提供非颜色区分")
     require("innerHTML" not in worldmap_module
             and 'from "./finance-terminal-worldmap.mjs"' in terminal_visuals
             and "renderWorldHeatmap" in worldmap_module
