@@ -5,6 +5,7 @@ import {
 } from "../apps/finance-terminal/finance-terminal-visuals.mjs";
 import { deriveRiskRadar } from "../apps/finance-terminal/finance-terminal-risk-radar.mjs";
 import { textureCoordinate } from "../apps/finance-terminal/finance-terminal-globe.mjs";
+import { sessionState } from "../apps/finance-terminal/finance-terminal-sessions.mjs";
 
 function asset(symbol, dailyReturn, options = {}) {
   return {
@@ -93,8 +94,33 @@ assert.equal(textureCoordinate(0, 0), .5, "地球中央经线必须映射到纹�
 assert.equal(textureCoordinate(0, 1), .75, "地球右侧边缘必须映射到东经90度");
 assert.equal(textureCoordinate(0, -1), .25, "地球左侧边缘必须映射到西经90度");
 
+
+/* 交易时段：纯日历推导，覆盖盘中、午休、盘前、收盘、周末与未知时区。 */
+const at = (iso, zone) => sessionState(zone, new Date(iso));
+assert.equal(at("2026-08-19T18:00:00Z", "America/New_York").state, "open",
+  "周三纽约14:00应处于常规交易时段");
+assert.equal(at("2026-08-20T00:00:00Z", "America/New_York").state, "closed",
+  "纽约收盘后不得仍标记为开盘");
+assert.equal(at("2026-08-19T12:00:00Z", "America/New_York").state, "pre",
+  "纽约盘前应标记为待开盘");
+assert.equal(at("2026-08-19T11:00:00Z", "Europe/London").state, "open",
+  "周三伦敦12:00应处于常规交易时段");
+assert.equal(at("2026-08-19T04:00:00Z", "Asia/Shanghai").state, "lunch",
+  "上海12:00应识别为午间休市而非收盘");
+assert.equal(at("2026-08-19T03:00:00Z", "Asia/Tokyo").state, "lunch",
+  "东京12:00应识别为午间休市而非收盘");
+assert.ok(at("2026-08-19T02:30:00Z", "Asia/Shanghai").detail.includes("午休"),
+  "上半场剩余时间应指向午休而非收盘");
+assert.ok(at("2026-08-19T06:00:00Z", "Asia/Shanghai").detail.includes("收盘"),
+  "下半场剩余时间应指向收盘");
+assert.equal(at("2026-08-22T18:00:00Z", "America/New_York").state, "weekend",
+  "周六必须标记为周末休市");
+assert.equal(at("2026-08-19T18:00:00Z", "Mars/Olympus").state, "unknown",
+  "无法解析的时区必须返回未知而不是猜测开盘");
+
 console.log("Finance Terminal visual data contracts: PASS");
 console.log("- seven-region daily return pressure proxy / error isolation: PASS");
 console.log("- dynamic 5/7 to 7/7 minimum-cycle continuity / stale evidence preservation: PASS");
 console.log("- three-source normalized six-axis risk radar / incomplete-source isolation: PASS");
 console.log("- rotating globe longitude projection / texture wrap contract: PASS");
+console.log("- calendar-only trading sessions / lunch break / weekend / unknown zone: PASS");
