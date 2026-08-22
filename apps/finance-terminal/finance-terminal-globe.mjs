@@ -39,7 +39,7 @@ export function initMarketGlobe(options = {}) {
 
   /* 遮罩一次性采样成陆地点阵，之后每帧只投影。 */
   function sampleLand() {
-    const columns = 132, rows = 66;
+    const columns = 208, rows = 104;
     const buffer = document.createElement("canvas");
     buffer.width = columns;
     buffer.height = rows;
@@ -88,22 +88,20 @@ export function initMarketGlobe(options = {}) {
   }
 
   function drawSphere(cx, cy, r) {
-    ctx.strokeStyle = "rgba(88,206,255,.22)";
+    ctx.strokeStyle = "rgba(99,216,255,.3)";
     ctx.lineWidth = Math.max(.6, r * .0035);
     ctx.beginPath();
     [-60, -30, 0, 30, 60].forEach((latitude) => trace(cx, cy, r, latitude, true));
     for (let longitude = -180; longitude < 180; longitude += 30) trace(cx, cy, r, longitude, false);
     ctx.stroke();
 
-    const dot = Math.max(.9, r * .0125);
-    ctx.fillStyle = "rgba(120,232,255,.92)";
+    const dot = Math.max(1, r * .0094);
+    ctx.fillStyle = "rgba(154,242,255,.96)";
     for (let index = 0; index < land.length; index += 2) {
       const point = projectPoint(land[index], land[index + 1], spun);
       if (point.depth <= .04) continue;
-      ctx.globalAlpha = Math.min(.95, point.depth * 1.25);
-      ctx.beginPath();
-      ctx.arc(cx + point.x * r, cy + point.y * r, dot, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.globalAlpha = Math.min(1, point.depth * 1.55);
+      ctx.fillRect(cx + point.x * r - dot / 2, cy + point.y * r - dot / 2, dot, dot);
     }
     ctx.globalAlpha = 1;
   }
@@ -114,7 +112,7 @@ export function initMarketGlobe(options = {}) {
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(rotation);
-      ctx.strokeStyle = `rgba(${color},${front ? .72 : .2})`;
+      ctx.strokeStyle = `rgba(${color},${front ? .85 : .26})`;
       ctx.lineWidth = Math.max(1, r * (front ? .006 : .004));
       if (front) {
         ctx.shadowColor = `rgba(${color},.55)`;
@@ -133,13 +131,13 @@ export function initMarketGlobe(options = {}) {
     const size = canvas.width;
     const cx = size / 2;
     const cy = cx;
-    const r = size * .35;
+    const r = size * .385;
     ctx.clearRect(0, 0, size, size);
     drawOrbits(cx, cy, r, false);
 
     const body = ctx.createRadialGradient(cx - r * .35, cy - r * .4, r * .05, cx, cy, r * 1.05);
-    body.addColorStop(0, "rgba(19,71,108,.95)");
-    body.addColorStop(1, "rgba(2,12,23,.98)");
+    body.addColorStop(0, "rgba(30,102,150,.97)");
+    body.addColorStop(1, "rgba(3,18,34,.99)");
     ctx.save();
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);

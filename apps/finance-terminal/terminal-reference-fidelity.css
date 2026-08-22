@@ -22,7 +22,18 @@
 .market-globe-canvas {
   display: block;
   max-width: 100%;
-  filter: saturate(1.12) brightness(1.06);
+  /* drop-shadow 让亮点阵整体泛光，比在画布里对每个点做 shadowBlur 快得多。 */
+  filter: saturate(1.18) brightness(1.12) drop-shadow(0 0 5px rgba(84, 212, 255, .5));
+}
+
+/* 大气层：与画布内球体半径（size*0.385）对齐的辉光环。 */
+.market-globe-shell::before {
+  position: absolute;
+  inset: 11.5%;
+  content: "";
+  border-radius: 50%;
+  box-shadow: 0 0 30px rgba(69, 212, 255, .5), inset 0 0 34px rgba(69, 212, 255, .16);
+  pointer-events: none;
 }
 
 .globe-canvas-ready .market-globe-shell { opacity: 1; }
