@@ -33,6 +33,7 @@ APP = ROOT / "apps" / "finance-terminal" / "app.js"
 LOADER = ROOT / "apps" / "finance-terminal" / "finance-terminal-loader.mjs"
 TERMINAL_VISUALS = ROOT / "apps" / "finance-terminal" / "finance-terminal-visuals.mjs"
 RISK_RADAR_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-radar.mjs"
+WORLDMAP_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-worldmap.mjs"
 GLOBE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-globe.mjs"
 VISION_CSS = ROOT / "apps" / "finance-terminal" / "terminal-vision.css"
 VISUAL_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-visual-fidelity.css"
@@ -2494,6 +2495,7 @@ def main() -> None:
     loader = LOADER.read_text(encoding="utf-8")
     terminal_visuals = TERMINAL_VISUALS.read_text(encoding="utf-8")
     risk_radar_module = RISK_RADAR_MODULE.read_text(encoding="utf-8")
+    worldmap_module = WORLDMAP_MODULE.read_text(encoding="utf-8")
     globe_module = GLOBE_MODULE.read_text(encoding="utf-8")
     vision_css = VISION_CSS.read_text(encoding="utf-8")
     command_center_css = COMMAND_CENTER_CSS.read_text(encoding="utf-8")
@@ -2511,6 +2513,7 @@ def main() -> None:
     require(LOADER.stat().st_size <= 14_000, "金融终端分区加载模块超过14KB性能预算")
     require(TERMINAL_VISUALS.stat().st_size <= 16_000, "金融终端视觉数据模块超过16KB性能预算")
     require(RISK_RADAR_MODULE.stat().st_size <= 3_000, "金融终端风险雷达模块超过3KB性能预算")
+    require(WORLDMAP_MODULE.stat().st_size <= 5_000, "金融终端点阵世界地图模块超过5KB性能预算")
     require(GLOBE_MODULE.stat().st_size <= 8_000, "金融终端地球动画模块超过8KB性能预算")
     require(VISION_CSS.stat().st_size <= 28_000, "金融终端科幻视觉样式超过28KB性能预算")
     require(COMMAND_CENTER_CSS.stat().st_size <= 20_000, "金融终端单屏指挥中心样式超过20KB性能预算")
@@ -2584,6 +2587,14 @@ def main() -> None:
             and "deriveRiskRadar" in risk_radar_module
             and "renderRiskRadar" in risk_radar_module,
             "高保真风险雷达必须使用独立受预算约束的真实信号视觉层")
+    require("innerHTML" not in worldmap_module
+            and 'from "./finance-terminal-worldmap.mjs"' in terminal_visuals
+            and "renderWorldHeatmap" in worldmap_module
+            and "pressureTone" in worldmap_module
+            and "earth-water.jpg" in worldmap_module
+            and 'id="risk-map-canvas"' in page
+            and ".risk-map-canvas-ready" in reference_fidelity_css,
+            "点阵世界地图必须使用同源遮罩、既有回报着色并保留SVG降级")
     require('@media (max-width: 1040px)' in vision_css
             and '@media (max-width: 780px)' in vision_css
             and '@media (max-width: 620px)' in vision_css

@@ -5,12 +5,13 @@
   z-index: 2;
 }
 
+/* 画布本身绘制球体、经纬网、限边辉光与前后轨道环，外框只负责定位。 */
 .market-globe-shell {
   position: absolute;
   top: 51.5%;
   left: 50%;
   z-index: 1;
-  width: min(43%, 372px);
+  width: min(56%, 486px);
   aspect-ratio: 1;
   opacity: 0;
   pointer-events: none;
@@ -18,42 +19,107 @@
   transition: opacity 280ms ease;
 }
 
-.market-globe-shell::before,
-.market-globe-shell::after {
-  position: absolute;
-  content: "";
-  pointer-events: none;
-}
-
-.market-globe-shell::before {
-  inset: 2.8%;
-  z-index: 2;
-  border: 1px solid rgba(105, 226, 255, .58);
-  border-radius: 50%;
-  box-shadow: 0 0 18px rgba(69, 212, 255, .42), inset 0 0 20px rgba(69, 212, 255, .2);
-}
-
-.market-globe-shell::after {
-  right: -28%;
-  bottom: -9%;
-  left: -28%;
-  height: 19%;
-  border: 1px solid rgba(57, 183, 235, .32);
-  border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(38, 157, 212, .2), transparent 70%);
-  box-shadow: 0 0 18px rgba(31, 147, 201, .18);
-  transform: perspective(120px) rotateX(68deg);
-}
-
 .market-globe-canvas {
   display: block;
   max-width: 100%;
-  border-radius: 50%;
-  filter: contrast(1.16) saturate(1.35) brightness(1.16);
+  filter: saturate(1.12) brightness(1.06);
 }
 
 .globe-canvas-ready .market-globe-shell { opacity: 1; }
-.globe-canvas-ready .market-orbit-svg .globe { opacity: 0; }
+
+/* 雷达评分区按参考图分栏：标签一行、读数一行，判语靠右下对齐。 */
+.risk-radar-score {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 5px;
+  padding-right: 82px;
+}
+
+.risk-radar-score > span { flex: 1 0 100%; }
+.risk-radar-score > strong { margin-left: 0; }
+
+.risk-radar-score > b {
+  position: absolute;
+  right: 0;
+  bottom: 1px;
+  color: var(--vision-cyan);
+  font: 700 9px/1.4 var(--mono);
+  text-align: right;
+  white-space: pre-line;
+}
+
+/* 画布接管后隐藏SVG降级球与旧连线弧，避免两套轨迹叠加。 */
+.globe-canvas-ready .market-orbit-svg .globe,
+.globe-canvas-ready .market-orbit-svg .orbit-arcs,
+.globe-canvas-ready .market-orbit-svg .market-node { opacity: 0; }
+
+/* 点阵热力图：画布铺满图框，就绪后接管SVG色块降级层。 */
+.risk-map-canvas {
+  display: block;
+  width: 100%;
+  height: 315px;
+}
+
+.risk-map-canvas-ready .risk-map-svg {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.risk-map-figure:not(.risk-map-canvas-ready) .risk-map-canvas { display: none; }
+
+/* 聚合指标卡：量纲后缀独立成行（读数不再被圆环截断），
+   状态徽标移到圆环下方，内容纵向居中以消除卡片底部空档。 */
+.risk-value-suffix {
+  color: var(--faint);
+  font: 700 9px var(--mono);
+  letter-spacing: .06em;
+}
+
+.risk-hud-gauge { overflow: visible; }
+
+/* 原始指数（非0-100分）不画进度弧：用未填充的中性轨道环，
+   与百分制表盘视觉统一，同时如实表明没有可归一化的量纲。 */
+.risk-hud-raw {
+  background:
+    radial-gradient(circle at 50% 50%, #06131f 0 54%, transparent 55%),
+    conic-gradient(rgba(126, 170, 198, .2) 0 360deg);
+}
+
+.risk-hud-gauge .risk-assessment {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+@media (min-width: 1041px) {
+  body[data-terminal-view="overview"] .risk-card { justify-content: center; }
+
+  body[data-terminal-view="overview"] .risk-hud-gauge {
+    margin: 10px auto 30px;
+  }
+
+  /* 圆环内已显示 / 100，底部刻度重复即隐藏。 */
+  body[data-terminal-view="overview"] .risk-hud-scale { display: none; }
+  body[data-terminal-view="overview"] .risk-value-suffix { font-size: 7px; }
+
+  /* 较长的状态描述（如“低于历史平均压力”）在窄卡内收窄字号并留边。 */
+  body[data-terminal-view="overview"] .risk-hud-gauge .risk-assessment {
+    max-width: 96%;
+    padding: 2px 5px;
+    font-size: 6px;
+  }
+
+  /* 标题不换行，让右侧计数在空间不足时先省略。 */
+  body[data-terminal-view="overview"] .board-title { white-space: nowrap; }
+  body[data-terminal-view="overview"] .board-subtitle { min-width: 0; }
+}
 
 .risk-radar-values text {
   fill: #d3f5ff;

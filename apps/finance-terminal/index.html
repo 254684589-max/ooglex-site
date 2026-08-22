@@ -1361,7 +1361,10 @@
               <text x="61" y="161">—</text><text x="61" y="78">—</text>
             </g>
           </svg>
-          <div class="risk-radar-score"><span>风险合评分</span><strong id="risk-radar-score">—</strong><small>/10</small></div>
+          <div class="risk-radar-score">
+            <span>风险综合评分</span><strong id="risk-radar-score">—</strong><small>/10</small>
+            <b id="risk-radar-verdict">—</b>
+          </div>
           <p id="risk-radar-note">由宏观状态、恐慌贪婪与OFR压力三项现有信号归一化映射，仅作风险结构可视化。</p>
         </aside>
       </section>
@@ -1406,6 +1409,7 @@
           </div>
           <div class="global-risk-map-layout">
             <figure class="risk-map-figure">
+              <canvas class="risk-map-canvas" id="risk-map-canvas" width="900" height="430" role="img" aria-label="由区域代表性股票指数当日价格回报着色的大陆点阵市场压力代理地图"></canvas>
               <svg class="risk-map-svg" viewBox="0 0 900 430" role="img" aria-label="由区域代表性股票指数当日价格回报构成的市场压力代理地图">
                 <image class="risk-map-texture" href="../tv/vendor/earth-night.jpg" x="0" y="0" width="900" height="430" preserveAspectRatio="none"></image>
                 <g class="risk-map-grid" aria-hidden="true">
