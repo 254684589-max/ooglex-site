@@ -5,6 +5,7 @@ import {
 } from "../apps/finance-terminal/finance-terminal-visuals.mjs";
 import { deriveRiskRadar } from "../apps/finance-terminal/finance-terminal-risk-radar.mjs";
 import { textureCoordinate } from "../apps/finance-terminal/finance-terminal-globe.mjs";
+import { regionAt } from "../apps/finance-terminal/finance-terminal-worldmap.mjs";
 import { sessionState } from "../apps/finance-terminal/finance-terminal-sessions.mjs";
 import { sanitizeSymbol, normalizeList, toggleSymbol, orderByWatchlist, describeFilter, createWatchlistStore }
   from "../apps/finance-terminal/finance-terminal-watchlist.mjs";
@@ -191,6 +192,29 @@ assert.equal(readInput({ meterPercent: 140 }), 100, "读数必须夹在 0–100"
 assert.equal(readInput({ value: -10 }), 0, "由 value 映射的读数同样夹在 0–100");
 assert.equal(readInput({}), null, "无有效读数必须返回 null 而非猜测");
 
+/* 地图不得替没有代表指数的地区着色：这些地点站内没有任何指数，必须留白。 */
+{
+  const REGIONS = ["north-america", "south-america", "europe", "greater-china",
+    "japan", "south-asia", "oceania"].map((id) => ({ id }));
+  const mustCover = [["纽约", -74, 40.7, "north-america"], ["圣保罗", -46.6, -23.5, "south-america"],
+    ["伦敦", -0.1, 51.5, "europe"], ["里斯本", -9.1, 38.7, "europe"], ["雅典", 23.7, 38, "europe"],
+    ["上海", 121.5, 31.2, "greater-china"], ["乌鲁木齐", 87.6, 43.8, "greater-china"],
+    ["东京", 139.7, 35.7, "japan"], ["新德里", 77.2, 28.6, "south-asia"],
+    ["孟买", 72.8, 19, "south-asia"], ["悉尼", 151.2, -33.9, "oceania"]];
+  const mustStayBlank = [["拉各斯", 3.4, 6.5], ["开罗", 31.2, 30], ["约翰内斯堡", 28, -26.2],
+    ["内罗毕", 36.8, -1.3], ["利雅得", 46.7, 24.7], ["德黑兰", 51.4, 35.7],
+    ["莫斯科", 37.6, 55.8], ["伊斯坦布尔", 29, 41], ["首尔", 127, 37.5],
+    ["雅加达", 106.8, -6.2], ["曼谷", 100.5, 13.8]];
+  mustCover.forEach(([name, lon, lat, expected]) => {
+    const hit = regionAt(lon, lat, REGIONS);
+    assert.equal(hit && hit.id, expected, `${name}应归入${expected}`);
+  });
+  mustStayBlank.forEach(([name, lon, lat]) => {
+    assert.equal(regionAt(lon, lat, REGIONS), null,
+      `${name}所在国家站内没有代表指数，地图不得借邻近区域的涨跌为其着色`);
+  });
+}
+
 console.log("Finance Terminal visual data contracts: PASS");
 console.log("- seven-region daily return pressure proxy / error isolation: PASS");
 console.log("- dynamic 5/7 to 7/7 minimum-cycle continuity / stale evidence preservation: PASS");
@@ -200,3 +224,4 @@ console.log("- calendar-only trading sessions / lunch break / weekend / unknown 
 console.log("- watchlist sanitization / pure toggle / stable ordering / storage degradation: PASS");
 console.log("- detail drawer series geometry / literal keyword-hit labelling: PASS");
 console.log("- radar axis weights match deriveRiskRadar / honest formula text: PASS");
+console.log("- heatmap paints only regions with a representative index: PASS");
