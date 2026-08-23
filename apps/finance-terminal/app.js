@@ -1450,8 +1450,30 @@
       frequency: "日频",
       status: stale ? "stale" : "ok",
       source: { name: macroData.source, url: "../macro-radar/" },
-      detailUrl: "../macro-radar/"
+      detailUrl: "../macro-radar/",
+      regimeSignals: extractRegimeSignals(macroData)
     };
+  }
+
+  /* 宏观管线本就算出 8 个制度信号（波动率来自 VIX、信用来自高收益债 OAS、
+     流动性来自净流动性与 SOFR−IORB 等），此前终端只读了聚合后的一个分数，
+     把分项全丢了——雷达才不得不用那一个数字重组出六个轴。这里把它们取出来，
+     只保留分数确为 0–100 有限值的条目，缺项由雷达按不可用处理，不做填补。 */
+  function extractRegimeSignals(macroData) {
+    var raw = macroData && Array.isArray(macroData.signals) ? macroData.signals : [];
+    var out = [];
+    raw.forEach(function (signal) {
+      if (!signal || typeof signal.key !== "string") return;
+      if (!isNumber(signal.score) || signal.score < 0 || signal.score > 100) return;
+      out.push({
+        key: signal.key,
+        label: typeof signal.zh === "string" ? signal.zh : signal.key,
+        score: signal.score,
+        statusLabel: typeof signal.statusZh === "string" ? signal.statusZh : "",
+        detail: typeof signal.desc === "string" ? signal.desc : ""
+      });
+    });
+    return out;
   }
 
   function unavailableMacroRegime(error) {
