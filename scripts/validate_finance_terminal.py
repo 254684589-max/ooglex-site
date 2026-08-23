@@ -2744,6 +2744,7 @@ def main() -> None:
             and "在此之前不显示推断值" in curve_view_module
             and "不构成对后市的预测" in curve_view_module
             and 'id="yield-curve-entry"' in page
+            and 'id="yield-curve-entry-risk"' in page
             and "aria-modal" not in curve_view_module,
             "收益率曲线抽屉必须按需导入、不进首屏、缺档断线不插值，且不得另建对话框语义")
     require("innerHTML" not in radar_view_module

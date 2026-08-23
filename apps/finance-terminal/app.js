@@ -2956,12 +2956,16 @@
   bindRadarDetail(null);
   /* 收益率曲线抽屉按需加载；入口在首屏即绑定，不依赖任何延迟分区。 */
   (function bindYieldCurve() {
-    var trigger = document.getElementById("yield-curve-entry");
-    if (!trigger) return;
-    trigger.addEventListener("click", function () {
-      import("./finance-terminal-curve-view.mjs").then(function (mod) {
-        mod.openCurve(document);
-      }).catch(function () {});
+    /* 两个入口：总览的遥测卡与「市场状态」页标题栏。后者才是访客找它的地方——
+       曲线属于市场状态，不属于首页概览。 */
+    ["yield-curve-entry", "yield-curve-entry-risk"].forEach(function (id) {
+      var trigger = document.getElementById(id);
+      if (!trigger) return;
+      trigger.addEventListener("click", function () {
+        import("./finance-terminal-curve-view.mjs").then(function (mod) {
+          mod.openCurve(document);
+        }).catch(function () {});
+      });
     });
   }());
   import("./finance-terminal-watchlist.mjs").then(function (mod) {
