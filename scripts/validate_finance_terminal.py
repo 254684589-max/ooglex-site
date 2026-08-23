@@ -2642,7 +2642,10 @@ def main() -> None:
                       + "\n" + information_view_module + "\n" + operations_view_module)
     compact_loader = re.sub(r"\s+", "", loader)
     require(APP.stat().st_size <= 220_000, "金融终端生产入口脚本超过220KB性能预算")
-    require(LOADER.stat().st_size <= 14_000, "金融终端分区加载模块超过14KB性能预算")
+    # 14,000 是按「一个分区一个触发元素、进入视野即加载」那版观察器设的。改为
+    # 「掠过不算、停留才算」并允许一个分区挂多个触发元素后，这段不可压缩地变大；
+    # 同时 app.js 里那个各行其是的雷达观察器被删掉，常规加载合计反而比之前小。
+    require(LOADER.stat().st_size <= 15_000, "金融终端分区加载模块超过15KB性能预算")
     require(TERMINAL_VISUALS.stat().st_size <= 16_000, "金融终端视觉数据模块超过16KB性能预算")
     require(RISK_RADAR_MODULE.stat().st_size <= 3_000, "金融终端风险雷达模块超过3KB性能预算")
     require(WORLDMAP_MODULE.stat().st_size <= 5_000, "金融终端点阵世界地图模块超过5KB性能预算")
@@ -2758,11 +2761,17 @@ def main() -> None:
             and "这里也不显示由不完整输入推算出的轴值" in radar_view_module
             and 'id="risk-radar-detail"' in page,
             "雷达构成抽屉必须按需导入、不进首屏，且如实说明六轴由三项信号重组而来")
-    require("observeRadarPanel" in app
-            and '.risk-radar-panel' in app
-            and 'scheduler.load("risk")' in app,
-            "首屏之外但先于 #risk-section 出现的风险雷达必须自带加载触发点，"
-            "否则窄屏下它会一直停在 LOADING 直到访客滚到数千像素之下的分区")
+    require('risk: [document.getElementById("risk-section")' in app
+            and 'document.querySelector(".risk-radar-panel")' in app
+            and "observeRadarPanel" not in app,
+            "首屏之外但先于 #risk-section 出现的风险雷达必须登记为 risk 分区的触发元素，"
+            "否则窄屏下它会一直停在 LOADING 直到访客滚到数千像素之下的分区；"
+            "触发逻辑只能有一份，不得在 app.js 里另起一个观察器")
+    require("dwellMs" in loader
+            and "clearTimeout(dwellTimers" in loader
+            and "掠过" in loader,
+            "延迟分区必须区分「滚过」与「看过」：分区导航是一次上万像素的平滑滚动，"
+            "掠过即加载会把整页请求一并拉起，延迟加载形同虚设")
     require("openPanel" in detail_view_module and "isPanelOpen" in detail_view_module
             and "aria-modal" in detail_view_module
             and "aria-modal" not in radar_view_module,

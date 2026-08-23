@@ -162,6 +162,8 @@ export function createDeferredSectionScheduler(options = {}) {
     ? options.Observer
     : globalThis.IntersectionObserver;
   const rootMargin = options.rootMargin || "480px 0px";
+  const dwellMs = Number.isFinite(options.dwellMs) ? options.dwellMs : 600;
+  const dwellTimers = new Map();
   const inFlight = new Map();
   const loaded = new Set();
   const failed = new Set();
@@ -238,19 +240,31 @@ export function createDeferredSectionScheduler(options = {}) {
       Promise.all(names.map((name) => load(name))).catch(() => {});
       return { mode: "eager", allLoaded, allSettled };
     }
-    observer = new Observer((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const name = names.find((candidate) => sections[candidate] === entry.target);
-        if (!name) return;
-        observer.unobserve(entry.target);
-        load(name).catch(() => {});
-      });
-    }, { rootMargin });
+    /* 一个分区可以给多个触发元素：风险雷达画在首屏总览里，数据却属于
+       #risk-section；窄屏下那个分区在四千像素之下，雷达便会一直空着。
+       另外，「滚过」不等于「看过」——分区导航是一次上万像素的平滑滚动，沿途每个
+       分区都会在视野里掠过约两百毫秒。掠过即加载会把整页请求一并拉起，延迟加载
+       形同虚设，所以要求停留够久才算数，中途划走即取消。 */
+    const targets = new Map();
     names.forEach((name) => {
-      if (sections[name]) observer.observe(sections[name]);
+      const list = (Array.isArray(sections[name]) ? sections[name] : [sections[name]]).filter(Boolean);
+      if (list.length) list.forEach((element) => targets.set(element, name));
       else load(name).catch(() => {});
     });
+    observer = new Observer((entries) => {
+      entries.forEach((entry) => {
+        const name = targets.get(entry.target);
+        if (!name || inFlight.has(name)) return;
+        if (!entry.isIntersecting) {
+          clearTimeout(dwellTimers.get(entry.target));
+          dwellTimers.delete(entry.target);
+          return;
+        }
+        if (dwellTimers.has(entry.target)) return;
+        dwellTimers.set(entry.target, setTimeout(() => load(name).catch(() => {}), dwellMs));
+      });
+    }, { rootMargin });
+    targets.forEach((name, element) => observer.observe(element));
     navigationLinks.forEach((link) => {
       const name = names.find((candidate) => {
         return sections[candidate] && link.hash === `#${sections[candidate].id}`;
@@ -264,6 +278,8 @@ export function createDeferredSectionScheduler(options = {}) {
   }
 
   function disconnect() {
+    dwellTimers.forEach((timer) => clearTimeout(timer));
+    dwellTimers.clear();
     if (observer) observer.disconnect();
     navigationListeners.forEach(([link, listener]) => link.removeEventListener("click", listener));
   }
@@ -336,6 +352,7 @@ export async function startFinanceTerminal(options = {}) {
     sections: options.sections,
     navigationLinks: options.navigationLinks,
     rootMargin: options.rootMargin,
+    dwellMs: options.dwellMs,
     onStateChange(state) {
       loadState.sectionTransitions.push({ name: state.name, state: state.state });
       const complete = state.settled.length === Object.keys(options.sections).length;

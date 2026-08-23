@@ -481,26 +481,6 @@
     };
   }
 
-  /* 风险雷达画在首屏总览里，它的数据却属于 risk 延迟分区，而分区观察的是页面
-     深处的 #risk-section。桌面一屏装得下，两者同时可见所以没事；窄屏下
-     #risk-section 在四千多像素之下，雷达便一直停在 LOADING，直到访客滚到那个
-     不相干的分区为止。首屏就能看见的面板不该等一个看不见的分区，这里为雷达
-     本身补一个触发点。 */
-  function observeRadarPanel(scheduler) {
-    var panel = document.querySelector(".risk-radar-panel");
-    if (!panel || !scheduler || typeof scheduler.load !== "function") return;
-    if (typeof window.IntersectionObserver !== "function") {
-      scheduler.load("risk").catch(function () {});
-      return;
-    }
-    var observer = new window.IntersectionObserver(function (entries) {
-      if (!entries.some(function (entry) { return entry.isIntersecting; })) return;
-      observer.disconnect();
-      scheduler.load("risk").catch(function () {});
-    }, { rootMargin: "480px 0px" });
-    observer.observe(panel);
-  }
-
   var radarTrigger = null;
   /* 雷达构成抽屉按需加载：只有真的去点「六轴如何算出」才下载这段代码。
      入口在首屏就绑好，不等风险区渲染完——窄屏下风险区可能一直没加载，
@@ -4010,15 +3990,16 @@
           operations: "operations"
         },
         sections: {
-          risk: document.getElementById("risk-section"),
+          /* 风险雷达画在首屏总览里，数据却属于 risk 分区。窄屏下 #risk-section
+             在四千多像素之下，只观察它的话雷达会一直停在 LOADING，直到访客滚到
+             那个不相干的分区为止；所以雷达面板本身也算 risk 的触发元素。 */
+          risk: [document.getElementById("risk-section"),
+                 document.querySelector(".risk-radar-panel")],
           research: document.getElementById("research-section"),
           information: document.getElementById("information-section"),
           operations: document.getElementById("operations-section")
         },
         navigationLinks: document.querySelectorAll(".section-nav a")
-      }).then(function (started) {
-        observeRadarPanel(started && started.scheduler);
-        return started;
       });
     }).catch(function (error) {
       root.setAttribute("data-critical-data-state", "error");

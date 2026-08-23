@@ -296,6 +296,10 @@ async function waitForRegression(client, timeoutMs) {
   throw new Error("页面未在限定时间内生成浏览器回归结果");
 }
 
+async function readLoadSnapshot(client) {
+  return waitForLoadState(client, () => true, 5000);
+}
+
 async function waitForLoadState(client, predicate, timeoutMs) {
   const deadline = Date.now() + timeoutMs;
   const expression = `JSON.stringify({
@@ -437,6 +441,27 @@ async function validateDeferredLoading(client, baseUrl, timeoutMs) {
     || operations.state.duplicateNetworkRequestCount !== 0
     || Object.values(operations.state.requestStates).some((state) => state !== "ready")) {
     throw new Error(`运行证据分区请求复用边界无效：${JSON.stringify(operations.state)}`);
+  }
+  /* 上面三段的快照都取在「该分区刚就绪」那一刻，而锚点跳转是平滑滚动，取样时
+     动画往往还没走完。沿途分区在视野里掠过约两百毫秒，掠过即加载的话整页请求
+     会被一并拉起——这一点只有等动画停稳后再看一次才验得出来，此前三段断言都是
+     抢在动画前面取样才侥幸通过的。 */
+  await new Promise((resolve) => setTimeout(resolve, 2500));
+  const settled = await readLoadSnapshot(client);
+  if (settled.modules?.states?.risk !== "idle") {
+    throw new Error(`分区跳转滚动停稳后越界加载风险区：${JSON.stringify(settled.modules)}`);
+  }
+  /* 反过来的一面同样要成立：窄屏下 #risk-section 在四千像素之下，访客若停在
+     首屏雷达前，雷达必须自己把风险数据取回来，不能一直空着。 */
+  await client.send("Runtime.evaluate", {
+    expression: `document.querySelector('.risk-radar-panel')?.scrollIntoView({ block: "center" })`
+  });
+  const dwelled = await waitForLoadState(client, (snapshot) => {
+    return snapshot.modules?.states?.risk === "ready";
+  }, timeoutMs);
+  if (!dwelled.state.loadedSections.includes("risk")
+    || dwelled.state.duplicateNetworkRequestCount !== 0) {
+    throw new Error(`首屏雷达停留未取回风险数据：${JSON.stringify(dwelled.state)}`);
   }
   return {
     criticalSourceRequestCount: critical.state.sourceRequestCount,
