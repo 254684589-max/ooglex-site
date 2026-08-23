@@ -966,8 +966,12 @@ assert.strictEqual(dgs10WithMissingHealth.status, dgs10.status);
 assert.strictEqual(dgs10WithMissingHealth.price, dgs10.price);
 assert.strictEqual(dgs10WithMissingHealth.updateHealth.status, "unknown");
 assert.strictEqual(dollar.demo, false);
+/* 阈值读自被测代码本身，避免测试与源码各写一个数字而悄悄漂移。 */
 assert.strictEqual(dollar.status, reference.status === "ok"
-  && adapter.businessDaysSince(reference.asOf, currentNow) <= 3 ? "ok" : "stale");
+  && adapter.businessDaysSince(reference.asOf, currentNow)
+     <= adapter.DTWEXBGS_MAX_BUSINESS_DAYS ? "ok" : "stale");
+assert.equal(adapter.DTWEXBGS_MAX_BUSINESS_DAYS, 8,
+  "H.10 按周成批发布，正常滞后可达 5 个工作日；阈值需容纳一周批次并仍能发现缺批");
 assert.strictEqual(dollar.symbol, "DTWEXBGS");
 assert.strictEqual(dollar.price, reference.price);
 assert.strictEqual(dollar.previousPrice, reference.previousPrice);
@@ -1152,7 +1156,12 @@ assert.strictEqual(unavailableBitcoinPage.assets.find((asset) => asset.id === "u
 assert.strictEqual(success.assets.filter((asset) => asset.demo === false).length, 8);
 assert.strictEqual(success.assets.filter((asset) => asset.externalDisplay).length, 4);
 assert.strictEqual(success.assets.filter((asset) => asset.demo === true).length, 0);
-assert.strictEqual(success.status, "stale");
+/* 页面状态是各卡状态的汇总，不能写死某个值——那会随当天真实数据变化，
+   此前它之所以恒为 stale，正是因为 DTWEXBGS 被日频阈值误判。
+   这里锁不变式；「确实能汇总出过期」由下方 staleMacro 夹具专门覆盖。 */
+const staleAssets = success.assets.filter((asset) => asset.status === "stale");
+assert.strictEqual(success.status, staleAssets.length ? "stale" : "ok",
+  "页面状态应汇总各卡，过期卡=" + JSON.stringify(staleAssets.map((a) => a.symbol)));
 
 const trackedDgsMacro = JSON.parse(JSON.stringify(macro));
 const trackedDgs = adapter.findDgs10Row(trackedDgsMacro).row;
@@ -1182,7 +1191,8 @@ const freshDollar = adapter.adaptDtwexbgs(
 );
 assert.strictEqual(freshDollar.status, "ok");
 assert.strictEqual(freshDollar.demo, false);
-assert.strictEqual(freshDollar.delayLabel, "日频 · 自动更新");
+/* 频率标签必须说清 H.10 的发布节奏：观测是日度的，发布是按周成批的。 */
+assert.strictEqual(freshDollar.delayLabel, "日度观测 · 每周成批发布");
 
 const freshOilMacro = JSON.parse(JSON.stringify(macro));
 freshOilMacro.referenceSeries.RWTC.status = "ok";
@@ -1210,11 +1220,14 @@ const staleMacro = JSON.parse(JSON.stringify(macro));
 const staleMatch = adapter.findDgs10Row(staleMacro);
 staleMatch.row.asOf = "2026-07-20";
 staleMatch.row.observations = [{ asOf: staleMatch.row.asOf, value: staleMatch.row.price }];
-staleMacro.referenceSeries.DTWEXBGS.asOf = "2026-07-20";
-staleMacro.referenceSeries.DTWEXBGS.previousAsOf = "2026-07-17";
+/* DTWEXBGS 的阈值按 H.10 每周成批发布定为 8 个工作日，因此这里要把夹具推到
+   10 个工作日之前，才真正落在过期区间内——原来的 07-20 距 07-27 只有 5 个
+   工作日，属于该序列的正常滞后，不该被判过期。 */
+staleMacro.referenceSeries.DTWEXBGS.asOf = "2026-07-13";
+staleMacro.referenceSeries.DTWEXBGS.previousAsOf = "2026-07-10";
 staleMacro.referenceSeries.DTWEXBGS.observations = [
-  { asOf: "2026-07-17", value: staleMacro.referenceSeries.DTWEXBGS.previousPrice },
-  { asOf: "2026-07-20", value: staleMacro.referenceSeries.DTWEXBGS.price }
+  { asOf: "2026-07-10", value: staleMacro.referenceSeries.DTWEXBGS.previousPrice },
+  { asOf: "2026-07-13", value: staleMacro.referenceSeries.DTWEXBGS.price }
 ];
 staleMacro.referenceSeries.RWTC.status = "ok";
 staleMacro.referenceSeries.RWTC.asOf = "2026-07-20";
@@ -3027,6 +3040,11 @@ def main() -> None:
             "分区加载器未读取宏观雷达逐源健康快照")
     require("businessDaysSince" in app and "DGS10_MAX_BUSINESS_DAYS" in app and '"stale"' in app, "app.js未实现DGS10过期判断")
     require("DTWEXBGS_MAX_BUSINESS_DAYS" in app and "findDtwexbgsReference" in app, "app.js未读取DTWEXBGS自动更新记录")
+    require("var DTWEXBGS_MAX_BUSINESS_DAYS = 8;" in app
+            and "H.10按周成批发布" in app
+            and "日度观测 · 每周成批发布" in app,
+            "DTWEXBGS 新鲜度阈值必须匹配 H.10 每周成批发布的真实节奏："
+            "日频假设下的 3 个工作日会让它每周有一半时间误报过期")
     require("record.price / record.previousPrice" in app and "refreshFailed" in app, "DTWEXBGS涨跌幅或失败回退不可复现")
     require("RWTC_MAX_BUSINESS_DAYS" in app and "findRwtcReference" in app and "adaptRwtc" in app, "app.js未读取RWTC自动更新记录")
     require("MACRO_REGIME_MAX_BUSINESS_DAYS" in app and "adaptMacroRegime" in app and "buildRiskCards" in app, "app.js未接入宏观状态适配层")
