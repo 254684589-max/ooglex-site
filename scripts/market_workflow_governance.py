@@ -49,6 +49,7 @@ DATASET_RULES = {
     "asset-tracker": DatasetRule((
         "apps/asset-tracker/data.json",
         "apps/asset-tracker/health.json",
+        "apps/asset-tracker/history.json",
     )),
     "companies": DatasetRule(
         (
@@ -133,11 +134,25 @@ def verify_ownership(dataset: str, repo: Path = ROOT) -> list[str]:
     return paths
 
 
+def _stageable_paths(rule: DatasetRule, repo: Path) -> list[str]:
+    """保留磁盘上已存在或 git 已跟踪的授权路径。
+
+    已跟踪但已删除的路径仍需保留，删除动作才能被暂存；
+    尚未生成的新授权产物（例如首次运行前的 history.json）则跳过，
+    否则 git add 会因 pathspec 不匹配整体失败。
+    """
+    listed = _run_git(repo, "ls-files", "--", *rule.stage_paths).stdout
+    tracked = {line for line in listed.splitlines() if line}
+    return [path for path in rule.stage_paths if (repo / path).exists() or path in tracked]
+
+
 def stage_owned(dataset: str, repo: Path = ROOT) -> list[str]:
     """Verify the worktree and stage only the active pipeline's owned paths."""
     verify_ownership(dataset, repo)
     rule = DATASET_RULES[dataset]
-    _run_git(repo, "add", "-A", "--", *rule.stage_paths)
+    stageable = _stageable_paths(rule, repo)
+    if stageable:
+        _run_git(repo, "add", "-A", "--", *stageable)
     staged = staged_paths(repo)
     unexpected = unowned_paths(dataset, staged)
     if unexpected:
