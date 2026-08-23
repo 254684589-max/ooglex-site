@@ -1946,6 +1946,26 @@ if (calendar.selectionLabel === "接下来重要事件") {
     || event.timestamp <= calendar.events[index - 1].timestamp));
 }
 
+/* 回归：周末没有经济数据发布，周范围常在周五结束；周六跑出的文件不得被误判为过期。
+   固定构造一份周日~周五的周历，分别在周六、下周日两个时点求值。 */
+const weekendCalendar = JSON.parse(JSON.stringify(econCalendar));
+weekendCalendar.weekOf = "2026-08-16 ~ 2026-08-21";
+weekendCalendar.asOf = "2026-08-22";
+weekendCalendar.updatedAt = "2026-08-22T21:30:00Z";
+const saturdayNow = new Date(Date.parse("2026-08-22T22:30:00Z"));
+assert.notStrictEqual(adapter.adaptEconomicCalendar(weekendCalendar, saturdayNow).status, "stale",
+  "周六（本周内、无发布日）不得因周范围止于周五而被判为过期");
+const nextSundayCalendar = JSON.parse(JSON.stringify(weekendCalendar));
+nextSundayCalendar.asOf = "2026-08-23";
+nextSundayCalendar.updatedAt = "2026-08-23T10:00:00Z";
+assert.strictEqual(
+  adapter.adaptEconomicCalendar(nextSundayCalendar, new Date(Date.parse("2026-08-23T11:00:00Z"))).status,
+  "stale", "文件已进入下一周仍必须判为过期——放宽整周不得掩盖真正的跨周陈旧");
+const agedCalendar = JSON.parse(JSON.stringify(weekendCalendar));
+assert.strictEqual(
+  adapter.adaptEconomicCalendar(agedCalendar, new Date(Date.parse("2026-08-24T21:30:00Z"))).status,
+  "stale", "超过36小时未更新仍必须判为过期");
+
 const partialCalendar = JSON.parse(JSON.stringify(econCalendar));
 partialCalendar.count += 1;
 assert.strictEqual(adapter.adaptEconomicCalendar(partialCalendar, calendarNow).status, "partial");

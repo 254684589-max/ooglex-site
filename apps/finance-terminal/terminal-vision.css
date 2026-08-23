@@ -425,6 +425,7 @@ body::after {
 }
 
 .orbit-clock time { color: var(--vision-amber); }
+.orbit-clock u { margin-left: 3px; color: var(--faint); font-style: normal; text-decoration: none; }
 
 /* 自选：★/☆ 符号本身即状态，不依赖颜色；触控目标满足 44px。 */
 .watch-toggle {

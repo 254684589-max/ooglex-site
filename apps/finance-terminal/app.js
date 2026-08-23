@@ -477,6 +477,7 @@
   }
 
   var supportingHealthAdapter = null;
+  var SUPPORTING_HEALTH_SECTIONS = { risk: true, information: true };
 
   /* 由分区加载或离线测试显式安装，安装前 attachSupportingHealth 明确报未就绪，不臆造健康状态。 */
   function installSupportingHealthAdapter(implementation) {
@@ -2412,7 +2413,15 @@
       selectionLabel = "本周事件";
     }
 
-    var outsideWeek = current < week.start || current > week.end;
+    /* 周六周日通常没有经济数据发布，声明的周范围往往在周五结束。若直接用该范围判断，
+       周六跑出来的文件会落在自己声明的范围外而被误判为过期，因此按 Forex Factory 的
+       周日~周六整周口径判断；"文件来自上一周"这一真正要拦的情况仍然会被拦下。 */
+    var weekStart = new Date(week.start.getTime());
+    weekStart.setUTCDate(weekStart.getUTCDate() - weekStart.getUTCDay());
+    var weekEnd = new Date(weekStart.getTime());
+    weekEnd.setUTCDate(weekEnd.getUTCDate() + 6);
+    if (week.end > weekEnd) weekEnd = week.end;
+    var outsideWeek = current < weekStart || current > weekEnd;
     var status = age > ECON_CALENDAR_MAX_AGE_HOURS || outsideWeek
       ? "stale"
       : (!inputComplete || important.length === 0) ? "partial" : "ok";
@@ -2967,7 +2976,9 @@
         }
         sectionViewModules[name] = viewModule;
         sectionViewEvidence.states[name] = "ready";
-        if (name !== "risk" || supportingHealthAdapter) return viewModule;
+        /* 市场状态与事件资讯两个分区都要渲染辅助来源健康面板，两者都必须等适配层装好
+           再解析，否则先加载的那个分区会渲染出「尚未加载」的 UNKNOWN 面板。 */
+        if (!SUPPORTING_HEALTH_SECTIONS[name] || supportingHealthAdapter) return viewModule;
         return import("./finance-terminal-health-adapters.mjs").then(function (mod) {
           installSupportingHealthAdapter(mod.createSupportingHealthAdapter(supportingHealthHelpers()));
           return viewModule;
