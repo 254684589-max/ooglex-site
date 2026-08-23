@@ -161,28 +161,43 @@ jobs:
         id: final-quality
         continue-on-error: true
         run: |
-          python scripts/validate_finance_terminal.py
-          node scripts/validate_finance_terminal_loader.mjs
-          python scripts/validate_finance_terminal_market_licenses.py
-          python scripts/validate_market_data_quality.py --dataset all
-          python scripts/validate_market_source_health.py --dataset all \
+          # 逐项记录成败而不在第一处失败就停：一次运行要把所有问题都报出来，
+          # 否则前一个缺陷会一直挡住后面的检查，使其长期无人发现。
+          # 退出码仍取决于是否有失败项，门禁强度不变。
+          status=0
+          run_check() {
+            echo "::group::$*"
+            if "$@"; then
+              echo "::endgroup::"
+            else
+              status=1
+              echo "::endgroup::"
+              echo "::error::门禁检查失败：$*"
+            fi
+          }
+          run_check python scripts/validate_finance_terminal.py
+          run_check node scripts/validate_finance_terminal_loader.mjs
+          run_check python scripts/validate_finance_terminal_market_licenses.py
+          run_check python scripts/validate_market_data_quality.py --dataset all
+          run_check python scripts/validate_market_source_health.py --dataset all \
             --report /tmp/finance-terminal-health/source-health.json
-          python scripts/validate_macro_source_health.py \
+          run_check python scripts/validate_macro_source_health.py \
             --report /tmp/finance-terminal-health/macro-source-health.json
-          python scripts/validate_supporting_source_health.py --dataset all \
+          run_check python scripts/validate_supporting_source_health.py --dataset all \
             --report /tmp/finance-terminal-health/supporting-source-health.json
-          python scripts/validate_supporting_source_builders.py
-          python scripts/validate_market_workflow_governance.py --dataset all
-          python scripts/validate_finance_terminal_release_gate.py
-          python scripts/validate_finance_terminal_qualification.py
-          python scripts/validate_finance_terminal_cycle_trigger.py
-          python scripts/validate_finance_terminal_readiness_snapshot.py
-          python scripts/validate_finance_terminal_proxy_runtime_history.py
-          python scripts/finance_terminal_readiness_snapshot.py \
+          run_check python scripts/validate_supporting_source_builders.py
+          run_check python scripts/validate_market_workflow_governance.py --dataset all
+          run_check python scripts/validate_finance_terminal_release_gate.py
+          run_check python scripts/validate_finance_terminal_qualification.py
+          run_check python scripts/validate_finance_terminal_cycle_trigger.py
+          run_check python scripts/validate_finance_terminal_readiness_snapshot.py
+          run_check python scripts/validate_finance_terminal_proxy_runtime_history.py
+          run_check python scripts/finance_terminal_readiness_snapshot.py \
             --validate-only apps/finance-terminal/readiness.json
-          node scripts/validate_finance_terminal_browser_evidence.mjs
-          node scripts/validate_finance_terminal_browser.mjs \
+          run_check node scripts/validate_finance_terminal_browser_evidence.mjs
+          run_check node scripts/validate_finance_terminal_browser.mjs \
             --artifacts-dir /tmp/finance-terminal-browser
+          exit "$status"
 
       - name: Build final bounded proxy runtime history
         if: steps.final-quality.outcome == 'success'
