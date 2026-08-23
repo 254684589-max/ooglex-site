@@ -13,6 +13,8 @@ import { seriesPath, matchedKeyword }
   from "../apps/finance-terminal/finance-terminal-detail-view.mjs";
 import { RADAR_AXES, axisValue, formulaText, readInput }
   from "../apps/finance-terminal/finance-terminal-radar-view.mjs";
+import { tenorX, valueY, curveSegments, describeShape }
+  from "../apps/finance-terminal/finance-terminal-curve-view.mjs";
 
 function asset(symbol, dailyReturn, options = {}) {
   return {
@@ -215,6 +217,41 @@ assert.equal(readInput({}), null, "无有效读数必须返回 null 而非猜测
   });
 }
 
+/* 收益率曲线：缺档必须断线，绝不插值跨过空洞。 */
+{
+  const pts = (vals) => vals.map((v, i) => (v === null ? null : { value: v, months: i + 1 }));
+  assert.equal(curveSegments(pts([1, 2, 3])).length, 1, "无缺档应为一整段");
+  assert.equal(curveSegments(pts([1, 2, null, 4, 5])).length, 2,
+    "中间缺档必须断成两段，不得插值跨过");
+  assert.equal(curveSegments(pts([1, null, 3])).length, 0,
+    "两侧各只剩一点时无法成线，不得画出任何线段");
+  assert.equal(curveSegments(pts([null, null])).length, 0, "全缺档不画线");
+  assert.equal(curveSegments([]).length, 0, "空输入不画线");
+
+  /* 对数横轴：短端不得挤在一起，且首尾贴合内边距。 */
+  assert.equal(tenorX(1, 1, 360).toFixed(1), "26.0", "最短期限落在左内边距");
+  assert.equal(tenorX(360, 1, 360).toFixed(1), "494.0", "最长期限落在右内边距");
+  assert.ok(tenorX(12, 1, 360) > tenorX(3, 1, 360), "期限越长横坐标越大");
+  const shortGap = tenorX(3, 1, 360) - tenorX(1, 1, 360);
+  const longGap = tenorX(360, 1, 360) - tenorX(120, 1, 360);
+  assert.ok(shortGap > longGap * 0.5,
+    "对数轴下短端间距不应被长端压缩到难以分辨");
+  assert.equal(tenorX(0, 1, 360), 26, "非法月数回退到左内边距而非产生 NaN");
+
+  assert.equal(valueY(5, 5, 5).toFixed(1), "144.0", "全平序列不得因零跨度产生 NaN");
+  assert.ok(valueY(5, 3, 5) < valueY(3, 3, 5), "读数越高纵坐标越靠上");
+
+  const t = (label, value, months) => ({ label, value, months });
+  assert.equal(describeShape([t("1M", 5.4, 1), t("2Y", 4.6, 24), t("10Y", 4.1, 120)]),
+    "整体倒挂 · 短端高于长端");
+  assert.equal(describeShape([t("1M", 4.0, 1), t("2Y", 4.3, 24), t("10Y", 4.8, 120)]),
+    "正常上行 · 长端明显高于短端");
+  assert.equal(describeShape([t("1M", 4.3, 1), t("10Y", 4.5, 120)]),
+    "读数不足，不判断形态", "少于三个可用读数时不得给出形态结论");
+  assert.equal(describeShape([t("1M", null, 1), t("2Y", null, 24), t("10Y", 4.1, 120)]),
+    "读数不足，不判断形态", "缺读数的档位不得计入形态判断");
+}
+
 console.log("Finance Terminal visual data contracts: PASS");
 console.log("- seven-region daily return pressure proxy / error isolation: PASS");
 console.log("- dynamic 5/7 to 7/7 minimum-cycle continuity / stale evidence preservation: PASS");
@@ -225,3 +262,4 @@ console.log("- watchlist sanitization / pure toggle / stable ordering / storage 
 console.log("- detail drawer series geometry / literal keyword-hit labelling: PASS");
 console.log("- radar axis weights match deriveRiskRadar / honest formula text: PASS");
 console.log("- heatmap paints only regions with a representative index: PASS");
+console.log("- yield curve breaks at missing tenors / log tenor axis / honest shape call: PASS");

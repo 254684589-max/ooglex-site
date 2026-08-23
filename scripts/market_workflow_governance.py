@@ -46,6 +46,7 @@ DATASET_RULES = {
         "apps/macro-radar/health.json",
         "apps/macro-radar/history.json",
         "apps/macro-radar/series.json",
+        "apps/macro-radar/curve.json",
     )),
     "asset-tracker": DatasetRule((
         "apps/asset-tracker/data.json",

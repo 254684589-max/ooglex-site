@@ -47,6 +47,18 @@ from macro_source_health import (  # noqa: E402
 
 OUT_PATH = os.path.join("apps", "macro-radar", "data.json")
 SERIES_PATH = os.path.join("apps", "macro-radar", "series.json")
+CURVE_PATH = os.path.join("apps", "macro-radar", "curve.json")
+CURVE_POINTS = 260           # 曲线历史滚动保留约一年交易日
+
+# 美债完整期限结构；months 仅用于横轴定位与利差计算，不参与任何插值。
+CURVE_TENORS = (
+    ("DGS1MO", "1M", 1), ("DGS3MO", "3M", 3), ("DGS6MO", "6M", 6),
+    ("DGS1", "1Y", 12), ("DGS2", "2Y", 24), ("DGS3", "3Y", 36),
+    ("DGS5", "5Y", 60), ("DGS7", "7Y", 84), ("DGS10", "10Y", 120),
+    ("DGS20", "20Y", 240), ("DGS30", "30Y", 360),
+)
+# 明确列出要跟踪的利差，不做任意两点相减。
+CURVE_SPREADS = (("DGS10", "DGS2", "10Y-2Y"), ("DGS10", "DGS3MO", "10Y-3M"))
 SERIES_POINTS = 260          # 官方序列滚动保留约一年交易日
 _EIA_SERIES_CACHE = []       # 同一轮内复用，避免为长历史再发一次请求
 DGS10_ID = "DGS10"
@@ -999,6 +1011,89 @@ def load_prev_series():
     return {}
 
 
+def load_prev_curve():
+    try:
+        with open(CURVE_PATH, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return None
+
+
+def build_yield_curve(updated_at, limit=CURVE_POINTS):
+    """整条美债收益率曲线。
+
+    十一个期限各取一条 FRED 序列；DGS10 本轮已在别处取过，直接命中进程内缓存。
+    共享日期轴，某期限当日无观测即为 None——不做任何插值，也不用相邻期限顶替。
+    利差只在两端同日都有观测时计算，否则留空；倒挂判定同理。
+    本轮完全取不到时返回 None，由调用方保留上次文件。
+    """
+    fetched = {}
+    for series_id, _, _ in CURVE_TENORS:
+        pairs = []
+        for item in fred_api(series_id) or []:
+            if not isinstance(item, (list, tuple)) or len(item) != 2:
+                continue
+            observed, value = item
+            if _parse_observation_date(observed) is None or not _positive_number(value):
+                continue
+            pairs.append((str(observed), float(value)))
+        if pairs:
+            fetched[series_id] = dict(pairs)
+    if not fetched:
+        return None
+
+    axis = sorted({d for series in fetched.values() for d in series})[-limit:]
+    if not axis:
+        return None
+    history = {}
+    for series_id, _, _ in CURVE_TENORS:
+        series = fetched.get(series_id)
+        if not series:
+            continue
+        history[series_id] = [round(series[d], 4) if d in series else None for d in axis]
+
+    latest = axis[-1]
+    tenors = []
+    for series_id, label, months in CURVE_TENORS:
+        series = fetched.get(series_id) or {}
+        observed = latest if latest in series else (
+            max((d for d in series), default=None))
+        tenors.append({
+            "id": series_id, "label": label, "months": months,
+            "value": round(series[observed], 4) if observed else None,
+            "asOf": observed,
+            "current": bool(observed) and observed == latest,
+        })
+
+    spreads = []
+    for long_id, short_id, label in CURVE_SPREADS:
+        long_series = fetched.get(long_id) or {}
+        short_series = fetched.get(short_id) or {}
+        shared = sorted(set(long_series) & set(short_series))[-limit:]
+        if not shared:
+            continue
+        values = [round(long_series[d] - short_series[d], 4) for d in shared]
+        spreads.append({
+            "id": label, "long": long_id, "short": short_id,
+            "asOf": shared[-1], "value": values[-1],
+            "inverted": values[-1] < 0,
+            "dates": shared, "values": values,
+        })
+
+    return {
+        "updatedAt": updated_at,
+        "asOf": latest,
+        "source": "FRED / U.S. Treasury H.15",
+        "sourceUrl": "https://fred.stlouisfed.org/categories/115",
+        "frequency": "daily",
+        "note": ("十一个期限各取一条 FRED 官方序列，共享日期轴；某期限当日无观测即留空，"
+                 "不插值、不用相邻期限顶替。利差只在两端同日都有观测时计算。"),
+        "tenors": tenors,
+        "spreads": spreads,
+        "history": {"dates": axis, "values": history},
+    }
+
+
 def build_official_series(raw, prev_series, updated_at, limit=SERIES_POINTS):
     """把三条官方序列整理成逐序列的长历史。
 
@@ -1435,6 +1530,18 @@ def build():
                                 "，沿用 %s" % kept if kept else ""))
     else:
         print("本轮无可用官方长序列，保留上次 %s，不覆盖。" % SERIES_PATH)
+
+    curve = build_yield_curve(now_iso)
+    if curve:
+        with open(CURVE_PATH, "w", encoding="utf-8") as f:
+            json.dump(curve, f, ensure_ascii=False, separators=(",", ":"))
+        have = sum(1 for t in curve["tenors"] if t["value"] is not None)
+        inverted = [sp["id"] for sp in curve["spreads"] if sp["inverted"]]
+        print("写入 %s：%d/%d 个期限有读数，历史 %d 点%s"
+              % (CURVE_PATH, have, len(CURVE_TENORS), len(curve["history"]["dates"]),
+                 ("，倒挂 " + "、".join(inverted)) if inverted else ""))
+    else:
+        print("本轮无可用收益率曲线，保留上次 %s，不覆盖。" % CURVE_PATH)
 
     print("写入 %s：机制 %s(%s)，信号 %d，异动 %d，宏观 %d 项(FRED=%s)，LIVE=%s"
           % (OUT_PATH, regime_score, lz, len(signals), len(mut),
