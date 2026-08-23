@@ -5,3 +5,34 @@
 @media(min-width:1041px){body[data-terminal-view=overview] .command-hero{grid-template-columns:minmax(0,7.4fr) minmax(150px,1.65fr) minmax(215px,2.45fr)}body[data-terminal-view=overview] .risk-radar-panel{display:grid;min-height:0;grid-template-rows:auto minmax(0,1fr) auto auto;padding:10px 10px 8px;overflow:hidden;border-radius:4px;background:linear-gradient(rgba(69,212,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(69,212,255,.025) 1px,transparent 1px),rgba(3,13,22,.84);background-size:18px 18px}body[data-terminal-view=overview] .risk-radar-head span,body[data-terminal-view=overview] .risk-radar-head strong{font-size:7px}body[data-terminal-view=overview] .risk-radar-head h2{margin-top:3px;font-size:13px}body[data-terminal-view=overview] .risk-radar-chart{width:100%;height:100%;min-height:0;margin:0;overflow:visible}body[data-terminal-view=overview] .risk-radar-labels text{font-size:7px}body[data-terminal-view=overview] .risk-radar-score{font-size:8px}body[data-terminal-view=overview] .risk-radar-score strong{font-size:20px}body[data-terminal-view=overview] .risk-radar-score small{font:7px var(--mono)}body[data-terminal-view=overview] .risk-radar-panel>p{margin-top:3px;font-size:6px}body[data-terminal-view=overview] .risk-hud-gauge{width:min(98px,88%)}body[data-terminal-view=overview] .risk-hud-gauge::before{inset:7px}body[data-terminal-view=overview] .risk-hud-gauge .risk-value{font-size:clamp(20px,1.9vw,28px)}body[data-terminal-view=overview] .risk-map-svg{filter:drop-shadow(0 0 7px rgba(50,179,234,.22))}body[data-terminal-view=overview] .risk-region{filter:drop-shadow(0 0 5px rgba(44,208,255,.28))}body[data-terminal-view=overview] .region-pressure-high,body[data-terminal-view=overview] .region-pressure-watch{filter:drop-shadow(0 0 9px rgba(255,171,65,.65))}}
 @media(max-width:1040px){.risk-radar-panel{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,.85fr);align-items:center}.risk-radar-head,.risk-radar-score,.risk-radar-panel>p{grid-column:1}.risk-radar-chart{grid-column:2;grid-row:1/4}}@media(max-width:780px){.risk-radar-panel{grid-template-columns:1fr}.risk-radar-head,.risk-radar-score,.risk-radar-panel>p,.risk-radar-chart{grid-column:1;grid-row:auto}}
 @media(prefers-reduced-motion:no-preference){.globe-surface{animation:earth-breathe 7s ease-in-out infinite;transform-box:fill-box;transform-origin:center}.globe-atmosphere{animation:atmosphere-pulse 4.8s ease-in-out infinite}}@keyframes earth-breathe{0%,100%{opacity:.94;transform:scale(.995) rotate(-.35deg)}50%{opacity:1;transform:scale(1.008) rotate(.35deg)}}@keyframes atmosphere-pulse{0%,100%{opacity:.55;stroke-width:2}50%{opacity:.95;stroke-width:3.4}}@media(prefers-reduced-motion:reduce){.globe-surface,.globe-atmosphere{animation:none!important}}
+
+/* 面板入口：把「这一块能点进去」做得看得见。
+   聚合指标其实早就能点进独立页面，但入口太隐蔽，连站主本人看截图都没发现，
+   等于没做。这里统一成带边框的胶囊，悬停高亮、有可见焦点环。
+   触控目标按既有口径：桌面 ≥24px，窄屏 ≥44px。
+   既有的 .detail-link（聚合指标等卡片里的「查看完整页面 →」）一并纳入同一外观，
+   否则站内会出现两种「可点入口」的样子。 */
+.panel-entry,
+.detail-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 7px;
+  border: 1px solid var(--vision-line-strong);
+  border-radius: 3px;
+  color: var(--vision-cyan);
+  font: 9px var(--mono);
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.panel-entry:hover,
+.detail-link:hover { border-color: var(--vision-cyan); background: rgba(69, 212, 255, 0.12); }
+.panel-entry:focus-visible,
+.detail-link:focus-visible { outline: 2px solid var(--vision-cyan); outline-offset: 2px; }
+
+@media (max-width: 620px) {
+  .panel-entry,
+  .detail-link { min-height: 44px; }
+}
