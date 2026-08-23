@@ -84,7 +84,7 @@ async function validateDeferredScheduler() {
     observe(target) { observed.push(target); }
     unobserve() {}
     disconnect() {}
-    fire(target) { this.callback([{ target, isIntersecting: true }]); }
+    fire(target, isIntersecting = true) { this.callback([{ target, isIntersecting }]); }
   }
   function fakeLink(hash) {
     const listeners = {};
@@ -111,7 +111,8 @@ async function validateDeferredScheduler() {
     handlers,
     sections,
     navigationLinks: links,
-    Observer: FakeObserver
+    Observer: FakeObserver,
+    dwellMs: 0
   });
   const start = scheduler.start();
   assert.equal(start.mode, "deferred");
@@ -121,12 +122,50 @@ async function validateDeferredScheduler() {
   links[1].click();
   await Promise.all([scheduler.load("information"), scheduler.load("operations")]);
   await scheduler.allLoaded;
+  /* risk 排在最后：视野触发要等停留计时走完（这里 dwellMs 为 0，也仍晚一个宏任务），
+     导航点击则是立即加载。顺序反映的正是「点过的先来、看到的后到」。 */
   assert.deepEqual(await scheduler.allSettled, {
-    loaded: ["risk", "research", "information", "operations"],
+    loaded: ["research", "information", "operations", "risk"],
     failed: [],
-    settled: ["risk", "research", "information", "operations"]
+    settled: ["research", "information", "operations", "risk"]
   });
   assert.deepEqual(new Set(loaded), new Set(["risk", "research", "information", "operations"]));
+  scheduler.disconnect();
+}
+
+/* 分区导航是一次上万像素的平滑滚动，沿途每个分区都会在视野里掠过约两百毫秒。
+   掠过即加载会把整页请求一并拉起，延迟加载就白做了。这里钉住两条：掠过不算数，
+   停留才算数；以及一个分区可以有多个触发元素（首屏雷达面板与 #risk-section 同属
+   risk，任何一个停留够久都该把风险数据取回来）。 */
+async function validateDeferredDwell() {
+  let instance;
+  class FakeObserver {
+    constructor(callback) { this.callback = callback; instance = this; }
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+    fire(target, isIntersecting) { this.callback([{ target, isIntersecting }]); }
+  }
+  const riskSection = { id: "risk-section" };
+  const radarPanel = { id: "risk-radar-panel" };
+  const loaded = [];
+  const scheduler = createDeferredSectionScheduler({
+    handlers: { risk: async () => { loaded.push("risk"); } },
+    sections: { risk: [riskSection, radarPanel] },
+    Observer: FakeObserver,
+    dwellMs: 40
+  });
+  scheduler.start();
+  instance.fire(riskSection, true);
+  instance.fire(riskSection, false);
+  await new Promise((resolve) => setTimeout(resolve, 90));
+  assert.deepEqual(loaded, [], "一掠而过的分区不得触发加载");
+  instance.fire(radarPanel, true);
+  await scheduler.allLoaded;
+  assert.deepEqual(loaded, ["risk"], "首屏雷达面板停留够久应取回风险数据");
+  instance.fire(riskSection, true);
+  await new Promise((resolve) => setTimeout(resolve, 90));
+  assert.deepEqual(loaded, ["risk"], "同一分区的第二个触发元素不得重复加载");
   scheduler.disconnect();
 }
 
@@ -368,6 +407,7 @@ async function main() {
   await validateResourceStages();
   await validateFailureIsolation();
   await validateDeferredScheduler();
+  await validateDeferredDwell();
   await validateDeferredFailureIsolation();
   await validateCriticalPaintBarrier();
   await validateAsyncSectionBuild();
@@ -378,6 +418,7 @@ async function main() {
   console.log("Finance Terminal staged loader contract: PASS");
   console.log("- 5 critical sources / 13 deferred sources / 18 unique source requests: PASS");
   console.log("- viewport and section-navigation activation / shared request cache: PASS");
+  console.log("- scroll-past immunity / dwell activation / multi-trigger section: PASS");
   console.log("- per-source HTTP failure isolation / no-store snapshots: PASS");
   console.log("- critical render / paint yield / deferred scheduler order: PASS");
   console.log("- one-section failure / three-section continuation / partial completion: PASS");
