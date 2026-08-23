@@ -6,6 +6,8 @@ import {
 import { deriveRiskRadar } from "../apps/finance-terminal/finance-terminal-risk-radar.mjs";
 import { textureCoordinate } from "../apps/finance-terminal/finance-terminal-globe.mjs";
 import { sessionState } from "../apps/finance-terminal/finance-terminal-sessions.mjs";
+import { sanitizeSymbol, normalizeList, toggleSymbol, orderByWatchlist, describeFilter, createWatchlistStore }
+  from "../apps/finance-terminal/finance-terminal-watchlist.mjs";
 
 function asset(symbol, dailyReturn, options = {}) {
   return {
@@ -118,9 +120,40 @@ assert.equal(at("2026-08-22T18:00:00Z", "America/New_York").state, "weekend",
 assert.equal(at("2026-08-19T18:00:00Z", "Mars/Olympus").state, "unknown",
   "无法解析的时区必须返回未知而不是猜测开盘");
 
+
+/* 自选清单：代码清洗、纯函数切换、稳定排序与存储不可用降级。 */
+assert.equal(sanitizeSymbol("BTC/USD"), "BTC/USD", "合法标的代码必须原样保留");
+assert.equal(sanitizeSymbol("<script>"), null, "含尖括号的输入不得写入本地存储");
+assert.equal(sanitizeSymbol("x".repeat(50)), null, "超长输入必须拒绝");
+assert.equal(normalizeList(["A", "A", "B"]).join(), "A,B", "自选必须去重");
+assert.equal(normalizeList(Array.from({ length: 80 }, (_, i) => `S${i}`)).length, 40,
+  "自选条数必须有上限");
+
+const baseList = ["SPY"];
+assert.equal(toggleSymbol("QQQ", baseList).join(), "SPY,QQQ", "切换必须能新增");
+assert.equal(baseList.join(), "SPY", "切换不得修改入参数组");
+assert.equal(toggleSymbol("SPY", ["SPY", "QQQ"]).join(), "QQQ", "再次切换必须移除");
+
+const ordered = orderByWatchlist(
+  [{ s: "A" }, { s: "B" }, { s: "C" }, { s: "D" }], ["C", "A"], (item) => item.s);
+assert.equal(ordered.map((item) => item.s).join(""), "ACBD",
+  "自选须前置且两组内部各自保持原有相对顺序");
+
+assert.equal(describeFilter(0, false, true).hidden, true, "无自选时筛选入口必须隐藏");
+assert.equal(describeFilter(2, true, true).label, "显示全部", "筛选开启时入口应提供退出");
+assert.ok(describeFilter(2, false, false).title.includes("仅在本次会话有效"),
+  "存储不可用时必须如实说明不跨会话保留");
+
+const blocked = { getItem() { throw new Error("blocked"); }, setItem() { throw new Error("blocked"); } };
+const degraded = createWatchlistStore(blocked);
+degraded.toggle("SPY");
+assert.ok(degraded.has("SPY"), "存储被拦时自选仍应在本次会话内生效");
+assert.equal(degraded.persisted(), false, "存储被拦时不得声称已保存");
+
 console.log("Finance Terminal visual data contracts: PASS");
 console.log("- seven-region daily return pressure proxy / error isolation: PASS");
 console.log("- dynamic 5/7 to 7/7 minimum-cycle continuity / stale evidence preservation: PASS");
 console.log("- three-source normalized six-axis risk radar / incomplete-source isolation: PASS");
 console.log("- rotating globe longitude projection / texture wrap contract: PASS");
 console.log("- calendar-only trading sessions / lunch break / weekend / unknown zone: PASS");
+console.log("- watchlist sanitization / pure toggle / stable ordering / storage degradation: PASS");

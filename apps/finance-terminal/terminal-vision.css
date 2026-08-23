@@ -426,6 +426,42 @@ body::after {
 
 .orbit-clock time { color: var(--vision-amber); }
 
+/* 自选：★/☆ 符号本身即状态，不依赖颜色；触控目标满足 44px。 */
+.watch-toggle {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  color: var(--faint);
+  background: none;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.watch-toggle[aria-pressed="true"] { color: var(--vision-amber); }
+.watch-toggle:hover { color: var(--vision-cyan); }
+.watch-toggle:focus-visible { outline: 2px solid var(--vision-cyan); outline-offset: 2px; }
+
+.watch-filter {
+  min-height: 28px;
+  margin-left: 10px;
+  padding: 2px 9px;
+  border: 1px solid var(--vision-line-strong);
+  border-radius: 999px;
+  color: var(--muted);
+  background: none;
+  font: 9px var(--mono);
+  cursor: pointer;
+}
+
+.watch-filter[aria-pressed="true"] {
+  border-color: var(--vision-amber);
+  color: var(--vision-amber);
+}
+
+.watch-filter:focus-visible { outline: 2px solid var(--vision-cyan); outline-offset: 2px; }
+
 /* 交易时段：颜色之外同时用符号与文字区分，颜色不作为唯一信号。 */
 .orbit-session {
   display: block;
