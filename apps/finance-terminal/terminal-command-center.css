@@ -771,3 +771,16 @@
     border-color: CanvasText;
   }
 }
+
+/* 总览卡片只有 125px 高，却塞了八个区块。弹性挤压时最先被牺牲的偏偏是最该看清的
+   主数字——实测被压到 9px 而字号是 22px，等于把「4.69%」裁掉大半截。
+   这里让主数字保持自身高度，并把走势小图、口径说明、更新链健康与数据日移出总览：
+   它们在「核心资产」页与详情抽屉里都有完整且不被裁切的版本。
+   元素仍留在 DOM 中（只是不显示），逐源健康与观测走势的既有契约不受影响。 */
+body[data-terminal-view="overview"] #market-grid .asset-price,
+body[data-terminal-view="overview"] #market-grid .asset-footer { flex: none; }
+
+body[data-terminal-view="overview"] #market-grid .official-trend,
+body[data-terminal-view="overview"] #market-grid .official-note,
+body[data-terminal-view="overview"] #market-grid .pipeline-health,
+body[data-terminal-view="overview"] #market-grid .asset-details { display: none; }
