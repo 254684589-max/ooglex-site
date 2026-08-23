@@ -2,17 +2,17 @@
    只把既有回报值映射为颜色，不产生任何新的行情事实，也不请求外部服务。 */
 const MASK_URL = new URL("../tv/vendor/earth-water.jpg", import.meta.url).href;
 
-/* 区域代表指数的地理锚点，仅用于把已有回报值定位到地图上。 */
-const ANCHORS = Object.freeze({
-  "north-america": [-100, 45],
-  "south-america": [-58, -15],
-  europe: [15, 50],
-  "greater-china": [110, 33],
-  japan: [138, 37],
-  "south-asia": [79, 22],
-  oceania: [145, -27]
+/* 各区域代表指数覆盖的经纬度范围 [西,南,东,北]。此前是单一锚点加 46 度圆半径，
+   欧洲的圆盖到尼日利亚与埃及，等于替没有数据的地区断言市场状态。 */
+const BOUNDS = Object.freeze({
+  "north-america": [-168, 15, -52, 72],
+  "south-america": [-82, -56, -34, 13],
+  europe: [-11, 35, 28, 71],
+  "greater-china": [73, 18, 123, 54],
+  japan: [129, 30, 146, 46],
+  "south-asia": [68, 6, 90, 36],
+  oceania: [112, -48, 179, -10]
 });
-const REACH = 46;
 
 /* 当日回报 → 点阵配色：跌幅越深压力越高（琥珀转橙红），上涨为冷青，无数据为暗蓝。 */
 export function pressureTone(value) {
@@ -23,19 +23,16 @@ export function pressureTone(value) {
   return [244 + heat * 11, 182 - heat * 62, 75 - heat * 22, .74 + heat * .26];
 }
 
-/* 找出覆盖该经纬度的区域（取最近锚点，超出 REACH 视为未覆盖）。 */
-export function nearestRegion(longitude, latitude, regions) {
+/* 都不含则返回 null——没有代表指数的地区宁可留白，不借邻近数值。
+   两框重叠处（喜马拉雅一带）取面积更小者。 */
+export function regionAt(longitude, latitude, regions) {
   let best = null;
-  let bestDistance = REACH;
+  let bestArea = Infinity;
   regions.forEach((region) => {
-    const anchor = ANCHORS[region.id];
-    if (!anchor) return;
-    const dx = (longitude - anchor[0]) * Math.cos((latitude + anchor[1]) / 2 * Math.PI / 180);
-    const distance = Math.hypot(dx, latitude - anchor[1]);
-    if (distance < bestDistance) {
-      bestDistance = distance;
-      best = region;
-    }
+    const b = BOUNDS[region.id];
+    if (!b || longitude < b[0] || longitude > b[2] || latitude < b[1] || latitude > b[3]) return;
+    const area = (b[2] - b[0]) * (b[3] - b[1]);
+    if (area < bestArea) { bestArea = area; best = region; }
   });
   return best;
 }
@@ -85,7 +82,7 @@ export function renderWorldHeatmap(canvas, regions, options = {}) {
       for (let column = 0; column < columns; column += 1) {
         if (pixels[(row * columns + column) * 4] > 118) continue;
         const longitude = (column + .5) / columns * 360 - 180;
-        const region = nearestRegion(longitude, latitude, regions);
+        const region = regionAt(longitude, latitude, regions);
         const [r, g, b, alpha] = pressureTone(region ? region.value : NaN);
         ctx.fillStyle = `rgba(${r | 0},${g | 0},${b | 0},${alpha})`;
         ctx.beginPath();

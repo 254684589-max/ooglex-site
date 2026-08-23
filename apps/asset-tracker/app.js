@@ -50,7 +50,7 @@
     DATA.periods.forEach(function (p) {
       var b = document.createElement("button");
       b.textContent = p.label;
-      if (!periodHasData(p.key)) { b.disabled = true; b.title = "实时数据上线后可用"; }
+      if (!periodHasData(p.key)) { b.disabled = true; b.title = "该周期暂无足够数据"; }
       if (p.key === state.period) b.className = "on";
       b.onclick = function () {
         state.period = p.key; state.sortKey = p.key; state.sortDir = -1;
@@ -72,10 +72,13 @@
   }
 
   function renderStatus() {
-    var live = /yahoo/i.test(DATA.source || "");
+    /* real 只表示「取到了真实来源」，与实时无关：这份数据是日频，每天更新一次。
+       此前写作「实时行情」，既与 frequency: daily 矛盾，也和同一句里的
+       「每日自动更新」自相冲突。 */
+    var real = /yahoo/i.test(DATA.source || "");
     var el = $("status");
-    el.className = "status " + (live ? "live" : "demo");
-    el.innerHTML = '<span class="sdot"></span>' + (live ? "实时行情 · 每日自动更新" : "示例数据 · 合并后转实时");
+    el.className = "status " + (real ? "live" : "demo");
+    el.innerHTML = '<span class="sdot"></span>' + (real ? "日频行情 · 每日自动更新" : "示例数据 · 合并后转真实行情");
   }
 
   function renderSummary() {
