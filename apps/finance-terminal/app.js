@@ -2,7 +2,12 @@
   "use strict";
 
   var DGS10_MAX_BUSINESS_DAYS = 3;
-  var DTWEXBGS_MAX_BUSINESS_DAYS = 3;
+  /* DTWEXBGS 的观测是日度的，但美联储 H.10 按周成批发布：每周一次性补齐上一周的
+     日度值。实测滞后天数每周在 1 到 5 个工作日之间循环（2026-08-16 与 08-22 两个
+     周末均恰好滞后 5 个工作日，中间一次性从 08-07 跳到 08-14）。原阈值 3 是按日频
+     假设定的，会让它从每周三四起一直误报到周日——每周约一半时间。
+     改为 8：正常周期内不再误报，而一旦某周的批次真的没发布，两三天内仍会触发。 */
+  var DTWEXBGS_MAX_BUSINESS_DAYS = 8;
   var RWTC_MAX_BUSINESS_DAYS = 4;
   var MACRO_REGIME_MAX_BUSINESS_DAYS = 2;
   var FEAR_GREED_MAX_BUSINESS_DAYS = 2;
@@ -1294,18 +1299,20 @@
     var refreshFailed = record.status === "stale";
     var stale = refreshFailed || age > DTWEXBGS_MAX_BUSINESS_DAYS;
     var observationTrend = buildOfficialObservationTrend(record, "percent");
-    var note = "FRED官方日频数据；变化为相对上一观测值的百分比。";
+    var note = "观测为日度，但美联储H.10按周成批发布，通常每周一次性补齐上一周；"
+      + "变化为相对上一观测值的百分比。";
     if (refreshFailed) {
       note = "本轮FRED自动更新失败，保留上次有效观测值并标记为过期。";
     } else if (age > DTWEXBGS_MAX_BUSINESS_DAYS) {
-      note = "已超过3个美国工作日未发布新观测值，保留最后有效数据。";
+      note = "已超过8个美国工作日未发布新观测值——按H.10每周成批发布的节奏，"
+        + "这意味着至少一次周批次缺失，保留最后有效数据。";
     }
     return Object.assign({}, template, record, {
       id: template.id,
       changePct: changePct,
       demo: false,
       status: stale ? "stale" : "ok",
-      delayLabel: "日频 · 自动更新",
+      delayLabel: "日度观测 · 每周成批发布",
       source: {
         name: "FRED / Federal Reserve H.10",
         url: "https://fred.stlouisfed.org/series/DTWEXBGS",
@@ -2909,6 +2916,7 @@
     buildResearchCards: buildResearchCards,
     buildRiskCards: buildRiskCards,
     businessDaysSince: businessDaysSince,
+    DTWEXBGS_MAX_BUSINESS_DAYS: DTWEXBGS_MAX_BUSINESS_DAYS,
     findDgs10Row: findDgs10Row,
     findDtwexbgsReference: findDtwexbgsReference,
     findRwtcReference: findRwtcReference,
