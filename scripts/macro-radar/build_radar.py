@@ -46,6 +46,9 @@ from macro_source_health import (  # noqa: E402
 )
 
 OUT_PATH = os.path.join("apps", "macro-radar", "data.json")
+SERIES_PATH = os.path.join("apps", "macro-radar", "series.json")
+SERIES_POINTS = 260          # 官方序列滚动保留约一年交易日
+_EIA_SERIES_CACHE = []       # 同一轮内复用，避免为长历史再发一次请求
 DGS10_ID = "DGS10"
 DGS10_SOURCE = {
     "name": "FRED / Federal Reserve H.15",
@@ -787,13 +790,15 @@ def build_rwtc_reference(previous_data, updated_at, fetcher=None):
         if fetcher is not None:
             series = fetcher(8) or []
         else:
-            series = eia_rwtc_api(8) or []
+            series = eia_rwtc_api(SERIES_POINTS) or []
             if series:
                 access_method = "EIA API v2"
             else:
-                series = eia_rwtc_history(8) or []
+                series = eia_rwtc_history(SERIES_POINTS) or []
                 if series:
                     access_method = "EIA public history page"
+            if series:
+                _EIA_SERIES_CACHE[:] = series
     except Exception:
         series = []
 
@@ -982,6 +987,60 @@ def build_macro():
 
 
 # ── 组装 ────────────────────────────────────────────────────────────────
+def load_prev_series():
+    """读取上次 series.json；缺失或损坏返回空结构，绝不据此臆造数据。"""
+    try:
+        with open(SERIES_PATH, encoding="utf-8") as f:
+            prev = json.load(f)
+        if isinstance(prev, dict) and isinstance(prev.get("series"), dict):
+            return prev
+    except Exception:
+        pass
+    return {}
+
+
+def build_official_series(raw, prev_series, updated_at, limit=SERIES_POINTS):
+    """把三条官方序列整理成逐序列的长历史。
+
+    raw: {series_id: [(date, value), ...]}，仅含本轮真实取到的序列；
+    DGS10/DTWEXBGS 直接复用 fred_api 的进程内缓存（本轮已取，零额外请求），
+    RWTC 复用同一次 EIA 请求的结果。本轮缺失的序列沿用上次，不补造新点。
+    data.json 中受门禁契约约束的 8 点窗口不受影响。
+    """
+    prev = (prev_series or {}).get("series") or {}
+    out = {}
+    retained = []
+    for series_id in (DGS10_ID, DTWEXBGS_ID, RWTC_ID):
+        pairs = []
+        for item in raw.get(series_id) or []:
+            if not isinstance(item, (list, tuple)) or len(item) != 2:
+                continue
+            observed, value = item
+            if _parse_observation_date(observed) is None or not _positive_number(value):
+                continue
+            pairs.append((str(observed), float(value)))
+        if pairs:
+            pairs = sorted(dict(pairs).items())[-limit:]
+            out[series_id] = {"dates": [d for d, _ in pairs],
+                              "values": [round(v, 6) for _, v in pairs]}
+            continue
+        kept = prev.get(series_id)
+        if isinstance(kept, dict) and kept.get("dates") and kept.get("values"):
+            out[series_id] = kept
+            retained.append(series_id)
+    if not out:
+        return None, retained
+    return {
+        "updatedAt": updated_at,
+        "source": "FRED · EIA",
+        "frequency": "daily",
+        "note": ("DGS10 与 DTWEXBGS 取自 FRED、RWTC 取自 EIA，与 data.json 同一次取数；"
+                 "本轮未取到的序列沿用上次，不补造新点。"
+                 "data.json 中的 8 点观测窗口口径不受本文件影响。"),
+        "series": out,
+    }, retained
+
+
 def build():
     prev = None
     try:
@@ -1362,6 +1421,21 @@ def build():
         json.dump(out, f, ensure_ascii=False, indent=2)
     health = make_macro_health(out, attempted_at=now_iso, previous_health=prev_health)
     write_macro_health(HEALTH_PATH, health)
+
+    official, kept = build_official_series({
+        DGS10_ID: fred_api(DGS10_ID),
+        DTWEXBGS_ID: fred_api(DTWEXBGS_ID),
+        RWTC_ID: list(_EIA_SERIES_CACHE),
+    }, load_prev_series(), now_iso)
+    if official:
+        with open(SERIES_PATH, "w", encoding="utf-8") as f:
+            json.dump(official, f, ensure_ascii=False, separators=(",", ":"))
+        points = {k: len(v["dates"]) for k, v in official["series"].items()}
+        print("写入 %s：%s%s" % (SERIES_PATH, points,
+                                "，沿用 %s" % kept if kept else ""))
+    else:
+        print("本轮无可用官方长序列，保留上次 %s，不覆盖。" % SERIES_PATH)
+
     print("写入 %s：机制 %s(%s)，信号 %d，异动 %d，宏观 %d 项(FRED=%s)，LIVE=%s"
           % (OUT_PATH, regime_score, lz, len(signals), len(mut),
              macro_series, has_fred, live))
