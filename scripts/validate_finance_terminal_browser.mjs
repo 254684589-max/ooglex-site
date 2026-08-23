@@ -483,6 +483,31 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
       || result.sectionModules?.states?.operations !== "ready") {
       throw new Error(`${width}px按需区块模块证据无效：${JSON.stringify(result.sectionModules)}`);
     }
+    /* 点阵世界地图曾因 onload 回调里的残留常量静默抛错：页面不报任何错，
+       只是回落到被拉伸的降级贴图，看起来"有点糊"而已，三档检查全绿。
+       这里锁住不变式——区域明细已渲染出行，点阵画布就必须真的画出来。 */
+    const heatmap = await client.send("Runtime.evaluate", {
+      expression: `(() => {
+        const rows = document.querySelectorAll("#risk-region-list .risk-region-row").length;
+        const canvas = document.getElementById("risk-map-canvas");
+        const ready = Boolean(document.querySelector(".risk-map-figure.risk-map-canvas-ready"));
+        let painted = 0;
+        try {
+          const data = canvas.getContext("2d")
+            .getImageData(0, 0, canvas.width, canvas.height).data;
+          for (let i = 3; i < data.length; i += 4) if (data[i] > 8) painted += 1;
+        } catch (error) { painted = -1; }
+        return { rows, ready, painted, width: canvas?.width ?? 0, height: canvas?.height ?? 0 };
+      })()`,
+      returnByValue: true
+    });
+    result.heatmapCanvas = heatmap.result.value;
+    if (result.heatmapCanvas?.rows > 0
+      && (!result.heatmapCanvas.ready || result.heatmapCanvas.painted < 1000)) {
+      throw new Error(`${width}px点阵世界地图未真正绘制：`
+        + `${JSON.stringify(result.heatmapCanvas)}（区域明细已有数据，画布却是空的或未就绪，`
+        + `通常意味着绘制回调抛错后静默回落到降级贴图）`);
+    }
     result.providerScriptTransport = scriptTransport.snapshot();
   } finally {
     scriptTransport.stop();

@@ -43,8 +43,8 @@ export function renderWorldHeatmap(canvas, regions, options = {}) {
   const ctx = canvas?.getContext?.("2d");
   if (!canvas || !ctx || !doc || !view) return Object.freeze({ destroy() {} });
 
-  const rows = 118;
-  const columns = 236;
+  let rows = 118;
+  let columns = 236;
   /* 裁掉南极空白带，只保留有陆地与代表指数的纬度区间。 */
   const TOP_LATITUDE = 84;
   const BOTTOM_LATITUDE = -58;
@@ -63,19 +63,7 @@ export function renderWorldHeatmap(canvas, regions, options = {}) {
     const dot = Math.max(.85, Math.min(stepX, stepY) * .34);
     ctx.clearRect(0, 0, width, height);
 
-    /* 先铺压力辉光，再画点阵，形成参考图的热区扩散感。 */
-    regions.forEach((region) => {
-      const anchor = ANCHORS[region.id];
-      if (!anchor || !Number.isFinite(region.value) || region.value > -.25) return;
-      const [r, g, b] = pressureTone(region.value);
-      const cx = (anchor[0] + 180) / 360 * width;
-      const cy = (TOP_LATITUDE - anchor[1]) / (TOP_LATITUDE - BOTTOM_LATITUDE) * height;
-      const bloom = ctx.createRadialGradient(cx, cy, 0, cx, cy, width * .12);
-      bloom.addColorStop(0, `rgba(${r | 0},${g | 0},${b | 0},.26)`);
-      bloom.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = bloom;
-      ctx.fillRect(0, 0, width, height);
-    });
+    /* 不铺热区辉光：那会把 -0.3% 这种寻常波动放大成一片橙色。 */
 
     for (let row = 0; row < rows; row += 1) {
       const latitude = rowLatitude(row);
@@ -95,18 +83,29 @@ export function renderWorldHeatmap(canvas, regions, options = {}) {
   image.decoding = "async";
   image.onload = () => {
     if (destroyed) return;
+    /* 背衬按实际显示尺寸乘设备像素比设定，避免被 CSS 拉伸压扁点阵。
+       canvas 在 ready 前是 display:none 量不到，故先显形再量，失败则撤回。 */
+    const figure = canvas.closest(".risk-map-figure");
+    figure?.classList.add("risk-map-canvas-ready");
+    const box = canvas.getBoundingClientRect();
+    const ratio = Math.min(view.devicePixelRatio || 1, 2);
+    if (box.width > 1 && box.height > 1) {
+      canvas.width = Math.round(box.width * ratio);
+      canvas.height = Math.round(box.height * ratio);
+      columns = Math.max(200, Math.round(canvas.width / (4.4 * ratio)));
+      rows = Math.max(90, Math.round(canvas.height / (4.4 * ratio)));
+    }
     const buffer = doc.createElement("canvas");
     buffer.width = columns;
     buffer.height = rows;
     const target = buffer.getContext("2d", { willReadFrequently: true });
-    if (!target) return;
+    if (!target) { figure?.classList.remove("risk-map-canvas-ready"); return; }
     const sourceTop = (90 - TOP_LATITUDE) / 180 * image.naturalHeight;
     const sourceHeight = (TOP_LATITUDE - BOTTOM_LATITUDE) / 180 * image.naturalHeight;
     target.drawImage(image, 0, sourceTop, image.naturalWidth, sourceHeight, 0, 0, columns, rows);
     try {
       paint(target.getImageData(0, 0, columns, rows).data);
-    } catch { return; }
-    canvas.closest(".risk-map-figure")?.classList.add("risk-map-canvas-ready");
+    } catch { figure?.classList.remove("risk-map-canvas-ready"); }
   };
   image.src = MASK_URL;
 
