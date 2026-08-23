@@ -41,7 +41,7 @@ export function matchedKeyword(title, keywords) {
   return (keywords || []).find((word) => word && text.includes(word)) || null;
 }
 
-function row(document, parent, label, value) {
+export function row(document, parent, label, value) {
   if (!value) return;
   const item = document.createElement("div");
   item.className = "detail-row";
@@ -53,7 +53,7 @@ function row(document, parent, label, value) {
   parent.appendChild(item);
 }
 
-function section(document, parent, title) {
+export function section(document, parent, title) {
   const box = document.createElement("section");
   box.className = "detail-section";
   const heading = document.createElement("h4");
@@ -63,7 +63,7 @@ function section(document, parent, title) {
   return box;
 }
 
-function note(document, parent, text) {
+export function note(document, parent, text) {
   const paragraph = document.createElement("p");
   paragraph.className = "detail-note";
   paragraph.textContent = text;
@@ -177,95 +177,97 @@ function ensureStyle(document) {
   document.head.appendChild(style);
 }
 
-let instance = null;
+/* 抽屉外壳：焦点归还、Esc 关闭、点遮罩关闭只此一份实现，
+   资产详情与风险雷达构成共用，避免两份可访问性逻辑各自走样。 */
+let overlay = null;
+let lastFocus = null;
+let host = null;
 
-/* 模块内单例：调用方无需自行持有实例。 */
-export function openAsset(document, view, asset) {
-  instance = instance || createDetailView(document, view);
-  return instance.open(asset);
+function onKey(event) {
+  if (event.key === "Escape") closePanel();
 }
 
-export function createDetailView(document, window) {
-  let overlay = null;
-  let lastFocus = null;
+export function closePanel() {
+  if (!overlay) return;
+  overlay.remove();
+  overlay = null;
+  if (host) host.removeEventListener("keydown", onKey);
+  if (lastFocus && lastFocus.focus) lastFocus.focus();
+}
 
-  function close() {
-    if (!overlay) return;
-    overlay.remove();
-    overlay = null;
-    document.removeEventListener("keydown", onKey);
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+export function isPanelOpen() {
+  return overlay !== null;
+}
+
+/* 建好遮罩与面板并接管焦点，返回面板容器供调用方填内容。 */
+export function openPanel(document, title, subtitle, ariaLabel) {
+  ensureStyle(document);
+  closePanel();
+  host = document;
+  lastFocus = document.activeElement;
+  overlay = document.createElement("div");
+  overlay.className = "detail-overlay";
+  const panel = document.createElement("div");
+  panel.className = "detail-panel";
+  panel.setAttribute("role", "dialog");
+  panel.setAttribute("aria-modal", "true");
+  panel.setAttribute("aria-label", ariaLabel);
+  const head = document.createElement("div");
+  head.className = "detail-head";
+  const titleBox = document.createElement("div");
+  const heading = document.createElement("h3");
+  heading.textContent = title;
+  const sub = document.createElement("span");
+  sub.textContent = subtitle;
+  titleBox.append(heading, sub);
+  const dismiss = document.createElement("button");
+  dismiss.type = "button";
+  dismiss.className = "detail-close";
+  dismiss.textContent = "\u2715";
+  dismiss.setAttribute("aria-label", "关闭详情");
+  dismiss.addEventListener("click", closePanel);
+  head.append(titleBox, dismiss);
+  panel.appendChild(head);
+  overlay.appendChild(panel);
+  overlay.addEventListener("click", (event) => { if (event.target === overlay) closePanel(); });
+  document.body.appendChild(overlay);
+  document.addEventListener("keydown", onKey);
+  dismiss.focus();
+  return panel;
+}
+
+/* 资产详情抽屉。 */
+export async function openAsset(document, view, asset) {
+  const panel = openPanel(document, asset.name,
+    `${asset.nameEn || ""} · ${asset.symbol}`, `${asset.name} 数据详情`);
+  const meta = section(document, panel, "来源与口径");
+  row(document, meta, "来源", (asset.source && asset.source.name) || "不可用");
+  row(document, meta, "数据日", asset.asOf || "不可用");
+  row(document, meta, "更新时间", asset.updatedAt || "不可用");
+  row(document, meta, "频率", asset.delayLabel || asset.frequency || "不可用");
+  row(document, meta, "状态", asset.status || "不可用");
+  if (asset.proxyFor) row(document, meta, "代理原标的", asset.proxyFor.symbol);
+  if (asset.source && asset.source.url) {
+    const link = document.createElement("a");
+    link.className = "detail-news";
+    link.href = asset.source.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = "前往官方来源查看";
+    meta.appendChild(link);
   }
 
-  function onKey(event) {
-    if (event.key === "Escape") close();
-  }
+  const body = document.createElement("div");
+  body.className = "detail-body";
+  panel.appendChild(body);
 
-  async function open(asset) {
-    ensureStyle(document);
-    close();
-    lastFocus = document.activeElement;
-    overlay = document.createElement("div");
-    overlay.className = "detail-overlay";
-    const panel = document.createElement("div");
-    panel.className = "detail-panel";
-    panel.setAttribute("role", "dialog");
-    panel.setAttribute("aria-modal", "true");
-    panel.setAttribute("aria-label", `${asset.name} 数据详情`);
-
-    const head = document.createElement("div");
-    head.className = "detail-head";
-    const titleBox = document.createElement("div");
-    const title = document.createElement("h3");
-    title.textContent = asset.name;
-    const sub = document.createElement("span");
-    sub.textContent = `${asset.nameEn || ""} · ${asset.symbol}`;
-    titleBox.append(title, sub);
-    const dismiss = document.createElement("button");
-    dismiss.type = "button";
-    dismiss.className = "detail-close";
-    dismiss.textContent = "✕";
-    dismiss.setAttribute("aria-label", "关闭详情");
-    dismiss.addEventListener("click", close);
-    head.append(titleBox, dismiss);
-    panel.appendChild(head);
-
-    const meta = section(document, panel, "来源与口径");
-    row(document, meta, "来源", (asset.source && asset.source.name) || "不可用");
-    row(document, meta, "数据日", asset.asOf || "不可用");
-    row(document, meta, "更新时间", asset.updatedAt || "不可用");
-    row(document, meta, "频率", asset.delayLabel || asset.frequency || "不可用");
-    row(document, meta, "状态", asset.status || "不可用");
-    if (asset.proxyFor) row(document, meta, "代理原标的", asset.proxyFor.symbol);
-    if (asset.source && asset.source.url) {
-      const link = document.createElement("a");
-      link.className = "detail-news";
-      link.href = asset.source.url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.textContent = "前往官方来源查看";
-      meta.appendChild(link);
-    }
-
-    const body = document.createElement("div");
-    body.className = "detail-body";
-    panel.appendChild(body);
-    overlay.appendChild(panel);
-    overlay.addEventListener("click", (event) => { if (event.target === overlay) close(); });
-    document.body.appendChild(overlay);
-    document.addEventListener("keydown", onKey);
-    dismiss.focus();
-
-    const [series, calendar, news] = await Promise.all([
-      SERIES_BY_SYMBOL[asset.symbol] ? loadJson("../macro-radar/series.json") : null,
-      loadJson("../econ-calendar/data.json"),
-      loadJson("../whats-latest/data.json")
-    ]);
-    if (!overlay) return;
-    renderChart(document, body, asset, series);
-    renderEvents(document, body, asset, calendar);
-    renderNews(document, body, asset, news);
-  }
-
-  return Object.freeze({ open, close });
+  const [series, calendar, news] = await Promise.all([
+    SERIES_BY_SYMBOL[asset.symbol] ? loadJson("../macro-radar/series.json") : null,
+    loadJson("../econ-calendar/data.json"),
+    loadJson("../whats-latest/data.json")
+  ]);
+  if (!isPanelOpen()) return;
+  renderChart(document, body, asset, series);
+  renderEvents(document, body, asset, calendar);
+  renderNews(document, body, asset, news);
 }

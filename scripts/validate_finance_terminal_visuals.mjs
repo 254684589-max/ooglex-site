@@ -10,6 +10,8 @@ import { sanitizeSymbol, normalizeList, toggleSymbol, orderByWatchlist, describe
   from "../apps/finance-terminal/finance-terminal-watchlist.mjs";
 import { seriesPath, matchedKeyword }
   from "../apps/finance-terminal/finance-terminal-detail-view.mjs";
+import { RADAR_AXES, axisValue, formulaText, readInput }
+  from "../apps/finance-terminal/finance-terminal-radar-view.mjs";
 
 function asset(symbol, dailyReturn, options = {}) {
   return {
@@ -169,6 +171,26 @@ assert.equal(matchedKeyword("美联储维持利率不变", ["黄金"]), null, "�
 assert.equal(matchedKeyword(null, ["利率"]), null, "标题缺失不得抛错或误判命中");
 assert.equal(matchedKeyword("SPY 创新高", []), null, "无关键词时不得声称命中");
 
+/* 漂移守卫：雷达抽屉里的权重表与 deriveRiskRadar 是两份独立实现，
+   任何一方改了而另一方没改，这里立刻失败。 */
+for (const [m, s2, y] of [[54, 55, 20], [0, 0, 0], [100, 100, 100], [12.5, 87.5, 63.25], [50, 50, 50]]) {
+  const cards = [{ meterPercent: m }, { meterPercent: s2 }, { meterPercent: y }];
+  const derived = deriveRiskRadar(cards);
+  assert.ok(derived, "三项输入齐备时雷达必须有结果");
+  RADAR_AXES.forEach((axis, index) => {
+    assert.ok(Math.abs(axisValue(axis, m, s2, y) - derived.values[index]) < 1e-9,
+      `第${index + 1}轴「${axis.name}」的权重表与 deriveRiskRadar 不一致`);
+  });
+}
+assert.equal(RADAR_AXES.length, 6, "雷达必须是六个轴");
+assert.equal(RADAR_AXES[0].terms.length, 1,
+  "「利率风险」就是宏观状态本身，权重表不得把它写成多项组合而掩盖这一点");
+assert.equal(formulaText(RADAR_AXES[1]), "宏观状态 70% + OFR金融压力 30%",
+  "算式必须如实写出各输入占比");
+assert.equal(readInput({ meterPercent: 140 }), 100, "读数必须夹在 0–100");
+assert.equal(readInput({ value: -10 }), 0, "由 value 映射的读数同样夹在 0–100");
+assert.equal(readInput({}), null, "无有效读数必须返回 null 而非猜测");
+
 console.log("Finance Terminal visual data contracts: PASS");
 console.log("- seven-region daily return pressure proxy / error isolation: PASS");
 console.log("- dynamic 5/7 to 7/7 minimum-cycle continuity / stale evidence preservation: PASS");
@@ -177,3 +199,4 @@ console.log("- rotating globe longitude projection / texture wrap contract: PASS
 console.log("- calendar-only trading sessions / lunch break / weekend / unknown zone: PASS");
 console.log("- watchlist sanitization / pure toggle / stable ordering / storage degradation: PASS");
 console.log("- detail drawer series geometry / literal keyword-hit labelling: PASS");
+console.log("- radar axis weights match deriveRiskRadar / honest formula text: PASS");
