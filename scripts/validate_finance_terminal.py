@@ -363,6 +363,54 @@ def run_asset_tracker_builder_contract_tests() -> None:
         {"^X": [(day(18), float("nan")), (day(19), 5.0), (day(20), None)]}, {}, "t")
     require(dirty["dates"] == [day(19)], "NaN与缺失值不得写入历史")
     print("Asset tracker rolling history: PASS")
+
+    macro_spec = importlib.util.spec_from_file_location(
+        "macro_radar_series", ROOT / "scripts" / "macro-radar" / "build_radar.py")
+    macro_module = importlib.util.module_from_spec(macro_spec)
+    macro_inserted = "requests" not in sys.modules
+    if macro_inserted:
+        macro_stub = types.ModuleType("requests")
+        macro_stub.utils = types.SimpleNamespace(quote=lambda value: value)
+        sys.modules["requests"] = macro_stub
+    try:
+        macro_spec.loader.exec_module(macro_module)
+    finally:
+        if macro_inserted:
+            sys.modules.pop("requests", None)
+
+    official, _ = macro_module.build_official_series({
+        "DGS10": [(day(18), 4.61), (day(19), 4.65), (day(20), 4.69)],
+        "DTWEXBGS": [(day(18), 118.9), (day(19), 119.1)],
+        "RWTC": [(day(18), 86.0), (day(20), 86.48)],
+    }, {}, "2026-08-22T00:00:00Z")
+    require(official["source"] == "FRED · EIA" and official["frequency"] == "daily",
+            "官方长序列必须标注来源与频率")
+    require(official["series"]["DGS10"]["dates"] == [day(18), day(19), day(20)],
+            "官方长序列必须按日升序")
+    capped_macro, _ = macro_module.build_official_series(
+        {"DGS10": [(day(18), 1.0), (day(19), 2.0), (day(20), 3.0)]}, {}, "t", limit=2)
+    require(capped_macro["series"]["DGS10"]["dates"] == [day(19), day(20)],
+            "官方长序列必须滚动截断")
+    kept_macro, kept_ids = macro_module.build_official_series(
+        {"DGS10": [(day(19), 4.6)]},
+        {"series": {"RWTC": {"dates": [day(17)], "values": [85.0]}}}, "t")
+    require(kept_ids == ["RWTC"] and kept_macro["series"]["RWTC"]["values"] == [85.0],
+            "本轮缺失的官方序列必须沿用上次且不补造新点")
+    require(macro_module.build_official_series({}, {}, "t")[0] is None,
+            "无任何有效官方序列时必须返回空，保留上次series.json")
+    dirty_macro, _ = macro_module.build_official_series(
+        {"DGS10": [("bad", 1.0), (day(19), -5.0), (day(20), 4.7)]}, {}, "t")
+    require(dirty_macro["series"]["DGS10"]["dates"] == [day(20)],
+            "非法日期与非正值不得写入官方长序列")
+    published = json.loads((ROOT / "apps" / "finance-terminal" / "data.json").read_text(encoding="utf-8"))
+    for record in published["assets"]:
+        if record["symbol"] in {"DGS10", "DTWEXBGS", "WTI"}:
+            require(record.get("dataRef", "").startswith("../macro-radar/data.json"),
+                    "三项官方行情仍必须读取data.json中的受契约8点窗口")
+    print("Macro official long series: PASS")
+    print("- FRED cache reuse / single EIA request / rolling cap: PASS")
+    print("- retention on failure / no fabricated points / contracted 8-point window untouched: PASS")
+
     print("- shared date axis / no forward fill / rolling cap: PASS")
     print("- per-symbol retention on failure / no fabricated points / dirty value rejection: PASS")
 
