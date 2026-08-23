@@ -110,20 +110,27 @@ export function createTerminalVisuals(dependencies = {}) {
     const now = new Date();
     document.querySelectorAll("[data-market-time]").forEach((element) => {
       const timeZone = element.getAttribute("data-market-time");
+      const zone = document.querySelector(`[data-market-zone="${timeZone}"]`);
       try {
-        /* 按时区选locale才能得到正确缩写（伦敦BST需en-GB、纽约EDT需en-US）；
-           其余时区回退为准确的GMT偏移，不硬编码会随夏令时改变的缩写。 */
-        element.textContent = new Intl.DateTimeFormat(timeZone.startsWith("America/") ? "en-US" : "en-GB", {
+        /* <time> 只放机器可读的 HH:MM；时区缩写写进相邻元素，
+           这样时间本身可被程序解析，缩写仍照常显示。 */
+        const parts = new Intl.DateTimeFormat(timeZone.startsWith("America/") ? "en-US" : "en-GB", {
           timeZone,
           hour: "2-digit",
           minute: "2-digit",
           hour12: false,
           timeZoneName: "short"
-        }).format(now);
+        }).formatToParts(now);
+        const pick = (type) => parts.find((part) => part.type === type)?.value || "";
+        element.textContent = `${pick("hour")}:${pick("minute")}`;
         element.dateTime = now.toISOString();
+        /* 按时区选locale才能得到正确缩写（伦敦BST需en-GB、纽约EDT需en-US）；
+           其余时区回退为准确的GMT偏移，不硬编码会随夏令时改变的缩写。 */
+        if (zone) zone.textContent = pick("timeZoneName");
       } catch {
         element.textContent = "--:--";
         element.removeAttribute("datetime");
+        if (zone) zone.textContent = "";
       }
     });
     renderSessions(document, now);
