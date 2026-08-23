@@ -2647,7 +2647,10 @@ def main() -> None:
     # 同时 app.js 里那个各行其是的雷达观察器被删掉，常规加载合计反而比之前小。
     require(LOADER.stat().st_size <= 15_000, "金融终端分区加载模块超过15KB性能预算")
     require(TERMINAL_VISUALS.stat().st_size <= 16_000, "金融终端视觉数据模块超过16KB性能预算")
-    require(RISK_RADAR_MODULE.stat().st_size <= 3_000, "金融终端风险雷达模块超过3KB性能预算")
+    # 3,000 是按旧版「把宏观状态一个分数加权重组出六个轴」那一行设定的。六个轴改读
+    # 六个具名真实制度信号后，查表逻辑不可压缩地更大；该模块不计入 230KB 常规加载
+    # 合计，增量约占首屏 JS 的 0.2%，换来雷达从推算值变为真实测量。
+    require(RISK_RADAR_MODULE.stat().st_size <= 3_400, "金融终端风险雷达模块超过3.4KB性能预算")
     require(WORLDMAP_MODULE.stat().st_size <= 5_000, "金融终端点阵世界地图模块超过5KB性能预算")
     require(SESSIONS_MODULE.stat().st_size <= 3_500, "金融终端交易时段模块超过3.5KB性能预算")
     require(WATCHLIST_MODULE.stat().st_size <= 7_000, "金融终端自选清单模块超过7KB性能预算")
@@ -2750,17 +2753,27 @@ def main() -> None:
             and 'id="yield-curve-entry-risk"' in page
             and "aria-modal" not in curve_view_module,
             "收益率曲线抽屉必须按需导入、不进首屏、缺档断线不插值，且不得另建对话框语义")
+    risk_radar_module = RISK_RADAR_MODULE.read_text(encoding="utf-8")
     require("innerHTML" not in radar_view_module
             and 'import("./finance-terminal-radar-view.mjs")' in app
             and "finance-terminal-radar-view.mjs" not in page
             and "openRadar" in radar_view_module
-            and "RADAR_AXES" in radar_view_module
+            and "pairAxes" in radar_view_module
             and 'from "./finance-terminal-detail-view.mjs"' in radar_view_module
-            and "这六个轴不是六项独立测量" in radar_view_module
-            and "不代表站内存在对应的利率、通胀或信用专项数据" in radar_view_module
-            and "这里也不显示由不完整输入推算出的轴值" in radar_view_module
+            and 'from "./finance-terminal-risk-radar.mjs"' in radar_view_module
+            and "缺任一信号时雷达整体保持空态" in radar_view_module
+            and "不是对后市的预测" in radar_view_module
             and 'id="risk-radar-detail"' in page,
-            "雷达构成抽屉必须按需导入、不进首屏，且如实说明六轴由三项信号重组而来")
+            "雷达构成抽屉必须按需导入、不进首屏，且与雷达共用同一份信号键")
+    require("RADAR_SIGNAL_KEYS" in risk_radar_module
+            and "regimeSignals" in risk_radar_module
+            and "extractRegimeSignals" in app
+            and "regimeSignals: extractRegimeSignals(macroData)" in app
+            and "实际利率" in page and "期限溢价" in page and "信用利差" in page
+            and "利率风险" not in page and "通胀风险" not in page
+            and "波动率来自VIX" in page,
+            "风险雷达六轴必须各读一个真实制度信号，不得再用单一分数加权重组，"
+            "且轴名不得沿用没有对应测量的旧标签")
     require('risk: [document.getElementById("risk-section")' in app
             and 'document.querySelector(".risk-radar-panel")' in app
             and "observeRadarPanel" not in app,

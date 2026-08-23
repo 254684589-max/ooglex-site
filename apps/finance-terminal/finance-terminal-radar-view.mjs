@@ -1,99 +1,85 @@
 /* 风险雷达构成抽屉：按需加载。
 
-   六个轴不是六项独立测量。站内只有三项已校验信号（宏观状态、恐慌与贪婪、
-   OFR金融压力），六个轴由它们按固定权重线性重组而来。图上只看得到六个
-   凭空出现的数字，这个抽屉把重组过程原样摊开，让访客能自己核对。 */
+   六个轴各对应宏观管线里一个已算好的制度信号（波动率来自 VIX 水平与期限结构、
+   信用来自高收益债 OAS、流动性来自净流动性与 SOFR−IORB 等）。信号口径是
+   「越高越宽松·支持」，风险方向相反，故 风险 = 100 − 信号分数。
+   这里把每个轴的来源信号、原始分数与其依据原样列出，供访客核对。 */
 
 import { openPanel, section, row, note } from "./finance-terminal-detail-view.mjs";
+import { RADAR_SIGNAL_KEYS } from "./finance-terminal-risk-radar.mjs";
 
-/* 权重必须与 finance-terminal-risk-radar.mjs 的 deriveRiskRadar 完全一致；
-   两处独立存在会漂移，校验脚本里有断言逐点比对二者输出。
-   S 表示恐慌与贪婪的反向读数（100 − s）。轴的顺序即雷达图顶点顺序，
-   已按屏幕方位与标签逐一核对。 */
-export const RADAR_AXES = Object.freeze([
-  Object.freeze({ name: "利率风险", terms: Object.freeze([["m", 1]]) }),
-  Object.freeze({ name: "通胀风险", terms: Object.freeze([["m", 0.7], ["y", 0.3]]) }),
-  Object.freeze({ name: "汇率风险", terms: Object.freeze([["m", 0.55], ["s", 0.45]]) }),
-  Object.freeze({ name: "波动率风险", terms: Object.freeze([["S", 0.72], ["y", 0.28]]) }),
-  Object.freeze({ name: "信用风险", terms: Object.freeze([["y", 0.75], ["m", 0.25]]) }),
-  Object.freeze({ name: "流动性风险", terms: Object.freeze([["S", 0.55], ["m", 0.45]]) })
+/* 轴名与雷达图上的标签一致，顺序即顶点顺序。 */
+export const AXIS_LABELS = Object.freeze([
+  "实际利率", "期限溢价", "美元汇率", "波动率", "信用利差", "流动性"
 ]);
 
-const INPUT_LABEL = Object.freeze({
-  m: "宏观状态", s: "恐慌与贪婪", S: "恐慌与贪婪反向", y: "OFR金融压力"
-});
-
-/* 纯函数：按权重算出某一轴的 0–100 读数，便于离线断言。 */
-export function axisValue(axis, m, s, y) {
-  const by = { m: m, s: s, S: 100 - s, y: y };
-  return axis.terms.reduce((sum, term) => sum + by[term[0]] * term[1], 0);
+/* 纯函数：信号分数 → 风险读数（0–10），便于离线断言。 */
+export function riskReading(score) {
+  return Number.isFinite(score) ? (100 - score) / 10 : null;
 }
 
-/* 纯函数：把权重写成人能读的算式，如「宏观状态 70% + OFR金融压力 30%」。 */
-export function formulaText(axis) {
-  return axis.terms
-    .map((term) => `${INPUT_LABEL[term[0]]} ${Math.round(term[1] * 100)}%`)
-    .join(" + ");
+/* 纯函数：把六个轴与其来源信号配对；缺失的信号如实留空，不用其他轴顶替。 */
+export function pairAxes(signals) {
+  const byKey = new Map((signals || [])
+    .filter((signal) => signal && typeof signal.key === "string")
+    .map((signal) => [signal.key, signal]));
+  return RADAR_SIGNAL_KEYS.map((key, index) => {
+    const signal = byKey.get(key) || null;
+    return {
+      key,
+      label: AXIS_LABELS[index] || key,
+      signal,
+      reading: signal ? riskReading(signal.score) : null
+    };
+  });
 }
 
-/* 与 deriveRiskRadar 相同的取数口径：优先 meterPercent，其次由 value 线性映射。 */
-export function readInput(card) {
-  if (!card) return null;
-  if (Number.isFinite(card.meterPercent)) return Math.min(100, Math.max(0, card.meterPercent));
-  if (Number.isFinite(card.value)) return Math.min(100, Math.max(0, 50 + card.value * 8));
-  return null;
-}
-
-function sourceLink(document, parent, card) {
-  const url = card && card.detailUrl;
-  if (!url || !/^\.\.\/[a-z-]+\/$/.test(url)) return;
-  const link = document.createElement("a");
-  link.className = "detail-news";
-  link.href = url;
-  link.textContent = `查看 ${card.name} 数据页 →`;
-  parent.appendChild(link);
+function findMacroCard(cards) {
+  return (Array.isArray(cards) ? cards : [])
+    .find((card) => card && Array.isArray(card.regimeSignals)) || null;
 }
 
 export function openRadar(document, cards) {
-  const list = Array.isArray(cards) ? cards : [];
-  const panel = openPanel(document, "风险雷达 · 六轴构成",
-    "RISK RADAR · HOW THE SIX AXES ARE DERIVED", "风险雷达六轴构成说明");
+  const panel = openPanel(document, "风险雷达 · 六轴来源",
+    "RISK RADAR · SIGNAL BEHIND EACH AXIS", "风险雷达六轴来源说明");
 
-  const readings = list.slice(0, 3).map(readInput);
-  const complete = readings.length === 3 && readings.every(Number.isFinite);
+  const macro = findMacroCard(cards);
+  const axes = pairAxes(macro ? macro.regimeSignals : []);
+  const complete = axes.every((axis) => Number.isFinite(axis.reading));
 
-  const intro = section(document, panel, "这六个轴不是六项独立测量");
-  note(document, intro, "站内只有三项已校验信号。六个轴由这三项按固定权重线性重组而来，"
-    + "用于呈现风险结构，本身不是新的观测事实。");
+  const intro = section(document, panel, "每个轴背后是一项真实测量");
+  note(document, intro, "六个轴各取宏观管线里一个已算好的制度信号。"
+    + "信号口径是「越高越宽松、越支持」，风险方向相反，故风险读数 = 100 − 信号分数。");
 
-  const inputs = section(document, panel, "三项输入");
-  list.slice(0, 3).forEach((card, index) => {
-    const reading = readings[index];
-    row(document, inputs, card && card.name ? card.name : "不可用",
-      Number.isFinite(reading)
-        ? `${reading.toFixed(1)} / 100 · 数据日 ${(card && card.asOf) || "不可用"}`
-        : "读数不可用");
-    sourceLink(document, inputs, card);
+  const list = section(document, panel, "六轴与来源信号");
+  axes.forEach((axis) => {
+    if (!axis.signal || !Number.isFinite(axis.reading)) {
+      row(document, list, `${axis.label} · 信号缺失`, "—");
+      return;
+    }
+    row(document, list, `${axis.label} · ${axis.signal.label || axis.key} ${axis.signal.score}/100`,
+      `${axis.reading.toFixed(1)}${axis.signal.statusLabel ? " · " + axis.signal.statusLabel : ""}`);
+    if (axis.signal.detail) note(document, list, axis.signal.detail);
   });
 
-  const axes = section(document, panel, "六个轴如何算出来");
   if (!complete) {
-    note(document, axes, "三项输入中至少一项不可用，雷达此时保持空态，"
-      + "这里也不显示由不完整输入推算出的轴值。");
-    return panel;
+    note(document, list, "缺任一信号时雷达整体保持空态——六边形少一个顶点无法成形，"
+      + "这里也不用其他轴的值替代缺失项。");
+  } else {
+    const total = axes.reduce((sum, axis) => sum + axis.reading, 0);
+    row(document, list, "综合评分 · 六轴均值", (total / axes.length).toFixed(1));
   }
 
-  const [m, s, y] = readings;
-  let total = 0;
-  RADAR_AXES.forEach((axis) => {
-    const value = axisValue(axis, m, s, y);
-    total += value;
-    row(document, axes, `${axis.name} · ${formulaText(axis)}`, (value / 10).toFixed(1));
-  });
-  row(document, axes, "综合评分 · 六轴均值", (total / RADAR_AXES.length / 10).toFixed(1));
-
-  note(document, axes, "「利率风险」「通胀风险」等名称描述的是该权重组合意在近似的风险类型，"
-    + "不代表站内存在对应的利率、通胀或信用专项数据——例如「利率风险」就是宏观状态本身，"
-    + "「通胀风险」不含任何通胀输入。");
+  const meta = section(document, panel, "口径");
+  row(document, meta, "数据日", (macro && macro.asOf) || "不可用");
+  row(document, meta, "更新时间", (macro && macro.updatedAt) || "不可用");
+  row(document, meta, "来源", (macro && macro.source && macro.source.name) || "不可用");
+  const link = document.createElement("a");
+  link.className = "detail-news";
+  link.href = "../macro-radar/";
+  link.textContent = "查看宏观雷达完整方法学 →";
+  meta.appendChild(link);
+  note(document, meta, "轴名描述的是该信号刻画的风险类型；分数为各自序列在近两年窗口内的"
+    + "分位，不是对后市的预测。");
   return panel;
 }
