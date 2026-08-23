@@ -3072,7 +3072,9 @@ def main() -> None:
             and "stagedDataLoading" in regression_module
             and "supportingHealthResources" in regression_module and "supportingHealthPanelCount" in regression_module
             and "officialHealthResources" in regression_module and "officialHealthPanelCount" in regression_module
-            and "officialObservationTrends" in regression_module and "officialObservationTrendCount" in regression_module,
+            and "officialObservationTrends" in regression_module and "officialObservationTrendCount" in regression_module
+            and "overviewCardLegibility" in regression_module
+            and "scrollHeight <= n.clientHeight" in regression_module,
             "页面缺少浏览器、分区加载、官方逐源或辅助来源资源回归探针")
     require("marketLicenseReadiness" in regression_module and "providerWidgetCount" in regression_module,
             "浏览器回归探针未覆盖免费代理状态或四项提供方组件")

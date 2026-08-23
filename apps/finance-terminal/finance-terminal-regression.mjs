@@ -72,6 +72,8 @@ export function runBrowserRegressionProbe(options = {}) {
   const readinessEvidencePanels = Array.from(document.querySelectorAll("#operations-grid .operation-readiness"));
   const marketTapeItems = Array.from(document.querySelectorAll("#market-tape .market-tape-item"));
   const marketClocks = Array.from(document.querySelectorAll("[data-market-time]"));
+  const overviewLegible = Array.from(document.querySelectorAll(
+    "#market-grid .asset-price, #market-grid .asset-footer"));
   const riskHudGauges = Array.from(document.querySelectorAll("#risk-grid .risk-hud-gauge"));
   const marketGlobe = document.getElementById("market-globe-canvas");
   const radarAxisValues = Array.from(document.querySelectorAll("#risk-radar-values text"));
@@ -190,6 +192,9 @@ export function runBrowserRegressionProbe(options = {}) {
           && panel.textContent.indexOf("UNKNOWN") === -1
           && Number.isInteger(value) && value >= 0 && value <= 7;
       }),
+    /* 主数字曾被压进9px盒子。 */
+    overviewCardLegibility: overviewLegible.length === 12
+      && overviewLegible.every((n) => n.scrollHeight <= n.clientHeight + 1),
     orbitalTerminalVisuals: marketTapeItems.length === 8
       && marketTapeItems.every((item) => item.textContent.trim().length > 4)
       && marketTapeItems.filter((item) => item.textContent.includes("组件报价")).length === 4
