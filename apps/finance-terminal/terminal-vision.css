@@ -443,6 +443,22 @@ body::after {
 .watch-toggle:hover { color: var(--vision-cyan); }
 .watch-toggle:focus-visible { outline: 2px solid var(--vision-cyan); outline-offset: 2px; }
 
+/* 详情入口：抽屉本身懒加载，但按钮在首屏可见，样式不能跟着延后。 */
+.detail-open {
+  flex: none;
+  min-height: 44px;
+  padding: 0 8px;
+  border: 1px solid var(--vision-line-strong);
+  border-radius: 3px;
+  color: var(--muted);
+  background: none;
+  font: 9px var(--mono);
+  cursor: pointer;
+}
+
+.detail-open:hover { border-color: var(--vision-cyan); color: var(--vision-cyan); }
+.detail-open:focus-visible { outline: 2px solid var(--vision-cyan); outline-offset: 2px; }
+
 .watch-filter {
   min-height: 28px;
   margin-left: 10px;

@@ -3421,6 +3421,14 @@
     top.appendChild(titleBox);
     appendText(top, "span", "asset-symbol", asset.symbol);
     if (watch) top.appendChild(watch.button(asset.symbol));
+    var detail = appendText(top, "button", "detail-open", "详情");
+    detail.type = "button";
+    detail.setAttribute("aria-label", "查看 " + asset.symbol + " 数据详情");
+    detail.addEventListener("click", function () {
+      import("./finance-terminal-detail-view.mjs").then(function (mod) {
+        mod.openAsset(document, window, asset);
+      }).catch(function () {});
+    });
     card.appendChild(top);
 
     if (asset.externalDisplay) {

@@ -37,6 +37,7 @@ WORLDMAP_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-worldma
 SESSIONS_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-sessions.mjs"
 WATCHLIST_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-watchlist.mjs"
 HEALTH_ADAPTERS_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-health-adapters.mjs"
+DETAIL_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-detail-view.mjs"
 GLOBE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-globe.mjs"
 VISION_CSS = ROOT / "apps" / "finance-terminal" / "terminal-vision.css"
 VISUAL_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-visual-fidelity.css"
@@ -2589,6 +2590,7 @@ def main() -> None:
     sessions_module = SESSIONS_MODULE.read_text(encoding="utf-8")
     watchlist_module = WATCHLIST_MODULE.read_text(encoding="utf-8")
     health_adapters_module = HEALTH_ADAPTERS_MODULE.read_text(encoding="utf-8")
+    detail_view_module = DETAIL_VIEW_MODULE.read_text(encoding="utf-8")
     globe_module = GLOBE_MODULE.read_text(encoding="utf-8")
     vision_css = VISION_CSS.read_text(encoding="utf-8")
     command_center_css = COMMAND_CENTER_CSS.read_text(encoding="utf-8")
@@ -2610,6 +2612,7 @@ def main() -> None:
     require(SESSIONS_MODULE.stat().st_size <= 3_500, "金融终端交易时段模块超过3.5KB性能预算")
     require(WATCHLIST_MODULE.stat().st_size <= 7_000, "金融终端自选清单模块超过7KB性能预算")
     require(HEALTH_ADAPTERS_MODULE.stat().st_size <= 11_000, "金融终端辅助来源健康适配层超过11KB性能预算")
+    require(DETAIL_VIEW_MODULE.stat().st_size <= 13_000, "金融终端资产详情抽屉模块超过13KB性能预算")
     require(GLOBE_MODULE.stat().st_size <= 8_000, "金融终端地球动画模块超过8KB性能预算")
     require(VISION_CSS.stat().st_size <= 28_000, "金融终端科幻视觉样式超过28KB性能预算")
     require(COMMAND_CENTER_CSS.stat().st_size <= 20_000, "金融终端单屏指挥中心样式超过20KB性能预算")
@@ -2692,6 +2695,22 @@ def main() -> None:
             and "function adaptSupportingSourceHealth" in health_adapters_module
             and "辅助来源健康适配层尚未加载" in app,
             "辅助来源健康适配层必须按需加载、不进首屏，且未安装时明确报未就绪而非臆造状态")
+    require("innerHTML" not in detail_view_module
+            and 'import("./finance-terminal-detail-view.mjs")' in app
+            and "finance-terminal-detail-view.mjs" not in page
+            and "openAsset" in detail_view_module
+            and "seriesPath" in detail_view_module
+            and "matchedKeyword" in detail_view_module
+            and "按其使用条款不得抓取、保存或再分发组件行情" in detail_view_module
+            and "在此之前不显示推断值" in detail_view_module
+            and "不代表其与本标的存在因果关系" in detail_view_module
+            and "命中不等于与本标的相关" in detail_view_module
+            and 'aria-modal' in detail_view_module
+            and 'class="detail-open"' not in page
+            and ".detail-open" in vision_css
+            and ".detail-open" not in detail_view_module,
+            "资产详情抽屉必须按需导入、不进首屏，无序列时如实说明而非展示推断值，"
+            "且首屏可见的触发按钮样式不得随抽屉延后加载")
     require("innerHTML" not in watchlist_module
             and 'import("./finance-terminal-watchlist.mjs")' in app
             and "finance-terminal-watchlist.mjs" not in page
