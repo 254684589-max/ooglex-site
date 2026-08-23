@@ -38,6 +38,7 @@ SESSIONS_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-session
 WATCHLIST_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-watchlist.mjs"
 HEALTH_ADAPTERS_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-health-adapters.mjs"
 DETAIL_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-detail-view.mjs"
+RADAR_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-radar-view.mjs"
 GLOBE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-globe.mjs"
 VISION_CSS = ROOT / "apps" / "finance-terminal" / "terminal-vision.css"
 VISUAL_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-visual-fidelity.css"
@@ -2611,6 +2612,7 @@ def main() -> None:
     watchlist_module = WATCHLIST_MODULE.read_text(encoding="utf-8")
     health_adapters_module = HEALTH_ADAPTERS_MODULE.read_text(encoding="utf-8")
     detail_view_module = DETAIL_VIEW_MODULE.read_text(encoding="utf-8")
+    radar_view_module = RADAR_VIEW_MODULE.read_text(encoding="utf-8")
     globe_module = GLOBE_MODULE.read_text(encoding="utf-8")
     vision_css = VISION_CSS.read_text(encoding="utf-8")
     command_center_css = COMMAND_CENTER_CSS.read_text(encoding="utf-8")
@@ -2633,6 +2635,7 @@ def main() -> None:
     require(WATCHLIST_MODULE.stat().st_size <= 7_000, "金融终端自选清单模块超过7KB性能预算")
     require(HEALTH_ADAPTERS_MODULE.stat().st_size <= 11_000, "金融终端辅助来源健康适配层超过11KB性能预算")
     require(DETAIL_VIEW_MODULE.stat().st_size <= 13_000, "金融终端资产详情抽屉模块超过13KB性能预算")
+    require(RADAR_VIEW_MODULE.stat().st_size <= 6_000, "金融终端雷达构成抽屉模块超过6KB性能预算")
     require(GLOBE_MODULE.stat().st_size <= 8_000, "金融终端地球动画模块超过8KB性能预算")
     require(VISION_CSS.stat().st_size <= 28_000, "金融终端科幻视觉样式超过28KB性能预算")
     require(COMMAND_CENTER_CSS.stat().st_size <= 20_000, "金融终端单屏指挥中心样式超过20KB性能预算")
@@ -2715,6 +2718,21 @@ def main() -> None:
             and "function adaptSupportingSourceHealth" in health_adapters_module
             and "辅助来源健康适配层尚未加载" in app,
             "辅助来源健康适配层必须按需加载、不进首屏，且未安装时明确报未就绪而非臆造状态")
+    require("innerHTML" not in radar_view_module
+            and 'import("./finance-terminal-radar-view.mjs")' in app
+            and "finance-terminal-radar-view.mjs" not in page
+            and "openRadar" in radar_view_module
+            and "RADAR_AXES" in radar_view_module
+            and 'from "./finance-terminal-detail-view.mjs"' in radar_view_module
+            and "这六个轴不是六项独立测量" in radar_view_module
+            and "不代表站内存在对应的利率、通胀或信用专项数据" in radar_view_module
+            and "这里也不显示由不完整输入推算出的轴值" in radar_view_module
+            and 'id="risk-radar-detail"' in page,
+            "雷达构成抽屉必须按需导入、不进首屏，且如实说明六轴由三项信号重组而来")
+    require("openPanel" in detail_view_module and "isPanelOpen" in detail_view_module
+            and "aria-modal" in detail_view_module
+            and "aria-modal" not in radar_view_module,
+            "抽屉外壳必须只有一份实现，雷达抽屉不得另建一套对话框语义")
     require("innerHTML" not in detail_view_module
             and 'import("./finance-terminal-detail-view.mjs")' in app
             and "finance-terminal-detail-view.mjs" not in page

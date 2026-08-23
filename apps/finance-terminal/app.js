@@ -476,6 +476,24 @@
     };
   }
 
+  var radarTrigger = null;
+  /* 雷达构成抽屉按需加载：只有真的去点「六轴如何算出」才下载这段代码。
+     入口在首屏就绑好，不等风险区渲染完——窄屏下风险区可能一直没加载，
+     若把绑定挂在渲染回调里，按钮在那些尺寸下会变成点了没反应的死键。
+     数据尚未到达时抽屉照常打开，并如实说明输入不可用。 */
+  function bindRadarDetail(cards) {
+    var trigger = radarTrigger || document.getElementById("risk-radar-detail");
+    if (!trigger) return;
+    if (cards) trigger.radarCards = cards;
+    if (radarTrigger) return;
+    radarTrigger = trigger;
+    trigger.addEventListener("click", function () {
+      import("./finance-terminal-radar-view.mjs").then(function (mod) {
+        mod.openRadar(document, trigger.radarCards || []);
+      }).catch(function () {});
+    });
+  }
+
   var supportingHealthAdapter = null;
   var SUPPORTING_HEALTH_SECTIONS = { risk: true, information: true };
 
@@ -2907,6 +2925,7 @@
   var grid = document.getElementById("market-grid");
   var watch = null;
   var lastRendered = null;
+  bindRadarDetail(null);
   import("./finance-terminal-watchlist.mjs").then(function (mod) {
     watch = mod.mountWatchlist(document, window, function () {
       if (lastRendered) render(lastRendered);
@@ -3170,6 +3189,7 @@
       });
     }
     riskView.render(cards);
+    bindRadarDetail(cards);
     return terminalVisualsPromise.then(function (visuals) {
       if (visuals) visuals.renderRiskRadar(cards);
     });
