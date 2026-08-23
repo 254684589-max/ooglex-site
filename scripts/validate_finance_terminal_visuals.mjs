@@ -8,6 +8,8 @@ import { textureCoordinate } from "../apps/finance-terminal/finance-terminal-glo
 import { sessionState } from "../apps/finance-terminal/finance-terminal-sessions.mjs";
 import { sanitizeSymbol, normalizeList, toggleSymbol, orderByWatchlist, describeFilter, createWatchlistStore }
   from "../apps/finance-terminal/finance-terminal-watchlist.mjs";
+import { seriesPath, matchedKeyword }
+  from "../apps/finance-terminal/finance-terminal-detail-view.mjs";
 
 function asset(symbol, dailyReturn, options = {}) {
   return {
@@ -150,6 +152,23 @@ degraded.toggle("SPY");
 assert.ok(degraded.has("SPY"), "存储被拦时自选仍应在本次会话内生效");
 assert.equal(degraded.persisted(), false, "存储被拦时不得声称已保存");
 
+assert.equal(seriesPath([1], 100, 50, 5), "", "不足两点时不得画出任何折线");
+assert.equal(seriesPath([], 100, 50, 5), "", "空序列不得画出任何折线");
+assert.equal(seriesPath([1, "x", null, 3], 100, 50, 5), seriesPath([1, 3], 100, 50, 5),
+  "非有限值必须整点剔除而非当作零");
+const flat = seriesPath([2, 2, 2], 100, 50, 5);
+assert.ok(flat.startsWith("M5.0 ") && !flat.includes("NaN"),
+  "全平序列不得因零跨度产生 NaN 坐标");
+const shaped = seriesPath([0, 10], 100, 50, 5);
+assert.equal(shaped, "M5.0 45.0 L95.0 5.0",
+  "最低点须落在下边距、最高点须落在上边距，且首尾贴合内框");
+
+assert.equal(matchedKeyword("美联储维持利率不变", ["利率", "黄金"]), "利率",
+  "必须返回实际命中的关键词以便如实标注匹配依据");
+assert.equal(matchedKeyword("美联储维持利率不变", ["黄金"]), null, "未命中必须返回 null");
+assert.equal(matchedKeyword(null, ["利率"]), null, "标题缺失不得抛错或误判命中");
+assert.equal(matchedKeyword("SPY 创新高", []), null, "无关键词时不得声称命中");
+
 console.log("Finance Terminal visual data contracts: PASS");
 console.log("- seven-region daily return pressure proxy / error isolation: PASS");
 console.log("- dynamic 5/7 to 7/7 minimum-cycle continuity / stale evidence preservation: PASS");
@@ -157,3 +176,4 @@ console.log("- three-source normalized six-axis risk radar / incomplete-source i
 console.log("- rotating globe longitude projection / texture wrap contract: PASS");
 console.log("- calendar-only trading sessions / lunch break / weekend / unknown zone: PASS");
 console.log("- watchlist sanitization / pure toggle / stable ordering / storage degradation: PASS");
+console.log("- detail drawer series geometry / literal keyword-hit labelling: PASS");
