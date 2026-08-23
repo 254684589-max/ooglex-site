@@ -35,6 +35,7 @@ TERMINAL_VISUALS = ROOT / "apps" / "finance-terminal" / "finance-terminal-visual
 RISK_RADAR_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-radar.mjs"
 WORLDMAP_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-worldmap.mjs"
 SESSIONS_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-sessions.mjs"
+WATCHLIST_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-watchlist.mjs"
 GLOBE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-globe.mjs"
 VISION_CSS = ROOT / "apps" / "finance-terminal" / "terminal-vision.css"
 VISUAL_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-visual-fidelity.css"
@@ -2532,6 +2533,7 @@ def main() -> None:
     risk_radar_module = RISK_RADAR_MODULE.read_text(encoding="utf-8")
     worldmap_module = WORLDMAP_MODULE.read_text(encoding="utf-8")
     sessions_module = SESSIONS_MODULE.read_text(encoding="utf-8")
+    watchlist_module = WATCHLIST_MODULE.read_text(encoding="utf-8")
     globe_module = GLOBE_MODULE.read_text(encoding="utf-8")
     vision_css = VISION_CSS.read_text(encoding="utf-8")
     command_center_css = COMMAND_CENTER_CSS.read_text(encoding="utf-8")
@@ -2551,6 +2553,7 @@ def main() -> None:
     require(RISK_RADAR_MODULE.stat().st_size <= 3_000, "金融终端风险雷达模块超过3KB性能预算")
     require(WORLDMAP_MODULE.stat().st_size <= 5_000, "金融终端点阵世界地图模块超过5KB性能预算")
     require(SESSIONS_MODULE.stat().st_size <= 3_500, "金融终端交易时段模块超过3.5KB性能预算")
+    require(WATCHLIST_MODULE.stat().st_size <= 7_000, "金融终端自选清单模块超过7KB性能预算")
     require(GLOBE_MODULE.stat().st_size <= 8_000, "金融终端地球动画模块超过8KB性能预算")
     require(VISION_CSS.stat().st_size <= 28_000, "金融终端科幻视觉样式超过28KB性能预算")
     require(COMMAND_CENTER_CSS.stat().st_size <= 20_000, "金融终端单屏指挥中心样式超过20KB性能预算")
@@ -2624,6 +2627,17 @@ def main() -> None:
             and "deriveRiskRadar" in risk_radar_module
             and "renderRiskRadar" in risk_radar_module,
             "高保真风险雷达必须使用独立受预算约束的真实信号视觉层")
+    require("innerHTML" not in watchlist_module
+            and 'import("./finance-terminal-watchlist.mjs")' in app
+            and "finance-terminal-watchlist.mjs" not in page
+            and "mountWatchlist" in watchlist_module
+            and "sanitizeSymbol" in watchlist_module
+            and "safeStorage" in watchlist_module
+            and "仅保存在本机浏览器，不会上传" in watchlist_module
+            and 'id="watch-filter"' in page
+            and ".watch-toggle" in vision_css
+            and 'aria-pressed' in watchlist_module,
+            "自选清单必须按需导入、清洗代码、容忍存储不可用并声明只存本机")
     require("innerHTML" not in sessions_module
             and 'from "./finance-terminal-sessions.mjs"' in terminal_visuals
             and "sessionState" in sessions_module

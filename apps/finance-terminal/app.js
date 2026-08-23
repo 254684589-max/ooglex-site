@@ -3062,6 +3062,14 @@
   if (typeof document === "undefined") return;
 
   var grid = document.getElementById("market-grid");
+  var watch = null;
+  var lastRendered = null;
+  import("./finance-terminal-watchlist.mjs").then(function (mod) {
+    watch = mod.mountWatchlist(document, window, function () {
+      if (lastRendered) render(lastRendered);
+    });
+    if (lastRendered) render(lastRendered);
+  }).catch(function () {});
   var pageUpdated = document.getElementById("page-updated");
   var pageSource = document.getElementById("page-source");
   var assetCount = document.getElementById("asset-count");
@@ -3560,6 +3568,7 @@
     return shell;
   }
 
+
   function makeCard(asset) {
     var direction = directionOf(asset);
     var card = document.createElement("article");
@@ -3573,6 +3582,7 @@
     appendText(titleBox, "span", "asset-en", asset.nameEn + " · " + asset.category);
     top.appendChild(titleBox);
     appendText(top, "span", "asset-symbol", asset.symbol);
+    if (watch) top.appendChild(watch.button(asset.symbol));
     card.appendChild(top);
 
     if (asset.externalDisplay) {
@@ -3698,8 +3708,13 @@
     });
     var demos = data.assets.filter(function (asset) { return asset.demo === true; });
     var unavailable = official.filter(function (asset) { return asset.status === "error"; });
+    lastRendered = data;
+    /* 自选前置，只改呈现顺序，不改数值口径。 */
+    var picked = watch ? watch.select(data.assets)
+      : { ordered: data.assets, shown: data.assets };
+
     grid.textContent = "";
-    data.assets.forEach(function (asset) {
+    picked.shown.forEach(function (asset) {
       grid.appendChild(makeCard(asset));
     });
     grid.setAttribute("aria-busy", "false");
@@ -3710,10 +3725,14 @@
       + "项站内真实可用 / " + unavailable.length + "项不可用 / "
       + proxies.length + "项免费嵌入代理 / " + demos.length + "项演示";
     updateSummary(data);
+    var overview = picked.ordered === data.assets ? data
+      : Object.assign({}, data, { assets: picked.ordered });
     terminalVisualsPromise.then(function (visuals) {
-      if (visuals) visuals.renderMarketOverview(data);
+      if (visuals) visuals.renderMarketOverview(overview);
     });
   }
+
+
 
   function renderError(error) {
     grid.textContent = "";

@@ -64,4 +64,13 @@ export function sessionState(timeZone, now) {
   return { state: "closed", label: "已收盘", detail: "" };
 }
 
+/* 把状态写进各城市牌；符号与文字由CSS按 session-* 类补足，颜色不作为唯一信号。 */
+export function renderSessions(document, now) {
+  document.querySelectorAll("[data-market-session]").forEach((element) => {
+    const { state, label, detail } = sessionState(element.getAttribute("data-market-session"), now);
+    element.className = `orbit-session session-${state}`;
+    element.textContent = detail ? `${label} · ${detail}` : label;
+  });
+}
+
 export const SESSION_TIME_ZONES = Object.freeze(Object.keys(SESSIONS));
