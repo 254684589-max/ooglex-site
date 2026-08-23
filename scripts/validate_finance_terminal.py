@@ -332,6 +332,40 @@ def run_asset_tracker_builder_contract_tests() -> None:
             "中证500ETF代理契约无效")
     print("Asset tracker CSI 500 fallback: PASS")
 
+    def day(number):
+        return f"2026-08-{number:02d}"
+
+    fresh, _ = module.build_history({
+        "^GSPC": [(day(18), 100.0), (day(19), 101.0), (day(20), 102.5)],
+        "^N225": [(day(18), 200.0), (day(20), 204.0)],
+    }, {}, "2026-08-22T00:00:00Z")
+    require(fresh["dates"] == [day(18), day(19), day(20)], "历史共享日期轴必须按日升序合并")
+    require(fresh["series"]["^N225"][1] is None, "缺报价日必须留空，不得前向填充")
+    require(fresh["asOf"] == day(20) and fresh["points"] == 3, "历史 asOf 与点数必须由日期轴复算")
+    require(fresh["source"] == "Yahoo Finance" and fresh["frequency"] == "daily",
+            "历史必须标注与data.json一致的来源与频率")
+
+    capped, _ = module.build_history(
+        {"^GSPC": [(day(18), 1.0), (day(19), 2.0), (day(20), 3.0)]}, {}, "t", limit=2)
+    require(capped["dates"] == [day(19), day(20)], "历史必须滚动截断到最近N个交易日")
+
+    previous = {"dates": [day(18), day(19)],
+                "series": {"^GSPC": [100.0, 101.0], "^FTSE": [50.0, 51.0]}}
+    merged, retained = module.build_history(
+        {"^GSPC": [(day(19), 101.0), (day(20), 102.0)]}, previous, "t")
+    require(retained == ["^FTSE"], "本轮取数失败的标的必须沿用上次序列")
+    require(merged["series"]["^FTSE"][-1] is None, "沿用的序列不得为新日期补造点位")
+
+    require(module.build_history({}, {}, "t")[0] is None,
+            "无任何有效序列时必须返回空，让调用方保留上次history.json")
+    dirty, _ = module.build_history(
+        {"^X": [(day(18), float("nan")), (day(19), 5.0), (day(20), None)]}, {}, "t")
+    require(dirty["dates"] == [day(19)], "NaN与缺失值不得写入历史")
+    print("Asset tracker rolling history: PASS")
+    print("- shared date axis / no forward fill / rolling cap: PASS")
+    print("- per-symbol retention on failure / no fabricated points / dirty value rejection: PASS")
+
+
     csi300 = next(item for item in module.ASSETS if item["name"] == "沪深300")
     require(csi300["syms"][0] == "000300.SS", "沪深300必须优先尝试原指数代码")
     require(csi300["syms"][1].get("sym") == "510300.SS", "沪深300ETF代理代码无效")
