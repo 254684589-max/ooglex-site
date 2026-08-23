@@ -2412,7 +2412,15 @@
       selectionLabel = "本周事件";
     }
 
-    var outsideWeek = current < week.start || current > week.end;
+    /* 周六周日通常没有经济数据发布，声明的周范围往往在周五结束。若直接用该范围判断，
+       周六跑出来的文件会落在自己声明的范围外而被误判为过期，因此按 Forex Factory 的
+       周日~周六整周口径判断；"文件来自上一周"这一真正要拦的情况仍然会被拦下。 */
+    var weekStart = new Date(week.start.getTime());
+    weekStart.setUTCDate(weekStart.getUTCDate() - weekStart.getUTCDay());
+    var weekEnd = new Date(weekStart.getTime());
+    weekEnd.setUTCDate(weekEnd.getUTCDate() + 6);
+    if (week.end > weekEnd) weekEnd = week.end;
+    var outsideWeek = current < weekStart || current > weekEnd;
     var status = age > ECON_CALENDAR_MAX_AGE_HOURS || outsideWeek
       ? "stale"
       : (!inputComplete || important.length === 0) ? "partial" : "ok";

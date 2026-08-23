@@ -14,7 +14,7 @@
 import json
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import requests
 
@@ -221,6 +221,20 @@ def utc_now():
     return datetime.now(timezone.utc)
 
 
+def week_of(days):
+    """返回这批事件所属的完整一周（周日~周六），而不是恰好有事件的那几天。
+
+    周六周日通常没有经济数据发布，若直接取事件日期的首尾，得到的区间会在周五结束；
+    于是在周六跑的任务，其 asOf 会落在自己声明的周范围之外，被下游误判为"过期"。
+    Forex Factory 周历以周日为一周开始，这里按同一口径把区间补全为 7 天。
+    """
+    if not days:
+        return ""
+    first = datetime.strptime(days[0], "%Y-%m-%d").date()
+    start = first - timedelta(days=(first.weekday() + 1) % 7)
+    return start.isoformat() + " ~ " + (start + timedelta(days=6)).isoformat()
+
+
 def record_failure(prev, prev_health, attempted_at, reason):
     if not prev:
         print("没有可保留的经济日历快照，无法生成匹配的健康文件。")
@@ -281,12 +295,13 @@ def build():
     events.sort(key=lambda e: e["ts"])
     days = sorted({e["ts"][:10] for e in events})
     highs = sum(1 for e in events if e["impact"] == "high")
+    week_range = week_of(days)
 
     data = {
         "updatedAt": attempted_at,
         "asOf": now.strftime("%Y-%m-%d"),
         "source": "Forex Factory 经济日历",
-        "weekOf": (days[0] + " ~ " + days[-1]) if days else "",
+        "weekOf": week_range,
         "count": len(events),
         "highCount": highs,
         "events": events,
