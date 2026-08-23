@@ -1,12 +1,14 @@
+/* 六轴各对应一个真实制度信号，顺序即顶点顺序。信号「越高越宽松」，故风险=100−分数。
+   缺任一信号即整体空态：六边形少一顶点无法成形，不用推算值补齐。 */
+export const RADAR_SIGNAL_KEYS = Object.freeze(
+  ["realrate", "term", "usd", "volatility", "credit", "liquidity"]);
+
 export function deriveRiskRadar(cards) {
-  const source = (Array.isArray(cards) ? cards : []).map((card) => Number.isFinite(card?.meterPercent)
-    ? Math.min(100, Math.max(0, card.meterPercent))
-    : Number.isFinite(card?.value) ? Math.min(100, Math.max(0, 50 + card.value * 8)) : null);
-  if (source.filter(Number.isFinite).length !== 3) return null;
-  const [m, s, y] = source;
-  const values = [m, m * .7 + y * .3, m * .55 + s * .45, (100 - s) * .72 + y * .28,
-    y * .75 + m * .25, (100 - s) * .55 + m * .45];
-  return { values, score: values.reduce((sum, value) => sum + value, 0) / values.length / 10 };
+  const macro = (Array.isArray(cards) ? cards : []).find((c) => c && Array.isArray(c.regimeSignals));
+  const by = new Map((macro ? macro.regimeSignals : []).map((s) => [s.key, s.score]));
+  const values = RADAR_SIGNAL_KEYS.map((k) => (Number.isFinite(by.get(k)) ? 100 - by.get(k) : null));
+  if (values.some((v) => v === null)) return null;
+  return { values, score: values.reduce((a, b) => a + b, 0) / values.length / 10 };
 }
 
 export function renderRiskRadar(document, cards) {

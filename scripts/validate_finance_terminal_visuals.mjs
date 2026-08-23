@@ -11,8 +11,9 @@ import { sanitizeSymbol, normalizeList, toggleSymbol, orderByWatchlist, describe
   from "../apps/finance-terminal/finance-terminal-watchlist.mjs";
 import { seriesPath, matchedKeyword }
   from "../apps/finance-terminal/finance-terminal-detail-view.mjs";
-import { RADAR_AXES, axisValue, formulaText, readInput }
+import { AXIS_LABELS, riskReading, pairAxes }
   from "../apps/finance-terminal/finance-terminal-radar-view.mjs";
+import { RADAR_SIGNAL_KEYS } from "../apps/finance-terminal/finance-terminal-risk-radar.mjs";
 import { tenorX, valueY, curveSegments, describeShape }
   from "../apps/finance-terminal/finance-terminal-curve-view.mjs";
 
@@ -92,12 +93,15 @@ assert.equal(staleEvidence.evidenceStale, true, "任一资格证据过期必须�
 assert.equal(derivePipelineSummary(pipelineCards.slice(0, 3)).minimumCycle, null,
   "缺少任一核心管线时不得显示伪造的总资格进度");
 
-const radar = deriveRiskRadar([{ meterPercent: 62 }, { meterPercent: 44 }, { value: -1.25 }]);
-assert.equal(radar.values.length, 6, "风险雷达必须由三项现有信号生成六个可视维度");
-assert.ok(radar.values.every((value) => value >= 0 && value <= 100));
-assert.ok(radar.score >= 0 && radar.score <= 10);
-assert.equal(deriveRiskRadar([{ meterPercent: 50 }]), null,
-  "三项信号不完整时风险雷达不得生成推断分数");
+const radarProbe = deriveRiskRadar([{ regimeSignals: [
+  { key: "realrate", score: 11 }, { key: "term", score: 55 }, { key: "usd", score: 68 },
+  { key: "volatility", score: 87 }, { key: "credit", score: 74 }, { key: "liquidity", score: 31 }
+] }]);
+assert.equal(radarProbe.values.length, 6, "风险雷达必须输出六个维度");
+assert.ok(radarProbe.values.every((value) => value >= 0 && value <= 100));
+assert.ok(radarProbe.score >= 0 && radarProbe.score <= 10);
+assert.equal(deriveRiskRadar([{ regimeSignals: [{ key: "realrate", score: 11 }] }]), null,
+  "制度信号不完整时风险雷达不得生成推断分数");
 
 assert.equal(textureCoordinate(0, 0), .5, "地球中央经线必须映射到纹理中央");
 assert.equal(textureCoordinate(0, 1), .75, "地球右侧边缘必须映射到东经90度");
@@ -174,25 +178,54 @@ assert.equal(matchedKeyword("美联储维持利率不变", ["黄金"]), null, "�
 assert.equal(matchedKeyword(null, ["利率"]), null, "标题缺失不得抛错或误判命中");
 assert.equal(matchedKeyword("SPY 创新高", []), null, "无关键词时不得声称命中");
 
-/* 漂移守卫：雷达抽屉里的权重表与 deriveRiskRadar 是两份独立实现，
-   任何一方改了而另一方没改，这里立刻失败。 */
-for (const [m, s2, y] of [[54, 55, 20], [0, 0, 0], [100, 100, 100], [12.5, 87.5, 63.25], [50, 50, 50]]) {
-  const cards = [{ meterPercent: m }, { meterPercent: s2 }, { meterPercent: y }];
-  const derived = deriveRiskRadar(cards);
-  assert.ok(derived, "三项输入齐备时雷达必须有结果");
-  RADAR_AXES.forEach((axis, index) => {
-    assert.ok(Math.abs(axisValue(axis, m, s2, y) - derived.values[index]) < 1e-9,
-      `第${index + 1}轴「${axis.name}」的权重表与 deriveRiskRadar 不一致`);
+/* 雷达六轴现在各读一个真实制度信号，风险 = 100 − 分数。 */
+{
+  const SIGNALS = [
+    { key: "liquidity", label: "流动性", score: 31 }, { key: "volatility", label: "波动率", score: 87 },
+    { key: "term", label: "期限溢价", score: 55 }, { key: "realrate", label: "实际利率", score: 11 },
+    { key: "credit", label: "信用利差", score: 74 }, { key: "growth", label: "增长动能", score: 61 },
+    { key: "usd", label: "美元汇率", score: 68 }, { key: "breadth", label: "市场广度", score: 66 }
+  ];
+  const cards = [{ id: "macro-regime", regimeSignals: SIGNALS }];
+  const radar = deriveRiskRadar(cards);
+  assert.ok(radar, "八个信号齐备时雷达必须出值");
+  assert.equal(RADAR_SIGNAL_KEYS.length, 6, "雷达必须是六个轴");
+  assert.equal(AXIS_LABELS.length, 6, "轴名数量必须与轴数一致");
+
+  /* 抽屉与雷达是两份独立读取，任何一方改了映射这里立刻失败。 */
+  const paired = pairAxes(SIGNALS);
+  paired.forEach((axis, index) => {
+    assert.equal(axis.key, RADAR_SIGNAL_KEYS[index], `第${index + 1}轴的信号键必须与雷达一致`);
+    assert.ok(Math.abs(axis.reading * 10 - radar.values[index]) < 1e-9,
+      `第${index + 1}轴「${axis.label}」抽屉读数与雷达不一致`);
   });
+
+  /* 方向必须正确：信号越高（越宽松）风险越低。 */
+  assert.equal(riskReading(87), 1.3, "波动率信号 87 对应风险 1.3");
+  assert.equal(riskReading(11), 8.9, "实际利率信号 11 对应风险 8.9");
+  assert.equal(riskReading(null), null, "分数缺失必须返回 null 而非猜测");
+  const volatility = paired.find((axis) => axis.key === "volatility");
+  const realrate = paired.find((axis) => axis.key === "realrate");
+  assert.ok(volatility.reading < realrate.reading,
+    "波动率信号高于实际利率信号时，其风险读数必须更低——方向写反会让整张雷达读反");
+
+  /* 真实信号必须体现离散度；此前六轴由一个分数重组，全挤在中段。 */
+  const spread = Math.max(...radar.values) - Math.min(...radar.values);
+  assert.ok(spread > 50, `六轴应反映真实差异，当前跨度 ${spread.toFixed(1)}`);
+
+  /* 缺任一信号即整体空态，不用其他轴顶替。 */
+  RADAR_SIGNAL_KEYS.forEach((key) => {
+    const partial = SIGNALS.filter((signal) => signal.key !== key);
+    assert.equal(deriveRiskRadar([{ regimeSignals: partial }]), null,
+      `缺 ${key} 信号时雷达必须整体空态`);
+    const gap = pairAxes(partial).find((axis) => axis.key === key);
+    assert.equal(gap.reading, null, `缺 ${key} 时抽屉对应轴必须留空`);
+    assert.equal(gap.signal, null, `缺 ${key} 时不得用其他信号顶替`);
+  });
+  assert.equal(deriveRiskRadar([{ id: "x" }]), null, "没有宏观卡时必须空态");
+  assert.equal(deriveRiskRadar([]), null, "空输入必须空态");
 }
-assert.equal(RADAR_AXES.length, 6, "雷达必须是六个轴");
-assert.equal(RADAR_AXES[0].terms.length, 1,
-  "「利率风险」就是宏观状态本身，权重表不得把它写成多项组合而掩盖这一点");
-assert.equal(formulaText(RADAR_AXES[1]), "宏观状态 70% + OFR金融压力 30%",
-  "算式必须如实写出各输入占比");
-assert.equal(readInput({ meterPercent: 140 }), 100, "读数必须夹在 0–100");
-assert.equal(readInput({ value: -10 }), 0, "由 value 映射的读数同样夹在 0–100");
-assert.equal(readInput({}), null, "无有效读数必须返回 null 而非猜测");
+
 
 /* 地图不得替没有代表指数的地区着色：这些地点站内没有任何指数，必须留白。 */
 {
@@ -260,6 +293,6 @@ console.log("- rotating globe longitude projection / texture wrap contract: PASS
 console.log("- calendar-only trading sessions / lunch break / weekend / unknown zone: PASS");
 console.log("- watchlist sanitization / pure toggle / stable ordering / storage degradation: PASS");
 console.log("- detail drawer series geometry / literal keyword-hit labelling: PASS");
-console.log("- radar axis weights match deriveRiskRadar / honest formula text: PASS");
+console.log("- radar six axes read real regime signals / direction / gap isolation: PASS");
 console.log("- heatmap paints only regions with a representative index: PASS");
 console.log("- yield curve breaks at missing tenors / log tenor axis / honest shape call: PASS");

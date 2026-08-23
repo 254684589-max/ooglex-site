@@ -1358,9 +1358,9 @@
               <circle r="3"></circle><circle r="3"></circle><circle r="3"></circle>
             </g>
             <g class="risk-radar-labels" aria-hidden="true">
-              <text x="130" y="13">利率风险</text><text x="224" y="66">通胀风险</text>
-              <text x="226" y="178">汇率风险</text><text x="130" y="217">波动率风险</text>
-              <text x="37" y="178">信用风险</text><text x="35" y="66">流动性风险</text>
+              <text x="130" y="13">实际利率</text><text x="224" y="66">期限溢价</text>
+              <text x="226" y="178">美元汇率</text><text x="130" y="217">波动率</text>
+              <text x="37" y="178">信用利差</text><text x="35" y="66">流动性</text>
             </g>
             <g class="risk-radar-values" id="risk-radar-values" aria-hidden="true">
               <text x="130" y="34">—</text><text x="199" y="78">—</text>
@@ -1372,7 +1372,7 @@
             <span>风险综合评分</span><strong id="risk-radar-score">—</strong><small>/10</small>
             <b id="risk-radar-verdict">—</b>
           </div>
-          <p id="risk-radar-note">由宏观状态、恐慌贪婪与OFR压力三项现有信号归一化映射，仅作风险结构可视化。</p>
+          <p id="risk-radar-note">六轴各取宏观管线一个已算好的制度信号（波动率来自VIX、信用来自高收益债OAS、流动性来自净流动性与SOFR−IORB等），风险方向为100减信号分数；缺任一信号则整体留空，不推算补齐。</p>
         </aside>
       </section>
 
