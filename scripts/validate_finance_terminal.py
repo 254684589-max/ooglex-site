@@ -39,6 +39,7 @@ WATCHLIST_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-watchl
 HEALTH_ADAPTERS_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-health-adapters.mjs"
 DETAIL_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-detail-view.mjs"
 RADAR_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-radar-view.mjs"
+CURVE_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-curve-view.mjs"
 GLOBE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-globe.mjs"
 VISION_CSS = ROOT / "apps" / "finance-terminal" / "terminal-vision.css"
 VISUAL_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-visual-fidelity.css"
@@ -2613,6 +2614,7 @@ def main() -> None:
     health_adapters_module = HEALTH_ADAPTERS_MODULE.read_text(encoding="utf-8")
     detail_view_module = DETAIL_VIEW_MODULE.read_text(encoding="utf-8")
     radar_view_module = RADAR_VIEW_MODULE.read_text(encoding="utf-8")
+    curve_view_module = CURVE_VIEW_MODULE.read_text(encoding="utf-8")
     globe_module = GLOBE_MODULE.read_text(encoding="utf-8")
     vision_css = VISION_CSS.read_text(encoding="utf-8")
     command_center_css = COMMAND_CENTER_CSS.read_text(encoding="utf-8")
@@ -2636,6 +2638,7 @@ def main() -> None:
     require(HEALTH_ADAPTERS_MODULE.stat().st_size <= 11_000, "金融终端辅助来源健康适配层超过11KB性能预算")
     require(DETAIL_VIEW_MODULE.stat().st_size <= 13_000, "金融终端资产详情抽屉模块超过13KB性能预算")
     require(RADAR_VIEW_MODULE.stat().st_size <= 6_000, "金融终端雷达构成抽屉模块超过6KB性能预算")
+    require(CURVE_VIEW_MODULE.stat().st_size <= 9_000, "金融终端收益率曲线抽屉模块超过9KB性能预算")
     require(GLOBE_MODULE.stat().st_size <= 8_000, "金融终端地球动画模块超过8KB性能预算")
     require(VISION_CSS.stat().st_size <= 28_000, "金融终端科幻视觉样式超过28KB性能预算")
     require(COMMAND_CENTER_CSS.stat().st_size <= 20_000, "金融终端单屏指挥中心样式超过20KB性能预算")
@@ -2718,6 +2721,18 @@ def main() -> None:
             and "function adaptSupportingSourceHealth" in health_adapters_module
             and "辅助来源健康适配层尚未加载" in app,
             "辅助来源健康适配层必须按需加载、不进首屏，且未安装时明确报未就绪而非臆造状态")
+    require("innerHTML" not in curve_view_module
+            and 'import("./finance-terminal-curve-view.mjs")' in app
+            and "finance-terminal-curve-view.mjs" not in page
+            and "openCurve" in curve_view_module
+            and "curveSegments" in curve_view_module
+            and 'from "./finance-terminal-detail-view.mjs"' in curve_view_module
+            and "不插值、不用相邻期限顶替" in curve_view_module
+            and "在此之前不显示推断值" in curve_view_module
+            and "不构成对后市的预测" in curve_view_module
+            and 'id="yield-curve-entry"' in page
+            and "aria-modal" not in curve_view_module,
+            "收益率曲线抽屉必须按需导入、不进首屏、缺档断线不插值，且不得另建对话框语义")
     require("innerHTML" not in radar_view_module
             and 'import("./finance-terminal-radar-view.mjs")' in app
             and "finance-terminal-radar-view.mjs" not in page

@@ -2946,6 +2946,16 @@
   var watch = null;
   var lastRendered = null;
   bindRadarDetail(null);
+  /* 收益率曲线抽屉按需加载；入口在首屏即绑定，不依赖任何延迟分区。 */
+  (function bindYieldCurve() {
+    var trigger = document.getElementById("yield-curve-entry");
+    if (!trigger) return;
+    trigger.addEventListener("click", function () {
+      import("./finance-terminal-curve-view.mjs").then(function (mod) {
+        mod.openCurve(document);
+      }).catch(function () {});
+    });
+  }());
   import("./finance-terminal-watchlist.mjs").then(function (mod) {
     watch = mod.mountWatchlist(document, window, function () {
       if (lastRendered) render(lastRendered);
