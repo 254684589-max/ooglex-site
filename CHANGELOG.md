@@ -11,7 +11,13 @@
 
 ## [未发布]
 
-### 新增
+### 修改
+
+- 2026-08-22，`app.js` 瘦身：把仅服务「市场状态」延迟分区的辅助来源健康适配逻辑（`adaptSupportingSourceHealth` 与其独占的 `supportingComponentPresent`、`SUPPORTING_HEALTH_SPECS`）移入按需加载的 `finance-terminal-health-adapters.mjs`。
+  - **真实减负而非挪账**：该分区本就延迟加载，不打开「市场状态」的访客不再下载这段代码。常规加载合计 **229,893 → 221,108 字节**，余量由 107 涨到 8,892。
+  - **函数体逐字未改**：共享辅助（`isNumber`／`hoursSince`／`sameStringArray`／`sourceHealthPercent`）与历史状态常量由调用方注入，因此迁移前后逻辑完全相同。已用 main 上的旧实现与新实现做对拍：4 个数据集 × 5 个时间点共 20 组输入（覆盖正常、过期与抛错三类路径）输出**逐字节一致**。
+  - 新增显式安装点 `installSupportingHealthAdapter`，浏览器分区加载与离线测试走同一条路；**未安装时明确返回「适配层尚未加载」，不臆造健康状态**。
+  - 校验脚本同步改为从新模块构造适配层，原有 10 条辅助健康断言全部保留。
 
 - 2026-08-22，宏观三条官方序列开始沉淀**滚动一年长历史** `apps/macro-radar/series.json`：DGS10、DTWEXBGS（FRED）与 RWTC（EIA）各保留最近 260 个交易日。
   - **零额外请求**：`fred_api` 本就为 2 年分位打分抓取 520 个观测点并进程内缓存，此前展示时被截断到 8 个即丢弃，现直接复用同一份缓存；RWTC 把单次 EIA 请求的 `length` 由 8 调大，仍是同一次请求，结果在轮内缓存供两处使用。

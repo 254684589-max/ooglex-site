@@ -36,6 +36,7 @@ RISK_RADAR_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-
 WORLDMAP_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-worldmap.mjs"
 SESSIONS_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-sessions.mjs"
 WATCHLIST_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-watchlist.mjs"
+HEALTH_ADAPTERS_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-health-adapters.mjs"
 GLOBE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-globe.mjs"
 VISION_CSS = ROOT / "apps" / "finance-terminal" / "terminal-vision.css"
 VISUAL_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-visual-fidelity.css"
@@ -713,9 +714,13 @@ def run_rwtc_pipeline_tests() -> None:
 
 def run_js_adapter_tests() -> None:
     script = r"""
+(async () => {
 const assert = require("assert");
 const fs = require("fs");
 const adapter = require("./apps/finance-terminal/app.js");
+const { createSupportingHealthAdapter } = await import("./apps/finance-terminal/finance-terminal-health-adapters.mjs");
+const supportingAdapter = createSupportingHealthAdapter(adapter.supportingHealthHelpers());
+adapter.installSupportingHealthAdapter(supportingAdapter);
 const config = JSON.parse(fs.readFileSync("./apps/finance-terminal/data.json", "utf8"));
 const macro = JSON.parse(fs.readFileSync("./apps/macro-radar/data.json", "utf8"));
 const macroHealth = JSON.parse(fs.readFileSync("./apps/macro-radar/health.json", "utf8"));
@@ -803,7 +808,7 @@ function qualityDeclaration(rows) {
   ["econ-calendar", econCalendar, econCalendarHealth],
   ["whats-latest", financeNews, financeNewsHealth]
 ].forEach(([dataset, sourceData, sourceHealth]) => {
-  const state = adapter.adaptSupportingSourceHealth(sourceHealth, dataset, sourceData, supportingNow);
+  const state = supportingAdapter.adaptSupportingSourceHealth(sourceHealth, dataset, sourceData, supportingNow);
   const reportAgeHours = (supportingNow.getTime() - Date.parse(sourceHealth.generatedAt)) / (60 * 60 * 1000);
   const expectedStatus = sourceHealth.historyStatus !== "migrated"
     && reportAgeHours > sourceHealth.policy.maxReportAgeHours
@@ -815,7 +820,7 @@ function qualityDeclaration(rows) {
   assert.strictEqual(state.publishedCoveragePct, sourceHealth.coverage.publishedCoveragePct);
   const tampered = JSON.parse(JSON.stringify(sourceHealth));
   tampered.coverage.refreshedComponents += 1;
-  assert.throws(() => adapter.adaptSupportingSourceHealth(tampered, dataset, sourceData, supportingNow));
+  assert.throws(() => supportingAdapter.adaptSupportingSourceHealth(tampered, dataset, sourceData, supportingNow));
 });
 function trackedSupportingHealth(sourceHealth, attemptedAt, overrides = {}, published = true) {
   const tracked = JSON.parse(JSON.stringify(sourceHealth));
@@ -854,15 +859,15 @@ function trackedSupportingHealth(sourceHealth, attemptedAt, overrides = {}, publ
 const supportingAttemptAt = new Date(supportingNow.getTime() - 60 * 60 * 1000).toISOString();
 const supportingStaleAt = new Date(supportingNow.getTime() - 96 * 60 * 60 * 1000).toISOString();
 const trackedFear = trackedSupportingHealth(fearGreedHealth, supportingAttemptAt);
-assert.strictEqual(adapter.adaptSupportingSourceHealth(trackedFear, "fear-greed", fearGreed, supportingNow).status, "healthy");
+assert.strictEqual(supportingAdapter.adaptSupportingSourceHealth(trackedFear, "fear-greed", fearGreed, supportingNow).status, "healthy");
 const fallbackFear = trackedSupportingHealth(fearGreedHealth, supportingAttemptAt, { "cnn-index": "fallback" });
-const fallbackFearState = adapter.adaptSupportingSourceHealth(fallbackFear, "fear-greed", fearGreed, supportingNow);
+const fallbackFearState = supportingAdapter.adaptSupportingSourceHealth(fallbackFear, "fear-greed", fearGreed, supportingNow);
 assert.strictEqual(fallbackFearState.status, "degraded");
 assert.strictEqual(fallbackFearState.terminalStatus, "degraded");
 const failedFear = trackedSupportingHealth(fearGreedHealth, supportingAttemptAt, { "cnn-index": "fallback" }, false);
-assert.strictEqual(adapter.adaptSupportingSourceHealth(failedFear, "fear-greed", fearGreed, supportingNow).status, "failed");
+assert.strictEqual(supportingAdapter.adaptSupportingSourceHealth(failedFear, "fear-greed", fearGreed, supportingNow).status, "failed");
 const staleFearHealth = trackedSupportingHealth(fearGreedHealth, supportingStaleAt);
-assert.strictEqual(adapter.adaptSupportingSourceHealth(staleFearHealth, "fear-greed", fearGreed, supportingNow).status, "stale");
+assert.strictEqual(supportingAdapter.adaptSupportingSourceHealth(staleFearHealth, "fear-greed", fearGreed, supportingNow).status, "stale");
 const supportingRiskCards = adapter.buildRiskCards({
   macro: { data: macro, error: null },
   fearGreed: { data: fearGreed, error: null },
@@ -871,9 +876,9 @@ const supportingRiskCards = adapter.buildRiskCards({
   ofrHealth: { data: ofrHealth, error: null }
 }, supportingNow);
 assert.strictEqual(supportingRiskCards[1].sourceHealth.status,
-  adapter.adaptSupportingSourceHealth(fearGreedHealth, "fear-greed", fearGreed, supportingNow).status);
+  supportingAdapter.adaptSupportingSourceHealth(fearGreedHealth, "fear-greed", fearGreed, supportingNow).status);
 assert.strictEqual(supportingRiskCards[2].sourceHealth.status,
-  adapter.adaptSupportingSourceHealth(ofrHealth, "ofr-monitor", ofr, supportingNow).status);
+  supportingAdapter.adaptSupportingSourceHealth(ofrHealth, "ofr-monitor", ofr, supportingNow).status);
 const supportingInformationCards = adapter.buildInformationCards({
   calendar: { data: econCalendar, error: null },
   calendarHealth: { data: econCalendarHealth, error: null },
@@ -881,9 +886,9 @@ const supportingInformationCards = adapter.buildInformationCards({
   newsHealth: { data: financeNewsHealth, error: null }
 }, supportingNow);
 assert.strictEqual(supportingInformationCards[0].sourceHealth.status,
-  adapter.adaptSupportingSourceHealth(econCalendarHealth, "econ-calendar", econCalendar, supportingNow).status);
+  supportingAdapter.adaptSupportingSourceHealth(econCalendarHealth, "econ-calendar", econCalendar, supportingNow).status);
 assert.strictEqual(supportingInformationCards[1].sourceHealth.status,
-  adapter.adaptSupportingSourceHealth(financeNewsHealth, "whats-latest", financeNews, supportingNow).status);
+  supportingAdapter.adaptSupportingSourceHealth(financeNewsHealth, "whats-latest", financeNews, supportingNow).status);
 const success = adapter.buildPageData(
   config, macro, currentNow, null, null, rankingSource, rankingHealthSource
 );
@@ -2031,6 +2036,7 @@ console.log("Economic calendar adapter states: PASS");
 console.log("- event counts / impact filter / local-time input / partial / stale / invalid-source / request-error: PASS");
 console.log("Finance news adapter states: PASS");
 console.log("- BTC market/fallback + market-only / latest-five / safe links / failure isolation: PASS");
+})().catch((error) => { console.error(error); process.exit(1); });
 """
     result = subprocess.run(
         ["node", "-e", script],
@@ -2582,6 +2588,7 @@ def main() -> None:
     worldmap_module = WORLDMAP_MODULE.read_text(encoding="utf-8")
     sessions_module = SESSIONS_MODULE.read_text(encoding="utf-8")
     watchlist_module = WATCHLIST_MODULE.read_text(encoding="utf-8")
+    health_adapters_module = HEALTH_ADAPTERS_MODULE.read_text(encoding="utf-8")
     globe_module = GLOBE_MODULE.read_text(encoding="utf-8")
     vision_css = VISION_CSS.read_text(encoding="utf-8")
     command_center_css = COMMAND_CENTER_CSS.read_text(encoding="utf-8")
@@ -2602,6 +2609,7 @@ def main() -> None:
     require(WORLDMAP_MODULE.stat().st_size <= 5_000, "金融终端点阵世界地图模块超过5KB性能预算")
     require(SESSIONS_MODULE.stat().st_size <= 3_500, "金融终端交易时段模块超过3.5KB性能预算")
     require(WATCHLIST_MODULE.stat().st_size <= 7_000, "金融终端自选清单模块超过7KB性能预算")
+    require(HEALTH_ADAPTERS_MODULE.stat().st_size <= 11_000, "金融终端辅助来源健康适配层超过11KB性能预算")
     require(GLOBE_MODULE.stat().st_size <= 8_000, "金融终端地球动画模块超过8KB性能预算")
     require(VISION_CSS.stat().st_size <= 28_000, "金融终端科幻视觉样式超过28KB性能预算")
     require(COMMAND_CENTER_CSS.stat().st_size <= 20_000, "金融终端单屏指挥中心样式超过20KB性能预算")
@@ -2675,6 +2683,15 @@ def main() -> None:
             and "deriveRiskRadar" in risk_radar_module
             and "renderRiskRadar" in risk_radar_module,
             "高保真风险雷达必须使用独立受预算约束的真实信号视觉层")
+    require("innerHTML" not in health_adapters_module
+            and 'import("./finance-terminal-health-adapters.mjs")' in app
+            and "finance-terminal-health-adapters.mjs" not in page
+            and "createSupportingHealthAdapter" in health_adapters_module
+            and "installSupportingHealthAdapter" in app
+            and "function adaptSupportingSourceHealth" not in app
+            and "function adaptSupportingSourceHealth" in health_adapters_module
+            and "辅助来源健康适配层尚未加载" in app,
+            "辅助来源健康适配层必须按需加载、不进首屏，且未安装时明确报未就绪而非臆造状态")
     require("innerHTML" not in watchlist_module
             and 'import("./finance-terminal-watchlist.mjs")' in app
             and "finance-terminal-watchlist.mjs" not in page
