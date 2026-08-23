@@ -53,6 +53,9 @@ navigation.forEach((link) => {
 });
 
 window.addEventListener("popstate", () => applyView(viewFromHash(), true));
+/* 面板入口用 hash 跳转。点击 hash 链接只触发 hashchange 而不触发 popstate，
+   少了这一条，导航栏以外的入口点下去地址变了、视图却不动。 */
+window.addEventListener("hashchange", () => applyView(viewFromHash(), true));
 desktop.addEventListener("change", () => applyView(viewFromHash(), desktop.matches));
 applyView(viewFromHash());
 initMarketGlobe({ document, window });
