@@ -477,6 +477,7 @@
   }
 
   var supportingHealthAdapter = null;
+  var SUPPORTING_HEALTH_SECTIONS = { risk: true, information: true };
 
   /* 由分区加载或离线测试显式安装，安装前 attachSupportingHealth 明确报未就绪，不臆造健康状态。 */
   function installSupportingHealthAdapter(implementation) {
@@ -2975,7 +2976,9 @@
         }
         sectionViewModules[name] = viewModule;
         sectionViewEvidence.states[name] = "ready";
-        if (name !== "risk" || supportingHealthAdapter) return viewModule;
+        /* 市场状态与事件资讯两个分区都要渲染辅助来源健康面板，两者都必须等适配层装好
+           再解析，否则先加载的那个分区会渲染出「尚未加载」的 UNKNOWN 面板。 */
+        if (!SUPPORTING_HEALTH_SECTIONS[name] || supportingHealthAdapter) return viewModule;
         return import("./finance-terminal-health-adapters.mjs").then(function (mod) {
           installSupportingHealthAdapter(mod.createSupportingHealthAdapter(supportingHealthHelpers()));
           return viewModule;
