@@ -13,3 +13,7 @@ short.mp4
 short_meta.json
 slide_*.png
 client_secret.json
+
+# Alpha 模型的行情缓存与本地输出（不入库）
+scripts/alpha-model/cache/
+scripts/alpha-model/output/
