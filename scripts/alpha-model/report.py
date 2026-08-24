@@ -150,6 +150,15 @@ tbody tr.cand { background: var(--series-1-wash); }
            min-width: 26px; text-align: right; }
 .kv .mbar .track { width: 100%; max-width: 260px; }
 .na { font-size: 12px; color: var(--ink-3); }
+table.sub { min-width: 620px; }
+table.sub td { white-space: nowrap; }
+.dbar { position: relative; display: inline-block; width: 84px; height: 7px;
+        background: var(--surface-2); border-radius: 999px; vertical-align: middle;
+        margin-right: 8px; overflow: hidden; }
+.dbar::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0;
+               width: 1px; background: var(--border); }
+.dfill { position: absolute; top: 0; height: 7px; border-radius: 2px; }
+.dnum { font-variant-numeric: tabular-nums; font-size: 12px; }
 
 details { background: var(--surface-1); border: 1px solid var(--border);
           border-radius: 10px; padding: 0; margin-bottom: 8px; }
@@ -462,6 +471,50 @@ def factor_ic_svg(table, labels=None):
                      f'{f"  t{tstat:+.1f}" if tstat is not None else ""}</text>')
     parts.append("</svg>")
     return "".join(parts)
+
+
+def subperiod_table(stability, labels=None):
+    """子区间 IC 稳定性表。每个因子三段并排，一眼看出符号稳不稳。
+
+    单个 t 值把九年压成一个数，制度切换被平均掉了；分段才看得出
+    「因子方向真的反了」和「这段历史恰好对它不友好」的区别。
+    """
+    if not stability or not stability.get("rows"):
+        return ""
+    labels = labels or {}
+    bounds = stability["bounds"]
+    rows = stability["rows"]
+    span = max((abs(c["mean"]) for r in rows for c in r["periods"] if c), default=0.01) or 0.01
+
+    def cell(c):
+        if not c:
+            return '<td class="num na">—</td>'
+        width = min(100.0, abs(c["mean"]) / span * 100.0)
+        side = "left:50%" if c["mean"] >= 0 else f"right:50%"
+        color = "var(--series-1)" if c["mean"] >= 0 else "var(--neg)"
+        tip = f'IC {c["mean"]:+.4f}，t {c["tStat"]:+.2f}，{c["n"]} 次评估' \
+            if c.get("tStat") is not None else f'IC {c["mean"]:+.4f}'
+        return (f'<td class="num" data-tip="{esc(tip)}">'
+                f'<span class="dbar"><span class="dfill" style="{side};'
+                f'width:{width / 2:.1f}%;background:{color}"></span></span>'
+                f'<span class="dnum">{c["mean"]:+.3f}</span></td>')
+
+    head = "".join(f'<th class="num">{esc(b["from"][:7])}<br>~{esc(b["to"][:7])}</th>'
+                   for b in bounds)
+    body = []
+    for row in rows:
+        name = labels.get(row["factor"], row["factor"])
+        if row["consistent"]:
+            verdict = ('<span class="mark pass">✓ 三段同号</span>' if row["sign"] > 0
+                       else '<span class="mark fail">✓ 三段同负</span>')
+        else:
+            verdict = '<span class="muted">✗ 符号翻转</span>'
+        body.append(f'<tr><td>{esc(name)}</td>'
+                    + "".join(cell(c) for c in row["periods"])
+                    + f"<td>{verdict}</td></tr>")
+    return ('<div class="table-scroll"><table class="sub"><thead><tr><th>因子</th>'
+            + head + "<th>稳定性</th></tr></thead><tbody>"
+            + "".join(body) + "</tbody></table></div>")
 
 
 def sector_svg(counts):
@@ -927,6 +980,37 @@ def render_backtest(payload):
                           f"{_significance_note(factor_ic, '子因子')}"
                           "有显著正 IC 的因子才值得留；显著为负的可考虑反向使用。"
                           "</figcaption></figure>")
+
+    mt = payload.get("multipleTesting") or {}
+    if mt:
+        body.append('<div class="callout" style="margin-top:14px">'
+                    f'<strong>读上面那些 t 值之前，先看这条。</strong>'
+                    f'一共测了 {mt.get("numTests")} 个子因子。'
+                    f'即使它们<strong>全部无效</strong>，纯靠运气也会出现约 '
+                    f'<strong>{mt.get("expectedFalsePositives", 0):.1f} 个</strong> |t|&gt;2。'
+                    f'所以单看「有几个因子 |t|&gt;2」没有意义。'
+                    f'多重检验校正后需要 |t| &gt; <strong>'
+                    f'{mt.get("effectiveT", mt.get("bonferroniT", 0)):.2f}</strong> 才算确立'
+                    f'（按约 {mt.get("effectiveTests", "—")} 个独立因子群算；'
+                    f'三个低波动因子测的是同一件事，Bonferroni 的 '
+                    f'{mt.get("bonferroniT", 0):.2f} 过于保守）。'
+                    '没过这条线的因子属于<strong>值得追查</strong>，不是<strong>已确立</strong>。'
+                    "</div>")
+
+    stability = payload.get("subperiodIC")
+    if stability:
+        body.append("<h2>子区间稳定性：方向真的反了，还是这段历史不友好</h2>")
+        body.append('<p class="note">单个 t 值把整段历史压成一个数，制度切换被平均掉了。'
+                    '把评估期切成三段分别算，才分得出两种情况：'
+                    '<strong>三段同号</strong>说明这是稳定的因子方向（哪怕是负的，'
+                    '也可以反向使用）；<strong>符号翻转</strong>说明它随市场制度变，'
+                    '在一段历史上的显著性不能外推。'
+                    '这一条比任何单一 t 值都更能说明问题。</p>')
+        body.append(subperiod_table(stability, FACTOR_NAME_MAP))
+        consistent = [r for r in stability["rows"] if r["consistent"]]
+        body.append(f'<p class="note" style="margin-top:12px">'
+                    f'{len(consistent)} / {len(stability["rows"])} 个因子三段同号。'
+                    '同号且均值绝对值大的那几个，才是下一步唯一值得动的地方。</p>')
 
     if pf:
         body.append("<h2>组合模拟（扣成本后）</h2>")

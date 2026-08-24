@@ -124,6 +124,85 @@ def factor_ic_table(factor_snapshots, nw_lag):
     return table
 
 
+def multiple_testing_threshold(num_tests, effective_tests=None, alpha=0.05):
+    """多重检验校正后的 |t| 阈值。
+
+    测了 N 个因子再挑最好的那个，它的 t 值天然偏高：全部无效时，
+    纯靠运气出现 |t|>2 的个数期望就是 N × 4.55%。不做这一步，
+    「有 3 个因子显著」这种话没有意义。
+
+    因子之间高度相关时 Bonferroni 过于保守（三个低波动因子测的是同一件事），
+    所以额外给出按 ``effective_tests`` 个独立因子群算的阈值。
+    """
+    from statistics import NormalDist
+    normal = NormalDist()
+    out = {
+        "numTests": num_tests,
+        "expectedFalsePositives": num_tests * 0.0455,
+        "bonferroniT": abs(normal.inv_cdf(alpha / 2.0 / max(1, num_tests))),
+    }
+    if effective_tests:
+        out["effectiveTests"] = effective_tests
+        out["effectiveT"] = abs(normal.inv_cdf(alpha / 2.0 / max(1, effective_tests)))
+    return out
+
+
+def subperiod_ic(factor_series, n_periods=3, nw_lag=6, dates=None):
+    """把评估期切成若干子区间，逐因子看每段的 IC。
+
+    这是区分「因子方向真的反了」和「这段历史恰好对它不友好」的唯一办法。
+    全段同号 → 稳定的反向因子，值得反向使用；
+    只在某一段为负 → 制度效应，换个市场环境可能就回来了。
+
+    单个 t 值做不到这一点：它把九年压成一个数，制度切换被平均掉了。
+    """
+    # factor_series 里的键是交易日**索引**，不是日期。``dates`` 用于换成
+    # 人能读的日期；不给就退回索引，但报告页会显示成数字。
+    all_index = sorted({i for series in factor_series.values() for i, _ in series})
+    if len(all_index) < n_periods * 5:
+        return None
+
+    def label(index):
+        if dates and 0 <= index < len(dates):
+            return dates[index]
+        return str(index)
+
+    size = len(all_index) // n_periods
+    bounds = []
+    for i in range(n_periods):
+        lo = all_index[i * size]
+        hi = all_index[-1] if i == n_periods - 1 else all_index[(i + 1) * size - 1]
+        bounds.append((lo, hi))
+
+    rows = []
+    for name, series in factor_series.items():
+        cells, signs = [], []
+        for lo, hi in bounds:
+            values = [ic for d, ic in series if lo <= d <= hi]
+            if len(values) < 5:
+                cells.append(None)
+                continue
+            mu = mean(values)
+            se = newey_west_se(values, nw_lag)
+            cells.append({"mean": mu, "n": len(values),
+                          "tStat": (mu / se) if (se and se > 0) else None})
+            signs.append(1 if mu > 0 else -1)
+        rows.append({
+            "factor": name,
+            "periods": cells,
+            # 三段同号才算稳定；任一段缺失则判为不可判定
+            "consistent": (len(signs) == n_periods and len(set(signs)) == 1),
+            "sign": signs[0] if (signs and len(set(signs)) == 1) else 0,
+            "meanAll": mean([c["mean"] for c in cells if c]),
+        })
+    rows.sort(key=lambda r: (r["meanAll"] is None, r["meanAll"] or 0))
+    return {
+        "bounds": [{"from": label(lo), "to": label(hi),
+                    "fromIndex": lo, "toIndex": hi} for lo, hi in bounds],
+        "rows": rows,
+    }
+
+
 def rank_ic_series(snapshots, horizon):
     """逐评估日算 Rank IC。
 

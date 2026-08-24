@@ -29,10 +29,12 @@ from backtest import (  # noqa: E402
     evaluate_gates,
     factor_ic_table,
     ic_summary,
+    multiple_testing_threshold,
     rank_ic_series,
     rank_ic_series_dense,
     simulate_portfolio,
     spearman,
+    subperiod_ic,
 )
 from config import (  # noqa: E402
     BACKTEST_COST_BPS_ONE_WAY,
@@ -294,6 +296,10 @@ def run_backtest(args):
 
     factor_ic = factor_ic_table(factor_series, nw_lag)
     family_ic = factor_ic_table(family_series, nw_lag)
+    # 28 个子因子里有 3 个低波动因子测的是同一件事、4 个动量因子也高度相关，
+    # 独立因子群按 10 估
+    testing = multiple_testing_threshold(len(factor_ic), effective_tests=10)
+    stability = subperiod_ic(factor_series, n_periods=3, nw_lag=nw_lag, dates=dates)
     deciles = decile_stats(pooled_scores, pooled_labels)
 
     # ---- 组合：每月调仓，持有到下次调仓，收益序列不重叠 ----
@@ -331,6 +337,8 @@ def run_backtest(args):
         "rankIC": ic,
         "factorIC": factor_ic,
         "familyIC": family_ic,
+        "multipleTesting": testing,
+        "subperiodIC": stability,
         "deciles": deciles,
         "portfolio": {k: v for k, v in (portfolio or {}).items() if k != "periods"},
         "gates": {"passed": passed, "checks": checks},
@@ -343,7 +351,9 @@ def run_backtest(args):
             f"IC用重叠窗口（每{IC_STEP}个交易日一次）换取统计功效，"
             f"标准误已按 Newey–West（滞后{max(1, -(-HORIZON_DAYS // IC_STEP))}期）修正",
             "若 |t| < 2，说明样本不足以判断，不能读成「模型是负的」",
-            "未做多重检验校正；若尝试过多个因子变体，需对显著性打折",
+            f"已测 {len(factor_ic)} 个子因子：全部无效时纯靠运气也会出现约 "
+            f"{testing['expectedFalsePositives']:.1f} 个 |t|>2。"
+            f"多重检验校正后需 |t| > {testing.get('effectiveT', 0):.2f} 才算确立",
         ],
         "disclaimer": "研究用途，不构成投资建议。历史表现不代表未来。",
     }
