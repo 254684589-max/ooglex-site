@@ -1,1 +1,40 @@
-[]
+[
+  {
+    "at": "2026-08-24T15:06:07Z",
+    "variant": "baseline",
+    "horizon": 60,
+    "independentWindows": 10,
+    "weights": {
+      "momentum": 30.0,
+      "reversal": 5.0,
+      "risk": 15.0,
+      "positioning": 10.0
+    },
+    "flipped": [],
+    "range": "10y",
+    "demo": true,
+    "null": false,
+    "icMean": 0.3061759316500065,
+    "tStat": 11.076142018500676,
+    "passed": true
+  },
+  {
+    "at": "2026-08-24T15:09:12Z",
+    "variant": "baseline",
+    "horizon": 60,
+    "independentWindows": 10,
+    "weights": {
+      "momentum": 30.0,
+      "reversal": 5.0,
+      "risk": 15.0,
+      "positioning": 10.0
+    },
+    "flipped": [],
+    "range": "10y",
+    "demo": true,
+    "null": false,
+    "icMean": 0.3061759316500065,
+    "tStat": 11.076142018500676,
+    "passed": true
+  }
+]

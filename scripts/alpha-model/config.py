@@ -7,7 +7,20 @@
 """
 
 MODEL_NAME = "Ooglex Alpha 60"
-MODEL_VERSION = "1.0.0"
+MODEL_VERSION = "1.1.0"
+
+# 模型定位。V1 在 10 年真实日线上跑完 5 次尝试后，回测**未能**证明预测能力，
+# 且唯一达到统计显著的发现是幸存者偏差暴露（t=2.98）。因此本模型不再声称
+# 预测收益，只声称「按固定规则排序」——这个功能不需要 alpha 就成立。
+# 详见 docs/ALPHA60_V1_FINDINGS.md。
+POSITIONING = "research-funnel"
+POSITIONING_LABEL = "研究漏斗"
+OBJECTIVE = "按固定规则把股票池压缩到可人工深度研究的规模"
+PREDICTION_DISCLAIMER = (
+    "分数是当日横截面排序，不是收益预测。回测未能证明该排序具有预测能力："
+    "10 年日线、5 次尝试，最好的 |t| = 1.32，未过显著性门槛。"
+)
+FINDINGS_DOC = "docs/ALPHA60_V1_FINDINGS.md"
 
 # 预测目标：未来 60 个交易日相对基准的超额收益（约 3 个月）。
 HORIZON_DAYS = 60

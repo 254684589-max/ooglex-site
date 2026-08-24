@@ -34,6 +34,23 @@ SECTOR_MAP = {
 }
 UNKNOWN_SECTOR = "其他"
 
+# GICS 英文行业名 → 与 SECTOR_MAP 相同的 11 个中文桶。
+# PIT 成分表来自维基百科，用的是 GICS 官方英文名。
+GICS_MAP = {
+    "information technology": "科技",
+    "financials": "金融",
+    "health care": "医疗健康",
+    "consumer discretionary": "可选消费",
+    "consumer staples": "必需消费",
+    "industrials": "工业",
+    "energy": "能源",
+    "utilities": "公用事业",
+    "real estate": "房地产",
+    "materials": "原材料",
+    "communication services": "通信服务",
+    "telecommunication services": "通信服务",
+}
+
 
 # 市值榜里含未上市公司（Anthropic、OpenAI、Stripe、Waymo…），它们的代码位是
 # 占位符而不是真实 ticker。不滤掉会白抓一次并报出莫名其妙的“取数失败：—”。
@@ -41,7 +58,11 @@ PLACEHOLDER_SYMBOLS = {"—", "–", "-", "", "N/A", "NA", "—/—"}
 
 
 def normalize_sector(raw):
-    return SECTOR_MAP.get((raw or "").strip(), UNKNOWN_SECTOR)
+    """中文与 GICS 英文都能归到同一套 11 个桶，两个数据源才可互换。"""
+    text = (raw or "").strip()
+    if text in SECTOR_MAP:
+        return SECTOR_MAP[text]
+    return GICS_MAP.get(text.lower(), UNKNOWN_SECTOR)
 
 
 def is_tradeable_symbol(symbol):
@@ -110,3 +131,33 @@ def load_symbols_file(path):
             sector = normalize_sector(parts[1]) if len(parts) > 1 else UNKNOWN_SECTOR
             members.append({"symbol": symbol, "name": symbol, "sector": sector})
     return members
+
+
+def load_pit_universe(path=None):
+    """加载 point-in-time 成分股。
+
+    返回 (成分并集, 快照, 元数据)。成分并集是**所有曾经出现过的代码**——
+    取数必须覆盖它，否则那些后来被踢出指数的公司在历史日期上依然缺失，
+    幸存者偏差根本没修掉。这是本次改动最容易做错的一步。
+
+    文件不存在返回 (None, None, None)，调用方回退到静态股票池。
+    """
+    from pit_universe import DEFAULT_PATH, load as _load
+    snapshots, sectors, meta = _load(path or DEFAULT_PATH)
+    if not snapshots:
+        return None, None, None
+
+    union = set()
+    for _, members in snapshots:
+        union |= members
+
+    members = [{"symbol": sym,
+                "name": sym,
+                "sector": normalize_sector(sectors.get(sym))}
+               for sym in sorted(union)]
+    meta = {**(meta or {}), "count": len(members),
+            "unionOfAllHistoricalMembers": len(union),
+            "survivorshipBias": ("已使用 point-in-time 成分股；"
+                                 "每个横截面日只用当时在册的公司，"
+                                 "被踢出指数的公司在其在册期间照常参与")}
+    return members, snapshots, meta

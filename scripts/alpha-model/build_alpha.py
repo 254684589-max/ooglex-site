@@ -43,8 +43,13 @@ from config import (  # noqa: E402
     BENCHMARK,
     HORIZON_DAYS,
     MIN_HISTORY_DAYS,
+    FINDINGS_DOC,
     MODEL_NAME,
     MODEL_VERSION,
+    OBJECTIVE,
+    POSITIONING,
+    POSITIONING_LABEL,
+    PREDICTION_DISCLAIMER,
     SOURCE_NAME,
     WEIGHTS,
     WEIGHTS_A,
@@ -66,7 +71,8 @@ from prices import (  # noqa: E402
     new_session,
 )
 from report import write_report  # noqa: E402
-from universe import load_symbols_file, load_universe  # noqa: E402
+from pit_universe import constituents_at  # noqa: E402
+from universe import load_pit_universe, load_symbols_file, load_universe  # noqa: E402
 from variants import (  # noqa: E402
     VARIANTS,
     append_ledger,
@@ -157,13 +163,16 @@ def run_scan(args):
     if demo:
         members, series, bench_closes, dates = load_offline(
             null=args.null, n_stocks=args.limit or 120, signal=args.signal)
-        failures, universe_meta = [], {"source": "合成数据", "pointInTime": False}
+        failures, universe_meta, pit_snapshots = [], {
+            "source": "合成数据", "pointInTime": False}, None
     else:
-        members, universe_meta = _resolve_universe(args)
+        members, universe_meta, pit_snapshots = _resolve_universe(args)
         series, bench_closes, dates, failures = load_live(members, args.range)
 
     t = len(dates) - 1
-    rows, rejected = raw_cross_section(members, series, bench_closes, t)
+    rows, rejected = raw_cross_section(
+        members, series, bench_closes, t,
+        allowed=constituents_at(pit_snapshots, dates[t]) if pit_snapshots else None)
 
     # B 层：默认联网抓取；给了外部文件则用文件；--no-fundamentals 跳过。
     # 拿不到就整体缺失，总分按 A 层权重重新归一化——不填中位数。
@@ -199,7 +208,14 @@ def run_scan(args):
         "version": MODEL_VERSION,
         "horizonDays": HORIZON_DAYS,
         "benchmark": BENCHMARK,
-        "objective": f"未来{HORIZON_DAYS}个交易日相对{BENCHMARK}的超额收益排序",
+        "objective": OBJECTIVE,
+        "positioning": POSITIONING,
+        "positioningLabel": POSITIONING_LABEL,
+        "predictionDisclaimer": PREDICTION_DISCLAIMER,
+        "findingsDoc": FINDINGS_DOC,
+        "factorHorizonNote": (f"因子按 {HORIZON_DAYS} 个交易日的视角构造"
+                              f"（相对 {BENCHMARK}），但这只是因子的构造口径，"
+                              "不是对未来收益的承诺"),
         "source": "合成数据（仅供自检）" if demo else SOURCE_NAME,
         "asOf": dates[t],
         "barInterval": _calendar_interval(dates)[0],
@@ -223,7 +239,7 @@ def run_scan(args):
                           "symbols": [c["symbol"] for c in candidates]},
         "rejectedSamples": rejected[:20],
         "ranking": top,
-        "disclaimer": "研究用途，不构成投资建议。分数是横截面排序，不是收益预测。",
+        "disclaimer": "研究用途，不构成投资建议。" + PREDICTION_DISCLAIMER,
     }
 
     out = _write(payload, args.out, "alpha60.json")
@@ -257,9 +273,10 @@ def run_backtest(args):
         members, series, bench_closes, dates = load_offline(
             null=args.null, n_stocks=args.limit or 120, n_days=args.days or 900,
             signal=args.signal)
-        universe_meta = {"source": "合成数据", "pointInTime": False}
+        universe_meta, pit_snapshots = {"source": "合成数据",
+                                        "pointInTime": False}, None
     else:
-        members, universe_meta = _resolve_universe(args)
+        members, universe_meta, pit_snapshots = _resolve_universe(args)
         series, bench_closes, dates, _ = load_live(members, args.range)
 
     variant = getattr(args, "variant", "baseline") or "baseline"
@@ -269,6 +286,12 @@ def run_backtest(args):
     # 缩短前瞻期是提高功效最直接的办法，代价是换手与成本上升。
     # 它改的是**问题定义**不是模型参数，但同样计入台账——看过结果之后
     # 换一个问题再问一遍，本质上仍是一次尝试。
+    def _allowed_at(t):
+        """当日在册成分。无 PIT 数据时返回 None（不过滤）。"""
+        if not pit_snapshots:
+            return None
+        return constituents_at(pit_snapshots, dates[t])
+
     horizon = int(getattr(args, "horizon", None) or HORIZON_DAYS)
     ic_step = max(1, horizon // IC_STEP_PER_HORIZON)
     independent = (len(dates) - MIN_HISTORY_DAYS) // max(1, horizon)
@@ -291,7 +314,8 @@ def run_backtest(args):
     factor_series, family_series = {}, {}
 
     for t in range(MIN_HISTORY_DAYS, last_usable + 1, ic_step):
-        scored = _score_at(members, series, bench_closes, t, weights_used, flip)
+        scored = _score_at(members, series, bench_closes, t, weights_used, flip,
+                           allowed=_allowed_at(t))
         labels = [forward_excess_return(series[r["symbol"]][0], bench_closes, t, horizon)
                   for r in scored]
         if sum(1 for l in labels if l is not None) < 20:
@@ -339,7 +363,8 @@ def run_backtest(args):
     def _run_portfolio(hold):
         rows = []
         for t in range(MIN_HISTORY_DAYS, len(dates) - hold - 1, hold):
-            scored = _score_at(members, series, bench_closes, t, weights_used, flip)
+            scored = _score_at(members, series, bench_closes, t, weights_used, flip,
+                           allowed=_allowed_at(t))
             if not scored:
                 continue
             rows.append((
@@ -399,6 +424,7 @@ def run_backtest(args):
         "benchmark": BENCHMARK,
         "factorsUsed": list(WEIGHTS_A),
         "updatedAt": _now(),
+        "universe": universe_meta,
         "window": {"from": dates[MIN_HISTORY_DAYS], "to": dates[len(dates) - 1],
                    "tradingDays": len(dates),
                    "barInterval": _calendar_interval(dates)[0],
@@ -494,9 +520,13 @@ def _calendar_interval(dates):
     return _infer(dates)
 
 
-def _score_at(members, series, bench_closes, t, weights=None, flip=()):
-    """单个横截面日的打分。回测路径固定只用 A 层权重（B 层无 PIT 历史）。"""
-    rows, _ = raw_cross_section(members, series, bench_closes, t)
+def _score_at(members, series, bench_closes, t, weights=None, flip=(), allowed=None):
+    """单个横截面日的打分。回测路径固定只用 A 层权重（B 层无 PIT 历史）。
+
+    ``allowed`` 为当日在册成分。传了它，判断就只用当时看得到的股票池——
+    这是修掉幸存者偏差的落点。
+    """
+    rows, _ = raw_cross_section(members, series, bench_closes, t, allowed=allowed)
     return rank_cross_section(rows, fundamentals=None,
                               weights=weights or WEIGHTS_A, flip_families=flip)
 
@@ -562,10 +592,31 @@ def _f(value, digits=4):
 # 辅助
 # --------------------------------------------------------------------------
 def _resolve_universe(args):
+    """股票池优先级：--symbols 文件 > PIT 成分股 > 今日市值榜（回退）。
+
+    返回 (成分, 元数据, 快照或 None)。有快照就意味着可以做 point-in-time 过滤。
+    """
     if args.symbols:
         return load_symbols_file(args.symbols), {
-            "source": os.path.basename(args.symbols), "pointInTime": False}
-    return load_universe(limit=args.limit)
+            "source": os.path.basename(args.symbols), "pointInTime": False}, None
+
+    if not getattr(args, "no_pit", False):
+        members, snapshots, meta = load_pit_universe()
+        if members:
+            if args.limit:
+                members = members[:args.limit]
+            print(f"  使用 point-in-time 成分股：{len(members)} 只历史并集，"
+                  f"可靠起点 {meta.get('reliableFrom')}", file=sys.stderr)
+            return members, meta, snapshots
+
+    members, meta = load_universe(limit=args.limit)
+    meta = {**meta, "pitFallbackReason": (
+        "未找到 pit_membership.json；跑 "
+        "python3 scripts/alpha-model/pit_wikipedia.py 生成后即可启用 "
+        "point-in-time 股票池")}
+    print("  未启用 point-in-time 股票池，回退今日市值榜（含幸存者偏差）",
+          file=sys.stderr)
+    return members, meta, None
 
 
 def _resolve_fundamentals(args, rows, demo):
@@ -625,6 +676,9 @@ def main(argv=None):
                        help="合成数据的每日漂移幅度；越大信噪比越高")
         p.add_argument("--limit", type=int, default=None, help="股票池上限")
         p.add_argument("--symbols", default=None, help="自定义股票池文件")
+        p.add_argument("--no-pit", action="store_true", dest="no_pit",
+                       help="不使用 point-in-time 成分股，强制回退今日市值榜"
+                            "（仅用于对照实验，会重新引入幸存者偏差）")
         p.add_argument("--range", default="5y",
                        help="行情区间，如 5y / 10y。不要用 max——Yahoo 在超长区间下"
                             "会静默把日线降级成月线，程序会因粒度校验直接终止")

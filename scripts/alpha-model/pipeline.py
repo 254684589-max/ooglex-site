@@ -56,13 +56,18 @@ def screen(closes, volumes, t,
     return True, None, adv
 
 
-def raw_cross_section(members, series, bench_closes, t):
+def raw_cross_section(members, series, bench_closes, t, allowed=None):
     """算出通过过滤的股票的原始因子值。返回 (合格行, 剔除记录)。
 
     ``series``：{代码: (closes, volumes)}，均已对齐到同一主交易日历。
+    ``allowed``：当日在册的成分股集合；为 None 时不做成分过滤。
     """
     rows, rejected = [], []
     for member in members:
+        # allowed 为当日在册成分。传了就只算这些——这是 point-in-time 的落点：
+        # 判断必须只用「当时看得到的股票池」，而不是今天还活着的那批。
+        if allowed is not None and member["symbol"] not in allowed:
+            continue
         pair = series.get(member["symbol"])
         if not pair:
             rejected.append({"symbol": member["symbol"], "reason": "无行情"})

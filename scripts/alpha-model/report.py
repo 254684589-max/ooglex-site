@@ -617,6 +617,9 @@ def _meta_badges(payload):
     badges.append(f'<span class="{cls}">{esc(text)}</span>')
     if payload.get("blocksScored"):
         badges.append(f'<span class="badge">{esc(payload["blocksScored"])}</span>')
+    if payload.get("positioningLabel"):
+        badges.append(f'<span class="badge">定位：{esc(payload["positioningLabel"])}'
+                      f'·非预测</span>')
     fund = payload.get("fundamentals") or {}
     if fund.get("used"):
         badges.append(f'<span class="badge ok">✓ B层已接入 '
@@ -647,9 +650,10 @@ def render_scan(payload):
     pool = payload.get("candidatePool") or {}
     rule = pool.get("rule") or {}
 
-    body = ['<header><h1>Ooglex Alpha 60 · 选股扫描</h1>'
+    body = ['<header><h1>Ooglex Alpha 60 · 研究漏斗</h1>'
             f'<p class="sub">{esc(payload.get("objective"))}</p>'
             f'{_meta_badges(payload)}</header>']
+    body.append(_positioning_panel(payload))
 
     # ---- 关键数字 ----
     share = dist.get("shareAbove80")
@@ -753,7 +757,7 @@ def render_scan(payload):
                 "</ul></div>")
 
     body.append(_footer(payload))
-    return _page("Ooglex Alpha 60 · 选股扫描", "\n".join(body))
+    return _page("Ooglex Alpha 60 · 研究漏斗", "\n".join(body))
 
 
 def _significance_note(table, unit):
@@ -791,6 +795,36 @@ def _bin_width(dist):
         return "—"
     w = bins[0]["hi"] - bins[0]["lo"]
     return f"{w:g}"
+
+
+def _positioning_panel(payload):
+    """首屏定位说明。
+
+    这一节的存在本身就是结论：V1 在 10 年真实日线上跑完 5 次尝试后，
+    回测**未能**证明预测能力，且唯一达到统计显著的发现是幸存者偏差暴露。
+    因此页面标题从「选股扫描」改成「研究漏斗」——它声称的是
+    「按固定规则排序」，不是「预测收益」。
+
+    这个功能不需要 alpha 就成立，所以可以放心用；
+    但把它读成收益预测就是误用，必须写在第一屏而不是页脚。
+    """
+    disclaimer = payload.get("predictionDisclaimer")
+    if not disclaimer:
+        return ""
+    doc = payload.get("findingsDoc")
+    note = payload.get("factorHorizonNote")
+    return (
+        '<div class="callout" style="margin-top:20px">'
+        '<strong>这个页面是什么，不是什么</strong>'
+        "<ul>"
+        "<li><strong>是</strong>：按一套固定、公开、可复现的规则，"
+        "把整个股票池压缩到 20–30 只值得人工读财报的标的。"
+        "这个功能不需要预测能力就成立。</li>"
+        f"<li><strong>不是</strong>：收益预测。{esc(disclaimer)}</li>"
+        + (f"<li>{esc(note)}。</li>" if note else "")
+        + (f"<li>完整结论见 <code>{esc(doc)}</code>。</li>" if doc else "")
+        + "</ul></div>"
+    )
 
 
 def _fundamentals_panel(fund):
@@ -1062,6 +1096,39 @@ def render_backtest(payload):
                         "<strong>先验上几乎一定是偏差而不是 alpha</strong>——"
                         "真实世界里这种策略极其罕见。</li>"
                         "</ul></div>")
+
+    uni = payload.get("universe") or {}
+    if uni.get("pointInTime"):
+        body.append("<h2>Point-in-time 成分股</h2>")
+        body.append('<p class="note">每个横截面日只用<strong>当时在册</strong>的成分股；'
+                    '被踢出指数的公司在其在册期间照常参与。'
+                    '取数覆盖了历史上出现过的全部代码，'
+                    '否则退市/被剔除的公司在历史日期上依然缺失，偏差根本没修掉。</p>')
+        body.append('<div class="tiles">')
+        body.append(_tile("历史并集", uni.get("unionOfAllHistoricalMembers"), "曾出现过的代码总数"))
+        body.append(_tile("成分快照", uni.get("snapshots"), "重建出的时点数"))
+        body.append(_tile("变更记录", uni.get("changes"), "带日期的增删条数"))
+        body.append(_tile("可靠起点", uni.get("reliableFrom") or "—", "早于此不应采信"))
+        body.append("</div>")
+        per_year = uni.get("changesPerYear") or {}
+        if per_year:
+            thin = [y for y, c in per_year.items()
+                    if c < (uni.get("minChangesPerYear") or 10)]
+            if thin:
+                body.append('<div class="callout" style="margin-top:14px">'
+                            f'<strong>这些年份的变更记录不全：'
+                            f'{esc("、".join(sorted(thin)))}。</strong>'
+                            "变更记录越早越稀疏，缺失的调整会让重建的历史成分越往前越偏。"
+                            "覆盖这些年份的回测结论不应采信——"
+                            "重建能修掉大部分幸存者偏差，但修不掉记录本身的缺口。</div>")
+    elif uni.get("pitFallbackReason"):
+        body.append("<h2>Point-in-time 成分股：未启用</h2>")
+        body.append('<div class="callout">'
+                    f'<strong>{esc(uni["pitFallbackReason"])}</strong><br>'
+                    "当前使用今日市值榜，含幸存者偏差与前视选择偏差——"
+                    "这正是 V1 研究结论里唯一达到统计显著的问题（t = 2.98）。"
+                    "在启用 PIT 之前，下面的回测结论只能用来否决模型，"
+                    "不能用来证明模型。</div>")
 
     sv = payload.get("survivorshipExposure") or {}
     if sv:

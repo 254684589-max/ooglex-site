@@ -456,6 +456,47 @@ Newey–West t 值，按均值降序排。它回答的是"是全都没用，还�
 因此 **V1 的回测只能用来否决坏模型，不能用来证明好模型。**
 修掉它需要 point-in-time 成分股历史，属于 V2。
 
+## 9.7 Point-in-time 成分股（V1.1 起）
+
+V1 研究结论指出：唯一达到统计显著的发现是幸存者偏差暴露（t = 2.98）。
+V1.1 用 point-in-time 成分股修掉它。
+
+**回溯重建算法**
+
+```
+某日 D 发生「X 被加入、Y 被移除」
+  ⇒ D 当天及之后的成分含 X 不含 Y
+  ⇒ D 之前的成分 = D 及之后的成分 − {X} + {Y}
+```
+
+从今天的名单出发，按日期倒序逐条撤销，即得任意历史时点的成分。
+
+**两处最容易做错、且都有断言守住的地方：**
+
+1. **快照键错位一格。** 撤销 D 日变更后得到的成分，生效区间是 **D 之前**，
+   因此该快照的键必须是「再往前一个变更日」，不是 D 本身。
+   用 D 当键会让整串快照错位，而且不报错。
+2. **取数必须覆盖历史并集。** 只抓今天的成分，那些后来被踢出指数的公司
+   在历史日期上依然缺失——偏差根本没修掉。必须抓「所有曾经出现过的代码」。
+
+**可靠性随回溯深度衰减，如实报出**
+
+变更记录越早越不全，缺失的调整会让重建的历史成分越往前越偏。
+因此逐年统计变更条数，每年少于 10 条（S&P 500 实际约 20–25 次/年）
+的年份判为不可靠，并给出 `reliableFrom`。
+
+**早于 `reliableFrom` 的回测结论不应采信。**
+重建能修掉大部分幸存者偏差，但修不掉记录本身的缺口。
+
+**怎么启用**
+
+```bash
+python3 scripts/alpha-model/pit_wikipedia.py     # 生成 pit_membership.json
+python3 scripts/alpha-model/build_alpha.py backtest --range 10y
+```
+
+生成后自动启用；`--no-pit` 可强制回退今日市值榜做对照实验。
+
 ## 10. 参考实现与验证结果
 
 ```
@@ -468,6 +509,9 @@ scripts/alpha-model/
     pipeline.py     横截面主流程
     backtest.py     IC、分组、组合模拟、验收判定
     fundamentals.py B层取数与派生（quoteSummary + crumb 握手）
+    pit_universe.py PIT 成分股：回溯重建与可靠性报告
+    pit_wikipedia.py 维基百科成分表抓取与解析
+    variants.py     因子变体与尝试台账
     fixtures.py     确定性合成行情（仅供自检）
     report.py       自包含 HTML 报告生成
     build_alpha.py  命令行入口
@@ -538,7 +582,7 @@ python3 scripts/alpha-model/report.py scripts/alpha-model/output/alpha60.json
 
 ### 自检覆盖什么
 
-80 项断言，六类：
+122 项断言，七类：
 
 1. **数学基本功** —— 分位、去极值、区间收益、回撤、秩相关，对着可手算的答案；
 2. **未来函数守卫** —— 把 `t` 之后的价格 ×7、成交量归零、基准腰斩，
@@ -551,6 +595,8 @@ python3 scripts/alpha-model/report.py scripts/alpha-model/output/alpha60.json
 
 6. **行情粒度校验** —— 复现 `range=max` 返回 404 个月线 bar 的真实事故，
    断言它被识破而不是被当成日线跑完全程。
+7. **PIT 成分股** —— 回溯重建的边界日语义（变更当日即生效、前一天仍是旧成分）、
+   同日多笔一起撤销、维基 rowspan 合并日期的沿用、PIT 过滤确实作用在横截面上。
 
 第 4 条的后半句比前半句重要，它证明这套代码不会从随机数里造出 alpha。
 实测（100 只标的、1800 个交易日）：

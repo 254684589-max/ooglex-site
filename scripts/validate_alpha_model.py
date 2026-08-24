@@ -26,6 +26,8 @@ from config import HORIZON_DAYS, MIN_HISTORY_DAYS, WEIGHTS_A  # noqa: E402
 from fixtures import synthetic_market  # noqa: E402
 from pipeline import raw_cross_section, rank_cross_section, screen, select_candidates  # noqa: E402
 from prices import infer_interval  # noqa: E402
+import pit_universe as PIT  # noqa: E402
+import pit_wikipedia as WIKI  # noqa: E402
 
 FAILURES = []
 
@@ -445,6 +447,120 @@ def test_interval_guard():
     check("月线中位间隔远超日线上限", gap > 4)
 
 
+
+# ---------------------------------------------------------------------------
+WIKI_FIXTURE = """
+<table class="wikitable sortable" id="constituents"><tbody>
+<tr><th>Symbol</th><th>Security</th><th>GICS Sector</th><th>Date added</th></tr>
+<tr><td><a href="/a">MMM</a></td><td>3M</td><td>Industrials</td><td>1957-03-04</td></tr>
+<tr><td><a href="/b">BRK.B</a></td><td>Berkshire</td><td>Financials</td><td>2010-02-16</td></tr>
+<tr><td>—</td><td>占位</td><td>N/A</td><td></td></tr>
+</tbody></table>
+<table class="wikitable sortable"><tbody>
+<tr><th>Date</th><th>Added Ticker</th><th>Added Security</th>
+    <th>Removed Ticker</th><th>Removed Security</th><th>Reason</th></tr>
+<tr><td rowspan="2">March 18, 2024</td><td>SMCI</td><td>Super Micro</td>
+    <td>WHR</td><td>Whirlpool</td><td>Market cap<sup>[1]</sup></td></tr>
+<tr><td>DECK</td><td>Deckers</td><td>ZION</td><td>Zions</td><td>Market cap change</td></tr>
+<tr><td>June 24, 2023</td><td>PANW</td><td>Palo Alto</td><td>DXC</td>
+    <td>DXC Tech</td><td>Index rebalance</td></tr>
+</tbody></table>
+"""
+
+
+def test_pit_reconstruction():
+    section("13. Point-in-time 成分股回溯重建")
+    # 手算样例：今天 {A,B,C}；2024-06-01 C 换掉 D；2023-01-10 B 换掉 E
+    snaps = PIT.build_snapshots(["A", "B", "C"], "2025-01-01", [
+        {"date": "2024-06-01", "added": "C", "removed": "D"},
+        {"date": "2023-01-10", "added": "B", "removed": "E"},
+    ])
+    at = lambda d: sorted(PIT.constituents_at(snaps, d))  # noqa: E731
+
+    # 这三条守住的是一个真实踩过的 off-by-one：撤销 D 日变更后得到的成分，
+    # 生效区间是 **D 之前**，用 D 当快照键会让整串错位一格。
+    check("变更之后取到新成分", at("2024-12-01") == ["A", "B", "C"], str(at("2024-12-01")))
+    check("两次变更之间取到中间态", at("2023-06-01") == ["A", "B", "D"], str(at("2023-06-01")))
+    check("最早变更之前取到原始成分", at("2022-06-01") == ["A", "D", "E"], str(at("2022-06-01")))
+    check("变更当日即生效（含当天）", at("2024-06-01") == ["A", "B", "C"], str(at("2024-06-01")))
+    check("变更前一天仍是旧成分", at("2024-05-31") == ["A", "B", "D"], str(at("2024-05-31")))
+
+    # 同一天多笔调整必须一起撤销
+    multi = PIT.build_snapshots(["A", "B", "C", "D"], "2025-01-01", [
+        {"date": "2024-03-18", "added": "C", "removed": "X"},
+        {"date": "2024-03-18", "added": "D", "removed": "Y"},
+    ])
+    check("同日多笔一起撤销",
+          sorted(PIT.constituents_at(multi, "2024-01-01")) == ["A", "B", "X", "Y"],
+          str(sorted(PIT.constituents_at(multi, "2024-01-01"))))
+
+    check("未来日期的变更被丢弃",
+          len(PIT.build_snapshots(["A"], "2020-01-01",
+                                  [{"date": "2030-01-01", "added": "Z"}])) == 1)
+    check("无变更时只有一份快照",
+          len(PIT.build_snapshots(["A", "B"], "2025-01-01", [])) == 1)
+
+    check("BRK.B 归一成 Yahoo 口径", PIT.normalize_ticker("BRK.B") == "BRK-B")
+    check("占位符被剔除", PIT.normalize_ticker("—") is None
+          and PIT.normalize_ticker("") is None)
+    check("中文名不是代码", PIT.normalize_ticker("瑞波") is None)
+
+
+def test_pit_coverage():
+    section("14. PIT 可靠性报告")
+    changes = ([{"date": f"2024-{m:02d}-01", "added": f"A{m}"} for m in range(1, 13)]
+               + [{"date": f"2023-{m:02d}-01", "added": f"B{m}"} for m in range(1, 13)]
+               + [{"date": "2018-05-01", "added": "C1"}])       # 2018 只有 1 条
+    snaps = PIT.build_snapshots(["Z"], "2025-01-01", changes)
+    report = PIT.coverage_report(snaps, changes)
+    check("逐年统计变更条数", report["changesPerYear"]["2024"] == 12)
+    check("记录稀疏的年份被识别为不可靠边界",
+          report["reliableFrom"] == "2019-01-01", str(report["reliableFrom"]))
+    check("报出最早/最晚变更日",
+          report["earliestChange"] == "2018-05-01" and report["latestChange"] == "2024-12-01")
+    check("不把 date.min 当成有意义的最早日期", "earliest" not in report)
+
+
+def test_wikipedia_parser():
+    section("15. 维基百科成分表解析")
+    tickers, sectors = WIKI.parse_constituents(WIKI_FIXTURE, min_members=2)
+    check("解析出成分与行业", tickers == ["MMM", "BRK-B"], str(tickers))
+    check("行业取 GICS 列", sectors.get("MMM") == "Industrials")
+    check("占位符行被跳过", len(tickers) == 2)
+    check("成分数明显偏少时不认这张表",
+          WIKI.parse_constituents(WIKI_FIXTURE, min_members=400)[0] == [])
+
+    changes = WIKI.parse_changes(WIKI_FIXTURE)
+    dates = [c["date"] for c in changes]
+    # rowspan 合并日期：同一天的第二笔调整少一个单元格，日期必须沿用上一行。
+    # 漏掉这一步会让当天第二笔之后的调整全部错位，而且不会报错。
+    check("rowspan 合并日期被正确沿用", dates.count("2024-03-18") == 2, str(dates))
+    check("变更按日期升序", dates == sorted(dates))
+    check("脚注 <sup> 被剥掉",
+          all("[1]" not in c["reason"] for c in changes),
+          str([c["reason"] for c in changes]))
+    check("增删代码都解析到",
+          any(c["added"] == "SMCI" and c["removed"] == "WHR" for c in changes))
+
+
+def test_pit_filters_cross_section():
+    section("16. PIT 过滤真的作用在横截面上")
+    from fixtures import synthetic_market as _sm
+    members, series, bench, dates = _sm(n_stocks=30, n_days=400, seed=9,
+                                        signal_strength=0.002)
+    t = len(dates) - 1
+    allowed = {m["symbol"] for m in members[:10]}
+
+    full, _ = raw_cross_section(members, series, bench, t)
+    subset, _ = raw_cross_section(members, series, bench, t, allowed=allowed)
+    check("不传 allowed 时全量参与", len(full) > len(subset), f"{len(full)} vs {len(subset)}")
+    check("传了 allowed 只算在册成分",
+          {r["symbol"] for r in subset} <= allowed and len(subset) == 10,
+          str(len(subset)))
+    check("被排除的标的完全不出现",
+          not ({r["symbol"] for r in subset} & {m["symbol"] for m in members[10:]}))
+
+
 def main():
     print("Ooglex Alpha 60 V1 · 离线自检（不联网）")
     test_math()
@@ -459,6 +575,10 @@ def main():
     test_fundamental_parser()
     test_b_layer_pipeline()
     test_interval_guard()
+    test_pit_reconstruction()
+    test_pit_coverage()
+    test_wikipedia_parser()
+    test_pit_filters_cross_section()
 
     print()
     if FAILURES:
