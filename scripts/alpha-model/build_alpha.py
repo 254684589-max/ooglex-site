@@ -78,8 +78,10 @@ from variants import (  # noqa: E402
 
 DEFAULT_OUT = os.path.join(HERE, "output")
 REBALANCE_SPACING = 21          # 约一个月一次调仓
-IC_STEP = 10                    # IC 评估间隔（交易日）。用重叠窗口换统计功效，
-                                # 显著性由 Newey–West 修正，不靠丢样本换干净。
+IC_STEP_PER_HORIZON = 6         # 每个前瞻期内取几个评估点。采样密度必须跟着前瞻期走：
+                                # 固定 IC_STEP 会让缩短前瞻期完全拿不到功效增益——
+                                # 真正的独立信息量是 总交易日 / 前瞻期，
+                                # 前瞻 10 日的独立窗口数是前瞻 60 日的 6 倍。
 
 
 def _now():
@@ -262,11 +264,22 @@ def run_backtest(args):
 
     variant = getattr(args, "variant", "baseline") or "baseline"
     weights_used, flip = resolve_weights(variant)
+
+    # 前瞻期可覆盖。60 日只能给出约 4 个独立窗口/年，统计功效极低；
+    # 缩短前瞻期是提高功效最直接的办法，代价是换手与成本上升。
+    # 它改的是**问题定义**不是模型参数，但同样计入台账——看过结果之后
+    # 换一个问题再问一遍，本质上仍是一次尝试。
+    horizon = int(getattr(args, "horizon", None) or HORIZON_DAYS)
+    ic_step = max(1, horizon // IC_STEP_PER_HORIZON)
+    independent = (len(dates) - MIN_HISTORY_DAYS) // max(1, horizon)
+    if horizon != HORIZON_DAYS:
+        print(f"  前瞻期覆盖为 {horizon} 个交易日（默认 {HORIZON_DAYS}）；"
+              f"评估间隔 {ic_step} 日，独立窗口约 {independent} 个", file=sys.stderr)
     if variant != "baseline":
         print(f"  变体 {variant}（{VARIANTS[variant]['label']}）："
               f"{VARIANTS[variant]['reason']}", file=sys.stderr)
 
-    last_usable = len(dates) - HORIZON_DAYS - 1
+    last_usable = len(dates) - horizon - 1
     if last_usable <= MIN_HISTORY_DAYS:
         raise SystemExit(f"历史长度不足：需要至少 {MIN_HISTORY_DAYS + HORIZON_DAYS} 个交易日")
 
@@ -277,9 +290,9 @@ def run_backtest(args):
     dense, sparse, pooled_scores, pooled_labels = [], [], [], []
     factor_series, family_series = {}, {}
 
-    for t in range(MIN_HISTORY_DAYS, last_usable + 1, IC_STEP):
+    for t in range(MIN_HISTORY_DAYS, last_usable + 1, ic_step):
         scored = _score_at(members, series, bench_closes, t, weights_used, flip)
-        labels = [forward_excess_return(series[r["symbol"]][0], bench_closes, t, HORIZON_DAYS)
+        labels = [forward_excess_return(series[r["symbol"]][0], bench_closes, t, horizon)
                   for r in scored]
         if sum(1 for l in labels if l is not None) < 20:
             continue
@@ -297,17 +310,18 @@ def run_backtest(args):
                 family_series.setdefault(fam, []).append((t, ic_one))
 
         # 不重叠子集：作为交叉核对，两者应当同号同量级
-        if not sparse or (t - sparse[-1][0]) >= HORIZON_DAYS:
+        if not sparse or (t - sparse[-1][0]) >= horizon:
             sparse.append((t, scores, labels))
             pooled_scores.extend(scores)
             pooled_labels.extend(labels)
 
-    nw_lag = max(1, -(-HORIZON_DAYS // IC_STEP))     # 前瞻期换算成评估期数
+    nw_lag = max(1, -(-horizon // ic_step))     # 前瞻期换算成评估期数
     ic = ic_summary(rank_ic_series_dense(dense), nw_lag=nw_lag)
-    ic["step"] = IC_STEP
+    ic["step"] = ic_step
     ic["overlapping"] = True
+    ic["independentWindows"] = independent
     ic["neweyWestLag"] = nw_lag
-    ic["nonOverlappingCheck"] = ic_summary(rank_ic_series(sparse, HORIZON_DAYS))
+    ic["nonOverlappingCheck"] = ic_summary(rank_ic_series(sparse, horizon))
 
     factor_ic = factor_ic_table(factor_series, nw_lag)
     family_ic = factor_ic_table(family_series, nw_lag)
@@ -344,7 +358,7 @@ def run_backtest(args):
             ]
         return result
 
-    portfolio = _run_portfolio(HORIZON_DAYS)          # 与验收口径一致
+    portfolio = _run_portfolio(horizon)          # 与验收口径一致
     portfolio_monthly = _run_portfolio(REBALANCE_SPACING)   # 对照
 
     survivorship = _survivorship_exposure(portfolio, members)
@@ -355,6 +369,8 @@ def run_backtest(args):
     attempts = append_ledger({
         "at": _now(),
         "variant": variant,
+        "horizon": horizon,
+        "independentWindows": independent,
         "weights": weights_used,
         "flipped": list(flip),
         "range": getattr(args, "range", None),
@@ -379,7 +395,7 @@ def run_backtest(args):
         "attemptLedger": {**deflated, **ledger_summary},
         "demo": demo,
         "null": bool(args.null),
-        "horizonDays": HORIZON_DAYS,
+        "horizonDays": horizon,
         "benchmark": BENCHMARK,
         "factorsUsed": list(WEIGHTS_A),
         "updatedAt": _now(),
@@ -405,8 +421,9 @@ def run_backtest(args):
             universe_meta.get("survivorshipBias")
             or "股票池非 point-in-time，含幸存者偏差",
             "回测只含A层价格因子；B层基本面无PIT历史，不参与回测",
-            f"IC用重叠窗口（每{IC_STEP}个交易日一次）换取统计功效，"
-            f"标准误已按 Newey–West（滞后{max(1, -(-HORIZON_DAYS // IC_STEP))}期）修正",
+            f"前瞻{horizon}个交易日，独立窗口约{independent}个；"
+            f"IC用重叠窗口（每{ic_step}个交易日一次）换取统计功效，"
+            f"标准误已按 Newey–West（滞后{max(1, -(-horizon // ic_step))}期）修正",
             "若 |t| < 2，说明样本不足以判断，不能读成「模型是负的」",
             f"已测 {len(factor_ic)} 个子因子：全部无效时纯靠运气也会出现约 "
             f"{testing['expectedFalsePositives']:.1f} 个 |t|>2。"
@@ -624,6 +641,10 @@ def main(argv=None):
                                      help="跳过B层，只用A层价格因子打分")
     sub.choices["backtest"].add_argument("--days", type=int, default=None,
                                          help="合成数据天数")
+    sub.choices["backtest"].add_argument(
+        "--horizon", type=int, default=None,
+        help=f"前瞻期（交易日），默认 {HORIZON_DAYS}。缩短可大幅提高统计功效："
+             "60日约4个独立窗口/年，20日约12个，10日约25个。同样计入台账")
     sub.choices["backtest"].add_argument(
         "--variant", default="baseline", choices=sorted(VARIANTS),
         help="因子变体。每次运行都会记入台账并收紧显著性阈值")

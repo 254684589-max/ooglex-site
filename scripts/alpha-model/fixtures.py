@@ -27,7 +27,8 @@ def _trading_days(n, start=date(2019, 1, 2)):
     return days
 
 
-def synthetic_market(n_stocks=120, n_days=900, seed=7, signal_strength=0.0):
+def synthetic_market(n_stocks=120, n_days=900, seed=7, signal_strength=0.0,
+                     mean_revert=0.0):
     """生成 (成分, {代码: (closes, volumes)}, 基准收盘序列, 日期序列)。
 
     ``signal_strength`` 是每日漂移的幅度上限：股票 i 的漂移 = (q_i − 0.5) × 强度，
@@ -58,7 +59,9 @@ def synthetic_market(n_stocks=120, n_days=900, seed=7, signal_strength=0.0):
     for _ in range(n_days - 1):
         market = 0.0003 + 0.009 * rng.gauss(0, 1)
         for i, p in enumerate(params):
-            ret = p["drift"] + p["beta"] * market + p["sigma"] * rng.gauss(0, 1)
+            prev_ret = (closes[i][-1] / closes[i][-2] - 1.0) if len(closes[i]) > 1 else 0.0
+            ret = (p["drift"] + p["beta"] * market + p["sigma"] * rng.gauss(0, 1)
+                   - mean_revert * prev_ret)
             closes[i].append(max(1.0, closes[i][-1] * (1.0 + ret)))
             # 成交量与当日波动幅度正相关，并带自身随机游走，使量能因子有横截面差异
             shock = 1.0 + 2.5 * abs(ret) + 0.25 * rng.gauss(0, 1)
