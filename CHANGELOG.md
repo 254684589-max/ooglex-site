@@ -11,6 +11,10 @@
 
 ## [未发布]
 
+### 修复
+
+- 2026-08-24，**Alpha 模型股票池滤掉未上市公司**：`apps/companies/data.json` 是市值榜，含 Anthropic、OpenAI、Stripe、Waymo 等 24 家未上市公司，其代码位是占位符 `—` 而非真实 ticker。此前它们会被当成股票去抓行情，既浪费请求又在日志里报出误导性的「取数失败：—」（实际不是抓取失败，是根本没有这只股票）。新增 `is_tradeable_symbol()` 按真实 ticker 字符集校验，并在股票池元数据里用 `skippedNonTradeable` 与失败数分开计数。可交易标的 372 → **371**（此前 24 家占位符被去重成 1 条混进了池子）。
+
 ### 新增
 
 - 2026-08-24，**Ooglex Alpha 60 V1 量化选股模型**：规格 `docs/OOGLEX_ALPHA_MODEL.md`，参考实现 `scripts/alpha-model/`，离线自检 `scripts/validate_alpha_model.py`。**未部署，不接入任何页面**，输出与行情缓存均在 `.gitignore` 里。

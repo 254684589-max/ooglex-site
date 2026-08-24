@@ -35,8 +35,28 @@ SECTOR_MAP = {
 UNKNOWN_SECTOR = "其他"
 
 
+# 市值榜里含未上市公司（Anthropic、OpenAI、Stripe、Waymo…），它们的代码位是
+# 占位符而不是真实 ticker。不滤掉会白抓一次并报出莫名其妙的“取数失败：—”。
+PLACEHOLDER_SYMBOLS = {"—", "–", "-", "", "N/A", "NA", "—/—"}
+
+
 def normalize_sector(raw):
     return SECTOR_MAP.get((raw or "").strip(), UNKNOWN_SECTOR)
+
+
+def is_tradeable_symbol(symbol):
+    """判断是不是可交易的美股代码。
+
+    真实 ticker 只由字母、点、连字符组成（BRK-B、BF.B）。占位符与含中文、
+    空格等字符的条目一律排除——它们进不了行情接口，只会变成噪声。
+    """
+    symbol = (symbol or "").strip()
+    if not symbol or symbol in PLACEHOLDER_SYMBOLS:
+        return False
+    if len(symbol) > 8:
+        return False
+    return all(c.isascii() and (c.isalnum() or c in ".-") for c in symbol) \
+        and any(c.isalpha() for c in symbol)
 
 
 def load_universe(path=COMPANIES_PATH, country="美国", limit=None):
@@ -44,12 +64,15 @@ def load_universe(path=COMPANIES_PATH, country="美国", limit=None):
     with open(path, encoding="utf-8") as f:
         data = json.load(f)
 
-    members, seen = [], set()
+    members, seen, skipped = [], set(), 0
     for row in data.get("companies") or []:
         symbol = (row.get("symbol") or "").strip()
-        if not symbol or symbol in seen:
-            continue
         if country and row.get("country") != country:
+            continue
+        if not is_tradeable_symbol(symbol):
+            skipped += 1          # 未上市公司，不是抓取失败
+            continue
+        if symbol in seen:
             continue
         seen.add(symbol)
         members.append({
@@ -66,6 +89,7 @@ def load_universe(path=COMPANIES_PATH, country="美国", limit=None):
         "asOf": data.get("asOf"),
         "updatedAt": data.get("updatedAt"),
         "count": len(members),
+        "skippedNonTradeable": skipped,
         "pointInTime": False,
         "survivorshipBias": ("股票池取自当日市值榜，含幸存者偏差与前视选择偏差；"
                              "回测结论只可用于否决模型，不可用于证明模型"),
