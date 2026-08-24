@@ -27,9 +27,12 @@ sys.path.insert(0, HERE)
 from backtest import (  # noqa: E402
     decile_stats,
     evaluate_gates,
+    factor_ic_table,
     ic_summary,
     rank_ic_series,
+    rank_ic_series_dense,
     simulate_portfolio,
+    spearman,
 )
 from config import (  # noqa: E402
     BACKTEST_COST_BPS_ONE_WAY,
@@ -58,6 +61,8 @@ from universe import load_symbols_file, load_universe  # noqa: E402
 
 DEFAULT_OUT = os.path.join(HERE, "output")
 REBALANCE_SPACING = 21          # 约一个月一次调仓
+IC_STEP = 10                    # IC 评估间隔（交易日）。用重叠窗口换统计功效，
+                                # 显著性由 Newey–West 修正，不靠丢样本换干净。
 
 
 def _now():
@@ -222,20 +227,47 @@ def run_backtest(args):
     if last_usable <= MIN_HISTORY_DAYS:
         raise SystemExit(f"历史长度不足：需要至少 {MIN_HISTORY_DAYS + HORIZON_DAYS} 个交易日")
 
-    # ---- IC 与分组：评估日必须不重叠，间隔 = 前瞻期 ----
-    ic_snapshots, pooled_scores, pooled_labels = [], [], []
-    for t in range(MIN_HISTORY_DAYS, last_usable + 1, HORIZON_DAYS):
+    # ---- IC 与分组 ----
+    # 密集评估（每 IC_STEP 个交易日）+ Newey–West 修正标准误。
+    # 此前强制不重叠窗口，统计上干净但功效太低：5 年只剩 16 个样本，
+    # 标准误 0.049，连 IC=0.02 都测不出来，"未通过"和"测不出"分不开。
+    dense, sparse, pooled_scores, pooled_labels = [], [], [], []
+    factor_series, family_series = {}, {}
+
+    for t in range(MIN_HISTORY_DAYS, last_usable + 1, IC_STEP):
         scored = _score_at(members, series, bench_closes, t)
         labels = [forward_excess_return(series[r["symbol"]][0], bench_closes, t, HORIZON_DAYS)
                   for r in scored]
-        scores = [r["alpha"] for r in scored]
         if sum(1 for l in labels if l is not None) < 20:
             continue
-        ic_snapshots.append((t, scores, labels))
-        pooled_scores.extend(scores)
-        pooled_labels.extend(labels)
+        scores = [r["alpha"] for r in scored]
+        dense.append((t, scores, labels))
 
-    ic = ic_summary(rank_ic_series(ic_snapshots, HORIZON_DAYS))
+        # 逐因子分解：composite 失败时用它定位是哪些因子在拖后腿
+        for name in sorted(scored[0].get("ranked") or {}):
+            ic_one = spearman([r["ranked"].get(name) for r in scored], labels)
+            if ic_one is not None:
+                factor_series.setdefault(name, []).append((t, ic_one))
+        for fam in sorted(scored[0].get("families") or {}):
+            ic_one = spearman([(r["families"] or {}).get(fam) for r in scored], labels)
+            if ic_one is not None:
+                family_series.setdefault(fam, []).append((t, ic_one))
+
+        # 不重叠子集：作为交叉核对，两者应当同号同量级
+        if not sparse or (t - sparse[-1][0]) >= HORIZON_DAYS:
+            sparse.append((t, scores, labels))
+            pooled_scores.extend(scores)
+            pooled_labels.extend(labels)
+
+    nw_lag = max(1, -(-HORIZON_DAYS // IC_STEP))     # 前瞻期换算成评估期数
+    ic = ic_summary(rank_ic_series_dense(dense), nw_lag=nw_lag)
+    ic["step"] = IC_STEP
+    ic["overlapping"] = True
+    ic["neweyWestLag"] = nw_lag
+    ic["nonOverlappingCheck"] = ic_summary(rank_ic_series(sparse, HORIZON_DAYS))
+
+    factor_ic = factor_ic_table(factor_series, nw_lag)
+    family_ic = factor_ic_table(family_series, nw_lag)
     deciles = decile_stats(pooled_scores, pooled_labels)
 
     # ---- 组合：每月调仓，持有到下次调仓，收益序列不重叠 ----
@@ -269,6 +301,8 @@ def run_backtest(args):
         "window": {"from": dates[MIN_HISTORY_DAYS], "to": dates[len(dates) - 1],
                    "tradingDays": len(dates)},
         "rankIC": ic,
+        "factorIC": factor_ic,
+        "familyIC": family_ic,
         "deciles": deciles,
         "portfolio": {k: v for k, v in (portfolio or {}).items() if k != "periods"},
         "gates": {"passed": passed, "checks": checks},
@@ -278,7 +312,9 @@ def run_backtest(args):
             universe_meta.get("survivorshipBias")
             or "股票池非 point-in-time，含幸存者偏差",
             "回测只含A层价格因子；B层基本面无PIT历史，不参与回测",
-            f"评估日间隔{HORIZON_DAYS}个交易日，前瞻窗口不重叠",
+            f"IC用重叠窗口（每{IC_STEP}个交易日一次）换取统计功效，"
+            f"标准误已按 Newey–West（滞后{max(1, -(-HORIZON_DAYS // IC_STEP))}期）修正",
+            "若 |t| < 2，说明样本不足以判断，不能读成「模型是负的」",
             "未做多重检验校正；若尝试过多个因子变体，需对显著性打折",
         ],
         "disclaimer": "研究用途，不构成投资建议。历史表现不代表未来。",
@@ -302,8 +338,23 @@ def _print_backtest(payload, out):
     print(f"已写入 {out}")
     print(f"\n窗口 {payload['window']['from']} → {payload['window']['to']}"
           f"（{payload['window']['tradingDays']} 个交易日）")
-    print(f"Rank IC  均值 {_f(ic['mean'])}  标准差 {_f(ic['std'])}  "
-          f"信息比 {_f(ic['ir'])}  胜率 {_f(ic['hitRate'])}  样本 {ic['n']}")
+    print(f"Rank IC  均值 {_f(ic['mean'])}  信息比 {_f(ic['ir'])}  "
+          f"胜率 {_f(ic['hitRate'])}  样本 {ic['n']}")
+    print(f"         t值 {_f(ic.get('tStat'), 2)}  "
+          f"95%区间 [{_f((ic.get('ci95') or [None, None])[0])}, "
+          f"{_f((ic.get('ci95') or [None, None])[1])}]  "
+          f"{'可与0区分' if ic.get('distinguishableFromZero') else '← 无法与0区分，样本不足'}")
+    top_factors = (payload.get("factorIC") or [])[:5]
+    if top_factors:
+        print("\n单因子 IC 排名（前5）：")
+        for row in top_factors:
+            print(f"  {row['factor']:<20} IC {_f(row['mean'])}  "
+                  f"t {_f(row.get('tStat'), 2)}  胜率 {_f(row['hitRate'], 3)}")
+        worst = (payload.get("factorIC") or [])[-3:]
+        print("单因子 IC 垫底（后3）：")
+        for row in worst:
+            print(f"  {row['factor']:<20} IC {_f(row['mean'])}  "
+                  f"t {_f(row.get('tStat'), 2)}  胜率 {_f(row['hitRate'], 3)}")
     dec = payload.get("deciles") or {}
     if dec.get("groups"):
         print(f"分组单调性 {_f(dec['monotonicSpearman'])}（期望接近 −1）  "
@@ -392,7 +443,7 @@ def main(argv=None):
                        help="合成数据的每日漂移幅度；越大信噪比越高")
         p.add_argument("--limit", type=int, default=None, help="股票池上限")
         p.add_argument("--symbols", default=None, help="自定义股票池文件")
-        p.add_argument("--range", default="5y", help="行情区间，如 5y / 10y")
+        p.add_argument("--range", default="5y", help="行情区间，如 5y / 10y / max")
         p.add_argument("--out", default=None, help="输出目录")
         p.set_defaults(func=handler)
 
@@ -406,6 +457,8 @@ def main(argv=None):
                                      help="跳过B层，只用A层价格因子打分")
     sub.choices["backtest"].add_argument("--days", type=int, default=None,
                                          help="合成数据天数")
+    sub.choices["backtest"].set_defaults(range="10y")   # 回测默认拉满历史：
+    # 5y 只能给出十几个独立窗口，统计上判不了任何事
 
     args = parser.parse_args(argv)
     args.func(args)

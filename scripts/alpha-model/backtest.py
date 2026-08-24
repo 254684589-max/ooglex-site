@@ -57,6 +57,73 @@ def spearman(xs, ys):
     return pearson(rx, ry)
 
 
+def newey_west_se(values, lag):
+    """Newey–West 修正后的均值标准误。
+
+    重叠窗口的 IC 序列高度自相关，直接用 std/√n 会把标准误严重低估、t 值虚高。
+    Newey–West 用带 Bartlett 权重的自协方差把这部分补回来，
+    因此可以**既用上全部重叠样本（拿回统计功效），又不虚报显著性**。
+
+    这是对原设计的修正：此前强制不重叠窗口，统计上干净，但 5 年历史只剩
+    16 个独立样本——标准误 0.049，连 IC=0.02 这种量级都测不出来。
+    把评估密度提上去 + NW 修正，才是真正能做判断的做法。
+    """
+    values = [v for v in values if v is not None]
+    n = len(values)
+    if n < 3:
+        return None
+    mu = sum(values) / n
+    dev = [v - mu for v in values]
+
+    def autocov(k):
+        return sum(dev[i] * dev[i - k] for i in range(k, n)) / n
+
+    variance = autocov(0)
+    for k in range(1, min(lag, n - 1) + 1):
+        weight = 1.0 - k / (lag + 1.0)          # Bartlett 核
+        variance += 2.0 * weight * autocov(k)
+    if variance <= 0:
+        return None
+    return math.sqrt(variance / n)
+
+
+def rank_ic_series_dense(snapshots):
+    """允许重叠的 IC 序列。显著性必须配 ``newey_west_se`` 使用，不可用普通标准误。"""
+    out = []
+    for index, scores, labels in sorted(snapshots, key=lambda s: s[0]):
+        ic = spearman(scores, labels)
+        if ic is not None:
+            out.append((index, ic))
+    return out
+
+
+def factor_ic_table(factor_snapshots, nw_lag):
+    """逐因子 IC 分解：composite 失败时，用它定位是哪些因子在拖后腿。
+
+    ``factor_snapshots``：{因子名: [(评估日, IC), ...]}
+    按 IC 均值降序返回，附 Newey–West t 值。
+    """
+    table = []
+    for name, series in factor_snapshots.items():
+        values = [ic for _, ic in series]
+        if len(values) < 5:
+            continue
+        mu = mean(values)
+        sd = stdev(values)
+        se = newey_west_se(values, nw_lag)
+        table.append({
+            "factor": name,
+            "n": len(values),
+            "mean": mu,
+            "std": sd,
+            "ir": (mu / sd) if (sd and sd > 0) else None,
+            "tStat": (mu / se) if (se and se > 0) else None,
+            "hitRate": sum(1 for v in values if v > 0) / len(values),
+        })
+    table.sort(key=lambda r: (r["mean"] is None, -(r["mean"] or 0)))
+    return table
+
+
 def rank_ic_series(snapshots, horizon):
     """逐评估日算 Rank IC。
 
@@ -77,20 +144,28 @@ def rank_ic_series(snapshots, horizon):
     return out
 
 
-def ic_summary(ic_series):
+def ic_summary(ic_series, nw_lag=None):
     """IC 均值、标准差、信息比、胜率与样本数。"""
     values = [ic for _, ic in ic_series]
     if not values:
         return {"n": 0, "mean": None, "std": None, "ir": None, "hitRate": None}
     mu = mean(values)
     sd = stdev(values)
+    naive_se = (sd / math.sqrt(len(values))) if (sd and sd > 0) else None
+    nw_se = newey_west_se(values, nw_lag) if nw_lag else None
+    se = nw_se or naive_se
     return {
         "n": len(values),
         "mean": mu,
         "std": sd,
         "ir": (mu / sd) if (sd and sd > 0) else None,
         "hitRate": sum(1 for v in values if v > 0) / len(values),
-        "tStat": (mu / (sd / math.sqrt(len(values)))) if (sd and sd > 0) else None,
+        "stdError": se,
+        "neweyWest": nw_se is not None,
+        "tStat": (mu / se) if (se and se > 0) else None,
+        "ci95": [mu - 1.96 * se, mu + 1.96 * se] if se else None,
+        # |t| < 2 时，无论均值是正是负都不能下结论——只能说"测不出来"
+        "distinguishableFromZero": bool(se and abs(mu / se) > 2.0),
     }
 
 
@@ -207,6 +282,9 @@ def evaluate_gates(ic, deciles, portfolio):
         f"{ic.get('ir')} > {GATE_IC_IR}")
     add("IC胜率", ic.get("hitRate") is not None and ic["hitRate"] > GATE_IC_HIT_RATE,
         f"{ic.get('hitRate')} > {GATE_IC_HIT_RATE}")
+    # 这条不是新门槛，是把"没通过"和"测不出来"分开：|t|<2 时前五条都无意义
+    add("IC可与0区分", ic.get("distinguishableFromZero") is True,
+        f"|t|={abs(ic['tStat']):.2f} > 2" if ic.get("tStat") is not None else "t值不可得")
 
     mono = (deciles or {}).get("monotonicSpearman")
     add("分组单调性", mono is not None and mono < -GATE_DECILE_SPEARMAN,
