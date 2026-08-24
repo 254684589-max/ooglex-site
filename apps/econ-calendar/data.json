@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-08-24T13:29:59Z",
+  "updatedAt": "2026-08-24T21:38:37Z",
   "asOf": "2026-08-24",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-23 ~ 2026-08-29",
-  "count": 66,
+  "count": 69,
   "highCount": 9,
   "events": [
     {
@@ -43,7 +43,7 @@
       "actual": null
     },
     {
-      "ts": "2026-08-24T18:00:00Z",
+      "ts": "2026-08-24T17:00:00Z",
       "ccy": "USD",
       "country": "美国",
       "flag": "🇺🇸",
@@ -98,7 +98,7 @@
       "title": "German ifo Business Climate",
       "titleEn": "German ifo Business Climate",
       "impact": "low",
-      "forecast": "87.3",
+      "forecast": "87.2",
       "previous": "86.6",
       "actual": null
     },
@@ -112,6 +112,18 @@
       "impact": "low",
       "forecast": null,
       "previous": "9.5K",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-25T12:30:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Barkin Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
@@ -146,7 +158,7 @@
       "title": "标普/CS 20 城房价指数 同比",
       "titleEn": "S&P/CS Composite-20 HPI y/y",
       "impact": "low",
-      "forecast": "1.9%",
+      "forecast": "1.8%",
       "previous": "1.6%",
       "actual": null
     },
@@ -182,8 +194,20 @@
       "title": "Richmond Manufacturing Index",
       "titleEn": "Richmond Manufacturing Index",
       "impact": "low",
-      "forecast": "7",
+      "forecast": "6",
       "previous": "5",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-25T20:00:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Barkin Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
@@ -254,7 +278,7 @@
       "title": "CPI（消费者物价指数） 环比",
       "titleEn": "Trimmed Mean CPI m/m",
       "impact": "high",
-      "forecast": "0.3%",
+      "forecast": "0.4%",
       "previous": "0.3%",
       "actual": null
     },
@@ -388,6 +412,18 @@
       "impact": "low",
       "forecast": null,
       "previous": "4.4M",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-26T15:45:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Barkin Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
