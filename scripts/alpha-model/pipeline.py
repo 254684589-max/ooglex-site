@@ -83,7 +83,8 @@ def raw_cross_section(members, series, bench_closes, t):
     return rows, rejected
 
 
-def rank_cross_section(rows, fundamentals=None, subweights=SUBWEIGHTS, weights=WEIGHTS):
+def rank_cross_section(rows, fundamentals=None, subweights=SUBWEIGHTS, weights=WEIGHTS,
+                       flip_families=()):
     """把原始因子值变成 0–100 分并合成 Alpha60。就地补齐每行的分数字段。
 
     ``fundamentals``：可选的 {代码: {族名: 原始值}}，用于接入 B 层。留空时
@@ -106,6 +107,13 @@ def rank_cross_section(rows, fundamentals=None, subweights=SUBWEIGHTS, weights=W
         values = winsorize([r["raw"].get(name) for r in rows])
         for row, score in zip(rows, sector_neutral_rank(values, sectors)):
             row.setdefault("ranked", {})[name] = score
+
+    if flip_families:
+        # 在**已归一化的分位分数**上翻转（100 − 分数），不是在原始值上取负号：
+        # 分位是 0–100 均匀的，100−x 仍是合法分位；在原始值上取负会改变
+        # 去极值边界与并列处理，两者不等价。
+        from variants import apply_flips
+        apply_flips(rows, flip_families, subweights)
 
     for row in rows:
         # B 层缺失时，其子因子根本不在 ranked 里，族覆盖率为 0 → 族分数为 None，

@@ -554,6 +554,11 @@ FAMILY_LABELS = [
     ("valuation", "估值"), ("revision", "盈利修正"),
 ]
 FAMILY_NAME_MAP = {k: v for k, v in FAMILY_LABELS}
+VARIANT_LABELS = {
+    "baseline": "基线", "no-risk": "去掉风险块", "flip-risk": "风险块反向",
+    "momentum-only": "只用动量", "reversal-only": "只用反转",
+    "no-momentum": "去掉动量",
+}
 FACTOR_NAME_MAP = {
     "mom_12_1": "12月动量(剔近1月)", "mom_6_1": "6月动量(剔近1月)",
     "rs_120": "120日相对基准", "trend_200": "相对200日均线",
@@ -896,6 +901,10 @@ def render_backtest(payload):
         badges.append(f'<span class="badge bad">⚠ 粒度 {esc(win_interval)} 非日线，'
                       f'本页全部数字无效</span>')
     badges.append('<span class="badge">仅 A 层价格因子</span>')
+    variant = payload.get("variant")
+    if variant and variant != "baseline":
+        badges.append(f'<span class="badge demo">变体 '
+                      f'{esc(payload.get("variantLabel") or variant)}</span>')
     badges.append(f'<span class="badge {"ok" if passed else "bad"}">'
                   f'{"✓ 验收通过" if passed else "✗ 验收未通过"}</span>')
 
@@ -1025,6 +1034,57 @@ def render_backtest(payload):
         body.append(_tile("成本拖累", pct(pf.get("costDrag"), 2), "累计"))
         body.append(_tile("最大回撤", pct(pf.get("maxDrawdown"), 2), "相对净值峰值"))
         body.append("</div>")
+
+    led = payload.get("attemptLedger") or {}
+    if led:
+        current_t = abs((payload.get("rankIC") or {}).get("tStat") or 0)
+        threshold = led.get("deflatedT", 1.96)
+        clears = current_t > threshold
+        body.append("<h2>尝试台账：你已经试了多少次</h2>")
+        body.append('<p class="note">看过回测结果之后再改模型，改动就带着'
+                    '「已经看过答案」的污染。试十个变体挑最好的那个，'
+                    '即使十个全是噪声，出现至少一个 |t|&gt;2 的概率也有 37%。'
+                    '所以每跑一次就记一次，阈值随次数收紧——'
+                    '<strong>让每多试一次都变贵，而不是免费。</strong>'
+                    '台账只增不改。</p>')
+        body.append('<div class="tiles">')
+        body.append(_tile("累计尝试", led.get("attempts"), "只增不改"))
+        body.append(_tile("不同变体", led.get("distinctVariants"), "已试过的种类"))
+        body.append(_tile("打折后阈值", f'|t| > {threshold:.2f}',
+                          f'基准 1.96 收紧至此'))
+        body.append(_tile("当前 |t|", f"{current_t:.2f}",
+                          "✓ 过线" if clears else "✗ 未过线"))
+        body.append(_tile("假阳性概率",
+                          f'{led.get("anyFalsePositiveProb", 0) * 100:.0f}%',
+                          "纯靠运气至少出现一个"))
+        body.append("</div>")
+
+        rows = led.get("byVariant") or []
+        if len(rows) > 1:
+            body.append('<div class="table-scroll" style="margin-top:14px">'
+                        '<table><thead><tr><th>变体</th><th class="num">最佳 |t|</th>'
+                        '<th class="num">IC 均值</th><th>验收</th>'
+                        '<th>最近一次</th></tr></thead><tbody>')
+            for row in sorted(rows, key=lambda x: -abs(x.get("tStat") or 0)):
+                label = VARIANT_LABELS.get(row["variant"], row["variant"])
+                tv = row.get("tStat")
+                body.append(
+                    f'<tr><td>{esc(label)}</td>'
+                    f'<td class="num">{abs(tv):.2f}</td>' if tv is not None
+                    else f'<tr><td>{esc(label)}</td><td class="num na">—</td>')
+                body.append(f'<td class="num">{num(row.get("icMean"), 4)}</td>'
+                            f'<td>{"✓ 通过" if row.get("passed") else "✗ 未过"}</td>'
+                            f'<td class="muted">{esc((row.get("at") or "")[:10])}</td></tr>')
+            body.append("</tbody></table></div>")
+
+        if not clears:
+            body.append('<div class="callout" style="margin-top:14px">'
+                        f'<strong>当前 |t| = {current_t:.2f}，没到打折后的 '
+                        f'{threshold:.2f}。</strong>'
+                        "继续试变体只会让阈值更高、更难过线。"
+                        "如果几轮之后仍然过不了，说明问题不在权重配比，"
+                        "而在因子本身或股票池——那时候该换的是数据，不是参数。"
+                        "</div>")
 
     biases = payload.get("knownBiases") or []
     if biases:

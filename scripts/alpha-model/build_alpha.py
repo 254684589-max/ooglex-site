@@ -66,6 +66,14 @@ from prices import (  # noqa: E402
 )
 from report import write_report  # noqa: E402
 from universe import load_symbols_file, load_universe  # noqa: E402
+from variants import (  # noqa: E402
+    VARIANTS,
+    append_ledger,
+    deflate,
+    load_ledger,
+    resolve_weights,
+    summarize,
+)
 
 DEFAULT_OUT = os.path.join(HERE, "output")
 REBALANCE_SPACING = 21          # 约一个月一次调仓
@@ -251,6 +259,12 @@ def run_backtest(args):
         members, universe_meta = _resolve_universe(args)
         series, bench_closes, dates, _ = load_live(members, args.range)
 
+    variant = getattr(args, "variant", "baseline") or "baseline"
+    weights_used, flip = resolve_weights(variant)
+    if variant != "baseline":
+        print(f"  变体 {variant}（{VARIANTS[variant]['label']}）："
+              f"{VARIANTS[variant]['reason']}", file=sys.stderr)
+
     last_usable = len(dates) - HORIZON_DAYS - 1
     if last_usable <= MIN_HISTORY_DAYS:
         raise SystemExit(f"历史长度不足：需要至少 {MIN_HISTORY_DAYS + HORIZON_DAYS} 个交易日")
@@ -263,7 +277,7 @@ def run_backtest(args):
     factor_series, family_series = {}, {}
 
     for t in range(MIN_HISTORY_DAYS, last_usable + 1, IC_STEP):
-        scored = _score_at(members, series, bench_closes, t)
+        scored = _score_at(members, series, bench_closes, t, weights_used, flip)
         labels = [forward_excess_return(series[r["symbol"]][0], bench_closes, t, HORIZON_DAYS)
                   for r in scored]
         if sum(1 for l in labels if l is not None) < 20:
@@ -305,7 +319,7 @@ def run_backtest(args):
     # ---- 组合：每月调仓，持有到下次调仓，收益序列不重叠 ----
     rebalances = []
     for t in range(MIN_HISTORY_DAYS, len(dates) - REBALANCE_SPACING - 1, REBALANCE_SPACING):
-        scored = _score_at(members, series, bench_closes, t)
+        scored = _score_at(members, series, bench_closes, t, weights_used, flip)
         if not scored:
             continue
         rebalances.append((
@@ -320,10 +334,32 @@ def run_backtest(args):
 
     passed, checks = evaluate_gates(ic, deciles or {}, portfolio or {})
 
+    # 台账只增不改：每跑一次就记一次，让「试了多少次」这个数字无法被遗忘。
+    attempts = append_ledger({
+        "at": _now(),
+        "variant": variant,
+        "weights": weights_used,
+        "flipped": list(flip),
+        "range": getattr(args, "range", None),
+        "demo": demo,
+        "null": bool(args.null),
+        "icMean": ic.get("mean"),
+        "tStat": ic.get("tStat"),
+        "passed": passed,
+    })
+    deflated = deflate(attempts)
+    ledger_summary = summarize(load_ledger())
+
     payload = {
         "model": MODEL_NAME,
         "version": MODEL_VERSION,
         "mode": "backtest",
+        "variant": variant,
+        "variantLabel": VARIANTS[variant]["label"],
+        "variantReason": VARIANTS[variant]["reason"],
+        "weightsUsed": weights_used,
+        "flipped": list(flip),
+        "attemptLedger": {**deflated, **ledger_summary},
         "demo": demo,
         "null": bool(args.null),
         "horizonDays": HORIZON_DAYS,
@@ -354,6 +390,10 @@ def run_backtest(args):
             f"已测 {len(factor_ic)} 个子因子：全部无效时纯靠运气也会出现约 "
             f"{testing['expectedFalsePositives']:.1f} 个 |t|>2。"
             f"多重检验校正后需 |t| > {testing.get('effectiveT', 0):.2f} 才算确立",
+            f"这是第 {attempts} 次回测尝试；按尝试次数打折后需 "
+            f"|t| > {deflated['deflatedT']:.2f}，"
+            f"纯靠运气出现至少一个假阳性的概率已达 "
+            f"{deflated['anyFalsePositiveProb'] * 100:.0f}%",
         ],
         "disclaimer": "研究用途，不构成投资建议。历史表现不代表未来。",
     }
@@ -371,10 +411,11 @@ def _calendar_interval(dates):
     return _infer(dates)
 
 
-def _score_at(members, series, bench_closes, t):
-    """单个横截面日的打分。回测路径固定只用 A 层权重。"""
+def _score_at(members, series, bench_closes, t, weights=None, flip=()):
+    """单个横截面日的打分。回测路径固定只用 A 层权重（B 层无 PIT 历史）。"""
     rows, _ = raw_cross_section(members, series, bench_closes, t)
-    return rank_cross_section(rows, fundamentals=None, weights=WEIGHTS_A)
+    return rank_cross_section(rows, fundamentals=None,
+                              weights=weights or WEIGHTS_A, flip_families=flip)
 
 
 def _print_backtest(payload, out):
@@ -411,6 +452,12 @@ def _print_backtest(payload, out):
               f"每期均值 {_f(pf.get('meanExcessPerPeriod'))}  胜率 {_f(pf.get('hitRate'))}")
         print(f"      年换手 {_f(pf.get('annualTurnover'))}  "
               f"成本累计 {_f(pf.get('costDrag'))}  最大回撤 {_f(pf.get('maxDrawdown'))}")
+    led = payload.get("attemptLedger") or {}
+    if led:
+        print(f"\n尝试台账：这是第 {led.get('attempts')} 次回测"
+              f"（{led.get('distinctVariants')} 个不同变体）")
+        print(f"           按尝试次数打折后需 |t| > {led.get('deflatedT', 0):.2f}；"
+              f"当前 |t| = {abs(payload['rankIC'].get('tStat') or 0):.2f}")
     print(f"\n验收：{'通过' if payload['gates']['passed'] else '未通过'}")
     for check in payload["gates"]["checks"]:
         print(f"  [{'✓' if check['pass'] else '✗'}] {check['name']}：{check['detail']}")
@@ -503,6 +550,9 @@ def main(argv=None):
                                      help="跳过B层，只用A层价格因子打分")
     sub.choices["backtest"].add_argument("--days", type=int, default=None,
                                          help="合成数据天数")
+    sub.choices["backtest"].add_argument(
+        "--variant", default="baseline", choices=sorted(VARIANTS),
+        help="因子变体。每次运行都会记入台账并收紧显著性阈值")
     sub.choices["backtest"].set_defaults(range="10y")   # 回测默认拉满历史：
     # 5y 只能给出十几个独立窗口，统计上判不了任何事
 
