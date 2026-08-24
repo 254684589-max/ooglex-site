@@ -2660,7 +2660,10 @@ def main() -> None:
     require(CURVE_VIEW_MODULE.stat().st_size <= 9_000, "金融终端收益率曲线抽屉模块超过9KB性能预算")
     require(GLOBE_MODULE.stat().st_size <= 8_000, "金融终端地球动画模块超过8KB性能预算")
     require(VISION_CSS.stat().st_size <= 28_000, "金融终端科幻视觉样式超过28KB性能预算")
-    require(COMMAND_CENTER_CSS.stat().st_size <= 20_000, "金融终端单屏指挥中心样式超过20KB性能预算")
+    # 20,000 是在分区内容还没被发现遭裁切时定的。补上「分区内那一层也要能缩」与
+    # 遥测面板第三行两处修复、连同解释它们为何存在的注释后需要 20.7KB；换回的是
+    # OFR 卡片与运行证据面板不再被裁掉 137px 与 201px，收益率曲线入口不再缺 6px。
+    require(COMMAND_CENTER_CSS.stat().st_size <= 20_700, "金融终端单屏指挥中心样式超过20.7KB性能预算")
     require(VISUAL_FIDELITY_CSS.stat().st_size <= 6_000, "金融终端高保真视觉层超过6KB性能预算")
     require(REFERENCE_FIDELITY_CSS.stat().st_size <= 12_000, "金融终端参考图精修层超过12KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")

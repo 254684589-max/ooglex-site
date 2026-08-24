@@ -533,6 +533,35 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
         + `${JSON.stringify(result.heatmapCanvas)}（区域明细已有数据，画布却是空的或未就绪，`
         + `通常意味着绘制回调抛错后静默回落到降级贴图）`);
     }
+    /* 单屏总览把每个分区压进一格并 overflow:hidden。分区自己能缩到 0，分区里
+       那一层却是网格项、min-width 默认 auto，撑到 min-content 后整块被裁掉——
+       没有报错、没有横向滚动条，只是内容从边界起消失。曾因此在总览里裁掉
+       OFR金融压力卡片的 137px 与运行证据面板的 201px。 */
+    const clipped = await client.send("Runtime.evaluate", {
+      expression: `(() => {
+        if (document.body.dataset.terminalView !== "overview") return [];
+        const out = [];
+        document.querySelectorAll("#main-content > section").forEach((section) => {
+          if (getComputedStyle(section).overflow !== "hidden") return;
+          const box = section.getBoundingClientRect();
+          section.querySelectorAll("*").forEach((node) => {
+            const rect = node.getBoundingClientRect();
+            if (rect.width < 8 || rect.height < 8) return;
+            if (rect.top >= box.bottom - 2 || rect.bottom <= box.top + 2) return;
+            const over = Math.round(rect.right - box.right);
+            if (over > 1) out.push({ section: section.id, over,
+              node: node.tagName.toLowerCase() + "." + String(node.className || "").split(" ")[0] });
+          });
+        });
+        return out.slice(0, 8);
+      })()`,
+      returnByValue: true
+    });
+    result.overviewClippedNodes = clipped.result.value || [];
+    if (result.overviewClippedNodes.length) {
+      throw new Error(`${width}px总览分区把可见内容裁在边界外：`
+        + `${JSON.stringify(result.overviewClippedNodes)}`);
+    }
     result.providerScriptTransport = scriptTransport.snapshot();
   } finally {
     scriptTransport.stop();

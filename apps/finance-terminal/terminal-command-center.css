@@ -202,6 +202,14 @@
     clip-path: inset(50%);
   }
 
+  /* 分区自己能缩到 0，分区里那一层却不能：.risk-grid 等都是分区的网格项，
+     min-width 默认 auto，按 min-content 撑开后整块被下面那行 overflow:hidden
+     裁掉。实测风险区宽 354px 而内容 490px，OFR金融压力那张卡只剩 26px 露在
+     外面；运行证据分区同样被裁掉 201px。 */
+  body[data-terminal-view="overview"] #main-content > section > * {
+    min-width: 0;
+  }
+
   body[data-terminal-view="overview"] #main-content > section {
     min-width: 0;
     min-height: 0;
@@ -271,14 +279,16 @@
     font-size: 7px;
   }
 
+  /* 面板里三个可见块只排了两行，收益率曲线落进隐式轨道分不到高度，入口按钮
+     有 6px 被裁在外面。第三行改按内容取高，并收紧内边距让三块装得下。 */
   body[data-terminal-view="overview"] .hero-telemetry {
-    grid-template-rows: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    grid-template-rows: minmax(0, 0.95fr) minmax(0, 1.05fr) auto;
     gap: 6px;
   }
 
   body[data-terminal-view="overview"] .telemetry-card {
     min-height: 0;
-    padding: 10px;
+    padding: 7px;
   }
 
   body[data-terminal-view="overview"] .telemetry-card > strong {
@@ -305,7 +315,7 @@
 
   body[data-terminal-view="overview"] .hero-telemetry .meta-item {
     min-height: 0;
-    padding: 7px 8px;
+    padding: 4px 8px;
   }
 
   body[data-terminal-view="overview"] .hero-telemetry .meta-value {
