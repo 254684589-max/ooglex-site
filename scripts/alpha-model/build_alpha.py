@@ -17,6 +17,7 @@
 
 import argparse
 import json
+import math
 import os
 import sys
 from datetime import datetime, timezone
@@ -316,21 +317,37 @@ def run_backtest(args):
     stability = subperiod_ic(factor_series, n_periods=3, nw_lag=nw_lag, dates=dates)
     deciles = decile_stats(pooled_scores, pooled_labels)
 
-    # ---- 组合：每月调仓，持有到下次调仓，收益序列不重叠 ----
-    rebalances = []
-    for t in range(MIN_HISTORY_DAYS, len(dates) - REBALANCE_SPACING - 1, REBALANCE_SPACING):
-        scored = _score_at(members, series, bench_closes, t, weights_used, flip)
-        if not scored:
-            continue
-        rebalances.append((
-            dates[t],
-            {r["symbol"]: r["alpha"] for r in scored},
-            {r["symbol"]: forward_excess_return(series[r["symbol"]][0], bench_closes,
-                                                t, REBALANCE_SPACING)
-             for r in scored},
-        ))
-    portfolio = simulate_portfolio(rebalances, BACKTEST_TOP_N,
-                                   spacing_days=REBALANCE_SPACING)
+    # ---- 组合 ----
+    # 跑两个持有期。此前只跑 21 日，而验收线测的是 60 日 IC——同一个模型两个口径，
+    # 于是出现过「IC=0.0001 但组合 +240%」这种自相矛盾的结果。
+    # 模型叫 Alpha 60、声称预测 60 日超额，那么用于验收的组合就必须持有 60 日。
+    # 21 日那份保留为对照：两者差异本身就是信息（信号衰减快慢）。
+    def _run_portfolio(hold):
+        rows = []
+        for t in range(MIN_HISTORY_DAYS, len(dates) - hold - 1, hold):
+            scored = _score_at(members, series, bench_closes, t, weights_used, flip)
+            if not scored:
+                continue
+            rows.append((
+                dates[t],
+                {r["symbol"]: r["alpha"] for r in scored},
+                {r["symbol"]: forward_excess_return(series[r["symbol"]][0], bench_closes,
+                                                    t, hold) for r in scored},
+            ))
+        result = simulate_portfolio(rows, BACKTEST_TOP_N, spacing_days=hold)
+        if result:
+            result["holdDays"] = hold
+            result["picks"] = [
+                sorted(((v, k) for k, v in scores.items() if v is not None),
+                       reverse=True)[:BACKTEST_TOP_N]
+                for _, scores, _ in rows
+            ]
+        return result
+
+    portfolio = _run_portfolio(HORIZON_DAYS)          # 与验收口径一致
+    portfolio_monthly = _run_portfolio(REBALANCE_SPACING)   # 对照
+
+    survivorship = _survivorship_exposure(portfolio, members)
 
     passed, checks = evaluate_gates(ic, deciles or {}, portfolio or {})
 
@@ -376,7 +393,11 @@ def run_backtest(args):
         "multipleTesting": testing,
         "subperiodIC": stability,
         "deciles": deciles,
-        "portfolio": {k: v for k, v in (portfolio or {}).items() if k != "periods"},
+        "portfolio": {k: v for k, v in (portfolio or {}).items()
+                      if k not in ("periods", "picks")},
+        "portfolioMonthly": {k: v for k, v in (portfolio_monthly or {}).items()
+                             if k not in ("periods", "picks")},
+        "survivorshipExposure": survivorship,
         "gates": {"passed": passed, "checks": checks},
         "costModel": {"oneWayBps": BACKTEST_COST_BPS_ONE_WAY,
                       "note": "换手率按被替换仓位比例计，买卖各付一次单边成本"},
@@ -403,6 +424,51 @@ def run_backtest(args):
     _print_backtest(payload, out)
     print(f"\n报告页 {page}   ← 双击用浏览器打开")
     return payload
+
+
+def _survivorship_exposure(portfolio, members):
+    """幸存者偏差暴露度：策略选中的票，在**今天**的市值榜上排多靠前。
+
+    股票池是「今日市值前列」，所以每只都活到了今天并且变大了。若策略在 2018 年
+    选出的票，恰好是今天排名最靠前的那批，那它的收益里有多少来自「预测能力」、
+    多少来自「我们只把赢家放进了股票池」，就分不开了。
+
+    基准线是 50：股票池按今日市值降序，随机挑选的平均分位就是 50。
+    显著低于 50（排名更靠前）说明暴露度高。
+
+    这是**暴露度**不是**修正**——它让偏差可见，不能把它减掉。
+    真正的解法是 point-in-time 成分股。
+    """
+    if not portfolio or not portfolio.get("picks"):
+        return None
+    # members 按今日市值降序，下标即今日排名
+    rank = {m["symbol"]: i for i, m in enumerate(members)}
+    total = len(members)
+    if total < 2:
+        return None
+
+    percentiles = []
+    for picks in portfolio["picks"]:
+        for _, symbol in picks:
+            if symbol in rank:
+                percentiles.append(100.0 * rank[symbol] / (total - 1))
+    if not percentiles:
+        return None
+
+    from factors import mean as _mean, stdev as _stdev
+    avg = _mean(percentiles)
+    sd = _stdev(percentiles)
+    se = (sd / math.sqrt(len(percentiles))) if sd else None
+    return {
+        "meanTerminalRankPercentile": avg,
+        "baseline": 50.0,
+        "advantage": 50.0 - avg,          # 正数 = 选中的票今天排名更靠前
+        "picks": len(percentiles),
+        "tStat": ((50.0 - avg) / se) if se else None,
+        "note": ("股票池取自今日市值榜，全部标的都活到了今天。策略选中的票若在今日"
+                 "榜上系统性靠前，说明收益里混入了「只把赢家放进池子」的选择效应。"
+                 "这是暴露度不是修正——真正的解法是 point-in-time 成分股。"),
+    }
 
 
 def _calendar_interval(dates):
@@ -446,12 +512,20 @@ def _print_backtest(payload, out):
               f"D1−D10 {_f(dec['topMinusBottom'])}")
         for g in dec["groups"]:
             print(f"  D{g['decile']:<2} n={g['count']:<5} 平均超额 {_f(g['meanForward'])}")
-    pf = payload.get("portfolio") or {}
-    if pf:
-        print(f"组合 Top{BACKTEST_TOP_N} 等权：累计超额 {_f(pf.get('cumulativeExcess'))}  "
+    for key, label in (("portfolio", f"持有{HORIZON_DAYS}日（与验收口径一致）"),
+                       ("portfolioMonthly", f"持有{REBALANCE_SPACING}日（对照）")):
+        pf = payload.get(key) or {}
+        if not pf:
+            continue
+        print(f"组合 Top{BACKTEST_TOP_N} · {label}：累计超额 {_f(pf.get('cumulativeExcess'))}  "
               f"每期均值 {_f(pf.get('meanExcessPerPeriod'))}  胜率 {_f(pf.get('hitRate'))}")
         print(f"      年换手 {_f(pf.get('annualTurnover'))}  "
               f"成本累计 {_f(pf.get('costDrag'))}  最大回撤 {_f(pf.get('maxDrawdown'))}")
+    sv = payload.get("survivorshipExposure") or {}
+    if sv:
+        print(f"\n幸存者偏差暴露：选中标的的今日市值排名分位均值 "
+              f"{_f(sv.get('meanTerminalRankPercentile'), 1)}（随机基准 50）"
+              f"，优势 {_f(sv.get('advantage'), 1)} 分位，t={_f(sv.get('tStat'), 2)}")
     led = payload.get("attemptLedger") or {}
     if led:
         print(f"\n尝试台账：这是第 {led.get('attempts')} 次回测"

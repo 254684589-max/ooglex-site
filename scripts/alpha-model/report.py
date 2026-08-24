@@ -1021,19 +1021,80 @@ def render_backtest(payload):
                     f'{len(consistent)} / {len(stability["rows"])} 个因子三段同号。'
                     '同号且均值绝对值大的那几个，才是下一步唯一值得动的地方。</p>')
 
+    monthly = payload.get("portfolioMonthly") or {}
     if pf:
         body.append("<h2>组合模拟（扣成本后）</h2>")
-        body.append('<p class="note">每月调仓，等权持有分数最高的若干只到下次调仓，'
+        body.append('<p class="note">等权持有分数最高的若干只到下次调仓，'
                     '因此收益序列不重叠。换手率按被替换仓位比例计，'
-                    '买卖各付一次单边成本——不计成本的年化收益没有意义。</p>')
+                    '买卖各付一次单边成本——不计成本的年化收益没有意义。<br>'
+                    f'两个持有期都跑：<strong>{pf.get("holdDays")} 日</strong>与验收口径一致'
+                    f'（模型预测的就是 {payload.get("horizonDays")} 日超额），'
+                    f'<strong>{monthly.get("holdDays", "—")} 日</strong>为对照。'
+                    '两者差得远说明信号衰减快。</p>')
+        for label, data, primary in ((f'持有 {pf.get("holdDays")} 日 · 验收口径', pf, True),
+                                     (f'持有 {monthly.get("holdDays")} 日 · 对照', monthly, False)):
+            if not data:
+                continue
+            body.append(f'<p class="note" style="margin:16px 0 8px"><strong>{esc(label)}'
+                        f'</strong></p><div class="tiles">')
+            body.append(_tile("累计超额", pct(data.get("cumulativeExcess"), 2), "扣成本后"))
+            body.append(_tile("每期均值", pct(data.get("meanExcessPerPeriod"), 2), "单个持有期"))
+            body.append(_tile("胜率", pct(data.get("hitRate")), "跑赢基准的期数"))
+            body.append(_tile("年换手", num(data.get("annualTurnover"), 2), "倍"))
+            body.append(_tile("成本拖累", pct(data.get("costDrag"), 2), "累计"))
+            body.append(_tile("最大回撤", pct(data.get("maxDrawdown"), 2), "相对净值峰值"))
+            body.append("</div>")
+
+        # IC 与组合互相矛盾时必须说出来，不能让读者自己去发现
+        ic_t = abs((payload.get("rankIC") or {}).get("tStat") or 0)
+        cum = pf.get("cumulativeExcess")
+        if ic_t < 2 and cum is not None and cum > 0.5:
+            body.append('<div class="callout" style="margin-top:14px">'
+                        f'<strong>注意：IC 说排序无信息（|t|={ic_t:.2f}），'
+                        f'组合却赚了 {cum * 100:.0f}%。这两个数必须一起解释。</strong>'
+                        "<ul>"
+                        "<li><strong>IC 测的是全体单调性</strong>，Top-N 组合只吃最极端的头部。"
+                        "信号若只存在于前 5%，全体秩相关会接近 0，而 Top-N 照样好看——"
+                        "看分组图能确认：如果只有 D1 突出、D2–D10 乱序，就是这种情况。</li>"
+                        "<li><strong>更可能的是选择偏差。</strong>股票池取自今日市值榜，"
+                        "每只都活到了今天并且变大了。请看下面「幸存者偏差暴露」那一节。</li>"
+                        "<li>年化超额若超过 10%、同时最大回撤很浅，"
+                        "<strong>先验上几乎一定是偏差而不是 alpha</strong>——"
+                        "真实世界里这种策略极其罕见。</li>"
+                        "</ul></div>")
+
+    sv = payload.get("survivorshipExposure") or {}
+    if sv:
+        adv = sv.get("advantage") or 0
+        tv = sv.get("tStat")
+        strong = tv is not None and abs(tv) > 2
+        body.append("<h2>幸存者偏差暴露</h2>")
+        body.append('<p class="note">股票池取自<strong>今日</strong>市值榜，'
+                    '每只标的都活到了今天并且变大了。如果策略在多年前选出的票，'
+                    '恰好是今天排名最靠前的那批，那它的收益里有多少来自预测能力、'
+                    '多少来自「我们只把赢家放进了池子」，就分不开了。<br>'
+                    '股票池按今日市值降序，随机挑选的平均分位就是 <strong>50</strong>。'
+                    '明显低于 50 说明暴露度高。</p>')
         body.append('<div class="tiles">')
-        body.append(_tile("累计超额", pct(pf.get("cumulativeExcess"), 2), "扣成本后"))
-        body.append(_tile("每期均值", pct(pf.get("meanExcessPerPeriod"), 2), "单次调仓周期"))
-        body.append(_tile("胜率", pct(pf.get("hitRate")), "跑赢基准的期数占比"))
-        body.append(_tile("年换手", num(pf.get("annualTurnover"), 2), "倍"))
-        body.append(_tile("成本拖累", pct(pf.get("costDrag"), 2), "累计"))
-        body.append(_tile("最大回撤", pct(pf.get("maxDrawdown"), 2), "相对净值峰值"))
+        body.append(_tile("选中票的今日排名分位", num(sv.get("meanTerminalRankPercentile"), 1),
+                          "随机基准 50"))
+        body.append(_tile("排名优势", f'{adv:+.1f}', "正数=选中的今天更靠前"))
+        body.append(_tile("t 值", num(tv, 2),
+                          "✗ 暴露显著" if strong and adv > 0 else "未见显著暴露"))
+        body.append(_tile("样本", sv.get("picks"), "累计选中次数"))
         body.append("</div>")
+        if strong and adv > 0:
+            body.append('<div class="callout" style="margin-top:14px">'
+                        f'<strong>暴露显著：选中的票在今日市值榜上系统性靠前 '
+                        f'{adv:.1f} 个分位。</strong>'
+                        "上面的组合收益不能当作 alpha 的证据——"
+                        "它至少有一部分来自「这些票后来变成了巨头，而池子正是按这个选的」。"
+                        "<br>这是<strong>暴露度不是修正</strong>，减不掉。"
+                        "真正的解法是 point-in-time 成分股历史。</div>")
+        else:
+            body.append('<p class="note" style="margin-top:12px">未见显著暴露，'
+                        '但这只说明「选中的票不比池子平均更靠前」，'
+                        '不代表池子本身没有偏差——整个池子都是幸存者。</p>')
 
     led = payload.get("attemptLedger") or {}
     if led:
