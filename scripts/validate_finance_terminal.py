@@ -52,6 +52,8 @@ RISK_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-v
 RESEARCH_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-research-view.mjs"
 INFORMATION_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-information-view.mjs"
 OPERATIONS_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-operations-view.mjs"
+OPERATIONS_DATA_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-operations-data.mjs"
+INFORMATION_DATA_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-information-data.mjs"
 TERMS_PAGE = ROOT / "apps" / "finance-terminal" / "terms.html"
 PRIVACY_PAGE = ROOT / "apps" / "finance-terminal" / "privacy.html"
 LEGAL_CSS = ROOT / "apps" / "finance-terminal" / "legal.css"
@@ -721,6 +723,10 @@ def run_js_adapter_tests() -> None:
 const assert = require("assert");
 const fs = require("fs");
 const adapter = require("./apps/finance-terminal/app.js");
+const informationData = (await import("./apps/finance-terminal/finance-terminal-information-data.mjs"))
+  .createInformationData(adapter.sectionDataHelpers());
+const operationsData = (await import("./apps/finance-terminal/finance-terminal-operations-data.mjs"))
+  .createOperationsData(adapter.sectionDataHelpers());
 const { createSupportingHealthAdapter } = await import("./apps/finance-terminal/finance-terminal-health-adapters.mjs");
 const supportingAdapter = createSupportingHealthAdapter(adapter.supportingHealthHelpers());
 adapter.installSupportingHealthAdapter(supportingAdapter);
@@ -882,7 +888,7 @@ assert.strictEqual(supportingRiskCards[1].sourceHealth.status,
   supportingAdapter.adaptSupportingSourceHealth(fearGreedHealth, "fear-greed", fearGreed, supportingNow).status);
 assert.strictEqual(supportingRiskCards[2].sourceHealth.status,
   supportingAdapter.adaptSupportingSourceHealth(ofrHealth, "ofr-monitor", ofr, supportingNow).status);
-const supportingInformationCards = adapter.buildInformationCards({
+const supportingInformationCards = informationData.buildInformationCards({
   calendar: { data: econCalendar, error: null },
   calendarHealth: { data: econCalendarHealth, error: null },
   news: { data: financeNews, error: null },
@@ -1434,7 +1440,7 @@ assert.strictEqual(riskCardsWithOfrFailure[0].status, "ok");
 assert.strictEqual(riskCardsWithOfrFailure[1].status, "ok");
 assert.strictEqual(riskCardsWithOfrFailure[2].status, "error");
 
-const macroOperationHealth = adapter.adaptMacroSourceHealth(macroHealth, macro, currentNow);
+const macroOperationHealth = operationsData.adaptMacroSourceHealth(macroHealth, macro, currentNow);
 assert.strictEqual(macroOperationHealth.dataset, "macro-radar");
 assert.strictEqual(macroOperationHealth.status, macroHealth.status);
 assert.strictEqual(macroOperationHealth.pipelineStatus, macroHealth.status);
@@ -1455,7 +1461,7 @@ const operationSources = {
   assetRankingHealth: { data: assetRankingHealth, error: null },
   readiness: { data: readiness, error: null }
 };
-const operationCards = adapter.buildOperationsCards(operationSources, currentNow);
+const operationCards = operationsData.buildOperationsCards(operationSources, currentNow);
 assert.strictEqual(operationCards.length, 4);
 assert.deepStrictEqual(operationCards.map((card) => card.id), [
   "macro-radar", "asset-tracker", "companies", "asset-ranking"
@@ -1475,7 +1481,7 @@ assert.deepStrictEqual(operationCards.map((card) => card.freshCoveragePct), [
 assert.deepStrictEqual(operationCards.map((card) => card.historyKnown), [
   macroHealth, assetTrackerHealth, companiesHealth, assetRankingHealth
 ].map((health) => health.historyStatus === "tracked"));
-const readinessState = adapter.adaptReadinessSnapshot(readiness, currentNow);
+const readinessState = operationsData.adaptReadinessSnapshot(readiness, currentNow);
 const expectedReadinessById = Object.fromEntries(readiness.pipelines.map((pipeline) => [pipeline.id, pipeline]));
 operationCards.forEach((card) => {
   const expected = expectedReadinessById[card.id];
@@ -1484,26 +1490,26 @@ operationCards.forEach((card) => {
   assert.strictEqual(card.readiness.latestCycleDate, expected.cycleDates.slice().sort().at(-1));
   assert.strictEqual(card.readiness.status, readinessState.pipelines[card.id].status);
 });
-const staleReadiness = adapter.adaptReadinessSnapshot(
+const staleReadiness = operationsData.adaptReadinessSnapshot(
   readiness, new Date(Date.parse(readiness.generatedAt) + 73 * 60 * 60 * 1000)
 );
 assert(Object.values(staleReadiness.pipelines).every((pipeline) => pipeline.status === "stale"));
 const tamperedReadiness = JSON.parse(JSON.stringify(readiness));
 tamperedReadiness.summary.minimumConsecutiveSuccessfulCycles += 1;
-assert.throws(() => adapter.adaptReadinessSnapshot(tamperedReadiness, currentNow), /不可复算/);
+assert.throws(() => operationsData.adaptReadinessSnapshot(tamperedReadiness, currentNow), /不可复算/);
 
-const staleOperationCards = adapter.buildOperationsCards(operationSources, expiredOfficialHealthNow);
+const staleOperationCards = operationsData.buildOperationsCards(operationSources, expiredOfficialHealthNow);
 assert(staleOperationCards.every((card) => card.status === "stale"));
 assert(staleOperationCards.every((card) => card.reportStale === true));
 assert(staleOperationCards[0].note.includes("不代表当前任务仍在正常运行"));
 
 const tamperedMacroHealth = JSON.parse(JSON.stringify(macroHealth));
 tamperedMacroHealth.coverage.freshCoveragePct = macroHealth.coverage.freshCoveragePct === 100 ? 99 : 100;
-assert.throws(() => adapter.adaptMacroSourceHealth(tamperedMacroHealth, macro, currentNow), /覆盖率/);
+assert.throws(() => operationsData.adaptMacroSourceHealth(tamperedMacroHealth, macro, currentNow), /覆盖率/);
 const tamperedOperationSources = Object.assign({}, operationSources, {
   macroHealth: { data: tamperedMacroHealth, error: null }
 });
-const tamperedOperationCards = adapter.buildOperationsCards(tamperedOperationSources, currentNow);
+const tamperedOperationCards = operationsData.buildOperationsCards(tamperedOperationSources, currentNow);
 assert.strictEqual(tamperedOperationCards[0].status, "unknown");
 assert.strictEqual(tamperedOperationCards[0].contractKnown, false);
 assert.deepStrictEqual(tamperedOperationCards.slice(1).map((card) => card.status), [
@@ -1512,11 +1518,11 @@ assert.deepStrictEqual(tamperedOperationCards.slice(1).map((card) => card.status
 
 const mismatchedMacroSnapshot = JSON.parse(JSON.stringify(macro));
 mismatchedMacroSnapshot.updatedAt = "2026-08-03T22:00:00Z";
-assert.throws(() => adapter.adaptMacroSourceHealth(macroHealth, mismatchedMacroSnapshot, currentNow), /快照时间不一致/);
+assert.throws(() => operationsData.adaptMacroSourceHealth(macroHealth, mismatchedMacroSnapshot, currentNow), /快照时间不一致/);
 const failedOperationSources = Object.assign({}, operationSources, {
   companiesHealth: { data: null, error: new Error("HTTP 503") }
 });
-const failedOperationCards = adapter.buildOperationsCards(failedOperationSources, currentNow);
+const failedOperationCards = operationsData.buildOperationsCards(failedOperationSources, currentNow);
 assert.strictEqual(failedOperationCards[2].status, "unknown");
 assert.strictEqual(failedOperationCards[2].publishedRecords, null);
 assert(failedOperationCards[2].note.includes("HTTP 503"));
@@ -1940,7 +1946,7 @@ assert.strictEqual(failedCompanyResearch[1].status, baselineResearch[1].status);
 assert.strictEqual(failedCompanyResearch[2].status, "error");
 
 const calendarNow = new Date(Date.parse(econCalendar.updatedAt) + 60 * 60 * 1000);
-const calendar = adapter.adaptEconomicCalendar(econCalendar, calendarNow);
+const calendar = informationData.adaptEconomicCalendar(econCalendar, calendarNow);
 assert.strictEqual(calendar.id, "economic-calendar");
 assert.strictEqual(calendar.status, "ok");
 assert.strictEqual(calendar.count, econCalendar.events.length);
@@ -1968,37 +1974,37 @@ weekendCalendar.weekOf = "2026-08-16 ~ 2026-08-21";
 weekendCalendar.asOf = "2026-08-22";
 weekendCalendar.updatedAt = "2026-08-22T21:30:00Z";
 const saturdayNow = new Date(Date.parse("2026-08-22T22:30:00Z"));
-assert.notStrictEqual(adapter.adaptEconomicCalendar(weekendCalendar, saturdayNow).status, "stale",
+assert.notStrictEqual(informationData.adaptEconomicCalendar(weekendCalendar, saturdayNow).status, "stale",
   "周六（本周内、无发布日）不得因周范围止于周五而被判为过期");
 const nextSundayCalendar = JSON.parse(JSON.stringify(weekendCalendar));
 nextSundayCalendar.asOf = "2026-08-23";
 nextSundayCalendar.updatedAt = "2026-08-23T10:00:00Z";
 assert.strictEqual(
-  adapter.adaptEconomicCalendar(nextSundayCalendar, new Date(Date.parse("2026-08-23T11:00:00Z"))).status,
+  informationData.adaptEconomicCalendar(nextSundayCalendar, new Date(Date.parse("2026-08-23T11:00:00Z"))).status,
   "stale", "文件已进入下一周仍必须判为过期——放宽整周不得掩盖真正的跨周陈旧");
 const agedCalendar = JSON.parse(JSON.stringify(weekendCalendar));
 assert.strictEqual(
-  adapter.adaptEconomicCalendar(agedCalendar, new Date(Date.parse("2026-08-24T21:30:00Z"))).status,
+  informationData.adaptEconomicCalendar(agedCalendar, new Date(Date.parse("2026-08-24T21:30:00Z"))).status,
   "stale", "超过36小时未更新仍必须判为过期");
 
 const partialCalendar = JSON.parse(JSON.stringify(econCalendar));
 partialCalendar.count += 1;
-assert.strictEqual(adapter.adaptEconomicCalendar(partialCalendar, calendarNow).status, "partial");
+assert.strictEqual(informationData.adaptEconomicCalendar(partialCalendar, calendarNow).status, "partial");
 
 const staleCalendar = JSON.parse(JSON.stringify(econCalendar));
 staleCalendar.updatedAt = "2026-07-31T12:00:00Z";
-assert.strictEqual(adapter.adaptEconomicCalendar(staleCalendar, calendarNow).status, "stale");
+assert.strictEqual(informationData.adaptEconomicCalendar(staleCalendar, calendarNow).status, "stale");
 
 const invalidCalendar = JSON.parse(JSON.stringify(econCalendar));
 invalidCalendar.source = "Unknown calendar";
-const invalidInformation = adapter.buildInformationCards({
+const invalidInformation = informationData.buildInformationCards({
   calendar: { data: invalidCalendar, error: null }
 }, calendarNow);
 assert.strictEqual(invalidInformation.length, 1);
 assert.strictEqual(invalidInformation[0].status, "error");
 assert.strictEqual(invalidInformation[0].events.length, 0);
 
-const failedInformation = adapter.buildInformationCards({
+const failedInformation = informationData.buildInformationCards({
   calendar: { data: null, error: new Error("HTTP 503") }
 }, calendarNow);
 assert.strictEqual(failedInformation.length, 1);
@@ -2006,7 +2012,7 @@ assert.strictEqual(failedInformation[0].status, "error");
 assert.strictEqual(failedInformation[0].events.length, 0);
 
 const newsNow = new Date(Date.parse(financeNews.updatedAt) + 60 * 60 * 1000);
-const news = adapter.adaptFinanceNews(financeNews, newsNow);
+const news = informationData.adaptFinanceNews(financeNews, newsNow);
 const marketItems = financeNews.categories.find((category) => category.key === "markets").items;
 const expectedNews = marketItems.slice().sort((a, b) => b.published - a.published).slice(0, 5);
 assert.strictEqual(news.id, "finance-news");
@@ -2017,34 +2023,34 @@ assert.strictEqual(news.asOf, financeNews.asOf);
 assert.strictEqual(news.updatedAt, financeNews.updatedAt);
 assert.strictEqual(news.source.name, "Google News RSS · 原媒体");
 assert.deepStrictEqual(news.articles.map((item) => item.title), expectedNews.map((item) => item.title));
-assert(news.articles.every((item) => adapter.isSafeGoogleNewsUrl(item.link)));
+assert(news.articles.every((item) => informationData.isSafeGoogleNewsUrl(item.link)));
 assert(news.articles.every((item, index) => index === 0 || item.published <= news.articles[index - 1].published));
 assert(news.articles.every((item) => !Object.prototype.hasOwnProperty.call(item, "price")));
 
 const partialNews = JSON.parse(JSON.stringify(financeNews));
 partialNews.categories.find((category) => category.key === "markets").items[0].link = "https://example.com/unsafe";
-assert.strictEqual(adapter.adaptFinanceNews(partialNews, newsNow).status, "partial");
+assert.strictEqual(informationData.adaptFinanceNews(partialNews, newsNow).status, "partial");
 
 const staleNewsNow = new Date(Date.parse(financeNews.updatedAt) + 13 * 60 * 60 * 1000);
-assert.strictEqual(adapter.adaptFinanceNews(financeNews, staleNewsNow).status, "stale");
+assert.strictEqual(informationData.adaptFinanceNews(financeNews, staleNewsNow).status, "stale");
 
 const invalidNews = JSON.parse(JSON.stringify(financeNews));
 invalidNews.source = "Yahoo Finance";
-const invalidNewsInformation = adapter.buildInformationCards({
+const invalidNewsInformation = informationData.buildInformationCards({
   news: { data: invalidNews, error: null }
 }, newsNow);
 assert.strictEqual(invalidNewsInformation.length, 1);
 assert.strictEqual(invalidNewsInformation[0].status, "error");
 assert.strictEqual(invalidNewsInformation[0].articles.length, 0);
 
-const failedNewsInformation = adapter.buildInformationCards({
+const failedNewsInformation = informationData.buildInformationCards({
   news: { data: null, error: new Error("HTTP 503") }
 }, newsNow);
 assert.strictEqual(failedNewsInformation.length, 1);
 assert.strictEqual(failedNewsInformation[0].status, "error");
 assert.strictEqual(failedNewsInformation[0].articles.length, 0);
 
-const combinedInformation = adapter.buildInformationCards({
+const combinedInformation = informationData.buildInformationCards({
   calendar: { data: econCalendar, error: null },
   news: { data: financeNews, error: null }
 }, newsNow);
@@ -2637,6 +2643,8 @@ def main() -> None:
     risk_view_module = RISK_VIEW_MODULE.read_text(encoding="utf-8")
     research_view_module = RESEARCH_VIEW_MODULE.read_text(encoding="utf-8")
     information_view_module = INFORMATION_VIEW_MODULE.read_text(encoding="utf-8")
+    information_data_module = INFORMATION_DATA_MODULE.read_text(encoding="utf-8")
+    operations_data_module = OPERATIONS_DATA_MODULE.read_text(encoding="utf-8")
     operations_view_module = OPERATIONS_VIEW_MODULE.read_text(encoding="utf-8")
     terminal_views = (app + "\n" + risk_view_module + "\n" + research_view_module
                       + "\n" + information_view_module + "\n" + operations_view_module)
@@ -3088,13 +3096,24 @@ def main() -> None:
             "分区加载器未读取三条聚合管道健康文件")
     require("adaptSourceHealth" in app and "safeSourceHealth" in app and "appendSourceHealth" in app,
             "app.js未校验或展示来源健康状态")
-    require("adaptMacroSourceHealth" in app and "buildOperationsCards" in app
+    require("adaptMacroSourceHealth" in operations_data_module
+            and "buildOperationsCards" in operations_data_module
             and "renderOperationsCards" in app and "makeOperationCard" in operations_view_module,
-            "app.js未校验或渲染四管道Beta运行状态")
-    require('readiness:"readiness.json"' in compact_loader and "adaptReadinessSnapshot" in app
+            "运行证据数据层未校验或渲染四管道Beta运行状态")
+    require('readiness:"readiness.json"' in compact_loader
+            and "adaptReadinessSnapshot" in operations_data_module
+            and "READINESS_MAX_AGE_HOURS" in operations_data_module
             and "operation-readiness" in operations_view_module
             and "STABLE V1 EVIDENCE" in operations_view_module,
             "金融终端未读取、校验或渲染稳定V1连续周期证据")
+    # 运行证据的适配只有该分区用得上，不该进首屏。
+    require('import("./finance-terminal-operations-data.mjs")' in app
+            and "createOperationsData" in operations_data_module
+            and "adaptMacroSourceHealth" not in app
+            and "adaptReadinessSnapshot" not in app,
+            "运行证据数据层必须按需加载，且其适配函数不得留在首屏脚本里")
+    require(OPERATIONS_DATA_MODULE.stat().st_size <= 23_000,
+            "金融终端运行证据数据层超过23KB性能预算")
     require('marketLicense:"market-source-readiness.json"' in compact_loader
             and "adaptMarketLicenseReadiness" in app
             and "renderMarketLicenseNotice" in app and "FREE DATA" in app,
@@ -3128,14 +3147,28 @@ def main() -> None:
     require("moverCoverage" in app and "暂停当日领涨与领跌" in app and "company.dataLabel" in terminal_views,
             "公司榜未按逐条状态暂停或恢复每日涨跌排行")
     require('calendar:"../econ-calendar/data.json"' in compact_loader
-            and "ECON_CALENDAR_MAX_AGE_HOURS" in app, "金融终端未读取现有经济日历数据")
-    require("adaptEconomicCalendar" in app and "buildInformationCards" in app and "normalizeCalendarEvent" in app,
-            "app.js未实现经济日历适配、校验或独立状态")
-    require('news:"../whats-latest/data.json"' in compact_loader and "FINANCE_NEWS_MAX_AGE_HOURS" in app
-            and "FINANCE_NEWS_ITEM_MAX_AGE_HOURS" in app, "app.js未读取现有财经新闻或缺少新鲜度规则")
-    require("adaptFinanceNews" in app and "isSafeGoogleNewsUrl" in app
+            and "ECON_CALENDAR_MAX_AGE_HOURS" in information_data_module,
+            "金融终端未读取现有经济日历数据")
+    require("adaptEconomicCalendar" in information_data_module
+            and "buildInformationCards" in information_data_module
+            and "normalizeCalendarEvent" in information_data_module,
+            "事件资讯数据层未实现经济日历适配、校验或独立状态")
+    require('news:"../whats-latest/data.json"' in compact_loader
+            and "FINANCE_NEWS_MAX_AGE_HOURS" in information_data_module
+            and "FINANCE_NEWS_ITEM_MAX_AGE_HOURS" in information_data_module,
+            "事件资讯数据层未读取现有财经新闻或缺少新鲜度规则")
+    require("adaptFinanceNews" in information_data_module
+            and "isSafeGoogleNewsUrl" in information_data_module
             and "makeFinanceNewsCard" in terminal_views,
-            "app.js未实现财经新闻适配、安全链接或渲染")
+            "事件资讯数据层未实现财经新闻适配、安全链接或渲染")
+    # 事件资讯的适配只有该分区用得上，不该进首屏。数据层必须按需导入、不得回流 app.js。
+    require('import("./finance-terminal-information-data.mjs")' in app
+            and "createInformationData" in information_data_module
+            and "adaptEconomicCalendar" not in app
+            and "adaptFinanceNews" not in app,
+            "事件资讯数据层必须按需加载，且其适配函数不得留在首屏脚本里")
+    require(INFORMATION_DATA_MODULE.stat().st_size <= 15_000,
+            "金融终端事件资讯数据层超过15KB性能预算")
     require('setAttribute("role", "listitem")' in terminal_views, "动态卡片缺少列表项语义")
     require("card.tabIndex = 0" not in terminal_views and "article.tabIndex = 0" not in terminal_views,
             "非交互卡片不得进入键盘Tab顺序")

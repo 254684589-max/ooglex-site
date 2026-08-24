@@ -22,10 +22,6 @@
     "asset-ranking": ASSET_RANKING_MAX_AGE_HOURS,
     companies: COMPANIES_MAX_AGE_HOURS
   };
-  var ECON_CALENDAR_MAX_AGE_HOURS = 36;
-  var FINANCE_NEWS_MAX_AGE_HOURS = 12;
-  var FINANCE_NEWS_ITEM_MAX_AGE_HOURS = 36;
-  var READINESS_MAX_AGE_HOURS = 72;
   var PROVIDER_WIDGET_TAG = "tv-mini-chart";
   var PROVIDER_WIDGET_REGRESSION_TIMEOUT_MS = 150;
   var DATA_MODES = ["market", "fallback", "estimate", "unknown", "unavailable"];
@@ -47,28 +43,7 @@
       provider: "U.S. EIA / Cushing WTI Spot", maxBusinessDays: 4, changeUnit: "percent"
     }
   };
-  var PIPELINE_OPERATION_SPECS = {
-    "macro-radar": {
-      name: "宏观官方序列", nameEn: "Macro Official Series", symbol: "3 SERIES",
-      expectedRecords: 3, unit: "项官方序列", detailUrl: "../macro-radar/",
-      workflow: "macro_radar.yml", readinessEnabled: true
-    },
-    "asset-tracker": {
-      name: "跨资产强弱", nameEn: "Cross-Asset Strength", symbol: "28 ASSETS",
-      expectedRecords: 28, unit: "项资产", detailUrl: "../asset-tracker/",
-      workflow: "asset_tracker.yml", readinessEnabled: true
-    },
-    companies: {
-      name: "全球公司榜", nameEn: "Global Companies", symbol: "500 COMPANIES",
-      expectedRecords: 500, unit: "家公司", detailUrl: "../companies/",
-      workflow: "companies.yml", readinessEnabled: true
-    },
-    "asset-ranking": {
-      name: "全球资产榜", nameEn: "Global Asset Ranking", symbol: "250 ASSETS",
-      expectedRecords: 250, unit: "项资产", detailUrl: "../asset-ranking/",
-      workflow: "asset_ranking.yml", readinessEnabled: true
-    }
-  };
+
   var SVG_NS = "http://www.w3.org/2000/svg";
 
   function isNumber(value) {
@@ -572,173 +547,6 @@
     };
   }
 
-  function adaptMacroSourceHealth(health, data, now) {
-    if (!health || typeof health !== "object" || !data || typeof data !== "object") {
-      throw new Error("宏观健康或数据文件缺失");
-    }
-    if (health.contractVersion !== 1 || health.dataset !== "macro-radar"
-      || PIPELINE_HEALTH_STATUSES.indexOf(health.status) === -1
-      || PIPELINE_HISTORY_STATUSES.indexOf(health.historyStatus) === -1) {
-      throw new Error("宏观健康契约或数据集标识无效");
-    }
-    var reportAgeHours = hoursSince(health.generatedAt, now);
-    var attemptAgeHours = hoursSince(health.lastAttemptAt, now);
-    if (reportAgeHours === null || attemptAgeHours === null || health.generatedAt !== health.lastAttemptAt) {
-      throw new Error("宏观健康尝试时间无效");
-    }
-    if (health.lastSuccessfulAt !== null && hoursSince(health.lastSuccessfulAt, now) === null) {
-      throw new Error("宏观健康最后成功时间无效");
-    }
-    if (health.publishedSnapshotAt !== data.updatedAt) throw new Error("宏观健康与数据快照时间不一致");
-
-    var expectedIds = ["DGS10", "DTWEXBGS", "RWTC"];
-    var sourceSpecs = {
-      DGS10: { provider: "FRED / Federal Reserve H.15", maxBusinessDays: 3, changeUnit: "bp" },
-      DTWEXBGS: { provider: "FRED / Federal Reserve H.10", maxBusinessDays: 3, changeUnit: "percent" },
-      RWTC: { provider: "U.S. EIA / Cushing WTI Spot", maxBusinessDays: 4, changeUnit: "percent" }
-    };
-    if (!Array.isArray(health.sources) || !sameStringArray(health.sources.map(function (source) {
-      return source && source.id;
-    }), expectedIds)) throw new Error("宏观健康逐源顺序或ID无效");
-
-    var published = macroPublishedRecords(data);
-    var counts = { market: 0, fallback: 0, unavailable: 0, unknown: 0 };
-    health.sources.forEach(function (source) {
-      var spec = sourceSpecs[source.id];
-      var record = published[source.id];
-      if (!spec || !record || ["ok", "stale", "error"].indexOf(record.status) === -1) {
-        throw new Error(source.id + "发布记录无效");
-      }
-      if (source.provider !== spec.provider || source.role !== "primary" || source.frequency !== "daily"
-        || source.maxBusinessDays !== spec.maxBusinessDays || source.changeUnit !== spec.changeUnit
-        || MACRO_HEALTH_SOURCE_STATUSES.indexOf(source.status) === -1
-        || MACRO_HEALTH_MODES.indexOf(source.mode) === -1
-        || PIPELINE_HISTORY_STATUSES.indexOf(source.historyStatus) === -1) {
-        throw new Error(source.id + "健康来源口径无效");
-      }
-      if (!source.source || source.source.seriesId !== source.id || source.source.name !== spec.provider
-        || typeof source.source.url !== "string" || source.source.url.indexOf("https://") !== 0) {
-        throw new Error(source.id + "健康来源登记无效");
-      }
-      if (source.published !== record.published || source.asOf !== record.asOf
-        || source.publishedUpdatedAt !== record.updatedAt) {
-        throw new Error(source.id + "健康状态与发布快照不一致");
-      }
-      if (hoursSince(source.lastAttemptAt, now) === null
-        || (source.lastSuccessfulAt !== null && hoursSince(source.lastSuccessfulAt, now) === null)) {
-        throw new Error(source.id + "健康运行时间无效");
-      }
-      if (health.historyStatus === "migrated") {
-        if (source.historyStatus !== "migrated" || source.mode !== "unknown" || source.status !== "unknown"
-          || source.consecutiveFailures !== null || source.snapshotPreserved !== null
-          || source.failureReason !== null) throw new Error(source.id + "迁移历史被错误推断");
-      } else {
-        if (source.historyStatus !== "tracked" || source.lastAttemptAt !== health.lastAttemptAt
-          || !Number.isInteger(source.consecutiveFailures) || source.consecutiveFailures < 0) {
-          throw new Error(source.id + "跟踪历史无效");
-        }
-        if (source.mode === "market" && (source.status !== "healthy" || source.consecutiveFailures !== 0
-          || source.snapshotPreserved !== false || source.failureReason !== null || record.status !== "ok")) {
-          throw new Error(source.id + "成功语义不一致");
-        }
-        if (source.mode === "fallback" && (source.status !== "degraded" || source.consecutiveFailures < 1
-          || source.snapshotPreserved !== true || typeof source.failureReason !== "string"
-          || !source.failureReason.trim() || record.published !== true)) {
-          throw new Error(source.id + "回退语义不一致");
-        }
-        if (source.mode === "unavailable" && (source.status !== "failed" || source.consecutiveFailures < 1
-          || source.snapshotPreserved !== false || typeof source.failureReason !== "string"
-          || !source.failureReason.trim() || record.published !== false)) {
-          throw new Error(source.id + "不可用语义不一致");
-        }
-        if (source.mode === "unknown") throw new Error(source.id + "跟踪状态不得使用unknown模式");
-      }
-      counts[source.mode] += 1;
-    });
-
-    var coverage = health.coverage;
-    var publishedSeries = health.sources.filter(function (source) { return source.published; }).length;
-    if (!coverage || coverage.expectedSeries !== expectedIds.length || coverage.publishedSeries !== publishedSeries
-      || !coverage.counts || MACRO_HEALTH_MODES.some(function (mode) { return coverage.counts[mode] !== counts[mode]; })
-      || !isNumber(coverage.freshCoveragePct) || !isNumber(coverage.availableCoveragePct)
-      || Math.abs(coverage.freshCoveragePct - sourceHealthPercent(counts.market, expectedIds.length)) > 0.001
-      || Math.abs(coverage.availableCoveragePct - sourceHealthPercent(publishedSeries, expectedIds.length)) > 0.001) {
-      throw new Error("宏观健康覆盖率不可复算");
-    }
-
-    var refreshed = health.sources.filter(function (source) { return source.mode === "market"; })
-      .map(function (source) { return source.id; });
-    var failed = health.sources.filter(function (source) {
-      return source.mode === "fallback" || source.mode === "unavailable";
-    }).map(function (source) { return source.id; });
-    var unknown = health.sources.filter(function (source) { return source.mode === "unknown"; })
-      .map(function (source) { return source.id; });
-    var attemptStatus = unknown.length ? "unknown" : refreshed.length === expectedIds.length
-      ? "success" : refreshed.length ? "partial" : "failed";
-    if (!health.attempt || health.attempt.status !== attemptStatus
-      || !sameStringArray(health.attempt.refreshedSeries, refreshed)
-      || !sameStringArray(health.attempt.failedSeries, failed)
-      || !sameStringArray(health.attempt.unknownSeries, unknown)) {
-      throw new Error("宏观健康任务汇总不可复算");
-    }
-    var expectedPipeline = unknown.length ? "degraded" : refreshed.length === expectedIds.length
-      ? "healthy" : refreshed.length ? "degraded" : "failed";
-    if (health.status !== expectedPipeline) throw new Error("宏观健康管道状态不可复算");
-    if (health.historyStatus === "migrated") {
-      if (health.consecutiveFailures !== null || health.snapshotPreserved !== null || health.failureReason !== null) {
-        throw new Error("宏观迁移状态不得推断失败历史");
-      }
-    } else {
-      if (!Number.isInteger(health.consecutiveFailures) || health.consecutiveFailures < 0) {
-        throw new Error("宏观连续失败次数无效");
-      }
-      if (refreshed.length && (health.consecutiveFailures !== 0 || health.snapshotPreserved !== false)) {
-        throw new Error("宏观部分成功时失败状态未归零");
-      }
-      if (!refreshed.length && (health.consecutiveFailures < 1
-        || health.snapshotPreserved !== Boolean(publishedSeries)
-        || typeof health.failureReason !== "string" || !health.failureReason.trim())) {
-        throw new Error("宏观整批失败语义不一致");
-      }
-    }
-    if (!health.recovery || health.recovery.preservesLastValidSnapshot !== true
-      || !Array.isArray(health.recovery.steps) || !health.recovery.steps.length) {
-      throw new Error("宏观健康恢复链无效");
-    }
-
-    var reportStale = attemptAgeHours > SOURCE_HEALTH_MAX_AGE_HOURS["macro-radar"];
-    var displayStatus = reportStale && health.status !== "failed" ? "stale" : health.status;
-    var note = health.status === "failed"
-      ? "三项官方序列本轮均未刷新；可验证旧值按逐源规则保留。"
-      : health.historyStatus === "migrated"
-        ? "三项官方序列的健康历史从当前快照开始建立；此前连续失败次数未知。"
-        : health.status === "degraded"
-          ? "仅部分官方序列完成本轮刷新；其余来源保持独立回退或不可用状态。"
-          : "三项官方序列均完成本轮刷新，逐源健康状态已跟踪。";
-    if (reportStale) {
-      note = "健康报告已超过72小时；可展示覆盖仅代表上次快照，不代表当前任务仍在正常运行。";
-    }
-    return {
-      dataset: "macro-radar",
-      status: displayStatus,
-      pipelineStatus: health.status,
-      label: displayStatus.toUpperCase(),
-      contractKnown: true,
-      historyKnown: health.historyStatus === "tracked",
-      reportStale: reportStale,
-      reportAgeHours: attemptAgeHours,
-      freshCoveragePct: coverage.freshCoveragePct,
-      verifiedCoveragePct: coverage.availableCoveragePct,
-      availableCoveragePct: coverage.availableCoveragePct,
-      consecutiveFailures: health.consecutiveFailures,
-      lastAttemptAt: health.lastAttemptAt,
-      lastSuccessfulAt: health.lastSuccessfulAt,
-      snapshotPreserved: health.snapshotPreserved,
-      failureReason: health.failureReason,
-      note: note
-    };
-  }
-
   function unavailableOfficialSourceHealth(seriesId, error) {
     return {
       seriesId: seriesId,
@@ -900,193 +708,6 @@
     }
     asset.updateHealth = state;
     return asset;
-  }
-
-  function pipelineOperationCard(dataset, state, data, health) {
-    var spec = PIPELINE_OPERATION_SPECS[dataset];
-    if (!spec) throw new Error("未知数据管道");
-    var publishedRecords = dataset === "macro-radar"
-      ? health.coverage.publishedSeries : sourceHealthRows(dataset, data).length;
-    return Object.assign({}, state, {
-      id: dataset,
-      name: spec.name,
-      nameEn: spec.nameEn,
-      symbol: spec.symbol,
-      expectedRecords: spec.expectedRecords,
-      publishedRecords: publishedRecords,
-      unit: spec.unit,
-      detailUrl: spec.detailUrl
-    });
-  }
-
-  function unavailablePipelineOperation(dataset, error) {
-    var spec = PIPELINE_OPERATION_SPECS[dataset];
-    var state = unavailableSourceHealth(dataset, error);
-    return Object.assign({}, state, {
-      id: dataset,
-      name: spec.name,
-      nameEn: spec.nameEn,
-      symbol: spec.symbol,
-      expectedRecords: spec.expectedRecords,
-      publishedRecords: null,
-      unit: spec.unit,
-      detailUrl: spec.detailUrl
-    });
-  }
-
-  function adaptPipelineOperation(dataset, data, health, now) {
-    var state = dataset === "macro-radar"
-      ? adaptMacroSourceHealth(health, data, now)
-      : adaptSourceHealth(health, dataset, data, now);
-    return pipelineOperationCard(dataset, state, data, health);
-  }
-
-  function unavailableReadinessEvidence(error) {
-    return {
-      status: "unknown",
-      sourceStatus: "unknown",
-      label: "UNKNOWN",
-      consecutiveSuccessfulCycles: null,
-      stableRequiredSuccessfulCycles: 7,
-      remainingStableCycles: null,
-      latestCreatedAt: null,
-      latestCycleDate: null,
-      latestRunUrl: null,
-      reportStale: true,
-      note: "稳定V1远端证据不可用。" + (error && error.message ? " " + error.message : "")
-    };
-  }
-
-  function safeReadinessRunUrl(value) {
-    return typeof value === "string"
-      && /^https:\/\/github\.com\/[^/\s]+\/[^/\s]+\/actions\/runs\/\d+$/.test(value)
-      ? value : null;
-  }
-
-  function adaptReadinessSnapshot(snapshot, now) {
-    if (!snapshot || snapshot.schemaVersion !== 1) throw new Error("稳定V1证据版本无效");
-    if (typeof snapshot.targetBranch !== "string"
-      || !/^agent\/finance-terminal-[A-Za-z0-9._-]+$/.test(snapshot.targetBranch)) {
-      throw new Error("稳定V1证据分支无效");
-    }
-    var targetStatuses = ["PASS", "WARN", "BLOCKED"];
-    if (!snapshot.targets || targetStatuses.indexOf(snapshot.targets.beta) === -1
-      || targetStatuses.indexOf(snapshot.targets.stableV1) === -1) {
-      throw new Error("稳定V1目标结论无效");
-    }
-    if (snapshot.doesNotCallMarketApis !== true || snapshot.doesNotDeploy !== true) {
-      throw new Error("稳定V1证据缺少只读安全声明");
-    }
-    if (snapshot.source !== "GitHub Actions workflow_dispatch / Finance Terminal release gate") {
-      throw new Error("稳定V1证据来源无效");
-    }
-    var reportAgeHours = hoursSince(snapshot.generatedAt, now);
-    if (reportAgeHours === null) throw new Error("稳定V1证据生成时间无效");
-    var reportStale = reportAgeHours > READINESS_MAX_AGE_HOURS;
-    var ids = Object.keys(PIPELINE_OPERATION_SPECS);
-    if (!Array.isArray(snapshot.pipelines) || snapshot.pipelines.length !== ids.length) {
-      throw new Error("稳定V1证据必须包含四条核心管道");
-    }
-    var allowedStatuses = ["progress", "qualified", "blocked"];
-    var pipelines = {};
-    snapshot.pipelines.forEach(function (item, index) {
-      var id = ids[index];
-      var spec = PIPELINE_OPERATION_SPECS[id];
-      if (!item || item.id !== id || item.name !== spec.name || item.workflow !== spec.workflow) {
-        throw new Error("稳定V1证据管道身份无效");
-      }
-      var cycles = item.consecutiveSuccessfulCycles;
-      if (!Number.isInteger(cycles) || cycles < 0 || item.betaRequiredSuccessfulCycles !== 3
-        || item.stableRequiredSuccessfulCycles !== 7
-        || item.remainingStableCycles !== Math.max(0, 7 - cycles)
-        || allowedStatuses.indexOf(item.status) === -1
-        || targetStatuses.indexOf(item.checkStatus) === -1) {
-        throw new Error(id + "稳定V1周期证据不可复算");
-      }
-      var expectedStatus = cycles >= 7 && item.checkStatus === "PASS" ? "qualified"
-        : cycles > 0 && item.latestConclusion === "success" ? "progress" : "blocked";
-      if (item.status !== expectedStatus) throw new Error(id + "稳定V1状态不可复算");
-      if (!Array.isArray(item.cycleDates) || item.cycleDates.length > 7
-        || item.cycleDates.some(function (date) { return !/^\d{4}-\d{2}-\d{2}$/.test(date); })
-        || new Set(item.cycleDates).size !== item.cycleDates.length
-        || item.cycleDates.join("|") !== item.cycleDates.slice().sort().reverse().join("|")) {
-        throw new Error(id + "稳定V1周期日期无效");
-      }
-      if (item.latestCreatedAt !== null && item.latestCreatedAt !== undefined
-        && Number.isNaN(new Date(item.latestCreatedAt).getTime())) {
-        throw new Error(id + "最近远端运行时间无效");
-      }
-      var displayStatus = reportStale ? "stale" : item.status;
-      pipelines[id] = {
-        status: displayStatus,
-        sourceStatus: item.status,
-        label: displayStatus.toUpperCase(),
-        consecutiveSuccessfulCycles: cycles,
-        stableRequiredSuccessfulCycles: 7,
-        remainingStableCycles: item.remainingStableCycles,
-        latestCreatedAt: item.latestCreatedAt || null,
-        latestCycleDate: item.cycleDates.length ? item.cycleDates[0] : null,
-        latestRunUrl: safeReadinessRunUrl(item.latestRunUrl),
-        reportStale: reportStale,
-        note: reportStale ? "稳定V1证据快照已超过72小时，请以远端门禁为准。"
-          : cycles + "/7个独立日更周期已验证；同周期重跑不会重复累计。"
-      };
-    });
-    var minimum = Math.min.apply(null, ids.map(function (id) {
-      return pipelines[id].consecutiveSuccessfulCycles;
-    }));
-    var qualified = ids.filter(function (id) { return pipelines[id].sourceStatus === "qualified"; }).length;
-    var expectedSummary = snapshot.summary;
-    if (!expectedSummary || expectedSummary.pipelineCount !== 4
-      || expectedSummary.qualifiedPipelines !== qualified
-      || expectedSummary.minimumConsecutiveSuccessfulCycles !== minimum
-      || expectedSummary.stableRequiredSuccessfulCycles !== 7
-      || expectedSummary.remainingStableCycles !== Math.max(0, 7 - minimum)) {
-      throw new Error("稳定V1证据汇总不可复算");
-    }
-    return {
-      generatedAt: snapshot.generatedAt,
-      reportAgeHours: reportAgeHours,
-      reportStale: reportStale,
-      targets: snapshot.targets,
-      pipelines: pipelines
-    };
-  }
-
-  function buildOperationsCards(sources, now) {
-    var readiness = null;
-    var readinessError = sources && sources.readiness && sources.readiness.error;
-    if (sources && sources.readiness && !readinessError) {
-      try {
-        readiness = adaptReadinessSnapshot(sources.readiness.data, now);
-      } catch (error) {
-        readinessError = error;
-      }
-    }
-    var definitions = [
-      ["macro-radar", sources && sources.macro, sources && sources.macroHealth],
-      ["asset-tracker", sources && sources.assetTracker, sources && sources.assetTrackerHealth],
-      ["companies", sources && sources.companies, sources && sources.companiesHealth],
-      ["asset-ranking", sources && sources.assetRanking, sources && sources.assetRankingHealth]
-    ];
-    return definitions.map(function (definition) {
-      var dataset = definition[0];
-      var dataSource = definition[1] || {};
-      var healthSource = definition[2] || {};
-      var card;
-      if (dataSource.error) card = unavailablePipelineOperation(dataset, dataSource.error);
-      else if (healthSource.error) card = unavailablePipelineOperation(dataset, healthSource.error);
-      try {
-        if (!card) card = adaptPipelineOperation(dataset, dataSource.data, healthSource.data, now);
-      } catch (error) {
-        card = unavailablePipelineOperation(dataset, error);
-      }
-      if (PIPELINE_OPERATION_SPECS[dataset].readinessEnabled) {
-        card.readiness = readiness
-          ? readiness.pipelines[dataset] : unavailableReadinessEvidence(readinessError);
-      }
-      return card;
-    });
   }
 
   function findDgs10Row(macroData) {
@@ -2379,277 +2000,6 @@
     return cards;
   }
 
-  function parseWeekRange(value) {
-    if (typeof value !== "string") return null;
-    var match = value.match(/^(\d{4}-\d{2}-\d{2})\s*~\s*(\d{4}-\d{2}-\d{2})$/);
-    if (!match) return null;
-    var start = parseIsoDate(match[1]);
-    var end = parseIsoDate(match[2]);
-    if (!start || !end || start > end) return null;
-    return { start: start, end: end, label: match[1] + " ~ " + match[2] };
-  }
-
-  function isCalendarValue(value) {
-    return value === null || typeof value === "string";
-  }
-
-  function normalizeCalendarEvent(event) {
-    if (!event || typeof event.ts !== "string") return null;
-    var timestamp = new Date(event.ts);
-    var allowedImpact = ["high", "medium", "low", "holiday"];
-    if (Number.isNaN(timestamp.getTime()) || allowedImpact.indexOf(event.impact) === -1) return null;
-    if (typeof event.title !== "string" || !event.title.trim()
-      || typeof event.country !== "string" || !event.country.trim()
-      || typeof event.ccy !== "string" || !event.ccy.trim()
-      || !isCalendarValue(event.actual) || !isCalendarValue(event.forecast) || !isCalendarValue(event.previous)) {
-      return null;
-    }
-    return {
-      ts: event.ts,
-      timestamp: timestamp.getTime(),
-      ccy: event.ccy.trim(),
-      country: event.country.trim(),
-      flag: typeof event.flag === "string" ? event.flag : "🌐",
-      title: event.title.trim(),
-      titleEn: typeof event.titleEn === "string" ? event.titleEn.trim() : "",
-      impact: event.impact,
-      actual: event.actual,
-      forecast: event.forecast,
-      previous: event.previous
-    };
-  }
-
-  function adaptEconomicCalendar(data, now) {
-    if (!data || data.source !== "Forex Factory 经济日历") throw new Error("经济日历来源不是Forex Factory");
-    var age = hoursSince(data.updatedAt, now);
-    var observed = parseIsoDate(data.asOf);
-    var week = parseWeekRange(data.weekOf);
-    var current = now instanceof Date ? new Date(now.getTime()) : new Date();
-    if (age === null) throw new Error("经济日历更新时间无效或晚于当前时间");
-    if (!observed || !week || Number.isNaN(current.getTime())) throw new Error("经济日历日期或周范围无效");
-    current.setUTCHours(0, 0, 0, 0);
-    if (observed > current) throw new Error("经济日历数据日期晚于当前时间");
-    if (!Array.isArray(data.events) || data.events.length < 1) throw new Error("经济日历没有事件");
-
-    var events = data.events.map(normalizeCalendarEvent).filter(Boolean).sort(function (a, b) {
-      return a.timestamp - b.timestamp;
-    });
-    if (!events.length) throw new Error("经济日历没有有效事件");
-    var highCount = events.filter(function (event) { return event.impact === "high"; }).length;
-    var rangeComplete = events.every(function (event) {
-      var eventDate = new Date(event.timestamp);
-      eventDate.setUTCHours(0, 0, 0, 0);
-      return eventDate >= week.start && eventDate <= week.end;
-    });
-    var inputComplete = events.length === data.events.length
-      && data.count === data.events.length
-      && data.highCount === highCount
-      && rangeComplete;
-    var nowTime = (now instanceof Date ? now : new Date()).getTime();
-    var important = events.filter(function (event) {
-      return event.impact === "high" || event.impact === "medium";
-    });
-    var selected = important.filter(function (event) { return event.timestamp >= nowTime; }).slice(0, 4);
-    var selectionLabel = "接下来重要事件";
-    if (!selected.length) {
-      selected = important.filter(function (event) { return event.timestamp < nowTime; }).slice(-4).reverse();
-      selectionLabel = "最近重要事件";
-    }
-    if (!selected.length) {
-      selected = events.filter(function (event) { return event.impact !== "holiday"; }).slice(0, 4);
-      selectionLabel = "本周事件";
-    }
-
-    /* 周六周日通常没有经济数据发布，声明的周范围往往在周五结束。若直接用该范围判断，
-       周六跑出来的文件会落在自己声明的范围外而被误判为过期，因此按 Forex Factory 的
-       周日~周六整周口径判断；"文件来自上一周"这一真正要拦的情况仍然会被拦下。 */
-    var weekStart = new Date(week.start.getTime());
-    weekStart.setUTCDate(weekStart.getUTCDate() - weekStart.getUTCDay());
-    var weekEnd = new Date(weekStart.getTime());
-    weekEnd.setUTCDate(weekEnd.getUTCDate() + 6);
-    if (week.end > weekEnd) weekEnd = week.end;
-    var outsideWeek = current < weekStart || current > weekEnd;
-    var status = age > ECON_CALENDAR_MAX_AGE_HOURS || outsideWeek
-      ? "stale"
-      : (!inputComplete || important.length === 0) ? "partial" : "ok";
-    return {
-      id: "economic-calendar",
-      name: "重要经济事件",
-      nameEn: "Economic Calendar",
-      symbol: "CALENDAR",
-      status: status,
-      events: selected,
-      selectionLabel: selectionLabel,
-      count: events.length,
-      highCount: highCount,
-      weekOf: week.label,
-      asOf: data.asOf,
-      updatedAt: data.updatedAt,
-      frequency: "每日更新 · 周历",
-      source: { name: data.source, url: "../econ-calendar/" },
-      detailUrl: "../econ-calendar/",
-      note: status === "stale"
-        ? "周历文件超过36小时未更新或已离开当前周范围；保留最后有效事件并明确标记过期。"
-        : status === "partial"
-          ? "部分事件或数量元数据不完整；仅展示通过校验的事件，不以空值补齐。"
-          : "时间按你的设备时区显示；高、中影响级别来自上游日历，实际值公布后由既有任务回填。"
-    };
-  }
-
-  function unavailableEconomicCalendar(error) {
-    return {
-      id: "economic-calendar",
-      name: "重要经济事件",
-      nameEn: "Economic Calendar",
-      symbol: "CALENDAR",
-      status: "error",
-      events: [],
-      selectionLabel: "事件不可用",
-      count: 0,
-      highCount: 0,
-      weekOf: null,
-      asOf: null,
-      updatedAt: null,
-      frequency: "每日更新 · 周历",
-      source: { name: "Forex Factory 经济日历", url: "../econ-calendar/" },
-      detailUrl: "../econ-calendar/",
-      note: "无法读取经济日历。" + (error && error.message ? " " + error.message : "")
-    };
-  }
-
-  function isSafeGoogleNewsUrl(value) {
-    return typeof value === "string" && /^https:\/\/news\.google\.com\/rss\/articles\/[A-Za-z0-9_-]+(?:\?[^\s]*)?$/.test(value);
-  }
-
-  function normalizeFinanceNewsItem(item, nowTime) {
-    if (!item || typeof item.title !== "string" || !item.title.trim()
-      || typeof item.source !== "string" || !item.source.trim()
-      || !isSafeGoogleNewsUrl(item.link)
-      || !isNumber(item.published) || item.published <= 0) return null;
-    var publishedAt = new Date(item.published * 1000);
-    if (Number.isNaN(publishedAt.getTime()) || publishedAt.getTime() > nowTime + 15 * 60000) return null;
-    return {
-      title: item.title.trim(),
-      sourceName: item.source.trim(),
-      link: item.link,
-      published: item.published,
-      publishedAt: publishedAt.toISOString()
-    };
-  }
-
-  function adaptFinanceNews(data, now) {
-    if (!data || typeof data.source !== "string" || data.source.indexOf("Google News") === -1) {
-      throw new Error("财经新闻来源不含Google News");
-    }
-    var age = hoursSince(data.updatedAt, now);
-    var observed = parseIsoDate(data.asOf);
-    var current = now instanceof Date ? new Date(now.getTime()) : new Date();
-    if (age === null) throw new Error("财经新闻更新时间无效或晚于当前时间");
-    if (!observed || Number.isNaN(current.getTime())) throw new Error("财经新闻数据日期无效");
-    current.setUTCHours(0, 0, 0, 0);
-    if (observed > current) throw new Error("财经新闻数据日期晚于当前时间");
-    if (!Array.isArray(data.categories)) throw new Error("财经新闻缺少板块列表");
-    var marketCategories = data.categories.filter(function (category) {
-      return category && category.key === "markets";
-    });
-    if (marketCategories.length !== 1 || !Array.isArray(marketCategories[0].items) || !marketCategories[0].items.length) {
-      throw new Error("财经新闻缺少唯一市场板块或新闻为空");
-    }
-
-    var rawItems = marketCategories[0].items;
-    var currentTime = (now instanceof Date ? now : new Date()).getTime();
-    var seenLinks = {};
-    var articles = rawItems.map(function (item) { return normalizeFinanceNewsItem(item, currentTime); })
-      .filter(function (item) {
-        if (!item || seenLinks[item.link]) return false;
-        seenLinks[item.link] = true;
-        return true;
-      })
-      .sort(function (a, b) { return b.published - a.published; });
-    if (!articles.length) throw new Error("财经新闻没有有效文章");
-    var selected = articles.slice(0, 5);
-    var newestAge = hoursSince(selected[0].publishedAt, now);
-    if (newestAge === null) throw new Error("最新财经新闻发布时间无效");
-    var inputComplete = articles.length === rawItems.length;
-    var status = age > FINANCE_NEWS_MAX_AGE_HOURS || newestAge > FINANCE_NEWS_ITEM_MAX_AGE_HOURS
-      ? "stale"
-      : (!inputComplete || selected.length < 3) ? "partial" : "ok";
-    return {
-      id: "finance-news",
-      name: "最新财经新闻",
-      nameEn: "Latest Market News",
-      symbol: "NEWS",
-      status: status,
-      articles: selected,
-      count: articles.length,
-      latestPublishedAt: selected[0].publishedAt,
-      asOf: data.asOf,
-      updatedAt: data.updatedAt,
-      frequency: "每6小时聚合",
-      source: { name: "Google News RSS · 原媒体", url: "../whats-latest/" },
-      detailUrl: "../whats-latest/",
-      note: status === "stale"
-        ? "新闻文件超过12小时未更新或最新文章已超过36小时；保留最后有效标题并明确标记过期。"
-        : status === "partial"
-          ? "部分新闻字段或链接未通过校验；仅展示有效文章，不读取同文件的Yahoo行情快照。"
-          : "只读取“市场”板块并按发布时间排序；标题来自Google News聚合，点击经Google News跳转原媒体。"
-    };
-  }
-
-  function unavailableFinanceNews(error) {
-    return {
-      id: "finance-news",
-      name: "最新财经新闻",
-      nameEn: "Latest Market News",
-      symbol: "NEWS",
-      status: "error",
-      articles: [],
-      count: 0,
-      latestPublishedAt: null,
-      asOf: null,
-      updatedAt: null,
-      frequency: "每6小时聚合",
-      source: { name: "Google News RSS · 原媒体", url: "../whats-latest/" },
-      detailUrl: "../whats-latest/",
-      note: "无法读取财经新闻。" + (error && error.message ? " " + error.message : "")
-    };
-  }
-
-  function buildInformationCards(sources, now) {
-    var cards = [];
-    if (sources && Object.prototype.hasOwnProperty.call(sources, "calendar")) {
-      var calendarSource = sources.calendar || {};
-      var calendarHealthSource = sources.calendarHealth || {};
-      if (calendarSource.error) cards.push(attachSupportingHealth(
-        unavailableEconomicCalendar(calendarSource.error), "econ-calendar", calendarSource, calendarHealthSource, now
-      ));
-      else {
-        try { cards.push(attachSupportingHealth(
-          adaptEconomicCalendar(calendarSource.data, now), "econ-calendar", calendarSource, calendarHealthSource, now
-        )); }
-        catch (error) { cards.push(attachSupportingHealth(
-          unavailableEconomicCalendar(error), "econ-calendar", calendarSource, calendarHealthSource, now
-        )); }
-      }
-    }
-    if (sources && Object.prototype.hasOwnProperty.call(sources, "news")) {
-      var newsSource = sources.news || {};
-      var newsHealthSource = sources.newsHealth || {};
-      if (newsSource.error) cards.push(attachSupportingHealth(
-        unavailableFinanceNews(newsSource.error), "whats-latest", newsSource, newsHealthSource, now
-      ));
-      else {
-        try { cards.push(attachSupportingHealth(
-          adaptFinanceNews(newsSource.data, now), "whats-latest", newsSource, newsHealthSource, now
-        )); }
-        catch (error) { cards.push(attachSupportingHealth(
-          unavailableFinanceNews(error), "whats-latest", newsSource, newsHealthSource, now
-        )); }
-      }
-    }
-    return cards;
-  }
-
   function latestOfficialUpdate(assets) {
     var latest = null;
     assets.forEach(function (asset) {
@@ -2888,16 +2238,12 @@
   }
 
   var testApi = {
+    sectionDataHelpers: sectionDataHelpers,
     adaptDgs10: adaptDgs10,
     adaptDtwexbgs: adaptDtwexbgs,
-    adaptMacroSourceHealth: adaptMacroSourceHealth,
     adaptOfficialSourceHealth: adaptOfficialSourceHealth,
-    adaptPipelineOperation: adaptPipelineOperation,
-    adaptReadinessSnapshot: adaptReadinessSnapshot,
     adaptMarketLicenseReadiness: adaptMarketLicenseReadiness,
     adaptCrossAsset: adaptCrossAsset,
-    adaptEconomicCalendar: adaptEconomicCalendar,
-    adaptFinanceNews: adaptFinanceNews,
     adaptAssetRanking: adaptAssetRanking,
     adaptCompanies: adaptCompanies,
     adaptFearGreed: adaptFearGreed,
@@ -2913,8 +2259,6 @@
     installSupportingHealthAdapter: installSupportingHealthAdapter,
     buildPageData: buildPageData,
     buildPageDataWithMacroError: buildPageDataWithMacroError,
-    buildInformationCards: buildInformationCards,
-    buildOperationsCards: buildOperationsCards,
     buildResearchCards: buildResearchCards,
     buildRiskCards: buildRiskCards,
     businessDaysSince: businessDaysSince,
@@ -2925,7 +2269,6 @@
     normalizeOfficialObservations: normalizeOfficialObservations,
     isUsBusinessDay: isUsBusinessDay,
     isSafeOfrUrl: isSafeOfrUrl,
-    isSafeGoogleNewsUrl: isSafeGoogleNewsUrl,
     hoursSince: hoursSince,
     parseUnitValue: parseUnitValue,
     rankCrossAssetPeriod: rankCrossAssetPeriod,
@@ -2939,8 +2282,6 @@
     unavailableCrossAsset: unavailableCrossAsset,
     unavailableAssetRanking: unavailableAssetRanking,
     unavailableCompanies: unavailableCompanies,
-    unavailableEconomicCalendar: unavailableEconomicCalendar,
-    unavailableFinanceNews: unavailableFinanceNews,
     unavailableFearGreed: unavailableFearGreed,
     unavailableMacroRegime: unavailableMacroRegime,
     unavailableOfrFsi: unavailableOfrFsi,
@@ -3013,6 +2354,51 @@
   }).catch(function () {
     return null;
   });
+
+  /* 分区数据层与视图一样按需加载：只有事件资讯分区用得上的适配代码，不该让每个
+     访客在首屏就下载。助手仍留在 app.js（首屏自己也要用），这里注入过去。 */
+  var sectionDataImports = {};
+  function sectionDataHelpers() {
+    return {
+      adaptSourceHealth: adaptSourceHealth,
+      attachSupportingHealth: attachSupportingHealth,
+      hoursSince: hoursSince,
+      isNumber: isNumber,
+      macroPublishedRecords: macroPublishedRecords,
+      parseIsoDate: parseIsoDate,
+      sameStringArray: sameStringArray,
+      sourceHealthPercent: sourceHealthPercent,
+      sourceHealthRows: sourceHealthRows,
+      unavailableSourceHealth: unavailableSourceHealth,
+      MACRO_HEALTH_MODES: MACRO_HEALTH_MODES,
+      MACRO_HEALTH_SOURCE_STATUSES: MACRO_HEALTH_SOURCE_STATUSES,
+      PIPELINE_HEALTH_STATUSES: PIPELINE_HEALTH_STATUSES,
+      PIPELINE_HISTORY_STATUSES: PIPELINE_HISTORY_STATUSES,
+      SOURCE_HEALTH_MAX_AGE_HOURS: SOURCE_HEALTH_MAX_AGE_HOURS
+    };
+  }
+
+  function importSectionData(name) {
+    if (name === "information") {
+      return import("./finance-terminal-information-data.mjs")
+        .then(function (mod) { return mod.createInformationData(sectionDataHelpers()); });
+    }
+    if (name === "operations") {
+      return import("./finance-terminal-operations-data.mjs")
+        .then(function (mod) { return mod.createOperationsData(sectionDataHelpers()); });
+    }
+    return Promise.resolve(null);
+  }
+
+  function loadSectionData(name) {
+    if (!sectionDataImports[name]) {
+      sectionDataImports[name] = importSectionData(name).then(function (data) {
+        if (!data) throw new Error("延迟区块数据模块缺少工厂函数：" + name);
+        return data;
+      });
+    }
+    return sectionDataImports[name];
+  }
 
   function importSectionView(name) {
     if (name === "risk") return import("./finance-terminal-risk-view.mjs");
@@ -3971,12 +3357,16 @@
           }
           if (name === "information") {
             return loadSectionView(name).then(function () {
-              return buildInformationCards(group);
+              return loadSectionData(name);
+            }).then(function (data) {
+              return data.buildInformationCards(group);
             });
           }
           if (name === "operations") {
             return loadSectionView(name).then(function () {
-              return buildOperationsCards(group);
+              return loadSectionData(name);
+            }).then(function (data) {
+              return data.buildOperationsCards(group);
             });
           }
           throw new Error("未知金融终端分区：" + name);
