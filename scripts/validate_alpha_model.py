@@ -19,6 +19,7 @@ sys.path.insert(0, os.path.join(ROOT, "scripts", "alpha-model"))
 
 import backtest as B          # noqa: E402
 import factors as F           # noqa: E402
+import fundamentals as FU     # noqa: E402
 import scoring as S           # noqa: E402
 from build_alpha import REBALANCE_SPACING  # noqa: E402
 from config import HORIZON_DAYS, MIN_HISTORY_DAYS, WEIGHTS_A  # noqa: E402
@@ -282,13 +283,134 @@ def test_candidate_rule():
     check("降级被显式标记", rule["relaxed"] is True,
           "门槛放宽必须写进输出，不能悄悄放宽")
 
-    fundamentals = {m["symbol"]: {"fundamental": i, "valuation": i, "revision": i}
+    # B 层输入是**子因子级**的（重构后），不是族级的。
+    # 外部 --fundamentals 文件也必须用这套键名。
+    from config import SUBWEIGHTS as _SW
+    b_keys = [k for fam in ("fundamental", "valuation", "revision") for k in _SW[fam]]
+    fundamentals = {m["symbol"]: {k: float(i) for k in b_keys}
                     for i, m in enumerate(members)}
     rows2, _ = raw_cross_section(members, series, bench, len(dates) - 1)
     scored2 = rank_cross_section(rows2, fundamentals=fundamentals)
     _, rule2 = select_candidates(scored2)
     check("接入B层后恢复三块", rule2["availableBlocks"] == 3, str(rule2))
     check("门槛恢复到配置值", rule2["minConfluence"] == 2 and rule2["relaxed"] is False)
+
+
+
+# ---------------------------------------------------------------------------
+QUOTE_FIXTURE = {
+    "financialData": {
+        "totalRevenue": 100_000_000_000, "revenueGrowth": 0.62,
+        "earningsGrowth": 1.05, "grossMargins": 0.75, "operatingMargins": 0.61,
+        "returnOnEquity": 1.19, "freeCashflow": 40_000_000_000,
+        "totalDebt": 12_000_000_000, "totalCash": 4_000_000_000,
+        "ebitda": 66_000_000_000, "currentPrice": 200.0,
+        "targetMeanPrice": 250.0, "numberOfAnalystOpinions": 50,
+    },
+    "defaultKeyStatistics": {
+        "forwardPE": 25.0, "enterpriseToEbitda": 40.0, "enterpriseToRevenue": 20.0,
+    },
+    "summaryDetail": {"marketCap": 4_000_000_000_000},
+    "price": {"marketCap": 4_000_000_000_000, "regularMarketPrice": 200.0},
+    "earningsTrend": {"trend": [
+        {"period": "0q", "epsTrend": {"current": 1.0, "90daysAgo": 0.9}},
+        {"period": "+1y",
+         "epsTrend": {"current": 8.0, "30daysAgo": 7.6, "90daysAgo": 6.4},
+         "epsRevisions": {"upLast30days": 22, "downLast30days": 2},
+         "earningsEstimate": {"avg": 8.0, "numberOfAnalysts": 40}},
+    ]},
+}
+
+
+def test_fundamental_parser():
+    section("10. B层解析器（纯函数，可离线断言）")
+    m, diag = FU.extract_metrics(QUOTE_FIXTURE)
+
+    check("15 个子因子全部解析出来", len(diag["missing"]) == 0, str(diag["missing"]))
+    check("营收增速直读", close_to(m["revenue_growth"], 0.62))
+    check("FCF利润率 = FCF/营收", close_to(m["fcf_margin"], 0.4))
+    check("FCF收益率 = FCF/市值", close_to(m["fcf_yield"], 0.01))
+    check("净负债杠杆取负号（高分=负债轻）",
+          close_to(m["low_leverage"], -(12e9 - 4e9) / 66e9), f'{m["low_leverage"]}')
+    check("盈利收益率 = 1/前瞻PE", close_to(m["earnings_yield"], 0.04))
+    check("目标价上行空间", close_to(m["target_upside"], 0.25))
+    check("修正广度 = (上调−下调)/分析师数", close_to(m["revision_breadth"], 0.5))
+    check("90日EPS修正 = (8.0−6.4)/6.4", close_to(m["eps_revision_90d"], 0.25))
+    check("只读 +1y 那一期，不误取 0q",
+          not close_to(m["eps_revision_90d"], (1.0 - 0.9) / 0.9))
+
+    # 亏损公司：预期从 −1.00 上修到 −0.50 是改善，必须是正数。
+    # 用带符号分母会算成 −50%，方向正好反了——这是最容易写错的一处。
+    loss = {"earningsTrend": {"trend": [
+        {"period": "+1y", "epsTrend": {"current": -0.50, "90daysAgo": -1.00}}]}}
+    lm, _ = FU.extract_metrics(loss)
+    check("亏损收窄记为正向修正（分母取绝对值）",
+          lm["eps_revision_90d"] is not None and lm["eps_revision_90d"] > 0,
+          f'得到 {lm["eps_revision_90d"]}')
+
+    worse = {"earningsTrend": {"trend": [
+        {"period": "+1y", "epsTrend": {"current": -1.50, "90daysAgo": -1.00}}]}}
+    wm, _ = FU.extract_metrics(worse)
+    check("亏损扩大记为负向修正", wm["eps_revision_90d"] < 0, f'{wm["eps_revision_90d"]}')
+
+    # 亏损公司的前瞻PE为负，盈利收益率应保留负号且亏得越狠越负
+    check("亏损公司盈利收益率为负", FU._inverse(-25.0) < 0)
+    check("亏损越重（PE绝对值越小）排序越靠后",
+          FU._inverse(-5.0) < FU._inverse(-100.0),
+          f"{FU._inverse(-5.0)} vs {FU._inverse(-100.0)}")
+
+    check("_num 解开 {raw:…} 包装", close_to(FU._num({"raw": 1.5, "fmt": "1.50"}), 1.5))
+    check("_num 拒绝布尔值", FU._num(True) is None)
+    check("_num 拒绝 None 与字符串", FU._num(None) is None and FU._num("3") is None)
+    check("零倍数不炸成无穷", FU._inverse(0.0) is None)
+    check("零分母不炸", FU._safe_div(1.0, 0.0) is None)
+
+    empty, ed = FU.extract_metrics({})
+    check("空响应全部返回 None，不返回 0",
+          all(v is None for v in empty.values()), str({k: v for k, v in empty.items() if v is not None}))
+    check("空响应的诊断如实报出全缺", len(ed["present"]) == 0)
+
+    partial, pd_ = FU.extract_metrics({"financialData": {"revenueGrowth": 0.3}})
+    check("部分响应只填拿到的那项",
+          close_to(partial["revenue_growth"], 0.3) and partial["roe"] is None)
+    check("分析师不足 3 位不算修正广度",
+          FU.extract_metrics({"earningsTrend": {"trend": [{"period": "+1y",
+              "epsRevisions": {"upLast30days": 1, "downLast30days": 0},
+              "earningsEstimate": {"numberOfAnalysts": 2}}]}})[0]["revision_breadth"] is None)
+
+
+def test_b_layer_pipeline():
+    section("11. B层并入同一条归一化流水线")
+    import random
+    from fixtures import synthetic_market as _sm
+    from config import WEIGHTS as _W
+    members, series, bench, dates = _sm(n_stocks=40, n_days=500, seed=5, signal_strength=0.003)
+    rng = random.Random(2)
+    keys = [k for fam in ("fundamental", "valuation", "revision")
+            for k in __import__("config").SUBWEIGHTS[fam]]
+    fund = {m["symbol"]: {k: rng.gauss(0, 1) for k in keys} for m in members}
+
+    rows, _ = raw_cross_section(members, series, bench, len(dates) - 1)
+    scored = rank_cross_section(rows, fundamentals=fund, weights=_W)
+    top = scored[0]
+
+    check("七族分数全部算出", all(v is not None for v in top["families"].values()),
+          str(top["families"]))
+    check("总覆盖率为 1.0", close_to(top["coverage"], 1.0))
+    check("可排名子因子数 = A层13 + B层15", len(top["ranked"]) == 28, str(len(top["ranked"])))
+    check("B层子因子也做了0–100分位归一",
+          all(0 <= top["ranked"][k] <= 100 for k in keys))
+
+    _, rule = select_candidates(scored)
+    check("接入B层后共振门槛不再降级", rule["relaxed"] is False and rule["minConfluence"] == 2)
+
+    rows2, _ = raw_cross_section(members, series, bench, len(dates) - 1)
+    scored2 = rank_cross_section(rows2, fundamentals=None, weights=_W)
+    top2 = scored2[0]
+    check("不给B层时三族为 None 而非 0 分",
+          all(top2["families"][f] is None for f in ("fundamental", "valuation", "revision")))
+    check("不给B层时覆盖率降到 0.6", close_to(top2["coverage"], 0.6))
+    check("不给B层时总分仍算得出（按A层重新归一化）", top2["alpha"] is not None)
 
 
 def main():
@@ -302,6 +424,8 @@ def main():
     test_end_to_end_signal()
     test_end_to_end_null()
     test_candidate_rule()
+    test_fundamental_parser()
+    test_b_layer_pipeline()
 
     print()
     if FAILURES:

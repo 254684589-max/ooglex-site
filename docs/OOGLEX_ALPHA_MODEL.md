@@ -107,11 +107,72 @@ V1 用第 3 条，并预留第 1 条的接口。
 
 ## 4. B 层因子（实时可用，不进回测）
 
-| 族 | 内容 | 权重 |
+数据源 Yahoo quoteSummary（需 cookie + crumb 握手，与 v8/chart 不同）。
+子因子与 A 层走**完全相同**的归一化流水线——不给它单开一条路径，
+否则两层分数不在同一尺度，加权平均就没有意义。
+
+### 4.1 基本面 F（权重 20）
+
+| 子因子 | 来源字段 | 子权重 |
 |---|---|---|
-| 基本面 F | 营收增速、增速加速度、EPS 增速、毛利率、营业利润率、ROE、FCF 利润率、净负债/EBITDA | 20 |
-| 估值 Q | 行业相对 forward PE、EV/EBITDA、FCF yield、GARP（增速/估值） | 10 |
-| 盈利修正 E | EPS 预测 30/90 日变化、修正广度 `(上调−下调)/总数` | 10 |
+| `revenue_growth` | `revenueGrowth` | 0.20 |
+| `earnings_growth` | `earningsGrowth` | 0.20 |
+| `roe` | `returnOnEquity` | 0.15 |
+| `operating_margin` | `operatingMargins` | 0.13 |
+| `gross_margin` | `grossMargins` | 0.12 |
+| `fcf_margin` | `freeCashflow / totalRevenue` | 0.12 |
+| `low_leverage` | `−(totalDebt − totalCash) / ebitda` | 0.08 |
+
+### 4.2 估值 Q（权重 10）
+
+估值一律翻成"收益率"口径（取倒数），使**高分 = 便宜**，方向与其他因子一致。
+
+| 子因子 | 定义 | 子权重 |
+|---|---|---|
+| `earnings_yield` | `1 / forwardPE` | 0.35 |
+| `ev_ebitda_yield` | `1 / enterpriseToEbitda` | 0.25 |
+| `fcf_yield` | `freeCashflow / marketCap` | 0.25 |
+| `ev_sales_yield` | `1 / enterpriseToRevenue` | 0.15 |
+
+取倒数时**保留负号**：亏损公司的盈利收益率为负，且亏得越狠（PE 绝对值越小）
+越负，排序方向正确。行业相对性由 `sector_neutral_rank` 的行业内分位承担——
+英伟达和银行比 PE 没有意义，但和其他半导体比有。
+
+### 4.3 盈利修正 E（权重 10）
+
+| 子因子 | 定义 | 子权重 |
+|---|---|---|
+| `eps_revision_90d` | 明年 EPS 一致预期相对 90 天前的变化率 | 0.40 |
+| `revision_breadth` | `(上调数 − 下调数) / 分析师总数` | 0.30 |
+| `eps_revision_30d` | 同上，30 天窗口 | 0.15 |
+| `target_upside` | `targetMeanPrice / currentPrice − 1` | 0.15 |
+
+修正率的**分母取绝对值**。这是最容易写错的一处：预期从 −1.00 上修到 −0.50
+是改善，用带符号分母会算成 −50%，方向正好反了。自检里对这条有专门断言。
+
+### 4.4 为什么它不能进回测
+
+quoteSummary 只给"此刻"的快照。它给不出「2020-03-16 那天市场看到的
+TTM 净利润」——那天的报表可能后来被重述，分析师预测更是没有留档。
+所以 B 层只用于**今天的横截面打分**，`build_alpha.py` 的回测路径固定传
+`WEIGHTS_A`，B 层从代码层面就进不去。
+
+真正的 PIT 财务要走 **SEC EDGAR XBRL**（`companyfacts` 接口免费、无需密钥，
+且每条数据都带 `filed` 日期，能重建任意历史时点的可见信息集）。那是 V2 的事。
+
+### 4.5 接不上时会怎样
+
+握手失败或字段缺失时**整族留空**，总分按 A 层权重重新归一化，
+覆盖率降到 0.60 并如实写进输出。不用中位数填充。
+此时可共振块数只有 1，候选池门槛按可得块数封顶并标记 `relaxed: true`。
+
+诊断命令：
+
+```bash
+python3 scripts/alpha-model/fundamentals.py NVDA CSX
+```
+
+逐字段打印拿到了什么、缺了什么，区分"握手失败"与"字段缺失"两种情况。
 
 **增速的加速度值得单列**。不是看"营收增长 30%"，而是看 12% → 16% → 21% → 28%
 这个二阶差分。增速转向往往先于分析师上调预测，而上调预测又先于估值重估。
@@ -289,6 +350,7 @@ scripts/alpha-model/
     scoring.py      去极值、分位、行业中性、合成、共振
     pipeline.py     横截面主流程
     backtest.py     IC、分组、组合模拟、验收判定
+    fundamentals.py B层取数与派生（quoteSummary + crumb 握手）
     fixtures.py     确定性合成行情（仅供自检）
     report.py       自包含 HTML 报告生成
     build_alpha.py  命令行入口
@@ -330,8 +392,17 @@ scripts/validate_alpha_model.py   离线自检，不联网
 ### 怎么跑
 
 ```bash
-# 生成今日排名 → scripts/alpha-model/output/alpha60.json
+# 生成今日排名（默认联网抓 B 层）→ output/alpha60.json + .html
 python3 scripts/alpha-model/build_alpha.py scan
+
+# 只用 A 层价格因子
+python3 scripts/alpha-model/build_alpha.py scan --no-fundamentals
+
+# 用别家数据源的 B 层：{代码: {子因子: 原始值}}，键名见 config.SUBWEIGHTS 后三族
+python3 scripts/alpha-model/build_alpha.py scan --fundamentals my_data.json
+
+# B 层逐字段诊断
+python3 scripts/alpha-model/fundamentals.py NVDA CSX
 
 # 跑完整验收协议
 python3 scripts/alpha-model/build_alpha.py backtest
@@ -350,13 +421,16 @@ python3 scripts/alpha-model/report.py scripts/alpha-model/output/alpha60.json
 
 ### 自检覆盖什么
 
-40 项断言，四类：
+71 项断言，五类：
 
 1. **数学基本功** —— 分位、去极值、区间收益、回撤、秩相关，对着可手算的答案；
 2. **未来函数守卫** —— 把 `t` 之后的价格 ×7、成交量归零、基准腰斩，
    `t` 时刻的 13 个因子值必须一字不变。这是整套代码最关键的一条断言；
 3. **缺失语义** —— 缺数据必须是 `None`，不能被填成 50 分；
 4. **端到端双向** —— 埋了信号的合成市场必须找得出来，纯噪声市场必须找不出来。
+
+5. **B 层解析器** —— 对着固定样本断言 15 个子因子的每一个算式，
+   含亏损公司修正方向、负市盈率排序、零分母、空响应、部分响应等边界。
 
 第 4 条的后半句比前半句重要，它证明这套代码不会从随机数里造出 alpha。
 实测（100 只标的、1800 个交易日）：

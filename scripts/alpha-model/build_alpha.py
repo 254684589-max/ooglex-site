@@ -44,6 +44,7 @@ from config import (  # noqa: E402
     WEIGHTS_A,
 )
 from factors import forward_excess_return  # noqa: E402
+from fundamentals import load_fundamentals  # noqa: E402
 from pipeline import (  # noqa: E402
     explain,
     rank_cross_section,
@@ -120,7 +121,10 @@ def run_scan(args):
 
     t = len(dates) - 1
     rows, rejected = raw_cross_section(members, series, bench_closes, t)
-    fundamentals = _load_fundamentals(args.fundamentals)
+
+    # B 层：默认联网抓取；给了外部文件则用文件；--no-fundamentals 跳过。
+    # 拿不到就整体缺失，总分按 A 层权重重新归一化——不填中位数。
+    fundamentals, fund_meta = _resolve_fundamentals(args, rows, demo)
     weights = WEIGHTS if fundamentals else WEIGHTS_A
     scored = rank_cross_section(rows, fundamentals=fundamentals, weights=weights)
     candidates, candidate_rule = select_candidates(scored)
@@ -163,7 +167,9 @@ def run_scan(args):
         "blocksScored": ("A层价格因子" if weights is WEIGHTS_A else "A层价格因子 + B层基本面"),
         "note": ("合成数据自检结果，不是市场数据，不得作为研究结论"
                  if demo else
-                 "打分基于日线收盘，非实时；B层基本面缺失时总分按A层权重重新归一化"),
+                 "打分基于日线收盘，非实时；B层为当前财务快照、无PIT历史，"
+                 "仅用于当日打分不参与回测；缺失时总分按A层权重重新归一化"),
+        "fundamentals": fund_meta,
         "universe": {**universe_meta, "requested": len(members),
                      "priced": len(series), "screened": len(scored),
                      "rejected": len(rejected), "fetchFailures": len(failures)},
@@ -184,6 +190,11 @@ def run_scan(args):
           + ("（共振门槛因B层缺失降为"
              f"{candidate_rule['minConfluence']}/{candidate_rule['configuredMinConfluence']}）"
              if candidate_rule["relaxed"] else ""))
+    if fund_meta.get("used"):
+        print(f"B层基本面 {fund_meta.get('fetched', fund_meta.get('count'))} 只可用"
+              f"（当前快照，无PIT历史，不参与回测）")
+    else:
+        print(f"B层未接入：{fund_meta.get('reason', '未知')}；总分按A层权重重新归一化")
     if distribution:
         print(f"总分分布 中位 {distribution['p50']:.1f}  90分位 {distribution['p90']:.1f}  "
               f"99分位 {distribution['p99']:.1f}  ≥80占比 {distribution['shareAbove80']*100:.1f}%")
@@ -324,16 +335,36 @@ def _resolve_universe(args):
     return load_universe(limit=args.limit)
 
 
-def _load_fundamentals(path):
-    """可选的 B 层输入：{代码: {fundamental: 原始值, valuation: …, revision: …}}。
+def _resolve_fundamentals(args, rows, demo):
+    """决定 B 层数据从哪来。返回 (数据或 None, 元数据)。
 
-    刻意做成外部文件而不是内建抓取：能提供 point-in-time 财务与分析师预测的
-    数据源各不相同，模型不应该被绑死在某一家上。文件缺失就只跑 A 层。
+    优先级：--no-fundamentals > --fundamentals 文件 > 联网抓取。
+    外部文件的口子保留，是为了让换用别家数据源（含真正 PIT 的）不必改模型。
+
+    外部文件格式是**子因子级**而不是族级：
+        {"NVDA": {"revenue_growth": 0.62, "earnings_yield": 0.04, ...}, ...}
+    键名见 ``config.SUBWEIGHTS`` 的 fundamental / valuation / revision 三族。
+    这样外部数据和内建取数走同一条归一化流水线，尺度一致。
     """
-    if not path:
-        return None
-    with open(path, encoding="utf-8") as f:
-        return json.load(f)
+    if demo or getattr(args, "no_fundamentals", False):
+        return None, {"used": False,
+                      "reason": "合成数据模式" if demo else "--no-fundamentals 显式跳过"}
+
+    if getattr(args, "fundamentals", None):
+        with open(args.fundamentals, encoding="utf-8") as f:
+            data = json.load(f)
+        return data, {"used": True, "source": os.path.basename(args.fundamentals),
+                      "pointInTime": "未知，取决于外部文件", "count": len(data)}
+
+    symbols = [r["symbol"] for r in rows]
+    print(f"  取 B 层基本面（{len(symbols)} 只）…", file=sys.stderr)
+    session = new_session()
+    data, meta = load_fundamentals(session, symbols)
+    if not data:
+        print(f"  B层跳过：{meta.get('reason') or '全部取数失败'}", file=sys.stderr)
+        return None, {"used": False, **meta, "source": SOURCE_NAME}
+    print(f"  B层取到 {meta['fetched']}/{meta['requested']} 只", file=sys.stderr)
+    return data, {"used": True, "source": SOURCE_NAME, "pointInTime": False, **meta}
 
 
 def _write(payload, out_dir, filename):
@@ -367,7 +398,12 @@ def main(argv=None):
 
     sub.choices["scan"].add_argument("--top", type=int, default=50, help="输出前 N 名")
     sub.choices["scan"].add_argument("--fundamentals", default=None,
-                                     help="B层基本面 JSON，缺省则只跑A层")
+                                     help="外部B层 JSON，形如 {代码: {子因子: 原始值}}，"
+                                          "子因子键名见 config.SUBWEIGHTS 的后三族；"
+                                          "缺省则联网抓取")
+    sub.choices["scan"].add_argument("--no-fundamentals", action="store_true",
+                                     dest="no_fundamentals",
+                                     help="跳过B层，只用A层价格因子打分")
     sub.choices["backtest"].add_argument("--days", type=int, default=None,
                                          help="合成数据天数")
 

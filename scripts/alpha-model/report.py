@@ -477,6 +477,12 @@ def _meta_badges(payload):
     badges.append(f'<span class="{cls}">{esc(text)}</span>')
     if payload.get("blocksScored"):
         badges.append(f'<span class="badge">{esc(payload["blocksScored"])}</span>')
+    fund = payload.get("fundamentals") or {}
+    if fund.get("used"):
+        badges.append(f'<span class="badge ok">✓ B层已接入 '
+                      f'{fund.get("fetched", fund.get("count", "—"))} 只</span>')
+    elif "used" in fund:
+        badges.append('<span class="badge bad">✗ B层未接入</span>')
     return '<div class="badges">' + "".join(badges) + "</div>"
 
 
@@ -523,6 +529,9 @@ def render_scan(payload):
     if uni.get("fetchFailures"):
         body.append(f'<p class="note">本轮有 {uni["fetchFailures"]} 只取数失败'
                     f'（真实退市或代码变更），已从股票池剔除，未用旧值顶替。</p>')
+
+    # ---- B 层状态 ----
+    body.append(_fundamentals_panel(payload.get("fundamentals") or {}))
 
     # ---- 分布 ----
     body.append("<h2>总分分布：为什么 80 分这么难</h2>")
@@ -614,6 +623,51 @@ def _bin_width(dist):
         return "—"
     w = bins[0]["hi"] - bins[0]["lo"]
     return f"{w:g}"
+
+
+def _fundamentals_panel(fund):
+    """B 层数据的来源、覆盖与限制。空着不写，等于让读者以为模型是完整的。"""
+    if not fund:
+        return ""
+    body = ["<h2>B 层基本面数据</h2>"]
+    if fund.get("used"):
+        body.append('<p class="note">基本面、估值、盈利修正三族已接入，'
+                    f'来源 {esc(fund.get("source"))}，'
+                    f'{fund.get("fetched", fund.get("count", "—"))} / '
+                    f'{fund.get("requested", "—")} 只有数据。'
+                    'B 层子因子与 A 层走<strong>完全相同</strong>的归一化流水线'
+                    '（去极值 → 全市场/行业内分位混合），两层分数才在同一尺度上。</p>')
+        coverage = fund.get("fieldCoverage") or {}
+        if coverage:
+            weak = sorted((v, k) for k, v in coverage.items())[:5]
+            rows = "".join(
+                f'<li>{esc(k)}：{v * 100:.0f}% 的标的有数据</li>' for v, k in weak)
+            body.append('<div class="callout"><strong>覆盖率最低的几个字段</strong>'
+                        f"<ul>{rows}</ul>"
+                        "覆盖率低的子因子在缺失的标的上不参与打分，"
+                        "该族权重按剩余项重新归一化。</div>")
+    else:
+        body.append('<p class="note">基本面、估值、盈利修正三族<strong>未接入</strong>：'
+                    f'{esc(fund.get("reason") or "取数失败")}。'
+                    '这三族占设计权重的 40%，缺失时总分只由 A 层价格因子构成，'
+                    '并按 A 层权重重新归一化——不是用中位数补 50 分。'
+                    '此时的高分股本质上是价格因子选出来的，'
+                    '跨块共振检验也无法进行。</p>')
+        body.append('<div class="callout"><strong>怎么把它接上</strong><ul>'
+                    "<li><code>python3 scripts/alpha-model/fundamentals.py NVDA CSX</code>"
+                    "——逐字段诊断，看是握手失败还是字段缺失</li>"
+                    "<li>或用 <code>--fundamentals 你的文件.json</code> 接别家数据源</li>"
+                    "</ul></div>")
+
+    body.append('<div class="callout"><strong>B 层的硬限制</strong>'
+                "<ul><li>它是<strong>当前快照</strong>，没有 point-in-time 历史——"
+                "给不出「2020-03-16 那天市场看到的 TTM 净利润」，"
+                "那天的报表可能后来被重述，分析师预测更是没有留档。</li>"
+                "<li>所以 B 层<strong>只用于今天的横截面打分，不参与回测</strong>。"
+                "用今天的财报回测三年前是未来函数，回测结果必然虚高。</li>"
+                "<li>真正的 PIT 财务要走 SEC EDGAR XBRL（companyfacts 带 filed 日期），"
+                "属于 V2。</li></ul></div>")
+    return "\n".join(body)
 
 
 def _tile(label, value, hint=None):

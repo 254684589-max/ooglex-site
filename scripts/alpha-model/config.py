@@ -54,6 +54,28 @@ SUBWEIGHTS = {
         "near_52w_high": 0.25,
         "volume_confirm_60": 0.15,  # 收益与成交量变化的相关性
     },
+    # ---- 以下三族属 B 层：实时可用，但没有 point-in-time 历史，不进回测 ----
+    "fundamental": {
+        "revenue_growth": 0.20,     # 营收同比
+        "earnings_growth": 0.20,    # 盈利同比
+        "operating_margin": 0.13,
+        "gross_margin": 0.12,
+        "roe": 0.15,
+        "fcf_margin": 0.12,         # 自由现金流 / 营收
+        "low_leverage": 0.08,       # −净负债/EBITDA，取负号使高分=负债轻
+    },
+    "valuation": {
+        "earnings_yield": 0.35,     # 1 / 前瞻市盈率，高=便宜
+        "ev_ebitda_yield": 0.25,    # 1 / EV/EBITDA
+        "fcf_yield": 0.25,          # 自由现金流 / 市值
+        "ev_sales_yield": 0.15,     # 1 / EV/Sales
+    },
+    "revision": {
+        "eps_revision_90d": 0.40,   # 明年EPS一致预期 90 日变化率
+        "revision_breadth": 0.30,   # (上调−下调)/分析师总数
+        "eps_revision_30d": 0.15,   # 30 日变化率，捕捉更新的转向
+        "target_upside": 0.15,      # 目标价相对现价
+    },
 }
 
 # ---------------------------------------------------------------------------
@@ -113,3 +135,11 @@ YF_HEADERS = {
 HTTP_TIMEOUT = 15
 CACHE_TTL_HOURS = 12
 SOURCE_NAME = "Yahoo Finance"
+
+# quoteSummary 需要 cookie + crumb 握手（v8/chart 不需要）。握手失败时 B 层整体缺失，
+# 总分按 A 层权重重新归一化——不用中位数把缺失伪装成中性。
+YF_QUOTE_MODULES = ("financialData", "defaultKeyStatistics",
+                    "summaryDetail", "earningsTrend", "price")
+YF_CRUMB_URL = "https://query2.finance.yahoo.com/v1/test/getcrumb"
+YF_COOKIE_URLS = ("https://fc.yahoo.com", "https://finance.yahoo.com")
+FUNDAMENTAL_CACHE_TTL_HOURS = 20   # 财务是慢变量，一天抓一次足够

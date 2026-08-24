@@ -94,6 +94,12 @@ def rank_cross_section(rows, fundamentals=None, subweights=SUBWEIGHTS, weights=W
         return rows
     sectors = [r["sector"] for r in rows]
 
+    # B 层原始值并入同一份 raw，走**完全相同**的归一化流水线。
+    # 不给它单开一条路径：估值要和动量一样做去极值、一样做行业中性混合，
+    # 否则两层的分数不在同一个尺度上，加权平均就没有意义。
+    for row in rows:
+        row["raw"].update((fundamentals or {}).get(row["symbol"]) or {})
+
     # 每个子因子独立做横截面归一化：去极值 → 全市场/行业内分位混合。
     factor_names = sorted({name for r in rows for name in r["raw"]})
     for name in factor_names:
@@ -101,16 +107,11 @@ def rank_cross_section(rows, fundamentals=None, subweights=SUBWEIGHTS, weights=W
         for row, score in zip(rows, sector_neutral_rank(values, sectors)):
             row.setdefault("ranked", {})[name] = score
 
-    # B 层：同样的归一化流水线，只是原始值来自外部快照。
-    for family in FUNDAMENTAL_FAMILIES:
-        raws = [((fundamentals or {}).get(r["symbol"]) or {}).get(family) for r in rows]
-        scores = sector_neutral_rank(winsorize(raws), sectors)
-        for row, score in zip(rows, scores):
-            row.setdefault("families", {})[family] = score
-
     for row in rows:
+        # B 层缺失时，其子因子根本不在 ranked 里，族覆盖率为 0 → 族分数为 None，
+        # 总分按剩余权重重新归一化。缺失不被填成中位数。
         families, coverage = block_scores(row["ranked"], subweights)
-        row.setdefault("families", {}).update(families)
+        row["families"] = families
         row["blockCoverage"] = coverage
 
         total, total_coverage = alpha_score(row["families"], weights)
@@ -230,6 +231,21 @@ def explain(row, top_k=3):
         "accumulation_60": "吸筹比 上涨日量/下跌日量",
         "near_52w_high": "距52周高点",
         "volume_confirm_60": "量价配合度",
+        "revenue_growth": "营收同比增速",
+        "earnings_growth": "盈利同比增速",
+        "operating_margin": "营业利润率",
+        "gross_margin": "毛利率",
+        "roe": "净资产收益率",
+        "fcf_margin": "自由现金流利润率",
+        "low_leverage": "净负债/EBITDA（轻者优）",
+        "earnings_yield": "盈利收益率（前瞻PE倒数）",
+        "ev_ebitda_yield": "EV/EBITDA倒数",
+        "ev_sales_yield": "EV/Sales倒数",
+        "fcf_yield": "自由现金流收益率",
+        "eps_revision_90d": "EPS预期90日修正",
+        "eps_revision_30d": "EPS预期30日修正",
+        "revision_breadth": "修正广度（上调−下调）",
+        "target_upside": "目标价相对现价",
     }
     present = [(v, k) for k, v in ranked.items() if v is not None]
     present.sort(reverse=True)
