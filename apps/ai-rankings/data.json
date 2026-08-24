@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-08-23T21:30:38Z",
-  "asOf": "2026-08-23",
+  "updatedAt": "2026-08-24T21:38:57Z",
+  "asOf": "2026-08-24",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -67,7 +67,7 @@
       "livebench": 81.6,
       "aa": 58.9,
       "ctx": "400K",
-      "price": 11.25
+      "price": 8.0
     },
     {
       "id": "gpt-5-5",
@@ -184,7 +184,7 @@
       "livebench": 78.6,
       "aa": null,
       "ctx": null,
-      "price": 5.62
+      "price": 4.5
     },
     {
       "id": "gemini-3-1-pro",
@@ -327,7 +327,7 @@
       "livebench": 73.7,
       "aa": null,
       "ctx": null,
-      "price": 2.25
+      "price": 0.45
     },
     {
       "id": "deepseek-v4-pro",
@@ -417,8 +417,8 @@
       "arena": 1443,
       "livebench": 67.5,
       "aa": null,
-      "ctx": null,
-      "price": 1.05
+      "ctx": "524K",
+      "price": 0.52
     },
     {
       "id": "deepseek-v4-flash",
