@@ -11,7 +11,7 @@
 import json
 import os
 import time
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 import requests
 
@@ -20,6 +20,7 @@ from config import CACHE_TTL_HOURS, HTTP_TIMEOUT, YF_HEADERS, YF_HOSTS
 HERE = os.path.dirname(os.path.abspath(__file__))
 CACHE_DIR = os.path.join(HERE, "cache")
 MAX_FORWARD_FILL = 5     # 允许前向填补的最大连续缺口（假期、临时停牌）
+MAX_DAILY_GAP_DAYS = 4   # 日线相邻 bar 的中位间隔上限（跨周末为 3 天）
 
 
 def new_session():
@@ -54,6 +55,44 @@ def _write_cache(symbol, rng, series):
         json.dump({"fetchedAt": time.time(), "symbol": symbol,
                    "range": rng, "series": series}, f)
     os.replace(tmp, path)
+
+
+def infer_interval(dates):
+    """从日期序列反推 bar 的真实粒度，返回 (名称, 中位间隔天数)。
+
+    **这个校验是必须的，不是保险。** Yahoo 在某些 range 下会**静默地**把
+    interval=1d 降级成周线或月线——响应里没有任何字段说明这件事。
+    拿到月线却当日线用，模型不会报错，只会安静地算出一整套废数：
+    「60 个交易日前瞻」变成 60 个月前瞻，「12 个月动量」变成 19 年动量，
+    而所有指标看上去都还是正常数字。这种错最难被发现。
+    """
+    if len(dates) < 3:
+        return "unknown", None
+    days = []
+    for a, b in zip(dates, dates[1:]):
+        try:
+            ya, ma, da = (int(x) for x in a.split("-"))
+            yb, mb, db = (int(x) for x in b.split("-"))
+        except (ValueError, AttributeError):
+            continue
+        days.append((date(yb, mb, db) - date(ya, ma, da)).days)
+    if not days:
+        return "unknown", None
+    days.sort()
+    median = days[len(days) // 2]
+    if median <= MAX_DAILY_GAP_DAYS:
+        name = "1d"
+    elif median <= 10:
+        name = "1wk"
+    elif median <= 45:
+        name = "1mo"
+    else:
+        name = "coarser"
+    return name, median
+
+
+class NotDailyDataError(ValueError):
+    """取回的不是日线。继续算下去会得到一整套看似正常的废数。"""
 
 
 def _parse_chart(payload):
@@ -94,11 +133,20 @@ def _parse_chart(payload):
 
 
 def fetch_history(session, symbol, rng="5y", use_cache=True,
-                  ttl_hours=CACHE_TTL_HOURS):
-    """取单只日线历史；失败返回 None，不返回空序列冒充成功。"""
+                  ttl_hours=CACHE_TTL_HOURS, require_daily=True):
+    """取单只日线历史；失败返回 None，不返回空序列冒充成功。
+
+    ``require_daily`` 为真（默认）时，若 Yahoo 静默降级了粒度则抛
+    ``NotDailyDataError``——宁可整轮失败，也不能用月线冒充日线跑完全程。
+    """
     if use_cache:
         cached = _read_cache(symbol, rng, ttl_hours)
         if cached:
+            interval, gap = infer_interval(cached["dates"])
+            if require_daily and interval != "1d":
+                raise NotDailyDataError(
+                    f"{symbol} 的缓存是 {interval} 数据（中位间隔 {gap} 天），"
+                    f"请删除 {_cache_path(symbol, rng)} 后改用较短区间重取")
             return cached
 
     quoted = requests.utils.quote(symbol)
@@ -111,6 +159,16 @@ def fetch_history(session, symbol, rng="5y", use_cache=True,
                 continue
             series = _parse_chart(response.json())
             if series and len(series["dates"]) > 20:
+                interval, median_gap = infer_interval(series["dates"])
+                if require_daily and interval != "1d":
+                    raise NotDailyDataError(
+                        f"{symbol} 在 range={rng} 下返回的是 {interval} 数据"
+                        f"（相邻 bar 中位间隔 {median_gap} 天，日线应 ≤ "
+                        f"{MAX_DAILY_GAP_DAYS} 天）。Yahoo 会静默降级粒度，"
+                        f"把它当日线用会算出一整套看似正常的废数。请改用较短区间"
+                        f"（如 --range 10y）。")
+                series["interval"] = interval
+                series["medianGapDays"] = median_gap
                 if use_cache:
                     _write_cache(symbol, rng, series)
                 return series

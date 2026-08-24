@@ -547,7 +547,12 @@ def _meta_badges(payload):
     else:
         badges.append(f'<span class="badge">数据源 {esc(payload.get("source"))}</span>')
     badges.append(f'<span class="badge">数据日期 {esc(payload.get("asOf"))}</span>')
-    badges.append('<span class="badge">日频收盘 · 非实时</span>')
+    interval = payload.get("barInterval") or (payload.get("window") or {}).get("barInterval")
+    if interval and interval != "1d":
+        badges.append(f'<span class="badge bad">⚠ 行情粒度 {esc(interval)}，'
+                      f'不是日线——结果无效</span>')
+    else:
+        badges.append('<span class="badge">日频收盘 · 非实时</span>')
     status = payload.get("status")
     cls = {"ok": "badge ok", "partial": "badge", "stale": "badge bad", "error": "badge bad"}.get(status, "badge")
     text = {"ok": "✓ 数据完整", "partial": "◐ 部分缺失", "stale": "✗ 数据过期", "error": "✗ 失败"}.get(status, status)
@@ -833,6 +838,10 @@ def render_backtest(payload):
         badges.append('<span class="badge demo">零信号对照组</span>')
     badges.append(f'<span class="badge">前瞻 {payload.get("horizonDays")} 个交易日</span>')
     badges.append(f'<span class="badge">基准 {esc(payload.get("benchmark"))}</span>')
+    win_interval = (payload.get("window") or {}).get("barInterval")
+    if win_interval and win_interval != "1d":
+        badges.append(f'<span class="badge bad">⚠ 粒度 {esc(win_interval)} 非日线，'
+                      f'本页全部数字无效</span>')
     badges.append('<span class="badge">仅 A 层价格因子</span>')
     badges.append(f'<span class="badge {"ok" if passed else "bad"}">'
                   f'{"✓ 验收通过" if passed else "✗ 验收未通过"}</span>')

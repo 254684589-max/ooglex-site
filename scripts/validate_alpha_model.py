@@ -25,6 +25,7 @@ from build_alpha import REBALANCE_SPACING  # noqa: E402
 from config import HORIZON_DAYS, MIN_HISTORY_DAYS, WEIGHTS_A  # noqa: E402
 from fixtures import synthetic_market  # noqa: E402
 from pipeline import raw_cross_section, rank_cross_section, screen, select_candidates  # noqa: E402
+from prices import infer_interval  # noqa: E402
 
 FAILURES = []
 
@@ -413,6 +414,37 @@ def test_b_layer_pipeline():
     check("不给B层时总分仍算得出（按A层重新归一化）", top2["alpha"] is not None)
 
 
+
+# ---------------------------------------------------------------------------
+def test_interval_guard():
+    section("12. 行情粒度校验（Yahoo 会静默降级）")
+    from datetime import date as _date, timedelta as _td
+
+    def gen(n, step, skip_weekend=False, start=_date(2020, 1, 1)):
+        out, d = [], start
+        while len(out) < n:
+            if not skip_weekend or d.weekday() < 5:
+                out.append(d.isoformat())
+            d += _td(days=step)
+        return out
+
+    check("日线（跳周末）识别为 1d", infer_interval(gen(300, 1, True))[0] == "1d")
+    check("连续日线识别为 1d", infer_interval(gen(300, 1))[0] == "1d")
+    check("周线识别为 1wk", infer_interval(gen(120, 7))[0] == "1wk")
+    check("月线识别为 1mo", infer_interval(gen(120, 30))[0] == "1mo")
+    check("季线识别为 coarser", infer_interval(gen(60, 91))[0] == "coarser")
+    check("样本过少返回 unknown", infer_interval(["2020-01-01"])[0] == "unknown")
+    check("脏日期不炸", infer_interval(["x", "y", "z"])[0] == "unknown")
+
+    # 复现真实事故：range=max 下 Yahoo 返回 SPY 上市至今的月线，
+    # 403 个月被当成 403 个交易日，60日前瞻变成 60 个月前瞻。
+    monthly = gen(404, 30, start=_date(1993, 2, 1))
+    interval, gap = infer_interval(monthly)
+    check("复现 404 个月线 bar 被识破", interval == "1mo" and gap >= 28,
+          f"{interval}/{gap}")
+    check("月线中位间隔远超日线上限", gap > 4)
+
+
 def main():
     print("Ooglex Alpha 60 V1 · 离线自检（不联网）")
     test_math()
@@ -426,6 +458,7 @@ def main():
     test_candidate_rule()
     test_fundamental_parser()
     test_b_layer_pipeline()
+    test_interval_guard()
 
     print()
     if FAILURES:

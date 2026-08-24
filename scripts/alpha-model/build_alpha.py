@@ -55,7 +55,13 @@ from pipeline import (  # noqa: E402
     score_distribution,
     select_candidates,
 )
-from prices import align_to_calendar, fetch_history, new_session  # noqa: E402
+from prices import (  # noqa: E402
+    NotDailyDataError,
+    align_to_calendar,
+    fetch_history,
+    infer_interval,
+    new_session,
+)
 from report import write_report  # noqa: E402
 from universe import load_symbols_file, load_universe  # noqa: E402
 
@@ -72,23 +78,39 @@ def _now():
 # --------------------------------------------------------------------------
 # 数据装载
 # --------------------------------------------------------------------------
-def load_live(members, rng, verbose=True):
+def load_live(members, rng, verbose=True):  # noqa: C901
     """抓取基准与全部成分股，对齐到基准的交易日历。
 
     基准（SPY）的交易日就是主日历：它每个交易日都有成交，用它当标尺
     可以让个股的停牌与缺失暴露成显式缺口，而不是被悄悄压缩掉。
     """
     session = new_session()
-    bench_series = fetch_history(session, BENCHMARK, rng=rng)
+    try:
+        bench_series = fetch_history(session, BENCHMARK, rng=rng)
+    except NotDailyDataError as error:
+        raise SystemExit(
+            f"\n粒度校验未通过：{error}\n\n"
+            "为什么这条会直接终止：模型全部因子都按「一个 bar = 一个交易日」定义。\n"
+            "拿到月线却继续跑，不会报错，只会算出一整套看上去正常的废数——\n"
+            "60个交易日前瞻会变成60个月前瞻，12个月动量会变成19年动量。\n"
+            "建议改用 --range 10y。")
     if not bench_series:
         raise SystemExit(f"基准 {BENCHMARK} 行情获取失败，终止；不用残缺日历打分")
 
     dates = bench_series["dates"]
     bench_closes = bench_series["closes"]
+    interval, gap = infer_interval(dates)
+    if verbose:
+        print(f"  基准日历 {len(dates)} 个 bar，粒度 {interval}"
+              f"（中位间隔 {gap} 天），{dates[0]} → {dates[-1]}", file=sys.stderr)
 
-    series, failures = {}, []
+    series, failures, wrong_interval = {}, [], []
     for i, member in enumerate(members, start=1):
-        raw = fetch_history(session, member["symbol"], rng=rng)
+        try:
+            raw = fetch_history(session, member["symbol"], rng=rng)
+        except NotDailyDataError:
+            wrong_interval.append(member["symbol"])   # 粒度不符，整只弃用
+            continue
         if not raw:
             failures.append(member["symbol"])
             continue
@@ -100,7 +122,10 @@ def load_live(members, rng, verbose=True):
     if verbose and failures:
         print(f"  {len(failures)} 只取数失败：{', '.join(failures[:12])}"
               f"{' …' if len(failures) > 12 else ''}", file=sys.stderr)
-    return series, bench_closes, dates, failures
+    if verbose and wrong_interval:
+        print(f"  {len(wrong_interval)} 只粒度不是日线，已弃用："
+              f"{', '.join(wrong_interval[:8])}", file=sys.stderr)
+    return series, bench_closes, dates, failures + wrong_interval
 
 
 def load_offline(null=False, n_stocks=120, n_days=900, signal=0.0016):
@@ -164,6 +189,7 @@ def run_scan(args):
         "objective": f"未来{HORIZON_DAYS}个交易日相对{BENCHMARK}的超额收益排序",
         "source": "合成数据（仅供自检）" if demo else SOURCE_NAME,
         "asOf": dates[t],
+        "barInterval": _calendar_interval(dates)[0],
         "updatedAt": _now(),
         "frequency": "daily",
         "status": "ok" if demo else status,
@@ -299,7 +325,9 @@ def run_backtest(args):
         "factorsUsed": list(WEIGHTS_A),
         "updatedAt": _now(),
         "window": {"from": dates[MIN_HISTORY_DAYS], "to": dates[len(dates) - 1],
-                   "tradingDays": len(dates)},
+                   "tradingDays": len(dates),
+                   "barInterval": _calendar_interval(dates)[0],
+                   "medianGapDays": _calendar_interval(dates)[1]},
         "rankIC": ic,
         "factorIC": factor_ic,
         "familyIC": family_ic,
@@ -325,6 +353,12 @@ def run_backtest(args):
     _print_backtest(payload, out)
     print(f"\n报告页 {page}   ← 双击用浏览器打开")
     return payload
+
+
+def _calendar_interval(dates):
+    """主日历的真实粒度。写进输出，让读者能一眼确认这是日线而不是被降级的月线。"""
+    from prices import infer_interval as _infer
+    return _infer(dates)
 
 
 def _score_at(members, series, bench_closes, t):
@@ -443,7 +477,9 @@ def main(argv=None):
                        help="合成数据的每日漂移幅度；越大信噪比越高")
         p.add_argument("--limit", type=int, default=None, help="股票池上限")
         p.add_argument("--symbols", default=None, help="自定义股票池文件")
-        p.add_argument("--range", default="5y", help="行情区间，如 5y / 10y / max")
+        p.add_argument("--range", default="5y",
+                       help="行情区间，如 5y / 10y。不要用 max——Yahoo 在超长区间下"
+                            "会静默把日线降级成月线，程序会因粒度校验直接终止")
         p.add_argument("--out", default=None, help="输出目录")
         p.set_defaults(func=handler)
 
