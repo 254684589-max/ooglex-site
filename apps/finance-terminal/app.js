@@ -2298,6 +2298,18 @@
   var lastRendered = null;
   bindRadarDetail(null);
   /* 收益率曲线抽屉按需加载；入口在首屏即绑定，不依赖任何延迟分区。 */
+  /* 相关性矩阵按需加载：只有真的去点才下载这段代码与那份滚动历史。
+     入口在首屏就绑好，不等研究区渲染完——窄屏下研究区可能一直没加载。 */
+  (function bindCorrelation() {
+    var trigger = document.getElementById("correlation-entry");
+    if (!trigger) return;
+    trigger.addEventListener("click", function () {
+      import("./finance-terminal-correlation-view.mjs").then(function (mod) {
+        mod.openCorrelation(document);
+      }).catch(function () {});
+    });
+  }());
+
   (function bindYieldCurve() {
     /* 两个入口：总览的遥测卡与「市场状态」页标题栏。后者才是访客找它的地方——
        曲线属于市场状态，不属于首页概览。 */

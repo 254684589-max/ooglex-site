@@ -14,6 +14,8 @@ import { seriesPath, matchedKeyword }
 import { AXIS_LABELS, riskReading, pairAxes }
   from "../apps/finance-terminal/finance-terminal-radar-view.mjs";
 import { RADAR_SIGNAL_KEYS } from "../apps/finance-terminal/finance-terminal-risk-radar.mjs";
+import { logReturns, sessionAligned, pearson, buildMatrix, MIN_OVERLAP }
+  from "../apps/finance-terminal/finance-terminal-correlation-view.mjs";
 import { tenorX, valueY, curveSegments, describeShape }
   from "../apps/finance-terminal/finance-terminal-curve-view.mjs";
 
@@ -285,6 +287,75 @@ assert.equal(matchedKeyword("SPY 创新高", []), null, "无关键词时不得�
     "读数不足，不判断形态", "缺读数的档位不得计入形态判断");
 }
 
+/* 相关性矩阵的三条口径必须钉住：用收益率不用价位、错位日历整列剔除、
+   重叠样本不足不给数。任何一条松掉，页面就会显示看起来专业却是错的系数。 */
+{
+  assert.deepEqual(logReturns([]).length, 0);
+  assert.equal(logReturns([100, 110])[0], null, "第一个交易日没有前一日，收益率必须留空");
+  assert.ok(Math.abs(logReturns([100, 110])[1] - Math.log(1.1)) < 1e-12);
+  assert.equal(logReturns([100, null, 110])[2], null, "缺报价处不得跨日拼出收益率");
+  assert.equal(logReturns([100, null, 110])[1], null);
+  assert.equal(logReturns([0, 10])[1], null, "非正价位不得进入对数收益率");
+
+  const weekdays = ["2026-08-17", "2026-08-18", "2026-08-19"];
+  const withWeekend = ["2026-08-16", "2026-08-17", "2026-08-18"];
+  assert.equal(sessionAligned(weekdays, [1, 2, 3]), true);
+  assert.equal(sessionAligned(withWeekend, [1, 2, 3]), false, "周日出现观测即判定日历错位");
+  assert.equal(sessionAligned(withWeekend, [null, 2, 3]), true, "周末留空不算错位");
+
+  /* 完全同向与完全反向的两条序列，系数必须是 ±1；样本不足则一律不给数。 */
+  const up = [];
+  const down = [];
+  for (let index = 0; index < MIN_OVERLAP + 5; index += 1) {
+    up.push((index % 7) - 3);
+    down.push(3 - (index % 7));
+  }
+  assert.ok(Math.abs(pearson(up, up).value - 1) < 1e-12);
+  assert.ok(Math.abs(pearson(up, down).value + 1) < 1e-12);
+  assert.equal(pearson(up.slice(0, MIN_OVERLAP - 1), down.slice(0, MIN_OVERLAP - 1)).value, null,
+    `重叠样本少于 ${MIN_OVERLAP} 天必须留空，不得给出不稳定的系数`);
+  assert.equal(pearson(up, up.map(() => 5)).value, null, "常数序列没有相关性可言，不得返回数字");
+
+  const dates = [];
+  const rising = [];
+  const falling = [];
+  const misaligned = [];
+  let cursor = Date.UTC(2026, 0, 5);
+  while (dates.length < MIN_OVERLAP + 6) {
+    const day = new Date(cursor);
+    if (day.getUTCDay() !== 0 && day.getUTCDay() !== 6) {
+      dates.push(day.toISOString().slice(0, 10));
+      /* 两条价位路径的对数收益率互为相反数，相关系数因此正好是 −1。
+         直接用镜像价位是不行的：log 是非线性的，镜像价位并不给出镜像收益率。 */
+      const step = ((dates.length % 5) - 2) / 100;
+      const previousUp = rising.length ? rising[rising.length - 1] : 100;
+      const previousDown = falling.length ? falling[falling.length - 1] : 300;
+      rising.push(rising.length ? previousUp * Math.exp(step) : previousUp);
+      falling.push(falling.length ? previousDown * Math.exp(-step) : previousDown);
+      misaligned.push(50 + dates.length);
+    }
+    cursor += 86400000;
+  }
+  /* 把一个周末观测塞进第三条序列：它必须整列出局，另外两条照常入表。 */
+  dates.push("2026-04-05");
+  rising.push(null);
+  falling.push(null);
+  misaligned.push(77);
+  const matrix = buildMatrix(
+    { dates, series: { RISE: rising, FALL: falling, SKEW: misaligned } },
+    [{ symbol: "RISE", name: "上行", category: "equity" },
+      { symbol: "FALL", name: "下行", category: "equity" },
+      { symbol: "SKEW", name: "错位", category: "fx" }]
+  );
+  assert.deepEqual(matrix.symbols, ["FALL", "RISE"], "日历错位的标的不得进入矩阵");
+  assert.equal(matrix.excluded.length, 1);
+  assert.equal(matrix.excluded[0].symbol, "SKEW");
+  assert.equal(matrix.excluded[0].weekend, 1, "被剔除的标的必须如实记录周末观测数");
+  assert.equal(matrix.cells.length, 1, "两个标的只应产生一组配对，不重复计对角线两侧");
+  assert.ok(Math.abs(matrix.cells[0].value + 1) < 1e-12, "构造的完全反向序列必须给出 −1");
+  assert.ok(matrix.cells[0].n >= MIN_OVERLAP);
+}
+
 console.log("Finance Terminal visual data contracts: PASS");
 console.log("- seven-region daily return pressure proxy / error isolation: PASS");
 console.log("- dynamic 5/7 to 7/7 minimum-cycle continuity / stale evidence preservation: PASS");
@@ -296,3 +367,4 @@ console.log("- detail drawer series geometry / literal keyword-hit labelling: PA
 console.log("- radar six axes read real regime signals / direction / gap isolation: PASS");
 console.log("- heatmap paints only regions with a representative index: PASS");
 console.log("- yield curve breaks at missing tenors / log tenor axis / honest shape call: PASS");
+console.log("- correlation on log returns / misaligned-calendar exclusion / thin-overlap blanking: PASS");

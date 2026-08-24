@@ -54,6 +54,7 @@ INFORMATION_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal
 OPERATIONS_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-operations-view.mjs"
 OPERATIONS_DATA_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-operations-data.mjs"
 INFORMATION_DATA_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-information-data.mjs"
+CORRELATION_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-correlation-view.mjs"
 TERMS_PAGE = ROOT / "apps" / "finance-terminal" / "terms.html"
 PRIVACY_PAGE = ROOT / "apps" / "finance-terminal" / "privacy.html"
 LEGAL_CSS = ROOT / "apps" / "finance-terminal" / "legal.css"
@@ -2666,6 +2667,8 @@ def main() -> None:
     require(DETAIL_VIEW_MODULE.stat().st_size <= 13_000, "金融终端资产详情抽屉模块超过13KB性能预算")
     require(RADAR_VIEW_MODULE.stat().st_size <= 6_000, "金融终端雷达构成抽屉模块超过6KB性能预算")
     require(CURVE_VIEW_MODULE.stat().st_size <= 9_000, "金融终端收益率曲线抽屉模块超过9KB性能预算")
+    require(CORRELATION_VIEW_MODULE.stat().st_size <= 15_000,
+            "金融终端相关性矩阵抽屉模块超过15KB性能预算")
     require(GLOBE_MODULE.stat().st_size <= 8_000, "金融终端地球动画模块超过8KB性能预算")
     require(VISION_CSS.stat().st_size <= 28_000, "金融终端科幻视觉样式超过28KB性能预算")
     # 20,000 是在分区内容还没被发现遭裁切时定的。补上「分区内那一层也要能缩」与
@@ -2796,6 +2799,27 @@ def main() -> None:
             and "掠过" in loader,
             "延迟分区必须区分「滚过」与「看过」：分区导航是一次上万像素的平滑滚动，"
             "掠过即加载会把整页请求一并拉起，延迟加载形同虚设")
+    correlation_view_module = CORRELATION_VIEW_MODULE.read_text(encoding="utf-8")
+    require("innerHTML" not in correlation_view_module
+            and 'import("./finance-terminal-correlation-view.mjs")' in app
+            and "finance-terminal-correlation-view.mjs" not in page
+            and "openCorrelation" in correlation_view_module
+            and "buildMatrix" in correlation_view_module
+            and 'from "./finance-terminal-detail-view.mjs"' in correlation_view_module
+            and "aria-modal" not in correlation_view_module
+            and 'id="correlation-entry"' in page,
+            "相关性矩阵抽屉必须按需导入、不进首屏，且不得另建对话框语义")
+    # 三条口径必须留在代码里：用收益率不用价位、日历错位整列剔除、重叠不足不给数。
+    require("logReturns" in correlation_view_module
+            and "价位序列本身带趋势" in correlation_view_module
+            and "sessionAligned" in correlation_view_module
+            and "交易日历对不齐的标的整个不进矩阵" in correlation_view_module
+            and "MIN_OVERLAP" in correlation_view_module
+            and "不是对后市的预测" in correlation_view_module,
+            "相关性矩阵必须用日对数收益率、剔除日历错位标的、重叠不足时留空，"
+            "并声明其为历史统计而非预测")
+    require("../asset-tracker/history.json" in correlation_view_module,
+            "相关性矩阵必须读取站内已发布的滚动历史，不得另立数据源")
     require("openPanel" in detail_view_module and "isPanelOpen" in detail_view_module
             and "aria-modal" in detail_view_module
             and "aria-modal" not in radar_view_module,
