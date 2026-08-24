@@ -186,7 +186,18 @@ def score_distribution(rows):
     if not values:
         return None
     from factors import mean as _mean
+
+    # 直方图分箱：报告页画分布用。2.5 分一箱共 40 箱——箱宽再粗，
+    # 柱子就会超过 24px 的marks上限而读成“大色块”；再细则单箱样本太少。
+    bins = []
+    for step in range(40):
+        lo = step * 2.5
+        hi = lo + 2.5
+        count = sum(1 for v in values if lo <= v < hi or (step == 39 and v == 100))
+        bins.append({"lo": lo, "hi": hi, "count": count})
+
     return {
+        "histogram": bins,
         "count": len(values),
         "mean": _mean(values),
         "std": stdev(values),

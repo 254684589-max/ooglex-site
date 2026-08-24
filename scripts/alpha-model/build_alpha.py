@@ -52,6 +52,7 @@ from pipeline import (  # noqa: E402
     select_candidates,
 )
 from prices import align_to_calendar, fetch_history, new_session  # noqa: E402
+from report import write_report  # noqa: E402
 from universe import load_symbols_file, load_universe  # noqa: E402
 
 DEFAULT_OUT = os.path.join(HERE, "output")
@@ -176,7 +177,9 @@ def run_scan(args):
     }
 
     out = _write(payload, args.out, "alpha60.json")
+    page = write_report(payload, out[:-5] + ".html", "scan")
     print(f"已写入 {out}")
+    print(f"报告页 {page}   ← 双击用浏览器打开")
     print(f"股票池 {len(members)} → 通过过滤 {len(scored)} → 候选池 {len(candidates)}"
           + ("（共振门槛因B层缺失降为"
              f"{candidate_rule['minConfluence']}/{candidate_rule['configuredMinConfluence']}）"
@@ -271,7 +274,9 @@ def run_backtest(args):
     }
 
     out = _write(payload, args.out, "alpha60_backtest.json")
+    page = write_report(payload, out[:-5] + ".html", "backtest")
     _print_backtest(payload, out)
+    print(f"\n报告页 {page}   ← 双击用浏览器打开")
     return payload
 
 
