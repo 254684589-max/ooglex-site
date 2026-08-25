@@ -17,10 +17,12 @@ import {
   tenorChangeBp
 } from "../apps/finance-terminal/finance-terminal-board-data.mjs";
 import {
+  distribution,
   matchesQuery,
   rangeChange,
   selectRows,
-  sliceSeries
+  sliceSeries,
+  sparkDirection
 } from "../apps/finance-terminal/finance-terminal-board-view.mjs";
 import {
   createWatchlistStore,
@@ -285,6 +287,37 @@ function validateStaleAndMissing(group) {
   assert.equal(withoutChange.down, 0, "缺涨跌的行不得被计入任何一边");
 }
 
+/* 迷你走势与脉冲条只是同一批数据的另一种呈现：方向按窗口自己的首尾算，
+   缺观测既不当成持平也不借用当日涨跌；分布计数与摘要口径必须对得上。 */
+function validateSparkAndPulse(board) {
+  assert.equal(sparkDirection([1, 2, 3]), "up");
+  assert.equal(sparkDirection([3, 2, 1]), "down");
+  assert.equal(sparkDirection([2, 5, 2]), "flat", "首尾相等即为持平，中途高点不改变方向");
+  assert.equal(sparkDirection([1]), "unknown", "只有一个观测不足以判定方向");
+  assert.equal(sparkDirection([]), "unknown");
+  assert.equal(sparkDirection([Number.NaN, 2]), "unknown");
+
+  const window = sliceSeries(["2026-01-02", "2026-01-05", "2026-01-06"], [10, null, 12], 60);
+  assert.deepEqual(window.values, [10, 12], "缺观测的日子不得被前向填充进迷你走势");
+  assert.equal(sparkDirection(window.values), "up");
+
+  const counts = distribution([
+    { change: { direction: "up" } },
+    { change: { direction: "down" } },
+    { change: { direction: "flat" } },
+    { change: { direction: "unknown" } },
+    {}
+  ]);
+  assert.deepEqual(counts, { up: 1, down: 1, flat: 1, unknown: 2, total: 5 },
+    "缺涨跌的行必须计入 unknown，不得算作持平");
+
+  const commodity = categoryOf(board, "commodity");
+  const live = distribution(commodity.rows);
+  assert.equal(live.total, commodity.rows.length);
+  assert.equal(live.up, commodity.summary.up, "脉冲条的上涨计数必须与该品类摘要一致");
+  assert.equal(live.down, commodity.summary.down, "脉冲条的下跌计数必须与该品类摘要一致");
+}
+
 async function main() {
   const group = await loadGroup();
   const board = buildBoard(group);
@@ -295,6 +328,7 @@ async function main() {
   validateProvenance(board, group);
   validateCryptoFallback(group);
   validateSearchAndWatchlist(board);
+  validateSparkAndPulse(board);
   await validateFailureIsolation(group);
   validateStaleAndMissing(group);
   const counts = board.categories.map((category) => `${category.label}${category.rows.length}`).join(" · ");
@@ -304,6 +338,7 @@ async function main() {
   console.log("- listed-only stocks / no proprietary DXY level / reproducible bp change: PASS");
   console.log("- single-pipeline failure isolation / stale propagation / no forward fill: PASS");
   console.log("- literal name/symbol search / starred-first ordering / sanitised watchlist keys: PASS");
+  console.log("- per-row sparkline window / direction / pulse distribution vs summary: PASS");
 }
 
 main().catch((error) => {

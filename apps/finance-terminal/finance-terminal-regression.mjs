@@ -54,6 +54,7 @@ export function runBrowserRegressionProbe(options = {}) {
   const boardRows = Array.from(document.querySelectorAll("#board-panel .board-row:not(.board-row-head)"));
   const boardToggle = document.querySelector("#board-panel .board-toggle");
   const boardSearch = document.getElementById("board-search");
+  const boardPulse = document.getElementById("board-pulse");
   /* 折叠壳的默认状态要在量尺寸之前记下来：窄屏默认收起，桌面各自成页保持展开。
      记完立即展开，后面的列数与裁切测量才和改造前一致。 */
   const sectionFolds = Array.from(document.querySelectorAll("details.section-fold"));
@@ -303,8 +304,11 @@ export function runBrowserRegressionProbe(options = {}) {
       && boardRows.every((row) => {
         const price = row.querySelector(".board-cell-price");
         const change = row.querySelector(".board-cell-change");
-        return price && price.textContent.trim() && change && change.textContent.trim();
+        return price && price.textContent.trim() && change && change.textContent.trim()
+          && row.querySelector(".board-cell-spark");
       })
+      && Boolean(boardPulse) && boardPulse.hidden === false
+      && Boolean(boardPulse.querySelector(".board-pulse-bar"))
       && (!boardToggle || boardToggle.getAttribute("aria-expanded") === "false")
       && Boolean(boardSearch) && boardSearch.type === "search"
       && boardWatchButtons.length === boardRows.length
@@ -364,6 +368,9 @@ export function runBrowserRegressionProbe(options = {}) {
       rows: boardRows.length,
       collapsed: Boolean(boardToggle),
       search: Boolean(boardSearch),
+      pulse: Boolean(boardPulse) && boardPulse.hidden === false,
+      sparkCells: document.querySelectorAll("#board-panel .board-cell-spark").length,
+      sparkCharts: document.querySelectorAll("#board-panel .board-spark").length,
       watchToggles: boardWatchButtons.length
     },
     layout: {

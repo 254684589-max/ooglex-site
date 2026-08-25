@@ -216,12 +216,16 @@
 
   body[data-terminal-view="overview"] #board-panel .board-open,
   body[data-terminal-view="overview"] #board-panel .board-head-cells {
-    grid-template-columns: minmax(0, 1fr) 110px 110px 120px;
+    grid-template-columns: minmax(0, 1fr) 62px 110px 110px 120px;
     gap: 8px;
     min-height: 34px;
     padding: 4px 10px;
     font-size: 11px;
   }
+  body[data-terminal-view="overview"] .board-pulse-bar { width: 54px; height: 4px; }
+  body[data-terminal-view="overview"] .board-pulse-text { font-size: 8px; }
+  body[data-terminal-view="overview"] #board-panel .board-cell-spark,
+  body[data-terminal-view="overview"] #board-panel .board-spark { height: 18px; }
   body[data-terminal-view="overview"] #board-panel .board-cell-price { font-size: 12px; }
   body[data-terminal-view="overview"] #board-panel .board-cell-change { font-size: 11px; }
   body[data-terminal-view="overview"] #board-panel .watch-toggle { min-width: 34px; min-height: 34px; }

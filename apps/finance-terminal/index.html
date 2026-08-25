@@ -1126,14 +1126,39 @@
     }
     .board-tab b { font-weight: 600; }
     .board-tab i { color: var(--faint); font-family: var(--mono); font-size: 10px; font-style: normal; }
-    .board-tab:hover { border-color: var(--cyan); color: var(--ink); }
-    .board-tab[aria-selected="true"] { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-soft); }
+    /* 六个品类各带一条强调色：标签上的圆点、选中态、面板描边与脉冲条都跟着它走，
+       「现在看的是哪一类」不用靠记忆。颜色只做品类标识，涨跌另有箭头与文字，不靠颜色编码。 */
+    .board-tab[data-category="commodity"], [data-board-category="commodity"] { --accent: #f2bd5c; --accent-soft: rgba(242, 189, 92, 0.12); }
+    .board-tab[data-category="index"], [data-board-category="index"] { --accent: #54d8ff; --accent-soft: rgba(84, 216, 255, 0.12); }
+    .board-tab[data-category="stock"], [data-board-category="stock"] { --accent: #a78bfa; --accent-soft: rgba(167, 139, 250, 0.13); }
+    .board-tab[data-category="fx"], [data-board-category="fx"] { --accent: #4fd1c5; --accent-soft: rgba(79, 209, 197, 0.12); }
+    .board-tab[data-category="crypto"], [data-board-category="crypto"] { --accent: #ff9f45; --accent-soft: rgba(255, 159, 69, 0.12); }
+    .board-tab[data-category="bond"], [data-board-category="bond"] { --accent: #7aa2ff; --accent-soft: rgba(122, 162, 255, 0.13); }
+    .board-tab::before {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent, var(--cyan));
+      box-shadow: 0 0 7px var(--accent, var(--cyan));
+      content: "";
+      opacity: 0.75;
+    }
+    .board-tab:hover { border-color: var(--accent, var(--cyan)); color: var(--ink); }
+    .board-tab[aria-selected="true"] {
+      border-color: var(--accent, var(--cyan));
+      color: var(--accent, var(--cyan));
+      background: var(--accent-soft, var(--cyan-soft));
+    }
+    .board-tab[aria-selected="true"]::before { opacity: 1; }
     .board-tab:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
     .board-panel {
       margin-top: 12px;
       overflow: hidden;
       border: 1px solid var(--line);
+      border-top: 2px solid var(--accent, var(--cyan));
       border-radius: 4px;
+      background:
+        linear-gradient(180deg, var(--accent-soft, var(--cyan-soft)), transparent 96px);
     }
     .board-row {
       display: grid;
@@ -1148,11 +1173,11 @@
       font-size: 13px;
     }
     .board-row:last-child { border-bottom: 0; }
-    .board-row:hover { background: rgba(84, 216, 255, 0.06); }
+    .board-row:hover { background: var(--accent-soft, var(--cyan-soft)); }
     .board-open,
     .board-head-cells {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 116px 116px 128px;
+      grid-template-columns: minmax(0, 1fr) 76px 116px 116px 128px;
       align-items: center;
       gap: 10px;
       width: 100%;
@@ -1191,8 +1216,53 @@
     }
     .board-arrow { font-size: 10px; font-style: normal; }
     .board-cell-extra { color: var(--muted); font-family: var(--mono); font-size: 11px; text-align: right; }
+    .board-cell-spark {
+      display: flex;
+      overflow: hidden;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      height: 22px;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 10px;
+    }
+    .board-spark { width: 100%; height: 22px; }
+    .board-spark-line {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+      filter: drop-shadow(0 0 3px currentColor);
+    }
+    .board-spark-area { fill: currentColor; opacity: 0.13; stroke: none; }
+    .board-spark-up { color: var(--up); }
+    .board-spark-down { color: var(--down); }
+    .board-spark-flat, .board-spark-unknown { color: var(--faint); }
+    .board-spark-empty { color: var(--faint); font-size: 9px; font-style: normal; }
+    .board-pulse { display: inline-flex; align-items: center; gap: 8px; }
+    .board-pulse-bar {
+      display: flex;
+      overflow: hidden;
+      width: 84px;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(151, 169, 196, 0.16);
+    }
+    .board-pulse-seg { height: 100%; }
+    .board-pulse-up { background: var(--up); }
+    .board-pulse-down { background: var(--down); }
+    .board-pulse-flat, .board-pulse-unknown { background: var(--faint); }
+    .board-pulse-text { color: var(--muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; }
+    /* 涨跌用底色块托一下，长列表里更容易一眼扫到；方向仍由箭头与正负号决定，
+       颜色只是加强，不是唯一编码。 */
+    .board-cell-change b { padding: 2px 6px; border-radius: 3px; }
     .board-change-up .board-cell-change { color: var(--up); }
+    .board-change-up .board-cell-change b { background: var(--up-soft); }
     .board-change-down .board-cell-change { color: var(--down); }
+    .board-change-down .board-cell-change b { background: var(--down-soft); }
     .board-change-flat .board-cell-change,
     .board-change-unknown .board-cell-change { color: var(--faint); }
     .board-toggle {
@@ -1267,7 +1337,7 @@
       .research-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .information-grid { grid-template-columns: 1fr; }
       .operations-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .board-open, .board-head-cells { grid-template-columns: minmax(0, 1fr) 104px 104px 108px; }
+      .board-open, .board-head-cells { grid-template-columns: minmax(0, 1fr) 68px 104px 104px 108px; }
       .leader-columns { grid-template-columns: 1fr; }
       .event-row { grid-template-columns: 54px 92px minmax(0, 1fr); }
       .event-values { grid-column: 3; justify-content: start; }
@@ -1302,7 +1372,9 @@
         gap: 8px;
         padding: 8px 6px;
       }
-      .board-cell-extra { display: none; }
+      /* 窄屏优先保证名称、价格与涨跌不被挤扁：口径列与迷你走势在这里让位，
+         两者在展开的走势抽屉里都有完整版本。 */
+      .board-cell-extra, .board-cell-spark { display: none; }
       .board-tab { flex: 1 1 auto; justify-content: center; }
       .operations-actions { justify-content: flex-start; }
       .operation-action { min-width: 44px; min-height: 44px; }
@@ -1580,8 +1652,9 @@
         <div class="board-heading">
           <h2 class="board-title" id="board-heading-title">品类行情</h2>
           <span class="board-subtitle" id="board-summary">LOADING CATEGORIES</span>
+          <span class="board-pulse" id="board-pulse" hidden></span>
         </div>
-        <p class="board-note" id="board-intro">六大品类全部读取站内已在日更的公开管道：商品、指数、外汇与中国国债来自跨资产管道（Yahoo Finance），股票来自全球公司榜，加密来自全球资产榜（CoinGecko），美债各期限来自FRED官方收益率曲线。点开任一标的可看站内历史走势、逐项来源与数据日。涨跌口径按品类不同：股票为当日价格变动，加密为过去24小时，债券为相对上一观测的基点（bp）变化。</p>
+        <p class="board-note" id="board-intro">六大品类全部读取站内已在日更的公开管道：商品、指数、外汇与中国国债来自跨资产管道（Yahoo Finance），股票来自全球公司榜，加密来自全球资产榜（CoinGecko），美债各期限来自FRED官方收益率曲线。每行的迷你走势取站内历史序列最近60个交易日的收盘，颜色按这段窗口自己的首尾变化，与当日涨跌分开算；站内还没有序列的标的显示「无序列」，不画任何推断曲线。点开任一标的可看完整走势、逐项来源与数据日。涨跌口径按品类不同：股票为当日价格变动，加密为过去24小时，债券为相对上一观测的基点（bp）变化。</p>
         <div class="board-controls">
           <label class="sr-only" for="board-search">按名称或代码搜索标的</label>
           <input class="board-search" id="board-search" type="search" placeholder="搜索名称或代码，例如 黄金 / GC=F"

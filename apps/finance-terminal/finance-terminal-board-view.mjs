@@ -14,7 +14,15 @@ const RANGES = Object.freeze([
   { key: "1y", label: "1年", points: 260 }
 ]);
 
+/* 每行的迷你走势固定看最近60个交易日：足够看出形态，又不会让整屏的取点成本失控。
+   取点复用抽屉那份裁剪函数，颜色按这段窗口自己的首尾变化算，不套用当日涨跌方向。 */
+const SPARK_POINTS = 60;
+const SPARK_BOX = Object.freeze({ width: 68, height: 22, pad: 3 });
+
 const cache = new Map();
+
+/* 每次重画自增：品类切得快时，先前那批异步补图落地前会看到令牌已过期而放弃。 */
+let paintToken = 0;
 
 function loadJson(url) {
   if (!cache.has(url)) {
@@ -82,6 +90,26 @@ export function rangeChange(values, isYield) {
   return `${pct > 0 ? "+" : ""}${pct.toFixed(2)}%`;
 }
 
+/* 纯函数：迷你走势的方向按该窗口首尾比较得到，与当日涨跌各算各的，互不顶替。 */
+export function sparkDirection(values) {
+  if (!Array.isArray(values) || values.length < 2) return "unknown";
+  const first = values[0];
+  const last = values[values.length - 1];
+  if (!Number.isFinite(first) || !Number.isFinite(last)) return "unknown";
+  return last > first ? "up" : (last < first ? "down" : "flat");
+}
+
+/* 纯函数：当前显示行的涨跌分布，用于品类脉冲条。无观测的行归入 unknown，不算持平。 */
+export function distribution(rows) {
+  const counts = { up: 0, down: 0, flat: 0, unknown: 0, total: 0 };
+  (rows || []).forEach((item) => {
+    const direction = item && item.change ? item.change.direction : "unknown";
+    counts[counts[direction] === undefined ? "unknown" : direction] += 1;
+    counts.total += 1;
+  });
+  return counts;
+}
+
 /* 序列解析：五种来源各自独立读取，缺哪一种就如实说没有，不互相顶替。 */
 async function resolveSeries(reference, bundles) {
   if (!reference) return null;
@@ -137,6 +165,56 @@ async function resolveSeries(reference, bundles) {
     };
   }
   return null;
+}
+
+/* 行内迷你走势：面积+折线两条路径共用同一份取点，颜色由窗口首尾决定。
+   取不到两个以上有效观测就返回 false，由调用方如实标注「无序列」。 */
+function drawSpark(document, cell, item, window) {
+  const line = seriesPath(window.values, SPARK_BOX.width, SPARK_BOX.height, SPARK_BOX.pad);
+  if (!line) return false;
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("class", `board-spark board-spark-${sparkDirection(window.values)}`);
+  svg.setAttribute("viewBox", `0 0 ${SPARK_BOX.width} ${SPARK_BOX.height}`);
+  svg.setAttribute("preserveAspectRatio", "none");
+  svg.setAttribute("role", "img");
+  const change = rangeChange(window.values, item.unit === "年化收益率");
+  svg.setAttribute("aria-label", `${item.name} 最近${window.values.length}个交易日站内收盘走势`
+    + (change ? `，区间变化 ${change}` : ""));
+  const area = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  area.setAttribute("class", "board-spark-area");
+  area.setAttribute("d",
+    `${line} L${SPARK_BOX.width - SPARK_BOX.pad} ${SPARK_BOX.height} L${SPARK_BOX.pad} ${SPARK_BOX.height} Z`);
+  svg.appendChild(area);
+  const stroke = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  stroke.setAttribute("class", "board-spark-line");
+  stroke.setAttribute("d", line);
+  svg.appendChild(stroke);
+  cell.textContent = "";
+  cell.appendChild(svg);
+  return true;
+}
+
+/* 迷你走势按当前显示的行批量补齐：同一份历史文件只请求一次（loadJson 自带缓存），
+   站内没有序列的行保持空位并写明原因，不用相邻标的或推断值顶替。 */
+async function fillSparks(document, pending, bundles, token) {
+  const resolved = await Promise.all(
+    pending.map((entry) => resolveSeries(entry.item.series, bundles).catch(() => null)));
+  if (token !== paintToken) return;
+  pending.forEach((entry, index) => {
+    if (!entry.cell.isConnected) return;
+    const series = resolved[index];
+    const window = series
+      ? sliceSeries(series.dates, series.values, SPARK_POINTS)
+      : { dates: [], values: [] };
+    if (drawSpark(document, entry.cell, entry.item, window)) return;
+    markSparkEmpty(document, entry.cell);
+  });
+}
+
+function markSparkEmpty(document, cell) {
+  cell.textContent = "";
+  const mark = text(cell, "i", "board-spark-empty", "无序列");
+  mark.title = "站内日更管道还没有覆盖该标的的历史序列，此处不画任何推断曲线";
 }
 
 function renderChart(document, box, item, series, rangeKey) {
@@ -250,10 +328,12 @@ function renderRows(document, host, category, bundles, expanded, context) {
   text(head, "span", "board-cell-watch", "自选");
   const headCells = text(head, "span", "board-head-cells");
   text(headCells, "span", "board-cell-name", "标的");
+  text(headCells, "span", "board-cell-spark", "近60日");
   text(headCells, "span", "board-cell-price", "最新价");
   text(headCells, "span", "board-cell-change", "涨跌");
   text(headCells, "span", "board-cell-extra", category.extraLabel || "口径");
   const visible = expanded ? rows : rows.slice(0, category.collapseAfter);
+  const pending = [];
   visible.forEach((item) => {
     const line = text(host, "div", `board-row board-change-${item.change.direction}`);
     if (context.watch) line.appendChild(context.watch.button(item.symbol));
@@ -265,6 +345,7 @@ function renderRows(document, host, category, bundles, expanded, context) {
     const name = text(open, "span", "board-cell-name");
     text(name, "b", "", item.name);
     text(name, "i", "", item.symbol + (item.status === "stale" ? " · 过期" : ""));
+    pending.push({ item, cell: text(open, "span", "board-cell-spark") });
     const price = text(open, "span", "board-cell-price", item.priceText);
     if (item.currency && item.currency !== "USD") text(price, "i", "board-cell-currency", item.currency);
     const change = text(open, "span", "board-cell-change");
@@ -273,6 +354,8 @@ function renderRows(document, host, category, bundles, expanded, context) {
     text(open, "span", "board-cell-extra", item.extraText || "—");
     open.addEventListener("click", () => { openTrend(document, item, bundles); });
   });
+  paintToken += 1;
+  if (pending.length) fillSparks(document, pending, bundles, paintToken);
   if (rows.length > category.collapseAfter) {
     const toggle = text(host, "button", "board-toggle",
       expanded ? "收起" : `展开全部 ${rows.length} 项`);
@@ -286,11 +369,37 @@ function renderRows(document, host, category, bundles, expanded, context) {
   }
 }
 
+/* 品类脉冲条：只统计当前显示的行，涨跌各占多少一目了然。
+   债券品类的方向词按该品类自己的口径（上行/下行），不套用股票的涨跌措辞。 */
+function paintPulse(document, host, rows, category) {
+  if (!host) return;
+  host.textContent = "";
+  const counts = distribution(rows);
+  if (!counts.total) {
+    host.hidden = true;
+    return;
+  }
+  host.hidden = false;
+  const labels = (category && category.directionLabels) || { up: "上涨", down: "下跌" };
+  const bar = text(host, "span", "board-pulse-bar");
+  ["up", "flat", "unknown", "down"].forEach((key) => {
+    if (!counts[key]) return;
+    const segment = text(bar, "i", `board-pulse-seg board-pulse-${key}`);
+    segment.style.width = `${(counts[key] / counts.total * 100).toFixed(1)}%`;
+  });
+  const rest = counts.flat + counts.unknown;
+  text(host, "span", "board-pulse-text", `▲${counts.up} ▼${counts.down} ▬${rest}`);
+  host.setAttribute("role", "img");
+  host.setAttribute("aria-label", `当前显示 ${counts.total} 项：${labels.up} ${counts.up} 项，`
+    + `${labels.down} ${counts.down} 项，持平或暂无观测 ${rest} 项`);
+}
+
 export function createBoardView(document, view) {
   const tabsHost = document.getElementById("board-tabs");
   const panelHost = document.getElementById("board-panel");
   const summaryHost = document.getElementById("board-summary");
   const searchInput = document.getElementById("board-search");
+  const pulseHost = document.getElementById("board-pulse");
 
   function render(board) {
     if (!tabsHost || !panelHost) return;
@@ -322,6 +431,8 @@ export function createBoardView(document, view) {
         }
       });
       panelHost.setAttribute("aria-label", `${category.label}行情列表`);
+      if (tabsHost.parentElement) tabsHost.parentElement.dataset.boardCategory = category.key;
+      paintPulse(document, pulseHost, picked.shown, category);
       if (summaryHost) {
         const scope = query || picked.shown.length !== category.rows.length
           ? `显示${picked.shown.length}/${category.rows.length}项`

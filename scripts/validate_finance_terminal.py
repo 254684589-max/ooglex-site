@@ -2829,7 +2829,8 @@ def main() -> None:
     # 遥测面板第三行两处修复、连同解释它们为何存在的注释后需要 20.7KB；换回的是
     # OFR 卡片与运行证据面板不再被裁掉 137px 与 201px，收益率曲线入口不再缺 6px。
     # 24,000：一屏总览把主行让给品类行情、核心资产退到第三行并做紧凑化后的增量。
-    require(COMMAND_CENTER_CSS.stat().st_size <= 24_000, "金融终端单屏指挥中心样式超过24KB性能预算")
+    # 24,600：总览里的行情板多出一列迷你走势与一条脉冲条的紧凑化规则。
+    require(COMMAND_CENTER_CSS.stat().st_size <= 24_600, "金融终端单屏指挥中心样式超过24.6KB性能预算")
     require(VISUAL_FIDELITY_CSS.stat().st_size <= 6_000, "金融终端高保真视觉层超过6KB性能预算")
     require(REFERENCE_FIDELITY_CSS.stat().st_size <= 12_400, "金融终端参考图精修层超过12.4KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
@@ -2840,12 +2841,20 @@ def main() -> None:
     # 语义（页面现在有跨资产周期与品类行情板两组），核对六个品类标签、当前品类的
     # 价格/涨跌列、折叠按钮默认收起、搜索框与逐行自选开关，并在量尺寸前记下两个
     # 工程/运营向分区折叠壳的默认状态。该模块只在 regression=1 时加载。
-    require(REGRESSION_MODULE.stat().st_size <= 24_000,
+    # 24,800：探针额外核对每行的迷你走势位与品类脉冲条。
+    require(REGRESSION_MODULE.stat().st_size <= 24_800,
             "仅回归模式加载的浏览器探针超过24KB性能预算")
     require(BOARD_DATA_MODULE.stat().st_size <= 19_000,
             "按需加载的品类行情板数据层超过19KB性能预算")
-    require(BOARD_VIEW_MODULE.stat().st_size <= 18_000,
-            "按需加载的品类行情板视图超过18KB性能预算")
+    # 23,000：在原18KB基础上给「逐行迷你走势 + 品类脉冲条」留出的增量。走势本身
+    # 不新增任何请求：它复用抽屉那套历史文件与同一份带缓存的读取，一个品类最多
+    # 触发一次历史文件读取；拿不到序列的行如实留白，不画推断曲线。
+    require(BOARD_VIEW_MODULE.stat().st_size <= 23_000,
+            "按需加载的品类行情板视图超过23KB性能预算")
+    require("board-cell-spark" in board_view_module and "sparkDirection" in board_view_module
+            and "SPARK_POINTS" in board_view_module and "distribution" in board_view_module
+            and 'id="board-pulse"' in page and ".board-spark-line" in page,
+            "品类行情板必须逐行画站内序列的迷你走势并给出涨跌分布脉冲条")
     require('import("./finance-terminal-board-view.mjs")' in app
             and 'import("./finance-terminal-board-data.mjs")' in app
             and "createBoardView" in board_view_module
