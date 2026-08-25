@@ -1784,7 +1784,7 @@ freshAssetTracker.dataQuality = {
 };
 const freshCrossAsset = adapter.adaptCrossAsset(freshAssetTracker, currentNow);
 assert.strictEqual(freshCrossAsset.status, "ok");
-assert.strictEqual(freshCrossAsset.quality.counts.market, 28);
+assert.strictEqual(freshCrossAsset.quality.counts.market, freshAssetTracker.assets.length);
 
 const mismatchedTrackerQuality = JSON.parse(JSON.stringify(freshAssetTracker));
 mismatchedTrackerQuality.dataQuality.counts.market -= 1;
