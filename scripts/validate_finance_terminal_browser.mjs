@@ -670,7 +670,8 @@ async function main() {
       const layout = result.layout;
       const mounted = result.providerWidgetRuntimeEvidence.filter((item) => item.state === "mounted").length;
       const script = result.providerScriptTransport;
-      console.log(`${result.viewport.width}px: PASS · cards 8/3/3/2/4 · provider script ${script.state}/${script.reason} · proxy hosts ${mounted}/4 mounted · official trends ${result.officialObservationTrendCount}/3 · official health ${result.officialHealthPanelCount}/4 · support health ${result.supportingHealthPanelCount}/4 · V1 evidence ${result.readinessEvidencePanelCount}/4 · columns ${layout.market}/${layout.risk}/${layout.research}/${layout.information}/${layout.operations} · focusable ${result.focusableCount} · targets ${result.targetCount}`);
+      const proxyHosts = result.providerWidgetRuntimeEvidence.length;
+      console.log(`${result.viewport.width}px: PASS · cards ${result.assetCardCount}/3/3/2/4 · provider script ${script.state}/${script.reason} · proxy hosts ${mounted}/${proxyHosts} mounted · official trends ${result.officialObservationTrendCount}/3 · official health ${result.officialHealthPanelCount}/4 · support health ${result.supportingHealthPanelCount}/4 · V1 evidence ${result.readinessEvidencePanelCount}/4 · columns ${layout.market}/${layout.risk}/${layout.research}/${layout.information}/${layout.operations} · focusable ${result.focusableCount} · targets ${result.targetCount}`);
     }
     console.log(`Finance Terminal browser regression: PASS (${WIDTHS.join(", ")}px)`);
     console.log(`Proxy runtime evidence: ${evidence.summary.mountedObservations}/${evidence.summary.observationCount} mounted observations; ${evidence.summary.fallbackObservations} official-link fallbacks`);

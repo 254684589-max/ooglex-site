@@ -11,9 +11,9 @@ from urllib.parse import urlparse
 
 TRADINGVIEW_HOSTS = {"www.tradingview.com", "widgets.tradingview-widget.com"}
 WIDGET_SCRIPT_URL = "https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js"
+# 2026-08-25 所有者决定：标普500与纳斯达克100两张ETF代理卡从核心资产撤下，
+# 免费嵌入代理只保留道琼斯与黄金两项；这里同步收窄，契约不得再声明已撤下的代理。
 EXPECTED_ASSETS = {
-    "sp500": {"originalSymbol": "SPX", "proxySymbol": "SPY", "widgetSymbol": "AMEX:SPY"},
-    "nasdaq100": {"originalSymbol": "NDX", "proxySymbol": "QQQ", "widgetSymbol": "NASDAQ:QQQ"},
     "dow": {"originalSymbol": "DJIA", "proxySymbol": "DIA", "widgetSymbol": "AMEX:DIA"},
     "gold": {
         "originalSymbol": "LBMA-GOLD-PM-USD",
@@ -129,8 +129,9 @@ def validate_market_source_readiness(readiness: dict[str, Any]) -> list[str]:
     if not isinstance(assets, list):
         return errors + ["免费代理行情契约assets必须是数组"]
     ids = [asset.get("id") for asset in assets if isinstance(asset, dict)]
-    if len(assets) != 4 or len(ids) != 4 or set(ids) != set(EXPECTED_ASSETS):
-        errors.append("免费代理行情契约必须恰好覆盖三大股指与黄金且ID唯一")
+    expected_count = len(EXPECTED_ASSETS)
+    if len(assets) != expected_count or len(ids) != expected_count or set(ids) != set(EXPECTED_ASSETS):
+        errors.append("免费代理行情契约必须恰好覆盖已登记的代理项且ID唯一")
 
     valid_count = 0
     for asset in assets:

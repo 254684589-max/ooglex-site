@@ -33,8 +33,8 @@ from market_source_health import attach_upstream_health, make_source_health
 ROOT = Path(__file__).resolve().parents[1]
 NOW = datetime(2026, 8, 7, 12, 0, tzinfo=timezone.utc)
 PAGE = " ".join((
-    "4项站内真实数据与4项TradingView免费ETF代理",
-    "SPY、QQQ、DIA与GLD分别仅作为SPX、NDX、DJIA与LBMA Gold Price PM的免费ETF代理",
+    "4项站内真实数据与2项TradingView免费ETF代理",
+    "DIA与GLD分别仅作为DJIA与LBMA Gold Price PM的免费ETF代理",
     "Ooglex不抓取、不导出、不保存这些组件中的原始行情",
     "任一卡验证失败只保留对应TradingView来源链接",
     "FRED API使用条款",
@@ -331,7 +331,7 @@ def test_fresh_core_with_free_proxies() -> None:
     macro["referenceSeries"]["RWTC"]["source"]["accessMethod"] = "EIA public history page"
     report = build_report(make_config(), macro, PAGE, NOW)
     checks = by_id(report)
-    require(report["status"] == "PASS", "4项合规免费代理不应使Beta报告降级")
+    require(report["status"] == "PASS", "已登记的合规免费代理不应使Beta报告降级")
     require(checks["market-demo-policy"]["status"] == "PASS", "免费代理策略状态错误")
     require(checks["official-dgs10"]["status"] == "PASS", "新鲜DGS10应通过")
     require(checks["official-dtwexbgs"]["status"] == "PASS", "新鲜DTWEXBGS应通过")
@@ -406,12 +406,14 @@ def test_machine_readable_market_license_gate() -> None:
     )
     check = by_id(report)["market-demo-policy"]
     require(check["status"] == "PASS", "合法免费嵌入代理契约应通过来源策略门禁")
-    require(check["metrics"]["proxyAssets"] == 4
-            and check["metrics"]["freeDisplayAssets"] == 4
+    expected_proxies = len(EXPECTED_PROXIES)
+    require(check["metrics"]["proxyAssets"] == expected_proxies
+            and check["metrics"]["freeDisplayAssets"] == expected_proxies
             and check["metrics"]["rawMarketDataStored"] is False,
-            "门禁没有逐项汇总四项免费代理状态")
-    require(len(check["details"]) == 4 and all("TradingView官方免费组件" in item for item in check["details"]),
-            "门禁没有输出四项可审计免费代理说明")
+            "门禁没有逐项汇总已登记的免费代理状态")
+    require(len(check["details"]) == expected_proxies
+            and all("TradingView官方免费组件" in item for item in check["details"]),
+            "门禁没有为每一项已登记代理输出可审计说明")
 
     tampered = deepcopy(readiness)
     tampered["assets"][0]["productionAction"] = "publish-anyway"

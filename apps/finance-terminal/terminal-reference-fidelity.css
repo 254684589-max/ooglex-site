@@ -242,13 +242,16 @@
 .market-insight-foot { color: var(--faint); font: 6px var(--mono); }
 
 @media (min-width: 1041px) {
+  /* 一屏总览的主行给品类行情：它是现在信息量最大的一块（六大类）。
+     第三行恢复「市场强弱与领袖 + 市场聚合指标 + 核心资产」——核心资产必须留在
+     落地视图里：免费ETF代理组件要有真实布局才挂得上，代理挂载证据依赖这一点。
+     稳定V1运行证据仍是独立视图。 */
   body[data-terminal-view="overview"] #overview-section,
-  body[data-terminal-view="overview"] #market-section { grid-column: 1 / 14; }
+  body[data-terminal-view="overview"] #board-section { grid-column: 1 / 14; }
 
-  /* 第三行改成「市场状态 + 品类行情」：市场强弱与领袖、稳定V1运行证据两块
-     已移出一屏总览（各自成页），这里把它们让出的列宽分给行情板。 */
-  body[data-terminal-view="overview"] #risk-section { grid-column: 1 / 7; }
-  body[data-terminal-view="overview"] #board-section { grid-column: 7 / 14; }
+  body[data-terminal-view="overview"] #research-section { grid-column: 1 / 6; }
+  body[data-terminal-view="overview"] #risk-section { grid-column: 6 / 10; }
+  body[data-terminal-view="overview"] #market-section { grid-column: 10 / 14; }
   body[data-terminal-view="overview"] #information-section { grid-column: 14 / 17; }
 
   body[data-terminal-view="overview"] #information-section {

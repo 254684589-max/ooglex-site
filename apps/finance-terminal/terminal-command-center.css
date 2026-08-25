@@ -167,29 +167,25 @@
     grid-row: 1;
   }
 
-  body[data-terminal-view="overview"] #market-section {
-    grid-column: 1 / 13;
-    grid-row: 2;
-  }
-
-  /* 一屏总览只留「看行情与看风险」这条主线：市场强弱与领袖、稳定V1运行证据
-     两块偏研究与运维，改为各自独立视图（左栏与分区导航仍可进入），
-     腾出的位置给品类行情板，六大类在总览里直接可读、可切换。
-     本文件后面仍有若干 overview 下针对这两块的排版规则，它们随之失效但无害，
-     保留是为了这两块日后若要回到一屏视图时不必重新推导尺寸。 */
-  body[data-terminal-view="overview"] #research-section,
+  /* 一屏总览的主行让给品类行情；核心资产退到第三行与研究、风险并排——它不能
+     整块藏起来：免费ETF代理组件要有真实布局才挂得上，代理挂载证据依赖这一点。
+     稳定V1运行证据偏运维，继续作为独立视图（左栏与分区导航可进入）。
+     本文件后面仍有若干 overview 下针对运行证据的排版规则，它们随之失效但无害，
+     保留是为了那一块日后若要回到一屏视图时不必重新推导尺寸。 */
   body[data-terminal-view="overview"] #operations-section {
     display: none;
   }
 
   /* 列宽由参考图精修层统一给定（那是最后一层，也是一屏栅格的实际归属地）；
-     这里只负责第三行的行号、显示方式与不溢出。 */
+     这里只负责行号、显示方式与不溢出。 */
+  body[data-terminal-view="overview"] #research-section,
+  body[data-terminal-view="overview"] #market-section,
   body[data-terminal-view="overview"] #risk-section { grid-row: 3; }
 
   body[data-terminal-view="overview"] #board-section {
     display: flex;
     flex-direction: column;
-    grid-row: 3;
+    grid-row: 2;
     min-width: 0;
     overflow: hidden;
   }
@@ -200,7 +196,7 @@
   body[data-terminal-view="overview"] .board-controls,
   body[data-terminal-view="overview"] #board-failures,
   body[data-terminal-view="overview"] #board-panel .board-toggle,
-  body[data-terminal-view="overview"] #board-panel .board-row:nth-child(n + 6) {
+  body[data-terminal-view="overview"] #board-panel .board-row:nth-child(n + 7) {
     display: none;
   }
 
@@ -220,14 +216,12 @@
 
   body[data-terminal-view="overview"] #board-panel .board-open,
   body[data-terminal-view="overview"] #board-panel .board-head-cells {
-    grid-template-columns: minmax(0, 1fr) 74px 82px;
-    gap: 6px;
+    grid-template-columns: minmax(0, 1fr) 110px 110px 120px;
+    gap: 8px;
     min-height: 34px;
-    padding: 4px 6px;
+    padding: 4px 10px;
     font-size: 11px;
   }
-
-  body[data-terminal-view="overview"] #board-panel .board-cell-extra { display: none; }
   body[data-terminal-view="overview"] #board-panel .board-cell-price { font-size: 12px; }
   body[data-terminal-view="overview"] #board-panel .board-cell-change { font-size: 11px; }
   body[data-terminal-view="overview"] #board-panel .watch-toggle { min-width: 34px; min-height: 34px; }
@@ -378,9 +372,11 @@
     display: none;
   }
 
+  /* 核心资产退到第三行那一格后宽度只有原来的三分之一：四列会把卡片挤到裁切，
+     改成两列纵向铺开，卡片内容与「资产」视图完全一致，只是排布更紧。 */
   body[data-terminal-view="overview"] .market-grid {
     height: 100%;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: repeat(2, minmax(0, 1fr));
   }
 
@@ -845,3 +841,9 @@ body[data-terminal-view="overview"] #market-grid .official-trend,
 body[data-terminal-view="overview"] #market-grid .official-note,
 body[data-terminal-view="overview"] #market-grid .pipeline-health,
 body[data-terminal-view="overview"] #market-grid .asset-details { display: none; }
+
+/* 核心资产退到第三行那一格后每张卡只有约180px宽：卡头那排「名称＋★＋详情」
+   会顶出边界被裁掉。总览里只留名称、代码与主数字，自选与详情入口在「资产」
+   视图里原样保留——元素仍在DOM中，既有契约与抽屉入口不受影响。 */
+body[data-terminal-view="overview"] #market-grid .detail-open,
+body[data-terminal-view="overview"] #market-grid .watch-toggle { display: none; }

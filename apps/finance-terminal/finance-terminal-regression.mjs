@@ -2,6 +2,12 @@ const CRITICAL_REQUEST_KEYS = Object.freeze([
   "$config", "macro", "macroHealth", "assetRanking", "assetRankingHealth", "marketLicense"
 ]);
 const DEFERRED_SECTION_NAMES = Object.freeze(["board", "risk", "research", "information", "operations"]);
+/* 2026-08-25 所有者决定撤下标普500与纳斯达克100两张ETF代理卡：核心资产六张，
+   免费嵌入代理两项（DIA、GLD）。改动清单时这两个常量与契约文件一起改。 */
+const EXPECTED_ASSET_CARDS = 6;
+const EXPECTED_PROXY_WIDGETS = 2;
+/* 站内官方管道卡：只有它们在卡面上直接画主数字，代理卡的报价由组件自己渲染。 */
+const EXPECTED_OFFICIAL_CARDS = EXPECTED_ASSET_CARDS - EXPECTED_PROXY_WIDGETS;
 const EXPECTED_GROUP_SEQUENCE = Object.freeze(["critical", ...DEFERRED_SECTION_NAMES]);
 
 function sameSequence(actual, expected) {
@@ -62,7 +68,9 @@ export function runBrowserRegressionProbe(options = {}) {
     ? { market: 1, risk: 1, research: 1, information: 1, operations: 1 }
     : width <= 1040
       ? { market: 2, risk: 2, research: 2, information: 1, operations: 2 }
-      : { market: 4, risk: 3, research: 3, information: 1, operations: 4 };
+      /* 桌面一屏总览里核心资产只占第三行的一格（宽度约为整行的三分之一），
+         按两列纵向铺开；它在自己的「资产」视图里仍是四列。 */
+      : { market: 2, risk: 3, research: 3, information: 1, operations: 4 };
   const cards = Array.from(document.querySelectorAll(
     ".asset-card, .risk-card, .research-card, .information-card, .operation-card"
   ));
@@ -192,17 +200,17 @@ export function runBrowserRegressionProbe(options = {}) {
     marketLicenseReadiness: licenseNotice && !licenseNotice.classList.contains("status-unknown")
       && licenseNotice.textContent.indexOf("免费ETF代理") !== -1
       && licenseNotice.textContent.indexOf("API密钥") !== -1,
-    providerWidgetContracts: providerWidgets.length === 4
+    providerWidgetContracts: providerWidgets.length === EXPECTED_PROXY_WIDGETS
       && providerWidgets.every((widget) => {
-        return /^(AMEX:(SPY|DIA|GLD)|NASDAQ:QQQ)$/.test(widget.getAttribute("symbol") || "")
+        return /^AMEX:(DIA|GLD)$/.test(widget.getAttribute("symbol") || "")
           && widget.getAttribute("theme") === "dark";
-      }) && document.querySelectorAll(".provider-widget-fallback").length === 4,
+      }) && document.querySelectorAll(".provider-widget-fallback").length === EXPECTED_PROXY_WIDGETS,
     providerAttribution: poweredByCoinGeckoLinks.length === coinGeckoAttributions.length
       && coinGeckoAttributions.every((link) => {
         return link.textContent.trim() === "Powered by CoinGecko"
           && Number.parseFloat(window.getComputedStyle(link).fontSize) >= 10;
       }),
-    providerWidgetRuntime: providerWidgetShells.length === 4
+    providerWidgetRuntime: providerWidgetShells.length === EXPECTED_PROXY_WIDGETS
       && providerWidgetShells.every((shell) => {
         const state = shell.getAttribute("data-provider-state");
         const reason = shell.getAttribute("data-provider-reason");
@@ -225,11 +233,12 @@ export function runBrowserRegressionProbe(options = {}) {
           && Number.isInteger(value) && value >= 0 && value <= 7;
       }),
     /* 主数字曾被压进9px盒子。 */
-    overviewCardLegibility: overviewLegible.length === 12
+    overviewCardLegibility: overviewLegible.length === EXPECTED_ASSET_CARDS + EXPECTED_OFFICIAL_CARDS
       && overviewLegible.every((n) => n.scrollHeight <= n.clientHeight + 1),
-    orbitalTerminalVisuals: marketTapeItems.length === 8
+    orbitalTerminalVisuals: marketTapeItems.length === EXPECTED_ASSET_CARDS
       && marketTapeItems.every((item) => item.textContent.trim().length > 4)
-      && marketTapeItems.filter((item) => item.textContent.includes("组件报价")).length === 4
+      && marketTapeItems.filter((item) => item.textContent.includes("组件报价")).length
+        === EXPECTED_PROXY_WIDGETS
       && marketClocks.length === 4
       && marketClocks.every((clock) => /^\d{2}:\d{2}$/.test(clock.textContent.trim()))
       && Boolean(document.querySelector(".market-orbit.globe-canvas-ready"))
@@ -253,7 +262,7 @@ export function runBrowserRegressionProbe(options = {}) {
       && stableV1Ring && Number(stableV1Ring.getAttribute("aria-valuenow")) === minimumReadinessCycle
       && stableV1Chip && stableV1Chip.textContent.includes(`${minimumReadinessCycle} / 7`)
       && document.querySelectorAll("#pipeline-nodes [data-pipeline-node]").length === 4,
-    cardCounts: document.querySelectorAll(".asset-card").length === 8
+    cardCounts: document.querySelectorAll(".asset-card").length === EXPECTED_ASSET_CARDS
       && document.querySelectorAll(".risk-card").length === 3
       && document.querySelectorAll(".research-card").length === 3
       && document.querySelectorAll(".information-card").length === 2
@@ -263,7 +272,7 @@ export function runBrowserRegressionProbe(options = {}) {
         const rect = card.getBoundingClientRect();
         return rect.left >= -1 && rect.right <= document.documentElement.clientWidth + 1;
       }),
-    responsiveColumns: renderedGridColumns(grid) === expectedColumns.market
+    responsiveColumns: columnsMatch(grid, expectedColumns.market)
       && columnsMatch(riskGrid, expectedColumns.risk)
       && columnsMatch(researchGrid, expectedColumns.research)
       && columnsMatch(informationGrid, expectedColumns.information)
@@ -348,6 +357,7 @@ export function runBrowserRegressionProbe(options = {}) {
     stagedDataLoading: stagedLoad,
     undersizedTargets,
     overflowCandidates,
+    assetCardCount: document.querySelectorAll(".asset-card").length,
     sectionFolds: foldDefaults,
     board: {
       tabs: boardTabs.length,

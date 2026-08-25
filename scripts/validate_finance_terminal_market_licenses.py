@@ -28,8 +28,10 @@ def main() -> None:
     readiness = json.loads(READINESS_PATH.read_text(encoding="utf-8"))
     require(not validate_market_source_readiness(readiness), "仓库免费代理行情契约无效")
     summary = authorization_summary(readiness)
-    require(summary["proxyAssets"] == 4 and summary["freeDisplayAssets"] == 4,
-            "四项代理必须全部使用免费嵌入展示")
+    expected_proxy_count = len(EXPECTED_ASSETS)
+    require(summary["proxyAssets"] == expected_proxy_count
+            and summary["freeDisplayAssets"] == expected_proxy_count,
+            "已登记的每一项代理都必须使用免费嵌入展示")
     require(summary["strategy"] == "free-embedded-proxy"
             and summary["provider"] == "TradingView"
             and summary["cost"] == "free",

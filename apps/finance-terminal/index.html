@@ -1384,7 +1384,7 @@
     <div class="market-tape" role="region" aria-label="核心资产行情带">
       <span class="market-tape-label">MARKET TAPE</span>
       <div class="market-tape-track" id="market-tape" aria-live="off">
-        <span class="market-tape-loading">正在读取8项核心资产状态</span>
+        <span class="market-tape-loading">正在读取6项核心资产状态</span>
       </div>
     </div>
 
@@ -1392,13 +1392,13 @@
 
     <div class="data-banner status-loading" id="data-banner" role="region" aria-labelledby="banner-title" aria-describedby="banner-copy banner-note">
       <span class="data-label" id="banner-label">PARTIAL</span>
-      <span><strong id="banner-title">正在校验免费数据覆盖</strong><span class="banner-copy" id="banner-copy">4项站内真实数据与4项TradingView免费ETF代理均不使用演示数值。</span></span>
+      <span><strong id="banner-title">正在校验免费数据覆盖</strong><span class="banner-copy" id="banner-copy">4项站内真实数据与2项TradingView免费ETF代理均不使用演示数值。</span></span>
       <span class="data-note" id="banner-note">LOADING 4 REAL · 4 FREE PROXY · 0 DEMO</span>
     </div>
 
     <div class="license-notice status-loading" id="license-notice" role="region" aria-labelledby="license-title" aria-describedby="license-copy">
       <span class="license-label" id="license-label">LICENSE CHECK</span>
-      <span><strong id="license-title">正在读取免费代理行情策略</strong><span class="license-copy" id="license-copy">三大指数与黄金使用明确披露的SPY、QQQ、DIA、GLD官方嵌入组件。</span></span>
+      <span><strong id="license-title">正在读取免费代理行情策略</strong><span class="license-copy" id="license-copy">道琼斯与黄金使用明确披露的DIA、GLD官方嵌入组件。</span></span>
     </div>
 
     <nav class="section-nav" aria-label="页面分区">
@@ -1510,7 +1510,7 @@
             <div class="meta-item"><span class="meta-key">Data status</span><span class="meta-value partial" id="data-status">正在校验4项真实数据</span></div>
             <div class="meta-item"><span class="meta-key">Updated</span><time class="meta-value" id="page-updated">加载中</time></div>
             <div class="meta-item"><span class="meta-key">Source</span><span class="meta-value" id="page-source">FRED · EIA · CoinGecko / Yahoo · TradingView</span></div>
-            <div class="meta-item"><span class="meta-key">Coverage</span><span class="meta-value" id="asset-count">8项全球核心资产</span></div>
+            <div class="meta-item"><span class="meta-key">Coverage</span><span class="meta-value" id="asset-count">6项全球核心资产</span></div>
           </div>
           <div class="telemetry-card">
             <span class="telemetry-label">YIELD CURVE</span>
@@ -1570,7 +1570,6 @@
           <span class="board-subtitle">PRICE · CHANGE · UPDATED TIME</span>
         </div>
         <div class="market-grid" id="market-grid" role="list" aria-label="核心资产数据卡片" aria-busy="true">
-          <div class="skeleton" aria-hidden="true"></div><div class="skeleton" aria-hidden="true"></div>
           <div class="skeleton" aria-hidden="true"></div><div class="skeleton" aria-hidden="true"></div>
           <div class="skeleton" aria-hidden="true"></div><div class="skeleton" aria-hidden="true"></div>
           <div class="skeleton" aria-hidden="true"></div><div class="skeleton" aria-hidden="true"></div>
@@ -1775,7 +1774,7 @@
           全球资产市值以十亿美元为统一单位，逐项区分行情、已披露市值代理、历史回退、静态估值和待确认状态，并展示逐条来源；房地产、政府债务等慢变量估值若未保存原报告日期，不会用文件更新时间代替。公司榜与资产榜运行状态把动态行情和慢频估值分层：已登记的慢频估值不会冒充每日行情，也不会单独被当作更新失败；动态回退、未知、不可用或未登记`PARTIAL`路径仍会明确降级。全球公司领袖逐公司区分Yahoo行情、历史回退和未上市静态估值；未上市估值不参与涨跌排序。
           宏观状态沿用宏观雷达已有的0–100制度信号分数，数值越高越偏“宽松·支持”；CNN恐慌与贪婪分数表示从“极度恐惧”到“极度贪婪”；OFR金融压力指数以0为历史平均，正值高于平均压力、负值低于平均压力。三者口径不同，不合成为新的总分。DGS10收益率显示为百分比，变化显示为相对上一观测值的基点（bp）。
           DGS10、DTWEXBGS与RWTC三张官方行情卡片分别交叉校验同一份宏观数据和逐源健康快照；BTC/USD另与资产榜中的CoinGecko/Yahoo逐源证据对齐。四张真实行情卡片都在卡内显示独立 <code>UPDATE HEALTH</code>：本轮刷新、明确降级或回退、连续失败、最近尝试与最后成功均不与行情数据日混用。前三张官方卡片另显示最多8项严格按日期递增的最近官方观测；DGS10区间变化使用bp，DTWEXBGS与RWTC使用百分比，历史不足时不以演示走势填充。单个来源健康字段异常时只把对应健康栏降为 <code>UNKNOWN</code>，不会隐藏仍可验证的行情，也不会拖累其他卡片；健康证据超过72小时显示 <code>STALE</code>。
-          <strong>DTWEXBGS是美联储H.10广义贸易加权美元指数，不是ICE DXY；RWTC是EIA库欣WTI现货，不是 <code>CL=F</code> 近月期货。</strong> WTI以美元/桶显示，涨跌按前后两个有效观测值计算；美元或WTI自动更新失败时保留最后有效值，RWTC超过4个美国工作日未发布新观测值时标记“STALE”。BTC/USD优先复用资产榜CoinGecko日度快照并显示“Powered by CoinGecko”；若明确降级至Yahoo BTC-USD，卡片同步改为“较前收盘”口径。SPY、QQQ、DIA与GLD分别仅作为SPX、NDX、DJIA与LBMA Gold Price PM的免费ETF代理，不是同一原标的；行情、延迟、交易状态与更新时间由TradingView组件直接标示，Ooglex不抓取、不导出、不保存这些组件中的原始行情。页面最多等待8秒验证Web Component注册，再逐卡确认组件元素已连接、已定义且具有非空布局；只有完成宿主挂载才显示组件。“组件宿主已挂载”仍不代表报价已经渲染、数据新鲜或市场开市；任一卡验证失败只保留对应TradingView来源链接，不用缓存值或演示值顶替，脚本稍后注册时可自动恢复。查看 <a href="https://fred.stlouisfed.org/series/DTWEXBGS" target="_blank" rel="noopener noreferrer">DTWEXBGS官方序列</a>、<a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html" target="_blank" rel="noopener noreferrer">FRED API使用条款</a>、<a href="https://www.eia.gov/dnav/pet/hist/rwtcd.htm" target="_blank" rel="noopener noreferrer">EIA RWTC官方序列</a>、<a href="https://www.eia.gov/opendata/documentation.php" target="_blank" rel="noopener noreferrer">EIA API文档</a>、<a href="https://www.coingecko.com/en/api_terms" target="_blank" rel="noopener noreferrer">CoinGecko API使用条款</a>、<a href="https://www.tradingview.com/widget-docs/" target="_blank" rel="noopener noreferrer">TradingView组件文档</a>和<a href="https://www.tradingview.com/widget-docs/faq/data/" target="_blank" rel="noopener noreferrer">TradingView数据说明</a>；本产品未获圣路易斯联储、EIA或TradingView认可或认证，也未获CoinGecko认可或赞助。
+          <strong>DTWEXBGS是美联储H.10广义贸易加权美元指数，不是ICE DXY；RWTC是EIA库欣WTI现货，不是 <code>CL=F</code> 近月期货。</strong> WTI以美元/桶显示，涨跌按前后两个有效观测值计算；美元或WTI自动更新失败时保留最后有效值，RWTC超过4个美国工作日未发布新观测值时标记“STALE”。BTC/USD优先复用资产榜CoinGecko日度快照并显示“Powered by CoinGecko”；若明确降级至Yahoo BTC-USD，卡片同步改为“较前收盘”口径。DIA与GLD分别仅作为DJIA与LBMA Gold Price PM的免费ETF代理，不是同一原标的；标普500与纳斯达克100的ETF代理卡已于2026-08-25撤下，标普500点位改在「品类行情」的指数类按跨资产管道展示，纳斯达克本页不再展示、未用其他标的顶替；行情、延迟、交易状态与更新时间由TradingView组件直接标示，Ooglex不抓取、不导出、不保存这些组件中的原始行情。页面最多等待8秒验证Web Component注册，再逐卡确认组件元素已连接、已定义且具有非空布局；只有完成宿主挂载才显示组件。“组件宿主已挂载”仍不代表报价已经渲染、数据新鲜或市场开市；任一卡验证失败只保留对应TradingView来源链接，不用缓存值或演示值顶替，脚本稍后注册时可自动恢复。查看 <a href="https://fred.stlouisfed.org/series/DTWEXBGS" target="_blank" rel="noopener noreferrer">DTWEXBGS官方序列</a>、<a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html" target="_blank" rel="noopener noreferrer">FRED API使用条款</a>、<a href="https://www.eia.gov/dnav/pet/hist/rwtcd.htm" target="_blank" rel="noopener noreferrer">EIA RWTC官方序列</a>、<a href="https://www.eia.gov/opendata/documentation.php" target="_blank" rel="noopener noreferrer">EIA API文档</a>、<a href="https://www.coingecko.com/en/api_terms" target="_blank" rel="noopener noreferrer">CoinGecko API使用条款</a>、<a href="https://www.tradingview.com/widget-docs/" target="_blank" rel="noopener noreferrer">TradingView组件文档</a>和<a href="https://www.tradingview.com/widget-docs/faq/data/" target="_blank" rel="noopener noreferrer">TradingView数据说明</a>；本产品未获圣路易斯联储、EIA或TradingView认可或认证，也未获CoinGecko认可或赞助。
           </p>
         </div>
       </details>

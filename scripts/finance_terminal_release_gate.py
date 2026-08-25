@@ -75,8 +75,9 @@ WORKFLOW_LATEST_MAX_AGE_HOURS = 48
 REPORT_VERSION = 1
 STATUSES = ("PASS", "WARN", "BLOCKED")
 STATUS_WEIGHT = {status: index for index, status in enumerate(STATUSES)}
+# 2026-08-25 所有者决定撤下标普500与纳斯达克100两张ETF代理卡；核心资产收敛为六项。
 EXPECTED_ASSET_IDS = {
-    "sp500", "nasdaq100", "dow", "us10y", "dxy", "gold", "wti", "bitcoin"
+    "dow", "us10y", "dxy", "gold", "wti", "bitcoin"
 }
 EXPECTED_OFFICIAL = {
     "us10y": {
@@ -104,8 +105,6 @@ EXPECTED_OFFICIAL = {
     },
 }
 EXPECTED_PROXIES = {
-    "sp500": {"symbol": "SPY", "proxyFor": "SPX", "widgetSymbol": "AMEX:SPY"},
-    "nasdaq100": {"symbol": "QQQ", "proxyFor": "NDX", "widgetSymbol": "NASDAQ:QQQ"},
     "dow": {"symbol": "DIA", "proxyFor": "DJIA", "widgetSymbol": "AMEX:DIA"},
     "gold": {"symbol": "GLD", "proxyFor": "LBMA-GOLD-PM-USD", "widgetSymbol": "AMEX:GLD"},
 }
@@ -252,8 +251,10 @@ def validate_config(config: dict[str, Any]) -> tuple[list[dict[str, Any]], list[
     if not isinstance(assets, list):
         return [], ["终端配置assets不是数组"]
     ids = [asset.get("id") for asset in assets if isinstance(asset, dict)]
-    if len(assets) != 8 or len(ids) != 8 or set(ids) != EXPECTED_ASSET_IDS:
-        errors.append("核心资产必须恰为约定的8项且ID唯一")
+    expected_asset_count = len(EXPECTED_ASSET_IDS)
+    if len(assets) != expected_asset_count or len(ids) != expected_asset_count \
+            or set(ids) != EXPECTED_ASSET_IDS:
+        errors.append("核心资产必须恰为约定的清单且ID唯一")
     demos = [asset for asset in assets if isinstance(asset, dict) and asset.get("demo") is True]
     if demos:
         errors.append("免费代理策略下核心资产不得保留演示数据")
@@ -320,8 +321,8 @@ def evaluate_demo_policy(
         errors.append("免费代理配置必须使用schemaVersion 3、demo false与status ok")
 
     required_page_markers = (
-        "4项站内真实数据与4项TradingView免费ETF代理",
-        "SPY、QQQ、DIA与GLD分别仅作为SPX、NDX、DJIA与LBMA Gold Price PM的免费ETF代理",
+        "4项站内真实数据与2项TradingView免费ETF代理",
+        "DIA与GLD分别仅作为DJIA与LBMA Gold Price PM的免费ETF代理",
         "Ooglex不抓取、不导出、不保存这些组件中的原始行情",
         "任一卡验证失败只保留对应TradingView来源链接",
         "FRED API使用条款",
@@ -373,7 +374,7 @@ def evaluate_demo_policy(
         "market-demo-policy",
         "免费代理与公开说明",
         "PASS",
-        "4项站内真实数据与4项免费嵌入代理均无演示数值。",
+        f"4项站内真实数据与{len(EXPECTED_PROXIES)}项免费嵌入代理均无演示数值。",
         details=(license_details or ["三大股指与黄金均使用明确披露的免费ETF代理。"]),
         metrics=metrics,
     )

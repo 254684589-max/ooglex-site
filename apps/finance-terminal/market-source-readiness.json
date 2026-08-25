@@ -1,11 +1,11 @@
 {
   "schemaVersion": 3,
-  "reviewedOn": "2026-08-13",
+  "reviewedOn": "2026-08-25",
   "displayScope": "public-web",
-  "policy": "稳定V1采用免费优先的官方嵌入展示路径；SPY、QQQ、DIA和GLD均为显式ETF代理，不冒充SPX、NDX、DJIA或黄金现货/基准，且不抓取、导出或再分发TradingView原始数据。",
+  "policy": "稳定V1采用免费优先的官方嵌入展示路径；DIA和GLD均为显式ETF代理，不冒充DJIA或黄金现货/基准，且不抓取、导出或再分发TradingView原始数据。",
   "selection": {
     "strategy": "free-embedded-proxy",
-    "decidedOn": "2026-08-13",
+    "decidedOn": "2026-08-25",
     "decidedBy": "project-owner",
     "proxySubstitutionAllowed": true,
     "exactBenchmarkProcurementPaused": true
@@ -43,43 +43,24 @@
       "registrationEvidence": "custom-element-registered",
       "hostCheckDelayMs": 100,
       "successEvidence": "connected-defined-element-with-layout",
-      "successDoesNotAssert": ["quote-rendered", "quote-freshness", "market-open"],
+      "successDoesNotAssert": [
+        "quote-rendered",
+        "quote-freshness",
+        "market-open"
+      ],
       "failureFallback": "official-symbol-link",
       "lateRegistrationRecovery": true
     }
   },
-  "proxyAssetCount": 4,
-  "freeDisplayAssetCount": 4,
+  "proxyAssetCount": 2,
+  "freeDisplayAssetCount": 2,
   "assets": [
     {
-      "id": "sp500",
-      "original": {"symbol": "SPX", "instrument": "S&P 500 Price Index"},
-      "proxy": {
-        "symbol": "SPY",
-        "widgetSymbol": "AMEX:SPY",
-        "instrument": "SPDR S&P 500 ETF Trust",
-        "instrumentType": "etf-proxy",
-        "isSameInstrument": false,
-        "selected": true
-      },
-      "productionAction": "embed-provider-widget"
-    },
-    {
-      "id": "nasdaq100",
-      "original": {"symbol": "NDX", "instrument": "Nasdaq-100 Price Index"},
-      "proxy": {
-        "symbol": "QQQ",
-        "widgetSymbol": "NASDAQ:QQQ",
-        "instrument": "Invesco QQQ Trust",
-        "instrumentType": "etf-proxy",
-        "isSameInstrument": false,
-        "selected": true
-      },
-      "productionAction": "embed-provider-widget"
-    },
-    {
       "id": "dow",
-      "original": {"symbol": "DJIA", "instrument": "Dow Jones Industrial Average"},
+      "original": {
+        "symbol": "DJIA",
+        "instrument": "Dow Jones Industrial Average"
+      },
       "proxy": {
         "symbol": "DIA",
         "widgetSymbol": "AMEX:DIA",
@@ -92,7 +73,10 @@
     },
     {
       "id": "gold",
-      "original": {"symbol": "LBMA-GOLD-PM-USD", "instrument": "LBMA Gold Price PM in USD per troy ounce"},
+      "original": {
+        "symbol": "LBMA-GOLD-PM-USD",
+        "instrument": "LBMA Gold Price PM in USD per troy ounce"
+      },
       "proxy": {
         "symbol": "GLD",
         "widgetSymbol": "AMEX:GLD",

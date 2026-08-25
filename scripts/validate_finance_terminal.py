@@ -111,10 +111,10 @@ SUPPORTING_HEALTH_VALIDATOR = ROOT / "scripts" / "validate_supporting_source_hea
 SUPPORTING_HEALTH_DOC = ROOT / "docs" / "SUPPORTING_SOURCE_HEALTH.md"
 HOME = ROOT / "index.html"
 
-EXPECTED_SYMBOLS = {"SPY", "QQQ", "DIA", "DGS10", "DTWEXBGS", "GLD", "WTI", "BTC/USD"}
+# 2026-08-25 所有者决定：标普500与纳斯达克100两张ETF代理卡撤下，核心资产收敛为
+# 六项（两项免费嵌入代理 + 四项站内官方管道）；纳斯达克不再由其他标的顶替。
+EXPECTED_SYMBOLS = {"DIA", "DGS10", "DTWEXBGS", "GLD", "WTI", "BTC/USD"}
 EXPECTED_PROXIES = {
-    "sp500": ("SPY", "SPX", "AMEX:SPY"),
-    "nasdaq100": ("QQQ", "NDX", "NASDAQ:QQQ"),
     "dow": ("DIA", "DJIA", "AMEX:DIA"),
     "gold": ("GLD", "LBMA-GOLD-PM-USD", "AMEX:GLD"),
 }
@@ -906,11 +906,11 @@ const currentNow = new Date(currentLatestMs + 6 * 60 * 60 * 1000);
 const marketLicenseState = adapter.adaptMarketLicenseReadiness(marketLicenseReadiness);
 assert.strictEqual(marketLicenseState.status, "free");
 assert.strictEqual(marketLicenseState.strategy, "free-embedded-proxy");
-assert.strictEqual(marketLicenseState.proxyAssets, 4);
+assert.strictEqual(marketLicenseState.proxyAssets, marketLicenseReadiness.assets.length);
 assert.strictEqual(marketLicenseState.provider, "TradingView");
 assert.strictEqual(marketLicenseState.cost, "free");
 assert.strictEqual(marketLicenseState.rawMarketDataStored, false);
-assert.deepStrictEqual(marketLicenseState.targets, ["SPY", "QQQ", "DIA", "GLD"]);
+assert.deepStrictEqual(marketLicenseState.targets, ["DIA", "GLD"]);
 const disguisedMarketProxy = JSON.parse(JSON.stringify(marketLicenseReadiness));
 disguisedMarketProxy.assets[0].proxy.isSameInstrument = true;
 assert.throws(() => adapter.adaptMarketLicenseReadiness(disguisedMarketProxy), /冒充原标的/);
@@ -1290,8 +1290,9 @@ const unavailableBitcoinPage = adapter.buildPageData(
 );
 assert.strictEqual(unavailableBitcoinPage.assets.find((asset) => asset.id === "bitcoin").status, "error");
 assert.strictEqual(unavailableBitcoinPage.assets.find((asset) => asset.id === "us10y").price, dgs10.price);
-assert.strictEqual(success.assets.filter((asset) => asset.demo === false).length, 8);
-assert.strictEqual(success.assets.filter((asset) => asset.externalDisplay).length, 4);
+assert.strictEqual(success.assets.filter((asset) => asset.demo === false).length, config.assets.length);
+assert.strictEqual(success.assets.filter((asset) => asset.externalDisplay).length,
+  config.assets.filter((asset) => asset.externalDisplay).length);
 assert.strictEqual(success.assets.filter((asset) => asset.demo === true).length, 0);
 /* 页面状态是各卡状态的汇总，不能写死某个值——那会随当天真实数据变化，
    此前它之所以恒为 stale，正是因为 DTWEXBGS 被日频阈值误判。
@@ -2384,21 +2385,22 @@ def main() -> None:
         "DGS10" in data.get("source", "") and "DTWEXBGS" in data.get("source", "")
         and "RWTC" in data.get("source", "") and "CoinGecko" in data.get("source", "")
         and "Yahoo Finance" in data.get("source", "") and "TradingView" in data.get("source", "")
-        and "SPY" in data.get("source", "") and "GLD" in data.get("source", ""),
+        and "DIA" in data.get("source", "") and "GLD" in data.get("source", ""),
         "总来源必须同时标注四项站内行情与TradingView免费代理",
     )
     parse_iso(data["updatedAt"])
 
     assets = data.get("assets")
-    require(isinstance(assets, list) and len(assets) == 8, "必须且只能包含8项核心资产")
+    require(isinstance(assets, list) and len(assets) == 6, "必须且只能包含6项核心资产")
     require({asset.get("symbol") for asset in assets} == EXPECTED_SYMBOLS, "资产代码与需求不一致")
-    require(len({asset.get("id") for asset in assets}) == 8, "资产ID必须唯一")
+    require(len({asset.get("id") for asset in assets}) == len(assets), "资产ID必须唯一")
 
     demo_assets = [asset for asset in assets if asset.get("demo") is True]
-    require(not demo_assets, "四项免费代理接入后不得保留演示资产")
+    require(not demo_assets, "免费代理接入后不得保留演示资产")
     proxy_configs = [asset for asset in assets if asset.get("id") in EXPECTED_PROXIES]
     real_configs = [asset for asset in assets if asset.get("id") in {"us10y", "dxy", "wti", "bitcoin"}]
-    require(len(proxy_configs) == 4, "三大股指与黄金必须恰有4项免费ETF代理")
+    require(len(proxy_configs) == len(EXPECTED_PROXIES),
+            "免费ETF代理项数必须与已登记的代理契约一致")
     require(len(real_configs) == 4, "站内真实数据配置必须是us10y、dxy、wti与bitcoin")
 
     for asset in assets:
@@ -2823,8 +2825,8 @@ def main() -> None:
     # 20,000 是在分区内容还没被发现遭裁切时定的。补上「分区内那一层也要能缩」与
     # 遥测面板第三行两处修复、连同解释它们为何存在的注释后需要 20.7KB；换回的是
     # OFR 卡片与运行证据面板不再被裁掉 137px 与 201px，收益率曲线入口不再缺 6px。
-    # 23,000：一屏总览把研究与运维两块移出栅格、给品类行情板排位并做紧凑化后的增量。
-    require(COMMAND_CENTER_CSS.stat().st_size <= 23_000, "金融终端单屏指挥中心样式超过23KB性能预算")
+    # 24,000：一屏总览把主行让给品类行情、核心资产退到第三行并做紧凑化后的增量。
+    require(COMMAND_CENTER_CSS.stat().st_size <= 24_000, "金融终端单屏指挥中心样式超过24KB性能预算")
     require(VISUAL_FIDELITY_CSS.stat().st_size <= 6_000, "金融终端高保真视觉层超过6KB性能预算")
     require(REFERENCE_FIDELITY_CSS.stat().st_size <= 12_400, "金融终端参考图精修层超过12.4KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
@@ -2835,8 +2837,8 @@ def main() -> None:
     # 语义（页面现在有跨资产周期与品类行情板两组），核对六个品类标签、当前品类的
     # 价格/涨跌列、折叠按钮默认收起、搜索框与逐行自选开关，并在量尺寸前记下两个
     # 工程/运营向分区折叠壳的默认状态。该模块只在 regression=1 时加载。
-    require(REGRESSION_MODULE.stat().st_size <= 23_000,
-            "仅回归模式加载的浏览器探针超过23KB性能预算")
+    require(REGRESSION_MODULE.stat().st_size <= 24_000,
+            "仅回归模式加载的浏览器探针超过24KB性能预算")
     require(BOARD_DATA_MODULE.stat().st_size <= 19_000,
             "按需加载的品类行情板数据层超过19KB性能预算")
     require(BOARD_VIEW_MODULE.stat().st_size <= 18_000,
@@ -3048,7 +3050,7 @@ def main() -> None:
     privacy_page = PRIVACY_PAGE.read_text(encoding="utf-8")
     legal_css = LEGAL_CSS.read_text(encoding="utf-8")
     home = HOME.read_text(encoding="utf-8")
-    require("4项站内真实数据与4项TradingView免费ETF代理" in page,
+    require("4项站内真实数据与2项TradingView免费ETF代理" in page,
             "页面首屏缺少免费数据覆盖提示")
     require("FRED API使用条款" in page
             and "未获圣路易斯联储、EIA或TradingView认可或认证" in page,
@@ -3083,7 +3085,7 @@ def main() -> None:
         require(all('rel="noopener noreferrer"' in tag
                     for tag in re.findall(r'<a[^>]+target="_blank"[^>]*>', legal_page)),
                 "法律页面外链必须隔离新窗口上下文")
-    require("SPY、QQQ、DIA与GLD分别仅作为SPX、NDX、DJIA与LBMA Gold Price PM的免费ETF代理" in page
+    require("DIA与GLD分别仅作为DJIA与LBMA Gold Price PM的免费ETF代理" in page
             and "不是同一原标的" in page
             and "不抓取、不导出、不保存" in page,
             "页面未披露免费ETF代理与原标的边界")
@@ -3394,12 +3396,12 @@ def main() -> None:
             and "verifyProviderWidgetHosts" in app and "monitorProviderWidgets" in app
             and "providerWidgetRuntime" in regression_module and "providerWidgetRuntimeStates" in regression_module
             and "providerWidgetRuntimeEvidence" in regression_module,
-            "页面未验证或回归四项免费组件的注册与宿主挂载状态")
+            "页面未验证或回归免费组件的注册与宿主挂载状态")
     require('data-provider-state", "loading"' in app
             and "组件已注册 · 正在验证宿主" in app
             and "组件宿主已挂载 · 报价状态见组件" in app
             and "组件未加载 · 使用来源链接" in app,
-            "四项免费组件缺少加载、注册、宿主挂载或官方链接回退状态")
+            "免费组件缺少加载、注册、宿主挂载或官方链接回退状态")
     require("providerWidgetUnavailableCopy" in app
             and "组件加载超时 · 使用来源链接" in app
             and "组件注册失败 · 使用来源链接" in app
@@ -3486,7 +3488,7 @@ def main() -> None:
             "浏览器回归脚本未覆盖三档宽度、官方趋势、稳定V1证据、渲染DOM和截图")
     browser_evidence = BROWSER_EVIDENCE.read_text(encoding="utf-8")
     require("EXPECTED_WIDTHS = [360, 768, 1280]" in browser_evidence
-            and 'EXPECTED_SYMBOLS = ["SPY", "QQQ", "DIA", "GLD"]' in browser_evidence
+            and 'EXPECTED_SYMBOLS = ["DIA", "GLD"]' in browser_evidence
             and "EXPECTED_PROVIDER_SCRIPT" in browser_evidence
             and "providerScriptLoadedViewports" in browser_evidence
             and "providerScriptFailedViewports" in browser_evidence

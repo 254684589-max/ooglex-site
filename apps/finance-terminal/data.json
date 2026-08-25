@@ -5,57 +5,9 @@
   "frequency": "daily",
   "asOf": "2026-08-12",
   "updatedAt": "2026-08-12T09:15:17Z",
-  "source": "TradingView官方免费组件（SPY / QQQ / DIA / GLD代理）· FRED H.15（DGS10）· FRED H.10（DTWEXBGS自动更新）· U.S. EIA（RWTC现货）· CoinGecko / Yahoo Finance（BTC/USD）",
-  "note": "SPY、QQQ、DIA与GLD通过TradingView官方免费组件在浏览器中展示，不抓取或保存原始行情；四项均为显式ETF代理。其余4项继续读取站内免密钥或官方公共数据管道。",
+  "source": "TradingView官方免费组件（DIA / GLD代理）· FRED H.15（DGS10）· FRED H.10（DTWEXBGS自动更新）· U.S. EIA（RWTC现货）· CoinGecko / Yahoo Finance（BTC/USD）",
+  "note": "DIA与GLD通过TradingView官方免费组件在浏览器中展示，不抓取或保存原始行情；两项均为显式ETF代理。其余4项继续读取站内免密钥或官方公共数据管道。标普500的点位可在「品类行情」的指数类查看（来自跨资产管道的^GSPC）；纳斯达克在删除QQQ代理卡后本页不再展示，未用其他标的顶替。",
   "assets": [
-    {
-      "id": "sp500",
-      "name": "标普500 ETF代理",
-      "nameEn": "SPDR S&P 500 ETF Trust",
-      "symbol": "SPY",
-      "category": "美国股市 / ETF代理",
-      "demo": false,
-      "status": "provider",
-      "frequency": "provider-managed",
-      "delayLabel": "免费嵌入 · 时效由TradingView标注",
-      "instrument": "etf-proxy",
-      "price": null,
-      "decimals": 2,
-      "prefix": "",
-      "suffix": "",
-      "changePct": null,
-      "asOf": null,
-      "updatedAt": null,
-      "source": {"name": "TradingView免费组件", "url": "https://www.tradingview.com/symbols/AMEX-SPY/"},
-      "externalDisplay": {"provider": "TradingView", "widget": "tv-mini-chart", "widgetSymbol": "AMEX:SPY", "rawDataStored": false},
-      "proxyFor": {"symbol": "SPX", "instrument": "S&P 500 Price Index", "isSameInstrument": false},
-      "note": "SPY是跟踪标普500的ETF代理，不是SPX指数；价格、涨跌和延迟状态由TradingView组件直接标注。",
-      "spark": []
-    },
-    {
-      "id": "nasdaq100",
-      "name": "纳斯达克100 ETF代理",
-      "nameEn": "Invesco QQQ Trust",
-      "symbol": "QQQ",
-      "category": "美国股市 / ETF代理",
-      "demo": false,
-      "status": "provider",
-      "frequency": "provider-managed",
-      "delayLabel": "免费嵌入 · 时效由TradingView标注",
-      "instrument": "etf-proxy",
-      "price": null,
-      "decimals": 2,
-      "prefix": "",
-      "suffix": "",
-      "changePct": null,
-      "asOf": null,
-      "updatedAt": null,
-      "source": {"name": "TradingView免费组件", "url": "https://www.tradingview.com/symbols/NASDAQ-QQQ/"},
-      "externalDisplay": {"provider": "TradingView", "widget": "tv-mini-chart", "widgetSymbol": "NASDAQ:QQQ", "rawDataStored": false},
-      "proxyFor": {"symbol": "NDX", "instrument": "Nasdaq-100 Price Index", "isSameInstrument": false},
-      "note": "QQQ是跟踪纳斯达克100的ETF代理，不是NDX指数；价格、涨跌和延迟状态由TradingView组件直接标注。",
-      "spark": []
-    },
     {
       "id": "dow",
       "name": "道琼斯 ETF代理",
@@ -74,9 +26,21 @@
       "changePct": null,
       "asOf": null,
       "updatedAt": null,
-      "source": {"name": "TradingView免费组件", "url": "https://www.tradingview.com/symbols/AMEX-DIA/"},
-      "externalDisplay": {"provider": "TradingView", "widget": "tv-mini-chart", "widgetSymbol": "AMEX:DIA", "rawDataStored": false},
-      "proxyFor": {"symbol": "DJIA", "instrument": "Dow Jones Industrial Average", "isSameInstrument": false},
+      "source": {
+        "name": "TradingView免费组件",
+        "url": "https://www.tradingview.com/symbols/AMEX-DIA/"
+      },
+      "externalDisplay": {
+        "provider": "TradingView",
+        "widget": "tv-mini-chart",
+        "widgetSymbol": "AMEX:DIA",
+        "rawDataStored": false
+      },
+      "proxyFor": {
+        "symbol": "DJIA",
+        "instrument": "Dow Jones Industrial Average",
+        "isSameInstrument": false
+      },
       "note": "DIA是跟踪道琼斯工业平均指数的ETF代理，不是DJIA指数；价格、涨跌和延迟状态由TradingView组件直接标注。",
       "spark": []
     },
@@ -155,9 +119,21 @@
       "changePct": null,
       "asOf": null,
       "updatedAt": null,
-      "source": {"name": "TradingView免费组件", "url": "https://www.tradingview.com/symbols/AMEX-GLD/"},
-      "externalDisplay": {"provider": "TradingView", "widget": "tv-mini-chart", "widgetSymbol": "AMEX:GLD", "rawDataStored": false},
-      "proxyFor": {"symbol": "LBMA-GOLD-PM-USD", "instrument": "LBMA Gold Price PM", "isSameInstrument": false},
+      "source": {
+        "name": "TradingView免费组件",
+        "url": "https://www.tradingview.com/symbols/AMEX-GLD/"
+      },
+      "externalDisplay": {
+        "provider": "TradingView",
+        "widget": "tv-mini-chart",
+        "widgetSymbol": "AMEX:GLD",
+        "rawDataStored": false
+      },
+      "proxyFor": {
+        "symbol": "LBMA-GOLD-PM-USD",
+        "instrument": "LBMA Gold Price PM",
+        "isSameInstrument": false
+      },
       "note": "GLD是黄金ETF代理，不是现货黄金或LBMA定盘价；价格、涨跌和延迟状态由TradingView组件直接标注。",
       "spark": []
     },

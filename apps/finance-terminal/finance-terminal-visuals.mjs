@@ -146,7 +146,9 @@ export function createTerminalVisuals(dependencies = {}) {
     const track = document.getElementById("market-tape");
     if (!track) return;
     track.textContent = "";
-    if (!Array.isArray(assets) || assets.length !== 8) {
+    /* 核心资产条数随所有者的展示决定变化（2026-08-25 由8项收敛为6项），
+       行情带只要求「有资产可播」，具体条数由 data.json 的契约校验负责。 */
+    if (!Array.isArray(assets) || !assets.length) {
       const unavailable = document.createElement("span");
       unavailable.className = "market-tape-loading";
       unavailable.textContent = "核心资产状态不可用";

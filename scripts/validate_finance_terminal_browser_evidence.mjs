@@ -9,10 +9,8 @@ import {
   validateBrowserEvidence
 } from "./finance_terminal_browser_evidence.mjs";
 
-const symbols = ["SPY", "QQQ", "DIA", "GLD"];
+const symbols = ["DIA", "GLD"];
 const fallbackUrls = {
-  SPY: "https://www.tradingview.com/symbols/AMEX-SPY/",
-  QQQ: "https://www.tradingview.com/symbols/NASDAQ-QQQ/",
   DIA: "https://www.tradingview.com/symbols/AMEX-DIA/",
   GLD: "https://www.tradingview.com/symbols/AMEX-GLD/"
 };
@@ -60,11 +58,14 @@ const results = widths.map((width, widthIndex) => ({
 }));
 
 const evidence = buildBrowserEvidence(results, "2026-08-13T08:00:00Z");
-assert.equal(evidence.summary.observationCount, 12);
-assert.equal(evidence.summary.mountedObservations, 6);
-assert.equal(evidence.summary.fallbackObservations, 6);
-assert.equal(evidence.summary.verifiedFallbackObservations, 6);
-assert.equal(evidence.summary.hiddenFallbackObservations, 6);
+assert.equal(evidence.summary.observationCount, widths.length * symbols.length);
+/* 夹具按 (视口序号 + 标的序号) 的奇偶交替挂载，因此挂载与回退各占一半；
+   代理项数变化时这里跟着算，不写死具体数字。 */
+const halfObservations = (widths.length * symbols.length) / 2;
+assert.equal(evidence.summary.mountedObservations, halfObservations);
+assert.equal(evidence.summary.fallbackObservations, halfObservations);
+assert.equal(evidence.summary.verifiedFallbackObservations, halfObservations);
+assert.equal(evidence.summary.hiddenFallbackObservations, halfObservations);
 assert.equal(evidence.summary.providerScriptLoadedViewports, 1);
 assert.equal(evidence.summary.providerScriptFailedViewports, 1);
 assert.equal(evidence.summary.providerScriptPendingViewports, 1);
@@ -113,7 +114,7 @@ wrongSymbol.viewports[1].proxies[0].symbol = "SPX";
 assert.throws(() => validateBrowserEvidence(wrongSymbol), /代理顺序或代码无效/);
 
 const wrongFallbackUrl = structuredClone(evidence);
-wrongFallbackUrl.viewports[0].proxies[0].fallbackUrl = "https://example.com/SPY";
+wrongFallbackUrl.viewports[0].proxies[0].fallbackUrl = "https://example.com/DIA";
 assert.throws(() => validateBrowserEvidence(wrongFallbackUrl), /官方回退链接无效/);
 
 const hiddenRequiredFallback = structuredClone(evidence);
@@ -129,7 +130,7 @@ unverifiedMount.viewports[0].proxies[0].reason = "custom-element-registered";
 assert.throws(() => validateBrowserEvidence(unverifiedMount), /宿主挂载证据无效/);
 
 const forgedSummary = structuredClone(evidence);
-forgedSummary.summary.mountedObservations = 12;
+forgedSummary.summary.mountedObservations = widths.length * symbols.length;
 assert.throws(() => validateBrowserEvidence(forgedSummary), /汇总不可由逐视口状态复算/);
 
 const scriptLeak = structuredClone(evidence);
@@ -157,7 +158,7 @@ forgedDiagnosis.viewports[0].diagnosis = { state: "healthy", reason: "all-hosts-
 assert.throws(() => validateBrowserEvidence(forgedDiagnosis), /关联诊断不可由脚本传输与宿主状态复算/);
 
 console.log("Finance Terminal proxy browser evidence contract: PASS");
-console.log("- 360 / 768 / 1280px · SPY / QQQ / DIA / GLD: PASS");
+console.log(`- 360 / 768 / 1280px · ${symbols.join(" / ")}: PASS`);
 console.log("- mounted vs official-link fallback reasons: PASS");
 console.log("- exact allowlisted official fallback URL and state-linked visibility: PASS");
 console.log("- allowlisted provider script request / response / cache / failure states: PASS");
