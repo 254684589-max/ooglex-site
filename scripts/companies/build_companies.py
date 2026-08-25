@@ -33,6 +33,7 @@ from market_data_quality import (  # noqa: E402
     make_data_meta,
     summarize_data_quality,
 )
+from market_history import build_rolling_history  # noqa: E402
 from market_source_health import (  # noqa: E402
     load_json as load_health_json,
     make_source_health,
@@ -41,6 +42,12 @@ from market_source_health import (  # noqa: E402
 
 OUT_PATH = os.path.join("apps", "companies", "data.json")
 HEALTH_PATH = os.path.join("apps", "companies", "health.json")
+HISTORY_PATH = os.path.join("apps", "companies", "history.json")
+HISTORY_SYMBOLS = 40     # 只给市值最高的一段存日线：金融终端品类行情板按这份历史画走势
+HISTORY_POINTS = 260     # 滚动保留约一年交易日，文件大小恒定而非逐日增长
+HISTORY_NOTE = ("市值前列上市公司自身收盘价的滚动历史，与 data.json 同一次取数、同一来源；"
+                "共享日期轴上该标的当日无收盘则为 null，不做前向填充。"
+                "本轮未取到的标的沿用上次序列，不补造新点。")
 UNI_PATH = os.path.join(HERE, "universe.json")
 LOGO_DIR = os.path.join("apps", "companies", "logos")
 TOP_N = 500
@@ -69,6 +76,53 @@ def yf_chart(session, symbol):
         except Exception:
             continue
     return None
+
+
+def yf_daily_closes(session, symbol, rng="1y"):
+    """取单只日线收盘序列 [(YYYY-MM-DD, close), ...]；任何异常都返回空列表。"""
+    sym = requests.utils.quote(symbol)
+    for host in YF_HOSTS:
+        try:
+            r = session.get(
+                f"https://{host}/v8/finance/chart/{sym}?range={rng}&interval=1d", timeout=12)
+            if r.status_code != 200:
+                continue
+            res = (r.json().get("chart", {}).get("result") or [{}])[0]
+            stamps = res.get("timestamp") or []
+            quote = (res.get("indicators", {}).get("quote") or [{}])[0]
+            closes = quote.get("close") or []
+            points = [(datetime.fromtimestamp(t, timezone.utc).strftime("%Y-%m-%d"), float(c))
+                      for t, c in zip(stamps, closes)
+                      if isinstance(t, (int, float)) and isinstance(c, (int, float))]
+            if len(points) >= 2:
+                return points
+        except Exception:
+            continue
+    return []
+
+
+def write_history(session, rows, run_updated_at):
+    """给市值前列的上市公司补一份滚动日线历史；失败只跳过，绝不影响已写好的 data.json。"""
+    symbols = [r["symbol"] for r in rows
+               if not r.get("private") and r.get("symbol") and r["symbol"] != "—"][:HISTORY_SYMBOLS]
+    collected = {}
+    for sym in symbols:
+        points = yf_daily_closes(session, sym)
+        if points:
+            collected[sym] = points
+        time.sleep(0.12)
+    history, retained = build_rolling_history(
+        collected, load_json(HISTORY_PATH), run_updated_at,
+        source="Yahoo Finance", note=HISTORY_NOTE, limit=HISTORY_POINTS)
+    if not history:
+        print("日线序列本轮全部失败，保留上次 history.json（不写空数据）")
+        return None
+    history["symbols"] = symbols
+    with open(HISTORY_PATH, "w", encoding="utf-8") as f:
+        json.dump(history, f, ensure_ascii=False, separators=(",", ":"))
+    print(f"日线历史：{len(collected)}/{len(symbols)} 只本轮取到，"
+          f"{len(retained)} 只沿用上次，共 {history['points']} 个交易日")
+    return history
 
 
 def fx_to_usd(session):
@@ -265,6 +319,12 @@ def build():
     write_health(HEALTH_PATH, health)
     print(f"写入 {OUT_PATH}：{len(rows)} 家（上市 {n_listed} + 非上市 {len(private_rows)}），"
           f"榜首 {rows[0]['nameEn']} ${rows[0]['marketCap']}B，总市值 ${data['totalMarketCap'] / 1000:.2f}T")
+
+    # 历史序列是附加产物：放在主快照之后，任何失败都只跳过它，不影响已经写好的 data.json
+    try:
+        write_history(session, rows, run_updated_at)
+    except Exception as error:                       # noqa: BLE001 - 附加产物不得拖垮主管道
+        print(f"日线历史构建异常：{error}；保留上次 history.json")
 
 
 if __name__ == "__main__":

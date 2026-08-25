@@ -13,8 +13,9 @@ export const BOARD_CATEGORIES = Object.freeze([
     directionLabels: { up: "上行", down: "下行" } }
 ]);
 
-/* 股票只取市值最高的一段：全部450家在自选页面完整展示，这里避免一次插入几百行。 */
-export const STOCK_ROW_LIMIT = 60;
+/* 股票只取市值最高的一段：与公司榜日线历史覆盖的标的数一致，让每一行都能画走势；
+   全部500家仍在全球公司榜页面完整展示。 */
+export const STOCK_ROW_LIMIT = 40;
 
 /* 指数所属地区只用于分组说明，不参与任何计算。 */
 const INDEX_REGION = Object.freeze({
@@ -232,12 +233,46 @@ function stockRows(companies) {
         proxyOf: "",
         currency: item.priceCur || "",
         unit: item.priceCur || "",
-        series: null
+        series: { kind: "company", key: item.symbol }
       };
     });
 }
 
-/* 资产榜 → 加密行。涨跌口径是 CoinGecko 的24小时变动，与股票的当日口径不同。 */
+/* 加密品类板 → 加密行。行情与日线来自同一次 CoinGecko 取数，涨跌是24小时口径。 */
+function cryptoBoardRows(board) {
+  const list = board && Array.isArray(board.assets) ? board.assets : [];
+  return list
+    .filter((item) => item && isFiniteNumber(item.price) && item.symbol)
+    .map((item) => {
+      const meta = item.dataMeta || {};
+      return {
+        id: `crypto:${item.symbol}`,
+        name: item.name,
+        nameEn: item.nameEn || "",
+        symbol: item.symbol,
+        priceText: formatPrice(item.price),
+        price: item.price,
+        change: formatChange(item.changePct, "pct"),
+        changeBasis: "过去24小时",
+        extraText: formatMarketCap(item.marketCap),
+        asOf: formatAsOf(meta.asOf || board.asOf),
+        updatedAt: meta.updatedAt || board.updatedAt || "",
+        frequency: meta.frequency || board.frequency || "",
+        sourceName: meta.source || board.source || "CoinGecko",
+        sourceUrl: item.id
+          ? `https://www.coingecko.com/en/coins/${encodeURIComponent(item.id)}`
+          : "https://www.coingecko.com/",
+        status: statusOf(meta, item.stale),
+        note: "",
+        proxyOf: "",
+        currency: "USD",
+        unit: "USD",
+        series: { kind: "cryptoBoard", key: item.symbol }
+      };
+    });
+}
+
+/* 资产榜 → 加密行（加密品类板尚未生成时的回退）。同样是24小时口径，但没有日线。 */
 function cryptoRows(assetRanking) {
   const list = assetRanking && Array.isArray(assetRanking.assets) ? assetRanking.assets : [];
   return list
@@ -315,7 +350,10 @@ function categoryRows(key, sources) {
     const broadRow = referenceRow(broad, "fx", { decimals: 4, extraText: "贸易加权指数" });
     return broadRow ? rows.concat([broadRow]) : rows;
   }
-  if (key === "crypto") return cryptoRows(assetRanking);
+  if (key === "crypto") {
+    const fromBoard = cryptoBoardRows(sources.cryptoBoard);
+    return fromBoard.length ? fromBoard : cryptoRows(assetRanking);
+  }
   if (key === "bond") {
     return curveRows(curve).concat(
       trackerAssets(assetTracker, "bond").map((asset) => trackerRow(asset, "bond", { extraText: "ETF代理" }))
@@ -336,12 +374,19 @@ export function buildBoard(group = {}) {
     }
     return entry.data;
   }
+  /* 加密品类板是后补的可选文件：首次日更任务跑完之前它可能不存在，
+     那不是管线故障，只回退到资产榜里已有的加密条目，不写进失败清单。 */
+  function pickOptional(key) {
+    const entry = group[key];
+    return entry && !entry.error ? entry.data : null;
+  }
   const sources = {
     assetTracker: pick("assetTracker", "跨资产管道"),
     companies: pick("companies", "公司榜"),
     assetRanking: pick("assetRanking", "资产榜"),
     macro: pick("macro", "宏观雷达"),
-    curve: pick("macroCurve", "美债收益率曲线")
+    curve: pick("macroCurve", "美债收益率曲线"),
+    cryptoBoard: pickOptional("assetRankingCrypto")
   };
   const categories = BOARD_CATEGORIES.map((category) => {
     const rows = categoryRows(category.key, sources);
@@ -363,6 +408,8 @@ export function buildBoard(group = {}) {
     status: withRows.length === categories.length ? "ok" : (withRows.length ? "partial" : "error"),
     failures,
     curveHistory: sources.curve && sources.curve.history ? sources.curve.history : null,
+    cryptoHistory: sources.cryptoBoard && sources.cryptoBoard.history
+      ? sources.cryptoBoard.history : null,
     summaryText: total
       ? `${withRows.length}/${categories.length}类 · ${total}项标的`
       : "品类行情暂不可用"

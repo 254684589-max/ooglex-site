@@ -38,22 +38,22 @@ async function validateResourceStages() {
   assert.equal(loader.snapshot().requestCount, 6, "首屏应读取1份配置与5份核心资源");
 
   await loader.loadGroup("board");
-  assert.equal(loader.snapshot().sourceRequestCount, 8,
-    "品类行情板只新增跨资产、公司与美债曲线三份数据，宏观与资产榜沿用首屏已加载资源");
+  assert.equal(loader.snapshot().sourceRequestCount, 9,
+    "品类行情板只新增跨资产、公司、加密品类板与美债曲线四份数据，宏观与资产榜沿用首屏已加载资源");
   await loader.loadGroup("research");
-  assert.equal(loader.snapshot().sourceRequestCount, 10, "研究区应复用行情板已加载的行情数据，只补两份健康快照");
+  assert.equal(loader.snapshot().sourceRequestCount, 11, "研究区应复用行情板已加载的行情数据，只补两份健康快照");
   await loader.loadGroup("operations");
-  assert.equal(loader.snapshot().sourceRequestCount, 11, "运行证据区应复用宏观、资产榜、跨资产与公司资源");
+  assert.equal(loader.snapshot().sourceRequestCount, 12, "运行证据区应复用宏观、资产榜、跨资产与公司资源");
   await Promise.all([loader.loadGroup("risk"), loader.loadGroup("information")]);
   const snapshot = loader.snapshot();
-  assert.equal(snapshot.sourceRequestCount, 19, "全页最终应覆盖17份上游与2份本地证据资源");
-  assert.equal(calls.length, 20, "同一资源不得因跨分区复用而重复请求");
+  assert.equal(snapshot.sourceRequestCount, 20, "全页最终应覆盖18份上游与2份本地证据资源");
+  assert.equal(calls.length, 21, "同一资源不得因跨分区复用而重复请求");
   assert.equal(new Set(calls.map((call) => call.url)).size, calls.length, "请求URL必须唯一");
   assert.ok(calls.every((call) => call.options.cache === "no-store"), "静态金融快照必须保留no-store请求契约");
   assert.deepEqual(snapshot.groupLoadSequence,
     ["critical", "board", "research", "operations", "risk", "information"],
     "加载证据必须保留实际分区启动顺序");
-  assert.equal(snapshot.networkRequestCount, 20);
+  assert.equal(snapshot.networkRequestCount, 21);
   assert.equal(snapshot.duplicateNetworkRequestCount, 0, "共享资源不得产生重复网络请求");
   assert.ok(Object.values(snapshot.requestStates).every((state) => state === "ready"));
 }
@@ -404,7 +404,7 @@ function validateOperationsViewContract() {
 
 async function main() {
   assert.equal(financeTerminalResourceContract.criticalSourceCount, 5);
-  assert.equal(financeTerminalResourceContract.upstreamSourceCount, 17);
+  assert.equal(financeTerminalResourceContract.upstreamSourceCount, 18);
   assert.equal(financeTerminalResourceContract.localEvidenceSourceCount, 2);
   assert.equal(typeof runBrowserRegressionProbe, "function");
   await validateResourceStages();
@@ -419,7 +419,7 @@ async function main() {
   validateInformationViewContract();
   validateOperationsViewContract();
   console.log("Finance Terminal staged loader contract: PASS");
-  console.log("- 5 critical sources / 14 deferred sources / 19 unique source requests: PASS");
+  console.log("- 5 critical sources / 15 deferred sources / 20 unique source requests: PASS");
   console.log("- viewport and section-navigation activation / shared request cache: PASS");
   console.log("- scroll-past immunity / dwell activation / multi-trigger section: PASS");
   console.log("- per-source HTTP failure isolation / no-store snapshots: PASS");

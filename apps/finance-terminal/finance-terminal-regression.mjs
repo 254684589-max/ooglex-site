@@ -145,8 +145,8 @@ export function runBrowserRegressionProbe(options = {}) {
     }) && !document.querySelector(".load-error"),
     stagedDataLoading: stagedLoad.mode === "eager"
       && stagedLoad.criticalSourceRequestCount === 5
-      && stagedLoad.sourceRequestCount === 19
-      && stagedLoad.requestCount === 20
+      && stagedLoad.sourceRequestCount === 20
+      && stagedLoad.requestCount === 21
       && stagedLoad.criticalPaintBarrier?.status === "yielded"
       && sameSequence(stagedLoad.startupOrder,
         ["critical-rendered", "critical-paint-yielded", "deferred-scheduler-started"])
@@ -156,9 +156,9 @@ export function runBrowserRegressionProbe(options = {}) {
       && Array.isArray(stagedLoad.loadedSections) && stagedLoad.loadedSections.length === 5
       && Array.isArray(stagedLoad.failedSections) && stagedLoad.failedSections.length === 0
       && Array.isArray(stagedLoad.settledSections) && stagedLoad.settledSections.length === 5
-      && stagedLoad.networkRequestCount === 20
+      && stagedLoad.networkRequestCount === 21
       && stagedLoad.duplicateNetworkRequestCount === 0
-      && requestStates.length === 20 && requestStates.every((state) => state === "ready")
+      && requestStates.length === 21 && requestStates.every((state) => state === "ready")
       && hasCompleteSectionTransitions(stagedLoad.sectionTransitions),
     supportingHealthResources: supportingHealthPanels.length === 4
       && supportingHealthPanels.every((panel) => panel.textContent.indexOf("更新链健康不可用") === -1),

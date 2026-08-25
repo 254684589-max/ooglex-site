@@ -1,0 +1,12 @@
+{
+  "updatedAt": null,
+  "asOf": null,
+  "source": "Yahoo Finance",
+  "frequency": "daily",
+  "status": "pending",
+  "points": 0,
+  "note": "市值前列上市公司的滚动日线历史占位文件：首次由 scripts/companies/build_companies.py 生成前没有任何观测，因此 dates 与 series 为空。页面在这里为空时如实显示“站内暂无历史序列”，不用推断值顶替。",
+  "symbols": [],
+  "dates": [],
+  "series": {}
+}

@@ -10,6 +10,7 @@ const RESOURCE_PATHS = Object.freeze({
   assetTrackerHealth: "../asset-tracker/health.json",
   assetRanking: "../asset-ranking/data.json",
   assetRankingHealth: "../asset-ranking/health.json",
+  assetRankingCrypto: "../asset-ranking/crypto.json",
   companies: "../companies/data.json",
   companiesHealth: "../companies/health.json",
   calendar: "../econ-calendar/data.json",
@@ -27,7 +28,7 @@ const RESOURCE_GROUPS = Object.freeze({
   /* 品类行情板只读行情本身：逐行的来源、数据日与过期状态来自这四份数据文件，
      逐源更新链健康归市场研究与运行证据分区，行情板不重复请求。 */
   board: Object.freeze([
-    "assetTracker", "assetRanking", "companies", "macro", "macroCurve"
+    "assetTracker", "assetRanking", "assetRankingCrypto", "companies", "macro", "macroCurve"
   ]),
   risk: Object.freeze([
     "macro", "fearGreed", "fearGreedHealth", "ofr", "ofrHealth"
@@ -399,6 +400,6 @@ export const financeTerminalResourceContract = Object.freeze({
   paths: RESOURCE_PATHS,
   groups: RESOURCE_GROUPS,
   criticalSourceCount: RESOURCE_GROUPS.critical.length,
-  upstreamSourceCount: 17,
+  upstreamSourceCount: 18,
   localEvidenceSourceCount: 2
 });

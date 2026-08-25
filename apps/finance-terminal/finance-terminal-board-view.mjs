@@ -64,9 +64,11 @@ export function rangeChange(values, isYield) {
   return `${pct > 0 ? "+" : ""}${pct.toFixed(2)}%`;
 }
 
-/* 序列解析：跨资产历史、美债曲线历史与宏观官方序列三种来源各自独立读取。 */
-async function resolveSeries(reference, curveHistory) {
+/* 序列解析：五种来源各自独立读取，缺哪一种就如实说没有，不互相顶替。 */
+async function resolveSeries(reference, bundles) {
   if (!reference) return null;
+  const curveHistory = bundles && bundles.curveHistory;
+  const cryptoHistory = bundles && bundles.cryptoHistory;
   if (reference.kind === "curve") {
     if (!curveHistory || !curveHistory.values) return null;
     return {
@@ -74,6 +76,25 @@ async function resolveSeries(reference, curveHistory) {
       values: curveHistory.values[reference.key] || [],
       source: "FRED / U.S. Treasury H.15",
       note: "十一个期限共享同一日期轴，某期限当日无观测即留空，不插值。"
+    };
+  }
+  if (reference.kind === "cryptoBoard") {
+    if (!cryptoHistory || !cryptoHistory.series || !cryptoHistory.series[reference.key]) return null;
+    return {
+      dates: cryptoHistory.dates || [],
+      values: cryptoHistory.series[reference.key],
+      source: cryptoHistory.source || "CoinGecko",
+      note: cryptoHistory.note || ""
+    };
+  }
+  if (reference.kind === "company") {
+    const history = await loadJson("../companies/history.json");
+    if (!history || !history.series || !history.series[reference.key]) return null;
+    return {
+      dates: history.dates || [],
+      values: history.series[reference.key],
+      source: history.source || "Yahoo Finance",
+      note: history.note || ""
     };
   }
   if (reference.kind === "tracker") {
@@ -135,7 +156,7 @@ function renderChart(document, box, item, series, rangeKey) {
 }
 
 /* 走势抽屉：先画来源与口径，再按区间画曲线；序列缺失时说明原因并给官方入口。 */
-async function openTrend(document, item, curveHistory) {
+async function openTrend(document, item, bundles) {
   const panel = openPanel(document, item.name,
     `${item.nameEn ? item.nameEn + " · " : ""}${item.symbol}`, `${item.name} 走势与数据口径`);
   const meta = section(document, panel, "来源与口径");
@@ -161,16 +182,17 @@ async function openTrend(document, item, curveHistory) {
 
   const box = section(document, panel, "站内历史走势");
   if (!item.series) {
-    note(document, box, "该品类目前只有站内日更的最新报价，没有可绘制的历史序列；"
+    note(document, box, "该标的目前只有站内日更的最新报价，没有可绘制的历史序列；"
       + "在日更管道补齐序列之前，这里不显示任何推断曲线。完整历史请前往上方官方来源。");
     return;
   }
   const loading = text(box, "p", "detail-note", "正在读取站内历史序列…");
-  const series = await resolveSeries(item.series, curveHistory);
+  const series = await resolveSeries(item.series, bundles);
   if (!isPanelOpen()) return;
   loading.remove();
   if (!series || !Array.isArray(series.values)) {
-    note(document, box, "站内历史文件里没有该标的的序列；日更任务补齐后此处会显示完整曲线。");
+    note(document, box, "站内历史文件里还没有该标的的序列；对应日更任务补齐后此处会显示完整曲线，"
+      + "在此之前不显示任何推断值。");
     return;
   }
   const tabs = text(box, "div", "board-range-tabs");
@@ -195,7 +217,7 @@ async function openTrend(document, item, curveHistory) {
   if (series.source) note(document, box, `序列来源：${series.source}。${series.note || ""}`);
 }
 
-function renderRows(document, host, category, curveHistory, expanded) {
+function renderRows(document, host, category, bundles, expanded) {
   host.textContent = "";
   if (!category.rows.length) {
     text(host, "p", "board-empty", "本类暂无可用数据；对应日更管道恢复后会自动出现。");
@@ -221,7 +243,7 @@ function renderRows(document, host, category, curveHistory, expanded) {
     text(change, "i", "board-arrow", item.change.arrow);
     text(change, "b", "", item.change.text);
     text(line, "span", "board-cell-extra", item.extraText || "—");
-    line.addEventListener("click", () => { openTrend(document, item, curveHistory); });
+    line.addEventListener("click", () => { openTrend(document, item, bundles); });
   });
   if (category.rows.length > category.collapseAfter) {
     const toggle = text(host, "button", "board-toggle",
@@ -229,7 +251,7 @@ function renderRows(document, host, category, curveHistory, expanded) {
     toggle.type = "button";
     toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
     toggle.addEventListener("click", () => {
-      renderRows(document, host, category, curveHistory, !expanded);
+      renderRows(document, host, category, bundles, !expanded);
       const next = host.querySelector(".board-toggle");
       if (next) next.focus();
     });
@@ -246,6 +268,7 @@ export function createBoardView(document) {
     tabsHost.textContent = "";
     panelHost.textContent = "";
     const expandedByKey = new Map();
+    const bundles = { curveHistory: board.curveHistory, cryptoHistory: board.cryptoHistory };
     let active = (board.categories.filter((category) => category.rows.length)[0]
       || board.categories[0]).key;
 
@@ -261,8 +284,7 @@ export function createBoardView(document) {
         summaryHost.textContent = `${category.label} · ${category.summary.text}`
           + (category.summary.asOf ? ` · 数据日 ${category.summary.asOf}` : "");
       }
-      renderRows(document, panelHost, category, board.curveHistory,
-        expandedByKey.get(active) === true);
+      renderRows(document, panelHost, category, bundles, expandedByKey.get(active) === true);
     }
 
     board.categories.forEach((category, index) => {

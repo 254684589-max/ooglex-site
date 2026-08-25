@@ -44,6 +44,7 @@ from market_data_quality import (  # noqa: E402
     make_data_meta,
     summarize_data_quality,
 )
+from market_history import build_rolling_history  # noqa: E402
 from market_source_health import (  # noqa: E402
     attach_upstream_health,
     load_json as load_health_json,
@@ -53,6 +54,7 @@ from market_source_health import (  # noqa: E402
 
 OUT_PATH = os.path.join("apps", "asset-ranking", "data.json")
 HEALTH_PATH = os.path.join("apps", "asset-ranking", "health.json")
+CRYPTO_BOARD_PATH = os.path.join("apps", "asset-ranking", "crypto.json")
 COMPANIES_PATH = os.path.join("apps", "companies", "data.json")
 COMPANIES_HEALTH_PATH = os.path.join("apps", "companies", "health.json")
 TOP_N = 250
@@ -61,6 +63,20 @@ YF_HEADERS = {"User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb
                              "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"), "Accept": "application/json"}
 CG_URL = ("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc"
           "&per_page=50&page=1&price_change_percentage=24h")
+CG_CHART_URL = "https://api.coingecko.com/api/v3/coins/{coin}/market_chart?vs_currency=usd&days=365"
+CRYPTO_BOARD_COUNT = 20   # 金融终端加密品类展示的条数；行情与日线都来自同一次CoinGecko取数
+CRYPTO_BOARD_POINTS = 260
+CRYPTO_BOARD_NOTE = ("CoinGecko 市值前列加密资产的日度快照与滚动日线；涨跌为过去24小时口径，"
+                     "与股票的当日口径不同。共享日期轴上当日无价则为 null，不做前向填充；"
+                     "本轮未取到的币种沿用上次序列，不补造新点。")
+# CoinGecko 只给英文名，这里补常见币种的中文名；未收录的如实沿用英文名，不臆造译名。
+CRYPTO_NAME_ZH = {
+    "BTC": "比特币", "ETH": "以太坊", "USDT": "泰达币", "BNB": "币安币", "XRP": "瑞波币",
+    "SOL": "索拉纳", "USDC": "美元币", "DOGE": "狗狗币", "ADA": "艾达币", "TRX": "波场",
+    "TON": "Toncoin", "AVAX": "雪崩", "SHIB": "柴犬币", "DOT": "波卡", "LINK": "Chainlink",
+    "BCH": "比特币现金", "LTC": "莱特币", "XLM": "恒星币", "UNI": "Uniswap", "ATOM": "Cosmos",
+    "XMR": "门罗币", "ETC": "以太经典", "HBAR": "Hedera", "FIL": "Filecoin", "APT": "Aptos",
+}
 
 
 # ————————————————————— 取数工具 —————————————————————
@@ -194,18 +210,114 @@ def build_aggregates(session, prev_rows, run_updated_at):
     return out
 
 
-def build_crypto(session, prev_rows, run_updated_at):
-    """加密货币：优先CoinGecko最新市值；兜底Yahoo现价×流通量；再兜底基准。"""
-    out = []
-    cg = {}
+def coingecko_markets(session):
+    """CoinGecko 市值快照 {id: 记录}；失败返回空字典。一轮只取一次，资产榜与加密板共用。"""
     try:
         r = session.get(CG_URL, timeout=15)
-        if r.status_code == 200:
-            for c in r.json():
-                if isinstance(c, dict) and c.get("id"):
-                    cg[c["id"]] = c
+        if r.status_code != 200:
+            return {}
+        return {c["id"]: c for c in r.json() if isinstance(c, dict) and c.get("id")}
     except Exception:
-        cg = {}
+        return {}
+
+
+def coingecko_daily_closes(session, coin_id):
+    """取单个币种近一年的日线价格 [(YYYY-MM-DD, price), ...]；任何异常都返回空列表。"""
+    try:
+        r = session.get(CG_CHART_URL.format(coin=coin_id), timeout=20)
+        if r.status_code != 200:
+            return []
+        daily = {}
+        for point in (r.json().get("prices") or []):
+            if not isinstance(point, list) or len(point) < 2:
+                continue
+            stamp, price = point[0], point[1]
+            if not isinstance(stamp, (int, float)) or not isinstance(price, (int, float)):
+                continue
+            day = datetime.fromtimestamp(stamp / 1000, timezone.utc).strftime("%Y-%m-%d")
+            daily[day] = float(price)          # 同一天有多个点时取最后一个
+        return sorted(daily.items())
+    except Exception:
+        return []
+
+
+def build_crypto_board(session, markets, run_updated_at):
+    """市值前列加密资产的行情与日线 → apps/asset-ranking/crypto.json。
+
+    行情直接复用本轮已经取到的 markets 快照（不重复请求），日线逐币单独取、单独容错；
+    本轮全失败时返回 None，由调用方保留上次文件，不写空数据。
+    """
+    ranked = sorted(
+        [m for m in markets.values()
+         if isinstance(m.get("market_cap"), (int, float)) and m.get("symbol")],
+        key=lambda m: m["market_cap"], reverse=True)[:CRYPTO_BOARD_COUNT]
+    if not ranked:
+        print("CoinGecko 市值快照不可用，保留上次 crypto.json（不写空数据）")
+        return None
+
+    assets, as_of_list = [], []
+    for rank, m in enumerate(ranked, 1):
+        symbol = str(m["symbol"]).upper()
+        as_of = m.get("last_updated") if valid_iso(m.get("last_updated")) else None
+        if as_of:
+            as_of_list.append(as_of)
+        change = m.get("price_change_percentage_24h")
+        assets.append({
+            "id": m["id"],
+            "symbol": symbol,
+            "name": CRYPTO_NAME_ZH.get(symbol) or m.get("name") or symbol,
+            "nameEn": m.get("name") or symbol,
+            "price": m.get("current_price"),
+            "changePct": round(change, 2) if isinstance(change, (int, float)) else None,
+            "marketCap": round(m["market_cap"] / 1e9, 1),
+            "rank": rank,
+            "stale": as_of is None,
+            "dataMeta": make_data_meta(
+                "market",
+                "CoinGecko",
+                as_of=as_of,
+                updated_at=run_updated_at,
+                frequency="daily",
+                status="ok" if as_of else "partial",
+                note=None if as_of else "本轮快照缺少可核验的时点。",
+            ),
+        })
+
+    collected = {}
+    for asset in assets:
+        points = coingecko_daily_closes(session, asset["id"])
+        if points:
+            collected[asset["symbol"]] = points
+        time.sleep(2.0)                        # 免费档限速：串行且留足间隔
+    prev = load_json(CRYPTO_BOARD_PATH) or {}
+    history, retained = build_rolling_history(
+        collected, prev.get("history"), run_updated_at,
+        source="CoinGecko", note=CRYPTO_BOARD_NOTE, limit=CRYPTO_BOARD_POINTS)
+
+    data = {
+        "updatedAt": run_updated_at,
+        "asOf": max(as_of_list)[:10] if as_of_list else run_updated_at[:10],
+        "source": "CoinGecko",
+        "frequency": "daily",
+        "status": "ok" if (history and len(collected) >= len(assets) * 0.6) else "partial",
+        "count": len(assets),
+        "changeBasis": "24_hours",
+        "note": CRYPTO_BOARD_NOTE,
+        "assets": assets,
+        "history": history,
+    }
+    os.makedirs(os.path.dirname(CRYPTO_BOARD_PATH), exist_ok=True)
+    with open(CRYPTO_BOARD_PATH, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
+    print(f"写入 {CRYPTO_BOARD_PATH}：{len(assets)} 币，"
+          f"日线 {len(collected)} 币本轮取到、{len(retained)} 币沿用上次")
+    return data
+
+
+def build_crypto(session, prev_rows, run_updated_at, markets=None):
+    """加密货币：优先CoinGecko最新市值；兜底Yahoo现价×流通量；再兜底基准。"""
+    out = []
+    cg = markets if markets is not None else coingecko_markets(session)
     if cg:
         print(f"CoinGecko 市值快照：{len(cg)} 币")
 
@@ -337,7 +449,8 @@ def build():
     session.headers.update(YF_HEADERS)
 
     aggregates = build_aggregates(session, prev_rows, run_updated_at)
-    crypto = build_crypto(session, prev_rows, run_updated_at)
+    markets = coingecko_markets(session)
+    crypto = build_crypto(session, prev_rows, run_updated_at, markets=markets)
     companies = build_companies(run_updated_at)
 
     assets = aggregates + crypto + companies
@@ -392,6 +505,12 @@ def build():
     write_health(HEALTH_PATH, with_companies_health(health))
     print(f"写入 {OUT_PATH}：{len(assets)} 项，榜首 {assets[0]['name']} "
           f"${top_cap_t:.1f}T，总市值 ${data['totalMarketCap'] / 1000:.1f}T，分类 {cat_count}")
+
+    # 加密品类板是附加产物：放在主快照之后，任何失败都只跳过它，不影响已写好的 data.json
+    try:
+        build_crypto_board(session, markets, run_updated_at)
+    except Exception as error:                       # noqa: BLE001 - 附加产物不得拖垮主管道
+        print(f"加密品类板构建异常：{error}；保留上次 crypto.json")
 
 
 if __name__ == "__main__":

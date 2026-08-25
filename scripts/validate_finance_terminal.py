@@ -77,6 +77,9 @@ ASSET_RANKING_BUILD = ROOT / "scripts" / "asset-ranking" / "build_ranking.py"
 COMPANIES_DATA = ROOT / "apps" / "companies" / "data.json"
 COMPANIES_HEALTH = ROOT / "apps" / "companies" / "health.json"
 COMPANIES_BUILD = ROOT / "scripts" / "companies" / "build_companies.py"
+COMPANIES_HISTORY = ROOT / "apps" / "companies" / "history.json"
+ASSET_RANKING_CRYPTO = ROOT / "apps" / "asset-ranking" / "crypto.json"
+MARKET_HISTORY_MODULE = ROOT / "scripts" / "market_history.py"
 ECON_CALENDAR_DATA = ROOT / "apps" / "econ-calendar" / "data.json"
 ECON_CALENDAR_HEALTH = ROOT / "apps" / "econ-calendar" / "health.json"
 FINANCE_NEWS_DATA = ROOT / "apps" / "whats-latest" / "data.json"
@@ -303,7 +306,75 @@ def run_company_builder_contract_tests() -> None:
     require(quote == (125.5, 120.0, "2026-08-03T00:00:00Z"), "公司行情值或行情时点映射错误")
     require(module.last_round_as_of("May 2026") == "2026-05-01", "融资月份规范化错误")
     require(module.last_round_as_of(None) is None, "缺失融资月份不得生成默认日期")
+
+    class SeriesResponse:
+        status_code = 200
+
+        @staticmethod
+        def json():
+            return {"chart": {"result": [{
+                "timestamp": [1785715200, 1785801600, 1785888000],
+                "indicators": {"quote": [{"close": [10.0, None, 12.5]}]},
+            }]}}
+
+    class SeriesSession:
+        @staticmethod
+        def get(*_args, **_kwargs):
+            return SeriesResponse()
+
+    closes = module.yf_daily_closes(SeriesSession(), "TEST")
+    require(closes == [("2026-08-03", 10.0), ("2026-08-05", 12.5)],
+            "公司日线必须跳过无收盘的交易日，不做前向填充")
+
+    class EmptySession:
+        @staticmethod
+        def get(*_args, **_kwargs):
+            raise RuntimeError("network down")
+
+    require(module.yf_daily_closes(EmptySession(), "TEST") == [],
+            "取数失败必须返回空序列，由调用方保留上次历史")
+    require(module.HISTORY_SYMBOLS == 40 and module.HISTORY_POINTS == 260,
+            "公司日线覆盖标的数与滚动长度必须与行情板契约一致")
+    require("history" in module.HISTORY_PATH and module.HISTORY_PATH.endswith(".json"),
+            "公司日线必须写入独立的history.json，不混进data.json")
     print("Company per-record provenance builder: PASS")
+
+
+def run_shared_history_contract_tests() -> None:
+    """三条管道共用同一份滚动历史规则，且首次生成前的占位文件不得冒充有效数据。"""
+    spec = importlib.util.spec_from_file_location("market_history", MARKET_HISTORY_MODULE)
+    require(spec is not None and spec.loader is not None, "无法加载共享滚动历史模块")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    history, retained = module.build_rolling_history(
+        {"A": [("2026-08-03", 1.0), ("2026-08-05", 3.0)]},
+        {"dates": ["2026-08-03", "2026-08-04"], "series": {"B": [9.0, 9.5]}},
+        "2026-08-25T00:00:00Z",
+        source="TestSource",
+        note="test",
+    )
+    require(history["dates"] == ["2026-08-03", "2026-08-04", "2026-08-05"],
+            "共享日期轴必须按日升序合并")
+    require(history["series"]["A"][1] is None, "缺观测日必须留空，不做前向填充")
+    require(retained == ["B"] and history["series"]["B"][-1] is None,
+            "本轮未取到的标的沿用上次序列且不补造新点")
+    require(history["source"] == "TestSource" and history["frequency"] == "daily",
+            "滚动历史必须标注调用方的真实来源")
+    require(module.build_rolling_history({}, {}, "t", source="s", note="n")[0] is None,
+            "无任何有效序列时必须返回空，由调用方保留上次文件")
+
+    for path, keys in ((COMPANIES_HISTORY, ("dates", "series")),
+                       (ASSET_RANKING_CRYPTO, ("assets", "history"))):
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        require(payload.get("demo") is not True, f"{path.name}不得标记为演示数据")
+        require(payload.get("source") and payload.get("note"),
+                f"{path.name}必须写明来源与口径")
+        for key in keys:
+            require(key in payload, f"{path.name}缺少{key}字段")
+        if payload.get("status") == "pending":
+            require(not payload.get("dates") and not payload.get("assets"),
+                    f"{path.name}标为pending时不得含有任何观测值")
+    print("Shared rolling history and pending placeholders: PASS")
 
 
 def run_asset_tracker_builder_contract_tests() -> None:
@@ -486,6 +557,37 @@ def run_asset_ranking_builder_contract_tests() -> None:
     require(quote == (75.25, 73.5, "2026-08-03T00:00:00Z"), "资产排行行情值或行情时点映射错误")
     require(module.baseline_provenance({"name": "全球房地产"}) == {"source": "Savills", "asOf": None},
             "全球房地产静态基准来源映射错误")
+
+    class ChartResponse:
+        status_code = 200
+
+        @staticmethod
+        def json():
+            return {"prices": [[1785715200000, 100.0], [1785758400000, 105.0],
+                               [1785801600000, 110.0], [1785888000000, None]]}
+
+    class ChartSession:
+        @staticmethod
+        def get(*_args, **_kwargs):
+            return ChartResponse()
+
+    crypto_closes = module.coingecko_daily_closes(ChartSession(), "bitcoin")
+    require(crypto_closes == [("2026-08-03", 105.0), ("2026-08-04", 110.0)],
+            "加密日线必须按UTC日期归并、同日取最后一个点，且丢弃缺价点")
+
+    class BrokenSession:
+        @staticmethod
+        def get(*_args, **_kwargs):
+            raise RuntimeError("rate limited")
+
+    require(module.coingecko_daily_closes(BrokenSession(), "bitcoin") == [],
+            "加密日线取数失败必须返回空序列，不得补造点位")
+    require(module.build_crypto_board(ChartSession(), {}, "2026-08-25T00:00:00Z") is None,
+            "CoinGecko市值快照不可用时必须保留上次crypto.json，不写空数据")
+    require(module.CRYPTO_BOARD_COUNT == 20 and module.CRYPTO_BOARD_POINTS == 260,
+            "加密品类板条数与滚动长度必须与行情板契约一致")
+    require(module.CRYPTO_NAME_ZH.get("BTC") == "比特币",
+            "常见币种必须有中文名，未收录的沿用英文名")
 
     rows = module.build_aggregates(Session(), {}, "2026-08-03T01:00:00Z")
     real_estate = next(row for row in rows if row["name"] == "全球房地产")
@@ -2189,6 +2291,7 @@ def main() -> None:
         ECON_CALENDAR_DATA, ECON_CALENDAR_HEALTH, FINANCE_NEWS_DATA, FINANCE_NEWS_HEALTH,
         MACRO_BUILD, MACRO_WORKFLOW, FEAR_GREED_WORKFLOW, OFR_WORKFLOW, ASSET_TRACKER_WORKFLOW,
         ASSET_RANKING_WORKFLOW, COMPANIES_WORKFLOW, ECON_CALENDAR_WORKFLOW, FINANCE_NEWS_WORKFLOW,
+        COMPANIES_HISTORY, ASSET_RANKING_CRYPTO, MARKET_HISTORY_MODULE,
         SCHEDULER_WORKFLOW, SOURCE_HEALTH_VALIDATOR, SOURCE_HEALTH_DOC,
         SUPPORTING_HEALTH_VALIDATOR, SUPPORTING_HEALTH_DOC,
         BROWSER_VALIDATOR, BROWSER_EVIDENCE, BROWSER_EVIDENCE_VALIDATOR, VISUALS_VALIDATOR,
@@ -2694,8 +2797,8 @@ def main() -> None:
     # 价格/涨跌列与折叠按钮默认收起。该模块只在 regression=1 时加载。
     require(REGRESSION_MODULE.stat().st_size <= 21_000,
             "仅回归模式加载的浏览器探针超过21KB性能预算")
-    require(BOARD_DATA_MODULE.stat().st_size <= 17_000,
-            "按需加载的品类行情板数据层超过17KB性能预算")
+    require(BOARD_DATA_MODULE.stat().st_size <= 19_000,
+            "按需加载的品类行情板数据层超过19KB性能预算")
     require(BOARD_VIEW_MODULE.stat().st_size <= 15_000,
             "按需加载的品类行情板视图超过15KB性能预算")
     require('import("./finance-terminal-board-view.mjs")' in app
@@ -3534,6 +3637,7 @@ def main() -> None:
             "财经新闻工作流缺少独立并发或短期诊断")
     require("cron: '15 */6 * * *'" in finance_news_workflow, "财经新闻工作流必须保持每6小时更新")
     run_market_data_quality_contract_tests()
+    run_shared_history_contract_tests()
     run_asset_tracker_builder_contract_tests()
     run_company_builder_contract_tests()
     run_asset_ranking_builder_contract_tests()

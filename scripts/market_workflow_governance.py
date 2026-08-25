@@ -57,12 +57,14 @@ DATASET_RULES = {
         (
             "apps/companies/data.json",
             "apps/companies/health.json",
+            "apps/companies/history.json",
         ),
         logo_directory="apps/companies/logos",
     ),
     "asset-ranking": DatasetRule((
         "apps/asset-ranking/data.json",
         "apps/asset-ranking/health.json",
+        "apps/asset-ranking/crypto.json",
     )),
     "fear-greed": DatasetRule((
         "apps/fear-greed/data.json",

@@ -32,6 +32,7 @@ from market_data_quality import (  # noqa: E402
     make_proxy_meta,
     summarize_data_quality,
 )
+from market_history import build_rolling_history  # noqa: E402
 from market_source_health import (  # noqa: E402
     load_json as load_health_json,
     make_source_health,
@@ -42,6 +43,9 @@ OUT_PATH = os.path.join("apps", "asset-tracker", "data.json")
 HEALTH_PATH = os.path.join("apps", "asset-tracker", "health.json")
 HISTORY_PATH = os.path.join("apps", "asset-tracker", "history.json")
 HISTORY_POINTS = 260   # 滚动保留约一年交易日，文件大小恒定而非逐日增长
+HISTORY_NOTE = ("各标的自身收盘价的滚动历史，与 data.json 同一次取数、同一来源；"
+                "共享日期轴上该标的当日无报价则为 null，不做前向填充。"
+                "本轮未取到的标的沿用上次序列，不补造新点。")
 
 # 四大品类：key / 中文名 / 颜色（沿用示例图语义：股市红、商品蓝、外汇橙、债券青，精修为更通透的配色）
 CATEGORIES = [
@@ -305,51 +309,12 @@ def load_prev_history():
 def build_history(collected, prev_history, updated_at, limit=HISTORY_POINTS):
     """把本轮已抓到的日线合成共享日期轴的紧凑历史。
 
-    collected: {symbol: [(date, close), ...]}，仅含本轮真实取到的序列。
+    规则与公司榜、加密快照完全一致，实现共用 scripts/market_history.py：
     本轮未取到的标的沿用上次序列（不丢历史、也不补造新点）；
     共享日期轴上没有该标的报价的位置写 null，不做前向填充。
     """
-    prev_series = (prev_history or {}).get("series") or {}
-    prev_dates = (prev_history or {}).get("dates") or []
-
-    merged = {}
-    for symbol, points in collected.items():
-        pairs = [(str(d), float(v)) for d, v in points
-                 if d and isinstance(v, (int, float)) and v == v]
-        if pairs:
-            merged[symbol] = dict(pairs)
-    retained = []
-    for symbol, values in prev_series.items():
-        if symbol in merged or not isinstance(values, list):
-            continue
-        pairs = [(d, v) for d, v in zip(prev_dates, values) if isinstance(v, (int, float))]
-        if pairs:
-            merged[symbol] = dict(pairs)
-            retained.append(symbol)
-
-    dates = sorted({d for values in merged.values() for d in values})[-limit:]
-    if not dates:
-        return None, retained
-    series = {}
-    for symbol in sorted(merged):
-        column = [merged[symbol].get(d) for d in dates]
-        if any(value is not None for value in column):
-            series[symbol] = [None if v is None else round(v, 4) for v in column]
-    if not series:
-        return None, retained
-    return {
-        "updatedAt": updated_at,
-        "asOf": dates[-1],
-        "source": "Yahoo Finance",
-        "frequency": "daily",
-        "status": "ok",
-        "points": len(dates),
-        "note": ("各标的自身收盘价的滚动历史，与 data.json 同一次取数、同一来源；"
-                 "共享日期轴上该标的当日无报价则为 null，不做前向填充。"
-                 "本轮未取到的标的沿用上次序列，不补造新点。"),
-        "dates": dates,
-        "series": series,
-    }, retained
+    return build_rolling_history(collected, prev_history, updated_at,
+                                 source="Yahoo Finance", note=HISTORY_NOTE, limit=limit)
 
 
 def build():

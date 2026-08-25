@@ -1,0 +1,12 @@
+{
+  "updatedAt": null,
+  "asOf": null,
+  "source": "CoinGecko",
+  "frequency": "daily",
+  "status": "pending",
+  "count": 0,
+  "changeBasis": "24_hours",
+  "note": "市值前列加密资产的行情与日线占位文件：首次由 scripts/asset-ranking/build_ranking.py 生成前没有任何观测，因此 assets 为空、history 为 null。页面在这里为空时回退到全球资产榜里已有的加密条目，并如实显示暂无历史序列。",
+  "assets": [],
+  "history": null
+}

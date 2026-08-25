@@ -29,17 +29,20 @@ function clone(value) {
 }
 
 async function loadGroup() {
-  const [assetTracker, companies, assetRanking, macro, macroCurve] = await Promise.all([
-    readJson("apps/asset-tracker/data.json"),
-    readJson("apps/companies/data.json"),
-    readJson("apps/asset-ranking/data.json"),
-    readJson("apps/macro-radar/data.json"),
-    readJson("apps/macro-radar/curve.json")
-  ]);
+  const [assetTracker, companies, assetRanking, assetRankingCrypto, macro, macroCurve] =
+    await Promise.all([
+      readJson("apps/asset-tracker/data.json"),
+      readJson("apps/companies/data.json"),
+      readJson("apps/asset-ranking/data.json"),
+      readJson("apps/asset-ranking/crypto.json"),
+      readJson("apps/macro-radar/data.json"),
+      readJson("apps/macro-radar/curve.json")
+    ]);
   return {
     assetTracker: { data: assetTracker, error: null },
     companies: { data: companies, error: null },
     assetRanking: { data: assetRanking, error: null },
+    assetRankingCrypto: { data: assetRankingCrypto, error: null },
     macro: { data: macro, error: null },
     macroCurve: { data: macroCurve, error: null }
   };
@@ -115,7 +118,10 @@ function validateCalibration(board) {
     "加密涨跌是24小时口径，必须与股票当日口径分开标注");
   assert.ok(bond.rows.some((row) => row.change.text.endsWith("bp")),
     "美债收益率必须按基点显示，不得用百分比相对变化冒充");
+  assert.equal(STOCK_ROW_LIMIT, 40, "股票行数必须与公司榜日线历史覆盖的标的数一致");
   assert.ok(stock.rows.length <= STOCK_ROW_LIMIT);
+  assert.ok(stock.rows.every((row) => row.series && row.series.kind === "company"),
+    "股票行必须指向公司榜日线历史");
   assert.ok(bond.rows.every((row) => row.unit === "年化收益率" || row.proxyOf || row.note),
     "债券行必须标明是收益率还是代理");
 }
@@ -144,6 +150,47 @@ function validateProvenance(board, group) {
     "基点变化必须能由曲线历史的最后两个观测复算");
   assert.equal(tenorChangeBp({ values: { X: [1] } }, "X"), null, "单点不得推算基点变化");
   assert.equal(tenorChangeBp(null, "X"), null);
+}
+
+/* 加密品类板首次生成前是空占位：必须回退到资产榜里已有的加密条目，并且不算管线失败。 */
+function validateCryptoFallback(group) {
+  const pending = { ...group, assetRankingCrypto: { data: {
+    status: "pending", assets: [], history: null
+  }, error: null } };
+  const board = buildBoard(pending);
+  const crypto = categoryOf(board, "crypto");
+  assert.ok(crypto.rows.length > 0, "加密品类板未生成时必须回退到资产榜的加密条目");
+  assert.ok(crypto.rows.every((row) => row.series === null),
+    "回退来源没有日线，必须如实标为无序列");
+  assert.equal(board.status, "ok", "可选文件缺内容不得把整块降级");
+  assert.equal(board.failures.length, 0, "加密品类板尚未生成不算管线失败");
+
+  const missing = { ...group, assetRankingCrypto: { data: null, error: new Error("HTTP 404") } };
+  assert.ok(categoryOf(buildBoard(missing), "crypto").rows.length > 0,
+    "加密品类板文件缺失时同样回退，不留空白品类");
+
+  const filled = { ...group, assetRankingCrypto: { data: {
+    updatedAt: "2026-08-25T00:00:00Z",
+    asOf: "2026-08-24",
+    source: "CoinGecko",
+    frequency: "daily",
+    assets: [{
+      id: "bitcoin", symbol: "BTC", name: "比特币", nameEn: "Bitcoin",
+      price: 78916, changePct: 1.44, marketCap: 1580, rank: 1, stale: false,
+      dataMeta: { mode: "market", status: "ok", source: "CoinGecko",
+        asOf: "2026-08-24T21:54:20.000Z", updatedAt: "2026-08-25T00:00:00Z", frequency: "daily" }
+    }],
+    history: { dates: ["2026-08-23", "2026-08-24"], series: { BTC: [77000, 78916] },
+      source: "CoinGecko", note: "" }
+  }, error: null } };
+  const upgraded = buildBoard(filled);
+  const row = categoryOf(upgraded, "crypto").rows[0];
+  assert.equal(row.symbol, "BTC");
+  assert.equal(row.changeBasis, "过去24小时");
+  assert.equal(row.series.kind, "cryptoBoard", "加密行必须接上同一次取数的日线");
+  assert.equal(row.sourceUrl, "https://www.coingecko.com/en/coins/bitcoin");
+  assert.ok(upgraded.cryptoHistory && upgraded.cryptoHistory.series.BTC,
+    "加密日线必须随分区数据一起交给视图，不额外发请求");
 }
 
 async function validateFailureIsolation(group) {
@@ -193,6 +240,7 @@ async function main() {
   validateCategories(board);
   validateCalibration(board);
   validateProvenance(board, group);
+  validateCryptoFallback(group);
   await validateFailureIsolation(group);
   validateStaleAndMissing(group);
   const counts = board.categories.map((category) => `${category.label}${category.rows.length}`).join(" · ");
