@@ -32,8 +32,8 @@ DATASET_SPECS: dict[str, dict[str, Any]] = {
         # 始终用这个现行值。清单扩容当天仓库里还留着上一次任务按旧条数写的健康文件，
         # 因此校验时额外接受 expectedRecordOptions 里已登记的历史值；扩容后的第一份
         # 健康文件发布后即可把该列表收回单值。
-        "expectedRecords": 55,
-        "expectedRecordOptions": (28, 55),
+        "expectedRecords": 56,
+        "expectedRecordOptions": (55, 56),
         "sources": [
             {
                 "id": "yahoo-finance",

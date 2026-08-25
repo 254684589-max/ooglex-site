@@ -107,8 +107,11 @@ ASSETS = [
      "syms": ["^KS11", {"sym": "^KS200", "note": "以 KOSPI 200 指数代理"},
               {"sym": "EWY", "note": "以韩国 ETF（美元计）代理"}]},
     {"name": "圣保罗IBOVESPA指数", "cat": "equity",  "syms": ["^BVSP"]},
-    # 2026-08 扩容：继续按「各国家/地区代表性指数」补齐，不新增美国基准指数点位
-    # （SPX/NDX/DJIA 按金融终端既有许可决定仍以 SPY/QQQ/DIA 免费组件展示）。
+    # 2026-08-25 所有者决定：撤下QQQ代理卡后，纳斯达克改由综合指数进入指数类。
+    # 这是纳斯达克综合（^IXIC），不是QQQ跟踪的纳斯达克100（NDX），两者成分与数值不同。
+    # DJIA仍由DIA免费组件展示、NDX不再进入本站，二者都不加入本清单。
+    {"name": "纳斯达克综合",     "cat": "equity",    "syms": ["^IXIC"]},
+    # 2026-08 扩容：继续按「各国家/地区代表性指数」补齐。
     {"name": "台湾加权指数",     "cat": "equity",    "syms": ["^TWII"]},
     {"name": "加拿大S&P/TSX",    "cat": "equity",    "syms": ["^GSPTSE"]},
     {"name": "瑞士SMI",          "cat": "equity",    "syms": ["^SSMI"]},

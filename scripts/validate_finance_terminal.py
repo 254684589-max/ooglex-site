@@ -400,17 +400,20 @@ def run_asset_tracker_builder_contract_tests() -> None:
 
     universe_names = [item["name"] for item in module.ASSETS]
     universe_symbols = [_first_symbol(item) for item in module.ASSETS]
-    require(len(module.ASSETS) == 55, f"跨资产清单条数应为55，当前{len(module.ASSETS)}")
+    require(len(module.ASSETS) == 56, f"跨资产清单条数应为56，当前{len(module.ASSETS)}")
     require(len(set(universe_names)) == len(universe_names), "跨资产标的名称必须唯一")
     require(len(set(universe_symbols)) == len(universe_symbols), "跨资产首选代码必须唯一")
     categories = {}
     for item in module.ASSETS:
         categories[item["cat"]] = categories.get(item["cat"], 0) + 1
-    require(categories == {"equity": 23, "commodity": 15, "fx": 13, "bond": 4},
+    require(categories == {"equity": 24, "commodity": 15, "fx": 13, "bond": 4},
             f"跨资产四类条数与登记不一致：{categories}")
-    require("^DJI" not in universe_symbols and "^IXIC" not in universe_symbols
-            and "^NDX" not in universe_symbols,
-            "美国基准指数点位按既有许可决定仍以免费ETF组件展示，不进入跨资产清单")
+    # 2026-08-25 所有者决定：撤下QQQ代理卡后纳斯达克改由综合指数^IXIC进入指数类；
+    # 道指仍由DIA免费组件展示，纳斯达克100（NDX）不再进入本站，两者都不得混进清单。
+    require("^IXIC" in universe_symbols,
+            "纳斯达克综合指数应在跨资产清单的指数类中")
+    require("^DJI" not in universe_symbols and "^NDX" not in universe_symbols,
+            "道指仍以免费ETF组件展示、纳斯达克100不再展示，两者都不进入跨资产清单")
     tracker_rows = json.loads(ASSET_TRACKER_DATA.read_text(encoding="utf-8"))["assets"]
     require(all(row.get("name") in set(universe_names) for row in tracker_rows),
             "data.json 里出现了清单外的标的")

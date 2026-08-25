@@ -311,7 +311,7 @@
        这里接受该数据集已登记的任一期望条数，覆盖率仍必须按健康文件自己声明的
        期望值逐项复算；扩容后的第一份健康文件发布后即可收回成单值。 */
     var expectedRecordOptions = {
-      "asset-tracker": [28, 55], companies: [500], "asset-ranking": [250]
+      "asset-tracker": [55, 56], companies: [500], "asset-ranking": [250]
     }[dataset];
     if (!expectedRecordOptions || !health || typeof health !== "object") throw new Error("健康文件缺失");
     if (health.contractVersion !== 1 || health.dataset !== dataset
