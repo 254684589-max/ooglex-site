@@ -66,6 +66,12 @@ CG_URL = ("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=
 CG_CHART_URL = "https://api.coingecko.com/api/v3/coins/{coin}/market_chart?vs_currency=usd&days=365"
 CRYPTO_BOARD_COUNT = 20   # 金融终端加密品类展示的条数；行情与日线都来自同一次CoinGecko取数
 CRYPTO_BOARD_POINTS = 260
+# 免费档限速实测：日线按2秒间隔连发时第5个请求起就被拒。改为10秒一个（约6次/分钟），
+# 失败再等30秒重试一次；连续4个都拿不到就本轮提前收工，已取到的照常写入，
+# 其余沿用上次序列——历史会在若干轮里补齐，不靠一次跑满。
+CRYPTO_CHART_INTERVAL = 10.0
+CRYPTO_CHART_RETRY_WAIT = 30.0
+CRYPTO_CHART_MAX_MISSES = 4
 CRYPTO_BOARD_NOTE = ("CoinGecko 市值前列加密资产的日度快照与滚动日线；涨跌为过去24小时口径，"
                      "与股票的当日口径不同。共享日期轴上当日无价则为 null，不做前向填充；"
                      "本轮未取到的币种沿用上次序列，不补造新点。")
@@ -283,12 +289,22 @@ def build_crypto_board(session, markets, run_updated_at):
             ),
         })
 
-    collected = {}
+    collected, misses = {}, 0
     for asset in assets:
         points = coingecko_daily_closes(session, asset["id"])
+        if not points:
+            time.sleep(CRYPTO_CHART_RETRY_WAIT)
+            points = coingecko_daily_closes(session, asset["id"])
         if points:
             collected[asset["symbol"]] = points
-        time.sleep(2.0)                        # 免费档限速：串行且留足间隔
+            misses = 0
+        else:
+            misses += 1
+            if misses >= CRYPTO_CHART_MAX_MISSES:
+                print(f"CoinGecko 连续{misses}次拒绝日线请求，本轮提前停止取历史；"
+                      "已取到的照常写入，其余沿用上次序列")
+                break
+        time.sleep(CRYPTO_CHART_INTERVAL)      # 免费档限速：串行且留足间隔
     prev = load_json(CRYPTO_BOARD_PATH) or {}
     history, retained = build_rolling_history(
         collected, prev.get("history"), run_updated_at,
