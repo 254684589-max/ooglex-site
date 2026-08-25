@@ -33,7 +33,11 @@ def validate_dataset(name):
             "文件级status与逐条汇总不一致", errors)
 
     if name == "asset-tracker":
-        require(len(rows) == 28, "跨资产条目数必须为28", errors)
+        # 清单条数由取数脚本的 ASSETS 决定（validate_finance_terminal.py 逐条比对），
+        # 这里只守住「不得缩水」与「代码唯一」，避免清单扩容当天与数据文件互相卡住。
+        require(len(rows) >= 28, f"跨资产条目数不得少于28，当前{len(rows)}", errors)
+        require(len({row.get("symbol") for row in rows}) == len(rows),
+                "跨资产代码必须唯一", errors)
         for row in rows:
             meta = row.get("dataMeta") or {}
             require(meta.get("source") == "Yahoo Finance", f"{row.get('name')}逐条来源不是Yahoo Finance", errors)

@@ -28,7 +28,12 @@ SOURCE_STATUSES = ("healthy", "degraded", "failed", "unknown")
 
 DATASET_SPECS: dict[str, dict[str, Any]] = {
     "asset-tracker": {
-        "expectedRecords": 28,
+        # 与 scripts/asset-tracker/build_assets.py 的 ASSETS 清单条数保持一致：写入健康文件时
+        # 始终用这个现行值。清单扩容当天仓库里还留着上一次任务按旧条数写的健康文件，
+        # 因此校验时额外接受 expectedRecordOptions 里已登记的历史值；扩容后的第一份
+        # 健康文件发布后即可把该列表收回单值。
+        "expectedRecords": 55,
+        "expectedRecordOptions": (28, 55),
         "sources": [
             {
                 "id": "yahoo-finance",
@@ -194,8 +199,10 @@ def _snapshot_is_healthy(dataset: str, rows: list[dict[str, Any]]) -> bool:
     return True
 
 
-def _coverage(dataset: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
-    expected = DATASET_SPECS[dataset]["expectedRecords"]
+def _coverage(dataset: str, rows: list[dict[str, Any]],
+              expected: int | None = None) -> dict[str, Any]:
+    if expected is None:
+        expected = DATASET_SPECS[dataset]["expectedRecords"]
     quality = summarize_data_quality(rows)
     counts = quality["counts"]
     dynamic = _dynamic_records(dataset, rows)
@@ -433,7 +440,12 @@ def validate_source_health(
     if health.get("status") == "failed" and isinstance(consecutive, int) and consecutive < 1:
         errors.append("失败状态的连续失败次数必须至少为1")
 
-    expected_coverage = _coverage(dataset, published_rows)
+    declared_expected = (health.get("coverage") or {}).get("expectedRecords")
+    accepted_expected = DATASET_SPECS[dataset].get(
+        "expectedRecordOptions", (DATASET_SPECS[dataset]["expectedRecords"],))
+    expected_coverage = _coverage(
+        dataset, published_rows,
+        declared_expected if declared_expected in accepted_expected else None)
     if health.get("coverage") != expected_coverage:
         errors.append("coverage不可由当前data.json逐条状态复算")
 

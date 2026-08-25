@@ -35,9 +35,12 @@ export function createOperationsData(dependencies = {}) {
       expectedRecords: 3, unit: "项官方序列", detailUrl: "../macro-radar/",
       workflow: "macro_radar.yml", readinessEnabled: true
     },
+    /* 跨资产清单随取数脚本扩容，条数以健康文件与快照实际发布的为准：
+       symbolSuffix 让标签跟着已发布条数走，expectedRecords 只是健康文件缺该字段时的兜底。 */
     "asset-tracker": {
-      name: "跨资产强弱", nameEn: "Cross-Asset Strength", symbol: "28 ASSETS",
-      expectedRecords: 28, unit: "项资产", detailUrl: "../asset-tracker/",
+      name: "跨资产强弱", nameEn: "Cross-Asset Strength", symbol: "CROSS ASSET",
+      symbolSuffix: "ASSETS",
+      expectedRecords: 55, unit: "项资产", detailUrl: "../asset-tracker/",
       workflow: "asset_tracker.yml", readinessEnabled: true
     },
     companies: {
@@ -228,8 +231,10 @@ export function createOperationsData(dependencies = {}) {
       id: dataset,
       name: spec.name,
       nameEn: spec.nameEn,
-      symbol: spec.symbol,
-      expectedRecords: spec.expectedRecords,
+      symbol: spec.symbolSuffix && Number.isInteger(publishedRecords)
+        ? publishedRecords + " " + spec.symbolSuffix : spec.symbol,
+      expectedRecords: Number.isInteger(state.expectedRecords)
+        ? state.expectedRecords : spec.expectedRecords,
       publishedRecords: publishedRecords,
       unit: spec.unit,
       detailUrl: spec.detailUrl

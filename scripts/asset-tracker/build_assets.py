@@ -107,6 +107,16 @@ ASSETS = [
      "syms": ["^KS11", {"sym": "^KS200", "note": "以 KOSPI 200 指数代理"},
               {"sym": "EWY", "note": "以韩国 ETF（美元计）代理"}]},
     {"name": "圣保罗IBOVESPA指数", "cat": "equity",  "syms": ["^BVSP"]},
+    # 2026-08 扩容：继续按「各国家/地区代表性指数」补齐，不新增美国基准指数点位
+    # （SPX/NDX/DJIA 按金融终端既有许可决定仍以 SPY/QQQ/DIA 免费组件展示）。
+    {"name": "台湾加权指数",     "cat": "equity",    "syms": ["^TWII"]},
+    {"name": "加拿大S&P/TSX",    "cat": "equity",    "syms": ["^GSPTSE"]},
+    {"name": "瑞士SMI",          "cat": "equity",    "syms": ["^SSMI"]},
+    {"name": "西班牙IBEX35",     "cat": "equity",    "syms": ["^IBEX"]},
+    {"name": "意大利富时MIB",    "cat": "equity",    "syms": ["FTSEMIB.MI", "^FTMIB"]},
+    {"name": "墨西哥IPC",        "cat": "equity",    "syms": ["^MXX"]},
+    {"name": "印尼雅加达综合",   "cat": "equity",    "syms": ["^JKSE"]},
+    {"name": "以色列TA-125",     "cat": "equity",    "syms": ["^TA125.TA"]},
     # —— 商品 ——（LME 现货 Yahoo 无免费源，以全球期货代理，涨跌方向高度一致）
     {"name": "COMEX黄金",        "cat": "commodity", "syms": ["GC=F"]},
     {"name": "COMEX白银",        "cat": "commodity", "syms": ["SI=F"]},
@@ -114,6 +124,18 @@ ASSETS = [
     {"name": "LME铜",            "cat": "commodity", "syms": ["HG=F"],  "note": "以 COMEX 铜代理 LME 铜"},
     {"name": "NYMEX WTI原油",    "cat": "commodity", "syms": ["CL=F"]},
     {"name": "ICE布油",          "cat": "commodity", "syms": ["BZ=F"]},
+    # 2026-08 扩容：能源、贵金属与农产品期货；天然气与农产品年内波动本就极大，放宽护栏以如实呈现
+    {"name": "NYMEX天然气",      "cat": "commodity", "syms": ["NG=F"],
+     "caps": {"d1": 40, "w1": 70, "m1": 120, "ytd": 300, "y1": 400}},
+    {"name": "NYMEX铂金",        "cat": "commodity", "syms": ["PL=F"]},
+    {"name": "NYMEX钯金",        "cat": "commodity", "syms": ["PA=F"]},
+    {"name": "CBOT小麦",         "cat": "commodity", "syms": ["ZW=F"]},
+    {"name": "CBOT玉米",         "cat": "commodity", "syms": ["ZC=F"]},
+    {"name": "CBOT大豆",         "cat": "commodity", "syms": ["ZS=F"]},
+    {"name": "ICE咖啡",          "cat": "commodity", "syms": ["KC=F"],
+     "caps": {"m1": 90, "ytd": 200, "y1": 300}},
+    {"name": "ICE白糖",          "cat": "commodity", "syms": ["SB=F"]},
+    {"name": "ICE棉花",          "cat": "commodity", "syms": ["CT=F"]},
     # —— 外汇 ——（涨跌幅即各汇率自身变动，与示例图口径一致）
     {"name": "美元兑日元",       "cat": "fx",        "syms": ["USDJPY=X", "JPY=X"]},
     {"name": "美元指数",         "cat": "fx",        "syms": ["DX-Y.NYB", "DX=F"]},
@@ -121,9 +143,25 @@ ASSETS = [
     {"name": "英镑兑美元",       "cat": "fx",        "syms": ["GBPUSD=X"]},
     {"name": "欧元兑美元",       "cat": "fx",        "syms": ["EURUSD=X"]},
     {"name": "澳元兑美元",       "cat": "fx",        "syms": ["AUDUSD=X"]},
+    # 2026-08 扩容：主要交叉盘与新兴市场货币，涨跌幅仍是各汇率自身变动
+    {"name": "美元兑加元",       "cat": "fx",        "syms": ["USDCAD=X", "CAD=X"]},
+    {"name": "美元兑瑞郎",       "cat": "fx",        "syms": ["USDCHF=X", "CHF=X"]},
+    {"name": "纽元兑美元",       "cat": "fx",        "syms": ["NZDUSD=X"]},
+    {"name": "美元兑韩元",       "cat": "fx",        "syms": ["USDKRW=X", "KRW=X"]},
+    {"name": "美元兑印度卢比",   "cat": "fx",        "syms": ["USDINR=X", "INR=X"]},
+    {"name": "美元兑新加坡元",   "cat": "fx",        "syms": ["USDSGD=X", "SGD=X"]},
+    {"name": "美元兑巴西雷亚尔", "cat": "fx",        "syms": ["USDBRL=X", "BRL=X"]},
     # —— 债券 ——（中债总财富指数无免费日更源，以国债 ETF 代理）
     {"name": "中国国债",         "cat": "bond",      "syms": ["511260.SS", "511010.SS", "511090.SS"],
      "note": "以国债 ETF 代理（非中债-国债总财富指数）"},
+    # 2026-08 扩容：美债三段期限以国债 ETF 价格代理，是债券价格而不是收益率；
+    # 收益率本身在金融终端读取 FRED 官方曲线，两者不可混用。
+    {"name": "美国长期国债",     "cat": "bond",      "syms": ["TLT"],
+     "note": "以 iShares 20年期以上美国国债 ETF 价格代理长端美债，不是国债收益率"},
+    {"name": "美国中期国债",     "cat": "bond",      "syms": ["IEF"],
+     "note": "以 iShares 7-10年期美国国债 ETF 价格代理中端美债，不是国债收益率"},
+    {"name": "美国短期国债",     "cat": "bond",      "syms": ["SHY"],
+     "note": "以 iShares 1-3年期美国国债 ETF 价格代理短端美债，不是国债收益率"},
 ]
 
 YF_HOSTS = ["query1.finance.yahoo.com", "query2.finance.yahoo.com"]

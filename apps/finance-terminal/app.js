@@ -307,8 +307,13 @@
   }
 
   function adaptSourceHealth(health, dataset, data, now) {
-    var expectedRecords = { "asset-tracker": 28, companies: 500, "asset-ranking": 250 }[dataset];
-    if (!expectedRecords || !health || typeof health !== "object") throw new Error("健康文件缺失");
+    /* 跨资产标的清单会随取数脚本扩容，健康文件与 data.json 由同一次任务一起产出。
+       这里接受该数据集已登记的任一期望条数，覆盖率仍必须按健康文件自己声明的
+       期望值逐项复算；扩容后的第一份健康文件发布后即可收回成单值。 */
+    var expectedRecordOptions = {
+      "asset-tracker": [28, 55], companies: [500], "asset-ranking": [250]
+    }[dataset];
+    if (!expectedRecordOptions || !health || typeof health !== "object") throw new Error("健康文件缺失");
     if (health.contractVersion !== 1 || health.dataset !== dataset
       || PIPELINE_HEALTH_STATUSES.indexOf(health.status) === -1
       || PIPELINE_HISTORY_STATUSES.indexOf(health.historyStatus) === -1) {
@@ -339,7 +344,9 @@
     var dynamicRecords = sourceHealthDynamicCount(dataset, rows);
     var coverage = health.coverage;
     var counts = coverage && coverage.counts;
-    if (!coverage || coverage.expectedRecords !== expectedRecords || coverage.publishedRecords !== rows.length
+    var expectedRecords = coverage && coverage.expectedRecords;
+    if (!coverage || expectedRecordOptions.indexOf(expectedRecords) === -1
+      || coverage.publishedRecords !== rows.length
       || coverage.dynamicRecords !== dynamicRecords || !counts
       || !DATA_MODES.every(function (mode) { return Number.isInteger(counts[mode]) && counts[mode] >= 0; })
       || DATA_MODES.reduce(function (sum, mode) { return sum + counts[mode]; }, 0) !== rows.length) {
@@ -404,6 +411,7 @@
       pipelineStatus: normalizedPipelineStatus,
       reportedPipelineStatus: health.status,
       label: displayStatus.toUpperCase(),
+      expectedRecords: expectedRecords,
       contractKnown: true,
       historyKnown: health.historyStatus === "tracked",
       reportStale: reportStale,
@@ -1436,7 +1444,7 @@
       id: "cross-asset",
       name: "跨资产强弱",
       nameEn: "Cross-Asset Performance",
-      symbol: "28 ASSETS",
+      symbol: data.assets.length + " ASSETS",
       status: status,
       periods: periods,
       defaultPeriod: data.defaultPeriod,
@@ -1462,7 +1470,7 @@
       id: "cross-asset",
       name: "跨资产强弱",
       nameEn: "Cross-Asset Performance",
-      symbol: "28 ASSETS",
+      symbol: "— ASSETS",
       status: "error",
       periods: [
         { key: "d1", label: "今日" }, { key: "w1", label: "近一周" },

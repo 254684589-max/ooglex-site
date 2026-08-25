@@ -377,6 +377,12 @@ def run_shared_history_contract_tests() -> None:
     print("Shared rolling history and pending placeholders: PASS")
 
 
+def _first_symbol(item: dict) -> str:
+    """取标的首选代码；候选可以是字符串或 {sym, note} 字典。"""
+    candidate = item["syms"][0]
+    return candidate["sym"] if isinstance(candidate, dict) else candidate
+
+
 def run_asset_tracker_builder_contract_tests() -> None:
     spec = importlib.util.spec_from_file_location("asset_tracker_builder", ASSET_TRACKER_BUILD)
     require(spec is not None and spec.loader is not None, "无法加载跨资产构建脚本")
@@ -391,6 +397,25 @@ def run_asset_tracker_builder_contract_tests() -> None:
     finally:
         if inserted_stub:
             sys.modules.pop("requests", None)
+
+    universe_names = [item["name"] for item in module.ASSETS]
+    universe_symbols = [_first_symbol(item) for item in module.ASSETS]
+    require(len(module.ASSETS) == 55, f"跨资产清单条数应为55，当前{len(module.ASSETS)}")
+    require(len(set(universe_names)) == len(universe_names), "跨资产标的名称必须唯一")
+    require(len(set(universe_symbols)) == len(universe_symbols), "跨资产首选代码必须唯一")
+    categories = {}
+    for item in module.ASSETS:
+        categories[item["cat"]] = categories.get(item["cat"], 0) + 1
+    require(categories == {"equity": 23, "commodity": 15, "fx": 13, "bond": 4},
+            f"跨资产四类条数与登记不一致：{categories}")
+    require("^DJI" not in universe_symbols and "^IXIC" not in universe_symbols
+            and "^NDX" not in universe_symbols,
+            "美国基准指数点位按既有许可决定仍以免费ETF组件展示，不进入跨资产清单")
+    tracker_rows = json.loads(ASSET_TRACKER_DATA.read_text(encoding="utf-8"))["assets"]
+    require(all(row.get("name") in set(universe_names) for row in tracker_rows),
+            "data.json 里出现了清单外的标的")
+    require(len(tracker_rows) <= len(module.ASSETS),
+            "已发布条数不得超过清单条数")
 
     asset = next(item for item in module.ASSETS if item["name"] == "中证500")
     require(asset["syms"][0] == "000905.SS", "中证500必须优先尝试原指数代码")
@@ -1575,8 +1600,20 @@ assert.deepStrictEqual(operationCards.map((card) => card.id), [
 assert.deepStrictEqual(operationCards.map((card) => card.status), [
   macroHealth.status, assetTrackerHealth.status, companiesHealth.status, assetRankingHealth.status
 ]);
-assert.deepStrictEqual(operationCards.map((card) => card.publishedRecords), [3, 28, 500, 250]);
-assert.deepStrictEqual(operationCards.map((card) => card.expectedRecords), [3, 28, 500, 250]);
+/* 条数以各自健康文件声明的为准：跨资产清单扩容时这里不该跟着改成新的魔法数字。 */
+assert.deepStrictEqual(operationCards.map((card) => card.publishedRecords), [
+  macroHealth.coverage.publishedSeries,
+  assetTracker.assets.length,
+  companies.companies.length,
+  assetRanking.assets.length
+]);
+assert.deepStrictEqual(operationCards.map((card) => card.expectedRecords), [
+  3,
+  assetTrackerHealth.coverage.expectedRecords,
+  companiesHealth.coverage.expectedRecords,
+  assetRankingHealth.coverage.expectedRecords
+]);
+assert.strictEqual(operationCards[1].symbol, `${assetTracker.assets.length} ASSETS`);
 assert.deepStrictEqual(operationCards.map((card) => card.availableCoveragePct), [100, 100, 100, 100]);
 assert.deepStrictEqual(operationCards.map((card) => card.freshCoveragePct), [
   macroHealth.coverage.freshCoveragePct,
