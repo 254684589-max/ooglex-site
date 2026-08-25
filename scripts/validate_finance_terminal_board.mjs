@@ -16,7 +16,17 @@ import {
   summarize,
   tenorChangeBp
 } from "../apps/finance-terminal/finance-terminal-board-data.mjs";
-import { rangeChange, sliceSeries } from "../apps/finance-terminal/finance-terminal-board-view.mjs";
+import {
+  matchesQuery,
+  rangeChange,
+  selectRows,
+  sliceSeries
+} from "../apps/finance-terminal/finance-terminal-board-view.mjs";
+import {
+  createWatchlistStore,
+  orderByWatchlist,
+  sanitizeSymbol
+} from "../apps/finance-terminal/finance-terminal-watchlist.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -82,6 +92,49 @@ function validateSeriesWindow() {
   assert.equal(rangeChange([4.0, 4.25], true), "+25 bp", "收益率区间必须按基点表达");
   assert.equal(rangeChange([10], false), null, "单点不得推算区间变化");
   assert.equal(rangeChange([], true), null);
+}
+
+/* 搜索与自选：搜索只做字面匹配，自选只前置不改数值，两者叠加时先搜后选。 */
+function validateSearchAndWatchlist(board) {
+  const commodity = categoryOf(board, "commodity");
+  assert.ok(commodity.rows.every((row) => matchesQuery(row, "")), "空搜索词必须匹配全部");
+  const gold = commodity.rows.filter((row) => matchesQuery(row, "黄金"));
+  assert.ok(gold.length >= 1 && gold.every((row) => row.name.includes("黄金")),
+    "中文名搜索必须命中对应标的");
+  assert.ok(commodity.rows.filter((row) => matchesQuery(row, "gc=f")).length === 1,
+    "代码搜索必须大小写不敏感");
+  assert.equal(commodity.rows.filter((row) => matchesQuery(row, "不存在的标的")).length, 0,
+    "没有命中时不得回退成全部");
+
+  const plain = selectRows(commodity.rows, "", null);
+  assert.equal(plain.shown.length, commodity.rows.length);
+  const searched = selectRows(commodity.rows, "黄金", null);
+  assert.equal(searched.shown.length, gold.length, "搜索结果必须与匹配数一致");
+
+  const memory = new Map();
+  const storage = {
+    getItem: (key) => (memory.has(key) ? memory.get(key) : null),
+    setItem: (key, value) => memory.set(key, value)
+  };
+  const store = createWatchlistStore(storage);
+  const target = commodity.rows[commodity.rows.length - 1];
+  store.toggle(target.symbol);
+  const watch = {
+    select: (rows) => ({
+      ordered: orderByWatchlist(rows, store.list(), (row) => row.symbol),
+      shown: orderByWatchlist(rows, store.list(), (row) => row.symbol),
+      count: store.size()
+    })
+  };
+  const picked = selectRows(commodity.rows, "", watch);
+  assert.equal(picked.shown[0].symbol, target.symbol, "自选标的必须置顶");
+  assert.equal(picked.shown.length, commodity.rows.length, "置顶不得丢行");
+  assert.equal(picked.watched, 1);
+  board.categories.forEach((category) => {
+    category.rows.forEach((row) => {
+      assert.ok(sanitizeSymbol(row.symbol), `${row.name} 的代码不能进自选存储：${row.symbol}`);
+    });
+  });
 }
 
 function validateCategories(board) {
@@ -241,6 +294,7 @@ async function main() {
   validateCalibration(board);
   validateProvenance(board, group);
   validateCryptoFallback(group);
+  validateSearchAndWatchlist(board);
   await validateFailureIsolation(group);
   validateStaleAndMissing(group);
   const counts = board.categories.map((category) => `${category.label}${category.rows.length}`).join(" · ");
@@ -249,6 +303,7 @@ async function main() {
   console.log("- per-row source / as-of / frequency / stale / change basis: PASS");
   console.log("- listed-only stocks / no proprietary DXY level / reproducible bp change: PASS");
   console.log("- single-pipeline failure isolation / stale propagation / no forward fill: PASS");
+  console.log("- literal name/symbol search / starred-first ordering / sanitised watchlist keys: PASS");
 }
 
 main().catch((error) => {

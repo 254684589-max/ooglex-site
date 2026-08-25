@@ -2631,7 +2631,7 @@
   var boardViewInstance = null;
   function renderBoardCategories(board, viewModule) {
     if (!viewModule || !boardPanel) return;
-    if (!boardViewInstance) boardViewInstance = viewModule.createBoardView(document);
+    if (!boardViewInstance) boardViewInstance = viewModule.createBoardView(document, window);
     boardViewInstance.render(board);
   }
 

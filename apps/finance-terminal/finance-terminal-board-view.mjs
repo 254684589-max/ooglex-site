@@ -4,6 +4,7 @@
 
 import { openPanel, section, row, note, seriesPath, isPanelOpen } from "./finance-terminal-detail-view.mjs";
 import { formatPrice } from "./finance-terminal-board-data.mjs";
+import { mountWatchlist } from "./finance-terminal-watchlist.mjs";
 
 /* 走势区间按交易日近似取点：站内序列本身就是交易日轴，不做日历插值。 */
 const RANGES = Object.freeze([
@@ -30,6 +31,23 @@ function text(parent, tag, className, content) {
   if (content !== undefined && content !== null) node.textContent = content;
   parent.appendChild(node);
   return node;
+}
+
+/* 纯函数：按名称、英文名、代码或口径标签匹配搜索词；空搜索词匹配全部。 */
+export function matchesQuery(item, query) {
+  const needle = String(query || "").trim().toLowerCase();
+  if (!needle) return true;
+  return [item && item.name, item && item.nameEn, item && item.symbol, item && item.extraText]
+    .filter(Boolean)
+    .some((field) => String(field).toLowerCase().includes(needle));
+}
+
+/* 纯函数：先按搜索词过滤，再交给自选清单排序与筛选；自选项前置。 */
+export function selectRows(rows, query, watch) {
+  const matched = (rows || []).filter((item) => matchesQuery(item, query));
+  if (!watch) return { matched, shown: matched, watched: 0 };
+  const picked = watch.select(matched);
+  return { matched, shown: picked.shown, watched: picked.count };
 }
 
 /* 纯函数：把共享日期轴上的序列裁到指定区间，只保留有观测的点，不前向填充。 */
@@ -217,51 +235,62 @@ async function openTrend(document, item, bundles) {
   if (series.source) note(document, box, `序列来源：${series.source}。${series.note || ""}`);
 }
 
-function renderRows(document, host, category, bundles, expanded) {
+function renderRows(document, host, category, bundles, expanded, context) {
   host.textContent = "";
-  if (!category.rows.length) {
-    text(host, "p", "board-empty", "本类暂无可用数据；对应日更管道恢复后会自动出现。");
+  const rows = context.shown;
+  if (!rows.length) {
+    text(host, "p", "board-empty", context.query
+      ? `没有匹配「${context.query}」的标的，换个名称或代码再试。`
+      : (context.watched
+        ? "自选里还没有本品类的标的；点行首的☆即可加入。"
+        : "本类暂无可用数据；对应日更管道恢复后会自动出现。"));
     return;
   }
   const head = text(host, "div", "board-row board-row-head");
-  text(head, "span", "board-cell-name", "标的");
-  text(head, "span", "board-cell-price", "最新价");
-  text(head, "span", "board-cell-change", "涨跌");
-  text(head, "span", "board-cell-extra", category.extraLabel || "口径");
-  const visible = expanded ? category.rows : category.rows.slice(0, category.collapseAfter);
+  text(head, "span", "board-cell-watch", "自选");
+  const headCells = text(head, "span", "board-head-cells");
+  text(headCells, "span", "board-cell-name", "标的");
+  text(headCells, "span", "board-cell-price", "最新价");
+  text(headCells, "span", "board-cell-change", "涨跌");
+  text(headCells, "span", "board-cell-extra", category.extraLabel || "口径");
+  const visible = expanded ? rows : rows.slice(0, category.collapseAfter);
   visible.forEach((item) => {
-    const line = text(host, "button", `board-row board-change-${item.change.direction}`);
-    line.type = "button";
-    line.setAttribute("aria-label",
+    const line = text(host, "div", `board-row board-change-${item.change.direction}`);
+    if (context.watch) line.appendChild(context.watch.button(item.symbol));
+    else text(line, "span", "board-cell-watch", "");
+    const open = text(line, "button", "board-open");
+    open.type = "button";
+    open.setAttribute("aria-label",
       `${item.name}，最新价 ${item.priceText}，${item.change.text}，查看走势与数据口径`);
-    const name = text(line, "span", "board-cell-name");
+    const name = text(open, "span", "board-cell-name");
     text(name, "b", "", item.name);
     text(name, "i", "", item.symbol + (item.status === "stale" ? " · 过期" : ""));
-    const price = text(line, "span", "board-cell-price", item.priceText);
+    const price = text(open, "span", "board-cell-price", item.priceText);
     if (item.currency && item.currency !== "USD") text(price, "i", "board-cell-currency", item.currency);
-    const change = text(line, "span", "board-cell-change");
+    const change = text(open, "span", "board-cell-change");
     text(change, "i", "board-arrow", item.change.arrow);
     text(change, "b", "", item.change.text);
-    text(line, "span", "board-cell-extra", item.extraText || "—");
-    line.addEventListener("click", () => { openTrend(document, item, bundles); });
+    text(open, "span", "board-cell-extra", item.extraText || "—");
+    open.addEventListener("click", () => { openTrend(document, item, bundles); });
   });
-  if (category.rows.length > category.collapseAfter) {
+  if (rows.length > category.collapseAfter) {
     const toggle = text(host, "button", "board-toggle",
-      expanded ? "收起" : `展开全部 ${category.rows.length} 项`);
+      expanded ? "收起" : `展开全部 ${rows.length} 项`);
     toggle.type = "button";
     toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
     toggle.addEventListener("click", () => {
-      renderRows(document, host, category, bundles, !expanded);
+      renderRows(document, host, category, bundles, !expanded, context);
       const next = host.querySelector(".board-toggle");
       if (next) next.focus();
     });
   }
 }
 
-export function createBoardView(document) {
+export function createBoardView(document, view) {
   const tabsHost = document.getElementById("board-tabs");
   const panelHost = document.getElementById("board-panel");
   const summaryHost = document.getElementById("board-summary");
+  const searchInput = document.getElementById("board-search");
 
   function render(board) {
     if (!tabsHost || !panelHost) return;
@@ -271,20 +300,41 @@ export function createBoardView(document) {
     const bundles = { curveHistory: board.curveHistory, cryptoHistory: board.cryptoHistory };
     let active = (board.categories.filter((category) => category.rows.length)[0]
       || board.categories[0]).key;
+    let query = searchInput ? searchInput.value : "";
+    /* 自选与核心资产卡共用同一份清单：任一处切换都会回到这里重画。 */
+    const watch = mountWatchlist(document, view || globalThis, () => paint(),
+      { filterId: "board-watch-filter" });
 
     function paint() {
       const category = board.categories.filter((item) => item.key === active)[0];
+      const picked = selectRows(category.rows, query, watch);
       Array.from(tabsHost.children).forEach((button) => {
         const selected = button.dataset.category === active;
         button.setAttribute("aria-selected", selected ? "true" : "false");
         button.tabIndex = selected ? 0 : -1;
+        const owner = board.categories.filter((item) => item.key === button.dataset.category)[0];
+        const count = button.querySelector("i");
+        if (owner && count) {
+          const hits = query
+            ? owner.rows.filter((row) => matchesQuery(row, query)).length
+            : owner.rows.length;
+          count.textContent = query ? `${hits}/${owner.rows.length}` : String(owner.rows.length);
+        }
       });
       panelHost.setAttribute("aria-label", `${category.label}行情列表`);
       if (summaryHost) {
-        summaryHost.textContent = `${category.label} · ${category.summary.text}`
+        const scope = query || picked.shown.length !== category.rows.length
+          ? `显示${picked.shown.length}/${category.rows.length}项`
+          : category.summary.text;
+        summaryHost.textContent = `${category.label} · ${scope}`
           + (category.summary.asOf ? ` · 数据日 ${category.summary.asOf}` : "");
       }
-      renderRows(document, panelHost, category, bundles, expandedByKey.get(active) === true);
+      renderRows(document, panelHost, category, bundles, expandedByKey.get(active) === true, {
+        shown: picked.shown,
+        query: String(query || "").trim(),
+        watched: picked.watched,
+        watch
+      });
     }
 
     board.categories.forEach((category, index) => {
@@ -297,9 +347,8 @@ export function createBoardView(document) {
       text(button, "b", "", category.label);
       text(button, "i", "", String(category.rows.length));
       button.addEventListener("click", () => {
-        expandedByKey.set(active, panelHost.querySelector(".board-toggle")
-          ? panelHost.querySelector(".board-toggle").getAttribute("aria-expanded") === "true"
-          : false);
+        expandedByKey.set(active, Boolean(panelHost.querySelector(".board-toggle"))
+          && panelHost.querySelector(".board-toggle").getAttribute("aria-expanded") === "true");
         active = category.key;
         paint();
       });
@@ -313,6 +362,13 @@ export function createBoardView(document) {
         tabsHost.children[next].focus();
       });
     });
+    if (searchInput) {
+      searchInput.addEventListener("input", () => {
+        query = searchInput.value;
+        expandedByKey.clear();
+        paint();
+      });
+    }
     paint();
     panelHost.setAttribute("aria-busy", "false");
     if (board.failures.length && summaryHost) {

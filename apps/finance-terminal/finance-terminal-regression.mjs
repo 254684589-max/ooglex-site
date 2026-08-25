@@ -47,6 +47,8 @@ export function runBrowserRegressionProbe(options = {}) {
   const boardTabs = Array.from(document.querySelectorAll("#board-tabs .board-tab"));
   const boardRows = Array.from(document.querySelectorAll("#board-panel .board-row:not(.board-row-head)"));
   const boardToggle = document.querySelector("#board-panel .board-toggle");
+  const boardSearch = document.getElementById("board-search");
+  const boardWatchButtons = Array.from(document.querySelectorAll("#board-panel .watch-toggle"));
   const licenseNotice = document.getElementById("license-notice");
   const pageAnnouncer = document.getElementById("page-announcer");
   const width = window.innerWidth;
@@ -63,7 +65,7 @@ export function runBrowserRegressionProbe(options = {}) {
   )).filter(elementIsRendered);
   const targetMinimum = width <= 620 ? 44 : 24;
   const targetElements = Array.from(document.querySelectorAll(
-    ".brand, .back-link, .terminal-rail a, .stable-v1-chip, .section-nav a, .method summary, .period-tab, .source-link, .detail-link, .news-link, .operation-action, .operation-readiness-link, .legal-links a"
+    ".brand, .back-link, .terminal-rail a, .stable-v1-chip, .section-nav a, .method summary, .period-tab, .source-link, .detail-link, .news-link, .operation-action, .operation-readiness-link, .legal-links a, .board-tab, .board-open, .board-toggle, .board-search"
   )).filter(elementIsRendered);
   const sectionLinks = Array.from(document.querySelectorAll(".section-nav a"));
   const supportingHealthPanels = Array.from(document.querySelectorAll(
@@ -121,7 +123,9 @@ export function runBrowserRegressionProbe(options = {}) {
     group.items.push(tab);
   });
   const renderedGroups = tabGroups.filter((group) => group.items.some(elementIsRendered));
-  let keyboardTabs = renderedGroups.length > 0 && renderedGroups.every((group) => {
+  /* 桌面单屏总览下两组标签都可能不在视图里；没有渲染出来的标签组不参与断言，
+     与改造前「页面没有标签则跳过」的语义保持一致。 */
+  let keyboardTabs = renderedGroups.every((group) => {
     return group.items.filter((tab) => tab.getAttribute("aria-selected") === "true").length === 1;
   });
   renderedGroups.forEach((group) => {
@@ -276,7 +280,11 @@ export function runBrowserRegressionProbe(options = {}) {
         const change = row.querySelector(".board-cell-change");
         return price && price.textContent.trim() && change && change.textContent.trim();
       })
-      && (!boardToggle || boardToggle.getAttribute("aria-expanded") === "false"),
+      && (!boardToggle || boardToggle.getAttribute("aria-expanded") === "false")
+      && Boolean(boardSearch) && boardSearch.type === "search"
+      && boardWatchButtons.length === boardRows.length
+      && boardWatchButtons.every((button) => button.getAttribute("aria-pressed") === "false"
+        || button.getAttribute("aria-pressed") === "true"),
     targetSizes: targetElements.length > 8 && undersizedTargets.length === 0,
     externalLinkSafety: Array.from(document.querySelectorAll('a[target="_blank"]')).every((link) => {
       return /(^|\s)noopener(\s|$)/.test(link.rel) && /(^|\s)noreferrer(\s|$)/.test(link.rel);
@@ -324,7 +332,13 @@ export function runBrowserRegressionProbe(options = {}) {
     stagedDataLoading: stagedLoad,
     undersizedTargets,
     overflowCandidates,
-    board: { tabs: boardTabs.length, rows: boardRows.length, collapsed: Boolean(boardToggle) },
+    board: {
+      tabs: boardTabs.length,
+      rows: boardRows.length,
+      collapsed: Boolean(boardToggle),
+      search: Boolean(boardSearch),
+      watchToggles: boardWatchButtons.length
+    },
     layout: {
       market: renderedGridColumns(grid),
       risk: renderedGridColumns(riskGrid),

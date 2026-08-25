@@ -2810,7 +2810,8 @@ def main() -> None:
     require(RISK_RADAR_MODULE.stat().st_size <= 3_400, "金融终端风险雷达模块超过3.4KB性能预算")
     require(WORLDMAP_MODULE.stat().st_size <= 5_000, "金融终端点阵世界地图模块超过5KB性能预算")
     require(SESSIONS_MODULE.stat().st_size <= 3_500, "金融终端交易时段模块超过3.5KB性能预算")
-    require(WATCHLIST_MODULE.stat().st_size <= 7_000, "金融终端自选清单模块超过7KB性能预算")
+    # 7,600：自选清单改为整页共用一份状态并支持分区各自的筛选入口后必要的增量。
+    require(WATCHLIST_MODULE.stat().st_size <= 7_600, "金融终端自选清单模块超过7.6KB性能预算")
     require(HEALTH_ADAPTERS_MODULE.stat().st_size <= 11_000, "金融终端辅助来源健康适配层超过11KB性能预算")
     require(DETAIL_VIEW_MODULE.stat().st_size <= 13_000, "金融终端资产详情抽屉模块超过13KB性能预算")
     require(RADAR_VIEW_MODULE.stat().st_size <= 6_000, "金融终端雷达构成抽屉模块超过6KB性能预算")
@@ -2829,15 +2830,16 @@ def main() -> None:
     require(APP.stat().st_size + LOADER.stat().st_size + TERMINAL_VISUALS.stat().st_size
             + COMMAND_CENTER_MODULE.stat().st_size + GLOBE_MODULE.stat().st_size <= 230_000,
             "金融终端常规加载JavaScript超过230KB性能预算")
-    # 21,000 是加入品类行情板检查后的预算：探针要逐「标签组」校验键盘与语义
+    # 22,000 是加入品类行情板检查后的预算：探针要逐「标签组」校验键盘与语义
     # （页面现在有跨资产周期与品类行情板两组），并核对六个品类标签、当前品类的
-    # 价格/涨跌列与折叠按钮默认收起。该模块只在 regression=1 时加载。
-    require(REGRESSION_MODULE.stat().st_size <= 21_000,
-            "仅回归模式加载的浏览器探针超过21KB性能预算")
+    # 价格/涨跌列、折叠按钮默认收起、搜索框与逐行自选开关。该模块只在
+    # regression=1 时加载。
+    require(REGRESSION_MODULE.stat().st_size <= 22_000,
+            "仅回归模式加载的浏览器探针超过22KB性能预算")
     require(BOARD_DATA_MODULE.stat().st_size <= 19_000,
             "按需加载的品类行情板数据层超过19KB性能预算")
-    require(BOARD_VIEW_MODULE.stat().st_size <= 15_000,
-            "按需加载的品类行情板视图超过15KB性能预算")
+    require(BOARD_VIEW_MODULE.stat().st_size <= 18_000,
+            "按需加载的品类行情板视图超过18KB性能预算")
     require('import("./finance-terminal-board-view.mjs")' in app
             and 'import("./finance-terminal-board-data.mjs")' in app
             and "createBoardView" in board_view_module

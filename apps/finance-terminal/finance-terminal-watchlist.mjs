@@ -79,6 +79,32 @@ export function createWatchlistStore(storage) {
   });
 }
 
+/* 整页共用一份自选状态：核心资产与品类行情板读同一个 store，任一处切换都会
+   通知另一处重画，避免两份内存副本各自显示不同的星标。 */
+let sharedStore = null;
+const listeners = new Set();
+
+export function sharedWatchlistStore(view) {
+  if (!sharedStore) sharedStore = createWatchlistStore(safeStorage(view));
+  return sharedStore;
+}
+
+export function subscribeWatchlist(listener) {
+  if (typeof listener !== "function") return () => {};
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+}
+
+export function notifyWatchlist() {
+  listeners.forEach((listener) => {
+    try {
+      listener();
+    } catch {
+      /* 单个分区重画失败不影响其他分区 */
+    }
+  });
+}
+
 /* 隐私模式或站点数据被拦时，连访问 window.localStorage 本身都可能抛异常。 */
 export function safeStorage(view) {
   try {
@@ -144,11 +170,14 @@ export function applyFilter(element, count, watchOnly, store) {
   return active;
 }
 
-/* 一次挂载：自建存储、接管筛选按钮并持有筛选状态，调用方只需 button() 与 select()。 */
-export function mountWatchlist(document, view, onChange) {
-  const store = createWatchlistStore(safeStorage(view));
-  const filter = document.getElementById("watch-filter");
+/* 一次挂载：共用存储、接管本分区的筛选按钮并持有筛选状态，
+   调用方只需 button() 与 select()。filterId 让不同分区各自挂自己的筛选入口。 */
+export function mountWatchlist(document, view, onChange, options) {
+  const settings = options || {};
+  const store = sharedWatchlistStore(view);
+  const filter = document.getElementById(settings.filterId || "watch-filter");
   let watchOnly = false;
+  if (onChange) subscribeWatchlist(onChange);
   if (filter) {
     filter.addEventListener("click", () => {
       watchOnly = !watchOnly;
@@ -157,7 +186,7 @@ export function mountWatchlist(document, view, onChange) {
   }
   return Object.freeze({
     store,
-    button: (symbol) => createWatchButton(document, symbol, store, onChange),
+    button: (symbol) => createWatchButton(document, symbol, store, notifyWatchlist),
     select(assets) {
       const picked = selectAssets(assets, store, watchOnly);
       watchOnly = applyFilter(filter, picked.count, watchOnly, store);

@@ -1092,7 +1092,23 @@
       font-size: 12px;
       line-height: 1.85;
     }
-    .board-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .board-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .board-search {
+      flex: 1 1 240px;
+      min-width: 0;
+      max-width: 420px;
+      min-height: 44px;
+      padding: 0 12px;
+      border: 1px solid var(--line-strong);
+      border-radius: 3px;
+      color: var(--ink);
+      background: rgba(12, 18, 27, 0.7);
+      font-family: var(--sans);
+      font-size: 13px;
+    }
+    .board-search::placeholder { color: var(--faint); }
+    .board-search:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+    .board-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
     .board-tab {
       display: inline-flex;
       align-items: center;
@@ -1121,24 +1137,36 @@
     }
     .board-row {
       display: grid;
+      grid-template-columns: 44px minmax(0, 1fr);
+      align-items: center;
+      width: 100%;
+      min-height: 46px;
+      padding: 0 10px 0 4px;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 13px;
+    }
+    .board-row:last-child { border-bottom: 0; }
+    .board-row:hover { background: rgba(84, 216, 255, 0.06); }
+    .board-open,
+    .board-head-cells {
+      display: grid;
       grid-template-columns: minmax(0, 1fr) 116px 116px 128px;
       align-items: center;
       gap: 10px;
       width: 100%;
       min-height: 46px;
-      padding: 8px 14px;
+      padding: 8px 10px;
       border: 0;
-      border-bottom: 1px solid var(--line);
-      color: var(--ink);
-      background: transparent;
-      font-family: var(--sans);
-      font-size: 13px;
+      color: inherit;
+      background: none;
+      font: inherit;
       text-align: left;
       cursor: pointer;
     }
-    .board-row:last-child { border-bottom: 0; }
-    .board-row:hover { background: rgba(84, 216, 255, 0.06); }
-    .board-row:focus-visible { outline: 2px solid var(--cyan); outline-offset: -2px; }
+    .board-open:focus-visible { outline: 2px solid var(--cyan); outline-offset: -2px; }
+    .board-cell-watch { color: var(--faint); font-family: var(--mono); font-size: 10px; text-align: center; }
     .board-row-head {
       min-height: 34px;
       color: var(--faint);
@@ -1146,8 +1174,8 @@
       font-family: var(--mono);
       font-size: 10px;
       letter-spacing: 0.08em;
-      cursor: default;
     }
+    .board-head-cells { min-height: 34px; padding: 6px 10px; cursor: default; }
     .board-cell-name { display: flex; min-width: 0; flex-direction: column; gap: 2px; }
     .board-cell-name b { overflow: hidden; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
     .board-cell-name i { color: var(--faint); font-family: var(--mono); font-size: 10px; font-style: normal; }
@@ -1214,7 +1242,7 @@
       .research-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .information-grid { grid-template-columns: 1fr; }
       .operations-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .board-row { grid-template-columns: minmax(0, 1fr) 104px 104px 108px; }
+      .board-open, .board-head-cells { grid-template-columns: minmax(0, 1fr) 104px 104px 108px; }
       .leader-columns { grid-template-columns: 1fr; }
       .event-row { grid-template-columns: 54px 92px minmax(0, 1fr); }
       .event-values { grid-column: 3; justify-content: start; }
@@ -1243,7 +1271,12 @@
       .information-grid { grid-template-columns: 1fr; }
       .operations-grid { grid-template-columns: 1fr; }
       .operations-notice { grid-template-columns: 1fr; }
-      .board-row { grid-template-columns: minmax(0, 1fr) 86px 92px; gap: 8px; }
+      .board-row { grid-template-columns: 38px minmax(0, 1fr); }
+      .board-open, .board-head-cells {
+        grid-template-columns: minmax(0, 1fr) 80px 88px;
+        gap: 8px;
+        padding: 8px 6px;
+      }
       .board-cell-extra { display: none; }
       .board-tab { flex: 1 1 auto; justify-content: center; }
       .operations-actions { justify-content: flex-start; }
@@ -1525,6 +1558,12 @@
           <span class="board-subtitle" id="board-summary">LOADING CATEGORIES</span>
         </div>
         <p class="board-note" id="board-intro">六大品类全部读取站内已在日更的公开管道：商品、指数、外汇与中国国债来自跨资产管道（Yahoo Finance），股票来自全球公司榜，加密来自全球资产榜（CoinGecko），美债各期限来自FRED官方收益率曲线。点开任一标的可看站内历史走势、逐项来源与数据日。涨跌口径按品类不同：股票为当日价格变动，加密为过去24小时，债券为相对上一观测的基点（bp）变化。</p>
+        <div class="board-controls">
+          <label class="sr-only" for="board-search">按名称或代码搜索标的</label>
+          <input class="board-search" id="board-search" type="search" placeholder="搜索名称或代码，例如 黄金 / GC=F"
+                 autocomplete="off" spellcheck="false" aria-controls="board-panel">
+          <button type="button" class="watch-filter" id="board-watch-filter" aria-pressed="false" hidden>只看自选</button>
+        </div>
         <div class="board-tabs" id="board-tabs" role="tablist" aria-label="行情品类"></div>
         <div class="board-panel" id="board-panel" role="tabpanel" aria-label="行情列表" aria-busy="true">
           <p class="board-empty">正在按品类整理站内日更行情…</p>
