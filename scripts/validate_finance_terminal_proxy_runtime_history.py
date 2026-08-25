@@ -15,6 +15,8 @@ from datetime import datetime, timedelta, timezone
 
 from finance_terminal_proxy_runtime_history import (
     ContractError,
+    EXPECTED_PROXY_COUNT,
+    EXPECTED_VIEWPORTS,
     build_history,
     cycle_date,
     render_markdown,
@@ -37,19 +39,23 @@ def expect_error(callback, message: str) -> None:
     raise AssertionError(message)
 
 
+# 夹具跟着当前展示决定走：三档视口 × 已登记代理项数（2026-08-25 起为DIA、GLD两项）。
+TOTAL = EXPECTED_VIEWPORTS * EXPECTED_PROXY_COUNT
+
+
 def evidence(generated_at: str, mounted: int, loaded: int, failed: int, category: str | None) -> dict:
     failure_categories = {key: 0 for key in ("dns", "tls", "connection", "timeout", "blocked", "other")}
     if category:
         failure_categories[category] = failed
     diagnosis_counts = {
-        "healthy": 3 if mounted == 12 and loaded == 3 else 0,
-        "degraded": 3 if 0 < mounted < 12 and loaded == 3 else 0,
+        "healthy": 3 if mounted == TOTAL and loaded == 3 else 0,
+        "degraded": 3 if 0 < mounted < TOTAL and loaded == 3 else 0,
         "unavailable": 3 if mounted == 0 else 0,
         "unknown": 0,
     }
     if sum(diagnosis_counts.values()) != 3:
         diagnosis_counts["degraded"] = 3 - sum(diagnosis_counts.values())
-    fallback = 12 - mounted
+    fallback = TOTAL - mounted
     return {
         "schemaVersion": 5,
         "generatedAt": generated_at,
@@ -57,9 +63,9 @@ def evidence(generated_at: str, mounted: int, loaded: int, failed: int, category
         "source": "Chrome DevTools Protocol / static branch checkout",
         "viewports": [{}, {}, {}],
         "summary": {
-            "viewportCount": 3,
-            "proxyCountPerViewport": 4,
-            "observationCount": 12,
+            "viewportCount": EXPECTED_VIEWPORTS,
+            "proxyCountPerViewport": EXPECTED_PROXY_COUNT,
+            "observationCount": TOTAL,
             "mountedObservations": mounted,
             "fallbackObservations": fallback,
             "verifiedFallbackObservations": fallback,
@@ -97,11 +103,11 @@ records = []
 start = datetime(2026, 8, 5, 21, 30, tzinfo=timezone.utc)
 for index in range(9):
     timestamp = (start + timedelta(days=index)).isoformat().replace("+00:00", "Z")
-    records.append(evidence(timestamp, 12 if index % 3 == 0 else 0, 3 if index % 3 == 0 else 0,
+    records.append(evidence(timestamp, TOTAL if index % 3 == 0 else 0, 3 if index % 3 == 0 else 0,
                             0 if index % 3 == 0 else 3, None if index % 3 == 0 else "connection"))
 
 # Same-cycle rerun must replace, not add, the earlier observation.
-records.append(evidence("2026-08-13T22:30:00Z", 6, 3, 0, None))
+records.append(evidence("2026-08-13T22:30:00Z", TOTAL // 2, 3, 0, None))
 collection = {
     "status": "complete",
     "reason": None,
@@ -113,7 +119,7 @@ history = build_history(records, "agent/finance-terminal-supporting-qualificatio
                         "2026-08-13T23:00:00Z", collection)
 require(history["summary"]["observedCycles"] == 7, "历史必须限制为7个周期")
 require(history["cycles"][0]["cycleDate"] == "2026-08-13", "最新周期顺序错误")
-require(history["cycles"][0]["summary"]["mountedObservations"] == 6, "同周期未保留最新证据")
+require(history["cycles"][0]["summary"]["mountedObservations"] == TOTAL // 2, "同周期未保留最新证据")
 require(history["summary"]["mixedHostCycles"] == 1, "混合宿主周期复算错误")
 require(history["assessment"]["state"] == "watch"
         and history["assessment"]["reason"] == "latest-cycle-partial-hosts",
@@ -149,8 +155,8 @@ require(warning_fallback["assessment"]["state"] == "warn"
         "连续两周期全回退必须告警")
 
 warning_script = build_history([
-    evidence("2026-08-12T22:00:00Z", 6, 0, 3, "connection"),
-    evidence("2026-08-13T22:00:00Z", 6, 0, 3, "connection"),
+    evidence("2026-08-12T22:00:00Z", TOTAL // 2, 0, 3, "connection"),
+    evidence("2026-08-13T22:00:00Z", TOTAL // 2, 0, 3, "connection"),
 ], "agent/finance-terminal-supporting-qualification", "2026-08-13T23:00:00Z", {
     "status": "complete", "reason": None, "remoteArtifactsSeen": 1,
     "remoteArtifactsAccepted": 1, "remoteArtifactsSkipped": 0,
@@ -160,8 +166,8 @@ require(warning_script["assessment"]["state"] == "warn"
         "连续两周期脚本失败必须告警")
 
 healthy = build_history([
-    evidence("2026-08-12T22:00:00Z", 12, 3, 0, None),
-    evidence("2026-08-13T22:00:00Z", 12, 3, 0, None),
+    evidence("2026-08-12T22:00:00Z", TOTAL, 3, 0, None),
+    evidence("2026-08-13T22:00:00Z", TOTAL, 3, 0, None),
 ], "agent/finance-terminal-supporting-qualification", "2026-08-13T23:00:00Z", {
     "status": "complete", "reason": None, "remoteArtifactsSeen": 1,
     "remoteArtifactsAccepted": 1, "remoteArtifactsSkipped": 0,
@@ -172,7 +178,7 @@ require(healthy["assessment"]["state"] == "healthy"
 
 recovered = build_history([
     evidence("2026-08-12T22:00:00Z", 0, 0, 3, "timeout"),
-    evidence("2026-08-13T22:00:00Z", 12, 3, 0, None),
+    evidence("2026-08-13T22:00:00Z", TOTAL, 3, 0, None),
 ], "agent/finance-terminal-supporting-qualification", "2026-08-13T23:00:00Z", {
     "status": "complete", "reason": None, "remoteArtifactsSeen": 1,
     "remoteArtifactsAccepted": 1, "remoteArtifactsSkipped": 0,
