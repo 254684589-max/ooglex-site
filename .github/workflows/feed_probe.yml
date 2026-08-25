@@ -1,0 +1,50 @@
+name: Feed Availability Probe
+
+# 只读探测：判断某个外部站点能否被正当接入（有没有公开订阅口、robots 怎么写、条款页在哪）。
+# 手动触发，不写仓库、不提交任何外部内容，仅把探测报告作为构建产物留存。
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: '站点根地址，例如 https://example.com'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: feed-probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Self-test probe logic offline
+        run: python scripts/probe_feed_availability.py --self-test
+
+      - name: Probe target site
+        run: |
+          mkdir -p /tmp/feed-probe
+          python scripts/probe_feed_availability.py --base "${{ inputs.base_url }}" \
+            | tee /tmp/feed-probe/report.txt
+          python scripts/probe_feed_availability.py --base "${{ inputs.base_url }}" --json \
+            > /tmp/feed-probe/report.json
+
+      - name: Upload probe report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: feed-probe
+          path: /tmp/feed-probe
+          retention-days: 7
