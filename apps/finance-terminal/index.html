@@ -1228,9 +1228,34 @@
     .board-range-tab[aria-pressed="true"] { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-soft); }
     .board-range-tab:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
 
-    /* 桌面单屏指挥中心把总览压成一屏，品类行情板自成一个视图，不挤进那张16列栅格。 */
+    /* 工程/运营向分区的明细折叠：窄屏默认收起（由视图切换模块按断点同步），
+       桌面各自成页时保持展开。摘要本身是可聚焦的触控目标。 */
+    .section-fold { margin-top: 12px; }
+    .section-fold-summary {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px solid var(--line-strong);
+      border-radius: 3px;
+      color: var(--muted);
+      background: rgba(12, 18, 27, 0.7);
+      font-size: 12px;
+      cursor: pointer;
+      list-style: none;
+    }
+    .section-fold-summary::-webkit-details-marker { display: none; }
+    .section-fold-summary::before { color: var(--cyan); content: "▸"; font-size: 10px; }
+    .section-fold[open] > .section-fold-summary { margin-bottom: 4px; }
+    .section-fold[open] > .section-fold-summary::before { content: "▾"; }
+    .section-fold-summary:hover { border-color: var(--cyan); color: var(--ink); }
+    .section-fold-summary:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
     @media (min-width: 1041px) {
-      body[data-terminal-view="overview"] #board-section { display: none; }
+      /* 桌面单屏里这两块各自成页，折叠壳退成透明容器，不再占额外高度。 */
+      .section-fold-summary { display: none; }
+      .section-fold { margin-top: 0; }
       body[data-terminal-view="board"] #main-content > #board-section { display: block; }
     }
 
@@ -1590,6 +1615,8 @@
           <span class="board-subtitle" id="research-summary">LOADING RESEARCH</span>
           <button type="button" class="panel-entry" id="correlation-entry">资产相关性矩阵 →</button>
         </div>
+        <details class="section-fold" id="research-fold" open>
+          <summary class="section-fold-summary">全球股指地图与研究卡片</summary>
         <article class="global-risk-map status-loading" id="global-risk-map" aria-labelledby="global-risk-map-title" aria-describedby="global-risk-map-note" aria-busy="true">
           <div class="global-risk-map-head">
             <div>
@@ -1666,6 +1693,7 @@
           <div class="research-skeleton" aria-hidden="true"></div>
           <div class="research-skeleton" aria-hidden="true"></div>
         </div>
+        </details>
       </section>
 
       <section class="information-section" id="information-section" aria-labelledby="information-heading">
@@ -1697,6 +1725,8 @@
           <span class="board-subtitle" id="operations-summary">LOADING PIPELINES</span>
           <a class="panel-entry" href="#operations-section">逐日运行记录 →</a>
         </div>
+        <details class="section-fold" id="operations-fold" open>
+          <summary class="section-fold-summary">资格说明、管线健康与四条管道明细</summary>
         <div class="operations-notice" id="operations-notice">
           <p><strong>当前仍未达到稳定V1标准；健康快照与连续周期证据是两套独立信号。</strong> 卡片同时展示仓库内的更新健康和远端任务连续成功周期；稳定V1证据超过72小时会标记为`STALE`，同一日更周期重跑不会重复累计。Beta需四条管道各满3个周期，稳定V1需各满7个周期。</p>
           <div class="operations-actions" aria-label="Beta运行与反馈">
@@ -1728,6 +1758,7 @@
           <div class="operation-skeleton" aria-hidden="true"></div>
           <div class="operation-skeleton" aria-hidden="true"></div>
         </div>
+        </details>
       </section>
 
       <details class="method" id="method-section">

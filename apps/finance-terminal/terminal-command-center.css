@@ -172,20 +172,66 @@
     grid-row: 2;
   }
 
-  body[data-terminal-view="overview"] #research-section {
-    grid-column: 1 / 5;
-    grid-row: 3;
-  }
-
-  body[data-terminal-view="overview"] #risk-section {
-    grid-column: 5 / 9;
-    grid-row: 3;
-  }
-
+  /* 一屏总览只留「看行情与看风险」这条主线：市场强弱与领袖、稳定V1运行证据
+     两块偏研究与运维，改为各自独立视图（左栏与分区导航仍可进入），
+     腾出的位置给品类行情板，六大类在总览里直接可读、可切换。
+     本文件后面仍有若干 overview 下针对这两块的排版规则，它们随之失效但无害，
+     保留是为了这两块日后若要回到一屏视图时不必重新推导尺寸。 */
+  body[data-terminal-view="overview"] #research-section,
   body[data-terminal-view="overview"] #operations-section {
-    grid-column: 9 / 13;
-    grid-row: 3;
+    display: none;
   }
+
+  /* 列宽由参考图精修层统一给定（那是最后一层，也是一屏栅格的实际归属地）；
+     这里只负责第三行的行号、显示方式与不溢出。 */
+  body[data-terminal-view="overview"] #risk-section { grid-row: 3; }
+
+  body[data-terminal-view="overview"] #board-section {
+    display: flex;
+    flex-direction: column;
+    grid-row: 3;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  /* 总览里的行情板只留标签与前几行：说明、搜索、自选入口与展开按钮都在
+     「品类」视图里有完整版本，一屏视图不重复占高度。 */
+  body[data-terminal-view="overview"] #board-intro,
+  body[data-terminal-view="overview"] .board-controls,
+  body[data-terminal-view="overview"] #board-failures,
+  body[data-terminal-view="overview"] #board-panel .board-toggle,
+  body[data-terminal-view="overview"] #board-panel .board-row:nth-child(n + 6) {
+    display: none;
+  }
+
+  body[data-terminal-view="overview"] .board-tabs { gap: 4px; margin-top: 6px; }
+
+  body[data-terminal-view="overview"] .board-tab {
+    min-width: 0;
+    min-height: 30px;
+    padding: 0 8px;
+    gap: 4px;
+    font-size: 11px;
+  }
+
+  body[data-terminal-view="overview"] #board-panel { margin-top: 6px; min-height: 0; }
+
+  body[data-terminal-view="overview"] #board-panel .board-row { min-height: 34px; }
+
+  body[data-terminal-view="overview"] #board-panel .board-open,
+  body[data-terminal-view="overview"] #board-panel .board-head-cells {
+    grid-template-columns: minmax(0, 1fr) 74px 82px;
+    gap: 6px;
+    min-height: 34px;
+    padding: 4px 6px;
+    font-size: 11px;
+  }
+
+  body[data-terminal-view="overview"] #board-panel .board-cell-extra { display: none; }
+  body[data-terminal-view="overview"] #board-panel .board-cell-price { font-size: 12px; }
+  body[data-terminal-view="overview"] #board-panel .board-cell-change { font-size: 11px; }
+  body[data-terminal-view="overview"] #board-panel .watch-toggle { min-width: 34px; min-height: 34px; }
+  body[data-terminal-view="overview"] #board-section .board-heading { padding: 6px 0 4px; }
 
   body[data-terminal-view="overview"] #information-section {
     grid-column: 13 / 17;
@@ -447,7 +493,6 @@
   }
 
   body[data-terminal-view="overview"] #risk-section,
-  body[data-terminal-view="overview"] #operations-section,
   body[data-terminal-view="overview"] #information-section {
     display: grid;
     grid-template-rows: 28px minmax(0, 1fr);

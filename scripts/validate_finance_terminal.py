@@ -2823,19 +2823,20 @@ def main() -> None:
     # 20,000 是在分区内容还没被发现遭裁切时定的。补上「分区内那一层也要能缩」与
     # 遥测面板第三行两处修复、连同解释它们为何存在的注释后需要 20.7KB；换回的是
     # OFR 卡片与运行证据面板不再被裁掉 137px 与 201px，收益率曲线入口不再缺 6px。
-    require(COMMAND_CENTER_CSS.stat().st_size <= 20_700, "金融终端单屏指挥中心样式超过20.7KB性能预算")
+    # 23,000：一屏总览把研究与运维两块移出栅格、给品类行情板排位并做紧凑化后的增量。
+    require(COMMAND_CENTER_CSS.stat().st_size <= 23_000, "金融终端单屏指挥中心样式超过23KB性能预算")
     require(VISUAL_FIDELITY_CSS.stat().st_size <= 6_000, "金融终端高保真视觉层超过6KB性能预算")
-    require(REFERENCE_FIDELITY_CSS.stat().st_size <= 12_000, "金融终端参考图精修层超过12KB性能预算")
+    require(REFERENCE_FIDELITY_CSS.stat().st_size <= 12_400, "金融终端参考图精修层超过12.4KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
     require(APP.stat().st_size + LOADER.stat().st_size + TERMINAL_VISUALS.stat().st_size
             + COMMAND_CENTER_MODULE.stat().st_size + GLOBE_MODULE.stat().st_size <= 230_000,
             "金融终端常规加载JavaScript超过230KB性能预算")
-    # 22,000 是加入品类行情板检查后的预算：探针要逐「标签组」校验键盘与语义
-    # （页面现在有跨资产周期与品类行情板两组），并核对六个品类标签、当前品类的
-    # 价格/涨跌列、折叠按钮默认收起、搜索框与逐行自选开关。该模块只在
-    # regression=1 时加载。
-    require(REGRESSION_MODULE.stat().st_size <= 22_000,
-            "仅回归模式加载的浏览器探针超过22KB性能预算")
+    # 23,000 是加入品类行情板与分区折叠检查后的预算：探针要逐「标签组」校验键盘与
+    # 语义（页面现在有跨资产周期与品类行情板两组），核对六个品类标签、当前品类的
+    # 价格/涨跌列、折叠按钮默认收起、搜索框与逐行自选开关，并在量尺寸前记下两个
+    # 工程/运营向分区折叠壳的默认状态。该模块只在 regression=1 时加载。
+    require(REGRESSION_MODULE.stat().st_size <= 23_000,
+            "仅回归模式加载的浏览器探针超过23KB性能预算")
     require(BOARD_DATA_MODULE.stat().st_size <= 19_000,
             "按需加载的品类行情板数据层超过19KB性能预算")
     require(BOARD_VIEW_MODULE.stat().st_size <= 18_000,

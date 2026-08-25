@@ -330,7 +330,7 @@ async function validateDesktopViews(client, width) {
   if (width <= 1040) return [];
   const evaluation = await client.send("Runtime.evaluate", {
     expression: `(async () => {
-      const views = ["market", "risk", "research", "information", "operations", "method"];
+      const views = ["market", "board", "risk", "research", "information", "operations", "method"];
       const evidence = [];
       for (const view of views) {
         document.querySelector('.section-nav a[href="#' + view + '-section"]')?.click();
@@ -350,7 +350,7 @@ async function validateDesktopViews(client, width) {
     returnByValue: true
   });
   const evidence = evaluation.result?.value || [];
-  if (evidence.length !== 6 || evidence.some((item) => {
+  if (evidence.length !== 7 || evidence.some((item) => {
     return item.active !== item.view || item.current !== `#${item.view}-section` || !item.visible;
   })) {
     throw new Error(`${width}px桌面分区切换失败：${JSON.stringify(evidence)}`);
@@ -448,8 +448,12 @@ async function validateDeferredLoading(client, baseUrl, timeoutMs) {
      抢在动画前面取样才侥幸通过的。 */
   await new Promise((resolve) => setTimeout(resolve, 2500));
   const settled = await readLoadSnapshot(client);
-  if (settled.modules?.states?.risk !== "idle") {
-    throw new Error(`分区跳转滚动停稳后越界加载风险区：${JSON.stringify(settled.modules)}`);
+  /* 工程/运营向明细在窄屏默认折叠后长页明显变短，跳到底部的运行证据时，
+     市场状态可能确实停在视野边缘，那时加载它是对的。真正要守住的仍是
+     「一路掠过不算看过」：品类行情板在页面中段，平滑滚动整段经过它，
+     停稳后它必须还是 idle。 */
+  if (settled.modules?.states?.board !== "idle") {
+    throw new Error(`分区跳转滚动停稳后越界加载品类行情板：${JSON.stringify(settled.modules)}`);
   }
   /* 反过来的一面同样要成立：窄屏下 #risk-section 在四千像素之下，访客若停在
      首屏雷达前，雷达必须自己把风险数据取回来，不能一直空着。 */

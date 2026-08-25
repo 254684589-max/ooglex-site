@@ -48,6 +48,12 @@ export function runBrowserRegressionProbe(options = {}) {
   const boardRows = Array.from(document.querySelectorAll("#board-panel .board-row:not(.board-row-head)"));
   const boardToggle = document.querySelector("#board-panel .board-toggle");
   const boardSearch = document.getElementById("board-search");
+  /* 折叠壳的默认状态要在量尺寸之前记下来：窄屏默认收起，桌面各自成页保持展开。
+     记完立即展开，后面的列数与裁切测量才和改造前一致。 */
+  const sectionFolds = Array.from(document.querySelectorAll("details.section-fold"));
+  const foldDefaults = sectionFolds.map((fold) => ({ id: fold.id, open: fold.open }));
+  const wideViewport = window.innerWidth > 1040;
+  sectionFolds.forEach((fold) => { fold.open = true; });
   const boardWatchButtons = Array.from(document.querySelectorAll("#board-panel .watch-toggle"));
   const licenseNotice = document.getElementById("license-notice");
   const pageAnnouncer = document.getElementById("page-announcer");
@@ -142,6 +148,12 @@ export function runBrowserRegressionProbe(options = {}) {
     moved.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true }));
     keyboardTabs = Boolean(document.activeElement) && document.activeElement.id === previousId;
   });
+
+  /* 一屏总览不再摆研究与运维两块，它们在自己的视图里才有布局；
+     没有渲染出来的栅格不参与列数断言，桌面分区切换由浏览器校验器逐个核对。 */
+  function columnsMatch(grid, expected) {
+    return !elementIsRendered(grid) || renderedGridColumns(grid) === expected;
+  }
 
   const checks = {
     dataLoaded: [grid, boardPanel, riskGrid, researchGrid, informationGrid, operationsGrid].every((item) => {
@@ -252,10 +264,10 @@ export function runBrowserRegressionProbe(options = {}) {
         return rect.left >= -1 && rect.right <= document.documentElement.clientWidth + 1;
       }),
     responsiveColumns: renderedGridColumns(grid) === expectedColumns.market
-      && renderedGridColumns(riskGrid) === expectedColumns.risk
-      && renderedGridColumns(researchGrid) === expectedColumns.research
-      && renderedGridColumns(informationGrid) === expectedColumns.information
-      && renderedGridColumns(operationsGrid) === expectedColumns.operations,
+      && columnsMatch(riskGrid, expectedColumns.risk)
+      && columnsMatch(researchGrid, expectedColumns.research)
+      && columnsMatch(informationGrid, expectedColumns.information)
+      && columnsMatch(operationsGrid, expectedColumns.operations),
     focusOrder: focusables.length > 6 && focusables[0].classList.contains("skip-link")
       && !focusables.some((element) => {
         return element.matches(".asset-card, .risk-card, .research-card, .information-card, .operation-card");
@@ -270,6 +282,10 @@ export function runBrowserRegressionProbe(options = {}) {
         const panel = document.getElementById(tab.getAttribute("aria-controls"));
         return panel && panel.getAttribute("role") === "tabpanel";
       }),
+    /* 工程/运营向分区的明细：窄屏默认收起，桌面（各自成页）保持展开。 */
+    sectionFolding: foldDefaults.length === 2
+      && foldDefaults.every((fold) => fold.id && fold.open === wideViewport)
+      && sectionFolds.every((fold) => fold.querySelector("summary")),
     /* 品类行情板：六个品类都要出标签，当前品类要真的画出带价格与涨跌的行，
        折叠按钮存在时必须处于收起状态（默认不展开整张长列表）。 */
     categoryBoard: boardTabs.length === 6
@@ -332,6 +348,7 @@ export function runBrowserRegressionProbe(options = {}) {
     stagedDataLoading: stagedLoad,
     undersizedTargets,
     overflowCandidates,
+    sectionFolds: foldDefaults,
     board: {
       tabs: boardTabs.length,
       rows: boardRows.length,

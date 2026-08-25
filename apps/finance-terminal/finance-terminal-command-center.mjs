@@ -53,6 +53,15 @@ navigation.forEach((link) => {
   });
 });
 
+/* 长页（≤1040px）默认把工程/运营向分区的明细收起：一路滚下来太长。
+   桌面单屏里这两块各自成页，保持展开；断点变化时同步一次，不覆盖同断点内的手动展开。 */
+const folds = Array.from(document.querySelectorAll("details.section-fold"));
+function syncFolds() {
+  folds.forEach((fold) => { fold.open = desktop.matches; });
+}
+syncFolds();
+desktop.addEventListener("change", syncFolds);
+
 window.addEventListener("popstate", () => applyView(viewFromHash(), true));
 /* 面板入口用 hash 跳转。点击 hash 链接只触发 hashchange 而不触发 popstate，
    少了这一条，导航栏以外的入口点下去地址变了、视图却不动。 */
