@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-08-24T21:38:37Z",
-  "asOf": "2026-08-24",
+  "updatedAt": "2026-08-25T13:27:38Z",
+  "asOf": "2026-08-25",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-23 ~ 2026-08-29",
   "count": 69,
@@ -314,7 +314,7 @@
       "title": "CBI Realized Sales",
       "titleEn": "CBI Realized Sales",
       "impact": "low",
-      "forecast": "-34",
+      "forecast": "-35",
       "previous": "-26",
       "actual": null
     },
@@ -362,7 +362,7 @@
       "title": "耐用品订单 环比",
       "titleEn": "Core Durable Goods Orders m/m",
       "impact": "low",
-      "forecast": "0.5%",
+      "forecast": "0.6%",
       "previous": "0.6%",
       "actual": null
     },
@@ -374,7 +374,7 @@
       "title": "耐用品订单 环比",
       "titleEn": "Durable Goods Orders m/m",
       "impact": "low",
-      "forecast": "0.5%",
+      "forecast": "0.4%",
       "previous": "0.3%",
       "actual": null
     },
@@ -410,7 +410,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": null,
+      "forecast": "1.9M",
       "previous": "4.4M",
       "actual": null
     },
@@ -446,7 +446,7 @@
       "title": "Household Spending m/m",
       "titleEn": "Household Spending m/m",
       "impact": "low",
-      "forecast": "0.4%",
+      "forecast": "0.3%",
       "previous": "0.8%",
       "actual": null
     },
@@ -482,7 +482,7 @@
       "title": "German GfK Consumer Climate",
       "titleEn": "German GfK Consumer Climate",
       "impact": "low",
-      "forecast": "-29.2",
+      "forecast": "-29.5",
       "previous": "-29.6",
       "actual": null
     },
@@ -494,7 +494,7 @@
       "title": "M3 货币供应 同比",
       "titleEn": "M3 Money Supply y/y",
       "impact": "low",
-      "forecast": "3.4%",
+      "forecast": "3.5%",
       "previous": "3.3%",
       "actual": null
     },
@@ -530,7 +530,7 @@
       "title": "经常账户",
       "titleEn": "Current Account",
       "impact": "low",
-      "forecast": "5.6B",
+      "forecast": "3.5B",
       "previous": "-7.2B",
       "actual": null
     },
@@ -554,7 +554,7 @@
       "title": "贸易帐",
       "titleEn": "Goods Trade Balance",
       "impact": "low",
-      "forecast": "-99.9B",
+      "forecast": "-100.8B",
       "previous": "-101.5B",
       "actual": null
     },
@@ -650,7 +650,7 @@
       "title": "法国消费支出 环比",
       "titleEn": "French Consumer Spending m/m",
       "impact": "low",
-      "forecast": "0.0%",
+      "forecast": "0.1%",
       "previous": "0.4%",
       "actual": null
     },
@@ -758,7 +758,7 @@
       "title": "芝加哥 PMI",
       "titleEn": "Chicago PMI",
       "impact": "low",
-      "forecast": "57.8",
+      "forecast": "57.9",
       "previous": "57.6",
       "actual": null
     },
