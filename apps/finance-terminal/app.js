@@ -2351,11 +2351,14 @@
   var informationSummary = document.getElementById("information-summary");
   var operationsGrid = document.getElementById("operations-grid");
   var operationsSummary = document.getElementById("operations-summary");
+  var boardPanel = document.getElementById("board-panel");
+  var boardSummary = document.getElementById("board-summary");
   var pageAnnouncer = document.getElementById("page-announcer");
   var sectionViewImports = {};
   var sectionViewModules = {};
   var sectionViewEvidence = {
-    requested: [], states: { risk: "idle", research: "idle", information: "idle", operations: "idle" }
+    requested: [],
+    states: { board: "idle", risk: "idle", research: "idle", information: "idle", operations: "idle" }
   };
   root.__financeTerminalSectionModules = sectionViewEvidence;
   var terminalVisualsPromise = import("./finance-terminal-visuals.mjs").then(function (visualModule) {
@@ -2391,6 +2394,8 @@
   }
 
   function importSectionData(name) {
+    /* 品类行情板的数据层是纯函数模块，没有需要注入的首屏助手，直接返回模块本身。 */
+    if (name === "board") return import("./finance-terminal-board-data.mjs");
     if (name === "information") {
       return import("./finance-terminal-information-data.mjs")
         .then(function (mod) { return mod.createInformationData(sectionDataHelpers()); });
@@ -2413,6 +2418,7 @@
   }
 
   function importSectionView(name) {
+    if (name === "board") return import("./finance-terminal-board-view.mjs");
     if (name === "risk") return import("./finance-terminal-risk-view.mjs");
     if (name === "research") return import("./finance-terminal-research-view.mjs");
     if (name === "information") return import("./finance-terminal-information-view.mjs");
@@ -2422,6 +2428,7 @@
 
   function loadSectionView(name) {
     var factoryNames = {
+      board: "createBoardView",
       risk: "createRiskView",
       research: "createResearchView",
       information: "createInformationView",
@@ -2611,6 +2618,14 @@
   }
 
   var riskView = null;
+
+  /* 品类行情板：视图实例只建一次，切换品类和展开折叠都在实例内部完成。 */
+  var boardViewInstance = null;
+  function renderBoardCategories(board, viewModule) {
+    if (!viewModule || !boardPanel) return;
+    if (!boardViewInstance) boardViewInstance = viewModule.createBoardView(document);
+    boardViewInstance.render(board);
+  }
 
   function renderRiskCards(cards, viewModule) {
     if (!viewModule || typeof viewModule.createRiskView !== "function") {
@@ -3305,6 +3320,7 @@
 
   function renderDeferredSectionError(name, error) {
     var specs = {
+      board: [boardPanel, boardSummary, "品类行情", "CATEGORIES UNAVAILABLE"],
       risk: [riskGrid, riskSummary, "市场状态", "SIGNALS UNAVAILABLE"],
       research: [researchGrid, researchSummary, "市场研究", "RESEARCH UNAVAILABLE"],
       information: [informationGrid, informationSummary, "事件资讯", "INFORMATION UNAVAILABLE"],
@@ -3350,6 +3366,7 @@
           return {
             market: marketData,
             marketLicense: marketLicenseState,
+            board: null,
             risks: [],
             research: [],
             information: [],
@@ -3357,6 +3374,13 @@
           };
         },
         buildSection: function (name, group) {
+          if (name === "board") {
+            return loadSectionView(name).then(function () {
+              return loadSectionData(name);
+            }).then(function (data) {
+              return data.buildBoard(group);
+            });
+          }
           if (name === "risk") {
             return loadSectionView(name).then(function () {
               return buildRiskCards(group);
@@ -3388,6 +3412,7 @@
           renderMarketLicenseNotice(experience.marketLicense);
         },
         renderSection: function (name, cards) {
+          if (name === "board") return renderBoardCategories(cards, sectionViewModules.board);
           if (name === "risk") return renderRiskCards(cards, sectionViewModules.risk);
           if (name === "research") return renderResearchCards(cards, sectionViewModules.research);
           if (name === "information") return renderInformationCards(cards, sectionViewModules.information);
@@ -3408,12 +3433,14 @@
           });
         },
         experienceKeys: {
+          board: "board",
           risk: "risks",
           research: "research",
           information: "information",
           operations: "operations"
         },
         sections: {
+          board: document.getElementById("board-section"),
           /* 风险雷达画在首屏总览里，数据却属于 risk 分区。窄屏下 #risk-section
              在四千多像素之下，只观察它的话雷达会一直停在 LOADING，直到访客滚到
              那个不相干的分区为止；所以雷达面板本身也算 risk 的触发元素。 */

@@ -1,7 +1,7 @@
 const CRITICAL_REQUEST_KEYS = Object.freeze([
   "$config", "macro", "macroHealth", "assetRanking", "assetRankingHealth", "marketLicense"
 ]);
-const DEFERRED_SECTION_NAMES = Object.freeze(["risk", "research", "information", "operations"]);
+const DEFERRED_SECTION_NAMES = Object.freeze(["board", "risk", "research", "information", "operations"]);
 const EXPECTED_GROUP_SEQUENCE = Object.freeze(["critical", ...DEFERRED_SECTION_NAMES]);
 
 function sameSequence(actual, expected) {
@@ -43,6 +43,10 @@ export function runBrowserRegressionProbe(options = {}) {
   const researchGrid = document.getElementById("research-grid");
   const informationGrid = document.getElementById("information-grid");
   const operationsGrid = document.getElementById("operations-grid");
+  const boardPanel = document.getElementById("board-panel");
+  const boardTabs = Array.from(document.querySelectorAll("#board-tabs .board-tab"));
+  const boardRows = Array.from(document.querySelectorAll("#board-panel .board-row:not(.board-row-head)"));
+  const boardToggle = document.querySelector("#board-panel .board-toggle");
   const licenseNotice = document.getElementById("license-notice");
   const pageAnnouncer = document.getElementById("page-announcer");
   const width = window.innerWidth;
@@ -106,43 +110,55 @@ export function runBrowserRegressionProbe(options = {}) {
   }).filter((target) => {
     return target.width + 0.5 < targetMinimum || target.height + 0.5 < targetMinimum;
   });
+  /* 页面现在有两组标签：跨资产周期与品类行情板。键盘与语义都按「组」校验，
+     否则第二组一出现，全页只允许一个选中项的旧断言就会误报。 */
   const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
-  const selectedBefore = tabs.filter((tab) => tab.getAttribute("aria-selected") === "true");
-  const tabsRendered = tabs.some(elementIsRendered);
-  let keyboardTabs = !tabsRendered || selectedBefore.length === 1;
-  if (keyboardTabs && tabsRendered) {
-    const previousId = selectedBefore[0].id;
-    selectedBefore[0].focus();
-    selectedBefore[0].dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
+  const tabGroups = [];
+  tabs.forEach((tab) => {
+    const owner = tab.closest('[role="tablist"]') || tab.parentElement;
+    const group = tabGroups.filter((entry) => entry.owner === owner)[0]
+      || (tabGroups.push({ owner: owner, items: [] }), tabGroups[tabGroups.length - 1]);
+    group.items.push(tab);
+  });
+  const renderedGroups = tabGroups.filter((group) => group.items.some(elementIsRendered));
+  let keyboardTabs = renderedGroups.length > 0 && renderedGroups.every((group) => {
+    return group.items.filter((tab) => tab.getAttribute("aria-selected") === "true").length === 1;
+  });
+  renderedGroups.forEach((group) => {
+    if (!keyboardTabs) return;
+    const selected = group.items.filter((tab) => tab.getAttribute("aria-selected") === "true")[0];
+    const previousId = selected.id;
+    selected.focus();
+    selected.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
     const moved = document.activeElement;
-    keyboardTabs = moved && moved.getAttribute("role") === "tab"
-      && moved.id !== previousId && moved.getAttribute("aria-selected") === "true";
-    if (keyboardTabs) {
-      moved.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true }));
-      keyboardTabs = document.activeElement && document.activeElement.id === previousId;
-    }
-  }
+    keyboardTabs = Boolean(moved) && moved.getAttribute("role") === "tab"
+      && Boolean(previousId) && moved.id !== previousId
+      && moved.getAttribute("aria-selected") === "true";
+    if (!keyboardTabs) return;
+    moved.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true }));
+    keyboardTabs = Boolean(document.activeElement) && document.activeElement.id === previousId;
+  });
 
   const checks = {
-    dataLoaded: [grid, riskGrid, researchGrid, informationGrid, operationsGrid].every((item) => {
+    dataLoaded: [grid, boardPanel, riskGrid, researchGrid, informationGrid, operationsGrid].every((item) => {
       return item && item.getAttribute("aria-busy") === "false";
     }) && !document.querySelector(".load-error"),
     stagedDataLoading: stagedLoad.mode === "eager"
       && stagedLoad.criticalSourceRequestCount === 5
-      && stagedLoad.sourceRequestCount === 18
-      && stagedLoad.requestCount === 19
+      && stagedLoad.sourceRequestCount === 19
+      && stagedLoad.requestCount === 20
       && stagedLoad.criticalPaintBarrier?.status === "yielded"
       && sameSequence(stagedLoad.startupOrder,
         ["critical-rendered", "critical-paint-yielded", "deferred-scheduler-started"])
       && sameSequence(stagedLoad.requestedKeysAfterCritical, CRITICAL_REQUEST_KEYS)
       && sameSequence(stagedLoad.requestedKeysAtSchedulerStart, CRITICAL_REQUEST_KEYS)
       && sameSequence(stagedLoad.groupLoadSequence, EXPECTED_GROUP_SEQUENCE)
-      && Array.isArray(stagedLoad.loadedSections) && stagedLoad.loadedSections.length === 4
+      && Array.isArray(stagedLoad.loadedSections) && stagedLoad.loadedSections.length === 5
       && Array.isArray(stagedLoad.failedSections) && stagedLoad.failedSections.length === 0
-      && Array.isArray(stagedLoad.settledSections) && stagedLoad.settledSections.length === 4
-      && stagedLoad.networkRequestCount === 19
+      && Array.isArray(stagedLoad.settledSections) && stagedLoad.settledSections.length === 5
+      && stagedLoad.networkRequestCount === 20
       && stagedLoad.duplicateNetworkRequestCount === 0
-      && requestStates.length === 19 && requestStates.every((state) => state === "ready")
+      && requestStates.length === 20 && requestStates.every((state) => state === "ready")
       && hasCompleteSectionTransitions(stagedLoad.sectionTransitions),
     supportingHealthResources: supportingHealthPanels.length === 4
       && supportingHealthPanels.every((panel) => panel.textContent.indexOf("更新链健康不可用") === -1),
@@ -240,16 +256,27 @@ export function runBrowserRegressionProbe(options = {}) {
       && !focusables.some((element) => {
         return element.matches(".asset-card, .risk-card, .research-card, .information-card, .operation-card");
       }),
-    sectionNavigation: sectionLinks.length === 7
+    sectionNavigation: sectionLinks.length === 8
       && sectionLinks.every((link) => link.hash && document.getElementById(link.hash.slice(1)))
       && Boolean(document.querySelector("details.method > summary")),
     keyboardTabs,
-    tabSemantics: tabs.length === 5
-      && tabs.filter((tab) => tab.tabIndex === 0).length === 1
+    tabSemantics: tabs.length === 11
+      && renderedGroups.every((group) => group.items.filter((tab) => tab.tabIndex === 0).length === 1)
       && tabs.every((tab) => {
         const panel = document.getElementById(tab.getAttribute("aria-controls"));
         return panel && panel.getAttribute("role") === "tabpanel";
       }),
+    /* 品类行情板：六个品类都要出标签，当前品类要真的画出带价格与涨跌的行，
+       折叠按钮存在时必须处于收起状态（默认不展开整张长列表）。 */
+    categoryBoard: boardTabs.length === 6
+      && boardTabs.filter((tab) => tab.getAttribute("aria-selected") === "true").length === 1
+      && boardRows.length >= 4
+      && boardRows.every((row) => {
+        const price = row.querySelector(".board-cell-price");
+        const change = row.querySelector(".board-cell-change");
+        return price && price.textContent.trim() && change && change.textContent.trim();
+      })
+      && (!boardToggle || boardToggle.getAttribute("aria-expanded") === "false"),
     targetSizes: targetElements.length > 8 && undersizedTargets.length === 0,
     externalLinkSafety: Array.from(document.querySelectorAll('a[target="_blank"]')).every((link) => {
       return /(^|\s)noopener(\s|$)/.test(link.rel) && /(^|\s)noreferrer(\s|$)/.test(link.rel);
@@ -297,6 +324,7 @@ export function runBrowserRegressionProbe(options = {}) {
     stagedDataLoading: stagedLoad,
     undersizedTargets,
     overflowCandidates,
+    board: { tabs: boardTabs.length, rows: boardRows.length, collapsed: Boolean(boardToggle) },
     layout: {
       market: renderedGridColumns(grid),
       risk: renderedGridColumns(riskGrid),

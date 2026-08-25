@@ -501,7 +501,8 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
     });
     result.sectionModules = sectionModules.result.value;
     if (JSON.stringify(result.sectionModules?.requested?.slice().sort())
-        !== JSON.stringify(["information", "operations", "research", "risk"])
+        !== JSON.stringify(["board", "information", "operations", "research", "risk"])
+      || result.sectionModules?.states?.board !== "ready"
       || result.sectionModules?.states?.risk !== "ready"
       || result.sectionModules?.states?.research !== "ready"
       || result.sectionModules?.states?.information !== "ready"

@@ -4,6 +4,7 @@ const DESKTOP_QUERY = "(min-width: 1041px)";
 const VIEW_BY_ID = Object.freeze({
   "overview-section": "overview",
   "market-section": "market",
+  "board-section": "board",
   "risk-section": "risk",
   "research-section": "research",
   "information-section": "information",

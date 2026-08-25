@@ -38,6 +38,8 @@ SESSIONS_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-session
 WATCHLIST_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-watchlist.mjs"
 HEALTH_ADAPTERS_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-health-adapters.mjs"
 DETAIL_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-detail-view.mjs"
+BOARD_DATA_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-board-data.mjs"
+BOARD_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-board-view.mjs"
 RADAR_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-radar-view.mjs"
 CURVE_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-curve-view.mjs"
 GLOBE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-globe.mjs"
@@ -95,6 +97,7 @@ BROWSER_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_browser.mjs"
 BROWSER_EVIDENCE = ROOT / "scripts" / "finance_terminal_browser_evidence.mjs"
 BROWSER_EVIDENCE_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_browser_evidence.mjs"
 LOADER_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_loader.mjs"
+BOARD_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_board.mjs"
 PROXY_RUNTIME_HISTORY = ROOT / "scripts" / "finance_terminal_proxy_runtime_history.py"
 PROXY_RUNTIME_HISTORY_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_proxy_runtime_history.py"
 DATA_ISSUE_FORM = ROOT / ".github" / "ISSUE_TEMPLATE" / "finance-terminal-data.yml"
@@ -2647,6 +2650,8 @@ def main() -> None:
     information_data_module = INFORMATION_DATA_MODULE.read_text(encoding="utf-8")
     operations_data_module = OPERATIONS_DATA_MODULE.read_text(encoding="utf-8")
     operations_view_module = OPERATIONS_VIEW_MODULE.read_text(encoding="utf-8")
+    board_data_module = BOARD_DATA_MODULE.read_text(encoding="utf-8")
+    board_view_module = BOARD_VIEW_MODULE.read_text(encoding="utf-8")
     terminal_views = (app + "\n" + risk_view_module + "\n" + research_view_module
                       + "\n" + information_view_module + "\n" + operations_view_module)
     compact_loader = re.sub(r"\s+", "", loader)
@@ -2654,7 +2659,10 @@ def main() -> None:
     # 14,000 是按「一个分区一个触发元素、进入视野即加载」那版观察器设的。改为
     # 「掠过不算、停留才算」并允许一个分区挂多个触发元素后，这段不可压缩地变大；
     # 同时 app.js 里那个各行其是的雷达观察器被删掉，常规加载合计反而比之前小。
-    require(LOADER.stat().st_size <= 15_000, "金融终端分区加载模块超过15KB性能预算")
+    # 15,600 是在原15KB基础上给「品类行情板」留出的增量：新增一份美债收益率曲线
+    # 资源与一个只复用已有资源键的board资源组，加载器本身多出约210字节；常规加载
+    # 合计仍受下方230KB预算约束。
+    require(LOADER.stat().st_size <= 15_600, "金融终端分区加载模块超过15.6KB性能预算")
     require(TERMINAL_VISUALS.stat().st_size <= 16_000, "金融终端视觉数据模块超过16KB性能预算")
     # 3,000 是按旧版「把宏观状态一个分数加权重组出六个轴」那一行设定的。六个轴改读
     # 六个具名真实制度信号后，查表逻辑不可压缩地更大；该模块不计入 230KB 常规加载
@@ -2681,8 +2689,22 @@ def main() -> None:
     require(APP.stat().st_size + LOADER.stat().st_size + TERMINAL_VISUALS.stat().st_size
             + COMMAND_CENTER_MODULE.stat().st_size + GLOBE_MODULE.stat().st_size <= 230_000,
             "金融终端常规加载JavaScript超过230KB性能预算")
-    require(REGRESSION_MODULE.stat().st_size <= 19_000,
-            "仅回归模式加载的浏览器探针超过19KB性能预算")
+    # 21,000 是加入品类行情板检查后的预算：探针要逐「标签组」校验键盘与语义
+    # （页面现在有跨资产周期与品类行情板两组），并核对六个品类标签、当前品类的
+    # 价格/涨跌列与折叠按钮默认收起。该模块只在 regression=1 时加载。
+    require(REGRESSION_MODULE.stat().st_size <= 21_000,
+            "仅回归模式加载的浏览器探针超过21KB性能预算")
+    require(BOARD_DATA_MODULE.stat().st_size <= 17_000,
+            "按需加载的品类行情板数据层超过17KB性能预算")
+    require(BOARD_VIEW_MODULE.stat().st_size <= 15_000,
+            "按需加载的品类行情板视图超过15KB性能预算")
+    require('import("./finance-terminal-board-view.mjs")' in app
+            and 'import("./finance-terminal-board-data.mjs")' in app
+            and "createBoardView" in board_view_module
+            and "buildBoard" in board_data_module
+            and "finance-terminal-board-view.mjs" not in page
+            and "finance-terminal-board-data.mjs" not in page,
+            "品类行情板的数据层与视图必须保持按需导入且不得在首屏预加载")
     require(RISK_VIEW_MODULE.stat().st_size <= 6_000,
             "按需加载的市场状态视图超过6KB性能预算")
     require('import("./finance-terminal-risk-view.mjs")' in app
@@ -3348,6 +3370,7 @@ def main() -> None:
             "代理运行趋势未限制7周期、21:00 UTC边界、14天Artifact或诚实降级")
     require(QUALITY_WORKFLOW.exists(), "缺少金融终端只读质量工作流")
     require(LOADER_VALIDATOR.exists(), "缺少金融终端分区加载器独立契约测试")
+    require(BOARD_VALIDATOR.exists(), "缺少品类行情板独立契约测试")
     quality_workflow = QUALITY_WORKFLOW.read_text(encoding="utf-8")
     require("permissions:\n  actions: read\n  contents: read" in quality_workflow,
             "金融终端质量工作流权限必须限制为Actions与内容只读")
@@ -3368,7 +3391,8 @@ def main() -> None:
             and "GITHUB_TOKEN: ${{ github.token }}" in quality_workflow
             and "finance-terminal-proxy-runtime" in quality_workflow
             and "validate_finance_terminal.py" in quality_workflow
-            and "node scripts/validate_finance_terminal_loader.mjs" in quality_workflow,
+            and "node scripts/validate_finance_terminal_loader.mjs" in quality_workflow
+            and "node scripts/validate_finance_terminal_board.mjs" in quality_workflow,
             "金融终端质量工作流未运行静态与浏览器回归")
     require("validate_market_data_quality.py --dataset all" in quality_workflow,
             "金融终端质量工作流未统一校验三条逐项来源契约")
@@ -3518,6 +3542,16 @@ def main() -> None:
     run_rwtc_pipeline_tests()
     run_js_adapter_tests()
     run_provider_widget_runtime_tests()
+    board_contracts = subprocess.run(
+        ["node", str(BOARD_VALIDATOR)],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    require(board_contracts.returncode == 0,
+            f"品类行情板契约失败：\n{board_contracts.stdout}{board_contracts.stderr}")
+    print(board_contracts.stdout.strip())
     visual_contracts = subprocess.run(
         ["node", str(VISUALS_VALIDATOR)],
         cwd=ROOT,
