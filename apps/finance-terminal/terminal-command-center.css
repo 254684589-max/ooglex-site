@@ -179,8 +179,10 @@
   /* 列宽由参考图精修层统一给定（那是最后一层，也是一屏栅格的实际归属地）；
      这里只负责行号、显示方式与不溢出。 */
   body[data-terminal-view="overview"] #research-section,
-  body[data-terminal-view="overview"] #market-section,
+  body[data-terminal-view="overview"] #geo-risk-section,
   body[data-terminal-view="overview"] #risk-section { grid-row: 3; }
+
+  body[data-terminal-view="overview"] #market-section { grid-row: 2; }
 
   body[data-terminal-view="overview"] #board-section {
     display: flex;
@@ -231,25 +233,54 @@
   body[data-terminal-view="overview"] #board-panel .watch-toggle { min-width: 34px; min-height: 34px; }
   body[data-terminal-view="overview"] #board-section .board-heading { padding: 6px 0 4px; }
 
-  /* 总览里的地缘风险定价只留名称、等级与等级梯：四条轴的读数条、原值、口径与
-     档位刻度在「风险」视图里有完整版本，一屏视图里既放不下也会压到下面三张卡。 */
+  /* 总览里的地缘风险定价占原ETF代理那一格：表盘、等级与四条轴的读数都留着，
+     逐轴的完整原值、映射口径与来源说明在「市场状态」视图里展开。 */
+  body[data-terminal-view="overview"] #geo-risk-section { overflow: hidden; min-width: 0; }
+
   body[data-terminal-view="overview"] #geo-risk {
     overflow: hidden;
-    margin-top: 6px;
-    padding: 7px 9px;
-    gap: 5px;
+    height: 100%;
+    margin-top: 0;
+    padding: 9px 11px;
+    gap: 7px;
   }
   body[data-terminal-view="overview"] #geo-risk .geo-risk-label,
-  body[data-terminal-view="overview"] #geo-risk .geo-risk-axes,
+  body[data-terminal-view="overview"] #geo-risk .geo-axis-raw,
+  body[data-terminal-view="overview"] #geo-risk .geo-axis-meta,
   body[data-terminal-view="overview"] #geo-risk .geo-risk-note { display: none; }
-  body[data-terminal-view="overview"] #geo-risk .geo-risk-step::after { content: none; }
+  body[data-terminal-view="overview"] #geo-risk .geo-axis-short { display: block; }
   body[data-terminal-view="overview"] #geo-risk .geo-risk-head { gap: 7px; }
-  body[data-terminal-view="overview"] #geo-risk .geo-risk-name { font-size: 11px; }
-  body[data-terminal-view="overview"] #geo-risk .geo-risk-level { padding: 2px 7px; font-size: 9px; }
-  body[data-terminal-view="overview"] #geo-risk .geo-risk-score { font-size: 17px; }
-  body[data-terminal-view="overview"] #geo-risk .geo-risk-score small { font-size: 8px; }
-  body[data-terminal-view="overview"] #geo-risk .geo-risk-ladder { margin-bottom: 0; gap: 3px; }
-  body[data-terminal-view="overview"] #geo-risk .geo-risk-step { height: 5px; }
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-name { font-size: 12px; }
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-level { padding: 2px 8px; font-size: 10px; }
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-chip { padding: 2px 6px; font-size: 8px; }
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-body { gap: 6px; }
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-dial { flex: 1 1 100%; }
+  body[data-terminal-view="overview"] #geo-risk .geo-gauge { width: 168px; }
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-asof { font-size: 8px; }
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-asof { display: none; }
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-axes { flex: 1 1 100%; gap: 7px; }
+  /* 一格里四条轴各占两行：名称与读数一行、条一行；四个格位都写死，
+     免得后面再加字段时被自动排布挤到别的行上去。 */
+  body[data-terminal-view="overview"] #geo-risk .geo-axis {
+    gap: 1px 6px;
+    grid-template-columns: auto minmax(0, 1fr) 20px;
+  }
+  body[data-terminal-view="overview"] #geo-risk .geo-axis-name { grid-area: 1 / 1; font-size: 10px; }
+  body[data-terminal-view="overview"] #geo-risk .geo-axis-score { grid-area: 1 / 3; font-size: 10px; }
+  body[data-terminal-view="overview"] #geo-risk .geo-axis-bar {
+    height: 4px;
+    grid-area: 2 / 1 / auto / -1;
+  }
+  body[data-terminal-view="overview"] #geo-risk .geo-axis-short {
+    grid-area: 1 / 2;
+    overflow: hidden;
+    color: var(--faint);
+    font-family: var(--mono);
+    font-size: 9px;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
   body[data-terminal-view="overview"] #information-section {
     grid-column: 13 / 17;
@@ -819,6 +850,7 @@
 
   body[data-terminal-view="market"] #main-content > #market-section,
   body[data-terminal-view="risk"] #main-content > #risk-section,
+  body[data-terminal-view="risk"] #main-content > #geo-risk-section,
   body[data-terminal-view="research"] #main-content > #research-section,
   body[data-terminal-view="information"] #main-content > #information-section,
   body[data-terminal-view="operations"] #main-content > #operations-section,

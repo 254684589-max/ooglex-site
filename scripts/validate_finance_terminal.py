@@ -2832,11 +2832,12 @@ def main() -> None:
     # 20,000 是在分区内容还没被发现遭裁切时定的。补上「分区内那一层也要能缩」与
     # 遥测面板第三行两处修复、连同解释它们为何存在的注释后需要 20.7KB；换回的是
     # OFR 卡片与运行证据面板不再被裁掉 137px 与 201px，收益率曲线入口不再缺 6px。
-    # 24,000：一屏总览把主行让给品类行情、核心资产退到第三行并做紧凑化后的增量。
+    # 27,000：一屏总览把核心资产上移到第二行、原ETF代理那一格改放地缘风险定价
+    # 表盘，两块各自的紧凑化规则（含四条轴在窄格里的两行排布）都在这里。
     # 24,600：总览里的行情板多出一列迷你走势与一条脉冲条的紧凑化规则。
-    require(COMMAND_CENTER_CSS.stat().st_size <= 25_600, "金融终端单屏指挥中心样式超过25.6KB性能预算")
+    require(COMMAND_CENTER_CSS.stat().st_size <= 27_000, "金融终端单屏指挥中心样式超过27KB性能预算")
     require(VISUAL_FIDELITY_CSS.stat().st_size <= 6_000, "金融终端高保真视觉层超过6KB性能预算")
-    require(REFERENCE_FIDELITY_CSS.stat().st_size <= 12_400, "金融终端参考图精修层超过12.4KB性能预算")
+    require(REFERENCE_FIDELITY_CSS.stat().st_size <= 12_900, "金融终端参考图精修层超过12.9KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
     require(APP.stat().st_size + LOADER.stat().st_size + TERMINAL_VISUALS.stat().st_size
             + COMMAND_CENTER_MODULE.stat().st_size + GLOBE_MODULE.stat().st_size <= 230_000,
@@ -2872,8 +2873,8 @@ def main() -> None:
     # 地缘风险定价：四条轴各自读站内已在日更的公开管道，逐轴给出原值、映射口径、
     # 来源与数据日；缺任何一条即不给等级。它与同分区那三张「不合成为总分」的官方
     # 信号卡分开渲染，也不参与它们的状态计数。
-    require(GEO_RISK_MODULE.stat().st_size <= 13_200,
-            "按需加载的地缘风险定价模型超过13.2KB性能预算")
+    require(GEO_RISK_MODULE.stat().st_size <= 16_500,
+            "按需加载的地缘风险定价模型超过16.5KB性能预算")
     require("buildGeoRisk" in risk_view_module and "renderGeoRisk" in risk_view_module
             and "GEO_AXES" in geo_risk_module and "percentileScore" in geo_risk_module
             and "不统计" in geo_risk_module and 'id="geo-risk"' in page

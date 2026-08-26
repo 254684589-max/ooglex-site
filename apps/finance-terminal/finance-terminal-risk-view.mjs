@@ -123,8 +123,8 @@ export function createRiskView(dependencies = {}) {
     summary.textContent = `${ok} ACTIVE · ${partial} PARTIAL · ${stale} STALE · ${errors} ERROR`;
   }
 
-  /* 地缘风险定价与三张官方信号卡同属本分区，但它是站内复算出来的模型：
-     单独占一块，不混进那三张卡的列表里，也不参与它们的 ACTIVE/STALE 计数。 */
+  /* 地缘风险定价由本视图一并渲染，但它是站内复算出来的模型，单独成区：
+     不混进那三张官方信号卡的列表，也不参与它们的 ACTIVE/STALE 计数。 */
   function renderGeo(sources) {
     const host = document.getElementById("geo-risk");
     if (!host) return;
