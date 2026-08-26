@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-08-24T21:38:57Z",
-  "asOf": "2026-08-24",
+  "updatedAt": "2026-08-25T21:38:23Z",
+  "asOf": "2026-08-25",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -200,6 +200,19 @@
       "price": 2.25
     },
     {
+      "id": "glm-5-3",
+      "name": "GLM 5.3",
+      "org": "Zhipu AI",
+      "orgCn": "智谱",
+      "flag": "🇨🇳",
+      "open": true,
+      "arena": 1487,
+      "livebench": 76.6,
+      "aa": null,
+      "ctx": "1M",
+      "price": 2.15
+    },
+    {
       "id": "grok-4-5",
       "name": "Grok 4.5",
       "org": "xAI",
@@ -301,7 +314,7 @@
       "livebench": 75.8,
       "aa": null,
       "ctx": null,
-      "price": 1.12
+      "price": 1.05
     },
     {
       "id": "glm-5-2",
@@ -549,19 +562,6 @@
       "aa": null,
       "ctx": null,
       "price": null
-    },
-    {
-      "id": "glm-5-3",
-      "name": "GLM 5.3",
-      "org": "Zhipu AI",
-      "orgCn": "智谱",
-      "flag": "🇨🇳",
-      "open": true,
-      "arena": 1487,
-      "livebench": null,
-      "aa": null,
-      "ctx": "1M",
-      "price": 2.15
     }
   ]
 }

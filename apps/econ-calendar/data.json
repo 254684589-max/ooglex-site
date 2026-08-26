@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-25T13:27:38Z",
+  "updatedAt": "2026-08-25T21:38:02Z",
   "asOf": "2026-08-25",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-23 ~ 2026-08-29",
@@ -410,7 +410,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": "1.9M",
+      "forecast": "1.6M",
       "previous": "4.4M",
       "actual": null
     },
@@ -590,7 +590,7 @@
       "title": "天然气库存",
       "titleEn": "Natural Gas Storage",
       "impact": "low",
-      "forecast": null,
+      "forecast": "19B",
       "previous": "16B",
       "actual": null
     },
@@ -735,7 +735,7 @@
       "titleEn": "Italian 10-y Bond Auction",
       "impact": "low",
       "forecast": null,
-      "previous": null,
+      "previous": "4.00|1.7",
       "actual": null
     },
     {
