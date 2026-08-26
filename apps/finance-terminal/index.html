@@ -1180,11 +1180,11 @@
     }
     /* 逐轴条的颜色与等级梯同一套配色：这条轴自己落在哪一档，就用哪一档的颜色。 */
     .geo-axis-bar i { display: block; height: 100%; background: var(--cyan); }
-    .geo-axis-fill-low { background: var(--up); }
-    .geo-axis-fill-mild { background: var(--cyan); }
-    .geo-axis-fill-mid { background: var(--amber); }
-    .geo-axis-fill-high { background: #ff9f45; }
-    .geo-axis-fill-severe { background: var(--down); }
+    .geo-axis-bar .geo-axis-fill-low { background: var(--up); }
+    .geo-axis-bar .geo-axis-fill-mild { background: var(--cyan); }
+    .geo-axis-bar .geo-axis-fill-mid { background: var(--amber); }
+    .geo-axis-bar .geo-axis-fill-high { background: #ff9f45; }
+    .geo-axis-bar .geo-axis-fill-severe { background: var(--down); }
     .geo-axis-score { font-family: var(--mono); font-size: 12px; text-align: right; }
     .geo-axis-raw { grid-column: 4; color: var(--muted); font-family: var(--mono); font-size: 11px; }
     .geo-axis-meta { grid-column: 4; color: var(--faint); font-family: var(--mono); font-size: 10px; }
