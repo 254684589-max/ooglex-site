@@ -2636,6 +2636,10 @@
     boardViewInstance.render(board);
   }
 
+  /* 地缘风险定价要读的是原始的分区资源（跨资产、宏观雷达、OFR），
+     不是适配后的卡片；这里只留住本轮 risk 分区拿到的那一份，不另发请求。 */
+  var riskSources = null;
+
   function renderRiskCards(cards, viewModule) {
     if (!viewModule || typeof viewModule.createRiskView !== "function") {
       throw new Error("市场状态视图模块契约无效");
@@ -2655,6 +2659,7 @@
       });
     }
     riskView.render(cards);
+    if (typeof riskView.renderGeo === "function") riskView.renderGeo(riskSources);
     bindRadarDetail(cards);
     return terminalVisualsPromise.then(function (visuals) {
       if (visuals) visuals.renderRiskRadar(cards);
@@ -3391,6 +3396,7 @@
             });
           }
           if (name === "risk") {
+            riskSources = group;
             return loadSectionView(name).then(function () {
               return buildRiskCards(group);
             });

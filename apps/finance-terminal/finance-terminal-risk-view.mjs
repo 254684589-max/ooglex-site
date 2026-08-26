@@ -1,3 +1,5 @@
+import { buildGeoRisk, renderGeoRisk } from "./finance-terminal-geo-risk.mjs";
+
 function requireDependency(dependencies, name) {
   const value = dependencies && dependencies[name];
   if (value === undefined || value === null) {
@@ -121,5 +123,13 @@ export function createRiskView(dependencies = {}) {
     summary.textContent = `${ok} ACTIVE · ${partial} PARTIAL · ${stale} STALE · ${errors} ERROR`;
   }
 
-  return Object.freeze({ render });
+  /* 地缘风险定价由本视图一并渲染，但它是站内复算出来的模型，单独成区：
+     不混进那三张官方信号卡的列表，也不参与它们的 ACTIVE/STALE 计数。 */
+  function renderGeo(sources) {
+    const host = document.getElementById("geo-risk");
+    if (!host) return;
+    renderGeoRisk(document, host, buildGeoRisk(sources || {}));
+  }
+
+  return Object.freeze({ render, renderGeo });
 }

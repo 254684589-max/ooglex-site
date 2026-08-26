@@ -1108,6 +1108,106 @@
     }
     .board-search::placeholder { color: var(--faint); }
     .board-search:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+    /* 地缘风险定价：站内合成的四轴模型，与「市场聚合指标」里那三张「不合成」的
+       官方信号卡刻意分开——它有自己的分区、表盘与逐轴条，读者一眼能分出哪些是
+       原始官方读数、哪个是站内复算出来的模型。 */
+    .geo-risk-section { display: flex; flex-direction: column; min-width: 0; }
+    .geo-risk {
+      display: grid;
+      align-content: start;
+      gap: 12px;
+      margin-top: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--line-strong);
+      border-radius: 4px;
+      background:
+        radial-gradient(120% 90% at 50% 0%, rgba(242, 189, 92, 0.09), transparent 62%),
+        linear-gradient(180deg, rgba(9, 16, 25, 0.96), rgba(4, 9, 15, 0.96));
+      box-shadow: inset 0 1px 0 rgba(242, 189, 92, 0.18);
+    }
+    .geo-risk-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    .geo-risk-title { margin-right: auto; min-width: 0; }
+    .geo-risk-label { display: block; color: var(--faint); font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; }
+    .geo-risk-name { margin: 3px 0 0; font-size: 15px; letter-spacing: 0.06em; }
+    .geo-risk-level {
+      padding: 4px 11px;
+      border: 1px solid currentColor;
+      border-radius: 3px;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    .geo-risk-level-low { color: var(--up); }
+    .geo-risk-level-mild { color: var(--cyan); }
+    .geo-risk-level-mid { color: var(--amber); }
+    .geo-risk-level-high { color: #ff9f45; }
+    .geo-risk-level-severe { color: var(--down); }
+    .geo-risk-level-off { color: var(--faint); }
+    .geo-risk-chip {
+      padding: 3px 8px;
+      border: 1px solid var(--amber);
+      border-radius: 3px;
+      color: var(--amber);
+      font-family: var(--mono);
+      font-size: 10px;
+    }
+    .geo-risk-body { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; }
+    .geo-risk-dial { display: flex; flex: 0 0 auto; flex-direction: column; align-items: center; gap: 2px; }
+    .geo-gauge { width: 220px; max-width: 100%; height: auto; }
+    /* 五档弧段：当前档亮起并带辉光，其余压暗；指针角度由分数直接换算。 */
+    .geo-risk-step {
+      fill: none;
+      stroke: rgba(151, 169, 196, 0.18);
+      stroke-linecap: round;
+    }
+    .geo-risk-step.is-active { filter: drop-shadow(0 0 7px currentColor); }
+    .geo-risk-step-low.is-active { stroke: var(--up); }
+    .geo-risk-step-mild.is-active { stroke: var(--cyan); }
+    .geo-risk-step-mid.is-active { stroke: var(--amber); }
+    .geo-risk-step-high.is-active { stroke: #ff9f45; }
+    .geo-risk-step-severe.is-active { stroke: var(--down); }
+    .geo-risk-step-low.is-active { color: var(--up); }
+    .geo-risk-step-mild.is-active { color: var(--cyan); }
+    .geo-risk-step-mid.is-active { color: var(--amber); }
+    .geo-risk-step-high.is-active { color: #ff9f45; }
+    .geo-risk-step-severe.is-active { color: var(--down); }
+    .geo-gauge-label { fill: var(--faint); font-family: var(--mono); font-size: 9px; }
+    .geo-gauge-label.is-active { fill: var(--ink); }
+    .geo-gauge-marker { fill: var(--ink); stroke: rgba(2, 9, 15, 0.92); stroke-width: 2; }
+    .geo-gauge-marker-low { filter: drop-shadow(0 0 6px var(--up)); }
+    .geo-gauge-marker-mild { filter: drop-shadow(0 0 6px var(--cyan)); }
+    .geo-gauge-marker-mid { filter: drop-shadow(0 0 6px var(--amber)); }
+    .geo-gauge-marker-high { filter: drop-shadow(0 0 6px #ff9f45); }
+    .geo-gauge-marker-severe { filter: drop-shadow(0 0 6px var(--down)); }
+    .geo-gauge-score { fill: var(--ink); font-family: var(--mono); font-size: 30px; }
+    .geo-gauge-scale { fill: var(--faint); font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; }
+    .geo-risk-asof { color: var(--faint); font-family: var(--mono); font-size: 10px; }
+    .geo-risk-axes { display: grid; flex: 1 1 320px; gap: 9px; min-width: 0; }
+    .geo-axis {
+      display: grid;
+      align-items: center;
+      gap: 3px 10px;
+      grid-template-columns: 84px 110px 30px minmax(0, 1fr);
+    }
+    .geo-axis-name { font-size: 12px; }
+    .geo-axis-bar {
+      overflow: hidden;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(151, 169, 196, 0.16);
+    }
+    /* 逐轴条的颜色与表盘同一套配色：这条轴自己落在哪一档，就用哪一档的颜色。 */
+    .geo-axis-bar i { display: block; height: 100%; background: var(--cyan); }
+    .geo-axis-bar .geo-axis-fill-low { background: var(--up); }
+    .geo-axis-bar .geo-axis-fill-mild { background: var(--cyan); }
+    .geo-axis-bar .geo-axis-fill-mid { background: var(--amber); }
+    .geo-axis-bar .geo-axis-fill-high { background: #ff9f45; }
+    .geo-axis-bar .geo-axis-fill-severe { background: var(--down); }
+    .geo-axis-score { font-family: var(--mono); font-size: 12px; text-align: right; }
+    .geo-axis-short { display: none; }
+    .geo-axis-raw { grid-column: 4; color: var(--muted); font-family: var(--mono); font-size: 11px; }
+    .geo-axis-meta { grid-column: 4; color: var(--faint); font-family: var(--mono); font-size: 10px; }
+    .geo-risk-note { margin: 0; color: var(--faint); font-size: 11px; line-height: 1.62; }
+
     .board-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
     .board-tab {
       display: inline-flex;
@@ -1126,14 +1226,39 @@
     }
     .board-tab b { font-weight: 600; }
     .board-tab i { color: var(--faint); font-family: var(--mono); font-size: 10px; font-style: normal; }
-    .board-tab:hover { border-color: var(--cyan); color: var(--ink); }
-    .board-tab[aria-selected="true"] { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-soft); }
+    /* 六个品类各带一条强调色：标签上的圆点、选中态、面板描边与脉冲条都跟着它走，
+       「现在看的是哪一类」不用靠记忆。颜色只做品类标识，涨跌另有箭头与文字，不靠颜色编码。 */
+    .board-tab[data-category="commodity"], [data-board-category="commodity"] { --accent: #f2bd5c; --accent-soft: rgba(242, 189, 92, 0.12); }
+    .board-tab[data-category="index"], [data-board-category="index"] { --accent: #54d8ff; --accent-soft: rgba(84, 216, 255, 0.12); }
+    .board-tab[data-category="stock"], [data-board-category="stock"] { --accent: #a78bfa; --accent-soft: rgba(167, 139, 250, 0.13); }
+    .board-tab[data-category="fx"], [data-board-category="fx"] { --accent: #4fd1c5; --accent-soft: rgba(79, 209, 197, 0.12); }
+    .board-tab[data-category="crypto"], [data-board-category="crypto"] { --accent: #ff9f45; --accent-soft: rgba(255, 159, 69, 0.12); }
+    .board-tab[data-category="bond"], [data-board-category="bond"] { --accent: #7aa2ff; --accent-soft: rgba(122, 162, 255, 0.13); }
+    .board-tab::before {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent, var(--cyan));
+      box-shadow: 0 0 7px var(--accent, var(--cyan));
+      content: "";
+      opacity: 0.75;
+    }
+    .board-tab:hover { border-color: var(--accent, var(--cyan)); color: var(--ink); }
+    .board-tab[aria-selected="true"] {
+      border-color: var(--accent, var(--cyan));
+      color: var(--accent, var(--cyan));
+      background: var(--accent-soft, var(--cyan-soft));
+    }
+    .board-tab[aria-selected="true"]::before { opacity: 1; }
     .board-tab:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
     .board-panel {
       margin-top: 12px;
       overflow: hidden;
       border: 1px solid var(--line);
+      border-top: 2px solid var(--accent, var(--cyan));
       border-radius: 4px;
+      background:
+        linear-gradient(180deg, var(--accent-soft, var(--cyan-soft)), transparent 96px);
     }
     .board-row {
       display: grid;
@@ -1148,11 +1273,11 @@
       font-size: 13px;
     }
     .board-row:last-child { border-bottom: 0; }
-    .board-row:hover { background: rgba(84, 216, 255, 0.06); }
+    .board-row:hover { background: var(--accent-soft, var(--cyan-soft)); }
     .board-open,
     .board-head-cells {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 116px 116px 128px;
+      grid-template-columns: minmax(0, 1fr) 76px 116px 116px 128px;
       align-items: center;
       gap: 10px;
       width: 100%;
@@ -1191,8 +1316,53 @@
     }
     .board-arrow { font-size: 10px; font-style: normal; }
     .board-cell-extra { color: var(--muted); font-family: var(--mono); font-size: 11px; text-align: right; }
+    .board-cell-spark {
+      display: flex;
+      overflow: hidden;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      height: 22px;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 10px;
+    }
+    .board-spark { width: 100%; height: 22px; }
+    .board-spark-line {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+      filter: drop-shadow(0 0 3px currentColor);
+    }
+    .board-spark-area { fill: currentColor; opacity: 0.13; stroke: none; }
+    .board-spark-up { color: var(--up); }
+    .board-spark-down { color: var(--down); }
+    .board-spark-flat, .board-spark-unknown { color: var(--faint); }
+    .board-spark-empty { color: var(--faint); font-size: 9px; font-style: normal; }
+    .board-pulse { display: inline-flex; align-items: center; gap: 8px; }
+    .board-pulse-bar {
+      display: flex;
+      overflow: hidden;
+      width: 84px;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(151, 169, 196, 0.16);
+    }
+    .board-pulse-seg { height: 100%; }
+    .board-pulse-up { background: var(--up); }
+    .board-pulse-down { background: var(--down); }
+    .board-pulse-flat, .board-pulse-unknown { background: var(--faint); }
+    .board-pulse-text { color: var(--muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; }
+    /* 涨跌用底色块托一下，长列表里更容易一眼扫到；方向仍由箭头与正负号决定，
+       颜色只是加强，不是唯一编码。 */
+    .board-cell-change b { padding: 2px 6px; border-radius: 3px; }
     .board-change-up .board-cell-change { color: var(--up); }
+    .board-change-up .board-cell-change b { background: var(--up-soft); }
     .board-change-down .board-cell-change { color: var(--down); }
+    .board-change-down .board-cell-change b { background: var(--down-soft); }
     .board-change-flat .board-cell-change,
     .board-change-unknown .board-cell-change { color: var(--faint); }
     .board-toggle {
@@ -1267,7 +1437,7 @@
       .research-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .information-grid { grid-template-columns: 1fr; }
       .operations-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .board-open, .board-head-cells { grid-template-columns: minmax(0, 1fr) 104px 104px 108px; }
+      .board-open, .board-head-cells { grid-template-columns: minmax(0, 1fr) 68px 104px 104px 108px; }
       .leader-columns { grid-template-columns: 1fr; }
       .event-row { grid-template-columns: 54px 92px minmax(0, 1fr); }
       .event-values { grid-column: 3; justify-content: start; }
@@ -1302,7 +1472,11 @@
         gap: 8px;
         padding: 8px 6px;
       }
-      .board-cell-extra { display: none; }
+      /* 窄屏优先保证名称、价格与涨跌不被挤扁：口径列与迷你走势在这里让位，
+         两者在展开的走势抽屉里都有完整版本。 */
+      .board-cell-extra, .board-cell-spark { display: none; }
+      .geo-axis { grid-template-columns: 78px minmax(0, 1fr) 28px; }
+      .geo-axis-raw, .geo-axis-meta { grid-column: 1 / -1; }
       .board-tab { flex: 1 1 auto; justify-content: center; }
       .operations-actions { justify-content: flex-start; }
       .operation-action { min-width: 44px; min-height: 44px; }
@@ -1580,8 +1754,9 @@
         <div class="board-heading">
           <h2 class="board-title" id="board-heading-title">品类行情</h2>
           <span class="board-subtitle" id="board-summary">LOADING CATEGORIES</span>
+          <span class="board-pulse" id="board-pulse" hidden></span>
         </div>
-        <p class="board-note" id="board-intro">六大品类全部读取站内已在日更的公开管道：商品、指数、外汇与中国国债来自跨资产管道（Yahoo Finance），股票来自全球公司榜，加密来自全球资产榜（CoinGecko），美债各期限来自FRED官方收益率曲线。点开任一标的可看站内历史走势、逐项来源与数据日。涨跌口径按品类不同：股票为当日价格变动，加密为过去24小时，债券为相对上一观测的基点（bp）变化。</p>
+        <p class="board-note" id="board-intro">六大品类全部读取站内已在日更的公开管道：商品、指数、外汇与中国国债来自跨资产管道（Yahoo Finance），股票来自全球公司榜，加密来自全球资产榜（CoinGecko），美债各期限来自FRED官方收益率曲线。每行的迷你走势取站内历史序列最近60个交易日的收盘，颜色按这段窗口自己的首尾变化，与当日涨跌分开算；站内还没有序列的标的显示「无序列」，不画任何推断曲线。点开任一标的可看完整走势、逐项来源与数据日。涨跌口径按品类不同：股票为当日价格变动，加密为过去24小时，债券为相对上一观测的基点（bp）变化。</p>
         <div class="board-controls">
           <label class="sr-only" for="board-search">按名称或代码搜索标的</label>
           <input class="board-search" id="board-search" type="search" placeholder="搜索名称或代码，例如 黄金 / GC=F"
@@ -1606,6 +1781,12 @@
           <div class="risk-skeleton" aria-hidden="true"></div>
           <div class="risk-skeleton" aria-hidden="true"></div>
         </div>
+      </section>
+
+      <section class="geo-risk-section" id="geo-risk-section" aria-labelledby="geo-risk-heading">
+        <article class="geo-risk" id="geo-risk">
+          <p class="geo-risk-note" id="geo-risk-heading">正在按站内日更管道复算地缘风险定价…</p>
+        </article>
       </section>
 
       <section class="research-section" id="research-section" aria-labelledby="research-heading">
@@ -1772,7 +1953,7 @@
           经济日历复用Forex Factory公开周历，筛选接下来的高、中影响事件，按设备本地时区展示；文件超过36小时未更新或离开当前周范围时标记`STALE`，实际值、预测值和前值缺失时显示“—”，不补造数值。财经新闻只读取“最新消息”数据中的 <code>markets</code> 市场板块，按发布时间展示最新5条；同文件的Yahoo行情快照不参与终端行情，新闻文件超过12小时未更新或最新文章超过36小时时标记`STALE`，标题点击后经Google News跳转原媒体。
           跨资产强弱读取跨资产管道全部标的（当前55项，随清单扩容自动跟随）的自身价格回报，按今日、近一周、近一月、年初至今和近一年分别排序；每项附带行情、历史回退、来源、数据日和更新时间状态，历史回退、异常或缺值标的不参与排行，旧快照无法反推出精确逐条日期时保持`PARTIAL`。整个文件超过72小时未更新时暂停“今日”排行。债券与部分金属含ETF或期货代理，不冒充对应现货或收益率，具体口径以详情页为准。
           全球资产市值以十亿美元为统一单位，逐项区分行情、已披露市值代理、历史回退、静态估值和待确认状态，并展示逐条来源；房地产、政府债务等慢变量估值若未保存原报告日期，不会用文件更新时间代替。公司榜与资产榜运行状态把动态行情和慢频估值分层：已登记的慢频估值不会冒充每日行情，也不会单独被当作更新失败；动态回退、未知、不可用或未登记`PARTIAL`路径仍会明确降级。全球公司领袖逐公司区分Yahoo行情、历史回退和未上市静态估值；未上市估值不参与涨跌排序。
-          宏观状态沿用宏观雷达已有的0–100制度信号分数，数值越高越偏“宽松·支持”；CNN恐慌与贪婪分数表示从“极度恐惧”到“极度贪婪”；OFR金融压力指数以0为历史平均，正值高于平均压力、负值低于平均压力。三者口径不同，不合成为新的总分。DGS10收益率显示为百分比，变化显示为相对上一观测值的基点（bp）。
+          宏观状态沿用宏观雷达已有的0–100制度信号分数，数值越高越偏“宽松·支持”；CNN恐慌与贪婪分数表示从“极度恐惧”到“极度贪婪”；OFR金融压力指数以0为历史平均，正值高于平均压力、负值低于平均压力。三者口径不同，不合成为新的总分。紧随其后的「地缘风险定价」是**独立分区**、不属于上面那三张卡：它是站内复算的四轴模型（能源溢价按布伦特近一月涨幅±15%线性映射、避险需求按黄金减标普500近一月涨幅差±15个百分点线性映射、波动率制度取宏观雷达波动率信号的100减分数、金融压力取OFR金融压力指数在该文件自身观测窗口内的百分位），四轴等权合成0–100并落到五个等级；它读的是市场为地缘风险付出的价格，不统计也不解读地缘政治事件本身，四轴缺任何一条即不给等级；它单独成区、单独显示，不参与上面三张官方信号卡的状态计数，那三张卡本身仍然不合成为总分。桌面一屏总览里它占原标普500/纳斯达克100 ETF代理卡撤下后腾出的那一格，核心资产整块上移到品类行情右侧（不是隐藏：免费ETF代理组件要有真实布局才挂得上）。DGS10收益率显示为百分比，变化显示为相对上一观测值的基点（bp）。
           DGS10、DTWEXBGS与RWTC三张官方行情卡片分别交叉校验同一份宏观数据和逐源健康快照；BTC/USD另与资产榜中的CoinGecko/Yahoo逐源证据对齐。四张真实行情卡片都在卡内显示独立 <code>UPDATE HEALTH</code>：本轮刷新、明确降级或回退、连续失败、最近尝试与最后成功均不与行情数据日混用。前三张官方卡片另显示最多8项严格按日期递增的最近官方观测；DGS10区间变化使用bp，DTWEXBGS与RWTC使用百分比，历史不足时不以演示走势填充。单个来源健康字段异常时只把对应健康栏降为 <code>UNKNOWN</code>，不会隐藏仍可验证的行情，也不会拖累其他卡片；健康证据超过72小时显示 <code>STALE</code>。
           <strong>DTWEXBGS是美联储H.10广义贸易加权美元指数，不是ICE DXY；RWTC是EIA库欣WTI现货，不是 <code>CL=F</code> 近月期货。</strong> WTI以美元/桶显示，涨跌按前后两个有效观测值计算；美元或WTI自动更新失败时保留最后有效值，RWTC超过4个美国工作日未发布新观测值时标记“STALE”。BTC/USD优先复用资产榜CoinGecko日度快照并显示“Powered by CoinGecko”；若明确降级至Yahoo BTC-USD，卡片同步改为“较前收盘”口径。DIA与GLD分别仅作为DJIA与LBMA Gold Price PM的免费ETF代理，不是同一原标的；标普500与纳斯达克100的ETF代理卡已于2026-08-25撤下，标普500点位改在「品类行情」的指数类按跨资产管道展示，纳斯达克本页不再展示、未用其他标的顶替；行情、延迟、交易状态与更新时间由TradingView组件直接标示，Ooglex不抓取、不导出、不保存这些组件中的原始行情。页面最多等待8秒验证Web Component注册，再逐卡确认组件元素已连接、已定义且具有非空布局；只有完成宿主挂载才显示组件。“组件宿主已挂载”仍不代表报价已经渲染、数据新鲜或市场开市；任一卡验证失败只保留对应TradingView来源链接，不用缓存值或演示值顶替，脚本稍后注册时可自动恢复。查看 <a href="https://fred.stlouisfed.org/series/DTWEXBGS" target="_blank" rel="noopener noreferrer">DTWEXBGS官方序列</a>、<a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html" target="_blank" rel="noopener noreferrer">FRED API使用条款</a>、<a href="https://www.eia.gov/dnav/pet/hist/rwtcd.htm" target="_blank" rel="noopener noreferrer">EIA RWTC官方序列</a>、<a href="https://www.eia.gov/opendata/documentation.php" target="_blank" rel="noopener noreferrer">EIA API文档</a>、<a href="https://www.coingecko.com/en/api_terms" target="_blank" rel="noopener noreferrer">CoinGecko API使用条款</a>、<a href="https://www.tradingview.com/widget-docs/" target="_blank" rel="noopener noreferrer">TradingView组件文档</a>和<a href="https://www.tradingview.com/widget-docs/faq/data/" target="_blank" rel="noopener noreferrer">TradingView数据说明</a>；本产品未获圣路易斯联储、EIA或TradingView认可或认证，也未获CoinGecko认可或赞助。
           </p>

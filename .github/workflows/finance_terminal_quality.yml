@@ -195,6 +195,10 @@ jobs:
         if: ${{ !cancelled() }}
         run: node scripts/validate_finance_terminal_board.mjs
 
+      - name: Validate geopolitical risk pricing contract
+        if: ${{ !cancelled() }}
+        run: node scripts/validate_finance_terminal_geo_risk.mjs
+
       - name: Validate per-record market data quality
         if: ${{ !cancelled() }}
         run: python scripts/validate_market_data_quality.py --dataset all
