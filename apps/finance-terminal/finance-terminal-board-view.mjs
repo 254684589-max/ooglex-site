@@ -2,18 +2,10 @@
    抽屉复用资产详情抽屉的外壳与折线映射，保证焦点、Esc、遮罩与几何只有一份实现。
    没有站内历史序列的标的如实说明原因，不用相邻标的或推断值顶替。 */
 
-import { openPanel, section, row, note, seriesPath, isPanelOpen } from "./finance-terminal-detail-view.mjs";
-import { formatPrice } from "./finance-terminal-board-data.mjs";
+import { seriesPath } from "./finance-terminal-detail-view.mjs";
 import { mountWatchlist } from "./finance-terminal-watchlist.mjs";
 
 /* 走势区间按交易日近似取点：站内序列本身就是交易日轴，不做日历插值。 */
-const RANGES = Object.freeze([
-  { key: "1m", label: "1个月", points: 22 },
-  { key: "3m", label: "3个月", points: 66 },
-  { key: "6m", label: "6个月", points: 132 },
-  { key: "1y", label: "1年", points: 260 }
-]);
-
 /* 每行的迷你走势固定看最近60个交易日：足够看出形态，又不会让整屏的取点成本失控。
    取点复用抽屉那份裁剪函数，颜色按这段窗口自己的首尾变化算，不套用当日涨跌方向。 */
 const SPARK_POINTS = 60;
@@ -88,6 +80,17 @@ export function rangeChange(values, isYield) {
   }
   const pct = (last / first - 1) * 100;
   return `${pct > 0 ? "+" : ""}${pct.toFixed(2)}%`;
+}
+
+/* 纯函数：逐行链接到独立的行情详情页。序列引用里的 kind 决定详情页读哪一条管道；
+   没有序列引用的行也仍然可以打开——详情页会照样摆出它的当期读数与来源。 */
+export function quoteHref(item) {
+  const kinds = { tracker: "tracker", company: "company", cryptoBoard: "crypto", curve: "curve", macro: "macro" };
+  const reference = item && item.series ? item.series : null;
+  const kind = reference && kinds[reference.kind] ? kinds[reference.kind] : "";
+  const symbol = reference && reference.key ? reference.key : (item ? item.symbol : "");
+  if (!kind || !symbol) return "";
+  return `quote.html?kind=${encodeURIComponent(kind)}&symbol=${encodeURIComponent(symbol)}`;
 }
 
 /* 纯函数：迷你走势的方向按该窗口首尾比较得到，与当日涨跌各算各的，互不顶替。 */
@@ -217,102 +220,6 @@ function markSparkEmpty(document, cell) {
   mark.title = "站内日更管道还没有覆盖该标的的历史序列，此处不画任何推断曲线";
 }
 
-function renderChart(document, box, item, series, rangeKey) {
-  const range = RANGES.filter((entry) => entry.key === rangeKey)[0] || RANGES[RANGES.length - 1];
-  const window = sliceSeries(series.dates, series.values, range.points);
-  if (window.values.length < 2) {
-    note(document, box, `该标的在${range.label}窗口内不足两个有效观测，暂不绘制曲线。`);
-    return;
-  }
-  const isYield = item.unit === "年化收益率";
-  const width = 520;
-  const height = 150;
-  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  svg.setAttribute("class", "detail-chart");
-  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-  svg.setAttribute("role", "img");
-  const first = window.dates[0];
-  const last = window.dates[window.dates.length - 1];
-  svg.setAttribute("aria-label",
-    `${item.name} 自 ${first} 至 ${last} 共 ${window.values.length} 个收盘观测的走势`);
-  const line = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  line.setAttribute("class", "detail-chart-line");
-  line.setAttribute("d", seriesPath(window.values, width, height, 10));
-  svg.appendChild(line);
-  box.appendChild(svg);
-  const low = Math.min(...window.values);
-  const high = Math.max(...window.values);
-  const unit = isYield ? "%（年化收益率）" : (item.currency ? `${item.currency}计价` : "标的自身计价单位");
-  row(document, box, "区间", isYield
-    ? `${low.toFixed(2)}% — ${high.toFixed(2)}% · 年化收益率`
-    : `${formatPrice(low)} — ${formatPrice(high)} · ${unit}`);
-  row(document, box, "覆盖", `${first} → ${last} · ${window.values.length} 个交易日观测`);
-  const change = rangeChange(window.values, isYield);
-  if (change) row(document, box, `${range.label}变化`, change);
-}
-
-/* 走势抽屉：先画来源与口径，再按区间画曲线；序列缺失时说明原因并给官方入口。 */
-async function openTrend(document, item, bundles) {
-  const panel = openPanel(document, item.name,
-    `${item.nameEn ? item.nameEn + " · " : ""}${item.symbol}`, `${item.name} 走势与数据口径`);
-  const meta = section(document, panel, "来源与口径");
-  row(document, meta, "最新价", item.priceText);
-  row(document, meta, "涨跌", `${item.change.arrow} ${item.change.text} · ${item.changeBasis}`);
-  row(document, meta, "数据日", item.asOf || "不可用");
-  row(document, meta, "更新时间", item.updatedAt || "不可用");
-  row(document, meta, "频率", item.frequency || "不可用");
-  row(document, meta, "来源", item.sourceName || "不可用");
-  row(document, meta, "状态", item.status === "ok" ? "正常" : (item.status === "stale" ? "过期" : item.status));
-  if (item.currency) row(document, meta, "计价货币", item.currency);
-  if (item.proxyOf) row(document, meta, "代理原标的", item.proxyOf);
-  if (item.note) note(document, meta, item.note);
-  if (item.sourceUrl) {
-    const link = document.createElement("a");
-    link.className = "detail-news";
-    link.href = item.sourceUrl;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = "前往官方来源查看";
-    meta.appendChild(link);
-  }
-
-  const box = section(document, panel, "站内历史走势");
-  if (!item.series) {
-    note(document, box, "该标的目前只有站内日更的最新报价，没有可绘制的历史序列；"
-      + "在日更管道补齐序列之前，这里不显示任何推断曲线。完整历史请前往上方官方来源。");
-    return;
-  }
-  const loading = text(box, "p", "detail-note", "正在读取站内历史序列…");
-  const series = await resolveSeries(item.series, bundles);
-  if (!isPanelOpen()) return;
-  loading.remove();
-  if (!series || !Array.isArray(series.values)) {
-    note(document, box, "站内历史文件里还没有该标的的序列；对应日更任务补齐后此处会显示完整曲线，"
-      + "在此之前不显示任何推断值。");
-    return;
-  }
-  const tabs = text(box, "div", "board-range-tabs");
-  tabs.setAttribute("role", "group");
-  tabs.setAttribute("aria-label", "走势区间");
-  const canvas = text(box, "div", "board-chart-body");
-  let active = "1y";
-  function draw() {
-    canvas.textContent = "";
-    renderChart(document, canvas, item, series, active);
-    Array.from(tabs.children).forEach((button) => {
-      button.setAttribute("aria-pressed", button.dataset.range === active ? "true" : "false");
-    });
-  }
-  RANGES.forEach((range) => {
-    const button = text(tabs, "button", "board-range-tab", range.label);
-    button.type = "button";
-    button.dataset.range = range.key;
-    button.addEventListener("click", () => { active = range.key; draw(); });
-  });
-  draw();
-  if (series.source) note(document, box, `序列来源：${series.source}。${series.note || ""}`);
-}
-
 function renderRows(document, host, category, bundles, expanded, context) {
   host.textContent = "";
   const rows = context.shown;
@@ -338,10 +245,10 @@ function renderRows(document, host, category, bundles, expanded, context) {
     const line = text(host, "div", `board-row board-change-${item.change.direction}`);
     if (context.watch) line.appendChild(context.watch.button(item.symbol));
     else text(line, "span", "board-cell-watch", "");
-    const open = text(line, "button", "board-open");
-    open.type = "button";
+    const open = text(line, "a", "board-open");
+    open.href = quoteHref(item);
     open.setAttribute("aria-label",
-      `${item.name}，最新价 ${item.priceText}，${item.change.text}，查看走势与数据口径`);
+      `${item.name}，最新价 ${item.priceText}，${item.change.text}，打开完整行情页`);
     const name = text(open, "span", "board-cell-name");
     text(name, "b", "", item.name);
     text(name, "i", "", item.symbol + (item.status === "stale" ? " · 过期" : ""));
@@ -352,7 +259,6 @@ function renderRows(document, host, category, bundles, expanded, context) {
     text(change, "i", "board-arrow", item.change.arrow);
     text(change, "b", "", item.change.text);
     text(open, "span", "board-cell-extra", item.extraText || "—");
-    open.addEventListener("click", () => { openTrend(document, item, bundles); });
   });
   paintToken += 1;
   if (pending.length) fillSparks(document, pending, bundles, paintToken);
