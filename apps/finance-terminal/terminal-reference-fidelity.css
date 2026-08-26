@@ -319,7 +319,7 @@
   body[data-terminal-view="overview"] #risk-section .board-heading::after {
     margin-left: 7px;
     color: var(--faint);
-    content: "3 VERIFIED SIGNALS · NO SYNTHETIC DATA";
+    content: "3 VERIFIED SIGNALS · 1 PRICED MODEL";
     font: 6px var(--mono);
     letter-spacing: .06em;
   }

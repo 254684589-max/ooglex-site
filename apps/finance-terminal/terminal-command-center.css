@@ -231,6 +231,26 @@
   body[data-terminal-view="overview"] #board-panel .watch-toggle { min-width: 34px; min-height: 34px; }
   body[data-terminal-view="overview"] #board-section .board-heading { padding: 6px 0 4px; }
 
+  /* 总览里的地缘风险定价只留名称、等级与等级梯：四条轴的读数条、原值、口径与
+     档位刻度在「风险」视图里有完整版本，一屏视图里既放不下也会压到下面三张卡。 */
+  body[data-terminal-view="overview"] #geo-risk {
+    overflow: hidden;
+    margin-top: 6px;
+    padding: 7px 9px;
+    gap: 5px;
+  }
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-label,
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-axes,
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-note { display: none; }
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-step::after { content: none; }
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-head { gap: 7px; }
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-name { font-size: 11px; }
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-level { padding: 2px 7px; font-size: 9px; }
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-score { font-size: 17px; }
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-score small { font-size: 8px; }
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-ladder { margin-bottom: 0; gap: 3px; }
+  body[data-terminal-view="overview"] #geo-risk .geo-risk-step { height: 5px; }
+
   body[data-terminal-view="overview"] #information-section {
     grid-column: 13 / 17;
     grid-row: 1 / 4;

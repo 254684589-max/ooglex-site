@@ -2,6 +2,7 @@ const CRITICAL_REQUEST_KEYS = Object.freeze([
   "$config", "macro", "macroHealth", "assetRanking", "assetRankingHealth", "marketLicense"
 ]);
 const DEFERRED_SECTION_NAMES = Object.freeze(["board", "risk", "research", "information", "operations"]);
+const EXPECTED_GEO_AXES = 4;
 /* 2026-08-25 所有者决定撤下标普500与纳斯达克100两张ETF代理卡：核心资产六张，
    免费嵌入代理两项（DIA、GLD）。改动清单时这两个常量与契约文件一起改。 */
 const EXPECTED_ASSET_CARDS = 6;
@@ -55,6 +56,9 @@ export function runBrowserRegressionProbe(options = {}) {
   const boardToggle = document.querySelector("#board-panel .board-toggle");
   const boardSearch = document.getElementById("board-search");
   const boardPulse = document.getElementById("board-pulse");
+  const geoPanel = document.getElementById("geo-risk");
+  const geoAxes = Array.from(document.querySelectorAll("#geo-risk .geo-axis-bar"));
+  const geoSteps = Array.from(document.querySelectorAll("#geo-risk .geo-risk-step"));
   /* 折叠壳的默认状态要在量尺寸之前记下来：窄屏默认收起，桌面各自成页保持展开。
      记完立即展开，后面的列数与裁切测量才和改造前一致。 */
   const sectionFolds = Array.from(document.querySelectorAll("details.section-fold"));
@@ -314,6 +318,15 @@ export function runBrowserRegressionProbe(options = {}) {
       && boardWatchButtons.length === boardRows.length
       && boardWatchButtons.every((button) => button.getAttribute("aria-pressed") === "false"
         || button.getAttribute("aria-pressed") === "true"),
+    /* 地缘风险定价：四条轴齐了才给等级，等级梯必须恰好五档且只亮一档；
+       任一轴缺失时不给分数，此时整块只写明缺哪一条。 */
+    geoRiskModel: Boolean(geoPanel) && geoPanel.hidden === false
+      && (geoAxes.length === 0
+        ? Boolean(geoPanel.querySelector(".geo-risk-level-off"))
+        : geoAxes.length === EXPECTED_GEO_AXES
+          && geoAxes.every((bar) => Number.isFinite(Number(bar.getAttribute("aria-valuenow"))))
+          && geoSteps.length === 5
+          && geoSteps.filter((step) => step.classList.contains("is-active")).length === 1),
     targetSizes: targetElements.length > 8 && undersizedTargets.length === 0,
     externalLinkSafety: Array.from(document.querySelectorAll('a[target="_blank"]')).every((link) => {
       return /(^|\s)noopener(\s|$)/.test(link.rel) && /(^|\s)noreferrer(\s|$)/.test(link.rel);
@@ -372,6 +385,12 @@ export function runBrowserRegressionProbe(options = {}) {
       sparkCells: document.querySelectorAll("#board-panel .board-cell-spark").length,
       sparkCharts: document.querySelectorAll("#board-panel .board-spark").length,
       watchToggles: boardWatchButtons.length
+    },
+    geoRisk: {
+      rendered: Boolean(geoPanel) && geoPanel.hidden === false,
+      axes: geoAxes.length,
+      steps: geoSteps.length,
+      score: geoPanel ? (geoPanel.querySelector(".geo-risk-score") || {}).textContent || "" : ""
     },
     layout: {
       market: renderedGridColumns(grid),

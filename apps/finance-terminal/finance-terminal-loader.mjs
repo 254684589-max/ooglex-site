@@ -30,8 +30,10 @@ const RESOURCE_GROUPS = Object.freeze({
   board: Object.freeze([
     "assetTracker", "assetRanking", "assetRankingCrypto", "companies", "macro", "macroCurve"
   ]),
+  /* 地缘风险定价的能源与避险两条轴读跨资产管道的近一月涨幅：该文件在品类行情与
+     市场研究两组里已经在取，加载器按资源键去重，总览里不会因此多发一次请求。 */
   risk: Object.freeze([
-    "macro", "fearGreed", "fearGreedHealth", "ofr", "ofrHealth"
+    "macro", "fearGreed", "fearGreedHealth", "ofr", "ofrHealth", "assetTracker"
   ]),
   research: Object.freeze([
     "assetTracker", "assetTrackerHealth", "assetRanking", "assetRankingHealth",

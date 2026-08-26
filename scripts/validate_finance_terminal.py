@@ -51,6 +51,7 @@ COMMAND_CENTER_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-c
 REGRESSION_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-regression.mjs"
 VISUALS_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_visuals.mjs"
 RISK_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-view.mjs"
+GEO_RISK_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-geo-risk.mjs"
 RESEARCH_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-research-view.mjs"
 INFORMATION_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-information-view.mjs"
 OPERATIONS_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-operations-view.mjs"
@@ -2797,6 +2798,7 @@ def main() -> None:
     operations_view_module = OPERATIONS_VIEW_MODULE.read_text(encoding="utf-8")
     board_data_module = BOARD_DATA_MODULE.read_text(encoding="utf-8")
     board_view_module = BOARD_VIEW_MODULE.read_text(encoding="utf-8")
+    geo_risk_module = GEO_RISK_MODULE.read_text(encoding="utf-8")
     terminal_views = (app + "\n" + risk_view_module + "\n" + research_view_module
                       + "\n" + information_view_module + "\n" + operations_view_module)
     compact_loader = re.sub(r"\s+", "", loader)
@@ -2807,7 +2809,9 @@ def main() -> None:
     # 15,600 是在原15KB基础上给「品类行情板」留出的增量：新增一份美债收益率曲线
     # 资源与一个只复用已有资源键的board资源组，加载器本身多出约210字节；常规加载
     # 合计仍受下方230KB预算约束。
-    require(LOADER.stat().st_size <= 15_600, "金融终端分区加载模块超过15.6KB性能预算")
+    # 15,800：风险分区多读一份跨资产快照（地缘风险定价的能源与避险两条轴），
+    # 该资源键在品类行情与市场研究两组里已存在，加载器按键去重，请求数不变。
+    require(LOADER.stat().st_size <= 15_800, "金融终端分区加载模块超过15.8KB性能预算")
     require(TERMINAL_VISUALS.stat().st_size <= 16_000, "金融终端视觉数据模块超过16KB性能预算")
     # 3,000 是按旧版「把宏观状态一个分数加权重组出六个轴」那一行设定的。六个轴改读
     # 六个具名真实制度信号后，查表逻辑不可压缩地更大；该模块不计入 230KB 常规加载
@@ -2830,7 +2834,7 @@ def main() -> None:
     # OFR 卡片与运行证据面板不再被裁掉 137px 与 201px，收益率曲线入口不再缺 6px。
     # 24,000：一屏总览把主行让给品类行情、核心资产退到第三行并做紧凑化后的增量。
     # 24,600：总览里的行情板多出一列迷你走势与一条脉冲条的紧凑化规则。
-    require(COMMAND_CENTER_CSS.stat().st_size <= 24_600, "金融终端单屏指挥中心样式超过24.6KB性能预算")
+    require(COMMAND_CENTER_CSS.stat().st_size <= 25_600, "金融终端单屏指挥中心样式超过25.6KB性能预算")
     require(VISUAL_FIDELITY_CSS.stat().st_size <= 6_000, "金融终端高保真视觉层超过6KB性能预算")
     require(REFERENCE_FIDELITY_CSS.stat().st_size <= 12_400, "金融终端参考图精修层超过12.4KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
@@ -2841,8 +2845,9 @@ def main() -> None:
     # 语义（页面现在有跨资产周期与品类行情板两组），核对六个品类标签、当前品类的
     # 价格/涨跌列、折叠按钮默认收起、搜索框与逐行自选开关，并在量尺寸前记下两个
     # 工程/运营向分区折叠壳的默认状态。该模块只在 regression=1 时加载。
-    # 24,800：探针额外核对每行的迷你走势位与品类脉冲条。
-    require(REGRESSION_MODULE.stat().st_size <= 24_800,
+    # 25,400：探针额外核对每行的迷你走势位、品类脉冲条，以及地缘风险定价的
+    # 四条轴与五档等级梯（缺轴时改为核对「不可用」态而不是分数）。
+    require(REGRESSION_MODULE.stat().st_size <= 25_400,
             "仅回归模式加载的浏览器探针超过24KB性能预算")
     require(BOARD_DATA_MODULE.stat().st_size <= 19_000,
             "按需加载的品类行情板数据层超过19KB性能预算")
@@ -2862,8 +2867,18 @@ def main() -> None:
             and "finance-terminal-board-view.mjs" not in page
             and "finance-terminal-board-data.mjs" not in page,
             "品类行情板的数据层与视图必须保持按需导入且不得在首屏预加载")
-    require(RISK_VIEW_MODULE.stat().st_size <= 6_000,
-            "按需加载的市场状态视图超过6KB性能预算")
+    require(RISK_VIEW_MODULE.stat().st_size <= 6_600,
+            "按需加载的市场状态视图超过6.6KB性能预算")
+    # 地缘风险定价：四条轴各自读站内已在日更的公开管道，逐轴给出原值、映射口径、
+    # 来源与数据日；缺任何一条即不给等级。它与同分区那三张「不合成为总分」的官方
+    # 信号卡分开渲染，也不参与它们的状态计数。
+    require(GEO_RISK_MODULE.stat().st_size <= 13_200,
+            "按需加载的地缘风险定价模型超过13.2KB性能预算")
+    require("buildGeoRisk" in risk_view_module and "renderGeoRisk" in risk_view_module
+            and "GEO_AXES" in geo_risk_module and "percentileScore" in geo_risk_module
+            and "不统计" in geo_risk_module and 'id="geo-risk"' in page
+            and "finance-terminal-geo-risk.mjs" not in page,
+            "地缘风险定价必须随市场状态视图按需加载，并写明它读的是定价而非事件本身")
     require('import("./finance-terminal-risk-view.mjs")' in app
             and "createRiskView" in risk_view_module
             and "finance-terminal-risk-view.mjs" not in page,
