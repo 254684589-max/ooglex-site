@@ -33,7 +33,8 @@ from market_data_quality import (  # noqa: E402
     make_data_meta,
     summarize_data_quality,
 )
-from market_history import build_rolling_history  # noqa: E402
+from market_history import build_rolling_history
+from market_history_long import build_long_history, monthly_from_daily  # noqa: E402
 from market_source_health import (  # noqa: E402
     load_json as load_health_json,
     make_source_health,
@@ -43,6 +44,10 @@ from market_source_health import (  # noqa: E402
 OUT_PATH = os.path.join("apps", "companies", "data.json")
 HEALTH_PATH = os.path.join("apps", "companies", "health.json")
 HISTORY_PATH = os.path.join("apps", "companies", "history.json")
+LONG_HISTORY_PATH = os.path.join("apps", "companies", "history-monthly.json")
+LONG_HISTORY_NOTE = ("市值前列上市公司自身的月线收盘，用于 5 年 / 10 年 / 25 年 / 全部区间的走势；"
+                     "起始月即该公司在数据源上可得的最早月份，缺月留空不做前向填充，"
+                     "本轮未取到的公司沿用上次序列。")
 HISTORY_SYMBOLS = 40     # 只给市值最高的一段存日线：金融终端品类行情板按这份历史画走势
 HISTORY_POINTS = 260     # 滚动保留约一年交易日，文件大小恒定而非逐日增长
 HISTORY_NOTE = ("市值前列上市公司自身收盘价的滚动历史，与 data.json 同一次取数、同一来源；"
@@ -101,6 +106,52 @@ def yf_daily_closes(session, symbol, rng="1y"):
     return []
 
 
+def yf_monthly_closes(session, symbol):
+    """取单只月线收盘序列 [(YYYY-MM, close), ...]；任何异常都返回空列表。"""
+    sym = requests.utils.quote(symbol)
+    for host in YF_HOSTS:
+        try:
+            r = session.get(
+                f"https://{host}/v8/finance/chart/{sym}?range=max&interval=1mo", timeout=15)
+            if r.status_code != 200:
+                continue
+            res = (r.json().get("chart", {}).get("result") or [{}])[0]
+            stamps = res.get("timestamp") or []
+            quote = (res.get("indicators", {}).get("quote") or [{}])[0]
+            closes = quote.get("close") or []
+            points = [(datetime.fromtimestamp(t, timezone.utc).strftime("%Y-%m"), float(c))
+                      for t, c in zip(stamps, closes)
+                      if isinstance(t, (int, float)) and isinstance(c, (int, float))]
+            if len(points) >= 2:
+                return points
+        except Exception:
+            continue
+    return []
+
+
+def write_long_history(session, symbols, daily, run_updated_at):
+    """再补一份月线长历史；失败只跳过，不影响 data.json 与日线历史。"""
+    collected = {}
+    for sym in symbols:
+        points = yf_monthly_closes(session, sym)
+        if not points:
+            points = monthly_from_daily(daily.get(sym) or [])
+        if len(points) >= 2:
+            collected[sym] = points
+        time.sleep(0.12)
+    history, retained = build_long_history(
+        collected, load_json(LONG_HISTORY_PATH), run_updated_at,
+        source="Yahoo Finance", note=LONG_HISTORY_NOTE)
+    if not history:
+        print("月线序列本轮全部失败，保留上次 history-monthly.json（不写空数据）")
+        return None
+    with open(LONG_HISTORY_PATH, "w", encoding="utf-8") as f:
+        json.dump(history, f, ensure_ascii=False, separators=(",", ":"))
+    print(f"月线历史：{len(collected)}/{len(symbols)} 只本轮取到，"
+          f"{len(retained)} 只沿用上次，最新月 {history['asOf']}")
+    return history
+
+
 def write_history(session, rows, run_updated_at):
     """给市值前列的上市公司补一份滚动日线历史；失败只跳过，绝不影响已写好的 data.json。"""
     symbols = [r["symbol"] for r in rows
@@ -122,6 +173,7 @@ def write_history(session, rows, run_updated_at):
         json.dump(history, f, ensure_ascii=False, separators=(",", ":"))
     print(f"日线历史：{len(collected)}/{len(symbols)} 只本轮取到，"
           f"{len(retained)} 只沿用上次，共 {history['points']} 个交易日")
+    write_long_history(session, symbols, collected, run_updated_at)
     return history
 
 

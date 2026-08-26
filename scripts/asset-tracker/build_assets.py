@@ -33,6 +33,7 @@ from market_data_quality import (  # noqa: E402
     summarize_data_quality,
 )
 from market_history import build_rolling_history  # noqa: E402
+from market_history_long import build_long_history, monthly_from_daily  # noqa: E402
 from market_source_health import (  # noqa: E402
     load_json as load_health_json,
     make_source_health,
@@ -46,6 +47,10 @@ HISTORY_POINTS = 260   # 滚动保留约一年交易日，文件大小恒定而�
 HISTORY_NOTE = ("各标的自身收盘价的滚动历史，与 data.json 同一次取数、同一来源；"
                 "共享日期轴上该标的当日无报价则为 null，不做前向填充。"
                 "本轮未取到的标的沿用上次序列，不补造新点。")
+LONG_HISTORY_PATH = os.path.join("apps", "asset-tracker", "history-monthly.json")
+LONG_HISTORY_NOTE = ("各标的自身的月线收盘（每月最后一个交易日），用于 5 年 / 10 年 / 25 年 / "
+                     "全部区间的走势；起始月即该标的在数据源上可得的最早月份，"
+                     "缺月留空不做前向填充，本轮未取到的标的沿用上次序列。")
 
 # 四大品类：key / 中文名 / 颜色（沿用示例图语义：股市红、商品蓝、外汇橙、债券青，精修为更通透的配色）
 CATEGORIES = [
@@ -120,6 +125,28 @@ ASSETS = [
     {"name": "墨西哥IPC",        "cat": "equity",    "syms": ["^MXX"]},
     {"name": "印尼雅加达综合",   "cat": "equity",    "syms": ["^JKSE"]},
     {"name": "以色列TA-125",     "cat": "equity",    "syms": ["^TA125.TA"]},
+    # 2026-08-26 再扩容：继续按各市场代表性指数补齐，另加两支美股宽基与一支波动率指数。
+    {"name": "荷兰AEX",          "cat": "equity",    "syms": ["^AEX"]},
+    {"name": "比利时BEL20",      "cat": "equity",    "syms": ["^BFX"]},
+    {"name": "瑞典OMXS30",       "cat": "equity",    "syms": ["^OMX"]},
+    {"name": "奥地利ATX",        "cat": "equity",    "syms": ["^ATX"]},
+    {"name": "土耳其BIST100",    "cat": "equity",    "syms": ["XU100.IS"],
+     "caps": {"m1": 90, "ytd": 300, "y1": 400}},
+    {"name": "波兰WIG20",        "cat": "equity",    "syms": ["WIG20.WA"]},
+    {"name": "泰国SET",          "cat": "equity",    "syms": ["^SET.BK"]},
+    {"name": "马来西亚KLCI",     "cat": "equity",    "syms": ["^KLSE"]},
+    {"name": "菲律宾PSEi",       "cat": "equity",    "syms": ["PSEI.PS"]},
+    {"name": "智利IPSA",         "cat": "equity",    "syms": ["^IPSA"]},
+    # 阿根廷长期高通胀，名义指数涨跌本就极大，放宽护栏以如实呈现
+    {"name": "阿根廷MERVAL",     "cat": "equity",    "syms": ["^MERV"],
+     "caps": {"d1": 40, "w1": 80, "m1": 150, "ytd": 500, "y1": 600}},
+    {"name": "美国罗素2000",     "cat": "equity",    "syms": ["^RUT"]},
+    {"name": "恒生科技指数",     "cat": "equity",    "syms": ["^HSTECH"],
+     "caps": {"m1": 90, "ytd": 200, "y1": 300}},
+    # VIX 是标普500期权隐含波动率指数，不是可交易标的，日内跳动本就远大于股指
+    {"name": "标普500波动率VIX", "cat": "equity",    "syms": ["^VIX"],
+     "note": "CBOE标普500波动率指数，衡量期权隐含波动率，不是可交易标的",
+     "caps": {"d1": 80, "w1": 150, "m1": 250, "ytd": 400, "y1": 500}},
     # —— 商品 ——（LME 现货 Yahoo 无免费源，以全球期货代理，涨跌方向高度一致）
     {"name": "COMEX黄金",        "cat": "commodity", "syms": ["GC=F"]},
     {"name": "COMEX白银",        "cat": "commodity", "syms": ["SI=F"]},
@@ -139,6 +166,26 @@ ASSETS = [
      "caps": {"m1": 90, "ytd": 200, "y1": 300}},
     {"name": "ICE白糖",          "cat": "commodity", "syms": ["SB=F"]},
     {"name": "ICE棉花",          "cat": "commodity", "syms": ["CT=F"]},
+    # 2026-08-26 再扩容：能源制品、软商品、油籽制品与畜牧期货。
+    {"name": "NYMEX取暖油",      "cat": "commodity", "syms": ["HO=F"],
+     "caps": {"m1": 80, "ytd": 200, "y1": 250}},
+    {"name": "NYMEX汽油RBOB",    "cat": "commodity", "syms": ["RB=F"],
+     "caps": {"m1": 80, "ytd": 200, "y1": 250}},
+    {"name": "ICE可可",          "cat": "commodity", "syms": ["CC=F"],
+     "caps": {"m1": 90, "ytd": 300, "y1": 400}},
+    {"name": "ICE橙汁",          "cat": "commodity", "syms": ["OJ=F"],
+     "caps": {"m1": 90, "ytd": 300, "y1": 400}},
+    {"name": "CBOT燕麦",         "cat": "commodity", "syms": ["ZO=F"],
+     "caps": {"m1": 80, "ytd": 200, "y1": 250}},
+    {"name": "CBOT糙米",         "cat": "commodity", "syms": ["ZR=F"]},
+    {"name": "CBOT豆油",         "cat": "commodity", "syms": ["ZL=F"]},
+    {"name": "CBOT豆粕",         "cat": "commodity", "syms": ["ZM=F"]},
+    {"name": "CME活牛",          "cat": "commodity", "syms": ["LE=F"]},
+    {"name": "CME饲牛",          "cat": "commodity", "syms": ["GF=F"]},
+    {"name": "CME瘦肉猪",        "cat": "commodity", "syms": ["HE=F"],
+     "caps": {"m1": 90, "ytd": 250, "y1": 300}},
+    {"name": "CME木材",          "cat": "commodity", "syms": ["LBR=F", "LBS=F"],
+     "caps": {"m1": 90, "ytd": 250, "y1": 300}},
     # —— 外汇 ——（涨跌幅即各汇率自身变动，与示例图口径一致）
     {"name": "美元兑日元",       "cat": "fx",        "syms": ["USDJPY=X", "JPY=X"]},
     {"name": "美元指数",         "cat": "fx",        "syms": ["DX-Y.NYB", "DX=F"]},
@@ -154,6 +201,18 @@ ASSETS = [
     {"name": "美元兑印度卢比",   "cat": "fx",        "syms": ["USDINR=X", "INR=X"]},
     {"name": "美元兑新加坡元",   "cat": "fx",        "syms": ["USDSGD=X", "SGD=X"]},
     {"name": "美元兑巴西雷亚尔", "cat": "fx",        "syms": ["USDBRL=X", "BRL=X"]},
+    # 2026-08-26 再扩容：更多美元盘与两组欧系交叉盘。
+    {"name": "美元兑港元",       "cat": "fx",        "syms": ["USDHKD=X", "HKD=X"]},
+    {"name": "美元兑墨西哥比索", "cat": "fx",        "syms": ["USDMXN=X", "MXN=X"]},
+    {"name": "美元兑南非兰特",   "cat": "fx",        "syms": ["USDZAR=X", "ZAR=X"]},
+    # 里拉长期单边贬值，年度变动本就极大，放宽护栏以如实呈现
+    {"name": "美元兑土耳其里拉", "cat": "fx",        "syms": ["USDTRY=X", "TRY=X"],
+     "caps": {"m1": 80, "ytd": 200, "y1": 300}},
+    {"name": "美元兑泰铢",       "cat": "fx",        "syms": ["USDTHB=X", "THB=X"]},
+    {"name": "美元兑瑞典克朗",   "cat": "fx",        "syms": ["USDSEK=X", "SEK=X"]},
+    {"name": "美元兑挪威克朗",   "cat": "fx",        "syms": ["USDNOK=X", "NOK=X"]},
+    {"name": "欧元兑日元",       "cat": "fx",        "syms": ["EURJPY=X"]},
+    {"name": "欧元兑英镑",       "cat": "fx",        "syms": ["EURGBP=X"]},
     # —— 债券 ——（中债总财富指数无免费日更源，以国债 ETF 代理）
     {"name": "中国国债",         "cat": "bond",      "syms": ["511260.SS", "511010.SS", "511090.SS"],
      "note": "以国债 ETF 代理（非中债-国债总财富指数）"},
@@ -165,6 +224,21 @@ ASSETS = [
      "note": "以 iShares 7-10年期美国国债 ETF 价格代理中端美债，不是国债收益率"},
     {"name": "美国短期国债",     "cat": "bond",      "syms": ["SHY"],
      "note": "以 iShares 1-3年期美国国债 ETF 价格代理短端美债，不是国债收益率"},
+    # 2026-08-26 再扩容：债券各板块同样以 ETF 价格代理，是价格不是收益率，逐行写明口径。
+    {"name": "美国通胀保值债",   "cat": "bond",      "syms": ["TIP"],
+     "note": "以 iShares TIPS ETF 价格代理美国通胀保值国债，不是实际收益率"},
+    {"name": "美国综合债",       "cat": "bond",      "syms": ["AGG"],
+     "note": "以 iShares 美国综合债券 ETF 价格代理美国投资级债券总体，不是收益率"},
+    {"name": "美国投资级公司债", "cat": "bond",      "syms": ["LQD"],
+     "note": "以 iShares 投资级公司债 ETF 价格代理，不是信用利差或收益率"},
+    {"name": "美国高收益债",     "cat": "bond",      "syms": ["HYG"],
+     "note": "以 iShares 高收益公司债 ETF 价格代理，不是高收益债利差"},
+    {"name": "美国市政债",       "cat": "bond",      "syms": ["MUB"],
+     "note": "以 iShares 美国市政债 ETF 价格代理，不是市政债收益率"},
+    {"name": "新兴市场美元主权债", "cat": "bond",    "syms": ["EMB"],
+     "note": "以 iShares 新兴市场美元主权债 ETF 价格代理，不是主权债收益率"},
+    {"name": "非美国国债",       "cat": "bond",      "syms": ["BWX"],
+     "note": "以 SPDR 非美国国际国债 ETF 价格代理，不是各国国债收益率"},
 ]
 
 YF_HOSTS = ["query1.finance.yahoo.com", "query2.finance.yahoo.com"]
@@ -358,6 +432,62 @@ def build_history(collected, prev_history, updated_at, limit=HISTORY_POINTS):
                                  source="Yahoo Finance", note=HISTORY_NOTE, limit=limit)
 
 
+def load_prev_long_history():
+    """读取上次的 history-monthly.json；缺失或损坏时返回空结构。"""
+    try:
+        with open(LONG_HISTORY_PATH, encoding="utf-8") as f:
+            prev = json.load(f)
+        if isinstance(prev, dict) and isinstance(prev.get("series"), dict):
+            return prev
+    except Exception:
+        pass
+    return {}
+
+
+def fetch_monthly(symbol):
+    """Yahoo 月线（range=max）：返回按月升序的 [(YYYY-MM, close), ...]。
+
+    走的是与日线同一个图表接口，只是把粒度换成 1mo、区间换成全部可得；
+    折成月是数据源自己给的月线收盘，不由日线二次聚合，避免两处口径不一致。
+    """
+    sym = requests.utils.quote(symbol)
+    last_err = ValueError("无可用月线")
+    for host in YF_HOSTS:
+        url = f"https://{host}/v8/finance/chart/{sym}?range=max&interval=1mo"
+        try:
+            r = requests.get(url, headers=YF_HEADERS, timeout=15)
+            r.raise_for_status()
+            res = r.json()["chart"]["result"][0]
+            ts = res["timestamp"]
+            closes = res["indicators"]["quote"][0]["close"]
+            pts = [(time.strftime("%Y-%m", time.gmtime(t)), float(c))
+                   for t, c in zip(ts, closes) if c is not None]
+            if len(pts) < 2:
+                raise ValueError("月线数据点不足")
+            return pts
+        except Exception as e:
+            last_err = e
+    raise last_err
+
+
+def collect_monthly(symbols, daily_series):
+    """逐标的取月线；单个失败只跳过自己，并回退到用本轮日线折出的月线。"""
+    collected = {}
+    failed = []
+    for symbol in symbols:
+        try:
+            collected[symbol] = fetch_monthly(symbol)
+        except Exception as e:
+            fallback = monthly_from_daily(daily_series.get(symbol) or [])
+            if len(fallback) >= 2:
+                collected[symbol] = fallback
+                failed.append(f"{symbol}（改用本轮日线折算的月线）")
+            else:
+                failed.append(f"{symbol}：{e}")
+        time.sleep(0.35)
+    return collected, failed
+
+
 def build():
     prev_data = load_prev_data()
     prev_health = load_health_json(HEALTH_PATH)
@@ -512,6 +642,21 @@ def build():
         print(f"写入 {HISTORY_PATH}：{len(history['series'])} 个标的 × {history['points']} 点{note}")
     else:
         print(f"本轮无可用历史序列，保留上次 {HISTORY_PATH}，不覆盖。")
+
+    monthly, monthly_failed = collect_monthly(sorted(collected_series), collected_series)
+    long_history, long_retained = build_long_history(
+        monthly, load_prev_long_history(), run_updated_at,
+        source="Yahoo Finance", note=LONG_HISTORY_NOTE)
+    if long_history:
+        with open(LONG_HISTORY_PATH, "w", encoding="utf-8") as f:
+            json.dump(long_history, f, ensure_ascii=False, separators=(",", ":"))
+        note = f"，其中 {len(long_retained)} 项沿用上次序列" if long_retained else ""
+        print(f"写入 {LONG_HISTORY_PATH}：{long_history['symbols']} 个标的月线，"
+              f"最新月 {long_history['asOf']}{note}")
+    else:
+        print(f"本轮无可用月线序列，保留上次 {LONG_HISTORY_PATH}，不覆盖。")
+    if monthly_failed:
+        print(f"月线未取到：{'; '.join(monthly_failed[:8])}")
 
 
 if __name__ == "__main__":
