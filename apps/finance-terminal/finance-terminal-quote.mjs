@@ -59,9 +59,11 @@ function loadJson(path) {
 export function readQuery(search) {
   const params = new URLSearchParams(String(search || ""));
   const kind = String(params.get("kind") || "").trim();
+  const range = String(params.get("range") || "").trim();
   return {
     symbol: String(params.get("symbol") || "").trim(),
-    kind: Object.prototype.hasOwnProperty.call(KIND_SOURCES, kind) ? kind : ""
+    kind: Object.prototype.hasOwnProperty.call(KIND_SOURCES, kind) ? kind : "",
+    range: QUOTE_RANGES.some((entry) => entry.key === range) ? range : ""
   };
 }
 
@@ -322,7 +324,7 @@ function metaRow(list, key, value) {
   text(row, "dd", "", value);
 }
 
-export function renderQuote(document, root, payload) {
+export function renderQuote(document, root, payload, wanted) {
   const { instrument, daily, monthly } = payload;
   root.textContent = "";
   root.setAttribute("aria-busy", "false");
@@ -333,7 +335,9 @@ export function renderQuote(document, root, payload) {
   text(nameRow, "h1", "", instrument.name);
   text(nameRow, "span", "quote-symbol", instrument.symbol);
   if (instrument.categoryLabel) text(nameRow, "span", "quote-tag", instrument.categoryLabel);
-  if (instrument.nameEn) text(nameRow, "span", "quote-symbol", instrument.nameEn);
+  if (instrument.nameEn && instrument.nameEn !== instrument.symbol) {
+    text(nameRow, "span", "quote-symbol", instrument.nameEn);
+  }
 
   const priceRow = text(head, "div", "quote-price-row");
   text(priceRow, "strong", "quote-price", instrument.priceText);
@@ -411,10 +415,19 @@ export function renderQuote(document, root, payload) {
       initial = range;
     }
     button.setAttribute("aria-pressed", "false");
-    button.addEventListener("click", () => { paint(range); });
+    button.addEventListener("click", () => {
+      paint(range);
+      if (window.history && typeof window.history.replaceState === "function") {
+        const url = new URL(window.location.href);
+        url.searchParams.set("range", range.key);
+        window.history.replaceState(null, "", url.toString());
+      }
+    });
   });
+  /* 默认停在1年；网址带 range 时按网址来，分享出去的链接能落回同一档区间。 */
+  const asked = QUOTE_RANGES.filter((range) => range.key === wanted && pointsFor(range).length >= 2)[0];
   const preferred = QUOTE_RANGES.filter((range) => range.key === "1y" && pointsFor(range).length >= 2)[0];
-  paint(preferred || initial || QUOTE_RANGES[0]);
+  paint(asked || preferred || initial || QUOTE_RANGES[0]);
 
   const meta = text(root, "section", "quote-panel");
   text(meta, "h2", "quote-symbol", "逐项来源与口径");
@@ -461,7 +474,7 @@ async function start() {
     return;
   }
   try {
-    renderQuote(document, root, await loadInstrument(query.kind, query.symbol));
+    renderQuote(document, root, await loadInstrument(query.kind, query.symbol), query.range);
   } catch (error) {
     renderQuoteError(document, root,
       `暂时读不到这个标的：${error && error.message ? error.message : "未知错误"}。`);

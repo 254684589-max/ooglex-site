@@ -51,6 +51,9 @@ COMMAND_CENTER_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-c
 REGRESSION_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-regression.mjs"
 VISUALS_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_visuals.mjs"
 RISK_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-view.mjs"
+QUOTE_PAGE = ROOT / "apps" / "finance-terminal" / "quote.html"
+QUOTE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-quote.mjs"
+CHART_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-chart.mjs"
 GEO_RISK_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-geo-risk.mjs"
 RESEARCH_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-research-view.mjs"
 INFORMATION_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-information-view.mjs"
@@ -2857,6 +2860,30 @@ def main() -> None:
     # 触发一次历史文件读取；拿不到序列的行如实留白，不画推断曲线。
     require(BOARD_VIEW_MODULE.stat().st_size <= 23_000,
             "按需加载的品类行情板视图超过23KB性能预算")
+    # 行情详情页是独立网址的完整页面：品类行情逐行是真链接（<a href>，可新标签页
+    # 打开、可分享），不再是就地弹层。页面只读站内已在日更的公开管道，缺哪一档
+    # 区间就说没有；走势图渲染器与详情页各自独立于首屏，不进常规加载预算。
+    quote_page = QUOTE_PAGE.read_text(encoding="utf-8")
+    quote_module = QUOTE_MODULE.read_text(encoding="utf-8")
+    chart_module = CHART_MODULE.read_text(encoding="utf-8")
+    require(QUOTE_MODULE.stat().st_size <= 22_000, "行情详情页脚本超过22KB性能预算")
+    require(CHART_MODULE.stat().st_size <= 11_000, "走势图渲染模块超过11KB性能预算")
+    require(QUOTE_PAGE.stat().st_size <= 14_000, "行情详情页超过14KB性能预算")
+    require('src="finance-terminal-quote.mjs"' in quote_page
+            and 'href="index.html#board-section"' in quote_page
+            and "terms.html" in quote_page and "privacy.html" in quote_page,
+            "行情详情页必须挂载自己的脚本，并保留返回入口与法律链接")
+    require("quoteHref" in board_view_module and 'text(line, "a", "board-open")' in board_view_module
+            and "openPanel" not in board_view_module,
+            "品类行情逐行必须是指向独立行情页的真链接，不再就地弹层")
+    require("QUOTE_RANGES" in quote_module and '"25y"' in quote_module and '"all"' in quote_module
+            and "history-monthly.json" in quote_module and "curve-monthly.json" in quote_module,
+            "行情详情页必须提供 5年/10年/25年/全部 区间并读取月线长历史")
+    require("不插值" in quote_module and "cache: \"no-store\"" in quote_module,
+            "行情详情页必须写明缺观测不插值，并按不缓存读取站内快照")
+    require("renderChart" in chart_module and "quote-cursor" in chart_module
+            and "非交易" not in chart_module,
+            "走势图渲染器必须提供读数游标")
     require("board-cell-spark" in board_view_module and "sparkDirection" in board_view_module
             and "SPARK_POINTS" in board_view_module and "distribution" in board_view_module
             and 'id="board-pulse"' in page and ".board-spark-line" in page,

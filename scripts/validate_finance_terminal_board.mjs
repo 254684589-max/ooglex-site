@@ -17,9 +17,18 @@ import {
   tenorChangeBp
 } from "../apps/finance-terminal/finance-terminal-board-data.mjs";
 import {
+  dailyPoints,
+  monthlyPoints,
+  QUOTE_RANGES,
+  rangeStats,
+  readQuery,
+  slicePoints
+} from "../apps/finance-terminal/finance-terminal-quote.mjs";
+import {
   distribution,
   matchesQuery,
   rangeChange,
+  quoteHref,
   selectRows,
   sliceSeries,
   sparkDirection
@@ -318,6 +327,48 @@ function validateSparkAndPulse(board) {
   assert.equal(live.down, commodity.summary.down, "脉冲条的下跌计数必须与该品类摘要一致");
 }
 
+/* 逐行必须链到一个真实网址，而不是弹层：链接要带类别与代码，且能被详情页解析回来。
+   月线取点、区间裁剪与区间统计也在这里对齐，避免详情页自己另算一套。 */
+function validateQuoteLinks(board) {
+  const rows = board.categories.flatMap((category) => category.rows);
+  const linked = rows.filter((row) => quoteHref(row));
+  assert.ok(linked.length >= rows.length - 2,
+    "除极个别没有序列引用的行外，每一行都要能链到独立行情页");
+  const gold = rows.filter((row) => row.symbol === "GC=F")[0];
+  assert.equal(quoteHref(gold), "quote.html?kind=tracker&symbol=GC%3DF",
+    "跨资产行的链接必须带 tracker 类别与转义后的代码");
+  const parsed = readQuery(quoteHref(gold).split("?")[1]);
+  assert.deepEqual(parsed, { symbol: "GC=F", kind: "tracker", range: "" },
+    "详情页必须能把链接解析回同一个标的");
+  assert.equal(readQuery("kind=evil&symbol=X").kind, "",
+    "未登记的类别一律不接受，避免详情页去读任意路径");
+
+  const stock = rows.filter((row) => row.series && row.series.kind === "company")[0];
+  assert.match(quoteHref(stock), /^quote\.html\?kind=company&symbol=/);
+  const tenor = rows.filter((row) => row.series && row.series.kind === "curve")[0];
+  assert.match(quoteHref(tenor), /^quote\.html\?kind=curve&symbol=DGS/);
+
+  assert.equal(QUOTE_RANGES.length, 8, "区间档位应为 1月/3月/6月/1年/5年/10年/25年/全部");
+  assert.deepEqual(QUOTE_RANGES.filter((range) => range.grain === "monthly").map((r) => r.key),
+    ["5y", "10y", "25y", "all"], "五年及以上一律读月线");
+
+  const monthly = monthlyPoints({ series: { X: { start: "2024-11", closes: [1, null, 3] } } }, "X");
+  assert.deepEqual(monthly, [{ label: "2024-11", value: 1 }, { label: "2025-01", value: 3 }],
+    "月线缺月必须整点丢弃，不得前向填充，也不得让后面的月份错位");
+  const daily = dailyPoints({ dates: ["2026-01-02", "2026-01-05"], series: { X: [null, 7] } }, "X");
+  assert.deepEqual(daily, [{ label: "2026-01-05", value: 7 }]);
+  assert.equal(slicePoints(monthly, 1).length, 1);
+  assert.equal(slicePoints(monthly, 0).length, 2, "「全部」区间不做截断");
+
+  const stats = rangeStats([{ label: "a", value: 2 }, { label: "b", value: 3 }], "pct");
+  assert.equal(stats.change.text, "+50.00%");
+  assert.equal(stats.high, 3);
+  assert.equal(stats.low, 2);
+  const bp = rangeStats([{ label: "a", value: 3.5 }, { label: "b", value: 4.1 }], "bp");
+  assert.equal(bp.change.text, "+60 bp", "收益率类的区间变化按基点，不按百分比");
+  assert.equal(rangeStats([{ label: "a", value: 1 }], "pct"), null, "只有一个观测时不给区间统计");
+}
+
 async function main() {
   const group = await loadGroup();
   const board = buildBoard(group);
@@ -329,6 +380,7 @@ async function main() {
   validateCryptoFallback(group);
   validateSearchAndWatchlist(board);
   validateSparkAndPulse(board);
+  validateQuoteLinks(board);
   await validateFailureIsolation(group);
   validateStaleAndMissing(group);
   const counts = board.categories.map((category) => `${category.label}${category.rows.length}`).join(" · ");
@@ -339,6 +391,7 @@ async function main() {
   console.log("- single-pipeline failure isolation / stale propagation / no forward fill: PASS");
   console.log("- literal name/symbol search / starred-first ordering / sanitised watchlist keys: PASS");
   console.log("- per-row sparkline window / direction / pulse distribution vs summary: PASS");
+  console.log("- per-row link to a standalone quote page / range grain / monthly gaps: PASS");
 }
 
 main().catch((error) => {

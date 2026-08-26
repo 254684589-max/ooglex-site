@@ -132,16 +132,21 @@ ASSETS = [
     {"name": "奥地利ATX",        "cat": "equity",    "syms": ["^ATX"]},
     {"name": "土耳其BIST100",    "cat": "equity",    "syms": ["XU100.IS"],
      "caps": {"m1": 90, "ytd": 300, "y1": 400}},
-    {"name": "波兰WIG20",        "cat": "equity",    "syms": ["WIG20.WA"]},
-    {"name": "泰国SET",          "cat": "equity",    "syms": ["^SET.BK"]},
+    {"name": "波兰WIG20",        "cat": "equity",    "syms": [
+        "WIG20.WA", {"sym": "EPOL", "note": "以波兰 ETF（美元计）代理，含汇率影响"}]},
+    {"name": "泰国SET",          "cat": "equity",    "syms": [
+        "^SET.BK", {"sym": "THD", "note": "以泰国 ETF（美元计）代理，含汇率影响"}]},
     {"name": "马来西亚KLCI",     "cat": "equity",    "syms": ["^KLSE"]},
-    {"name": "菲律宾PSEi",       "cat": "equity",    "syms": ["PSEI.PS"]},
-    {"name": "智利IPSA",         "cat": "equity",    "syms": ["^IPSA"]},
+    {"name": "菲律宾PSEi",       "cat": "equity",    "syms": [
+        "PSEI.PS", {"sym": "EPHE", "note": "以菲律宾 ETF（美元计）代理，含汇率影响"}]},
+    {"name": "智利IPSA",         "cat": "equity",    "syms": [
+        "^IPSA", {"sym": "ECH", "note": "以智利 ETF（美元计）代理，含汇率影响"}]},
     # 阿根廷长期高通胀，名义指数涨跌本就极大，放宽护栏以如实呈现
     {"name": "阿根廷MERVAL",     "cat": "equity",    "syms": ["^MERV"],
      "caps": {"d1": 40, "w1": 80, "m1": 150, "ytd": 500, "y1": 600}},
     {"name": "美国罗素2000",     "cat": "equity",    "syms": ["^RUT"]},
-    {"name": "恒生科技指数",     "cat": "equity",    "syms": ["^HSTECH"],
+    {"name": "恒生科技指数",     "cat": "equity",    "syms": [
+        "^HSTECH", {"sym": "3033.HK", "note": "以恒生科技指数 ETF（港元计）代理"}],
      "caps": {"m1": 90, "ytd": 200, "y1": 300}},
     # VIX 是标普500期权隐含波动率指数，不是可交易标的，日内跳动本就远大于股指
     {"name": "标普500波动率VIX", "cat": "equity",    "syms": ["^VIX"],
