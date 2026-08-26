@@ -66,8 +66,20 @@ function path(coords) {
 }
 
 /* 渲染：返回一个可查询的句柄，调用方可以问「当前游标停在哪个观测上」。 */
+/* 纵轴留白按刻度标签的实际长度算：六位数加千分位的标签比默认留白宽，
+   固定留白会把最高位裁掉，读数就成了另一个数。 */
+export function gutter(plan, format) {
+  if (!plan) return BOX.left;
+  const widest = Math.max(...ticks(plan).map((tick) => String(format(tick.value)).length));
+  return Math.min(120, Math.max(46, 18 + widest * 7.1));
+}
+
 export function renderChart(document, host, options = {}) {
-  const plan = layout(options.points);
+  const format0 = typeof options.format === "function" ? options.format : (value) => value.toFixed(2);
+  const draft = layout(options.points);
+  const plan = draft
+    ? layout(options.points, Object.assign({}, BOX, { left: gutter(draft, format0) }))
+    : null;
   host.textContent = "";
   if (!plan) {
     const empty = document.createElement("p");
@@ -77,9 +89,7 @@ export function renderChart(document, host, options = {}) {
     return null;
   }
   const direction = plan.points[plan.points.length - 1].value >= plan.points[0].value ? "up" : "down";
-  const format = typeof options.format === "function"
-    ? options.format
-    : (value) => value.toFixed(2);
+  const format = format0;
   const uid = `chart-${Math.random().toString(36).slice(2, 8)}`;
 
   const svg = document.createElementNS(NS, "svg");
