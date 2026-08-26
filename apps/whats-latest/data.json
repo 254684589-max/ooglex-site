@@ -1,19 +1,31 @@
 {
-  "updatedAt": "2026-08-26T13:14:23Z",
+  "updatedAt": "2026-08-26T20:01:17Z",
   "asOf": "2026-08-26",
   "source": "Google News · Yahoo Finance",
   "highlight": {
-    "title": "西藏自治区应急指挥部启动自然灾害一级应急响应",
-    "source": "中国日报网",
-    "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE92dkhhZW9SWm16QlZsbGJoeE1RUU40VERLUFBBOFNLUU5qWnhjaU02ZWtVd2I4STNSOUt2Zi11VDZ3RjE0MkZONEx4ME5IeFRWaUc4SEJaVDFBRzNEX1RwQzI4OVc1UTU3NlJDRG83aVhIazdZbzJocW5XVmY?oc=5",
-    "published": 1787748593,
-    "category": "国际"
+    "title": "澳洲最先出手！纯AI音乐禁止登官方榜单，创作核心必须是人类",
+    "source": "新浪财经",
+    "link": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQZHZCUlZXWS1IZTU4a2ZXSFNiOElDVEdUZDA5RmstYkNGekNFRV9JNDR5dzlRM05RTWN2T0hIZXVfNEdwcDJQZlRiWlJlZjV6X3VQZVVmWkZLTFVLc3ZuTERBUGp0eEtfUmFIaTlMeXE4OWItdnRMV2ZhTkVjN1hTTU1wTWhBenNUcHJNdkN6NEpwTHFIZEY1ZlhGV25RcnlfT0pBVTRGSQ?oc=5",
+    "published": 1787770312,
+    "category": "娱乐"
   },
   "categories": [
     {
       "key": "markets",
       "name": "市场",
       "items": [
+        {
+          "title": "美股三大指数集体低开 Meta涨超3%",
+          "source": "东方财富",
+          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE16dS13WF9ZZjVLU2NnbmRVQU9ubktZbjdIeURaRElDNy1yUFBpRllORzRCdkVCMW1RaVNvZDY4VnR2RnBablQwUVFNWTk4NWRKazVCVkxDY3pBVDAybDVZaA?oc=5",
+          "published": 1787751065
+        },
+        {
+          "title": "美国7月核心PCE符合预期，通胀韧性重燃美联储加息预期-市场参考",
+          "source": "金十数据",
+          "link": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE1qVXZncW83alh6dnNoekhsazYxNENZSXpCTTVoeE81Wm5YdWF1UGpfSG5vb1llNGRXSmdFc01JRFRIOVJ5OEFQN2RNMkhxRlE?oc=5",
+          "published": 1787757025
+        },
         {
           "title": "日本新财年预算大幅增加 “国债费”与防卫预算双创新高",
           "source": "紫牛新闻",
@@ -27,28 +39,22 @@
           "published": 1787713140
         },
         {
-          "title": "电投能源ESG引领循环经济再跃升",
-          "source": "中国能源新闻网",
-          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1oRDJyYjN6WG1BVjdsZi0wRlJPdkFTckRKbkJFVERaRnZCbE9wQUJtS0tLNFB2b001XzQtejh3R3pUSlJ2RXVaVkNnRFZqVEhHZFVNOHREUmloMkEzREQ1Smc1U3l5aGNuNGFCZ3lMbGE?oc=5",
-          "published": 1787747097
-        },
-        {
-          "title": "美国制裁伊朗经济新措施 为何对中国“松手”？",
-          "source": "BBC",
-          "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE5WSWJ1TTVjT0xqVXlCR0RnMWZuS2psLUwxWXlCUDVKTFJPNmdCSXczMnpvSkVqRW0yS1c4Vnl2bXdMbW9rc2dmUDR3ZzlVV2pneHZaRmN2WmVkaEJTREQtWTFxZUl6UdIBa0FVX3lxTE9mcHAxcThTZEtUV0JhcXNTYkxyNkZjOWZMa1pNN0x3Ylp1M3Fsb0RoeUExMkI0bUVROHN1dmlLTVA3anRibl9zcnZCZVVxTWlhUE5nNjVLcHdXeXhjX25XZlBQZ3liSlNoUnlr?oc=5",
-          "published": 1787674008
-        },
-        {
-          "title": "韩国股市大幅震荡，AI投资逻辑是否生变？瑞士百达郑汪清答21",
-          "source": "21财经",
-          "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQWHl0MGpaZ3pXSDk3TU8tOXcxbHhCbXNFUzROWUVZZWZBaDM1UVJfS0U3bGo1X3JnTElsVlpJRjRGYW8xMWkxZ0xFNGFUQ19ENUxRcHUxTWY4aGxuemstOUU2Q1FIT3p0eTVDcmt5RTFwMHNFcUtRWS1QQlVrYk1tdnNyMlhxSEtHcEROXw?oc=5",
-          "published": 1787734380
-        },
-        {
-          "title": "【财经分析】加拿大贸易反制如何“精准施压”美国",
+          "title": "【环球财经】韩国出口“引擎单一”暗藏风险",
           "source": "eeo.com.cn",
-          "link": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE5EODEteVlNU3IxcXB4eFViQ1VEZkZDYzBIR2JVdEFOLWhHQnczQzJYdkdKaFJzZ1ZaUDd0SjkwdDBPTUR5MWF5N3RIQnRwY3h2STgxZ0cwcWM?oc=5",
-          "published": 1787739394
+          "link": "https://news.google.com/rss/articles/CBMiWEFVX3lxTFBmNDI0SmpzTHJDMkpsVVE5dGtJMG1vOUxPZy05M09UTkNCX2k5VXlMUkJLOHFCdlpnOXo3N1B0YVZvcUhfa2ppanBhMzhYTmJyQVdJUXk4RzY?oc=5",
+          "published": 1787756580
+        },
+        {
+          "title": "总台记者观察丨新财年“国债费”和防卫预算大增 日本舆论担忧财政失控",
+          "source": "光明网",
+          "link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTFBaNW9WRHZSbFNYYi01TG82Nmdzd2JYS2dfcWh0SllVV19vS3VqTFRrbF9Ya205cWpFdnRnQ2Iwd1FXX25neTZ4aE1vVWI5YW8xcWlSZlBMaUwtR05NTU1NaVdn?oc=5",
+          "published": 1787751060
+        },
+        {
+          "title": "经纬度：读懂“钟才文”四连评，读懂中国经济",
+          "source": "中国青年网",
+          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE5PYnB1U2htUWRtQVJpbGJxRUN3R2hURC1KSEJUT3p3RFl4YzNOcFdmWVU2S1ZWeGhfcnBhTTlGV1I1SmRJV3o4amE3NzRGV2tPSVFHUVltd1lVbnkxNktXY2NiSzQ?oc=5",
+          "published": 1787752380
         }
       ]
     },
@@ -63,40 +69,40 @@
           "published": 1787748508
         },
         {
-          "title": "AI素养新编程 助力青少年学会驾驭人工智能",
-          "source": "中国科技网",
-          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTFA4OEJHVGxaN3lHTHFaaGlGaS1rSUlic1RZYS1NbW16em9tNUVFLTJObkx2WmdaeG9oWEQwQk5qVlhIN2NpWWplRUJiMzJ0T3ZoanVFbm56Z0xGUy1seGwtRE42TWJYSFZ5MWZuUV9CQlQ?oc=5",
-          "published": 1787728986
+          "title": "中国月之暗面据报正洽谈Kimi K3进入美国三大云平台，引发对华AI管制漏洞担忧",
+          "source": "美国之音",
+          "link": "https://news.google.com/rss/articles/CBMixgFBVV95cUxNdHpCbmpHaDM2eWtfMF9La21PdnBNdGpPMUVickxQQXROYnVtYXFhYlVOZUIzcVl2OGVmS2RVTkFmV2UyVzFibVAwYUVlZWZiQUFLeVYwWnVqb2ZJRllFTWotSi1acU1DRjdEbmk2UVVjeHlPbk1yanFucU5ESEd6cWJMZ3dYbXhUNFhoZXFlZ09pSDNHM01hd0tqbXhfNnBzb2ozRE1ONE1QYUdjYzNXWVRieEl0VDM3b2Q1OHJLRVI5YnlrWnfSAcgBQVVfeXFMTWwxVmRuZXJrcmZNc1hLOHRYZlhXY0dRWjMtRnk1NkxIbFVwcFM0cndzRGlDaE5uZjVDRWt0MjY5dFNKRDAyX1pRWURaSWZpaG1QZ05wRFM2MTNGbzZrdjFPMF93RmJXT1hDZDltd1NNVW9XY2VENXB3aExGbWtsRF9fd1BNS0NsLXBiTlEwY0ExY2NGdW5ZVnUtYkVrLVhMWkdZcmtNVDRJNl9Hd0tfMk1zckhORkNFNzNCRHZHejdNa2twRGwyMzk?oc=5",
+          "published": 1787766599
         },
         {
-          "title": "AI只辅助不决策 邵永灵：美军人工智能反潜系统优势与局限并存",
-          "source": "央广网",
-          "link": "https://news.google.com/rss/articles/CBMic0FVX3lxTE5obkExbFpZbHhDekktUXItRWdncUtfV08xemp6NXpVazVBRE14QWtrX2RORmFJbG9KN1N6M0R0bWpXX3FOb1hnZXVLQ0dtdGphN3Z6a0JqRU5qeHJiRWpESkFFT0FkOXczN21WQTJ3T1lYYm8?oc=5",
-          "published": 1787737495
+          "title": "2026世界农业科技创新大会9月在京举办",
+          "source": "中国农业大学新闻网",
+          "link": "https://news.google.com/rss/articles/CBMid0FVX3lxTE81b2I0X0pFcW5rRlJ0NG1WNkl6MjF5NHVPcnh6dTZoSTJfSDd6M2dGdVJBcF9JOFd4SnFDUjQ5SklXcGtXQndSZWZNRjlwOFlBTkFLRG9BcHF1LTRXSHBNa0RpYUoxdUVxaDYxN1ZBNU13TWpWRjJj?oc=5",
+          "published": 1787752235
         },
         {
-          "title": "重新定义行业标准 WPS Comate百城AI智能体赋能计划在京启动",
-          "source": "新华网客户端",
-          "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOaVVkTFJINHV5Q1VmUlR4OVlUOWdJbGc0bEZ5UFE5WEFTejFlU1duakdHVU5JSDNOWVRfNC0yZFhQSkVoaEVWQUloTElVczJmMVpEWEhWZDdaQjlCRlFtTFVWLWVHVmZKc252NHd0R1lVSEl4LUxYLWZ2N0lpT2ItY0pDVjRXS3cyYkNvTURwWU1OTy1RcHhMSEl3?oc=5",
-          "published": 1787736532
+          "title": "抢抓行业景气机遇 联芸科技布局新一代存储芯片",
+          "source": "东方财富",
+          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE43MWR0SUo1Z2t5ekJFVTRvUUxfcVRPeVEybUJDWlpiMjBtZDBKWGpDbV9HbjRaT0p5WXZOeXVQS2JvZGE1UXZJcW1Zcnc0emduUEZvaEx3MFdjRmUxTkNFOQ?oc=5",
+          "published": 1787768373
         },
         {
-          "title": "“特种安防型”AI机器人将在成都简阳投产，订单排到一年后",
-          "source": "四川新闻",
-          "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE9nby1LbERVVWdKTkJFcWVrYXNKVDBvOVdRSGxxOU9qR3JNNF9ON1UwYU50bVhfekc1SzVzNXVzVUpfRGRVQmZiRTBOTkE0T2NBeWJMT0tvLXJacnZlYVZrN1gxYw?oc=5",
-          "published": 1787738354
+          "title": "“我感到被骗了”：AI假医师给台湾老人的震撼教育",
+          "source": "BBC",
+          "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1RQ2pOaktTMFktY0lPdXk2LW0zWTlwcXQzTVRxcnJPZWZLS2J5amQweXFtTUFFMFpFZndoaldYcVhZTWc0WmI1enBDU1UzTUh0Ty04OHZIN2tYQkg1eEdhNXpIa3pBZ9IBa0FVX3lxTE95TkdSQmItWlcyX2cteU4yN2UwNDVUQlUzZ005VWJ3NG5ha1d5Wlk0UFhJeV94YmNxWjVSUndYS2JSOGh3dkwxbjdwc0trTWh3MWFzNlUzeUl2ZHE3aXp1SU5ZQVQ0VmNZcWtv?oc=5",
+          "published": 1787717678
         },
         {
-          "title": "视频丨美AI系统被指致伊朗小学遭袭 日本仍计划引入引争议",
-          "source": "中安在线",
-          "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTE55ZGQtTWVGdFRWajNNS1JoclZDR2Z3LVZBbGVmWE5qWW45dk4zQlBGdFJfMF85UXlVY1djQTl0U3kzVHB4YmZxd1ozNWo0bE9ueHJVbUVDbWpCVGFCZTlfOG10MVcyZWloeHpRUGd3?oc=5",
-          "published": 1787732460
+          "title": "美图赚到了AI的钱，股价仍承压",
+          "source": "第一财经",
+          "link": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE5iaDNNa3J1STdXbE9mTVd5d1R6SzdiUTk1V1R3TDFwUUZsWWxrX3RvSlNLRWtjUWNKY1kwNS1jOWducjd3dXNmU19mREdYSF9UUFV3?oc=5",
+          "published": 1787762168
         },
         {
-          "title": "把AI产品装进“点心匣”，HICOOL峰会海淀展区可逛、可买",
-          "source": "新京报",
-          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE1JUUlKRUNKX2VJWC1IVHFURjdrUjhOcWNMdlVkbjdGeUZoeHVDSHB0VGhnWWI3em1GUUM4a0llOS1NNVEyQlNvTDh5QWlmVFVONkwyTk5yYi04RFlHTWlxWGExWHc?oc=5",
-          "published": 1787738220
+          "title": "对话淘云科技吴超人：为了读懂孩子，一个二娃父亲做了款儿童AI",
+          "source": "新浪财经",
+          "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTFBLOVdsaHY4d1otUTBhZDdvTkY0R2FrcWctcWk0WVRwZmxPZUhMcVlJMXdHZng4MGFxU3VJX3hMN3pCSFlJcGZIaDNwamFWakhIN0Z0RFZEcS0tUXJtRjRER3hfWnV0cy16cXpUcEhSRUJsQmQtdlNmT05QVGs?oc=5",
+          "published": 1787767200
         }
       ]
     },
@@ -105,16 +111,22 @@
       "name": "娱乐",
       "items": [
         {
-          "title": "活力中国调研行丨山东乐陵：“影视+文旅”激活县域消费新活力",
-          "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE5EcXJaT3hjU3l6aGtLV01lMHdTZjlMXzVXSHcwNHFJdGxlNkpOR3dtSzhVSzhGZWlTQXM3UVBBX29hNGRWTUxPUU4zTWZnX0pKTlRpN0JRMzVMMVBVTURYa0JUMTlST0FlSDRVT1p5eEM2aWQydzhLMmN5RlBBUms?oc=5",
-          "published": 1787726966
+          "title": "歌迷和歌手悼念乡村音乐偶像多莉·帕顿",
+          "source": "美国之音",
+          "link": "https://news.google.com/rss/articles/CBMiowFBVV95cUxOcDY3TEhRdDlmR0hXcm52UEF6Q2owTkg2Z1Nyd01PZnlXTEllQkxsY2wxV2ZTOURnTVJpTHR1ZjEtcTlLWWxjNm45d09IcklmS2lyVE9JbkpGRmtvbzNabExHRUNvS2d0bllwdWFqWm1iWUtWQk1RZjNnNzRnWUZqcnVoTVMxS2txd3REZ3hRZGdtcVBsRW1XVjVSaXhNeG1ZNGw00gGjAUFVX3lxTE5wNjdMSFF0OWZHSFdybnZQQXpDajBOSDZnU3J3TU9meVdMSWVCTGxjbDFXZlM5RGdNUmlMdHVmMS1xOUtZbGM2bjl3T0hySWZLaXJUT0luSkZGa29vM1psTEdFQ29LZ3RuWXB1YWpabWJZS1ZCTVFmM2c3NGdZRmpydWhNUzFLa3F3dERneFFkZ21xUGxFbVdWNVJpeE14bVk0bDQ?oc=5",
+          "published": 1787769589
         },
         {
           "title": "Dolly Parton：美国乡村音乐女王逝世，盘点诉说其生命故事的六首名曲",
           "source": "BBC",
           "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE5jYWZMYm1qb2J5OTlmY3VMZkxUVFVVTDM5clJEOTdsV0tuck82RkVSc1NlTDFMOVBPNmI2Z1dkQU5Vb2sxdGF0dnRTMVQ3a2xMLXAtbDZQR3FCeG5aTWM2dkliLXJKQdIBa0FVX3lxTE5WdjMxZVEyRFZpcDZoamlYcE9JcUM2ZWJ4SmFicy1UX09VN2tsX2Z0SFpaNTdfRHZyYW1VQ3BwazZUZ0JRMWVqTHluV3RIb3BfakFxMmF3bHBXNmRLZzQzUnZYT1hJNDVQWFVB?oc=5",
-          "published": 1787740146
+          "published": 1787740362
+        },
+        {
+          "title": "活力中国调研行丨山东乐陵：“影视+文旅”激活县域消费新活力",
+          "source": "新华网",
+          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE5EcXJaT3hjU3l6aGtLV01lMHdTZjlMXzVXSHcwNHFJdGxlNkpOR3dtSzhVSzhGZWlTQXM3UVBBX29hNGRWTUxPUU4zTWZnX0pKTlRpN0JRMzVMMVBVTURYa0JUMTlST0FlSDRVT1p5eEM2aWQydzhLMmN5RlBBUms?oc=5",
+          "published": 1787726966
         },
         {
           "title": "2026成都友城青年音乐周来啦 所有演出向市民免费开放",
@@ -123,28 +135,22 @@
           "published": 1787727221
         },
         {
+          "title": "活力中国调研行丨走进片场，一秒入戏——打卡乐陵影视城",
+          "source": "中国科技网",
+          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1VeFB4TlhuR1FjWjJwMWE4Y3czTGtwZnBfU1pZbU9ZOU5wRVRORXVLU3o3REx4SmJEZjQwSkxCR25PclhaTVp0TGxLY2pJMUo3V1lqZWxNSnZMaWpMS3BPaDRzUlFyQ3RpYVpCMUlJZ0Q?oc=5",
+          "published": 1787751668
+        },
+        {
           "title": "暑期档电影活力奔涌（新时代画卷）",
           "source": "人民网",
           "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTE10X3lCbE03dk9oeGoxNVVLTHhjV2NpRTZ6WVR5ZV9KM0JPQUJ5QXItMGo2WHZxMmFhUjZHTW5pbWZOemI3Q0VCU1BCM0xzNVgyeHhjZEEyY20zOXlmbUc5WWhXTlN3YXBjNGc?oc=5",
           "published": 1787708760
         },
         {
-          "title": "乡村音乐偶像多莉·帕顿去世，享年80岁",
-          "source": "美国之音",
-          "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNX3ZITi1Ia3o0NVBiQm1NcTJ2QkNFaTBCUVVTNGgxN3BSWkRnN1Z1MC1zYXhIaGpld1hydHpiQ2hta2V0QzNqUi1Cc24wQ0x6Z01Kc0sweGJfZWgxa1ZtQ3lfaGk1bnhDWWREcG1XZ3RQXzZTLU5IVzJIbjB0Wnk3MHNoU21GbS1OT1JHODA5ZDFXU0F1b1BWb9IBmwFBVV95cUxNZEdtRkVVRTRudkRtZjJTNjZzNWo3RW1YSnhxS19EMXlHOFRBV24tQlFZQ1p5QnNNZ3B4RHpReFZFQlQ1cUpra0ZQck5vY2NKaG16aXEtcjEtTFlNR19abzNBc2NKTkE1c1hwcUhuUk01RmNzLWRIVWpKNF81ckVZZy04dlY0eUwwWE9ERFRpMEZhaFFqVl9ldXdRYw?oc=5",
-          "published": 1787693103
-        },
-        {
-          "title": "长春电影节以光影致敬城市建设者",
-          "source": "央广网",
-          "link": "https://news.google.com/rss/articles/CBMickFVX3lxTE1vYVVZYmkydUFRRnZIRkYybllHTW9PRWdmZTR2N2Z0YVVjUXJNaHdCU0JFcFBuQ0RaWGZGLURkY3piTHJyeTZCRElvYlpvVUlySzZpQmwxRUdWcVBYMEZCS29rSExGNzZxdVNWNGFUSkdCdw?oc=5",
-          "published": 1787704092
-        },
-        {
-          "title": "活力中国调研行 | 山东这座影视城，竟有“两副面孔”",
-          "source": "21财经",
-          "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPUDUtY0c3bjRtalZYQ3F4ZGhWZDNyUF9COWRkN0tnZXA3VUt0cXQzSVNZMHRad3pfTUpBWWJ5bEZ3allIVjdMM2dfa1NEaXJIN2hwdTdEQ29BUkFOcUlFa1pBejh6OW4xX3ZEdDU5dmNhb3N6N1FNSGVxNXRGc1JSVnhadDhlWFk3cGgxdQ?oc=5",
-          "published": 1787736600
+          "title": "澳洲最先出手！纯AI音乐禁止登官方榜单，创作核心必须是人类",
+          "source": "新浪财经",
+          "link": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQZHZCUlZXWS1IZTU4a2ZXSFNiOElDVEdUZDA5RmstYkNGekNFRV9JNDR5dzlRM05RTWN2T0hIZXVfNEdwcDJQZlRiWlJlZjV6X3VQZVVmWkZLTFVLc3ZuTERBUGp0eEtfUmFIaTlMeXE4OWItdnRMV2ZhTkVjN1hTTU1wTWhBenNUcHJNdkN6NEpwTHFIZEY1ZlhGV25RcnlfT0pBVTRGSQ?oc=5",
+          "published": 1787770312
         }
       ]
     },
@@ -159,10 +165,22 @@
           "published": 1787708189
         },
         {
-          "title": "2026国际篮联三人篮球挑战赛石景山站收官",
-          "source": "chinanews.com.cn",
-          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE8zWXItVzB1M0dLR05nSDJsZUlCQ0VxSFZJTTh3Y2JCcGctR1dfOXNuREYxTzNPdWFOWDdHVnNSX2tHNTQxVWJoVmNQT2xjcjVxSFhTVUJJZ1ZZS1owSS1QeU5oNG80dk84?oc=5",
-          "published": 1787738068
+          "title": "2026年广州国际女子网球公开赛10月回归",
+          "source": "中青在线",
+          "link": "https://news.google.com/rss/articles/CBMieEFVX3lxTE9hTEJ3RU5JcWEyVlliaGJXNXVTZHlLS0I4R0ZkU2NobzI1V3VRTGZtX0Y3NGhWdk1nSk53YWdKUkpJRlBwRklFTkdPTlBWdlRvekxpQi16ODc2Y0VpdTU4U1FDY3AzZW5JYnI4TTFsY2JmZUtlNVNmMg?oc=5",
+          "published": 1787751480
+        },
+        {
+          "title": "探月登陆·集结奥运村主题活动举办 专家共议人形机器人实景落地新方向",
+          "source": "中国科技网",
+          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1peXcwWkRSckRFNXdXVzVXNE91UHZpRHZhOE1xNWdjTHczNUxCVDJ3YnRacFpwajBBLXB5eHBVNXdnSnZveDlOcVJwREdDRmdxNjhneldrM1VaaTdiMV8taDA4TFdKUTJGVHhlOEhDUHA?oc=5",
+          "published": 1787747868
+        },
+        {
+          "title": "苏州大众体育联赛网球联赛开赛",
+          "source": "央广网",
+          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBiY1FFdzUtN3NTdFNFRFVWeGpmSXZJWmlBSlpzMmlOX3diZzlMM2o2MVM3UEdaeTBMZ1VvX0xRVnMyOGRHUVRjaFRYNDZ1OC1VaEtVMElQYnhKeTRCb042R1RfRGZzZXN4?oc=5",
+          "published": 1787739149
         },
         {
           "title": "全国U12青少年篮球大区训练营（东北大区）收官",
@@ -171,28 +189,16 @@
           "published": 1787723128
         },
         {
-          "title": "2026世界杯足球赛",
-          "source": "美国之音",
-          "link": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE14SDJVQnBKUkEzbUhiNnZpZlI3SFlkS1NHcnZuUXJZZWRyNlZKOGg5X3VPU3JqRGRlTDYtV1FZSUdUTXdtVHd5akpnRkJDNFlJ?oc=5",
-          "published": 1787738254
+          "title": "与西韩俱乐部同台竞技 浙江足球小将在对抗中比球技找差距",
+          "source": "ori.hangzhou.com.cn",
+          "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTFBsVnB2VnRMWFlVdzltSkxPTUp2al9yVlU0ZmxBTmp2V0U2UXUtXzdibmdLQlMwYm5vUGlkOU50eEZRbTdxeEtFWVZ5a2RLSkloaHJTWHEwckx5aHVyTlQ5Z0pBUmZ1QUJPOXYtejNNZmE0ZDI4eGhtbm5HZElXUQ?oc=5",
+          "published": 1787753352
         },
         {
-          "title": "不以冠军论成败——多特青训负责人谈足球人才培养",
-          "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQdHhaa3pMRGJGZlAwZ2dFdmo3OHhZZUdpMk94MXM4SVZEbVcwdEtkU0t4cHdhYUl2bGNSU0pJRkcyM3RIUlRPWlZ2OXA4aW5FUXZ2YlJGcWZYX3ZUcXBjUlJxTFFSUWFadHcya2IwcWtGcEpWbmxXOFQ0Q3dadHgtYlZB?oc=5",
-          "published": 1787707541
-        },
-        {
-          "title": "2026年广州国际女子网球公开赛10月在南沙开赛",
-          "source": "广州日报新花城",
-          "link": "https://news.google.com/rss/articles/CBMiigFBVV95cUxOUFRIUzdEaDV1VjBMcTZ6QU1VOVRjeFZ1RDMxM0NLcGE5QzQzbXhvSko5bnJmXzVHb0xIZDJzaUdPSkxkSHBRSVFPR08yazVZbExVZ0F3a19sck83c1pNaXNmVUdVZDZZTHRjVnBIY1pCaWFpRjJxTlBCWG0wa1c3UGpFMG9ybGpkS1E?oc=5",
-          "published": 1787741084
-        },
-        {
-          "title": "花样滑冰：奥运冠军刘美贤宣布休战一年——“别担心，我会回来的”",
-          "source": "olympics.com",
-          "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNT012MlFxdFFpNVh2VUxya29xbXk2YmtJWXlGamJqQjNUZC03WDJKMG5uWUVlS1RXd1BFSGthc3pUSzNLLXNZRGNfYzJBUTRhS212cmxCYmUwc3dpQVZURDZUaXdmbHBSNWF6Y0pITmlUcTl5cURXNkQ2WXZTamQxdGE5WlVYdE5JajBidFBONHpkMkQ1XzdFOXJwR0RlZTBJUnhaRVRFS1lYRExFcklDajZoSQ?oc=5",
-          "published": 1787741520
+          "title": "2026国际篮联三人篮球挑战赛石景山站收官",
+          "source": "chinanews.com.cn",
+          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE8zWXItVzB1M0dLR05nSDJsZUlCQ0VxSFZJTTh3Y2JCcGctR1dfOXNuREYxTzNPdWFOWDdHVnNSX2tHNTQxVWJoVmNQT2xjcjVxSFhTVUJJZ1ZZS1owSS1QeU5oNG80dk84?oc=5",
+          "published": 1787738068
         }
       ]
     },
@@ -201,16 +207,16 @@
       "name": "国际",
       "items": [
         {
-          "title": "以色列禁加沙放风筝 联合国批“令人发指”",
-          "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE42ZlkwTVhIVWpyM1BiRHd3TzA1LWZCTHlwVnp5SEszWXFWSnJhTVZ1SDE0RTNxZ2lmSXlIN3RuVXRfcGV4djdGU0NQLVdobGw2TFVqRV9GVEt0MzBtRDRGM0pXVVRsRkJRMmFKLVdhUXQ1UTItemNfbzJ3S2l3c3c?oc=5",
-          "published": 1787735622
+          "title": "联合国：加沙停火依然脆弱，必须推进解除武装、恢复治理和重建",
+          "source": "UN News",
+          "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE9sVi1CTmhDMW40SnhuSjJ1V1VYM0QxY29Wa0VNUkloSFQyMEZiRnlZRWVIN2ozeXo3cjh5SXJZejJSeVlxQXFJa1BpY3FxUHRWQkE0NFkxcw?oc=5",
+          "published": 1787759710
         },
         {
-          "title": "西藏吉隆口岸发生泥石流灾害",
+          "title": "吉隆县遭受泥石流灾害 西部战区迅速指挥抢险救援行动",
           "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxPR1BTb3JEa1pGblZsVTVTalNwOWZvSGVlV0dxT09oMFBuS0FXZGl1Z2xWOUd1VmhTVkhLMmpOYm1HckpNYm5QLUx0eG81TVBvc3ZrV2g4VlFsQktnQWFzZGk0WF81RUJEblVreGRoUHE4TVhkdER1Z0xVak13STZWdW82VjlIUQ?oc=5",
-          "published": 1787730366
+          "link": "https://news.google.com/rss/articles/CBMigwFBVV95cUxNZjNjek5xaWlhdlJ6RTVMZWktYkIxN0xtNFBEMGVSR1RSYlhxZlRjMVVmZlJ5MDkzYjNtZWpwS2NiczAyRDUtVmNicmt1eDdFVzdVYnJMUVFVV0xLaTNVLVRZamJhVk9jQUxfMzByN0Y4VXhPWVhxcm1JdTJlQ2JtcC12dw?oc=5",
+          "published": 1787753924
         },
         {
           "title": "地质灾害气象风险预警：河北山西等7省区部分地区风险较高",
@@ -219,16 +225,28 @@
           "published": 1787739736
         },
         {
+          "title": "HICOOL2026全球创业者峰会在京开幕 四大重磅仪式激活全球创新创业生态",
+          "source": "中国科技网",
+          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5hTEFrVHlUR19iQmJHbXJrenBFbjdVdW1VNWgteGdDZFZLa3VqTUstZXVGbFdQZ1FFdGdLdE8zek9hTUlYT3ZOVDhVeVA0eUlNNTBXSDE5ZVFmR05HZ2NTeC1BdUNUWnQwWFBmZGoxNjQ?oc=5",
+          "published": 1787752119
+        },
+        {
+          "title": "自然资源部对浙江启动地质灾害防御Ⅳ级响应",
+          "source": "新京报",
+          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE1SOEYzbnBvclE4V0pVRG9vVE1XcVJKZ0FUbVg1OFhWVzVUWmxzNWtHQXdSY2g0TWVheTItX2IzelBQcnNFbU13R3NSVDV3eTB0eTFOSDNKZm5MYWNNdjFWUGhqY04?oc=5",
+          "published": 1787751720
+        },
+        {
           "title": "西藏自治区应急指挥部启动自然灾害一级应急响应",
           "source": "中国日报网",
           "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE92dkhhZW9SWm16QlZsbGJoeE1RUU40VERLUFBBOFNLUU5qWnhjaU02ZWtVd2I4STNSOUt2Zi11VDZ3RjE0MkZONEx4ME5IeFRWaUc4SEJaVDFBRzNEX1RwQzI4OVc1UTU3NlJDRG83aVhIazdZbzJocW5XVmY?oc=5",
           "published": 1787748593
         },
         {
-          "title": "帕西尼“2026全球具身生态之夜”成功举办",
-          "source": "中国科技网",
-          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE9rOGRkZWpwT2N3UHdRV1dUZ2tROWpBeG1DUmtyckxfYl9hZ0tBVnRGQUk4cWhWeU9GZlBCVkxoOFlaUDNBRVpsajU2VWx4ZjBjTHJGeG1scnF1dHlleERuaUpBUTl4dUNFcE5UcEh6ZXk?oc=5",
-          "published": 1787733632
+          "title": "第1现场｜西藏吉隆口岸遭受泥石流灾害，武警日喀则支队官兵已前往现场处置",
+          "source": "thepaper.cn",
+          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE5ZMnVmX1RMY3VRa3AxbWxHT0J1ZmZ1SzVRbEJfaEFtTjVNQzNOY0RXNmFtYjdwYnNtYzNNeURuUVFVOGcxOE05bVJVVy1zeV9tUmJDTDhfbVNCVGZRU3FkRg?oc=5",
+          "published": 1787738820
         }
       ]
     }
@@ -237,43 +255,43 @@
     {
       "name": "标普500",
       "symbol": "^GSPC",
-      "price": 7677.28,
-      "changePct": 0.32,
+      "price": 7675.82,
+      "changePct": -0.02,
       "fmt": "idx"
     },
     {
       "name": "纳斯达克",
       "symbol": "^IXIC",
-      "price": 26151.3,
-      "changePct": 0.66,
+      "price": 26130.2,
+      "changePct": -0.08,
       "fmt": "idx"
     },
     {
       "name": "布伦特原油",
       "symbol": "BZ=F",
-      "price": 85.55,
-      "changePct": -3.42,
+      "price": 86.56,
+      "changePct": -2.28,
       "fmt": "usd"
     },
     {
       "name": "WTI原油",
       "symbol": "CL=F",
-      "price": 80.51,
-      "changePct": -2.25,
+      "price": 81.96,
+      "changePct": -0.49,
       "fmt": "usd"
     },
     {
       "name": "黄金",
       "symbol": "GC=F",
-      "price": 4669.3,
-      "changePct": 0.67,
+      "price": 4648.4,
+      "changePct": 0.22,
       "fmt": "usd"
     },
     {
       "name": "美元指数",
       "symbol": "DX-Y.NYB",
-      "price": 99.13,
-      "changePct": 0.21,
+      "price": 99.16,
+      "changePct": 0.25,
       "fmt": "idx"
     }
   ],
