@@ -49,8 +49,10 @@ HISTORY_NOTE = ("各标的自身收盘价的滚动历史，与 data.json 同一�
                 "本轮未取到的标的沿用上次序列，不补造新点。")
 LONG_HISTORY_PATH = os.path.join("apps", "asset-tracker", "history-monthly.json")
 LONG_HISTORY_NOTE = ("各标的自身的月线收盘（每月最后一个交易日），用于 5 年 / 10 年 / 25 年 / "
-                     "全部区间的走势；起始月即该标的在数据源上可得的最早月份，"
-                     "缺月留空不做前向填充，本轮未取到的标的沿用上次序列。")
+                     "全部区间的走势；起始月即该标的在数据源上可得的最早月份。"
+                     "数据源对超长区间会自行降采样，部分标的的早年只有季度末观测，"
+                     "缺月一律留空不做前向填充，页面按真实时间轴作图；"
+                     "本轮未取到的标的沿用上次序列。")
 
 # 四大品类：key / 中文名 / 颜色（沿用示例图语义：股市红、商品蓝、外汇橙、债券青，精修为更通透的配色）
 CATEGORIES = [
@@ -449,16 +451,16 @@ def load_prev_long_history():
     return {}
 
 
-def fetch_monthly(symbol):
-    """Yahoo 月线（range=max）：返回按月升序的 [(YYYY-MM, close), ...]。
+def fetch_monthly_range(symbol, rng):
+    """Yahoo 月线：返回按月升序的 [(YYYY-MM, close), ...]。
 
-    走的是与日线同一个图表接口，只是把粒度换成 1mo、区间换成全部可得；
-    折成月是数据源自己给的月线收盘，不由日线二次聚合，避免两处口径不一致。
+    走的是与日线同一个图表接口，只是把粒度换成 1mo；月线收盘由数据源自己给出，
+    不由日线二次聚合，避免两处口径不一致。
     """
     sym = requests.utils.quote(symbol)
     last_err = ValueError("无可用月线")
     for host in YF_HOSTS:
-        url = f"https://{host}/v8/finance/chart/{sym}?range=max&interval=1mo"
+        url = f"https://{host}/v8/finance/chart/{sym}?range={rng}&interval=1mo"
         try:
             r = requests.get(url, headers=YF_HEADERS, timeout=15)
             r.raise_for_status()
@@ -473,6 +475,21 @@ def fetch_monthly(symbol):
         except Exception as e:
             last_err = e
     raise last_err
+
+
+def fetch_monthly(symbol):
+    """全区间月线 + 最近十年月线合并。
+
+    数据源对超长区间会自行降采样（部分标的退化成季度末），一次 range=max 拿不到
+    逐月点；再取一次 range=10y 把最近十年补稠密，重叠月份以十年那份为准。
+    两份都是同一个接口的月线收盘，不做任何本地插值。
+    """
+    merged = dict(fetch_monthly_range(symbol, "max"))
+    try:
+        merged.update(dict(fetch_monthly_range(symbol, "10y")))
+    except Exception:
+        pass
+    return sorted(merged.items())
 
 
 def collect_monthly(symbols, daily_series):

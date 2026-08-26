@@ -22,6 +22,7 @@ import {
   QUOTE_RANGES,
   rangeStats,
   readQuery,
+  sliceMonths,
   slicePoints
 } from "../apps/finance-terminal/finance-terminal-quote.mjs";
 import {
@@ -353,12 +354,19 @@ function validateQuoteLinks(board) {
     ["5y", "10y", "25y", "all"], "五年及以上一律读月线");
 
   const monthly = monthlyPoints({ series: { X: { start: "2024-11", closes: [1, null, 3] } } }, "X");
-  assert.deepEqual(monthly, [{ label: "2024-11", value: 1 }, { label: "2025-01", value: 3 }],
-    "月线缺月必须整点丢弃，不得前向填充，也不得让后面的月份错位");
+  assert.deepEqual(monthly, [
+    { label: "2024-11", value: 1, at: 24298 },
+    { label: "2025-01", value: 3, at: 24300 }
+  ], "月线缺月必须整点丢弃，不得前向填充，也不得让后面的月份错位；每点带真实月序号");
+  assert.equal(sliceMonths(monthly, 1).length, 1, "月线区间按真实时间窗口裁剪，不按点数");
+  assert.equal(sliceMonths(monthly, 3).length, 2);
+  assert.equal(sliceMonths(monthly, 0).length, 2, "「全部」不裁剪");
   const daily = dailyPoints({ dates: ["2026-01-02", "2026-01-05"], series: { X: [null, 7] } }, "X");
   assert.deepEqual(daily, [{ label: "2026-01-05", value: 7 }]);
   assert.equal(slicePoints(monthly, 1).length, 1);
   assert.equal(slicePoints(monthly, 0).length, 2, "「全部」区间不做截断");
+  assert.deepEqual(QUOTE_RANGES.filter((range) => range.grain === "monthly").map((r) => r.months),
+    [60, 120, 300, 0], "长端四档按月数定义窗口");
 
   const stats = rangeStats([{ label: "a", value: 2 }, { label: "b", value: 3 }], "pct");
   assert.equal(stats.change.text, "+50.00%");

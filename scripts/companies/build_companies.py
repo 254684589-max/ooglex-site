@@ -46,8 +46,9 @@ HEALTH_PATH = os.path.join("apps", "companies", "health.json")
 HISTORY_PATH = os.path.join("apps", "companies", "history.json")
 LONG_HISTORY_PATH = os.path.join("apps", "companies", "history-monthly.json")
 LONG_HISTORY_NOTE = ("市值前列上市公司自身的月线收盘，用于 5 年 / 10 年 / 25 年 / 全部区间的走势；"
-                     "起始月即该公司在数据源上可得的最早月份，缺月留空不做前向填充，"
-                     "本轮未取到的公司沿用上次序列。")
+                     "起始月即该公司在数据源上可得的最早月份。数据源对超长区间会自行降采样，"
+                     "部分公司的早年只有季度末观测，缺月一律留空不做前向填充，"
+                     "页面按真实时间轴作图；本轮未取到的公司沿用上次序列。")
 HISTORY_SYMBOLS = 40     # 只给市值最高的一段存日线：金融终端品类行情板按这份历史画走势
 HISTORY_POINTS = 260     # 滚动保留约一年交易日，文件大小恒定而非逐日增长
 HISTORY_NOTE = ("市值前列上市公司自身收盘价的滚动历史，与 data.json 同一次取数、同一来源；"
@@ -106,13 +107,13 @@ def yf_daily_closes(session, symbol, rng="1y"):
     return []
 
 
-def yf_monthly_closes(session, symbol):
+def yf_monthly_closes(session, symbol, rng="max"):
     """取单只月线收盘序列 [(YYYY-MM, close), ...]；任何异常都返回空列表。"""
     sym = requests.utils.quote(symbol)
     for host in YF_HOSTS:
         try:
             r = session.get(
-                f"https://{host}/v8/finance/chart/{sym}?range=max&interval=1mo", timeout=15)
+                f"https://{host}/v8/finance/chart/{sym}?range={rng}&interval=1mo", timeout=15)
             if r.status_code != 200:
                 continue
             res = (r.json().get("chart", {}).get("result") or [{}])[0]
@@ -133,8 +134,11 @@ def write_long_history(session, symbols, daily, run_updated_at):
     """再补一份月线长历史；失败只跳过，不影响 data.json 与日线历史。"""
     collected = {}
     for sym in symbols:
-        points = yf_monthly_closes(session, sym)
-        if not points:
+        # 数据源对超长区间会自行降采样，再取一次最近十年把近端补稠密。
+        merged = dict(yf_monthly_closes(session, sym))
+        merged.update(dict(yf_monthly_closes(session, sym, "10y")))
+        points = sorted(merged.items())
+        if len(points) < 2:
             points = monthly_from_daily(daily.get(sym) or [])
         if len(points) >= 2:
             collected[sym] = points

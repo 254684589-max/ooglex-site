@@ -29,8 +29,14 @@ export function layout(points, box = BOX) {
   const ceiling = high + pad;
   const innerW = box.width - box.left - box.right;
   const innerH = box.height - box.top - box.bottom;
+  /* 点自带 at（真实时间序号）时按时间轴摆放：数据源对超长区间会自行降采样，
+     若一律按数组下标等距摆放，稀疏时段会被拉宽成和密集时段一样，读出来的形状就是假的。 */
+  const stamps = usable.map((point, index) => (Number.isFinite(point.at) ? point.at : index));
+  const firstStamp = stamps[0];
+  const lastStamp = stamps[stamps.length - 1];
+  const span = lastStamp - firstStamp || 1;
   const x = (index) => box.left + (usable.length === 1 ? innerW / 2
-    : index / (usable.length - 1) * innerW);
+    : (stamps[index] - firstStamp) / span * innerW);
   const y = (value) => box.top + (1 - (value - floor) / (ceiling - floor)) * innerH;
   return {
     points: usable,

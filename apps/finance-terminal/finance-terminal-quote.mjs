@@ -38,10 +38,10 @@ export const QUOTE_RANGES = Object.freeze([
   { key: "3m", label: "3个月", grain: "daily", points: 66 },
   { key: "6m", label: "6个月", grain: "daily", points: 132 },
   { key: "1y", label: "1年", grain: "daily", points: 260 },
-  { key: "5y", label: "5年", grain: "monthly", points: 60 },
-  { key: "10y", label: "10年", grain: "monthly", points: 120 },
-  { key: "25y", label: "25年", grain: "monthly", points: 300 },
-  { key: "all", label: "全部", grain: "monthly", points: 0 }
+  { key: "5y", label: "5年", grain: "monthly", months: 60 },
+  { key: "10y", label: "10年", grain: "monthly", months: 120 },
+  { key: "25y", label: "25年", grain: "monthly", months: 300 },
+  { key: "all", label: "全部", grain: "monthly", months: 0 }
 ]);
 
 const cache = new Map();
@@ -87,13 +87,22 @@ export function monthlyPoints(history, symbol) {
   return entry.closes.map((value, index) => {
     const cursor = base + index;
     const label = `${String(Math.floor(cursor / 12)).padStart(4, "0")}-${String(cursor % 12 + 1).padStart(2, "0")}`;
-    return { label, value };
+    return { label, value, at: cursor };
   }).filter((point) => isFiniteNumber(point.value));
 }
 
 export function slicePoints(points, limit) {
   if (!limit || limit <= 0 || points.length <= limit) return points.slice();
   return points.slice(points.length - limit);
+}
+
+/* 月线按真实时间窗口裁剪，而不是按点数：数据源对超长区间会自行降采样，
+   按点数裁「25年」在季度点上会一路裁到七十多年前，窗口名与实际区间对不上。 */
+export function sliceMonths(points, months) {
+  if (!months || months <= 0 || !points.length) return points.slice();
+  const last = points[points.length - 1].at;
+  if (!Number.isFinite(last)) return points.slice();
+  return points.filter((point) => Number.isFinite(point.at) && point.at > last - months);
 }
 
 /* 纯函数：区间统计。收益率类按基点，其余按百分比，两者都由首尾两个真实观测算出。 */
@@ -369,8 +378,9 @@ export function renderQuote(document, root, payload, wanted) {
   });
 
   function pointsFor(range) {
-    const source = range.grain === "daily" ? daily : monthly;
-    return slicePoints(source, range.points);
+    return range.grain === "daily"
+      ? slicePoints(daily, range.points)
+      : sliceMonths(monthly, range.months);
   }
 
   function paint(range) {

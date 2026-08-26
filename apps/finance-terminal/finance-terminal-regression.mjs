@@ -308,8 +308,11 @@ export function runBrowserRegressionProbe(options = {}) {
       && boardRows.every((row) => {
         const price = row.querySelector(".board-cell-price");
         const change = row.querySelector(".board-cell-change");
+        const open = row.querySelector(".board-open");
         return price && price.textContent.trim() && change && change.textContent.trim()
-          && row.querySelector(".board-cell-spark");
+          && row.querySelector(".board-cell-spark")
+          && Boolean(open) && open.tagName === "A"
+          && /^quote\.html\?kind=/.test(open.getAttribute("href") || "");
       })
       && Boolean(boardPulse) && boardPulse.hidden === false
       && Boolean(boardPulse.querySelector(".board-pulse-bar"))
