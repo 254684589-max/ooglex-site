@@ -70,16 +70,32 @@ function renderOrthographic(state, centerLongitude) {
       const sourceY = Math.min(sourceHeight - 1,
         Math.max(0, Math.round((90 - latitude) / 180 * (sourceHeight - 1))));
       const input = (sourceY * sourceWidth + sourceX) * 4;
-      const edgeShade = .5 + depth * .5;
-      const northLight = Math.max(0, .18 - screenY * .09);
+      const edgeShade = .43 + depth * .57;
+      const northLight = Math.max(0, .26 - screenY * .14) * depth;
+      const luminance = pixels[input] * .27 + pixels[input + 1] * .58 + pixels[input + 2] * .15;
+      const leftX = Math.max(0, sourceX - 2);
+      const rightX = Math.min(sourceWidth - 1, sourceX + 2);
+      const upperY = Math.max(0, sourceY - 2);
+      const lowerY = Math.min(sourceHeight - 1, sourceY + 2);
+      const left = (sourceY * sourceWidth + leftX) * 4;
+      const right = (sourceY * sourceWidth + rightX) * 4;
+      const upper = (upperY * sourceWidth + sourceX) * 4;
+      const lower = (lowerY * sourceWidth + sourceX) * 4;
+      const localAverage = (
+        pixels[left] * .27 + pixels[left + 1] * .58 + pixels[left + 2] * .15
+        + pixels[right] * .27 + pixels[right + 1] * .58 + pixels[right + 2] * .15
+        + pixels[upper] * .27 + pixels[upper + 1] * .58 + pixels[upper + 2] * .15
+        + pixels[lower] * .27 + pixels[lower + 1] * .58 + pixels[lower + 2] * .15
+      ) / 4;
+      const sparkle = Math.max(0, luminance - localAverage - 1.8) ** 1.22;
       const warmLight = Math.max(0,
-        Math.min(pixels[input], pixels[input + 1]) - pixels[input + 2] * .72 - 8) ** 1.16;
+        Math.min(pixels[input], pixels[input + 1]) - pixels[input + 2] * .7 - 7) ** 1.13;
       output[out] = Math.min(255,
-        pixels[input] * edgeShade * .84 + northLight * 6 + warmLight * 2.7);
+        pixels[input] * edgeShade * .8 + northLight * 18 + warmLight * 3.2 + sparkle * 3.1);
       output[out + 1] = Math.min(255,
-        pixels[input + 1] * edgeShade * .9 + northLight * 14 + warmLight * 2.15);
+        pixels[input + 1] * edgeShade * .82 + northLight * 31 + warmLight * 2.55 + sparkle * 2.6);
       output[out + 2] = Math.min(255,
-        pixels[input + 2] * (edgeShade + .06) + northLight * 27 + warmLight * .68);
+        pixels[input + 2] * (edgeShade + .02) * .9 + northLight * 53 + warmLight * .72 + sparkle * 1.35);
       output[out + 3] = 255;
     }
   }
