@@ -1,0 +1,499 @@
+/* Reference-locked homepage composition, revision 3.
+   Closes the remaining gaps between the shipped overview and the approved 1672×941 mockup:
+   a circular earth with screen-space market links, clean gauge dials, a value-first evidence
+   strip, a denser workspace preview and a tighter quote ribbon.
+   Presentation only — every quote, source, freshness, proxy disclosure and fallback state
+   keeps coming from the existing data contracts. */
+
+:root {
+  --aurora-violet: #9a63ff;
+  --aurora-magenta: #d558ff;
+}
+
+/* ---------- 1. Top bar ---------- */
+
+.brand-lockup small { letter-spacing: 0.11em; }
+
+.section-nav a + a::before,
+.terminal-mode-switch a + a::before {
+  margin-right: 12px;
+  color: rgba(149, 178, 200, 0.45);
+  content: "·";
+  font-weight: 400;
+}
+
+.terminal-mode-switch {
+  grid-template-columns: auto auto;
+  border-radius: 7px;
+  background: rgba(4, 16, 27, 0.72);
+}
+
+.terminal-mode-switch a { padding: 6px 17px; }
+.terminal-mode-switch a + a { border-left: 0; }
+.terminal-mode-switch a + a::before { margin-right: 14px; margin-left: -3px; content: "/"; }
+
+.terminal-mode-switch a:hover,
+.terminal-mode-switch a:focus-visible,
+.terminal-mode-switch a[aria-current="page"] {
+  background: transparent;
+  text-shadow: 0 0 16px color-mix(in srgb, var(--aurora-cyan) 60%, transparent);
+  box-shadow: none;
+}
+
+/* ---------- 2. Evidence strip ---------- */
+
+.aurora-evidence > * { gap: 3px; }
+.aurora-evidence strong { color: #e6f6ff; font: 600 12px/1.25 var(--sans, inherit); letter-spacing: 0.02em; }
+.aurora-evidence span { color: #8ea3b6; font-size: 9px; letter-spacing: 0.06em; }
+
+/* ---------- 3. Gauge dials ---------- */
+
+.aurora-hud-ring {
+  border-color: color-mix(in srgb, var(--hud-color) 26%, transparent);
+  background:
+    radial-gradient(circle, rgba(4, 17, 28, 0.94) 0 62%, transparent 63%),
+    radial-gradient(circle, color-mix(in srgb, var(--hud-color) 10%, transparent) 0 74%, transparent 75%);
+  box-shadow:
+    0 0 24px color-mix(in srgb, var(--hud-color) 15%, transparent),
+    inset 0 0 20px color-mix(in srgb, var(--hud-color) 8%, transparent);
+}
+
+/* 3/4 圆弧用四条边框拼出来，不依赖 mask，老浏览器也能画对。 */
+.aurora-hud-ring::before {
+  inset: 4px;
+  border: 2px solid color-mix(in srgb, var(--hud-color) 13%, transparent);
+  border-top-color: var(--hud-color);
+  border-right-color: var(--hud-color);
+  border-left-color: var(--hud-color);
+  transform: rotate(-42deg);
+}
+
+.aurora-hud-ring::after {
+  inset: 11px;
+  border: 1px solid color-mix(in srgb, var(--hud-color) 20%, transparent);
+  background: radial-gradient(circle, color-mix(in srgb, var(--hud-color) 12%, transparent), transparent 72%);
+}
+
+.aurora-hud-ring i.hud-icon {
+  display: grid;
+  width: 46%;
+  aspect-ratio: 1;
+  place-items: center;
+  color: var(--hud-color);
+  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--hud-color) 62%, transparent));
+}
+
+.hud-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.aurora-hud small { color: #c3d2e0; letter-spacing: 0.05em; }
+
+/* ---------- 4. Globe stage ---------- */
+
+.orbit-grid { display: none; }
+
+.orbit-links {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .4s ease;
+}
+
+.orbit-links-ready { opacity: 1; }
+
+.orbit-link {
+  fill: none;
+  stroke: rgba(120, 224, 255, 0.72);
+  stroke-width: 1.15;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 4px rgba(78, 208, 255, 0.7));
+}
+
+.orbit-link-far { stroke: rgba(96, 190, 255, 0.42); stroke-width: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit-links { transition: none; }
+}
+
+/* ---------- 5. Quote ribbon ---------- */
+
+#market-grid .asset-card .asset-price { display: inline-block; vertical-align: baseline; }
+#market-grid .asset-card .change-row { display: inline-flex; vertical-align: baseline; }
+
+.sparkline .area { fill: none; stroke: none; }
+.official-trend.trend-positive .sparkline .area { fill: color-mix(in srgb, var(--up) 20%, transparent); }
+.official-trend.trend-negative .sparkline .area { fill: color-mix(in srgb, var(--down) 20%, transparent); }
+.official-trend.trend-neutral .sparkline .area { fill: rgba(140, 164, 186, 0.14); }
+.positive .sparkline .area { fill: color-mix(in srgb, var(--up) 18%, transparent); }
+.negative .sparkline .area { fill: color-mix(in srgb, var(--down) 18%, transparent); }
+
+/* ---------- 6. Workspace previews ---------- */
+
+/* 早期极光层给预览里所有 <i> 一次性上了样式；结构化后的行有自己的角色，逐个还原。 */
+.aurora-events-preview .preview-event-list i,
+.aurora-events-preview .preview-impact-table i,
+.aurora-terminal-preview .preview-quote-table i,
+.aurora-macro-preview .preview-metrics i {
+  grid-column: auto;
+  border: 0;
+  transform: none;
+}
+
+.aurora-events-preview .event-dot { width: 5px; height: 5px; }
+
+.aurora-gateway-preview > div {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.preview-head {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  border-bottom: 1px solid color-mix(in srgb, var(--gateway-color) 26%, transparent) !important;
+  background: color-mix(in srgb, var(--gateway-color) 7%, transparent);
+}
+
+.preview-head b { color: color-mix(in srgb, var(--gateway-color) 62%, white); letter-spacing: 0.06em; }
+.preview-head em,
+.preview-axis em,
+.preview-metrics b { color: color-mix(in srgb, var(--gateway-color) 74%, transparent); font-style: normal; }
+
+.preview-axis {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2px;
+  text-decoration: none;
+}
+
+.preview-axis em { font: 6px var(--mono); letter-spacing: 0.02em; }
+
+.preview-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  padding: 2px 1px 0;
+  text-decoration: none;
+}
+
+.preview-metrics em {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+  padding: 3px 4px;
+  border: 1px solid color-mix(in srgb, var(--gateway-color) 18%, transparent);
+  font-style: normal;
+}
+
+.preview-metrics b { font: 6px var(--mono); }
+.preview-metrics i { height: 2px; background: linear-gradient(90deg, var(--gateway-color), transparent); }
+
+.preview-impact-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 12px minmax(28px, .8fr);
+  align-items: center;
+  gap: 5px;
+  padding: 0 5px;
+}
+
+.preview-impact-row b { overflow: hidden; color: color-mix(in srgb, var(--gateway-color) 58%, white); font: 6px var(--mono); text-overflow: ellipsis; white-space: nowrap; }
+.preview-impact-row em { color: color-mix(in srgb, var(--gateway-color) 80%, transparent); font: 7px var(--mono); font-style: normal; text-align: center; }
+.preview-impact-row u {
+  height: 3px;
+  background:
+    linear-gradient(90deg, var(--gateway-color) 0 32%, transparent 32% 36%, color-mix(in srgb, var(--gateway-color) 55%, transparent) 36% 68%, transparent 68% 72%, color-mix(in srgb, var(--gateway-color) 22%, transparent) 72%);
+  text-decoration: none;
+}
+
+.preview-impact-legend {
+  grid-template-columns: minmax(0, 1fr) minmax(28px, .8fr);
+}
+
+.preview-impact-legend b,
+.preview-impact-legend em { opacity: .68; }
+.preview-impact-legend em { display: none; }
+.preview-impact-legend u { background: linear-gradient(90deg, color-mix(in srgb, var(--gateway-color) 28%, transparent), transparent); }
+
+/* 工作流预览里的 K 线只是入口卡的装饰底图（aria-hidden），不承载任何行情数值。 */
+.preview-candles rect { stroke: none; }
+.preview-wick { fill: none; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.preview-candle-up rect,
+.preview-candle-up .preview-wick { fill: color-mix(in srgb, var(--up) 78%, transparent); stroke: color-mix(in srgb, var(--up) 78%, transparent); }
+.preview-candle-down rect,
+.preview-candle-down .preview-wick { fill: color-mix(in srgb, var(--down) 74%, transparent); stroke: color-mix(in srgb, var(--down) 74%, transparent); }
+.preview-volume rect { fill: color-mix(in srgb, var(--gateway-color) 26%, transparent); stroke: none; }
+.preview-line-soft { opacity: .62; }
+
+/* ---------- 7. Desktop single-screen composition ---------- */
+
+@media (min-width: 1041px) {
+  body[data-terminal-view="overview"] .brand-lockup strong { letter-spacing: 0.13em; }
+
+  body[data-terminal-view="overview"] .aurora-evidence {
+    width: fit-content;
+    max-width: 100%;
+    grid-template-columns: repeat(3, minmax(0, auto));
+    margin-top: clamp(16px, 1.5vw, 28px);
+  }
+
+  body[data-terminal-view="overview"] .aurora-evidence > [data-evidence-icon] {
+    grid-template-columns: clamp(26px, 1.85vw, 38px) minmax(0, 1fr);
+    padding: 9px clamp(9px, .74vw, 15px);
+  }
+
+  body[data-terminal-view="overview"] .aurora-evidence strong { font-size: clamp(10px, .78vw, 15px); }
+  body[data-terminal-view="overview"] .aurora-evidence span { font-size: clamp(8px, .58vw, 11px); }
+
+  /* 仪表盘按参考稿收窄：环 74px 上下，读数不再压过右栏。 */
+  body[data-terminal-view="overview"] .aurora-hud {
+    grid-template-columns: clamp(56px, 4.4vw, 84px) minmax(0, 1fr);
+    gap: clamp(10px, .8vw, 17px);
+  }
+
+  body[data-terminal-view="overview"] .aurora-hud-ring {
+    width: clamp(56px, 4.35vw, 82px);
+    border-width: 1px;
+  }
+
+  body[data-terminal-view="overview"] .aurora-hud-ring::before { inset: 4px; border-width: 2px; }
+  body[data-terminal-view="overview"] .aurora-hud-ring::after { inset: 12px; border-width: 1px; }
+  body[data-terminal-view="overview"] .aurora-hud small { font-size: clamp(10px, .76vw, 15px); }
+  body[data-terminal-view="overview"] .aurora-hud strong { font-size: clamp(24px, 1.86vw, 38px); }
+  body[data-terminal-view="overview"] .aurora-hud b { font-size: clamp(9px, .66vw, 13px); }
+
+  /* 地球回到正圆，并按参考稿的中心点摆放；底部由行情带盖住。 */
+  body[data-terminal-view="overview"] .market-globe-shell {
+    top: 63%;
+    left: 45%;
+    width: min(78%, 660px);
+    transform: translate(-50%, -50%);
+  }
+
+  body[data-terminal-view="overview"] .market-globe-canvas {
+    filter: saturate(1.08) brightness(1.02) contrast(1.06) drop-shadow(0 0 16px rgba(56, 156, 235, .34));
+  }
+
+  body[data-terminal-view="overview"] .market-globe-shell::before {
+    inset: 11.5%;
+    box-shadow:
+      0 0 18px rgba(83, 208, 255, .34),
+      0 0 58px rgba(36, 132, 255, .22),
+      inset 0 0 30px rgba(94, 218, 255, .1);
+  }
+
+  /* 极光带：参考稿里地球上方的紫青色弧光。 */
+  body[data-terminal-view="overview"] .market-orbit::before {
+    inset: -18% -6% -20% -12%;
+    background:
+      radial-gradient(ellipse at 46% 62%, rgba(24, 128, 196, .3), transparent 56%),
+      radial-gradient(ellipse at 47% 12%, rgba(146, 84, 255, .26), transparent 48%);
+  }
+
+  /* 极光合成在地球上缘之上（screen 混合），与参考稿一样带出紫青色帘幕。 */
+  body[data-terminal-view="overview"] .market-orbit::after {
+    top: -18%;
+    left: 15%;
+    z-index: 3;
+    width: 62%;
+    height: 54%;
+    border-radius: 50%;
+    background:
+      repeating-linear-gradient(95deg, transparent 0 11px, rgba(176, 226, 255, .16) 12px, transparent 16px),
+      radial-gradient(ellipse at 50% 64%, rgba(206, 118, 255, .52), rgba(126, 96, 255, .32) 40%, rgba(64, 176, 255, .17) 62%, transparent 79%);
+    filter: blur(15px);
+    opacity: .85;
+    mix-blend-mode: screen;
+    transform: none;
+  }
+
+  body[data-terminal-view="overview"] .market-orbit-svg { opacity: .55; }
+
+  /* 城市标签按参考稿收进球面上方，纽约/伦敦在左，上海/东京在右。 */
+  body[data-terminal-view="overview"] .clock-new-york { top: 38%; left: 0; }
+  body[data-terminal-view="overview"] .clock-london { top: 15%; left: 30%; }
+  body[data-terminal-view="overview"] .clock-shanghai { top: 45%; right: auto; left: 63%; }
+  body[data-terminal-view="overview"] .clock-tokyo { top: 62%; right: auto; left: 71%; }
+
+  body[data-terminal-view="overview"] .orbit-clock { z-index: 3; }
+  body[data-terminal-view="overview"] .orbit-clock b { font-size: clamp(11px, .78vw, 15px); }
+
+  body[data-terminal-view="overview"] .market-orbit figcaption {
+    right: 2%;
+    bottom: 1%;
+    max-width: 62%;
+  }
+
+  /* 行情带：读数与涨跌同排，走势图占满整格底部。 */
+  body[data-terminal-view="overview"] #market-grid .asset-card:nth-child(1),
+  body[data-terminal-view="overview"] #market-grid .asset-card:nth-child(6) { transform: translateY(9px); }
+  body[data-terminal-view="overview"] #market-grid .asset-card:nth-child(2),
+  body[data-terminal-view="overview"] #market-grid .asset-card:nth-child(5) { transform: translateY(4px); }
+
+  body[data-terminal-view="overview"] #market-grid .card-top { min-height: 0; }
+  body[data-terminal-view="overview"] #market-grid .asset-name { font-size: clamp(10px, .74vw, 14px); }
+
+  body[data-terminal-view="overview"] #market-grid .asset-price {
+    margin-top: 1px;
+    margin-right: clamp(6px, .5vw, 11px);
+    font-size: clamp(15px, 1.14vw, 22px);
+  }
+
+  body[data-terminal-view="overview"] #market-grid .change-row { margin-top: 0; }
+  body[data-terminal-view="overview"] #market-grid .asset-change { font-size: clamp(9px, .66vw, 13px); }
+  body[data-terminal-view="overview"] #market-grid .change-word { opacity: .72; }
+
+  /* 卡片是纵向 flex：走势块要“吃满”剩余高度，否则会被压成一条线。
+     观测窗口标注改为浮在右上角，保留口径说明又不再吃掉走势的高度。 */
+  body[data-terminal-view="overview"] #market-grid .official-trend {
+    position: relative;
+    display: flex;
+    height: auto;
+    min-height: clamp(26px, 2vw, 40px);
+    flex: 1 1 auto;
+    flex-direction: column;
+    margin-top: 2px;
+    padding: 0;
+  }
+
+  body[data-terminal-view="overview"] #market-grid .official-trend-head {
+    position: absolute;
+    top: 0;
+    right: 1px;
+    min-height: 0;
+    gap: 5px;
+    opacity: .5;
+    pointer-events: none;
+  }
+
+  body[data-terminal-view="overview"] #market-grid .official-trend-label { font-size: clamp(4px, .32vw, 7px); }
+  body[data-terminal-view="overview"] #market-grid .official-trend-count { font-size: clamp(5px, .38vw, 8px); }
+
+  body[data-terminal-view="overview"] #market-grid .official-trend .sparkline {
+    height: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 0;
+  }
+
+  body[data-terminal-view="overview"] #market-grid .official-trend-empty {
+    align-self: center;
+    font-size: clamp(6px, .44vw, 9px);
+  }
+
+  /* 首屏行情带只留名称、读数与走势；来源、数据日、代理说明与状态在“核心资产”视图里保持完整，
+     页脚状态条继续给出全局来源与最后更新时间。 */
+  body[data-terminal-view="overview"] #market-grid .official-update-health { display: none; }
+
+  /* 图标只占名称那一行，读数从卡片左缘起排，两者不再叠字。 */
+  body[data-terminal-view="overview"] #market-grid .asset-card::before {
+    top: clamp(7px, .56vw, 11px);
+    width: clamp(19px, 1.42vw, 28px);
+    font-size: clamp(8px, .58vw, 12px);
+  }
+
+  body[data-terminal-view="overview"] #market-grid .asset-card .card-top {
+    min-height: clamp(19px, 1.42vw, 28px);
+    align-items: center;
+    padding-left: clamp(24px, 1.82vw, 36px);
+  }
+
+  /* 免费代理格：组件区占满走势位，加载提示两行内收住，不再溢出到相邻卡。 */
+  body[data-terminal-view="overview"] #market-grid .provider-widget-shell {
+    height: auto;
+    min-height: clamp(30px, 2.3vw, 46px);
+    flex: 1 1 auto;
+    overflow: hidden;
+  }
+
+  body[data-terminal-view="overview"] #market-grid .provider-widget-fallback {
+    padding: 3px 5px;
+    font-size: clamp(5px, .4vw, 8px);
+    line-height: 1.45;
+  }
+
+  /* 工作流预览：行高按参考稿压紧，标题行独立。 */
+  body[data-terminal-view="overview"] .preview-quote-table { grid-template-rows: auto repeat(6, minmax(0, 1fr)); }
+  body[data-terminal-view="overview"] .preview-head { padding: 0 5px; }
+  body[data-terminal-view="overview"] .preview-head b { font-size: clamp(5px, .4vw, 8px); }
+  body[data-terminal-view="overview"] .preview-head em { font-size: clamp(4px, .33vw, 7px); }
+
+  body[data-terminal-view="overview"] .preview-chart,
+  body[data-terminal-view="overview"] .preview-macro-chart {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 3px;
+    padding: 0 0 3px;
+  }
+
+  body[data-terminal-view="overview"] .preview-chart > svg,
+  body[data-terminal-view="overview"] .preview-macro-chart > svg { padding: 0 5px; }
+
+  body[data-terminal-view="overview"] .preview-flow-table {
+    grid-template-rows: auto repeat(10, minmax(0, 1fr));
+    align-content: stretch;
+    gap: 0;
+    padding: 0 0 2px;
+  }
+
+  body[data-terminal-view="overview"] .preview-flow-table i {
+    height: 2px;
+    align-self: center;
+    margin: 0 5px;
+    background: linear-gradient(90deg, var(--gateway-color), color-mix(in srgb, var(--gateway-color) 6%, transparent));
+  }
+
+  body[data-terminal-view="overview"] .preview-flow-table i:nth-of-type(2n) { width: 74%; opacity: .66; }
+  body[data-terminal-view="overview"] .preview-flow-table i:nth-of-type(3n) { width: 88%; opacity: .82; }
+
+  body[data-terminal-view="overview"] .preview-event-list { grid-template-rows: auto repeat(5, minmax(0, 1fr)); }
+  body[data-terminal-view="overview"] .preview-impact-table { grid-template-rows: auto repeat(6, minmax(0, 1fr)); }
+  body[data-terminal-view="overview"] .preview-impact-row b { font-size: clamp(5px, .4vw, 8px); }
+
+  body[data-terminal-view="overview"] #market-section::before,
+  body[data-terminal-view="overview"] #market-section::after { height: 44px; }
+
+  body[data-terminal-view="overview"] #market-section::before { top: -14px; }
+  body[data-terminal-view="overview"] #market-section::after { bottom: -15px; }
+
+  /* 页脚状态条按参考稿放宽来源与状态两格，字号提到可读区间。 */
+  body[data-terminal-view="overview"] .aurora-statusbar {
+    grid-template-columns: 1.55fr 1.1fr .95fr .8fr 1.5fr auto;
+  }
+
+  body[data-terminal-view="overview"] .aurora-statusbar > span {
+    gap: 9px;
+    padding-inline: clamp(9px, .76vw, 15px);
+    font-size: clamp(7px, .5vw, 10px);
+  }
+
+  body[data-terminal-view="overview"] .aurora-statusbar b { letter-spacing: 0.08em; }
+}
+
+@media (min-width: 1041px) and (max-width: 1380px) {
+  body[data-terminal-view="overview"] .market-globe-shell { width: min(82%, 520px); }
+  body[data-terminal-view="overview"] .clock-shanghai { left: 60%; }
+  body[data-terminal-view="overview"] .clock-tokyo { left: 68%; }
+}
+
+@media (max-width: 1040px) {
+  .orbit-links { display: none; }
+  .aurora-hud-ring i.hud-icon { width: 44%; }
+}
+
+/* 窄屏把证据条摊成一行：判语在弹性列，标签靠右，读数不再被截断。 */
+@media (max-width: 620px) {
+  .aurora-evidence > [data-evidence-icon] { grid-template-columns: 34px minmax(0, 1.5fr) minmax(0, 1fr); }
+  .aurora-evidence strong { font-size: 12px; }
+}

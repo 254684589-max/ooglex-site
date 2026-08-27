@@ -1532,6 +1532,7 @@
   <link rel="stylesheet" href="terminal-reference-fidelity.css">
   <link rel="stylesheet" href="terminal-aurora-home.css">
   <link rel="stylesheet" href="terminal-reference-home-v2.css">
+  <link rel="stylesheet" href="terminal-reference-home-v3.css">
 </head>
 <body data-terminal-view="overview">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -1550,7 +1551,7 @@
         <span class="brand-mark" aria-hidden="true">OX</span>
         <span class="brand-lockup">
           <strong>OOGLEX</strong>
-          <small>全球金融数据 · 实时 / 准实时 / 日更</small>
+          <small>全球金融数据 | 实时 · 准实时 · 日更</small>
         </span>
       </a>
       <span class="public-beta-chip">PUBLIC BETA</span>
@@ -1610,16 +1611,16 @@
             </p>
             <div class="aurora-evidence" aria-label="今日判断的三项证据">
               <a href="#risk-section" data-evidence-icon="◎">
-                <span>宏观制度</span>
                 <strong id="overview-macro-chip">读取中</strong>
+                <span>宏观制度</span>
               </a>
               <button type="button" id="risk-radar-detail" data-evidence-icon="◇">
-                <span>六维风险</span>
                 <strong id="overview-risk-chip">读取中</strong>
+                <span>六维风险</span>
               </button>
               <a href="#method-section" data-evidence-icon="◉">
-                <span>数据覆盖</span>
                 <strong id="overview-coverage-chip">校验中</strong>
+                <span>数据覆盖</span>
               </a>
             </div>
           </div>
@@ -1693,6 +1694,12 @@
               <g class="market-node" transform="translate(548 235)"><circle r="5"></circle><circle class="node-pulse" r="12"></circle></g>
               <g class="market-node market-node-amber" transform="translate(625 210)"><circle r="5"></circle><circle class="node-pulse" r="12"></circle></g>
             </svg>
+            <svg class="orbit-links" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <path class="orbit-link" id="orbit-link-a" d=""></path>
+              <path class="orbit-link" id="orbit-link-b" d=""></path>
+              <path class="orbit-link" id="orbit-link-c" d=""></path>
+              <path class="orbit-link orbit-link-far" id="orbit-link-d" d=""></path>
+            </svg>
             <span class="orbit-clock clock-new-york"><b>纽约</b><time data-market-time="America/New_York">--:--</time><u data-market-zone="America/New_York"></u><i class="orbit-session" data-market-session="America/New_York"></i></span>
             <span class="orbit-clock clock-london"><b>伦敦</b><time data-market-time="Europe/London">--:--</time><u data-market-zone="Europe/London"></u><i class="orbit-session" data-market-session="Europe/London"></i></span>
             <span class="orbit-clock clock-shanghai"><b>上海</b><time data-market-time="Asia/Shanghai">--:--</time><u data-market-zone="Asia/Shanghai"></u><i class="orbit-session" data-market-session="Asia/Shanghai"></i></span>
@@ -1704,19 +1711,19 @@
         <aside class="risk-radar-panel" aria-label="宏观与风险状态" aria-describedby="risk-radar-note">
           <div class="aurora-hud-list" aria-label="四项已校验状态">
             <div class="aurora-hud aurora-hud-cyan">
-              <span class="aurora-hud-ring" aria-hidden="true"><i>◎</i></span>
+              <span class="aurora-hud-ring" aria-hidden="true"><i class="hud-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><ellipse cx="12" cy="12" rx="4" ry="9"></ellipse><path d="M3.2 9h17.6M3.2 15h17.6"></path></svg></i></span>
               <span><small>宏观状态</small><strong id="hud-macro-value">—</strong><b id="hud-macro-state">读取中</b></span>
             </div>
             <div class="aurora-hud aurora-hud-amber">
-              <span class="aurora-hud-ring" aria-hidden="true"><i>◇</i></span>
+              <span class="aurora-hud-ring" aria-hidden="true"><i class="hud-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2 20 6v6.1c0 4.4-3.2 7.3-8 8.7-4.8-1.4-8-4.3-8-8.7V6z"></path><path d="M12 8.4v5.4M12 16.4h.01"></path></svg></i></span>
               <span><small>风险雷达</small><strong id="hud-risk-value">—</strong><b id="hud-risk-state">读取中</b></span>
             </div>
             <div class="aurora-hud aurora-hud-green">
-              <span class="aurora-hud-ring" aria-hidden="true"><i>∿</i></span>
+              <span class="aurora-hud-ring" aria-hidden="true"><i class="hud-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12.6h4l2.3-6.4 3.1 11.6 2.5-7.4 1.8 3.4h5.3"></path></svg></i></span>
               <span><small>金融压力</small><strong id="hud-stress-value">—</strong><b id="hud-stress-state">读取中</b></span>
             </div>
             <div class="aurora-hud aurora-hud-blue">
-              <span class="aurora-hud-ring" aria-hidden="true"><i>▤</i></span>
+              <span class="aurora-hud-ring" aria-hidden="true"><i class="hud-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6.1" rx="7.6" ry="2.9"></ellipse><path d="M4.4 6.1v11.8c0 1.6 3.4 2.9 7.6 2.9s7.6-1.3 7.6-2.9V6.1"></path><path d="M4.4 12c0 1.6 3.4 2.9 7.6 2.9s7.6-1.3 7.6-2.9"></path></svg></i></span>
               <span><small>数据健康</small><strong id="hud-data-value">— / 6</strong><b id="hud-data-state">校验中</b></span>
             </div>
           </div>
@@ -1780,15 +1787,18 @@
             </header>
             <div class="aurora-gateway-preview aurora-terminal-preview" aria-hidden="true">
               <div class="preview-quote-table">
+                <span class="preview-head"><b>品类行情</b><em>6</em></span>
                 <span><b>指数</b><i></i></span><span><b>利率</b><i></i></span><span><b>外汇</b><i></i></span>
                 <span><b>贵金属</b><i></i></span><span><b>能源</b><i></i></span><span><b>数字资产</b><i></i></span>
               </div>
               <div class="preview-chart">
-                <span>跨资产趋势</span>
-                <svg viewBox="0 0 240 90" preserveAspectRatio="none"><path class="preview-grid-line" d="M0 18H240M0 45H240M0 72H240"></path><path class="preview-area" d="M0 78L22 68L42 72L64 54L84 61L104 42L126 47L148 28L170 38L193 20L214 26L240 10V90H0Z"></path><path class="preview-line" d="M0 78L22 68L42 72L64 54L84 61L104 42L126 47L148 28L170 38L193 20L214 26L240 10"></path></svg>
+                <span class="preview-head"><b>跨资产趋势</b><em>近60个交易日</em></span>
+                <svg viewBox="0 0 240 90" preserveAspectRatio="none"><path class="preview-grid-line" d="M0 18H240M0 45H240M0 72H240"></path><g class="preview-candles"><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M8 72V85"></path><rect x="4.5" y="76" width="7" height="6" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M28 66V79"></path><rect x="24.5" y="70" width="7" height="6" rx=".6"></rect></g><g class="preview-candle preview-candle-down"><path class="preview-wick" d="M48 67V78"></path><rect x="44.5" y="70" width="7" height="4" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M68 53V76"></path><rect x="64.5" y="56" width="7" height="18" rx=".6"></rect></g><g class="preview-candle preview-candle-down"><path class="preview-wick" d="M88 54V65"></path><rect x="84.5" y="56" width="7" height="6" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M108 41V64"></path><rect x="104.5" y="44" width="7" height="18" rx=".6"></rect></g><g class="preview-candle preview-candle-down"><path class="preview-wick" d="M128 42V52"></path><rect x="124.5" y="44" width="7" height="5" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M148 27V51"></path><rect x="144.5" y="30" width="7" height="19" rx=".6"></rect></g><g class="preview-candle preview-candle-down"><path class="preview-wick" d="M168 28V42"></path><rect x="164.5" y="30" width="7" height="9" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M188 19V41"></path><rect x="184.5" y="22" width="7" height="17" rx=".6"></rect></g><g class="preview-candle preview-candle-down"><path class="preview-wick" d="M208 20V30"></path><rect x="204.5" y="22" width="7" height="5" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M228 9V29"></path><rect x="224.5" y="12" width="7" height="15" rx=".6"></rect></g></g><g class="preview-volume"><rect x="4.5" y="85" width="7" height="5" rx=".5"></rect><rect x="24.5" y="83" width="7" height="7" rx=".5"></rect><rect x="44.5" y="86" width="7" height="4" rx=".5"></rect><rect x="64.5" y="81" width="7" height="9" rx=".5"></rect><rect x="84.5" y="85" width="7" height="5" rx=".5"></rect><rect x="104.5" y="82" width="7" height="8" rx=".5"></rect><rect x="124.5" y="86" width="7" height="4" rx=".5"></rect><rect x="144.5" y="80" width="7" height="10" rx=".5"></rect><rect x="164.5" y="84" width="7" height="6" rx=".5"></rect><rect x="184.5" y="81" width="7" height="9" rx=".5"></rect><rect x="204.5" y="85" width="7" height="5" rx=".5"></rect><rect x="224.5" y="82" width="7" height="8" rx=".5"></rect></g><path class="preview-line preview-line-soft" d="M0 78L22 68L42 72L64 54L84 61L104 42L126 47L148 28L170 38L193 20L214 26L240 10"></path></svg>
+                <u class="preview-axis"><em>60D</em><em>40D</em><em>20D</em><em>今日</em></u>
               </div>
               <div class="preview-flow-table">
-                <span>强弱队列</span><i></i><i></i><i></i><i></i><i></i><i></i>
+                <span class="preview-head"><b>强弱队列</b></span>
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
               </div>
             </div>
             <p>进入高密度行情板，按商品、指数、股票、外汇、加密与债券组织决策信息。</p>
@@ -1802,12 +1812,14 @@
             </header>
             <div class="aurora-gateway-preview aurora-macro-preview" aria-hidden="true">
               <div class="preview-macro-chart">
-                <span>美债收益率曲线</span>
+                <span class="preview-head"><b>美债收益率曲线</b><em>当前 · 历史对比</em></span>
                 <svg viewBox="0 0 240 90" preserveAspectRatio="none"><path class="preview-grid-line" d="M0 18H240M0 45H240M0 72H240"></path><path class="preview-line preview-line-soft" d="M0 70L40 59L80 51L120 39L160 28L200 19L240 18"></path><path class="preview-line" d="M0 62L40 52L80 40L120 30L160 19L200 14L240 16"></path></svg>
+                <u class="preview-axis"><em>3M</em><em>6M</em><em>1Y</em><em>2Y</em><em>5Y</em><em>10Y</em><em>20Y</em><em>30Y</em></u>
               </div>
               <div class="preview-macro-chart">
-                <span>全球流动性监测</span>
+                <span class="preview-head"><b>全球流动性监测</b><em>净流动性</em></span>
                 <svg viewBox="0 0 240 90" preserveAspectRatio="none"><path class="preview-grid-line" d="M0 18H240M0 45H240M0 72H240"></path><path class="preview-area" d="M0 44L20 53L42 40L62 60L84 34L104 48L126 30L148 54L170 42L192 70L214 54L240 66V90H0Z"></path><path class="preview-line" d="M0 44L20 53L42 40L62 60L84 34L104 48L126 30L148 54L170 42L192 70L214 54L240 66"></path></svg>
+                <u class="preview-metrics"><em><b>回购利率</b><i></i></em><em><b>资金利率</b><i></i></em><em><b>央行资产</b><i></i></em></u>
               </div>
             </div>
             <p>查看宏观制度、期限结构、情绪、金融压力与地缘风险定价的原始读数和口径。</p>
@@ -1824,13 +1836,21 @@
             </header>
             <div class="aurora-gateway-preview aurora-events-preview" aria-hidden="true">
               <div class="preview-event-list">
+                <span class="preview-head"><b>事件时间线</b><em>更多 ›</em></span>
                 <span><i class="event-dot event-dot-cyan"></i><b>经济日历</b><u></u></span>
                 <span><i class="event-dot event-dot-amber"></i><b>央行与政策</b><u></u></span>
                 <span><i class="event-dot event-dot-red"></i><b>通胀与就业</b><u></u></span>
                 <span><i class="event-dot event-dot-blue"></i><b>市场新闻</b><u></u></span>
+                <span><i class="event-dot event-dot-cyan"></i><b>财报与发行</b><u></u></span>
               </div>
               <div class="preview-impact-table">
-                <span>资产影响预览</span><i></i><i></i><i></i><i></i><i></i>
+                <span class="preview-head"><b>资产影响预览</b></span>
+                <span class="preview-impact-row preview-impact-legend"><b>影响资产 · 方向</b><em>方向</em><u></u></span>
+                <span class="preview-impact-row"><b>美元指数</b><em>·</em><u></u></span>
+                <span class="preview-impact-row"><b>美债收益率</b><em>·</em><u></u></span>
+                <span class="preview-impact-row"><b>黄金</b><em>·</em><u></u></span>
+                <span class="preview-impact-row"><b>全球股指</b><em>·</em><u></u></span>
+                <span class="preview-impact-row"><b>原油</b><em>·</em><u></u></span>
               </div>
             </div>
             <p>按发布时间与影响等级查看经济事件和市场资讯；每项保留来源、时点与更新状态。</p>

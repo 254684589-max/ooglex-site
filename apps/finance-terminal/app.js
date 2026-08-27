@@ -2551,6 +2551,12 @@
       return x.toFixed(1) + "," + y.toFixed(1);
     }).join(" ");
 
+    /* 面积用同一组观测点闭合到基线，只是同一条折线的填充，不新增任何推断数据点。 */
+    var area = document.createElementNS(SVG_NS, "polygon");
+    area.setAttribute("class", "area");
+    area.setAttribute("points", "0,42 " + points + " 240,42");
+    svg.appendChild(area);
+
     var line = document.createElementNS(SVG_NS, "polyline");
     line.setAttribute("class", "line");
     line.setAttribute("points", points);

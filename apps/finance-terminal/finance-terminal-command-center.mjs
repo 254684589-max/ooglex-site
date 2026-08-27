@@ -1,5 +1,6 @@
 import { initMarketGlobe } from "./finance-terminal-globe.mjs";
 import { initAuroraHome } from "./finance-terminal-aurora-home.mjs";
+import { initOrbitLinks } from "./finance-terminal-orbit-links.mjs";
 
 const DESKTOP_QUERY = "(min-width: 1041px)";
 const VIEW_BY_ID = Object.freeze({
@@ -77,3 +78,4 @@ desktop.addEventListener("change", () => applyView(viewFromHash(), desktop.match
 applyView(viewFromHash());
 initMarketGlobe({ document, window });
 initAuroraHome({ document, MutationObserver });
+initOrbitLinks({ document, window });
