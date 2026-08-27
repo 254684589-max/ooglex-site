@@ -269,7 +269,7 @@ body[data-terminal-view="overview"] {
     grid-template-rows:
       clamp(350px, 21vw, 430px)
       clamp(118px, 7.2vw, 148px)
-      clamp(260px, 20.1vw, 412px);
+      clamp(350px, 20.1vw, 430px);
     gap: clamp(7px, .55vw, 11px);
   }
 
@@ -304,9 +304,7 @@ body[data-terminal-view="overview"] {
   }
 
   body[data-terminal-view="overview"] .orbit-copy::after {
-    right: -150px;
-    width: 250px;
-    background: linear-gradient(90deg, rgba(1, 8, 15, .96), transparent);
+    display: none;
   }
 
   body[data-terminal-view="overview"] .orbit-copy .eyebrow { display: none; }
