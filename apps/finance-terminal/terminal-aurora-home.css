@@ -558,9 +558,15 @@
   body[data-terminal-view="overview"] #market-grid .official-trend-head,
   body[data-terminal-view="overview"] #market-grid .official-trend-meta { font-size: 5px; }
   body[data-terminal-view="overview"] #market-grid .official-trend .sparkline { height: 20px; margin: 1px 0; }
-  body[data-terminal-view="overview"] #market-grid .provider-widget-shell,
-  body[data-terminal-view="overview"] #market-grid .provider-widget-shell tv-mini-chart { height: 57px; min-height: 0; }
-  body[data-terminal-view="overview"] #market-grid .provider-widget-shell { margin: 4px 0 0; }
+  body[data-terminal-view="overview"] #market-grid .provider-widget-shell {
+    height: 57px;
+    min-height: 0;
+    margin: 4px 0 0;
+  }
+  body[data-terminal-view="overview"] #market-grid .provider-widget-shell tv-mini-chart {
+    height: 100%;
+    min-height: 0;
+  }
   body[data-terminal-view="overview"] #market-grid .asset-footer,
   body[data-terminal-view="overview"] #market-grid .official-note,
   body[data-terminal-view="overview"] #market-grid .asset-details,
