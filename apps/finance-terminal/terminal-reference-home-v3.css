@@ -320,3 +320,9 @@
 @media (min-width: 1041px) and (max-aspect-ratio: 16 / 9) {
   body[data-terminal-view="overview"] { overflow-y: hidden; }
 }
+
+@media (min-width: 1041px) and (max-width: 1440px) {
+  body[data-terminal-view="overview"] .aurora-hud-list {
+    transform: translateY(.55vw);
+  }
+}
