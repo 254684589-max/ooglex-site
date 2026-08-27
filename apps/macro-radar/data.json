@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-08-27T15:09:20Z",
+  "updatedAt": "2026-08-27T15:19:38Z",
   "asOf": "2026-08-27",
-  "asOfSh": "2026-08-27 23:09",
+  "asOfSh": "2026-08-27 23:19",
   "live": true,
   "source": "FRED · EIA · Yahoo Finance · 交易所行情",
   "regime": {
-    "score": 55,
+    "score": 56,
     "labelZh": "中性",
     "labelEn": "NEUTRAL",
     "desc": "实际利率、流动性走弱压制风险偏好；波动率、信用利差相对稳健，尚未进入系统性压力区。"
@@ -324,7 +324,7 @@
       "score": 60,
       "status": "neutral",
       "statusZh": "中性",
-      "desc": "美元指数 99.2（走弱、流动性顺风）",
+      "desc": "美元指数 99.1（走弱、流动性顺风）",
       "spark": [
         99.18,
         99.74,
@@ -427,7 +427,7 @@
       "text": "广度代理处于近两年 36% 分位，涨势集中"
     }
   ],
-  "mutSummary": "今日 1 条市场异动，避险情绪升温、结构偏承压；与机制读数 55（中性）方向一致。",
+  "mutSummary": "今日 1 条市场异动，避险情绪升温、结构偏承压；与机制读数 56（中性）方向一致。",
   "macro": [
     {
       "zh": "利率走廊",
@@ -541,8 +541,8 @@
           "changeBps": -6,
           "asOf": "2026-08-25",
           "previousAsOf": "2026-08-24",
-          "updatedAt": "2026-08-27T15:09:20Z",
-          "lastAttemptAt": "2026-08-27T15:09:20Z",
+          "updatedAt": "2026-08-27T15:19:38Z",
+          "lastAttemptAt": "2026-08-27T15:19:38Z",
           "source": {
             "name": "FRED / Federal Reserve H.15",
             "url": "https://fred.stlouisfed.org/series/DGS10",
@@ -751,24 +751,24 @@
         {
           "name": "铜/金 ×1000 (工业 vs 避险)",
           "id": "",
-          "val": "1.44",
-          "chg": "+0.1%",
+          "val": "1.43",
+          "chg": "-0.0%",
           "asOf": "2026-08-27",
-          "tone": "up"
+          "tone": "down"
         },
         {
           "name": "金/银",
           "id": "",
-          "val": "66.8",
-          "chg": "-1.2%",
+          "val": "66.9",
+          "chg": "-1.0%",
           "asOf": "2026-08-27",
           "tone": "down"
         },
         {
           "name": "油/铜",
           "id": "",
-          "val": "12.30",
-          "chg": "-1.4%",
+          "val": "12.34",
+          "chg": "-1.0%",
           "asOf": "2026-08-27",
           "tone": "down"
         },
@@ -776,7 +776,7 @@
           "name": "油/金 ×100",
           "id": "",
           "val": "1.77",
-          "chg": "-1.2%",
+          "chg": "-1.0%",
           "asOf": "2026-08-27",
           "tone": "down"
         }
@@ -821,8 +821,8 @@
         {
           "name": "VIX",
           "id": "VIX",
-          "val": "14.56",
-          "chg": "-4.3%",
+          "val": "14.48",
+          "chg": "-4.8%",
           "asOf": "2026-08-27",
           "tone": "down"
         },
@@ -837,8 +837,8 @@
         {
           "name": "VVIX 波动之波动",
           "id": "VVIX",
-          "val": "82.89",
-          "chg": "-2.8%",
+          "val": "82.62",
+          "chg": "-3.1%",
           "asOf": "2026-08-27",
           "tone": "down"
         }
@@ -858,8 +858,8 @@
       "changePct": -0.16236127413010726,
       "asOf": "2026-08-21",
       "previousAsOf": "2026-08-20",
-      "updatedAt": "2026-08-27T15:09:20Z",
-      "lastAttemptAt": "2026-08-27T15:09:20Z",
+      "updatedAt": "2026-08-27T15:19:38Z",
+      "lastAttemptAt": "2026-08-27T15:19:38Z",
       "source": {
         "name": "FRED / Federal Reserve H.10",
         "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
@@ -913,8 +913,8 @@
       "changePct": -2.826036599490389,
       "asOf": "2026-08-25",
       "previousAsOf": "2026-08-24",
-      "updatedAt": "2026-08-27T15:09:20Z",
-      "lastAttemptAt": "2026-08-27T15:09:20Z",
+      "updatedAt": "2026-08-27T15:19:38Z",
+      "lastAttemptAt": "2026-08-27T15:19:38Z",
       "source": {
         "name": "U.S. EIA / Cushing WTI Spot",
         "url": "https://www.eia.gov/dnav/pet/hist/rwtcd.htm",
