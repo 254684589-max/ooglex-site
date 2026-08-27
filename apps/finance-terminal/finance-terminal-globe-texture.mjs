@@ -70,16 +70,16 @@ function renderOrthographic(state, centerLongitude) {
       const sourceY = Math.min(sourceHeight - 1,
         Math.max(0, Math.round((90 - latitude) / 180 * (sourceHeight - 1))));
       const input = (sourceY * sourceWidth + sourceX) * 4;
-      const edgeShade = .52 + depth * .48;
-      const northLight = Math.max(0, .2 - screenY * .1);
-      const sourcePeak = Math.max(pixels[input], pixels[input + 1], pixels[input + 2]);
-      const cityLight = Math.max(0, sourcePeak - 46) ** 1.08;
+      const edgeShade = .5 + depth * .5;
+      const northLight = Math.max(0, .18 - screenY * .09);
+      const warmLight = Math.max(0,
+        Math.min(pixels[input], pixels[input + 1]) - pixels[input + 2] * .72 - 8) ** 1.16;
       output[out] = Math.min(255,
-        pixels[input] * edgeShade * 1.05 + northLight * 9 + cityLight * .62);
+        pixels[input] * edgeShade * .84 + northLight * 6 + warmLight * 2.7);
       output[out + 1] = Math.min(255,
-        pixels[input + 1] * edgeShade * 1.08 + northLight * 20 + cityLight * .42);
+        pixels[input + 1] * edgeShade * .9 + northLight * 14 + warmLight * 2.15);
       output[out + 2] = Math.min(255,
-        pixels[input + 2] * (edgeShade + .08) * 1.14 + northLight * 38 + cityLight * .18);
+        pixels[input + 2] * (edgeShade + .06) + northLight * 27 + warmLight * .68);
       output[out + 3] = 255;
     }
   }

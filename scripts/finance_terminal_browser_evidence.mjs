@@ -102,7 +102,7 @@ export function validateBrowserEvidence(evidence) {
     "schemaVersion", "generatedAt", "scope", "source", "viewports", "summary",
     "doesNotAssert", "doesNotReadOrStoreQuotes"
   ]), "浏览器证据顶层字段无效");
-  require(evidence.schemaVersion === 5, "浏览器证据版本无效");
+  require(evidence.schemaVersion === 6, "浏览器证据版本无效");
   require(typeof evidence.generatedAt === "string"
     && /(?:Z|[+-]\d{2}:\d{2})$/.test(evidence.generatedAt)
     && Number.isFinite(Date.parse(evidence.generatedAt)), "浏览器证据时间无效");
@@ -237,7 +237,7 @@ export function buildBrowserEvidence(results, generatedAt = new Date().toISOStri
   });
   const observations = viewports.flatMap((viewport) => viewport.proxies);
   const evidence = {
-    schemaVersion: 5,
+    schemaVersion: 6,
     generatedAt,
     scope: "finance-terminal-free-proxy-runtime",
     source: "Chrome DevTools Protocol / static branch checkout",

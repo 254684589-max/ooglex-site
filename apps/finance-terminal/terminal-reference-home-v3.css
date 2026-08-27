@@ -1,8 +1,8 @@
-/* 1672 x 941 reference lock v4; live data semantics unchanged. */
+/* 1672x941 live reference. */
 
 @media (min-width: 1041px) {
   body[data-terminal-view="overview"] {
-    --reference-unit: 1vw;
+    overflow-y: hidden;
   }
 
   body[data-terminal-view="overview"] .shell {
@@ -43,12 +43,12 @@
 
   body[data-terminal-view="overview"] .section-nav a {
     min-height: 2.9vw;
-    padding: .48vw 1.5vw;
+    padding: .48vw 2.45vw;
     font-size: .96vw;
   }
 
   body[data-terminal-view="overview"] .terminal-mode-switch {
-    width: 17.15vw;
+    width: 16.8vw;
   }
 
   body[data-terminal-view="overview"] .terminal-mode-switch a {
@@ -76,7 +76,7 @@
   }
 
   body[data-terminal-view="overview"] #page-title {
-    gap: .66vw;
+    gap: 1.45vw;
   }
 
   body[data-terminal-view="overview"] #page-title > span {
@@ -100,7 +100,7 @@
   body[data-terminal-view="overview"] .aurora-evidence {
     width: 28.65vw;
     min-height: 4.08vw;
-    margin-top: 1.56vw;
+    margin-top: 2.1vw;
   }
 
   body[data-terminal-view="overview"] .aurora-evidence > * {
@@ -127,7 +127,7 @@
   }
 
   body[data-terminal-view="overview"] .market-globe-canvas {
-    filter: saturate(1.34) brightness(1.24) contrast(1.13)
+    filter: saturate(1.27) brightness(1.12) contrast(1.18)
       drop-shadow(0 0 14px rgba(68, 198, 255, .7));
   }
 
@@ -161,21 +161,23 @@
   body[data-terminal-view="overview"] .orbit-clock i { font-size: .39vw; }
 
   body[data-terminal-view="overview"] .clock-new-york { top: 42%; left: -3%; }
-  body[data-terminal-view="overview"] .clock-london { top: 13%; left: 32%; }
-  body[data-terminal-view="overview"] .clock-shanghai { top: 42%; right: 29%; }
-  body[data-terminal-view="overview"] .clock-tokyo { top: 59%; right: 22%; }
+  body[data-terminal-view="overview"] .clock-london { top: 18%; left: 29%; }
+  body[data-terminal-view="overview"] .clock-shanghai { top: 48%; right: 29%; }
+  body[data-terminal-view="overview"] .clock-tokyo { top: 65%; right: 24%; }
 
   body[data-terminal-view="overview"] .aurora-hud-list {
+    height: calc(100% + 5vw);
     gap: .42vw;
+    transform: translateY(.3vw);
   }
 
   body[data-terminal-view="overview"] .aurora-hud {
-    grid-template-columns: 4.62vw minmax(0, 1fr);
+    grid-template-columns: 5.05vw minmax(0, 1fr);
     gap: .58vw;
   }
 
   body[data-terminal-view="overview"] .aurora-hud-ring {
-    width: 4.48vw;
+    width: 4.85vw;
   }
 
   body[data-terminal-view="overview"] .aurora-hud-ring::before { inset: .48vw; }
@@ -287,12 +289,12 @@
   }
 
   body[data-terminal-view="overview"] .aurora-gateway {
-    gap: .38vw;
+    gap: .1vw;
     padding: .55vw;
   }
 
   body[data-terminal-view="overview"] .aurora-gateway header {
-    min-height: 2.42vw;
+    min-height: 1.95vw;
     gap: .56vw;
     padding-bottom: .38vw;
   }
@@ -312,6 +314,6 @@
 
   body[data-terminal-view="overview"] .aurora-statusbar > span {
     padding: .3vw .62vw;
-    font-size: .43vw;
+    font-size: .48vw;
   }
 }
