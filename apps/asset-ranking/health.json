@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "asset-ranking",
-  "generatedAt": "2026-08-27T01:37:19Z",
-  "status": "healthy",
+  "generatedAt": "2026-08-27T02:31:28Z",
+  "status": "degraded",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-08-27T01:37:19Z",
-  "lastSuccessfulAt": "2026-08-27T01:37:19Z",
+  "lastAttemptAt": "2026-08-27T02:31:28Z",
+  "lastSuccessfulAt": "2026-08-27T02:31:28Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-08-27T01:37:19Z",
+  "publishedSnapshotAt": "2026-08-27T02:31:28Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -52,7 +52,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-27T01:37:19Z"
+      "lastSuccessAt": "2026-08-27T02:31:28Z"
     },
     {
       "id": "coingecko",
@@ -67,13 +67,13 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-27T01:37:19Z"
+      "lastSuccessAt": "2026-08-27T02:31:28Z"
     },
     {
       "id": "companies-upstream",
       "name": "companies/data.json上游快照",
       "role": "upstream",
-      "status": "healthy",
+      "status": "degraded",
       "records": 230,
       "counts": {
         "market": 221,
@@ -82,13 +82,13 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-27T01:34:27Z",
+      "lastSuccessAt": "2026-08-27T02:28:29Z",
       "upstream": {
         "dataset": "companies",
         "contractKnown": true,
-        "status": "healthy",
-        "lastAttemptAt": "2026-08-27T01:34:27Z",
-        "lastSuccessfulAt": "2026-08-27T01:34:27Z",
+        "status": "degraded",
+        "lastAttemptAt": "2026-08-27T02:28:29Z",
+        "lastSuccessfulAt": "2026-08-27T02:28:29Z",
         "consecutiveFailures": 0,
         "snapshotPreserved": false,
         "snapshotAligned": true
@@ -107,7 +107,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-27T01:37:19Z"
+      "lastSuccessAt": "2026-08-27T02:31:28Z"
     }
   ],
   "recovery": {
