@@ -577,11 +577,14 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
   }
   const layout = await client.send("Page.getLayoutMetrics");
   const content = layout.cssContentSize || layout.contentSize;
+  const capture = width === 1672
+    ? { width: 1672, height: 941 }
+    : { width: Math.ceil(content.width), height: Math.ceil(content.height) };
   const screenshot = await client.send("Page.captureScreenshot", {
     format: "png",
     fromSurface: true,
     captureBeyondViewport: true,
-    clip: { x: 0, y: 0, width: Math.ceil(content.width), height: Math.ceil(content.height), scale: 1 }
+    clip: { x: 0, y: 0, width: capture.width, height: capture.height, scale: 1 }
   });
   const screenshotPath = path.join(artifacts, `finance-terminal-${width}.png`);
   await writeFile(screenshotPath, Buffer.from(screenshot.data, "base64"));

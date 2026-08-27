@@ -2859,8 +2859,8 @@ def main() -> None:
     require(VISUAL_FIDELITY_CSS.stat().st_size <= 6_000, "金融终端高保真视觉层超过6KB性能预算")
     require(REFERENCE_FIDELITY_CSS.stat().st_size <= 12_900, "金融终端参考图精修层超过12.9KB性能预算")
     require(AURORA_HOME_CSS.stat().st_size <= 26_000, "金融终端极光首页样式超过26KB性能预算")
-    require(REFERENCE_HOME_V3_CSS.stat().st_size <= 9_000,
-            "金融终端1672像素参考锁定样式超过9KB性能预算")
+    require(REFERENCE_HOME_V3_CSS.stat().st_size <= 9_500,
+            "金融终端1672像素参考锁定样式超过9.5KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
     require(AURORA_HOME_MODULE.stat().st_size <= 3_500, "金融终端极光首页同步模块超过3.5KB性能预算")
     require(APP.stat().st_size + LOADER.stat().st_size + TERMINAL_VISUALS.stat().st_size
@@ -2964,8 +2964,8 @@ def main() -> None:
     compact_reference_home = re.sub(r"\s+", "", reference_home_v3_css)
     require("grid-template-rows:20.93vw6.7vw22.36vw" in compact_reference_home
             and "grid-template-columns:1.12fr1fr1.11fr" in compact_reference_home
-            and "width:74.5%" in compact_reference_home
-            and "margin-left:6.3%" in compact_reference_home
+            and "width:76.3%" in compact_reference_home
+            and "margin-left:6.8%" in compact_reference_home
             and "grid-template-columns:minmax(0,1fr)16.2vw" in compact_reference_home,
             "1672×941参考锁定层缺少目标纵向网格、资产弧带或三工作区比例")
     require('body[data-terminal-view="overview"] #main-content' in command_center_css

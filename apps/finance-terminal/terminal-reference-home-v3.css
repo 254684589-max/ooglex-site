@@ -1,8 +1,5 @@
-/* 1672x941 live reference. */
-
 @media (min-width: 1041px) {
   body[data-terminal-view="overview"] {
-    overflow-y: hidden;
   }
 
   body[data-terminal-view="overview"] .shell {
@@ -43,7 +40,7 @@
 
   body[data-terminal-view="overview"] .section-nav a {
     min-height: 2.9vw;
-    padding: .48vw 2.45vw;
+    padding: .48vw 2.9vw;
     font-size: .96vw;
   }
 
@@ -73,6 +70,7 @@
 
   body[data-terminal-view="overview"] .orbit-copy {
     padding: .35vw 0 .48vw .38vw;
+    transform: translateY(.88vw);
   }
 
   body[data-terminal-view="overview"] #page-title {
@@ -100,7 +98,7 @@
   body[data-terminal-view="overview"] .aurora-evidence {
     width: 28.65vw;
     min-height: 4.08vw;
-    margin-top: 2.1vw;
+    margin-top: 1.86vw;
   }
 
   body[data-terminal-view="overview"] .aurora-evidence > * {
@@ -163,21 +161,23 @@
   body[data-terminal-view="overview"] .clock-new-york { top: 42%; left: -3%; }
   body[data-terminal-view="overview"] .clock-london { top: 18%; left: 29%; }
   body[data-terminal-view="overview"] .clock-shanghai { top: 48%; right: 29%; }
-  body[data-terminal-view="overview"] .clock-tokyo { top: 65%; right: 24%; }
+  body[data-terminal-view="overview"] .clock-tokyo { top: 67%; right: 24%; }
 
   body[data-terminal-view="overview"] .aurora-hud-list {
-    height: calc(100% + 5vw);
+    position: relative;
+    z-index: 5;
+    height: calc(100% + 3.6vw);
     gap: .42vw;
-    transform: translateY(.3vw);
+    transform: translate(.4vw, .55vw);
   }
 
   body[data-terminal-view="overview"] .aurora-hud {
     grid-template-columns: 5.05vw minmax(0, 1fr);
-    gap: .58vw;
+    gap: 1.05vw;
   }
 
   body[data-terminal-view="overview"] .aurora-hud-ring {
-    width: 4.85vw;
+    width: 4.7vw;
   }
 
   body[data-terminal-view="overview"] .aurora-hud-ring::before { inset: .48vw; }
@@ -198,8 +198,8 @@
   body[data-terminal-view="overview"] #market-section::after { bottom: -.4vw; }
 
   body[data-terminal-view="overview"] .market-grid {
-    width: 74.5%;
-    margin-left: 6.3%;
+    width: 76.3%;
+    margin-left: 6.8%;
     background: linear-gradient(180deg, rgba(5, 23, 37, .86), rgba(2, 11, 19, .82));
   }
 
@@ -277,7 +277,6 @@
   }
 
   body[data-terminal-view="overview"] #aurora-gateways {
-    box-sizing: border-box;
     grid-template-rows: minmax(0, 1fr) 2.55vw;
     gap: 1.05vw;
     padding-top: 1.05vw;
@@ -290,7 +289,7 @@
 
   body[data-terminal-view="overview"] .aurora-gateway {
     gap: .1vw;
-    padding: .55vw;
+    padding: .05vw .55vw .55vw;
   }
 
   body[data-terminal-view="overview"] .aurora-gateway header {
@@ -316,4 +315,8 @@
     padding: .3vw .62vw;
     font-size: .48vw;
   }
+}
+
+@media (min-width: 1041px) and (max-aspect-ratio: 16 / 9) {
+  body[data-terminal-view="overview"] { overflow-y: hidden; }
 }
