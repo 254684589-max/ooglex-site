@@ -1605,8 +1605,12 @@ assert.deepStrictEqual(operationCards.map((card) => card.id), [
   "macro-radar", "asset-tracker", "companies", "asset-ranking"
 ]);
 assert.deepStrictEqual(operationCards.map((card) => card.status), [
-  macroHealth.status, assetTrackerHealth.status, companiesHealth.status, assetRankingHealth.status
+  macroHealth.status,
+  adapter.adaptSourceHealth(assetTrackerHealth, "asset-tracker", assetTracker, currentNow).status,
+  adapter.adaptSourceHealth(companiesHealth, "companies", companies, currentNow).status,
+  adapter.adaptSourceHealth(assetRankingHealth, "asset-ranking", assetRanking, currentNow).status
 ]);
+assert.strictEqual(operationCards[3].reportedPipelineStatus, assetRankingHealth.status);
 /* 条数以各自健康文件声明的为准：跨资产清单扩容时这里不该跟着改成新的魔法数字。 */
 assert.deepStrictEqual(operationCards.map((card) => card.publishedRecords), [
   macroHealth.coverage.publishedSeries,
@@ -1663,7 +1667,9 @@ const tamperedOperationCards = operationsData.buildOperationsCards(tamperedOpera
 assert.strictEqual(tamperedOperationCards[0].status, "unknown");
 assert.strictEqual(tamperedOperationCards[0].contractKnown, false);
 assert.deepStrictEqual(tamperedOperationCards.slice(1).map((card) => card.status), [
-  assetTrackerHealth.status, companiesHealth.status, assetRankingHealth.status
+  adapter.adaptSourceHealth(assetTrackerHealth, "asset-tracker", assetTracker, currentNow).status,
+  adapter.adaptSourceHealth(companiesHealth, "companies", companies, currentNow).status,
+  adapter.adaptSourceHealth(assetRankingHealth, "asset-ranking", assetRanking, currentNow).status
 ]);
 
 const mismatchedMacroSnapshot = JSON.parse(JSON.stringify(macro));
@@ -1857,7 +1863,9 @@ assert(globalAssets.assets.some((asset) => asset.static));
 assert(globalAssets.assets.some((asset) => !asset.static));
 assert.deepStrictEqual(globalAssets.quality.counts, assetRanking.dataQuality.counts);
 assert.strictEqual(globalAssets.quality.declaredValid, true);
-assert.strictEqual(globalAssets.sourceHealth.status, assetRankingHealth.status);
+assert.strictEqual(globalAssets.sourceHealth.status,
+  adapter.adaptSourceHealth(assetRankingHealth, "asset-ranking", assetRanking, currentNow).status);
+assert.strictEqual(globalAssets.sourceHealth.reportedPipelineStatus, assetRankingHealth.status);
 assert.strictEqual(globalAssets.sourceHealth.freshCoveragePct,
   assetRankingHealth.coverage.freshCoveragePct);
 assert.strictEqual(globalAssets.sourceHealth.verifiedCoveragePct,
@@ -1984,7 +1992,9 @@ assert.strictEqual(companyLeaders.sourceHealth.freshCoveragePct,
 assert.strictEqual(companyLeaders.sourceHealth.verifiedCoveragePct,
   companiesHealth.coverage.verifiedCoveragePct);
 assert.strictEqual(companyLeaders.sourceHealth.slowEstimateRecords, companies.dataQuality.counts.estimate);
-assert.strictEqual(companyLeaders.sourceHealth.dynamicIssueRecords, 0);
+const expectedCompanyDynamicIssues = companies.companies.filter((company) => company.private !== true
+  && (!company.dataMeta || company.dataMeta.mode !== "market" || company.dataMeta.status !== "ok")).length;
+assert.strictEqual(companyLeaders.sourceHealth.dynamicIssueRecords, expectedCompanyDynamicIssues);
 if (companies.dataQuality.counts.unknown + companies.dataQuality.counts.unavailable > 0) {
   assert(companyLeaders.note.includes("暂停当日领涨与领跌"));
 }

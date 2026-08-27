@@ -1531,6 +1531,7 @@
   <link rel="stylesheet" href="terminal-visual-fidelity.css">
   <link rel="stylesheet" href="terminal-reference-fidelity.css">
   <link rel="stylesheet" href="terminal-aurora-home.css">
+  <link rel="stylesheet" href="terminal-reference-home-v2.css">
 </head>
 <body data-terminal-view="overview">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -1598,22 +1599,25 @@
       <section class="hero command-hero" id="overview-section" aria-labelledby="page-title">
         <article class="orbit-panel">
           <div class="orbit-copy">
-            <p class="eyebrow">TODAY'S FIRST READ · VERIFIED SIGNALS</p>
+            <p class="eyebrow">GLOBAL MARKET PULSE · VERIFIED SIGNALS</p>
             <h1 id="page-title">
               <span>全球市场态势</span>
-              <strong id="overview-insight-title" data-market-insight-title>正在校验</strong>
+              <strong class="overview-verdict">谨慎观察</strong>
             </h1>
-            <p class="hero-copy" id="overview-insight-copy" data-market-insight-copy>只依据已校验的宏观制度信号生成规则摘要；缺任一必要信号时保持空态，不补造判断。</p>
+            <p class="hero-copy">
+              <strong id="overview-insight-title" data-market-insight-title>正在校验市场判断</strong>
+              <span id="overview-insight-copy" data-market-insight-copy>只依据已校验的宏观制度信号生成规则摘要；缺任一必要信号时保持空态，不补造判断。</span>
+            </p>
             <div class="aurora-evidence" aria-label="今日判断的三项证据">
-              <a href="#risk-section">
+              <a href="#risk-section" data-evidence-icon="◎">
                 <span>宏观制度</span>
                 <strong id="overview-macro-chip">读取中</strong>
               </a>
-              <button type="button" id="risk-radar-detail">
+              <button type="button" id="risk-radar-detail" data-evidence-icon="◇">
                 <span>六维风险</span>
                 <strong id="overview-risk-chip">读取中</strong>
               </button>
-              <a href="#method-section">
+              <a href="#method-section" data-evidence-icon="◉">
                 <span>数据覆盖</span>
                 <strong id="overview-coverage-chip">校验中</strong>
               </a>
@@ -1689,10 +1693,10 @@
               <g class="market-node" transform="translate(548 235)"><circle r="5"></circle><circle class="node-pulse" r="12"></circle></g>
               <g class="market-node market-node-amber" transform="translate(625 210)"><circle r="5"></circle><circle class="node-pulse" r="12"></circle></g>
             </svg>
-            <span class="orbit-clock clock-new-york"><b>NEW YORK</b><time data-market-time="America/New_York">--:--</time><u data-market-zone="America/New_York"></u><i class="orbit-session" data-market-session="America/New_York"></i></span>
-            <span class="orbit-clock clock-london"><b>LONDON</b><time data-market-time="Europe/London">--:--</time><u data-market-zone="Europe/London"></u><i class="orbit-session" data-market-session="Europe/London"></i></span>
-            <span class="orbit-clock clock-shanghai"><b>SHANGHAI</b><time data-market-time="Asia/Shanghai">--:--</time><u data-market-zone="Asia/Shanghai"></u><i class="orbit-session" data-market-session="Asia/Shanghai"></i></span>
-            <span class="orbit-clock clock-tokyo"><b>TOKYO</b><time data-market-time="Asia/Tokyo">--:--</time><u data-market-zone="Asia/Tokyo"></u><i class="orbit-session" data-market-session="Asia/Tokyo"></i></span>
+            <span class="orbit-clock clock-new-york"><b>纽约</b><time data-market-time="America/New_York">--:--</time><u data-market-zone="America/New_York"></u><i class="orbit-session" data-market-session="America/New_York"></i></span>
+            <span class="orbit-clock clock-london"><b>伦敦</b><time data-market-time="Europe/London">--:--</time><u data-market-zone="Europe/London"></u><i class="orbit-session" data-market-session="Europe/London"></i></span>
+            <span class="orbit-clock clock-shanghai"><b>上海</b><time data-market-time="Asia/Shanghai">--:--</time><u data-market-zone="Asia/Shanghai"></u><i class="orbit-session" data-market-session="Asia/Shanghai"></i></span>
+            <span class="orbit-clock clock-tokyo"><b>东京</b><time data-market-time="Asia/Tokyo">--:--</time><u data-market-zone="Asia/Tokyo"></u><i class="orbit-session" data-market-session="Asia/Tokyo"></i></span>
             <figcaption id="orbit-caption">城市时间按设备当前时刻换算 · 时段按各所常规交易时段与周末计算，未计入交易所假日 · 连线为示意，非资金流向图</figcaption>
           </figure>
         </article>
@@ -1705,7 +1709,7 @@
             </div>
             <div class="aurora-hud aurora-hud-amber">
               <span class="aurora-hud-ring" aria-hidden="true"><i>◇</i></span>
-              <span><small>六维风险</small><strong id="hud-risk-value">—</strong><b id="hud-risk-state">读取中</b></span>
+              <span><small>风险雷达</small><strong id="hud-risk-value">—</strong><b id="hud-risk-state">读取中</b></span>
             </div>
             <div class="aurora-hud aurora-hud-green">
               <span class="aurora-hud-ring" aria-hidden="true"><i>∿</i></span>
@@ -1713,7 +1717,7 @@
             </div>
             <div class="aurora-hud aurora-hud-blue">
               <span class="aurora-hud-ring" aria-hidden="true"><i>▤</i></span>
-              <span><small>核心覆盖</small><strong id="hud-data-value">— / 6</strong><b id="hud-data-state">校验中</b></span>
+              <span><small>数据健康</small><strong id="hud-data-value">— / 6</strong><b id="hud-data-state">校验中</b></span>
             </div>
           </div>
           <div class="risk-radar-head">
@@ -1775,11 +1779,20 @@
               <div><small>WORKSPACE 01</small><h3>专业终端</h3></div>
             </header>
             <div class="aurora-gateway-preview aurora-terminal-preview" aria-hidden="true">
-              <span>跨资产行情</span><span>六大品类</span><span>自选与详情</span>
-              <i></i><i></i><i></i><i></i><i></i><i></i>
+              <div class="preview-quote-table">
+                <span><b>指数</b><i></i></span><span><b>利率</b><i></i></span><span><b>外汇</b><i></i></span>
+                <span><b>贵金属</b><i></i></span><span><b>能源</b><i></i></span><span><b>数字资产</b><i></i></span>
+              </div>
+              <div class="preview-chart">
+                <span>跨资产趋势</span>
+                <svg viewBox="0 0 240 90" preserveAspectRatio="none"><path class="preview-grid-line" d="M0 18H240M0 45H240M0 72H240"></path><path class="preview-area" d="M0 78L22 68L42 72L64 54L84 61L104 42L126 47L148 28L170 38L193 20L214 26L240 10V90H0Z"></path><path class="preview-line" d="M0 78L22 68L42 72L64 54L84 61L104 42L126 47L148 28L170 38L193 20L214 26L240 10"></path></svg>
+              </div>
+              <div class="preview-flow-table">
+                <span>强弱队列</span><i></i><i></i><i></i><i></i><i></i><i></i>
+              </div>
             </div>
             <p>进入高密度行情板，按商品、指数、股票、外汇、加密与债券组织决策信息。</p>
-            <a class="gateway-enter" href="#board-section">进入专业终端 <span aria-hidden="true">→</span></a>
+            <a class="gateway-enter" href="#board-section" aria-label="进入专业终端">进入 <span aria-hidden="true">→</span></a>
           </article>
 
           <article class="aurora-gateway aurora-gateway-macro">
@@ -1788,12 +1801,18 @@
               <div><small>WORKSPACE 02</small><h3>宏观研究</h3></div>
             </header>
             <div class="aurora-gateway-preview aurora-macro-preview" aria-hidden="true">
-              <span>制度信号</span><span>收益率曲线</span><span>金融压力</span>
-              <i></i><i></i><i></i>
+              <div class="preview-macro-chart">
+                <span>美债收益率曲线</span>
+                <svg viewBox="0 0 240 90" preserveAspectRatio="none"><path class="preview-grid-line" d="M0 18H240M0 45H240M0 72H240"></path><path class="preview-line preview-line-soft" d="M0 70L40 59L80 51L120 39L160 28L200 19L240 18"></path><path class="preview-line" d="M0 62L40 52L80 40L120 30L160 19L200 14L240 16"></path></svg>
+              </div>
+              <div class="preview-macro-chart">
+                <span>全球流动性监测</span>
+                <svg viewBox="0 0 240 90" preserveAspectRatio="none"><path class="preview-grid-line" d="M0 18H240M0 45H240M0 72H240"></path><path class="preview-area" d="M0 44L20 53L42 40L62 60L84 34L104 48L126 30L148 54L170 42L192 70L214 54L240 66V90H0Z"></path><path class="preview-line" d="M0 44L20 53L42 40L62 60L84 34L104 48L126 30L148 54L170 42L192 70L214 54L240 66"></path></svg>
+              </div>
             </div>
             <p>查看宏观制度、期限结构、情绪、金融压力与地缘风险定价的原始读数和口径。</p>
             <div class="aurora-gateway-actions">
-              <a class="gateway-enter" href="#risk-section">进入宏观研究 <span aria-hidden="true">→</span></a>
+              <a class="gateway-enter" href="#risk-section" aria-label="进入宏观研究">进入 <span aria-hidden="true">→</span></a>
               <button type="button" class="gateway-secondary" id="yield-curve-entry">打开收益率曲线</button>
             </div>
           </article>
@@ -1804,11 +1823,18 @@
               <div><small>WORKSPACE 03</small><h3>实时事件</h3></div>
             </header>
             <div class="aurora-gateway-preview aurora-events-preview" aria-hidden="true">
-              <span>经济日历</span><span>市场新闻</span><span>资产关联</span>
-              <i></i><i></i><i></i><i></i>
+              <div class="preview-event-list">
+                <span><i class="event-dot event-dot-cyan"></i><b>经济日历</b><u></u></span>
+                <span><i class="event-dot event-dot-amber"></i><b>央行与政策</b><u></u></span>
+                <span><i class="event-dot event-dot-red"></i><b>通胀与就业</b><u></u></span>
+                <span><i class="event-dot event-dot-blue"></i><b>市场新闻</b><u></u></span>
+              </div>
+              <div class="preview-impact-table">
+                <span>资产影响预览</span><i></i><i></i><i></i><i></i><i></i>
+              </div>
             </div>
             <p>按发布时间与影响等级查看经济事件和市场资讯；每项保留来源、时点与更新状态。</p>
-            <a class="gateway-enter" href="#information-section">进入实时事件 <span aria-hidden="true">→</span></a>
+            <a class="gateway-enter" href="#information-section" aria-label="进入实时事件">进入 <span aria-hidden="true">→</span></a>
           </article>
         </div>
 
