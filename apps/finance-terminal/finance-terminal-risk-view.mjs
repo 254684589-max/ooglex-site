@@ -69,7 +69,9 @@ export function createRiskView(dependencies = {}) {
     valueRow.className = "risk-value-row";
     appendText(valueRow, "span", "risk-value", formatRiskValue(signal));
     if (signal.suffix) appendText(valueRow, "span", "risk-value-suffix", signal.suffix.trim());
-    appendText(valueRow, "span", "risk-assessment", signal.assessment);
+    /* 短态供首屏HUD用，卡面仍是完整判语。 */
+    const verdict = appendText(valueRow, "span", "risk-assessment", signal.assessment);
+    if (signal.shortAssessment) verdict.dataset.shortState = signal.shortAssessment;
     gauge.appendChild(valueRow);
     appendText(gauge, "span", "risk-hud-scale", isNumber(signal.meterPercent) ? "0 — 100" : "RAW INDEX");
     card.appendChild(gauge);

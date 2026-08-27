@@ -487,15 +487,21 @@
   body[data-terminal-view="overview"] #market-grid .card-top { min-height: 0; }
   body[data-terminal-view="overview"] #market-grid .asset-name { font-size: clamp(10px, .74vw, 14px); }
 
+  body[data-terminal-view="overview"] #market-grid .asset-card,
+  body[data-terminal-view="overview"] #market-grid .skeleton {
+    padding-bottom: 2px;
+  }
+
   body[data-terminal-view="overview"] #market-grid .asset-price {
-    margin-top: 1px;
+    margin-top: 0;
     margin-right: clamp(6px, .5vw, 11px);
     font-size: clamp(15px, 1.14vw, 22px);
+    line-height: 1.16;
   }
 
   body[data-terminal-view="overview"] #market-grid .change-row { margin-top: 0; }
   body[data-terminal-view="overview"] #market-grid .asset-change { font-size: clamp(9px, .66vw, 13px); }
-  body[data-terminal-view="overview"] #market-grid .change-word { opacity: .72; }
+  body[data-terminal-view="overview"] #market-grid .change-word { opacity: .6; font-size: clamp(5px, .36vw, 8px); }
 
   /* 卡片是纵向 flex：走势块要“吃满”剩余高度，否则会被压成一条线。
      观测窗口标注改为浮在右上角，保留口径说明又不再吃掉走势的高度。 */
@@ -503,10 +509,10 @@
     position: relative;
     display: flex;
     height: auto;
-    min-height: clamp(26px, 2vw, 40px);
+    min-height: clamp(30px, 2.3vw, 46px);
     flex: 1 1 auto;
     flex-direction: column;
-    margin-top: 2px;
+    margin-top: 1px;
     padding: 0;
   }
 
@@ -516,7 +522,7 @@
     right: 1px;
     min-height: 0;
     gap: 5px;
-    opacity: .5;
+    opacity: .34;
     pointer-events: none;
   }
 
@@ -668,7 +674,7 @@
 
   /* 页脚状态条按参考稿放宽来源与状态两格，字号提到可读区间。 */
   body[data-terminal-view="overview"] .aurora-statusbar {
-    grid-template-columns: 1.85fr 1.05fr .82fr .78fr 1.6fr auto;
+    grid-template-columns: 2.1fr 1fr .8fr .72fr 1.55fr auto;
   }
 
   body[data-terminal-view="overview"] .aurora-statusbar > span {
@@ -695,4 +701,44 @@
 @media (max-width: 620px) {
   .aurora-evidence > [data-evidence-icon] { grid-template-columns: 34px minmax(0, 1.5fr) minmax(0, 1fr); }
   .aurora-evidence strong { font-size: 12px; }
+}
+
+/* ---------- 8. Reference typography ----------
+   参考稿的读数用比例无衬线体（5.4 / 5,321.41 / -0.32%），我们此前一律用等宽体，
+   字距被拉宽、整体气质偏「终端」而不是「仪表盘」。这里只换总览首屏的读数与名称，
+   并开 tabular-nums 保持列对齐；RECENT OBSERVATIONS 一类微型技术标签仍用等宽。 */
+
+@media (min-width: 1041px) {
+  body[data-terminal-view="overview"] .aurora-hud small,
+  body[data-terminal-view="overview"] .aurora-hud strong,
+  body[data-terminal-view="overview"] .aurora-hud b,
+  body[data-terminal-view="overview"] .aurora-evidence strong,
+  body[data-terminal-view="overview"] .aurora-evidence span,
+  body[data-terminal-view="overview"] #market-grid .asset-name,
+  body[data-terminal-view="overview"] #market-grid .asset-price,
+  body[data-terminal-view="overview"] #market-grid .asset-change,
+  body[data-terminal-view="overview"] #market-grid .change-word {
+    font-family: var(--sans);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+  }
+
+  body[data-terminal-view="overview"] .aurora-hud strong {
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+
+  body[data-terminal-view="overview"] .aurora-hud small { letter-spacing: 0.04em; }
+  body[data-terminal-view="overview"] .aurora-hud b { font-weight: 600; }
+
+  body[data-terminal-view="overview"] #market-grid .asset-price {
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+
+  body[data-terminal-view="overview"] #market-grid .asset-change { font-weight: 620; }
+  body[data-terminal-view="overview"] #market-grid .asset-name { font-weight: 600; }
+
+  /* 品牌字距按参考稿收紧一档。 */
+  body[data-terminal-view="overview"] .brand-lockup strong { letter-spacing: 0.075em; }
 }

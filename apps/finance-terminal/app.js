@@ -1226,6 +1226,8 @@
     var stale = age > OFR_FSI_MAX_BUSINESS_DAYS;
     var partial = !isNumber(fsi.change);
     var assessment = fsi.value > 0 ? "高于历史平均压力" : fsi.value < 0 ? "低于历史平均压力" : "处于历史平均压力";
+    /* 同一个比较的短写法，供首屏HUD单行显示；卡片里仍是完整判语。 */
+    var shortAssessment = fsi.value > 0 ? "偏高" : fsi.value < 0 ? "偏低" : "持平";
     var changeText = "日变化暂不可用";
     if (!partial) {
       var sign = fsi.change > 0 ? "+" : fsi.change < 0 ? "−" : "";
@@ -1247,6 +1249,7 @@
       decimals: 2,
       suffix: "",
       assessment: assessment,
+      shortAssessment: shortAssessment,
       changeText: changeText,
       note: note,
       meterPercent: null,
