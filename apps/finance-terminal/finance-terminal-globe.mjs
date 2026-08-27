@@ -7,7 +7,6 @@ const ROTATION = .0025;
 const SIN_TILT = Math.sin(.34);
 const COS_TILT = Math.cos(.34);
 const RAD = Math.PI / 180;
-const ORBITS = [[1.2, .3, -.36, "244,182,75"], [1.34, .19, .28, "69,212,255"], [1.09, .46, .62, "88,206,255"]];
 
 export function textureCoordinate(centerLongitude, normalizedX) {
   const longitude = centerLongitude + Math.asin(Math.max(-1, Math.min(1, normalizedX))) * 180 / Math.PI;
@@ -87,7 +86,7 @@ export function initMarketGlobe(options = {}) {
 
   function drawSphere(cx, cy, r) {
     if (textureReady) drawEarthTexture(ctx, textureImage, cx, cy, r, spun);
-    ctx.strokeStyle = "rgba(99,216,255,.3)";
+    ctx.strokeStyle = "rgba(99,216,255,.1)";
     ctx.lineWidth = Math.max(.6, r * .0035);
     ctx.beginPath();
     [-60, -30, 0, 30, 60].forEach((latitude) => trace(cx, cy, r, latitude, true));
@@ -99,28 +98,10 @@ export function initMarketGlobe(options = {}) {
     for (let index = 0; index < land.length; index += 2) {
       const point = projectPoint(land[index], land[index + 1], spun);
       if (point.depth <= .04) continue;
-      ctx.globalAlpha = Math.min(textureReady ? .42 : 1, point.depth * (textureReady ? .58 : 1.55));
+      ctx.globalAlpha = Math.min(textureReady ? .3 : 1, point.depth * (textureReady ? .44 : 1.55));
       ctx.fillRect(cx + point.x * r - dot / 2, cy + point.y * r - dot / 2, dot, dot);
     }
     ctx.globalAlpha = 1;
-  }
-
-  function drawOrbits(cx, cy, r, front) {
-    ORBITS.forEach(([scale, flatten, rotation, color]) => {
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(rotation);
-      ctx.strokeStyle = `rgba(${color},${front ? .85 : .26})`;
-      ctx.lineWidth = Math.max(1, r * (front ? .006 : .004));
-      if (front) {
-        ctx.shadowColor = `rgba(${color},.55)`;
-        ctx.shadowBlur = r * .05;
-      }
-      ctx.beginPath();
-      ctx.ellipse(0, 0, r * scale, r * scale * flatten, 0, front ? Math.PI : 0, front ? Math.PI * 2 : Math.PI);
-      ctx.stroke();
-      ctx.restore();
-    });
   }
 
   function draw(longitude) {
@@ -131,7 +112,6 @@ export function initMarketGlobe(options = {}) {
     const cy = cx;
     const r = size * .385;
     ctx.clearRect(0, 0, size, size);
-    drawOrbits(cx, cy, r, false);
 
     const body = ctx.createRadialGradient(cx - r * .35, cy - r * .4, r * .05, cx, cy, r * 1.05);
     body.addColorStop(0, "rgba(30,102,150,.97)");
@@ -145,16 +125,14 @@ export function initMarketGlobe(options = {}) {
     drawSphere(cx, cy, r);
     ctx.restore();
 
-    ctx.strokeStyle = "rgba(126,232,255,.85)";
-    ctx.lineWidth = Math.max(1, r * .0075);
-    ctx.shadowColor = "rgba(66,209,255,.9)";
-    ctx.shadowBlur = r * .13;
+    ctx.strokeStyle = "rgba(126,232,255,.5)";
+    ctx.lineWidth = Math.max(1, r * .006);
+    ctx.shadowColor = "rgba(66,209,255,.55)";
+    ctx.shadowBlur = r * .075;
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
     ctx.stroke();
     ctx.shadowBlur = 0;
-
-    drawOrbits(cx, cy, r, true);
   }
 
   function stop() {
