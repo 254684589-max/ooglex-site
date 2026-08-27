@@ -5,11 +5,20 @@ export function initAuroraHome({ document, MutationObserver }) {
     if (target) target.textContent = source?.textContent.trim() || fallback;
   }
 
+  /* HUD 一行只放得下短标签：优先用来源节点自己声明的短态，其次取「中文 · ENGLISH」的中文段。 */
+  function copyShort(targetId, source, fallback = "读取中") {
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    const full = source?.textContent.trim() || "";
+    const short = source?.dataset?.shortState || full.split(" · ")[0];
+    target.textContent = short || fallback;
+  }
+
   function sync() {
     copy("overview-insight-title", document.getElementById("market-insight-title"));
     copy("overview-insight-copy", document.getElementById("market-insight-copy"));
     copy("hud-risk-value", document.getElementById("risk-radar-score"));
-    copy("hud-risk-state", document.getElementById("risk-radar-state"));
+    copyShort("hud-risk-state", document.getElementById("risk-radar-state"));
     const score = document.getElementById("risk-radar-score")?.textContent.trim();
     const riskChip = document.getElementById("overview-risk-chip");
     if (riskChip) riskChip.textContent = score && score !== "—" ? `${score} / 10` : "信号不足";
@@ -19,12 +28,12 @@ export function initAuroraHome({ document, MutationObserver }) {
     const macroState = macro?.querySelector(".risk-assessment");
     const macroValue = document.getElementById("hud-macro-value");
     if (macroValue) macroValue.textContent = Number.isFinite(macroScore) ? (macroScore / 10).toFixed(1) : "—";
-    copy("hud-macro-state", macroState, "信号不足");
+    copyShort("hud-macro-state", macroState, "信号不足");
     copy("overview-macro-chip", macroState, "信号不足");
 
     const stress = document.querySelector('#risk-grid [data-signal-id="ofr-fsi"]');
     copy("hud-stress-value", stress?.querySelector(".risk-value"), "—");
-    copy("hud-stress-state", stress?.querySelector(".risk-assessment"), "信号不足");
+    copyShort("hud-stress-state", stress?.querySelector(".risk-assessment"), "信号不足");
 
     const cards = Array.from(document.querySelectorAll("#market-grid .asset-card"));
     if (!cards.length) {

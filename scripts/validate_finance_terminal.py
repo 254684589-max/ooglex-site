@@ -2863,9 +2863,13 @@ def main() -> None:
     # 22,000 是第一轮参考对齐时定的。第二轮把行情带改成椭圆弧带、证据条与六个标的换成
     # 图形徽章、曲线补节点与图例、影响强度改三段式、页脚每组补图标块，另加解释这些取值
     # 由来的注释后需要 27.2KB；换回的是首屏与参考稿在弧带、图标、连线与页脚四处对齐。
-    require(REFERENCE_HOME_V3_CSS.stat().st_size <= 27_200, "金融终端参考首页第三版样式超过27.2KB性能预算")
+    # 28,800：第三轮把总览读数从等宽体换成无衬线＋表格数字（参考稿的读数是比例字体，
+    # 等宽把字距拉宽、气质偏终端），这一层连同说明注释再占 1.5KB。
+    require(REFERENCE_HOME_V3_CSS.stat().st_size <= 28_800, "金融终端参考首页第三版样式超过28.8KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
-    require(AURORA_HOME_MODULE.stat().st_size <= 3_500, "金融终端极光首页同步模块超过3.5KB性能预算")
+    # 3,500 是首版同步模块的预算。加上「短态优先」的取值分支（HUD 单行只放得下
+    # 中文短标签，长判语留在市场状态卡片里）与说明注释后需要 3.9KB。
+    require(AURORA_HOME_MODULE.stat().st_size <= 3_900, "金融终端极光首页同步模块超过3.9KB性能预算")
     require(APP.stat().st_size + LOADER.stat().st_size + TERMINAL_VISUALS.stat().st_size
             + COMMAND_CENTER_MODULE.stat().st_size + GLOBE_MODULE.stat().st_size
             + ORBIT_LINKS_MODULE.stat().st_size
