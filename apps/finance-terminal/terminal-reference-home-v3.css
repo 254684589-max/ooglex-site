@@ -17,18 +17,19 @@
   }
 
   body[data-terminal-view="overview"] .brand-lockup {
-    gap: .3vw;
+    gap: .7vw;
   }
 
   body[data-terminal-view="overview"] .brand-lockup strong {
-    font-size: 2.05vw;
+    font-size: 2.32vw;
     letter-spacing: .055em;
-    transform: scaleX(1.16);
+    transform: scaleX(1.01);
   }
 
   body[data-terminal-view="overview"] .brand-lockup small {
     font-size: .64vw;
     letter-spacing: .075em;
+    transform: translateY(.45vw);
   }
 
   body[data-terminal-view="overview"] .section-nav {
@@ -180,7 +181,7 @@
     position: relative;
     z-index: 5;
     width: calc(100% - .4vw);
-    height: calc(100% + 3.6vw);
+    height: calc(100% + 3.3vw);
     gap: .42vw;
     transform: translate(.4vw, .55vw);
   }
@@ -192,6 +193,7 @@
 
   body[data-terminal-view="overview"] .aurora-hud-ring {
     width: 5.1vw;
+    transform: translateX(.4vw);
   }
 
   body[data-terminal-view="overview"] .aurora-hud-ring::before { inset: .48vw; }
@@ -396,10 +398,18 @@
     grid-template-columns: .42vw 5.4vw minmax(0, 1fr);
   }
   body[data-terminal-view="overview"] .preview-event-list b {
+    grid-column: 2;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  body[data-terminal-view="overview"] .preview-event-list .event-dot {
+    width: .3vw;
+    height: .3vw;
+    grid-column: 1;
+    align-self: center;
+  }
+  body[data-terminal-view="overview"] .preview-event-list u { grid-column: 3; }
   body[data-terminal-view="overview"] .preview-impact-table i {
     margin-left: 4.5vw;
   }
@@ -438,5 +448,3 @@
     transform: translateY(.55vw);
   }
 }
-
-/* Desktop reference lock: 1672 × 941. */
