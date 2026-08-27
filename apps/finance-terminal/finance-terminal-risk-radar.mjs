@@ -49,6 +49,10 @@ export function renderRiskRadar(document, cards) {
   state.textContent = ["LOW RISK", "MODERATE", "HIGH RISK"][tier];
   state.className = tier === 2 ? "status-watch-text" : "status-ok-text";
   if (verdict) verdict.textContent = ["低风险\n继续跟踪", "中等风险\n保持审慎", "高风险\n控制敞口"][tier];
-  if (insightTitle) insightTitle.textContent = ["风险相对温和，继续跟踪数据", "风险偏中高，保持分散耐心", "风险偏高，优先关注敞口与流动性"][tier];
+  if (insightTitle) insightTitle.textContent = [
+    "金融压力温和；继续跟踪流动性与波动",
+    "风险偏中高；流动性与波动仍需关注",
+    "风险明显升温；优先控制敞口与流动性"
+  ][tier];
   if (insightCopy) insightCopy.textContent = `六维风险均值${reading}/10，不改变原始口径。`;
 }
