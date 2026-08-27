@@ -42,6 +42,39 @@
 
 /* ---------- 2. Evidence strip ---------- */
 
+/* 参考稿的三个证据用圆形描边图标（地球 / 盾牌 / 水滴），替掉早期的等宽字形。 */
+.aurora-evidence > [data-evidence-icon]::before { display: none; }
+
+.evidence-icon {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  grid-row: 1 / 3;
+  place-items: center;
+  align-self: center;
+  justify-self: center;
+  border: 1px solid color-mix(in srgb, var(--evidence-color, var(--aurora-cyan)) 46%, transparent);
+  border-radius: 50%;
+  color: var(--evidence-color, var(--aurora-cyan));
+  background: radial-gradient(circle, color-mix(in srgb, var(--evidence-color, var(--aurora-cyan)) 16%, transparent), transparent 72%);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--evidence-color, var(--aurora-cyan)) 18%, transparent);
+}
+
+.evidence-icon svg {
+  width: 58%;
+  height: 58%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, currentColor 60%, transparent));
+}
+
+.aurora-evidence > *:nth-child(2) { --evidence-color: var(--aurora-amber); }
+.aurora-evidence > *:nth-child(3) { --evidence-color: #7fcfff; }
+
 .aurora-evidence > * { gap: 3px; }
 .aurora-evidence strong { color: #e6f6ff; font: 600 12px/1.25 var(--sans, inherit); letter-spacing: 0.02em; }
 .aurora-evidence span { color: #8ea3b6; font-size: 9px; letter-spacing: 0.06em; }
@@ -101,7 +134,8 @@
 
 .orbit-links {
   position: absolute;
-  z-index: 1;
+  /* 必须压在地球画布（z-index 2）与极光（3）之上：参考稿的连线是画在球面上的。 */
+  z-index: 4;
   inset: 0;
   width: 100%;
   height: 100%;
@@ -114,20 +148,39 @@
 
 .orbit-link {
   fill: none;
-  stroke: rgba(120, 224, 255, 0.72);
-  stroke-width: 1.15;
+  stroke: rgba(158, 234, 255, 0.88);
+  stroke-width: 1.4;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
-  filter: drop-shadow(0 0 4px rgba(78, 208, 255, 0.7));
+  filter: drop-shadow(0 0 6px rgba(78, 208, 255, 0.85));
 }
 
-.orbit-link-far { stroke: rgba(96, 190, 255, 0.42); stroke-width: 1; }
+.orbit-link-far { stroke: rgba(112, 200, 255, 0.5); stroke-width: 1.1; }
 
 @media (prefers-reduced-motion: reduce) {
   .orbit-links { transition: none; }
 }
 
 /* ---------- 5. Quote ribbon ---------- */
+
+/* 参考稿的六个标的用实心彩色徽章，不是细描边圈。颜色按各自品类走。 */
+#market-grid .asset-card::before {
+  --badge: #4edbff;
+  --badge-ink: #041520;
+  border-color: color-mix(in srgb, var(--badge) 78%, transparent) !important;
+  color: var(--badge-ink) !important;
+  background: radial-gradient(circle at 34% 28%, color-mix(in srgb, var(--badge) 96%, white), var(--badge)) !important;
+  box-shadow:
+    0 0 12px color-mix(in srgb, var(--badge) 42%, transparent),
+    inset 0 -1px 3px rgba(0, 0, 0, .28) !important;
+}
+
+#market-grid .asset-card:nth-child(1)::before { --badge: #f2555a; --badge-ink: #fff4f4; }
+#market-grid .asset-card:nth-child(2)::before { --badge: #4b8ef0; --badge-ink: #f2f7ff; }
+#market-grid .asset-card:nth-child(3)::before { --badge: #8c9db0; --badge-ink: #0d1720; }
+#market-grid .asset-card:nth-child(4)::before { --badge: #eab63c; --badge-ink: #241703; }
+#market-grid .asset-card:nth-child(5)::before { --badge: #dfe8ef; --badge-ink: #101a22; }
+#market-grid .asset-card:nth-child(6)::before { --badge: #f79420; --badge-ink: #2a1503; }
 
 #market-grid .asset-card .asset-price { display: inline-block; vertical-align: baseline; }
 #market-grid .asset-card .change-row { display: inline-flex; vertical-align: baseline; }
@@ -237,6 +290,90 @@
 .preview-volume rect { fill: color-mix(in srgb, var(--gateway-color) 26%, transparent); stroke: none; }
 .preview-line-soft { opacity: .62; }
 
+/* 曲线节点、图例与影响等级色签：把参考稿里那一层信息密度补回来。 */
+.preview-nodes circle {
+  r: 2;
+  fill: var(--gateway-color);
+  stroke: rgba(2, 12, 20, .85);
+  stroke-width: .8;
+  vector-effect: non-scaling-stroke;
+}
+
+.preview-legend {
+  display: flex;
+  gap: 9px;
+  padding: 0 5px;
+  text-decoration: none;
+}
+
+.preview-legend em {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: color-mix(in srgb, var(--gateway-color) 70%, transparent);
+  font: 6px var(--mono);
+  font-style: normal;
+}
+
+.preview-legend em::before {
+  width: 8px;
+  height: 2px;
+  content: "";
+  background: var(--gateway-color);
+}
+
+.preview-legend .legend-past::before { opacity: .45; }
+
+.preview-grades { display: flex; gap: 3px; }
+
+.preview-grades s {
+  padding: 0 3px;
+  border-radius: 2px;
+  font: 6px var(--mono);
+  text-decoration: none;
+}
+
+.grade-high { color: #2b0d0e; background: #ff6c70; }
+.grade-mid { color: #2a1c02; background: var(--aurora-amber); }
+.grade-low { color: #06212c; background: #63c8ef; }
+
+/* 影响强度条按参考稿分成三段，而不是一条渐变。 */
+.preview-impact-row u {
+  height: 4px;
+  background:
+    linear-gradient(90deg,
+      var(--gateway-color) 0 30%, transparent 30% 35%,
+      color-mix(in srgb, var(--gateway-color) 52%, transparent) 35% 65%, transparent 65% 70%,
+      color-mix(in srgb, var(--gateway-color) 20%, transparent) 70% 100%);
+}
+
+.orbit-link { stroke: rgba(132, 226, 255, 0.82); stroke-width: 1.2; }
+.orbit-link-far { stroke: rgba(104, 194, 255, 0.46); stroke-width: 1; }
+
+/* 页脚状态条：参考稿每组标签前有一个小图标块，来源名成排列的芯片。
+   来源名保持站内真实管道（FRED / EIA / CoinGecko / TradingView），只改排版。 */
+.aurora-statusbar > span::before {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  content: "";
+  border: 1px solid rgba(126, 176, 205, .55);
+  border-radius: 2px;
+  background: linear-gradient(140deg, rgba(96, 190, 235, .3), transparent 70%);
+}
+
+.aurora-statusbar > span:nth-child(2)::before { border-radius: 50%; }
+.aurora-statusbar > span:nth-child(3)::before { border-radius: 50%; border-style: dashed; }
+.aurora-statusbar > span:nth-child(5)::before { border-color: rgba(126, 205, 176, .6); }
+
+.aurora-statusbar .aurora-system-state::before {
+  border-color: color-mix(in srgb, var(--aurora-green) 62%, transparent);
+  background: color-mix(in srgb, var(--aurora-green) 34%, transparent);
+  box-shadow: 0 0 7px color-mix(in srgb, var(--aurora-green) 55%, transparent);
+}
+
+.aurora-statusbar .sr-only::before { display: none; }
+
 /* ---------- 7. Desktop single-screen composition ---------- */
 
 @media (min-width: 1041px) {
@@ -252,6 +389,11 @@
   body[data-terminal-view="overview"] .aurora-evidence > [data-evidence-icon] {
     grid-template-columns: clamp(26px, 1.85vw, 38px) minmax(0, 1fr);
     padding: 9px clamp(9px, .74vw, 15px);
+  }
+
+  body[data-terminal-view="overview"] .evidence-icon {
+    width: clamp(24px, 1.72vw, 34px);
+    height: clamp(24px, 1.72vw, 34px);
   }
 
   body[data-terminal-view="overview"] .aurora-evidence strong { font-size: clamp(10px, .78vw, 15px); }
@@ -311,10 +453,10 @@
     height: 54%;
     border-radius: 50%;
     background:
-      repeating-linear-gradient(95deg, transparent 0 11px, rgba(176, 226, 255, .16) 12px, transparent 16px),
-      radial-gradient(ellipse at 50% 64%, rgba(206, 118, 255, .52), rgba(126, 96, 255, .32) 40%, rgba(64, 176, 255, .17) 62%, transparent 79%);
-    filter: blur(15px);
-    opacity: .85;
+      repeating-linear-gradient(95deg, transparent 0 10px, rgba(186, 232, 255, .2) 11px, transparent 15px),
+      radial-gradient(ellipse at 54% 62%, rgba(224, 126, 255, .68), rgba(140, 100, 255, .44) 38%, rgba(66, 182, 255, .22) 60%, transparent 78%);
+    filter: blur(14px);
+    opacity: 1;
     mix-blend-mode: screen;
     transform: none;
   }
@@ -430,11 +572,20 @@
   body[data-terminal-view="overview"] .preview-head b { font-size: clamp(5px, .4vw, 8px); }
   body[data-terminal-view="overview"] .preview-head em { font-size: clamp(4px, .33vw, 7px); }
 
-  body[data-terminal-view="overview"] .preview-chart,
-  body[data-terminal-view="overview"] .preview-macro-chart {
+  body[data-terminal-view="overview"] .preview-chart {
     grid-template-rows: auto minmax(0, 1fr) auto;
     gap: 3px;
     padding: 0 0 3px;
+  }
+
+  body[data-terminal-view="overview"] .preview-macro-chart {
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    gap: 2px;
+    padding: 0 0 3px;
+  }
+
+  body[data-terminal-view="overview"] .aurora-macro-preview > .preview-macro-chart:last-child {
+    grid-template-rows: auto minmax(0, 1fr) auto;
   }
 
   body[data-terminal-view="overview"] .preview-chart > svg,
@@ -461,15 +612,63 @@
   body[data-terminal-view="overview"] .preview-impact-table { grid-template-rows: auto repeat(6, minmax(0, 1fr)); }
   body[data-terminal-view="overview"] .preview-impact-row b { font-size: clamp(5px, .4vw, 8px); }
 
+  /* 行情带：参考稿是一条两端收窄、上下缘为椭圆弧的发光弧带，不是平直矩形条。
+     水平圆角半径取满宽的一半、纵向 34px，上下边框各自连成一整段椭圆弧；
+     格子背景改透明，弧形从底下透出来，分隔线也就自然比两端高。 */
   body[data-terminal-view="overview"] #market-section::before,
-  body[data-terminal-view="overview"] #market-section::after { height: 44px; }
+  body[data-terminal-view="overview"] #market-section::after { display: none; }
 
-  body[data-terminal-view="overview"] #market-section::before { top: -14px; }
-  body[data-terminal-view="overview"] #market-section::after { bottom: -15px; }
+  /* 分区通用样式（矩形描边 + overflow:hidden）会把弧带裁回矩形，这里按分区解开。 */
+  body[data-terminal-view="overview"] #main-content > #market-section {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  body[data-terminal-view="overview"] .market-grid {
+    position: relative;
+    overflow: visible;
+    background: transparent;
+  }
+
+  body[data-terminal-view="overview"] .market-grid::before {
+    position: absolute;
+    z-index: 0;
+    inset: -24px -2px -10px;
+    content: "";
+    border-top: 1.5px solid rgba(140, 233, 255, .9);
+    border-bottom: 1.5px solid rgba(104, 212, 250, .62);
+    /* 上缘弧比下缘深，和参考稿一样：带子在中间最厚、往两端收窄。 */
+    border-radius: 50% / 42px 42px 20px 20px;
+    background:
+      radial-gradient(130% 170% at 50% 0, rgba(27, 130, 190, .32), transparent 66%),
+      linear-gradient(180deg, rgba(6, 30, 48, .94), rgba(2, 11, 19, .9));
+    box-shadow:
+      0 0 40px rgba(52, 198, 245, .26),
+      inset 0 1px 0 rgba(163, 240, 255, .34),
+      inset 0 0 78px rgba(30, 148, 208, .12);
+    pointer-events: none;
+  }
+
+  body[data-terminal-view="overview"] #market-grid .asset-card,
+  body[data-terminal-view="overview"] #market-grid .skeleton {
+    z-index: 1;
+    background: transparent;
+  }
+
+  /* 弧形由背景层给出，格子本身不再靠位移假装曲线：参考稿里六格读数是平齐的。 */
+  body[data-terminal-view="overview"] #market-grid .asset-card:nth-child(1),
+  body[data-terminal-view="overview"] #market-grid .asset-card:nth-child(2),
+  body[data-terminal-view="overview"] #market-grid .asset-card:nth-child(5),
+  body[data-terminal-view="overview"] #market-grid .asset-card:nth-child(6) { transform: none; }
+
+  body[data-terminal-view="overview"] #market-grid .asset-card { border-right-color: rgba(88, 196, 236, .22); }
+  body[data-terminal-view="overview"] #market-grid .asset-card:last-child { border-right: 0; }
 
   /* 页脚状态条按参考稿放宽来源与状态两格，字号提到可读区间。 */
   body[data-terminal-view="overview"] .aurora-statusbar {
-    grid-template-columns: 1.55fr 1.1fr .95fr .8fr 1.5fr auto;
+    grid-template-columns: 1.85fr 1.05fr .82fr .78fr 1.6fr auto;
   }
 
   body[data-terminal-view="overview"] .aurora-statusbar > span {
