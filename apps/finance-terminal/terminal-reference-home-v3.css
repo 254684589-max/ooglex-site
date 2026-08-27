@@ -166,6 +166,7 @@
   body[data-terminal-view="overview"] .aurora-hud-list {
     position: relative;
     z-index: 5;
+    width: calc(100% - .4vw);
     height: calc(100% + 3.6vw);
     gap: .42vw;
     transform: translate(.4vw, .55vw);
