@@ -90,12 +90,13 @@ function renderOrthographic(state, centerLongitude) {
       const sparkle = Math.max(0, luminance - localAverage - 1.8) ** 1.22;
       const warmLight = Math.max(0,
         Math.min(pixels[input], pixels[input + 1]) - pixels[input + 2] * .7 - 7) ** 1.13;
+      const citySparkle = sparkle * Math.min(1, warmLight / 26);
       output[out] = Math.min(255,
-        pixels[input] * edgeShade * .8 + northLight * 18 + warmLight * 3.2 + sparkle * 3.1);
+        pixels[input] * edgeShade * .8 + northLight * 18 + warmLight * 2.6 + citySparkle * 2.6);
       output[out + 1] = Math.min(255,
-        pixels[input + 1] * edgeShade * .82 + northLight * 31 + warmLight * 2.55 + sparkle * 2.6);
+        pixels[input + 1] * edgeShade * .82 + northLight * 31 + warmLight * 2.25 + citySparkle * 2.3);
       output[out + 2] = Math.min(255,
-        pixels[input + 2] * (edgeShade + .02) * .9 + northLight * 53 + warmLight * .72 + sparkle * 1.35);
+        pixels[input + 2] * (edgeShade + .02) * .9 + northLight * 53 + warmLight * .95 + citySparkle * 1.4);
       output[out + 3] = 255;
     }
   }

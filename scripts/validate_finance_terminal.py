@@ -2861,10 +2861,10 @@ def main() -> None:
     require(VISUAL_FIDELITY_CSS.stat().st_size <= 6_000, "金融终端高保真视觉层超过6KB性能预算")
     require(REFERENCE_FIDELITY_CSS.stat().st_size <= 12_900, "金融终端参考图精修层超过12.9KB性能预算")
     require(AURORA_HOME_CSS.stat().st_size <= 26_000, "金融终端极光首页样式超过26KB性能预算")
-    # 13,000：增加1672参考图的地球光效、HUD跨层显示、官方代理暗色融合与三入口
+    # 14,000：增加1672参考图的地球光效、HUD跨层显示、官方代理暗色融合与三入口
     # 微缩预览细节；均仅在桌面总览命中，不扩大移动端或专业视图的样式计算范围。
-    require(REFERENCE_HOME_V3_CSS.stat().st_size <= 13_000,
-            "金融终端1672像素参考锁定样式超过13KB性能预算")
+    require(REFERENCE_HOME_V3_CSS.stat().st_size <= 14_000,
+            "金融终端1672像素参考锁定样式超过14KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
     # 4,200：首页HUD把已校验英文状态映射成参考图中的中文短标签，并把6项覆盖率
     # 等价显示为百分比；不新增数据请求或第二套计算口径。

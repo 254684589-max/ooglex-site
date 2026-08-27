@@ -171,10 +171,10 @@
   body[data-terminal-view="overview"] .orbit-clock u,
   body[data-terminal-view="overview"] .orbit-clock i { font-size: .39vw; }
 
-  body[data-terminal-view="overview"] .clock-new-york { top: 42%; left: -3%; }
-  body[data-terminal-view="overview"] .clock-london { top: 18%; left: 29%; }
-  body[data-terminal-view="overview"] .clock-shanghai { top: 48%; right: 29%; }
-  body[data-terminal-view="overview"] .clock-tokyo { top: 67%; right: 24%; }
+  body[data-terminal-view="overview"] .clock-new-york { top: 39%; left: -6%; }
+  body[data-terminal-view="overview"] .clock-london { top: 20%; left: 31.5%; }
+  body[data-terminal-view="overview"] .clock-shanghai { top: 46.5%; right: 30%; }
+  body[data-terminal-view="overview"] .clock-tokyo { top: 63.5%; right: 21.5%; }
 
   body[data-terminal-view="overview"] .aurora-hud-list {
     position: relative;
@@ -186,12 +186,12 @@
   }
 
   body[data-terminal-view="overview"] .aurora-hud {
-    grid-template-columns: 5.05vw minmax(0, 1fr);
-    gap: 1.05vw;
+    grid-template-columns: 5.35vw minmax(0, 1fr);
+    gap: 1.7vw;
   }
 
   body[data-terminal-view="overview"] .aurora-hud-ring {
-    width: 4.7vw;
+    width: 5.1vw;
   }
 
   body[data-terminal-view="overview"] .aurora-hud-ring::before { inset: .48vw; }
@@ -219,8 +219,9 @@
 
   body[data-terminal-view="overview"] #market-grid .asset-card,
   body[data-terminal-view="overview"] #market-grid .skeleton {
-    padding: .52vw .62vw .28vw;
+    padding: .72vw .62vw .28vw;
   }
+  body[data-terminal-view="overview"] #market-grid .provider-widget-card { padding-top: .52vw; }
 
   body[data-terminal-view="overview"] #market-grid .asset-card::before {
     top: .5vw;
@@ -248,7 +249,7 @@
   }
   body[data-terminal-view="overview"] #market-grid .change-row {
     position: absolute;
-    top: 2.35vw;
+    top: 2.7vw;
     right: .52vw;
     z-index: 3;
     margin: 0;
@@ -259,10 +260,10 @@
   body[data-terminal-view="overview"] #market-grid .official-trend {
     position: absolute;
     right: .42vw;
-    bottom: .18vw;
+    bottom: 1vw;
     left: .42vw;
     display: block;
-    height: 2.15vw;
+    height: 1.85vw;
     margin: 0;
     padding: 0;
   }
@@ -376,11 +377,44 @@
   }
   body[data-terminal-view="overview"] .preview-macro-metrics b { font-size: .42vw; }
   body[data-terminal-view="overview"] .preview-macro-metrics i {
+    height: auto;
+    border: 0;
     color: var(--gateway-color);
+    background: none;
     font: normal .48vw var(--mono);
+    transform: none;
   }
   body[data-terminal-view="overview"] .preview-event-list {
-    grid-template-rows: repeat(5, minmax(0, 1fr));
+    grid-template-rows: auto repeat(5, minmax(0, 1fr));
+  }
+  body[data-terminal-view="overview"] .preview-event-heading {
+    padding: .3vw .42vw;
+    color: var(--gateway-color);
+    font: 600 .48vw var(--mono);
+  }
+  body[data-terminal-view="overview"] .preview-event-list > span {
+    grid-template-columns: .42vw 5.4vw minmax(0, 1fr);
+  }
+  body[data-terminal-view="overview"] .preview-event-list b {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  body[data-terminal-view="overview"] .preview-impact-table i {
+    margin-left: 4.5vw;
+  }
+  body[data-terminal-view="overview"] .preview-impact-table i::before {
+    position: absolute;
+    top: 50%;
+    left: -4.5vw;
+    width: 4vw;
+    overflow: hidden;
+    color: #9db7c2;
+    content: attr(data-asset);
+    font: .42vw var(--mono);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transform: translateY(-50%);
   }
   body[data-terminal-view="overview"] .gateway-enter { min-height: 2.35vw; font-size: .68vw; }
 
