@@ -70,11 +70,16 @@ function renderOrthographic(state, centerLongitude) {
       const sourceY = Math.min(sourceHeight - 1,
         Math.max(0, Math.round((90 - latitude) / 180 * (sourceHeight - 1))));
       const input = (sourceY * sourceWidth + sourceX) * 4;
-      const edgeShade = .45 + depth * .55;
-      const northLight = Math.max(0, .18 - screenY * .09);
-      output[out] = Math.min(255, pixels[input] * edgeShade + northLight * 8);
-      output[out + 1] = Math.min(255, pixels[input + 1] * edgeShade + northLight * 18);
-      output[out + 2] = Math.min(255, pixels[input + 2] * (edgeShade + .06) + northLight * 34);
+      const edgeShade = .52 + depth * .48;
+      const northLight = Math.max(0, .2 - screenY * .1);
+      const sourcePeak = Math.max(pixels[input], pixels[input + 1], pixels[input + 2]);
+      const cityLight = Math.max(0, sourcePeak - 46) ** 1.08;
+      output[out] = Math.min(255,
+        pixels[input] * edgeShade * 1.05 + northLight * 9 + cityLight * .62);
+      output[out + 1] = Math.min(255,
+        pixels[input + 1] * edgeShade * 1.08 + northLight * 20 + cityLight * .42);
+      output[out + 2] = Math.min(255,
+        pixels[input + 2] * (edgeShade + .08) * 1.14 + northLight * 38 + cityLight * .18);
       output[out + 3] = 255;
     }
   }
@@ -107,10 +112,10 @@ export function drawEarthTexture(ctx, image, cx, cy, radius, centerLongitude) {
   const atmosphere = ctx.createRadialGradient(
     cx - radius * .38, cy - radius * .42, radius * .04, cx, cy, radius * 1.06
   );
-  atmosphere.addColorStop(0, "rgba(80,177,238,.11)");
-  atmosphere.addColorStop(.46, "rgba(15,89,151,.035)");
-  atmosphere.addColorStop(.78, "rgba(0,7,20,.16)");
-  atmosphere.addColorStop(1, "rgba(0,2,10,.7)");
+  atmosphere.addColorStop(0, "rgba(92,192,255,.14)");
+  atmosphere.addColorStop(.46, "rgba(20,105,174,.045)");
+  atmosphere.addColorStop(.8, "rgba(0,7,20,.08)");
+  atmosphere.addColorStop(1, "rgba(0,2,10,.44)");
   ctx.fillStyle = atmosphere;
   ctx.fillRect(cx - radius, cy - radius, diameter, diameter);
   ctx.restore();

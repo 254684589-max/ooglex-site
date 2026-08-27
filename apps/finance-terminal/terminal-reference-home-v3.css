@@ -1,5 +1,4 @@
-/* Approved 1672 x 941 reference lock, revision 3.
-   Geometry only: quotes, source labels, freshness and fallback states remain live. */
+/* 1672 x 941 reference lock v4; live data semantics unchanged. */
 
 @media (min-width: 1041px) {
   body[data-terminal-view="overview"] {
@@ -27,7 +26,7 @@
   body[data-terminal-view="overview"] .brand-lockup strong {
     font-size: 2.05vw;
     letter-spacing: .055em;
-    transform: scaleX(1.08);
+    transform: scaleX(1.16);
   }
 
   body[data-terminal-view="overview"] .brand-lockup small {
@@ -128,8 +127,8 @@
   }
 
   body[data-terminal-view="overview"] .market-globe-canvas {
-    filter: saturate(1.06) brightness(1.02) contrast(1.08)
-      drop-shadow(0 0 12px rgba(68, 198, 255, .58));
+    filter: saturate(1.34) brightness(1.24) contrast(1.13)
+      drop-shadow(0 0 14px rgba(68, 198, 255, .7));
   }
 
   body[data-terminal-view="overview"] .market-globe-shell::before {
@@ -144,8 +143,22 @@
     left: 13%;
     width: 77%;
     height: 37%;
-    opacity: .82;
+    opacity: .92;
   }
+
+  body[data-terminal-view="overview"] .orbit-grid path {
+    stroke: rgba(83, 176, 222, .18);
+  }
+
+  body[data-terminal-view="overview"] .orbit-clock {
+    min-width: 4.55vw;
+    padding: .12vw .3vw;
+  }
+
+  body[data-terminal-view="overview"] .orbit-clock b { font-size: .72vw; }
+  body[data-terminal-view="overview"] .orbit-clock time { font-size: .55vw; }
+  body[data-terminal-view="overview"] .orbit-clock u,
+  body[data-terminal-view="overview"] .orbit-clock i { font-size: .39vw; }
 
   body[data-terminal-view="overview"] .clock-new-york { top: 42%; left: -3%; }
   body[data-terminal-view="overview"] .clock-london { top: 13%; left: 32%; }
@@ -193,6 +206,10 @@
     padding: .52vw .62vw .28vw;
   }
 
+  body[data-terminal-view="overview"] #market-grid .asset-card {
+    isolation: isolate;
+  }
+
   body[data-terminal-view="overview"] #market-grid .asset-card::before {
     top: .5vw;
     left: .5vw;
@@ -206,12 +223,56 @@
 
   body[data-terminal-view="overview"] #market-grid .card-top { min-height: 1.34vw; }
   body[data-terminal-view="overview"] #market-grid .asset-name { font-size: .72vw; }
-  body[data-terminal-view="overview"] #market-grid .asset-symbol { font-size: .4vw; }
-  body[data-terminal-view="overview"] #market-grid .asset-price { font-size: 1.16vw; }
+  body[data-terminal-view="overview"] #market-grid .asset-symbol { display: none; }
+  body[data-terminal-view="overview"] #market-grid .asset-price {
+    min-height: 1.22em;
+    margin-top: .12vw;
+    overflow: visible;
+    font-size: 1.08vw;
+    line-height: 1.08;
+    white-space: nowrap;
+  }
+  body[data-terminal-view="overview"] #market-grid .change-row {
+    position: absolute;
+    top: 2.35vw;
+    right: .52vw;
+    z-index: 3;
+    margin: 0;
+    white-space: nowrap;
+  }
   body[data-terminal-view="overview"] #market-grid .asset-change { font-size: .58vw; }
-  body[data-terminal-view="overview"] #market-grid .change-word { font-size: .36vw; }
-  body[data-terminal-view="overview"] #market-grid .official-trend { height: 2.6vw; }
-  body[data-terminal-view="overview"] #market-grid .provider-widget-shell { height: 3.18vw; }
+  body[data-terminal-view="overview"] #market-grid .change-word { display: none; }
+  body[data-terminal-view="overview"] #market-grid .official-trend {
+    position: absolute;
+    right: .42vw;
+    bottom: .18vw;
+    left: .42vw;
+    display: block;
+    height: 2.15vw;
+    margin: 0;
+    padding: 0;
+  }
+  body[data-terminal-view="overview"] #market-grid .official-trend-head { display: none; }
+  body[data-terminal-view="overview"] #market-grid .official-trend .sparkline {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+  }
+  body[data-terminal-view="overview"] #market-grid .provider-widget-shell {
+    height: 3.18vw;
+    margin-top: .2vw;
+    overflow: hidden;
+  }
+  body[data-terminal-view="overview"] #market-grid .provider-widget-shell tv-mini-chart {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+  }
+  body[data-terminal-view="overview"] #market-grid .provider-widget-fallback {
+    padding: .25vw;
+    font-size: .42vw;
+  }
 
   body[data-terminal-view="overview"] #aurora-gateways {
     box-sizing: border-box;
