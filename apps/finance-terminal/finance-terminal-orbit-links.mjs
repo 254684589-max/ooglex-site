@@ -10,11 +10,12 @@ const ANCHORS = Object.freeze({
   "clock-tokyo": 0
 });
 
+/* 弓高按参考稿取：连线是横跨球面的长弧，不是贴着标签的短线。 */
 const LINKS = Object.freeze([
-  ["orbit-link-a", "clock-new-york", "clock-london", -13],
-  ["orbit-link-b", "clock-london", "clock-shanghai", -11],
-  ["orbit-link-c", "clock-shanghai", "clock-tokyo", 7],
-  ["orbit-link-d", "clock-new-york", "clock-tokyo", 21]
+  ["orbit-link-a", "clock-new-york", "clock-london", -16],
+  ["orbit-link-b", "clock-london", "clock-shanghai", -17],
+  ["orbit-link-c", "clock-shanghai", "clock-tokyo", 9],
+  ["orbit-link-d", "clock-new-york", "clock-tokyo", 27]
 ]);
 
 /* 标记点由 .orbit-clock::before 画出：纽约与伦敦贴右缘，上海与东京贴左缘，纵向都在 45% 处。 */

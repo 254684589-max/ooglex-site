@@ -2860,7 +2860,10 @@ def main() -> None:
     require(REFERENCE_FIDELITY_CSS.stat().st_size <= 12_900, "金融终端参考图精修层超过12.9KB性能预算")
     require(AURORA_HOME_CSS.stat().st_size <= 26_000, "金融终端极光首页样式超过26KB性能预算")
     require(REFERENCE_HOME_V2_CSS.stat().st_size <= 27_000, "金融终端参考首页第二版样式超过27KB性能预算")
-    require(REFERENCE_HOME_V3_CSS.stat().st_size <= 22_000, "金融终端参考首页第三版样式超过22KB性能预算")
+    # 22,000 是第一轮参考对齐时定的。第二轮把行情带改成椭圆弧带、证据条与六个标的换成
+    # 图形徽章、曲线补节点与图例、影响强度改三段式、页脚每组补图标块，另加解释这些取值
+    # 由来的注释后需要 27.2KB；换回的是首屏与参考稿在弧带、图标、连线与页脚四处对齐。
+    require(REFERENCE_HOME_V3_CSS.stat().st_size <= 27_200, "金融终端参考首页第三版样式超过27.2KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
     require(AURORA_HOME_MODULE.stat().st_size <= 3_500, "金融终端极光首页同步模块超过3.5KB性能预算")
     require(APP.stat().st_size + LOADER.stat().st_size + TERMINAL_VISUALS.stat().st_size

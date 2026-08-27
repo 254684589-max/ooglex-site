@@ -125,10 +125,16 @@ export function initMarketGlobe(options = {}) {
     drawSphere(cx, cy, r);
     ctx.restore();
 
-    ctx.strokeStyle = "rgba(126,232,255,.5)";
-    ctx.lineWidth = Math.max(1, r * .006);
-    ctx.shadowColor = "rgba(66,209,255,.55)";
-    ctx.shadowBlur = r * .075;
+    /* 参考稿的边缘光不是均匀一圈：左上缘最亮，绕到右下逐渐熄灭。 */
+    const limb = ctx.createLinearGradient(cx - r, cy - r, cx + r * .7, cy + r);
+    limb.addColorStop(0, "rgba(196,246,255,.95)");
+    limb.addColorStop(.32, "rgba(108,222,255,.7)");
+    limb.addColorStop(.68, "rgba(58,150,220,.22)");
+    limb.addColorStop(1, "rgba(30,84,150,.08)");
+    ctx.strokeStyle = limb;
+    ctx.lineWidth = Math.max(1.2, r * .009);
+    ctx.shadowColor = "rgba(96,214,255,.7)";
+    ctx.shadowBlur = r * .1;
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
     ctx.stroke();
