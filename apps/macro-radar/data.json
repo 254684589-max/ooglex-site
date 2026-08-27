@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-08-27T15:39:07Z",
+  "updatedAt": "2026-08-27T18:52:29Z",
   "asOf": "2026-08-27",
-  "asOfSh": "2026-08-27 23:39",
+  "asOfSh": "2026-08-28 02:52",
   "live": true,
   "source": "FRED · EIA · Yahoo Finance · 交易所行情",
   "regime": {
@@ -66,7 +66,7 @@
       "key": "volatility",
       "en": "VOLATILITY",
       "zh": "波动率",
-      "score": 95,
+      "score": 92,
       "status": "support",
       "statusZh": "支持",
       "desc": "VIX 水平与期限结构",
@@ -324,7 +324,7 @@
       "score": 60,
       "status": "neutral",
       "statusZh": "中性",
-      "desc": "美元指数 99.1（走弱、流动性顺风）",
+      "desc": "美元指数 99.2（走弱、流动性顺风）",
       "spark": [
         99.18,
         99.74,
@@ -372,7 +372,7 @@
       "key": "breadth",
       "en": "BREADTH",
       "zh": "市场广度",
-      "score": 64,
+      "score": 62,
       "status": "support",
       "statusZh": "支持",
       "desc": "等权/市值加权广度：存量近两年 36% 分位，近 13 周走扩",
@@ -514,10 +514,10 @@
           "id": "WTREGEN"
         },
         {
-          "val": "1B",
-          "chg": "+0.3B",
-          "tone": "up",
-          "asOf": "2026-08-26",
+          "val": "0B",
+          "chg": "-0.2B",
+          "tone": "down",
+          "asOf": "2026-08-27",
           "name": "隔夜逆回购用量 (RRP)",
           "id": "RRPONTSYD"
         }
@@ -541,8 +541,8 @@
           "changeBps": -6,
           "asOf": "2026-08-25",
           "previousAsOf": "2026-08-24",
-          "updatedAt": "2026-08-27T15:39:07Z",
-          "lastAttemptAt": "2026-08-27T15:39:07Z",
+          "updatedAt": "2026-08-27T18:52:29Z",
+          "lastAttemptAt": "2026-08-27T18:52:29Z",
           "source": {
             "name": "FRED / Federal Reserve H.15",
             "url": "https://fred.stlouisfed.org/series/DGS10",
@@ -759,26 +759,26 @@
         {
           "name": "金/银",
           "id": "",
-          "val": "66.9",
-          "chg": "-1.1%",
+          "val": "66.6",
+          "chg": "-1.5%",
           "asOf": "2026-08-27",
           "tone": "down"
         },
         {
           "name": "油/铜",
           "id": "",
-          "val": "12.33",
-          "chg": "-1.1%",
+          "val": "12.52",
+          "chg": "+0.4%",
           "asOf": "2026-08-27",
-          "tone": "down"
+          "tone": "up"
         },
         {
           "name": "油/金 ×100",
           "id": "",
-          "val": "1.77",
-          "chg": "-1.0%",
+          "val": "1.80",
+          "chg": "+0.5%",
           "asOf": "2026-08-27",
-          "tone": "down"
+          "tone": "up"
         }
       ]
     },
@@ -821,8 +821,8 @@
         {
           "name": "VIX",
           "id": "VIX",
-          "val": "14.47",
-          "chg": "-4.9%",
+          "val": "14.73",
+          "chg": "-3.2%",
           "asOf": "2026-08-27",
           "tone": "down"
         },
@@ -837,8 +837,8 @@
         {
           "name": "VVIX 波动之波动",
           "id": "VVIX",
-          "val": "82.48",
-          "chg": "-3.2%",
+          "val": "83.50",
+          "chg": "-2.0%",
           "asOf": "2026-08-27",
           "tone": "down"
         }
@@ -858,8 +858,8 @@
       "changePct": -0.16236127413010726,
       "asOf": "2026-08-21",
       "previousAsOf": "2026-08-20",
-      "updatedAt": "2026-08-27T15:39:07Z",
-      "lastAttemptAt": "2026-08-27T15:39:07Z",
+      "updatedAt": "2026-08-27T18:52:29Z",
+      "lastAttemptAt": "2026-08-27T18:52:29Z",
       "source": {
         "name": "FRED / Federal Reserve H.10",
         "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
@@ -913,8 +913,8 @@
       "changePct": -2.826036599490389,
       "asOf": "2026-08-25",
       "previousAsOf": "2026-08-24",
-      "updatedAt": "2026-08-27T15:39:07Z",
-      "lastAttemptAt": "2026-08-27T15:39:07Z",
+      "updatedAt": "2026-08-27T18:52:29Z",
+      "lastAttemptAt": "2026-08-27T18:52:29Z",
       "source": {
         "name": "U.S. EIA / Cushing WTI Spot",
         "url": "https://www.eia.gov/dnav/pet/hist/rwtcd.htm",
