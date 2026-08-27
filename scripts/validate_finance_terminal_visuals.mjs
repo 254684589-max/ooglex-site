@@ -18,6 +18,8 @@ import { logReturns, sessionAligned, pearson, buildMatrix, MIN_OVERLAP }
   from "../apps/finance-terminal/finance-terminal-correlation-view.mjs";
 import { tenorX, valueY, curveSegments, describeShape }
   from "../apps/finance-terminal/finance-terminal-curve-view.mjs";
+import { pickIndexRows, describeRows, formatChange }
+  from "../apps/finance-terminal/finance-terminal-gateway-preview.mjs";
 
 function asset(symbol, dailyReturn, options = {}) {
   return {
@@ -360,6 +362,42 @@ console.log("Finance Terminal visual data contracts: PASS");
 console.log("- seven-region daily return pressure proxy / error isolation: PASS");
 console.log("- dynamic 5/7 to 7/7 minimum-cycle continuity / stale evidence preservation: PASS");
 console.log("- three-source normalized six-axis risk radar / incomplete-source isolation: PASS");
+/* 入口卡的指数预览：只收已校验的当日涨跌，代理标的与降级/过期条目一律不进表；
+   数据日不一致时表头必须给区间，不能只写最新那天。 */
+const trackerFixture = {
+  assets: [
+    { name: "标普500", category: "equity", stale: false, returns: { d1: -0.02 },
+      dataMeta: { mode: "market", status: "ok", source: "Yahoo Finance", asOf: "2026-08-26" } },
+    { name: "日经225", category: "equity", stale: false, returns: { d1: 1.25 },
+      dataMeta: { mode: "market", status: "ok", source: "Yahoo Finance", asOf: "2026-08-27" } },
+    { name: "沪深300", category: "equity", stale: false, returns: { d1: -0.24 },
+      proxy: { type: "etf", targetSymbol: "000300.SS" },
+      dataMeta: { mode: "market", status: "ok", source: "Yahoo Finance", asOf: "2026-08-25" } },
+    { name: "过期指数", category: "equity", stale: true, returns: { d1: 0.4 },
+      dataMeta: { mode: "market", status: "ok", source: "Yahoo Finance", asOf: "2026-08-20" } },
+    { name: "估算指数", category: "equity", stale: false, returns: { d1: 0.4 },
+      dataMeta: { mode: "estimate", status: "ok", source: "Yahoo Finance", asOf: "2026-08-27" } },
+    { name: "降级指数", category: "equity", stale: false, returns: { d1: 0.4 },
+      dataMeta: { mode: "market", status: "partial", source: "Yahoo Finance", asOf: "2026-08-27" } },
+    { name: "缺涨跌指数", category: "equity", stale: false, returns: {},
+      dataMeta: { mode: "market", status: "ok", source: "Yahoo Finance", asOf: "2026-08-27" } },
+    { name: "布伦特原油", category: "commodity", stale: false, returns: { d1: 0.9 },
+      dataMeta: { mode: "market", status: "ok", source: "Yahoo Finance", asOf: "2026-08-27" } }
+  ]
+};
+const indexRows = pickIndexRows(trackerFixture, 6);
+assert.deepStrictEqual(indexRows.map((row) => row.name), ["标普500", "日经225"]);
+assert.deepStrictEqual(pickIndexRows({ assets: [] }, 6), []);
+assert.deepStrictEqual(pickIndexRows(null, 6), []);
+assert.strictEqual(describeRows(indexRows).label, "Yahoo Finance · 数据日 08-26~08-27");
+assert.strictEqual(describeRows([indexRows[0]]).label, "Yahoo Finance · 数据日 08-26");
+assert.strictEqual(describeRows([]).ready, false);
+assert.strictEqual(describeRows([]).label, "暂无可用指数");
+/* 颜色之外必须有正负号，涨跌不能只靠颜色表达。 */
+assert.strictEqual(formatChange(1.234), "+1.23%");
+assert.strictEqual(formatChange(-1.234), "−1.23%");
+assert.strictEqual(formatChange(0), "0.00%");
+
 console.log("- rotating globe longitude projection / texture wrap contract: PASS");
 console.log("- calendar-only trading sessions / lunch break / weekend / unknown zone: PASS");
 console.log("- watchlist sanitization / pure toggle / stable ordering / storage degradation: PASS");
@@ -368,3 +406,4 @@ console.log("- radar six axes read real regime signals / direction / gap isolati
 console.log("- heatmap paints only regions with a representative index: PASS");
 console.log("- yield curve breaks at missing tenors / log tenor axis / honest shape call: PASS");
 console.log("- correlation on log returns / misaligned-calendar exclusion / thin-overlap blanking: PASS");
+console.log("- gateway index preview drops proxy/stale/degraded rows and dates its own span: PASS");

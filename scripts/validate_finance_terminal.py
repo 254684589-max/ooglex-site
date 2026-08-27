@@ -44,6 +44,7 @@ RADAR_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-radar
 CURVE_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-curve-view.mjs"
 GLOBE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-globe.mjs"
 ORBIT_LINKS_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-orbit-links.mjs"
+GATEWAY_PREVIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-gateway-preview.mjs"
 VISION_CSS = ROOT / "apps" / "finance-terminal" / "terminal-vision.css"
 VISUAL_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-visual-fidelity.css"
 REFERENCE_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-fidelity.css"
@@ -2800,6 +2801,7 @@ def main() -> None:
     radar_view_module = RADAR_VIEW_MODULE.read_text(encoding="utf-8")
     curve_view_module = CURVE_VIEW_MODULE.read_text(encoding="utf-8")
     globe_module = GLOBE_MODULE.read_text(encoding="utf-8")
+    gateway_preview_module = GATEWAY_PREVIEW_MODULE.read_text(encoding="utf-8")
     orbit_links_module = ORBIT_LINKS_MODULE.read_text(encoding="utf-8")
     reference_home_v3_css = REFERENCE_HOME_V3_CSS.read_text(encoding="utf-8")
     vision_css = VISION_CSS.read_text(encoding="utf-8")
@@ -2848,6 +2850,7 @@ def main() -> None:
             "金融终端相关性矩阵抽屉模块超过15KB性能预算")
     require(GLOBE_MODULE.stat().st_size <= 8_000, "金融终端地球动画模块超过8KB性能预算")
     require(ORBIT_LINKS_MODULE.stat().st_size <= 4_000, "金融终端市场连线模块超过4KB性能预算")
+    require(GATEWAY_PREVIEW_MODULE.stat().st_size <= 4_200, "金融终端入口卡指数预览模块超过4.2KB性能预算")
     require(VISION_CSS.stat().st_size <= 28_000, "金融终端科幻视觉样式超过28KB性能预算")
     # 20,000 是在分区内容还没被发现遭裁切时定的。补上「分区内那一层也要能缩」与
     # 遥测面板第三行两处修复、连同解释它们为何存在的注释后需要 20.7KB；换回的是
@@ -2865,7 +2868,9 @@ def main() -> None:
     # 由来的注释后需要 27.2KB；换回的是首屏与参考稿在弧带、图标、连线与页脚四处对齐。
     # 28,800：第三轮把总览读数从等宽体换成无衬线＋表格数字（参考稿的读数是比例字体，
     # 等宽把字距拉宽、气质偏终端），这一层连同说明注释再占 1.5KB。
-    require(REFERENCE_HOME_V3_CSS.stat().st_size <= 28_800, "金融终端参考首页第三版样式超过28.8KB性能预算")
+    # 30,200：第四轮入口卡指数预览显示真实当日涨跌，逐行两列排布、涨跌配色与
+    # 表头那两行来源披露（不截断）在这里。
+    require(REFERENCE_HOME_V3_CSS.stat().st_size <= 30_200, "金融终端参考首页第三版样式超过30.2KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
     # 3,500 是首版同步模块的预算。加上「短态优先」的取值分支（HUD 单行只放得下
     # 中文短标签，长判语留在市场状态卡片里）与说明注释后需要 3.9KB。
@@ -2959,6 +2964,18 @@ def main() -> None:
             and ".aurora-gateway-grid" in aurora_home_css
             and "@media (max-width: 620px)" in aurora_home_css,
             "极光首页缺少模式切换、三工作流入口、已校验读数同步或独立移动端布局")
+    require('import("./finance-terminal-gateway-preview.mjs")' in app
+            and "pickIndexRows" in gateway_preview_module
+            and "describeRows" in gateway_preview_module
+            and "!asset.proxy" in gateway_preview_module
+            and 'asset.dataMeta.mode === "market"' in gateway_preview_module
+            and 'asset.dataMeta.status === "ok"' in gateway_preview_module
+            and "asset.stale !== true" in gateway_preview_module
+            and "innerHTML" not in gateway_preview_module
+            and 'id="gateway-index-table"' in page
+            and 'aria-busy="true"' in page
+            and "finance-terminal-gateway-preview.mjs" not in page,
+            "入口卡指数预览必须只收已校验的当日涨跌、排除代理与过期条目、按需导入且不使用innerHTML")
     require('from "./finance-terminal-orbit-links.mjs"' in command_center_module
             and "initOrbitLinks" in orbit_links_module
             and "anchorPoint" in orbit_links_module
