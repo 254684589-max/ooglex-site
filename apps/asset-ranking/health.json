@@ -1,23 +1,23 @@
 {
   "contractVersion": 1,
   "dataset": "asset-ranking",
-  "generatedAt": "2026-08-27T15:42:06Z",
+  "generatedAt": "2026-08-27T18:51:57Z",
   "status": "degraded",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-08-27T15:42:06Z",
-  "lastSuccessfulAt": "2026-08-27T15:42:06Z",
+  "lastAttemptAt": "2026-08-27T18:51:57Z",
+  "lastSuccessfulAt": "2026-08-27T18:51:57Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-08-27T15:42:06Z",
+  "publishedSnapshotAt": "2026-08-27T18:51:57Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
     "expectedRecords": 250,
     "publishedRecords": 250,
-    "dynamicRecords": 235,
+    "dynamicRecords": 234,
     "counts": {
-      "market": 235,
+      "market": 234,
       "fallback": 0,
-      "estimate": 15,
+      "estimate": 16,
       "unknown": 0,
       "unavailable": 0
     },
@@ -31,9 +31,9 @@
     "published": true,
     "producedRecords": 250,
     "counts": {
-      "market": 235,
+      "market": 234,
       "fallback": 0,
-      "estimate": 15,
+      "estimate": 16,
       "unknown": 0,
       "unavailable": 0
     }
@@ -44,15 +44,15 @@
       "name": "Yahoo Finance",
       "role": "primary",
       "status": "healthy",
-      "records": 230,
+      "records": 229,
       "counts": {
-        "market": 230,
+        "market": 229,
         "fallback": 0,
         "estimate": 0,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-27T15:42:06Z"
+      "lastSuccessAt": "2026-08-27T18:51:57Z"
     },
     {
       "id": "coingecko",
@@ -67,7 +67,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-27T15:42:06Z"
+      "lastSuccessAt": "2026-08-27T18:51:57Z"
     },
     {
       "id": "companies-upstream",
@@ -76,19 +76,19 @@
       "status": "degraded",
       "records": 230,
       "counts": {
-        "market": 221,
+        "market": 220,
         "fallback": 0,
-        "estimate": 9,
+        "estimate": 10,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-27T15:38:51Z",
+      "lastSuccessAt": "2026-08-27T18:48:31Z",
       "upstream": {
         "dataset": "companies",
         "contractKnown": true,
         "status": "degraded",
-        "lastAttemptAt": "2026-08-27T15:38:51Z",
-        "lastSuccessfulAt": "2026-08-27T15:38:51Z",
+        "lastAttemptAt": "2026-08-27T18:48:31Z",
+        "lastSuccessfulAt": "2026-08-27T18:48:31Z",
         "consecutiveFailures": 0,
         "snapshotPreserved": false,
         "snapshotAligned": true
@@ -99,15 +99,15 @@
       "name": "公开存量与融资估值",
       "role": "reference",
       "status": "healthy",
-      "records": 15,
+      "records": 16,
       "counts": {
         "market": 0,
         "fallback": 0,
-        "estimate": 15,
+        "estimate": 16,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-27T15:42:06Z"
+      "lastSuccessAt": "2026-08-27T18:51:57Z"
     }
   ],
   "recovery": {
