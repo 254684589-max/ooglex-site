@@ -1788,18 +1788,24 @@
               <span class="aurora-gateway-icon" aria-hidden="true">⌘</span>
               <div><small>WORKSPACE 01</small><h3>专业终端</h3></div>
             </header>
-            <div class="aurora-gateway-preview aurora-terminal-preview" aria-hidden="true">
-              <div class="preview-quote-table">
-                <span class="preview-head"><b>品类行情</b><em>6</em></span>
-                <span><b>指数</b><i></i></span><span><b>利率</b><i></i></span><span><b>外汇</b><i></i></span>
-                <span><b>贵金属</b><i></i></span><span><b>能源</b><i></i></span><span><b>数字资产</b><i></i></span>
+            <div class="aurora-gateway-preview aurora-terminal-preview">
+              <!-- 这张表显示真实当日涨跌，因此对辅助技术可见；同卡里的走势与强弱条是装饰底图，保持 aria-hidden。 -->
+              <div class="preview-quote-table" id="gateway-index-table" role="group"
+                   aria-label="全球指数当日涨跌预览，完整数据见品类行情" aria-busy="true">
+                <span class="preview-head"><b>全球指数</b><em>读取中</em></span>
+                <span class="preview-quote-row"><b>—</b><em class="preview-quote-change">—</em></span>
+                <span class="preview-quote-row"><b>—</b><em class="preview-quote-change">—</em></span>
+                <span class="preview-quote-row"><b>—</b><em class="preview-quote-change">—</em></span>
+                <span class="preview-quote-row"><b>—</b><em class="preview-quote-change">—</em></span>
+                <span class="preview-quote-row"><b>—</b><em class="preview-quote-change">—</em></span>
+                <span class="preview-quote-row"><b>—</b><em class="preview-quote-change">—</em></span>
               </div>
-              <div class="preview-chart">
+              <div class="preview-chart" aria-hidden="true">
                 <span class="preview-head"><b>跨资产趋势</b><em>近60个交易日</em></span>
                 <svg viewBox="0 0 240 90" preserveAspectRatio="none"><path class="preview-grid-line" d="M0 18H240M0 45H240M0 72H240"></path><g class="preview-candles"><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M8 72V85"></path><rect x="4.5" y="76" width="7" height="6" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M28 66V79"></path><rect x="24.5" y="70" width="7" height="6" rx=".6"></rect></g><g class="preview-candle preview-candle-down"><path class="preview-wick" d="M48 67V78"></path><rect x="44.5" y="70" width="7" height="4" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M68 53V76"></path><rect x="64.5" y="56" width="7" height="18" rx=".6"></rect></g><g class="preview-candle preview-candle-down"><path class="preview-wick" d="M88 54V65"></path><rect x="84.5" y="56" width="7" height="6" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M108 41V64"></path><rect x="104.5" y="44" width="7" height="18" rx=".6"></rect></g><g class="preview-candle preview-candle-down"><path class="preview-wick" d="M128 42V52"></path><rect x="124.5" y="44" width="7" height="5" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M148 27V51"></path><rect x="144.5" y="30" width="7" height="19" rx=".6"></rect></g><g class="preview-candle preview-candle-down"><path class="preview-wick" d="M168 28V42"></path><rect x="164.5" y="30" width="7" height="9" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M188 19V41"></path><rect x="184.5" y="22" width="7" height="17" rx=".6"></rect></g><g class="preview-candle preview-candle-down"><path class="preview-wick" d="M208 20V30"></path><rect x="204.5" y="22" width="7" height="5" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M228 9V29"></path><rect x="224.5" y="12" width="7" height="15" rx=".6"></rect></g></g><g class="preview-volume"><rect x="4.5" y="85" width="7" height="5" rx=".5"></rect><rect x="24.5" y="83" width="7" height="7" rx=".5"></rect><rect x="44.5" y="86" width="7" height="4" rx=".5"></rect><rect x="64.5" y="81" width="7" height="9" rx=".5"></rect><rect x="84.5" y="85" width="7" height="5" rx=".5"></rect><rect x="104.5" y="82" width="7" height="8" rx=".5"></rect><rect x="124.5" y="86" width="7" height="4" rx=".5"></rect><rect x="144.5" y="80" width="7" height="10" rx=".5"></rect><rect x="164.5" y="84" width="7" height="6" rx=".5"></rect><rect x="184.5" y="81" width="7" height="9" rx=".5"></rect><rect x="204.5" y="85" width="7" height="5" rx=".5"></rect><rect x="224.5" y="82" width="7" height="8" rx=".5"></rect></g><path class="preview-line preview-line-soft" d="M0 78L22 68L42 72L64 54L84 61L104 42L126 47L148 28L170 38L193 20L214 26L240 10"></path></svg>
                 <u class="preview-axis"><em>60D</em><em>40D</em><em>20D</em><em>今日</em></u>
               </div>
-              <div class="preview-flow-table">
+              <div class="preview-flow-table" aria-hidden="true">
                 <span class="preview-head"><b>强弱队列</b></span>
                 <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
               </div>

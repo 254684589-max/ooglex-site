@@ -374,6 +374,49 @@
 
 .aurora-statusbar .sr-only::before { display: none; }
 
+/* 指数预览显示真实当日涨跌：名称一列、涨跌一列，颜色之外同时带正负号，
+   不靠颜色单独表达涨跌。 */
+/* 指数表的表头带来源与数据日：标题一行、披露一行，是有意的两行排布。 */
+#gateway-index-table .preview-head {
+  display: grid !important;
+  align-content: center;
+  gap: 1px;
+  padding: 2px 5px;
+}
+
+/* 披露不截断：来源与数据日必须完整可见，需要几行就给几行。 */
+#gateway-index-table .preview-head em {
+  opacity: .82;
+  line-height: 1.3;
+  white-space: normal;
+}
+
+.preview-quote-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  padding: 0 5px;
+}
+
+.preview-quote-row b {
+  overflow: hidden;
+  color: color-mix(in srgb, var(--gateway-color) 58%, white);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preview-quote-change {
+  flex: none;
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in srgb, var(--gateway-color) 74%, transparent);
+}
+
+.preview-quote-change.is-up { color: var(--up); }
+.preview-quote-change.is-down { color: var(--down); }
+.preview-quote-change.is-flat { color: #9db1c3; }
+
 /* ---------- 7. Desktop single-screen composition ---------- */
 
 @media (min-width: 1041px) {
@@ -576,6 +619,8 @@
 
   /* 工作流预览：行高按参考稿压紧，标题行独立。 */
   body[data-terminal-view="overview"] .preview-quote-table { grid-template-rows: auto repeat(6, minmax(0, 1fr)); }
+  body[data-terminal-view="overview"] .preview-quote-row b,
+  body[data-terminal-view="overview"] .preview-quote-change { font-size: clamp(5px, .4vw, 8px); }
   body[data-terminal-view="overview"] .preview-head { padding: 0 5px; }
   body[data-terminal-view="overview"] .preview-head b { font-size: clamp(5px, .4vw, 8px); }
   body[data-terminal-view="overview"] .preview-head em { font-size: clamp(4px, .33vw, 7px); }

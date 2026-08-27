@@ -3003,6 +3003,19 @@
     return card;
   }
 
+  /* 「专业终端」入口卡的指数预览：跨资产管道已经在 risk 组里取过，这里只镜像它，
+     不新增请求。模块按需导入，失败时预览保持空态并写明管道不可用。 */
+  function renderGatewayIndexPreview(group) {
+    var tracker = group && group.assetTracker ? group.assetTracker : {};
+    import("./finance-terminal-gateway-preview.mjs").then(function (mod) {
+      mod.renderGatewayPreview({
+        document: document,
+        tracker: tracker.data || null,
+        error: tracker.error || null
+      });
+    }).catch(function () {});
+  }
+
   function updateSummary(data) {
     var proxies = data.assets.filter(function (asset) { return Boolean(asset.externalDisplay); });
     var official = data.assets.filter(function (asset) {
@@ -3406,6 +3419,7 @@
           }
           if (name === "risk") {
             riskSources = group;
+            renderGatewayIndexPreview(group);
             return loadSectionView(name).then(function () {
               return buildRiskCards(group);
             });
