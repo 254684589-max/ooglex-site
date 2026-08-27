@@ -2,7 +2,7 @@ import { drawEarthTexture } from "./finance-terminal-globe-texture.mjs";
 
 const MASK_URL = new URL("../tv/vendor/earth-water.jpg", import.meta.url).href;
 const TEX_URL = new URL("../tv/vendor/earth-night.jpg", import.meta.url);
-const INITIAL_LONGITUDE = -34;
+const INITIAL_LONGITUDE = 18;
 const ROTATION = .0025;
 const SIN_TILT = Math.sin(.34);
 const COS_TILT = Math.cos(.34);
