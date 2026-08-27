@@ -14,7 +14,7 @@ const fallbackUrls = {
   DIA: "https://www.tradingview.com/symbols/AMEX-DIA/",
   GLD: "https://www.tradingview.com/symbols/AMEX-GLD/"
 };
-const widths = [360, 768, 1280];
+const widths = [360, 768, 1280, 1672];
 const results = widths.map((width, widthIndex) => ({
   status: "pass",
   viewport: { width, height: 1400 },
@@ -37,14 +37,23 @@ const results = widths.map((width, widthIndex) => ({
           fromCache: null,
           failureCategory: "blocked"
         }
-      : {
-          url: "https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js",
-          state: "pending",
-          reason: "response-pending",
-          httpStatus: null,
-          fromCache: true,
-          failureCategory: null
-        },
+      : widthIndex === 2
+        ? {
+            url: "https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js",
+            state: "pending",
+            reason: "response-pending",
+            httpStatus: null,
+            fromCache: true,
+            failureCategory: null
+          }
+        : {
+            url: "https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js",
+            state: "not-observed",
+            reason: "not-requested",
+            httpStatus: null,
+            fromCache: null,
+            failureCategory: null
+          },
   providerWidgetRuntimeEvidence: symbols.map((symbol, symbolIndex) => {
     const mounted = (widthIndex + symbolIndex) % 2 === 0;
     return {
@@ -69,7 +78,7 @@ assert.equal(evidence.summary.hiddenFallbackObservations, halfObservations);
 assert.equal(evidence.summary.providerScriptLoadedViewports, 1);
 assert.equal(evidence.summary.providerScriptFailedViewports, 1);
 assert.equal(evidence.summary.providerScriptPendingViewports, 1);
-assert.equal(evidence.summary.providerScriptNotObservedViewports, 0);
+assert.equal(evidence.summary.providerScriptNotObservedViewports, 1);
 assert.deepEqual(evidence.summary.providerScriptFailureCategories, {
   dns: 0,
   tls: 0,
@@ -81,7 +90,7 @@ assert.deepEqual(evidence.summary.providerScriptFailureCategories, {
 assert.deepEqual(evidence.summary.diagnosisCounts, {
   healthy: 0,
   degraded: 1,
-  unavailable: 1,
+  unavailable: 2,
   unknown: 1
 });
 assert.equal(validateBrowserEvidence(evidence), evidence);
@@ -158,7 +167,7 @@ forgedDiagnosis.viewports[0].diagnosis = { state: "healthy", reason: "all-hosts-
 assert.throws(() => validateBrowserEvidence(forgedDiagnosis), /关联诊断不可由脚本传输与宿主状态复算/);
 
 console.log("Finance Terminal proxy browser evidence contract: PASS");
-console.log(`- 360 / 768 / 1280px · ${symbols.join(" / ")}: PASS`);
+console.log(`- 360 / 768 / 1280 / 1672px · ${symbols.join(" / ")}: PASS`);
 console.log("- mounted vs official-link fallback reasons: PASS");
 console.log("- exact allowlisted official fallback URL and state-linked visibility: PASS");
 console.log("- allowlisted provider script request / response / cache / failure states: PASS");

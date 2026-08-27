@@ -16,7 +16,7 @@ import {
 } from "./finance_terminal_browser_evidence.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const WIDTHS = [360, 768, 1280];
+const WIDTHS = [360, 768, 1280, 1672];
 const RESULT_ID = "finance-terminal-regression-result";
 const CRITICAL_REQUEST_KEYS = [
   "$config", "macro", "macroHealth", "assetRanking", "assetRankingHealth", "marketLicense"
@@ -481,13 +481,14 @@ async function validateDeferredLoading(client, baseUrl, timeoutMs) {
 }
 
 async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
+  const viewportHeight = width === 1672 ? 941 : height;
   await client.send("Emulation.setDeviceMetricsOverride", {
     width,
-    height,
+    height: viewportHeight,
     deviceScaleFactor: 1,
     mobile: false,
     screenWidth: width,
-    screenHeight: height
+    screenHeight: viewportHeight
   });
   const scriptTransport = trackProviderScriptTransport(client);
   let result;
@@ -591,7 +592,9 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
     const targets = result.undersizedTargets?.length ? `；触控目标=${JSON.stringify(result.undersizedTargets)}` : "";
     const boundary = `；视口=${result.viewport?.width ?? "?"}，文档宽度=${result.scrollWidth ?? "?"}`;
     const overflow = result.overflowCandidates?.length ? `；越界元素=${JSON.stringify(result.overflowCandidates)}` : "";
-    throw new Error(`${width}px浏览器检查失败：${(result.failures || ["unknown"]).join(", ")}${boundary}${targets}${overflow}`);
+    const cardBoxes = result.overviewCardBoxes?.length
+      ? `；资产主值盒=${JSON.stringify(result.overviewCardBoxes)}` : "";
+    throw new Error(`${width}px浏览器检查失败：${(result.failures || ["unknown"]).join(", ")}${boundary}${targets}${overflow}${cardBoxes}`);
   }
   return result;
 }

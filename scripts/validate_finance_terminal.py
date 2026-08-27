@@ -3546,7 +3546,7 @@ def main() -> None:
     finance_news_workflow = FINANCE_NEWS_WORKFLOW.read_text(encoding="utf-8")
     scheduler = SCHEDULER_WORKFLOW.read_text(encoding="utf-8")
     browser_validator = BROWSER_VALIDATOR.read_text(encoding="utf-8")
-    require("[360, 768, 1280]" in browser_validator and "Page.captureScreenshot" in browser_validator
+    require("[360, 768, 1280, 1672]" in browser_validator and "Page.captureScreenshot" in browser_validator
             and '\".mjs\": \"text/javascript; charset=utf-8\"' in browser_validator
             and "Runtime.evaluate" in browser_validator and "officialObservationTrendCount" in browser_validator
             and "readinessEvidencePanelCount" in browser_validator
@@ -3563,7 +3563,7 @@ def main() -> None:
             and "runtimeEvidence=1" in browser_validator,
             "浏览器回归脚本未覆盖三档宽度、官方趋势、稳定V1证据、渲染DOM和截图")
     browser_evidence = BROWSER_EVIDENCE.read_text(encoding="utf-8")
-    require("EXPECTED_WIDTHS = [360, 768, 1280]" in browser_evidence
+    require("EXPECTED_WIDTHS = [360, 768, 1280, 1672]" in browser_evidence
             and 'EXPECTED_SYMBOLS = ["DIA", "GLD"]' in browser_evidence
             and "EXPECTED_PROVIDER_SCRIPT" in browser_evidence
             and "providerScriptLoadedViewports" in browser_evidence
@@ -3791,7 +3791,7 @@ def main() -> None:
     print("- FRED and EIA refresh success / retained fallback / no-history error: PASS")
     print("- source / as-of / updated-at / stale / unavailable states: PASS")
     print("- homepage route and local data dependency: PASS")
-    print("- 360 / 768 / 1280 responsive rules: PASS")
+    print("- 360 / 768 / 1280 / 1672 responsive rules: PASS")
     print("- macro regime value / source / freshness / fallback states: PASS")
     print("- CNN fear & greed score / rating / close delta / freshness / failure states: PASS")
     print("- OFR FSI value / daily change / zero baseline / freshness / partial / failure states: PASS")

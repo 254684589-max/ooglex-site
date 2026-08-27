@@ -2,7 +2,7 @@
 
 import path from "node:path";
 
-export const EXPECTED_WIDTHS = [360, 768, 1280];
+export const EXPECTED_WIDTHS = [360, 768, 1280, 1672];
 /* 2026-08-25 所有者决定撤下标普500与纳斯达克100两张代理卡，免费嵌入代理只剩两项。 */
 export const EXPECTED_SYMBOLS = ["DIA", "GLD"];
 export const EXPECTED_PROVIDER_SCRIPT = "https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js";

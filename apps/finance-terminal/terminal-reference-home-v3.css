@@ -206,10 +206,6 @@
     padding: .52vw .62vw .28vw;
   }
 
-  body[data-terminal-view="overview"] #market-grid .asset-card {
-    isolation: isolate;
-  }
-
   body[data-terminal-view="overview"] #market-grid .asset-card::before {
     top: .5vw;
     left: .5vw;
@@ -225,9 +221,11 @@
   body[data-terminal-view="overview"] #market-grid .asset-name { font-size: .72vw; }
   body[data-terminal-view="overview"] #market-grid .asset-symbol { display: none; }
   body[data-terminal-view="overview"] #market-grid .asset-price {
+    height: 1.25em;
     min-height: 1.22em;
     margin-top: .12vw;
     overflow: visible;
+    flex: 0 0 1.25em;
     font-size: 1.08vw;
     line-height: 1.08;
     white-space: nowrap;
@@ -260,8 +258,10 @@
   }
   body[data-terminal-view="overview"] #market-grid .provider-widget-shell {
     height: 3.18vw;
+    min-height: 65px;
     margin-top: .2vw;
     overflow: hidden;
+    flex: none;
   }
   body[data-terminal-view="overview"] #market-grid .provider-widget-shell tv-mini-chart {
     display: block;
