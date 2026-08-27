@@ -2048,7 +2048,7 @@
     if (officialIds.length !== 4 || officialIds.indexOf("us10y") === -1 || officialIds.indexOf("dxy") === -1
       || officialIds.indexOf("wti") === -1 || officialIds.indexOf("bitcoin") === -1
       || proxyAssets.length !== 2 || demoCount !== 0) {
-      throw new Error("4项站内行情与4项免费嵌入代理的配置不一致");
+      throw new Error("4项站内行情与2项免费嵌入代理的配置不一致");
     }
     var expectedProxies = {
       sp500: ["SPY", "AMEX:SPY", "SPX"],
@@ -2877,7 +2877,7 @@
     licenseNotice.className = "license-notice status-" + state.status;
     if (state.status === "free") {
       licenseLabel.textContent = "FREE DATA";
-      licenseTitle.textContent = "四项免费ETF代理已启用";
+      licenseTitle.textContent = "两项免费ETF代理已启用";
       licenseCopy.textContent = "DIA与GLD由TradingView官方免费组件直接展示；均明确标为代理，不保存、导出或再分发原始行情，也不需要API密钥。";
     } else {
       licenseLabel.textContent = "SOURCE UNKNOWN";
@@ -3044,7 +3044,7 @@
       bannerLabel.textContent = "FREE";
       bannerTitle.textContent = "核心资产已取消演示数值";
       bannerCopy.textContent = "DGS10、DTWEXBGS、EIA RWTC与BTC/USD读取站内每日数据；DIA与GLD由TradingView免费组件直接展示，并明确标注ETF代理关系。";
-      bannerNote.textContent = "4 REAL · 4 FREE PROXY · 0 DEMO";
+      bannerNote.textContent = "4 REAL · 2 FREE PROXY · 0 DEMO";
       dataStatus.textContent = breakdown;
     }
   }
@@ -3069,7 +3069,7 @@
     pageUpdated.textContent = data.updatedAt ? formatTimestamp(data.updatedAt, false) : "真实数据更新时间不可用";
     if (data.updatedAt) pageUpdated.dateTime = data.updatedAt;
     pageSource.textContent = data.source;
-    assetCount.textContent = "8项资产 · " + (official.length - unavailable.length)
+    assetCount.textContent = data.assets.length + "项资产 · " + (official.length - unavailable.length)
       + "项站内真实可用 / " + unavailable.length + "项不可用 / "
       + proxies.length + "项免费嵌入代理 / " + demos.length + "项演示";
     updateSummary(data);

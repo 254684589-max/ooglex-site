@@ -46,8 +46,10 @@ GLOBE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-globe.mjs"
 VISION_CSS = ROOT / "apps" / "finance-terminal" / "terminal-vision.css"
 VISUAL_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-visual-fidelity.css"
 REFERENCE_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-fidelity.css"
+AURORA_HOME_CSS = ROOT / "apps" / "finance-terminal" / "terminal-aurora-home.css"
 COMMAND_CENTER_CSS = ROOT / "apps" / "finance-terminal" / "terminal-command-center.css"
 COMMAND_CENTER_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-command-center.mjs"
+AURORA_HOME_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-aurora-home.mjs"
 REGRESSION_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-regression.mjs"
 VISUALS_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_visuals.mjs"
 RISK_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-view.mjs"
@@ -2788,7 +2790,9 @@ def main() -> None:
     vision_css = VISION_CSS.read_text(encoding="utf-8")
     command_center_css = COMMAND_CENTER_CSS.read_text(encoding="utf-8")
     reference_fidelity_css = REFERENCE_FIDELITY_CSS.read_text(encoding="utf-8")
+    aurora_home_css = AURORA_HOME_CSS.read_text(encoding="utf-8")
     command_center_module = COMMAND_CENTER_MODULE.read_text(encoding="utf-8")
+    aurora_home_module = AURORA_HOME_MODULE.read_text(encoding="utf-8")
     regression_module = REGRESSION_MODULE.read_text(encoding="utf-8")
     risk_view_module = RISK_VIEW_MODULE.read_text(encoding="utf-8")
     research_view_module = RESEARCH_VIEW_MODULE.read_text(encoding="utf-8")
@@ -2838,9 +2842,12 @@ def main() -> None:
     require(COMMAND_CENTER_CSS.stat().st_size <= 27_000, "金融终端单屏指挥中心样式超过27KB性能预算")
     require(VISUAL_FIDELITY_CSS.stat().st_size <= 6_000, "金融终端高保真视觉层超过6KB性能预算")
     require(REFERENCE_FIDELITY_CSS.stat().st_size <= 12_900, "金融终端参考图精修层超过12.9KB性能预算")
+    require(AURORA_HOME_CSS.stat().st_size <= 26_000, "金融终端极光首页样式超过26KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
+    require(AURORA_HOME_MODULE.stat().st_size <= 3_500, "金融终端极光首页同步模块超过3.5KB性能预算")
     require(APP.stat().st_size + LOADER.stat().st_size + TERMINAL_VISUALS.stat().st_size
-            + COMMAND_CENTER_MODULE.stat().st_size + GLOBE_MODULE.stat().st_size <= 230_000,
+            + COMMAND_CENTER_MODULE.stat().st_size + GLOBE_MODULE.stat().st_size
+            + AURORA_HOME_MODULE.stat().st_size <= 230_000,
             "金融终端常规加载JavaScript超过230KB性能预算")
     # 23,000 是加入品类行情板与分区折叠检查后的预算：探针要逐「标签组」校验键盘与
     # 语义（页面现在有跨资产周期与品类行情板两组），核对六个品类标签、当前品类的
@@ -2906,10 +2913,20 @@ def main() -> None:
             and '<link rel="stylesheet" href="terminal-command-center.css">' in page
             and '<link rel="stylesheet" href="terminal-visual-fidelity.css">' in page
             and '<link rel="stylesheet" href="terminal-reference-fidelity.css">' in page
+            and '<link rel="stylesheet" href="terminal-aurora-home.css">' in page
             and 'src="finance-terminal-command-center.mjs"' in page
             and 'import("./finance-terminal-visuals.mjs")' in app
             and "createTerminalVisuals" in terminal_visuals,
             "科幻终端视觉层缺少本地样式或数据模块")
+    require('from "./finance-terminal-aurora-home.mjs"' in command_center_module
+            and "initAuroraHome" in command_center_module
+            and "MutationObserver" in aurora_home_module
+            and "innerHTML" not in aurora_home_module
+            and 'id="aurora-gateways"' in page
+            and 'class="terminal-mode-switch"' in page
+            and ".aurora-gateway-grid" in aurora_home_css
+            and "@media (max-width: 620px)" in aurora_home_css,
+            "极光首页缺少模式切换、三工作流入口、已校验读数同步或独立移动端布局")
     require('from "./finance-terminal-globe.mjs"' in command_center_module
             and "initMarketGlobe" in globe_module
             and "textureCoordinate" in globe_module
@@ -3469,9 +3486,9 @@ def main() -> None:
     require("changeUnit" in app and '"bp"' in app, "app.js未按bp显示收益率变化")
     require("apps/finance-terminal/" in home, "首页缺少金融终端入口")
     require("金融终端 Public Beta" in home
-            and "4项站内真实数据、4项免费ETF代理、0项演示" in home
+            and "4项站内真实数据、2项免费ETF代理、0项演示" in home
             and "Finance Terminal Public Beta" in home
-            and "4 first-party data cards, 4 free ETF proxies, 0 demo" in home,
+            and "4 first-party data cards, 2 free ETF proxies, 0 demo" in home,
             "首页金融终端入口未同步Public Beta真实数据与免费代理口径")
     require("金融终端（演示）" not in home
             and "4项演示数据" not in home
@@ -3738,7 +3755,7 @@ def main() -> None:
     print(visual_contracts.stdout.strip())
 
     print("Finance Terminal DGS10 + DTWEXBGS + RWTC + BTC/USD validation: PASS")
-    print("- four local data cards plus four explicit free TradingView ETF proxies / zero demos: PASS")
+    print("- four local data cards plus two explicit free TradingView ETF proxies / zero demos: PASS")
     print("- yield bp / broad-dollar and WTI percent / BTC 24h or previous-close change: PASS")
     print("- FRED and EIA refresh success / retained fallback / no-history error: PASS")
     print("- source / as-of / updated-at / stale / unavailable states: PASS")

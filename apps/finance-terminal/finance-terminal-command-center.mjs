@@ -1,4 +1,5 @@
 import { initMarketGlobe } from "./finance-terminal-globe.mjs";
+import { initAuroraHome } from "./finance-terminal-aurora-home.mjs";
 
 const DESKTOP_QUERY = "(min-width: 1041px)";
 const VIEW_BY_ID = Object.freeze({
@@ -15,6 +16,7 @@ const VIEW_BY_ID = Object.freeze({
 const body = document.body;
 const desktop = window.matchMedia(DESKTOP_QUERY);
 const navigation = Array.from(document.querySelectorAll(".section-nav a, .terminal-rail a"));
+const modeLinks = Array.from(document.querySelectorAll(".terminal-mode-switch a"));
 
 function viewFromHash(hash = window.location.hash) {
   return VIEW_BY_ID[String(hash).replace(/^#/, "")] || "overview";
@@ -23,6 +25,11 @@ function viewFromHash(hash = window.location.hash) {
 function updateCurrentLinks(view) {
   navigation.forEach((link) => {
     const current = viewFromHash(link.hash) === view;
+    if (current) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  });
+  modeLinks.forEach((link) => {
+    const current = link.dataset.terminalMode === (view === "overview" ? "standard" : "professional");
     if (current) link.setAttribute("aria-current", "page");
     else link.removeAttribute("aria-current");
   });
@@ -43,7 +50,7 @@ function applyView(view, shouldScroll = false) {
   });
 }
 
-navigation.forEach((link) => {
+[...navigation, ...modeLinks].forEach((link) => {
   link.addEventListener("click", (event) => {
     if (!desktop.matches) return;
     const view = viewFromHash(link.hash);
@@ -69,3 +76,4 @@ window.addEventListener("hashchange", () => applyView(viewFromHash(), true));
 desktop.addEventListener("change", () => applyView(viewFromHash(), desktop.matches));
 applyView(viewFromHash());
 initMarketGlobe({ document, window });
+initAuroraHome({ document, MutationObserver });

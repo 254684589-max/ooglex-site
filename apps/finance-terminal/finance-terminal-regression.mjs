@@ -73,9 +73,8 @@ export function runBrowserRegressionProbe(options = {}) {
     ? { market: 1, risk: 1, research: 1, information: 1, operations: 1 }
     : width <= 1040
       ? { market: 2, risk: 2, research: 2, information: 1, operations: 2 }
-      /* 桌面一屏总览里核心资产只占第三行的一格（宽度约为整行的三分之一），
-         按两列纵向铺开；它在自己的「资产」视图里仍是四列。 */
-      : { market: 2, risk: 3, research: 3, information: 1, operations: 4 };
+      /* 桌面极光首页把六项核心资产铺成一条弧形行情带。 */
+      : { market: 6, risk: 3, research: 3, information: 1, operations: 4 };
   const cards = Array.from(document.querySelectorAll(
     ".asset-card, .risk-card, .research-card, .information-card, .operation-card"
   ));
@@ -84,7 +83,7 @@ export function runBrowserRegressionProbe(options = {}) {
   )).filter(elementIsRendered);
   const targetMinimum = width <= 620 ? 44 : 24;
   const targetElements = Array.from(document.querySelectorAll(
-    ".brand, .back-link, .terminal-rail a, .stable-v1-chip, .section-nav a, .method summary, .period-tab, .source-link, .detail-link, .news-link, .operation-action, .operation-readiness-link, .legal-links a, .board-tab, .board-open, .board-toggle, .board-search"
+    ".brand, .back-link, .terminal-rail a, .stable-v1-chip, .section-nav a, .terminal-mode-switch a, .aurora-evidence > *, .gateway-enter, .gateway-secondary, .method summary, .period-tab, .source-link, .detail-link, .news-link, .operation-action, .operation-readiness-link, .legal-links a, .board-tab, .board-open, .board-toggle, .board-search"
   )).filter(elementIsRendered);
   const sectionLinks = Array.from(document.querySelectorAll(".section-nav a"));
   const supportingHealthPanels = Array.from(document.querySelectorAll(
@@ -98,7 +97,7 @@ export function runBrowserRegressionProbe(options = {}) {
   const marketTapeItems = Array.from(document.querySelectorAll("#market-tape .market-tape-item"));
   const marketClocks = Array.from(document.querySelectorAll("[data-market-time]"));
   const overviewLegible = Array.from(document.querySelectorAll(
-    "#market-grid .asset-price, #market-grid .asset-footer"));
+    "#market-grid .asset-price, #market-grid .provider-widget-shell")).filter(elementIsRendered);
   const riskHudGauges = Array.from(document.querySelectorAll("#risk-grid .risk-hud-gauge"));
   const marketGlobe = document.getElementById("market-globe-canvas");
   const radarAxisValues = Array.from(document.querySelectorAll("#risk-radar-values text"));
@@ -238,7 +237,7 @@ export function runBrowserRegressionProbe(options = {}) {
           && Number.isInteger(value) && value >= 0 && value <= 7;
       }),
     /* 主数字曾被压进9px盒子。 */
-    overviewCardLegibility: overviewLegible.length === EXPECTED_ASSET_CARDS + EXPECTED_OFFICIAL_CARDS
+    overviewCardLegibility: overviewLegible.length === EXPECTED_ASSET_CARDS
       && overviewLegible.every((n) => n.scrollHeight <= n.clientHeight + 1),
     orbitalTerminalVisuals: marketTapeItems.length === EXPECTED_ASSET_CARDS
       && marketTapeItems.every((item) => item.textContent.trim().length > 4)
