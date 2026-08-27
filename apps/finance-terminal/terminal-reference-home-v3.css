@@ -489,14 +489,16 @@
 
   body[data-terminal-view="overview"] #market-grid .asset-card,
   body[data-terminal-view="overview"] #market-grid .skeleton {
-    padding-bottom: 2px;
+    padding-bottom: 4px;
   }
 
+  /* 这里不要钉死 line-height：读数盒子必须随字体度量一起长，否则换一套中文字体
+     （本地文泉驿 vs CI 的 Noto CJK）就会 scrollHeight > clientHeight，
+     踩中浏览器探针的 overviewCardLegibility。 */
   body[data-terminal-view="overview"] #market-grid .asset-price {
     margin-top: 0;
     margin-right: clamp(6px, .5vw, 11px);
     font-size: clamp(15px, 1.14vw, 22px);
-    line-height: 1.16;
   }
 
   body[data-terminal-view="overview"] #market-grid .change-row { margin-top: 0; }
@@ -509,7 +511,7 @@
     position: relative;
     display: flex;
     height: auto;
-    min-height: clamp(30px, 2.3vw, 46px);
+    min-height: clamp(26px, 2vw, 40px);
     flex: 1 1 auto;
     flex-direction: column;
     margin-top: 1px;
