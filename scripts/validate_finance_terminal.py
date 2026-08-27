@@ -1,3793 +1,87 @@
-#!/usr/bin/env python3
-"""Validate the Finance Terminal market overview without third-party dependencies."""
-
-from __future__ import annotations
-
-import importlib.util
-import json
-import math
-import re
-import subprocess
-import sys
-import types
-from datetime import date, datetime
-from pathlib import Path
-
-from market_data_quality import (
-    fallback_data_meta,
-    make_data_meta,
-    make_proxy_meta,
-    summarize_data_quality,
-    validate_data_quality,
-    validate_proxy_meta,
-)
-from market_source_health import validate_source_health
-from supporting_source_health import validate_health as validate_supporting_health
-from finance_terminal_readiness_snapshot import validate_snapshot as validate_readiness_snapshot
-from finance_terminal_market_licenses import validate_market_source_readiness
-
-
-ROOT = Path(__file__).resolve().parents[1]
-PAGE = ROOT / "apps" / "finance-terminal" / "index.html"
-APP = ROOT / "apps" / "finance-terminal" / "app.js"
-LOADER = ROOT / "apps" / "finance-terminal" / "finance-terminal-loader.mjs"
-TERMINAL_VISUALS = ROOT / "apps" / "finance-terminal" / "finance-terminal-visuals.mjs"
-RISK_RADAR_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-radar.mjs"
-WORLDMAP_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-worldmap.mjs"
-SESSIONS_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-sessions.mjs"
-WATCHLIST_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-watchlist.mjs"
-HEALTH_ADAPTERS_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-health-adapters.mjs"
-DETAIL_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-detail-view.mjs"
-BOARD_DATA_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-board-data.mjs"
-BOARD_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-board-view.mjs"
-RADAR_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-radar-view.mjs"
-CURVE_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-curve-view.mjs"
-GLOBE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-globe.mjs"
-VISION_CSS = ROOT / "apps" / "finance-terminal" / "terminal-vision.css"
-VISUAL_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-visual-fidelity.css"
-REFERENCE_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-fidelity.css"
-AURORA_HOME_CSS = ROOT / "apps" / "finance-terminal" / "terminal-aurora-home.css"
-COMMAND_CENTER_CSS = ROOT / "apps" / "finance-terminal" / "terminal-command-center.css"
-COMMAND_CENTER_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-command-center.mjs"
-AURORA_HOME_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-aurora-home.mjs"
-REGRESSION_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-regression.mjs"
-VISUALS_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_visuals.mjs"
-RISK_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-view.mjs"
-GEO_RISK_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-geo-risk.mjs"
-RESEARCH_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-research-view.mjs"
-INFORMATION_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-information-view.mjs"
-OPERATIONS_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-operations-view.mjs"
-OPERATIONS_DATA_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-operations-data.mjs"
-INFORMATION_DATA_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-information-data.mjs"
-CORRELATION_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-correlation-view.mjs"
-TERMS_PAGE = ROOT / "apps" / "finance-terminal" / "terms.html"
-PRIVACY_PAGE = ROOT / "apps" / "finance-terminal" / "privacy.html"
-LEGAL_CSS = ROOT / "apps" / "finance-terminal" / "legal.css"
-DATA = ROOT / "apps" / "finance-terminal" / "data.json"
-READINESS_DATA = ROOT / "apps" / "finance-terminal" / "readiness.json"
-MARKET_LICENSE_READINESS = ROOT / "apps" / "finance-terminal" / "market-source-readiness.json"
-MACRO_DATA = ROOT / "apps" / "macro-radar" / "data.json"
-FEAR_GREED_DATA = ROOT / "apps" / "fear-greed" / "data.json"
-FEAR_GREED_HEALTH = ROOT / "apps" / "fear-greed" / "health.json"
-OFR_DATA = ROOT / "apps" / "ofr-monitor" / "data.json"
-OFR_HEALTH = ROOT / "apps" / "ofr-monitor" / "health.json"
-ASSET_TRACKER_DATA = ROOT / "apps" / "asset-tracker" / "data.json"
-ASSET_TRACKER_HEALTH = ROOT / "apps" / "asset-tracker" / "health.json"
-ASSET_TRACKER_BUILD = ROOT / "scripts" / "asset-tracker" / "build_assets.py"
-ASSET_RANKING_DATA = ROOT / "apps" / "asset-ranking" / "data.json"
-ASSET_RANKING_HEALTH = ROOT / "apps" / "asset-ranking" / "health.json"
-ASSET_RANKING_BUILD = ROOT / "scripts" / "asset-ranking" / "build_ranking.py"
-COMPANIES_DATA = ROOT / "apps" / "companies" / "data.json"
-COMPANIES_HEALTH = ROOT / "apps" / "companies" / "health.json"
-COMPANIES_BUILD = ROOT / "scripts" / "companies" / "build_companies.py"
-COMPANIES_HISTORY = ROOT / "apps" / "companies" / "history.json"
-ASSET_RANKING_CRYPTO = ROOT / "apps" / "asset-ranking" / "crypto.json"
-MARKET_HISTORY_MODULE = ROOT / "scripts" / "market_history.py"
-ECON_CALENDAR_DATA = ROOT / "apps" / "econ-calendar" / "data.json"
-ECON_CALENDAR_HEALTH = ROOT / "apps" / "econ-calendar" / "health.json"
-FINANCE_NEWS_DATA = ROOT / "apps" / "whats-latest" / "data.json"
-FINANCE_NEWS_HEALTH = ROOT / "apps" / "whats-latest" / "health.json"
-MACRO_BUILD = ROOT / "scripts" / "macro-radar" / "build_radar.py"
-MACRO_HISTORY_BUILD = ROOT / "scripts" / "macro-radar" / "build_history.py"
-MACRO_WORKFLOW = ROOT / ".github" / "workflows" / "macro_radar.yml"
-FEAR_GREED_WORKFLOW = ROOT / ".github" / "workflows" / "fear_greed.yml"
-OFR_WORKFLOW = ROOT / ".github" / "workflows" / "ofr_monitor.yml"
-ASSET_TRACKER_WORKFLOW = ROOT / ".github" / "workflows" / "asset_tracker.yml"
-ASSET_RANKING_WORKFLOW = ROOT / ".github" / "workflows" / "asset_ranking.yml"
-COMPANIES_WORKFLOW = ROOT / ".github" / "workflows" / "companies.yml"
-ECON_CALENDAR_WORKFLOW = ROOT / ".github" / "workflows" / "econ_calendar.yml"
-FINANCE_NEWS_WORKFLOW = ROOT / ".github" / "workflows" / "whats_latest.yml"
-SCHEDULER_WORKFLOW = ROOT / ".github" / "workflows" / "scheduler.yml"
-QUALITY_WORKFLOW = ROOT / ".github" / "workflows" / "finance_terminal_quality.yml"
-BROWSER_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_browser.mjs"
-BROWSER_EVIDENCE = ROOT / "scripts" / "finance_terminal_browser_evidence.mjs"
-BROWSER_EVIDENCE_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_browser_evidence.mjs"
-LOADER_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_loader.mjs"
-BOARD_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_board.mjs"
-PROXY_RUNTIME_HISTORY = ROOT / "scripts" / "finance_terminal_proxy_runtime_history.py"
-PROXY_RUNTIME_HISTORY_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_proxy_runtime_history.py"
-DATA_ISSUE_FORM = ROOT / ".github" / "ISSUE_TEMPLATE" / "finance-terminal-data.yml"
-OPERATIONS_RUNBOOK = ROOT / "docs" / "FINANCE_TERMINAL_OPERATIONS_RUNBOOK.md"
-SOURCE_HEALTH_VALIDATOR = ROOT / "scripts" / "validate_market_source_health.py"
-SOURCE_HEALTH_DOC = ROOT / "docs" / "AGGREGATE_SOURCE_HEALTH.md"
-SUPPORTING_HEALTH_VALIDATOR = ROOT / "scripts" / "validate_supporting_source_health.py"
-SUPPORTING_HEALTH_DOC = ROOT / "docs" / "SUPPORTING_SOURCE_HEALTH.md"
-HOME = ROOT / "index.html"
-
-# 2026-08-25 æ‰€æœ‰è€…å†³å®šï¼šæ ‡æ™®500ä¸çº³æ–¯è¾¾å…‹100ä¸¤å¼ ETFä»£ç†å¡æ’¤ä¸‹ï¼Œæ ¸å¿ƒèµ„äº§æ”¶æ•›ä¸º
-# å…­é¡¹ï¼ˆä¸¤é¡¹å…è´¹åµŒå…¥ä»£ç† + å››é¡¹ç«™å†…å®˜æ–¹ç®¡é“ï¼‰ï¼›çº³æ–¯è¾¾å…‹ä¸å†ç”±å…¶ä»–æ ‡çš„é¡¶æ›¿ã€‚
-EXPECTED_SYMBOLS = {"DIA", "DGS10", "DTWEXBGS", "GLD", "WTI", "BTC/USD"}
-EXPECTED_PROXIES = {
-    "dow": ("DIA", "DJIA", "AMEX:DIA"),
-    "gold": ("GLD", "LBMA-GOLD-PM-USD", "AMEX:GLD"),
-}
-COMMON_ASSET_FIELDS = {
-    "id", "name", "nameEn", "symbol", "category", "demo", "status", "frequency",
-    "delayLabel", "price", "asOf", "updatedAt", "source", "spark",
-}
-
-
-def require(condition: bool, message: str) -> None:
-    if not condition:
-        raise AssertionError(message)
-
-
-def parse_iso(value: str) -> None:
-    datetime.fromisoformat(value.replace("Z", "+00:00"))
-
-
-def parse_date(value: str) -> None:
-    date.fromisoformat(value)
-
-
-def validate_official_observations(record: dict, label: str) -> list[dict]:
-    """æ ¡éªŒæˆåŠŸåˆ·æ–°åä¼šä»è¿ç§»ç‚¹é€æ­¥æ‰©å±•åˆ°8ç‚¹çš„å®˜æ–¹è§‚æµ‹çª—å£ã€‚"""
-    observations = record.get("observations")
-    require(isinstance(observations, list) and 1 <= len(observations) <= 8,
-            f"{label}è§‚æµ‹çª—å£å¿…é¡»åŒ…å«1è‡³8ä¸ªå®˜æ–¹è§‚æµ‹ç‚¹")
-    parsed_dates = []
-    for index, observation in enumerate(observations):
-        require(isinstance(observation, dict)
-                and set(observation) == {"asOf", "value"},
-                f"{label}ç¬¬{index + 1}ä¸ªè§‚æµ‹ç‚¹ç»“æ„æ— æ•ˆ")
-        try:
-            observed_date = date.fromisoformat(observation["asOf"])
-        except (TypeError, ValueError) as exc:
-            raise AssertionError(f"{label}ç¬¬{index + 1}ä¸ªè§‚æµ‹æ—¥æœŸæ— æ•ˆ") from exc
-        value = observation["value"]
-        require(isinstance(value, (int, float)) and not isinstance(value, bool)
-                and math.isfinite(value) and value > 0,
-                f"{label}ç¬¬{index + 1}ä¸ªè§‚æµ‹å€¼å¿…é¡»æ˜¯æ­£æœ‰é™æ•°")
-        parsed_dates.append(observed_date)
-    require(all(previous < current for previous, current in zip(parsed_dates, parsed_dates[1:])),
-            f"{label}è§‚æµ‹æ—¥æœŸå¿…é¡»ä¸¥æ ¼é€’å¢ä¸”ä¸å¯é‡å¤")
-    require(observations[-1] == {"asOf": record.get("asOf"), "value": record.get("price")},
-            f"{label}è§‚æµ‹çª—å£æœ«å€¼å¿…é¡»ä¸å½“å‰å®˜æ–¹è®°å½•ä¸€è‡´")
-    if len(observations) >= 2:
-        require(observations[-2] == {
-            "asOf": record.get("previousAsOf"), "value": record.get("previousPrice")
-        }, f"{label}è§‚æµ‹çª—å£å€’æ•°ç¬¬äºŒé¡¹å¿…é¡»ä¸å‰å€¼è®°å½•ä¸€è‡´")
-    return observations
-
-
-def run_official_observation_contract_tests() -> None:
-    one_point = {
-        "asOf": "2026-08-06", "price": 4.69,
-        "previousAsOf": "2026-08-05", "previousPrice": 4.63,
-        "observations": [{"asOf": "2026-08-06", "value": 4.69}],
-    }
-    require(len(validate_official_observations(one_point, "è¿ç§»åºåˆ—")) == 1,
-            "å•ç‚¹è¿ç§»çª—å£åº”ä¿æŒæœ‰æ•ˆ")
-    full_window = {
-        "asOf": "2026-08-08", "price": 108.0,
-        "previousAsOf": "2026-08-07", "previousPrice": 107.0,
-        "observations": [
-            {"asOf": f"2026-08-{day:02d}", "value": 100.0 + day}
-            for day in range(1, 9)
-        ],
-    }
-    require(len(validate_official_observations(full_window, "å®Œæ•´åºåˆ—")) == 8,
-            "å…«ç‚¹å®Œæ•´çª—å£åº”ä¿æŒæœ‰æ•ˆ")
-
-    invalid_cases = []
-    too_long = json.loads(json.dumps(full_window))
-    too_long["observations"].insert(0, {"asOf": "2026-07-31", "value": 99.0})
-    invalid_cases.append(too_long)
-    reversed_window = json.loads(json.dumps(full_window))
-    reversed_window["observations"].reverse()
-    invalid_cases.append(reversed_window)
-    duplicate_date = json.loads(json.dumps(full_window))
-    duplicate_date["observations"][1]["asOf"] = duplicate_date["observations"][0]["asOf"]
-    invalid_cases.append(duplicate_date)
-    wrong_tail = json.loads(json.dumps(full_window))
-    wrong_tail["observations"][-1]["value"] = 999.0
-    invalid_cases.append(wrong_tail)
-    wrong_previous = json.loads(json.dumps(full_window))
-    wrong_previous["observations"][-2]["value"] = 999.0
-    invalid_cases.append(wrong_previous)
-    non_positive = json.loads(json.dumps(full_window))
-    non_positive["observations"][0]["value"] = 0
-    invalid_cases.append(non_positive)
-    for invalid in invalid_cases:
-        try:
-            validate_official_observations(invalid, "å¼‚å¸¸åºåˆ—")
-        except AssertionError:
-            continue
-        raise AssertionError("æ— æ•ˆå®˜æ–¹è§‚æµ‹çª—å£æœªè¢«æ‹’ç»")
-
-
-def css_hex_variable(styles: str, name: str) -> str:
-    match = re.search(rf"--{re.escape(name)}:\s*(#[0-9a-fA-F]{{6}})\s*;", styles)
-    require(match is not None, f"CSSå˜é‡--{name}ç¼ºå¤±æˆ–ä¸æ˜¯å…­ä½åå…­è¿›åˆ¶é¢œè‰²")
-    return match.group(1)
-
-
-def relative_luminance(color: str) -> float:
-    channels = [int(color[index:index + 2], 16) / 255 for index in (1, 3, 5)]
-    linear = [channel / 12.92 if channel <= 0.04045 else ((channel + 0.055) / 1.055) ** 2.4
-              for channel in channels]
-    return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
-
-
-def contrast_ratio(foreground: str, background: str) -> float:
-    lighter, darker = sorted((relative_luminance(foreground), relative_luminance(background)), reverse=True)
-    return (lighter + 0.05) / (darker + 0.05)
-
-
-def run_market_data_quality_contract_tests() -> None:
-    updated = "2026-08-03T12:00:00Z"
-    market = make_data_meta(
-        "market", "Yahoo Finance", as_of="2026-08-01", updated_at=updated, frequency="daily"
-    )
-    previous = {"dataMeta": market}
-    fallback = fallback_data_meta(previous, source="Yahoo Finance", frequency="daily")
-    require(fallback["mode"] == "fallback" and fallback["status"] == "stale", "é€æ¡å›é€€çŠ¶æ€æ— æ•ˆ")
-    require(fallback["asOf"] == market["asOf"] and fallback["updatedAt"] == market["updatedAt"],
-            "é€æ¡å›é€€å¿…é¡»ä¿ç•™ä¸Šä¸€ä»½çœŸå®æ—¶é—´")
-    legacy = fallback_data_meta(
-        {}, source="Yahoo Finance", frequency="daily", legacy_updated_at="2026-08-01T23:48:35Z"
-    )
-    require(legacy["mode"] == "fallback" and legacy["status"] == "partial", "æ—§å¿«ç…§å›é€€å¿…é¡»æ ‡è®°partial")
-    require(legacy["asOf"] is None, "æ—§å¿«ç…§ä¸å¾—ç”¨æ–‡ä»¶æ—¥æœŸå†’å……é€æ¡æ•°æ®æ—¥")
-    unknown_previous = {"dataMeta": make_data_meta(
-        "unknown", "Yahoo Finance", as_of=None, updated_at=updated, frequency="daily"
-    )}
-    unknown_fallback = fallback_data_meta(unknown_previous, source="Yahoo Finance", frequency="daily")
-    require(unknown_fallback["status"] == "partial" and unknown_fallback["asOf"] is None,
-            "ç¼ºå°‘å¯éªŒè¯é€æ¡æ—¶é—´çš„æ—§è®°å½•ä¸å¾—å‡çº§ä¸ºç²¾ç¡®STALEå›é€€")
-    rows = [{"name": "A", "dataMeta": market}, {"name": "B", "dataMeta": fallback}]
-    summary = summarize_data_quality(rows)
-    require(summary["counts"]["market"] == 1 and summary["counts"]["fallback"] == 1,
-            "é€æ¡æ•°æ®è´¨é‡è®¡æ•°é”™è¯¯")
-    require(summary["status"] == "partial" and not validate_data_quality(rows, summary),
-            "é€æ¡æ•°æ®è´¨é‡æ‘˜è¦æˆ–ç»“æ„æ ¡éªŒé”™è¯¯")
-    proxy = make_proxy_meta(
-        "etf", "000905.SS", "ä¸­è¯500ETF", "510500.SS",
-        currency="CNY", return_basis="price", note="ETFæ”¶ç›Šç‡ä»£ç†ï¼Œå¯èƒ½å­˜åœ¨è·Ÿè¸ªè¯¯å·®ã€‚",
-    )
-    proxy_row = {"name": "ä¸­è¯500", "symbol": "510500.SS", "dataMeta": market, "proxy": proxy}
-    require(not validate_proxy_meta(proxy_row), "æœ‰æ•ˆETFä»£ç†å¥‘çº¦ä¸åº”è¢«æ‹’ç»")
-    invalid_proxy_row = json.loads(json.dumps(proxy_row))
-    invalid_proxy_row["proxy"]["instrumentSymbol"] = "000905.SS"
-    require(validate_proxy_meta(invalid_proxy_row), "å®é™…ä»£ç é”™é…çš„ä»£ç†å¥‘çº¦å¿…é¡»è¢«æ‹’ç»")
-    print("Market data per-record contract: PASS")
-
-
-def run_company_builder_contract_tests() -> None:
-    spec = importlib.util.spec_from_file_location("companies_builder", COMPANIES_BUILD)
-    require(spec is not None and spec.loader is not None, "æ— æ³•åŠ è½½å…¬å¸æ¦œæ„å»ºè„šæœ¬")
-    module = importlib.util.module_from_spec(spec)
-    inserted_stub = "requests" not in sys.modules
-    if inserted_stub:
-        requests_stub = types.ModuleType("requests")
-        requests_stub.utils = types.SimpleNamespace(quote=lambda value: value)
-        requests_stub.Session = object
-        sys.modules["requests"] = requests_stub
-    try:
-        spec.loader.exec_module(module)
-    finally:
-        if inserted_stub:
-            sys.modules.pop("requests", None)
-
-    class Response:
-        status_code = 200
-
-        @staticmethod
-        def json():
-            return {"chart": {"result": [{"meta": {
-                "regularMarketPrice": 125.5,
-                "chartPreviousClose": 120.0,
-                "regularMarketTime": 1785715200,
-            }}]}}
-
-    class Session:
-        @staticmethod
-        def get(*_args, **_kwargs):
-            return Response()
-
-    quote = module.yf_chart(Session(), "TEST")
-    require(quote == (125.5, 120.0, "2026-08-03T00:00:00Z"), "å…¬å¸è¡Œæƒ…å€¼æˆ–è¡Œæƒ…æ—¶ç‚¹æ˜ å°„é”™è¯¯")
-    require(module.last_round_as_of("May 2026") == "2026-05-01", "èèµ„æœˆä»½è§„èŒƒåŒ–é”™è¯¯")
-    require(module.last_round_as_of(None) is None, "ç¼ºå¤±èèµ„æœˆä»½ä¸å¾—ç”Ÿæˆé»˜è®¤æ—¥æœŸ")
-
-    class SeriesResponse:
-        status_code = 200
-
-        @staticmethod
-        def json():
-            return {"chart": {"result": [{
-                "timestamp": [1785715200, 1785801600, 1785888000],
-                "indicators": {"quote": [{"close": [10.0, None, 12.5]}]},
-            }]}}
-
-    class SeriesSession:
-        @staticmethod
-        def get(*_args, **_kwargs):
-            return SeriesResponse()
-
-    closes = module.yf_daily_closes(SeriesSession(), "TEST")
-    require(closes == [("2026-08-03", 10.0), ("2026-08-05", 12.5)],
-            "å…¬å¸æ—¥çº¿å¿…é¡»è·³è¿‡æ— æ”¶ç›˜çš„äº¤æ˜“æ—¥ï¼Œä¸åšå‰å‘å¡«å……")
-
-    class EmptySession:
-        @staticmethod
-        def get(*_args, **_kwargs):
-            raise RuntimeError("network down")
-
-    require(module.yf_daily_closes(EmptySession(), "TEST") == [],
-            "å–æ•°å¤±è´¥å¿…é¡»è¿”å›ç©ºåºåˆ—ï¼Œç”±è°ƒç”¨æ–¹ä¿ç•™ä¸Šæ¬¡å†å²")
-    require(module.HISTORY_SYMBOLS == 40 and module.HISTORY_POINTS == 260,
-            "å…¬å¸æ—¥çº¿è¦†ç›–æ ‡çš„æ•°ä¸æ»šåŠ¨é•¿åº¦å¿…é¡»ä¸è¡Œæƒ…æ¿å¥‘çº¦ä¸€è‡´")
-    require("history" in module.HISTORY_PATH and module.HISTORY_PATH.endswith(".json"),
-            "å…¬å¸æ—¥çº¿å¿…é¡»å†™å…¥ç‹¬ç«‹çš„history.jsonï¼Œä¸æ··è¿›data.json")
-    print("Company per-record provenance builder: PASS")
-
-
-def run_shared_history_contract_tests() -> None:
-    """ä¸‰æ¡ç®¡é“å…±ç”¨åŒä¸€ä»½æ»šåŠ¨å†å²è§„åˆ™ï¼Œä¸”é¦–æ¬¡ç”Ÿæˆå‰çš„å ä½æ–‡ä»¶ä¸å¾—å†’å……æœ‰æ•ˆæ•°æ®ã€‚"""
-    spec = importlib.util.spec_from_file_location("market_history", MARKET_HISTORY_MODULE)
-    require(spec is not None and spec.loader is not None, "æ— æ³•åŠ è½½å…±äº«æ»šåŠ¨å†å²æ¨¡å—")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    history, retained = module.build_rolling_history(
-        {"A": [("2026-08-03", 1.0), ("2026-08-05", 3.0)]},
-        {"dates": ["2026-08-03", "2026-08-04"], "series": {"B": [9.0, 9.5]}},
-        "2026-08-25T00:00:00Z",
-        source="TestSource",
-        note="test",
-    )
-    require(history["dates"] == ["2026-08-03", "2026-08-04", "2026-08-05"],
-            "å…±äº«æ—¥æœŸè½´å¿…é¡»æŒ‰æ—¥å‡åºåˆå¹¶")
-    require(history["series"]["A"][1] is None, "ç¼ºè§‚æµ‹æ—¥å¿…é¡»ç•™ç©ºï¼Œä¸åšå‰å‘å¡«å……")
-    require(retained == ["B"] and history["series"]["B"][-1] is None,
-            "æœ¬è½®æœªå–åˆ°çš„æ ‡çš„æ²¿ç”¨ä¸Šæ¬¡åºåˆ—ä¸”ä¸è¡¥é€ æ–°ç‚¹")
-    require(history["source"] == "TestSource" and history["frequency"] == "daily",
-            "æ»šåŠ¨å†å²å¿…é¡»æ ‡æ³¨è°ƒç”¨æ–¹çš„çœŸå®æ¥æº")
-    require(module.build_rolling_history({}, {}, "t", source="s", note="n")[0] is None,
-            "æ— ä»»ä½•æœ‰æ•ˆåºåˆ—æ—¶å¿…é¡»è¿”å›ç©ºï¼Œç”±è°ƒç”¨æ–¹ä¿ç•™ä¸Šæ¬¡æ–‡ä»¶")
-
-    for path, keys in ((COMPANIES_HISTORY, ("dates", "series")),
-                       (ASSET_RANKING_CRYPTO, ("assets", "history"))):
-        payload = json.loads(path.read_text(encoding="utf-8"))
-        require(payload.get("demo") is not True, f"{path.name}ä¸å¾—æ ‡è®°ä¸ºæ¼”ç¤ºæ•°æ®")
-        require(payload.get("source") and payload.get("note"),
-                f"{path.name}å¿…é¡»å†™æ˜æ¥æºä¸å£å¾„")
-        for key in keys:
-            require(key in payload, f"{path.name}ç¼ºå°‘{key}å­—æ®µ")
-        if payload.get("status") == "pending":
-            require(not payload.get("dates") and not payload.get("assets"),
-                    f"{path.name}æ ‡ä¸ºpendingæ—¶ä¸å¾—å«æœ‰ä»»ä½•è§‚æµ‹å€¼")
-    print("Shared rolling history and pending placeholders: PASS")
-
-
-def _first_symbol(item: dict) -> str:
-    """å–æ ‡çš„é¦–é€‰ä»£ç ï¼›å€™é€‰å¯ä»¥æ˜¯å­—ç¬¦ä¸²æˆ– {sym, note} å­—å…¸ã€‚"""
-    candidate = item["syms"][0]
-    return candidate["sym"] if isinstance(candidate, dict) else candidate
-
-
-def run_asset_tracker_builder_contract_tests() -> None:
-    spec = importlib.util.spec_from_file_location("asset_tracker_builder", ASSET_TRACKER_BUILD)
-    require(spec is not None and spec.loader is not None, "æ— æ³•åŠ è½½è·¨èµ„äº§æ„å»ºè„šæœ¬")
-    module = importlib.util.module_from_spec(spec)
-    inserted_stub = "requests" not in sys.modules
-    if inserted_stub:
-        requests_stub = types.ModuleType("requests")
-        requests_stub.utils = types.SimpleNamespace(quote=lambda value: value)
-        sys.modules["requests"] = requests_stub
-    try:
-        spec.loader.exec_module(module)
-    finally:
-        if inserted_stub:
-            sys.modules.pop("requests", None)
-
-    universe_names = [item["name"] for item in module.ASSETS]
-    universe_symbols = [_first_symbol(item) for item in module.ASSETS]
-    require(len(module.ASSETS) == 56, f"è·¨èµ„äº§æ¸…å•æ¡æ•°åº”ä¸º56ï¼Œå½“å‰{len(module.ASSETS)}")
-    require(len(set(universe_names)) == len(universe_names), "è·¨èµ„äº§æ ‡çš„åç§°å¿…é¡»å”¯ä¸€")
-    require(len(set(universe_symbols)) == len(universe_symbols), "è·¨èµ„äº§é¦–é€‰ä»£ç å¿…é¡»å”¯ä¸€")
-    categories = {}
-    for item in module.ASSETS:
-        categories[item["cat"]] = categories.get(item["cat"], 0) + 1
-    require(categories == {"equity": 24, "commodity": 15, "fx": 13, "bond": 4},
-            f"è·¨èµ„äº§å››ç±»æ¡æ•°ä¸ç™»è®°ä¸ä¸€è‡´ï¼š{categories}")
-    # 2026-08-25 æ‰€æœ‰è€…å†³å®šï¼šæ’¤ä¸‹QQQä»£ç†å¡åçº³æ–¯è¾¾å…‹æ”¹ç”±ç»¼åˆæŒ‡æ•°^IXICè¿›å…¥æŒ‡æ•°ç±»ï¼›
-    # é“æŒ‡ä»ç”±DIAå…è´¹ç»„ä»¶å±•ç¤ºï¼Œçº³æ–¯è¾¾å…‹100ï¼ˆNDXï¼‰ä¸å†è¿›å…¥æœ¬ç«™ï¼Œä¸¤è€…éƒ½ä¸å¾—æ··è¿›æ¸…å•ã€‚
-    require("^IXIC" in universe_symbols,
-            "çº³æ–¯è¾¾å…‹ç»¼åˆæŒ‡æ•°åº”åœ¨è·¨èµ„äº§æ¸…å•çš„æŒ‡æ•°ç±»ä¸­")
-    require("^DJI" not in universe_symbols and "^NDX" not in universe_symbols,
-            "é“æŒ‡ä»ä»¥å…è´¹ETFç»„ä»¶å±•ç¤ºã€çº³æ–¯è¾¾å…‹100ä¸å†å±•ç¤ºï¼Œä¸¤è€…éƒ½ä¸è¿›å…¥è·¨èµ„äº§æ¸…å•")
-    tracker_rows = json.loads(ASSET_TRACKER_DATA.read_text(encoding="utf-8"))["assets"]
-    require(all(row.get("name") in set(universe_names) for row in tracker_rows),
-            "data.json é‡Œå‡ºç°äº†æ¸…å•å¤–çš„æ ‡çš„")
-    require(len(tracker_rows) <= len(module.ASSETS),
-            "å·²å‘å¸ƒæ¡æ•°ä¸å¾—è¶…è¿‡æ¸…å•æ¡æ•°")
-
-    asset = next(item for item in module.ASSETS if item["name"] == "ä¸­è¯500")
-    require(asset["syms"][0] == "000905.SS", "ä¸­è¯500å¿…é¡»ä¼˜å…ˆå°è¯•åŸæŒ‡æ•°ä»£ç ")
-    proxy_candidate = asset["syms"][1]
-    require(proxy_candidate.get("sym") == "510500.SS", "ä¸­è¯500ETFä»£ç†ä»£ç æ— æ•ˆ")
-    attempts = []
-
-    def fake_fetch(symbol):
-        attempts.append(symbol)
-        if symbol == "000905.SS":
-            raise ValueError("è¡Œæƒ…æ•°æ®ç‚¹ä¸è¶³")
-        return [("2025-08-11", 100.0), ("2026-08-10", 110.0), ("2026-08-11", 111.0)]
-
-    chosen, suspect = module.select_candidate(asset, fake_fetch)
-    require(attempts == ["000905.SS", "510500.SS"], "ä¸­è¯500å€™é€‰å›é€€é¡ºåºæ— æ•ˆ")
-    require(suspect is None and chosen and chosen[0] == "510500.SS", "ä¸­è¯500ETFä»£ç†æœªè¢«é€‰ä¸­")
-    require(chosen[2]["targetSymbol"] == "000905.SS"
-            and chosen[2]["instrumentSymbol"] == "510500.SS"
-            and chosen[2]["currency"] == "CNY"
-            and chosen[2]["returnBasis"] == "price",
-            "ä¸­è¯500ETFä»£ç†å¥‘çº¦æ— æ•ˆ")
-    print("Asset tracker CSI 500 fallback: PASS")
-
-    def day(number):
-        return f"2026-08-{number:02d}"
-
-    fresh, _ = module.build_history({
-        "^GSPC": [(day(18), 100.0), (day(19), 101.0), (day(20), 102.5)],
-        "^N225": [(day(18), 200.0), (day(20), 204.0)],
-    }, {}, "2026-08-22T00:00:00Z")
-    require(fresh["dates"] == [day(18), day(19), day(20)], "å†å²å…±äº«æ—¥æœŸè½´å¿…é¡»æŒ‰æ—¥å‡åºåˆå¹¶")
-    require(fresh["series"]["^N225"][1] is None, "ç¼ºæŠ¥ä»·æ—¥å¿…é¡»ç•™ç©ºï¼Œä¸å¾—å‰å‘å¡«å……")
-    require(fresh["asOf"] == day(20) and fresh["points"] == 3, "å†å² asOf ä¸ç‚¹æ•°å¿…é¡»ç”±æ—¥æœŸè½´å¤ç®—")
-    require(fresh["source"] == "Yahoo Finance" and fresh["frequency"] == "daily",
-            "å†å²å¿…é¡»æ ‡æ³¨ä¸data.jsonä¸€è‡´çš„æ¥æºä¸é¢‘ç‡")
-
-    capped, _ = module.build_history(
-        {"^GSPC": [(day(18), 1.0), (day(19), 2.0), (day(20), 3.0)]}, {}, "t", limit=2)
-    require(capped["dates"] == [day(19), day(20)], "å†å²å¿…é¡»æ»šåŠ¨æˆªæ–­åˆ°æœ€è¿‘Nä¸ªäº¤æ˜“æ—¥")
-
-    previous = {"dates": [day(18), day(19)],
-                "series": {"^GSPC": [100.0, 101.0], "^FTSE": [50.0, 51.0]}}
-    merged, retained = module.build_history(
-        {"^GSPC": [(day(19), 101.0), (day(20), 102.0)]}, previous, "t")
-    require(retained == ["^FTSE"], "æœ¬è½®å–æ•°å¤±è´¥çš„æ ‡çš„å¿…é¡»æ²¿ç”¨ä¸Šæ¬¡åºåˆ—")
-    require(merged["series"]["^FTSE"][-1] is None, "æ²¿ç”¨çš„åºåˆ—ä¸å¾—ä¸ºæ–°æ—¥æœŸè¡¥é€ ç‚¹ä½")
-
-    require(module.build_history({}, {}, "t")[0] is None,
-            "æ— ä»»ä½•æœ‰æ•ˆåºåˆ—æ—¶å¿…é¡»è¿”å›ç©ºï¼Œè®©è°ƒç”¨æ–¹ä¿ç•™ä¸Šæ¬¡history.json")
-    dirty, _ = module.build_history(
-        {"^X": [(day(18), float("nan")), (day(19), 5.0), (day(20), None)]}, {}, "t")
-    require(dirty["dates"] == [day(19)], "NaNä¸ç¼ºå¤±å€¼ä¸å¾—å†™å…¥å†å²")
-    print("Asset tracker rolling history: PASS")
-
-    macro_spec = importlib.util.spec_from_file_location(
-        "macro_radar_series", ROOT / "scripts" / "macro-radar" / "build_radar.py")
-    macro_module = importlib.util.module_from_spec(macro_spec)
-    macro_inserted = "requests" not in sys.modules
-    if macro_inserted:
-        macro_stub = types.ModuleType("requests")
-        macro_stub.utils = types.SimpleNamespace(quote=lambda value: value)
-        sys.modules["requests"] = macro_stub
-    try:
-        macro_spec.loader.exec_module(macro_module)
-    finally:
-        if macro_inserted:
-            sys.modules.pop("requests", None)
-
-    official, _ = macro_module.build_official_series({
-        "DGS10": [(day(18), 4.61), (day(19), 4.65), (day(20), 4.69)],
-        "DTWEXBGS": [(day(18), 118.9), (day(19), 119.1)],
-        "RWTC": [(day(18), 86.0), (day(20), 86.48)],
-    }, {}, "2026-08-22T00:00:00Z")
-    require(official["source"] == "FRED Â· EIA" and official["frequency"] == "daily",
-            "å®˜æ–¹é•¿åºåˆ—å¿…é¡»æ ‡æ³¨æ¥æºä¸é¢‘ç‡")
-    require(official["series"]["DGS10"]["dates"] == [day(18), day(19), day(20)],
-            "å®˜æ–¹é•¿åºåˆ—å¿…é¡»æŒ‰æ—¥å‡åº")
-    capped_macro, _ = macro_module.build_official_series(
-        {"DGS10": [(day(18), 1.0), (day(19), 2.0), (day(20), 3.0)]}, {}, "t", limit=2)
-    require(capped_macro["series"]["DGS10"]["dates"] == [day(19), day(20)],
-            "å®˜æ–¹é•¿åºåˆ—å¿…é¡»æ»šåŠ¨æˆªæ–­")
-    kept_macro, kept_ids = macro_module.build_official_series(
-        {"DGS10": [(day(19), 4.6)]},
-        {"series": {"RWTC": {"dates": [day(17)], "values": [85.0]}}}, "t")
-    require(kept_ids == ["RWTC"] and kept_macro["series"]["RWTC"]["values"] == [85.0],
-            "æœ¬è½®ç¼ºå¤±çš„å®˜æ–¹åºåˆ—å¿…é¡»æ²¿ç”¨ä¸Šæ¬¡ä¸”ä¸è¡¥é€ æ–°ç‚¹")
-    require(macro_module.build_official_series({}, {}, "t")[0] is None,
-            "æ— ä»»ä½•æœ‰æ•ˆå®˜æ–¹åºåˆ—æ—¶å¿…é¡»è¿”å›ç©ºï¼Œä¿ç•™ä¸Šæ¬¡series.json")
-    dirty_macro, _ = macro_module.build_official_series(
-        {"DGS10": [("bad", 1.0), (day(19), -5.0), (day(20), 4.7)]}, {}, "t")
-    require(dirty_macro["series"]["DGS10"]["dates"] == [day(20)],
-            "éæ³•æ—¥æœŸä¸éæ­£å€¼ä¸å¾—å†™å…¥å®˜æ–¹é•¿åºåˆ—")
-    published = json.loads((ROOT / "apps" / "finance-terminal" / "data.json").read_text(encoding="utf-8"))
-    for record in published["assets"]:
-        if record["symbol"] in {"DGS10", "DTWEXBGS", "WTI"}:
-            require(record.get("dataRef", "").startswith("../macro-radar/data.json"),
-                    "ä¸‰é¡¹å®˜æ–¹è¡Œæƒ…ä»å¿…é¡»è¯»å–data.jsonä¸­çš„å—å¥‘çº¦8ç‚¹çª—å£")
-    print("Macro official long series: PASS")
-    print("- FRED cache reuse / single EIA request / rolling cap: PASS")
-    print("- retention on failure / no fabricated points / contracted 8-point window untouched: PASS")
-
-    print("- shared date axis / no forward fill / rolling cap: PASS")
-    print("- per-symbol retention on failure / no fabricated points / dirty value rejection: PASS")
-
-
-    csi300 = next(item for item in module.ASSETS if item["name"] == "æ²ªæ·±300")
-    require(csi300["syms"][0] == "000300.SS", "æ²ªæ·±300å¿…é¡»ä¼˜å…ˆå°è¯•åŸæŒ‡æ•°ä»£ç ")
-    require(csi300["syms"][1].get("sym") == "510300.SS", "æ²ªæ·±300ETFä»£ç†ä»£ç æ— æ•ˆ")
-    csi300_attempts = []
-
-    def fake_csi300_fetch(symbol):
-        csi300_attempts.append(symbol)
-        if symbol == "000300.SS":
-            raise ValueError("æ¨¡æ‹ŸåŸæŒ‡æ•°å¤±è´¥")
-        return [("2025-08-11", 100.0), ("2026-08-10", 105.0), ("2026-08-11", 106.0)]
-
-    csi300_chosen, csi300_suspect = module.select_candidate(csi300, fake_csi300_fetch)
-    require(csi300_attempts == ["000300.SS", "510300.SS"], "æ²ªæ·±300å€™é€‰å›é€€é¡ºåºæ— æ•ˆ")
-    require(csi300_suspect is None and csi300_chosen and csi300_chosen[0] == "510300.SS",
-            "æ²ªæ·±300ETFä»£ç†æœªè¢«é€‰ä¸­")
-    require(csi300_chosen[2]["targetSymbol"] == "000300.SS"
-            and csi300_chosen[2]["instrumentSymbol"] == "510300.SS"
-            and csi300_chosen[2]["currency"] == "CNY"
-            and csi300_chosen[2]["returnBasis"] == "price",
-            "æ²ªæ·±300ETFä»£ç†å¥‘çº¦æ— æ•ˆ")
-    print("Asset tracker CSI 300 fallback: PASS")
-
-
-def run_asset_ranking_builder_contract_tests() -> None:
-    spec = importlib.util.spec_from_file_location("asset_ranking_builder", ASSET_RANKING_BUILD)
-    require(spec is not None and spec.loader is not None, "æ— æ³•åŠ è½½å…¨çƒèµ„äº§æ¦œæ„å»ºè„šæœ¬")
-    module = importlib.util.module_from_spec(spec)
-    inserted_stub = "requests" not in sys.modules
-    if inserted_stub:
-        requests_stub = types.ModuleType("requests")
-        requests_stub.utils = types.SimpleNamespace(quote=lambda value: value)
-        requests_stub.Session = object
-        sys.modules["requests"] = requests_stub
-    try:
-        spec.loader.exec_module(module)
-    finally:
-        if inserted_stub:
-            sys.modules.pop("requests", None)
-
-    class Response:
-        status_code = 200
-
-        @staticmethod
-        def json():
-            return {"chart": {"result": [{"meta": {
-                "regularMarketPrice": 75.25,
-                "chartPreviousClose": 73.5,
-                "regularMarketTime": 1785715200,
-            }}]}}
-
-    class Session:
-        headers = {}
-
-        @staticmethod
-        def get(*_args, **_kwargs):
-            return Response()
-
-    quote = module.yf_price(Session(), "TEST")
-    require(quote == (75.25, 73.5, "2026-08-03T00:00:00Z"), "èµ„äº§æ’è¡Œè¡Œæƒ…å€¼æˆ–è¡Œæƒ…æ—¶ç‚¹æ˜ å°„é”™è¯¯")
-    require(module.baseline_provenance({"name": "å…¨çƒæˆ¿åœ°äº§"}) == {"source": "Savills", "asOf": None},
-            "å…¨çƒæˆ¿åœ°äº§é™æ€åŸºå‡†æ¥æºæ˜ å°„é”™è¯¯")
-
-    class ChartResponse:
-        status_code = 200
-
-        @staticmethod
-        def json():
-            return {"prices": [[1785715200000, 100.0], [1785758400000, 105.0],
-                               [1785801600000, 110.0], [1785888000000, None]]}
-
-    class ChartSession:
-        @staticmethod
-        def get(*_args, **_kwargs):
-            return ChartResponse()
-
-    crypto_closes = module.coingecko_daily_closes(ChartSession(), "bitcoin")
-    require(crypto_closes == [("2026-08-03", 105.0), ("2026-08-04", 110.0)],
-            "åŠ å¯†æ—¥çº¿å¿…é¡»æŒ‰UTCæ—¥æœŸå½’å¹¶ã€åŒæ—¥å–æœ€åä¸€ä¸ªç‚¹ï¼Œä¸”ä¸¢å¼ƒç¼ºä»·ç‚¹")
-
-    class BrokenSession:
-        @staticmethod
-        def get(*_args, **_kwargs):
-            raise RuntimeError("rate limited")
-
-    require(module.coingecko_daily_closes(BrokenSession(), "bitcoin") == [],
-            "åŠ å¯†æ—¥çº¿å–æ•°å¤±è´¥å¿…é¡»è¿”å›ç©ºåºåˆ—ï¼Œä¸å¾—è¡¥é€ ç‚¹ä½")
-    require(module.build_crypto_board(ChartSession(), {}, "2026-08-25T00:00:00Z") is None,
-            "CoinGeckoå¸‚å€¼å¿«ç…§ä¸å¯ç”¨æ—¶å¿…é¡»ä¿ç•™ä¸Šæ¬¡crypto.jsonï¼Œä¸å†™ç©ºæ•°æ®")
-    require(module.CRYPTO_BOARD_COUNT == 20 and module.CRYPTO_BOARD_POINTS == 260,
-            "åŠ å¯†å“ç±»æ¿æ¡æ•°ä¸æ»šåŠ¨é•¿åº¦å¿…é¡»ä¸è¡Œæƒ…æ¿å¥‘çº¦ä¸€è‡´")
-    require(module.CRYPTO_NAME_ZH.get("BTC") == "æ¯”ç‰¹å¸",
-            "å¸¸è§å¸ç§å¿…é¡»æœ‰ä¸­æ–‡åï¼Œæœªæ”¶å½•çš„æ²¿ç”¨è‹±æ–‡å")
-
-    rows = module.build_aggregates(Session(), {}, "2026-08-03T01:00:00Z")
-    real_estate = next(row for row in rows if row["name"] == "å…¨çƒæˆ¿åœ°äº§")
-    oil = next(row for row in rows if row["name"] == "çŸ³æ²¹")
-    require(real_estate["dataMeta"]["mode"] == "estimate"
-            and real_estate["dataMeta"]["source"] == "Savills"
-            and real_estate["dataMeta"]["asOf"] is None,
-            "æ…¢å˜é‡ä¼°å€¼ä¸å¾—ä¼ªé€ æŠ¥å‘Šæ—¥æœŸ")
-    require(oil["dataMeta"]["mode"] == "market"
-            and oil["dataMeta"]["asOf"] == "2026-08-03T00:00:00Z"
-            and oil["dataMeta"]["status"] == "partial",
-            "æ•°é‡åŸºå‡†æ—¥æœŸç¼ºå¤±æ—¶ï¼Œè¡Œæƒ…ä»·æ ¼è®°å½•å¿…é¡»ä¿ç•™è¡Œæƒ…æ—¶ç‚¹å¹¶é™çº§ä¸ºpartial")
-    print("Asset ranking per-record provenance builder: PASS")
-
-
-def find_dgs10(macro: dict) -> tuple[dict, dict]:
-    matches = []
-    for category in macro.get("macro", []):
-        for row in category.get("rows", []):
-            if row.get("id") == "DGS10":
-                matches.append((category, row))
-    require(len(matches) == 1, "å®è§‚é›·è¾¾å¿…é¡»ä¸”åªèƒ½åŒ…å«ä¸€æ¡DGS10è®°å½•")
-    return matches[0]
-
-
-def load_macro_builder():
-    spec = importlib.util.spec_from_file_location("macro_radar_builder", MACRO_BUILD)
-    require(spec is not None and spec.loader is not None, "æ— æ³•åŠ è½½å®è§‚é›·è¾¾æ„å»ºè„šæœ¬")
-    module = importlib.util.module_from_spec(spec)
-    inserted_stub = "requests" not in sys.modules
-    if inserted_stub:
-        requests_stub = types.ModuleType("requests")
-        requests_stub.get = lambda *_args, **_kwargs: None
-        sys.modules["requests"] = requests_stub
-    try:
-        spec.loader.exec_module(module)
-    finally:
-        if inserted_stub:
-            sys.modules.pop("requests", None)
-    return module
-
-
-def run_dtwexbgs_pipeline_tests() -> None:
-    builder = load_macro_builder()
-    attempt = "2026-08-03T12:00:00Z"
-    observations = [
-        ("2026-07-21", 120.5210), ("2026-07-22", 120.6500),
-        ("2026-07-23", 120.9075), ("2026-07-24", 120.7105),
-    ]
-    fresh = builder.build_dtwexbgs_reference({}, attempt, lambda _series_id, _limit: observations)
-    require(fresh["status"] == "ok", "DTWEXBGSæˆåŠŸæ›´æ–°å¿…é¡»æ ‡è®°ok")
-    require(fresh["price"] == 120.7105 and fresh["previousPrice"] == 120.9075, "DTWEXBGSè§‚æµ‹å€¼æ˜ å°„é”™è¯¯")
-    require(fresh["asOf"] == "2026-07-24" and fresh["previousAsOf"] == "2026-07-23", "DTWEXBGSæ—¥æœŸæ˜ å°„é”™è¯¯")
-    expected_change = (120.7105 / 120.9075 - 1) * 100
-    require(abs(fresh["changePct"] - expected_change) < 1e-12, "DTWEXBGSæ¶¨è·Œå¹…è®¡ç®—é”™è¯¯")
-    require(fresh["updatedAt"] == attempt and fresh["lastAttemptAt"] == attempt, "DTWEXBGSæˆåŠŸæ›´æ–°æ—¶é—´é”™è¯¯")
-    require(fresh["observations"] == [
-        {"asOf": observed, "value": value} for observed, value in observations
-    ], "DTWEXBGSæœ€è¿‘è§‚æµ‹çª—å£æ˜ å°„é”™è¯¯")
-    require(builder.valid_dtwexbgs_reference(fresh), "æˆåŠŸè®°å½•æœªé€šè¿‡ç»“æ„æ ¡éªŒ")
-
-    old = {"referenceSeries": {"DTWEXBGS": fresh}}
-    failed_at = "2026-08-04T12:00:00Z"
-    fallback = builder.build_dtwexbgs_reference(old, failed_at, lambda _series_id, _limit: [])
-    require(fallback["status"] == "stale", "æ›´æ–°å¤±è´¥ä¸”æœ‰å†å²å€¼æ—¶å¿…é¡»æ ‡è®°stale")
-    require(fallback["price"] == fresh["price"] and fallback["asOf"] == fresh["asOf"], "æ›´æ–°å¤±è´¥ä¸å¾—è¦†ç›–å†å²æœ‰æ•ˆå€¼")
-    require(fallback["updatedAt"] == fresh["updatedAt"], "å¤±è´¥æ—¶ä¸å¾—ä¼ªé€ æˆåŠŸæ›´æ–°æ—¶é—´")
-    require(fallback["lastAttemptAt"] == failed_at, "å¤±è´¥å°è¯•æ—¶é—´å¿…é¡»å•ç‹¬è®°å½•")
-    require(fallback["observations"] == fresh["observations"], "å¤±è´¥å›é€€å¿…é¡»å®Œæ•´ä¿ç•™DTWEXBGSè§‚æµ‹çª—å£")
-    require(fresh["status"] == "ok", "å¤±è´¥å›é€€ä¸å¾—åŸåœ°ä¿®æ”¹ä¸Šä¸€ä»½è®°å½•")
-
-    unavailable = builder.build_dtwexbgs_reference({}, failed_at, lambda _series_id, _limit: [])
-    require(unavailable["status"] == "error", "æ— æ–°å€¼ä¹Ÿæ— å†å²å€¼æ—¶å¿…é¡»æ ‡è®°error")
-    require(unavailable["price"] is None and unavailable["updatedAt"] is None, "å¤±è´¥æ—¶ä¸å¾—å†™å…¥é»˜è®¤æ•°å€¼æˆ–ä¼ªæ›´æ–°æ—¶é—´")
-    require(unavailable["observations"] == [], "æ— å†å²DTWEXBGSæ—¶è§‚æµ‹çª—å£å¿…é¡»ä¸ºç©º")
-
-    invalid = builder.build_dtwexbgs_reference(
-        old,
-        failed_at,
-        lambda _series_id, _limit: [("2026-07-24", 120.7), ("2026-07-23", 120.9)],
-    )
-    require(invalid["status"] == "stale" and invalid["price"] == fresh["price"], "æ—¥æœŸå€’åºçš„æ–°æ•°æ®å¿…é¡»å›é€€å†å²æœ‰æ•ˆå€¼")
-    print("DTWEXBGS FRED pipeline states: PASS")
-    print("- success / failed-refresh fallback / no-history error / invalid-observation: PASS")
-
-
-def run_rwtc_pipeline_tests() -> None:
-    builder = load_macro_builder()
-    attempt = "2026-08-03T12:00:00Z"
-    payload = {
-        "response": {
-            "frequency": "daily",
-            "data": [
-                {
-                    "period": "2026-07-27",
-                    "series": "RWTC",
-                    "value": "84.25",
-                    "value-units": "dollars per barrel",
-                },
-                {
-                    "period": "2026-07-24",
-                    "series": "RWTC",
-                    "value": "91.74",
-                    "value-units": "dollars per barrel",
-                },
-                {
-                    "period": "2026-07-23",
-                    "series": "RBRTE",
-                    "value": "99.99",
-                    "value-units": "dollars per barrel",
-                },
-            ],
-        }
-    }
-    captured = {}
-
-    class FakeResponse:
-        status_code = 200
-
-        @staticmethod
-        def raise_for_status():
-            return None
-
-        @staticmethod
-        def json():
-            return payload
-
-    def requester(url, **kwargs):
-        captured["url"] = url
-        captured["params"] = kwargs.get("params")
-        return FakeResponse()
-
-    observations = builder.eia_rwtc_api(2, requester=requester, api_key="test-key")
-    require(captured["url"] == builder.EIA_API_URL, "RWTCå¿…é¡»ä½¿ç”¨å·²æ ¸å¯¹çš„EIA API v2è·¯ç”±")
-    require("test-key" not in captured["url"], "EIAå¯†é’¥ä¸å¾—æ‹¼å…¥æˆ–è®°å½•åœ¨è¯·æ±‚URLä¸­")
-    require(captured["params"]["api_key"] == "test-key", "EIAå¯†é’¥å¿…é¡»é€šè¿‡å‚æ•°å¯¹è±¡ä¼ é€’")
-    require(captured["params"]["frequency"] == "daily", "RWTC APIè¯·æ±‚å¿…é¡»ä¸ºæ—¥é¢‘")
-    require(captured["params"]["data[0]"] == "value", "RWTC APIè¯·æ±‚å­—æ®µå¿…é¡»ä¸ºvalue")
-    require(captured["params"]["facets[series][]"] == "RWTC", "RWTC APIè¯·æ±‚åºåˆ—ç­›é€‰é”™è¯¯")
-    require(observations == [("2026-07-24", 91.74), ("2026-07-27", 84.25)], "EIAè¿”å›å€¼è§£ææˆ–æ’åºé”™è¯¯")
-
-    history_page = """
-    <html><body><table>
-      <tr><th colspan="6">Cushing, OK WTI Spot Price FOB (Dollars per Barrel)</th></tr>
-      <tr><th>Week Of</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th></tr>
-      <tr><td>2025 Dec-29 to Jan- 2</td><td>57.89</td><td>57.79</td><td>57.26</td><td></td><td>57.21</td></tr>
-      <tr><td>2026 Jul-27 to Jul-31</td><td>84.25</td><td>80.91</td><td>86.08</td><td>85.15</td><td>86.16</td></tr>
-      <tr><td>2026 Aug- 3 to Aug- 7</td><td>81.96</td><td></td><td></td><td></td><td></td></tr>
-    </table></body></html>
-    """
-    expected_history = [
-        ("2026-07-29", 86.08), ("2026-07-30", 85.15),
-        ("2026-07-31", 86.16), ("2026-08-03", 81.96),
-    ]
-    require(builder.parse_eia_rwtc_history_html(history_page, 4) == expected_history,
-            "EIAå…¬å¼€å†å²é¡µæ—¥æœŸã€ç©ºå€¼æˆ–è·¨å‘¨è§£æé”™è¯¯")
-    require(builder.parse_eia_rwtc_history_html("<table><tr><td>2026 Aug- 3 to Aug- 7</td>"
-                                                "<td>81.96</td></tr></table>") == [],
-            "EIAå…¬å¼€å†å²é¡µå¿…é¡»éªŒè¯æ ‡é¢˜ä¸å•ä½")
-
-    history_captured = {}
-
-    class FakeHistoryResponse:
-        text = history_page
-
-        @staticmethod
-        def raise_for_status():
-            return None
-
-    def history_requester(url, **kwargs):
-        history_captured["url"] = url
-        history_captured["params"] = kwargs.get("params")
-        return FakeHistoryResponse()
-
-    history_observations = builder.eia_rwtc_history(4, requester=history_requester)
-    require(history_captured["url"] == builder.EIA_HISTORY_URL,
-            "RWTCæ— å¯†é’¥å›é€€å¿…é¡»ä½¿ç”¨EIAå®˜æ–¹æ—¥é¢‘å†å²é¡µ")
-    require(history_captured["params"] is None, "EIAå…¬å¼€å†å²é¡µä¸å¾—æ‹¼æ¥æˆ–ä¼ é€’APIå¯†é’¥")
-    require(history_observations == expected_history, "EIAå…¬å¼€å†å²é¡µè¯·æ±‚ç»“æœæ˜ å°„é”™è¯¯")
-
-    original_api = builder.eia_rwtc_api
-    original_history = builder.eia_rwtc_history
-    try:
-        builder.eia_rwtc_api = lambda _limit: []
-        builder.eia_rwtc_history = lambda _limit: history_observations
-        history_fresh = builder.build_rwtc_reference({}, attempt)
-    finally:
-        builder.eia_rwtc_api = original_api
-        builder.eia_rwtc_history = original_history
-    require(history_fresh["status"] == "ok" and history_fresh["asOf"] == "2026-08-03",
-            "EIA APIä¸å¯ç”¨æ—¶å®˜æ–¹å†å²é¡µåº”æ¢å¤RWTC")
-    require(history_fresh["source"].get("accessMethod") == "EIA public history page",
-            "RWTCå¿…é¡»æŠ«éœ²å®é™…å®˜æ–¹è®¿é—®è·¯å¾„")
-    require(builder.valid_rwtc_reference(history_fresh), "å¸¦è®¿é—®è·¯å¾„çš„RWTCè®°å½•å¿…é¡»é€šè¿‡ç»“æ„æ ¡éªŒ")
-    invalid_access = dict(history_fresh)
-    invalid_access["source"] = dict(history_fresh["source"], accessMethod="unregistered mirror")
-    require(not builder.valid_rwtc_reference(invalid_access), "æœªç™»è®°RWTCè®¿é—®è·¯å¾„å¿…é¡»è¢«æ‹’ç»")
-
-    fresh = builder.build_rwtc_reference({}, attempt, lambda _limit: observations)
-    require(fresh["status"] == "ok", "RWTCæˆåŠŸæ›´æ–°å¿…é¡»æ ‡è®°ok")
-    require(fresh["price"] == 84.25 and fresh["previousPrice"] == 91.74, "RWTCè§‚æµ‹å€¼æ˜ å°„é”™è¯¯")
-    require(fresh["asOf"] == "2026-07-27" and fresh["previousAsOf"] == "2026-07-24", "RWTCæ—¥æœŸæ˜ å°„é”™è¯¯")
-    expected_change = (84.25 / 91.74 - 1) * 100
-    require(abs(fresh["changePct"] - expected_change) < 1e-12, "RWTCæ¶¨è·Œå¹…è®¡ç®—é”™è¯¯")
-    require(fresh["updatedAt"] == attempt and fresh["lastAttemptAt"] == attempt, "RWTCæˆåŠŸæ›´æ–°æ—¶é—´é”™è¯¯")
-    require(fresh["observations"] == [
-        {"asOf": observed, "value": value} for observed, value in observations
-    ], "RWTCæœ€è¿‘è§‚æµ‹çª—å£æ˜ å°„é”™è¯¯")
-    require(builder.valid_rwtc_reference(fresh), "RWTCæˆåŠŸè®°å½•æœªé€šè¿‡ç»“æ„æ ¡éªŒ")
-
-    old = {"referenceSeries": {"RWTC": fresh}}
-    failed_at = "2026-08-04T12:00:00Z"
-    fallback = builder.build_rwtc_reference(old, failed_at, lambda _limit: [])
-    require(fallback["status"] == "stale", "RWTCæ›´æ–°å¤±è´¥ä¸”æœ‰å†å²å€¼æ—¶å¿…é¡»æ ‡è®°stale")
-    require(fallback["price"] == fresh["price"] and fallback["asOf"] == fresh["asOf"], "RWTCå¤±è´¥ä¸å¾—è¦†ç›–å†å²æœ‰æ•ˆå€¼")
-    require(fallback["updatedAt"] == fresh["updatedAt"], "RWTCå¤±è´¥æ—¶ä¸å¾—ä¼ªé€ æˆåŠŸæ›´æ–°æ—¶é—´")
-    require(fallback["lastAttemptAt"] == failed_at, "RWTCå¤±è´¥å°è¯•æ—¶é—´å¿…é¡»å•ç‹¬è®°å½•")
-    require(fallback["observations"] == fresh["observations"], "RWTCå¤±è´¥å›é€€å¿…é¡»å®Œæ•´ä¿ç•™è§‚æµ‹çª—å£")
-    require(fresh["status"] == "ok", "RWTCå¤±è´¥å›é€€ä¸å¾—åŸåœ°ä¿®æ”¹ä¸Šä¸€ä»½è®°å½•")
-
-    unavailable = builder.build_rwtc_reference({}, failed_at, lambda _limit: [])
-    require(unavailable["status"] == "error", "RWTCæ— æ–°å€¼ä¹Ÿæ— å†å²å€¼æ—¶å¿…é¡»æ ‡è®°error")
-    require(unavailable["price"] is None and unavailable["updatedAt"] is None, "RWTCå¤±è´¥æ—¶ä¸å¾—å†™å…¥é»˜è®¤æ•°å€¼")
-    require(unavailable["observations"] == [], "æ— å†å²RWTCæ—¶è§‚æµ‹çª—å£å¿…é¡»ä¸ºç©º")
-
-    invalid = builder.build_rwtc_reference(
-        old,
-        failed_at,
-        lambda _limit: [("2026-07-27", 84.25), ("2026-07-24", 91.74)],
-    )
-    require(invalid["status"] == "stale" and invalid["price"] == fresh["price"], "RWTCæ—¥æœŸå€’åºå¿…é¡»å›é€€å†å²å€¼")
-    print("RWTC EIA pipeline states: PASS")
-    print("- API contract / official history fallback / success / retained snapshot / invalid observation: PASS")
-
-
-def run_js_adapter_tests() -> None:
-    script = r"""
-(async () => {
-const assert = require("assert");
-const fs = require("fs");
-const adapter = require("./apps/finance-terminal/app.js");
-const informationData = (await import("./apps/finance-terminal/finance-terminal-information-data.mjs"))
-  .createInformationData(adapter.sectionDataHelpers());
-const operationsData = (await import("./apps/finance-terminal/finance-terminal-operations-data.mjs"))
-  .createOperationsData(adapter.sectionDataHelpers());
-const { createSupportingHealthAdapter } = await import("./apps/finance-terminal/finance-terminal-health-adapters.mjs");
-const supportingAdapter = createSupportingHealthAdapter(adapter.supportingHealthHelpers());
-adapter.installSupportingHealthAdapter(supportingAdapter);
-const config = JSON.parse(fs.readFileSync("./apps/finance-terminal/data.json", "utf8"));
-const macro = JSON.parse(fs.readFileSync("./apps/macro-radar/data.json", "utf8"));
-const macroHealth = JSON.parse(fs.readFileSync("./apps/macro-radar/health.json", "utf8"));
-const fearGreed = JSON.parse(fs.readFileSync("./apps/fear-greed/data.json", "utf8"));
-const fearGreedHealth = JSON.parse(fs.readFileSync("./apps/fear-greed/health.json", "utf8"));
-const ofr = JSON.parse(fs.readFileSync("./apps/ofr-monitor/data.json", "utf8"));
-const ofrHealth = JSON.parse(fs.readFileSync("./apps/ofr-monitor/health.json", "utf8"));
-const assetTracker = JSON.parse(fs.readFileSync("./apps/asset-tracker/data.json", "utf8"));
-const assetTrackerHealth = JSON.parse(fs.readFileSync("./apps/asset-tracker/health.json", "utf8"));
-const assetRanking = JSON.parse(fs.readFileSync("./apps/asset-ranking/data.json", "utf8"));
-const assetRankingHealth = JSON.parse(fs.readFileSync("./apps/asset-ranking/health.json", "utf8"));
-const companies = JSON.parse(fs.readFileSync("./apps/companies/data.json", "utf8"));
-const companiesHealth = JSON.parse(fs.readFileSync("./apps/companies/health.json", "utf8"));
-const econCalendar = JSON.parse(fs.readFileSync("./apps/econ-calendar/data.json", "utf8"));
-const econCalendarHealth = JSON.parse(fs.readFileSync("./apps/econ-calendar/health.json", "utf8"));
-const financeNews = JSON.parse(fs.readFileSync("./apps/whats-latest/data.json", "utf8"));
-const financeNewsHealth = JSON.parse(fs.readFileSync("./apps/whats-latest/health.json", "utf8"));
-const readiness = JSON.parse(fs.readFileSync("./apps/finance-terminal/readiness.json", "utf8"));
-const marketLicenseReadiness = JSON.parse(fs.readFileSync("./apps/finance-terminal/market-source-readiness.json", "utf8"));
-
-const match = adapter.findDgs10Row(macro);
-assert(match && match.row.id === "DGS10");
-const reference = adapter.findDtwexbgsReference(macro);
-assert(reference && reference.id === "DTWEXBGS");
-const oilReference = adapter.findRwtcReference(macro);
-assert(oilReference && oilReference.id === "RWTC");
-const dollarConfig = config.assets.find((asset) => asset.id === "dxy");
-const oilConfig = config.assets.find((asset) => asset.id === "wti");
-const bitcoinConfig = config.assets.find((asset) => asset.id === "bitcoin");
-const bitcoinRow = assetRanking.assets.find((asset) => asset.symbol === "BTC");
-const rankingSource = { data: assetRanking, error: null };
-const rankingHealthSource = { data: assetRankingHealth, error: null };
-const currentLatestMs = Math.max(...[
-  macro.updatedAt,
-  fearGreed.updatedAt,
-  ofr.updatedAt,
-  assetTracker.updatedAt,
-  assetRanking.updatedAt,
-  companies.updatedAt
-].map(Date.parse));
-assert(Number.isFinite(currentLatestMs));
-const currentNow = new Date(currentLatestMs + 6 * 60 * 60 * 1000);
-const marketLicenseState = adapter.adaptMarketLicenseReadiness(marketLicenseReadiness);
-assert.strictEqual(marketLicenseState.status, "free");
-assert.strictEqual(marketLicenseState.strategy, "free-embedded-proxy");
-assert.strictEqual(marketLicenseState.proxyAssets, marketLicenseReadiness.assets.length);
-assert.strictEqual(marketLicenseState.provider, "TradingView");
-assert.strictEqual(marketLicenseState.cost, "free");
-assert.strictEqual(marketLicenseState.rawMarketDataStored, false);
-assert.deepStrictEqual(marketLicenseState.targets, ["DIA", "GLD"]);
-const disguisedMarketProxy = JSON.parse(JSON.stringify(marketLicenseReadiness));
-disguisedMarketProxy.assets[0].proxy.isSameInstrument = true;
-assert.throws(() => adapter.adaptMarketLicenseReadiness(disguisedMarketProxy), /å†’å……åŸæ ‡çš„/);
-const scrapedMarketProxy = JSON.parse(JSON.stringify(marketLicenseReadiness));
-scrapedMarketProxy.provider.delivery = "scraped-api";
-assert.throws(() => adapter.adaptMarketLicenseReadiness(scrapedMarketProxy), /å…è´¹åµŒå…¥é…ç½®æ— æ•ˆ/);
-const currentAttemptAt = new Date(currentNow.getTime() - 60 * 60 * 1000).toISOString();
-const currentAttemptDate = currentAttemptAt.slice(0, 10);
-const supportingSnapshots = [
-  [fearGreed, fearGreedHealth],
-  [ofr, ofrHealth],
-  [econCalendar, econCalendarHealth],
-  [financeNews, financeNewsHealth]
-];
-const supportingLatestMs = Math.max(...supportingSnapshots.flatMap(([data, health]) => [
-  Date.parse(data.updatedAt), Date.parse(health.generatedAt)
-]));
-assert(Number.isFinite(supportingLatestMs));
-const supportingNow = new Date(supportingLatestMs + 60 * 60 * 1000);
-const expiredOfficialHealthNow = new Date(Date.parse(macroHealth.generatedAt) + 96 * 60 * 60 * 1000);
-function qualityDeclaration(rows) {
-  const metas = rows.map((row) => adapter.normalizeDataMeta(row.dataMeta, null));
-  const quality = adapter.summarizeRowQuality(metas, null);
-  return {
-    contractVersion: 1,
-    status: !rows.length || quality.counts.unavailable === rows.length ? "error" : quality.degraded ? "partial" : "ok",
-    total: quality.total,
-    counts: quality.counts,
-    sources: quality.sources
-  };
-}
-[
-  ["fear-greed", fearGreed, fearGreedHealth],
-  ["ofr-monitor", ofr, ofrHealth],
-  ["econ-calendar", econCalendar, econCalendarHealth],
-  ["whats-latest", financeNews, financeNewsHealth]
-].forEach(([dataset, sourceData, sourceHealth]) => {
-  const state = supportingAdapter.adaptSupportingSourceHealth(sourceHealth, dataset, sourceData, supportingNow);
-  const reportAgeHours = (supportingNow.getTime() - Date.parse(sourceHealth.generatedAt)) / (60 * 60 * 1000);
-  const expectedStatus = sourceHealth.historyStatus !== "migrated"
-    && reportAgeHours > sourceHealth.policy.maxReportAgeHours
-    && sourceHealth.status !== "failed" ? "stale" : sourceHealth.status;
-  assert.strictEqual(state.dataset, dataset);
-  assert.strictEqual(state.status, expectedStatus);
-  assert.strictEqual(state.historyKnown, sourceHealth.historyStatus === "tracked");
-  assert.strictEqual(state.freshCoveragePct, sourceHealth.coverage.freshCoveragePct);
-  assert.strictEqual(state.publishedCoveragePct, sourceHealth.coverage.publishedCoveragePct);
-  const tampered = JSON.parse(JSON.stringify(sourceHealth));
-  tampered.coverage.refreshedComponents += 1;
-  assert.throws(() => supportingAdapter.adaptSupportingSourceHealth(tampered, dataset, sourceData, supportingNow));
-});
-function trackedSupportingHealth(sourceHealth, attemptedAt, overrides = {}, published = true) {
-  const tracked = JSON.parse(JSON.stringify(sourceHealth));
-  const statusForMode = { fresh: "healthy", fallback: "degraded", unavailable: "failed", unknown: "unknown" };
-  const grouped = { fresh: [], fallback: [], unavailable: [], unknown: [] };
-  tracked.historyStatus = "tracked";
-  tracked.generatedAt = attemptedAt;
-  tracked.lastAttemptAt = attemptedAt;
-  tracked.consecutiveFailures = published ? 0 : 1;
-  tracked.snapshotPreserved = !published;
-  tracked.failureReason = published ? null : "æµ‹è¯•å¤±è´¥";
-  tracked.components.forEach((component) => {
-    const mode = overrides[component.id] || "fresh";
-    component.mode = mode;
-    component.status = statusForMode[mode];
-    component.lastAttemptAt = attemptedAt;
-    if (mode === "fresh") component.lastSuccessAt = attemptedAt;
-    grouped[mode].push(component.id);
-  });
-  tracked.coverage.refreshedComponents = grouped.fresh.length;
-  tracked.coverage.fallbackComponents = grouped.fallback.length;
-  tracked.coverage.unavailableComponents = grouped.unavailable.length;
-  tracked.coverage.unknownComponents = grouped.unknown.length;
-  tracked.coverage.freshCoveragePct = Math.round(grouped.fresh.length / tracked.components.length * 10000) / 100;
-  tracked.attempt = {
-    status: published && grouped.fresh.length === tracked.components.length ? "success" : published ? "partial" : "failed",
-    published,
-    refreshedComponents: grouped.fresh,
-    fallbackComponents: grouped.fallback,
-    unavailableComponents: grouped.unavailable,
-    unknownComponents: grouped.unknown
-  };
-  tracked.status = tracked.attempt.status === "success" ? "healthy" : published ? "degraded" : "failed";
-  return tracked;
-}
-const supportingAttemptAt = new Date(supportingNow.getTime() - 60 * 60 * 1000).toISOString();
-const supportingStaleAt = new Date(supportingNow.getTime() - 96 * 60 * 60 * 1000).toISOString();
-const trackedFear = trackedSupportingHealth(fearGreedHealth, supportingAttemptAt);
-assert.strictEqual(supportingAdapter.adaptSupportingSourceHealth(trackedFear, "fear-greed", fearGreed, supportingNow).status, "healthy");
-const fallbackFear = trackedSupportingHealth(fearGreedHealth, supportingAttemptAt, { "cnn-index": "fallback" });
-const fallbackFearState = supportingAdapter.adaptSupportingSourceHealth(fallbackFear, "fear-greed", fearGreed, supportingNow);
-assert.strictEqual(fallbackFearState.status, "degraded");
-assert.strictEqual(fallbackFearState.terminalStatus, "degraded");
-const failedFear = trackedSupportingHealth(fearGreedHealth, supportingAttemptAt, { "cnn-index": "fallback" }, false);
-assert.strictEqual(supportingAdapter.adaptSupportingSourceHealth(failedFear, "fear-greed", fearGreed, supportingNow).status, "failed");
-const staleFearHealth = trackedSupportingHealth(fearGreedHealth, supportingStaleAt);
-assert.strictEqual(supportingAdapter.adaptSupportingSourceHealth(staleFearHealth, "fear-greed", fearGreed, supportingNow).status, "stale");
-const supportingRiskCards = adapter.buildRiskCards({
-  macro: { data: macro, error: null },
-  fearGreed: { data: fearGreed, error: null },
-  fearGreedHealth: { data: fearGreedHealth, error: null },
-  ofr: { data: ofr, error: null },
-  ofrHealth: { data: ofrHealth, error: null }
-}, supportingNow);
-assert.strictEqual(supportingRiskCards[1].sourceHealth.status,
-  supportingAdapter.adaptSupportingSourceHealth(fearGreedHealth, "fear-greed", fearGreed, supportingNow).status);
-assert.strictEqual(supportingRiskCards[2].sourceHealth.status,
-  supportingAdapter.adaptSupportingSourceHealth(ofrHealth, "ofr-monitor", ofr, supportingNow).status);
-const supportingInformationCards = informationData.buildInformationCards({
-  calendar: { data: econCalendar, error: null },
-  calendarHealth: { data: econCalendarHealth, error: null },
-  news: { data: financeNews, error: null },
-  newsHealth: { data: financeNewsHealth, error: null }
-}, supportingNow);
-assert.strictEqual(supportingInformationCards[0].sourceHealth.status,
-  supportingAdapter.adaptSupportingSourceHealth(econCalendarHealth, "econ-calendar", econCalendar, supportingNow).status);
-assert.strictEqual(supportingInformationCards[1].sourceHealth.status,
-  supportingAdapter.adaptSupportingSourceHealth(financeNewsHealth, "whats-latest", financeNews, supportingNow).status);
-const success = adapter.buildPageData(
-  config, macro, currentNow, null, null, rankingSource, rankingHealthSource
-);
-const dgs10 = success.assets.find((asset) => asset.id === "us10y");
-const dollar = success.assets.find((asset) => asset.id === "dxy");
-const oil = success.assets.find((asset) => asset.id === "wti");
-const bitcoin = success.assets.find((asset) => asset.id === "bitcoin");
-assert.strictEqual(dgs10.demo, false);
-assert.strictEqual(dgs10.status, match.row.status === "ok"
-  && adapter.businessDaysSince(match.row.asOf, currentNow) <= 3 ? "ok" : "stale");
-assert.strictEqual(dgs10.symbol, "DGS10");
-assert.strictEqual(dgs10.changeUnit, "bp");
-assert(Number.isFinite(dgs10.price));
-assert(Number.isFinite(dgs10.change));
-assert.strictEqual(dgs10.price, Number(match.row.val.replace("%", "")));
-assert.strictEqual(dgs10.change, Number(match.row.chg.toLowerCase().replace("bp", "")));
-assert.strictEqual(dgs10.asOf, match.row.asOf);
-assert.strictEqual(dgs10.updatedAt, macro.updatedAt);
-assert.strictEqual(dgs10.source.seriesId, "DGS10");
-assert.strictEqual(dgs10.observationTrend.count, match.row.observations.length);
-assert.strictEqual(dgs10.observationTrend.targetCount, 8);
-assert.deepStrictEqual(dgs10.observationTrend.values, match.row.observations.map((item) => item.value));
-assert.strictEqual(dgs10.observationTrend.changeUnit, "bp");
-assert.strictEqual(dgs10.observationTrend.change, match.row.observations.length < 2 ? null
-  : Math.round((match.row.observations[match.row.observations.length - 1].value
-    - match.row.observations[0].value) * 10000) / 100);
-const dgsWindow = JSON.parse(JSON.stringify(macro));
-const dgsWindowRow = adapter.findDgs10Row(dgsWindow).row;
-const dgsWindowPrice = Number(dgsWindowRow.val.replace("%", ""));
-dgsWindowRow.price = dgsWindowPrice;
-dgsWindowRow.previousPrice = Math.round((dgsWindowPrice - 0.06) * 100) / 100;
-dgsWindowRow.changeBps = 6;
-dgsWindowRow.chg = "6bp";
-dgsWindowRow.observations = [
-  { asOf: dgsWindowRow.previousAsOf, value: dgsWindowRow.previousPrice },
-  { asOf: dgsWindowRow.asOf, value: dgsWindowPrice }
-];
-const dgsWindowAsset = adapter.adaptDgs10(
-  config.assets.find((asset) => asset.id === "us10y"), dgsWindow, currentNow
-);
-assert.strictEqual(dgsWindowAsset.observationTrend.count, 2);
-assert.strictEqual(dgsWindowAsset.observationTrend.change, 6);
-const tamperedDgsWindow = JSON.parse(JSON.stringify(dgsWindow));
-adapter.findDgs10Row(tamperedDgsWindow).row.observations[1].value =
-  Math.round((dgsWindowPrice + 0.01) * 100) / 100;
-assert.throws(() => adapter.adaptDgs10(
-  config.assets.find((asset) => asset.id === "us10y"), tamperedDgsWindow, currentNow
-));
-const dgs10Health = adapter.adaptOfficialSourceHealth(macroHealth, macro, dgs10, "DGS10", currentNow);
-const dgs10HealthRecord = macroHealth.sources.find((source) => source.id === "DGS10");
-assert.strictEqual(dgs10Health.seriesId, "DGS10");
-assert.strictEqual(dgs10Health.status, dgs10HealthRecord.status);
-assert.strictEqual(dgs10Health.historyKnown, macroHealth.historyStatus === "tracked");
-assert.strictEqual(dgs10Health.refreshLabel, {
-  market: "å·²åˆ·æ–°", fallback: "ä¿ç•™æ—§å€¼", unavailable: "ä¸å¯ç”¨", unknown: "å†å²å¾…å»ºç«‹"
-}[dgs10HealthRecord.mode]);
-const dgs10WithStaleHealth = adapter.buildPageData(
-  config, macro, expiredOfficialHealthNow, null, { data: macroHealth, error: null }
-).assets.find((asset) => asset.id === "us10y");
-assert.strictEqual(dgs10WithStaleHealth.updateHealth.status, "stale");
-assert.strictEqual(dgs10WithStaleHealth.updateHealth.seriesId, "DGS10");
-assert(dgs10WithStaleHealth.updateHealth.note.includes("è¶…è¿‡72å°æ—¶"));
-const tamperedDgs10Health = JSON.parse(JSON.stringify(macroHealth));
-tamperedDgs10Health.sources.find((source) => source.id === "DGS10").asOf = "2026-07-29";
-assert.throws(() => adapter.adaptOfficialSourceHealth(
-  tamperedDgs10Health, macro, dgs10, "DGS10", currentNow
-));
-const dgs10WithMissingHealth = adapter.buildPageData(
-  config, macro, currentNow, null, { data: null, error: new Error("HTTP 503") }
-).assets.find((asset) => asset.id === "us10y");
-assert.strictEqual(dgs10WithMissingHealth.status, dgs10.status);
-assert.strictEqual(dgs10WithMissingHealth.price, dgs10.price);
-assert.strictEqual(dgs10WithMissingHealth.updateHealth.status, "unknown");
-assert.strictEqual(dollar.demo, false);
-/* é˜ˆå€¼è¯»è‡ªè¢«æµ‹ä»£ç æœ¬èº«ï¼Œé¿å…æµ‹è¯•ä¸æºç å„å†™ä¸€ä¸ªæ•°å­—è€Œæ‚„æ‚„æ¼‚ç§»ã€‚ */
-assert.strictEqual(dollar.status, reference.status === "ok"
-  && adapter.businessDaysSince(reference.asOf, currentNow)
-     <= adapter.DTWEXBGS_MAX_BUSINESS_DAYS ? "ok" : "stale");
-assert.equal(adapter.DTWEXBGS_MAX_BUSINESS_DAYS, 8,
-  "H.10 æŒ‰å‘¨æˆæ‰¹å‘å¸ƒï¼Œæ­£å¸¸æ»åå¯è¾¾ 5 ä¸ªå·¥ä½œæ—¥ï¼›é˜ˆå€¼éœ€å®¹çº³ä¸€å‘¨æ‰¹æ¬¡å¹¶ä»èƒ½å‘ç°ç¼ºæ‰¹");
-assert.strictEqual(dollar.symbol, "DTWEXBGS");
-assert.strictEqual(dollar.price, reference.price);
-assert.strictEqual(dollar.previousPrice, reference.previousPrice);
-assert.strictEqual(dollar.asOf, reference.asOf);
-assert.strictEqual(dollar.updatedAt, reference.updatedAt);
-assert.strictEqual(dollar.source.seriesId, "DTWEXBGS");
-assert(Math.abs(dollar.changePct - ((reference.price / reference.previousPrice - 1) * 100)) < 1e-12);
-assert.strictEqual(dollar.observationTrend.count, reference.observations.length);
-assert.deepStrictEqual(dollar.observationTrend.values, reference.observations.map((item) => item.value));
-assert.strictEqual(dollar.observationTrend.startAsOf, reference.observations[0].asOf);
-assert.strictEqual(dollar.observationTrend.endAsOf, reference.asOf);
-assert(Math.abs(dollar.observationTrend.change
-  - ((reference.price / reference.observations[0].value - 1) * 100)) < 1e-12);
-const tamperedDollarWindow = JSON.parse(JSON.stringify(macro));
-tamperedDollarWindow.referenceSeries.DTWEXBGS.observations[
-  tamperedDollarWindow.referenceSeries.DTWEXBGS.observations.length - 1
-].value += 1;
-assert.throws(() => adapter.adaptDtwexbgs(dollarConfig, tamperedDollarWindow, currentNow));
-const dollarHealth = adapter.adaptOfficialSourceHealth(
-  macroHealth, macro, dollar, "DTWEXBGS", currentNow
-);
-const dollarHealthRecord = macroHealth.sources.find((source) => source.id === "DTWEXBGS");
-assert.strictEqual(dollarHealth.status, dollarHealthRecord.status);
-assert.strictEqual(dollarHealth.historyKnown, macroHealth.historyStatus === "tracked");
-assert.strictEqual(dollarHealth.refreshLabel, {
-  market: "å·²åˆ·æ–°", fallback: "ä¿ç•™æ—§å€¼", unavailable: "ä¸å¯ç”¨", unknown: "å†å²å¾…å»ºç«‹"
-}[dollarHealthRecord.mode]);
-const dollarWithStaleHealth = adapter.buildPageData(
-  config, macro, expiredOfficialHealthNow, null, { data: macroHealth, error: null }
-).assets.find((asset) => asset.id === "dxy");
-assert.strictEqual(dollarWithStaleHealth.updateHealth.status, "stale");
-assert.strictEqual(dollarWithStaleHealth.updateHealth.seriesId, "DTWEXBGS");
-const tamperedDollarHealth = JSON.parse(JSON.stringify(macroHealth));
-tamperedDollarHealth.sources.find((source) => source.id === "DTWEXBGS").publishedUpdatedAt = "2026-07-28T20:23:00Z";
-const isolatedDollarHealth = adapter.buildPageData(
-  config, macro, expiredOfficialHealthNow, null, { data: tamperedDollarHealth, error: null }
-);
-assert.strictEqual(isolatedDollarHealth.assets.find((asset) => asset.id === "dxy").updateHealth.status, "unknown");
-assert.strictEqual(isolatedDollarHealth.assets.find((asset) => asset.id === "dxy").price, dollar.price);
-assert.strictEqual(isolatedDollarHealth.assets.find((asset) => asset.id === "us10y").updateHealth.status, "stale");
-assert.strictEqual(oil.demo, false);
-assert.strictEqual(oil.status, oilReference.status === "ok"
-  && adapter.businessDaysSince(oilReference.asOf, currentNow) <= 4 ? "ok" : "stale");
-assert.strictEqual(oil.symbol, "WTI");
-assert.strictEqual(oil.price, oilReference.price);
-assert.strictEqual(oil.previousPrice, oilReference.previousPrice);
-assert.strictEqual(oil.asOf, oilReference.asOf);
-assert.strictEqual(oil.updatedAt, oilReference.updatedAt);
-assert.strictEqual(oil.source.seriesId, "RWTC");
-assert(Math.abs(oil.changePct - ((oilReference.price / oilReference.previousPrice - 1) * 100)) < 1e-12);
-assert.strictEqual(oil.observationTrend.count, oilReference.observations.length);
-assert.deepStrictEqual(oil.observationTrend.values, oilReference.observations.map((item) => item.value));
-assert.strictEqual(oil.observationTrend.startAsOf, oilReference.observations[0].asOf);
-assert.strictEqual(oil.observationTrend.endAsOf, oilReference.asOf);
-assert(Math.abs(oil.observationTrend.change
-  - ((oilReference.price / oilReference.observations[0].value - 1) * 100)) < 1e-12);
-const tamperedOilWindow = JSON.parse(JSON.stringify(macro));
-tamperedOilWindow.referenceSeries.RWTC.observations.reverse();
-assert.throws(() => adapter.adaptRwtc(oilConfig, tamperedOilWindow, currentNow));
-const oilHealth = adapter.adaptOfficialSourceHealth(macroHealth, macro, oil, "RWTC", currentNow);
-const oilHealthRecord = macroHealth.sources.find((source) => source.id === "RWTC");
-assert.strictEqual(oilHealth.status, oilHealthRecord.status);
-assert.strictEqual(oilHealth.historyKnown, macroHealth.historyStatus === "tracked");
-assert.strictEqual(oilHealth.refreshLabel, {
-  market: "å·²åˆ·æ–°", fallback: "ä¿ç•™æ—§å€¼", unavailable: "ä¸å¯ç”¨", unknown: "å†å²å¾…å»ºç«‹"
-}[oilHealthRecord.mode]);
-const oilWithStaleHealth = adapter.buildPageData(
-  config, macro, expiredOfficialHealthNow, null, { data: macroHealth, error: null }
-).assets.find((asset) => asset.id === "wti");
-assert.strictEqual(oilWithStaleHealth.updateHealth.status, "stale");
-assert.strictEqual(oilWithStaleHealth.updateHealth.seriesId, "RWTC");
-const allOfficialHealth = adapter.buildPageData(
-  config, macro, expiredOfficialHealthNow, null, { data: macroHealth, error: null }
-).assets.filter((asset) => asset.updateHealth);
-assert.deepStrictEqual(allOfficialHealth.map((asset) => asset.updateHealth.seriesId), [
-  "DGS10", "DTWEXBGS", "RWTC", "BTC/USD"
-]);
-assert.strictEqual(allOfficialHealth.filter((asset) => asset.updateHealth.status === "stale").length, 3);
-assert.strictEqual(allOfficialHealth.filter((asset) => asset.updateHealth.status === "unknown").length, 1);
-
-function trackedOfficialHealth(base, seriesId, attemptedAt, mode) {
-  const tracked = JSON.parse(JSON.stringify(base));
-  tracked.historyStatus = "tracked";
-  tracked.generatedAt = attemptedAt;
-  tracked.lastAttemptAt = attemptedAt;
-  const source = tracked.sources.find((item) => item.id === seriesId);
-  source.historyStatus = "tracked";
-  source.lastAttemptAt = attemptedAt;
-  source.mode = mode;
-  source.status = { market: "healthy", fallback: "degraded", unavailable: "failed" }[mode];
-  source.consecutiveFailures = mode === "market" ? 0 : 1;
-  source.snapshotPreserved = mode === "fallback";
-  source.failureReason = mode === "market" ? null : "æµ‹è¯•æ›´æ–°å¤±è´¥";
-  if (mode === "market") source.lastSuccessfulAt = attemptedAt;
-  return tracked;
-}
-const healthyDgsHealth = trackedOfficialHealth(macroHealth, "DGS10", currentAttemptAt, "market");
-const healthyDgsMacro = JSON.parse(JSON.stringify(macro));
-adapter.findDgs10Row(healthyDgsMacro).row.status = "ok";
-const healthyDgsAsset = adapter.buildPageData(config, healthyDgsMacro, currentNow)
-  .assets.find((asset) => asset.id === "us10y");
-assert.strictEqual(adapter.adaptOfficialSourceHealth(
-  healthyDgsHealth, healthyDgsMacro, healthyDgsAsset, "DGS10", currentNow
-).status, "healthy");
-
-const fallbackDollarMacro = JSON.parse(JSON.stringify(macro));
-fallbackDollarMacro.referenceSeries.DTWEXBGS.status = "stale";
-const fallbackDollarAsset = adapter.adaptDtwexbgs(dollarConfig, fallbackDollarMacro, currentNow);
-const trackedDollarFallback = trackedOfficialHealth(
-  macroHealth, "DTWEXBGS", currentAttemptAt, "fallback"
-);
-assert.strictEqual(adapter.adaptOfficialSourceHealth(
-  trackedDollarFallback, fallbackDollarMacro, fallbackDollarAsset, "DTWEXBGS", currentNow
-).status, "degraded");
-
-const unavailableOilMacro = JSON.parse(JSON.stringify(macro));
-unavailableOilMacro.referenceSeries.RWTC.status = "error";
-const unavailableOilAsset = Object.assign({}, oilConfig, {
-  price: null, previousPrice: null, changePct: null, asOf: null, updatedAt: null, demo: false, status: "error",
-  source: Object.assign({}, oilConfig.source, { accessMethod: oilReference.source.accessMethod })
-});
-const trackedOilFailure = trackedOfficialHealth(
-  macroHealth, "RWTC", currentAttemptAt, "unavailable"
-);
-const trackedOilSource = trackedOilFailure.sources.find((source) => source.id === "RWTC");
-trackedOilSource.published = false;
-trackedOilSource.asOf = null;
-trackedOilSource.publishedUpdatedAt = null;
-assert.strictEqual(adapter.adaptOfficialSourceHealth(
-  trackedOilFailure, unavailableOilMacro, unavailableOilAsset, "RWTC", currentNow
-).status, "failed");
-assert.strictEqual(bitcoin.demo, false);
-assert.strictEqual(bitcoin.status, "ok");
-assert.strictEqual(bitcoin.price, bitcoinRow.price);
-assert.strictEqual(bitcoin.changePct, bitcoinRow.changePct);
-assert.strictEqual(bitcoin.asOf, bitcoinRow.dataMeta.asOf);
-assert.strictEqual(bitcoin.updatedAt, bitcoinRow.dataMeta.updatedAt);
-assert.strictEqual(bitcoin.source.name, "Powered by CoinGecko");
-assert.strictEqual(bitcoin.changePeriod, "24_hours");
-assert(bitcoin.note.includes("ä¸å®£ç§°å®æ—¶"));
-assert.strictEqual(bitcoin.updateHealth.status, "healthy");
-assert.strictEqual(bitcoin.updateHealth.accessMethodLabel, "CoinGecko");
-assert.strictEqual(bitcoin.updateHealth.lastSuccessfulAt, bitcoin.updatedAt);
-const tamperedBitcoinHealth = JSON.parse(JSON.stringify(assetRankingHealth));
-tamperedBitcoinHealth.sources.find((source) => source.id === "coingecko").lastSuccessAt = "2026-08-01T00:00:00Z";
-assert.throws(() => adapter.adaptBitcoinSourceHealth(
-  tamperedBitcoinHealth, assetRanking, bitcoin, currentNow
-), /åŒæ‰¹/);
-const yahooRanking = JSON.parse(JSON.stringify(assetRanking));
-const yahooBitcoin = adapter.findBitcoinAsset(yahooRanking);
-yahooBitcoin.dataMeta.mode = "market";
-yahooBitcoin.dataMeta.status = "partial";
-yahooBitcoin.dataMeta.source = "Yahoo Finance Â· é™æ€æµé€šé‡åŸºå‡†";
-const yahooBitcoinCard = adapter.adaptBitcoin(bitcoinConfig, yahooRanking, currentNow);
-assert.strictEqual(yahooBitcoinCard.status, "partial");
-assert.strictEqual(yahooBitcoinCard.changePeriod, "previous_close");
-assert.strictEqual(adapter.adaptBitcoinSourceHealth(
-  assetRankingHealth, yahooRanking, yahooBitcoinCard, currentNow
-).accessMethodLabel, "Yahoo BTC-USD");
-const retainedRanking = JSON.parse(JSON.stringify(assetRanking));
-const retainedBitcoin = adapter.findBitcoinAsset(retainedRanking);
-retainedBitcoin.dataMeta.mode = "fallback";
-retainedBitcoin.dataMeta.status = "stale";
-retainedBitcoin.dataMeta.source = "CoinGecko Â· Yahoo Finance";
-assert.strictEqual(adapter.adaptBitcoin(bitcoinConfig, retainedRanking, currentNow).status, "stale");
-const estimatedRanking = JSON.parse(JSON.stringify(assetRanking));
-const estimatedBitcoin = adapter.findBitcoinAsset(estimatedRanking);
-estimatedBitcoin.dataMeta.mode = "estimate";
-estimatedBitcoin.dataMeta.status = "partial";
-assert.throws(() => adapter.adaptBitcoin(bitcoinConfig, estimatedRanking, currentNow), /ä¸å¾—ä½¿ç”¨ä¼°å€¼/);
-const duplicateBitcoin = JSON.parse(JSON.stringify(assetRanking));
-duplicateBitcoin.assets.push(JSON.parse(JSON.stringify(bitcoinRow)));
-assert.throws(() => adapter.findBitcoinAsset(duplicateBitcoin), /åªèƒ½åŒ…å«ä¸€æ¡/);
-const missingBitcoin = JSON.parse(JSON.stringify(assetRanking));
-missingBitcoin.assets = missingBitcoin.assets.filter((asset) => asset.symbol !== "BTC");
-assert.throws(() => adapter.findBitcoinAsset(missingBitcoin), /åªèƒ½åŒ…å«ä¸€æ¡/);
-const unavailableBitcoinPage = adapter.buildPageData(
-  config, macro, currentNow, null, null, { data: null, error: new Error("HTTP 503") }
-);
-assert.strictEqual(unavailableBitcoinPage.assets.find((asset) => asset.id === "bitcoin").status, "error");
-assert.strictEqual(unavailableBitcoinPage.assets.find((asset) => asset.id === "us10y").price, dgs10.price);
-assert.strictEqual(success.assets.filter((asset) => asset.demo === false).length, config.assets.length);
-assert.strictEqual(success.assets.filter((asset) => asset.externalDisplay).length,
-  config.assets.filter((asset) => asset.externalDisplay).length);
-assert.strictEqual(success.assets.filter((asset) => asset.demo === true).length, 0);
-/* é¡µé¢çŠ¶æ€æ˜¯å„å¡çŠ¶æ€çš„æ±‡æ€»ï¼Œä¸èƒ½å†™æ­»æŸä¸ªå€¼â€”â€”é‚£ä¼šéšå½“å¤©çœŸå®æ•°æ®å˜åŒ–ï¼Œ
-   æ­¤å‰å®ƒä¹‹æ‰€ä»¥æ’ä¸º staleï¼Œæ­£æ˜¯å› ä¸º DTWEXBGS è¢«æ—¥é¢‘é˜ˆå€¼è¯¯åˆ¤ã€‚
-   è¿™é‡Œé”ä¸å˜å¼ï¼›ã€Œç¡®å®èƒ½æ±‡æ€»å‡ºè¿‡æœŸã€ç”±ä¸‹æ–¹ staleMacro å¤¹å…·ä¸“é—¨è¦†ç›–ã€‚ */
-const staleAssets = success.assets.filter((asset) => asset.status === "stale");
-assert.strictEqual(success.status, staleAssets.length ? "stale" : "ok",
-  "é¡µé¢çŠ¶æ€åº”æ±‡æ€»å„å¡ï¼Œè¿‡æœŸå¡=" + JSON.stringify(staleAssets.map((a) => a.symbol)));
-
-const trackedDgsMacro = JSON.parse(JSON.stringify(macro));
-const trackedDgs = adapter.findDgs10Row(trackedDgsMacro).row;
-trackedDgs.status = "stale";
-trackedDgs.price = Number(trackedDgs.val.replace("%", ""));
-trackedDgs.changeBps = Number(trackedDgs.chg.toLowerCase().replace("bp", ""));
-trackedDgs.previousPrice = trackedDgs.price - trackedDgs.changeBps / 100;
-trackedDgs.updatedAt = "2026-08-02T21:00:00Z";
-trackedDgs.lastAttemptAt = "2026-08-03T21:00:00Z";
-trackedDgs.source = { name: "FRED / Federal Reserve H.15", seriesId: "DGS10" };
-const retainedDgs = adapter.buildPageData(config, trackedDgsMacro, currentNow).assets.find((asset) => asset.id === "us10y");
-assert.strictEqual(retainedDgs.status, "stale");
-assert.strictEqual(retainedDgs.updatedAt, trackedDgs.updatedAt);
-assert(retainedDgs.note.includes("è‡ªåŠ¨æ›´æ–°å¤±è´¥"));
-
-trackedDgs.status = "ok";
-trackedDgs.asOf = currentAttemptDate;
-trackedDgs.updatedAt = currentAttemptAt;
-trackedDgs.lastAttemptAt = trackedDgs.updatedAt;
-trackedDgs.observations = [{ asOf: trackedDgs.asOf, value: trackedDgs.price }];
-const independentlyFreshDgs = adapter.buildPageData(config, trackedDgsMacro, currentNow).assets.find((asset) => asset.id === "us10y");
-assert.strictEqual(independentlyFreshDgs.status, "ok");
-assert.strictEqual(independentlyFreshDgs.updatedAt, trackedDgs.updatedAt);
-
-const freshDollar = adapter.adaptDtwexbgs(
-  dollarConfig, macro, new Date(reference.asOf + "T23:59:59Z")
-);
-assert.strictEqual(freshDollar.status, "ok");
-assert.strictEqual(freshDollar.demo, false);
-/* é¢‘ç‡æ ‡ç­¾å¿…é¡»è¯´æ¸… H.10 çš„å‘å¸ƒèŠ‚å¥ï¼šè§‚æµ‹æ˜¯æ—¥åº¦çš„ï¼Œå‘å¸ƒæ˜¯æŒ‰å‘¨æˆæ‰¹çš„ã€‚ */
-assert.strictEqual(freshDollar.delayLabel, "æ—¥åº¦è§‚æµ‹ Â· æ¯å‘¨æˆæ‰¹å‘å¸ƒ");
-
-const freshOilMacro = JSON.parse(JSON.stringify(macro));
-freshOilMacro.referenceSeries.RWTC.status = "ok";
-freshOilMacro.referenceSeries.RWTC.source.accessMethod = "EIA public history page";
-const freshOil = adapter.adaptRwtc(
-  oilConfig, freshOilMacro, new Date(oilReference.asOf + "T23:59:59Z")
-);
-assert.strictEqual(freshOil.status, "ok");
-assert.strictEqual(freshOil.demo, false);
-assert.strictEqual(freshOil.delayLabel, "æ—¥é¢‘ç°è´§ Â· è‡ªåŠ¨æ›´æ–°");
-assert.strictEqual(freshOil.source.accessMethod, "EIA public history page");
-const pathAwareHealth = trackedOfficialHealth(macroHealth, "RWTC", currentAttemptAt, "market");
-pathAwareHealth.sources.find((source) => source.id === "RWTC").source.accessMethod = "EIA public history page";
-const pathAwareState = adapter.adaptOfficialSourceHealth(
-  pathAwareHealth, freshOilMacro, freshOil, "RWTC", currentNow
-);
-assert.strictEqual(pathAwareState.accessMethodLabel, "å®˜æ–¹å†å²é¡µ");
-const tamperedPathHealth = JSON.parse(JSON.stringify(pathAwareHealth));
-tamperedPathHealth.sources.find((source) => source.id === "RWTC").source.accessMethod = "EIA API v2";
-assert.throws(() => adapter.adaptOfficialSourceHealth(
-  tamperedPathHealth, freshOilMacro, freshOil, "RWTC", currentNow
-), /è®¿é—®è·¯å¾„/);
-
-const staleMacro = JSON.parse(JSON.stringify(macro));
-const staleMatch = adapter.findDgs10Row(staleMacro);
-staleMatch.row.asOf = "2026-07-20";
-staleMatch.row.observations = [{ asOf: staleMatch.row.asOf, value: staleMatch.row.price }];
-/* DTWEXBGS çš„é˜ˆå€¼æŒ‰ H.10 æ¯å‘¨æˆæ‰¹å‘å¸ƒå®šä¸º 8 ä¸ªå·¥ä½œæ—¥ï¼Œå› æ­¤è¿™é‡Œè¦æŠŠå¤¹å…·æ¨åˆ°
-   10 ä¸ªå·¥ä½œæ—¥ä¹‹å‰ï¼Œæ‰çœŸæ­£è½åœ¨è¿‡æœŸåŒºé—´å†…â€”â€”åŸæ¥çš„ 07-20 è· 07-27 åªæœ‰ 5 ä¸ª
-   å·¥ä½œæ—¥ï¼Œå±äºè¯¥åºåˆ—çš„æ­£å¸¸æ»åï¼Œä¸è¯¥è¢«åˆ¤è¿‡æœŸã€‚ */
-staleMacro.referenceSeries.DTWEXBGS.asOf = "2026-07-13";
-staleMacro.referenceSeries.DTWEXBGS.previousAsOf = "2026-07-10";
-staleMacro.referenceSeries.DTWEXBGS.observations = [
-  { asOf: "2026-07-10", value: staleMacro.referenceSeries.DTWEXBGS.previousPrice },
-  { asOf: "2026-07-13", value: staleMacro.referenceSeries.DTWEXBGS.price }
-];
-staleMacro.referenceSeries.RWTC.status = "ok";
-staleMacro.referenceSeries.RWTC.asOf = "2026-07-20";
-staleMacro.referenceSeries.RWTC.previousAsOf = "2026-07-17";
-staleMacro.referenceSeries.RWTC.observations = [
-  { asOf: "2026-07-17", value: staleMacro.referenceSeries.RWTC.previousPrice },
-  { asOf: "2026-07-20", value: staleMacro.referenceSeries.RWTC.price }
-];
-const stale = adapter.buildPageData(config, staleMacro, new Date("2026-07-27T23:59:59Z"));
-assert.strictEqual(stale.assets.find((asset) => asset.id === "us10y").status, "stale");
-assert.strictEqual(stale.assets.find((asset) => asset.id === "dxy").status, "stale");
-assert.strictEqual(stale.assets.find((asset) => asset.id === "wti").status, "stale");
-assert.strictEqual(stale.status, "stale");
-
-const missingMacro = JSON.parse(JSON.stringify(macro));
-missingMacro.macro.forEach((category) => {
-  category.rows = (category.rows || []).filter((row) => row.id !== "DGS10");
-});
-const missing = adapter.buildPageData(config, missingMacro, currentNow);
-assert.strictEqual(missing.assets.find((asset) => asset.id === "us10y").status, "error");
-assert.strictEqual(missing.assets.find((asset) => asset.id === "dxy").status, dollar.status);
-assert.strictEqual(missing.assets.find((asset) => asset.id === "wti").status, oil.status);
-
-const invalidMacro = JSON.parse(JSON.stringify(macro));
-adapter.findDgs10Row(invalidMacro).row.chg = "+1%";
-adapter.findDgs10Row(invalidMacro).row.changeBps = null;
-const invalidDgs10 = adapter.buildPageData(config, invalidMacro, currentNow);
-assert.strictEqual(invalidDgs10.assets.find((asset) => asset.id === "us10y").status, "error");
-
-const invalidDollarMacro = JSON.parse(JSON.stringify(macro));
-invalidDollarMacro.referenceSeries.DTWEXBGS.price = null;
-const invalidDollar = adapter.buildPageData(config, invalidDollarMacro, currentNow);
-assert.strictEqual(invalidDollar.assets.find((asset) => asset.id === "dxy").status, "error");
-assert.strictEqual(invalidDollar.assets.find((asset) => asset.id === "dxy").price, null);
-
-const wrongSourceMacro = JSON.parse(JSON.stringify(macro));
-wrongSourceMacro.referenceSeries.DTWEXBGS.source.seriesId = "DXY";
-const wrongSource = adapter.buildPageData(config, wrongSourceMacro, currentNow);
-assert.strictEqual(wrongSource.assets.find((asset) => asset.id === "dxy").status, "error");
-
-const invalidOilMacro = JSON.parse(JSON.stringify(macro));
-invalidOilMacro.referenceSeries.RWTC.previousPrice = null;
-const invalidOil = adapter.buildPageData(config, invalidOilMacro, currentNow);
-assert.strictEqual(invalidOil.assets.find((asset) => asset.id === "wti").status, "error");
-assert.strictEqual(invalidOil.assets.find((asset) => asset.id === "wti").price, null);
-
-const wrongOilSourceMacro = JSON.parse(JSON.stringify(macro));
-wrongOilSourceMacro.referenceSeries.RWTC.source.seriesId = "CL=F";
-const wrongOilSource = adapter.buildPageData(config, wrongOilSourceMacro, currentNow);
-assert.strictEqual(wrongOilSource.assets.find((asset) => asset.id === "wti").status, "error");
-
-const fallbackMacro = JSON.parse(JSON.stringify(macro));
-fallbackMacro.referenceSeries.DTWEXBGS.status = "stale";
-fallbackMacro.referenceSeries.DTWEXBGS.asOf = "2026-08-03";
-fallbackMacro.referenceSeries.DTWEXBGS.previousAsOf = "2026-07-31";
-fallbackMacro.referenceSeries.DTWEXBGS.observations = [
-  { asOf: "2026-07-31", value: fallbackMacro.referenceSeries.DTWEXBGS.previousPrice },
-  { asOf: "2026-08-03", value: fallbackMacro.referenceSeries.DTWEXBGS.price }
-];
-const fallback = adapter.buildPageData(config, fallbackMacro, currentNow);
-const fallbackDollar = fallback.assets.find((asset) => asset.id === "dxy");
-assert.strictEqual(fallbackDollar.status, "stale");
-assert(fallbackDollar.note.includes("è‡ªåŠ¨æ›´æ–°å¤±è´¥"));
-
-const oilFallbackMacro = JSON.parse(JSON.stringify(macro));
-oilFallbackMacro.referenceSeries.RWTC.status = "stale";
-oilFallbackMacro.referenceSeries.RWTC.asOf = "2026-08-03";
-oilFallbackMacro.referenceSeries.RWTC.previousAsOf = "2026-07-31";
-oilFallbackMacro.referenceSeries.RWTC.observations = [
-  { asOf: "2026-07-31", value: oilFallbackMacro.referenceSeries.RWTC.previousPrice },
-  { asOf: "2026-08-03", value: oilFallbackMacro.referenceSeries.RWTC.price }
-];
-const oilFallback = adapter.buildPageData(config, oilFallbackMacro, currentNow).assets.find((asset) => asset.id === "wti");
-assert.strictEqual(oilFallback.status, "stale");
-assert(oilFallback.note.includes("è‡ªåŠ¨æ›´æ–°æœªæˆåŠŸ"));
-
-const failed = adapter.buildPageDataWithMacroError(config, new Error("HTTP 503"), currentNow);
-const unavailableYield = failed.assets.find((asset) => asset.id === "us10y");
-const unavailableDollar = failed.assets.find((asset) => asset.id === "dxy");
-const unavailableOil = failed.assets.find((asset) => asset.id === "wti");
-assert.strictEqual(unavailableYield.status, "error");
-assert.strictEqual(unavailableYield.demo, false);
-assert.strictEqual(unavailableYield.price, null);
-assert.strictEqual(unavailableYield.change, null);
-assert.strictEqual(unavailableDollar.status, "error");
-assert.strictEqual(unavailableDollar.price, null);
-assert.strictEqual(unavailableOil.status, "error");
-assert.strictEqual(unavailableOil.price, null);
-assert.strictEqual(adapter.businessDaysSince("2026-07-30", new Date("2026-08-03T23:00:00Z")), 2);
-assert.strictEqual(adapter.businessDaysSince("2026-07-02", new Date("2026-07-06T23:00:00Z")), 1);
-
-const macroRisk = adapter.adaptMacroRegime(macro, currentNow);
-assert.strictEqual(macroRisk.id, "macro-regime");
-assert.strictEqual(macroRisk.value, macro.regime.score);
-assert.strictEqual(macroRisk.assessment, macro.regime.labelZh + " Â· " + macro.regime.labelEn);
-assert.strictEqual(macroRisk.status, "ok");
-assert.strictEqual(macroRisk.asOf, macro.asOf);
-assert.strictEqual(macroRisk.updatedAt, macro.updatedAt);
-assert.strictEqual(macroRisk.source.name, macro.source);
-assert.deepStrictEqual(macroRisk.meterLabels, ["æ‰¿å‹", "ä¸­æ€§", "æ”¯æŒ"]);
-
-const staleRiskMacro = JSON.parse(JSON.stringify(macro));
-staleRiskMacro.asOf = "2026-07-27";
-const staleMacroRisk = adapter.adaptMacroRegime(staleRiskMacro, currentNow);
-assert.strictEqual(staleMacroRisk.status, "stale");
-assert(staleMacroRisk.note.includes("è¶…è¿‡2ä¸ªç¾å›½å·¥ä½œæ—¥"));
-
-const fallbackRiskMacro = JSON.parse(JSON.stringify(macro));
-fallbackRiskMacro.live = false;
-const fallbackMacroRisk = adapter.adaptMacroRegime(fallbackRiskMacro, currentNow);
-assert.strictEqual(fallbackMacroRisk.status, "stale");
-assert(fallbackMacroRisk.note.includes("å‘½ä¸­ä¸è¶³"));
-
-const invalidRiskMacro = JSON.parse(JSON.stringify(macro));
-invalidRiskMacro.regime.score = 101;
-const invalidMacroRisk = adapter.buildRiskCards({ macro: { data: invalidRiskMacro, error: null } }, currentNow)[0];
-assert.strictEqual(invalidMacroRisk.status, "error");
-assert.strictEqual(invalidMacroRisk.value, null);
-
-const failedMacroRisk = adapter.buildRiskCards({ macro: { data: null, error: new Error("HTTP 503") } }, currentNow)[0];
-assert.strictEqual(failedMacroRisk.status, "error");
-assert.strictEqual(failedMacroRisk.value, null);
-
-const fearGreedRisk = adapter.adaptFearGreed(fearGreed, currentNow);
-assert.strictEqual(fearGreedRisk.id, "fear-greed");
-assert.strictEqual(fearGreedRisk.value, fearGreed.score);
-assert.strictEqual(fearGreedRisk.assessment, fearGreed.ratingZh);
-assert.strictEqual(fearGreedRisk.status, "ok");
-assert.strictEqual(fearGreedRisk.asOf, fearGreed.asOf);
-assert.strictEqual(fearGreedRisk.updatedAt, fearGreed.updatedAt);
-assert(fearGreedRisk.changeText.includes("è¾ƒä¸Šä¸€æ”¶ç›˜"));
-assert.deepStrictEqual(fearGreedRisk.meterLabels, ["æåº¦ææƒ§", "ä¸­æ€§", "æåº¦è´ªå©ª"]);
-
-const staleFearGreed = JSON.parse(JSON.stringify(fearGreed));
-staleFearGreed.asOf = "2026-07-27";
-const staleFearGreedRisk = adapter.adaptFearGreed(staleFearGreed, currentNow);
-assert.strictEqual(staleFearGreedRisk.status, "stale");
-assert(staleFearGreedRisk.note.includes("è¶…è¿‡2ä¸ªç¾å›½å·¥ä½œæ—¥"));
-
-const invalidFearGreed = JSON.parse(JSON.stringify(fearGreed));
-invalidFearGreed.refs.now.score = invalidFearGreed.score - 1;
-const riskCardsWithInvalidFear = adapter.buildRiskCards({
-  macro: { data: macro, error: null },
-  fearGreed: { data: invalidFearGreed, error: null },
-  ofr: { data: ofr, error: null }
-}, currentNow);
-assert.strictEqual(riskCardsWithInvalidFear.length, 3);
-assert.strictEqual(riskCardsWithInvalidFear[0].status, "ok");
-assert.strictEqual(riskCardsWithInvalidFear[1].status, "error");
-assert.strictEqual(riskCardsWithInvalidFear[1].value, null);
-assert.strictEqual(riskCardsWithInvalidFear[2].status, "ok");
-
-const riskCardsWithFearFailure = adapter.buildRiskCards({
-  macro: { data: macro, error: null },
-  fearGreed: { data: null, error: new Error("HTTP 503") },
-  ofr: { data: ofr, error: null }
-}, currentNow);
-assert.strictEqual(riskCardsWithFearFailure[0].status, "ok");
-assert.strictEqual(riskCardsWithFearFailure[1].status, "error");
-assert.strictEqual(riskCardsWithFearFailure[2].status, "ok");
-
-const ofrRisk = adapter.adaptOfrFsi(ofr, currentNow);
-assert.strictEqual(ofrRisk.id, "ofr-fsi");
-assert.strictEqual(ofrRisk.value, ofr.fsi.value);
-assert.strictEqual(ofrRisk.assessment, "ä½äºå†å²å¹³å‡å‹åŠ›");
-assert.strictEqual(ofrRisk.status, "ok");
-assert.strictEqual(ofrRisk.asOf, ofr.fsi.asOf);
-assert.strictEqual(ofrRisk.updatedAt, ofr.updatedAt);
-assert(ofrRisk.changeText.includes((ofr.fsi.change > 0 ? "+" : ofr.fsi.change < 0 ? "âˆ’" : "")
-  + Math.abs(ofr.fsi.change).toFixed(2)));
-assert(ofrRisk.changeText.includes(ofr.fsi.change > 0 ? "å‹åŠ›ä¸Šå‡" : ofr.fsi.change < 0 ? "å‹åŠ›ä¸‹é™" : "å‹åŠ›æŒå¹³"));
-
-const partialOfr = JSON.parse(JSON.stringify(ofr));
-partialOfr.fsi.change = null;
-const partialOfrRisk = adapter.adaptOfrFsi(partialOfr, currentNow);
-assert.strictEqual(partialOfrRisk.status, "partial");
-assert.strictEqual(partialOfrRisk.value, ofr.fsi.value);
-assert(partialOfrRisk.note.includes("å˜åŒ–å­—æ®µç¼ºå¤±"));
-
-const staleOfr = JSON.parse(JSON.stringify(ofr));
-staleOfr.fsi.asOf = "2026-07-23";
-const staleOfrRisk = adapter.adaptOfrFsi(staleOfr, currentNow);
-assert.strictEqual(staleOfrRisk.status, "stale");
-assert(staleOfrRisk.note.includes("è¶…è¿‡5ä¸ªç¾å›½å·¥ä½œæ—¥"));
-
-const invalidOfr = JSON.parse(JSON.stringify(ofr));
-invalidOfr.fsi.url = "https://example.com/fsi";
-const riskCardsWithInvalidOfr = adapter.buildRiskCards({
-  macro: { data: macro, error: null },
-  fearGreed: { data: fearGreed, error: null },
-  ofr: { data: invalidOfr, error: null }
-}, currentNow);
-assert.strictEqual(riskCardsWithInvalidOfr[0].status, "ok");
-assert.strictEqual(riskCardsWithInvalidOfr[1].status, "ok");
-assert.strictEqual(riskCardsWithInvalidOfr[2].status, "error");
-assert.strictEqual(riskCardsWithInvalidOfr[2].value, null);
-
-const riskCardsWithOfrFailure = adapter.buildRiskCards({
-  macro: { data: macro, error: null },
-  fearGreed: { data: fearGreed, error: null },
-  ofr: { data: null, error: new Error("HTTP 503") }
-}, currentNow);
-assert.strictEqual(riskCardsWithOfrFailure[0].status, "ok");
-assert.strictEqual(riskCardsWithOfrFailure[1].status, "ok");
-assert.strictEqual(riskCardsWithOfrFailure[2].status, "error");
-
-const macroOperationHealth = operationsData.adaptMacroSourceHealth(macroHealth, macro, currentNow);
-assert.strictEqual(macroOperationHealth.dataset, "macro-radar");
-assert.strictEqual(macroOperationHealth.status, macroHealth.status);
-assert.strictEqual(macroOperationHealth.pipelineStatus, macroHealth.status);
-assert.strictEqual(macroOperationHealth.availableCoveragePct, 100);
-assert.strictEqual(macroOperationHealth.freshCoveragePct, macroHealth.coverage.freshCoveragePct);
-assert.strictEqual(macroOperationHealth.historyKnown, macroHealth.historyStatus === "tracked");
-assert.strictEqual(macroOperationHealth.consecutiveFailures, macroHealth.consecutiveFailures);
-assert.strictEqual(macroOperationHealth.reportStale, false);
-
-const operationSources = {
-  macro: { data: macro, error: null },
-  macroHealth: { data: macroHealth, error: null },
-  assetTracker: { data: assetTracker, error: null },
-  assetTrackerHealth: { data: assetTrackerHealth, error: null },
-  companies: { data: companies, error: null },
-  companiesHealth: { data: companiesHealth, error: null },
-  assetRanking: { data: assetRanking, error: null },
-  assetRankingHealth: { data: assetRankingHealth, error: null },
-  readiness: { data: readiness, error: null }
-};
-const operationCards = operationsData.buildOperationsCards(operationSources, currentNow);
-assert.strictEqual(operationCards.length, 4);
-assert.deepStrictEqual(operationCards.map((card) => card.id), [
-  "macro-radar", "asset-tracker", "companies", "asset-ranking"
-]);
-assert.deepStrictEqual(operationCards.map((card) => card.status), [
-  macroHealth.status,
-  adapter.adaptSourceHealth(assetTrackerHealth, "asset-tracker", assetTracker, currentNow).status,
-  adapter.adaptSourceHealth(companiesHealth, "companies", companies, currentNow).status,
-  adapter.adaptSourceHealth(assetRankingHealth, "asset-ranking", assetRanking, currentNow).status
-]);
-assert.strictEqual(operationCards[3].reportedPipelineStatus, assetRankingHealth.status);
-/* æ¡æ•°ä»¥å„è‡ªå¥åº·æ–‡ä»¶å£°æ˜çš„ä¸ºå‡†ï¼šè·¨èµ„äº§æ¸…å•æ‰©å®¹æ—¶è¿™é‡Œä¸è¯¥è·Ÿç€æ”¹æˆæ–°çš„é­”æ³•æ•°å­—ã€‚ */
-assert.deepStrictEqual(operationCards.map((card) => card.publishedRecords), [
-  macroHealth.coverage.publishedSeries,
-  assetTracker.assets.length,
-  companies.companies.length,
-  assetRanking.assets.length
-]);
-assert.deepStrictEqual(operationCards.map((card) => card.expectedRecords), [
-  3,
-  assetTrackerHealth.coverage.expectedRecords,
-  companiesHealth.coverage.expectedRecords,
-  assetRankingHealth.coverage.expectedRecords
-]);
-assert.strictEqual(operationCards[1].symbol, `${assetTracker.assets.length} ASSETS`);
-assert.deepStrictEqual(operationCards.map((card) => card.availableCoveragePct), [100, 100, 100, 100]);
-assert.deepStrictEqual(operationCards.map((card) => card.freshCoveragePct), [
-  macroHealth.coverage.freshCoveragePct,
-  assetTrackerHealth.coverage.freshCoveragePct,
-  companiesHealth.coverage.freshCoveragePct,
-  assetRankingHealth.coverage.freshCoveragePct
-]);
-assert.deepStrictEqual(operationCards.map((card) => card.historyKnown), [
-  macroHealth, assetTrackerHealth, companiesHealth, assetRankingHealth
-].map((health) => health.historyStatus === "tracked"));
-const readinessState = operationsData.adaptReadinessSnapshot(readiness, currentNow);
-const expectedReadinessById = Object.fromEntries(readiness.pipelines.map((pipeline) => [pipeline.id, pipeline]));
-operationCards.forEach((card) => {
-  const expected = expectedReadinessById[card.id];
-  assert(expected);
-  assert.strictEqual(card.readiness.consecutiveSuccessfulCycles, expected.consecutiveSuccessfulCycles);
-  assert.strictEqual(card.readiness.latestCycleDate, expected.cycleDates.slice().sort().at(-1));
-  assert.strictEqual(card.readiness.status, readinessState.pipelines[card.id].status);
-});
-const staleReadiness = operationsData.adaptReadinessSnapshot(
-  readiness, new Date(Date.parse(readiness.generatedAt) + 73 * 60 * 60 * 1000)
-);
-assert(Object.values(staleReadiness.pipelines).every((pipeline) => pipeline.status === "stale"));
-const tamperedReadiness = JSON.parse(JSON.stringify(readiness));
-tamperedReadiness.summary.minimumConsecutiveSuccessfulCycles += 1;
-assert.throws(() => operationsData.adaptReadinessSnapshot(tamperedReadiness, currentNow), /ä¸å¯å¤ç®—/);
-
-const staleOperationCards = operationsData.buildOperationsCards(operationSources, expiredOfficialHealthNow);
-assert(staleOperationCards.every((card) => card.status === "stale"));
-assert(staleOperationCards.every((card) => card.reportStale === true));
-assert(staleOperationCards[0].note.includes("ä¸ä»£è¡¨å½“å‰ä»»åŠ¡ä»åœ¨æ­£å¸¸è¿è¡Œ"));
-
-const tamperedMacroHealth = JSON.parse(JSON.stringify(macroHealth));
-tamperedMacroHealth.coverage.freshCoveragePct = macroHealth.coverage.freshCoveragePct === 100 ? 99 : 100;
-assert.throws(() => operationsData.adaptMacroSourceHealth(tamperedMacroHealth, macro, currentNow), /è¦†ç›–ç‡/);
-const tamperedOperationSources = Object.assign({}, operationSources, {
-  macroHealth: { data: tamperedMacroHealth, error: null }
-});
-const tamperedOperationCards = operationsData.buildOperationsCards(tamperedOperationSources, currentNow);
-assert.strictEqual(tamperedOperationCards[0].status, "unknown");
-assert.strictEqual(tamperedOperationCards[0].contractKnown, false);
-assert.deepStrictEqual(tamperedOperationCards.slice(1).map((card) => card.status), [
-  adapter.adaptSourceHealth(assetTrackerHealth, "asset-tracker", assetTracker, currentNow).status,
-  adapter.adaptSourceHealth(companiesHealth, "companies", companies, currentNow).status,
-  adapter.adaptSourceHealth(assetRankingHealth, "asset-ranking", assetRanking, currentNow).status
-]);
-
-const mismatchedMacroSnapshot = JSON.parse(JSON.stringify(macro));
-mismatchedMacroSnapshot.updatedAt = "2026-08-03T22:00:00Z";
-assert.throws(() => operationsData.adaptMacroSourceHealth(macroHealth, mismatchedMacroSnapshot, currentNow), /å¿«ç…§æ—¶é—´ä¸ä¸€è‡´/);
-const failedOperationSources = Object.assign({}, operationSources, {
-  companiesHealth: { data: null, error: new Error("HTTP 503") }
-});
-const failedOperationCards = operationsData.buildOperationsCards(failedOperationSources, currentNow);
-assert.strictEqual(failedOperationCards[2].status, "unknown");
-assert.strictEqual(failedOperationCards[2].publishedRecords, null);
-assert(failedOperationCards[2].note.includes("HTTP 503"));
-assert.strictEqual(failedOperationCards[0].status, macroHealth.status);
-
-const crossAsset = adapter.adaptCrossAsset(assetTracker, currentNow, assetTrackerHealth);
-assert.strictEqual(crossAsset.id, "cross-asset");
-assert.strictEqual(crossAsset.status, assetTracker.status);
-assert.strictEqual(crossAsset.asOf, assetTracker.asOf);
-assert.strictEqual(crossAsset.updatedAt, assetTracker.updatedAt);
-assert.strictEqual(crossAsset.source.name, "Yahoo Finance");
-assert.strictEqual(crossAsset.periods.length, 5);
-assert.strictEqual(crossAsset.assets.length, assetTracker.assets.length);
-assert.deepStrictEqual(crossAsset.quality.counts, assetTracker.dataQuality.counts);
-assert.strictEqual(crossAsset.quality.declaredValid, true);
-assert.strictEqual(crossAsset.quality.contractKnown, true);
-assert.strictEqual(crossAsset.sourceHealth.status, assetTrackerHealth.status);
-assert.strictEqual(crossAsset.sourceHealth.freshCoveragePct, assetTrackerHealth.coverage.freshCoveragePct);
-assert.strictEqual(crossAsset.sourceHealth.historyKnown, assetTrackerHealth.historyStatus === "tracked");
-assert.strictEqual(crossAsset.sourceHealth.consecutiveFailures, assetTrackerHealth.consecutiveFailures);
-assert.strictEqual(crossAsset.sourceHealth.reportStale, false);
-const expiredTrackerHealth = adapter.adaptSourceHealth(
-  assetTrackerHealth, "asset-tracker", assetTracker, expiredOfficialHealthNow
-);
-assert.strictEqual(expiredTrackerHealth.status, "stale");
-assert.strictEqual(expiredTrackerHealth.pipelineStatus, assetTrackerHealth.status);
-assert.strictEqual(expiredTrackerHealth.reportStale, true);
-assert(expiredTrackerHealth.note.includes("ä¸ä»£è¡¨å½“å‰è¡Œæƒ…æ–°é²œåº¦"));
-const failedTrackerHealth = JSON.parse(JSON.stringify(assetTrackerHealth));
-Object.assign(failedTrackerHealth, {
-  generatedAt: currentAttemptAt,
-  lastAttemptAt: currentAttemptAt,
-  status: "failed",
-  historyStatus: "tracked",
-  consecutiveFailures: 1,
-  snapshotPreserved: true,
-  failureReason: "æµ‹è¯•æ•´æºå¤±è´¥ï¼Œä¿ç•™æ—§å¿«ç…§ã€‚"
-});
-failedTrackerHealth.attempt = {
-  status: "failed", published: false, producedRecords: 28,
-  counts: { market: 0, fallback: 0, estimate: 0, unknown: 0, unavailable: 28 }
-};
-const retainedCrossAsset = adapter.adaptCrossAsset(assetTracker, currentNow, failedTrackerHealth);
-assert.strictEqual(retainedCrossAsset.sourceHealth.status, "failed");
-assert.strictEqual(retainedCrossAsset.sourceHealth.snapshotPreserved, true);
-assert.strictEqual(retainedCrossAsset.sourceHealth.consecutiveFailures, 1);
-assert(retainedCrossAsset.sourceHealth.note.includes("æœ€åæœ‰æ•ˆå¿«ç…§"));
-const mismatchedTrackerHealth = JSON.parse(JSON.stringify(assetTrackerHealth));
-mismatchedTrackerHealth.publishedSnapshotAt = "2026-07-31T00:00:00Z";
-const unverifiedTrackerHealth = adapter.adaptCrossAsset(assetTracker, currentNow, mismatchedTrackerHealth).sourceHealth;
-assert.strictEqual(unverifiedTrackerHealth.status, "unknown");
-assert.strictEqual(unverifiedTrackerHealth.contractKnown, false);
-const fallbackTracker = JSON.parse(JSON.stringify(assetTracker));
-const fallbackRow = fallbackTracker.assets[0];
-fallbackRow.stale = true;
-fallbackRow.suspect = false;
-fallbackRow.dataMeta = {
-  mode: "fallback", status: "partial", source: "Yahoo Finance", asOf: null,
-  updatedAt: fallbackTracker.updatedAt, frequency: "daily",
-  note: "æµ‹è¯•å¤¹å…·ï¼šæœ¬è½®è¯·æ±‚å¤±è´¥ï¼Œæ²¿ç”¨ä¸Šä¸€ä»½é€æ¡æœ‰æ•ˆå€¼ã€‚"
-};
-fallbackTracker.status = "partial";
-fallbackTracker.dataQuality = qualityDeclaration(fallbackTracker.assets);
-const fallbackCrossAsset = adapter.adaptCrossAsset(fallbackTracker, currentNow);
-assert.strictEqual(fallbackCrossAsset.status, "partial");
-const fallbackAsset = fallbackCrossAsset.assets.find((asset) => asset.dataMeta.mode === "fallback");
-assert(fallbackAsset && fallbackAsset.dataMeta.asOf === null);
-assert(fallbackAsset.dataLabel.includes("å†å²å›é€€"));
-const proxyTracker = JSON.parse(JSON.stringify(assetTracker));
-const proxyRow = proxyTracker.assets.find((asset) => asset.name === "ä¸­è¯500");
-proxyRow.symbol = "510500.SS";
-proxyRow.proxy = {
-  type: "etf", targetSymbol: "000905.SS", instrumentName: "ä¸­è¯500ETF",
-  instrumentSymbol: "510500.SS", currency: "CNY", returnBasis: "price",
-  note: "ETFæ”¶ç›Šç‡ä»£ç†ï¼Œå¯èƒ½å­˜åœ¨è·Ÿè¸ªè¯¯å·®ã€‚"
-};
-const proxyCrossAsset = adapter.adaptCrossAsset(proxyTracker, currentNow, assetTrackerHealth);
-const adaptedProxy = proxyCrossAsset.assets.find((asset) => asset.name === "ä¸­è¯500");
-assert(adaptedProxy.proxy && adaptedProxy.proxy.instrumentSymbol === "510500.SS");
-assert(adaptedProxy.dataLabel.startsWith("PROXY Â· "));
-const invalidProxyTracker = JSON.parse(JSON.stringify(proxyTracker));
-invalidProxyTracker.assets.find((asset) => asset.name === "ä¸­è¯500").proxy.currency = "äººæ°‘å¸";
-assert.throws(() => adapter.adaptCrossAsset(invalidProxyTracker, currentNow), /ä»£ç†æ ‡çš„å¥‘çº¦æ— æ•ˆ/);
-const ytdRanking = adapter.rankCrossAssetPeriod(crossAsset, "ytd");
-const expectedYtd = assetTracker.assets
-  .filter((asset) => !asset.stale && !asset.suspect && Number.isFinite(asset.returns.ytd))
-  .sort((a, b) => a.returns.ytd - b.returns.ytd);
-assert.strictEqual(ytdRanking.coverage, expectedYtd.length);
-assert.strictEqual(ytdRanking.total, assetTracker.assets.length);
-assert.deepStrictEqual(ytdRanking.leaders.map((asset) => asset.symbol), expectedYtd.slice(-3).reverse().map((asset) => asset.symbol));
-assert.deepStrictEqual(ytdRanking.laggards.map((asset) => asset.symbol), expectedYtd.slice(0, 3).map((asset) => asset.symbol));
-assert(ytdRanking.leaders.concat(ytdRanking.laggards).every((asset) => !asset.stale && !asset.suspect));
-assert.strictEqual(adapter.periodTabTargetIndex(0, "ArrowRight", 5), 1);
-assert.strictEqual(adapter.periodTabTargetIndex(4, "ArrowRight", 5), 0);
-assert.strictEqual(adapter.periodTabTargetIndex(0, "ArrowLeft", 5), 4);
-assert.strictEqual(adapter.periodTabTargetIndex(2, "Home", 5), 0);
-assert.strictEqual(adapter.periodTabTargetIndex(2, "End", 5), 4);
-assert.strictEqual(adapter.periodTabTargetIndex(2, "Enter", 5), 2);
-
-const freshAssetTracker = JSON.parse(JSON.stringify(assetTracker));
-freshAssetTracker.updatedAt = currentAttemptAt;
-freshAssetTracker.asOf = currentAttemptDate;
-freshAssetTracker.status = "ok";
-freshAssetTracker.assets.forEach((asset) => {
-  asset.stale = false;
-  asset.suspect = false;
-  asset.dataMeta = {
-    mode: "market", status: "ok", source: "Yahoo Finance", asOf: freshAssetTracker.asOf,
-    updatedAt: freshAssetTracker.updatedAt, frequency: "daily"
-  };
-});
-freshAssetTracker.dataQuality = {
-  contractVersion: 1, status: "ok", total: freshAssetTracker.assets.length,
-  counts: { market: freshAssetTracker.assets.length, fallback: 0, estimate: 0, unknown: 0, unavailable: 0 },
-  sources: [{ name: "Yahoo Finance", count: freshAssetTracker.assets.length }]
-};
-const freshCrossAsset = adapter.adaptCrossAsset(freshAssetTracker, currentNow);
-assert.strictEqual(freshCrossAsset.status, "ok");
-assert.strictEqual(freshCrossAsset.quality.counts.market, freshAssetTracker.assets.length);
-
-const mismatchedTrackerQuality = JSON.parse(JSON.stringify(freshAssetTracker));
-mismatchedTrackerQuality.dataQuality.counts.market -= 1;
-assert.strictEqual(adapter.adaptCrossAsset(mismatchedTrackerQuality, currentNow).status, "partial");
-
-const legacyAssetTracker = JSON.parse(JSON.stringify(freshAssetTracker));
-delete legacyAssetTracker.dataQuality;
-legacyAssetTracker.assets.forEach((asset) => { delete asset.dataMeta; });
-const legacyCrossAsset = adapter.adaptCrossAsset(legacyAssetTracker, currentNow);
-assert.strictEqual(legacyCrossAsset.status, "partial");
-assert.strictEqual(legacyCrossAsset.quality.contractKnown, false);
-
-const staleAssetTracker = JSON.parse(JSON.stringify(freshAssetTracker));
-staleAssetTracker.updatedAt = "2026-07-30T20:00:00Z";
-staleAssetTracker.asOf = "2026-07-30";
-const staleCrossAsset = adapter.adaptCrossAsset(staleAssetTracker, currentNow);
-assert.strictEqual(staleCrossAsset.status, "stale");
-assert.strictEqual(adapter.rankCrossAssetPeriod(staleCrossAsset, "d1").paused, true);
-assert.strictEqual(adapter.rankCrossAssetPeriod(staleCrossAsset, "ytd").paused, false);
-
-const baselineResearch = adapter.buildResearchCards({
-  assetTracker: { data: assetTracker, error: null },
-  assetRanking: { data: assetRanking, error: null },
-  companies: { data: companies, error: null }
-}, currentNow);
-assert.strictEqual(baselineResearch.length, 3);
-
-const invalidAssetTracker = JSON.parse(JSON.stringify(assetTracker));
-invalidAssetTracker.source = "Unknown feed";
-const invalidResearch = adapter.buildResearchCards({
-  assetTracker: { data: invalidAssetTracker, error: null },
-  assetRanking: { data: assetRanking, error: null },
-  companies: { data: companies, error: null }
-}, currentNow);
-assert.strictEqual(invalidResearch.length, 3);
-assert.strictEqual(invalidResearch[0].status, "error");
-assert.strictEqual(invalidResearch[0].assets.length, 0);
-assert.strictEqual(invalidResearch[1].status, baselineResearch[1].status);
-assert.strictEqual(invalidResearch[2].status, baselineResearch[2].status);
-
-const failedResearch = adapter.buildResearchCards({
-  assetTracker: { data: null, error: new Error("HTTP 503") },
-  assetRanking: { data: assetRanking, error: null },
-  companies: { data: companies, error: null }
-}, currentNow);
-assert.strictEqual(failedResearch.length, 3);
-assert.strictEqual(failedResearch[0].status, "error");
-assert.strictEqual(failedResearch[0].assets.length, 0);
-assert.strictEqual(failedResearch[1].status, baselineResearch[1].status);
-assert.strictEqual(failedResearch[2].status, baselineResearch[2].status);
-
-const globalAssets = adapter.adaptAssetRanking(assetRanking, currentNow, assetRankingHealth);
-assert.strictEqual(globalAssets.id, "asset-ranking");
-assert.strictEqual(globalAssets.status, assetRanking.status);
-assert.strictEqual(globalAssets.count, assetRanking.count);
-assert.strictEqual(globalAssets.totalMarketCap, assetRanking.totalMarketCap);
-assert.strictEqual(globalAssets.asOf, assetRanking.asOf);
-assert.strictEqual(globalAssets.updatedAt, assetRanking.updatedAt);
-assert.strictEqual(globalAssets.assets.length, 5);
-assert.deepStrictEqual(globalAssets.assets.map((asset) => asset.name), assetRanking.assets.slice(0, 5).map((asset) => asset.name));
-assert.deepStrictEqual(globalAssets.assets.map((asset) => asset.marketCap), assetRanking.assets.slice(0, 5).map((asset) => asset.marketCap));
-assert(globalAssets.assets.some((asset) => asset.static));
-assert(globalAssets.assets.some((asset) => !asset.static));
-assert.deepStrictEqual(globalAssets.quality.counts, assetRanking.dataQuality.counts);
-assert.strictEqual(globalAssets.quality.declaredValid, true);
-assert.strictEqual(globalAssets.sourceHealth.status,
-  adapter.adaptSourceHealth(assetRankingHealth, "asset-ranking", assetRanking, currentNow).status);
-assert.strictEqual(globalAssets.sourceHealth.reportedPipelineStatus, assetRankingHealth.status);
-assert.strictEqual(globalAssets.sourceHealth.freshCoveragePct,
-  assetRankingHealth.coverage.freshCoveragePct);
-assert.strictEqual(globalAssets.sourceHealth.verifiedCoveragePct,
-  assetRankingHealth.coverage.verifiedCoveragePct);
-assert.strictEqual(globalAssets.sourceHealth.slowEstimateRecords, assetRanking.dataQuality.counts.estimate);
-assert.strictEqual(globalAssets.sourceHealth.dynamicIssueRecords, 0);
-assert(globalAssets.assets[0].dataLabel.includes("é™æ€ä¼°ç®—") && globalAssets.assets[0].dataLabel.includes("Savills"));
-globalAssets.assets.forEach((asset, index) => {
-  const mode = assetRanking.assets[index].dataMeta.mode;
-  if (mode === "estimate") assert(asset.dataLabel.includes("é™æ€ä¼°ç®—"));
-  if (mode === "fallback") assert(asset.dataLabel.includes("å†å²å›é€€"));
-  if (mode === "unknown") assert.strictEqual(asset.dataLabel, "æ¥æºå¾…ç¡®è®¤");
-});
-if (assetRanking.dataQuality.counts.unknown > 0) {
-  assert(globalAssets.note.includes(assetRanking.dataQuality.counts.unknown + "é¡¹æ—§å¿«ç…§"));
-}
-
-const freshAssetRanking = JSON.parse(JSON.stringify(assetRanking));
-freshAssetRanking.updatedAt = currentAttemptAt;
-freshAssetRanking.asOf = currentAttemptDate;
-freshAssetRanking.status = "ok";
-freshAssetRanking.assets.forEach((asset) => {
-  asset.stale = false;
-  const estimate = asset.static === true || asset.private === true;
-  asset.dataMeta = {
-    mode: estimate ? "estimate" : "market",
-    status: "ok",
-    source: asset.dataMeta.source,
-    asOf: estimate ? "2026-08-01" : currentAttemptAt,
-    updatedAt: freshAssetRanking.updatedAt,
-    frequency: estimate ? "irregular" : "daily"
-  };
-});
-freshAssetRanking.dataQuality = qualityDeclaration(freshAssetRanking.assets);
-const freshGlobalAssets = adapter.adaptAssetRanking(freshAssetRanking, currentNow);
-assert.strictEqual(freshGlobalAssets.status, "ok");
-const expectedFreshRankingEstimates = freshAssetRanking.assets
-  .filter((asset) => asset.static === true || asset.private === true).length;
-assert.strictEqual(freshGlobalAssets.quality.counts.market,
-  freshAssetRanking.assets.length - expectedFreshRankingEstimates);
-assert.strictEqual(freshGlobalAssets.quality.counts.estimate, expectedFreshRankingEstimates);
-
-const fallbackAssetRanking = JSON.parse(JSON.stringify(freshAssetRanking));
-const fallbackRankingRow = fallbackAssetRanking.assets.find((asset) => asset.dataMeta.mode === "market");
-fallbackRankingRow.stale = true;
-fallbackRankingRow.dataMeta = {
-  mode: "fallback", status: "stale", source: fallbackRankingRow.dataMeta.source,
-  asOf: "2026-08-02T20:00:00Z", updatedAt: "2026-08-02T20:10:00Z", frequency: "daily"
-};
-fallbackAssetRanking.dataQuality = qualityDeclaration(fallbackAssetRanking.assets);
-const fallbackGlobalAssets = adapter.adaptAssetRanking(fallbackAssetRanking, currentNow);
-assert.strictEqual(fallbackGlobalAssets.status, "partial");
-assert.strictEqual(fallbackGlobalAssets.quality.counts.fallback, 1);
-
-const mismatchedRankingQuality = JSON.parse(JSON.stringify(freshAssetRanking));
-mismatchedRankingQuality.dataQuality.counts.market -= 1;
-assert.strictEqual(adapter.adaptAssetRanking(mismatchedRankingQuality, currentNow).status, "partial");
-
-const legacyAssetRanking = JSON.parse(JSON.stringify(freshAssetRanking));
-delete legacyAssetRanking.dataQuality;
-legacyAssetRanking.assets.forEach((asset) => { delete asset.dataMeta; });
-const legacyGlobalAssets = adapter.adaptAssetRanking(legacyAssetRanking, currentNow);
-assert.strictEqual(legacyGlobalAssets.status, "partial");
-assert.strictEqual(legacyGlobalAssets.quality.contractKnown, false);
-
-const staleAssetRanking = JSON.parse(JSON.stringify(freshAssetRanking));
-staleAssetRanking.updatedAt = "2026-07-30T20:00:00Z";
-staleAssetRanking.asOf = "2026-07-30";
-assert.strictEqual(adapter.adaptAssetRanking(staleAssetRanking, currentNow).status, "stale");
-
-const invalidAssetRanking = JSON.parse(JSON.stringify(assetRanking));
-invalidAssetRanking.source = "Yahoo Finance";
-const invalidRankingResearch = adapter.buildResearchCards({
-  assetTracker: { data: assetTracker, error: null },
-  assetRanking: { data: invalidAssetRanking, error: null },
-  companies: { data: companies, error: null }
-}, currentNow);
-assert.strictEqual(invalidRankingResearch[0].status, baselineResearch[0].status);
-assert.strictEqual(invalidRankingResearch[1].status, "error");
-assert.strictEqual(invalidRankingResearch[1].totalMarketCap, null);
-
-const brokenTopRanking = JSON.parse(JSON.stringify(assetRanking));
-brokenTopRanking.assets[0].marketCap = null;
-const brokenTopResearch = adapter.buildResearchCards({
-  assetTracker: { data: assetTracker, error: null },
-  assetRanking: { data: brokenTopRanking, error: null },
-  companies: { data: companies, error: null }
-}, currentNow);
-assert.strictEqual(brokenTopResearch[0].status, baselineResearch[0].status);
-assert.strictEqual(brokenTopResearch[1].status, "error");
-
-const failedRankingResearch = adapter.buildResearchCards({
-  assetTracker: { data: assetTracker, error: null },
-  assetRanking: { data: null, error: new Error("HTTP 503") },
-  companies: { data: companies, error: null }
-}, currentNow);
-assert.strictEqual(failedRankingResearch[0].status, baselineResearch[0].status);
-assert.strictEqual(failedRankingResearch[1].status, "error");
-
-const companyLeaders = adapter.adaptCompanies(companies, currentNow, companiesHealth);
-const listedCompanies = companies.companies.filter((company) => !company.private);
-const eligibleCompanyMovers = listedCompanies.filter((company) => company.stale !== true
-  && company.dataMeta && company.dataMeta.mode === "market" && company.dataMeta.status === "ok"
-  && Number.isFinite(company.changePct) && company.changePct >= -100 && company.changePct <= 1000)
-  .slice().sort((a, b) => a.changePct - b.changePct);
-assert.strictEqual(companyLeaders.id, "company-leaders");
-assert.strictEqual(companyLeaders.status, companies.status);
-assert.strictEqual(companyLeaders.listedCount, companies.listedCount);
-assert.strictEqual(companyLeaders.privateCount, companies.privateCount);
-assert.strictEqual(companyLeaders.asOf, companies.asOf);
-assert.strictEqual(companyLeaders.updatedAt, companies.updatedAt);
-assert(companyLeaders.source.name.includes("Yahoo Finance") && companyLeaders.source.name.includes("multiples.vc"));
-assert.deepStrictEqual(companyLeaders.topCompanies.map((company) => company.symbol), listedCompanies.slice(0, 3).map((company) => company.symbol));
-assert.strictEqual(companyLeaders.gainer && companyLeaders.gainer.symbol,
-  eligibleCompanyMovers.length >= 20 ? eligibleCompanyMovers[eligibleCompanyMovers.length - 1].symbol : null);
-assert.strictEqual(companyLeaders.laggard && companyLeaders.laggard.symbol,
-  eligibleCompanyMovers.length >= 20 ? eligibleCompanyMovers[0].symbol : null);
-assert.strictEqual(companyLeaders.moverCoverage, eligibleCompanyMovers.length);
-assert.deepStrictEqual(companyLeaders.quality.counts, companies.dataQuality.counts);
-assert.strictEqual(companyLeaders.quality.declaredValid, true);
-assert.strictEqual(companyLeaders.sourceHealth.status, companiesHealth.status);
-assert.strictEqual(companyLeaders.sourceHealth.freshCoveragePct,
-  companiesHealth.coverage.freshCoveragePct);
-assert.strictEqual(companyLeaders.sourceHealth.verifiedCoveragePct,
-  companiesHealth.coverage.verifiedCoveragePct);
-assert.strictEqual(companyLeaders.sourceHealth.slowEstimateRecords, companies.dataQuality.counts.estimate);
-const expectedCompanyDynamicIssues = companies.companies.filter((company) => company.private !== true
-  && (!company.dataMeta || company.dataMeta.mode !== "market" || company.dataMeta.status !== "ok")).length;
-assert.strictEqual(companyLeaders.sourceHealth.dynamicIssueRecords, expectedCompanyDynamicIssues);
-if (companies.dataQuality.counts.unknown + companies.dataQuality.counts.unavailable > 0) {
-  assert(companyLeaders.note.includes("æš‚åœå½“æ—¥é¢†æ¶¨ä¸é¢†è·Œ"));
-}
-companyLeaders.topCompanies.forEach((company, index) => {
-  const mode = listedCompanies[index].dataMeta.mode;
-  if (mode === "market") assert(company.dataLabel.includes("è¡Œæƒ…"));
-  if (mode === "fallback") assert(company.dataLabel.includes("å†å²å›é€€"));
-  if (mode === "unknown") assert.strictEqual(company.dataLabel, "æ¥æºå¾…ç¡®è®¤");
-});
-assert(Math.abs(companyLeaders.listedMarketCap - listedCompanies.reduce((sum, company) => sum + company.marketCap, 0)) < 1e-9);
-const dynamicFallbackCompanies = JSON.parse(JSON.stringify(companies));
-dynamicFallbackCompanies.companies.find((company) => !company.private).dataMeta = {
-  mode: "fallback", status: "stale", source: "Yahoo Finance",
-  asOf: "2026-08-01T00:00:00Z", updatedAt: "2026-08-01T00:00:00Z", frequency: "daily"
-};
-dynamicFallbackCompanies.dataQuality = qualityDeclaration(dynamicFallbackCompanies.companies);
-const dynamicFallbackHealth = JSON.parse(JSON.stringify(companiesHealth));
-dynamicFallbackHealth.status = "degraded";
-dynamicFallbackHealth.coverage.counts = dynamicFallbackCompanies.dataQuality.counts;
-dynamicFallbackHealth.coverage.freshCoveragePct = Math.round(
-  dynamicFallbackCompanies.dataQuality.counts.market / companies.listedCount * 10000
-) / 100;
-dynamicFallbackHealth.coverage.verifiedCoveragePct = 100;
-dynamicFallbackHealth.attempt.counts = dynamicFallbackCompanies.dataQuality.counts;
-assert.strictEqual(adapter.adaptSourceHealth(
-  dynamicFallbackHealth, "companies", dynamicFallbackCompanies, currentNow
-).status, "degraded");
-const monitoredResearch = adapter.buildResearchCards({
-  assetTracker: { data: assetTracker, error: null },
-  assetTrackerHealth: { data: assetTrackerHealth, error: null },
-  assetRanking: { data: assetRanking, error: null },
-  assetRankingHealth: { data: assetRankingHealth, error: null },
-  companies: { data: companies, error: null },
-  companiesHealth: { data: companiesHealth, error: null }
-}, currentNow);
-assert.strictEqual(monitoredResearch.length, 3);
-assert(monitoredResearch.every((card) => card.sourceHealth.contractKnown));
-
-const freshCompanies = JSON.parse(JSON.stringify(companies));
-freshCompanies.updatedAt = currentAttemptAt;
-freshCompanies.asOf = currentAttemptDate;
-freshCompanies.companies.forEach((company) => {
-  if (!company.private) {
-    if (!Number.isFinite(company.changePct)) company.changePct = 0;
-    company.stale = false;
-    company.dataMeta = {
-      mode: "market", status: "ok", source: "Yahoo Finance", asOf: currentAttemptAt,
-      updatedAt: freshCompanies.updatedAt, frequency: "daily"
-    };
-  }
-});
-freshCompanies.dataQuality = qualityDeclaration(freshCompanies.companies);
-freshCompanies.status = freshCompanies.dataQuality.status;
-const freshCompanyLeaders = adapter.adaptCompanies(freshCompanies, currentNow);
-const freshListedCompanies = freshCompanies.companies.filter((company) => !company.private);
-const freshExpectedMovers = freshListedCompanies.slice().sort((a, b) => a.changePct - b.changePct);
-assert.strictEqual(freshCompanyLeaders.status, "ok");
-assert.strictEqual(freshCompanyLeaders.moverCoverage, freshCompanies.listedCount);
-assert.strictEqual(freshCompanyLeaders.gainer.symbol, freshExpectedMovers[freshExpectedMovers.length - 1].symbol);
-assert.strictEqual(freshCompanyLeaders.laggard.symbol, freshExpectedMovers[0].symbol);
-assert.strictEqual(freshCompanyLeaders.gainer.private, false);
-assert.strictEqual(freshCompanyLeaders.laggard.private, false);
-
-const fallbackCompanies = JSON.parse(JSON.stringify(freshCompanies));
-fallbackCompanies.companies[0].stale = true;
-fallbackCompanies.companies[0].dataMeta.mode = "fallback";
-fallbackCompanies.companies[0].dataMeta.status = "stale";
-fallbackCompanies.dataQuality = qualityDeclaration(fallbackCompanies.companies);
-fallbackCompanies.status = fallbackCompanies.dataQuality.status;
-const fallbackCompanyLeaders = adapter.adaptCompanies(fallbackCompanies, currentNow);
-assert.strictEqual(fallbackCompanyLeaders.status, "partial");
-assert.strictEqual(fallbackCompanyLeaders.quality.counts.fallback, 1);
-assert.strictEqual(fallbackCompanyLeaders.moverCoverage, freshCompanies.listedCount - 1);
-assert.notStrictEqual(fallbackCompanyLeaders.gainer.symbol, fallbackCompanies.companies[0].symbol);
-
-const staleCompanies = JSON.parse(JSON.stringify(freshCompanies));
-staleCompanies.updatedAt = "2026-07-30T20:00:00Z";
-staleCompanies.asOf = "2026-07-30";
-assert.strictEqual(adapter.adaptCompanies(staleCompanies, currentNow).status, "stale");
-
-const invalidCompanies = JSON.parse(JSON.stringify(companies));
-invalidCompanies.source = "Unknown feed";
-const invalidCompanyResearch = adapter.buildResearchCards({
-  assetTracker: { data: assetTracker, error: null },
-  assetRanking: { data: assetRanking, error: null },
-  companies: { data: invalidCompanies, error: null }
-}, currentNow);
-assert.strictEqual(invalidCompanyResearch[0].status, baselineResearch[0].status);
-assert.strictEqual(invalidCompanyResearch[1].status, baselineResearch[1].status);
-assert.strictEqual(invalidCompanyResearch[2].status, "error");
-assert.strictEqual(invalidCompanyResearch[2].listedMarketCap, null);
-
-const brokenCompanyTotal = JSON.parse(JSON.stringify(freshCompanies));
-brokenCompanyTotal.totalMarketCap += 100;
-const brokenCompanyResearch = adapter.buildResearchCards({
-  assetTracker: { data: assetTracker, error: null },
-  assetRanking: { data: assetRanking, error: null },
-  companies: { data: brokenCompanyTotal, error: null }
-}, currentNow);
-assert.strictEqual(brokenCompanyResearch[2].status, "error");
-
-const failedCompanyResearch = adapter.buildResearchCards({
-  assetTracker: { data: assetTracker, error: null },
-  assetRanking: { data: assetRanking, error: null },
-  companies: { data: null, error: new Error("HTTP 503") }
-}, currentNow);
-assert.strictEqual(failedCompanyResearch[0].status, baselineResearch[0].status);
-assert.strictEqual(failedCompanyResearch[1].status, baselineResearch[1].status);
-assert.strictEqual(failedCompanyResearch[2].status, "error");
-
-const calendarNow = new Date(Date.parse(econCalendar.updatedAt) + 60 * 60 * 1000);
-const calendar = informationData.adaptEconomicCalendar(econCalendar, calendarNow);
-assert.strictEqual(calendar.id, "economic-calendar");
-assert.strictEqual(calendar.status, "ok");
-assert.strictEqual(calendar.count, econCalendar.events.length);
-assert.strictEqual(calendar.highCount, econCalendar.events.filter((event) => event.impact === "high").length);
-assert.strictEqual(calendar.asOf, econCalendar.asOf);
-assert.strictEqual(calendar.updatedAt, econCalendar.updatedAt);
-assert.strictEqual(calendar.source.name, "Forex Factory ç»æµæ—¥å†");
-assert(calendar.events.length > 0 && calendar.events.length <= 4);
-assert(calendar.events.every((event) => ["high", "medium"].includes(event.impact)));
-if (calendar.selectionLabel === "æ¥ä¸‹æ¥é‡è¦äº‹ä»¶") {
-  assert(calendar.events.every((event) => Date.parse(event.ts) >= calendarNow.getTime()));
-  assert(calendar.events.every((event, index) => index === 0
-    || event.timestamp >= calendar.events[index - 1].timestamp));
-} else {
-  assert.strictEqual(calendar.selectionLabel, "æœ€è¿‘é‡è¦äº‹ä»¶");
-  assert(calendar.events.every((event) => Date.parse(event.ts) < calendarNow.getTime()));
-  assert(calendar.events.every((event, index) => index === 0
-    || event.timestamp <= calendar.events[index - 1].timestamp));
-}
-
-/* å›å½’ï¼šå‘¨æœ«æ²¡æœ‰ç»æµæ•°æ®å‘å¸ƒï¼Œå‘¨èŒƒå›´å¸¸åœ¨å‘¨äº”ç»“æŸï¼›å‘¨å…­è·‘å‡ºçš„æ–‡ä»¶ä¸å¾—è¢«è¯¯åˆ¤ä¸ºè¿‡æœŸã€‚
-   å›ºå®šæ„é€ ä¸€ä»½å‘¨æ—¥~å‘¨äº”çš„å‘¨å†ï¼Œåˆ†åˆ«åœ¨å‘¨å…­ã€ä¸‹å‘¨æ—¥ä¸¤ä¸ªæ—¶ç‚¹æ±‚å€¼ã€‚ */
-const weekendCalendar = JSON.parse(JSON.stringify(econCalendar));
-weekendCalendar.weekOf = "2026-08-16 ~ 2026-08-21";
-weekendCalendar.asOf = "2026-08-22";
-weekendCalendar.updatedAt = "2026-08-22T21:30:00Z";
-const saturdayNow = new Date(Date.parse("2026-08-22T22:30:00Z"));
-assert.notStrictEqual(informationData.adaptEconomicCalendar(weekendCalendar, saturdayNow).status, "stale",
-  "å‘¨å…­ï¼ˆæœ¬å‘¨å†…ã€æ— å‘å¸ƒæ—¥ï¼‰ä¸å¾—å› å‘¨èŒƒå›´æ­¢äºå‘¨äº”è€Œè¢«åˆ¤ä¸ºè¿‡æœŸ");
-const nextSundayCalendar = JSON.parse(JSON.stringify(weekendCalendar));
-nextSundayCalendar.asOf = "2026-08-23";
-nextSundayCalendar.updatedAt = "2026-08-23T10:00:00Z";
-assert.strictEqual(
-  informationData.adaptEconomicCalendar(nextSundayCalendar, new Date(Date.parse("2026-08-23T11:00:00Z"))).status,
-  "stale", "æ–‡ä»¶å·²è¿›å…¥ä¸‹ä¸€å‘¨ä»å¿…é¡»åˆ¤ä¸ºè¿‡æœŸâ€”â€”æ”¾å®½æ•´å‘¨ä¸å¾—æ©ç›–çœŸæ­£çš„è·¨å‘¨é™ˆæ—§");
-const agedCalendar = JSON.parse(JSON.stringify(weekendCalendar));
-assert.strictEqual(
-  informationData.adaptEconomicCalendar(agedCalendar, new Date(Date.parse("2026-08-24T21:30:00Z"))).status,
-  "stale", "è¶…è¿‡36å°æ—¶æœªæ›´æ–°ä»å¿…é¡»åˆ¤ä¸ºè¿‡æœŸ");
-
-const partialCalendar = JSON.parse(JSON.stringify(econCalendar));
-partialCalendar.count += 1;
-assert.strictEqual(informationData.adaptEconomicCalendar(partialCalendar, calendarNow).status, "partial");
-
-const staleCalendar = JSON.parse(JSON.stringify(econCalendar));
-staleCalendar.updatedAt = "2026-07-31T12:00:00Z";
-assert.strictEqual(informationData.adaptEconomicCalendar(staleCalendar, calendarNow).status, "stale");
-
-const invalidCalendar = JSON.parse(JSON.stringify(econCalendar));
-invalidCalendar.source = "Unknown calendar";
-const invalidInformation = informationData.buildInformationCards({
-  calendar: { data: invalidCalendar, error: null }
-}, calendarNow);
-assert.strictEqual(invalidInformation.length, 1);
-assert.strictEqual(invalidInformation[0].status, "error");
-assert.strictEqual(invalidInformation[0].events.length, 0);
-
-const failedInformation = informationData.buildInformationCards({
-  calendar: { data: null, error: new Error("HTTP 503") }
-}, calendarNow);
-assert.strictEqual(failedInformation.length, 1);
-assert.strictEqual(failedInformation[0].status, "error");
-assert.strictEqual(failedInformation[0].events.length, 0);
-
-const newsNow = new Date(Date.parse(financeNews.updatedAt) + 60 * 60 * 1000);
-const news = informationData.adaptFinanceNews(financeNews, newsNow);
-const marketItems = financeNews.categories.find((category) => category.key === "markets").items;
-const expectedNews = marketItems.slice().sort((a, b) => b.published - a.published).slice(0, 5);
-assert.strictEqual(news.id, "finance-news");
-assert.strictEqual(news.status, "ok");
-assert.strictEqual(news.count, marketItems.length);
-assert.strictEqual(news.articles.length, 5);
-assert.strictEqual(news.asOf, financeNews.asOf);
-assert.strictEqual(news.updatedAt, financeNews.updatedAt);
-assert.strictEqual(news.source.name, "Google News RSS Â· åŸåª’ä½“");
-assert.deepStrictEqual(news.articles.map((item) => item.title), expectedNews.map((item) => item.title));
-assert(news.articles.every((item) => informationData.isSafeGoogleNewsUrl(item.link)));
-assert(news.articles.every((item, index) => index === 0 || item.published <= news.articles[index - 1].published));
-assert(news.articles.every((item) => !Object.prototype.hasOwnProperty.call(item, "price")));
-
-const partialNews = JSON.parse(JSON.stringify(financeNews));
-partialNews.categories.find((category) => category.key === "markets").items[0].link = "https://example.com/unsafe";
-assert.strictEqual(informationData.adaptFinanceNews(partialNews, newsNow).status, "partial");
-
-const staleNewsNow = new Date(Date.parse(financeNews.updatedAt) + 13 * 60 * 60 * 1000);
-assert.strictEqual(informationData.adaptFinanceNews(financeNews, staleNewsNow).status, "stale");
-
-const invalidNews = JSON.parse(JSON.stringify(financeNews));
-invalidNews.source = "Yahoo Finance";
-const invalidNewsInformation = informationData.buildInformationCards({
-  news: { data: invalidNews, error: null }
-}, newsNow);
-assert.strictEqual(invalidNewsInformation.length, 1);
-assert.strictEqual(invalidNewsInformation[0].status, "error");
-assert.strictEqual(invalidNewsInformation[0].articles.length, 0);
-
-const failedNewsInformation = informationData.buildInformationCards({
-  news: { data: null, error: new Error("HTTP 503") }
-}, newsNow);
-assert.strictEqual(failedNewsInformation.length, 1);
-assert.strictEqual(failedNewsInformation[0].status, "error");
-assert.strictEqual(failedNewsInformation[0].articles.length, 0);
-
-const combinedInformation = informationData.buildInformationCards({
-  calendar: { data: econCalendar, error: null },
-  news: { data: financeNews, error: null }
-}, newsNow);
-assert.strictEqual(combinedInformation.length, 2);
-assert.strictEqual(combinedInformation[0].id, "economic-calendar");
-assert.strictEqual(combinedInformation[1].id, "finance-news");
-
-console.log("DGS10 + DTWEXBGS + RWTC JavaScript adapter states: PASS");
-console.log("- official / automatic / stale / missing / invalid / request-error: PASS");
-console.log("Macro regime adapter states: PASS");
-console.log("- active / stale / retained fallback / invalid / request-error: PASS");
-console.log("CNN Fear & Greed adapter states: PASS");
-console.log("- active / stale / invalid / independent request-error: PASS");
-console.log("OFR Financial Stress adapter states: PASS");
-console.log("- active / partial / stale / invalid-source / independent request-error: PASS");
-console.log("Cross-asset performance adapter states: PASS");
-console.log("- period ranking / excluded stale rows / partial / stale / invalid-source / request-error: PASS");
-console.log("Global asset ranking adapter states: PASS");
-console.log("- total / top-five order / static-vs-market / partial / stale / invalid-source / request-error: PASS");
-console.log("Global company leaders adapter states: PASS");
-console.log("- listed top-three / movers / private exclusion / total / partial / stale / invalid-source / request-error: PASS");
-console.log("Aggregate source health adapter states: PASS");
-console.log("- migrated history / coverage / failed-attempt retention / snapshot mismatch / independent health request: PASS");
-console.log("Economic calendar adapter states: PASS");
-console.log("- event counts / impact filter / local-time input / partial / stale / invalid-source / request-error: PASS");
-console.log("Finance news adapter states: PASS");
-console.log("- BTC market/fallback + market-only / latest-five / safe links / failure isolation: PASS");
-})().catch((error) => { console.error(error); process.exit(1); });
-"""
-    result = subprocess.run(
-        ["node", "-e", script],
-        cwd=ROOT,
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    require(result.returncode == 0, f"DGS10ã€DTWEXBGSã€RWTCä¸BTC/USD JavaScripté€‚é…æµ‹è¯•å¤±è´¥ï¼š\n{result.stdout}{result.stderr}")
-    print(result.stdout.strip())
-
-
-def run_provider_widget_runtime_tests() -> None:
-    script = r"""
-const assert = require("assert");
-const adapter = require("./apps/finance-terminal/app.js");
-
-(async () => {
-  const missing = await adapter.waitForProviderWidgetRegistration(null, "tv-mini-chart", 5);
-  assert.deepStrictEqual(missing, {
-    status: "unavailable", reason: "custom-elements-unavailable"
-  });
-
-  const alreadyRegistered = await adapter.waitForProviderWidgetRegistration({
-    get: (tag) => tag === "tv-mini-chart" ? function Widget() {} : undefined,
-    whenDefined: () => Promise.resolve()
-  }, "tv-mini-chart", 5);
-  assert.deepStrictEqual(alreadyRegistered, {
-    status: "registered", reason: "custom-element-registered"
-  });
-
-  let resolveRegistration;
-  const registration = new Promise((resolve) => { resolveRegistration = resolve; });
-  setTimeout(resolveRegistration, 0);
-  const delayed = await adapter.waitForProviderWidgetRegistration({
-    get: () => undefined,
-    whenDefined: () => registration
-  }, "tv-mini-chart", 50);
-  assert.deepStrictEqual(delayed, {
-    status: "registered", reason: "custom-element-registered"
-  });
-
-  const timedOut = await adapter.waitForProviderWidgetRegistration({
-    get: () => undefined,
-    whenDefined: () => new Promise(() => {})
-  }, "tv-mini-chart", 5);
-  assert.deepStrictEqual(timedOut, {
-    status: "unavailable", reason: "registration-timeout"
-  });
-
-  const mountedHost = {
-    localName: "tv-mini-chart",
-    isConnected: true,
-    matches: (selector) => selector === ":defined",
-    getBoundingClientRect: () => ({ width: 320, height: 176 })
-  };
-  assert.deepStrictEqual(adapter.inspectProviderWidgetHost(
-    mountedHost, "tv-mini-chart", "connected-defined-element-with-layout"
-  ), {
-    status: "mounted", reason: "connected-defined-element-with-layout"
-  });
-  assert.deepStrictEqual(adapter.inspectProviderWidgetHost({
-    ...mountedHost, isConnected: false
-  }, "tv-mini-chart", "connected-defined-element-with-layout"), {
-    status: "unavailable", reason: "component-host-disconnected"
-  });
-  assert.deepStrictEqual(adapter.inspectProviderWidgetHost({
-    ...mountedHost, matches: () => false
-  }, "tv-mini-chart", "connected-defined-element-with-layout"), {
-    status: "unavailable", reason: "component-host-not-defined"
-  });
-  assert.deepStrictEqual(adapter.inspectProviderWidgetHost({
-    ...mountedHost, getBoundingClientRect: () => ({ width: 0, height: 176 })
-  }, "tv-mini-chart", "connected-defined-element-with-layout"), {
-    status: "unavailable", reason: "component-host-empty-layout"
-  });
-
-  console.log("TradingView proxy runtime registration and host states: PASS");
-  console.log("- missing / pre-registered / delayed / timeout fallback: PASS");
-  console.log("- connected / defined / non-empty host layout boundary: PASS");
-})().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
-"""
-    result = subprocess.run(
-        ["node", "-e", script],
-        cwd=ROOT,
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    require(result.returncode == 0,
-            f"TradingViewä»£ç†è¿è¡Œæ—¶çŠ¶æ€æµ‹è¯•å¤±è´¥ï¼š\n{result.stdout}{result.stderr}")
-    print(result.stdout.strip())
-
-
-def main() -> None:
-    for path in (
-        PAGE, APP, LOADER, TERMINAL_VISUALS, VISION_CSS, DATA, READINESS_DATA, MARKET_LICENSE_READINESS,
-        MACRO_DATA, FEAR_GREED_DATA, FEAR_GREED_HEALTH, OFR_DATA, OFR_HEALTH,
-        ASSET_TRACKER_DATA, ASSET_TRACKER_HEALTH, ASSET_RANKING_DATA, ASSET_RANKING_HEALTH,
-        COMPANIES_DATA, COMPANIES_HEALTH,
-        ECON_CALENDAR_DATA, ECON_CALENDAR_HEALTH, FINANCE_NEWS_DATA, FINANCE_NEWS_HEALTH,
-        MACRO_BUILD, MACRO_WORKFLOW, FEAR_GREED_WORKFLOW, OFR_WORKFLOW, ASSET_TRACKER_WORKFLOW,
-        ASSET_RANKING_WORKFLOW, COMPANIES_WORKFLOW, ECON_CALENDAR_WORKFLOW, FINANCE_NEWS_WORKFLOW,
-        COMPANIES_HISTORY, ASSET_RANKING_CRYPTO, MARKET_HISTORY_MODULE,
-        SCHEDULER_WORKFLOW, SOURCE_HEALTH_VALIDATOR, SOURCE_HEALTH_DOC,
-        SUPPORTING_HEALTH_VALIDATOR, SUPPORTING_HEALTH_DOC,
-        BROWSER_VALIDATOR, BROWSER_EVIDENCE, BROWSER_EVIDENCE_VALIDATOR, VISUALS_VALIDATOR,
-        PROXY_RUNTIME_HISTORY, PROXY_RUNTIME_HISTORY_VALIDATOR, HOME,
-    ):
-        require(path.is_file(), f"ç¼ºå°‘æ–‡ä»¶ï¼š{path.relative_to(ROOT)}")
-
-    data = json.loads(DATA.read_text(encoding="utf-8"))
-    readiness = json.loads(READINESS_DATA.read_text(encoding="utf-8"))
-    validate_readiness_snapshot(readiness)
-    market_license_readiness = json.loads(MARKET_LICENSE_READINESS.read_text(encoding="utf-8"))
-    market_source_errors = validate_market_source_readiness(market_license_readiness)
-    require(not market_source_errors,
-            "å…è´¹ä»£ç†è¡Œæƒ…å¥‘çº¦æ— æ•ˆï¼š" + "ï¼›".join(market_source_errors))
-    macro = json.loads(MACRO_DATA.read_text(encoding="utf-8"))
-    fear_greed = json.loads(FEAR_GREED_DATA.read_text(encoding="utf-8"))
-    fear_greed_health = json.loads(FEAR_GREED_HEALTH.read_text(encoding="utf-8"))
-    ofr = json.loads(OFR_DATA.read_text(encoding="utf-8"))
-    ofr_health = json.loads(OFR_HEALTH.read_text(encoding="utf-8"))
-    asset_tracker = json.loads(ASSET_TRACKER_DATA.read_text(encoding="utf-8"))
-    asset_tracker_health = json.loads(ASSET_TRACKER_HEALTH.read_text(encoding="utf-8"))
-    asset_ranking = json.loads(ASSET_RANKING_DATA.read_text(encoding="utf-8"))
-    asset_ranking_health = json.loads(ASSET_RANKING_HEALTH.read_text(encoding="utf-8"))
-    companies = json.loads(COMPANIES_DATA.read_text(encoding="utf-8"))
-    companies_health = json.loads(COMPANIES_HEALTH.read_text(encoding="utf-8"))
-    econ_calendar = json.loads(ECON_CALENDAR_DATA.read_text(encoding="utf-8"))
-    econ_calendar_health = json.loads(ECON_CALENDAR_HEALTH.read_text(encoding="utf-8"))
-    finance_news = json.loads(FINANCE_NEWS_DATA.read_text(encoding="utf-8"))
-    finance_news_health = json.loads(FINANCE_NEWS_HEALTH.read_text(encoding="utf-8"))
-    for dataset_name, dataset, health, rows_key in (
-        ("asset-tracker", asset_tracker, asset_tracker_health, "assets"),
-        ("asset-ranking", asset_ranking, asset_ranking_health, "assets"),
-        ("companies", companies, companies_health, "companies"),
-    ):
-        health_errors = validate_source_health(
-            health,
-            dataset=dataset_name,
-            published_rows=dataset.get(rows_key, []),
-            published_snapshot_at=dataset.get("updatedAt"),
-        )
-        require(not health_errors, dataset_name + "æ¥æºå¥åº·æ— æ•ˆï¼š" + "ï¼›".join(health_errors))
-    for dataset_name, dataset, health in (
-        ("fear-greed", fear_greed, fear_greed_health),
-        ("ofr-monitor", ofr, ofr_health),
-        ("econ-calendar", econ_calendar, econ_calendar_health),
-        ("whats-latest", finance_news, finance_news_health),
-    ):
-        validate_supporting_health(dataset_name, dataset, health)
-    require(data.get("schemaVersion") == 3, "data.json schemaVersionå¿…é¡»ä¸º3")
-    require(data.get("demo") is False, "å…è´¹ä»£ç†ç­–ç•¥ä¸‹data.jsonå¿…é¡»åŒ…å«demo: false")
-    require(data.get("status") == "ok", "æ— æ¼”ç¤ºå€¼çš„æ··åˆå±•ç¤ºé…ç½®çŠ¶æ€å¿…é¡»ä¸ºok")
-    require(
-        "DGS10" in data.get("source", "") and "DTWEXBGS" in data.get("source", "")
-        and "RWTC" in data.get("source", "") and "CoinGecko" in data.get("source", "")
-        and "Yahoo Finance" in data.get("source", "") and "TradingView" in data.get("source", "")
-        and "DIA" in data.get("source", "") and "GLD" in data.get("source", ""),
-        "æ€»æ¥æºå¿…é¡»åŒæ—¶æ ‡æ³¨å››é¡¹ç«™å†…è¡Œæƒ…ä¸TradingViewå…è´¹ä»£ç†",
-    )
-    parse_iso(data["updatedAt"])
-
-    assets = data.get("assets")
-    require(isinstance(assets, list) and len(assets) == 6, "å¿…é¡»ä¸”åªèƒ½åŒ…å«6é¡¹æ ¸å¿ƒèµ„äº§")
-    require({asset.get("symbol") for asset in assets} == EXPECTED_SYMBOLS, "èµ„äº§ä»£ç ä¸éœ€æ±‚ä¸ä¸€è‡´")
-    require(len({asset.get("id") for asset in assets}) == len(assets), "èµ„äº§IDå¿…é¡»å”¯ä¸€")
-
-    demo_assets = [asset for asset in assets if asset.get("demo") is True]
-    require(not demo_assets, "å…è´¹ä»£ç†æ¥å…¥åä¸å¾—ä¿ç•™æ¼”ç¤ºèµ„äº§")
-    proxy_configs = [asset for asset in assets if asset.get("id") in EXPECTED_PROXIES]
-    real_configs = [asset for asset in assets if asset.get("id") in {"us10y", "dxy", "wti", "bitcoin"}]
-    require(len(proxy_configs) == len(EXPECTED_PROXIES),
-            "å…è´¹ETFä»£ç†é¡¹æ•°å¿…é¡»ä¸å·²ç™»è®°çš„ä»£ç†å¥‘çº¦ä¸€è‡´")
-    require(len(real_configs) == 4, "ç«™å†…çœŸå®æ•°æ®é…ç½®å¿…é¡»æ˜¯us10yã€dxyã€wtiä¸bitcoin")
-
-    for asset in assets:
-        missing = COMMON_ASSET_FIELDS - asset.keys()
-        require(not missing, f"{asset.get('symbol', 'unknown')} ç¼ºå°‘å­—æ®µï¼š{sorted(missing)}")
-        require(isinstance(asset["source"], dict) and asset["source"].get("name"), f"{asset['symbol']} ç¼ºå°‘ç»“æ„åŒ–æ•°æ®æ¥æº")
-    for asset in proxy_configs:
-        expected_symbol, expected_original, expected_widget = EXPECTED_PROXIES[asset["id"]]
-        external = asset.get("externalDisplay") or {}
-        proxy_for = asset.get("proxyFor") or {}
-        require(asset["symbol"] == expected_symbol and asset.get("instrument") == "etf-proxy",
-                f"{asset['id']}å…è´¹ETFä»£ç†ä»£ç æˆ–ç±»å‹æ— æ•ˆ")
-        require(asset["status"] == "provider" and asset["frequency"] == "provider-managed",
-                f"{asset['id']}å¿…é¡»ç”±TradingViewç®¡ç†è¡Œæƒ…çŠ¶æ€å’Œé¢‘ç‡")
-        require(asset.get("price") is None and asset.get("changePct") is None
-                and asset.get("asOf") is None and asset.get("updatedAt") is None,
-                f"{asset['id']}ä¸å¾—ä¿å­˜å…è´¹ç»„ä»¶ä¸­çš„è¡Œæƒ…å€¼æˆ–æ—¶é—´æˆ³")
-        require(external == {
-            "provider": "TradingView", "widget": "tv-mini-chart",
-            "widgetSymbol": expected_widget, "rawDataStored": False,
-        }, f"{asset['id']}TradingViewç»„ä»¶é…ç½®æ— æ•ˆ")
-        require(proxy_for.get("symbol") == expected_original
-                and proxy_for.get("isSameInstrument") is False,
-                f"{asset['id']}å¿…é¡»æ˜ç¡®ä»£ç†ä¸æ˜¯åŸæ ‡çš„")
-        require("TradingView" in asset["source"]["name"]
-                and asset["source"]["url"].startswith("https://www.tradingview.com/symbols/"),
-                f"{asset['id']}ç¼ºå°‘TradingViewå®˜æ–¹æ¥æº")
-        require(isinstance(asset["spark"], list) and not asset["spark"],
-                f"{asset['id']}ä¸å¾—ä½¿ç”¨æœ¬åœ°æ¼”ç¤ºèµ°åŠ¿")
-
-    real_by_id = {asset["id"]: asset for asset in real_configs}
-    dgs10_config = real_by_id["us10y"]
-    require(dgs10_config["symbol"] == "DGS10", "ç¾å€ºå¡ç‰‡ä»£ç å¿…é¡»ä¸ºDGS10")
-    require(dgs10_config["status"] == "loading", "DGS10é™æ€é…ç½®å¿…é¡»ä»¥loadingçŠ¶æ€ç­‰å¾…é€‚é…")
-    require(dgs10_config["price"] is None and dgs10_config.get("change") is None, "ä¸å¾—æŠŠæ¨¡æ‹ŸDGS10æ•°å€¼ç•™åœ¨é™æ€é…ç½®ä¸­")
-    require(dgs10_config.get("changeUnit") == "bp", "DGS10å˜åŒ–å•ä½å¿…é¡»ä¸ºbp")
-    require(dgs10_config["source"].get("seriesId") == "DGS10", "DGS10æ¥æºåºåˆ—IDä¸ä¸€è‡´")
-    require(dgs10_config.get("dataRef") == "../macro-radar/data.json#DGS10", "DGS10å¿…é¡»å¤ç”¨å®è§‚é›·è¾¾æ•°æ®")
-
-    dollar_config = real_by_id["dxy"]
-    require(dollar_config["name"] == "ç¾è”å‚¨å¹¿ä¹‰ç¾å…ƒæŒ‡æ•°", "DTWEXBGSé¡µé¢åç§°ä¸å‡†ç¡®")
-    require(dollar_config["symbol"] == "DTWEXBGS", "å¹¿ä¹‰ç¾å…ƒå¡ç‰‡ä¸å¾—ç»§ç»­æ˜¾ç¤ºä¸ºDXY")
-    require(dollar_config["status"] == "loading", "DTWEXBGSé…ç½®å¿…é¡»ä»¥loadingçŠ¶æ€ç­‰å¾…é€‚é…")
-    require("snapshot" not in dollar_config, "DTWEXBGSè‡ªåŠ¨æ›´æ–°åä¸å¾—ç»§ç»­æ ‡è®°ä¸ºé™æ€å¿«ç…§")
-    require(dollar_config.get("changePct") is None, "DTWEXBGSæ¶¨è·Œå¹…å¿…é¡»ç”±å½“å‰å€¼å’Œå‰å€¼è®¡ç®—")
-    require(dollar_config.get("price") is None and dollar_config.get("previousPrice") is None, "DTWEXBGSä»·æ ¼ä¸å¾—ç»§ç»­å­˜æ”¾åœ¨ç»ˆç«¯é…ç½®ä¸­")
-    require(dollar_config.get("asOf") is None and dollar_config.get("updatedAt") is None, "DTWEXBGSæ—¶é—´ä¸å¾—ç»§ç»­å­˜æ”¾åœ¨ç»ˆç«¯é…ç½®ä¸­")
-    require(dollar_config["source"].get("seriesId") == "DTWEXBGS", "DTWEXBGSæ¥æºåºåˆ—IDä¸ä¸€è‡´")
-    require(dollar_config["source"].get("url") == "https://fred.stlouisfed.org/series/DTWEXBGS", "DTWEXBGSæ¥æºé“¾æ¥ä¸å‡†ç¡®")
-    require(
-        dollar_config.get("dataRef") == "../macro-radar/data.json#referenceSeries.DTWEXBGS",
-        "DTWEXBGSå¿…é¡»æŒ‡å‘å®è§‚é›·è¾¾è‡ªåŠ¨æ›´æ–°è®°å½•",
-    )
-
-    wti_config = real_by_id["wti"]
-    require(wti_config["name"] == "åº“æ¬£WTIåŸæ²¹ç°è´§", "WTIé¡µé¢åç§°å¿…é¡»æ˜ç¡®ä¸ºåº“æ¬£ç°è´§")
-    require(wti_config["symbol"] == "WTI", "WTIç°è´§å¡ç‰‡ä»£ç ä¸å‡†ç¡®")
-    require(wti_config["status"] == "loading", "RWTCé…ç½®å¿…é¡»ä»¥loadingçŠ¶æ€ç­‰å¾…é€‚é…")
-    require(wti_config.get("changePct") is None, "RWTCæ¶¨è·Œå¹…å¿…é¡»ç”±å½“å‰å€¼å’Œå‰å€¼è®¡ç®—")
-    require(wti_config.get("price") is None and wti_config.get("previousPrice") is None, "RWTCä»·æ ¼ä¸å¾—ç•™åœ¨ç»ˆç«¯é…ç½®ä¸­")
-    require(wti_config.get("asOf") is None and wti_config.get("updatedAt") is None, "RWTCæ—¶é—´ä¸å¾—ç•™åœ¨ç»ˆç«¯é…ç½®ä¸­")
-    require(wti_config["source"].get("seriesId") == "RWTC", "WTIæ¥æºå¿…é¡»æ˜¯EIA RWTC")
-    require(wti_config["source"].get("url") == "https://www.eia.gov/dnav/pet/hist/rwtcd.htm", "RWTCæ¥æºé“¾æ¥ä¸å‡†ç¡®")
-    require(
-        wti_config.get("dataRef") == "../macro-radar/data.json#referenceSeries.RWTC",
-        "RWTCå¿…é¡»æŒ‡å‘å®è§‚é›·è¾¾è‡ªåŠ¨æ›´æ–°è®°å½•",
-    )
-
-    bitcoin_config = real_by_id["bitcoin"]
-    require(bitcoin_config["symbol"] == "BTC/USD", "æ¯”ç‰¹å¸å¡ç‰‡ä»£ç å¿…é¡»ä¸ºBTC/USD")
-    require(bitcoin_config["status"] == "loading", "BTC/USDé…ç½®å¿…é¡»ä»¥loadingçŠ¶æ€ç­‰å¾…é€‚é…")
-    require(bitcoin_config.get("price") is None and bitcoin_config.get("changePct") is None,
-            "BTC/USDä»·æ ¼ä¸æ¶¨è·Œä¸å¾—ç•™åœ¨ç»ˆç«¯é…ç½®ä¸­")
-    require(bitcoin_config.get("asOf") is None and bitcoin_config.get("updatedAt") is None,
-            "BTC/USDæ—¶é—´ä¸å¾—ç•™åœ¨ç»ˆç«¯é…ç½®ä¸­")
-    require(bitcoin_config["source"].get("assetId") == "bitcoin"
-            and "CoinGecko" in bitcoin_config["source"].get("name", ""),
-            "BTC/USDæ¥æºå¿…é¡»æŒ‡å‘CoinGeckoèµ„äº§è®°å½•")
-    require(bitcoin_config["source"].get("url") == "https://www.coingecko.com/",
-            "BTC/USDä¸»è¦æ¥æºé“¾æ¥ä¸å‡†ç¡®")
-    require(bitcoin_config.get("dataRef") == "../asset-ranking/data.json#assets[Bitcoin]",
-            "BTC/USDå¿…é¡»å¤ç”¨å…¨çƒèµ„äº§æ¦œé€æ¡è¡Œæƒ…")
-
-    category, row = find_dgs10(macro)
-    require(category.get("src") == "FRED", "å®è§‚é›·è¾¾DGS10æ¥æºå¿…é¡»ä¸ºFRED")
-    validate_official_observations(row, "DGS10")
-    require(re.fullmatch(r"-?\d+(?:\.\d+)?%", row.get("val", "")) is not None, "DGS10æ”¶ç›Šç‡æ ¼å¼æ— æ•ˆ")
-    require(re.fullmatch(r"[+-]?\d+(?:\.\d+)?bp", row.get("chg", ""), flags=re.I) is not None, "DGS10å˜åŒ–å¿…é¡»ä½¿ç”¨bp")
-    parse_date(row["asOf"])
-    parse_iso(macro["updatedAt"])
-
-    dollar_reference = (macro.get("referenceSeries") or {}).get("DTWEXBGS")
-    require(isinstance(dollar_reference, dict), "å®è§‚é›·è¾¾ç¼ºå°‘DTWEXBGSå‚è€ƒåºåˆ—")
-    require(dollar_reference.get("id") == "DTWEXBGS", "DTWEXBGSå‚è€ƒåºåˆ—IDæ— æ•ˆ")
-    require(dollar_reference.get("demo") is False, "DTWEXBGSå‚è€ƒåºåˆ—ä¸å¾—æ ‡è®°ä¸ºæ¼”ç¤ºæ•°æ®")
-    require(dollar_reference.get("status") in {"ok", "stale"}, "DTWEXBGSå‚è€ƒåºåˆ—çŠ¶æ€æ— æ•ˆ")
-    require(isinstance(dollar_reference.get("price"), (int, float)), "DTWEXBGSè‡ªåŠ¨æ›´æ–°å½“å‰å€¼æ— æ•ˆ")
-    require(isinstance(dollar_reference.get("previousPrice"), (int, float)), "DTWEXBGSè‡ªåŠ¨æ›´æ–°å‰å€¼æ— æ•ˆ")
-    dollar_as_of = date.fromisoformat(dollar_reference["asOf"])
-    dollar_previous_as_of = date.fromisoformat(dollar_reference["previousAsOf"])
-    require(dollar_previous_as_of < dollar_as_of, "DTWEXBGSè‡ªåŠ¨æ›´æ–°å‰å€¼æ—¥æœŸå¿…é¡»æ—©äºå½“å‰è§‚æµ‹æ—¥æœŸ")
-    parse_iso(dollar_reference["updatedAt"])
-    parse_iso(dollar_reference["lastAttemptAt"])
-    require(dollar_reference["source"].get("seriesId") == "DTWEXBGS", "DTWEXBGSè‡ªåŠ¨æ›´æ–°æ¥æºä¸å‡†ç¡®")
-    validate_official_observations(dollar_reference, "DTWEXBGS")
-    expected_change = (dollar_reference["price"] / dollar_reference["previousPrice"] - 1) * 100
-    require(abs(dollar_reference["changePct"] - expected_change) < 1e-12, "DTWEXBGSè‡ªåŠ¨æ›´æ–°æ¶¨è·Œå¹…ä¸å¯å¤ç°")
-
-    wti_reference = (macro.get("referenceSeries") or {}).get("RWTC")
-    require(isinstance(wti_reference, dict), "å®è§‚é›·è¾¾ç¼ºå°‘RWTCå‚è€ƒåºåˆ—")
-    require(wti_reference.get("id") == "RWTC", "RWTCå‚è€ƒåºåˆ—IDæ— æ•ˆ")
-    require(wti_reference.get("demo") is False, "RWTCå‚è€ƒåºåˆ—ä¸å¾—æ ‡è®°ä¸ºæ¼”ç¤ºæ•°æ®")
-    require(wti_reference.get("status") in {"ok", "stale"}, "RWTCå‚è€ƒåºåˆ—çŠ¶æ€æ— æ•ˆ")
-    require(isinstance(wti_reference.get("price"), (int, float)), "RWTCè‡ªåŠ¨æ›´æ–°å½“å‰å€¼æ— æ•ˆ")
-    require(isinstance(wti_reference.get("previousPrice"), (int, float)), "RWTCè‡ªåŠ¨æ›´æ–°å‰å€¼æ— æ•ˆ")
-    wti_as_of = date.fromisoformat(wti_reference["asOf"])
-    wti_previous_as_of = date.fromisoformat(wti_reference["previousAsOf"])
-    require(wti_previous_as_of < wti_as_of, "RWTCè‡ªåŠ¨æ›´æ–°å‰å€¼æ—¥æœŸå¿…é¡»æ—©äºå½“å‰è§‚æµ‹æ—¥æœŸ")
-    parse_iso(wti_reference["updatedAt"])
-    parse_iso(wti_reference["lastAttemptAt"])
-    require(wti_reference["source"].get("seriesId") == "RWTC", "RWTCè‡ªåŠ¨æ›´æ–°æ¥æºä¸å‡†ç¡®")
-    validate_official_observations(wti_reference, "RWTC")
-    expected_wti_change = (wti_reference["price"] / wti_reference["previousPrice"] - 1) * 100
-    require(abs(wti_reference["changePct"] - expected_wti_change) < 1e-12, "RWTCè‡ªåŠ¨æ›´æ–°æ¶¨è·Œå¹…ä¸å¯å¤ç°")
-
-    require(fear_greed.get("source") == "CNN Business Fear & Greed Index", "ææ…Œä¸è´ªå©ªæ¥æºä¸å‡†ç¡®")
-    require(isinstance(fear_greed.get("score"), (int, float)) and 0 <= fear_greed["score"] <= 100, "ææ…Œä¸è´ªå©ªè¯»æ•°å¿…é¡»åœ¨0è‡³100ä¹‹é—´")
-    require(isinstance(fear_greed.get("rating"), str) and fear_greed["rating"], "ææ…Œä¸è´ªå©ªè‹±æ–‡è¯„çº§ç¼ºå¤±")
-    require(isinstance(fear_greed.get("ratingZh"), str) and fear_greed["ratingZh"], "ææ…Œä¸è´ªå©ªä¸­æ–‡è¯„çº§ç¼ºå¤±")
-    require((fear_greed.get("refs") or {}).get("now", {}).get("score") == fear_greed["score"], "ææ…Œä¸è´ªå©ªå½“å‰å‚è€ƒå€¼ä¸ä¸€è‡´")
-    close_score = (fear_greed.get("refs") or {}).get("close", {}).get("score")
-    require(isinstance(close_score, (int, float)) and 0 <= close_score <= 100, "ææ…Œä¸è´ªå©ªä¸Šä¸€æ”¶ç›˜å‚è€ƒå€¼æ— æ•ˆ")
-    parse_date(fear_greed["asOf"])
-    parse_iso(fear_greed["updatedAt"])
-
-    require(ofr.get("source") == "U.S. Office of Financial Research (OFR)", "OFRæ•°æ®æ¥æºä¸å‡†ç¡®")
-    require(isinstance(ofr.get("fsi"), dict), "OFRæ•°æ®ç¼ºå°‘é‡‘èå‹åŠ›æŒ‡æ•°")
-    require(isinstance(ofr["fsi"].get("value"), (int, float)), "OFRé‡‘èå‹åŠ›è¯»æ•°æ— æ•ˆ")
-    require(isinstance(ofr["fsi"].get("change"), (int, float)), "OFRé‡‘èå‹åŠ›æ—¥å˜åŒ–æ— æ•ˆ")
-    require(
-        ofr["fsi"].get("url") == "https://www.financialresearch.gov/financial-stress-index/",
-        "OFRé‡‘èå‹åŠ›æ¥æºé“¾æ¥ä¸å‡†ç¡®",
-    )
-    parse_date(ofr["fsi"]["asOf"])
-    parse_iso(ofr["updatedAt"])
-
-    require(asset_tracker.get("source") == "Yahoo Finance", "è·¨èµ„äº§æ•°æ®æ¥æºå¿…é¡»æ˜ç¡®ä¸ºYahoo Finance")
-    require(asset_tracker.get("defaultPeriod") == "ytd", "è·¨èµ„äº§é»˜è®¤å‘¨æœŸå¿…é¡»ä¸ºå¹´åˆè‡³ä»Š")
-    require(
-        {period.get("key") for period in asset_tracker.get("periods", [])} == {"d1", "w1", "m1", "ytd", "y1"},
-        "è·¨èµ„äº§æ•°æ®å¿…é¡»åŒ…å«5ä¸ªçº¦å®šå‘¨æœŸ",
-    )
-    tracker_assets = asset_tracker.get("assets")
-    require(isinstance(tracker_assets, list) and len(tracker_assets) >= 8, "è·¨èµ„äº§æ•°æ®æ ·æœ¬ä¸è¶³")
-    require(
-        all(isinstance(asset.get("name"), str) and isinstance(asset.get("symbol"), str) for asset in tracker_assets),
-        "è·¨èµ„äº§æ•°æ®ç¼ºå°‘åç§°æˆ–ä»£ç ",
-    )
-    require(
-        sum(isinstance((asset.get("returns") or {}).get("ytd"), (int, float)) for asset in tracker_assets) >= 8,
-        "è·¨èµ„äº§å¹´åˆè‡³ä»Šå›æŠ¥æœ‰æ•ˆæ ·æœ¬ä¸è¶³",
-    )
-    require(asset_tracker.get("frequency") == "daily", "è·¨èµ„äº§æ–‡ä»¶çº§frequencyå¿…é¡»ä¸ºdaily")
-    tracker_quality_errors = validate_data_quality(tracker_assets, asset_tracker.get("dataQuality"))
-    require(not tracker_quality_errors, "è·¨èµ„äº§é€æ¡æ•°æ®å¥‘çº¦æ— æ•ˆï¼š" + "ï¼›".join(tracker_quality_errors))
-    tracker_counts = asset_tracker["dataQuality"]["counts"]
-    require(asset_tracker.get("status") == asset_tracker["dataQuality"]["status"],
-            "è·¨èµ„äº§æ–‡ä»¶çº§statuså¿…é¡»ä¸é€æ¡è´¨é‡æ±‡æ€»ä¸€è‡´")
-    require(sum(tracker_counts.values()) == len(tracker_assets)
-            and tracker_counts["estimate"] == 0 and tracker_counts["unavailable"] == 0,
-            "è·¨èµ„äº§é€æ¡çŠ¶æ€è®¡æ•°å¿…é¡»å®Œæ•´ä¸”ä¸å¾—æ··å…¥ä¼°å€¼æˆ–ä¸å¯ç”¨è®°å½•")
-    tracker_fallbacks = [asset for asset in tracker_assets if asset["dataMeta"]["mode"] == "fallback"]
-    tracker_stale_rows = [asset for asset in tracker_assets if asset.get("stale") is True]
-    require(len(tracker_fallbacks) == len(tracker_stale_rows) == tracker_counts["fallback"],
-            "è·¨èµ„äº§å›é€€æ¨¡å¼å¿…é¡»ä¸é€æ¡staleå­—æ®µä¸€è‡´")
-    require(all(asset["dataMeta"]["asOf"] is not None
-                or "æ—§" in asset["dataMeta"].get("note", "")
-                for asset in tracker_fallbacks),
-            "ç¼ºå°‘ç²¾ç¡®æ•°æ®æ—¥çš„è·¨èµ„äº§å›é€€å¿…é¡»æŠ«éœ²æ—§å¿«ç…§é™åˆ¶")
-    require(all(asset["dataMeta"]["source"] == "Yahoo Finance" for asset in tracker_assets),
-            "è·¨èµ„äº§é€æ¡æ¥æºå¿…é¡»æ˜ç¡®ä¸ºYahoo Finance")
-    require("ETF" in asset_tracker.get("note", "") and "æœŸè´§ä»£ç†" in asset_tracker.get("note", ""), "è·¨èµ„äº§æ•°æ®æœªæŠ«éœ²ä»£ç†æ ‡çš„å£å¾„")
-    parse_date(asset_tracker["asOf"])
-    parse_iso(asset_tracker["updatedAt"])
-
-    ranking_source = asset_ranking.get("source", "")
-    require(
-        all(name in ranking_source for name in ("Yahoo Finance", "CoinGecko", "å…¬å¼€ä¼°ç®—")),
-        "å…¨çƒèµ„äº§å¸‚å€¼æ¥æºå¿…é¡»æŠ«éœ²è¡Œæƒ…ã€åŠ å¯†è´§å¸å’Œå…¬å¼€ä¼°ç®—",
-    )
-    ranking_assets = asset_ranking.get("assets")
-    require(
-        isinstance(ranking_assets, list) and len(ranking_assets) == asset_ranking.get("count") == 250,
-        "å…¨çƒèµ„äº§å¸‚å€¼æ¦œå¿…é¡»åŒ…å«250é¡¹",
-    )
-    require(
-        all(isinstance(asset.get("marketCap"), (int, float)) and asset["marketCap"] > 0 for asset in ranking_assets),
-        "å…¨çƒèµ„äº§å¸‚å€¼åˆ†é¡¹å¿…é¡»ä¸ºæ­£æ•°",
-    )
-    require(
-        all(asset.get("rank") == index for index, asset in enumerate(ranking_assets, 1)),
-        "å…¨çƒèµ„äº§å¸‚å€¼æ’åå¿…é¡»è¿ç»­",
-    )
-    require(
-        all(ranking_assets[index - 1]["marketCap"] >= ranking_assets[index]["marketCap"] for index in range(1, len(ranking_assets))),
-        "å…¨çƒèµ„äº§å¸‚å€¼å¿…é¡»æŒ‰å¸‚å€¼é™åºæ’åˆ—",
-    )
-    ranking_total = sum(asset["marketCap"] for asset in ranking_assets)
-    require(abs(ranking_total - asset_ranking.get("totalMarketCap", 0)) <= 1, "å…¨çƒèµ„äº§æ€»å¸‚å€¼ä¸å¯ç”±åˆ†é¡¹å¤ç°")
-    require(any(asset.get("static") is True for asset in ranking_assets[:5]), "æ¦œé¦–æ ·æœ¬å¿…é¡»è¦†ç›–æ…¢å˜é‡ä¼°ç®—æ ‡ç­¾")
-    require(any(asset.get("static") is False for asset in ranking_assets[:5]), "æ¦œé¦–æ ·æœ¬å¿…é¡»è¦†ç›–éšè¡Œæƒ…æ›´æ–°æ ‡ç­¾")
-    require(asset_ranking.get("frequency") == "daily", "å…¨çƒèµ„äº§æ¦œæ–‡ä»¶çº§frequencyå¿…é¡»ä¸ºdaily")
-    ranking_quality_errors = validate_data_quality(ranking_assets, asset_ranking.get("dataQuality"))
-    require(not ranking_quality_errors, "å…¨çƒèµ„äº§æ¦œé€æ¡æ•°æ®å¥‘çº¦æ— æ•ˆï¼š" + "ï¼›".join(ranking_quality_errors))
-    ranking_counts = asset_ranking["dataQuality"]["counts"]
-    require(asset_ranking.get("status") == asset_ranking["dataQuality"]["status"],
-            "å…¨çƒèµ„äº§æ¦œæ–‡ä»¶çº§statuså¿…é¡»ä¸é€æ¡è´¨é‡æ±‡æ€»ä¸€è‡´")
-    require(sum(ranking_counts.values()) == len(ranking_assets) and ranking_counts["unavailable"] == 0,
-            "å…¨çƒèµ„äº§æ¦œé€æ¡çŠ¶æ€è®¡æ•°å¿…é¡»å®Œæ•´ä¸”å½“å‰å¿«ç…§ä¸å¾—å«ä¸å¯ç”¨è®°å½•")
-    static_ranking_rows = [asset for asset in ranking_assets if asset.get("static") is True]
-    private_ranking_rows = [asset for asset in ranking_assets if asset.get("private") is True]
-    require(len(static_ranking_rows) == 6
-            and all(asset["dataMeta"]["mode"] == "estimate" for asset in static_ranking_rows),
-            "å…¨çƒèµ„äº§æ¦œæ…¢å˜é‡å¿…é¡»æ˜ç¡®æ ‡è®°ä¸ºé™æ€ä¼°å€¼")
-    require(private_ranking_rows
-            and all(asset["dataMeta"]["mode"] == "estimate" for asset in private_ranking_rows),
-            "å…¨çƒèµ„äº§æ¦œä¸­çš„æœªä¸Šå¸‚å…¬å¸å¿…é¡»é€ä¼ é™æ€ä¼°å€¼çŠ¶æ€")
-    require(ranking_counts["estimate"] >= len(static_ranking_rows) + len(private_ranking_rows),
-            "å…¨çƒèµ„äº§æ¦œä¼°å€¼è®¡æ•°ä¸å¾—å°‘äºæ…¢å˜é‡ä¸æœªä¸Šå¸‚å…¬å¸ä¹‹å’Œ")
-    require(all(asset["dataMeta"]["asOf"] is None
-                for asset in ranking_assets if asset["dataMeta"]["mode"] == "unknown"),
-            "æ—§å…¨çƒèµ„äº§è¡Œæƒ…å¿«ç…§ä¸å¾—ä»¥æ–‡ä»¶æ—¥æœŸå†’å……é€æ¡è¡Œæƒ…æ—¥æœŸ")
-    require(all(asset["dataMeta"]["asOf"] is None for asset in static_ranking_rows),
-            "æœªä¿å­˜åŸæŠ¥å‘Šæ—¥æœŸçš„æ…¢å˜é‡ä¸å¾—ä»¥æ–‡ä»¶æ—¥æœŸå†’å……ä¼°å€¼æ—¥æœŸ")
-    expected_missing_private_dates = sum(not isinstance(asset.get("lastRound"), str)
-                                         or not asset["lastRound"].strip()
-                                         for asset in private_ranking_rows)
-    require(sum(asset["dataMeta"]["asOf"] is None for asset in private_ranking_rows)
-            == expected_missing_private_dates,
-            "å…¨çƒèµ„äº§æ¦œå¿…é¡»æŒ‰æœªä¸Šå¸‚å…¬å¸èèµ„æœˆä»½é€ä¼ ä¼°å€¼æ—¥æœŸç¼ºå¤±çŠ¶æ€")
-    ranking_fallbacks = [asset for asset in ranking_assets if asset["dataMeta"]["mode"] == "fallback"]
-    require("æ…¢å˜é‡" in asset_ranking.get("note", "")
-            and all("æ²¿ç”¨" in asset["dataMeta"].get("note", "")
-                    or "æ—§" in asset["dataMeta"].get("note", "") for asset in ranking_fallbacks),
-            "å…¨çƒèµ„äº§å¸‚å€¼æ•°æ®æœªæŠ«éœ²æ…¢å˜é‡æˆ–å›é€€å¿«ç…§é™åˆ¶")
-    parse_date(asset_ranking["asOf"])
-    parse_iso(asset_ranking["updatedAt"])
-
-    require(companies.get("source") == "Yahoo Finance", "å…¬å¸æ¦œæ¥æºå¿…é¡»æ˜ç¡®ä¸ºYahoo Finance")
-    company_rows = companies.get("companies")
-    require(
-        isinstance(company_rows, list) and len(company_rows) == companies.get("count") == 500,
-        "å…¬å¸æ¦œå¿…é¡»åŒ…å«500é¡¹",
-    )
-    listed_rows = [company for company in company_rows if company.get("private") is not True]
-    private_rows = [company for company in company_rows if company.get("private") is True]
-    require(len(listed_rows) == companies.get("listedCount") == 450, "å…¬å¸æ¦œä¸Šå¸‚å…¬å¸æ•°é‡ä¸ä¸€è‡´")
-    require(len(private_rows) == companies.get("privateCount") == 50, "å…¬å¸æ¦œæœªä¸Šå¸‚å…¬å¸æ•°é‡ä¸ä¸€è‡´")
-    require(
-        all(isinstance(company.get("marketCap"), (int, float)) and company["marketCap"] > 0 for company in company_rows),
-        "å…¬å¸æ¦œå¸‚å€¼å¿…é¡»ä¸ºæ­£æ•°",
-    )
-    require(
-        all(company.get("rank") == index for index, company in enumerate(company_rows, 1)),
-        "å…¬å¸æ¦œæ’åå¿…é¡»è¿ç»­",
-    )
-    require(
-        all(listed_rows[index - 1]["marketCap"] >= listed_rows[index]["marketCap"] for index in range(1, len(listed_rows))),
-        "ä¸Šå¸‚å…¬å¸å¿…é¡»æŒ‰å¸‚å€¼é™åºæ’åˆ—",
-    )
-    company_total = sum(company["marketCap"] for company in company_rows)
-    require(abs(company_total - companies.get("totalMarketCap", 0)) <= 1, "å…¬å¸æ¦œæ€»å¸‚å€¼ä¸å¯ç”±åˆ†é¡¹å¤ç°")
-    valid_company_changes = [
-        company for company in listed_rows
-        if isinstance(company.get("changePct"), (int, float)) and -100 <= company["changePct"] <= 1000
-    ]
-    require(len(valid_company_changes) >= 20, "ä¸Šå¸‚å…¬å¸å½“æ—¥æ¶¨è·Œæœ‰æ•ˆæ ·æœ¬ä¸è¶³")
-    require(all(company.get("private") is not True for company in valid_company_changes), "æœªä¸Šå¸‚å…¬å¸ä¸å¾—è¿›å…¥å½“æ—¥æ¶¨è·Œæ ·æœ¬")
-    require(companies.get("frequency") == "daily", "å…¬å¸æ¦œæ–‡ä»¶çº§frequencyå¿…é¡»ä¸ºdaily")
-    company_quality_errors = validate_data_quality(company_rows, companies.get("dataQuality"))
-    require(not company_quality_errors, "å…¬å¸æ¦œé€æ¡æ•°æ®å¥‘çº¦æ— æ•ˆï¼š" + "ï¼›".join(company_quality_errors))
-    company_counts = companies["dataQuality"]["counts"]
-    require(companies.get("status") == companies["dataQuality"]["status"],
-            "å…¬å¸æ¦œæ–‡ä»¶çº§statuså¿…é¡»ä¸é€æ¡è´¨é‡æ±‡æ€»ä¸€è‡´")
-    require(sum(company_counts.values()) == len(company_rows)
-            and company_counts["estimate"] == len(private_rows) and company_counts["unavailable"] == 0,
-            "å…¬å¸æ¦œé€æ¡çŠ¶æ€è®¡æ•°å¿…é¡»è¦†ç›–å…¨éƒ¨è®°å½•ï¼Œå¹¶ä¸æœªä¸Šå¸‚ä¼°å€¼æ•°é‡ä¸€è‡´")
-    require(all(company["dataMeta"]["mode"] in {"market", "fallback", "unknown"}
-                and (company.get("stale") is True) == (company["dataMeta"]["mode"] == "fallback")
-                for company in listed_rows),
-            "ä¸Šå¸‚å…¬å¸è¡Œæƒ…ã€å›é€€å’Œå¾…ç¡®è®¤æ¨¡å¼å¿…é¡»ä¸staleå­—æ®µä¸€è‡´")
-    require(all(company["dataMeta"]["mode"] == "estimate" and company["dataMeta"]["frequency"] == "irregular"
-                for company in private_rows), "æœªä¸Šå¸‚å…¬å¸å¿…é¡»æ ‡è®°ä¸ºä¸å®šæœŸé™æ€ä¼°å€¼")
-    expected_missing_company_dates = sum(not isinstance(company.get("lastRound"), str)
-                                         or not company["lastRound"].strip() for company in private_rows)
-    require(sum(company["dataMeta"]["asOf"] is None for company in private_rows)
-            == expected_missing_company_dates,
-            "æœªä¸Šå¸‚ä¼°å€¼æ—¥æœŸç¼ºå¤±å¿…é¡»ä¸èèµ„æœˆä»½å­—æ®µä¸€è‡´")
-    for company in private_rows:
-        if company["dataMeta"]["asOf"]:
-            parse_date(company["dataMeta"]["asOf"])
-    require("æœªä¸Šå¸‚" in companies.get("note", "") and "éå®æ—¶" in companies.get("note", ""), "å…¬å¸æ¦œæœªæŠ«éœ²æœªä¸Šå¸‚ä¼°å€¼å£å¾„")
-    parse_date(companies["asOf"])
-    parse_iso(companies["updatedAt"])
-
-    require(econ_calendar.get("source") == "Forex Factory ç»æµæ—¥å†", "ç»æµæ—¥å†æ¥æºå¿…é¡»æ˜ç¡®ä¸ºForex Factory")
-    calendar_events = econ_calendar.get("events")
-    require(
-        isinstance(calendar_events, list) and len(calendar_events) == econ_calendar.get("count") and len(calendar_events) > 0,
-        "ç»æµæ—¥å†äº‹ä»¶æ•°å¿…é¡»ä¸countä¸€è‡´ä¸”éç©º",
-    )
-    require(
-        all(event.get("impact") in {"high", "medium", "low", "holiday"} for event in calendar_events),
-        "ç»æµæ—¥å†å½±å“çº§åˆ«æ— æ•ˆ",
-    )
-    require(
-        all(
-            isinstance(event.get("title"), str) and event["title"]
-            and isinstance(event.get("country"), str) and event["country"]
-            and isinstance(event.get("ccy"), str) and event["ccy"]
-            for event in calendar_events
-        ),
-        "ç»æµæ—¥å†äº‹ä»¶ç¼ºå°‘æ ‡é¢˜ã€å›½å®¶æˆ–è´§å¸ä»£ç ",
-    )
-    require(
-        all(event.get(field) is None or isinstance(event.get(field), str)
-            for event in calendar_events for field in ("actual", "forecast", "previous")),
-        "ç»æµæ—¥å†å®é™…ã€é¢„æµ‹æˆ–å‰å€¼å¿…é¡»æ˜¯å­—ç¬¦ä¸²æˆ–ç©ºå€¼",
-    )
-    calendar_times = [datetime.fromisoformat(event["ts"].replace("Z", "+00:00")) for event in calendar_events]
-    require(calendar_times == sorted(calendar_times), "ç»æµæ—¥å†äº‹ä»¶å¿…é¡»æŒ‰æ—¶é—´å‡åºæ’åˆ—")
-    require(
-        sum(event.get("impact") == "high" for event in calendar_events) == econ_calendar.get("highCount"),
-        "ç»æµæ—¥å†é«˜å½±å“äº‹ä»¶æ•°ä¸å¯ç”±åˆ†é¡¹å¤ç°",
-    )
-    require(re.fullmatch(r"\d{4}-\d{2}-\d{2}\s*~\s*\d{4}-\d{2}-\d{2}", econ_calendar.get("weekOf", "")) is not None,
-            "ç»æµæ—¥å†å‘¨èŒƒå›´æ ¼å¼æ— æ•ˆ")
-    require("å®é™…å€¼" in econ_calendar.get("note", ""), "ç»æµæ—¥å†è¯´æ˜æœªæŠ«éœ²å®é™…å€¼å›å¡«")
-    parse_date(econ_calendar["asOf"])
-    parse_iso(econ_calendar["updatedAt"])
-
-    require("Google News" in finance_news.get("source", ""), "è´¢ç»æ–°é—»æ€»æ¥æºå¿…é¡»åŒ…å«Google News")
-    news_categories = finance_news.get("categories")
-    require(isinstance(news_categories, list), "è´¢ç»æ–°é—»ç¼ºå°‘æ¿å—åˆ—è¡¨")
-    market_categories = [category for category in news_categories if category.get("key") == "markets"]
-    require(len(market_categories) == 1 and market_categories[0].get("name") == "å¸‚åœº", "è´¢ç»æ–°é—»å¿…é¡»ä¸”åªèƒ½åŒ…å«ä¸€ä¸ªå¸‚åœºæ¿å—")
-    market_news = market_categories[0].get("items")
-    require(isinstance(market_news, list) and len(market_news) >= 3, "è´¢ç»æ–°é—»å¸‚åœºæ¿å—æœ‰æ•ˆæ ·æœ¬ä¸è¶³")
-    require(
-        all(
-            isinstance(item.get("title"), str) and item["title"]
-            and isinstance(item.get("source"), str) and item["source"]
-            and isinstance(item.get("published"), (int, float)) and item["published"] > 0
-            for item in market_news
-        ),
-        "è´¢ç»æ–°é—»ç¼ºå°‘æ ‡é¢˜ã€åŸåª’ä½“æˆ–å‘å¸ƒæ—¶é—´",
-    )
-    require(
-        all(re.fullmatch(r"https://news\.google\.com/rss/articles/[A-Za-z0-9_-]+(?:\?[^\s]*)?", item.get("link", ""))
-            for item in market_news),
-        "è´¢ç»æ–°é—»é“¾æ¥å¿…é¡»æ˜¯Google News RSSæ–‡ç« é“¾æ¥",
-    )
-    require(len({item["link"] for item in market_news}) == len(market_news), "è´¢ç»æ–°é—»å¸‚åœºæ¿å—ä¸å¾—åŒ…å«é‡å¤é“¾æ¥")
-    require("æ¯æ¡å‡é“¾æ¥å›åŸæ–‡" in finance_news.get("note", ""), "è´¢ç»æ–°é—»è¯´æ˜æœªæŠ«éœ²åŸæ–‡é“¾æ¥å£å¾„")
-    parse_date(finance_news["asOf"])
-    parse_iso(finance_news["updatedAt"])
-
-    page = PAGE.read_text(encoding="utf-8")
-    app = APP.read_text(encoding="utf-8")
-    loader = LOADER.read_text(encoding="utf-8")
-    terminal_visuals = TERMINAL_VISUALS.read_text(encoding="utf-8")
-    risk_radar_module = RISK_RADAR_MODULE.read_text(encoding="utf-8")
-    worldmap_module = WORLDMAP_MODULE.read_text(encoding="utf-8")
-    sessions_module = SESSIONS_MODULE.read_text(encoding="utf-8")
-    watchlist_module = WATCHLIST_MODULE.read_text(encoding="utf-8")
-    health_adapters_module = HEALTH_ADAPTERS_MODULE.read_text(encoding="utf-8")
-    detail_view_module = DETAIL_VIEW_MODULE.read_text(encoding="utf-8")
-    radar_view_module = RADAR_VIEW_MODULE.read_text(encoding="utf-8")
-    curve_view_module = CURVE_VIEW_MODULE.read_text(encoding="utf-8")
-    globe_module = GLOBE_MODULE.read_text(encoding="utf-8")
-    vision_css = VISION_CSS.read_text(encoding="utf-8")
-    command_center_css = COMMAND_CENTER_CSS.read_text(encoding="utf-8")
-    reference_fidelity_css = REFERENCE_FIDELITY_CSS.read_text(encoding="utf-8")
-    aurora_home_css = AURORA_HOME_CSS.read_text(encoding="utf-8")
-    command_center_module = COMMAND_CENTER_MODULE.read_text(encoding="utf-8")
-    aurora_home_module = AURORA_HOME_MODULE.read_text(encoding="utf-8")
-    regression_module = REGRESSION_MODULE.read_text(encoding="utf-8")
-    risk_view_module = RISK_VIEW_MODULE.read_text(encoding="utf-8")
-    research_view_module = RESEARCH_VIEW_MODULE.read_text(encoding="utf-8")
-    information_view_module = INFORMATION_VIEW_MODULE.read_text(encoding="utf-8")
-    information_data_module = INFORMATION_DATA_MODULE.read_text(encoding="utf-8")
-    operations_data_module = OPERATIONS_DATA_MODULE.read_text(encoding="utf-8")
-    operations_view_module = OPERATIONS_VIEW_MODULE.read_text(encoding="utf-8")
-    board_data_module = BOARD_DATA_MODULE.read_text(encoding="utf-8")
-    board_view_module = BOARD_VIEW_MODULE.read_text(encoding="utf-8")
-    geo_risk_module = GEO_RISK_MODULE.read_text(encoding="utf-8")
-    terminal_views = (app + "\n" + risk_view_module + "\n" + research_view_module
-                      + "\n" + information_view_module + "\n" + operations_view_module)
-    compact_loader = re.sub(r"\s+", "", loader)
-    require(APP.stat().st_size <= 220_000, "é‡‘èç»ˆç«¯ç”Ÿäº§å…¥å£è„šæœ¬è¶…è¿‡220KBæ€§èƒ½é¢„ç®—")
-    # 14,000 æ˜¯æŒ‰ã€Œä¸€ä¸ªåˆ†åŒºä¸€ä¸ªè§¦å‘å…ƒç´ ã€è¿›å…¥è§†é‡å³åŠ è½½ã€é‚£ç‰ˆè§‚å¯Ÿå™¨è®¾çš„ã€‚æ”¹ä¸º
-    # ã€Œæ è¿‡ä¸ç®—ã€åœç•™æ‰ç®—ã€å¹¶å…è®¸ä¸€ä¸ªåˆ†åŒºæŒ‚å¤šä¸ªè§¦å‘å…ƒç´ åï¼Œè¿™æ®µä¸å¯å‹ç¼©åœ°å˜å¤§ï¼›
-    # åŒæ—¶ app.js é‡Œé‚£ä¸ªå„è¡Œå…¶æ˜¯çš„é›·è¾¾è§‚å¯Ÿå™¨è¢«åˆ æ‰ï¼Œå¸¸è§„åŠ è½½åˆè®¡åè€Œæ¯”ä¹‹å‰å°ã€‚
-    # 15,600 æ˜¯åœ¨åŸ15KBåŸºç¡€ä¸Šç»™ã€Œå“ç±»è¡Œæƒ…æ¿ã€ç•™å‡ºçš„å¢é‡ï¼šæ–°å¢ä¸€ä»½ç¾å€ºæ”¶ç›Šç‡æ›²çº¿
-    # èµ„æºä¸ä¸€ä¸ªåªå¤ç”¨å·²æœ‰èµ„æºé”®çš„boardèµ„æºç»„ï¼ŒåŠ è½½å™¨æœ¬èº«å¤šå‡ºçº¦210å­—èŠ‚ï¼›å¸¸è§„åŠ è½½
-    # åˆè®¡ä»å—ä¸‹æ–¹230KBé¢„ç®—çº¦æŸã€‚
-    # 15,800ï¼šé£é™©åˆ†åŒºå¤šè¯»ä¸€ä»½è·¨èµ„äº§å¿«ç…§ï¼ˆåœ°ç¼˜é£é™©å®šä»·çš„èƒ½æºä¸é¿é™©ä¸¤æ¡è½´ï¼‰ï¼Œ
-    # è¯¥èµ„æºé”®åœ¨å“ç±»è¡Œæƒ…ä¸å¸‚åœºç ”ç©¶ä¸¤ç»„é‡Œå·²å­˜åœ¨ï¼ŒåŠ è½½å™¨æŒ‰é”®å»é‡ï¼Œè¯·æ±‚æ•°ä¸å˜ã€‚
-    require(LOADER.stat().st_size <= 15_800, "é‡‘èç»ˆç«¯åˆ†åŒºåŠ è½½æ¨¡å—è¶…è¿‡15.8KBæ€§èƒ½é¢„ç®—")
-    require(TERMINAL_VISUALS.stat().st_size <= 16_000, "é‡‘èç»ˆç«¯è§†è§‰æ•°æ®æ¨¡å—è¶…è¿‡16KBæ€§èƒ½é¢„ç®—")
-    # 3,000 æ˜¯æŒ‰æ—§ç‰ˆã€ŒæŠŠå®è§‚çŠ¶æ€ä¸€ä¸ªåˆ†æ•°åŠ æƒé‡ç»„å‡ºå…­ä¸ªè½´ã€é‚£ä¸€è¡Œè®¾å®šçš„ã€‚å…­ä¸ªè½´æ”¹è¯»
-    # å…­ä¸ªå…·åçœŸå®åˆ¶åº¦ä¿¡å·åï¼ŒæŸ¥è¡¨é€»è¾‘ä¸å¯å‹ç¼©åœ°æ›´å¤§ï¼›è¯¥æ¨¡å—ä¸è®¡å…¥ 230KB å¸¸è§„åŠ è½½
-    # åˆè®¡ï¼Œå¢é‡çº¦å é¦–å± JS çš„ 0.2%ï¼Œæ¢æ¥é›·è¾¾ä»æ¨ç®—å€¼å˜ä¸ºçœŸå®æµ‹é‡ã€‚
-    require(RISK_RADAR_MODULE.stat().st_size <= 3_400, "é‡‘èç»ˆç«¯é£é™©é›·è¾¾æ¨¡å—è¶…è¿‡3.4KBæ€§èƒ½é¢„ç®—")
-    require(WORLDMAP_MODULE.stat().st_size <= 5_000, "é‡‘èç»ˆç«¯ç‚¹é˜µä¸–ç•Œåœ°å›¾æ¨¡å—è¶…è¿‡5KBæ€§èƒ½é¢„ç®—")
-    require(SESSIONS_MODULE.stat().st_size <= 3_500, "é‡‘èç»ˆç«¯äº¤æ˜“æ—¶æ®µæ¨¡å—è¶…è¿‡3.5KBæ€§èƒ½é¢„ç®—")
-    # 7,600ï¼šè‡ªé€‰æ¸…å•æ”¹ä¸ºæ•´é¡µå…±ç”¨ä¸€ä»½çŠ¶æ€å¹¶æ”¯æŒåˆ†åŒºå„è‡ªçš„ç­›é€‰å…¥å£åå¿…è¦çš„å¢é‡ã€‚
-    require(WATCHLIST_MODULE.stat().st_size <= 7_600, "é‡‘èç»ˆç«¯è‡ªé€‰æ¸…å•æ¨¡å—è¶…è¿‡7.6KBæ€§èƒ½é¢„ç®—")
-    require(HEALTH_ADAPTERS_MODULE.stat().st_size <= 11_000, "é‡‘èç»ˆç«¯è¾…åŠ©æ¥æºå¥åº·é€‚é…å±‚è¶…è¿‡11KBæ€§èƒ½é¢„ç®—")
-    require(DETAIL_VIEW_MODULE.stat().st_size <= 13_000, "é‡‘èç»ˆç«¯èµ„äº§è¯¦æƒ…æŠ½å±‰æ¨¡å—è¶…è¿‡13KBæ€§èƒ½é¢„ç®—")
-    require(RADAR_VIEW_MODULE.stat().st_size <= 6_000, "é‡‘èç»ˆç«¯é›·è¾¾æ„æˆæŠ½å±‰æ¨¡å—è¶…è¿‡6KBæ€§èƒ½é¢„ç®—")
-    require(CURVE_VIEW_MODULE.stat().st_size <= 9_000, "é‡‘èç»ˆç«¯æ”¶ç›Šç‡æ›²çº¿æŠ½å±‰æ¨¡å—è¶…è¿‡9KBæ€§èƒ½é¢„ç®—")
-    require(CORRELATION_VIEW_MODULE.stat().st_size <= 15_000,
-            "é‡‘èç»ˆç«¯ç›¸å…³æ€§çŸ©é˜µæŠ½å±‰æ¨¡å—è¶…è¿‡15KBæ€§èƒ½é¢„ç®—")
-    require(GLOBE_MODULE.stat().st_size <= 8_000, "é‡‘èç»ˆç«¯åœ°çƒåŠ¨ç”»æ¨¡å—è¶…è¿‡8KBæ€§èƒ½é¢„ç®—")
-    require(VISION_CSS.stat().st_size <= 28_000, "é‡‘èç»ˆç«¯ç§‘å¹»è§†è§‰æ ·å¼è¶…è¿‡28KBæ€§èƒ½é¢„ç®—")
-    # 20,000 æ˜¯åœ¨åˆ†åŒºå†…å®¹è¿˜æ²¡è¢«å‘ç°é­è£åˆ‡æ—¶å®šçš„ã€‚è¡¥ä¸Šã€Œåˆ†åŒºå†…é‚£ä¸€å±‚ä¹Ÿè¦èƒ½ç¼©ã€ä¸
-    # é¥æµ‹é¢æ¿ç¬¬ä¸‰è¡Œä¸¤å¤„ä¿®å¤ã€è¿åŒè§£é‡Šå®ƒä»¬ä¸ºä½•å­˜åœ¨çš„æ³¨é‡Šåéœ€è¦ 20.7KBï¼›æ¢å›çš„æ˜¯
-    # OFR å¡ç‰‡ä¸è¿è¡Œè¯æ®é¢æ¿ä¸å†è¢«è£æ‰ 137px ä¸ 201pxï¼Œæ”¶ç›Šç‡æ›²çº¿å…¥å£ä¸å†ç¼º 6pxã€‚
-    # 27,000ï¼šä¸€å±æ€»è§ˆæŠŠæ ¸å¿ƒèµ„äº§ä¸Šç§»åˆ°ç¬¬äºŒè¡Œã€åŸETFä»£ç†é‚£ä¸€æ ¼æ”¹æ”¾åœ°ç¼˜é£é™©å®šä»·
-    # è¡¨ç›˜ï¼Œä¸¤å—å„è‡ªçš„ç´§å‡‘åŒ–è§„åˆ™ï¼ˆå«å››æ¡è½´åœ¨çª„æ ¼é‡Œçš„ä¸¤è¡Œæ’å¸ƒï¼‰éƒ½åœ¨è¿™é‡Œã€‚
-    # 24,600ï¼šæ€»è§ˆé‡Œçš„è¡Œæƒ…æ¿å¤šå‡ºä¸€åˆ—è¿·ä½ èµ°åŠ¿ä¸ä¸€æ¡è„‰å†²æ¡çš„ç´§å‡‘åŒ–è§„åˆ™ã€‚
-    require(COMMAND_CENTER_CSS.stat().st_size <= 27_000, "é‡‘èç»ˆç«¯å•å±æŒ‡æŒ¥ä¸­å¿ƒæ ·å¼è¶…è¿‡27KBæ€§èƒ½é¢„ç®—")
-    require(VISUAL_FIDELITY_CSS.stat().st_size <= 6_000, "é‡‘èç»ˆç«¯é«˜ä¿çœŸè§†è§‰å±‚è¶…è¿‡6KBæ€§èƒ½é¢„ç®—")
-    require(REFERENCE_FIDELITY_CSS.stat().st_size <= 12_900, "é‡‘èç»ˆç«¯å‚è€ƒå›¾ç²¾ä¿®å±‚è¶…è¿‡12.9KBæ€§èƒ½é¢„ç®—")
-    require(AURORA_HOME_CSS.stat().st_size <= 26_000, "é‡‘èç»ˆç«¯æå…‰é¦–é¡µæ ·å¼è¶…è¿‡26KBæ€§èƒ½é¢„ç®—")
-    require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "é‡‘èç»ˆç«¯è§†å›¾åˆ‡æ¢æ¨¡å—è¶…è¿‡4KBæ€§èƒ½é¢„ç®—")
-    require(AURORA_HOME_MODULE.stat().st_size <= 3_500, "é‡‘èç»ˆç«¯æå…‰é¦–é¡µåŒæ­¥æ¨¡å—è¶…è¿‡3.5KBæ€§èƒ½é¢„ç®—")
-    require(APP.stat().st_size + LOADER.stat().st_size + TERMINAL_VISUALS.stat().st_size
-            + COMMAND_CENTER_MODULE.stat().st_size + GLOBE_MODULE.stat().st_size
-            + AURORA_HOME_MODULE.stat().st_size <= 230_000,
-            "é‡‘èç»ˆç«¯å¸¸è§„åŠ è½½JavaScriptè¶…è¿‡230KBæ€§èƒ½é¢„ç®—")
-    # 23,000 æ˜¯åŠ å…¥å“ç±»è¡Œæƒ…æ¿ä¸åˆ†åŒºæŠ˜å æ£€æŸ¥åçš„é¢„ç®—ï¼šæ¢é’ˆè¦é€ã€Œæ ‡ç­¾ç»„ã€æ ¡éªŒé”®ç›˜ä¸
-    # è¯­ä¹‰ï¼ˆé¡µé¢ç°åœ¨æœ‰è·¨èµ„äº§å‘¨æœŸä¸å“ç±»è¡Œæƒ…æ¿ä¸¤ç»„ï¼‰ï¼Œæ ¸å¯¹å…­ä¸ªå“ç±»æ ‡ç­¾ã€å½“å‰å“ç±»çš„
-    # ä»·æ ¼/æ¶¨è·Œåˆ—ã€æŠ˜å æŒ‰é’®é»˜è®¤æ”¶èµ·ã€æœç´¢æ¡†ä¸é€è¡Œè‡ªé€‰å¼€å…³ï¼Œå¹¶åœ¨é‡å°ºå¯¸å‰è®°ä¸‹ä¸¤ä¸ª
-    # å·¥ç¨‹/è¿è¥å‘åˆ†åŒºæŠ˜å å£³çš„é»˜è®¤çŠ¶æ€ã€‚è¯¥æ¨¡å—åªåœ¨ regression=1 æ—¶åŠ è½½ã€‚
-    # 25,400ï¼šæ¢é’ˆé¢å¤–æ ¸å¯¹æ¯è¡Œçš„è¿·ä½ èµ°åŠ¿ä½ã€å“ç±»è„‰å†²æ¡ï¼Œä»¥åŠåœ°ç¼˜é£é™©å®šä»·çš„
-    # å››æ¡è½´ä¸äº”æ¡£ç­‰çº§æ¢¯ï¼ˆç¼ºè½´æ—¶æ”¹ä¸ºæ ¸å¯¹ã€Œä¸å¯ç”¨ã€æ€è€Œä¸æ˜¯åˆ†æ•°ï¼‰ã€‚
-    require(REGRESSION_MODULE.stat().st_size <= 25_400,
-            "ä»…å›å½’æ¨¡å¼åŠ è½½çš„æµè§ˆå™¨æ¢é’ˆè¶…è¿‡24KBæ€§èƒ½é¢„ç®—")
-    require(BOARD_DATA_MODULE.stat().st_size <= 19_000,
-            "æŒ‰éœ€åŠ è½½çš„å“ç±»è¡Œæƒ…æ¿æ•°æ®å±‚è¶…è¿‡19KBæ€§èƒ½é¢„ç®—")
-    # 23,000ï¼šåœ¨åŸ18KBåŸºç¡€ä¸Šç»™ã€Œé€è¡Œè¿·ä½ èµ°åŠ¿ + å“ç±»è„‰å†²æ¡ã€ç•™å‡ºçš„å¢é‡ã€‚èµ°åŠ¿æœ¬èº«
-    # ä¸æ–°å¢ä»»ä½•è¯·æ±‚ï¼šå®ƒå¤ç”¨æŠ½å±‰é‚£å¥—å†å²æ–‡ä»¶ä¸åŒä¸€ä»½å¸¦ç¼“å­˜çš„è¯»å–ï¼Œä¸€ä¸ªå“ç±»æœ€å¤š
-    # è§¦å‘ä¸€æ¬¡å†å²æ–‡ä»¶è¯»å–ï¼›æ‹¿ä¸åˆ°åºåˆ—çš„è¡Œå¦‚å®ç•™ç™½ï¼Œä¸ç”»æ¨æ–­æ›²çº¿ã€‚
-    require(BOARD_VIEW_MODULE.stat().st_size <= 23_000,
-            "æŒ‰éœ€åŠ è½½çš„å“ç±»è¡Œæƒ…æ¿è§†å›¾è¶…è¿‡23KBæ€§èƒ½é¢„ç®—")
-    require("board-cell-spark" in board_view_module and "sparkDirection" in board_view_module
-            and "SPARK_POINTS" in board_view_module and "distribution" in board_view_module
-            and 'id="board-pulse"' in page and ".board-spark-line" in page,
-            "å“ç±»è¡Œæƒ…æ¿å¿…é¡»é€è¡Œç”»ç«™å†…åºåˆ—çš„è¿·ä½ èµ°åŠ¿å¹¶ç»™å‡ºæ¶¨è·Œåˆ†å¸ƒè„‰å†²æ¡")
-    require('import("./finance-terminal-board-view.mjs")' in app
-            and 'import("./finance-terminal-board-data.mjs")' in app
-            and "createBoardView" in board_view_module
-            and "buildBoard" in board_data_module
-            and "finance-terminal-board-view.mjs" not in page
-            and "finance-terminal-board-data.mjs" not in page,
-            "å“ç±»è¡Œæƒ…æ¿çš„æ•°æ®å±‚ä¸è§†å›¾å¿…é¡»ä¿æŒæŒ‰éœ€å¯¼å…¥ä¸”ä¸å¾—åœ¨é¦–å±é¢„åŠ è½½")
-    require(RISK_VIEW_MODULE.stat().st_size <= 6_600,
-            "æŒ‰éœ€åŠ è½½çš„å¸‚åœºçŠ¶æ€è§†å›¾è¶…è¿‡6.6KBæ€§èƒ½é¢„ç®—")
-    # åœ°ç¼˜é£é™©å®šä»·ï¼šå››æ¡è½´å„è‡ªè¯»ç«™å†…å·²åœ¨æ—¥æ›´çš„å…¬å¼€ç®¡é“ï¼Œé€è½´ç»™å‡ºåŸå€¼ã€æ˜ å°„å£å¾„ã€
-    # æ¥æºä¸æ•°æ®æ—¥ï¼›ç¼ºä»»ä½•ä¸€æ¡å³ä¸ç»™ç­‰çº§ã€‚å®ƒä¸åŒåˆ†åŒºé‚£ä¸‰å¼ ã€Œä¸åˆæˆä¸ºæ€»åˆ†ã€çš„å®˜æ–¹
-    # ä¿¡å·å¡åˆ†å¼€æ¸²æŸ“ï¼Œä¹Ÿä¸å‚ä¸å®ƒä»¬çš„çŠ¶æ€è®¡æ•°ã€‚
-    require(GEO_RISK_MODULE.stat().st_size <= 16_500,
-            "æŒ‰éœ€åŠ è½½çš„åœ°ç¼˜é£é™©å®šä»·æ¨¡å‹è¶…è¿‡16.5KBæ€§èƒ½é¢„ç®—")
-    require("buildGeoRisk" in risk_view_module and "renderGeoRisk" in risk_view_module
-            and "GEO_AXES" in geo_risk_module and "percentileScore" in geo_risk_module
-            and "ä¸ç»Ÿè®¡" in geo_risk_module and 'id="geo-risk"' in page
-            and "finance-terminal-geo-risk.mjs" not in page,
-            "åœ°ç¼˜é£é™©å®šä»·å¿…é¡»éšå¸‚åœºçŠ¶æ€è§†å›¾æŒ‰éœ€åŠ è½½ï¼Œå¹¶å†™æ˜å®ƒè¯»çš„æ˜¯å®šä»·è€Œéäº‹ä»¶æœ¬èº«")
-    require('import("./finance-terminal-risk-view.mjs")' in app
-            and "createRiskView" in risk_view_module
-            and "finance-terminal-risk-view.mjs" not in page,
-            "å¸‚åœºçŠ¶æ€è§†å›¾å¿…é¡»ä¿æŒæŒ‰éœ€å¯¼å…¥ä¸”ä¸å¾—åœ¨é¦–å±é¢„åŠ è½½")
-    require(RESEARCH_VIEW_MODULE.stat().st_size <= 14_000,
-            "æŒ‰éœ€åŠ è½½çš„å¸‚åœºç ”ç©¶è§†å›¾è¶…è¿‡14KBæ€§èƒ½é¢„ç®—")
-    require('import("./finance-terminal-research-view.mjs")' in app
-            and "createResearchView" in research_view_module
-            and "finance-terminal-research-view.mjs" not in page,
-            "å¸‚åœºç ”ç©¶è§†å›¾å¿…é¡»ä¿æŒæŒ‰éœ€å¯¼å…¥ä¸”ä¸å¾—åœ¨é¦–å±é¢„åŠ è½½")
-    require(INFORMATION_VIEW_MODULE.stat().st_size <= 10_000,
-            "æŒ‰éœ€åŠ è½½çš„äº‹ä»¶èµ„è®¯è§†å›¾è¶…è¿‡10KBæ€§èƒ½é¢„ç®—")
-    require('import("./finance-terminal-information-view.mjs")' in app
-            and "createInformationView" in information_view_module
-            and "finance-terminal-information-view.mjs" not in page,
-            "äº‹ä»¶èµ„è®¯è§†å›¾å¿…é¡»ä¿æŒæŒ‰éœ€å¯¼å…¥ä¸”ä¸å¾—åœ¨é¦–å±é¢„åŠ è½½")
-    require(OPERATIONS_VIEW_MODULE.stat().st_size <= 9_000,
-            "æŒ‰éœ€åŠ è½½çš„ç¨³å®šV1è¿è¡Œè¯æ®è§†å›¾è¶…è¿‡9KBæ€§èƒ½é¢„ç®—")
-    require('import("./finance-terminal-operations-view.mjs")' in app
-            and "createOperationsView" in operations_view_module
-            and "finance-terminal-operations-view.mjs" not in page,
-            "ç¨³å®šV1è¿è¡Œè¯æ®è§†å›¾å¿…é¡»ä¿æŒæŒ‰éœ€å¯¼å…¥ä¸”ä¸å¾—åœ¨é¦–å±é¢„åŠ è½½")
-    require('<link rel="stylesheet" href="terminal-vision.css">' in page
-            and '<link rel="stylesheet" href="terminal-command-center.css">' in page
-            and '<link rel="stylesheet" href="terminal-visual-fidelity.css">' in page
-            and '<link rel="stylesheet" href="terminal-reference-fidelity.css">' in page
-            and '<link rel="stylesheet" href="terminal-aurora-home.css">' in page
-            and 'src="finance-terminal-command-center.mjs"' in page
-            and 'import("./finance-terminal-visuals.mjs")' in app
-            and "createTerminalVisuals" in terminal_visuals,
-            "ç§‘å¹»ç»ˆç«¯è§†è§‰å±‚ç¼ºå°‘æœ¬åœ°æ ·å¼æˆ–æ•°æ®æ¨¡å—")
-    require('from "./finance-terminal-aurora-home.mjs"' in command_center_module
-            and "initAuroraHome" in command_center_module
-            and "MutationObserver" in aurora_home_module
-            and "innerHTML" not in aurora_home_module
-            and 'id="aurora-gateways"' in page
-            and 'class="terminal-mode-switch"' in page
-            and ".aurora-gateway-grid" in aurora_home_css
-            and "@media (max-width: 620px)" in aurora_home_css,
-            "æå…‰é¦–é¡µç¼ºå°‘æ¨¡å¼åˆ‡æ¢ã€ä¸‰å·¥ä½œæµå…¥å£ã€å·²æ ¡éªŒè¯»æ•°åŒæ­¥æˆ–ç‹¬ç«‹ç§»åŠ¨ç«¯å¸ƒå±€")
-    require('from "./finance-terminal-globe.mjs"' in command_center_module
-            and "initMarketGlobe" in globe_module
-            and "textureCoordinate" in globe_module
-            and "earth-night.jpg" in globe_module
-            and "prefers-reduced-motion" in globe_module
-            and "visibilitychange" in globe_module
-            and "innerHTML" not in globe_module
-            and 'id="market-globe-canvas"' in page
-            and ".market-globe-shell" in reference_fidelity_css,
-            "é«˜ä¿çœŸåœ°çƒå¿…é¡»ä½¿ç”¨æœ¬åœ°çº¹ç†ã€çœŸå®è‡ªè½¬ã€èŠ‚èƒ½ä¸å‡å°‘åŠ¨ç”»é™çº§")
-    require('body[data-terminal-view="overview"] #main-content' in command_center_css
-            and 'grid-template-columns: repeat(16, minmax(0, 1fr))' in command_center_css
-            and 'body[data-terminal-view="overview"] #information-section' in command_center_css
-            and 'body[data-terminal-view="overview"] .global-risk-map' in command_center_css
-            and 'body[data-terminal-view="overview"] .pipeline-command' in command_center_css
-            and "VIEW_BY_ID" in command_center_module
-            and "aria-current" in command_center_module
-            and "innerHTML" not in command_center_module,
-            "å•å±æŒ‡æŒ¥ä¸­å¿ƒç¼ºå°‘æ¡Œé¢ç½‘æ ¼ã€åœ°å›¾ã€ç®¡çº¿æˆ–å¯è®¿é—®å¯¼èˆªå¥‘çº¦")
-    require("innerHTML" not in terminal_visuals
-            and "REGION_SPECS" in terminal_visuals
-            and "Yahoo Finance" in terminal_visuals
-            and "renderGlobalRiskHeatmap" in terminal_visuals
-            and "renderPipelineOverview" in terminal_visuals,
-            "ç»ˆç«¯è§†è§‰æ•°æ®æ¨¡å—ç¼ºå°‘å®‰å…¨æ–‡æœ¬æ¸²æŸ“ã€åŒºåŸŸä»£ç†æˆ–èµ„æ ¼è¿›åº¦é€»è¾‘")
-    require("innerHTML" not in risk_radar_module
-            and 'from "./finance-terminal-risk-radar.mjs"' in terminal_visuals
-            and "deriveRiskRadar" in risk_radar_module
-            and "renderRiskRadar" in risk_radar_module,
-            "é«˜ä¿çœŸé£é™©é›·è¾¾å¿…é¡»ä½¿ç”¨ç‹¬ç«‹å—é¢„ç®—çº¦æŸçš„çœŸå®ä¿¡å·è§†è§‰å±‚")
-    require("innerHTML" not in health_adapters_module
-            and 'import("./finance-terminal-health-adapters.mjs")' in app
-            and "finance-terminal-health-adapters.mjs" not in page
-            and "createSupportingHealthAdapter" in health_adapters_module
-            and "installSupportingHealthAdapter" in app
-            and "function adaptSupportingSourceHealth" not in app
-            and "function adaptSupportingSourceHealth" in health_adapters_module
-            and "è¾…åŠ©æ¥æºå¥åº·é€‚é…å±‚å°šæœªåŠ è½½" in app,
-            "è¾…åŠ©æ¥æºå¥åº·é€‚é…å±‚å¿…é¡»æŒ‰éœ€åŠ è½½ã€ä¸è¿›é¦–å±ï¼Œä¸”æœªå®‰è£…æ—¶æ˜ç¡®æŠ¥æœªå°±ç»ªè€Œéè‡†é€ çŠ¶æ€")
-    require("innerHTML" not in curve_view_module
-            and 'import("./finance-terminal-curve-view.mjs")' in app
-            and "finance-terminal-curve-view.mjs" not in page
-            and "openCurve" in curve_view_module
-            and "curveSegments" in curve_view_module
-            and 'from "./finance-terminal-detail-view.mjs"' in curve_view_module
-            and "ä¸æ’å€¼ã€ä¸ç”¨ç›¸é‚»æœŸé™é¡¶æ›¿" in curve_view_module
-            and "åœ¨æ­¤ä¹‹å‰ä¸æ˜¾ç¤ºæ¨æ–­å€¼" in curve_view_module
-            and "ä¸æ„æˆå¯¹åå¸‚çš„é¢„æµ‹" in curve_view_module
-            and 'id="yield-curve-entry"' in page
-            and 'id="yield-curve-entry-risk"' in page
-            and "aria-modal" not in curve_view_module,
-            "æ”¶ç›Šç‡æ›²çº¿æŠ½å±‰å¿…é¡»æŒ‰éœ€å¯¼å…¥ã€ä¸è¿›é¦–å±ã€ç¼ºæ¡£æ–­çº¿ä¸æ’å€¼ï¼Œä¸”ä¸å¾—å¦å»ºå¯¹è¯æ¡†è¯­ä¹‰")
-    risk_radar_module = RISK_RADAR_MODULE.read_text(encoding="utf-8")
-    require("innerHTML" not in radar_view_module
-            and 'import("./finance-terminal-radar-view.mjs")' in app
-            and "finance-terminal-radar-view.mjs" not in page
-            and "openRadar" in radar_view_module
-            and "pairAxes" in radar_view_module
-            and 'from "./finance-terminal-detail-view.mjs"' in radar_view_module
-            and 'from "./finance-terminal-risk-radar.mjs"' in radar_view_module
-            and "ç¼ºä»»ä¸€ä¿¡å·æ—¶é›·è¾¾æ•´ä½“ä¿æŒç©ºæ€" in radar_view_module
-            and "ä¸æ˜¯å¯¹åå¸‚çš„é¢„æµ‹" in radar_view_module
-            and 'id="risk-radar-detail"' in page,
-            "é›·è¾¾æ„æˆæŠ½å±‰å¿…é¡»æŒ‰éœ€å¯¼å…¥ã€ä¸è¿›é¦–å±ï¼Œä¸”ä¸é›·è¾¾å…±ç”¨åŒä¸€ä»½ä¿¡å·é”®")
-    require("RADAR_SIGNAL_KEYS" in risk_radar_module
-            and "regimeSignals" in risk_radar_module
-            and "extractRegimeSignals" in app
-            and "regimeSignals: extractRegimeSignals(macroData)" in app
-            and "å®é™…åˆ©ç‡" in page and "æœŸé™æº¢ä»·" in page and "ä¿¡ç”¨åˆ©å·®" in page
-            and "åˆ©ç‡é£é™©" not in page and "é€šèƒ€é£é™©" not in page
-            and "æ³¢åŠ¨ç‡æ¥è‡ªVIX" in page,
-            "é£é™©é›·è¾¾å…­è½´å¿…é¡»å„è¯»ä¸€ä¸ªçœŸå®åˆ¶åº¦ä¿¡å·ï¼Œä¸å¾—å†ç”¨å•ä¸€åˆ†æ•°åŠ æƒé‡ç»„ï¼Œ"
-            "ä¸”è½´åä¸å¾—æ²¿ç”¨æ²¡æœ‰å¯¹åº”æµ‹é‡çš„æ—§æ ‡ç­¾")
-    require('risk: [document.getElementById("risk-section")' in app
-            and 'document.querySelector(".risk-radar-panel")' in app
-            and "observeRadarPanel" not in app,
-            "é¦–å±ä¹‹å¤–ä½†å…ˆäº #risk-section å‡ºç°çš„é£é™©é›·è¾¾å¿…é¡»ç™»è®°ä¸º risk åˆ†åŒºçš„è§¦å‘å…ƒç´ ï¼Œ"
-            "å¦åˆ™çª„å±ä¸‹å®ƒä¼šä¸€ç›´åœåœ¨ LOADING ç›´åˆ°è®¿å®¢æ»šåˆ°æ•°åƒåƒç´ ä¹‹ä¸‹çš„åˆ†åŒºï¼›"
-            "è§¦å‘é€»è¾‘åªèƒ½æœ‰ä¸€ä»½ï¼Œä¸å¾—åœ¨ app.js é‡Œå¦èµ·ä¸€ä¸ªè§‚å¯Ÿå™¨")
-    require("dwellMs" in loader
-            and "clearTimeout(dwellTimers" in loader
-            and "æ è¿‡" in loader,
-            "å»¶è¿Ÿåˆ†åŒºå¿…é¡»åŒºåˆ†ã€Œæ»šè¿‡ã€ä¸ã€Œçœ‹è¿‡ã€ï¼šåˆ†åŒºå¯¼èˆªæ˜¯ä¸€æ¬¡ä¸Šä¸‡åƒç´ çš„å¹³æ»‘æ»šåŠ¨ï¼Œ"
-            "æ è¿‡å³åŠ è½½ä¼šæŠŠæ•´é¡µè¯·æ±‚ä¸€å¹¶æ‹‰èµ·ï¼Œå»¶è¿ŸåŠ è½½å½¢åŒè™šè®¾")
-    correlation_view_module = CORRELATION_VIEW_MODULE.read_text(encoding="utf-8")
-    require("innerHTML" not in correlation_view_module
-            and 'import("./finance-terminal-correlation-view.mjs")' in app
-            and "finance-terminal-correlation-view.mjs" not in page
-            and "openCorrelation" in correlation_view_module
-            and "buildMatrix" in correlation_view_module
-            and 'from "./finance-terminal-detail-view.mjs"' in correlation_view_module
-            and "aria-modal" not in correlation_view_module
-            and 'id="correlation-entry"' in page,
-            "ç›¸å…³æ€§çŸ©é˜µæŠ½å±‰å¿…é¡»æŒ‰éœ€å¯¼å…¥ã€ä¸è¿›é¦–å±ï¼Œä¸”ä¸å¾—å¦å»ºå¯¹è¯æ¡†è¯­ä¹‰")
-    # ä¸‰æ¡å£å¾„å¿…é¡»ç•™åœ¨ä»£ç é‡Œï¼šç”¨æ”¶ç›Šç‡ä¸ç”¨ä»·ä½ã€æ—¥å†é”™ä½æ•´åˆ—å‰”é™¤ã€é‡å ä¸è¶³ä¸ç»™æ•°ã€‚
-    require("logReturns" in correlation_view_module
-            and "ä»·ä½åºåˆ—æœ¬èº«å¸¦è¶‹åŠ¿" in correlation_view_module
-            and "sessionAligned" in correlation_view_module
-            and "äº¤æ˜“æ—¥å†å¯¹ä¸é½çš„æ ‡çš„æ•´ä¸ªä¸è¿›çŸ©é˜µ" in correlation_view_module
-            and "MIN_OVERLAP" in correlation_view_module
-            and "ä¸æ˜¯å¯¹åå¸‚çš„é¢„æµ‹" in correlation_view_module,
-            "ç›¸å…³æ€§çŸ©é˜µå¿…é¡»ç”¨æ—¥å¯¹æ•°æ”¶ç›Šç‡ã€å‰”é™¤æ—¥å†é”™ä½æ ‡çš„ã€é‡å ä¸è¶³æ—¶ç•™ç©ºï¼Œ"
-            "å¹¶å£°æ˜å…¶ä¸ºå†å²ç»Ÿè®¡è€Œéé¢„æµ‹")
-    require("../asset-tracker/history.json" in correlation_view_module,
-            "ç›¸å…³æ€§çŸ©é˜µå¿…é¡»è¯»å–ç«™å†…å·²å‘å¸ƒçš„æ»šåŠ¨å†å²ï¼Œä¸å¾—å¦ç«‹æ•°æ®æº")
-    require("openPanel" in detail_view_module and "isPanelOpen" in detail_view_module
-            and "aria-modal" in detail_view_module
-            and "aria-modal" not in radar_view_module,
-            "æŠ½å±‰å¤–å£³å¿…é¡»åªæœ‰ä¸€ä»½å®ç°ï¼Œé›·è¾¾æŠ½å±‰ä¸å¾—å¦å»ºä¸€å¥—å¯¹è¯æ¡†è¯­ä¹‰")
-    require("innerHTML" not in detail_view_module
-            and 'import("./finance-terminal-detail-view.mjs")' in app
-            and "finance-terminal-detail-view.mjs" not in page
-            and "openAsset" in detail_view_module
-            and "seriesPath" in detail_view_module
-            and "matchedKeyword" in detail_view_module
-            and "æŒ‰å…¶ä½¿ç”¨æ¡æ¬¾ä¸å¾—æŠ“å–ã€ä¿å­˜æˆ–å†åˆ†å‘ç»„ä»¶è¡Œæƒ…" in detail_view_module
-            and "åœ¨æ­¤ä¹‹å‰ä¸æ˜¾ç¤ºæ¨æ–­å€¼" in detail_view_module
-            and "ä¸ä»£è¡¨å…¶ä¸æœ¬æ ‡çš„å­˜åœ¨å› æœå…³ç³»" in detail_view_module
-            and "å‘½ä¸­ä¸ç­‰äºä¸æœ¬æ ‡çš„ç›¸å…³" in detail_view_module
-            and 'aria-modal' in detail_view_module
-            and 'class="detail-open"' not in page
-            and ".detail-open" in vision_css
-            and ".detail-open" not in detail_view_module,
-            "èµ„äº§è¯¦æƒ…æŠ½å±‰å¿…é¡»æŒ‰éœ€å¯¼å…¥ã€ä¸è¿›é¦–å±ï¼Œæ— åºåˆ—æ—¶å¦‚å®è¯´æ˜è€Œéå±•ç¤ºæ¨æ–­å€¼ï¼Œ"
-            "ä¸”é¦–å±å¯è§çš„è§¦å‘æŒ‰é’®æ ·å¼ä¸å¾—éšæŠ½å±‰å»¶ååŠ è½½")
-    require("innerHTML" not in watchlist_module
-            and 'import("./finance-terminal-watchlist.mjs")' in app
-            and "finance-terminal-watchlist.mjs" not in page
-            and "mountWatchlist" in watchlist_module
-            and "sanitizeSymbol" in watchlist_module
-            and "safeStorage" in watchlist_module
-            and "ä»…ä¿å­˜åœ¨æœ¬æœºæµè§ˆå™¨ï¼Œä¸ä¼šä¸Šä¼ " in watchlist_module
-            and 'id="watch-filter"' in page
-            and ".watch-toggle" in vision_css
-            and 'aria-pressed' in watchlist_module,
-            "è‡ªé€‰æ¸…å•å¿…é¡»æŒ‰éœ€å¯¼å…¥ã€æ¸…æ´—ä»£ç ã€å®¹å¿å­˜å‚¨ä¸å¯ç”¨å¹¶å£°æ˜åªå­˜æœ¬æœº")
-    require("innerHTML" not in sessions_module
-            and 'from "./finance-terminal-sessions.mjs"' in terminal_visuals
-            and "sessionState" in sessions_module
-            and "localClock" in sessions_module
-            and "æœªè®¡å…¥äº¤æ˜“æ‰€å‡æ—¥" in page
-            and ".orbit-session" in vision_css
-            and "session-open" in vision_css,
-            "äº¤æ˜“æ—¶æ®µçŠ¶æ€å¿…é¡»ä¸ºçº¯æ—¥å†è®¡ç®—ã€æŠ«éœ²æœªè®¡å‡æ—¥å¹¶æä¾›éé¢œè‰²åŒºåˆ†")
-    require("innerHTML" not in worldmap_module
-            and 'from "./finance-terminal-worldmap.mjs"' in terminal_visuals
-            and "renderWorldHeatmap" in worldmap_module
-            and "pressureTone" in worldmap_module
-            and "earth-water.jpg" in worldmap_module
-            and 'id="risk-map-canvas"' in page
-            and ".risk-map-canvas-ready" in reference_fidelity_css,
-            "ç‚¹é˜µä¸–ç•Œåœ°å›¾å¿…é¡»ä½¿ç”¨åŒæºé®ç½©ã€æ—¢æœ‰å›æŠ¥ç€è‰²å¹¶ä¿ç•™SVGé™çº§")
-    require('@media (max-width: 1040px)' in vision_css
-            and '@media (max-width: 780px)' in vision_css
-            and '@media (max-width: 620px)' in vision_css
-            and "prefers-reduced-motion" in vision_css
-            and "forced-colors" in vision_css,
-            "ç§‘å¹»è§†è§‰å±‚ç¼ºå°‘æ¡Œé¢ã€å¹³æ¿ã€æ‰‹æœºã€å‡å°‘åŠ¨ç”»æˆ–å¼ºåˆ¶é¢œè‰²è§„åˆ™")
-    require(".section-nav a { min-width: 44px; min-height: 44px; justify-content: center; }" in vision_css
-            and ".global-risk-map-layout > *" in vision_css
-            and ".pipeline-command > *" in vision_css
-            and vision_css.count("grid-template-columns: minmax(0, 1fr);") >= 2
-            and ".hero-telemetry .meta-item" in vision_css,
-            "ç§‘å¹»è§†è§‰å±‚ç¼ºå°‘360pxè§¦æ§ç›®æ ‡æˆ–å¤æ‚ç½‘æ ¼å®‰å…¨æ”¶ç¼©è¾¹ç•Œ")
-    terms_page = TERMS_PAGE.read_text(encoding="utf-8")
-    privacy_page = PRIVACY_PAGE.read_text(encoding="utf-8")
-    legal_css = LEGAL_CSS.read_text(encoding="utf-8")
-    home = HOME.read_text(encoding="utf-8")
-    require("4é¡¹ç«™å†…çœŸå®æ•°æ®ä¸2é¡¹TradingViewå…è´¹ETFä»£ç†" in page,
-            "é¡µé¢é¦–å±ç¼ºå°‘å…è´¹æ•°æ®è¦†ç›–æç¤º")
-    require("FRED APIä½¿ç”¨æ¡æ¬¾" in page
-            and "æœªè·åœ£è·¯æ˜“æ–¯è”å‚¨ã€EIAæˆ–TradingViewè®¤å¯æˆ–è®¤è¯" in page,
-            "é¡µé¢ç¼ºå°‘æ¥æºè¯´æ˜ä¸æ¡æ¬¾å…¥å£")
-    require("DTWEXBGS" in page and "ä¸æ˜¯ICE DXY" in page and "è‡ªåŠ¨æ›´æ–°å¤±è´¥" in page, "é¡µé¢æœªå‡†ç¡®è§£é‡Šå¹¿ä¹‰ç¾å…ƒæŒ‡æ•°ä¸å›é€€è§„åˆ™")
-    require("RWTC" in page and "ä¸æ˜¯ <code>CL=F</code>" in page and "EIA APIæ–‡æ¡£" in page, "é¡µé¢æœªå‡†ç¡®è§£é‡ŠWTIç°è´§æ¥æºä¸å£å¾„")
-    require("å®˜æ–¹é™æ€å¿«ç…§" not in page, "é¡µé¢ä¸å¾—ç»§ç»­æŠŠDTWEXBGSæè¿°ä¸ºé™æ€å¿«ç…§")
-    require("0 DEMO" in page, "é¡µé¢æœªæ˜ç¡®æŠ«éœ²é›¶æ¼”ç¤ºè¡Œæƒ…")
-    require("Powered by CoinGecko" in page and "Yahoo BTC-USD" in page,
-            "é¡µé¢æœªæŠ«éœ²BTC/USDä¸»è¦æ¥æºã€ç½²åæˆ–é™çº§å£å¾„")
-    require('if (source.name === "Powered by CoinGecko") link.classList.add("coingecko-attribution")' in app
-            and ".coingecko-attribution" in page and "font-size: 11px" in page,
-            "CoinGeckoç½²åå¿…é¡»ä½¿ç”¨å¯æœºå™¨è¯†åˆ«ä¸”ä¸å°äº10pxçš„é†’ç›®æ ·å¼")
-    require('href="terms.html"' in page and 'href="privacy.html"' in page
-            and 'class="legal-links"' in page,
-            "é‡‘èç»ˆç«¯é¡µè„šç¼ºå°‘æ˜“è®¿é—®çš„ä½¿ç”¨æ¡æ¬¾æˆ–éšç§æ”¿ç­–")
-    require("CoinGecko APIåŠç›¸å…³æ•°æ®ã€å“ç‰Œå’ŒçŸ¥è¯†äº§æƒå±äºGecko Labs" in terms_page
-            and "å‡ºå”®ã€å‡ºç§Ÿã€è½¬æˆæƒã€å†åˆ†å‘" in terms_page
-            and "CoinGeckoä¸è´Ÿè´£æœ¬äº§å“" in terms_page
-            and "åŠ å¯†èµ„äº§ä»·æ ¼é«˜åº¦æ³¢åŠ¨" in terms_page
-            and "https://www.coingecko.com/en/api_terms" in terms_page,
-            "ç”¨æˆ·æ¡æ¬¾ç¼ºå°‘CoinGeckoæ‰€æœ‰æƒã€ä¿æŠ¤æ€§é™åˆ¶ã€è´£ä»»æ’é™¤æˆ–åŠ å¯†èµ„äº§é£é™©æŠ«éœ²")
-    require("æ— éœ€æ³¨å†Œçš„é™æ€Public Beta" in privacy_page
-            and "TradingViewå®˜æ–¹ç»„ä»¶" in privacy_page
-            and "ç»ˆç«¯åº”ç”¨ä»£ç å½“å‰ä¸ä½¿ç”¨æœ¬åœ°å­˜å‚¨" in privacy_page
-            and "https://www.coingecko.com/en/privacy" in privacy_page,
-            "éšç§æ”¿ç­–ç¼ºå°‘å½“å‰æ”¶é›†èŒƒå›´ã€ç¬¬ä¸‰æ–¹ç»„ä»¶ã€æœ¬åœ°å­˜å‚¨æˆ–CoinGeckoéšç§å…¥å£")
-    require("font-size: 16px" in legal_css and "min-width: 320px" in legal_css
-            and "<script" not in terms_page and "<script" not in privacy_page,
-            "æ³•å¾‹é¡µé¢å¿…é¡»ä¿æŒç§»åŠ¨ç«¯å¯è¯»ä¸”ä¸å¾—æ–°å¢è¿½è¸ªè„šæœ¬")
-    for legal_page in (terms_page, privacy_page):
-        require(all('rel="noopener noreferrer"' in tag
-                    for tag in re.findall(r'<a[^>]+target="_blank"[^>]*>', legal_page)),
-                "æ³•å¾‹é¡µé¢å¤–é“¾å¿…é¡»éš”ç¦»æ–°çª—å£ä¸Šä¸‹æ–‡")
-    require("DIAä¸GLDåˆ†åˆ«ä»…ä½œä¸ºDJIAä¸LBMA Gold Price PMçš„å…è´¹ETFä»£ç†" in page
-            and "ä¸æ˜¯åŒä¸€åŸæ ‡çš„" in page
-            and "ä¸æŠ“å–ã€ä¸å¯¼å‡ºã€ä¸ä¿å­˜" in page,
-            "é¡µé¢æœªæŠ«éœ²å…è´¹ETFä»£ç†ä¸åŸæ ‡çš„è¾¹ç•Œ")
-    require('id="data-banner"' in page and 'id="market-grid"' in page, "é¡µé¢ç¼ºå°‘æ•°æ®çŠ¶æ€æˆ–å¡ç‰‡å®¹å™¨")
-    require('id="license-notice" role="region"' in page
-            and 'aria-labelledby="license-title"' in page
-            and "å…è´¹ä»£ç†è¡Œæƒ…ç­–ç•¥" in page,
-            "é¡µé¢ç¼ºå°‘å…è´¹ä»£ç†è¡Œæƒ…ç­–ç•¥åŒºåŸŸ")
-    require('id="risk-grid"' in page and 'id="risk-summary"' in page and "å¸‚åœºçŠ¶æ€" in page, "é¡µé¢ç¼ºå°‘å¸‚åœºçŠ¶æ€æ¨¡å—")
-    require('id="research-grid"' in page and 'id="research-summary"' in page and "å¸‚åœºå¼ºå¼±ä¸é¢†è¢–" in page, "é¡µé¢ç¼ºå°‘å¸‚åœºç ”ç©¶æ¨¡å—")
-    require('id="information-grid"' in page and 'id="information-summary"' in page and "å¸‚åœºæ´å¯Ÿä¸åŠ¨æ€" in page
-            and 'id="market-insight-title"' in page and 'id="market-insight-copy"' in page
-            and "RULE-BASED Â· VERIFIED SIGNALS" in page,
-            "é¡µé¢ç¼ºå°‘äº‹ä»¶èµ„è®¯æ¨¡å—")
-    require('id="operations-grid"' in page and 'id="operations-summary"' in page and "ç¨³å®šV1è¿è¡Œè¯æ®" in page,
-            "é¡µé¢ç¼ºå°‘å››ç®¡é“ç¨³å®šV1è¿è¡Œè¯æ®æ¨¡å—")
-    require('id="market-tape"' in page and 'class="market-orbit-svg"' in page
-            and page.count('data-market-time=') == 4
-            and "éèµ„é‡‘æµå‘å›¾" in page,
-            "é¡µé¢ç¼ºå°‘æ ¸å¿ƒèµ„äº§è¡Œæƒ…å¸¦ã€å…¨æ¯åœ°çƒæ—¶åŒºæˆ–éèµ„é‡‘æµå‘è¯´æ˜")
-    require('id="global-risk-map"' in page and page.count('data-risk-region=') == 8
-            and "åŒºåŸŸä»£è¡¨æ€§è‚¡ç¥¨æŒ‡æ•°çš„å½“æ—¥ä»·æ ¼è·Œå¹…ä½œä¸ºå¸‚åœºå‹åŠ›ä»£ç†" in page
-            and "ä¸æ˜¯å›½å®¶é£é™©è¯„åˆ†" in page,
-            "å…¨çƒé£é™©çƒ­åŠ›å›¾ç¼ºå°‘åŒºåŸŸè·¯å¾„ã€å‹åŠ›ä»£ç†å£å¾„æˆ–é£é™©è¾¹ç•Œè¯´æ˜")
-    require('id="stable-v1-ring" role="progressbar"' in page
-            and 'aria-valuemax="7"' in page and 'id="pipeline-nodes"' in page,
-            "é¡µé¢ç¼ºå°‘ç¨³å®šV1 7å‘¨æœŸHUDæˆ–å››ç®¡çº¿èŠ‚ç‚¹")
-    require("å¥åº·å¿«ç…§ä¸è¿ç»­å‘¨æœŸè¯æ®æ˜¯ä¸¤å¥—ç‹¬ç«‹ä¿¡å·" in page
-            and "Betaéœ€å››æ¡ç®¡é“å„æ»¡3ä¸ªå‘¨æœŸ" in page,
-            "é¡µé¢æœªåŒºåˆ†ä»“åº“å¥åº·å¿«ç…§ä¸è¿œç«¯Betaé—¨ç¦è¯æ®")
-    require("finance_terminal_beta_gate.yml" in page and "finance-terminal-data.yml" in page
-            and "æŠ¥å‘Šæ•°æ®é—®é¢˜" in page, "é¡µé¢ç¼ºå°‘è¿œç«¯é—¨ç¦æˆ–ç»“æ„åŒ–æ•°æ®åé¦ˆå…¥å£")
-    require('class="skip-link" href="#main-content"' in page and 'id="main-content" tabindex="-1"' in page,
-            "é¡µé¢ç¼ºå°‘è·³åˆ°ä¸»è¦å†…å®¹çš„é”®ç›˜å…¥å£")
-    require('id="page-announcer" role="status" aria-live="polite" aria-atomic="true"' in page,
-            "é¡µé¢ç¼ºå°‘åŸå­åŒ–åŠ è½½çŠ¶æ€æ’­æŠ¥")
-    require('id="data-banner" role="region"' in page and 'aria-labelledby="banner-title"' in page,
-            "æ•°æ®æ¨ªå¹…å¿…é¡»ä½¿ç”¨æœ‰åç§°çš„é™æ€åŒºåŸŸï¼Œé¿å…é‡å¤æ’­æŠ¥")
-    require(page.count('aria-live="polite"') == 1, "é¡µé¢åªèƒ½ä¿ç•™ä¸€ä¸ªç¤¼è²Œçº§å®æ—¶æ’­æŠ¥åŒº")
-    require(page.count('role="list"') >= 5, "äº”ä¸ªåŠ¨æ€å¡ç‰‡å®¹å™¨å¿…é¡»ä½¿ç”¨åˆ—è¡¨è¯­ä¹‰")
-    require("è·¨èµ„äº§å¼ºå¼±" in page and "ä»Šæ—¥ã€è¿‘ä¸€å‘¨ã€è¿‘ä¸€æœˆã€å¹´åˆè‡³ä»Šå’Œè¿‘ä¸€å¹´" in page, "é¡µé¢æœªè¯´æ˜è·¨èµ„äº§æ’è¡Œå‘¨æœŸ")
-    require("ETFæˆ–æœŸè´§ä»£ç†" in page and "è¶…è¿‡72å°æ—¶" in page, "é¡µé¢æœªæŠ«éœ²è·¨èµ„äº§ä»£ç†å£å¾„æˆ–è¿‡æœŸè§„åˆ™")
-    require("å…¨çƒèµ„äº§å¸‚å€¼" in page
-            and "å·²æŠ«éœ²å¸‚å€¼ä»£ç†" in page and "ä¸ä¼šç”¨æ–‡ä»¶æ›´æ–°æ—¶é—´ä»£æ›¿" in page
-            and "æœªç™»è®°`PARTIAL`è·¯å¾„ä»ä¼šæ˜ç¡®é™çº§" in page,
-            "é¡µé¢æœªè¯´æ˜å…¨çƒèµ„äº§å¸‚å€¼é€æ¡æ¥æºé™åˆ¶")
-    require("å…¨çƒå…¬å¸é¢†è¢–" in page and "æœªä¸Šå¸‚ä¼°å€¼ä¸å‚ä¸æ¶¨è·Œæ’åº" in page, "é¡µé¢æœªè¯´æ˜å…¬å¸é¢†è¢–çš„ä¸Šå¸‚èŒƒå›´")
-    require("åŠ¨æ€è¡Œæƒ…å’Œæ…¢é¢‘ä¼°å€¼åˆ†å±‚" in page and "ä¸ä¼šå•ç‹¬è¢«å½“ä½œæ›´æ–°å¤±è´¥" in page,
-            "é¡µé¢æœªæŠ«éœ²å…¬å¸æ•°æ®é€é¡¹æ–°é²œåº¦é™åˆ¶")
-    require("CNNææ…Œä¸è´ªå©ªåˆ†æ•°" in page and "0â€“100" in page, "é¡µé¢æœªè¯´æ˜CNNææ…Œä¸è´ªå©ªæŒ‡æ ‡å£å¾„")
-    require("OFRé‡‘èå‹åŠ›æŒ‡æ•°ä»¥0ä¸ºå†å²å¹³å‡" in page and "æ­£å€¼é«˜äºå¹³å‡å‹åŠ›" in page, "é¡µé¢æœªè¯´æ˜OFRé‡‘èå‹åŠ›å£å¾„")
-    require("ç»æµæ—¥å†å¤ç”¨Forex Factoryå…¬å¼€å‘¨å†" in page and "è¶…è¿‡36å°æ—¶" in page and "è®¾å¤‡æœ¬åœ°æ—¶åŒº" in page,
-            "é¡µé¢æœªè¯´æ˜ç»æµæ—¥å†æ¥æºã€æ—¶åŒºæˆ–è¿‡æœŸè§„åˆ™")
-    require("è´¢ç»æ–°é—»åªè¯»å–â€œæœ€æ–°æ¶ˆæ¯â€æ•°æ®ä¸­çš„" in page and "Yahooè¡Œæƒ…å¿«ç…§ä¸å‚ä¸ç»ˆç«¯è¡Œæƒ…" in page,
-            "é¡µé¢æœªè¯´æ˜è´¢ç»æ–°é—»æ¿å—èŒƒå›´æˆ–è¡Œæƒ…æ’é™¤è§„åˆ™")
-    require("æ–°é—»æ–‡ä»¶è¶…è¿‡12å°æ—¶" in page and "æœ€æ–°æ–‡ç« è¶…è¿‡36å°æ—¶" in page and "Google Newsè·³è½¬åŸåª’ä½“" in page,
-            "é¡µé¢æœªè¯´æ˜è´¢ç»æ–°é—»æ—¶æ•ˆæˆ–è·³è½¬æ¥æº")
-    require("UPDATE HEALTH" in app and "é¦–æ¬¡è¿ç§»æ— æ³•è¿½æº¯æ—§ä»»åŠ¡" in page
-            and "å››ä¸ªè¾…åŠ©æ¥æºå¥åº·" in page,
-            "é¡µé¢æœªå±•ç¤ºæˆ–è§£é‡Šå››ä¸ªè¾…åŠ©æ¥æºæ›´æ–°é“¾å¥åº·")
-    require("official-update-health" in app and "adaptOfficialSourceHealth" in app
-            and "ä¸‰å¼ å®˜æ–¹è¡Œæƒ…å¡ç‰‡" in page and "é€æºå¥åº·å¿«ç…§" in page,
-            "é¡µé¢æœªå±•ç¤ºæˆ–è§£é‡Šä¸‰é¡¹å®˜æ–¹è¡Œæƒ…é€æºæ›´æ–°é“¾å¥åº·")
-    require("official-trend" in page and "buildOfficialObservationTrend" in app
-            and "normalizeOfficialObservations" in app and "RECENT OBSERVATIONS" in app
-            and "æœ€å¤š8é¡¹" in page and "ä¸ä»¥æ¼”ç¤ºèµ°åŠ¿å¡«å……" in page,
-            "é¡µé¢æœªæ ¡éªŒæˆ–å±•ç¤ºä¸‰é¡¹å®˜æ–¹è¡Œæƒ…æœ€è¿‘è§‚æµ‹è¶‹åŠ¿")
-    require('src="app.js"' in page, "é¡µé¢æœªåŠ è½½æœ¬åœ°app.js")
-    require('rel="modulepreload" href="finance-terminal-loader.mjs"' in page
-            and 'import("./finance-terminal-loader.mjs")' in app,
-            "é¡µé¢æœªé¢„åŠ è½½æˆ–åŠ¨æ€å¯¼å…¥åŸç”Ÿåˆ†åŒºåŠ è½½æ¨¡å—")
-    require('critical:Object.freeze(["macro","macroHealth","assetRanking","assetRankingHealth","marketLicense"])'
-            in compact_loader and "criticalSourceCount:RESOURCE_GROUPS.critical.length" in compact_loader,
-            "é¦–å±èµ„æºå¥‘çº¦å¿…é¡»å›ºå®šä¸ºå®è§‚ã€èµ„äº§æ¦œåŠè®¸å¯5ä»½èµ„æº")
-    require("requests=newMap()" in compact_loader and "if(!requests.has(key))" in compact_loader
-            and "createDeferredSectionScheduler" in loader and "IntersectionObserver" in loader
-            and "navigationLinks" in loader,
-            "åˆ†åŒºåŠ è½½å™¨ç¼ºå°‘å…±äº«è¯·æ±‚ç¼“å­˜ã€è§†å£è§‚å¯Ÿæˆ–å¯¼èˆªè§¦å‘å¥‘çº¦")
-    require('loader.loadGroup("critical")' in loader and "data-critical-data-state" in loader
-            and "data-deferred-data-state" in loader and "criticalSourceRequestCount" in loader
-            and "criticalPaintBarrier" in loader and "requestedKeysAtSchedulerStart" in loader
-            and "networkRequestCount" in loader and "duplicateNetworkRequestCount" in loader
-            and "sectionTransitions" in loader and "stagedDataLoading" in regression_module,
-            "é¡µé¢æœªåŒºåˆ†é¦–å±ä¸å»¶è¿Ÿåˆ†åŒºåŠ è½½çŠ¶æ€")
-    compact_page = re.sub(r"\s+", "", page)
-    require(contrast_ratio(css_hex_variable(page, "faint"), css_hex_variable(page, "panel")) >= 4.5,
-            "æœ€å¼±æ­£æ–‡è‰²ä¸å¡ç‰‡èƒŒæ™¯å¯¹æ¯”åº¦å¿…é¡»è¾¾åˆ°WCAG AA 4.5:1")
-    require('content="width=device-width,initial-scale=1.0"' in compact_page, "é¡µé¢ç¼ºå°‘ç§»åŠ¨ç«¯viewport")
-    require(
-        ".market-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))" in compact_page,
-        "æ¡Œé¢ç«¯å¿…é¡»æ˜¾ç¤ºå››åˆ—å¸‚åœºå¡ç‰‡",
-    )
-    require(
-        ".risk-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))" in compact_page,
-        "æ¡Œé¢ç«¯å¸‚åœºçŠ¶æ€æ¨¡å—å¿…é¡»æ”¯æŒä¸‰åˆ—ä¿¡å·å¡ç‰‡",
-    )
-    require(
-        ".research-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))" in compact_page,
-        "æ¡Œé¢ç«¯å¸‚åœºç ”ç©¶æ¨¡å—å¿…é¡»æ”¯æŒä¸‰åˆ—å¡ç‰‡",
-    )
-    require(
-        ".information-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))" in compact_page,
-        "æ¡Œé¢ç«¯äº‹ä»¶èµ„è®¯æ¨¡å—å¿…é¡»æ”¯æŒåŒåˆ—å¡ç‰‡",
-    )
-    require(
-        ".operations-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))" in compact_page,
-        "æ¡Œé¢ç«¯è¿è¡ŒçŠ¶æ€æ¨¡å—å¿…é¡»æ”¯æŒå››åˆ—ç®¡é“å¡ç‰‡",
-    )
-    require(
-        "@media(max-width:1040px)" in compact_page
-        and ".market-grid{grid-template-columns:repeat(2,minmax(0,1fr))" in compact_page,
-        "å¹³æ¿ç«¯å¿…é¡»æ˜¾ç¤ºä¸¤åˆ—å¸‚åœºå¡ç‰‡",
-    )
-    require(".hero>*{min-width:0" in compact_page
-            and ".hero{grid-template-columns:minmax(0,1fr);gap:30px" in compact_page,
-            "çª„å±Heroç½‘æ ¼å¿…é¡»å…è®¸åŒ…å«ä¸æ¢è¡Œå…ƒæ•°æ®çš„å­é¡¹æ”¶ç¼©")
-    require(".meta-grid{grid-template-columns:minmax(0,1fr)" in compact_page,
-            "360åƒç´ å…ƒæ•°æ®ç½‘æ ¼å¿…é¡»å…è®¸é•¿æ¥æºå­—æ®µæ”¶ç¼©å¹¶çœç•¥")
-    require(
-        "@media(max-width:1040px)" in compact_page
-        and ".risk-grid{grid-template-columns:repeat(2,minmax(0,1fr))" in compact_page,
-        "å¹³æ¿ç«¯å¸‚åœºçŠ¶æ€æ¨¡å—å¿…é¡»ä½¿ç”¨ä¸¤åˆ—å¸ƒå±€",
-    )
-    require(
-        "@media(max-width:1040px)" in compact_page
-        and ".research-grid{grid-template-columns:repeat(2,minmax(0,1fr))" in compact_page,
-        "å¹³æ¿ç«¯å¸‚åœºç ”ç©¶æ¨¡å—å¿…é¡»ä½¿ç”¨ä¸¤åˆ—å¸ƒå±€",
-    )
-    require(
-        "@media(max-width:1040px)" in compact_page
-        and ".information-grid{grid-template-columns:1fr" in compact_page,
-        "768åƒç´ äº‹ä»¶èµ„è®¯æ¨¡å—å¿…é¡»ä½¿ç”¨å•åˆ—å¸ƒå±€",
-    )
-    require(
-        "@media(max-width:1040px)" in compact_page
-        and ".operations-grid{grid-template-columns:repeat(2,minmax(0,1fr))" in compact_page,
-        "768åƒç´ è¿è¡ŒçŠ¶æ€æ¨¡å—å¿…é¡»ä½¿ç”¨ä¸¤åˆ—å¸ƒå±€",
-    )
-    require(
-        "@media(max-width:620px)" in compact_page
-        and ".market-grid{grid-template-columns:1fr" in compact_page,
-        "æ‰‹æœºç«¯å¿…é¡»æ˜¾ç¤ºå•åˆ—å¸‚åœºå¡ç‰‡",
-    )
-    require(
-        "@media(max-width:620px)" in compact_page
-        and ".risk-grid{grid-template-columns:1fr" in compact_page,
-        "æ‰‹æœºç«¯å¸‚åœºçŠ¶æ€æ¨¡å—å¿…é¡»ä½¿ç”¨å•åˆ—å¸ƒå±€",
-    )
-    require(
-        "@media(max-width:620px)" in compact_page
-        and ".research-grid{grid-template-columns:1fr" in compact_page,
-        "æ‰‹æœºç«¯å¸‚åœºç ”ç©¶æ¨¡å—å¿…é¡»ä½¿ç”¨å•åˆ—å¸ƒå±€",
-    )
-    require(
-        "@media(max-width:620px)" in compact_page
-        and ".operations-grid{grid-template-columns:1fr" in compact_page,
-        "æ‰‹æœºç«¯è¿è¡ŒçŠ¶æ€æ¨¡å—å¿…é¡»ä½¿ç”¨å•åˆ—å¸ƒå±€",
-    )
-    require(
-        "@media(max-width:620px)" in compact_page
-        and ".event-row{grid-template-columns:48pxminmax(0,1fr)" in compact_page,
-        "360åƒç´ ç»æµäº‹ä»¶è¡Œå¿…é¡»ä½¿ç”¨ç´§å‡‘å¸ƒå±€",
-    )
-    require(
-        ".brand,.back-link,.period-tab,.source-link,.detail-link{display:inline-flex;min-height:44px" in compact_page,
-        "360åƒç´ ä¸»è¦äº¤äº’æ§ä»¶å¿…é¡»æä¾›è‡³å°‘44åƒç´ è§¦æ§é«˜åº¦",
-    )
-    require("touch-action:manipulation" in compact_page and ".event-values{display:flex;flex-wrap:wrap;white-space:normal" in compact_page,
-            "æ‰‹æœºç«¯ç¼ºå°‘è§¦æ§ä¼˜åŒ–æˆ–ç»æµæ•°æ®æ¢è¡Œä¿æŠ¤")
-    require("@media(prefers-reduced-motion:reduce)" in compact_page
-            and "animation-duration:0.01ms!important" in compact_page,
-            "é¡µé¢æœªå®Œæ•´å°Šé‡å‡å°‘åŠ¨ç”»åå¥½")
-    require("@media(prefers-contrast:more)" in compact_page and "@media(forced-colors:active)" in compact_page,
-            "é¡µé¢ç¼ºå°‘é«˜å¯¹æ¯”åå¥½æˆ–ç³»ç»Ÿå¼ºåˆ¶é¢œè‰²æ”¯æŒ")
-    require('macro:"../macro-radar/data.json"' in compact_loader, "åˆ†åŒºåŠ è½½å™¨æœªè¯»å–ç°æœ‰å®è§‚é›·è¾¾æ•°æ®")
-    require('macroHealth:"../macro-radar/health.json"' in compact_loader,
-            "åˆ†åŒºåŠ è½½å™¨æœªè¯»å–å®è§‚é›·è¾¾é€æºå¥åº·å¿«ç…§")
-    require("businessDaysSince" in app and "DGS10_MAX_BUSINESS_DAYS" in app and '"stale"' in app, "app.jsæœªå®ç°DGS10è¿‡æœŸåˆ¤æ–­")
-    require("DTWEXBGS_MAX_BUSINESS_DAYS" in app and "findDtwexbgsReference" in app, "app.jsæœªè¯»å–DTWEXBGSè‡ªåŠ¨æ›´æ–°è®°å½•")
-    require("var DTWEXBGS_MAX_BUSINESS_DAYS = 8;" in app
-            and "H.10æŒ‰å‘¨æˆæ‰¹å‘å¸ƒ" in app
-            and "æ—¥åº¦è§‚æµ‹ Â· æ¯å‘¨æˆæ‰¹å‘å¸ƒ" in app,
-            "DTWEXBGS æ–°é²œåº¦é˜ˆå€¼å¿…é¡»åŒ¹é… H.10 æ¯å‘¨æˆæ‰¹å‘å¸ƒçš„çœŸå®èŠ‚å¥ï¼š"
-            "æ—¥é¢‘å‡è®¾ä¸‹çš„ 3 ä¸ªå·¥ä½œæ—¥ä¼šè®©å®ƒæ¯å‘¨æœ‰ä¸€åŠæ—¶é—´è¯¯æŠ¥è¿‡æœŸ")
-    require("record.price / record.previousPrice" in app and "refreshFailed" in app, "DTWEXBGSæ¶¨è·Œå¹…æˆ–å¤±è´¥å›é€€ä¸å¯å¤ç°")
-    require("RWTC_MAX_BUSINESS_DAYS" in app and "findRwtcReference" in app and "adaptRwtc" in app, "app.jsæœªè¯»å–RWTCè‡ªåŠ¨æ›´æ–°è®°å½•")
-    require("MACRO_REGIME_MAX_BUSINESS_DAYS" in app and "adaptMacroRegime" in app and "buildRiskCards" in app, "app.jsæœªæ¥å…¥å®è§‚çŠ¶æ€é€‚é…å±‚")
-    require('fearGreed:"../fear-greed/data.json"' in compact_loader
-            and "FEAR_GREED_MAX_BUSINESS_DAYS" in app and "adaptFearGreed" in app,
-            "é‡‘èç»ˆç«¯æœªæ¥å…¥CNNææ…Œä¸è´ªå©ªæ•°æ®")
-    require('ofr:"../ofr-monitor/data.json"' in compact_loader
-            and "OFR_FSI_MAX_BUSINESS_DAYS" in app and "adaptOfrFsi" in app,
-            "é‡‘èç»ˆç«¯æœªæ¥å…¥OFRé‡‘èå‹åŠ›æ•°æ®")
-    require('assetTracker:"../asset-tracker/data.json"' in compact_loader
-            and "ASSET_TRACKER_MAX_AGE_HOURS" in app, "é‡‘èç»ˆç«¯æœªè¯»å–ç°æœ‰è·¨èµ„äº§æ•°æ®")
-    require('assetTrackerHealth:"../asset-tracker/health.json"' in compact_loader
-            and 'assetRankingHealth:"../asset-ranking/health.json"' in compact_loader
-            and 'companiesHealth:"../companies/health.json"' in compact_loader,
-            "åˆ†åŒºåŠ è½½å™¨æœªè¯»å–ä¸‰æ¡èšåˆç®¡é“å¥åº·æ–‡ä»¶")
-    require("adaptSourceHealth" in app and "safeSourceHealth" in app and "appendSourceHealth" in app,
-            "app.jsæœªæ ¡éªŒæˆ–å±•ç¤ºæ¥æºå¥åº·çŠ¶æ€")
-    require("adaptMacroSourceHealth" in operations_data_module
-            and "buildOperationsCards" in operations_data_module
-            and "renderOperationsCards" in app and "makeOperationCard" in operations_view_module,
-            "è¿è¡Œè¯æ®æ•°æ®å±‚æœªæ ¡éªŒæˆ–æ¸²æŸ“å››ç®¡é“Betaè¿è¡ŒçŠ¶æ€")
-    require('readiness:"readiness.json"' in compact_loader
-            and "adaptReadinessSnapshot" in operations_data_module
-            and "READINESS_MAX_AGE_HOURS" in operations_data_module
-            and "operation-readiness" in operations_view_module
-            and "STABLE V1 EVIDENCE" in operations_view_module,
-            "é‡‘èç»ˆç«¯æœªè¯»å–ã€æ ¡éªŒæˆ–æ¸²æŸ“ç¨³å®šV1è¿ç»­å‘¨æœŸè¯æ®")
-    # è¿è¡Œè¯æ®çš„é€‚é…åªæœ‰è¯¥åˆ†åŒºç”¨å¾—ä¸Šï¼Œä¸è¯¥è¿›é¦–å±ã€‚
-    require('import("./finance-terminal-operations-data.mjs")' in app
-            and "createOperationsData" in operations_data_module
-            and "adaptMacroSourceHealth" not in app
-            and "adaptReadinessSnapshot" not in app,
-            "è¿è¡Œè¯æ®æ•°æ®å±‚å¿…é¡»æŒ‰éœ€åŠ è½½ï¼Œä¸”å…¶é€‚é…å‡½æ•°ä¸å¾—ç•™åœ¨é¦–å±è„šæœ¬é‡Œ")
-    require(OPERATIONS_DATA_MODULE.stat().st_size <= 23_000,
-            "é‡‘èç»ˆç«¯è¿è¡Œè¯æ®æ•°æ®å±‚è¶…è¿‡23KBæ€§èƒ½é¢„ç®—")
-    require('marketLicense:"market-source-readiness.json"' in compact_loader
-            and "adaptMarketLicenseReadiness" in app
-            and "renderMarketLicenseNotice" in app and "FREE DATA" in app,
-            "é‡‘èç»ˆç«¯æœªè¯»å–ã€æ ¡éªŒæˆ–æ¸²æŸ“å…è´¹ä»£ç†è¡Œæƒ…çŠ¶æ€")
-    require("ç¨³å®šV1è¿è¡Œè¯æ®" in page and "åŒä¸€æ—¥æ›´å‘¨æœŸé‡è·‘ä¸ä¼šé‡å¤ç´¯è®¡" in page,
-            "é¡µé¢æœªåŒºåˆ†å¥åº·å¿«ç…§ä¸ç¨³å®šV1å‘¨æœŸé—¨ç¦")
-    require("å¯ç”¨è¦†ç›–" in operations_view_module and "æœ¬è½®æ–°é²œ" in operations_view_module
-            and "å·²éªŒè¯è¦†ç›–" in operations_view_module and "å¤±è´¥å›é€€" in operations_view_module,
-            "è¿è¡ŒçŠ¶æ€å¡ç‰‡ç¼ºå°‘è¦†ç›–ç‡ã€æ—¶æ•ˆæˆ–å›é€€è¯´æ˜")
-    require("pipeline-health" in page and "æœ¬è½®è¡Œæƒ…" in app and "è¿ç»­å¤±è´¥" in operations_view_module
-            and "æœ€è¿‘å°è¯•" in operations_view_module and "æœ€åæˆåŠŸ" in operations_view_module
-            and "å¥åº·æŠ¥å‘Šå·²è¶…è¿‡" in app,
-            "é¡µé¢ç¼ºå°‘ç®¡é“çŠ¶æ€ã€æœ¬è½®è¦†ç›–ã€å°è¯•æ—¶é—´ã€è¿‡æœŸæç¤ºæˆ–æœ€åæˆåŠŸä¿¡æ¯")
-    require("adaptCrossAsset" in app and "rankCrossAssetPeriod" in app and "buildResearchCards" in app, "app.jsæœªå®ç°è·¨èµ„äº§é€‚é…å’Œæ’è¡Œ")
-    require("asset.stale" in app and "asset.suspect" in app and "paused" in app, "è·¨èµ„äº§æ’è¡Œæœªæ’é™¤å¼‚å¸¸è¡Œæˆ–æš‚åœè¿‡æœŸä»Šæ—¥æ’è¡Œ")
-    require("normalizeDataMeta" in app and "summarizeRowQuality" in app and "appendQualitySummary" in app,
-            "è·¨èµ„äº§å¡ç‰‡æœªè¯»å–æˆ–å±•ç¤ºé€æ¡æ•°æ®çŠ¶æ€")
-    require("normalizeAssetProxy" in app and "proxy-badge" in page and "PROXY" in app,
-            "è·¨èµ„äº§é¡µé¢æœªæ ¡éªŒæˆ–æ˜¾å¼å±•ç¤ºä»£ç†æ ‡çš„")
-    require("quality-strip" in page and "quality.counts.fallback" in app and "å†å²å›é€€" in app,
-            "é¡µé¢ç¼ºå°‘è¡Œæƒ…ã€å›é€€ã€ä¼°ç®—ä¸å¾…ç¡®è®¤è¦†ç›–ä¿¡æ¯")
-    require('assetRanking:"../asset-ranking/data.json"' in compact_loader
-            and "ASSET_RANKING_MAX_AGE_HOURS" in app, "é‡‘èç»ˆç«¯æœªè¯»å–ç°æœ‰å…¨çƒèµ„äº§å¸‚å€¼æ•°æ®")
-    require("adaptAssetRanking" in app and "formatMarketCapBillions" in terminal_views
-            and "asset.dataLabel" in terminal_views and "summarizeRowQuality(rowMetas, data.dataQuality)" in app,
-            "app.jsæœªå®ç°å…¨çƒèµ„äº§å¸‚å€¼é€æ¡æ¥æºé€‚é…æˆ–å£å¾„æ ‡ç­¾")
-    require('companies:"../companies/data.json"' in compact_loader
-            and "COMPANIES_MAX_AGE_HOURS" in app, "é‡‘èç»ˆç«¯æœªè¯»å–ç°æœ‰å…¬å¸æ¦œæ•°æ®")
-    require("adaptCompanies" in app and "company.private" in app and "freshnessKnown" in app, "app.jsæœªå®ç°ä¸Šå¸‚å…¬å¸ç­›é€‰æˆ–é€é¡¹æ–°é²œåº¦çŠ¶æ€")
-    require("gainer" in app and "laggard" in app and "listedMarketCap" in app, "app.jsæœªç”Ÿæˆå…¬å¸é¢†æ¶¨ã€é¢†è·Œå’Œä¸Šå¸‚å¸‚å€¼")
-    require("moverCoverage" in app and "æš‚åœå½“æ—¥é¢†æ¶¨ä¸é¢†è·Œ" in app and "company.dataLabel" in terminal_views,
-            "å…¬å¸æ¦œæœªæŒ‰é€æ¡çŠ¶æ€æš‚åœæˆ–æ¢å¤æ¯æ—¥æ¶¨è·Œæ’è¡Œ")
-    require('calendar:"../econ-calendar/data.json"' in compact_loader
-            and "ECON_CALENDAR_MAX_AGE_HOURS" in information_data_module,
-            "é‡‘èç»ˆç«¯æœªè¯»å–ç°æœ‰ç»æµæ—¥å†æ•°æ®")
-    require("adaptEconomicCalendar" in information_data_module
-            and "buildInformationCards" in information_data_module
-            and "normalizeCalendarEvent" in information_data_module,
-            "äº‹ä»¶èµ„è®¯æ•°æ®å±‚æœªå®ç°ç»æµæ—¥å†é€‚é…ã€æ ¡éªŒæˆ–ç‹¬ç«‹çŠ¶æ€")
-    require('news:"../whats-latest/data.json"' in compact_loader
-            and "FINANCE_NEWS_MAX_AGE_HOURS" in information_data_module
-            and "FINANCE_NEWS_ITEM_MAX_AGE_HOURS" in information_data_module,
-            "äº‹ä»¶èµ„è®¯æ•°æ®å±‚æœªè¯»å–ç°æœ‰è´¢ç»æ–°é—»æˆ–ç¼ºå°‘æ–°é²œåº¦è§„åˆ™")
-    require("adaptFinanceNews" in information_data_module
-            and "isSafeGoogleNewsUrl" in information_data_module
-            and "makeFinanceNewsCard" in terminal_views,
-            "äº‹ä»¶èµ„è®¯æ•°æ®å±‚æœªå®ç°è´¢ç»æ–°é—»é€‚é…ã€å®‰å…¨é“¾æ¥æˆ–æ¸²æŸ“")
-    # äº‹ä»¶èµ„è®¯çš„é€‚é…åªæœ‰è¯¥åˆ†åŒºç”¨å¾—ä¸Šï¼Œä¸è¯¥è¿›é¦–å±ã€‚æ•°æ®å±‚å¿…é¡»æŒ‰éœ€å¯¼å…¥ã€ä¸å¾—å›æµ app.jsã€‚
-    require('import("./finance-terminal-information-data.mjs")' in app
-            and "createInformationData" in information_data_module
-            and "adaptEconomicCalendar" not in app
-            and "adaptFinanceNews" not in app,
-            "äº‹ä»¶èµ„è®¯æ•°æ®å±‚å¿…é¡»æŒ‰éœ€åŠ è½½ï¼Œä¸”å…¶é€‚é…å‡½æ•°ä¸å¾—ç•™åœ¨é¦–å±è„šæœ¬é‡Œ")
-    require(INFORMATION_DATA_MODULE.stat().st_size <= 15_000,
-            "é‡‘èç»ˆç«¯äº‹ä»¶èµ„è®¯æ•°æ®å±‚è¶…è¿‡15KBæ€§èƒ½é¢„ç®—")
-    require('setAttribute("role", "listitem")' in terminal_views, "åŠ¨æ€å¡ç‰‡ç¼ºå°‘åˆ—è¡¨é¡¹è¯­ä¹‰")
-    require("card.tabIndex = 0" not in terminal_views and "article.tabIndex = 0" not in terminal_views,
-            "éäº¤äº’å¡ç‰‡ä¸å¾—è¿›å…¥é”®ç›˜Tabé¡ºåº")
-    require("announceExperience" in app and "pageAnnouncer.textContent" in app,
-            "é¡µé¢æœªé›†ä¸­æ’­æŠ¥å¼‚æ­¥åŠ è½½ç»“æœ")
-    require('setAttribute("role", "tablist")' in terminal_views and 'setAttribute("role", "tab")' in terminal_views
-            and 'setAttribute("role", "tabpanel")' in terminal_views, "è·¨èµ„äº§å‘¨æœŸæœªä½¿ç”¨æ ‡å‡†æ ‡ç­¾é¡µè¯­ä¹‰")
-    require("periodTabTargetIndex" in app and 'event.key' in terminal_views and 'nextButton.focus()' in terminal_views,
-            "è·¨èµ„äº§å‘¨æœŸæœªæ”¯æŒæ–¹å‘é”®ã€Homeå’ŒEndé”®ç›˜å¯¼èˆª")
-    require('setAttribute("aria-selected"' in terminal_views and 'setAttribute("aria-controls"' in terminal_views,
-            "è·¨èµ„äº§å‘¨æœŸæ ‡ç­¾é¡µçŠ¶æ€æˆ–é¢æ¿å…³è”ç¼ºå¤±")
-    require('setAttribute("aria-pressed"' not in terminal_views, "æ ‡ç­¾é¡µä¸å¾—æ··ç”¨aria-pressedæŒ‰é’®æ¨¡å¼")
-    require('import("./finance-terminal-regression.mjs")' in app
-            and "runBrowserRegressionProbe" in regression_module
-            and "finance-terminal-regression-result" in regression_module
-            and "stagedDataLoading" in regression_module
-            and "supportingHealthResources" in regression_module and "supportingHealthPanelCount" in regression_module
-            and "officialHealthResources" in regression_module and "officialHealthPanelCount" in regression_module
-            and "officialObservationTrends" in regression_module and "officialObservationTrendCount" in regression_module
-            and "overviewCardLegibility" in regression_module
-            and "scrollHeight <= n.clientHeight" in regression_module,
-            "é¡µé¢ç¼ºå°‘æµè§ˆå™¨ã€åˆ†åŒºåŠ è½½ã€å®˜æ–¹é€æºæˆ–è¾…åŠ©æ¥æºèµ„æºå›å½’æ¢é’ˆ")
-    require("marketLicenseReadiness" in regression_module and "providerWidgetCount" in regression_module,
-            "æµè§ˆå™¨å›å½’æ¢é’ˆæœªè¦†ç›–å…è´¹ä»£ç†çŠ¶æ€æˆ–å››é¡¹æä¾›æ–¹ç»„ä»¶")
-    require("orbitalTerminalVisuals" in regression_module
-            and "riskHudVisuals" in regression_module
-            and "globalRiskHeatmap" in regression_module
-            and "stableV1Hud" in regression_module
-            and "minimumReadinessCycle" in regression_module,
-            "æµè§ˆå™¨å›å½’æ¢é’ˆæœªè¦†ç›–è¡Œæƒ…å¸¦ã€æ—¶åŒºåœ°çƒã€é£é™©HUDã€åŒºåŸŸçƒ­åŠ›å›¾æˆ–åŠ¨æ€V1èµ„æ ¼")
-    require("providerAttribution" in regression_module and "poweredByCoinGeckoLinks" in regression_module,
-            "æµè§ˆå™¨å›å½’æ¢é’ˆæœªæ ¸å¯¹CoinGeckoç½²åæ–‡æœ¬ã€æ ·å¼æˆ–æœ€å°å­—å·")
-    require("waitForProviderWidgetRegistration" in app and "inspectProviderWidgetHost" in app
-            and "verifyProviderWidgetHosts" in app and "monitorProviderWidgets" in app
-            and "providerWidgetRuntime" in regression_module and "providerWidgetRuntimeStates" in regression_module
-            and "providerWidgetRuntimeEvidence" in regression_module,
-            "é¡µé¢æœªéªŒè¯æˆ–å›å½’å…è´¹ç»„ä»¶çš„æ³¨å†Œä¸å®¿ä¸»æŒ‚è½½çŠ¶æ€")
-    require('data-provider-state", "loading"' in app
-            and "ç»„ä»¶å·²æ³¨å†Œ Â· æ­£åœ¨éªŒè¯å®¿ä¸»" in app
-            and "ç»„ä»¶å®¿ä¸»å·²æŒ‚è½½ Â· æŠ¥ä»·çŠ¶æ€è§ç»„ä»¶" in app
-            and "ç»„ä»¶æœªåŠ è½½ Â· ä½¿ç”¨æ¥æºé“¾æ¥" in app,
-            "å…è´¹ç»„ä»¶ç¼ºå°‘åŠ è½½ã€æ³¨å†Œã€å®¿ä¸»æŒ‚è½½æˆ–å®˜æ–¹é“¾æ¥å›é€€çŠ¶æ€")
-    require("providerWidgetUnavailableCopy" in app
-            and "ç»„ä»¶åŠ è½½è¶…æ—¶ Â· ä½¿ç”¨æ¥æºé“¾æ¥" in app
-            and "ç»„ä»¶æ³¨å†Œå¤±è´¥ Â· ä½¿ç”¨æ¥æºé“¾æ¥" in app
-            and "ç»„ä»¶éªŒè¯ä¸å¯ç”¨ Â· ä½¿ç”¨æ¥æºé“¾æ¥" in app
-            and "ç»„ä»¶æŒ‚è½½å¼‚å¸¸ Â· ä½¿ç”¨æ¥æºé“¾æ¥" in app,
-            "å…è´¹ä»£ç†å¡æœªæŒ‰æ³¨å†Œè¶…æ—¶ã€æ³¨å†Œå¤±è´¥ã€éªŒè¯ä¸å¯ç”¨å’Œå®¿ä¸»å¼‚å¸¸æ˜¾ç¤ºåˆ†å±‚å›é€€åŸå› ")
-    require('params.get("runtimeEvidence") === "1"' in app
-            and "useProductionEvidenceWindow" in app,
-            "æœºå™¨æµè§ˆå™¨è¯æ®æ²¡æœ‰ä½¿ç”¨ä¸ç”Ÿäº§é¡µé¢ä¸€è‡´çš„å®Œæ•´ç»„ä»¶ç­‰å¾…çª—å£")
-    require('.provider-widget-shell[data-provider-state="mounted"]' in page
-            and "visibility: hidden" in page and ".provider-runtime-status" in page,
-            "å…è´¹ç»„ä»¶å®¿ä¸»æœªæŒ‚è½½æ—¶æ²¡æœ‰éšè—ç©ºç»„ä»¶æˆ–ä¿ç•™å¯è§çŠ¶æ€")
-    require("noHorizontalOverflow" in regression_module and "responsiveColumns" in regression_module
-            and "targetSizes" in regression_module and "keyboardTabs" in regression_module,
-            "æµè§ˆå™¨å›å½’æ¢é’ˆæœªè¦†ç›–æº¢å‡ºã€å¸ƒå±€ã€è§¦æ§ä¸é”®ç›˜äº¤äº’")
-    require('class="section-nav"' in page and page.count('class="section-nav"') == 1
-            and "sectionNavigation" in regression_module
-            and 'document.querySelector("details.method > summary")' in regression_module,
-            "é¡µé¢ç¼ºå°‘åˆ†åŒºå¯¼èˆªã€é”šç‚¹å¥‘çº¦æˆ–å¯æŠ˜å æ•°æ®è¯´æ˜")
-    require("STALE DATA" not in app and "compactStatus.join(\"ï¼\")" in app,
-            "é¡¶éƒ¨çŠ¶æ€å¿…é¡»æ˜¾ç¤ºé€ç±»æ•°é‡ï¼Œä¸èƒ½ä»¥å…¨å±€STALE DATAè¯¯å¯¼ç”¨æˆ·")
-    require("Prototype" not in page and "Ooglex Finance Terminal Â· Public Beta" in page,
-            "é‡‘èç»ˆç«¯é¡µè„šç‰ˆæœ¬åç§°å¿…é¡»ç»Ÿä¸€ä¸ºPublic Beta")
-    require("Dense metadata remains readable" in page and "footer { font-size: 11px; }" in page,
-            "é‡‘èç»ˆç«¯è¾…åŠ©æ–‡å­—ç¼ºå°‘11pxæ­£å¸¸ç¼©æ”¾å¯è¯»æ€§ä¸‹é™")
-    require(".section-nav a { min-width: 44px; min-height: 44px;" in page
-            and ".legal-links a { min-width: 44px; min-height: 44px;" in page,
-            "ç§»åŠ¨ç«¯åˆ†åŒºå¯¼èˆªä¸æ³•å¾‹é“¾æ¥å¿…é¡»åŒæ—¶æ»¡è¶³44pxå®½é«˜è§¦æ§ä¸‹é™")
-    require('document.querySelectorAll(".operation-card").length === 4' in regression_module
-            and "renderedGridColumns(operationsGrid)" in regression_module,
-            "æµè§ˆå™¨å›å½’æ¢é’ˆæœªè¦†ç›–å››å¼ è¿è¡ŒçŠ¶æ€å¡ç‰‡æˆ–å…¶å“åº”å¼åˆ—æ•°")
-    require("undersizedTargets" in regression_module, "æµè§ˆå™¨å›å½’ç»“æœå¿…é¡»åˆ—å‡ºå°ºå¯¸ä¸è¶³çš„è§¦æ§ç›®æ ‡")
-    require(".operation-action" in regression_module, "æµè§ˆå™¨å›å½’æ¢é’ˆæœªæ£€æŸ¥Betaè¿è¡Œä¸åé¦ˆè§¦æ§ç›®æ ‡")
-    require("data.markets" not in app and ".markets" not in app, "ç»ˆç«¯è´¢ç»æ–°é—»ä¸å¾—è¯»å–åŒæ–‡ä»¶çš„Yahooè¡Œæƒ…å¿«ç…§")
-    require('card.status === "partial"' in app and 'text: "PARTIAL"' in app, "å¸‚åœºçŠ¶æ€å¡ç‰‡æœªåŒºåˆ†éƒ¨åˆ†æ•°æ®")
-    require("buildPageDataWithMacroError" in app and "unavailableDtwexbgs" in app and "unavailableRwtc" in app and 'status: "error"' in app, "app.jsæœªè¦†ç›–å®˜æ–¹æ•°æ®æ–‡ä»¶å¤±è´¥çŠ¶æ€")
-    require("changeUnit" in app and '"bp"' in app, "app.jsæœªæŒ‰bpæ˜¾ç¤ºæ”¶ç›Šç‡å˜åŒ–")
-    require("apps/finance-terminal/" in home, "é¦–é¡µç¼ºå°‘é‡‘èç»ˆç«¯å…¥å£")
-    require("é‡‘èç»ˆç«¯ Public Beta" in home
-            and "4é¡¹ç«™å†…çœŸå®æ•°æ®ã€2é¡¹å…è´¹ETFä»£ç†ã€0é¡¹æ¼”ç¤º" in home
-            and "Finance Terminal Public Beta" in home
-            and "4 first-party data cards, 2 free ETF proxies, 0 demo" in home,
-            "é¦–é¡µé‡‘èç»ˆç«¯å…¥å£æœªåŒæ­¥Public BetaçœŸå®æ•°æ®ä¸å…è´¹ä»£ç†å£å¾„")
-    require("é‡‘èç»ˆç«¯ï¼ˆæ¼”ç¤ºï¼‰" not in home
-            and "4é¡¹æ¼”ç¤ºæ•°æ®" not in home
-            and "Finance Terminal (Demo)" not in home
-            and "4 real, 4 demo" not in home,
-            "é¦–é¡µä»æ®‹ç•™é‡‘èç»ˆç«¯æ¼”ç¤ºç‰ˆæ–‡æ¡ˆ")
-
-    external_scripts = re.findall(r'<script[^>]+src=["\'](https?://[^"\']+)', page, flags=re.I)
-    require(external_scripts == ["https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js"],
-            "é‡‘èç»ˆç«¯åªèƒ½å¼•å…¥å·²ç™»è®°çš„TradingViewå…è´¹ç»„ä»¶è„šæœ¬")
-    require("www.tradingview-widget.com" not in page and "www.tradingview-widget.com" not in app,
-            "é‡‘èç»ˆç«¯ä¸å¾—å›é€€åˆ°ä¼šæ‹’ç»ç»„ä»¶è¯·æ±‚çš„æ—§wwwè„šæœ¬ä¸»æœº")
-    require('type="module"' in page and page.index("tv-mini-chart.js") < page.index('src="app.js"'),
-            "TradingViewç»„ä»¶å¿…é¡»ä»¥æ¨¡å—è„šæœ¬åœ¨æœ¬åœ°åº”ç”¨å‰åŠ è½½")
-    build_script = MACRO_BUILD.read_text(encoding="utf-8")
-    history_build_script = MACRO_HISTORY_BUILD.read_text(encoding="utf-8")
-    workflow = MACRO_WORKFLOW.read_text(encoding="utf-8")
-    fear_greed_workflow = FEAR_GREED_WORKFLOW.read_text(encoding="utf-8")
-    ofr_workflow = OFR_WORKFLOW.read_text(encoding="utf-8")
-    asset_tracker_workflow = ASSET_TRACKER_WORKFLOW.read_text(encoding="utf-8")
-    asset_ranking_workflow = ASSET_RANKING_WORKFLOW.read_text(encoding="utf-8")
-    companies_workflow = COMPANIES_WORKFLOW.read_text(encoding="utf-8")
-    econ_calendar_workflow = ECON_CALENDAR_WORKFLOW.read_text(encoding="utf-8")
-    finance_news_workflow = FINANCE_NEWS_WORKFLOW.read_text(encoding="utf-8")
-    scheduler = SCHEDULER_WORKFLOW.read_text(encoding="utf-8")
-    browser_validator = BROWSER_VALIDATOR.read_text(encoding="utf-8")
-    require("[360, 768, 1280]" in browser_validator and "Page.captureScreenshot" in browser_validator
-            and '\".mjs\": \"text/javascript; charset=utf-8\"' in browser_validator
-            and "Runtime.evaluate" in browser_validator and "officialObservationTrendCount" in browser_validator
-            and "readinessEvidencePanelCount" in browser_validator
-            and "validateDeferredLoading" in browser_validator
-            and "criticalSourceRequestCount" in browser_validator
-            and "informationSourceRequestCount" in browser_validator
-            and "operationsSourceRequestCount" in browser_validator
-            and "groupLoadSequence" in browser_validator
-            and "duplicateNetworkRequestCount" in browser_validator
-            and "informationTransitions" in browser_validator
-            and "operationsTransitions" in browser_validator
-            and "finance-terminal-browser-evidence.json" in browser_validator
-            and "buildBrowserEvidence" in browser_validator
-            and "runtimeEvidence=1" in browser_validator,
-            "æµè§ˆå™¨å›å½’è„šæœ¬æœªè¦†ç›–ä¸‰æ¡£å®½åº¦ã€å®˜æ–¹è¶‹åŠ¿ã€ç¨³å®šV1è¯æ®ã€æ¸²æŸ“DOMå’Œæˆªå›¾")
-    browser_evidence = BROWSER_EVIDENCE.read_text(encoding="utf-8")
-    require("EXPECTED_WIDTHS = [360, 768, 1280]" in browser_evidence
-            and 'EXPECTED_SYMBOLS = ["DIA", "GLD"]' in browser_evidence
-            and "EXPECTED_PROVIDER_SCRIPT" in browser_evidence
-            and "providerScriptLoadedViewports" in browser_evidence
-            and "providerScriptFailedViewports" in browser_evidence
-            and "buildViewportDiagnosis" in browser_evidence
-            and "renderBrowserEvidenceSummary" in browser_evidence
-            and "diagnosisCounts" in browser_evidence
-            and "doesNotReadOrStoreQuotes" in browser_evidence
-            and "connected-defined-element-with-layout" in browser_evidence,
-            "æµè§ˆå™¨è¯æ®æœªè¦†ç›–å››é¡¹ä»£ç†ã€ä¸‰æ¡£è§†å£æˆ–ç¦æ­¢è¡Œæƒ…è¯»å–è¾¹ç•Œ")
-    require('client.send("Network.enable")' in browser_validator
-            and "trackProviderScriptTransport" in browser_validator
-            and 'client.subscribe("Network.requestWillBeSent"' in browser_validator
-            and 'client.subscribe("Network.responseReceived"' in browser_validator
-            and 'client.subscribe("Network.loadingFailed"' in browser_validator,
-            "æµè§ˆå™¨å›å½’æœªè®°å½•ç™½åå•æä¾›æ–¹è„šæœ¬çš„è¯·æ±‚ã€å“åº”å’Œå—æ§å¤±è´¥çŠ¶æ€")
-    proxy_history = PROXY_RUNTIME_HISTORY.read_text(encoding="utf-8")
-    require("MAX_CYCLES = 7" in proxy_history
-            and "ARTIFACT_LOOKBACK_DAYS = 14" in proxy_history
-            and 'cycleBoundaryUtc": "21:00"' in proxy_history
-            and "finance-terminal-proxy-runtime-" in proxy_history
-            and "doesNotReadOrStoreQuotes" in proxy_history
-            and "token-unavailable" in proxy_history
-            and "api-unavailable" in proxy_history,
-            "ä»£ç†è¿è¡Œè¶‹åŠ¿æœªé™åˆ¶7å‘¨æœŸã€21:00 UTCè¾¹ç•Œã€14å¤©Artifactæˆ–è¯šå®é™çº§")
-    require(QUALITY_WORKFLOW.exists(), "ç¼ºå°‘é‡‘èç»ˆç«¯åªè¯»è´¨é‡å·¥ä½œæµ")
-    require(LOADER_VALIDATOR.exists(), "ç¼ºå°‘é‡‘èç»ˆç«¯åˆ†åŒºåŠ è½½å™¨ç‹¬ç«‹å¥‘çº¦æµ‹è¯•")
-    require(BOARD_VALIDATOR.exists(), "ç¼ºå°‘å“ç±»è¡Œæƒ…æ¿ç‹¬ç«‹å¥‘çº¦æµ‹è¯•")
-    quality_workflow = QUALITY_WORKFLOW.read_text(encoding="utf-8")
-    require("permissions:\n  actions: read\n  contents: read" in quality_workflow,
-            "é‡‘èç»ˆç«¯è´¨é‡å·¥ä½œæµæƒé™å¿…é¡»é™åˆ¶ä¸ºActionsä¸å†…å®¹åªè¯»")
-    require(".github/ISSUE_TEMPLATE/finance-terminal-data.yml" in quality_workflow,
-            "é‡‘èç»ˆç«¯è´¨é‡å·¥ä½œæµæœªè¦†ç›–æ•°æ®åé¦ˆè¡¨å•å˜æ›´")
-    require("docs/FINANCE_TERMINAL_OPERATIONS_RUNBOOK.md" in quality_workflow,
-            "é‡‘èç»ˆç«¯è´¨é‡å·¥ä½œæµæœªè¦†ç›–å››ç®¡é“è¿è¡Œæ‰‹å†Œå˜æ›´")
-    require("validate_finance_terminal_browser.mjs" in quality_workflow
-            and "validate_finance_terminal_visuals.mjs" in quality_workflow
-            and "validate_finance_terminal_browser_evidence.mjs" in quality_workflow
-            and "fonts-noto-cjk" in quality_workflow
-            and "finance-terminal-browser-evidence.json" in quality_workflow
-            and "finance-terminal-browser-evidence.md" in quality_workflow
-            and "validate_finance_terminal_proxy_runtime_history.py" in quality_workflow
-            and "finance_terminal_proxy_runtime_history.py" in quality_workflow
-            and "finance-terminal-proxy-runtime-history.json" in quality_workflow
-            and "finance-terminal-proxy-runtime-history.md" in quality_workflow
-            and "GITHUB_TOKEN: ${{ github.token }}" in quality_workflow
-            and "finance-terminal-proxy-runtime" in quality_workflow
-            and "validate_finance_terminal.py" in quality_workflow
-            and "node scripts/validate_finance_terminal_loader.mjs" in quality_workflow
-            and "node scripts/validate_finance_terminal_board.mjs" in quality_workflow,
-            "é‡‘èç»ˆç«¯è´¨é‡å·¥ä½œæµæœªè¿è¡Œé™æ€ä¸æµè§ˆå™¨å›å½’")
-    require("validate_market_data_quality.py --dataset all" in quality_workflow,
-            "é‡‘èç»ˆç«¯è´¨é‡å·¥ä½œæµæœªç»Ÿä¸€æ ¡éªŒä¸‰æ¡é€é¡¹æ¥æºå¥‘çº¦")
-    require("validate_market_source_health.py --dataset all --report" in quality_workflow
-            and "validate_macro_source_health.py --report" in quality_workflow
-            and "finance-terminal-source-health" in quality_workflow
-            and "retention-days: 14" in quality_workflow,
-            "é‡‘èç»ˆç«¯è´¨é‡å·¥ä½œæµæœªç”Ÿæˆæˆ–ä¿ç•™å››ç®¡é“å¥åº·è¯Šæ–­")
-    require("validate_market_workflow_governance.py --dataset all" in quality_workflow,
-            "é‡‘èç»ˆç«¯è´¨é‡å·¥ä½œæµæœªç»Ÿä¸€æ ¡éªŒç”Ÿäº§ä¸è¾…åŠ©ä»»åŠ¡æ²»ç†å¥‘çº¦")
-    require("validate_finance_terminal_readiness_snapshot.py" in quality_workflow,
-            "é‡‘èç»ˆç«¯è´¨é‡å·¥ä½œæµæœªæ ¡éªŒç¨³å®šV1é™æ€è¯æ®")
-    require("validate_supporting_source_health.py --dataset all --report" in quality_workflow
-            and "validate_supporting_source_builders.py" in quality_workflow,
-            "é‡‘èç»ˆç«¯è´¨é‡å·¥ä½œæµæœªæ ¡éªŒå››ä¸ªè¾…åŠ©æ¥æºå¥åº·ä¸ç¦»çº¿å›é€€")
-    require("deploy" not in quality_workflow.lower() and "secrets." not in quality_workflow,
-            "é‡‘èç»ˆç«¯è´¨é‡å·¥ä½œæµä¸å¾—éƒ¨ç½²æˆ–è¯»å–Secrets")
-    require(DATA_ISSUE_FORM.exists(), "ç¼ºå°‘é‡‘èç»ˆç«¯æ•°æ®é—®é¢˜åé¦ˆè¡¨å•")
-    issue_form = DATA_ISSUE_FORM.read_text(encoding="utf-8")
-    require(issue_form.count("- type:") == 9 and "id: pipeline" in issue_form
-            and "id: problem_type" in issue_form and "id: observed_at" in issue_form,
-            "æ•°æ®åé¦ˆè¡¨å•å­—æ®µæ•°é‡æˆ–å…³é”®IDæ— æ•ˆ")
-    for pipeline_label in ("DGS10 / DTWEXBGS / RWTC", "asset-tracker", "companies", "asset-ranking"):
-        require(pipeline_label in issue_form, f"æ•°æ®åé¦ˆè¡¨å•ç¼ºå°‘ç®¡é“é€‰é¡¹ï¼š{pipeline_label}")
-    require("APIå¯†é’¥" in issue_form and "è®¿é—®ä»¤ç‰Œ" in issue_form and "æŒä»“" in issue_form
-            and issue_form.count("required: true") >= 8,
-            "æ•°æ®åé¦ˆè¡¨å•ç¼ºå°‘æ•æ„Ÿä¿¡æ¯è­¦å‘Šæˆ–å¿…å¡«çº¦æŸ")
-    require(OPERATIONS_RUNBOOK.exists(), "ç¼ºå°‘é‡‘èç»ˆç«¯å››ç®¡é“è¿è¡Œä¸æ•…éšœæ¢å¤æ‰‹å†Œ")
-    runbook = OPERATIONS_RUNBOOK.read_text(encoding="utf-8")
-    for required_text in (
-        "macro-radar", "asset-tracker", "companies", "asset-ranking",
-        "data.json", "health.json", "Betaé—¨ç¦Artifact", "è¶…è¿‡72å°æ—¶",
-        "è¿ç»­æˆåŠŸè‡³å°‘3ä¸ªæ—¥æ›´å‘¨æœŸ", "ç¨³å®šV1è‡³å°‘è§‚å¯Ÿ7ä¸ªå‘¨æœŸ",
-        "ä¸å¾—æ‰‹å·¥åªä¿®å…¶ä¸­ä¸€ä¸ªæ–‡ä»¶", "ä¸å¾—é‡ç½®æˆ–å¼ºæ¨å…±äº«åˆ†æ”¯",
-    ):
-        require(required_text in runbook, f"å››ç®¡é“è¿è¡Œæ‰‹å†Œç¼ºå°‘å…³é”®è§„åˆ™ï¼š{required_text}")
-    require(runbook.index("è¿è¡Œ`Companies Tracker`") < runbook.index("è¿è¡Œ`Asset Ranking`"),
-            "å››ç®¡é“è¿è¡Œæ‰‹å†Œå¿…é¡»æ˜ç¡®å…¬å¸æ¦œå…ˆäºèµ„äº§æ¦œ")
-    for command in (
-        "validate_finance_terminal.py", "validate_market_data_quality.py --dataset all",
-        "validate_market_source_health.py --dataset all", "validate_macro_source_health.py",
-        "validate_market_workflow_governance.py --dataset all",
-        "validate_finance_terminal_release_gate.py",
-    ):
-        require(command in runbook, f"å››ç®¡é“è¿è¡Œæ‰‹å†Œç¼ºå°‘æœ¬åœ°æ£€æŸ¥ï¼š{command}")
-    require("build_dtwexbgs_reference" in build_script and '"referenceSeries": reference_series' in build_script, "å®è§‚é›·è¾¾è„šæœ¬æœªç”ŸæˆDTWEXBGSå‚è€ƒåºåˆ—")
-    require("build_rwtc_reference" in build_script and '"facets[series][]": RWTC_ID' in build_script, "å®è§‚é›·è¾¾è„šæœ¬æœªæŒ‰EIA RWTCå£å¾„ç”Ÿæˆå‚è€ƒåºåˆ—")
-    require("parse_eia_rwtc_history_html" in build_script and "EIA_HISTORY_URL" in build_script,
-            "å®è§‚é›·è¾¾è„šæœ¬ç¼ºå°‘EIAå®˜æ–¹å†å²é¡µæ— å¯†é’¥å›é€€")
-    require("requests.get(url, params=params" in build_script, "FREDè¯·æ±‚å¿…é¡»æŠŠå¯†é’¥æ”¾åœ¨å‚æ•°å¯¹è±¡è€Œéæ—¥å¿—å­—ç¬¦ä¸²ä¸­")
-    require("response = get(EIA_API_URL, params=params" in build_script, "EIAè¯·æ±‚å¿…é¡»æŠŠå¯†é’¥æ”¾åœ¨å‚æ•°å¯¹è±¡è€ŒéURLå­—ç¬¦ä¸²ä¸­")
-    require("repr(e)" not in build_script and "repr(exc)" not in build_script, "å¼‚å¸¸æ—¥å¿—ä¸å¾—è¾“å‡ºå¯èƒ½å«å¯†é’¥çš„å®Œæ•´è¯·æ±‚URL")
-    require("requests.get(url, params=params" in history_build_script
-            and "&api_key=" not in history_build_script
-            and "repr(e)" not in history_build_script and "repr(error)" not in history_build_script,
-            "å®è§‚å†å²ä»»åŠ¡ä¸å¾—æŠŠFREDå¯†é’¥æ‹¼å…¥URLæˆ–å¼‚å¸¸æ—¥å¿—")
-    require("FRED_API_KEY: ${{ secrets.FRED_API_KEY }}" in workflow, "å®è§‚é›·è¾¾å·¥ä½œæµæœªé€šè¿‡Secretæä¾›FREDå¯†é’¥")
-    require("EIA_API_KEY: ${{ secrets.EIA_API_KEY }}" in workflow, "å®è§‚é›·è¾¾å·¥ä½œæµæœªé€šè¿‡Secretå¼•ç”¨EIAå¯†é’¥")
-    require("market_workflow_governance.py stage --dataset macro-radar" in workflow
-            and "validate_macro_source_health.py --report" in workflow,
-            "å®è§‚é›·è¾¾å·¥ä½œæµæœªä½¿ç”¨é€æºå¥åº·æ ¡éªŒä¸ç²¾ç¡®è·¯å¾„å®ˆå«")
-    require('-f event=workflow_dispatch -f "branch=$GITHUB_REF_NAME" -f per_page=1' in scheduler,
-            "æ¯æ—¥è°ƒåº¦å™¨å¿…é¡»æŒ‰å½“å‰åˆ†æ”¯æŸ¥è¯¢æœ€è¿‘è¿è¡Œï¼Œä¸èƒ½è®©å¼€å‘åˆ†æ”¯èµ„æ ¼è¿è¡ŒæŠ‘åˆ¶mainç”Ÿäº§è°ƒåº¦")
-    require("macro_radar.yml" in scheduler, "æ¯æ—¥è°ƒåº¦å™¨æœªè§¦å‘å®è§‚é›·è¾¾å·¥ä½œæµ")
-    require("python scripts/fear-greed/build_fear_greed.py" in fear_greed_workflow, "ææ…Œä¸è´ªå©ªå·¥ä½œæµæœªè¿è¡Œæ—¢æœ‰å–æ•°è„šæœ¬")
-    require("validate_supporting_source_health.py --dataset fear-greed" in fear_greed_workflow
-            and "market_workflow_governance.py stage --dataset fear-greed" in fear_greed_workflow,
-            "ææ…Œä¸è´ªå©ªå·¥ä½œæµæœªæ ¡éªŒå¥åº·æˆ–ä½¿ç”¨ç²¾ç¡®è·¯å¾„å®ˆå«")
-    require("market-data-fear-greed-${{ github.ref }}" in fear_greed_workflow
-            and "retention-days: 14" in fear_greed_workflow,
-            "ææ…Œä¸è´ªå©ªå·¥ä½œæµç¼ºå°‘ç‹¬ç«‹å¹¶å‘æˆ–çŸ­æœŸè¯Šæ–­")
-    require("fear_greed.yml" in scheduler, "æ¯æ—¥è°ƒåº¦å™¨æœªè§¦å‘ææ…Œä¸è´ªå©ªå·¥ä½œæµ")
-    require("python scripts/ofr-monitor/build_ofr.py" in ofr_workflow, "OFRå·¥ä½œæµæœªè¿è¡Œæ—¢æœ‰å–æ•°è„šæœ¬")
-    require("validate_supporting_source_health.py --dataset ofr-monitor" in ofr_workflow
-            and "market_workflow_governance.py stage --dataset ofr-monitor" in ofr_workflow,
-            "OFRå·¥ä½œæµæœªæ ¡éªŒå¥åº·æˆ–ä½¿ç”¨ç²¾ç¡®è·¯å¾„å®ˆå«")
-    require("market-data-ofr-monitor-${{ github.ref }}" in ofr_workflow
-            and "retention-days: 14" in ofr_workflow,
-            "OFRå·¥ä½œæµç¼ºå°‘ç‹¬ç«‹å¹¶å‘æˆ–çŸ­æœŸè¯Šæ–­")
-    require("ofr_monitor.yml" in scheduler, "æ¯æ—¥è°ƒåº¦å™¨æœªè§¦å‘OFRå·¥ä½œæµ")
-    require("python scripts/asset-tracker/build_assets.py" in asset_tracker_workflow, "è·¨èµ„äº§å·¥ä½œæµæœªè¿è¡Œæ—¢æœ‰å–æ•°è„šæœ¬")
-    require("validate_market_data_quality.py --dataset asset-tracker" in asset_tracker_workflow,
-            "è·¨èµ„äº§å·¥ä½œæµæœªåœ¨æäº¤å‰æ ¡éªŒé€æ¡æ¥æºå¥‘çº¦")
-    require("validate_market_source_health.py --dataset asset-tracker" in asset_tracker_workflow,
-            "è·¨èµ„äº§å·¥ä½œæµæœªåœ¨æäº¤å‰æ ¡éªŒæ¥æºå¥åº·")
-    require("market_workflow_governance.py stage --dataset asset-tracker" in asset_tracker_workflow,
-            "è·¨èµ„äº§å·¥ä½œæµæœªä½¿ç”¨è·¯å¾„æ‰€æœ‰æƒå®ˆå«æš‚å­˜æ•°æ®ä¸å¥åº·æ–‡ä»¶")
-    require("market-data-asset-tracker-${{ github.ref }}" in asset_tracker_workflow
-            and "Sync target branch before generation" in asset_tracker_workflow,
-            "è·¨èµ„äº§å·¥ä½œæµç¼ºå°‘ç‹¬ç«‹å¹¶å‘é”æˆ–ç”Ÿæˆå‰åŒæ­¥")
-    require("asset-tracker-workflow-${{ github.run_attempt }}" in asset_tracker_workflow
-            and "retention-days: 14" in asset_tracker_workflow,
-            "è·¨èµ„äº§å·¥ä½œæµæœªæŠŠè¿è¡Œè¯Šæ–­ä¿ç•™ä¸ºçŸ­æœŸArtifact")
-    require("asset_tracker.yml" in scheduler, "æ¯æ—¥è°ƒåº¦å™¨æœªè§¦å‘è·¨èµ„äº§å·¥ä½œæµ")
-    require("python scripts/asset-ranking/build_ranking.py" in asset_ranking_workflow, "å…¨çƒèµ„äº§å¸‚å€¼å·¥ä½œæµæœªè¿è¡Œæ—¢æœ‰å–æ•°è„šæœ¬")
-    require("validate_market_data_quality.py --dataset asset-ranking" in asset_ranking_workflow,
-            "å…¨çƒèµ„äº§å¸‚å€¼å·¥ä½œæµæœªåœ¨æäº¤å‰æ ¡éªŒé€æ¡æ¥æºå¥‘çº¦")
-    require("validate_market_source_health.py --dataset asset-ranking" in asset_ranking_workflow,
-            "å…¨çƒèµ„äº§å¸‚å€¼å·¥ä½œæµæœªåœ¨æäº¤å‰æ ¡éªŒæ¥æºå¥åº·")
-    require("market_workflow_governance.py stage --dataset asset-ranking" in asset_ranking_workflow,
-            "å…¨çƒèµ„äº§å¸‚å€¼å·¥ä½œæµæœªä½¿ç”¨è·¯å¾„æ‰€æœ‰æƒå®ˆå«æš‚å­˜æ•°æ®ä¸å¥åº·æ–‡ä»¶")
-    require("market-data-asset-ranking-${{ github.ref }}" in asset_ranking_workflow
-            and "Sync target branch before generation" in asset_ranking_workflow,
-            "å…¨çƒèµ„äº§å¸‚å€¼å·¥ä½œæµç¼ºå°‘ç‹¬ç«‹å¹¶å‘é”æˆ–ç”Ÿæˆå‰åŒæ­¥")
-    require("asset-ranking-workflow-${{ github.run_attempt }}" in asset_ranking_workflow
-            and "retention-days: 14" in asset_ranking_workflow,
-            "å…¨çƒèµ„äº§å¸‚å€¼å·¥ä½œæµæœªæŠŠè¿è¡Œè¯Šæ–­ä¿ç•™ä¸ºçŸ­æœŸArtifact")
-    require("asset_ranking.yml" in scheduler and "companies.yml" in scheduler, "è°ƒåº¦å™¨æœªæŒ‰å…¬å¸æ•°æ®åç½®è§¦å‘å…¨çƒèµ„äº§å¸‚å€¼å·¥ä½œæµ")
-    require("python scripts/companies/build_companies.py" in companies_workflow, "å…¬å¸æ¦œå·¥ä½œæµæœªè¿è¡Œæ—¢æœ‰å–æ•°è„šæœ¬")
-    require("validate_market_data_quality.py --dataset companies" in companies_workflow,
-            "å…¬å¸æ¦œå·¥ä½œæµæœªåœ¨æäº¤å‰æ ¡éªŒé€æ¡æ¥æºå¥‘çº¦")
-    require("validate_market_source_health.py --dataset companies" in companies_workflow,
-            "å…¬å¸æ¦œå·¥ä½œæµæœªåœ¨æäº¤å‰æ ¡éªŒæ¥æºå¥åº·")
-    require("market_workflow_governance.py stage --dataset companies" in companies_workflow,
-            "å…¬å¸æ¦œå·¥ä½œæµæœªä½¿ç”¨ç²¾ç¡®è·¯å¾„å®ˆå«æäº¤æ•°æ®ã€å¥åº·çŠ¶æ€ä¸æœ¬åœ°Logo")
-    require("market-data-companies-${{ github.ref }}" in companies_workflow
-            and "Sync target branch before generation" in companies_workflow,
-            "å…¬å¸æ¦œå·¥ä½œæµç¼ºå°‘ç‹¬ç«‹å¹¶å‘é”æˆ–ç”Ÿæˆå‰åŒæ­¥")
-    require("companies-workflow-${{ github.run_attempt }}" in companies_workflow
-            and "retention-days: 14" in companies_workflow,
-            "å…¬å¸æ¦œå·¥ä½œæµæœªæŠŠè¿è¡Œè¯Šæ–­ä¿ç•™ä¸ºçŸ­æœŸArtifact")
-    require("git add -A apps/companies" not in companies_workflow,
-            "å…¬å¸æ¦œå·¥ä½œæµä¸å¾—å®½èŒƒå›´æš‚å­˜æ•´ä¸ªåº”ç”¨ç›®å½•")
-    require("companies.yml" in scheduler, "æ¯æ—¥è°ƒåº¦å™¨æœªè§¦å‘å…¬å¸æ¦œå·¥ä½œæµ")
-    require("python scripts/econ-calendar/build_calendar.py" in econ_calendar_workflow, "ç»æµæ—¥å†å·¥ä½œæµæœªè¿è¡Œæ—¢æœ‰å–æ•°è„šæœ¬")
-    require("validate_supporting_source_health.py --dataset econ-calendar" in econ_calendar_workflow
-            and "market_workflow_governance.py stage --dataset econ-calendar" in econ_calendar_workflow,
-            "ç»æµæ—¥å†å·¥ä½œæµæœªæ ¡éªŒå¥åº·æˆ–ä½¿ç”¨ç²¾ç¡®è·¯å¾„å®ˆå«")
-    require("market-data-econ-calendar-${{ github.ref }}" in econ_calendar_workflow
-            and "retention-days: 14" in econ_calendar_workflow,
-            "ç»æµæ—¥å†å·¥ä½œæµç¼ºå°‘ç‹¬ç«‹å¹¶å‘æˆ–çŸ­æœŸè¯Šæ–­")
-    require("econ_calendar.yml" in scheduler, "æ¯æ—¥è°ƒåº¦å™¨æœªè§¦å‘ç»æµæ—¥å†å·¥ä½œæµ")
-    require("python scripts/whats-latest/build_news.py" in finance_news_workflow, "è´¢ç»æ–°é—»å·¥ä½œæµæœªè¿è¡Œæ—¢æœ‰å–æ•°è„šæœ¬")
-    require("validate_supporting_source_health.py --dataset whats-latest" in finance_news_workflow
-            and "market_workflow_governance.py stage --dataset whats-latest" in finance_news_workflow,
-            "è´¢ç»æ–°é—»å·¥ä½œæµæœªæ ¡éªŒå¥åº·æˆ–ä½¿ç”¨ç²¾ç¡®è·¯å¾„å®ˆå«")
-    require("market-data-whats-latest-${{ github.ref }}" in finance_news_workflow
-            and "retention-days: 14" in finance_news_workflow,
-            "è´¢ç»æ–°é—»å·¥ä½œæµç¼ºå°‘ç‹¬ç«‹å¹¶å‘æˆ–çŸ­æœŸè¯Šæ–­")
-    require("cron: '15 */6 * * *'" in finance_news_workflow, "è´¢ç»æ–°é—»å·¥ä½œæµå¿…é¡»ä¿æŒæ¯6å°æ—¶æ›´æ–°")
-    run_market_data_quality_contract_tests()
-    run_shared_history_contract_tests()
-    run_asset_tracker_builder_contract_tests()
-    run_company_builder_contract_tests()
-    run_asset_ranking_builder_contract_tests()
-    run_official_observation_contract_tests()
-    run_dtwexbgs_pipeline_tests()
-    run_rwtc_pipeline_tests()
-    run_js_adapter_tests()
-    run_provider_widget_runtime_tests()
-    board_contracts = subprocess.run(
-        ["node", str(BOARD_VALIDATOR)],
-        cwd=ROOT,
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    require(board_contracts.returncode == 0,
-            f"å“ç±»è¡Œæƒ…æ¿å¥‘çº¦å¤±è´¥ï¼š\n{board_contracts.stdout}{board_contracts.stderr}")
-    print(board_contracts.stdout.strip())
-    visual_contracts = subprocess.run(
-        ["node", str(VISUALS_VALIDATOR)],
-        cwd=ROOT,
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    require(visual_contracts.returncode == 0,
-            f"ç§‘å¹»ç»ˆç«¯è§†è§‰æ•°æ®å¥‘çº¦å¤±è´¥ï¼š\n{visual_contracts.stdout}{visual_contracts.stderr}")
-    print(visual_contracts.stdout.strip())
-
-    print("Finance Terminal DGS10 + DTWEXBGS + RWTC + BTC/USD validation: PASS")
-    print("- four local data cards plus two explicit free TradingView ETF proxies / zero demos: PASS")
-    print("- yield bp / broad-dollar and WTI percent / BTC 24h or previous-close change: PASS")
-    print("- FRED and EIA refresh success / retained fallback / no-history error: PASS")
-    print("- source / as-of / updated-at / stale / unavailable states: PASS")
-    print("- homepage route and local data dependency: PASS")
-    print("- 360 / 768 / 1280 responsive rules: PASS")
-    print("- macro regime value / source / freshness / fallback states: PASS")
-    print("- CNN fear & greed score / rating / close delta / freshness / failure states: PASS")
-    print("- OFR FSI value / daily change / zero baseline / freshness / partial / failure states: PASS")
-    print("- cross-asset five-period ranking / per-row provenance / fallback / freshness / failure states: PASS")
-    print("- global asset top-five / total / per-record provenance / mixed-frequency / failure states: PASS")
-    print("- company per-row market/fallback/estimate / mover gating / private exclusion / failure states: PASS")
-    print("- aggregate source health / coverage / consecutive failure / retained snapshot / diagnostics: PASS")
-    print("- four-pipeline stable V1 evidence / macro cross-check / stale snapshot isolation: PASS")
-    print("- Beta gate link / structured data feedback / sensitive-input warning: PASS")
-    print("- economic calendar counts / impact / local-time input / freshness / independent failure states: PASS")
-    print("- finance news market-only / latest-five / safe links / freshness / independent failure states: PASS")
-    print("- four supporting feeds / migrated health / partial fallback / retained snapshot / workflow governance: PASS")
-    print("- four real-asset update chains / single-source isolation / stale evidence: PASS")
-    print("- one allowlisted TradingView free widget dependency / explicit proxy fallback: PASS")
-    print("- proxy widget registration / host mount / timeout / late-recovery contract: PASS")
-    print("- browser regression probe / read-only CI contract: PASS")
-
-
-if __name__ == "__main__":
-    main()
+YªçŠx-®éÜj×¢ëiºÚ+Š§j[h‘éÜ¢éíïŞõÑ:-jZ.¶›­–)Ş³R2÷W7"ö&–âöVçb—F†öã0¢""%fÆ–FFRF†Rf–ææ6RFW&Ö–æÂÖ&¶WB÷fW'f–Wrv—F†÷WBF†—&B×'G’FWVæFVæ6–W2â""  ¦g&öÒõögWGW&Uõò–×÷'Bææ÷FF–öç0 ¦–×÷'B–×÷'FÆ–"çWF–À¦–×÷'B§6öà¦–×÷'BÖF€¦–×÷'B&P¦–×÷'B7V'&ö6W70¦–×÷'B7—0¦–×÷'BG—W0¦g&öÒFFWF–ÖR–×÷'BFFRÂFFWF–ÖP¦g&öÒF†Æ–"–×÷'BF€ ¦g&öÒÖ&¶WEöFF÷VÆ—G’–×÷'B€¢fÆÆ&6µöFFöÖWFÀ¢Ö¶UöFFöÖWFÀ¢Ö¶U÷&÷‡•öÖWFÀ¢7VÖÖ&—¦UöFF÷VÆ—G’À¢fÆ–FFUöFF÷VÆ—G’À¢fÆ–FFU÷&÷‡•öÖWFÀ¢¦g&öÒÖ&¶WE÷6÷W&6Uö†VÇF‚–×÷'BfÆ–FFU÷6÷W&6Uö†VÇF€¦g&öÒ7W÷'F–æu÷6÷W&6Uö†VÇF‚–×÷'BfÆ–FFUö†VÇF‚2fÆ–FFU÷7W÷'F–æuö†VÇF€¦g&öÒf–ææ6U÷FW&Ö–æÅ÷&VF–æW75÷6æ6†÷B–×÷'BfÆ–FFU÷6æ6†÷B2fÆ–FFU÷&VF–æW75÷6æ6†÷@¦g&öÒf–ææ6U÷FW&Ö–æÅöÖ&¶WEöÆ–6Vç6W2–×÷'BfÆ–FFUöÖ&¶WE÷6÷W&6U÷&VF–æW70  ¥$ôõBÒF‚…õöf–ÆUõò’ç&W6öÇfR‚’ç&VçG5³Ğ¥tRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&–æFW‚æ‡FÖÂ ¤Ò$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&æ§2 ¤ÄôDU"Ò$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂÖÆöFW"æÖ§2 ¥DU$Ô”äÅõd•5TÅ2Ò$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂ×f—7VÇ2æÖ§2 ¥$•4µõ$D%ôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂ×&—6²×&F"æÖ§2 ¥tõ$ÄDÔôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂ×v÷&ÆFÖæÖ§2 ¥4U54”ôå5ôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂ×6W76–öç2æÖ§2 ¥tD4„Ä•5EôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂ×vF6†Æ—7BæÖ§2 ¤„TÅD…ôDDU%5ôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂÖ†VÇF‚ÖFFW'2æÖ§2 ¤DUD”Åõd”UuôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂÖFWF–Â×f–WræÖ§2 ¤$ô$EôDDôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂÖ&ö&BÖFFæÖ§2 ¤$ô$Eõd”UuôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂÖ&ö&B×f–WræÖ§2 ¥$D%õd”UuôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂ×&F"×f–WræÖ§2 ¤5U%dUõd”UuôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂÖ7W'fR×f–WræÖ§2 ¤tÄô$UôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂÖvÆö&RæÖ§2 ¤tÄô$UõDU…EU$UôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂÖvÆö&R×FW‡GW&RæÖ§2 ¥d•4”ôåô552Ò$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò'FW&Ö–æÂ×f—6–öâæ772 ¥d•5TÅôd”DTÄ•E•ô552Ò$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò'FW&Ö–æÂ×f—7VÂÖf–FVÆ—G’æ772 ¥$TdU$Tä4Uôd”DTÄ•E•ô552Ò$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò'FW&Ö–æÂ×&VfW&Væ6RÖf–FVÆ—G’æ772 ¤U$õ$ô„ôÔUô552Ò$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò'FW&Ö–æÂÖW&÷&Ö†öÖRæ772 ¥$TdU$Tä4Uô„ôÔUõc5ô552Ò$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò'FW&Ö–æÂ×&VfW&Væ6RÖ†öÖR×c2æ772 ¤4ôÔÔäEô4TåDU%ô552Ò$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò'FW&Ö–æÂÖ6öÖÖæBÖ6VçFW"æ772 ¤4ôÔÔäEô4TåDU%ôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂÖ6öÖÖæBÖ6VçFW"æÖ§2 ¤U$õ$ô„ôÔUôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂÖW&÷&Ö†öÖRæÖ§2 ¥$Tu$U54”ôåôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂ×&Vw&W76–öâæÖ§2 ¥d•5TÅ5õdÄ”DDõ"Ò$ôõBò'67&—G2"ò'fÆ–FFUöf–ææ6U÷FW&Ö–æÅ÷f—7VÇ2æÖ§2 ¥$•4µõd”UuôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂ×&—6²×f–WræÖ§2 ¤tTõõ$•4µôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂÖvVò×&—6²æÖ§2 ¥$U4T$4…õd”UuôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂ×&W6V&6‚×f–WræÖ§2 ¤”ädõ$ÔD”ôåõd”UuôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂÖ–æf÷&ÖF–öâ×f–WræÖ§2 ¤õU$D”ôå5õd”UuôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂÖ÷W&F–öç2×f–WræÖ§2 ¤õU$D”ôå5ôDDôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂÖ÷W&F–öç2ÖFFæÖ§2 ¤”ädõ$ÔD”ôåôDDôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂÖ–æf÷&ÖF–öâÖFFæÖ§2 ¤4õ%$TÄD”ôåõd”UuôÔôETÄRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&f–ææ6R×FW&Ö–æÂÖ6÷'&VÆF–öâ×f–WræÖ§2 ¥DU$Õ5õtRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò'FW&×2æ‡FÖÂ ¥$•d5•õtRÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò'&—f7’æ‡FÖÂ ¤ÄTtÅô552Ò$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&ÆVvÂæ772 ¤DDÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&FFæ§6öâ ¥$TD”äU55ôDDÒ$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò'&VF–æW72æ§6öâ ¤Ô$´UEôÄ”4Tå4Uõ$TD”äU52Ò$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&Ö&¶WB×6÷W&6R×&VF–æW72æ§6öâ ¤Ô5$õôDDÒ$ôõBò&2"ò&Ö7&ò×&F""ò&FFæ§6öâ ¤dT%ôu$TTEôDDÒ$ôõBò&2"ò&fV"Öw&VVB"ò&FFæ§6öâ ¤dT%ôu$TTEô„TÅD‚Ò$ôõBò&2"ò&fV"Öw&VVB"ò&†VÇF‚æ§6öâ ¤ôe%ôDDÒ$ôõBò&2"ò&ög"ÖÖöæ—F÷""ò&FFæ§6öâ ¤ôe%ô„TÅD‚Ò$ôõBò&2"ò&ög"ÖÖöæ—F÷""ò&†VÇF‚æ§6öâ ¤54UEõE$4´U%ôDDÒ$ôõBò&2"ò&76WB×G&6¶W""ò&FFæ§6öâ ¤54UEõE$4´U%ô„TÅD‚Ò$ôõBò&2"ò&76WB×G&6¶W""ò&†VÇF‚æ§6öâ ¤54UEõE$4´U%ô%T”ÄBÒ$ôõBò'67&—G2"ò&76WB×G&6¶W""ò&'V–ÆEö76WG2ç’ ¤54UEõ$ä´”äuôDDÒ$ôõBò&2"ò&76WB×&æ¶–ær"ò&FFæ§6öâ ¤54UEõ$ä´”äuô„TÅD‚Ò$ôõBò&2"ò&76WB×&æ¶–ær"ò&†VÇF‚æ§6öâ ¤54UEõ$ä´”äuô%T”ÄBÒ$ôõBò'67&—G2"ò&76WB×&æ¶–ær"ò&'V–ÆE÷&æ¶–ærç’ ¤4ôÕä”U5ôDDÒ$ôõBò&2"ò&6ö×æ–W2"ò&FFæ§6öâ ¤4ôÕä”U5ô„TÅD‚Ò$ôõBò&2"ò&6ö×æ–W2"ò&†VÇF‚æ§6öâ ¤4ôÕä”U5ô%T”ÄBÒ$ôõBò'67&—G2"ò&6ö×æ–W2"ò&'V–ÆEö6ö×æ–W2ç’ ¤4ôÕä”U5ô„•5Dõ%’Ò$ôõBò&2"ò&6ö×æ–W2"ò&†—7F÷'’æ§6öâ ¤54UEõ$ä´”äuô5%•DòÒ$ôõBò&2"ò&76WB×&æ¶–ær"ò&7'—Fòæ§6öâ ¤Ô$´UEô„•5Dõ%•ôÔôETÄRÒ$ôõBò'67&—G2"ò&Ö&¶WEö†—7F÷'’ç’ ¤T4ôåô4ÄTäD%ôDDÒ$ôõBò&2"ò&V6öâÖ6ÆVæF""ò&FFæ§6öâ ¤T4ôåô4ÄTäD%ô„TÅD‚Ò$ôõBò&2"ò&V6öâÖ6ÆVæF""ò&†VÇF‚æ§6öâ ¤d”ää4UôäUu5ôDDÒ$ôõBò&2"ò'v†G2ÖÆFW7B"ò&FFæ§6öâ ¤d”ää4UôäUu5ô„TÅD‚Ò$ôõBò&2"ò'v†G2ÖÆFW7B"ò&†VÇF‚æ§6öâ ¤Ô5$õô%T”ÄBÒ$ôõBò'67&—G2"ò&Ö7&ò×&F""ò&'V–ÆE÷&F"ç’ ¤Ô5$õô„•5Dõ%•ô%T”ÄBÒ$ôõBò'67&—G2"ò&Ö7&ò×&F""ò&'V–ÆEö†—7F÷'’ç’ ¤Ô5$õõtõ$´dÄõrÒ$ôõBò"æv—F‡V""ò'v÷&¶fÆ÷w2"ò&Ö7&õ÷&F"ç–ÖÂ ¤dT%ôu$TTEõtõ$´dÄõrÒ$ôõBò"æv—F‡V""ò'v÷&¶fÆ÷w2"ò&fV%öw&VVBç–ÖÂ ¤ôe%õtõ$´dÄõrÒ$ôõBò"æv—F‡V""ò'v÷&¶fÆ÷w2"ò&ög%öÖöæ—F÷"ç–ÖÂ ¤54UEõE$4´U%õtõ$´dÄõrÒ$ôõBò"æv—F‡V""ò'v÷&¶fÆ÷w2"ò&76WE÷G&6¶W"ç–ÖÂ ¤54UEõ$ä´”äuõtõ$´dÄõrÒ$ôõBò"æv—F‡V""ò'v÷&¶fÆ÷w2"ò&76WE÷&æ¶–ærç–ÖÂ ¤4ôÕä”U5õtõ$´dÄõrÒ$ôõBò"æv—F‡V""ò'v÷&¶fÆ÷w2"ò&6ö×æ–W2ç–ÖÂ ¤T4ôåô4ÄTäD%õtõ$´dÄõrÒ$ôõBò"æv—F‡V""ò'v÷&¶fÆ÷w2"ò&V6öåö6ÆVæF"ç–ÖÂ ¤d”ää4UôäUu5õtõ$´dÄõrÒ$ôõBò"æv—F‡V""ò'v÷&¶fÆ÷w2"ò'v†G5öÆFW7Bç–ÖÂ ¥44„TETÄU%õtõ$´dÄõrÒ$ôõBò"æv—F‡V""ò'v÷&¶fÆ÷w2"ò'66†VGVÆW"ç–ÖÂ ¥TÄ•E•õtõ$´dÄõrÒ$ôõBò"æv—F‡V""ò'v÷&¶fÆ÷w2"ò&f–ææ6U÷FW&Ö–æÅ÷VÆ—G’ç–ÖÂ ¤%$õu4U%õdÄ”DDõ"Ò$ôõBò'67&—G2"ò'fÆ–FFUöf–ææ6U÷FW&Ö–æÅö'&÷w6W"æÖ§2 ¤%$õu4U%ôUd”DTä4RÒ$ôõBò'67&—G2"ò&f–ææ6U÷FW&Ö–æÅö'&÷w6W%öWf–FVæ6RæÖ§2 ¤%$õu4U%ôUd”DTä4UõdÄ”DDõ"Ò$ôõBò'67&—G2"ò'fÆ–FFUöf–ææ6U÷FW&Ö–æÅö'&÷w6W%öWf–FVæ6RæÖ§2 ¤ÄôDU%õdÄ”DDõ"Ò$ôõBò'67&—G2"ò'fÆ–FFUöf–ææ6U÷FW&Ö–æÅöÆöFW"æÖ§2 ¤$ô$EõdÄ”DDõ"Ò$ôõBò'67&—G2"ò'fÆ–FFUöf–ææ6U÷FW&Ö–æÅö&ö&BæÖ§2 ¥$õ…•õ%TåD”ÔUô„•5Dõ%’Ò$ôõBò'67&—G2"ò&f–ææ6U÷FW&Ö–æÅ÷&÷‡•÷'VçF–ÖUö†—7F÷'’ç’ ¥$õ…•õ%TåD”ÔUô„•5Dõ%•õdÄ”DDõ"Ò$ôõBò'67&—G2"ò'fÆ–FFUöf–ææ6U÷FW&Ö–æÅ÷&÷‡•÷'VçF–ÖUö†—7F÷'’ç’ ¤DDô•55TUôdõ$ÒÒ$ôõBò"æv—F‡V""ò$•55TUõDTÕÄDR"ò&f–ææ6R×FW&Ö–æÂÖFFç–ÖÂ ¤õU$D”ôå5õ%Tä$ôô²Ò$ôõBò&Fö72"ò$d”ää4UõDU$Ô”äÅôõU$D”ôå5õ%Tä$ôô²æÖB ¥4õU$4Uô„TÅD…õdÄ”DDõ"Ò$ôõBò'67&—G2"ò'fÆ–FFUöÖ&¶WE÷6÷W&6Uö†VÇF‚ç’ ¥4õU$4Uô„TÅD…ôDô2Ò$ôõBò&Fö72"ò$tu$TtDUõ4õU$4Uô„TÅD‚æÖB ¥5Uõ%D”äuô„TÅD…õdÄ”DDõ"Ò$ôõBò'67&—G2"ò'fÆ–FFU÷7W÷'F–æu÷6÷W&6Uö†VÇF‚ç’ ¥5Uõ%D”äuô„TÅD…ôDô2Ò$ôõBò&Fö72"ò%5Uõ%D”äuõ4õU$4Uô„TÅD‚æÖB ¤„ôÔRÒ$ôõBò&–æFW‚æ‡FÖÂ  ¢2##bÓ‚Ó#Rh˜iÈˆ^Xk>Zé®ûÉ®j~išãSKˆî{«>ijş‹ëîXX³KŠN[ÊUDnKº>ynXÚi*NKˆ¾ûÈÎj[ø>‹XNKª~iKniY¾K‹ ¢2XZŞšûÈKŠNšXXŞ‹K[XÎXZ^Kº>yb²Y¹¾šz¹Xh^Zéikzê˜>ûÈûÉ¾{«>ijş‹ëîXX¾KˆŞXhŞyKX[nK¹nj~y¨Nšni»ş8 ¤U…T5DTEõ5”Ô$ôÅ2Ò²$D”"Â$Du3"Â$EEtU„$u2"Â$tÄB"Â%uD’"Â$%D2õU4B'Ğ¤U…T5DTEõ$õ„”U2Ò°¢&F÷r#¢‚$D”"Â$D¤”"Â$ÔUƒ¤D”"’À¢&vöÆB#¢‚$tÄB"Â$Ä$ÔÔtôÄBÕÒÕU4B"Â$ÔUƒ¤tÄB"’À§Ğ¤4ôÔÔôåô54UEôd”TÄE2Ò°¢&–B"Â&æÖR"Â&æÖTVâ"Â'7–Ö&öÂ"Â&6FVv÷'’"Â&FVÖò"Â'7FGW2"Â&g&WVVæ7’"À¢&FVÆ”Æ&VÂ"Â'&–6R"Â&4öb"Â'WFFVDB"Â'6÷W&6R"Â'7&²"À§Ğ  ¦FVb&WV—&R†6öæF—F–öã¢&ööÂÂÖW76vS¢7G"’ÓâæöæS ¢–bæ÷B6öæF—F–öã ¢&—6R76W'F–öäW'&÷"†ÖW76vR  ¦FVb'6Uö—6ò‡fÇVS¢7G"’ÓâæöæS ¢FFWF–ÖRæg&öÖ—6öf÷&ÖB‡fÇVRç&WÆ6R‚%¢"Â"³£"’  ¦FVb'6UöFFR‡fÇVS¢7G"’ÓâæöæS ¢FFRæg&öÖ—6öf÷&ÖB‡fÇVR  ¦FVbfÆ–FFUööff–6–Åöö'6W'fF–öç2‡&V6÷&C¢F–7BÂÆ&VÃ¢7G"’ÓâÆ—7E¶F–7EÓ ¢"".j
+š¨Îh‰X©şX‹~ikYîKÉ®K¸î‹øz{¾x+˜	jÚ^hš[^X‹x+y¨NZéikŠx.kX¾z©~Xú>8""" ¢ö'6W'fF–öç2Ò&V6÷&BævWB‚&ö'6W'fF–öç2"¢&WV—&R†—6–ç7Fæ6R†ö'6W'fF–öç2ÂÆ—7B’æBÃÒÆVâ†ö'6W'fF–öç2’ÃÒ‚À¢b'¶Æ&VÇŞŠx.kX¾z©~Xú>[ø^š¾XÈ^Y
+³ˆ{3KŠ®ZéikŠx.kX¾x+’"¢'6VEöFFW2ÒµĞ¢f÷"–æFW‚Âö'6W'fF–öâ–âVçVÖW&FR†ö'6W'fF–öç2“ ¢&WV—&R†—6–ç7Fæ6R†ö'6W'fF–öâÂF–7B¢æB6WB†ö'6W'fF–öâ’ÓÒ²&4öb"Â'fÇVR'ÒÀ¢b'¶Æ&VÇŞzÊÇ¶–æFW‚²ŞKŠ®Šx.kX¾x+{¹>ièNiziX‚"¢G'“ ¢ö'6W'fVEöFFRÒFFRæg&öÖ—6öf÷&ÖB†ö'6W'fF–öå²&4öb%Ò¢W†6WB…G—TW'&÷"ÂfÇVTW'&÷"’2W†3 ¢&—6R76W'F–öäW'&÷"†b'¶Æ&VÇŞzÊÇ¶–æFW‚²ŞKŠ®Šx.kX¾iz^iÉşiziX‚"’g&öÒW†0¢fÇVRÒö'6W'fF–öå²'fÇVR%Ğ¢&WV—&R†—6–ç7Fæ6R‡fÇVRÂ†–çBÂfÆöB’’æBæ÷B—6–ç7Fæ6R‡fÇVRÂ&ööÂ¢æBÖF‚æ—6f–æ—FR‡fÇVR’æBfÇVRâÀ¢b'¶Æ&VÇŞzÊÇ¶–æFW‚²ŞKŠ®Šx.kX¾XÎ[ø^š¾iŠşjÚ>iÈ™™i["¢'6VEöFFW2æVæB†ö'6W'fVEöFFR¢&WV—&R†ÆÂ‡&Wf–÷W2Â7W'&VçBf÷"&Wf–÷W2Â7W'&VçB–â¦—‡'6VEöFFW2Â'6VEöFFW5³¥Ò’’À¢b'¶Æ&VÇŞŠx.kX¾iz^iÉş[ø^š¾KŠ^jÎ˜	.Z)îK‰NKˆŞXúş˜xŞZHÒ"¢&WV—&R†ö'6W'fF–öç5²ÓÒÓÒ²&4öb#¢&V6÷&BævWB‚&4öb"’Â'fÇVR#¢&V6÷&BævWB‚'&–6R"—ÒÀ¢b'¶Æ&VÇŞŠx.kX¾z©~Xú>iÊ¾XÎ[ø^š¾Kˆî[Ù>X˜ŞZéikŠë[Ù^Kˆˆ{B"¢–bÆVâ†ö'6W'fF–öç2’ãÒ# ¢&WV—&R†ö'6W'fF–öç5²Ó%ÒÓÒ°¢&4öb#¢&V6÷&BævWB‚'&Wf–÷W44öb"’Â'fÇVR#¢&V6÷&BævWB‚'&Wf–÷W5&–6R"¢ÒÂb'¶Æ&VÇŞŠx.kX¾z©~Xú>X	.i[zÊÎK¨Îš[ø^š¾KˆîX˜ŞXÎŠë[Ù^Kˆˆ{B"¢&WGW&âö'6W'fF–öç0  ¦FVb'Våööff–6–Åöö'6W'fF–öåö6öçG&7E÷FW7G2‚’ÓâæöæS ¢öæU÷ö–çBÒ°¢&4öb#¢###bÓ‚Ób"Â'&–6R#¢Bãc’À¢'&Wf–÷W44öb#¢###bÓ‚ÓR"Â'&Wf–÷W5&–6R#¢Bãc2À¢&ö'6W'fF–öç2#¢·²&4öb#¢###bÓ‚Ób"Â'fÇVR#¢Bãc—ÕÒÀ¢Ğ¢&WV—&R†ÆVâ‡fÆ–FFUööff–6–Åöö'6W'fF–öç2†öæU÷ö–çBÂ.‹øz{¾[¨şX‰r"’’ÓÒÀ¢.XÙ^x+‹øz{¾z©~Xú>[©NKùŞhÈiÈiX‚"¢gVÆÅ÷v–æF÷rÒ°¢&4öb#¢###bÓ‚Ó‚"Â'&–6R#¢‚ãÀ¢'&Wf–÷W44öb#¢###bÓ‚Ór"Â'&Wf–÷W5&–6R#¢rãÀ¢&ö'6W'fF–öç2#¢°¢²&4öb#¢b###bÓ‚×¶F“£&GÒ"Â'fÇVR#¢ã²F—Ğ¢f÷"F’–â&ævRƒÂ’¢ÒÀ¢Ğ¢&WV—&R†ÆVâ‡fÆ–FFUööff–6–Åöö'6W'fF–öç2†gVÆÅ÷v–æF÷rÂ.ZèÎi[N[¨şX‰r"’’ÓÒ‚À¢.XZ¾x+ZèÎi[Nz©~Xú>[©NKùŞhÈiÈiX‚" ¢–çfÆ–Eö66W2ÒµĞ¢FöõöÆöærÒ§6öâæÆöG2†§6öâæGV×2†gVÆÅ÷v–æF÷r’¢FöõöÆöæu²&ö'6W'fF–öç2%Òæ–ç6W'BƒÂ²&4öb#¢###bÓrÓ3"Â'fÇVR#¢“’ãÒ¢–çfÆ–Eö66W2æVæB‡FöõöÆöær¢&WfW'6VE÷v–æF÷rÒ§6öâæÆöG2†§6öâæGV×2†gVÆÅ÷v–æF÷r’¢&WfW'6VE÷v–æF÷u²&ö'6W'fF–öç2%Òç&WfW'6R‚¢–çfÆ–Eö66W2æVæB‡&WfW'6VE÷v–æF÷r¢GWÆ–6FUöFFRÒ§6öâæÆöG2†§6öâæGV×2†gVÆÅ÷v–æF÷r’¢GWÆ–6FUöFFU²&ö'6W'fF–öç2%Õ³Õ²&4öb%ÒÒGWÆ–6FUöFFU²&ö'6W'fF–öç2%Õ³Õ²&4öb%Ğ¢–çfÆ–Eö66W2æVæB†GWÆ–6FUöFFR¢w&öæu÷F–ÂÒ§6öâæÆöG2†§6öâæGV×2†gVÆÅ÷v–æF÷r’¢w&öæu÷F–Å²&ö'6W'fF–öç2%Õ²ÓÕ²'fÇVR%ÒÒ““’ã ¢–çfÆ–Eö66W2æVæB‡w&öæu÷F–Â¢w&öæu÷&Wf–÷W2Ò§6öâæÆöG2†§6öâæGV×2†gVÆÅ÷v–æF÷r’¢w&öæu÷&Wf–÷W5²&ö'6W'fF–öç2%Õ²Ó%Õ²'fÇVR%ÒÒ““’ã ¢–çfÆ–Eö66W2æVæB‡w&öæu÷&Wf–÷W2¢æöå÷÷6—F—fRÒ§6öâæÆöG2†§6öâæGV×2†gVÆÅ÷v–æF÷r’¢æöå÷÷6—F—fU²&ö'6W'fF–öç2%Õ³Õ²'fÇVR%ÒÒ ¢–çfÆ–Eö66W2æVæB†æöå÷÷6—F—fR¢f÷"–çfÆ–B–â–çfÆ–Eö66W3 ¢G'“ ¢fÆ–FFUööff–6–Åöö'6W'fF–öç2†–çfÆ–BÂ.[È.[‹[¨şX‰r"¢W†6WB76W'F–öäW'&÷# ¢6öçF–çVP¢&—6R76W'F–öäW'&÷"‚.iziXZéikŠx.kX¾z©~Xú>iÊ®Š*¾h¹.{¹Ò"  ¦FVb775ö†W…÷f&–&ÆR‡7G–ÆW3¢7G"ÂæÖS¢7G"’Óâ7G# ¢ÖF6‚Ò&Rç6V&6‚‡&b"Ò×·&RæW66R†æÖR—Ó¥Ç2¢‚5³Ó–ÖdÔe×·³g×Ò•Ç2£²"Â7G–ÆW2¢&WV—&R†ÖF6‚—2æ÷BæöæRÂb$55>Xù˜xòÒ×¶æÖWŞ{Ë®ZKh‰nKˆŞiŠşXZŞKØŞXØXZŞ‹ù¾X‹nš)Îˆ›""¢&WGW&âÖF6‚æw&÷Wƒ  ¦FVb&VÆF—fUöÇVÖ–ææ6R†6öÆ÷#¢7G"’ÓâfÆöC ¢6†ææVÇ2Ò¶–çB†6öÆ÷%¶–æFWƒ¦–æFW‚²%ÒÂb’ò#SRf÷"–æFW‚–âƒÂ2ÂR•Ğ¢Æ–æV"Ò¶6†ææVÂò"ã“"–b6†ææVÂÃÒãCCRVÇ6R‚†6†ææVÂ²ãSR’òãSR’¢¢"ã@¢f÷"6†ææVÂ–â6†ææVÇ5Ğ¢&WGW&âã##b¢Æ–æV%³Ò²ãsS"¢Æ–æV%³Ò²ãs#"¢Æ–æV%³%Ğ  ¦FVb6öçG&7E÷&F–ò†f÷&Vw&÷VæC¢7G"Â&6¶w&÷VæC¢7G"’ÓâfÆöC ¢Æ–v‡FW"ÂF&¶W"Ò6÷'FVB‚‡&VÆF—fUöÇVÖ–ææ6R†f÷&Vw&÷VæB’Â&VÆF—fUöÇVÖ–ææ6R†&6¶w&÷VæB’’Â&WfW'6SÕG'VR¢&WGW&â†Æ–v‡FW"²ãR’ò†F&¶W"²ãR  ¦FVb'VåöÖ&¶WEöFF÷VÆ—G•ö6öçG&7E÷FW7G2‚’ÓâæöæS ¢WFFVBÒ###bÓ‚Ó5C#££¢ ¢Ö&¶WBÒÖ¶UöFFöÖWF€¢&Ö&¶WB"Â%–†öòf–ææ6R"Â5ööcÒ###bÓ‚Ó"ÂWFFVEöC×WFFVBÂg&WVVæ7“Ò&F–Ç’ ¢¢&Wf–÷W2Ò²&FFÖWF#¢Ö&¶WGĞ¢fÆÆ&6²ÒfÆÆ&6µöFFöÖWF‡&Wf–÷W2Â6÷W&6SÒ%–†öòf–ææ6R"Âg&WVVæ7“Ò&F–Ç’"¢&WV—&R†fÆÆ&6µ²&ÖöFR%ÒÓÒ&fÆÆ&6²"æBfÆÆ&6µ²'7FGW2%ÒÓÒ'7FÆR"Â.˜	iÚY¹î˜x«nhiziX‚"¢&WV—&R†fÆÆ&6µ²&4öb%ÒÓÒÖ&¶WE²&4öb%ÒæBfÆÆ&6µ²'WFFVDB%ÒÓÒÖ&¶WE²'WFFVDB%ÒÀ¢.˜	iÚY¹î˜[ø^š¾KùŞyYKˆ®KˆK»ŞyÉşZéîi{n™{B"¢ÆVv7’ÒfÆÆ&6µöFFöÖWF€¢·ÒÂ6÷W&6SÒ%–†öòf–ææ6R"Âg&WVVæ7“Ò&F–Ç’"ÂÆVv7•÷WFFVEöCÒ###bÓ‚ÓC#3£Cƒ£3U¢ ¢¢&WV—&R†ÆVv7•²&ÖöFR%ÒÓÒ&fÆÆ&6²"æBÆVv7•²'7FGW2%ÒÓÒ''F–Â"Â.iz~[ú¾xZ~Y¹î˜[ø^š¾j~Šë'F–Â"¢&WV—&R†ÆVv7•²&4öb%Ò—2æöæRÂ.iz~[ú¾xZ~KˆŞ[é~yJih~K»niz^iÉşXi.XX^˜	iÚi[hÚîizR"¢Væ¶æ÷vå÷&Wf–÷W2Ò²&FFÖWF#¢Ö¶UöFFöÖWF€¢'Væ¶æ÷vâ"Â%–†öòf–ææ6R"Â5ööcÔæöæRÂWFFVEöC×WFFVBÂg&WVVæ7“Ò&F–Ç’ ¢—Ğ¢Væ¶æ÷våöfÆÆ&6²ÒfÆÆ&6µöFFöÖWF‡Væ¶æ÷vå÷&Wf–÷W2Â6÷W&6SÒ%–†öòf–ææ6R"Âg&WVVæ7“Ò&F–Ç’"¢&WV—&R‡Væ¶æ÷våöfÆÆ&6µ²'7FGW2%ÒÓÒ''F–Â"æBVæ¶æ÷våöfÆÆ&6µ²&4öb%Ò—2æöæRÀ¢.{Ë®[	Xúşš¨ÎŠø˜	iÚi{n™{Ny¨Niz~Šë[Ù^KˆŞ[é~XØ~{ª~K‹®{+îzå5DÄ^Y¹î˜"¢&÷w2Ò·²&æÖR#¢$"Â&FFÖWF#¢Ö&¶WGÒÂ²&æÖR#¢$""Â&FFÖWF#¢fÆÆ&6·ÕĞ¢7VÖÖ'’Ò7VÖÖ&—¦UöFF÷VÆ—G’‡&÷w2¢&WV—&R‡7VÖÖ'•²&6÷VçG2%Õ²&Ö&¶WB%ÒÓÒæB7VÖÖ'•²&6÷VçG2%Õ²&fÆÆ&6²%ÒÓÒÀ¢.˜	iÚi[hÚî‹J˜xşŠêi[™IŠúò"¢&WV—&R‡7VÖÖ'•²'7FGW2%ÒÓÒ''F–Â"æBæ÷BfÆ–FFUöFF÷VÆ—G’‡&÷w2Â7VÖÖ'’’À¢.˜	iÚi[hÚî‹J˜xşiŠhh‰n{¹>ièNj
+š¨Î™IŠúò"¢&÷‡’ÒÖ¶U÷&÷‡•öÖWF€¢&WFb"Â#“Rå52"Â.KŠŞŠøSUDb"Â#SSå52"À¢7W'&Væ7“Ò$4å’"Â&WGW&åö&6—3Ò'&–6R"Âæ÷FSÒ$UDniKny¸®xè~Kº>ynûÈÎXúşˆ;ŞZÙYÊ‹yş‹Š®Šúş[zî8""À¢¢&÷‡•÷&÷rÒ²&æÖR#¢.KŠŞŠøS"Â'7–Ö&öÂ#¢#SSå52"Â&FFÖWF#¢Ö&¶WBÂ'&÷‡’#¢&÷‡—Ğ¢&WV—&R†æ÷BfÆ–FFU÷&÷‡•öÖWF‡&÷‡•÷&÷r’Â.iÈiX„UDnKº>ynZY{ªnKˆŞ[©NŠ*¾h¹.{¹Ò"¢–çfÆ–E÷&÷‡•÷&÷rÒ§6öâæÆöG2†§6öâæGV×2‡&÷‡•÷&÷r’¢–çfÆ–E÷&÷‡•÷&÷u²'&÷‡’%Õ²&–ç7G'VÖVçE7–Ö&öÂ%ÒÒ#“Rå52 ¢&WV—&R‡fÆ–FFU÷&÷‡•öÖWF†–çfÆ–E÷&÷‡•÷&÷r’Â.Zéî™˜^Kº>z™I˜XŞy¨NKº>ynZY{ªn[ø^š¾Š*¾h¹.{¹Ò"¢&–çB‚$Ö&¶WBFFW"×&V6÷&B6öçG&7C¢52"  ¦FVb'Våö6ö×ç•ö'V–ÆFW%ö6öçG&7E÷FW7G2‚’ÓâæöæS ¢7V2Ò–×÷'FÆ–"çWF–Âç7V5ög&öÕöf–ÆUöÆö6F–öâ‚&6ö×æ–W5ö'V–ÆFW""Â4ôÕä”U5ô%T”ÄB¢&WV—&R‡7V2—2æ÷BæöæRæB7V2æÆöFW"—2æ÷BæöæRÂ.izk9^Xª‹ÛŞXZÎXûjiÎièN[»®ˆI®iÊÂ"¢ÖöGVÆRÒ–×÷'FÆ–"çWF–ÂæÖöGVÆUög&öÕ÷7V2‡7V2¢–ç6W'FVE÷7GV"Ò'&WVW7G2"æ÷B–â7—2æÖöGVÆW0¢–b–ç6W'FVE÷7GV# ¢&WVW7G5÷7GV"ÒG—W2äÖöGVÆUG—R‚'&WVW7G2"¢&WVW7G5÷7GV"çWF–Ç2ÒG—W2å6–×ÆTæÖW76R‡V÷FSÖÆÖ&FfÇVS¢fÇVR¢&WVW7G5÷7GV"å6W76–öâÒö&¦V7@¢7—2æÖöGVÆW5²'&WVW7G2%ÒÒ&WVW7G5÷7GV ¢G'“ ¢7V2æÆöFW"æW†V5öÖöGVÆR†ÖöGVÆR¢f–æÆÇ“ ¢–b–ç6W'FVE÷7GV# ¢7—2æÖöGVÆW2ç÷‚'&WVW7G2"ÂæöæR ¢6Æ72&W7öç6S ¢7FGW5ö6öFRÒ#  ¢7FF–6ÖWF†ö@¢FVb§6öâ‚“ ¢&WGW&â²&6†'B#¢²'&W7VÇB#¢·²&ÖWF#¢°¢'&VwVÆ$Ö&¶WE&–6R#¢#RãRÀ¢&6†'E&Wf–÷W46Æ÷6R#¢#ãÀ¢'&VwVÆ$Ö&¶WEF–ÖR#¢sƒSsS#À¢×Õ××Ğ ¢6Æ726W76–öã ¢7FF–6ÖWF†ö@¢FVbvWB‚¥ö&w2Â¢¥ö·v&w2“ ¢&WGW&â&W7öç6R‚ ¢V÷FRÒÖöGVÆRç–eö6†'B…6W76–öâ‚’Â%DU5B"¢&WV—&R‡V÷FRÓÒƒ#RãRÂ#ãÂ###bÓ‚Ó5C££¢"’Â.XZÎXûŠÎh8^XÎh‰nŠÎh8^i{nx+iŠ[N™IŠúò"¢&WV—&R†ÖöGVÆRæÆ7E÷&÷VæEö5ööb‚$Ö’##b"’ÓÒ###bÓRÓ"Â.‰èŞ‹XNiÈK»ŞŠxNˆÈ>XÉn™IŠúò"¢&WV—&R†ÖöGVÆRæÆ7E÷&÷VæEö5ööb„æöæR’—2æöæRÂ.{Ë®ZK‰èŞ‹XNiÈK»ŞKˆŞ[é~yIşh‰›¹ŠêNiz^iÉò" ¢6Æ726W&–W5&W7öç6S ¢7FGW5ö6öFRÒ#  ¢7FF–6ÖWF†ö@¢FVb§6öâ‚“ ¢&WGW&â²&6†'B#¢²'&W7VÇB#¢·°¢'F–ÖW7F×#¢³sƒSsS#ÂsƒSƒcÂsƒSƒƒƒÒÀ¢&–æF–6F÷'2#¢²'V÷FR#¢·²&6Æ÷6R#¢³ãÂæöæRÂ"ãU×Õ×ÒÀ¢Õ××Ğ ¢6Æ726W&–W56W76–öã ¢7FF–6ÖWF†ö@¢FVbvWB‚¥ö&w2Â¢¥ö·v&w2“ ¢&WGW&â6W&–W5&W7öç6R‚ ¢6Æ÷6W2ÒÖöGVÆRç–eöF–Ç•ö6Æ÷6W2…6W&–W56W76–öâ‚’Â%DU5B"¢&WV—&R†6Æ÷6W2ÓÒ²‚###bÓ‚Ó2"Âã’Â‚###bÓ‚ÓR"Â"ãR•ÒÀ¢.XZÎXûiz^{«ş[ø^š¾‹{>‹ø~iziKny¹y¨NKªNi‰>iz^ûÈÎKˆŞX®X˜ŞY	Z¾XXR" ¢6Æ72V×G•6W76–öã ¢7FF–6ÖWF†ö@¢FVbvWB‚¥ö&w2Â¢¥ö·v&w2“ ¢&—6R'VçF–ÖTW'&÷"‚&æWGv÷&²F÷vâ" ¢&WV—&R†ÖöGVÆRç–eöF–Ç•ö6Æ÷6W2„V×G•6W76–öâ‚’Â%DU5B"’ÓÒµÒÀ¢.Xùni[ZK‹J^[ø^š¾‹ùNY¹îz›®[¨şX‰~ûÈÎyK‹>yJikKùŞyYKˆ®jÊXènXû""¢&WV—&R†ÖöGVÆRä„•5Dõ%•õ5”Ô$ôÅ2ÓÒCæBÖöGVÆRä„•5Dõ%•õô”åE2ÓÒ#cÀ¢.XZÎXûiz^{«şŠhny¹nj~y¨Ni[Kˆîk¹®Xª™[ş[ªn[ø^š¾KˆîŠÎh8^iÛşZY{ªnKˆˆ{B"¢&WV—&R‚&†—7F÷'’"–âÖöGVÆRä„•5Dõ%•õD‚æBÖöGVÆRä„•5Dõ%•õD‚æVæG7v—F‚‚"æ§6öâ"’À¢.XZÎXûiz^{«ş[ø^š¾XiXZ^xºÎz¸¾y¨F†—7F÷'’æ§6öîûÈÎKˆŞk{~‹ù¶FFæ§6öâ"¢&–çB‚$6ö×ç’W"×&V6÷&B&÷fVææ6R'V–ÆFW#¢52"  ¦FVb'Vå÷6†&VEö†—7F÷'•ö6öçG&7E÷FW7G2‚’ÓâæöæS ¢"".KˆiÚzê˜>X[yJYÎKˆK»Şk¹®XªXènXû.ŠxNX‰ûÈÎK‰NšinjÊyIşh‰X˜Şy¨NXÚKØŞih~K»nKˆŞ[é~Xi.XX^iÈiXi[hÚî8""" ¢7V2Ò–×÷'FÆ–"çWF–Âç7V5ög&öÕöf–ÆUöÆö6F–öâ‚&Ö&¶WEö†—7F÷'’"ÂÔ$´UEô„•5Dõ%•ôÔôETÄR¢&WV—&R‡7V2—2æ÷BæöæRæB7V2æÆöFW"—2æ÷BæöæRÂ.izk9^Xª‹ÛŞX[Kª¾k¹®XªXènXû.jŠYÙr"¢ÖöGVÆRÒ–×÷'FÆ–"çWF–ÂæÖöGVÆUög&öÕ÷7V2‡7V2¢7V2æÆöFW"æW†V5öÖöGVÆR†ÖöGVÆR¢†—7F÷'’Â&WF–æVBÒÖöGVÆRæ'V–ÆE÷&öÆÆ–æuö†—7F÷'’€¢²$#¢²‚###bÓ‚Ó2"Âã’Â‚###bÓ‚ÓR"Â2ã•×ÒÀ¢²&FFW2#¢²###bÓ‚Ó2"Â###bÓ‚ÓB%ÒÂ'6W&–W2#¢²$"#¢³’ãÂ’ãU××ÒÀ¢###bÓ‚Ó#UC££¢"À¢6÷W&6SÒ%FW7E6÷W&6R"À¢æ÷FSÒ'FW7B"À¢¢&WV—&R††—7F÷'•²&FFW2%ÒÓÒ²###bÓ‚Ó2"Â###bÓ‚ÓB"Â###bÓ‚ÓR%ÒÀ¢.X[Kª¾iz^iÉş‹ÛN[ø^š¾hÈiz^XØ~[¨şY[›b"¢&WV—&R††—7F÷'•²'6W&–W2%Õ²$%Õ³Ò—2æöæRÂ.{Ë®Šx.kX¾iz^[ø^š¾yYz›®ûÈÎKˆŞX®X˜ŞY	Z¾XXR"¢&WV—&R‡&WF–æVBÓÒ²$"%ÒæB†—7F÷'•²'6W&–W2%Õ²$"%Õ²ÓÒ—2æöæRÀ¢.iÊÎ‹ÚîiÊ®XùnX‹y¨Nj~y¨Nk+şyJKˆ®jÊ[¨şX‰~K‰NKˆŞŠ^˜
+ikx+’"¢&WV—&R††—7F÷'•²'6÷W&6R%ÒÓÒ%FW7E6÷W&6R"æB†—7F÷'•²&g&WVVæ7’%ÒÓÒ&F–Ç’"À¢.k¹®XªXènXû.[ø^š¾j~k:‹>yJiky¨NyÉşZéîiÚ^k©"¢&WV—&R†ÖöGVÆRæ'V–ÆE÷&öÆÆ–æuö†—7F÷'’‡·ÒÂ·ÒÂ'B"Â6÷W&6SÒ'2"Âæ÷FSÒ&â"•³Ò—2æöæRÀ¢.izK»¾KÙ^iÈiX[¨şX‰~i{n[ø^š¾‹ùNY¹îz›®ûÈÎyK‹>yJikKùŞyYKˆ®jÊih~K»b" ¢f÷"F‚Â¶W—2–â‚„4ôÕä”U5ô„•5Dõ%’Â‚&FFW2"Â'6W&–W2"’’À¢„54UEõ$ä´”äuô5%•DòÂ‚&76WG2"Â&†—7F÷'’"’’“ ¢–ÆöBÒ§6öâæÆöG2‡F‚ç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"’¢&WV—&R‡–ÆöBævWB‚&FVÖò"’—2æ÷BG'VRÂb'·F‚ææÖWŞKˆŞ[é~j~ŠëK‹®kÉNzK®i[hÚâ"¢&WV—&R‡–ÆöBævWB‚'6÷W&6R"’æB–ÆöBævWB‚&æ÷FR"’À¢b'·F‚ææÖWŞ[ø^š¾XiiˆîiÚ^k©KˆîXú>[èB"¢f÷"¶W’–â¶W—3 ¢&WV—&R†¶W’–â–ÆöBÂb'·F‚ææÖWŞ{Ë®[	¶¶W—ŞZÙ~jëR"¢–b–ÆöBævWB‚'7FGW2"’ÓÒ'VæF–ær# ¢&WV—&R†æ÷B–ÆöBævWB‚&FFW2"’æBæ÷B–ÆöBævWB‚&76WG2"’À¢b'·F‚ææÖWŞj~K‹§VæF–æ~i{nKˆŞ[é~Y
+¾iÈK»¾KÙ^Šx.kX¾XÂ"¢&–çB‚%6†&VB&öÆÆ–ær†—7F÷'’æBVæF–ærÆ6V†öÆFW'3¢52"  ¦FVböf—'7E÷7–Ö&öÂ†—FVÓ¢F–7B’Óâ7G# ¢"".Xùnj~y¨Nšin˜Kº>zûÉ¾X	˜XúşKº^iŠşZÙ~zÊnK‹.h‰b·7–ÒÂæ÷FWÒZÙ~X[8""" ¢6æF–FFRÒ—FVÕ²'7–×2%Õ³Ğ¢&WGW&â6æF–FFU²'7–Ò%Ò–b—6–ç7Fæ6R†6æF–FFRÂF–7B’VÇ6R6æF–FFP  ¦FVb'Våö76WE÷G&6¶W%ö'V–ÆFW%ö6öçG&7E÷FW7G2‚’ÓâæöæS ¢7V2Ò–×÷'FÆ–"çWF–Âç7V5ög&öÕöf–ÆUöÆö6F–öâ‚&76WE÷G&6¶W%ö'V–ÆFW""Â54UEõE$4´U%ô%T”ÄB¢&WV—&R‡7V2—2æ÷BæöæRæB7V2æÆöFW"—2æ÷BæöæRÂ.izk9^Xª‹ÛŞ‹z‹XNKª~ièN[»®ˆI®iÊÂ"¢ÖöGVÆRÒ–×÷'FÆ–"çWF–ÂæÖöGVÆUög&öÕ÷7V2‡7V2¢–ç6W'FVE÷7GV"Ò'&WVW7G2"æ÷B–â7—2æÖöGVÆW0¢–b–ç6W'FVE÷7GV# ¢&WVW7G5÷7GV"ÒG—W2äÖöGVÆUG—R‚'&WVW7G2"¢&WVW7G5÷7GV"çWF–Ç2ÒG—W2å6–×ÆTæÖW76R‡V÷FSÖÆÖ&FfÇVS¢fÇVR¢7—2æÖöGVÆW5²'&WVW7G2%ÒÒ&WVW7G5÷7GV ¢G'“ ¢7V2æÆöFW"æW†V5öÖöGVÆR†ÖöGVÆR¢f–æÆÇ“ ¢–b–ç6W'FVE÷7GV# ¢7—2æÖöGVÆW2ç÷‚'&WVW7G2"ÂæöæR ¢Væ—fW'6UöæÖW2Ò¶—FVÕ²&æÖR%Òf÷"—FVÒ–âÖöGVÆRä54UE5Ğ¢Væ—fW'6U÷7–Ö&öÇ2Òµöf—'7E÷7–Ö&öÂ†—FVÒ’f÷"—FVÒ–âÖöGVÆRä54UE5Ğ¢&WV—&R†ÆVâ†ÖöGVÆRä54UE2’ÓÒSbÂb.‹z‹XNKª~kˆ^XÙ^iÚi[[©NK‹£SnûÈÎ[Ù>X˜×¶ÆVâ†ÖöGVÆRä54UE2—Ò"¢&WV—&R†ÆVâ‡6WB‡Væ—fW'6UöæÖW2’’ÓÒÆVâ‡Væ—fW'6UöæÖW2’Â.‹z‹XNKª~j~y¨NYŞz{[ø^š¾YJşKˆ"¢&WV—&R†ÆVâ‡6WB‡Væ—fW'6U÷7–Ö&öÇ2’’ÓÒÆVâ‡Væ—fW'6U÷7–Ö&öÇ2’Â.‹z‹XNKª~šin˜Kº>z[ø^š¾YJşKˆ"¢6FVv÷&–W2Ò·Ğ¢f÷"—FVÒ–âÖöGVÆRä54UE3 ¢6FVv÷&–W5¶—FVÕ²&6B%ÕÒÒ6FVv÷&–W2ævWB†—FVÕ²&6B%ÒÂ’²¢&WV—&R†6FVv÷&–W2ÓÒ²&WV—G’#¢#BÂ&6öÖÖöF—G’#¢RÂ&g‚#¢2Â&&öæB#¢GÒÀ¢b.‹z‹XNKª~Y¹¾{¾iÚi[Kˆîy›¾ŠëKˆŞKˆˆ{NûÉ§¶6FVv÷&–W7Ò"¢2##bÓ‚Ó#Rh˜iÈˆ^Xk>Zé®ûÉ®i*NKˆµKº>ynXÚYî{«>ijş‹ëîXX¾iKyK{»ÎYhÈ~i[ä•„”>‹ù¾XZ^hÈ~i[{¾ûÉ°¢2˜>hÈ~K¸ŞyKD”XXŞ‹K{¸NK»n[^zK®ûÈÎ{«>ijş‹ëîXX³ûÈ„äEûÈKˆŞXhŞ‹ù¾XZ^iÊÎz¹ûÈÎKŠNˆ^˜;ŞKˆŞ[é~k{~‹ù¾kˆ^XÙ^8 ¢&WV—&R‚%ä•„”2"–âVæ—fW'6U÷7–Ö&öÇ2À¢.{«>ijş‹ëîXX¾{»ÎYhÈ~i[[©NYÊ‹z‹XNKª~kˆ^XÙ^y¨NhÈ~i[{¾KŠÒ"¢&WV—&R‚%äD¤’"æ÷B–âVæ—fW'6U÷7–Ö&öÇ2æB%ääE‚"æ÷B–âVæ—fW'6U÷7–Ö&öÇ2À¢.˜>hÈ~K¸ŞKº^XXŞ‹K”UDn{¸NK»n[^zK®8{«>ijş‹ëîXX³KˆŞXhŞ[^zK®ûÈÎKŠNˆ^˜;ŞKˆŞ‹ù¾XZ^‹z‹XNKª~kˆ^XÙR"¢G&6¶W%÷&÷w2Ò§6öâæÆöG2„54UEõE$4´U%ôDDç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"’•²&76WG2%Ğ¢&WV—&R†ÆÂ‡&÷rævWB‚&æÖR"’–â6WB‡Væ—fW'6UöæÖW2’f÷"&÷r–âG&6¶W%÷&÷w2’À¢&FFæ§6öâ˜xÎX{®xëK¨nkˆ^XÙ^ZIny¨Nj~y¨B"¢&WV—&R†ÆVâ‡G&6¶W%÷&÷w2’ÃÒÆVâ†ÖöGVÆRä54UE2’À¢.[{.Xù[ˆ>iÚi[KˆŞ[é~‹h^‹ø~kˆ^XÙ^iÚi[" ¢76WBÒæW‡B†—FVÒf÷"—FVÒ–âÖöGVÆRä54UE2–b—FVÕ²&æÖR%ÒÓÒ.KŠŞŠøS"¢&WV—&R†76WE²'7–×2%Õ³ÒÓÒ#“Rå52"Â.KŠŞŠøS[ø^š¾KÉXX[	ŞŠù^XéşhÈ~i[Kº>z"¢&÷‡•ö6æF–FFRÒ76WE²'7–×2%Õ³Ğ¢&WV—&R‡&÷‡•ö6æF–FFRævWB‚'7–Ò"’ÓÒ#SSå52"Â.KŠŞŠøSUDnKº>ynKº>ziziX‚"¢GFV×G2ÒµĞ ¢FVbf¶UöfWF6‚‡7–Ö&öÂ“ ¢GFV×G2æVæB‡7–Ö&öÂ¢–b7–Ö&öÂÓÒ#“Rå52# ¢&—6RfÇVTW'&÷"‚.ŠÎh8^i[hÚîx+KˆŞ‹k2"¢&WGW&â²‚###RÓ‚Ó"Âã’Â‚###bÓ‚Ó"Âã’Â‚###bÓ‚Ó"Âã•Ğ ¢6†÷6VâÂ7W7V7BÒÖöGVÆRç6VÆV7Eö6æF–FFR†76WBÂf¶UöfWF6‚¢&WV—&R†GFV×G2ÓÒ²#“Rå52"Â#SSå52%ÒÂ.KŠŞŠøSX	˜Y¹î˜š®[¨şiziX‚"¢&WV—&R‡7W7V7B—2æöæRæB6†÷6VâæB6†÷6Vå³ÒÓÒ#SSå52"Â.KŠŞŠøSUDnKº>yniÊ®Š*¾˜KŠÒ"¢&WV—&R†6†÷6Vå³%Õ²'F&vWE7–Ö&öÂ%ÒÓÒ#“Rå52 ¢æB6†÷6Vå³%Õ²&–ç7G'VÖVçE7–Ö&öÂ%ÒÓÒ#SSå52 ¢æB6†÷6Vå³%Õ²&7W'&Væ7’%ÒÓÒ$4å’ ¢æB6†÷6Vå³%Õ²'&WGW&ä&6—2%ÒÓÒ'&–6R"À¢.KŠŞŠøSUDnKº>ynZY{ªniziX‚"¢&–çB‚$76WBG&6¶W"54’SfÆÆ&6³¢52" ¢FVbF’†çVÖ&W"“ ¢&WGW&âb###bÓ‚×¶çVÖ&W#£&GÒ  ¢g&W6‚ÂòÒÖöGVÆRæ'V–ÆEö†—7F÷'’‡°¢%äu52#¢²†F’ƒ‚’Âã’Â†F’ƒ’’Âã’Â†F’ƒ#’Â"ãR•ÒÀ¢%äã##R#¢²†F’ƒ‚’Â#ã’Â†F’ƒ#’Â#Bã•ÒÀ¢ÒÂ·ÒÂ###bÓ‚Ó#%C££¢"¢&WV—&R†g&W6…²&FFW2%ÒÓÒ¶F’ƒ‚’ÂF’ƒ’’ÂF’ƒ#•ÒÂ.XènXû.X[Kª¾iz^iÉş‹ÛN[ø^š¾hÈiz^XØ~[¨şY[›b"¢&WV—&R†g&W6…²'6W&–W2%Õ²%äã##R%Õ³Ò—2æöæRÂ.{Ë®hª^K»~iz^[ø^š¾yYz›®ûÈÎKˆŞ[é~X˜ŞY	Z¾XXR"¢&WV—&R†g&W6…²&4öb%ÒÓÒF’ƒ#’æBg&W6…²'ö–çG2%ÒÓÒ2Â.XènXû"4öbKˆîx+i[[ø^š¾yKiz^iÉş‹ÛNZHŞzér"¢&WV—&R†g&W6…²'6÷W&6R%ÒÓÒ%–†öòf–ææ6R"æBg&W6…²&g&WVVæ7’%ÒÓÒ&F–Ç’"À¢.XènXû.[ø^š¾j~k:KˆæFFæ§6öîKˆˆ{Ny¨NiÚ^k©Kˆîš)xèr" ¢6VBÂòÒÖöGVÆRæ'V–ÆEö†—7F÷'’€¢²%äu52#¢²†F’ƒ‚’Âã’Â†F’ƒ’’Â"ã’Â†F’ƒ#’Â2ã•×ÒÂ·ÒÂ'B"ÂÆ–Ö—CÓ"¢&WV—&R†6VE²&FFW2%ÒÓÒ¶F’ƒ’’ÂF’ƒ#•ÒÂ.XènXû.[ø^š¾k¹®XªhŠ®ijŞX‹iÈ‹ùîKŠ®KªNi‰>izR" ¢&Wf–÷W2Ò²&FFW2#¢¶F’ƒ‚’ÂF’ƒ’•ÒÀ¢'6W&–W2#¢²%äu52#¢³ãÂãÒÂ%äeE4R#¢³SãÂSã××Ğ¢ÖW&vVBÂ&WF–æVBÒÖöGVÆRæ'V–ÆEö†—7F÷'’€¢²%äu52#¢²†F’ƒ’’Âã’Â†F’ƒ#’Â"ã•×ÒÂ&Wf–÷W2Â'B"¢&WV—&R‡&WF–æVBÓÒ²%äeE4R%ÒÂ.iÊÎ‹ÚîXùni[ZK‹J^y¨Nj~y¨N[ø^š¾k+şyJKˆ®jÊ[¨şX‰r"¢&WV—&R†ÖW&vVE²'6W&–W2%Õ²%äeE4R%Õ²ÓÒ—2æöæRÂ.k+şyJy¨N[¨şX‰~KˆŞ[é~K‹®ikiz^iÉşŠ^˜
+x+KØÒ" ¢&WV—&R†ÖöGVÆRæ'V–ÆEö†—7F÷'’‡·ÒÂ·ÒÂ'B"•³Ò—2æöæRÀ¢.izK»¾KÙ^iÈiX[¨şX‰~i{n[ø^š¾‹ùNY¹îz›®ûÈÎŠê‹>yJikKùŞyYKˆ®jÊ†—7F÷'’æ§6öâ"¢F—'G’ÂòÒÖöGVÆRæ'V–ÆEö†—7F÷'’€¢²%å‚#¢²†F’ƒ‚’ÂfÆöB‚&æâ"’’Â†F’ƒ’’ÂRã’Â†F’ƒ#’ÂæöæR•×ÒÂ·ÒÂ'B"¢&WV—&R†F—'G•²&FFW2%ÒÓÒ¶F’ƒ’•ÒÂ$æîKˆî{Ë®ZKXÎKˆŞ[é~XiXZ^XènXû""¢&–çB‚$76WBG&6¶W"&öÆÆ–ær†—7F÷'“¢52" ¢Ö7&õ÷7V2Ò–×÷'FÆ–"çWF–Âç7V5ög&öÕöf–ÆUöÆö6F–öâ€¢&Ö7&õ÷&F%÷6W&–W2"Â$ôõBò'67&—G2"ò&Ö7&ò×&F""ò&'V–ÆE÷&F"ç’"¢Ö7&õöÖöGVÆRÒ–×÷'FÆ–"çWF–ÂæÖöGVÆUög&öÕ÷7V2†Ö7&õ÷7V2¢Ö7&õö–ç6W'FVBÒ'&WVW7G2"æ÷B–â7—2æÖöGVÆW0¢–bÖ7&õö–ç6W'FVC ¢Ö7&õ÷7GV"ÒG—W2äÖöGVÆUG—R‚'&WVW7G2"¢Ö7&õ÷7GV"çWF–Ç2ÒG—W2å6–×ÆTæÖW76R‡V÷FSÖÆÖ&FfÇVS¢fÇVR¢7—2æÖöGVÆW5²'&WVW7G2%ÒÒÖ7&õ÷7GV ¢G'“ ¢Ö7&õ÷7V2æÆöFW"æW†V5öÖöGVÆR†Ö7&õöÖöGVÆR¢f–æÆÇ“ ¢–bÖ7&õö–ç6W'FVC ¢7—2æÖöGVÆW2ç÷‚'&WVW7G2"ÂæöæR ¢öff–6–ÂÂòÒÖ7&õöÖöGVÆRæ'V–ÆEööff–6–Å÷6W&–W2‡°¢$Du3#¢²†F’ƒ‚’ÂBãc’Â†F’ƒ’’ÂBãcR’Â†F’ƒ#’ÂBãc’•ÒÀ¢$EEtU„$u2#¢²†F’ƒ‚’Â‚ã’’Â†F’ƒ’’Â’ã•ÒÀ¢%%uD2#¢²†F’ƒ‚’Âƒbã’Â†F’ƒ#’ÂƒbãC‚•ÒÀ¢ÒÂ·ÒÂ###bÓ‚Ó#%C££¢"¢&WV—&R†öff–6–Å²'6÷W&6R%ÒÓÒ$e$TB+rT”"æBöff–6–Å²&g&WVVæ7’%ÒÓÒ&F–Ç’"À¢.Zéik™[ş[¨şX‰~[ø^š¾j~k:iÚ^k©Kˆîš)xèr"¢&WV—&R†öff–6–Å²'6W&–W2%Õ²$Du3%Õ²&FFW2%ÒÓÒ¶F’ƒ‚’ÂF’ƒ’’ÂF’ƒ#•ÒÀ¢.Zéik™[ş[¨şX‰~[ø^š¾hÈiz^XØ~[¨ò"¢6VEöÖ7&òÂòÒÖ7&õöÖöGVÆRæ'V–ÆEööff–6–Å÷6W&–W2€¢²$Du3#¢²†F’ƒ‚’Âã’Â†F’ƒ’’Â"ã’Â†F’ƒ#’Â2ã•×ÒÂ·ÒÂ'B"ÂÆ–Ö—CÓ"¢&WV—&R†6VEöÖ7&õ²'6W&–W2%Õ²$Du3%Õ²&FFW2%ÒÓÒ¶F’ƒ’’ÂF’ƒ#•ÒÀ¢.Zéik™[ş[¨şX‰~[ø^š¾k¹®XªhŠ®ijÒ"¢¶WEöÖ7&òÂ¶WEö–G2ÒÖ7&õöÖöGVÆRæ'V–ÆEööff–6–Å÷6W&–W2€¢²$Du3#¢²†F’ƒ’’ÂBãb•×ÒÀ¢²'6W&–W2#¢²%%uD2#¢²&FFW2#¢¶F’ƒr•ÒÂ'fÇVW2#¢³ƒRã×××ÒÂ'B"¢&WV—&R†¶WEö–G2ÓÒ²%%uD2%ÒæB¶WEöÖ7&õ²'6W&–W2%Õ²%%uD2%Õ²'fÇVW2%ÒÓÒ³ƒRãÒÀ¢.iÊÎ‹Úî{Ë®ZKy¨NZéik[¨şX‰~[ø^š¾k+şyJKˆ®jÊK‰NKˆŞŠ^˜
+ikx+’"¢&WV—&R†Ö7&õöÖöGVÆRæ'V–ÆEööff–6–Å÷6W&–W2‡·ÒÂ·ÒÂ'B"•³Ò—2æöæRÀ¢.izK»¾KÙ^iÈiXZéik[¨şX‰~i{n[ø^š¾‹ùNY¹îz›®ûÈÎKùŞyYKˆ®jÊ6W&–W2æ§6öâ"¢F—'G•öÖ7&òÂòÒÖ7&õöÖöGVÆRæ'V–ÆEööff–6–Å÷6W&–W2€¢²$Du3#¢²‚&&B"Âã’Â†F’ƒ’’ÂÓRã’Â†F’ƒ#’ÂBãr•×ÒÂ·ÒÂ'B"¢&WV—&R†F—'G•öÖ7&õ²'6W&–W2%Õ²$Du3%Õ²&FFW2%ÒÓÒ¶F’ƒ#•ÒÀ¢.™Ùîk9^iz^iÉşKˆî™ÙîjÚ>XÎKˆŞ[é~XiXZ^Zéik™[ş[¨şX‰r"¢V&Æ—6†VBÒ§6öâæÆöG2‚…$ôõBò&2"ò&f–ææ6R×FW&Ö–æÂ"ò&FFæ§6öâ"’ç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"’¢f÷"&V6÷&B–âV&Æ—6†VE²&76WG2%Ó ¢–b&V6÷&E²'7–Ö&öÂ%Ò–â²$Du3"Â$EEtU„$u2"Â%uD’'Ó ¢&WV—&R‡&V6÷&BævWB‚&FF&Vb"Â""’ç7F'G7v—F‚‚"ââöÖ7&ò×&F"öFFæ§6öâ"’À¢.KˆšZéikŠÎh8^K¸Ş[ø^š¾Šû¾XùfFFæ§6öîKŠŞy¨NXù~ZY{ªcx+z©~Xú2"¢&–çB‚$Ö7&òöff–6–ÂÆöær6W&–W3¢52"¢&–çB‚"Òe$TB66†R&WW6Rò6–ævÆRT”&WVW7Bò&öÆÆ–ær6¢52"¢&–çB‚"Ò&WFVçF–öâöâf–ÇW&Ròæòf'&–6FVBö–çG2ò6öçG&7FVB‚×ö–çBv–æF÷rVçF÷V6†VC¢52" ¢&–çB‚"Ò6†&VBFFR†—2òæòf÷'v&Bf–ÆÂò&öÆÆ–ær6¢52"¢&–çB‚"ÒW"×7–Ö&öÂ&WFVçF–öâöâf–ÇW&Ròæòf'&–6FVBö–çG2òF—'G’fÇVR&V¦V7F–öã¢52"  ¢76“3ÒæW‡B†—FVÒf÷"—FVÒ–âÖöGVÆRä54UE2–b—FVÕ²&æÖR%ÒÓÒ.k*®k{3"¢&WV—&R†76“3²'7–×2%Õ³ÒÓÒ#3å52"Â.k*®k{3[ø^š¾KÉXX[	ŞŠù^XéşhÈ~i[Kº>z"¢&WV—&R†76“3²'7–×2%Õ³ÒævWB‚'7–Ò"’ÓÒ#S3å52"Â.k*®k{3UDnKº>ynKº>ziziX‚"¢76“3öGFV×G2ÒµĞ ¢FVbf¶Uö76“3öfWF6‚‡7–Ö&öÂ“ ¢76“3öGFV×G2æVæB‡7–Ö&öÂ¢–b7–Ö&öÂÓÒ#3å52# ¢&—6RfÇVTW'&÷"‚.jŠh¹şXéşhÈ~i[ZK‹JR"¢&WGW&â²‚###RÓ‚Ó"Âã’Â‚###bÓ‚Ó"ÂRã’Â‚###bÓ‚Ó"Âbã•Ğ ¢76“3ö6†÷6VâÂ76“3÷7W7V7BÒÖöGVÆRç6VÆV7Eö6æF–FFR†76“3Âf¶Uö76“3öfWF6‚¢&WV—&R†76“3öGFV×G2ÓÒ²#3å52"Â#S3å52%ÒÂ.k*®k{3X	˜Y¹î˜š®[¨şiziX‚"¢&WV—&R†76“3÷7W7V7B—2æöæRæB76“3ö6†÷6VâæB76“3ö6†÷6Vå³ÒÓÒ#S3å52"À¢.k*®k{3UDnKº>yniÊ®Š*¾˜KŠÒ"¢&WV—&R†76“3ö6†÷6Vå³%Õ²'F&vWE7–Ö&öÂ%ÒÓÒ#3å52 ¢æB76“3ö6†÷6Vå³%Õ²&–ç7G'VÖVçE7–Ö&öÂ%ÒÓÒ#S3å52 ¢æB76“3ö6†÷6Vå³%Õ²&7W'&Væ7’%ÒÓÒ$4å’ ¢æB76“3ö6†÷6Vå³%Õ²'&WGW&ä&6—2%ÒÓÒ'&–6R"À¢.k*®k{3UDnKº>ynZY{ªniziX‚"¢&–çB‚$76WBG&6¶W"54’3fÆÆ&6³¢52"  ¦FVb'Våö76WE÷&æ¶–æuö'V–ÆFW%ö6öçG&7E÷FW7G2‚’ÓâæöæS ¢7V2Ò–×÷'FÆ–"çWF–Âç7V5ög&öÕöf–ÆUöÆö6F–öâ‚&76WE÷&æ¶–æuö'V–ÆFW""Â54UEõ$ä´”äuô%T”ÄB¢&WV—&R‡7V2—2æ÷BæöæRæB7V2æÆöFW"—2æ÷BæöæRÂ.izk9^Xª‹ÛŞXZy>‹XNKª~jiÎièN[»®ˆI®iÊÂ"¢ÖöGVÆRÒ–×÷'FÆ–"çWF–ÂæÖöGVÆUög&öÕ÷7V2‡7V2¢–ç6W'FVE÷7GV"Ò'&WVW7G2"æ÷B–â7—2æÖöGVÆW0¢–b–ç6W'FVE÷7GV# ¢&WVW7G5÷7GV"ÒG—W2äÖöGVÆUG—R‚'&WVW7G2"¢&WVW7G5÷7GV"çWF–Ç2ÒG—W2å6–×ÆTæÖW76R‡V÷FSÖÆÖ&FfÇVS¢fÇVR¢&WVW7G5÷7GV"å6W76–öâÒö&¦V7@¢7—2æÖöGVÆW5²'&WVW7G2%ÒÒ&WVW7G5÷7GV ¢G'“ ¢7V2æÆöFW"æW†V5öÖöGVÆR†ÖöGVÆR¢f–æÆÇ“ ¢–b–ç6W'FVE÷7GV# ¢7—2æÖöGVÆW2ç÷‚'&WVW7G2"ÂæöæR ¢6Æ72&W7öç6S ¢7FGW5ö6öFRÒ#  ¢7FF–6ÖWF†ö@¢FVb§6öâ‚“ ¢&WGW&â²&6†'B#¢²'&W7VÇB#¢·²&ÖWF#¢°¢'&VwVÆ$Ö&¶WE&–6R#¢sRã#RÀ¢&6†'E&Wf–÷W46Æ÷6R#¢s2ãRÀ¢'&VwVÆ$Ö&¶WEF–ÖR#¢sƒSsS#À¢×Õ××Ğ ¢6Æ726W76–öã ¢†VFW'2Ò·Ğ ¢7FF–6ÖWF†ö@¢FVbvWB‚¥ö&w2Â¢¥ö·v&w2“ ¢&WGW&â&W7öç6R‚ ¢V÷FRÒÖöGVÆRç–e÷&–6R…6W76–öâ‚’Â%DU5B"¢&WV—&R‡V÷FRÓÒƒsRã#RÂs2ãRÂ###bÓ‚Ó5C££¢"’Â.‹XNKª~hé.ŠÎŠÎh8^XÎh‰nŠÎh8^i{nx+iŠ[N™IŠúò"¢&WV—&R†ÖöGVÆRæ&6VÆ–æU÷&÷fVææ6R‡²&æÖR#¢.XZy>h‹şYËKªr'Ò’ÓÒ²'6÷W&6R#¢%6f–ÆÇ2"Â&4öb#¢æöæWÒÀ¢.XZy>h‹şYËKª~™ÙhYû®XxniÚ^k©iŠ[N™IŠúò" ¢6Æ726†'E&W7öç6S ¢7FGW5ö6öFRÒ#  ¢7FF–6ÖWF†ö@¢FVb§6öâ‚“ ¢&WGW&â²'&–6W2#¢µ³sƒSsS#ÂãÒÂ³sƒSsSƒCÂRãÒÀ¢³sƒSƒcÂãÒÂ³sƒSƒƒƒÂæöæUÕ×Ğ ¢6Æ726†'E6W76–öã ¢7FF–6ÖWF†ö@¢FVbvWB‚¥ö&w2Â¢¥ö·v&w2“ ¢&WGW&â6†'E&W7öç6R‚ ¢7'—Fõö6Æ÷6W2ÒÖöGVÆRæ6ö–ævV6¶õöF–Ç•ö6Æ÷6W2„6†'E6W76–öâ‚’Â&&—F6ö–â"¢&WV—&R†7'—Fõö6Æ÷6W2ÓÒ²‚###bÓ‚Ó2"ÂRã’Â‚###bÓ‚ÓB"Âã•ÒÀ¢.XªZøniz^{«ş[ø^š¾hÈ•UD>iz^iÉş[Ù.[›n8YÎiz^XùniÈYîKˆKŠ®x+ûÈÎK‰NKŠ.[È>{Ë®K»~x+’" ¢6Æ72'&ö¶Vå6W76–öã ¢7FF–6ÖWF†ö@¢FVbvWB‚¥ö&w2Â¢¥ö·v&w2“ ¢&—6R'VçF–ÖTW'&÷"‚'&FRÆ–Ö—FVB" ¢&WV—&R†ÖöGVÆRæ6ö–ævV6¶õöF–Ç•ö6Æ÷6W2„'&ö¶Vå6W76–öâ‚’Â&&—F6ö–â"’ÓÒµÒÀ¢.XªZøniz^{«şXùni[ZK‹J^[ø^š¾‹ùNY¹îz›®[¨şX‰~ûÈÎKˆŞ[é~Š^˜
+x+KØÒ"¢&WV—&R†ÖöGVÆRæ'V–ÆEö7'—Fõö&ö&B„6†'E6W76–öâ‚’Â·ÒÂ###bÓ‚Ó#UC££¢"’—2æöæRÀ¢$6ö–ävV6¶ş[ˆ.XÎ[ú¾xZ~KˆŞXúşyJi{n[ø^š¾KùŞyYKˆ®jÊ7'—Fòæ§6öîûÈÎKˆŞXiz›®i[hÚâ"¢&WV—&R†ÖöGVÆRä5%•Dõô$ô$Eô4õTåBÓÒ#æBÖöGVÆRä5%•Dõô$ô$Eõô”åE2ÓÒ#cÀ¢.XªZønY8{¾iÛşiÚi[Kˆîk¹®Xª™[ş[ªn[ø^š¾KˆîŠÎh8^iÛşZY{ªnKˆˆ{B"¢&WV—&R†ÖöGVÆRä5%•DõôäÔUõ¤‚ævWB‚$%D2"’ÓÒ.jùNx›[ˆ"À¢.[‹Šx[ˆzxŞ[ø^š¾iÈKŠŞih~YŞûÈÎiÊ®iKn[Ù^y¨Nk+şyJˆ»ih~YÒ" ¢&÷w2ÒÖöGVÆRæ'V–ÆEövw&VvFW2…6W76–öâ‚’Â·ÒÂ###bÓ‚Ó5C££¢"¢&VÅöW7FFRÒæW‡B‡&÷rf÷"&÷r–â&÷w2–b&÷u²&æÖR%ÒÓÒ.XZy>h‹şYËKªr"¢ö–ÂÒæW‡B‡&÷rf÷"&÷r–â&÷w2–b&÷u²&æÖR%ÒÓÒ.yû>k+’"¢&WV—&R‡&VÅöW7FFU²&FFÖWF%Õ²&ÖöFR%ÒÓÒ&W7F–ÖFR ¢æB&VÅöW7FFU²&FFÖWF%Õ²'6÷W&6R%ÒÓÒ%6f–ÆÇ2 ¢æB&VÅöW7FFU²&FFÖWF%Õ²&4öb%Ò—2æöæRÀ¢.hZ.Xù˜xşKËXÎKˆŞ[é~KÊ®˜
+hª^Y®iz^iÉò"¢&WV—&R†ö–Å²&FFÖWF%Õ²&ÖöFR%ÒÓÒ&Ö&¶WB ¢æBö–Å²&FFÖWF%Õ²&4öb%ÒÓÒ###bÓ‚Ó5C££¢ ¢æBö–Å²&FFÖWF%Õ²'7FGW2%ÒÓÒ''F–Â"À¢.i[˜xşYû®Xxniz^iÉş{Ë®ZKi{nûÈÎŠÎh8^K»~jÎŠë[Ù^[ø^š¾KùŞyYŠÎh8^i{nx+[›n™˜Ş{ª~K‹§'F–Â"¢&–çB‚$76WB&æ¶–ærW"×&V6÷&B&÷fVææ6R'V–ÆFW#¢52"  ¦FVbf–æEöFw3†Ö7&ó¢F–7B’ÓâGWÆU¶F–7BÂF–7EÓ ¢ÖF6†W2ÒµĞ¢f÷"6FVv÷'’–âÖ7&òævWB‚&Ö7&ò"ÂµÒ“ ¢f÷"&÷r–â6FVv÷'’ævWB‚'&÷w2"ÂµÒ“ ¢–b&÷rævWB‚&–B"’ÓÒ$Du3# ¢ÖF6†W2æVæB‚†6FVv÷'’Â&÷r’¢&WV—&R†ÆVâ†ÖF6†W2’ÓÒÂ.ZèşŠx.™»~‹ëî[ø^š¾K‰NXú®ˆ;ŞXÈ^Y
+¾KˆiÚDu3Šë[ÙR"¢&WGW&âÖF6†W5³Ğ  ¦FVbÆöEöÖ7&õö'V–ÆFW"‚“ ¢7V2Ò–×÷'FÆ–"çWF–Âç7V5ög&öÕöf–ÆUöÆö6F–öâ‚&Ö7&õ÷&F%ö'V–ÆFW""ÂÔ5$õô%T”ÄB¢&WV—&R‡7V2—2æ÷BæöæRæB7V2æÆöFW"—2æ÷BæöæRÂ.izk9^Xª‹ÛŞZèşŠx.™»~‹ëîièN[»®ˆI®iÊÂ"¢ÖöGVÆRÒ–×÷'FÆ–"çWF–ÂæÖöGVÆUög&öÕ÷7V2‡7V2¢–ç6W'FVE÷7GV"Ò'&WVW7G2"æ÷B–â7—2æÖöGVÆW0¢–b–ç6W'FVE÷7GV# ¢&WVW7G5÷7GV"ÒG—W2äÖöGVÆUG—R‚'&WVW7G2"¢&WVW7G5÷7GV"ævWBÒÆÖ&F¥ö&w2Â¢¥ö·v&w3¢æöæP¢7—2æÖöGVÆW5²'&WVW7G2%ÒÒ&WVW7G5÷7GV ¢G'“ ¢7V2æÆöFW"æW†V5öÖöGVÆR†ÖöGVÆR¢f–æÆÇ“ ¢–b–ç6W'FVE÷7GV# ¢7—2æÖöGVÆW2ç÷‚'&WVW7G2"ÂæöæR¢&WGW&âÖöGVÆP  ¦FVb'VåöGGvW†&w5÷—VÆ–æU÷FW7G2‚’ÓâæöæS ¢'V–ÆFW"ÒÆöEöÖ7&õö'V–ÆFW"‚¢GFV×BÒ###bÓ‚Ó5C#££¢ ¢ö'6W'fF–öç2Ò°¢‚###bÓrÓ#"Â#ãS#’Â‚###bÓrÓ#""Â#ãcS’À¢‚###bÓrÓ#2"Â#ã“sR’Â‚###bÓrÓ#B"Â#ãsR’À¢Ğ¢g&W6‚Ò'V–ÆFW"æ'V–ÆEöGGvW†&w5÷&VfW&Væ6R‡·ÒÂGFV×BÂÆÖ&F÷6W&–W5ö–BÂöÆ–Ö—C¢ö'6W'fF–öç2¢&WV—&R†g&W6…²'7FGW2%ÒÓÒ&ö²"Â$EEtU„$u>h‰X©şi»Nik[ø^š¾j~Šëö²"¢&WV—&R†g&W6…²'&–6R%ÒÓÒ#ãsRæBg&W6…²'&Wf–÷W5&–6R%ÒÓÒ#ã“sRÂ$EEtU„$u>Šx.kX¾XÎiŠ[N™IŠúò"¢&WV—&R†g&W6…²&4öb%ÒÓÒ###bÓrÓ#B"æBg&W6…²'&Wf–÷W44öb%ÒÓÒ###bÓrÓ#2"Â$EEtU„$u>iz^iÉşiŠ[N™IŠúò"¢W‡V7FVEö6†ævRÒƒ#ãsRò#ã“sRÒ’¢ ¢&WV—&R†'2†g&W6…²&6†ævU7B%ÒÒW‡V7FVEö6†ævR’ÂRÓ"Â$EEtU„$u>kj‹xÎ[˜^Šêzé~™IŠúò"¢&WV—&R†g&W6…²'WFFVDB%ÒÓÒGFV×BæBg&W6…²&Æ7DGFV×DB%ÒÓÒGFV×BÂ$EEtU„$u>h‰X©şi»Niki{n™{N™IŠúò"¢&WV—&R†g&W6…²&ö'6W'fF–öç2%ÒÓÒ°¢²&4öb#¢ö'6W'fVBÂ'fÇVR#¢fÇVWÒf÷"ö'6W'fVBÂfÇVR–âö'6W'fF–öç0¢ÒÂ$EEtU„$u>iÈ‹ùŠx.kX¾z©~Xú>iŠ[N™IŠúò"¢&WV—&R†'V–ÆFW"çfÆ–EöGGvW†&w5÷&VfW&Væ6R†g&W6‚’Â.h‰X©şŠë[Ù^iÊ®˜	®‹ø~{¹>ièNj
+š¨Â" ¢öÆBÒ²'&VfW&Væ6U6W&–W2#¢²$EEtU„$u2#¢g&W6‡×Ğ¢f–ÆVEöBÒ###bÓ‚ÓEC#££¢ ¢fÆÆ&6²Ò'V–ÆFW"æ'V–ÆEöGGvW†&w5÷&VfW&Væ6R†öÆBÂf–ÆVEöBÂÆÖ&F÷6W&–W5ö–BÂöÆ–Ö—C¢µÒ¢&WV—&R†fÆÆ&6µ²'7FGW2%ÒÓÒ'7FÆR"Â.i»NikZK‹J^K‰NiÈXènXû.XÎi{n[ø^š¾j~Šë7FÆR"¢&WV—&R†fÆÆ&6µ²'&–6R%ÒÓÒg&W6…²'&–6R%ÒæBfÆÆ&6µ²&4öb%ÒÓÒg&W6…²&4öb%ÒÂ.i»NikZK‹J^KˆŞ[é~Šhny¹nXènXû.iÈiXXÂ"¢&WV—&R†fÆÆ&6µ²'WFFVDB%ÒÓÒg&W6…²'WFFVDB%ÒÂ.ZK‹J^i{nKˆŞ[é~KÊ®˜
+h‰X©şi»Niki{n™{B"¢&WV—&R†fÆÆ&6µ²&Æ7DGFV×DB%ÒÓÒf–ÆVEöBÂ.ZK‹J^[	ŞŠù^i{n™{N[ø^š¾XÙ^xºÎŠë[ÙR"¢&WV—&R†fÆÆ&6µ²&ö'6W'fF–öç2%ÒÓÒg&W6…²&ö'6W'fF–öç2%ÒÂ.ZK‹J^Y¹î˜[ø^š¾ZèÎi[NKùŞyY”EEtU„$u>Šx.kX¾z©~Xú2"¢&WV—&R†g&W6…²'7FGW2%ÒÓÒ&ö²"Â.ZK‹J^Y¹î˜KˆŞ[é~XéşYËKúîiKKˆ®KˆK»ŞŠë[ÙR" ¢Væf–Æ&ÆRÒ'V–ÆFW"æ'V–ÆEöGGvW†&w5÷&VfW&Væ6R‡·ÒÂf–ÆVEöBÂÆÖ&F÷6W&–W5ö–BÂöÆ–Ö—C¢µÒ¢&WV—&R‡Væf–Æ&ÆU²'7FGW2%ÒÓÒ&W'&÷""Â.izikXÎK™şizXènXû.XÎi{n[ø^š¾j~ŠëW'&÷""¢&WV—&R‡Væf–Æ&ÆU²'&–6R%Ò—2æöæRæBVæf–Æ&ÆU²'WFFVDB%Ò—2æöæRÂ.ZK‹J^i{nKˆŞ[é~XiXZ^›¹ŠêNi[XÎh‰nKÊ®i»Niki{n™{B"¢&WV—&R‡Væf–Æ&ÆU²&ö'6W'fF–öç2%ÒÓÒµÒÂ.izXènXû$EEtU„$u>i{nŠx.kX¾z©~Xú>[ø^š¾K‹®z›¢" ¢–çfÆ–BÒ'V–ÆFW"æ'V–ÆEöGGvW†&w5÷&VfW&Væ6R€¢öÆBÀ¢f–ÆVEöBÀ¢ÆÖ&F÷6W&–W5ö–BÂöÆ–Ö—C¢²‚###bÓrÓ#B"Â#ãr’Â‚###bÓrÓ#2"Â#ã’•ÒÀ¢¢&WV—&R†–çfÆ–E²'7FGW2%ÒÓÒ'7FÆR"æB–çfÆ–E²'&–6R%ÒÓÒg&W6…²'&–6R%ÒÂ.iz^iÉşX	.[¨şy¨Niki[hÚî[ø^š¾Y¹î˜XènXû.iÈiXXÂ"¢&–çB‚$EEtU„$u2e$TB—VÆ–æR7FFW3¢52"¢&–çB‚"Ò7V66W72òf–ÆVB×&Vg&W6‚fÆÆ&6²òæòÖ†—7F÷'’W'&÷"ò–çfÆ–BÖö'6W'fF–öã¢52"  ¦FVb'Vå÷'wF5÷—VÆ–æU÷FW7G2‚’ÓâæöæS ¢'V–ÆFW"ÒÆöEöÖ7&õö'V–ÆFW"‚¢GFV×BÒ###bÓ‚Ó5C#££¢ ¢–ÆöBÒ°¢'&W7öç6R#¢°¢&g&WVVæ7’#¢&F–Ç’"À¢&FF#¢°¢°¢'W&–öB#¢###bÓrÓ#r"À¢'6W&–W2#¢%%uD2"À¢'fÇVR#¢#ƒBã#R"À¢'fÇVR×Væ—G2#¢&FöÆÆ'2W"&'&VÂ"À¢ÒÀ¢°¢'W&–öB#¢###bÓrÓ#B"À¢'6W&–W2#¢%%uD2"À¢'fÇVR#¢#“ãsB"À¢'fÇVR×Væ—G2#¢&FöÆÆ'2W"&'&VÂ"À¢ÒÀ¢°¢'W&–öB#¢###bÓrÓ#2"À¢'6W&–W2#¢%$%%DR"À¢'fÇVR#¢#“’ã“’"À¢'fÇVR×Væ—G2#¢&FöÆÆ'2W"&'&VÂ"À¢ÒÀ¢ÒÀ¢Ğ¢Ğ¢6GW&VBÒ·Ğ ¢6Æ72f¶U&W7öç6S ¢7FGW5ö6öFRÒ#  ¢7FF–6ÖWF†ö@¢FVb&—6Uöf÷%÷7FGW2‚“ ¢&WGW&âæöæP ¢7FF–6ÖWF†ö@¢FVb§6öâ‚“ ¢&WGW&â–Æö@ ¢FVb&WVW7FW"‡W&ÂÂ¢¦·v&w2“ ¢6GW&VE²'W&Â%ÒÒW&À¢6GW&VE²'&×2%ÒÒ·v&w2ævWB‚'&×2"¢&WGW&âf¶U&W7öç6R‚ ¢ö'6W'fF–öç2Ò'V–ÆFW"æV–÷'wF5ö’ƒ"Â&WVW7FW#×&WVW7FW"Â•ö¶W“Ò'FW7BÖ¶W’"¢&WV—&R†6GW&VE²'W&Â%ÒÓÒ'V–ÆFW"äT”ô•õU$ÂÂ%%uD>[ø^š¾KÛşyJ[{.jZûy¨DT”’c.‹zşyK"¢&WV—&R‚'FW7BÖ¶W’"æ÷B–â6GW&VE²'W&Â%ÒÂ$T”Zøn™*^KˆŞ[é~h»ÎXZ^h‰nŠë[Ù^YÊŠû~k%U$ÎKŠÒ"¢&WV—&R†6GW&VE²'&×2%Õ²&•ö¶W’%ÒÓÒ'FW7BÖ¶W’"Â$T”Zøn™*^[ø^š¾˜	®‹ø~Xø.i[Zû‹KÊ˜	""¢&WV—&R†6GW&VE²'&×2%Õ²&g&WVVæ7’%ÒÓÒ&F–Ç’"Â%%uD2Šû~k.[ø^š¾K‹®iz^š)"¢&WV—&R†6GW&VE²'&×2%Õ²&FF³Ò%ÒÓÒ'fÇVR"Â%%uD2Šû~k.ZÙ~jë^[ø^š¾K‹§fÇVR"¢&WV—&R†6GW&VE²'&×2%Õ²&f6WG5·6W&–W5ÕµÒ%ÒÓÒ%%uD2"Â%%uD2Šû~k.[¨şX‰~zÙ¾˜™IŠúò"¢&WV—&R†ö'6W'fF–öç2ÓÒ²‚###bÓrÓ#B"Â“ãsB’Â‚###bÓrÓ#r"ÂƒBã#R•ÒÂ$T”‹ùNY¹îXÎŠz>iéh‰nhé.[¨ş™IŠúò" ¢†—7F÷'•÷vRÒ"" ¢Æ‡FÖÃãÆ&öG“ãÇF&ÆSà¢ÇG#ãÇF‚6öÇ7ãÒ#b#ä7W6†–ærÂô²uD’7÷B&–6Rdô"„FöÆÆ'2W"&'&VÂ“Â÷FƒãÂ÷G#à¢ÇG#ãÇFƒåvVV²öcÂ÷FƒãÇFƒäÖöãÂ÷FƒãÇFƒåGVSÂ÷FƒãÇFƒåvVCÂ÷FƒãÇFƒåF‡SÂ÷FƒãÇFƒäg&“Â÷FƒãÂ÷G#à¢ÇG#ãÇFCã##RFV2Ó#’Fò¦âÒ#Â÷FCãÇFCãSrãƒ“Â÷FCãÇFCãSrãs“Â÷FCãÇFCãSrã#cÂ÷FCãÇFCãÂ÷FCãÇFCãSrã#Â÷FCãÂ÷G#à¢ÇG#ãÇFCã##b§VÂÓ#rFò§VÂÓ3Â÷FCãÇFCãƒBã#SÂ÷FCãÇFCãƒã“Â÷FCãÇFCãƒbãƒÂ÷FCãÇFCãƒRãSÂ÷FCãÇFCãƒbãcÂ÷FCãÂ÷G#à¢ÇG#ãÇFCã##bVrÒ2FòVrÒsÂ÷FCãÇFCãƒã“cÂ÷FCãÇFCãÂ÷FCãÇFCãÂ÷FCãÇFCãÂ÷FCãÇFCãÂ÷FCãÂ÷G#à¢Â÷F&ÆSãÂö&öG“ãÂö‡FÖÃà¢"" ¢W‡V7FVEö†—7F÷'’Ò°¢‚###bÓrÓ#’"Âƒbã‚’Â‚###bÓrÓ3"ÂƒRãR’À¢‚###bÓrÓ3"Âƒbãb’Â‚###bÓ‚Ó2"Âƒã“b’À¢Ğ¢&WV—&R†'V–ÆFW"ç'6UöV–÷'wF5ö†—7F÷'•ö‡FÖÂ††—7F÷'•÷vRÂB’ÓÒW‡V7FVEö†—7F÷'’À¢$T”XZÎ[ÈXènXû.š^iz^iÉş8z›®XÎh‰n‹zYŠz>ié™IŠúò"¢&WV—&R†'V–ÆFW"ç'6UöV–÷'wF5ö†—7F÷'•ö‡FÖÂ‚#ÇF&ÆSãÇG#ãÇFCã##bVrÒ2FòVrÒsÂ÷FCâ ¢#ÇFCãƒã“cÂ÷FCãÂ÷G#ãÂ÷F&ÆSâ"’ÓÒµÒÀ¢$T”XZÎ[ÈXènXû.š^[ø^š¾š¨ÎŠøj~š)KˆîXÙ^KØÒ" ¢†—7F÷'•ö6GW&VBÒ·Ğ ¢6Æ72f¶T†—7F÷'•&W7öç6S ¢FW‡BÒ†—7F÷'•÷vP ¢7FF–6ÖWF†ö@¢FVb&—6Uöf÷%÷7FGW2‚“ ¢&WGW&âæöæP ¢FVb†—7F÷'•÷&WVW7FW"‡W&ÂÂ¢¦·v&w2“ ¢†—7F÷'•ö6GW&VE²'W&Â%ÒÒW&À¢†—7F÷'•ö6GW&VE²'&×2%ÒÒ·v&w2ævWB‚'&×2"¢&WGW&âf¶T†—7F÷'•&W7öç6R‚ ¢†—7F÷'•öö'6W'fF–öç2Ò'V–ÆFW"æV–÷'wF5ö†—7F÷'’ƒBÂ&WVW7FW#Ö†—7F÷'•÷&WVW7FW"¢&WV—&R††—7F÷'•ö6GW&VE²'W&Â%ÒÓÒ'V–ÆFW"äT”ô„•5Dõ%•õU$ÂÀ¢%%uD>izZøn™*^Y¹î˜[ø^š¾KÛşyJ„T”Zéikiz^š)XènXû.šR"¢&WV—&R††—7F÷'•ö6GW&VE²'&×2%Ò—2æöæRÂ$T”XZÎ[ÈXènXû.š^KˆŞ[é~h»Îhê^h‰nKÊ˜	$Zøn™*R"¢&WV—&R††—7F÷'•öö'6W'fF–öç2ÓÒW‡V7FVEö†—7F÷'’Â$T”XZÎ[ÈXènXû.š^Šû~k.{¹>iéÎiŠ[N™IŠúò" ¢÷&–v–æÅö’Ò'V–ÆFW"æV–÷'wF5ö¢÷&–v–æÅö†—7F÷'’Ò'V–ÆFW"æV–÷'wF5ö†—7F÷'¢G'“ ¢'V–ÆFW"æV–÷'wF5ö’ÒÆÖ&FöÆ–Ö—C¢µĞ¢'V–ÆFW"æV–÷'wF5ö†—7F÷'’ÒÆÖ&FöÆ–Ö—C¢†—7F÷'•öö'6W'fF–öç0¢†—7F÷'•ög&W6‚Ò'V–ÆFW"æ'V–ÆE÷'wF5÷&VfW&Væ6R‡·ÒÂGFV×B¢f–æÆÇ“ ¢'V–ÆFW"æV–÷'wF5ö’Ò÷&–v–æÅö¢'V–ÆFW"æV–÷'wF5ö†—7F÷'’Ò÷&–v–æÅö†—7F÷'¢&WV—&R††—7F÷'•ög&W6…²'7FGW2%ÒÓÒ&ö²"æB†—7F÷'•ög&W6…²&4öb%ÒÓÒ###bÓ‚Ó2"À¢$T”KˆŞXúşyJi{nZéikXènXû.š^[©Nh.ZHÕ%uD2"¢&WV—&R††—7F÷'•ög&W6…²'6÷W&6R%ÒævWB‚&66W74ÖWF†öB"’ÓÒ$T”V&Æ–2†—7F÷'’vR"À¢%%uD>[ø^š¾hª¾™Ë.Zéî™˜^ZéikŠëş™zî‹zş[èB"¢&WV—&R†'V–ÆFW"çfÆ–E÷'wF5÷&VfW&Væ6R††—7F÷'•ög&W6‚’Â.[ŠnŠëş™zî‹zş[èNy¨E%uD>Šë[Ù^[ø^š¾˜	®‹ø~{¹>ièNj
+š¨Â"¢–çfÆ–Eö66W72ÒF–7B††—7F÷'•ög&W6‚¢–çfÆ–Eö66W75²'6÷W&6R%ÒÒF–7B††—7F÷'•ög&W6…²'6÷W&6R%ÒÂ66W74ÖWF†öCÒ'Vç&Vv—7FW&VBÖ—'&÷""¢&WV—&R†æ÷B'V–ÆFW"çfÆ–E÷'wF5÷&VfW&Væ6R†–çfÆ–Eö66W72’Â.iÊ®y›¾Šë%uD>Šëş™zî‹zş[èN[ø^š¾Š*¾h¹.{¹Ò" ¢g&W6‚Ò'V–ÆFW"æ'V–ÆE÷'wF5÷&VfW&Væ6R‡·ÒÂGFV×BÂÆÖ&FöÆ–Ö—C¢ö'6W'fF–öç2¢&WV—&R†g&W6…²'7FGW2%ÒÓÒ&ö²"Â%%uD>h‰X©şi»Nik[ø^š¾j~Šëö²"¢&WV—&R†g&W6…²'&–6R%ÒÓÒƒBã#RæBg&W6…²'&Wf–÷W5&–6R%ÒÓÒ“ãsBÂ%%uD>Šx.kX¾XÎiŠ[N™IŠúò"¢&WV—&R†g&W6…²&4öb%ÒÓÒ###bÓrÓ#r"æBg&W6…²'&Wf–÷W44öb%ÒÓÒ###bÓrÓ#B"Â%%uD>iz^iÉşiŠ[N™IŠúò"¢W‡V7FVEö6†ævRÒƒƒBã#Rò“ãsBÒ’¢ ¢&WV—&R†'2†g&W6…²&6†ævU7B%ÒÒW‡V7FVEö6†ævR’ÂRÓ"Â%%uD>kj‹xÎ[˜^Šêzé~™IŠúò"¢&WV—&R†g&W6…²'WFFVDB%ÒÓÒGFV×BæBg&W6…²&Æ7DGFV×DB%ÒÓÒGFV×BÂ%%uD>h‰X©şi»Niki{n™{N™IŠúò"¢&WV—&R†g&W6…²&ö'6W'fF–öç2%ÒÓÒ°¢²&4öb#¢ö'6W'fVBÂ'fÇVR#¢fÇVWÒf÷"ö'6W'fVBÂfÇVR–âö'6W'fF–öç0¢ÒÂ%%uD>iÈ‹ùŠx.kX¾z©~Xú>iŠ[N™IŠúò"¢&WV—&R†'V–ÆFW"çfÆ–E÷'wF5÷&VfW&Væ6R†g&W6‚’Â%%uD>h‰X©şŠë[Ù^iÊ®˜	®‹ø~{¹>ièNj
+š¨Â" ¢öÆBÒ²'&VfW&Væ6U6W&–W2#¢²%%uD2#¢g&W6‡×Ğ¢f–ÆVEöBÒ###bÓ‚ÓEC#££¢ ¢fÆÆ&6²Ò'V–ÆFW"æ'V–ÆE÷'wF5÷&VfW&Væ6R†öÆBÂf–ÆVEöBÂÆÖ&FöÆ–Ö—C¢µÒ¢&WV—&R†fÆÆ&6µ²'7FGW2%ÒÓÒ'7FÆR"Â%%uD>i»NikZK‹J^K‰NiÈXènXû.XÎi{n[ø^š¾j~Šë7FÆR"¢&WV—&R†fÆÆ&6µ²'&–6R%ÒÓÒg&W6…²'&–6R%ÒæBfÆÆ&6µ²&4öb%ÒÓÒg&W6…²&4öb%ÒÂ%%uD>ZK‹J^KˆŞ[é~Šhny¹nXènXû.iÈiXXÂ"¢&WV—&R†fÆÆ&6µ²'WFFVDB%ÒÓÒg&W6…²'WFFVDB%ÒÂ%%uD>ZK‹J^i{nKˆŞ[é~KÊ®˜
+h‰X©şi»Niki{n™{B"¢&WV—&R†fÆÆ&6µ²&Æ7DGFV×DB%ÒÓÒf–ÆVEöBÂ%%uD>ZK‹J^[	ŞŠù^i{n™{N[ø^š¾XÙ^xºÎŠë[ÙR"¢&WV—&R†fÆÆ&6µ²&ö'6W'fF–öç2%ÒÓÒg&W6…²&ö'6W'fF–öç2%ÒÂ%%uD>ZK‹J^Y¹î˜[ø^š¾ZèÎi[NKùŞyYŠx.kX¾z©~Xú2"¢&WV—&R†g&W6…²'7FGW2%ÒÓÒ&ö²"Â%%uD>ZK‹J^Y¹î˜KˆŞ[é~XéşYËKúîiKKˆ®KˆK»ŞŠë[ÙR" ¢Væf–Æ&ÆRÒ'V–ÆFW"æ'V–ÆE÷'wF5÷&VfW&Væ6R‡·ÒÂf–ÆVEöBÂÆÖ&FöÆ–Ö—C¢µÒ¢&WV—&R‡Væf–Æ&ÆU²'7FGW2%ÒÓÒ&W'&÷""Â%%uD>izikXÎK™şizXènXû.XÎi{n[ø^š¾j~ŠëW'&÷""¢&WV—&R‡Væf–Æ&ÆU²'&–6R%Ò—2æöæRæBVæf–Æ&ÆU²'WFFVDB%Ò—2æöæRÂ%%uD>ZK‹J^i{nKˆŞ[é~XiXZ^›¹ŠêNi[XÂ"¢&WV—&R‡Væf–Æ&ÆU²&ö'6W'fF–öç2%ÒÓÒµÒÂ.izXènXû%%uD>i{nŠx.kX¾z©~Xú>[ø^š¾K‹®z›¢" ¢–çfÆ–BÒ'V–ÆFW"æ'V–ÆE÷'wF5÷&VfW&Væ6R€¢öÆBÀ¢f–ÆVEöBÀ¢ÆÖ&FöÆ–Ö—C¢²‚###bÓrÓ#r"ÂƒBã#R’Â‚###bÓrÓ#B"Â“ãsB•ÒÀ¢¢&WV—&R†–çfÆ–E²'7FGW2%ÒÓÒ'7FÆR"æB–çfÆ–E²'&–6R%ÒÓÒg&W6…²'&–6R%ÒÂ%%uD>iz^iÉşX	.[¨ş[ø^š¾Y¹î˜XènXû.XÂ"¢&–çB‚%%uD2T”—VÆ–æR7FFW3¢52"¢&–çB‚"Ò’6öçG&7Bòöff–6–Â†—7F÷'’fÆÆ&6²ò7V66W72ò&WF–æVB6æ6†÷Bò–çfÆ–Bö'6W'fF–öã¢52"  ¦FVb'Våö§5öFFW%÷FW7G2‚’ÓâæöæS ¢67&—BÒ""" ¢†7–æ2‚’Óâ°¦6öç7B76W'BÒ&WV—&R‚&76W'B"“°¦6öç7Bg2Ò&WV—&R‚&g2"“°¦6öç7BFFW"Ò&WV—&R‚"âö2öf–ææ6R×FW&Ö–æÂöæ§2"“°¦6öç7B–æf÷&ÖF–öäFFÒ†v—B–×÷'B‚"âö2öf–ææ6R×FW&Ö–æÂöf–ææ6R×FW&Ö–æÂÖ–æf÷&ÖF–öâÖFFæÖ§2"’¢æ7&VFT–æf÷&ÖF–öäFF†FFW"ç6V7F–öäFF†VÇW'2‚’“°¦6öç7B÷W&F–öç4FFÒ†v—B–×÷'B‚"âö2öf–ææ6R×FW&Ö–æÂöf–ææ6R×FW&Ö–æÂÖ÷W&F–öç2ÖFFæÖ§2"’¢æ7&VFT÷W&F–öç4FF†FFW"ç6V7F–öäFF†VÇW'2‚’“°¦6öç7B²7&VFU7W÷'F–æt†VÇF„FFW"ÒÒv—B–×÷'B‚"âö2öf–ææ6R×FW&Ö–æÂöf–ææ6R×FW&Ö–æÂÖ†VÇF‚ÖFFW'2æÖ§2"“°¦6öç7B7W÷'F–ætFFW"Ò7&VFU7W÷'F–æt†VÇF„FFW"†FFW"ç7W÷'F–æt†VÇF„†VÇW'2‚’“°¦FFW"æ–ç7FÆÅ7W÷'F–æt†VÇF„FFW"‡7W÷'F–ætFFW"“°¦6öç7B6öæf–rÒ¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2öf–ææ6R×FW&Ö–æÂöFFæ§6öâ"Â'WFc‚"’“°¦6öç7BÖ7&òÒ¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2öÖ7&ò×&F"öFFæ§6öâ"Â'WFc‚"’“°¦6öç7BÖ7&ô†VÇF‚Ò¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2öÖ7&ò×&F"ö†VÇF‚æ§6öâ"Â'WFc‚"’“°¦6öç7BfV$w&VVBÒ¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2öfV"Öw&VVBöFFæ§6öâ"Â'WFc‚"’“°¦6öç7BfV$w&VVD†VÇF‚Ò¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2öfV"Öw&VVBö†VÇF‚æ§6öâ"Â'WFc‚"’“°¦6öç7Bög"Ò¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2öög"ÖÖöæ—F÷"öFFæ§6öâ"Â'WFc‚"’“°¦6öç7Bög$†VÇF‚Ò¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2öög"ÖÖöæ—F÷"ö†VÇF‚æ§6öâ"Â'WFc‚"’“°¦6öç7B76WEG&6¶W"Ò¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2ö76WB×G&6¶W"öFFæ§6öâ"Â'WFc‚"’“°¦6öç7B76WEG&6¶W$†VÇF‚Ò¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2ö76WB×G&6¶W"ö†VÇF‚æ§6öâ"Â'WFc‚"’“°¦6öç7B76WE&æ¶–ærÒ¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2ö76WB×&æ¶–æröFFæ§6öâ"Â'WFc‚"’“°¦6öç7B76WE&æ¶–æt†VÇF‚Ò¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2ö76WB×&æ¶–ærö†VÇF‚æ§6öâ"Â'WFc‚"’“°¦6öç7B6ö×æ–W2Ò¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2ö6ö×æ–W2öFFæ§6öâ"Â'WFc‚"’“°¦6öç7B6ö×æ–W4†VÇF‚Ò¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2ö6ö×æ–W2ö†VÇF‚æ§6öâ"Â'WFc‚"’“°¦6öç7BV6öä6ÆVæF"Ò¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2öV6öâÖ6ÆVæF"öFFæ§6öâ"Â'WFc‚"’“°¦6öç7BV6öä6ÆVæF$†VÇF‚Ò¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2öV6öâÖ6ÆVæF"ö†VÇF‚æ§6öâ"Â'WFc‚"’“°¦6öç7Bf–ææ6TæWw2Ò¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2÷v†G2ÖÆFW7BöFFæ§6öâ"Â'WFc‚"’“°¦6öç7Bf–ææ6TæWw4†VÇF‚Ò¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2÷v†G2ÖÆFW7Bö†VÇF‚æ§6öâ"Â'WFc‚"’“°¦6öç7B&VF–æW72Ò¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2öf–ææ6R×FW&Ö–æÂ÷&VF–æW72æ§6öâ"Â'WFc‚"’“°¦6öç7BÖ&¶WDÆ–6Vç6U&VF–æW72Ò¥4ôâç'6R†g2ç&VDf–ÆU7–æ2‚"âö2öf–ææ6R×FW&Ö–æÂöÖ&¶WB×6÷W&6R×&VF–æW72æ§6öâ"Â'WFc‚"’“° ¦6öç7BÖF6‚ÒFFW"æf–æDFw3&÷r†Ö7&ò“°¦76W'B†ÖF6‚bbÖF6‚ç&÷ræ–BÓÓÒ$Du3"“°¦6öç7B&VfW&Væ6RÒFFW"æf–æDGGvW†&w5&VfW&Væ6R†Ö7&ò“°¦76W'B‡&VfW&Væ6Rbb&VfW&Væ6Ræ–BÓÓÒ$EEtU„$u2"“°¦6öç7Bö–Å&VfW&Væ6RÒFFW"æf–æE'wF5&VfW&Væ6R†Ö7&ò“°¦76W'B†ö–Å&VfW&Væ6Rbbö–Å&VfW&Væ6Ræ–BÓÓÒ%%uD2"“°¦6öç7BFöÆÆ$6öæf–rÒ6öæf–ræ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ&G‡’"“°¦6öç7Bö–Ä6öæf–rÒ6öæf–ræ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ'wF’"“°¦6öç7B&—F6ö–ä6öæf–rÒ6öæf–ræ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ&&—F6ö–â"“°¦6öç7B&—F6ö–å&÷rÒ76WE&æ¶–æræ76WG2æf–æB‚†76WB’Óâ76WBç7–Ö&öÂÓÓÒ$%D2"“°¦6öç7B&æ¶–æu6÷W&6RÒ²FF¢76WE&æ¶–ærÂW'&÷#¢çVÆÂÓ°¦6öç7B&æ¶–æt†VÇF…6÷W&6RÒ²FF¢76WE&æ¶–æt†VÇF‚ÂW'&÷#¢çVÆÂÓ°¦6öç7B7W'&VçDÆFW7D×2ÒÖF‚æÖ‚‚ââå°¢Ö7&òçWFFVDBÀ¢fV$w&VVBçWFFVDBÀ¢ög"çWFFVDBÀ¢76WEG&6¶W"çWFFVDBÀ¢76WE&æ¶–ærçWFFVDBÀ¢6ö×æ–W2çWFFVD@¥ÒæÖ„FFRç'6R’“°¦76W'B„çVÖ&W"æ—4f–æ—FR†7W'&VçDÆFW7D×2’“°¦6öç7B7W'&VçDæ÷rÒæWrFFR†7W'&VçDÆFW7D×2²b¢c¢c¢“°¦6öç7BÖ&¶WDÆ–6Vç6U7FFRÒFFW"æFDÖ&¶WDÆ–6Vç6U&VF–æW72†Ö&¶WDÆ–6Vç6U&VF–æW72“°¦76W'Bç7G&–7DWVÂ†Ö&¶WDÆ–6Vç6U7FFRç7FGW2Â&g&VR"“°¦76W'Bç7G&–7DWVÂ†Ö&¶WDÆ–6Vç6U7FFRç7G&FVw’Â&g&VRÖVÖ&VFFVB×&÷‡’"“°¦76W'Bç7G&–7DWVÂ†Ö&¶WDÆ–6Vç6U7FFRç&÷‡”76WG2ÂÖ&¶WDÆ–6Vç6U&VF–æW72æ76WG2æÆVæwF‚“°¦76W'Bç7G&–7DWVÂ†Ö&¶WDÆ–6Vç6U7FFRç&÷f–FW"Â%G&F–æuf–Wr"“°¦76W'Bç7G&–7DWVÂ†Ö&¶WDÆ–6Vç6U7FFRæ6÷7BÂ&g&VR"“°¦76W'Bç7G&–7DWVÂ†Ö&¶WDÆ–6Vç6U7FFRç&tÖ&¶WDFF7F÷&VBÂfÇ6R“°¦76W'BæFVW7G&–7DWVÂ†Ö&¶WDÆ–6Vç6U7FFRçF&vWG2Â²$D”"Â$tÄB%Ò“°¦6öç7BF—6wV—6VDÖ&¶WE&÷‡’Ò¥4ôâç'6R„¥4ôâç7G&–æv–g’†Ö&¶WDÆ–6Vç6U&VF–æW72’“°¦F—6wV—6VDÖ&¶WE&÷‡’æ76WG5³Òç&÷‡’æ—56ÖT–ç7G'VÖVçBÒG'VS°¦76W'BçF‡&÷w2‚‚’ÓâFFW"æFDÖ&¶WDÆ–6Vç6U&VF–æW72†F—6wV—6VDÖ&¶WE&÷‡’’ÂşXi.XX^Xéşj~y¨Bò“°¦6öç7B67&VDÖ&¶WE&÷‡’Ò¥4ôâç'6R„¥4ôâç7G&–æv–g’†Ö&¶WDÆ–6Vç6U&VF–æW72’“°§67&VDÖ&¶WE&÷‡’ç&÷f–FW"æFVÆ—fW'’Ò'67&VBÖ’#°¦76W'BçF‡&÷w2‚‚’ÓâFFW"æFDÖ&¶WDÆ–6Vç6U&VF–æW72‡67&VDÖ&¶WE&÷‡’’ÂşXXŞ‹K[XÎXZ^˜XŞ{ÚîiziX‚ò“°¦6öç7B7W'&VçDGFV×DBÒæWrFFR†7W'&VçDæ÷rævWEF–ÖR‚’Òc¢c¢’çFô•4õ7G&–ær‚“°¦6öç7B7W'&VçDGFV×DFFRÒ7W'&VçDGFV×DBç6Æ–6RƒÂ“°¦6öç7B7W÷'F–æu6æ6†÷G2Ò°¢¶fV$w&VVBÂfV$w&VVD†VÇF…ÒÀ¢¶ög"Âög$†VÇF…ÒÀ¢¶V6öä6ÆVæF"ÂV6öä6ÆVæF$†VÇF…ÒÀ¢¶f–ææ6TæWw2Âf–ææ6TæWw4†VÇF…Ğ¥Ó°¦6öç7B7W÷'F–ætÆFW7D×2ÒÖF‚æÖ‚‚ââç7W÷'F–æu6æ6†÷G2æfÆDÖ‚…¶FFÂ†VÇF…Ò’Óâ°¢FFRç'6R†FFçWFFVDB’ÂFFRç'6R††VÇF‚ævVæW&FVDB¥Ò’“°¦76W'B„çVÖ&W"æ—4f–æ—FR‡7W÷'F–ætÆFW7D×2’“°¦6öç7B7W÷'F–ætæ÷rÒæWrFFR‡7W÷'F–ætÆFW7D×2²c¢c¢“°¦6öç7BW‡—&VDöff–6–Ä†VÇF„æ÷rÒæWrFFR„FFRç'6R†Ö7&ô†VÇF‚ævVæW&FVDB’²“b¢c¢c¢“°¦gVæ7F–öâVÆ—G”FV6Æ&F–öâ‡&÷w2’°¢6öç7BÖWF2Ò&÷w2æÖ‚‡&÷r’ÓâFFW"ææ÷&ÖÆ—¦TFFÖWF‡&÷ræFFÖWFÂçVÆÂ’“°¢6öç7BVÆ—G’ÒFFW"ç7VÖÖ&—¦U&÷uVÆ—G’†ÖWF2ÂçVÆÂ“°¢&WGW&â°¢6öçG&7EfW'6–öã¢À¢7FGW3¢&÷w2æÆVæwF‚ÇÂVÆ—G’æ6÷VçG2çVæf–Æ&ÆRÓÓÒ&÷w2æÆVæwF‚ò&W'&÷""¢VÆ—G’æFVw&FVBò''F–Â"¢&ö²"À¢F÷FÃ¢VÆ—G’çF÷FÂÀ¢6÷VçG3¢VÆ—G’æ6÷VçG2À¢6÷W&6W3¢VÆ—G’ç6÷W&6W0¢Ó°§Ğ¥°¢²&fV"Öw&VVB"ÂfV$w&VVBÂfV$w&VVD†VÇF…ÒÀ¢²&ög"ÖÖöæ—F÷""Âög"Âög$†VÇF…ÒÀ¢²&V6öâÖ6ÆVæF""ÂV6öä6ÆVæF"ÂV6öä6ÆVæF$†VÇF…ÒÀ¢²'v†G2ÖÆFW7B"Âf–ææ6TæWw2Âf–ææ6TæWw4†VÇF…Ğ¥Òæf÷$V6‚‚…¶FF6WBÂ6÷W&6TFFÂ6÷W&6T†VÇF…Ò’Óâ°¢6öç7B7FFRÒ7W÷'F–ætFFW"æFE7W÷'F–æu6÷W&6T†VÇF‚‡6÷W&6T†VÇF‚ÂFF6WBÂ6÷W&6TFFÂ7W÷'F–ætæ÷r“°¢6öç7B&W÷'DvT†÷W'2Ò‡7W÷'F–ætæ÷rævWEF–ÖR‚’ÒFFRç'6R‡6÷W&6T†VÇF‚ævVæW&FVDB’’òƒc¢c¢“°¢6öç7BW‡V7FVE7FGW2Ò6÷W&6T†VÇF‚æ†—7F÷'•7FGW2ÓÒ&Ö–w&FVB ¢bb&W÷'DvT†÷W'2â6÷W&6T†VÇF‚çöÆ–7’æÖ…&W÷'DvT†÷W'0¢bb6÷W&6T†VÇF‚ç7FGW2ÓÒ&f–ÆVB"ò'7FÆR"¢6÷W&6T†VÇF‚ç7FGW3°¢76W'Bç7G&–7DWVÂ‡7FFRæFF6WBÂFF6WB“°¢76W'Bç7G&–7DWVÂ‡7FFRç7FGW2ÂW‡V7FVE7FGW2“°¢76W'Bç7G&–7DWVÂ‡7FFRæ†—7F÷'”¶æ÷vâÂ6÷W&6T†VÇF‚æ†—7F÷'•7FGW2ÓÓÒ'G&6¶VB"“°¢76W'Bç7G&–7DWVÂ‡7FFRæg&W6„6÷fW&vU7BÂ6÷W&6T†VÇF‚æ6÷fW&vRæg&W6„6÷fW&vU7B“°¢76W'Bç7G&–7DWVÂ‡7FFRçV&Æ—6†VD6÷fW&vU7BÂ6÷W&6T†VÇF‚æ6÷fW&vRçV&Æ—6†VD6÷fW&vU7B“°¢6öç7BF×W&VBÒ¥4ôâç'6R„¥4ôâç7G&–æv–g’‡6÷W&6T†VÇF‚’“°¢F×W&VBæ6÷fW&vRç&Vg&W6†VD6ö×öæVçG2³Ò°¢76W'BçF‡&÷w2‚‚’Óâ7W÷'F–ætFFW"æFE7W÷'F–æu6÷W&6T†VÇF‚‡F×W&VBÂFF6WBÂ6÷W&6TFFÂ7W÷'F–ætæ÷r’“°§Ò“°¦gVæ7F–öâG&6¶VE7W÷'F–æt†VÇF‚‡6÷W&6T†VÇF‚ÂGFV×FVDBÂ÷fW'&–FW2Ò·ÒÂV&Æ—6†VBÒG'VR’°¢6öç7BG&6¶VBÒ¥4ôâç'6R„¥4ôâç7G&–æv–g’‡6÷W&6T†VÇF‚’“°¢6öç7B7FGW4f÷$ÖöFRÒ²g&W6ƒ¢&†VÇF‡’"ÂfÆÆ&6³¢&FVw&FVB"ÂVæf–Æ&ÆS¢&f–ÆVB"ÂVæ¶æ÷vã¢'Væ¶æ÷vâ"Ó°¢6öç7Bw&÷WVBÒ²g&W6ƒ¢µÒÂfÆÆ&6³¢µÒÂVæf–Æ&ÆS¢µÒÂVæ¶æ÷vã¢µÒÓ°¢G&6¶VBæ†—7F÷'•7FGW2Ò'G&6¶VB#°¢G&6¶VBævVæW&FVDBÒGFV×FVDC°¢G&6¶VBæÆ7DGFV×DBÒGFV×FVDC°¢G&6¶VBæ6öç6V7WF—fTf–ÇW&W2ÒV&Æ—6†VBò¢°¢G&6¶VBç6æ6†÷E&W6W'fVBÒV&Æ—6†VC°¢G&6¶VBæf–ÇW&U&V6öâÒV&Æ—6†VBòçVÆÂ¢.kX¾Šù^ZK‹JR#°¢G&6¶VBæ6ö×öæVçG2æf÷$V6‚‚†6ö×öæVçB’Óâ°¢6öç7BÖöFRÒ÷fW'&–FW5¶6ö×öæVçBæ–EÒÇÂ&g&W6‚#°¢6ö×öæVçBæÖöFRÒÖöFS°¢6ö×öæVçBç7FGW2Ò7FGW4f÷$ÖöFU¶ÖöFUÓ°¢6ö×öæVçBæÆ7DGFV×DBÒGFV×FVDC°¢–b†ÖöFRÓÓÒ&g&W6‚"’6ö×öæVçBæÆ7E7V66W74BÒGFV×FVDC°¢w&÷WVE¶ÖöFUÒçW6‚†6ö×öæVçBæ–B“°¢Ò“°¢G&6¶VBæ6÷fW&vRç&Vg&W6†VD6ö×öæVçG2Òw&÷WVBæg&W6‚æÆVæwFƒ°¢G&6¶VBæ6÷fW&vRæfÆÆ&6´6ö×öæVçG2Òw&÷WVBæfÆÆ&6²æÆVæwFƒ°¢G&6¶VBæ6÷fW&vRçVæf–Æ&ÆT6ö×öæVçG2Òw&÷WVBçVæf–Æ&ÆRæÆVæwFƒ°¢G&6¶VBæ6÷fW&vRçVæ¶æ÷vä6ö×öæVçG2Òw&÷WVBçVæ¶æ÷vâæÆVæwFƒ°¢G&6¶VBæ6÷fW&vRæg&W6„6÷fW&vU7BÒÖF‚ç&÷VæB†w&÷WVBæg&W6‚æÆVæwF‚òG&6¶VBæ6ö×öæVçG2æÆVæwF‚¢’ò°¢G&6¶VBæGFV×BÒ°¢7FGW3¢V&Æ—6†VBbbw&÷WVBæg&W6‚æÆVæwF‚ÓÓÒG&6¶VBæ6ö×öæVçG2æÆVæwF‚ò'7V66W72"¢V&Æ—6†VBò''F–Â"¢&f–ÆVB"À¢V&Æ—6†VBÀ¢&Vg&W6†VD6ö×öæVçG3¢w&÷WVBæg&W6‚À¢fÆÆ&6´6ö×öæVçG3¢w&÷WVBæfÆÆ&6²À¢Væf–Æ&ÆT6ö×öæVçG3¢w&÷WVBçVæf–Æ&ÆRÀ¢Væ¶æ÷vä6ö×öæVçG3¢w&÷WVBçVæ¶æ÷và¢Ó°¢G&6¶VBç7FGW2ÒG&6¶VBæGFV×Bç7FGW2ÓÓÒ'7V66W72"ò&†VÇF‡’"¢V&Æ—6†VBò&FVw&FVB"¢&f–ÆVB#°¢&WGW&âG&6¶VC°§Ğ¦6öç7B7W÷'F–ætGFV×DBÒæWrFFR‡7W÷'F–ætæ÷rævWEF–ÖR‚’Òc¢c¢’çFô•4õ7G&–ær‚“°¦6öç7B7W÷'F–æu7FÆTBÒæWrFFR‡7W÷'F–ætæ÷rævWEF–ÖR‚’Ò“b¢c¢c¢’çFô•4õ7G&–ær‚“°¦6öç7BG&6¶VDfV"ÒG&6¶VE7W÷'F–æt†VÇF‚†fV$w&VVD†VÇF‚Â7W÷'F–ætGFV×DB“°¦76W'Bç7G&–7DWVÂ‡7W÷'F–ætFFW"æFE7W÷'F–æu6÷W&6T†VÇF‚‡G&6¶VDfV"Â&fV"Öw&VVB"ÂfV$w&VVBÂ7W÷'F–ætæ÷r’ç7FGW2Â&†VÇF‡’"“°¦6öç7BfÆÆ&6´fV"ÒG&6¶VE7W÷'F–æt†VÇF‚†fV$w&VVD†VÇF‚Â7W÷'F–ætGFV×DBÂ²&6æâÖ–æFW‚#¢&fÆÆ&6²"Ò“°¦6öç7BfÆÆ&6´fV%7FFRÒ7W÷'F–ætFFW"æFE7W÷'F–æu6÷W&6T†VÇF‚†fÆÆ&6´fV"Â&fV"Öw&VVB"ÂfV$w&VVBÂ7W÷'F–ætæ÷r“°¦76W'Bç7G&–7DWVÂ†fÆÆ&6´fV%7FFRç7FGW2Â&FVw&FVB"“°¦76W'Bç7G&–7DWVÂ†fÆÆ&6´fV%7FFRçFW&Ö–æÅ7FGW2Â&FVw&FVB"“°¦6öç7Bf–ÆVDfV"ÒG&6¶VE7W÷'F–æt†VÇF‚†fV$w&VVD†VÇF‚Â7W÷'F–ætGFV×DBÂ²&6æâÖ–æFW‚#¢&fÆÆ&6²"ÒÂfÇ6R“°¦76W'Bç7G&–7DWVÂ‡7W÷'F–ætFFW"æFE7W÷'F–æu6÷W&6T†VÇF‚†f–ÆVDfV"Â&fV"Öw&VVB"ÂfV$w&VVBÂ7W÷'F–ætæ÷r’ç7FGW2Â&f–ÆVB"“°¦6öç7B7FÆTfV$†VÇF‚ÒG&6¶VE7W÷'F–æt†VÇF‚†fV$w&VVD†VÇF‚Â7W÷'F–æu7FÆTB“°¦76W'Bç7G&–7DWVÂ‡7W÷'F–ætFFW"æFE7W÷'F–æu6÷W&6T†VÇF‚‡7FÆTfV$†VÇF‚Â&fV"Öw&VVB"ÂfV$w&VVBÂ7W÷'F–ætæ÷r’ç7FGW2Â'7FÆR"“°¦6öç7B7W÷'F–æu&—6´6&G2ÒFFW"æ'V–ÆE&—6´6&G2‡°¢Ö7&ó¢²FF¢Ö7&òÂW'&÷#¢çVÆÂÒÀ¢fV$w&VVC¢²FF¢fV$w&VVBÂW'&÷#¢çVÆÂÒÀ¢fV$w&VVD†VÇFƒ¢²FF¢fV$w&VVD†VÇF‚ÂW'&÷#¢çVÆÂÒÀ¢ög#¢²FF¢ög"ÂW'&÷#¢çVÆÂÒÀ¢ög$†VÇFƒ¢²FF¢ög$†VÇF‚ÂW'&÷#¢çVÆÂĞ§ÒÂ7W÷'F–ætæ÷r“°¦76W'Bç7G&–7DWVÂ‡7W÷'F–æu&—6´6&G5³Òç6÷W&6T†VÇF‚ç7FGW2À¢7W÷'F–ætFFW"æFE7W÷'F–æu6÷W&6T†VÇF‚†fV$w&VVD†VÇF‚Â&fV"Öw&VVB"ÂfV$w&VVBÂ7W÷'F–ætæ÷r’ç7FGW2“°¦76W'Bç7G&–7DWVÂ‡7W÷'F–æu&—6´6&G5³%Òç6÷W&6T†VÇF‚ç7FGW2À¢7W÷'F–ætFFW"æFE7W÷'F–æu6÷W&6T†VÇF‚†ög$†VÇF‚Â&ög"ÖÖöæ—F÷""Âög"Â7W÷'F–ætæ÷r’ç7FGW2“°¦6öç7B7W÷'F–æt–æf÷&ÖF–öä6&G2Ò–æf÷&ÖF–öäFFæ'V–ÆD–æf÷&ÖF–öä6&G2‡°¢6ÆVæF#¢²FF¢V6öä6ÆVæF"ÂW'&÷#¢çVÆÂÒÀ¢6ÆVæF$†VÇFƒ¢²FF¢V6öä6ÆVæF$†VÇF‚ÂW'&÷#¢çVÆÂÒÀ¢æWw3¢²FF¢f–ææ6TæWw2ÂW'&÷#¢çVÆÂÒÀ¢æWw4†VÇFƒ¢²FF¢f–ææ6TæWw4†VÇF‚ÂW'&÷#¢çVÆÂĞ§ÒÂ7W÷'F–ætæ÷r“°¦76W'Bç7G&–7DWVÂ‡7W÷'F–æt–æf÷&ÖF–öä6&G5³Òç6÷W&6T†VÇF‚ç7FGW2À¢7W÷'F–ætFFW"æFE7W÷'F–æu6÷W&6T†VÇF‚†V6öä6ÆVæF$†VÇF‚Â&V6öâÖ6ÆVæF""ÂV6öä6ÆVæF"Â7W÷'F–ætæ÷r’ç7FGW2“°¦76W'Bç7G&–7DWVÂ‡7W÷'F–æt–æf÷&ÖF–öä6&G5³Òç6÷W&6T†VÇF‚ç7FGW2À¢7W÷'F–ætFFW"æFE7W÷'F–æu6÷W&6T†VÇF‚†f–ææ6TæWw4†VÇF‚Â'v†G2ÖÆFW7B"Âf–ææ6TæWw2Â7W÷'F–ætæ÷r’ç7FGW2“°¦6öç7B7V66W72ÒFFW"æ'V–ÆEvTFF€¢6öæf–rÂÖ7&òÂ7W'&VçDæ÷rÂçVÆÂÂçVÆÂÂ&æ¶–æu6÷W&6RÂ&æ¶–æt†VÇF…6÷W&6P¢“°¦6öç7BFw3Ò7V66W72æ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ'W3’"“°¦6öç7BFöÆÆ"Ò7V66W72æ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ&G‡’"“°¦6öç7Bö–ÂÒ7V66W72æ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ'wF’"“°¦6öç7B&—F6ö–âÒ7V66W72æ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ&&—F6ö–â"“°¦76W'Bç7G&–7DWVÂ†Fw3æFVÖòÂfÇ6R“°¦76W'Bç7G&–7DWVÂ†Fw3ç7FGW2ÂÖF6‚ç&÷rç7FGW2ÓÓÒ&ö² ¢bbFFW"æ'W6–æW74F—56–æ6R†ÖF6‚ç&÷ræ4öbÂ7W'&VçDæ÷r’ÃÒ2ò&ö²"¢'7FÆR"“°¦76W'Bç7G&–7DWVÂ†Fw3ç7–Ö&öÂÂ$Du3"“°¦76W'Bç7G&–7DWVÂ†Fw3æ6†ævUVæ—BÂ&'"“°¦76W'B„çVÖ&W"æ—4f–æ—FR†Fw3ç&–6R’“°¦76W'B„çVÖ&W"æ—4f–æ—FR†Fw3æ6†ævR’“°¦76W'Bç7G&–7DWVÂ†Fw3ç&–6RÂçVÖ&W"†ÖF6‚ç&÷rçfÂç&WÆ6R‚"R"Â""’’“°¦76W'Bç7G&–7DWVÂ†Fw3æ6†ævRÂçVÖ&W"†ÖF6‚ç&÷ræ6†rçFôÆ÷vW$66R‚’ç&WÆ6R‚&'"Â""’’“°¦76W'Bç7G&–7DWVÂ†Fw3æ4öbÂÖF6‚ç&÷ræ4öb“°¦76W'Bç7G&–7DWVÂ†Fw3çWFFVDBÂÖ7&òçWFFVDB“°¦76W'Bç7G&–7DWVÂ†Fw3ç6÷W&6Rç6W&–W4–BÂ$Du3"“°¦76W'Bç7G&–7DWVÂ†Fw3æö'6W'fF–öåG&VæBæ6÷VçBÂÖF6‚ç&÷ræö'6W'fF–öç2æÆVæwF‚“°¦76W'Bç7G&–7DWVÂ†Fw3æö'6W'fF–öåG&VæBçF&vWD6÷VçBÂ‚“°¦76W'BæFVW7G&–7DWVÂ†Fw3æö'6W'fF–öåG&VæBçfÇVW2ÂÖF6‚ç&÷ræö'6W'fF–öç2æÖ‚†—FVÒ’Óâ—FVÒçfÇVR’“°¦76W'Bç7G&–7DWVÂ†Fw3æö'6W'fF–öåG&VæBæ6†ævUVæ—BÂ&'"“°¦76W'Bç7G&–7DWVÂ†Fw3æö'6W'fF–öåG&VæBæ6†ævRÂÖF6‚ç&÷ræö'6W'fF–öç2æÆVæwF‚Â"òçVÆÀ¢¢ÖF‚ç&÷VæB‚†ÖF6‚ç&÷ræö'6W'fF–öç5¶ÖF6‚ç&÷ræö'6W'fF–öç2æÆVæwF‚ÒÒçfÇVP¢ÒÖF6‚ç&÷ræö'6W'fF–öç5³ÒçfÇVR’¢’ò“°¦6öç7BFw5v–æF÷rÒ¥4ôâç'6R„¥4ôâç7G&–æv–g’†Ö7&ò’“°¦6öç7BFw5v–æF÷u&÷rÒFFW"æf–æDFw3&÷r†Fw5v–æF÷r’ç&÷s°¦6öç7BFw5v–æF÷u&–6RÒçVÖ&W"†Fw5v–æF÷u&÷rçfÂç&WÆ6R‚"R"Â""’“°¦Fw5v–æF÷u&÷rç&–6RÒFw5v–æF÷u&–6S°¦Fw5v–æF÷u&÷rç&Wf–÷W5&–6RÒÖF‚ç&÷VæB‚†Fw5v–æF÷u&–6RÒãb’¢’ò°¦Fw5v–æF÷u&÷ræ6†ævT'2Òc°¦Fw5v–æF÷u&÷ræ6†rÒ#f'#°¦Fw5v–æF÷u&÷ræö'6W'fF–öç2Ò°¢²4öc¢Fw5v–æF÷u&÷rç&Wf–÷W44öbÂfÇVS¢Fw5v–æF÷u&÷rç&Wf–÷W5&–6RÒÀ¢²4öc¢Fw5v–æF÷u&÷ræ4öbÂfÇVS¢Fw5v–æF÷u&–6RĞ¥Ó°¦6öç7BFw5v–æF÷t76WBÒFFW"æFDFw3€¢6öæf–ræ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ'W3’"’ÂFw5v–æF÷rÂ7W'&VçDæ÷p¢“°¦76W'Bç7G&–7DWVÂ†Fw5v–æF÷t76WBæö'6W'fF–öåG&VæBæ6÷VçBÂ"“°¦76W'Bç7G&–7DWVÂ†Fw5v–æF÷t76WBæö'6W'fF–öåG&VæBæ6†ævRÂb“°¦6öç7BF×W&VDFw5v–æF÷rÒ¥4ôâç'6R„¥4ôâç7G&–æv–g’†Fw5v–æF÷r’“°¦FFW"æf–æDFw3&÷r‡F×W&VDFw5v–æF÷r’ç&÷ræö'6W'fF–öç5³ÒçfÇVRĞ¢ÖF‚ç&÷VæB‚†Fw5v–æF÷u&–6R²ã’¢’ò°¦76W'BçF‡&÷w2‚‚’ÓâFFW"æFDFw3€¢6öæf–ræ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ'W3’"’ÂF×W&VDFw5v–æF÷rÂ7W'&VçDæ÷p¢’“°¦6öç7BFw3†VÇF‚ÒFFW"æFDöff–6–Å6÷W&6T†VÇF‚†Ö7&ô†VÇF‚ÂÖ7&òÂFw3Â$Du3"Â7W'&VçDæ÷r“°¦6öç7BFw3†VÇF…&V6÷&BÒÖ7&ô†VÇF‚ç6÷W&6W2æf–æB‚‡6÷W&6R’Óâ6÷W&6Ræ–BÓÓÒ$Du3"“°¦76W'Bç7G&–7DWVÂ†Fw3†VÇF‚ç6W&–W4–BÂ$Du3"“°¦76W'Bç7G&–7DWVÂ†Fw3†VÇF‚ç7FGW2ÂFw3†VÇF…&V6÷&Bç7FGW2“°¦76W'Bç7G&–7DWVÂ†Fw3†VÇF‚æ†—7F÷'”¶æ÷vâÂÖ7&ô†VÇF‚æ†—7F÷'•7FGW2ÓÓÒ'G&6¶VB"“°¦76W'Bç7G&–7DWVÂ†Fw3†VÇF‚ç&Vg&W6„Æ&VÂÂ°¢Ö&¶WC¢.[{.X‹~ik"ÂfÆÆ&6³¢.KùŞyYiz~XÂ"ÂVæf–Æ&ÆS¢.KˆŞXúşyJ‚"ÂVæ¶æ÷vã¢.XènXû.[è^[»®z¸² §Õ¶Fw3†VÇF…&V6÷&BæÖöFUÒ“°¦6öç7BFw3v—F…7FÆT†VÇF‚ÒFFW"æ'V–ÆEvTFF€¢6öæf–rÂÖ7&òÂW‡—&VDöff–6–Ä†VÇF„æ÷rÂçVÆÂÂ²FF¢Ö7&ô†VÇF‚ÂW'&÷#¢çVÆÂĞ¢’æ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ'W3’"“°¦76W'Bç7G&–7DWVÂ†Fw3v—F…7FÆT†VÇF‚çWFFT†VÇF‚ç7FGW2Â'7FÆR"“°¦76W'Bç7G&–7DWVÂ†Fw3v—F…7FÆT†VÇF‚çWFFT†VÇF‚ç6W&–W4–BÂ$Du3"“°¦76W'B†Fw3v—F…7FÆT†VÇF‚çWFFT†VÇF‚ææ÷FRæ–æ6ÇVFW2‚.‹h^‹øss.[şi{b"’“°¦6öç7BF×W&VDFw3†VÇF‚Ò¥4ôâç'6R„¥4ôâç7G&–æv–g’†Ö7&ô†VÇF‚’“°§F×W&VDFw3†VÇF‚ç6÷W&6W2æf–æB‚‡6÷W&6R’Óâ6÷W&6Ræ–BÓÓÒ$Du3"’æ4öbÒ###bÓrÓ#’#°¦76W'BçF‡&÷w2‚‚’ÓâFFW"æFDöff–6–Å6÷W&6T†VÇF‚€¢F×W&VDFw3†VÇF‚ÂÖ7&òÂFw3Â$Du3"Â7W'&VçDæ÷p¢’“°¦6öç7BFw3v—F„Ö—76–æt†VÇF‚ÒFFW"æ'V–ÆEvTFF€¢6öæf–rÂÖ7&òÂ7W'&VçDæ÷rÂçVÆÂÂ²FF¢çVÆÂÂW'&÷#¢æWrW'&÷"‚$…EES2"’Ğ¢’æ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ'W3’"“°¦76W'Bç7G&–7DWVÂ†Fw3v—F„Ö—76–æt†VÇF‚ç7FGW2ÂFw3ç7FGW2“°¦76W'Bç7G&–7DWVÂ†Fw3v—F„Ö—76–æt†VÇF‚ç&–6RÂFw3ç&–6R“°¦76W'Bç7G&–7DWVÂ†Fw3v—F„Ö—76–æt†VÇF‚çWFFT†VÇF‚ç7FGW2Â'Væ¶æ÷vâ"“°¦76W'Bç7G&–7DWVÂ†FöÆÆ"æFVÖòÂfÇ6R“°¢ò¢™ˆXÎŠû¾ˆz®Š*¾kX¾Kº>ziÊÎ‹ª¾ûÈÎ˜şXXŞkX¾Šù^Kˆîk©zYNXiKˆKŠ®i[ZÙ~ˆÎh(Nh(NkÈ.z{¾8"¢ğ¦76W'Bç7G&–7DWVÂ†FöÆÆ"ç7FGW2Â&VfW&Væ6Rç7FGW2ÓÓÒ&ö² ¢bbFFW"æ'W6–æW74F—56–æ6R‡&VfW&Væ6Ræ4öbÂ7W'&VçDæ÷r¢ÃÒFFW"äEEtU„$u5ôÔ…ô%U4”äU55ôD•2ò&ö²"¢'7FÆR"“°¦76W'BæWVÂ†FFW"äEEtU„$u5ôÔ…ô%U4”äU55ôD•2Â‚À¢$‚ãhÈYh‰h›Xù[ˆ>ûÈÎjÚ>[‹k¹îYîXúş‹ëâRKŠ®[z^KÙÎiz^ûÉ¾™ˆXÎ™ÈZë{«>KˆYh›jÊ[›nK¸Şˆ;ŞXùxë{Ë®h›’"“°¦76W'Bç7G&–7DWVÂ†FöÆÆ"ç7–Ö&öÂÂ$EEtU„$u2"“°¦76W'Bç7G&–7DWVÂ†FöÆÆ"ç&–6RÂ&VfW&Væ6Rç&–6R“°¦76W'Bç7G&–7DWVÂ†FöÆÆ"ç&Wf–÷W5&–6RÂ&VfW&Væ6Rç&Wf–÷W5&–6R“°¦76W'Bç7G&–7DWVÂ†FöÆÆ"æ4öbÂ&VfW&Væ6Ræ4öb“°¦76W'Bç7G&–7DWVÂ†FöÆÆ"çWFFVDBÂ&VfW&Væ6RçWFFVDB“°¦76W'Bç7G&–7DWVÂ†FöÆÆ"ç6÷W&6Rç6W&–W4–BÂ$EEtU„$u2"“°¦76W'B„ÖF‚æ'2†FöÆÆ"æ6†ævU7BÒ‚‡&VfW&Væ6Rç&–6Rò&VfW&Væ6Rç&Wf–÷W5&–6RÒ’¢’’ÂRÓ"“°¦76W'Bç7G&–7DWVÂ†FöÆÆ"æö'6W'fF–öåG&VæBæ6÷VçBÂ&VfW&Væ6Ræö'6W'fF–öç2æÆVæwF‚“°¦76W'BæFVW7G&–7DWVÂ†FöÆÆ"æö'6W'fF–öåG&VæBçfÇVW2Â&VfW&Væ6Ræö'6W'fF–öç2æÖ‚†—FVÒ’Óâ—FVÒçfÇVR’“°¦76W'Bç7G&–7DWVÂ†FöÆÆ"æö'6W'fF–öåG&VæBç7F'D4öbÂ&VfW&Væ6Ræö'6W'fF–öç5³Òæ4öb“°¦76W'Bç7G&–7DWVÂ†FöÆÆ"æö'6W'fF–öåG&VæBæVæD4öbÂ&VfW&Væ6Ræ4öb“°¦76W'B„ÖF‚æ'2†FöÆÆ"æö'6W'fF–öåG&VæBæ6†ævP¢Ò‚‡&VfW&Væ6Rç&–6Rò&VfW&Væ6Ræö'6W'fF–öç5³ÒçfÇVRÒ’¢’’ÂRÓ"“°¦6öç7BF×W&VDFöÆÆ%v–æF÷rÒ¥4ôâç'6R„¥4ôâç7G&–æv–g’†Ö7&ò’“°§F×W&VDFöÆÆ%v–æF÷rç&VfW&Væ6U6W&–W2äEEtU„$u2æö'6W'fF–öç5°¢F×W&VDFöÆÆ%v–æF÷rç&VfW&Væ6U6W&–W2äEEtU„$u2æö'6W'fF–öç2æÆVæwF‚Ò¥ÒçfÇVR³Ò°¦76W'BçF‡&÷w2‚‚’ÓâFFW"æFDGGvW†&w2†FöÆÆ$6öæf–rÂF×W&VDFöÆÆ%v–æF÷rÂ7W'&VçDæ÷r’“°¦6öç7BFöÆÆ$†VÇF‚ÒFFW"æFDöff–6–Å6÷W&6T†VÇF‚€¢Ö7&ô†VÇF‚ÂÖ7&òÂFöÆÆ"Â$EEtU„$u2"Â7W'&VçDæ÷p¢“°¦6öç7BFöÆÆ$†VÇF…&V6÷&BÒÖ7&ô†VÇF‚ç6÷W&6W2æf–æB‚‡6÷W&6R’Óâ6÷W&6Ræ–BÓÓÒ$EEtU„$u2"“°¦76W'Bç7G&–7DWVÂ†FöÆÆ$†VÇF‚ç7FGW2ÂFöÆÆ$†VÇF…&V6÷&Bç7FGW2“°¦76W'Bç7G&–7DWVÂ†FöÆÆ$†VÇF‚æ†—7F÷'”¶æ÷vâÂÖ7&ô†VÇF‚æ†—7F÷'•7FGW2ÓÓÒ'G&6¶VB"“°¦76W'Bç7G&–7DWVÂ†FöÆÆ$†VÇF‚ç&Vg&W6„Æ&VÂÂ°¢Ö&¶WC¢.[{.X‹~ik"ÂfÆÆ&6³¢.KùŞyYiz~XÂ"ÂVæf–Æ&ÆS¢.KˆŞXúşyJ‚"ÂVæ¶æ÷vã¢.XènXû.[è^[»®z¸² §Õ¶FöÆÆ$†VÇF…&V6÷&BæÖöFUÒ“°¦6öç7BFöÆÆ%v—F…7FÆT†VÇF‚ÒFFW"æ'V–ÆEvTFF€¢6öæf–rÂÖ7&òÂW‡—&VDöff–6–Ä†VÇF„æ÷rÂçVÆÂÂ²FF¢Ö7&ô†VÇF‚ÂW'&÷#¢çVÆÂĞ¢’æ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ&G‡’"“°¦76W'Bç7G&–7DWVÂ†FöÆÆ%v—F…7FÆT†VÇF‚çWFFT†VÇF‚ç7FGW2Â'7FÆR"“°¦76W'Bç7G&–7DWVÂ†FöÆÆ%v—F…7FÆT†VÇF‚çWFFT†VÇF‚ç6W&–W4–BÂ$EEtU„$u2"“°¦6öç7BF×W&VDFöÆÆ$†VÇF‚Ò¥4ôâç'6R„¥4ôâç7G&–æv–g’†Ö7&ô†VÇF‚’“°§F×W&VDFöÆÆ$†VÇF‚ç6÷W&6W2æf–æB‚‡6÷W&6R’Óâ6÷W&6Ræ–BÓÓÒ$EEtU„$u2"’çV&Æ—6†VEWFFVDBÒ###bÓrÓ#…C#£#3£¢#°¦6öç7B—6öÆFVDFöÆÆ$†VÇF‚ÒFFW"æ'V–ÆEvTFF€¢6öæf–rÂÖ7&òÂW‡—&VDöff–6–Ä†VÇF„æ÷rÂçVÆÂÂ²FF¢F×W&VDFöÆÆ$†VÇF‚ÂW'&÷#¢çVÆÂĞ¢“°¦76W'Bç7G&–7DWVÂ†—6öÆFVDFöÆÆ$†VÇF‚æ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ&G‡’"’çWFFT†VÇF‚ç7FGW2Â'Væ¶æ÷vâ"“°¦76W'Bç7G&–7DWVÂ†—6öÆFVDFöÆÆ$†VÇF‚æ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ&G‡’"’ç&–6RÂFöÆÆ"ç&–6R“°¦76W'Bç7G&–7DWVÂ†—6öÆFVDFöÆÆ$†VÇF‚æ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ'W3’"’çWFFT†VÇF‚ç7FGW2Â'7FÆR"“°¦76W'Bç7G&–7DWVÂ†ö–ÂæFVÖòÂfÇ6R“°¦76W'Bç7G&–7DWVÂ†ö–Âç7FGW2Âö–Å&VfW&Væ6Rç7FGW2ÓÓÒ&ö² ¢bbFFW"æ'W6–æW74F—56–æ6R†ö–Å&VfW&Væ6Ræ4öbÂ7W'&VçDæ÷r’ÃÒBò&ö²"¢'7FÆR"“°¦76W'Bç7G&–7DWVÂ†ö–Âç7–Ö&öÂÂ%uD’"“°¦76W'Bç7G&–7DWVÂ†ö–Âç&–6RÂö–Å&VfW&Væ6Rç&–6R“°¦76W'Bç7G&–7DWVÂ†ö–Âç&Wf–÷W5&–6RÂö–Å&VfW&Væ6Rç&Wf–÷W5&–6R“°¦76W'Bç7G&–7DWVÂ†ö–Âæ4öbÂö–Å&VfW&Væ6Ræ4öb“°¦76W'Bç7G&–7DWVÂ†ö–ÂçWFFVDBÂö–Å&VfW&Væ6RçWFFVDB“°¦76W'Bç7G&–7DWVÂ†ö–Âç6÷W&6Rç6W&–W4–BÂ%%uD2"“°¦76W'B„ÖF‚æ'2†ö–Âæ6†ævU7BÒ‚†ö–Å&VfW&Væ6Rç&–6Ròö–Å&VfW&Væ6Rç&Wf–÷W5&–6RÒ’¢’’ÂRÓ"“°¦76W'Bç7G&–7DWVÂ†ö–Âæö'6W'fF–öåG&VæBæ6÷VçBÂö–Å&VfW&Væ6Ræö'6W'fF–öç2æÆVæwF‚“°¦76W'BæFVW7G&–7DWVÂ†ö–Âæö'6W'fF–öåG&VæBçfÇVW2Âö–Å&VfW&Væ6Ræö'6W'fF–öç2æÖ‚†—FVÒ’Óâ—FVÒçfÇVR’“°¦76W'Bç7G&–7DWVÂ†ö–Âæö'6W'fF–öåG&VæBç7F'D4öbÂö–Å&VfW&Væ6Ræö'6W'fF–öç5³Òæ4öb“°¦76W'Bç7G&–7DWVÂ†ö–Âæö'6W'fF–öåG&VæBæVæD4öbÂö–Å&VfW&Væ6Ræ4öb“°¦76W'B„ÖF‚æ'2†ö–Âæö'6W'fF–öåG&VæBæ6†ævP¢Ò‚†ö–Å&VfW&Væ6Rç&–6Ròö–Å&VfW&Væ6Ræö'6W'fF–öç5³ÒçfÇVRÒ’¢’’ÂRÓ"“°¦6öç7BF×W&VDö–Åv–æF÷rÒ¥4ôâç'6R„¥4ôâç7G&–æv–g’†Ö7&ò’“°§F×W&VDö–Åv–æF÷rç&VfW&Væ6U6W&–W2å%uD2æö'6W'fF–öç2ç&WfW'6R‚“°¦76W'BçF‡&÷w2‚‚’ÓâFFW"æFE'wF2†ö–Ä6öæf–rÂF×W&VDö–Åv–æF÷rÂ7W'&VçDæ÷r’“°¦6öç7Bö–Ä†VÇF‚ÒFFW"æFDöff–6–Å6÷W&6T†VÇF‚†Ö7&ô†VÇF‚ÂÖ7&òÂö–ÂÂ%%uD2"Â7W'&VçDæ÷r“°¦6öç7Bö–Ä†VÇF…&V6÷&BÒÖ7&ô†VÇF‚ç6÷W&6W2æf–æB‚‡6÷W&6R’Óâ6÷W&6Ræ–BÓÓÒ%%uD2"“°¦76W'Bç7G&–7DWVÂ†ö–Ä†VÇF‚ç7FGW2Âö–Ä†VÇF…&V6÷&Bç7FGW2“°¦76W'Bç7G&–7DWVÂ†ö–Ä†VÇF‚æ†—7F÷'”¶æ÷vâÂÖ7&ô†VÇF‚æ†—7F÷'•7FGW2ÓÓÒ'G&6¶VB"“°¦76W'Bç7G&–7DWVÂ†ö–Ä†VÇF‚ç&Vg&W6„Æ&VÂÂ°¢Ö&¶WC¢.[{.X‹~ik"ÂfÆÆ&6³¢.KùŞyYiz~XÂ"ÂVæf–Æ&ÆS¢.KˆŞXúşyJ‚"ÂVæ¶æ÷vã¢.XènXû.[è^[»®z¸² §Õ¶ö–Ä†VÇF…&V6÷&BæÖöFUÒ“°¦6öç7Bö–Åv—F…7FÆT†VÇF‚ÒFFW"æ'V–ÆEvTFF€¢6öæf–rÂÖ7&òÂW‡—&VDöff–6–Ä†VÇF„æ÷rÂçVÆÂÂ²FF¢Ö7&ô†VÇF‚ÂW'&÷#¢çVÆÂĞ¢’æ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ'wF’"“°¦76W'Bç7G&–7DWVÂ†ö–Åv—F…7FÆT†VÇF‚çWFFT†VÇF‚ç7FGW2Â'7FÆR"“°¦76W'Bç7G&–7DWVÂ†ö–Åv—F…7FÆT†VÇF‚çWFFT†VÇF‚ç6W&–W4–BÂ%%uD2"“°¦6öç7BÆÄöff–6–Ä†VÇF‚ÒFFW"æ'V–ÆEvTFF€¢6öæf–rÂÖ7&òÂW‡—&VDöff–6–Ä†VÇF„æ÷rÂçVÆÂÂ²FF¢Ö7&ô†VÇF‚ÂW'&÷#¢çVÆÂĞ¢’æ76WG2æf–ÇFW"‚†76WB’Óâ76WBçWFFT†VÇF‚“°¦76W'BæFVW7G&–7DWVÂ†ÆÄöff–6–Ä†VÇF‚æÖ‚†76WB’Óâ76WBçWFFT†VÇF‚ç6W&–W4–B’Â°¢$Du3"Â$EEtU„$u2"Â%%uD2"Â$%D2õU4B ¥Ò“°¦76W'Bç7G&–7DWVÂ†ÆÄöff–6–Ä†VÇF‚æf–ÇFW"‚†76WB’Óâ76WBçWFFT†VÇF‚ç7FGW2ÓÓÒ'7FÆR"’æÆVæwF‚Â2“°¦76W'Bç7G&–7DWVÂ†ÆÄöff–6–Ä†VÇF‚æf–ÇFW"‚†76WB’Óâ76WBçWFFT†VÇF‚ç7FGW2ÓÓÒ'Væ¶æ÷vâ"’æÆVæwF‚Â“° ¦gVæ7F–öâG&6¶VDöff–6–Ä†VÇF‚†&6RÂ6W&–W4–BÂGFV×FVDBÂÖöFR’°¢6öç7BG&6¶VBÒ¥4ôâç'6R„¥4ôâç7G&–æv–g’†&6R’“°¢G&6¶VBæ†—7F÷'•7FGW2Ò'G&6¶VB#°¢G&6¶VBævVæW&FVDBÒGFV×FVDC°¢G&6¶VBæÆ7DGFV×DBÒGFV×FVDC°¢6öç7B6÷W&6RÒG&6¶VBç6÷W&6W2æf–æB‚†—FVÒ’Óâ—FVÒæ–BÓÓÒ6W&–W4–B“°¢6÷W&6Ræ†—7F÷'•7FGW2Ò'G&6¶VB#°¢6÷W&6RæÆ7DGFV×DBÒGFV×FVDC°¢6÷W&6RæÖöFRÒÖöFS°¢6÷W&6Rç7FGW2Ò²Ö&¶WC¢&†VÇF‡’"ÂfÆÆ&6³¢&FVw&FVB"ÂVæf–Æ&ÆS¢&f–ÆVB"Õ¶ÖöFUÓ°¢6÷W&6Ræ6öç6V7WF—fTf–ÇW&W2ÒÖöFRÓÓÒ&Ö&¶WB"ò¢°¢6÷W&6Rç6æ6†÷E&W6W'fVBÒÖöFRÓÓÒ&fÆÆ&6²#°¢6÷W&6Ræf–ÇW&U&V6öâÒÖöFRÓÓÒ&Ö&¶WB"òçVÆÂ¢.kX¾Šù^i»NikZK‹JR#°¢–b†ÖöFRÓÓÒ&Ö&¶WB"’6÷W&6RæÆ7E7V66W76gVÄBÒGFV×FVDC°¢&WGW&âG&6¶VC°§Ğ¦6öç7B†VÇF‡”Fw4†VÇF‚ÒG&6¶VDöff–6–Ä†VÇF‚†Ö7&ô†VÇF‚Â$Du3"Â7W'&VçDGFV×DBÂ&Ö&¶WB"“°¦6öç7B†VÇF‡”Fw4Ö7&òÒ¥4ôâç'6R„¥4ôâç7G&–æv–g’†Ö7&ò’“°¦FFW"æf–æDFw3&÷r††VÇF‡”Fw4Ö7&ò’ç&÷rç7FGW2Ò&ö²#°¦6öç7B†VÇF‡”Fw476WBÒFFW"æ'V–ÆEvTFF†6öæf–rÂ†VÇF‡”Fw4Ö7&òÂ7W'&VçDæ÷r¢æ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ'W3’"“°¦76W'Bç7G&–7DWVÂ†FFW"æFDöff–6–Å6÷W&6T†VÇF‚€¢†VÇF‡”Fw4†VÇF‚Â†VÇF‡”Fw4Ö7&òÂ†VÇF‡”Fw476WBÂ$Du3"Â7W'&VçDæ÷p¢’ç7FGW2Â&†VÇF‡’"“° ¦6öç7BfÆÆ&6´FöÆÆ$Ö7&òÒ¥4ôâç'6R„¥4ôâç7G&–æv–g’†Ö7&ò’“°¦fÆÆ&6´FöÆÆ$Ö7&òç&VfW&Væ6U6W&–W2äEEtU„$u2ç7FGW2Ò'7FÆR#°¦6öç7BfÆÆ&6´FöÆÆ$76WBÒFFW"æFDGGvW†&w2†FöÆÆ$6öæf–rÂfÆÆ&6´FöÆÆ$Ö7&òÂ7W'&VçDæ÷r“°¦6öç7BG&6¶VDFöÆÆ$fÆÆ&6²ÒG&6¶VDöff–6–Ä†VÇF‚€¢Ö7&ô†VÇF‚Â$EEtU„$u2"Â7W'&VçDGFV×DBÂ&fÆÆ&6² ¢“°¦76W'Bç7G&–7DWVÂ†FFW"æFDöff–6–Å6÷W&6T†VÇF‚€¢G&6¶VDFöÆÆ$fÆÆ&6²ÂfÆÆ&6´FöÆÆ$Ö7&òÂfÆÆ&6´FöÆÆ$76WBÂ$EEtU„$u2"Â7W'&VçDæ÷p¢’ç7FGW2Â&FVw&FVB"“° ¦6öç7BVæf–Æ&ÆTö–ÄÖ7&òÒ¥4ôâç'6R„¥4ôâç7G&–æv–g’†Ö7&ò’“°§Væf–Æ&ÆTö–ÄÖ7&òç&VfW&Væ6U6W&–W2å%uD2ç7FGW2Ò&W'&÷"#°¦6öç7BVæf–Æ&ÆTö–Ä76WBÒö&¦V7Bæ76–vâ‡·ÒÂö–Ä6öæf–rÂ°¢&–6S¢çVÆÂÂ&Wf–÷W5&–6S¢çVÆÂÂ6†ævU7C¢çVÆÂÂ4öc¢çVÆÂÂWFFVDC¢çVÆÂÂFVÖó¢fÇ6RÂ7FGW3¢&W'&÷""À¢6÷W&6S¢ö&¦V7Bæ76–vâ‡·ÒÂö–Ä6öæf–rç6÷W&6RÂ²66W74ÖWF†öC¢ö–Å&VfW&Væ6Rç6÷W&6Ræ66W74ÖWF†öBÒ§Ò“°¦6öç7BG&6¶VDö–Äf–ÇW&RÒG&6¶VDöff–6–Ä†VÇF‚€¢Ö7&ô†VÇF‚Â%%uD2"Â7W'&VçDGFV×DBÂ'Væf–Æ&ÆR ¢“°¦6öç7BG&6¶VDö–Å6÷W&6RÒG&6¶VDö–Äf–ÇW&Rç6÷W&6W2æf–æB‚‡6÷W&6R’Óâ6÷W&6Ræ–BÓÓÒ%%uD2"“°§G&6¶VDö–Å6÷W&6RçV&Æ—6†VBÒfÇ6S°§G&6¶VDö–Å6÷W&6Ræ4öbÒçVÆÃ°§G&6¶VDö–Å6÷W&6RçV&Æ—6†VEWFFVDBÒçVÆÃ°¦76W'Bç7G&–7DWVÂ†FFW"æFDöff–6–Å6÷W&6T†VÇF‚€¢G&6¶VDö–Äf–ÇW&RÂVæf–Æ&ÆTö–ÄÖ7&òÂVæf–Æ&ÆTö–Ä76WBÂ%%uD2"Â7W'&VçDæ÷p¢’ç7FGW2Â&f–ÆVB"“°¦76W'Bç7G&–7DWVÂ†&—F6ö–âæFVÖòÂfÇ6R“°¦76W'Bç7G&–7DWVÂ†&—F6ö–âç7FGW2Â&ö²"“°¦76W'Bç7G&–7DWVÂ†&—F6ö–âç&–6RÂ&—F6ö–å&÷rç&–6R“°¦76W'Bç7G&–7DWVÂ†&—F6ö–âæ6†ævU7BÂ&—F6ö–å&÷ræ6†ævU7B“°¦76W'Bç7G&–7DWVÂ†&—F6ö–âæ4öbÂ&—F6ö–å&÷ræFFÖWFæ4öb“°¦76W'Bç7G&–7DWVÂ†&—F6ö–âçWFFVDBÂ&—F6ö–å&÷ræFFÖWFçWFFVDB“°¦76W'Bç7G&–7DWVÂ†&—F6ö–âç6÷W&6RææÖRÂ%÷vW&VB'’6ö–ävV6¶ò"“°¦76W'Bç7G&–7DWVÂ†&—F6ö–âæ6†ævUW&–öBÂ##Eö†÷W'2"“°¦76W'B†&—F6ö–âææ÷FRæ–æ6ÇVFW2‚.KˆŞZê>z{Zéîi{b"’“°¦76W'Bç7G&–7DWVÂ†&—F6ö–âçWFFT†VÇF‚ç7FGW2Â&†VÇF‡’"“°¦76W'Bç7G&–7DWVÂ†&—F6ö–âçWFFT†VÇF‚æ66W74ÖWF†öDÆ&VÂÂ$6ö–ävV6¶ò"“°¦76W'Bç7G&–7DWVÂ†&—F6ö–âçWFFT†VÇF‚æÆ7E7V66W76gVÄBÂ&—F6ö–âçWFFVDB“°¦6öç7BF×W&VD&—F6ö–ä†VÇF‚Ò¥4ôâç'6R„¥4ôâç7G&–æv–g’†76WE&æ¶–æt†VÇF‚’“°§F×W&VD&—F6ö–ä†VÇF‚ç6÷W&6W2æf–æB‚‡6÷W&6R’Óâ6÷W&6Ræ–BÓÓÒ&6ö–ævV6¶ò"’æÆ7E7V66W74BÒ###bÓ‚ÓC££¢#°¦76W'BçF‡&÷w2‚‚’ÓâFFW"æFD&—F6ö–å6÷W&6T†VÇF‚€¢F×W&VD&—F6ö–ä†VÇF‚Â76WE&æ¶–ærÂ&—F6ö–âÂ7W'&VçDæ÷p¢’ÂşYÎh›’ò“°¦6öç7B–†öõ&æ¶–ærÒ¥4ôâç'6R„¥4ôâç7G&–æv–g’†76WE&æ¶–ær’“°¦6öç7B–†öô&—F6ö–âÒFFW"æf–æD&—F6ö–ä76WB‡–†öõ&æ¶–ær“°§–†öô&—F6ö–âæFFÖWFæÖöFRÒ&Ö&¶WB#°§–†öô&—F6ö–âæFFÖWFç7FGW2Ò''F–Â#°§–†öô&—F6ö–âæFFÖWFç6÷W&6RÒ%–†öòf–ææ6R+r™ÙhkX˜	®˜xşYû®Xxb#°¦6öç7B–†öô&—F6ö–ä6&BÒFFW"æFD&—F6ö–â†&—F6ö–ä6öæf–rÂ–†öõ&æ¶–ærÂ7W'&VçDæ÷r“°¦76W'Bç7G&–7DWVÂ‡–†öô&—F6ö–ä6&Bç7FGW2Â''F–Â"“°¦76W'Bç7G&–7DWVÂ‡–†öô&—F6ö–ä6&Bæ6†ævUW&–öBÂ'&Wf–÷W5ö6Æ÷6R"“°¦76W'Bç7G&–7DWVÂ†FFW"æFD&—F6ö–å6÷W&6T†VÇF‚€¢76WE&æ¶–æt†VÇF‚Â–†öõ&æ¶–ærÂ–†öô&—F6ö–ä6&BÂ7W'&VçDæ÷p¢’æ66W74ÖWF†öDÆ&VÂÂ%–†öò%D2ÕU4B"“°¦6öç7B&WF–æVE&æ¶–ærÒ¥4ôâç'6R„¥4ôâç7G&–æv–g’†76WE&æ¶–ær’“°¦6öç7B&WF–æVD&—F6ö–âÒFFW"æf–æD&—F6ö–ä76WB‡&WF–æVE&æ¶–ær“°§&WF–æVD&—F6ö–âæFFÖWFæÖöFRÒ&fÆÆ&6²#°§&WF–æVD&—F6ö–âæFFÖWFç7FGW2Ò'7FÆR#°§&WF–æVD&—F6ö–âæFFÖWFç6÷W&6RÒ$6ö–ävV6¶ò+r–†öòf–ææ6R#°¦76W'Bç7G&–7DWVÂ†FFW"æFD&—F6ö–â†&—F6ö–ä6öæf–rÂ&WF–æVE&æ¶–ærÂ7W'&VçDæ÷r’ç7FGW2Â'7FÆR"“°¦6öç7BW7F–ÖFVE&æ¶–ærÒ¥4ôâç'6R„¥4ôâç7G&–æv–g’†76WE&æ¶–ær’“°¦6öç7BW7F–ÖFVD&—F6ö–âÒFFW"æf–æD&—F6ö–ä76WB†W7F–ÖFVE&æ¶–ær“°¦W7F–ÖFVD&—F6ö–âæFFÖWFæÖöFRÒ&W7F–ÖFR#°¦W7F–ÖFVD&—F6ö–âæFFÖWFç7FGW2Ò''F–Â#°¦76W'BçF‡&÷w2‚‚’ÓâFFW"æFD&—F6ö–â†&—F6ö–ä6öæf–rÂW7F–ÖFVE&æ¶–ærÂ7W'&VçDæ÷r’ÂşKˆŞ[é~KÛşyJKËXÂò“°¦6öç7BGWÆ–6FT&—F6ö–âÒ¥4ôâç'6R„¥4ôâç7G&–æv–g’†76WE&æ¶–ær’“°¦GWÆ–6FT&—F6ö–âæ76WG2çW6‚„¥4ôâç'6R„¥4ôâç7G&–æv–g’†&—F6ö–å&÷r’’“°¦76W'BçF‡&÷w2‚‚’ÓâFFW"æf–æD&—F6ö–ä76WB†GWÆ–6FT&—F6ö–â’ÂşXú®ˆ;ŞXÈ^Y
+¾KˆiÚò“°¦6öç7BÖ—76–æt&—F6ö–âÒ¥4ôâç'6R„¥4ôâç7G&–æv–g’†76WE&æ¶–ær’“°¦Ö—76–æt&—F6ö–âæ76WG2ÒÖ—76–æt&—F6ö–âæ76WG2æf–ÇFW"‚†76WB’Óâ76WBç7–Ö&öÂÓÒ$%D2"“°¦76W'BçF‡&÷w2‚‚’ÓâFFW"æf–æD&—F6ö–ä76WB†Ö—76–æt&—F6ö–â’ÂşXú®ˆ;ŞXÈ^Y
+¾KˆiÚò“°¦6öç7BVæf–Æ&ÆT&—F6ö–åvRÒFFW"æ'V–ÆEvTFF€¢6öæf–rÂÖ7&òÂ7W'&VçDæ÷rÂçVÆÂÂçVÆÂÂ²FF¢çVÆÂÂW'&÷#¢æWrW'&÷"‚$…EES2"’Ğ¢“°¦76W'Bç7G&–7DWVÂ‡Væf–Æ&ÆT&—F6ö–åvRæ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ&&—F6ö–â"’ç7FGW2Â&W'&÷""“°¦76W'Bç7G&–7DWVÂ‡Væf–Æ&ÆT&—F6ö–åvRæ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ'W3’"’ç&–6RÂFw3ç&–6R“°¦76W'Bç7G&–7DWVÂ‡7V66W72æ76WG2æf–ÇFW"‚†76WB’Óâ76WBæFVÖòÓÓÒfÇ6R’æÆVæwF‚Â6öæf–ræ76WG2æÆVæwF‚“°¦76W'Bç7G&–7DWVÂ‡7V66W72æ76WG2æf–ÇFW"‚†76WB’Óâ76WBæW‡FW&æÄF—7Æ’’æÆVæwF‚À¢6öæf–ræ76WG2æf–ÇFW"‚†76WB’Óâ76WBæW‡FW&æÄF—7Æ’’æÆVæwF‚“°¦76W'Bç7G&–7DWVÂ‡7V66W72æ76WG2æf–ÇFW"‚†76WB’Óâ76WBæFVÖòÓÓÒG'VR’æÆVæwF‚Â“°¢ò¢š^™Ú.x«nhiŠşYNXÚx«nhy¨Nk~h¾ûÈÎKˆŞˆ;ŞXijÛ¾iùKŠ®XÎ(	N(	N˜*>KÉ®™¨ş[Ù>ZJyÉşZéîi[hÚîXùXÉnûÈÀ¢jÚNX˜ŞZè>K˜¾h˜Kº^h.K‹¢7FÆ^ûÈÎjÚ>iŠşYºK‹¢EEtU„$u2Š*¾iz^š)™ˆXÎŠúşXŠN8 ¢‹ù˜xÎ™HKˆŞXù[ÈşûÉ¾8ÎzîZéîˆ;Şk~h¾X{®‹ø~iÉş8ŞyKKˆ¾ik’7FÆTÖ7&òZKX[~K‰>™zŠhny¹n8"¢ğ¦6öç7B7FÆT76WG2Ò7V66W72æ76WG2æf–ÇFW"‚†76WB’Óâ76WBç7FGW2ÓÓÒ'7FÆR"“°¦76W'Bç7G&–7DWVÂ‡7V66W72ç7FGW2Â7FÆT76WG2æÆVæwF‚ò'7FÆR"¢&ö²"À¢.š^™Ú.x«nh[©Nk~h¾YNXÚûÈÎ‹ø~iÉşXÚÒ"²¥4ôâç7G&–æv–g’‡7FÆT76WG2æÖ‚†’Óâç7–Ö&öÂ’’“° ¦6öç7BG&6¶VDFw4Ö7&òÒ¥4ôâç'6R„¥4ôâç7G&–æv–g’†Ö7&ò’“°¦6öç7BG&6¶VDFw2ÒFFW"æf–æDFw3&÷r‡G&6¶VDFw4Ö7&ò’ç&÷s°§G&6¶VDFw2ç7FGW2Ò'7FÆR#°§G&6¶VDFw2ç&–6RÒçVÖ&W"‡G&6¶VDFw2çfÂç&WÆ6R‚"R"Â""’“°§G&6¶VDFw2æ6†ævT'2ÒçVÖ&W"‡G&6¶VDFw2æ6†rçFôÆ÷vW$66R‚’ç&WÆ6R‚&'"Â""’“°§G&6¶VDFw2ç&Wf–÷W5&–6RÒG&6¶VDFw2ç&–6RÒG&6¶VDFw2æ6†ævT'2ò°§G&6¶VDFw2çWFFVDBÒ###bÓ‚Ó%C#££¢#°§G&6¶VDFw2æÆ7DGFV×DBÒ###bÓ‚Ó5C#££¢#°§G&6¶VDFw2ç6÷W&6RÒ²æÖS¢$e$TBòfVFW&Â&W6W'fR‚ãR"Â6W&–W4–C¢$Du3"Ó°¦6öç7B&WF–æVDFw2ÒFFW"æ'V–ÆEvTFF†6öæf–rÂG&6¶VDFw4Ö7&òÂ7W'&VçDæ÷r’æ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ'W3’"“°¦76W'Bç7G&–7DWVÂ‡&WF–æVDFw2ç7FGW2Â'7FÆR"“°¦76W'Bç7G&–7DWVÂ‡&WF–æVDFw2çWFFVDBÂG&6¶VDFw2çWFFVDB“°¦76W'B‡&WF–æVDFw2ææ÷FRæ–æ6ÇVFW2‚.ˆz®Xªi»NikZK‹JR"’“° §G&6¶VDFw2ç7FGW2Ò&ö²#°§G&6¶VDFw2æ4öbÒ7W'&VçDGFV×DFFS°§G&6¶VDFw2çWFFVDBÒ7W'&VçDGFV×DC°§G&6¶VDFw2æÆ7DGFV×DBÒG&6¶VDFw2çWFFVDC°§G&6¶VDFw2æö'6W'fF–öç2Ò·²4öc¢G&6¶VDFw2æ4öbÂfÇVS¢G&6¶VDFw2ç&–6RÕÓ°¦6öç7B–æFWVæFVçFÇ”g&W6„Fw2ÒFFW"æ'V–ÆEvTFF†6öæf–rÂG&6¶VDFw4Ö7&òÂ7W'&VçDæ÷r’æ76WG2æf–æB‚†76WB’Óâ76WBæ–BÓÓÒ'W3’"“°¦76W'Bç7G&–7DWVÂ†–æFWVæFVçFÇ”g&W6„Fw2ç7FGW2Â&ö²"“°¦76W'Bç7G&–7DWVÂ†–æFWVæFVçFÇ”g&W6„Fw2çWFFVDBÂG&6¶VDFw2çWFFVDB“° ¦6öç7Bg&W6„FöÆÆ"ÒFFW"æFDGGvW†&w2€¢FöÆÆ$6öæf–rÂÖ7&òÂæWrFFR‡&VfW&Væ6Ræ4öb²%C#3£S“£S•¢"¢“°¦76W'Bç7G&–7DWVÂ†g&W6„FöÆÆ"ç7FGW2Â&ö²"“°¦76W'Bç7G&–7DWVÂ†g&W6„FöÆÆ"æFVÖòÂfÇ6R“°¢ò¢š)xè~j~zÛî[ø^š¾ŠûNkˆR‚ãy¨NXù[ˆ>ˆ¨.ZXşûÉ®Šx.kX¾iŠşiz^[ªny¨NûÈÎXù[ˆ>iŠşhÈYh‰h›y¨N8"¢ğ¦76W'Bç7G&–7DWVÂ†g&W6„FöÆÆ"æFVÆ”Æ&VÂÂ.iz^[ªnŠx.kX²+rjøşYh‰h›Xù[ˆ2"“° ¦6öç7Bg&W6„ö–ÄÖ7&òÒ¥4ôâç'6R„¥4ôâç7G&–æv–g’†Ö7&ò’“°¦g&W6„ö–ÄÖ7&òç&VfW&Væ6U6W&–W2å%uD2ç7FGW2Ò&ö²#°¦g&W6„ö–ÄÖ7&òç&VfW&Væ6U6W&–W2å%}½ï]-¢G§²ÚîÆ­yÚxNXª‹ÛŞYŠêXøŞˆÎjùNK˜¾X˜Ş[ş8 ¢2RÃciŠşYÊXéóT´.Yû®zKˆ®{¹8ÎY8{¾ŠÎh8^iÛş8ŞyYX{®y¨NZ)î˜xşûÉ®ikZ)îKˆK»Ş{èîX®iKny¸®xè~i».{«ğ¢2‹XNk©KˆîKˆKŠ®Xú®ZHŞyJ[{.iÈ‹XNk©™Jîy¨F&ö&N‹XNk©{¸NûÈÎXª‹ÛŞYšiÊÎ‹ª¾ZI®X{®{ªc#ZÙ~ˆ¨.ûÉ¾[‹ŠxNXª‹ÛĞ¢2YŠêK¸ŞXù~Kˆ¾ik“#3´.š(Nzé~{ªniÙş8 ¢2RÃƒûÉ®š8î™šXˆnXË®ZI®Šû¾KˆK»Ş‹z‹XNKª~[ú¾xZ~ûÈYË{Éš8î™šZé®K»~y¨Nˆ;Şk©Kˆî˜ş™šKŠNiÚ‹ÛNûÈûÈÀ¢2Šú^‹XNk©™JîYÊY8{¾ŠÎh8^Kˆî[ˆ.YË®z	Nz›nKŠN{¸N˜xÎ[{.ZÙYÊûÈÎXª‹ÛŞYšhÈ™JîXë¾˜xŞûÈÎŠû~k.i[KˆŞXù8 ¢&WV—&R„ÄôDU"ç7FB‚’ç7E÷6—¦RÃÒUóƒÂ.˜y‰èŞ{¸zºşXˆnXË®Xª‹ÛŞjŠYÙ~‹h^‹øsRã„´.h
+~ˆ;Şš(Nzér"¢&WV—&R…DU$Ô”äÅõd•5TÅ2ç7FB‚’ç7E÷6—¦RÃÒeóÂ.˜y‰èŞ{¸zºşŠxnŠxi[hÚîjŠYÙ~‹h^‹øsd´.h
+~ˆ;Şš(Nzér"¢22ÃiŠşhÈiz~x˜8Îh¨®ZèşŠx.x«nhKˆKŠ®Xˆni[XªiØ>˜xŞ{¸NX{®XZŞKŠ®‹ÛN8Ş˜*>KˆŠÎŠëîZé®y¨N8.XZŞKŠ®‹ÛNiKŠû°¢2XZŞKŠ®X[~YŞyÉşZéîX‹n[ªnKúXû~YîûÈÎiú^Š˜¾‹éKˆŞXúşXè¾{ÊYËi»NZJ~ûÉ¾Šú^jŠYÙ~KˆŞŠêXZR#3´"[‹ŠxNXª‹ÛĞ¢2YŠêûÈÎZ)î˜xş{ªnXÚšin[ò¥2y¨Bã"^ûÈÎhÚ.iÚ^™»~‹ëîK¸îhêzé~XÎXùK‹®yÉşZéîkX¾˜xş8 ¢&WV—&R…$•4µõ$D%ôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒ5óCÂ.˜y‰èŞ{¸zºşš8î™š™»~‹ëîjŠYÙ~‹h^‹øs2ãD´.h
+~ˆ;Şš(Nzér"¢&WV—&R…tõ$ÄDÔôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒUóÂ.˜y‰èŞ{¸zºşx+™‹^K‰nyXÎYËY»îjŠYÙ~‹h^‹øsT´.h
+~ˆ;Şš(Nzér"¢&WV—&R…4U54”ôå5ôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒ5óSÂ.˜y‰èŞ{¸zºşKªNi‰>i{një^jŠYÙ~‹h^‹øs2ãT´.h
+~ˆ;Şš(Nzér"¢2rÃcûÉ®ˆz®˜kˆ^XÙ^iKK‹®i[Nš^X[yJKˆK»Şx«nh[›niJşhÈXˆnXË®YNˆz®y¨NzÙ¾˜XZ^Xú>Yî[ø^Šhy¨NZ)î˜xş8 ¢&WV—&R…tD4„Ä•5EôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒuócÂ.˜y‰èŞ{¸zºşˆz®˜kˆ^XÙ^jŠYÙ~‹h^‹øsrãd´.h
+~ˆ;Şš(Nzér"¢&WV—&R„„TÅD…ôDDU%5ôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒóÂ.˜y‰èŞ{¸zºş‹è^XªiÚ^k©X^[«~˜.˜XŞ[.‹h^‹øs´.h
+~ˆ;Şš(Nzér"¢&WV—&R„DUD”Åõd”UuôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒ5óÂ.˜y‰èŞ{¸zºş‹XNKª~Šúnh8^h«Ş[jŠYÙ~‹h^‹øs4´.h
+~ˆ;Şš(Nzér"¢&WV—&R…$D%õd”UuôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒeóÂ.˜y‰èŞ{¸zºş™»~‹ëîièNh‰h«Ş[jŠYÙ~‹h^‹øsd´.h
+~ˆ;Şš(Nzér"¢&WV—&R„5U%dUõd”UuôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒ•óÂ.˜y‰èŞ{¸zºşiKny¸®xè~i».{«şh«Ş[jŠYÙ~‹h^‹øs”´.h
+~ˆ;Şš(Nzér"¢&WV—&R„4õ%$TÄD”ôåõd”UuôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒUóÀ¢.˜y‰èŞ{¸zºşy»X[>h
+~yú™‹^h«Ş[jŠYÙ~‹h^‹øsT´.h
+~ˆ;Şš(Nzér"¢&WV—&R„tÄô$UôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒ…ó#Â.˜y‰èŞ{¸zºşYËy>XªyK¾jŠYÙ~‹h^‹øs‚ã$´.h
+~ˆ;Şš(Nzér"¢&WV—&R„tÄô$UõDU…EU$UôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒUóÀ¢.˜y‰èŞ{¸zºşjÚ>[NYËy>{«ynjŠYÙ~‹h^‹øsT´.h
+~ˆ;Şš(Nzér"¢&WV—&R…d•4”ôåô552ç7FB‚’ç7E÷6—¦RÃÒ#…óÂ.˜y‰èŞ{¸zºşzy[›¾ŠxnŠxj~[Èş‹h^‹øs#„´.h
+~ˆ;Şš(Nzér"¢2#ÃiŠşYÊXˆnXË®Xh^Zë‹ùk*Š*¾Xùxë˜ŞŠ8Xˆ~i{nZé®y¨N8.Š^Kˆ®8ÎXˆnXË®Xh^˜*>Kˆ[.K™şŠhˆ;Ş{Ê8ŞKˆà¢2˜^kX¾™Ú.iÛşzÊÎKˆŠÎKŠNZHNKúîZHŞ8‹ùîYÎŠz>˜x®Zè>KºÎK‹®KÙ^ZÙYÊy¨Nk:˜x®Yî™ÈŠh#ãt´.ûÉ¾hÚ.Y¹îy¨NiŠğ¢2ôe"XÚx˜~Kˆî‹ùŠÎŠøhÚî™Ú.iÛşKˆŞXhŞŠ*¾Š8hè’3w‚Kˆâ#ûÈÎiKny¸®xè~i».{«şXZ^Xú>KˆŞXhŞ{Ë¢g8 ¢2#rÃûÉ®Kˆ[şh¾Šxh¨®j[ø>‹XNKª~Kˆ®z{¾X‹zÊÎK¨ÎŠÎ8XéôUDnKº>yn˜*>KˆjÎiKiKîYË{Éš8î™šZé®K»p¢2Šy¹ûÈÎKŠNYÙ~YNˆz®y¨N{J~XyXÉnŠxNX‰ûÈY
+¾Y¹¾iÚ‹ÛNYÊz¨NjÎ˜xÎy¨NKŠNŠÎhé.[ˆ>ûÈ˜;ŞYÊ‹ù˜xÎ8 ¢2#BÃcûÉ®h¾Šx˜xÎy¨NŠÎh8^iÛşZI®X{®KˆX‰~‹û~KÚ‹[X«şKˆîKˆiÚˆHXk.iÚy¨N{J~XyXÉnŠxNX‰8 ¢&WV—&R„4ôÔÔäEô4TåDU%ô552ç7FB‚’ç7E÷6—¦RÃÒ#uóÂ.˜y‰èŞ{¸zºşXÙ^[şhÈ~hÊ^KŠŞ[ø>j~[Èş‹h^‹øs#t´.h
+~ˆ;Şš(Nzér"¢&WV—&R…d•5TÅôd”DTÄ•E•ô552ç7FB‚’ç7E÷6—¦RÃÒeóÂ.˜y‰èŞ{¸zºşš¹KùŞyÉşŠxnŠx[.‹h^‹øsd´.h
+~ˆ;Şš(Nzér"¢&WV—&R…$TdU$Tä4Uôd”DTÄ•E•ô552ç7FB‚’ç7E÷6—¦RÃÒ%ó“Â.˜y‰èŞ{¸zºşXø.ˆ>Y»î{+îKúî[.‹h^‹øs"ã”´.h
+~ˆ;Şš(Nzér"¢&WV—&R„U$õ$ô„ôÔUô552ç7FB‚’ç7E÷6—¦RÃÒ#eóÂ.˜y‰èŞ{¸zºşièXXšinš^j~[Èş‹h^‹øs#d´.h
+~ˆ;Şš(Nzér"¢&WV—&R…$TdU$Tä4Uô„ôÔUõc5ô552ç7FB‚’ç7E÷6—¦RÃÒ•óÀ¢.˜y‰èŞ{¸zºócs.X8ş{JXø.ˆ>™HZé®j~[Èş‹h^‹øs”´.h
+~ˆ;Şš(Nzér"¢&WV—&R„4ôÔÔäEô4TåDU%ôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒEóÂ.˜y‰èŞ{¸zºşŠxnY»îXˆ~hÚ.jŠYÙ~‹h^‹øsD´.h
+~ˆ;Şš(Nzér"¢&WV—&R„U$õ$ô„ôÔUôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒ5óSÂ.˜y‰èŞ{¸zºşièXXšinš^YÎjÚ^jŠYÙ~‹h^‹øs2ãT´.h
+~ˆ;Şš(Nzér"¢&WV—&R„ç7FB‚’ç7E÷6—¦R²ÄôDU"ç7FB‚’ç7E÷6—¦R²DU$Ô”äÅõd•5TÅ2ç7FB‚’ç7E÷6—¦P¢²4ôÔÔäEô4TåDU%ôÔôETÄRç7FB‚’ç7E÷6—¦R²tÄô$UôÔôETÄRç7FB‚’ç7E÷6—¦P¢²tÄô$UõDU…EU$UôÔôETÄRç7FB‚’ç7E÷6—¦P¢²U$õ$ô„ôÔUôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒ#3óÀ¢.˜y‰èŞ{¸zºş[‹ŠxNXª‹ÛÔ¦f67&—N‹h^‹øs#3´.h
+~ˆ;Şš(Nzér"¢2#2ÃiŠşXªXZ^Y8{¾ŠÎh8^iÛşKˆîXˆnXË®h©Xúj8iú^Yîy¨Nš(Nzé~ûÉ®hê.™(Šh˜	8Îj~zÛî{¸N8Şj
+š¨Î™Jîy¹Kˆà¢2ŠúŞK˜ûÈš^™Ú.xëYÊiÈ‹z‹XNKª~YiÉşKˆîY8{¾ŠÎh8^iÛşKŠN{¸NûÈûÈÎjZûXZŞKŠ®Y8{¾j~zÛî8[Ù>X˜ŞY8{¾y¨@¢2K»~jÂşkj‹xÎX‰~8h©XúhÈ™*î›¹ŠêNiKn‹[~8i	Î{J.jnKˆî˜	ŠÎˆz®˜[ÈX[>ûÈÎ[›nYÊ˜xş[®ZûX˜ŞŠëKˆ¾KŠNKŠ ¢2[z^zˆ²ş‹ù‰
+^Y	XˆnXË®h©XúZ;>y¨N›¹ŠêNx«nh8.Šú^jŠYÙ~Xú®YÊ‚&Vw&W76–öãÓi{nXª‹ÛŞ8 ¢2#RÃCûÉ®hê.™(š)ŞZInjZûjøşŠÎy¨N‹û~KÚ‹[X«şKØŞ8Y8{¾ˆHXk.iÚûÈÎKº^Xø®YË{Éš8î™šZé®K»~y¨@¢2Y¹¾iÚ‹ÛNKˆîK©Nj>zØ{ª~j*şûÈ{Ë®‹ÛNi{niKK‹®jZû8ÎKˆŞXúşyJ8ŞhˆÎKˆŞiŠşXˆni[ûÈ8 ¢&WV—&R…$Tu$U54”ôåôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒ#UóCÀ¢.K¸^Y¹î[Ù.jŠ[ÈşXª‹ÛŞy¨NkXşŠxYšhê.™(‹h^‹øs#D´.h
+~ˆ;Şš(Nzér"¢&WV—&R„$ô$EôDDôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒ•óÀ¢.hÈ™ÈXª‹ÛŞy¨NY8{¾ŠÎh8^iÛşi[hÚî[.‹h^‹øs”´.h
+~ˆ;Şš(Nzér"¢2#2ÃûÉ®YÊXéó„´.Yû®zKˆ®{¹8Î˜	ŠÎ‹û~KÚ‹[X«ò²Y8{¾ˆHXk.iÚ8ŞyYX{®y¨NZ)î˜xş8.‹[X«şiÊÎ‹ª°¢2KˆŞikZ)îK»¾KÙ^Šû~k.ûÉ®Zè>ZHŞyJh«Ş[˜*>ZY~XènXû.ih~K»nKˆîYÎKˆK»Ş[Šn{É>ZÙy¨NŠû¾XùnûÈÎKˆKŠ®Y8{¾iÈZI ¢2ŠznXùKˆjÊXènXû.ih~K»nŠû¾XùnûÉ¾h»şKˆŞX‹[¨şX‰~y¨NŠÎZh.ZéîyYy›ŞûÈÎKˆŞyK¾hêijŞi».{«ş8 ¢&WV—&R„$ô$Eõd”UuôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒ#5óÀ¢.hÈ™ÈXª‹ÛŞy¨NY8{¾ŠÎh8^iÛşŠxnY»î‹h^‹øs#4´.h
+~ˆ;Şš(Nzér"¢&WV—&R‚&&ö&BÖ6VÆÂ×7&²"–â&ö&E÷f–WuöÖöGVÆRæB'7&´F—&V7F–öâ"–â&ö&E÷f–WuöÖöGVÆP¢æB%5$µõô”åE2"–â&ö&E÷f–WuöÖöGVÆRæB&F—7G&–'WF–öâ"–â&ö&E÷f–WuöÖöGVÆP¢æBv–CÒ&&ö&B×VÇ6R"r–âvRæB"æ&ö&B×7&²ÖÆ–æR"–âvRÀ¢.Y8{¾ŠÎh8^iÛş[ø^š¾˜	ŠÎyK¾z¹Xh^[¨şX‰~y¨N‹û~KÚ‹[X«ş[›n{¹X{®kj‹xÎXˆn[ˆ>ˆHXk.iÚ"¢&WV—&R‚v–×÷'B‚"âöf–ææ6R×FW&Ö–æÂÖ&ö&B×f–WræÖ§2"’r–â ¢æBv–×÷'B‚"âöf–ææ6R×FW&Ö–æÂÖ&ö&BÖFFæÖ§2"’r–â ¢æB&7&VFT&ö&Ef–Wr"–â&ö&E÷f–WuöÖöGVÆP¢æB&'V–ÆD&ö&B"–â&ö&EöFFöÖöGVÆP¢æB&f–ææ6R×FW&Ö–æÂÖ&ö&B×f–WræÖ§2"æ÷B–âvP¢æB&f–ææ6R×FW&Ö–æÂÖ&ö&BÖFFæÖ§2"æ÷B–âvRÀ¢.Y8{¾ŠÎh8^iÛşy¨Ni[hÚî[.KˆîŠxnY»î[ø^š¾KùŞhÈhÈ™ÈZûÎXZ^K‰NKˆŞ[é~YÊšin[şš(NXª‹ÛÒ"¢&WV—&R…$•4µõd”UuôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒeócÀ¢.hÈ™ÈXª‹ÛŞy¨N[ˆ.YË®x«nhŠxnY»î‹h^‹øsbãd´.h
+~ˆ;Şš(Nzér"¢2YË{Éš8î™šZé®K»~ûÉ®Y¹¾iÚ‹ÛNYNˆz®Šû¾z¹Xh^[{.YÊiz^i»Ny¨NXZÎ[Èzê˜>ûÈÎ˜	‹ÛN{¹X{®XéşXÎ8iŠ[NXú>[èN8¢2iÚ^k©Kˆîi[hÚîiz^ûÉ¾{Ë®K»¾KÙ^KˆiÚXÛ>KˆŞ{¹zØ{ª~8.Zè>KˆîYÎXˆnXË®˜*>Kˆ[Ê8ÎKˆŞYh‰K‹®h¾Xˆn8Şy¨NZéik¢2KúXû~XÚXˆn[Èk‹.iù>ûÈÎK™şKˆŞXø.KˆîZè>KºÎy¨Nx«nhŠêi[8 ¢&WV—&R„tTõõ$•4µôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒeóSÀ¢.hÈ™ÈXª‹ÛŞy¨NYË{Éš8î™šZé®K»~jŠYè¾‹h^‹øsbãT´.h
+~ˆ;Şš(Nzér"¢&WV—&R‚&'V–ÆDvVõ&—6²"–â&—6µ÷f–WuöÖöGVÆRæB'&VæFW$vVõ&—6²"–â&—6µ÷f–WuöÖöGVÆP¢æB$tTõô„U2"–âvVõ÷&—6µöÖöGVÆRæB'W&6VçF–ÆU66÷&R"–âvVõ÷&—6µöÖöGVÆP¢æB.KˆŞ{¹şŠê"–âvVõ÷&—6µöÖöGVÆRæBv–CÒ&vVò×&—6²"r–âvP¢æB&f–ææ6R×FW&Ö–æÂÖvVò×&—6²æÖ§2"æ÷B–âvRÀ¢.YË{Éš8î™šZé®K»~[ø^š¾™¨ş[ˆ.YË®x«nhŠxnY»îhÈ™ÈXª‹ÛŞûÈÎ[›nXiiˆîZè>Šû¾y¨NiŠşZé®K»~ˆÎ™ÙîK¨¾K»niÊÎ‹ª²"¢&WV—&R‚v–×÷'B‚"âöf–ææ6R×FW&Ö–æÂ×&—6²×f–WræÖ§2"’r–â ¢æB&7&VFU&—6µf–Wr"–â&—6µ÷f–WuöÖöGVÆP¢æB&f–ææ6R×FW&Ö–æÂ×&—6²×f–WræÖ§2"æ÷B–âvRÀ¢.[ˆ.YË®x«nhŠxnY»î[ø^š¾KùŞhÈhÈ™ÈZûÎXZ^K‰NKˆŞ[é~YÊšin[şš(NXª‹ÛÒ"¢&WV—&R…$U4T$4…õd”UuôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒEóÀ¢.hÈ™ÈXª‹ÛŞy¨N[ˆ.YË®z	Nz›nŠxnY»î‹h^‹øsD´.h
+~ˆ;Şš(Nzér"¢&WV—&R‚v–×÷'B‚"âöf–ææ6R×FW&Ö–æÂ×&W6V&6‚×f–WræÖ§2"’r–â ¢æB&7&VFU&W6V&6…f–Wr"–â&W6V&6…÷f–WuöÖöGVÆP¢æB&f–ææ6R×FW&Ö–æÂ×&W6V&6‚×f–WræÖ§2"æ÷B–âvRÀ¢.[ˆ.YË®z	Nz›nŠxnY»î[ø^š¾KùŞhÈhÈ™ÈZûÎXZ^K‰NKˆŞ[é~YÊšin[şš(NXª‹ÛÒ"¢&WV—&R„”ädõ$ÔD”ôåõd”UuôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒóÀ¢.hÈ™ÈXª‹ÛŞy¨NK¨¾K»n‹XNŠêşŠxnY»î‹h^‹øs´.h
+~ˆ;Şš(Nzér"¢&WV—&R‚v–×÷'B‚"âöf–ææ6R×FW&Ö–æÂÖ–æf÷&ÖF–öâ×f–WræÖ§2"’r–â ¢æB&7&VFT–æf÷&ÖF–öåf–Wr"–â–æf÷&ÖF–öå÷f–WuöÖöGVÆP¢æB&f–ææ6R×FW&Ö–æÂÖ–æf÷&ÖF–öâ×f–WræÖ§2"æ÷B–âvRÀ¢.K¨¾K»n‹XNŠêşŠxnY»î[ø^š¾KùŞhÈhÈ™ÈZûÎXZ^K‰NKˆŞ[é~YÊšin[şš(NXª‹ÛÒ"¢&WV—&R„õU$D”ôå5õd”UuôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒ•óÀ¢.hÈ™ÈXª‹ÛŞy¨Nz‹>Zé¥c‹ùŠÎŠøhÚîŠxnY»î‹h^‹øs”´.h
+~ˆ;Şš(Nzér"¢&WV—&R‚v–×÷'B‚"âöf–ææ6R×FW&Ö–æÂÖ÷W&F–öç2×f–WræÖ§2"’r–â ¢æB&7&VFT÷W&F–öç5f–Wr"–â÷W&F–öç5÷f–WuöÖöGVÆP¢æB&f–ææ6R×FW&Ö–æÂÖ÷W&F–öç2×f–WræÖ§2"æ÷B–âvRÀ¢.z‹>Zé¥c‹ùŠÎŠøhÚîŠxnY»î[ø^š¾KùŞhÈhÈ™ÈZûÎXZ^K‰NKˆŞ[é~YÊšin[şš(NXª‹ÛÒ"¢&WV—&R‚sÆÆ–æ²&VÃÒ'7G–ÆW6†VWB"‡&VcÒ'FW&Ö–æÂ×f—6–öâæ772#âr–âvP¢æBsÆÆ–æ²&VÃÒ'7G–ÆW6†VWB"‡&VcÒ'FW&Ö–æÂÖ6öÖÖæBÖ6VçFW"æ772#âr–âvP¢æBsÆÆ–æ²&VÃÒ'7G–ÆW6†VWB"‡&VcÒ'FW&Ö–æÂ×f—7VÂÖf–FVÆ—G’æ772#âr–âvP¢æBsÆÆ–æ²&VÃÒ'7G–ÆW6†VWB"‡&VcÒ'FW&Ö–æÂ×&VfW&Væ6RÖf–FVÆ—G’æ772#âr–âvP¢æBsÆÆ–æ²&VÃÒ'7G–ÆW6†VWB"‡&VcÒ'FW&Ö–æÂÖW&÷&Ö†öÖRæ772#âr–âvP¢æBsÆÆ–æ²&VÃÒ'7G–ÆW6†VWB"‡&VcÒ'FW&Ö–æÂ×&VfW&Væ6RÖ†öÖR×c2æ772#âr–âvP¢æBw7&3Ò&f–ææ6R×FW&Ö–æÂÖ6öÖÖæBÖ6VçFW"æÖ§2"r–âvP¢æBv–×÷'B‚"âöf–ææ6R×FW&Ö–æÂ×f—7VÇ2æÖ§2"’r–â ¢æB&7&VFUFW&Ö–æÅf—7VÇ2"–âFW&Ö–æÅ÷f—7VÇ2À¢.zy[›¾{¸zºşŠxnŠx[.{Ë®[	iÊÎYËj~[Èşh‰ni[hÚîjŠYÙr"¢&WV—&R‚vg&öÒ"âöf–ææ6R×FW&Ö–æÂÖW&÷&Ö†öÖRæÖ§2"r–â6öÖÖæEö6VçFW%öÖöGVÆP¢æB&–æ—DW&÷&†öÖR"–â6öÖÖæEö6VçFW%öÖöGVÆP¢æB$×WFF–öäö'6W'fW""–âW&÷&ö†öÖUöÖöGVÆP¢æB&–ææW$…DÔÂ"æ÷B–âW&÷&ö†öÖUöÖöGVÆP¢æBv–CÒ&W&÷&ÖvFWv—2"r–âvP¢æBv6Æ73Ò'FW&Ö–æÂÖÖöFR×7v—F6‚"r–âvP¢æB"æW&÷&ÖvFWv’Öw&–B"–âW&÷&ö†öÖUö770¢æB$ÖVF–†Ö‚×v–GFƒ¢c#‚’"–âW&÷&ö†öÖUö772À¢.ièXXšinš^{Ë®[	jŠ[ÈşXˆ~hÚ.8Kˆ[z^KÙÎkXXZ^Xú>8[{.j
+š¨ÎŠû¾i[YÎjÚ^h‰nxºÎz¸¾z{¾Xªzºş[ˆ>["¢&WV—&R‚vg&öÒ"âöf–ææ6R×FW&Ö–æÂÖvÆö&RæÖ§2"r–â6öÖÖæEö6VçFW%öÖöGVÆP¢æB&–æ—DÖ&¶WDvÆö&R"–âvÆö&UöÖöGVÆP¢æB'FW‡GW&T6ö÷&F–æFR"–âvÆö&UöÖöGVÆP¢æB&V'F‚Öæ–v‡Bæ§r"–âvÆö&UöÖöGVÆP¢æB&G&t6öææV7F–öç2"–âvÆö&UöÖöGVÆP¢æB'&VæFW$÷'F†öw&†–2"–âvÆö&U÷FW‡GW&UöÖöGVÆP¢æB&vWD–ÖvTFF"–âvÆö&U÷FW‡GW&UöÖöGVÆP¢æB$44„RÒæWrvV´Ö"–âvÆö&U÷FW‡GW&UöÖöGVÆP¢æB'&VfW'2×&VGV6VBÖÖ÷F–öâ"–âvÆö&UöÖöGVÆP¢æB'f—6–&–Æ—G–6†ævR"–âvÆö&UöÖöGVÆP¢æB&–ææW$…DÔÂ"æ÷B–âvÆö&UöÖöGVÆP¢æBv–CÒ&Ö&¶WBÖvÆö&RÖ6çf2"r–âvP¢æB"æÖ&¶WBÖvÆö&R×6†VÆÂ"–â&VfW&Væ6Uöf–FVÆ—G•ö772À¢.š¹KùŞyÉşYËy>[ø^š¾KÛşyJiÊÎYË{«yn8yÉşZéîˆz®‹ÚÎ8ˆ¨.ˆ;ŞKˆîXxş[	XªyK¾™˜Ş{ªr"¢6ö×7E÷&VfW&Væ6Uö†öÖRÒ&Rç7V"‡"%Ç2²"Â""Â&VfW&Væ6Uö†öÖU÷c5ö772¢&WV—&R‚&w&–B×FV×ÆFR×&÷w3£#ã“7gsbãwgs#"ã3ggr"–â6ö×7E÷&VfW&Væ6Uö†öÖP¢æB&w&–B×FV×ÆFRÖ6öÇVÖç3£ã&g#g#ãg""–â6ö×7E÷&VfW&Væ6Uö†öÖP¢æB'v–GFƒ£sBãRR"–â6ö×7E÷&VfW&Væ6Uö†öÖP¢æB&Ö&v–âÖÆVgC£bã2R"–â6ö×7E÷&VfW&Væ6Uö†öÖP¢æB&w&–B×FV×ÆFRÖ6öÇVÖç3¦Ö–æÖ‚ƒÃg"“bã'gr"–â6ö×7E÷&VfW&Væ6Uö†öÖRÀ¢#cs,9s“CXø.ˆ>™HZé®[.{Ë®[	yºîj~{«^Y	{ÙjÎ8‹XNKª~[Ê~[Šnh‰nKˆ[z^KÙÎXË®jùNKè²"¢&WV—&R‚v&öG•¶FF×FW&Ö–æÂ×f–WsÒ&÷fW'f–Wr%Ò6Ö–âÖ6öçFVçBr–â6öÖÖæEö6VçFW%ö770¢æBvw&–B×FV×ÆFRÖ6öÇVÖç3¢&WVBƒbÂÖ–æÖ‚ƒÂg"’’r–â6öÖÖæEö6VçFW%ö770¢æBv&öG•¶FF×FW&Ö–æÂ×f–WsÒ&÷fW'f–Wr%Ò6–æf÷&ÖF–öâ×6V7F–öâr–â6öÖÖæEö6VçFW%ö770¢æBv&öG•¶FF×FW&Ö–æÂ×f–WsÒ&÷fW'f–Wr%ÒævÆö&Â×&—6²ÖÖr–â6öÖÖæEö6VçFW%ö770¢æBv&öG•¶FF×FW&Ö–æÂ×f–WsÒ&÷fW'f–Wr%Òç—VÆ–æRÖ6öÖÖæBr–â6öÖÖæEö6VçFW%ö770¢æB%d”Uuô%•ô”B"–â6öÖÖæEö6VçFW%öÖöGVÆP¢æB&&–Ö7W'&VçB"–â6öÖÖæEö6VçFW%öÖöGVÆP¢æB&–ææW$…DÔÂ"æ÷B–â6öÖÖæEö6VçFW%öÖöGVÆRÀ¢.XÙ^[şhÈ~hÊ^KŠŞ[ø>{Ë®[	jÎ™Ú.{ÙjÎ8YËY»î8zê{«şh‰nXúşŠëş™zîZûÎˆŠ®ZY{ªb"¢&WV—&R‚&–ææW$…DÔÂ"æ÷B–âFW&Ö–æÅ÷f—7VÇ0¢æB%$Tt”ôåõ5T52"–âFW&Ö–æÅ÷f—7VÇ0¢æB%–†öòf–ææ6R"–âFW&Ö–æÅ÷f—7VÇ0¢æB'&VæFW$vÆö&Å&—6´†VFÖ"–âFW&Ö–æÅ÷f—7VÇ0¢æB'&VæFW%—VÆ–æT÷fW'f–Wr"–âFW&Ö–æÅ÷f—7VÇ2À¢.{¸zºşŠxnŠxi[hÚîjŠYÙ~{Ë®[	ZèXZih~iÊÎk‹.iù>8XË®YùşKº>ynh‰n‹XNjÎ‹ù¾[ªn˜¾‹é"¢&WV—&R‚&–ææW$…DÔÂ"æ÷B–â&—6µ÷&F%öÖöGVÆP¢æBvg&öÒ"âöf–ææ6R×FW&Ö–æÂ×&—6²×&F"æÖ§2"r–âFW&Ö–æÅ÷f—7VÇ0¢æB&FW&—fU&—6µ&F""–â&—6µ÷&F%öÖöGVÆP¢æB'&VæFW%&—6µ&F""–â&—6µ÷&F%öÖöGVÆRÀ¢.š¹KùŞyÉşš8î™š™»~‹ëî[ø^š¾KÛşyJxºÎz¸¾Xù~š(Nzé~{ªniÙşy¨NyÉşZéîKúXû~ŠxnŠx[""¢&WV—&R‚&–ææW$…DÔÂ"æ÷B–â†VÇF…öFFW'5öÖöGVÆP¢æBv–×÷'B‚"âöf–ææ6R×FW&Ö–æÂÖ†VÇF‚ÖFFW'2æÖ§2"’r–â ¢æB&f–ææ6R×FW&Ö–æÂÖ†VÇF‚ÖFFW'2æÖ§2"æ÷B–âvP¢æB&7&VFU7W÷'F–æt†VÇF„FFW""–â†VÇF…öFFW'5öÖöGVÆP¢æB&–ç7FÆÅ7W÷'F–æt†VÇF„FFW""–â ¢æB&gVæ7F–öâFE7W÷'F–æu6÷W&6T†VÇF‚"æ÷B–â ¢æB&gVæ7F–öâFE7W÷'F–æu6÷W&6T†VÇF‚"–â†VÇF…öFFW'5öÖöGVÆP¢æB.‹è^XªiÚ^k©X^[«~˜.˜XŞ[.[	®iÊ®Xª‹ÛÒ"–âÀ¢.‹è^XªiÚ^k©X^[«~˜.˜XŞ[.[ø^š¾hÈ™ÈXª‹ÛŞ8KˆŞ‹ù¾šin[şûÈÎK‰NiÊ®ZèŠ8^i{niˆîzîhª^iÊ®[{º®ˆÎ™Ùîˆxn˜
+x«nh"¢&WV—&R‚&–ææW$…DÔÂ"æ÷B–â7W'fU÷f–WuöÖöGVÆP¢æBv–×÷'B‚"âöf–ææ6R×FW&Ö–æÂÖ7W'fR×f–WræÖ§2"’r–â ¢æB&f–ææ6R×FW&Ö–æÂÖ7W'fR×f–WræÖ§2"æ÷B–âvP¢æB&÷Vä7W'fR"–â7W'fU÷f–WuöÖöGVÆP¢æB&7W'fU6VvÖVçG2"–â7W'fU÷f–WuöÖöGVÆP¢æBvg&öÒ"âöf–ææ6R×FW&Ö–æÂÖFWF–Â×f–WræÖ§2"r–â7W'fU÷f–WuöÖöGVÆP¢æB.KˆŞhù.XÎ8KˆŞyJy»˜+¾iÉş™™šni»ò"–â7W'fU÷f–WuöÖöGVÆP¢æB.YÊjÚNK˜¾X˜ŞKˆŞi‹îzK®hêijŞXÂ"–â7W'fU÷f–WuöÖöGVÆP¢æB.KˆŞièNh‰ZûYî[ˆ.y¨Nš(NkX²"–â7W'fU÷f–WuöÖöGVÆP¢æBv–CÒ'––VÆBÖ7W'fRÖVçG'’"r–âvP¢æBv–CÒ'––VÆBÖ7W'fRÖVçG'’×&—6²"r–âvP¢æB&&–ÖÖöFÂ"æ÷B–â7W'fU÷f–WuöÖöGVÆRÀ¢.iKny¸®xè~i».{«şh«Ş[[ø^š¾hÈ™ÈZûÎXZ^8KˆŞ‹ù¾šin[ş8{Ë®j>ijŞ{«şKˆŞhù.XÎûÈÎK‰NKˆŞ[é~Xún[»®ZûŠùŞjnŠúŞK˜’"¢&—6µ÷&F%öÖöGVÆRÒ$•4µõ$D%ôÔôETÄRç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢&WV—&R‚&–ææW$…DÔÂ"æ÷B–â&F%÷f–WuöÖöGVÆP¢æBv–×÷'B‚"âöf–ææ6R×FW&Ö–æÂ×&F"×f–WræÖ§2"’r–â ¢æB&f–ææ6R×FW&Ö–æÂ×&F"×f–WræÖ§2"æ÷B–âvP¢æB&÷Vå&F""–â&F%÷f–WuöÖöGVÆP¢æB'—$†W2"–â&F%÷f–WuöÖöGVÆP¢æBvg&öÒ"âöf–ææ6R×FW&Ö–æÂÖFWF–Â×f–WræÖ§2"r–â&F%÷f–WuöÖöGVÆP¢æBvg&öÒ"âöf–ææ6R×FW&Ö–æÂ×&—6²×&F"æÖ§2"r–â&F%÷f–WuöÖöGVÆP¢æB.{Ë®K»¾KˆKúXû~i{n™»~‹ëîi[NKÙ>KùŞhÈz›®h"–â&F%÷f–WuöÖöGVÆP¢æB.KˆŞiŠşZûYî[ˆ.y¨Nš(NkX²"–â&F%÷f–WuöÖöGVÆP¢æBv–CÒ'&—6²×&F"ÖFWF–Â"r–âvRÀ¢.™»~‹ëîièNh‰h«Ş[[ø^š¾hÈ™ÈZûÎXZ^8KˆŞ‹ù¾šin[şûÈÎK‰NKˆî™»~‹ëîX[yJYÎKˆK»ŞKúXû~™Jâ"¢&WV—&R‚%$D%õ4”täÅô´U•2"–â&—6µ÷&F%öÖöGVÆP¢æB'&Vv–ÖU6–væÇ2"–â&—6µ÷&F%öÖöGVÆP¢æB&W‡G&7E&Vv–ÖU6–væÇ2"–â ¢æB'&Vv–ÖU6–væÇ3¢W‡G&7E&Vv–ÖU6–væÇ2†Ö7&ôFF’"–â ¢æB.Zéî™˜^XŠxèr"–âvRæB.iÉş™™kª.K»r"–âvRæB.KúyJXŠ[zâ"–âvP¢æB.XŠxè~š8î™š’"æ÷B–âvRæB.˜	®ˆ8š8î™š’"æ÷B–âvP¢æB.k:.Xªxè~iÚ^ˆz¥d•‚"–âvRÀ¢.š8î™š™»~‹ëîXZŞ‹ÛN[ø^š¾YNŠû¾KˆKŠ®yÉşZéîX‹n[ªnKúXû~ûÈÎKˆŞ[é~XhŞyJXÙ^KˆXˆni[XªiØ>˜xŞ{¸NûÈÂ ¢.K‰N‹ÛNYŞKˆŞ[é~k+şyJk*iÈZû[©NkX¾˜xşy¨Niz~j~zÛâ"¢&WV—&R‚w&—6³¢¶Fö7VÖVçBævWDVÆVÖVçD'”–B‚'&—6²×6V7F–öâ"’r–â ¢æBvFö7VÖVçBçVW'•6VÆV7F÷"‚"ç&—6²×&F"×æVÂ"’r–â ¢æB&ö'6W'fU&F%æVÂ"æ÷B–âÀ¢.šin[şK˜¾ZInKØnXXK¨â7&—6²×6V7F–öâX{®xëy¨Nš8î™š™»~‹ëî[ø^š¾y›¾ŠëK‹¢&—6²XˆnXË®y¨NŠznXùXX>{JûÈÂ ¢.Y
+nX‰z¨N[şKˆ¾Zè>KÉ®Kˆy»NXÎYÊ‚ÄôD”äry»NX‹ŠëşZê.k¹®X‹i[XØ>X8ş{JK˜¾Kˆ¾y¨NXˆnXË®ûÉ² ¢.ŠznXù˜¾‹éXú®ˆ;ŞiÈKˆK»ŞûÈÎKˆŞ[é~YÊ‚æ§2˜xÎXún‹[~KˆKŠ®Šx.ZùşYš‚"¢&WV—&R‚&GvVÆÄ×2"–âÆöFW ¢æB&6ÆV%F–ÖV÷WB†GvVÆÅF–ÖW'2"–âÆöFW ¢æB.hê‹ør"–âÆöFW"À¢.[»n‹ùşXˆnXË®[ø^š¾XË®Xˆn8Îk¹®‹ø~8ŞKˆî8ÎyÈ¾‹ø~8ŞûÉ®XˆnXË®ZûÎˆŠ®iŠşKˆjÊKˆ®Kˆ~X8ş{Jy¨N[›>k¹k¹®XªûÈÂ ¢.hê‹ø~XÛ>Xª‹ÛŞKÉ®h¨®i[Nš^Šû~k.Kˆ[›nh¸‹[~ûÈÎ[»n‹ùşXª‹ÛŞ[Ú.YÎ‰™®Šëâ"¢6÷'&VÆF–öå÷f–WuöÖöGVÆRÒ4õ%$TÄD”ôåõd”UuôÔôETÄRç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢&WV—&R‚&–ææW$…DÔÂ"æ÷B–â6÷'&VÆF–öå÷f–WuöÖöGVÆP¢æBv–×÷'B‚"âöf–ææ6R×FW&Ö–æÂÖ6÷'&VÆF–öâ×f–WræÖ§2"’r–â ¢æB&f–ææ6R×FW&Ö–æÂÖ6÷'&VÆF–öâ×f–WræÖ§2"æ÷B–âvP¢æB&÷Vä6÷'&VÆF–öâ"–â6÷'&VÆF–öå÷f–WuöÖöGVÆP¢æB&'V–ÆDÖG&—‚"–â6÷'&VÆF–öå÷f–WuöÖöGVÆP¢æBvg&öÒ"âöf–ææ6R×FW&Ö–æÂÖFWF–Â×f–WræÖ§2"r–â6÷'&VÆF–öå÷f–WuöÖöGVÆP¢æB&&–ÖÖöFÂ"æ÷B–â6÷'&VÆF–öå÷f–WuöÖöGVÆP¢æBv–CÒ&6÷'&VÆF–öâÖVçG'’"r–âvRÀ¢.y»X[>h
+~yú™‹^h«Ş[[ø^š¾hÈ™ÈZûÎXZ^8KˆŞ‹ù¾šin[şûÈÎK‰NKˆŞ[é~Xún[»®ZûŠùŞjnŠúŞK˜’"¢2KˆiÚXú>[èN[ø^š¾yYYÊKº>z˜xÎûÉ®yJiKny¸®xè~KˆŞyJK»~KØŞ8iz^Xèn™IKØŞi[NX‰~X™N™šN8˜xŞXúKˆŞ‹k>KˆŞ{¹i[8 ¢&WV—&R‚&Æöu&WGW&ç2"–â6÷'&VÆF–öå÷f–WuöÖöGVÆP¢æB.K»~KØŞ[¨şX‰~iÊÎ‹ª¾[Šn‹h¾X«ò"–â6÷'&VÆF–öå÷f–WuöÖöGVÆP¢æB'6W76–öäÆ–væVB"–â6÷'&VÆF–öå÷f–WuöÖöGVÆP¢æB.KªNi‰>iz^XènZûKˆŞ›Ùy¨Nj~y¨Ni[NKŠ®KˆŞ‹ù¾yú™‹R"–â6÷'&VÆF–öå÷f–WuöÖöGVÆP¢æB$Ô”åôõdU$Ä"–â6÷'&VÆF–öå÷f–WuöÖöGVÆP¢æB.KˆŞiŠşZûYî[ˆ.y¨Nš(NkX²"–â6÷'&VÆF–öå÷f–WuöÖöGVÆRÀ¢.y»X[>h
+~yú™‹^[ø^š¾yJiz^Zûi[iKny¸®xè~8X™N™šNiz^Xèn™IKØŞj~y¨N8˜xŞXúKˆŞ‹k>i{nyYz›®ûÈÂ ¢.[›nZ;iˆîX[nK‹®XènXû.{¹şŠêˆÎ™Ùîš(NkX²"¢&WV—&R‚"ââö76WB×G&6¶W"ö†—7F÷'’æ§6öâ"–â6÷'&VÆF–öå÷f–WuöÖöGVÆRÀ¢.y»X[>h
+~yú™‹^[ø^š¾Šû¾Xùnz¹Xh^[{.Xù[ˆ>y¨Nk¹®XªXènXû.ûÈÎKˆŞ[é~Xúnz¸¾i[hÚîk©"¢&WV—&R‚&÷VåæVÂ"–âFWF–Å÷f–WuöÖöGVÆRæB&—5æVÄ÷Vâ"–âFWF–Å÷f–WuöÖöGVÆP¢æB&&–ÖÖöFÂ"–âFWF–Å÷f–WuöÖöGVÆP¢æB&&–ÖÖöFÂ"æ÷B–â&F%÷f–WuöÖöGVÆRÀ¢.h«Ş[ZInZ;>[ø^š¾Xú®iÈKˆK»ŞZéîxëûÈÎ™»~‹ëîh«Ş[KˆŞ[é~Xún[»®KˆZY~ZûŠùŞjnŠúŞK˜’"¢&WV—&R‚&–ææW$…DÔÂ"æ÷B–âFWF–Å÷f–WuöÖöGVÆP¢æBv–×÷'B‚"âöf–ææ6R×FW&Ö–æÂÖFWF–Â×f–WræÖ§2"’r–â ¢æB&f–ææ6R×FW&Ö–æÂÖFWF–Â×f–WræÖ§2"æ÷B–âvP¢æB&÷Vä76WB"–âFWF–Å÷f–WuöÖöGVÆP¢æB'6W&–W5F‚"–âFWF–Å÷f–WuöÖöGVÆP¢æB&ÖF6†VD¶W—v÷&B"–âFWF–Å÷f–WuöÖöGVÆP¢æB.hÈX[nKÛşyJiÚjËîKˆŞ[é~h©>Xùn8KùŞZÙh‰nXhŞXˆnXù{¸NK»nŠÎh8R"–âFWF–Å÷f–WuöÖöGVÆP¢æB.YÊjÚNK˜¾X˜ŞKˆŞi‹îzK®hêijŞXÂ"–âFWF–Å÷f–WuöÖöGVÆP¢æB.KˆŞKº>ŠX[nKˆîiÊÎj~y¨NZÙYÊYºiéÎX[>{;²"–âFWF–Å÷f–WuöÖöGVÆP¢æB.YŞKŠŞKˆŞzØK¨îKˆîiÊÎj~y¨Ny»X[2"–âFWF–Å÷f–WuöÖöGVÆP¢æBv&–ÖÖöFÂr–âFWF–Å÷f–WuöÖöGVÆP¢æBv6Æ73Ò&FWF–ÂÖ÷Vâ"ræ÷B–âvP¢æB"æFWF–ÂÖ÷Vâ"–âf—6–öåö770¢æB"æFWF–ÂÖ÷Vâ"æ÷B–âFWF–Å÷f–WuöÖöGVÆRÀ¢.‹XNKª~Šúnh8^h«Ş[[ø^š¾hÈ™ÈZûÎXZ^8KˆŞ‹ù¾šin[şûÈÎiz[¨şX‰~i{nZh.ZéîŠûNiˆîˆÎ™Ùî[^zK®hêijŞXÎûÈÂ ¢.K‰Nšin[şXúşŠxy¨NŠznXùhÈ™*îj~[ÈşKˆŞ[é~™¨şh«Ş[[»nYîXª‹ÛÒ"¢&WV—&R‚&–ææW$…DÔÂ"æ÷B–âvF6†Æ—7EöÖöGVÆP¢æBv–×÷'B‚"âöf–ææ6R×FW&Ö–æÂ×vF6†Æ—7BæÖ§2"’r–â ¢æB&f–ææ6R×FW&Ö–æÂ×vF6†Æ—7BæÖ§2"æ÷B–âvP¢æB&Ö÷VçEvF6†Æ—7B"–âvF6†Æ—7EöÖöGVÆP¢æB'6æ—F—¦U7–Ö&öÂ"–âvF6†Æ—7EöÖöGVÆP¢æB'6fU7F÷&vR"–âvF6†Æ—7EöÖöGVÆP¢æB.K¸^KùŞZÙYÊiÊÎiË®kXşŠxYšûÈÎKˆŞKÉ®Kˆ®KÊ"–âvF6†Æ—7EöÖöGVÆP¢æBv–CÒ'vF6‚Öf–ÇFW""r–âvP¢æB"çvF6‚×FövvÆR"–âf—6–öåö770¢æBv&–×&W76VBr–âvF6†Æ—7EöÖöGVÆRÀ¢.ˆz®˜kˆ^XÙ^[ø^š¾hÈ™ÈZûÎXZ^8kˆ^kI~Kº>z8Zë[øŞZÙX*KˆŞXúşyJ[›nZ;iˆîXú®ZÙiÊÎiË¢"¢&WV—&R‚&–ææW$…DÔÂ"æ÷B–â6W76–öç5öÖöGVÆP¢æBvg&öÒ"âöf–ææ6R×FW&Ö–æÂ×6W76–öç2æÖ§2"r–âFW&Ö–æÅ÷f—7VÇ0¢æB'6W76–öå7FFR"–â6W76–öç5öÖöGVÆP¢æB&Æö6Ä6Æö6²"–â6W76–öç5öÖöGVÆP¢æB.iÊ®ŠêXZ^KªNi‰>h˜X~izR"–âvP¢æB"æ÷&&—B×6W76–öâ"–âf—6–öåö770¢æB'6W76–öâÖ÷Vâ"–âf—6–öåö772À¢.KªNi‰>i{një^x«nh[ø^š¾K‹®{ªşiz^XènŠêzé~8hª¾™Ë.iÊ®ŠêX~iz^[›nhùKé¾™Ùîš)Îˆ›.XË®Xˆb"¢&WV—&R‚&–ææW$…DÔÂ"æ÷B–âv÷&ÆFÖöÖöGVÆP¢æBvg&öÒ"âöf–ææ6R×FW&Ö–æÂ×v÷&ÆFÖæÖ§2"r–âFW&Ö–æÅ÷f—7VÇ0¢æB'&VæFW%v÷&ÆD†VFÖ"–âv÷&ÆFÖöÖöGVÆP¢æB'&W77W&UFöæR"–âv÷&ÆFÖöÖöGVÆP¢æB&V'F‚×vFW"æ§r"–âv÷&ÆFÖöÖöGVÆP¢æBv–CÒ'&—6²ÖÖÖ6çf2"r–âvP¢æB"ç&—6²ÖÖÖ6çf2×&VG’"–â&VfW&Væ6Uöf–FVÆ—G•ö772À¢.x+™‹^K‰nyXÎYËY»î[ø^š¾KÛşyJYÎk©˜î{Ú8iz.iÈY¹îhª^yØˆ›.[›nKùŞyY•5d~™˜Ş{ªr"¢&WV—&R‚tÖVF–†Ö‚×v–GFƒ¢C‚’r–âf—6–öåö770¢æBtÖVF–†Ö‚×v–GFƒ¢sƒ‚’r–âf—6–öåö770¢æBtÖVF–†Ö‚×v–GFƒ¢c#‚’r–âf—6–öåö770¢æB'&VfW'2×&VGV6VBÖÖ÷F–öâ"–âf—6–öåö770¢æB&f÷&6VBÖ6öÆ÷'2"–âf—6–öåö772À¢.zy[›¾ŠxnŠx[.{Ë®[	jÎ™Ú.8[›>iÛş8h˜¾iË®8Xxş[	XªyK¾h‰n[Ë®X‹nš)Îˆ›.ŠxNX‰’"¢&WV—&R‚"ç6V7F–öâÖæb²Ö–â×v–GFƒ¢CGƒ²Ö–âÖ†V–v‡C¢CGƒ²§W7F–g’Ö6öçFVçC¢6VçFW#²Ò"–âf—6–öåö770¢æB"ævÆö&Â×&—6²ÖÖÖÆ–÷WBâ¢"–âf—6–öåö770¢æB"ç—VÆ–æRÖ6öÖÖæBâ¢"–âf—6–öåö770¢æBf—6–öåö772æ6÷VçB‚&w&–B×FV×ÆFRÖ6öÇVÖç3¢Ö–æÖ‚ƒÂg"“²"’ãÒ ¢æB"æ†W&ò×FVÆVÖWG'’æÖWFÖ—FVÒ"–âf—6–öåö772À¢.zy[›¾ŠxnŠx[.{Ë®[	3cŠznhê~yºîj~h‰nZHŞiØ.{ÙjÎZèXZiKn{Ê‹ëyXÂ"¢FW&×5÷vRÒDU$Õ5õtRç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢&—f7•÷vRÒ$•d5•õtRç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢ÆVvÅö772ÒÄTtÅô552ç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢†öÖRÒ„ôÔRç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢&WV—&R‚#Nšz¹Xh^yÉşZéîi[hÚîKˆã.š•G&F–æuf–W~XXŞ‹K”UDnKº>yb"–âvRÀ¢.š^™Ú.šin[ş{Ë®[	XXŞ‹Ki[hÚîŠhny¹nhùzK¢"¢&WV—&R‚$e$TBKÛşyJiÚjËâ"–âvP¢æB.iÊ®ˆë~YÊ>‹zşi‰>ijşˆNX*8T”h‰eG&F–æuf–W~ŠêNXúşh‰nŠêNŠø"–âvRÀ¢.š^™Ú.{Ë®[	iÚ^k©ŠûNiˆîKˆîiÚjËîXZ^Xú2"¢&WV—&R‚$EEtU„$u2"–âvRæB.KˆŞiŠô”4RE…’"–âvRæB.ˆz®Xªi»NikZK‹JR"–âvRÂ.š^™Ú.iÊ®XxnzîŠz>˜x®[›şK˜{èîXX>hÈ~i[KˆîY¹î˜ŠxNX‰’"¢&WV—&R‚%%uD2"–âvRæB.KˆŞiŠòÆ6öFSä4ÃÔcÂö6öFSâ"–âvRæB$T”ih~j2"–âvRÂ.š^™Ú.iÊ®XxnzîŠz>˜x¥uDxë‹J~iÚ^k©KˆîXú>[èB"¢&WV—&R‚.Zéik™Ùh[ú¾xZr"æ÷B–âvRÂ.š^™Ú.KˆŞ[é~{º~{ºŞh¨¤EEtU„$u>høş‹ûK‹®™Ùh[ú¾xZr"¢&WV—&R‚#DTÔò"–âvRÂ.š^™Ú.iÊ®iˆîzîhª¾™Ë.™»nkÉNzK®ŠÎh8R"¢&WV—&R‚%÷vW&VB'’6ö–ävV6¶ò"–âvRæB%–†öò%D2ÕU4B"–âvRÀ¢.š^™Ú.iÊ®hª¾™Ë$%D2õU4NK‹¾ŠhiÚ^k©8{Û.YŞh‰n™˜Ş{ª~Xú>[èB"¢&WV—&R‚v–b‡6÷W&6RææÖRÓÓÒ%÷vW&VB'’6ö–ävV6¶ò"’Æ–æ²æ6Æ74Æ—7BæFB‚&6ö–ævV6¶òÖGG&–'WF–öâ"’r–â ¢æB"æ6ö–ævV6¶òÖGG&–'WF–öâ"–âvRæB&föçB×6—¦S¢‚"–âvRÀ¢$6ö–ävV6¶ş{Û.YŞ[ø^š¾KÛşyJXúşiË®YšŠønXŠ¾K‰NKˆŞ[şK¨ãy¨N˜i.yºîj~[Èò"¢&WV—&R‚v‡&VcÒ'FW&×2æ‡FÖÂ"r–âvRæBv‡&VcÒ'&—f7’æ‡FÖÂ"r–âvP¢æBv6Æ73Ò&ÆVvÂÖÆ–æ·2"r–âvRÀ¢.˜y‰èŞ{¸zºşš^ˆI®{Ë®[	i‰>Šëş™zîy¨NKÛşyJiÚjËîh‰n™©zxiKşzÙb"¢&WV—&R‚$6ö–ävV6¶òXø®y»X[>i[hÚî8Y8x˜ÎY(Îyú^ŠønKª~iØ>[îK¨ävV6¶òÆ'2"–âFW&×5÷vP¢æB.X{®YJî8X{®zyş8‹ÚÎhèiØ>8XhŞXˆnXù"–âFW&×5÷vP¢æB$6ö–ävV6¶şKˆŞ‹Iş‹J>iÊÎKª~Y8"–âFW&×5÷vP¢æB.XªZøn‹XNKª~K»~jÎš¹[ªnk:.Xª‚"–âFW&×5÷vP¢æB&‡GG3¢ò÷wwræ6ö–ævV6¶òæ6öÒöVâö•÷FW&×2"–âFW&×5÷vRÀ¢.yJh‹~iÚjËî{Ë®[	6ö–ävV6¶şh˜iÈiØ>8KùŞhªNh
+~™™X‹n8‹J>K»¾hé.™šNh‰nXªZøn‹XNKª~š8î™šhª¾™Ë""¢&WV—&R‚.iz™Èk:XhÎy¨N™ÙhV&Æ–2&WF"–â&—f7•÷vP¢æB%G&F–æuf–W~Zéik{¸NK»b"–â&—f7•÷vP¢æB.{¸zºş[©NyJKº>z[Ù>X˜ŞKˆŞKÛşyJiÊÎYËZÙX*‚"–â&—f7•÷vP¢æB&‡GG3¢ò÷wwræ6ö–ævV6¶òæ6öÒöVâ÷&—f7’"–â&—f7•÷vRÀ¢.™©zxiKşzÙn{Ë®[	[Ù>X˜ŞiKn™¸nˆÈ>Y»N8zÊÎKˆik{¸NK»n8iÊÎYËZÙX*h‰d6ö–ävV6¶ş™©zxXZ^Xú2"¢&WV—&R‚&föçB×6—¦S¢g‚"–âÆVvÅö772æB&Ö–â×v–GFƒ¢3#‚"–âÆVvÅö770¢æB#Ç67&—B"æ÷B–âFW&×5÷vRæB#Ç67&—B"æ÷B–â&—f7•÷vRÀ¢.k9^[è¾š^™Ú.[ø^š¾KùŞhÈz{¾XªzºşXúşŠû¾K‰NKˆŞ[é~ikZ)î‹ûŞ‹Š®ˆI®iÊÂ"¢f÷"ÆVvÅ÷vR–â‡FW&×5÷vRÂ&—f7•÷vR“ ¢&WV—&R†ÆÂ‚w&VÃÒ&æö÷VæW"æ÷&VfW'&W""r–âFp¢f÷"Fr–â&Ræf–æFÆÂ‡"sÆµãåÒ·F&vWCÒ%ö&Ææ²%µãåÒ£ârÂÆVvÅ÷vR’’À¢.k9^[è¾š^™Ú.ZIn™;î[ø^š¾™©Nzk¾ikz©~Xú>Kˆ®Kˆ¾ihr"¢&WV—&R‚$D”KˆätÄNXˆnXŠ¾K¸^KÙÎK‹¤D¤”KˆäÄ$ÔvöÆB&–6RŞy¨NXXŞ‹K”UDnKº>yb"–âvP¢æB.KˆŞiŠşYÎKˆXéşj~y¨B"–âvP¢æB.KˆŞh©>Xùn8KˆŞZûÎX{®8KˆŞKùŞZÙ‚"–âvRÀ¢.š^™Ú.iÊ®hª¾™Ë.XXŞ‹K”UDnKº>ynKˆîXéşj~y¨N‹ëyXÂ"¢&WV—&R‚v–CÒ&FFÖ&ææW""r–âvRæBv–CÒ&Ö&¶WBÖw&–B"r–âvRÂ.š^™Ú.{Ë®[	i[hÚîx«nhh‰nXÚx˜~ZëYš‚"¢&WV—&R‚v–CÒ&Æ–6Vç6RÖæ÷F–6R"&öÆSÒ'&Vv–öâ"r–âvP¢æBv&–ÖÆ&VÆÆVF'“Ò&Æ–6Vç6R×F—FÆR"r–âvP¢æB.XXŞ‹KKº>ynŠÎh8^zÙnyZR"–âvRÀ¢.š^™Ú.{Ë®[	XXŞ‹KKº>ynŠÎh8^zÙnyZ^XË®Yùò"¢&WV—&R‚v–CÒ'&—6²Öw&–B"r–âvRæBv–CÒ'&—6²×7VÖÖ'’"r–âvRæB.[ˆ.YË®x«nh"–âvRÂ.š^™Ú.{Ë®[	[ˆ.YË®x«nhjŠYÙr"¢&WV—&R‚v–CÒ'&W6V&6‚Öw&–B"r–âvRæBv–CÒ'&W6V&6‚×7VÖÖ'’"r–âvRæB.[ˆ.YË®[Ë®[ËKˆîš(nŠ)b"–âvRÂ.š^™Ú.{Ë®[	[ˆ.YË®z	Nz›njŠYÙr"¢&WV—&R‚v–CÒ&–æf÷&ÖF–öâÖw&–B"r–âvRæBv–CÒ&–æf÷&ÖF–öâ×7VÖÖ'’"r–âvRæB.[ˆ.YË®kIîZùşKˆîXªh"–âvP¢æBv–CÒ&Ö&¶WBÖ–ç6–v‡B×F—FÆR"r–âvRæBv–CÒ&Ö&¶WBÖ–ç6–v‡BÖ6÷’"r–âvP¢æB%%TÄRÔ$4TB+rdU$”d”TB4”täÅ2"–âvRÀ¢.š^™Ú.{Ë®[	K¨¾K»n‹XNŠêşjŠYÙr"¢&WV—&R‚v–CÒ&÷W&F–öç2Öw&–B"r–âvRæBv–CÒ&÷W&F–öç2×7VÖÖ'’"r–âvRæB.z‹>Zé¥c‹ùŠÎŠøhÚâ"–âvRÀ¢.š^™Ú.{Ë®[	Y¹¾zê˜>z‹>Zé¥c‹ùŠÎŠøhÚîjŠYÙr"¢&WV—&R‚v–CÒ&Ö&¶WB×FR"r–âvRæBv6Æ73Ò&Ö&¶WBÖ÷&&—B×7fr"r–âvP¢æBvRæ6÷VçB‚vFFÖÖ&¶WB×F–ÖSÒr’ÓÒ@¢æB.™Ùî‹XN˜ykXY	Y»â"–âvRÀ¢.š^™Ú.{Ë®[	j[ø>‹XNKª~ŠÎh8^[Šn8XZhşYËy>i{nXË®h‰n™Ùî‹XN˜ykXY	ŠûNiˆâ"¢&WV—&R‚v–CÒ&vÆö&Â×&—6²ÖÖ"r–âvRæBvRæ6÷VçB‚vFF×&—6²×&Vv–öãÒr’ÓÒ€¢æB.XË®YùşKº>Šh
+~ˆ*zZhÈ~i[y¨N[Ù>iz^K»~jÎ‹xÎ[˜^KÙÎK‹®[ˆ.YË®Xè¾X©¾Kº>yb"–âvP¢æB.KˆŞiŠşY»ŞZënš8î™šŠøNXˆb"–âvRÀ¢.XZy>š8î™šx:ŞX©¾Y»î{Ë®[	XË®Yùş‹zş[èN8Xè¾X©¾Kº>ynXú>[èNh‰nš8î™š‹ëyXÎŠûNiˆâ"¢&WV—&R‚v–CÒ'7F&ÆR×c×&–ær"&öÆSÒ'&öw&W76&""r–âvP¢æBv&–×fÇVVÖƒÒ#r"r–âvRæBv–CÒ'—VÆ–æRÖæöFW2"r–âvRÀ¢.š^™Ú.{Ë®[	z‹>Zé¥c~YiÉô…TNh‰nY¹¾zê{«şˆ¨.x+’"¢&WV—&R‚.X^[«~[ú¾xZ~Kˆî‹ùî{ºŞYiÉşŠøhÚîiŠşKŠNZY~xºÎz¸¾KúXûr"–âvP¢æB$&WF™ÈY¹¾iÚzê˜>YNkº>KŠ®YiÉò"–âvRÀ¢.š^™Ú.iÊ®XË®XˆnK¹>[©>X^[«~[ú¾xZ~Kˆî‹ùÎzºô&WF™zzhŠøhÚâ"¢&WV—&R‚&f–ææ6U÷FW&Ö–æÅö&WFövFRç–ÖÂ"–âvRæB&f–ææ6R×FW&Ö–æÂÖFFç–ÖÂ"–âvP¢æB.hª^Y®i[hÚî™zîš)‚"–âvRÂ.š^™Ú.{Ë®[	‹ùÎzºş™zzhh‰n{¹>ièNXÉni[hÚîXøŞšhXZ^Xú2"¢&WV—&R‚v6Æ73Ò'6¶—ÖÆ–æ²"‡&VcÒ"6Ö–âÖ6öçFVçB"r–âvRæBv–CÒ&Ö–âÖ6öçFVçB"F&–æFWƒÒ"Ó"r–âvRÀ¢.š^™Ú.{Ë®[	‹{>X‹K‹¾ŠhXh^Zëy¨N™Jîy¹XZ^Xú2"¢&WV—&R‚v–CÒ'vRÖææ÷Væ6W""&öÆSÒ'7FGW2"&–ÖÆ—fSÒ'öÆ—FR"&–ÖFöÖ–3Ò'G'VR"r–âvRÀ¢.š^™Ú.{Ë®[	XéşZÙXÉnXª‹ÛŞx«nhi*ŞhªR"¢&WV—&R‚v–CÒ&FFÖ&ææW""&öÆSÒ'&Vv–öâ"r–âvRæBv&–ÖÆ&VÆÆVF'“Ò&&ææW"×F—FÆR"r–âvRÀ¢.i[hÚîjŠ®[˜^[ø^š¾KÛşyJiÈYŞz{y¨N™ÙhXË®YùşûÈÎ˜şXXŞ˜xŞZHŞi*ŞhªR"¢&WV—&R‡vRæ6÷VçB‚v&–ÖÆ—fSÒ'öÆ—FR"r’ÓÒÂ.š^™Ú.Xú®ˆ;ŞKùŞyYKˆKŠ®zKÎ‹(Î{ª~Zéîi{ni*Şhª^XË¢"¢&WV—&R‡vRæ6÷VçB‚w&öÆSÒ&Æ—7B"r’ãÒRÂ.K©NKŠ®XªhXÚx˜~ZëYš[ø^š¾KÛşyJX‰~ŠŠúŞK˜’"¢&WV—&R‚.‹z‹XNKª~[Ë®[Ë"–âvRæB.K¸®iz^8‹ùKˆY8‹ùKˆiÈ8[›NX‰Şˆ{>K¸®Y(Î‹ùKˆ[›B"–âvRÂ.š^™Ú.iÊ®ŠûNiˆî‹z‹XNKª~hé.ŠÎYiÉò"¢&WV—&R‚$UDnh‰niÉş‹J~Kº>yb"–âvRæB.‹h^‹øss.[şi{b"–âvRÂ.š^™Ú.iÊ®hª¾™Ë.‹z‹XNKª~Kº>ynXú>[èNh‰n‹ø~iÉşŠxNX‰’"¢&WV—&R‚.XZy>‹XNKª~[ˆ.XÂ"–âvP¢æB.[{.hª¾™Ë.[ˆ.XÎKº>yb"–âvRæB.KˆŞKÉ®yJih~K»ni»Niki{n™{NKº>i»ò"–âvP¢æB.iÊ®y›¾Šë%D”Æ‹zş[èNK¸ŞKÉ®iˆîzî™˜Ş{ªr"–âvRÀ¢.š^™Ú.iÊ®ŠûNiˆîXZy>‹XNKª~[ˆ.XÎ˜	iÚiÚ^k©™™X‹b"¢&WV—&R‚.XZy>XZÎXûš(nŠ)b"–âvRæB.iÊ®Kˆ®[ˆ.KËXÎKˆŞXø.Kˆîkj‹xÎhé.[¨ò"–âvRÂ.š^™Ú.iÊ®ŠûNiˆîXZÎXûš(nŠ)ny¨NKˆ®[ˆ.ˆÈ>Y»B"¢&WV—&R‚.XªhŠÎh8^Y(ÎhZ.š)KËXÎXˆn[""–âvRæB.KˆŞKÉ®XÙ^xºÎŠ*¾[Ù>KÙÎi»NikZK‹JR"–âvRÀ¢.š^™Ú.iÊ®hª¾™Ë.XZÎXûi[hÚî˜	šik›)Î[ªn™™X‹b"¢&WV—&R‚$4äîhhXÎKˆî‹J®Zš®Xˆni["–âvRæB#(	3"–âvRÂ.š^™Ú.iÊ®ŠûNiˆä4äîhhXÎKˆî‹J®Zš®hÈ~j~Xú>[èB"¢&WV—&R‚$ôe.˜y‰èŞXè¾X©¾hÈ~i[KºSK‹®XènXû.[›>YØr"–âvRæB.jÚ>XÎš¹K¨î[›>YØ~Xè¾X©²"–âvRÂ.š^™Ú.iÊ®ŠûNiˆäôe.˜y‰èŞXè¾X©¾Xú>[èB"¢&WV—&R‚.{¸şkXîiz^XènZHŞyJ„f÷&W‚f7F÷'XZÎ[ÈYXèb"–âvRæB.‹h^‹øs3n[şi{b"–âvRæB.ŠëîZH~iÊÎYËi{nXË¢"–âvRÀ¢.š^™Ú.iÊ®ŠûNiˆî{¸şkXîiz^XèniÚ^k©8i{nXË®h‰n‹ø~iÉşŠxNX‰’"¢&WV—&R‚.‹J.{¸şik™{¾Xú®Šû¾Xùn(	ÎiÈikkhhş(	Şi[hÚîKŠŞy¨B"–âvRæB%–†öşŠÎh8^[ú¾xZ~KˆŞXø.Kˆî{¸zºşŠÎh8R"–âvRÀ¢.š^™Ú.iÊ®ŠûNiˆî‹J.{¸şik™{¾iÛşYÙ~ˆÈ>Y»Nh‰nŠÎh8^hé.™šNŠxNX‰’"¢&WV—&R‚.ik™{¾ih~K»n‹h^‹øs.[şi{b"–âvRæB.iÈikih~zº‹h^‹øs3n[şi{b"–âvRæB$vöövÆRæWw>‹{>‹ÚÎXéşZ©.KÙ2"–âvRÀ¢.š^™Ú.iÊ®ŠûNiˆî‹J.{¸şik™{¾i{niXh‰n‹{>‹ÚÎiÚ^k©"¢&WV—&R‚%UDDR„TÅD‚"–âæB.šinjÊ‹øz{¾izk9^‹ûŞkªşiz~K»¾Xª"–âvP¢æB.Y¹¾KŠ®‹è^XªiÚ^k©X^[«r"–âvRÀ¢.š^™Ú.iÊ®[^zK®h‰nŠz>˜x®Y¹¾KŠ®‹è^XªiÚ^k©i»Nik™;îX^[«r"¢&WV—&R‚&öff–6–Â×WFFRÖ†VÇF‚"–âæB&FDöff–6–Å6÷W&6T†VÇF‚"–â ¢æB.Kˆ[ÊZéikŠÎh8^XÚx˜r"–âvRæB.˜	k©X^[«~[ú¾xZr"–âvRÀ¢.š^™Ú.iÊ®[^zK®h‰nŠz>˜x®KˆšZéikŠÎh8^˜	k©i»Nik™;îX^[«r"¢&WV—&R‚&öff–6–Â×G&VæB"–âvRæB&'V–ÆDöff–6–Äö'6W'fF–öåG&VæB"–â ¢æB&æ÷&ÖÆ—¦Töff–6–Äö'6W'fF–öç2"–âæB%$T4TåBô%4U%dD”ôå2"–â ¢æB.iÈZI£š’"–âvRæB.KˆŞKº^kÉNzK®‹[X«şZ¾XXR"–âvRÀ¢.š^™Ú.iÊ®j
+š¨Îh‰n[^zK®KˆšZéikŠÎh8^iÈ‹ùŠx.kX¾‹h¾X«ò"¢&WV—&R‚w7&3Ò&æ§2"r–âvRÂ.š^™Ú.iÊ®Xª‹ÛŞiÊÎYËæ§2"¢&WV—&R‚w&VÃÒ&ÖöGVÆW&VÆöB"‡&VcÒ&f–ææ6R×FW&Ö–æÂÖÆöFW"æÖ§2"r–âvP¢æBv–×÷'B‚"âöf–ææ6R×FW&Ö–æÂÖÆöFW"æÖ§2"’r–âÀ¢.š^™Ú.iÊ®š(NXª‹ÛŞh‰nXªhZûÎXZ^XéşyIşXˆnXË®Xª‹ÛŞjŠYÙr"¢&WV—&R‚v7&—F–6Ã¤ö&¦V7Bæg&VW¦R…²&Ö7&ò"Â&Ö7&ô†VÇF‚"Â&76WE&æ¶–ær"Â&76WE&æ¶–æt†VÇF‚"Â&Ö&¶WDÆ–6Vç6R%Ò’p¢–â6ö×7EöÆöFW"æB&7&—F–6Å6÷W&6T6÷VçC¥$U4õU$4Uôu$õU2æ7&—F–6ÂæÆVæwF‚"–â6ö×7EöÆöFW"À¢.šin[ş‹XNk©ZY{ªn[ø^š¾Y»®Zé®K‹®ZèşŠx.8‹XNKª~jiÎXø®ŠëXúó^K»Ş‹XNk©"¢&WV—&R‚'&WVW7G3ÖæWtÖ‚’"–â6ö×7EöÆöFW"æB&–b‚&WVW7G2æ†2†¶W’’’"–â6ö×7EöÆöFW ¢æB&7&VFTFVfW'&VE6V7F–öå66†VGVÆW""–âÆöFW"æB$–çFW'6V7F–öäö'6W'fW""–âÆöFW ¢æB&æf–vF–öäÆ–æ·2"–âÆöFW"À¢.XˆnXË®Xª‹ÛŞYš{Ë®[	X[Kª¾Šû~k.{É>ZÙ8ŠxnXú>Šx.Zùşh‰nZûÎˆŠ®ŠznXùZY{ªb"¢&WV—&R‚vÆöFW"æÆöDw&÷W‚&7&—F–6Â"’r–âÆöFW"æB&FFÖ7&—F–6ÂÖFF×7FFR"–âÆöFW ¢æB&FFÖFVfW'&VBÖFF×7FFR"–âÆöFW"æB&7&—F–6Å6÷W&6U&WVW7D6÷VçB"–âÆöFW ¢æB&7&—F–6Å–çD&'&–W""–âÆöFW"æB'&WVW7FVD¶W—4E66†VGVÆW%7F'B"–âÆöFW ¢æB&æWGv÷&µ&WVW7D6÷VçB"–âÆöFW"æB&GWÆ–6FTæWGv÷&µ&WVW7D6÷VçB"–âÆöFW ¢æB'6V7F–öåG&ç6—F–öç2"–âÆöFW"æB'7FvVDFFÆöF–ær"–â&Vw&W76–öåöÖöGVÆRÀ¢.š^™Ú.iÊ®XË®Xˆnšin[şKˆî[»n‹ùşXˆnXË®Xª‹ÛŞx«nh"¢6ö×7E÷vRÒ&Rç7V"‡"%Ç2²"Â""ÂvR¢&WV—&R†6öçG&7E÷&F–ò†775ö†W…÷f&–&ÆR‡vRÂ&f–çB"’Â775ö†W…÷f&–&ÆR‡vRÂ'æVÂ"’’ãÒBãRÀ¢.iÈ[ËjÚ>ih~ˆ›.KˆîXÚx˜~ˆ8ÎišşZûjùN[ªn[ø^š¾‹ëîX‹t4rBãS£"¢&WV—&R‚v6öçFVçCÒ'v–GFƒÖFWf–6R×v–GF‚Æ–æ—F–Â×66ÆSÓã"r–â6ö×7E÷vRÂ.š^™Ú.{Ë®[	z{¾Xªzº÷f–Ww÷'B"¢&WV—&R€¢"æÖ&¶WBÖw&–G¶F—7Æ“¦w&–C¶w&–B×FV×ÆFRÖ6öÇVÖç3§&WVBƒBÆÖ–æÖ‚ƒÃg"’’"–â6ö×7E÷vRÀ¢.jÎ™Ú.zºş[ø^š¾i‹îzK®Y¹¾X‰~[ˆ.YË®XÚx˜r"À¢¢&WV—&R€¢"ç&—6²Öw&–G¶F—7Æ“¦w&–C¶w&–B×FV×ÆFRÖ6öÇVÖç3§&WVBƒ2ÆÖ–æÖ‚ƒÃg"’’"–â6ö×7E÷vRÀ¢.jÎ™Ú.zºş[ˆ.YË®x«nhjŠYÙ~[ø^š¾iJşhÈKˆX‰~KúXû~XÚx˜r"À¢¢&WV—&R€¢"ç&W6V&6‚Öw&–G¶F—7Æ“¦w&–C¶w&–B×FV×ÆFRÖ6öÇVÖç3§&WVBƒ2ÆÖ–æÖ‚ƒÃg"’’"–â6ö×7E÷vRÀ¢.jÎ™Ú.zºş[ˆ.YË®z	Nz›njŠYÙ~[ø^š¾iJşhÈKˆX‰~XÚx˜r"À¢¢&WV—&R€¢"æ–æf÷&ÖF–öâÖw&–G¶F—7Æ“¦w&–C¶w&–B×FV×ÆFRÖ6öÇVÖç3§&WVBƒ"ÆÖ–æÖ‚ƒÃg"’’"–â6ö×7E÷vRÀ¢.jÎ™Ú.zºşK¨¾K»n‹XNŠêşjŠYÙ~[ø^š¾iJşhÈXøÎX‰~XÚx˜r"À¢¢&WV—&R€¢"æ÷W&F–öç2Öw&–G¶F—7Æ“¦w&–C¶w&–B×FV×ÆFRÖ6öÇVÖç3§&WVBƒBÆÖ–æÖ‚ƒÃg"’’"–â6ö×7E÷vRÀ¢.jÎ™Ú.zºş‹ùŠÎx«nhjŠYÙ~[ø^š¾iJşhÈY¹¾X‰~zê˜>XÚx˜r"À¢¢&WV—&R€¢$ÖVF–†Ö‚×v–GFƒ£C‚’"–â6ö×7E÷vP¢æB"æÖ&¶WBÖw&–G¶w&–B×FV×ÆFRÖ6öÇVÖç3§&WVBƒ"ÆÖ–æÖ‚ƒÃg"’’"–â6ö×7E÷vRÀ¢.[›>iÛşzºş[ø^š¾i‹îzK®KŠNX‰~[ˆ.YË®XÚx˜r"À¢¢&WV—&R‚"æ†W&óâ§¶Ö–â×v–GFƒ£"–â6ö×7E÷vP¢æB"æ†W&÷¶w&–B×FV×ÆFRÖ6öÇVÖç3¦Ö–æÖ‚ƒÃg"“¶v£3‚"–â6ö×7E÷vRÀ¢.z¨N[ô†W&ş{ÙjÎ[ø^š¾XXŠëXÈ^Y
+¾KˆŞhÚ.ŠÎXX>i[hÚîy¨NZÙšiKn{Ê’"¢&WV—&R‚"æÖWFÖw&–G¶w&–B×FV×ÆFRÖ6öÇVÖç3¦Ö–æÖ‚ƒÃg"’"–â6ö×7E÷vRÀ¢#3cX8ş{JXX>i[hÚî{ÙjÎ[ø^š¾XXŠë™[şiÚ^k©ZÙ~jë^iKn{Ê[›nyÈyZR"¢&WV—&R€¢$ÖVF–†Ö‚×v–GFƒ£C‚’"–â6ö×7E÷vP¢æB"ç&—6²Öw&–G¶w&–B×FV×ÆFRÖ6öÇVÖç3§&WVBƒ"ÆÖ–æÖ‚ƒÃg"’’"–â6ö×7E÷vRÀ¢.[›>iÛşzºş[ˆ.YË®x«nhjŠYÙ~[ø^š¾KÛşyJKŠNX‰~[ˆ>["À¢¢&WV—&R€¢$ÖVF–†Ö‚×v–GFƒ£C‚’"–â6ö×7E÷vP¢æB"ç&W6V&6‚Öw&–G¶w&–B×FV×ÆFRÖ6öÇVÖç3§&WVBƒ"ÆÖ–æÖ‚ƒÃg"’’"–â6ö×7E÷vRÀ¢.[›>iÛşzºş[ˆ.YË®z	Nz›njŠYÙ~[ø^š¾KÛşyJKŠNX‰~[ˆ>["À¢¢&WV—&R€¢$ÖVF–†Ö‚×v–GFƒ£C‚’"–â6ö×7E÷vP¢æB"æ–æf÷&ÖF–öâÖw&–G¶w&–B×FV×ÆFRÖ6öÇVÖç3£g""–â6ö×7E÷vRÀ¢#scX8ş{JK¨¾K»n‹XNŠêşjŠYÙ~[ø^š¾KÛşyJXÙ^X‰~[ˆ>["À¢¢&WV—&R€¢$ÖVF–†Ö‚×v–GFƒ£C‚’"–â6ö×7E÷vP¢æB"æ÷W&F–öç2Öw&–G¶w&–B×FV×ÆFRÖ6öÇVÖç3§&WVBƒ"ÆÖ–æÖ‚ƒÃg"’’"–â6ö×7E÷vRÀ¢#scX8ş{J‹ùŠÎx«nhjŠYÙ~[ø^š¾KÛşyJKŠNX‰~[ˆ>["À¢¢&WV—&R€¢$ÖVF–†Ö‚×v–GFƒ£c#‚’"–â6ö×7E÷vP¢æB"æÖ&¶WBÖw&–G¶w&–B×FV×ÆFRÖ6öÇVÖç3£g""–â6ö×7E÷vRÀ¢.h˜¾iË®zºş[ø^š¾i‹îzK®XÙ^X‰~[ˆ.YË®XÚx˜r"À¢¢&WV—&R€¢$ÖVF–†Ö‚×v–GFƒ£c#‚’"–â6ö×7E÷vP¢æB"ç&—6²Öw&–G¶w&–B×FV×ÆFRÖ6öÇVÖç3£g""–â6ö×7E÷vRÀ¢.h˜¾iË®zºş[ˆ.YË®x«nhjŠYÙ~[ø^š¾KÛşyJXÙ^X‰~[ˆ>["À¢¢&WV—&R€¢$ÖVF–†Ö‚×v–GFƒ£c#‚’"–â6ö×7E÷vP¢æB"ç&W6V&6‚Öw&–G¶w&–B×FV×ÆFRÖ6öÇVÖç3£g""–â6ö×7E÷vRÀ¢.h˜¾iË®zºş[ˆ.YË®z	Nz›njŠYÙ~[ø^š¾KÛşyJXÙ^X‰~[ˆ>["À¢¢&WV—&R€¢$ÖVF–†Ö‚×v–GFƒ£c#‚’"–â6ö×7E÷vP¢æB"æ÷W&F–öç2Öw&–G¶w&–B×FV×ÆFRÖ6öÇVÖç3£g""–â6ö×7E÷vRÀ¢.h˜¾iË®zºş‹ùŠÎx«nhjŠYÙ~[ø^š¾KÛşyJXÙ^X‰~[ˆ>["À¢¢&WV—&R€¢$ÖVF–†Ö‚×v–GFƒ£c#‚’"–â6ö×7E÷vP¢æB"æWfVçB×&÷w¶w&–B×FV×ÆFRÖ6öÇVÖç3£C‡†Ö–æÖ‚ƒÃg"’"–â6ö×7E÷vRÀ¢#3cX8ş{J{¸şkXîK¨¾K»nŠÎ[ø^š¾KÛşyJ{J~Xy[ˆ>["À¢¢&WV—&R€¢"æ'&æBÂæ&6²ÖÆ–æ²ÂçW&–öB×F"Âç6÷W&6RÖÆ–æ²ÂæFWF–ÂÖÆ–æ·¶F—7Æ“¦–æÆ–æRÖfÆWƒ¶Ö–âÖ†V–v‡C£CG‚"–â6ö×7E÷vRÀ¢#3cX8ş{JK‹¾ŠhKªNK©.hê~K»n[ø^š¾hùKé¾ˆ{>[	CNX8ş{JŠznhê~š¹[ªb"À¢¢&WV—&R‚'F÷V6‚Ö7F–öã¦Öæ—VÆF–öâ"–â6ö×7E÷vRæB"æWfVçB×fÇVW7¶F—7Æ“¦fÆWƒ¶fÆW‚×w&§w&·v†—FR×76S¦æ÷&ÖÂ"–â6ö×7E÷vRÀ¢.h˜¾iË®zºş{Ë®[	Šznhê~KÉXÉnh‰n{¸şkXîi[hÚîhÚ.ŠÎKùŞhªB"¢&WV—&R‚$ÖVF–‡&VfW'2×&VGV6VBÖÖ÷F–öã§&VGV6R’"–â6ö×7E÷vP¢æB&æ–ÖF–öâÖGW&F–öã£ã×2–×÷'FçB"–â6ö×7E÷vRÀ¢.š^™Ú.iÊ®ZèÎi[N[®˜xŞXxş[	XªyK¾XşZ[Ò"¢&WV—&R‚$ÖVF–‡&VfW'2Ö6öçG&7C¦Ö÷&R’"–â6ö×7E÷vRæB$ÖVF–†f÷&6VBÖ6öÆ÷'3¦7F—fR’"–â6ö×7E÷vRÀ¢.š^™Ú.{Ë®[	š¹ZûjùNXşZ[Şh‰n{;¾{¹ş[Ë®X‹nš)Îˆ›.iJşhÈ"¢&WV—&R‚vÖ7&ó¢"ââöÖ7&ò×&F"öFFæ§6öâ"r–â6ö×7EöÆöFW"Â.XˆnXË®Xª‹ÛŞYšiÊ®Šû¾XùnxëiÈZèşŠx.™»~‹ëîi[hÚâ"¢&WV—&R‚vÖ7&ô†VÇFƒ¢"ââöÖ7&ò×&F"ö†VÇF‚æ§6öâ"r–â6ö×7EöÆöFW"À¢.XˆnXË®Xª‹ÛŞYšiÊ®Šû¾XùnZèşŠx.™»~‹ëî˜	k©X^[«~[ú¾xZr"¢&WV—&R‚&'W6–æW74F—56–æ6R"–âæB$Du3ôÔ…ô%U4”äU55ôD•2"–âæBr'7FÆR"r–âÂ&æ§>iÊ®ZéîxëDu3‹ø~iÉşXŠNijÒ"¢&WV—&R‚$EEtU„$u5ôÔ…ô%U4”äU55ôD•2"–âæB&f–æDGGvW†&w5&VfW&Væ6R"–âÂ&æ§>iÊ®Šû¾XùdEEtU„$u>ˆz®Xªi»NikŠë[ÙR"¢&WV—&R‚'f"EEtU„$u5ôÔ…ô%U4”äU55ôD•2Òƒ²"–â ¢æB$‚ãhÈYh‰h›Xù[ˆ2"–â ¢æB.iz^[ªnŠx.kX²+rjøşYh‰h›Xù[ˆ2"–âÀ¢$EEtU„$u2ik›)Î[ªn™ˆXÎ[ø^š¾XË˜XÒ‚ãjøşYh‰h›Xù[ˆ>y¨NyÉşZéîˆ¨.ZXşûÉ¢ ¢.iz^š)X~ŠëîKˆ¾y¨B2KŠ®[z^KÙÎiz^KÉ®ŠêZè>jøşYiÈKˆXØ®i{n™{NŠúşhª^‹ø~iÉò"¢&WV—&R‚'&V6÷&Bç&–6Rò&V6÷&Bç&Wf–÷W5&–6R"–âæB'&Vg&W6„f–ÆVB"–âÂ$EEtU„$u>kj‹xÎ[˜^h‰nZK‹J^Y¹î˜KˆŞXúşZHŞxë"¢&WV—&R‚%%uD5ôÔ…ô%U4”äU55ôD•2"–âæB&f–æE'wF5&VfW&Væ6R"–âæB&FE'wF2"–âÂ&æ§>iÊ®Šû¾Xùe%uD>ˆz®Xªi»NikŠë[ÙR"¢&WV—&R‚$Ô5$õõ$Tt”ÔUôÔ…ô%U4”äU55ôD•2"–âæB&FDÖ7&õ&Vv–ÖR"–âæB&'V–ÆE&—6´6&G2"–âÂ&æ§>iÊ®hê^XZ^ZèşŠx.x«nh˜.˜XŞ[""¢&WV—&R‚vfV$w&VVC¢"ââöfV"Öw&VVBöFFæ§6öâ"r–â6ö×7EöÆöFW ¢æB$dT%ôu$TTEôÔ…ô%U4”äU55ôD•2"–âæB&FDfV$w&VVB"–âÀ¢.˜y‰èŞ{¸zºşiÊ®hê^XZT4äîhhXÎKˆî‹J®Zš®i[hÚâ"¢&WV—&R‚vög#¢"ââöög"ÖÖöæ—F÷"öFFæ§6öâ"r–â6ö×7EöÆöFW ¢æB$ôe%ôe4•ôÔ…ô%U4”äU55ôD•2"–âæB&FDög$g6’"–âÀ¢.˜y‰èŞ{¸zºşiÊ®hê^XZTôe.˜y‰èŞXè¾X©¾i[hÚâ"¢&WV—&R‚v76WEG&6¶W#¢"ââö76WB×G&6¶W"öFFæ§6öâ"r–â6ö×7EöÆöFW ¢æB$54UEõE$4´U%ôÔ…ôtUô„õU%2"–âÂ.˜y‰èŞ{¸zºşiÊ®Šû¾XùnxëiÈ‹z‹XNKª~i[hÚâ"¢&WV—&R‚v76WEG&6¶W$†VÇFƒ¢"ââö76WB×G&6¶W"ö†VÇF‚æ§6öâ"r–â6ö×7EöÆöFW ¢æBv76WE&æ¶–æt†VÇFƒ¢"ââö76WB×&æ¶–ærö†VÇF‚æ§6öâ"r–â6ö×7EöÆöFW ¢æBv6ö×æ–W4†VÇFƒ¢"ââö6ö×æ–W2ö†VÇF‚æ§6öâ"r–â6ö×7EöÆöFW"À¢.XˆnXË®Xª‹ÛŞYšiÊ®Šû¾XùnKˆiÚˆ®Yzê˜>X^[«~ih~K»b"¢&WV—&R‚&FE6÷W&6T†VÇF‚"–âæB'6fU6÷W&6T†VÇF‚"–âæB&VæE6÷W&6T†VÇF‚"–âÀ¢&æ§>iÊ®j
+š¨Îh‰n[^zK®iÚ^k©X^[«~x«nh"¢&WV—&R‚&FDÖ7&õ6÷W&6T†VÇF‚"–â÷W&F–öç5öFFöÖöGVÆP¢æB&'V–ÆD÷W&F–öç46&G2"–â÷W&F–öç5öFFöÖöGVÆP¢æB'&VæFW$÷W&F–öç46&G2"–âæB&Ö¶T÷W&F–öä6&B"–â÷W&F–öç5÷f–WuöÖöGVÆRÀ¢.‹ùŠÎŠøhÚîi[hÚî[.iÊ®j
+š¨Îh‰nk‹.iù>Y¹¾zê˜4&WF‹ùŠÎx«nh"¢&WV—&R‚w&VF–æW73¢'&VF–æW72æ§6öâ"r–â6ö×7EöÆöFW ¢æB&FE&VF–æW756æ6†÷B"–â÷W&F–öç5öFFöÖöGVÆP¢æB%$TD”äU55ôÔ…ôtUô„õU%2"–â÷W&F–öç5öFFöÖöGVÆP¢æB&÷W&F–öâ×&VF–æW72"–â÷W&F–öç5÷f–WuöÖöGVÆP¢æB%5D$ÄRcUd”DTä4R"–â÷W&F–öç5÷f–WuöÖöGVÆRÀ¢.˜y‰èŞ{¸zºşiÊ®Šû¾Xùn8j
+š¨Îh‰nk‹.iù>z‹>Zé¥c‹ùî{ºŞYiÉşŠøhÚâ"¢2‹ùŠÎŠøhÚîy¨N˜.˜XŞXú®iÈŠú^XˆnXË®yJ[é~Kˆ®ûÈÎKˆŞŠú^‹ù¾šin[ş8 ¢&WV—&R‚v–×÷'B‚"âöf–ææ6R×FW&Ö–æÂÖ÷W&F–öç2ÖFFæÖ§2"’r–â ¢æB&7&VFT÷W&F–öç4FF"–â÷W&F–öç5öFFöÖöGVÆP¢æB&FDÖ7&õ6÷W&6T†VÇF‚"æ÷B–â ¢æB&FE&VF–æW756æ6†÷B"æ÷B–âÀ¢.‹ùŠÎŠøhÚîi[hÚî[.[ø^š¾hÈ™ÈXª‹ÛŞûÈÎK‰NX[n˜.˜XŞX{Şi[KˆŞ[é~yYYÊšin[şˆI®iÊÎ˜xÂ"¢&WV—&R„õU$D”ôå5ôDDôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒ#5óÀ¢.˜y‰èŞ{¸zºş‹ùŠÎŠøhÚîi[hÚî[.‹h^‹øs#4´.h
+~ˆ;Şš(Nzér"¢&WV—&R‚vÖ&¶WDÆ–6Vç6S¢&Ö&¶WB×6÷W&6R×&VF–æW72æ§6öâ"r–â6ö×7EöÆöFW ¢æB&FDÖ&¶WDÆ–6Vç6U&VF–æW72"–â ¢æB'&VæFW$Ö&¶WDÆ–6Vç6Tæ÷F–6R"–âæB$e$TRDD"–âÀ¢.˜y‰èŞ{¸zºşiÊ®Šû¾Xùn8j
+š¨Îh‰nk‹.iù>XXŞ‹KKº>ynŠÎh8^x«nh"¢&WV—&R‚.z‹>Zé¥c‹ùŠÎŠøhÚâ"–âvRæB.YÎKˆiz^i»NYiÉş˜xŞ‹yKˆŞKÉ®˜xŞZHŞ{JşŠê"–âvRÀ¢.š^™Ú.iÊ®XË®XˆnX^[«~[ú¾xZ~Kˆîz‹>Zé¥cYiÉş™zzh"¢&WV—&R‚.XúşyJŠhny¹b"–â÷W&F–öç5÷f–WuöÖöGVÆRæB.iÊÎ‹Úîik›)Â"–â÷W&F–öç5÷f–WuöÖöGVÆP¢æB.[{.š¨ÎŠøŠhny¹b"–â÷W&F–öç5÷f–WuöÖöGVÆRæB.ZK‹J^Y¹î˜"–â÷W&F–öç5÷f–WuöÖöGVÆRÀ¢.‹ùŠÎx«nhXÚx˜~{Ë®[	Šhny¹nxè~8i{niXh‰nY¹î˜ŠûNiˆâ"¢&WV—&R‚'—VÆ–æRÖ†VÇF‚"–âvRæB.iÊÎ‹ÚîŠÎh8R"–âæB.‹ùî{ºŞZK‹JR"–â÷W&F–öç5÷f–WuöÖöGVÆP¢æB.iÈ‹ù[	ŞŠùR"–â÷W&F–öç5÷f–WuöÖöGVÆRæB.iÈYîh‰X©ò"–â÷W&F–öç5÷f–WuöÖöGVÆP¢æB.X^[«~hª^Y®[{.‹h^‹ør"–âÀ¢.š^™Ú.{Ë®[	zê˜>x«nh8iÊÎ‹ÚîŠhny¹n8[	ŞŠù^i{n™{N8‹ø~iÉşhùzK®h‰niÈYîh‰X©şKúhò"¢&WV—&R‚&FD7&÷7476WB"–âæB'&æ´7&÷7476WEW&–öB"–âæB&'V–ÆE&W6V&6„6&G2"–âÂ&æ§>iÊ®Zéîxë‹z‹XNKª~˜.˜XŞY(Îhé.ŠÂ"¢&WV—&R‚&76WBç7FÆR"–âæB&76WBç7W7V7B"–âæB'W6VB"–âÂ.‹z‹XNKª~hé.ŠÎiÊ®hé.™šN[È.[‹ŠÎh‰ni¨.XÎ‹ø~iÉşK¸®iz^hé.ŠÂ"¢&WV—&R‚&æ÷&ÖÆ—¦TFFÖWF"–âæB'7VÖÖ&—¦U&÷uVÆ—G’"–âæB&VæEVÆ—G•7VÖÖ'’"–âÀ¢.‹z‹XNKª~XÚx˜~iÊ®Šû¾Xùnh‰n[^zK®˜	iÚi[hÚîx«nh"¢&WV—&R‚&æ÷&ÖÆ—¦T76WE&÷‡’"–âæB'&÷‡’Ö&FvR"–âvRæB%$õ…’"–âÀ¢.‹z‹XNKª~š^™Ú.iÊ®j
+š¨Îh‰ni‹î[Èş[^zK®Kº>ynj~y¨B"¢&WV—&R‚'VÆ—G’×7G&—"–âvRæB'VÆ—G’æ6÷VçG2æfÆÆ&6²"–âæB.XènXû.Y¹î˜"–âÀ¢.š^™Ú.{Ë®[	ŠÎh8^8Y¹î˜8KËzé~Kˆî[è^zîŠêNŠhny¹nKúhò"¢&WV—&R‚v76WE&æ¶–æs¢"ââö76WB×&æ¶–æröFFæ§6öâ"r–â6ö×7EöÆöFW ¢æB$54UEõ$ä´”äuôÔ…ôtUô„õU%2"–âÂ.˜y‰èŞ{¸zºşiÊ®Šû¾XùnxëiÈXZy>‹XNKª~[ˆ.XÎi[hÚâ"¢&WV—&R‚&FD76WE&æ¶–ær"–âæB&f÷&ÖDÖ&¶WD6&–ÆÆ–öç2"–âFW&Ö–æÅ÷f–Ww0¢æB&76WBæFFÆ&VÂ"–âFW&Ö–æÅ÷f–Ww2æB'7VÖÖ&—¦U&÷uVÆ—G’‡&÷tÖWF2ÂFFæFFVÆ—G’’"–âÀ¢&æ§>iÊ®ZéîxëXZy>‹XNKª~[ˆ.XÎ˜	iÚiÚ^k©˜.˜XŞh‰nXú>[èNj~zÛâ"¢&WV—&R‚v6ö×æ–W3¢"ââö6ö×æ–W2öFFæ§6öâ"r–â6ö×7EöÆöFW ¢æB$4ôÕä”U5ôÔ…ôtUô„õU%2"–âÂ.˜y‰èŞ{¸zºşiÊ®Šû¾XùnxëiÈXZÎXûjiÎi[hÚâ"¢&WV—&R‚&FD6ö×æ–W2"–âæB&6ö×ç’ç&—fFR"–âæB&g&W6†æW74¶æ÷vâ"–âÂ&æ§>iÊ®ZéîxëKˆ®[ˆ.XZÎXûzÙ¾˜h‰n˜	šik›)Î[ªnx«nh"¢&WV—&R‚&v–æW""–âæB&Ævv&B"–âæB&Æ—7FVDÖ&¶WD6"–âÂ&æ§>iÊ®yIşh‰XZÎXûš(nkj8š(n‹xÎY(ÎKˆ®[ˆ.[ˆ.XÂ"¢&WV—&R‚&Ö÷fW$6÷fW&vR"–âæB.i¨.XÎ[Ù>iz^š(nkjKˆîš(n‹xÂ"–âæB&6ö×ç’æFFÆ&VÂ"–âFW&Ö–æÅ÷f–Ww2À¢.XZÎXûjiÎiÊ®hÈ˜	iÚx«nhi¨.XÎh‰nh.ZHŞjøşiz^kj‹xÎhé.ŠÂ"¢&WV—&R‚v6ÆVæF#¢"ââöV6öâÖ6ÆVæF"öFFæ§6öâ"r–â6ö×7EöÆöFW ¢æB$T4ôåô4ÄTäD%ôÔ…ôtUô„õU%2"–â–æf÷&ÖF–öåöFFöÖöGVÆRÀ¢.˜y‰èŞ{¸zºşiÊ®Šû¾XùnxëiÈ{¸şkXîiz^Xèni[hÚâ"¢&WV—&R‚&FDV6öæöÖ–46ÆVæF""–â–æf÷&ÖF–öåöFFöÖöGVÆP¢æB&'V–ÆD–æf÷&ÖF–öä6&G2"–â–æf÷&ÖF–öåöFFöÖöGVÆP¢æB&æ÷&ÖÆ—¦T6ÆVæF$WfVçB"–â–æf÷&ÖF–öåöFFöÖöGVÆRÀ¢.K¨¾K»n‹XNŠêşi[hÚî[.iÊ®Zéîxë{¸şkXîiz^Xèn˜.˜XŞ8j
+š¨Îh‰nxºÎz¸¾x«nh"¢&WV—&R‚væWw3¢"ââ÷v†G2ÖÆFW7BöFFæ§6öâ"r–â6ö×7EöÆöFW ¢æB$d”ää4UôäUu5ôÔ…ôtUô„õU%2"–â–æf÷&ÖF–öåöFFöÖöGVÆP¢æB$d”ää4UôäUu5ô•DTÕôÔ…ôtUô„õU%2"–â–æf÷&ÖF–öåöFFöÖöGVÆRÀ¢.K¨¾K»n‹XNŠêşi[hÚî[.iÊ®Šû¾XùnxëiÈ‹J.{¸şik™{¾h‰n{Ë®[	ik›)Î[ªnŠxNX‰’"¢&WV—&R‚&FDf–ææ6TæWw2"–â–æf÷&ÖF–öåöFFöÖöGVÆP¢æB&—56fTvöövÆTæWw5W&Â"–â–æf÷&ÖF–öåöFFöÖöGVÆP¢æB&Ö¶Tf–ææ6TæWw46&B"–âFW&Ö–æÅ÷f–Ww2À¢.K¨¾K»n‹XNŠêşi[hÚî[.iÊ®Zéîxë‹J.{¸şik™{¾˜.˜XŞ8ZèXZ™;îhê^h‰nk‹.iù2"¢2K¨¾K»n‹XNŠêşy¨N˜.˜XŞXú®iÈŠú^XˆnXË®yJ[é~Kˆ®ûÈÎKˆŞŠú^‹ù¾šin[ş8.i[hÚî[.[ø^š¾hÈ™ÈZûÎXZ^8KˆŞ[é~Y¹îkXæ§>8 ¢&WV—&R‚v–×÷'B‚"âöf–ææ6R×FW&Ö–æÂÖ–æf÷&ÖF–öâÖFFæÖ§2"’r–â ¢æB&7&VFT–æf÷&ÖF–öäFF"–â–æf÷&ÖF–öåöFFöÖöGVÆP¢æB&FDV6öæöÖ–46ÆVæF""æ÷B–â ¢æB&FDf–ææ6TæWw2"æ÷B–âÀ¢.K¨¾K»n‹XNŠêşi[hÚî[.[ø^š¾hÈ™ÈXª‹ÛŞûÈÎK‰NX[n˜.˜XŞX{Şi[KˆŞ[é~yYYÊšin[şˆI®iÊÎ˜xÂ"¢&WV—&R„”ädõ$ÔD”ôåôDDôÔôETÄRç7FB‚’ç7E÷6—¦RÃÒUóÀ¢.˜y‰èŞ{¸zºşK¨¾K»n‹XNŠêşi[hÚî[.‹h^‹øsT´.h
+~ˆ;Şš(Nzér"¢&WV—&R‚w6WDGG&–'WFR‚'&öÆR"Â&Æ—7F—FVÒ"’r–âFW&Ö–æÅ÷f–Ww2Â.XªhXÚx˜~{Ë®[	X‰~ŠšŠúŞK˜’"¢&WV—&R‚&6&BçF$–æFW‚Ò"æ÷B–âFW&Ö–æÅ÷f–Ww2æB&'F–6ÆRçF$–æFW‚Ò"æ÷B–âFW&Ö–æÅ÷f–Ww2À¢.™ÙîKªNK©.XÚx˜~KˆŞ[é~‹ù¾XZ^™Jîy¹…F.š®[¨ò"¢&WV—&R‚&ææ÷Væ6TW‡W&–Væ6R"–âæB'vTææ÷Væ6W"çFW‡D6öçFVçB"–âÀ¢.š^™Ú.iÊ®™¸nKŠŞi*Şhª^[È.jÚ^Xª‹ÛŞ{¹>iéÂ"¢&WV—&R‚w6WDGG&–'WFR‚'&öÆR"Â'F&Æ—7B"’r–âFW&Ö–æÅ÷f–Ww2æBw6WDGG&–'WFR‚'&öÆR"Â'F""’r–âFW&Ö–æÅ÷f–Ww0¢æBw6WDGG&–'WFR‚'&öÆR"Â'F'æVÂ"’r–âFW&Ö–æÅ÷f–Ww2Â.‹z‹XNKª~YiÉşiÊ®KÛşyJj~Xxnj~zÛîš^ŠúŞK˜’"¢&WV—&R‚'W&–öEF%F&vWD–æFW‚"–âæBvWfVçBæ¶W’r–âFW&Ö–æÅ÷f–Ww2æBvæW‡D'WGFöâæfö7W2‚’r–âFW&Ö–æÅ÷f–Ww2À¢.‹z‹XNKª~YiÉşiÊ®iJşhÈikY	™Jî8†öÖ^Y(ÄVæN™Jîy¹ZûÎˆŠ¢"¢&WV—&R‚w6WDGG&–'WFR‚&&–×6VÆV7FVB"r–âFW&Ö–æÅ÷f–Ww2æBw6WDGG&–'WFR‚&&–Ö6öçG&öÇ2"r–âFW&Ö–æÅ÷f–Ww2À¢.‹z‹XNKª~YiÉşj~zÛîš^x«nhh‰n™Ú.iÛşX[>ˆN{Ë®ZK"¢&WV—&R‚w6WDGG&–'WFR‚&&–×&W76VB"ræ÷B–âFW&Ö–æÅ÷f–Ww2Â.j~zÛîš^KˆŞ[é~k{~yJ†&–×&W76VNhÈ™*îjŠ[Èò"¢&WV—&R‚v–×÷'B‚"âöf–ææ6R×FW&Ö–æÂ×&Vw&W76–öâæÖ§2"’r–â ¢æB''Vä'&÷w6W%&Vw&W76–öå&ö&R"–â&Vw&W76–öåöÖöGVÆP¢æB&f–ææ6R×FW&Ö–æÂ×&Vw&W76–öâ×&W7VÇB"–â&Vw&W76–öåöÖöGVÆP¢æB'7FvVDFFÆöF–ær"–â&Vw&W76–öåöÖöGVÆP¢æB'7W÷'F–æt†VÇF…&W6÷W&6W2"–â&Vw&W76–öåöÖöGVÆRæB'7W÷'F–æt†VÇF…æVÄ6÷VçB"–â&Vw&W76–öåöÖöGVÆP¢æB&öff–6–Ä†VÇF…&W6÷W&6W2"–â&Vw&W76–öåöÖöGVÆRæB&öff–6–Ä†VÇF…æVÄ6÷VçB"–â&Vw&W76–öåöÖöGVÆP¢æB&öff–6–Äö'6W'fF–öåG&VæG2"–â&Vw&W76–öåöÖöGVÆRæB&öff–6–Äö'6W'fF–öåG&VæD6÷VçB"–â&Vw&W76–öåöÖöGVÆP¢æB&÷fW'f–Wt6&DÆVv–&–Æ—G’"–â&Vw&W76–öåöÖöGVÆP¢æB'67&öÆÄ†V–v‡BÃÒâæ6Æ–VçD†V–v‡B"–â&Vw&W76–öåöÖöGVÆRÀ¢.š^™Ú.{Ë®[	kXşŠxYš8XˆnXË®Xª‹ÛŞ8Zéik˜	k©h‰n‹è^XªiÚ^k©‹XNk©Y¹î[Ù.hê.™(‚"¢&WV—&R‚&Ö&¶WDÆ–6Vç6U&VF–æW72"–â&Vw&W76–öåöÖöGVÆRæB'&÷f–FW%v–FvWD6÷VçB"–â&Vw&W76–öåöÖöGVÆRÀ¢.kXşŠxYšY¹î[Ù.hê.™(iÊ®Šhny¹nXXŞ‹KKº>ynx«nhh‰nY¹¾šhùKé¾ik{¸NK»b"¢&WV—&R‚&÷&&—FÅFW&Ö–æÅf—7VÇ2"–â&Vw&W76–öåöÖöGVÆP¢æB'&—6´‡VEf—7VÇ2"–â&Vw&W76–öåöÖöGVÆP¢æB&vÆö&Å&—6´†VFÖ"–â&Vw&W76–öåöÖöGVÆP¢æB'7F&ÆUc‡VB"–â&Vw&W76–öåöÖöGVÆP¢æB&Ö–æ–×VÕ&VF–æW747–6ÆR"–â&Vw&W76–öåöÖöGVÆRÀ¢.kXşŠxYšY¹î[Ù.hê.™(iÊ®Šhny¹nŠÎh8^[Šn8i{nXË®YËy>8š8î™š”…TN8XË®Yùşx:ŞX©¾Y»îh‰nXªhc‹XNjÂ"¢&WV—&R‚'&÷f–FW$GG&–'WF–öâ"–â&Vw&W76–öåöÖöGVÆRæB'÷vW&VD'”6ö–ävV6¶ôÆ–æ·2"–â&Vw&W76–öåöÖöGVÆRÀ¢.kXşŠxYšY¹î[Ù.hê.™(iÊ®jZû”6ö–ävV6¶ş{Û.YŞih~iÊÎ8j~[Èşh‰niÈ[şZÙ~Xûr"¢&WV—&R‚'v—Df÷%&÷f–FW%v–FvWE&Vv—7G&F–öâ"–âæB&–ç7V7E&÷f–FW%v–FvWD†÷7B"–â ¢æB'fW&–g•&÷f–FW%v–FvWD†÷7G2"–âæB&Ööæ—F÷%&÷f–FW%v–FvWG2"–â ¢æB'&÷f–FW%v–FvWE'VçF–ÖR"–â&Vw&W76–öåöÖöGVÆRæB'&÷f–FW%v–FvWE'VçF–ÖU7FFW2"–â&Vw&W76–öåöÖöGVÆP¢æB'&÷f–FW%v–FvWE'VçF–ÖTWf–FVæ6R"–â&Vw&W76–öåöÖöGVÆRÀ¢.š^™Ú.iÊ®š¨ÎŠøh‰nY¹î[Ù.XXŞ‹K{¸NK»ny¨Nk:XhÎKˆîZëşK‹¾hÈ.‹ÛŞx«nh"¢&WV—&R‚vFF×&÷f–FW"×7FFR"Â&ÆöF–ær"r–â ¢æB.{¸NK»n[{.k:XhÂ+rjÚ>YÊš¨ÎŠøZëşK‹²"–â ¢æB.{¸NK»nZëşK‹¾[{.hÈ.‹ÛÒ+rhª^K»~x«nhŠx{¸NK»b"–â ¢æB.{¸NK»niÊ®Xª‹ÛÒ+rKÛşyJiÚ^k©™;îhêR"–âÀ¢.XXŞ‹K{¸NK»n{Ë®[	Xª‹ÛŞ8k:XhÎ8ZëşK‹¾hÈ.‹ÛŞh‰nZéik™;îhê^Y¹î˜x«nh"¢&WV—&R‚'&÷f–FW%v–FvWEVæf–Æ&ÆT6÷’"–â ¢æB.{¸NK»nXª‹ÛŞ‹h^i{b+rKÛşyJiÚ^k©™;îhêR"–â ¢æB.{¸NK»nk:XhÎZK‹JR+rKÛşyJiÚ^k©™;îhêR"–â ¢æB.{¸NK»nš¨ÎŠøKˆŞXúşyJ‚+rKÛşyJiÚ^k©™;îhêR"–â ¢æB.{¸NK»nhÈ.‹ÛŞ[È.[‹‚+rKÛşyJiÚ^k©™;îhêR"–âÀ¢.XXŞ‹KKº>ynXÚiÊ®hÈk:XhÎ‹h^i{n8k:XhÎZK‹J^8š¨ÎŠøKˆŞXúşyJY(ÎZëşK‹¾[È.[‹i‹îzK®Xˆn[.Y¹î˜XéşYº"¢&WV—&R‚w&×2ævWB‚''VçF–ÖTWf–FVæ6R"’ÓÓÒ#"r–â ¢æB'W6U&öGV7F–öäWf–FVæ6Uv–æF÷r"–âÀ¢.iË®YškXşŠxYšŠøhÚîk*iÈKÛşyJKˆîyIşKª~š^™Ú.Kˆˆ{Ny¨NZèÎi[N{¸NK»nzØ[è^z©~Xú2"¢&WV—&R‚rç&÷f–FW"×v–FvWB×6†VÆÅ¶FF×&÷f–FW"×7FFSÒ&Ö÷VçFVB%Òr–âvP¢æB'f—6–&–Æ—G“¢†–FFVâ"–âvRæB"ç&÷f–FW"×'VçF–ÖR×7FGW2"–âvRÀ¢.XXŞ‹K{¸NK»nZëşK‹¾iÊ®hÈ.‹ÛŞi{nk*iÈ™©‰xşz›®{¸NK»nh‰nKùŞyYXúşŠxx«nh"¢&WV—&R‚&æô†÷&—¦öçFÄ÷fW&fÆ÷r"–â&Vw&W76–öåöÖöGVÆRæB'&W7öç6—fT6öÇVÖç2"–â&Vw&W76–öåöÖöGVÆP¢æB'F&vWE6—¦W2"–â&Vw&W76–öåöÖöGVÆRæB&¶W–&ö&EF'2"–â&Vw&W76–öåöÖöGVÆRÀ¢.kXşŠxYšY¹î[Ù.hê.™(iÊ®Šhny¹nkª.X{®8[ˆ>[8Šznhê~Kˆî™Jîy¹KªNK©""¢&WV—&R‚v6Æ73Ò'6V7F–öâÖæb"r–âvRæBvRæ6÷VçB‚v6Æ73Ò'6V7F–öâÖæb"r’ÓÒ¢æB'6V7F–öäæf–vF–öâ"–â&Vw&W76–öåöÖöGVÆP¢æBvFö7VÖVçBçVW'•6VÆV7F÷"‚&FWF–Ç2æÖWF†öBâ7VÖÖ'’"’r–â&Vw&W76–öåöÖöGVÆRÀ¢.š^™Ú.{Ë®[	XˆnXË®ZûÎˆŠ®8™I®x+ZY{ªnh‰nXúşh©Xúi[hÚîŠûNiˆâ"¢&WV—&R‚%5DÄRDD"æ÷B–âæB&6ö×7E7FGW2æ¦ö–â…Â.ûÈõÂ"’"–âÀ¢.šn˜:x«nh[ø^š¾i‹îzK®˜	{¾i[˜xşûÈÎKˆŞˆ;ŞKº^XZ[5DÄRDDŠúşZûÎyJh‹r"¢&WV—&R‚%&÷F÷G—R"æ÷B–âvRæB$öövÆW‚f–ææ6RFW&Ö–æÂ+rV&Æ–2&WF"–âvRÀ¢.˜y‰èŞ{¸zºşš^ˆI®x˜iÊÎYŞz{[ø^š¾{¹şKˆK‹¥V&Æ–2&WF"¢&WV—&R‚$FVç6RÖWFFF&VÖ–ç2&VF&ÆR"–âvRæB&fö÷FW"²föçB×6—¦S¢ƒ²Ò"–âvRÀ¢.˜y‰èŞ{¸zºş‹è^Xªih~ZÙ~{Ë®[	jÚ>[‹{ÊiKîXúşŠû¾h
+~Kˆ¾™™"¢&WV—&R‚"ç6V7F–öâÖæb²Ö–â×v–GFƒ¢CGƒ²Ö–âÖ†V–v‡C¢CGƒ²"–âvP¢æB"æÆVvÂÖÆ–æ·2²Ö–â×v–GFƒ¢CGƒ²Ö–âÖ†V–v‡C¢CGƒ²"–âvRÀ¢.z{¾XªzºşXˆnXË®ZûÎˆŠ®Kˆîk9^[è¾™;îhê^[ø^š¾YÎi{nkº‹k3CGZëŞš¹Šznhê~Kˆ¾™™"¢&WV—&R‚vFö7VÖVçBçVW'•6VÆV7F÷$ÆÂ‚"æ÷W&F–öâÖ6&B"’æÆVæwF‚ÓÓÒBr–â&Vw&W76–öåöÖöGVÆP¢æB'&VæFW&VDw&–D6öÇVÖç2†÷W&F–öç4w&–B’"–â&Vw&W76–öåöÖöGVÆRÀ¢.kXşŠxYšY¹î[Ù.hê.™(iÊ®Šhny¹nY¹¾[Ê‹ùŠÎx«nhXÚx˜~h‰nX[nY8Ş[©N[ÈşX‰~i["¢&WV—&R‚'VæFW'6—¦VEF&vWG2"–â&Vw&W76–öåöÖöGVÆRÂ.kXşŠxYšY¹î[Ù.{¹>iéÎ[ø^š¾X‰~X{®[®ZûKˆŞ‹k>y¨NŠznhê~yºîjr"¢&WV—&R‚"æ÷W&F–öâÖ7F–öâ"–â&Vw&W76–öåöÖöGVÆRÂ.kXşŠxYšY¹î[Ù.hê.™(iÊ®j8iúT&WF‹ùŠÎKˆîXøŞšhŠznhê~yºîjr"¢&WV—&R‚&FFæÖ&¶WG2"æ÷B–âæB"æÖ&¶WG2"æ÷B–âÂ.{¸zºş‹J.{¸şik™{¾KˆŞ[é~Šû¾XùnYÎih~K»ny¨E–†öşŠÎh8^[ú¾xZr"¢&WV—&R‚v6&Bç7FGW2ÓÓÒ''F–Â"r–âæBwFW‡C¢%%D”Â"r–âÂ.[ˆ.YË®x«nhXÚx˜~iÊ®XË®Xˆn˜:Xˆni[hÚâ"¢&WV—&R‚&'V–ÆEvTFFv—F„Ö7&ôW'&÷""–âæB'Væf–Æ&ÆTGGvW†&w2"–âæB'Væf–Æ&ÆU'wF2"–âæBw7FGW3¢&W'&÷""r–âÂ&æ§>iÊ®Šhny¹nZéiki[hÚîih~K»nZK‹J^x«nh"¢&WV—&R‚&6†ævUVæ—B"–âæBr&'"r–âÂ&æ§>iÊ®hÈ–'i‹îzK®iKny¸®xè~XùXÉb"¢&WV—&R‚&2öf–ææ6R×FW&Ö–æÂò"–â†öÖRÂ.šinš^{Ë®[	˜y‰èŞ{¸zºşXZ^Xú2"¢&WV—&R‚.˜y‰èŞ{¸zºòV&Æ–2&WF"–â†öÖP¢æB#Nšz¹Xh^yÉşZéîi[hÚî8.šXXŞ‹K”UDnKº>yn8škÉNzK¢"–â†öÖP¢æB$f–ææ6RFW&Ö–æÂV&Æ–2&WF"–â†öÖP¢æB#Bf—'7B×'G’FF6&G2Â"g&VRUDb&÷†–W2ÂFVÖò"–â†öÖRÀ¢.šinš^˜y‰èŞ{¸zºşXZ^Xú>iÊ®YÎjÚUV&Æ–2&WFyÉşZéîi[hÚîKˆîXXŞ‹KKº>ynXú>[èB"¢&WV—&R‚.˜y‰èŞ{¸zºşûÈkÉNzK®ûÈ’"æ÷B–â†öÖP¢æB#NškÉNzK®i[hÚâ"æ÷B–â†öÖP¢æB$f–ææ6RFW&Ö–æÂ„FVÖò’"æ÷B–â†öÖP¢æB#B&VÂÂBFVÖò"æ÷B–â†öÖRÀ¢.šinš^K¸Şjè¾yY˜y‰èŞ{¸zºşkÉNzK®x˜ih~j‚" ¢W‡FW&æÅ÷67&—G2Ò&Ræf–æFÆÂ‡"sÇ67&—EµãåÒ·7&3Õ²%ÂuÒ†‡GG3ó¢òõµâ%ÂuÒ²’rÂvRÂfÆw3×&Rä’¢&WV—&R†W‡FW&æÅ÷67&—G2ÓÒ²&‡GG3¢ò÷v–FvWG2çG&F–æwf–Wr×v–FvWBæ6öÒ÷röVâ÷GbÖÖ–æ’Ö6†'Bæ§2%ÒÀ¢.˜y‰èŞ{¸zºşXú®ˆ;Ş[É^XZ^[{.y›¾Šëy¨EG&F–æuf–W~XXŞ‹K{¸NK»nˆI®iÊÂ"¢&WV—&R‚'wwrçG&F–æwf–Wr×v–FvWBæ6öÒ"æ÷B–âvRæB'wwrçG&F–æwf–Wr×v–FvWBæ6öÒ"æ÷B–âÀ¢.˜y‰èŞ{¸zºşKˆŞ[é~Y¹î˜X‹KÉ®h¹.{¹Ş{¸NK»nŠû~k.y¨Nizwww~ˆI®iÊÎK‹¾iË¢"¢&WV—&R‚wG—SÒ&ÖöGVÆR"r–âvRæBvRæ–æFW‚‚'GbÖÖ–æ’Ö6†'Bæ§2"’ÂvRæ–æFW‚‚w7&3Ò&æ§2"r’À¢%G&F–æuf–W~{¸NK»n[ø^š¾Kº^jŠYÙ~ˆI®iÊÎYÊiÊÎYË[©NyJX˜ŞXª‹ÛÒ"¢'V–ÆE÷67&—BÒÔ5$õô%T”ÄBç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢†—7F÷'•ö'V–ÆE÷67&—BÒÔ5$õô„•5Dõ%•ô%T”ÄBç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢v÷&¶fÆ÷rÒÔ5$õõtõ$´dÄõrç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢fV%öw&VVE÷v÷&¶fÆ÷rÒdT%ôu$TTEõtõ$´dÄõrç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢ög%÷v÷&¶fÆ÷rÒôe%õtõ$´dÄõrç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢76WE÷G&6¶W%÷v÷&¶fÆ÷rÒ54UEõE$4´U%õtõ$´dÄõrç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢76WE÷&æ¶–æu÷v÷&¶fÆ÷rÒ54UEõ$ä´”äuõtõ$´dÄõrç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢6ö×æ–W5÷v÷&¶fÆ÷rÒ4ôÕä”U5õtõ$´dÄõrç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢V6öåö6ÆVæF%÷v÷&¶fÆ÷rÒT4ôåô4ÄTäD%õtõ$´dÄõrç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢f–ææ6UöæWw5÷v÷&¶fÆ÷rÒd”ää4UôäUu5õtõ$´dÄõrç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢66†VGVÆW"Ò44„TETÄU%õtõ$´dÄõrç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢'&÷w6W%÷fÆ–FF÷"Ò%$õu4U%õdÄ”DDõ"ç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢&WV—&R‚%³3cÂsc‚Â#ƒÒ"–â'&÷w6W%÷fÆ–FF÷"æB%vRæ6GW&U67&VVç6†÷B"–â'&÷w6W%÷fÆ–FF÷ ¢æBuÂ"æÖ§5Â#¢Â'FW‡Bö¦f67&—C²6†'6WC×WFbÓ…Â"r–â'&÷w6W%÷fÆ–FF÷ ¢æB%'VçF–ÖRæWfÇVFR"–â'&÷w6W%÷fÆ–FF÷"æB&öff–6–Äö'6W'fF–öåG&VæD6÷VçB"–â'&÷w6W%÷fÆ–FF÷ ¢æB'&VF–æW74Wf–FVæ6UæVÄ6÷VçB"–â'&÷w6W%÷fÆ–FF÷ ¢æB'fÆ–FFTFVfW'&VDÆöF–ær"–â'&÷w6W%÷fÆ–FF÷ ¢æB&7&—F–6Å6÷W&6U&WVW7D6÷VçB"–â'&÷w6W%÷fÆ–FF÷ ¢æB&–æf÷&ÖF–öå6÷W&6U&WVW7D6÷VçB"–â'&÷w6W%÷fÆ–FF÷ ¢æB&÷W&F–öç56÷W&6U&WVW7D6÷VçB"–â'&÷w6W%÷fÆ–FF÷ ¢æB&w&÷WÆöE6WVVæ6R"–â'&÷w6W%÷fÆ–FF÷ ¢æB&GWÆ–6FTæWGv÷&µ&WVW7D6÷VçB"–â'&÷w6W%÷fÆ–FF÷ ¢æB&–æf÷&ÖF–öåG&ç6—F–öç2"–â'&÷w6W%÷fÆ–FF÷ ¢æB&÷W&F–öç5G&ç6—F–öç2"–â'&÷w6W%÷fÆ–FF÷ ¢æB&f–ææ6R×FW&Ö–æÂÖ'&÷w6W"ÖWf–FVæ6Ræ§6öâ"–â'&÷w6W%÷fÆ–FF÷ ¢æB&'V–ÆD'&÷w6W$Wf–FVæ6R"–â'&÷w6W%÷fÆ–FF÷ ¢æB''VçF–ÖTWf–FVæ6SÓ"–â'&÷w6W%÷fÆ–FF÷"À¢.kXşŠxYšY¹î[Ù.ˆI®iÊÎiÊ®Šhny¹nKˆj>ZëŞ[ªn8Zéik‹h¾X«ş8z‹>Zé¥cŠøhÚî8k‹.iù4DôŞY(ÎhŠ®Y»â"¢'&÷w6W%öWf–FVæ6RÒ%$õu4U%ôUd”DTä4Rç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢&WV—&R‚$U…T5DTEõt”ED…2Ò³3cÂsc‚Â#ƒÒ"–â'&÷w6W%öWf–FVæ6P¢æBtU…T5DTEõ5”Ô$ôÅ2Ò²$D”"Â$tÄB%Òr–â'&÷w6W%öWf–FVæ6P¢æB$U…T5DTEõ$õd”DU%õ45$•B"–â'&÷w6W%öWf–FVæ6P¢æB'&÷f–FW%67&—DÆöFVEf–Ww÷'G2"–â'&÷w6W%öWf–FVæ6P¢æB'&÷f–FW%67&—Df–ÆVEf–Ww÷'G2"–â'&÷w6W%öWf–FVæ6P¢æB&'V–ÆEf–Ww÷'DF–væ÷6—2"–â'&÷w6W%öWf–FVæ6P¢æB'&VæFW$'&÷w6W$Wf–FVæ6U7VÖÖ'’"–â'&÷w6W%öWf–FVæ6P¢æB&F–væ÷6—46÷VçG2"–â'&÷w6W%öWf–FVæ6P¢æB&FöW4æ÷E&VD÷%7F÷&UV÷FW2"–â'&÷w6W%öWf–FVæ6P¢æB&6öææV7FVBÖFVf–æVBÖVÆVÖVçB×v—F‚ÖÆ–÷WB"–â'&÷w6W%öWf–FVæ6RÀ¢.kXşŠxYšŠøhÚîiÊ®Šhny¹nY¹¾šKº>yn8Kˆj>ŠxnXú>h‰nzhjÚ.ŠÎh8^Šû¾Xùn‹ëyXÂ"¢&WV—&R‚v6Æ–VçBç6VæB‚$æWGv÷&²æVæ&ÆR"’r–â'&÷w6W%÷fÆ–FF÷ ¢æB'G&6µ&÷f–FW%67&—EG&ç7÷'B"–â'&÷w6W%÷fÆ–FF÷ ¢æBv6Æ–VçBç7V'67&–&R‚$æWGv÷&²ç&WVW7Ev–ÆÄ&U6VçB"r–â'&÷w6W%÷fÆ–FF÷ ¢æBv6Æ–VçBç7V'67&–&R‚$æWGv÷&²ç&W7öç6U&V6V—fVB"r–â'&÷w6W%÷fÆ–FF÷ ¢æBv6Æ–VçBç7V'67&–&R‚$æWGv÷&²æÆöF–ætf–ÆVB"r–â'&÷w6W%÷fÆ–FF÷"À¢.kXşŠxYšY¹î[Ù.iÊ®Šë[Ù^y›ŞYŞXÙ^hùKé¾ikˆI®iÊÎy¨NŠû~k.8Y8Ş[©NY(ÎXù~hê~ZK‹J^x«nh"¢&÷‡•ö†—7F÷'’Ò$õ…•õ%TåD”ÔUô„•5Dõ%’ç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢&WV—&R‚$Ô…ô5”4ÄU2Òr"–â&÷‡•ö†—7F÷'¢æB$%D”d5EôÄôô´$4µôD•2ÒB"–â&÷‡•ö†—7F÷'¢æBv7–6ÆT&÷VæF'•WF2#¢##£"r–â&÷‡•ö†—7F÷'¢æB&f–ææ6R×FW&Ö–æÂ×&÷‡’×'VçF–ÖRÒ"–â&÷‡•ö†—7F÷'¢æB&FöW4æ÷E&VD÷%7F÷&UV÷FW2"–â&÷‡•ö†—7F÷'¢æB'Fö¶Vâ×Væf–Æ&ÆR"–â&÷‡•ö†—7F÷'¢æB&’×Væf–Æ&ÆR"–â&÷‡•ö†—7F÷'’À¢.Kº>yn‹ùŠÎ‹h¾X«şiÊ®™™X‹c~YiÉş8#£UD>‹ëyXÎ8NZJ”'F–f7Nh‰nŠù®Zéî™˜Ş{ªr"¢&WV—&R…TÄ•E•õtõ$´dÄõræW†—7G2‚’Â.{Ë®[	˜y‰èŞ{¸zºşXú®Šû¾‹J˜xş[z^KÙÎkX"¢&WV—&R„ÄôDU%õdÄ”DDõ"æW†—7G2‚’Â.{Ë®[	˜y‰èŞ{¸zºşXˆnXË®Xª‹ÛŞYšxºÎz¸¾ZY{ªnkX¾ŠùR"¢&WV—&R„$ô$EõdÄ”DDõ"æW†—7G2‚’Â.{Ë®[	Y8{¾ŠÎh8^iÛşxºÎz¸¾ZY{ªnkX¾ŠùR"¢VÆ—G•÷v÷&¶fÆ÷rÒTÄ•E•õtõ$´dÄõrç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢&WV—&R‚'W&Ö—76–öç3¥Æâ7F–öç3¢&VEÆâ6öçFVçG3¢&VB"–âVÆ—G•÷v÷&¶fÆ÷rÀ¢.˜y‰èŞ{¸zºş‹J˜xş[z^KÙÎkXiØ>™™[ø^š¾™™X‹nK‹¤7F–öç>KˆîXh^ZëXú®Šû²"¢&WV—&R‚"æv—F‡V"ô•55TUõDTÕÄDRöf–ææ6R×FW&Ö–æÂÖFFç–ÖÂ"–âVÆ—G•÷v÷&¶fÆ÷rÀ¢.˜y‰èŞ{¸zºş‹J˜xş[z^KÙÎkXiÊ®Šhny¹ni[hÚîXøŞšhŠXÙ^Xùi»B"¢&WV—&R‚&Fö72ôd”ää4UõDU$Ô”äÅôõU$D”ôå5õ%Tä$ôô²æÖB"–âVÆ—G•÷v÷&¶fÆ÷rÀ¢.˜y‰èŞ{¸zºş‹J˜xş[z^KÙÎkXiÊ®Šhny¹nY¹¾zê˜>‹ùŠÎh˜¾XhÎXùi»B"¢&WV—&R‚'fÆ–FFUöf–ææ6U÷FW&Ö–æÅö'&÷w6W"æÖ§2"–âVÆ—G•÷v÷&¶fÆ÷p¢æB'fÆ–FFUöf–ææ6U÷FW&Ö–æÅ÷f—7VÇ2æÖ§2"–âVÆ—G•÷v÷&¶fÆ÷p¢æB'fÆ–FFUöf–ææ6U÷FW&Ö–æÅö'&÷w6W%öWf–FVæ6RæÖ§2"–âVÆ—G•÷v÷&¶fÆ÷p¢æB&föçG2Öæ÷FòÖ6¦²"–âVÆ—G•÷v÷&¶fÆ÷p¢æB&f–ææ6R×FW&Ö–æÂÖ'&÷w6W"ÖWf–FVæ6Ræ§6öâ"–âVÆ—G•÷v÷&¶fÆ÷p¢æB&f–ææ6R×FW&Ö–æÂÖ'&÷w6W"ÖWf–FVæ6RæÖB"–âVÆ—G•÷v÷&¶fÆ÷p¢æB'fÆ–FFUöf–ææ6U÷FW&Ö–æÅ÷&÷‡•÷'VçF–ÖUö†—7F÷'’ç’"–âVÆ—G•÷v÷&¶fÆ÷p¢æB&f–ææ6U÷FW&Ö–æÅ÷&÷‡•÷'VçF–ÖUö†—7F÷'’ç’"–âVÆ—G•÷v÷&¶fÆ÷p¢æB&f–ææ6R×FW&Ö–æÂ×&÷‡’×'VçF–ÖRÖ†—7F÷'’æ§6öâ"–âVÆ—G•÷v÷&¶fÆ÷p¢æB&f–ææ6R×FW&Ö–æÂ×&÷‡’×'VçF–ÖRÖ†—7F÷'’æÖB"–âVÆ—G•÷v÷&¶fÆ÷p¢æB$t•D…T%õDô´Tã¢G·²v—F‡V"çFö¶Vâ×Ò"–âVÆ—G•÷v÷&¶fÆ÷p¢æB&f–ææ6R×FW&Ö–æÂ×&÷‡’×'VçF–ÖR"–âVÆ—G•÷v÷&¶fÆ÷p¢æB'fÆ–FFUöf–ææ6U÷FW&Ö–æÂç’"–âVÆ—G•÷v÷&¶fÆ÷p¢æB&æöFR67&—G2÷fÆ–FFUöf–ææ6U÷FW&Ö–æÅöÆöFW"æÖ§2"–âVÆ—G•÷v÷&¶fÆ÷p¢æB&æöFR67&—G2÷fÆ–FFUöf–ææ6U÷FW&Ö–æÅö&ö&BæÖ§2"–âVÆ—G•÷v÷&¶fÆ÷rÀ¢.˜y‰èŞ{¸zºş‹J˜xş[z^KÙÎkXiÊ®‹ùŠÎ™ÙhKˆîkXşŠxYšY¹î[Ù""¢&WV—&R‚'fÆ–FFUöÖ&¶WEöFF÷VÆ—G’ç’ÒÖFF6WBÆÂ"–âVÆ—G•÷v÷&¶fÆ÷rÀ¢.˜y‰èŞ{¸zºş‹J˜xş[z^KÙÎkXiÊ®{¹şKˆj
+š¨ÎKˆiÚ˜	šiÚ^k©ZY{ªb"¢&WV—&R‚'fÆ–FFUöÖ&¶WE÷6÷W&6Uö†VÇF‚ç’ÒÖFF6WBÆÂÒ×&W÷'B"–âVÆ—G•÷v÷&¶fÆ÷p¢æB'fÆ–FFUöÖ7&õ÷6÷W&6Uö†VÇF‚ç’Ò×&W÷'B"–âVÆ—G•÷v÷&¶fÆ÷p¢æB&f–ææ6R×FW&Ö–æÂ×6÷W&6RÖ†VÇF‚"–âVÆ—G•÷v÷&¶fÆ÷p¢æB'&WFVçF–öâÖF—3¢B"–âVÆ—G•÷v÷&¶fÆ÷rÀ¢.˜y‰èŞ{¸zºş‹J˜xş[z^KÙÎkXiÊ®yIşh‰h‰nKùŞyYY¹¾zê˜>X^[«~Šø®ijÒ"¢&WV—&R‚'fÆ–FFUöÖ&¶WE÷v÷&¶fÆ÷uöv÷fW&ææ6Rç’ÒÖFF6WBÆÂ"–âVÆ—G•÷v÷&¶fÆ÷rÀ¢.˜y‰èŞ{¸zºş‹J˜xş[z^KÙÎkXiÊ®{¹şKˆj
+š¨ÎyIşKª~Kˆî‹è^XªK»¾Xªk+¾ynZY{ªb"¢&WV—&R‚'fÆ–FFUöf–ææ6U÷FW&Ö–æÅ÷&VF–æW75÷6æ6†÷Bç’"–âVÆ—G•÷v÷&¶fÆ÷rÀ¢.˜y‰èŞ{¸zºş‹J˜xş[z^KÙÎkXiÊ®j
+š¨Îz‹>Zé¥c™ÙhŠøhÚâ"¢&WV—&R‚'fÆ–FFU÷7W÷'F–æu÷6÷W&6Uö†VÇF‚ç’ÒÖFF6WBÆÂÒ×&W÷'B"–âVÆ—G•÷v÷&¶fÆ÷p¢æB'fÆ–FFU÷7W÷'F–æu÷6÷W&6Uö'V–ÆFW'2ç’"–âVÆ—G•÷v÷&¶fÆ÷rÀ¢.˜y‰èŞ{¸zºş‹J˜xş[z^KÙÎkXiÊ®j
+š¨ÎY¹¾KŠ®‹è^XªiÚ^k©X^[«~Kˆîzk¾{«şY¹î˜"¢&WV—&R‚&FWÆ÷’"æ÷B–âVÆ—G•÷v÷&¶fÆ÷ræÆ÷vW"‚’æB'6V7&WG2â"æ÷B–âVÆ—G•÷v÷&¶fÆ÷rÀ¢.˜y‰èŞ{¸zºş‹J˜xş[z^KÙÎkXKˆŞ[é~˜:{Û.h‰nŠû¾Xùe6V7&WG2"¢&WV—&R„DDô•55TUôdõ$ÒæW†—7G2‚’Â.{Ë®[	˜y‰èŞ{¸zºşi[hÚî™zîš)XøŞšhŠXÙR"¢—77VUöf÷&ÒÒDDô•55TUôdõ$Òç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢&WV—&R†—77VUöf÷&Òæ6÷VçB‚"ÒG—S¢"’ÓÒ’æB&–C¢—VÆ–æR"–â—77VUöf÷&Ğ¢æB&–C¢&ö&ÆVÕ÷G—R"–â—77VUöf÷&ÒæB&–C¢ö'6W'fVEöB"–â—77VUöf÷&ÒÀ¢.i[hÚîXøŞšhŠXÙ^ZÙ~jë^i[˜xşh‰nX[>™Jä”NiziX‚"¢f÷"—VÆ–æUöÆ&VÂ–â‚$Du3òEEtU„$u2ò%uD2"Â&76WB×G&6¶W""Â&6ö×æ–W2"Â&76WB×&æ¶–ær"“ ¢&WV—&R‡—VÆ–æUöÆ&VÂ–â—77VUöf÷&ÒÂb.i[hÚîXøŞšhŠXÙ^{Ë®[	zê˜>˜šûÉ§·—VÆ–æUöÆ&VÇÒ"¢&WV—&R‚$Zøn™*R"–â—77VUöf÷&ÒæB.Šëş™zîKºNx˜Â"–â—77VUöf÷&ÒæB.hÈK¹2"–â—77VUöf÷&Ğ¢æB—77VUöf÷&Òæ6÷VçB‚'&WV—&VC¢G'VR"’ãÒ‚À¢.i[hÚîXøŞšhŠXÙ^{Ë®[	iXşhIşKúhşŠÚnY®h‰n[ø^Z¾{ªniÙò"¢&WV—&R„õU$D”ôå5õ%Tä$ôô²æW†—7G2‚’Â.{Ë®[	˜y‰èŞ{¸zºşY¹¾zê˜>‹ùŠÎKˆîiX^™©Îh.ZHŞh˜¾XhÂ"¢'Væ&öö²ÒõU$D”ôå5õ%Tä$ôô²ç&VE÷FW‡B†Væ6öF–æsÒ'WFbÓ‚"¢f÷"&WV—&VE÷FW‡B–â€¢&Ö7&ò×&F""Â&76WB×G&6¶W""Â&6ö×æ–W2"Â&76WB×&æ¶–ær"À¢&FFæ§6öâ"Â&†VÇF‚æ§6öâ"Â$&WF™zzh'F–f7B"Â.‹h^‹øss.[şi{b"À¢.‹ùî{ºŞh‰X©şˆ{>[	>KŠ®iz^i»NYiÉò"Â.z‹>Zé¥cˆ{>[	Šx.Zùó~KŠ®YiÉò"À¢.KˆŞ[é~h˜¾[z^Xú®KúîX[nKŠŞKˆKŠ®ih~K»b"Â.KˆŞ[é~˜xŞ{Úîh‰n[Ë®hêX[Kª¾XˆniJò"À¢“ ¢&WV—&R‡&WV—&VE÷FW‡B–â'Væ&öö²Âb.Y¹¾zê˜>‹ùŠÎh˜¾XhÎ{Ë®[	X[>™JîŠxNX‰ûÉ§·&WV—&VE÷FW‡GÒ"¢&WV—&R‡'Væ&öö²æ–æFW‚‚.‹ùŠÆ6ö×æ–W2G&6¶W&"’Â'Væ&öö²æ–æFW‚‚.‹ùŠÆ76WB&æ¶–æv"’À¢.Y¹¾zê˜>‹ùŠÎh˜¾XhÎ[ø^š¾iˆîzîXZÎXûjiÎXXK¨î‹XNKª~jiÂ"¢f÷"6öÖÖæB–â€¢'fÆ–FFUöf–ææ6U÷FW&Ö–æÂç’"Â'fÆ–FFUöÖ&¶WEöFF÷VÆ—G’ç’ÒÖFF6WBÆÂ"À¢'fÆ–FFUöÖ&¶WE÷6÷W&6Uö†VÇF‚ç’ÒÖFF6WBÆÂ"Â'fÆ–FFUöÖ7&õ÷6÷W&6Uö†VÇF‚ç’"À¢'fÆ–FFUöÖ&¶WE÷v÷&¶fÆ÷uöv÷fW&ææ6Rç’ÒÖFF6WBÆÂ"À¢'fÆ–FFUöf–ææ6U÷FW&Ö–æÅ÷&VÆV6UövFRç’"À¢“ ¢&WV—&R†6öÖÖæB–â'Væ&öö²Âb.Y¹¾zê˜>‹ùŠÎh˜¾XhÎ{Ë®[	iÊÎYËj8iú^ûÉ§¶6öÖÖæGÒ"¢&WV—&R‚&'V–ÆEöGGvW†&w5÷&VfW&Væ6R"–â'V–ÆE÷67&—BæBr'&VfW&Væ6U6W&–W2#¢&VfW&Væ6U÷6W&–W2r–â'V–ÆE÷67&—BÂ.ZèşŠx.™»~‹ëîˆI®iÊÎiÊ®yIşh‰EEtU„$u>Xø.ˆ>[¨şX‰r"¢&WV—&R‚&'V–ÆE÷'wF5÷&VfW&Væ6R"–â'V–ÆE÷67&—BæBr&f6WG5·6W&–W5ÕµÒ#¢%uD5ô”Br–â'V–ÆE÷67&—BÂ.ZèşŠx.™»~‹ëîˆI®iÊÎiÊ®hÈ”T”%uD>Xú>[èNyIşh‰Xø.ˆ>[¨şX‰r"¢&WV—&R‚''6UöV–÷'wF5ö†—7F÷'•ö‡FÖÂ"–â'V–ÆE÷67&—BæB$T”ô„•5Dõ%•õU$Â"–â'V–ÆE÷67&—BÀ¢.ZèşŠx.™»~‹ëîˆI®iÊÎ{Ë®[	T”ZéikXènXû.š^izZøn™*^Y¹î˜"¢&WV—&R‚'&WVW7G2ævWB‡W&ÂÂ&×3×&×2"–â'V–ÆE÷67&—BÂ$e$TNŠû~k.[ø^š¾h¨®Zøn™*^iKîYÊXø.i[Zû‹ˆÎ™Ùîiz^[ù~ZÙ~zÊnK‹.KŠÒ"¢&WV—&R‚'&W7öç6RÒvWB„T”ô•õU$ÂÂ&×3×&×2"–â'V–ÆE÷67&—BÂ$T”Šû~k.[ø^š¾h¨®Zøn™*^iKîYÊXø.i[Zû‹ˆÎ™ÙåU$ÎZÙ~zÊnK‹.KŠÒ"¢&WV—&R‚'&W"†R’"æ÷B–â'V–ÆE÷67&—BæB'&W"†W†2’"æ÷B–â'V–ÆE÷67&—BÂ.[È.[‹iz^[ù~KˆŞ[é~‹é>X{®Xúşˆ;ŞY
+¾Zøn™*^y¨NZèÎi[NŠû~k%U$Â"¢&WV—&R‚'&WVW7G2ævWB‡W&ÂÂ&×3×&×2"–â†—7F÷'•ö'V–ÆE÷67&—@¢æB"f•ö¶W“Ò"æ÷B–â†—7F÷'•ö'V–ÆE÷67&—@¢æB'&W"†R’"æ÷B–â†—7F÷'•ö'V–ÆE÷67&—BæB'&W"†W'&÷"’"æ÷B–â†—7F÷'•ö'V–ÆE÷67&—BÀ¢.ZèşŠx.XènXû.K»¾XªKˆŞ[é~h¨¤e$TNZøn™*^h»ÎXZUU$Îh‰n[È.[‹iz^[ùr"¢&WV—&R‚$e$TEô•ô´U“¢G·²6V7&WG2äe$TEô•ô´U’×Ò"–âv÷&¶fÆ÷rÂ.ZèşŠx.™»~‹ëî[z^KÙÎkXiÊ®˜	®‹øu6V7&WNhùKé´e$TNZøn™*R"¢&WV—&R‚$T”ô•ô´U“¢G·²6V7&WG2äT”ô•ô´U’×Ò"–âv÷&¶fÆ÷rÂ.ZèşŠx.™»~‹ëî[z^KÙÎkXiÊ®˜	®‹øu6V7&WN[É^yJ„T”Zøn™*R"¢&WV—&R‚&Ö&¶WE÷v÷&¶fÆ÷uöv÷fW&ææ6Rç’7FvRÒÖFF6WBÖ7&ò×&F""–âv÷&¶fÆ÷p¢æB'fÆ–FFUöÖ7&õ÷6÷W&6Uö†VÇF‚ç’Ò×&W÷'B"–âv÷&¶fÆ÷rÀ¢.ZèşŠx.™»~‹ëî[z^KÙÎkXiÊ®KÛşyJ˜	k©X^[«~j
+š¨ÎKˆî{+îzî‹zş[èNZèXÚ²"¢&WV—&R‚rÖbWfVçC×v÷&¶fÆ÷uöF—7F6‚Öb&'&æ6ƒÒDt•D…T%õ$TeôäÔR"ÖbW%÷vSÓr–â66†VGVÆW"À¢.jøşiz^‹>[ªnYš[ø^š¾hÈ[Ù>X˜ŞXˆniJşiú^Šú.iÈ‹ù‹ùŠÎûÈÎKˆŞˆ;ŞŠê[ÈXùXˆniJş‹XNjÎ‹ùŠÎh©X‹fÖ–îyIşKª~‹>[ªb"¢&WV—&R‚&Ö7&õ÷&F"ç–ÖÂ"–â66†VGVÆW"Â.jøşiz^‹>[ªnYšiÊ®ŠznXùZèşŠx.™»~‹ëî[z^KÙÎkX"¢&WV—&R‚'—F†öâ67&—G2öfV"Öw&VVBö'V–ÆEöfV%öw&VVBç’"–âfV%öw&VVE÷v÷&¶fÆ÷rÂ.hhXÎKˆî‹J®Zš®[z^KÙÎkXiÊ®‹ùŠÎiz.iÈXùni[ˆI®iÊÂ"¢&WV—&R‚'fÆ–FFU÷7W÷'F–æu÷6÷W&6Uö†VÇF‚ç’ÒÖFF6WBfV"Öw&VVB"–âfV%öw&VVE÷v÷&¶fÆ÷p¢æB&Ö&¶WE÷v÷&¶fÆ÷uöv÷fW&ææ6Rç’7FvRÒÖFF6WBfV"Öw&VVB"–âfV%öw&VVE÷v÷&¶fÆ÷rÀ¢.hhXÎKˆî‹J®Zš®[z^KÙÎkXiÊ®j
+š¨ÎX^[«~h‰nKÛşyJ{+îzî‹zş[èNZèXÚ²"¢&WV—&R‚&Ö&¶WBÖFFÖfV"Öw&VVBÒG·²v—F‡V"ç&Vb×Ò"–âfV%öw&VVE÷v÷&¶fÆ÷p¢æB'&WFVçF–öâÖF—3¢B"–âfV%öw&VVE÷v÷&¶fÆ÷rÀ¢.hhXÎKˆî‹J®Zš®[z^KÙÎkX{Ë®[	xºÎz¸¾[›nXùh‰nyúŞiÉşŠø®ijÒ"¢&WV—&R‚&fV%öw&VVBç–ÖÂ"–â66†VGVÆW"Â.jøşiz^‹>[ªnYšiÊ®ŠznXùhhXÎKˆî‹J®Zš®[z^KÙÎkX"¢&WV—&R‚'—F†öâ67&—G2öög"ÖÖöæ—F÷"ö'V–ÆEöög"ç’"–âög%÷v÷&¶fÆ÷rÂ$ôe.[z^KÙÎkXiÊ®‹ùŠÎiz.iÈXùni[ˆI®iÊÂ"¢&WV—&R‚'fÆ–FFU÷7W÷'F–æu÷6÷W&6Uö†VÇF‚ç’ÒÖFF6WBög"ÖÖöæ—F÷""–âög%÷v÷&¶fÆ÷p¢æB&Ö&¶WE÷v÷&¶fÆ÷uöv÷fW&ææ6Rç’7FvRÒÖFF6WBög"ÖÖöæ—F÷""–âög%÷v÷&¶fÆ÷rÀ¢$ôe.[z^KÙÎkXiÊ®j
+š¨ÎX^[«~h‰nKÛşyJ{+îzî‹zş[èNZèXÚ²"¢&WV—&R‚&Ö&¶WBÖFFÖög"ÖÖöæ—F÷"ÒG·²v—F‡V"ç&Vb×Ò"–âög%÷v÷&¶fÆ÷p¢æB'&WFVçF–öâÖF—3¢B"–âög%÷v÷&¶fÆ÷rÀ¢$ôe.[z^KÙÎkX{Ë®[	xºÎz¸¾[›nXùh‰nyúŞiÉşŠø®ijÒ"¢&WV—&R‚&ög%öÖöæ—F÷"ç–ÖÂ"–â66†VGVÆW"Â.jøşiz^‹>[ªnYšiÊ®ŠznXùôe.[z^KÙÎkX"¢&WV—&R‚'—F†öâ67&—G2ö76WB×G&6¶W"ö'V–ÆEö76WG2ç’"–â76WE÷G&6¶W%÷v÷&¶fÆ÷rÂ.‹z‹XNKª~[z^KÙÎkXiÊ®‹ùŠÎiz.iÈXùni[ˆI®iÊÂ"¢&WV—&R‚'fÆ–FFUöÖ&¶WEöFF÷VÆ—G’ç’ÒÖFF6WB76WB×G&6¶W""–â76WE÷G&6¶W%÷v÷&¶fÆ÷rÀ¢.‹z‹XNKª~[z^KÙÎkXiÊ®YÊhùKªNX˜Şj
+š¨Î˜	iÚiÚ^k©ZY{ªb"¢&WV—&R‚'fÆ–FFUöÖ&¶WE÷6÷W&6Uö†VÇF‚ç’ÒÖFF6WB76WB×G&6¶W""–â76WE÷G&6¶W%÷v÷&¶fÆ÷rÀ¢.‹z‹XNKª~[z^KÙÎkXiÊ®YÊhùKªNX˜Şj
+š¨ÎiÚ^k©X^[«r"¢&WV—&R‚&Ö&¶WE÷v÷&¶fÆ÷uöv÷fW&ææ6Rç’7FvRÒÖFF6WB76WB×G&6¶W""–â76WE÷G&6¶W%÷v÷&¶fÆ÷rÀ¢.‹z‹XNKª~[z^KÙÎkXiÊ®KÛşyJ‹zş[èNh˜iÈiØ>ZèXÚ¾i¨.ZÙi[hÚîKˆîX^[«~ih~K»b"¢&WV—&R‚&Ö&¶WBÖFFÖ76WB×G&6¶W"ÒG·²v—F‡V"ç&Vb×Ò"–â76WE÷G&6¶W%÷v÷&¶fÆ÷p¢æB%7–æ2F&vWB'&æ6‚&Vf÷&RvVæW&F–öâ"–â76WE÷G&6¶W%÷v÷&¶fÆ÷rÀ¢.‹z‹XNKª~[z^KÙÎkX{Ë®[	xºÎz¸¾[›nXù™Hh‰nyIşh‰X˜ŞYÎjÚR"¢&WV—&R‚&76WB×G&6¶W"×v÷&¶fÆ÷rÒG·²v—F‡V"ç'VåöGFV×B×Ò"–â76WE÷G&6¶W%÷v÷&¶fÆ÷p¢æB'&WFVçF–öâÖF—3¢B"–â76WE÷G&6¶W%÷v÷&¶fÆ÷rÀ¢.‹z‹XNKª~[z^KÙÎkXiÊ®h¨®‹ùŠÎŠø®ijŞKùŞyYK‹®yúŞiÉô'F–f7B"¢&WV—&R‚&76WE÷G&6¶W"ç–ÖÂ"–â66†VGVÆW"Â.jøşiz^‹>[ªnYšiÊ®ŠznXù‹z‹XNKª~[z^KÙÎkX"¢&WV—&R‚'—F†öâ67&—G2ö76WB×&æ¶–ærö'V–ÆE÷&æ¶–ærç’"–â76WE÷&æ¶–æu÷v÷&¶fÆ÷rÂ.XZy>‹XNKª~[ˆ.XÎ[z^KÙÎkXiÊ®‹ùŠÎiz.iÈXùni[ˆI®iÊÂ"¢&WV—&R‚'fÆ–FFUöÖ&¶WEöFF÷VÆ—G’ç’ÒÖFF6WB76WB×&æ¶–ær"–â76WE÷&æ¶–æu÷v÷&¶fÆ÷rÀ¢.XZy>‹XNKª~[ˆ.XÎ[z^KÙÎkXiÊ®YÊhùKªNX˜Şj
+š¨Î˜	iÚiÚ^k©ZY{ªb"¢&WV—&R‚'fÆ–FFUöÖ&¶WE÷6÷W&6Uö†VÇF‚ç’ÒÖFF6WB76WB×&æ¶–ær"–â76WE÷&æ¶–æu÷v÷&¶fÆ÷rÀ¢.XZy>‹XNKª~[ˆ.XÎ[z^KÙÎkXiÊ®YÊhùKªNX˜Şj
+š¨ÎiÚ^k©X^[«r"¢&WV—&R‚&Ö&¶WE÷v÷&¶fÆ÷uöv÷fW&ææ6Rç’7FvRÒÖFF6WB76WB×&æ¶–ær"–â76WE÷&æ¶–æu÷v÷&¶fÆ÷rÀ¢.XZy>‹XNKª~[ˆ.XÎ[z^KÙÎkXiÊ®KÛşyJ‹zş[èNh˜iÈiØ>ZèXÚ¾i¨.ZÙi[hÚîKˆîX^[«~ih~K»b"¢&WV—&R‚&Ö&¶WBÖFFÖ76WB×&æ¶–ærÒG·²v—F‡V"ç&Vb×Ò"–â76WE÷&æ¶–æu÷v÷&¶fÆ÷p¢æB%7–æ2F&vWB'&æ6‚&Vf÷&RvVæW&F–öâ"–â76WE÷&æ¶–æu÷v÷&¶fÆ÷rÀ¢.XZy>‹XNKª~[ˆ.XÎ[z^KÙÎkX{Ë®[	xºÎz¸¾[›nXù™Hh‰nyIşh‰X˜ŞYÎjÚR"¢&WV—&R‚&76WB×&æ¶–ær×v÷&¶fÆ÷rÒG·²v—F‡V"ç'VåöGFV×B×Ò"–â76WE÷&æ¶–æu÷v÷&¶fÆ÷p¢æB'&WFVçF–öâÖF—3¢B"–â76WE÷&æ¶–æu÷v÷&¶fÆ÷rÀ¢.XZy>‹XNKª~[ˆ.XÎ[z^KÙÎkXiÊ®h¨®‹ùŠÎŠø®ijŞKùŞyYK‹®yúŞiÉô'F–f7B"¢&WV—&R‚&76WE÷&æ¶–ærç–ÖÂ"–â66†VGVÆW"æB&6ö×æ–W2ç–ÖÂ"–â66†VGVÆW"Â.‹>[ªnYšiÊ®hÈXZÎXûi[hÚîYî{ÚîŠznXùXZy>‹XNKª~[ˆ.XÎ[z^KÙÎkX"¢&WV—&R‚'—F†öâ67&—G2ö6ö×æ–W2ö'V–ÆEö6ö×æ–W2ç’"–â6ö×æ–W5÷v÷&¶fÆ÷rÂ.XZÎXûjiÎ[z^KÙÎkXiÊ®‹ùŠÎiz.iÈXùni[ˆI®iÊÂ"¢&WV—&R‚'fÆ–FFUöÖ&¶WEöFF÷VÆ—G’ç’ÒÖFF6WB6ö×æ–W2"–â6ö×æ–W5÷v÷&¶fÆ÷rÀ¢.XZÎXûjiÎ[z^KÙÎkXiÊ®YÊhùKªNX˜Şj
+š¨Î˜	iÚiÚ^k©ZY{ªb"¢&WV—&R‚'fÆ–FFUöÖ&¶WE÷6÷W&6Uö†VÇF‚ç’ÒÖFF6WB6ö×æ–W2"–â6ö×æ–W5÷v÷&¶fÆ÷rÀ¢.XZÎXûjiÎ[z^KÙÎkXiÊ®YÊhùKªNX˜Şj
+š¨ÎiÚ^k©X^[«r"¢&WV—&R‚&Ö&¶WE÷v÷&¶fÆ÷uöv÷fW&ææ6Rç’7FvRÒÖFF6WB6ö×æ–W2"–â6ö×æ–W5÷v÷&¶fÆ÷rÀ¢.XZÎXûjiÎ[z^KÙÎkXiÊ®KÛşyJ{+îzî‹zş[èNZèXÚ¾hùKªNi[hÚî8X^[«~x«nhKˆîiÊÎYËÆövò"¢&WV—&R‚&Ö&¶WBÖFFÖ6ö×æ–W2ÒG·²v—F‡V"ç&Vb×Ò"–â6ö×æ–W5÷v÷&¶fÆ÷p¢æB%7–æ2F&vWB'&æ6‚&Vf÷&RvVæW&F–öâ"–â6ö×æ–W5÷v÷&¶fÆ÷rÀ¢.XZÎXûjiÎ[z^KÙÎkX{Ë®[	xºÎz¸¾[›nXù™Hh‰nyIşh‰X˜ŞYÎjÚR"¢&WV—&R‚&6ö×æ–W2×v÷&¶fÆ÷rÒG·²v—F‡V"ç'VåöGFV×B×Ò"–â6ö×æ–W5÷v÷&¶fÆ÷p¢æB'&WFVçF–öâÖF—3¢B"–â6ö×æ–W5÷v÷&¶fÆ÷rÀ¢.XZÎXûjiÎ[z^KÙÎkXiÊ®h¨®‹ùŠÎŠø®ijŞKùŞyYK‹®yúŞiÉô'F–f7B"¢&WV—&R‚&v—BFBÔ2ö6ö×æ–W2"æ÷B–â6ö×æ–W5÷v÷&¶fÆ÷rÀ¢.XZÎXûjiÎ[z^KÙÎkXKˆŞ[é~ZëŞˆÈ>Y»Ni¨.ZÙi[NKŠ®[©NyJyºî[ÙR"¢&WV—&R‚&6ö×æ–W2ç–ÖÂ"–â66†VGVÆW"Â.jøşiz^‹>[ªnYšiÊ®ŠznXùXZÎXûjiÎ[z^KÙÎkX"¢&WV—&R‚'—F†öâ67&—G2öV6öâÖ6ÆVæF"ö'V–ÆEö6ÆVæF"ç’"–âV6öåö6ÆVæF%÷v÷&¶fÆ÷rÂ.{¸şkXîiz^Xèn[z^KÙÎkXiÊ®‹ùŠÎiz.iÈXùni[ˆI®iÊÂ"¢&WV—&R‚'fÆ–FFU÷7W÷'F–æu÷6÷W&6Uö†VÇF‚ç’ÒÖFF6WBV6öâÖ6ÆVæF""–âV6öåö6ÆVæF%÷v÷&¶fÆ÷p¢æB&Ö&¶WE÷v÷&¶fÆ÷uöv÷fW&ææ6Rç’7FvRÒÖFF6WBV6öâÖ6ÆVæF""–âV6öåö6ÆVæF%÷v÷&¶fÆ÷rÀ¢.{¸şkXîiz^Xèn[z^KÙÎkXiÊ®j
+š¨ÎX^[«~h‰nKÛşyJ{+îzî‹zş[èNZèXÚ²"¢&WV—&R‚&Ö&¶WBÖFFÖV6öâÖ6ÆVæF"ÒG·²v—F‡V"ç&Vb×Ò"–âV6öåö6ÆVæF%÷v÷&¶fÆ÷p¢æB'&WFVçF–öâÖF—3¢B"–âV6öåö6ÆVæF%÷v÷&¶fÆ÷rÀ¢.{¸şkXîiz^Xèn[z^KÙÎkX{Ë®[	xºÎz¸¾[›nXùh‰nyúŞiÉşŠø®ijÒ"¢&WV—&R‚&V6öåö6ÆVæF"ç–ÖÂ"–â66†VGVÆW"Â.jøşiz^‹>[ªnYšiÊ®ŠznXù{¸şkXîiz^Xèn[z^KÙÎkX"¢&WV—&R‚'—F†öâ67&—G2÷v†G2ÖÆFW7Bö'V–ÆEöæWw2ç’"–âf–ææ6UöæWw5÷v÷&¶fÆ÷rÂ.‹J.{¸şik™{¾[z^KÙÎkXiÊ®‹ùŠÎiz.iÈXùni[ˆI®iÊÂ"¢&WV—&R‚'fÆ–FFU÷7W÷'F–æu÷6÷W&6Uö†VÇF‚ç’ÒÖFF6WBv†G2ÖÆFW7B"–âf–ææ6UöæWw5÷v÷&¶fÆ÷p¢æB&Ö&¶WE÷v÷&¶fÆ÷uöv÷fW&ææ6Rç’7FvRÒÖFF6WBv†G2ÖÆFW7B"–âf–ææ6UöæWw5÷v÷&¶fÆ÷rÀ¢.‹J.{¸şik™{¾[z^KÙÎkXiÊ®j
+š¨ÎX^[«~h‰nKÛşyJ{+îzî‹zş[èNZèXÚ²"¢&WV—&R‚&Ö&¶WBÖFF×v†G2ÖÆFW7BÒG·²v—F‡V"ç&Vb×Ò"–âf–ææ6UöæWw5÷v÷&¶fÆ÷p¢æB'&WFVçF–öâÖF—3¢B"–âf–ææ6UöæWw5÷v÷&¶fÆ÷rÀ¢.‹J.{¸şik™{¾[z^KÙÎkX{Ë®[	xºÎz¸¾[›nXùh‰nyúŞiÉşŠø®ijÒ"¢&WV—&R‚&7&öã¢sR¢ób¢¢¢r"–âf–ææ6UöæWw5÷v÷&¶fÆ÷rÂ.‹J.{¸şik™{¾[z^KÙÎkX[ø^š¾KùŞhÈjøón[şi{ni»Nik"¢'VåöÖ&¶WEöFF÷VÆ—G•ö6öçG&7E÷FW7G2‚¢'Vå÷6†&VEö†—7F÷'•ö6öçG&7E÷FW7G2‚¢'Våö76WE÷G&6¶W%ö'V–ÆFW%ö6öçG&7E÷FW7G2‚¢'Våö6ö×ç•ö'V–ÆFW%ö6öçG&7E÷FW7G2‚¢'Våö76WE÷&æ¶–æuö'V–ÆFW%ö6öçG&7E÷FW7G2‚¢'Våööff–6–Åöö'6W'fF–öåö6öçG&7E÷FW7G2‚¢'VåöGGvW†&w5÷—VÆ–æU÷FW7G2‚¢'Vå÷'wF5÷—VÆ–æU÷FW7G2‚¢'Våö§5öFFW%÷FW7G2‚¢'Vå÷&÷f–FW%÷v–FvWE÷'VçF–ÖU÷FW7G2‚¢&ö&Eö6öçG&7G2Ò7V'&ö6W72ç'Vâ€¢²&æöFR"Â7G"„$ô$EõdÄ”DDõ"•ÒÀ¢7vCÕ$ôõBÀ¢6†V6³ÔfÇ6RÀ¢6GW&Uö÷WGWCÕG'VRÀ¢FW‡CÕG'VRÀ¢¢&WV—&R†&ö&Eö6öçG&7G2ç&WGW&æ6öFRÓÒÀ¢b.Y8{¾ŠÎh8^iÛşZY{ªnZK‹J^ûÉ¥Æç¶&ö&Eö6öçG&7G2ç7FF÷WG×¶&ö&Eö6öçG&7G2ç7FFW''Ò"¢&–çB†&ö&Eö6öçG&7G2ç7FF÷WBç7G&—‚’¢f—7VÅö6öçG&7G2Ò7V'&ö6W72ç'Vâ€¢²&æöFR"Â7G"…d•5TÅ5õdÄ”DDõ"•ÒÀ¢7vCÕ$ôõBÀ¢6†V6³ÔfÇ6RÀ¢6GW&Uö÷WGWCÕG'VRÀ¢FW‡CÕG'VRÀ¢¢&WV—&R‡f—7VÅö6öçG&7G2ç&WGW&æ6öFRÓÒÀ¢b.zy[›¾{¸zºşŠxnŠxi[hÚîZY{ªnZK‹J^ûÉ¥Æç·f—7VÅö6öçG&7G2ç7FF÷WG×·f—7VÅö6öçG&7G2ç7FFW''Ò"¢&–çB‡f—7VÅö6öçG&7G2ç7FF÷WBç7G&—‚’ ¢&–çB‚$f–ææ6RFW&Ö–æÂDu3²EEtU„$u2²%uD2²%D2õU4BfÆ–FF–öã¢52"¢&–çB‚"Òf÷W"Æö6ÂFF6&G2ÇW2GvòW‡Æ–6—Bg&VRG&F–æuf–WrUDb&÷†–W2ò¦W&òFVÖ÷3¢52"¢&–çB‚"Ò––VÆB'ò'&öBÖFöÆÆ"æBuD’W&6VçBò%D2#F‚÷"&Wf–÷W2Ö6Æ÷6R6†ævS¢52"¢&–çB‚"Òe$TBæBT”&Vg&W6‚7V66W72ò&WF–æVBfÆÆ&6²òæòÖ†—7F÷'’W'&÷#¢52"¢&–çB‚"Ò6÷W&6Rò2ÖöbòWFFVBÖBò7FÆRòVæf–Æ&ÆR7FFW3¢52"¢&–çB‚"Ò†öÖWvR&÷WFRæBÆö6ÂFFFWVæFVæ7“¢52"¢&–çB‚"Ò3còsc‚ò#ƒ&W7öç6—fR'VÆW3¢52"¢&–çB‚"ÒÖ7&ò&Vv–ÖRfÇVRò6÷W&6Ròg&W6†æW72òfÆÆ&6²7FFW3¢52"¢&–çB‚"Ò4äâfV"bw&VVB66÷&Rò&F–ærò6Æ÷6RFVÇFòg&W6†æW72òf–ÇW&R7FFW3¢52"¢&–çB‚"Òôe"e4’fÇVRòF–Ç’6†ævRò¦W&ò&6VÆ–æRòg&W6†æW72ò'F–Âòf–ÇW&R7FFW3¢52"¢&–çB‚"Ò7&÷72Ö76WBf—fR×W&–öB&æ¶–æròW"×&÷r&÷fVææ6RòfÆÆ&6²òg&W6†æW72òf–ÇW&R7FFW3¢52"¢&–çB‚"ÒvÆö&Â76WBF÷Öf—fRòF÷FÂòW"×&V6÷&B&÷fVææ6RòÖ—†VBÖg&WVVæ7’òf–ÇW&R7FFW3¢52"¢&–çB‚"Ò6ö×ç’W"×&÷rÖ&¶WBöfÆÆ&6²öW7F–ÖFRòÖ÷fW"vF–ærò&—fFRW†6ÇW6–öâòf–ÇW&R7FFW3¢52"¢&–çB‚"Òvw&VvFR6÷W&6R†VÇF‚ò6÷fW&vRò6öç6V7WF—fRf–ÇW&Rò&WF–æVB6æ6†÷BòF–væ÷7F–73¢52"¢&–çB‚"Òf÷W"×—VÆ–æR7F&ÆRcWf–FVæ6RòÖ7&ò7&÷72Ö6†V6²ò7FÆR6æ6†÷B—6öÆF–öã¢52"¢&–çB‚"Ò&WFvFRÆ–æ²ò7G'V7GW&VBFFfVVF&6²ò6Vç6—F—fRÖ–çWBv&æ–æs¢52"¢&–çB‚"ÒV6öæöÖ–26ÆVæF"6÷VçG2ò–×7BòÆö6Â×F–ÖR–çWBòg&W6†æW72ò–æFWVæFVçBf–ÇW&R7FFW3¢52"¢&–çB‚"Òf–ææ6RæWw2Ö&¶WBÖöæÇ’òÆFW7BÖf—fRò6fRÆ–æ·2òg&W6†æW72ò–æFWVæFVçBf–ÇW&R7FFW3¢52"¢&–çB‚"Òf÷W"7W÷'F–ærfVVG2òÖ–w&FVB†VÇF‚ò'F–ÂfÆÆ&6²ò&WF–æVB6æ6†÷Bòv÷&¶fÆ÷rv÷fW&ææ6S¢52"¢&–çB‚"Òf÷W"&VÂÖ76WBWFFR6†–ç2ò6–ævÆR×6÷W&6R—6öÆF–öâò7FÆRWf–FVæ6S¢52"¢&–çB‚"ÒöæRÆÆ÷vÆ—7FVBG&F–æuf–Wrg&VRv–FvWBFWVæFVæ7’òW‡Æ–6—B&÷‡’fÆÆ&6³¢52"¢&–çB‚"Ò&÷‡’v–FvWB&Vv—7G&F–öâò†÷7BÖ÷VçBòF–ÖV÷WBòÆFR×&V6÷fW'’6öçG&7C¢52"¢&–çB‚"Ò'&÷w6W"&Vw&W76–öâ&ö&Rò&VBÖöæÇ’4’6öçG&7C¢52"  ¦–bõöæÖUõòÓÒ%õöÖ–åõò# ¢Ö–â‚
