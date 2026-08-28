@@ -417,13 +417,13 @@ def run_asset_tracker_builder_contract_tests() -> None:
 
     universe_names = [item["name"] for item in module.ASSETS]
     universe_symbols = [_first_symbol(item) for item in module.ASSETS]
-    require(len(module.ASSETS) == 98, f"跨资产清单条数应为98，当前{len(module.ASSETS)}")
+    require(len(module.ASSETS) == 104, f"跨资产清单条数应为104，当前{len(module.ASSETS)}")
     require(len(set(universe_names)) == len(universe_names), "跨资产标的名称必须唯一")
     require(len(set(universe_symbols)) == len(universe_symbols), "跨资产首选代码必须唯一")
     categories = {}
     for item in module.ASSETS:
         categories[item["cat"]] = categories.get(item["cat"], 0) + 1
-    require(categories == {"equity": 38, "commodity": 27, "fx": 22, "bond": 11},
+    require(categories == {"equity": 38, "commodity": 33, "fx": 22, "bond": 11},
             f"跨资产四类条数与登记不一致：{categories}")
     # 2026-08-25 所有者决定：撤下QQQ代理卡后纳斯达克改由综合指数^IXIC进入指数类；
     # 道指仍由DIA免费组件展示，纳斯达克100（NDX）不再进入本站，两者都不得混进清单。
@@ -2898,13 +2898,17 @@ def main() -> None:
     # 四条轴与五档等级梯（缺轴时改为核对「不可用」态而不是分数）。
     require(REGRESSION_MODULE.stat().st_size <= 25_400,
             "仅回归模式加载的浏览器探针超过24KB性能预算")
-    require(BOARD_DATA_MODULE.stat().st_size <= 19_000,
-            "按需加载的品类行情板数据层超过19KB性能预算")
+    # 22,500：在原19KB基础上给「商品品类下的二级分组」留出的增量——七组的登记、逐代码
+    # 归组表与「口径按工具本身取值」的判断。分组只是静态归类，不新增任何请求与任何行情事实。
+    require(BOARD_DATA_MODULE.stat().st_size <= 22_500,
+            "按需加载的品类行情板数据层超过22.5KB性能预算")
     # 23,000：在原18KB基础上给「逐行迷你走势 + 品类脉冲条」留出的增量。走势本身
     # 不新增任何请求：它复用抽屉那套历史文件与同一份带缓存的读取，一个品类最多
     # 触发一次历史文件读取；拿不到序列的行如实留白，不画推断曲线。
-    require(BOARD_VIEW_MODULE.stat().st_size <= 21_000,
-            "按需加载的品类行情板视图超过21KB性能预算")
+    # 23,000：再加上分组筛选条（aria-pressed 芯片）与列表里的分组小标题。分组不新增
+    # 任何请求：它只是把同一批已经取到的行按登记的组序摆开。
+    require(BOARD_VIEW_MODULE.stat().st_size <= 23_000,
+            "按需加载的品类行情板视图超过23KB性能预算")
     # 行情详情页是独立网址的完整页面：品类行情逐行是真链接（<a href>，可新标签页
     # 打开、可分享），不再是就地弹层。页面只读站内已在日更的公开管道，缺哪一档
     # 区间就说没有；走势图渲染器与详情页各自独立于首屏，不进常规加载预算。
@@ -2967,8 +2971,25 @@ def main() -> None:
             "品类行情板必须逐行画站内序列的迷你走势并给出涨跌分布脉冲条")
     require('<link rel="stylesheet" href="terminal-board.css">' in page
             and ".board-tab" in board_css and ".board-pulse-bar" in board_css
-            and BOARD_CSS.stat().st_size <= 12_000,
-            "行情板样式必须是两页共用的独立样式表，并保持在12KB以内")
+            and BOARD_CSS.stat().st_size <= 13_000,
+            "行情板样式必须是两页共用的独立样式表，并保持在13KB以内")
+    # 品类之下的二级分组：目前只有商品分了组。分组条是筛选芯片（aria-pressed）而不是
+    # 第二组标签页——面板仍是同一个品类的 tabpanel；列表里的分组小标题不带 .board-row，
+    # 因此不参与逐行的自选、迷你走势与盘中覆盖。两页共用同一个挂载点与同一份样式。
+    require('id="board-groups"' in page and 'id="board-groups"' in markets_page,
+            "两页都必须给品类下的二级分组条留出挂载点")
+    require("COMMODITY_GROUPS" in board_data_module and "groupSummary" in board_data_module
+            and "commodityBasis" in board_data_module
+            and "board-group-chip" in board_view_module
+            and "board-group-head" in board_view_module
+            and 'aria-pressed' in board_view_module
+            and ".board-group-chip" in board_css and ".board-group-head" in board_css,
+            "商品品类必须在品类之下再分组，并且分组条是筛选芯片而不是第二组标签页")
+    require("能源" in board_data_module and "贵金属" in board_data_module
+            and "工业金属" in board_data_module and "农产品" in board_data_module
+            and "软商品" in board_data_module and "畜牧" in board_data_module
+            and "商品指数" in board_data_module,
+            "商品二级分组必须覆盖能源、贵金属、工业金属、农产品、软商品、畜牧与商品指数")
     require('import("./finance-terminal-board-view.mjs")' in app
             and 'import("./finance-terminal-board-data.mjs")' in app
             and "createBoardView" in board_view_module

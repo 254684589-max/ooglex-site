@@ -83,7 +83,7 @@ export function runBrowserRegressionProbe(options = {}) {
   )).filter(elementIsRendered);
   const targetMinimum = width <= 620 ? 44 : 24;
   const targetElements = Array.from(document.querySelectorAll(
-    ".brand, .back-link, .terminal-rail a, .stable-v1-chip, .section-nav a, .terminal-mode-switch a, .aurora-evidence > *, .gateway-enter, .gateway-secondary, .method summary, .period-tab, .source-link, .detail-link, .news-link, .operation-action, .operation-readiness-link, .legal-links a, .board-tab, .board-open, .board-toggle, .board-search"
+    ".brand, .back-link, .terminal-rail a, .stable-v1-chip, .section-nav a, .terminal-mode-switch a, .aurora-evidence > *, .gateway-enter, .gateway-secondary, .method summary, .period-tab, .source-link, .detail-link, .news-link, .operation-action, .operation-readiness-link, .legal-links a, .board-tab, .board-group-chip, .board-open, .board-toggle, .board-search"
   )).filter(elementIsRendered);
   const sectionLinks = Array.from(document.querySelectorAll(".section-nav a"));
   const supportingHealthPanels = Array.from(document.querySelectorAll(

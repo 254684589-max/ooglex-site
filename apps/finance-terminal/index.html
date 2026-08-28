@@ -1676,7 +1676,7 @@
           <span class="board-pulse" id="board-pulse" hidden></span>
           <span class="board-live" id="board-live" hidden></span>
         </div>
-        <p class="board-note" id="board-intro">六大品类全部读取站内已在日更的公开管道：商品、指数、外汇与中国国债来自跨资产管道（Yahoo Finance），股票来自全球公司榜，加密来自全球资产榜（CoinGecko），美债各期限来自FRED官方收益率曲线。每行的迷你走势取站内历史序列最近60个交易日的收盘，颜色按这段窗口自己的首尾变化，与当日涨跌分开算；站内还没有序列的标的显示「无序列」，不画任何推断曲线。点开任一标的会打开它自己的完整行情页（独立网址，可直接分享），那里有 1个月到全部区间的走势、区间统计与逐项来源。这块行情板另有独立页面：<a href="../markets/">全球市场行情</a>。涨跌口径按品类不同：股票为当日价格变动，加密为过去24小时，债券为相对上一观测的基点（bp）变化。</p>
+        <p class="board-note" id="board-intro">六大品类全部读取站内已在日更的公开管道：商品、指数、外汇与中国国债来自跨资产管道（Yahoo Finance），股票来自全球公司榜，加密来自全球资产榜（CoinGecko），美债各期限来自FRED官方收益率曲线。每行的迷你走势取站内历史序列最近60个交易日的收盘，颜色按这段窗口自己的首尾变化，与当日涨跌分开算；站内还没有序列的标的显示「无序列」，不画任何推断曲线。点开任一标的会打开它自己的完整行情页（独立网址，可直接分享），那里有 1个月到全部区间的走势、区间统计与逐项来源。这块行情板另有独立页面：<a href="../markets/">全球市场行情</a>。商品这一类在品类之下再分一层：能源、贵金属、工业金属、农产品、软商品、畜牧与商品指数。分组是静态归类，只决定怎么摆，不改动任何一行的价格、涨跌、数据日与来源；某一组当天一条数据都没有就不摆这个标签，也不留空位。逐行的「口径」列写明它是交易所期货、官方现货序列还是基金份额价格——这三者不是同一种东西，不能当成同一个报价读。涨跌口径按品类不同：股票为当日价格变动，加密为过去24小时，债券为相对上一观测的基点（bp）变化。</p>
         <div class="board-controls">
           <label class="sr-only" for="board-search">按名称或代码搜索标的</label>
           <input class="board-search" id="board-search" type="search" placeholder="搜索名称或代码，例如 黄金 / GC=F"
@@ -1684,6 +1684,7 @@
           <button type="button" class="watch-filter" id="board-watch-filter" aria-pressed="false" hidden>只看自选</button>
         </div>
         <div class="board-tabs" id="board-tabs" role="tablist" aria-label="行情品类"></div>
+        <div class="board-groups" id="board-groups" role="group" aria-label="品类分组" hidden></div>
         <div class="board-panel" id="board-panel" role="tabpanel" aria-label="行情列表" aria-busy="true">
           <p class="board-empty">正在按品类整理站内日更行情…</p>
         </div>
