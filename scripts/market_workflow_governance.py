@@ -60,6 +60,13 @@ DATASET_RULES = {
     "asset-tracker-intraday": DatasetRule((
         "apps/asset-tracker/intraday.json",
     )),
+    # 商品现货与官方指数：FRED（EIA 日频现货 + IMF 月频初级商品价）。它只允许动自己
+    # 这三个文件，期货那条 Yahoo 管道的任何文件都不在可写范围内。
+    "commodities": DatasetRule((
+        "apps/commodities/data.json",
+        "apps/commodities/health.json",
+        "apps/commodities/history.json",
+    )),
     "companies": DatasetRule(
         (
             "apps/companies/data.json",

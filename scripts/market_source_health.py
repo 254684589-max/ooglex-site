@@ -79,6 +79,37 @@ DATASET_SPECS: dict[str, dict[str, Any]] = {
             {"id": "previous-snapshot", "kind": "previous-snapshot", "label": "有效报价低于50%或体检失败时保留完整旧快照"},
         ],
     },
+    "commodities": {
+        # 与 scripts/commodities/build_commodities.py 的 SERIES 清单条数保持一致。
+        # 每一条都在 Actions 机房实测取到过才登记，因此这里不留历史值备选。
+        "expectedRecords": 36,
+        "sources": [
+            {
+                "id": "fred-eia",
+                "name": "FRED / U.S. EIA",
+                "role": "primary",
+                "matches": ["FRED / U.S. EIA"],
+                "recordModes": ["market", "fallback", "unknown", "unavailable"],
+                "successModes": ["market"],
+            },
+            {
+                "id": "fred-imf",
+                "name": "FRED / IMF Primary Commodity Prices",
+                "role": "primary",
+                "matches": ["FRED / IMF Primary Commodity Prices"],
+                "recordModes": ["market", "fallback", "unknown", "unavailable"],
+                "successModes": ["market"],
+            },
+        ],
+        "recovery": [
+            {"id": "keyless-export", "kind": "alternate-endpoint",
+             "label": "缺少FRED_API_KEY时改读免密钥的fredgraph.csv公开导出"},
+            {"id": "previous-record", "kind": "previous-record",
+             "label": "单条序列失败时沿用上一份有效观测并标记过期"},
+            {"id": "previous-snapshot", "kind": "previous-snapshot",
+             "label": "整源失败时保留上一份完整data.json"},
+        ],
+    },
     "asset-ranking": {
         "expectedRecords": 250,
         "sources": [

@@ -19,6 +19,8 @@ WORKFLOWS = {
     # 盘中快照是同一条管道的第二层：单独的工作流、单独的并发组、单独的可写路径，
     # 只能动 intraday.json，动不了收盘口径的任何文件。
     "asset-tracker-intraday": ROOT / ".github" / "workflows" / "asset_tracker_intraday.yml",
+    # 商品现货与官方指数：独立工作流、独立并发组、独立可写路径，动不了期货那条管道。
+    "commodities": ROOT / ".github" / "workflows" / "commodities.yml",
     "companies": ROOT / ".github" / "workflows" / "companies.yml",
     "asset-ranking": ROOT / ".github" / "workflows" / "asset_ranking.yml",
     "fear-greed": ROOT / ".github" / "workflows" / "fear_greed.yml",
@@ -224,6 +226,11 @@ def validate_workflow(dataset: str) -> None:
         allowed = {"FRED_API_KEY", "EIA_API_KEY"}
         referenced = set(__import__("re").findall(r"secrets\.([A-Z0-9_]+)", text))
         require(referenced == allowed, "宏观雷达只能读取已登记的FRED/EIA行情Secrets")
+    elif dataset == "commodities":
+        # 商品现货管道读同一把 FRED 行情密钥，且只读这一把；缺失时退到免密钥的公开导出，
+        # 因此密钥是可选加速而不是必需依赖。
+        referenced = set(__import__("re").findall(r"secrets\.([A-Z0-9_]+)", text))
+        require(referenced == {"FRED_API_KEY"}, "商品现货管道只能读取已登记的FRED行情Secret")
     else:
         require("secrets." not in text, f"{dataset}治理任务不得读取Secret")
     if dataset in ("fear-greed", "ofr-monitor", "econ-calendar", "whats-latest"):
@@ -246,6 +253,7 @@ def validate_cross_pipeline_contract() -> None:
         "macro-radar": "python scripts/macro-radar/build_radar.py",
         "asset-tracker": "python scripts/asset-tracker/build_assets.py",
         "asset-tracker-intraday": "python scripts/asset-tracker/build_intraday.py",
+        "commodities": "python scripts/commodities/build_commodities.py",
         "companies": "python scripts/companies/fetch_logos.py",
         "asset-ranking": "python scripts/asset-ranking/build_ranking.py",
         "fear-greed": "python scripts/fear-greed/build_fear_greed.py",
