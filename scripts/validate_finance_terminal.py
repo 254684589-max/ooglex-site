@@ -43,11 +43,17 @@ BOARD_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-board
 RADAR_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-radar-view.mjs"
 CURVE_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-curve-view.mjs"
 GLOBE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-globe.mjs"
+ORBIT_LINKS_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-orbit-links.mjs"
+GATEWAY_PREVIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-gateway-preview.mjs"
 VISION_CSS = ROOT / "apps" / "finance-terminal" / "terminal-vision.css"
 VISUAL_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-visual-fidelity.css"
 REFERENCE_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-fidelity.css"
+AURORA_HOME_CSS = ROOT / "apps" / "finance-terminal" / "terminal-aurora-home.css"
+REFERENCE_HOME_V2_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-home-v2.css"
+REFERENCE_HOME_V3_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-home-v3.css"
 COMMAND_CENTER_CSS = ROOT / "apps" / "finance-terminal" / "terminal-command-center.css"
 COMMAND_CENTER_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-command-center.mjs"
+AURORA_HOME_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-aurora-home.mjs"
 REGRESSION_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-regression.mjs"
 VISUALS_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_visuals.mjs"
 RISK_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-view.mjs"
@@ -1606,8 +1612,12 @@ assert.deepStrictEqual(operationCards.map((card) => card.id), [
   "macro-radar", "asset-tracker", "companies", "asset-ranking"
 ]);
 assert.deepStrictEqual(operationCards.map((card) => card.status), [
-  macroHealth.status, assetTrackerHealth.status, companiesHealth.status, assetRankingHealth.status
+  macroHealth.status,
+  adapter.adaptSourceHealth(assetTrackerHealth, "asset-tracker", assetTracker, currentNow).status,
+  adapter.adaptSourceHealth(companiesHealth, "companies", companies, currentNow).status,
+  adapter.adaptSourceHealth(assetRankingHealth, "asset-ranking", assetRanking, currentNow).status
 ]);
+assert.strictEqual(operationCards[3].reportedPipelineStatus, assetRankingHealth.status);
 /* 条数以各自健康文件声明的为准：跨资产清单扩容时这里不该跟着改成新的魔法数字。 */
 assert.deepStrictEqual(operationCards.map((card) => card.publishedRecords), [
   macroHealth.coverage.publishedSeries,
@@ -1664,7 +1674,9 @@ const tamperedOperationCards = operationsData.buildOperationsCards(tamperedOpera
 assert.strictEqual(tamperedOperationCards[0].status, "unknown");
 assert.strictEqual(tamperedOperationCards[0].contractKnown, false);
 assert.deepStrictEqual(tamperedOperationCards.slice(1).map((card) => card.status), [
-  assetTrackerHealth.status, companiesHealth.status, assetRankingHealth.status
+  adapter.adaptSourceHealth(assetTrackerHealth, "asset-tracker", assetTracker, currentNow).status,
+  adapter.adaptSourceHealth(companiesHealth, "companies", companies, currentNow).status,
+  adapter.adaptSourceHealth(assetRankingHealth, "asset-ranking", assetRanking, currentNow).status
 ]);
 
 const mismatchedMacroSnapshot = JSON.parse(JSON.stringify(macro));
@@ -1858,7 +1870,9 @@ assert(globalAssets.assets.some((asset) => asset.static));
 assert(globalAssets.assets.some((asset) => !asset.static));
 assert.deepStrictEqual(globalAssets.quality.counts, assetRanking.dataQuality.counts);
 assert.strictEqual(globalAssets.quality.declaredValid, true);
-assert.strictEqual(globalAssets.sourceHealth.status, assetRankingHealth.status);
+assert.strictEqual(globalAssets.sourceHealth.status,
+  adapter.adaptSourceHealth(assetRankingHealth, "asset-ranking", assetRanking, currentNow).status);
+assert.strictEqual(globalAssets.sourceHealth.reportedPipelineStatus, assetRankingHealth.status);
 assert.strictEqual(globalAssets.sourceHealth.freshCoveragePct,
   assetRankingHealth.coverage.freshCoveragePct);
 assert.strictEqual(globalAssets.sourceHealth.verifiedCoveragePct,
@@ -1985,7 +1999,9 @@ assert.strictEqual(companyLeaders.sourceHealth.freshCoveragePct,
 assert.strictEqual(companyLeaders.sourceHealth.verifiedCoveragePct,
   companiesHealth.coverage.verifiedCoveragePct);
 assert.strictEqual(companyLeaders.sourceHealth.slowEstimateRecords, companies.dataQuality.counts.estimate);
-assert.strictEqual(companyLeaders.sourceHealth.dynamicIssueRecords, 0);
+const expectedCompanyDynamicIssues = companies.companies.filter((company) => company.private !== true
+  && (!company.dataMeta || company.dataMeta.mode !== "market" || company.dataMeta.status !== "ok")).length;
+assert.strictEqual(companyLeaders.sourceHealth.dynamicIssueRecords, expectedCompanyDynamicIssues);
 if (companies.dataQuality.counts.unknown + companies.dataQuality.counts.unavailable > 0) {
   assert(companyLeaders.note.includes("暂停当日领涨与领跌"));
 }
@@ -2788,10 +2804,15 @@ def main() -> None:
     radar_view_module = RADAR_VIEW_MODULE.read_text(encoding="utf-8")
     curve_view_module = CURVE_VIEW_MODULE.read_text(encoding="utf-8")
     globe_module = GLOBE_MODULE.read_text(encoding="utf-8")
+    gateway_preview_module = GATEWAY_PREVIEW_MODULE.read_text(encoding="utf-8")
+    orbit_links_module = ORBIT_LINKS_MODULE.read_text(encoding="utf-8")
+    reference_home_v3_css = REFERENCE_HOME_V3_CSS.read_text(encoding="utf-8")
     vision_css = VISION_CSS.read_text(encoding="utf-8")
     command_center_css = COMMAND_CENTER_CSS.read_text(encoding="utf-8")
     reference_fidelity_css = REFERENCE_FIDELITY_CSS.read_text(encoding="utf-8")
+    aurora_home_css = AURORA_HOME_CSS.read_text(encoding="utf-8")
     command_center_module = COMMAND_CENTER_MODULE.read_text(encoding="utf-8")
+    aurora_home_module = AURORA_HOME_MODULE.read_text(encoding="utf-8")
     regression_module = REGRESSION_MODULE.read_text(encoding="utf-8")
     risk_view_module = RISK_VIEW_MODULE.read_text(encoding="utf-8")
     research_view_module = RESEARCH_VIEW_MODULE.read_text(encoding="utf-8")
@@ -2831,6 +2852,8 @@ def main() -> None:
     require(CORRELATION_VIEW_MODULE.stat().st_size <= 15_000,
             "金融终端相关性矩阵抽屉模块超过15KB性能预算")
     require(GLOBE_MODULE.stat().st_size <= 8_000, "金融终端地球动画模块超过8KB性能预算")
+    require(ORBIT_LINKS_MODULE.stat().st_size <= 4_000, "金融终端市场连线模块超过4KB性能预算")
+    require(GATEWAY_PREVIEW_MODULE.stat().st_size <= 4_200, "金融终端入口卡指数预览模块超过4.2KB性能预算")
     require(VISION_CSS.stat().st_size <= 28_000, "金融终端科幻视觉样式超过28KB性能预算")
     # 20,000 是在分区内容还没被发现遭裁切时定的。补上「分区内那一层也要能缩」与
     # 遥测面板第三行两处修复、连同解释它们为何存在的注释后需要 20.7KB；换回的是
@@ -2841,9 +2864,24 @@ def main() -> None:
     require(COMMAND_CENTER_CSS.stat().st_size <= 27_000, "金融终端单屏指挥中心样式超过27KB性能预算")
     require(VISUAL_FIDELITY_CSS.stat().st_size <= 6_000, "金融终端高保真视觉层超过6KB性能预算")
     require(REFERENCE_FIDELITY_CSS.stat().st_size <= 12_900, "金融终端参考图精修层超过12.9KB性能预算")
+    require(AURORA_HOME_CSS.stat().st_size <= 26_000, "金融终端极光首页样式超过26KB性能预算")
+    require(REFERENCE_HOME_V2_CSS.stat().st_size <= 27_000, "金融终端参考首页第二版样式超过27KB性能预算")
+    # 22,000 是第一轮参考对齐时定的。第二轮把行情带改成椭圆弧带、证据条与六个标的换成
+    # 图形徽章、曲线补节点与图例、影响强度改三段式、页脚每组补图标块，另加解释这些取值
+    # 由来的注释后需要 27.2KB；换回的是首屏与参考稿在弧带、图标、连线与页脚四处对齐。
+    # 28,800：第三轮把总览读数从等宽体换成无衬线＋表格数字（参考稿的读数是比例字体，
+    # 等宽把字距拉宽、气质偏终端），这一层连同说明注释再占 1.5KB。
+    # 30,200：第四轮入口卡指数预览显示真实当日涨跌，逐行两列排布、涨跌配色与
+    # 表头那两行来源披露（不截断）在这里。
+    require(REFERENCE_HOME_V3_CSS.stat().st_size <= 30_200, "金融终端参考首页第三版样式超过30.2KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
+    # 3,500 是首版同步模块的预算。加上「短态优先」的取值分支（HUD 单行只放得下
+    # 中文短标签，长判语留在市场状态卡片里）与说明注释后需要 3.9KB。
+    require(AURORA_HOME_MODULE.stat().st_size <= 3_900, "金融终端极光首页同步模块超过3.9KB性能预算")
     require(APP.stat().st_size + LOADER.stat().st_size + TERMINAL_VISUALS.stat().st_size
-            + COMMAND_CENTER_MODULE.stat().st_size + GLOBE_MODULE.stat().st_size <= 230_000,
+            + COMMAND_CENTER_MODULE.stat().st_size + GLOBE_MODULE.stat().st_size
+            + ORBIT_LINKS_MODULE.stat().st_size
+            + AURORA_HOME_MODULE.stat().st_size <= 230_000,
             "金融终端常规加载JavaScript超过230KB性能预算")
     # 23,000 是加入品类行情板与分区折叠检查后的预算：探针要逐「标签组」校验键盘与
     # 语义（页面现在有跨资产周期与品类行情板两组），核对六个品类标签、当前品类的
@@ -2929,14 +2967,52 @@ def main() -> None:
             and "createOperationsView" in operations_view_module
             and "finance-terminal-operations-view.mjs" not in page,
             "稳定V1运行证据视图必须保持按需导入且不得在首屏预加载")
+    require('<link rel="stylesheet" href="terminal-reference-home-v2.css">' in page
+            and '<link rel="stylesheet" href="terminal-reference-home-v3.css">' in page
+            and 'body[data-terminal-view="overview"] .market-globe-shell' in reference_home_v3_css
+            and '@media (max-width: 620px)' in reference_home_v3_css
+            and 'aria-hidden' in page,
+            "参考首页精修层缺少样式引用、单屏地球定位或独立窄屏规则")
     require('<link rel="stylesheet" href="terminal-vision.css">' in page
             and '<link rel="stylesheet" href="terminal-command-center.css">' in page
             and '<link rel="stylesheet" href="terminal-visual-fidelity.css">' in page
             and '<link rel="stylesheet" href="terminal-reference-fidelity.css">' in page
+            and '<link rel="stylesheet" href="terminal-aurora-home.css">' in page
             and 'src="finance-terminal-command-center.mjs"' in page
             and 'import("./finance-terminal-visuals.mjs")' in app
             and "createTerminalVisuals" in terminal_visuals,
             "科幻终端视觉层缺少本地样式或数据模块")
+    require('from "./finance-terminal-aurora-home.mjs"' in command_center_module
+            and "initAuroraHome" in command_center_module
+            and "MutationObserver" in aurora_home_module
+            and "innerHTML" not in aurora_home_module
+            and 'id="aurora-gateways"' in page
+            and 'class="terminal-mode-switch"' in page
+            and ".aurora-gateway-grid" in aurora_home_css
+            and "@media (max-width: 620px)" in aurora_home_css,
+            "极光首页缺少模式切换、三工作流入口、已校验读数同步或独立移动端布局")
+    require('import("./finance-terminal-gateway-preview.mjs")' in app
+            and "pickIndexRows" in gateway_preview_module
+            and "describeRows" in gateway_preview_module
+            and "!asset.proxy" in gateway_preview_module
+            and 'asset.dataMeta.mode === "market"' in gateway_preview_module
+            and 'asset.dataMeta.status === "ok"' in gateway_preview_module
+            and "asset.stale !== true" in gateway_preview_module
+            and "innerHTML" not in gateway_preview_module
+            and 'id="gateway-index-table"' in page
+            and 'aria-busy="true"' in page
+            and "finance-terminal-gateway-preview.mjs" not in page,
+            "入口卡指数预览必须只收已校验的当日涨跌、排除代理与过期条目、按需导入且不使用innerHTML")
+    require('from "./finance-terminal-orbit-links.mjs"' in command_center_module
+            and "initOrbitLinks" in orbit_links_module
+            and "anchorPoint" in orbit_links_module
+            and "arcPath" in orbit_links_module
+            and "ResizeObserver" in orbit_links_module
+            and "innerHTML" not in orbit_links_module
+            and 'class="orbit-links"' in page
+            and 'id="orbit-link-a"' in page
+            and ".orbit-link" in reference_home_v3_css,
+            "市场连线层必须按城市标记实测坐标绘制、随尺寸重算且不使用innerHTML")
     require('from "./finance-terminal-globe.mjs"' in command_center_module
             and "initMarketGlobe" in globe_module
             and "textureCoordinate" in globe_module
@@ -3496,9 +3572,9 @@ def main() -> None:
     require("changeUnit" in app and '"bp"' in app, "app.js未按bp显示收益率变化")
     require("apps/finance-terminal/" in home, "首页缺少金融终端入口")
     require("金融终端 Public Beta" in home
-            and "4项站内真实数据、4项免费ETF代理、0项演示" in home
+            and "4项站内真实数据、2项免费ETF代理、0项演示" in home
             and "Finance Terminal Public Beta" in home
-            and "4 first-party data cards, 4 free ETF proxies, 0 demo" in home,
+            and "4 first-party data cards, 2 free ETF proxies, 0 demo" in home,
             "首页金融终端入口未同步Public Beta真实数据与免费代理口径")
     require("金融终端（演示）" not in home
             and "4项演示数据" not in home
@@ -3765,7 +3841,7 @@ def main() -> None:
     print(visual_contracts.stdout.strip())
 
     print("Finance Terminal DGS10 + DTWEXBGS + RWTC + BTC/USD validation: PASS")
-    print("- four local data cards plus four explicit free TradingView ETF proxies / zero demos: PASS")
+    print("- four local data cards plus two explicit free TradingView ETF proxies / zero demos: PASS")
     print("- yield bp / broad-dollar and WTI percent / BTC 24h or previous-close change: PASS")
     print("- FRED and EIA refresh success / retained fallback / no-history error: PASS")
     print("- source / as-of / updated-at / stale / unavailable states: PASS")

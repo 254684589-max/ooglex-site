@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-08-25T21:38:02Z",
-  "asOf": "2026-08-25",
+  "updatedAt": "2026-08-27T23:56:51Z",
+  "asOf": "2026-08-27",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-23 ~ 2026-08-29",
-  "count": 69,
+  "count": 71,
   "highCount": 9,
   "events": [
     {
@@ -751,6 +751,18 @@
       "actual": null
     },
     {
+      "ts": "2026-08-28T13:00:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Hammack Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
       "ts": "2026-08-28T13:45:00Z",
       "ccy": "USD",
       "country": "美国",
@@ -818,6 +830,18 @@
       "title": "Jackson Hole Symposium",
       "titleEn": "Jackson Hole Symposium",
       "impact": "high",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-08-29T15:15:00Z",
+      "ccy": "All",
+      "country": "全球",
+      "flag": "🌐",
+      "title": "G20 Meetings",
+      "titleEn": "G20 Meetings",
+      "impact": "low",
       "forecast": null,
       "previous": null,
       "actual": null

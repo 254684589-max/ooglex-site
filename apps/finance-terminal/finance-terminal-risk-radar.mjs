@@ -26,7 +26,8 @@ export function renderRiskRadar(document, cards) {
     polygon.setAttribute("points", Array(6).fill("130,118").join(" "));
     score.textContent = "—";
     values.forEach((value) => { value.textContent = "—"; });
-    state.textContent = "UNAVAILABLE";
+    state.textContent = "信号不足 · UNAVAILABLE";
+    state.dataset.shortState = "信号不足";
     state.className = "status-error-text";
     if (verdict) verdict.textContent = "信号不足";
     if (insightTitle) insightTitle.textContent = "风险信号不完整，摘要保持空态";
@@ -46,7 +47,8 @@ export function renderRiskRadar(document, cards) {
   const tier = radar.score >= 6.5 ? 2 : radar.score >= 4 ? 1 : 0;
   const reading = radar.score.toFixed(1);
   score.textContent = reading;
-  state.textContent = ["LOW RISK", "MODERATE", "HIGH RISK"][tier];
+  state.textContent = ["低风险 · LOW RISK", "中等 · MODERATE", "高风险 · HIGH RISK"][tier];
+  state.dataset.shortState = ["低风险", "中等", "高风险"][tier];
   state.className = tier === 2 ? "status-watch-text" : "status-ok-text";
   if (verdict) verdict.textContent = ["低风险\n继续跟踪", "中等风险\n保持审慎", "高风险\n控制敞口"][tier];
   if (insightTitle) insightTitle.textContent = ["风险相对温和，继续跟踪数据", "风险偏中高，保持分散耐心", "风险偏高，优先关注敞口与流动性"][tier];

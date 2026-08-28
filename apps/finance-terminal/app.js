@@ -1226,6 +1226,8 @@
     var stale = age > OFR_FSI_MAX_BUSINESS_DAYS;
     var partial = !isNumber(fsi.change);
     var assessment = fsi.value > 0 ? "高于历史平均压力" : fsi.value < 0 ? "低于历史平均压力" : "处于历史平均压力";
+    /* 同一个比较的短写法，供首屏HUD单行显示；卡片里仍是完整判语。 */
+    var shortAssessment = fsi.value > 0 ? "偏高" : fsi.value < 0 ? "偏低" : "持平";
     var changeText = "日变化暂不可用";
     if (!partial) {
       var sign = fsi.change > 0 ? "+" : fsi.change < 0 ? "−" : "";
@@ -1247,6 +1249,7 @@
       decimals: 2,
       suffix: "",
       assessment: assessment,
+      shortAssessment: shortAssessment,
       changeText: changeText,
       note: note,
       meterPercent: null,
@@ -2048,7 +2051,7 @@
     if (officialIds.length !== 4 || officialIds.indexOf("us10y") === -1 || officialIds.indexOf("dxy") === -1
       || officialIds.indexOf("wti") === -1 || officialIds.indexOf("bitcoin") === -1
       || proxyAssets.length !== 2 || demoCount !== 0) {
-      throw new Error("4项站内行情与4项免费嵌入代理的配置不一致");
+      throw new Error("4项站内行情与2项免费嵌入代理的配置不一致");
     }
     var expectedProxies = {
       sp500: ["SPY", "AMEX:SPY", "SPX"],
@@ -2551,6 +2554,12 @@
       return x.toFixed(1) + "," + y.toFixed(1);
     }).join(" ");
 
+    /* 面积用同一组观测点闭合到基线，只是同一条折线的填充，不新增任何推断数据点。 */
+    var area = document.createElementNS(SVG_NS, "polygon");
+    area.setAttribute("class", "area");
+    area.setAttribute("points", "0,42 " + points + " 240,42");
+    svg.appendChild(area);
+
     var line = document.createElementNS(SVG_NS, "polyline");
     line.setAttribute("class", "line");
     line.setAttribute("points", points);
@@ -2877,7 +2886,7 @@
     licenseNotice.className = "license-notice status-" + state.status;
     if (state.status === "free") {
       licenseLabel.textContent = "FREE DATA";
-      licenseTitle.textContent = "四项免费ETF代理已启用";
+      licenseTitle.textContent = "两项免费ETF代理已启用";
       licenseCopy.textContent = "DIA与GLD由TradingView官方免费组件直接展示；均明确标为代理，不保存、导出或再分发原始行情，也不需要API密钥。";
     } else {
       licenseLabel.textContent = "SOURCE UNKNOWN";
@@ -2994,6 +3003,19 @@
     return card;
   }
 
+  /* 「专业终端」入口卡的指数预览：跨资产管道已经在 risk 组里取过，这里只镜像它，
+     不新增请求。模块按需导入，失败时预览保持空态并写明管道不可用。 */
+  function renderGatewayIndexPreview(group) {
+    var tracker = group && group.assetTracker ? group.assetTracker : {};
+    import("./finance-terminal-gateway-preview.mjs").then(function (mod) {
+      mod.renderGatewayPreview({
+        document: document,
+        tracker: tracker.data || null,
+        error: tracker.error || null
+      });
+    }).catch(function () {});
+  }
+
   function updateSummary(data) {
     var proxies = data.assets.filter(function (asset) { return Boolean(asset.externalDisplay); });
     var official = data.assets.filter(function (asset) {
@@ -3044,7 +3066,7 @@
       bannerLabel.textContent = "FREE";
       bannerTitle.textContent = "核心资产已取消演示数值";
       bannerCopy.textContent = "DGS10、DTWEXBGS、EIA RWTC与BTC/USD读取站内每日数据；DIA与GLD由TradingView免费组件直接展示，并明确标注ETF代理关系。";
-      bannerNote.textContent = "4 REAL · 4 FREE PROXY · 0 DEMO";
+      bannerNote.textContent = "4 REAL · 2 FREE PROXY · 0 DEMO";
       dataStatus.textContent = breakdown;
     }
   }
@@ -3069,7 +3091,7 @@
     pageUpdated.textContent = data.updatedAt ? formatTimestamp(data.updatedAt, false) : "真实数据更新时间不可用";
     if (data.updatedAt) pageUpdated.dateTime = data.updatedAt;
     pageSource.textContent = data.source;
-    assetCount.textContent = "8项资产 · " + (official.length - unavailable.length)
+    assetCount.textContent = data.assets.length + "项资产 · " + (official.length - unavailable.length)
       + "项站内真实可用 / " + unavailable.length + "项不可用 / "
       + proxies.length + "项免费嵌入代理 / " + demos.length + "项演示";
     updateSummary(data);
@@ -3397,6 +3419,7 @@
           }
           if (name === "risk") {
             riskSources = group;
+            renderGatewayIndexPreview(group);
             return loadSectionView(name).then(function () {
               return buildRiskCards(group);
             });

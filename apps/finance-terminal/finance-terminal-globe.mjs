@@ -1,20 +1,18 @@
-/* 全息线框地球：站内海陆遮罩点阵大陆 + 倾斜经纬网 + 前后分层轨道环。
-   贴图仅取同源静态图，不含任何行情数值。 */
+import { drawEarthTexture } from "./finance-terminal-globe-texture.mjs";
+
 const MASK_URL = new URL("../tv/vendor/earth-water.jpg", import.meta.url).href;
-const FALLBACK_URL = new URL("../tv/vendor/earth-night.jpg", import.meta.url).href;
-const INITIAL_LONGITUDE = -34;
-const ROTATION_DEGREES_PER_MS = .0025;
+const TEX_URL = new URL("../tv/vendor/earth-night.jpg", import.meta.url);
+const INITIAL_LONGITUDE = 18;
+const ROTATION = .0025;
 const SIN_TILT = Math.sin(.34);
 const COS_TILT = Math.cos(.34);
 const RAD = Math.PI / 180;
-const ORBITS = [[1.2, .3, -.36, "244,182,75"], [1.34, .19, .28, "69,212,255"], [1.09, .46, .62, "88,206,255"]];
 
 export function textureCoordinate(centerLongitude, normalizedX) {
   const longitude = centerLongitude + Math.asin(Math.max(-1, Math.min(1, normalizedX))) * 180 / Math.PI;
   return (((longitude + 180) % 360) + 360) % 360 / 360;
 }
 
-/* 倾斜正交投影，depth>0 为朝向观察者的半球。 */
 export function projectPoint(latitude, longitude, centerLongitude) {
   const phi = latitude * RAD;
   const delta = (longitude - centerLongitude) * RAD;
@@ -33,11 +31,11 @@ export function initMarketGlobe(options = {}) {
 
   const figure = host.closest(".market-orbit");
   const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const image = new window.Image();
+  const maskImage = new window.Image();
+  const textureImage = new window.Image();
   let animationFrame = 0, lastFrame = 0, observer = null, land = [], spun = INITIAL_LONGITUDE;
-  let ready = false, destroyed = false;
+  let ready = false, textureReady = false, destroyed = false;
 
-  /* 遮罩一次性采样成陆地点阵，之后每帧只投影。 */
   function sampleLand() {
     const columns = 208, rows = 104;
     const buffer = document.createElement("canvas");
@@ -45,7 +43,7 @@ export function initMarketGlobe(options = {}) {
     buffer.height = rows;
     const target = buffer.getContext("2d", { willReadFrequently: true });
     if (!target) return;
-    target.drawImage(image, 0, 0, columns, rows);
+    target.drawImage(maskImage, 0, 0, columns, rows);
     let pixels;
     try {
       pixels = target.getImageData(0, 0, columns, rows).data;
@@ -74,7 +72,6 @@ export function initMarketGlobe(options = {}) {
     if (ready) draw(spun);
   }
 
-  /* parallel：定纬扫经；否则定经扫纬。 */
   function trace(cx, cy, r, fixed, parallel) {
     let drawing = false;
     for (let value = 0; value <= (parallel ? 360 : 180); value += 4) {
@@ -88,41 +85,23 @@ export function initMarketGlobe(options = {}) {
   }
 
   function drawSphere(cx, cy, r) {
-    ctx.strokeStyle = "rgba(99,216,255,.3)";
+    if (textureReady) drawEarthTexture(ctx, textureImage, cx, cy, r, spun);
+    ctx.strokeStyle = "rgba(99,216,255,.1)";
     ctx.lineWidth = Math.max(.6, r * .0035);
     ctx.beginPath();
     [-60, -30, 0, 30, 60].forEach((latitude) => trace(cx, cy, r, latitude, true));
     for (let longitude = -180; longitude < 180; longitude += 30) trace(cx, cy, r, longitude, false);
     ctx.stroke();
 
-    const dot = Math.max(1, r * .0094);
-    ctx.fillStyle = "rgba(154,242,255,.96)";
+    const dot = Math.max(.8, r * .0065);
+    ctx.fillStyle = textureReady ? "rgba(145,231,255,.38)" : "rgba(154,242,255,.96)";
     for (let index = 0; index < land.length; index += 2) {
       const point = projectPoint(land[index], land[index + 1], spun);
       if (point.depth <= .04) continue;
-      ctx.globalAlpha = Math.min(1, point.depth * 1.55);
+      ctx.globalAlpha = Math.min(textureReady ? .3 : 1, point.depth * (textureReady ? .44 : 1.55));
       ctx.fillRect(cx + point.x * r - dot / 2, cy + point.y * r - dot / 2, dot, dot);
     }
     ctx.globalAlpha = 1;
-  }
-
-  /* 后半段先画、前半段后画，形成环绕关系。 */
-  function drawOrbits(cx, cy, r, front) {
-    ORBITS.forEach(([scale, flatten, rotation, color]) => {
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(rotation);
-      ctx.strokeStyle = `rgba(${color},${front ? .85 : .26})`;
-      ctx.lineWidth = Math.max(1, r * (front ? .006 : .004));
-      if (front) {
-        ctx.shadowColor = `rgba(${color},.55)`;
-        ctx.shadowBlur = r * .05;
-      }
-      ctx.beginPath();
-      ctx.ellipse(0, 0, r * scale, r * scale * flatten, 0, front ? Math.PI : 0, front ? Math.PI * 2 : Math.PI);
-      ctx.stroke();
-      ctx.restore();
-    });
   }
 
   function draw(longitude) {
@@ -133,7 +112,6 @@ export function initMarketGlobe(options = {}) {
     const cy = cx;
     const r = size * .385;
     ctx.clearRect(0, 0, size, size);
-    drawOrbits(cx, cy, r, false);
 
     const body = ctx.createRadialGradient(cx - r * .35, cy - r * .4, r * .05, cx, cy, r * 1.05);
     body.addColorStop(0, "rgba(30,102,150,.97)");
@@ -147,16 +125,20 @@ export function initMarketGlobe(options = {}) {
     drawSphere(cx, cy, r);
     ctx.restore();
 
-    ctx.strokeStyle = "rgba(126,232,255,.85)";
-    ctx.lineWidth = Math.max(1, r * .0075);
-    ctx.shadowColor = "rgba(66,209,255,.9)";
-    ctx.shadowBlur = r * .13;
+    /* 参考稿的边缘光不是均匀一圈：左上缘最亮，绕到右下逐渐熄灭。 */
+    const limb = ctx.createLinearGradient(cx - r, cy - r, cx + r * .7, cy + r);
+    limb.addColorStop(0, "rgba(196,246,255,.95)");
+    limb.addColorStop(.32, "rgba(108,222,255,.7)");
+    limb.addColorStop(.68, "rgba(58,150,220,.22)");
+    limb.addColorStop(1, "rgba(30,84,150,.08)");
+    ctx.strokeStyle = limb;
+    ctx.lineWidth = Math.max(1.2, r * .009);
+    ctx.shadowColor = "rgba(96,214,255,.7)";
+    ctx.shadowBlur = r * .1;
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
     ctx.stroke();
     ctx.shadowBlur = 0;
-
-    drawOrbits(cx, cy, r, true);
   }
 
   function stop() {
@@ -167,9 +149,9 @@ export function initMarketGlobe(options = {}) {
   function frame(timestamp) {
     animationFrame = 0;
     if (destroyed || motion.matches || document.hidden) return;
-    if (!lastFrame || timestamp - lastFrame >= 42) {
+    if (!lastFrame || timestamp - lastFrame >= 72) {
       lastFrame = timestamp;
-      draw(INITIAL_LONGITUDE + timestamp * ROTATION_DEGREES_PER_MS);
+      draw(INITIAL_LONGITUDE + timestamp * ROTATION);
     }
     animationFrame = window.requestAnimationFrame(frame);
   }
@@ -180,21 +162,31 @@ export function initMarketGlobe(options = {}) {
     else if (ready) draw(INITIAL_LONGITUDE);
   }
 
-  image.decoding = "async";
-  image.onload = () => {
-    if (destroyed) return;
-    sampleLand();
+  function activate() {
+    if (destroyed || ready) return;
     ready = true;
     resize();
     draw(INITIAL_LONGITUDE);
     figure?.classList.add("globe-canvas-ready");
     start();
+  }
+
+  maskImage.onload = () => {
+    if (destroyed) return;
+    sampleLand();
+    if (ready) draw(spun);
+    else activate();
   };
-  image.onerror = () => {
-    if (image.src === MASK_URL) image.src = FALLBACK_URL;
-    else figure?.classList.add("globe-canvas-fallback");
+  maskImage.onerror = activate;
+  textureImage.onload = () => {
+    if (destroyed) return;
+    textureReady = true;
+    if (ready) draw(spun);
+    else activate();
   };
-  image.src = MASK_URL;
+  textureImage.onerror = activate;
+  maskImage.src = MASK_URL;
+  textureImage.src = TEX_URL;
 
   if (typeof window.ResizeObserver === "function") {
     observer = new window.ResizeObserver(resize);

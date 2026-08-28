@@ -1532,6 +1532,9 @@
   <link rel="stylesheet" href="terminal-command-center.css">
   <link rel="stylesheet" href="terminal-visual-fidelity.css">
   <link rel="stylesheet" href="terminal-reference-fidelity.css">
+  <link rel="stylesheet" href="terminal-aurora-home.css">
+  <link rel="stylesheet" href="terminal-reference-home-v2.css">
+  <link rel="stylesheet" href="terminal-reference-home-v3.css">
 </head>
 <body data-terminal-view="overview">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -1548,12 +1551,19 @@
     <header class="terminal-bar">
       <a class="brand" href="../../" aria-label="返回Ooglex首页">
         <span class="brand-mark" aria-hidden="true">OX</span>
-        <span>OOGLEX FINANCE TERMINAL</span>
+        <span class="brand-lockup">
+          <strong>OOGLEX</strong>
+          <small>全球金融数据 | 实时 · 准实时 · 日更</small>
+        </span>
       </a>
       <span class="public-beta-chip">PUBLIC BETA</span>
       <span class="bar-spacer"></span>
       <span class="market-state" id="market-state">正在校验</span>
       <span class="stable-v1-chip status-loading" id="stable-v1-chip" aria-label="稳定V1资格正在加载">STABLE V1 · — / 7</span>
+      <nav class="terminal-mode-switch" aria-label="终端显示模式">
+        <a href="#overview-section" data-terminal-mode="standard">标准模式</a>
+        <a href="#board-section" data-terminal-mode="professional">专业模式</a>
+      </nav>
       <a class="back-link" href="../../">返回主页</a>
     </header>
 
@@ -1569,7 +1579,7 @@
     <div class="data-banner status-loading" id="data-banner" role="region" aria-labelledby="banner-title" aria-describedby="banner-copy banner-note">
       <span class="data-label" id="banner-label">PARTIAL</span>
       <span><strong id="banner-title">正在校验免费数据覆盖</strong><span class="banner-copy" id="banner-copy">4项站内真实数据与2项TradingView免费ETF代理均不使用演示数值。</span></span>
-      <span class="data-note" id="banner-note">LOADING 4 REAL · 4 FREE PROXY · 0 DEMO</span>
+      <span class="data-note" id="banner-note">LOADING 4 REAL · 2 FREE PROXY · 0 DEMO</span>
     </div>
 
     <div class="license-notice status-loading" id="license-notice" role="region" aria-labelledby="license-title" aria-describedby="license-copy">
@@ -1578,12 +1588,12 @@
     </div>
 
     <nav class="section-nav" aria-label="页面分区">
-      <a href="#overview-section">总览</a>
+      <a href="#overview-section">全球总览</a>
+      <a href="#board-section">专业终端</a>
+      <a href="#risk-section">宏观</a>
+      <a href="#information-section">实时事件</a>
       <a href="#market-section">核心资产</a>
-      <a href="#board-section">品类行情</a>
-      <a href="#risk-section">市场状态</a>
-      <a href="#research-section">强弱与领袖</a>
-      <a href="#information-section">事件与资讯</a>
+      <a href="#research-section">市场研究</a>
       <a href="#operations-section">V1运行证据</a>
       <a href="#method-section">数据说明</a>
     </nav>
@@ -1592,10 +1602,32 @@
       <section class="hero command-hero" id="overview-section" aria-labelledby="page-title">
         <article class="orbit-panel">
           <div class="orbit-copy">
-            <p class="eyebrow">GLOBAL MARKET ORBIT · VERIFIED SOURCES</p>
-            <h1 id="page-title">全球市场总览</h1>
-            <p class="hero-copy">用一张清晰的市场面板观察美国股指、利率、美元、黄金、原油与比特币。全息地球仅用于展示全球市场时区与连接关系，不表示资金流向；价格、来源、更新时间和回退状态仍以资产卡片为准。</p>
-            <a class="panel-entry" href="#method-section">数据来源与口径 →</a>
+            <p class="eyebrow">GLOBAL MARKET PULSE · VERIFIED SIGNALS</p>
+            <h1 id="page-title">
+              <span>全球市场态势</span>
+              <strong class="overview-verdict">谨慎观察</strong>
+            </h1>
+            <p class="hero-copy">
+              <strong id="overview-insight-title" data-market-insight-title>正在校验市场判断</strong>
+              <span id="overview-insight-copy" data-market-insight-copy>只依据已校验的宏观制度信号生成规则摘要；缺任一必要信号时保持空态，不补造判断。</span>
+            </p>
+            <div class="aurora-evidence" aria-label="今日判断的三项证据">
+              <a href="#risk-section" data-evidence-icon="◎">
+                <i class="evidence-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><ellipse cx="12" cy="12" rx="4" ry="9"></ellipse><path d="M3.2 9h17.6M3.2 15h17.6"></path></svg></i>
+                <strong id="overview-macro-chip">读取中</strong>
+                <span>宏观制度</span>
+              </a>
+              <button type="button" id="risk-radar-detail" data-evidence-icon="◇">
+                <i class="evidence-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2 20 6v6.1c0 4.4-3.2 7.3-8 8.7-4.8-1.4-8-4.3-8-8.7V6z"></path><path d="M8.8 12.2 11 14.4l4.2-4.4"></path></svg></i>
+                <strong id="overview-risk-chip">读取中</strong>
+                <span>六维风险</span>
+              </button>
+              <a href="#method-section" data-evidence-icon="◉">
+                <i class="evidence-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.4c3.4 4 5.6 6.9 5.6 9.5A5.6 5.6 0 0 1 12 18.6a5.6 5.6 0 0 1-5.6-5.7c0-2.6 2.2-5.5 5.6-9.5z"></path><path d="M9.3 13.4a2.8 2.8 0 0 0 2.4 2.5"></path></svg></i>
+                <strong id="overview-coverage-chip">校验中</strong>
+                <span>数据覆盖</span>
+              </a>
+            </div>
           </div>
           <figure class="market-orbit" aria-labelledby="orbit-caption">
             <div class="market-globe-shell" id="market-globe" aria-hidden="true">
@@ -1667,43 +1699,41 @@
               <g class="market-node" transform="translate(548 235)"><circle r="5"></circle><circle class="node-pulse" r="12"></circle></g>
               <g class="market-node market-node-amber" transform="translate(625 210)"><circle r="5"></circle><circle class="node-pulse" r="12"></circle></g>
             </svg>
-            <span class="orbit-clock clock-new-york"><b>NEW YORK</b><time data-market-time="America/New_York">--:--</time><u data-market-zone="America/New_York"></u><i class="orbit-session" data-market-session="America/New_York"></i></span>
-            <span class="orbit-clock clock-london"><b>LONDON</b><time data-market-time="Europe/London">--:--</time><u data-market-zone="Europe/London"></u><i class="orbit-session" data-market-session="Europe/London"></i></span>
-            <span class="orbit-clock clock-shanghai"><b>SHANGHAI</b><time data-market-time="Asia/Shanghai">--:--</time><u data-market-zone="Asia/Shanghai"></u><i class="orbit-session" data-market-session="Asia/Shanghai"></i></span>
-            <span class="orbit-clock clock-tokyo"><b>TOKYO</b><time data-market-time="Asia/Tokyo">--:--</time><u data-market-zone="Asia/Tokyo"></u><i class="orbit-session" data-market-session="Asia/Tokyo"></i></span>
+            <svg class="orbit-links" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <path class="orbit-link" id="orbit-link-a" d=""></path>
+              <path class="orbit-link" id="orbit-link-b" d=""></path>
+              <path class="orbit-link" id="orbit-link-c" d=""></path>
+              <path class="orbit-link orbit-link-far" id="orbit-link-d" d=""></path>
+            </svg>
+            <span class="orbit-clock clock-new-york"><b>纽约</b><time data-market-time="America/New_York">--:--</time><u data-market-zone="America/New_York"></u><i class="orbit-session" data-market-session="America/New_York"></i></span>
+            <span class="orbit-clock clock-london"><b>伦敦</b><time data-market-time="Europe/London">--:--</time><u data-market-zone="Europe/London"></u><i class="orbit-session" data-market-session="Europe/London"></i></span>
+            <span class="orbit-clock clock-shanghai"><b>上海</b><time data-market-time="Asia/Shanghai">--:--</time><u data-market-zone="Asia/Shanghai"></u><i class="orbit-session" data-market-session="Asia/Shanghai"></i></span>
+            <span class="orbit-clock clock-tokyo"><b>东京</b><time data-market-time="Asia/Tokyo">--:--</time><u data-market-zone="Asia/Tokyo"></u><i class="orbit-session" data-market-session="Asia/Tokyo"></i></span>
             <figcaption id="orbit-caption">城市时间按设备当前时刻换算 · 时段按各所常规交易时段与周末计算，未计入交易所假日 · 连线为示意，非资金流向图</figcaption>
           </figure>
         </article>
 
-        <aside class="hero-telemetry" aria-label="终端数据状态">
-          <div class="telemetry-card telemetry-scan">
-            <span class="telemetry-label">MARKET STATUS</span>
-            <strong id="orbit-market-status">正在校验数据</strong>
-            <span id="orbit-market-note">状态来自核心资产数据契约</span>
-            <div class="telemetry-radar" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <aside class="risk-radar-panel" aria-label="宏观与风险状态" aria-describedby="risk-radar-note">
+          <div class="aurora-hud-list" aria-label="四项已校验状态">
+            <div class="aurora-hud aurora-hud-cyan">
+              <span class="aurora-hud-ring" aria-hidden="true"><i class="hud-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><ellipse cx="12" cy="12" rx="4" ry="9"></ellipse><path d="M3.2 9h17.6M3.2 15h17.6"></path></svg></i></span>
+              <span><small>宏观状态</small><strong id="hud-macro-value">—</strong><b id="hud-macro-state">读取中</b></span>
+            </div>
+            <div class="aurora-hud aurora-hud-amber">
+              <span class="aurora-hud-ring" aria-hidden="true"><i class="hud-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2 20 6v6.1c0 4.4-3.2 7.3-8 8.7-4.8-1.4-8-4.3-8-8.7V6z"></path><path d="M12 8.4v5.4M12 16.4h.01"></path></svg></i></span>
+              <span><small>风险雷达</small><strong id="hud-risk-value">—</strong><b id="hud-risk-state">读取中</b></span>
+            </div>
+            <div class="aurora-hud aurora-hud-green">
+              <span class="aurora-hud-ring" aria-hidden="true"><i class="hud-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12.6h4l2.3-6.4 3.1 11.6 2.5-7.4 1.8 3.4h5.3"></path></svg></i></span>
+              <span><small>金融压力</small><strong id="hud-stress-value">—</strong><b id="hud-stress-state">读取中</b></span>
+            </div>
+            <div class="aurora-hud aurora-hud-blue">
+              <span class="aurora-hud-ring" aria-hidden="true"><i class="hud-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6.1" rx="7.6" ry="2.9"></ellipse><path d="M4.4 6.1v11.8c0 1.6 3.4 2.9 7.6 2.9s7.6-1.3 7.6-2.9V6.1"></path><path d="M4.4 12c0 1.6 3.4 2.9 7.6 2.9s7.6-1.3 7.6-2.9"></path></svg></i></span>
+              <span><small>数据健康</small><strong id="hud-data-value">— / 6</strong><b id="hud-data-state">校验中</b></span>
+            </div>
           </div>
-          <div class="meta-grid" aria-label="数据说明">
-            <div class="meta-item"><span class="meta-key">Data status</span><span class="meta-value partial" id="data-status">正在校验4项真实数据</span></div>
-            <div class="meta-item"><span class="meta-key">Updated</span><time class="meta-value" id="page-updated">加载中</time></div>
-            <div class="meta-item"><span class="meta-key">Source</span><span class="meta-value" id="page-source">FRED · EIA · CoinGecko / Yahoo · TradingView</span></div>
-            <div class="meta-item"><span class="meta-key">Coverage</span><span class="meta-value" id="asset-count">6项全球核心资产</span></div>
-          </div>
-          <div class="telemetry-card">
-            <span class="telemetry-label">YIELD CURVE</span>
-            <strong>美债完整期限结构</strong>
-            <button type="button" class="panel-entry" id="yield-curve-entry">1M 至 30Y 曲线 →</button>
-          </div>
-          <div class="telemetry-card telemetry-integrity">
-            <span class="telemetry-label">DATA INTEGRITY</span>
-            <strong>来源、时点、频率、回退独立显示</strong>
-            <span>视觉层不改变任何行情口径</span>
-          </div>
-        </aside>
-
-        <aside class="risk-radar-panel" aria-labelledby="risk-radar-title" aria-describedby="risk-radar-note">
           <div class="risk-radar-head">
             <div><span>RISK RADAR</span><h2 id="risk-radar-title">风险雷达</h2></div>
-            <button type="button" class="panel-entry" id="risk-radar-detail">六轴如何算出 →</button>
             <strong id="risk-radar-state">LOADING</strong>
           </div>
           <svg class="risk-radar-chart" viewBox="0 0 260 218" role="img" aria-label="由现有市场状态信号归一化生成的六维风险雷达">
@@ -1749,6 +1779,105 @@
           <div class="skeleton" aria-hidden="true"></div><div class="skeleton" aria-hidden="true"></div>
           <div class="skeleton" aria-hidden="true"></div><div class="skeleton" aria-hidden="true"></div>
           <div class="skeleton" aria-hidden="true"></div><div class="skeleton" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="aurora-gateways" id="aurora-gateways" aria-labelledby="gateway-heading">
+        <h2 class="sr-only" id="gateway-heading">进入Ooglex三项金融工作流</h2>
+        <div class="aurora-gateway-grid">
+          <article class="aurora-gateway aurora-gateway-terminal">
+            <header>
+              <span class="aurora-gateway-icon" aria-hidden="true">⌘</span>
+              <div><small>WORKSPACE 01</small><h3>专业终端</h3></div>
+            </header>
+            <div class="aurora-gateway-preview aurora-terminal-preview">
+              <!-- 这张表显示真实当日涨跌，因此对辅助技术可见；同卡里的走势与强弱条是装饰底图，保持 aria-hidden。 -->
+              <div class="preview-quote-table" id="gateway-index-table" role="group"
+                   aria-label="全球指数当日涨跌预览，完整数据见品类行情" aria-busy="true">
+                <span class="preview-head"><b>全球指数</b><em>读取中</em></span>
+                <span class="preview-quote-row"><b>—</b><em class="preview-quote-change">—</em></span>
+                <span class="preview-quote-row"><b>—</b><em class="preview-quote-change">—</em></span>
+                <span class="preview-quote-row"><b>—</b><em class="preview-quote-change">—</em></span>
+                <span class="preview-quote-row"><b>—</b><em class="preview-quote-change">—</em></span>
+                <span class="preview-quote-row"><b>—</b><em class="preview-quote-change">—</em></span>
+                <span class="preview-quote-row"><b>—</b><em class="preview-quote-change">—</em></span>
+              </div>
+              <div class="preview-chart" aria-hidden="true">
+                <span class="preview-head"><b>跨资产趋势</b><em>近60个交易日</em></span>
+                <svg viewBox="0 0 240 90" preserveAspectRatio="none"><path class="preview-grid-line" d="M0 18H240M0 45H240M0 72H240"></path><g class="preview-candles"><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M8 72V85"></path><rect x="4.5" y="76" width="7" height="6" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M28 66V79"></path><rect x="24.5" y="70" width="7" height="6" rx=".6"></rect></g><g class="preview-candle preview-candle-down"><path class="preview-wick" d="M48 67V78"></path><rect x="44.5" y="70" width="7" height="4" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M68 53V76"></path><rect x="64.5" y="56" width="7" height="18" rx=".6"></rect></g><g class="preview-candle preview-candle-down"><path class="preview-wick" d="M88 54V65"></path><rect x="84.5" y="56" width="7" height="6" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M108 41V64"></path><rect x="104.5" y="44" width="7" height="18" rx=".6"></rect></g><g class="preview-candle preview-candle-down"><path class="preview-wick" d="M128 42V52"></path><rect x="124.5" y="44" width="7" height="5" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M148 27V51"></path><rect x="144.5" y="30" width="7" height="19" rx=".6"></rect></g><g class="preview-candle preview-candle-down"><path class="preview-wick" d="M168 28V42"></path><rect x="164.5" y="30" width="7" height="9" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M188 19V41"></path><rect x="184.5" y="22" width="7" height="17" rx=".6"></rect></g><g class="preview-candle preview-candle-down"><path class="preview-wick" d="M208 20V30"></path><rect x="204.5" y="22" width="7" height="5" rx=".6"></rect></g><g class="preview-candle preview-candle-up"><path class="preview-wick" d="M228 9V29"></path><rect x="224.5" y="12" width="7" height="15" rx=".6"></rect></g></g><g class="preview-volume"><rect x="4.5" y="85" width="7" height="5" rx=".5"></rect><rect x="24.5" y="83" width="7" height="7" rx=".5"></rect><rect x="44.5" y="86" width="7" height="4" rx=".5"></rect><rect x="64.5" y="81" width="7" height="9" rx=".5"></rect><rect x="84.5" y="85" width="7" height="5" rx=".5"></rect><rect x="104.5" y="82" width="7" height="8" rx=".5"></rect><rect x="124.5" y="86" width="7" height="4" rx=".5"></rect><rect x="144.5" y="80" width="7" height="10" rx=".5"></rect><rect x="164.5" y="84" width="7" height="6" rx=".5"></rect><rect x="184.5" y="81" width="7" height="9" rx=".5"></rect><rect x="204.5" y="85" width="7" height="5" rx=".5"></rect><rect x="224.5" y="82" width="7" height="8" rx=".5"></rect></g><path class="preview-line preview-line-soft" d="M0 78L22 68L42 72L64 54L84 61L104 42L126 47L148 28L170 38L193 20L214 26L240 10"></path></svg>
+                <u class="preview-axis"><em>60D</em><em>40D</em><em>20D</em><em>今日</em></u>
+              </div>
+              <div class="preview-flow-table" aria-hidden="true">
+                <span class="preview-head"><b>强弱队列</b></span>
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+              </div>
+            </div>
+            <p>进入高密度行情板，按商品、指数、股票、外汇、加密与债券组织决策信息。</p>
+            <a class="gateway-enter" href="#board-section" aria-label="进入专业终端">进入 <span aria-hidden="true">→</span></a>
+          </article>
+
+          <article class="aurora-gateway aurora-gateway-macro">
+            <header>
+              <span class="aurora-gateway-icon" aria-hidden="true">◎</span>
+              <div><small>WORKSPACE 02</small><h3>宏观研究</h3></div>
+            </header>
+            <div class="aurora-gateway-preview aurora-macro-preview" aria-hidden="true">
+              <div class="preview-macro-chart">
+                <span class="preview-head"><b>美债收益率曲线</b><em>当前 · 历史对比</em></span>
+                <svg viewBox="0 0 240 90" preserveAspectRatio="none"><path class="preview-grid-line" d="M0 18H240M0 45H240M0 72H240"></path><path class="preview-line preview-line-soft" d="M0 70L40 59L80 51L120 39L160 28L200 19L240 18"></path><path class="preview-line" d="M0 62L40 52L80 40L120 30L160 19L200 14L240 16"></path><g class="preview-nodes"><circle cx="0" cy="62"></circle><circle cx="40" cy="52"></circle><circle cx="80" cy="40"></circle><circle cx="120" cy="30"></circle><circle cx="160" cy="19"></circle><circle cx="200" cy="14"></circle><circle cx="240" cy="16"></circle></g></svg>
+                <u class="preview-axis"><em>3M</em><em>6M</em><em>1Y</em><em>2Y</em><em>5Y</em><em>10Y</em><em>20Y</em><em>30Y</em></u>
+                <u class="preview-legend"><em class="legend-now">当前</em><em class="legend-past">历史对比</em></u>
+              </div>
+              <div class="preview-macro-chart">
+                <span class="preview-head"><b>全球流动性监测</b><em>净流动性</em></span>
+                <svg viewBox="0 0 240 90" preserveAspectRatio="none"><path class="preview-grid-line" d="M0 18H240M0 45H240M0 72H240"></path><path class="preview-area" d="M0 44L20 53L42 40L62 60L84 34L104 48L126 30L148 54L170 42L192 70L214 54L240 66V90H0Z"></path><path class="preview-line" d="M0 44L20 53L42 40L62 60L84 34L104 48L126 30L148 54L170 42L192 70L214 54L240 66"></path></svg>
+                <u class="preview-metrics"><em><b>回购利率</b><i></i></em><em><b>资金利率</b><i></i></em><em><b>央行资产</b><i></i></em></u>
+              </div>
+            </div>
+            <p>查看宏观制度、期限结构、情绪、金融压力与地缘风险定价的原始读数和口径。</p>
+            <div class="aurora-gateway-actions">
+              <a class="gateway-enter" href="#risk-section" aria-label="进入宏观研究">进入 <span aria-hidden="true">→</span></a>
+              <button type="button" class="gateway-secondary" id="yield-curve-entry">打开收益率曲线</button>
+            </div>
+          </article>
+
+          <article class="aurora-gateway aurora-gateway-events">
+            <header>
+              <span class="aurora-gateway-icon" aria-hidden="true">ϟ</span>
+              <div><small>WORKSPACE 03</small><h3>实时事件</h3></div>
+            </header>
+            <div class="aurora-gateway-preview aurora-events-preview" aria-hidden="true">
+              <div class="preview-event-list">
+                <span class="preview-head"><b>事件时间线</b><em class="preview-grades"><s class="grade-high">高</s><s class="grade-mid">中</s><s class="grade-low">低</s></em></span>
+                <span><i class="event-dot event-dot-cyan"></i><b>经济日历</b><u></u></span>
+                <span><i class="event-dot event-dot-amber"></i><b>央行与政策</b><u></u></span>
+                <span><i class="event-dot event-dot-red"></i><b>通胀与就业</b><u></u></span>
+                <span><i class="event-dot event-dot-blue"></i><b>市场新闻</b><u></u></span>
+                <span><i class="event-dot event-dot-cyan"></i><b>财报与发行</b><u></u></span>
+              </div>
+              <div class="preview-impact-table">
+                <span class="preview-head"><b>资产影响预览</b></span>
+                <span class="preview-impact-row preview-impact-legend"><b>影响资产 · 方向</b><em>方向</em><u></u></span>
+                <span class="preview-impact-row"><b>美元指数</b><em>·</em><u></u></span>
+                <span class="preview-impact-row"><b>美债收益率</b><em>·</em><u></u></span>
+                <span class="preview-impact-row"><b>黄金</b><em>·</em><u></u></span>
+                <span class="preview-impact-row"><b>全球股指</b><em>·</em><u></u></span>
+                <span class="preview-impact-row"><b>原油</b><em>·</em><u></u></span>
+              </div>
+            </div>
+            <p>按发布时间与影响等级查看经济事件和市场资讯；每项保留来源、时点与更新状态。</p>
+            <a class="gateway-enter" href="#information-section" aria-label="进入实时事件">进入 <span aria-hidden="true">→</span></a>
+          </article>
+        </div>
+
+        <div class="aurora-statusbar" aria-label="数据来源、时效与系统状态">
+          <span><b>数据来源</b><i id="page-source">FRED · EIA · CoinGecko / Yahoo · TradingView</i></span>
+          <span><b>数据时效</b><i>实时 / 准实时 / 日更 · 逐项标示</i></span>
+          <span><b>最后更新</b><time id="page-updated">加载中</time></span>
+          <span><b>覆盖</b><i id="asset-count">6项全球核心资产</i></span>
+          <span><b>数据状态</b><i class="partial" id="data-status">正在校验4项真实数据</i></span>
+          <span class="aurora-system-state"><b aria-hidden="true">●</b><i id="orbit-market-status">正在校验数据</i></span>
+          <span class="sr-only" id="orbit-market-note">状态来自核心资产数据契约</span>
         </div>
       </section>
 
@@ -1890,8 +2019,8 @@
             <a class="panel-entry" href="#risk-section">三项信号原值 →</a>
           </div>
           <div class="market-insight-copy">
-            <strong id="market-insight-title">正在读取三项独立风险信号</strong>
-            <p id="market-insight-copy">只依据已校验的宏观状态、恐慌贪婪与OFR压力生成规则摘要，不新增行情事实。</p>
+            <strong id="market-insight-title" data-market-insight-title>正在读取三项独立风险信号</strong>
+            <p id="market-insight-copy" data-market-insight-copy>只依据已校验的宏观状态、恐慌贪婪与OFR压力生成规则摘要，不新增行情事实。</p>
           </div>
           <span class="market-insight-foot">非投资建议 · 不作为新的数据源或交易信号</span>
         </article>
@@ -1950,7 +2079,7 @@
         </summary>
         <div class="method-body">
           <p>
-          <strong>DGS10、DTWEXBGS、RWTC、BTC/USD、三项市场状态、跨资产强弱、全球资产市值、全球公司领袖、经济日历和财经新闻均不在浏览器中调用外部API，而是读取站内任务生成的静态数据；仅四项免费ETF代理由TradingView官方组件在浏览器中直接展示。</strong>
+          <strong>DGS10、DTWEXBGS、RWTC、BTC/USD、三项市场状态、跨资产强弱、全球资产市值、全球公司领袖、经济日历和财经新闻均不在浏览器中调用外部API，而是读取站内任务生成的静态数据；仅两项免费ETF代理由TradingView官方组件在浏览器中直接展示。</strong>
           CNN恐慌与贪婪、OFR、Forex Factory经济日历和Google News市场资讯分别读取独立 <code>health.json</code>；卡片中的“UPDATE HEALTH”只表示最近更新任务证据，与内容本身的数据日分开。首次迁移无法追溯旧任务时显示 <code>UNKNOWN</code>，报告超出各来源12/36/72小时阈值时显示 <code>STALE</code>，失败时继续保留同一来源的最后有效内容，不用空值或新时间戳覆盖。
           经济日历复用Forex Factory公开周历，筛选接下来的高、中影响事件，按设备本地时区展示；文件超过36小时未更新或离开当前周范围时标记`STALE`，实际值、预测值和前值缺失时显示“—”，不补造数值。财经新闻只读取“最新消息”数据中的 <code>markets</code> 市场板块，按发布时间展示最新5条；同文件的Yahoo行情快照不参与终端行情，新闻文件超过12小时未更新或最新文章超过36小时时标记`STALE`，标题点击后经Google News跳转原媒体。
           跨资产强弱读取跨资产管道全部标的（当前98项，随清单扩容自动跟随）的自身价格回报，按今日、近一周、近一月、年初至今和近一年分别排序；每项附带行情、历史回退、来源、数据日和更新时间状态，历史回退、异常或缺值标的不参与排行，旧快照无法反推出精确逐条日期时保持`PARTIAL`。整个文件超过72小时未更新时暂停“今日”排行。债券与部分金属含ETF或期货代理，不冒充对应现货或收益率，具体口径以详情页为准。
@@ -1973,7 +2102,7 @@
     </footer>
   </div>
 
-  <noscript><div class="load-error">此页面需要启用JavaScript才能校验核心资产、四项免费ETF代理、三项官方行情逐源更新链、宏观状态、市场情绪、金融压力、跨资产强弱、全球资产市值、全球公司领袖、经济日历、财经新闻、四条生产管道与四个辅助来源健康。</div></noscript>
+  <noscript><div class="load-error">此页面需要启用JavaScript才能校验核心资产、两项免费ETF代理、三项官方行情逐源更新链、宏观状态、市场情绪、金融压力、跨资产强弱、全球资产市值、全球公司领袖、经济日历、财经新闻、四条生产管道与四个辅助来源健康。</div></noscript>
   <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js"></script>
   <script type="module" src="finance-terminal-command-center.mjs"></script>
   <script src="app.js"></script>
