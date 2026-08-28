@@ -43,6 +43,20 @@ jobs:
       - name: Build asset data
         run: python scripts/asset-tracker/build_assets.py
 
+      # 临时探测步骤：验证盘中快照取数在 Actions 机房可用后即移除（不提交任何文件）。
+      - name: Probe intraday snapshot (temporary)
+        run: |
+          python scripts/asset-tracker/build_intraday.py
+          python scripts/validate_asset_tracker_intraday.py
+          python - <<'PY'
+          import json
+          d = json.load(open("apps/asset-tracker/intraday.json"))
+          items = list(d["quotes"].items())[:6]
+          print("SAMPLE", json.dumps(dict(items), ensure_ascii=False))
+          print("STATUS", d["status"], d["fresh"], "/", d["count"], d["asOfLatest"])
+          PY
+          rm -f apps/asset-tracker/intraday.json
+
       - name: Validate per-asset provenance
         run: python scripts/validate_market_data_quality.py --dataset asset-tracker
 
