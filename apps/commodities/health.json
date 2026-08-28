@@ -1,0 +1,93 @@
+{
+  "contractVersion": 1,
+  "dataset": "commodities",
+  "generatedAt": "2026-08-28T12:25:52Z",
+  "status": "healthy",
+  "historyStatus": "tracked",
+  "lastAttemptAt": "2026-08-28T12:25:52Z",
+  "lastSuccessfulAt": "2026-08-28T12:25:52Z",
+  "consecutiveFailures": 0,
+  "publishedSnapshotAt": "2026-08-28T12:25:52Z",
+  "snapshotPreserved": false,
+  "failureReason": null,
+  "coverage": {
+    "expectedRecords": 36,
+    "publishedRecords": 36,
+    "dynamicRecords": 36,
+    "counts": {
+      "market": 36,
+      "fallback": 0,
+      "estimate": 0,
+      "unknown": 0,
+      "unavailable": 0
+    },
+    "publishedCoveragePct": 100.0,
+    "freshCoveragePct": 100.0,
+    "verifiedCoveragePct": 100.0,
+    "availableCoveragePct": 100.0
+  },
+  "attempt": {
+    "status": "success",
+    "published": true,
+    "producedRecords": 36,
+    "counts": {
+      "market": 36,
+      "fallback": 0,
+      "estimate": 0,
+      "unknown": 0,
+      "unavailable": 0
+    }
+  },
+  "sources": [
+    {
+      "id": "fred-eia",
+      "name": "FRED / U.S. EIA",
+      "role": "primary",
+      "status": "healthy",
+      "records": 5,
+      "counts": {
+        "market": 5,
+        "fallback": 0,
+        "estimate": 0,
+        "unknown": 0,
+        "unavailable": 0
+      },
+      "lastSuccessAt": "2026-08-28T12:25:52Z"
+    },
+    {
+      "id": "fred-imf",
+      "name": "FRED / IMF Primary Commodity Prices",
+      "role": "primary",
+      "status": "healthy",
+      "records": 31,
+      "counts": {
+        "market": 31,
+        "fallback": 0,
+        "estimate": 0,
+        "unknown": 0,
+        "unavailable": 0
+      },
+      "lastSuccessAt": "2026-08-28T12:25:52Z"
+    }
+  ],
+  "recovery": {
+    "preservesLastValidSnapshot": true,
+    "steps": [
+      {
+        "id": "keyless-export",
+        "kind": "alternate-endpoint",
+        "label": "缺少FRED_API_KEY时改读免密钥的fredgraph.csv公开导出"
+      },
+      {
+        "id": "previous-record",
+        "kind": "previous-record",
+        "label": "单条序列失败时沿用上一份有效观测并标记过期"
+      },
+      {
+        "id": "previous-snapshot",
+        "kind": "previous-snapshot",
+        "label": "整源失败时保留上一份完整data.json"
+      }
+    ]
+  }
+}

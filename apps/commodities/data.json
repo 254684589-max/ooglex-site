@@ -1,0 +1,755 @@
+{
+  "updatedAt": "2026-08-28T12:25:52Z",
+  "asOf": "2026-08-25",
+  "frequency": "mixed",
+  "status": "ok",
+  "source": "FRED (U.S. EIA / IMF Primary Commodity Prices)",
+  "note": "商品现货与官方指数：逐条取自 FRED 转发的官方序列——日频/周频现货来自美国能源信息署（EIA），月频初级商品价格来自国际货币基金组织（IMF）。频率逐条标注，涨跌一律相对该序列自己的上一观测，不是当日涨跌，也不与交易所期货的日频口径混用。仅供参考，非投资建议。",
+  "count": 36,
+  "series": [
+    {
+      "id": "DCOILBRENTEU",
+      "name": "布伦特原油现货",
+      "group": "energy",
+      "unit": "美元/桶",
+      "note": "欧洲布伦特原油现货离岸价，与站内的 ICE 布油期货是现货与期货两个口径",
+      "price": 88.24,
+      "changePct": -4.82,
+      "previousAsOf": "2026-08-24",
+      "frequency": "daily",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / U.S. EIA",
+        "asOf": "2026-08-25",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "daily",
+        "note": "欧洲布伦特原油现货离岸价，与站内的 ICE 布油期货是现货与期货两个口径"
+      }
+    },
+    {
+      "id": "DHHNGSP",
+      "name": "亨利港天然气现货",
+      "group": "energy",
+      "unit": "美元/百万英热",
+      "note": "美国天然气基准现货价，与站内 NYMEX 天然气期货口径不同",
+      "price": 2.7,
+      "changePct": -4.59,
+      "previousAsOf": "2026-08-24",
+      "frequency": "daily",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / U.S. EIA",
+        "asOf": "2026-08-25",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "daily",
+        "note": "美国天然气基准现货价，与站内 NYMEX 天然气期货口径不同"
+      }
+    },
+    {
+      "id": "DPROPANEMBTX",
+      "name": "丙烷现货",
+      "group": "energy",
+      "unit": "美元/加仑",
+      "note": "德州蒙贝尔维尤丙烷现货，天然气液（NGL）的基准价",
+      "price": 0.685,
+      "changePct": -1.15,
+      "previousAsOf": "2026-08-24",
+      "frequency": "daily",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / U.S. EIA",
+        "asOf": "2026-08-25",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "daily",
+        "note": "德州蒙贝尔维尤丙烷现货，天然气液（NGL）的基准价"
+      }
+    },
+    {
+      "id": "DJFUELUSGULF",
+      "name": "航空煤油现货",
+      "group": "energy",
+      "unit": "美元/加仑",
+      "note": "美国墨西哥湾沿岸航空煤油现货价",
+      "price": 3.619,
+      "changePct": -3.08,
+      "previousAsOf": "2026-08-24",
+      "frequency": "daily",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / U.S. EIA",
+        "asOf": "2026-08-25",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "daily",
+        "note": "美国墨西哥湾沿岸航空煤油现货价"
+      }
+    },
+    {
+      "id": "GASREGW",
+      "name": "美国汽油零售均价",
+      "group": "energy",
+      "unit": "美元/加仑",
+      "note": "全美普通汽油零售均价，含税，是终端零售价而非批发或期货价",
+      "price": 4.085,
+      "changePct": 0.89,
+      "previousAsOf": "2026-08-17",
+      "frequency": "weekly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / U.S. EIA",
+        "asOf": "2026-08-24",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "weekly",
+        "note": "全美普通汽油零售均价，含税，是终端零售价而非批发或期货价"
+      }
+    },
+    {
+      "id": "PCOALAUUSDM",
+      "name": "澳大利亚动力煤",
+      "group": "energy",
+      "unit": "美元/吨",
+      "note": "纽卡斯尔港动力煤离岸价",
+      "price": 140.396786,
+      "changePct": -6.63,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly",
+        "note": "纽卡斯尔港动力煤离岸价"
+      }
+    },
+    {
+      "id": "PNGASJPUSDM",
+      "name": "日本液化天然气",
+      "group": "energy",
+      "unit": "美元/百万英热",
+      "note": "日本到岸液化天然气价格",
+      "price": 19.562,
+      "changePct": 13.81,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly",
+        "note": "日本到岸液化天然气价格"
+      }
+    },
+    {
+      "id": "PURANUSDM",
+      "name": "铀",
+      "group": "energy",
+      "unit": "美元/磅",
+      "note": "八氧化三铀（U3O8）现货价",
+      "price": 69.233778,
+      "changePct": 0.17,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly",
+        "note": "八氧化三铀（U3O8）现货价"
+      }
+    },
+    {
+      "id": "PIORECRUSDM",
+      "name": "铁矿石",
+      "group": "base",
+      "unit": "美元/吨",
+      "note": "中国到岸铁矿石（含铁量62%）价格",
+      "price": 101.595652,
+      "changePct": -2.12,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly",
+        "note": "中国到岸铁矿石（含铁量62%）价格"
+      }
+    },
+    {
+      "id": "PNICKUSDM",
+      "name": "镍",
+      "group": "base",
+      "unit": "美元/吨",
+      "note": "伦敦金属交易所镍现货价",
+      "price": 16632.361364,
+      "changePct": -5.44,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly",
+        "note": "伦敦金属交易所镍现货价"
+      }
+    },
+    {
+      "id": "PZINCUSDM",
+      "name": "锌",
+      "group": "base",
+      "unit": "美元/吨",
+      "note": "伦敦金属交易所锌现货价",
+      "price": 3593.775,
+      "changePct": 1.56,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly",
+        "note": "伦敦金属交易所锌现货价"
+      }
+    },
+    {
+      "id": "PLEADUSDM",
+      "name": "铅",
+      "group": "base",
+      "unit": "美元/吨",
+      "note": "伦敦金属交易所铅现货价",
+      "price": 1842.516364,
+      "changePct": -5.34,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly",
+        "note": "伦敦金属交易所铅现货价"
+      }
+    },
+    {
+      "id": "PTINUSDM",
+      "name": "锡",
+      "group": "base",
+      "unit": "美元/吨",
+      "note": "伦敦金属交易所锡现货价",
+      "price": 52881.998636,
+      "changePct": -0.29,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly",
+        "note": "伦敦金属交易所锡现货价"
+      }
+    },
+    {
+      "id": "PPOILUSDM",
+      "name": "棕榈油",
+      "group": "grain",
+      "unit": "美元/吨",
+      "note": "马来西亚棕榈油价格",
+      "price": 1106.469929,
+      "changePct": -0.2,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly",
+        "note": "马来西亚棕榈油价格"
+      }
+    },
+    {
+      "id": "PSUNOUSDM",
+      "name": "葵花籽油",
+      "group": "grain",
+      "unit": "美元/吨",
+      "price": 1786.89221,
+      "changePct": -1.05,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "PROILUSDM",
+      "name": "菜籽油",
+      "group": "grain",
+      "unit": "美元/吨",
+      "price": 1500.1025,
+      "changePct": -1.71,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "POLVOILUSDM",
+      "name": "橄榄油",
+      "group": "grain",
+      "unit": "美元/吨",
+      "price": 6185.217099,
+      "changePct": 0.51,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "PBARLUSDM",
+      "name": "大麦",
+      "group": "grain",
+      "unit": "美元/吨",
+      "price": 121.90437,
+      "changePct": 0.67,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "PRUBBUSDM",
+      "name": "天然橡胶",
+      "group": "soft",
+      "unit": "美分/磅",
+      "price": 129.504899,
+      "changePct": -3.2,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "PTEAUSDM",
+      "name": "茶叶",
+      "group": "soft",
+      "unit": "美分/公斤",
+      "price": 273.143229,
+      "changePct": -1.01,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "PBANSOPUSDM",
+      "name": "香蕉",
+      "group": "soft",
+      "unit": "美元/吨",
+      "price": 1167.427347,
+      "changePct": -1.93,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "PWOOLCUSDM",
+      "name": "粗羊毛",
+      "group": "soft",
+      "unit": "美分/公斤",
+      "price": 1483.992925,
+      "changePct": -4.3,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "PWOOLFUSDM",
+      "name": "细羊毛",
+      "group": "soft",
+      "unit": "美分/公斤",
+      "price": 1600.703062,
+      "changePct": -5.48,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "PLOGSKUSDM",
+      "name": "原木",
+      "group": "soft",
+      "unit": "美元/立方米",
+      "price": 183.2,
+      "changePct": -1.13,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "PSAWMALUSDM",
+      "name": "锯材",
+      "group": "soft",
+      "unit": "美元/立方米",
+      "price": 728.9,
+      "changePct": 0.29,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "PBEEFUSDM",
+      "name": "牛肉",
+      "group": "livestock",
+      "unit": "美分/磅",
+      "price": 331.782609,
+      "changePct": -2.87,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "PPORKUSDM",
+      "name": "猪肉",
+      "group": "livestock",
+      "unit": "美分/磅",
+      "price": 92.290462,
+      "changePct": 2.98,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "PPOULTUSDM",
+      "name": "禽肉",
+      "group": "livestock",
+      "unit": "美分/磅",
+      "price": 166.292961,
+      "changePct": -0.49,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "PSALMUSDM",
+      "name": "三文鱼",
+      "group": "livestock",
+      "unit": "美元/公斤",
+      "price": 7.135599,
+      "changePct": -4.82,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "PSHRIUSDM",
+      "name": "虾",
+      "group": "livestock",
+      "unit": "美元/公斤",
+      "price": 6.538102,
+      "changePct": 7.87,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "PFISHUSDM",
+      "name": "鱼粉",
+      "group": "livestock",
+      "unit": "美元/吨",
+      "price": 2630.138769,
+      "changePct": 1.87,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "PALLFNFINDEXM",
+      "name": "IMF全部初级商品指数",
+      "group": "index",
+      "unit": "指数 2016=100",
+      "note": "涵盖能源与非能源初级商品的加权指数，是指数点位而不是任何单一商品价格",
+      "price": 193.204474,
+      "changePct": -0.73,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly",
+        "note": "涵盖能源与非能源初级商品的加权指数，是指数点位而不是任何单一商品价格"
+      }
+    },
+    {
+      "id": "PNRGINDEXM",
+      "name": "IMF能源指数",
+      "group": "index",
+      "unit": "指数 2016=100",
+      "note": "原油、天然气与煤炭的加权指数",
+      "price": 198.703805,
+      "changePct": -0.05,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly",
+        "note": "原油、天然气与煤炭的加权指数"
+      }
+    },
+    {
+      "id": "PMETAINDEXM",
+      "name": "IMF金属指数",
+      "group": "index",
+      "unit": "指数 2016=100",
+      "note": "基本金属与铁矿石的加权指数",
+      "price": 226.169515,
+      "changePct": -1.87,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly",
+        "note": "基本金属与铁矿石的加权指数"
+      }
+    },
+    {
+      "id": "PFOODINDEXM",
+      "name": "IMF食品指数",
+      "group": "index",
+      "unit": "指数 2016=100",
+      "note": "谷物、植物油、肉类与海产的加权指数",
+      "price": 131.77991,
+      "changePct": 1.13,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly",
+        "note": "谷物、植物油、肉类与海产的加权指数"
+      }
+    },
+    {
+      "id": "PRAWMINDEXM",
+      "name": "IMF工业原料指数",
+      "group": "index",
+      "unit": "指数 2016=100",
+      "note": "木材、棉花、羊毛与橡胶的加权指数",
+      "price": 117.211119,
+      "changePct": -0.68,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / IMF Primary Commodity Prices",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-28T12:25:52Z",
+        "frequency": "monthly",
+        "note": "木材、棉花、羊毛与橡胶的加权指数"
+      }
+    }
+  ],
+  "dataQuality": {
+    "contractVersion": 1,
+    "status": "ok",
+    "total": 36,
+    "counts": {
+      "market": 36,
+      "fallback": 0,
+      "estimate": 0,
+      "unknown": 0,
+      "unavailable": 0
+    },
+    "sources": [
+      {
+        "name": "FRED / IMF Primary Commodity Prices",
+        "count": 31
+      },
+      {
+        "name": "FRED / U.S. EIA",
+        "count": 5
+      }
+    ]
+  }
+}
