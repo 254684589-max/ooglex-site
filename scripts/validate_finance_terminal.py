@@ -43,6 +43,7 @@ BOARD_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-board
 RADAR_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-radar-view.mjs"
 CURVE_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-curve-view.mjs"
 GLOBE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-globe.mjs"
+GLOBE_TEXTURE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-globe-texture.mjs"
 ORBIT_LINKS_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-orbit-links.mjs"
 GATEWAY_PREVIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-gateway-preview.mjs"
 VISION_CSS = ROOT / "apps" / "finance-terminal" / "terminal-vision.css"
@@ -51,6 +52,7 @@ REFERENCE_FIDELITY_CSS = ROOT / "apps" / "finance-terminal" / "terminal-referenc
 AURORA_HOME_CSS = ROOT / "apps" / "finance-terminal" / "terminal-aurora-home.css"
 REFERENCE_HOME_V2_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-home-v2.css"
 REFERENCE_HOME_V3_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-home-v3.css"
+REFERENCE_HOME_V4_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-home-v4.css"
 COMMAND_CENTER_CSS = ROOT / "apps" / "finance-terminal" / "terminal-command-center.css"
 COMMAND_CENTER_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-command-center.mjs"
 AURORA_HOME_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-aurora-home.mjs"
@@ -2811,9 +2813,11 @@ def main() -> None:
     radar_view_module = RADAR_VIEW_MODULE.read_text(encoding="utf-8")
     curve_view_module = CURVE_VIEW_MODULE.read_text(encoding="utf-8")
     globe_module = GLOBE_MODULE.read_text(encoding="utf-8")
+    globe_texture_module = GLOBE_TEXTURE_MODULE.read_text(encoding="utf-8")
     gateway_preview_module = GATEWAY_PREVIEW_MODULE.read_text(encoding="utf-8")
     orbit_links_module = ORBIT_LINKS_MODULE.read_text(encoding="utf-8")
     reference_home_v3_css = REFERENCE_HOME_V3_CSS.read_text(encoding="utf-8")
+    reference_home_v4_css = REFERENCE_HOME_V4_CSS.read_text(encoding="utf-8")
     vision_css = VISION_CSS.read_text(encoding="utf-8")
     command_center_css = COMMAND_CENTER_CSS.read_text(encoding="utf-8")
     reference_fidelity_css = REFERENCE_FIDELITY_CSS.read_text(encoding="utf-8")
@@ -2859,6 +2863,9 @@ def main() -> None:
     require(CORRELATION_VIEW_MODULE.stat().st_size <= 15_000,
             "金融终端相关性矩阵抽屉模块超过15KB性能预算")
     require(GLOBE_MODULE.stat().st_size <= 8_000, "金融终端地球动画模块超过8KB性能预算")
+    # 正射纹理以520px为上限并缓存旋转结果；四邻域对比只增强原图真实城市灯光。
+    require(GLOBE_TEXTURE_MODULE.stat().st_size <= 5_800,
+            "金融终端正射地球纹理模块超过5.8KB性能预算")
     require(ORBIT_LINKS_MODULE.stat().st_size <= 4_000, "金融终端市场连线模块超过4KB性能预算")
     require(GATEWAY_PREVIEW_MODULE.stat().st_size <= 4_200, "金融终端入口卡指数预览模块超过4.2KB性能预算")
     require(VISION_CSS.stat().st_size <= 28_000, "金融终端科幻视觉样式超过28KB性能预算")
@@ -2881,12 +2888,15 @@ def main() -> None:
     # 30,200：第四轮入口卡指数预览显示真实当日涨跌，逐行两列排布、涨跌配色与
     # 表头那两行来源披露（不截断）在这里。
     require(REFERENCE_HOME_V3_CSS.stat().st_size <= 30_200, "金融终端参考首页第三版样式超过30.2KB性能预算")
+    # v4仅在桌面总览上校正1672×941参考图的坐标、比例和光效；移动端继续由v3负责。
+    require(REFERENCE_HOME_V4_CSS.stat().st_size <= 15_500,
+            "金融终端1672像素参考锁定样式超过15.5KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
-    # 3,500 是首版同步模块的预算。加上「短态优先」的取值分支（HUD 单行只放得下
-    # 中文短标签，长判语留在市场状态卡片里）与说明注释后需要 3.9KB。
-    require(AURORA_HOME_MODULE.stat().st_size <= 3_900, "金融终端极光首页同步模块超过3.9KB性能预算")
+    # HUD只把既有已校验状态压缩为中文短标签与等价覆盖率百分比，不引入第二套数据。
+    require(AURORA_HOME_MODULE.stat().st_size <= 4_200, "金融终端极光首页同步模块超过4.2KB性能预算")
     require(APP.stat().st_size + LOADER.stat().st_size + TERMINAL_VISUALS.stat().st_size
             + COMMAND_CENTER_MODULE.stat().st_size + GLOBE_MODULE.stat().st_size
+            + GLOBE_TEXTURE_MODULE.stat().st_size
             + ORBIT_LINKS_MODULE.stat().st_size
             + AURORA_HOME_MODULE.stat().st_size <= 230_000,
             "金融终端常规加载JavaScript超过230KB性能预算")
@@ -2896,8 +2906,9 @@ def main() -> None:
     # 工程/运营向分区折叠壳的默认状态。该模块只在 regression=1 时加载。
     # 25,400：探针额外核对每行的迷你走势位、品类脉冲条，以及地缘风险定价的
     # 四条轴与五档等级梯（缺轴时改为核对「不可用」态而不是分数）。
-    require(REGRESSION_MODULE.stat().st_size <= 25_400,
-            "仅回归模式加载的浏览器探针超过24KB性能预算")
+    # 25.8KB包含资产主值盒的诊断尺寸；仅失败时写入证据，不进入常规加载路径。
+    require(REGRESSION_MODULE.stat().st_size <= 25_800,
+            "仅回归模式加载的浏览器探针超过25.8KB性能预算")
     # 22,500：在原19KB基础上给「商品品类下的二级分组」留出的增量——七组的登记、逐代码
     # 归组表与「口径按工具本身取值」的判断。分组只是静态归类，不新增任何请求与任何行情事实。
     require(BOARD_DATA_MODULE.stat().st_size <= 22_500,
@@ -3033,7 +3044,8 @@ def main() -> None:
             "稳定V1运行证据视图必须保持按需导入且不得在首屏预加载")
     require('<link rel="stylesheet" href="terminal-reference-home-v2.css">' in page
             and '<link rel="stylesheet" href="terminal-reference-home-v3.css">' in page
-            and 'body[data-terminal-view="overview"] .market-globe-shell' in reference_home_v3_css
+            and '<link rel="stylesheet" href="terminal-reference-home-v4.css">' in page
+            and 'body[data-terminal-view="overview"] .market-globe-shell' in reference_home_v4_css
             and '@media (max-width: 620px)' in reference_home_v3_css
             and 'aria-hidden' in page,
             "参考首页精修层缺少样式引用、单屏地球定位或独立窄屏规则")
@@ -3081,12 +3093,25 @@ def main() -> None:
             and "initMarketGlobe" in globe_module
             and "textureCoordinate" in globe_module
             and "earth-night.jpg" in globe_module
+            and "renderOrthographic" in globe_texture_module
+            and "getImageData" in globe_texture_module
+            and "CACHE = new WeakMap" in globe_texture_module
             and "prefers-reduced-motion" in globe_module
             and "visibilitychange" in globe_module
             and "innerHTML" not in globe_module
             and 'id="market-globe-canvas"' in page
             and ".market-globe-shell" in reference_fidelity_css,
             "高保真地球必须使用本地纹理、真实自转、节能与减少动画降级")
+    compact_reference_home = re.sub(r"\s+", "", reference_home_v4_css)
+    require("grid-template-rows:20.93vw6.7vw22.36vw" in compact_reference_home
+            and "grid-template-columns:1.12fr1fr1.11fr" in compact_reference_home
+            and "width:76.3%" in compact_reference_home
+            and "margin-left:6.8%" in compact_reference_home
+            and "top:50%" in compact_reference_home
+            and "left:50%" in compact_reference_home
+            and "width:52%" in compact_reference_home
+            and "grid-template-columns:minmax(0,1fr)16.2vw" in compact_reference_home,
+            "1672×941参考锁定层缺少目标纵向网格、资产弧带或三工作区比例")
     require('body[data-terminal-view="overview"] #main-content' in command_center_css
             and 'grid-template-columns: repeat(16, minmax(0, 1fr))' in command_center_css
             and 'body[data-terminal-view="overview"] #information-section' in command_center_css
@@ -3665,7 +3690,7 @@ def main() -> None:
     finance_news_workflow = FINANCE_NEWS_WORKFLOW.read_text(encoding="utf-8")
     scheduler = SCHEDULER_WORKFLOW.read_text(encoding="utf-8")
     browser_validator = BROWSER_VALIDATOR.read_text(encoding="utf-8")
-    require("[360, 768, 1280]" in browser_validator and "Page.captureScreenshot" in browser_validator
+    require("[360, 768, 1280, 1672]" in browser_validator and "Page.captureScreenshot" in browser_validator
             and '\".mjs\": \"text/javascript; charset=utf-8\"' in browser_validator
             and "Runtime.evaluate" in browser_validator and "officialObservationTrendCount" in browser_validator
             and "readinessEvidencePanelCount" in browser_validator
@@ -3680,9 +3705,9 @@ def main() -> None:
             and "finance-terminal-browser-evidence.json" in browser_validator
             and "buildBrowserEvidence" in browser_validator
             and "runtimeEvidence=1" in browser_validator,
-            "浏览器回归脚本未覆盖三档宽度、官方趋势、稳定V1证据、渲染DOM和截图")
+            "浏览器回归脚本未覆盖四档宽度、官方趋势、稳定V1证据、渲染DOM和截图")
     browser_evidence = BROWSER_EVIDENCE.read_text(encoding="utf-8")
-    require("EXPECTED_WIDTHS = [360, 768, 1280]" in browser_evidence
+    require("EXPECTED_WIDTHS = [360, 768, 1280, 1672]" in browser_evidence
             and 'EXPECTED_SYMBOLS = ["DIA", "GLD"]' in browser_evidence
             and "EXPECTED_PROVIDER_SCRIPT" in browser_evidence
             and "providerScriptLoadedViewports" in browser_evidence
@@ -3692,7 +3717,7 @@ def main() -> None:
             and "diagnosisCounts" in browser_evidence
             and "doesNotReadOrStoreQuotes" in browser_evidence
             and "connected-defined-element-with-layout" in browser_evidence,
-            "浏览器证据未覆盖四项代理、三档视口或禁止行情读取边界")
+            "浏览器证据未覆盖两项代理、四档视口或禁止行情读取边界")
     require('client.send("Network.enable")' in browser_validator
             and "trackProviderScriptTransport" in browser_validator
             and 'client.subscribe("Network.requestWillBeSent"' in browser_validator
@@ -3910,7 +3935,7 @@ def main() -> None:
     print("- FRED and EIA refresh success / retained fallback / no-history error: PASS")
     print("- source / as-of / updated-at / stale / unavailable states: PASS")
     print("- homepage route and local data dependency: PASS")
-    print("- 360 / 768 / 1280 responsive rules: PASS")
+    print("- 360 / 768 / 1280 / 1672 responsive rules: PASS")
     print("- macro regime value / source / freshness / fallback states: PASS")
     print("- CNN fear & greed score / rating / close delta / freshness / failure states: PASS")
     print("- OFR FSI value / daily change / zero baseline / freshness / partial / failure states: PASS")

@@ -239,6 +239,11 @@ export function runBrowserRegressionProbe(options = {}) {
     /* 主数字曾被压进9px盒子。 */
     overviewCardLegibility: overviewLegible.length === EXPECTED_ASSET_CARDS
       && overviewLegible.every((n) => n.scrollHeight <= n.clientHeight + 1),
+    overviewCardBoxes: overviewLegible.map((node) => ({
+      type: node.className,
+      clientHeight: node.clientHeight,
+      scrollHeight: node.scrollHeight
+    })),
     orbitalTerminalVisuals: marketTapeItems.length === EXPECTED_ASSET_CARDS
       && marketTapeItems.every((item) => item.textContent.trim().length > 4)
       && marketTapeItems.filter((item) => item.textContent.includes("组件报价")).length

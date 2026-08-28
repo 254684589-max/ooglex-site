@@ -2,8 +2,8 @@ import { drawEarthTexture } from "./finance-terminal-globe-texture.mjs";
 
 const MASK_URL = new URL("../tv/vendor/earth-water.jpg", import.meta.url).href;
 const TEX_URL = new URL("../tv/vendor/earth-night.jpg", import.meta.url);
-const INITIAL_LONGITUDE = 18;
-const ROTATION = .0025;
+const INITIAL_LONGITUDE = -5;
+const ROTATION = .00004;
 const SIN_TILT = Math.sin(.34);
 const COS_TILT = Math.cos(.34);
 const RAD = Math.PI / 180;
@@ -149,7 +149,7 @@ export function initMarketGlobe(options = {}) {
   function frame(timestamp) {
     animationFrame = 0;
     if (destroyed || motion.matches || document.hidden) return;
-    if (!lastFrame || timestamp - lastFrame >= 72) {
+    if (!lastFrame || timestamp - lastFrame >= 220) {
       lastFrame = timestamp;
       draw(INITIAL_LONGITUDE + timestamp * ROTATION);
     }
