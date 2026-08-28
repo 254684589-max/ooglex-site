@@ -124,12 +124,14 @@ export function applySnapshot(root, snapshot, now) {
    它是页面上唯一声称「盘中」的地方，措辞固定为非实时。 */
 export function paintLiveState(host, state) {
   if (!host) return;
-  if (!state || state.error) {
+  if (!state || state.error || state.absent) {
     host.hidden = false;
-    host.dataset.liveState = "error";
+    host.dataset.liveState = state && state.absent ? "stale" : "error";
     host.textContent = "";
     host.appendChild(host.ownerDocument.createElement("i"));
-    host.appendChild(host.ownerDocument.createTextNode("盘中快照读取失败 · 显示日更收盘值"));
+    host.appendChild(host.ownerDocument.createTextNode(state && state.absent
+      ? "暂无盘中快照 · 显示日更收盘值"
+      : "盘中快照读取失败 · 显示日更收盘值"));
     return;
   }
   const snapshot = state.snapshot;
@@ -146,8 +148,11 @@ export function paintLiveState(host, state) {
   host.dataset.liveState = "live";
   host.textContent = "";
   host.appendChild(host.ownerDocument.createElement("i"));
+  /* 两个数字含义不同，都写出来：快照里有多少项，本屏实际覆盖了多少行。
+     只写后者会让人以为盘中层只有几项，只写前者又对不上眼前看到的行。 */
+  const total = Number.isInteger(snapshot.count) ? snapshot.count : Object.keys(snapshot.quotes).length;
   host.appendChild(host.ownerDocument.createTextNode(
-    `盘中 ${state.covered} 项 · ${freshnessText(snapshot.updatedAt, state.now)}`
+    `盘中快照 ${total} 项 · 本屏覆盖 ${state.covered} 行 · ${freshnessText(snapshot.updatedAt, state.now)}`
     + (cadence ? ` · 约${cadence}分钟一刷，非实时` : " · 非实时")));
   host.title = String(snapshot.note || "");
 }
@@ -166,6 +171,12 @@ export function startLive(options = {}) {
     if (stopped) return;
     try {
       const response = await fetch(path, { cache: "no-store" });
+      /* 文件还不存在（首次跑管道之前）不是故障：如实说「暂无盘中快照」，
+         而不是把它说成读取失败，两者对读者的含义完全不同。 */
+      if (response && response.status === 404) {
+        onState({ snapshot: null, now: Date.now(), applied: 0, covered: 0, usable: false, absent: true, error: null });
+        return;
+      }
       if (!response || response.ok !== true) throw new Error(`HTTP ${response && response.status}`);
       const snapshot = await response.json();
       const now = Date.now();

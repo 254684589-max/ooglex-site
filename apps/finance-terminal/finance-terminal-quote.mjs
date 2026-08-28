@@ -482,9 +482,11 @@ function startQuoteLive(document, instrument, priceRow, changeNode, chips) {
     path: "../asset-tracker/intraday.json",
     onState: (state) => {
       const snapshot = state.snapshot;
-      if (state.error || !snapshot || !usableSnapshot(snapshot, state.now)) {
+      if (state.error || state.absent || !snapshot || !usableSnapshot(snapshot, state.now)) {
         chip.className = "quote-chip";
-        chip.textContent = state.error ? "盘中快照读取失败 · 显示日更收盘值" : "盘中快照已过期 · 显示日更收盘值";
+        chip.textContent = state.error
+          ? "盘中快照读取失败 · 显示日更收盘值"
+          : (state.absent ? "暂无盘中快照 · 显示日更收盘值" : "盘中快照已过期 · 显示日更收盘值");
         return;
       }
       const quote = snapshot.quotes[instrument.symbol];
