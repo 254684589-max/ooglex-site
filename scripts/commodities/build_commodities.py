@@ -150,14 +150,23 @@ def _get_text(url: str) -> str:
         return response.read().decode("utf-8", "replace")
 
 
-def fetch_series(series_id: str, limit: int):
-    """返回 (按日期升序的 [(date, value)], 频率)。取不到就抛异常，绝不返回占位值。"""
+def fetch_series(series_id: str, limit: int, monthly: bool = False):
+    """返回 (按日期升序的 [(date, value)], 频率)。取不到就抛异常，绝不返回占位值。
+
+    monthly=True 时向 FRED 要「按月末聚合」的同一条序列（frequency=m,
+    aggregation_method=eop）——这是官方自己做的降采样，不是我们本地折算，
+    用来给日频现货补上 5 年 / 10 年 / 25 年 / 全部这几档长区间。
+    """
     key = os.environ.get("FRED_API_KEY")
     if key:
-        query = parse.urlencode({
+        params = {
             "series_id": series_id, "api_key": key, "file_type": "json",
             "sort_order": "desc", "limit": limit,
-        })
+        }
+        if monthly:
+            params["frequency"] = "m"
+            params["aggregation_method"] = "eop"
+        query = parse.urlencode(params)
         payload = _get_json(f"https://api.stlouisfed.org/fred/series/observations?{query}")
         points = [(row["date"], float(row["value"]))
                   for row in payload.get("observations", [])
@@ -169,7 +178,7 @@ def fetch_series(series_id: str, limit: int):
                                             "file_type": "json"}))
         info = (meta.get("seriess") or [{}])[0]
         frequency = FREQUENCY_BY_CODE.get(info.get("frequency_short", ""), "")
-        return sorted(points), frequency
+        return sorted(points), ("monthly" if monthly else frequency)
     body = _get_text(f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={parse.quote(series_id)}")
     points = []
     for line in body.strip().splitlines()[1:]:
@@ -248,6 +257,15 @@ def build() -> None:
                 updated_at=run_updated_at, frequency=frequency, note=note or None),
         })
         (monthly_points if frequency == "monthly" else daily_points)[series_id] = points
+        if frequency != "monthly":
+            # 日频/周频序列再取一份官方月末聚合：400 个日观测只有一年半，撑不起
+            # 5年/10年/25年/全部这几档。取不到就只是没有长区间，不影响近端。
+            try:
+                long_points, _ = fetch_series(series_id, MONTHLY_POINTS, monthly=True)
+                monthly_points[series_id] = long_points
+            except (error.HTTPError, error.URLError, ValueError, KeyError, IndexError) as exc:
+                print(f"[..] {name}（{series_id}）月末聚合未取到，仅有近端区间：{str(exc)[:40]}")
+            time.sleep(GAP)
         latest = max(latest, as_of)
         ok += 1
         print(f"[OK] {name:<16} {series_id:<14} {as_of}  {value:>14,.4f}  {frequency}")

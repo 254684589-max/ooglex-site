@@ -349,7 +349,7 @@ export async function loadInstrument(kind, symbol) {
     }
     if (!paths.daily) return [];
     /* 月频序列没有日线：把 400 个月度观测塞进「1个月/3个月」这几档会把月频说成日频，
-       因此这里如实返回空，长端区间读月线那一支。 */
+       因此这里如实返回空，长端区间读月线那一支。日频/周频序列两个桶都有，八档都能开。 */
     if (kind === "commodity" && instrument.grain === "monthly") return [];
     try {
       const file = await loadJson(paths.daily);
@@ -365,9 +365,10 @@ export async function loadInstrument(kind, symbol) {
   })();
   const monthly = await (async () => {
     if (!paths.monthly) return [];
-    if (kind === "commodity" && instrument.grain !== "monthly") return [];
     try {
       const file = await loadJson(paths.monthly);
+      /* 长端区间一律读月频桶：月频序列本来就在那里，日频序列另有一份官方月末聚合。
+         桶里没有这条序列就返回空，长端几档自然禁用——不拿日线冒充月线。 */
       if (kind === "commodity") return monthlyPointsFromAxis(file.monthly, seriesKey);
       return monthlyPoints(file, seriesKey);
     } catch (error) {
