@@ -157,7 +157,11 @@ export function createResourceLoader(options = {}) {
       networkRequestCount,
       requestStates: Object.fromEntries(requestStates),
       duplicateNetworkRequestCount: Math.max(0, networkRequestCount - requestedKeys.length),
-      groupLoadSequence: groupLoadSequence.slice()
+      groupLoadSequence: groupLoadSequence.slice(),
+      /* 应取到的上游资源数由登记表自算，探针不再抄一份硬编码计数。 */
+      registeredSourceCount: new Set(
+        Object.keys(groups).reduce((keys, name) => keys.concat(groups[name] || []), [])
+      ).size
     };
   }
 

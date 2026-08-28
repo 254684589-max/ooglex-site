@@ -173,8 +173,11 @@ export function runBrowserRegressionProbe(options = {}) {
     }) && !document.querySelector(".load-error"),
     stagedDataLoading: stagedLoad.mode === "eager"
       && stagedLoad.criticalSourceRequestCount === 5
-      && stagedLoad.sourceRequestCount === 20
-      && stagedLoad.requestCount === 21
+      /* 资源数由加载器登记表自算并随快照带出，不再各处硬编码；「不该多取」由下面的
+         重复请求计数与 requestCount = 资源数 + 1 份配置守住。 */
+      && Number.isInteger(stagedLoad.registeredSourceCount)
+      && stagedLoad.sourceRequestCount === stagedLoad.registeredSourceCount
+      && stagedLoad.requestCount === stagedLoad.registeredSourceCount + 1
       && stagedLoad.criticalPaintBarrier?.status === "yielded"
       && sameSequence(stagedLoad.startupOrder,
         ["critical-rendered", "critical-paint-yielded", "deferred-scheduler-started"])
@@ -184,9 +187,10 @@ export function runBrowserRegressionProbe(options = {}) {
       && Array.isArray(stagedLoad.loadedSections) && stagedLoad.loadedSections.length === 5
       && Array.isArray(stagedLoad.failedSections) && stagedLoad.failedSections.length === 0
       && Array.isArray(stagedLoad.settledSections) && stagedLoad.settledSections.length === 5
-      && stagedLoad.networkRequestCount === 21
+      && stagedLoad.networkRequestCount === stagedLoad.registeredSourceCount + 1
       && stagedLoad.duplicateNetworkRequestCount === 0
-      && requestStates.length === 21 && requestStates.every((state) => state === "ready")
+      && requestStates.length === stagedLoad.registeredSourceCount + 1
+      && requestStates.every((state) => state === "ready")
       && hasCompleteSectionTransitions(stagedLoad.sectionTransitions),
     supportingHealthResources: supportingHealthPanels.length === 4
       && supportingHealthPanels.every((panel) => panel.textContent.indexOf("更新链健康不可用") === -1),
