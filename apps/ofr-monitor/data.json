@@ -1,14 +1,14 @@
 {
-  "updatedAt": "2026-08-27T23:57:24Z",
-  "asOf": "2026-08-25",
+  "updatedAt": "2026-08-28T21:32:15Z",
+  "asOf": "2026-08-26",
   "source": "U.S. Office of Financial Research (OFR)",
   "fsi": {
-    "value": -2.73,
-    "change": 0.02,
-    "yearAgo": -2.1,
+    "value": -2.74,
+    "change": -0.01,
+    "yearAgo": -2.14,
     "regions": {
-      "us": -1.31,
-      "oae": -0.87,
+      "us": -1.32,
+      "oae": -0.86,
       "em": -0.56
     },
     "categories": [
@@ -30,11 +30,10 @@
       },
       {
         "name": "波动率",
-        "value": -0.54
+        "value": -0.55
       }
     ],
     "spark": [
-      -2.25,
       -2.292,
       -2.228,
       -2.107,
@@ -293,23 +292,24 @@
       -2.675,
       -2.814,
       -2.757,
-      -2.734
+      -2.734,
+      -2.741
     ],
-    "asOf": "2026-08-25",
+    "asOf": "2026-08-26",
     "url": "https://www.financialresearch.gov/financial-stress-index/"
   },
   "funding": {
-    "asOf": "2026-08-26",
+    "asOf": "2026-08-27",
     "url": "https://www.financialresearch.gov/short-term-funding-monitor/",
     "sofr": {
       "value": 3.64,
-      "change": -0.02
+      "change": 0.0
     },
     "effr": {
       "value": 3.63,
       "change": 0.0
     },
-    "sofrVol": 2.859
+    "sofrVol": 2.836
   },
   "mmf": {
     "total": 8.412,
