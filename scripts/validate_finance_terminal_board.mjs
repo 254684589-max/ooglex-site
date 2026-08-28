@@ -27,10 +27,13 @@ import {
 } from "../apps/finance-terminal/finance-terminal-board-data.mjs";
 import {
   dailyPoints,
+  FOUR_HOUR_RANGES,
+  hourlyPoints,
   monthlyPoints,
   QUOTE_RANGES,
   rangeStats,
   readQuery,
+  sliceDays,
   sliceMonths,
   slicePoints
 } from "../apps/finance-terminal/finance-terminal-quote.mjs";
@@ -475,6 +478,50 @@ function validateQuoteLinks(board) {
   assert.equal(rangeStats([{ label: "a", value: 1 }], "pct"), null, "只有一个观测时不给区间统计");
 }
 
+/* 4 小时线：这一层唯一容易出错的地方是「把没有的东西画出来」和「把聚合说成原生」。
+   前者靠 hourlyPoints 丢弃缺观测、靠区间按天数裁剪来守；后者靠页面披露来守，
+   披露文案在 quote.html 之外没有第二处，这里只钉数据侧的行为。 */
+function validateFourHourSeries() {
+  const day = 86400;
+  const base = 1767225600;                      // 2026-01-01T00:00:00Z，整除 4 小时
+  const axis = [base, base + 14400, base + 28800, base + 3 * day, base + 3 * day + 14400];
+  const file = { axis, series: { X: [10, null, 12, 20, null], Y: null } };
+
+  const points = hourlyPoints(file, "X");
+  assert.deepEqual(points.map((point) => point.value), [10, 12, 20],
+    "缺观测的桶必须整点丢弃：休市不是「和上一根一样」，不得前向填充");
+  assert.deepEqual(points.map((point) => point.label),
+    ["01-01 00:00", "01-01 08:00", "01-04 00:00"],
+    "时间标签按 UTC 标注，与分桶口径一致——换成本地时区会让同一根柱子在不同时区显示成不同整点");
+  assert.ok(points.every((point) => Number.isFinite(point.at)),
+    "每个点都要带真实时点，区间裁剪按时间而不是按点数");
+  assert.deepEqual(hourlyPoints(file, "Y"), [], "文件里没有这条序列时返回空，不得回退到别的标的");
+  assert.deepEqual(hourlyPoints(null, "X"), [], "文件缺失时返回空，页面据此不显示粒度切换");
+  assert.deepEqual(hourlyPoints({ axis, series: { X: [10, 12] } }, "X").length, 2,
+    "列比轴短时只取得到有值的那几个，不得因错位把值配到别的时点上");
+
+  assert.equal(sliceDays(points, 1).length, 1, "「3天/1周」这类窗口按真实时间裁剪");
+  assert.equal(sliceDays(points, 4).length, 3);
+  assert.equal(sliceDays(points, 0).length, 3, "不给天数时不裁剪");
+  assert.equal(sliceDays([], 7).length, 0);
+
+  assert.equal(FOUR_HOUR_RANGES.length, 4, "4 小时线四档：3天/1周/2周/1个月");
+  assert.ok(FOUR_HOUR_RANGES.every((range) => range.grain === "fourHour"
+    && Number.isInteger(range.days) && range.days > 0),
+    "4 小时线的每一档都必须按天数定义窗口");
+  const keys = new Set(QUOTE_RANGES.map((range) => range.key));
+  assert.ok(FOUR_HOUR_RANGES.every((range) => !keys.has(range.key)),
+    "两套区间键不得重名：页面靠 range 键本身反推粒度，重名会让分享出去的链接落错粒度");
+  FOUR_HOUR_RANGES.forEach((range) => {
+    assert.equal(readQuery(`kind=tracker&symbol=X&range=${range.key}`).range, range.key,
+      `${range.key} 必须能被详情页解析回同一档区间`);
+  });
+  assert.equal(readQuery("kind=tracker&symbol=X&range=4h-99y").range, "",
+    "未登记的区间键一律不接受");
+  assert.ok(FOUR_HOUR_RANGES.some((range) => range.key === "4h-1w"),
+    "4 小时线的默认档 4h-1w 必须存在，否则页面会落到第一个可用档");
+}
+
 /* 商品品类下的二级分组：分组只是静态归类，因此这里守的是「不猜、不丢、不改口径」——
    每一行都要落进一个已登记的组（落进「其他」即说明有新代码没登记，属于要修的事），
    组序稳定、计数可复算，且分组不得改动任何一行的价格、涨跌、数据日与来源。 */
@@ -646,6 +693,7 @@ async function main() {
   validateSearchAndWatchlist(board);
   validateSparkAndPulse(board);
   validateQuoteLinks(board);
+  validateFourHourSeries();
   await validateFailureIsolation(group);
   validateStaleAndMissing(group);
   const counts = board.categories.map((category) => `${category.label}${category.rows.length}`).join(" · ");
@@ -662,6 +710,7 @@ async function main() {
   console.log(`- commodity sub-groups, every row registered, counts reproducible: ${groups}`);
   console.log("- spot pipeline merged: per-row frequency / observation-basis change / grain: PASS");
   console.log("- extra columns: reproducible absolute change / period returns / no weekly on monthly: PASS");
+  console.log("- four-hour layer: UTC-labelled buckets / gaps dropped / day-window slicing / distinct range keys: PASS");
 }
 
 main().catch((error) => {

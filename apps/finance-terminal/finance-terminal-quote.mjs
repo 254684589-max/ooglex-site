@@ -52,6 +52,23 @@ export const QUOTE_RANGES = Object.freeze([
   { key: "all", label: "全部", grain: "monthly", months: 0 }
 ]);
 
+/* 4 小时线只有跨资产、公司榜与加密这三类有：它们的报价源头确实存在小时级观测。
+   FRED 的商品现货/官方指数与美债收益率曲线在源头就没有小时数据，这几类连这份文件
+   都不去读，页面上也不会出现粒度切换——给它们画 4 小时线只能靠插值，那是伪造。 */
+const HOURLY_PATH = "../asset-tracker/hourly.json";
+const HOURLY_KINDS = Object.freeze({ tracker: true, company: true, crypto: true });
+
+/* 4 小时线的区间按天数而不是按点数：各市场每天成桶数不同（加密全天候 6 个、
+   美股约 2 个），按点数裁会让「1周」在不同市场对应完全不同的真实跨度。 */
+export const FOUR_HOUR_RANGES = Object.freeze([
+  { key: "4h-3d", label: "3天", grain: "fourHour", days: 3 },
+  { key: "4h-1w", label: "1周", grain: "fourHour", days: 7 },
+  { key: "4h-2w", label: "2周", grain: "fourHour", days: 14 },
+  { key: "4h-1m", label: "1个月", grain: "fourHour", days: 30 }
+]);
+
+const ALL_RANGES = QUOTE_RANGES.concat(FOUR_HOUR_RANGES);
+
 const cache = new Map();
 
 function loadJson(path) {
@@ -71,7 +88,7 @@ export function readQuery(search) {
   return {
     symbol: String(params.get("symbol") || "").trim(),
     kind: Object.prototype.hasOwnProperty.call(KIND_SOURCES, kind) ? kind : "",
-    range: QUOTE_RANGES.some((entry) => entry.key === range) ? range : ""
+    range: ALL_RANGES.some((entry) => entry.key === range) ? range : ""
   };
 }
 
@@ -115,6 +132,35 @@ export function monthlyPointsFromAxis(history, symbol) {
       at: year * 12 + (month - 1)
     };
   }).filter((point) => point && isFiniteNumber(point.value));
+}
+
+/* 纯函数：把「共享时间轴 + 逐标的列」的 4 小时线取成点序列，缺观测丢弃不补。
+   时点一律按 UTC 标注——桶本身就是按 UTC 对齐切出来的，换成浏览器本地时区会让
+   标签和分桶口径对不上（同一根柱子在不同时区显示成不同的整点）。 */
+export function hourlyPoints(file, symbol) {
+  const axis = file && Array.isArray(file.axis) ? file.axis : [];
+  const values = file && file.series ? file.series[symbol] : null;
+  if (!Array.isArray(values)) return [];
+  return axis.map((stamp, index) => ({
+    label: hourLabel(stamp),
+    value: values[index],
+    at: Number(stamp)
+  })).filter((point) => isFiniteNumber(point.value) && Number.isFinite(point.at));
+}
+
+function hourLabel(stamp) {
+  const at = new Date(Number(stamp) * 1000);
+  const pad = (value) => String(value).padStart(2, "0");
+  return `${pad(at.getUTCMonth() + 1)}-${pad(at.getUTCDate())} ${pad(at.getUTCHours())}:00`;
+}
+
+/* 纯函数：4 小时线按真实时间窗口裁剪，理由同 FOUR_HOUR_RANGES 上的注释。 */
+export function sliceDays(points, days) {
+  if (!days || days <= 0 || !points.length) return points.slice();
+  const last = points[points.length - 1].at;
+  if (!Number.isFinite(last)) return points.slice();
+  const floor = last - days * 86400;
+  return points.filter((point) => Number.isFinite(point.at) && point.at > floor);
 }
 
 export function slicePoints(points, limit) {
@@ -341,7 +387,7 @@ export async function loadInstrument(kind, symbol) {
   const instrument = INSTRUMENT_READERS[kind](data, symbol);
   if (!instrument) throw new Error("站内当前的日更快照里没有这个标的");
   const seriesKey = instrument.seriesKey || symbol;
-  const daily = await (async () => {
+  const dailyTask = (async () => {
     if (kind === "crypto") return dailyPoints(data.history, seriesKey);
     if (kind === "curve") {
       const values = data.history && data.history.values ? data.history.values[symbol] : null;
@@ -363,7 +409,7 @@ export async function loadInstrument(kind, symbol) {
       return [];
     }
   })();
-  const monthly = await (async () => {
+  const monthlyTask = (async () => {
     if (!paths.monthly) return [];
     try {
       const file = await loadJson(paths.monthly);
@@ -375,7 +421,18 @@ export async function loadInstrument(kind, symbol) {
       return [];
     }
   })();
-  return { instrument, daily, monthly };
+  /* 4 小时线只对源头确有小时观测的类别去取：其余类别连这个请求都不发。 */
+  const hourlyTask = (async () => {
+    if (!HOURLY_KINDS[kind]) return { points: [], file: null };
+    try {
+      const file = await loadJson(HOURLY_PATH);
+      return { points: hourlyPoints(file, seriesKey), file };
+    } catch (error) {
+      return { points: [], file: null };
+    }
+  })();
+  const [daily, monthly, hourly] = await Promise.all([dailyTask, monthlyTask, hourlyTask]);
+  return { instrument, daily, monthly, hourly };
 }
 
 function text(parent, tag, className, content) {
@@ -402,6 +459,8 @@ function metaRow(list, key, value) {
 
 export function renderQuote(document, root, payload, wanted) {
   const { instrument, daily, monthly } = payload;
+  const hourly = (payload.hourly && payload.hourly.points) || [];
+  const hourlyFile = (payload.hourly && payload.hourly.file) || null;
   root.textContent = "";
   root.setAttribute("aria-busy", "false");
   document.title = `${instrument.name} 行情详情 · Ooglex金融终端`;
@@ -431,23 +490,62 @@ export function renderQuote(document, root, payload, wanted) {
   if (instrument.proxyOf) text(chips, "span", "quote-chip", `代理标的 ${instrument.proxyOf}`);
 
   const panel = text(root, "section", "quote-panel");
+  /* 粒度切换只在站内确实有这条 4 小时线时出现：没有小时观测的标的（FRED 商品现货、
+     美债曲线）连这个按钮都不给，而不是给一个点开只有空图的选项。 */
+  const grains = [{ key: "daily", label: "日线", ranges: QUOTE_RANGES }];
+  if (hourly.length >= 2) {
+    grains.push({ key: "4h", label: "4小时", ranges: FOUR_HOUR_RANGES });
+  }
+  const grainBar = grains.length > 1 ? text(panel, "div", "quote-grains") : null;
+  if (grainBar) {
+    grainBar.setAttribute("role", "group");
+    grainBar.setAttribute("aria-label", "走势粒度");
+  }
   const tabs = text(panel, "div", "quote-ranges");
   tabs.setAttribute("role", "group");
   tabs.setAttribute("aria-label", "走势区间");
   const chartHost = text(panel, "div", "quote-chart-host");
+  const grainNote = text(panel, "p", "quote-grain-note");
   const stats = text(panel, "div", "quote-stats");
 
-  const decimals = instrument.changeMode === "bp" ? 2 : priceDecimals(daily.length
-    ? daily[daily.length - 1].value : 1);
+  const sample = daily.length ? daily : hourly;
+  const decimals = instrument.changeMode === "bp" ? 2 : priceDecimals(sample.length
+    ? sample[sample.length - 1].value : 1);
   const format = (value) => value.toLocaleString("en-US", {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals
   });
 
   function pointsFor(range) {
+    if (range.grain === "fourHour") return sliceDays(hourly, range.days);
     return range.grain === "daily"
       ? slicePoints(daily, range.points)
       : sliceMonths(monthly, range.months);
+  }
+
+  /* 4 小时线的每一句披露都取自数据文件自报的字段，不在页面上另写一套说法：
+     它是本站聚合的、不是交易所原生的 4 小时 K 线，时间标签是 UTC，刷新有周期。
+     加密的报价在站内来自 CoinGecko 而这条线来自 Yahoo，来源不同就明说。 */
+  function describeGrain(range) {
+    grainNote.textContent = "";
+    if (!hourlyFile || range.grain !== "fourHour") return;
+    const meta = (hourlyFile.meta || {})[instrument.seriesKey || instrument.symbol] || {};
+    const cadence = Number.isFinite(hourlyFile.cadenceHours) ? hourlyFile.cadenceHours : null;
+    const lines = [`4小时线由本站把 ${hourlyFile.source || "上游"} 的 `
+      + `${hourlyFile.aggregatedFrom || "1小时"} 行情按 UTC 对齐聚合而成（每桶取桶内最后一个收盘），`
+      + "不是交易所原生的 4 小时 K 线，与交易所自己划分的 4 小时周期不一定对齐；"
+      + "休市缺口如实留空，不插值、不前向填充。图上时间标签为 UTC。"
+      + (cadence ? `约 ${cadence} 小时刷新一次，不是实时行情。` : "不是实时行情。")];
+    if (instrument.sourceName && hourlyFile.source
+        && instrument.sourceName !== hourlyFile.source) {
+      lines.push(`本页报价来自 ${instrument.sourceName}，这条 4 小时线取自 `
+        + `${hourlyFile.source}${meta.source ? `（代码 ${meta.source}）` : ""}`
+        + "——同一标的、两个来源，数值可能不完全一致。");
+    }
+    if (meta.stale === true) {
+      lines.push("这条序列本轮未取到，显示的是上一轮的观测，没有补造新点。");
+    }
+    grainNote.textContent = lines.join("");
   }
 
   function paint(range) {
@@ -455,15 +553,19 @@ export function renderQuote(document, root, payload, wanted) {
       button.setAttribute("aria-pressed", button.dataset.range === range.key ? "true" : "false");
     });
     const points = pointsFor(range);
+    const grain = range.grain === "fourHour" ? "个4小时桶" : "个站内观测";
     renderChart(document, chartHost, {
       points,
       format,
       unit: instrument.unit,
-      label: `${instrument.name} ${range.label}走势，共 ${points.length} 个站内观测`,
+      label: `${instrument.name} ${range.label}走势，共 ${points.length} ${grain}`,
       emptyText: range.grain === "monthly"
         ? "站内还没有该标的的月线序列，这一档区间暂时画不出来；管道每日更新，取到后会自动出现。"
-        : "站内还没有该标的的日线序列，这一档区间暂时画不出来。"
+        : (range.grain === "fourHour"
+          ? "站内还没有该标的这一档区间的 4 小时观测，这里不画任何推断曲线。"
+          : "站内还没有该标的的日线序列，这一档区间暂时画不出来。")
     });
+    describeGrain(range);
     stats.textContent = "";
     const summary = rangeStats(points, instrument.changeMode);
     if (!summary) return;
@@ -479,32 +581,58 @@ export function renderQuote(document, root, payload, wanted) {
     });
   }
 
-  let initial = null;
-  QUOTE_RANGES.forEach((range) => {
-    const button = text(tabs, "button", "quote-range", range.label);
-    button.type = "button";
-    button.dataset.range = range.key;
-    const available = pointsFor(range).length >= 2;
-    if (!available) {
-      button.disabled = true;
-      button.title = "站内暂无该区间的历史序列";
-    } else if (!initial) {
-      initial = range;
+  function rememberRange(key) {
+    if (!window.history || typeof window.history.replaceState !== "function") return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("range", key);
+    window.history.replaceState(null, "", url.toString());
+  }
+
+  /* 换粒度就整条区间条重建：两种粒度的档位本来就不是同一套，
+     日线是1个月到全部，4小时是3天到1个月，混在一条上读不出来是哪种粒度。 */
+  function showGrain(grain, askedKey) {
+    if (grainBar) {
+      Array.from(grainBar.children).forEach((button) => {
+        button.setAttribute("aria-pressed", button.dataset.grain === grain.key ? "true" : "false");
+      });
     }
-    button.setAttribute("aria-pressed", "false");
-    button.addEventListener("click", () => {
-      paint(range);
-      if (window.history && typeof window.history.replaceState === "function") {
-        const url = new URL(window.location.href);
-        url.searchParams.set("range", range.key);
-        window.history.replaceState(null, "", url.toString());
+    tabs.textContent = "";
+    let initial = null;
+    grain.ranges.forEach((range) => {
+      const button = text(tabs, "button", "quote-range", range.label);
+      button.type = "button";
+      button.dataset.range = range.key;
+      if (pointsFor(range).length < 2) {
+        button.disabled = true;
+        button.title = "站内暂无该区间的历史序列";
+      } else if (!initial) {
+        initial = range;
       }
+      button.setAttribute("aria-pressed", "false");
+      button.addEventListener("click", () => {
+        paint(range);
+        rememberRange(range.key);
+      });
     });
+    /* 日线默认停在1年、4小时默认停在1周；网址带 range 时按网址来，
+       分享出去的链接能落回同一种粒度的同一档区间。 */
+    const usable = (key) => grain.ranges.filter(
+      (range) => range.key === key && pointsFor(range).length >= 2)[0];
+    paint(usable(askedKey) || usable(grain.key === "4h" ? "4h-1w" : "1y")
+      || initial || grain.ranges[0]);
+  }
+
+  grains.forEach((grain) => {
+    if (!grainBar) return;
+    const button = text(grainBar, "button", "quote-grain", grain.label);
+    button.type = "button";
+    button.dataset.grain = grain.key;
+    button.setAttribute("aria-pressed", "false");
+    button.addEventListener("click", () => { showGrain(grain, ""); });
   });
-  /* 默认停在1年；网址带 range 时按网址来，分享出去的链接能落回同一档区间。 */
-  const asked = QUOTE_RANGES.filter((range) => range.key === wanted && pointsFor(range).length >= 2)[0];
-  const preferred = QUOTE_RANGES.filter((range) => range.key === "1y" && pointsFor(range).length >= 2)[0];
-  paint(asked || preferred || initial || QUOTE_RANGES[0]);
+  /* 区间键两套之间不重名，因此粒度可以直接由网址里的 range 反推，不必另开一个参数。 */
+  const wantedGrain = FOUR_HOUR_RANGES.some((range) => range.key === wanted) ? "4h" : "daily";
+  showGrain(grains.filter((grain) => grain.key === wantedGrain)[0] || grains[0], wanted);
 
   /* 盘中活更新：只有跨资产管道的标的才有盘中层，且盘中报价必须比本页显示的
      数据日更新才会覆盖。覆盖后价格与涨跌都改成盘中口径，并在标签里写明。 */
@@ -526,6 +654,10 @@ export function renderQuote(document, root, payload, wanted) {
   metaRow(list, "长周期序列", monthly.length
     ? `站内月线 ${monthly.length} 个月（${monthly[0].label} → ${monthly[monthly.length - 1].label}）`
     : "站内暂无月线序列");
+  metaRow(list, "4小时线", hourly.length
+    ? `站内 ${hourly.length} 个 4 小时桶（UTC ${hourly[0].label} → ${hourly[hourly.length - 1].label}），`
+      + `由 ${hourlyFile && hourlyFile.aggregatedFrom || "1h"} 行情聚合，非交易所原生 K 线`
+    : "该标的在源头没有小时级观测，站内不提供 4 小时线");
   if (instrument.sourceUrl) {
     const link = text(meta, "a", "quote-source-link", `${instrument.sourceLabel} →`);
     link.href = instrument.sourceUrl;

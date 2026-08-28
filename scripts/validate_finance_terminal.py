@@ -2934,7 +2934,10 @@ def main() -> None:
     quote_module = QUOTE_MODULE.read_text(encoding="utf-8")
     chart_module = CHART_MODULE.read_text(encoding="utf-8")
     # 28,000：详情页新增商品现货这一类标的的读取器与月频历史轴转换。
-    require(QUOTE_MODULE.stat().st_size <= 28_000, "行情详情页脚本超过28KB性能预算")
+    # 28,000 是只有日线与月线两套区间时定的。补上 4 小时线这一层——粒度切换、按天数
+    # 裁剪的区间集合、以及说明「本站聚合、非交易所原生 K 线、时间为 UTC、来源可能与
+    # 本页报价不同」的那段逐条披露——连同解释这些取值由来的注释后需要 35KB。
+    require(QUOTE_MODULE.stat().st_size <= 35_000, "行情详情页脚本超过35KB性能预算")
     # 盘中活更新模块：两页共用一份，只重取那份几KB的盘中快照并在数值真的变了时闪一下。
     live_module = LIVE_MODULE.read_text(encoding="utf-8")
     require(LIVE_MODULE.stat().st_size <= 10_000, "盘中活更新模块超过10KB性能预算")

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>行情详情 · Ooglex金融终端</title>
-  <meta name="description" content="Ooglex金融终端行情详情页：单个标的的完整走势（1个月至全部区间），逐项标注来源、数据日、更新时间与口径。">
+  <meta name="description" content="Ooglex金融终端行情详情页：单个标的的完整走势（日线1个月至全部区间，有小时观测的标的另有4小时线），逐项标注来源、数据日、更新时间与口径。">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/favicon.svg">
   <meta name="theme-color" content="#070a0f">
@@ -120,6 +120,38 @@
       border-radius: 5px;
       background: linear-gradient(180deg, rgba(12, 18, 27, 0.92), rgba(6, 11, 18, 0.92));
     }
+    /* 粒度切换排在区间条之上，视觉上比区间重一级：先选日线还是4小时，再选区间。
+       两种粒度的档位不是同一套，混排会让人读不出当前这张图到底是什么粒度。 */
+    .quote-grains { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+    .quote-grain {
+      min-width: 72px;
+      min-height: 44px;
+      padding: 0 15px;
+      border: 1px solid var(--line-strong);
+      border-radius: 3px;
+      color: var(--muted);
+      background: rgba(12, 18, 27, 0.7);
+      font-family: var(--sans);
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+    }
+    .quote-grain:hover { border-color: var(--cyan); color: var(--ink); }
+    /* 选中态不只靠颜色：同时加粗字重并压深底色，色觉差异下也分得出当前粒度。 */
+    .quote-grain[aria-pressed="true"] {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      background: var(--cyan-soft);
+      font-weight: 700;
+    }
+    .quote-grain:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+    .quote-grain-note:empty { display: none; }
+    .quote-grain-note {
+      margin: 10px 0 0;
+      color: var(--faint);
+      font-size: 12px;
+      line-height: 1.7;
+    }
     .quote-ranges { display: flex; flex-wrap: wrap; gap: 8px; }
     .quote-range {
       min-width: 58px;
@@ -228,6 +260,7 @@
       .wrap { padding: 0 14px 40px; }
       .quote-meta-row { grid-template-columns: minmax(0, 1fr); }
       .quote-range { flex: 1 1 auto; }
+      .quote-grain { flex: 1 1 auto; }
     }
   </style>
 </head>
