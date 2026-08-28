@@ -193,6 +193,30 @@ ASSETS = [
      "caps": {"m1": 90, "ytd": 250, "y1": 300}},
     {"name": "CME木材",          "cat": "commodity", "syms": ["LBR=F", "LBS=F"],
      "caps": {"m1": 90, "ytd": 250, "y1": 300}},
+    # 2026-08-28 再扩容：商品品类要在页面上再分「能源 / 贵金属 / 工业金属 / 农产品 /
+    # 软商品 / 畜牧 / 商品指数」七组，这里补的是各组里站内此前完全没有的品种。
+    # 只登记在数据源上确实有免费日线的代码：宁可某一组只有三行，也不放进取不到的代码——
+    # 取不到的行会让整条管道长期标成 degraded，而页面上仍旧一行都不会多。
+    {"name": "NYMEX丙烷",        "cat": "commodity", "syms": ["B0=F"],
+     "note": "蒙贝尔维尤LDH丙烷（OPIS）期货，天然气液（NGL）的基准合约",
+     "caps": {"m1": 80, "ytd": 200, "y1": 250}},
+    {"name": "KCBT硬红冬小麦",   "cat": "commodity", "syms": ["KE=F"],
+     "note": "堪萨斯硬红冬小麦期货，与CBOT软红冬小麦（ZW=F）是两个不同品种"},
+    # 以下四项是基金份额价格，不是任何一种商品或指数本身的报价，逐条写明代理关系。
+    # 它们各自覆盖站内单品期货覆盖不到的东西：锌等基本金属、宽基商品指数、碳配额。
+    {"name": "工业金属篮子",     "cat": "commodity", "syms": ["DBB"],
+     "note": "以 Invesco DB 基本金属基金（DBB）份额价格代理铝、锌、铜期货篮子，"
+             "是基金价格而不是任一金属的现货价"},
+    {"name": "综合商品指数",     "cat": "commodity", "syms": ["DBC"],
+     "note": "以 Invesco DB 商品指数跟踪基金（DBC）份额价格代理多元化商品指数，"
+             "是基金价格而不是指数点位"},
+    {"name": "标普GSCI商品指数", "cat": "commodity", "syms": ["GSG"],
+     "note": "以 iShares 标普GSCI商品指数信托（GSG）份额价格代理，"
+             "是信托价格而不是指数点位"},
+    {"name": "全球碳排放权",     "cat": "commodity", "syms": ["KRBN"],
+     "note": "以 KraneShares 全球碳排放ETF（KRBN）份额价格代理欧盟、加州与RGGI碳配额期货，"
+             "是基金价格而不是任一市场的配额价",
+     "caps": {"m1": 80, "ytd": 200, "y1": 250}},
     # —— 外汇 ——（涨跌幅即各汇率自身变动，与示例图口径一致）
     {"name": "美元兑日元",       "cat": "fx",        "syms": ["USDJPY=X", "JPY=X"]},
     {"name": "美元指数",         "cat": "fx",        "syms": ["DX-Y.NYB", "DX=F"]},
@@ -617,7 +641,7 @@ def build():
             published_snapshot_at=(prev_data or {}).get("updatedAt"),
             published=False,
             previous_health=prev_health,
-            failure_reason="28项Yahoo候选代码本轮均未返回可发布行情，本轮未发布新快照。",
+            failure_reason=f"{len(ASSETS)}项Yahoo候选代码本轮均未返回可发布行情，本轮未发布新快照。",
         )
         write_health(HEALTH_PATH, health)
         print("\n本轮 0 个标的成功（可能整源被限流），保留上次的 data.json，不覆盖。")

@@ -4,7 +4,7 @@
 
 /* 六大类的顺序、折叠阈值与附加列；折叠阈值即首屏直接显示的行数。 */
 export const BOARD_CATEGORIES = Object.freeze([
-  { key: "commodity", label: "商品", labelEn: "Commodities", collapseAfter: 6, extraLabel: "口径" },
+  { key: "commodity", label: "商品", labelEn: "Commodities", collapseAfter: 8, extraLabel: "口径" },
   { key: "index", label: "指数", labelEn: "Indices", collapseAfter: 6, extraLabel: "地区" },
   { key: "stock", label: "股票", labelEn: "Stocks", collapseAfter: 8, extraLabel: "市值" },
   { key: "fx", label: "外汇", labelEn: "FX", collapseAfter: 6, extraLabel: "口径" },
@@ -31,6 +31,49 @@ const INDEX_REGION = Object.freeze({
   "WIG20.WA": "波兰", "^SET.BK": "泰国", "^KLSE": "马来西亚", "PSEI.PS": "菲律宾",
   "^IPSA": "智利", "^MERV": "阿根廷", "^HSTECH": "中国香港"
 });
+
+/* 商品品类下的二级分组：一类三十多行，一条长列表看不出「这是能源还是金属」。
+   分组是静态归类，只决定怎么摆，不参与计算，也不改动逐行的价格、涨跌、数据日与来源。 */
+export const COMMODITY_GROUPS = Object.freeze([
+  { key: "energy", label: "能源", labelEn: "Energy" },
+  { key: "precious", label: "贵金属", labelEn: "Precious Metals" },
+  { key: "base", label: "工业金属", labelEn: "Base Metals" },
+  { key: "grain", label: "农产品", labelEn: "Grains & Oilseeds" },
+  { key: "soft", label: "软商品", labelEn: "Softs" },
+  { key: "livestock", label: "畜牧", labelEn: "Livestock" },
+  { key: "index", label: "商品指数", labelEn: "Commodity Indices" },
+  { key: "other", label: "其他", labelEn: "Other" }
+]);
+
+/* 逐代码登记。没登记的落进「其他」，不就近猜：分错组比不分组更误导。 */
+const COMMODITY_GROUP = Object.freeze({
+  "CL=F": "energy", "BZ=F": "energy", "NG=F": "energy", "HO=F": "energy",
+  "RB=F": "energy", "B0=F": "energy", RWTC: "energy",
+  "GC=F": "precious", "SI=F": "precious", "PL=F": "precious", "PA=F": "precious",
+  "HG=F": "base", "ALI=F": "base", DBB: "base",
+  "ZW=F": "grain", "KE=F": "grain", "ZC=F": "grain", "ZS=F": "grain",
+  "ZL=F": "grain", "ZM=F": "grain", "ZO=F": "grain", "ZR=F": "grain",
+  "KC=F": "soft", "SB=F": "soft", "CC=F": "soft", "CT=F": "soft",
+  "OJ=F": "soft", "LBR=F": "soft", "LBS=F": "soft",
+  "LE=F": "livestock", "GF=F": "livestock", "HE=F": "livestock",
+  DBC: "index", GSG: "index", KRBN: "index"
+});
+
+/* 目前只有商品分了组；其余品类没有分组即不摆分组条。 */
+export const GROUPS_BY_CATEGORY = Object.freeze({ commodity: COMMODITY_GROUPS });
+
+export function groupKeyOf(categoryKey, symbol) {
+  if (categoryKey !== "commodity") return "";
+  return COMMODITY_GROUP[String(symbol || "")] || "other";
+}
+
+/* 「口径」列按工具本身取值：=F 是期货，官方现货序列另标现货，其余是基金份额价格。
+   三者不是同一种东西，不能都写成「期货」。 */
+export function commodityBasis(symbol) {
+  const text = String(symbol || "");
+  if (!text) return "";
+  return /=F$/.test(text) ? "期货" : "ETF代理";
+}
 
 /* 美债各期限的显示名；期限本身来自 curve.json，不在此处推算。 */
 const TENOR_NAME = Object.freeze({
@@ -334,15 +377,43 @@ export function summarize(rows, labels) {
   };
 }
 
+/* 贴分组并按登记组序重排；同组内保持上游顺序。没有分组的品类原样返回。 */
+export function withGroups(rows, categoryKey) {
+  const groups = GROUPS_BY_CATEGORY[categoryKey];
+  if (!groups) return rows;
+  const order = groups.map((group) => group.key);
+  return rows
+    .map((row, index) => ({ row, index, key: groupKeyOf(categoryKey, row.symbol) }))
+    .sort((a, b) => (order.indexOf(a.key) - order.indexOf(b.key)) || (a.index - b.index))
+    .map((entry) => Object.assign({}, entry.row, {
+      group: entry.key,
+      groupLabel: (groups.filter((group) => group.key === entry.key)[0] || {}).label || ""
+    }));
+}
+
+/* 分组条只列出当前确实有行的组：一条都没有的组不摆空标签占位。 */
+export function groupSummary(categoryKey, rows) {
+  const groups = GROUPS_BY_CATEGORY[categoryKey];
+  if (!groups) return [];
+  return groups
+    .map((group) => ({
+      key: group.key,
+      label: group.label,
+      labelEn: group.labelEn,
+      count: rows.filter((row) => row.group === group.key).length
+    }))
+    .filter((group) => group.count > 0);
+}
+
 function categoryRows(key, sources) {
   const { assetTracker, companies, assetRanking, macro, curve } = sources;
   if (key === "commodity") {
     const rows = trackerAssets(assetTracker, "commodity").map((asset) => trackerRow(asset, "commodity", {
-      extraText: "期货"
+      extraText: commodityBasis(asset.symbol)
     }));
     const spot = macro && macro.referenceSeries ? macro.referenceSeries.RWTC : null;
     const spotRow = referenceRow(spot, "commodity", { extraText: "现货" });
-    return spotRow ? rows.concat([spotRow]) : rows;
+    return withGroups(spotRow ? rows.concat([spotRow]) : rows, "commodity");
   }
   if (key === "index") {
     return trackerAssets(assetTracker, "equity").map((asset) => trackerRow(asset, "index", {
@@ -406,6 +477,7 @@ export function buildBoard(group = {}) {
       collapseAfter: category.collapseAfter,
       extraLabel: category.extraLabel,
       rows,
+      groups: groupSummary(category.key, rows),
       summary: summarize(rows, category.directionLabels)
     };
   });

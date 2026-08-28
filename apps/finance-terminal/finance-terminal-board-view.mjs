@@ -37,7 +37,8 @@ function text(parent, tag, className, content) {
 export function matchesQuery(item, query) {
   const needle = String(query || "").trim().toLowerCase();
   if (!needle) return true;
-  return [item && item.name, item && item.nameEn, item && item.symbol, item && item.extraText]
+  return [item && item.name, item && item.nameEn, item && item.symbol,
+    item && item.extraText, item && item.groupLabel]
     .filter(Boolean)
     .some((field) => String(field).toLowerCase().includes(needle));
 }
@@ -254,9 +255,20 @@ function renderRows(document, host, category, bundles, expanded, context) {
   text(headCells, "span", "board-cell-price", "最新价");
   text(headCells, "span", "board-cell-change", "涨跌");
   text(headCells, "span", "board-cell-extra", category.extraLabel || "口径");
-  const visible = expanded ? rows : rows.slice(0, category.collapseAfter);
+  /* 只看某一组时不再折叠（每组本来就只有几行）；分组小标题也只在「全部」视图里出现，
+     已经筛到一组时，标题就是分组条上那颗选中的芯片。 */
+  const limit = context.group ? rows.length : category.collapseAfter;
+  const grouped = Boolean(category.groups && category.groups.length) && !context.group;
+  const visible = expanded ? rows : rows.slice(0, limit);
   const pending = [];
+  let openGroup = "";
   visible.forEach((item) => {
+    if (grouped && item.group && item.group !== openGroup) {
+      openGroup = item.group;
+      const band = text(host, "div", "board-group-head");
+      text(band, "b", "", item.groupLabel || item.group);
+      text(band, "i", "", `${rows.filter((row) => row.group === item.group).length}项`);
+    }
     const line = text(host, "div", `board-row board-change-${item.change.direction}`);
     /* 盘中快照目前只覆盖跨资产管道的标的：给这些行标出代码与当前显示的数据日，
        活更新模块据此判断「盘中那条是不是真的更新」，其余品类原样保留日更读数。 */
@@ -284,7 +296,7 @@ function renderRows(document, host, category, bundles, expanded, context) {
   });
   paintToken += 1;
   if (pending.length) fillSparks(document, pending, bundles, paintToken);
-  if (rows.length > category.collapseAfter) {
+  if (rows.length > limit) {
     const toggle = text(host, "button", "board-toggle",
       expanded ? "收起" : `展开全部 ${rows.length} 项`);
     toggle.type = "button";
@@ -322,18 +334,48 @@ function paintPulse(document, host, rows, category) {
     + `${labels.down} ${counts.down} 项，持平或暂无观测 ${rest} 项`);
 }
 
+/* 二级分组条：只在当前品类确实分了组时出现。它是筛选器而不是第二组标签页——面板仍是
+   同一个品类的 tabpanel，因此用 aria-pressed 的按钮。计数口径与品类标签一致。 */
+function paintGroups(document, host, category, active, query, onPick) {
+  if (!host) return;
+  host.textContent = "";
+  const groups = category.groups || [];
+  host.hidden = groups.length < 2;
+  if (host.hidden) return;
+  host.setAttribute("aria-label", `${category.label}分组`);
+  const entries = [{ key: "", label: "全部", rows: category.rows }].concat(
+    groups.map((group) => ({
+      key: group.key,
+      label: group.label,
+      rows: category.rows.filter((row) => row.group === group.key)
+    })));
+  entries.forEach((entry) => {
+    const chip = text(host, "button", "board-group-chip");
+    chip.type = "button";
+    chip.dataset.group = entry.key;
+    chip.setAttribute("aria-pressed", entry.key === active ? "true" : "false");
+    text(chip, "b", "", entry.label);
+    const hits = query ? entry.rows.filter((row) => matchesQuery(row, query)).length : entry.rows.length;
+    text(chip, "i", "", query ? `${hits}/${entry.rows.length}` : String(entry.rows.length));
+    chip.addEventListener("click", () => { onPick(entry.key === active ? "" : entry.key); });
+  });
+}
+
 export function createBoardView(document, view) {
   const tabsHost = document.getElementById("board-tabs");
   const panelHost = document.getElementById("board-panel");
   const summaryHost = document.getElementById("board-summary");
   const searchInput = document.getElementById("board-search");
   const pulseHost = document.getElementById("board-pulse");
+  const groupsHost = document.getElementById("board-groups");
 
   function render(board) {
     if (!tabsHost || !panelHost) return;
     tabsHost.textContent = "";
     panelHost.textContent = "";
     const expandedByKey = new Map();
+    /* 每个品类记住自己选中的二级分组，切回来时还在原处。 */
+    const groupByKey = new Map();
     const bundles = { curveHistory: board.curveHistory, cryptoHistory: board.cryptoHistory };
     let active = (board.categories.filter((category) => category.rows.length)[0]
       || board.categories[0]).key;
@@ -344,7 +386,9 @@ export function createBoardView(document, view) {
 
     function paint() {
       const category = board.categories.filter((item) => item.key === active)[0];
-      const picked = selectRows(category.rows, query, watch);
+      const group = groupByKey.get(active) || "";
+      const scoped = group ? category.rows.filter((row) => row.group === group) : category.rows;
+      const picked = selectRows(scoped, query, watch);
       Array.from(tabsHost.children).forEach((button) => {
         const selected = button.dataset.category === active;
         button.setAttribute("aria-selected", selected ? "true" : "false");
@@ -358,20 +402,32 @@ export function createBoardView(document, view) {
           count.textContent = query ? `${hits}/${owner.rows.length}` : String(owner.rows.length);
         }
       });
-      panelHost.setAttribute("aria-label", `${category.label}行情列表`);
+      paintGroups(document, groupsHost, category, group, String(query || "").trim(), (next) => {
+        groupByKey.set(active, next);
+        expandedByKey.delete(active);
+        paint();
+        const chip = groupsHost.querySelector(`.board-group-chip[data-group="${next}"]`);
+        if (chip) chip.focus();
+      });
+      const groupLabel = group
+        ? (category.groups.filter((item) => item.key === group)[0] || {}).label || ""
+        : "";
+      panelHost.setAttribute("aria-label",
+        `${category.label}${groupLabel ? `·${groupLabel}` : ""}行情列表`);
       if (tabsHost.parentElement) tabsHost.parentElement.dataset.boardCategory = category.key;
       paintPulse(document, pulseHost, picked.shown, category);
       if (summaryHost) {
         const scope = query || picked.shown.length !== category.rows.length
           ? `显示${picked.shown.length}/${category.rows.length}项`
           : category.summary.text;
-        summaryHost.textContent = `${category.label} · ${scope}`
+        summaryHost.textContent = `${category.label}${groupLabel ? ` · ${groupLabel}` : ""} · ${scope}`
           + (category.summary.asOf ? ` · 数据日 ${category.summary.asOf}` : "");
       }
       renderRows(document, panelHost, category, bundles, expandedByKey.get(active) === true, {
         shown: picked.shown,
         query: String(query || "").trim(),
         watched: picked.watched,
+        group,
         watch
       });
     }

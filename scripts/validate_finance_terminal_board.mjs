@@ -8,13 +8,18 @@ import { fileURLToPath } from "node:url";
 
 import {
   BOARD_CATEGORIES,
+  COMMODITY_GROUPS,
   STOCK_ROW_LIMIT,
   buildBoard,
+  commodityBasis,
   formatAsOf,
   formatChange,
   formatPrice,
+  groupKeyOf,
+  groupSummary,
   summarize,
-  tenorChangeBp
+  tenorChangeBp,
+  withGroups
 } from "../apps/finance-terminal/finance-terminal-board-data.mjs";
 import {
   dailyPoints,
@@ -377,12 +382,80 @@ function validateQuoteLinks(board) {
   assert.equal(rangeStats([{ label: "a", value: 1 }], "pct"), null, "只有一个观测时不给区间统计");
 }
 
+/* 商品品类下的二级分组：分组只是静态归类，因此这里守的是「不猜、不丢、不改口径」——
+   每一行都要落进一个已登记的组（落进「其他」即说明有新代码没登记，属于要修的事），
+   组序稳定、计数可复算，且分组不得改动任何一行的价格、涨跌、数据日与来源。 */
+function validateCommodityGroups(board) {
+  assert.deepEqual(COMMODITY_GROUPS.map((group) => group.key),
+    ["energy", "precious", "base", "grain", "soft", "livestock", "index", "other"],
+    "商品二级分组的顺序必须固定");
+  assert.deepEqual(COMMODITY_GROUPS.map((group) => group.label),
+    ["能源", "贵金属", "工业金属", "农产品", "软商品", "畜牧", "商品指数", "其他"]);
+
+  const commodity = categoryOf(board, "commodity");
+  const registered = COMMODITY_GROUPS.map((group) => group.key);
+  commodity.rows.forEach((row) => {
+    assert.ok(registered.includes(row.group), `${row.name} 的分组未登记：${row.group}`);
+    assert.ok(row.groupLabel, `${row.name} 缺少分组显示名`);
+    assert.notEqual(row.group, "other",
+      `${row.name}（${row.symbol}）没有登记所属分组，请在 COMMODITY_GROUP 里补上`);
+  });
+
+  /* 组序：同一个组的行必须连成一段，否则列表里的分组小标题会重复出现。 */
+  const seen = [];
+  commodity.rows.forEach((row) => {
+    if (seen[seen.length - 1] !== row.group) seen.push(row.group);
+  });
+  assert.equal(seen.length, new Set(seen).size, "同一分组的行必须连续，不得被别的组打断");
+  assert.deepEqual(seen, registered.filter((key) => seen.includes(key)),
+    "分组在列表里的先后必须与登记顺序一致");
+
+  /* 分组条只列出真的有行的组，计数逐组可复算并且加总等于该品类的行数。 */
+  assert.ok(commodity.groups.length >= 2, "商品品类必须至少分出两组才值得摆分组条");
+  commodity.groups.forEach((group) => {
+    assert.ok(group.count > 0, `${group.label} 没有行就不该出现在分组条上`);
+    assert.equal(group.count, commodity.rows.filter((row) => row.group === group.key).length,
+      `${group.label} 的计数必须能由行逐条复算`);
+  });
+  assert.equal(commodity.groups.reduce((sum, group) => sum + group.count, 0), commodity.rows.length,
+    "分组计数之和必须等于该品类的行数：不得有行落在所有分组之外");
+  board.categories.filter((category) => category.key !== "commodity").forEach((category) => {
+    assert.deepEqual(category.groups, [], `${category.label}尚未分组，不得凭空生成分组条`);
+  });
+  assert.deepEqual(groupSummary("stock", [{ group: "energy" }]), [],
+    "没有登记分组的品类一律返回空数组");
+
+  /* 口径列按工具本身取值：期货、官方现货序列与基金份额价格是三种东西。 */
+  assert.equal(commodityBasis("CL=F"), "期货");
+  assert.equal(commodityBasis("DBC"), "ETF代理");
+  assert.equal(commodityBasis(""), "");
+  const spot = commodity.rows.filter((row) => row.symbol === "RWTC")[0];
+  assert.ok(spot && spot.extraText === "现货" && spot.group === "energy",
+    "EIA 官方现货序列必须标成现货并归入能源组");
+  commodity.rows.filter((row) => row.symbol !== "RWTC").forEach((row) => {
+    assert.equal(row.extraText, commodityBasis(row.symbol),
+      `${row.name} 的口径列必须由代码本身决定，不得一律写成期货`);
+  });
+  assert.equal(groupKeyOf("index", "^GSPC"), "", "只有商品品类参与二级分组");
+  assert.equal(groupKeyOf("commodity", "NEW=F"), "other", "未登记的代码落进「其他」而不是就近归组");
+
+  /* 分组只重排，不改任何一行的事实字段。 */
+  const before = [{ symbol: "GC=F", price: 1 }, { symbol: "CL=F", price: 2 }, { symbol: "SI=F", price: 3 }];
+  const after = withGroups(before, "commodity");
+  assert.deepEqual(after.map((row) => row.symbol), ["CL=F", "GC=F", "SI=F"],
+    "重排必须按组序，且同组内保持上游顺序");
+  assert.deepEqual(after.map((row) => row.price), [2, 1, 3], "重排不得改动任何一行的数值");
+  assert.deepEqual(before.map((row) => row.symbol), ["GC=F", "CL=F", "SI=F"], "不得就地改写入参");
+  assert.deepEqual(withGroups(before, "stock"), before, "未分组的品类原样返回");
+}
+
 async function main() {
   const group = await loadGroup();
   const board = buildBoard(group);
   validateFormatting();
   validateSeriesWindow();
   validateCategories(board);
+  validateCommodityGroups(board);
   validateCalibration(board);
   validateProvenance(board, group);
   validateCryptoFallback(group);
@@ -400,6 +473,9 @@ async function main() {
   console.log("- literal name/symbol search / starred-first ordering / sanitised watchlist keys: PASS");
   console.log("- per-row sparkline window / direction / pulse distribution vs summary: PASS");
   console.log("- per-row link to a standalone quote page / range grain / monthly gaps: PASS");
+  const groups = categoryOf(board, "commodity").groups
+    .map((group) => `${group.label}${group.count}`).join(" · ");
+  console.log(`- commodity sub-groups, every row registered, counts reproducible: ${groups}`);
 }
 
 main().catch((error) => {

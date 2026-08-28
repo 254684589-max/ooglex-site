@@ -36,6 +36,10 @@ function text(id, value) {
 function paintStats(board) {
   text("stat-total", String(board.total));
   text("stat-categories", String(board.categories.filter((category) => category.rows.length).length));
+  /* 二级分组目前只有商品这一类有；统计的是「今天真的有行的组」，不是登记了几组。 */
+  const grouped = board.categories.filter((category) => (category.groups || []).length);
+  const groups = grouped.reduce((sum, category) => sum + category.groups.length, 0);
+  text("stat-groups", groups ? `${groups} 组` : "不可用");
   const rows = board.categories.flatMap((category) => category.rows);
   const dates = rows.map((row) => row.asOf).filter(Boolean).sort();
   const oldest = dates[0] || "";

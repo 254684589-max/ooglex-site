@@ -71,6 +71,52 @@
 }
 .board-tab[aria-selected="true"]::before { opacity: 1; }
 .board-tab:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+/* 二级分组条：品类之下再分一层（目前只有商品分了「能源 / 贵金属 / 工业金属 / 农产品 /
+   软商品 / 畜牧 / 商品指数」七组）。它是筛选芯片而不是第二组标签页——面板仍是同一个
+   品类的 tabpanel，状态由 aria-pressed 表达，触控目标同样不低于44px。 */
+.board-groups { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.board-groups[hidden] { display: none; }
+.board-group-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  background: none;
+  font-family: var(--sans);
+  font-size: 12px;
+  cursor: pointer;
+}
+.board-group-chip b { font-weight: 500; }
+.board-group-chip i { color: var(--faint); font-family: var(--mono); font-size: 10px; font-style: normal; }
+.board-group-chip:hover { border-color: var(--accent, var(--cyan)); color: var(--ink); }
+.board-group-chip[aria-pressed="true"] {
+  border-color: var(--accent, var(--cyan));
+  color: var(--accent, var(--cyan));
+  background: var(--accent-soft, var(--cyan-soft));
+}
+.board-group-chip:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+/* 列表里的分组小标题：它不是数据行，因此不带 .board-row，也不参与逐行的自选、
+   迷你走势与盘中覆盖——那些只发生在真正的行情行上。 */
+.board-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--line);
+  border-left: 2px solid var(--accent, var(--cyan));
+  color: var(--muted);
+  background: rgba(12, 18, 27, 0.55);
+  font-family: var(--sans);
+  font-size: 12px;
+}
+.board-group-head b { font-weight: 600; letter-spacing: 0.04em; }
+.board-group-head i { color: var(--faint); font-family: var(--mono); font-size: 10px; font-style: normal; }
+
 .board-panel {
   margin-top: 12px;
   overflow: hidden;
