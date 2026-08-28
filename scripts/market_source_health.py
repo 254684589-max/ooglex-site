@@ -33,7 +33,7 @@ DATASET_SPECS: dict[str, dict[str, Any]] = {
         # 因此校验时额外接受 expectedRecordOptions 里已登记的历史值；扩容后的第一份
         # 健康文件发布后即可把该列表收回单值。
         "expectedRecords": 103,
-        "expectedRecordOptions": (56, 98, 103, 104),
+        "expectedRecordOptions": (56, 98, 103),
         "sources": [
             {
                 "id": "yahoo-finance",
