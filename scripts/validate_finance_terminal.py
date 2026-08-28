@@ -58,6 +58,12 @@ REGRESSION_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-regre
 VISUALS_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_visuals.mjs"
 RISK_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-view.mjs"
 QUOTE_PAGE = ROOT / "apps" / "finance-terminal" / "quote.html"
+BOARD_CSS = ROOT / "apps" / "finance-terminal" / "terminal-board.css"
+MARKETS_PAGE = ROOT / "apps" / "markets" / "index.html"
+MARKETS_MODULE = ROOT / "apps" / "markets" / "markets.mjs"
+HOME_PAGE = ROOT / "index.html"
+DATA_HUB_APP = ROOT / "apps" / "data-hub" / "app.js"
+SITEMAP = ROOT / "sitemap.xml"
 QUOTE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-quote.mjs"
 CHART_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-chart.mjs"
 GEO_RISK_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-geo-risk.mjs"
@@ -2908,9 +2914,30 @@ def main() -> None:
     require(CHART_MODULE.stat().st_size <= 11_000, "走势图渲染模块超过11KB性能预算")
     require(QUOTE_PAGE.stat().st_size <= 14_000, "行情详情页超过14KB性能预算")
     require('src="finance-terminal-quote.mjs"' in quote_page
+            and 'href="../markets/"' in quote_page
             and 'href="index.html#board-section"' in quote_page
             and "terms.html" in quote_page and "privacy.html" in quote_page,
-            "行情详情页必须挂载自己的脚本，并保留返回入口与法律链接")
+            "行情详情页必须挂载自己的脚本，并同时保留「全球市场行情」与金融终端两个返回入口")
+    # 「全球市场行情」是同一块行情板的独立页面：数据层与视图都复用金融终端那一份，
+    # 六份数据文件的相对深度也相同，因此不需要第二套取数逻辑，也不会出现两套口径。
+    markets_page = MARKETS_PAGE.read_text(encoding="utf-8")
+    markets_module = MARKETS_MODULE.read_text(encoding="utf-8")
+    require(MARKETS_PAGE.stat().st_size <= 14_000 and MARKETS_MODULE.stat().st_size <= 5_000,
+            "「全球市场行情」页面或脚本超过体积预算")
+    require('data-quote-base="../finance-terminal/quote.html"' in markets_page
+            and 'href="../finance-terminal/terminal-board.css"' in markets_page
+            and 'id="board-panel"' in markets_page and 'id="board-search"' in markets_page
+            and 'id="board-pulse"' in markets_page and 'id="board-tabs"' in markets_page,
+            "「全球市场行情」必须复用共享的行情板样式与同一套挂载点")
+    require("finance-terminal-board-data.mjs" in markets_module
+            and "finance-terminal-board-view.mjs" in markets_module
+            and "buildBoard" in markets_module and "createBoardView" in markets_module
+            and "assetRankingCrypto" in markets_module,
+            "「全球市场行情」必须直接复用品类行情的数据层与视图，不得另写一套取数")
+    require('href="apps/markets/"' in HOME_PAGE.read_text(encoding="utf-8")
+            and 'folder: "markets"' in DATA_HUB_APP.read_text(encoding="utf-8")
+            and "apps/markets/" in SITEMAP.read_text(encoding="utf-8"),
+            "「全球市场行情」必须同时出现在首页、数据中心与站点地图里")
     require("quoteHref" in board_view_module and 'text(line, "a", "board-open")' in board_view_module
             and "openPanel" not in board_view_module,
             "品类行情逐行必须是指向独立行情页的真链接，不再就地弹层")
@@ -2922,10 +2949,17 @@ def main() -> None:
     require("renderChart" in chart_module and "quote-cursor" in chart_module
             and "非交易" not in chart_module,
             "走势图渲染器必须提供读数游标")
+    # 行情板样式已抽成 terminal-board.css，供金融终端与独立的「全球市场行情」页共用：
+    # 同一份数据的同一种呈现不该因为换页面就变成两套样子。
+    board_css = BOARD_CSS.read_text(encoding="utf-8")
     require("board-cell-spark" in board_view_module and "sparkDirection" in board_view_module
             and "SPARK_POINTS" in board_view_module and "distribution" in board_view_module
-            and 'id="board-pulse"' in page and ".board-spark-line" in page,
+            and 'id="board-pulse"' in page and ".board-spark-line" in board_css,
             "品类行情板必须逐行画站内序列的迷你走势并给出涨跌分布脉冲条")
+    require('<link rel="stylesheet" href="terminal-board.css">' in page
+            and ".board-tab" in board_css and ".board-pulse-bar" in board_css
+            and BOARD_CSS.stat().st_size <= 11_000,
+            "行情板样式必须是两页共用的独立样式表，并保持在11KB以内")
     require('import("./finance-terminal-board-view.mjs")' in app
             and 'import("./finance-terminal-board-data.mjs")' in app
             and "createBoardView" in board_view_module

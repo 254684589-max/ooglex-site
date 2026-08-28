@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-quote-base="../finance-terminal/quote.html">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>全球市场行情 · 六大品类逐项报价与完整走势</title>
+  <meta name="description" content="全球市场行情：商品、指数、股票、外汇、加密、债券六大品类逐项报价，每行带近60个交易日迷你走势，点开即是该标的的完整行情页（1个月至全部区间）。逐项标注来源、数据日与口径，每日自动更新。">
+  <link rel="canonical" href="https://www.ooglex.com/apps/markets/">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+  <meta name="theme-color" content="#070a0f">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="全球市场行情 · 六大品类逐项报价与完整走势">
+  <meta property="og:description" content="商品、指数、股票、外汇、加密、债券六大品类逐项报价，每行带迷你走势，点开是该标的的完整行情页。逐项标注来源与数据日，每日自动更新。">
+  <meta property="og:url" content="https://www.ooglex.com/apps/markets/">
+  <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../finance-terminal/terminal-board.css">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070a0f;
+      --line: rgba(151, 169, 196, 0.15);
+      --line-strong: rgba(151, 169, 196, 0.28);
+      --ink: #f1f5f9;
+      --muted: #8c98aa;
+      --faint: #738196;
+      --cyan: #54d8ff;
+      --cyan-soft: rgba(84, 216, 255, 0.12);
+      --amber: #f2bd5c;
+      --up: #52d69a;
+      --up-soft: rgba(82, 214, 154, 0.12);
+      --down: #ff7d86;
+      --down-soft: rgba(255, 125, 134, 0.12);
+      --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+      --sans: Inter, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--bg); }
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 480px at 88% -10%, rgba(84, 216, 255, 0.08), transparent 64%),
+        radial-gradient(760px 520px at -8% 110%, rgba(89, 104, 255, 0.07), transparent 64%),
+        var(--bg);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 1240px; margin: 0 auto; padding: 0 22px 60px; }
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 13px;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      color: var(--muted);
+      font-size: 13px;
+      text-decoration: none;
+    }
+    .topbar a:hover { border-color: var(--cyan); color: var(--cyan); }
+    .topbar a.home { padding-left: 0; color: var(--cyan); }
+    .topbar .spacer { margin-left: auto; }
+    .masthead { padding: 30px 0 6px; }
+    .kick { color: var(--cyan); font-family: var(--mono); font-size: 11px; letter-spacing: 0.28em; }
+    .masthead h1 { margin: 12px 0 0; font-size: clamp(28px, 5vw, 42px); font-weight: 600; letter-spacing: 0.02em; }
+    .masthead .sub { margin: 10px 0 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
+    .stat-row {
+      display: grid;
+      gap: 1px;
+      margin-top: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      background: var(--line);
+    }
+    .stat { padding: 12px 14px; background: rgba(8, 13, 21, 0.96); }
+    .stat span { display: block; color: var(--faint); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; }
+    .stat b { display: block; margin-top: 5px; font-family: var(--mono); font-size: 17px; font-weight: 600; }
+    .board-heading {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 26px;
+      padding: 15px 0 11px;
+      border-bottom: 1px solid var(--line-strong);
+    }
+    .board-title { margin: 0; font-size: 15px; letter-spacing: 0.08em; }
+    .board-subtitle { color: var(--faint); font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; }
+    .watch-filter {
+      min-height: 44px;
+      padding: 0 13px;
+      border: 1px solid var(--line-strong);
+      border-radius: 3px;
+      color: var(--muted);
+      background: rgba(12, 18, 27, 0.7);
+      font-family: var(--sans);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .watch-filter[aria-pressed="true"] { border-color: var(--amber); color: var(--amber); }
+    .watch-toggle {
+      min-width: 38px;
+      min-height: 44px;
+      border: 0;
+      color: var(--faint);
+      background: none;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .watch-toggle[aria-pressed="true"] { color: var(--amber); }
+    .watch-toggle:hover { color: var(--cyan); }
+    .watch-toggle:focus-visible, .watch-filter:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+    footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-top: 34px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+    footer nav { display: flex; flex-wrap: wrap; gap: 12px; margin-left: auto; }
+    footer a { color: var(--muted); }
+    .sr-only {
+      position: absolute;
+      overflow: hidden;
+      width: 1px;
+      height: 1px;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+    @media (max-width: 1040px) {
+      .board-open, .board-head-cells { grid-template-columns: minmax(0, 1fr) 68px 104px 104px 108px; }
+    }
+    @media (max-width: 620px) {
+      .wrap { padding: 0 14px 44px; }
+      .board-heading { align-items: flex-start; flex-direction: column; }
+      .board-row { grid-template-columns: 38px minmax(0, 1fr); }
+      .board-open, .board-head-cells {
+        grid-template-columns: minmax(0, 1fr) 80px 88px;
+        gap: 8px;
+        padding: 8px 6px;
+      }
+      .board-cell-extra, .board-cell-spark { display: none; }
+      .board-tab { flex: 1 1 auto; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <a class="home" href="../../">← Ooglex</a>
+      <a href="../data-hub/">数据中心</a>
+      <a href="../finance-terminal/">金融终端</a>
+      <span class="spacer"></span>
+      <a href="../asset-tracker/">大类资产收益率</a>
+      <a href="../companies/">全球公司榜</a>
+    </div>
+
+    <div class="masthead">
+      <div class="kick">GLOBAL MARKETS</div>
+      <h1>全球市场行情</h1>
+      <p class="sub">商品、指数、股票、外汇、加密、债券六大品类逐项报价。每行带近60个交易日的迷你走势，点开即是该标的自己的完整行情页——1个月到全部区间、区间统计与逐项来源。</p>
+      <div class="stat-row" id="markets-stats" aria-live="polite">
+        <div class="stat"><span>标的总数</span><b id="stat-total">…</b></div>
+        <div class="stat"><span>品类</span><b id="stat-categories">6</b></div>
+        <div class="stat"><span>数据日</span><b id="stat-asof">…</b></div>
+        <div class="stat"><span>今日涨跌</span><b id="stat-breadth">…</b></div>
+        <div class="stat"><span>数据源</span><b id="stat-sources">…</b></div>
+      </div>
+    </div>
+
+    <section class="board-section" aria-labelledby="board-heading-title">
+      <div class="board-heading">
+        <h2 class="board-title" id="board-heading-title">品类行情</h2>
+        <span class="board-subtitle" id="board-summary">LOADING CATEGORIES</span>
+        <span class="board-pulse" id="board-pulse" hidden></span>
+      </div>
+      <p class="board-note" id="board-intro">六大品类全部读取站内已在日更的公开管道：商品、指数、外汇与中国国债来自跨资产管道（Yahoo Finance），股票来自全球公司榜，加密来自全球资产榜（CoinGecko），美债各期限来自FRED官方收益率曲线。每行的迷你走势取站内历史序列最近60个交易日的收盘，颜色按这段窗口自己的首尾变化，与当日涨跌分开算；站内还没有序列的标的显示「无序列」，不画任何推断曲线。涨跌口径按品类不同：股票为当日价格变动，加密为过去24小时，债券为相对上一观测的基点（bp）变化。</p>
+      <div class="board-controls">
+        <label class="sr-only" for="board-search">按名称或代码搜索标的</label>
+        <input class="board-search" id="board-search" type="search" placeholder="搜索名称或代码，例如 黄金 / GC=F"
+               autocomplete="off" spellcheck="false" aria-controls="board-panel">
+        <button type="button" class="watch-filter" id="board-watch-filter" aria-pressed="false" hidden>只看自选</button>
+      </div>
+      <div class="board-tabs" id="board-tabs" role="tablist" aria-label="行情品类"></div>
+      <div class="board-panel" id="board-panel" role="tabpanel" aria-label="行情列表" aria-busy="true">
+        <p class="board-empty">正在按品类整理站内日更行情…</p>
+      </div>
+      <p class="board-failures" id="board-failures" role="status" hidden></p>
+    </section>
+
+    <footer>
+      <span>Ooglex · 全球市场行情</span>
+      <span>数据每日自动更新 · 仅供参考，非投资建议</span>
+      <nav aria-label="产品法律与隐私">
+        <a href="../finance-terminal/terms.html">使用条款</a>
+        <a href="../finance-terminal/privacy.html">隐私政策</a>
+      </nav>
+    </footer>
+  </div>
+
+  <noscript><p class="board-note">此页面需要启用JavaScript才能读取站内日更管道中的行情与历史序列。</p></noscript>
+  <script type="module" src="markets.mjs"></script>
+</body>
+</html>

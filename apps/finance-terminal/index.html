@@ -15,6 +15,9 @@
   <meta property="og:description" content="专业、简洁的全球市场总览，聚合核心资产行情与宏观市场状态，并明确标注数据口径和更新时间。">
   <meta property="og:url" content="https://www.ooglex.com/apps/finance-terminal/">
   <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+  <!-- 品类行情板样式与独立的「全球市场行情」页共用一份；放在内联样式之前，
+       让本页原有的断点覆盖仍然生效。 -->
+  <link rel="stylesheet" href="terminal-board.css">
   <style>
     :root {
       color-scheme: dark;
@@ -1083,31 +1086,6 @@
     .operation-readiness-note, .operation-readiness-link, .operation-note, .operation-footer,
     footer { font-size: 11px; }
 
-    /* 品类行情板：六类标签页 + 可折叠列表。整行本身是按钮，触控目标不低于44px；
-       涨跌同时用箭头、正负号与文字表达，颜色只是第三重编码。 */
-    .board-note {
-      max-width: 92ch;
-      margin: 13px 0 0;
-      color: var(--faint);
-      font-size: 12px;
-      line-height: 1.85;
-    }
-    .board-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-    .board-search {
-      flex: 1 1 240px;
-      min-width: 0;
-      max-width: 420px;
-      min-height: 44px;
-      padding: 0 12px;
-      border: 1px solid var(--line-strong);
-      border-radius: 3px;
-      color: var(--ink);
-      background: rgba(12, 18, 27, 0.7);
-      font-family: var(--sans);
-      font-size: 13px;
-    }
-    .board-search::placeholder { color: var(--faint); }
-    .board-search:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
     /* 地缘风险定价：站内合成的四轴模型，与「市场聚合指标」里那三张「不合成」的
        官方信号卡刻意分开——它有自己的分区、表盘与逐轴条，读者一眼能分出哪些是
        原始官方读数、哪个是站内复算出来的模型。 */
@@ -1208,196 +1186,6 @@
     .geo-axis-meta { grid-column: 4; color: var(--faint); font-family: var(--mono); font-size: 10px; }
     .geo-risk-note { margin: 0; color: var(--faint); font-size: 11px; line-height: 1.62; }
 
-    .board-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-    .board-tab {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      min-width: 64px;
-      min-height: 44px;
-      padding: 0 14px;
-      border: 1px solid var(--line-strong);
-      border-radius: 3px;
-      color: var(--muted);
-      background: rgba(12, 18, 27, 0.7);
-      font-family: var(--sans);
-      font-size: 13px;
-      cursor: pointer;
-    }
-    .board-tab b { font-weight: 600; }
-    .board-tab i { color: var(--faint); font-family: var(--mono); font-size: 10px; font-style: normal; }
-    /* 六个品类各带一条强调色：标签上的圆点、选中态、面板描边与脉冲条都跟着它走，
-       「现在看的是哪一类」不用靠记忆。颜色只做品类标识，涨跌另有箭头与文字，不靠颜色编码。 */
-    .board-tab[data-category="commodity"], [data-board-category="commodity"] { --accent: #f2bd5c; --accent-soft: rgba(242, 189, 92, 0.12); }
-    .board-tab[data-category="index"], [data-board-category="index"] { --accent: #54d8ff; --accent-soft: rgba(84, 216, 255, 0.12); }
-    .board-tab[data-category="stock"], [data-board-category="stock"] { --accent: #a78bfa; --accent-soft: rgba(167, 139, 250, 0.13); }
-    .board-tab[data-category="fx"], [data-board-category="fx"] { --accent: #4fd1c5; --accent-soft: rgba(79, 209, 197, 0.12); }
-    .board-tab[data-category="crypto"], [data-board-category="crypto"] { --accent: #ff9f45; --accent-soft: rgba(255, 159, 69, 0.12); }
-    .board-tab[data-category="bond"], [data-board-category="bond"] { --accent: #7aa2ff; --accent-soft: rgba(122, 162, 255, 0.13); }
-    .board-tab::before {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--accent, var(--cyan));
-      box-shadow: 0 0 7px var(--accent, var(--cyan));
-      content: "";
-      opacity: 0.75;
-    }
-    .board-tab:hover { border-color: var(--accent, var(--cyan)); color: var(--ink); }
-    .board-tab[aria-selected="true"] {
-      border-color: var(--accent, var(--cyan));
-      color: var(--accent, var(--cyan));
-      background: var(--accent-soft, var(--cyan-soft));
-    }
-    .board-tab[aria-selected="true"]::before { opacity: 1; }
-    .board-tab:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
-    .board-panel {
-      margin-top: 12px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-top: 2px solid var(--accent, var(--cyan));
-      border-radius: 4px;
-      background:
-        linear-gradient(180deg, var(--accent-soft, var(--cyan-soft)), transparent 96px);
-    }
-    .board-row {
-      display: grid;
-      grid-template-columns: 44px minmax(0, 1fr);
-      align-items: center;
-      width: 100%;
-      min-height: 46px;
-      padding: 0 10px 0 4px;
-      border-bottom: 1px solid var(--line);
-      color: var(--ink);
-      font-family: var(--sans);
-      font-size: 13px;
-    }
-    .board-row:last-child { border-bottom: 0; }
-    .board-row:hover { background: var(--accent-soft, var(--cyan-soft)); }
-    .board-open,
-    .board-head-cells {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 76px 116px 116px 128px;
-      align-items: center;
-      gap: 10px;
-      width: 100%;
-      min-height: 46px;
-      padding: 8px 10px;
-      border: 0;
-      color: inherit;
-      background: none;
-      font: inherit;
-      text-align: left;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    .board-open:focus-visible { outline: 2px solid var(--cyan); outline-offset: -2px; }
-    .board-open:hover .board-cell-name b { color: var(--cyan); }
-    .board-cell-watch { color: var(--faint); font-family: var(--mono); font-size: 10px; text-align: center; }
-    .board-row-head {
-      min-height: 34px;
-      color: var(--faint);
-      background: rgba(12, 18, 27, 0.82);
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.08em;
-    }
-    .board-head-cells { min-height: 34px; padding: 6px 10px; cursor: default; }
-    .board-cell-name { display: flex; min-width: 0; flex-direction: column; gap: 2px; }
-    .board-cell-name b { overflow: hidden; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
-    .board-cell-name i { color: var(--faint); font-family: var(--mono); font-size: 10px; font-style: normal; }
-    .board-cell-price { font-family: var(--mono); font-size: 14px; text-align: right; }
-    .board-cell-currency { margin-left: 4px; color: var(--faint); font-size: 10px; font-style: normal; }
-    .board-cell-change {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 5px;
-      font-family: var(--mono);
-      font-size: 13px;
-    }
-    .board-arrow { font-size: 10px; font-style: normal; }
-    .board-cell-extra { color: var(--muted); font-family: var(--mono); font-size: 11px; text-align: right; }
-    .board-cell-spark {
-      display: flex;
-      overflow: hidden;
-      align-items: center;
-      justify-content: center;
-      min-width: 0;
-      height: 22px;
-      color: var(--faint);
-      font-family: var(--mono);
-      font-size: 10px;
-    }
-    .board-spark { width: 100%; height: 22px; }
-    .board-spark-line {
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 1.4;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      vector-effect: non-scaling-stroke;
-      filter: drop-shadow(0 0 3px currentColor);
-    }
-    .board-spark-area { fill: currentColor; opacity: 0.13; stroke: none; }
-    .board-spark-up { color: var(--up); }
-    .board-spark-down { color: var(--down); }
-    .board-spark-flat, .board-spark-unknown { color: var(--faint); }
-    .board-spark-empty { color: var(--faint); font-size: 9px; font-style: normal; }
-    .board-pulse { display: inline-flex; align-items: center; gap: 8px; }
-    .board-pulse-bar {
-      display: flex;
-      overflow: hidden;
-      width: 84px;
-      height: 6px;
-      border-radius: 3px;
-      background: rgba(151, 169, 196, 0.16);
-    }
-    .board-pulse-seg { height: 100%; }
-    .board-pulse-up { background: var(--up); }
-    .board-pulse-down { background: var(--down); }
-    .board-pulse-flat, .board-pulse-unknown { background: var(--faint); }
-    .board-pulse-text { color: var(--muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; }
-    /* 涨跌用底色块托一下，长列表里更容易一眼扫到；方向仍由箭头与正负号决定，
-       颜色只是加强，不是唯一编码。 */
-    .board-cell-change b { padding: 2px 6px; border-radius: 3px; }
-    .board-change-up .board-cell-change { color: var(--up); }
-    .board-change-up .board-cell-change b { background: var(--up-soft); }
-    .board-change-down .board-cell-change { color: var(--down); }
-    .board-change-down .board-cell-change b { background: var(--down-soft); }
-    .board-change-flat .board-cell-change,
-    .board-change-unknown .board-cell-change { color: var(--faint); }
-    .board-toggle {
-      display: block;
-      width: 100%;
-      min-height: 44px;
-      padding: 11px 14px;
-      border: 0;
-      border-top: 1px solid var(--line);
-      color: var(--cyan);
-      background: rgba(12, 18, 27, 0.62);
-      font-family: var(--sans);
-      font-size: 12px;
-      cursor: pointer;
-    }
-    .board-toggle:hover { background: var(--cyan-soft); }
-    .board-toggle:focus-visible { outline: 2px solid var(--cyan); outline-offset: -2px; }
-    .board-empty { margin: 0; padding: 16px 14px; color: var(--faint); font-size: 12px; }
-    .board-failures { margin: 10px 0 0; color: var(--amber); font-size: 12px; }
-    .board-range-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-    .board-range-tab {
-      min-width: 44px;
-      min-height: 44px;
-      padding: 0 10px;
-      border: 1px solid var(--line-strong);
-      border-radius: 3px;
-      color: var(--muted);
-      background: none;
-      font-family: var(--sans);
-      font-size: 11px;
-      cursor: pointer;
-    }
-    .board-range-tab[aria-pressed="true"] { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-soft); }
     .board-range-tab:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
 
     /* 工程/运营向分区的明细折叠：窄屏默认收起（由视图切换模块按断点同步），
@@ -1887,7 +1675,7 @@
           <span class="board-subtitle" id="board-summary">LOADING CATEGORIES</span>
           <span class="board-pulse" id="board-pulse" hidden></span>
         </div>
-        <p class="board-note" id="board-intro">六大品类全部读取站内已在日更的公开管道：商品、指数、外汇与中国国债来自跨资产管道（Yahoo Finance），股票来自全球公司榜，加密来自全球资产榜（CoinGecko），美债各期限来自FRED官方收益率曲线。每行的迷你走势取站内历史序列最近60个交易日的收盘，颜色按这段窗口自己的首尾变化，与当日涨跌分开算；站内还没有序列的标的显示「无序列」，不画任何推断曲线。点开任一标的会打开它自己的完整行情页（独立网址，可直接分享），那里有 1个月到全部区间的走势、区间统计与逐项来源。涨跌口径按品类不同：股票为当日价格变动，加密为过去24小时，债券为相对上一观测的基点（bp）变化。</p>
+        <p class="board-note" id="board-intro">六大品类全部读取站内已在日更的公开管道：商品、指数、外汇与中国国债来自跨资产管道（Yahoo Finance），股票来自全球公司榜，加密来自全球资产榜（CoinGecko），美债各期限来自FRED官方收益率曲线。每行的迷你走势取站内历史序列最近60个交易日的收盘，颜色按这段窗口自己的首尾变化，与当日涨跌分开算；站内还没有序列的标的显示「无序列」，不画任何推断曲线。点开任一标的会打开它自己的完整行情页（独立网址，可直接分享），那里有 1个月到全部区间的走势、区间统计与逐项来源。这块行情板另有独立页面：<a href="../markets/">全球市场行情</a>。涨跌口径按品类不同：股票为当日价格变动，加密为过去24小时，债券为相对上一观测的基点（bp）变化。</p>
         <div class="board-controls">
           <label class="sr-only" for="board-search">按名称或代码搜索标的</label>
           <input class="board-search" id="board-search" type="search" placeholder="搜索名称或代码，例如 黄金 / GC=F"
