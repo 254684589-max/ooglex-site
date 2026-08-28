@@ -520,10 +520,32 @@ function validateCommodityGroups(board) {
   const spot = commodity.rows.filter((row) => row.symbol === "RWTC")[0];
   assert.ok(spot && spot.extraText === "现货" && spot.group === "energy",
     "EIA 官方现货序列必须标成现货并归入能源组");
-  commodity.rows.filter((row) => row.symbol !== "RWTC").forEach((row) => {
-    assert.equal(row.extraText, commodityBasis(row.symbol),
-      `${row.name} 的口径列必须由代码本身决定，不得一律写成期货`);
+  /* 商品品类由两条管道并成：口径列必须按行自己的来源判定。跨资产管道的行按代码
+     （=F 是期货，其余是基金份额价格），商品现货管道的行按它自己声明的频率与分组。
+     用同一个函数校验所有行会把现货说成 ETF 代理——这条断言原本就是那样写窄的。 */
+  commodity.rows.forEach((row) => {
+    const kind = row.series && row.series.kind;
+    if (kind === "tracker") {
+      assert.equal(row.extraText, commodityBasis(row.symbol),
+        `${row.name} 的口径列必须由代码本身决定，不得一律写成期货`);
+    } else if (kind === "commodity") {
+      assert.equal(row.extraText, spotBasis({ frequency: row.frequency, group: row.group }),
+        `${row.name} 的口径列必须由它自己的频率决定，不得套用期货口径`);
+      assert.ok(["daily", "weekly", "monthly"].includes(row.frequency),
+        `${row.name} 必须如实标注观测频率`);
+      assert.match(row.changeBasis, /^较前一观测 /,
+        `${row.name} 的涨跌必须写明相对上一观测，不得写成当日涨跌`);
+    }
   });
+  /* 两条管道的行必须都在，且都不与对方混淆口径。 */
+  const trackerRows = commodity.rows.filter((row) => row.series.kind === "tracker");
+  const spotPipeline = commodity.rows.filter((row) => row.series.kind === "commodity");
+  assert.ok(trackerRows.length > 0 && spotPipeline.length > 0,
+    "商品品类应同时含交易所期货与官方现货两条管道的行");
+  assert.ok(trackerRows.every((row) => row.changeBasis === "较前一交易日收盘"),
+    "期货那半边的涨跌口径不得被现货管道带偏");
+  assert.ok(spotPipeline.every((row) => row.extraText !== "期货"),
+    "现货与官方指数不得被标成期货");
   assert.equal(groupKeyOf("index", "^GSPC"), "", "只有商品品类参与二级分组");
   assert.equal(groupKeyOf("commodity", "NEW=F"), "other", "未登记的代码落进「其他」而不是就近归组");
 
