@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 62783)
-Total output lines: 3958
-
 #!/usr/bin/env python3
 """Validate the Finance Terminal market overview without third-party dependencies."""
 
@@ -2120,7 +2117,218 @@ const failedCompanyResearch = adapter.buildResearchCards({
   assetRanking: { data: assetRanking, error: null },
   companies: { data: null, error: new Error("HTTP 503") }
 }, currentNow);
-assert.strictEqual(failedCompanyResearch[0].status, baselineResear…2783 tokens truncated…i-chart", "connected-defined-element-with-layout"), {
+assert.strictEqual(failedCompanyResearch[0].status, baselineResearch[0].status);
+assert.strictEqual(failedCompanyResearch[1].status, baselineResearch[1].status);
+assert.strictEqual(failedCompanyResearch[2].status, "error");
+
+const calendarNow = new Date(Date.parse(econCalendar.updatedAt) + 60 * 60 * 1000);
+const calendar = informationData.adaptEconomicCalendar(econCalendar, calendarNow);
+assert.strictEqual(calendar.id, "economic-calendar");
+assert.strictEqual(calendar.status, "ok");
+assert.strictEqual(calendar.count, econCalendar.events.length);
+assert.strictEqual(calendar.highCount, econCalendar.events.filter((event) => event.impact === "high").length);
+assert.strictEqual(calendar.asOf, econCalendar.asOf);
+assert.strictEqual(calendar.updatedAt, econCalendar.updatedAt);
+assert.strictEqual(calendar.source.name, "Forex Factory 经济日历");
+assert(calendar.events.length > 0 && calendar.events.length <= 4);
+assert(calendar.events.every((event) => ["high", "medium"].includes(event.impact)));
+if (calendar.selectionLabel === "接下来重要事件") {
+  assert(calendar.events.every((event) => Date.parse(event.ts) >= calendarNow.getTime()));
+  assert(calendar.events.every((event, index) => index === 0
+    || event.timestamp >= calendar.events[index - 1].timestamp));
+} else {
+  assert.strictEqual(calendar.selectionLabel, "最近重要事件");
+  assert(calendar.events.every((event) => Date.parse(event.ts) < calendarNow.getTime()));
+  assert(calendar.events.every((event, index) => index === 0
+    || event.timestamp <= calendar.events[index - 1].timestamp));
+}
+
+/* 回归：周末没有经济数据发布，周范围常在周五结束；周六跑出的文件不得被误判为过期。
+   固定构造一份周日~周五的周历，分别在周六、下周日两个时点求值。 */
+const weekendCalendar = JSON.parse(JSON.stringify(econCalendar));
+weekendCalendar.weekOf = "2026-08-16 ~ 2026-08-21";
+weekendCalendar.asOf = "2026-08-22";
+weekendCalendar.updatedAt = "2026-08-22T21:30:00Z";
+const saturdayNow = new Date(Date.parse("2026-08-22T22:30:00Z"));
+assert.notStrictEqual(informationData.adaptEconomicCalendar(weekendCalendar, saturdayNow).status, "stale",
+  "周六（本周内、无发布日）不得因周范围止于周五而被判为过期");
+const nextSundayCalendar = JSON.parse(JSON.stringify(weekendCalendar));
+nextSundayCalendar.asOf = "2026-08-23";
+nextSundayCalendar.updatedAt = "2026-08-23T10:00:00Z";
+assert.strictEqual(
+  informationData.adaptEconomicCalendar(nextSundayCalendar, new Date(Date.parse("2026-08-23T11:00:00Z"))).status,
+  "stale", "文件已进入下一周仍必须判为过期——放宽整周不得掩盖真正的跨周陈旧");
+const agedCalendar = JSON.parse(JSON.stringify(weekendCalendar));
+assert.strictEqual(
+  informationData.adaptEconomicCalendar(agedCalendar, new Date(Date.parse("2026-08-24T21:30:00Z"))).status,
+  "stale", "超过36小时未更新仍必须判为过期");
+
+const partialCalendar = JSON.parse(JSON.stringify(econCalendar));
+partialCalendar.count += 1;
+assert.strictEqual(informationData.adaptEconomicCalendar(partialCalendar, calendarNow).status, "partial");
+
+const staleCalendar = JSON.parse(JSON.stringify(econCalendar));
+staleCalendar.updatedAt = "2026-07-31T12:00:00Z";
+assert.strictEqual(informationData.adaptEconomicCalendar(staleCalendar, calendarNow).status, "stale");
+
+const invalidCalendar = JSON.parse(JSON.stringify(econCalendar));
+invalidCalendar.source = "Unknown calendar";
+const invalidInformation = informationData.buildInformationCards({
+  calendar: { data: invalidCalendar, error: null }
+}, calendarNow);
+assert.strictEqual(invalidInformation.length, 1);
+assert.strictEqual(invalidInformation[0].status, "error");
+assert.strictEqual(invalidInformation[0].events.length, 0);
+
+const failedInformation = informationData.buildInformationCards({
+  calendar: { data: null, error: new Error("HTTP 503") }
+}, calendarNow);
+assert.strictEqual(failedInformation.length, 1);
+assert.strictEqual(failedInformation[0].status, "error");
+assert.strictEqual(failedInformation[0].events.length, 0);
+
+const newsNow = new Date(Date.parse(financeNews.updatedAt) + 60 * 60 * 1000);
+const news = informationData.adaptFinanceNews(financeNews, newsNow);
+const marketItems = financeNews.categories.find((category) => category.key === "markets").items;
+const expectedNews = marketItems.slice().sort((a, b) => b.published - a.published).slice(0, 5);
+assert.strictEqual(news.id, "finance-news");
+assert.strictEqual(news.status, "ok");
+assert.strictEqual(news.count, marketItems.length);
+assert.strictEqual(news.articles.length, 5);
+assert.strictEqual(news.asOf, financeNews.asOf);
+assert.strictEqual(news.updatedAt, financeNews.updatedAt);
+assert.strictEqual(news.source.name, "Google News RSS · 原媒体");
+assert.deepStrictEqual(news.articles.map((item) => item.title), expectedNews.map((item) => item.title));
+assert(news.articles.every((item) => informationData.isSafeGoogleNewsUrl(item.link)));
+assert(news.articles.every((item, index) => index === 0 || item.published <= news.articles[index - 1].published));
+assert(news.articles.every((item) => !Object.prototype.hasOwnProperty.call(item, "price")));
+
+const partialNews = JSON.parse(JSON.stringify(financeNews));
+partialNews.categories.find((category) => category.key === "markets").items[0].link = "https://example.com/unsafe";
+assert.strictEqual(informationData.adaptFinanceNews(partialNews, newsNow).status, "partial");
+
+const staleNewsNow = new Date(Date.parse(financeNews.updatedAt) + 13 * 60 * 60 * 1000);
+assert.strictEqual(informationData.adaptFinanceNews(financeNews, staleNewsNow).status, "stale");
+
+const invalidNews = JSON.parse(JSON.stringify(financeNews));
+invalidNews.source = "Yahoo Finance";
+const invalidNewsInformation = informationData.buildInformationCards({
+  news: { data: invalidNews, error: null }
+}, newsNow);
+assert.strictEqual(invalidNewsInformation.length, 1);
+assert.strictEqual(invalidNewsInformation[0].status, "error");
+assert.strictEqual(invalidNewsInformation[0].articles.length, 0);
+
+const failedNewsInformation = informationData.buildInformationCards({
+  news: { data: null, error: new Error("HTTP 503") }
+}, newsNow);
+assert.strictEqual(failedNewsInformation.length, 1);
+assert.strictEqual(failedNewsInformation[0].status, "error");
+assert.strictEqual(failedNewsInformation[0].articles.length, 0);
+
+const combinedInformation = informationData.buildInformationCards({
+  calendar: { data: econCalendar, error: null },
+  news: { data: financeNews, error: null }
+}, newsNow);
+assert.strictEqual(combinedInformation.length, 2);
+assert.strictEqual(combinedInformation[0].id, "economic-calendar");
+assert.strictEqual(combinedInformation[1].id, "finance-news");
+
+console.log("DGS10 + DTWEXBGS + RWTC JavaScript adapter states: PASS");
+console.log("- official / automatic / stale / missing / invalid / request-error: PASS");
+console.log("Macro regime adapter states: PASS");
+console.log("- active / stale / retained fallback / invalid / request-error: PASS");
+console.log("CNN Fear & Greed adapter states: PASS");
+console.log("- active / stale / invalid / independent request-error: PASS");
+console.log("OFR Financial Stress adapter states: PASS");
+console.log("- active / partial / stale / invalid-source / independent request-error: PASS");
+console.log("Cross-asset performance adapter states: PASS");
+console.log("- period ranking / excluded stale rows / partial / stale / invalid-source / request-error: PASS");
+console.log("Global asset ranking adapter states: PASS");
+console.log("- total / top-five order / static-vs-market / partial / stale / invalid-source / request-error: PASS");
+console.log("Global company leaders adapter states: PASS");
+console.log("- listed top-three / movers / private exclusion / total / partial / stale / invalid-source / request-error: PASS");
+console.log("Aggregate source health adapter states: PASS");
+console.log("- migrated history / coverage / failed-attempt retention / snapshot mismatch / independent health request: PASS");
+console.log("Economic calendar adapter states: PASS");
+console.log("- event counts / impact filter / local-time input / partial / stale / invalid-source / request-error: PASS");
+console.log("Finance news adapter states: PASS");
+console.log("- BTC market/fallback + market-only / latest-five / safe links / failure isolation: PASS");
+})().catch((error) => { console.error(error); process.exit(1); });
+"""
+    result = subprocess.run(
+        ["node", "-e", script],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    require(result.returncode == 0, f"DGS10、DTWEXBGS、RWTC与BTC/USD JavaScript适配测试失败：\n{result.stdout}{result.stderr}")
+    print(result.stdout.strip())
+
+
+def run_provider_widget_runtime_tests() -> None:
+    script = r"""
+const assert = require("assert");
+const adapter = require("./apps/finance-terminal/app.js");
+
+(async () => {
+  const missing = await adapter.waitForProviderWidgetRegistration(null, "tv-mini-chart", 5);
+  assert.deepStrictEqual(missing, {
+    status: "unavailable", reason: "custom-elements-unavailable"
+  });
+
+  const alreadyRegistered = await adapter.waitForProviderWidgetRegistration({
+    get: (tag) => tag === "tv-mini-chart" ? function Widget() {} : undefined,
+    whenDefined: () => Promise.resolve()
+  }, "tv-mini-chart", 5);
+  assert.deepStrictEqual(alreadyRegistered, {
+    status: "registered", reason: "custom-element-registered"
+  });
+
+  let resolveRegistration;
+  const registration = new Promise((resolve) => { resolveRegistration = resolve; });
+  setTimeout(resolveRegistration, 0);
+  const delayed = await adapter.waitForProviderWidgetRegistration({
+    get: () => undefined,
+    whenDefined: () => registration
+  }, "tv-mini-chart", 50);
+  assert.deepStrictEqual(delayed, {
+    status: "registered", reason: "custom-element-registered"
+  });
+
+  const timedOut = await adapter.waitForProviderWidgetRegistration({
+    get: () => undefined,
+    whenDefined: () => new Promise(() => {})
+  }, "tv-mini-chart", 5);
+  assert.deepStrictEqual(timedOut, {
+    status: "unavailable", reason: "registration-timeout"
+  });
+
+  const mountedHost = {
+    localName: "tv-mini-chart",
+    isConnected: true,
+    matches: (selector) => selector === ":defined",
+    getBoundingClientRect: () => ({ width: 320, height: 176 })
+  };
+  assert.deepStrictEqual(adapter.inspectProviderWidgetHost(
+    mountedHost, "tv-mini-chart", "connected-defined-element-with-layout"
+  ), {
+    status: "mounted", reason: "connected-defined-element-with-layout"
+  });
+  assert.deepStrictEqual(adapter.inspectProviderWidgetHost({
+    ...mountedHost, isConnected: false
+  }, "tv-mini-chart", "connected-defined-element-with-layout"), {
+    status: "unavailable", reason: "component-host-disconnected"
+  });
+  assert.deepStrictEqual(adapter.inspectProviderWidgetHost({
+    ...mountedHost, matches: () => false
+  }, "tv-mini-chart", "connected-defined-element-with-layout"), {
+    status: "unavailable", reason: "component-host-not-defined"
+  });
+  assert.deepStrictEqual(adapter.inspectProviderWidgetHost({
+    ...mountedHost, getBoundingClientRect: () => ({ width: 0, height: 176 })
+  }, "tv-mini-chart", "connected-defined-element-with-layout"), {
     status: "unavailable", reason: "component-host-empty-layout"
   });
 
