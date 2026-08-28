@@ -149,6 +149,24 @@
     .quote-grid-label, .quote-axis-label { fill: var(--faint); font-family: var(--mono); font-size: 11px; }
     .quote-extreme { fill: currentColor; }
     .quote-extreme-label { fill: var(--muted); font-family: var(--mono); font-size: 11px; }
+    /* 末端光点：标出序列画到哪一天为止，带一圈呼吸光晕；不代表实时。 */
+    .quote-end-dot { fill: currentColor; filter: drop-shadow(0 0 6px currentColor); }
+    .quote-end-halo { fill: currentColor; opacity: 0.22; animation: quote-halo 2.6s ease-in-out infinite; }
+    @keyframes quote-halo {
+      0%, 100% { opacity: 0.1; r: 5; }
+      50% { opacity: 0.3; r: 9; }
+    }
+    .quote-price.live-tick-up, .quote-price.live-tick-down { animation: quote-tick 0.9s ease-out; }
+    @keyframes quote-tick {
+      0% { text-shadow: 0 0 18px currentColor; }
+      100% { text-shadow: none; }
+    }
+    .quote-price.live-tick-up { color: var(--up); }
+    .quote-price.live-tick-down { color: var(--down); }
+    .quote-chip-live { border-color: rgba(82, 214, 154, 0.5); color: var(--up); }
+    @media (prefers-reduced-motion: reduce) {
+      .quote-end-halo, .quote-price.live-tick-up, .quote-price.live-tick-down { animation: none; }
+    }
     .quote-cursor-line { stroke: var(--cyan); stroke-width: 1; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
     .quote-cursor-dot { fill: var(--cyan); stroke: rgba(2, 9, 15, 0.9); stroke-width: 2; }
     .quote-readout { margin: 8px 0 0; color: var(--muted); font-family: var(--mono); font-size: 12px; min-height: 18px; }

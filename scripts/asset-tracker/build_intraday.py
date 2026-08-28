@@ -32,8 +32,11 @@ YF_HOSTS = ["query1.finance.yahoo.com", "query2.finance.yahoo.com"]
 YF_HEADERS = {"User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                              "AppleWebKit/537.36 (KHTML, like Gecko) "
                              "Chrome/123.0 Safari/537.36")}
-CHUNK = 25              # 一次请求带多少个代码；spark 接口支持批量，避免每标的一请求
-CADENCE_MINUTES = 15    # 与工作流 cron 一致，写进文件供页面如实展示
+# 批量的 spark 接口实测已对这些参数返回 400，改用日更管道一直在用的 v8 图表接口逐标的取。
+# 逐标的意味着一轮就是清单条数那么多次请求，因此把刷新周期定在30分钟而不是更短：
+# 与其把取数源打到限流、连带拖垮日更那条主管道，不如把「盘中」这两个字说得准一点。
+PAUSE_SECONDS = 0.15    # 逐标的之间的轻微限速
+CADENCE_MINUTES = 30    # 与工作流 cron 一致，写进文件供页面如实展示
 NOTE = ("盘中快照：最新价与相对上一交易日收盘的涨跌，与收盘口径的 data.json 分开存放。"
         "刷新周期约%d分钟，各交易所自身还有延迟（股票常见15分钟，指数/外汇/加密通常更快），"
         "本站不保证也不声称实时。本轮未取到的标的沿用上一份，不写空数据、不外推。" % CADENCE_MINUTES)
@@ -58,39 +61,42 @@ def universe():
     return seen
 
 
-def spark(symbols):
-    """Yahoo spark 批量接口：返回 {symbol: (price, previous_close, epoch_seconds)}。"""
-    joined = ",".join(requests.utils.quote(symbol) for symbol in symbols)
+def latest_quote(symbol):
+    """Yahoo v8 图表接口取盘中最新点：返回 (price, previous_close, epoch_seconds)。
+
+    meta 里的 regularMarketPrice 与 chartPreviousClose 是数据源自己给的当期读数与前收，
+    这里不由 K 线自行推算，避免和日更那条管道各算各的。
+    """
+    encoded = requests.utils.quote(symbol)
     last_error = ValueError("无可用报价")
     for host in YF_HOSTS:
-        url = (f"https://{host}/v7/finance/spark?symbols={joined}"
-               "&range=1d&interval=5m")
+        url = (f"https://{host}/v8/finance/chart/{encoded}"
+               "?range=1d&interval=5m&includePrePost=false")
         try:
-            response = requests.get(url, headers=YF_HEADERS, timeout=15)
+            response = requests.get(url, headers=YF_HEADERS, timeout=12)
             response.raise_for_status()
-            payload = response.json()
-            out = {}
-            for symbol, entry in (payload or {}).items():
-                if not isinstance(entry, dict):
-                    continue
-                closes = entry.get("close") or []
-                stamps = entry.get("timestamp") or []
-                previous = entry.get("chartPreviousClose")
-                if previous is None:
-                    previous = entry.get("previousClose")
-                price = None
-                stamp = None
+            result = response.json()["chart"]["result"][0]
+            meta = result.get("meta") or {}
+            previous = meta.get("chartPreviousClose")
+            if not isinstance(previous, (int, float)) or previous <= 0:
+                previous = meta.get("previousClose")
+            price = meta.get("regularMarketPrice")
+            stamp = meta.get("regularMarketTime")
+            if not isinstance(price, (int, float)):
+                # meta 里没有当期价就退回该轮 K 线的最后一个有效收盘，并沿用它自己的时点
+                closes = ((result.get("indicators") or {}).get("quote") or [{}])[0].get("close") or []
+                stamps = result.get("timestamp") or []
                 for value, moment in zip(reversed(closes), reversed(stamps)):
                     if isinstance(value, (int, float)):
                         price = float(value)
                         stamp = moment
                         break
-                if price is None or not isinstance(previous, (int, float)) or previous <= 0:
-                    continue
-                out[symbol] = (price, float(previous), stamp)
-            if out:
-                return out
-        except Exception as error:  # 单个宿主失败就换另一个，两个都失败再上报
+            if not isinstance(price, (int, float)) or price <= 0:
+                raise ValueError("无当期报价")
+            if not isinstance(previous, (int, float)) or previous <= 0:
+                raise ValueError("无前收价，无法给出可复算的涨跌")
+            return float(price), float(previous), stamp
+        except Exception as error:   # 单个宿主失败就换另一个，两个都失败再上报
             last_error = error
     raise last_error
 
@@ -105,24 +111,21 @@ def build():
 
     quotes = {}
     failures = []
-    for index in range(0, len(symbols), CHUNK):
-        batch = symbols[index:index + CHUNK]
+    for symbol in symbols:
         try:
-            for symbol, (price, prev_close, stamp) in spark(batch).items():
-                if symbol not in symbols:
-                    continue           # 只收清单内的标的，接口回什么都不额外采纳
-                quote = {
-                    "price": round(price, 6),
-                    "previousClose": round(prev_close, 6),
-                    "changePct": round((price / prev_close - 1.0) * 100, 4),
-                }
-                if isinstance(stamp, (int, float)):
-                    quote["asOf"] = datetime.fromtimestamp(stamp, timezone.utc) \
-                        .strftime("%Y-%m-%dT%H:%M:%SZ")
-                quotes[symbol] = quote
+            price, prev_close, stamp = latest_quote(symbol)
+            quote = {
+                "price": round(price, 6),
+                "previousClose": round(prev_close, 6),
+                "changePct": round((price / prev_close - 1.0) * 100, 4),
+            }
+            if isinstance(stamp, (int, float)):
+                quote["asOf"] = datetime.fromtimestamp(stamp, timezone.utc) \
+                    .strftime("%Y-%m-%dT%H:%M:%SZ")
+            quotes[symbol] = quote
         except Exception as error:
-            failures.append(f"{batch[0]}…{batch[-1]}：{error}")
-        time.sleep(0.4)
+            failures.append(f"{symbol}：{error}")
+        time.sleep(PAUSE_SECONDS)
 
     if not quotes:
         print("本轮一个盘中报价都没取到，保留上一份 %s，不覆盖。" % OUT_PATH)

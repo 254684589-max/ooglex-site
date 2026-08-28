@@ -3,12 +3,13 @@ name: Asset Tracker Intraday
 # 盘中快照：只刷新「最新价 + 相对前收涨跌」这一层，写 apps/asset-tracker/intraday.json。
 # 收盘口径的 data.json 由 asset_tracker.yml 每日生成，本工作流一个字都不动它。
 #
-# 诚实边界：这不是实时行情。这里每约15分钟跑一轮，各交易所本身还有自己的延迟，
-# 页面上写明「盘中快照 · 刷新周期约15分钟 · 非实时」。
+# 诚实边界：这不是实时行情。这里每约30分钟跑一轮（逐标的取数，周期再短会把取数源打到
+# 限流并连带拖垮日更那条主管道），各交易所本身还有自己的延迟，页面上写明
+# 「盘中快照 · 刷新周期约30分钟 · 非实时」。
 on:
   workflow_dispatch:
   schedule:
-    - cron: '3,18,33,48 * * * *'   # 每15分钟（避开整点高峰分钟）
+    - cron: '11,41 * * * *'   # 每30分钟（避开整点高峰分钟）
 
 permissions:
   contents: write
@@ -20,7 +21,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
