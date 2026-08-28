@@ -28,7 +28,12 @@ const KIND_SOURCES = Object.freeze({
     daily: "../companies/history.json",
     monthly: "../companies/history-monthly.json"
   },
-  crypto: { data: "../asset-ranking/crypto.json" },
+  /* 加密的现价与日线在 CoinGecko 那份里，长周期月线另有来源（见下方 monthlySource 披露）：
+     CoinGecko 免费档只回溯 365 天，5年及以上的区间只能由另一个数据源补。 */
+  crypto: {
+    data: "../asset-ranking/crypto.json",
+    monthly: "../asset-ranking/crypto-history-monthly.json"
+  },
   curve: { data: "../macro-radar/curve.json", monthly: "../macro-radar/curve-monthly.json" },
   macro: { data: "../macro-radar/data.json", daily: "../macro-radar/series.json" }
 });
@@ -302,15 +307,26 @@ export async function loadInstrument(kind, symbol) {
       return [];
     }
   })();
-  const monthly = await (async () => {
-    if (!paths.monthly) return [];
+  /* 月线可能与现价不是同一个数据源（加密就是这样），把那份文件自报的来源与更新时间
+     一并带出来，页面在长区间上必须如实标注，不能让读者以为两段是同一口径。 */
+  const long = await (async () => {
+    if (!paths.monthly) return { points: [], meta: null };
     try {
-      return monthlyPoints(await loadJson(paths.monthly), seriesKey);
+      const file = await loadJson(paths.monthly);
+      return {
+        points: monthlyPoints(file, seriesKey),
+        meta: {
+          source: (file && file.source) || "",
+          updatedAt: (file && file.updatedAt) || "",
+          asOf: (file && file.asOf) || "",
+          note: (file && file.note) || ""
+        }
+      };
     } catch (error) {
-      return [];
+      return { points: [], meta: null };
     }
   })();
-  return { instrument, daily, monthly };
+  return { instrument, daily, monthly: long.points, monthlyMeta: long.meta };
 }
 
 function text(parent, tag, className, content) {
@@ -337,6 +353,10 @@ function metaRow(list, key, value) {
 
 export function renderQuote(document, root, payload, wanted) {
   const { instrument, daily, monthly } = payload;
+  const monthlyMeta = payload.monthlyMeta || null;
+  /* 月线来源与现价来源不同时（加密就是这样），长区间必须自己说清楚是谁的数。 */
+  const crossSource = Boolean(monthlyMeta && monthlyMeta.source && instrument.sourceName
+    && monthlyMeta.source !== instrument.sourceName);
   root.textContent = "";
   root.setAttribute("aria-busy", "false");
   document.title = `${instrument.name} 行情详情 · Ooglex金融终端`;
@@ -370,6 +390,8 @@ export function renderQuote(document, root, payload, wanted) {
   tabs.setAttribute("role", "group");
   tabs.setAttribute("aria-label", "走势区间");
   const chartHost = text(panel, "div", "quote-chart-host");
+  const sourceNote = text(panel, "p", "quote-cross-source");
+  sourceNote.hidden = true;
   const stats = text(panel, "div", "quote-stats");
 
   const decimals = instrument.changeMode === "bp" ? 2 : priceDecimals(daily.length
@@ -399,6 +421,14 @@ export function renderQuote(document, root, payload, wanted) {
         ? "站内还没有该标的的月线序列，这一档区间暂时画不出来；管道每日更新，取到后会自动出现。"
         : "站内还没有该标的的日线序列，这一档区间暂时画不出来。"
     });
+    const foreign = crossSource && range.grain === "monthly" && points.length >= 2;
+    sourceNote.hidden = !foreign;
+    sourceNote.textContent = foreign
+      ? `本档区间画的是 ${monthlyMeta.source} 的月线收盘`
+        + `${monthlyMeta.asOf ? `（截至 ${monthlyMeta.asOf}）` : ""}`
+        + `，与上方 ${instrument.sourceName} 的现价不是同一来源，历史价位可能有小幅差异；`
+        + "近端区间仍用现价那一份的日线。"
+      : "";
     stats.textContent = "";
     const summary = rangeStats(points, instrument.changeMode);
     if (!summary) return;
@@ -460,7 +490,12 @@ export function renderQuote(document, root, payload, wanted) {
     : "站内暂无日线序列");
   metaRow(list, "长周期序列", monthly.length
     ? `站内月线 ${monthly.length} 个月（${monthly[0].label} → ${monthly[monthly.length - 1].label}）`
+      + (monthlyMeta && monthlyMeta.source ? ` · 来源 ${monthlyMeta.source}` : "")
     : "站内暂无月线序列");
+  if (crossSource) {
+    metaRow(list, "长周期口径", monthlyMeta.note || `月线来自 ${monthlyMeta.source}，与现价来源不同。`);
+    metaRow(list, "长周期更新时间", monthlyMeta.updatedAt);
+  }
   if (instrument.sourceUrl) {
     const link = text(meta, "a", "quote-source-link", `${instrument.sourceLabel} →`);
     link.href = instrument.sourceUrl;

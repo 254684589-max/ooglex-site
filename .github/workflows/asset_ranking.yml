@@ -50,6 +50,9 @@ jobs:
       - name: Validate source health and recovery
         run: python scripts/validate_market_source_health.py --dataset asset-ranking --report /tmp/market-workflow-diagnostics/asset-ranking-source-health.json
 
+      - name: Validate crypto long history contract
+        run: python scripts/validate_crypto_long_history.py
+
       - name: Guard and stage owned outputs
         id: stage
         run: python scripts/market_workflow_governance.py stage --dataset asset-ranking --github-output "$GITHUB_OUTPUT" --report /tmp/market-workflow-diagnostics/asset-ranking-workflow.json

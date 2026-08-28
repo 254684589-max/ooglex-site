@@ -34,6 +34,7 @@ from market_data_quality import (  # noqa: E402
 )
 from market_history import build_rolling_history  # noqa: E402
 from market_history_long import build_long_history, monthly_from_daily  # noqa: E402
+from market_monthly_yahoo import fetch_monthly  # noqa: E402
 from market_source_health import (  # noqa: E402
     load_json as load_health_json,
     make_source_health,
@@ -449,47 +450,6 @@ def load_prev_long_history():
     except Exception:
         pass
     return {}
-
-
-def fetch_monthly_range(symbol, rng):
-    """Yahoo 月线：返回按月升序的 [(YYYY-MM, close), ...]。
-
-    走的是与日线同一个图表接口，只是把粒度换成 1mo；月线收盘由数据源自己给出，
-    不由日线二次聚合，避免两处口径不一致。
-    """
-    sym = requests.utils.quote(symbol)
-    last_err = ValueError("无可用月线")
-    for host in YF_HOSTS:
-        url = f"https://{host}/v8/finance/chart/{sym}?range={rng}&interval=1mo"
-        try:
-            r = requests.get(url, headers=YF_HEADERS, timeout=15)
-            r.raise_for_status()
-            res = r.json()["chart"]["result"][0]
-            ts = res["timestamp"]
-            closes = res["indicators"]["quote"][0]["close"]
-            pts = [(time.strftime("%Y-%m", time.gmtime(t)), float(c))
-                   for t, c in zip(ts, closes) if c is not None]
-            if len(pts) < 2:
-                raise ValueError("月线数据点不足")
-            return pts
-        except Exception as e:
-            last_err = e
-    raise last_err
-
-
-def fetch_monthly(symbol):
-    """全区间月线 + 最近十年月线合并。
-
-    数据源对超长区间会自行降采样（部分标的退化成季度末），一次 range=max 拿不到
-    逐月点；再取一次 range=10y 把最近十年补稠密，重叠月份以十年那份为准。
-    两份都是同一个接口的月线收盘，不做任何本地插值。
-    """
-    merged = dict(fetch_monthly_range(symbol, "max"))
-    try:
-        merged.update(dict(fetch_monthly_range(symbol, "10y")))
-    except Exception:
-        pass
-    return sorted(merged.items())
 
 
 def collect_monthly(symbols, daily_series):

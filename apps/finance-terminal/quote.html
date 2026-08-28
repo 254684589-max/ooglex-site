@@ -171,6 +171,16 @@
     .quote-cursor-dot { fill: var(--cyan); stroke: rgba(2, 9, 15, 0.9); stroke-width: 2; }
     .quote-readout { margin: 8px 0 0; color: var(--muted); font-family: var(--mono); font-size: 12px; min-height: 18px; }
     .quote-chart-empty { margin: 26px 0; color: var(--faint); font-size: 13px; text-align: center; }
+    /* 长区间与现价不同源时的口径提示：跟着图走，不藏进页尾的说明里 */
+    .quote-cross-source {
+      margin: 10px 0 0;
+      padding: 8px 10px;
+      border-left: 2px solid var(--cyan);
+      background: var(--cyan-soft);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
     .quote-stats {
       display: grid;
       margin-top: 14px;

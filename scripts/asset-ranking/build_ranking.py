@@ -45,6 +45,8 @@ from market_data_quality import (  # noqa: E402
     summarize_data_quality,
 )
 from market_history import build_rolling_history  # noqa: E402
+from market_history_long import build_long_history  # noqa: E402
+from market_monthly_yahoo import fetch_monthly  # noqa: E402
 from market_source_health import (  # noqa: E402
     attach_upstream_health,
     load_json as load_health_json,
@@ -75,6 +77,22 @@ CRYPTO_CHART_MAX_MISSES = 4
 CRYPTO_BOARD_NOTE = ("CoinGecko 市值前列加密资产的日度快照与滚动日线；涨跌为过去24小时口径，"
                      "与股票的当日口径不同。共享日期轴上当日无价则为 null，不做前向填充；"
                      "本轮未取到的币种沿用上次序列，不补造新点。")
+# 加密长周期月线：CoinGecko 免费档的历史只给 365 天，5年/10年/25年/全部这四档拿不到，
+# 改由 Yahoo Finance 的现货交易对（{符号}-USD）月线补齐。这是与现价不同的另一个来源，
+# 文件、页面都必须写明，不与 CoinGecko 的现价混为一谈。
+CRYPTO_LONG_HISTORY_PATH = os.path.join("apps", "asset-ranking", "crypto-history-monthly.json")
+CRYPTO_LONG_SOURCE = "Yahoo Finance"
+CRYPTO_LONG_NOTE = ("加密资产的月线收盘，来自 Yahoo Finance 的现货交易对（{符号}-USD），"
+                    "用于 5 年 / 10 年 / 25 年 / 全部四档区间；"
+                    "与 crypto.json 的现价、24小时涨跌（CoinGecko）不是同一来源，"
+                    "两边取价的交易所与时点不同，历史价位可能有小幅差异。"
+                    "起始月即该币种在数据源上可得的最早月份（比特币约 2014 年 9 月起，"
+                    "更早的价格该源没有），缺月一律留空不做前向填充；"
+                    "本轮未取到的币种沿用上次序列，不补造新点。")
+# 同名代码在 Yahoo 上可能指向另一个资产，因此每条序列都要用最新一个月的收盘与本轮
+# CoinGecko 现价对表；偏离超过这个比例就判定为取错标的，宁可没有该币的长历史。
+CRYPTO_LONG_TOLERANCE = 0.20
+CRYPTO_LONG_INTERVAL = 0.35
 # CoinGecko 只给英文名，这里补常见币种的中文名；未收录的如实沿用英文名，不臆造译名。
 CRYPTO_NAME_ZH = {
     "BTC": "比特币", "ETH": "以太坊", "USDT": "泰达币", "BNB": "币安币", "XRP": "瑞波币",
@@ -330,6 +348,71 @@ def build_crypto_board(session, markets, run_updated_at):
     return data
 
 
+def crypto_yahoo_symbol(symbol):
+    """币种代码 → Yahoo 现货交易对代码；Yahoo 统一以 {符号}-USD 表示美元现货。"""
+    text = str(symbol or "").strip().upper()
+    if not text or not text.isalnum():
+        return None
+    return f"{text}-USD"
+
+
+def plausible_monthly(points, spot):
+    """月线尾点必须与本轮现价对得上，否则判定同名代码在数据源上是另一个资产。
+
+    interval=1mo 的最后一根是当月未走完的那根，收盘即最新成交价，正常应与
+    CoinGecko 现价高度一致；差得离谱只可能是取错标的，这种序列宁可不要。
+    """
+    if not points or not isinstance(spot, (int, float)) or spot <= 0:
+        return False
+    last = points[-1][1]
+    if not isinstance(last, (int, float)) or last <= 0:
+        return False
+    return abs(last - spot) / spot <= CRYPTO_LONG_TOLERANCE
+
+
+def build_crypto_long_history(assets, run_updated_at):
+    """加密品类的长周期月线 → apps/asset-ranking/crypto-history-monthly.json。
+
+    CoinGecko 免费档只回溯 365 天，5年/10年/25年/全部四档在那边根本拿不到，
+    因此这份历史走 Yahoo Finance 的现货交易对；来源与现价不同，写进文件的
+    source/note 里如实说明。逐币单独取、单独容错，取错标的的直接丢弃；
+    本轮一条都没取到时不写文件，保留上次那份。
+    """
+    collected, skipped = {}, []
+    for asset in assets:
+        symbol = asset.get("symbol")
+        pair = crypto_yahoo_symbol(symbol)
+        if not pair:
+            skipped.append(f"{symbol}：代码不合法")
+            continue
+        try:
+            points = fetch_monthly(pair)
+        except Exception as error:                   # noqa: BLE001 - 单币失败只跳过自己
+            skipped.append(f"{symbol}（{pair}）：{error}")
+            time.sleep(CRYPTO_LONG_INTERVAL)
+            continue
+        if plausible_monthly(points, asset.get("price")):
+            collected[str(symbol).upper()] = points
+        else:
+            skipped.append(f"{symbol}（{pair}）：月末价与现价对不上，疑似同名的别的资产")
+        time.sleep(CRYPTO_LONG_INTERVAL)
+
+    prev = load_json(CRYPTO_LONG_HISTORY_PATH) or {}
+    history, retained = build_long_history(
+        collected, prev, run_updated_at, source=CRYPTO_LONG_SOURCE, note=CRYPTO_LONG_NOTE)
+    if not history:
+        print(f"本轮无可用加密月线，保留上次 {CRYPTO_LONG_HISTORY_PATH}，不覆盖。")
+        return None
+    os.makedirs(os.path.dirname(CRYPTO_LONG_HISTORY_PATH), exist_ok=True)
+    with open(CRYPTO_LONG_HISTORY_PATH, "w", encoding="utf-8") as f:
+        json.dump(history, f, ensure_ascii=False, separators=(",", ":"))
+    print(f"写入 {CRYPTO_LONG_HISTORY_PATH}：{history['symbols']} 币月线，"
+          f"本轮取到 {len(collected)} 币、沿用上次 {len(retained)} 币")
+    if skipped:
+        print(f"月线未取到：{'; '.join(skipped[:8])}")
+    return history
+
+
 def build_crypto(session, prev_rows, run_updated_at, markets=None):
     """加密货币：优先CoinGecko最新市值；兜底Yahoo现价×流通量；再兜底基准。"""
     out = []
@@ -523,10 +606,18 @@ def build():
           f"${top_cap_t:.1f}T，总市值 ${data['totalMarketCap'] / 1000:.1f}T，分类 {cat_count}")
 
     # 加密品类板是附加产物：放在主快照之后，任何失败都只跳过它，不影响已写好的 data.json
+    board = None
     try:
-        build_crypto_board(session, markets, run_updated_at)
+        board = build_crypto_board(session, markets, run_updated_at)
     except Exception as error:                       # noqa: BLE001 - 附加产物不得拖垮主管道
         print(f"加密品类板构建异常：{error}；保留上次 crypto.json")
+
+    # 长周期月线又是加密板的附加产物，且来源与现价不同，失败同样只跳过自己
+    try:
+        if board and board.get("assets"):
+            build_crypto_long_history(board["assets"], run_updated_at)
+    except Exception as error:                       # noqa: BLE001 - 附加产物不得拖垮主管道
+        print(f"加密长周期月线构建异常：{error}；保留上次 crypto-history-monthly.json")
 
 
 if __name__ == "__main__":

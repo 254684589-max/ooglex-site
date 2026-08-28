@@ -2911,7 +2911,9 @@ def main() -> None:
     quote_page = QUOTE_PAGE.read_text(encoding="utf-8")
     quote_module = QUOTE_MODULE.read_text(encoding="utf-8")
     chart_module = CHART_MODULE.read_text(encoding="utf-8")
-    require(QUOTE_MODULE.stat().st_size <= 25_000, "行情详情页脚本超过25KB性能预算")
+    # 25KB→27KB：加密的长周期月线来自与现价不同的数据源，读取那份文件的来源/更新时间
+    # 并在长区间上如实标注，这段披露逻辑值这 2KB。
+    require(QUOTE_MODULE.stat().st_size <= 27_000, "行情详情页脚本超过27KB性能预算")
     # 盘中活更新模块：两页共用一份，只重取那份几KB的盘中快照并在数值真的变了时闪一下。
     live_module = LIVE_MODULE.read_text(encoding="utf-8")
     require(LIVE_MODULE.stat().st_size <= 10_000, "盘中活更新模块超过10KB性能预算")
@@ -2953,6 +2955,14 @@ def main() -> None:
     require("QUOTE_RANGES" in quote_module and '"25y"' in quote_module and '"all"' in quote_module
             and "history-monthly.json" in quote_module and "curve-monthly.json" in quote_module,
             "行情详情页必须提供 5年/10年/25年/全部 区间并读取月线长历史")
+    # 加密的现价走 CoinGecko（免费档只回溯365天），长周期月线只能另找来源。两段不同源
+    # 就必须在图边上说清楚是谁的数，而不是让读者默认整页同一口径。
+    require("crypto-history-monthly.json" in quote_module and "monthlyMeta" in quote_module
+            and "crossSource" in quote_module and "不是同一来源" in quote_module
+            and "quote-cross-source" in quote_module,
+            "加密长周期区间必须接入月线文件，并在图边标注它与现价不是同一来源")
+    require(".quote-cross-source" in quote_page,
+            "行情详情页必须为跨来源口径提示准备样式")
     require("不插值" in quote_module and "cache: \"no-store\"" in quote_module,
             "行情详情页必须写明缺观测不插值，并按不缓存读取站内快照")
     require("renderChart" in chart_module and "quote-cursor" in chart_module

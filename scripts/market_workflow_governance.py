@@ -73,6 +73,7 @@ DATASET_RULES = {
         "apps/asset-ranking/data.json",
         "apps/asset-ranking/health.json",
         "apps/asset-ranking/crypto.json",
+        "apps/asset-ranking/crypto-history-monthly.json",
     )),
     "fear-greed": DatasetRule((
         "apps/fear-greed/data.json",

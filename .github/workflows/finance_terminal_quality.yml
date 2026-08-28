@@ -37,6 +37,7 @@ on:
       - 'scripts/finance_terminal_proxy_runtime_history.py'
       - 'scripts/validate_finance_terminal_proxy_runtime_history.py'
       - 'scripts/market_data_quality.py'
+      - 'scripts/validate_crypto_long_history.py'
       - 'scripts/validate_market_data_quality.py'
       - 'scripts/market_source_health.py'
       - 'scripts/validate_market_source_health.py'
@@ -113,6 +114,7 @@ on:
       - 'scripts/finance_terminal_proxy_runtime_history.py'
       - 'scripts/validate_finance_terminal_proxy_runtime_history.py'
       - 'scripts/market_data_quality.py'
+      - 'scripts/validate_crypto_long_history.py'
       - 'scripts/validate_market_data_quality.py'
       - 'scripts/market_source_health.py'
       - 'scripts/validate_market_source_health.py'
@@ -198,6 +200,10 @@ jobs:
       - name: Validate geopolitical risk pricing contract
         if: ${{ !cancelled() }}
         run: node scripts/validate_finance_terminal_geo_risk.mjs
+
+      - name: Validate crypto long history contract
+        if: ${{ !cancelled() }}
+        run: python scripts/validate_crypto_long_history.py
 
       - name: Validate per-record market data quality
         if: ${{ !cancelled() }}
