@@ -144,8 +144,22 @@
       clip: rect(0 0 0 0);
       white-space: nowrap;
     }
+    @media (max-width: 1400px) {
+      .board-open, .board-head-cells { grid-template-columns: minmax(0, 1fr) 68px 100px 78px 100px 74px 74px 80px 74px 88px; }
+      .board-cell-asof { display: none; }
+    }
+    @media (max-width: 1200px) {
+      .board-open, .board-head-cells { grid-template-columns: minmax(0, 1fr) 64px 96px 76px 96px 74px 80px 84px; }
+      .board-cell-abs { display: none; }
+      .board-open .board-cell-period:nth-of-type(2) { display: none; }
+    }
     @media (max-width: 1040px) {
-      .board-open, .board-head-cells { grid-template-columns: minmax(0, 1fr) 68px 104px 104px 108px; }
+      .board-open, .board-head-cells { grid-template-columns: minmax(0, 1fr) 64px 96px 92px 84px 100px; }
+      .board-cell-abs, .board-cell-asof { display: none; }
+      .board-open .board-cell-period:nth-of-type(1),
+      .board-open .board-cell-period:nth-of-type(2) { display: none; }
+      .board-head-cells .board-cell-period:nth-of-type(1),
+      .board-head-cells .board-cell-period:nth-of-type(2) { display: none; }
     }
     @media (max-width: 620px) {
       .wrap { padding: 0 14px 44px; }
@@ -156,7 +170,9 @@
         gap: 8px;
         padding: 8px 6px;
       }
-      .board-cell-extra, .board-cell-spark { display: none; }
+      /* 360px 只留「标的 · 最新价 · 涨跌」三列：再多一列就会横向溢出。 */
+      .board-cell-extra, .board-cell-spark, .board-cell-abs,
+      .board-cell-period, .board-cell-asof { display: none; }
       .board-tab { flex: 1 1 auto; justify-content: center; }
     }
   </style>

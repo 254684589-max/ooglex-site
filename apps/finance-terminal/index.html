@@ -1219,6 +1219,16 @@
       body[data-terminal-view="board"] #main-content > #board-section { display: block; }
     }
 
+    @media (max-width: 1400px) {
+      .board-open, .board-head-cells { grid-template-columns: minmax(0, 1fr) 68px 100px 78px 100px 74px 74px 80px 74px 88px; }
+      .board-cell-asof { display: none; }
+    }
+    @media (max-width: 1200px) {
+      .board-open, .board-head-cells { grid-template-columns: minmax(0, 1fr) 64px 96px 76px 96px 74px 80px 84px; }
+      .board-cell-abs { display: none; }
+      .board-open .board-cell-period:nth-of-type(2),
+      .board-head-cells .board-cell-period:nth-of-type(2) { display: none; }
+    }
     @media (max-width: 1040px) {
       .hero { grid-template-columns: minmax(0, 1fr); gap: 30px; }
       .meta-grid { max-width: 720px; }
@@ -1227,7 +1237,12 @@
       .research-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .information-grid { grid-template-columns: 1fr; }
       .operations-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .board-open, .board-head-cells { grid-template-columns: minmax(0, 1fr) 68px 104px 104px 108px; }
+      .board-open, .board-head-cells { grid-template-columns: minmax(0, 1fr) 64px 96px 92px 84px 100px; }
+      .board-cell-abs, .board-cell-asof { display: none; }
+      .board-open .board-cell-period:nth-of-type(1),
+      .board-open .board-cell-period:nth-of-type(2),
+      .board-head-cells .board-cell-period:nth-of-type(1),
+      .board-head-cells .board-cell-period:nth-of-type(2) { display: none; }
       .leader-columns { grid-template-columns: 1fr; }
       .event-row { grid-template-columns: 54px 92px minmax(0, 1fr); }
       .event-values { grid-column: 3; justify-content: start; }
@@ -1264,7 +1279,9 @@
       }
       /* 窄屏优先保证名称、价格与涨跌不被挤扁：口径列与迷你走势在这里让位，
          两者在展开的走势抽屉里都有完整版本。 */
-      .board-cell-extra, .board-cell-spark { display: none; }
+      /* 360px 只留「标的 · 最新价 · 涨跌」三列：再多一列就会横向溢出。 */
+      .board-cell-extra, .board-cell-spark, .board-cell-abs,
+      .board-cell-period, .board-cell-asof { display: none; }
       .geo-axis { grid-template-columns: 78px minmax(0, 1fr) 28px; }
       .geo-axis-raw, .geo-axis-meta { grid-column: 1 / -1; }
       .board-tab { flex: 1 1 auto; justify-content: center; }

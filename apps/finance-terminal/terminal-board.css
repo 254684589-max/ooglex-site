@@ -143,7 +143,9 @@
 .board-open,
 .board-head-cells {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 76px 116px 116px 128px;
+  /* 标的 · 走势 · 最新价 · 变 · 涨跌 · 每周 · 月度 · 年初至今 · 同比 · 口径 · 数据日 */
+  grid-template-columns:
+    minmax(0, 1fr) 68px 104px 84px 104px 76px 76px 82px 76px 96px 88px;
   align-items: center;
   gap: 10px;
   width: 100%;
@@ -184,6 +186,27 @@
 }
 .board-arrow { font-size: 10px; font-style: normal; }
 .board-cell-extra { color: var(--muted); font-family: var(--mono); font-size: 11px; text-align: right; }
+/* 绝对变化与四个区间列：正负同时用符号与颜色表达，缺值一律「—」。 */
+.board-cell-abs,
+.board-cell-period {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.board-cell-abs[data-direction="up"], .board-cell-period[data-direction="up"] { color: var(--up); }
+.board-cell-abs[data-direction="down"], .board-cell-period[data-direction="down"] { color: var(--down); }
+.board-cell-asof {
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 10px;
+  text-align: right;
+  white-space: nowrap;
+}
+.board-row-head .board-cell-abs,
+.board-row-head .board-cell-period,
+.board-row-head .board-cell-asof { color: var(--faint); }
 .board-cell-spark {
   display: flex;
   overflow: hidden;

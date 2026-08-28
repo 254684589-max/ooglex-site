@@ -11,7 +11,10 @@ import {
   COMMODITY_GROUPS,
   STOCK_ROW_LIMIT,
   buildBoard,
+  absoluteChange,
   commodityBasis,
+  formatAbsolute,
+  periodSet,
   spotBasis,
   formatAsOf,
   formatChange,
@@ -32,6 +35,8 @@ import {
   slicePoints
 } from "../apps/finance-terminal/finance-terminal-quote.mjs";
 import {
+  periodsFromSeries,
+  valueBefore,
   distribution,
   matchesQuery,
   rangeChange,
@@ -559,6 +564,73 @@ function validateCommodityGroups(board) {
   assert.deepEqual(withGroups(before, "stock"), before, "未分组的品类原样返回");
 }
 
+/* 新增的五列：绝对变化必须能由已发布的价与涨跌幅复算，区间涨跌必须要么来自上游、
+   要么由站内历史按同一口径算出，算不出就留空——绝不推算，也绝不把月度冒充成周度。 */
+function validateExtraColumns(board) {
+  /* 绝对变化 = 价 − 价 ÷ (1+涨跌%)，逐行可复现。 */
+  assert.ok(Math.abs(absoluteChange(110, 10) - 10) < 1e-9, "涨10%时绝对变化应为10");
+  assert.ok(Math.abs(absoluteChange(90, -10) - -10) < 1e-9);
+  assert.equal(absoluteChange(100, null), null, "涨跌缺失时不得推算绝对变化");
+  assert.equal(absoluteChange(null, 5), null);
+  assert.equal(absoluteChange(100, -100), null, "跌满100%不可复算前值");
+  assert.equal(formatAbsolute(null), "—", "缺值必须写「—」，不得显示0");
+  assert.equal(formatAbsolute(1.5, 2), "+1.50");
+  assert.equal(formatAbsolute(-1.5, 2), "-1.50");
+
+  /* 区间集合：上游给什么用什么，非数字一律 null。 */
+  assert.deepEqual(periodSet({ w1: 1, m1: null, ytd: "x", y1: 4 }),
+    { w1: 1, m1: null, ytd: null, y1: 4 }, "非数字的上游值必须落成 null，不得当成 0");
+  assert.deepEqual(periodSet(null), { w1: null, m1: null, ytd: null, y1: null });
+
+  /* 锚点取「该日或之前的最后一个观测」，缺当天观测顺延到更早那个，不前向填充。 */
+  const pairs = [["2026-01-02", 10], ["2026-01-09", 11], ["2026-01-20", 12]];
+  assert.equal(valueBefore(pairs, "2026-01-15"), 11, "锚点当天无观测时顺延到更早的一个");
+  assert.equal(valueBefore(pairs, "2026-01-01"), null, "锚点早于序列起点时没有基准");
+
+  /* 序列不够长就如实返回 null，不拿最早那个点冒充一年前。 */
+  const short = periodsFromSeries(["2026-08-20", "2026-08-27"], [100, 110], "daily");
+  assert.equal(short.w1, 10, "一周区间在序列覆盖得到时必须算出");
+  assert.equal(short.y1, null, "序列不够一年时同比必须留空");
+  assert.equal(short.ytd, null, "序列覆盖不到上年末时年初至今必须留空");
+
+  /* 月频序列没有「每周」：往回推7天落到的还是上一个月度观测。 */
+  const months = [];
+  const values = [];
+  for (let index = 0; index < 30; index += 1) {
+    const year = 2024 + Math.floor(index / 12);
+    const month = (index % 12) + 1;
+    months.push(`${year}-${String(month).padStart(2, "0")}-01`);
+    values.push(100 + index);
+  }
+  const monthly = periodsFromSeries(months, values, "monthly");
+  assert.equal(monthly.w1, null, "月频序列不得给出周度变化——那其实是月度变化");
+  assert.ok(Number.isFinite(monthly.m1) && Number.isFinite(monthly.y1));
+  assert.notEqual(periodsFromSeries(months, values, "daily").w1, null,
+    "同一序列按日频口径时周度可算，说明留空是频率判定而不是数据缺失");
+
+  /* 逐行字段必须齐备：每一行都要有 changeAbs 与 periods 两个键（值可以是 null）。 */
+  board.categories.forEach((category) => {
+    category.rows.forEach((row) => {
+      assert.ok("changeAbs" in row, `${row.name} 缺少绝对变化字段`);
+      assert.ok(row.periods && PERIOD_FIELDS.every((key) => key in row.periods),
+        `${row.name} 缺少区间涨跌字段`);
+      if (Number.isFinite(row.changeAbs) && Number.isFinite(row.price)) {
+        const back = row.price - row.changeAbs;
+        assert.ok(Number.isFinite(back) && back !== 0,
+          `${row.name} 的绝对变化必须能反推出前值`);
+      }
+    });
+  });
+  /* 跨资产管道的行必须直接沿用上游已算好的四档，不该退回现场计算。 */
+  const tracker = board.categories.flatMap((category) => category.rows)
+    .filter((row) => row.series && row.series.kind === "tracker");
+  assert.ok(tracker.length > 0);
+  assert.ok(tracker.every((row) => Number.isFinite(row.periods.ytd)),
+    "跨资产管道已算好年初至今，行情板必须直接沿用");
+}
+
+const PERIOD_FIELDS = Object.freeze(["w1", "m1", "ytd", "y1"]);
+
 async function main() {
   const group = await loadGroup();
   const board = buildBoard(group);
@@ -567,6 +639,7 @@ async function main() {
   validateCategories(board);
   validateCommodityGroups(board);
   validateSpotPipeline(group);
+  validateExtraColumns(board);
   validateCalibration(board);
   validateProvenance(board, group);
   validateCryptoFallback(group);
@@ -588,6 +661,7 @@ async function main() {
     .map((group) => `${group.label}${group.count}`).join(" · ");
   console.log(`- commodity sub-groups, every row registered, counts reproducible: ${groups}`);
   console.log("- spot pipeline merged: per-row frequency / observation-basis change / grain: PASS");
+  console.log("- extra columns: reproducible absolute change / period returns / no weekly on monthly: PASS");
 }
 
 main().catch((error) => {
