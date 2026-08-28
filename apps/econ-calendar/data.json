@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-08-27T23:56:51Z",
-  "asOf": "2026-08-27",
+  "updatedAt": "2026-08-28T21:31:44Z",
+  "asOf": "2026-08-28",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-23 ~ 2026-08-29",
-  "count": 71,
+  "count": 72,
   "highCount": 9,
   "events": [
     {
@@ -727,7 +727,7 @@
       "actual": null
     },
     {
-      "ts": "2026-08-28T09:33:00Z",
+      "ts": "2026-08-28T09:09:00Z",
       "ccy": "EUR",
       "country": "欧元区",
       "flag": "🇪🇺",
@@ -820,6 +820,18 @@
       "impact": "medium",
       "forecast": null,
       "previous": "4.3%",
+      "actual": null
+    },
+    {
+      "ts": "2026-08-28T14:30:00Z",
+      "ccy": "GBP",
+      "country": "英国",
+      "flag": "🇬🇧",
+      "title": "英央行 MPC 委员讲话",
+      "titleEn": "MPC Member Mann Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
