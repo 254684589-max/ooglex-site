@@ -37,7 +37,7 @@ export function initAuroraHome({ document, MutationObserver }) {
 
     const cards = Array.from(document.querySelectorAll("#market-grid .asset-card"));
     if (!cards.length) {
-      copy("hud-data-value", null, "— / 6");
+      copy("hud-data-value", null, "—%");
       copy("hud-data-state", null, "校验中");
       copy("overview-coverage-chip", null, "校验中");
       return;
@@ -46,10 +46,11 @@ export function initAuroraHome({ document, MutationObserver }) {
       && !card.querySelector('[data-provider-state="unavailable"]')).length;
     const total = cards.length || 6;
     const coverage = `${available} / ${total}`;
+    const coveragePercent = `${Math.round(available / total * 100)}%`;
     const coverageValue = document.getElementById("hud-data-value");
-    if (coverageValue) coverageValue.textContent = coverage;
+    if (coverageValue) coverageValue.textContent = coveragePercent;
     const dataState = document.getElementById("hud-data-state");
-    if (dataState) dataState.textContent = available === total ? "无不可用项" : `${total - available}项不可用`;
+    if (dataState) dataState.textContent = available === total ? "良好" : `${total - available}项需关注`;
     const coverageChip = document.getElementById("overview-coverage-chip");
     if (coverageChip) coverageChip.textContent = `${coverage} 可用`;
   }

@@ -39,7 +39,7 @@ def expect_error(callback, message: str) -> None:
     raise AssertionError(message)
 
 
-# 夹具跟着当前展示决定走：三档视口 × 已登记代理项数（2026-08-25 起为DIA、GLD两项）。
+# 夹具跟着当前展示决定走：四档视口 × 已登记代理项数（2026-08-25 起为DIA、GLD两项）。
 TOTAL = EXPECTED_VIEWPORTS * EXPECTED_PROXY_COUNT
 
 
@@ -48,20 +48,20 @@ def evidence(generated_at: str, mounted: int, loaded: int, failed: int, category
     if category:
         failure_categories[category] = failed
     diagnosis_counts = {
-        "healthy": 3 if mounted == TOTAL and loaded == 3 else 0,
-        "degraded": 3 if 0 < mounted < TOTAL and loaded == 3 else 0,
-        "unavailable": 3 if mounted == 0 else 0,
+        "healthy": EXPECTED_VIEWPORTS if mounted == TOTAL and loaded == EXPECTED_VIEWPORTS else 0,
+        "degraded": EXPECTED_VIEWPORTS if 0 < mounted < TOTAL and loaded == EXPECTED_VIEWPORTS else 0,
+        "unavailable": EXPECTED_VIEWPORTS if mounted == 0 else 0,
         "unknown": 0,
     }
-    if sum(diagnosis_counts.values()) != 3:
-        diagnosis_counts["degraded"] = 3 - sum(diagnosis_counts.values())
+    if sum(diagnosis_counts.values()) != EXPECTED_VIEWPORTS:
+        diagnosis_counts["degraded"] = EXPECTED_VIEWPORTS - sum(diagnosis_counts.values())
     fallback = TOTAL - mounted
     return {
-        "schemaVersion": 5,
+        "schemaVersion": 6,
         "generatedAt": generated_at,
         "scope": "finance-terminal-free-proxy-runtime",
         "source": "Chrome DevTools Protocol / static branch checkout",
-        "viewports": [{}, {}, {}],
+        "viewports": [{} for _ in range(EXPECTED_VIEWPORTS)],
         "summary": {
             "viewportCount": EXPECTED_VIEWPORTS,
             "proxyCountPerViewport": EXPECTED_PROXY_COUNT,
@@ -72,7 +72,7 @@ def evidence(generated_at: str, mounted: int, loaded: int, failed: int, category
             "hiddenFallbackObservations": mounted,
             "providerScriptLoadedViewports": loaded,
             "providerScriptFailedViewports": failed,
-            "providerScriptPendingViewports": 3 - loaded - failed,
+            "providerScriptPendingViewports": EXPECTED_VIEWPORTS - loaded - failed,
             "providerScriptNotObservedViewports": 0,
             "providerScriptFailureCategories": failure_categories,
             "diagnosisCounts": diagnosis_counts,
@@ -103,11 +103,13 @@ records = []
 start = datetime(2026, 8, 5, 21, 30, tzinfo=timezone.utc)
 for index in range(9):
     timestamp = (start + timedelta(days=index)).isoformat().replace("+00:00", "Z")
-    records.append(evidence(timestamp, TOTAL if index % 3 == 0 else 0, 3 if index % 3 == 0 else 0,
-                            0 if index % 3 == 0 else 3, None if index % 3 == 0 else "connection"))
+    records.append(evidence(timestamp, TOTAL if index % 3 == 0 else 0,
+                            EXPECTED_VIEWPORTS if index % 3 == 0 else 0,
+                            0 if index % 3 == 0 else EXPECTED_VIEWPORTS,
+                            None if index % 3 == 0 else "connection"))
 
 # Same-cycle rerun must replace, not add, the earlier observation.
-records.append(evidence("2026-08-13T22:30:00Z", TOTAL // 2, 3, 0, None))
+records.append(evidence("2026-08-13T22:30:00Z", TOTAL // 2, EXPECTED_VIEWPORTS, 0, None))
 collection = {
     "status": "complete",
     "reason": None,
@@ -143,8 +145,8 @@ require(partial["assessment"]["state"] == "unknown"
         "API失败时运维评估必须诚实标记UNKNOWN")
 
 warning_fallback = build_history([
-    evidence("2026-08-12T22:00:00Z", 0, 0, 3, "other"),
-    evidence("2026-08-13T22:00:00Z", 0, 0, 3, "other"),
+    evidence("2026-08-12T22:00:00Z", 0, 0, EXPECTED_VIEWPORTS, "other"),
+    evidence("2026-08-13T22:00:00Z", 0, 0, EXPECTED_VIEWPORTS, "other"),
 ], "agent/finance-terminal-supporting-qualification", "2026-08-13T23:00:00Z", {
     "status": "complete", "reason": None, "remoteArtifactsSeen": 1,
     "remoteArtifactsAccepted": 1, "remoteArtifactsSkipped": 0,
@@ -155,8 +157,8 @@ require(warning_fallback["assessment"]["state"] == "warn"
         "连续两周期全回退必须告警")
 
 warning_script = build_history([
-    evidence("2026-08-12T22:00:00Z", TOTAL // 2, 0, 3, "connection"),
-    evidence("2026-08-13T22:00:00Z", TOTAL // 2, 0, 3, "connection"),
+    evidence("2026-08-12T22:00:00Z", TOTAL // 2, 0, EXPECTED_VIEWPORTS, "connection"),
+    evidence("2026-08-13T22:00:00Z", TOTAL // 2, 0, EXPECTED_VIEWPORTS, "connection"),
 ], "agent/finance-terminal-supporting-qualification", "2026-08-13T23:00:00Z", {
     "status": "complete", "reason": None, "remoteArtifactsSeen": 1,
     "remoteArtifactsAccepted": 1, "remoteArtifactsSkipped": 0,
@@ -166,8 +168,8 @@ require(warning_script["assessment"]["state"] == "warn"
         "连续两周期脚本失败必须告警")
 
 healthy = build_history([
-    evidence("2026-08-12T22:00:00Z", TOTAL, 3, 0, None),
-    evidence("2026-08-13T22:00:00Z", TOTAL, 3, 0, None),
+    evidence("2026-08-12T22:00:00Z", TOTAL, EXPECTED_VIEWPORTS, 0, None),
+    evidence("2026-08-13T22:00:00Z", TOTAL, EXPECTED_VIEWPORTS, 0, None),
 ], "agent/finance-terminal-supporting-qualification", "2026-08-13T23:00:00Z", {
     "status": "complete", "reason": None, "remoteArtifactsSeen": 1,
     "remoteArtifactsAccepted": 1, "remoteArtifactsSkipped": 0,
@@ -177,8 +179,8 @@ require(healthy["assessment"]["state"] == "healthy"
         "连续两周期脚本加载且宿主全挂载才可标记HEALTHY")
 
 recovered = build_history([
-    evidence("2026-08-12T22:00:00Z", 0, 0, 3, "timeout"),
-    evidence("2026-08-13T22:00:00Z", TOTAL, 3, 0, None),
+    evidence("2026-08-12T22:00:00Z", 0, 0, EXPECTED_VIEWPORTS, "timeout"),
+    evidence("2026-08-13T22:00:00Z", TOTAL, EXPECTED_VIEWPORTS, 0, None),
 ], "agent/finance-terminal-supporting-qualification", "2026-08-13T23:00:00Z", {
     "status": "complete", "reason": None, "remoteArtifactsSeen": 1,
     "remoteArtifactsAccepted": 1, "remoteArtifactsSkipped": 0,
@@ -187,8 +189,8 @@ require(recovered["assessment"]["state"] == "watch"
         and recovered["assessment"]["reason"] == "recovered-after-warning",
         "单周期恢复必须继续观察")
 
-old_schema = evidence("2026-08-13T22:00:00Z", 0, 0, 3, "dns")
-old_schema["schemaVersion"] = 4
+old_schema = evidence("2026-08-13T22:00:00Z", 0, 0, EXPECTED_VIEWPORTS, "dns")
+old_schema["schemaVersion"] = 5
 expect_error(lambda: summarize_evidence(old_schema), "旧格式证据必须跳过")
 
 forged_summary = copy.deepcopy(history)
@@ -207,7 +209,7 @@ invalid_counts = copy.deepcopy(history)
 invalid_counts["cycles"][0]["summary"]["mountedObservations"] = 13
 expect_error(lambda: validate_history(invalid_counts), "趋势周期计数必须有界")
 
-raw_error = evidence("2026-08-13T22:00:00Z", 0, 0, 3, "other")
+raw_error = evidence("2026-08-13T22:00:00Z", 0, 0, EXPECTED_VIEWPORTS, "other")
 raw_error["summary"]["providerScriptErrorText"] = "net::ERR_FAILED"
 expect_error(lambda: summarize_evidence(raw_error), "趋势输入不得接受原始浏览器错误")
 
@@ -247,7 +249,7 @@ with tempfile.TemporaryDirectory(prefix="finance-proxy-history-") as temporary_d
 print("Finance Terminal proxy runtime history contract: PASS")
 print("- 21:00 UTC cycle grouping / same-cycle latest evidence / 7-cycle bound: PASS")
 print("- complete and honest partial collection states: PASS")
-print("- schema-v5 summary normalization / incompatible evidence rejection: PASS")
+print("- schema-v6 summary normalization / incompatible evidence rejection: PASS")
 print("- no quote fields / no raw transport error / derived summary: PASS")
 print("- cross-host artifact redirect strips GitHub authorization: PASS")
 print("- no-token CLI writes a current-only partial artifact: PASS")
