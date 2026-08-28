@@ -526,13 +526,19 @@ export function renderQuote(document, root, payload, wanted) {
   /* 4 小时线的每一句披露都取自数据文件自报的字段，不在页面上另写一套说法：
      它是本站聚合的、不是交易所原生的 4 小时 K 线，时间标签是 UTC，刷新有周期。
      加密的报价在站内来自 CoinGecko 而这条线来自 Yahoo，来源不同就明说。 */
+  function aggregatedFrom(file) {
+    /* 文件里记的是机器可读的 "1h"，页面上要写成中文的「1 小时」。 */
+    const raw = file && file.aggregatedFrom;
+    return raw === "1h" ? "1 小时" : (raw ? `${raw} ` : "1 小时");
+  }
+
   function describeGrain(range) {
     grainNote.textContent = "";
     if (!hourlyFile || range.grain !== "fourHour") return;
     const meta = (hourlyFile.meta || {})[instrument.seriesKey || instrument.symbol] || {};
     const cadence = Number.isFinite(hourlyFile.cadenceHours) ? hourlyFile.cadenceHours : null;
     const lines = [`4小时线由本站把 ${hourlyFile.source || "上游"} 的 `
-      + `${hourlyFile.aggregatedFrom || "1小时"} 行情按 UTC 对齐聚合而成（每桶取桶内最后一个收盘），`
+      + `${aggregatedFrom(hourlyFile)}行情按 UTC 对齐聚合而成（每桶取桶内最后一个收盘），`
       + "不是交易所原生的 4 小时 K 线，与交易所自己划分的 4 小时周期不一定对齐；"
       + "休市缺口如实留空，不插值、不前向填充。图上时间标签为 UTC。"
       + (cadence ? `约 ${cadence} 小时刷新一次，不是实时行情。` : "不是实时行情。")];
@@ -656,7 +662,7 @@ export function renderQuote(document, root, payload, wanted) {
     : "站内暂无月线序列");
   metaRow(list, "4小时线", hourly.length
     ? `站内 ${hourly.length} 个 4 小时桶（UTC ${hourly[0].label} → ${hourly[hourly.length - 1].label}），`
-      + `由 ${hourlyFile && hourlyFile.aggregatedFrom || "1h"} 行情聚合，非交易所原生 K 线`
+      + `由 ${aggregatedFrom(hourlyFile)}行情聚合，非交易所原生 K 线`
     : "该标的在源头没有小时级观测，站内不提供 4 小时线");
   if (instrument.sourceUrl) {
     const link = text(meta, "a", "quote-source-link", `${instrument.sourceLabel} →`);
