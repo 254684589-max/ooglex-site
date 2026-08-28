@@ -39,6 +39,7 @@ import requests
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPTS_DIR = os.path.dirname(HERE)
 sys.path.insert(0, SCRIPTS_DIR)
+from market_history_long import build_long_history  # noqa: E402
 from macro_source_health import (  # noqa: E402
     load_json as load_health_json,
     make_macro_health,
@@ -48,6 +49,10 @@ from macro_source_health import (  # noqa: E402
 OUT_PATH = os.path.join("apps", "macro-radar", "data.json")
 SERIES_PATH = os.path.join("apps", "macro-radar", "series.json")
 CURVE_PATH = os.path.join("apps", "macro-radar", "curve.json")
+CURVE_LONG_PATH = os.path.join("apps", "macro-radar", "curve-monthly.json")
+CURVE_LONG_NOTE = ("十一个期限各取一条 FRED 官方序列的月末观测（frequency=m, aggregation_method=eop），"
+                   "用于 5 年 / 10 年 / 25 年 / 全部区间的走势；起始月即该期限在 FRED 上可得的最早月份，"
+                   "缺月留空不做前向填充，本轮未取到的期限沿用上次序列。")
 CURVE_POINTS = 260           # 曲线历史滚动保留约一年交易日
 
 # 美债完整期限结构；months 仅用于横轴定位与利差计算，不参与任何插值。
@@ -1011,6 +1016,70 @@ def load_prev_series():
     return {}
 
 
+def fred_monthly(series_id):
+    """FRED 月末观测（frequency=m, aggregation_method=eop）：返回升序 [(YYYY-MM, value)]。
+
+    与日频那条走的是同一个官方序列，只是让 FRED 自己按月末聚合，
+    避免我们在本地二次聚合造出与官方口径不同的月线。
+    """
+    key = os.environ.get("FRED_API_KEY")
+    if not key:
+        return []
+    params = {
+        "series_id": series_id,
+        "api_key": key,
+        "file_type": "json",
+        "frequency": "m",
+        "aggregation_method": "eop",
+        "observation_start": "1900-01-01",
+        "sort_order": "asc",
+    }
+    url = "https://api.stlouisfed.org/fred/series/observations"
+    for attempt in range(2):
+        try:
+            r = requests.get(url, params=params, headers=UA, timeout=(8, 20))
+            r.raise_for_status()
+            out = []
+            for o in (r.json() or {}).get("observations") or []:
+                value = o.get("value")
+                date = str(o.get("date") or "")
+                if value in (".", "", None) or len(date) < 7:
+                    continue
+                try:
+                    out.append((date[:7], float(value)))
+                except (TypeError, ValueError):
+                    continue
+            if len(out) >= 2:
+                return out
+        except Exception:
+            time.sleep(1.0 + attempt)
+    return []
+
+
+def build_curve_long_history(updated_at):
+    """整条曲线的月线长历史；本轮全失败时返回 None，由调用方保留上次文件。"""
+    collected = {}
+    for series_id, _, _ in CURVE_TENORS:
+        points = fred_monthly(series_id)
+        if len(points) >= 2:
+            collected[series_id] = points
+        time.sleep(0.2)
+    return build_long_history(
+        collected, load_prev_curve_long(), updated_at,
+        source="FRED / U.S. Treasury H.15", note=CURVE_LONG_NOTE)
+
+
+def load_prev_curve_long():
+    try:
+        with open(CURVE_LONG_PATH, encoding="utf-8") as f:
+            prev = json.load(f)
+        if isinstance(prev, dict) and isinstance(prev.get("series"), dict):
+            return prev
+    except Exception:
+        pass
+    return {}
+
+
 def load_prev_curve():
     try:
         with open(CURVE_PATH, encoding="utf-8") as f:
@@ -1542,6 +1611,16 @@ def build():
                  ("，倒挂 " + "、".join(inverted)) if inverted else ""))
     else:
         print("本轮无可用收益率曲线，保留上次 %s，不覆盖。" % CURVE_PATH)
+
+    curve_long, curve_long_retained = build_curve_long_history(now_iso)
+    if curve_long:
+        with open(CURVE_LONG_PATH, "w", encoding="utf-8") as f:
+            json.dump(curve_long, f, ensure_ascii=False, separators=(",", ":"))
+        print("写入 %s：%d 个期限月线，最新月 %s%s"
+              % (CURVE_LONG_PATH, curve_long["symbols"], curve_long["asOf"],
+                 ("，沿用 %d 条" % len(curve_long_retained)) if curve_long_retained else ""))
+    else:
+        print("本轮无可用曲线月线，保留上次 %s，不覆盖。" % CURVE_LONG_PATH)
 
     print("写入 %s：机制 %s(%s)，信号 %d，异动 %d，宏观 %d 项(FRED=%s)，LIVE=%s"
           % (OUT_PATH, regime_score, lz, len(signals), len(mut),

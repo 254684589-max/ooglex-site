@@ -47,17 +47,20 @@ DATASET_RULES = {
         "apps/macro-radar/history.json",
         "apps/macro-radar/series.json",
         "apps/macro-radar/curve.json",
+        "apps/macro-radar/curve-monthly.json",
     )),
     "asset-tracker": DatasetRule((
         "apps/asset-tracker/data.json",
         "apps/asset-tracker/health.json",
         "apps/asset-tracker/history.json",
+        "apps/asset-tracker/history-monthly.json",
     )),
     "companies": DatasetRule(
         (
             "apps/companies/data.json",
             "apps/companies/health.json",
             "apps/companies/history.json",
+            "apps/companies/history-monthly.json",
         ),
         logo_directory="apps/companies/logos",
     ),

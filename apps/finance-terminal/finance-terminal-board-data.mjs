@@ -23,7 +23,13 @@ const INDEX_REGION = Object.freeze({
   "^STI": "新加坡", "000300.SS": "中国内地", "510300.SS": "中国内地",
   "^NZ50": "新西兰", "^BSESN": "印度", "^AXJO": "澳大利亚",
   "000905.SS": "中国内地", "510500.SS": "中国内地", "^STOXX": "欧洲",
-  "^FTSE": "英国", "^FCHI": "法国", "^KS11": "韩国", "^BVSP": "巴西"
+  "^FTSE": "英国", "^FCHI": "法国", "^KS11": "韩国", "^BVSP": "巴西",
+  "^IXIC": "美国", "^RUT": "美国", "^VIX": "美国·波动率", "^TWII": "中国台湾",
+  "^GSPTSE": "加拿大", "^SSMI": "瑞士", "^IBEX": "西班牙", "FTSEMIB.MI": "意大利",
+  "^MXX": "墨西哥", "^JKSE": "印尼", "^TA125.TA": "以色列", "^AEX": "荷兰",
+  "^BFX": "比利时", "^OMX": "瑞典", "^ATX": "奥地利", "XU100.IS": "土耳其",
+  "WIG20.WA": "波兰", "^SET.BK": "泰国", "^KLSE": "马来西亚", "PSEI.PS": "菲律宾",
+  "^IPSA": "智利", "^MERV": "阿根廷", "^HSTECH": "中国香港"
 });
 
 /* 美债各期限的显示名；期限本身来自 curve.json，不在此处推算。 */
@@ -131,10 +137,13 @@ function trackerRow(asset, categoryKey, options = {}) {
    口径只比较各标的自身收益率，不受此处影响。 */
 const BOARD_EXCLUDED_SYMBOLS = Object.freeze(["DX-Y.NYB"]);
 
+/* 上游明确标为 unavailable 且连价格都没有的标的不进列表：那种行只有一串「—」，
+   既不是行情也不是过期数据。管线本身的失败另有 #board-failures 与运行证据分区如实报告。 */
 function trackerAssets(assetTracker, category) {
   const assets = assetTracker && Array.isArray(assetTracker.assets) ? assetTracker.assets : [];
   return assets.filter((asset) => asset && asset.category === category && asset.symbol
-    && !BOARD_EXCLUDED_SYMBOLS.includes(asset.symbol));
+    && !BOARD_EXCLUDED_SYMBOLS.includes(asset.symbol)
+    && !(asset.price === null && asset.dataMeta && asset.dataMeta.mode === "unavailable"));
 }
 
 /* 宏观雷达参考序列（FRED 广义美元指数、EIA 库欣WTI现货）→ 行情行。 */

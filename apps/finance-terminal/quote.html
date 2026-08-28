@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>行情详情 · Ooglex金融终端</title>
+  <meta name="description" content="Ooglex金融终端行情详情页：单个标的的完整走势（1个月至全部区间），逐项标注来源、数据日、更新时间与口径。">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+  <meta name="theme-color" content="#070a0f">
+  <meta name="robots" content="noindex">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070a0f;
+      --panel: #0c1119;
+      --line: rgba(151, 169, 196, 0.15);
+      --line-strong: rgba(151, 169, 196, 0.28);
+      --ink: #f1f5f9;
+      --muted: #8c98aa;
+      --faint: #738196;
+      --cyan: #54d8ff;
+      --cyan-soft: rgba(84, 216, 255, 0.12);
+      --amber: #f2bd5c;
+      --up: #52d69a;
+      --up-soft: rgba(82, 214, 154, 0.12);
+      --down: #ff7d86;
+      --down-soft: rgba(255, 125, 134, 0.12);
+      --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+      --sans: Inter, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--bg); }
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 480px at 88% -10%, rgba(84, 216, 255, 0.08), transparent 64%),
+        radial-gradient(760px 520px at -8% 110%, rgba(89, 104, 255, 0.07), transparent 64%),
+        var(--bg);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 0 22px 56px; }
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-decoration: none;
+    }
+    .brand b {
+      padding: 3px 7px;
+      border: 1px solid var(--cyan);
+      border-radius: 3px;
+      color: var(--cyan);
+      font-weight: 600;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      margin-left: auto;
+      padding: 0 14px;
+      border: 1px solid var(--line-strong);
+      border-radius: 3px;
+      color: var(--muted);
+      font-size: 13px;
+      text-decoration: none;
+    }
+    .back-link:hover { border-color: var(--cyan); color: var(--cyan); }
+    .quote-head { display: grid; gap: 14px; padding: 26px 0 18px; }
+    .quote-name { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; }
+    .quote-name h1 { margin: 0; font-size: clamp(24px, 4vw, 34px); letter-spacing: 0.02em; }
+    .quote-symbol { color: var(--faint); font-family: var(--mono); font-size: 14px; }
+    .quote-tag {
+      padding: 3px 9px;
+      border: 1px solid var(--line-strong);
+      border-radius: 3px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+    .quote-price-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 16px; }
+    .quote-price { font-family: var(--mono); font-size: clamp(30px, 6vw, 44px); line-height: 1; }
+    .quote-change { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 17px; }
+    .quote-change-up { color: var(--up); }
+    .quote-change-down { color: var(--down); }
+    .quote-change-flat, .quote-change-unknown { color: var(--faint); }
+    .quote-basis { color: var(--faint); font-size: 12px; }
+    .quote-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .quote-chip {
+      padding: 4px 9px;
+      border: 1px solid var(--line-strong);
+      border-radius: 3px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+    }
+    .quote-chip-ok { border-color: rgba(82, 214, 154, 0.5); color: var(--up); }
+    .quote-chip-stale { border-color: rgba(242, 189, 92, 0.6); color: var(--amber); }
+    .quote-panel {
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: linear-gradient(180deg, rgba(12, 18, 27, 0.92), rgba(6, 11, 18, 0.92));
+    }
+    .quote-ranges { display: flex; flex-wrap: wrap; gap: 8px; }
+    .quote-range {
+      min-width: 58px;
+      min-height: 44px;
+      padding: 0 13px;
+      border: 1px solid var(--line-strong);
+      border-radius: 3px;
+      color: var(--muted);
+      background: rgba(12, 18, 27, 0.7);
+      font-family: var(--sans);
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .quote-range:hover:not([disabled]) { border-color: var(--cyan); color: var(--ink); }
+    .quote-range[aria-pressed="true"] { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-soft); }
+    .quote-range[disabled] { color: var(--faint); cursor: not-allowed; opacity: 0.55; }
+    .quote-range:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+    .quote-chart-host { margin-top: 14px; }
+    .quote-chart { display: block; width: 100%; height: clamp(240px, 38vh, 360px); }
+    .quote-chart:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+    .quote-chart-up { color: var(--up); }
+    .quote-chart-down { color: var(--down); }
+    .quote-line { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+      vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 5px currentColor); }
+    .quote-area { stroke: none; }
+    .quote-grid line { stroke: rgba(151, 169, 196, 0.14); stroke-width: 1; vector-effect: non-scaling-stroke; }
+    .quote-grid-label, .quote-axis-label { fill: var(--faint); font-family: var(--mono); font-size: 11px; }
+    .quote-extreme { fill: currentColor; }
+    .quote-extreme-label { fill: var(--muted); font-family: var(--mono); font-size: 11px; }
+    .quote-cursor-line { stroke: var(--cyan); stroke-width: 1; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
+    .quote-cursor-dot { fill: var(--cyan); stroke: rgba(2, 9, 15, 0.9); stroke-width: 2; }
+    .quote-readout { margin: 8px 0 0; color: var(--muted); font-family: var(--mono); font-size: 12px; min-height: 18px; }
+    .quote-chart-empty { margin: 26px 0; color: var(--faint); font-size: 13px; text-align: center; }
+    .quote-stats {
+      display: grid;
+      margin-top: 14px;
+      gap: 1px;
+      grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+      background: var(--line);
+    }
+    .quote-stat { padding: 11px 13px; background: rgba(8, 13, 21, 0.96); }
+    .quote-stat span { display: block; color: var(--faint); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; }
+    .quote-stat b { display: block; margin-top: 5px; font-family: var(--mono); font-size: 15px; font-weight: 600; }
+    .quote-stat-up b { color: var(--up); }
+    .quote-stat-down b { color: var(--down); }
+    .quote-meta { display: grid; gap: 10px; margin-top: 18px; }
+    .quote-meta-row { display: grid; gap: 4px 16px; grid-template-columns: 132px minmax(0, 1fr); }
+    .quote-meta-row dt { color: var(--faint); font-family: var(--mono); font-size: 11px; }
+    .quote-meta-row dd { margin: 0; font-size: 13px; line-height: 1.6; }
+    .quote-source-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      margin-top: 6px;
+      padding: 0 14px;
+      border: 1px solid var(--line-strong);
+      border-radius: 3px;
+      color: var(--cyan);
+      font-size: 13px;
+      text-decoration: none;
+    }
+    .quote-source-link:hover { border-color: var(--cyan); background: var(--cyan-soft); }
+    .quote-note { margin: 0; color: var(--faint); font-size: 12px; line-height: 1.7; }
+    .quote-error { margin: 40px 0; padding: 18px; border: 1px solid var(--line-strong); border-radius: 4px; color: var(--muted); }
+    footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-top: 34px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+    footer nav { display: flex; flex-wrap: wrap; gap: 12px; margin-left: auto; }
+    footer a { color: var(--muted); }
+    .sr-only {
+      position: absolute;
+      overflow: hidden;
+      width: 1px;
+      height: 1px;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+    @media (max-width: 620px) {
+      .wrap { padding: 0 14px 40px; }
+      .quote-meta-row { grid-template-columns: minmax(0, 1fr); }
+      .quote-range { flex: 1 1 auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <a class="brand" href="index.html"><b>OX</b>OOGLEX FINANCE TERMINAL</a>
+      <a class="back-link" href="index.html#board-section">← 返回品类行情</a>
+    </div>
+
+    <main id="quote-root" aria-busy="true">
+      <p class="quote-note" id="quote-loading">正在读取站内日更管道中的该标的…</p>
+    </main>
+
+    <footer>
+      <span>Ooglex Finance Terminal · Public Beta</span>
+      <span>仅供产品测试 · 非投资建议</span>
+      <nav class="legal-links" aria-label="产品法律与隐私">
+        <a href="terms.html">使用条款</a>
+        <a href="privacy.html">隐私政策</a>
+      </nav>
+    </footer>
+  </div>
+
+  <noscript><p class="quote-error">此页面需要启用JavaScript才能读取站内日更管道中的行情与历史序列。</p></noscript>
+  <script type="module" src="finance-terminal-quote.mjs"></script>
+</body>
+</html>
