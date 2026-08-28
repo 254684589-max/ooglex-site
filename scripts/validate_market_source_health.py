@@ -226,6 +226,38 @@ def read_json(path: Path):
         raise SystemExit(f"JSON无效：{path.relative_to(ROOT)} · {error}") from error
 
 
+def validate_every_registered_dataset_can_report() -> None:
+    """每个已登记的数据集都必须能生成健康快照。
+
+    商品管道首轮就栽在这里：`DATASET_SPECS` 登记了它，但另外两个按数据集写死分支的
+    函数没有它，运行时直接抛「未知数据集」——取数全部成功、文件都写好了，却在最后
+    一步整轮失败。这条用最小合成行遍历所有已登记数据集，把这类「登记了一处、漏了
+    另一处」的错误挡在离线校验里。
+    """
+    for dataset, spec in DATASET_SPECS.items():
+        source = spec["sources"][0]
+        matched = (source.get("matches") or [source["name"]])[0]
+        rows = [{
+            "name": f"{dataset}-{index}",
+            "dataMeta": {
+                "mode": "market", "source": matched, "asOf": "2026-08-01",
+                "updatedAt": "2026-08-01T00:00:00Z", "frequency": "daily", "status": "ok",
+            },
+        } for index in range(spec["expectedRecords"])]
+        # 这里只守「能不能生成」与「动态行计数是否可复算」。健康状态本身取决于逐源
+        # 覆盖情况（例如商品管道登记了 EIA 与 IMF 两个主来源，只喂一个就该判为不健康），
+        # 那是各数据集自己的真实数据要回答的，不该由合成行断言。
+        health = make_source_health(
+            dataset, published_rows=rows, attempted_rows=rows,
+            attempted_at="2026-08-01T00:00:00Z",
+            published_snapshot_at="2026-08-01T00:00:00Z", published=True)
+        if health["coverage"]["dynamicRecords"] != spec["expectedRecords"]:
+            raise SystemExit(f"{dataset} 的动态行计数无法由已登记的静态行标记复算")
+        if health["coverage"]["expectedRecords"] != spec["expectedRecords"]:
+            raise SystemExit(f"{dataset} 的期望条数与登记不一致")
+    print(f"每个已登记数据集都能生成健康快照并复算动态行：{len(DATASET_SPECS)} 个 · PASS")
+
+
 def validate_dataset(name: str) -> dict:
     spec = DATASETS[name]
     if not spec["data"].exists() or not spec["health"].exists():
@@ -294,6 +326,7 @@ def main() -> None:
     if missing_specs:
         raise SystemExit("健康契约缺少数据集登记：" + ", ".join(sorted(missing_specs)))
     run_contract_tests()
+    validate_every_registered_dataset_can_report()
     outcomes = [(name, validate_dataset(name)) for name in selected]
     results = [health for _, health in outcomes if health is not None]
     skipped = [name for name, health in outcomes if health is None]

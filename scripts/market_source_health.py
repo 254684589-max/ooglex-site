@@ -53,6 +53,7 @@ DATASET_SPECS: dict[str, dict[str, Any]] = {
     },
     "companies": {
         "expectedRecords": 500,
+        "staticRowFlags": ("private",),
         "sources": [
             {
                 "id": "yahoo-finance",
@@ -112,6 +113,7 @@ DATASET_SPECS: dict[str, dict[str, Any]] = {
     },
     "asset-ranking": {
         "expectedRecords": 250,
+        "staticRowFlags": ("static", "private"),
         "sources": [
             {
                 "id": "yahoo-finance",
@@ -176,28 +178,22 @@ def _percent(numerator: int, denominator: int) -> float:
     return round(numerator / denominator * 100, 2) if denominator > 0 else 0.0
 
 
-def _dynamic_records(dataset: str, rows: list[dict[str, Any]]) -> int:
-    if dataset == "asset-tracker":
-        return len(rows)
-    if dataset == "companies":
-        return sum(row.get("private") is not True for row in rows if isinstance(row, dict))
-    if dataset == "asset-ranking":
-        return sum(
-            row.get("static") is not True and row.get("private") is not True
-            for row in rows
-            if isinstance(row, dict)
-        )
-    raise ValueError(f"未知数据集：{dataset}")
-
-
 def _row_is_dynamic(dataset: str, row: dict[str, Any]) -> bool:
-    if dataset == "asset-tracker":
-        return True
-    if dataset == "companies":
-        return row.get("private") is not True
-    if dataset == "asset-ranking":
-        return row.get("static") is not True and row.get("private") is not True
-    raise ValueError(f"未知数据集：{dataset}")
+    """这一行是不是「应当每轮刷新的动态行情」。
+
+    改成由 DATASET_SPECS 的 staticRowFlags 驱动，而不是在这里逐个数据集写分支：
+    以前新登记一个数据集要同时改三处，漏掉任何一处都会在运行时抛「未知数据集」——
+    商品管道首轮就是这样失败的。现在默认「全部行都是动态行情」，只有确实含慢变量
+    估值的数据集才在自己的登记里声明哪些字段代表静态行。
+    """
+    if dataset not in DATASET_SPECS:
+        raise ValueError(f"未知数据集：{dataset}")
+    flags = DATASET_SPECS[dataset].get("staticRowFlags", ())
+    return not any(row.get(flag) is True for flag in flags)
+
+
+def _dynamic_records(dataset: str, rows: list[dict[str, Any]]) -> int:
+    return sum(_row_is_dynamic(dataset, row) for row in rows if isinstance(row, dict))
 
 
 def _dynamic_market_success(dataset: str, meta: dict[str, Any]) -> bool:
