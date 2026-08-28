@@ -1,41 +1,41 @@
 {
   "contractVersion": 1,
   "dataset": "asset-tracker",
-  "generatedAt": "2026-08-28T04:52:10Z",
-  "status": "healthy",
+  "generatedAt": "2026-08-28T11:17:10Z",
+  "status": "degraded",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-08-28T04:52:10Z",
-  "lastSuccessfulAt": "2026-08-28T04:52:10Z",
+  "lastAttemptAt": "2026-08-28T11:17:10Z",
+  "lastSuccessfulAt": "2026-08-28T11:17:10Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-08-28T04:52:10Z",
+  "publishedSnapshotAt": "2026-08-28T11:17:10Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
-    "expectedRecords": 98,
-    "publishedRecords": 98,
-    "dynamicRecords": 98,
+    "expectedRecords": 104,
+    "publishedRecords": 104,
+    "dynamicRecords": 104,
     "counts": {
-      "market": 98,
+      "market": 103,
       "fallback": 0,
       "estimate": 0,
       "unknown": 0,
-      "unavailable": 0
+      "unavailable": 1
     },
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 100.0,
-    "verifiedCoveragePct": 100.0,
-    "availableCoveragePct": 100.0
+    "freshCoveragePct": 99.04,
+    "verifiedCoveragePct": 99.04,
+    "availableCoveragePct": 99.04
   },
   "attempt": {
     "status": "success",
     "published": true,
-    "producedRecords": 98,
+    "producedRecords": 104,
     "counts": {
-      "market": 98,
+      "market": 103,
       "fallback": 0,
       "estimate": 0,
       "unknown": 0,
-      "unavailable": 0
+      "unavailable": 1
     }
   },
   "sources": [
@@ -43,16 +43,16 @@
       "id": "yahoo-finance",
       "name": "Yahoo Finance",
       "role": "primary",
-      "status": "healthy",
-      "records": 98,
+      "status": "degraded",
+      "records": 104,
       "counts": {
-        "market": 98,
+        "market": 103,
         "fallback": 0,
         "estimate": 0,
         "unknown": 0,
-        "unavailable": 0
+        "unavailable": 1
       },
-      "lastSuccessAt": "2026-08-28T04:52:10Z"
+      "lastSuccessAt": "2026-08-28T11:17:10Z"
     }
   ],
   "recovery": {
