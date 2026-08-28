@@ -2639,10 +2639,26 @@
 
   /* 品类行情板：视图实例只建一次，切换品类和展开折叠都在实例内部完成。 */
   var boardViewInstance = null;
+  /* 盘中活更新只启动一次：它只重取那份几KB的盘中快照，覆盖跨资产管道的行，
+     且必须比行上显示的数据日更新才生效；取不到或过期就原样保留日更读数。 */
+  var liveStarted = false;
+  function startBoardLive() {
+    if (liveStarted) return;
+    liveStarted = true;
+    import("./finance-terminal-live.mjs").then(function (live) {
+      var host = document.getElementById("board-live");
+      live.startLive({
+        path: "../asset-tracker/intraday.json",
+        onState: function (state) { live.paintLiveState(host, state); }
+      });
+    }).catch(function () { liveStarted = false; });
+  }
+
   function renderBoardCategories(board, viewModule) {
     if (!viewModule || !boardPanel) return;
     if (!boardViewInstance) boardViewInstance = viewModule.createBoardView(document, window);
     boardViewInstance.render(board);
+    startBoardLive();
   }
 
   /* 地缘风险定价要读的是原始的分区资源（跨资产、宏观雷达、OFR），

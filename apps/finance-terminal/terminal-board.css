@@ -218,3 +218,63 @@
   cursor: pointer;
 }
 .board-range-tab[aria-pressed="true"] { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-soft); }
+
+/* 末端光点与数值闪动：两者都只在「有真实新数据」时才有意义——
+   光点标的是序列画到哪一天为止，闪动只由取到的新数值与当前显示不同触发。
+   两者都尊重系统的「减少动态效果」设置。 */
+.board-spark-dot {
+  fill: currentColor;
+  filter: drop-shadow(0 0 4px currentColor);
+  animation: board-spark-pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes board-spark-pulse {
+  0%, 100% { opacity: 0.55; r: 1.7; }
+  50% { opacity: 1; r: 2.6; }
+}
+
+.board-cell-price.live-tick-up,
+.board-cell-price.live-tick-down {
+  border-radius: 3px;
+  animation: board-tick 0.9s ease-out;
+}
+
+@keyframes board-tick {
+  0% { background: currentColor; color: #050a11; }
+  100% { background: transparent; }
+}
+
+.board-cell-price.live-tick-up { color: var(--up); }
+.board-cell-price.live-tick-down { color: var(--down); }
+
+.board-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+.board-live i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--up);
+  box-shadow: 0 0 6px var(--up);
+  animation: board-live-blink 2.2s ease-in-out infinite;
+}
+
+.board-live[data-live-state="stale"] i,
+.board-live[data-live-state="error"] i { background: var(--faint); box-shadow: none; animation: none; }
+
+@keyframes board-live-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .board-spark-dot, .board-live i { animation: none; }
+  .board-cell-price.live-tick-up, .board-cell-price.live-tick-down { animation: none; }
+}

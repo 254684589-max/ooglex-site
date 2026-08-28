@@ -4,6 +4,7 @@
 
 import { buildBoard } from "../finance-terminal/finance-terminal-board-data.mjs";
 import { createBoardView } from "../finance-terminal/finance-terminal-board-view.mjs";
+import { paintLiveState, startLive } from "../finance-terminal/finance-terminal-live.mjs";
 
 /* 与金融终端 board 资源组同一份清单：同样的六份文件、同样的相对路径深度。 */
 const SOURCES = Object.freeze({
@@ -57,6 +58,13 @@ async function start() {
   const board = buildBoard(group);
   createBoardView(document, window).render(board);
   paintStats(board);
+  /* 盘中快照只覆盖跨资产管道的行，且必须比行上显示的数据日更新才会生效；
+     取不到或过期就原样保留日更读数，并在状态条里说明。 */
+  const live = document.getElementById("board-live");
+  startLive({
+    path: "../asset-tracker/intraday.json",
+    onState: (state) => { paintLiveState(live, state); }
+  });
 }
 
 start().catch((error) => {

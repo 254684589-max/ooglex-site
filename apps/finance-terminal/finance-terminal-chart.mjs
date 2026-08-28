@@ -169,6 +169,18 @@ export function renderChart(document, host, options = {}) {
     label.textContent = plan.points[index].label;
   });
 
+  /* 末端光点：最后一个真实观测的位置标记，带一圈呼吸光晕。它标的是「画到哪为止」，
+     不代表实时；系统开启「减少动态效果」时光晕会停下来。 */
+  const [endX, endY] = plan.coords[plan.coords.length - 1];
+  const halo = node(svg, "circle", "quote-end-halo");
+  halo.setAttribute("cx", endX.toFixed(1));
+  halo.setAttribute("cy", endY.toFixed(1));
+  halo.setAttribute("r", "6.5");
+  const endDot = node(svg, "circle", "quote-end-dot");
+  endDot.setAttribute("cx", endX.toFixed(1));
+  endDot.setAttribute("cy", endY.toFixed(1));
+  endDot.setAttribute("r", "3.4");
+
   const cursor = node(svg, "g", "quote-cursor");
   cursor.setAttribute("aria-hidden", "true");
   const cursorLine = node(cursor, "line", "quote-cursor-line");

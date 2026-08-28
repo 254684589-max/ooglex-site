@@ -14,6 +14,8 @@ import {
   tenorChangeBp
 } from "./finance-terminal-board-data.mjs";
 import { renderChart } from "./finance-terminal-chart.mjs";
+import { formatChangePct, formatLike, freshnessText, newerThan, startLive, usableSnapshot }
+  from "./finance-terminal-live.mjs";
 
 const KIND_SOURCES = Object.freeze({
   tracker: {
@@ -439,6 +441,10 @@ export function renderQuote(document, root, payload, wanted) {
   const preferred = QUOTE_RANGES.filter((range) => range.key === "1y" && pointsFor(range).length >= 2)[0];
   paint(asked || preferred || initial || QUOTE_RANGES[0]);
 
+  /* 盘中活更新：只有跨资产管道的标的才有盘中层，且盘中报价必须比本页显示的
+     数据日更新才会覆盖。覆盖后价格与涨跌都改成盘中口径，并在标签里写明。 */
+  if (payload.kind === "tracker") startQuoteLive(document, instrument, priceRow, change, chips);
+
   const meta = text(root, "section", "quote-panel");
   text(meta, "h2", "quote-symbol", "逐项来源与口径");
   const list = text(meta, "dl", "quote-meta");
@@ -466,6 +472,61 @@ export function renderQuote(document, root, payload, wanted) {
     + "缺观测的位置一律留空，不插值、不前向填充，也不用其他标的顶替。");
 }
 
+function startQuoteLive(document, instrument, priceRow, changeNode, chips) {
+  const priceNode = priceRow.querySelector(".quote-price");
+  const chip = document.createElement("span");
+  chip.className = "quote-chip";
+  chips.appendChild(chip);
+  let shownAsOf = instrument.asOf;
+  startLive({
+    path: "../asset-tracker/intraday.json",
+    onState: (state) => {
+      const snapshot = state.snapshot;
+      if (state.error || state.absent || !snapshot || !usableSnapshot(snapshot, state.now)) {
+        chip.className = "quote-chip";
+        chip.textContent = state.error
+          ? "盘中快照读取失败 · 显示日更收盘值"
+          : (state.absent ? "暂无盘中快照 · 显示日更收盘值" : "盘中快照已过期 · 显示日更收盘值");
+        return;
+      }
+      const quote = snapshot.quotes[instrument.symbol];
+      const cadence = Number.isInteger(snapshot.cadenceMinutes) ? snapshot.cadenceMinutes : null;
+      if (!quote || !newerThan(quote, shownAsOf)) {
+        chip.className = "quote-chip";
+        chip.textContent = "盘中层暂无更新 · 显示日更收盘值";
+        return;
+      }
+      const next = formatLike(priceNode.textContent, quote.price);
+      const rising = Number(String(next).replace(/,/g, ""))
+        >= Number(String(priceNode.textContent || "0").replace(/,/g, ""));
+      if (priceNode.textContent !== next) {
+        priceNode.textContent = next;
+        priceNode.classList.remove("live-tick-up", "live-tick-down");
+        void priceNode.offsetWidth;
+        priceNode.classList.add(rising ? "live-tick-up" : "live-tick-down");
+        window.setTimeout(() => {
+          priceNode.classList.remove("live-tick-up", "live-tick-down");
+        }, 900);
+      }
+      const moved = formatChangePct(quote.changePct);
+      changeNode.className = `quote-change quote-change-${moved.direction}`;
+      changeNode.textContent = "";
+      const arrow = document.createElement("i");
+      arrow.style.fontStyle = "normal";
+      arrow.textContent = moved.arrow;
+      changeNode.appendChild(arrow);
+      const body = document.createElement("span");
+      body.textContent = moved.text;
+      changeNode.appendChild(body);
+      shownAsOf = quote.asOf || shownAsOf;
+      chip.className = "quote-chip quote-chip-live";
+      chip.textContent = `盘中 · ${freshnessText(snapshot.updatedAt, state.now)}`
+        + (cadence ? ` · 约${cadence}分钟一刷，非实时` : " · 非实时");
+      chip.title = String(snapshot.note || "");
+    }
+  });
+}
+
 export function renderQuoteError(document, root, message) {
   root.textContent = "";
   root.setAttribute("aria-busy", "false");
@@ -484,7 +545,9 @@ async function start() {
     return;
   }
   try {
-    renderQuote(document, root, await loadInstrument(query.kind, query.symbol), query.range);
+    const payload = await loadInstrument(query.kind, query.symbol);
+    payload.kind = query.kind;
+    renderQuote(document, root, payload, query.range);
   } catch (error) {
     renderQuoteError(document, root,
       `暂时读不到这个标的：${error && error.message ? error.message : "未知错误"}。`);

@@ -194,6 +194,19 @@ function drawSpark(document, cell, item, window) {
   stroke.setAttribute("class", "board-spark-line");
   stroke.setAttribute("d", line);
   svg.appendChild(stroke);
+  /* 末端光点：标出「这条线画到哪一天为止」。它只是最后一个真实观测的位置标记，
+     不代表实时——脉冲动画在系统开启「减少动态效果」时会自动停下。 */
+  const last = window.values[window.values.length - 1];
+  const low = Math.min(...window.values);
+  const high = Math.max(...window.values);
+  const span = (high - low) || 1;
+  const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  dot.setAttribute("class", "board-spark-dot");
+  dot.setAttribute("cx", String(SPARK_BOX.width - SPARK_BOX.pad));
+  dot.setAttribute("cy", (SPARK_BOX.pad + (1 - (last - low) / span)
+    * (SPARK_BOX.height - SPARK_BOX.pad * 2)).toFixed(1));
+  dot.setAttribute("r", "2");
+  svg.appendChild(dot);
   cell.textContent = "";
   cell.appendChild(svg);
   return true;
@@ -245,6 +258,13 @@ function renderRows(document, host, category, bundles, expanded, context) {
   const pending = [];
   visible.forEach((item) => {
     const line = text(host, "div", `board-row board-change-${item.change.direction}`);
+    /* 盘中快照目前只覆盖跨资产管道的标的：给这些行标出代码与当前显示的数据日，
+       活更新模块据此判断「盘中那条是不是真的更新」，其余品类原样保留日更读数。 */
+    if (item.series && item.series.kind === "tracker") {
+      line.dataset.liveSymbol = item.symbol;
+      line.dataset.liveAsof = item.asOf || "";
+      line.dataset.livePrice = item.priceText;
+    }
     if (context.watch) line.appendChild(context.watch.button(item.symbol));
     else text(line, "span", "board-cell-watch", "");
     const open = text(line, "a", "board-open");

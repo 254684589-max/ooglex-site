@@ -59,6 +59,7 @@ VISUALS_VALIDATOR = ROOT / "scripts" / "validate_finance_terminal_visuals.mjs"
 RISK_VIEW_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-risk-view.mjs"
 QUOTE_PAGE = ROOT / "apps" / "finance-terminal" / "quote.html"
 BOARD_CSS = ROOT / "apps" / "finance-terminal" / "terminal-board.css"
+LIVE_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-live.mjs"
 MARKETS_PAGE = ROOT / "apps" / "markets" / "index.html"
 MARKETS_MODULE = ROOT / "apps" / "markets" / "markets.mjs"
 HOME_PAGE = ROOT / "index.html"
@@ -2902,16 +2903,24 @@ def main() -> None:
     # 23,000：在原18KB基础上给「逐行迷你走势 + 品类脉冲条」留出的增量。走势本身
     # 不新增任何请求：它复用抽屉那套历史文件与同一份带缓存的读取，一个品类最多
     # 触发一次历史文件读取；拿不到序列的行如实留白，不画推断曲线。
-    require(BOARD_VIEW_MODULE.stat().st_size <= 23_000,
-            "按需加载的品类行情板视图超过23KB性能预算")
+    require(BOARD_VIEW_MODULE.stat().st_size <= 21_000,
+            "按需加载的品类行情板视图超过21KB性能预算")
     # 行情详情页是独立网址的完整页面：品类行情逐行是真链接（<a href>，可新标签页
     # 打开、可分享），不再是就地弹层。页面只读站内已在日更的公开管道，缺哪一档
     # 区间就说没有；走势图渲染器与详情页各自独立于首屏，不进常规加载预算。
     quote_page = QUOTE_PAGE.read_text(encoding="utf-8")
     quote_module = QUOTE_MODULE.read_text(encoding="utf-8")
     chart_module = CHART_MODULE.read_text(encoding="utf-8")
-    require(QUOTE_MODULE.stat().st_size <= 22_000, "行情详情页脚本超过22KB性能预算")
-    require(CHART_MODULE.stat().st_size <= 11_000, "走势图渲染模块超过11KB性能预算")
+    require(QUOTE_MODULE.stat().st_size <= 25_000, "行情详情页脚本超过25KB性能预算")
+    # 盘中活更新模块：两页共用一份，只重取那份几KB的盘中快照并在数值真的变了时闪一下。
+    live_module = LIVE_MODULE.read_text(encoding="utf-8")
+    require(LIVE_MODULE.stat().st_size <= 10_000, "盘中活更新模块超过10KB性能预算")
+    require("realtime !== false" in live_module and "MAX_AGE_MINUTES" in live_module
+            and "newerThan" in live_module and "非实时" in live_module,
+            "盘中活更新必须校验快照自报的非实时标记与新鲜度，并只在报价确实更新时覆盖")
+    require('id="board-live"' in page and 'id="board-live"' in MARKETS_PAGE.read_text(encoding="utf-8"),
+            "两页都必须给盘中状态留出如实标注的位置")
+    require(CHART_MODULE.stat().st_size <= 12_000, "走势图渲染模块超过12KB性能预算")
     require(QUOTE_PAGE.stat().st_size <= 14_000, "行情详情页超过14KB性能预算")
     require('src="finance-terminal-quote.mjs"' in quote_page
             and 'href="../markets/"' in quote_page
@@ -2958,8 +2967,8 @@ def main() -> None:
             "品类行情板必须逐行画站内序列的迷你走势并给出涨跌分布脉冲条")
     require('<link rel="stylesheet" href="terminal-board.css">' in page
             and ".board-tab" in board_css and ".board-pulse-bar" in board_css
-            and BOARD_CSS.stat().st_size <= 11_000,
-            "行情板样式必须是两页共用的独立样式表，并保持在11KB以内")
+            and BOARD_CSS.stat().st_size <= 12_000,
+            "行情板样式必须是两页共用的独立样式表，并保持在12KB以内")
     require('import("./finance-terminal-board-view.mjs")' in app
             and 'import("./finance-terminal-board-data.mjs")' in app
             and "createBoardView" in board_view_module

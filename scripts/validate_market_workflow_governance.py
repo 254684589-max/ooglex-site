@@ -16,6 +16,9 @@ GOVERNANCE = ROOT / "scripts" / "market_workflow_governance.py"
 WORKFLOWS = {
     "macro-radar": ROOT / ".github" / "workflows" / "macro_radar.yml",
     "asset-tracker": ROOT / ".github" / "workflows" / "asset_tracker.yml",
+    # 盘中快照是同一条管道的第二层：单独的工作流、单独的并发组、单独的可写路径，
+    # 只能动 intraday.json，动不了收盘口径的任何文件。
+    "asset-tracker-intraday": ROOT / ".github" / "workflows" / "asset_tracker_intraday.yml",
     "companies": ROOT / ".github" / "workflows" / "companies.yml",
     "asset-ranking": ROOT / ".github" / "workflows" / "asset_ranking.yml",
     "fear-greed": ROOT / ".github" / "workflows" / "fear_greed.yml",
@@ -242,6 +245,7 @@ def validate_cross_pipeline_contract() -> None:
     build_markers = {
         "macro-radar": "python scripts/macro-radar/build_radar.py",
         "asset-tracker": "python scripts/asset-tracker/build_assets.py",
+        "asset-tracker-intraday": "python scripts/asset-tracker/build_intraday.py",
         "companies": "python scripts/companies/fetch_logos.py",
         "asset-ranking": "python scripts/asset-ranking/build_ranking.py",
         "fear-greed": "python scripts/fear-greed/build_fear_greed.py",
