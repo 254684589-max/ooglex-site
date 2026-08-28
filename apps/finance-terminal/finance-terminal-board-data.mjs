@@ -48,7 +48,7 @@ export const COMMODITY_GROUPS = Object.freeze([
 /* 逐代码登记。没登记的落进「其他」，不就近猜：分错组比不分组更误导。 */
 const COMMODITY_GROUP = Object.freeze({
   "CL=F": "energy", "BZ=F": "energy", "NG=F": "energy", "HO=F": "energy",
-  "RB=F": "energy", "B0=F": "energy", RWTC: "energy",
+  "RB=F": "energy", RWTC: "energy",
   "GC=F": "precious", "SI=F": "precious", "PL=F": "precious", "PA=F": "precious",
   "HG=F": "base", "ALI=F": "base", DBB: "base",
   "ZW=F": "grain", "KE=F": "grain", "ZC=F": "grain", "ZS=F": "grain",
