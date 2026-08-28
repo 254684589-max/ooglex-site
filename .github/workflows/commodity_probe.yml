@@ -1,0 +1,44 @@
+name: Commodity Source Probe
+
+# 临时只读探测：候选商品来源在 Actions 机房到底取不取得到。
+# 不写仓库、不提交任何数据，只把探测报告作为构建产物留存。
+# 用途是「先探测、再登记」——上一轮凭印象登记 B0=F 实测取不到，
+# 那一行 unavailable 把日更管道标成 degraded 并弄红发布校验。
+# 候选确定后本工作流与 scripts/probe_commodity_sources.py 一并移除。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: commodity-source-probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Probe candidate sources
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}   # 可选：有则走官方API，缺则退到免密钥CSV
+          PROBE_OUTPUT: /tmp/commodity-probe/report.json
+        run: python scripts/probe_commodity_sources.py
+
+      - name: Upload probe report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: commodity-probe-${{ github.run_attempt }}
+          path: /tmp/commodity-probe/report.json
+          if-no-files-found: warn
+          retention-days: 7

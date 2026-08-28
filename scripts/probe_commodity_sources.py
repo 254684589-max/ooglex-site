@@ -1,0 +1,264 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""临时探测：候选商品来源在 Actions 机房到底取不取得到。
+
+这个脚本只回答一个问题——「这个代码有没有真实可用的公开序列」，因此：
+
+- 只读。不写仓库里的任何数据文件，也不改任何清单；
+- 逐个候选独立 try/except，单个失败不影响其余；
+- 输出逐条结果（最新观测日、最新值、观测点数、频率），供人工挑选后再登记；
+- 密钥只从环境变量读取，绝不打印。
+
+背景：上一轮扩容凭印象登记了 `B0=F`，实测返回「行情数据点不足」，那一行
+unavailable 把整条日更管道标成 degraded，还弄红了发布校验。教训是——
+**先探测，再登记**。验证完这个脚本与对应工作流即可移除。
+"""
+from __future__ import annotations
+
+import json
+import os
+import sys
+import time
+from urllib import error, parse, request
+
+TIMEOUT = 20
+GAP = 0.25          # 逐个请求之间留出间隔，不给对方造成压力
+MIN_POINTS = 2      # 少于两个观测就画不出变化，等同于没有
+
+UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+      "(KHTML, like Gecko) Chrome/123.0 Safari/537.36")
+
+# ── FRED 候选 ────────────────────────────────────────────────────────────
+# 参考站（TradingEconomics）列出但站内没有的品种，优先找官方公开序列。
+# 日频：EIA 经 FRED 发布的现货价；月频：IMF Primary Commodity Prices。
+FRED_CANDIDATES = [
+    # 能源 · 日频现货
+    ("DCOILBRENTEU", "布伦特原油现货"),
+    ("DCOILWTICO", "WTI原油现货"),
+    ("DHHNGSP", "亨利港天然气现货"),
+    ("DPROPANEMBTX", "蒙贝尔维尤丙烷现货"),
+    ("DJFUELUSGULF", "美湾航空煤油现货"),
+    ("DHOILNYH", "纽约港取暖油现货"),
+    ("DGASNYH", "纽约港汽油现货"),
+    ("DGASUSGULF", "美湾汽油现货"),
+    ("GASREGW", "美国普通汽油零售均价"),
+    # 能源 · 月频
+    ("PNGASEUUSDM", "欧洲天然气"),
+    ("PNGASJPUSDM", "日本液化天然气"),
+    ("PCOALAUUSDM", "澳大利亚动力煤"),
+    ("PURANUSDM", "铀"),
+    # 金属 · 月频
+    ("PIORECRUSDM", "铁矿石"),
+    ("PALUMUSDM", "铝"),
+    ("PCOPPUSDM", "铜"),
+    ("PNICKUSDM", "镍"),
+    ("PZINCUSDM", "锌"),
+    ("PLEADUSDM", "铅"),
+    ("PTINUSDM", "锡"),
+    ("PGOLDUSDM", "黄金"),
+    ("PSILVERUSDM", "白银"),
+    ("PPLATUSDM", "铂金"),
+    # 农产品 · 月频
+    ("PRUBBUSDM", "橡胶"),
+    ("PPOILUSDM", "棕榈油"),
+    ("PSUNOUSDM", "葵花籽油"),
+    ("POLVOILUSDM", "橄榄油"),
+    ("PROILUSDM", "菜籽油"),
+    ("PSOILUSDM", "豆油"),
+    ("PSMEAUSDM", "豆粕"),
+    ("PBARLUSDM", "大麦"),
+    ("PMAIZMTUSDM", "玉米"),
+    ("PWHEAMTUSDM", "小麦"),
+    ("PRICENPQUSDM", "大米"),
+    ("PSOYBUSDM", "大豆"),
+    ("PCOFFOTMUSDM", "咖啡"),
+    ("PCOCOUSDM", "可可"),
+    ("PSUGAISAUSDM", "食糖"),
+    ("PCOTTINDUSDM", "棉花"),
+    ("PTEAUSDM", "茶叶"),
+    ("PORANGUSDM", "橙"),
+    ("PBANSOPUSDM", "香蕉"),
+    ("PWOOLCUSDM", "粗羊毛"),
+    ("PWOOLFUSDM", "细羊毛"),
+    ("PLOGSKUSDM", "原木"),
+    ("PSAWMALUSDM", "锯材"),
+    ("PHARDWUSDM", "硬木"),
+    # 畜牧与水产 · 月频
+    ("PBEEFUSDM", "牛肉"),
+    ("PPORKUSDM", "猪肉"),
+    ("PPOULTUSDM", "禽肉"),
+    ("PSALMUSDM", "三文鱼"),
+    ("PSHRIUSDM", "虾"),
+    ("PFISHUSDM", "鱼粉"),
+    # 商品指数 · 月频
+    ("PALLFNFINDEXM", "IMF全部初级商品指数"),
+    ("PNRGINDEXM", "IMF能源指数"),
+    ("PMETAINDEXM", "IMF金属指数"),
+    ("PFOODINDEXM", "IMF食品指数"),
+    ("PAGRIINDEXM", "IMF农业原料指数"),
+    ("PRAWMINDEXM", "IMF工业原料指数"),
+]
+
+# ── Yahoo 候选 ───────────────────────────────────────────────────────────
+# 上一轮凭印象登记而没实测的那几个，这次一并验证清楚。
+YAHOO_CANDIDATES = [
+    ("RS=F", "ICE油菜籽期货"),
+    ("DC=F", "CME三类牛奶期货"),
+    ("CSC=F", "CME奶酪期货"),
+    ("HRC=F", "热轧卷板钢期货"),
+    ("TTF=F", "荷兰TTF天然气期货"),
+    ("B0=F", "蒙贝尔维尤丙烷期货（上轮失败，复核）"),
+    ("ALW=F", "LME铝远期"),
+    ("QA=F", "迷你原油"),
+    ("DBA", "农产品篮子ETF"),
+    ("DBE", "能源篮子ETF"),
+    ("CPER", "美国铜指数基金"),
+    ("PALL", "实物钯ETF"),
+    ("PPLT", "实物铂ETF"),
+    ("WEAT", "小麦ETF"),
+    ("CORN", "玉米ETF"),
+    ("SOYB", "大豆ETF"),
+    ("CANE", "食糖ETF"),
+    ("UNG", "美国天然气基金"),
+    ("USO", "美国原油基金"),
+    ("BNO", "布伦特原油基金"),
+    ("UGA", "美国汽油基金"),
+    ("URA", "铀矿业ETF（矿股，非铀价）"),
+    ("SRUUF", "斯普鲁特实物铀信托"),
+    ("SLX", "钢铁ETF（矿股，非钢价）"),
+    ("REMX", "稀土战略金属ETF（矿股）"),
+    ("LIT", "锂电ETF（股票）"),
+    ("WOOD", "林业木材ETF（股票）"),
+    ("COMT", "iShares商品动态展期ETF"),
+    ("PDBC", "景顺优化收益多元商品ETF"),
+    ("BCI", "abrdn彭博全商品ETF"),
+    ("FTGC", "First Trust全球战术商品ETF"),
+    ("GCC", "WisdomTree增强商品ETF"),
+]
+
+
+def get_json(url: str, headers: dict | None = None) -> dict:
+    req = request.Request(url, headers=headers or {"User-Agent": UA, "Accept": "*/*"})
+    with request.urlopen(req, timeout=TIMEOUT) as response:
+        return json.loads(response.read().decode("utf-8", "replace"))
+
+
+def get_text(url: str) -> str:
+    req = request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
+    with request.urlopen(req, timeout=TIMEOUT) as response:
+        return response.read().decode("utf-8", "replace")
+
+
+def probe_fred(series_id: str) -> dict:
+    """优先用官方 API（有 key 时），否则退到免密钥的 fredgraph.csv。"""
+    key = os.environ.get("FRED_API_KEY")
+    if key:
+        query = parse.urlencode({
+            "series_id": series_id, "api_key": key, "file_type": "json",
+            "sort_order": "desc", "limit": 400,
+        })
+        try:
+            payload = get_json(f"https://api.stlouisfed.org/fred/series/observations?{query}")
+            rows = [r for r in payload.get("observations", []) if r.get("value") not in (".", "", None)]
+            if len(rows) < MIN_POINTS:
+                return {"ok": False, "via": "api", "why": f"观测点不足（{len(rows)}）"}
+            meta = get_json(
+                "https://api.stlouisfed.org/fred/series?"
+                + parse.urlencode({"series_id": series_id, "api_key": key, "file_type": "json"}))
+            info = (meta.get("seriess") or [{}])[0]
+            return {
+                "ok": True, "via": "api", "points": len(rows),
+                "asOf": rows[0]["date"], "value": float(rows[0]["value"]),
+                "previous": float(rows[1]["value"]), "previousAsOf": rows[1]["date"],
+                "frequency": info.get("frequency_short", ""), "units": info.get("units_short", ""),
+                "title": info.get("title", ""), "start": info.get("observation_start", ""),
+            }
+        except (error.HTTPError, error.URLError, ValueError, KeyError, IndexError) as exc:
+            return {"ok": False, "via": "api", "why": f"{type(exc).__name__}: {str(exc)[:70]}"}
+    try:
+        body = get_text(f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={parse.quote(series_id)}")
+        rows = []
+        for line in body.strip().splitlines()[1:]:
+            parts = line.split(",")
+            if len(parts) >= 2 and parts[1] not in (".", ""):
+                rows.append((parts[0], float(parts[1])))
+        if len(rows) < MIN_POINTS:
+            return {"ok": False, "via": "csv", "why": f"观测点不足（{len(rows)}）"}
+        return {"ok": True, "via": "csv", "points": len(rows), "asOf": rows[-1][0],
+                "value": rows[-1][1], "previous": rows[-2][1], "previousAsOf": rows[-2][0]}
+    except (error.HTTPError, error.URLError, ValueError) as exc:
+        return {"ok": False, "via": "csv", "why": f"{type(exc).__name__}: {str(exc)[:70]}"}
+
+
+def probe_yahoo(symbol: str) -> dict:
+    """与日更管道同一个 v8 图表接口，判定口径也一致：至少两个收盘点。"""
+    last = "无可用数据"
+    for host in ("query1.finance.yahoo.com", "query2.finance.yahoo.com"):
+        url = (f"https://{host}/v8/finance/chart/{parse.quote(symbol)}"
+               "?range=1y&interval=1d")
+        try:
+            payload = get_json(url)
+            result = payload["chart"]["result"][0]
+            closes = [c for c in result["indicators"]["quote"][0]["close"] if c is not None]
+            stamps = result["timestamp"]
+            if len(closes) < MIN_POINTS:
+                last = f"行情数据点不足（{len(closes)}）"
+                continue
+            meta = result.get("meta") or {}
+            return {"ok": True, "points": len(closes), "value": round(float(closes[-1]), 4),
+                    "asOf": time.strftime("%Y-%m-%d", time.gmtime(stamps[-1])),
+                    "currency": meta.get("currency", ""), "name": meta.get("shortName", "")}
+        except (error.HTTPError, error.URLError, ValueError, KeyError, IndexError) as exc:
+            last = f"{type(exc).__name__}: {str(exc)[:60]}"
+    return {"ok": False, "why": last}
+
+
+def main() -> None:
+    report = {"fred": {}, "yahoo": {}}
+    print("=" * 78)
+    print("FRED 候选")
+    print("=" * 78)
+    for series_id, label in FRED_CANDIDATES:
+        outcome = probe_fred(series_id)
+        report["fred"][series_id] = dict(outcome, label=label)
+        if outcome.get("ok"):
+            print(f"[OK] {series_id:<16} {label:<16} {outcome['asOf']}  "
+                  f"{outcome['value']:>14,.4f}  freq={outcome.get('frequency', '?'):<3} "
+                  f"n={outcome['points']:<5} {outcome.get('units', '')[:22]}")
+        else:
+            print(f"[XX] {series_id:<16} {label:<16} {outcome.get('why', '')}")
+        time.sleep(GAP)
+
+    print()
+    print("=" * 78)
+    print("Yahoo 候选")
+    print("=" * 78)
+    for symbol, label in YAHOO_CANDIDATES:
+        outcome = probe_yahoo(symbol)
+        report["yahoo"][symbol] = dict(outcome, label=label)
+        if outcome.get("ok"):
+            print(f"[OK] {symbol:<8} {label:<26} {outcome['asOf']}  "
+                  f"{outcome['value']:>13,.4f}  n={outcome['points']:<5} "
+                  f"{outcome.get('currency', '')} {outcome.get('name', '')[:26]}")
+        else:
+            print(f"[XX] {symbol:<8} {label:<26} {outcome.get('why', '')}")
+        time.sleep(GAP)
+
+    ok_fred = [k for k, v in report["fred"].items() if v.get("ok")]
+    ok_yahoo = [k for k, v in report["yahoo"].items() if v.get("ok")]
+    print()
+    print(f"可用：FRED {len(ok_fred)}/{len(FRED_CANDIDATES)}，"
+          f"Yahoo {len(ok_yahoo)}/{len(YAHOO_CANDIDATES)}")
+    out = os.environ.get("PROBE_OUTPUT")
+    if out:
+        os.makedirs(os.path.dirname(out), exist_ok=True)
+        with open(out, "w", encoding="utf-8") as handle:
+            json.dump(report, handle, ensure_ascii=False, indent=2)
+        print(f"报告：{out}")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit(130)
