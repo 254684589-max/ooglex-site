@@ -36,6 +36,11 @@ DATASETS = {
         "health": ROOT / "apps" / "asset-ranking" / "health.json",
         "rowsKey": "assets",
     },
+    "commodities": {
+        "data": ROOT / "apps" / "commodities" / "data.json",
+        "health": ROOT / "apps" / "commodities" / "health.json",
+        "rowsKey": "series",
+    },
 }
 
 
@@ -223,6 +228,11 @@ def read_json(path: Path):
 
 def validate_dataset(name: str) -> dict:
     spec = DATASETS[name]
+    if not spec["data"].exists() or not spec["health"].exists():
+        # 新管道首轮跑完之前它的数据与健康文件还不存在；上线顺序本来就是先合代码、
+        # 再由工作流生成数据。文件一旦存在，下面所有契约照常执行。
+        print(f"{name}: SKIP · 数据或健康文件尚未生成（首轮运行前属于正常状态）")
+        return None
     data = read_json(spec["data"])
     health = read_json(spec["health"])
     rows = data.get(spec["rowsKey"])
@@ -246,7 +256,7 @@ def validate_dataset(name: str) -> dict:
     return health
 
 
-def write_report(path: Path, results: list[dict]) -> None:
+def write_report(path: Path, results: list[dict], skipped: list[str] | None = None) -> None:
     counts = {status: sum(item["status"] == status for item in results)
               for status in ("healthy", "degraded", "failed")}
     overall = "failed" if counts["failed"] else "degraded" if counts["degraded"] else "healthy"
@@ -255,6 +265,9 @@ def write_report(path: Path, results: list[dict]) -> None:
         "generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "status": overall,
         "summary": counts,
+        # 首轮跑完前还没有数据文件的管道如实列出来，不计入任何一档状态：
+        # 把「还没生成」算成健康或失败都是假话。
+        "skippedDatasets": list(skipped or []),
         "datasets": [{
             "dataset": item["dataset"],
             "status": item["status"],
@@ -281,9 +294,11 @@ def main() -> None:
     if missing_specs:
         raise SystemExit("健康契约缺少数据集登记：" + ", ".join(sorted(missing_specs)))
     run_contract_tests()
-    results = [validate_dataset(name) for name in selected]
+    outcomes = [(name, validate_dataset(name)) for name in selected]
+    results = [health for _, health in outcomes if health is not None]
+    skipped = [name for name, health in outcomes if health is None]
     if args.report:
-        write_report(args.report, results)
+        write_report(args.report, results, skipped)
 
 
 if __name__ == "__main__":

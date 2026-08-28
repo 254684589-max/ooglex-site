@@ -14,6 +14,7 @@ DATASETS = {
     "asset-tracker": (ROOT / "apps" / "asset-tracker" / "data.json", "assets"),
     "companies": (ROOT / "apps" / "companies" / "data.json", "companies"),
     "asset-ranking": (ROOT / "apps" / "asset-ranking" / "data.json", "assets"),
+    "commodities": (ROOT / "apps" / "commodities" / "data.json", "series"),
 }
 
 
@@ -24,10 +25,17 @@ def require(condition, message, errors):
 
 def validate_dataset(name):
     path, rows_key = DATASETS[name]
+    if not path.exists():
+        # 新管道首轮跑完之前它的数据文件还不存在，这不是校验失败——上线顺序本来就是
+        # 「先合代码、再由工作流生成数据」。文件一旦存在，下面所有契约照常执行。
+        print(f"{name}: SKIP · {path.relative_to(ROOT)} 尚未生成（首轮运行前属于正常状态）")
+        return
     data = json.loads(path.read_text(encoding="utf-8"))
     rows = data.get(rows_key)
     errors = validate_data_quality(rows, data.get("dataQuality"))
-    require(data.get("frequency") in ("daily", "irregular"), "文件级frequency无效", errors)
+    # 商品现货管道同时含日频、周频与月频序列，因此文件级频率是 mixed，逐条各自标注。
+    allowed_frequency = ("daily", "irregular", "mixed") if name == "commodities" else ("daily", "irregular")
+    require(data.get("frequency") in allowed_frequency, "文件级frequency无效", errors)
     require(data.get("status") in ("ok", "partial", "stale", "error"), "文件级status无效", errors)
     require(data.get("status") == (data.get("dataQuality") or {}).get("status"),
             "文件级status与逐条汇总不一致", errors)
@@ -49,6 +57,27 @@ def validate_dataset(name):
                 require("代理" in row["proxy"].get("note", "")
                         and "误差" in row["proxy"].get("note", ""),
                         f"{row.get('name')}代理说明未披露代理性质或误差", errors)
+
+    if name == "commodities":
+        # 这条管道的诚实边界全在「频率」上：月频不得被写成日频，涨跌必须相对上一观测。
+        require(len({row.get("id") for row in rows}) == len(rows), "商品序列代码必须唯一", errors)
+        for row in rows:
+            meta = row.get("dataMeta") or {}
+            require(meta.get("source") in ("FRED / U.S. EIA", "FRED / IMF Primary Commodity Prices"),
+                    f"{row.get('name')}逐条来源未登记", errors)
+            require(row.get("frequency") in ("daily", "weekly", "monthly"),
+                    f"{row.get('name')}逐条频率无效：月频不得写成日频", errors)
+            require(meta.get("frequency") == row.get("frequency"),
+                    f"{row.get('name')}逐条频率与元数据不一致", errors)
+            require(row.get("group") in ("energy", "precious", "base", "grain", "soft",
+                                         "livestock", "index"),
+                    f"{row.get('name')}分组未登记", errors)
+            require(bool(row.get("unit")), f"{row.get('name')}缺少单位", errors)
+            require((meta.get("mode") == "fallback") == (row.get("stale") is True),
+                    f"{row.get('name')}回退模式与stale字段不一致", errors)
+            if meta.get("mode") == "market":
+                require(row.get("previousAsOf"),
+                        f"{row.get('name')}缺少上一观测日期，涨跌口径无法复核", errors)
 
     if name == "companies":
         require(len(rows) == data.get("count") == 500, "公司榜数量元数据不一致", errors)

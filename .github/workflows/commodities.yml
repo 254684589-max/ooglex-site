@@ -1,0 +1,92 @@
+name: Commodities
+
+# 每日刷新「商品现货与官方指数」：跑取数脚本 → 生成 apps/commodities/data.json（含历史与健康）
+# → 提交回仓库。补的是期货管道补不到的那一半：铀、铁矿石、锌镍铅锡、动力煤、棕榈油、
+# 橡胶、羊毛、牛肉、三文鱼这些在免费日频源上没有代码、但有官方月频序列的品种。
+# FRED_API_KEY 可选：有则走官方 API，缺失时退到免密钥的 fredgraph.csv 公开导出。
+on:
+  # 定点 cron 会被 GitHub 推迟数小时，改由 scheduler.yml 每日在窗口开启后统一触发。
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: market-data-commodities-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Sync target branch before generation
+        run: |
+          if [ "$GITHUB_REF_TYPE" != "branch" ]; then
+            echo "仅允许从分支运行数据更新，当前引用类型：$GITHUB_REF_TYPE"
+            exit 1
+          fi
+          git fetch --no-tags origin "$GITHUB_REF_NAME"
+          git checkout -B "$GITHUB_REF_NAME" FETCH_HEAD
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Build commodity data
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}   # 可选：有则走官方API，缺则用免密钥公开导出
+        run: python scripts/commodities/build_commodities.py
+
+      - name: Validate per-series provenance
+        run: python scripts/validate_market_data_quality.py --dataset commodities
+
+      - name: Validate source health and recovery
+        run: python scripts/validate_market_source_health.py --dataset commodities --report /tmp/market-workflow-diagnostics/commodities-source-health.json
+
+      - name: Guard and stage owned outputs
+        id: stage
+        run: python scripts/market_workflow_governance.py stage --dataset commodities --github-output "$GITHUB_OUTPUT" --report /tmp/market-workflow-diagnostics/commodities-workflow.json
+
+      - name: Commit and push data
+        if: steps.stage.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "data: refresh commodity spot and official indices"
+          # 数据文件由本工作流独占生成。推送遇远端新提交时 rebase 重试，冲突以本次生成的版本为准
+          # （rebase 中 ours/theirs 语义互换，-X theirs 才是本地工作分支一侧）。
+          for i in 1 2 3 4 5; do
+            if git push origin "HEAD:$GITHUB_REF_NAME"; then
+              echo "已推送"; exit 0
+            fi
+            echo "推送被拒，拉取远端后重试（$i）"
+            if ! git fetch --no-tags origin "$GITHUB_REF_NAME"; then
+              sleep $((i * 3)); continue
+            fi
+            if ! git rebase -X theirs "origin/$GITHUB_REF_NAME"; then
+              git rebase --abort || true
+              sleep $((i * 3)); continue
+            fi
+            sleep $((i * 3))
+          done
+          echo "推送多次失败"; exit 1
+
+      - name: Report no data changes
+        if: steps.stage.outputs.changed == 'false'
+        run: echo "生成结果与仓库一致，跳过提交和推送"
+
+      - name: Upload workflow diagnostics
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: commodities-workflow-${{ github.run_attempt }}
+          path: /tmp/market-workflow-diagnostics/commodities-*.json
+          if-no-files-found: warn
+          retention-days: 14
