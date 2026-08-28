@@ -19,6 +19,9 @@ WORKFLOWS = {
     # 盘中快照是同一条管道的第二层：单独的工作流、单独的并发组、单独的可写路径，
     # 只能动 intraday.json，动不了收盘口径的任何文件。
     "asset-tracker-intraday": ROOT / ".github" / "workflows" / "asset_tracker_intraday.yml",
+    # 4 小时线是同一条管道的第三层：单独的工作流、单独的并发组、单独的可写路径，
+    # 只能动 hourly.json，动不了收盘口径与盘中层的任何文件。
+    "asset-tracker-hourly": ROOT / ".github" / "workflows" / "asset_tracker_hourly.yml",
     # 商品现货与官方指数：独立工作流、独立并发组、独立可写路径，动不了期货那条管道。
     "commodities": ROOT / ".github" / "workflows" / "commodities.yml",
     "companies": ROOT / ".github" / "workflows" / "companies.yml",
@@ -59,6 +62,21 @@ def test_path_contract(module) -> None:
     require(module.owns_path("asset-tracker", "apps/asset-tracker/data.json"), "跨资产data未授权")
     require(module.owns_path("asset-tracker", "apps/asset-tracker/health.json"), "跨资产health未授权")
     require(not module.owns_path("asset-tracker", "apps/asset-tracker/index.html"), "跨资产页面不得授权")
+    # 三层时间粒度各管各的文件：日更、盘中、4小时线互不越界，
+    # 4 小时线的清单虽然横跨三份快照，可写范围仍只有 hourly.json 这一个文件。
+    require(module.owns_path("asset-tracker-intraday", "apps/asset-tracker/intraday.json"),
+            "盘中层intraday未授权")
+    require(not module.owns_path("asset-tracker-intraday", "apps/asset-tracker/hourly.json"),
+            "盘中层不得写4小时线")
+    require(module.owns_path("asset-tracker-hourly", "apps/asset-tracker/hourly.json"),
+            "4小时线hourly未授权")
+    for path in ("apps/asset-tracker/data.json", "apps/asset-tracker/history.json",
+                 "apps/asset-tracker/intraday.json", "apps/companies/data.json",
+                 "apps/asset-ranking/crypto.json"):
+        require(not module.owns_path("asset-tracker-hourly", path),
+                f"4小时线不得回写它的上游：{path}")
+    require(not module.owns_path("asset-tracker", "apps/asset-tracker/hourly.json"),
+            "日更管道不得写4小时线")
     require(module.owns_path("companies", "apps/companies/logos/example.com.png"), "公司PNG Logo未授权")
     require(not module.owns_path("companies", "apps/companies/app.js"), "公司页面不得授权")
     require(not module.owns_path("companies", "apps/companies/logos/nested/logo.png"), "嵌套Logo路径不得授权")
@@ -253,6 +271,7 @@ def validate_cross_pipeline_contract() -> None:
         "macro-radar": "python scripts/macro-radar/build_radar.py",
         "asset-tracker": "python scripts/asset-tracker/build_assets.py",
         "asset-tracker-intraday": "python scripts/asset-tracker/build_intraday.py",
+        "asset-tracker-hourly": "python scripts/asset-tracker/build_hourly.py",
         "commodities": "python scripts/commodities/build_commodities.py",
         "companies": "python scripts/companies/fetch_logos.py",
         "asset-ranking": "python scripts/asset-ranking/build_ranking.py",

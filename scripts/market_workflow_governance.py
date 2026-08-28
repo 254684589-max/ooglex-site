@@ -60,6 +60,12 @@ DATASET_RULES = {
     "asset-tracker-intraday": DatasetRule((
         "apps/asset-tracker/intraday.json",
     )),
+    # 4 小时线单独一条数据集规则：它每 4 小时跑一次，只允许动 hourly.json 这一个文件。
+    # 它的标的清单横跨跨资产、公司榜与加密三份已发布快照，但一个都不允许回写——
+    # 收盘口径的 data.json、盘中的 intraday.json、公司与加密的任何文件都不在可写范围内。
+    "asset-tracker-hourly": DatasetRule((
+        "apps/asset-tracker/hourly.json",
+    )),
     # 商品现货与官方指数：FRED（EIA 日频现货 + IMF 月频初级商品价）。它只允许动自己
     # 这三个文件，期货那条 Yahoo 管道的任何文件都不在可写范围内。
     "commodities": DatasetRule((
