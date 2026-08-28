@@ -48,27 +48,38 @@ export const COMMODITY_GROUPS = Object.freeze([
 /* 逐代码登记。没登记的落进「其他」，不就近猜：分错组比不分组更误导。 */
 const COMMODITY_GROUP = Object.freeze({
   "CL=F": "energy", "BZ=F": "energy", "NG=F": "energy", "HO=F": "energy",
-  "RB=F": "energy", RWTC: "energy",
+  "RB=F": "energy", RWTC: "energy", "TTF=F": "energy",
   "GC=F": "precious", "SI=F": "precious", "PL=F": "precious", "PA=F": "precious",
-  "HG=F": "base", "ALI=F": "base", DBB: "base",
+  "HG=F": "base", "ALI=F": "base", DBB: "base", "HRC=F": "base",
   "ZW=F": "grain", "KE=F": "grain", "ZC=F": "grain", "ZS=F": "grain",
   "ZL=F": "grain", "ZM=F": "grain", "ZO=F": "grain", "ZR=F": "grain",
   "KC=F": "soft", "SB=F": "soft", "CC=F": "soft", "CT=F": "soft",
   "OJ=F": "soft", "LBR=F": "soft", "LBS=F": "soft",
   "LE=F": "livestock", "GF=F": "livestock", "HE=F": "livestock",
+  "DC=F": "livestock", "CSC=F": "livestock",
   DBC: "index", GSG: "index", KRBN: "index"
 });
 
 /* 目前只有商品分了组；其余品类没有分组即不摆分组条。 */
 export const GROUPS_BY_CATEGORY = Object.freeze({ commodity: COMMODITY_GROUPS });
 
-export function groupKeyOf(categoryKey, symbol) {
+/* 分组来源有两处：期货那条管道按代码查登记表；商品现货管道自己就带 group 字段
+   （它的品种在代码上看不出属于哪一组）。声明的组必须是已登记的组，否则一律落进
+   「其他」——由上游随便写一个组名就能凭空造出一个分组，比不分组更糟。 */
+export function groupKeyOf(categoryKey, symbol, declared) {
   if (categoryKey !== "commodity") return "";
+  const named = String(declared || "");
+  if (named && COMMODITY_GROUPS.some((group) => group.key === named && group.key !== "other")) {
+    return named;
+  }
   return COMMODITY_GROUP[String(symbol || "")] || "other";
 }
 
 /* 「口径」列按工具本身取值：=F 是期货，官方现货序列另标现货，其余是基金份额价格。
    三者不是同一种东西，不能都写成「期货」。 */
+/* 非美元计价的商品逐个登记：价格格中会跟着写出币种，否则读者会默认它是美元。 */
+const COMMODITY_CURRENCY = Object.freeze({ "TTF=F": "EUR" });
+
 export function commodityBasis(symbol) {
   const text = String(symbol || "");
   if (!text) return "";
@@ -365,16 +376,65 @@ export function summarize(rows, labels) {
   const down = rows.filter((row) => row.change.direction === "down").length;
   const stale = rows.filter((row) => row.status === "stale").length;
   const dates = rows.map((row) => row.asOf).filter(Boolean).sort();
+  const oldest = dates[0] || "";
+  const newest = dates[dates.length - 1] || "";
   return {
     total: rows.length,
     up,
     down,
     stale,
-    asOf: dates.length ? dates[dates.length - 1] : "",
+    asOf: newest,
+    /* 一类里混着不同频率时（商品同时有日频期货与月频现货），只写最新那天会把整类
+       说得比实际更新。数据日不一致就给区间，一致才写单日。 */
+    asOfRange: newest && oldest !== newest ? `${oldest} ~ ${newest}` : newest,
     text: rows.length
       ? `${rows.length}项 · ${upLabel}${up} · ${downLabel}${down}${stale ? ` · 过期${stale}` : ""}`
       : "本类暂无可用数据"
   };
+}
+
+/* 商品现货管道的「口径」列：它和期货不是一回事，频率也不是日频，逐条按自己的频率写明。 */
+export function spotBasis(row) {
+  const frequency = String(row && row.frequency || "");
+  if (row && row.group === "index") return frequency === "monthly" ? "月度指数" : "官方指数";
+  if (frequency === "monthly") return "月度现货";
+  if (frequency === "weekly") return "周度均价";
+  return "现货";
+}
+
+/* 商品现货与官方指数（FRED：EIA 日频现货 + IMF 月频初级商品价）→ 行情行。
+   涨跌一律相对该序列自己的上一观测，绝不写成「当日涨跌」——它多数是月频。 */
+function spotRows(commodities) {
+  const list = commodities && Array.isArray(commodities.series) ? commodities.series : [];
+  return list
+    .filter((item) => item && item.id && isFiniteNumber(item.price))
+    .map((item) => {
+      const meta = item.dataMeta || {};
+      const frequency = item.frequency || meta.frequency || "";
+      return {
+        id: `commodity:${item.id}`,
+        name: item.name,
+        nameEn: "",
+        symbol: item.id,
+        priceText: formatPrice(item.price),
+        price: item.price,
+        change: formatChange(item.changePct, "pct"),
+        changeBasis: `较前一观测 ${item.previousAsOf || "—"}`,
+        extraText: spotBasis(item),
+        group: item.group || "",
+        asOf: formatAsOf(meta.asOf),
+        updatedAt: meta.updatedAt || commodities.updatedAt || "",
+        frequency,
+        sourceName: meta.source || commodities.source || "",
+        sourceUrl: `https://fred.stlouisfed.org/series/${encodeURIComponent(item.id)}`,
+        status: statusOf(meta, item.stale),
+        note: item.note || meta.note || "",
+        proxyOf: "",
+        currency: "",
+        unit: item.unit || "",
+        series: { kind: "commodity", key: item.id, grain: frequency === "monthly" ? "monthly" : "daily" }
+      };
+    });
 }
 
 /* 贴分组并按登记组序重排；同组内保持上游顺序。没有分组的品类原样返回。 */
@@ -383,7 +443,7 @@ export function withGroups(rows, categoryKey) {
   if (!groups) return rows;
   const order = groups.map((group) => group.key);
   return rows
-    .map((row, index) => ({ row, index, key: groupKeyOf(categoryKey, row.symbol) }))
+    .map((row, index) => ({ row, index, key: groupKeyOf(categoryKey, row.symbol, row.group) }))
     .sort((a, b) => (order.indexOf(a.key) - order.indexOf(b.key)) || (a.index - b.index))
     .map((entry) => Object.assign({}, entry.row, {
       group: entry.key,
@@ -409,11 +469,13 @@ function categoryRows(key, sources) {
   const { assetTracker, companies, assetRanking, macro, curve } = sources;
   if (key === "commodity") {
     const rows = trackerAssets(assetTracker, "commodity").map((asset) => trackerRow(asset, "commodity", {
-      extraText: commodityBasis(asset.symbol)
+      extraText: commodityBasis(asset.symbol),
+      currency: COMMODITY_CURRENCY[asset.symbol] || ""
     }));
     const spot = macro && macro.referenceSeries ? macro.referenceSeries.RWTC : null;
     const spotRow = referenceRow(spot, "commodity", { extraText: "现货" });
-    return withGroups(spotRow ? rows.concat([spotRow]) : rows, "commodity");
+    const withSpot = spotRow ? rows.concat([spotRow]) : rows;
+    return withGroups(withSpot.concat(spotRows(sources.commodities)), "commodity");
   }
   if (key === "index") {
     return trackerAssets(assetTracker, "equity").map((asset) => trackerRow(asset, "index", {
@@ -466,7 +528,10 @@ export function buildBoard(group = {}) {
     assetRanking: pick("assetRanking", "资产榜"),
     macro: pick("macro", "宏观雷达"),
     curve: pick("macroCurve", "美债收益率曲线"),
-    cryptoBoard: pickOptional("assetRankingCrypto")
+    cryptoBoard: pickOptional("assetRankingCrypto"),
+    /* 商品现货管道是后补的可选文件：首轮日更跑完前它可能不存在，
+       那不是管线故障——期货那半边照常显示，缺的只是现货与官方指数那半边。 */
+    commodities: pickOptional("commodities")
   };
   const categories = BOARD_CATEGORIES.map((category) => {
     const rows = categoryRows(category.key, sources);

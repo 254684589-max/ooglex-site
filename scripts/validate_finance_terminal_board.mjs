@@ -12,6 +12,7 @@ import {
   STOCK_ROW_LIMIT,
   buildBoard,
   commodityBasis,
+  spotBasis,
   formatAsOf,
   formatChange,
   formatPrice,
@@ -65,15 +66,102 @@ async function loadGroup() {
       readJson("apps/macro-radar/data.json"),
       readJson("apps/macro-radar/curve.json")
     ]);
+  /* 商品现货管道是后补的可选文件：首轮日更跑完前它不存在，那不是管线故障。 */
+  const commodities = await readJson("apps/commodities/data.json").catch(() => null);
   return {
     assetTracker: { data: assetTracker, error: null },
     companies: { data: companies, error: null },
     assetRanking: { data: assetRanking, error: null },
     assetRankingCrypto: { data: assetRankingCrypto, error: null },
     macro: { data: macro, error: null },
-    macroCurve: { data: macroCurve, error: null }
+    macroCurve: { data: macroCurve, error: null },
+    commodities: commodities ? { data: commodities, error: null } : undefined
   };
 }
+
+/* 合成载荷：现货管道首轮跑完前仓库里没有这份文件，但它的解析逻辑必须先测透——
+   上一轮的教训正是「等真实数据落地才发现问题」。 */
+const SPOT_FIXTURE = Object.freeze({
+  updatedAt: "2026-08-28T04:00:00Z",
+  asOf: "2026-07-01",
+  source: "FRED (U.S. EIA / IMF Primary Commodity Prices)",
+  series: [
+    { id: "PURANUSDM", name: "铀", group: "energy", unit: "美元/磅", price: 69.2338,
+      changePct: 1.25, previousAsOf: "2026-06-01", frequency: "monthly", stale: false,
+      dataMeta: { mode: "market", source: "FRED / IMF Primary Commodity Prices",
+        asOf: "2026-07-01", updatedAt: "2026-08-28T04:00:00Z", frequency: "monthly", status: "ok" } },
+    { id: "DHHNGSP", name: "亨利港天然气现货", group: "energy", unit: "美元/百万英热",
+      price: 2.7, changePct: -0.74, previousAsOf: "2026-08-24", frequency: "daily", stale: false,
+      dataMeta: { mode: "market", source: "FRED / U.S. EIA", asOf: "2026-08-25",
+        updatedAt: "2026-08-28T04:00:00Z", frequency: "daily", status: "ok" } },
+    { id: "PMETAINDEXM", name: "IMF金属指数", group: "index", unit: "指数 2016=100",
+      price: 226.1695, changePct: 0.9, previousAsOf: "2026-06-01", frequency: "monthly",
+      stale: false, dataMeta: { mode: "market", source: "FRED / IMF Primary Commodity Prices",
+        asOf: "2026-07-01", updatedAt: "2026-08-28T04:00:00Z", frequency: "monthly", status: "ok" } },
+    { id: "PFAKEUSDM", name: "组名未登记的品种", group: "not-a-group", unit: "美元/吨",
+      price: 10, changePct: 0, previousAsOf: "2026-06-01", frequency: "monthly", stale: false,
+      dataMeta: { mode: "market", source: "FRED / IMF Primary Commodity Prices",
+        asOf: "2026-07-01", updatedAt: "2026-08-28T04:00:00Z", frequency: "monthly", status: "ok" } },
+    { id: "PNULLUSDM", name: "本轮没取到的品种", group: "grain", unit: "美元/吨", price: null,
+      changePct: null, previousAsOf: "", frequency: "monthly", stale: false,
+      dataMeta: { mode: "unavailable", source: "FRED / IMF Primary Commodity Prices",
+        asOf: null, updatedAt: "2026-08-28T04:00:00Z", frequency: "monthly", status: "error" } }
+  ]
+});
+
+/* 现货管道并进商品品类：频率、涨跌口径与分组都必须如实，绝不与期货的日频混用。 */
+function validateSpotPipeline(group) {
+  const board = buildBoard({ ...group, commodities: { data: SPOT_FIXTURE, error: null } });
+  const commodity = categoryOf(board, "commodity");
+  const byId = new Map(commodity.rows.map((row) => [row.symbol, row]));
+
+  assert.ok(!byId.has("PNULLUSDM"), "本轮没取到的序列不得以空行进入行情板");
+  assert.equal(commodity.rows.filter((row) => row.symbol === "PFAKEUSDM")[0].group, "other",
+    "上游声明了未登记的组名时必须落进「其他」，不得凭空造出一个分组");
+
+  const uranium = byId.get("PURANUSDM");
+  assert.ok(uranium, "现货管道的品种必须进入商品品类");
+  assert.equal(uranium.group, "energy", "分组必须采用上游声明的已登记组");
+  assert.equal(uranium.frequency, "monthly", "月频必须如实标注");
+  assert.equal(uranium.extraText, "月度现货", "月频现货的口径列不得写成期货或日频");
+  assert.equal(uranium.changeBasis, "较前一观测 2026-06-01",
+    "涨跌口径必须写明是相对上一观测，不得写成当日涨跌");
+  assert.equal(uranium.series.grain, "monthly", "月频序列必须指向月频历史桶");
+  assert.match(uranium.sourceUrl, /^https:\/\/fred\.stlouisfed\.org\/series\//);
+  assert.equal(quoteHref(uranium), "quote.html?kind=commodity&symbol=PURANUSDM");
+
+  const henry = byId.get("DHHNGSP");
+  assert.equal(henry.extraText, "现货");
+  assert.equal(henry.frequency, "daily");
+  assert.equal(henry.series.grain, "daily");
+  assert.equal(byId.get("PMETAINDEXM").extraText, "月度指数",
+    "官方指数是指数点位，口径列必须与现货区分开");
+
+  assert.equal(spotBasis({ frequency: "weekly" }), "周度均价");
+  assert.equal(spotBasis({ frequency: "daily" }), "现货");
+  assert.equal(spotBasis({ frequency: "monthly", group: "index" }), "月度指数");
+
+  /* 一类里混着日频期货与月频现货时，摘要必须给数据日区间——只写最新那天会把
+     整类说得比实际更新。 */
+  assert.match(commodity.summary.asOfRange, /^\d{4}-\d{2}-\d{2} ~ \d{4}-\d{2}-\d{2}$/,
+    "商品同时含日频与月频，数据日必须给区间");
+  const single = summarize([{ change: { direction: "up" }, status: "ok", asOf: "2026-08-28" }]);
+  assert.equal(single.asOfRange, "2026-08-28", "数据日一致时写单日，不要写成区间");
+  assert.equal(summarize([]).asOfRange, "", "没有行时不编造数据日");
+
+  /* 期货那半边一条都不能因为现货管道并入而改口径。 */
+  assert.equal(byId.get("GC=F").extraText, "期货");
+  assert.equal(byId.get("GC=F").changeBasis, "较前一交易日收盘");
+
+  /* 现货管道整份缺失时，期货那半边必须照常显示，且不算管线故障。 */
+  const without = buildBoard({ ...group, commodities: undefined });
+  assert.equal(without.status, "ok", "可选的现货管道缺失不得把整块降级");
+  assert.ok(categoryOf(without, "commodity").rows.length > 0,
+    "现货管道缺失时期货那半边必须照常显示");
+  assert.ok(categoryOf(without, "commodity").rows.every((row) => row.series.kind !== "commodity"));
+}
+
+
 
 function categoryOf(board, key) {
   return board.categories.filter((category) => category.key === key)[0];
@@ -456,6 +544,7 @@ async function main() {
   validateSeriesWindow();
   validateCategories(board);
   validateCommodityGroups(board);
+  validateSpotPipeline(group);
   validateCalibration(board);
   validateProvenance(board, group);
   validateCryptoFallback(group);
@@ -476,6 +565,7 @@ async function main() {
   const groups = categoryOf(board, "commodity").groups
     .map((group) => `${group.label}${group.count}`).join(" · ");
   console.log(`- commodity sub-groups, every row registered, counts reproducible: ${groups}`);
+  console.log("- spot pipeline merged: per-row frequency / observation-basis change / grain: PASS");
 }
 
 main().catch((error) => {

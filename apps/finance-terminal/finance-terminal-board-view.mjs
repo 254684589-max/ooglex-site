@@ -87,7 +87,8 @@ export function rangeChange(values, isYield) {
    没有序列引用的行也仍然可以打开——详情页会照样摆出它的当期读数与来源。
    base 让同一份视图能被不同目录下的页面复用（金融终端与「全球市场行情」各给各的相对路径）。 */
 export function quoteHref(item, base) {
-  const kinds = { tracker: "tracker", company: "company", cryptoBoard: "crypto", curve: "curve", macro: "macro" };
+  const kinds = { tracker: "tracker", company: "company", cryptoBoard: "crypto", curve: "curve",
+    macro: "macro", commodity: "commodity" };
   const reference = item && item.series ? item.series : null;
   const kind = reference && kinds[reference.kind] ? kinds[reference.kind] : "";
   const symbol = reference && reference.key ? reference.key : (item ? item.symbol : "");
@@ -159,6 +160,18 @@ async function resolveSeries(reference, bundles) {
       note: history.note || ""
     };
   }
+  if (reference.kind === "commodity") {
+    const bundle = await loadJson("../commodities/history.json");
+    const grain = reference.grain === "monthly" ? "monthly" : "daily";
+    const record = bundle && bundle[grain] ? bundle[grain] : null;
+    if (!record || !record.series || !record.series[reference.key]) return null;
+    return {
+      dates: record.dates || [],
+      values: record.series[reference.key],
+      source: record.source || bundle.source || "",
+      note: record.note || bundle.note || ""
+    };
+  }
   if (reference.kind === "macro") {
     const bundle = await loadJson("../macro-radar/series.json");
     const record = bundle && bundle.series ? bundle.series[reference.key] : null;
@@ -184,7 +197,11 @@ function drawSpark(document, cell, item, window) {
   svg.setAttribute("preserveAspectRatio", "none");
   svg.setAttribute("role", "img");
   const change = rangeChange(window.values, item.unit === "年化收益率");
-  svg.setAttribute("aria-label", `${item.name} 最近${window.values.length}个交易日站内收盘走势`
+  /* 观测单位按该行自己的频率说：月频序列写「个月度观测」，写成「交易日」就是把
+     月频数据说成了日频。 */
+  const grain = item.frequency === "monthly" ? "个月度观测"
+    : (item.frequency === "weekly" ? "个周度观测" : "个交易日");
+  svg.setAttribute("aria-label", `${item.name} 最近${window.values.length}${grain}站内走势`
     + (change ? `，区间变化 ${change}` : ""));
   const area = document.createElementNS("http://www.w3.org/2000/svg", "path");
   area.setAttribute("class", "board-spark-area");
@@ -421,7 +438,7 @@ export function createBoardView(document, view) {
           ? `显示${picked.shown.length}/${category.rows.length}项`
           : category.summary.text;
         summaryHost.textContent = `${category.label}${groupLabel ? ` · ${groupLabel}` : ""} · ${scope}`
-          + (category.summary.asOf ? ` · 数据日 ${category.summary.asOf}` : "");
+          + (category.summary.asOfRange ? ` · 数据日 ${category.summary.asOfRange}` : "");
       }
       renderRows(document, panelHost, category, bundles, expandedByKey.get(active) === true, {
         shown: picked.shown,

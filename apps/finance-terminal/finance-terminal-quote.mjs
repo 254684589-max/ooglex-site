@@ -30,7 +30,13 @@ const KIND_SOURCES = Object.freeze({
   },
   crypto: { data: "../asset-ranking/crypto.json" },
   curve: { data: "../macro-radar/curve.json", monthly: "../macro-radar/curve-monthly.json" },
-  macro: { data: "../macro-radar/data.json", daily: "../macro-radar/series.json" }
+  macro: { data: "../macro-radar/data.json", daily: "../macro-radar/series.json" },
+  /* 商品现货管道的日频与月频历史在同一个文件里分两个桶，因此 daily 与 monthly 指向同一份。 */
+  commodity: {
+    data: "../commodities/data.json",
+    daily: "../commodities/history.json",
+    monthly: "../commodities/history.json"
+  }
 });
 
 /* 近端四档读日线（约22/66/132/260个交易日），长端四档读月线。
@@ -91,6 +97,24 @@ export function monthlyPoints(history, symbol) {
     const label = `${String(Math.floor(cursor / 12)).padStart(4, "0")}-${String(cursor % 12 + 1).padStart(2, "0")}`;
     return { label, value, at: cursor };
   }).filter((point) => isFiniteNumber(point.value));
+}
+
+/* 纯函数：商品现货管道的月频历史用「共享日期轴 + 逐序列列」，与公司/跨资产那份
+   {start, closes} 压缩格式不同；这里按同一套月序号口径转成月线点，缺观测整点丢弃。 */
+export function monthlyPointsFromAxis(history, symbol) {
+  const dates = history && Array.isArray(history.dates) ? history.dates : [];
+  const values = history && history.series ? history.series[symbol] : null;
+  if (!Array.isArray(values)) return [];
+  return dates.map((date, index) => {
+    const year = Number(String(date).slice(0, 4));
+    const month = Number(String(date).slice(5, 7));
+    if (!Number.isInteger(year) || !Number.isInteger(month) || month < 1 || month > 12) return null;
+    return {
+      label: `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}`,
+      value: values[index],
+      at: year * 12 + (month - 1)
+    };
+  }).filter((point) => point && isFiniteNumber(point.value));
 }
 
 export function slicePoints(points, limit) {
@@ -269,12 +293,45 @@ function macroInstrument(data, symbol) {
   };
 }
 
+/* 商品现货与官方指数：涨跌一律相对该序列自己的上一观测，频率逐条如实标注——
+   多数是月频，写成「当日涨跌」就是把月频说成了日频。 */
+function commodityInstrument(data, symbol) {
+  const rows = data && Array.isArray(data.series) ? data.series : [];
+  const row = rows.filter((item) => item && item.id === symbol)[0];
+  if (!row || !isFiniteNumber(row.price)) return null;
+  const meta = row.dataMeta || {};
+  const frequency = row.frequency || meta.frequency || "";
+  return {
+    name: row.name,
+    nameEn: "",
+    symbol,
+    categoryLabel: "商品",
+    grain: frequency === "monthly" ? "monthly" : "daily",
+    priceText: formatPrice(row.price, priceDecimals(row.price)),
+    change: formatChange(row.changePct, "pct"),
+    changeBasis: `较前一观测 ${row.previousAsOf || "—"}`,
+    unit: row.unit || "",
+    changeMode: "pct",
+    asOf: formatAsOf(meta.asOf),
+    updatedAt: meta.updatedAt || data.updatedAt || "",
+    frequency,
+    sourceName: meta.source || data.source || "",
+    sourceUrl: `https://fred.stlouisfed.org/series/${encodeURIComponent(symbol)}`,
+    sourceLabel: "在 FRED 打开官方序列页",
+    status: row.stale ? "stale" : (meta.status || "ok"),
+    note: row.note || meta.note || "",
+    proxyOf: "",
+    extra: []
+  };
+}
+
 const INSTRUMENT_READERS = Object.freeze({
   tracker: trackerInstrument,
   company: companyInstrument,
   crypto: cryptoInstrument,
   curve: curveInstrument,
-  macro: macroInstrument
+  macro: macroInstrument,
+  commodity: commodityInstrument
 });
 
 export async function loadInstrument(kind, symbol) {
@@ -291,8 +348,12 @@ export async function loadInstrument(kind, symbol) {
       return dailyPoints({ dates: data.history && data.history.dates, series: { [symbol]: values } }, symbol);
     }
     if (!paths.daily) return [];
+    /* 月频序列没有日线：把 400 个月度观测塞进「1个月/3个月」这几档会把月频说成日频，
+       因此这里如实返回空，长端区间读月线那一支。 */
+    if (kind === "commodity" && instrument.grain === "monthly") return [];
     try {
       const file = await loadJson(paths.daily);
+      if (kind === "commodity") return dailyPoints(file.daily, seriesKey);
       if (kind === "macro") {
         const entry = file.series ? file.series[symbol] : null;
         return dailyPoints({ dates: entry && entry.dates, series: { [symbol]: entry && entry.values } }, symbol);
@@ -304,8 +365,11 @@ export async function loadInstrument(kind, symbol) {
   })();
   const monthly = await (async () => {
     if (!paths.monthly) return [];
+    if (kind === "commodity" && instrument.grain !== "monthly") return [];
     try {
-      return monthlyPoints(await loadJson(paths.monthly), seriesKey);
+      const file = await loadJson(paths.monthly);
+      if (kind === "commodity") return monthlyPointsFromAxis(file.monthly, seriesKey);
+      return monthlyPoints(file, seriesKey);
     } catch (error) {
       return [];
     }

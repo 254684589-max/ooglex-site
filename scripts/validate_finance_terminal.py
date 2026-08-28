@@ -419,13 +419,13 @@ def run_asset_tracker_builder_contract_tests() -> None:
 
     universe_names = [item["name"] for item in module.ASSETS]
     universe_symbols = [_first_symbol(item) for item in module.ASSETS]
-    require(len(module.ASSETS) == 103, f"跨资产清单条数应为103，当前{len(module.ASSETS)}")
+    require(len(module.ASSETS) == 107, f"跨资产清单条数应为107，当前{len(module.ASSETS)}")
     require(len(set(universe_names)) == len(universe_names), "跨资产标的名称必须唯一")
     require(len(set(universe_symbols)) == len(universe_symbols), "跨资产首选代码必须唯一")
     categories = {}
     for item in module.ASSETS:
         categories[item["cat"]] = categories.get(item["cat"], 0) + 1
-    require(categories == {"equity": 38, "commodity": 32, "fx": 22, "bond": 11},
+    require(categories == {"equity": 38, "commodity": 36, "fx": 22, "bond": 11},
             f"跨资产四类条数与登记不一致：{categories}")
     # 2026-08-25 所有者决定：撤下QQQ代理卡后纳斯达克改由综合指数^IXIC进入指数类；
     # 道指仍由DIA免费组件展示，纳斯达克100（NDX）不再进入本站，两者都不得混进清单。
@@ -2909,24 +2909,26 @@ def main() -> None:
     # 25.8KB包含资产主值盒的诊断尺寸；仅失败时写入证据，不进入常规加载路径。
     require(REGRESSION_MODULE.stat().st_size <= 25_800,
             "仅回归模式加载的浏览器探针超过25.8KB性能预算")
-    # 22,500：在原19KB基础上给「商品品类下的二级分组」留出的增量——七组的登记、逐代码
-    # 归组表与「口径按工具本身取值」的判断。分组只是静态归类，不新增任何请求与任何行情事实。
-    require(BOARD_DATA_MODULE.stat().st_size <= 22_500,
-            "按需加载的品类行情板数据层超过22.5KB性能预算")
+    # 25,500：在 22.5KB 基础上再给「商品现货与官方指数」那条管道留出的增量——它把 FRED
+    # 的 EIA 日频现货与 IMF 月频初级商品价并进商品品类，逐条按自己的频率标口径与涨跌基准。
+    # 分组与并流都只是重新编排已经取到的行，不新增任何行情事实。
+    require(BOARD_DATA_MODULE.stat().st_size <= 25_500,
+            "按需加载的品类行情板数据层超过25.5KB性能预算")
     # 23,000：在原18KB基础上给「逐行迷你走势 + 品类脉冲条」留出的增量。走势本身
     # 不新增任何请求：它复用抽屉那套历史文件与同一份带缓存的读取，一个品类最多
     # 触发一次历史文件读取；拿不到序列的行如实留白，不画推断曲线。
-    # 23,000：再加上分组筛选条（aria-pressed 芯片）与列表里的分组小标题。分组不新增
-    # 任何请求：它只是把同一批已经取到的行按登记的组序摆开。
-    require(BOARD_VIEW_MODULE.stat().st_size <= 23_000,
-            "按需加载的品类行情板视图超过23KB性能预算")
+    # 24,000：再加上分组筛选条（aria-pressed 芯片）、列表里的分组小标题，以及现货管道
+    # 那条按「日频/月频」分桶取历史的分支。走势说明按各行自己的频率措辞，不把月频说成日频。
+    require(BOARD_VIEW_MODULE.stat().st_size <= 24_000,
+            "按需加载的品类行情板视图超过24KB性能预算")
     # 行情详情页是独立网址的完整页面：品类行情逐行是真链接（<a href>，可新标签页
     # 打开、可分享），不再是就地弹层。页面只读站内已在日更的公开管道，缺哪一档
     # 区间就说没有；走势图渲染器与详情页各自独立于首屏，不进常规加载预算。
     quote_page = QUOTE_PAGE.read_text(encoding="utf-8")
     quote_module = QUOTE_MODULE.read_text(encoding="utf-8")
     chart_module = CHART_MODULE.read_text(encoding="utf-8")
-    require(QUOTE_MODULE.stat().st_size <= 25_000, "行情详情页脚本超过25KB性能预算")
+    # 28,000：详情页新增商品现货这一类标的的读取器与月频历史轴转换。
+    require(QUOTE_MODULE.stat().st_size <= 28_000, "行情详情页脚本超过28KB性能预算")
     # 盘中活更新模块：两页共用一份，只重取那份几KB的盘中快照并在数值真的变了时闪一下。
     live_module = LIVE_MODULE.read_text(encoding="utf-8")
     require(LIVE_MODULE.stat().st_size <= 10_000, "盘中活更新模块超过10KB性能预算")

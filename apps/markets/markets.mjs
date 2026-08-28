@@ -13,11 +13,12 @@ const SOURCES = Object.freeze({
   assetRankingCrypto: "../asset-ranking/crypto.json",
   companies: "../companies/data.json",
   macro: "../macro-radar/data.json",
-  macroCurve: "../macro-radar/curve.json"
+  macroCurve: "../macro-radar/curve.json",
+  commodities: "../commodities/data.json"
 });
 
 /* 可选文件缺失不算管线故障：加密快照首次生成前就属于这种情况。 */
-const OPTIONAL = Object.freeze(["assetRankingCrypto"]);
+const OPTIONAL = Object.freeze(["assetRankingCrypto", "commodities"]);
 
 function loadOne(key, path) {
   return fetch(path, { cache: "no-store" }).then((response) => {

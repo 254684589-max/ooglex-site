@@ -212,6 +212,17 @@ ASSETS = [
     {"name": "标普GSCI商品指数", "cat": "commodity", "syms": ["GSG"],
      "note": "以 iShares 标普GSCI商品指数信托（GSG）份额价格代理，"
              "是信托价格而不是指数点位"},
+    # 2026-08-28 第三轮：这四个代码先在 Actions 机房实测取到过才登记
+    # （scripts/probe_commodity_sources.py），不再凭印象写入。
+    {"name": "荷兰TTF天然气",    "cat": "commodity", "syms": ["TTF=F"],
+     "note": "欧洲天然气基准期货，以欧元计价（欧元/兆瓦时），不是美元报价",
+     "caps": {"m1": 90, "ytd": 300, "y1": 400}},
+    {"name": "热轧卷板钢",       "cat": "commodity", "syms": ["HRC=F"],
+     "note": "美国中西部热轧卷板钢期货，钢材基准合约"},
+    {"name": "CME三类牛奶",      "cat": "commodity", "syms": ["DC=F"],
+     "note": "三类牛奶期货，乳制品定价基准"},
+    {"name": "CME奶酪",          "cat": "commodity", "syms": ["CSC=F"],
+     "note": "现金结算奶酪期货"},
     {"name": "全球碳排放权",     "cat": "commodity", "syms": ["KRBN"],
      "note": "以 KraneShares 全球碳排放ETF（KRBN）份额价格代理欧盟、加州与RGGI碳配额期货，"
              "是基金价格而不是任一市场的配额价",
