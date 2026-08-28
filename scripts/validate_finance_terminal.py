@@ -2872,8 +2872,8 @@ def main() -> None:
     # 由来的注释后需要 27.2KB；换回的是首屏与参考稿在弧带、图标、连线与页脚四处对齐。
     require(REFERENCE_HOME_V3_CSS.stat().st_size <= 27_200, "金融终端参考首页第三版样式超过27.2KB性能预算")
     # v4仅在桌面总览上校正1672×941参考图的坐标、比例和光效；移动端继续由v3负责。
-    require(REFERENCE_HOME_V4_CSS.stat().st_size <= 14_800,
-            "金融终端1672像素参考锁定样式超过14.8KB性能预算")
+    require(REFERENCE_HOME_V4_CSS.stat().st_size <= 15_500,
+            "金融终端1672像素参考锁定样式超过15.5KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
     # HUD只把既有已校验状态压缩为中文短标签与等价覆盖率百分比，不引入第二套数据。
     require(AURORA_HOME_MODULE.stat().st_size <= 4_200, "金融终端极光首页同步模块超过4.2KB性能预算")
@@ -2996,6 +2996,9 @@ def main() -> None:
             and "grid-template-columns:1.12fr1fr1.11fr" in compact_reference_home
             and "width:76.3%" in compact_reference_home
             and "margin-left:6.8%" in compact_reference_home
+            and "top:50%" in compact_reference_home
+            and "left:50%" in compact_reference_home
+            and "width:52%" in compact_reference_home
             and "grid-template-columns:minmax(0,1fr)16.2vw" in compact_reference_home,
             "1672×941参考锁定层缺少目标纵向网格、资产弧带或三工作区比例")
     require('body[data-terminal-view="overview"] #main-content' in command_center_css

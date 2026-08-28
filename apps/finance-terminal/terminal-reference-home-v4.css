@@ -20,12 +20,13 @@
   body[data-terminal-view="overview"] .brand-lockup strong {
     font-size: 2.32vw;
     letter-spacing: .055em;
-    transform: translateY(.5vw) scaleX(1) scaleY(1.2);
+    transform: translateY(.62vw) scaleX(1.24) scaleY(1.2);
+    transform-origin: left center;
   }
 
   body[data-terminal-view="overview"] .brand-lockup small {
     font-size: .64vw;
-    letter-spacing: .075em;
+    letter-spacing: .11em;
     transform: translateY(.45vw);
   }
 
@@ -39,7 +40,7 @@
 
   body[data-terminal-view="overview"] .section-nav a {
     min-height: 2.9vw;
-    padding: .48vw 2.9vw;
+    padding: .48vw 2.55vw;
     font-size: .96vw;
   }
 
@@ -82,7 +83,7 @@
   }
 
   body[data-terminal-view="overview"] #page-title {
-    gap: 1.45vw;
+    gap: 1.2vw;
   }
 
   body[data-terminal-view="overview"] #page-title > span {
@@ -90,7 +91,7 @@
   }
 
   body[data-terminal-view="overview"] #page-title > strong {
-    font-size: 4.02vw;
+    font-size: 4.12vw;
     line-height: .96;
   }
 
@@ -128,12 +129,14 @@
   body[data-terminal-view="overview"] .aurora-evidence strong { font-size: .68vw; }
 
   body[data-terminal-view="overview"] .market-globe-shell {
+    top: 50%;
+    left: 50%;
     width: 40vw;
     transform: translate(-64%, -50%) scaleX(1.22);
   }
 
   body[data-terminal-view="overview"] .market-globe-canvas {
-    filter: saturate(1.08) brightness(1.3) contrast(1.15)
+    filter: saturate(1.08) brightness(1.16) contrast(1.13)
       drop-shadow(0 0 14px rgba(68, 198, 255, .7));
   }
 
@@ -204,6 +207,7 @@
 
   body[data-terminal-view="overview"] #market-section::before,
   body[data-terminal-view="overview"] #market-section::after {
+    display: block;
     right: .3%;
     left: .3%;
     height: 1.95vw;
@@ -312,6 +316,7 @@
   body[data-terminal-view="overview"] .aurora-gateway-grid {
     grid-template-columns: 1.12fr 1fr 1.11fr;
     gap: .88vw;
+    transform: translateY(-.18vw);
   }
 
   body[data-terminal-view="overview"] .aurora-gateway {
@@ -425,7 +430,14 @@
     white-space: nowrap;
     transform: translateY(-50%);
   }
-  body[data-terminal-view="overview"] .gateway-enter { min-height: 2.35vw; font-size: .68vw; }
+  body[data-terminal-view="overview"] .gateway-enter {
+    width: 52%;
+    min-height: 2.35vw;
+    margin-inline: auto;
+    font-size: .68vw;
+  }
+  body[data-terminal-view="overview"] .aurora-gateway-actions { width: 52%; margin-inline: auto; }
+  body[data-terminal-view="overview"] .aurora-gateway-actions .gateway-enter { width: 100%; }
   body[data-terminal-view="overview"] .aurora-statusbar,
   body[data-terminal-view="overview"] .aurora-statusbar > span {
     min-height: 2.55vw;
