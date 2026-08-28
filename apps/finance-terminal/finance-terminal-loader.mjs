@@ -11,6 +11,7 @@ const RESOURCE_PATHS = Object.freeze({
   assetRanking: "../asset-ranking/data.json",
   assetRankingHealth: "../asset-ranking/health.json",
   assetRankingCrypto: "../asset-ranking/crypto.json",
+  commodities: "../commodities/data.json",
   companies: "../companies/data.json",
   companiesHealth: "../companies/health.json",
   calendar: "../econ-calendar/data.json",
@@ -25,10 +26,12 @@ const RESOURCE_GROUPS = Object.freeze({
   critical: Object.freeze([
     "macro", "macroHealth", "assetRanking", "assetRankingHealth", "marketLicense"
   ]),
-  /* 品类行情板只读行情本身：逐行的来源、数据日与过期状态来自这四份数据文件，
-     逐源更新链健康归市场研究与运行证据分区，行情板不重复请求。 */
+  /* 品类行情板只读行情本身：逐行的来源、数据日与过期状态来自这几份数据文件，
+     逐源更新链健康归市场研究与运行证据分区，行情板不重复请求。
+     commodities 是商品现货与官方指数那条管道，补的是期货管道覆盖不到的品种。 */
   board: Object.freeze([
-    "assetTracker", "assetRanking", "assetRankingCrypto", "companies", "macro", "macroCurve"
+    "assetTracker", "assetRanking", "assetRankingCrypto", "companies", "macro", "macroCurve",
+    "commodities"
   ]),
   /* 地缘风险定价的能源与避险两条轴读跨资产管道的近一月涨幅：该文件在品类行情与
      市场研究两组里已经在取，加载器按资源键去重，总览里不会因此多发一次请求。 */
@@ -154,7 +157,11 @@ export function createResourceLoader(options = {}) {
       networkRequestCount,
       requestStates: Object.fromEntries(requestStates),
       duplicateNetworkRequestCount: Math.max(0, networkRequestCount - requestedKeys.length),
-      groupLoadSequence: groupLoadSequence.slice()
+      groupLoadSequence: groupLoadSequence.slice(),
+      /* 应取到的上游资源数由登记表自算，探针不再抄一份硬编码计数。 */
+      registeredSourceCount: new Set(
+        Object.keys(groups).reduce((keys, name) => keys.concat(groups[name] || []), [])
+      ).size
     };
   }
 
