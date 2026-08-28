@@ -40,7 +40,7 @@
 
   body[data-terminal-view="overview"] .section-nav a {
     min-height: 2.9vw;
-    padding: .48vw 2.55vw;
+    padding: .48vw 2.2vw;
     font-size: .96vw;
   }
 
@@ -325,14 +325,29 @@
   }
 
   body[data-terminal-view="overview"] .aurora-gateway header {
-    min-height: 1.95vw;
-    gap: .56vw;
+    min-height: 2.25vw;
+    gap: .8vw;
+    padding-left: .45vw;
     padding-bottom: .38vw;
   }
 
   body[data-terminal-view="overview"] .aurora-gateway-icon {
-    width: 2.18vw;
+    width: 1.9vw;
     font-size: 1.18vw;
+  }
+
+  body[data-terminal-view="overview"] .aurora-gateway-icon svg {
+    width: 1.18vw;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.55;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  body[data-terminal-view="overview"] .aurora-gateway-icon .gateway-bolt {
+    fill: currentColor;
+    stroke: none;
   }
 
   body[data-terminal-view="overview"] .aurora-gateway h3 { font-size: 1.18vw; }
@@ -432,9 +447,10 @@
   }
   body[data-terminal-view="overview"] .gateway-enter {
     width: 52%;
-    min-height: 2.35vw;
+    min-height: 2.45vw;
     margin-inline: auto;
     font-size: .68vw;
+    transform: translateY(.14vw);
   }
   body[data-terminal-view="overview"] .aurora-gateway-actions { width: 52%; margin-inline: auto; }
   body[data-terminal-view="overview"] .aurora-gateway-actions .gateway-enter { width: 100%; }
