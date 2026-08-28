@@ -471,8 +471,8 @@ export function renderQuoteError(document, root, message) {
   root.setAttribute("aria-busy", "false");
   const box = text(root, "div", "quote-error");
   text(box, "p", "", message);
-  const back = text(box, "a", "quote-source-link", "← 返回品类行情");
-  back.href = "index.html#board-section";
+  const back = text(box, "a", "quote-source-link", "← 返回全球市场行情");
+  back.href = "../markets/";
 }
 
 async function start() {

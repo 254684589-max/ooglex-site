@@ -83,14 +83,16 @@ export function rangeChange(values, isYield) {
 }
 
 /* 纯函数：逐行链接到独立的行情详情页。序列引用里的 kind 决定详情页读哪一条管道；
-   没有序列引用的行也仍然可以打开——详情页会照样摆出它的当期读数与来源。 */
-export function quoteHref(item) {
+   没有序列引用的行也仍然可以打开——详情页会照样摆出它的当期读数与来源。
+   base 让同一份视图能被不同目录下的页面复用（金融终端与「全球市场行情」各给各的相对路径）。 */
+export function quoteHref(item, base) {
   const kinds = { tracker: "tracker", company: "company", cryptoBoard: "crypto", curve: "curve", macro: "macro" };
   const reference = item && item.series ? item.series : null;
   const kind = reference && kinds[reference.kind] ? kinds[reference.kind] : "";
   const symbol = reference && reference.key ? reference.key : (item ? item.symbol : "");
   if (!kind || !symbol) return "";
-  return `quote.html?kind=${encodeURIComponent(kind)}&symbol=${encodeURIComponent(symbol)}`;
+  const target = base || "quote.html";
+  return `${target}?kind=${encodeURIComponent(kind)}&symbol=${encodeURIComponent(symbol)}`;
 }
 
 /* 纯函数：迷你走势的方向按该窗口首尾比较得到，与当日涨跌各算各的，互不顶替。 */
@@ -246,7 +248,7 @@ function renderRows(document, host, category, bundles, expanded, context) {
     if (context.watch) line.appendChild(context.watch.button(item.symbol));
     else text(line, "span", "board-cell-watch", "");
     const open = text(line, "a", "board-open");
-    open.href = quoteHref(item);
+    open.href = quoteHref(item, document.documentElement.dataset.quoteBase);
     open.setAttribute("aria-label",
       `${item.name}，最新价 ${item.priceText}，${item.change.text}，打开完整行情页`);
     const name = text(open, "span", "board-cell-name");

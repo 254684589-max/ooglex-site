@@ -35,6 +35,19 @@
           "<small style='color:" + col + "'>" + esc(r.labelZh || "") + "</small></div>" +
           row("偏弱信号", weak || "—", "dim");
       } },
+    // 全球市场行情自己不产数据文件：它把跨资产、公司榜、资产榜与美债曲线四条管道
+    // 重新编排成六大品类，这里的预览读它体量最大的那一条（跨资产），并写明只是其中一部分。
+    { folder: "markets", dataFolder: "asset-tracker", en: "Global Markets", name: "全球市场行情",
+      tag: "商品 · 指数 · 股票 · 外汇 · 加密 · 债券 · 逐项完整走势",
+      render: function (d) {
+        var a = (d.assets || []).filter(function (x) { return x.returns && isNum(x.returns.d1); });
+        if (!a.length) return "<div class='loading'>暂无数据</div>";
+        var up = a.filter(function (x) { return x.returns.d1 > 0; }).length;
+        var top = a.slice().sort(function (x, y) { return y.returns.d1 - x.returns.d1; })[0];
+        return "<div class='big'>" + a.length + "<small>项跨资产标的（另有公司榜、加密与美债曲线）</small></div>" +
+          row("今日上涨", up + " / " + a.length, "up") +
+          row("领涨", esc(top.name) + " " + pct(top.returns.d1), "up");
+      } },
     { folder: "asset-tracker", en: "Assets · YTD", name: "全球大类资产收益率", tag: "股市 · 商品 · 外汇 · 债券",
       render: function (d) {
         var a = (d.assets || []).filter(function (x) { return x.returns && isNum(x.returns.ytd); })
@@ -167,7 +180,7 @@
       "<div class='body'><div class='loading'>加载中…</div></div>" +
       "<div class='upd'>—</div>";
     var body = a.querySelector(".body"), upd = a.querySelector(".upd");
-    getData(app.folder)
+    getData(app.dataFolder || app.folder)
       .then(function (d) {
         try { body.innerHTML = app.render(d); } catch (e) { body.innerHTML = "<div class='loading'>预览不可用</div>"; }
         upd.textContent = relTime(d.updatedAt);
