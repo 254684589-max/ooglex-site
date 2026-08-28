@@ -1,0 +1,88 @@
+name: Asset Tracker Intraday
+
+# 盘中快照：只刷新「最新价 + 相对前收涨跌」这一层，写 apps/asset-tracker/intraday.json。
+# 收盘口径的 data.json 由 asset_tracker.yml 每日生成，本工作流一个字都不动它。
+#
+# 诚实边界：这不是实时行情。这里每约15分钟跑一轮，各交易所本身还有自己的延迟，
+# 页面上写明「盘中快照 · 刷新周期约15分钟 · 非实时」。
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '3,18,33,48 * * * *'   # 每15分钟（避开整点高峰分钟）
+
+permissions:
+  contents: write
+
+concurrency:
+  group: market-data-asset-tracker-intraday-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Sync target branch before generation
+        run: |
+          if [ "$GITHUB_REF_TYPE" != "branch" ]; then
+            echo "仅允许从分支运行数据更新，当前引用类型：$GITHUB_REF_TYPE"
+            exit 1
+          fi
+          git fetch --no-tags origin "$GITHUB_REF_NAME"
+          git checkout -B "$GITHUB_REF_NAME" FETCH_HEAD
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Build intraday snapshot
+        run: python scripts/asset-tracker/build_intraday.py
+
+      - name: Validate intraday snapshot
+        run: python scripts/validate_asset_tracker_intraday.py
+
+      - name: Guard and stage owned outputs
+        id: stage
+        run: python scripts/market_workflow_governance.py stage --dataset asset-tracker-intraday --github-output "$GITHUB_OUTPUT" --report /tmp/market-workflow-diagnostics/asset-tracker-intraday-workflow.json
+
+      - name: Commit and push data
+        if: steps.stage.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "data: refresh intraday quotes"
+          # 与日更那条同样的安全推送：遇远端新提交就 rebase 重试，冲突以本次生成的版本为准
+          # （rebase 中 ours/theirs 语义互换，-X theirs 才是本地工作分支一侧）。
+          for i in 1 2 3 4 5; do
+            if git push origin "HEAD:$GITHUB_REF_NAME"; then
+              echo "已推送"; exit 0
+            fi
+            echo "推送被拒，拉取远端后重试（$i）"
+            if ! git fetch --no-tags origin "$GITHUB_REF_NAME"; then
+              sleep $((i * 3)); continue
+            fi
+            if ! git rebase -X theirs "origin/$GITHUB_REF_NAME"; then
+              git rebase --abort || true
+              sleep $((i * 3)); continue
+            fi
+            sleep $((i * 2))
+          done
+          echo "多次重试后仍未推送成功"; exit 1
+
+      - name: Upload workflow diagnostics
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: asset-tracker-intraday-${{ github.run_attempt }}
+          path: /tmp/market-workflow-diagnostics/
+          if-no-files-found: ignore
+          retention-days: 14

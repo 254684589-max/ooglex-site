@@ -55,6 +55,11 @@ DATASET_RULES = {
         "apps/asset-tracker/history.json",
         "apps/asset-tracker/history-monthly.json",
     )),
+    # 盘中快照单独一条数据集规则：它每15分钟跑一次，只允许动 intraday.json 这一个文件，
+    # 收盘口径的 data.json / health.json / 两份历史一个都不在它的可写范围内。
+    "asset-tracker-intraday": DatasetRule((
+        "apps/asset-tracker/intraday.json",
+    )),
     "companies": DatasetRule(
         (
             "apps/companies/data.json",
