@@ -141,6 +141,61 @@ YAHOO_CANDIDATES = [
 ]
 
 
+# ── 小时线候选 ───────────────────────────────────────────────────────────
+# 4小时线要由小时线聚合而来。这里逐类各取代表标的，确认三件事：
+# 能不能取到、返回的是不是这个标的本身（名称与计价单位）、覆盖多长时间。
+HOURLY_CANDIDATES = [
+    ("GC=F", "COMEX黄金期货"),
+    ("CL=F", "WTI原油期货"),
+    ("TTF=F", "荷兰TTF天然气期货（欧元计价）"),
+    ("HRC=F", "热轧卷板钢期货"),
+    ("^GSPC", "标普500指数"),
+    ("^HSI", "恒生指数"),
+    ("USDJPY=X", "美元兑日元"),
+    ("EURUSD=X", "欧元兑美元"),
+    ("NVDA", "英伟达（股票）"),
+    ("TLT", "美国长期国债ETF"),
+    ("KRBN", "全球碳排放权ETF"),
+    ("BTC-USD", "比特币（Yahoo代码）"),
+    ("ETH-USD", "以太坊（Yahoo代码）"),
+]
+
+
+def probe_hourly(symbol: str) -> dict:
+    """Yahoo 小时线：确认能取到、是本标的、且覆盖足够长。
+
+    只请求 interval=1h。4小时线由小时线聚合而来，聚合是我们本地做的确定性运算，
+    真正要验证的是「源头有没有小时级观测」这一件事。
+    """
+    last = "无可用数据"
+    for host in ("query1.finance.yahoo.com", "query2.finance.yahoo.com"):
+        url = (f"https://{host}/v8/finance/chart/{parse.quote(symbol)}"
+               "?range=730d&interval=1h")
+        try:
+            payload = get_json(url)
+            result = payload["chart"]["result"][0]
+            stamps = result.get("timestamp") or []
+            closes = result["indicators"]["quote"][0]["close"]
+            bars = [(t, c) for t, c in zip(stamps, closes) if c is not None]
+            if len(bars) < 24:
+                last = f"小时线数据点不足（{len(bars)}）"
+                continue
+            meta = result.get("meta") or {}
+            span_days = round((bars[-1][0] - bars[0][0]) / 86400.0, 1)
+            return {
+                "ok": True, "bars": len(bars), "spanDays": span_days,
+                "first": time.strftime("%Y-%m-%d %H:%M", time.gmtime(bars[0][0])),
+                "last": time.strftime("%Y-%m-%d %H:%M", time.gmtime(bars[-1][0])),
+                "value": round(float(bars[-1][1]), 4),
+                "currency": meta.get("currency", ""), "name": meta.get("shortName", ""),
+                "granularity": meta.get("dataGranularity", ""),
+                "exchangeTz": meta.get("exchangeTimezoneName", ""),
+            }
+        except (error.HTTPError, error.URLError, ValueError, KeyError, IndexError) as exc:
+            last = f"{type(exc).__name__}: {str(exc)[:60]}"
+    return {"ok": False, "why": last}
+
+
 def get_json(url: str, headers: dict | None = None) -> dict:
     req = request.Request(url, headers=headers or {"User-Agent": UA, "Accept": "*/*"})
     with request.urlopen(req, timeout=TIMEOUT) as response:
@@ -248,11 +303,30 @@ def main() -> None:
             print(f"[XX] {symbol:<8} {label:<26} {outcome.get('why', '')}")
         time.sleep(GAP)
 
+    print()
+    print("=" * 78)
+    print("小时线候选（4小时线的原料）")
+    print("=" * 78)
+    report["hourly"] = {}
+    for symbol, label in HOURLY_CANDIDATES:
+        outcome = probe_hourly(symbol)
+        report["hourly"][symbol] = dict(outcome, label=label)
+        if outcome.get("ok"):
+            print(f"[OK] {symbol:<10} {label:<24} {outcome['bars']:>5}根 "
+                  f"跨{outcome['spanDays']:>6}天 粒度={outcome.get('granularity',''):<4} "
+                  f"{outcome.get('currency','')} {outcome.get('name','')[:22]}")
+            print(f"     {outcome['first']} → {outcome['last']}  最新={outcome['value']}")
+        else:
+            print(f"[XX] {symbol:<10} {label:<24} {outcome.get('why','')}")
+        time.sleep(GAP)
+
     ok_fred = [k for k, v in report["fred"].items() if v.get("ok")]
     ok_yahoo = [k for k, v in report["yahoo"].items() if v.get("ok")]
     print()
+    ok_hourly = [k for k, v in report["hourly"].items() if v.get("ok")]
     print(f"可用：FRED {len(ok_fred)}/{len(FRED_CANDIDATES)}，"
-          f"Yahoo {len(ok_yahoo)}/{len(YAHOO_CANDIDATES)}")
+          f"Yahoo {len(ok_yahoo)}/{len(YAHOO_CANDIDATES)}，"
+          f"小时线 {len(ok_hourly)}/{len(HOURLY_CANDIDATES)}")
     out = os.environ.get("PROBE_OUTPUT")
     if out:
         os.makedirs(os.path.dirname(out), exist_ok=True)
