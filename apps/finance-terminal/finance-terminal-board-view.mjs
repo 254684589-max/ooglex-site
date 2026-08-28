@@ -2,6 +2,7 @@
    抽屉复用资产详情抽屉的外壳与折线映射，保证焦点、Esc、遮罩与几何只有一份实现。
    没有站内历史序列的标的如实说明原因，不用相邻标的或推断值顶替。 */
 
+import { formatAbsolute, formatChange } from "./finance-terminal-board-data.mjs";
 import { seriesPath } from "./finance-terminal-detail-view.mjs";
 import { mountWatchlist } from "./finance-terminal-watchlist.mjs";
 
@@ -104,6 +105,58 @@ export function sparkDirection(values) {
   const last = values[values.length - 1];
   if (!Number.isFinite(first) || !Number.isFinite(last)) return "unknown";
   return last > first ? "up" : (last < first ? "down" : "flat");
+}
+
+/* 纯函数：按「相对最近观测往回推 N 天」找锚点，返回该日期或之前的最后一个观测值。
+   共享日期轴上没有当天观测就顺延到更早那一个，绝不前向填充、也不插值。 */
+export function valueBefore(pairs, isoDate) {
+  let chosen = null;
+  for (let index = 0; index < pairs.length; index += 1) {
+    if (pairs[index][0] <= isoDate) chosen = pairs[index][1]; else break;
+  }
+  return chosen;
+}
+
+function shiftDays(isoDate, days) {
+  const at = new Date(`${isoDate}T00:00:00Z`);
+  if (Number.isNaN(at.getTime())) return "";
+  at.setUTCDate(at.getUTCDate() - days);
+  return at.toISOString().slice(0, 10);
+}
+
+/* 纯函数：由站内历史现场算出「每周 / 月度 / 年初至今 / 同比」。
+
+   上游已经算好这四档的行（跨资产管道）直接沿用上游值，这里只补没算的那些。
+   口径与上游一致：都以「最近观测」对「锚点日或之前的最后一个观测」比较，锚点缺观测
+   就顺延到更早的一个；锚点比序列起点还早就返回 null——序列不够长就如实说没有，
+   不拿最早那个点冒充一年前。 */
+export function periodsFromSeries(dates, values, frequency) {
+  const pairs = [];
+  const length = Math.min(Array.isArray(dates) ? dates.length : 0,
+    Array.isArray(values) ? values.length : 0);
+  for (let index = 0; index < length; index += 1) {
+    const value = values[index];
+    if (typeof value === "number" && Number.isFinite(value)) pairs.push([dates[index], value]);
+  }
+  if (pairs.length < 2) return { w1: null, m1: null, ytd: null, y1: null };
+  const [lastDate, last] = pairs[pairs.length - 1];
+  const start = pairs[0][0];
+  function change(anchor) {
+    if (!anchor || anchor < start) return null;
+    const base = valueBefore(pairs, anchor);
+    if (!Number.isFinite(base) || base === 0) return null;
+    return Math.round((last / base - 1) * 10000) / 100;
+  }
+  /* 比观测间隔还短的区间没有意义：月频序列往回推 7 天，落到的还是上个月那个观测，
+     算出来的「每周」其实就是月度变化。与其给一个会被当成周度读的数字，不如留空。 */
+  const grain = String(frequency || "");
+  const weekly = grain === "monthly" ? null : change(shiftDays(lastDate, 7));
+  return {
+    w1: weekly,
+    m1: change(shiftDays(lastDate, 30)),
+    ytd: change(`${Number(lastDate.slice(0, 4)) - 1}-12-31`),
+    y1: change(shiftDays(lastDate, 365))
+  };
 }
 
 /* 纯函数：当前显示行的涨跌分布，用于品类脉冲条。无观测的行归入 unknown，不算持平。 */
@@ -239,6 +292,9 @@ async function fillSparks(document, pending, bundles, token) {
   pending.forEach((entry, index) => {
     if (!entry.cell.isConnected) return;
     const series = resolved[index];
+    /* 区间列与迷你走势共用这一次历史读取：上游没算好的四档在这里现场补。
+       算不出来的（序列不够长）如实写「—」，不拿最早那个点冒充一年前。 */
+    fillPeriods(entry, series);
     const window = series
       ? sliceSeries(series.dates, series.values, SPARK_POINTS)
       : { dates: [], values: [] };
@@ -247,10 +303,64 @@ async function fillSparks(document, pending, bundles, token) {
   });
 }
 
+function fillPeriods(entry, series) {
+  const cells = entry.periodCells || [];
+  if (!cells.length || cells.every((cell) => cell.dataset.resolved === "1")) return;
+  const computed = series
+    ? periodsFromSeries(series.dates, series.values, entry.item.frequency) : null;
+  cells.forEach((cell, index) => {
+    if (cell.dataset.resolved === "1" || !cell.isConnected) return;
+    const value = computed ? computed[PERIOD_KEYS[index]] : null;
+    if (Number.isFinite(value)) {
+      const shown = formatChange(value, "pct");
+      cell.textContent = shown.text;
+      cell.dataset.direction = shown.direction;
+      cell.dataset.resolved = "1";
+      cell.title = "由站内历史序列现场算出：最近观测对该区间锚点日之前的最后一个观测";
+    } else {
+      cell.textContent = "—";
+      cell.title = "站内历史序列不够长，算不出这一档区间变化；此处不做推算";
+    }
+  });
+}
+
 function markSparkEmpty(document, cell) {
   cell.textContent = "";
   const mark = text(cell, "i", "board-spark-empty", "无序列");
   mark.title = "站内日更管道还没有覆盖该标的的历史序列，此处不画任何推断曲线";
+}
+
+const PERIOD_KEYS = Object.freeze(["w1", "m1", "ytd", "y1"]);
+
+/* 绝对变化列：正负号与颜色同时给出，缺值写「—」。收益率类（债券）没有这一列的
+   意义——它的变化本身就是基点，已经在涨跌列里，这里留空不重复。 */
+function paintAbsolute(open, item) {
+  const cell = text(open, "span", "board-cell-abs");
+  if (!Number.isFinite(item.changeAbs)) {
+    cell.textContent = "—";
+    return cell;
+  }
+  const decimals = item.priceText && item.priceText.indexOf(".") >= 0
+    ? item.priceText.split(".")[1].replace(/[^0-9]/g, "").length : 2;
+  cell.textContent = formatAbsolute(item.changeAbs, Math.min(decimals, 4));
+  cell.dataset.direction = item.changeAbs > 0 ? "up" : (item.changeAbs < 0 ? "down" : "flat");
+  return cell;
+}
+
+/* 区间涨跌列：null 表示上游没算、也还没从历史算出来，先写「…」；
+   历史读完仍算不出（序列不够长）由 fillSparks 改写成「—」。 */
+function paintPeriod(open, periods, key) {
+  const cell = text(open, "span", "board-cell-period");
+  const value = periods ? periods[key] : null;
+  if (Number.isFinite(value)) {
+    const shown = formatChange(value, "pct");
+    cell.textContent = shown.text;
+    cell.dataset.direction = shown.direction;
+    cell.dataset.resolved = "1";
+  } else {
+    cell.textContent = "…";
+  }
+  return cell;
 }
 
 function renderRows(document, host, category, bundles, expanded, context) {
@@ -270,8 +380,14 @@ function renderRows(document, host, category, bundles, expanded, context) {
   text(headCells, "span", "board-cell-name", "标的");
   text(headCells, "span", "board-cell-spark", "近60日");
   text(headCells, "span", "board-cell-price", "最新价");
+  text(headCells, "span", "board-cell-abs", "变");
   text(headCells, "span", "board-cell-change", "涨跌");
+  text(headCells, "span", "board-cell-period", "每周");
+  text(headCells, "span", "board-cell-period", "月度");
+  text(headCells, "span", "board-cell-period", "年初至今");
+  text(headCells, "span", "board-cell-period", "同比");
   text(headCells, "span", "board-cell-extra", category.extraLabel || "口径");
+  text(headCells, "span", "board-cell-asof", "数据日");
   /* 只看某一组时不再折叠（每组本来就只有几行）；分组小标题也只在「全部」视图里出现，
      已经筛到一组时，标题就是分组条上那颗选中的芯片。 */
   const limit = context.group ? rows.length : category.collapseAfter;
@@ -303,13 +419,20 @@ function renderRows(document, host, category, bundles, expanded, context) {
     const name = text(open, "span", "board-cell-name");
     text(name, "b", "", item.name);
     text(name, "i", "", item.symbol + (item.status === "stale" ? " · 过期" : ""));
-    pending.push({ item, cell: text(open, "span", "board-cell-spark") });
+    const sparkCell = text(open, "span", "board-cell-spark");
     const price = text(open, "span", "board-cell-price", item.priceText);
+    /* 迷你走势与区间列共用同一次历史读取，不额外发请求。 */
     if (item.currency && item.currency !== "USD") text(price, "i", "board-cell-currency", item.currency);
+    paintAbsolute(open, item);
     const change = text(open, "span", "board-cell-change");
     text(change, "i", "board-arrow", item.change.arrow);
     text(change, "b", "", item.change.text);
+    /* 四个区间列：上游算好的直接摆上，没算的先留「…」，等历史加载完再由
+       fillSparks 现场补。补不出来（序列不够长）就写「—」，绝不推算。 */
+    const periodCells = PERIOD_KEYS.map((key) => paintPeriod(open, item.periods, key));
     text(open, "span", "board-cell-extra", item.extraText || "—");
+    text(open, "span", "board-cell-asof", item.asOf || "—");
+    pending.push({ item, cell: sparkCell, periodCells });
   });
   paintToken += 1;
   if (pending.length) fillSparks(document, pending, bundles, paintToken);

@@ -133,6 +133,29 @@ export function formatChange(value, unit) {
 }
 
 /* 亿美元：公司榜与资产榜的市值单位都是十亿美元。 */
+/* 绝对变化：由已发布的最新价与涨跌幅现场复算（价 − 价 ÷ (1+涨跌%)），
+   不引入第二个事实来源。涨跌缺失时不推算，留空。 */
+export function absoluteChange(price, pct) {
+  if (!isFiniteNumber(price) || !isFiniteNumber(pct) || pct === -100) return null;
+  const previous = price / (1 + pct / 100);
+  if (!Number.isFinite(previous)) return null;
+  return price - previous;
+}
+
+export function formatAbsolute(value, hint) {
+  if (!isFiniteNumber(value)) return "—";
+  const sign = value > 0 ? "+" : "";
+  return sign + formatPrice(value, hint);
+}
+
+/* 区间涨跌列（每周 / 月度 / 年初至今 / 同比）：上游已经算好的直接沿用，
+   没算的留 null，由视图按站内历史现场补——两种来源都不允许推算或前向填充。 */
+export function periodSet(returns) {
+  const source = returns && typeof returns === "object" ? returns : {};
+  const pick = (key) => (isFiniteNumber(source[key]) ? source[key] : null);
+  return { w1: pick("w1"), m1: pick("m1"), ytd: pick("ytd"), y1: pick("y1") };
+}
+
 export function formatMarketCap(billions) {
   if (!isFiniteNumber(billions)) return "";
   const yi = billions * 10;
@@ -170,6 +193,8 @@ function trackerRow(asset, categoryKey, options = {}) {
     priceText: formatPrice(asset.price, options.decimals),
     price: isFiniteNumber(asset.price) ? asset.price : null,
     change,
+    changeAbs: absoluteChange(asset.price, asset && asset.returns ? asset.returns.d1 : null),
+    periods: periodSet(asset && asset.returns),
     changeBasis: "较前一交易日收盘",
     extraText: options.extraText || "",
     asOf: formatAsOf(meta.asOf),
@@ -212,6 +237,8 @@ function referenceRow(series, categoryKey, options = {}) {
     priceText: formatPrice(series.price, options.decimals),
     price: isFiniteNumber(series.price) ? series.price : null,
     change,
+    changeAbs: absoluteChange(series.price, series.changePct),
+    periods: periodSet(series.returns),
     changeBasis: `较前一观测 ${series.previousAsOf || "—"}`,
     extraText: options.extraText || "",
     asOf: formatAsOf(series.asOf),
@@ -250,6 +277,8 @@ function curveRows(curve) {
       priceText: isFiniteNumber(tenor.value) ? `${tenor.value.toFixed(2)}%` : "—",
       price: isFiniteNumber(tenor.value) ? tenor.value : null,
       change,
+      changeAbs: null,
+      periods: periodSet(null),
       changeBasis: "较前一观测（基点）",
       extraText: tenor.label || "",
       asOf: formatAsOf(tenor.asOf || curve.asOf),
@@ -284,6 +313,8 @@ function stockRows(companies) {
         priceText: formatPrice(item.price),
         price: item.price,
         change,
+        changeAbs: absoluteChange(item.price, item.changePct),
+        periods: periodSet(item.returns),
         changeBasis: "当日价格变动",
         extraText: formatMarketCap(item.marketCap),
         asOf: formatAsOf(meta.asOf),
@@ -316,6 +347,8 @@ function cryptoBoardRows(board) {
         priceText: formatPrice(item.price),
         price: item.price,
         change: formatChange(item.changePct, "pct"),
+        changeAbs: absoluteChange(item.price, item.changePct),
+        periods: periodSet(item.returns),
         changeBasis: "过去24小时",
         extraText: formatMarketCap(item.marketCap),
         asOf: formatAsOf(meta.asOf || board.asOf),
@@ -351,6 +384,8 @@ function cryptoRows(assetRanking) {
         priceText: formatPrice(item.price),
         price: item.price,
         change,
+        changeAbs: absoluteChange(item.price, item.changePct),
+        periods: periodSet(item.returns),
         changeBasis: "过去24小时",
         extraText: formatMarketCap(item.marketCap),
         asOf: formatAsOf(meta.asOf),
@@ -419,6 +454,8 @@ function spotRows(commodities) {
         priceText: formatPrice(item.price),
         price: item.price,
         change: formatChange(item.changePct, "pct"),
+        changeAbs: absoluteChange(item.price, item.changePct),
+        periods: periodSet(item.returns),
         changeBasis: `较前一观测 ${item.previousAsOf || "—"}`,
         extraText: spotBasis(item),
         group: item.group || "",
