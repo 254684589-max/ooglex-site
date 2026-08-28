@@ -417,13 +417,13 @@ def run_asset_tracker_builder_contract_tests() -> None:
 
     universe_names = [item["name"] for item in module.ASSETS]
     universe_symbols = [_first_symbol(item) for item in module.ASSETS]
-    require(len(module.ASSETS) == 104, f"跨资产清单条数应为104，当前{len(module.ASSETS)}")
+    require(len(module.ASSETS) == 103, f"跨资产清单条数应为103，当前{len(module.ASSETS)}")
     require(len(set(universe_names)) == len(universe_names), "跨资产标的名称必须唯一")
     require(len(set(universe_symbols)) == len(universe_symbols), "跨资产首选代码必须唯一")
     categories = {}
     for item in module.ASSETS:
         categories[item["cat"]] = categories.get(item["cat"], 0) + 1
-    require(categories == {"equity": 38, "commodity": 33, "fx": 22, "bond": 11},
+    require(categories == {"equity": 38, "commodity": 32, "fx": 22, "bond": 11},
             f"跨资产四类条数与登记不一致：{categories}")
     # 2026-08-25 所有者决定：撤下QQQ代理卡后纳斯达克改由综合指数^IXIC进入指数类；
     # 道指仍由DIA免费组件展示，纳斯达克100（NDX）不再进入本站，两者都不得混进清单。
