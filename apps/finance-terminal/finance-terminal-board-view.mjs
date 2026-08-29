@@ -194,7 +194,10 @@ async function resolveSeries(reference, bundles) {
     };
   }
   if (reference.kind === "company") {
-    const history = await loadJson("../companies/history.json");
+    /* 迷你走势只画最近 60 个观测，因此读窄文件 spark.json（约190KB）而不是 500 家的
+       完整历史（约830KB）——后者多出来的 200 个点，行情板一个也不会用到。
+       完整历史按名次分片存着，行情页按 historyShard 只取自己那一片。 */
+    const history = await loadJson("../companies/spark.json");
     if (!history || !history.series || !history.series[reference.key]) return null;
     return {
       dates: history.dates || [],
@@ -499,7 +502,21 @@ function paintGroups(document, host, category, active, query, onPick) {
     text(chip, "i", "", query ? `${hits}/${entry.rows.length}` : String(entry.rows.length));
     chip.addEventListener("click", () => { onPick(entry.key === active ? "" : entry.key); });
   });
+  /* 分组条末尾挂该品类的专属视图入口。目前只有股票有——同一批公司换成按市值定面积、
+     按当日涨跌上色的方块图。这是链接不是筛选，因此不带 aria-pressed，也不参与选中态。 */
+  const extra = CATEGORY_LINK[category.key];
+  if (extra) {
+    const link = text(host, "a", "board-group-link");
+    link.href = extra.href;
+    text(link, "b", "", extra.label);
+    text(link, "i", "", extra.hint);
+  }
 }
+
+/* 品类专属视图的入口登记表。加第二个时只动这张表。 */
+const CATEGORY_LINK = Object.freeze({
+  stock: { href: "../heatmap/", label: "标普500热力图", hint: "按行业·市值" }
+});
 
 export function createBoardView(document, view) {
   const tabsHost = document.getElementById("board-tabs");

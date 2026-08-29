@@ -21,7 +21,7 @@ import json
 import os
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import requests
 
@@ -57,14 +57,83 @@ SP500_NOTE = ("标普500成分股的当日市值与涨跌，与全球公司榜�
 HEALTH_PATH = os.path.join("apps", "companies", "health.json")
 HISTORY_PATH = os.path.join("apps", "companies", "history.json")
 LONG_HISTORY_PATH = os.path.join("apps", "companies", "history-monthly.json")
+SPARK_PATH = os.path.join("apps", "companies", "spark.json")
+SPARK_NOTE = ("行情板迷你走势专用：市值前列上市公司最近 60 个交易日的收盘，"
+              "与 history 分片同一次取数、同一来源。只存行情板真正会用到的窗口——"
+              "完整的 260 个交易日在 history 分片里，行情页按 historyShard 取自己那一片。"
+              "共享日期轴上该标的当日无收盘则为 null，不做前向填充。")
+
+
+def shard_of(index):
+    """名次（从0起）落在第几片。片号从 1 起，与 data.json 里的 historyShard 一致。"""
+    return index // SHARD_SIZE + 1
+
+
+def shard_path(base, shard):
+    """第 1 片沿用原文件名，其余加 -N；老的读取方仍能直接读到第 1 片。"""
+    return base if shard == 1 else base.replace(".json", f"-{shard}.json")
+
+
+def load_all_shards(base, count):
+    """把各片的上一份历史合回一份。
+
+    公司名次天天在变，今天在第 1 片的明天可能掉到第 2 片。若只拿本片的上一份做沿用，
+    跨片移动的公司在本轮取数失败时就会丢掉全部历史。因此先合、后按新名次重新分片。
+    """
+    merged = {"dates": [], "series": {}}
+    for shard in range(1, count + 1):
+        part = load_json(shard_path(base, shard))
+        if not part:
+            continue
+        if not merged["dates"] and part.get("dates"):
+            merged["dates"] = part["dates"]
+        if part.get("dates") == merged["dates"]:
+            merged["series"].update(part.get("series") or {})
+        else:
+            # 日期轴对不齐（历史上分片规则变过）时逐条对齐，宁可慢也不能错位。
+            for symbol, values in (part.get("series") or {}).items():
+                pairs = {d: v for d, v in zip(part.get("dates") or [], values)
+                         if isinstance(v, (int, float))}
+                merged["series"][symbol] = [pairs.get(d) for d in merged["dates"]]
+    return merged if merged["series"] else {}
+
+
+def write_shards(base, history, symbols, kind):
+    """把一份完整历史按名次切片写出，并清掉不再需要的旧片。"""
+    written = 0
+    for shard in range(1, (len(symbols) - 1) // SHARD_SIZE + 2):
+        part_symbols = symbols[(shard - 1) * SHARD_SIZE: shard * SHARD_SIZE]
+        if not part_symbols:
+            break
+        part = dict(history)
+        part["series"] = {s: history["series"][s] for s in part_symbols
+                          if s in history.get("series", {})}
+        part["symbols"] = part_symbols
+        part["shard"] = shard
+        part["shardSize"] = SHARD_SIZE
+        with open(shard_path(base, shard), "w", encoding="utf-8") as handle:
+            json.dump(part, handle, ensure_ascii=False, separators=(",", ":"))
+        written += 1
+    for stale in range(written + 1, written + 6):        # 清理缩编后遗留的旧片
+        leftover = shard_path(base, stale)
+        if os.path.exists(leftover):
+            os.remove(leftover)
+            print(f"删除不再需要的旧片 {leftover}")
+    print(f"{kind}：写出 {written} 片，每片至多 {SHARD_SIZE} 家")
+    return written
 LONG_HISTORY_NOTE = ("市值前列上市公司自身的月线收盘，用于 5 年 / 10 年 / 25 年 / 全部区间的走势；"
                      "起始月即该公司在数据源上可得的最早月份。数据源对超长区间会自行降采样，"
                      "部分公司的早年只有季度末观测，缺月一律留空不做前向填充，"
                      "页面按真实时间轴作图；本轮未取到的公司沿用上次序列。")
-HISTORY_SYMBOLS = 100    # 只给市值最高的一段存日线：金融终端品类行情板按这份历史画走势。
-                         # 100 是与行情板股票行数对齐的：每一行都要画得出迷你走势，
-                         # 不能出现一半有序列、一半写「无序列」。每家约 1.7KB，100 家约 170KB，
-                         # 且这份历史只在打开股票品类时才按需加载。
+HISTORY_SYMBOLS = 500    # 存日线的家数，与行情板股票行数对齐：每一行都要画得出迷你走势、
+                         # 也都要能打开自己的走势页，不能一半有序列、一半写「无序列」。
+                         # 500 家 × 260 个交易日约 830KB，一份文件太重，因此分两路存：
+                         #   spark.json  —— 只留最近 60 个收盘（行情板画迷你走势只用这么多），
+                         #                  一份约 190KB，打开股票品类时读它；
+                         #   history-N   —— 完整 260 个交易日，按名次每 100 家一片，
+                         #                  行情页只读自己那一片（约 170KB）而不是整份。
+SHARD_SIZE = 100         # 每片家数；片号写进 data.json 逐行的 historyShard，页面据此直接取对片
+SPARK_POINTS = 60        # 与行情板迷你走势的窗口一致——多存的点页面根本不会用
 HISTORY_POINTS = 260     # 滚动保留约一年交易日，文件大小恒定而非逐日增长
 HISTORY_NOTE = ("市值前列上市公司自身收盘价的滚动历史，与 data.json 同一次取数、同一来源；"
                 "共享日期轴上该标的当日无收盘则为 null，不做前向填充。"
@@ -238,6 +307,16 @@ def yf_monthly_closes(session, symbol, rng="max"):
     return []
 
 
+def load_monthly_shards():
+    """月线各片合回一份。月线是 {start, closes} 的逐条结构，没有共享日期轴，直接并 series。"""
+    merged = {}
+    for shard in range(1, 9):
+        part = load_json(shard_path(LONG_HISTORY_PATH, shard))
+        if part and isinstance(part.get("series"), dict):
+            merged.update(part["series"])
+    return {"series": merged} if merged else {}
+
+
 def write_long_history(session, symbols, daily, run_updated_at):
     """再补一份月线长历史；失败只跳过，不影响 data.json 与日线历史。"""
     collected = {}
@@ -252,13 +331,12 @@ def write_long_history(session, symbols, daily, run_updated_at):
             collected[sym] = points
         time.sleep(0.12)
     history, retained = build_long_history(
-        collected, load_json(LONG_HISTORY_PATH), run_updated_at,
+        collected, load_monthly_shards(), run_updated_at,
         source="Yahoo Finance", note=LONG_HISTORY_NOTE)
     if not history:
-        print("月线序列本轮全部失败，保留上次 history-monthly.json（不写空数据）")
+        print("月线序列本轮全部失败，保留上次 history-monthly 分片（不写空数据）")
         return None
-    with open(LONG_HISTORY_PATH, "w", encoding="utf-8") as f:
-        json.dump(history, f, ensure_ascii=False, separators=(",", ":"))
+    write_shards(LONG_HISTORY_PATH, history, symbols, "月线历史")
     print(f"月线历史：{len(collected)}/{len(symbols)} 只本轮取到，"
           f"{len(retained)} 只沿用上次，最新月 {history['asOf']}")
     return history
@@ -275,18 +353,110 @@ def write_history(session, rows, run_updated_at):
             collected[sym] = points
         time.sleep(0.12)
     history, retained = build_rolling_history(
-        collected, load_json(HISTORY_PATH), run_updated_at,
+        collected, load_all_shards(HISTORY_PATH, 8), run_updated_at,
         source="Yahoo Finance", note=HISTORY_NOTE, limit=HISTORY_POINTS)
     if not history:
-        print("日线序列本轮全部失败，保留上次 history.json（不写空数据）")
+        print("日线序列本轮全部失败，保留上次 history 分片（不写空数据）")
         return None
     history["symbols"] = symbols
-    with open(HISTORY_PATH, "w", encoding="utf-8") as f:
-        json.dump(history, f, ensure_ascii=False, separators=(",", ":"))
+    write_shards(HISTORY_PATH, history, symbols, "日线历史")
+    write_spark(history, symbols, run_updated_at)
+    attach_returns(history, symbols)
     print(f"日线历史：{len(collected)}/{len(symbols)} 只本轮取到，"
           f"{len(retained)} 只沿用上次，共 {history['points']} 个交易日")
     write_long_history(session, symbols, collected, run_updated_at)
     return history
+
+
+def period_returns(points):
+    """由日线序列算出四档区间涨跌幅，口径与跨资产管道完全一致：
+    「最近观测」对「锚点日或之前的最后一个观测」，锚点当天没有观测就顺延到更早的一个。
+
+    这四个数由管道算而不是由页面现场算，是因为行情板的迷你走势只读最近 60 个交易日
+    的窄文件——用 60 个点算不出「年初至今」与「同比」。让页面为了两列数字去下载
+    500 家的完整历史，是本末倒置。
+    """
+    pairs = sorted((str(d), float(v)) for d, v in (points or [])
+                   if d and isinstance(v, (int, float)))
+    if len(pairs) < 2:
+        return None
+    last_date, last = pairs[-1]
+    day = datetime.strptime(last_date, "%Y-%m-%d").date()
+
+    def before(anchor):
+        chosen = None
+        for date, value in pairs:
+            if date <= anchor:
+                chosen = value
+            else:
+                break
+        return chosen
+
+    def change(base):
+        if not base:
+            return None
+        return round((last / base - 1.0) * 100, 2)
+
+    return {
+        "w1": change(before(str(day - timedelta(days=7)))),
+        "m1": change(before(str(day - timedelta(days=30)))),
+        "ytd": change(before(f"{day.year - 1}-12-31")),
+        "y1": change(before(str(day - timedelta(days=365)))),
+    }
+
+
+def write_spark(history, symbols, run_updated_at):
+    """行情板迷你走势专用的窄文件：只留最近 SPARK_POINTS 个收盘。
+
+    行情板对每一行只画最近 60 个观测，却要为此下载 260 个点的完整历史——500 家时
+    那是 830KB 换 190KB 的用量。这份文件把窗口裁到页面真正会用的宽度。
+    """
+    dates = (history.get("dates") or [])[-SPARK_POINTS:]
+    series = {}
+    for symbol in symbols:
+        values = (history.get("series") or {}).get(symbol)
+        if not isinstance(values, list):
+            continue
+        window = values[-SPARK_POINTS:]
+        if any(value is not None for value in window):
+            series[symbol] = window
+    payload = {
+        "updatedAt": run_updated_at, "source": "Yahoo Finance",
+        "frequency": "daily", "points": len(dates), "count": len(series),
+        "note": SPARK_NOTE, "dates": dates, "series": series,
+    }
+    with open(SPARK_PATH, "w", encoding="utf-8") as handle:
+        json.dump(payload, handle, ensure_ascii=False, separators=(",", ":"))
+    print(f"迷你走势：{len(series)} 家 × {len(dates)} 个交易日 → "
+          f"{os.path.getsize(SPARK_PATH) // 1024} KB")
+
+
+def attach_returns(history, symbols):
+    """把四档区间涨跌写回已经落盘的 data.json 逐行。
+
+    历史要等 data.json 写完之后才建（顺序不能反：历史失败不该拖累 data.json），
+    所以这里回头补写一次，而不是在拼行的时候算。
+    """
+    data = load_json(OUT_PATH)
+    if not data or not isinstance(data.get("companies"), list):
+        print("data.json 读不回来，跳过区间涨跌回写（不影响已写好的快照）")
+        return
+    dates = history.get("dates") or []
+    series = history.get("series") or {}
+    filled = 0
+    for row in data["companies"]:
+        symbol = row.get("symbol")
+        values = series.get(symbol) if symbol else None
+        if not isinstance(values, list):
+            continue
+        points = [(d, v) for d, v in zip(dates, values) if isinstance(v, (int, float))]
+        returns = period_returns(points)
+        if returns:
+            row["returns"] = returns
+            filled += 1
+    with open(OUT_PATH, "w", encoding="utf-8") as handle:
+        json.dump(data, handle, ensure_ascii=False, indent=2)
+    print(f"区间涨跌：{filled}/{len(symbols)} 家已写回 data.json（每周/月度/年初至今/同比）")
 
 
 def fx_to_usd(session):
@@ -462,6 +632,11 @@ def build():
     rows = listed[:TOP_N - len(private_rows)] + private_rows
     for i, r in enumerate(rows, 1):
         r["rank"] = i
+    # 逐行写上自己在第几片日线历史里。行情页据此只取自己那一片（约170KB），
+    # 而不是把 500 家的完整历史整份拉下来。名次按上市公司自己的顺序数，
+    # 不含未上市那几十家——它们本来就没有行情历史。
+    for index, row in enumerate(r for r in rows if not r.get("private")):
+        row["historyShard"] = shard_of(index) if index < HISTORY_SYMBOLS else None
 
     n_listed = len(rows) - len(private_rows)
     data_quality = summarize_data_quality(rows)

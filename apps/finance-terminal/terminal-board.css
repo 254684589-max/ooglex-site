@@ -76,6 +76,21 @@
    品类的 tabpanel，状态由 aria-pressed 表达，触控目标同样不低于44px。 */
 .board-groups { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
 .board-groups[hidden] { display: none; }
+/* 分组条末尾的品类专属视图入口。它是链接不是筛选，所以样式上与分组标签区分：
+   走强调色描边、右侧带箭头，不参与选中态。 */
+.board-group-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 44px; padding: 0 14px;
+  border: 1px solid rgba(84, 216, 255, 0.38); border-radius: 999px;
+  color: var(--cyan, #54d8ff); text-decoration: none;
+  background: rgba(84, 216, 255, 0.08);
+}
+.board-group-link:hover { border-color: var(--cyan, #54d8ff); background: rgba(84, 216, 255, 0.16); }
+.board-group-link:focus-visible { outline: 2px solid var(--cyan, #54d8ff); outline-offset: 2px; }
+.board-group-link b { font-size: 13px; font-weight: 600; }
+.board-group-link b::after { content: " →"; }
+.board-group-link i { font-style: normal; font-size: 11px; opacity: .72; }
+
 .board-group-chip {
   display: inline-flex;
   align-items: center;

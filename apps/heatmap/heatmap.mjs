@@ -12,8 +12,18 @@ import {
 } from "./heatmap-data.mjs";
 
 const DATA_PATH = "../companies/sp500.json";
-/* 瓦片小到放不下字时就不放：挤成半个字比留白更难读。阈值按实测的字号定。 */
-const MIN_W_SYMBOL = 34, MIN_H_SYMBOL = 18, MIN_H_PCT = 32;
+/* 瓦片小到放不下字时就不放：挤成半个字比留白更难读。
+   中文名一个字约等于两个拉丁字符宽，因此放名字的门槛比放代码时高一些；
+   实在放不下中文名的小格退回显示代码，再放不下就只留颜色，读数交给悬浮层与数据表。 */
+const MIN_W_NAME = 52, MIN_H_NAME = 18;
+const MIN_W_SYMBOL = 30, MIN_H_PCT = 34, MIN_W_CODE = 74, MIN_H_CODE = 52;
+
+/* 名字太长的按瓦片宽度截断——挤到溢出会盖住相邻格，比截断更难读。 */
+function fitName(name, width) {
+  const text = String(name || "");
+  const max = Math.max(2, Math.floor((width - 8) / 12));
+  return text.length <= max ? text : `${text.slice(0, max - 1)}…`;
+}
 
 /* 字号随瓦片大小走：最大的几家给到 26px，最小的仍是 10px。
    面积已经在编码市值，字号只是让大块读得清，不额外承载信息——所以按短边定，
@@ -98,14 +108,25 @@ export function renderHeatmap(document, host, sectors, box) {
         `${row.name || row.symbol}（${row.symbol}），${block.sector.label}，`
         + `市值 ${formatCap(row.marketCap)}，当日 ${formatPct(row.changePct)}`);
       cell.dataset.symbol = row.symbol;
-      if (tile.w >= MIN_W_SYMBOL && tile.h >= MIN_H_SYMBOL) {
-        const type = typeScale(tile.w, tile.h);
-        el(cell, "b", "heat-tile-symbol", row.symbol).style.fontSize = `${type.symbol}px`;
-        /* 颜色之外的第二重编码：涨跌数字带 ▲▼，放得下就一定写出来。 */
-        if (tile.h >= MIN_H_PCT) {
-          el(cell, "span", "heat-tile-pct", formatPct(row.changePct))
-            .style.fontSize = `${type.pct}px`;
-        }
+      const type = typeScale(tile.w, tile.h);
+      /* 以中文名为主：放得下就写中文名，放不下退回代码，再放不下就不写。 */
+      const label = row.name || row.nameEn || row.symbol;
+      if (tile.w >= MIN_W_NAME && tile.h >= MIN_H_NAME) {
+        el(cell, "b", "heat-tile-name", fitName(label, tile.w))
+          .style.fontSize = `${type.symbol}px`;
+      } else if (tile.w >= MIN_W_SYMBOL && tile.h >= MIN_H_NAME) {
+        el(cell, "b", "heat-tile-symbol", row.symbol)
+          .style.fontSize = `${Math.min(type.symbol, 12)}px`;
+      }
+      /* 大格再补一行代码：中文名之外，交易代码是另一条检索线索。 */
+      if (tile.w >= MIN_W_CODE && tile.h >= MIN_H_CODE) {
+        el(cell, "span", "heat-tile-symbol", row.symbol)
+          .style.fontSize = `${Math.max(9, Math.round(type.pct * 0.9))}px`;
+      }
+      /* 颜色之外的第二重编码：涨跌数字带 ▲▼，放得下就一定写出来。 */
+      if (tile.w >= MIN_W_SYMBOL && tile.h >= MIN_H_PCT) {
+        el(cell, "span", "heat-tile-pct", formatPct(row.changePct))
+          .style.fontSize = `${type.pct}px`;
       }
     });
   });

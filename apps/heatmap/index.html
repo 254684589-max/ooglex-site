@@ -77,7 +77,11 @@
     .heat-ink-dark { color: var(--tile-ink-dark); }
     .heat-tile:hover { filter: brightness(1.16); }
     .heat-tile:focus-visible { outline: 2px solid var(--cyan); outline-offset: -2px; z-index: 3; }
-    .heat-tile-symbol { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: -.02em; }
+    .heat-tile-name { font-weight: 700; letter-spacing: .01em; text-align: center; padding: 0 3px;
+      max-width: 100%; overflow: hidden; white-space: nowrap; }
+    /* 代码作为第二行：比中文名弱一档，避免和名字抢主次。 */
+    .heat-tile-symbol { font-family: var(--mono); font-size: 11px; font-weight: 700;
+      letter-spacing: -.02em; opacity: .72; }
     .heat-tile-pct { font-family: var(--mono); font-size: 10px; opacity: .92; }
     #heat-tip {
       position: absolute; z-index: 8; pointer-events: none; max-width: 300px;
@@ -122,7 +126,7 @@
     </nav>
     <p class="eyebrow">S&amp;P 500 HEATMAP</p>
     <h1>标普500热力图</h1>
-    <p class="lede">按行业分块，每块的面积正比于该公司的市值，颜色是它当日的涨跌。每块瓦片上同时写出带 ▲▼ 的涨跌数字，另有图例与完整数据表——颜色不是唯一的编码方式。点开任一块即是该公司的完整行情页。</p>
+    <p class="lede">按行业分块，每块的面积正比于该公司的市值，颜色是它当日的涨跌。方格以中文公司名标注，放得下的大格再补上交易代码。每块瓦片上同时写出带 ▲▼ 的涨跌数字，另有图例与完整数据表——颜色不是唯一的编码方式。点开任一块即是该公司的完整行情页。</p>
 
     <div class="stats">
       <div class="stat"><span>覆盖成分股</span><b id="stat-count">…</b></div>

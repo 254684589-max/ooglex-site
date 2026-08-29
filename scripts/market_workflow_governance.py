@@ -79,6 +79,20 @@ DATASET_RULES = {
             "apps/companies/health.json",
             "apps/companies/history.json",
             "apps/companies/history-monthly.json",
+            # 完整历史按市值名次每 100 家一片。片数随家数变化，这里按上限登记；
+            # 缩编时管道会自己删掉多余的片，删除同样要在授权范围内才暂存得了。
+            "apps/companies/history-2.json",
+            "apps/companies/history-3.json",
+            "apps/companies/history-4.json",
+            "apps/companies/history-5.json",
+            "apps/companies/history-6.json",
+            "apps/companies/history-monthly-2.json",
+            "apps/companies/history-monthly-3.json",
+            "apps/companies/history-monthly-4.json",
+            "apps/companies/history-monthly-5.json",
+            "apps/companies/history-monthly-6.json",
+            # 行情板迷你走势专用的窄文件（只留最近60个交易日）
+            "apps/companies/spark.json",
             # 标普500快照与公司榜同一次取数、同一条管道产出，因此归它所有；
             # 热力图页面只读这一个文件，不另开一条管道重复取五百只股票。
             "apps/companies/sp500.json",

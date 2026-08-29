@@ -13,11 +13,10 @@ export const BOARD_CATEGORIES = Object.freeze([
     directionLabels: { up: "上行", down: "下行" } }
 ]);
 
-/* 股票只取市值最高的一段：与公司榜日线历史覆盖的标的数一致，让每一行都能画走势；
-   全部500家仍在全球公司榜页面完整展示，标普500成分另有热力图页面。
-   100 与管道里的 HISTORY_SYMBOLS 是同一个数——两处必须一致，否则后面几十行会
-   显示「无序列」。契约里钉住了这一点。 */
-export const STOCK_ROW_LIMIT = 100;
+/* 股票取到公司榜里全部有行情的上市公司：每一行都要画得出迷你走势、也都要能打开
+   自己的走势页。500 与管道里的 HISTORY_SYMBOLS 是同一个数——两处必须一致，否则
+   后面几百行会显示「无序列」。契约里跨语言钉住了这一点。 */
+export const STOCK_ROW_LIMIT = 500;
 
 /* 指数所属地区只用于分组说明，不参与任何计算。 */
 const INDEX_REGION = Object.freeze({
@@ -46,6 +45,24 @@ const INDEX_REGION = Object.freeze({
   "^HSCE": "中国香港", "^TASI.SR": "沙特", "^AORD": "澳大利亚",
   "^AXKO": "澳大利亚", "^J203.JO": "南非"
 });
+
+/* 股票品类下的二级分组：按行业。分组名直接用上游 data.json 里逐行的 sector，
+   顺序按标普/GICS 的惯用次序固定写死——按当天的家数排会让标签位置天天变，
+   读者刚记住「金融在第二个」，第二天就不是了。 */
+export const STOCK_GROUPS = Object.freeze([
+  { key: "科技", label: "科技", labelEn: "Technology" },
+  { key: "金融", label: "金融", labelEn: "Financials" },
+  { key: "工业", label: "工业", labelEn: "Industrials" },
+  { key: "医疗健康", label: "医疗健康", labelEn: "Health Care" },
+  { key: "可选消费", label: "可选消费", labelEn: "Consumer Discretionary" },
+  { key: "必需消费", label: "必需消费", labelEn: "Consumer Staples" },
+  { key: "通信服务", label: "通信服务", labelEn: "Communication Services" },
+  { key: "能源", label: "能源", labelEn: "Energy" },
+  { key: "公用事业", label: "公用事业", labelEn: "Utilities" },
+  { key: "原材料", label: "原材料", labelEn: "Materials" },
+  { key: "房地产", label: "房地产", labelEn: "Real Estate" },
+  { key: "other", label: "其他", labelEn: "Other" }
+]);
 
 /* 指数品类下的二级分组：按地区。分区沿用参考站自己的划分（美洲/欧洲/亚洲/大洋洲/非洲），
    不另立「中东」——参考站把以色列、海湾各国都放在亚洲，自己再划一条线只会和它对不上。 */
@@ -121,12 +138,16 @@ const COMMODITY_GROUP = Object.freeze({
    加第三个分组品类时只动这张表，不必再在 groupKeyOf 里加一条 if。 */
 const GROUP_REGISTRY = Object.freeze({
   commodity: { groups: COMMODITY_GROUPS, bySymbol: COMMODITY_GROUP },
-  index: { groups: INDEX_GROUPS, bySymbol: INDEX_GROUP }
+  index: { groups: INDEX_GROUPS, bySymbol: INDEX_GROUP },
+  /* 股票没有逐代码登记表：行业由上游逐行声明（data.json 的 sector），
+     声明的组名必须是上面登记过的，否则一律落进「其他」。 */
+  stock: { groups: STOCK_GROUPS, bySymbol: {} }
 });
 
 export const GROUPS_BY_CATEGORY = Object.freeze({
   commodity: COMMODITY_GROUPS,
-  index: INDEX_GROUPS
+  index: INDEX_GROUPS,
+  stock: STOCK_GROUPS
 });
 
 /* 分组来源有两处：期货那条管道按代码查登记表；商品现货管道自己就带 group 字段
@@ -394,6 +415,7 @@ function stockRows(companies) {
         proxyOf: "",
         currency: item.priceCur || "",
         unit: item.priceCur || "",
+        group: item.sector || "",
         series: { kind: "company", key: item.symbol }
       };
     });
@@ -586,7 +608,7 @@ function categoryRows(key, sources) {
       extraText: INDEX_REGION[asset.symbol] || ""
     })), "index");
   }
-  if (key === "stock") return stockRows(companies);
+  if (key === "stock") return withGroups(stockRows(companies), "stock");
   if (key === "fx") {
     const rows = trackerAssets(assetTracker, "fx").map((asset) => trackerRow(asset, "fx", {
       decimals: Math.abs(Number(asset.price)) >= 100 ? 3 : 4,

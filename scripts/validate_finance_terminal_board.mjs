@@ -10,6 +10,7 @@ import {
   BOARD_CATEGORIES,
   COMMODITY_GROUPS,
   INDEX_GROUPS,
+  STOCK_GROUPS,
   STOCK_ROW_LIMIT,
   buildBoard,
   absoluteChange,
@@ -285,7 +286,7 @@ function validateCalibration(board) {
     "加密涨跌是24小时口径，必须与股票当日口径分开标注");
   assert.ok(bond.rows.some((row) => row.change.text.endsWith("bp")),
     "美债收益率必须按基点显示，不得用百分比相对变化冒充");
-  assert.equal(STOCK_ROW_LIMIT, 100, "股票行数改动是有意的才该发生（同步值由 Python 侧跨语言校验）");
+  assert.equal(STOCK_ROW_LIMIT, 500, "股票行数改动是有意的才该发生（同步值由 Python 侧跨语言校验）");
   assert.ok(stock.rows.length <= STOCK_ROW_LIMIT);
   assert.ok(stock.rows.every((row) => row.series && row.series.kind === "company"),
     "股票行必须指向公司榜日线历史");
@@ -522,6 +523,38 @@ function validateIndexGroups(board) {
     "没有登记分组表的品类不得返回分组");
 }
 
+/* 股票按行业分组。与商品/指数不同，股票没有逐代码登记表——行业由上游逐行声明，
+   因此这里守的是「声明的组名必须已登记」与「没登记的落进其他而不是凭空造组」。 */
+function validateStockGroups(board) {
+  const stock = categoryOf(board, "stock");
+  const registered = STOCK_GROUPS.map((group) => group.key);
+
+  assert.ok(stock.groups.length >= 5, "股票品类应分出多个行业组");
+  stock.rows.forEach((row) => {
+    assert.ok(registered.includes(row.group), `${row.name} 的行业 ${row.group} 未登记`);
+  });
+
+  /* 分组连续成段，段序与登记顺序一致——分组条是按段读的。 */
+  const seen = [];
+  stock.rows.forEach((row) => {
+    if (seen[seen.length - 1] !== row.group) seen.push(row.group);
+  });
+  assert.equal(seen.length, new Set(seen).size, "同一行业的行必须连续，不得被别的行业隔开");
+  assert.deepEqual(seen, registered.filter((key) => seen.includes(key)),
+    "行业在列表里的先后必须与登记顺序一致");
+  assert.equal(stock.groups.reduce((sum, group) => sum + group.count, 0), stock.rows.length,
+    "行业计数之和必须等于股票品类的行数");
+
+  /* 上游声明了没登记的行业名时落进「其他」，不得按名字凭空造出一个分组。 */
+  assert.equal(groupKeyOf("stock", "X", "不存在的行业"), "other",
+    "未登记的行业名必须落进「其他」");
+  assert.equal(groupKeyOf("stock", "X", "科技"), "科技", "已登记的行业名按声明归组");
+  assert.equal(groupKeyOf("stock", "X", ""), "other", "没有声明行业的落进「其他」");
+  /* 行业顺序写死，不随当天家数变——读者刚记住位置，第二天就不该变。 */
+  assert.equal(STOCK_GROUPS[0].key, "科技");
+  assert.equal(STOCK_GROUPS[STOCK_GROUPS.length - 1].key, "other");
+}
+
 /* 4 小时线：这一层唯一容易出错的地方是「把没有的东西画出来」和「把聚合说成原生」。
    前者靠 hourlyPoints 丢弃缺观测、靠区间按天数裁剪来守；后者靠页面披露来守，
    披露文案在 quote.html 之外没有第二处，这里只钉数据侧的行为。 */
@@ -605,11 +638,11 @@ function validateCommodityGroups(board) {
     "分组计数之和必须等于该品类的行数：不得有行落在所有分组之外");
   /* 目前只有商品与指数分了二级组；其余四类没登记分组表，必须返回空数组而不是
      凭空生成分组条。加第三个分组品类时改这里的名单，不改断言的形状。 */
-  const GROUPED = ["commodity", "index"];
+  const GROUPED = ["commodity", "index", "stock"];
   board.categories.filter((category) => !GROUPED.includes(category.key)).forEach((category) => {
     assert.deepEqual(category.groups, [], `${category.label}尚未分组，不得凭空生成分组条`);
   });
-  assert.deepEqual(groupSummary("stock", [{ group: "energy" }]), [],
+  assert.deepEqual(groupSummary("fx", [{ group: "energy" }]), [],
     "没有登记分组的品类一律返回空数组");
 
   /* 口径列按工具本身取值：期货、官方现货序列与基金份额价格是三种东西。 */
@@ -655,7 +688,12 @@ function validateCommodityGroups(board) {
     "重排必须按组序，且同组内保持上游顺序");
   assert.deepEqual(after.map((row) => row.price), [2, 1, 3], "重排不得改动任何一行的数值");
   assert.deepEqual(before.map((row) => row.symbol), ["GC=F", "CL=F", "SI=F"], "不得就地改写入参");
-  assert.deepEqual(withGroups(before, "stock"), before, "未分组的品类原样返回");
+  assert.deepEqual(withGroups(before, "fx"), before, "未分组的品类原样返回");
+  /* 股票现在也分组了：它按上游声明的行业归组，且同样不得就地改写入参。 */
+  const stockIn = [{ symbol: "A", sector: "金融", group: "金融" }, { symbol: "B", group: "科技" }];
+  const stockOut = withGroups(stockIn, "stock");
+  assert.deepEqual(stockOut.map((row) => row.symbol), ["B", "A"], "股票按登记的行业次序重排");
+  assert.deepEqual(stockIn.map((row) => row.symbol), ["A", "B"], "不得就地改写入参");
 }
 
 /* 新增的五列：绝对变化必须能由已发布的价与涨跌幅复算，区间涨跌必须要么来自上游、
@@ -742,6 +780,7 @@ async function main() {
   validateQuoteLinks(board);
   validateFourHourSeries();
   validateIndexGroups(board);
+  validateStockGroups(board);
   await validateFailureIsolation(group);
   validateStaleAndMissing(group);
   const counts = board.categories.map((category) => `${category.label}${category.rows.length}`).join(" · ");
@@ -760,6 +799,8 @@ async function main() {
   console.log("- extra columns: reproducible absolute change / period returns / no weekly on monthly: PASS");
   console.log(`- index sub-groups by region, every row registered, counts reproducible: ${
     categoryOf(board, "index").groups.map((g) => g.label + g.count).join(" · ")}`);
+  console.log(`- stock sub-groups by sector, every row registered: ${
+    categoryOf(board, "stock").groups.map((g) => g.label + g.count).join(" · ")}`);
   console.log("- four-hour layer: UTC-labelled buckets / gaps dropped / day-window slicing / distinct range keys: PASS");
 }
 

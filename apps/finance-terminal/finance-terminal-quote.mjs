@@ -23,10 +23,13 @@ const KIND_SOURCES = Object.freeze({
     daily: "../asset-tracker/history.json",
     monthly: "../asset-tracker/history-monthly.json"
   },
+  /* 公司的完整历史按市值名次每 100 家一片；逐行的 historyShard 指明在第几片。
+     行情页只取自己那一片（约170KB），不把 500 家的整份历史拉下来。 */
   company: {
     data: "../companies/data.json",
     daily: "../companies/history.json",
-    monthly: "../companies/history-monthly.json"
+    monthly: "../companies/history-monthly.json",
+    sharded: true
   },
   crypto: { data: "../asset-ranking/crypto.json" },
   curve: { data: "../macro-radar/curve.json", monthly: "../macro-radar/curve-monthly.json" },
@@ -90,6 +93,14 @@ export function readQuery(search) {
     kind: Object.prototype.hasOwnProperty.call(KIND_SOURCES, kind) ? kind : "",
     range: ALL_RANGES.some((entry) => entry.key === range) ? range : ""
   };
+}
+
+/* 纯函数：按片号改写历史文件路径。第 1 片沿用原文件名，其余加 -N，与管道一致。
+   片号缺失或不是大于 1 的整数时退回第 1 片：宁可多取一片取不到，也不要拼出乱路径。 */
+export function shardPath(path, shard) {
+  const index = Number(shard);
+  if (!Number.isInteger(index) || index <= 1) return path;
+  return path.replace(/\.json$/, `-${index}.json`);
 }
 
 /* 纯函数：把「共享日期轴 + 逐标的列」的日线历史取成点序列，null 直接丢弃不补。 */
@@ -253,6 +264,8 @@ function companyInstrument(data, symbol) {
     status: row.stale ? "stale" : (meta.status || "ok"),
     note: meta.note || "",
     proxyOf: "",
+    /* 完整历史按市值名次分片存放，这一行落在第几片由管道写在 data.json 里。 */
+    historyShard: row.historyShard,
     extra: [["市值", formatMarketCap(row.marketCap) || "—"], ["榜内排名", row.rank ? `第 ${row.rank} 位` : "—"]]
   };
 }
@@ -398,7 +411,8 @@ export async function loadInstrument(kind, symbol) {
        因此这里如实返回空，长端区间读月线那一支。日频/周频序列两个桶都有，八档都能开。 */
     if (kind === "commodity" && instrument.grain === "monthly") return [];
     try {
-      const file = await loadJson(paths.daily);
+      const file = await loadJson(
+        paths.sharded ? shardPath(paths.daily, instrument.historyShard) : paths.daily);
       if (kind === "commodity") return dailyPoints(file.daily, seriesKey);
       if (kind === "macro") {
         const entry = file.series ? file.series[symbol] : null;
@@ -412,7 +426,8 @@ export async function loadInstrument(kind, symbol) {
   const monthlyTask = (async () => {
     if (!paths.monthly) return [];
     try {
-      const file = await loadJson(paths.monthly);
+      const file = await loadJson(
+        paths.sharded ? shardPath(paths.monthly, instrument.historyShard) : paths.monthly);
       /* 长端区间一律读月频桶：月频序列本来就在那里，日频序列另有一份官方月末聚合。
          桶里没有这条序列就返回空，长端几档自然禁用——不拿日线冒充月线。 */
       if (kind === "commodity") return monthlyPointsFromAxis(file.monthly, seriesKey);
