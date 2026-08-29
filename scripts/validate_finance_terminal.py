@@ -54,6 +54,7 @@ REFERENCE_HOME_V2_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference
 REFERENCE_HOME_V3_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-home-v3.css"
 REFERENCE_HOME_V4_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-home-v4.css"
 REFERENCE_HOME_V5_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-home-v5.css"
+REFERENCE_HOME_V6_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-home-v6.css"
 COMMAND_CENTER_CSS = ROOT / "apps" / "finance-terminal" / "terminal-command-center.css"
 COMMAND_CENTER_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-command-center.mjs"
 AURORA_HOME_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-aurora-home.mjs"
@@ -2884,6 +2885,7 @@ def main() -> None:
     reference_home_v3_css = REFERENCE_HOME_V3_CSS.read_text(encoding="utf-8")
     reference_home_v4_css = REFERENCE_HOME_V4_CSS.read_text(encoding="utf-8")
     reference_home_v5_css = REFERENCE_HOME_V5_CSS.read_text(encoding="utf-8")
+    reference_home_v6_css = REFERENCE_HOME_V6_CSS.read_text(encoding="utf-8")
     vision_css = VISION_CSS.read_text(encoding="utf-8")
     command_center_css = COMMAND_CENTER_CSS.read_text(encoding="utf-8")
     reference_fidelity_css = REFERENCE_FIDELITY_CSS.read_text(encoding="utf-8")
@@ -2931,10 +2933,12 @@ def main() -> None:
     require(CURVE_VIEW_MODULE.stat().st_size <= 9_000, "金融终端收益率曲线抽屉模块超过9KB性能预算")
     require(CORRELATION_VIEW_MODULE.stat().st_size <= 15_000,
             "金融终端相关性矩阵抽屉模块超过15KB性能预算")
-    require(GLOBE_MODULE.stat().st_size <= 8_000, "金融终端地球动画模块超过8KB性能预算")
-    # 正射纹理以520px为上限并缓存旋转结果；四邻域对比只增强原图真实城市灯光。
-    require(GLOBE_TEXTURE_MODULE.stat().st_size <= 5_800,
-            "金融终端正射地球纹理模块超过5.8KB性能预算")
+    # v6把极光、前后景轨道和七条示意连接直接合成进同一画布，避免CSS容器裁掉光冠；
+    # 新增绘制仍沿用同一个requestAnimationFrame，不增加资源请求或数据管道。
+    require(GLOBE_MODULE.stat().st_size <= 15_600, "金融终端地球动画模块超过15.6KB性能预算")
+    # 正射纹理以700px为上限并缓存旋转结果；四邻域对比只增强原图真实城市灯光。
+    require(GLOBE_TEXTURE_MODULE.stat().st_size <= 6_000,
+            "金融终端正射地球纹理模块超过6KB性能预算")
     require(ORBIT_LINKS_MODULE.stat().st_size <= 4_000, "金融终端市场连线模块超过4KB性能预算")
     # 三张入口卡现共同镜像跨资产、宏观与经济日历快照；多出的解析只在risk组就绪后按需加载。
     require(GATEWAY_PREVIEW_MODULE.stat().st_size <= 14_000, "金融终端三工作区预览模块超过14KB性能预算")
@@ -2964,6 +2968,9 @@ def main() -> None:
     # v5补回入口卡真实表格、曲线、事件与异动密度，并封住宽屏装饰造成的根横向滚动。
     require(REFERENCE_HOME_V5_CSS.stat().st_size <= 20_500,
             "金融终端参考丰富度样式超过20.5KB性能预算")
+    # v6只在桌面总览增加地球空间层与三工作区各自的仪表纹理，移动端仍沿用独立布局。
+    require(REFERENCE_HOME_V6_CSS.stat().st_size <= 10_500,
+            "金融终端地球空间精修样式超过10.5KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
     # HUD只把既有已校验状态压缩为中文短标签与等价覆盖率百分比，不引入第二套数据。
     require(AURORA_HOME_MODULE.stat().st_size <= 4_200, "金融终端极光首页同步模块超过4.2KB性能预算")
@@ -3151,9 +3158,13 @@ def main() -> None:
             and '<link rel="stylesheet" href="terminal-reference-home-v3.css">' in page
             and '<link rel="stylesheet" href="terminal-reference-home-v4.css">' in page
             and '<link rel="stylesheet" href="terminal-reference-home-v5.css">' in page
+            and '<link rel="stylesheet" href="terminal-reference-home-v6.css">' in page
             and 'body[data-terminal-view="overview"] .market-globe-shell' in reference_home_v4_css
             and 'html[data-finance-terminal-page]' in reference_home_v5_css
             and 'overflow-x: clip' in reference_home_v5_css
+            and 'v6-orbit-turn' in reference_home_v6_css
+            and 'width: min(36vw, 650px)' in reference_home_v6_css
+            and '.aurora-macro-preview::before' in reference_home_v6_css
             and '@media (max-width: 620px)' in reference_home_v3_css
             and 'aria-hidden' in page,
             "参考首页精修层缺少样式引用、单屏地球定位或独立窄屏规则")

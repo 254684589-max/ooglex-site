@@ -21,7 +21,7 @@ function makeCanvas(ctx, width, height) {
 }
 
 function prepareSource(ctx, image) {
-  const width = Math.min(1024, image.naturalWidth);
+  const width = Math.min(1536, image.naturalWidth);
   const height = Math.round(width / 2);
   const canvas = makeCanvas(ctx, width, height);
   const source = canvas?.getContext?.("2d", { willReadFrequently: true });
@@ -35,7 +35,7 @@ function prepareSource(ctx, image) {
 }
 
 function prepareTarget(ctx, diameter) {
-  const size = Math.max(280, Math.min(520, Math.round(diameter)));
+  const size = Math.max(320, Math.min(700, Math.round(diameter)));
   const canvas = makeCanvas(ctx, size, size);
   const target = canvas?.getContext?.("2d");
   if (!target) return null;
@@ -70,8 +70,8 @@ function renderOrthographic(state, centerLongitude) {
       const sourceY = Math.min(sourceHeight - 1,
         Math.max(0, Math.round((90 - latitude) / 180 * (sourceHeight - 1))));
       const input = (sourceY * sourceWidth + sourceX) * 4;
-      const edgeShade = .43 + depth * .57;
-      const northLight = Math.max(0, .26 - screenY * .14) * depth;
+      const edgeShade = .38 + depth * .68;
+      const northLight = Math.max(0, .29 - screenY * .16) * depth;
       const luminance = pixels[input] * .27 + pixels[input + 1] * .58 + pixels[input + 2] * .15;
       const leftX = Math.max(0, sourceX - 2);
       const rightX = Math.min(sourceWidth - 1, sourceX + 2);
@@ -87,16 +87,16 @@ function renderOrthographic(state, centerLongitude) {
         + pixels[upper] * .27 + pixels[upper + 1] * .58 + pixels[upper + 2] * .15
         + pixels[lower] * .27 + pixels[lower + 1] * .58 + pixels[lower + 2] * .15
       ) / 4;
-      const sparkle = Math.max(0, luminance - localAverage - 1.8) ** 1.22;
+      const sparkle = Math.max(0, luminance - localAverage - 1.4) ** 1.24;
       const warmLight = Math.max(0,
-        Math.min(pixels[input], pixels[input + 1]) - pixels[input + 2] * .7 - 7) ** 1.13;
-      const citySparkle = sparkle * Math.min(1, warmLight / 26);
+        Math.min(pixels[input], pixels[input + 1]) - pixels[input + 2] * .68 - 5) ** 1.15;
+      const citySparkle = sparkle * Math.min(1, warmLight / 22);
       output[out] = Math.min(255,
-        pixels[input] * edgeShade * .8 + northLight * 18 + warmLight * 2.6 + citySparkle * 2.6);
+        pixels[input] * edgeShade * .88 + northLight * 20 + warmLight * 3.15 + citySparkle * 3.5);
       output[out + 1] = Math.min(255,
-        pixels[input + 1] * edgeShade * .82 + northLight * 31 + warmLight * 2.25 + citySparkle * 2.3);
+        pixels[input + 1] * edgeShade * .91 + northLight * 35 + warmLight * 2.75 + citySparkle * 3.15);
       output[out + 2] = Math.min(255,
-        pixels[input + 2] * (edgeShade + .02) * .9 + northLight * 53 + warmLight * .95 + citySparkle * 1.4);
+        pixels[input + 2] * (edgeShade + .03) * .98 + northLight * 62 + warmLight * 1.08 + citySparkle * 1.75);
       output[out + 3] = 255;
     }
   }
@@ -108,7 +108,7 @@ export function drawEarthTexture(ctx, image, cx, cy, radius, centerLongitude) {
   if (!image?.naturalWidth) return false;
   let state = CACHE.get(ctx);
   const diameter = radius * 2;
-  const desiredSize = Math.max(280, Math.min(520, Math.round(diameter)));
+  const desiredSize = Math.max(320, Math.min(700, Math.round(diameter)));
   if (!state || state.image !== image || state.target.size !== desiredSize) {
     const source = prepareSource(ctx, image);
     const target = prepareTarget(ctx, diameter);
@@ -116,7 +116,7 @@ export function drawEarthTexture(ctx, image, cx, cy, radius, centerLongitude) {
     state = { image, source, target, longitude: Number.NaN };
     CACHE.set(ctx, state);
   }
-  if (!Number.isFinite(state.longitude) || angularDistance(state.longitude, centerLongitude) >= .32) {
+  if (!Number.isFinite(state.longitude) || angularDistance(state.longitude, centerLongitude) >= .42) {
     renderOrthographic(state, centerLongitude);
   }
 
@@ -124,15 +124,17 @@ export function drawEarthTexture(ctx, image, cx, cy, radius, centerLongitude) {
   ctx.beginPath();
   ctx.arc(cx, cy, radius, 0, Math.PI * 2);
   ctx.clip();
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
   ctx.drawImage(state.target.canvas, cx - radius, cy - radius, diameter, diameter);
 
   const atmosphere = ctx.createRadialGradient(
     cx - radius * .38, cy - radius * .42, radius * .04, cx, cy, radius * 1.06
   );
-  atmosphere.addColorStop(0, "rgba(92,192,255,.14)");
-  atmosphere.addColorStop(.46, "rgba(20,105,174,.045)");
-  atmosphere.addColorStop(.8, "rgba(0,7,20,.08)");
-  atmosphere.addColorStop(1, "rgba(0,2,10,.44)");
+  atmosphere.addColorStop(0, "rgba(118,207,255,.18)");
+  atmosphere.addColorStop(.43, "rgba(29,119,190,.055)");
+  atmosphere.addColorStop(.78, "rgba(0,7,20,.06)");
+  atmosphere.addColorStop(1, "rgba(0,2,10,.4)");
   ctx.fillStyle = atmosphere;
   ctx.fillRect(cx - radius, cy - radius, diameter, diameter);
   ctx.restore();

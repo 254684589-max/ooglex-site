@@ -4,7 +4,7 @@ import {
   deriveRegionalHeatmap
 } from "../apps/finance-terminal/finance-terminal-visuals.mjs";
 import { deriveRiskRadar } from "../apps/finance-terminal/finance-terminal-risk-radar.mjs";
-import { textureCoordinate } from "../apps/finance-terminal/finance-terminal-globe.mjs";
+import { greatCirclePoint, textureCoordinate } from "../apps/finance-terminal/finance-terminal-globe.mjs";
 import { regionAt } from "../apps/finance-terminal/finance-terminal-worldmap.mjs";
 import { sessionState } from "../apps/finance-terminal/finance-terminal-sessions.mjs";
 import { sanitizeSymbol, normalizeList, toggleSymbol, orderByWatchlist, describeFilter, createWatchlistStore }
@@ -113,6 +113,14 @@ assert.equal(deriveRiskRadar([{ regimeSignals: [{ key: "realrate", score: 11 }] 
 assert.equal(textureCoordinate(0, 0), .5, "地球中央经线必须映射到纹理中央");
 assert.equal(textureCoordinate(0, 1), .75, "地球右侧边缘必须映射到东经90度");
 assert.equal(textureCoordinate(0, -1), .25, "地球左侧边缘必须映射到西经90度");
+const routeStart = [40.7128, -74.006], routeEnd = [51.5072, -.1276];
+const routeMidpoint = greatCirclePoint(routeStart, routeEnd, .5);
+assert.ok(Math.abs(greatCirclePoint(routeStart, routeEnd, 0).latitude - routeStart[0]) < 1e-6,
+  "示意连接起点必须落在真实枢纽坐标");
+assert.ok(Math.abs(greatCirclePoint(routeStart, routeEnd, 1).longitude - routeEnd[1]) < 1e-6,
+  "示意连接终点必须落在真实枢纽坐标");
+assert.ok(routeMidpoint.latitude > 50 && routeMidpoint.longitude > -45 && routeMidpoint.longitude < -25,
+  "纽约至伦敦的示意连接必须沿球面大圆向北拱起，而不是屏幕直线");
 
 
 /* 交易时段：纯日历推导，覆盖盘中、午休、盘前、收盘、周末与未知时区。 */
