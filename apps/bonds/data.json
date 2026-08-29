@@ -1,0 +1,741 @@
+{
+  "updatedAt": "2026-08-29T10:52:03Z",
+  "asOf": "2026-08-27",
+  "frequency": "mixed",
+  "status": "ok",
+  "source": "FRED (OECD Main Economic Indicators) / ECB Data Portal",
+  "note": "各国十年期国债收益率：主来源为 FRED 转发的 OECD《主要经济指标》长期国债收益率（月频），欧元区口径与罗马尼亚取自欧洲央行数据门户。除欧元区 AAA 曲线一条为日频外，其余全部为月频——涨跌一律是相对该序列自己上一观测的基点变化，不是当日变动，也不与美债收益率曲线的日频口径混用。收益率是年化百分数，不是债券价格。仅供参考，非投资建议。",
+  "count": 35,
+  "series": [
+    {
+      "id": "IRLTLT01USM156N",
+      "name": "美国10年期国债",
+      "nameEn": "United States",
+      "region": "americas",
+      "unit": "年化收益率",
+      "note": "与站内美债收益率曲线的10年期是同一条资产的两个口径：曲线那条是日频，这条是 OECD 月频",
+      "price": 4.47,
+      "changeBp": -1.0,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly",
+        "note": "与站内美债收益率曲线的10年期是同一条资产的两个口径：曲线那条是日频，这条是 OECD 月频"
+      }
+    },
+    {
+      "id": "IRLTLT01CAM156N",
+      "name": "加拿大10年期国债",
+      "nameEn": "Canada",
+      "region": "americas",
+      "unit": "年化收益率",
+      "price": 3.42,
+      "changeBp": -12.2,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01MXM156N",
+      "name": "墨西哥10年期国债",
+      "nameEn": "Mexico",
+      "region": "americas",
+      "unit": "年化收益率",
+      "price": 9.45,
+      "changeBp": 57.0,
+      "previousAsOf": "2026-04-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-05-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01CLM156N",
+      "name": "智利10年期国债",
+      "nameEn": "Chile",
+      "region": "americas",
+      "unit": "年化收益率",
+      "price": 5.52,
+      "changeBp": -5.0,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01GBM156N",
+      "name": "英国10年期国债",
+      "nameEn": "United Kingdom",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 4.796,
+      "changeBp": -14.6,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01DEM156N",
+      "name": "德国10年期国债",
+      "nameEn": "Germany",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 2.97,
+      "changeBp": -7.6,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01FRM156N",
+      "name": "法国10年期国债",
+      "nameEn": "France",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 3.68,
+      "changeBp": -6.0,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01ITM156N",
+      "name": "意大利10年期国债",
+      "nameEn": "Italy",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 3.734,
+      "changeBp": -10.5,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01ESM156N",
+      "name": "西班牙10年期国债",
+      "nameEn": "Spain",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 3.4212,
+      "changeBp": -6.1,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01NLM156N",
+      "name": "荷兰10年期国债",
+      "nameEn": "Netherlands",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 3.077,
+      "changeBp": -8.8,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01BEM156N",
+      "name": "比利时10年期国债",
+      "nameEn": "Belgium",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 3.51,
+      "changeBp": -9.0,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01ATM156N",
+      "name": "奥地利10年期国债",
+      "nameEn": "Austria",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 3.2074,
+      "changeBp": -9.1,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01CHM156N",
+      "name": "瑞士10年期国债",
+      "nameEn": "Switzerland",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 0.31,
+      "changeBp": -13.0,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01SEM156N",
+      "name": "瑞典10年期国债",
+      "nameEn": "Sweden",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 2.7807,
+      "changeBp": 3.6,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01NOM156N",
+      "name": "挪威10年期国债",
+      "nameEn": "Norway",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 4.2027,
+      "changeBp": -12.7,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01DKM156N",
+      "name": "丹麦10年期国债",
+      "nameEn": "Denmark",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 2.807,
+      "changeBp": -7.3,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01FIM156N",
+      "name": "芬兰10年期国债",
+      "nameEn": "Finland",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 3.3107,
+      "changeBp": -8.8,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01IEM156N",
+      "name": "爱尔兰10年期国债",
+      "nameEn": "Ireland",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 3.1264,
+      "changeBp": -12.1,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01PTM156N",
+      "name": "葡萄牙10年期国债",
+      "nameEn": "Portugal",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 3.33,
+      "changeBp": -9.0,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01GRM156N",
+      "name": "希腊10年期国债",
+      "nameEn": "Greece",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 3.65,
+      "changeBp": -10.0,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01LUM156N",
+      "name": "卢森堡10年期国债",
+      "nameEn": "Luxembourg",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 3.188,
+      "changeBp": -7.9,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01PLM156N",
+      "name": "波兰10年期国债",
+      "nameEn": "Poland",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 5.51,
+      "changeBp": -23.0,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01CZM156N",
+      "name": "捷克10年期国债",
+      "nameEn": "Czechia",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 4.7005,
+      "changeBp": -18.5,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01HUM156N",
+      "name": "匈牙利10年期国债",
+      "nameEn": "Hungary",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 5.26,
+      "changeBp": -39.0,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01SKM156N",
+      "name": "斯洛伐克10年期国债",
+      "nameEn": "Slovakia",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 3.6233,
+      "changeBp": 11.1,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01SIM156N",
+      "name": "斯洛文尼亚10年期国债",
+      "nameEn": "Slovenia",
+      "region": "europe",
+      "unit": "年化收益率",
+      "price": 3.36,
+      "changeBp": -11.0,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01JPM156N",
+      "name": "日本10年期国债",
+      "nameEn": "Japan",
+      "region": "asia",
+      "unit": "年化收益率",
+      "price": 2.67,
+      "changeBp": 2.0,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01KRM156N",
+      "name": "韩国10年期国债",
+      "nameEn": "South Korea",
+      "region": "asia",
+      "unit": "年化收益率",
+      "price": 4.181,
+      "changeBp": 10.6,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01ILM156N",
+      "name": "以色列10年期国债",
+      "nameEn": "Israel",
+      "region": "asia",
+      "unit": "年化收益率",
+      "price": 3.81,
+      "changeBp": -17.0,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01AUM156N",
+      "name": "澳大利亚10年期国债",
+      "nameEn": "Australia",
+      "region": "oceania",
+      "unit": "年化收益率",
+      "price": 4.831,
+      "changeBp": -15.1,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01NZM156N",
+      "name": "新西兰10年期国债",
+      "nameEn": "New Zealand",
+      "region": "oceania",
+      "unit": "年化收益率",
+      "price": 4.46,
+      "changeBp": -22.0,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "IRLTLT01ZAM156N",
+      "name": "南非10年期国债",
+      "nameEn": "South Africa",
+      "region": "africa",
+      "unit": "年化收益率",
+      "price": 8.7,
+      "changeBp": -29.5,
+      "previousAsOf": "2026-05-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "FRED / OECD Main Economic Indicators",
+        "asOf": "2026-06-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly"
+      }
+    },
+    {
+      "id": "ECB-RO-10Y",
+      "name": "罗马尼亚10年期国债",
+      "nameEn": "Romania",
+      "region": "europe",
+      "unit": "年化收益率",
+      "note": "OECD 那一族没有罗马尼亚，改用欧洲央行的趋同用长期利率（本币计价）",
+      "price": 6.09,
+      "changeBp": 11.0,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "ECB Data Portal",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly",
+        "note": "OECD 那一族没有罗马尼亚，改用欧洲央行的趋同用长期利率（本币计价）"
+      }
+    },
+    {
+      "id": "ECB-EA-10Y",
+      "name": "欧元区10年期国债",
+      "nameEn": "Euro Area",
+      "region": "europe",
+      "unit": "年化收益率",
+      "note": "欧元区整体的趋同用长期利率；FRED 上的同名 OECD 序列已滞后半年以上，改用本条",
+      "price": 3.4935,
+      "changeBp": 12.6,
+      "previousAsOf": "2026-06-01",
+      "frequency": "monthly",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "ECB Data Portal",
+        "asOf": "2026-07-01",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "monthly",
+        "note": "欧元区整体的趋同用长期利率；FRED 上的同名 OECD 序列已滞后半年以上，改用本条"
+      }
+    },
+    {
+      "id": "ECB-EA-AAA-10Y",
+      "name": "欧元区AAA国债曲线10年",
+      "nameEn": "Euro Area AAA Curve",
+      "region": "europe",
+      "unit": "年化收益率",
+      "note": "欧元区 AAA 评级政府债收益率曲线的十年点，是本类里唯一一条日频的非美主权收益率",
+      "price": 3.2773,
+      "changeBp": 2.9,
+      "previousAsOf": "2026-08-26",
+      "frequency": "daily",
+      "stale": false,
+      "dataMeta": {
+        "mode": "market",
+        "status": "ok",
+        "source": "ECB Data Portal",
+        "asOf": "2026-08-27",
+        "updatedAt": "2026-08-29T10:52:03Z",
+        "frequency": "daily",
+        "note": "欧元区 AAA 评级政府债收益率曲线的十年点，是本类里唯一一条日频的非美主权收益率"
+      }
+    }
+  ],
+  "dataQuality": {
+    "contractVersion": 1,
+    "status": "ok",
+    "total": 35,
+    "counts": {
+      "market": 35,
+      "fallback": 0,
+      "estimate": 0,
+      "unknown": 0,
+      "unavailable": 0
+    },
+    "sources": [
+      {
+        "name": "FRED / OECD Main Economic Indicators",
+        "count": 32
+      },
+      {
+        "name": "ECB Data Portal",
+        "count": 3
+      }
+    ]
+  }
+}
