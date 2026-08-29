@@ -96,9 +96,9 @@
     background:
       repeating-linear-gradient(96deg, transparent 0 .7vw, rgba(116, 224, 255, .3) .74vw,
         rgba(181, 108, 255, .17) .8vw, transparent .92vw),
-      radial-gradient(ellipse at 56% 84%, rgba(195, 105, 255, .54), rgba(90, 157, 255, .22) 43%, transparent 75%);
-    filter: blur(.8vw);
-    opacity: .66;
+      radial-gradient(ellipse at 56% 84%, rgba(207, 105, 255, .72), rgba(90, 157, 255, .28) 43%, transparent 75%);
+    filter: blur(.72vw);
+    opacity: .82;
     mix-blend-mode: screen;
     transform: perspective(20vw) rotateX(63deg);
     transform-origin: bottom;

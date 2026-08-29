@@ -129,8 +129,8 @@ export function initMarketGlobe(options = {}) {
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
     const haze = ctx.createRadialGradient(cx + r * .08, cy - r * .94, 0, cx, cy - r * .84, r * .9);
-    haze.addColorStop(0, "rgba(181,103,255,.25)");
-    haze.addColorStop(.38, "rgba(75,168,255,.16)");
+    haze.addColorStop(0, "rgba(204,105,255,.38)");
+    haze.addColorStop(.38, "rgba(75,168,255,.22)");
     haze.addColorStop(1, "rgba(30,188,255,0)");
     ctx.fillStyle = haze;
     ctx.fillRect(cx - r, cy - r * 1.36, r * 2, r * .7);
@@ -143,8 +143,8 @@ export function initMarketGlobe(options = {}) {
       const plume = r * wave * (1 - Math.abs(unit) * .45);
       const gradient = ctx.createLinearGradient(0, rim + 3, 0, rim - plume);
       const violet = index > 12 && index < 24;
-      gradient.addColorStop(0, violet ? "rgba(155,92,255,.48)" : "rgba(73,211,255,.5)");
-      gradient.addColorStop(.42, violet ? "rgba(187,112,255,.22)" : "rgba(92,218,255,.2)");
+      gradient.addColorStop(0, violet ? "rgba(177,92,255,.7)" : "rgba(73,211,255,.54)");
+      gradient.addColorStop(.42, violet ? "rgba(205,119,255,.34)" : "rgba(92,218,255,.23)");
       gradient.addColorStop(1, "rgba(98,172,255,0)");
       ctx.strokeStyle = gradient;
       ctx.lineWidth = Math.max(.8, r * (.003 + (index % 5 === 0 ? .004 : 0)));
