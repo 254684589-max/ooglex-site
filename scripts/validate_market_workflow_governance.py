@@ -28,6 +28,9 @@ WORKFLOWS = {
     # 与债券 ETF（跨资产管道）的任何文件。
     "bonds": ROOT / ".github" / "workflows" / "bonds.yml",
     "companies": ROOT / ".github" / "workflows" / "companies.yml",
+    # 标普500盘中快照是公司榜的第二层：单独的工作流、单独的并发组、单独的可写路径，
+    # 只能动 intraday.json，动不了收盘口径的任何文件。
+    "companies-intraday": ROOT / ".github" / "workflows" / "companies_intraday.yml",
     "asset-ranking": ROOT / ".github" / "workflows" / "asset_ranking.yml",
     "fear-greed": ROOT / ".github" / "workflows" / "fear_greed.yml",
     "ofr-monitor": ROOT / ".github" / "workflows" / "ofr_monitor.yml",
@@ -279,6 +282,7 @@ def validate_cross_pipeline_contract() -> None:
         "commodities": "python scripts/commodities/build_commodities.py",
         "bonds": "python scripts/bonds/build_bonds.py",
         "companies": "python scripts/companies/fetch_logos.py",
+        "companies-intraday": "python scripts/companies/build_intraday.py",
         "asset-ranking": "python scripts/asset-ranking/build_ranking.py",
         "fear-greed": "python scripts/fear-greed/build_fear_greed.py",
         "ofr-monitor": "python scripts/ofr-monitor/build_ofr.py",

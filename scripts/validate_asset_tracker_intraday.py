@@ -1,22 +1,39 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""盘中快照的离线契约。
+"""盘中快照的离线契约（跨资产与标普500成分股两层共用）。
 
 盘中层唯一的职责是：给日更快照里已登记的标的，补一份更新的最新价与相对前收涨跌。
 因此这里守三件事：
 1. 不越界——只出现日更清单里的标的，不引入任何新标的；
 2. 不冒充——文件必须自报 realtime=false、刷新周期与报价时点，页面才能如实标注；
 3. 不造数——每条报价的涨跌必须能由 price 与 previousClose 现场复算出来。
+
+两条盘中管道守的是同一件事，因此共用同一份实现，只把「日更清单在哪、盘中文件在哪、
+清单键叫什么」参数化——把同一段契约抄成两份，早晚会有一份漏改。
 """
+import argparse
 import json
 import os
 import sys
 from datetime import datetime, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA_PATH = os.path.join(ROOT, "apps", "asset-tracker", "data.json")
-INTRADAY_PATH = os.path.join(ROOT, "apps", "asset-tracker", "intraday.json")
 MAX_AGE_HOURS = 6.0
+
+DATASETS = {
+    "asset-tracker": {
+        "daily": os.path.join(ROOT, "apps", "asset-tracker", "data.json"),
+        "intraday": os.path.join(ROOT, "apps", "asset-tracker", "intraday.json"),
+        "rowsKey": "assets",
+        "label": "Asset tracker",
+    },
+    "companies": {
+        "daily": os.path.join(ROOT, "apps", "companies", "sp500.json"),
+        "intraday": os.path.join(ROOT, "apps", "companies", "intraday.json"),
+        "rowsKey": "members",
+        "label": "S&P 500 companies",
+    },
+}
 
 
 def require(condition, message):
@@ -36,13 +53,14 @@ def parse_moment(value):
         return None
 
 
-def main():
-    if not os.path.exists(INTRADAY_PATH):
-        print("盘中快照尚未生成，跳过（首次运行前属于正常状态）。")
+def validate(name):
+    spec = DATASETS[name]
+    if not os.path.exists(spec["intraday"]):
+        print(f"{name}: 盘中快照尚未生成，跳过（首次运行前属于正常状态）。")
         return
-    daily = load(DATA_PATH)
-    snapshot = load(INTRADAY_PATH)
-    symbols = {asset.get("symbol") for asset in daily.get("assets") or []}
+    daily = load(spec["daily"])
+    snapshot = load(spec["intraday"])
+    symbols = {row.get("symbol") for row in daily.get(spec["rowsKey"]) or []}
 
     require(snapshot.get("realtime") is False,
             "盘中快照必须自报 realtime=false：这不是实时行情，页面要按它来标注")
@@ -80,12 +98,20 @@ def main():
 
     age_hours = (datetime.now(timezone.utc) - updated).total_seconds() / 3600.0
     stale = age_hours > MAX_AGE_HOURS
-    print("Asset tracker intraday snapshot contract: PASS")
+    print(f"{spec['label']} intraday snapshot contract: PASS")
     print(f"- {len(quotes)} quotes, all inside the daily universe ({len(symbols)} symbols)")
     print(f"- reproducible change from price/previousClose, realtime=false, cadence "
           f"{snapshot['cadenceMinutes']}min")
     print(f"- updated {age_hours:.2f}h ago"
           + ("（超过阈值，页面会按过期处理）" if stale else ""))
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset", choices=[*DATASETS, "all"], default="asset-tracker")
+    args = parser.parse_args()
+    for name in (list(DATASETS) if args.dataset == "all" else [args.dataset]):
+        validate(name)
 
 
 if __name__ == "__main__":

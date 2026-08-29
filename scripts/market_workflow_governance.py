@@ -81,6 +81,11 @@ DATASET_RULES = {
         "apps/bonds/health.json",
         "apps/bonds/history.json",
     )),
+    # 标普500盘中快照：与公司榜日更管道分成两层，只允许动 intraday.json 这一个文件。
+    # 收盘口径的 data.json / sp500.json / 历史分片 / 标志图全都不在可写范围内。
+    "companies-intraday": DatasetRule((
+        "apps/companies/intraday.json",
+    )),
     "companies": DatasetRule(
         (
             "apps/companies/data.json",

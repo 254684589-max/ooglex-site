@@ -432,10 +432,13 @@ def write_spark(history, symbols, run_updated_at):
 
 
 def attach_returns(history, symbols):
-    """把四档区间涨跌写回已经落盘的 data.json 逐行。
+    """把四档区间涨跌写回已经落盘的 data.json 与 sp500.json 逐行。
 
     历史要等 data.json 写完之后才建（顺序不能反：历史失败不该拖累 data.json），
     所以这里回头补写一次，而不是在拼行的时候算。
+
+    两份文件回写的是**同一次计算**的结果，不各算一遍——气泡图的「年初至今」与
+    行情板公司行的「年初至今」必须是同一个数，两处各算一次早晚会对不上。
     """
     data = load_json(OUT_PATH)
     if not data or not isinstance(data.get("companies"), list):
@@ -443,6 +446,7 @@ def attach_returns(history, symbols):
         return
     dates = history.get("dates") or []
     series = history.get("series") or {}
+    computed = {}
     filled = 0
     for row in data["companies"]:
         symbol = row.get("symbol")
@@ -453,10 +457,27 @@ def attach_returns(history, symbols):
         returns = period_returns(points)
         if returns:
             row["returns"] = returns
+            computed[symbol] = returns
             filled += 1
     with open(OUT_PATH, "w", encoding="utf-8") as handle:
         json.dump(data, handle, ensure_ascii=False, indent=2)
     print(f"区间涨跌：{filled}/{len(symbols)} 家已写回 data.json（每周/月度/年初至今/同比）")
+
+    # 同一批数字回写给标普500快照：气泡图的纵轴要按「年初至今」等区间摆位，
+    # 而 sp500.json 是在历史建好之前写的，因此和 data.json 一样回头补一次。
+    sp500 = load_json(SP500_PATH)
+    if not sp500 or not isinstance(sp500.get("members"), list):
+        print("sp500.json 读不回来，跳过区间涨跌回写（不影响已写好的快照）")
+        return
+    sp_filled = 0
+    for row in sp500["members"]:
+        returns = computed.get(row.get("symbol"))
+        if returns:
+            row["returns"] = returns
+            sp_filled += 1
+    with open(SP500_PATH, "w", encoding="utf-8") as handle:
+        json.dump(sp500, handle, ensure_ascii=False, separators=(",", ":"))
+    print(f"区间涨跌：{sp_filled}/{len(sp500['members'])} 家已写回 sp500.json")
 
 
 def fx_to_usd(session):
