@@ -133,6 +133,38 @@ const COMMODITY_GROUP = Object.freeze({
   DBC: "index", GSG: "index", KRBN: "index"
 });
 
+/* 债券品类下的二级分组：按地区，另加两组不属于任何地区的。地区划分与指数品类
+   同一套（美洲/欧洲/亚洲/大洋洲/非洲），以色列同样归亚洲。
+
+   为什么不是纯地区分组：这一类里摆着三种不同的东西——
+   1. 美债收益率曲线的 11 个期限，是同一个国家沿到期日展开的一条曲线，不是国别比较；
+   2. 各国十年期国债收益率，年化百分数，这一层才是地区比较；
+   3. 11 只债券 ETF 的份额价格，单位是美元不是百分数。
+   把 ETF 的 $88 摆进「美洲」和德国的 2.97% 并排，读者会当成同一种数去比。
+   因此曲线单列「美债期限」，基金单列「基金代理」，中间五组才是各国收益率。 */
+export const BOND_GROUPS = Object.freeze([
+  { key: "curve", label: "美债期限", labelEn: "U.S. Curve" },
+  { key: "americas", label: "美洲", labelEn: "Americas" },
+  { key: "europe", label: "欧洲", labelEn: "Europe" },
+  { key: "asia", label: "亚洲", labelEn: "Asia" },
+  { key: "oceania", label: "大洋洲", labelEn: "Oceania" },
+  { key: "africa", label: "非洲", labelEn: "Africa" },
+  { key: "fund", label: "基金代理", labelEn: "Fund Proxies" },
+  { key: "other", label: "其他", labelEn: "Other" }
+]);
+
+/* 逐代码登记。美债曲线的 11 个期限与 11 只债券 ETF 都在这里；各国收益率不在这里，
+   它们由上游 data.json 逐行声明 region（声明的组名必须是上面登记过的，否则落进
+   「其他」）——理由与公司品类的行业一样：代码上看不出国别，猜不如让上游说。 */
+const BOND_GROUP = Object.freeze({
+  DGS1MO: "curve", DGS3MO: "curve", DGS6MO: "curve", DGS1: "curve",
+  DGS2: "curve", DGS3: "curve", DGS5: "curve", DGS7: "curve",
+  DGS10: "curve", DGS20: "curve", DGS30: "curve",
+  /* 份额价格，不是收益率——逐行的 note 里也这么写着。 */
+  "511260.SS": "fund", TLT: "fund", IEF: "fund", SHY: "fund", TIP: "fund",
+  AGG: "fund", LQD: "fund", HYG: "fund", MUB: "fund", EMB: "fund", BWX: "fund"
+});
+
 /* 目前只有商品分了组；其余品类没有分组即不摆分组条。 */
 /* 一张表登记「哪个品类有二级分组、分组表是哪份、逐代码登记表是哪份」。
    加第三个分组品类时只动这张表，不必再在 groupKeyOf 里加一条 if。 */
@@ -141,13 +173,16 @@ const GROUP_REGISTRY = Object.freeze({
   index: { groups: INDEX_GROUPS, bySymbol: INDEX_GROUP },
   /* 公司品类没有逐代码登记表：行业由上游逐行声明（data.json 的 sector），
      声明的组名必须是上面登记过的，否则一律落进「其他」。 */
-  stock: { groups: STOCK_GROUPS, bySymbol: {} }
+  stock: { groups: STOCK_GROUPS, bySymbol: {} },
+  /* 债券两头都用得上：曲线与基金按代码查登记表，各国收益率由上游声明地区。 */
+  bond: { groups: BOND_GROUPS, bySymbol: BOND_GROUP }
 });
 
 export const GROUPS_BY_CATEGORY = Object.freeze({
   commodity: COMMODITY_GROUPS,
   index: INDEX_GROUPS,
-  stock: STOCK_GROUPS
+  stock: STOCK_GROUPS,
+  bond: BOND_GROUPS
 });
 
 /* 分组来源有两处：期货那条管道按代码查登记表；商品现货管道自己就带 group 字段
@@ -563,6 +598,52 @@ function spotRows(commodities) {
     });
 }
 
+/* 各国主权债收益率（FRED 转发的 OECD 月频长期国债收益率 + ECB 数据门户）→ 行情行。
+
+   涨跌用**基点**而不是百分比：2.97% 到 3.07% 是「上行 10 个基点」，写成 +3.37%
+   会被读成价格涨了 3%，那是另一回事。基点值由上游算好（(今 − 上) × 100），
+   这里只格式化，不重算。
+
+   除欧元区 AAA 曲线一条为日频外全是月频，因此涨跌口径逐行写「较前一观测」并带上
+   那一观测的日期，绝不写成「当日涨跌」——它多数是相对上个月。 */
+function sovereignRows(bonds) {
+  const list = bonds && Array.isArray(bonds.series) ? bonds.series : [];
+  return list
+    .filter((item) => item && item.id && isFiniteNumber(item.price))
+    .map((item) => {
+      const meta = item.dataMeta || {};
+      const frequency = item.frequency || meta.frequency || "";
+      const monthly = frequency === "monthly";
+      return {
+        id: `bond:${item.id}`,
+        name: item.name,
+        nameEn: item.nameEn || "",
+        symbol: item.id,
+        priceText: `${item.price.toFixed(2)}%`,
+        price: item.price,
+        change: formatChange(item.changeBp, "bp"),
+        changeAbs: null,
+        periods: periodSet(item.returns),
+        changeBasis: `较前一观测 ${item.previousAsOf || "—"}（基点）`,
+        extraText: monthly ? "月度收益率" : "日频收益率",
+        group: item.region || "",
+        asOf: formatAsOf(meta.asOf),
+        updatedAt: meta.updatedAt || bonds.updatedAt || "",
+        frequency,
+        sourceName: meta.source || bonds.source || "",
+        sourceUrl: meta.source === "ECB Data Portal"
+          ? "https://data.ecb.europa.eu/"
+          : `https://fred.stlouisfed.org/series/${encodeURIComponent(item.id)}`,
+        status: statusOf(meta, item.stale),
+        note: item.note || meta.note || "",
+        proxyOf: "",
+        currency: "",
+        unit: item.unit || "年化收益率",
+        series: { kind: "bond", key: item.id, grain: monthly ? "monthly" : "daily" }
+      };
+    });
+}
+
 /* 贴分组并按登记组序重排；同组内保持上游顺序。没有分组的品类原样返回。 */
 export function withGroups(rows, categoryKey) {
   const groups = GROUPS_BY_CATEGORY[categoryKey];
@@ -623,8 +704,14 @@ function categoryRows(key, sources) {
     return fromBoard.length ? fromBoard : cryptoRows(assetRanking);
   }
   if (key === "bond") {
-    return curveRows(curve).concat(
-      trackerAssets(assetTracker, "bond").map((asset) => trackerRow(asset, "bond", { extraText: "ETF代理" }))
+    /* 三段拼起来：美债曲线各期限、债券 ETF 份额价格、各国十年期收益率。
+       withGroups 按登记组序重排，把它们摆成「美债期限 → 五个地区 → 基金代理」。 */
+    return withGroups(
+      curveRows(curve)
+        .concat(trackerAssets(assetTracker, "bond")
+          .map((asset) => trackerRow(asset, "bond", { extraText: "ETF代理" })))
+        .concat(sovereignRows(sources.bonds)),
+      "bond"
     );
   }
   return [];
@@ -657,7 +744,10 @@ export function buildBoard(group = {}) {
     cryptoBoard: pickOptional("assetRankingCrypto"),
     /* 商品现货管道是后补的可选文件：首轮日更跑完前它可能不存在，
        那不是管线故障——期货那半边照常显示，缺的只是现货与官方指数那半边。 */
-    commodities: pickOptional("commodities")
+    commodities: pickOptional("commodities"),
+    /* 主权债管道同样是后补的可选文件：首轮日更跑完前它可能不存在，那不是管线故障
+       ——美债曲线与债券 ETF 照常显示，缺的只是各国十年期那一段。 */
+    bonds: pickOptional("bonds")
   };
   const categories = BOARD_CATEGORIES.map((category) => {
     const rows = categoryRows(category.key, sources);

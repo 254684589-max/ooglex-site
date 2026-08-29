@@ -89,7 +89,7 @@ export function rangeChange(values, isYield) {
    base 让同一份视图能被不同目录下的页面复用（金融终端与「全球市场行情」各给各的相对路径）。 */
 export function quoteHref(item, base) {
   const kinds = { tracker: "tracker", company: "company", cryptoBoard: "crypto", curve: "curve",
-    macro: "macro", commodity: "commodity" };
+    macro: "macro", commodity: "commodity", bond: "bond" };
   const reference = item && item.series ? item.series : null;
   const kind = reference && kinds[reference.kind] ? kinds[reference.kind] : "";
   const symbol = reference && reference.key ? reference.key : (item ? item.symbol : "");
@@ -127,10 +127,11 @@ function shiftDays(isoDate, days) {
 /* 纯函数：由站内历史现场算出「每周 / 月度 / 年初至今 / 同比」。
 
    上游已经算好这四档的行（跨资产管道）直接沿用上游值，这里只补没算的那些。
+   isYield 为真时四档一律按基点差表示，与该行的当期涨跌同一口径。
    口径与上游一致：都以「最近观测」对「锚点日或之前的最后一个观测」比较，锚点缺观测
    就顺延到更早的一个；锚点比序列起点还早就返回 null——序列不够长就如实说没有，
    不拿最早那个点冒充一年前。 */
-export function periodsFromSeries(dates, values, frequency) {
+export function periodsFromSeries(dates, values, frequency, isYield) {
   const pairs = [];
   const length = Math.min(Array.isArray(dates) ? dates.length : 0,
     Array.isArray(values) ? values.length : 0);
@@ -141,10 +142,15 @@ export function periodsFromSeries(dates, values, frequency) {
   if (pairs.length < 2) return { w1: null, m1: null, ytd: null, y1: null };
   const [lastDate, last] = pairs[pairs.length - 1];
   const start = pairs[0][0];
+  /* 收益率的区间变化算基点差，不算相对涨幅：德国十年期从 3.05% 到 2.97%，
+     是「下行 8 个基点」，写成 −2.62% 会被读成价格跌了 2.6%——那是另一回事。
+     其余品类仍是相对涨跌幅。基点口径下基准为 0 也照样算得出（差值不是比值）。 */
   function change(anchor) {
     if (!anchor || anchor < start) return null;
     const base = valueBefore(pairs, anchor);
-    if (!Number.isFinite(base) || base === 0) return null;
+    if (!Number.isFinite(base)) return null;
+    if (isYield) return Math.round((last - base) * 100);
+    if (base === 0) return null;
     return Math.round((last / base - 1) * 10000) / 100;
   }
   /* 比观测间隔还短的区间没有意义：月频序列往回推 7 天，落到的还是上个月那个观测，
@@ -218,6 +224,21 @@ async function resolveSeries(reference, bundles) {
   }
   if (reference.kind === "commodity") {
     const bundle = await loadJson("../commodities/history.json");
+    const grain = reference.grain === "monthly" ? "monthly" : "daily";
+    const record = bundle && bundle[grain] ? bundle[grain] : null;
+    if (!record || !record.series || !record.series[reference.key]) return null;
+    return {
+      dates: record.dates || [],
+      values: record.series[reference.key],
+      source: record.source || bundle.source || "",
+      note: record.note || bundle.note || ""
+    };
+  }
+  if (reference.kind === "bond") {
+    /* 主权债历史与商品现货同一种结构：日频与月频分两个桶，逐行按自己的频率取。
+       月频那一桶里的 60 个点是 60 个月度观测而不是 60 个交易日——迷你走势的无障碍
+       说明按该行自己的频率措辞，不把月频说成日频。 */
+    const bundle = await loadJson("../bonds/history.json");
     const grain = reference.grain === "monthly" ? "monthly" : "daily";
     const record = bundle && bundle[grain] ? bundle[grain] : null;
     if (!record || !record.series || !record.series[reference.key]) return null;
@@ -309,17 +330,20 @@ async function fillSparks(document, pending, bundles, token) {
 function fillPeriods(entry, series) {
   const cells = entry.periodCells || [];
   if (!cells.length || cells.every((cell) => cell.dataset.resolved === "1")) return;
+  const isYield = entry.item.unit === "年化收益率";
   const computed = series
-    ? periodsFromSeries(series.dates, series.values, entry.item.frequency) : null;
+    ? periodsFromSeries(series.dates, series.values, entry.item.frequency, isYield) : null;
   cells.forEach((cell, index) => {
     if (cell.dataset.resolved === "1" || !cell.isConnected) return;
     const value = computed ? computed[PERIOD_KEYS[index]] : null;
     if (Number.isFinite(value)) {
-      const shown = formatChange(value, "pct");
+      const shown = formatChange(value, isYield ? "bp" : "pct");
       cell.textContent = shown.text;
       cell.dataset.direction = shown.direction;
       cell.dataset.resolved = "1";
-      cell.title = "由站内历史序列现场算出：最近观测对该区间锚点日之前的最后一个观测";
+      cell.title = isYield
+        ? "由站内历史序列现场算出：最近观测对该区间锚点日之前的最后一个观测，单位为基点"
+        : "由站内历史序列现场算出：最近观测对该区间锚点日之前的最后一个观测";
     } else {
       cell.textContent = "—";
       cell.title = "站内历史序列不够长，算不出这一档区间变化；此处不做推算";
@@ -352,11 +376,11 @@ function paintAbsolute(open, item) {
 
 /* 区间涨跌列：null 表示上游没算、也还没从历史算出来，先写「…」；
    历史读完仍算不出（序列不够长）由 fillSparks 改写成「—」。 */
-function paintPeriod(open, periods, key) {
+function paintPeriod(open, periods, key, isYield) {
   const cell = text(open, "span", "board-cell-period");
   const value = periods ? periods[key] : null;
   if (Number.isFinite(value)) {
-    const shown = formatChange(value, "pct");
+    const shown = formatChange(value, isYield ? "bp" : "pct");
     cell.textContent = shown.text;
     cell.dataset.direction = shown.direction;
     cell.dataset.resolved = "1";
@@ -432,7 +456,8 @@ function renderRows(document, host, category, bundles, expanded, context) {
     text(change, "b", "", item.change.text);
     /* 四个区间列：上游算好的直接摆上，没算的先留「…」，等历史加载完再由
        fillSparks 现场补。补不出来（序列不够长）就写「—」，绝不推算。 */
-    const periodCells = PERIOD_KEYS.map((key) => paintPeriod(open, item.periods, key));
+    const periodCells = PERIOD_KEYS.map((key) =>
+      paintPeriod(open, item.periods, key, item.unit === "年化收益率"));
     text(open, "span", "board-cell-extra", item.extraText || "—");
     text(open, "span", "board-cell-asof", item.asOf || "—");
     pending.push({ item, cell: sparkCell, periodCells });

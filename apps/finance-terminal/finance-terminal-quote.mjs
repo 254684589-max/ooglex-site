@@ -39,6 +39,12 @@ const KIND_SOURCES = Object.freeze({
     data: "../commodities/data.json",
     daily: "../commodities/history.json",
     monthly: "../commodities/history.json"
+  },
+  /* 各国主权债的日频与月频历史同样在一个文件里分两个桶，与商品现货同一种结构。 */
+  bond: {
+    data: "../bonds/data.json",
+    daily: "../bonds/history.json",
+    monthly: "../bonds/history.json"
   }
 });
 
@@ -384,13 +390,60 @@ function commodityInstrument(data, symbol) {
   };
 }
 
+/* 频率是机器可读的英文标记（daily/weekly/monthly/irregular），页面上要读成中文。
+   映射之外的取值原样显示，不猜也不吞——上游多出一种频率时页面上看得见，
+   而不是被悄悄显示成别的什么。 */
+const FREQUENCY_LABEL = Object.freeze({
+  daily: "日频", weekly: "周频", monthly: "月频", irregular: "不定期", mixed: "多种频率"
+});
+
+export function describeFrequency(value) {
+  const key = String(value || "");
+  return FREQUENCY_LABEL[key] || key;
+}
+
+/* 各国十年期国债收益率。涨跌是基点而不是百分比，与美债曲线同一口径；
+   频率逐行沿用上游，月频序列在页面上就写成月频。 */
+function bondInstrument(data, symbol) {
+  const rows = data && Array.isArray(data.series) ? data.series : [];
+  const row = rows.filter((item) => item && item.id === symbol)[0];
+  if (!row || !isFiniteNumber(row.price)) return null;
+  const meta = row.dataMeta || {};
+  const frequency = row.frequency || meta.frequency || "";
+  const ecb = meta.source === "ECB Data Portal";
+  return {
+    name: row.name,
+    nameEn: row.nameEn || "",
+    symbol,
+    categoryLabel: "债券",
+    grain: frequency === "monthly" ? "monthly" : "daily",
+    priceText: `${row.price.toFixed(2)}%`,
+    change: formatChange(row.changeBp, "bp"),
+    changeBasis: `较前一观测 ${row.previousAsOf || "—"}（基点）`,
+    unit: row.unit || "年化收益率",
+    changeMode: "bp",
+    asOf: formatAsOf(meta.asOf),
+    updatedAt: meta.updatedAt || data.updatedAt || "",
+    frequency,
+    sourceName: meta.source || data.source || "",
+    sourceUrl: ecb ? "https://data.ecb.europa.eu/"
+      : `https://fred.stlouisfed.org/series/${encodeURIComponent(symbol)}`,
+    sourceLabel: ecb ? "在欧洲央行数据门户打开" : "在 FRED 打开官方序列页",
+    status: row.stale ? "stale" : (meta.status || "ok"),
+    note: row.note || meta.note || "",
+    proxyOf: "",
+    extra: []
+  };
+}
+
 const INSTRUMENT_READERS = Object.freeze({
   tracker: trackerInstrument,
   company: companyInstrument,
   crypto: cryptoInstrument,
   curve: curveInstrument,
   macro: macroInstrument,
-  commodity: commodityInstrument
+  commodity: commodityInstrument,
+  bond: bondInstrument
 });
 
 export async function loadInstrument(kind, symbol) {
@@ -409,11 +462,11 @@ export async function loadInstrument(kind, symbol) {
     if (!paths.daily) return [];
     /* 月频序列没有日线：把 400 个月度观测塞进「1个月/3个月」这几档会把月频说成日频，
        因此这里如实返回空，长端区间读月线那一支。日频/周频序列两个桶都有，八档都能开。 */
-    if (kind === "commodity" && instrument.grain === "monthly") return [];
+    if ((kind === "commodity" || kind === "bond") && instrument.grain === "monthly") return [];
     try {
       const file = await loadJson(
         paths.sharded ? shardPath(paths.daily, instrument.historyShard) : paths.daily);
-      if (kind === "commodity") return dailyPoints(file.daily, seriesKey);
+      if (kind === "commodity" || kind === "bond") return dailyPoints(file.daily, seriesKey);
       if (kind === "macro") {
         const entry = file.series ? file.series[symbol] : null;
         return dailyPoints({ dates: entry && entry.dates, series: { [symbol]: entry && entry.values } }, symbol);
@@ -430,7 +483,7 @@ export async function loadInstrument(kind, symbol) {
         paths.sharded ? shardPath(paths.monthly, instrument.historyShard) : paths.monthly);
       /* 长端区间一律读月频桶：月频序列本来就在那里，日频序列另有一份官方月末聚合。
          桶里没有这条序列就返回空，长端几档自然禁用——不拿日线冒充月线。 */
-      if (kind === "commodity") return monthlyPointsFromAxis(file.monthly, seriesKey);
+      if (kind === "commodity" || kind === "bond") return monthlyPointsFromAxis(file.monthly, seriesKey);
       return monthlyPoints(file, seriesKey);
     } catch (error) {
       return [];
@@ -500,7 +553,7 @@ export function renderQuote(document, root, payload, wanted) {
   const chip = statusChip(instrument.status);
   text(chips, "span", chip.className, chip.label);
   if (instrument.asOf) text(chips, "span", "quote-chip", `数据日 ${instrument.asOf}`);
-  if (instrument.frequency) text(chips, "span", "quote-chip", `频率 ${instrument.frequency}`);
+  if (instrument.frequency) text(chips, "span", "quote-chip", `频率 ${describeFrequency(instrument.frequency)}`);
   if (instrument.sourceName) text(chips, "span", "quote-chip", `来源 ${instrument.sourceName}`);
   if (instrument.proxyOf) text(chips, "span", "quote-chip", `代理标的 ${instrument.proxyOf}`);
 
@@ -665,7 +718,7 @@ export function renderQuote(document, root, payload, wanted) {
   metaRow(list, "来源", instrument.sourceName);
   metaRow(list, "数据日", instrument.asOf);
   metaRow(list, "更新时间", instrument.updatedAt);
-  metaRow(list, "频率", instrument.frequency);
+  metaRow(list, "频率", describeFrequency(instrument.frequency));
   metaRow(list, "涨跌口径", instrument.changeBasis);
   (instrument.extra || []).forEach(([key, value]) => { metaRow(list, key, value); });
   metaRow(list, "口径说明", instrument.note);

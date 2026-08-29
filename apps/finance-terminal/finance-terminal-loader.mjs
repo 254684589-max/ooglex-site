@@ -12,6 +12,7 @@ const RESOURCE_PATHS = Object.freeze({
   assetRankingHealth: "../asset-ranking/health.json",
   assetRankingCrypto: "../asset-ranking/crypto.json",
   commodities: "../commodities/data.json",
+  bonds: "../bonds/data.json",
   companies: "../companies/data.json",
   companiesHealth: "../companies/health.json",
   calendar: "../econ-calendar/data.json",
@@ -28,10 +29,11 @@ const RESOURCE_GROUPS = Object.freeze({
   ]),
   /* 品类行情板只读行情本身：逐行的来源、数据日与过期状态来自这几份数据文件，
      逐源更新链健康归市场研究与运行证据分区，行情板不重复请求。
-     commodities 是商品现货与官方指数那条管道，补的是期货管道覆盖不到的品种。 */
+     commodities 是商品现货与官方指数那条管道，补的是期货管道覆盖不到的品种；
+     bonds 是各国主权债收益率，补的是美债曲线与债券 ETF 之外的各国十年期。 */
   board: Object.freeze([
     "assetTracker", "assetRanking", "assetRankingCrypto", "companies", "macro", "macroCurve",
-    "commodities"
+    "commodities", "bonds"
   ]),
   /* 地缘风险定价的能源与避险两条轴读跨资产管道的近一月涨幅。总览右下角的事件
      工作区同时镜像经济日历里已经发布的真实事件，所以把calendar放在同一延迟组：
@@ -406,10 +408,16 @@ export async function startFinanceTerminal(options = {}) {
   return { experience, loader, scheduler, mode: eager ? "eager" : "deferred" };
 }
 
+/* 本地证据文件与上游行情文件的分界：本地那两份就放在终端页自己的目录下，
+   路径不带 ../。资源清单每扩容一次都要在几处同步改数字、漏一处就红，这已经是
+   本仓库同一类错误的第四次，因此这两个计数一律现算，不再手写。 */
+const LOCAL_EVIDENCE_KEYS = Object.freeze(
+  Object.keys(RESOURCE_PATHS).filter((key) => !RESOURCE_PATHS[key].startsWith("../")));
+
 export const financeTerminalResourceContract = Object.freeze({
   paths: RESOURCE_PATHS,
   groups: RESOURCE_GROUPS,
   criticalSourceCount: RESOURCE_GROUPS.critical.length,
-  upstreamSourceCount: 18,
-  localEvidenceSourceCount: 2
+  upstreamSourceCount: Object.keys(RESOURCE_PATHS).length - LOCAL_EVIDENCE_KEYS.length,
+  localEvidenceSourceCount: LOCAL_EVIDENCE_KEYS.length
 });

@@ -37,24 +37,39 @@ async function validateResourceStages() {
   assert.equal(loader.snapshot().sourceRequestCount, 5, "首屏只应读取5份核心资源");
   assert.equal(loader.snapshot().requestCount, 6, "首屏应读取1份配置与5份核心资源");
 
+  /* 累计计数由资源登记表现算，不再逐档手写数字：守的还是同一件事——每一档只新增
+     自己组里此前没取过的那几份，其余一律复用——但清单扩容时不会有五个魔数漏改。
+     （同一类错误此前已在浏览器回归探针里犯过一次。） */
+  const { groups } = financeTerminalResourceContract;
+  const union = (...names) => new Set(names.flatMap((name) => groups[name]));
+  const expected = (...names) => union("critical", ...names).size;
+
   await loader.loadGroup("board");
-  assert.equal(loader.snapshot().sourceRequestCount, 10,
-    "品类行情板只新增跨资产、公司、加密品类板、美债曲线与商品现货五份数据，"
-    + "宏观与资产榜沿用首屏已加载资源");
+  assert.equal(loader.snapshot().sourceRequestCount, expected("board"),
+    "品类行情板只新增自己组里此前没取过的数据，宏观与资产榜沿用首屏已加载资源");
   await loader.loadGroup("research");
-  assert.equal(loader.snapshot().sourceRequestCount, 12, "研究区应复用行情板已加载的行情数据，只补两份健康快照");
+  assert.equal(loader.snapshot().sourceRequestCount, expected("board", "research"),
+    "研究区应复用行情板已加载的行情数据，只补两份健康快照");
   await loader.loadGroup("operations");
-  assert.equal(loader.snapshot().sourceRequestCount, 13, "运行证据区应复用宏观、资产榜、跨资产与公司资源");
+  assert.equal(loader.snapshot().sourceRequestCount, expected("board", "research", "operations"),
+    "运行证据区应复用宏观、资产榜、跨资产与公司资源");
   await Promise.all([loader.loadGroup("risk"), loader.loadGroup("information")]);
   const snapshot = loader.snapshot();
-  assert.equal(snapshot.sourceRequestCount, 21, "全页最终应覆盖19份上游与2份本地证据资源");
-  assert.equal(calls.length, 22, "同一资源不得因跨分区复用而重复请求");
+  const allSources = expected("board", "research", "operations", "risk", "information");
+  assert.equal(snapshot.sourceRequestCount, allSources,
+    "全页最终应覆盖登记表里全部上游与本地证据资源");
+  assert.equal(snapshot.sourceRequestCount,
+    financeTerminalResourceContract.upstreamSourceCount
+    + financeTerminalResourceContract.localEvidenceSourceCount,
+    "取到的份数必须等于登记表里的资源总数：少一份就是有分区漏读");
+  assert.equal(calls.length, allSources + 1, "同一资源不得因跨分区复用而重复请求（另加1份配置）");
   assert.equal(new Set(calls.map((call) => call.url)).size, calls.length, "请求URL必须唯一");
   assert.ok(calls.every((call) => call.options.cache === "no-store"), "静态金融快照必须保留no-store请求契约");
   assert.deepEqual(snapshot.groupLoadSequence,
     ["critical", "board", "research", "operations", "risk", "information"],
     "加载证据必须保留实际分区启动顺序");
-  assert.equal(snapshot.networkRequestCount, 22);
+  assert.equal(snapshot.networkRequestCount, allSources + 1,
+    "网络请求数等于资源总数加1份配置：多一次就是有资源被重复取了");
   assert.equal(snapshot.duplicateNetworkRequestCount, 0, "共享资源不得产生重复网络请求");
   assert.ok(Object.values(snapshot.requestStates).every((state) => state === "ready"));
 }
@@ -406,8 +421,15 @@ function validateOperationsViewContract() {
 
 async function main() {
   assert.equal(financeTerminalResourceContract.criticalSourceCount, 5);
-  assert.equal(financeTerminalResourceContract.upstreamSourceCount, 18);
+  /* 上游与本地证据两个计数由路径登记表现算，这里守的是「分界规则没被改坏」：
+     本地证据永远是终端页自己目录下那两份，其余全是上游。 */
   assert.equal(financeTerminalResourceContract.localEvidenceSourceCount, 2);
+  assert.equal(financeTerminalResourceContract.upstreamSourceCount,
+    Object.keys(financeTerminalResourceContract.paths).length - 2);
+  assert.deepEqual(
+    Object.keys(financeTerminalResourceContract.paths)
+      .filter((key) => !financeTerminalResourceContract.paths[key].startsWith("../")).sort(),
+    ["marketLicense", "readiness"], "本地证据文件必须只有就绪快照与许可清单两份");
   assert.equal(typeof runBrowserRegressionProbe, "function");
   await validateResourceStages();
   await validateFailureIsolation();
@@ -421,7 +443,11 @@ async function main() {
   validateInformationViewContract();
   validateOperationsViewContract();
   console.log("Finance Terminal staged loader contract: PASS");
-  console.log("- 5 critical sources / 15 deferred sources / 20 unique source requests: PASS");
+  const contract = financeTerminalResourceContract;
+  const total = contract.upstreamSourceCount + contract.localEvidenceSourceCount;
+  console.log(`- ${contract.criticalSourceCount} critical sources / `
+    + `${total - contract.criticalSourceCount} deferred sources / `
+    + `${total} unique source requests: PASS`);
   console.log("- viewport and section-navigation activation / shared request cache: PASS");
   console.log("- scroll-past immunity / dwell activation / multi-trigger section: PASS");
   console.log("- per-source HTTP failure isolation / no-store snapshots: PASS");

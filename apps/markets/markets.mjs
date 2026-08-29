@@ -6,7 +6,7 @@ import { buildBoard } from "../finance-terminal/finance-terminal-board-data.mjs"
 import { createBoardView } from "../finance-terminal/finance-terminal-board-view.mjs";
 import { paintLiveState, startLive } from "../finance-terminal/finance-terminal-live.mjs";
 
-/* 与金融终端 board 资源组同一份清单：同样的六份文件、同样的相对路径深度。 */
+/* 与金融终端 board 资源组同一份清单：同样的八份文件、同样的相对路径深度。 */
 const SOURCES = Object.freeze({
   assetTracker: "../asset-tracker/data.json",
   assetRanking: "../asset-ranking/data.json",
@@ -14,11 +14,12 @@ const SOURCES = Object.freeze({
   companies: "../companies/data.json",
   macro: "../macro-radar/data.json",
   macroCurve: "../macro-radar/curve.json",
-  commodities: "../commodities/data.json"
+  commodities: "../commodities/data.json",
+  bonds: "../bonds/data.json"
 });
 
 /* 可选文件缺失不算管线故障：加密快照首次生成前就属于这种情况。 */
-const OPTIONAL = Object.freeze(["assetRankingCrypto", "commodities"]);
+const OPTIONAL = Object.freeze(["assetRankingCrypto", "commodities", "bonds"]);
 
 function loadOne(key, path) {
   return fetch(path, { cache: "no-store" }).then((response) => {

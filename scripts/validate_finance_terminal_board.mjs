@@ -8,7 +8,9 @@ import { fileURLToPath } from "node:url";
 
 import {
   BOARD_CATEGORIES,
+  BOND_GROUPS,
   COMMODITY_GROUPS,
+  GROUPS_BY_CATEGORY,
   INDEX_GROUPS,
   STOCK_GROUPS,
   STOCK_ROW_LIMIT,
@@ -76,8 +78,9 @@ async function loadGroup() {
       readJson("apps/macro-radar/data.json"),
       readJson("apps/macro-radar/curve.json")
     ]);
-  /* 商品现货管道是后补的可选文件：首轮日更跑完前它不存在，那不是管线故障。 */
+  /* 商品现货与主权债都是后补的可选文件：首轮日更跑完前它们不存在，那不是管线故障。 */
   const commodities = await readJson("apps/commodities/data.json").catch(() => null);
+  const bonds = await readJson("apps/bonds/data.json").catch(() => null);
   return {
     assetTracker: { data: assetTracker, error: null },
     companies: { data: companies, error: null },
@@ -85,7 +88,8 @@ async function loadGroup() {
     assetRankingCrypto: { data: assetRankingCrypto, error: null },
     macro: { data: macro, error: null },
     macroCurve: { data: macroCurve, error: null },
-    commodities: commodities ? { data: commodities, error: null } : undefined
+    commodities: commodities ? { data: commodities, error: null } : undefined,
+    bonds: bonds ? { data: bonds, error: null } : undefined
   };
 }
 
@@ -555,6 +559,103 @@ function validateStockGroups(board) {
   assert.equal(STOCK_GROUPS[STOCK_GROUPS.length - 1].key, "other");
 }
 
+/* 债券按地区分组，另有两组不属于任何地区：美债曲线各期限、债券基金份额价格。
+
+   这一类是全站唯一一个「同一个品类里摆着三种量纲」的地方——收益率百分数、
+   收益率百分数（另一种频率）、以及美元计价的基金份额价格。因此这里守的重点是
+   **别让它们混进同一组**：ETF 的 $88 一旦被摆进「美洲」和德国的 2.97% 并排，
+   读者会当成同一种数去比。 */
+function validateBondGroups(board) {
+  const bond = categoryOf(board, "bond");
+  const registered = BOND_GROUPS.map((group) => group.key);
+  const regions = ["americas", "europe", "asia", "oceania", "africa"];
+
+  assert.ok(bond.groups.length >= 4, "债券品类必须至少分出四组才值得摆分组条");
+  bond.rows.forEach((row) => {
+    assert.ok(registered.includes(row.group), `${row.name} 的分组 ${row.group} 未登记`);
+    assert.notEqual(row.group, "other",
+      `${row.name}（${row.symbol}）没有登记分组，掉进了「其他」`);
+  });
+
+  /* 美债曲线的 11 个期限必须全在 curve 组，一个都不许漏到地区组里去。 */
+  const curve = bond.rows.filter((row) => row.series && row.series.kind === "curve");
+  assert.equal(curve.length, 11, `美债曲线应有11个期限，实为 ${curve.length}`);
+  assert.ok(curve.every((row) => row.group === "curve"),
+    "美债曲线的期限必须全部落在「美债期限」组，不得混进按国别比较的地区组");
+
+  /* 基金份额价格必须全在 fund 组：它们的单位是美元，不是年化收益率。 */
+  const funds = bond.rows.filter((row) => row.extraText === "ETF代理");
+  assert.ok(funds.length > 0, "债券基金代理行不应为空");
+  assert.ok(funds.every((row) => row.group === "fund"),
+    "债券 ETF 的份额价格必须落在「基金代理」组——它是价格不是收益率，不能和各国收益率并排比");
+
+  /* 地区组里只能是各国主权债收益率，且逐行必须写明是相对上一观测、带出那一观测的日期。 */
+  const sovereign = bond.rows.filter((row) => regions.includes(row.group));
+  assert.ok(sovereign.length >= 20, `各国主权债收益率行数偏少：${sovereign.length}`);
+  sovereign.forEach((row) => {
+    assert.equal(row.series && row.series.kind, "bond",
+      `${row.name} 落在地区组里，却不是主权债收益率行`);
+    assert.equal(row.unit, "年化收益率", `${row.name} 的单位必须写明是年化收益率`);
+    assert.ok(/^\d+(\.\d+)?%$/.test(row.priceText),
+      `${row.name} 的读数必须是年化百分数，实为 ${row.priceText}`);
+    assert.ok(/较前一观测 .+（基点）/.test(row.changeBasis),
+      `${row.name} 的涨跌口径必须写明是相对上一观测的基点变化：${row.changeBasis}`);
+    assert.ok(row.change.text === "—" || /bp$/.test(row.change.text),
+      `${row.name} 的涨跌必须以基点表示，实为 ${row.change.text}`);
+    assert.ok(["月度收益率", "日频收益率"].includes(row.extraText),
+      `${row.name} 的「期限」列必须写明频率：${row.extraText}`);
+    assert.ok(row.frequency === "monthly" || row.frequency === "daily",
+      `${row.name} 的频率无效：${row.frequency}`);
+    assert.equal(row.extraText === "月度收益率", row.frequency === "monthly",
+      `${row.name} 页面上写的频率与数据字段对不上`);
+  });
+  /* 月频绝不能被说成日频：除欧元区AAA曲线一条外全是月频。 */
+  const daily = sovereign.filter((row) => row.frequency === "daily").map((row) => row.symbol);
+  assert.deepEqual(daily.filter((s) => s !== "ECB-EA-AAA-10Y"), [],
+    `只有欧元区AAA曲线可以是日频，多出：${daily}`);
+
+  /* 分组连续成段，段序与登记顺序一致；计数逐组可复算，加总等于该品类行数。 */
+  const seen = [];
+  bond.rows.forEach((row) => {
+    if (seen[seen.length - 1] !== row.group) seen.push(row.group);
+  });
+  assert.equal(seen.length, new Set(seen).size, "同一组的行必须连续，不得被别的组隔开");
+  assert.deepEqual(seen, registered.filter((key) => seen.includes(key)),
+    "分组在列表里的先后必须与登记顺序一致");
+  bond.groups.forEach((group) => {
+    assert.ok(group.count > 0, `${group.label} 没有行就不该出现在分组条上`);
+    assert.equal(group.count, bond.rows.filter((row) => row.group === group.key).length,
+      `${group.label} 的计数必须能由行逐条复算`);
+  });
+  assert.equal(bond.groups.reduce((sum, group) => sum + group.count, 0), bond.rows.length,
+    "分组计数之和必须等于债券品类的行数");
+
+  /* 上游声明了没登记的地区名时落进「其他」，不得凭空造组；曲线与基金按代码查表。 */
+  assert.equal(groupKeyOf("bond", "X", "不存在的地区"), "other", "未登记的地区名必须落进「其他」");
+  assert.equal(groupKeyOf("bond", "X", "europe"), "europe", "已登记的地区名按声明归组");
+  assert.equal(groupKeyOf("bond", "DGS10", ""), "curve", "美债期限按代码查登记表");
+  assert.equal(groupKeyOf("bond", "TLT", ""), "fund", "债券基金按代码查登记表");
+  /* 四个区间涨跌列在收益率行上必须是基点差，不是相对涨幅。这一条既守新加的各国
+     主权债，也守美债曲线那 11 行——把 3.05%→2.97% 写成 −2.62%，会被读成价格跌了 2.6%。 */
+  const dates = ["2025-06-01", "2025-12-31", "2026-05-01", "2026-06-01"];
+  const values = [2.52, 2.81, 3.05, 2.97];
+  assert.deepEqual(periodsFromSeries(dates, values, "monthly", true),
+    { w1: null, m1: -8, ytd: 16, y1: 45 }, "收益率的区间变化必须是基点差");
+  assert.deepEqual(periodsFromSeries(dates, values, "monthly", false),
+    { w1: null, m1: -2.62, ytd: 5.69, y1: 17.86 }, "非收益率仍按相对涨跌幅");
+  /* 基点是差值不是比值，因此基准为 0（负利率年代真实出现过）照样算得出，不该被吞掉。 */
+  assert.deepEqual(periodsFromSeries(["2025-06-01", "2026-06-01"], [0, 0.31], "monthly", true).y1,
+    31, "基准为0时基点差仍必须算得出");
+  assert.equal(periodsFromSeries(["2025-06-01", "2026-06-01"], [0, 0.31], "monthly", false).y1,
+    null, "相对涨跌幅在基准为0时无意义，必须留空");
+  /* 月频序列不给「每周」：往回推 7 天落到的还是上个月那个观测。 */
+  assert.equal(periodsFromSeries(dates, values, "monthly", true).w1, null,
+    "月频序列的「每周」必须留空，不得把月度变化当成周度");
+
+  assert.equal(BOND_GROUPS[0].key, "curve");
+  assert.equal(BOND_GROUPS[BOND_GROUPS.length - 1].key, "other");
+}
+
 /* 4 小时线：这一层唯一容易出错的地方是「把没有的东西画出来」和「把聚合说成原生」。
    前者靠 hourlyPoints 丢弃缺观测、靠区间按天数裁剪来守；后者靠页面披露来守，
    披露文案在 quote.html 之外没有第二处，这里只钉数据侧的行为。 */
@@ -636,9 +737,10 @@ function validateCommodityGroups(board) {
   });
   assert.equal(commodity.groups.reduce((sum, group) => sum + group.count, 0), commodity.rows.length,
     "分组计数之和必须等于该品类的行数：不得有行落在所有分组之外");
-  /* 目前只有商品与指数分了二级组；其余四类没登记分组表，必须返回空数组而不是
-     凭空生成分组条。加第三个分组品类时改这里的名单，不改断言的形状。 */
-  const GROUPED = ["commodity", "index", "stock"];
+  /* 没登记分组表的品类必须返回空数组，而不是凭空生成分组条。
+     「哪些品类分了组」从登记表现算，不在这里再抄一份名单——同一个常量抄在两处，
+     加第四个分组品类的那天就会有一处漏改（这已经是本仓库第四次遇到同一类错误）。 */
+  const GROUPED = Object.keys(GROUPS_BY_CATEGORY);
   board.categories.filter((category) => !GROUPED.includes(category.key)).forEach((category) => {
     assert.deepEqual(category.groups, [], `${category.label}尚未分组，不得凭空生成分组条`);
   });
@@ -781,6 +883,7 @@ async function main() {
   validateFourHourSeries();
   validateIndexGroups(board);
   validateStockGroups(board);
+  validateBondGroups(board);
   await validateFailureIsolation(group);
   validateStaleAndMissing(group);
   const counts = board.categories.map((category) => `${category.label}${category.rows.length}`).join(" · ");
@@ -801,6 +904,8 @@ async function main() {
     categoryOf(board, "index").groups.map((g) => g.label + g.count).join(" · ")}`);
   console.log(`- stock sub-groups by sector, every row registered: ${
     categoryOf(board, "stock").groups.map((g) => g.label + g.count).join(" · ")}`);
+  console.log(`- bond sub-groups: U.S. curve and fund proxies never mixed into the country regions: ${
+    categoryOf(board, "bond").groups.map((g) => g.label + g.count).join(" · ")}`);
   console.log("- four-hour layer: UTC-labelled buckets / gaps dropped / day-window slicing / distinct range keys: PASS");
 }
 
