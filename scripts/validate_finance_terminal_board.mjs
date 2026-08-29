@@ -285,7 +285,7 @@ function validateCalibration(board) {
     "加密涨跌是24小时口径，必须与股票当日口径分开标注");
   assert.ok(bond.rows.some((row) => row.change.text.endsWith("bp")),
     "美债收益率必须按基点显示，不得用百分比相对变化冒充");
-  assert.equal(STOCK_ROW_LIMIT, 40, "股票行数必须与公司榜日线历史覆盖的标的数一致");
+  assert.equal(STOCK_ROW_LIMIT, 100, "股票行数改动是有意的才该发生（同步值由 Python 侧跨语言校验）");
   assert.ok(stock.rows.length <= STOCK_ROW_LIMIT);
   assert.ok(stock.rows.every((row) => row.series && row.series.kind === "company"),
     "股票行必须指向公司榜日线历史");

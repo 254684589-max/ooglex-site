@@ -472,7 +472,7 @@ def main() -> None:
         if outcome.get("ok"):
             print(f"[OK] {symbol:<8} {label:<26} {outcome['asOf']}  "
                   f"{outcome['value']:>13,.4f}  n={outcome['points']:<5} "
-                  f"{outcome.get('currency', '')} {outcome.get('name', '')[:26]}")
+                  f"{(outcome.get('currency') or '')} {(outcome.get('name') or '')[:26]}")
         else:
             print(f"[XX] {symbol:<8} {label:<26} {outcome.get('why', '')}")
         time.sleep(GAP)
@@ -517,10 +517,12 @@ def main() -> None:
         report["index"][symbol] = dict(outcome, label=label)
         if outcome.get("ok"):
             flag = "OK" if outcome.get("type") == "INDEX" else "??"
+            # 上游会把 currency/type 显式返回成 null；dict.get 的默认值对「键存在但为 None」
+            # 不生效，直接拿去格式化会抛 TypeError 并弄挂整个探测。一律 or "" 兜住。
             print(f"[{flag}] {symbol:<12} {label:<22} {outcome['asOf']}  "
                   f"{outcome['value']:>13,.2f}  n={outcome['points']:<4} "
-                  f"{outcome.get('currency',''):<4} type={outcome.get('type',''):<6} "
-                  f"{outcome.get('name','')[:24]}")
+                  f"{(outcome.get('currency') or ''):<4} type={(outcome.get('type') or ''):<6} "
+                  f"{(outcome.get('name') or '')[:24]}")
         else:
             print(f"[XX] {symbol:<12} {label:<22} {outcome.get('why','')}")
         time.sleep(GAP)
@@ -535,8 +537,8 @@ def main() -> None:
         report["hourly"][symbol] = dict(outcome, label=label)
         if outcome.get("ok"):
             print(f"[OK] {symbol:<10} {label:<24} {outcome['bars']:>5}根 "
-                  f"跨{outcome['spanDays']:>6}天 粒度={outcome.get('granularity',''):<4} "
-                  f"{outcome.get('currency','')} {outcome.get('name','')[:22]}")
+                  f"跨{outcome['spanDays']:>6}天 粒度={(outcome.get('granularity') or ''):<4} "
+                  f"{(outcome.get('currency') or '')} {(outcome.get('name') or '')[:22]}")
             print(f"     {outcome['first']} → {outcome['last']}  最新={outcome['value']}")
         else:
             print(f"[XX] {symbol:<10} {label:<24} {outcome.get('why','')}")

@@ -352,7 +352,9 @@ def run_company_builder_contract_tests() -> None:
 
     require(module.yf_daily_closes(EmptySession(), "TEST") == [],
             "取数失败必须返回空序列，由调用方保留上次历史")
-    require(module.HISTORY_SYMBOLS == 40 and module.HISTORY_POINTS == 260,
+    # 数值改动必须是有意的才该发生；「与行情板那一侧相等」由
+    # _require_stock_row_limit_matches_history() 跨语言强制，不再靠两处各钉一个字面量。
+    require(module.HISTORY_SYMBOLS == 100 and module.HISTORY_POINTS == 260,
             "公司日线覆盖标的数与滚动长度必须与行情板契约一致")
     require("history" in module.HISTORY_PATH and module.HISTORY_PATH.endswith(".json"),
             "公司日线必须写入独立的history.json，不混进data.json")
@@ -395,6 +397,24 @@ def run_shared_history_contract_tests() -> None:
                     f"{path.name}标为pending时不得含有任何观测值")
     print("Shared rolling history and pending placeholders: PASS")
 
+
+def _require_stock_row_limit_matches_history() -> None:
+    """行情板的股票行数必须等于公司管道存日线的家数。
+
+    这两个数分别写在 JS 与 Python 里。只改一处，页面上后面几十行就会显示「无序列」——
+    页面不会报错，只是静静地少了走势，没人会立刻发现。同类的「常量抄了两份」在本仓库
+    已经出过三次（健康记录数、加载器资源数、盘中桶数），所以这里不再各钉一个字面量，
+    而是让两处必须相等。
+    """
+    board = BOARD_DATA_MODULE.read_text(encoding="utf-8")
+    match = re.search(r"export const STOCK_ROW_LIMIT\s*=\s*(\d+)", board)
+    require(match is not None, "行情板数据层里找不到 STOCK_ROW_LIMIT，同步校验会失效")
+    builder = (ROOT / "scripts" / "companies" / "build_companies.py").read_text(encoding="utf-8")
+    history = re.search(r"^HISTORY_SYMBOLS\s*=\s*(\d+)", builder, re.M)
+    require(history is not None, "公司管道里找不到 HISTORY_SYMBOLS，同步校验会失效")
+    require(int(match.group(1)) == int(history.group(1)),
+            f"行情板股票行数({match.group(1)})与公司管道存日线的家数({history.group(1)})不一致："
+            "多出来的那几行会显示「无序列」")
 
 def _index_registry(name: str) -> set[str]:
     """从行情板数据层里读回某张登记表的代码集合。
@@ -470,6 +490,7 @@ def run_asset_tracker_builder_contract_tests() -> None:
     require(categories == {"equity": 64, "commodity": 36, "fx": 22, "bond": 11},
             f"跨资产四类条数与登记不一致：{categories}")
     _require_index_registration(module.ASSETS)
+    _require_stock_row_limit_matches_history()
     # 2026-08-25 所有者决定：撤下QQQ代理卡后纳斯达克改由综合指数^IXIC进入指数类；
     # 道指仍由DIA免费组件展示，纳斯达克100（NDX）不再进入本站，两者都不得混进清单。
     require("^IXIC" in universe_symbols,

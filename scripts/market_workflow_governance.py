@@ -79,6 +79,9 @@ DATASET_RULES = {
             "apps/companies/health.json",
             "apps/companies/history.json",
             "apps/companies/history-monthly.json",
+            # 标普500快照与公司榜同一次取数、同一条管道产出，因此归它所有；
+            # 热力图页面只读这一个文件，不另开一条管道重复取五百只股票。
+            "apps/companies/sp500.json",
         ),
         logo_directory="apps/companies/logos",
     ),

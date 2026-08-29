@@ -15,6 +15,8 @@
 - 有效报价过少（疑似被限流）或榜首市值离谱时，保留上次 data.json 不覆盖，绝不用空/脏数据洗掉好数据。
 由 .github/workflows/companies.yml 每日运行并提交回仓库。
 """
+import csv
+import io
 import json
 import os
 import sys
@@ -42,6 +44,16 @@ from market_source_health import (  # noqa: E402
 )
 
 OUT_PATH = os.path.join("apps", "companies", "data.json")
+SP500_PATH = os.path.join("apps", "companies", "sp500.json")
+# 成分名单来自 datahub 的公开数据集（CSV，免密钥）。探测过：503 个代码，与标普500的
+# 份额类数量一致（500 家公司、503 个代码，GOOGL/GOOG 这类双份额各占一个）。
+SP500_LIST_URL = ("https://raw.githubusercontent.com/datasets/s-and-p-500-companies"
+                  "/main/data/constituents.csv")
+SP500_NOTE = ("标普500成分股的当日市值与涨跌，与全球公司榜同一次取数、同一来源。"
+              "成分名单取自 datahub 公开数据集，站内按 Yahoo 的代码写法归一化后匹配；"
+              "名单里站内没有行情的成分股逐个列在 missing 里，不用别的公司顶替、也不静默丢弃。"
+              "市值为「最新价 × 流通股数」，与指数公司自己按自由流通量加权的口径不同，"
+              "因此这里只用于相对大小的可视化，不是指数权重。")
 HEALTH_PATH = os.path.join("apps", "companies", "health.json")
 HISTORY_PATH = os.path.join("apps", "companies", "history.json")
 LONG_HISTORY_PATH = os.path.join("apps", "companies", "history-monthly.json")
@@ -49,7 +61,10 @@ LONG_HISTORY_NOTE = ("市值前列上市公司自身的月线收盘，用于 5 �
                      "起始月即该公司在数据源上可得的最早月份。数据源对超长区间会自行降采样，"
                      "部分公司的早年只有季度末观测，缺月一律留空不做前向填充，"
                      "页面按真实时间轴作图；本轮未取到的公司沿用上次序列。")
-HISTORY_SYMBOLS = 40     # 只给市值最高的一段存日线：金融终端品类行情板按这份历史画走势
+HISTORY_SYMBOLS = 100    # 只给市值最高的一段存日线：金融终端品类行情板按这份历史画走势。
+                         # 100 是与行情板股票行数对齐的：每一行都要画得出迷你走势，
+                         # 不能出现一半有序列、一半写「无序列」。每家约 1.7KB，100 家约 170KB，
+                         # 且这份历史只在打开股票品类时才按需加载。
 HISTORY_POINTS = 260     # 滚动保留约一年交易日，文件大小恒定而非逐日增长
 HISTORY_NOTE = ("市值前列上市公司自身收盘价的滚动历史，与 data.json 同一次取数、同一来源；"
                 "共享日期轴上该标的当日无收盘则为 null，不做前向填充。"
@@ -61,6 +76,99 @@ YF_HOSTS = ["query1.finance.yahoo.com", "query2.finance.yahoo.com"]
 YF_HEADERS = {"User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                              "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"), "Accept": "application/json"}
 FX_FALLBACK = {"USD": 1.0, "SAR": 0.26667, "KRW": 0.0006408}  # 本币→美元（取不到实时汇率时兜底）
+
+
+def sp500_symbol(raw):
+    """把名单里的代码写成 Yahoo 的写法：类别股用连字符，BRK.B → BRK-B。
+
+    不归一化就会把 BRK.B、BF.B 判成「站内没有」，而站内其实有 BRK-B、BF-B——
+    同一家公司因为一个分隔符被算成缺失，得出的覆盖度是假的。
+    """
+    return str(raw or "").strip().upper().replace(".", "-")
+
+
+def fetch_sp500_members(session):
+    """取标普500成分名单，返回 (代码集合, 逐代码的GICS行业)；取不到返回 (None, None)。
+
+    取不到就沿用上一份 sp500.json 的名单并标 stale：成分名单一年只变动几次，
+    沿用一天远好过当天把整张热力图清空。
+    """
+    try:
+        response = session.get(SP500_LIST_URL, timeout=20)
+        response.raise_for_status()
+        rows = list(csv.DictReader(io.StringIO(response.text)))
+    except Exception as exc:                       # noqa: BLE001
+        print(f"[!!] 标普500成分名单取数失败：{str(exc)[:80]}")
+        return None, None
+    members, sectors = set(), {}
+    for row in rows:
+        symbol = sp500_symbol(row.get("Symbol"))
+        if not symbol:
+            continue
+        members.add(symbol)
+        sectors[symbol] = (row.get("GICS Sector") or "").strip()
+    if len(members) < 400:
+        print(f"[!!] 成分名单只有 {len(members)} 条，明显不完整，按取数失败处理")
+        return None, None
+    print(f"标普500成分名单：{len(members)} 个代码")
+    return members, sectors
+
+
+def previous_sp500_members():
+    """上一份 sp500.json 里的成分代码，供本轮取不到名单时沿用。"""
+    try:
+        with open(SP500_PATH, encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except (OSError, ValueError):
+        return set()
+    return {row["symbol"] for row in payload.get("members") or [] if row.get("symbol")}
+
+
+def write_sp500(listed, members, member_sectors, stale, updated_at, as_of, universe):
+    """写标普500的当日快照：热力图按行业分块、按市值定面积、按当日涨跌上色。
+
+    只收「名单里有、且站内当天确实取到行情」的公司。名单里站内没有行情的逐个列进
+    missing，页面照实显示覆盖了多少家——一张少了几家还叫「标普500」的图是在骗人。
+    """
+    sector_en = {u["symbol"]: u.get("sector") or "" for u in universe if u.get("symbol")}
+    rows = []
+    for row in listed:
+        if not row.get("sp500") or not isinstance(row.get("marketCap"), (int, float)):
+            continue
+        if not (row["marketCap"] > 0):
+            continue
+        rows.append({
+            "symbol": row["symbol"], "name": row["name"], "nameEn": row["nameEn"],
+            "marketCap": row["marketCap"], "price": row["price"],
+            "changePct": row["changePct"],
+            "sector": row["sector"],
+            "sectorEn": member_sectors.get(row["symbol"]) or sector_en.get(row["symbol"]) or "",
+            "logo": row.get("logo"), "stale": bool(row.get("stale")),
+        })
+    rows.sort(key=lambda r: r["marketCap"], reverse=True)
+    for index, row in enumerate(rows, 1):
+        row["rank"] = index
+    covered = {row["symbol"] for row in rows}
+    missing = sorted(members - covered)
+    payload = {
+        "updatedAt": updated_at,
+        "asOf": as_of,
+        "frequency": "daily",
+        "source": "Yahoo Finance",
+        "listSource": "datahub / s-and-p-500-companies",
+        "listStale": bool(stale),
+        "status": "ok" if not missing and not stale else "partial",
+        "constituents": len(members),
+        "count": len(rows),
+        "missing": missing,
+        "note": SP500_NOTE + ("（本轮成分名单未取到，沿用上一份。）" if stale else ""),
+        "members": rows,
+    }
+    os.makedirs(os.path.dirname(SP500_PATH), exist_ok=True)
+    with open(SP500_PATH, "w", encoding="utf-8") as handle:
+        json.dump(payload, handle, ensure_ascii=False, separators=(",", ":"))
+    print(f"写入 {SP500_PATH}：{len(rows)}/{len(members)} 家成分股，"
+          f"缺 {len(missing)}{'（名单沿用上一份）' if stale else ''}")
 
 
 def yf_chart(session, symbol):
@@ -316,6 +424,16 @@ def build():
         keep(f"有效报价过少（{fresh}/{len(universe)}），未达到50%发布门槛", listed)
         return
 
+    # 成分标记打在全部已取到的上市公司上，而不是截断后的前500：标普500里有几十家
+    # 排不进全球市值前500，只标截断后的那批会把它们漏掉。
+    members, member_sectors = fetch_sp500_members(session)
+    members_stale = members is None
+    if members_stale:
+        members = previous_sp500_members()
+        member_sectors = {}
+    for row in listed:
+        row["sp500"] = row["symbol"] in members
+
     listed.sort(key=lambda r: r["marketCap"] or 0, reverse=True)
     if not listed or not (300 <= listed[0]["marketCap"] <= 20000):
         keep(f"体检未过：榜首市值 ${listed[0]['marketCap'] if listed else '—'}B", listed)
@@ -363,6 +481,9 @@ def build():
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+    write_sp500(listed, members, member_sectors, members_stale, run_updated_at,
+                max(fresh_as_of)[:10], universe)
+
     health = make_source_health(
         "companies",
         published_rows=rows,

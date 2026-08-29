@@ -35,6 +35,20 @@
           "<small style='color:" + col + "'>" + esc(r.labelZh || "") + "</small></div>" +
           row("偏弱信号", weak || "—", "dim");
       } },
+    // 标普500热力图读公司管道另出的那份成分股快照（sp500.json），不是公司榜本身。
+    { folder: "heatmap", dataFolder: "companies", dataFile: "sp500.json",
+      en: "S&P 500 Heatmap", name: "标普500热力图",
+      tag: "按行业分块 · 按市值定面积 · 按当日涨跌上色",
+      render: function (d) {
+        var m = (d.members || []).filter(function (x) { return isNum(x.changePct); });
+        if (!m.length) return "<div class='loading'>暂无数据</div>";
+        var up = m.filter(function (x) { return x.changePct > 0; }).length;
+        var top = m.slice().sort(function (x, y) { return y.changePct - x.changePct; })[0];
+        return "<div class='big'>" + (d.count || m.length) + "<small>家成分股（共 " +
+            (d.constituents || "—") + " 个成分代码）</small></div>" +
+          row("今日上涨", up + " / " + m.length, "up") +
+          row("领涨", esc(top.name || top.symbol) + " " + pct(top.changePct), "up");
+      } },
     // 全球市场行情自己不产数据文件：它把跨资产、公司榜、资产榜与美债曲线四条管道
     // 重新编排成六大品类，这里的预览读它体量最大的那一条（跨资产），并写明只是其中一部分。
     { folder: "markets", dataFolder: "asset-tracker", en: "Global Markets", name: "全球市场行情",
@@ -170,7 +184,9 @@
     }
     return _cache[url];
   }
-  function getData(folder) { return getJSON("../" + folder + "/data.json"); }
+  /* 多数应用的预览读同目录下的 data.json；个别应用（标普500热力图）读同一条管道
+     另出的第二个文件，因此允许逐卡指定文件名，默认仍是 data.json。 */
+  function getData(folder, file) { return getJSON("../" + folder + "/" + (file || "data.json")); }
 
   function card(app) {
     var a = document.createElement("a");
@@ -180,7 +196,7 @@
       "<div class='body'><div class='loading'>加载中…</div></div>" +
       "<div class='upd'>—</div>";
     var body = a.querySelector(".body"), upd = a.querySelector(".upd");
-    getData(app.dataFolder || app.folder)
+    getData(app.dataFolder || app.folder, app.dataFile)
       .then(function (d) {
         try { body.innerHTML = app.render(d); } catch (e) { body.innerHTML = "<div class='loading'>预览不可用</div>"; }
         upd.textContent = relTime(d.updatedAt);

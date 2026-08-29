@@ -14,8 +14,10 @@ export const BOARD_CATEGORIES = Object.freeze([
 ]);
 
 /* 股票只取市值最高的一段：与公司榜日线历史覆盖的标的数一致，让每一行都能画走势；
-   全部500家仍在全球公司榜页面完整展示。 */
-export const STOCK_ROW_LIMIT = 40;
+   全部500家仍在全球公司榜页面完整展示，标普500成分另有热力图页面。
+   100 与管道里的 HISTORY_SYMBOLS 是同一个数——两处必须一致，否则后面几十行会
+   显示「无序列」。契约里钉住了这一点。 */
+export const STOCK_ROW_LIMIT = 100;
 
 /* 指数所属地区只用于分组说明，不参与任何计算。 */
 const INDEX_REGION = Object.freeze({
