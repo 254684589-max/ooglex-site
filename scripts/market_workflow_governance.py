@@ -73,6 +73,14 @@ DATASET_RULES = {
         "apps/commodities/health.json",
         "apps/commodities/history.json",
     )),
+    # 各国主权债收益率：FRED 转发的 OECD 长期国债收益率（月频）+ ECB 数据门户。
+    # 它只允许动自己这三个文件；美债收益率曲线属于宏观雷达、债券 ETF 属于跨资产管道，
+    # 两者的任何文件都不在可写范围内。
+    "bonds": DatasetRule((
+        "apps/bonds/data.json",
+        "apps/bonds/health.json",
+        "apps/bonds/history.json",
+    )),
     "companies": DatasetRule(
         (
             "apps/companies/data.json",

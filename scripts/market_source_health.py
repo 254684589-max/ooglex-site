@@ -80,6 +80,37 @@ DATASET_SPECS: dict[str, dict[str, Any]] = {
             {"id": "previous-snapshot", "kind": "previous-snapshot", "label": "有效报价低于50%或体检失败时保留完整旧快照"},
         ],
     },
+    "bonds": {
+        # 与 scripts/bonds/build_bonds.py 的 SERIES + ECB_SERIES 条数保持一致。
+        # 每一条都在 Actions 机房实测取到过、且末次观测确实是近月才登记。
+        "expectedRecords": 35,
+        "sources": [
+            {
+                "id": "fred-oecd",
+                "name": "FRED / OECD Main Economic Indicators",
+                "role": "primary",
+                "matches": ["FRED / OECD Main Economic Indicators"],
+                "recordModes": ["market", "fallback", "unknown", "unavailable"],
+                "successModes": ["market"],
+            },
+            {
+                "id": "ecb-data-portal",
+                "name": "ECB Data Portal",
+                "role": "primary",
+                "matches": ["ECB Data Portal"],
+                "recordModes": ["market", "fallback", "unknown", "unavailable"],
+                "successModes": ["market"],
+            },
+        ],
+        "recovery": [
+            {"id": "keyless-export", "kind": "alternate-endpoint",
+             "label": "缺少FRED_API_KEY时改读免密钥的fredgraph.csv公开导出"},
+            {"id": "previous-record", "kind": "previous-record",
+             "label": "单条序列失败时沿用上一份有效观测并标记过期"},
+            {"id": "previous-snapshot", "kind": "previous-snapshot",
+             "label": "本轮零条成功时保留完整旧快照，不用空数据覆盖"},
+        ],
+    },
     "commodities": {
         # 与 scripts/commodities/build_commodities.py 的 SERIES 清单条数保持一致。
         # 每一条都在 Actions 机房实测取到过才登记，因此这里不留历史值备选。

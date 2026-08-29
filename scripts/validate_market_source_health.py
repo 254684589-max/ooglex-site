@@ -41,6 +41,11 @@ DATASETS = {
         "health": ROOT / "apps" / "commodities" / "health.json",
         "rowsKey": "series",
     },
+    "bonds": {
+        "data": ROOT / "apps" / "bonds" / "data.json",
+        "health": ROOT / "apps" / "bonds" / "health.json",
+        "rowsKey": "series",
+    },
 }
 
 
