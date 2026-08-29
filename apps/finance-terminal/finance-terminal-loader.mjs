@@ -33,10 +33,11 @@ const RESOURCE_GROUPS = Object.freeze({
     "assetTracker", "assetRanking", "assetRankingCrypto", "companies", "macro", "macroCurve",
     "commodities"
   ]),
-  /* 地缘风险定价的能源与避险两条轴读跨资产管道的近一月涨幅：该文件在品类行情与
-     市场研究两组里已经在取，加载器按资源键去重，总览里不会因此多发一次请求。 */
+  /* 地缘风险定价的能源与避险两条轴读跨资产管道的近一月涨幅。总览右下角的事件
+     工作区同时镜像经济日历里已经发布的真实事件，所以把calendar放在同一延迟组：
+     它仍在首屏双帧绘制之后才取，事件资讯分区再打开时按资源键复用，不会重复请求。 */
   risk: Object.freeze([
-    "macro", "fearGreed", "fearGreedHealth", "ofr", "ofrHealth", "assetTracker"
+    "macro", "fearGreed", "fearGreedHealth", "ofr", "ofrHealth", "assetTracker", "calendar"
   ]),
   research: Object.freeze([
     "assetTracker", "assetTrackerHealth", "assetRanking", "assetRankingHealth",

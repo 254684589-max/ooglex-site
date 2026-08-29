@@ -39,40 +39,42 @@ def expect_error(callback, message: str) -> None:
     raise AssertionError(message)
 
 
-# 夹具跟着当前展示决定走：四档视口 × 已登记代理项数（2026-08-25 起为DIA、GLD两项）。
+# 夹具跟着当前展示决定走：五档视口 × 已登记代理项数（2026-08-25 起为DIA、GLD两项）。
 TOTAL = EXPECTED_VIEWPORTS * EXPECTED_PROXY_COUNT
 
 
-def evidence(generated_at: str, mounted: int, loaded: int, failed: int, category: str | None) -> dict:
+def evidence(generated_at: str, mounted: int, loaded: int, failed: int,
+             category: str | None, viewport_count: int = EXPECTED_VIEWPORTS) -> dict:
+    total = viewport_count * EXPECTED_PROXY_COUNT
     failure_categories = {key: 0 for key in ("dns", "tls", "connection", "timeout", "blocked", "other")}
     if category:
         failure_categories[category] = failed
     diagnosis_counts = {
-        "healthy": EXPECTED_VIEWPORTS if mounted == TOTAL and loaded == EXPECTED_VIEWPORTS else 0,
-        "degraded": EXPECTED_VIEWPORTS if 0 < mounted < TOTAL and loaded == EXPECTED_VIEWPORTS else 0,
-        "unavailable": EXPECTED_VIEWPORTS if mounted == 0 else 0,
+        "healthy": viewport_count if mounted == total and loaded == viewport_count else 0,
+        "degraded": viewport_count if 0 < mounted < total and loaded == viewport_count else 0,
+        "unavailable": viewport_count if mounted == 0 else 0,
         "unknown": 0,
     }
-    if sum(diagnosis_counts.values()) != EXPECTED_VIEWPORTS:
-        diagnosis_counts["degraded"] = EXPECTED_VIEWPORTS - sum(diagnosis_counts.values())
-    fallback = TOTAL - mounted
+    if sum(diagnosis_counts.values()) != viewport_count:
+        diagnosis_counts["degraded"] = viewport_count - sum(diagnosis_counts.values())
+    fallback = total - mounted
     return {
         "schemaVersion": 6,
         "generatedAt": generated_at,
         "scope": "finance-terminal-free-proxy-runtime",
         "source": "Chrome DevTools Protocol / static branch checkout",
-        "viewports": [{} for _ in range(EXPECTED_VIEWPORTS)],
+        "viewports": [{} for _ in range(viewport_count)],
         "summary": {
-            "viewportCount": EXPECTED_VIEWPORTS,
+            "viewportCount": viewport_count,
             "proxyCountPerViewport": EXPECTED_PROXY_COUNT,
-            "observationCount": TOTAL,
+            "observationCount": total,
             "mountedObservations": mounted,
             "fallbackObservations": fallback,
             "verifiedFallbackObservations": fallback,
             "hiddenFallbackObservations": mounted,
             "providerScriptLoadedViewports": loaded,
             "providerScriptFailedViewports": failed,
-            "providerScriptPendingViewports": EXPECTED_VIEWPORTS - loaded - failed,
+            "providerScriptPendingViewports": viewport_count - loaded - failed,
             "providerScriptNotObservedViewports": 0,
             "providerScriptFailureCategories": failure_categories,
             "diagnosisCounts": diagnosis_counts,
@@ -85,6 +87,15 @@ def evidence(generated_at: str, mounted: int, loaded: int, failed: int, category
 
 require(cycle_date("2026-08-13T20:59:59Z") == "2026-08-12", "21:00前应属于上一周期")
 require(cycle_date("2026-08-13T21:00:00Z") == "2026-08-13", "21:00起应属于本周期")
+
+legacy_viewports = 4
+legacy_total = legacy_viewports * EXPECTED_PROXY_COUNT
+legacy = evidence("2026-08-12T22:00:00Z", legacy_total, legacy_viewports, 0, None,
+                  viewport_count=legacy_viewports)
+require(summarize_evidence(legacy)["summary"]["viewportCount"] == legacy_viewports,
+        "扩到五档后仍必须接受历史四档证据并保留其原始分母")
+unsupported = evidence("2026-08-12T22:00:00Z", 6, 3, 0, None, viewport_count=3)
+expect_error(lambda: summarize_evidence(unsupported), "未登记的三档证据不得进入历史")
 
 redirect = SafeArtifactRedirect().redirect_request(
     urllib.request.Request("https://api.github.com/repos/example/repo/actions/artifacts/1/zip", headers={

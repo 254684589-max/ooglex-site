@@ -16,7 +16,7 @@ import {
 } from "./finance_terminal_browser_evidence.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const WIDTHS = [360, 768, 1280, 1672];
+const WIDTHS = [360, 768, 1280, 1672, 2048];
 const RESULT_ID = "finance-terminal-regression-result";
 const CRITICAL_REQUEST_KEYS = [
   "$config", "macro", "macroHealth", "assetRanking", "assetRankingHealth", "marketLicense"
@@ -481,7 +481,7 @@ async function validateDeferredLoading(client, baseUrl, timeoutMs) {
 }
 
 async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
-  const viewportHeight = width === 1672 ? 941 : height;
+  const viewportHeight = width === 1672 ? 941 : width === 2048 ? 1219 : height;
   await client.send("Emulation.setDeviceMetricsOverride", {
     width,
     height: viewportHeight,
@@ -577,8 +577,8 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
   }
   const layout = await client.send("Page.getLayoutMetrics");
   const content = layout.cssContentSize || layout.contentSize;
-  const capture = width === 1672
-    ? { width: 1672, height: 941 }
+  const capture = width === 1672 || width === 2048
+    ? { width, height: viewportHeight }
     : { width: Math.ceil(content.width), height: Math.ceil(content.height) };
   const screenshot = await client.send("Page.captureScreenshot", {
     format: "png",

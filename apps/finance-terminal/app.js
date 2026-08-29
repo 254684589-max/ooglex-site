@@ -3019,15 +3019,21 @@
     return card;
   }
 
-  /* 「专业终端」入口卡的指数预览：跨资产管道已经在 risk 组里取过，这里只镜像它，
-     不新增请求。模块按需导入，失败时预览保持空态并写明管道不可用。 */
-  function renderGatewayIndexPreview(group) {
+  /* 三张入口卡共用risk组已经取回的跨资产、宏观和经济日历快照。日历在首屏双帧绘制
+     之后才随risk组加载，进入事件资讯时按资源键复用；预览不建立第二套事实来源。 */
+  function renderGatewayWorkspacePreview(group) {
     var tracker = group && group.assetTracker ? group.assetTracker : {};
+    var macro = group && group.macro ? group.macro : {};
+    var calendar = group && group.calendar ? group.calendar : {};
     import("./finance-terminal-gateway-preview.mjs").then(function (mod) {
       mod.renderGatewayPreview({
         document: document,
         tracker: tracker.data || null,
-        error: tracker.error || null
+        trackerError: tracker.error || null,
+        macro: macro.data || null,
+        macroError: macro.error || null,
+        calendar: calendar.data || null,
+        calendarError: calendar.error || null
       });
     }).catch(function () {});
   }
@@ -3435,7 +3441,7 @@
           }
           if (name === "risk") {
             riskSources = group;
-            renderGatewayIndexPreview(group);
+            renderGatewayWorkspacePreview(group);
             return loadSectionView(name).then(function () {
               return buildRiskCards(group);
             });
