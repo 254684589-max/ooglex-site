@@ -275,6 +275,33 @@ def probe_sp500(name: str, url: str) -> dict:
     }
 
 
+def probe_sp500_coverage() -> dict:
+    """把成分名单与站内 universe.json 对一遍，报覆盖度与缺口。
+
+    universe.json 里每条都带流通股数，市值就是「价 × 股数」；名单里有、清单里没有的
+    那几家算不出市值，也就进不了热力图——这个缺口必须量出来并写到页面上。
+    """
+    import csv, io, os.path
+    url = SP500_SOURCES[0][1]
+    try:
+        text = get_text(url)
+    except (error.HTTPError, error.URLError, ValueError) as exc:
+        return {"ok": False, "why": f"{type(exc).__name__}: {str(exc)[:60]}"}
+    rows = list(csv.DictReader(io.StringIO(text)))
+    members = {r["Symbol"].strip(): r for r in rows if r.get("Symbol")}
+    here = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(here, "companies", "universe.json"), encoding="utf-8") as handle:
+        universe = json.load(handle)
+    known = {u["symbol"] for u in universe if u.get("symbol")}
+    us_known = {u["symbol"] for u in universe if u.get("country") == "US"}
+    missing = sorted(set(members) - known)
+    return {
+        "ok": True, "total": len(members), "covered": len(set(members) & known),
+        "missing": missing, "extraUS": sorted(us_known - set(members)),
+        "sectors": sorted({(r.get("GICS Sector") or "").strip() for r in rows if r.get("GICS Sector")}),
+    }
+
+
 def probe_index(symbol: str) -> dict:
     """指数候选：除了「取不取得到」，还要确认它到底是不是一条指数。
 
@@ -468,6 +495,17 @@ def main() -> None:
     if len(ok_lists) > 1:
         print(f"     取到 {len(ok_lists)} 份名单，条数：",
               {k: report["sp500"][k]["count"] for k in ok_lists})
+    # 覆盖度：热力图能不能诚实地叫「标普500」，取决于站内清单盖住了多少成分股。
+    # 盖不住的必须在页面上写出来，而不是画一张少了几十家的图还叫标普500。
+    coverage = probe_sp500_coverage()
+    report["sp500Coverage"] = coverage
+    if coverage.get("ok"):
+        print(f"     覆盖度：站内 universe.json 盖住 {coverage['covered']}/{coverage['total']} 个成分代码；"
+              f"缺 {len(coverage['missing'])} 个")
+        print(f"     缺的（前25）：{', '.join(coverage['missing'][:25])}")
+        print(f"     站内有、但已不在成分名单里的（前15）：{', '.join(coverage['extraUS'][:15])}")
+    else:
+        print(f"     覆盖度未能计算：{coverage.get('why', '')}")
 
     print()
     print("=" * 78)
