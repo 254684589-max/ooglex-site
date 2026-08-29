@@ -396,6 +396,48 @@ def run_shared_history_contract_tests() -> None:
     print("Shared rolling history and pending placeholders: PASS")
 
 
+def _index_registry(name: str) -> set[str]:
+    """从行情板数据层里读回某张登记表的代码集合。
+
+    找不到这张表就直接失败，而不是当作空表放行——静默失效的校验比没有校验更糟：
+    改名或重构会让它变成永远通过。
+    """
+    source = BOARD_DATA_MODULE.read_text(encoding="utf-8")
+    marker = f"const {name} = Object.freeze({{"
+    start = source.find(marker)
+    require(start >= 0, f"行情板数据层里找不到登记表 {name}，指数登记校验会失效")
+    end = source.find("});", start)
+    require(end > start, f"登记表 {name} 的字面量没有正常闭合")
+    body = source[start + len(marker):end]
+    body = re.sub(r"/\*.*?\*/", " ", body, flags=re.S)      # 去掉块注释里的中文，免得被当成键
+    # 键有两种写法：带引号的 "^GSPC" 与裸标识符 EPOL。裸标识符一行可以写好几个，
+    # 因此按「前面是 { 或 ,」来断，不能按行首断——那样一行里只认得出第一个。
+    normalized = "," + body
+    return (set(re.findall(r'"([^"]+)"\s*:', normalized))
+            | set(re.findall(r"[{,]\s*([A-Za-z_$][\w$]*)\s*:", normalized)))
+
+
+def _require_index_registration(assets) -> None:
+    """每一个可能落进快照的指数代码，都必须登记了地区与分组。
+
+    「可能落进快照」包括候选列表里的每一个代码：主代码取不到时，落地的是回退或代理
+    那一行，只登记主代码会让页面上的「地区」空着、分组掉进「其他」。
+    """
+    regions = _index_registry("INDEX_REGION")
+    groups = _index_registry("INDEX_GROUP")
+    candidates: list[str] = []
+    for item in assets:
+        if item.get("cat") != "equity":
+            continue
+        for entry in item.get("syms", []):
+            candidates.append(entry if isinstance(entry, str) else entry.get("sym", ""))
+    missing_region = sorted({s for s in candidates if s and s not in regions})
+    missing_group = sorted({s for s in candidates if s and s not in groups})
+    require(not missing_region,
+            f"这些指数代码没有登记地区，页面上「地区」列会是空的：{missing_region}")
+    require(not missing_group,
+            f"这些指数代码没有登记分组，会掉进「其他」：{missing_group}")
+
 def _first_symbol(item: dict) -> str:
     """取标的首选代码；候选可以是字符串或 {sym, note} 字典。"""
     candidate = item["syms"][0]
@@ -419,14 +461,15 @@ def run_asset_tracker_builder_contract_tests() -> None:
 
     universe_names = [item["name"] for item in module.ASSETS]
     universe_symbols = [_first_symbol(item) for item in module.ASSETS]
-    require(len(module.ASSETS) == 107, f"跨资产清单条数应为107，当前{len(module.ASSETS)}")
+    require(len(module.ASSETS) == 133, f"跨资产清单条数应为133，当前{len(module.ASSETS)}")
     require(len(set(universe_names)) == len(universe_names), "跨资产标的名称必须唯一")
     require(len(set(universe_symbols)) == len(universe_symbols), "跨资产首选代码必须唯一")
     categories = {}
     for item in module.ASSETS:
         categories[item["cat"]] = categories.get(item["cat"], 0) + 1
-    require(categories == {"equity": 38, "commodity": 36, "fx": 22, "bond": 11},
+    require(categories == {"equity": 64, "commodity": 36, "fx": 22, "bond": 11},
             f"跨资产四类条数与登记不一致：{categories}")
+    _require_index_registration(module.ASSETS)
     # 2026-08-25 所有者决定：撤下QQQ代理卡后纳斯达克改由综合指数^IXIC进入指数类；
     # 道指仍由DIA免费组件展示，纳斯达克100（NDX）不再进入本站，两者都不得混进清单。
     require("^IXIC" in universe_symbols,
@@ -2916,8 +2959,11 @@ def main() -> None:
     # 分组与并流都只是重新编排已经取到的行，不新增任何行情事实。
     # 27,500：再加上「变 / 每周 / 月度 / 年初至今 / 同比」五列所需的逐行字段——
     # 绝对变化由已发布的价与涨跌幅现场复算，区间涨跌沿用上游已算好的值。
-    require(BOARD_DATA_MODULE.stat().st_size <= 27_500,
-            "按需加载的品类行情板数据层超过27.5KB性能预算")
+    # 27,500 是商品分七组时定的。指数扩到 64 条、并在品类下按地区再分一层后，多出的是
+    # 两张逐代码登记表（地区 + 分组，含代理代码）与解释它们为何要逐条登记的注释：
+    # 按代码后缀猜地区遇到 ETF 代理就会分错，分错组比不分组更误导。
+    require(BOARD_DATA_MODULE.stat().st_size <= 32_000,
+            "按需加载的品类行情板数据层超过32KB性能预算")
     # 23,000：在原18KB基础上给「逐行迷你走势 + 品类脉冲条」留出的增量。走势本身
     # 不新增任何请求：它复用抽屉那套历史文件与同一份带缓存的读取，一个品类最多
     # 触发一次历史文件读取；拿不到序列的行如实留白，不画推断曲线。

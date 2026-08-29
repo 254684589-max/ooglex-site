@@ -5,7 +5,7 @@
 /* 六大类的顺序、折叠阈值与附加列；折叠阈值即首屏直接显示的行数。 */
 export const BOARD_CATEGORIES = Object.freeze([
   { key: "commodity", label: "商品", labelEn: "Commodities", collapseAfter: 8, extraLabel: "口径" },
-  { key: "index", label: "指数", labelEn: "Indices", collapseAfter: 6, extraLabel: "地区" },
+  { key: "index", label: "指数", labelEn: "Indices", collapseAfter: 8, extraLabel: "地区" },
   { key: "stock", label: "股票", labelEn: "Stocks", collapseAfter: 8, extraLabel: "市值" },
   { key: "fx", label: "外汇", labelEn: "FX", collapseAfter: 6, extraLabel: "口径" },
   { key: "crypto", label: "加密", labelEn: "Crypto", collapseAfter: 6, extraLabel: "市值" },
@@ -29,7 +29,61 @@ const INDEX_REGION = Object.freeze({
   "^MXX": "墨西哥", "^JKSE": "印尼", "^TA125.TA": "以色列", "^AEX": "荷兰",
   "^BFX": "比利时", "^OMX": "瑞典", "^ATX": "奥地利", "XU100.IS": "土耳其",
   "WIG20.WA": "波兰", "^SET.BK": "泰国", "^KLSE": "马来西亚", "PSEI.PS": "菲律宾",
-  "^IPSA": "智利", "^MERV": "阿根廷", "^HSTECH": "中国香港"
+  "^IPSA": "智利", "^MERV": "阿根廷", "^HSTECH": "中国香港",
+  /* 代理代码同样要登记：主代码取不到时，落进快照的是代理那一行。只登记主代码，
+     页面上「地区」就会空着——2026-08-29 发现波兰、智利、恒生科技三行正是如此。 */
+  EPOL: "波兰", ECH: "智利", "3033.HK": "中国香港", THD: "泰国", EPHE: "菲律宾",
+  EWJ: "日本", EWY: "韩国", "^KS200": "韩国", "^FTMIB": "意大利",
+  /* 2026-08-29 扩容的 26 条，逐条探测确认过是真指数后才登记。 */
+  "^STOXX50E": "欧元区", "^N100": "泛欧", "^MDAXI": "德国", "^SDAXI": "德国",
+  "^TECDAX": "德国", "OSEBX.OL": "挪威", "^OMXC25": "丹麦", "^OMXH25": "芬兰",
+  "^ISEQ": "爱尔兰", "GD.AT": "希腊", "PSI20.LS": "葡萄牙",
+  "^OMXRGI": "拉脱维亚", "^OMXVGI": "立陶宛", "^OMXTGI": "爱沙尼亚",
+  "^RUI": "美国", "^NYA": "美国", "^SP400": "美国", "^W5000": "美国",
+  "000001.SS": "中国内地", "399001.SZ": "中国内地", "^NSEI": "印度",
+  "^HSCE": "中国香港", "^TASI.SR": "沙特", "^AORD": "澳大利亚",
+  "^AXKO": "澳大利亚", "^J203.JO": "南非"
+});
+
+/* 指数品类下的二级分组：按地区。分区沿用参考站自己的划分（美洲/欧洲/亚洲/大洋洲/非洲），
+   不另立「中东」——参考站把以色列、海湾各国都放在亚洲，自己再划一条线只会和它对不上。 */
+export const INDEX_GROUPS = Object.freeze([
+  { key: "americas", label: "美洲", labelEn: "Americas" },
+  { key: "europe", label: "欧洲", labelEn: "Europe" },
+  { key: "asia", label: "亚洲", labelEn: "Asia" },
+  { key: "oceania", label: "大洋洲", labelEn: "Oceania" },
+  { key: "africa", label: "非洲", labelEn: "Africa" },
+  { key: "other", label: "其他", labelEn: "Other" }
+]);
+
+/* 逐代码登记，代理代码一并登记（理由同上面的地区表）。没登记的落进「其他」，
+   不按代码后缀猜：.SS 是上海、.HK 是香港这类规则看着好用，遇到 ETF 代理就会分错，
+   分错组比不分组更误导。 */
+const INDEX_GROUP = Object.freeze({
+  "^GSPC": "americas", "^IXIC": "americas", "^RUT": "americas", "^VIX": "americas",
+  "^GSPTSE": "americas", "^BVSP": "americas", "^MXX": "americas",
+  "^IPSA": "americas", ECH: "americas", "^MERV": "americas",
+  "^STOXX": "europe", "^FTSE": "europe", "^GDAXI": "europe", "^FCHI": "europe",
+  "^SSMI": "europe", "^IBEX": "europe", "FTSEMIB.MI": "europe", "^FTMIB": "europe",
+  "^AEX": "europe", "^BFX": "europe", "^OMX": "europe", "^ATX": "europe",
+  "XU100.IS": "europe", "WIG20.WA": "europe", EPOL: "europe",
+  "^N225": "asia", EWJ: "asia", "^HSI": "asia", "^HSTECH": "asia", "3033.HK": "asia",
+  "^STI": "asia", "000300.SS": "asia", "510300.SS": "asia",
+  "000905.SS": "asia", "510500.SS": "asia", "^BSESN": "asia",
+  "^KS11": "asia", "^KS200": "asia", EWY: "asia", "^TWII": "asia",
+  "^JKSE": "asia", "^TA125.TA": "asia", "^SET.BK": "asia", THD: "asia",
+  "^KLSE": "asia", "PSEI.PS": "asia", EPHE: "asia",
+  "^AXJO": "oceania", "^NZ50": "oceania",
+  /* 2026-08-29 扩容的 26 条。地区划分沿用参考站：沙特等海湾国家归亚洲，不另立中东。 */
+  "^STOXX50E": "europe", "^N100": "europe", "^MDAXI": "europe", "^SDAXI": "europe",
+  "^TECDAX": "europe", "OSEBX.OL": "europe", "^OMXC25": "europe", "^OMXH25": "europe",
+  "^ISEQ": "europe", "GD.AT": "europe", "PSI20.LS": "europe",
+  "^OMXRGI": "europe", "^OMXVGI": "europe", "^OMXTGI": "europe",
+  "^RUI": "americas", "^NYA": "americas", "^SP400": "americas", "^W5000": "americas",
+  "000001.SS": "asia", "399001.SZ": "asia", "^NSEI": "asia", "^HSCE": "asia",
+  "^TASI.SR": "asia",
+  "^AORD": "oceania", "^AXKO": "oceania",
+  "^J203.JO": "africa"
 });
 
 /* 商品品类下的二级分组：一类三十多行，一条长列表看不出「这是能源还是金属」。
@@ -61,18 +115,29 @@ const COMMODITY_GROUP = Object.freeze({
 });
 
 /* 目前只有商品分了组；其余品类没有分组即不摆分组条。 */
-export const GROUPS_BY_CATEGORY = Object.freeze({ commodity: COMMODITY_GROUPS });
+/* 一张表登记「哪个品类有二级分组、分组表是哪份、逐代码登记表是哪份」。
+   加第三个分组品类时只动这张表，不必再在 groupKeyOf 里加一条 if。 */
+const GROUP_REGISTRY = Object.freeze({
+  commodity: { groups: COMMODITY_GROUPS, bySymbol: COMMODITY_GROUP },
+  index: { groups: INDEX_GROUPS, bySymbol: INDEX_GROUP }
+});
+
+export const GROUPS_BY_CATEGORY = Object.freeze({
+  commodity: COMMODITY_GROUPS,
+  index: INDEX_GROUPS
+});
 
 /* 分组来源有两处：期货那条管道按代码查登记表；商品现货管道自己就带 group 字段
    （它的品种在代码上看不出属于哪一组）。声明的组必须是已登记的组，否则一律落进
    「其他」——由上游随便写一个组名就能凭空造出一个分组，比不分组更糟。 */
 export function groupKeyOf(categoryKey, symbol, declared) {
-  if (categoryKey !== "commodity") return "";
+  const entry = GROUP_REGISTRY[categoryKey];
+  if (!entry) return "";
   const named = String(declared || "");
-  if (named && COMMODITY_GROUPS.some((group) => group.key === named && group.key !== "other")) {
+  if (named && entry.groups.some((group) => group.key === named && group.key !== "other")) {
     return named;
   }
-  return COMMODITY_GROUP[String(symbol || "")] || "other";
+  return entry.bySymbol[String(symbol || "")] || "other";
 }
 
 /* 「口径」列按工具本身取值：=F 是期货，官方现货序列另标现货，其余是基金份额价格。
@@ -515,9 +580,9 @@ function categoryRows(key, sources) {
     return withGroups(withSpot.concat(spotRows(sources.commodities)), "commodity");
   }
   if (key === "index") {
-    return trackerAssets(assetTracker, "equity").map((asset) => trackerRow(asset, "index", {
+    return withGroups(trackerAssets(assetTracker, "equity").map((asset) => trackerRow(asset, "index", {
       extraText: INDEX_REGION[asset.symbol] || ""
-    }));
+    })), "index");
   }
   if (key === "stock") return stockRows(companies);
   if (key === "fx") {

@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import {
   BOARD_CATEGORIES,
   COMMODITY_GROUPS,
+  INDEX_GROUPS,
   STOCK_ROW_LIMIT,
   buildBoard,
   absoluteChange,
@@ -478,6 +479,49 @@ function validateQuoteLinks(board) {
   assert.equal(rangeStats([{ label: "a", value: 1 }], "pct"), null, "只有一个观测时不给区间统计");
 }
 
+/* 指数按地区分组。这一层最容易出的错是「漏登记」：新增一条指数、或主代码取不到
+   落地成了代理代码，而登记表里没有它——页面上「地区」列就空着、分组掉进「其他」。
+   2026-08-29 之前波兰、智利、恒生科技三行正是如此。这里对真实数据逐行守住。 */
+function validateIndexGroups(board) {
+  const index = categoryOf(board, "index");
+  const registered = INDEX_GROUPS.map((group) => group.key);
+
+  assert.ok(index.groups.length >= 2, "指数品类必须至少分出两组才值得摆分组条");
+  index.rows.forEach((row) => {
+    assert.ok(registered.includes(row.group), `${row.name} 的分组 ${row.group} 未登记`);
+    assert.notEqual(row.group, "other",
+      `${row.name}（${row.symbol}）没有登记地区分组，掉进了「其他」`);
+    assert.ok(row.extraText, `${row.name}（${row.symbol}）的「地区」列是空的：代码没登记`);
+  });
+
+  /* 分组必须连续成段，且段序与登记顺序一致——分组条是按段读的，交错就读不出来了。 */
+  const seen = [];
+  index.rows.forEach((row) => {
+    if (seen[seen.length - 1] !== row.group) seen.push(row.group);
+  });
+  assert.equal(seen.length, new Set(seen).size, "同一个地区的行必须连续，不得被别的地区隔开");
+  assert.deepEqual(seen, registered.filter((key) => seen.includes(key)),
+    "地区在列表里的先后必须与登记顺序一致");
+
+  /* 计数逐组可复算，加总等于该品类的行数：不得有行落在所有分组之外。 */
+  index.groups.forEach((group) => {
+    assert.ok(group.count > 0, `${group.label} 没有行就不该出现在分组条上`);
+    assert.equal(group.count, index.rows.filter((row) => row.group === group.key).length,
+      `${group.label} 的计数必须能由行逐条复算`);
+  });
+  assert.equal(index.groups.reduce((sum, group) => sum + group.count, 0), index.rows.length,
+    "地区计数之和必须等于指数品类的行数");
+
+  /* 分组是静态归类：不参与任何计算，也不改动逐行的价格、涨跌、数据日与来源。 */
+  const sample = index.rows[0];
+  assert.equal(groupKeyOf("index", sample.symbol), sample.group,
+    "分组必须只由代码决定，与该行当天的行情无关");
+  assert.equal(groupKeyOf("index", "NOT_A_REAL_INDEX"), "other",
+    "没登记的代码一律落进「其他」，不得按后缀猜地区");
+  assert.equal(groupKeyOf("fx", "EURUSD=X"), "",
+    "没有登记分组表的品类不得返回分组");
+}
+
 /* 4 小时线：这一层唯一容易出错的地方是「把没有的东西画出来」和「把聚合说成原生」。
    前者靠 hourlyPoints 丢弃缺观测、靠区间按天数裁剪来守；后者靠页面披露来守，
    披露文案在 quote.html 之外没有第二处，这里只钉数据侧的行为。 */
@@ -559,7 +603,10 @@ function validateCommodityGroups(board) {
   });
   assert.equal(commodity.groups.reduce((sum, group) => sum + group.count, 0), commodity.rows.length,
     "分组计数之和必须等于该品类的行数：不得有行落在所有分组之外");
-  board.categories.filter((category) => category.key !== "commodity").forEach((category) => {
+  /* 目前只有商品与指数分了二级组；其余四类没登记分组表，必须返回空数组而不是
+     凭空生成分组条。加第三个分组品类时改这里的名单，不改断言的形状。 */
+  const GROUPED = ["commodity", "index"];
+  board.categories.filter((category) => !GROUPED.includes(category.key)).forEach((category) => {
     assert.deepEqual(category.groups, [], `${category.label}尚未分组，不得凭空生成分组条`);
   });
   assert.deepEqual(groupSummary("stock", [{ group: "energy" }]), [],
@@ -598,7 +645,7 @@ function validateCommodityGroups(board) {
     "期货那半边的涨跌口径不得被现货管道带偏");
   assert.ok(spotPipeline.every((row) => row.extraText !== "期货"),
     "现货与官方指数不得被标成期货");
-  assert.equal(groupKeyOf("index", "^GSPC"), "", "只有商品品类参与二级分组");
+  assert.equal(groupKeyOf("fx", "EURUSD=X"), "", "没有登记分组表的品类不参与二级分组");
   assert.equal(groupKeyOf("commodity", "NEW=F"), "other", "未登记的代码落进「其他」而不是就近归组");
 
   /* 分组只重排，不改任何一行的事实字段。 */
@@ -694,6 +741,7 @@ async function main() {
   validateSparkAndPulse(board);
   validateQuoteLinks(board);
   validateFourHourSeries();
+  validateIndexGroups(board);
   await validateFailureIsolation(group);
   validateStaleAndMissing(group);
   const counts = board.categories.map((category) => `${category.label}${category.rows.length}`).join(" · ");
@@ -710,6 +758,8 @@ async function main() {
   console.log(`- commodity sub-groups, every row registered, counts reproducible: ${groups}`);
   console.log("- spot pipeline merged: per-row frequency / observation-basis change / grain: PASS");
   console.log("- extra columns: reproducible absolute change / period returns / no weekly on monthly: PASS");
+  console.log(`- index sub-groups by region, every row registered, counts reproducible: ${
+    categoryOf(board, "index").groups.map((g) => g.label + g.count).join(" · ")}`);
   console.log("- four-hour layer: UTC-labelled buckets / gaps dropped / day-window slicing / distinct range keys: PASS");
 }
 

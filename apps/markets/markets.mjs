@@ -37,7 +37,8 @@ function text(id, value) {
 function paintStats(board) {
   text("stat-total", String(board.total));
   text("stat-categories", String(board.categories.filter((category) => category.rows.length).length));
-  /* 二级分组目前只有商品这一类有；统计的是「今天真的有行的组」，不是登记了几组。 */
+  /* 二级分组现在有商品（按品种）与指数（按地区）两类，因此这一格叫「二级分组」而不是
+     「商品分组」——它统计的是所有分了组的品类里「今天真的有行的组」，不是登记了几组。 */
   const grouped = board.categories.filter((category) => (category.groups || []).length);
   const groups = grouped.reduce((sum, category) => sum + category.groups.length, 0);
   text("stat-groups", groups ? `${groups} 组` : "不可用");

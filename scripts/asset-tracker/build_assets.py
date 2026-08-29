@@ -154,6 +154,45 @@ ASSETS = [
     {"name": "标普500波动率VIX", "cat": "equity",    "syms": ["^VIX"],
      "note": "CBOE标普500波动率指数，衡量期权隐含波动率，不是可交易标的",
      "caps": {"d1": 80, "w1": 150, "m1": 250, "ytd": 400, "y1": 500}},
+    # 2026-08-29 扩容：参考站 Indexes 分区一百多条，逐条探测后登记确实取得到、且
+    # instrumentType=INDEX 的 26 条（探测报告见 Commodity Source Probe 工作流）。
+    # 探测未通过、因而没有登记的：俄罗斯MOEX、捷克PX、匈牙利BUX、保加利亚SOFIX、
+    # 罗马尼亚BET、克罗地亚CROBEX、冰岛全指、巴基斯坦KSE100、越南VN、迪拜DFM、
+    # 阿布扎比ADX、埃及EGX30、尼日利亚全股、哥伦比亚COLCAP、上证50、创业板指——
+    # Yahoo 上要么 404、要么一年只有一个观测点。没有免费公开源就不登记，不拿别的顶替。
+    # 南非 Top40 美元计（^JN0U.JO）探测可用但**没有登记**：它是净总回报指数（含股息再投），
+    # 与本清单其余的价格指数不是同一种口径，摆在一起比涨跌会误导。
+    # —— 指数 · 欧洲 ——
+    {"name": "欧元区斯托克50",   "cat": "equity",    "syms": ["^STOXX50E"]},
+    {"name": "泛欧Euronext100",  "cat": "equity",    "syms": ["^N100"]},
+    {"name": "德国MDAX中盘",     "cat": "equity",    "syms": ["^MDAXI"]},
+    {"name": "德国SDAX小盘",     "cat": "equity",    "syms": ["^SDAXI"]},
+    {"name": "德国TecDAX科技",   "cat": "equity",    "syms": ["^TECDAX"]},
+    {"name": "挪威OSEBX",        "cat": "equity",    "syms": ["OSEBX.OL"]},
+    {"name": "丹麦OMXC25",       "cat": "equity",    "syms": ["^OMXC25"]},
+    {"name": "芬兰OMXH25",       "cat": "equity",    "syms": ["^OMXH25"]},
+    {"name": "爱尔兰ISEQ",       "cat": "equity",    "syms": ["^ISEQ"]},
+    {"name": "希腊雅典综合",     "cat": "equity",    "syms": ["GD.AT"]},
+    {"name": "葡萄牙PSI",        "cat": "equity",    "syms": ["PSI20.LS"]},
+    {"name": "拉脱维亚里加全指", "cat": "equity",    "syms": ["^OMXRGI"]},
+    {"name": "立陶宛维尔纽斯全指", "cat": "equity",  "syms": ["^OMXVGI"]},
+    {"name": "爱沙尼亚塔林全指", "cat": "equity",    "syms": ["^OMXTGI"]},
+    # —— 指数 · 美洲 ——
+    {"name": "美国罗素1000",     "cat": "equity",    "syms": ["^RUI"]},
+    {"name": "纽约证交所综合",   "cat": "equity",    "syms": ["^NYA"]},
+    {"name": "标普400中盘",      "cat": "equity",    "syms": ["^SP400"]},
+    {"name": "威尔希尔5000",     "cat": "equity",    "syms": ["^W5000"]},
+    # —— 指数 · 亚洲 ——
+    {"name": "上证综合指数",     "cat": "equity",    "syms": ["000001.SS"]},
+    {"name": "深证成指",         "cat": "equity",    "syms": ["399001.SZ"]},
+    {"name": "印度NIFTY50",      "cat": "equity",    "syms": ["^NSEI"]},
+    {"name": "恒生中国企业指数", "cat": "equity",    "syms": ["^HSCE"]},
+    {"name": "沙特TASI",         "cat": "equity",    "syms": ["^TASI.SR"]},
+    # —— 指数 · 大洋洲 ——
+    {"name": "澳洲全普通股",     "cat": "equity",    "syms": ["^AORD"]},
+    {"name": "澳洲标普300",      "cat": "equity",    "syms": ["^AXKO"]},
+    # —— 指数 · 非洲 ——
+    {"name": "南非全股指数",     "cat": "equity",    "syms": ["^J203.JO"]},
     # —— 商品 ——（LME 现货 Yahoo 无免费源，以全球期货代理，涨跌方向高度一致）
     {"name": "COMEX黄金",        "cat": "commodity", "syms": ["GC=F"]},
     {"name": "COMEX白银",        "cat": "commodity", "syms": ["SI=F"]},
