@@ -520,6 +520,102 @@ def probe_daily_endpoint(url: str) -> dict:
 
 
 
+# ── 标普500盘中批量取价候选 ───────────────────────────────────────────────
+# 热力图/气泡图要在美股开盘后跟着动，需要给约 500 只成分股定期取「最新价 + 相对前收
+# 涨跌」。跨资产那条盘中管道是**逐标的**取的（133 个标的、30 分钟一轮）；照搬到 500 只
+# 就是一轮 500 次请求，很可能把取数源打到限流，连带拖垮日更那条主管道。
+#
+# 因此先实测批量接口到底通不通、一次能塞多少个代码：
+#   - v8 spark：跨资产那轮实测对**它当时用的参数**返回 400，这里换几组参数重试；
+#   - v7 quote：现在要 crumb，预期 401，实测确认而不是凭印象排除；
+#   - v8 chart 逐标的：作为对照，确认单个仍然可用；
+#   - Stooq CSV：免费、允许批量，作为完全独立的备选来源。
+INTRADAY_BATCH_SYMBOLS = [
+    "AAPL", "MSFT", "NVDA", "AMZN", "GOOGL", "META", "BRK-B", "AVGO", "TSLA", "JPM",
+    "LLY", "V", "XOM", "UNH", "MA", "COST", "HD", "PG", "JNJ", "WMT",
+    "NFLX", "BAC", "CRM", "ORCL", "MRK", "CVX", "KO", "AMD", "PEP", "ADBE",
+]
+
+
+def probe_yahoo_spark(symbols: list[str], params: dict, host: str = "query1.finance.yahoo.com") -> dict:
+    """v8 spark：一次问多个代码。返回逐代码是否真的带回了收盘序列。"""
+    query = dict(params)
+    query["symbols"] = ",".join(symbols)
+    url = f"https://{host}/v8/finance/spark?{parse.urlencode(query)}"
+    try:
+        payload = get_json(url, headers={"User-Agent": UA, "Accept": "application/json"})
+    except (error.HTTPError, error.URLError, ValueError) as exc:
+        code = getattr(exc, "code", "")
+        return {"ok": False, "why": f"{type(exc).__name__}{f' {code}' if code else ''}: {str(exc)[:60]}"}
+    # 返回体历史上有两种形状：{"SYM": {...}} 与 {"spark": {"result": [...]}}
+    got = {}
+    if isinstance(payload, dict) and "spark" in payload:
+        for entry in (payload.get("spark") or {}).get("result") or []:
+            key = entry.get("symbol")
+            closes = (((entry.get("response") or [{}])[0].get("indicators") or {})
+                      .get("quote") or [{}])[0].get("close") or []
+            if key and [c for c in closes if c is not None]:
+                got[key] = len([c for c in closes if c is not None])
+    else:
+        for key, entry in (payload or {}).items():
+            closes = [c for c in (entry or {}).get("close") or [] if c is not None]
+            if closes:
+                got[key] = len(closes)
+    if not got:
+        keys = list(payload)[:6] if isinstance(payload, dict) else []
+        return {"ok": False, "why": f"返回体里没有可用收盘序列；顶层键={keys}"}
+    return {"ok": True, "asked": len(symbols), "got": len(got),
+            "sample": sorted(got.items())[:3]}
+
+
+def probe_yahoo_quote_batch(symbols: list[str]) -> dict:
+    """v7 quote：官方现在要 crumb，预期 401。实测确认，不凭印象排除。"""
+    url = ("https://query1.finance.yahoo.com/v7/finance/quote?"
+           + parse.urlencode({"symbols": ",".join(symbols)}))
+    try:
+        payload = get_json(url, headers={"User-Agent": UA, "Accept": "application/json"})
+    except (error.HTTPError, error.URLError, ValueError) as exc:
+        code = getattr(exc, "code", "")
+        return {"ok": False, "why": f"{type(exc).__name__}{f' {code}' if code else ''}: {str(exc)[:60]}"}
+    rows = ((payload or {}).get("quoteResponse") or {}).get("result") or []
+    priced = [r for r in rows if isinstance(r.get("regularMarketPrice"), (int, float))]
+    if not priced:
+        return {"ok": False, "why": "返回体里没有带价的记录"}
+    return {"ok": True, "asked": len(symbols), "got": len(priced),
+            "sample": [(r.get("symbol"), r.get("regularMarketPrice")) for r in priced[:3]]}
+
+
+def probe_stooq_batch(symbols: list[str]) -> dict:
+    """Stooq CSV：完全独立的免费来源，允许一次问多个代码。美股代码后缀 .us。"""
+    codes = "+".join(f"{s.replace('-', '.').lower()}.us" for s in symbols)
+    url = f"https://stooq.com/q/l/?s={parse.quote(codes, safe='+')}&f=sd2t2ohlcvn&h&e=csv"
+    try:
+        body = get_text(url)
+    except (error.HTTPError, error.URLError) as exc:
+        return {"ok": False, "why": f"{type(exc).__name__}: {str(exc)[:60]}"}
+    lines = [ln for ln in body.strip().splitlines() if ln.strip()]
+    if len(lines) < 2:
+        return {"ok": False, "why": f"返回体只有 {len(lines)} 行"}
+    header = [h.strip().lower() for h in lines[0].split(",")]
+    try:
+        sym_i, close_i, date_i = header.index("symbol"), header.index("close"), header.index("date")
+    except ValueError:
+        return {"ok": False, "why": f"表头对不上：{','.join(header[:8])}"}
+    rows = []
+    for line in lines[1:]:
+        parts = line.split(",")
+        if len(parts) > max(sym_i, close_i, date_i):
+            try:
+                rows.append((parts[sym_i], float(parts[close_i]), parts[date_i]))
+            except ValueError:
+                continue
+    if not rows:
+        return {"ok": False, "why": "没有一行带得出收盘价（多半是 N/D）"}
+    return {"ok": True, "asked": len(symbols), "got": len(rows),
+            "sample": rows[:3], "bytes": len(body)}
+
+
+
 def get_json(url: str, headers: dict | None = None) -> dict:
     req = request.Request(url, headers=headers or {"User-Agent": UA, "Accept": "*/*"})
     with request.urlopen(req, timeout=TIMEOUT) as response:
@@ -766,6 +862,67 @@ def main() -> None:
         else:
             print(f"[XX] {symbol:<14} {label:<28} {outcome.get('why', '')}")
         time.sleep(GAP)
+
+    print()
+    print("=" * 78)
+    print("标普500盘中批量取价候选（决定热力图/气泡图能不能跟着开盘动）")
+    print("=" * 78)
+    report["intradayBatch"] = {}
+    batch = INTRADAY_BATCH_SYMBOLS
+    spark_variants = [
+        ("spark-5m", {"range": "1d", "interval": "5m"}, "query1.finance.yahoo.com"),
+        ("spark-1m-full", {"range": "1d", "interval": "1m", "indicators": "close",
+                           "includeTimestamps": "false", "includePrePost": "false",
+                           "corsDomain": "finance.yahoo.com", ".tsrc": "finance"},
+         "query1.finance.yahoo.com"),
+        ("spark-5m-q2", {"range": "1d", "interval": "5m"}, "query2.finance.yahoo.com"),
+        ("spark-2d-15m", {"range": "2d", "interval": "15m"}, "query1.finance.yahoo.com"),
+    ]
+    for name, params, host in spark_variants:
+        outcome = probe_yahoo_spark(batch, params, host)
+        report["intradayBatch"][name] = dict(outcome, params=params, host=host)
+        if outcome.get("ok"):
+            print(f"[OK] {name:<16} 问 {outcome['asked']} 个，回 {outcome['got']} 个  {outcome['sample']}")
+        else:
+            print(f"[XX] {name:<16} {outcome.get('why', '')}")
+        time.sleep(GAP)
+
+    outcome = probe_yahoo_quote_batch(batch)
+    report["intradayBatch"]["v7-quote"] = outcome
+    print(f"[{'OK' if outcome.get('ok') else 'XX'}] {'v7-quote':<16} "
+          + (f"问 {outcome['asked']} 个，回 {outcome['got']} 个  {outcome['sample']}"
+             if outcome.get("ok") else outcome.get("why", "")))
+    time.sleep(GAP)
+
+    outcome = probe_stooq_batch(batch)
+    report["intradayBatch"]["stooq"] = outcome
+    print(f"[{'OK' if outcome.get('ok') else 'XX'}] {'stooq':<16} "
+          + (f"问 {outcome['asked']} 个，回 {outcome['got']} 个  {outcome['sample']}"
+             if outcome.get("ok") else outcome.get("why", "")))
+    time.sleep(GAP)
+
+    # 能通的那条还要知道「一次最多塞多少个代码」：500 只要分几批，直接决定一轮的请求数。
+    working = [(n, v) for n, v in report["intradayBatch"].items() if v.get("ok") and n != "stooq"]
+    if working:
+        name, entry = working[0]
+        params, host = entry.get("params") or {"range": "1d", "interval": "5m"}, entry.get("host") or "query1.finance.yahoo.com"
+        pool = (INTRADAY_BATCH_SYMBOLS * 8)[:200]
+        for size in (50, 100, 200):
+            outcome = probe_yahoo_spark(sorted(set(pool[:size])), params, host)
+            report["intradayBatch"][f"{name}-x{size}"] = outcome
+            print(f"[{'OK' if outcome.get('ok') else 'XX'}] {name}-x{size:<10} "
+                  + (f"问 {outcome['asked']} 个去重后，回 {outcome['got']} 个"
+                     if outcome.get("ok") else outcome.get("why", "")))
+            time.sleep(GAP)
+    if report["intradayBatch"].get("stooq", {}).get("ok"):
+        for size in (100, 250, 500):
+            pool = sorted(set((INTRADAY_BATCH_SYMBOLS * 20)[:size]))
+            outcome = probe_stooq_batch(pool)
+            report["intradayBatch"][f"stooq-x{size}"] = outcome
+            print(f"[{'OK' if outcome.get('ok') else 'XX'}] {'stooq-x' + str(size):<16} "
+                  + (f"问 {outcome['asked']} 个去重后，回 {outcome['got']} 个，{outcome['bytes']} 字节"
+                     if outcome.get("ok") else outcome.get("why", "")))
+            time.sleep(GAP)
 
     ok_fred = [k for k, v in report["fred"].items() if v.get("ok")]
     ok_yahoo = [k for k, v in report["yahoo"].items() if v.get("ok")]
