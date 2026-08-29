@@ -55,6 +55,7 @@ REFERENCE_HOME_V3_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference
 REFERENCE_HOME_V4_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-home-v4.css"
 REFERENCE_HOME_V5_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-home-v5.css"
 REFERENCE_HOME_V6_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-home-v6.css"
+REFERENCE_HOME_V7_CSS = ROOT / "apps" / "finance-terminal" / "terminal-reference-home-v7.css"
 COMMAND_CENTER_CSS = ROOT / "apps" / "finance-terminal" / "terminal-command-center.css"
 COMMAND_CENTER_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-command-center.mjs"
 AURORA_HOME_MODULE = ROOT / "apps" / "finance-terminal" / "finance-terminal-aurora-home.mjs"
@@ -2886,6 +2887,7 @@ def main() -> None:
     reference_home_v4_css = REFERENCE_HOME_V4_CSS.read_text(encoding="utf-8")
     reference_home_v5_css = REFERENCE_HOME_V5_CSS.read_text(encoding="utf-8")
     reference_home_v6_css = REFERENCE_HOME_V6_CSS.read_text(encoding="utf-8")
+    reference_home_v7_css = REFERENCE_HOME_V7_CSS.read_text(encoding="utf-8")
     vision_css = VISION_CSS.read_text(encoding="utf-8")
     command_center_css = COMMAND_CENTER_CSS.read_text(encoding="utf-8")
     reference_fidelity_css = REFERENCE_FIDELITY_CSS.read_text(encoding="utf-8")
@@ -2971,6 +2973,10 @@ def main() -> None:
     # v6只在桌面总览增加地球空间层与三工作区各自的仪表纹理，移动端仍沿用独立布局。
     require(REFERENCE_HOME_V6_CSS.stat().st_size <= 10_500,
             "金融终端地球空间精修样式超过10.5KB性能预算")
+    # v7把完整球体、前后轨道、卫星/信标和三套工作区仪器全部放在本地CSS/SVG层，
+    # 不增加常规加载JavaScript，也不引入任何模拟行情；移动端继续沿用独立布局。
+    require(REFERENCE_HOME_V7_CSS.stat().st_size <= 17_500,
+            "金融终端行星指挥台精修样式超过17.5KB性能预算")
     require(COMMAND_CENTER_MODULE.stat().st_size <= 4_000, "金融终端视图切换模块超过4KB性能预算")
     # HUD只把既有已校验状态压缩为中文短标签与等价覆盖率百分比，不引入第二套数据。
     require(AURORA_HOME_MODULE.stat().st_size <= 4_200, "金融终端极光首页同步模块超过4.2KB性能预算")
@@ -3159,12 +3165,17 @@ def main() -> None:
             and '<link rel="stylesheet" href="terminal-reference-home-v4.css">' in page
             and '<link rel="stylesheet" href="terminal-reference-home-v5.css">' in page
             and '<link rel="stylesheet" href="terminal-reference-home-v6.css">' in page
+            and '<link rel="stylesheet" href="terminal-reference-home-v7.css">' in page
             and 'body[data-terminal-view="overview"] .market-globe-shell' in reference_home_v4_css
             and 'html[data-finance-terminal-page]' in reference_home_v5_css
             and 'overflow-x: clip' in reference_home_v5_css
             and 'v6-orbit-turn' in reference_home_v6_css
             and 'width: min(36vw, 650px)' in reference_home_v6_css
             and '.aurora-macro-preview::before' in reference_home_v6_css
+            and 'width: min(26vw, 445px)' in reference_home_v7_css
+            and 'transform: translate(-50%, -50%)' in reference_home_v7_css
+            and 'v7-satellite-float' in reference_home_v7_css
+            and '.workspace-instrument-events' in reference_home_v7_css
             and '@media (max-width: 620px)' in reference_home_v3_css
             and 'aria-hidden' in page,
             "参考首页精修层缺少样式引用、单屏地球定位或独立窄屏规则")
@@ -3229,6 +3240,17 @@ def main() -> None:
             and 'id="market-globe-canvas"' in page
             and ".market-globe-shell" in reference_fidelity_css,
             "高保真地球必须使用本地纹理、真实自转、节能与减少动画降级")
+    require(page.count('class="globe-instruments ') == 2
+            and 'class="globe-instruments globe-instruments-back" aria-hidden="true"' in page
+            and 'class="globe-instruments globe-instruments-front" aria-hidden="true"' in page
+            and page.count('class="workspace-instrument ') == 3
+            and 'workspace-instrument-market' in page
+            and 'workspace-instrument-macro' in page
+            and 'workspace-instrument-events' in page
+            and '.instrument-satellite' in reference_home_v7_css
+            and '.instrument-beacons' in reference_home_v7_css
+            and '.instrument-foreground-orbits' in reference_home_v7_css,
+            "V7必须包含前后景轨道、卫星信标与三工作区专属装饰，并保持无模拟读数")
     compact_reference_home = re.sub(r"\s+", "", reference_home_v4_css)
     require("grid-template-rows:20.93vw6.7vw22.36vw" in compact_reference_home
             and "grid-template-columns:1.12fr1fr1.11fr" in compact_reference_home

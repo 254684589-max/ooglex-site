@@ -244,11 +244,11 @@ export function initMarketGlobe(options = {}) {
 
   function drawSphere(cx, cy, r) {
     if (textureReady) drawEarthTexture(ctx, textureImage, cx, cy, r, spun);
-    ctx.strokeStyle = "rgba(99,216,255,.052)";
-    ctx.lineWidth = Math.max(.45, r * .0024);
+    ctx.strokeStyle = "rgba(99,216,255,.026)";
+    ctx.lineWidth = Math.max(.35, r * .0017);
     ctx.beginPath();
-    [-45, 0, 45].forEach((latitude) => trace(cx, cy, r, latitude, true));
-    for (let longitude = -180; longitude < 180; longitude += 45) trace(cx, cy, r, longitude, false);
+    [-42, 0, 42].forEach((latitude) => trace(cx, cy, r, latitude, true));
+    for (let longitude = -180; longitude < 180; longitude += 60) trace(cx, cy, r, longitude, false);
     ctx.stroke();
 
     const dot = Math.max(.55, r * (textureReady ? .0037 : .0065));

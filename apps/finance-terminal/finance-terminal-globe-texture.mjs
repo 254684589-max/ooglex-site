@@ -70,7 +70,7 @@ function renderOrthographic(state, centerLongitude) {
       const sourceY = Math.min(sourceHeight - 1,
         Math.max(0, Math.round((90 - latitude) / 180 * (sourceHeight - 1))));
       const input = (sourceY * sourceWidth + sourceX) * 4;
-      const edgeShade = .38 + depth * .68;
+      const edgeShade = .34 + depth * .72;
       const northLight = Math.max(0, .29 - screenY * .16) * depth;
       const luminance = pixels[input] * .27 + pixels[input + 1] * .58 + pixels[input + 2] * .15;
       const leftX = Math.max(0, sourceX - 2);
@@ -90,13 +90,13 @@ function renderOrthographic(state, centerLongitude) {
       const sparkle = Math.max(0, luminance - localAverage - 1.4) ** 1.24;
       const warmLight = Math.max(0,
         Math.min(pixels[input], pixels[input + 1]) - pixels[input + 2] * .68 - 5) ** 1.15;
-      const citySparkle = sparkle * Math.min(1, warmLight / 22);
+      const citySparkle = sparkle * Math.min(1, warmLight / 18);
       output[out] = Math.min(255,
-        pixels[input] * edgeShade * .88 + northLight * 20 + warmLight * 3.15 + citySparkle * 3.5);
+        pixels[input] * edgeShade * .84 + northLight * 20 + warmLight * 3.8 + citySparkle * 4.6);
       output[out + 1] = Math.min(255,
-        pixels[input + 1] * edgeShade * .91 + northLight * 35 + warmLight * 2.75 + citySparkle * 3.15);
+        pixels[input + 1] * edgeShade * .88 + northLight * 35 + warmLight * 3.25 + citySparkle * 4.05);
       output[out + 2] = Math.min(255,
-        pixels[input + 2] * (edgeShade + .03) * .98 + northLight * 62 + warmLight * 1.08 + citySparkle * 1.75);
+        pixels[input + 2] * (edgeShade + .03) * .96 + northLight * 64 + warmLight * 1.15 + citySparkle * 2.15);
       output[out + 3] = 255;
     }
   }

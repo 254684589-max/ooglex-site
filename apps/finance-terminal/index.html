@@ -1343,6 +1343,7 @@
   <link rel="stylesheet" href="terminal-reference-home-v4.css">
   <link rel="stylesheet" href="terminal-reference-home-v5.css">
   <link rel="stylesheet" href="terminal-reference-home-v6.css">
+  <link rel="stylesheet" href="terminal-reference-home-v7.css">
 </head>
 <body data-terminal-view="overview">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -1438,8 +1439,71 @@
             </div>
           </div>
           <figure class="market-orbit" aria-labelledby="orbit-caption">
+            <div class="globe-instruments globe-instruments-back" aria-hidden="true">
+              <svg viewBox="0 0 720 380" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                  <linearGradient id="v7-orbit-fade" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#4fcfff" stop-opacity="0"></stop>
+                    <stop offset=".28" stop-color="#65d9ff" stop-opacity=".58"></stop>
+                    <stop offset=".7" stop-color="#a783ff" stop-opacity=".44"></stop>
+                    <stop offset="1" stop-color="#5ad9ff" stop-opacity="0"></stop>
+                  </linearGradient>
+                  <radialGradient id="v7-polar-haze" cx="50%" cy="100%" r="72%">
+                    <stop offset="0" stop-color="#bd75ff" stop-opacity=".48"></stop>
+                    <stop offset=".42" stop-color="#6ca7ff" stop-opacity=".24"></stop>
+                    <stop offset="1" stop-color="#45d8ff" stop-opacity="0"></stop>
+                  </radialGradient>
+                </defs>
+                <path class="instrument-polar-haze" d="M223 176Q382 31 545 176L522 193Q382 77 246 193Z" fill="url(#v7-polar-haze)"></path>
+                <g class="instrument-deep-orbits" fill="none" stroke="url(#v7-orbit-fade)">
+                  <ellipse cx="382" cy="198" rx="282" ry="92" transform="rotate(-8 382 198)"></ellipse>
+                  <ellipse cx="382" cy="194" rx="246" ry="126" transform="rotate(16 382 194)"></ellipse>
+                  <path d="M63 183C201 47 506 50 686 215"></path>
+                </g>
+                <g class="instrument-star-cluster">
+                  <circle cx="86" cy="74" r="1.4"></circle><circle cx="118" cy="118" r=".9"></circle>
+                  <circle cx="168" cy="45" r="1.1"></circle><circle cx="610" cy="52" r="1.2"></circle>
+                  <circle cx="654" cy="139" r=".8"></circle><circle cx="585" cy="304" r="1.3"></circle>
+                  <circle cx="116" cy="302" r="1"></circle><circle cx="676" cy="282" r="1.1"></circle>
+                </g>
+              </svg>
+            </div>
             <div class="market-globe-shell" id="market-globe" aria-hidden="true">
               <canvas class="market-globe-canvas" id="market-globe-canvas" width="420" height="420"></canvas>
+            </div>
+            <div class="globe-instruments globe-instruments-front" aria-hidden="true">
+              <svg viewBox="0 0 720 380" preserveAspectRatio="xMidYMid meet">
+                <g class="instrument-reticle" transform="translate(382 194)" fill="none">
+                  <circle r="150"></circle><circle r="160" stroke-dasharray="1 8"></circle>
+                  <path d="M-174 0h38M136 0h38M0-174v28M0 146v28"></path>
+                  <path class="instrument-sweep" d="M0 0L-79-121A145 145 0 0 1 21-143Z"></path>
+                </g>
+                <g class="instrument-foreground-orbits" fill="none">
+                  <path d="M85 226C224 330 537 329 686 205"></path>
+                  <path d="M110 247C263 151 523 140 661 237"></path>
+                </g>
+                <g class="instrument-satellite satellite-alpha" transform="translate(112 101)">
+                  <path d="M-24-6h16v12h-16zM8-6h16v12H8z"></path><rect x="-7" y="-8" width="14" height="16" rx="2"></rect>
+                  <path class="satellite-signal" d="M0 11v18M-5 24l5 5 5-5"></path>
+                </g>
+                <g class="instrument-satellite satellite-beta" transform="translate(631 92)">
+                  <path d="M-21-5h14v10h-14zM7-5h14v10H7z"></path><rect x="-6" y="-7" width="12" height="14" rx="2"></rect>
+                  <path class="satellite-signal" d="M0 10v17M-5 22l5 5 5-5"></path>
+                </g>
+                <g class="instrument-satellite satellite-gamma" transform="translate(615 292)">
+                  <path d="M-18-5h12v10h-12zM6-5h12v10H6z"></path><rect x="-5" y="-6" width="10" height="12" rx="2"></rect>
+                </g>
+                <g class="instrument-beacons">
+                  <g transform="translate(115 226)"><circle r="4"></circle><circle class="beacon-wave" r="11"></circle></g>
+                  <g transform="translate(246 124)"><circle r="3"></circle><circle class="beacon-wave" r="9"></circle></g>
+                  <g transform="translate(530 142)"><circle r="4"></circle><circle class="beacon-wave" r="11"></circle></g>
+                  <g transform="translate(650 224)"><circle r="3"></circle><circle class="beacon-wave" r="9"></circle></g>
+                </g>
+                <g class="instrument-corners" fill="none">
+                  <path d="M60 67v-18h26M660 49h26v18M60 311v18h26M686 311v18h-26"></path>
+                  <path d="M72 61h55M638 61h36M72 317h44M646 317h28"></path>
+                </g>
+              </svg>
             </div>
             <svg class="market-orbit-svg" viewBox="0 0 720 380" role="img" aria-label="全球市场时区连接示意图">
               <defs>
@@ -1599,6 +1663,11 @@
               <div><small>WORKSPACE 01</small><h3>品类行情</h3></div>
             </header>
             <div class="aurora-gateway-preview aurora-terminal-preview">
+              <svg class="workspace-instrument workspace-instrument-market" viewBox="0 0 160 100" preserveAspectRatio="none" aria-hidden="true">
+                <g class="instrument-grid"><path d="M0 20H160M0 40H160M0 60H160M0 80H160M32 0V100M64 0V100M96 0V100M128 0V100"></path></g>
+                <g class="instrument-depth"><path d="M90 18h48M101 30h37M82 42h56M108 54h30M93 66h45M114 78h24"></path></g>
+                <path class="instrument-trace" d="M4 77L18 68 29 72 43 52 56 61 69 44 82 50 96 31 109 38 123 20 139 28 156 13"></path>
+              </svg>
               <!-- 这张表显示真实当日涨跌，因此对辅助技术可见；同卡里的走势与强弱条是装饰底图，保持 aria-hidden。 -->
               <div class="preview-quote-table" id="gateway-index-table" role="group"
                    aria-label="全球指数当日涨跌预览，完整数据见品类行情" aria-busy="true">
@@ -1637,6 +1706,10 @@
             </header>
             <div class="aurora-gateway-preview aurora-macro-preview" role="group"
                  aria-label="美债收益率曲线与宏观读数预览，完整口径见宏观研究">
+              <svg class="workspace-instrument workspace-instrument-macro" viewBox="0 0 160 100" preserveAspectRatio="none" aria-hidden="true">
+                <g class="instrument-scope" transform="translate(122 50)"><circle r="34"></circle><circle r="24"></circle><circle r="14"></circle><path d="M-38 0H38M0-38V38"></path><path class="scope-sweep" d="M0 0L-25-24A35 35 0 0 1 17-31Z"></path></g>
+                <g class="instrument-curves"><path d="M4 78C32 65 50 69 75 45S111 33 153 18"></path><path d="M4 86C32 77 55 79 78 60S116 43 153 34"></path><path d="M4 92C38 86 58 88 82 74S122 61 153 51"></path></g>
+              </svg>
               <div class="preview-macro-chart">
                 <span class="preview-head"><b>美债收益率曲线</b><em id="gateway-yield-meta">FRED · 读取中</em></span>
                 <svg id="gateway-yield-chart" viewBox="0 0 240 90" preserveAspectRatio="none" role="img" aria-label="2年、10年与30年期美债收益率曲线预览">
@@ -1672,6 +1745,11 @@
               <div><small>WORKSPACE 03</small><h3>实时事件</h3></div>
             </header>
             <div class="aurora-gateway-preview aurora-events-preview">
+              <svg class="workspace-instrument workspace-instrument-events" viewBox="0 0 160 100" preserveAspectRatio="none" aria-hidden="true">
+                <g class="instrument-radar" transform="translate(126 49)"><circle r="35"></circle><circle r="24"></circle><circle r="13"></circle><path d="M-39 0H39M0-39V39"></path><path class="radar-sweep" d="M0 0L-30-19A36 36 0 0 1 7-35Z"></path></g>
+                <path class="instrument-pulse" d="M3 64H25l5-10 7 22 8-34 8 22h24l6-13 8 26 7-13h24"></path>
+                <g class="instrument-pings"><circle cx="112" cy="37" r="3"></circle><circle cx="137" cy="60" r="2.5"></circle><circle cx="129" cy="24" r="2"></circle></g>
+              </svg>
               <div class="preview-event-list" id="gateway-event-list" role="group"
                    aria-label="重要经济事件预览，时间按本地时区显示" aria-busy="true">
                 <span class="preview-head"><b>事件时间线</b><em id="gateway-event-meta">Forex Factory · 读取中</em></span>

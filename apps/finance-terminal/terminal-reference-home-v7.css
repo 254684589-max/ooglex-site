@@ -1,0 +1,411 @@
+/* Planetary command-stage and workspace instruments, revision 7.
+   Presentation only: every quote, score, event and timestamp continues to come from the existing
+   terminal data contracts. All new SVG layers are aria-hidden and contain no simulated readings. */
+
+@keyframes v7-orbit-flow { to { stroke-dashoffset: -88; } }
+@keyframes v7-reticle-turn { to { transform: rotate(360deg); } }
+@keyframes v7-sweep-turn { to { transform: rotate(360deg); } }
+@keyframes v7-satellite-float { 50% { transform: translateY(-5px); } }
+@keyframes v7-beacon-pulse { 0%, 100% { opacity: .15; transform: scale(.65); } 50% { opacity: .82; transform: scale(1.18); } }
+@keyframes v7-star-pulse { 50% { opacity: 1; } }
+@keyframes v7-instrument-draw { to { stroke-dashoffset: -120; } }
+@keyframes v7-panel-breathe { 50% { opacity: .82; filter: drop-shadow(0 0 .7vw var(--gateway-color)); } }
+
+@media (min-width: 1041px) {
+  body[data-terminal-view="overview"] .market-orbit {
+    isolation: isolate;
+    overflow: visible;
+  }
+
+  /* The sphere now fits inside the 20.93vw hero row. Canvas radius is 38.5% of this square, so
+     26vw produces a 20vw visible globe: complete at 1041px, faithful at 1672px and capped on 4K. */
+  body[data-terminal-view="overview"] .market-globe-shell {
+    top: 50%;
+    left: 53%;
+    z-index: 2;
+    width: min(26vw, 445px);
+    transform: translate(-50%, -50%);
+    transform-origin: center;
+  }
+
+  body[data-terminal-view="overview"] .market-globe-canvas {
+    width: 100%;
+    height: auto;
+    filter:
+      saturate(1.42)
+      brightness(1.18)
+      contrast(1.22)
+      drop-shadow(0 0 .48vw rgba(135, 234, 255, .92))
+      drop-shadow(0 0 1.5vw rgba(45, 152, 255, .5))
+      drop-shadow(0 -1.2vw 2.5vw rgba(164, 90, 255, .28));
+  }
+
+  /* Two separate air shells: a hard cyan ionosphere and a broader blue-violet exosphere. */
+  body[data-terminal-view="overview"] .market-globe-shell::before {
+    inset: 11.15%;
+    border: 1px solid rgba(190, 246, 255, .78);
+    background:
+      radial-gradient(circle at 28% 17%, rgba(202, 249, 255, .2), transparent 25%),
+      radial-gradient(circle at 70% 9%, rgba(203, 124, 255, .14), transparent 28%);
+    box-shadow:
+      0 0 .55vw rgba(137, 235, 255, .95),
+      0 0 1.65vw rgba(50, 179, 255, .65),
+      0 0 3.8vw rgba(35, 102, 255, .38),
+      0 -1.6vw 3.4vw rgba(182, 93, 255, .34),
+      inset 0 0 1.4vw rgba(88, 210, 255, .23),
+      inset 0 0 3.1vw rgba(20, 65, 132, .36);
+  }
+
+  body[data-terminal-view="overview"] .market-globe-shell::after {
+    inset: 7.6%;
+    z-index: 4;
+    border: 1px solid rgba(90, 208, 255, .18);
+    border-radius: 50%;
+    background:
+      repeating-conic-gradient(from -12deg,
+        rgba(127, 228, 255, .66) 0 .38deg, transparent .38deg 4.4deg),
+      conic-gradient(from 186deg,
+        rgba(80, 211, 255, 0) 0 11%, rgba(91, 224, 255, .33) 16%, transparent 24% 62%,
+        rgba(194, 104, 255, .28) 70%, transparent 81%);
+    box-shadow: 0 0 1vw rgba(76, 207, 255, .24), inset 0 0 1.4vw rgba(95, 205, 255, .07);
+    filter: drop-shadow(0 0 .25vw rgba(70, 216, 255, .78));
+    opacity: .7;
+    pointer-events: none;
+    -webkit-mask: radial-gradient(circle, transparent 0 96%, #000 96.2% 97%, transparent 97.2%);
+    mask: radial-gradient(circle, transparent 0 96%, #000 96.2% 97%, transparent 97.2%);
+    animation: v7-reticle-turn 46s linear infinite;
+  }
+
+  /* The backdrop is intentionally irregular: three star fields, a faint telemetry lattice and a
+     low orbital horizon. It replaces the large empty black patch without pretending to be data. */
+  body[data-terminal-view="overview"] .market-orbit::before {
+    inset: -10% -9% -16% -11%;
+    z-index: 0;
+    border-radius: 0;
+    background:
+      radial-gradient(circle at 7% 23%, rgba(222, 250, 255, .84) 0 1px, transparent 1.5px),
+      radial-gradient(circle at 67% 11%, rgba(153, 119, 255, .65) 0 1px, transparent 1.6px),
+      radial-gradient(circle at 89% 68%, rgba(79, 216, 255, .72) 0 1px, transparent 1.4px),
+      linear-gradient(rgba(70, 181, 225, .025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(70, 181, 225, .025) 1px, transparent 1px),
+      repeating-radial-gradient(ellipse at 53% 65%, transparent 0 5.6vw,
+        rgba(66, 179, 226, .07) 5.64vw 5.7vw, transparent 5.76vw 8.9vw),
+      radial-gradient(ellipse at 53% 57%, rgba(13, 126, 198, .33), transparent 54%);
+    background-size: 103px 79px, 173px 131px, 239px 181px, 2.65vw 2.65vw,
+      2.65vw 2.65vw, auto, auto;
+    opacity: .98;
+  }
+
+  /* Blue-violet polar crown: narrow light pillars over a soft polar bloom. */
+  body[data-terminal-view="overview"] .market-orbit::after {
+    top: -11%;
+    left: 27%;
+    z-index: 1;
+    width: 50%;
+    height: 58%;
+    border-radius: 48% 52% 45% 55%;
+    background:
+      repeating-linear-gradient(94deg,
+        transparent 0 .58vw, rgba(99, 221, 255, .38) .62vw,
+        rgba(210, 112, 255, .31) .69vw, transparent .82vw),
+      radial-gradient(ellipse at 52% 86%, rgba(232, 137, 255, .78), rgba(112, 135, 255, .36) 39%,
+        rgba(70, 211, 255, .16) 59%, transparent 75%);
+    filter: blur(.48vw) drop-shadow(0 0 1.2vw rgba(166, 96, 255, .4));
+    opacity: .9;
+    mix-blend-mode: screen;
+    transform: perspective(22vw) rotateX(56deg);
+    transform-origin: bottom;
+  }
+
+  .globe-instruments {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .globe-instruments svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .globe-instruments-back { z-index: 1; opacity: .76; }
+  .globe-instruments-front { z-index: 3; opacity: .88; }
+
+  .instrument-polar-haze {
+    opacity: .42;
+    filter: blur(7px) drop-shadow(0 0 12px rgba(169, 94, 255, .45));
+  }
+
+  .instrument-deep-orbits {
+    stroke-width: 1;
+    stroke-dasharray: 3 8 19 7;
+    filter: drop-shadow(0 0 4px rgba(82, 207, 255, .55));
+    animation: v7-orbit-flow 12s linear infinite;
+  }
+
+  .instrument-deep-orbits ellipse:nth-child(2) { stroke-opacity: .48; stroke-dasharray: 1 11 25 8; }
+
+  .instrument-star-cluster { fill: #d8f8ff; opacity: .45; animation: v7-star-pulse 3.8s ease-in-out infinite; }
+  .instrument-star-cluster circle:nth-child(3n) { fill: #bc8bff; animation-delay: -1.4s; }
+
+  .instrument-reticle {
+    stroke: rgba(105, 218, 255, .31);
+    stroke-width: .8;
+    transform-box: fill-box;
+    transform-origin: center;
+    filter: drop-shadow(0 0 3px rgba(63, 202, 255, .5));
+    animation: v7-reticle-turn 72s linear infinite reverse;
+  }
+
+  .instrument-reticle circle:nth-child(2) { stroke: rgba(179, 121, 255, .38); }
+  .instrument-sweep,
+  .scope-sweep,
+  .radar-sweep {
+    fill: rgba(86, 214, 255, .075);
+    stroke: rgba(112, 225, 255, .26);
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: v7-sweep-turn 9s linear infinite;
+  }
+
+  .instrument-foreground-orbits {
+    stroke: url(#v7-orbit-fade);
+    stroke-width: 1.15;
+    stroke-dasharray: 2 5 28 8;
+    filter: drop-shadow(0 0 4px rgba(81, 215, 255, .72));
+    animation: v7-orbit-flow 7s linear infinite reverse;
+  }
+
+  .instrument-foreground-orbits path:nth-child(2) { stroke: rgba(161, 129, 255, .3); stroke-width: .75; }
+
+  .instrument-satellite {
+    color: #9ceaff;
+    fill: rgba(19, 79, 112, .82);
+    stroke: currentColor;
+    stroke-width: 1.05;
+    filter: drop-shadow(0 0 5px currentColor);
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: v7-satellite-float 5s ease-in-out infinite;
+  }
+
+  .instrument-satellite rect { fill: rgba(6, 24, 38, .96); }
+  .instrument-satellite path:not(.satellite-signal) { fill: rgba(61, 172, 219, .22); }
+  .instrument-satellite .satellite-signal { fill: none; stroke-dasharray: 3 3; opacity: .6; }
+  .satellite-beta { color: #c28dff; animation-delay: -1.8s; }
+  .satellite-gamma { animation-delay: -3.2s; opacity: .74; }
+
+  .instrument-beacons circle:first-child { fill: #e6fbff; filter: drop-shadow(0 0 5px #64ddff); }
+  .instrument-beacons .beacon-wave {
+    fill: none;
+    stroke: rgba(97, 224, 255, .68);
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: v7-beacon-pulse 3.1s ease-in-out infinite;
+  }
+  .instrument-beacons > g:nth-child(2n) .beacon-wave { stroke: rgba(190, 132, 255, .7); animation-delay: -1.2s; }
+  .instrument-beacons > g:nth-child(3) .beacon-wave { animation-delay: -2.1s; }
+
+  .instrument-corners { stroke: rgba(109, 220, 255, .35); stroke-width: 1; stroke-dasharray: 1 4 12 4; }
+
+  body[data-terminal-view="overview"] .market-orbit-svg { z-index: 1; opacity: .36; }
+  body[data-terminal-view="overview"] .orbit-grid path { stroke: rgba(87, 190, 226, .045); }
+
+  body[data-terminal-view="overview"] .orbit-links { z-index: 4; }
+  body[data-terminal-view="overview"] .orbit-link {
+    stroke-width: 1.15;
+    stroke-dasharray: 1 5 18 7;
+    animation-duration: 5.8s;
+  }
+
+  body[data-terminal-view="overview"] .orbit-clock {
+    z-index: 5;
+    border-left: 1px solid rgba(104, 222, 255, .4);
+    background:
+      linear-gradient(90deg, rgba(13, 73, 101, .34), rgba(2, 18, 31, .58) 55%, transparent),
+      rgba(0, 7, 14, .24);
+    box-shadow: inset 0 1px rgba(105, 220, 255, .1), 0 0 1vw rgba(46, 180, 230, .08);
+    backdrop-filter: blur(2px);
+  }
+
+  body[data-terminal-view="overview"] .clock-new-york { top: 49%; left: 2%; }
+  body[data-terminal-view="overview"] .clock-london { top: 15%; left: 35%; }
+  body[data-terminal-view="overview"] .clock-shanghai { top: 43%; right: 18%; left: auto; }
+  body[data-terminal-view="overview"] .clock-tokyo { top: 64%; right: 9%; left: auto; }
+
+  body[data-terminal-view="overview"] .market-orbit figcaption {
+    right: 0;
+    bottom: 1.2%;
+    z-index: 6;
+    max-width: 68%;
+  }
+
+  /* Three dedicated instrument languages sit underneath the real previews: amber order depth,
+     cyan curve scope, green event radar. They are deliberately graphic-only and aria-hidden. */
+  body[data-terminal-view="overview"] .aurora-gateway {
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  body[data-terminal-view="overview"] .aurora-gateway::after {
+    right: -.8vw;
+    bottom: -.85vw;
+    width: 6.8vw;
+    height: 6.8vw;
+    border: 1px solid color-mix(in srgb, var(--gateway-color) 22%, transparent);
+    border-radius: 50%;
+    background:
+      repeating-conic-gradient(from 8deg,
+        color-mix(in srgb, var(--gateway-color) 20%, transparent) 0 .7deg,
+        transparent .7deg 9deg),
+      radial-gradient(circle, transparent 0 56%, color-mix(in srgb, var(--gateway-color) 7%, transparent) 57% 58%, transparent 59%);
+    opacity: .5;
+    transform: none;
+    -webkit-mask: none;
+    mask: none;
+  }
+
+  body[data-terminal-view="overview"] .aurora-gateway header {
+    border-bottom: 1px solid color-mix(in srgb, var(--gateway-color) 15%, transparent);
+  }
+
+  body[data-terminal-view="overview"] .aurora-gateway header::before {
+    position: absolute;
+    right: .25vw;
+    bottom: .24vw;
+    width: 18%;
+    height: 2px;
+    content: "";
+    background: repeating-linear-gradient(90deg,
+      var(--gateway-color) 0 .28vw, transparent .28vw .45vw);
+    box-shadow: 0 0 .45vw color-mix(in srgb, var(--gateway-color) 45%, transparent);
+    opacity: .32;
+  }
+
+  body[data-terminal-view="overview"] .aurora-gateway-preview {
+    position: relative;
+    overflow: hidden;
+    border-color: color-mix(in srgb, var(--gateway-color) 22%, transparent);
+    box-shadow:
+      inset 0 0 1.8vw rgba(0, 0, 0, .48),
+      inset 0 1px color-mix(in srgb, var(--gateway-color) 12%, transparent),
+      0 0 1vw color-mix(in srgb, var(--gateway-color) 7%, transparent);
+  }
+
+  body[data-terminal-view="overview"] .workspace-instrument {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 1 !important;
+    display: block;
+    width: 100%;
+    height: 100%;
+    color: var(--gateway-color);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: .7;
+    opacity: .24;
+    pointer-events: none;
+    filter: drop-shadow(0 0 .3vw color-mix(in srgb, var(--gateway-color) 35%, transparent));
+    animation: v7-panel-breathe 7s ease-in-out infinite;
+  }
+
+  body[data-terminal-view="overview"] .workspace-instrument .instrument-grid { opacity: .23; stroke-width: .35; }
+  body[data-terminal-view="overview"] .workspace-instrument .instrument-trace,
+  body[data-terminal-view="overview"] .workspace-instrument .instrument-curves path,
+  body[data-terminal-view="overview"] .workspace-instrument .instrument-pulse {
+    stroke-width: 1.15;
+    stroke-dasharray: 5 3 18 4;
+    animation: v7-instrument-draw 9s linear infinite;
+  }
+
+  body[data-terminal-view="overview"] .workspace-instrument .instrument-depth path {
+    stroke-width: 3;
+    stroke-linecap: square;
+    opacity: .6;
+  }
+
+  body[data-terminal-view="overview"] .workspace-instrument-macro { opacity: .19; }
+  body[data-terminal-view="overview"] .workspace-instrument-macro .instrument-scope,
+  body[data-terminal-view="overview"] .workspace-instrument-events .instrument-radar { stroke-width: .55; opacity: .72; }
+  body[data-terminal-view="overview"] .workspace-instrument-macro .scope-sweep { fill: rgba(77, 211, 255, .12); }
+  body[data-terminal-view="overview"] .workspace-instrument-events { opacity: .22; }
+  body[data-terminal-view="overview"] .workspace-instrument-events .radar-sweep { fill: rgba(76, 238, 188, .11); animation-duration: 6.5s; }
+  body[data-terminal-view="overview"] .workspace-instrument-events .instrument-pings { fill: currentColor; stroke: none; }
+
+  body[data-terminal-view="overview"] .aurora-terminal-preview {
+    background:
+      linear-gradient(90deg, transparent 0 49.8%, rgba(243, 181, 68, .08) 50%, transparent 50.2%),
+      repeating-linear-gradient(180deg, transparent 0 .75vw, rgba(243, 181, 68, .035) .77vw .79vw),
+      radial-gradient(ellipse at 64% 54%, rgba(238, 163, 42, .07), transparent 49%),
+      rgba(1, 9, 16, .84);
+  }
+
+  body[data-terminal-view="overview"] .aurora-macro-preview {
+    background:
+      repeating-radial-gradient(circle at 76% 50%, transparent 0 1.3vw,
+        rgba(70, 208, 255, .055) 1.34vw 1.38vw, transparent 1.42vw 2.2vw),
+      linear-gradient(rgba(66, 198, 240, .04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(66, 198, 240, .04) 1px, transparent 1px),
+      radial-gradient(ellipse at 67% 47%, rgba(38, 157, 220, .09), transparent 55%),
+      rgba(1, 9, 16, .84);
+    background-size: auto, 1vw 1vw, 1vw 1vw, auto, auto;
+  }
+
+  body[data-terminal-view="overview"] .aurora-events-preview {
+    background:
+      repeating-radial-gradient(circle at 79% 48%, transparent 0 1.2vw,
+        rgba(64, 227, 172, .06) 1.24vw 1.28vw, transparent 1.32vw 2vw),
+      linear-gradient(90deg, rgba(68, 232, 181, .04) 1px, transparent 1px),
+      linear-gradient(rgba(68, 232, 181, .035) 1px, transparent 1px),
+      radial-gradient(circle at 74% 44%, rgba(54, 204, 161, .09), transparent 43%),
+      rgba(1, 9, 16, .84);
+    background-size: auto, 1vw 1vw, 1vw 1vw, auto, auto;
+  }
+
+  body[data-terminal-view="overview"] .preview-chart,
+  body[data-terminal-view="overview"] .preview-macro-chart,
+  body[data-terminal-view="overview"] .preview-event-list,
+  body[data-terminal-view="overview"] .preview-impact-table,
+  body[data-terminal-view="overview"] .preview-quote-table,
+  body[data-terminal-view="overview"] .preview-flow-table { backdrop-filter: blur(.15px); }
+
+  body[data-terminal-view="overview"] .gateway-enter {
+    box-shadow:
+      0 0 1.25vw color-mix(in srgb, var(--gateway-color) 23%, transparent),
+      inset 0 0 1.5vw color-mix(in srgb, var(--gateway-color) 10%, transparent),
+      inset 0 1px color-mix(in srgb, var(--gateway-color) 35%, transparent);
+  }
+}
+
+@media (min-width: 1800px) {
+  body[data-terminal-view="overview"] .market-globe-shell {
+    top: 50%;
+    left: 53%;
+    width: 445px;
+    transform: translate(-50%, -50%);
+  }
+
+  body[data-terminal-view="overview"] .market-orbit::after {
+    left: 31%;
+    width: 42%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-terminal-view="overview"] .market-globe-shell::after,
+  body[data-terminal-view="overview"] .instrument-deep-orbits,
+  body[data-terminal-view="overview"] .instrument-star-cluster,
+  body[data-terminal-view="overview"] .instrument-reticle,
+  body[data-terminal-view="overview"] .instrument-sweep,
+  body[data-terminal-view="overview"] .scope-sweep,
+  body[data-terminal-view="overview"] .radar-sweep,
+  body[data-terminal-view="overview"] .instrument-foreground-orbits,
+  body[data-terminal-view="overview"] .instrument-satellite,
+  body[data-terminal-view="overview"] .beacon-wave,
+  body[data-terminal-view="overview"] .workspace-instrument,
+  body[data-terminal-view="overview"] .instrument-trace,
+  body[data-terminal-view="overview"] .instrument-curves path,
+  body[data-terminal-view="overview"] .instrument-pulse { animation: none; }
+}
