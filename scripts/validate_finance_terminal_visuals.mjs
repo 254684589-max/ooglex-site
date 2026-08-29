@@ -18,7 +18,10 @@ import { logReturns, sessionAligned, pearson, buildMatrix, MIN_OVERLAP }
   from "../apps/finance-terminal/finance-terminal-correlation-view.mjs";
 import { tenorX, valueY, curveSegments, describeShape }
   from "../apps/finance-terminal/finance-terminal-curve-view.mjs";
-import { pickIndexRows, describeRows, formatChange }
+import {
+  pickIndexRows, pickMoverRows, pickMacroSnapshot, pickCalendarRows,
+  curveGeometry, describeRows, formatChange
+}
   from "../apps/finance-terminal/finance-terminal-gateway-preview.mjs";
 
 function asset(symbol, dailyReturn, options = {}) {
@@ -398,6 +401,51 @@ assert.strictEqual(formatChange(1.234), "+1.23%");
 assert.strictEqual(formatChange(-1.234), "−1.23%");
 assert.strictEqual(formatChange(0), "0.00%");
 
+/* 强弱队列与资产异动预览仍只读同一批合格行情，按绝对涨跌排序；代理、过期和
+   降级条目不能为了填满入口卡被重新放回来。 */
+const moverRows = pickMoverRows(trackerFixture, 6);
+assert.deepStrictEqual(moverRows.map((row) => row.name), ["日经225", "布伦特原油", "标普500"]);
+
+/* 宏观入口只把站内已有的2Y/10Y/30Y、SOFR和联储资产读数压成预览。上一观测
+   可由明确给出的bp变化复算；任何期限缺失都不得伪造完整曲线。 */
+const macroFixture = {
+  macro: [
+    { rows: [
+      { id: "SOFR", val: "3.64%", asOf: "2026-08-26" },
+      { id: "WALCL", val: "6.73T", asOf: "2026-08-26" },
+      { id: "DGS2", val: "4.19%", chg: "+2bp", asOf: "2026-08-26" },
+      { id: "DGS10", val: "4.66%", price: 4.66, previousPrice: 4.64, asOf: "2026-08-26" },
+      { id: "DGS30", val: "5.18%", chg: "+1bp", asOf: "2026-08-26" }
+    ] }
+  ]
+};
+const macroSnapshot = pickMacroSnapshot(macroFixture);
+assert.equal(macroSnapshot.ready, true);
+assert.equal(macroSnapshot.curve[0].previous, 4.17);
+assert.deepStrictEqual(macroSnapshot.metrics.map((metric) => metric.value), ["3.64%", "4.66%", "6.73T"]);
+const geometry = curveGeometry(macroSnapshot.curve);
+assert.ok(geometry.currentPath.startsWith("M24 ") && geometry.currentPath.includes("L232 "));
+assert.deepStrictEqual(geometry.axis, ["5.18%", "4.67%", "4.17%"]);
+assert.equal(pickMacroSnapshot({ macro: [] }).ready, false);
+assert.equal(curveGeometry([]), null);
+
+/* 事件时间线只收Forex Factory文件内可校验的事件，优先未来高/中影响，再补最近
+   重要事件；无效时间、标题和影响级别不得进入。 */
+const calendarFixture = {
+  source: "Forex Factory 经济日历",
+  events: [
+    { ts: "2026-08-27T10:00:00Z", title: "央行官员讲话", country: "美国", ccy: "USD", impact: "medium" },
+    { ts: "2026-08-28T12:30:00Z", title: "PCE价格指数", country: "美国", ccy: "USD", impact: "high" },
+    { ts: "2026-08-26T08:00:00Z", title: "消费者信心", country: "德国", ccy: "EUR", impact: "medium" },
+    { ts: "2026-08-27T09:00:00Z", title: "低影响数据", country: "法国", ccy: "EUR", impact: "low" },
+    { ts: "invalid", title: "无效", country: "", ccy: "", impact: "high" }
+  ]
+};
+const calendarRows = pickCalendarRows(calendarFixture, new Date("2026-08-27T00:00:00Z"), 4);
+assert.deepStrictEqual(calendarRows.map((row) => row.title),
+  ["央行官员讲话", "PCE价格指数", "消费者信心", "低影响数据"]);
+assert.deepStrictEqual(pickCalendarRows({ source: "其他来源", events: [] }), []);
+
 console.log("- rotating globe longitude projection / texture wrap contract: PASS");
 console.log("- calendar-only trading sessions / lunch break / weekend / unknown zone: PASS");
 console.log("- watchlist sanitization / pure toggle / stable ordering / storage degradation: PASS");
@@ -406,4 +454,4 @@ console.log("- radar six axes read real regime signals / direction / gap isolati
 console.log("- heatmap paints only regions with a representative index: PASS");
 console.log("- yield curve breaks at missing tenors / log tenor axis / honest shape call: PASS");
 console.log("- correlation on log returns / misaligned-calendar exclusion / thin-overlap blanking: PASS");
-console.log("- gateway index preview drops proxy/stale/degraded rows and dates its own span: PASS");
+console.log("- gateway index/mover/macro/calendar previews mirror validated snapshots only: PASS");

@@ -68,6 +68,7 @@ async function validateFailureIsolation() {
   });
   const risk = await loader.loadGroup("risk");
   assert.equal(risk.macro.error, null);
+  assert.equal(risk.calendar.error, null, "总览事件工作区应复用risk组延迟加载的经济日历");
   assert.match(risk.ofr.error.message, /^HTTP 503$/);
   assert.match(risk.ofrHealth.error.message, /^HTTP 503$/);
   const snapshot = loader.snapshot();
