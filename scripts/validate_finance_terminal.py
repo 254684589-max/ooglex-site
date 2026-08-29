@@ -3805,7 +3805,7 @@ def main() -> None:
             and "finance-terminal-browser-evidence.json" in browser_validator
             and "buildBrowserEvidence" in browser_validator
             and "runtimeEvidence=1" in browser_validator,
-            "浏览器回归脚本未覆盖四档宽度、官方趋势、稳定V1证据、渲染DOM和截图")
+            "浏览器回归脚本未覆盖五档宽度、官方趋势、稳定V1证据、渲染DOM和截图")
     browser_evidence = BROWSER_EVIDENCE.read_text(encoding="utf-8")
     require("EXPECTED_WIDTHS = [360, 768, 1280, 1672, 2048]" in browser_evidence
             and 'EXPECTED_SYMBOLS = ["DIA", "GLD"]' in browser_evidence
@@ -3817,7 +3817,7 @@ def main() -> None:
             and "diagnosisCounts" in browser_evidence
             and "doesNotReadOrStoreQuotes" in browser_evidence
             and "connected-defined-element-with-layout" in browser_evidence,
-            "浏览器证据未覆盖两项代理、四档视口或禁止行情读取边界")
+            "浏览器证据未覆盖两项代理、五档视口或禁止行情读取边界")
     require('client.send("Network.enable")' in browser_validator
             and "trackProviderScriptTransport" in browser_validator
             and 'client.subscribe("Network.requestWillBeSent"' in browser_validator
@@ -3827,6 +3827,8 @@ def main() -> None:
     proxy_history = PROXY_RUNTIME_HISTORY.read_text(encoding="utf-8")
     require("MAX_CYCLES = 7" in proxy_history
             and "ARTIFACT_LOOKBACK_DAYS = 14" in proxy_history
+            and "EXPECTED_VIEWPORTS = 5" in proxy_history
+            and "COMPATIBLE_VIEWPORT_COUNTS = {4, EXPECTED_VIEWPORTS}" in proxy_history
             and 'cycleBoundaryUtc": "21:00"' in proxy_history
             and "finance-terminal-proxy-runtime-" in proxy_history
             and "doesNotReadOrStoreQuotes" in proxy_history

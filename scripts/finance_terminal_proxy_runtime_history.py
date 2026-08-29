@@ -101,10 +101,11 @@ def consecutive_cycles(cycles: list[dict[str, Any]], predicate) -> int:
     return count
 
 
-# 四档视口是固定的；每轮的代理项数随所有者的展示决定变化（2026-08-25 由4项收敛为
-# DIA与GLD两项），因此「一轮的观测总数」一律读该轮自己声明的 observationCount，
-# 历史周期沿用它当时的数字，不被现在的项数改写。
-EXPECTED_VIEWPORTS = 4
+# 当前回归覆盖五档视口；2026-08-29前的兼容证据只有四档。历史必须保留旧周期自己的
+# viewportCount，不能因新增2048px实图回归而把此前的有效周期全部丢掉。代理项数也会随
+# 所有者的展示决定变化，因此一轮的观测总数始终读该轮自己的 observationCount。
+EXPECTED_VIEWPORTS = 5
+COMPATIBLE_VIEWPORT_COUNTS = {4, EXPECTED_VIEWPORTS}
 EXPECTED_PROXY_COUNT = 2
 
 
@@ -123,7 +124,7 @@ def assess_runtime(cycles: list[dict[str, Any]], collection: dict[str, Any]) -> 
         cycles, lambda summary: summary["mountedObservations"] == cycle_total(summary)
     )
     all_scripts_loaded = consecutive_cycles(
-        cycles, lambda summary: summary["providerScriptLoadedViewports"] == EXPECTED_VIEWPORTS
+        cycles, lambda summary: summary["providerScriptLoadedViewports"] == summary["viewportCount"]
     )
     latest_cycle_date = cycles[0]["cycleDate"] if cycles else None
     assessment = {
@@ -153,7 +154,7 @@ def assess_runtime(cycles: list[dict[str, Any]], collection: dict[str, Any]) -> 
     latest = cycles[0]["summary"]
     previous = cycles[1]["summary"]
     latest_healthy = latest["mountedObservations"] == cycle_total(latest) \
-        and latest["providerScriptLoadedViewports"] == EXPECTED_VIEWPORTS
+        and latest["providerScriptLoadedViewports"] == latest["viewportCount"]
     previous_warning = previous["fallbackObservations"] == cycle_total(previous) \
         or previous["providerScriptFailedViewports"] > 0
     if latest_healthy and previous_warning:
@@ -180,8 +181,9 @@ def summarize_evidence(evidence: Any) -> dict[str, Any]:
     require(evidence["doesNotAssert"] == DOES_NOT_ASSERT, "浏览器证据断言边界无效")
     require(evidence["doesNotReadOrStoreQuotes"] is True, "浏览器证据不得读取或保存行情")
     require(isinstance(evidence["viewports"], list)
-            and len(evidence["viewports"]) == EXPECTED_VIEWPORTS,
+            and len(evidence["viewports"]) in COMPATIBLE_VIEWPORT_COUNTS,
             "浏览器证据视口数量无效")
+    viewport_count = len(evidence["viewports"])
 
     summary = evidence["summary"]
     expected_summary_keys = {
@@ -193,9 +195,9 @@ def summarize_evidence(evidence: Any) -> dict[str, Any]:
     }
     require(exact_keys(summary, expected_summary_keys), "浏览器证据汇总字段无效")
     total = summary["observationCount"]
-    require(summary["viewportCount"] == EXPECTED_VIEWPORTS
+    require(summary["viewportCount"] == viewport_count
             and summary["proxyCountPerViewport"] == EXPECTED_PROXY_COUNT
-            and total == EXPECTED_VIEWPORTS * EXPECTED_PROXY_COUNT
+            and total == viewport_count * EXPECTED_PROXY_COUNT
             and summary["allViewportsPassed"] is True,
             "浏览器证据固定覆盖无效")
     mounted = summary["mountedObservations"]
@@ -209,26 +211,26 @@ def summarize_evidence(evidence: Any) -> dict[str, Any]:
         "providerScriptLoadedViewports", "providerScriptFailedViewports",
         "providerScriptPendingViewports", "providerScriptNotObservedViewports",
     )]
-    require(all(nonnegative_integer(value, EXPECTED_VIEWPORTS) for value in script_counts)
-            and sum(script_counts) == EXPECTED_VIEWPORTS,
+    require(all(nonnegative_integer(value, viewport_count) for value in script_counts)
+            and sum(script_counts) == viewport_count,
             "提供方脚本汇总无效")
     failure_categories = summary["providerScriptFailureCategories"]
     require(exact_keys(failure_categories, set(FAILURE_CATEGORIES))
-            and all(nonnegative_integer(failure_categories[key], EXPECTED_VIEWPORTS)
+            and all(nonnegative_integer(failure_categories[key], viewport_count)
                     for key in FAILURE_CATEGORIES)
             and sum(failure_categories.values()) <= summary["providerScriptFailedViewports"],
             "提供方脚本失败分类无效")
     diagnosis_counts = summary["diagnosisCounts"]
     require(exact_keys(diagnosis_counts, set(DIAGNOSIS_STATES))
-            and all(nonnegative_integer(diagnosis_counts[key], EXPECTED_VIEWPORTS)
+            and all(nonnegative_integer(diagnosis_counts[key], viewport_count)
                     for key in DIAGNOSIS_STATES)
-            and sum(diagnosis_counts.values()) == EXPECTED_VIEWPORTS, "关联诊断汇总无效")
+            and sum(diagnosis_counts.values()) == viewport_count, "关联诊断汇总无效")
 
     return {
         "cycleDate": cycle_date(generated_at),
         "generatedAt": generated_at,
         "summary": {
-            "viewportCount": EXPECTED_VIEWPORTS,
+            "viewportCount": viewport_count,
             "observationCount": summary["observationCount"],
             "mountedObservations": mounted,
             "fallbackObservations": fallback,
@@ -265,7 +267,8 @@ def build_history(
         "mixedHostCycles": sum(0 < item["summary"]["mountedObservations"] < cycle_total(item["summary"])
                                for item in cycles),
         "allProviderScriptsLoadedCycles": sum(
-            item["summary"]["providerScriptLoadedViewports"] == EXPECTED_VIEWPORTS for item in cycles
+            item["summary"]["providerScriptLoadedViewports"] == item["summary"]["viewportCount"]
+            for item in cycles
         ),
         "anyProviderScriptFailedCycles": sum(
             item["summary"]["providerScriptFailedViewports"] > 0 for item in cycles
@@ -339,7 +342,8 @@ def validate_history(history: Any) -> dict[str, Any]:
         }), "代理趋势周期汇总字段无效")
         # 历史周期只记录视口数与观测总数：代理项数会随展示决定变化，
         # 旧周期沿用它当时的总数，这里只要求是视口数的正整数倍。
-        require(summary["viewportCount"] == EXPECTED_VIEWPORTS
+        viewport_count = summary["viewportCount"]
+        require(viewport_count in COMPATIBLE_VIEWPORT_COUNTS
                 and isinstance(summary["observationCount"], int)
                 and summary["observationCount"] > 0
                 and summary["observationCount"] % summary["viewportCount"] == 0,
@@ -351,19 +355,19 @@ def validate_history(history: Any) -> dict[str, Any]:
                 and mounted + fallback == total, "代理趋势宿主计数无效")
         loaded = summary["providerScriptLoadedViewports"]
         failed = summary["providerScriptFailedViewports"]
-        require(nonnegative_integer(loaded, EXPECTED_VIEWPORTS)
-                and nonnegative_integer(failed, EXPECTED_VIEWPORTS)
-                and loaded + failed <= EXPECTED_VIEWPORTS, "代理趋势脚本计数无效")
+        require(nonnegative_integer(loaded, viewport_count)
+                and nonnegative_integer(failed, viewport_count)
+                and loaded + failed <= viewport_count, "代理趋势脚本计数无效")
         failure_categories = summary["providerScriptFailureCategories"]
         require(exact_keys(failure_categories, set(FAILURE_CATEGORIES))
-                and all(nonnegative_integer(failure_categories[key], EXPECTED_VIEWPORTS)
+                and all(nonnegative_integer(failure_categories[key], viewport_count)
                         for key in FAILURE_CATEGORIES)
                 and sum(failure_categories.values()) <= failed, "代理趋势失败分类无效")
         diagnosis_counts = summary["diagnosisCounts"]
         require(exact_keys(diagnosis_counts, set(DIAGNOSIS_STATES))
-                and all(nonnegative_integer(diagnosis_counts[key], EXPECTED_VIEWPORTS)
+                and all(nonnegative_integer(diagnosis_counts[key], viewport_count)
                         for key in DIAGNOSIS_STATES)
-                and sum(diagnosis_counts.values()) == EXPECTED_VIEWPORTS,
+                and sum(diagnosis_counts.values()) == viewport_count,
                 "代理趋势诊断计数无效")
     expected_summary = {
         "observedCycles": len(cycles),
@@ -374,7 +378,8 @@ def validate_history(history: Any) -> dict[str, Any]:
         "mixedHostCycles": sum(0 < item["summary"]["mountedObservations"] < cycle_total(item["summary"])
                                for item in cycles),
         "allProviderScriptsLoadedCycles": sum(
-            item["summary"]["providerScriptLoadedViewports"] == EXPECTED_VIEWPORTS for item in cycles
+            item["summary"]["providerScriptLoadedViewports"] == item["summary"]["viewportCount"]
+            for item in cycles
         ),
         "anyProviderScriptFailedCycles": sum(
             item["summary"]["providerScriptFailedViewports"] > 0 for item in cycles
@@ -508,8 +513,8 @@ def render_markdown(history: dict[str, Any]) -> str:
             f"{key}={summary['diagnosisCounts'][key]}" for key in DIAGNOSIS_STATES
         )
         lines.append(
-            f"| {item['cycleDate']} | {summary['providerScriptLoadedViewports']}/{EXPECTED_VIEWPORTS} | "
-            f"{summary['providerScriptFailedViewports']}/{EXPECTED_VIEWPORTS} | "
+            f"| {item['cycleDate']} | {summary['providerScriptLoadedViewports']}/{summary['viewportCount']} | "
+            f"{summary['providerScriptFailedViewports']}/{summary['viewportCount']} | "
             f"{summary['mountedObservations']}/{cycle_total(summary)} | "
             f"{summary['fallbackObservations']}/{cycle_total(summary)} | {diagnosis} |"
         )
