@@ -9,7 +9,7 @@
  * 纵向位置是收益率本身，零线画出来；面积正比于市值。两者都是量化承诺，
  * 不为了好看去改。
  */
-import { SCALE, NO_CHANGE, stepFor, formatCap, formatPct } from "./heatmap-data.mjs";
+import { SCALE, NO_CHANGE, stepFor, bandLabel, formatCap, formatPct } from "./heatmap-data.mjs";
 import { layoutBubbles, isNum } from "./bubble-layout.mjs";
 
 const NS = "http://www.w3.org/2000/svg";
@@ -19,10 +19,12 @@ const NS = "http://www.w3.org/2000/svg";
    写得出的自然少；筛到前 60/150 家，气泡变大，绝大多数都写得下。 */
 const MIN_R_NAME = 13, MIN_R_PRICE = 19;
 
+/* 股价一律带 $：这一页上同时有百分数、市值（亿/万亿美元）与股价三种数字，
+   光一个「319.70」读不出它是价格还是别的什么。四位数以上取整，否则两位小数。 */
 export function formatPrice(value) {
   if (!isNum(value)) return "—";
   const decimals = Math.abs(value) >= 1000 ? 0 : 2;
-  return value.toLocaleString("en-US",
+  return "$" + value.toLocaleString("en-US",
     { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 }
 
@@ -61,6 +63,7 @@ export function renderBubbles(document, host, rows, box, options = {}) {
   host.textContent = "";
   const metricOf = options.metricOf || ((row) => row.changePct);
   const metricLabel = options.metricLabel || "当日涨跌";
+  const band = options.band || 1;
   const layout = layoutBubbles(rows, box, { metricOf });
   const svg = svgEl(host, "svg", "bubble-svg");
   svg.setAttribute("viewBox", `0 0 ${box.w} ${box.h}`);
@@ -121,7 +124,7 @@ export function renderBubbles(document, host, rows, box, options = {}) {
   /* 大的先画、小的后画：小气泡压在大气泡上面才不会被整个盖住。 */
   layout.circles.slice().sort((a, b) => b.r - a.r).forEach((circle) => {
     const row = circle.row;
-    const step = stepFor(circle.value);
+    const step = stepFor(circle.value, band);
     const group = svgEl(layer, "a",
       `bubble-node bubble-ink-${step.ink}${circle.outside ? " bubble-clamped" : ""}`);
     group.setAttribute("href",
@@ -129,7 +132,7 @@ export function renderBubbles(document, host, rows, box, options = {}) {
     group.setAttribute("transform", `translate(${circle.x.toFixed(1)} ${circle.y.toFixed(1)})`);
     group.dataset.symbol = row.symbol;
     const label = `${row.name || row.symbol}（${row.symbol}），${circle.sector}，`
-      + `股价 ${formatPrice(row.price)} 美元，市值 ${formatCap(row.marketCap)}，`
+      + `股价 ${formatPrice(row.price)}，市值 ${formatCap(row.marketCap)}，`
       + `${metricLabel} ${formatPct(circle.value)}`
       + (circle.outside ? "（超出纵轴范围，已贴边显示）" : "");
     group.setAttribute("aria-label", label);
@@ -169,6 +172,7 @@ export function updateBubbles(handles, rows, options = {}) {
   if (!handles || !handles.nodes || !handles.layout || !handles.layout.yOf) return 0;
   const metricOf = options.metricOf || ((row) => row.changePct);
   const metricLabel = options.metricLabel || "当日涨跌";
+  const band = options.band || 1;
   const yOf = handles.layout.yOf;
   const domain = handles.layout.domain;
   let moved = 0;
@@ -180,7 +184,7 @@ export function updateBubbles(handles, rows, options = {}) {
     /* 超出当前纵轴范围就贴边并标出来——悄悄画到框外等于把它藏了。 */
     const clamped = Math.max(domain.min, Math.min(domain.max, value));
     const y = yOf(clamped);
-    const step = stepFor(value);
+    const step = stepFor(value, band);
     if (Math.abs(y - handle.layout.y) > 0.2) {
       const shift = `translate(${handle.layout.x.toFixed(1)} ${y.toFixed(1)})`;
       handle.group.setAttribute("transform", shift);
@@ -195,14 +199,14 @@ export function updateBubbles(handles, rows, options = {}) {
     if (handle.label) handle.label.setAttribute("class", `bubble-label bubble-ink-${step.ink}`);
     handle.group.setAttribute("aria-label",
       `${row.name || row.symbol}（${row.symbol}），${handle.layout.sector}，`
-      + `股价 ${formatPrice(row.price)} 美元，市值 ${formatCap(row.marketCap)}，`
+      + `股价 ${formatPrice(row.price)}，市值 ${formatCap(row.marketCap)}，`
       + `${metricLabel} ${formatPct(value)}`);
   });
   return moved;
 }
 
 /* 图例与热力图共用同一套色阶，因此这里只负责摆，不另定义颜色。 */
-export function paintBubbleLegend(document, host) {
+export function paintBubbleLegend(document, host, band = 1, metricLabel = "当日") {
   host.textContent = "";
   const add = (color, text) => {
     const chip = document.createElement("span");
@@ -218,8 +222,10 @@ export function paintBubbleLegend(document, host) {
   };
   const head = document.createElement("span");
   head.className = "legend-label";
-  head.textContent = "气泡颜色 = 同一档涨跌";
+  head.textContent = `气泡颜色 = ${metricLabel}涨跌`;
   host.appendChild(head);
-  SCALE.forEach((step) => add(step.color, step.label));
-  add(NO_CHANGE.color, NO_CHANGE.label);
+  /* 图例写的是**当前这一档**的真实边界：±3% 那套是给当日定的，
+     拿去看年初至今会几乎全落在最上一档，颜色就不区分任何东西了。 */
+  SCALE.forEach((step) => add(step.color, bandLabel(step, band)));
+  add(NO_CHANGE.color, `${metricLabel}涨跌缺失`);
 }

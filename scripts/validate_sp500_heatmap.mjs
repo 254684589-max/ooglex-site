@@ -14,7 +14,8 @@ import { fileURLToPath } from "node:url";
 
 import { squarify, layoutSectors } from "../apps/heatmap/heatmap-layout.mjs";
 import {
-  SCALE, NO_CHANGE, stepFor, formatCap, formatPct, groupBySector, summarize
+  SCALE, NO_CHANGE, stepFor, bandLabel, BAND_SCALE, formatCap, formatPct,
+  groupBySector, summarize
 } from "../apps/heatmap/heatmap-data.mjs";
 import { defaultLimit, aspectFor } from "../apps/heatmap/heatmap.mjs";
 import {
@@ -240,8 +241,42 @@ function validateBubbles() {
   assert.equal(pickLabel("美国运通", "AXP", 15), "AXP", "中文名放不下就退回交易代码");
   assert.equal(pickLabel("美国运通", "AXP", 4), "", "两个都放不下就不写，不截断");
   assert.ok(!pickLabel("美国运通", "AXP", 15).includes("…"), "标签一律不带省略号");
-  assert.equal(formatPrice(1234.5), "1,235", "四位数股价取整并加千分位");
-  assert.equal(formatPrice(null), "—", "没有股价就写破折号，不写 0");
+  assert.equal(formatPrice(1234.5), "$1,235", "四位数股价取整、加千分位并带美元符号");
+  assert.equal(formatPrice(319.7), "$319.70", "四位数以下保留两位小数");
+  assert.equal(formatPrice(null), "—", "没有股价就写破折号，不写 0，也不写 $0");
+  assert.ok(formatPrice(1).startsWith("$"),
+    "股价一律带 $：同一页上还有百分数与市值，光一个数字读不出它是价格");
+
+  /* 某一档区间涨跌整批缺失时，页面必须说出来。
+     这一条是补票：2026-08-29 首版上线时 sp500.json 还没有 returns 字段，
+     每周/月度/年初至今三档画出来是**一张空白图、什么都不说**——
+     契约当时只管住了「缺的那几家不画」，没管住「全都缺时要交代」。 */
+  const noReturns = Array.from({ length: 30 }, (_, i) => (
+    { symbol: `N${i}`, name: `第${i}`, marketCap: 50, changePct: i - 15, sector: "科技" }));
+  const emptyLayout = layoutBubbles(noReturns, { w: 800, h: 400 },
+    { metricOf: (row) => (row.returns || {}).ytd });
+  assert.equal(emptyLayout.circles.length, 0,
+    "整批缺这一档时一个气泡都画不出来——页面必须据此改说明，而不是摆一张空图");
+  const someLayout = layoutBubbles(noReturns, { w: 800, h: 400 });
+  assert.ok(someLayout.circles.length > 0, "当日这一档本来就有数据，必须画得出来");
+
+  /* 色阶边界随区间缩放：±3% 那套是给当日定的，拿去看年初至今几乎每家都越过 +3%，
+     整张图全绿、颜色不再区分任何东西。图例必须写出**当前这一档**的真实边界，
+     而且标签与着色必须说的是同一件事。 */
+  assert.equal(BAND_SCALE.d1, 1, "当日就是色阶的原始口径");
+  assert.ok(BAND_SCALE.w1 < BAND_SCALE.m1 && BAND_SCALE.m1 < BAND_SCALE.ytd,
+    "区间越长，边界越宽");
+  assert.equal(stepFor(2, 1).key, "up2", "当日 +2% 属于「涨1–3%」那一档");
+  assert.equal(stepFor(2, BAND_SCALE.ytd).key, "up1", "年初至今 +2% 只算「涨1%内」");
+  assert.equal(stepFor(45, BAND_SCALE.ytd).key, "up3", "年初至今 +45% 才进最上一档");
+  assert.equal(bandLabel(SCALE[0], 1), "跌超3%", "倍数为1时沿用原标签");
+  assert.equal(bandLabel(SCALE[0], BAND_SCALE.ytd), "跌超30%", "最外一档用自己的边界，不是相邻那一档的");
+  assert.equal(bandLabel(SCALE[SCALE.length - 1], BAND_SCALE.ytd), "涨超30%");
+  /* 标签与着色一致：写着「涨超30%」，30.1% 就必须落在最上一档、29.9% 不能。 */
+  assert.equal(stepFor(30.1, BAND_SCALE.ytd).key, "up3");
+  assert.equal(stepFor(29.9, BAND_SCALE.ytd).key, "up2");
+  assert.equal(stepFor(-30.1, BAND_SCALE.ytd).key, "down3");
+  assert.ok(!bandLabel(SCALE[1], BAND_SCALE.ytd).includes("NaN"), "标签不得出现 NaN");
 }
 
 async function main() {
@@ -259,6 +294,8 @@ async function main() {
   console.log("- narrow screens draw fewer by market cap and say so; canvas grows taller");
   console.log("- bubble chart: area ∝ market cap under both scalings, quantile y-domain, "
     + "out-of-range pinned and flagged, deterministic layout, labels never truncated");
+  console.log("- prices carry $; a metric with no data anywhere draws nothing (page must say so)");
+  console.log("- colour bands scale with the period; legend prints the actual edges and matches them");
   if (published) {
     console.log(`- published snapshot: ${published.count}/${published.constituents} constituents, `
       + `${published.missing.length} missing (listed by symbol)`);

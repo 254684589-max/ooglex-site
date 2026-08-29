@@ -8,7 +8,7 @@
  */
 import { layoutSectors } from "./heatmap-layout.mjs";
 import {
-  SCALE, NO_CHANGE, stepFor, formatCap, formatPct, groupBySector, summarize
+  SCALE, NO_CHANGE, stepFor, formatCap, formatPct, groupBySector, summarize, BAND_SCALE
 } from "./heatmap-data.mjs";
 import { formatPrice, renderBubbles, updateBubbles, paintBubbleLegend } from "./bubble.mjs";
 import {
@@ -368,25 +368,56 @@ async function start() {
      同一个行业里谁在涨、谁在跌、各自多大。 */
   const bubbleHost = document.getElementById("bubble-canvas");
   const metricBar = document.getElementById("bubble-metrics");
+  /* band 是这一档的色阶倍数：色阶的 ±0.1/±1/±3 是给当日定的，
+     拿去看年初至今几乎每家都越过 +3%，整张图会全绿。 */
   const METRICS = [
-    { key: "d1", label: "当日", of: (row) => row.changePct },
-    { key: "w1", label: "每周", of: (row) => (row.returns || {}).w1 },
-    { key: "m1", label: "月度", of: (row) => (row.returns || {}).m1 },
-    { key: "ytd", label: "年初至今", of: (row) => (row.returns || {}).ytd }
+    { key: "d1", label: "当日", of: (row) => row.changePct, band: BAND_SCALE.d1 },
+    { key: "w1", label: "每周", of: (row) => (row.returns || {}).w1, band: BAND_SCALE.w1 },
+    { key: "m1", label: "月度", of: (row) => (row.returns || {}).m1, band: BAND_SCALE.m1 },
+    { key: "ytd", label: "年初至今", of: (row) => (row.returns || {}).ytd, band: BAND_SCALE.ytd }
   ];
   let metric = METRICS[0];
   let bubbles = null;
+  let bubbleZoom = 1;
+  const bubbleViewport = document.getElementById("bubble-viewport");
+  const bubbleZoomLabel = document.getElementById("bubble-zoom-level");
 
   function bubbleBox() {
-    const width = bubbleHost ? bubbleHost.clientWidth || 900 : 900;
-    return { w: width, h: Math.max(320, Math.round(width * (width < 700 ? 0.95 : 0.5))) };
+    const base = (bubbleViewport ? bubbleViewport.clientWidth : 900) || 900;
+    const h = Math.max(320, Math.round(base * (base < 700 ? 0.95 : 0.5)));
+    /* 放大与热力图同一个做法：把画布真的做大再重排一次，气泡因此变大，
+       小气泡才越过写字的门槛——不是把同一张图糊着放大。 */
+    return { w: Math.round(base * bubbleZoom), h: Math.round(h * bubbleZoom) };
   }
 
   function drawBubbles() {
     if (!bubbleHost) return;
     const shown = groupBySector(members, limit).flatMap((sector) => sector.children.map((c) => c.row));
-    bubbles = renderBubbles(document, bubbleHost, shown, bubbleBox(),
-      { metricOf: metric.of, metricLabel: metric.label });
+    const box = bubbleBox();
+    bubbleHost.style.width = `${box.w}px`;
+    /* 某一档区间涨跌整批都没有时，如实说出来——画一张空图什么都不说，
+       读者只会以为页面坏了。（这一档的数据由公司榜日更管道回写，
+       管道尚未跑过时它就是空的。） */
+    const withMetric = shown.filter((row) => Number.isFinite(metric.of(row))).length;
+    if (!withMetric) {
+      bubbleHost.textContent = "";
+      const empty = el(bubbleHost, "p", "heat-note");
+      empty.textContent = `站内暂时没有「${metric.label}」这一档的区间涨跌，`
+        + "因此这张图画不出来。这一档由公司榜日更管道在建完历史后回写，"
+        + "下一轮日更跑完即会出现——这里不拿别的档位顶替，也不画一张空图假装有数据。";
+      bubbles = null;
+      if (bubbleZoomLabel) bubbleZoomLabel.textContent = `${bubbleZoom}×`;
+      Array.from(metricBar ? metricBar.children : []).forEach((button) => {
+        button.setAttribute("aria-pressed", button.dataset.metric === metric.key ? "true" : "false");
+      });
+      const note = document.getElementById("bubble-note");
+      if (note) note.textContent = "";
+      return;
+    }
+    bubbles = renderBubbles(document, bubbleHost, shown, box,
+      { metricOf: metric.of, metricLabel: metric.label, band: metric.band });
+    paintBubbleLegend(document, document.getElementById("bubble-legend"),
+      metric.band, metric.label);
     const drawn = bubbles.layout.circles.length;
     const gap = shown.length - drawn;
     const outside = bubbles.layout.circles.filter((circle) => circle.outside).length;
@@ -401,9 +432,37 @@ async function start() {
           + `真实数值见悬浮读数与数据表。` : "")
         + (gap ? `另有 ${gap} 家缺这一档涨跌、不画在图上——放到零线上会被读成「没涨没跌」，那是伪造。` : "");
     }
+    if (bubbleZoomLabel) {
+      bubbleZoomLabel.textContent = `${bubbleZoom.toFixed(bubbleZoom % 1 ? 1 : 0)}×`;
+    }
     Array.from(metricBar ? metricBar.children : []).forEach((button) => {
       button.setAttribute("aria-pressed", button.dataset.metric === metric.key ? "true" : "false");
     });
+  }
+
+  /* 缩放锚定光标，与热力图同一套行为：档位真的变了才拦截滚动，
+     到顶到底继续滚则页面照常走。 */
+  function setBubbleZoom(next, anchor) {
+    const clamped = Math.max(ZOOM_STEPS[0], Math.min(ZOOM_STEPS[ZOOM_STEPS.length - 1], next));
+    if (clamped === bubbleZoom || !bubbleViewport) return false;
+    const before = bubbleZoom;
+    const rect = bubbleViewport.getBoundingClientRect();
+    const px = anchor ? anchor.clientX - rect.left : rect.width / 2;
+    const py = anchor ? anchor.clientY - rect.top : rect.height / 2;
+    const atX = (bubbleViewport.scrollLeft + px) / before;
+    const atY = (bubbleViewport.scrollTop + py) / before;
+    bubbleZoom = clamped;
+    drawBubbles();
+    bubbleViewport.scrollLeft = atX * bubbleZoom - px;
+    bubbleViewport.scrollTop = atY * bubbleZoom - py;
+    return true;
+  }
+
+  function stepBubbleZoom(direction, anchor) {
+    const index = ZOOM_STEPS.indexOf(bubbleZoom);
+    const at = index >= 0 ? index : ZOOM_STEPS.findIndex((value) => value > bubbleZoom);
+    return setBubbleZoom(
+      ZOOM_STEPS[Math.max(0, Math.min(ZOOM_STEPS.length - 1, at + direction))], anchor);
   }
 
   /* 盘中刷新时两张图各自就地更新：热力图重排一次（面积不变、颜色与数字变），
@@ -411,7 +470,8 @@ async function start() {
   function repaintFromRows() {
     draw();
     if (bubbles && metric.key === "d1") {
-      updateBubbles(bubbles, members, { metricOf: metric.of, metricLabel: metric.label });
+      updateBubbles(bubbles, members,
+        { metricOf: metric.of, metricLabel: metric.label, band: metric.band });
     }
   }
 
@@ -425,10 +485,9 @@ async function start() {
   });
 
   attachTooltip(document, canvas.parentElement, tip);
-  if (bubbleHost) attachTooltip(document, bubbleHost.parentElement, tip, ".bubble-node");
+  if (bubbleViewport) attachTooltip(document, bubbleViewport.parentElement, tip, ".bubble-node");
   draw();
   drawBubbles();
-  paintBubbleLegend(document, document.getElementById("bubble-legend"));
   root.setAttribute("aria-busy", "false");
   if (status) status.remove();
 
@@ -452,6 +511,25 @@ async function start() {
   if (zoomIn) zoomIn.addEventListener("click", () => stepZoom(1));
   if (zoomOut) zoomOut.addEventListener("click", () => stepZoom(-1));
   if (zoomReset) zoomReset.addEventListener("click", () => setZoom(1));
+
+  /* 气泡图的缩放与热力图完全同一套交互，读者不必学两遍。 */
+  if (bubbleViewport) {
+    bubbleViewport.addEventListener("wheel", (event) => {
+      if (event.deltaY === 0) return;
+      if (stepBubbleZoom(event.deltaY < 0 ? 1 : -1, event)) event.preventDefault();
+    }, { passive: false });
+    bubbleViewport.addEventListener("keydown", (event) => {
+      if (event.key === "+" || event.key === "=") { if (stepBubbleZoom(1)) event.preventDefault(); }
+      if (event.key === "-" || event.key === "_") { if (stepBubbleZoom(-1)) event.preventDefault(); }
+      if (event.key === "0") { setBubbleZoom(1); event.preventDefault(); }
+    });
+  }
+  const bZoomIn = document.getElementById("bubble-zoom-in");
+  const bZoomOut = document.getElementById("bubble-zoom-out");
+  const bZoomReset = document.getElementById("bubble-zoom-reset");
+  if (bZoomIn) bZoomIn.addEventListener("click", () => stepBubbleZoom(1));
+  if (bZoomOut) bZoomOut.addEventListener("click", () => stepBubbleZoom(-1));
+  if (bZoomReset) bZoomReset.addEventListener("click", () => setBubbleZoom(1));
 
   pullLive();
   window.setInterval(pullLive, LIVE_INTERVAL_MS);

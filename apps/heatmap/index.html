@@ -89,12 +89,13 @@
     /* 缩放视口：画布在里面按真实尺寸重排，超出的部分滚动查看。
        overscroll-behavior 只挡住「滚到边界后把整页也带着滚」，
        到了缩放极限时滚轮事件本身不再被拦截，页面照常滚动。 */
-    #heat-viewport {
+    #heat-viewport, #bubble-viewport {
       position: relative; width: 100%; overflow: auto; overscroll-behavior-x: contain;
       border-radius: 4px; cursor: grab;
     }
-    #heat-viewport:active { cursor: grabbing; }
-    #heat-viewport:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+    #heat-viewport:active, #bubble-viewport:active { cursor: grabbing; }
+    #heat-viewport:focus-visible, #bubble-viewport:focus-visible {
+      outline: 2px solid var(--cyan); outline-offset: 2px; }
     .zoombar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center;
       justify-content: space-between; margin-top: 12px; }
     .zoomhint { color: var(--faint); font-size: 12px; }
@@ -238,7 +239,19 @@
         行业身份由列的位置与列标题承担，不另派十一种颜色：气泡这类任意两点都可能相邻的图形，
         分类色最多撑得住三种，十一种在色觉差异下必然有几对分不开。放得下的气泡上直接标出公司名与股价。</p>
       <div class="canvas-wrap">
-        <div id="bubble-canvas"></div>
+        <div id="bubble-viewport" tabindex="0" role="group"
+             aria-label="气泡图画布，可用滚轮或下方按钮缩放，放大后可拖动查看">
+          <div id="bubble-canvas"></div>
+        </div>
+      </div>
+      <div class="zoombar">
+        <span class="zoomhint">滚轮缩放 · 放大后小气泡也写得出公司名与股价 · 也可用 + − 0 键</span>
+        <div class="zoomctl" role="group" aria-label="气泡图缩放">
+          <button type="button" id="bubble-zoom-out" aria-label="缩小">−</button>
+          <b id="bubble-zoom-level" aria-live="polite">1×</b>
+          <button type="button" id="bubble-zoom-in" aria-label="放大">＋</button>
+          <button type="button" id="bubble-zoom-reset">重置</button>
+        </div>
       </div>
       <div id="bubble-legend"></div>
       <p class="heat-note" id="bubble-note"></p>

@@ -23,9 +23,35 @@ export const NO_CHANGE = Object.freeze({
   key: "unknown", color: "#1b2330", ink: "light", label: "当日涨跌缺失"
 });
 
-export function stepFor(changePct) {
+/* 档位边界按「看的是哪一档区间」缩放。
+
+   色阶的 ±0.1/±1/±3 是给**当日**涨跌定的。同一套边界拿去看年初至今，几乎每一家都
+   越过 +3%，整张图会全绿——颜色不再区分任何东西，等于白占一个通道。因此每一档区间
+   自带一个倍数，边界随之放大，图例也按放大后的真实数字重写。
+
+   倍数不是拍脑袋：按各档区间大致的波动幅度取整（周约 2 倍日、月约 4 倍、
+   年初至今约 10 倍），够让分布铺开在七档上，又不必每天重算一遍而让颜色含义天天变。 */
+export const BAND_SCALE = Object.freeze({ d1: 1, w1: 2, m1: 4, ytd: 10 });
+
+export function stepFor(changePct, factor = 1) {
   if (!Number.isFinite(changePct)) return NO_CHANGE;
-  return SCALE.filter((step) => changePct < step.max)[0] || SCALE[SCALE.length - 1];
+  const k = Number.isFinite(factor) && factor > 0 ? factor : 1;
+  return SCALE.filter((step) => changePct < step.max * k)[0] || SCALE[SCALE.length - 1];
+}
+
+/* 图例文字：按当前倍数写出这一档的真实边界，而不是永远印着「跌超3%」。 */
+export function bandLabel(step, factor = 1) {
+  const k = Number.isFinite(factor) && factor > 0 ? factor : 1;
+  if (k === 1) return step.label;
+  const edges = SCALE.map((entry) => entry.max * k);
+  const index = SCALE.indexOf(step);
+  const round = (value) => (Math.abs(value) >= 10 ? Math.round(value) : Number(value.toFixed(1)));
+  /* 最外两档是开区间：下界用它自己的边，不是相邻那一档的。 */
+  if (index === 0) return `跌超${round(Math.abs(edges[0]))}%`;
+  if (index === SCALE.length - 1) return `涨超${round(edges[SCALE.length - 2])}%`;
+  if (step.key === "flat") return "基本持平";
+  if (index < 3) return `跌${round(Math.abs(edges[index]))}–${round(Math.abs(edges[index - 1]))}%`;
+  return `涨${round(edges[index - 1])}–${round(edges[index])}%`;
 }
 
 /* 上游的 marketCap 单位是「十亿美元」，中文里没有这个量级词：
