@@ -13,9 +13,11 @@
 4. 不留空壳——写进文件的每条序列都至少有两个真实观测，取不到的标的进 unavailable
    而不是留一条画不出来的空线。
 """
+import importlib.util
 import json
 import os
 import sys
+import types
 from datetime import datetime, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,8 +39,39 @@ def load(path):
         return json.load(handle)
 
 
+def registered_candidates():
+    """跨资产清单里每一个**可能落地**的代码：主代码、回退与 ETF 代理。
+
+    跨资产管道按候选顺序回退，因此同一条资产今天落地的可能是主代码、明天是代理
+    （例：泰国 SET 取不到时落地 THD）。4 小时线是在当时的快照上建的，之后主代码恢复，
+    上一份文件里就会留着代理代码——那不是「引入了新标的」，而是同一条资产换了个代码。
+    把候选一并算作合法，既守住「不得引入清单外标的」，又不会每次回退切换都误报。
+    取不到清单就返回空集，退回到只认已发布代码的更严口径，而不是放行。
+    """
+    builder = os.path.join(ROOT, "scripts", "asset-tracker", "build_assets.py")
+    stub = "requests" not in sys.modules
+    if stub:
+        sys.modules["requests"] = types.ModuleType("requests")
+    try:
+        spec = importlib.util.spec_from_file_location("_build_assets", builder)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+    except Exception:                      # noqa: BLE001 - 读不到清单就退回更严的口径
+        return set()
+    finally:
+        if stub:
+            sys.modules.pop("requests", None)
+    names = set()
+    for asset in getattr(module, "ASSETS", []):
+        for candidate in asset.get("syms", []):
+            symbol = candidate if isinstance(candidate, str) else candidate.get("sym")
+            if symbol:
+                names.add(str(symbol))
+    return names
+
+
 def published_symbols():
-    """三份已发布快照里的全部标的代码：4 小时线的清单不得超出这个并集。"""
+    """4 小时线的清单不得超出：三份已发布快照 ∪ 跨资产清单登记的全部候选代码。"""
     symbols = set()
     tracker = load(TRACKER_PATH)
     symbols.update(str(a.get("symbol")) for a in tracker.get("assets") or [] if a.get("symbol"))
@@ -46,7 +79,7 @@ def published_symbols():
     symbols.update(str(c.get("symbol")) for c in companies.get("companies") or [] if c.get("symbol"))
     crypto = load(CRYPTO_PATH)
     symbols.update(str(k.get("symbol")) for k in crypto.get("assets") or [] if k.get("symbol"))
-    return symbols
+    return symbols | registered_candidates()
 
 
 def parse_moment(value):
