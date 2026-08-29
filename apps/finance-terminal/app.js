@@ -2041,7 +2041,7 @@
       throw new Error("页面数据配置无效或免费代理标记缺失");
     }
     if (!Array.isArray(config.assets) || config.assets.length !== 6) {
-      throw new Error("核心资产配置不完整");
+      throw new Error("市场基准配置不完整");
     }
     var officialIds = config.assets.filter(function (asset) {
       return asset.demo === false && !asset.externalDisplay;
@@ -3056,7 +3056,7 @@
     if (errors.length > 0) compactStatus.push(errors.length + "不可用");
     compactStatus.push(proxies.length + "提供方代理");
     marketState.textContent = compactStatus.join("／");
-    marketState.setAttribute("aria-label", "核心资产状态：" + compactStatus.join("，"));
+    marketState.setAttribute("aria-label", "市场基准状态：" + compactStatus.join("，"));
 
     if (errors.length > 0) {
       banner.className = "data-banner status-error";
@@ -3086,7 +3086,7 @@
     } else {
       banner.className = "data-banner";
       bannerLabel.textContent = "FREE";
-      bannerTitle.textContent = "核心资产已取消演示数值";
+      bannerTitle.textContent = "市场基准已取消演示数值";
       bannerCopy.textContent = "DGS10、DTWEXBGS、EIA RWTC与BTC/USD读取站内每日数据；DIA与GLD由TradingView免费组件直接展示，并明确标注ETF代理关系。";
       bannerNote.textContent = "4 REAL · 2 FREE PROXY · 0 DEMO";
       dataStatus.textContent = breakdown;
@@ -3194,7 +3194,7 @@
     }, { partial: 0, stale: 0, error: 0 });
     var operationIssues = experience.operations.filter(function (card) { return card.status !== "healthy"; }).length;
     pageAnnouncer.setAttribute("aria-live", "polite");
-    pageAnnouncer.textContent = "金融终端加载完成。6项核心资产，"
+    pageAnnouncer.textContent = "金融终端加载完成。6项市场基准，"
       + proxies.length + "项免费嵌入代理，" + marketIssues + "项站内行情需要注意；其他模块中"
       + grouped.partial + "项部分数据，" + grouped.stale + "项过期，"
       + grouped.error + "项不可用；四条数据管道中" + operationIssues + "条需要注意。";
@@ -3207,7 +3207,7 @@
     });
     var issues = official.filter(function (asset) { return asset.status !== "ok"; }).length;
     pageAnnouncer.setAttribute("aria-live", "polite");
-    pageAnnouncer.textContent = "金融终端首屏加载完成。6项核心资产中"
+    pageAnnouncer.textContent = "金融终端首屏加载完成。6项市场基准中"
       + issues + "项站内行情需要注意；首屏以下分区将在接近视口时继续加载。";
   }
 

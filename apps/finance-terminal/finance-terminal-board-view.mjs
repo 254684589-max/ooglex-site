@@ -537,7 +537,7 @@ export function createBoardView(document, view) {
     let active = (board.categories.filter((category) => category.rows.length)[0]
       || board.categories[0]).key;
     let query = searchInput ? searchInput.value : "";
-    /* 自选与核心资产卡共用同一份清单：任一处切换都会回到这里重画。 */
+    /* 自选与市场基准卡共用同一份清单：任一处切换都会回到这里重画。 */
     const watch = mountWatchlist(document, view || globalThis, () => paint(),
       { filterId: "board-watch-filter" });
 

@@ -131,7 +131,7 @@ SUPPORTING_HEALTH_VALIDATOR = ROOT / "scripts" / "validate_supporting_source_hea
 SUPPORTING_HEALTH_DOC = ROOT / "docs" / "SUPPORTING_SOURCE_HEALTH.md"
 HOME = ROOT / "index.html"
 
-# 2026-08-25 所有者决定：标普500与纳斯达克100两张ETF代理卡撤下，核心资产收敛为
+# 2026-08-25 所有者决定：标普500与纳斯达克100两张ETF代理卡撤下，市场基准收敛为
 # 六项（两项免费嵌入代理 + 四项站内官方管道）；纳斯达克不再由其他标的顶替。
 EXPECTED_SYMBOLS = {"DIA", "DGS10", "DTWEXBGS", "GLD", "WTI", "BTC/USD"}
 EXPECTED_PROXIES = {
@@ -2488,7 +2488,7 @@ def main() -> None:
     parse_iso(data["updatedAt"])
 
     assets = data.get("assets")
-    require(isinstance(assets, list) and len(assets) == 6, "必须且只能包含6项核心资产")
+    require(isinstance(assets, list) and len(assets) == 6, "必须且只能包含6项市场基准")
     require({asset.get("symbol") for asset in assets} == EXPECTED_SYMBOLS, "资产代码与需求不一致")
     require(len({asset.get("id") for asset in assets}) == len(assets), "资产ID必须唯一")
 
@@ -2940,7 +2940,7 @@ def main() -> None:
     # 20,000 是在分区内容还没被发现遭裁切时定的。补上「分区内那一层也要能缩」与
     # 遥测面板第三行两处修复、连同解释它们为何存在的注释后需要 20.7KB；换回的是
     # OFR 卡片与运行证据面板不再被裁掉 137px 与 201px，收益率曲线入口不再缺 6px。
-    # 27,000：一屏总览把核心资产上移到第二行、原ETF代理那一格改放地缘风险定价
+    # 27,000：一屏总览把市场基准上移到第二行、原ETF代理那一格改放地缘风险定价
     # 表盘，两块各自的紧凑化规则（含四条轴在窄格里的两行排布）都在这里。
     # 24,600：总览里的行情板多出一列迷你走势与一条脉冲条的紧凑化规则。
     require(COMMAND_CENTER_CSS.stat().st_size <= 27_000, "金融终端单屏指挥中心样式超过27KB性能预算")
@@ -3425,7 +3425,7 @@ def main() -> None:
     require('id="market-tape"' in page and 'class="market-orbit-svg"' in page
             and page.count('data-market-time=') == 4
             and "非资金流向图" in page,
-            "页面缺少核心资产行情带、全息地球时区或非资金流向说明")
+            "页面缺少市场基准行情带、全息地球时区或非资金流向说明")
     require('id="global-risk-map"' in page and page.count('data-risk-region=') == 8
             and "区域代表性股票指数的当日价格跌幅作为市场压力代理" in page
             and "不是国家风险评分" in page,

@@ -167,7 +167,7 @@
     grid-row: 1;
   }
 
-  /* 一屏总览的主行让给品类行情；核心资产退到第三行与研究、风险并排——它不能
+  /* 一屏总览的主行让给品类行情；市场基准退到第三行与研究、风险并排——它不能
      整块藏起来：免费ETF代理组件要有真实布局才挂得上，代理挂载证据依赖这一点。
      稳定V1运行证据偏运维，继续作为独立视图（左栏与分区导航可进入）。
      本文件后面仍有若干 overview 下针对运行证据的排版规则，它们随之失效但无害，
@@ -427,7 +427,7 @@
     display: none;
   }
 
-  /* 核心资产退到第三行那一格后宽度只有原来的三分之一：四列会把卡片挤到裁切，
+  /* 市场基准退到第三行那一格后宽度只有原来的三分之一：四列会把卡片挤到裁切，
      改成两列纵向铺开，卡片内容与「资产」视图完全一致，只是排布更紧。 */
   body[data-terminal-view="overview"] .market-grid {
     height: 100%;
@@ -888,7 +888,7 @@
 /* 总览卡片只有 125px 高，却塞了八个区块。弹性挤压时最先被牺牲的偏偏是最该看清的
    主数字——实测被压到 9px 而字号是 22px，等于把「4.69%」裁掉大半截。
    这里让主数字保持自身高度，并把走势小图、口径说明、更新链健康与数据日移出总览：
-   它们在「核心资产」页与详情抽屉里都有完整且不被裁切的版本。
+   它们在「市场基准」页与详情抽屉里都有完整且不被裁切的版本。
    元素仍留在 DOM 中（只是不显示），逐源健康与观测走势的既有契约不受影响。 */
 body[data-terminal-view="overview"] #market-grid .asset-price,
 body[data-terminal-view="overview"] #market-grid .asset-footer { flex: none; }
@@ -898,7 +898,7 @@ body[data-terminal-view="overview"] #market-grid .official-note,
 body[data-terminal-view="overview"] #market-grid .pipeline-health,
 body[data-terminal-view="overview"] #market-grid .asset-details { display: none; }
 
-/* 核心资产退到第三行那一格后每张卡只有约180px宽：卡头那排「名称＋★＋详情」
+/* 市场基准退到第三行那一格后每张卡只有约180px宽：卡头那排「名称＋★＋详情」
    会顶出边界被裁掉。总览里只留名称、代码与主数字，自选与详情入口在「资产」
    视图里原样保留——元素仍在DOM中，既有契约与抽屉入口不受影响。 */
 body[data-terminal-view="overview"] #market-grid .detail-open,

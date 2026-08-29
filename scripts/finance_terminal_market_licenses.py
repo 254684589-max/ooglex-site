@@ -11,7 +11,7 @@ from urllib.parse import urlparse
 
 TRADINGVIEW_HOSTS = {"www.tradingview.com", "widgets.tradingview-widget.com"}
 WIDGET_SCRIPT_URL = "https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js"
-# 2026-08-25 所有者决定：标普500与纳斯达克100两张ETF代理卡从核心资产撤下，
+# 2026-08-25 所有者决定：标普500与纳斯达克100两张ETF代理卡从市场基准撤下，
 # 免费嵌入代理只保留道琼斯与黄金两项；这里同步收窄，契约不得再声明已撤下的代理。
 EXPECTED_ASSETS = {
     "dow": {"originalSymbol": "DJIA", "proxySymbol": "DIA", "widgetSymbol": "AMEX:DIA"},

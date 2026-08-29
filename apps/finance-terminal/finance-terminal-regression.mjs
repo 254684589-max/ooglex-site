@@ -3,7 +3,7 @@ const CRITICAL_REQUEST_KEYS = Object.freeze([
 ]);
 const DEFERRED_SECTION_NAMES = Object.freeze(["board", "risk", "research", "information", "operations"]);
 const EXPECTED_GEO_AXES = 4;
-/* 2026-08-25 所有者决定撤下标普500与纳斯达克100两张ETF代理卡：核心资产六张，
+/* 2026-08-25 所有者决定撤下标普500与纳斯达克100两张ETF代理卡：市场基准六张，
    免费嵌入代理两项（DIA、GLD）。改动清单时这两个常量与契约文件一起改。 */
 const EXPECTED_ASSET_CARDS = 6;
 const EXPECTED_PROXY_WIDGETS = 2;
@@ -73,7 +73,7 @@ export function runBrowserRegressionProbe(options = {}) {
     ? { market: 1, risk: 1, research: 1, information: 1, operations: 1 }
     : width <= 1040
       ? { market: 2, risk: 2, research: 2, information: 1, operations: 2 }
-      /* 桌面极光首页把六项核心资产铺成一条弧形行情带。 */
+      /* 桌面极光首页把六项市场基准铺成一条弧形行情带。 */
       : { market: 6, risk: 3, research: 3, information: 1, operations: 4 };
   const cards = Array.from(document.querySelectorAll(
     ".asset-card, .risk-card, .research-card, .information-card, .operation-card"

@@ -586,7 +586,7 @@
     font-size: clamp(6px, .44vw, 9px);
   }
 
-  /* 首屏行情带只留名称、读数与走势；来源、数据日、代理说明与状态在“核心资产”视图里保持完整，
+  /* 首屏行情带只留名称、读数与走势；来源、数据日、代理说明与状态在“市场基准”视图里保持完整，
      页脚状态条继续给出全局来源与最后更新时间。 */
   body[data-terminal-view="overview"] #market-grid .official-update-health { display: none; }
 

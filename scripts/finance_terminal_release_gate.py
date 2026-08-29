@@ -75,7 +75,7 @@ WORKFLOW_LATEST_MAX_AGE_HOURS = 48
 REPORT_VERSION = 1
 STATUSES = ("PASS", "WARN", "BLOCKED")
 STATUS_WEIGHT = {status: index for index, status in enumerate(STATUSES)}
-# 2026-08-25 所有者决定撤下标普500与纳斯达克100两张ETF代理卡；核心资产收敛为六项。
+# 2026-08-25 所有者决定撤下标普500与纳斯达克100两张ETF代理卡；市场基准收敛为六项。
 EXPECTED_ASSET_IDS = {
     "dow", "us10y", "dxy", "gold", "wti", "bitcoin"
 }
@@ -254,10 +254,10 @@ def validate_config(config: dict[str, Any]) -> tuple[list[dict[str, Any]], list[
     expected_asset_count = len(EXPECTED_ASSET_IDS)
     if len(assets) != expected_asset_count or len(ids) != expected_asset_count \
             or set(ids) != EXPECTED_ASSET_IDS:
-        errors.append("核心资产必须恰为约定的清单且ID唯一")
+        errors.append("市场基准必须恰为约定的清单且ID唯一")
     demos = [asset for asset in assets if isinstance(asset, dict) and asset.get("demo") is True]
     if demos:
-        errors.append("免费代理策略下核心资产不得保留演示数据")
+        errors.append("免费代理策略下市场基准不得保留演示数据")
     local_assets = [
         asset for asset in assets
         if isinstance(asset, dict) and asset.get("id") in EXPECTED_OFFICIAL

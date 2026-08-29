@@ -79,7 +79,7 @@ export function createWatchlistStore(storage) {
   });
 }
 
-/* 整页共用一份自选状态：核心资产与品类行情板读同一个 store，任一处切换都会
+/* 整页共用一份自选状态：市场基准与品类行情板读同一个 store，任一处切换都会
    通知另一处重画，避免两份内存副本各自显示不同的星标。 */
 let sharedStore = null;
 const listeners = new Set();
