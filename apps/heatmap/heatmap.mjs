@@ -10,13 +10,28 @@ import { layoutSectors } from "./heatmap-layout.mjs";
 import {
   SCALE, NO_CHANGE, stepFor, formatCap, formatPct, groupBySector, summarize
 } from "./heatmap-data.mjs";
+import { formatPrice, renderBubbles, updateBubbles, paintBubbleLegend } from "./bubble.mjs";
+import {
+  usableSnapshot, newerThan, freshnessText, isFiniteNumber
+} from "../finance-terminal/finance-terminal-live.mjs";
 
 const DATA_PATH = "../companies/sp500.json";
+const INTRADAY_PATH = "../companies/intraday.json";
+/* 页面重读盘中文件的间隔。文件本身约30分钟一轮，这里读得勤一点只是为了
+   「它一更新就看得见」，不是把刷新周期说成20秒。 */
+const LIVE_INTERVAL_MS = 20000;
+/* 滚轮缩放的档位。1 是整屏铺满，往上是为了看清小市值公司——每一档都会**重新排版**
+   而不是把同一张图糊着放大：格子在更大的画布上重算，小格因此越过写字的门槛，
+   名字、代码、涨跌与股价才真的显示得出来。 */
+const ZOOM_STEPS = Object.freeze([1, 1.5, 2, 3, 4, 6]);
 /* 瓦片小到放不下字时就不放：挤成半个字比留白更难读。
    中文名一个字约等于两个拉丁字符宽，因此放名字的门槛比放代码时高一些；
    实在放不下中文名的小格退回显示代码，再放不下就只留颜色，读数交给悬浮层与数据表。 */
 const MIN_W_NAME = 52, MIN_H_NAME = 18;
 const MIN_W_SYMBOL = 30, MIN_H_PCT = 34, MIN_W_CODE = 74, MIN_H_CODE = 52;
+/* 股价是第四行，门槛最高：前三行（名字、代码、涨跌）先满足，还有余地才写价。
+   放不下就不写——写一半的数字比不写更糟，读数交给悬浮层与数据表。 */
+const MIN_W_PRICE = 74, MIN_H_PRICE = 68;
 
 /* 名字太长的按瓦片宽度截断——挤到溢出会盖住相邻格，比截断更难读。 */
 function fitName(name, width) {
@@ -59,7 +74,7 @@ function paintTable(host, members) {
   host.textContent = "";
   const table = el(host, "table", "heat-table");
   const head = el(el(table, "thead"), "tr");
-  ["#", "标的", "代码", "行业", "市值", "当日涨跌"].forEach((label) => el(head, "th", "", label));
+  ["#", "标的", "代码", "行业", "股价", "市值", "当日涨跌"].forEach((label) => el(head, "th", "", label));
   const body = el(table, "tbody");
   members.forEach((row) => {
     const tr = el(body, "tr");
@@ -67,6 +82,7 @@ function paintTable(host, members) {
     el(tr, "td", "", row.name || row.nameEn || row.symbol);
     el(tr, "td", "heat-mono", row.symbol);
     el(tr, "td", "", row.sector || "—");
+    el(tr, "td", "heat-mono", formatPrice(row.price));
     el(tr, "td", "heat-mono", formatCap(row.marketCap));
     const cell = el(tr, "td", "heat-mono", formatPct(row.changePct));
     cell.classList.add(Number.isFinite(row.changePct)
@@ -128,12 +144,18 @@ export function renderHeatmap(document, host, sectors, box) {
         el(cell, "span", "heat-tile-pct", formatPct(row.changePct))
           .style.fontSize = `${type.pct}px`;
       }
+      /* 股价：够大的格子再补一行。缩放放大后小格也会越过这个门槛——
+         这正是滚轮放大的意义，不是把同一张图糊着放大。 */
+      if (tile.w >= MIN_W_PRICE && tile.h >= MIN_H_PRICE) {
+        el(cell, "span", "heat-tile-price", formatPrice(row.price))
+          .style.fontSize = `${Math.max(9, Math.round(type.pct * 0.95))}px`;
+      }
     });
   });
   return blocks;
 }
 
-function attachTooltip(document, host, tip) {
+function attachTooltip(document, host, tip, selector = ".heat-tile") {
   const show = (cell) => {
     const data = cell.getAttribute("aria-label") || "";
     tip.textContent = data;
@@ -147,12 +169,12 @@ function attachTooltip(document, host, tip) {
   };
   const hide = () => { tip.hidden = true; };
   host.addEventListener("mouseover", (event) => {
-    const cell = event.target.closest(".heat-tile");
+    const cell = event.target.closest(selector);
     if (cell) show(cell);
   });
   host.addEventListener("mouseleave", hide);
   host.addEventListener("focusin", (event) => {
-    const cell = event.target.closest(".heat-tile");
+    const cell = event.target.closest(selector);
     if (cell) show(cell);
   });
   host.addEventListener("focusout", hide);
@@ -216,22 +238,118 @@ async function start() {
   paintTable(document.getElementById("heat-table-host"), members);
 
   const canvas = document.getElementById("heat-canvas");
+  const viewport = document.getElementById("heat-viewport");
   const tip = document.getElementById("heat-tip");
   const limitBar = document.getElementById("heat-limits");
   const shownLabel = document.getElementById("heat-shown");
+  const zoomLabel = document.getElementById("heat-zoom-level");
   let limit = defaultLimit(window.innerWidth);
+  let zoom = 1;
 
   function draw() {
-    const width = canvas.clientWidth || 900;
+    const width = (viewport ? viewport.clientWidth : canvas.clientWidth) || 900;
     const sectors = groupBySector(members, limit);
     const drawn = sectors.reduce((sum, sector) => sum + sector.count, 0);
-    renderHeatmap(document, canvas, sectors, { w: width, h: Math.round(width * aspectFor(width)) });
+    /* 放大就是把画布真的做大再重排一次，不是 CSS 缩放：字会跟着重新排版，
+       小格因此才写得下名字与股价，而不是被糊着放大。 */
+    const w = Math.round(width * zoom);
+    const h = Math.round(width * aspectFor(width) * zoom);
+    canvas.style.width = `${w}px`;
+    renderHeatmap(document, canvas, sectors, { w, h });
     shownLabel.textContent = limit && drawn < stats.count
       ? `显示市值前 ${drawn} 家（共 ${stats.count} 家）`
       : `显示全部 ${drawn} 家`;
+    if (zoomLabel) zoomLabel.textContent = `${zoom.toFixed(zoom % 1 ? 1 : 0)}×`;
     Array.from(limitBar.children).forEach((button) => {
       button.setAttribute("aria-pressed", Number(button.dataset.limit) === limit ? "true" : "false");
     });
+    paintLive();
+  }
+
+  /* 缩放锚定在光标处：放大后光标下面的那家公司还在光标下面，
+     否则每滚一格视野就跳到别处，等于每次都要重新找。 */
+  function setZoom(next, anchor) {
+    const clamped = Math.max(ZOOM_STEPS[0], Math.min(ZOOM_STEPS[ZOOM_STEPS.length - 1], next));
+    if (clamped === zoom) return false;
+    const before = zoom;
+    const rect = viewport.getBoundingClientRect();
+    const px = anchor ? anchor.clientX - rect.left : rect.width / 2;
+    const py = anchor ? anchor.clientY - rect.top : rect.height / 2;
+    const atX = (viewport.scrollLeft + px) / before;
+    const atY = (viewport.scrollTop + py) / before;
+    zoom = clamped;
+    draw();
+    viewport.scrollLeft = atX * zoom - px;
+    viewport.scrollTop = atY * zoom - py;
+    return true;
+  }
+
+  function stepZoom(direction, anchor) {
+    const index = ZOOM_STEPS.indexOf(zoom);
+    const at = index >= 0 ? index : ZOOM_STEPS.findIndex((value) => value > zoom);
+    const next = ZOOM_STEPS[Math.max(0, Math.min(ZOOM_STEPS.length - 1, at + direction))];
+    return setZoom(next, anchor);
+  }
+
+  /* ── 盘中层 ────────────────────────────────────────────────────────
+     两张图读同一份盘中快照。覆盖只发生在盘中报价确实比日更那条更新时；
+     文件过期、缺这个标的、或者取数失败，就原样保留日更读数并如实说明。
+     这里绝不做定时抖动——那等于伪造实时。 */
+  let live = null;
+  const liveNote = document.getElementById("heat-live");
+
+  /* 把盘中价覆盖到一行上，返回是否真的覆盖了。日更那份原样留在 dailyPrice /
+     dailyChangePct 上，随时可以说清「现在显示的是哪一层」。 */
+  function overlay(row, now) {
+    if (!row.dailyPrice) {
+      row.dailyPrice = row.price;
+      row.dailyChangePct = row.changePct;
+      row.dailyAsOf = payload.asOf || "";
+    }
+    const quote = live && live.quotes ? live.quotes[row.symbol] : null;
+    if (live && usableSnapshot(live, now) && newerThan(quote, row.dailyAsOf)) {
+      row.price = quote.price;
+      row.changePct = isFiniteNumber(quote.changePct) ? quote.changePct : row.changePct;
+      row.intraday = true;
+      return true;
+    }
+    row.price = row.dailyPrice;
+    row.changePct = row.dailyChangePct;
+    row.intraday = false;
+    return false;
+  }
+
+  function paintLive() {
+    if (!liveNote) return;
+    const now = Date.now();
+    const covered = members.filter((row) => overlay(row, now)).length;
+    if (!live) {
+      liveNote.textContent = "盘中快照尚未生成，当前显示的是收盘口径的日更读数。";
+      return;
+    }
+    if (!covered) {
+      liveNote.textContent = `盘中快照未覆盖当前读数（${freshnessText(live.updatedAt, now)}），`
+        + "显示的是收盘口径的日更读数。";
+      return;
+    }
+    liveNote.textContent = `盘中读数已覆盖 ${covered} 家 · 刷新周期约 `
+      + `${live.cadenceMinutes || 30} 分钟 · ${freshnessText(live.updatedAt, now)} · 非实时行情`;
+  }
+
+  async function pullLive() {
+    try {
+      const response = await fetch(INTRADAY_PATH, { cache: "no-store" });
+      if (!response || response.ok !== true) return;
+      const next = await response.json();
+      if (!next || next.realtime !== false) return;   // 自称实时的文件一律不采信
+      live = next;
+    } catch (error) {
+      return;                                        // 取不到就继续显示日更读数
+    }
+    const now = Date.now();
+    members.forEach((row) => overlay(row, now));
+    repaintFromRows();
+    paintLive();
   }
 
   [["60", 60], ["150", 150], ["300", 300], ["全部", 0]].forEach(([label, value]) => {
@@ -239,18 +357,109 @@ async function start() {
     button.type = "button";
     button.dataset.limit = String(value);
     button.setAttribute("aria-pressed", "false");
-    button.addEventListener("click", () => { limit = value; draw(); });
+    /* 家数一变，两张图都要跟着重排：气泡图的取数与热力图同一份筛选结果，
+       只更新一张会让两张图当场对不上。 */
+    button.addEventListener("click", () => { limit = value; draw(); drawBubbles(); });
+  });
+
+  /* ── 气泡图 ────────────────────────────────────────────────────────
+     与热力图同源同色：同一份成分股、同一套发散色阶。区别只在于把「市值」
+     从面积换成气泡大小、把「涨跌」从颜色再加一条纵轴——因此一眼能看出
+     同一个行业里谁在涨、谁在跌、各自多大。 */
+  const bubbleHost = document.getElementById("bubble-canvas");
+  const metricBar = document.getElementById("bubble-metrics");
+  const METRICS = [
+    { key: "d1", label: "当日", of: (row) => row.changePct },
+    { key: "w1", label: "每周", of: (row) => (row.returns || {}).w1 },
+    { key: "m1", label: "月度", of: (row) => (row.returns || {}).m1 },
+    { key: "ytd", label: "年初至今", of: (row) => (row.returns || {}).ytd }
+  ];
+  let metric = METRICS[0];
+  let bubbles = null;
+
+  function bubbleBox() {
+    const width = bubbleHost ? bubbleHost.clientWidth || 900 : 900;
+    return { w: width, h: Math.max(320, Math.round(width * (width < 700 ? 0.95 : 0.5))) };
+  }
+
+  function drawBubbles() {
+    if (!bubbleHost) return;
+    const shown = groupBySector(members, limit).flatMap((sector) => sector.children.map((c) => c.row));
+    bubbles = renderBubbles(document, bubbleHost, shown, bubbleBox(),
+      { metricOf: metric.of, metricLabel: metric.label });
+    const drawn = bubbles.layout.circles.length;
+    const gap = shown.length - drawn;
+    const outside = bubbles.layout.circles.filter((circle) => circle.outside).length;
+    const domain = bubbles.layout.domain;
+    const note = document.getElementById("bubble-note");
+    if (note) {
+      note.textContent = `纵向是${metric.label}涨跌，横向按行业分列，气泡面积正比于市值；`
+        + `共画出 ${drawn} 家。`
+        + `纵轴按第2–98百分位取范围（${domain.min}% ~ ${domain.max}%）而不是按极值——`
+        + `按极值定范围会被个别极端值撑开，其余几百家挤成一条线。`
+        + (outside ? `有 ${outside} 家的真实涨跌在这个范围之外，贴边显示并描了虚线圈，`
+          + `真实数值见悬浮读数与数据表。` : "")
+        + (gap ? `另有 ${gap} 家缺这一档涨跌、不画在图上——放到零线上会被读成「没涨没跌」，那是伪造。` : "");
+    }
+    Array.from(metricBar ? metricBar.children : []).forEach((button) => {
+      button.setAttribute("aria-pressed", button.dataset.metric === metric.key ? "true" : "false");
+    });
+  }
+
+  /* 盘中刷新时两张图各自就地更新：热力图重排一次（面积不变、颜色与数字变），
+     气泡图只移动纵向位置，因此看上去是在上下浮动而不是整张重画。 */
+  function repaintFromRows() {
+    draw();
+    if (bubbles && metric.key === "d1") {
+      updateBubbles(bubbles, members, { metricOf: metric.of, metricLabel: metric.label });
+    }
+  }
+
+  METRICS.forEach((entry) => {
+    if (!metricBar) return;
+    const button = el(metricBar, "button", "heat-limit", entry.label);
+    button.type = "button";
+    button.dataset.metric = entry.key;
+    button.setAttribute("aria-pressed", "false");
+    button.addEventListener("click", () => { metric = entry; drawBubbles(); });
   });
 
   attachTooltip(document, canvas.parentElement, tip);
+  if (bubbleHost) attachTooltip(document, bubbleHost.parentElement, tip, ".bubble-node");
   draw();
+  drawBubbles();
+  paintBubbleLegend(document, document.getElementById("bubble-legend"));
   root.setAttribute("aria-busy", "false");
   if (status) status.remove();
+
+  /* ── 滚轮缩放 ──────────────────────────────────────────────────────
+     只有确实改变了档位才拦截滚动：到了最大/最小档还继续滚，页面照常往下走，
+     不会把读者困在图里。键盘与按钮同样能缩放——只给滚轮等于把它挡在门外。 */
+  if (viewport) {
+    viewport.addEventListener("wheel", (event) => {
+      if (event.deltaY === 0) return;
+      if (stepZoom(event.deltaY < 0 ? 1 : -1, event)) event.preventDefault();
+    }, { passive: false });
+    viewport.addEventListener("keydown", (event) => {
+      if (event.key === "+" || event.key === "=") { if (stepZoom(1)) event.preventDefault(); }
+      if (event.key === "-" || event.key === "_") { if (stepZoom(-1)) event.preventDefault(); }
+      if (event.key === "0") { setZoom(1); event.preventDefault(); }
+    });
+  }
+  const zoomIn = document.getElementById("heat-zoom-in");
+  const zoomOut = document.getElementById("heat-zoom-out");
+  const zoomReset = document.getElementById("heat-zoom-reset");
+  if (zoomIn) zoomIn.addEventListener("click", () => stepZoom(1));
+  if (zoomOut) zoomOut.addEventListener("click", () => stepZoom(-1));
+  if (zoomReset) zoomReset.addEventListener("click", () => setZoom(1));
+
+  pullLive();
+  window.setInterval(pullLive, LIVE_INTERVAL_MS);
 
   let timer = 0;
   window.addEventListener("resize", () => {
     window.clearTimeout(timer);
-    timer = window.setTimeout(draw, 160);
+    timer = window.setTimeout(() => { draw(); drawBubbles(); }, 160);
   });
 
   const toggle = document.getElementById("heat-table-toggle");

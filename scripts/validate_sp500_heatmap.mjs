@@ -17,6 +17,10 @@ import {
   SCALE, NO_CHANGE, stepFor, formatCap, formatPct, groupBySector, summarize
 } from "../apps/heatmap/heatmap-data.mjs";
 import { defaultLimit, aspectFor } from "../apps/heatmap/heatmap.mjs";
+import {
+  niceDomain, quantile, radiusScale, packColumn, layoutBubbles, SECTOR_ORDER, INK_FRACTION
+} from "../apps/heatmap/bubble-layout.mjs";
+import { pickLabel, formatPrice } from "../apps/heatmap/bubble.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -173,18 +177,88 @@ async function validatePublished() {
   return payload;
 }
 
+/* 气泡图守的是与热力图同一类承诺，只是换了两个通道：面积仍然严格正比于市值，
+   纵向位置就是收益率本身。这里另外守两件这张图特有的事：
+   - 纵轴按分位数取范围，越界的贴边并标出来，不是悄悄画到框外或压扁全体；
+   - 标签宁可不写也不截断成一个字加省略号。 */
+function validateBubbles() {
+  /* 面积正比于市值：同一个 k，比值必须恒定。 */
+  const caps = [4, 16, 64, 256, 1024];
+  const r = radiusScale(caps, 60, 1);
+  const ratios = caps.map((cap) => (r(cap) ** 2) / cap);
+  ratios.forEach((value) => assert.ok(Math.abs(value - ratios[0]) < 1e-9,
+    `气泡面积必须严格正比于市值，实测比值 ${ratios}`));
+
+  /* 总墨迹法只改整体比例，不改任何两颗之间的面积比。 */
+  const inked = radiusScale(caps, 60, 1, 400 * 300);
+  const inkRatios = caps.map((cap) => (inked(cap) ** 2) / cap);
+  inkRatios.forEach((value) => assert.ok(Math.abs(value - inkRatios[0]) < 1e-9,
+    "按总墨迹定比例后，面积与市值的比值仍必须恒定"));
+  assert.ok(INK_FRACTION > 0 && INK_FRACTION < 1, "墨迹占比必须是 0~1 之间的比例");
+
+  /* 纵轴按分位数取，不被极端值撑开。 */
+  const bulk = Array.from({ length: 100 }, (_, i) => -5 + i * 0.1);   // −5 ~ +5
+  const domain = niceDomain(bulk.concat([200, -200]));
+  assert.ok(domain.max <= 20 && domain.min >= -20,
+    `两个极端值不该把纵轴撑到 ${domain.min}~${domain.max}`);
+  assert.ok(domain.min <= 0 && domain.max >= 0, "纵轴范围必须包含 0：零线是这张图的基准");
+  assert.equal(quantile([1, 2, 3, 4], 0.5), 2.5, "分位数取值必须线性插值");
+  /* 观测很少时不启用分位数：20 个点里砍掉两端等于砍掉真实数据。 */
+  assert.equal(niceDomain([0, 10]).max >= 10, true, "样本少时必须包住全部观测");
+
+  /* 越界的贴边 + 标记，不画到框外。 */
+  const rows = [
+    { symbol: "BIG", name: "巨涨", marketCap: 100, changePct: 999, sector: "科技" },
+    { symbol: "MID", name: "中间", marketCap: 100, changePct: 1, sector: "科技" },
+    { symbol: "NIL", name: "缺失", marketCap: 100, changePct: null, sector: "科技" }
+  ].concat(Array.from({ length: 40 }, (_, i) => (
+    { symbol: `S${i}`, name: `第${i}`, marketCap: 50, changePct: (i % 11) - 5, sector: "金融" })));
+  const layout = layoutBubbles(rows, { w: 800, h: 400 });
+  const big = layout.circles.filter((c) => c.key === "BIG")[0];
+  assert.ok(big, "越界的公司必须仍然画出来（贴边），不能悄悄丢掉");
+  assert.equal(big.outside, true, "越界必须被标记，页面据此描虚线圈并在说明里点出家数");
+  assert.ok(big.y >= layout.plot.y - 0.5 && big.y <= layout.plot.y + layout.plot.h + 0.5,
+    "越界的气泡必须贴在框内边缘，不得画到绘图区之外");
+  assert.ok(!layout.circles.some((c) => c.key === "NIL"),
+    "缺这一档涨跌的公司不画：放到零线上会被读成「没涨没跌」");
+
+  /* 同一份输入两次布局必须完全一致——盘中刷新时 x 不动、只有 y 变，
+     靠的就是这个确定性；否则每半小时整列重新洗牌，读不出「在浮动」。 */
+  const again = layoutBubbles(rows, { w: 800, h: 400 });
+  assert.deepEqual(layout.circles.map((c) => [c.key, Math.round(c.x), Math.round(c.y)]),
+    again.circles.map((c) => [c.key, Math.round(c.x), Math.round(c.y)]),
+    "布局必须是确定性的：同一份输入排出同一个位置");
+
+  /* 行业列次序写死，不随当天涨跌变。 */
+  assert.equal(SECTOR_ORDER[0], "科技");
+  assert.equal(SECTOR_ORDER.length, 11, "GICS 十一个行业");
+  assert.deepEqual(layout.columns.map((c) => c.label), ["科技", "金融"],
+    "只摆当天有数据的行业，且次序按登记表");
+
+  /* 标签宁可不写也不截断成一个字加省略号。 */
+  assert.equal(pickLabel("英伟达", "NVDA", 40), "英伟达", "放得下就写中文名");
+  assert.equal(pickLabel("美国运通", "AXP", 15), "AXP", "中文名放不下就退回交易代码");
+  assert.equal(pickLabel("美国运通", "AXP", 4), "", "两个都放不下就不写，不截断");
+  assert.ok(!pickLabel("美国运通", "AXP", 15).includes("…"), "标签一律不带省略号");
+  assert.equal(formatPrice(1234.5), "1,235", "四位数股价取整并加千分位");
+  assert.equal(formatPrice(null), "—", "没有股价就写破折号，不写 0");
+}
+
 async function main() {
   validateScale();
   validateFormatting();
   validateGrouping();
   validateGeometry();
   validateResponsive();
+  validateBubbles();
   const published = await validatePublished();
   console.log("S&P 500 heatmap contract: PASS");
   console.log("- diverging scale: 3+1+3 steps, neutral midpoint, per-step ink, missing ≠ flat");
   console.log("- area strictly proportional to market cap, no overlap, header never covers tiles");
   console.log("- sector change is cap-weighted; rows without a change are counted but not weighted");
   console.log("- narrow screens draw fewer by market cap and say so; canvas grows taller");
+  console.log("- bubble chart: area ∝ market cap under both scalings, quantile y-domain, "
+    + "out-of-range pinned and flagged, deterministic layout, labels never truncated");
   if (published) {
     console.log(`- published snapshot: ${published.count}/${published.constituents} constituents, `
       + `${published.missing.length} missing (listed by symbol)`);

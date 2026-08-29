@@ -83,13 +83,74 @@
     .heat-tile-symbol { font-family: var(--mono); font-size: 11px; font-weight: 700;
       letter-spacing: -.02em; opacity: .72; }
     .heat-tile-pct { font-family: var(--mono); font-size: 10px; opacity: .92; }
+    /* 股价是瓦片上的第四行，比涨跌再弱一档：它是补充信息，不该和涨跌抢注意力。 */
+    .heat-tile-price { font-family: var(--mono); font-size: 10px; opacity: .78; }
+
+    /* 缩放视口：画布在里面按真实尺寸重排，超出的部分滚动查看。
+       overscroll-behavior 只挡住「滚到边界后把整页也带着滚」，
+       到了缩放极限时滚轮事件本身不再被拦截，页面照常滚动。 */
+    #heat-viewport {
+      position: relative; width: 100%; overflow: auto; overscroll-behavior-x: contain;
+      border-radius: 4px; cursor: grab;
+    }
+    #heat-viewport:active { cursor: grabbing; }
+    #heat-viewport:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+    .zoombar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center;
+      justify-content: space-between; margin-top: 12px; }
+    .zoomhint { color: var(--faint); font-size: 12px; }
+    .zoomctl { display: inline-flex; align-items: center; gap: 6px; }
+    .zoomctl button {
+      min-width: 44px; min-height: 44px; padding: 0 12px; cursor: pointer;
+      border: 1px solid var(--line-strong); border-radius: 3px; color: var(--muted);
+      background: rgba(12,18,27,.7); font-family: var(--sans); font-size: 13px;
+    }
+    .zoomctl button:hover { color: var(--ink); border-color: var(--cyan); }
+    .zoomctl button:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+    .zoomctl b { min-width: 42px; text-align: center; color: var(--ink);
+      font-family: var(--mono); font-size: 13px; }
+
+    /* ── 气泡图 ─────────────────────────────────────────────────────── */
+    .lede-tight { margin: 10px 0 16px; font-size: 13px; }
+    #bubble-canvas { width: 100%; }
+    .bubble-svg { display: block; width: 100%; overflow: visible; }
+    .bubble-gridline { stroke: var(--line); stroke-width: 1; }
+    /* 零线比其余刻度重一档：它是这张图的基准。 */
+    .bubble-zero { stroke: var(--line-strong); stroke-width: 1.5; stroke-dasharray: 4 3; }
+    .bubble-colsep { stroke: var(--line); stroke-width: 1; opacity: .5; }
+    .bubble-tick { fill: var(--faint); font-family: var(--mono); font-size: 10px; }
+    .bubble-collabel { fill: var(--muted); font-size: 11px; font-weight: 700; }
+    .bubble-colcount { fill: var(--faint); font-family: var(--mono); font-size: 9px; }
+    .bubble-node { cursor: pointer; }
+    /* 位置过渡就是「浮动」本身：盘中读数一变，气泡从旧位置滑到新位置，
+       而不是整张图重画。刻意只过渡位置与颜色，绝不做定时抖动。 */
+    .bubble-node { transition: transform .9s cubic-bezier(.22,.61,.36,1); }
+    .bubble-dot {
+      /* 气泡互相重叠，一圈底色描边把它们分开——不是装饰性描边。 */
+      stroke: #0c121b; stroke-width: 1.5;
+      transition: fill .5s ease;
+    }
+    .bubble-node:hover .bubble-dot { stroke: var(--cyan); stroke-width: 2; }
+    .bubble-node:focus-visible .bubble-dot { stroke: var(--cyan); stroke-width: 2.5; }
+    /* 被纵轴范围夹住的气泡描一圈虚线：它的真实值在框外，不假装它就在边上。 */
+    .bubble-clamped .bubble-dot { stroke-dasharray: 3 2; }
+    .bubble-labels { pointer-events: none; }
+    .bubble-label { transition: transform .9s cubic-bezier(.22,.61,.36,1); }
+    .bubble-name { font-size: 11px; font-weight: 700; pointer-events: none; }
+    .bubble-price { font-family: var(--mono); font-size: 10px; opacity: .85; pointer-events: none; }
+    .bubble-ink-light .bubble-name, .bubble-ink-light .bubble-price { fill: var(--tile-ink-light); }
+    .bubble-ink-dark .bubble-name, .bubble-ink-dark .bubble-price { fill: var(--tile-ink-dark); }
+    @media (prefers-reduced-motion: reduce) {
+      .bubble-node, .bubble-dot, .bubble-label { transition: none; }
+    }
+
     #heat-tip {
       position: absolute; z-index: 8; pointer-events: none; max-width: 300px;
       padding: 8px 10px; border: 1px solid var(--line-strong); border-radius: 4px;
       background: rgba(6, 11, 18, .97); color: var(--ink); font-size: 12px; line-height: 1.6;
       box-shadow: 0 10px 26px rgba(0,0,0,.5);
     }
-    #heat-legend { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 14px; }
+    #heat-legend, #bubble-legend { display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+      margin-top: 18px; }
     .legend-label { color: var(--faint); font-size: 12px; }
     .legend-chip { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; }
     .legend-swatch { width: 14px; height: 14px; border-radius: 2px; display: inline-block; }
@@ -126,7 +187,9 @@
     </nav>
     <p class="eyebrow">S&amp;P 500 HEATMAP</p>
     <h1>标普500热力图</h1>
-    <p class="lede">按行业分块，每块的面积正比于该公司的市值，颜色是它当日的涨跌。方格以中文公司名标注，放得下的大格再补上交易代码。每块瓦片上同时写出带 ▲▼ 的涨跌数字，另有图例与完整数据表——颜色不是唯一的编码方式。点开任一块即是该公司的完整行情页。</p>
+    <p class="lede">按行业分块，每块的面积正比于该公司的市值，颜色是它当日的涨跌。方格以中文公司名标注，放得下的大格再补上交易代码与股价。每块瓦片上同时写出带 ▲▼ 的涨跌数字，另有图例与完整数据表——颜色不是唯一的编码方式。点开任一块即是该公司的完整行情页。<br>
+      <b>滚轮可以缩放</b>：放大不是把同一张图糊着放大，而是在更大的画布上重新排一次版，小市值公司的格子因此变大，名字、代码与股价才真的显示得出来。到了最大或最小档还继续滚，页面照常滚动，不会把你困在图里；也可以用下方按钮或 + − 0 键。<br>
+      <b>美股开盘后会跟着动</b>：站内任务每约30分钟重取一次全部成分股的最新价，页面每20秒重读这份站内静态文件（不在浏览器里调用任何外部行情接口），只有确实更新时才覆盖。<b>这不是实时行情</b>——刷新周期约30分钟，交易所自身还有延迟（美股常见15分钟），标题下方会写明覆盖了多少家与更新于多久前。</p>
 
     <div class="stats">
       <div class="stat"><span>覆盖成分股</span><b id="stat-count">…</b></div>
@@ -143,13 +206,42 @@
       </div>
       <p id="heat-status" class="heat-note">正在读取站内每日管道生成的标普500快照…</p>
       <div class="canvas-wrap">
-        <div id="heat-canvas" role="img" aria-label="标普500成分股按行业分块的市值与当日涨跌热力图"></div>
+        <div id="heat-viewport" tabindex="0" role="group"
+             aria-label="热力图画布，可用滚轮或下方按钮缩放，放大后可拖动查看">
+          <div id="heat-canvas" role="img" aria-label="标普500成分股按行业分块的市值与当日涨跌热力图"></div>
+        </div>
         <div id="heat-tip" role="tooltip" hidden></div>
       </div>
+      <div class="zoombar">
+        <span class="zoomhint">滚轮缩放 · 放大后可拖动 · 也可用 + − 0 键</span>
+        <div class="zoomctl" role="group" aria-label="缩放">
+          <button type="button" id="heat-zoom-out" aria-label="缩小">−</button>
+          <b id="heat-zoom-level" aria-live="polite">1×</b>
+          <button type="button" id="heat-zoom-in" aria-label="放大">＋</button>
+          <button type="button" id="heat-zoom-reset">重置</button>
+        </div>
+      </div>
       <div id="heat-legend"></div>
+      <p class="heat-note" id="heat-live"></p>
       <p class="heat-note" id="heat-note"></p>
       <button type="button" id="heat-table-toggle" aria-expanded="false" aria-controls="heat-table-wrap">以数据表查看</button>
       <div id="heat-table-wrap" hidden><div id="heat-table-host"></div></div>
+    </section>
+
+    <section class="panel" id="bubble-root">
+      <div class="bar">
+        <span class="heat-shown">标普500气泡图</span>
+        <div id="bubble-metrics" role="group" aria-label="纵轴区间"></div>
+      </div>
+      <p class="lede lede-tight">同一批成分股换一种看法：横向按行业分列，纵向是这一档的涨跌，气泡面积正比于市值。
+        颜色与热力图同一套色阶——两张图摆在一页上，不该为了看第二张重新学一遍颜色。
+        行业身份由列的位置与列标题承担，不另派十一种颜色：气泡这类任意两点都可能相邻的图形，
+        分类色最多撑得住三种，十一种在色觉差异下必然有几对分不开。放得下的气泡上直接标出公司名与股价。</p>
+      <div class="canvas-wrap">
+        <div id="bubble-canvas"></div>
+      </div>
+      <div id="bubble-legend"></div>
+      <p class="heat-note" id="bubble-note"></p>
     </section>
 
     <footer>
