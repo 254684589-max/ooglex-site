@@ -230,6 +230,51 @@ INDEX_CANDIDATES = [
 ]
 
 
+# ── 标普500成分股名单候选 ────────────────────────────────────────────────
+# 站内的公司榜是「全球市值前500」，不是标普500：里面有台积电、沙特阿美、三星、
+# 阿斯麦，还有 50 家未上市公司。两者是不同的集合，不能拿一个冒充另一个。
+# 要做真的标普500，先得拿到真的成分股名单。这里探测几个公开来源，比较：
+# 能不能取到、条数是不是 ~503、以及取到的代码彼此对不对得上。
+SP500_SOURCES = [
+    ("datahub-csv",
+     "https://raw.githubusercontent.com/datasets/s-and-p-500-companies/main/data/constituents.csv"),
+    ("datahub-csv-master",
+     "https://raw.githubusercontent.com/datasets/s-and-p-500-companies/master/data/constituents.csv"),
+    ("wikipedia-api",
+     "https://en.wikipedia.org/w/api.php?action=parse&page=List_of_S%26P_500_companies"
+     "&prop=wikitext&section=1&format=json"),
+    ("ishares-ivv",
+     "https://www.ishares.com/us/products/239726/ishares-core-sp-500-etf/1467271812596.ajax"
+     "?fileType=csv&fileName=IVV_holdings&dataType=fund"),
+]
+
+
+def probe_sp500(name: str, url: str) -> dict:
+    """标普500成分名单：只关心「取不取得到」与「像不像一份 ~503 条的成分表」。
+
+    不同来源格式不同（CSV / Wiki 源码），这里统一用一个宽松的代码抽取：
+    找出所有像股票代码的 token，去重后报条数与样例，由人核对。
+    """
+    import re
+    try:
+        text = get_text(url)
+    except (error.HTTPError, error.URLError, ValueError) as exc:
+        return {"ok": False, "why": f"{type(exc).__name__}: {str(exc)[:70]}"}
+    if not text or len(text) < 200:
+        return {"ok": False, "why": f"响应过短（{len(text)}字节）"}
+    if name.startswith("datahub") or name.startswith("ishares"):
+        rows = [line.split(",")[0].strip().strip('"') for line in text.splitlines()[1:]]
+        symbols = [s for s in rows if re.fullmatch(r"[A-Z][A-Z.\-]{0,6}", s)]
+    else:
+        symbols = re.findall(r"\{\{NYSE\|([A-Z.\-]{1,7})\}\}|\{\{Nasdaq\|([A-Z.\-]{1,7})\}\}", text)
+        symbols = [a or b for a, b in symbols]
+    unique = sorted(set(symbols))
+    return {
+        "ok": len(unique) >= 400, "count": len(unique), "bytes": len(text),
+        "sample": unique[:8], "why": "" if len(unique) >= 400 else f"只抽到 {len(unique)} 个代码",
+    }
+
+
 def probe_index(symbol: str) -> dict:
     """指数候选：除了「取不取得到」，还要确认它到底是不是一条指数。
 
@@ -404,6 +449,25 @@ def main() -> None:
         else:
             print(f"[XX] {symbol:<8} {label:<26} {outcome.get('why', '')}")
         time.sleep(GAP)
+
+    print()
+    print("=" * 78)
+    print("标普500成分名单候选")
+    print("=" * 78)
+    report["sp500"] = {}
+    for name, url in SP500_SOURCES:
+        outcome = probe_sp500(name, url)
+        report["sp500"][name] = dict(outcome, url=url)
+        if outcome.get("ok"):
+            print(f"[OK] {name:<20} {outcome['count']:>4} 个代码  "
+                  f"{outcome['bytes']:>8} 字节  样例 {','.join(outcome['sample'][:6])}")
+        else:
+            print(f"[XX] {name:<20} {outcome.get('why','')}")
+        time.sleep(GAP)
+    ok_lists = {k: set(v.get("sample") or []) for k, v in report["sp500"].items() if v.get("ok")}
+    if len(ok_lists) > 1:
+        print(f"     取到 {len(ok_lists)} 份名单，条数：",
+              {k: report["sp500"][k]["count"] for k in ok_lists})
 
     print()
     print("=" * 78)
