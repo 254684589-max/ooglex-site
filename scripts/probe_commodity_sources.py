@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""常备探测：候选行情来源在 Actions 机房到底取不取得到（商品、指数、小时线）。
+"""常备探测：候选行情来源在 Actions 机房到底取不取得到（商品、指数、小时线、国债）。
 
 这个脚本只回答一个问题——「这个代码有没有真实可用的公开序列」，因此：
 
@@ -370,6 +370,156 @@ def probe_hourly(symbol: str) -> dict:
     return {"ok": False, "why": last}
 
 
+# ── 各国10年期国债收益率候选 ─────────────────────────────────────────────
+# 参考站（TradingEconomics）的 Bonds 分区按地区列了约 50 个国家的十年期收益率，
+# 站内债券品类目前只有美债曲线 11 个期限 + 中国国债 + 三段美债ETF代理。
+#
+# 这里要回答的不只是「取不取得到」，还有**频率**：站内绝不能把月频序列摆成日频。
+# 因此三个来源家族各留一批候选，逐个实测后再决定登记哪一份：
+#   A. FRED / OECD 主要经济指标长期国债收益率 `IRLTLT01{ISO2}M156N`（月频，覆盖广）
+#      —— 注意 OECD 2024 年改了数据投送方式，FRED 上这一族有相当一部分已停更，
+#      必须实测最后观测日，不能只看「取到了」。
+#   B. FRED / IMF IFS 政府债券利率 `INTGSB{ISO2}M193N`（月频，另一条独立口径）
+#   C. ECB 数据门户（免密钥）——欧盟趋同用长期利率（月频）与欧元区收益率曲线（日频）
+# 另附几个日频的官方接口（加拿大央行 Valet）与 Yahoo 的债券代码，看有没有日频可用。
+BOND_FRED_CANDIDATES = [
+    # —— 欧洲 ——
+    ("IRLTLT01ATM156N", "奥地利10年期"), ("IRLTLT01BEM156N", "比利时10年期"),
+    ("IRLTLT01CZM156N", "捷克10年期"), ("IRLTLT01DKM156N", "丹麦10年期"),
+    ("IRLTLT01EEM156N", "爱沙尼亚10年期"), ("IRLTLT01FIM156N", "芬兰10年期"),
+    ("IRLTLT01FRM156N", "法国10年期"), ("IRLTLT01DEM156N", "德国10年期"),
+    ("IRLTLT01GRM156N", "希腊10年期"), ("IRLTLT01HUM156N", "匈牙利10年期"),
+    ("IRLTLT01ISM156N", "冰岛10年期"), ("IRLTLT01IEM156N", "爱尔兰10年期"),
+    ("IRLTLT01ITM156N", "意大利10年期"), ("IRLTLT01LVM156N", "拉脱维亚10年期"),
+    ("IRLTLT01LTM156N", "立陶宛10年期"), ("IRLTLT01LUM156N", "卢森堡10年期"),
+    ("IRLTLT01NLM156N", "荷兰10年期"), ("IRLTLT01NOM156N", "挪威10年期"),
+    ("IRLTLT01PLM156N", "波兰10年期"), ("IRLTLT01PTM156N", "葡萄牙10年期"),
+    ("IRLTLT01SKM156N", "斯洛伐克10年期"), ("IRLTLT01SIM156N", "斯洛文尼亚10年期"),
+    ("IRLTLT01ESM156N", "西班牙10年期"), ("IRLTLT01SEM156N", "瑞典10年期"),
+    ("IRLTLT01CHM156N", "瑞士10年期"), ("IRLTLT01GBM156N", "英国10年期"),
+    ("IRLTLT01TRM156N", "土耳其10年期"), ("IRLTLT01RUM156N", "俄罗斯10年期"),
+    ("IRLTLT01EZM156N", "欧元区10年期"), ("IRLTLT01BGM156N", "保加利亚10年期"),
+    ("IRLTLT01HRM156N", "克罗地亚10年期"), ("IRLTLT01ROM156N", "罗马尼亚10年期"),
+    # —— 美洲 ——
+    ("IRLTLT01USM156N", "美国10年期"), ("IRLTLT01CAM156N", "加拿大10年期"),
+    ("IRLTLT01MXM156N", "墨西哥10年期"), ("IRLTLT01BRM156N", "巴西10年期"),
+    ("IRLTLT01CLM156N", "智利10年期"), ("IRLTLT01COM156N", "哥伦比亚10年期"),
+    ("IRLTLT01CRM156N", "哥斯达黎加10年期"),
+    # —— 亚洲 ——
+    ("IRLTLT01JPM156N", "日本10年期"), ("IRLTLT01KRM156N", "韩国10年期"),
+    ("IRLTLT01CNM156N", "中国10年期"), ("IRLTLT01INM156N", "印度10年期"),
+    ("IRLTLT01IDM156N", "印尼10年期"), ("IRLTLT01ILM156N", "以色列10年期"),
+    # —— 大洋洲 / 非洲 ——
+    ("IRLTLT01AUM156N", "澳大利亚10年期"), ("IRLTLT01NZM156N", "新西兰10年期"),
+    ("IRLTLT01ZAM156N", "南非10年期"),
+]
+
+BOND_FRED_IFS_CANDIDATES = [
+    ("INTGSBUSM193N", "美国·IMF口径"), ("INTGSBJPM193N", "日本·IMF口径"),
+    ("INTGSBGBM193N", "英国·IMF口径"), ("INTGSBDEM193N", "德国·IMF口径"),
+    ("INTGSBFRM193N", "法国·IMF口径"), ("INTGSBITM193N", "意大利·IMF口径"),
+    ("INTGSBCAM193N", "加拿大·IMF口径"), ("INTGSBAUM193N", "澳大利亚·IMF口径"),
+    ("INTGSBCHM193N", "瑞士·IMF口径"), ("INTGSBMXM193N", "墨西哥·IMF口径"),
+    ("INTGSBZAM193N", "南非·IMF口径"), ("INTGSBKRM193N", "韩国·IMF口径"),
+    ("INTGSBINM193N", "印度·IMF口径"), ("INTGSBIDM193N", "印尼·IMF口径"),
+    ("INTGSBTHM193N", "泰国·IMF口径"), ("INTGSBMYM193N", "马来西亚·IMF口径"),
+    ("INTGSBPHM193N", "菲律宾·IMF口径"), ("INTGSBSGM193N", "新加坡·IMF口径"),
+    ("INTGSBNGM193N", "尼日利亚·IMF口径"), ("INTGSBKEM193N", "肯尼亚·IMF口径"),
+    ("INTGSBPKM193N", "巴基斯坦·IMF口径"), ("INTGSBVNM193N", "越南·IMF口径"),
+    ("INTGSBPEM193N", "秘鲁·IMF口径"), ("INTGSBCLM193N", "智利·IMF口径"),
+]
+
+# ECB 数据门户：免密钥。两个数据集——
+#   IRS = 趋同用长期利率（成员国 10 年期国债二级市场收益率，月频）
+#   YC  = 欧元区 AAA 国债收益率曲线（日频）
+ECB_CANDIDATES = [
+    ("IRS/M.DE.L.L40.CI.0000.EUR.N.Z", "德国·趋同长期利率"),
+    ("IRS/M.FR.L.L40.CI.0000.EUR.N.Z", "法国·趋同长期利率"),
+    ("IRS/M.IT.L.L40.CI.0000.EUR.N.Z", "意大利·趋同长期利率"),
+    ("IRS/M.ES.L.L40.CI.0000.EUR.N.Z", "西班牙·趋同长期利率"),
+    ("IRS/M.NL.L.L40.CI.0000.EUR.N.Z", "荷兰·趋同长期利率"),
+    ("IRS/M.PL.L.L40.CI.0000.PLN.N.Z", "波兰·趋同长期利率（本币）"),
+    ("IRS/M.SE.L.L40.CI.0000.SEK.N.Z", "瑞典·趋同长期利率（本币）"),
+    ("IRS/M.CZ.L.L40.CI.0000.CZK.N.Z", "捷克·趋同长期利率（本币）"),
+    ("IRS/M.HU.L.L40.CI.0000.HUF.N.Z", "匈牙利·趋同长期利率（本币）"),
+    ("IRS/M.RO.L.L40.CI.0000.RON.N.Z", "罗马尼亚·趋同长期利率（本币）"),
+    ("IRS/M.U2.L.L40.CI.0000.EUR.N.Z", "欧元区·趋同长期利率"),
+    ("YC/B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y", "欧元区AAA国债曲线10年（日频）"),
+    ("YC/B.U2.EUR.4F.G_N_C.SV_C_YM.SR_10Y", "欧元区全评级国债曲线10年（日频）"),
+]
+
+# 官方日频接口与 Yahoo：看有没有能把「日频」这一档补上的免费来源。
+BOND_DAILY_CANDIDATES = [
+    ("boc", "https://www.bankofcanada.ca/valet/observations/BD.CDN.10YR.DQ.YLD/json?recent=5",
+     "加拿大央行 Valet 10年期（日频）"),
+    ("ustreasury",
+     "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/"
+     "avg_interest_rates?sort=-record_date&page[size]=3",
+     "美国财政部平均利率（对照）"),
+]
+
+BOND_YAHOO_CANDIDATES = [
+    ("^TNX", "美国10年期收益率（对照，已在站内）"),
+    ("^TYX", "美国30年期收益率"),
+    ("^FVX", "美国5年期收益率"),
+    ("^IRX", "美国13周国库券"),
+    ("^JP10YT=RR", "日本10年期（路透式代码）"),
+    ("JP10Y-JP.BD", "日本10年期（另一种写法）"),
+    ("^DE10Y", "德国10年期"),
+    ("^GB10Y", "英国10年期"),
+    ("BND", "先锋全债市ETF"),
+    ("BNDX", "先锋国际债券ETF"),
+    ("IGOV", "iShares国际国债ETF"),
+    ("BWX", "SPDR国际国债ETF"),
+    ("EMB", "iShares新兴市场美元债ETF"),
+    ("IEF", "iShares 7-10年美债ETF"),
+]
+
+
+def probe_ecb(key: str) -> dict:
+    """ECB 数据门户，免密钥。要 CSV 而不是 SDMX-JSON：CSV 的最后一行就是最新观测。"""
+    url = (f"https://data-api.ecb.europa.eu/service/data/{key}"
+           "?lastNObservations=3&format=csvdata")
+    try:
+        body = get_text(url)
+    except (error.HTTPError, error.URLError) as exc:
+        return {"ok": False, "why": f"{type(exc).__name__}: {str(exc)[:70]}"}
+    lines = [ln for ln in body.strip().splitlines() if ln.strip()]
+    if len(lines) < 2:
+        return {"ok": False, "why": "返回体里没有观测行"}
+    header = [h.strip().strip('"') for h in lines[0].split(",")]
+    try:
+        period = header.index("TIME_PERIOD")
+        value = header.index("OBS_VALUE")
+    except ValueError:
+        return {"ok": False, "why": f"表头缺 TIME_PERIOD/OBS_VALUE：{','.join(header[:8])}"}
+    rows = []
+    for line in lines[1:]:
+        parts = [c.strip().strip('"') for c in line.split(",")]
+        if len(parts) > max(period, value) and parts[value] not in ("", "."):
+            try:
+                rows.append((parts[period], float(parts[value])))
+            except ValueError:
+                continue
+    if len(rows) < MIN_POINTS:
+        return {"ok": False, "why": f"观测点不足（{len(rows)}）"}
+    rows.sort()
+    return {"ok": True, "points": len(rows), "asOf": rows[-1][0], "value": rows[-1][1],
+            "previous": rows[-2][1], "previousAsOf": rows[-2][0]}
+
+
+def probe_daily_endpoint(url: str) -> dict:
+    """官方日频接口：只确认「取得到 + 返回体里确有观测日」，字段结构逐个来源不同，
+    因此这里不硬解字段，把开头一段原样带回报告，由人看过再决定怎么解析。"""
+    try:
+        body = get_text(url)
+    except (error.HTTPError, error.URLError) as exc:
+        return {"ok": False, "why": f"{type(exc).__name__}: {str(exc)[:70]}"}
+    snippet = " ".join(body.split())[:220]
+    return {"ok": True, "bytes": len(body), "snippet": snippet}
+
+
+
 def get_json(url: str, headers: dict | None = None) -> dict:
     req = request.Request(url, headers=headers or {"User-Agent": UA, "Accept": "*/*"})
     with request.urlopen(req, timeout=TIMEOUT) as response:
@@ -544,6 +694,79 @@ def main() -> None:
             print(f"[XX] {symbol:<10} {label:<24} {outcome.get('why','')}")
         time.sleep(GAP)
 
+    print()
+    print("=" * 78)
+    print("国债候选 · FRED / OECD 长期国债收益率（月频，看清最后观测日）")
+    print("=" * 78)
+    report["bondFred"] = {}
+    for series_id, label in BOND_FRED_CANDIDATES:
+        outcome = probe_fred(series_id)
+        report["bondFred"][series_id] = dict(outcome, label=label)
+        if outcome.get("ok"):
+            print(f"[OK] {series_id:<18} {label:<20} 末次 {outcome['asOf']}  "
+                  f"{outcome['value']:>9,.4f}  freq={outcome.get('frequency', '?'):<3} "
+                  f"n={outcome['points']:<5} {(outcome.get('title') or '')[:34]}")
+        else:
+            print(f"[XX] {series_id:<18} {label:<20} {outcome.get('why', '')}")
+        time.sleep(GAP)
+
+    print()
+    print("=" * 78)
+    print("国债候选 · FRED / IMF IFS 政府债券利率（月频，独立第二口径）")
+    print("=" * 78)
+    report["bondIfs"] = {}
+    for series_id, label in BOND_FRED_IFS_CANDIDATES:
+        outcome = probe_fred(series_id)
+        report["bondIfs"][series_id] = dict(outcome, label=label)
+        if outcome.get("ok"):
+            print(f"[OK] {series_id:<16} {label:<20} 末次 {outcome['asOf']}  "
+                  f"{outcome['value']:>9,.4f}  freq={outcome.get('frequency', '?'):<3} "
+                  f"n={outcome['points']}")
+        else:
+            print(f"[XX] {series_id:<16} {label:<20} {outcome.get('why', '')}")
+        time.sleep(GAP)
+
+    print()
+    print("=" * 78)
+    print("国债候选 · ECB 数据门户（免密钥）")
+    print("=" * 78)
+    report["bondEcb"] = {}
+    for key, label in ECB_CANDIDATES:
+        outcome = probe_ecb(key)
+        report["bondEcb"][key] = dict(outcome, label=label)
+        if outcome.get("ok"):
+            print(f"[OK] {key:<42} {label:<26} 末次 {outcome['asOf']}  "
+                  f"{outcome['value']:>9,.4f}  n={outcome['points']}")
+        else:
+            print(f"[XX] {key:<42} {label:<26} {outcome.get('why', '')}")
+        time.sleep(GAP)
+
+    print()
+    print("=" * 78)
+    print("国债候选 · 官方日频接口与 Yahoo")
+    print("=" * 78)
+    report["bondDaily"] = {}
+    for name, url, label in BOND_DAILY_CANDIDATES:
+        outcome = probe_daily_endpoint(url)
+        report["bondDaily"][name] = dict(outcome, label=label, url=url)
+        if outcome.get("ok"):
+            print(f"[OK] {name:<12} {label:<28} {outcome['bytes']:>7} 字节")
+            print(f"     {outcome['snippet'][:190]}")
+        else:
+            print(f"[XX] {name:<12} {label:<28} {outcome.get('why', '')}")
+        time.sleep(GAP)
+    report["bondYahoo"] = {}
+    for symbol, label in BOND_YAHOO_CANDIDATES:
+        outcome = probe_yahoo(symbol)
+        report["bondYahoo"][symbol] = dict(outcome, label=label)
+        if outcome.get("ok"):
+            print(f"[OK] {symbol:<14} {label:<28} {outcome['asOf']}  "
+                  f"{outcome['value']:>10,.4f}  {(outcome.get('currency') or '')} "
+                  f"{(outcome.get('name') or '')[:24]}")
+        else:
+            print(f"[XX] {symbol:<14} {label:<28} {outcome.get('why', '')}")
+        time.sleep(GAP)
+
     ok_fred = [k for k, v in report["fred"].items() if v.get("ok")]
     ok_yahoo = [k for k, v in report["yahoo"].items() if v.get("ok")]
     print()
@@ -554,6 +777,20 @@ def main() -> None:
           f"Yahoo {len(ok_yahoo)}/{len(YAHOO_CANDIDATES)}，"
           f"指数 {len(ok_index)}/{len(INDEX_CANDIDATES)}（其中 type=INDEX 的 {len(real_index)} 条），"
           f"小时线 {len(ok_hourly)}/{len(HOURLY_CANDIDATES)}")
+    for bucket, total in (("bondFred", len(BOND_FRED_CANDIDATES)),
+                          ("bondIfs", len(BOND_FRED_IFS_CANDIDATES)),
+                          ("bondEcb", len(ECB_CANDIDATES)),
+                          ("bondYahoo", len(BOND_YAHOO_CANDIDATES))):
+        got = [k for k, v in report.get(bucket, {}).items() if v.get("ok")]
+        print(f"    {bucket}: {len(got)}/{total} 可用")
+    # 「取到了」不等于「还在更新」：把最后观测日按年份点一遍，停更的序列一眼可见。
+    stale = {}
+    for bucket in ("bondFred", "bondIfs", "bondEcb"):
+        for key, value in report.get(bucket, {}).items():
+            if value.get("ok"):
+                stale.setdefault(str(value.get("asOf", ""))[:4], []).append(key)
+    for year in sorted(stale, reverse=True):
+        print(f"    末次观测年份 {year}：{len(stale[year])} 条  {', '.join(stale[year][:10])}")
     out = os.environ.get("PROBE_OUTPUT")
     if out:
         os.makedirs(os.path.dirname(out), exist_ok=True)
