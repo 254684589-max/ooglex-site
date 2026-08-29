@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""临时探测：候选商品来源在 Actions 机房到底取不取得到。
+"""常备探测：候选行情来源在 Actions 机房到底取不取得到（商品、指数、小时线）。
 
 这个脚本只回答一个问题——「这个代码有没有真实可用的公开序列」，因此：
 
@@ -161,6 +161,108 @@ HOURLY_CANDIDATES = [
 ]
 
 
+# ── 指数候选 ─────────────────────────────────────────────────────────────
+# 参考站（TradingEconomics）的 Indexes 分区列了一百多条，站内目前 38 条。
+# 这里把「参考站有、站内没有」的按地区列成候选，逐个确认三件事：能不能取到、
+# 返回的到底是不是这条指数（名称 + instrumentType 必须是 INDEX，不能是汇率或个股）、
+# 计价币种是什么。凭印象登记的代价见本文件开头的 B0=F 与 QA=F。
+INDEX_CANDIDATES = [
+    # —— 欧洲 ——
+    ("^STOXX50E", "欧元区斯托克50"),
+    ("^N100", "泛欧Euronext 100"),
+    ("^MDAXI", "德国MDAX中盘"),
+    ("^SDAXI", "德国SDAX小盘"),
+    ("^TECDAX", "德国TecDAX科技"),
+    ("^SX7E", "欧元区斯托克银行"),
+    ("OSEBX.OL", "挪威OSEBX"),
+    ("^OSEAX", "挪威奥斯陆全指"),
+    ("^OMXC25", "丹麦OMXC25"),
+    ("^OMXH25", "芬兰OMXH25"),
+    ("^OMXHPI", "芬兰赫尔辛基全指"),
+    ("^ISEQ", "爱尔兰ISEQ"),
+    ("GD.AT", "希腊雅典综合"),
+    ("PSI20.LS", "葡萄牙PSI"),
+    ("^PX", "捷克PX"),
+    ("^BUX", "匈牙利BUX"),
+    ("BUX.BD", "匈牙利BUX（布达佩斯所）"),
+    ("^SOFIX", "保加利亚SOFIX"),
+    ("^BETI", "罗马尼亚BET"),
+    ("WIG.WA", "波兰WIG全指"),
+    ("WIG20.WA", "波兰WIG20"),
+    ("^OMXRGI", "拉脱维亚里加全指"),
+    ("^OMXVGI", "立陶宛维尔纽斯全指"),
+    ("^OMXTGI", "爱沙尼亚塔林全指"),
+    ("^OMXIPI", "冰岛全指"),
+    ("^CRBEX", "克罗地亚CROBEX"),
+    ("IMOEX.ME", "俄罗斯MOEX"),
+    # —— 美洲 ——
+    ("^RUI", "美国罗素1000"),
+    ("^NYA", "纽约证交所综合"),
+    ("^SP400", "标普400中盘"),
+    ("^W5000", "威尔希尔5000全市场"),
+    ("^IPSA", "智利IPSA（现由ETF代理）"),
+    ("^COLCAP", "哥伦比亚COLCAP"),
+    ("^MERV", "阿根廷MERVAL（已在站内，作对照）"),
+    # —— 亚洲 ——
+    ("000001.SS", "上证综合指数"),
+    ("000016.SS", "上证50"),
+    ("399001.SZ", "深证成指"),
+    ("399006.SZ", "创业板指"),
+    ("^NSEI", "印度NIFTY50"),
+    ("^HSCE", "恒生中国企业指数"),
+    ("^KS200", "韩国KOSPI200"),
+    ("^TASI.SR", "沙特TASI"),
+    ("^KSE", "巴基斯坦KSE100"),
+    ("^TA35.TA", "以色列TA-35"),
+    ("^SET.BK", "泰国SET（现由ETF代理）"),
+    ("PSEI.PS", "菲律宾PSEi（现由ETF代理）"),
+    ("^VNINDEX", "越南VN指数"),
+    ("^DFMGI", "迪拜DFM综合"),
+    ("^ADI", "阿布扎比ADX综合"),
+    # —— 大洋洲 ——
+    ("^AORD", "澳洲全普通股"),
+    ("^AXKO", "澳洲标普300"),
+    # —— 中东非洲 ——
+    ("^CASE30", "埃及EGX30"),
+    ("^JN0U.JO", "南非Top40（美元计）"),
+    ("^J203.JO", "南非全股指数"),
+    ("^NGSEINDX", "尼日利亚全股指数"),
+]
+
+
+def probe_index(symbol: str) -> dict:
+    """指数候选：除了「取不取得到」，还要确认它到底是不是一条指数。
+
+    QA=F 的教训是「取得到，但返回的是别的东西」。这里额外读回 instrumentType 与
+    交易所名称：不是 INDEX 的一律标出来，由人决定要不要按代理登记。
+    """
+    last = "无可用数据"
+    for host in ("query1.finance.yahoo.com", "query2.finance.yahoo.com"):
+        url = (f"https://{host}/v8/finance/chart/{parse.quote(symbol)}"
+               "?range=1y&interval=1d")
+        try:
+            payload = get_json(url)
+            result = payload["chart"]["result"][0]
+            stamps = result.get("timestamp") or []
+            closes = [c for c in result["indicators"]["quote"][0]["close"] if c is not None]
+            if len(closes) < 60:
+                last = f"日线数据点不足（{len(closes)}）"
+                continue
+            meta = result.get("meta") or {}
+            return {
+                "ok": True, "points": len(closes), "value": round(float(closes[-1]), 4),
+                "asOf": time.strftime("%Y-%m-%d", time.gmtime(stamps[-1])),
+                "currency": meta.get("currency", ""),
+                "name": meta.get("shortName", "") or meta.get("longName", ""),
+                "type": meta.get("instrumentType", ""),
+                "exchange": meta.get("fullExchangeName", "") or meta.get("exchangeName", ""),
+                "tz": meta.get("exchangeTimezoneName", ""),
+            }
+        except (error.HTTPError, error.URLError, ValueError, KeyError, IndexError) as exc:
+            last = f"{type(exc).__name__}: {str(exc)[:60]}"
+    return {"ok": False, "why": last}
+
+
 def probe_hourly(symbol: str) -> dict:
     """Yahoo 小时线：确认能取到、是本标的、且覆盖足够长。
 
@@ -305,6 +407,24 @@ def main() -> None:
 
     print()
     print("=" * 78)
+    print("指数候选")
+    print("=" * 78)
+    report["index"] = {}
+    for symbol, label in INDEX_CANDIDATES:
+        outcome = probe_index(symbol)
+        report["index"][symbol] = dict(outcome, label=label)
+        if outcome.get("ok"):
+            flag = "OK" if outcome.get("type") == "INDEX" else "??"
+            print(f"[{flag}] {symbol:<12} {label:<22} {outcome['asOf']}  "
+                  f"{outcome['value']:>13,.2f}  n={outcome['points']:<4} "
+                  f"{outcome.get('currency',''):<4} type={outcome.get('type',''):<6} "
+                  f"{outcome.get('name','')[:24]}")
+        else:
+            print(f"[XX] {symbol:<12} {label:<22} {outcome.get('why','')}")
+        time.sleep(GAP)
+
+    print()
+    print("=" * 78)
     print("小时线候选（4小时线的原料）")
     print("=" * 78)
     report["hourly"] = {}
@@ -324,8 +444,11 @@ def main() -> None:
     ok_yahoo = [k for k, v in report["yahoo"].items() if v.get("ok")]
     print()
     ok_hourly = [k for k, v in report["hourly"].items() if v.get("ok")]
+    ok_index = [k for k, v in report["index"].items() if v.get("ok")]
+    real_index = [k for k, v in report["index"].items() if v.get("type") == "INDEX"]
     print(f"可用：FRED {len(ok_fred)}/{len(FRED_CANDIDATES)}，"
           f"Yahoo {len(ok_yahoo)}/{len(YAHOO_CANDIDATES)}，"
+          f"指数 {len(ok_index)}/{len(INDEX_CANDIDATES)}（其中 type=INDEX 的 {len(real_index)} 条），"
           f"小时线 {len(ok_hourly)}/{len(HOURLY_CANDIDATES)}")
     out = os.environ.get("PROBE_OUTPUT")
     if out:
