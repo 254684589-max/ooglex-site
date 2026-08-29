@@ -400,7 +400,7 @@ def run_shared_history_contract_tests() -> None:
 
 
 def _require_stock_row_limit_matches_history() -> None:
-    """行情板的股票行数必须等于公司管道存日线的家数。
+    """行情板的公司行数必须等于公司管道存日线的家数。
 
     这两个数分别写在 JS 与 Python 里。只改一处，页面上后面几十行就会显示「无序列」——
     页面不会报错，只是静静地少了走势，没人会立刻发现。同类的「常量抄了两份」在本仓库
@@ -414,7 +414,7 @@ def _require_stock_row_limit_matches_history() -> None:
     history = re.search(r"^HISTORY_SYMBOLS\s*=\s*(\d+)", builder, re.M)
     require(history is not None, "公司管道里找不到 HISTORY_SYMBOLS，同步校验会失效")
     require(int(match.group(1)) == int(history.group(1)),
-            f"行情板股票行数({match.group(1)})与公司管道存日线的家数({history.group(1)})不一致："
+            f"行情板公司行数({match.group(1)})与公司管道存日线的家数({history.group(1)})不一致："
             "多出来的那几行会显示「无序列」")
 
 def _index_registry(name: str) -> set[str]:
@@ -2989,7 +2989,7 @@ def main() -> None:
     # 27,500 是商品分七组时定的。指数扩到 64 条、并在品类下按地区再分一层后，多出的是
     # 两张逐代码登记表（地区 + 分组，含代理代码）与解释它们为何要逐条登记的注释：
     # 按代码后缀猜地区遇到 ETF 代理就会分错，分错组比不分组更误导。
-    # 34,000：股票品类也分了二级组（按行业），多出一张行业登记表与解释它为何按
+    # 34,000：公司品类也分了二级组（按行业），多出一张行业登记表与解释它为何按
     # GICS 惯用次序写死（而不是按当天家数排）的注释。
     require(BOARD_DATA_MODULE.stat().st_size <= 34_000,
             "按需加载的品类行情板数据层超过34KB性能预算")
@@ -3000,7 +3000,7 @@ def main() -> None:
     # 那条按「日频/月频」分桶取历史的分支。走势说明按各行自己的频率措辞，不把月频说成日频。
     # 30,000：新增五列的渲染，以及「上游没算的区间涨跌由站内历史现场补」那一段。
     # 它复用迷你走势那一次历史读取，一个品类仍然最多触发一次历史文件请求。
-    # 31,500：股票品类的分组条末尾多了一个「专属视图入口」（目前是标普500热力图），
+    # 31,500：公司品类的分组条末尾多了一个「专属视图入口」（目前是标普500热力图），
     # 连同那张入口登记表——加第二个品类的专属视图时只动表、不改渲染逻辑。
     require(BOARD_VIEW_MODULE.stat().st_size <= 31_500,
             "按需加载的品类行情板视图超过31.5KB性能预算")

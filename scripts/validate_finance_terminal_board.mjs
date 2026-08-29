@@ -256,7 +256,7 @@ function validateCategories(board) {
   assert.deepEqual(board.categories.map((category) => category.key),
     ["commodity", "index", "stock", "fx", "crypto", "bond"], "六大品类顺序必须固定");
   assert.deepEqual(board.categories.map((category) => category.label),
-    ["商品", "指数", "股票", "外汇", "加密", "债券"]);
+    ["商品", "指数", "公司", "外汇", "加密", "债券"]);
   assert.equal(BOARD_CATEGORIES.length, 6);
   assert.equal(board.status, "ok");
   board.categories.forEach((category) => {
@@ -283,13 +283,13 @@ function validateCalibration(board) {
   const bond = categoryOf(board, "bond");
   assert.ok(stock.rows.every((row) => row.changeBasis === "当日价格变动"));
   assert.ok(crypto.rows.every((row) => row.changeBasis === "过去24小时"),
-    "加密涨跌是24小时口径，必须与股票当日口径分开标注");
+    "加密涨跌是24小时口径，必须与公司当日口径分开标注");
   assert.ok(bond.rows.some((row) => row.change.text.endsWith("bp")),
     "美债收益率必须按基点显示，不得用百分比相对变化冒充");
-  assert.equal(STOCK_ROW_LIMIT, 500, "股票行数改动是有意的才该发生（同步值由 Python 侧跨语言校验）");
+  assert.equal(STOCK_ROW_LIMIT, 500, "公司行数改动是有意的才该发生（同步值由 Python 侧跨语言校验）");
   assert.ok(stock.rows.length <= STOCK_ROW_LIMIT);
   assert.ok(stock.rows.every((row) => row.series && row.series.kind === "company"),
-    "股票行必须指向公司榜日线历史");
+    "公司行必须指向公司榜日线历史");
   assert.ok(bond.rows.every((row) => row.unit === "年化收益率" || row.proxyOf || row.note),
     "债券行必须标明是收益率还是代理");
 }
@@ -300,7 +300,7 @@ function validateProvenance(board, group) {
   stock.rows.forEach((row) => {
     const upstream = listed.get(row.symbol);
     assert.ok(upstream, `${row.name} 必须来自公司榜真实记录`);
-    assert.equal(upstream.dataMeta.mode, "market", "未上市估值不得进入股票行情板");
+    assert.equal(upstream.dataMeta.mode, "market", "未上市估值不得进入公司行情板");
     assert.equal(row.price, upstream.price, "价格必须与上游一致，不得二次加工");
   });
   const fx = categoryOf(board, "fx");
@@ -367,7 +367,7 @@ async function validateFailureIsolation(group) {
   assert.equal(board.status, "partial", "单条管线失败只降级为部分可用");
   assert.equal(categoryOf(board, "stock").rows.length, 0);
   assert.equal(categoryOf(board, "stock").summary.text, "本类暂无可用数据");
-  assert.ok(categoryOf(board, "index").rows.length > 0, "其他品类不得因股票失败一起清空");
+  assert.ok(categoryOf(board, "index").rows.length > 0, "其他品类不得因公司品类失败一起清空");
   assert.ok(board.failures.some((message) => message.includes("公司榜")));
 
   const empty = buildBoard({});
@@ -523,13 +523,13 @@ function validateIndexGroups(board) {
     "没有登记分组表的品类不得返回分组");
 }
 
-/* 股票按行业分组。与商品/指数不同，股票没有逐代码登记表——行业由上游逐行声明，
+/* 公司按行业分组。与商品/指数不同，公司品类没有逐代码登记表——行业由上游逐行声明，
    因此这里守的是「声明的组名必须已登记」与「没登记的落进其他而不是凭空造组」。 */
 function validateStockGroups(board) {
   const stock = categoryOf(board, "stock");
   const registered = STOCK_GROUPS.map((group) => group.key);
 
-  assert.ok(stock.groups.length >= 5, "股票品类应分出多个行业组");
+  assert.ok(stock.groups.length >= 5, "公司品类应分出多个行业组");
   stock.rows.forEach((row) => {
     assert.ok(registered.includes(row.group), `${row.name} 的行业 ${row.group} 未登记`);
   });
@@ -543,7 +543,7 @@ function validateStockGroups(board) {
   assert.deepEqual(seen, registered.filter((key) => seen.includes(key)),
     "行业在列表里的先后必须与登记顺序一致");
   assert.equal(stock.groups.reduce((sum, group) => sum + group.count, 0), stock.rows.length,
-    "行业计数之和必须等于股票品类的行数");
+    "行业计数之和必须等于公司品类的行数");
 
   /* 上游声明了没登记的行业名时落进「其他」，不得按名字凭空造出一个分组。 */
   assert.equal(groupKeyOf("stock", "X", "不存在的行业"), "other",
@@ -689,10 +689,10 @@ function validateCommodityGroups(board) {
   assert.deepEqual(after.map((row) => row.price), [2, 1, 3], "重排不得改动任何一行的数值");
   assert.deepEqual(before.map((row) => row.symbol), ["GC=F", "CL=F", "SI=F"], "不得就地改写入参");
   assert.deepEqual(withGroups(before, "fx"), before, "未分组的品类原样返回");
-  /* 股票现在也分组了：它按上游声明的行业归组，且同样不得就地改写入参。 */
+  /* 公司现在也分组了：它按上游声明的行业归组，且同样不得就地改写入参。 */
   const stockIn = [{ symbol: "A", sector: "金融", group: "金融" }, { symbol: "B", group: "科技" }];
   const stockOut = withGroups(stockIn, "stock");
-  assert.deepEqual(stockOut.map((row) => row.symbol), ["B", "A"], "股票按登记的行业次序重排");
+  assert.deepEqual(stockOut.map((row) => row.symbol), ["B", "A"], "公司按登记的行业次序重排");
   assert.deepEqual(stockIn.map((row) => row.symbol), ["A", "B"], "不得就地改写入参");
 }
 

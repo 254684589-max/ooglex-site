@@ -249,7 +249,7 @@ function companyInstrument(data, symbol) {
     name: row.name,
     nameEn: row.nameEn || "",
     symbol,
-    categoryLabel: "股票",
+    categoryLabel: "公司",
     priceText: formatPrice(row.price, priceDecimals(row.price)),
     change: formatChange(row.changePct, "pct"),
     changeBasis: "较前一交易日收盘",

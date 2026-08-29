@@ -6,14 +6,14 @@
 export const BOARD_CATEGORIES = Object.freeze([
   { key: "commodity", label: "商品", labelEn: "Commodities", collapseAfter: 8, extraLabel: "口径" },
   { key: "index", label: "指数", labelEn: "Indices", collapseAfter: 8, extraLabel: "地区" },
-  { key: "stock", label: "股票", labelEn: "Stocks", collapseAfter: 8, extraLabel: "市值" },
+  { key: "stock", label: "公司", labelEn: "Companies", collapseAfter: 8, extraLabel: "市值" },
   { key: "fx", label: "外汇", labelEn: "FX", collapseAfter: 6, extraLabel: "口径" },
   { key: "crypto", label: "加密", labelEn: "Crypto", collapseAfter: 6, extraLabel: "市值" },
   { key: "bond", label: "债券", labelEn: "Bonds", collapseAfter: 6, extraLabel: "期限",
     directionLabels: { up: "上行", down: "下行" } }
 ]);
 
-/* 股票取到公司榜里全部有行情的上市公司：每一行都要画得出迷你走势、也都要能打开
+/* 公司品类取到公司榜里全部有行情的上市公司：每一行都要画得出迷你走势、也都要能打开
    自己的走势页。500 与管道里的 HISTORY_SYMBOLS 是同一个数——两处必须一致，否则
    后面几百行会显示「无序列」。契约里跨语言钉住了这一点。 */
 export const STOCK_ROW_LIMIT = 500;
@@ -46,7 +46,7 @@ const INDEX_REGION = Object.freeze({
   "^AXKO": "澳大利亚", "^J203.JO": "南非"
 });
 
-/* 股票品类下的二级分组：按行业。分组名直接用上游 data.json 里逐行的 sector，
+/* 公司品类下的二级分组：按行业。分组名直接用上游 data.json 里逐行的 sector，
    顺序按标普/GICS 的惯用次序固定写死——按当天的家数排会让标签位置天天变，
    读者刚记住「金融在第二个」，第二天就不是了。 */
 export const STOCK_GROUPS = Object.freeze([
@@ -139,7 +139,7 @@ const COMMODITY_GROUP = Object.freeze({
 const GROUP_REGISTRY = Object.freeze({
   commodity: { groups: COMMODITY_GROUPS, bySymbol: COMMODITY_GROUP },
   index: { groups: INDEX_GROUPS, bySymbol: INDEX_GROUP },
-  /* 股票没有逐代码登记表：行业由上游逐行声明（data.json 的 sector），
+  /* 公司品类没有逐代码登记表：行业由上游逐行声明（data.json 的 sector），
      声明的组名必须是上面登记过的，否则一律落进「其他」。 */
   stock: { groups: STOCK_GROUPS, bySymbol: {} }
 });
@@ -384,7 +384,7 @@ function curveRows(curve) {
   });
 }
 
-/* 公司榜 → 股票行。只取有真实行情的上市公司，未上市估值不进入行情板。 */
+/* 公司榜 → 公司品类行。只取有真实行情的上市公司，未上市估值不进入行情板。 */
 function stockRows(companies) {
   const list = companies && Array.isArray(companies.companies) ? companies.companies : [];
   return list

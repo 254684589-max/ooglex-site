@@ -52,7 +52,7 @@
     // 全球市场行情自己不产数据文件：它把跨资产、公司榜、资产榜与美债曲线四条管道
     // 重新编排成六大品类，这里的预览读它体量最大的那一条（跨资产），并写明只是其中一部分。
     { folder: "markets", dataFolder: "asset-tracker", en: "Global Markets", name: "全球市场行情",
-      tag: "商品 · 指数 · 股票 · 外汇 · 加密 · 债券 · 逐项完整走势",
+      tag: "商品 · 指数 · 公司 · 外汇 · 加密 · 债券 · 逐项完整走势",
       render: function (d) {
         var a = (d.assets || []).filter(function (x) { return x.returns && isNum(x.returns.d1); });
         if (!a.length) return "<div class='loading'>暂无数据</div>";

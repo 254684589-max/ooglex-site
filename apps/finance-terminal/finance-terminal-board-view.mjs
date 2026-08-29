@@ -453,7 +453,7 @@ function renderRows(document, host, category, bundles, expanded, context) {
 }
 
 /* 品类脉冲条：只统计当前显示的行，涨跌各占多少一目了然。
-   债券品类的方向词按该品类自己的口径（上行/下行），不套用股票的涨跌措辞。 */
+   债券品类的方向词按该品类自己的口径（上行/下行），不套用公司品类的涨跌措辞。 */
 function paintPulse(document, host, rows, category) {
   if (!host) return;
   host.textContent = "";
@@ -502,7 +502,7 @@ function paintGroups(document, host, category, active, query, onPick) {
     text(chip, "i", "", query ? `${hits}/${entry.rows.length}` : String(entry.rows.length));
     chip.addEventListener("click", () => { onPick(entry.key === active ? "" : entry.key); });
   });
-  /* 分组条末尾挂该品类的专属视图入口。目前只有股票有——同一批公司换成按市值定面积、
+  /* 分组条末尾挂该品类的专属视图入口。目前只有公司品类有——同一批公司换成按市值定面积、
      按当日涨跌上色的方块图。这是链接不是筛选，因此不带 aria-pressed，也不参与选中态。 */
   const extra = CATEGORY_LINK[category.key];
   if (extra) {
