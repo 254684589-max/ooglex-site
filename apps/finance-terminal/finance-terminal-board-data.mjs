@@ -105,6 +105,65 @@ const INDEX_GROUP = Object.freeze({
   "^J203.JO": "africa"
 });
 
+/* 外汇品类下的二级分组：按地区。一类八十多行，一条长列表里找「亚洲货币」得一行行扫。
+   归组规则只有一条：看**非美元一方**的货币属于哪个地区——USDJPY 归亚洲、EURUSD 归欧洲。
+   两种东西不进地区组，因为硬塞进去就是武断：
+   - 不含美元的交叉盘（EURJPY 同时涉及欧亚，划给任一边都说不通）单列一组；
+   - 美元指数与贸易加权指数是指数不是货币对，单列一组。
+   地区划分沿用上面指数品类那套（土耳其归欧洲、以色列与海湾各国归亚洲），
+   同一个站里两处对「哪个国家算哪个洲」给出不同答案，比不分组更让人糊涂。 */
+export const FX_GROUPS = Object.freeze([
+  { key: "fx-americas", label: "美洲", labelEn: "Americas" },
+  { key: "fx-europe", label: "欧洲", labelEn: "Europe" },
+  { key: "fx-asia", label: "亚洲", labelEn: "Asia" },
+  { key: "fx-oceania", label: "大洋洲", labelEn: "Oceania" },
+  { key: "fx-africa", label: "非洲", labelEn: "Africa" },
+  { key: "fx-cross", label: "交叉盘", labelEn: "Crosses" },
+  { key: "fx-index", label: "美元指数", labelEn: "Dollar Index" },
+  { key: "other", label: "其他", labelEn: "Other" }
+]);
+
+/* 地区属于**货币**，不属于货币对——所以这里登记货币，不逐个登记货币对：
+   八十多个货币对里出现的货币只有五十来种，且新加一个 USDxxx 对时无需再改这张表。
+   代码解析只认两种确定形式（六字母=X、三字母=X），别的一律进「其他」，
+   不做「USD 后面三个字母就是对手方」这类猜测——DX-Y.NYB 这种一猜就错。 */
+const FX_REGION = Object.freeze({
+  CAD: "fx-americas", MXN: "fx-americas", BRL: "fx-americas", ARS: "fx-americas",
+  CLP: "fx-americas", COP: "fx-americas", PEN: "fx-americas", UYU: "fx-americas",
+  DOP: "fx-americas", CRC: "fx-americas",
+  EUR: "fx-europe", GBP: "fx-europe", CHF: "fx-europe", SEK: "fx-europe",
+  NOK: "fx-europe", DKK: "fx-europe", PLN: "fx-europe", CZK: "fx-europe",
+  HUF: "fx-europe", RON: "fx-europe", TRY: "fx-europe", RUB: "fx-europe",
+  UAH: "fx-europe", ISK: "fx-europe",
+  JPY: "fx-asia", CNY: "fx-asia", CNH: "fx-asia", HKD: "fx-asia", KRW: "fx-asia",
+  INR: "fx-asia", SGD: "fx-asia", TWD: "fx-asia", THB: "fx-asia", IDR: "fx-asia",
+  MYR: "fx-asia", PHP: "fx-asia", VND: "fx-asia", PKR: "fx-asia", ILS: "fx-asia",
+  SAR: "fx-asia", AED: "fx-asia", QAR: "fx-asia", KWD: "fx-asia", BHD: "fx-asia",
+  KZT: "fx-asia",
+  AUD: "fx-oceania", NZD: "fx-oceania", FJD: "fx-oceania",
+  ZAR: "fx-africa", EGP: "fx-africa", NGN: "fx-africa", KES: "fx-africa",
+  MAD: "fx-africa", GHS: "fx-africa", TND: "fx-africa", UGX: "fx-africa",
+  TZS: "fx-africa", MUR: "fx-africa"
+});
+
+/* 指数不是货币对，解析不出来，逐个登记。 */
+const FX_INDEX_SYMBOLS = Object.freeze(["DX-Y.NYB", "DX=F", "DTWEXBGS"]);
+const FX_PAIR = /^([A-Z]{3})([A-Z]{3})=X$/;
+const FX_SHORT = /^([A-Z]{3})=X$/;   /* JPY=X 是 USDJPY 的回退写法 */
+
+function fxGroupOf(symbol) {
+  const sym = String(symbol || "");
+  if (FX_INDEX_SYMBOLS.indexOf(sym) >= 0) return "fx-index";
+  const pair = FX_PAIR.exec(sym);
+  if (pair) {
+    if (pair[1] === "USD") return FX_REGION[pair[2]] || "other";
+    if (pair[2] === "USD") return FX_REGION[pair[1]] || "other";
+    return "fx-cross";                 /* 两边都不是美元 */
+  }
+  const short = FX_SHORT.exec(sym);
+  return short ? (FX_REGION[short[1]] || "other") : "other";
+}
+
 /* 商品品类下的二级分组：一类三十多行，一条长列表看不出「这是能源还是金属」。
    分组是静态归类，只决定怎么摆，不参与计算，也不改动逐行的价格、涨跌、数据日与来源。 */
 export const COMMODITY_GROUPS = Object.freeze([
@@ -171,6 +230,7 @@ const BOND_GROUP = Object.freeze({
 const GROUP_REGISTRY = Object.freeze({
   commodity: { groups: COMMODITY_GROUPS, bySymbol: COMMODITY_GROUP },
   index: { groups: INDEX_GROUPS, bySymbol: INDEX_GROUP },
+  fx: { groups: FX_GROUPS, bySymbol: {}, resolve: fxGroupOf },
   /* 公司品类没有逐代码登记表：行业由上游逐行声明（data.json 的 sector），
      声明的组名必须是上面登记过的，否则一律落进「其他」。 */
   stock: { groups: STOCK_GROUPS, bySymbol: {} },
@@ -181,6 +241,7 @@ const GROUP_REGISTRY = Object.freeze({
 export const GROUPS_BY_CATEGORY = Object.freeze({
   commodity: COMMODITY_GROUPS,
   index: INDEX_GROUPS,
+  fx: FX_GROUPS,
   stock: STOCK_GROUPS,
   bond: BOND_GROUPS
 });
@@ -195,6 +256,7 @@ export function groupKeyOf(categoryKey, symbol, declared) {
   if (named && entry.groups.some((group) => group.key === named && group.key !== "other")) {
     return named;
   }
+  if (entry.resolve) return entry.resolve(symbol);
   return entry.bySymbol[String(symbol || "")] || "other";
 }
 
@@ -697,7 +759,9 @@ function categoryRows(key, sources) {
     }));
     const broad = macro && macro.referenceSeries ? macro.referenceSeries.DTWEXBGS : null;
     const broadRow = referenceRow(broad, "fx", { decimals: 4, extraText: "贸易加权指数" });
-    return broadRow ? rows.concat([broadRow]) : rows;
+    /* 贸易加权指数与美元指数是同一类东西（都是指数不是货币对），摆进同一组。 */
+    const all = broadRow ? rows.concat([broadRow]) : rows;
+    return withGroups(all, "fx");
   }
   if (key === "crypto") {
     const fromBoard = cryptoBoardRows(sources.cryptoBoard);

@@ -523,7 +523,8 @@ function validateIndexGroups(board) {
     "分组必须只由代码决定，与该行当天的行情无关");
   assert.equal(groupKeyOf("index", "NOT_A_REAL_INDEX"), "other",
     "没登记的代码一律落进「其他」，不得按后缀猜地区");
-  assert.equal(groupKeyOf("fx", "EURUSD=X"), "",
+  /* 加密仍未分组，用它守住「没登记分组表的品类不得凭空返回分组」这条。 */
+  assert.equal(groupKeyOf("crypto", "BTC"), "",
     "没有登记分组表的品类不得返回分组");
 }
 
@@ -744,7 +745,7 @@ function validateCommodityGroups(board) {
   board.categories.filter((category) => !GROUPED.includes(category.key)).forEach((category) => {
     assert.deepEqual(category.groups, [], `${category.label}尚未分组，不得凭空生成分组条`);
   });
-  assert.deepEqual(groupSummary("fx", [{ group: "energy" }]), [],
+  assert.deepEqual(groupSummary("crypto", [{ group: "energy" }]), [],
     "没有登记分组的品类一律返回空数组");
 
   /* 口径列按工具本身取值：期货、官方现货序列与基金份额价格是三种东西。 */
@@ -780,8 +781,17 @@ function validateCommodityGroups(board) {
     "期货那半边的涨跌口径不得被现货管道带偏");
   assert.ok(spotPipeline.every((row) => row.extraText !== "期货"),
     "现货与官方指数不得被标成期货");
-  assert.equal(groupKeyOf("fx", "EURUSD=X"), "", "没有登记分组表的品类不参与二级分组");
+  assert.equal(groupKeyOf("crypto", "BTC"), "", "没有登记分组表的品类不参与二级分组");
   assert.equal(groupKeyOf("commodity", "NEW=F"), "other", "未登记的代码落进「其他」而不是就近归组");
+  /* 外汇按「非美元一方」的货币归地区；两边都不是美元的进交叉盘；指数不是货币对，单列。 */
+  assert.equal(groupKeyOf("fx", "USDJPY=X"), "fx-asia", "美元盘按对手方货币归地区");
+  assert.equal(groupKeyOf("fx", "EURUSD=X"), "fx-europe", "非美元在前的写法同样按对手方归地区");
+  assert.equal(groupKeyOf("fx", "JPY=X"), "fx-asia", "回退写法 JPY=X 就是 USDJPY，归同一组");
+  assert.equal(groupKeyOf("fx", "EURJPY=X"), "fx-cross",
+    "两边都不是美元的交叉盘单列，不得硬塞进欧洲或亚洲");
+  assert.equal(groupKeyOf("fx", "DTWEXBGS"), "fx-index", "美元指数是指数不是货币对，单列");
+  assert.equal(groupKeyOf("fx", "USDXXX=X"), "other", "未登记的货币落进「其他」，不按拼写猜地区");
+  assert.equal(groupKeyOf("fx", "NOT-A-PAIR"), "other", "解析不出的代码一律落进「其他」");
 
   /* 分组只重排，不改任何一行的事实字段。 */
   const before = [{ symbol: "GC=F", price: 1 }, { symbol: "CL=F", price: 2 }, { symbol: "SI=F", price: 3 }];
@@ -790,7 +800,7 @@ function validateCommodityGroups(board) {
     "重排必须按组序，且同组内保持上游顺序");
   assert.deepEqual(after.map((row) => row.price), [2, 1, 3], "重排不得改动任何一行的数值");
   assert.deepEqual(before.map((row) => row.symbol), ["GC=F", "CL=F", "SI=F"], "不得就地改写入参");
-  assert.deepEqual(withGroups(before, "fx"), before, "未分组的品类原样返回");
+  assert.deepEqual(withGroups(before, "crypto"), before, "未分组的品类原样返回");
   /* 公司现在也分组了：它按上游声明的行业归组，且同样不得就地改写入参。 */
   const stockIn = [{ symbol: "A", sector: "金融", group: "金融" }, { symbol: "B", group: "科技" }];
   const stockOut = withGroups(stockIn, "stock");

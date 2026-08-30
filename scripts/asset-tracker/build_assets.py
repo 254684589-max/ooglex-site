@@ -293,6 +293,93 @@ ASSETS = [
     {"name": "美元兑挪威克朗",   "cat": "fx",        "syms": ["USDNOK=X", "NOK=X"]},
     {"name": "欧元兑日元",       "cat": "fx",        "syms": ["EURJPY=X"]},
     {"name": "欧元兑英镑",       "cat": "fx",        "syms": ["EURGBP=X"]},
+    # —— 2026-08-30 扩容：把外汇从 22 个货币对扩到 79 个，并在行情板按地区分组 ——
+    # 分组规则见 finance-terminal-board-data.mjs 的 FX_GROUPS：按「非美元一方」的货币
+    # 所属地区归类；不含美元的交叉盘单列（EURJPY 同时涉及欧亚，划给任一边都是武断）；
+    # 美元指数单列（它是指数不是货币对）。地区划分沿用站内指数品类的分区，
+    # 因此土耳其归欧洲、以色列与海湾各国归亚洲，不另立「中东」。
+    # 高通胀货币放宽年度护栏，否则真实的单边贬值会被护栏截断——那是掩盖事实。
+
+    # 亚洲
+    {"name": "美元兑离岸人民币", "cat": "fx",        "syms": ["USDCNH=X", "CNH=X"]},
+    {"name": "美元兑新台币",     "cat": "fx",        "syms": ["USDTWD=X", "TWD=X"]},
+    {"name": "美元兑印尼盾",     "cat": "fx",        "syms": ["USDIDR=X", "IDR=X"]},
+    {"name": "美元兑马来西亚林吉特", "cat": "fx",    "syms": ["USDMYR=X", "MYR=X"]},
+    {"name": "美元兑菲律宾比索", "cat": "fx",        "syms": ["USDPHP=X", "PHP=X"]},
+    {"name": "美元兑越南盾",     "cat": "fx",        "syms": ["USDVND=X", "VND=X"]},
+    {"name": "美元兑巴基斯坦卢比", "cat": "fx",      "syms": ["USDPKR=X", "PKR=X"],
+     "caps": {"m1": 60, "ytd": 150, "y1": 200}},
+    {"name": "美元兑以色列谢克尔", "cat": "fx",      "syms": ["USDILS=X", "ILS=X"]},
+    {"name": "美元兑沙特里亚尔", "cat": "fx",        "syms": ["USDSAR=X", "SAR=X"]},
+    {"name": "美元兑阿联酋迪拉姆", "cat": "fx",      "syms": ["USDAED=X", "AED=X"]},
+    {"name": "美元兑卡塔尔里亚尔", "cat": "fx",      "syms": ["USDQAR=X", "QAR=X"]},
+    {"name": "美元兑科威特第纳尔", "cat": "fx",      "syms": ["USDKWD=X", "KWD=X"]},
+    {"name": "美元兑巴林第纳尔", "cat": "fx",        "syms": ["USDBHD=X", "BHD=X"]},
+    {"name": "美元兑哈萨克斯坦坚戈", "cat": "fx",    "syms": ["USDKZT=X", "KZT=X"],
+     "caps": {"m1": 60, "ytd": 150, "y1": 200}},
+
+    # 欧洲（土耳其沿用站内指数品类的分区，归欧洲）
+    {"name": "美元兑丹麦克朗",   "cat": "fx",        "syms": ["USDDKK=X", "DKK=X"]},
+    {"name": "美元兑波兰兹罗提", "cat": "fx",        "syms": ["USDPLN=X", "PLN=X"]},
+    {"name": "美元兑捷克克朗",   "cat": "fx",        "syms": ["USDCZK=X", "CZK=X"]},
+    {"name": "美元兑匈牙利福林", "cat": "fx",        "syms": ["USDHUF=X", "HUF=X"]},
+    {"name": "美元兑罗马尼亚列伊", "cat": "fx",      "syms": ["USDRON=X", "RON=X"]},
+    {"name": "美元兑俄罗斯卢布", "cat": "fx",        "syms": ["USDRUB=X", "RUB=X"],
+     "caps": {"m1": 80, "ytd": 200, "y1": 300}},
+    {"name": "美元兑乌克兰格里夫纳", "cat": "fx",    "syms": ["USDUAH=X", "UAH=X"],
+     "caps": {"m1": 80, "ytd": 200, "y1": 300}},
+    {"name": "美元兑冰岛克朗",   "cat": "fx",        "syms": ["USDISK=X", "ISK=X"]},
+
+    # 美洲
+    {"name": "美元兑阿根廷比索", "cat": "fx",        "syms": ["USDARS=X", "ARS=X"],
+     "caps": {"m1": 120, "ytd": 400, "y1": 600}},
+    {"name": "美元兑智利比索",   "cat": "fx",        "syms": ["USDCLP=X", "CLP=X"]},
+    {"name": "美元兑哥伦比亚比索", "cat": "fx",      "syms": ["USDCOP=X", "COP=X"]},
+    {"name": "美元兑秘鲁索尔",   "cat": "fx",        "syms": ["USDPEN=X", "PEN=X"]},
+    {"name": "美元兑乌拉圭比索", "cat": "fx",        "syms": ["USDUYU=X", "UYU=X"]},
+    {"name": "美元兑多米尼加比索", "cat": "fx",      "syms": ["USDDOP=X", "DOP=X"]},
+    {"name": "美元兑哥斯达黎加科朗", "cat": "fx",    "syms": ["USDCRC=X", "CRC=X"]},
+
+    # 大洋洲
+    {"name": "美元兑斐济元",     "cat": "fx",        "syms": ["USDFJD=X", "FJD=X"]},
+
+    # 非洲
+    {"name": "美元兑埃及镑",     "cat": "fx",        "syms": ["USDEGP=X", "EGP=X"],
+     "caps": {"m1": 80, "ytd": 250, "y1": 350}},
+    {"name": "美元兑尼日利亚奈拉", "cat": "fx",      "syms": ["USDNGN=X", "NGN=X"],
+     "caps": {"m1": 80, "ytd": 250, "y1": 350}},
+    {"name": "美元兑肯尼亚先令", "cat": "fx",        "syms": ["USDKES=X", "KES=X"]},
+    {"name": "美元兑摩洛哥迪拉姆", "cat": "fx",      "syms": ["USDMAD=X", "MAD=X"]},
+    {"name": "美元兑加纳塞地",   "cat": "fx",        "syms": ["USDGHS=X", "GHS=X"],
+     "caps": {"m1": 80, "ytd": 250, "y1": 350}},
+    {"name": "美元兑突尼斯第纳尔", "cat": "fx",      "syms": ["USDTND=X", "TND=X"]},
+    {"name": "美元兑乌干达先令", "cat": "fx",        "syms": ["USDUGX=X", "UGX=X"]},
+    {"name": "美元兑坦桑尼亚先令", "cat": "fx",      "syms": ["USDTZS=X", "TZS=X"]},
+    {"name": "美元兑毛里求斯卢比", "cat": "fx",      "syms": ["USDMUR=X", "MUR=X"]},
+
+    # 交叉盘（不含美元）
+    {"name": "欧元兑瑞郎",       "cat": "fx",        "syms": ["EURCHF=X"]},
+    {"name": "欧元兑澳元",       "cat": "fx",        "syms": ["EURAUD=X"]},
+    {"name": "欧元兑加元",       "cat": "fx",        "syms": ["EURCAD=X"]},
+    {"name": "欧元兑纽元",       "cat": "fx",        "syms": ["EURNZD=X"]},
+    {"name": "欧元兑瑞典克朗",   "cat": "fx",        "syms": ["EURSEK=X"]},
+    {"name": "欧元兑挪威克朗",   "cat": "fx",        "syms": ["EURNOK=X"]},
+    {"name": "欧元兑波兰兹罗提", "cat": "fx",        "syms": ["EURPLN=X"]},
+    {"name": "欧元兑捷克克朗",   "cat": "fx",        "syms": ["EURCZK=X"]},
+    {"name": "欧元兑匈牙利福林", "cat": "fx",        "syms": ["EURHUF=X"]},
+    {"name": "欧元兑土耳其里拉", "cat": "fx",        "syms": ["EURTRY=X"],
+     "caps": {"m1": 80, "ytd": 200, "y1": 300}},
+    {"name": "英镑兑日元",       "cat": "fx",        "syms": ["GBPJPY=X"]},
+    {"name": "英镑兑瑞郎",       "cat": "fx",        "syms": ["GBPCHF=X"]},
+    {"name": "英镑兑澳元",       "cat": "fx",        "syms": ["GBPAUD=X"]},
+    {"name": "英镑兑加元",       "cat": "fx",        "syms": ["GBPCAD=X"]},
+    {"name": "英镑兑纽元",       "cat": "fx",        "syms": ["GBPNZD=X"]},
+    {"name": "澳元兑日元",       "cat": "fx",        "syms": ["AUDJPY=X"]},
+    {"name": "澳元兑纽元",       "cat": "fx",        "syms": ["AUDNZD=X"]},
+    {"name": "澳元兑加元",       "cat": "fx",        "syms": ["AUDCAD=X"]},
+    {"name": "纽元兑日元",       "cat": "fx",        "syms": ["NZDJPY=X"]},
+    {"name": "加元兑日元",       "cat": "fx",        "syms": ["CADJPY=X"]},
+    {"name": "瑞郎兑日元",       "cat": "fx",        "syms": ["CHFJPY=X"]},
     # —— 债券 ——（中债总财富指数无免费日更源，以国债 ETF 代理）
     {"name": "中国国债",         "cat": "bond",      "syms": ["511260.SS", "511010.SS", "511090.SS"],
      "note": "以国债 ETF 代理（非中债-国债总财富指数）"},

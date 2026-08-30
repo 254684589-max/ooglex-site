@@ -484,13 +484,15 @@ def run_asset_tracker_builder_contract_tests() -> None:
 
     universe_names = [item["name"] for item in module.ASSETS]
     universe_symbols = [_first_symbol(item) for item in module.ASSETS]
-    require(len(module.ASSETS) == 133, f"跨资产清单条数应为133，当前{len(module.ASSETS)}")
+    # 2026-08-30 外汇扩容：22 → 82 个货币对（清单总数 133 → 193），并在行情板按地区
+    # 分了二级组。条数在这里钉死是为了「悄悄少了几个标的」能被测出来，不是为了封顶。
+    require(len(module.ASSETS) == 193, f"跨资产清单条数应为193，当前{len(module.ASSETS)}")
     require(len(set(universe_names)) == len(universe_names), "跨资产标的名称必须唯一")
     require(len(set(universe_symbols)) == len(universe_symbols), "跨资产首选代码必须唯一")
     categories = {}
     for item in module.ASSETS:
         categories[item["cat"]] = categories.get(item["cat"], 0) + 1
-    require(categories == {"equity": 64, "commodity": 36, "fx": 22, "bond": 11},
+    require(categories == {"equity": 64, "commodity": 36, "fx": 82, "bond": 11},
             f"跨资产四类条数与登记不一致：{categories}")
     _require_index_registration(module.ASSETS)
     _require_stock_row_limit_matches_history()
@@ -3010,8 +3012,11 @@ def main() -> None:
     # 登记表（美债 11 个期限 + 11 只债券基金）与主权债那段行构造。它比别的品类多花的
     # 篇幅都在注释上：这一类里同时摆着收益率百分数与美元计价的基金份额价格，
     # 为什么必须分开摆、为什么涨跌用基点而不是百分比，都写在代码旁边。
-    require(BOARD_DATA_MODULE.stat().st_size <= 38_500,
-            "按需加载的品类行情板数据层超过38.5KB性能预算")
+    # 42,000：外汇品类接进 82 个货币对并按地区分了二级组，多出一张分组表、一张
+    # 「货币 → 地区」表与一个解析函数。登记的是货币而不是货币对：地区属于货币，
+    # 八十多个对里只出现五十来种货币，再加一个 USDxxx 对时这张表不必跟着改。
+    require(BOARD_DATA_MODULE.stat().st_size <= 42_000,
+            "按需加载的品类行情板数据层超过42KB性能预算")
     # 23,000：在原18KB基础上给「逐行迷你走势 + 品类脉冲条」留出的增量。走势本身
     # 不新增任何请求：它复用抽屉那套历史文件与同一份带缓存的读取，一个品类最多
     # 触发一次历史文件读取；拿不到序列的行如实留白，不画推断曲线。
