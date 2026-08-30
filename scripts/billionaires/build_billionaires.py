@@ -78,6 +78,13 @@ COUNTRY_ZH = {
     "Hungary": "匈牙利", "Portugal": "葡萄牙", "Oman": "阿曼", "Morocco": "摩洛哥",
     "Algeria": "阿尔及利亚", "Iceland": "冰岛", "Luxembourg": "卢森堡", "Liechtenstein": "列支敦士登",
     "Guernsey": "根西", "Bermuda": "百慕大", "Belize": "伯利兹", "Eswatini": "斯威士兰",
+    # —— 补充：扩到全榜后实测出现、原词典未覆盖的国家/地区（2026-08-30 共 16 个、35 人）——
+    # Forbes 用 "Czech Republic" 而非 "Czechia"，"Eswatini (Swaziland)" 而非 "Eswatini"，两种写法都留着。
+    "Czech Republic": "捷克", "Estonia": "爱沙尼亚", "St. Kitts and Nevis": "圣基茨和尼维斯",
+    "Slovakia": "斯洛伐克", "Bulgaria": "保加利亚", "Uruguay": "乌拉圭",
+    "Eswatini (Swaziland)": "斯威士兰", "Pakistan": "巴基斯坦", "Zimbabwe": "津巴布韦",
+    "Croatia": "克罗地亚", "Tanzania": "坦桑尼亚", "Nepal": "尼泊尔", "Albania": "阿尔巴尼亚",
+    "Afghanistan": "阿富汗", "Armenia": "亚美尼亚", "Barbados": "巴巴多斯",
 }
 COUNTRY_FLAG = {
     "United States": "🇺🇸", "France": "🇫🇷", "China": "🇨🇳", "India": "🇮🇳", "Mexico": "🇲🇽",
@@ -95,6 +102,11 @@ COUNTRY_FLAG = {
     "Hungary": "🇭🇺", "Portugal": "🇵🇹", "Oman": "🇴🇲", "Morocco": "🇲🇦",
     "Algeria": "🇩🇿", "Iceland": "🇮🇸", "Luxembourg": "🇱🇺", "Liechtenstein": "🇱🇮",
     "Guernsey": "🇬🇬", "Bermuda": "🇧🇲", "Belize": "🇧🇿", "Eswatini": "🇸🇿",
+    "Czech Republic": "🇨🇿", "Estonia": "🇪🇪", "St. Kitts and Nevis": "🇰🇳",
+    "Slovakia": "🇸🇰", "Bulgaria": "🇧🇬", "Uruguay": "🇺🇾",
+    "Eswatini (Swaziland)": "🇸🇿", "Pakistan": "🇵🇰", "Zimbabwe": "🇿🇼",
+    "Croatia": "🇭🇷", "Tanzania": "🇹🇿", "Nepal": "🇳🇵", "Albania": "🇦🇱",
+    "Afghanistan": "🇦🇫", "Armenia": "🇦🇲", "Barbados": "🇧🇧",
 }
 INDUSTRY_ZH = {
     "Technology": "科技", "Automotive": "汽车", "Fashion & Retail": "时尚零售",
