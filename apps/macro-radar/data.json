@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-08-29T21:39:23Z",
-  "asOf": "2026-08-29",
-  "asOfSh": "2026-08-30 05:39",
+  "updatedAt": "2026-08-30T21:53:33Z",
+  "asOf": "2026-08-30",
+  "asOfSh": "2026-08-31 05:53",
   "live": true,
   "source": "FRED · EIA · Yahoo Finance · 交易所行情",
   "regime": {
@@ -462,7 +462,7 @@
           "val": "3.75%",
           "chg": "+0bp",
           "tone": "flat",
-          "asOf": "2026-08-29",
+          "asOf": "2026-08-30",
           "name": "联邦基金目标上限",
           "id": "DFEDTARU"
         },
@@ -470,7 +470,7 @@
           "val": "3.50%",
           "chg": "+0bp",
           "tone": "flat",
-          "asOf": "2026-08-29",
+          "asOf": "2026-08-30",
           "name": "联邦基金目标下限",
           "id": "DFEDTARL"
         },
@@ -541,8 +541,8 @@
           "changeBps": 1,
           "asOf": "2026-08-27",
           "previousAsOf": "2026-08-26",
-          "updatedAt": "2026-08-29T21:39:23Z",
-          "lastAttemptAt": "2026-08-29T21:39:23Z",
+          "updatedAt": "2026-08-30T21:53:33Z",
+          "lastAttemptAt": "2026-08-30T21:53:33Z",
           "source": {
             "name": "FRED / Federal Reserve H.15",
             "url": "https://fred.stlouisfed.org/series/DGS10",
@@ -752,7 +752,7 @@
           "name": "铜/金 ×1000 (工业 vs 避险)",
           "id": "",
           "val": "1.47",
-          "chg": "+2.5%",
+          "chg": "+2.9%",
           "asOf": "2026-08-28",
           "tone": "up"
         },
@@ -767,16 +767,16 @@
         {
           "name": "油/铜",
           "id": "",
-          "val": "12.71",
-          "chg": "+0.2%",
+          "val": "12.52",
+          "chg": "-1.2%",
           "asOf": "2026-08-28",
-          "tone": "up"
+          "tone": "down"
         },
         {
           "name": "油/金 ×100",
           "id": "",
-          "val": "1.86",
-          "chg": "+2.8%",
+          "val": "1.84",
+          "chg": "+1.6%",
           "asOf": "2026-08-28",
           "tone": "up"
         }
@@ -858,8 +858,8 @@
       "changePct": -0.16236127413010726,
       "asOf": "2026-08-21",
       "previousAsOf": "2026-08-20",
-      "updatedAt": "2026-08-29T21:39:23Z",
-      "lastAttemptAt": "2026-08-29T21:39:23Z",
+      "updatedAt": "2026-08-30T21:53:33Z",
+      "lastAttemptAt": "2026-08-30T21:53:33Z",
       "source": {
         "name": "FRED / Federal Reserve H.10",
         "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
@@ -913,8 +913,8 @@
       "changePct": -2.826036599490389,
       "asOf": "2026-08-25",
       "previousAsOf": "2026-08-24",
-      "updatedAt": "2026-08-29T21:39:23Z",
-      "lastAttemptAt": "2026-08-29T21:39:23Z",
+      "updatedAt": "2026-08-30T21:53:33Z",
+      "lastAttemptAt": "2026-08-30T21:53:33Z",
       "source": {
         "name": "U.S. EIA / Cushing WTI Spot",
         "url": "https://www.eia.gov/dnav/pet/hist/rwtcd.htm",
