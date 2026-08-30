@@ -76,7 +76,7 @@
 
   #list { display:flex; flex-direction:column; gap:9px; }
   .rowcard {
-    display:grid; grid-template-columns:30px 46px 1fr auto; align-items:center; gap:11px;
+    display:grid; grid-template-columns:40px 46px 1fr auto; align-items:center; gap:11px;
     padding:11px 14px; border-radius:14px; position:relative; overflow:hidden;
     background:linear-gradient(180deg, rgba(24,25,33,.94), rgba(18,19,26,.94));
     border:1px solid var(--line); box-shadow:0 16px 40px -30px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.04);
@@ -89,7 +89,9 @@
     background:linear-gradient(90deg,var(--gold2),var(--gold)); box-shadow:0 0 8px rgba(243,201,105,.5);
     transition:width .6s cubic-bezier(.22,.61,.36,1); }
 
-  .rk { font-size:1.05rem; font-weight:800; color:var(--dim); text-align:center; font-variant-numeric:tabular-nums; }
+  /* 列宽 40px / 字号 1rem：4 位数排名（榜尾到 3408）实测占 35.6px，原来 30px 会被头像盖住 */
+  .rk { font-size:1rem; font-weight:800; color:var(--dim); text-align:center;
+    font-variant-numeric:tabular-nums; letter-spacing:-0.02em; }
   .rk.top { color:var(--gold); }
   .ava { width:46px; height:46px; border-radius:50%; overflow:hidden; flex:none;
     border:1px solid rgba(243,201,105,.35); background:#222; }
@@ -105,16 +107,32 @@
   .chg { font-size:0.78rem; font-weight:700; font-variant-numeric:tabular-nums; margin-top:1px; }
   .chg.up { color:var(--up); } .chg.down { color:var(--down); } .chg.flat { color:var(--dim); }
 
-  /* .more 用了 display:flex，会盖掉 [hidden] 的 display:none，必须显式关掉 */
-  .more[hidden], .more button[hidden] { display:none; }
-  .more { display:flex; flex-direction:column; align-items:center; gap:9px; padding:18px 0 2px; }
-  .more button { padding:8px 22px; border-radius:999px; cursor:pointer; font-family:inherit; font-size:0.88rem;
+  /* .pager 用了 display:flex，会盖掉 [hidden] 的 display:none，必须显式关掉 */
+  .pager[hidden] { display:none; }
+  .pager { display:flex; flex-direction:column; align-items:center; gap:11px; padding:22px 0 4px; }
+  .pagenav { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:6px; }
+  .pagenav button { min-width:38px; height:38px; padding:0 9px; border-radius:10px; cursor:pointer;
+    font-family:inherit; font-size:0.9rem; font-variant-numeric:tabular-nums;
     color:var(--text); background:var(--card); border:1px solid var(--line); transition:all .18s; }
-  .more button:hover { color:var(--gold); border-color:var(--gold); }
-  .more .moretip { color:var(--dim); font-size:0.8rem; font-variant-numeric:tabular-nums; }
-  .more .sentinel { width:100%; height:1px; }
+  .pagenav button:hover:not(:disabled) { color:var(--gold); border-color:var(--gold); }
+  .pagenav button:disabled { opacity:.32; cursor:not-allowed; }
+  .pagenav button.cur { color:#26210f; font-weight:800; border-color:transparent;
+    background:linear-gradient(135deg,var(--gold),var(--gold2)); box-shadow:0 8px 20px -8px rgba(243,201,105,.7); }
+  .pagenav .gap { color:var(--dim); padding:0 1px; }
+  .pagetip { color:var(--dim); font-size:0.82rem; font-variant-numeric:tabular-nums; }
+  .jump { display:flex; align-items:center; gap:7px; color:var(--dim); font-size:0.82rem; }
+  .jump input, .jump .jumpgo { height:32px; border-radius:9px; font-family:inherit; font-size:0.85rem;
+    color:var(--text); background:var(--card); border:1px solid var(--line); }
+  .jump input { width:66px; padding:0 8px; text-align:center; font-variant-numeric:tabular-nums; }
+  .jump input:focus { outline:none; border-color:var(--gold); }
+  /* 去掉数字输入框的上下箭头，它在窄屏会挤掉可点区域 */
+  .jump input::-webkit-outer-spin-button, .jump input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+  .jump input { -moz-appearance:textfield; appearance:textfield; }
+  .jump .jumpgo { padding:0 12px; cursor:pointer; transition:all .18s; }
+  .jump .jumpgo:hover { color:var(--gold); border-color:var(--gold); }
 
-  .seg button:focus-visible, .more button:focus-visible, .search input:focus-visible {
+  .seg button:focus-visible, .pagenav button:focus-visible, .jump .jumpgo:focus-visible,
+  .jump input:focus-visible, .search input:focus-visible {
     outline:2px solid var(--gold); outline-offset:2px; }
 
   @media (prefers-reduced-motion: reduce) {
@@ -122,6 +140,7 @@
     .rowcard .wbar { transition:none; }
     .status.live .sdot { animation:none; }
     * { scroll-behavior:auto !important; }
+    .rowcard .wbar, .pagenav button { transition:none; }
   }
 
   .empty { text-align:center; color:var(--dim); padding:44px 0; font-size:0.92rem; }
@@ -130,10 +149,12 @@
 
   @media (max-width:560px) {
     .title h1 { font-size:1.5rem; }
-    .rowcard { grid-template-columns:24px 40px 1fr auto; gap:9px; padding:10px 11px; }
-    .ava { width:40px; height:40px; }
+    .rowcard { grid-template-columns:36px 38px 1fr auto; gap:9px; padding:10px 11px; }
+    .rk { font-size:0.9rem; }   /* 36px 列宽下 4 位数占 32.1px，留 4px 余量 */
+    .ava { width:38px; height:38px; }
     .nm .en { display:none; }
     .worth { font-size:1rem; }
+    .pagenav button { min-width:34px; height:34px; padding:0 7px; font-size:0.85rem; }
   }
 </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
@@ -167,6 +188,6 @@
   <script src="../../assets/particles.js"></script>
   <script src="../../assets/ambient.js"></script>
 
-<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于本页数据</h2><p style="margin:0;opacity:.85">本页追踪全球全部亿万富豪（净值 ≥ 10 亿美元，当前约 3400 位）及其当日变动，数据来源 Forbes 实时富豪榜，每日自动更新，实际人数以页面顶部显示的当日数字为准。身价以美元计，主要随其持有的上市公司股价波动，因此「当日变动」更多反映市场行情，而非真实可动用现金。榜单头部人物提供中文名对照，排名靠后的人物显示福布斯英文原名。榜单仅供了解全球财富格局参考。</p></section>
+<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于本页数据</h2><p style="margin:0;opacity:.85">本页追踪全球全部亿万富豪（净值 ≥ 10 亿美元，当前约 3400 位）及其当日变动，数据来源 Forbes 实时富豪榜，每日自动更新，实际人数以页面顶部显示的当日数字为准。身价以美元计，主要随其持有的上市公司股价波动，因此「当日变动」更多反映市场行情，而非真实可动用现金。多数人物提供中文名对照，少数无法确认对应汉字的（多为中日韩越等汉字圈人物的罗马化拼写）保留福布斯英文原名，不做音译臆造。榜单仅供了解全球财富格局参考。</p></section>
 </body>
 </html>

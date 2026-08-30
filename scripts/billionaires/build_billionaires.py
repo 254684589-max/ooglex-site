@@ -9,8 +9,8 @@ apps/billionaires/data.json，供静态页面读取渲染。
 - 数据源：Forbes 实时富豪榜（forbesapi/person/rtb），无需任何 API Key；
 - 纯 requests + 硬超时，绝不挂起；整源失败则保留上次 data.json 不覆盖；
 - 当日变动优先用 Forbes 的 estWorthPrev（上一参考时点估值），缺失时退回「今值 − 上次快照值」；
-- 中文名 / 国家 / 行业做常见词映射，未命中回退英文原文；国家附 emoji 国旗。
-  中文名词典以榜单头部为主，扩到全榜后尾部大量人物按设计回退英文原名，不做音译臆造；
+- 中文名 / 国家 / 行业做映射，未命中回退英文原文；国家附 emoji 国旗。中文名表外置于
+  names_zh.json（约 2900 条，覆盖当前榜单约 84%），未收录者按设计显示英文原名，不做音译臆造；
 - 截断按人数取 TOP_N，但边界落在并列排名中间时补齐整个并列组（福布斯榜尾并列组可达数十人）；
 - 身价低于 MIN_WORTH_B 的一并滤除：实时榜尾部带着已跌出十亿门槛、福布斯仍在跟踪的前富豪；
 - 输出「每人一行」的紧凑 JSON：体积较 indent=2 省约 20%，同时保留逐人可 diff 的可审阅性。
@@ -36,30 +36,28 @@ API = ("https://www.forbes.com/forbesapi/person/rtb/0/position/true.json"
 HEADERS = {"User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                           "(KHTML, like Gecko) Chrome/123.0 Safari/537.36")}
 
-# 常见富豪中文名（未命中则回退英文）。榜单头部稳定，覆盖常驻前列者即可。
-NAME_ZH = {
-    "Elon Musk": "埃隆·马斯克", "Jeff Bezos": "杰夫·贝佐斯", "Mark Zuckerberg": "马克·扎克伯格",
-    "Larry Ellison": "拉里·埃里森", "Bernard Arnault": "贝尔纳·阿尔诺", "Bernard Arnault & family": "贝尔纳·阿尔诺及家族",
-    "Larry Page": "拉里·佩奇", "Sergey Brin": "谢尔盖·布林", "Warren Buffett": "沃伦·巴菲特",
-    "Bill Gates": "比尔·盖茨", "Steve Ballmer": "史蒂夫·鲍尔默", "Michael Bloomberg": "迈克尔·布隆伯格",
-    "Jensen Huang": "黄仁勋", "Michael Dell": "迈克尔·戴尔", "Amancio Ortega": "阿曼西奥·奥特加",
-    "Mukesh Ambani": "穆克什·安巴尼", "Gautam Adani": "高塔姆·阿达尼", "Rob Walton": "罗布·沃尔顿",
-    "Jim Walton": "吉姆·沃尔顿", "Alice Walton": "爱丽丝·沃尔顿", "Carlos Slim Helu": "卡洛斯·斯利姆",
-    "Carlos Slim Helu & family": "卡洛斯·斯利姆及家族", "Francoise Bettencourt Meyers": "弗朗索瓦丝·贝当古·迈耶斯",
-    "Francoise Bettencourt Meyers & family": "弗朗索瓦丝·贝当古·迈耶斯及家族",
-    "Zhong Shanshan": "钟睒睒", "Ma Huateng": "马化腾", "Zhang Yiming": "张一鸣", "Colin Huang": "黄峥",
-    "Jack Ma": "马云", "William Lei Ding": "丁磊", "Li Ka-shing": "李嘉诚", "Zeng Yuqun": "曾毓群",
-    "Masayoshi Son": "孙正义", "Tadashi Yanai": "柳井正", "Giovanni Ferrero": "乔瓦尼·费列罗",
-    "Dieter Schwarz": "迪特尔·施瓦茨", "Klaus-Michael Kuehne": "克劳斯-米夏埃尔·库内", "Phil Knight": "菲尔·奈特",
-    "Prajogo Pangestu": "普拉约戈·班格斯图", "Thomas Peterffy": "托马斯·彼得菲", "Charles Koch": "查尔斯·科赫",
-    "Julia Koch": "朱莉娅·科赫", "Julia Koch & family": "朱莉娅·科赫及家族", "David Thomson": "戴维·汤姆森",
-    "Rupert Murdoch": "鲁伯特·默多克", "MacKenzie Scott": "麦肯齐·斯科特", "Ken Griffin": "肯·格里芬",
-    "Stephen Schwarzman": "苏世民", "Jim Simons": "詹姆斯·西蒙斯", "Robin Zeng": "曾毓群",
-    "Low Tuck Kwong": "黄约翰", "Alain Wertheimer": "阿兰·韦特海默", "Gerard Wertheimer": "热拉尔·韦特海默",
-}
-# —— 扩充：覆盖当前榜单全部人物（华人真名优先，其余按惯例音译）——
-ADD_NAME_ZH = {'Changpeng Zhao': '赵长鹏', 'Giancarlo Devasini': '吉安卡洛·德瓦西尼', 'Jeff Yass': '杰夫·亚斯', 'Germán Larrea Mota Velasco': '赫尔曼·拉雷亚·莫塔·维拉斯科', 'Iris Fontbona': '伊里斯·丰特沃纳', 'Lukas Walton': '卢卡斯·沃尔顿', 'Mark Mateschitz': '马克·马特希茨', 'Gianluigi Aponte': '詹路易吉·阿庞特', 'Rafaela Aponte-Diamant': '拉法埃拉·阿庞特-迪亚曼特', 'Jacqueline Mars': '杰奎琳·玛氏', 'John Mars': '约翰·玛氏', 'William Ding': '丁磊', 'Andrea Pignataro': '安德烈亚·皮尼亚塔罗', 'Abigail Johnson': '阿比盖尔·约翰逊', 'Eric Schmidt': '埃里克·施密特', 'Chen Tianshi': '陈天石', 'Savitri Jindal': '萨维特里·金达尔', 'Jean-Louis van der Velde': '让-路易·范德维尔德', 'Paolo Ardoino': '保罗·阿尔多伊诺', 'Alexey Mordashov': '阿列克谢·莫尔达绍夫', 'Jay Y. Lee': '李在镕', 'Henry Samueli': '亨利·萨穆埃利', 'Andreas von Bechtolsheim': '安德烈亚斯·冯·贝希托尔斯海姆', 'Eyal Ofer': '埃亚勒·奥弗', 'Pham Nhat Vuong': '范日旺', 'Miriam Adelson': '米里亚姆·阿德尔森', 'He Xiangjian': '何享健', 'Marilyn Simons': '玛丽莲·西蒙斯', 'Idan Ofer': '伊丹·奥弗', 'John Tu': '杜纪川', 'David Sun': '孙大卫', 'Robert Pera': '罗伯特·佩拉', 'Thomas Frist Jr': '小托马斯·弗里斯特', 'Eduardo Saverin': '爱德华多·萨维林', 'Liu Debing': '刘德兵', 'Len Blavatnik': '伦·布拉瓦特尼克', 'Elaine Marshall': '伊莱恩·马歇尔', 'Lyndal Stephens Greth': '林达尔·斯蒂芬斯·格雷思', 'Wang Weixiu': '王威秀', 'Melinda French Gates': '梅琳达·弗伦奇·盖茨', 'Vladimir Potanin': '弗拉基米尔·波塔宁', 'Vagit Alekperov': '瓦吉特·阿列克佩罗夫', 'Aliko Dangote': '阿里科·丹格特', 'Vinod Adani': '维诺德·阿达尼', 'Lakshmi Mittal': '拉克希米·米塔尔', 'Leonid Mikhelson': '列昂尼德·米赫尔松', 'Cyrus Poonawalla': '赛勒斯·普纳瓦拉', 'Huang Shilin': '黄世霖', 'François Pinault': '弗朗索瓦·皮诺', 'Reinhold Wuerth': '莱因霍尔德·维尔特', 'Pierre Chen': '陈泰铭', 'Dilip Shanghvi': '迪利普·桑哈维', 'Peter Thiel': '彼得·蒂尔', 'Emmanuel Besnier': '埃马纽埃尔·贝尼耶', 'Israel Englander': '伊斯雷尔·英格兰德', 'Suleiman Kerimov': '苏莱曼·克里莫夫', 'Vladimir Lisin': '弗拉基米尔·利辛', 'Vicky Safra': '维琪·萨夫拉', 'Shiv Nadar': '希夫·纳达尔', 'Daniel Gilbert': '丹尼尔·吉尔伯特', 'Torstein Hagen': '托尔斯泰因·哈根', 'Zhou Qunfei': '周群飞', 'Stuart Hoegner': '斯图尔特·赫格纳', 'Gina Rinehart': '吉娜·莱因哈特', 'Stanley Kroenke': '斯坦利·克伦克', 'Prince Alwaleed Bin Talal Alsaud': '阿尔瓦利德·本·塔拉勒亲王', 'Gennady Timchenko': '根纳季·季姆琴科', 'Susanne Klatten': '苏珊娜·克拉滕', 'David Tepper': '大卫·泰珀', 'Stefan Quandt': '斯特凡·宽特', 'Henry Nicholas III': '亨利·尼古拉斯三世', 'Steve Cohen': '史蒂夫·科恩', 'Takemitsu Takizaki': '泷崎武光', 'Harry Triguboff': '哈里·特里古博夫', 'John Doerr': '约翰·杜尔', 'Christy Walton': '克里斯蒂·沃尔顿', 'Todd Graves': '托德·格雷夫斯', 'Diane Hendricks': '黛安·亨德里克斯', 'Kumar Birla': '库马尔·比尔拉', 'Zheng Shuliang': '郑淑良', 'Rick Cohen': '里克·科恩', 'Yu Yong': '于泳', 'Yuan Fugen': '袁富根', 'Jason Chang': '张虔生', 'Stefan Persson': '斯特凡·佩尔松', 'Michael Platt': '迈克尔·普拉特', 'Ernest Garcia II': '欧内斯特·加西亚二世', 'Andrey Melnichenko': '安德烈·梅尔尼琴科', 'John Fredriksen': '约翰·弗雷德里克森', 'Jorge Paulo Lemann': '若热·保罗·莱曼', 'Enrique Razon Jr.': '小恩里克·拉松', 'Harold Hamm': '哈罗德·哈姆', 'Wang Chuanfu': '王传福', 'Renata Kellnerova': '蕾娜塔·凯尔纳罗娃', 'Philip Anschutz': '菲利普·安舒茨', 'Donald Bren': '唐纳德·布伦', 'Jerry Jones': '杰里·琼斯', 'Nathan Kirsh': '内森·基尔什', 'Brett Adcock': '布雷特·阿德科克', 'Nik Storonsky': '尼克·斯托龙斯基', 'Andrew Forrest': '安德鲁·福里斯特', 'Dang Yanbao': '党彦宝', 'Chen Jianhua': '陈建华', 'Nancy Walton Laurie': '南希·沃尔顿·劳里', 'Adam Foroughi': '亚当·福鲁吉', 'Edwin Chen': '埃德温·陈', 'Zou Zhinong': '邹志农', 'Eric Smidt': '埃里克·斯米特', 'James Ratcliffe': '詹姆斯·拉特克利夫', 'Lei Jun': '雷军', 'Johann Rupert': '约翰·鲁珀特', 'John Collison': '约翰·科里森', 'Patrick Collison': '帕特里克·科里森', 'Cai Huabo': '蔡华波', 'Kwong Siu-hing': '邝肖卿', 'Pei Zhenhua': '裴振华', 'John Menard Jr': '小约翰·梅纳德', 'Stephen Ross': '斯蒂芬·罗斯', 'Radhakishan Damani': '拉达基尚·达马尼', 'Arthur Dantchik': '阿瑟·丹奇克', 'Georg Schaeffler': '格奥尔格·舍夫勒', 'Beate Heister': '贝亚特·海斯特', 'Karl Albrecht Jr.': '小卡尔·阿尔布雷希特', 'Jan Koum': '扬·库姆', 'Sarath Ratanavadi': '萨拉·拉塔纳瓦迪', 'Anders Holch Povlsen': '安诺斯·霍尔希·波夫尔森', 'Qin Yinglin': '秦英林', 'George Kaiser': '乔治·凯泽', 'Barry Lam': '林百里', 'Zhong Huijuan': '钟慧娟', 'Mikhail Fridman': '米哈伊尔·弗里德曼', 'Ludwig Merckle': '路德维希·默克勒', 'Charlene de Carvalho-Heineken': '沙琳·德卡瓦略-海尼根', 'Dhanin Chearavanont': '谢国民', 'Peter Mallouk': '彼得·马卢克', 'Jaime Gilinski Bacal': '海梅·吉林斯基·巴卡尔', 'Wang Xin': '王欣', 'Lu Xiangyang': '吕向阳', 'Theo Albrecht Jr': '小特奥·阿尔布雷希特', 'Edward Johnson IV': '爱德华·约翰逊四世', 'Alejandro Baillères Gual': '亚历杭德罗·巴耶雷斯', 'Christopher Olah': '克里斯托弗·奥拉', 'Daniela Amodei': '丹妮拉·阿莫迪', 'Dario Amodei': '达里奥·阿莫迪', 'Jack Clark': '杰克·克拉克', 'Jared Kaplan': '贾里德·卡普兰', 'Sam McCandlish': '萨姆·麦坎德利什', 'Tom Brown': '汤姆·布朗', 'Xavier Niel': '泽维尔·尼尔', 'Ray Dalio': '瑞·达利欧', 'Hussain Sajwani': '侯赛因·萨杰瓦尼', 'Terry Gou': '郭台铭', 'Shahid Khan': '沙希德·汗', 'Eric Li': '埃里克·李', 'Friedhelm Loh': '弗里德黑尔姆·洛', 'Ralph Lauren': '拉尔夫·劳伦', 'R. Budi Hartono': '布迪·哈托诺', 'Wang Liping': '王丽萍', 'James Dyson': '詹姆斯·戴森', 'Cao Renxian': '曹仁贤', 'Brad Jacobs': '布拉德·雅各布斯', 'Jack Dangermond': '杰克·丹杰蒙德', 'Wang Wei': '王卫', 'Wang Laisheng': '王来胜', 'Laurene Powell Jobs': '劳伦·鲍威尔·乔布斯', 'Joseph Lau': '刘銮雄', 'Wang Laichun': '王来春', 'Charles Ergen': '查尔斯·埃根', 'Vinod Khosla': '维诺德·科斯拉', 'Elizabeth Johnson': '伊丽莎白·约翰逊', 'Robert Kraft': '罗伯特·克拉夫特', 'Ann Walton Kroenke': '安·沃尔顿·克伦克', 'Alisher Usmanov': '阿利舍尔·乌斯马诺夫', 'Lee Boo-jin': '李富真', 'Dmitri Bukhman': '德米特里·布赫曼', 'Igor Bukhman': '伊戈尔·布赫曼', 'Zhang Zhidong': '张志东', 'Bubba Cathy': '巴巴·卡西', 'Dan Cathy': '丹·卡西', 'Trudy Cathy White': '特鲁迪·卡西·怀特', 'Uday Kotak': '乌代·科塔克', 'Antonia Ax:son Johnson': '安东尼娅·阿克松·约翰逊', 'Sunil Mittal': '苏尼尔·米塔尔', 'Ken Fisher': '肯·费雪', 'J. Christopher Reyes': '克里斯托弗·雷耶斯', 'Jude Reyes': '裘德·雷耶斯', 'Zhu Yi': '朱义', 'Bruce Cheng': '郑崇华', 'Li Shuirong': '李水荣', 'David Reuben': '大卫·鲁本', 'Simon Reuben': '西蒙·鲁本', 'Richard Kinder': '理查德·金德', 'Abdulsamad Rabiu': '阿卜杜勒萨马德·拉比乌', 'Ivan Glasenberg': '伊万·格拉森伯格', 'David Velez': '大卫·贝莱斯', 'Robert Kuok': '郭鹤年', 'Orlando Bravo': '奥兰多·布拉沃', 'Lee Seo-hyun': '李叙显', 'Wang Ning': '王宁', 'James Goodnight': '詹姆斯·古德奈特', 'Leon Black': '利昂·布莱克', 'Andrew Beal': '安德鲁·比尔', 'Hamdi Ulukaya': '哈姆迪·乌卢卡亚', 'Charles Schwab': '查尔斯·施瓦布', 'George Roberts': '乔治·罗伯茨'}
-NAME_ZH.update(ADD_NAME_ZH)
+# 中文名对照表。扩到全榜（3400+ 人）后条目达 2900 余条，内联进本文件将完全无法审阅，
+# 因此外置为 names_zh.json，本文件只负责加载。
+#
+# 收录口径（很重要，改词典前先读）：
+# - 非汉字圈姓名按《世界人名翻译大辞典》惯例音译——音译是同一个名字的另一种书写，不是编造；
+# - 中国大陆/港澳台/日/韩/越等汉字圈人物的罗马化姓名，只在能确指其人时才写汉字。
+#   "Wang Wei" 可能是王伟/王卫/王薇，猜错就是对一个真人断言假事实，宁可留空回退英文原名；
+# - 同一英文名在榜上对应不同人物的（如两个 Zhang Jian）一律不收录，否则会张冠李戴。
+NAMES_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "names_zh.json")
+
+
+def load_name_zh():
+    """载入中文名对照表；文件缺失或损坏时退化为空表（全部显示英文原名），不让取数失败。"""
+    try:
+        with open(NAMES_PATH, encoding="utf-8") as f:
+            return json.load(f)["names"]
+    except Exception as e:
+        print(f"中文名词典加载失败（{str(e)[:80]}），本轮全部回退英文原名")
+        return {}
+
+
+NAME_ZH = load_name_zh()
 
 COUNTRY_ZH = {
     "United States": "美国", "France": "法国", "China": "中国", "India": "印度", "Mexico": "墨西哥",

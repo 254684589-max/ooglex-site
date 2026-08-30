@@ -1,24 +1,20 @@
 /* 全球富豪实时榜 · 前端渲染
  * 读取同目录 data.json（由 scripts/billionaires/build_billionaires.py 每日生成），
  * 渲染全球全部亿万富豪（约 3400 人）的排行卡片（头像 / 身价 / 当日变动 / 净值条），
- * 支持排序与搜索。纯原生 JS。
+ * 支持排序、搜索与分页。纯原生 JS。
  *
- * 榜单从前 250 扩到全榜后，一次性建完整张列表在手机上要 1 秒以上（4 万个 DOM 节点），
- * 搜索框每敲一个字都会重来一遍，实测不可用。所以改成：
- *   - 分批渲染：先出 BATCH 条，滚到底再追加，DOM 只按实际看到的量增长；
- *   - 搜索防抖：输入停下来再过滤，避免逐字重建；
- *   - 过滤 / 排序结果缓存在 state.view，追加批次时不重复算。
- * IntersectionObserver 只是「自动点一下加载更多」的增强，按钮本身始终可用（也可键盘操作）。 */
+ * 为什么是分页而不是无限滚动：榜单 3400 余人，滚动加载要看到第 3000 名得先滚过
+ * 2900 张卡片，尾部实际上不可达；分页后「第 3000 名」就是第 30 页，一步到位，
+ * 且每页 DOM 恒定 100 条，不会越滚越重。搜索与排序都作用于全榜，不只当前页。 */
 (function () {
   "use strict";
 
-  var BATCH = 60;          // 每批渲染条数：手机上约 20ms，一屏装得下且有余量
-  var PRELOAD = "600px";   // 距底部多远就预加载下一批
+  var PER_PAGE = 100;
 
   var DATA = null, MAXW = 1;
-  var state = { sort: "rank", q: "", view: [], shown: 0 };
-  var els = {};            // list / sentinel / moreBtn / moreTip
-  var io = null, qTimer = null;
+  var state = { sort: "rank", q: "", view: [], page: 1 };
+  var els = {};
+  var qTimer = null;
 
   var $ = function (id) { return document.getElementById(id); };
   var raf = (typeof requestAnimationFrame !== "undefined")
@@ -39,6 +35,7 @@
   function chgClass(c) { return !isNum(c) ? "flat" : (c > 0 ? "up" : (c < 0 ? "down" : "flat")); }
   function chgArrow(c) { return !isNum(c) ? "·" : (c > 0 ? "▲" : (c < 0 ? "▼" : "·")); }
   function fmtInt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+  function pageCount() { return Math.max(1, Math.ceil(state.view.length / PER_PAGE)); }
 
   function sorted() {
     var list = (DATA.people || []).filter(function (p) {
@@ -72,8 +69,7 @@
 
   function card(p, i) {
     var el = document.createElement("div"); el.className = "rowcard";
-    // 入场动画按「批内序号」错开，否则第 3000 条会排到几十秒之后
-    if (!reduceMotion) el.style.animationDelay = Math.min(i * 14, 360) + "ms";
+    if (!reduceMotion) el.style.animationDelay = Math.min(i * 8, 280) + "ms";
 
     var rk = document.createElement("div");
     rk.className = "rk" + (p.rank <= 3 ? " top" : ""); rk.textContent = p.rank;
@@ -106,53 +102,109 @@
     return { el: el, bar: bar, pct: pct };
   }
 
-  /* 追加下一批。返回本批实际渲染条数（0 表示已到底）。 */
-  function renderMore() {
-    var list = state.view, from = state.shown;
-    if (from >= list.length) return 0;
-    var to = Math.min(from + BATCH, list.length);
-    var frag = document.createDocumentFragment(), grow = [];
-    for (var i = from; i < to; i++) {
-      var c = card(list[i], i - from);
-      frag.appendChild(c.el);
-      if (!reduceMotion) grow.push(c);
-    }
-    els.list.appendChild(frag);
-    state.shown = to;
-    if (grow.length) raf(function () { grow.forEach(function (g) { g.bar.style.width = g.pct + "%"; }); });
-    syncMore();
-    return to - from;
-  }
-
-  /* 同步底部「加载更多 / 已全部显示」区域，并让观察器对新位置重新起效。 */
-  function syncMore() {
-    var total = state.view.length, left = total - state.shown;
-    if (!total) { els.more.hidden = true; return; }
-    els.more.hidden = false;
-    els.moreTip.textContent = left > 0
-      ? "已显示 " + fmtInt(state.shown) + " / " + fmtInt(total) + " 人" + (io ? " · 继续滚动加载" : "")
-      : "已显示全部 " + fmtInt(total) + " 人";
-    // 按钮只在没有 IntersectionObserver、无法自动加载时露出：
-    // 两者并存时，按钮一进视口就触发自动追加，新卡片会把它往下推，用户永远点不中。
-    els.moreBtn.hidden = left <= 0 || !!io;
-    if (left > 0) {
-      els.moreBtn.textContent = "加载更多（还有 " + fmtInt(left) + " 人）";
-      // 重新观察：追加后哨兵若仍在视口内，交叉状态没变化就不会再触发回调
-      if (io) raf(function () { io.unobserve(els.sentinel); io.observe(els.sentinel); });
-    }
-  }
-
-  /* 过滤 / 排序变化后整表重来：只建第一批。 */
-  function rebuild() {
-    state.view = sorted();
-    state.shown = 0;
-    els.list.innerHTML = "";
+  /* 渲染当前页的 100 条。 */
+  function renderPage() {
+    var wrap = els.list;
+    wrap.innerHTML = "";
     if (!state.view.length) {
-      els.list.innerHTML = '<div class="empty">没有匹配的人物，换个关键词试试 🙂</div>';
-      els.more.hidden = true;
+      wrap.innerHTML = '<div class="empty">没有匹配的人物，换个关键词试试 🙂</div>';
+      els.pager.hidden = true;
       return;
     }
-    renderMore();
+    els.pager.hidden = false;
+    var from = (state.page - 1) * PER_PAGE;
+    var slice = state.view.slice(from, from + PER_PAGE);
+    var frag = document.createDocumentFragment(), grow = [];
+    slice.forEach(function (p, i) {
+      var c = card(p, i);
+      frag.appendChild(c.el);
+      if (!reduceMotion) grow.push(c);
+    });
+    wrap.appendChild(frag);
+    if (grow.length) raf(function () { grow.forEach(function (g) { g.bar.style.width = g.pct + "%"; }); });
+    renderPager(from, from + slice.length);
+  }
+
+  /* 页码条：首页、末页、当前页 ±N，中间用省略号。窄屏少留几个，避免横向溢出。 */
+  function pageWindow(cur, total) {
+    var span = (window.innerWidth && window.innerWidth < 560) ? 1 : 2;
+    var set = {};
+    set[1] = 1; set[total] = 1;
+    for (var i = cur - span; i <= cur + span; i++) if (i >= 1 && i <= total) set[i] = 1;
+    var nums = Object.keys(set).map(Number).sort(function (a, b) { return a - b; });
+    var out = [];
+    nums.forEach(function (n, i) {
+      if (i && n - nums[i - 1] > 1) out.push("…");
+      out.push(n);
+    });
+    return out;
+  }
+
+  function pageBtn(label, page, opts) {
+    var b = document.createElement("button");
+    b.type = "button"; b.textContent = label;
+    if (opts && opts.current) { b.className = "cur"; b.setAttribute("aria-current", "page"); }
+    if (opts && opts.disabled) { b.disabled = true; }
+    else { b.onclick = function () { goPage(page); }; }
+    if (opts && opts.label) b.setAttribute("aria-label", opts.label);
+    return b;
+  }
+
+  function renderPager(from, to) {
+    var total = pageCount(), cur = state.page;
+    var nav = els.pageNav; nav.innerHTML = "";
+    nav.appendChild(pageBtn("‹", cur - 1, { disabled: cur <= 1, label: "上一页" }));
+    pageWindow(cur, total).forEach(function (n) {
+      if (n === "…") {
+        var s = document.createElement("span"); s.className = "gap"; s.textContent = "…";
+        s.setAttribute("aria-hidden", "true"); nav.appendChild(s);
+      } else {
+        nav.appendChild(pageBtn(String(n), n, { current: n === cur, label: "第 " + n + " 页" }));
+      }
+    });
+    nav.appendChild(pageBtn("›", cur + 1, { disabled: cur >= total, label: "下一页" }));
+
+    els.pageTip.textContent = state.q
+      ? "第 " + fmtInt(from + 1) + " – " + fmtInt(to) + " 条 · 共搜到 " + fmtInt(state.view.length) + " 人"
+      : "第 " + fmtInt(from + 1) + " – " + fmtInt(to) + " 名 · 共 " + fmtInt(state.view.length) + " 人";
+    els.jump.max = total;
+    els.jump.value = "";
+    els.jump.placeholder = cur + "/" + total;
+  }
+
+  function goPage(n) {
+    var total = pageCount();
+    n = Math.min(total, Math.max(1, n | 0));
+    if (n === state.page) return;
+    state.page = n;
+    syncHash();
+    renderPage();
+    // 翻页后回到列表顶部，否则会停在上一页的位置、看起来像没翻
+    var y = els.list.getBoundingClientRect().top + window.pageYOffset - 12;
+    window.scrollTo(reduceMotion ? { top: y } : { top: y, behavior: "smooth" });
+  }
+
+  /* 过滤 / 排序变化后回到第 1 页重算。 */
+  function rebuild(keepPage) {
+    state.view = sorted();
+    if (!keepPage) state.page = 1;
+    else state.page = Math.min(state.page, pageCount());
+    syncHash();
+    renderPage();
+  }
+
+  /* 页码写进 URL hash：刷新、收藏、分享都能停在同一页。 */
+  function syncHash() {
+    var want = state.page > 1 ? "#p=" + state.page : "";
+    if ((location.hash || "") !== want) {
+      try {
+        history.replaceState(null, "", location.pathname + location.search + want);
+      } catch (e) { /* file:// 等环境下 replaceState 不可用，忽略即可 */ }
+    }
+  }
+  function pageFromHash() {
+    var m = /(?:^|#|&)p=(\d+)/.exec(location.hash || "");
+    return m ? parseInt(m[1], 10) : 1;
   }
 
   function renderSummary() {
@@ -190,23 +242,35 @@
     });
   }
 
-  /* 底部「加载更多」+ 哨兵，插在列表之后。 */
-  function buildMore() {
-    var more = document.createElement("div"); more.className = "more"; more.hidden = true;
-    var btn = document.createElement("button"); btn.type = "button";
-    btn.onclick = function () { renderMore(); };
-    var tip = document.createElement("span"); tip.className = "moretip";
-    var sentinel = document.createElement("div"); sentinel.className = "sentinel"; sentinel.setAttribute("aria-hidden", "true");
-    more.appendChild(btn); more.appendChild(tip); more.appendChild(sentinel);
-    els.list.parentNode.insertBefore(more, els.list.nextSibling);
-    els.more = more; els.moreBtn = btn; els.moreTip = tip; els.sentinel = sentinel;
+  /* 分页条：页码按钮 + 「第 X–Y 名 / 共 N 人」+ 跳页输入框，插在列表之后。 */
+  function buildPager() {
+    var box = document.createElement("div"); box.className = "pager"; box.hidden = true;
+    var nav = document.createElement("nav"); nav.className = "pagenav";
+    nav.setAttribute("aria-label", "分页导航");
 
-    if (typeof IntersectionObserver !== "undefined") {
-      io = new IntersectionObserver(function (entries) {
-        if (entries[0].isIntersecting && state.shown < state.view.length) renderMore();
-      }, { rootMargin: PRELOAD + " 0px" });
-      io.observe(sentinel);
-    }
+    var tip = document.createElement("div"); tip.className = "pagetip";
+    tip.setAttribute("aria-live", "polite");
+
+    var jumpWrap = document.createElement("div"); jumpWrap.className = "jump";
+    var jl = document.createElement("label");
+    jl.setAttribute("for", "jumpto"); jl.textContent = "跳至";
+    var jump = document.createElement("input");
+    jump.type = "number"; jump.id = "jumpto"; jump.min = "1"; jump.inputMode = "numeric";
+    jump.setAttribute("aria-label", "跳转到指定页");
+    var jb = document.createElement("button");
+    jb.type = "button"; jb.className = "jumpgo"; jb.textContent = "页";
+    var doJump = function () {
+      var v = parseInt(jump.value, 10);
+      if (v >= 1) goPage(v);
+      jump.value = "";
+    };
+    jb.onclick = doJump;
+    jump.onkeydown = function (e) { if (e.key === "Enter") { e.preventDefault(); doJump(); } };
+    jumpWrap.appendChild(jl); jumpWrap.appendChild(jump); jumpWrap.appendChild(jb);
+
+    box.appendChild(nav); box.appendChild(tip); box.appendChild(jumpWrap);
+    els.list.parentNode.insertBefore(box, els.list.nextSibling);
+    els.pager = box; els.pageNav = nav; els.pageTip = tip; els.jump = jump;
   }
 
   function initControls() {
@@ -221,7 +285,7 @@
       };
       b.setAttribute("aria-pressed", b.classList.contains("on") ? "true" : "false");
     });
-    // 防抖：3400 人时逐字重建会卡住输入
+    // 防抖：全榜 3400 人，逐字过滤没必要每次都跑
     $("q").oninput = function () {
       var v = this.value.trim();
       clearTimeout(qTimer);
@@ -230,13 +294,27 @@
         state.q = v; rebuild();
       }, 180);
     };
+    // 浏览器前进/后退改了 hash 时跟着翻页
+    window.addEventListener("hashchange", function () {
+      var n = pageFromHash();
+      if (n !== state.page) { state.page = Math.min(pageCount(), Math.max(1, n)); renderPage(); }
+    });
+    // 窗口跨过窄屏断点时页码窗口大小会变，重画一下页码条
+    var wasNarrow = window.innerWidth < 560;
+    window.addEventListener("resize", function () {
+      var narrow = window.innerWidth < 560;
+      if (narrow !== wasNarrow) { wasNarrow = narrow; if (state.view.length) renderPage(); }
+    });
   }
 
   function boot(data) {
     DATA = data;
     els.list = $("list");
     MAXW = Math.max.apply(null, (DATA.people || [{ worth: 1 }]).map(function (p) { return p.worth || 0; })) || 1;
-    renderStatus(); renderSummary(); buildMore(); initControls(); rebuild(); renderFooter();
+    renderStatus(); renderSummary(); buildPager(); initControls();
+    state.view = sorted();
+    state.page = Math.min(pageCount(), Math.max(1, pageFromHash()));
+    renderPage(); renderFooter();
   }
 
   fetch("data.json?t=" + Date.now())
