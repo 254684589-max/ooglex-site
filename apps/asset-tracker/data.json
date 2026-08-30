@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-08-30T09:15:32Z",
+  "updatedAt": "2026-08-30T09:36:55Z",
   "asOf": "2026-08-30",
   "frequency": "daily",
-  "status": "partial",
+  "status": "ok",
   "defaultPeriod": "ytd",
   "source": "Yahoo Finance",
   "note": "数据来自 Yahoo Finance 公开行情，每日自动更新；涨跌幅为各标的自身价格变动。LME 金属以全球期货代理、债券以国债 ETF 代理（详见各条备注）。仅供参考，非投资建议。",
@@ -69,7 +69,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -91,7 +91,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -113,7 +113,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -135,7 +135,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -157,7 +157,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -179,7 +179,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-07-17",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -201,7 +201,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -223,7 +223,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -245,7 +245,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -267,7 +267,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-27",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily",
         "note": "以人民币中证500ETF价格收益率代理；可能存在跟踪误差、分红与费用差异。"
       },
@@ -300,7 +300,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -322,7 +322,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -344,7 +344,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -366,7 +366,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -388,7 +388,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -410,7 +410,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -432,7 +432,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -454,7 +454,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -476,7 +476,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -498,7 +498,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -520,7 +520,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -542,7 +542,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -564,7 +564,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -586,7 +586,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -608,7 +608,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -630,7 +630,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -652,7 +652,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -674,7 +674,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -696,7 +696,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -718,7 +718,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily",
         "note": "以波兰 ETF（美元计）代理，含汇率影响"
       },
@@ -742,7 +742,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-07-17",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -764,7 +764,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -786,7 +786,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-07-17",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -808,7 +808,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily",
         "note": "以智利 ETF（美元计）代理，含汇率影响"
       },
@@ -832,7 +832,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -854,7 +854,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -876,7 +876,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-27",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily",
         "note": "以恒生科技指数 ETF（港元计）代理"
       },
@@ -901,7 +901,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -923,7 +923,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -945,7 +945,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -967,7 +967,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -989,7 +989,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1011,7 +1011,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1033,7 +1033,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1047,7 +1047,7 @@
         "w1": 0.88,
         "m1": 3.92,
         "ytd": 5.46,
-        "y1": 15.44
+        "y1": 14.1
       },
       "stale": false,
       "dataMeta": {
@@ -1055,7 +1055,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1077,7 +1077,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1099,7 +1099,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1121,7 +1121,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-07-17",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1143,7 +1143,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1165,7 +1165,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1187,7 +1187,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1209,7 +1209,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1231,7 +1231,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1253,7 +1253,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1275,7 +1275,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1297,7 +1297,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1319,7 +1319,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1341,7 +1341,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1363,7 +1363,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1385,7 +1385,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1393,13 +1393,13 @@
       "name": "沙特TASI",
       "category": "equity",
       "symbol": "^TASI.SR",
-      "price": 11180.9297,
+      "price": 11169.4199,
       "returns": {
-        "d1": 4.3,
-        "w1": 4.3,
-        "m1": 4.3,
-        "ytd": 6.58,
-        "y1": 4.53
+        "d1": 4.19,
+        "w1": 4.19,
+        "m1": 4.19,
+        "ytd": 6.47,
+        "y1": 4.42
       },
       "stale": false,
       "dataMeta": {
@@ -1407,7 +1407,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1429,7 +1429,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1451,7 +1451,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1473,7 +1473,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1495,7 +1495,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1517,7 +1517,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1540,7 +1540,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1563,7 +1563,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1585,7 +1585,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1607,7 +1607,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1629,7 +1629,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1651,7 +1651,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1673,7 +1673,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1695,7 +1695,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1717,7 +1717,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1739,7 +1739,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1761,7 +1761,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1783,7 +1783,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1805,7 +1805,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1827,7 +1827,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1849,7 +1849,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1871,7 +1871,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1893,7 +1893,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1915,7 +1915,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1937,7 +1937,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1959,7 +1959,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -1981,7 +1981,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2003,7 +2003,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2025,7 +2025,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2047,7 +2047,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2069,7 +2069,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2092,7 +2092,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2115,7 +2115,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2138,7 +2138,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2161,7 +2161,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2184,7 +2184,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2207,7 +2207,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2230,7 +2230,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2253,7 +2253,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2276,7 +2276,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2298,7 +2298,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2320,7 +2320,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2342,7 +2342,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2364,7 +2364,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2386,7 +2386,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2408,7 +2408,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2430,7 +2430,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2452,7 +2452,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2474,7 +2474,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2496,7 +2496,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2518,7 +2518,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2540,7 +2540,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2562,7 +2562,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-29",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2584,7 +2584,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2606,7 +2606,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2628,7 +2628,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2650,7 +2650,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2672,7 +2672,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2694,7 +2694,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2716,7 +2716,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2738,7 +2738,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2760,31 +2760,8 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
-      }
-    },
-    {
-      "name": "美元兑离岸人民币",
-      "category": "fx",
-      "symbol": "USDCNH=X",
-      "price": null,
-      "returns": {
-        "d1": null,
-        "w1": null,
-        "m1": null,
-        "ytd": null,
-        "y1": null
-      },
-      "stale": false,
-      "dataMeta": {
-        "mode": "unavailable",
-        "status": "error",
-        "source": "Yahoo Finance",
-        "asOf": null,
-        "updatedAt": "2026-08-30T09:15:32Z",
-        "frequency": "daily",
-        "note": "本轮所有候选代码均未返回有效行情。"
       }
     },
     {
@@ -2805,7 +2782,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2827,7 +2804,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2849,7 +2826,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2871,7 +2848,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2893,7 +2870,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2915,7 +2892,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2937,7 +2914,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2959,7 +2936,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -2981,7 +2958,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3003,7 +2980,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3025,7 +3002,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3047,7 +3024,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3069,7 +3046,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3091,7 +3068,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3113,7 +3090,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3135,7 +3112,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3157,7 +3134,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3179,7 +3156,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3201,7 +3178,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3223,7 +3200,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3245,7 +3222,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3267,7 +3244,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3289,7 +3266,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-29",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3311,7 +3288,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3333,7 +3310,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3355,7 +3332,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3377,7 +3354,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3399,7 +3376,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3421,7 +3398,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3443,7 +3420,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3465,7 +3442,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3487,7 +3464,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3509,7 +3486,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3531,7 +3508,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3553,7 +3530,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3575,7 +3552,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3597,7 +3574,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3619,7 +3596,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3641,7 +3618,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3663,7 +3640,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3685,7 +3662,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3707,7 +3684,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3729,7 +3706,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3751,7 +3728,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3773,7 +3750,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3795,7 +3772,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3817,7 +3794,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3839,7 +3816,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3861,7 +3838,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3883,7 +3860,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3905,7 +3882,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3927,7 +3904,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3949,7 +3926,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3971,7 +3948,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -3993,7 +3970,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -4015,7 +3992,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-30",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -4037,7 +4014,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -4059,7 +4036,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -4081,7 +4058,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -4104,7 +4081,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-27",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -4127,7 +4104,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -4150,7 +4127,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -4173,7 +4150,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -4196,7 +4173,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -4219,7 +4196,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -4242,7 +4219,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -4265,7 +4242,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -4288,7 +4265,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -4311,7 +4288,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     },
@@ -4334,26 +4311,26 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-08-28",
-        "updatedAt": "2026-08-30T09:15:32Z",
+        "updatedAt": "2026-08-30T09:36:55Z",
         "frequency": "daily"
       }
     }
   ],
   "dataQuality": {
     "contractVersion": 1,
-    "status": "partial",
-    "total": 193,
+    "status": "ok",
+    "total": 192,
     "counts": {
       "market": 192,
       "fallback": 0,
       "estimate": 0,
       "unknown": 0,
-      "unavailable": 1
+      "unavailable": 0
     },
     "sources": [
       {
         "name": "Yahoo Finance",
-        "count": 193
+        "count": 192
       }
     ]
   },

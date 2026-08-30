@@ -1,41 +1,41 @@
 {
   "contractVersion": 1,
   "dataset": "asset-tracker",
-  "generatedAt": "2026-08-30T09:15:32Z",
-  "status": "degraded",
+  "generatedAt": "2026-08-30T09:36:55Z",
+  "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-08-30T09:15:32Z",
-  "lastSuccessfulAt": "2026-08-30T09:15:32Z",
+  "lastAttemptAt": "2026-08-30T09:36:55Z",
+  "lastSuccessfulAt": "2026-08-30T09:36:55Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-08-30T09:15:32Z",
+  "publishedSnapshotAt": "2026-08-30T09:36:55Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
-    "expectedRecords": 133,
-    "publishedRecords": 193,
-    "dynamicRecords": 193,
+    "expectedRecords": 192,
+    "publishedRecords": 192,
+    "dynamicRecords": 192,
     "counts": {
       "market": 192,
       "fallback": 0,
       "estimate": 0,
       "unknown": 0,
-      "unavailable": 1
+      "unavailable": 0
     },
-    "publishedCoveragePct": 145.11,
-    "freshCoveragePct": 99.48,
-    "verifiedCoveragePct": 144.36,
-    "availableCoveragePct": 144.36
+    "publishedCoveragePct": 100.0,
+    "freshCoveragePct": 100.0,
+    "verifiedCoveragePct": 100.0,
+    "availableCoveragePct": 100.0
   },
   "attempt": {
     "status": "success",
     "published": true,
-    "producedRecords": 193,
+    "producedRecords": 192,
     "counts": {
       "market": 192,
       "fallback": 0,
       "estimate": 0,
       "unknown": 0,
-      "unavailable": 1
+      "unavailable": 0
     }
   },
   "sources": [
@@ -43,16 +43,16 @@
       "id": "yahoo-finance",
       "name": "Yahoo Finance",
       "role": "primary",
-      "status": "degraded",
-      "records": 193,
+      "status": "healthy",
+      "records": 192,
       "counts": {
         "market": 192,
         "fallback": 0,
         "estimate": 0,
         "unknown": 0,
-        "unavailable": 1
+        "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-30T09:15:32Z"
+      "lastSuccessAt": "2026-08-30T09:36:55Z"
     }
   ],
   "recovery": {
