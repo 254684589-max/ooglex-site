@@ -428,7 +428,7 @@ def _index_registry(name: str) -> set[str]:
     source = BOARD_DATA_MODULE.read_text(encoding="utf-8")
     marker = f"const {name} = Object.freeze({{"
     start = source.find(marker)
-    require(start >= 0, f"行情板数据层里找不到登记表 {name}，指数登记校验会失效")
+    require(start >= 0, f"行情板数据层里找不到登记表 {name}，分组登记校验会失效")
     end = source.find("});", start)
     require(end > start, f"登记表 {name} 的字面量没有正常闭合")
     body = source[start + len(marker):end]
@@ -461,6 +461,53 @@ def _require_index_registration(assets) -> None:
     require(not missing_group,
             f"这些指数代码没有登记分组，会掉进「其他」：{missing_group}")
 
+def _require_fx_registration(assets) -> None:
+    """每一个可能落进快照的美元盘货币，都必须在 FX_REGION 里登记了地区。
+
+    与指数那条同一个道理：漏登记不会报错，只会让这一行悄悄掉进「其他」组。指数漏登记
+    还看得见「地区」列是空的，外汇连这点提示都没有——所以更需要在加代码的那次提交里变红。
+
+    只查得出地区的那一类：不含美元的交叉盘本来就单列（EURJPY 同时涉及欧亚，划给任一边
+    都是武断），美元指数是指数不是货币对，两者都不需要登记货币。
+    """
+    regions = _index_registry("FX_REGION")
+    index_symbols = set(re.findall(
+        r'"([^"]+)"',
+        (lambda src: src[src.find("const FX_INDEX_SYMBOLS = Object.freeze(["):][:200])(
+            BOARD_DATA_MODULE.read_text(encoding="utf-8"))))
+    require(index_symbols, "行情板数据层里找不到 FX_INDEX_SYMBOLS，美元指数单列的校验会失效")
+
+    pair = re.compile(r"^([A-Z]{3})([A-Z]{3})=X$")
+    short = re.compile(r"^([A-Z]{3})=X$")
+    missing: set[str] = set()
+    unparsed: list[str] = []
+    for item in assets:
+        if item.get("cat") != "fx":
+            continue
+        for entry in item.get("syms", []):
+            sym = entry if isinstance(entry, str) else entry.get("sym", "")
+            if not sym or sym in index_symbols:
+                continue
+            matched = pair.match(sym)
+            if matched:
+                base, quote = matched.group(1), matched.group(2)
+                if base == "USD" and quote not in regions:
+                    missing.add(quote)
+                elif quote == "USD" and base not in regions:
+                    missing.add(base)
+                continue
+            matched = short.match(sym)
+            if matched:
+                if matched.group(1) not in regions:
+                    missing.add(matched.group(1))
+                continue
+            unparsed.append(sym)
+    require(not missing,
+            f"这些货币没有登记地区，对应的行会掉进外汇「其他」组：{sorted(missing)}")
+    require(not unparsed,
+            f"这些外汇代码既不是货币对写法、也没登记成美元指数，会掉进「其他」组：{sorted(unparsed)}")
+
+
 def _first_symbol(item: dict) -> str:
     """取标的首选代码；候选可以是字符串或 {sym, note} 字典。"""
     candidate = item["syms"][0]
@@ -484,17 +531,20 @@ def run_asset_tracker_builder_contract_tests() -> None:
 
     universe_names = [item["name"] for item in module.ASSETS]
     universe_symbols = [_first_symbol(item) for item in module.ASSETS]
-    # 2026-08-30 外汇扩容：22 → 82 个货币对（清单总数 133 → 193），并在行情板按地区
-    # 分了二级组。条数在这里钉死是为了「悄悄少了几个标的」能被测出来，不是为了封顶。
-    require(len(module.ASSETS) == 193, f"跨资产清单条数应为193，当前{len(module.ASSETS)}")
+    # 2026-08-30 外汇扩容：22 → 81 条（80 个货币对 + 美元指数，清单总数 133 → 192），
+    # 并在行情板按地区分了二级组。实跑（Asset Tracker #124）后撤下离岸人民币：
+    # USDCNH=X 与 CNH=X 两个候选都没有行情，不登记也不拿在岸人民币顶替。
+    # 条数在这里钉死是为了「悄悄少了几个标的」能被测出来，不是为了封顶。
+    require(len(module.ASSETS) == 192, f"跨资产清单条数应为192，当前{len(module.ASSETS)}")
     require(len(set(universe_names)) == len(universe_names), "跨资产标的名称必须唯一")
     require(len(set(universe_symbols)) == len(universe_symbols), "跨资产首选代码必须唯一")
     categories = {}
     for item in module.ASSETS:
         categories[item["cat"]] = categories.get(item["cat"], 0) + 1
-    require(categories == {"equity": 64, "commodity": 36, "fx": 82, "bond": 11},
+    require(categories == {"equity": 64, "commodity": 36, "fx": 81, "bond": 11},
             f"跨资产四类条数与登记不一致：{categories}")
     _require_index_registration(module.ASSETS)
+    _require_fx_registration(module.ASSETS)
     _require_stock_row_limit_matches_history()
     # 2026-08-25 所有者决定：撤下QQQ代理卡后纳斯达克改由综合指数^IXIC进入指数类；
     # 道指仍由DIA免费组件展示，纳斯达克100（NDX）不再进入本站，两者都不得混进清单。
@@ -2752,13 +2802,16 @@ def main() -> None:
 
     require(companies.get("source") == "Yahoo Finance", "公司榜来源必须明确为Yahoo Finance")
     company_rows = companies.get("companies")
+    # 550 = 上市 500 + 非上市 50。「前 500」指的是上市那一段，不是文件总行数：
+    # 行情板只收有实时报价的行，上市段自己有 500 家，公司品类才有 500 行可上。
+    # 三个数都钉死，是为了让「悄悄少了公司」在这里变红，而不是等页面上少一行没人发现。
     require(
-        isinstance(company_rows, list) and len(company_rows) == companies.get("count") == 500,
-        "公司榜必须包含500项",
+        isinstance(company_rows, list) and len(company_rows) == companies.get("count") == 550,
+        "公司榜必须包含550项（上市500 + 非上市50）",
     )
     listed_rows = [company for company in company_rows if company.get("private") is not True]
     private_rows = [company for company in company_rows if company.get("private") is True]
-    require(len(listed_rows) == companies.get("listedCount") == 450, "公司榜上市公司数量不一致")
+    require(len(listed_rows) == companies.get("listedCount") == 500, "公司榜上市公司数量不一致")
     require(len(private_rows) == companies.get("privateCount") == 50, "公司榜未上市公司数量不一致")
     require(
         all(isinstance(company.get("marketCap"), (int, float)) and company["marketCap"] > 0 for company in company_rows),

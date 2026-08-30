@@ -114,7 +114,7 @@ def validate_dataset(name):
                         f"{row.get('name')}缺少上一观测日期，涨跌口径无法复核", errors)
 
     if name == "companies":
-        require(len(rows) == data.get("count") == 500, "公司榜数量元数据不一致", errors)
+        require(len(rows) == data.get("count") == 550, "公司榜数量元数据不一致（上市500 + 非上市50）", errors)
         for row in rows:
             meta = row.get("dataMeta") or {}
             if row.get("private") is True:

@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-构建「全球公司市值榜（前 500）」数据 → apps/companies/data.json。
+构建「全球公司市值榜（上市前 500 + 非上市附录）」数据 → apps/companies/data.json。
 
 数据源 Yahoo Finance（免密钥，与本仓库 asset-tracker 同款 v8/chart 接口，机房可达）：
 - 上市公司清单（约 560 家：标普 500 成分 + 海外巨头 ADR + 三星/沙特阿美等）烘焙在 universe.json，
   每条带 shares（流通股数）与 cur（计价币种）；
 - 本脚本逐只取最新价，按「价 × 股数」算市值（本币市值再按汇率折美元），算当日涨跌；
-- 末段并入若干知名非上市公司（maps.PRIVATE，最近公开估值、非实时），按美元市值排前 500：
-  上市公司在前、非上市公司殿后，共 500 家。
+- 上市部分取美元市值前 LISTED_N（500）家；
+- 末段另附若干知名非上市公司（maps.PRIVATE，最近公开估值、非实时），单独标「未上市」，
+  排在上市部分之后，不与上市公司混排市值名次。
+
+「500」指的是上市公司那一段，不是文件总行数：非上市那几十家是附录，它们没有实时行情，
+把它们算进「前 500」会让这份榜既不是干净的市值前 500、也不是干净的上市前 500。
+品类行情板只收得到实时报价的行，所以上市段必须自己就有 500 家，才有 500 行可上板。
 
 稳健性：
 - 逐只独立容错、主备双域名、硬超时；某只当日取不到时回退沿用上次 data.json 的已知值，不掉榜；
@@ -140,7 +145,7 @@ HISTORY_NOTE = ("市值前列上市公司自身收盘价的滚动历史，与 da
                 "本轮未取到的标的沿用上次序列，不补造新点。")
 UNI_PATH = os.path.join(HERE, "universe.json")
 LOGO_DIR = os.path.join("apps", "companies", "logos")
-TOP_N = 500
+LISTED_N = 500       # 上市公司家数；与 HISTORY_SYMBOLS、行情板 STOCK_ROW_LIMIT 对齐
 YF_HOSTS = ["query1.finance.yahoo.com", "query2.finance.yahoo.com"]
 YF_HEADERS = {"User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                              "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"), "Accept": "application/json"}
@@ -650,7 +655,7 @@ def build():
                 note="最近一轮公开估值，非交易行情。" if estimate_as_of else "未记录可核验的最近融资月份。",
             ),
         })
-    rows = listed[:TOP_N - len(private_rows)] + private_rows
+    rows = listed[:LISTED_N] + private_rows
     for i, r in enumerate(rows, 1):
         r["rank"] = i
     # 逐行写上自己在第几片日线历史里。行情页据此只取自己那一片（约170KB），

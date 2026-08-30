@@ -32,8 +32,8 @@ DATASET_SPECS: dict[str, dict[str, Any]] = {
         # 始终用这个现行值。清单扩容当天仓库里还留着上一次任务按旧条数写的健康文件，
         # 因此校验时额外接受 expectedRecordOptions 里已登记的历史值；扩容后的第一份
         # 健康文件发布后即可把该列表收回单值。
-        "expectedRecords": 133,
-        "expectedRecordOptions": (56, 98, 103, 107, 133),
+        "expectedRecords": 192,
+        "expectedRecordOptions": (56, 98, 103, 107, 133, 192),
         "sources": [
             {
                 "id": "yahoo-finance",
@@ -52,7 +52,10 @@ DATASET_SPECS: dict[str, dict[str, Any]] = {
         ],
     },
     "companies": {
-        "expectedRecords": 500,
+        # 550 = 上市 500 + 非上市 50。同上：扩容当天仓库里还留着按 500 写的健康文件，
+        # 因此过渡期额外接受 500；新健康文件发布后把该列表收回单值。
+        "expectedRecords": 550,
+        "expectedRecordOptions": (500, 550),
         "staticRowFlags": ("private",),
         "sources": [
             {
