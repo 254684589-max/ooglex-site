@@ -124,7 +124,7 @@
     var bot = withChg.slice().sort(function (a, b) { return a.changePct - b.changePct; })[0];
     var totalT = isNum(DATA.totalMarketCap) ? "$" + (DATA.totalMarketCap / 1000).toFixed(2) + "T" : "—";
     var html = '<span class="pill-i">📅 ' + (DATA.asOf || "—") + "</span>" +
-      '<span class="pill-i">前 ' + (DATA.count || cs.length) + ' 总市值 <b class="big">' + totalT + "</b></span>" +
+      '<span class="pill-i">合计 ' + (DATA.count || cs.length) + ' 家 · 总市值 <b class="big">' + totalT + "</b></span>" +
       (DATA.listedCount ? '<span class="pill-i">' + DATA.listedCount + " 上市 · " + DATA.privateCount + " 未上市</span>" : "");
     if (top && top.changePct > 0) html += '<span class="lead up">▲ 今日领涨 ' + esc(top.name) + " " + fmtPct(top.changePct) + "</span>";
     if (bot && bot.changePct < 0) html += '<span class="lead down">▼ 今日领跌 ' + esc(bot.name) + " " + fmtPct(bot.changePct) + "</span>";

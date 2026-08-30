@@ -1760,6 +1760,9 @@ assert.deepStrictEqual(operationCards.map((card) => card.expectedRecords), [
   assetRankingHealth.coverage.expectedRecords
 ]);
 assert.strictEqual(operationCards[1].symbol, `${assetTracker.assets.length} ASSETS`);
+/* 公司榜同理：卡片标签必须跟着已发布条数走。写死「500 COMPANIES」在上市段扩到
+   500 家、文件变成 550 行之后就是错的，而且错得没人会立刻发现。 */
+assert.strictEqual(operationCards[2].symbol, `${companies.companies.length} COMPANIES`);
 assert.deepStrictEqual(operationCards.map((card) => card.availableCoveragePct), [100, 100, 100, 100]);
 assert.deepStrictEqual(operationCards.map((card) => card.freshCoveragePct), [
   macroHealth.coverage.freshCoveragePct,

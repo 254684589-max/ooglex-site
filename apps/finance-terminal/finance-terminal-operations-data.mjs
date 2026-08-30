@@ -43,9 +43,12 @@ export function createOperationsData(dependencies = {}) {
       expectedRecords: 55, unit: "项资产", detailUrl: "../asset-tracker/",
       workflow: "asset_tracker.yml", readinessEnabled: true
     },
+    /* 公司榜同理：上市段扩到 500 家后文件是 550 行（上市 500 + 非上市 50），
+       写死的「500 COMPANIES」会和页面对不上，因此也改成跟着已发布条数走。 */
     companies: {
-      name: "全球公司榜", nameEn: "Global Companies", symbol: "500 COMPANIES",
-      expectedRecords: 500, unit: "家公司", detailUrl: "../companies/",
+      name: "全球公司榜", nameEn: "Global Companies", symbol: "COMPANIES",
+      symbolSuffix: "COMPANIES",
+      expectedRecords: 550, unit: "家公司", detailUrl: "../companies/",
       workflow: "companies.yml", readinessEnabled: true
     },
     "asset-ranking": {
