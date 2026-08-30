@@ -155,8 +155,80 @@ export function renderHeatmap(document, host, sectors, box) {
   return blocks;
 }
 
-function attachTooltip(document, host, tip, selector = ".heat-tile") {
+/* 按住左键拖动平移。放大后画布比视口大，只能靠滚动条挪视野很别扭，
+   抓住图直接拖是这类图的常规操作（视口的 aria-label 与 cursor:grab 本来就
+   是这么写的，只是一直没实现）。三个坑都得躲开：
+   1) 瓦片是链接、气泡可点击——拖完不能顺带把链接点开；
+   2) 触摸屏原生就能滑动，再接一套指针拖动会和原生滚动打架，所以只接鼠标/触控笔；
+   3) 拖动中要挡住文字选中与原生链接拖拽，否则一拖就是一片蓝或拖出个链接影子。
+   视口吃不下的位移交给页面：缩放为 1 时视口本身没有可滚动的余量，
+   这时上下拖就是拖整页，手感上仍然是「抓住图往任意方向拖」。 */
+function enableDragPan(host, state) {
+  if (!host) return;
+  const SLOP = 5;               // 位移小于此值仍算点击：手抖不该吃掉一次点击
+  let id = null, moved = false, lastX = 0, lastY = 0;
+
+  host.addEventListener("pointerdown", (event) => {
+    state.suppressClick = false;              // 上一次拖动的残留标记，按下即清
+    if (event.pointerType === "touch") return;   // 触摸交给原生滚动
+    if (event.button !== 0) return;              // 只认左键
+    id = event.pointerId; moved = false;
+    lastX = event.clientX; lastY = event.clientY;
+  });
+
+  host.addEventListener("pointermove", (event) => {
+    if (id === null || event.pointerId !== id) return;
+    const dx = event.clientX - lastX;
+    const dy = event.clientY - lastY;
+    if (!moved) {
+      if (Math.hypot(event.clientX - lastX, event.clientY - lastY) < SLOP) return;
+      moved = true;
+      state.panning = true;
+      if (state.hideTip) state.hideTip();   // 已经弹出来的提示先收掉
+      host.classList.add("is-panning");
+      // 越过阈值才捕获指针：捕获得太早会把原地按下松开的点击也吞掉
+      try { host.setPointerCapture(id); } catch (err) { /* 老浏览器没有就算了 */ }
+    }
+    lastX = event.clientX; lastY = event.clientY;
+    const beforeLeft = host.scrollLeft, beforeTop = host.scrollTop;
+    host.scrollLeft = beforeLeft - dx;
+    host.scrollTop = beforeTop - dy;
+    // 视口没吃下的那部分给页面，两级滚动接力
+    const restX = -dx - (host.scrollLeft - beforeLeft);
+    const restY = -dy - (host.scrollTop - beforeTop);
+    if (restX || restY) window.scrollBy(restX, restY);
+    event.preventDefault();
+  });
+
+  const end = (event) => {
+    if (id === null || (event && event.pointerId !== undefined && event.pointerId !== id)) return;
+    try { host.releasePointerCapture(id); } catch (err) { /* 已经释放过 */ }
+    id = null;
+    if (!moved) return;
+    moved = false;
+    state.panning = false;
+    host.classList.remove("is-panning");
+    // 松手后浏览器仍会补派一次 click，会把瓦片链接点开——标记一下，在捕获阶段吞掉
+    state.suppressClick = true;
+  };
+  host.addEventListener("pointerup", end);
+  host.addEventListener("pointercancel", end);
+  host.addEventListener("lostpointercapture", end);
+
+  host.addEventListener("click", (event) => {
+    if (!state.suppressClick) return;
+    state.suppressClick = false;
+    event.stopPropagation();
+    event.preventDefault();
+  }, true);
+
+  // 瓦片是 <a>，不挡的话拖两下就变成原生链接拖拽，平移直接失效
+  host.addEventListener("dragstart", (event) => event.preventDefault());
+}
+
+function attachTooltip(document, host, tip, selector = ".heat-tile", state = null) {
   const show = (cell) => {
+    if (state && state.panning) return;   // 拖动中不弹提示，跟着鼠标闪很吵
     const data = cell.getAttribute("aria-label") || "";
     tip.textContent = data;
     tip.hidden = false;
@@ -168,6 +240,7 @@ function attachTooltip(document, host, tip, selector = ".heat-tile") {
     tip.style.top = `${Math.max(4, box.top - wrap.top - tip.offsetHeight - 8)}px`;
   };
   const hide = () => { tip.hidden = true; };
+  if (state) state.hideTip = hide;
   host.addEventListener("mouseover", (event) => {
     const cell = event.target.closest(selector);
     if (cell) show(cell);
@@ -484,8 +557,14 @@ async function start() {
     button.addEventListener("click", () => { metric = entry; drawBubbles(); });
   });
 
-  attachTooltip(document, canvas.parentElement, tip);
-  if (bubbleViewport) attachTooltip(document, bubbleViewport.parentElement, tip, ".bubble-node");
+  /* 两张图共用一个拖动状态：拖动中要压住提示框，松手后要吞掉那次补发的 click。 */
+  const panState = { panning: false, suppressClick: false };
+  attachTooltip(document, canvas.parentElement, tip, ".heat-tile", panState);
+  if (bubbleViewport) {
+    attachTooltip(document, bubbleViewport.parentElement, tip, ".bubble-node", panState);
+  }
+  enableDragPan(viewport, panState);
+  enableDragPan(bubbleViewport, panState);
   draw();
   drawBubbles();
   root.setAttribute("aria-busy", "false");

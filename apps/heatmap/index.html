@@ -93,7 +93,10 @@
       position: relative; width: 100%; overflow: auto; overscroll-behavior-x: contain;
       border-radius: 4px; cursor: grab;
     }
-    #heat-viewport:active, #bubble-viewport:active { cursor: grabbing; }
+    /* 拖动态用类而不是 :active——点一下瓦片链接也会触发 :active，
+       那时并没有在拖。拖动中禁掉选中，否则一拖就是一片蓝。 */
+    #heat-viewport.is-panning, #bubble-viewport.is-panning {
+      cursor: grabbing; user-select: none; -webkit-user-select: none; }
     #heat-viewport:focus-visible, #bubble-viewport:focus-visible {
       outline: 2px solid var(--cyan); outline-offset: 2px; }
     .zoombar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center;
@@ -214,7 +217,7 @@
         <div id="heat-tip" role="tooltip" hidden></div>
       </div>
       <div class="zoombar">
-        <span class="zoomhint">滚轮缩放 · 放大后可拖动 · 也可用 + − 0 键</span>
+        <span class="zoomhint">滚轮缩放 · 按住左键拖动平移 · 也可用 + − 0 键</span>
         <div class="zoomctl" role="group" aria-label="缩放">
           <button type="button" id="heat-zoom-out" aria-label="缩小">−</button>
           <b id="heat-zoom-level" aria-live="polite">1×</b>
@@ -245,7 +248,7 @@
         </div>
       </div>
       <div class="zoombar">
-        <span class="zoomhint">滚轮缩放 · 放大后小气泡也写得出公司名与股价 · 也可用 + − 0 键</span>
+        <span class="zoomhint">滚轮缩放 · 按住左键拖动平移 · 放大后小气泡也写得出公司名与股价 · 也可用 + − 0 键</span>
         <div class="zoomctl" role="group" aria-label="气泡图缩放">
           <button type="button" id="bubble-zoom-out" aria-label="缩小">−</button>
           <b id="bubble-zoom-level" aria-live="polite">1×</b>
