@@ -481,11 +481,18 @@ function curveRows(curve) {
   });
 }
 
-/* 公司榜 → 公司品类行。只取有真实行情的上市公司，未上市估值不进入行情板。 */
+/* 公司榜 → 公司品类行。未上市估值不进入行情板：它是最近一轮融资估值，不是交易行情。
+   当日没取到价的上市公司照旧进板，按过期标出来——这是本板对其他五个品类一直在做的事
+   （见 trackerAssets 与「上游过期必须逐行显示，不得静默展示旧值」那条契约），管道也正是
+   为了「不掉榜」才沿用上次已知价。原来这里写的是 mode === "market"，把回退行一并挡掉了：
+   一家公司当天取不到价就从板上整行消失，比标着「过期」显示更不透明。 */
+const STOCK_EXCLUDED_MODES = Object.freeze(["estimate", "unavailable", "unknown"]);
+
 function stockRows(companies) {
   const list = companies && Array.isArray(companies.companies) ? companies.companies : [];
   return list
-    .filter((item) => item && item.dataMeta && item.dataMeta.mode === "market" && isFiniteNumber(item.price))
+    .filter((item) => item && item.dataMeta && !STOCK_EXCLUDED_MODES.includes(item.dataMeta.mode)
+      && isFiniteNumber(item.price))
     .slice(0, STOCK_ROW_LIMIT)
     .map((item) => {
       const meta = item.dataMeta || {};

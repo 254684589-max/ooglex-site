@@ -131,7 +131,7 @@ def run_contract_tests() -> None:
         "dataMeta": make_data_meta(
             "market", "Yahoo Finance", as_of="2026-08-01", updated_at=snapshot_at, frequency="daily"
         ),
-    } for index in range(450)] + [{
+    } for index in range(500)] + [{
         "name": f"未上市公司{index}",
         "private": True,
         "dataMeta": make_data_meta(

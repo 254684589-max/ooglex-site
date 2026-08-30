@@ -304,7 +304,9 @@ function validateProvenance(board, group) {
   stock.rows.forEach((row) => {
     const upstream = listed.get(row.symbol);
     assert.ok(upstream, `${row.name} 必须来自公司榜真实记录`);
-    assert.equal(upstream.dataMeta.mode, "market", "未上市估值不得进入公司行情板");
+    assert.notEqual(upstream.dataMeta.mode, "estimate", "未上市估值不得进入公司行情板");
+    assert.ok(["market", "fallback"].includes(upstream.dataMeta.mode),
+      "公司行只能来自实时行情或沿用上次已知价这两种，不得是待确认或取不到");
     assert.equal(row.price, upstream.price, "价格必须与上游一致，不得二次加工");
   });
   const fx = categoryOf(board, "fx");
@@ -396,6 +398,34 @@ function validateStaleAndMissing(group) {
   const row = commodity.rows.filter((item) => item.symbol === target.symbol)[0];
   assert.equal(row.status, "stale", "上游过期必须逐行显示，不得静默展示旧值");
   assert.ok(commodity.summary.text.includes("过期1"));
+
+  /* 公司也走同一条规则：当日取不到价的上市公司必须标着「过期」留在板上，而不是整行消失。
+     管道沿用上次已知价正是为了不掉榜，板上再把它删掉，等于把上游的容错抵消掉，
+     而且删得无声无息——比标出来更不透明。 */
+  const staleCompany = clone(group);
+  const listedTarget = staleCompany.companies.data.companies
+    .filter((item) => item.private !== true)[0];
+  listedTarget.stale = true;
+  listedTarget.dataMeta.mode = "fallback";
+  listedTarget.dataMeta.status = "stale";
+  const stockBoard = buildBoard({
+    assetTracker: { data: staleCompany.assetTracker.data, error: null },
+    companies: { data: staleCompany.companies.data, error: null },
+    assetRanking: { data: staleCompany.assetRanking.data, error: null },
+    macro: { data: staleCompany.macro.data, error: null },
+    macroCurve: { data: staleCompany.macroCurve.data, error: null }
+  });
+  const stockRow = categoryOf(stockBoard, "stock").rows
+    .filter((item) => item.symbol === listedTarget.symbol)[0];
+  assert.ok(stockRow, "当日取不到价的上市公司不得从行情板上消失");
+  assert.equal(stockRow.status, "stale", "沿用上次已知价的公司必须逐行标为过期");
+  assert.equal(stockRow.price, listedTarget.price, "沿用的价格必须与上游一致，不得二次加工");
+
+  /* 未上市估值仍然不得进板：它是最近一轮融资估值，不是交易行情。 */
+  const privateSymbols = new Set(staleCompany.companies.data.companies
+    .filter((item) => item.private === true).map((item) => item.symbol));
+  assert.ok(categoryOf(stockBoard, "stock").rows.every((row) => !privateSymbols.has(row.symbol)),
+    "未上市估值不得进入公司行情板");
 
   const withoutChange = summarize([
     { change: { direction: "unknown" }, status: "unknown", asOf: "" }
