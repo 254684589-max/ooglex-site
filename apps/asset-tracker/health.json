@@ -1,41 +1,41 @@
 {
   "contractVersion": 1,
   "dataset": "asset-tracker",
-  "generatedAt": "2026-08-29T21:39:32Z",
-  "status": "healthy",
+  "generatedAt": "2026-08-30T09:15:32Z",
+  "status": "degraded",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-08-29T21:39:32Z",
-  "lastSuccessfulAt": "2026-08-29T21:39:32Z",
+  "lastAttemptAt": "2026-08-30T09:15:32Z",
+  "lastSuccessfulAt": "2026-08-30T09:15:32Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-08-29T21:39:32Z",
+  "publishedSnapshotAt": "2026-08-30T09:15:32Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
     "expectedRecords": 133,
-    "publishedRecords": 133,
-    "dynamicRecords": 133,
+    "publishedRecords": 193,
+    "dynamicRecords": 193,
     "counts": {
-      "market": 133,
+      "market": 192,
       "fallback": 0,
       "estimate": 0,
       "unknown": 0,
-      "unavailable": 0
+      "unavailable": 1
     },
-    "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 100.0,
-    "verifiedCoveragePct": 100.0,
-    "availableCoveragePct": 100.0
+    "publishedCoveragePct": 145.11,
+    "freshCoveragePct": 99.48,
+    "verifiedCoveragePct": 144.36,
+    "availableCoveragePct": 144.36
   },
   "attempt": {
     "status": "success",
     "published": true,
-    "producedRecords": 133,
+    "producedRecords": 193,
     "counts": {
-      "market": 133,
+      "market": 192,
       "fallback": 0,
       "estimate": 0,
       "unknown": 0,
-      "unavailable": 0
+      "unavailable": 1
     }
   },
   "sources": [
@@ -43,16 +43,16 @@
       "id": "yahoo-finance",
       "name": "Yahoo Finance",
       "role": "primary",
-      "status": "healthy",
-      "records": 133,
+      "status": "degraded",
+      "records": 193,
       "counts": {
-        "market": 133,
+        "market": 192,
         "fallback": 0,
         "estimate": 0,
         "unknown": 0,
-        "unavailable": 0
+        "unavailable": 1
       },
-      "lastSuccessAt": "2026-08-29T21:39:32Z"
+      "lastSuccessAt": "2026-08-30T09:15:32Z"
     }
   ],
   "recovery": {
