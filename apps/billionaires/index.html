@@ -6,12 +6,12 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>全球富豪实时榜 · 前250身价追踪</title>
-<meta name="description" content="追踪全球最富有的前 250 人身价与当日变动，数据每日自动更新（来源 Forbes 实时富豪榜）。">
+<title>全球富豪实时榜 · 亿万富豪全榜身价追踪</title>
+<meta name="description" content="追踪全球全部亿万富豪（净值 ≥ 10 亿美元，约 3400 位）的身价与当日变动，数据每日自动更新（来源 Forbes 实时富豪榜）。">
 <link rel="canonical" href="https://www.ooglex.com/apps/billionaires/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="全球富豪实时榜 · 前250身价追踪">
-<meta property="og:description" content="追踪全球最富有的前 250 人身价与当日变动，数据每日自动更新（来源 Forbes 实时富豪榜）。">
+<meta property="og:title" content="全球富豪实时榜 · 亿万富豪全榜身价追踪">
+<meta property="og:description" content="追踪全球全部亿万富豪（净值 ≥ 10 亿美元，约 3400 位）的身价与当日变动，数据每日自动更新（来源 Forbes 实时富豪榜）。">
 <meta property="og:url" content="https://www.ooglex.com/apps/billionaires/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -105,6 +105,25 @@
   .chg { font-size:0.78rem; font-weight:700; font-variant-numeric:tabular-nums; margin-top:1px; }
   .chg.up { color:var(--up); } .chg.down { color:var(--down); } .chg.flat { color:var(--dim); }
 
+  /* .more 用了 display:flex，会盖掉 [hidden] 的 display:none，必须显式关掉 */
+  .more[hidden], .more button[hidden] { display:none; }
+  .more { display:flex; flex-direction:column; align-items:center; gap:9px; padding:18px 0 2px; }
+  .more button { padding:8px 22px; border-radius:999px; cursor:pointer; font-family:inherit; font-size:0.88rem;
+    color:var(--text); background:var(--card); border:1px solid var(--line); transition:all .18s; }
+  .more button:hover { color:var(--gold); border-color:var(--gold); }
+  .more .moretip { color:var(--dim); font-size:0.8rem; font-variant-numeric:tabular-nums; }
+  .more .sentinel { width:100%; height:1px; }
+
+  .seg button:focus-visible, .more button:focus-visible, .search input:focus-visible {
+    outline:2px solid var(--gold); outline-offset:2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rowcard { animation:none; }
+    .rowcard .wbar { transition:none; }
+    .status.live .sdot { animation:none; }
+    * { scroll-behavior:auto !important; }
+  }
+
   .empty { text-align:center; color:var(--dim); padding:44px 0; font-size:0.92rem; }
   footer { margin-top:20px; text-align:center; color:var(--dim); font-size:0.8rem; line-height:1.85; }
   footer .src b { color:var(--text); font-weight:600; }
@@ -125,7 +144,7 @@
 
     <div class="title">
       <h1>🏆 全球富豪实时榜</h1>
-      <p>世界上最富有的前 250 人 · 身价与当日变动 · 每日自动更新</p>
+      <p>全球全部亿万富豪 · 身价与当日变动 · 每日自动更新</p>
       <div class="statusrow"><span class="status" id="status"></span></div>
     </div>
 
@@ -137,7 +156,7 @@
         <button data-sort="gain">今日涨幅</button>
         <button data-sort="loss">今日跌幅</button>
       </div>
-      <div class="search"><input id="q" type="search" placeholder="搜索姓名（中 / 英）…" autocomplete="off"></div>
+      <div class="search"><input id="q" type="search" placeholder="在全部亿万富豪中搜索姓名（中 / 英）…" autocomplete="off"></div>
     </div>
 
     <div id="list"></div>
@@ -148,6 +167,6 @@
   <script src="../../assets/particles.js"></script>
   <script src="../../assets/ambient.js"></script>
 
-<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于本页数据</h2><p style="margin:0;opacity:.85">本页追踪全球身价最高的前 250 位富豪及其当日变动，数据来源 Forbes 实时富豪榜，每日自动更新。身价以美元计，主要随其持有的上市公司股价波动，因此「当日变动」更多反映市场行情，而非真实可动用现金。榜单仅供了解全球财富格局参考。</p></section>
+<section class="ogx-about" style="max-width:920px;margin:24px auto 48px;padding:18px 22px;border:1px solid rgba(128,128,128,.28);border-radius:14px;background:rgba(128,128,128,.06);font-size:14px;line-height:1.85"><h2 style="font-size:16px;margin:0 0 10px;font-weight:700">关于本页数据</h2><p style="margin:0;opacity:.85">本页追踪全球全部亿万富豪（净值 ≥ 10 亿美元，当前约 3400 位）及其当日变动，数据来源 Forbes 实时富豪榜，每日自动更新，实际人数以页面顶部显示的当日数字为准。身价以美元计，主要随其持有的上市公司股价波动，因此「当日变动」更多反映市场行情，而非真实可动用现金。榜单头部人物提供中文名对照，排名靠后的人物显示福布斯英文原名。榜单仅供了解全球财富格局参考。</p></section>
 </body>
 </html>

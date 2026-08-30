@@ -86,11 +86,12 @@
         return row("涨幅居首", esc(t.name) + " " + pct(t.yoyNominal), "up") +
           row("跌幅居首", esc(b.name) + " " + pct(b.yoyNominal), "down");
       } },
-    { folder: "billionaires", en: "Billionaires", name: "全球富豪实时榜", tag: "前 250 富豪身价",
+    { folder: "billionaires", en: "Billionaires", name: "全球富豪实时榜", tag: "亿万富豪全榜 · 身价",
       render: function (d) {
         var p = (d.people || [])[0]; if (!p) return "<div class='loading'>暂无数据</div>";
+        var n = d.count || (d.people || []).length;
         return "<div class='big'>" + worth(p.worth) + "<small>#1 " + esc(p.name) + "</small></div>" +
-          row("前 " + (d.count || 250) + " 总财富", worth(d.totalWorth));
+          row(n + " 位富豪总财富", worth(d.totalWorth));
       } },
     { folder: "companies", en: "Companies", name: "全球公司市值榜", tag: "全球 500 强 · 市值 · 股价",
       render: function (d) {

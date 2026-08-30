@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-构建「全球前 250 富豪身价」数据：抓取 Forbes 实时富豪榜公开 JSON 接口，取前 250，
-计算身价（十亿美元）与当日变动，写入 apps/billionaires/data.json，供静态页面读取渲染。
+构建「全球亿万富豪身价」全榜数据：抓取 Forbes 实时富豪榜公开 JSON 接口，取前 TOP_N（3428，
+即福布斯 2026 年度榜的亿万富豪总数），计算身价（十亿美元）与当日变动，写入
+apps/billionaires/data.json，供静态页面读取渲染。
 
 设计要点（与 asset-tracker 取数风格一致）：
 - 数据源：Forbes 实时富豪榜（forbesapi/person/rtb），无需任何 API Key；
 - 纯 requests + 硬超时，绝不挂起；整源失败则保留上次 data.json 不覆盖；
 - 当日变动优先用 Forbes 的 estWorthPrev（上一参考时点估值），缺失时退回「今值 − 上次快照值」；
 - 中文名 / 国家 / 行业做常见词映射，未命中回退英文原文；国家附 emoji 国旗。
+  中文名词典以榜单头部为主，扩到全榜后尾部大量人物按设计回退英文原名，不做音译臆造；
+- 截断按人数取 TOP_N，但边界落在并列排名中间时补齐整个并列组（福布斯榜尾并列组可达数十人）；
+- 输出「每人一行」的紧凑 JSON：体积较 indent=2 省约 20%，同时保留逐人可 diff 的可审阅性。
 由 .github/workflows/billionaires.yml 每日定时运行，并把更新后的 data.json 提交回仓库。
 """
 import json
@@ -18,11 +22,11 @@ from datetime import datetime, timezone
 import requests
 
 OUT_PATH = os.path.join("apps", "billionaires", "data.json")
-TOP_N = 250
+TOP_N = 3428  # 福布斯 2026 年度榜亿万富豪总数；实时榜实际返回可能略少，以返回为准
 
 API = ("https://www.forbes.com/forbesapi/person/rtb/0/position/true.json"
        "?fields=rank,personName,finalWorth,estWorthPrev,source,"
-       "countryOfCitizenship,industries,squareImage,birthDate,gender&limit=320")
+       "countryOfCitizenship,industries,squareImage,birthDate,gender&limit=4500")
 HEADERS = {"User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                           "(KHTML, like Gecko) Chrome/123.0 Safari/537.36")}
 
@@ -144,6 +148,43 @@ def zh_name(en):
     return en
 
 
+def cut_at_top_n(rows):
+    """截断到 TOP_N 人。边界若落在并列排名中间，则补齐整个并列组再截断。
+
+    福布斯用竞赛式排名，越往榜尾并列组越大（当前前 250 里 rank 194 就并列 7 人，
+    $1B 门槛附近可达数十人）。按人数硬切会把同一名次的人切掉一半，页面上表现为
+    「并列第 N 名」只显示了其中几个，所以宁可多收几人也不切开并列组。
+    """
+    if len(rows) <= TOP_N:
+        return rows
+    cut = TOP_N
+    edge = rows[TOP_N - 1].get("rank")
+    while cut < len(rows) and rows[cut].get("rank") == edge:
+        cut += 1
+    if cut > TOP_N:
+        print(f"第 {TOP_N} 位落在并列 #{edge} 组中间，补齐至 {cut} 人")
+    return rows[:cut]
+
+
+def dump_rowwise(data, f):
+    """写出「人物数组每人一行」的 JSON。
+
+    体积比 indent=2 省约 20%（全榜约 1.2MB vs 1.5MB，按天提交一年差 100MB 以上），
+    同时每人单独一行，git diff 仍能逐人比对——纯紧凑写法会把全文压成一行，
+    数据被写坏时无法在 diff 里看出来。
+    """
+    head = [(k, v) for k, v in data.items() if k != "people"]
+    people = data["people"]
+    f.write("{\n")
+    for k, v in head:
+        f.write(f"  {json.dumps(k, ensure_ascii=False)}: {json.dumps(v, ensure_ascii=False)},\n")
+    f.write('  "people": [\n')
+    for i, p in enumerate(people):
+        row = json.dumps(p, ensure_ascii=False, separators=(",", ":"))
+        f.write(f"    {row}{',' if i < len(people) - 1 else ''}\n")
+    f.write("  ]\n}\n")
+
+
 def build():
     prev = load_prev()
     try:
@@ -187,28 +228,33 @@ def build():
             "image": p.get("squareImage") or "",
             "age": age_from(p.get("birthDate")),
         })
-        if len(out) >= TOP_N:
-            break
+
+    out = cut_at_top_n(out)
 
     if not out:
         print("无数据且无历史快照，跳过（不覆盖）。")
         return
 
+    zh_hit = sum(1 for r in out if r["name"] != r["nameEn"])
     data = {
         "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "asOf": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
         "source": "Forbes Real-Time Billionaires",
+        "frequency": "daily",
+        "status": "ok",
         "count": len(out),
         "totalWorth": round(sum(r["worth"] for r in out), 1),
         "note": ("数据来自 Forbes 实时富豪榜，每日自动更新；身价单位为十亿美元（B），"
-                 "当日变动为较上一参考时点的估算。仅供参考，不构成任何建议。"),
+                 "当日变动为较上一参考时点的估算。榜单覆盖全部亿万富豪（净值 ≥ 10 亿美元），"
+                 f"其中 {zh_hit} 人有中文名对照，其余显示福布斯英文原名。仅供参考，不构成任何建议。"),
         "people": out,
     }
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
     with open(OUT_PATH, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+        dump_rowwise(data, f)
     print(f"写入 {OUT_PATH}：{len(out)} 人，榜首 {out[0]['nameEn']} ${out[0]['worth']}B，"
-          f"前{len(out)}总财富 ${data['totalWorth']}B")
+          f"榜尾 #{out[-1]['rank']} ${out[-1]['worth']}B，总财富 ${data['totalWorth']}B，"
+          f"中文名命中 {zh_hit}（{zh_hit / len(out) * 100:.0f}%）")
 
 
 if __name__ == "__main__":
