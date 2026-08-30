@@ -12,6 +12,7 @@ apps/billionaires/data.json，供静态页面读取渲染。
 - 中文名 / 国家 / 行业做常见词映射，未命中回退英文原文；国家附 emoji 国旗。
   中文名词典以榜单头部为主，扩到全榜后尾部大量人物按设计回退英文原名，不做音译臆造；
 - 截断按人数取 TOP_N，但边界落在并列排名中间时补齐整个并列组（福布斯榜尾并列组可达数十人）；
+- 身价低于 MIN_WORTH_B 的一并滤除：实时榜尾部带着已跌出十亿门槛、福布斯仍在跟踪的前富豪；
 - 输出「每人一行」的紧凑 JSON：体积较 indent=2 省约 20%，同时保留逐人可 diff 的可审阅性。
 由 .github/workflows/billionaires.yml 每日定时运行，并把更新后的 data.json 提交回仓库。
 """
@@ -23,6 +24,11 @@ import requests
 
 OUT_PATH = os.path.join("apps", "billionaires", "data.json")
 TOP_N = 3428  # 福布斯 2026 年度榜亿万富豪总数；实时榜实际返回可能略少，以返回为准
+# 身价下限（十亿美元）。实时榜尾部会带上「已经跌出十亿门槛、但福布斯仍在跟踪」的人
+# （2026-08-30 实测 5 人：Kanye West $0.40B，Elizabeth Holmes / Gary Wang / Rene Benko /
+# Sam Bankman-Fried 均为 $0.00B）。页面写的是「全部亿万富豪，净值 ≥ 10 亿美元」，
+# 挂 $0.0B 的行出去自相矛盾，故在此按门槛过滤。
+MIN_WORTH_B = 1.0
 
 API = ("https://www.forbes.com/forbesapi/person/rtb/0/position/true.json"
        "?fields=rank,personName,finalWorth,estWorthPrev,source,"
@@ -196,10 +202,13 @@ def build():
             return
         people = []
 
-    out = []
+    out, dropped = [], 0
     for p in people:
         worth = to_b(p.get("finalWorth"))
         if worth is None:
+            continue
+        if worth < MIN_WORTH_B:  # 已跌出十亿门槛的前富豪，不进榜
+            dropped += 1
             continue
         name_en = p.get("personName") or ""
         prev_m = p.get("estWorthPrev")
@@ -254,7 +263,8 @@ def build():
         dump_rowwise(data, f)
     print(f"写入 {OUT_PATH}：{len(out)} 人，榜首 {out[0]['nameEn']} ${out[0]['worth']}B，"
           f"榜尾 #{out[-1]['rank']} ${out[-1]['worth']}B，总财富 ${data['totalWorth']}B，"
-          f"中文名命中 {zh_hit}（{zh_hit / len(out) * 100:.0f}%）")
+          f"中文名命中 {zh_hit}（{zh_hit / len(out) * 100:.0f}%）"
+          f"，另滤除身价低于 ${MIN_WORTH_B}B 的 {dropped} 人")
 
 
 if __name__ == "__main__":
