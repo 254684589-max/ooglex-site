@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-08-30T01:59:35Z",
+  "updatedAt": "2026-08-30T02:03:04Z",
   "asOf": "2026-08-30",
   "source": "Forbes Real-Time Billionaires",
   "frequency": "daily",
   "status": "ok",
-  "count": 3422,
-  "totalWorth": 20456.5,
+  "count": 3417,
+  "totalWorth": 20456.0,
   "note": "数据来自 Forbes 实时富豪榜，每日自动更新；身价单位为十亿美元（B），当日变动为较上一参考时点的估算。榜单覆盖全部亿万富豪（净值 ≥ 10 亿美元），其中 250 人有中文名对照，其余显示福布斯英文原名。仅供参考，不构成任何建议。",
   "people": [
     {"rank":1,"name":"埃隆·马斯克","nameEn":"Elon Musk","worth":873.11,"change":0.0,"changePct":0.0,"country":"美国","flag":"🇺🇸","source":"Tesla, SpaceX","industry":"科技","image":"https://specials-images.forbesimg.com/imageserve/62d700cd6094d2c180f269b9/416x416.jpg?background=000000&cropX1=0&cropX2=959&cropY1=0&cropY2=959","age":55},
@@ -3424,11 +3424,6 @@
     {"rank":3408,"name":"Shayne Coplan","nameEn":"Shayne Coplan","worth":1.0,"change":0.0,"changePct":0.0,"country":"美国","flag":"🇺🇸","source":"Polymarket","industry":"科技","image":"https://specials-images.forbesimg.com/imageserve/6727ecff03a03d206f0860b1/416x416.jpg?background=000000&cropX1=1009&cropX2=2075&cropY1=184&cropY2=1250","age":28},
     {"rank":3408,"name":"Stephen Ketchum","nameEn":"Stephen Ketchum","worth":1.0,"change":0.0,"changePct":0.0,"country":"美国","flag":"🇺🇸","source":"Investments","industry":"金融投资","image":"","age":65},
     {"rank":3408,"name":"Thor Bjorgolfsson","nameEn":"Thor Bjorgolfsson","worth":1.0,"change":0.0,"changePct":0.0,"country":"冰岛","flag":"🇮🇸","source":"Investments","industry":"多元化","image":"//specials-images.forbesimg.com/imageserve/5e76590a10380d0006fbb132/416x416.jpg?background=000000&cropX1=145&cropX2=1383&cropY1=172&cropY2=1409","age":59},
-    {"rank":3408,"name":"Trae Stephens","nameEn":"Trae Stephens","worth":1.0,"change":0.0,"changePct":0.0,"country":"美国","flag":"🇺🇸","source":"Defense technology","industry":"科技","image":"https://specials-images.forbesimg.com/imageserve/6a0f46dd548ed50b792f84ae/416x416.jpg?background=000000&cropX1=200&cropX2=1503&cropY1=175&cropY2=1479","age":43},
-    {"rank":3418,"name":"Kanye West","nameEn":"Kanye West","worth":0.4,"change":0.0,"changePct":0.0,"country":"美国","flag":"🇺🇸","source":"music, sneakers","industry":"时尚零售","image":"//specials-images.forbesimg.com/imageserve/5ed00f17d4a99d0006d2e738/416x416.jpg?background=000000&cropX1=154&cropX2=4820&cropY1=651&cropY2=5314","age":49},
-    {"rank":3419,"name":"Elizabeth Holmes","nameEn":"Elizabeth Holmes","worth":0.0,"change":null,"changePct":null,"country":"美国","flag":"🇺🇸","source":"blood testing","industry":"医疗健康","image":"https://specials-images.forbesimg.com/imageserve/f73972b9d28df45e961ffa27a62cdff5/416x416.jpg?background=000000&cropX1=0&cropX2=744&cropY1=150&cropY2=894","age":42},
-    {"rank":3419,"name":"Gary Wang","nameEn":"Gary Wang","worth":0.0,"change":null,"changePct":null,"country":"美国","flag":"🇺🇸","source":"cryptocurrency exchange","industry":"金融投资","image":"","age":33},
-    {"rank":3419,"name":"Rene Benko","nameEn":"Rene Benko","worth":0.0,"change":null,"changePct":null,"country":"奥地利","flag":"🇦🇹","source":"Real estate, retail","industry":"房地产","image":"//specials-images.forbesimg.com/imageserve/5e741d5a10380d0006bdab99/416x416.jpg?background=000000&cropX1=884&cropX2=2726&cropY1=44&cropY2=1885","age":49},
-    {"rank":3419,"name":"Sam Bankman-Fried","nameEn":"Sam Bankman-Fried","worth":0.0,"change":null,"changePct":null,"country":"美国","flag":"🇺🇸","source":"cryptocurrency exchange","industry":"金融投资","image":"https://specials-images.forbesimg.com/imageserve/615b149110bfa4447ff49baa/416x416.jpg?background=000000&cropX1=41&cropX2=2398&cropY1=333&cropY2=2691","age":34}
+    {"rank":3408,"name":"Trae Stephens","nameEn":"Trae Stephens","worth":1.0,"change":0.0,"changePct":0.0,"country":"美国","flag":"🇺🇸","source":"Defense technology","industry":"科技","image":"https://specials-images.forbesimg.com/imageserve/6a0f46dd548ed50b792f84ae/416x416.jpg?background=000000&cropX1=200&cropX2=1503&cropY1=175&cropY2=1479","age":43}
   ]
 }
