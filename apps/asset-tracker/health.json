@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "asset-tracker",
-  "generatedAt": "2026-08-30T21:53:41Z",
-  "status": "degraded",
+  "generatedAt": "2026-08-31T23:19:55Z",
+  "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-08-30T21:53:41Z",
-  "lastSuccessfulAt": "2026-08-30T21:53:41Z",
+  "lastAttemptAt": "2026-08-31T23:19:55Z",
+  "lastSuccessfulAt": "2026-08-31T23:19:55Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-08-30T21:53:41Z",
+  "publishedSnapshotAt": "2026-08-31T23:19:55Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -15,14 +15,14 @@
     "publishedRecords": 133,
     "dynamicRecords": 133,
     "counts": {
-      "market": 131,
-      "fallback": 2,
+      "market": 133,
+      "fallback": 0,
       "estimate": 0,
       "unknown": 0,
       "unavailable": 0
     },
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 98.5,
+    "freshCoveragePct": 100.0,
     "verifiedCoveragePct": 100.0,
     "availableCoveragePct": 100.0
   },
@@ -31,8 +31,8 @@
     "published": true,
     "producedRecords": 133,
     "counts": {
-      "market": 131,
-      "fallback": 2,
+      "market": 133,
+      "fallback": 0,
       "estimate": 0,
       "unknown": 0,
       "unavailable": 0
@@ -43,16 +43,16 @@
       "id": "yahoo-finance",
       "name": "Yahoo Finance",
       "role": "primary",
-      "status": "degraded",
+      "status": "healthy",
       "records": 133,
       "counts": {
-        "market": 131,
-        "fallback": 2,
+        "market": 133,
+        "fallback": 0,
         "estimate": 0,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-08-30T21:53:41Z"
+      "lastSuccessAt": "2026-08-31T23:19:55Z"
     }
   ],
   "recovery": {
