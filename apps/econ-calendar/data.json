@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-08-30T21:55:54Z",
-  "asOf": "2026-08-30",
+  "updatedAt": "2026-08-31T19:11:37Z",
+  "asOf": "2026-08-31",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-30 ~ 2026-09-05",
-  "count": 110,
+  "count": 112,
   "highCount": 15,
   "events": [
     {
@@ -230,7 +230,7 @@
       "title": "制造业 PMI",
       "titleEn": "RatingDog Manufacturing PMI",
       "impact": "low",
-      "forecast": "51.5",
+      "forecast": "51.1",
       "previous": "50.9",
       "actual": null
     },
@@ -1035,7 +1035,7 @@
       "titleEn": "Spanish 10-y Bond Auction",
       "impact": "low",
       "forecast": null,
-      "previous": null,
+      "previous": "3.54|2.4",
       "actual": null
     },
     {
@@ -1047,7 +1047,7 @@
       "titleEn": "French 10-y Bond Auction",
       "impact": "low",
       "forecast": null,
-      "previous": null,
+      "previous": "3.86|3.7",
       "actual": null
     },
     {
@@ -1183,6 +1183,30 @@
       "actual": null
     },
     {
+      "ts": "2026-09-03T19:00:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Hammack Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-09-03T19:05:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Goolsbee Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
       "ts": "2026-09-03T23:30:00Z",
       "ccy": "JPY",
       "country": "日本",
@@ -1298,7 +1322,7 @@
       "title": "非农就业人数变化",
       "titleEn": "Non-Farm Employment Change",
       "impact": "high",
-      "forecast": "58K",
+      "forecast": "55K",
       "previous": "-23K",
       "actual": null
     },
