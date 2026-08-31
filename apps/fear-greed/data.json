@@ -1,40 +1,40 @@
 {
-  "updatedAt": "2026-08-30T21:55:02Z",
-  "asOf": "2026-08-30",
+  "updatedAt": "2026-08-31T23:21:16Z",
+  "asOf": "2026-08-31",
   "source": "CNN Business Fear & Greed Index",
-  "score": 54,
+  "score": 50,
   "rating": "neutral",
   "ratingZh": "中性",
   "refs": {
     "now": {
-      "score": 54,
+      "score": 50,
       "rating": "neutral",
       "ratingZh": "中性"
     },
     "close": {
-      "score": 58,
-      "rating": "greed",
-      "ratingZh": "贪婪"
+      "score": 54,
+      "rating": "neutral",
+      "ratingZh": "中性"
     },
     "week": {
-      "score": 55,
+      "score": 56,
       "rating": "greed",
       "ratingZh": "贪婪"
     },
     "month": {
-      "score": 38,
-      "rating": "fear",
-      "ratingZh": "恐惧"
+      "score": 45,
+      "rating": "neutral",
+      "ratingZh": "中性"
     },
     "year": {
-      "score": 64,
+      "score": 62,
       "rating": "greed",
       "ratingZh": "贪婪"
     }
   },
   "indicators": [
     {
-      "score": 40,
+      "score": 35,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "market_momentum_sp500",
@@ -42,23 +42,23 @@
       "desc": "标普500 相对125日均线"
     },
     {
-      "score": 29,
-      "rating": "fear",
-      "ratingZh": "恐惧",
+      "score": 25,
+      "rating": "extreme fear",
+      "ratingZh": "极度恐惧",
       "key": "stock_price_strength",
       "name": "股价强度",
       "desc": "创52周新高 vs 新低个股"
     },
     {
-      "score": 59,
-      "rating": "greed",
-      "ratingZh": "贪婪",
+      "score": 54,
+      "rating": "neutral",
+      "ratingZh": "中性",
       "key": "stock_price_breadth",
       "name": "股价广度",
       "desc": "麦克莱伦成交量总和指数"
     },
     {
-      "score": 73,
+      "score": 65,
       "rating": "greed",
       "ratingZh": "贪婪",
       "key": "put_call_options",
@@ -74,7 +74,7 @@
       "desc": "VIX 及其50日均线"
     },
     {
-      "score": 40,
+      "score": 25,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "safe_haven_demand",
@@ -82,7 +82,7 @@
       "desc": "股票 vs 国债 20日收益差"
     },
     {
-      "score": 90,
+      "score": 94,
       "rating": "extreme greed",
       "ratingZh": "极度贪婪",
       "key": "junk_bond_demand",
@@ -422,6 +422,10 @@
     {
       "t": "2026-08-27",
       "v": 55
+    },
+    {
+      "t": "2026-08-31",
+      "v": 50
     }
   ],
   "note": "数据来自 CNN 恐慌与贪婪指数：0 = 极度恐惧，100 = 极度贪婪，由 7 个市场情绪指标综合而成，每日自动更新。仅供参考，不构成建议。"
