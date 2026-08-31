@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-31T19:11:37Z",
+  "updatedAt": "2026-08-31T23:22:06Z",
   "asOf": "2026-08-31",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-30 ~ 2026-09-05",
@@ -206,7 +206,7 @@
       "title": "建筑许可 环比",
       "titleEn": "Building Approvals m/m",
       "impact": "low",
-      "forecast": "-4.8%",
+      "forecast": "-4.7%",
       "previous": "7.2%",
       "actual": null
     },
@@ -230,7 +230,7 @@
       "title": "制造业 PMI",
       "titleEn": "RatingDog Manufacturing PMI",
       "impact": "low",
-      "forecast": "51.1",
+      "forecast": "51.0",
       "previous": "50.9",
       "actual": null
     },
@@ -302,7 +302,7 @@
       "title": "零售销售 同比",
       "titleEn": "Retail Sales y/y",
       "impact": "low",
-      "forecast": "1.3%",
+      "forecast": "1.6%",
       "previous": "1.5%",
       "actual": null
     },
@@ -314,7 +314,7 @@
       "title": "制造业 PMI",
       "titleEn": "Spanish Manufacturing PMI",
       "impact": "low",
-      "forecast": "50.4",
+      "forecast": "50.3",
       "previous": "50.2",
       "actual": null
     },
@@ -338,7 +338,7 @@
       "title": "制造业 PMI",
       "titleEn": "Italian Manufacturing PMI",
       "impact": "low",
-      "forecast": "51.6",
+      "forecast": "51.4",
       "previous": "51.3",
       "actual": null
     },
@@ -434,7 +434,7 @@
       "title": "对个人净贷款 环比",
       "titleEn": "Net Lending to Individuals m/m",
       "impact": "low",
-      "forecast": "9.2B",
+      "forecast": "7.2B",
       "previous": "9.5B",
       "actual": null
     },
@@ -470,7 +470,7 @@
       "title": "CPI（消费者物价指数） 环比",
       "titleEn": "Italian Prelim CPI m/m",
       "impact": "low",
-      "forecast": "0.4%",
+      "forecast": "0.5%",
       "previous": "0.2%",
       "actual": null
     },
@@ -542,7 +542,7 @@
       "title": "ISM 制造业物价",
       "titleEn": "ISM Manufacturing Prices",
       "impact": "medium",
-      "forecast": "71.2",
+      "forecast": "70.5",
       "previous": "71.1",
       "actual": null
     },
@@ -746,7 +746,7 @@
       "title": "就业人数变化",
       "titleEn": "Spanish Unemployment Change",
       "impact": "low",
-      "forecast": "21.5K",
+      "forecast": "15.4K",
       "previous": "19.5K",
       "actual": null
     },
@@ -758,7 +758,7 @@
       "title": "非农就业人数变化",
       "titleEn": "ADP Non-Farm Employment Change",
       "impact": "medium",
-      "forecast": "47K",
+      "forecast": "48K",
       "previous": "44K",
       "actual": null
     },
@@ -794,7 +794,7 @@
       "title": "工厂订单 环比",
       "titleEn": "Factory Orders m/m",
       "impact": "low",
-      "forecast": "0.6%",
+      "forecast": "0.7%",
       "previous": "-0.3%",
       "actual": null
     },
@@ -878,7 +878,7 @@
       "title": "贸易帐",
       "titleEn": "Goods Trade Balance",
       "impact": "low",
-      "forecast": "1.39B",
+      "forecast": "1.50B",
       "previous": "1.93B",
       "actual": null
     },
@@ -938,7 +938,7 @@
       "title": "GDP（国内生产总值） 季环比",
       "titleEn": "GDP q/q",
       "impact": "low",
-      "forecast": "1.7%",
+      "forecast": "1.5%",
       "previous": "0.7%",
       "actual": null
     },
@@ -950,7 +950,7 @@
       "title": "服务业 PMI",
       "titleEn": "Spanish Services PMI",
       "impact": "low",
-      "forecast": "58.8",
+      "forecast": "59.0",
       "previous": "58.3",
       "actual": null
     },
@@ -962,7 +962,7 @@
       "title": "服务业 PMI",
       "titleEn": "Italian Services PMI",
       "impact": "low",
-      "forecast": "53.3",
+      "forecast": "53.6",
       "previous": "52.5",
       "actual": null
     },
@@ -1022,7 +1022,7 @@
       "title": "PPI（生产者物价指数） 环比",
       "titleEn": "PPI m/m",
       "impact": "low",
-      "forecast": "1.3%",
+      "forecast": "1.2%",
       "previous": "-0.3%",
       "actual": null
     },
@@ -1070,7 +1070,7 @@
       "title": "Labor Productivity q/q",
       "titleEn": "Labor Productivity q/q",
       "impact": "low",
-      "forecast": "0.2%",
+      "forecast": "0.7%",
       "previous": "-0.5%",
       "actual": null
     },
@@ -1142,7 +1142,7 @@
       "title": "贸易帐",
       "titleEn": "Trade Balance",
       "impact": "low",
-      "forecast": "-86.4B",
+      "forecast": "-89.4B",
       "previous": "-73.3B",
       "actual": null
     },
@@ -1166,7 +1166,7 @@
       "title": "ISM 服务业 PMI",
       "titleEn": "ISM Services PMI",
       "impact": "medium",
-      "forecast": "54.1",
+      "forecast": "54.2",
       "previous": "54.1",
       "actual": null
     },
@@ -1226,7 +1226,7 @@
       "title": "工厂订单 环比",
       "titleEn": "German Factory Orders m/m",
       "impact": "low",
-      "forecast": "0.4%",
+      "forecast": "0.3%",
       "previous": "3.1%",
       "actual": null
     },
@@ -1250,7 +1250,7 @@
       "title": "采购经理人指数 PMI",
       "titleEn": "Construction PMI",
       "impact": "low",
-      "forecast": "45.9",
+      "forecast": "45.8",
       "previous": "44.7",
       "actual": null
     },
@@ -1286,7 +1286,7 @@
       "title": "就业人数变化",
       "titleEn": "Employment Change",
       "impact": "high",
-      "forecast": "15.8K",
+      "forecast": "15.1K",
       "previous": "75.1K",
       "actual": null
     },
