@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-08-31T23:21:16Z",
-  "asOf": "2026-08-31",
+  "updatedAt": "2026-09-01T22:34:58Z",
+  "asOf": "2026-09-01",
   "source": "CNN Business Fear & Greed Index",
-  "score": 50,
-  "rating": "neutral",
-  "ratingZh": "中性",
+  "score": 45,
+  "rating": "fear",
+  "ratingZh": "恐惧",
   "refs": {
     "now": {
+      "score": 45,
+      "rating": "fear",
+      "ratingZh": "恐惧"
+    },
+    "close": {
       "score": 50,
       "rating": "neutral",
       "ratingZh": "中性"
     },
-    "close": {
-      "score": 54,
-      "rating": "neutral",
-      "ratingZh": "中性"
-    },
     "week": {
-      "score": 56,
+      "score": 57,
       "rating": "greed",
       "ratingZh": "贪婪"
     },
@@ -34,7 +34,7 @@
   },
   "indicators": [
     {
-      "score": 35,
+      "score": 31,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "market_momentum_sp500",
@@ -42,7 +42,7 @@
       "desc": "标普500 相对125日均线"
     },
     {
-      "score": 25,
+      "score": 21,
       "rating": "extreme fear",
       "ratingZh": "极度恐惧",
       "key": "stock_price_strength",
@@ -50,7 +50,7 @@
       "desc": "创52周新高 vs 新低个股"
     },
     {
-      "score": 54,
+      "score": 49,
       "rating": "neutral",
       "ratingZh": "中性",
       "key": "stock_price_breadth",
@@ -58,9 +58,9 @@
       "desc": "麦克莱伦成交量总和指数"
     },
     {
-      "score": 65,
-      "rating": "greed",
-      "ratingZh": "贪婪",
+      "score": 44,
+      "rating": "fear",
+      "ratingZh": "恐惧",
       "key": "put_call_options",
       "name": "看跌/看涨期权",
       "desc": "5日 Put/Call 比率"
@@ -74,7 +74,7 @@
       "desc": "VIX 及其50日均线"
     },
     {
-      "score": 25,
+      "score": 28,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "safe_haven_demand",
@@ -82,7 +82,7 @@
       "desc": "股票 vs 国债 20日收益差"
     },
     {
-      "score": 94,
+      "score": 89,
       "rating": "extreme greed",
       "ratingZh": "极度贪婪",
       "key": "junk_bond_demand",
@@ -424,8 +424,8 @@
       "v": 55
     },
     {
-      "t": "2026-08-31",
-      "v": 50
+      "t": "2026-09-01",
+      "v": 45
     }
   ],
   "note": "数据来自 CNN 恐慌与贪婪指数：0 = 极度恐惧，100 = 极度贪婪，由 7 个市场情绪指标综合而成，每日自动更新。仅供参考，不构成建议。"
