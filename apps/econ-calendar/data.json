@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-01T16:49:24Z",
+  "updatedAt": "2026-09-01T22:35:50Z",
   "asOf": "2026-09-01",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-30 ~ 2026-09-05",
@@ -758,7 +758,7 @@
       "title": "非农就业人数变化",
       "titleEn": "ADP Non-Farm Employment Change",
       "impact": "medium",
-      "forecast": "48K",
+      "forecast": "47K",
       "previous": "44K",
       "actual": null
     },
@@ -818,7 +818,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": "0.0M",
+      "forecast": "-0.4M",
       "previous": "0.1M",
       "actual": null
     },
@@ -1190,7 +1190,7 @@
       "title": "天然气库存",
       "titleEn": "Natural Gas Storage",
       "impact": "low",
-      "forecast": null,
+      "forecast": "30B",
       "previous": "15B",
       "actual": null
     },
