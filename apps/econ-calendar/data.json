@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-08-31T23:22:06Z",
-  "asOf": "2026-08-31",
+  "updatedAt": "2026-09-01T16:49:24Z",
+  "asOf": "2026-09-01",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-30 ~ 2026-09-05",
-  "count": 112,
+  "count": 113,
   "highCount": 15,
   "events": [
     {
@@ -267,7 +267,7 @@
       "titleEn": "German Retail Sales m/m",
       "impact": "low",
       "forecast": "0.4%",
-      "previous": "-1.1%",
+      "previous": "-0.7%",
       "actual": null
     },
     {
@@ -295,7 +295,7 @@
       "actual": null
     },
     {
-      "ts": "2026-09-01T06:30:00Z",
+      "ts": "2026-09-01T06:33:00Z",
       "ccy": "CHF",
       "country": "瑞士",
       "flag": "🇨🇭",
@@ -487,6 +487,18 @@
       "actual": null
     },
     {
+      "ts": "2026-09-01T12:30:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "德央行行长讲话",
+      "titleEn": "German Buba President Nagel Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
       "ts": "2026-09-01T13:05:00Z",
       "ccy": "USD",
       "country": "美国",
@@ -571,7 +583,7 @@
       "actual": null
     },
     {
-      "ts": "2026-09-01T14:10:00Z",
+      "ts": "2026-09-01T14:04:00Z",
       "ccy": "USD",
       "country": "美国",
       "flag": "🇺🇸",
@@ -595,18 +607,6 @@
       "actual": null
     },
     {
-      "ts": "2026-09-01T14:50:00Z",
-      "ccy": "NZD",
-      "country": "新西兰",
-      "flag": "🇳🇿",
-      "title": "GDT Price Index",
-      "titleEn": "GDT Price Index",
-      "impact": "low",
-      "forecast": null,
-      "previous": "2.3%",
-      "actual": null
-    },
-    {
       "ts": "2026-09-01T15:15:00Z",
       "ccy": "All",
       "country": "全球",
@@ -616,6 +616,18 @@
       "impact": "low",
       "forecast": null,
       "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-09-01T15:25:00Z",
+      "ccy": "NZD",
+      "country": "新西兰",
+      "flag": "🇳🇿",
+      "title": "GDT Price Index",
+      "titleEn": "GDT Price Index",
+      "impact": "low",
+      "forecast": null,
+      "previous": "2.3%",
       "actual": null
     },
     {
@@ -652,18 +664,6 @@
       "impact": "low",
       "forecast": "-13.5%",
       "previous": "-13.8%",
-      "actual": null
-    },
-    {
-      "ts": "2026-09-02T00:30:00Z",
-      "ccy": "EUR",
-      "country": "欧元区",
-      "flag": "🇪🇺",
-      "title": "德央行行长讲话",
-      "titleEn": "German Buba President Nagel Speaks",
-      "impact": "low",
-      "forecast": null,
-      "previous": null,
       "actual": null
     },
     {
@@ -818,7 +818,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": null,
+      "forecast": "0.0M",
       "previous": "0.1M",
       "actual": null
     },
@@ -830,6 +830,18 @@
       "title": "Beige Book",
       "titleEn": "Beige Book",
       "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-09-02T20:10:00Z",
+      "ccy": "NZD",
+      "country": "新西兰",
+      "flag": "🇳🇿",
+      "title": "新西兰联储官员讲话",
+      "titleEn": "RBNZ Gov Breman Speaks",
+      "impact": "medium",
       "forecast": null,
       "previous": null,
       "actual": null
