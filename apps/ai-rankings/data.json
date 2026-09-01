@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-08-31T23:22:29Z",
-  "asOf": "2026-08-31",
+  "updatedAt": "2026-09-01T22:36:11Z",
+  "asOf": "2026-09-01",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -63,7 +63,7 @@
       "orgCn": "OpenAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1482,
+      "arena": 1483,
       "livebench": 81.6,
       "aa": 58.9,
       "ctx": "400K",
@@ -89,7 +89,7 @@
       "orgCn": "谷歌",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1490,
+      "arena": 1491,
       "livebench": 79.9,
       "aa": null,
       "ctx": "1M",
@@ -102,11 +102,24 @@
       "orgCn": "Meta",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1498,
+      "arena": 1499,
       "livebench": 78.9,
       "aa": null,
       "ctx": null,
       "price": 2.0
+    },
+    {
+      "id": "claude-opus-4-8",
+      "name": "Claude Opus 4.8",
+      "org": "Anthropic",
+      "orgCn": "Anthropic",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1482,
+      "livebench": null,
+      "aa": 56.5,
+      "ctx": "1M",
+      "price": 10.0
     },
     {
       "id": "qwen3-8",
@@ -122,15 +135,15 @@
       "price": 3.0
     },
     {
-      "id": "claude-opus-4-8",
-      "name": "Claude Opus 4.8",
+      "id": "claude-opus-4-7",
+      "name": "Claude Opus 4.7",
       "org": "Anthropic",
       "orgCn": "Anthropic",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1481,
+      "arena": 1502,
       "livebench": null,
-      "aa": 56.5,
+      "aa": 55.4,
       "ctx": "1M",
       "price": 10.0
     },
@@ -146,19 +159,6 @@
       "aa": 57.1,
       "ctx": "1M",
       "price": 6.0
-    },
-    {
-      "id": "claude-opus-4-7",
-      "name": "Claude Opus 4.7",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1502,
-      "livebench": null,
-      "aa": 55.4,
-      "ctx": "1M",
-      "price": 10.0
     },
     {
       "id": "grok-4-6",
@@ -206,11 +206,24 @@
       "orgCn": "智谱",
       "flag": "🇨🇳",
       "open": true,
-      "arena": 1484,
+      "arena": 1483,
       "livebench": 76.6,
       "aa": null,
       "ctx": "1M",
       "price": 2.15
+    },
+    {
+      "id": "muse-spark-1-1",
+      "name": "Muse Spark 1.1",
+      "org": "Meta",
+      "orgCn": "Meta",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1492,
+      "livebench": 76.0,
+      "aa": null,
+      "ctx": null,
+      "price": 2.0
     },
     {
       "id": "grok-4-5",
@@ -224,19 +237,6 @@
       "aa": null,
       "ctx": "500K",
       "price": 3.0
-    },
-    {
-      "id": "muse-spark-1-1",
-      "name": "Muse Spark 1.1",
-      "org": "Meta",
-      "orgCn": "Meta",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1490,
-      "livebench": 76.0,
-      "aa": null,
-      "ctx": null,
-      "price": 2.0
     },
     {
       "id": "gemini-3-5-flash",
@@ -258,7 +258,7 @@
       "orgCn": "OpenAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1477,
+      "arena": 1476,
       "livebench": 78.8,
       "aa": 54.0,
       "ctx": "1.1M",
@@ -271,7 +271,7 @@
       "orgCn": "xAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1465,
+      "arena": 1466,
       "livebench": null,
       "aa": 53.5,
       "ctx": "256K",
@@ -284,7 +284,7 @@
       "orgCn": "谷歌",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1481,
+      "arena": 1480,
       "livebench": 74.5,
       "aa": null,
       "ctx": "1M",
@@ -310,7 +310,7 @@
       "orgCn": "阿里巴巴",
       "flag": "🇨🇳",
       "open": true,
-      "arena": 1436,
+      "arena": 1435,
       "livebench": 75.8,
       "aa": null,
       "ctx": "262K",
@@ -349,7 +349,7 @@
       "orgCn": "深度求索",
       "flag": "🇨🇳",
       "open": true,
-      "arena": 1462,
+      "arena": 1460,
       "livebench": 72.6,
       "aa": null,
       "ctx": "1M",
@@ -369,6 +369,19 @@
       "price": 1.76
     },
     {
+      "id": "glm-5-3-flash",
+      "name": "GLM 5.3 Flash",
+      "org": "Zhipu AI",
+      "orgCn": "智谱",
+      "flag": "🇨🇳",
+      "open": true,
+      "arena": 1474,
+      "livebench": 71.1,
+      "aa": null,
+      "ctx": "1M",
+      "price": 0.24
+    },
+    {
       "id": "gemini-3-flash",
       "name": "Gemini 3 Flash",
       "org": "Google",
@@ -380,19 +393,6 @@
       "aa": 50.0,
       "ctx": "1M",
       "price": 1.12
-    },
-    {
-      "id": "glm-5-3-flash",
-      "name": "GLM 5.3 Flash",
-      "org": "Zhipu AI",
-      "orgCn": "智谱",
-      "flag": "🇨🇳",
-      "open": true,
-      "arena": 1469,
-      "livebench": 71.1,
-      "aa": null,
-      "ctx": "1M",
-      "price": 0.24
     },
     {
       "id": "kimi-k2-6",
@@ -440,7 +440,7 @@
       "orgCn": "MiniMax",
       "flag": "🇨🇳",
       "open": true,
-      "arena": 1442,
+      "arena": 1443,
       "livebench": 67.5,
       "aa": null,
       "ctx": "524K",
@@ -479,7 +479,7 @@
       "orgCn": "谷歌",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1458,
+      "arena": 1457,
       "livebench": 63.8,
       "aa": null,
       "ctx": "1M",
@@ -492,7 +492,7 @@
       "orgCn": "MiniMax",
       "flag": "🇨🇳",
       "open": true,
-      "arena": 1345,
+      "arena": 1346,
       "livebench": null,
       "aa": 48.0,
       "ctx": "205K",
@@ -505,7 +505,7 @@
       "orgCn": "xAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1442,
+      "arena": 1443,
       "livebench": 63.3,
       "aa": null,
       "ctx": "1M",
@@ -525,14 +525,14 @@
       "price": 2.0
     },
     {
-      "id": "claude-fable-5-effort",
-      "name": "Claude Fable 5 Effort",
+      "id": "claude-fable-5-1-effort",
+      "name": "Claude Fable 5.1 Max Effort",
       "org": "Anthropic",
       "orgCn": "Anthropic",
       "flag": "🇺🇸",
       "open": false,
       "arena": null,
-      "livebench": 83.4,
+      "livebench": 83.8,
       "aa": null,
       "ctx": null,
       "price": null
@@ -551,17 +551,17 @@
       "price": 10.0
     },
     {
-      "id": "claude-opus-5",
-      "name": "Claude Opus 5",
+      "id": "claude-fable-5-effort",
+      "name": "Claude Fable 5 Effort",
       "org": "Anthropic",
       "orgCn": "Anthropic",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1492,
-      "livebench": null,
+      "arena": null,
+      "livebench": 83.4,
       "aa": null,
-      "ctx": "1M",
-      "price": 10.0
+      "ctx": null,
+      "price": null
     }
   ]
 }
