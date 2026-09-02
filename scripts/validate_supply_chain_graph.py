@@ -41,7 +41,7 @@ def check_nodes(payload: dict, errors: list[str]) -> dict:
         return {}
 
     seen: set[str] = set()
-    counts = {"resolved": 0, "ambiguous": 0, "unknown": 0}
+    counts = {"resolved": 0, "ambiguous": 0, "unknown": 0, "byBasis": {}}
     for i, node in enumerate(nodes):
         where = f"nodes[{i}] {node.get('symbol')}"
         node_id = node.get("id")
@@ -53,6 +53,7 @@ def check_nodes(payload: dict, errors: list[str]) -> dict:
             seen.add(node_id)
 
         basis = node.get("stageBasis")
+        counts["byBasis"][basis] = counts["byBasis"].get(basis, 0) + 1
         if basis not in ALLOWED_BASIS:
             fail(errors, f"{where}：stageBasis {basis!r} 不在允许集 {sorted(ALLOWED_BASIS)}")
             continue
@@ -140,10 +141,18 @@ def check_coverage(payload: dict, counts: dict, edge_count: int, errors: list[st
         fail(errors, f"coverage.nodesTotal {coverage.get('nodesTotal')} 与实际节点数不符")
     if coverage.get("edgesTotal") != edge_count:
         fail(errors, f"coverage.edgesTotal {coverage.get('edgesTotal')} 与实际边数不符")
+    # 逐项核对，不能只查其中一项：曾经只校验 sector-ambiguous，结果 stageByBasis 把
+    # 495 个 sic-refined 节点全报成 sector-initial 也照样通过——覆盖率报告说错了
+    # 数据质量的来源却没人拦下。
     by_basis = coverage.get("stageByBasis") or {}
-    if by_basis.get("sector-ambiguous") != counts.get("ambiguous"):
-        fail(errors, f"coverage 歧义节点数 {by_basis.get('sector-ambiguous')} "
-                     f"与实际 {counts.get('ambiguous')} 不符")
+    actual_basis = counts.get("byBasis") or {}
+    for basis, actual in actual_basis.items():
+        if by_basis.get(basis) != actual:
+            fail(errors, f"coverage.stageByBasis[{basis}] 报告 {by_basis.get(basis)}，"
+                         f"实际 {actual}")
+    for basis, reported in by_basis.items():
+        if reported and basis not in actual_basis:
+            fail(errors, f"coverage.stageByBasis 多报了 {basis}={reported}，实际没有这类节点")
 
 
 def check_health(errors: list[str], node_count: int) -> None:

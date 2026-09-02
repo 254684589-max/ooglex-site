@@ -31,6 +31,7 @@ GICS 一级板块粒度明显不够：同属「科技」的英伟达（芯片设
 """
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 from datetime import datetime, timezone
@@ -39,6 +40,9 @@ CONTRACT_VERSION = 1
 DATASET = "supply-chain-graph"
 
 SOURCE_PATH = "apps/companies/sp500.json"
+# SIC 缓存由 fetch_company_identity.py 联网生成。缺失时自动退回板块级口径——
+# 一次取数失败不该让整条管道产出空数据或直接失败。
+IDENTITY_PATH = "apps/supply-chain/identity.json"
 OUT_DIR = "apps/supply-chain"
 NODES_PATH = os.path.join(OUT_DIR, "nodes.json")
 HEALTH_PATH = os.path.join(OUT_DIR, "health.json")
@@ -93,6 +97,28 @@ SECTOR_STAGE_MAP: dict[str, dict] = {
 }
 
 
+def load_sic_resolver():
+    """载入 SIC → 阶段映射。模块缺失时返回 None，构建退回板块级口径。"""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sic_stages.py")
+    if not os.path.exists(path):
+        return None
+    spec = importlib.util.spec_from_file_location("sic_stages", path)
+    if spec is None or spec.loader is None:
+        return None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def load_identity() -> dict:
+    """读 SIC 缓存。没有就返回空——阶段判定退回板块级，不中断构建。"""
+    try:
+        with open(IDENTITY_PATH, encoding="utf-8") as handle:
+            return (json.load(handle) or {}).get("companies") or {}
+    except (OSError, ValueError):
+        return {}
+
+
 def assert_edge_contract(edges: list[dict]) -> None:
     """无证据不上图：写盘前硬校验，不靠自觉。
 
@@ -128,7 +154,7 @@ def load_members() -> tuple[list[dict], dict]:
     return members, payload
 
 
-def build_node(member: dict) -> dict:
+def build_node(member: dict, identity: dict, sic_module) -> dict:
     sector_en = member.get("sector") if member.get("sector") in SECTOR_STAGE_MAP else member.get("sectorEn")
     mapping = SECTOR_STAGE_MAP.get(sector_en or "")
     node = {
@@ -165,12 +191,102 @@ def build_node(member: dict) -> dict:
         node["stageBasis"] = "sector-ambiguous"
         node["stageAmbiguous"] = True
         node["stageNote"] = mapping["reason"]
+
+    # ── SIC 升级：板块级判不出来的，用 SEC 行业码再判一次 ──────────────────
+    # 只在 SIC 能给出结论时覆盖，且如实记录依据；SIC 判不了就保留板块级结果。
+    record = identity.get(node["symbol"]) or {}
+    if record.get("cik"):
+        node["cik"] = int(record["cik"])
+    if record.get("sic"):
+        node["sic"] = int(record["sic"])
+        node["sicDescription"] = record.get("sicDescription")
+    resolved = sic_module.resolve(record.get("sic")) if sic_module else None
+    if resolved:
+        node["stage"] = resolved["stage"]
+        node["stageCandidates"] = [resolved["stage"]]
+        node["stageBasis"] = "sic-refined"
+        node["stageAmbiguous"] = False
+        node["stageNote"] = f"SIC {resolved['sic']}：{resolved['reason']}"
+        node["stageEvidence"] = {
+            "sourceType": "sec-submissions-sic",
+            "url": f"https://data.sec.gov/submissions/CIK{int(record['cik']):010d}.json"
+                   if record.get("cik") else None,
+            "sic": resolved["sic"],
+            "match": resolved["basis"],
+        }
     return node
+
+
+def stage_performance(members: list[dict], nodes: list[dict], source_payload: dict) -> dict:
+    """各产业链环节今日表现：把已判定阶段的公司按环节汇总当日涨跌。
+
+    只做汇总，不重算行情——价格与涨跌全部沿用站内 `sp500.json` 已有的值，
+    口径、来源与数据日跟着它走，不另建第二套事实来源。
+
+    诚实要求：
+    - 阶段未判定（`pending`）的公司不进任何环节，单独计数，**不摊到别处**；
+    - 报价过期（`stale`）的不计入均值，单独计数——过期值混进均值会伪造当日表现；
+    - 同时给等权与市值加权两个口径并标明，不用其中一个冒充「该环节表现」。
+    """
+    stage_of = {n["symbol"]: n.get("stage") for n in nodes}
+    buckets: dict[str, list[dict]] = {}
+    pending = stale = no_quote = 0
+    for member in members:
+        symbol = member.get("symbol")
+        stage = stage_of.get(symbol)
+        if not stage:
+            pending += 1
+            continue
+        change = member.get("changePct")
+        if change is None:
+            no_quote += 1
+            continue
+        if member.get("stale"):
+            stale += 1
+            continue
+        buckets.setdefault(stage, []).append(
+            {"changePct": float(change), "marketCap": float(member.get("marketCap") or 0.0)})
+
+    rows = []
+    for stage in STAGES:
+        items = buckets.get(stage["id"]) or []
+        if not items:
+            rows.append({"stage": stage["id"], "label": stage["label"], "companies": 0,
+                         "equalWeightPct": None, "capWeightPct": None, "medianPct": None})
+            continue
+        changes = sorted(item["changePct"] for item in items)
+        cap_total = sum(item["marketCap"] for item in items)
+        middle = len(changes) // 2
+        median = (changes[middle] if len(changes) % 2
+                  else (changes[middle - 1] + changes[middle]) / 2)
+        rows.append({
+            "stage": stage["id"],
+            "label": stage["label"],
+            "companies": len(items),
+            "equalWeightPct": round(sum(changes) / len(changes), 2),
+            "capWeightPct": (round(sum(i["changePct"] * i["marketCap"] for i in items) / cap_total, 2)
+                             if cap_total > 0 else None),
+            "medianPct": round(median, 2),
+        })
+    return {
+        "asOf": source_payload.get("asOf"),
+        "source": "站内 apps/companies/sp500.json",
+        "method": ("按价值链环节汇总当日涨跌；等权与市值加权并列给出，不互相冒充。"
+                   "行情值沿用站内成分股文件，未重算。"),
+        "stages": rows,
+        "excluded": {
+            "stageNotResolved": pending,   # 阶段未判定，不摊入任何环节
+            "staleQuote": stale,           # 报价过期，不计入均值
+            "noQuote": no_quote,
+        },
+    }
 
 
 def build() -> None:
     members, source_payload = load_members()
-    nodes = [build_node(m) for m in members if m.get("symbol")]
+    identity = load_identity()
+    sic_module = load_sic_resolver()
+    nodes = [build_node(m, identity, sic_module) for m in members if m.get("symbol")]
     edges: list[dict] = []          # 第 0 层没有任何证据来源，恒为空
     assert_edge_contract(edges)     # 契约从第 0 层就生效，不是以后再补
 
@@ -179,6 +295,10 @@ def build() -> None:
     for node in nodes:
         key = node.get("stage") or "pending"     # 未判定单独计，不并进任何一段
         by_stage[key] = by_stage.get(key, 0) + 1
+    by_basis: dict[str, int] = {}
+    for node in nodes:
+        key = node.get("stageBasis") or "unknown"
+        by_basis[key] = by_basis.get(key, 0) + 1
     resolved = sum(1 for n in nodes if n.get("stage"))
     ambiguous = sum(1 for n in nodes if n.get("stageBasis") == "sector-ambiguous")
     unknown = sum(1 for n in nodes if n.get("stageBasis") == "unknown")
@@ -200,17 +320,16 @@ def build() -> None:
         "stages": STAGES,
         "nodes": nodes,
         "edges": edges,
+        "stagePerformance": stage_performance(members, nodes, source_payload),
         "coverage": {
             "claimComplete": False,
             "nodesTotal": len(nodes),
             "nodesWithEdges": 0,
             "edgesTotal": 0,
             "edgesBySource": {},
-            "stageByBasis": {
-                "sector-initial": resolved,          # 板块与阶段一一对应，已判定
-                "sector-ambiguous": ambiguous,       # 板块横跨多段，只给候选集
-                "unknown": unknown,                  # 板块不在映射表内
-            },
+            # 按实际 stageBasis 分组。曾经把所有已判定的都记成 sector-initial，
+            # 等于把 SIC 升级的功劳记在板块级口径头上、低报了数据质量的真实来源。
+            "stageByBasis": by_basis,
             "stageResolvedNodes": resolved,
             "stageAmbiguousNodes": ambiguous,
             "note": ("本图谱只收录有公开出处的关系，不是完整供应链。"
@@ -270,7 +389,17 @@ def build() -> None:
     print(f"  阶段分布：{by_stage}")
     print(f"  已判定阶段 {resolved}（{health['coverage']['stageResolvedPct']}%）；"
           f"仅给候选集 {ambiguous}；板块未登记 {unknown}")
+    print(f"  口径来源：{by_basis}")
     print(f"  关系边 {len(edges)}（第 0 层无证据来源，契约已校验）")
+    perf = payload["stagePerformance"]
+    active = [r for r in perf["stages"] if r["companies"]]
+    print(f"  环节表现：{len(active)} 个环节有报价；"
+          f"未判定阶段 {perf['excluded']['stageNotResolved']} 家不摊入、"
+          f"过期报价 {perf['excluded']['staleQuote']} 家不计入均值")
+    for row in active:
+        print(f"    {row['label']:<6} {row['companies']:>3} 家  "
+              f"等权 {row['equalWeightPct']:>6}%  市值加权 {row['capWeightPct']:>6}%  "
+              f"中位 {row['medianPct']:>6}%")
     print(f"健康 → {HEALTH_PATH}  status={health['status']}")
 
 

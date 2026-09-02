@@ -49,12 +49,31 @@ jobs:
           PROBE_OUTPUT: /tmp/supply-chain-probe/edgar.json
         run: python scripts/supply-chain/probe_edgar_relationships.py
 
+      # 反查：不指望对方主动写客户名，改为拿确定的名字去搜谁提到它。
+      # 首轮否决了逐家解析 10-K 的做法（见 docs/SUPPLY_CHAIN_GRAPH.md 第 8.5 节）。
+      # 单独一步：正查失败不影响反查取证，反之亦然。
+      - name: Probe EDGAR full-text reverse lookup
+        if: ${{ !cancelled() }}
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+          PROBE_OUTPUT: /tmp/supply-chain-probe/edgar-reverse.json
+        run: python scripts/supply-chain/probe_edgar_fulltext_reverse.py
+
+      # Form SD 冲突矿产：有强制格式的结构化披露，冶炼厂名单里的实体是具名的，
+      # 不像客户集中度那样匿名。正查与反查都否决后，这是仍可能产出真边的一条。
+      - name: Probe Form SD conflict minerals
+        if: ${{ !cancelled() }}
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+          PROBE_OUTPUT: /tmp/supply-chain-probe/edgar-formsd.json
+        run: python scripts/supply-chain/probe_form_sd.py
+
       - name: Upload EDGAR probe report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6
         with:
           name: supply-chain-edgar-${{ github.run_attempt }}
-          path: /tmp/supply-chain-probe/edgar.json
+          path: /tmp/supply-chain-probe/edgar*.json
           if-no-files-found: warn
           retention-days: 7
 

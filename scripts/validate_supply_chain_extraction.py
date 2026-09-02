@@ -28,6 +28,59 @@ import sys
 
 PROBE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                           "supply-chain", "probe_edgar_relationships.py")
+REVERSE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            "supply-chain", "probe_edgar_fulltext_reverse.py")
+SIC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        "supply-chain", "sic_stages.py")
+
+# ── SIC → 价值链阶段 ────────────────────────────────────────────────────────
+# SIC 码全部取自探针在 Actions 机房实测到的真实值，不是凭印象写的。
+# 前三条是这套映射存在的理由：GICS 一级板块把苹果、英伟达、微软都归为「科技」，
+# 分不出产业链位置；SIC 能分开。后两条是 33xx 拆分的回归——不拆的话康宁
+# （SIC 3357 有色线材拉制）会被误判成上游资源，它做的是玻璃基板与光纤。
+SIC_CASES: list[tuple[int, str, str]] = [
+    (3571, "苹果 电子计算机整机", "brand-integration"),
+    (3674, "英伟达 半导体", "intermediate-manufacturing"),
+    (7372, "微软 预装软件", "platform-service"),
+    (3312, "钢铁高炉", "upstream-resource"),
+    (3357, "康宁 有色线材", "intermediate-manufacturing"),
+    (3663, "高通 通信设备", "intermediate-manufacturing"),
+    (3559, "泛林 专用机械", "intermediate-manufacturing"),
+    (1311, "原油与天然气开采", "upstream-resource"),
+    (6022, "州立商业银行", "supporting"),
+    (5912, "药品零售", "distribution-service"),
+    (2834, "成药制剂", "brand-integration"),
+    (3714, "机动车零部件", "intermediate-manufacturing"),
+    (3711, "整车制造", "brand-integration"),
+]
+
+# ── 反查上下文分类用例 ──────────────────────────────────────────────────────
+# 「提到某公司」不等于「与它有供应关系」。反查探针的精度数字完全依赖这套分类，
+# 分类错了数字就没意义。最后两条是对抗用例：窗口里同时出现多种线索时，
+# 线索必须落在提及所在的那一句里——整窗匹配会把「我们与 Apple 竞争」误判成
+# 「Apple 是我们的客户」（因为窗口别处有个讲分部营收的 accounted for），
+# 精度虚高，正好是会误导人去建错误边的方向。
+CONTEXT_CASES: list[tuple[str, str, str]] = [
+    ("客户·点名占比", "Apple Inc. accounted for 22% of our net revenue in fiscal 2025.", "customer"),
+    ("客户·最大客户", "Our largest customer, Apple Inc., represented a substantial portion "
+                    "of shipments.", "customer"),
+    ("客户·销售给", "Sales to Apple Inc. increased during the period.", "customer"),
+    ("竞争对手", "We compete with Apple Inc. and Samsung in the smartphone market.", "competitor"),
+    ("举例", "Companies such as Apple Inc. have adopted similar practices.", "competitor"),
+    ("诉讼", "In re Apple Inc. Securities Litigation, the court granted summary judgment.", "legal"),
+    ("专利诉讼", "We filed a patent infringement complaint against Apple Inc.", "legal"),
+    ("纯提及·无关", "Our headquarters are located near the Apple Inc. campus in Cupertino.", "other"),
+    ("持仓", "The fund held 1,200 shares of Apple Inc. as of year end.", "other"),
+    ("对抗·竞争但窗口有无关的 accounted for",
+     "Our Americas segment accounted for 42% of consolidated net revenue in fiscal 2025. "
+     "We face intense competition in the consumer electronics market, where we compete with "
+     "Apple Inc., Samsung Electronics and other large manufacturers with greater resources.",
+     "competitor"),
+    ("对抗·真客户但同句附近提竞争",
+     "Apple Inc. accounted for approximately 20% of our net revenue in fiscal 2025. "
+     "We also compete with other suppliers for this business and may lose share.",
+     "customer"),
+]
 
 # ── 用例：措辞取自 10-K 客户集中度披露的常见写法 ────────────────────────────
 # (标签, 文本, 应否定位到披露, 应抽出的客户名或 None)
@@ -61,13 +114,25 @@ NEGATIVE: list[tuple[str, str]] = [
 ]
 
 
-def load_probe():
-    spec = importlib.util.spec_from_file_location("probe_edgar", PROBE_PATH)
+def _load(path: str, name: str):
+    spec = importlib.util.spec_from_file_location(name, path)
     if spec is None or spec.loader is None:
-        raise RuntimeError(f"载入不了 {PROBE_PATH}")
+        raise RuntimeError(f"载入不了 {path}")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def load_probe():
+    return _load(PROBE_PATH, "probe_edgar")
+
+
+def load_reverse():
+    return _load(REVERSE_PATH, "probe_edgar_reverse")
+
+
+def load_sic():
+    return _load(SIC_PATH, "sic_stages")
 
 
 def locate(module, text: str) -> list[str]:
@@ -112,7 +177,34 @@ def main() -> int:
             failures.append(f"误报 {label}：不应命中，实际命中 {len(hits)} 条规则")
         print(f"  [{'OK' if ok else 'XX'}] {label:<16} {'无误报' if ok else f'误报 {len(hits)} 条'}")
 
-    total = len(CASES) * 2 + len(NEGATIVE)
+    print("\n── 反查上下文分类：提到 ≠ 有供应关系 ─────────────────────────────")
+    reverse = load_reverse()
+    for label, text, expected in CONTEXT_CASES:
+        result = reverse.classify_mentions(text, '"Apple Inc."')
+        buckets = [k for k, v in result["counts"].items() if v]
+        got = buckets[0] if buckets else "none"
+        ok = got == expected
+        if not ok:
+            failures.append(f"分类 {label}：期望 {expected}，实际 {got}")
+        print(f"  [{'OK' if ok else 'XX'}] {label:<26} 判为 {got}")
+
+    print("\n── SIC → 价值链阶段：板块级分不开的，行业码要能分开 ───────────────")
+    sic = load_sic()
+    for code, label, expected in SIC_CASES:
+        resolved = sic.resolve(code)
+        got = (resolved or {}).get("stage")
+        ok = got == expected
+        if not ok:
+            failures.append(f"SIC {code} {label}：期望 {expected}，实际 {got}")
+        print(f"  [{'OK' if ok else 'XX'}] SIC {code}  {label:<18} → {got}")
+    # 无法解析时必须返回 None，不得猜一个默认阶段
+    for bad in (None, "", 9999, -1, "abc"):
+        if sic.resolve(bad) is not None:
+            failures.append(f"SIC {bad!r} 无法解析时不得返回阶段")
+    print(f"  [{'OK' if all(sic.resolve(b) is None for b in (None, '', 9999, -1, 'abc')) else 'XX'}]"
+          f" 无法解析的输入返回 None，不猜默认阶段")
+
+    total = len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES) + 1
     print("\n" + "─" * 68)
     if failures:
         print(f"失败 {len(failures)}/{total}：")
