@@ -39,14 +39,19 @@ from urllib import error, request
 
 TIMEOUT = 30
 GAP = 0.35
-MAX_REQUESTS = 40
+MAX_REQUESTS = 60
+MAX_DOCS_PER_FILING = 4   # 滤掉系统文件后通常只剩 2~4 个真实文档
 BODY_LIMIT = 12_000_000
 
 CONTACT = os.environ.get("SEC_CONTACT", "contact via https://www.ooglex.com")
 UA = f"Ooglex Supply Chain Research/1.0 ({CONTACT})"
 
 # 实测确认有 Form SD 的公司，覆盖终端品牌、芯片设计与半导体设备三类
-SAMPLES = [("AAPL", 320193), ("NVDA", 1045810), ("AVGO", 1730168), ("AMAT", 6951)]
+# 覆盖三类申报人：终端品牌（苹果、特斯拉）、芯片设计（英伟达、博通）、
+# 半导体设备与元件（应用材料、Skyworks）。首轮 4 家里苹果与博通因文档筛选缺陷漏检，
+# 本轮扩到 6 家一并复核修复效果。
+SAMPLES = [("AAPL", 320193), ("NVDA", 1045810), ("AVGO", 1730168),
+           ("AMAT", 6951), ("TSLA", 1318605), ("SWKS", 4127)]
 
 # 冶炼厂名单的定位线索。Form SD 的冲突矿产报告用语高度套路化。
 SMELTER_CUES = [
@@ -182,16 +187,26 @@ def main() -> None:
         except Exception as exc:                   # noqa: BLE001
             documents = []
             print(f"     文档清单取不到：{_why(exc)}")
+        # EDGAR 每次申报都带一批系统文件（index / .txt / brokers / companysearch），
+        # 它们排在最前。只看前几个会把真正的申报文档整个遮住——苹果与博通的冲突
+        # 矿产报告首轮漏检就是这么来的。先滤掉系统文件再看。
+        SYSTEM = ("index", "brokers.htm", "companysearch", "primary_doc")
+        real = [d for d in documents
+                if not any(d.lower().startswith(p) or p in d.lower() for p in SYSTEM)
+                and not d.endswith(".txt")]
         entry["documents"] = documents
-        print(f"     文档 {len(documents)} 个：{', '.join(documents[:6])}")
+        entry["realDocuments"] = real
+        print(f"     文档 {len(documents)} 个（滤掉系统文件后 {len(real)} 个）：{', '.join(real)}")
         time.sleep(GAP)
 
-        # 冲突矿产报告常是附件（EX-1.01），优先看它，其次主文档
-        candidates = [d for d in documents if re.search(r"ex.?1|cmr|conflict|minerals", d, re.I)]
-        if filing.get("primaryDocument"):
+        # 命名各家不同（a2026conflictmineralsrepor / cmrcy2025_final / ef20073373_sd），
+        # 靠文件名猜必然漏。改为探测全部真实文档——冶炼厂名单动辄几百行，
+        # 报告一定是这批文件里最大的那份，探测顺序不影响结论。
+        candidates = list(real)
+        if filing.get("primaryDocument") and filing["primaryDocument"] not in candidates:
             candidates.append(filing["primaryDocument"])
         entry["analysed"] = []
-        for name in candidates[:2]:
+        for name in candidates[:MAX_DOCS_PER_FILING]:
             try:
                 outcome = analyse(filing["indexUrl"] + name)
             except Exception as exc:               # noqa: BLE001
