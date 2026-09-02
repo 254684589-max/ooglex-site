@@ -46,6 +46,15 @@ jobs:
         with:
           python-version: '3.12'
 
+      # 联网取 SEC 实体标识（CIK + SIC）。SIC 把板块级分不开的公司分开——
+      # 苹果 3571 品牌整合 / 英伟达 3674 中间制造 / 微软 7372 平台服务。
+      # 失败不中断：构建脚本读不到缓存时自动退回板块级口径，不产出空数据。
+      - name: Fetch SEC company identity (CIK + SIC)
+        continue-on-error: true
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: python scripts/supply-chain/fetch_company_identity.py
+
       - name: Build supply chain graph nodes
         run: python scripts/supply-chain/build_chain_nodes.py
 
@@ -60,7 +69,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # 只暂存本工作流拥有的路径，不夹带任何其他改动。
-          git add apps/supply-chain/nodes.json apps/supply-chain/health.json
+          git add apps/supply-chain/nodes.json apps/supply-chain/health.json \
+                  apps/supply-chain/identity.json
           if git diff --cached --quiet; then
             echo "生成结果与仓库一致，跳过提交和推送"
             exit 0

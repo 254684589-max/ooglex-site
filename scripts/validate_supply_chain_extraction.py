@@ -30,6 +30,29 @@ PROBE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                           "supply-chain", "probe_edgar_relationships.py")
 REVERSE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             "supply-chain", "probe_edgar_fulltext_reverse.py")
+SIC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        "supply-chain", "sic_stages.py")
+
+# ── SIC → 价值链阶段 ────────────────────────────────────────────────────────
+# SIC 码全部取自探针在 Actions 机房实测到的真实值，不是凭印象写的。
+# 前三条是这套映射存在的理由：GICS 一级板块把苹果、英伟达、微软都归为「科技」，
+# 分不出产业链位置；SIC 能分开。后两条是 33xx 拆分的回归——不拆的话康宁
+# （SIC 3357 有色线材拉制）会被误判成上游资源，它做的是玻璃基板与光纤。
+SIC_CASES: list[tuple[int, str, str]] = [
+    (3571, "苹果 电子计算机整机", "brand-integration"),
+    (3674, "英伟达 半导体", "intermediate-manufacturing"),
+    (7372, "微软 预装软件", "platform-service"),
+    (3312, "钢铁高炉", "upstream-resource"),
+    (3357, "康宁 有色线材", "intermediate-manufacturing"),
+    (3663, "高通 通信设备", "intermediate-manufacturing"),
+    (3559, "泛林 专用机械", "intermediate-manufacturing"),
+    (1311, "原油与天然气开采", "upstream-resource"),
+    (6022, "州立商业银行", "supporting"),
+    (5912, "药品零售", "distribution-service"),
+    (2834, "成药制剂", "brand-integration"),
+    (3714, "机动车零部件", "intermediate-manufacturing"),
+    (3711, "整车制造", "brand-integration"),
+]
 
 # ── 反查上下文分类用例 ──────────────────────────────────────────────────────
 # 「提到某公司」不等于「与它有供应关系」。反查探针的精度数字完全依赖这套分类，
@@ -108,6 +131,10 @@ def load_reverse():
     return _load(REVERSE_PATH, "probe_edgar_reverse")
 
 
+def load_sic():
+    return _load(SIC_PATH, "sic_stages")
+
+
 def locate(module, text: str) -> list[str]:
     return [p for p in module.CONCENTRATION_PATTERNS if re.search(p, text, re.I)]
 
@@ -161,7 +188,23 @@ def main() -> int:
             failures.append(f"分类 {label}：期望 {expected}，实际 {got}")
         print(f"  [{'OK' if ok else 'XX'}] {label:<26} 判为 {got}")
 
-    total = len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES)
+    print("\n── SIC → 价值链阶段：板块级分不开的，行业码要能分开 ───────────────")
+    sic = load_sic()
+    for code, label, expected in SIC_CASES:
+        resolved = sic.resolve(code)
+        got = (resolved or {}).get("stage")
+        ok = got == expected
+        if not ok:
+            failures.append(f"SIC {code} {label}：期望 {expected}，实际 {got}")
+        print(f"  [{'OK' if ok else 'XX'}] SIC {code}  {label:<18} → {got}")
+    # 无法解析时必须返回 None，不得猜一个默认阶段
+    for bad in (None, "", 9999, -1, "abc"):
+        if sic.resolve(bad) is not None:
+            failures.append(f"SIC {bad!r} 无法解析时不得返回阶段")
+    print(f"  [{'OK' if all(sic.resolve(b) is None for b in (None, '', 9999, -1, 'abc')) else 'XX'}]"
+          f" 无法解析的输入返回 None，不猜默认阶段")
+
+    total = len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES) + 1
     print("\n" + "─" * 68)
     if failures:
         print(f"失败 {len(failures)}/{total}：")
