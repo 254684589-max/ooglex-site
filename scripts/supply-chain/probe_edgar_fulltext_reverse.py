@@ -54,6 +54,10 @@ FTS = "https://efts.sec.gov/LATEST/search-index"
 
 # 深测目标：用户点名的用例。名字用申报文件里的正式写法，不用口语名。
 DEEP_TARGET = '"Apple Inc."'
+# 身份必须按 CIK 判定，不能按名字：EDGAR 同一个 CIK 会有多种历史名称写法，
+# 苹果在检索结果里同时以 `Apple Inc.`（58 份）和 `APPLE INC`（101 份）出现，
+# 按字符串排除会漏掉大写变体，导致拿目标自己的 10-K 去问「谁是它的供应商」（实测踩过两次）。
+DEEP_TARGET_CIK = 320193
 # 只数命中量、不深测的目标，用来看反查在不同体量公司上的规模
 COUNT_TARGETS = ['"NVIDIA Corporation"', '"Taiwan Semiconductor"', '"Samsung Electronics"']
 
@@ -199,10 +203,10 @@ def classify_mentions(plain: str, phrase: str) -> dict:
         else:
             bucket = "other"
         counts[bucket] += 1
-        # 样例保留更宽的窗口，便于人工核对分类对不对——首轮的教训是
-        # 不能只看机器结论，必须能读到原文。
-        window = plain[max(0, match.start() - 260):match.end() + 260]
-        samples.setdefault(bucket, re.sub(r"\s+", " ", window).strip()[:240])
+        # 样例必须是**实际用于分类的那一句**。之前显示的是更宽的窗口，
+        # 与分类依据不一致，导致人工核对不了分类对不对——而人工核对正是
+        # 首轮唯一拦下错误结论的环节。
+        samples.setdefault(bucket, re.sub(r"\s+", " ", sentence).strip()[:240])
     return {"counts": counts, "samples": samples, "mentions": sum(counts.values())}
 
 
@@ -257,11 +261,14 @@ def main() -> None:
     all_hits = ((first_ok or {}).get("hits") or {}).get("hits") or []
     # 排除目标自己的申报：EX-23.1 这类审计师同意书里公司名出现十几次，
     # 不排除就会拿苹果自己的文件去问「谁是苹果的供应商」（首轮实测踩过）。
-    target_plain = DEEP_TARGET.strip('"').lower()
     hits, self_filed, exhibit_only = [], 0, 0
     for hit in all_hits:
         identity = hit_identity(hit)
-        if target_plain in str(identity.get("displayName", "")).lower():
+        try:
+            same_entity = int(identity.get("cik") or -1) == DEEP_TARGET_CIK
+        except (TypeError, ValueError):
+            same_entity = False
+        if same_entity:
             self_filed += 1
             continue
         # 主文档优先：附件（EX-*）里的提及多为同意书、章程、协议样本，不是业务描述
@@ -317,7 +324,7 @@ def main() -> None:
     for bucket in buckets[:12]:
         key = str(bucket.get("key", ""))
         count = bucket.get("doc_count")
-        is_self = target_plain in key.lower()
+        is_self = str(DEEP_TARGET_CIK).zfill(10) in key
         report["filers"].append({"entity": key, "docs": count, "isSelf": is_self})
         print(f"    {'（自身）' if is_self else '        '} {key[:56]:<58} {count} 份")
     if not buckets:
