@@ -206,6 +206,25 @@ FORM_SD_FIXTURES: dict[str, str] = {
 <tr><td>Burkina Faso</td><td>Gold</td></tr>
 <tr><td>Burundi**</td><td>Tantalum</td><td>Tin</td><td>Tungsten</td></tr>
 </table>""",
+    # 英特尔那份名单的真实形状：每个厂名后面跟一个脚注星号。不去掉就会和别家
+    # 名单里的同一家算成两家——正是「按名字合并会把一家拆成几家」的具体形态。
+    "footnote-marked": """
+<table>
+<tr><td>Tungsten</td><td>A.L.M.T. Corp.*</td><td>Japan</td></tr>
+<tr><td>Gold</td><td>Agosi AG**</td><td>Germany</td></tr>
+<tr><td>Tin</td><td>Alpha Assembly Solutions Inc (1)</td><td>United States of America</td></tr>
+</table>""",
+    # 微软那份名单的真实形状：按矿种分节，**小标题自己占一整行在表格里面**，
+    # 数据行只有厂名与国别。不认表内小标题就会丢掉这 100 家真实冶炼厂。
+    "in-table-heading": """
+<table>
+<tr><td>Gold</td></tr>
+<tr><th>Smelter or Refiner Name</th><th>Country</th></tr>
+<tr><td>ABC Refinery Pty Ltd.</td><td>Australia</td></tr>
+<tr><td>Abington Reldan Metals, LLC</td><td>United States of America</td></tr>
+<tr><td>Tin</td></tr>
+<tr><td>Aurubis Beerse</td><td>Belgium</td></tr>
+</table>""",
     # 叙述正文里矿种与国名满天飞，不得凭空造出冶炼厂
     "narrative-only": """
 <p>During the reporting period we sourced gold, tin, tantalum and tungsten from
@@ -238,7 +257,17 @@ FORM_SD_CASES = [
     ("country-columns", 0, 0, 0, {}),
     # 国别 × 矿种矩阵：有国名有矿种但没有厂名列，同样一条都不收
     ("country-mineral-matrix", 0, 0, 0, {}),
-    # 只有厂名与国别、没有矿种：无法确认是冶炼厂行，不收但计入丢弃
+    # 脚注星号必须剥掉，否则同一家会被算成两家
+    ("footnote-marked", 3, 0, 3,
+     {"NAME:a-l-m-t-corp": ("A.L.M.T. Corp.", "日本", {"钨"}),
+      "NAME:agosi-ag": ("Agosi AG", "德国", {"金"}),
+      "NAME:alpha-assembly-solutions-inc": ("Alpha Assembly Solutions Inc", "美国", {"锡"})}),
+    # 表内小标题给出矿种，数据行只有厂名与国别
+    ("in-table-heading", 3, 0, 3,
+     {"NAME:abc-refinery-pty-ltd": ("ABC Refinery Pty Ltd.", "澳大利亚", {"金"}),
+      "NAME:abington-reldan-metals-llc": ("Abington Reldan Metals, LLC", "美国", {"金"}),
+      "NAME:aurubis-beerse": ("Aurubis Beerse", "比利时", {"锡"})}),
+    # 只有厂名与国别、没有矿种、也没有小标题：无法确认是冶炼厂行，不收但计入丢弃
     ("names-without-cid", 0, 3, 0, {}),
     ("narrative-only", 0, 0, 0, {}),
 ]
@@ -391,9 +420,19 @@ def main() -> int:
     if not slug_ok:
         failures.append("名字规范化：大小写空格应归一，但不得把不同写法并成一家")
     print(f"  [{'OK' if slug_ok else 'XX'}] 名字规范化不做同义合并      宁可重复，不可错并")
+    # 脚注剥离：只去尾部标记，不动名字本身
+    footnotes = [("A.L.M.T. Corp.*", "A.L.M.T. Corp."), ("Agosi AG**", "Agosi AG"),
+                 ("Alpha Assembly Solutions Inc (1)", "Alpha Assembly Solutions Inc"),
+                 ("Metalor Technologies SA", "Metalor Technologies SA"),
+                 ("L.S. Nikko Copper Inc.", "L.S. Nikko Copper Inc.")]
+    wrong = [(a, form_sd.clean_name(a)) for a, b in footnotes if form_sd.clean_name(a) != b]
+    if wrong:
+        failures.append(f"脚注剥离出错：{wrong}")
+    print(f"  [{'OK' if not wrong else 'XX'}] 脚注标记剥离              "
+          f"尾部 * / ** / (1) 去掉，名字本身不动")
 
     total = (len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
-             + len(FORM_SD_CASES) + 5)
+             + len(FORM_SD_CASES) + 6)
     print("\n" + "─" * 68)
     if failures:
         print(f"失败 {len(failures)}/{total}：")

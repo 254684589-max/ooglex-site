@@ -311,9 +311,11 @@ def main() -> int:
 
         if outcome["state"] == "listed":
             parse = outcome["parse"]
+            # 「行」是去重前的原始行数，「家」是去重后的实体数——两个数不一样时
+            # 说明同一家按多种矿种各列了一行，不是解析出了岔子。
             print(f"[OK] {symbol:<6} {outcome['filing']['filingDate']}  "
-                  f"冶炼厂 {parse['unique']:>4}"
-                  f"（编号 {parse['rowsWithCid']} / 仅名字 {parse['nameOnly']}）  "
+                  f"冶炼厂 {parse['unique']:>4} 家"
+                  f"（原始行：带编号 {parse['rowsWithCid']} / 仅名字 {parse['nameOnly']}）  "
                   f"带名 {parse['namedRatio']:.0%}  带国别 {parse['countryRatio']:.0%}  "
                   f"丢弃行 {parse['droppedNoCid']}")
             for item in parse["smelters"][:args.sample_rows]:

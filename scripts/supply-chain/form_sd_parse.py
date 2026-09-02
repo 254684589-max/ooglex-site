@@ -204,6 +204,19 @@ class _TableRows(HTMLParser):
         super().close()
 
 
+# 脚注标记：英特尔那份名单里每个厂名后面都跟着一个 `*`。不去掉的话
+# `A.L.M.T. Corp.*` 与 `A.L.M.T. Corp.` 会算成两家不同的冶炼厂——正是
+# 「按名字合并会把一家拆成几家」那个风险的具体形态。
+_FOOTNOTE = re.compile(r"[\s*†‡§¶]+$|\s*\((?:\d{1,2}|[a-z])\)$", re.I)
+
+
+def clean_name(name: str | None) -> str | None:
+    if not name:
+        return name
+    text = _FOOTNOTE.sub("", name.strip()).strip()
+    return text or None
+
+
 def _slug(name: str) -> str:
     """名字规范化，只用于无编号条目的内部标识。
 
@@ -316,7 +329,9 @@ def parse_smelters(html: str) -> dict:
     parser.feed(html or "")
     parser.close()
 
-    # 表格外文字里的矿种小标题：记录「第几行之前出现过什么矿种」
+    # 矿种小标题：可能在表格外的文字里（"Tin Smelters"），也可能自己占一整行
+    # （微软那份名单就是这样分节的——不认表内小标题会丢掉 100 家真实冶炼厂，
+    # 因为它们那几节的行里没有矿种列）。两处都收，按行号排序后合并。
     heading_at: list[tuple[int, str]] = []
     for row_index, text in parser.flow:
         if len(text) > 120:                        # 长段落是正文叙述，不是小标题
@@ -324,6 +339,16 @@ def parse_smelters(html: str) -> dict:
         mineral = match_mineral(text)
         if mineral:
             heading_at.append((row_index, mineral))
+    for row_index, row in enumerate(parser.rows):
+        cells = [c for c in row if c.strip()]
+        # 只认「整行只有一个格子、且这个格子短到只可能是小标题」的情况。
+        # 放宽一点就会把矿种矩阵的数据行当成小标题。
+        if len(cells) != 1 or len(cells[0]) > 40:
+            continue
+        mineral = match_mineral(cells[0])
+        if mineral and not match_country(cells[0])[0]:
+            heading_at.append((row_index, mineral))
+    heading_at.sort(key=lambda pair: pair[0])
 
     def heading_mineral(row_index: int) -> str | None:
         current = None
@@ -363,7 +388,7 @@ def parse_smelters(html: str) -> dict:
             if _looks_like_name(cell):
                 name_candidates.append(cell)
 
-        name = max(name_candidates, key=len) if name_candidates else None
+        name = clean_name(max(name_candidates, key=len)) if name_candidates else None
         if name and not country_en:
             name, country_en, country_zh = _split_trailing_country(name)
         if not minerals:
