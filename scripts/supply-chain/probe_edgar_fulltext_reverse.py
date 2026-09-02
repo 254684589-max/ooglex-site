@@ -254,7 +254,25 @@ def main() -> None:
     print("\n── C. 精度：命中里有多少真是供应关系 ────────────────────────────────")
     print(f"    目标 {DEEP_TARGET}，抓前 {DEEP_DOCS} 份原文逐处分类上下文\n")
     report["precision"] = {"target": DEEP_TARGET, "documents": []}
-    hits = ((first_ok or {}).get("hits") or {}).get("hits") or []
+    all_hits = ((first_ok or {}).get("hits") or {}).get("hits") or []
+    # 排除目标自己的申报：EX-23.1 这类审计师同意书里公司名出现十几次，
+    # 不排除就会拿苹果自己的文件去问「谁是苹果的供应商」（首轮实测踩过）。
+    target_plain = DEEP_TARGET.strip('"').lower()
+    hits, self_filed, exhibit_only = [], 0, 0
+    for hit in all_hits:
+        identity = hit_identity(hit)
+        if target_plain in str(identity.get("displayName", "")).lower():
+            self_filed += 1
+            continue
+        # 主文档优先：附件（EX-*）里的提及多为同意书、章程、协议样本，不是业务描述
+        if str(identity.get("formType", "")).upper().startswith("EX-"):
+            exhibit_only += 1
+            continue
+        hits.append(hit)
+    print(f"    命中 {len(all_hits)} 条 → 排除自身申报 {self_filed} 条、"
+          f"附件 {exhibit_only} 条 → 可分析 {len(hits)} 条\n")
+    report["precision"]["excluded"] = {"selfFiled": self_filed, "exhibitOnly": exhibit_only,
+                                       "analysable": len(hits)}
     totals = {"customer": 0, "competitor": 0, "legal": 0, "other": 0}
     docs_with_customer = 0
     for hit in hits[:DEEP_DOCS]:
@@ -292,6 +310,19 @@ def main() -> None:
             print(f"[XX] {str(entry.get('displayName'))[:38]:<40} {entry.get('why')}")
         time.sleep(GAP)
 
+    # ── C2. 申报人分布：聚合里直接有，不必逐份抓原文 ──────────────────────
+    print("\n── C2. 谁提到了目标（entity_filter 聚合） ───────────────────────────")
+    report["filers"] = []
+    buckets = (((first_ok or {}).get("aggregations") or {}).get("entity_filter") or {}).get("buckets") or []
+    for bucket in buckets[:12]:
+        key = str(bucket.get("key", ""))
+        count = bucket.get("doc_count")
+        is_self = target_plain in key.lower()
+        report["filers"].append({"entity": key, "docs": count, "isSelf": is_self})
+        print(f"    {'（自身）' if is_self else '        '} {key[:56]:<58} {count} 份")
+    if not buckets:
+        print("    聚合里没有 entity_filter 分桶")
+
     # ── D. 其他目标的命中规模 ────────────────────────────────────────────────
     print("\n── D. 其他目标命中规模 ──────────────────────────────────────────────")
     report["otherTargets"] = {}
@@ -311,12 +342,16 @@ def main() -> None:
     mentions = sum(totals.values())
     precision = round(100.0 * totals["customer"] / mentions, 1) if mentions else 0.0
     analysed = [d for d in report["precision"]["documents"] if d.get("ok")]
-    capped = any(v.get("relation") == "gte" for v in report["syntax"].values() if v.get("ok"))
+    # 只有不加过滤的查询会被截断；加表单过滤后总数落到精确值，上限实际不构成障碍。
+    unfiltered_capped = report["syntax"].get("仅短语", {}).get("relation") == "gte"
+    filtered = report["syntax"].get("限定10-K", {})
+    filtered_exact = filtered.get("ok") and filtered.get("relation") == "eq"
 
     print("\n── 结论 ────────────────────────────────────────────────────────────")
     print(f"语法：限定表单{'可用' if report['syntax'].get('限定10-K', {}).get('ok') else '不可用'}，"
           f"日期切片{'可用' if report['syntax'].get('限定10-K+年度切片', {}).get('ok') else '不可用'}")
-    print(f"上限：{'命中总数被截断（relation=gte），需靠日期切片分段取全' if capped else '返回精确总数，未触上限'}")
+    print(f"上限：不加过滤{'被截断（gte）' if unfiltered_capped else '未截断'}；"
+          f"加表单过滤后{'返回精确总数 ' + str(filtered.get('total')) + '，上限不构成障碍' if filtered_exact else '仍不精确'}")
     print(f"精度：{len(analysed)} 份原文共 {mentions} 处提及——"
           f"客户语境 {totals['customer']}（{precision}%）/ 竞争 {totals['competitor']}"
           f" / 诉讼 {totals['legal']} / 其他 {totals['other']}")
@@ -330,7 +365,8 @@ def main() -> None:
     report["verdict"] = {
         "formFilterWorks": bool(report["syntax"].get("限定10-K", {}).get("ok")),
         "dateSliceWorks": bool(report["syntax"].get("限定10-K+年度切片", {}).get("ok")),
-        "totalsCapped": capped,
+        "unfilteredCapped": unfiltered_capped,
+        "filteredExactTotal": filtered.get("total") if filtered_exact else None,
         "documentsAnalysed": len(analysed),
         "mentions": mentions,
         "customerContext": totals["customer"],
