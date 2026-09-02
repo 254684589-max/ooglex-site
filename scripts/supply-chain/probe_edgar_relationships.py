@@ -34,7 +34,7 @@ from urllib.parse import quote
 
 TIMEOUT = 30
 GAP = 0.35                # 远低于 SEC 每秒 10 次的上限
-MAX_REQUESTS = 60
+MAX_REQUESTS = 80
 BODY_LIMIT = 12_000_000   # 10-K 正文可能很大，但仍然封顶
 
 # SEC 要求 User-Agent 声明身份与联系方式。默认指向站点联系页，
@@ -48,7 +48,14 @@ TICKER_MAP_URL = "https://www.sec.gov/files/company_tickers.json"
 
 # 端到端抽取的样本公司：一家品牌整合方、一家上游芯片、一家典型「客户高度集中」的供应商。
 # 第三类是抽取效果最关键的样本——客户集中度披露正是在这类公司的 10-K 里。
-SAMPLE_TICKERS = ["AAPL", "NVDA", "AVGO"]
+SAMPLE_TICKERS = [
+    # 终端品牌与芯片设计：客户分散，预期点名率低，用来看下限
+    "AAPL", "NVDA",
+    # 客户高度集中的元件与代工供应商：ASC 280 披露正是在这类公司的 10-K 里
+    "AVGO", "QCOM", "SWKS", "JBL", "GLW", "MU",
+    # 半导体设备：客户是台积电/三星/英特尔那几家，通常会点名
+    "AMAT", "LRCX",
+]
 
 # 全文检索端点候选：不写死，实测哪个通。
 # 空格必须预先百分号编码：urllib 会直接拒绝带控制字符/空格的 URL（冒烟测试实测）。
@@ -91,7 +98,8 @@ NAMED_ENTITY_PATTERN = (
 # 年度 PDF 地址每年变，因此先探落地页，再探已知形态。
 APPLE_CANDIDATES = [
     "https://www.apple.com/supplier-responsibility/",
-    "https://www.apple.com/supplier-responsibility/pdf/Apple-Supplier-List.pdf",
+    "https://www.apple.com/supply-chain/",
+    "https://investor.apple.com/esg/default.aspx",
 ]
 
 
@@ -292,10 +300,17 @@ def probe_apple_list() -> dict:
             if body[:4] == b"%PDF":
                 entry["container"] = "PDF · 需确认可否用标准库解析，否则要评估依赖"
             elif b"<html" in body[:4000].lower():
-                # 落地页：把页面里的 PDF 链接找出来，年度地址每年变，靠发现而不是猜。
-                links = re.findall(r'href="([^"]+\.pdf)"', body.decode("utf-8", "replace"), re.I)
+                # 落地页：地址每年变，靠发现而不是猜。只找 href 会漏掉 JS 里拼的地址，
+                # 因此对整页正文找 URL，并单独挑出名字里含 supplier/list 的候选。
+                text = body.decode("utf-8", "replace")
+                pdfs = re.findall(r'https?://[^\s"\'<>]+?\.pdf', text, re.I)
+                relative = re.findall(r'(?:href|src)="(/[^"]+?\.pdf)"', text, re.I)
+                supplier_urls = [u for u in re.findall(r'https?://[^\s"\'<>]{6,200}', text, re.I)
+                                 if re.search(r'supplier[-_]?list|supply[-_]?chain[-_]?list', u, re.I)]
                 entry["container"] = "HTML 落地页"
-                entry["pdfLinks"] = sorted(set(links))[:10]
+                entry["pdfLinks"] = sorted(set(pdfs))[:15]
+                entry["pdfRelative"] = sorted(set(relative))[:10]
+                entry["supplierListCandidates"] = sorted(set(supplier_urls))[:10]
             outcomes[url] = entry
         except Exception as exc:                   # noqa: BLE001
             outcomes[url] = {"ok": False, "why": _why(exc)}
@@ -359,9 +374,15 @@ def main() -> None:
             outcome = {"ok": False, "why": _why(exc)}
         report["extraction"][ticker] = outcome
         if outcome.get("ok"):
-            print(f"[{'OK' if outcome['patternsHit'] else 'XX'}] {ticker:<6} "
+            named = outcome.get("windowsWithNamedEntity", 0)
+            total = outcome.get("windows", 0)
+            # 点名率才是能成边的比例：命中段落多但一个都不点名，等于零条边。
+            print(f"[{'OK' if named else 'XX'}] {ticker:<6} "
                   f"{outcome['rawBytes'] // 1024}KB / 正文 {outcome['plainChars'] // 1000}K字符 / "
-                  f"{outcome['elapsedMs']}ms  命中规则 {outcome['patternsHit']}/{len(CONCENTRATION_PATTERNS)}")
+                  f"{outcome['elapsedMs']}ms  命中规则 {outcome['patternsHit']}/{len(CONCENTRATION_PATTERNS)}"
+                  f"  段落 {total} 处，**点名 {named} 处**")
+            for name in outcome.get("namedEntityExamples", [])[:4]:
+                print(f"     点名 → {name}")
             for sample in outcome["samples"][:1]:
                 print(f"     样例：…{sample[:150]}…")
         else:
@@ -382,11 +403,20 @@ def main() -> None:
         detail = (f"{entry.get('bytes')} 字节  {entry.get('container','')}"
                   if entry.get("ok") else entry.get("why", ""))
         print(f"[{'OK' if entry.get('ok') else 'XX'}] {url.rsplit('/', 1)[-1] or 'landing':<30} {detail}")
-        for link in (entry.get("pdfLinks") or [])[:5]:
+        for link in (entry.get("supplierListCandidates") or [])[:5]:
+            print(f"     疑似名单：{link}")
+        for link in (entry.get("pdfLinks") or [])[:6]:
             print(f"     PDF：{link}")
+        for link in (entry.get("pdfRelative") or [])[:4]:
+            print(f"     相对PDF：{link}")
 
     # ── 结论：能不能规模化 ──────────────────────────────────────────────────
-    extraction_ok = [t for t, v in report["extraction"].items() if v.get("ok") and v.get("patternsHit")]
+    # 判定门槛是「点名」而不是「命中」：命中只说明找到了披露段落，
+    # 段落里不写对方是谁就抽不出边。
+    extraction_ok = [t for t, v in report["extraction"].items()
+                     if v.get("ok") and v.get("windowsWithNamedEntity")]
+    located_only = [t for t, v in report["extraction"].items()
+                    if v.get("ok") and v.get("patternsHit") and not v.get("windowsWithNamedEntity")]
     sizes = [v["rawBytes"] for v in report["extraction"].values() if v.get("ok")]
     times = [v["elapsedMs"] for v in report["extraction"].values() if v.get("ok")]
     resolved = report["tickerMap"].get("resolved", 0)
@@ -396,24 +426,34 @@ def main() -> None:
     est_minutes = round((est_requests * (GAP + avg_ms / 1000.0)) / 60.0, 1) if resolved else 0
 
     print("\n── 结论 ────────────────────────────────────────────────────────────")
-    print(f"CIK 解析率 {report['tickerMap'].get('resolvePct', 0)}%  ·  "
-          f"客户集中度规则命中 {len(extraction_ok)}/{len(report['extraction'])} 家样本")
+    total_windows = sum(v.get("windows", 0) for v in report["extraction"].values() if v.get("ok"))
+    named_windows = sum(v.get("windowsWithNamedEntity", 0) for v in report["extraction"].values() if v.get("ok"))
+    print(f"CIK 解析率 {report['tickerMap'].get('resolvePct', 0)}%")
+    print(f"客户集中度：{len(report['extraction'])} 家样本共 {total_windows} 处披露段落，"
+          f"其中 {named_windows} 处点名对方"
+          f"（{round(100.0 * named_windows / total_windows, 1) if total_windows else 0}%）")
+    if located_only:
+        print(f"只找到披露、但一处都没点名的公司：{', '.join(located_only)}——这些抽不出边，只能算线索")
     if sizes:
         print(f"10-K 体量：{min(sizes)//1024}~{max(sizes)//1024}KB，平均取回 {avg_ms}ms")
     print(f"全量估算：{resolved} 家 × 2 次请求 ≈ {est_requests} 次，约 {est_minutes} 分钟"
           f"（本脚本间隔 {GAP}s，远低于 SEC 每秒 10 次上限）")
     print("第2层可行性：" + (
-        "规则能在真申报文件里定位客户集中度披露，可进入抽取器开发"
+        f"{len(extraction_ok)}/{len(report['extraction'])} 家样本能抽出点名的对手方，可进入抽取器开发"
         if extraction_ok else
-        "规则未命中，需先改进定位策略或改用全文检索反查，不得据此推进抽取器"))
+        "**没有任何样本抽出点名的对手方**——只定位到披露段落不足以成边，"
+        "需改用全文检索反查（按已知大客户名反向搜谁提到它）或扩大样本再判断"))
 
     report["verdict"] = {
         "cikResolvePct": report["tickerMap"].get("resolvePct", 0),
-        "extractionSamplesHit": extraction_ok,
+        "extractionSamplesNamed": extraction_ok,
+        "extractionSamplesLocatedOnly": located_only,
+        "windowsTotal": total_windows,
+        "windowsNamed": named_windows,
         "avgFetchMs": avg_ms,
         "estimatedRequests": est_requests,
         "estimatedMinutes": est_minutes,
-        "layer2Feasible": bool(extraction_ok),
+        "layer2Feasible": bool(extraction_ok),   # 以点名为准，不是以命中为准
         "requestsSpent": MAX_REQUESTS - BUDGET.left,
     }
 
