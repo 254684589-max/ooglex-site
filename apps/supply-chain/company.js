@@ -406,6 +406,7 @@
     side.textContent = "";
     var n = state.node;
     var d = state.data;
+    var rows = edgeRows();
 
     // 出处栏
     var t = TIERS[state.tierSel] || TIERS[0];
@@ -416,7 +417,6 @@
     body.style.cssText = "font-size:.75rem;color:var(--dim);margin-bottom:10px;";
     src.appendChild(body);
     if (t.real) {
-      var rows = edgeRows();
       var okBox = el("div");
       okBox.style.cssText = "border-top:1px solid var(--line);padding-top:9px;";
       if (rows.length) {
@@ -535,7 +535,6 @@
     real.style.cssText = "padding:13px 15px;";
     real.appendChild(el("h3", null, "本页哪些是真实数据"));
     var sameStage = (d.nodes || []).filter(function (x) { return x.stage === n.stage; }).length;
-    var rows = edgeRows();
     [["身份与市值", "站内公司榜"], ["环节判定", "SEC 官方 SIC 行业码"],
      ["同行业公司", sameSic.length + " 家"], ["同环节公司", sameStage + " 家"],
      ["冶炼厂关系", rows.length + " 条"],

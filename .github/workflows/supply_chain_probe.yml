@@ -95,7 +95,7 @@ jobs:
   extract:
     name: Form SD 抽取器 · dry-run 人工核对
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6

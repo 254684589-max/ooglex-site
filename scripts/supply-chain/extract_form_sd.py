@@ -47,7 +47,9 @@ from datetime import datetime, timezone
 from urllib import error, request
 
 TIMEOUT = 45
-GAP = 0.30                 # 远低于 SEC 每秒 10 次上限
+# SEC 允许每秒 10 次。全表 495 家约 1100 次请求，0.30 秒间隔实测跑到 20 分钟以上，
+# 逼近 job 超时。收到 0.20 秒（含往返延迟约每秒 3~4 次），仍远低于上限。
+GAP = 0.20
 BODY_LIMIT = 24_000_000    # 冶炼厂名单动辄几 MB
 MAX_DOCS_PER_FILING = 4
 
