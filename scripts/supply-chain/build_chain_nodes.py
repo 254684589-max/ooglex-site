@@ -295,6 +295,10 @@ def build() -> None:
     for node in nodes:
         key = node.get("stage") or "pending"     # 未判定单独计，不并进任何一段
         by_stage[key] = by_stage.get(key, 0) + 1
+    by_basis: dict[str, int] = {}
+    for node in nodes:
+        key = node.get("stageBasis") or "unknown"
+        by_basis[key] = by_basis.get(key, 0) + 1
     resolved = sum(1 for n in nodes if n.get("stage"))
     ambiguous = sum(1 for n in nodes if n.get("stageBasis") == "sector-ambiguous")
     unknown = sum(1 for n in nodes if n.get("stageBasis") == "unknown")
@@ -323,11 +327,9 @@ def build() -> None:
             "nodesWithEdges": 0,
             "edgesTotal": 0,
             "edgesBySource": {},
-            "stageByBasis": {
-                "sector-initial": resolved,          # 板块与阶段一一对应，已判定
-                "sector-ambiguous": ambiguous,       # 板块横跨多段，只给候选集
-                "unknown": unknown,                  # 板块不在映射表内
-            },
+            # 按实际 stageBasis 分组。曾经把所有已判定的都记成 sector-initial，
+            # 等于把 SIC 升级的功劳记在板块级口径头上、低报了数据质量的真实来源。
+            "stageByBasis": by_basis,
             "stageResolvedNodes": resolved,
             "stageAmbiguousNodes": ambiguous,
             "note": ("本图谱只收录有公开出处的关系，不是完整供应链。"
@@ -387,6 +389,7 @@ def build() -> None:
     print(f"  阶段分布：{by_stage}")
     print(f"  已判定阶段 {resolved}（{health['coverage']['stageResolvedPct']}%）；"
           f"仅给候选集 {ambiguous}；板块未登记 {unknown}")
+    print(f"  口径来源：{by_basis}")
     print(f"  关系边 {len(edges)}（第 0 层无证据来源，契约已校验）")
     perf = payload["stagePerformance"]
     active = [r for r in perf["stages"] if r["companies"]]

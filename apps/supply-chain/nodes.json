@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-02T04:24:26Z",
+  "updatedAt": "2026-09-02T04:28:02Z",
   "asOf": "2026-09-01",
   "frequency": "daily",
   "status": "ok",
@@ -13487,9 +13487,7 @@
     "edgesTotal": 0,
     "edgesBySource": {},
     "stageByBasis": {
-      "sector-initial": 495,
-      "sector-ambiguous": 0,
-      "unknown": 0
+      "sic-refined": 495
     },
     "stageResolvedNodes": 495,
     "stageAmbiguousNodes": 0,
