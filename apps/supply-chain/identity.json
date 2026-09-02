@@ -1,0 +1,2984 @@
+{
+  "contractVersion": 1,
+  "dataset": "supply-chain-identity",
+  "updatedAt": "2026-09-02T04:24:26Z",
+  "source": "SEC EDGAR company_tickers.json + data.sec.gov/submissions",
+  "sourceUrl": "https://www.sec.gov/os/accessing-edgar-data",
+  "expected": 495,
+  "resolved": 495,
+  "withSic": 495,
+  "failed": [],
+  "note": "CIK 是建边时的实体锚点——关系必须指向标识符不能指向公司名，EDGAR 同一 CIK 存在多种历史名称写法。",
+  "companies": {
+    "NVDA": {
+      "cik": 1045810,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "secName": "NVIDIA CORP"
+    },
+    "AAPL": {
+      "cik": 320193,
+      "sic": 3571,
+      "sicDescription": "Electronic Computers",
+      "secName": "Apple Inc."
+    },
+    "GOOGL": {
+      "cik": 1652044,
+      "sic": 7370,
+      "sicDescription": "Services-Computer Programming, Data Processing, Etc.",
+      "secName": "Alphabet Inc."
+    },
+    "MSFT": {
+      "cik": 789019,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "MICROSOFT CORP"
+    },
+    "AMZN": {
+      "cik": 1018724,
+      "sic": 5961,
+      "sicDescription": "Retail-Catalog & Mail-Order Houses",
+      "secName": "AMAZON COM INC"
+    },
+    "AVGO": {
+      "cik": 1730168,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "secName": "Broadcom Inc."
+    },
+    "META": {
+      "cik": 1326801,
+      "sic": 7370,
+      "sicDescription": "Services-Computer Programming, Data Processing, Etc.",
+      "secName": "Meta Platforms, Inc."
+    },
+    "TSLA": {
+      "cik": 1318605,
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
+      "secName": "Tesla, Inc."
+    },
+    "LLY": {
+      "cik": 59478,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "secName": "ELI LILLY & Co"
+    },
+    "BRK-B": {
+      "cik": 1067983,
+      "sic": 6331,
+      "sicDescription": "Fire, Marine & Casualty Insurance",
+      "secName": "BERKSHIRE HATHAWAY INC"
+    },
+    "MU": {
+      "cik": 723125,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "secName": "MICRON TECHNOLOGY INC"
+    },
+    "JPM": {
+      "cik": 19617,
+      "sic": 6021,
+      "sicDescription": "National Commercial Banks",
+      "secName": "JPMORGAN CHASE & CO"
+    },
+    "WMT": {
+      "cik": 104169,
+      "sic": 5331,
+      "sicDescription": "Retail-Variety Stores",
+      "secName": "Walmart Inc."
+    },
+    "AMD": {
+      "cik": 2488,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "secName": "ADVANCED MICRO DEVICES INC"
+    },
+    "V": {
+      "cik": 1403161,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "secName": "VISA INC."
+    },
+    "XOM": {
+      "cik": 2115436,
+      "sic": 2911,
+      "sicDescription": "Petroleum Refining",
+      "secName": "ExxonMobil Holdings Corp"
+    },
+    "JNJ": {
+      "cik": 200406,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "secName": "JOHNSON & JOHNSON"
+    },
+    "MA": {
+      "cik": 1141391,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "secName": "Mastercard Inc"
+    },
+    "ABBV": {
+      "cik": 1551152,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "secName": "AbbVie Inc."
+    },
+    "INTC": {
+      "cik": 50863,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "secName": "INTEL CORP"
+    },
+    "BAC": {
+      "cik": 70858,
+      "sic": 6021,
+      "sicDescription": "National Commercial Banks",
+      "secName": "BANK OF AMERICA CORP /DE/"
+    },
+    "CSCO": {
+      "cik": 858877,
+      "sic": 3576,
+      "sicDescription": "Computer Communications Equipment",
+      "secName": "CISCO SYSTEMS, INC."
+    },
+    "CVX": {
+      "cik": 93410,
+      "sic": 2911,
+      "sicDescription": "Petroleum Refining",
+      "secName": "CHEVRON CORP"
+    },
+    "COST": {
+      "cik": 909832,
+      "sic": 5331,
+      "sicDescription": "Retail-Variety Stores",
+      "secName": "COSTCO WHOLESALE CORP /NEW"
+    },
+    "PLTR": {
+      "cik": 1321655,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "Palantir Technologies Inc."
+    },
+    "ORCL": {
+      "cik": 1341439,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "ORACLE CORP"
+    },
+    "KO": {
+      "cik": 21344,
+      "sic": 2080,
+      "sicDescription": "Beverages",
+      "secName": "COCA COLA CO"
+    },
+    "MRK": {
+      "cik": 310158,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "secName": "Merck & Co., Inc."
+    },
+    "LRCX": {
+      "cik": 707549,
+      "sic": 3559,
+      "sicDescription": "Special Industry Machinery, NEC",
+      "secName": "LAM RESEARCH CORP"
+    },
+    "UNH": {
+      "cik": 731766,
+      "sic": 6324,
+      "sicDescription": "Hospital & Medical Service Plans",
+      "secName": "UNITEDHEALTH GROUP INC"
+    },
+    "CAT": {
+      "cik": 18230,
+      "sic": 3531,
+      "sicDescription": "Construction Machinery & Equip",
+      "secName": "CATERPILLAR INC"
+    },
+    "AMAT": {
+      "cik": 6951,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "secName": "APPLIED MATERIALS INC /DE"
+    },
+    "GE": {
+      "cik": 40545,
+      "sic": 3600,
+      "sicDescription": "Electronic & Other Electrical Equipment (No Computer Equip)",
+      "secName": "GENERAL ELECTRIC CO"
+    },
+    "PG": {
+      "cik": 80424,
+      "sic": 2840,
+      "sicDescription": "Soap, Detergents, Cleang Preparations, Perfumes, Cosmetics",
+      "secName": "PROCTER & GAMBLE Co"
+    },
+    "NFLX": {
+      "cik": 1065280,
+      "sic": 7841,
+      "sicDescription": "Services-Video Tape Rental",
+      "secName": "NETFLIX INC"
+    },
+    "MS": {
+      "cik": 895421,
+      "sic": 6211,
+      "sicDescription": "Security Brokers, Dealers & Flotation Companies",
+      "secName": "MORGAN STANLEY"
+    },
+    "HD": {
+      "cik": 354950,
+      "sic": 5211,
+      "sicDescription": "Retail-Lumber & Other Building Materials Dealers",
+      "secName": "HOME DEPOT, INC."
+    },
+    "GS": {
+      "cik": 886982,
+      "sic": 6211,
+      "sicDescription": "Security Brokers, Dealers & Flotation Companies",
+      "secName": "GOLDMAN SACHS GROUP INC"
+    },
+    "PM": {
+      "cik": 1413329,
+      "sic": 2111,
+      "sicDescription": "Cigarettes",
+      "secName": "Philip Morris International Inc."
+    },
+    "DELL": {
+      "cik": 1571996,
+      "sic": 3571,
+      "sicDescription": "Electronic Computers",
+      "secName": "Dell Technologies Inc."
+    },
+    "RTX": {
+      "cik": 101829,
+      "sic": 3724,
+      "sicDescription": "Aircraft Engines & Engine Parts",
+      "secName": "RTX Corp"
+    },
+    "WFC": {
+      "cik": 72971,
+      "sic": 6021,
+      "sicDescription": "National Commercial Banks",
+      "secName": "WELLS FARGO & COMPANY/MN"
+    },
+    "PANW": {
+      "cik": 1327567,
+      "sic": 3577,
+      "sicDescription": "Computer Peripheral Equipment, NEC",
+      "secName": "Palo Alto Networks Inc"
+    },
+    "GEV": {
+      "cik": 1996810,
+      "sic": 3600,
+      "sicDescription": "Electronic & Other Electrical Equipment (No Computer Equip)",
+      "secName": "GE Vernova Inc."
+    },
+    "ANET": {
+      "cik": 1596532,
+      "sic": 3576,
+      "sicDescription": "Computer Communications Equipment",
+      "secName": "Arista Networks, Inc."
+    },
+    "AMGN": {
+      "cik": 318154,
+      "sic": 2836,
+      "sicDescription": "Biological Products, (No Diagnostic Substances)",
+      "secName": "AMGEN INC"
+    },
+    "TXN": {
+      "cik": 97476,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "secName": "TEXAS INSTRUMENTS INC"
+    },
+    "SNDK": {
+      "cik": 2023554,
+      "sic": 3572,
+      "sicDescription": "Computer Storage Devices",
+      "secName": "Sandisk Corp"
+    },
+    "C": {
+      "cik": 831001,
+      "sic": 6021,
+      "sicDescription": "National Commercial Banks",
+      "secName": "CITIGROUP INC"
+    },
+    "LIN": {
+      "cik": 1707925,
+      "sic": 2810,
+      "sicDescription": "Industrial Inorganic Chemicals",
+      "secName": "LINDE PLC"
+    },
+    "TMO": {
+      "cik": 97745,
+      "sic": 3829,
+      "sicDescription": "Measuring & Controlling Devices, NEC",
+      "secName": "THERMO FISHER SCIENTIFIC INC."
+    },
+    "KLAC": {
+      "cik": 319201,
+      "sic": 3827,
+      "sicDescription": "Optical Instruments & Lenses",
+      "secName": "KLA CORP"
+    },
+    "AXP": {
+      "cik": 4962,
+      "sic": 6199,
+      "sicDescription": "Finance Services",
+      "secName": "AMERICAN EXPRESS CO"
+    },
+    "IBM": {
+      "cik": 51143,
+      "sic": 3570,
+      "sicDescription": "Computer & office Equipment",
+      "secName": "INTERNATIONAL BUSINESS MACHINES CORP"
+    },
+    "CRM": {
+      "cik": 1108524,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "Salesforce, Inc."
+    },
+    "VZ": {
+      "cik": 732712,
+      "sic": 4813,
+      "sicDescription": "Telephone Communications (No Radiotelephone)",
+      "secName": "VERIZON COMMUNICATIONS INC"
+    },
+    "APH": {
+      "cik": 820313,
+      "sic": 3678,
+      "sicDescription": "Electronic Connectors",
+      "secName": "AMPHENOL CORP /DE/"
+    },
+    "TMUS": {
+      "cik": 1283699,
+      "sic": 4812,
+      "sicDescription": "Radiotelephone Communications",
+      "secName": "T-Mobile US, Inc."
+    },
+    "PEP": {
+      "cik": 77476,
+      "sic": 2080,
+      "sicDescription": "Beverages",
+      "secName": "PEPSICO INC"
+    },
+    "ABT": {
+      "cik": 1800,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "secName": "ABBOTT LABORATORIES"
+    },
+    "SCHW": {
+      "cik": 316709,
+      "sic": 6211,
+      "sicDescription": "Security Brokers, Dealers & Flotation Companies",
+      "secName": "SCHWAB CHARLES CORP"
+    },
+    "GILD": {
+      "cik": 882095,
+      "sic": 2836,
+      "sicDescription": "Biological Products, (No Diagnostic Substances)",
+      "secName": "GILEAD SCIENCES, INC."
+    },
+    "MCD": {
+      "cik": 63908,
+      "sic": 5812,
+      "sicDescription": "Retail-Eating  Places",
+      "secName": "MCDONALDS CORP"
+    },
+    "DIS": {
+      "cik": 1744489,
+      "sic": 7990,
+      "sicDescription": "Services-Miscellaneous Amusement & Recreation",
+      "secName": "Walt Disney Co"
+    },
+    "MRVL": {
+      "cik": 1835632,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "secName": "Marvell Technology, Inc."
+    },
+    "STX": {
+      "cik": 1137789,
+      "sic": 3572,
+      "sicDescription": "Computer Storage Devices",
+      "secName": "Seagate Technology Holdings plc"
+    },
+    "DE": {
+      "cik": 315189,
+      "sic": 3523,
+      "sicDescription": "Farm Machinery & Equipment",
+      "secName": "DEERE & CO"
+    },
+    "T": {
+      "cik": 732717,
+      "sic": 4813,
+      "sicDescription": "Telephone Communications (No Radiotelephone)",
+      "secName": "AT&T INC."
+    },
+    "QCOM": {
+      "cik": 804328,
+      "sic": 3663,
+      "sicDescription": "Radio & Tv Broadcasting & Communications Equipment",
+      "secName": "QUALCOMM INC/DE"
+    },
+    "BLK": {
+      "cik": 2012383,
+      "sic": 6211,
+      "sicDescription": "Security Brokers, Dealers & Flotation Companies",
+      "secName": "BlackRock, Inc."
+    },
+    "NEE": {
+      "cik": 753308,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "secName": "NEXTERA ENERGY INC"
+    },
+    "ADI": {
+      "cik": 6281,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "secName": "ANALOG DEVICES INC"
+    },
+    "UNP": {
+      "cik": 100885,
+      "sic": 4011,
+      "sicDescription": "Railroads, Line-Haul Operating",
+      "secName": "UNION PACIFIC CORP"
+    },
+    "WELL": {
+      "cik": 766704,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "WELLTOWER INC."
+    },
+    "COP": {
+      "cik": 1163165,
+      "sic": 2911,
+      "sicDescription": "Petroleum Refining",
+      "secName": "CONOCOPHILLIPS"
+    },
+    "BX": {
+      "cik": 1393818,
+      "sic": 6282,
+      "sicDescription": "Investment Advice",
+      "secName": "Blackstone Inc."
+    },
+    "PFE": {
+      "cik": 78003,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "secName": "PFIZER INC"
+    },
+    "BA": {
+      "cik": 12927,
+      "sic": 3721,
+      "sicDescription": "Aircraft",
+      "secName": "BOEING CO"
+    },
+    "IBKR": {
+      "cik": 1381197,
+      "sic": 6211,
+      "sicDescription": "Security Brokers, Dealers & Flotation Companies",
+      "secName": "Interactive Brokers Group, Inc."
+    },
+    "WDC": {
+      "cik": 106040,
+      "sic": 3572,
+      "sicDescription": "Computer Storage Devices",
+      "secName": "WESTERN DIGITAL CORP"
+    },
+    "UBER": {
+      "cik": 1543151,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "secName": "Uber Technologies, Inc"
+    },
+    "ETN": {
+      "cik": 1551182,
+      "sic": 3590,
+      "sicDescription": "Misc Industrial & Commercial Machinery & Equipment",
+      "secName": "Eaton Corp plc"
+    },
+    "BKNG": {
+      "cik": 1075531,
+      "sic": 4700,
+      "sicDescription": "Transportation Services",
+      "secName": "Booking Holdings Inc."
+    },
+    "NOW": {
+      "cik": 1373715,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "ServiceNow, Inc."
+    },
+    "TJX": {
+      "cik": 109198,
+      "sic": 5651,
+      "sicDescription": "Retail-Family Clothing Stores",
+      "secName": "TJX COMPANIES INC /DE/"
+    },
+    "DHR": {
+      "cik": 313616,
+      "sic": 3823,
+      "sicDescription": "Industrial Instruments For Measurement, Display, and Control",
+      "secName": "DANAHER CORP /DE/"
+    },
+    "VRTX": {
+      "cik": 875320,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "secName": "VERTEX PHARMACEUTICALS INC / MA"
+    },
+    "BMY": {
+      "cik": 14272,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "secName": "BRISTOL MYERS SQUIBB CO"
+    },
+    "HON": {
+      "cik": 773840,
+      "sic": 3724,
+      "sicDescription": "Aircraft Engines & Engine Parts",
+      "secName": "HONEYWELL INTERNATIONAL INC"
+    },
+    "CB": {
+      "cik": 896159,
+      "sic": 6331,
+      "sicDescription": "Fire, Marine & Casualty Insurance",
+      "secName": "Chubb Ltd"
+    },
+    "NEM": {
+      "cik": 1164727,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "secName": "NEWMONT Corp /DE/"
+    },
+    "ISRG": {
+      "cik": 1035267,
+      "sic": 3842,
+      "sicDescription": "Orthopedic, Prosthetic & Surgical Appliances & Supplies",
+      "secName": "INTUITIVE SURGICAL INC"
+    },
+    "SPGI": {
+      "cik": 64040,
+      "sic": 7320,
+      "sicDescription": "Services-Consumer Credit Reporting, Collection Agencies",
+      "secName": "S&P Global Inc."
+    },
+    "PLD": {
+      "cik": 1045609,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "Prologis, Inc."
+    },
+    "COF": {
+      "cik": 927628,
+      "sic": 6021,
+      "sicDescription": "National Commercial Banks",
+      "secName": "CAPITAL ONE FINANCIAL CORP"
+    },
+    "PGR": {
+      "cik": 80661,
+      "sic": 6331,
+      "sicDescription": "Fire, Marine & Casualty Insurance",
+      "secName": "PROGRESSIVE CORP/OH/"
+    },
+    "LMT": {
+      "cik": 936468,
+      "sic": 3760,
+      "sicDescription": "Guided Missiles & Space Vehicles & Parts",
+      "secName": "LOCKHEED MARTIN CORP"
+    },
+    "GLW": {
+      "cik": 24741,
+      "sic": 3357,
+      "sicDescription": "Drawing & Insulating of  Nonferrous Wire",
+      "secName": "CORNING INC /NY"
+    },
+    "CVS": {
+      "cik": 64803,
+      "sic": 5912,
+      "sicDescription": "Retail-Drug Stores and Proprietary Stores",
+      "secName": "CVS HEALTH Corp"
+    },
+    "SYK": {
+      "cik": 310764,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+      "secName": "STRYKER CORP"
+    },
+    "SBUX": {
+      "cik": 829224,
+      "sic": 5810,
+      "sicDescription": "Retail-Eating & Drinking Places",
+      "secName": "STARBUCKS CORP"
+    },
+    "PH": {
+      "cik": 76334,
+      "sic": 3490,
+      "sicDescription": "Miscellaneous Fabricated Metal Products",
+      "secName": "Parker-Hannifin Corp"
+    },
+    "FTNT": {
+      "cik": 1262039,
+      "sic": 3577,
+      "sicDescription": "Computer Peripheral Equipment, NEC",
+      "secName": "Fortinet, Inc."
+    },
+    "MDT": {
+      "cik": 1613103,
+      "sic": 3845,
+      "sicDescription": "Electromedical & Electrotherapeutic Apparatus",
+      "secName": "Medtronic plc"
+    },
+    "MO": {
+      "cik": 764180,
+      "sic": 2111,
+      "sicDescription": "Cigarettes",
+      "secName": "ALTRIA GROUP, INC."
+    },
+    "ACN": {
+      "cik": 1467373,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "secName": "Accenture plc"
+    },
+    "ADBE": {
+      "cik": 796343,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "ADOBE INC."
+    },
+    "ADP": {
+      "cik": 8670,
+      "sic": 7374,
+      "sicDescription": "Services-Computer Processing & Data Preparation",
+      "secName": "AUTOMATIC DATA PROCESSING INC"
+    },
+    "LOW": {
+      "cik": 60667,
+      "sic": 5211,
+      "sicDescription": "Retail-Lumber & Other Building Materials Dealers",
+      "secName": "LOWES COMPANIES INC"
+    },
+    "MPC": {
+      "cik": 1510295,
+      "sic": 2911,
+      "sicDescription": "Petroleum Refining",
+      "secName": "Marathon Petroleum Corp"
+    },
+    "BNY": {
+      "cik": 1390777,
+      "sic": 6022,
+      "sicDescription": "State Commercial Banks",
+      "secName": "Bank of New York Mellon Corp"
+    },
+    "ABNB": {
+      "cik": 1559720,
+      "sic": 7340,
+      "sicDescription": "Services-To Dwellings & Other Buildings",
+      "secName": "Airbnb, Inc."
+    },
+    "VLO": {
+      "cik": 1035002,
+      "sic": 2911,
+      "sicDescription": "Petroleum Refining",
+      "secName": "VALERO ENERGY CORP/TX"
+    },
+    "MCK": {
+      "cik": 927653,
+      "sic": 5122,
+      "sicDescription": "Wholesale-Drugs, Proprietaries & Druggists' Sundries",
+      "secName": "MCKESSON CORP"
+    },
+    "APP": {
+      "cik": 1751008,
+      "sic": 7370,
+      "sicDescription": "Services-Computer Programming, Data Processing, Etc.",
+      "secName": "AppLovin Corp"
+    },
+    "FCX": {
+      "cik": 831259,
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "secName": "FREEPORT-MCMORAN INC"
+    },
+    "CME": {
+      "cik": 1156375,
+      "sic": 6200,
+      "sicDescription": "Security & Commodity Brokers, Dealers, Exchanges & Services",
+      "secName": "CME GROUP INC."
+    },
+    "HWM": {
+      "cik": 4281,
+      "sic": 3350,
+      "sicDescription": "Rolling Drawing & Extruding of  Nonferrous Metals",
+      "secName": "Howmet Aerospace Inc."
+    },
+    "EQIX": {
+      "cik": 1101239,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "EQUINIX INC"
+    },
+    "PSX": {
+      "cik": 1534701,
+      "sic": 2911,
+      "sicDescription": "Petroleum Refining",
+      "secName": "Phillips 66"
+    },
+    "CEG": {
+      "cik": 1868275,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "secName": "Constellation Energy Corp"
+    },
+    "GD": {
+      "cik": 40533,
+      "sic": 3730,
+      "sicDescription": "Ship & Boat Building & Repairing",
+      "secName": "GENERAL DYNAMICS CORP"
+    },
+    "SO": {
+      "cik": 92122,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "secName": "SOUTHERN CO"
+    },
+    "VRT": {
+      "cik": 1674101,
+      "sic": 3679,
+      "sicDescription": "Electronic Components, NEC",
+      "secName": "Vertiv Holdings Co"
+    },
+    "DASH": {
+      "cik": 1792789,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "secName": "DoorDash, Inc."
+    },
+    "TT": {
+      "cik": 1466258,
+      "sic": 3822,
+      "sicDescription": "Auto Controls For Regulating Residential & Comml Environments",
+      "secName": "Trane Technologies plc"
+    },
+    "KKR": {
+      "cik": 1404912,
+      "sic": 6282,
+      "sicDescription": "Investment Advice",
+      "secName": "KKR & Co. Inc."
+    },
+    "PNC": {
+      "cik": 713676,
+      "sic": 6021,
+      "sicDescription": "National Commercial Banks",
+      "secName": "PNC FINANCIAL SERVICES GROUP, INC."
+    },
+    "USB": {
+      "cik": 36104,
+      "sic": 6021,
+      "sicDescription": "National Commercial Banks",
+      "secName": "US BANCORP \\DE\\"
+    },
+    "INTU": {
+      "cik": 896878,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "INTUIT INC."
+    },
+    "CMCSA": {
+      "cik": 1166691,
+      "sic": 4841,
+      "sicDescription": "Cable & Other Pay Television Services",
+      "secName": "COMCAST CORP"
+    },
+    "DUK": {
+      "cik": 1326160,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
+      "secName": "Duke Energy CORP"
+    },
+    "HOOD": {
+      "cik": 1783879,
+      "sic": 6211,
+      "sicDescription": "Security Brokers, Dealers & Flotation Companies",
+      "secName": "Robinhood Markets, Inc."
+    },
+    "WMB": {
+      "cik": 107263,
+      "sic": 4922,
+      "sicDescription": "Natural Gas Transmission",
+      "secName": "WILLIAMS COMPANIES, INC."
+    },
+    "HCA": {
+      "cik": 860730,
+      "sic": 8062,
+      "sicDescription": "Services-General Medical & Surgical Hospitals, NEC",
+      "secName": "HCA Healthcare, Inc."
+    },
+    "PWR": {
+      "cik": 1050915,
+      "sic": 1731,
+      "sicDescription": "Electrical Work",
+      "secName": "QUANTA SERVICES, INC."
+    },
+    "CSX": {
+      "cik": 277948,
+      "sic": 4011,
+      "sicDescription": "Railroads, Line-Haul Operating",
+      "secName": "CSX CORP"
+    },
+    "MRSH": {
+      "cik": 62709,
+      "sic": 6411,
+      "sicDescription": "Insurance Agents, Brokers & Service",
+      "secName": "MARSH & MCLENNAN COMPANIES, INC."
+    },
+    "ICE": {
+      "cik": 1571949,
+      "sic": 6200,
+      "sicDescription": "Security & Commodity Brokers, Dealers, Exchanges & Services",
+      "secName": "Intercontinental Exchange, Inc."
+    },
+    "MMM": {
+      "cik": 66740,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+      "secName": "3M CO"
+    },
+    "WM": {
+      "cik": 823768,
+      "sic": 4953,
+      "sicDescription": "Refuse Systems",
+      "secName": "WASTE MANAGEMENT INC"
+    },
+    "MAR": {
+      "cik": 1048286,
+      "sic": 7011,
+      "sicDescription": "Hotels & Motels",
+      "secName": "MARRIOTT INTERNATIONAL INC /MD/"
+    },
+    "ELV": {
+      "cik": 1156039,
+      "sic": 6324,
+      "sicDescription": "Hospital & Medical Service Plans",
+      "secName": "Elevance Health, Inc."
+    },
+    "UPS": {
+      "cik": 1090727,
+      "sic": 4210,
+      "sicDescription": "Trucking & Courier Services (No Air)",
+      "secName": "UNITED PARCEL SERVICE INC"
+    },
+    "MCO": {
+      "cik": 1059556,
+      "sic": 7320,
+      "sicDescription": "Services-Consumer Credit Reporting, Collection Agencies",
+      "secName": "MOODYS CORP /DE/"
+    },
+    "CDNS": {
+      "cik": 813672,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "CADENCE DESIGN SYSTEMS INC"
+    },
+    "SLB": {
+      "cik": 87347,
+      "sic": 1389,
+      "sicDescription": "Oil & Gas Field Services, NEC",
+      "secName": "SLB LIMITED/NV"
+    },
+    "JCI": {
+      "cik": 833444,
+      "sic": 3585,
+      "sicDescription": "Air-Cond & Warm Air Heatg Equip & Comm & Indl Refrig Equip",
+      "secName": "Johnson Controls International plc"
+    },
+    "REGN": {
+      "cik": 872589,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "secName": "REGENERON PHARMACEUTICALS, INC."
+    },
+    "EMR": {
+      "cik": 32604,
+      "sic": 3600,
+      "sicDescription": "Electronic & Other Electrical Equipment (No Computer Equip)",
+      "secName": "EMERSON ELECTRIC CO"
+    },
+    "AMT": {
+      "cik": 1053507,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "AMERICAN TOWER CORP /MA/"
+    },
+    "MSI": {
+      "cik": 68505,
+      "sic": 3663,
+      "sicDescription": "Radio & Tv Broadcasting & Communications Equipment",
+      "secName": "Motorola Solutions, Inc."
+    },
+    "SHW": {
+      "cik": 89800,
+      "sic": 5200,
+      "sicDescription": "Retail-Building Materials, Hardware, Garden Supply",
+      "secName": "SHERWIN WILLIAMS CO"
+    },
+    "CTAS": {
+      "cik": 723254,
+      "sic": 2320,
+      "sicDescription": "Men's & Boys' Furnishgs, Work Clothg, & Allied Garments",
+      "secName": "CINTAS CORP"
+    },
+    "DDOG": {
+      "cik": 1561550,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "Datadog, Inc."
+    },
+    "SNPS": {
+      "cik": 883241,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "SYNOPSYS INC"
+    },
+    "CVNA": {
+      "cik": 1690820,
+      "sic": 5500,
+      "sicDescription": "Retail-Auto Dealers & Gasoline Stations",
+      "secName": "CARVANA CO."
+    },
+    "MDLZ": {
+      "cik": 1103982,
+      "sic": 2000,
+      "sicDescription": "Food and Kindred Products",
+      "secName": "Mondelez International, Inc."
+    },
+    "EOG": {
+      "cik": 821189,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "secName": "EOG RESOURCES INC"
+    },
+    "ECL": {
+      "cik": 31462,
+      "sic": 2840,
+      "sicDescription": "Soap, Detergents, Cleang Preparations, Perfumes, Cosmetics",
+      "secName": "ECOLAB INC."
+    },
+    "ITW": {
+      "cik": 49826,
+      "sic": 3560,
+      "sicDescription": "General Industrial Machinery & Equipment",
+      "secName": "ILLINOIS TOOL WORKS INC"
+    },
+    "FDX": {
+      "cik": 1048911,
+      "sic": 4513,
+      "sicDescription": "Air Courier Services",
+      "secName": "FEDEX CORP"
+    },
+    "TRV": {
+      "cik": 86312,
+      "sic": 6331,
+      "sicDescription": "Fire, Marine & Casualty Insurance",
+      "secName": "TRAVELERS COMPANIES, INC."
+    },
+    "GM": {
+      "cik": 1467858,
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
+      "secName": "General Motors Co"
+    },
+    "CMI": {
+      "cik": 26172,
+      "sic": 3510,
+      "sicDescription": "Engines & Turbines",
+      "secName": "CUMMINS INC"
+    },
+    "APO": {
+      "cik": 1858681,
+      "sic": 6282,
+      "sicDescription": "Investment Advice",
+      "secName": "Apollo Global Management, Inc."
+    },
+    "NOC": {
+      "cik": 1133421,
+      "sic": 3812,
+      "sicDescription": "Search, Detection, Navigation, Guidance, Aeronautical Sys",
+      "secName": "NORTHROP GRUMMAN CORP /DE/"
+    },
+    "CI": {
+      "cik": 1739940,
+      "sic": 6324,
+      "sicDescription": "Hospital & Medical Service Plans",
+      "secName": "Cigna Group"
+    },
+    "NSC": {
+      "cik": 702165,
+      "sic": 4011,
+      "sicDescription": "Railroads, Line-Haul Operating",
+      "secName": "NORFOLK SOUTHERN CORP"
+    },
+    "TGT": {
+      "cik": 27419,
+      "sic": 5331,
+      "sicDescription": "Retail-Variety Stores",
+      "secName": "TARGET CORP"
+    },
+    "ROST": {
+      "cik": 745732,
+      "sic": 5651,
+      "sicDescription": "Retail-Family Clothing Stores",
+      "secName": "ROSS STORES, INC."
+    },
+    "ORLY": {
+      "cik": 898173,
+      "sic": 5531,
+      "sicDescription": "Retail-Auto & Home Supply Stores",
+      "secName": "O REILLY AUTOMOTIVE INC"
+    },
+    "CL": {
+      "cik": 21665,
+      "sic": 2844,
+      "sicDescription": "Perfumes, Cosmetics & Other Toilet Preparations",
+      "secName": "COLGATE PALMOLIVE CO"
+    },
+    "BSX": {
+      "cik": 885725,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+      "secName": "BOSTON SCIENTIFIC CORP"
+    },
+    "KMI": {
+      "cik": 1506307,
+      "sic": 4922,
+      "sicDescription": "Natural Gas Transmission",
+      "secName": "KINDER MORGAN, INC."
+    },
+    "RCL": {
+      "cik": 884887,
+      "sic": 4400,
+      "sicDescription": "Water Transportation",
+      "secName": "ROYAL CARIBBEAN CRUISES LTD"
+    },
+    "WBD": {
+      "cik": 1437107,
+      "sic": 4841,
+      "sicDescription": "Cable & Other Pay Television Services",
+      "secName": "Warner Bros. Discovery, Inc."
+    },
+    "HLT": {
+      "cik": 1585689,
+      "sic": 7011,
+      "sicDescription": "Hotels & Motels",
+      "secName": "Hilton Worldwide Holdings Inc."
+    },
+    "AON": {
+      "cik": 315293,
+      "sic": 6411,
+      "sicDescription": "Insurance Agents, Brokers & Service",
+      "secName": "Aon plc"
+    },
+    "RSG": {
+      "cik": 1060391,
+      "sic": 4953,
+      "sicDescription": "Refuse Systems",
+      "secName": "REPUBLIC SERVICES, INC."
+    },
+    "SPG": {
+      "cik": 1063761,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "SIMON PROPERTY GROUP INC."
+    },
+    "APD": {
+      "cik": 2969,
+      "sic": 2810,
+      "sicDescription": "Industrial Inorganic Chemicals",
+      "secName": "Air Products & Chemicals, Inc."
+    },
+    "BDX": {
+      "cik": 10795,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+      "secName": "BECTON DICKINSON & CO"
+    },
+    "LITE": {
+      "cik": 1633978,
+      "sic": 3669,
+      "sicDescription": "Communications Equipment, NEC",
+      "secName": "Lumentum Holdings Inc."
+    },
+    "HPE": {
+      "cik": 1645590,
+      "sic": 3570,
+      "sicDescription": "Computer & office Equipment",
+      "secName": "Hewlett Packard Enterprise Co"
+    },
+    "AJG": {
+      "cik": 354190,
+      "sic": 6411,
+      "sicDescription": "Insurance Agents, Brokers & Service",
+      "secName": "Arthur J. Gallagher & Co."
+    },
+    "AEP": {
+      "cik": 4904,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "secName": "AMERICAN ELECTRIC POWER CO INC"
+    },
+    "ALL": {
+      "cik": 899051,
+      "sic": 6331,
+      "sicDescription": "Fire, Marine & Casualty Insurance",
+      "secName": "ALLSTATE CORP"
+    },
+    "TDG": {
+      "cik": 1260221,
+      "sic": 3728,
+      "sicDescription": "Aircraft Parts & Auxiliary Equipment, NEC",
+      "secName": "TransDigm Group INC"
+    },
+    "DLR": {
+      "cik": 1297996,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "DIGITAL REALTY TRUST, INC."
+    },
+    "COR": {
+      "cik": 1140859,
+      "sic": 5122,
+      "sicDescription": "Wholesale-Drugs, Proprietaries & Druggists' Sundries",
+      "secName": "Cencora, Inc."
+    },
+    "PCAR": {
+      "cik": 75362,
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
+      "secName": "PACCAR INC"
+    },
+    "TRGP": {
+      "cik": 1389170,
+      "sic": 4922,
+      "sicDescription": "Natural Gas Transmission",
+      "secName": "Targa Resources Corp."
+    },
+    "BKR": {
+      "cik": 1701605,
+      "sic": 3533,
+      "sicDescription": "Oil & Gas Field Machinery & Equipment",
+      "secName": "Baker Hughes Co"
+    },
+    "URI": {
+      "cik": 1067701,
+      "sic": 7359,
+      "sicDescription": "Services-Equipment Rental & Leasing, NEC",
+      "secName": "UNITED RENTALS, INC."
+    },
+    "GWW": {
+      "cik": 277135,
+      "sic": 5000,
+      "sicDescription": "Wholesale-Durable Goods",
+      "secName": "W.W. GRAINGER, INC."
+    },
+    "TFC": {
+      "cik": 92230,
+      "sic": 6021,
+      "sicDescription": "National Commercial Banks",
+      "secName": "TRUIST FINANCIAL CORP"
+    },
+    "MRNA": {
+      "cik": 1682852,
+      "sic": 2836,
+      "sicDescription": "Biological Products, (No Diagnostic Substances)",
+      "secName": "Moderna, Inc."
+    },
+    "CRH": {
+      "cik": 849395,
+      "sic": 3241,
+      "sicDescription": "Cement, Hydraulic",
+      "secName": "CRH PUBLIC LTD CO"
+    },
+    "MET": {
+      "cik": 1099219,
+      "sic": 6311,
+      "sicDescription": "Life Insurance",
+      "secName": "METLIFE INC"
+    },
+    "TEL": {
+      "cik": 1385157,
+      "sic": 5065,
+      "sicDescription": "Wholesale-Electronic Parts & Equipment, NEC",
+      "secName": "TE Connectivity plc"
+    },
+    "OXY": {
+      "cik": 797468,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "secName": "OCCIDENTAL PETROLEUM CORP /DE/"
+    },
+    "OKE": {
+      "cik": 1039684,
+      "sic": 4923,
+      "sicDescription": "Natural Gas Transmisison & Distribution",
+      "secName": "ONEOK INC /NEW/"
+    },
+    "MPWR": {
+      "cik": 1280452,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "secName": "MONOLITHIC POWER SYSTEMS, INC."
+    },
+    "AFL": {
+      "cik": 4977,
+      "sic": 6321,
+      "sicDescription": "Accident & Health Insurance",
+      "secName": "AFLAC INC"
+    },
+    "CTVA": {
+      "cik": 1755672,
+      "sic": 100,
+      "sicDescription": "Agricultural Production-Crops",
+      "secName": "Corteva, Inc."
+    },
+    "D": {
+      "cik": 715957,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "secName": "DOMINION ENERGY, INC"
+    },
+    "NUE": {
+      "cik": 73309,
+      "sic": 3312,
+      "sicDescription": "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)",
+      "secName": "NUCOR CORP"
+    },
+    "FANG": {
+      "cik": 1539838,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "secName": "Diamondback Energy, Inc."
+    },
+    "O": {
+      "cik": 726728,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "REALTY INCOME CORP"
+    },
+    "NKE": {
+      "cik": 320187,
+      "sic": 3021,
+      "sicDescription": "Rubber & Plastics Footwear",
+      "secName": "NIKE, Inc."
+    },
+    "NXPI": {
+      "cik": 1413447,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "secName": "NXP Semiconductors N.V."
+    },
+    "CAH": {
+      "cik": 721371,
+      "sic": 5122,
+      "sicDescription": "Wholesale-Drugs, Proprietaries & Druggists' Sundries",
+      "secName": "CARDINAL HEALTH INC"
+    },
+    "FAST": {
+      "cik": 815556,
+      "sic": 5200,
+      "sicDescription": "Retail-Building Materials, Hardware, Garden Supply",
+      "secName": "FASTENAL CO"
+    },
+    "NDAQ": {
+      "cik": 1120193,
+      "sic": 6200,
+      "sicDescription": "Security & Commodity Brokers, Dealers, Exchanges & Services",
+      "secName": "NASDAQ, INC."
+    },
+    "SRE": {
+      "cik": 1032208,
+      "sic": 4932,
+      "sicDescription": "Gas & Other Services Combined",
+      "secName": "SEMPRA"
+    },
+    "FIX": {
+      "cik": 1035983,
+      "sic": 1731,
+      "sicDescription": "Electrical Work",
+      "secName": "COMFORT SYSTEMS USA INC"
+    },
+    "CRWD": {
+      "cik": 1535527,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "CrowdStrike Holdings, Inc."
+    },
+    "KEYS": {
+      "cik": 1601046,
+      "sic": 3823,
+      "sicDescription": "Industrial Instruments For Measurement, Display, and Control",
+      "secName": "Keysight Technologies, Inc."
+    },
+    "F": {
+      "cik": 37996,
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
+      "secName": "FORD MOTOR CO"
+    },
+    "PSA": {
+      "cik": 1393311,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "Public Storage"
+    },
+    "GRMN": {
+      "cik": 1121788,
+      "sic": 3812,
+      "sicDescription": "Search, Detection, Navigation, Guidance, Aeronautical Sys",
+      "secName": "GARMIN LTD"
+    },
+    "AME": {
+      "cik": 1037868,
+      "sic": 3823,
+      "sicDescription": "Industrial Instruments For Measurement, Display, and Control",
+      "secName": "AMETEK INC/"
+    },
+    "TER": {
+      "cik": 97210,
+      "sic": 3825,
+      "sicDescription": "Instruments For Meas & Testing of  Electricity & Elec Signals",
+      "secName": "TERADYNE, INC"
+    },
+    "ADSK": {
+      "cik": 769397,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "Autodesk, Inc."
+    },
+    "EW": {
+      "cik": 1099800,
+      "sic": 3842,
+      "sicDescription": "Orthopedic, Prosthetic & Surgical Appliances & Supplies",
+      "secName": "Edwards Lifesciences Corp"
+    },
+    "WDAY": {
+      "cik": 1327811,
+      "sic": 7374,
+      "sicDescription": "Services-Computer Processing & Data Preparation",
+      "secName": "Workday, Inc."
+    },
+    "STT": {
+      "cik": 93751,
+      "sic": 6022,
+      "sicDescription": "State Commercial Banks",
+      "secName": "STATE STREET CORP"
+    },
+    "CIEN": {
+      "cik": 936395,
+      "sic": 3661,
+      "sicDescription": "Telephone & Telegraph Apparatus",
+      "secName": "CIENA CORP"
+    },
+    "DAL": {
+      "cik": 27904,
+      "sic": 4512,
+      "sicDescription": "Air Transportation, Scheduled",
+      "secName": "DELTA AIR LINES, INC."
+    },
+    "LHX": {
+      "cik": 202058,
+      "sic": 3812,
+      "sicDescription": "Search, Detection, Navigation, Guidance, Aeronautical Sys",
+      "secName": "L3HARRIS TECHNOLOGIES, INC. /DE/"
+    },
+    "ETR": {
+      "cik": 65984,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "secName": "ENTERGY CORP /DE/"
+    },
+    "AMP": {
+      "cik": 820027,
+      "sic": 6282,
+      "sicDescription": "Investment Advice",
+      "secName": "AMERIPRISE FINANCIAL INC"
+    },
+    "AZO": {
+      "cik": 866787,
+      "sic": 5531,
+      "sicDescription": "Retail-Auto & Home Supply Stores",
+      "secName": "AUTOZONE INC"
+    },
+    "CMG": {
+      "cik": 1058090,
+      "sic": 5812,
+      "sicDescription": "Retail-Eating  Places",
+      "secName": "CHIPOTLE MEXICAN GRILL INC"
+    },
+    "FITB": {
+      "cik": 35527,
+      "sic": 6022,
+      "sicDescription": "State Commercial Banks",
+      "secName": "FIFTH THIRD BANCORP"
+    },
+    "CARR": {
+      "cik": 1783180,
+      "sic": 3585,
+      "sicDescription": "Air-Cond & Warm Air Heatg Equip & Comm & Indl Refrig Equip",
+      "secName": "CARRIER GLOBAL Corp"
+    },
+    "WAB": {
+      "cik": 943452,
+      "sic": 3743,
+      "sicDescription": "Railroad Equipment",
+      "secName": "WESTINGHOUSE AIR BRAKE TECHNOLOGIES CORP"
+    },
+    "HUM": {
+      "cik": 49071,
+      "sic": 6324,
+      "sicDescription": "Hospital & Medical Service Plans",
+      "secName": "HUMANA INC"
+    },
+    "XEL": {
+      "cik": 72903,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
+      "secName": "XCEL ENERGY INC"
+    },
+    "COIN": {
+      "cik": 1679788,
+      "sic": 6199,
+      "sicDescription": "Finance Services",
+      "secName": "Coinbase Global, Inc."
+    },
+    "VST": {
+      "cik": 1692819,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "secName": "Vistra Corp."
+    },
+    "EBAY": {
+      "cik": 1065088,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "secName": "EBAY INC"
+    },
+    "ROK": {
+      "cik": 1024478,
+      "sic": 3829,
+      "sicDescription": "Measuring & Controlling Devices, NEC",
+      "secName": "ROCKWELL AUTOMATION, INC"
+    },
+    "XYZ": {
+      "cik": 1512673,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "Block, Inc."
+    },
+    "PYPL": {
+      "cik": 1633917,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "secName": "PayPal Holdings, Inc."
+    },
+    "ARES": {
+      "cik": 1176948,
+      "sic": 6282,
+      "sicDescription": "Investment Advice",
+      "secName": "Ares Management Corp"
+    },
+    "VEEV": {
+      "cik": 1393052,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "VEEVA SYSTEMS INC"
+    },
+    "PAYX": {
+      "cik": 723531,
+      "sic": 8700,
+      "sicDescription": "Services-Engineering, Accounting, Research, Management",
+      "secName": "PAYCHEX INC"
+    },
+    "VTR": {
+      "cik": 740260,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "Ventas, Inc."
+    },
+    "EXC": {
+      "cik": 1109357,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
+      "secName": "EXELON CORP"
+    },
+    "MNST": {
+      "cik": 865752,
+      "sic": 2086,
+      "sicDescription": "Bottled & Canned Soft Drinks & Carbonated Waters",
+      "secName": "Monster Beverage Corp"
+    },
+    "KDP": {
+      "cik": 1418135,
+      "sic": 2080,
+      "sicDescription": "Beverages",
+      "secName": "Keurig Dr Pepper Inc."
+    },
+    "COHR": {
+      "cik": 820318,
+      "sic": 3827,
+      "sicDescription": "Optical Instruments & Lenses",
+      "secName": "COHERENT CORP."
+    },
+    "IQV": {
+      "cik": 1478242,
+      "sic": 8731,
+      "sicDescription": "Services-Commercial Physical & Biological Research",
+      "secName": "IQVIA HOLDINGS INC."
+    },
+    "IDXX": {
+      "cik": 874716,
+      "sic": 2835,
+      "sicDescription": "In Vitro & In Vivo Diagnostic Substances",
+      "secName": "IDEXX LABORATORIES INC /DE"
+    },
+    "CBRE": {
+      "cik": 1138118,
+      "sic": 6500,
+      "sicDescription": "Real Estate",
+      "secName": "CBRE GROUP, INC."
+    },
+    "A": {
+      "cik": 1090872,
+      "sic": 3826,
+      "sicDescription": "Laboratory Analytical Instruments",
+      "secName": "AGILENT TECHNOLOGIES, INC."
+    },
+    "ROP": {
+      "cik": 882835,
+      "sic": 3823,
+      "sicDescription": "Industrial Instruments For Measurement, Display, and Control",
+      "secName": "ROPER TECHNOLOGIES INC"
+    },
+    "YUM": {
+      "cik": 1041061,
+      "sic": 5812,
+      "sicDescription": "Retail-Eating  Places",
+      "secName": "YUM BRANDS INC"
+    },
+    "AXON": {
+      "cik": 1069183,
+      "sic": 3480,
+      "sicDescription": "Ordnance & Accessories, (No Vehicles/Guided Missiles)",
+      "secName": "AXON ENTERPRISE, INC."
+    },
+    "LYV": {
+      "cik": 1335258,
+      "sic": 7900,
+      "sicDescription": "Services-Amusement & Recreation Services",
+      "secName": "Live Nation Entertainment, Inc."
+    },
+    "MSCI": {
+      "cik": 1408198,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "secName": "MSCI Inc."
+    },
+    "PRU": {
+      "cik": 1137774,
+      "sic": 6311,
+      "sicDescription": "Life Insurance",
+      "secName": "PRUDENTIAL FINANCIAL INC"
+    },
+    "ADM": {
+      "cik": 7084,
+      "sic": 2070,
+      "sicDescription": "Fats & Oils",
+      "secName": "Archer-Daniels-Midland Co"
+    },
+    "TTWO": {
+      "cik": 946581,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "TAKE TWO INTERACTIVE SOFTWARE INC"
+    },
+    "AIG": {
+      "cik": 5272,
+      "sic": 6331,
+      "sicDescription": "Fire, Marine & Casualty Insurance",
+      "secName": "AMERICAN INTERNATIONAL GROUP, INC."
+    },
+    "DHI": {
+      "cik": 882184,
+      "sic": 1531,
+      "sicDescription": "Operative Builders",
+      "secName": "HORTON D R INC /DE/"
+    },
+    "ED": {
+      "cik": 1047862,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
+      "secName": "CONSOLIDATED EDISON INC"
+    },
+    "SYY": {
+      "cik": 96021,
+      "sic": 5140,
+      "sicDescription": "Wholesale-Groceries & Related Products",
+      "secName": "SYSCO CORP"
+    },
+    "FLEX": {
+      "cik": 866374,
+      "sic": 3672,
+      "sicDescription": "Printed Circuit Boards",
+      "secName": "FLEX LTD."
+    },
+    "ODFL": {
+      "cik": 878927,
+      "sic": 4213,
+      "sicDescription": "Trucking (No Local)",
+      "secName": "OLD DOMINION FREIGHT LINE, INC."
+    },
+    "MCHP": {
+      "cik": 827054,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "secName": "MICROCHIP TECHNOLOGY INC"
+    },
+    "HIG": {
+      "cik": 874766,
+      "sic": 6331,
+      "sicDescription": "Fire, Marine & Casualty Insurance",
+      "secName": "HARTFORD INSURANCE GROUP, INC."
+    },
+    "PEG": {
+      "cik": 788784,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
+      "secName": "PUBLIC SERVICE ENTERPRISE GROUP INC"
+    },
+    "EL": {
+      "cik": 1001250,
+      "sic": 2844,
+      "sicDescription": "Perfumes, Cosmetics & Other Toilet Preparations",
+      "secName": "ESTEE LAUDER COMPANIES INC"
+    },
+    "KVUE": {
+      "cik": 1944048,
+      "sic": 2844,
+      "sicDescription": "Perfumes, Cosmetics & Other Toilet Preparations",
+      "secName": "Kenvue Inc."
+    },
+    "NTAP": {
+      "cik": 1002047,
+      "sic": 3572,
+      "sicDescription": "Computer Storage Devices",
+      "secName": "NetApp, Inc."
+    },
+    "HSY": {
+      "cik": 47111,
+      "sic": 2060,
+      "sicDescription": "Sugar & Confectionery Products",
+      "secName": "HERSHEY CO"
+    },
+    "KR": {
+      "cik": 56873,
+      "sic": 5411,
+      "sicDescription": "Retail-Grocery Stores",
+      "secName": "KROGER CO"
+    },
+    "KMB": {
+      "cik": 55785,
+      "sic": 2670,
+      "sicDescription": "Converted Paper & Paperboard Prods (No Contaners/Boxes)",
+      "secName": "KIMBERLY CLARK CORP"
+    },
+    "EQT": {
+      "cik": 33213,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "secName": "EQT Corp"
+    },
+    "DXCM": {
+      "cik": 1093557,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+      "secName": "DEXCOM INC"
+    },
+    "EXPE": {
+      "cik": 1324424,
+      "sic": 4700,
+      "sicDescription": "Transportation Services",
+      "secName": "Expedia Group, Inc."
+    },
+    "WEC": {
+      "cik": 783325,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
+      "secName": "WEC ENERGY GROUP, INC."
+    },
+    "ACGL": {
+      "cik": 947484,
+      "sic": 6331,
+      "sicDescription": "Fire, Marine & Casualty Insurance",
+      "secName": "ARCH CAPITAL GROUP LTD."
+    },
+    "UAL": {
+      "cik": 100517,
+      "sic": 4512,
+      "sicDescription": "Air Transportation, Scheduled",
+      "secName": "United Airlines Holdings, Inc."
+    },
+    "IRM": {
+      "cik": 1020569,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "IRON MOUNTAIN INC"
+    },
+    "MTB": {
+      "cik": 36270,
+      "sic": 6022,
+      "sicDescription": "State Commercial Banks",
+      "secName": "M&T BANK CORP"
+    },
+    "STLD": {
+      "cik": 1022671,
+      "sic": 3312,
+      "sicDescription": "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)",
+      "secName": "STEEL DYNAMICS INC"
+    },
+    "RJF": {
+      "cik": 720005,
+      "sic": 6211,
+      "sicDescription": "Security Brokers, Dealers & Flotation Companies",
+      "secName": "RAYMOND JAMES FINANCIAL INC"
+    },
+    "NTRS": {
+      "cik": 73124,
+      "sic": 6022,
+      "sicDescription": "State Commercial Banks",
+      "secName": "NORTHERN TRUST CORP"
+    },
+    "VMC": {
+      "cik": 1396009,
+      "sic": 1400,
+      "sicDescription": "Mining & Quarrying of  Nonmetallic Minerals (No Fuels)",
+      "secName": "Vulcan Materials CO"
+    },
+    "RMD": {
+      "cik": 943819,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+      "secName": "RESMED INC"
+    },
+    "HBAN": {
+      "cik": 49196,
+      "sic": 6021,
+      "sicDescription": "National Commercial Banks",
+      "secName": "HUNTINGTON BANCSHARES INC /MD/"
+    },
+    "CCI": {
+      "cik": 1051470,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "CROWN CASTLE INC."
+    },
+    "EME": {
+      "cik": 105634,
+      "sic": 1731,
+      "sicDescription": "Electrical Work",
+      "secName": "EMCOR Group, Inc."
+    },
+    "ZTS": {
+      "cik": 1555280,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "secName": "Zoetis Inc."
+    },
+    "CBOE": {
+      "cik": 1374310,
+      "sic": 6200,
+      "sicDescription": "Security & Commodity Brokers, Dealers, Exchanges & Services",
+      "secName": "Cboe Global Markets, Inc."
+    },
+    "CNC": {
+      "cik": 1071739,
+      "sic": 6324,
+      "sicDescription": "Hospital & Medical Service Plans",
+      "secName": "CENTENE CORP"
+    },
+    "GEHC": {
+      "cik": 1932393,
+      "sic": 3844,
+      "sicDescription": "X-Ray Apparatus & Tubes & Related Irradiation Apparatus",
+      "secName": "GE HealthCare Technologies Inc."
+    },
+    "BIIB": {
+      "cik": 875045,
+      "sic": 2836,
+      "sicDescription": "Biological Products, (No Diagnostic Substances)",
+      "secName": "BIOGEN INC."
+    },
+    "CCL": {
+      "cik": 815097,
+      "sic": 4400,
+      "sicDescription": "Water Transportation",
+      "secName": "Carnival Corp Ltd."
+    },
+    "JBL": {
+      "cik": 898293,
+      "sic": 3672,
+      "sicDescription": "Printed Circuit Boards",
+      "secName": "JABIL INC"
+    },
+    "WTW": {
+      "cik": 1140536,
+      "sic": 6411,
+      "sicDescription": "Insurance Agents, Brokers & Service",
+      "secName": "WILLIS TOWERS WATSON PLC"
+    },
+    "PCG": {
+      "cik": 1004980,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
+      "secName": "PG&E Corp"
+    },
+    "KHC": {
+      "cik": 1637459,
+      "sic": 2030,
+      "sicDescription": "Canned, Frozen & Preservd Fruit, Veg & Food Specialties",
+      "secName": "Kraft Heinz Co"
+    },
+    "HAL": {
+      "cik": 45012,
+      "sic": 1389,
+      "sicDescription": "Oil & Gas Field Services, NEC",
+      "secName": "HALLIBURTON CO"
+    },
+    "DVN": {
+      "cik": 1090012,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "secName": "DEVON ENERGY CORP/DE"
+    },
+    "MLM": {
+      "cik": 916076,
+      "sic": 1400,
+      "sicDescription": "Mining & Quarrying of  Nonmetallic Minerals (No Fuels)",
+      "secName": "MARTIN MARIETTA MATERIALS INC"
+    },
+    "CPRT": {
+      "cik": 900075,
+      "sic": 5500,
+      "sicDescription": "Retail-Auto Dealers & Gasoline Stations",
+      "secName": "COPART INC"
+    },
+    "CTSH": {
+      "cik": 1058290,
+      "sic": 7371,
+      "sicDescription": "Services-Computer Programming Services",
+      "secName": "COGNIZANT TECHNOLOGY SOLUTIONS CORP"
+    },
+    "EXR": {
+      "cik": 1289490,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "Extra Space Storage Inc."
+    },
+    "AEE": {
+      "cik": 1002910,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
+      "secName": "AMEREN CORP"
+    },
+    "IR": {
+      "cik": 1699150,
+      "sic": 3560,
+      "sicDescription": "General Industrial Machinery & Equipment",
+      "secName": "Ingersoll Rand Inc."
+    },
+    "LVS": {
+      "cik": 1300514,
+      "sic": 7011,
+      "sicDescription": "Hotels & Motels",
+      "secName": "LAS VEGAS SANDS CORP"
+    },
+    "FOXA": {
+      "cik": 1754301,
+      "sic": 4833,
+      "sicDescription": "Television Broadcasting Stations",
+      "secName": "Fox Corp"
+    },
+    "DG": {
+      "cik": 29534,
+      "sic": 5331,
+      "sicDescription": "Retail-Variety Stores",
+      "secName": "DOLLAR GENERAL CORP"
+    },
+    "CFG": {
+      "cik": 759944,
+      "sic": 6022,
+      "sicDescription": "State Commercial Banks",
+      "secName": "CITIZENS FINANCIAL GROUP INC/RI"
+    },
+    "HPQ": {
+      "cik": 47217,
+      "sic": 3570,
+      "sicDescription": "Computer & office Equipment",
+      "secName": "HP INC"
+    },
+    "ON": {
+      "cik": 1097864,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "secName": "ON SEMICONDUCTOR CORP"
+    },
+    "CASY": {
+      "cik": 726958,
+      "sic": 5500,
+      "sicDescription": "Retail-Auto Dealers & Gasoline Stations",
+      "secName": "CASEYS GENERAL STORES INC"
+    },
+    "TDY": {
+      "cik": 1094285,
+      "sic": 3812,
+      "sicDescription": "Search, Detection, Navigation, Guidance, Aeronautical Sys",
+      "secName": "TELEDYNE TECHNOLOGIES INC"
+    },
+    "DTE": {
+      "cik": 936340,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "secName": "DTE ENERGY CO"
+    },
+    "ATO": {
+      "cik": 731802,
+      "sic": 4924,
+      "sicDescription": "Natural Gas Distribution",
+      "secName": "ATMOS ENERGY CORP"
+    },
+    "MTD": {
+      "cik": 1037646,
+      "sic": 3826,
+      "sicDescription": "Laboratory Analytical Instruments",
+      "secName": "METTLER TOLEDO INTERNATIONAL INC/"
+    },
+    "FISV": {
+      "cik": 798354,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "secName": "FISERV INC"
+    },
+    "VICI": {
+      "cik": 1705696,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "VICI PROPERTIES INC."
+    },
+    "OTIS": {
+      "cik": 1781335,
+      "sic": 3600,
+      "sicDescription": "Electronic & Other Electrical Equipment (No Computer Equip)",
+      "secName": "Otis Worldwide Corp"
+    },
+    "LH": {
+      "cik": 920148,
+      "sic": 8071,
+      "sicDescription": "Services-Medical Laboratories",
+      "secName": "LABCORP HOLDINGS INC."
+    },
+    "AWK": {
+      "cik": 1410636,
+      "sic": 4941,
+      "sicDescription": "Water Supply",
+      "secName": "American Water Works Company, Inc."
+    },
+    "FE": {
+      "cik": 1031296,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "secName": "FIRSTENERGY CORP"
+    },
+    "CPAY": {
+      "cik": 1175454,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "secName": "CORPAY, INC."
+    },
+    "ES": {
+      "cik": 72741,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "secName": "EVERSOURCE ENERGY"
+    },
+    "WAT": {
+      "cik": 1000697,
+      "sic": 3826,
+      "sicDescription": "Laboratory Analytical Instruments",
+      "secName": "WATERS CORP /DE/"
+    },
+    "CINF": {
+      "cik": 20286,
+      "sic": 6331,
+      "sicDescription": "Fire, Marine & Casualty Insurance",
+      "secName": "CINCINNATI FINANCIAL CORP"
+    },
+    "WSM": {
+      "cik": 719955,
+      "sic": 5700,
+      "sicDescription": "Retail-Home Furniture, Furnishings & Equipment Stores",
+      "secName": "WILLIAMS SONOMA INC"
+    },
+    "VRSN": {
+      "cik": 1014473,
+      "sic": 7371,
+      "sicDescription": "Services-Computer Programming Services",
+      "secName": "VERISIGN INC/CA"
+    },
+    "DGX": {
+      "cik": 1022079,
+      "sic": 8071,
+      "sicDescription": "Services-Medical Laboratories",
+      "secName": "QUEST DIAGNOSTICS INC"
+    },
+    "PPL": {
+      "cik": 922224,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "secName": "PPL Corp"
+    },
+    "SYF": {
+      "cik": 1601712,
+      "sic": 6199,
+      "sicDescription": "Finance Services",
+      "secName": "Synchrony Financial"
+    },
+    "CNP": {
+      "cik": 1130310,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "secName": "CENTERPOINT ENERGY INC"
+    },
+    "FICO": {
+      "cik": 814547,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "secName": "FAIR ISAAC CORP"
+    },
+    "DOV": {
+      "cik": 29905,
+      "sic": 3530,
+      "sicDescription": "Construction, Mining & Materials Handling Machinery & Equip",
+      "secName": "DOVER Corp"
+    },
+    "TPL": {
+      "cik": 1811074,
+      "sic": 6792,
+      "sicDescription": "Oil Royalty Traders",
+      "secName": "Texas Pacific Land Corp"
+    },
+    "VRSK": {
+      "cik": 1442145,
+      "sic": 7374,
+      "sicDescription": "Services-Computer Processing & Data Preparation",
+      "secName": "Verisk Analytics, Inc."
+    },
+    "XYL": {
+      "cik": 1524472,
+      "sic": 3561,
+      "sicDescription": "Pumps & Pumping Equipment",
+      "secName": "Xylem Inc."
+    },
+    "DLTR": {
+      "cik": 935703,
+      "sic": 5331,
+      "sicDescription": "Retail-Variety Stores",
+      "secName": "DOLLAR TREE, INC."
+    },
+    "WRB": {
+      "cik": 11544,
+      "sic": 6331,
+      "sicDescription": "Fire, Marine & Casualty Insurance",
+      "secName": "BERKLEY W R CORP"
+    },
+    "INCY": {
+      "cik": 879169,
+      "sic": 8731,
+      "sicDescription": "Services-Commercial Physical & Biological Research",
+      "secName": "INCYTE CORP"
+    },
+    "RF": {
+      "cik": 1281761,
+      "sic": 6021,
+      "sicDescription": "National Commercial Banks",
+      "secName": "REGIONS FINANCIAL CORP"
+    },
+    "TPR": {
+      "cik": 1116132,
+      "sic": 3100,
+      "sicDescription": "Leather & Leather Products",
+      "secName": "TAPESTRY, INC."
+    },
+    "DRI": {
+      "cik": 940944,
+      "sic": 5812,
+      "sicDescription": "Retail-Eating  Places",
+      "secName": "DARDEN RESTAURANTS INC"
+    },
+    "EXPD": {
+      "cik": 746515,
+      "sic": 4731,
+      "sicDescription": "Arrangement of  Transportation of  Freight & Cargo",
+      "secName": "EXPEDITORS INTERNATIONAL OF WASHINGTON INC"
+    },
+    "OMC": {
+      "cik": 29989,
+      "sic": 7311,
+      "sicDescription": "Services-Advertising Agencies",
+      "secName": "OMNICOM GROUP INC."
+    },
+    "PPG": {
+      "cik": 79879,
+      "sic": 2851,
+      "sicDescription": "Paints, Varnishes, Lacquers, Enamels & Allied Prods",
+      "secName": "PPG INDUSTRIES INC"
+    },
+    "BRO": {
+      "cik": 79282,
+      "sic": 6411,
+      "sicDescription": "Insurance Agents, Brokers & Service",
+      "secName": "BROWN & BROWN, INC."
+    },
+    "Q": {
+      "cik": 2058873,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "secName": "Qnity Electronics, Inc."
+    },
+    "JBHT": {
+      "cik": 728535,
+      "sic": 4213,
+      "sicDescription": "Trucking (No Local)",
+      "secName": "HUNT J B TRANSPORT SERVICES INC"
+    },
+    "EXE": {
+      "cik": 895126,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "secName": "EXPAND ENERGY Corp"
+    },
+    "WST": {
+      "cik": 105770,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+      "secName": "WEST PHARMACEUTICAL SERVICES INC"
+    },
+    "SW": {
+      "cik": 2005951,
+      "sic": 2650,
+      "sicDescription": "Paperboard Containers & Boxes",
+      "secName": "Smurfit Westrock plc"
+    },
+    "VLTO": {
+      "cik": 1967680,
+      "sic": 3825,
+      "sicDescription": "Instruments For Meas & Testing of  Electricity & Elec Signals",
+      "secName": "Veralto Corp"
+    },
+    "SMCI": {
+      "cik": 1375365,
+      "sic": 3571,
+      "sicDescription": "Electronic Computers",
+      "secName": "Super Micro Computer, Inc."
+    },
+    "CHD": {
+      "cik": 313927,
+      "sic": 2840,
+      "sicDescription": "Soap, Detergents, Cleang Preparations, Perfumes, Cosmetics",
+      "secName": "CHURCH & DWIGHT CO INC /DE/"
+    },
+    "PFG": {
+      "cik": 1126328,
+      "sic": 6321,
+      "sicDescription": "Accident & Health Insurance",
+      "secName": "PRINCIPAL FINANCIAL GROUP INC"
+    },
+    "BG": {
+      "cik": 1996862,
+      "sic": 2070,
+      "sicDescription": "Fats & Oils",
+      "secName": "Bunge Global SA"
+    },
+    "ULTA": {
+      "cik": 1403568,
+      "sic": 5990,
+      "sicDescription": "Retail-Retail Stores, NEC",
+      "secName": "Ulta Beauty, Inc."
+    },
+    "PHM": {
+      "cik": 822416,
+      "sic": 1531,
+      "sicDescription": "Operative Builders",
+      "secName": "PULTEGROUP INC/MI/"
+    },
+    "HUBB": {
+      "cik": 48898,
+      "sic": 3670,
+      "sicDescription": "Electronic Components & Accessories",
+      "secName": "HUBBELL INC"
+    },
+    "TROW": {
+      "cik": 1113169,
+      "sic": 6282,
+      "sicDescription": "Investment Advice",
+      "secName": "PRICE T ROWE GROUP INC"
+    },
+    "NRG": {
+      "cik": 1013871,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "secName": "NRG ENERGY, INC."
+    },
+    "KEY": {
+      "cik": 91576,
+      "sic": 6021,
+      "sicDescription": "National Commercial Banks",
+      "secName": "KEYCORP /NEW/"
+    },
+    "EIX": {
+      "cik": 827052,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "secName": "EDISON INTERNATIONAL"
+    },
+    "EFX": {
+      "cik": 33185,
+      "sic": 7320,
+      "sicDescription": "Services-Consumer Credit Reporting, Collection Agencies",
+      "secName": "EQUIFAX INC"
+    },
+    "STE": {
+      "cik": 1757898,
+      "sic": 3842,
+      "sicDescription": "Orthopedic, Prosthetic & Surgical Appliances & Supplies",
+      "secName": "STERIS plc"
+    },
+    "STZ": {
+      "cik": 16918,
+      "sic": 2080,
+      "sicDescription": "Beverages",
+      "secName": "CONSTELLATION BRANDS, INC."
+    },
+    "L": {
+      "cik": 60086,
+      "sic": 6331,
+      "sicDescription": "Fire, Marine & Casualty Insurance",
+      "secName": "LOEWS CORP"
+    },
+    "FFIV": {
+      "cik": 1048695,
+      "sic": 3576,
+      "sicDescription": "Computer Communications Equipment",
+      "secName": "F5, INC."
+    },
+    "DOW": {
+      "cik": 1751788,
+      "sic": 2821,
+      "sicDescription": "Plastic Materials, Synth Resins & Nonvulcan Elastomers",
+      "secName": "DOW INC."
+    },
+    "IFF": {
+      "cik": 51253,
+      "sic": 2860,
+      "sicDescription": "Industrial Organic Chemicals",
+      "secName": "INTERNATIONAL FLAVORS & FRAGRANCES INC"
+    },
+    "GIS": {
+      "cik": 40704,
+      "sic": 2040,
+      "sicDescription": "Grain Mill Products",
+      "secName": "GENERAL MILLS INC"
+    },
+    "FSLR": {
+      "cik": 1274494,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "secName": "FIRST SOLAR, INC."
+    },
+    "GPN": {
+      "cik": 1123360,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "secName": "GLOBAL PAYMENTS INC"
+    },
+    "AMCR": {
+      "cik": 1748790,
+      "sic": 3990,
+      "sicDescription": "Miscellaneous Manufacturing Industries",
+      "secName": "Amcor plc"
+    },
+    "FIS": {
+      "cik": 1136893,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "secName": "Fidelity National Information Services, Inc."
+    },
+    "LYB": {
+      "cik": 1489393,
+      "sic": 2860,
+      "sicDescription": "Industrial Organic Chemicals",
+      "secName": "LyondellBasell Industries N.V."
+    },
+    "CMS": {
+      "cik": 811156,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
+      "secName": "CMS ENERGY CORP"
+    },
+    "BR": {
+      "cik": 1383312,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "secName": "BROADRIDGE FINANCIAL SOLUTIONS, INC."
+    },
+    "CF": {
+      "cik": 1324404,
+      "sic": 2870,
+      "sicDescription": "Agricultural Chemicals",
+      "secName": "CF Industries Holdings, Inc."
+    },
+    "RL": {
+      "cik": 1037038,
+      "sic": 2320,
+      "sicDescription": "Men's & Boys' Furnishgs, Work Clothg, & Allied Garments",
+      "secName": "RALPH LAUREN CORP"
+    },
+    "CHTR": {
+      "cik": 1091667,
+      "sic": 4841,
+      "sicDescription": "Cable & Other Pay Television Services",
+      "secName": "CHARTER COMMUNICATIONS, INC. /MO/"
+    },
+    "LEN": {
+      "cik": 920760,
+      "sic": 1520,
+      "sicDescription": "General Bldg Contractors - Residential Bldgs",
+      "secName": "LENNAR CORP /NEW/"
+    },
+    "PKG": {
+      "cik": 75677,
+      "sic": 2650,
+      "sicDescription": "Paperboard Containers & Boxes",
+      "secName": "PACKAGING CORP OF AMERICA"
+    },
+    "SBAC": {
+      "cik": 1034054,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "SBA COMMUNICATIONS CORP"
+    },
+    "SNA": {
+      "cik": 91440,
+      "sic": 3420,
+      "sicDescription": "Cutlery, Handtools & General Hardware",
+      "secName": "Snap-on Inc"
+    },
+    "TSN": {
+      "cik": 100493,
+      "sic": 2015,
+      "sicDescription": "Poultry Slaughtering and Processing",
+      "secName": "TYSON FOODS, INC."
+    },
+    "NI": {
+      "cik": 1111711,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
+      "secName": "NISOURCE INC."
+    },
+    "VTRS": {
+      "cik": 1792044,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "secName": "Viatris Inc"
+    },
+    "IP": {
+      "cik": 51434,
+      "sic": 2621,
+      "sicDescription": "Paper Mills",
+      "secName": "INTERNATIONAL PAPER CO /NEW/"
+    },
+    "CDW": {
+      "cik": 1402057,
+      "sic": 5961,
+      "sicDescription": "Retail-Catalog & Mail-Order Houses",
+      "secName": "CDW Corp"
+    },
+    "ZBH": {
+      "cik": 1136869,
+      "sic": 3842,
+      "sicDescription": "Orthopedic, Prosthetic & Surgical Appliances & Supplies",
+      "secName": "ZIMMER BIOMET HOLDINGS, INC."
+    },
+    "EVRG": {
+      "cik": 1711269,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
+      "secName": "Evergy, Inc."
+    },
+    "GPC": {
+      "cik": 40987,
+      "sic": 5013,
+      "sicDescription": "Wholesale-Motor Vehicle Supplies & New Parts",
+      "secName": "GENUINE PARTS CO"
+    },
+    "LUV": {
+      "cik": 92380,
+      "sic": 4512,
+      "sicDescription": "Air Transportation, Scheduled",
+      "secName": "SOUTHWEST AIRLINES CO"
+    },
+    "TSCO": {
+      "cik": 916365,
+      "sic": 5200,
+      "sicDescription": "Retail-Building Materials, Hardware, Garden Supply",
+      "secName": "TRACTOR SUPPLY CO /DE/"
+    },
+    "GEN": {
+      "cik": 849399,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "Gen Digital Inc."
+    },
+    "ESS": {
+      "cik": 920522,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "ESSEX PROPERTY TRUST, INC."
+    },
+    "DD": {
+      "cik": 1666700,
+      "sic": 2821,
+      "sicDescription": "Plastic Materials, Synth Resins & Nonvulcan Elastomers",
+      "secName": "DuPont de Nemours, Inc."
+    },
+    "PTC": {
+      "cik": 857005,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "PTC INC."
+    },
+    "NDSN": {
+      "cik": 72331,
+      "sic": 3569,
+      "sicDescription": "General Industrial Machinery & Equipment, NEC",
+      "secName": "NORDSON CORP"
+    },
+    "LDOS": {
+      "cik": 1336920,
+      "sic": 7373,
+      "sicDescription": "Services-Computer Integrated Systems Design",
+      "secName": "Leidos Holdings, Inc."
+    },
+    "LNT": {
+      "cik": 352541,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
+      "secName": "ALLIANT ENERGY CORP"
+    },
+    "ROL": {
+      "cik": 84839,
+      "sic": 7340,
+      "sicDescription": "Services-To Dwellings & Other Buildings",
+      "secName": "ROLLINS INC"
+    },
+    "CHRW": {
+      "cik": 1043277,
+      "sic": 4731,
+      "sicDescription": "Arrangement of  Transportation of  Freight & Cargo",
+      "secName": "C. H. ROBINSON WORLDWIDE, INC."
+    },
+    "BBY": {
+      "cik": 764478,
+      "sic": 5731,
+      "sicDescription": "Retail-Radio, Tv & Consumer Electronics Stores",
+      "secName": "BEST BUY CO INC"
+    },
+    "INVH": {
+      "cik": 1687229,
+      "sic": 6510,
+      "sicDescription": "Real Estate Operators (No Developers) & Lessors",
+      "secName": "Invitation Homes Inc."
+    },
+    "FTV": {
+      "cik": 1659166,
+      "sic": 3823,
+      "sicDescription": "Industrial Instruments For Measurement, Display, and Control",
+      "secName": "Fortive Corp"
+    },
+    "J": {
+      "cik": 52988,
+      "sic": 1600,
+      "sicDescription": "Heavy Construction Other Than Bldg Const - Contractors",
+      "secName": "JACOBS SOLUTIONS INC."
+    },
+    "NWSA": {
+      "cik": 1564708,
+      "sic": 2711,
+      "sicDescription": "Newspapers: Publishing or  Publishing & Printing",
+      "secName": "NEWS CORP"
+    },
+    "BEN": {
+      "cik": 38777,
+      "sic": 6282,
+      "sicDescription": "Investment Advice",
+      "secName": "FRANKLIN RESOURCES INC"
+    },
+    "NVR": {
+      "cik": 906163,
+      "sic": 1531,
+      "sicDescription": "Operative Builders",
+      "secName": "NVR INC"
+    },
+    "WY": {
+      "cik": 106535,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "WEYERHAEUSER CO"
+    },
+    "BALL": {
+      "cik": 9389,
+      "sic": 3411,
+      "sicDescription": "Metal Cans",
+      "secName": "BALL Corp"
+    },
+    "IEX": {
+      "cik": 832101,
+      "sic": 3561,
+      "sicDescription": "Pumps & Pumping Equipment",
+      "secName": "IDEX CORP /DE/"
+    },
+    "ZBRA": {
+      "cik": 877212,
+      "sic": 3560,
+      "sicDescription": "General Industrial Machinery & Equipment",
+      "secName": "ZEBRA TECHNOLOGIES CORP"
+    },
+    "KIM": {
+      "cik": 879101,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "KIMCO REALTY CORP"
+    },
+    "FDXF": {
+      "cik": 2082247,
+      "sic": 4513,
+      "sicDescription": "Air Courier Services",
+      "secName": "FedEx Freight Holding Company, Inc."
+    },
+    "ALB": {
+      "cik": 915913,
+      "sic": 2821,
+      "sicDescription": "Plastic Materials, Synth Resins & Nonvulcan Elastomers",
+      "secName": "ALBEMARLE CORP"
+    },
+    "TYL": {
+      "cik": 860731,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "secName": "TYLER TECHNOLOGIES INC"
+    },
+    "SOLV": {
+      "cik": 1964738,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+      "secName": "Solventum Corp"
+    },
+    "APA": {
+      "cik": 1841666,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "secName": "APA Corp"
+    },
+    "AKAM": {
+      "cik": 1086222,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "secName": "AKAMAI TECHNOLOGIES INC"
+    },
+    "MAA": {
+      "cik": 912595,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "MID AMERICA APARTMENT COMMUNITIES INC."
+    },
+    "EG": {
+      "cik": 1095073,
+      "sic": 6331,
+      "sicDescription": "Fire, Marine & Casualty Insurance",
+      "secName": "EVEREST GROUP, LTD."
+    },
+    "HST": {
+      "cik": 1070750,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "HOST HOTELS & RESORTS, INC."
+    },
+    "SWK": {
+      "cik": 93556,
+      "sic": 3420,
+      "sicDescription": "Cutlery, Handtools & General Hardware",
+      "secName": "STANLEY BLACK & DECKER, INC."
+    },
+    "MKC": {
+      "cik": 63754,
+      "sic": 2090,
+      "sicDescription": "Miscellaneous Food Preparations & Kindred Products",
+      "secName": "MCCORMICK & CO INC"
+    },
+    "DOC": {
+      "cik": 765880,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "HEALTHPEAK PROPERTIES, INC."
+    },
+    "IVZ": {
+      "cik": 914208,
+      "sic": 6282,
+      "sicDescription": "Investment Advice",
+      "secName": "Invesco Ltd."
+    },
+    "MAS": {
+      "cik": 62996,
+      "sic": 3430,
+      "sicDescription": "Heating Equip, Except Elec & Warm Air; & Plumbing Fixtures",
+      "secName": "MASCO CORP /DE/"
+    },
+    "RVTY": {
+      "cik": 31791,
+      "sic": 3826,
+      "sicDescription": "Laboratory Analytical Instruments",
+      "secName": "REVVITY, INC."
+    },
+    "SJM": {
+      "cik": 91419,
+      "sic": 2033,
+      "sicDescription": "Canned, Fruits, Veg, Preserves, Jams & Jellies",
+      "secName": "J M SMUCKER Co"
+    },
+    "REG": {
+      "cik": 910606,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "REGENCY CENTERS CORP"
+    },
+    "AIZ": {
+      "cik": 1267238,
+      "sic": 6399,
+      "sicDescription": "Insurance Carriers, NEC",
+      "secName": "ASSURANT, INC."
+    },
+    "TXT": {
+      "cik": 217346,
+      "sic": 3720,
+      "sicDescription": "Aircraft & Parts",
+      "secName": "TEXTRON INC"
+    },
+    "TKO": {
+      "cik": 1973266,
+      "sic": 7900,
+      "sicDescription": "Services-Amusement & Recreation Services",
+      "secName": "TKO Group Holdings, Inc."
+    },
+    "TRMB": {
+      "cik": 864749,
+      "sic": 3829,
+      "sicDescription": "Measuring & Controlling Devices, NEC",
+      "secName": "TRIMBLE INC."
+    },
+    "CRL": {
+      "cik": 1100682,
+      "sic": 8731,
+      "sicDescription": "Services-Commercial Physical & Biological Research",
+      "secName": "CHARLES RIVER LABORATORIES INTERNATIONAL, INC."
+    },
+    "COO": {
+      "cik": 711404,
+      "sic": 3851,
+      "sicDescription": "Ophthalmic Goods",
+      "secName": "COOPER COMPANIES, INC."
+    },
+    "LULU": {
+      "cik": 1397187,
+      "sic": 2300,
+      "sicDescription": "Apparel & Other Finishd Prods of  Fabrics & Similar Matl",
+      "secName": "lululemon athletica inc."
+    },
+    "GL": {
+      "cik": 320335,
+      "sic": 6311,
+      "sicDescription": "Life Insurance",
+      "secName": "GLOBE LIFE INC."
+    },
+    "GDDY": {
+      "cik": 1609711,
+      "sic": 7373,
+      "sicDescription": "Services-Computer Integrated Systems Design",
+      "secName": "GoDaddy Inc."
+    },
+    "AVY": {
+      "cik": 8818,
+      "sic": 2670,
+      "sicDescription": "Converted Paper & Paperboard Prods (No Contaners/Boxes)",
+      "secName": "Avery Dennison Corp"
+    },
+    "HAS": {
+      "cik": 46080,
+      "sic": 3944,
+      "sicDescription": "Games, Toys & Children's Vehicles (No Dolls & Bicycles)",
+      "secName": "HASBRO, INC."
+    },
+    "BAX": {
+      "cik": 10456,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+      "secName": "BAXTER INTERNATIONAL INC"
+    },
+    "LII": {
+      "cik": 1069202,
+      "sic": 3585,
+      "sicDescription": "Air-Cond & Warm Air Heatg Equip & Comm & Indl Refrig Equip",
+      "secName": "LENNOX INTERNATIONAL INC"
+    },
+    "CSGP": {
+      "cik": 1057352,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "secName": "COSTAR GROUP, INC."
+    },
+    "ALLE": {
+      "cik": 1579241,
+      "sic": 7381,
+      "sicDescription": "Services-Detective, Guard & Armored Car Services",
+      "secName": "Allegion plc"
+    },
+    "IT": {
+      "cik": 749251,
+      "sic": 8741,
+      "sicDescription": "Services-Management Services",
+      "secName": "GARTNER INC"
+    },
+    "BF-B": {
+      "cik": 14693,
+      "sic": 2080,
+      "sicDescription": "Beverages",
+      "secName": "BROWN FORMAN CORP"
+    },
+    "HRL": {
+      "cik": 48465,
+      "sic": 2011,
+      "sicDescription": "Meat Packing Plants",
+      "secName": "HORMEL FOODS CORP /DE/"
+    },
+    "UDR": {
+      "cik": 74208,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "UDR, Inc."
+    },
+    "JKHY": {
+      "cik": 779152,
+      "sic": 7373,
+      "sicDescription": "Services-Computer Integrated Systems Design",
+      "secName": "JACK HENRY & ASSOCIATES INC"
+    },
+    "ERIE": {
+      "cik": 922621,
+      "sic": 6411,
+      "sicDescription": "Insurance Agents, Brokers & Service",
+      "secName": "ERIE INDEMNITY CO"
+    },
+    "PNW": {
+      "cik": 764622,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "secName": "PINNACLE WEST CAPITAL CORP"
+    },
+    "DECK": {
+      "cik": 910521,
+      "sic": 3021,
+      "sicDescription": "Rubber & Plastics Footwear",
+      "secName": "DECKERS OUTDOOR CORP"
+    },
+    "HII": {
+      "cik": 1501585,
+      "sic": 3730,
+      "sicDescription": "Ship & Boat Building & Repairing",
+      "secName": "HUNTINGTON INGALLS INDUSTRIES, INC."
+    },
+    "PSKY": {
+      "cik": 2041610,
+      "sic": 4833,
+      "sicDescription": "Television Broadcasting Stations",
+      "secName": "Paramount Skydance Corp"
+    },
+    "CLX": {
+      "cik": 21076,
+      "sic": 2842,
+      "sicDescription": "Specialty Cleaning, Polishing and Sanitation Preparations",
+      "secName": "CLOROX CO /DE/"
+    },
+    "TECH": {
+      "cik": 842023,
+      "sic": 2836,
+      "sicDescription": "Biological Products, (No Diagnostic Substances)",
+      "secName": "BIO-TECHNE Corp"
+    },
+    "DPZ": {
+      "cik": 1286681,
+      "sic": 5140,
+      "sicDescription": "Wholesale-Groceries & Related Products",
+      "secName": "DOMINOS PIZZA INC"
+    },
+    "DVA": {
+      "cik": 927066,
+      "sic": 8090,
+      "sicDescription": "Services-Misc Health & Allied Services, NEC",
+      "secName": "DAVITA INC."
+    },
+    "FDS": {
+      "cik": 1013237,
+      "sic": 7370,
+      "sicDescription": "Services-Computer Programming, Data Processing, Etc.",
+      "secName": "FACTSET RESEARCH SYSTEMS INC"
+    },
+    "ALGN": {
+      "cik": 1097149,
+      "sic": 3842,
+      "sicDescription": "Orthopedic, Prosthetic & Surgical Appliances & Supplies",
+      "secName": "ALIGN TECHNOLOGY INC"
+    },
+    "CPT": {
+      "cik": 906345,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "CAMDEN PROPERTY TRUST"
+    },
+    "GNRC": {
+      "cik": 1474735,
+      "sic": 3621,
+      "sicDescription": "Motors & Generators",
+      "secName": "GENERAC HOLDINGS INC."
+    },
+    "UHS": {
+      "cik": 352915,
+      "sic": 8062,
+      "sicDescription": "Services-General Medical & Surgical Hospitals, NEC",
+      "secName": "UNIVERSAL HEALTH SERVICES INC"
+    },
+    "BXP": {
+      "cik": 1037540,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "BXP, Inc."
+    },
+    "AES": {
+      "cik": 874761,
+      "sic": 4991,
+      "sicDescription": "Cogeneration Services & Small Power Producers",
+      "secName": "AES CORP"
+    },
+    "MGM": {
+      "cik": 789570,
+      "sic": 7011,
+      "sicDescription": "Hotels & Motels",
+      "secName": "MGM Resorts International"
+    },
+    "PODD": {
+      "cik": 1145197,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+      "secName": "INSULET CORP"
+    },
+    "FRT": {
+      "cik": 34903,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "FEDERAL REALTY INVESTMENT TRUST"
+    },
+    "HSIC": {
+      "cik": 1000228,
+      "sic": 5047,
+      "sicDescription": "Wholesale-Medical, Dental & Hospital Equipment & Supplies",
+      "secName": "HENRY SCHEIN INC"
+    },
+    "SWKS": {
+      "cik": 4127,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "secName": "SKYWORKS SOLUTIONS, INC."
+    },
+    "PNR": {
+      "cik": 77360,
+      "sic": 3550,
+      "sicDescription": "Special Industry Machinery (No Metalworking Machinery)",
+      "secName": "PENTAIR plc"
+    },
+    "APTV": {
+      "cik": 1521332,
+      "sic": 3714,
+      "sicDescription": "Motor Vehicle Parts & Accessories",
+      "secName": "Aptiv PLC"
+    },
+    "WYNN": {
+      "cik": 1174922,
+      "sic": 7011,
+      "sicDescription": "Hotels & Motels",
+      "secName": "WYNN RESORTS LTD"
+    },
+    "ARE": {
+      "cik": 1035443,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "secName": "ALEXANDRIA REAL ESTATE EQUITIES, INC."
+    },
+    "AOS": {
+      "cik": 91142,
+      "sic": 3630,
+      "sicDescription": "Household Appliances",
+      "secName": "SMITH A O CORP"
+    },
+    "MOS": {
+      "cik": 1285785,
+      "sic": 2870,
+      "sicDescription": "Agricultural Chemicals",
+      "secName": "MOSAIC CO"
+    },
+    "TAP": {
+      "cik": 24545,
+      "sic": 2082,
+      "sicDescription": "Malt Beverages",
+      "secName": "MOLSON COORS BEVERAGE CO"
+    },
+    "NCLH": {
+      "cik": 1513761,
+      "sic": 4400,
+      "sicDescription": "Water Transportation",
+      "secName": "Norwegian Cruise Line Holdings Ltd."
+    },
+    "BLDR": {
+      "cik": 1316835,
+      "sic": 5211,
+      "sicDescription": "Retail-Lumber & Other Building Materials Dealers",
+      "secName": "Builders FirstSource, Inc."
+    },
+    "TTD": {
+      "cik": 1671933,
+      "sic": 7370,
+      "sicDescription": "Services-Computer Programming, Data Processing, Etc.",
+      "secName": "Trade Desk, Inc."
+    }
+  }
+}
