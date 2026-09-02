@@ -1,0 +1,86 @@
+name: Supply Chain Source Probe
+
+# 只读探测：全球供应链板块的候选数据源在 Actions 机房到底取不取得到、许可能不能用。
+# 不写仓库、不提交任何数据，只把探测报告作为构建产物留存。
+#
+# 这是「先探后建」的第一步，也是常备工具：往供应链清单里加任何一条序列、或动抽取
+# 规则之前先跑一次。两个 job 互不依赖，一个失败不影响另一个：
+#
+#   graph  —— 公司图谱主线。先跑离线抽取规则校验（不联网、快、失败即停），再实测
+#             SEC EDGAR 能不能规模化抽出带出处的供应链关系。
+#   flow   —— 物流通道层。IMF PortWatch、纽约联储 GSCPI、世界银行与 FRED 政府口径序列。
+#
+# 许可是本领域的主要风险：BDI、Drewry WCI、Freightos FBX、Xeneta、ISM 供应商交付
+# 全是商业授权，与仓库已因许可放弃的 SPX／DXY／LBMA 定盘价同类。报告里 [!!] 标记的
+# 就是「技术上取得到但不许登记」的那一类，必须在落地前拦下。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supply-chain-source-probe
+  cancel-in-progress: false
+
+jobs:
+  graph:
+    name: 公司图谱 · EDGAR 关系抽取可行性
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      # 先跑离线校验：抽取规则退化的话，联网探测的结论也没有意义。
+      - name: Validate extraction rules (offline)
+        run: python scripts/validate_supply_chain_extraction.py
+
+      - name: Probe EDGAR relationship extraction
+        env:
+          # SEC 要求 User-Agent 声明身份与联系方式。留空则使用站点联系页；
+          # 项目所有者可在仓库变量里设为申报用邮箱。脚本不硬编码任何个人邮箱。
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+          PROBE_OUTPUT: /tmp/supply-chain-probe/edgar.json
+        run: python scripts/supply-chain/probe_edgar_relationships.py
+
+      - name: Upload EDGAR probe report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: supply-chain-edgar-${{ github.run_attempt }}
+          path: /tmp/supply-chain-probe/edgar.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  flow:
+    name: 物流通道 · 来源可用性与许可
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Probe candidate supply chain sources
+        env:
+          PROBE_OUTPUT: /tmp/supply-chain-probe/flow.json
+        run: python scripts/supply-chain/probe_supply_chain_sources.py
+
+      - name: Upload flow probe report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: supply-chain-flow-${{ github.run_attempt }}
+          path: /tmp/supply-chain-probe/flow.json
+          if-no-files-found: warn
+          retention-days: 7

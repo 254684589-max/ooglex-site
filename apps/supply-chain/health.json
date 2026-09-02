@@ -1,0 +1,34 @@
+{
+  "contractVersion": 1,
+  "dataset": "supply-chain-graph",
+  "generatedAt": "2026-09-02T03:31:25Z",
+  "status": "healthy",
+  "historyStatus": "migrated",
+  "lastAttemptAt": "2026-09-02T03:31:25Z",
+  "lastSuccessfulAt": "2026-09-02T03:31:25Z",
+  "consecutiveFailures": 0,
+  "failureReason": null,
+  "coverage": {
+    "expectedNodes": 495,
+    "publishedNodes": 495,
+    "stageResolvedPct": 36.8,
+    "stageAmbiguousPct": 63.2,
+    "edges": 0
+  },
+  "sources": [
+    {
+      "id": "sp500-members",
+      "name": "站内标普500成分股清单",
+      "role": "upstream",
+      "status": "healthy",
+      "mode": "market",
+      "frequency": "daily",
+      "asOf": "2026-08-30",
+      "upstream": {
+        "dataset": "companies",
+        "path": "apps/companies/sp500.json"
+      }
+    }
+  ],
+  "note": "第 0 层只依赖站内上游文件，不发起任何外部请求。stageAmbiguousPct 随 SIC 行业码细化与真实边反推逐步下降。"
+}
