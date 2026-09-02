@@ -59,6 +59,15 @@ jobs:
           PROBE_OUTPUT: /tmp/supply-chain-probe/edgar-reverse.json
         run: python scripts/supply-chain/probe_edgar_fulltext_reverse.py
 
+      # Form SD 冲突矿产：有强制格式的结构化披露，冶炼厂名单里的实体是具名的，
+      # 不像客户集中度那样匿名。正查与反查都否决后，这是仍可能产出真边的一条。
+      - name: Probe Form SD conflict minerals
+        if: ${{ !cancelled() }}
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+          PROBE_OUTPUT: /tmp/supply-chain-probe/edgar-formsd.json
+        run: python scripts/supply-chain/probe_form_sd.py
+
       - name: Upload EDGAR probe report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6
