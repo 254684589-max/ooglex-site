@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-09-01T22:36:11Z",
-  "asOf": "2026-09-01",
+  "updatedAt": "2026-09-02T23:17:00Z",
+  "asOf": "2026-09-02",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -50,7 +50,7 @@
       "orgCn": "Anthropic",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1507,
+      "arena": 1508,
       "livebench": null,
       "aa": 59.9,
       "ctx": "1M",
@@ -93,7 +93,7 @@
       "livebench": 79.9,
       "aa": null,
       "ctx": "1M",
-      "price": 1.46
+      "price": 1.5
     },
     {
       "id": "muse-spark-1-2",
@@ -161,6 +161,19 @@
       "price": 6.0
     },
     {
+      "id": "gemini-3-8-flash",
+      "name": "Gemini 3.8 Flash",
+      "org": "Google",
+      "orgCn": "谷歌",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1494,
+      "livebench": 77.5,
+      "aa": null,
+      "ctx": "1M",
+      "price": 1.5
+    },
+    {
       "id": "grok-4-6",
       "name": "Grok 4.6",
       "org": "xAI",
@@ -206,24 +219,11 @@
       "orgCn": "智谱",
       "flag": "🇨🇳",
       "open": true,
-      "arena": 1483,
+      "arena": 1482,
       "livebench": 76.6,
       "aa": null,
       "ctx": "1M",
       "price": 2.15
-    },
-    {
-      "id": "muse-spark-1-1",
-      "name": "Muse Spark 1.1",
-      "org": "Meta",
-      "orgCn": "Meta",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": 1492,
-      "livebench": 76.0,
-      "aa": null,
-      "ctx": null,
-      "price": 2.0
     },
     {
       "id": "grok-4-5",
@@ -237,6 +237,19 @@
       "aa": null,
       "ctx": "500K",
       "price": 3.0
+    },
+    {
+      "id": "muse-spark-1-1",
+      "name": "Muse Spark 1.1",
+      "org": "Meta",
+      "orgCn": "Meta",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1491,
+      "livebench": 76.0,
+      "aa": null,
+      "ctx": null,
+      "price": 2.0
     },
     {
       "id": "gemini-3-5-flash",
@@ -258,7 +271,7 @@
       "orgCn": "OpenAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1476,
+      "arena": 1477,
       "livebench": 78.8,
       "aa": 54.0,
       "ctx": "1.1M",
@@ -271,7 +284,7 @@
       "orgCn": "xAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1466,
+      "arena": 1465,
       "livebench": null,
       "aa": 53.5,
       "ctx": "256K",
@@ -336,7 +349,7 @@
       "orgCn": "OpenAI",
       "flag": "🇺🇸",
       "open": false,
-      "arena": 1452,
+      "arena": 1453,
       "livebench": 73.7,
       "aa": null,
       "ctx": null,
@@ -349,7 +362,7 @@
       "orgCn": "深度求索",
       "flag": "🇨🇳",
       "open": true,
-      "arena": 1460,
+      "arena": 1459,
       "livebench": 72.6,
       "aa": null,
       "ctx": "1M",
@@ -362,7 +375,7 @@
       "orgCn": "Thinky",
       "flag": "🌐",
       "open": true,
-      "arena": 1439,
+      "arena": 1440,
       "livebench": 72.9,
       "aa": null,
       "ctx": "524K",
@@ -375,7 +388,7 @@
       "orgCn": "智谱",
       "flag": "🇨🇳",
       "open": true,
-      "arena": 1474,
+      "arena": 1473,
       "livebench": 71.1,
       "aa": null,
       "ctx": "1M",
@@ -549,19 +562,6 @@
       "aa": null,
       "ctx": "1M",
       "price": 10.0
-    },
-    {
-      "id": "claude-fable-5-effort",
-      "name": "Claude Fable 5 Effort",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": null,
-      "livebench": 83.4,
-      "aa": null,
-      "ctx": null,
-      "price": null
     }
   ]
 }
