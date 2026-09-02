@@ -74,6 +74,17 @@
      结果压在第三张卡片上——截图才看得出来。 */
   .fignote { margin-top:10px; text-align:right; }
 
+  /* 冶炼厂清单：多列排布，几百条也能一屏看个大概 */
+  .smelters { padding:14px 16px; margin-top:14px; }
+  .smelters .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+    gap:2px 18px; }
+  .sm { padding:6px 0; border-bottom:1px solid var(--line); }
+  .sm .nm { font-size:.78rem; line-height:1.45; color:var(--text);
+    text-decoration:none; display:inline; }
+  a.sm-nm:hover { color:var(--accent); }
+  .sm .meta { font-size:.69rem; color:var(--dim); margin-top:1px; }
+  .sm .meta .cid { font-family:var(--mono); color:var(--faint); }
+
   /* 可选中的层级卡 */
   .picks { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:10px; }
   .pick { display:block; width:100%; text-align:left; appearance:none; font:inherit; color:inherit;
@@ -145,7 +156,12 @@
     </div>
 
     <div class="cols">
-      <div class="glass stagefig" id="fig"></div>
+      <div>
+        <div class="glass stagefig" id="fig"></div>
+        <!-- 冶炼厂清单放主栏：它是这一页唯一的真实关系数据，一家公司动辄两三百条。
+             塞进右侧窄栏会让它变成一个要滚半天的小窗，而左边空着大半屏。 -->
+        <div id="smelters"></div>
+      </div>
       <div class="side" id="side"></div>
     </div>
   </div>

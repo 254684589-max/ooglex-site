@@ -342,6 +342,63 @@
   }
 
   /* ── 右栏：出处 + 同行 + 真实数据清单 ── */
+  /* ── 冶炼厂清单（主栏）──
+     这一页唯一的真实关系数据。厂名即链接，点开就是这条边的原始申报文件。 */
+  function renderSmelters() {
+    var host = $("smelters");
+    host.textContent = "";
+    var rows = edgeRows();
+    if (!rows.length) return;
+
+    var counts = idCounts();
+    var mixed = counts.cid > 0 && counts.nameOnly > 0;
+    var box = el("section", "glass smelters");
+    box.setAttribute("aria-label", "冶炼厂清单");
+    var head = el("div", null, null);
+    head.style.cssText = "display:flex;justify-content:space-between;align-items:baseline;"
+      + "gap:12px;flex-wrap:wrap;margin-bottom:10px;";
+    head.appendChild(el("h3", null, "冶炼厂／精炼厂清单（" + rows.length + " 家）"));
+    var sub = el("span", null,
+      "出现在该公司 Form SD 申报供应链中 · 不是直接供货关系 · 点厂名看原始申报"
+      // 全体同一种标识时在这里说一次就够，不必每行都挂一个标签
+      + (mixed ? "" : (counts.cid ? " · 全部带 RMI 编号" : " · 全部只有名字、无 RMI 编号")));
+    sub.style.cssText = "font-size:.72rem;color:var(--dim);";
+    head.appendChild(sub);
+    box.appendChild(head);
+
+    var grid = el("div", "grid");
+    rows.slice().sort(function (a, b) {
+      return String(a.name || a.from).localeCompare(String(b.name || b.from));
+    }).forEach(function (e) {
+      var item = el("div", "sm");
+      var ev = (e.evidence || [])[0] || {};
+      var nm;
+      if (ev.url) {
+        nm = el("a", "nm sm-nm", e.name || e.from);
+        nm.href = ev.url;
+        nm.target = "_blank"; nm.rel = "noopener noreferrer";
+      } else {
+        nm = el("span", "nm", e.name || e.from);
+      }
+      item.appendChild(nm);
+      var bits = [e.country || "国别未写明", (e.minerals || []).join("·") || "矿种未写明"];
+      var meta = el("div", "meta", bits.join("  ·  "));
+      if (e.cid) {
+        meta.appendChild(document.createTextNode("  ·  "));
+        meta.appendChild(el("span", "cid", e.cid));
+      } else if (mixed) {
+        meta.appendChild(document.createTextNode("  ·  "));
+        var no = el("span", "cid", "无编号");
+        no.style.color = "var(--warn)";
+        meta.appendChild(no);
+      }
+      item.appendChild(meta);
+      grid.appendChild(item);
+    });
+    box.appendChild(grid);
+    host.appendChild(box);
+  }
+
   function renderSide() {
     var side = $("side");
     side.textContent = "";
@@ -428,60 +485,6 @@
     }
     side.appendChild(basis);
 
-    // 冶炼厂清单：本页唯一的真实关系数据，逐条可核验
-    var rows = edgeRows();
-    if (rows.length) {
-      var listBox = el("div", "glass");
-      listBox.style.cssText = "padding:13px 15px;border-color:rgba(63,174,125,.28);";
-      listBox.appendChild(el("h3", null, "冶炼厂清单（" + rows.length + " 家）"));
-      var lead = el("div", null,
-        "出现在该公司 Form SD 申报供应链中的冶炼厂／精炼厂。不是直接供货关系。");
-      lead.style.cssText = "font-size:.72rem;color:var(--dim);margin-bottom:9px;";
-      listBox.appendChild(lead);
-
-      var scroller = el("div", null, null);
-      scroller.style.cssText = "max-height:420px;overflow-y:auto;padding-right:4px;";
-      var shown = rows.slice().sort(function (a, b) {
-        return String(a.name || a.from).localeCompare(String(b.name || b.from));
-      });
-      shown.forEach(function (e) {
-        var row = el("div", null, null);
-        row.style.cssText = "padding:7px 0;border-bottom:1px solid var(--line);";
-        var top = el("div", null, null);
-        top.style.cssText = "display:flex;align-items:baseline;gap:7px;";
-        var ev = (e.evidence || [])[0] || {};
-        // 名字本身就是链接：点开就是这条边的原始申报文件
-        var nameEl;
-        if (ev.url) {
-          nameEl = el("a", null, e.name || e.from);
-          nameEl.href = ev.url;
-          nameEl.target = "_blank"; nameEl.rel = "noopener noreferrer";
-          nameEl.style.cssText = "font-size:.78rem;color:var(--text);text-decoration:none;"
-            + "flex:1;line-height:1.45;";
-        } else {
-          nameEl = el("span", null, e.name || e.from);
-          nameEl.style.cssText = "font-size:.78rem;flex:1;line-height:1.45;";
-        }
-        top.appendChild(nameEl);
-        if (e.cid) {
-          var cidEl = el("span", null, e.cid);
-          cidEl.style.cssText = "font-family:var(--mono);font-size:.66rem;color:var(--faint);";
-          top.appendChild(cidEl);
-        } else {
-          var noId = el("span", "chip", "无编号");
-          top.appendChild(noId);
-        }
-        row.appendChild(top);
-        var meta = el("div", null,
-          [e.country || "国别未写明", (e.minerals || []).join(" · ") || "矿种未写明"].join("  ·  "));
-        meta.style.cssText = "font-size:.7rem;color:var(--dim);margin-top:2px;";
-        row.appendChild(meta);
-        scroller.appendChild(row);
-      });
-      listBox.appendChild(scroller);
-      side.appendChild(listBox);
-    }
-
     // 同 SIC 同行（真实且有用）
     var sameSic = (d.nodes || []).filter(function (x) {
       return x.sic != null && x.sic === n.sic && x.symbol !== n.symbol;
@@ -515,6 +518,7 @@
     real.style.cssText = "padding:13px 15px;";
     real.appendChild(el("h3", null, "本页哪些是真实数据"));
     var sameStage = (d.nodes || []).filter(function (x) { return x.stage === n.stage; }).length;
+    var rows = edgeRows();
     [["身份与市值", "站内公司榜"], ["环节判定", "SEC 官方 SIC 行业码"],
      ["同行业公司", sameSic.length + " 家"], ["同环节公司", sameStage + " 家"],
      ["冶炼厂关系", rows.length + " 条"],
@@ -583,7 +587,8 @@
   }
 
   function paint() {
-    renderIdent(state.node); renderNotice(); renderSeg(); renderFig(); renderSide();
+    renderIdent(state.node); renderNotice(); renderSeg(); renderFig();
+    renderSmelters(); renderSide();
     $("state").hidden = true;
     $("body").hidden = false;
   }

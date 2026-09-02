@@ -59,6 +59,10 @@ SP500_PATH = "apps/companies/sp500.json"
 OUT_DIR = "apps/supply-chain/edges"
 SMELTERS_PATH = "apps/supply-chain/smelters.json"
 
+# 本轮拿到的公司数低于磁盘已有的这个比例，判定整轮取数异常，保留旧数据不覆盖。
+# 与 fetch_company_identity.py 的 MIN_SUCCESS_RATIO 同一个思路。
+MIN_KEEP_RATIO = 0.6
+
 RELATION = "smelter-in-supply-chain"
 RELATION_LABEL = "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）"
 
@@ -69,6 +73,27 @@ def load_parser():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def write_if_changed(path: str, payload: dict, ignore: tuple = ("updatedAt",)) -> bool:
+    """内容变了才写。返回是否真的写了。
+
+    Form SD 一年一报。每天把几百个文件的时间戳刷一遍再提交，仓库里会堆出几 MB
+    没有信息量的 diff，还会让「今年名单变了没有」这个问题在历史里查不出来。
+    """
+    def strip(data: dict) -> dict:
+        return {k: v for k, v in data.items() if k not in ignore}
+
+    try:
+        with open(path, encoding="utf-8") as handle:
+            if strip(json.load(handle)) == strip(payload):
+                return False
+    except (OSError, ValueError):
+        pass
+    with open(path, "w", encoding="utf-8") as handle:
+        json.dump(payload, handle, ensure_ascii=False, indent=2)
+        handle.write("\n")
+    return True
 
 
 def _fetch(url: str, accept: str = "*/*") -> bytes:
@@ -356,78 +381,110 @@ def main() -> int:
         print("\ndry-run：未写入任何文件。核对上面的名称／国别／矿种再决定是否接入发布。")
         return 0
 
+    # ── 写盘 ──────────────────────────────────────────────────────────────
+    # 三条规矩，都是「不拿坏结果覆盖好数据」的具体形态：
+    # 1. 这一轮拿到的公司数比磁盘上已有的少太多 → 判定整轮失败，一个字都不写；
+    # 2. 单家取数失败 → 保留它已有的边文件，不删；
+    # 3. 内容没变（只有时间戳不同）→ 不重写。Form SD 一年一报，天天重写等于
+    #    每天往仓库里塞几 MB 无意义的 diff。
+    existing = {name[:-5] for name in os.listdir(OUT_DIR)
+                if name.endswith(".json")} if os.path.isdir(OUT_DIR) else set()
+    if existing and len(listed) < MIN_KEEP_RATIO * len(existing):
+        print(f"\n[XX] 本轮只拿到 {len(listed)} 家的名单，磁盘上已有 {len(existing)} 家，"
+              f"低于 {MIN_KEEP_RATIO:.0%} 阈值——判定整轮取数异常，保留现有数据不覆盖。")
+        return 1
+
     os.makedirs(OUT_DIR, exist_ok=True)
-    registry: dict[str, dict] = {}
-    index: dict[str, dict] = {}
-    written = 0
+    written = kept = unchanged = 0
     for outcome in results:
         if outcome["state"] != "listed":
             continue
         payload = build_edges(outcome, names.get(outcome["symbol"]))
         path = os.path.join(OUT_DIR, f"{outcome['symbol']}.json")
-        with open(path, "w", encoding="utf-8") as handle:
-            json.dump(payload, handle, ensure_ascii=False, indent=2)
-            handle.write("\n")
-        written += 1
-        index[outcome["symbol"]] = {
-            "file": f"edges/{outcome['symbol']}.json",
-            "count": len(payload["edges"]),
-            "filingDate": payload["filing"]["filingDate"],
-            "accession": payload["filing"]["accession"],
+        if write_if_changed(path, payload):
+            written += 1
+        else:
+            unchanged += 1
+
+    # 登记表与索引一律从磁盘重建，保证它们和实际发布的边文件一致——
+    # 只按本轮结果生成的话，取数失败那几家会从索引里消失，而文件还在，
+    # 页面就会出现「文件在但没人索引」的孤儿。
+    registry: dict[str, dict] = {}
+    index: dict[str, dict] = {}
+    for name in sorted(os.listdir(OUT_DIR)):
+        if not name.endswith(".json"):
+            continue
+        symbol = name[:-5]
+        try:
+            with open(os.path.join(OUT_DIR, name), encoding="utf-8") as handle:
+                bundle = json.load(handle)
+        except (OSError, ValueError) as exc:
+            print(f"[XX] 边文件 {name} 读不出来：{exc}")
+            return 1
+        if symbol not in {o["symbol"] for o in results if o["state"] == "listed"}:
+            kept += 1
+        index[symbol] = {
+            "file": f"edges/{symbol}.json",
+            "count": len(bundle.get("edges") or []),
+            "filingDate": (bundle.get("filing") or {}).get("filingDate"),
+            "accession": (bundle.get("filing") or {}).get("accession"),
         }
-        for item in outcome["parse"]["smelters"]:
-            entry = registry.setdefault(item["id"], {
-                "id": item["id"], "cid": item["cid"],
-                "identifierType": item["identifierType"], "name": item["name"],
-                "country": item["country"], "countryEn": item["countryEn"],
+        for edge in bundle.get("edges") or []:
+            entry = registry.setdefault(edge["from"], {
+                "id": edge["from"], "cid": edge.get("cid"),
+                "identifierType": edge.get("identifierType"), "name": edge.get("name"),
+                "country": edge.get("country"), "countryEn": edge.get("countryEn"),
                 "minerals": [], "filers": []})
-            entry["name"] = entry["name"] or item["name"]
-            entry["country"] = entry["country"] or item["country"]
-            entry["countryEn"] = entry["countryEn"] or item["countryEn"]
-            entry["minerals"] = sorted(set(entry["minerals"]) | set(item["minerals"]))
-            entry["filers"] = sorted(set(entry["filers"]) | {outcome["symbol"]})
+            entry["name"] = entry["name"] or edge.get("name")
+            entry["country"] = entry["country"] or edge.get("country")
+            entry["countryEn"] = entry["countryEn"] or edge.get("countryEn")
+            entry["minerals"] = sorted(set(entry["minerals"]) | set(edge.get("minerals") or []))
+            entry["filers"] = sorted(set(entry["filers"]) | {symbol})
 
+    published_edges = sum(v["count"] for v in index.values())
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    with open(SMELTERS_PATH, "w", encoding="utf-8") as handle:
-        json.dump({
-            "contractVersion": 1,
-            "dataset": "supply-chain-smelters",
-            "updatedAt": now,
-            "frequency": "annual",     # Form SD 每年 5 月 31 日前申报
-            "status": "ok",
-            "source": "SEC EDGAR Form SD 冲突矿产申报",
-            "sourceUrl": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&type=SD",
-            "relation": {"id": RELATION, "label": RELATION_LABEL},
-            "note": ("带 RMI 编号的条目按编号合并，跨申报人可靠；无编号的条目只能按"
-                     "名字规范化归并，写法不同就会重复——两类分开统计，不混成一个数。"
-                     "名字归一只处理大小写与标点，不做同义合并：宁可一家重复出现，"
-                     "不可两家被错并成一家。"),
-            "companiesIndex": dict(sorted(index.items())),
-            "coverage": {
-                "claimComplete": False,
-                "companiesScanned": len(targets),
-                "companiesWithList": len(listed),
-                "companiesFiledNoList": len(filed_no_list),
-                "companiesNoFiling": len(no_filing),
-                "companiesFailed": len(failed),
-                "edgesTotal": total_edges,
-                "uniqueSmelters": len(registry),
-                "uniqueByIdentifier": {
-                    "rmi-cid": sum(1 for v in registry.values()
-                                   if v["identifierType"] == "rmi-cid"),
-                    "name-only": sum(1 for v in registry.values()
-                                     if v["identifierType"] == "name-only"),
-                },
-                "note": ("Form SD 强制申报、不强制列名单：有申报无名单的公司如实单列，"
-                         "不并入「无申报」。覆盖率因此永远到不了 100%，这是披露制度"
-                         "本身的上限，不是抓取缺陷。"),
+    smelters_payload = {
+        "contractVersion": 1,
+        "dataset": "supply-chain-smelters",
+        "updatedAt": now,
+        "frequency": "annual",     # Form SD 每年 5 月 31 日前申报
+        "status": "ok",
+        "source": "SEC EDGAR Form SD 冲突矿产申报",
+        "sourceUrl": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&type=SD",
+        "relation": {"id": RELATION, "label": RELATION_LABEL},
+        "note": ("带 RMI 编号的条目按编号合并，跨申报人可靠；无编号的条目只能按"
+                 "名字规范化归并，写法不同就会重复——两类分开统计，不混成一个数。"
+                 "名字归一只处理大小写与标点，不做同义合并：宁可一家重复出现，"
+                 "不可两家被错并成一家。"),
+        "companiesIndex": dict(sorted(index.items())),
+        "coverage": {
+            "claimComplete": False,
+            "companiesScanned": len(targets),
+            "companiesWithList": len(listed),
+            "companiesFiledNoList": len(filed_no_list),
+            "companiesNoFiling": len(no_filing),
+            "companiesFailed": len(failed),
+            "companiesPublished": len(index),
+            "edgesTotal": published_edges,
+            "uniqueSmelters": len(registry),
+            "uniqueByIdentifier": {
+                "rmi-cid": sum(1 for v in registry.values()
+                               if v["identifierType"] == "rmi-cid"),
+                "name-only": sum(1 for v in registry.values()
+                                 if v["identifierType"] == "name-only"),
             },
-            "smelters": dict(sorted(registry.items())),
-        }, handle, ensure_ascii=False, indent=2)
-        handle.write("\n")
+            "note": ("Form SD 强制申报、不强制列名单：有申报无名单的公司如实单列，"
+                     "不并入「无申报」。覆盖率因此永远到不了 100%，这是披露制度"
+                     "本身的上限，不是抓取缺陷。"),
+        },
+        "smelters": dict(sorted(registry.items())),
+    }
+    write_if_changed(SMELTERS_PATH, smelters_payload)
 
-    print(f"\n已写入 {written} 个公司边文件 → {OUT_DIR}/")
-    print(f"冶炼厂登记表 {len(registry)} 家 → {SMELTERS_PATH}")
+    print(f"\n边文件：新写／更新 {written}，内容未变 {unchanged}，"
+          f"本轮未取到但保留 {kept} → {OUT_DIR}/")
+    print(f"已发布 {len(index)} 家公司、{published_edges} 条边、"
+          f"{len(registry)} 家冶炼厂 → {SMELTERS_PATH}")
     return 0
 
 
