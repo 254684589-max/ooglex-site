@@ -131,8 +131,57 @@ COUNTRIES: dict[str, str] = {
     "tonga": "汤加", "guam": "关岛", "puerto rico": "波多黎各",
     "korea democratic peoples republic of": "朝鲜", "north korea": "朝鲜",
 }
+# 上面那张表只覆盖真的出现过冶炼厂的国家，够用来显示中文名。但**识别**必须覆盖
+# 得更广：申报里还有大段「原产国」附录，里面什么国家都有。一个国名没被认出来，
+# 就会被当成厂名候选，进而把整行误判成「漏收的冶炼厂」——微软那份附录里的
+# Andorra、Skyworks 那份里的 Sint Maarten 都这么错过。
+#
+# 因此再列一份只管识别、不给中文名的清单。命中它的格子按原文显示：
+# 认得出是国家但没有中文名，照原文写出来，比硬塞一个译名或干脆认不出都强。
+KNOWN_COUNTRIES = {
+    "afghanistan", "aland islands", "albania", "algeria", "american samoa", "andorra",
+    "angola", "anguilla", "antarctica", "antigua and barbuda", "argentina", "armenia",
+    "aruba", "azerbaijan", "bahamas", "bahrain", "bangladesh", "barbados", "belarus",
+    "belize", "benin", "bermuda", "bhutan", "bonaire", "bosnia and herzegovina",
+    "botswana", "bouvet island", "british indian ocean territory", "brunei darussalam",
+    "bulgaria", "burkina faso", "burundi", "cabo verde", "cambodia", "cameroon",
+    "cape verde", "cayman islands", "central african republic", "chad", "christmas island",
+    "cocos islands", "comoros", "congo", "congo democratic republic of the",
+    "congo the democratic republic of the", "cook islands", "costa rica", "cote divoire",
+    "croatia", "cuba", "curacao", "cyprus", "djibouti", "dominica", "dominican republic",
+    "ecuador", "egypt", "el salvador", "equatorial guinea", "eritrea", "eswatini",
+    "ethiopia", "falkland islands", "faroe islands", "fiji", "french guiana",
+    "french polynesia", "french southern territories", "gabon", "gambia", "georgia",
+    "ghana", "gibraltar", "greenland", "grenada", "guadeloupe", "guam", "guatemala",
+    "guernsey", "guinea", "guinea bissau", "guyana", "haiti", "holy see", "honduras",
+    "iceland", "iran islamic republic of", "iraq", "isle of man", "israel", "jamaica",
+    "jersey", "jordan", "kenya", "kiribati", "korea democratic peoples republic of",
+    "kosovo", "kuwait", "kyrgyzstan", "lao peoples democratic republic", "latvia",
+    "lebanon", "lesotho", "liberia", "libya", "liechtenstein", "lithuania", "luxembourg",
+    "macao", "macau", "madagascar", "malawi", "maldives", "mali", "malta",
+    "marshall islands", "martinique", "mauritania", "mauritius", "mayotte",
+    "micronesia federated states of", "moldova republic of", "monaco", "montenegro",
+    "montserrat", "morocco", "mozambique", "myanmar", "namibia", "nauru", "nepal",
+    "new caledonia", "nicaragua", "niger", "nigeria", "niue", "norfolk island",
+    "north macedonia", "northern mariana islands", "oman", "pakistan", "palau",
+    "palestine state of", "panama", "papua new guinea", "paraguay", "puerto rico",
+    "qatar", "reunion", "romania", "rwanda", "saint barthelemy", "saint helena",
+    "saint kitts and nevis", "saint lucia", "saint martin", "saint pierre and miquelon",
+    "saint vincent and the grenadines", "samoa", "san marino", "sao tome and principe",
+    "saudi arabia", "senegal", "serbia", "seychelles", "sierra leone", "sint maarten",
+    "slovakia", "slovenia", "solomon islands", "somalia", "south georgia", "south sudan",
+    "sri lanka", "sudan", "suriname", "svalbard", "syrian arab republic", "tajikistan",
+    "timor leste", "togo", "tokelau", "tonga", "trinidad and tobago", "tunisia",
+    "turkmenistan", "turks and caicos islands", "tuvalu", "uganda", "ukraine",
+    "united republic of tanzania", "united states minor outlying islands", "uruguay",
+    "vanuatu", "venezuela", "venezuela bolivarian republic of", "virgin islands",
+    "virgin islands british", "virgin islands us", "wallis and futuna",
+    "western sahara", "yemen", "zambia", "zimbabwe",
+}
+
 # 去掉标点后再比对，容忍 "Korea, Republic of" / "Korea Republic of" 之类差异
 _COUNTRY_KEYS = {re.sub(r"[^a-z ]", "", k): v for k, v in COUNTRIES.items()}
+_KNOWN_KEYS = {re.sub(r"[^a-z ]", "", k) for k in KNOWN_COUNTRIES}
 
 # 明显不是冶炼厂名的格子：表头、序号、空白
 _HEADER_WORDS = re.compile(
@@ -238,14 +287,21 @@ def normalise_cid(text: str) -> str | None:
 
 
 def match_country(text: str) -> tuple[str | None, str | None]:
-    """返回（规范英文名, 中文名）。认不出返回 (None, None)，不猜。"""
-    key = re.sub(r"[^a-z ]", "", (text or "").strip().lower())
+    """返回（规范英文名, 显示名）。认不出返回 (None, None)，不猜。
+
+    有中文名的给中文名；只在识别清单里的按原文显示——认得出是国家但没有译名，
+    照原文写出来，比硬塞一个译名诚实，也比认不出（会被当成厂名）安全。
+    """
+    raw = (text or "").strip()
+    key = re.sub(r"[^a-z ]", " ", raw.lower())
     key = re.sub(r"\s+", " ", key).strip()
-    if not key:
+    if not key or len(key) > 60:
         return None, None
     hit = _COUNTRY_KEYS.get(key)
     if hit:
         return key, hit
+    if key in _KNOWN_KEYS:
+        return key, raw
     return None, None
 
 
@@ -364,6 +420,7 @@ def parse_smelters(html: str) -> dict:
     name_only = 0
     dropped_no_cid = 0
     dropped_sample: list[list[str]] = []
+    dropped_headings: list[str] = []
     for index, row in enumerate(parser.rows):
         cid = None
         for cell in row:
@@ -418,6 +475,11 @@ def parse_smelters(html: str) -> dict:
                 dropped_no_cid += 1
                 if len(dropped_sample) < 12:
                     dropped_sample.append([c for c in row if c][:6])
+                if len(dropped_headings) < 6:
+                    # 这一行前面最近的一段表外文字。缺矿种的行到底是「不是名单」
+                    # 还是「小标题没认出来」，只能看这个才知道，不能靠猜。
+                    near = [t for at, t in parser.flow if at <= index]
+                    dropped_headings.append(near[-1][:90] if near else "（前面没有表外文字）")
             continue
 
         existing = found.get(key)
@@ -460,6 +522,7 @@ def parse_smelters(html: str) -> dict:
         "droppedNoCid": dropped_no_cid,
         # 只给 dry-run 看：被丢弃的行长什么样，决定「没有编号」是不是该改规则。
         "droppedSample": dropped_sample,
+        "droppedHeadings": dropped_headings,
         "unique": len(smelters),
         "namedRatio": (round(sum(1 for s in smelters if s["name"]) / len(smelters), 3)
                        if smelters else 0.0),

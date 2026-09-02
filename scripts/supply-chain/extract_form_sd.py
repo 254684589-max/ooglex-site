@@ -204,8 +204,11 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
                   f"CID {shape['cidTokens']}）")
             if result["unique"] == 0 and shape["trTags"] == 0:
                 print(f"            正文开头：{shape['textHead'][:150]}")
-            for row in result["droppedSample"][:6]:
+            for i, row in enumerate(result["droppedSample"][:6]):
                 print(f"            丢弃样例：{' | '.join(c[:34] for c in row)}")
+                heads = result.get("droppedHeadings") or []
+                if i < len(heads):
+                    print(f"              上方小标题：{heads[i]}")
         time.sleep(GAP)
         if best is None or result["unique"] > best["unique"]:
             best = result
@@ -296,7 +299,10 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true",
                     help="只解析并打印，不写任何文件——上线前用它核对真实抽取结果")
-    ap.add_argument("--tickers", default="", help="逗号分隔，限定公司（默认全部）")
+    ap.add_argument("--tickers", default="",
+                    help="逗号分隔，限定公司；留空或写 ALL 表示全部。"
+                         "（写 ALL 是因为 GitHub 会把空字符串输入替换成默认值，"
+                         "「留空=全部」在工作流里不成立）")
     ap.add_argument("--limit", type=int, default=0, help="最多处理几家")
     ap.add_argument("--sample-rows", type=int, default=0, help="每家打印前 N 条明细")
     args = ap.parse_args()
@@ -312,6 +318,8 @@ def main() -> int:
         pass
 
     wanted = [t.strip().upper() for t in args.tickers.split(",") if t.strip()]
+    if "ALL" in wanted:
+        wanted = []
     targets = [(t, v["cik"]) for t, v in sorted(identity.items())
                if v.get("cik") and (not wanted or t.upper() in wanted)]
     if args.limit:

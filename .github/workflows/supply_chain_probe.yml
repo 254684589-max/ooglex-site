@@ -19,7 +19,7 @@ on:
   workflow_dispatch:
     inputs:
       tickers:
-        description: '抽取器 dry-run 的公司（逗号分隔，留空则按 limit 扫全表）'
+        description: '抽取器 dry-run 的公司（逗号分隔；写 ALL 扫全部 495 家）'
         required: false
         default: 'AAPL,NVDA,AVGO,AMAT,SWKS,TSLA,INTC,MSFT,KO,GM'
       limit:

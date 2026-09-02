@@ -429,6 +429,20 @@
           kv.appendChild(el("b", null, pair[1]));
           okBox.appendChild(kv);
         });
+        var dropped = ((state.edges || {}).parse || {}).droppedNoCid || 0;
+        if (dropped) {
+          var dr = el("div", "kv");
+          dr.appendChild(el("span", null, "未收录的行"));
+          var db = el("b", null, dropped + " 行");
+          db.style.color = "var(--warn)";
+          dr.appendChild(db);
+          okBox.appendChild(dr);
+          var why = el("div", null,
+            "这些行看着像冶炼厂（有厂名有国别）但缺矿种，无法确认，因此不收录。"
+            + "这一栏不为零就说明本页只是该申报名单的一部分。");
+          why.style.cssText = "font-size:.7rem;color:var(--dim);line-height:1.6;margin-top:6px;";
+          okBox.appendChild(why);
+        }
         if (counts.nameOnly) {
           var caveat = el("div", null,
             "「仅有名字」的条目没有 RMI 全球编号，只能按名字比对，"
