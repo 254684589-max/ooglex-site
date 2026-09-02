@@ -244,6 +244,107 @@ async function main() {
         `溢出 ${opened.pageOverflowAfterOpen}px`));
     }
 
+    // ── 单家公司视图 ──────────────────────────────────────────────────
+    // 这一页今天没有任何关系边，因此守的是「空的时候有没有说清楚为什么空」：
+    // 真实数据与待接入结构必须一眼分得开，每处空缺都要给出原因。
+    for (const [width, height] of VIEWPORTS) {
+      console.log(`\n── 公司视图 ${width}×${height} ──`);
+      await client.send("Emulation.setDeviceMetricsOverride",
+        { width, height, deviceScaleFactor: 1, mobile: width < 700 }, sessionId);
+      await client.send("Page.navigate",
+        { url: `http://127.0.0.1:${port}/apps/supply-chain/company.html?symbol=AAPL` }, sessionId);
+      await evaluate(`new Promise((done, fail) => {
+        const deadline = Date.now() + 20000;
+        (function poll() {
+          if (document.querySelectorAll('.pick').length) return done(true);
+          if (Date.now() > deadline) return fail(new Error('20 秒内未渲染出层级卡'));
+          setTimeout(poll, 120);
+        })();
+      })`);
+
+      const co = await evaluate(`(() => {
+        const text = document.body.innerText;
+        const picks = [...document.querySelectorAll('.pick')];
+        const small = picks.filter(b => {
+          const r = b.getBoundingClientRect();
+          return r.width > 0 && (r.width < 44 || r.height < 44);
+        }).length;
+        // 点一张「待接入」卡：既测线型不变，也测点击不会销毁被聚焦的元素
+        const demo = picks.find(b => b.classList.contains('demo'));
+        let dashedWhenSelected = null, keptFocus = null;
+        if (demo) {
+          demo.focus();
+          demo.click();
+          const still = document.body.contains(demo);
+          keptFocus = still && document.activeElement === demo;
+          dashedWhenSelected = still ? getComputedStyle(demo).borderTopStyle : 'node-replaced';
+        }
+        return {
+          title: document.title,
+          identity: text.includes('苹果') && text.includes('3571') && text.includes('320193'),
+          zeroEdgeStated: text.includes('尚未收录任何供应链关系'),
+          notComplete: text.includes('不是完整供应链'),
+          gapExplained: text.includes('没有免费数据源'),
+          peers: [...document.querySelectorAll('.peer a')].map(a => a.textContent.trim()),
+          peerLinksToCompany: [...document.querySelectorAll('.peer a')]
+            .every(a => a.getAttribute('href').indexOf('company.html?symbol=') === 0),
+          evidenceLinks: document.querySelectorAll('a[href^="https://www.sec.gov"], a[href^="https://data.sec.gov"]').length,
+          undersized: small,
+          bodyOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+          demoBorderWhenSelected: dashedWhenSelected,
+          keptFocus,
+          gapAfterClick: document.body.innerText.includes('没有免费数据源'),
+          segButtons: document.querySelectorAll('#seg button').length,
+          // 图注不得压住层级卡——绝对定位曾经把它钉在第三张卡上
+          noteOverlaps: (() => {
+            const note = document.querySelector('.fignote');
+            if (!note) return false;
+            const nr = note.getBoundingClientRect();
+            return picks.some(p => {
+              const r = p.getBoundingClientRect();
+              return nr.left < r.right && nr.right > r.left
+                && nr.top < r.bottom && nr.bottom > r.top;
+            });
+          })()
+        };
+      })()`);
+
+      check(`标题带公司名`, () => assert.ok(co.title.includes("苹果"), co.title));
+      check(`身份为真实数据（SIC 3571 · CIK 320193）`, () => assert.ok(co.identity));
+      check(`明说尚未收录任何关系`, () => assert.ok(co.zeroEdgeStated));
+      check(`「不是完整供应链」声明可见`, () => assert.ok(co.notComplete));
+      // 层级卡默认落在有来源的那一层，缺口原因点开待接入卡才显示——一次点击可达即可
+      check(`点开待接入项后给出空缺原因`, () => assert.ok(co.gapAfterClick));
+      check(`同行业公司为真实同 SIC 公司`, () => assert.ok(co.peers.length > 0,
+        `同行数 ${co.peers.length}`));
+      check(`同行链接指向公司视图`, () => assert.ok(co.peerLinksToCompany));
+      check(`附可核验的 SEC 链接`, () => assert.ok(co.evidenceLinks > 0));
+      check(`视图切换 2 个`, () => assert.equal(co.segButtons, 2));
+      check(`触控区域不小于 44×44`, () => assert.equal(co.undersized, 0));
+      check(`页面无横向溢出`, () => assert.ok(co.bodyOverflow <= 1, `溢出 ${co.bodyOverflow}px`));
+      // 选中不得把待接入项的虚线变成实线——实线在这套视觉语言里意味着已核验
+      check(`待接入项选中后仍是虚线`, () => assert.equal(co.demoBorderWhenSelected, "dashed"));
+      // 点击不得销毁被聚焦的元素，否则键盘用户按回车后焦点就丢了
+      check(`选中后焦点仍在被点的卡片上`, () => assert.equal(co.keptFocus, true));
+      check(`图注不与层级卡重叠`, () => assert.equal(co.noteOverlaps, false));
+    }
+
+    // 未知代码要有明确说明，不能白屏
+    console.log("\n── 公司视图 · 未知代码 ──");
+    await client.send("Page.navigate",
+      { url: `http://127.0.0.1:${port}/apps/supply-chain/company.html?symbol=NOSUCH` }, sessionId);
+    const unknown = await evaluate(`new Promise((done) => {
+      const deadline = Date.now() + 15000;
+      (function poll() {
+        const s = document.getElementById('state');
+        if (s && !s.hidden && s.textContent.length > 10) return done(s.textContent);
+        if (Date.now() > deadline) return done("");
+        setTimeout(poll, 120);
+      })();
+    })`);
+    check(`未知代码给出明确说明`, () => assert.ok(unknown.includes("NOSUCH"),
+      `实际提示：${unknown.slice(0, 60)}`));
+
     // 数据加载失败必须有明确的用户可见状态，不能白屏
     console.log("\n── 失败路径 ──");
     await client.send("Page.navigate",
