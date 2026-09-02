@@ -193,8 +193,10 @@
     var table = document.createElement("table");
     var thead = document.createElement("thead");
     var hr = document.createElement("tr");
-    ["公司", "代码", "市值(美元)", "SIC", "判定依据"].forEach(function (h, i) {
-      var th = el("th", i === 2 ? "num" : null, h);
+    // 「冶炼厂」列：这家公司的 Form SD 申报里收录了几家冶炼厂。
+    // 有关系数据的公司在总览上就能一眼看出来，不必挨个点进去试。
+    ["公司", "代码", "市值(美元)", "SIC", "冶炼厂", "判定依据"].forEach(function (h, i) {
+      var th = el("th", (i === 2 || i === 4) ? "num" : null, h);
       hr.appendChild(th);
     });
     thead.appendChild(hr);
@@ -217,6 +219,20 @@
       tr.appendChild(el("td", null, n.symbol || "—"));
       tr.appendChild(el("td", "num", cap(n.marketCap)));
       tr.appendChild(el("td", "num", n.sic != null ? String(n.sic) : "—"));
+
+      // 0 与「—」不是一回事：0 表示这家我们查过、申报里没有可解析的名单；
+      // 「—」表示这家还没进过抽取器。抽取器扫全表，所以正常情况下都是数字。
+      var tdEdges = el("td", "num");
+      var count = n.edgeCount;
+      if (count) {
+        var el2 = el("a", "colink", String(count));
+        el2.href = "company.html?symbol=" + encodeURIComponent(n.symbol || "");
+        tdEdges.appendChild(el2);
+      } else {
+        tdEdges.appendChild(document.createTextNode(count === 0 ? "0" : "—"));
+        tdEdges.style.color = "var(--faint)";
+      }
+      tr.appendChild(tdEdges);
 
       // 判定依据：说明为什么落在这个环节，并给出可核验的申报链接
       var tdBasis = el("td", "basis");
