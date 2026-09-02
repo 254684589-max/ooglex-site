@@ -64,6 +64,10 @@ SMELTERS_PATH = "apps/supply-chain/smelters.json"
 # 本轮拿到的公司数低于磁盘已有的这个比例，判定整轮取数异常，保留旧数据不覆盖。
 # 与 fetch_company_identity.py 的 MIN_SUCCESS_RATIO 同一个思路。
 MIN_KEEP_RATIO = 0.6
+# 边文件 + 登记表的体积上限。超了就中止——静态站点的数据文件会随站点发布，
+# 而且永久留在 git 历史里。实测每条边约 275 字节，30 MB 够放十万条以上；
+# 真撞上这条线，说明该先想清楚怎么存，而不是直接塞进仓库。
+MAX_TOTAL_BYTES = 30 * 1024 * 1024
 
 RELATION = "smelter-in-supply-chain"
 RELATION_LABEL = "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）"
@@ -498,7 +502,18 @@ def main() -> int:
     }
     write_if_changed(SMELTERS_PATH, smelters_payload)
 
-    print(f"\n边文件：新写／更新 {written}，内容未变 {unchanged}，"
+    # 体积闸门：抽取器跑飞了不该能往仓库里塞几十 MB。这是静态站点，
+    # 边文件会随站点一起发布，一年只变一次却要永久留在 git 历史里。
+    total_bytes = sum(os.path.getsize(os.path.join(OUT_DIR, f))
+                      for f in os.listdir(OUT_DIR) if f.endswith(".json"))
+    total_bytes += os.path.getsize(SMELTERS_PATH) if os.path.exists(SMELTERS_PATH) else 0
+    print(f"\n边文件与登记表合计 {total_bytes / 1_048_576:.1f} MB")
+    if total_bytes > MAX_TOTAL_BYTES:
+        print(f"[XX] 超出上限 {MAX_TOTAL_BYTES / 1_048_576:.0f} MB——"
+              f"这不是「数据变多了」，是该先想清楚怎么存，不是直接塞进仓库。")
+        return 1
+
+    print(f"边文件：新写／更新 {written}，内容未变 {unchanged}，"
           f"本轮未取到但保留 {kept} → {OUT_DIR}/")
     print(f"已发布 {len(index)} 家公司、{published_edges} 条边、"
           f"{len(registry)} 家冶炼厂 → {SMELTERS_PATH}")
