@@ -416,6 +416,38 @@ async function main() {
         ed.geoText.slice(0, 120)));
       check(`页面无横向溢出`, () => assert.ok(ed.bodyOverflow <= 1,
         `溢出 ${ed.bodyOverflow}px`));
+
+      // 清单进主栏之后要在窄屏上复核一遍：几百条多列排布最容易撑破布局，
+      // 而这一段是新加的，之前三档宽度的断言没覆盖到它。
+      for (const [width, height] of [[360, 780], [768, 1024]]) {
+        await client.send("Emulation.setDeviceMetricsOverride",
+          { width, height, deviceScaleFactor: 1, mobile: width < 700 }, sessionId);
+        await client.send("Page.navigate",
+          { url: `http://127.0.0.1:${port}/apps/supply-chain/company.html?symbol=${target}` },
+          sessionId);
+        await evaluate(`new Promise((done, fail) => {
+          const deadline = Date.now() + 20000;
+          (function poll() {
+            if (document.querySelectorAll('#smelters .sm').length) return done(true);
+            if (Date.now() > deadline) return fail(new Error('20 秒内未渲染出冶炼厂清单'));
+            setTimeout(poll, 150);
+          })();
+        })`);
+        const narrow = await evaluate(`(() => {
+          const box = document.querySelector('#smelters');
+          return {
+            items: document.querySelectorAll('#smelters .sm').length,
+            page: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+            box: box ? box.scrollWidth - box.clientWidth : 0
+          };
+        })()`);
+        check(`${width}px 清单仍渲染 ${expected} 条`,
+          () => assert.equal(narrow.items, expected));
+        check(`${width}px 页面无横向溢出`, () => assert.ok(narrow.page <= 1,
+          `溢出 ${narrow.page}px`));
+        check(`${width}px 清单容器无横向溢出`, () => assert.ok(narrow.box <= 1,
+          `溢出 ${narrow.box}px`));
+      }
     }
 
     // 未知代码要有明确说明，不能白屏

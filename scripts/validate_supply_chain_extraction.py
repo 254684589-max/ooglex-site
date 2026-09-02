@@ -22,6 +22,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import os
 import re
 import sys
@@ -34,6 +35,8 @@ SIC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                         "supply-chain", "sic_stages.py")
 FORM_SD_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             "supply-chain", "form_sd_parse.py")
+EXTRACT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            "supply-chain", "extract_form_sd.py")
 
 # ── SIC → 价值链阶段 ────────────────────────────────────────────────────────
 # SIC 码全部取自探针在 Actions 机房实测到的真实值，不是凭印象写的。
@@ -294,6 +297,14 @@ def extract_names(module, text: str) -> list[str]:
             if len(e) > 4 and not e.lower().startswith("the compan")]
 
 
+def load_extractor():
+    """载入抽取器模块。它在导入时不发起任何请求，可离线加载。"""
+    spec = importlib.util.spec_from_file_location("extract_form_sd", EXTRACT_PATH)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def load_form_sd():
     spec = importlib.util.spec_from_file_location("form_sd_parse", FORM_SD_PATH)
     module = importlib.util.module_from_spec(spec)
@@ -431,8 +442,77 @@ def main() -> int:
     print(f"  [{'OK' if not wrong else 'XX'}] 脚注标记剥离              "
           f"尾部 * / ** / (1) 去掉，名字本身不动")
 
+    print("\n── 边文件写盘：契约字段与「不拿坏结果覆盖好数据」 ──────────────")
+    # 这几条路径（内容未变不重写、契约字段、体积闸门）只在真实抓取时才会跑到，
+    # 出错的代价却是往仓库里写错数据。用合成数据离线跑一遍，不联网。
+    extractor = load_extractor()
+    import shutil
+    import tempfile
+    scratch = tempfile.mkdtemp()
+    original_out, original_smelters = extractor.OUT_DIR, extractor.SMELTERS_PATH
+    try:
+        extractor.OUT_DIR = os.path.join(scratch, "edges")
+        extractor.SMELTERS_PATH = os.path.join(scratch, "smelters.json")
+        os.makedirs(extractor.OUT_DIR)
+
+        def fake(symbol, count, with_cid=True):
+            base = f"https://www.sec.gov/Archives/edgar/data/1/{symbol}/"
+            return {"symbol": symbol, "cik": 1, "state": "listed",
+                    "filing": {"accession": f"000-{symbol}", "filingDate": "2026-05-15",
+                               "reportDate": "2025-12-31", "totalSD": 3, "indexUrl": base},
+                    "parse": {"url": base + "cmr.htm", "document": "cmr.htm",
+                              "rowsScanned": count * 2,
+                              "rowsWithCid": count if with_cid else 0,
+                              "nameOnly": 0 if with_cid else count, "droppedNoCid": 0,
+                              "unique": count, "namedRatio": 1.0, "countryRatio": 1.0,
+                              "smelters": [{
+                                  "id": f"CID{i:06d}" if with_cid else f"NAME:plant-{i}",
+                                  "cid": f"CID{i:06d}" if with_cid else None,
+                                  "identifierType": "rmi-cid" if with_cid else "name-only",
+                                  "name": f"Plant {i} Co., Ltd.", "countryEn": "japan",
+                                  "country": "日本", "minerals": ["金"], "rowIndex": i}
+                                  for i in range(count)]}}
+
+        path = os.path.join(extractor.OUT_DIR, "AAA.json")
+        first = extractor.write_if_changed(path, extractor.build_edges(fake("AAA", 5), "甲"))
+        same = extractor.build_edges(fake("AAA", 5), "甲")
+        same["updatedAt"] = "1999-01-01T00:00:00Z"
+        rewrote_same = extractor.write_if_changed(path, same)
+        changed = extractor.write_if_changed(path, extractor.build_edges(fake("AAA", 6), "甲"))
+        with open(path, encoding="utf-8") as handle:
+            saved = json.load(handle)
+        name_only = extractor.build_edges(fake("BBB", 4, with_cid=False), "乙")
+        evidence = saved.get("evidence") or {}
+
+        writes = [
+            ("首轮写入", first),
+            ("时间戳变但内容同 → 不重写", not rewrote_same),
+            ("内容变了 → 重写", changed and len(saved["edges"]) == 6),
+            ("文件级 evidence 三要素齐全",
+             all(evidence.get(f) for f in ("sourceType", "url", "docDate"))),
+            ("出处是可点开的 https", str(evidence.get("url", "")).startswith("https://")),
+            ("每条边都有 row 定位",
+             all(isinstance(e.get("row"), int) and e["row"] >= 1 for e in saved["edges"])),
+            ("标 rmi-cid 的确实带 cid",
+             all(e["cid"] for e in saved["edges"] if e["idType"] == "rmi-cid")),
+            ("标 name-only 的确实不带 cid",
+             all(e["cid"] is None and e["idType"] == "name-only"
+                 for e in name_only["edges"])),
+            ("contractVersion = 2", saved.get("contractVersion") == 2),
+            ("claimComplete 恒为 false", saved["coverage"]["claimComplete"] is False),
+            ("体积闸门 30 MB", extractor.MAX_TOTAL_BYTES == 30 * 1024 * 1024),
+            ("整轮保留阈值 60%", extractor.MIN_KEEP_RATIO == 0.6),
+        ]
+        for label, condition in writes:
+            if not condition:
+                failures.append(f"写盘 {label}")
+            print(f"  [{'OK' if condition else 'XX'}] {label}")
+    finally:
+        extractor.OUT_DIR, extractor.SMELTERS_PATH = original_out, original_smelters
+        shutil.rmtree(scratch, ignore_errors=True)
+
     total = (len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
-             + len(FORM_SD_CASES) + 6)
+             + len(FORM_SD_CASES) + 6 + len(writes))
     print("\n" + "─" * 68)
     if failures:
         print(f"失败 {len(failures)}/{total}：")
