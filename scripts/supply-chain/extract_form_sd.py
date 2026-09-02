@@ -23,9 +23,12 @@ Form SD 强制的是**申报**，不是**列名单**。实测：特斯拉那份 
 通篇只写尽职调查流程。这类申报如实计为「有申报、无名单」，不能算作没申报，
 更不能拿别家的名单往上套。
 
-## 只认带 CID 的行
+## 两类条目，分开标记
 
-解析规则见 form_sd_parse.py。没有编号的行整行不收，代价由 `droppedNoCid` 如实计数。
+带 RMI 编号的按编号建边，跨申报人可合并；无编号但「矿种 + 厂名 + 国别」齐全的
+也建边，但标为 `name-only`——它没有全球统一标识，跨申报人合并只能靠名字，可能重复。
+两类在登记表与页面上分开统计，不混成一个数。解析规则与三种假名单的排除见
+form_sd_parse.py。
 
 ## 合规
 
@@ -200,13 +203,17 @@ def build_edges(outcome: dict, name_zh: str | None) -> dict:
     edges = []
     for item in parse["smelters"]:
         edges.append({
-            "from": item["cid"],
+            "from": item["id"],
             "to": outcome["symbol"],
             "fromListed": False,        # 冶炼厂普遍不是标普成分股，不进节点表
             "toListed": True,
             "relation": RELATION,
             "relationLabel": RELATION_LABEL,
             "tier": "smelter",
+            # rmi-cid：全球统一编号，跨申报人可合并。
+            # name-only：只有名字，合并只能靠名字规范化，可能重复。页面须分开说。
+            "identifierType": item["identifierType"],
+            "cid": item["cid"],
             # 名称与国别在边上冗余一份：公司页只需拉这一个文件就能渲染，
             # 不必再拉几百 KB 的全局冶炼厂表。
             "name": item["name"],
@@ -246,7 +253,7 @@ def build_edges(outcome: dict, name_zh: str | None) -> dict:
             "totalSD": filing.get("totalSD"),
         },
         "parse": {k: parse[k] for k in
-                  ("rowsScanned", "rowsWithCid", "droppedNoCid", "unique",
+                  ("rowsScanned", "rowsWithCid", "nameOnly", "droppedNoCid", "unique",
                    "namedRatio", "countryRatio")},
         "relation": {"id": RELATION, "label": RELATION_LABEL},
         "byCountry": dict(sorted(by_country.items(), key=lambda kv: -kv[1])),
@@ -305,10 +312,12 @@ def main() -> int:
         if outcome["state"] == "listed":
             parse = outcome["parse"]
             print(f"[OK] {symbol:<6} {outcome['filing']['filingDate']}  "
-                  f"冶炼厂 {parse['unique']:>4}  带名 {parse['namedRatio']:.0%}  "
-                  f"带国别 {parse['countryRatio']:.0%}  丢弃行 {parse['droppedNoCid']}")
+                  f"冶炼厂 {parse['unique']:>4}"
+                  f"（编号 {parse['rowsWithCid']} / 仅名字 {parse['nameOnly']}）  "
+                  f"带名 {parse['namedRatio']:.0%}  带国别 {parse['countryRatio']:.0%}  "
+                  f"丢弃行 {parse['droppedNoCid']}")
             for item in parse["smelters"][:args.sample_rows]:
-                print(f"       {item['cid']}  {str(item['name'])[:44]:<44} "
+                print(f"       {item['id'][:22]:<22} {str(item['name'])[:40]:<40} "
                       f"{str(item['country'] or '—'):<8} {'/'.join(item['minerals']) or '—'}")
         elif outcome["state"] == "filed-no-list":
             print(f"[--] {symbol:<6} {outcome['filing']['filingDate']}  "
@@ -326,11 +335,14 @@ def main() -> int:
     no_filing = states.get("no-filing", [])
     failed = [s for k, v in states.items() if k in ("error", "index-failed", "doc-failed") for s in v]
     total_edges = sum(r["parse"]["unique"] for r in results if r["state"] == "listed")
+    total_cid = sum(r["parse"]["rowsWithCid"] for r in results if r["state"] == "listed")
+    total_name_only = sum(r["parse"]["nameOnly"] for r in results if r["state"] == "listed")
 
     print("\n── 结论 ────────────────────────────────────────────────────────────")
     print(f"有名单 {len(listed)} 家 · 有申报无名单 {len(filed_no_list)} 家 · "
           f"无申报 {len(no_filing)} 家 · 失败 {len(failed)} 家")
-    print(f"冶炼厂关系边合计 {total_edges} 条")
+    print(f"冶炼厂关系边合计 {total_edges} 条"
+          f"（带 RMI 编号 {total_cid} · 仅有名字 {total_name_only}）")
     if filed_no_list:
         print(f"  有申报无名单：{', '.join(filed_no_list[:20])}"
               + (" …" if len(filed_no_list) > 20 else ""))
@@ -362,8 +374,9 @@ def main() -> int:
             "accession": payload["filing"]["accession"],
         }
         for item in outcome["parse"]["smelters"]:
-            entry = registry.setdefault(item["cid"], {
-                "cid": item["cid"], "name": item["name"],
+            entry = registry.setdefault(item["id"], {
+                "id": item["id"], "cid": item["cid"],
+                "identifierType": item["identifierType"], "name": item["name"],
                 "country": item["country"], "countryEn": item["countryEn"],
                 "minerals": [], "filers": []})
             entry["name"] = entry["name"] or item["name"]
@@ -383,8 +396,10 @@ def main() -> int:
             "source": "SEC EDGAR Form SD 冲突矿产申报",
             "sourceUrl": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&type=SD",
             "relation": {"id": RELATION, "label": RELATION_LABEL},
-            "note": ("按 RMI 全球统一编号（CID）合并同一冶炼厂。只收带编号的行——"
-                     "冶炼厂名在不同申报人笔下写法不一，只靠名字去重会把一家拆成几家。"),
+            "note": ("带 RMI 编号的条目按编号合并，跨申报人可靠；无编号的条目只能按"
+                     "名字规范化归并，写法不同就会重复——两类分开统计，不混成一个数。"
+                     "名字归一只处理大小写与标点，不做同义合并：宁可一家重复出现，"
+                     "不可两家被错并成一家。"),
             "companiesIndex": dict(sorted(index.items())),
             "coverage": {
                 "claimComplete": False,
@@ -395,6 +410,12 @@ def main() -> int:
                 "companiesFailed": len(failed),
                 "edgesTotal": total_edges,
                 "uniqueSmelters": len(registry),
+                "uniqueByIdentifier": {
+                    "rmi-cid": sum(1 for v in registry.values()
+                                   if v["identifierType"] == "rmi-cid"),
+                    "name-only": sum(1 for v in registry.values()
+                                     if v["identifierType"] == "name-only"),
+                },
                 "note": ("Form SD 强制申报、不强制列名单：有申报无名单的公司如实单列，"
                          "不并入「无申报」。覆盖率因此永远到不了 100%，这是披露制度"
                          "本身的上限，不是抓取缺陷。"),

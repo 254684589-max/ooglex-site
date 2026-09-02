@@ -20,6 +20,7 @@ import sys
 
 NODES_PATH = "apps/supply-chain/nodes.json"
 HEALTH_PATH = "apps/supply-chain/health.json"
+EDGES_DIR = "apps/supply-chain/edges"
 
 ALLOWED_CONFIDENCE = {"disclosed", "inferred"}
 ALLOWED_BASIS = {"sector-initial", "sector-ambiguous", "sic-refined", "edge-derived", "unknown"}
@@ -98,36 +99,91 @@ def check_nodes(payload: dict, errors: list[str]) -> dict:
 
 
 def check_edges(payload: dict, errors: list[str]) -> int:
-    edges = payload.get("edges")
-    if not isinstance(edges, list):
-        fail(errors, "edges 必须是数组")
+    """校验关系边。边按公司分文件放在 edges/ 下，本函数逐文件逐条查。
+
+    **契约跟着数据走。** 边从 nodes.json 里挪到独立文件，不等于挪出了校验范围——
+    否则「无证据不上图」就成了只管一个数组的空话。这里做四件事：
+
+    1. 索引里登记的每个文件都要能读出来，条数与索引一致；
+    2. 每条边逐条过证据契约（非空 evidence、可点开的 https 出处、文件日期）；
+    3. 每条边的 `to` 必须就是这个文件的公司——串文件等于把 A 的供应商挂到 B 名下；
+    4. **目录里不得有索引外的孤儿文件**——孤儿文件会随站点发布出去却没人校验过。
+    """
+    index = payload.get("edgeIndex")
+    if index is None:
+        fail(errors, "缺少 edgeIndex —— 边即使为空也要有索引结构")
         return 0
+    if not isinstance(index, dict):
+        fail(errors, "edgeIndex 必须是对象")
+        return 0
+
     node_ids = {n.get("id") for n in payload.get("nodes") or []}
-    for i, edge in enumerate(edges):
-        where = f"edges[{i}] {edge.get('from')}→{edge.get('to')}"
-        if not edge.get("from") or not edge.get("to"):
-            fail(errors, f"{where}：缺少 from / to")
-        for end in ("from", "to"):
-            # 供应商侧可能是非上市公司，未必在节点表里；上市侧必须能对上。
-            if edge.get(end) not in node_ids and edge.get(f"{end}Listed", False):
-                fail(errors, f"{where}：{end} 声称已上市但不在节点表中")
-        if edge.get("confidence") not in ALLOWED_CONFIDENCE:
-            fail(errors, f"{where}：confidence 必须是 {sorted(ALLOWED_CONFIDENCE)}")
-        evidence = edge.get("evidence")
-        if not isinstance(evidence, list) or not evidence:
-            fail(errors, f"{where}：**没有 evidence 的边不得发布**")
+    on_disk = ({name[:-5] for name in os.listdir(EDGES_DIR) if name.endswith(".json")}
+               if os.path.isdir(EDGES_DIR) else set())
+    for orphan in sorted(on_disk - set(index)):
+        fail(errors, f"{EDGES_DIR}/{orphan}.json 不在 edgeIndex 里——"
+                     f"孤儿边文件会随站点发布却没经过校验")
+    for missing in sorted(set(index) - on_disk):
+        fail(errors, f"edgeIndex 登记了 {missing}，但 {EDGES_DIR}/{missing}.json 不存在")
+
+    total = 0
+    for symbol in sorted(set(index) & on_disk):
+        path = os.path.join(EDGES_DIR, f"{symbol}.json")
+        try:
+            with open(path, encoding="utf-8") as handle:
+                bundle = json.load(handle)
+        except (OSError, ValueError) as exc:
+            fail(errors, f"{path} 读不出来：{exc}")
             continue
-        for j, item in enumerate(evidence):
-            if not isinstance(item, dict):
-                fail(errors, f"{where} evidence[{j}]：格式错误")
+
+        if symbol not in node_ids:
+            fail(errors, f"{path}：{symbol} 不在节点表中")
+        if bundle.get("symbol") != symbol:
+            fail(errors, f"{path}：symbol {bundle.get('symbol')!r} 与文件名不符")
+        if (bundle.get("coverage") or {}).get("claimComplete") is not False:
+            fail(errors, f"{path}：coverage.claimComplete 必须恒为 false")
+        # 边的语义必须写在文件里。「出现在供应链中」与「是供应商」是两件事，
+        # 页面靠这个字段决定怎么措辞，缺了就可能被写成直接供货关系。
+        if not (bundle.get("relation") or {}).get("label"):
+            fail(errors, f"{path}：缺少 relation.label —— 边的语义必须随数据发布")
+
+        edges = bundle.get("edges")
+        if not isinstance(edges, list):
+            fail(errors, f"{path}：edges 必须是数组")
+            continue
+        declared = (index.get(symbol) or {}).get("count")
+        if declared != len(edges):
+            fail(errors, f"edgeIndex[{symbol}].count 报告 {declared}，实际 {len(edges)}")
+        total += len(edges)
+
+        for i, edge in enumerate(edges):
+            where = f"{symbol}.json edges[{i}] {edge.get('from')}→{edge.get('to')}"
+            if not edge.get("from") or not edge.get("to"):
+                fail(errors, f"{where}：缺少 from / to")
+            if edge.get("to") != symbol:
+                fail(errors, f"{where}：to 应为 {symbol}——边串了文件")
+            for end in ("from", "to"):
+                # 冶炼厂这类对手方普遍不是标普成分股，未必在节点表里；
+                # 但只要声称已上市，就必须能对上节点。
+                if edge.get(f"{end}Listed") and edge.get(end) not in node_ids:
+                    fail(errors, f"{where}：{end} 声称已上市但不在节点表中")
+            if edge.get("confidence") not in ALLOWED_CONFIDENCE:
+                fail(errors, f"{where}：confidence 必须是 {sorted(ALLOWED_CONFIDENCE)}")
+            evidence = edge.get("evidence")
+            if not isinstance(evidence, list) or not evidence:
+                fail(errors, f"{where}：**没有 evidence 的边不得发布**")
                 continue
-            for field in REQUIRED_EVIDENCE_FIELDS:
-                if not item.get(field):
-                    fail(errors, f"{where} evidence[{j}]：缺少可核验字段 {field}")
-            url = str(item.get("url") or "")
-            if url and not url.startswith("https://"):
-                fail(errors, f"{where} evidence[{j}]：出处必须是可点开的 https 链接")
-    return len(edges)
+            for j, item in enumerate(evidence):
+                if not isinstance(item, dict):
+                    fail(errors, f"{where} evidence[{j}]：格式错误")
+                    continue
+                for field in REQUIRED_EVIDENCE_FIELDS:
+                    if not item.get(field):
+                        fail(errors, f"{where} evidence[{j}]：缺少可核验字段 {field}")
+                url = str(item.get("url") or "")
+                if url and not url.startswith("https://"):
+                    fail(errors, f"{where} evidence[{j}]：出处必须是可点开的 https 链接")
+    return total
 
 
 def check_coverage(payload: dict, counts: dict, edge_count: int, errors: list[str]) -> None:
@@ -141,6 +197,13 @@ def check_coverage(payload: dict, counts: dict, edge_count: int, errors: list[st
         fail(errors, f"coverage.nodesTotal {coverage.get('nodesTotal')} 与实际节点数不符")
     if coverage.get("edgesTotal") != edge_count:
         fail(errors, f"coverage.edgesTotal {coverage.get('edgesTotal')} 与实际边数不符")
+    with_edges = sum(1 for n in payload.get("nodes") or [] if n.get("edgeCount"))
+    if coverage.get("nodesWithEdges") != with_edges:
+        fail(errors, f"coverage.nodesWithEdges {coverage.get('nodesWithEdges')} "
+                     f"与实际有边节点数 {with_edges} 不符")
+    # 有边就必须说清这些边是什么意思，不能只报数字
+    if edge_count and not (coverage.get("note") or ""):
+        fail(errors, "有关系边却没有 coverage.note 说明其语义")
     # 逐项核对，不能只查其中一项：曾经只校验 sector-ambiguous，结果 stageByBasis 把
     # 495 个 sic-refined 节点全报成 sector-initial 也照样通过——覆盖率报告说错了
     # 数据质量的来源却没人拦下。
@@ -186,8 +249,9 @@ def main() -> int:
     total_nodes = len(payload.get("nodes") or [])
     print(f"节点 {total_nodes}：已判定 {counts.get('resolved', 0)}，"
           f"仅候选集 {counts.get('ambiguous', 0)}，未登记 {counts.get('unknown', 0)}")
-    print(f"关系边 {edge_count}"
-          + ("（全部携带可核验出处）" if edge_count else "（第 0 层无证据来源）"))
+    index = payload.get("edgeIndex") or {}
+    print(f"关系边 {edge_count} 条，分布在 {len(index)} 个公司边文件里"
+          + ("（全部携带可核验出处）" if edge_count else "（尚无证据来源）"))
     print(f"claimComplete = {(payload.get('coverage') or {}).get('claimComplete')}（必须恒为 false）")
 
     if errors:

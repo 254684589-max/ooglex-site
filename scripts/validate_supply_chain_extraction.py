@@ -177,6 +177,35 @@ FORM_SD_FIXTURES: dict[str, str] = {
 <tr><td>Umicore SA Business Unit Precious Metals Refining</td><td>Belgium</td></tr>
 <tr><td>JX Nippon Mining &amp; Metals Co., Ltd.</td><td>Japan</td></tr>
 </table>""",
+    # 英伟达 2026 年报告的真实形状：Metal | 厂名 | 国别，**全表没有一个 RMI 编号**。
+    # 只认编号的规则会把这 279 行整个丢掉。厂名列里还含矿种词（Tantalum Niobium），
+    # 宽松的矿种匹配会把厂名当成矿种列吞掉。
+    "nvda-no-cid": """
+<table>
+<tr><th>Metal</th><th>Smelter or Refiner</th><th>Country</th></tr>
+<tr><td>Tantalum</td><td>AMG Brasil</td><td>BRAZIL</td></tr>
+<tr><td>Tantalum</td><td>Changsha South Tantalum Niobium Co</td><td>CHINA</td></tr>
+<tr><td>Tantalum</td><td>D Block Metals, LLC</td><td>UNITED STATES OF AMERICA</td></tr>
+<tr><td>Gold</td><td>Global Advanced Metals Aizu</td><td>JAPAN</td></tr>
+</table>""",
+    # 微软 2026 年报告的真实形状：三列**全是国名**的原产国附录，一家冶炼厂都没有。
+    # 早期的「丢弃行」启发式把这 274 行当成漏收的冶炼厂，虚报了规则的代价。
+    "country-columns": """
+<table>
+<tr><td>Andorra</td><td>Italy</td><td>Tanzania</td></tr>
+<tr><td>Australia</td><td>Japan</td><td>Thailand</td></tr>
+<tr><td>Belgium</td><td>Korea, Republic of</td><td>Uganda</td></tr>
+<tr><td>Bolivia</td><td>Malaysia</td><td>United States of America</td></tr>
+</table>""",
+    # 英特尔 2026 年报告的真实形状：国别 × 矿种矩阵，同样不是冶炼厂名单。
+    # 它有国名也有矿种，但没有第三类格子——不能因为「有矿种有国别」就收。
+    "country-mineral-matrix": """
+<table>
+<tr><td>Australia</td><td>Gold</td><td>Tantalum</td><td>Tin</td><td>Tungsten</td></tr>
+<tr><td>Bulgaria</td><td>Gold</td></tr>
+<tr><td>Burkina Faso</td><td>Gold</td></tr>
+<tr><td>Burundi**</td><td>Tantalum</td><td>Tin</td><td>Tungsten</td></tr>
+</table>""",
     # 叙述正文里矿种与国名满天飞，不得凭空造出冶炼厂
     "narrative-only": """
 <p>During the reporting period we sourced gold, tin, tantalum and tungsten from
@@ -185,21 +214,33 @@ smelter that sourced from a covered country.</p>
 <table><tr><th>Metal</th><th>Country</th></tr><tr><td>Gold</td><td>China</td></tr></table>""",
 }
 
-# (夹具, 期望条数, 期望丢弃行数, 抽查 {cid: (名称, 国别, 矿种集)})
+# (夹具, 期望条数, 期望丢弃行数, 期望无编号条数, 抽查 {id: (名称, 国别, 矿种集)})
 FORM_SD_CASES = [
-    ("standard-4col", 4, 0, {"CID000082": ("Asahi Pretec Corp.", "日本", {"金"}),
-                             "CID002044": ("Wolfram Bergbau und Hutten AG", "奥地利", {"钨"})}),
-    ("reordered-spaced-cid", 2, 0, {"CID000801": ("LS-NIKKO Copper Inc.", "韩国", {"金"}),
-                                    "CID002514": ("Solar Applied Materials Technology Corp.",
-                                                  "中国台湾", {"金"})}),
-    ("mineral-in-heading", 2, 0, {"CID001105": ("Malaysia Smelting Corporation (MSC)",
-                                                "马来西亚", {"锡"}),
-                                  "CID002082": ("Xiamen Tungsten Co., Ltd.", "中国", {"钨"})}),
-    ("nested-table", 1, 0, {"CID001153": ("Metalor Technologies SA", "瑞士", {"金"})}),
-    ("duplicate-cid", 1, 0, {"CID001908": ("Yunnan Tin Company Limited", "中国", {"锡", "钨"})}),
-    ("country-in-name", 1, 0, {"CID001938": ("Tokuriki Honten Co., Ltd.", "日本", {"金"})}),
-    ("names-without-cid", 0, 3, {}),
-    ("narrative-only", 0, 0, {}),
+    ("standard-4col", 4, 0, 0, {"CID000082": ("Asahi Pretec Corp.", "日本", {"金"}),
+                                "CID002044": ("Wolfram Bergbau und Hutten AG", "奥地利", {"钨"})}),
+    ("reordered-spaced-cid", 2, 0, 0,
+     {"CID000801": ("LS-NIKKO Copper Inc.", "韩国", {"金"}),
+      "CID002514": ("Solar Applied Materials Technology Corp.", "中国台湾", {"金"})}),
+    ("mineral-in-heading", 2, 0, 0,
+     {"CID001105": ("Malaysia Smelting Corporation (MSC)", "马来西亚", {"锡"}),
+      "CID002082": ("Xiamen Tungsten Co., Ltd.", "中国", {"钨"})}),
+    ("nested-table", 1, 0, 0, {"CID001153": ("Metalor Technologies SA", "瑞士", {"金"})}),
+    ("duplicate-cid", 1, 0, 0, {"CID001908": ("Yunnan Tin Company Limited", "中国", {"锡", "钨"})}),
+    ("country-in-name", 1, 0, 0, {"CID001938": ("Tokuriki Honten Co., Ltd.", "日本", {"金"})}),
+    # 无编号但形态完整（矿种 + 厂名 + 国别）：照收，标为 name-only。
+    # 厂名里的 Tantalum 不得把厂名列吞成矿种列。
+    ("nvda-no-cid", 4, 0, 4,
+     {"NAME:amg-brasil": ("AMG Brasil", "巴西", {"钽"}),
+      "NAME:changsha-south-tantalum-niobium-co":
+          ("Changsha South Tantalum Niobium Co", "中国", {"钽"}),
+      "NAME:d-block-metals-llc": ("D Block Metals, LLC", "美国", {"钽"})}),
+    # 纯国名附录：一条都不能收，也不能算成「漏收的冶炼厂」
+    ("country-columns", 0, 0, 0, {}),
+    # 国别 × 矿种矩阵：有国名有矿种但没有厂名列，同样一条都不收
+    ("country-mineral-matrix", 0, 0, 0, {}),
+    # 只有厂名与国别、没有矿种：无法确认是冶炼厂行，不收但计入丢弃
+    ("names-without-cid", 0, 3, 0, {}),
+    ("narrative-only", 0, 0, 0, {}),
 ]
 
 
@@ -291,16 +332,18 @@ def main() -> int:
     print(f"  [{'OK' if all(sic.resolve(b) is None for b in (None, '', 9999, -1, 'abc')) else 'XX'}]"
           f" 无法解析的输入返回 None，不猜默认阶段")
 
-    print("\n── Form SD 冶炼厂清单：列序不固定，只认 RMI 编号 ─────────────────")
+    print("\n── Form SD 冶炼厂清单：列序不固定，真假名单要分得开 ───────────────")
     form_sd = load_form_sd()
-    for name, expect_count, expect_dropped, spot in FORM_SD_CASES:
+    for name, expect_count, expect_dropped, expect_name_only, spot in FORM_SD_CASES:
         result = form_sd.parse_smelters(FORM_SD_FIXTURES[name])
-        got = {s["cid"]: s for s in result["smelters"]}
+        got = {s["id"]: s for s in result["smelters"]}
         problems = []
         if len(got) != expect_count:
             problems.append(f"条数 {len(got)}≠{expect_count}")
         if result["droppedNoCid"] != expect_dropped:
             problems.append(f"丢弃行 {result['droppedNoCid']}≠{expect_dropped}")
+        if result["nameOnly"] != expect_name_only:
+            problems.append(f"无编号条目 {result['nameOnly']}≠{expect_name_only}")
         for cid, (want_name, want_country, want_minerals) in spot.items():
             row = got.get(cid)
             if not row:
@@ -314,8 +357,9 @@ def main() -> int:
                 problems.append(f"{cid} 矿种 {set(row['minerals'])}≠{want_minerals}")
         if problems:
             failures.append(f"FormSD {name}：" + "；".join(problems))
-        print(f"  [{'OK' if not problems else 'XX'}] {name:<22} "
-              f"抽出 {len(got)} 条，丢弃 {result['droppedNoCid']} 行"
+        print(f"  [{'OK' if not problems else 'XX'}] {name:<24} "
+              f"抽出 {len(got)} 条（无编号 {result['nameOnly']}），"
+              f"丢弃 {result['droppedNoCid']} 行"
               + ("" if not problems else "  " + "；".join(problems)))
 
     # 编号归一化：三种写法必须落到同一个 ID，否则跨申报人合并会把一家拆成三家
@@ -330,10 +374,26 @@ def main() -> int:
                      for x in ("", "Country", "Various", "Unknown", "N/A", "—"))
     if not unknown_ok:
         failures.append("未知国名必须返回 (None, None)，不得猜")
-    print(f"  [{'OK' if unknown_ok else 'XX'}] 未知国名不猜            返回 None")
+    print(f"  [{'OK' if unknown_ok else 'XX'}] 未知国名不猜              返回 None")
+
+    # 严格矿种列：整格是矿种词才算，含矿种词的厂名不得被吞成矿种列
+    strict = [("Gold", True), ("Tin", True), ("Tin/Tungsten", True), ("Gold and Tin", True),
+              ("Changsha South Tantalum Niobium Co", False), ("Gold Refinery Ltd", False),
+              ("Tanaka Kikinzoku Kogyo K.K.", False), ("", False)]
+    bad = [t for t, want in strict if bool(form_sd.mineral_cell(t)) != want]
+    if bad:
+        failures.append(f"矿种列严格判定失误：{bad}")
+    print(f"  [{'OK' if not bad else 'XX'}] 矿种列严格判定            "
+          f"含矿种词的厂名不被吞成矿种列")
+    # 名字规范化不得做同义合并——没有编号就无从判断是不是同一家
+    slug_ok = (form_sd._slug("Aurubis AG") != form_sd._slug("Aurubis AG, Hamburg")
+               and form_sd._slug("AMG Brasil") == form_sd._slug("amg  brasil"))
+    if not slug_ok:
+        failures.append("名字规范化：大小写空格应归一，但不得把不同写法并成一家")
+    print(f"  [{'OK' if slug_ok else 'XX'}] 名字规范化不做同义合并      宁可重复，不可错并")
 
     total = (len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
-             + len(FORM_SD_CASES) + 3)
+             + len(FORM_SD_CASES) + 5)
     print("\n" + "─" * 68)
     if failures:
         print(f"失败 {len(failures)}/{total}：")
