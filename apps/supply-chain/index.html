@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全球产业链 · 标普500公司的价值链位置</title>
+<meta name="description" content="标普500成分股按价值链环节分层：上游资源、中间制造、品牌整合、分销服务、平台服务与支持性行业。阶段由 SEC 官方 SIC 行业码判定，逐家可查依据，每日更新。">
+<link rel="canonical" href="https://www.ooglex.com/apps/supply-chain/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="全球产业链 · 标普500公司的价值链位置">
+<meta property="og:description" content="标普500成分股按价值链环节分层，阶段由 SEC 官方 SIC 行业码判定，逐家可查依据，每日更新。">
+<meta property="og:url" content="https://www.ooglex.com/apps/supply-chain/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#0a0d13; --card:#141922; --line:rgba(255,255,255,0.09);
+    --text:#eaf0f3; --dim:#93a0b2; --faint:#5f6c7e; --accent:#4a90d9;
+    --up:#3fae7d; --down:#e0554f; --warn:#e4b53d;
+    --s1:#c98b4b; --s2:#4a90d9; --s3:#7d6fd1; --s4:#3fae7d; --s5:#3aa8b8; --s6:#6b7a8d;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  body {
+    min-height:100vh; color:var(--text);
+    background:
+      radial-gradient(820px 420px at 10% -8%, rgba(201,139,75,0.12), transparent 60%),
+      radial-gradient(760px 400px at 92% 4%, rgba(74,144,217,0.10), transparent 60%),
+      var(--bg);
+    background-attachment:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    line-height:1.55; overflow-x:hidden;
+  }
+  .page { max-width:1040px; margin:0 auto; padding:18px 16px 72px; }
+  header { display:flex; align-items:center; margin-bottom:12px; }
+  header a { color:var(--accent); text-decoration:none; font-size:0.95rem;
+    min-height:44px; display:inline-flex; align-items:center; padding-right:12px; }
+  header a:hover { opacity:.78; }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline:2px solid var(--accent); outline-offset:3px; border-radius:6px; }
+
+  .title { text-align:center; margin-bottom:14px; }
+  .title h1 { font-size:1.8rem; letter-spacing:1px; font-weight:800;
+    background:linear-gradient(92deg,#e0a96a,#4a90d9 55%,#3fae7d);
+    -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .title p { color:var(--dim); margin-top:6px; font-size:0.88rem; }
+  .statusrow { display:flex; justify-content:center; gap:9px; margin-top:10px; flex-wrap:wrap; }
+  .status { display:inline-flex; align-items:center; gap:7px; font-size:0.78rem; padding:4px 13px;
+    border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,0.03); color:var(--dim); }
+  .status b { color:var(--text); font-weight:600; }
+
+  .glass { background:linear-gradient(180deg, rgba(22,27,37,.94), rgba(16,20,28,.94));
+    border:1px solid var(--line); border-radius:18px;
+    box-shadow:0 24px 60px -34px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.05); }
+
+  /* ── 覆盖率声明：必须一眼看到，不能藏在页脚 ── */
+  .notice { padding:14px 16px; margin-bottom:16px; border-left:3px solid var(--warn); }
+  .notice h2 { font-size:0.92rem; font-weight:700; color:#f0cf85; margin-bottom:5px; }
+  .notice p { font-size:0.82rem; color:var(--dim); }
+  .notice p + p { margin-top:5px; }
+  .notice code { font-family:var(--mono); font-size:0.78rem; color:var(--text); }
+
+  .sec-h { display:flex; align-items:baseline; gap:10px; margin:22px 2px 10px; flex-wrap:wrap; }
+  .sec-h h2 { font-size:1.05rem; font-weight:800; }
+  .sec-h span { font-size:0.76rem; color:var(--faint); }
+
+  /* ── 环节卡片 ── */
+  .chain { display:grid; gap:10px; grid-template-columns:repeat(4,1fr); }
+  .offchain { display:grid; gap:10px; grid-template-columns:repeat(2,1fr); margin-top:10px; }
+  .stage { padding:13px 14px; text-align:left; width:100%; cursor:pointer;
+    background:linear-gradient(180deg, rgba(22,27,37,.94), rgba(16,20,28,.94));
+    border:1px solid var(--line); border-radius:16px; color:inherit; font:inherit;
+    min-height:44px; transition:border-color .18s, transform .18s; }
+  .stage:hover { border-color:rgba(255,255,255,0.2); }
+  .stage[aria-expanded="true"] { border-color:var(--accent); }
+  .stage .bar { height:3px; border-radius:2px; margin-bottom:9px; }
+  .stage .nm { font-weight:700; font-size:0.98rem; display:flex; align-items:baseline; gap:7px; }
+  .stage .nm small { color:var(--faint); font-weight:400; font-size:0.7rem; }
+  .stage .cnt { color:var(--dim); font-size:0.76rem; margin-top:3px; }
+  .stage .perf { display:flex; gap:12px; margin-top:9px; flex-wrap:wrap; }
+  .stage .perf div { font-size:0.72rem; color:var(--faint); }
+  .stage .perf b { display:block; font-family:var(--mono); font-size:0.98rem; font-weight:700;
+    font-variant-numeric:tabular-nums; margin-top:1px; }
+  .up { color:var(--up); } .down { color:var(--down); } .flat { color:var(--dim); }
+
+  /* ── 展开的公司表 ── */
+  .panel { margin-top:10px; padding:0; overflow:hidden; }
+  .panel[hidden] { display:none !important; }
+  .panel .cap { padding:12px 15px; border-bottom:1px solid var(--line);
+    font-size:0.82rem; color:var(--dim); }
+  .panel .cap b { color:var(--text); }
+  .tablewrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  table { width:100%; border-collapse:collapse; font-size:0.83rem; }
+  th, td { padding:9px 12px; text-align:left; white-space:nowrap; }
+  th { color:var(--faint); font-weight:600; font-size:0.72rem; letter-spacing:.4px;
+    border-bottom:1px solid var(--line); position:sticky; top:0;
+    background:rgba(18,23,32,.98); }
+  tbody tr { border-bottom:1px solid rgba(255,255,255,0.045); }
+  tbody tr:last-child { border-bottom:none; }
+  td.num { font-family:var(--mono); font-variant-numeric:tabular-nums; text-align:right; }
+  td.nm { white-space:normal; min-width:150px; }
+  td.nm small { color:var(--faint); display:block; font-size:0.72rem; }
+  td.basis { white-space:normal; color:var(--dim); font-size:0.74rem; min-width:200px; max-width:340px; }
+  td.basis a { color:var(--accent); text-decoration:none; }
+  td.basis a:hover { text-decoration:underline; }
+  .more { padding:11px 15px; color:var(--faint); font-size:0.78rem; border-top:1px solid var(--line); }
+
+  /* ── 方法与来源 ── */
+  details.meth { margin-top:18px; padding:0; }
+  details.meth summary { padding:13px 16px; cursor:pointer; font-weight:700; font-size:0.92rem;
+    list-style:none; min-height:44px; display:flex; align-items:center; gap:8px; }
+  details.meth summary::-webkit-details-marker { display:none; }
+  details.meth summary::before { content:"▸"; color:var(--accent); transition:transform .18s; }
+  details.meth[open] summary::before { transform:rotate(90deg); }
+  details.meth .body { padding:0 16px 15px; font-size:0.82rem; color:var(--dim); }
+  details.meth .body p + p { margin-top:8px; }
+  details.meth .body b { color:var(--text); }
+  details.meth .body ul { margin:7px 0 0 18px; }
+  details.meth .body li { margin-bottom:4px; }
+
+  .state { padding:26px 16px; text-align:center; color:var(--dim); font-size:0.9rem; }
+  .state.err { color:#f3a49f; }
+
+  footer { margin-top:26px; text-align:center; color:var(--faint); font-size:0.75rem; line-height:1.7; }
+  footer a { color:var(--dim); text-decoration:none; }
+
+  @media (max-width:900px) { .chain { grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px) {
+    .page { padding:14px 12px 60px; }
+    .title h1 { font-size:1.42rem; }
+    .chain, .offchain { grid-template-columns:1fr; }
+    th, td { padding:8px 10px; }
+    td.basis { max-width:none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation:none !important; transition:none !important; }
+  }
+  @media (prefers-contrast: more) {
+    :root { --line:rgba(255,255,255,0.28); --dim:#c2ccd8; --faint:#93a0b2; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header><a href="/">← 返回首页</a></header>
+
+  <div class="title">
+    <h1>全球产业链</h1>
+    <p>标普500成分股按价值链环节分层 · Global Supply Chain</p>
+    <div class="statusrow" id="statusrow"></div>
+  </div>
+
+  <section class="glass notice" aria-label="数据范围声明">
+    <h2>关于本页数据范围</h2>
+    <p id="notice-coverage">本板块只收录有公开出处的信息，<b>不是完整供应链</b>。</p>
+    <p id="notice-edges"></p>
+    <p id="notice-basis"></p>
+  </section>
+
+  <div class="sec-h">
+    <h2>实物价值链</h2>
+    <span>从资源到终端，四个环节 · 点击展开该环节公司</span>
+  </div>
+  <div class="chain" id="chain"></div>
+
+  <div class="sec-h">
+    <h2>链外环节</h2>
+    <span>不直接位于实物流转链条上</span>
+  </div>
+  <div class="offchain" id="offchain"></div>
+
+  <div class="glass panel" id="panel" hidden></div>
+
+  <details class="glass meth">
+    <summary>数据方法与来源</summary>
+    <div class="body" id="method"></div>
+  </details>
+
+  <div class="state" id="state">正在加载产业链数据…</div>
+
+  <footer>
+    <p>数据仅供研究参考，不构成投资建议。</p>
+    <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
+  </footer>
+</div>
+<script src="app.js" defer></script>
+</body>
+</html>

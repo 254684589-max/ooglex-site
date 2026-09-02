@@ -64,6 +64,11 @@ jobs:
       - name: Validate graph contract and evidence
         run: python scripts/validate_supply_chain_graph.py
 
+      # 页面契约：三档宽度渲染、覆盖率声明可见、逐家显示判定依据与可核验链接。
+      # 数据对了但页面把推断显示成结论，同样是骗人，所以这道也在提交前跑。
+      - name: Validate page contract (browser)
+        run: node scripts/validate_supply_chain_page.mjs
+
       - name: Commit and push data
         run: |
           git config user.name "github-actions[bot]"
