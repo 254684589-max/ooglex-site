@@ -1,0 +1,85 @@
+name: Supply Chain Graph
+
+# 生成产业链图谱发布文件：读站内标普成分股清单 → 生成 apps/supply-chain/nodes.json
+# 与 health.json → 提交回仓库。
+#
+# 第 0 层只读站内数据，不发起任何外部请求、不新增数据源，因此没有密钥、没有上游接口
+# 风险；唯一的上游是 apps/companies/sp500.json，由 companies.yml 每日生成。调度上排在
+# companies 成功之后（与 asset_ranking 同一梯队）。
+#
+# 两道校验都在提交之前跑，任一失败即不提交：
+#   validate_supply_chain_extraction —— 关系抽取规则的定位/点名/误报断言（离线）
+#   validate_supply_chain_graph      —— 发布文件契约，核心是「无证据不上图」
+# 后者会拒绝任何没有可核验出处的关系边，也会拒绝把板块级推断显示成公司级结论。
+on:
+  # 定点 cron 会被 GitHub 推迟数小时，改由 scheduler.yml 每日在窗口开启后统一触发。
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: market-data-supply-chain-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Sync target branch before generation
+        run: |
+          if [ "$GITHUB_REF_TYPE" != "branch" ]; then
+            echo "仅允许从分支运行数据更新，当前引用类型：$GITHUB_REF_TYPE"
+            exit 1
+          fi
+          git fetch --no-tags origin "$GITHUB_REF_NAME"
+          git checkout -B "$GITHUB_REF_NAME" FETCH_HEAD
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Build supply chain graph nodes
+        run: python scripts/supply-chain/build_chain_nodes.py
+
+      - name: Validate extraction rules
+        run: python scripts/validate_supply_chain_extraction.py
+
+      - name: Validate graph contract and evidence
+        run: python scripts/validate_supply_chain_graph.py
+
+      - name: Commit and push data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # 只暂存本工作流拥有的路径，不夹带任何其他改动。
+          git add apps/supply-chain/nodes.json apps/supply-chain/health.json
+          if git diff --cached --quiet; then
+            echo "生成结果与仓库一致，跳过提交和推送"
+            exit 0
+          fi
+          git commit -m "data: refresh supply chain graph nodes"
+          # 数据文件由本工作流独占生成。推送遇远端新提交时 rebase 重试，冲突以本次生成的
+          # 版本为准（rebase 中 ours/theirs 语义互换，-X theirs 才是本地工作分支一侧）。
+          for i in 1 2 3 4 5; do
+            if git push origin "HEAD:$GITHUB_REF_NAME"; then
+              echo "已推送"; exit 0
+            fi
+            echo "推送被拒，拉取远端后重试（$i）"
+            if ! git fetch --no-tags origin "$GITHUB_REF_NAME"; then
+              sleep $((i * 3)); continue
+            fi
+            if ! git rebase -X theirs "origin/$GITHUB_REF_NAME"; then
+              git rebase --abort || true
+              sleep $((i * 3)); continue
+            fi
+            sleep $((i * 3))
+          done
+          echo "推送多次失败"; exit 1

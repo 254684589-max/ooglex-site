@@ -10,8 +10,9 @@ name: Daily Scheduler
 # 进入窗口后把本窗口内尚未触发过的每日工作流用 workflow_dispatch 立即拉起——workflow_dispatch
 # 是即时触发，不受 schedule 的排队延迟影响，从而把数据更新压在北京时间 07:00 之前完成。
 #
-# asset_ranking 复用 companies 当日生成的市值数据，须等 companies 本窗口运行成功后，
-# 由后续 tick 再拉起（二者原本就以 23:10 / 23:40 UTC 先后错开，这里保留同样的依赖顺序）。
+# asset_ranking 复用 companies 当日生成的市值数据，supply_chain 读 companies 生成的
+# 标普成分股清单，二者都须等 companies 本窗口运行成功后由后续 tick 再拉起
+# （asset_ranking 原本就以 23:10 / 23:40 UTC 与 companies 先后错开，这里保留同样的依赖顺序）。
 on:
   workflow_dispatch:
   schedule:
@@ -75,18 +76,30 @@ jobs:
             fi
           done
 
-          # 第二梯队：asset_ranking 等 companies 本窗口成功完成后再触发
-          if ran_in_window asset_ranking.yml; then
-            echo "asset_ranking.yml 本窗口已触发，跳过"
-          else
+          # 第二梯队：等 companies 本窗口成功完成后再触发的工作流
+          #   asset_ranking —— 复用 companies 当日生成的市值数据
+          #   supply_chain  —— 读 companies 生成的标普成分股清单建产业链图谱节点
+          pending=""
+          for wf in asset_ranking.yml supply_chain.yml; do
+            if ran_in_window "$wf"; then
+              echo "$wf 本窗口已触发，跳过"
+            else
+              pending="$pending $wf"
+            fi
+          done
+          # 全部已触发时不必再查 companies 状态，省一次 API 调用
+          if [ -n "$pending" ]; then
             read -r c_created c_concl <<< "$(latest_dispatch companies.yml)"
             if [ "$c_created" != "none" ] \
                && [ "$(date -u -d "$c_created" +%s)" -ge "$win_start" ] \
                && [ "$c_concl" = "success" ]; then
-              echo "触发 asset_ranking.yml"
-              gh api -X POST "repos/$GITHUB_REPOSITORY/actions/workflows/asset_ranking.yml/dispatches" \
-                -f "ref=$GITHUB_REF_NAME"
+              for wf in $pending; do
+                echo "触发 $wf"
+                gh api -X POST "repos/$GITHUB_REPOSITORY/actions/workflows/$wf/dispatches" \
+                  -f "ref=$GITHUB_REF_NAME"
+                sleep 15   # 错开启动时间，减少并发 push 撞车
+              done
             else
-              echo "companies 本窗口尚未成功完成（状态：$c_concl），asset_ranking 留待下个 tick"
+              echo "companies 本窗口尚未成功完成（状态：$c_concl），$pending 留待下个 tick"
             fi
           fi
