@@ -1,0 +1,46 @@
+name: Supply Chain Source Probe
+
+# 只读探测：全球供应链板块的候选数据源在 Actions 机房到底取不取得到、许可能不能用。
+# 不写仓库、不提交任何数据，只把探测报告作为构建产物留存。
+#
+# 这是「先探后建」的第一步，也是常备工具：往供应链清单里加任何一条序列之前先跑一次，
+# 只登记同时满足两个条件的候选——① 实测取得到且仍在更新，② 权利方允许再分发。
+# 供应链领域许可坑格外深：BDI、Drewry WCI、Freightos FBX、ISM 供应商交付全是商业
+# 授权，与仓库已因许可放弃的 SPX／DXY／LBMA 定盘价同类。报告里 [!!] 标记的就是
+# 「技术上取得到但不许登记」的那一类，必须在落地前拦下。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supply-chain-source-probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Probe candidate supply chain sources
+        env:
+          PROBE_OUTPUT: /tmp/supply-chain-probe/report.json
+        run: python scripts/supply-chain/probe_supply_chain_sources.py
+
+      - name: Upload probe report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: supply-chain-probe-${{ github.run_attempt }}
+          path: /tmp/supply-chain-probe/report.json
+          if-no-files-found: warn
+          retention-days: 7
