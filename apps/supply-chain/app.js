@@ -108,8 +108,15 @@
   }
 
   /* ── 环节卡片 ── */
+  function countIn(d, stageId) {
+    var n = 0;
+    (d.nodes || []).forEach(function (x) { if (x.stage === stageId) n++; });
+    return n;
+  }
+
   function stageCard(d, meta) {
     var p = perfOf(d, meta.id) || {};
+    var total = countIn(d, meta.id);
     var btn = el("button", "stage");
     btn.type = "button";
     btn.setAttribute("aria-expanded", "false");
@@ -125,16 +132,25 @@
     nm.appendChild(el("small", null, meta.labelEn || ""));
     btn.appendChild(nm);
 
-    btn.appendChild(el("div", "cnt", (p.companies || 0) + " 家 · " + (meta.description || "")));
+    btn.appendChild(el("div", "cnt", total + " 家 · " + (meta.description || "")));
 
     var perf = el("div", "perf");
-    [["等权", p.equalWeightPct], ["市值加权", p.capWeightPct], ["中位", p.medianPct]]
-      .forEach(function (pair) {
-        var box = el("div", null, pair[0]);
-        var b = el("b", cls(pair[1]), pct(pair[1]));
-        box.appendChild(b);
-        perf.appendChild(box);
-      });
+    if (p.companies == null) {
+      // 没有表现数据时如实说明，不显示成「0%」或「持平」——没算出来不等于没变化
+      perf.appendChild(el("div", "none", "本次未生成环节表现数据"));
+    } else {
+      [["等权", p.equalWeightPct], ["市值加权", p.capWeightPct], ["中位", p.medianPct]]
+        .forEach(function (pair) {
+          var box = el("div", null, pair[0]);
+          box.appendChild(el("b", cls(pair[1]), pct(pair[1])));
+          perf.appendChild(box);
+        });
+      // 参与统计的公司少于该环节公司数时点明差额，避免读者以为涨跌覆盖全部
+      if (p.companies < total) {
+        perf.appendChild(el("div", "none",
+          "（涨跌按 " + p.companies + " 家有效报价计，另 " + (total - p.companies) + " 家无有效报价）"));
+      }
+    }
     btn.appendChild(perf);
 
     btn.addEventListener("click", function () { toggle(meta.id); });

@@ -12,6 +12,10 @@
  * 4. **交互可用**——环节卡片键盘可达、触控区域不小于 44×44、展开后能看到表格。
  *
  * 纯离线：起本地静态服务器读仓库文件，不发外网请求。
+ *
+ * **降级数据会让本契约失败，这是刻意的**：SEC 取数失败时构建会退回板块级口径，
+ * 此时页面缺少 SIC 与可核验申报链接，第 2 条守不住。契约失败 → 工作流不提交 →
+ * 保留上一份好数据。宁可不更新，也不发布看起来完整却没有依据的页面。
  */
 import assert from "node:assert/strict";
 import http from "node:http";
@@ -199,8 +203,13 @@ async function main() {
         const cells = first ? [...first.children].map(c => c.textContent.trim()) : [];
         const links = panel.querySelectorAll('td.basis a[href^="https://"]').length;
         const headers = [...panel.querySelectorAll('th')].map(t => t.textContent.trim());
+        const card = document.querySelector('.stage');
+        const cardText = card ? card.querySelector('.cnt').textContent : "";
+        // 用字符类而非 \d / \s：这段表达式在 JS 模板字面量里，反斜杠转义会被吃掉
+        const cardMatch = cardText.match(/^([0-9]+) *家/);
         return {
           hidden: panel.hidden,
+          cardCount: cardMatch ? Number(cardMatch[1]) : -1,
           rowCount: rows.length,
           headers,
           firstRowCells: cells.length,
@@ -223,6 +232,14 @@ async function main() {
       check(`判定依据附可核验申报链接`, () => assert.ok(opened.evidenceLinks > 0,
         `链接数 ${opened.evidenceLinks}`));
       check(`宽表在自身容器内滚动`, () => assert.ok(opened.wrapScrolls));
+      // 卡片上的「N 家」与展开后表格的行数必须同口径。曾经卡片数的是「有有效
+      // 报价的公司」而表格数的是节点，两边对不上；表现数据缺失时卡片更会显示
+      // 成「0 家」——「支持性行业 0 家」是对事实的错误陈述。
+      check(`卡片计数与面板行数同口径`, () => {
+        const shown = Math.min(opened.cardCount, 60);
+        assert.equal(opened.rowCount, shown,
+          `卡片写 ${opened.cardCount} 家，表格 ${opened.rowCount} 行`);
+      });
       check(`展开后页面仍无横向溢出`, () => assert.ok(opened.pageOverflowAfterOpen <= 1,
         `溢出 ${opened.pageOverflowAfterOpen}px`));
     }
