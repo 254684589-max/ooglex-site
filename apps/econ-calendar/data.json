@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-09-01T22:35:50Z",
-  "asOf": "2026-09-01",
+  "updatedAt": "2026-09-02T16:46:25Z",
+  "asOf": "2026-09-02",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-30 ~ 2026-09-05",
   "count": 113,
@@ -854,7 +854,7 @@
       "title": "Overseas Trade Index q/q",
       "titleEn": "Overseas Trade Index q/q",
       "impact": "low",
-      "forecast": "-2.2%",
+      "forecast": "-2.1%",
       "previous": "-2.0%",
       "actual": null
     },
@@ -890,7 +890,7 @@
       "title": "贸易帐",
       "titleEn": "Goods Trade Balance",
       "impact": "low",
-      "forecast": "1.50B",
+      "forecast": "1.52B",
       "previous": "1.93B",
       "actual": null
     },
@@ -950,7 +950,7 @@
       "title": "GDP（国内生产总值） 季环比",
       "titleEn": "GDP q/q",
       "impact": "low",
-      "forecast": "1.5%",
+      "forecast": "1.7%",
       "previous": "0.7%",
       "actual": null
     },
