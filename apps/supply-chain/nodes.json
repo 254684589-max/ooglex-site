@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-02T15:34:50Z",
+  "updatedAt": "2026-09-02T16:18:30Z",
   "asOf": "2026-09-01",
   "frequency": "daily",
   "status": "ok",
@@ -79,7 +79,7 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 239
     },
     {
       "id": "AAPL",
@@ -163,7 +163,7 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 157
     },
     {
       "id": "AMZN",
@@ -191,7 +191,7 @@
         "sic": 5961,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 355
     },
     {
       "id": "AVGO",
@@ -359,7 +359,7 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 184
     },
     {
       "id": "JPM",
@@ -443,7 +443,7 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 211
     },
     {
       "id": "V",
@@ -611,7 +611,7 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 209
     },
     {
       "id": "BAC",
@@ -667,7 +667,7 @@
         "sic": 3576,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 2
     },
     {
       "id": "CVX",
@@ -723,7 +723,7 @@
         "sic": 5331,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 3
     },
     {
       "id": "PLTR",
@@ -919,7 +919,7 @@
         "sic": 3531,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 1
     },
     {
       "id": "AMAT",
@@ -947,7 +947,7 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 325
     },
     {
       "id": "GE",
@@ -1199,7 +1199,7 @@
         "sic": 3724,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 1
     },
     {
       "id": "WFC",
@@ -1311,7 +1311,7 @@
         "sic": 3576,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 281
     },
     {
       "id": "AMGN",
@@ -1367,7 +1367,7 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 219
     },
     {
       "id": "SNDK",
@@ -1395,7 +1395,7 @@
         "sic": 3572,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 221
     },
     {
       "id": "C",
@@ -1507,7 +1507,7 @@
         "sic": 3827,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 281
     },
     {
       "id": "AXP",
@@ -1647,7 +1647,7 @@
         "sic": 3678,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 698
     },
     {
       "id": "TMUS",
@@ -1675,7 +1675,7 @@
         "sic": 4812,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 197
     },
     {
       "id": "PEP",
@@ -1703,7 +1703,7 @@
         "sic": 2080,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 26
     },
     {
       "id": "ABT",
@@ -1843,7 +1843,7 @@
         "sic": 7990,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 6
     },
     {
       "id": "MRVL",
@@ -1899,7 +1899,7 @@
         "sic": 3572,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 347
     },
     {
       "id": "DE",
@@ -1983,7 +1983,7 @@
         "sic": 3663,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 218
     },
     {
       "id": "BLK",
@@ -2067,7 +2067,7 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 222
     },
     {
       "id": "UNP",
@@ -2291,7 +2291,7 @@
         "sic": 3572,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 209
     },
     {
       "id": "UBER",
@@ -2347,7 +2347,7 @@
         "sic": 3590,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 298
     },
     {
       "id": "BKNG",
@@ -2543,7 +2543,7 @@
         "sic": 3724,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 37
     },
     {
       "id": "CB",
@@ -2627,7 +2627,7 @@
         "sic": 3842,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 328
     },
     {
       "id": "SPGI",
@@ -2795,7 +2795,7 @@
         "sic": 3357,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 339
     },
     {
       "id": "CVS",
@@ -2851,7 +2851,7 @@
         "sic": 3841,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 344
     },
     {
       "id": "SBUX",
@@ -2963,7 +2963,7 @@
         "sic": 3845,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 599
     },
     {
       "id": "MO",
@@ -2991,7 +2991,7 @@
         "sic": 2111,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 41
     },
     {
       "id": "ACN",
@@ -3103,7 +3103,7 @@
         "sic": 5211,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 55
     },
     {
       "id": "MPC",
@@ -3523,7 +3523,7 @@
         "sic": 3679,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 329
     },
     {
       "id": "DASH",
@@ -3691,7 +3691,7 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 103
     },
     {
       "id": "CMCSA",
@@ -3859,7 +3859,7 @@
         "sic": 1731,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 9
     },
     {
       "id": "CSX",
@@ -4307,7 +4307,7 @@
         "sic": 3663,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 362
     },
     {
       "id": "SHW",
@@ -4335,7 +4335,7 @@
         "sic": 5200,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 7
     },
     {
       "id": "CTAS",
@@ -4531,7 +4531,7 @@
         "sic": 2840,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 354
     },
     {
       "id": "ITW",
@@ -4671,7 +4671,7 @@
         "sic": 3510,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 361
     },
     {
       "id": "APO",
@@ -4895,7 +4895,7 @@
         "sic": 2844,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 317
     },
     {
       "id": "BSX",
@@ -5203,7 +5203,7 @@
         "sic": 3669,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 6
     },
     {
       "id": "HPE",
@@ -5231,7 +5231,7 @@
         "sic": 3570,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 226
     },
     {
       "id": "AJG",
@@ -5427,7 +5427,7 @@
         "sic": 3711,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 361
     },
     {
       "id": "TRGP",
@@ -5483,7 +5483,7 @@
         "sic": 3533,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 341
     },
     {
       "id": "URI",
@@ -5679,7 +5679,7 @@
         "sic": 5065,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 472
     },
     {
       "id": "OXY",
@@ -5763,7 +5763,7 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 198
     },
     {
       "id": "AFL",
@@ -5987,7 +5987,7 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 208
     },
     {
       "id": "CAH",
@@ -6715,7 +6715,7 @@
         "sic": 3743,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 392
     },
     {
       "id": "HUM",
@@ -6883,7 +6883,7 @@
         "sic": 3829,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 691
     },
     {
       "id": "XYZ",
@@ -7135,7 +7135,7 @@
         "sic": 2080,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 244
     },
     {
       "id": "COHR",
@@ -7163,7 +7163,7 @@
         "sic": 3827,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 5
     },
     {
       "id": "IQV",
@@ -7275,7 +7275,7 @@
         "sic": 3826,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 349
     },
     {
       "id": "ROP",
@@ -7639,7 +7639,7 @@
         "sic": 3672,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 236
     },
     {
       "id": "ODFL",
@@ -7695,7 +7695,7 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 329
     },
     {
       "id": "HIG",
@@ -7919,7 +7919,7 @@
         "sic": 2670,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 241
     },
     {
       "id": "EQT",
@@ -9039,7 +9039,7 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 193
     },
     {
       "id": "CASY",
@@ -9179,7 +9179,7 @@
         "sic": 3826,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 360
     },
     {
       "id": "FISV",
@@ -9263,7 +9263,7 @@
         "sic": 3600,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 332
     },
     {
       "id": "LH",
@@ -9683,7 +9683,7 @@
         "sic": 3530,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 782
     },
     {
       "id": "TPL",
@@ -9767,7 +9767,7 @@
         "sic": 3561,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 355
     },
     {
       "id": "DLTR",
@@ -10019,7 +10019,7 @@
         "sic": 2851,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 27
     },
     {
       "id": "BRO",
@@ -10159,7 +10159,7 @@
         "sic": 3841,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 211
     },
     {
       "id": "SW",
@@ -10243,7 +10243,7 @@
         "sic": 3571,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 251
     },
     {
       "id": "CHD",
@@ -10467,7 +10467,7 @@
         "sic": 4911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 219
     },
     {
       "id": "KEY",
@@ -10663,7 +10663,7 @@
         "sic": 3576,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 338
     },
     {
       "id": "DOW",
@@ -10691,7 +10691,7 @@
         "sic": 2821,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 41
     },
     {
       "id": "IFF",
@@ -10775,7 +10775,7 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 93
     },
     {
       "id": "GPN",
@@ -10887,7 +10887,7 @@
         "sic": 2860,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 1
     },
     {
       "id": "CMS",
@@ -10999,7 +10999,7 @@
         "sic": 2320,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 217
     },
     {
       "id": "CHTR",
@@ -11307,7 +11307,7 @@
         "sic": 3842,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 232
     },
     {
       "id": "EVRG",
@@ -11419,7 +11419,7 @@
         "sic": 5200,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 5
     },
     {
       "id": "GEN",
@@ -11447,7 +11447,7 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 256
     },
     {
       "id": "ESS",
@@ -11699,7 +11699,7 @@
         "sic": 5731,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 218
     },
     {
       "id": "INVH",
@@ -11923,7 +11923,7 @@
         "sic": 3411,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 14
     },
     {
       "id": "IEX",
@@ -11951,7 +11951,7 @@
         "sic": 3561,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 245
     },
     {
       "id": "ZBRA",
@@ -11979,7 +11979,7 @@
         "sic": 3560,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 340
     },
     {
       "id": "KIM",
@@ -12287,7 +12287,7 @@
         "sic": 3420,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 337
     },
     {
       "id": "MKC",
@@ -12595,7 +12595,7 @@
         "sic": 3829,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 329
     },
     {
       "id": "CRL",
@@ -12763,7 +12763,7 @@
         "sic": 2670,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 405
     },
     {
       "id": "HAS",
@@ -12791,7 +12791,7 @@
         "sic": 3944,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 201
     },
     {
       "id": "BAX",
@@ -12819,7 +12819,7 @@
         "sic": 3841,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 323
     },
     {
       "id": "LII",
@@ -12903,7 +12903,7 @@
         "sic": 7381,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 338
     },
     {
       "id": "IT",
@@ -13211,7 +13211,7 @@
         "sic": 2842,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 19
     },
     {
       "id": "TECH",
@@ -13351,7 +13351,7 @@
         "sic": 3842,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 238
     },
     {
       "id": "CPT",
@@ -13631,7 +13631,7 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 194
     },
     {
       "id": "PNR",
@@ -13687,7 +13687,7 @@
         "sic": 3714,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 337
     },
     {
       "id": "WYNN",
@@ -13914,7 +13914,603 @@
       "edgeCount": 0
     }
   ],
-  "edgeIndex": {},
+  "edgeIndex": {
+    "A": {
+      "file": "edges/A.json",
+      "count": 349,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1090872/000119312526248281/a-ex1_01.htm"
+    },
+    "ADI": {
+      "file": "edges/ADI.json",
+      "count": 222,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-22",
+      "url": "https://www.sec.gov/Archives/edgar/data/6281/000119312526235474/d130534dex101.htm"
+    },
+    "ALGN": {
+      "file": "edges/ALGN.json",
+      "count": 238,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1097149/000109714926000044/exhibit101-conflictmineral.htm"
+    },
+    "ALLE": {
+      "file": "edges/ALLE.json",
+      "count": 338,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-22",
+      "url": "https://www.sec.gov/Archives/edgar/data/1579241/000157924126000019/exhibit101.htm"
+    },
+    "AMAT": {
+      "file": "edges/AMAT.json",
+      "count": 325,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/6951/000162828026038856/cmrcy2025_final.htm"
+    },
+    "AMD": {
+      "file": "edges/AMD.json",
+      "count": 211,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/2488/000000248826000103/fy2025cmr.htm"
+    },
+    "AMZN": {
+      "file": "edges/AMZN.json",
+      "count": 355,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1018724/000110465926068254/tm2615281d1_ex1-01.htm"
+    },
+    "ANET": {
+      "file": "edges/ANET.json",
+      "count": 281,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-27",
+      "url": "https://www.sec.gov/Archives/edgar/data/1596532/000159653226000107/arista-formsd2025xex1015x22.htm"
+    },
+    "APH": {
+      "file": "edges/APH.json",
+      "count": 698,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/820313/000110465926068220/tm2615811d1_ex1-01.htm"
+    },
+    "APTV": {
+      "file": "edges/APTV.json",
+      "count": 337,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/1521332/000152133226000051/aptv123125cmrex101.htm"
+    },
+    "AVY": {
+      "file": "edges/AVY.json",
+      "count": 405,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/8818/000000881826000112/exhibit1012025.htm"
+    },
+    "BALL": {
+      "file": "edges/BALL.json",
+      "count": 14,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/9389/000000938926000083/ball-20260501xex1.htm"
+    },
+    "BAX": {
+      "file": "edges/BAX.json",
+      "count": 323,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/10456/000162828026039002/bax2026_formsdxex101.htm"
+    },
+    "BBY": {
+      "file": "edges/BBY.json",
+      "count": 218,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-27",
+      "url": "https://www.sec.gov/Archives/edgar/data/764478/000076447826000016/bby-20251231xexx101conflic.htm"
+    },
+    "BKR": {
+      "file": "edges/BKR.json",
+      "count": 341,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-21",
+      "url": "https://www.sec.gov/Archives/edgar/data/1701605/000170160526000017/exhibit1.htm"
+    },
+    "CAT": {
+      "file": "edges/CAT.json",
+      "count": 1,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-22",
+      "url": "https://www.sec.gov/Archives/edgar/data/18230/000110465926065592/tm2614442d1_ex1-01.htm"
+    },
+    "CL": {
+      "file": "edges/CL.json",
+      "count": 317,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-06-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/21665/000002166526000028/a2025conflictmineralsreport.htm"
+    },
+    "CLX": {
+      "file": "edges/CLX.json",
+      "count": 19,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-06-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/21076/000120677426000303/clx4645541-ex101.htm"
+    },
+    "CMI": {
+      "file": "edges/CMI.json",
+      "count": 361,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-26",
+      "url": "https://www.sec.gov/Archives/edgar/data/26172/000089706926001233/cumminssdexhibit.htm"
+    },
+    "COHR": {
+      "file": "edges/COHR.json",
+      "count": 5,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/820318/000119312526248452/d156768dex101.htm"
+    },
+    "COST": {
+      "file": "edges/COST.json",
+      "count": 3,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/909832/000090983226000048/a2025formsd.htm"
+    },
+    "CSCO": {
+      "file": "edges/CSCO.json",
+      "count": 2,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-22",
+      "url": "https://www.sec.gov/Archives/edgar/data/858877/000085887726000088/cmrcy25.htm"
+    },
+    "DIS": {
+      "file": "edges/DIS.json",
+      "count": 6,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-21",
+      "url": "https://www.sec.gov/Archives/edgar/data/1744489/000174448926000041/fy2026_q3xsdxex101xconflic.htm"
+    },
+    "DOV": {
+      "file": "edges/DOV.json",
+      "count": 782,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-27",
+      "url": "https://www.sec.gov/Archives/edgar/data/29905/000002990526000018/a20260527exhibit101.htm"
+    },
+    "DOW": {
+      "file": "edges/DOW.json",
+      "count": 41,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-20",
+      "url": "https://www.sec.gov/Archives/edgar/data/1751788/000119312526232692/d100441dex101.htm"
+    },
+    "ECL": {
+      "file": "edges/ECL.json",
+      "count": 354,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/31462/000110465926068009/ecl-20260529xex1d01.htm"
+    },
+    "ETN": {
+      "file": "edges/ETN.json",
+      "count": 298,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-27",
+      "url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000016/exhibit10112312025.htm"
+    },
+    "FFIV": {
+      "file": "edges/FFIV.json",
+      "count": 338,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-06-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/1048695/000104869526000055/exhibit101-2025conflictmin.htm"
+    },
+    "FLEX": {
+      "file": "edges/FLEX.json",
+      "count": 236,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/866374/000086637426000014/formsdmay2026smelterlistex.htm"
+    },
+    "FSLR": {
+      "file": "edges/FSLR.json",
+      "count": 93,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-06-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/1274494/000127449426000151/ex101conflictmineralsrepor.htm"
+    },
+    "GEN": {
+      "file": "edges/GEN.json",
+      "count": 256,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2020-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/849399/000110465920067156/tm2019373d1_ex1-01.htm"
+    },
+    "GLW": {
+      "file": "edges/GLW.json",
+      "count": 339,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/24741/000120677426000299/glw4643301-ex101.htm"
+    },
+    "HAS": {
+      "file": "edges/HAS.json",
+      "count": 201,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/46080/000004608026000031/exhibit101-2025conflictmin.htm"
+    },
+    "HON": {
+      "file": "edges/HON.json",
+      "count": 37,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/773840/000077384026000064/a2025sdexhibit101.htm"
+    },
+    "HPE": {
+      "file": "edges/HPE.json",
+      "count": 226,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/1645590/000164559026000048/exhibit101-conflictmineral.htm"
+    },
+    "IEX": {
+      "file": "edges/IEX.json",
+      "count": 245,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/832101/000083210126000015/iex-20251231xex101.htm"
+    },
+    "INTC": {
+      "file": "edges/INTC.json",
+      "count": 209,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-19",
+      "url": "https://www.sec.gov/Archives/edgar/data/50863/000005086326000132/a05192026formsdex101.htm"
+    },
+    "INTU": {
+      "file": "edges/INTU.json",
+      "count": 103,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/896878/000089687826000027/exhibit101-calendaryear202.htm"
+    },
+    "ISRG": {
+      "file": "edges/ISRG.json",
+      "count": 328,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-21",
+      "url": "https://www.sec.gov/Archives/edgar/data/1035267/000103526726000039/a2025conflictmineralsex-101.htm"
+    },
+    "KDP": {
+      "file": "edges/KDP.json",
+      "count": 244,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1418135/000141813526000032/a2025conflictmineralsreport.htm"
+    },
+    "KLAC": {
+      "file": "edges/KLAC.json",
+      "count": 281,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-26",
+      "url": "https://www.sec.gov/Archives/edgar/data/319201/000031920126000020/ex101cy25.htm"
+    },
+    "KMB": {
+      "file": "edges/KMB.json",
+      "count": 241,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-22",
+      "url": "https://www.sec.gov/Archives/edgar/data/55785/000162828026037804/conflictmineralsreport2025.htm"
+    },
+    "LITE": {
+      "file": "edges/LITE.json",
+      "count": 6,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-06-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/1633978/000162828026039600/ex101conflictmineralsrepor.htm"
+    },
+    "LOW": {
+      "file": "edges/LOW.json",
+      "count": 55,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/60667/000006066726000071/exhibit101_05292026.htm"
+    },
+    "LYB": {
+      "file": "edges/LYB.json",
+      "count": 1,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/1489393/000148939326000044/exhibit101conflictminerals.htm"
+    },
+    "MCHP": {
+      "file": "edges/MCHP.json",
+      "count": 329,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/827054/000082705426000018/exhibit101may2026.htm"
+    },
+    "MDT": {
+      "file": "edges/MDT.json",
+      "count": 599,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/1613103/000162828026038810/exhibit101-2025conflictmin.htm"
+    },
+    "MO": {
+      "file": "edges/MO.json",
+      "count": 41,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/764180/000076418026000079/exhibit1012026.htm"
+    },
+    "MPWR": {
+      "file": "edges/MPWR.json",
+      "count": 198,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1280452/000143774926018857/ex_968762.htm"
+    },
+    "MSFT": {
+      "file": "edges/MSFT.json",
+      "count": 157,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526245474/d102558dex101.htm"
+    },
+    "MSI": {
+      "file": "edges/MSI.json",
+      "count": 362,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-18",
+      "url": "https://www.sec.gov/Archives/edgar/data/68505/000119312526229004/d46008dex101.htm"
+    },
+    "MTD": {
+      "file": "edges/MTD.json",
+      "count": 360,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1037646/000103764626000040/conflictmineralsreport2026.htm"
+    },
+    "MU": {
+      "file": "edges/MU.json",
+      "count": 184,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-20",
+      "url": "https://www.sec.gov/Archives/edgar/data/723125/000072312526000008/exhibit101conflictminerals.htm"
+    },
+    "NRG": {
+      "file": "edges/NRG.json",
+      "count": 219,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1013871/000110465926068221/tm2614517d1_ex1-01.htm"
+    },
+    "NVDA": {
+      "file": "edges/NVDA.json",
+      "count": 239,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-15",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000043/a2026conflictmineralsrepor.htm"
+    },
+    "NXPI": {
+      "file": "edges/NXPI.json",
+      "count": 208,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/1413447/000141344726000036/formsdcmrsecfiling2025repo.htm"
+    },
+    "ON": {
+      "file": "edges/ON.json",
+      "count": 193,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-18",
+      "url": "https://www.sec.gov/Archives/edgar/data/1097864/000114036126021912/ef20073660_ex1-01.htm"
+    },
+    "OTIS": {
+      "file": "edges/OTIS.json",
+      "count": 332,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-27",
+      "url": "https://www.sec.gov/Archives/edgar/data/1781335/000178133526000080/exhibit101cm2026.htm"
+    },
+    "PCAR": {
+      "file": "edges/PCAR.json",
+      "count": 361,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/75362/000119312526248231/d147637dex101.htm"
+    },
+    "PEP": {
+      "file": "edges/PEP.json",
+      "count": 26,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/77476/000007747626000028/exhibit101-conflictmineral.htm"
+    },
+    "PPG": {
+      "file": "edges/PPG.json",
+      "count": 27,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/79879/000007987926000186/exhibit101formsd2025.htm"
+    },
+    "PWR": {
+      "file": "edges/PWR.json",
+      "count": 9,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-06-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/1050915/000119312526251568/d111320dex101.htm"
+    },
+    "QCOM": {
+      "file": "edges/QCOM.json",
+      "count": 218,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-15",
+      "url": "https://www.sec.gov/Archives/edgar/data/804328/000080432826000069/ex101-conflictmineralsrepo.htm"
+    },
+    "RL": {
+      "file": "edges/RL.json",
+      "count": 217,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1037038/000095014226001550/eh260786370_ex0101.htm"
+    },
+    "ROK": {
+      "file": "edges/ROK.json",
+      "count": 691,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1024478/000119312526248467/d45956dex101.htm"
+    },
+    "RTX": {
+      "file": "edges/RTX.json",
+      "count": 1,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-06-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/101829/000010182926000015/exhibit101-2026x06x01formsd.htm"
+    },
+    "SHW": {
+      "file": "edges/SHW.json",
+      "count": 7,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-20",
+      "url": "https://www.sec.gov/Archives/edgar/data/89800/000119312526232651/d77990dex101.htm"
+    },
+    "SMCI": {
+      "file": "edges/SMCI.json",
+      "count": 251,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1375365/000137536526000016/smci-ex101toformsdconflict.htm"
+    },
+    "SNDK": {
+      "file": "edges/SNDK.json",
+      "count": 221,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-22",
+      "url": "https://www.sec.gov/Archives/edgar/data/2023554/000119312526237010/d103085dex101.htm"
+    },
+    "STX": {
+      "file": "edges/STX.json",
+      "count": 347,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-06-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/1137789/000113778926000111/stx-cy25formsdxconflictmin.htm"
+    },
+    "SWK": {
+      "file": "edges/SWK.json",
+      "count": 337,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/93556/000009355626000018/ex101conflictmineralsrepor.htm"
+    },
+    "SWKS": {
+      "file": "edges/SWKS.json",
+      "count": 194,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/4127/000000412726000034/exhibit101-cmr2025.htm"
+    },
+    "SYK": {
+      "file": "edges/SYK.json",
+      "count": 344,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-22",
+      "url": "https://www.sec.gov/Archives/edgar/data/310764/000031076426000036/a5222026ex101conflictminer.htm"
+    },
+    "TEL": {
+      "file": "edges/TEL.json",
+      "count": 472,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1385157/000110465926068087/tm2615812d1_ex1-01.htm"
+    },
+    "TMUS": {
+      "file": "edges/TMUS.json",
+      "count": 197,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-15",
+      "url": "https://www.sec.gov/Archives/edgar/data/1283699/000119312526226593/d65937dex101.htm"
+    },
+    "TRMB": {
+      "file": "edges/TRMB.json",
+      "count": 329,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-22",
+      "url": "https://www.sec.gov/Archives/edgar/data/864749/000086474926000067/ex101cmr2025.htm"
+    },
+    "TSCO": {
+      "file": "edges/TSCO.json",
+      "count": 5,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/916365/000091636526000048/a2026conflictmineralsex101.htm"
+    },
+    "TXN": {
+      "file": "edges/TXN.json",
+      "count": 219,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-06-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/97476/000119312526251453/d43734dex101.htm"
+    },
+    "VRT": {
+      "file": "edges/VRT.json",
+      "count": 329,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-06-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/1674101/000162828026039487/exhibit101-2025vertivconfl.htm"
+    },
+    "WAB": {
+      "file": "edges/WAB.json",
+      "count": 392,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-06-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/943452/000114036126023399/ef20075153_ex1-01.htm"
+    },
+    "WDC": {
+      "file": "edges/WDC.json",
+      "count": 209,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-06-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/106040/000119312526251429/d106904dex101.htm"
+    },
+    "WST": {
+      "file": "edges/WST.json",
+      "count": 211,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-13",
+      "url": "https://www.sec.gov/Archives/edgar/data/105770/000010577026000074/exhibit101conflictminerals.htm"
+    },
+    "XYL": {
+      "file": "edges/XYL.json",
+      "count": 355,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-21",
+      "url": "https://www.sec.gov/Archives/edgar/data/1524472/000152447226000095/xyl2026ex101.htm"
+    },
+    "ZBH": {
+      "file": "edges/ZBH.json",
+      "count": 232,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-27",
+      "url": "https://www.sec.gov/Archives/edgar/data/1136869/000119312526242098/zbh-ex1_01.htm"
+    },
+    "ZBRA": {
+      "file": "edges/ZBRA.json",
+      "count": 340,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-27",
+      "url": "https://www.sec.gov/Archives/edgar/data/877212/000162828026038391/a2025conflictmineralsrepor.htm"
+    }
+  },
   "stagePerformance": {
     "asOf": "2026-09-01",
     "source": "站内 apps/companies/sp500.json",
@@ -13978,16 +14574,33 @@
   "coverage": {
     "claimComplete": false,
     "nodesTotal": 495,
-    "nodesWithEdges": 0,
-    "edgesTotal": 0,
-    "edgesBySource": {},
-    "formSd": null,
+    "nodesWithEdges": 85,
+    "edgesTotal": 20245,
+    "edgesBySource": {
+      "sec-form-sd": 20245
+    },
+    "formSd": {
+      "claimComplete": false,
+      "companiesScanned": 495,
+      "companiesWithList": 85,
+      "companiesFiledNoList": 149,
+      "companiesNoFiling": 256,
+      "companiesFailed": 5,
+      "companiesPublished": 85,
+      "edgesTotal": 20245,
+      "uniqueSmelters": 1713,
+      "uniqueByIdentifier": {
+        "rmi-cid": 837,
+        "name-only": 876
+      },
+      "note": "Form SD 强制申报、不强制列名单：有申报无名单的公司如实单列，不并入「无申报」。覆盖率因此永远到不了 100%，这是披露制度本身的上限，不是抓取缺陷。"
+    },
     "stageByBasis": {
       "sic-refined": 495
     },
     "stageResolvedNodes": 495,
     "stageAmbiguousNodes": 0,
-    "note": "本图谱只收录有公开出处的关系，不是完整供应链。当前尚无关系边。"
+    "note": "本图谱只收录有公开出处的关系，不是完整供应链。当前 20245 条边全部来自 Form SD 冲突矿产申报，语义是「该冶炼厂出现在申报人的供应链中」——间接、不含份额、不含层级，不等于直接供货关系。"
   },
   "dataQuality": {
     "contractVersion": 1,
