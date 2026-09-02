@@ -4,17 +4,28 @@ name: Supply Chain Source Probe
 # 不写仓库、不提交任何数据，只把探测报告作为构建产物留存。
 #
 # 这是「先探后建」的第一步，也是常备工具：往供应链清单里加任何一条序列、或动抽取
-# 规则之前先跑一次。两个 job 互不依赖，一个失败不影响另一个：
+# 规则之前先跑一次。三个 job 互不依赖，一个失败不影响另外两个：
 #
-#   graph  —— 公司图谱主线。先跑离线抽取规则校验（不联网、快、失败即停），再实测
-#             SEC EDGAR 能不能规模化抽出带出处的供应链关系。
-#   flow   —— 物流通道层。IMF PortWatch、纽约联储 GSCPI、世界银行与 FRED 政府口径序列。
+#   graph   —— 公司图谱主线。先跑离线抽取规则校验（不联网、快、失败即停），再实测
+#              SEC EDGAR 能不能规模化抽出带出处的供应链关系。
+#   extract —— Form SD 抽取器 dry-run。把真实解析出的冶炼厂名／国别／矿种打到日志里
+#              供人逐条核对，不写任何文件。接不接入发布由人决定，不由脚本的自动结论决定。
+#   flow    —— 物流通道层。IMF PortWatch、纽约联储 GSCPI、世界银行与 FRED 政府口径序列。
 #
 # 许可是本领域的主要风险：BDI、Drewry WCI、Freightos FBX、Xeneta、ISM 供应商交付
 # 全是商业授权，与仓库已因许可放弃的 SPX／DXY／LBMA 定盘价同类。报告里 [!!] 标记的
 # 就是「技术上取得到但不许登记」的那一类，必须在落地前拦下。
 on:
   workflow_dispatch:
+    inputs:
+      tickers:
+        description: '抽取器 dry-run 的公司（逗号分隔，留空则按 limit 扫全表）'
+        required: false
+        default: 'AAPL,NVDA,AVGO,AMAT,SWKS,TSLA,INTC,MSFT,KO,GM'
+      limit:
+        description: 'dry-run 最多处理几家（tickers 留空时生效）'
+        required: false
+        default: '0'
 
 permissions:
   contents: read
@@ -76,6 +87,37 @@ jobs:
           path: /tmp/supply-chain-probe/edgar*.json
           if-no-files-found: warn
           retention-days: 7
+
+  # Form SD 抽取器上线前的人工核对关口。**dry-run，不写任何文件。**
+  # 上一轮的教训：探针的自动结论说「可进入抽取器开发」，但把抽出来的名字打出来
+  # 逐条看，6 家里有 3 家是噪声。自动判定不能代替核对，所以这一步只负责把真实
+  # 解析结果打到日志里给人看，是否接入发布由人决定。
+  extract:
+    name: Form SD 抽取器 · dry-run 人工核对
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      # 解析规则先过离线夹具。夹具挂了就没必要联网。
+      - name: Validate extraction rules (offline)
+        run: python scripts/validate_supply_chain_extraction.py
+
+      - name: Extract Form SD smelter lists (dry run)
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: |
+          python scripts/supply-chain/extract_form_sd.py \
+            --dry-run \
+            --tickers '${{ inputs.tickers }}' \
+            --limit '${{ inputs.limit }}' \
+            --sample-rows 12
 
   flow:
     name: 物流通道 · 来源可用性与许可
