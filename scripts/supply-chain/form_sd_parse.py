@@ -239,6 +239,7 @@ def parse_smelters(html: str) -> dict:
     found: dict[str, dict] = {}
     rows_with_cid = 0
     dropped_no_cid = 0
+    dropped_sample: list[list[str]] = []
     for index, row in enumerate(parser.rows):
         cid = None
         for cell in row:
@@ -252,6 +253,8 @@ def parse_smelters(html: str) -> dict:
             if any(match_country(cell)[0] for cell in row) and any(
                     _looks_like_name(cell) and len(cell) >= 8 for cell in row):
                 dropped_no_cid += 1
+                if len(dropped_sample) < 12:
+                    dropped_sample.append([c for c in row if c][:6])
             continue
         rows_with_cid += 1
 
@@ -298,13 +301,24 @@ def parse_smelters(html: str) -> dict:
         }
 
     smelters = sorted(found.values(), key=lambda s: s["cid"])
+    raw = html or ""
     return {
+        # 表格行数为 0 时靠这个区分「文档真没有表格」与「解析器没读懂这份 HTML」
+        "shape": {
+            "bytes": len(raw),
+            "tableTags": len(re.findall(r"<table[\s>]", raw, re.I)),
+            "trTags": len(re.findall(r"<tr[\s>]", raw, re.I)),
+            "cidTokens": len(CID_PATTERN.findall(raw)),
+            "textHead": re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", raw[:6000]))[:260],
+        },
         "smelters": smelters,
         "rowsScanned": len(parser.rows),
         "rowsWithCid": rows_with_cid,
         # 看着像冶炼厂行、但没有 RMI 编号因而被丢弃的行数。不为零就说明这份申报
         # 的名单我们只收了一部分，页面上必须照实说，不能显示成完整名单。
         "droppedNoCid": dropped_no_cid,
+        # 只给 dry-run 看：被丢弃的行长什么样，决定「没有编号」是不是该改规则。
+        "droppedSample": dropped_sample,
         "unique": len(smelters),
         "namedRatio": (round(sum(1 for s in smelters if s["name"]) / len(smelters), 3)
                        if smelters else 0.0),

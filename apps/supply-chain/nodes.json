@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-02T08:49:48Z",
+  "updatedAt": "2026-09-02T15:32:22Z",
   "asOf": "2026-09-01",
   "frequency": "daily",
   "status": "ok",
   "source": "站内 apps/companies/sp500.json",
   "sourceUpstream": "datahub / s-and-p-500-companies",
-  "note": "第 0 层：节点与价值链阶段初步口径。阶段由 GICS 一级板块映射得出，属板块级推断。板块横跨多个阶段时不给结论，只给 stageCandidates 候选集——「微软=中间制造」即使加歧义标记也是错误断言，「微软=待细化（可能：中间制造/品牌整合/平台服务）」才是数据实际支持的说法。本层不产出任何关系边——边必须携带可核验的原始申报文件，写盘前逐条硬校验。",
+  "note": "节点与价值链阶段口径。阶段由 GICS 一级板块映射得出，属板块级推断。板块横跨多个阶段时不给结论，只给 stageCandidates 候选集——「微软=中间制造」即使加歧义标记也是错误断言，「微软=待细化（可能：中间制造/品牌整合/平台服务）」才是数据实际支持的说法。关系边不内联在本文件里，按公司分文件放在 edges/ 下、由 edgeIndex 索引——一家公司的冶炼厂名单动辄几百条，内联会让总览页为看六个环节下载几 MB。每条边都必须携带可核验的原始申报文件，写盘前逐条硬校验。",
   "stages": [
     {
       "id": "upstream-resource",
@@ -78,7 +78,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001045810.json",
         "sic": 3674,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AAPL",
@@ -105,7 +106,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000320193.json",
         "sic": 3571,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GOOGL",
@@ -132,7 +134,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001652044.json",
         "sic": 7370,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MSFT",
@@ -159,7 +162,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000789019.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AMZN",
@@ -186,7 +190,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001018724.json",
         "sic": 5961,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AVGO",
@@ -213,7 +218,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001730168.json",
         "sic": 3674,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "META",
@@ -240,7 +246,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001326801.json",
         "sic": 7370,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TSLA",
@@ -267,7 +274,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001318605.json",
         "sic": 3711,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "LLY",
@@ -294,7 +302,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000059478.json",
         "sic": 2834,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BRK-B",
@@ -321,7 +330,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001067983.json",
         "sic": 6331,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MU",
@@ -348,7 +358,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000723125.json",
         "sic": 3674,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "JPM",
@@ -375,7 +386,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000019617.json",
         "sic": 6021,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "WMT",
@@ -402,7 +414,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000104169.json",
         "sic": 5331,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AMD",
@@ -429,7 +442,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000002488.json",
         "sic": 3674,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "V",
@@ -456,7 +470,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001403161.json",
         "sic": 7389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "XOM",
@@ -483,7 +498,8 @@
         "url": "https://data.sec.gov/submissions/CIK0002115436.json",
         "sic": 2911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "JNJ",
@@ -510,7 +526,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000200406.json",
         "sic": 2834,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MA",
@@ -537,7 +554,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001141391.json",
         "sic": 7389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ABBV",
@@ -564,7 +582,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001551152.json",
         "sic": 2834,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "INTC",
@@ -591,7 +610,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000050863.json",
         "sic": 3674,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BAC",
@@ -618,7 +638,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000070858.json",
         "sic": 6021,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CSCO",
@@ -645,7 +666,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000858877.json",
         "sic": 3576,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CVX",
@@ -672,7 +694,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000093410.json",
         "sic": 2911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "COST",
@@ -699,7 +722,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000909832.json",
         "sic": 5331,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PLTR",
@@ -726,7 +750,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001321655.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ORCL",
@@ -753,7 +778,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001341439.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "KO",
@@ -780,7 +806,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000021344.json",
         "sic": 2080,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MRK",
@@ -807,7 +834,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000310158.json",
         "sic": 2834,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "LRCX",
@@ -834,7 +862,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000707549.json",
         "sic": 3559,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "UNH",
@@ -861,7 +890,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000731766.json",
         "sic": 6324,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CAT",
@@ -888,7 +918,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000018230.json",
         "sic": 3531,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AMAT",
@@ -915,7 +946,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000006951.json",
         "sic": 3674,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GE",
@@ -942,7 +974,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000040545.json",
         "sic": 3600,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PG",
@@ -969,7 +1002,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000080424.json",
         "sic": 2840,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NFLX",
@@ -996,7 +1030,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001065280.json",
         "sic": 7841,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MS",
@@ -1023,7 +1058,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000895421.json",
         "sic": 6211,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HD",
@@ -1050,7 +1086,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000354950.json",
         "sic": 5211,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GS",
@@ -1077,7 +1114,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000886982.json",
         "sic": 6211,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PM",
@@ -1104,7 +1142,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001413329.json",
         "sic": 2111,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DELL",
@@ -1131,7 +1170,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001571996.json",
         "sic": 3571,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "RTX",
@@ -1158,7 +1198,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000101829.json",
         "sic": 3724,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "WFC",
@@ -1185,7 +1226,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000072971.json",
         "sic": 6021,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PANW",
@@ -1212,7 +1254,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001327567.json",
         "sic": 3577,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GEV",
@@ -1239,7 +1282,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001996810.json",
         "sic": 3600,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ANET",
@@ -1266,7 +1310,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001596532.json",
         "sic": 3576,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AMGN",
@@ -1293,7 +1338,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000318154.json",
         "sic": 2836,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TXN",
@@ -1320,7 +1366,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000097476.json",
         "sic": 3674,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SNDK",
@@ -1347,7 +1394,8 @@
         "url": "https://data.sec.gov/submissions/CIK0002023554.json",
         "sic": 3572,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "C",
@@ -1374,7 +1422,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000831001.json",
         "sic": 6021,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "LIN",
@@ -1401,7 +1450,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001707925.json",
         "sic": 2810,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TMO",
@@ -1428,7 +1478,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000097745.json",
         "sic": 3829,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "KLAC",
@@ -1455,7 +1506,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000319201.json",
         "sic": 3827,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AXP",
@@ -1482,7 +1534,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000004962.json",
         "sic": 6199,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "IBM",
@@ -1509,7 +1562,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000051143.json",
         "sic": 3570,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CRM",
@@ -1536,7 +1590,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001108524.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "VZ",
@@ -1563,7 +1618,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000732712.json",
         "sic": 4813,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "APH",
@@ -1590,7 +1646,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000820313.json",
         "sic": 3678,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TMUS",
@@ -1617,7 +1674,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001283699.json",
         "sic": 4812,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PEP",
@@ -1644,7 +1702,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000077476.json",
         "sic": 2080,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ABT",
@@ -1671,7 +1730,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000001800.json",
         "sic": 2834,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SCHW",
@@ -1698,7 +1758,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000316709.json",
         "sic": 6211,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GILD",
@@ -1725,7 +1786,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000882095.json",
         "sic": 2836,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MCD",
@@ -1752,7 +1814,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000063908.json",
         "sic": 5812,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DIS",
@@ -1779,7 +1842,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001744489.json",
         "sic": 7990,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MRVL",
@@ -1806,7 +1870,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001835632.json",
         "sic": 3674,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "STX",
@@ -1833,7 +1898,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001137789.json",
         "sic": 3572,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DE",
@@ -1860,7 +1926,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000315189.json",
         "sic": 3523,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "T",
@@ -1887,7 +1954,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000732717.json",
         "sic": 4813,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "QCOM",
@@ -1914,7 +1982,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000804328.json",
         "sic": 3663,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BLK",
@@ -1941,7 +2010,8 @@
         "url": "https://data.sec.gov/submissions/CIK0002012383.json",
         "sic": 6211,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NEE",
@@ -1968,7 +2038,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000753308.json",
         "sic": 4911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ADI",
@@ -1995,7 +2066,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000006281.json",
         "sic": 3674,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "UNP",
@@ -2022,7 +2094,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000100885.json",
         "sic": 4011,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "WELL",
@@ -2049,7 +2122,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000766704.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "COP",
@@ -2076,7 +2150,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001163165.json",
         "sic": 2911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BX",
@@ -2103,7 +2178,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001393818.json",
         "sic": 6282,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PFE",
@@ -2130,7 +2206,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000078003.json",
         "sic": 2834,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BA",
@@ -2157,7 +2234,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000012927.json",
         "sic": 3721,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "IBKR",
@@ -2184,7 +2262,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001381197.json",
         "sic": 6211,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "WDC",
@@ -2211,7 +2290,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000106040.json",
         "sic": 3572,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "UBER",
@@ -2238,7 +2318,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001543151.json",
         "sic": 7389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ETN",
@@ -2265,7 +2346,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001551182.json",
         "sic": 3590,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BKNG",
@@ -2292,7 +2374,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001075531.json",
         "sic": 4700,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NOW",
@@ -2319,7 +2402,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001373715.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TJX",
@@ -2346,7 +2430,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000109198.json",
         "sic": 5651,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DHR",
@@ -2373,7 +2458,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000313616.json",
         "sic": 3823,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "VRTX",
@@ -2400,7 +2486,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000875320.json",
         "sic": 2834,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BMY",
@@ -2427,7 +2514,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000014272.json",
         "sic": 2834,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HON",
@@ -2454,7 +2542,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000773840.json",
         "sic": 3724,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CB",
@@ -2481,7 +2570,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000896159.json",
         "sic": 6331,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NEM",
@@ -2508,7 +2598,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001164727.json",
         "sic": 1040,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ISRG",
@@ -2535,7 +2626,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001035267.json",
         "sic": 3842,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SPGI",
@@ -2562,7 +2654,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000064040.json",
         "sic": 7320,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PLD",
@@ -2589,7 +2682,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001045609.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "COF",
@@ -2616,7 +2710,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000927628.json",
         "sic": 6021,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PGR",
@@ -2643,7 +2738,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000080661.json",
         "sic": 6331,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "LMT",
@@ -2670,7 +2766,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000936468.json",
         "sic": 3760,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GLW",
@@ -2697,7 +2794,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000024741.json",
         "sic": 3357,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CVS",
@@ -2724,7 +2822,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000064803.json",
         "sic": 5912,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SYK",
@@ -2751,7 +2850,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000310764.json",
         "sic": 3841,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SBUX",
@@ -2778,7 +2878,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000829224.json",
         "sic": 5810,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PH",
@@ -2805,7 +2906,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000076334.json",
         "sic": 3490,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FTNT",
@@ -2832,7 +2934,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001262039.json",
         "sic": 3577,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MDT",
@@ -2859,7 +2962,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001613103.json",
         "sic": 3845,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MO",
@@ -2886,7 +2990,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000764180.json",
         "sic": 2111,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ACN",
@@ -2913,7 +3018,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001467373.json",
         "sic": 7389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ADBE",
@@ -2940,7 +3046,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000796343.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ADP",
@@ -2967,7 +3074,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000008670.json",
         "sic": 7374,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "LOW",
@@ -2994,7 +3102,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000060667.json",
         "sic": 5211,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MPC",
@@ -3021,7 +3130,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001510295.json",
         "sic": 2911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BNY",
@@ -3048,7 +3158,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001390777.json",
         "sic": 6022,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ABNB",
@@ -3075,7 +3186,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001559720.json",
         "sic": 7340,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "VLO",
@@ -3102,7 +3214,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001035002.json",
         "sic": 2911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MCK",
@@ -3129,7 +3242,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000927653.json",
         "sic": 5122,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "APP",
@@ -3156,7 +3270,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001751008.json",
         "sic": 7370,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FCX",
@@ -3183,7 +3298,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000831259.json",
         "sic": 1000,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CME",
@@ -3210,7 +3326,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001156375.json",
         "sic": 6200,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HWM",
@@ -3237,7 +3354,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000004281.json",
         "sic": 3350,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "EQIX",
@@ -3264,7 +3382,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001101239.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PSX",
@@ -3291,7 +3410,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001534701.json",
         "sic": 2911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CEG",
@@ -3318,7 +3438,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001868275.json",
         "sic": 4911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GD",
@@ -3345,7 +3466,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000040533.json",
         "sic": 3730,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SO",
@@ -3372,7 +3494,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000092122.json",
         "sic": 4911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "VRT",
@@ -3399,7 +3522,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001674101.json",
         "sic": 3679,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DASH",
@@ -3426,7 +3550,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001792789.json",
         "sic": 7389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TT",
@@ -3453,7 +3578,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001466258.json",
         "sic": 3822,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "KKR",
@@ -3480,7 +3606,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001404912.json",
         "sic": 6282,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PNC",
@@ -3507,7 +3634,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000713676.json",
         "sic": 6021,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "USB",
@@ -3534,7 +3662,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000036104.json",
         "sic": 6021,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "INTU",
@@ -3561,7 +3690,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000896878.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CMCSA",
@@ -3588,7 +3718,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001166691.json",
         "sic": 4841,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DUK",
@@ -3615,7 +3746,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001326160.json",
         "sic": 4931,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HOOD",
@@ -3642,7 +3774,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001783879.json",
         "sic": 6211,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "WMB",
@@ -3669,7 +3802,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000107263.json",
         "sic": 4922,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HCA",
@@ -3696,7 +3830,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000860730.json",
         "sic": 8062,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PWR",
@@ -3723,7 +3858,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001050915.json",
         "sic": 1731,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CSX",
@@ -3750,7 +3886,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000277948.json",
         "sic": 4011,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MRSH",
@@ -3777,7 +3914,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000062709.json",
         "sic": 6411,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ICE",
@@ -3804,7 +3942,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001571949.json",
         "sic": 6200,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MMM",
@@ -3831,7 +3970,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000066740.json",
         "sic": 3841,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "WM",
@@ -3858,7 +3998,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000823768.json",
         "sic": 4953,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MAR",
@@ -3885,7 +4026,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001048286.json",
         "sic": 7011,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ELV",
@@ -3912,7 +4054,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001156039.json",
         "sic": 6324,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "UPS",
@@ -3939,7 +4082,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001090727.json",
         "sic": 4210,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MCO",
@@ -3966,7 +4110,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001059556.json",
         "sic": 7320,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CDNS",
@@ -3993,7 +4138,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000813672.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SLB",
@@ -4020,7 +4166,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000087347.json",
         "sic": 1389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "JCI",
@@ -4047,7 +4194,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000833444.json",
         "sic": 3585,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "REGN",
@@ -4074,7 +4222,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000872589.json",
         "sic": 2834,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "EMR",
@@ -4101,7 +4250,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000032604.json",
         "sic": 3600,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AMT",
@@ -4128,7 +4278,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001053507.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MSI",
@@ -4155,7 +4306,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000068505.json",
         "sic": 3663,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SHW",
@@ -4182,7 +4334,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000089800.json",
         "sic": 5200,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CTAS",
@@ -4209,7 +4362,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000723254.json",
         "sic": 2320,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DDOG",
@@ -4236,7 +4390,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001561550.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SNPS",
@@ -4263,7 +4418,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000883241.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CVNA",
@@ -4290,7 +4446,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001690820.json",
         "sic": 5500,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MDLZ",
@@ -4317,7 +4474,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001103982.json",
         "sic": 2000,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "EOG",
@@ -4344,7 +4502,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000821189.json",
         "sic": 1311,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ECL",
@@ -4371,7 +4530,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000031462.json",
         "sic": 2840,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ITW",
@@ -4398,7 +4558,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000049826.json",
         "sic": 3560,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FDX",
@@ -4425,7 +4586,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001048911.json",
         "sic": 4513,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TRV",
@@ -4452,7 +4614,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000086312.json",
         "sic": 6331,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GM",
@@ -4479,7 +4642,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001467858.json",
         "sic": 3711,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CMI",
@@ -4506,7 +4670,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000026172.json",
         "sic": 3510,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "APO",
@@ -4533,7 +4698,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001858681.json",
         "sic": 6282,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NOC",
@@ -4560,7 +4726,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001133421.json",
         "sic": 3812,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CI",
@@ -4587,7 +4754,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001739940.json",
         "sic": 6324,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NSC",
@@ -4614,7 +4782,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000702165.json",
         "sic": 4011,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TGT",
@@ -4641,7 +4810,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000027419.json",
         "sic": 5331,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ROST",
@@ -4668,7 +4838,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000745732.json",
         "sic": 5651,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ORLY",
@@ -4695,7 +4866,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000898173.json",
         "sic": 5531,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CL",
@@ -4722,7 +4894,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000021665.json",
         "sic": 2844,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BSX",
@@ -4749,7 +4922,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000885725.json",
         "sic": 3841,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "KMI",
@@ -4776,7 +4950,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001506307.json",
         "sic": 4922,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "RCL",
@@ -4803,7 +4978,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000884887.json",
         "sic": 4400,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "WBD",
@@ -4830,7 +5006,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001437107.json",
         "sic": 4841,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HLT",
@@ -4857,7 +5034,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001585689.json",
         "sic": 7011,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AON",
@@ -4884,7 +5062,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000315293.json",
         "sic": 6411,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "RSG",
@@ -4911,7 +5090,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001060391.json",
         "sic": 4953,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SPG",
@@ -4938,7 +5118,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001063761.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "APD",
@@ -4965,7 +5146,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000002969.json",
         "sic": 2810,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BDX",
@@ -4992,7 +5174,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000010795.json",
         "sic": 3841,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "LITE",
@@ -5019,7 +5202,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001633978.json",
         "sic": 3669,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HPE",
@@ -5046,7 +5230,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001645590.json",
         "sic": 3570,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AJG",
@@ -5073,7 +5258,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000354190.json",
         "sic": 6411,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AEP",
@@ -5100,7 +5286,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000004904.json",
         "sic": 4911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ALL",
@@ -5127,7 +5314,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000899051.json",
         "sic": 6331,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TDG",
@@ -5154,7 +5342,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001260221.json",
         "sic": 3728,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DLR",
@@ -5181,7 +5370,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001297996.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "COR",
@@ -5208,7 +5398,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001140859.json",
         "sic": 5122,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PCAR",
@@ -5235,7 +5426,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000075362.json",
         "sic": 3711,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TRGP",
@@ -5262,7 +5454,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001389170.json",
         "sic": 4922,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BKR",
@@ -5289,7 +5482,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001701605.json",
         "sic": 3533,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "URI",
@@ -5316,7 +5510,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001067701.json",
         "sic": 7359,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GWW",
@@ -5343,7 +5538,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000277135.json",
         "sic": 5000,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TFC",
@@ -5370,7 +5566,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000092230.json",
         "sic": 6021,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MRNA",
@@ -5397,7 +5594,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001682852.json",
         "sic": 2836,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CRH",
@@ -5424,7 +5622,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000849395.json",
         "sic": 3241,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MET",
@@ -5451,7 +5650,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001099219.json",
         "sic": 6311,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TEL",
@@ -5478,7 +5678,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001385157.json",
         "sic": 5065,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "OXY",
@@ -5505,7 +5706,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000797468.json",
         "sic": 1311,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "OKE",
@@ -5532,7 +5734,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001039684.json",
         "sic": 4923,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MPWR",
@@ -5559,7 +5762,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001280452.json",
         "sic": 3674,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AFL",
@@ -5586,7 +5790,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000004977.json",
         "sic": 6321,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CTVA",
@@ -5613,7 +5818,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001755672.json",
         "sic": 100,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "D",
@@ -5640,7 +5846,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000715957.json",
         "sic": 4911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NUE",
@@ -5667,7 +5874,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000073309.json",
         "sic": 3312,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FANG",
@@ -5694,7 +5902,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001539838.json",
         "sic": 1311,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "O",
@@ -5721,7 +5930,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000726728.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NKE",
@@ -5748,7 +5958,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000320187.json",
         "sic": 3021,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NXPI",
@@ -5775,7 +5986,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001413447.json",
         "sic": 3674,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CAH",
@@ -5802,7 +6014,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000721371.json",
         "sic": 5122,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FAST",
@@ -5829,7 +6042,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000815556.json",
         "sic": 5200,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NDAQ",
@@ -5856,7 +6070,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001120193.json",
         "sic": 6200,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SRE",
@@ -5883,7 +6098,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001032208.json",
         "sic": 4932,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FIX",
@@ -5910,7 +6126,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001035983.json",
         "sic": 1731,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CRWD",
@@ -5937,7 +6154,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001535527.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "KEYS",
@@ -5964,7 +6182,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001601046.json",
         "sic": 3823,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "F",
@@ -5991,7 +6210,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000037996.json",
         "sic": 3711,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PSA",
@@ -6018,7 +6238,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001393311.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GRMN",
@@ -6045,7 +6266,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001121788.json",
         "sic": 3812,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AME",
@@ -6072,7 +6294,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001037868.json",
         "sic": 3823,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TER",
@@ -6099,7 +6322,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000097210.json",
         "sic": 3825,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ADSK",
@@ -6126,7 +6350,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000769397.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "EW",
@@ -6153,7 +6378,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001099800.json",
         "sic": 3842,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "WDAY",
@@ -6180,7 +6406,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001327811.json",
         "sic": 7374,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "STT",
@@ -6207,7 +6434,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000093751.json",
         "sic": 6022,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CIEN",
@@ -6234,7 +6462,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000936395.json",
         "sic": 3661,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DAL",
@@ -6261,7 +6490,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000027904.json",
         "sic": 4512,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "LHX",
@@ -6288,7 +6518,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000202058.json",
         "sic": 3812,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ETR",
@@ -6315,7 +6546,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000065984.json",
         "sic": 4911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AMP",
@@ -6342,7 +6574,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000820027.json",
         "sic": 6282,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AZO",
@@ -6369,7 +6602,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000866787.json",
         "sic": 5531,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CMG",
@@ -6396,7 +6630,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001058090.json",
         "sic": 5812,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FITB",
@@ -6423,7 +6658,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000035527.json",
         "sic": 6022,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CARR",
@@ -6450,7 +6686,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001783180.json",
         "sic": 3585,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "WAB",
@@ -6477,7 +6714,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000943452.json",
         "sic": 3743,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HUM",
@@ -6504,7 +6742,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000049071.json",
         "sic": 6324,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "XEL",
@@ -6531,7 +6770,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000072903.json",
         "sic": 4931,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "COIN",
@@ -6558,7 +6798,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001679788.json",
         "sic": 6199,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "VST",
@@ -6585,7 +6826,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001692819.json",
         "sic": 4911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "EBAY",
@@ -6612,7 +6854,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001065088.json",
         "sic": 7389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ROK",
@@ -6639,7 +6882,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001024478.json",
         "sic": 3829,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "XYZ",
@@ -6666,7 +6910,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001512673.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PYPL",
@@ -6693,7 +6938,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001633917.json",
         "sic": 7389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ARES",
@@ -6720,7 +6966,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001176948.json",
         "sic": 6282,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "VEEV",
@@ -6747,7 +6994,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001393052.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PAYX",
@@ -6774,7 +7022,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000723531.json",
         "sic": 8700,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "VTR",
@@ -6801,7 +7050,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000740260.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "EXC",
@@ -6828,7 +7078,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001109357.json",
         "sic": 4931,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MNST",
@@ -6855,7 +7106,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000865752.json",
         "sic": 2086,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "KDP",
@@ -6882,7 +7134,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001418135.json",
         "sic": 2080,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "COHR",
@@ -6909,7 +7162,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000820318.json",
         "sic": 3827,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "IQV",
@@ -6936,7 +7190,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001478242.json",
         "sic": 8731,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "IDXX",
@@ -6963,7 +7218,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000874716.json",
         "sic": 2835,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CBRE",
@@ -6990,7 +7246,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001138118.json",
         "sic": 6500,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "A",
@@ -7017,7 +7274,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001090872.json",
         "sic": 3826,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ROP",
@@ -7044,7 +7302,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000882835.json",
         "sic": 3823,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "YUM",
@@ -7071,7 +7330,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001041061.json",
         "sic": 5812,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AXON",
@@ -7098,7 +7358,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001069183.json",
         "sic": 3480,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "LYV",
@@ -7125,7 +7386,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001335258.json",
         "sic": 7900,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MSCI",
@@ -7152,7 +7414,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001408198.json",
         "sic": 7389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PRU",
@@ -7179,7 +7442,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001137774.json",
         "sic": 6311,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ADM",
@@ -7206,7 +7470,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000007084.json",
         "sic": 2070,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TTWO",
@@ -7233,7 +7498,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000946581.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AIG",
@@ -7260,7 +7526,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000005272.json",
         "sic": 6331,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DHI",
@@ -7287,7 +7554,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000882184.json",
         "sic": 1531,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ED",
@@ -7314,7 +7582,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001047862.json",
         "sic": 4931,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SYY",
@@ -7341,7 +7610,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000096021.json",
         "sic": 5140,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FLEX",
@@ -7368,7 +7638,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000866374.json",
         "sic": 3672,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ODFL",
@@ -7395,7 +7666,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000878927.json",
         "sic": 4213,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MCHP",
@@ -7422,7 +7694,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000827054.json",
         "sic": 3674,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HIG",
@@ -7449,7 +7722,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000874766.json",
         "sic": 6331,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PEG",
@@ -7476,7 +7750,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000788784.json",
         "sic": 4931,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "EL",
@@ -7503,7 +7778,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001001250.json",
         "sic": 2844,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "KVUE",
@@ -7530,7 +7806,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001944048.json",
         "sic": 2844,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NTAP",
@@ -7557,7 +7834,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001002047.json",
         "sic": 3572,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HSY",
@@ -7584,7 +7862,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000047111.json",
         "sic": 2060,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "KR",
@@ -7611,7 +7890,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000056873.json",
         "sic": 5411,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "KMB",
@@ -7638,7 +7918,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000055785.json",
         "sic": 2670,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "EQT",
@@ -7665,7 +7946,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000033213.json",
         "sic": 1311,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DXCM",
@@ -7692,7 +7974,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001093557.json",
         "sic": 3841,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "EXPE",
@@ -7719,7 +8002,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001324424.json",
         "sic": 4700,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "WEC",
@@ -7746,7 +8030,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000783325.json",
         "sic": 4931,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ACGL",
@@ -7773,7 +8058,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000947484.json",
         "sic": 6331,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "UAL",
@@ -7800,7 +8086,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000100517.json",
         "sic": 4512,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "IRM",
@@ -7827,7 +8114,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001020569.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MTB",
@@ -7854,7 +8142,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000036270.json",
         "sic": 6022,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "STLD",
@@ -7881,7 +8170,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001022671.json",
         "sic": 3312,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "RJF",
@@ -7908,7 +8198,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000720005.json",
         "sic": 6211,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NTRS",
@@ -7935,7 +8226,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000073124.json",
         "sic": 6022,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "VMC",
@@ -7962,7 +8254,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001396009.json",
         "sic": 1400,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "RMD",
@@ -7989,7 +8282,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000943819.json",
         "sic": 3841,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HBAN",
@@ -8016,7 +8310,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000049196.json",
         "sic": 6021,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CCI",
@@ -8043,7 +8338,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001051470.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "EME",
@@ -8070,7 +8366,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000105634.json",
         "sic": 1731,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ZTS",
@@ -8097,7 +8394,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001555280.json",
         "sic": 2834,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CBOE",
@@ -8124,7 +8422,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001374310.json",
         "sic": 6200,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CNC",
@@ -8151,7 +8450,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001071739.json",
         "sic": 6324,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GEHC",
@@ -8178,7 +8478,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001932393.json",
         "sic": 3844,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BIIB",
@@ -8205,7 +8506,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000875045.json",
         "sic": 2836,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CCL",
@@ -8232,7 +8534,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000815097.json",
         "sic": 4400,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "JBL",
@@ -8259,7 +8562,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000898293.json",
         "sic": 3672,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "WTW",
@@ -8286,7 +8590,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001140536.json",
         "sic": 6411,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PCG",
@@ -8313,7 +8618,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001004980.json",
         "sic": 4931,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "KHC",
@@ -8340,7 +8646,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001637459.json",
         "sic": 2030,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HAL",
@@ -8367,7 +8674,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000045012.json",
         "sic": 1389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DVN",
@@ -8394,7 +8702,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001090012.json",
         "sic": 1311,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MLM",
@@ -8421,7 +8730,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000916076.json",
         "sic": 1400,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CPRT",
@@ -8448,7 +8758,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000900075.json",
         "sic": 5500,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CTSH",
@@ -8475,7 +8786,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001058290.json",
         "sic": 7371,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "EXR",
@@ -8502,7 +8814,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001289490.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AEE",
@@ -8529,7 +8842,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001002910.json",
         "sic": 4931,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "IR",
@@ -8556,7 +8870,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001699150.json",
         "sic": 3560,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "LVS",
@@ -8583,7 +8898,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001300514.json",
         "sic": 7011,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FOXA",
@@ -8610,7 +8926,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001754301.json",
         "sic": 4833,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DG",
@@ -8637,7 +8954,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000029534.json",
         "sic": 5331,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CFG",
@@ -8664,7 +8982,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000759944.json",
         "sic": 6022,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HPQ",
@@ -8691,7 +9010,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000047217.json",
         "sic": 3570,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ON",
@@ -8718,7 +9038,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001097864.json",
         "sic": 3674,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CASY",
@@ -8745,7 +9066,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000726958.json",
         "sic": 5500,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TDY",
@@ -8772,7 +9094,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001094285.json",
         "sic": 3812,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DTE",
@@ -8799,7 +9122,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000936340.json",
         "sic": 4911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ATO",
@@ -8826,7 +9150,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000731802.json",
         "sic": 4924,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MTD",
@@ -8853,7 +9178,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001037646.json",
         "sic": 3826,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FISV",
@@ -8880,7 +9206,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000798354.json",
         "sic": 7389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "VICI",
@@ -8907,7 +9234,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001705696.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "OTIS",
@@ -8934,7 +9262,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001781335.json",
         "sic": 3600,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "LH",
@@ -8961,7 +9290,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000920148.json",
         "sic": 8071,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AWK",
@@ -8988,7 +9318,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001410636.json",
         "sic": 4941,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FE",
@@ -9015,7 +9346,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001031296.json",
         "sic": 4911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CPAY",
@@ -9042,7 +9374,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001175454.json",
         "sic": 7389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ES",
@@ -9069,7 +9402,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000072741.json",
         "sic": 4911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "WAT",
@@ -9096,7 +9430,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001000697.json",
         "sic": 3826,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CINF",
@@ -9123,7 +9458,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000020286.json",
         "sic": 6331,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "WSM",
@@ -9150,7 +9486,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000719955.json",
         "sic": 5700,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "VRSN",
@@ -9177,7 +9514,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001014473.json",
         "sic": 7371,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DGX",
@@ -9204,7 +9542,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001022079.json",
         "sic": 8071,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PPL",
@@ -9231,7 +9570,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000922224.json",
         "sic": 4911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SYF",
@@ -9258,7 +9598,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001601712.json",
         "sic": 6199,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CNP",
@@ -9285,7 +9626,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001130310.json",
         "sic": 4911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FICO",
@@ -9312,7 +9654,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000814547.json",
         "sic": 7389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DOV",
@@ -9339,7 +9682,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000029905.json",
         "sic": 3530,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TPL",
@@ -9366,7 +9710,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001811074.json",
         "sic": 6792,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "VRSK",
@@ -9393,7 +9738,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001442145.json",
         "sic": 7374,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "XYL",
@@ -9420,7 +9766,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001524472.json",
         "sic": 3561,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DLTR",
@@ -9447,7 +9794,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000935703.json",
         "sic": 5331,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "WRB",
@@ -9474,7 +9822,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000011544.json",
         "sic": 6331,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "INCY",
@@ -9501,7 +9850,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000879169.json",
         "sic": 8731,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "RF",
@@ -9528,7 +9878,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001281761.json",
         "sic": 6021,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TPR",
@@ -9555,7 +9906,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001116132.json",
         "sic": 3100,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DRI",
@@ -9582,7 +9934,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000940944.json",
         "sic": 5812,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "EXPD",
@@ -9609,7 +9962,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000746515.json",
         "sic": 4731,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "OMC",
@@ -9636,7 +9990,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000029989.json",
         "sic": 7311,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PPG",
@@ -9663,7 +10018,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000079879.json",
         "sic": 2851,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BRO",
@@ -9690,7 +10046,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000079282.json",
         "sic": 6411,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "Q",
@@ -9717,7 +10074,8 @@
         "url": "https://data.sec.gov/submissions/CIK0002058873.json",
         "sic": 3674,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "JBHT",
@@ -9744,7 +10102,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000728535.json",
         "sic": 4213,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "EXE",
@@ -9771,7 +10130,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000895126.json",
         "sic": 1311,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "WST",
@@ -9798,7 +10158,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000105770.json",
         "sic": 3841,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SW",
@@ -9825,7 +10186,8 @@
         "url": "https://data.sec.gov/submissions/CIK0002005951.json",
         "sic": 2650,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "VLTO",
@@ -9852,7 +10214,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001967680.json",
         "sic": 3825,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SMCI",
@@ -9879,7 +10242,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001375365.json",
         "sic": 3571,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CHD",
@@ -9906,7 +10270,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000313927.json",
         "sic": 2840,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PFG",
@@ -9933,7 +10298,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001126328.json",
         "sic": 6321,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BG",
@@ -9960,7 +10326,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001996862.json",
         "sic": 2070,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ULTA",
@@ -9987,7 +10354,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001403568.json",
         "sic": 5990,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PHM",
@@ -10014,7 +10382,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000822416.json",
         "sic": 1531,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HUBB",
@@ -10041,7 +10410,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000048898.json",
         "sic": 3670,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TROW",
@@ -10068,7 +10438,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001113169.json",
         "sic": 6282,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NRG",
@@ -10095,7 +10466,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001013871.json",
         "sic": 4911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "KEY",
@@ -10122,7 +10494,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000091576.json",
         "sic": 6021,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "EIX",
@@ -10149,7 +10522,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000827052.json",
         "sic": 4911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "EFX",
@@ -10176,7 +10550,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000033185.json",
         "sic": 7320,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "STE",
@@ -10203,7 +10578,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001757898.json",
         "sic": 3842,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "STZ",
@@ -10230,7 +10606,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000016918.json",
         "sic": 2080,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "L",
@@ -10257,7 +10634,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000060086.json",
         "sic": 6331,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FFIV",
@@ -10284,7 +10662,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001048695.json",
         "sic": 3576,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DOW",
@@ -10311,7 +10690,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001751788.json",
         "sic": 2821,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "IFF",
@@ -10338,7 +10718,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000051253.json",
         "sic": 2860,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GIS",
@@ -10365,7 +10746,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000040704.json",
         "sic": 2040,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FSLR",
@@ -10392,7 +10774,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001274494.json",
         "sic": 3674,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GPN",
@@ -10419,7 +10802,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001123360.json",
         "sic": 7389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AMCR",
@@ -10446,7 +10830,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001748790.json",
         "sic": 3990,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FIS",
@@ -10473,7 +10858,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001136893.json",
         "sic": 7389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "LYB",
@@ -10500,7 +10886,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001489393.json",
         "sic": 2860,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CMS",
@@ -10527,7 +10914,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000811156.json",
         "sic": 4931,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BR",
@@ -10554,7 +10942,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001383312.json",
         "sic": 7389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CF",
@@ -10581,7 +10970,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001324404.json",
         "sic": 2870,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "RL",
@@ -10608,7 +10998,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001037038.json",
         "sic": 2320,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CHTR",
@@ -10635,7 +11026,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001091667.json",
         "sic": 4841,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "LEN",
@@ -10662,7 +11054,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000920760.json",
         "sic": 1520,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PKG",
@@ -10689,7 +11082,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000075677.json",
         "sic": 2650,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SBAC",
@@ -10716,7 +11110,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001034054.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SNA",
@@ -10743,7 +11138,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000091440.json",
         "sic": 3420,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TSN",
@@ -10770,7 +11166,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000100493.json",
         "sic": 2015,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NI",
@@ -10797,7 +11194,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001111711.json",
         "sic": 4931,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "VTRS",
@@ -10824,7 +11222,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001792044.json",
         "sic": 2834,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "IP",
@@ -10851,7 +11250,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000051434.json",
         "sic": 2621,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CDW",
@@ -10878,7 +11278,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001402057.json",
         "sic": 5961,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ZBH",
@@ -10905,7 +11306,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001136869.json",
         "sic": 3842,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "EVRG",
@@ -10932,7 +11334,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001711269.json",
         "sic": 4931,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GPC",
@@ -10959,7 +11362,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000040987.json",
         "sic": 5013,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "LUV",
@@ -10986,7 +11390,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000092380.json",
         "sic": 4512,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TSCO",
@@ -11013,7 +11418,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000916365.json",
         "sic": 5200,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GEN",
@@ -11040,7 +11446,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000849399.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ESS",
@@ -11067,7 +11474,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000920522.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DD",
@@ -11094,7 +11502,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001666700.json",
         "sic": 2821,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PTC",
@@ -11121,7 +11530,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000857005.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NDSN",
@@ -11148,7 +11558,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000072331.json",
         "sic": 3569,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "LDOS",
@@ -11175,7 +11586,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001336920.json",
         "sic": 7373,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "LNT",
@@ -11202,7 +11614,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000352541.json",
         "sic": 4931,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ROL",
@@ -11229,7 +11642,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000084839.json",
         "sic": 7340,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CHRW",
@@ -11256,7 +11670,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001043277.json",
         "sic": 4731,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BBY",
@@ -11283,7 +11698,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000764478.json",
         "sic": 5731,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "INVH",
@@ -11310,7 +11726,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001687229.json",
         "sic": 6510,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FTV",
@@ -11337,7 +11754,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001659166.json",
         "sic": 3823,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "J",
@@ -11364,7 +11782,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000052988.json",
         "sic": 1600,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NWSA",
@@ -11391,7 +11810,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001564708.json",
         "sic": 2711,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BEN",
@@ -11418,7 +11838,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000038777.json",
         "sic": 6282,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NVR",
@@ -11445,7 +11866,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000906163.json",
         "sic": 1531,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "WY",
@@ -11472,7 +11894,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000106535.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BALL",
@@ -11499,7 +11922,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000009389.json",
         "sic": 3411,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "IEX",
@@ -11526,7 +11950,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000832101.json",
         "sic": 3561,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ZBRA",
@@ -11553,7 +11978,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000877212.json",
         "sic": 3560,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "KIM",
@@ -11580,7 +12006,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000879101.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FDXF",
@@ -11607,7 +12034,8 @@
         "url": "https://data.sec.gov/submissions/CIK0002082247.json",
         "sic": 4513,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ALB",
@@ -11634,7 +12062,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000915913.json",
         "sic": 2821,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TYL",
@@ -11661,7 +12090,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000860731.json",
         "sic": 7372,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SOLV",
@@ -11688,7 +12118,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001964738.json",
         "sic": 3841,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "APA",
@@ -11715,7 +12146,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001841666.json",
         "sic": 1311,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AKAM",
@@ -11742,7 +12174,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001086222.json",
         "sic": 7389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MAA",
@@ -11769,7 +12202,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000912595.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "EG",
@@ -11796,7 +12230,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001095073.json",
         "sic": 6331,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HST",
@@ -11823,7 +12258,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001070750.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SWK",
@@ -11850,7 +12286,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000093556.json",
         "sic": 3420,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MKC",
@@ -11877,7 +12314,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000063754.json",
         "sic": 2090,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DOC",
@@ -11904,7 +12342,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000765880.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "IVZ",
@@ -11931,7 +12370,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000914208.json",
         "sic": 6282,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MAS",
@@ -11958,7 +12398,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000062996.json",
         "sic": 3430,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "RVTY",
@@ -11985,7 +12426,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000031791.json",
         "sic": 3826,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SJM",
@@ -12012,7 +12454,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000091419.json",
         "sic": 2033,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "REG",
@@ -12039,7 +12482,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000910606.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AIZ",
@@ -12066,7 +12510,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001267238.json",
         "sic": 6399,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TXT",
@@ -12093,7 +12538,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000217346.json",
         "sic": 3720,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TKO",
@@ -12120,7 +12566,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001973266.json",
         "sic": 7900,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TRMB",
@@ -12147,7 +12594,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000864749.json",
         "sic": 3829,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CRL",
@@ -12174,7 +12622,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001100682.json",
         "sic": 8731,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "COO",
@@ -12201,7 +12650,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000711404.json",
         "sic": 3851,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "LULU",
@@ -12228,7 +12678,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001397187.json",
         "sic": 2300,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GL",
@@ -12255,7 +12706,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000320335.json",
         "sic": 6311,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GDDY",
@@ -12282,7 +12734,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001609711.json",
         "sic": 7373,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AVY",
@@ -12309,7 +12762,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000008818.json",
         "sic": 2670,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HAS",
@@ -12336,7 +12790,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000046080.json",
         "sic": 3944,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BAX",
@@ -12363,7 +12818,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000010456.json",
         "sic": 3841,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "LII",
@@ -12390,7 +12846,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001069202.json",
         "sic": 3585,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CSGP",
@@ -12417,7 +12874,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001057352.json",
         "sic": 7389,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ALLE",
@@ -12444,7 +12902,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001579241.json",
         "sic": 7381,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "IT",
@@ -12471,7 +12930,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000749251.json",
         "sic": 8741,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BF-B",
@@ -12498,7 +12958,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000014693.json",
         "sic": 2080,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HRL",
@@ -12525,7 +12986,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000048465.json",
         "sic": 2011,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "UDR",
@@ -12552,7 +13014,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000074208.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "JKHY",
@@ -12579,7 +13042,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000779152.json",
         "sic": 7373,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ERIE",
@@ -12606,7 +13070,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000922621.json",
         "sic": 6411,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PNW",
@@ -12633,7 +13098,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000764622.json",
         "sic": 4911,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DECK",
@@ -12660,7 +13126,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000910521.json",
         "sic": 3021,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HII",
@@ -12687,7 +13154,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001501585.json",
         "sic": 3730,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PSKY",
@@ -12714,7 +13182,8 @@
         "url": "https://data.sec.gov/submissions/CIK0002041610.json",
         "sic": 4833,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CLX",
@@ -12741,7 +13210,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000021076.json",
         "sic": 2842,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TECH",
@@ -12768,7 +13238,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000842023.json",
         "sic": 2836,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DPZ",
@@ -12795,7 +13266,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001286681.json",
         "sic": 5140,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "DVA",
@@ -12822,7 +13294,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000927066.json",
         "sic": 8090,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FDS",
@@ -12849,7 +13322,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001013237.json",
         "sic": 7370,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ALGN",
@@ -12876,7 +13350,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001097149.json",
         "sic": 3842,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "CPT",
@@ -12903,7 +13378,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000906345.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "GNRC",
@@ -12930,7 +13406,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001474735.json",
         "sic": 3621,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "UHS",
@@ -12957,7 +13434,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000352915.json",
         "sic": 8062,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BXP",
@@ -12984,7 +13462,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001037540.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AES",
@@ -13011,7 +13490,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000874761.json",
         "sic": 4991,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MGM",
@@ -13038,7 +13518,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000789570.json",
         "sic": 7011,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PODD",
@@ -13065,7 +13546,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001145197.json",
         "sic": 3841,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "FRT",
@@ -13092,7 +13574,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000034903.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "HSIC",
@@ -13119,7 +13602,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001000228.json",
         "sic": 5047,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "SWKS",
@@ -13146,7 +13630,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000004127.json",
         "sic": 3674,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "PNR",
@@ -13173,7 +13658,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000077360.json",
         "sic": 3550,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "APTV",
@@ -13200,7 +13686,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001521332.json",
         "sic": 3714,
         "match": "sic-exact"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "WYNN",
@@ -13227,7 +13714,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001174922.json",
         "sic": 7011,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "ARE",
@@ -13254,7 +13742,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001035443.json",
         "sic": 6798,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "AOS",
@@ -13281,7 +13770,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000091142.json",
         "sic": 3630,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "MOS",
@@ -13308,7 +13798,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001285785.json",
         "sic": 2870,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TAP",
@@ -13335,7 +13826,8 @@
         "url": "https://data.sec.gov/submissions/CIK0000024545.json",
         "sic": 2082,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "NCLH",
@@ -13362,7 +13854,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001513761.json",
         "sic": 4400,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "BLDR",
@@ -13389,7 +13882,8 @@
         "url": "https://data.sec.gov/submissions/CIK0001316835.json",
         "sic": 5211,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     },
     {
       "id": "TTD",
@@ -13416,10 +13910,11 @@
         "url": "https://data.sec.gov/submissions/CIK0001671933.json",
         "sic": 7370,
         "match": "sic-range"
-      }
+      },
+      "edgeCount": 0
     }
   ],
-  "edges": [],
+  "edgeIndex": {},
   "stagePerformance": {
     "asOf": "2026-09-01",
     "source": "站内 apps/companies/sp500.json",
@@ -13486,6 +13981,7 @@
     "nodesWithEdges": 0,
     "edgesTotal": 0,
     "edgesBySource": {},
+    "formSd": null,
     "stageByBasis": {
       "sic-refined": 495
     },

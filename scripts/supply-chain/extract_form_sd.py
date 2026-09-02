@@ -168,9 +168,16 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
         result["document"] = doc["name"]
         result["url"] = url
         if verbose:
+            shape = result["shape"]
             print(f"       [--] {doc['name']:<40} {doc['size'] // 1024:>5}KB  "
                   f"行 {result['rowsScanned']:>4}  抽出 {result['unique']:>4}  "
-                  f"丢弃 {result['droppedNoCid']:>3}")
+                  f"丢弃 {result['droppedNoCid']:>3}  "
+                  f"（<table>{shape['tableTags']} <tr>{shape['trTags']} "
+                  f"CID {shape['cidTokens']}）")
+            if result["unique"] == 0 and shape["trTags"] == 0:
+                print(f"            正文开头：{shape['textHead'][:150]}")
+            for row in result["droppedSample"][:6]:
+                print(f"            丢弃样例：{' | '.join(c[:34] for c in row)}")
         time.sleep(GAP)
         if best is None or result["unique"] > best["unique"]:
             best = result

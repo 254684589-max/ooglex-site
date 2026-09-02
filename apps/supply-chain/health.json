@@ -1,11 +1,11 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "generatedAt": "2026-09-02T08:49:48Z",
+  "generatedAt": "2026-09-02T15:32:22Z",
   "status": "healthy",
   "historyStatus": "migrated",
-  "lastAttemptAt": "2026-09-02T08:49:48Z",
-  "lastSuccessfulAt": "2026-09-02T08:49:48Z",
+  "lastAttemptAt": "2026-09-02T15:32:22Z",
+  "lastSuccessfulAt": "2026-09-02T15:32:22Z",
   "consecutiveFailures": 0,
   "failureReason": null,
   "coverage": {
@@ -13,7 +13,8 @@
     "publishedNodes": 495,
     "stageResolvedPct": 100.0,
     "stageAmbiguousPct": 0.0,
-    "edges": 0
+    "edges": 0,
+    "companiesWithEdges": 0
   },
   "sources": [
     {
@@ -30,5 +31,5 @@
       }
     }
   ],
-  "note": "第 0 层只依赖站内上游文件，不发起任何外部请求。stageAmbiguousPct 随 SIC 行业码细化与真实边反推逐步下降。"
+  "note": "构建脚本本身不发起外部请求，只读站内上游文件与抽取器产出的边文件。stageAmbiguousPct 随 SIC 行业码细化与真实边反推逐步下降。"
 }
