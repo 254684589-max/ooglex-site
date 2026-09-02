@@ -69,15 +69,28 @@
   .viewhint { font-size:.75rem; color:var(--faint); }
 
   .cols { display:grid; grid-template-columns:1fr 318px; gap:14px; align-items:start; }
+  /* 网格子项默认 min-width:auto，会被内容的最小宽度撑开。主栏里放了
+     auto-fill 的冶炼厂清单之后，360px 下整列被撑到 441px、页面横向溢出 93px。
+     显式 min-width:0 让它可以收缩。 */
+  .cols > * { min-width:0; }
   .stagefig { padding:14px; min-height:470px; }
   /* 说明放在层级卡下方的正常流里。曾经用绝对定位钉在右下角，
      结果压在第三张卡片上——截图才看得出来。 */
   .fignote { margin-top:10px; text-align:right; }
+  /* 图注里的 chip 装的是一整句话，不是短标签。.chip 的 nowrap 会让它在
+     360px 下拉成 411px 宽、把页面撑出 78px 横向滚动。这里允许换行。 */
+  .fignote .chip { white-space:normal; display:inline-block; text-align:left;
+    line-height:1.55; max-width:100%; }
 
   /* 冶炼厂清单：多列排布，几百条也能一屏看个大概 */
   .smelters { padding:14px 16px; margin-top:14px; }
-  .smelters .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+  /* min(230px,100%)：窄屏下单列可以窄于 230px，不会因为轨道下限而撑破容器。
+     只加 .cols>*{min-width:0} 不够——那只解决外层收缩，轨道本身仍不肯变窄。 */
+  .smelters .grid { display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(min(230px,100%),1fr));
     gap:2px 18px; }
+  .smelters .grid > * { min-width:0; }
+  .sm .nm { overflow-wrap:anywhere; }
   .sm { padding:6px 0; border-bottom:1px solid var(--line); }
   .sm .nm { font-size:.78rem; line-height:1.45; color:var(--text);
     text-decoration:none; display:inline; }
