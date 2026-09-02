@@ -66,7 +66,7 @@
   function idCounts() {
     var cid = 0, nameOnly = 0;
     edgeRows().forEach(function (e) {
-      if (e.identifierType === "rmi-cid") cid++; else nameOnly++;
+      if (e.idType === "rmi-cid") cid++; else nameOnly++;
     });
     return { cid: cid, nameOnly: nameOnly };
   }
@@ -205,7 +205,7 @@
       add("circle", {
         cx: (320 + 150 * Math.cos(angle)).toFixed(1),
         cy: (176 + 150 * Math.sin(angle)).toFixed(1),
-        r: 2.4, fill: e.identifierType === "rmi-cid" ? "#3fae7d" : "#4a90d9",
+        r: 2.4, fill: e.idType === "rmi-cid" ? "#3fae7d" : "#4a90d9",
         opacity: .85
       });
     });
@@ -352,6 +352,7 @@
 
     var counts = idCounts();
     var mixed = counts.cid > 0 && counts.nameOnly > 0;
+    var docUrl = ((state.edges || {}).evidence || {}).url || "";
     var box = el("section", "glass smelters");
     box.setAttribute("aria-label", "冶炼厂清单");
     var head = el("div", null, null);
@@ -371,12 +372,13 @@
       return String(a.name || a.from).localeCompare(String(b.name || b.from));
     }).forEach(function (e) {
       var item = el("div", "sm");
-      var ev = (e.evidence || [])[0] || {};
       var nm;
-      if (ev.url) {
+      if (docUrl) {
         nm = el("a", "nm sm-nm", e.name || e.from);
-        nm.href = ev.url;
+        nm.href = docUrl;
         nm.target = "_blank"; nm.rel = "noopener noreferrer";
+        // 行号写进 title，核验时知道去原文第几行找
+        if (e.row) nm.title = "原始申报第 " + e.row + " 行";
       } else {
         nm = el("span", "nm", e.name || e.from);
       }
@@ -418,7 +420,8 @@
       var okBox = el("div");
       okBox.style.cssText = "border-top:1px solid var(--line);padding-top:9px;";
       if (rows.length) {
-        var f = (state.edges && state.edges.filing) || {};
+        // 出处在文件级：本文件每条边共用同一份申报，因此这里只需读一次。
+        var f = (state.edges && state.edges.evidence) || {};
         var counts = idCounts();
         [["申报日", f.filingDate || "—"],
          ["冶炼厂", rows.length + " 家"],

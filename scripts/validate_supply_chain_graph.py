@@ -146,6 +146,23 @@ def check_edges(payload: dict, errors: list[str]) -> int:
         # 页面靠这个字段决定怎么措辞，缺了就可能被写成直接供货关系。
         if not (bundle.get("relation") or {}).get("label"):
             fail(errors, f"{path}：缺少 relation.label —— 边的语义必须随数据发布")
+        if bundle.get("confidence") not in ALLOWED_CONFIDENCE:
+            fail(errors, f"{path}：confidence 必须是 {sorted(ALLOWED_CONFIDENCE)}，"
+                         f"实际 {bundle.get('confidence')!r}")
+
+        # 出处在文件级：本文件每条边共用这一份。契约 v2 把它从逐边提到文件级，
+        # 因为同一份申报里所有边的出处本就相同，提上来之后**结构上不可能**
+        # 出现某条边指向别的出处或干脆没有出处。
+        evidence = bundle.get("evidence")
+        if not isinstance(evidence, dict) or not evidence:
+            fail(errors, f"{path}：**没有 evidence 的边文件不得发布**")
+        else:
+            for field in REQUIRED_EVIDENCE_FIELDS:
+                if not evidence.get(field):
+                    fail(errors, f"{path} evidence：缺少可核验字段 {field}")
+            url = str(evidence.get("url") or "")
+            if url and not url.startswith("https://"):
+                fail(errors, f"{path} evidence：出处必须是可点开的 https 链接")
 
         edges = bundle.get("edges")
         if not isinstance(edges, list):
@@ -156,33 +173,29 @@ def check_edges(payload: dict, errors: list[str]) -> int:
             fail(errors, f"edgeIndex[{symbol}].count 报告 {declared}，实际 {len(edges)}")
         total += len(edges)
 
+        seen_from: set = set()
         for i, edge in enumerate(edges):
-            where = f"{symbol}.json edges[{i}] {edge.get('from')}→{edge.get('to')}"
-            if not edge.get("from") or not edge.get("to"):
-                fail(errors, f"{where}：缺少 from / to")
-            if edge.get("to") != symbol:
-                fail(errors, f"{where}：to 应为 {symbol}——边串了文件")
-            for end in ("from", "to"):
-                # 冶炼厂这类对手方普遍不是标普成分股，未必在节点表里；
-                # 但只要声称已上市，就必须能对上节点。
-                if edge.get(f"{end}Listed") and edge.get(end) not in node_ids:
-                    fail(errors, f"{where}：{end} 声称已上市但不在节点表中")
-            if edge.get("confidence") not in ALLOWED_CONFIDENCE:
-                fail(errors, f"{where}：confidence 必须是 {sorted(ALLOWED_CONFIDENCE)}")
-            evidence = edge.get("evidence")
-            if not isinstance(evidence, list) or not evidence:
-                fail(errors, f"{where}：**没有 evidence 的边不得发布**")
-                continue
-            for j, item in enumerate(evidence):
-                if not isinstance(item, dict):
-                    fail(errors, f"{where} evidence[{j}]：格式错误")
-                    continue
-                for field in REQUIRED_EVIDENCE_FIELDS:
-                    if not item.get(field):
-                        fail(errors, f"{where} evidence[{j}]：缺少可核验字段 {field}")
-                url = str(item.get("url") or "")
-                if url and not url.startswith("https://"):
-                    fail(errors, f"{where} evidence[{j}]：出处必须是可点开的 https 链接")
+            where = f"{symbol}.json edges[{i}] {edge.get('from')}"
+            if not edge.get("from"):
+                fail(errors, f"{where}：缺少 from")
+            elif edge.get("from") in seen_from:
+                fail(errors, f"{where}：同一对手方在本文件里重复出现")
+            else:
+                seen_from.add(edge.get("from"))
+            # 定位：这条边在原始申报文档里的哪一行。没有定位，出处就只到「这份文件」，
+            # 核验时无从落到具体一条。
+            if not isinstance(edge.get("row"), int) or edge["row"] < 1:
+                fail(errors, f"{where}：缺少有效的 row 定位")
+            if edge.get("idType") not in ("rmi-cid", "name-only"):
+                fail(errors, f"{where}：idType {edge.get('idType')!r} 不在允许集")
+            # 带编号的必须真有编号，只有名字的必须真没有——两类分开统计的前提
+            if edge.get("idType") == "rmi-cid" and not edge.get("cid"):
+                fail(errors, f"{where}：标为 rmi-cid 却没有 cid")
+            if edge.get("idType") == "name-only" and edge.get("cid"):
+                fail(errors, f"{where}：标为 name-only 却带着 cid")
+            # 对手方是上市公司时必须能对上节点表；冶炼厂普遍不是，留空即可
+            if edge.get("fromListed") and edge.get("from") not in node_ids:
+                fail(errors, f"{where}：声称已上市但不在节点表中")
     return total
 
 

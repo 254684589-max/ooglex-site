@@ -160,30 +160,36 @@ def load_form_sd_coverage() -> dict | None:
         return None
 
 
-def assert_edge_contract(edges: list[dict]) -> None:
+def assert_edge_contract(bundles: dict[str, dict]) -> None:
     """无证据不上图：写盘前硬校验，不靠自觉。
 
-    每条边必须携带非空 evidence[]，每条 evidence 必须能点开核验（URL + 文件日期）。
-    confidence 只有 disclosed / inferred 两档。任何一条不合格即中止，不写文件——
-    宁可不发布，也不发布来路不明的公司间关系。
+    契约 v2：出处在**文件级**——同一份申报里所有边的出处本就相同，提到文件级之后
+    结构上不可能出现某条边指向别的出处或没有出处。每条边则必须有 `row`，
+    把核验落到原始文档的具体一行。
+
+    任何一条不合格即中止，不写文件——宁可不发布，也不发布来路不明的公司间关系。
     """
     allowed_confidence = {"disclosed", "inferred"}
-    for i, edge in enumerate(edges):
-        where = f"edges[{i}] {edge.get('from')}→{edge.get('to')}"
-        if not edge.get("from") or not edge.get("to"):
-            raise ValueError(f"{where}：缺少 from / to")
-        if edge.get("confidence") not in allowed_confidence:
+    for symbol, bundle in sorted(bundles.items()):
+        where = f"edges/{symbol}.json"
+        if bundle.get("confidence") not in allowed_confidence:
             raise ValueError(f"{where}：confidence 必须是 {allowed_confidence}，"
-                             f"实际 {edge.get('confidence')!r}")
-        evidence = edge.get("evidence")
-        if not isinstance(evidence, list) or not evidence:
+                             f"实际 {bundle.get('confidence')!r}")
+        if not (bundle.get("relation") or {}).get("label"):
+            raise ValueError(f"{where}：缺少 relation.label，边的语义必须随数据发布")
+        evidence = bundle.get("evidence")
+        if not isinstance(evidence, dict) or not evidence:
             raise ValueError(f"{where}：没有 evidence，拒绝写入")
-        for j, item in enumerate(evidence):
-            if not isinstance(item, dict):
-                raise ValueError(f"{where} evidence[{j}]：格式错误")
-            for field in ("sourceType", "url", "docDate"):
-                if not item.get(field):
-                    raise ValueError(f"{where} evidence[{j}]：缺少可核验字段 {field}")
+        for field in ("sourceType", "url", "docDate"):
+            if not evidence.get(field):
+                raise ValueError(f"{where} evidence：缺少可核验字段 {field}")
+        if not str(evidence.get("url")).startswith("https://"):
+            raise ValueError(f"{where} evidence：出处必须是可点开的 https 链接")
+        for i, edge in enumerate(bundle.get("edges") or []):
+            if not edge.get("from"):
+                raise ValueError(f"{where} edges[{i}]：缺少 from")
+            if not isinstance(edge.get("row"), int) or edge["row"] < 1:
+                raise ValueError(f"{where} edges[{i}] {edge.get('from')}：缺少 row 定位")
 
 
 def load_members() -> tuple[list[dict], dict]:
@@ -332,23 +338,22 @@ def build() -> None:
     # 关系边：抽取器写在 edges/ 下，本脚本只读、只索引、只校验，不自己造边。
     edge_files = load_edge_files()
     all_edges = [e for payload in edge_files.values() for e in (payload.get("edges") or [])]
-    assert_edge_contract(all_edges)   # 契约对每一条边生效，不管它存在哪个文件里
+    assert_edge_contract(edge_files)  # 契约对每个边文件与其每一条边生效
 
     edge_index: dict[str, dict] = {}
     edges_by_source: dict[str, int] = {}
     for symbol, payload in sorted(edge_files.items()):
         rows = payload.get("edges") or []
+        evidence = payload.get("evidence") or {}
         edge_index[symbol] = {
             "file": f"edges/{symbol}.json",
             "count": len(rows),
             "relation": (payload.get("relation") or {}).get("id"),
-            "filingDate": (payload.get("filing") or {}).get("filingDate"),
-            "url": (payload.get("filing") or {}).get("url"),
+            "filingDate": evidence.get("filingDate"),
+            "url": evidence.get("url"),
         }
-        for edge in rows:
-            for item in edge.get("evidence") or []:
-                key = item.get("sourceType") or "unknown"
-                edges_by_source[key] = edges_by_source.get(key, 0) + 1
+        key = evidence.get("sourceType") or "unknown"
+        edges_by_source[key] = edges_by_source.get(key, 0) + len(rows)
     node_ids = {n["id"] for n in nodes}
     for node in nodes:
         node["edgeCount"] = edge_index.get(node["id"], {}).get("count", 0)

@@ -225,65 +225,71 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
 
 
 def build_edges(outcome: dict, name_zh: str | None) -> dict:
-    """把解析结果变成带出处的边。每条边都自带可核验的申报链接。"""
+    """把解析结果变成带出处的边。
+
+    ## 出处提到文件级，不是省事，是更严
+
+    同一份申报里的每条边，出处文件、文件日期、来源类型、关系语义、confidence
+    完全相同——一条边一份 evidence 是几百字节纯重复。按实测规模（有名单的公司
+    动辄两三百家冶炼厂），逐边重复会让仓库多出十几 MB 一年只变一次的 JSON。
+
+    更重要的是：出处放在文件级之后，**结构上不可能出现同一文件里某条边指向
+    别的出处、或者干脆没有出处**。逐边存 evidence 反而给了这种可能。契约因此
+    改为：文件必须有完整的 `evidence`（来源类型 + 可点开的 https 地址 + 文件日期），
+    每条边必须有 `row`（在该文件里的行号）作为定位。同样可核验，且更难写错。
+
+    contractVersion 因此 1 → 2。
+    """
     filing, parse = outcome["filing"], outcome["parse"]
     doc_date = filing.get("reportDate") or filing.get("filingDate")
-    edges = []
-    for item in parse["smelters"]:
-        edges.append({
-            "from": item["id"],
-            "to": outcome["symbol"],
-            "fromListed": False,        # 冶炼厂普遍不是标普成分股，不进节点表
-            "toListed": True,
-            "relation": RELATION,
-            "relationLabel": RELATION_LABEL,
-            "tier": "smelter",
-            # rmi-cid：全球统一编号，跨申报人可合并。
-            # name-only：只有名字，合并只能靠名字规范化，可能重复。页面须分开说。
-            "identifierType": item["identifierType"],
-            "cid": item["cid"],
-            # 名称与国别在边上冗余一份：公司页只需拉这一个文件就能渲染，
-            # 不必再拉几百 KB 的全局冶炼厂表。
-            "name": item["name"],
-            "country": item["country"],
-            "countryEn": item["countryEn"],
-            "minerals": item["minerals"],
-            "confidence": "disclosed",
-            "evidence": [{
-                "sourceType": "sec-form-sd",
-                "url": parse["url"],
-                "docDate": doc_date,
-                "locator": f"冲突矿产报告 · 冶炼厂清单第 {item['rowIndex'] + 1} 行",
-                "quote": item["name"] or item["cid"],
-            }],
-        })
+    edges = [{
+        "from": item["id"],
+        # rmi-cid：全球统一编号，跨申报人可合并。
+        # name-only：只有名字，合并只能靠名字规范化，可能重复。页面须分开说。
+        "idType": item["identifierType"],
+        "cid": item["cid"],
+        "name": item["name"],
+        "country": item["country"],
+        "countryEn": item["countryEn"],
+        "minerals": item["minerals"],
+        # 在原始申报文档里的行号，用来定位核验
+        "row": item["rowIndex"] + 1,
+    } for item in parse["smelters"]]
+
     by_country: dict[str, int] = {}
-    for edge in edges:
-        by_country[edge["country"] or "未归类"] = by_country.get(edge["country"] or "未归类", 0) + 1
     by_mineral: dict[str, int] = {}
     for edge in edges:
+        key = edge["country"] or "未归类"
+        by_country[key] = by_country.get(key, 0) + 1
         for mineral in edge["minerals"] or ["未标注"]:
             by_mineral[mineral] = by_mineral.get(mineral, 0) + 1
+
     return {
-        "contractVersion": 1,
+        "contractVersion": 2,
         "dataset": "supply-chain-edges",
         "symbol": outcome["symbol"],
         "name": name_zh,
         "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "filing": {
+        # 关系语义。页面靠它决定措辞，缺了就可能被写成直接供货关系。
+        "relation": {"id": RELATION, "label": RELATION_LABEL, "tier": "smelter"},
+        "confidence": "disclosed",
+        "direction": {"from": "smelter", "to": outcome["symbol"], "toListed": True},
+        # 出处：本文件里每一条边共用这一份，可点开核验。
+        "evidence": {
+            "sourceType": "sec-form-sd",
+            "url": parse["url"],
+            "docDate": doc_date,
             "form": "SD",
             "accession": filing["accession"],
             "filingDate": filing["filingDate"],
             "reportDate": filing.get("reportDate"),
             "document": parse["document"],
-            "url": parse["url"],
             "indexUrl": filing["indexUrl"],
             "totalSD": filing.get("totalSD"),
         },
         "parse": {k: parse[k] for k in
                   ("rowsScanned", "rowsWithCid", "nameOnly", "droppedNoCid", "unique",
                    "namedRatio", "countryRatio")},
-        "relation": {"id": RELATION, "label": RELATION_LABEL},
         "byCountry": dict(sorted(by_country.items(), key=lambda kv: -kv[1])),
         "byMineral": dict(sorted(by_mineral.items(), key=lambda kv: -kv[1])),
         "edges": edges,
@@ -431,16 +437,17 @@ def main() -> int:
             return 1
         if symbol not in {o["symbol"] for o in results if o["state"] == "listed"}:
             kept += 1
+        evidence = bundle.get("evidence") or {}
         index[symbol] = {
             "file": f"edges/{symbol}.json",
             "count": len(bundle.get("edges") or []),
-            "filingDate": (bundle.get("filing") or {}).get("filingDate"),
-            "accession": (bundle.get("filing") or {}).get("accession"),
+            "filingDate": evidence.get("filingDate"),
+            "accession": evidence.get("accession"),
         }
         for edge in bundle.get("edges") or []:
             entry = registry.setdefault(edge["from"], {
                 "id": edge["from"], "cid": edge.get("cid"),
-                "identifierType": edge.get("identifierType"), "name": edge.get("name"),
+                "identifierType": edge.get("idType"), "name": edge.get("name"),
                 "country": edge.get("country"), "countryEn": edge.get("countryEn"),
                 "minerals": [], "filers": []})
             entry["name"] = entry["name"] or edge.get("name")
