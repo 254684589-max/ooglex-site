@@ -39,14 +39,19 @@ from urllib import error, request
 
 TIMEOUT = 30
 GAP = 0.35
-MAX_REQUESTS = 40
+MAX_REQUESTS = 60
+MAX_DOCS_PER_FILING = 4   # 滤掉系统文件后通常只剩 2~4 个真实文档
 BODY_LIMIT = 12_000_000
 
 CONTACT = os.environ.get("SEC_CONTACT", "contact via https://www.ooglex.com")
 UA = f"Ooglex Supply Chain Research/1.0 ({CONTACT})"
 
 # 实测确认有 Form SD 的公司，覆盖终端品牌、芯片设计与半导体设备三类
-SAMPLES = [("AAPL", 320193), ("NVDA", 1045810), ("AVGO", 1730168), ("AMAT", 6951)]
+# 覆盖三类申报人：终端品牌（苹果、特斯拉）、芯片设计（英伟达、博通）、
+# 半导体设备与元件（应用材料、Skyworks）。首轮 4 家里苹果与博通因文档筛选缺陷漏检，
+# 本轮扩到 6 家一并复核修复效果。
+SAMPLES = [("AAPL", 320193), ("NVDA", 1045810), ("AVGO", 1730168),
+           ("AMAT", 6951), ("TSLA", 1318605), ("SWKS", 4127)]
 
 # 冶炼厂名单的定位线索。Form SD 的冲突矿产报告用语高度套路化。
 SMELTER_CUES = [
@@ -120,12 +125,34 @@ def latest_form_sd(cik: int) -> dict:
     return {"ok": False, "why": "申报索引里没有 Form SD"}
 
 
-def list_documents(index_url: str) -> list[str]:
-    """列出该次申报下的全部文件名。冲突矿产报告常是附件而不是主文档。"""
-    body, _ = _fetch(index_url, accept="text/html,*/*")
-    text = body.decode("utf-8", "replace")
-    names = re.findall(r'href="[^"]*?/([^/"]+\.(?:htm|html|txt|pdf))"', text, re.I)
-    return sorted({n for n in names if not n.lower().startswith("index")})
+def list_documents(index_url: str) -> list[dict]:
+    """列出该次申报下的确切文件清单。
+
+    **不从页面 HTML 刮 href**：那样会抓到 EDGAR 的站点导航链接
+    （privacy.htm / search.htm / oacq.htm / howinvestigationswork.html 等九个），
+    它们不在申报目录下、请求一律 404，还会把探测名额占满——特斯拉的冲突矿产报告
+    `tm2615395d1_ex1-01.htm` 按字母序排在这些垃圾后面，因此被整个跳过（实测踩过）。
+
+    EDGAR 每个申报都提供 `index.json`，是权威清单且带文件大小。冶炼厂名单动辄
+    几百行，报告一定是这批文件里最大的那份，因此按体积倒序探测最省请求。
+    """
+    body, _ = _fetch(index_url.rstrip("/") + "/index.json", accept="application/json")
+    payload = json.loads(body.decode("utf-8", "replace"))
+    items = ((payload.get("directory") or {}).get("item")) or []
+    documents = []
+    for item in items:
+        name = str(item.get("name") or "")
+        if not name.lower().endswith((".htm", ".html")):
+            continue
+        if name.lower().startswith("0") or "index" in name.lower():
+            continue          # 申报索引页本身，不是内容
+        try:
+            size = int(item.get("size") or 0)
+        except (TypeError, ValueError):
+            size = 0
+        documents.append({"name": name, "size": size})
+    documents.sort(key=lambda d: -d["size"])
+    return documents
 
 
 def analyse(url: str) -> dict:
@@ -182,16 +209,22 @@ def main() -> None:
         except Exception as exc:                   # noqa: BLE001
             documents = []
             print(f"     文档清单取不到：{_why(exc)}")
+        # EDGAR 每次申报都带一批系统文件（index / .txt / brokers / companysearch），
+        # 它们排在最前。只看前几个会把真正的申报文档整个遮住——苹果与博通的冲突
+        # 矿产报告首轮漏检就是这么来的。先滤掉系统文件再看。
         entry["documents"] = documents
-        print(f"     文档 {len(documents)} 个：{', '.join(documents[:6])}")
+        real = [d["name"] for d in documents]
+        print(f"     文档 {len(documents)} 个（按体积倒序）："
+              + ", ".join(f"{d['name']}({d['size'] // 1024}KB)" for d in documents[:5]))
         time.sleep(GAP)
 
-        # 冲突矿产报告常是附件（EX-1.01），优先看它，其次主文档
-        candidates = [d for d in documents if re.search(r"ex.?1|cmr|conflict|minerals", d, re.I)]
-        if filing.get("primaryDocument"):
-            candidates.append(filing["primaryDocument"])
+        # 命名各家不同（a2026conflictmineralsrepor / cmrcy2025_final / ef20073373_sd），
+        # 靠文件名猜必然漏。改为探测全部真实文档——冶炼厂名单动辄几百行，
+        # 报告一定是这批文件里最大的那份，探测顺序不影响结论。
+        # 按体积倒序，最大的先探——名单几百行，一定是最大的那份
+        candidates = list(real)
         entry["analysed"] = []
-        for name in candidates[:2]:
+        for name in candidates[:MAX_DOCS_PER_FILING]:
             try:
                 outcome = analyse(filing["indexUrl"] + name)
             except Exception as exc:               # noqa: BLE001

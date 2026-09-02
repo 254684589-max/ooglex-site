@@ -206,7 +206,10 @@
 
       var tdName = el("td", "nm");
       var zh = n.name || n.symbol || "—";
-      tdName.appendChild(document.createTextNode(zh));
+      // 公司名做成进入单家供应链视图的入口
+      var link = el("a", "colink", zh);
+      link.href = "company.html?symbol=" + encodeURIComponent(n.symbol || "");
+      tdName.appendChild(link);
       // 中文名缺失时上游会回退成英文名，此时两行内容相同，不重复显示
       if (n.nameEn && n.nameEn !== zh) tdName.appendChild(el("small", null, n.nameEn));
       tr.appendChild(tdName);
