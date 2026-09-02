@@ -90,9 +90,21 @@
     p1.appendChild(el("b", null, "不是完整供应链"));
     p1.appendChild(document.createTextNode("。每一条信息都能点开核验来源。"));
 
+    // 有边的时候，覆盖率必须连「查过但没有」一起说。Form SD 强制申报、不强制
+    // 列名单，把「有申报无名单」并进「无申报」会把披露制度的上限说成抓取失败。
+    var sd = cov.formSd || {};
+    var withList = sd.companiesWithList;
+    var scope = (withList != null && sd.companiesFiledNoList != null)
+      ? "（扫了 " + (sd.companiesScanned != null ? sd.companiesScanned : "—") + " 家："
+        + withList + " 家有名单、" + sd.companiesFiledNoList + " 家有申报但正文未列名单、"
+        + (sd.companiesNoFiling != null ? sd.companiesNoFiling : "—") + " 家无申报）"
+      : "";
     setText($("notice-edges"), edges === 0
       ? "当前尚无企业间关系边（0 条）：每条关系都必须挂可核验的原始申报文件，没有出处的关系不会发布。本页展示的是各公司在价值链中的位置，不是公司之间的连线。"
-      : "已收录 " + edges + " 条带出处的关系，每条均可点开核验；这不是完整名单。");
+      : "已收录 " + edges + " 条带出处的关系" + scope
+        + "，全部来自 Form SD 冲突矿产申报，语义是「该冶炼厂出现在申报人的供应链中」——"
+        + "间接、不含份额，不是直接供货关系。一级与二级供应商仍无数据源。"
+        + "点公司表里的「冶炼厂」列进入单家视图逐条核验。");
 
     var parts = Object.keys(byBasis).filter(function (k) { return byBasis[k]; })
       .map(function (k) { return (BASIS_LABEL[k] || k) + " " + byBasis[k] + " 家"; });
