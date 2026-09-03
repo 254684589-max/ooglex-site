@@ -113,6 +113,111 @@
       : "");
   }
 
+  /* ── 按板块的覆盖情况 ──────────────────────────────────────────────
+     用户问「怎么有的公司有数据、有的没有」。这一段的职责是把这个问题按板块
+     回答清楚，而且**区分两种 0**：
+
+       金融 0/70、房地产 0/29 —— Form SD 只管产品里含 3TG 的发行人。银行和
+                               REIT 没有产品，本来就不申报，这个 0 不会变。
+       科技 34/84            —— 同样是缺口，但性质是「这一轮没拿到」。
+
+     两者合成一个覆盖率，等于把披露制度的适用范围说成抓取缺陷。
+     没有逐家申报状态时（抽取器还没跑过带 filingStatus 的版本）不猜原因，
+     只显示有名单的家数，把未知单列。 */
+  var COV_COLOR = {
+    withEdges: "#4ea1ff",     // 有名单：真数据
+    filedNoList: "#f0cf85",   // 有申报但正文没列名单：制度允许，不是缺陷
+    noFiling: "#5a6478",      // 没有申报：多半不适用
+    failed: "#e0685f",        // 取数失败：是缺陷，得亮出来
+    unknown: "#39414f"        // 没有逐家记录：不猜
+  };
+  var COV_LABEL = {
+    withEdges: "有名单",
+    filedNoList: "有申报未列名单",
+    noFiling: "无申报",
+    failed: "取数失败",
+    unknown: "无逐家记录"
+  };
+  var COV_ORDER = ["withEdges", "filedNoList", "noFiling", "failed", "unknown"];
+
+  function covSeg(row) {
+    return {
+      withEdges: row.withEdges || 0,
+      filedNoList: row.filedNoList || 0,
+      noFiling: row.noFiling || 0,
+      failed: row.failed || 0,
+      unknown: row.unscanned || 0
+    };
+  }
+
+  function renderCoverageBySector(d) {
+    var box = $("cov");
+    if (!box) return;
+    var rows = (d.coverage && d.coverage.bySector) || [];
+    if (!rows.length) { box.hidden = true; return; }
+    box.hidden = false;
+
+    var anyStatus = rows.some(function (r) {
+      return (r.filedNoList || 0) + (r.noFiling || 0) + (r.failed || 0) > 0;
+    });
+
+    setText($("cov-lead"), anyStatus
+      ? "当前唯一的关系数据源是 SEC 的 Form SD 冲突矿产申报，它只适用于产品中含钽锡钨金的发行人。"
+        + "因此各板块的覆盖率差别很大，而且有些板块的空白不会随时间填上——银行和 REIT 没有实体产品，"
+        + "本来就不需要申报。下面按板块把「有名单」和「为什么没有」分开列出。"
+      : "当前唯一的关系数据源是 SEC 的 Form SD 冲突矿产申报，它只适用于产品中含钽锡钨金的发行人。"
+        + "本轮尚无逐家申报状态记录，因此只列出各板块有名单的家数，不推断其余公司没有数据的原因。");
+
+    var wrap = $("cov-rows");
+    wrap.textContent = "";
+    rows.forEach(function (r) {
+      var seg = covSeg(r);
+      var total = r.companies || 0;
+      if (!total) return;
+      var line = el("div", "covrow");
+      line.appendChild(el("div", "s", r.sector || "未分类"));
+
+      var track = el("div", "t");
+      COV_ORDER.forEach(function (k) {
+        if (!seg[k]) return;
+        var i = el("i");
+        i.style.width = (seg[k] / total * 100) + "%";
+        i.style.background = COV_COLOR[k];
+        i.title = COV_LABEL[k] + " " + seg[k] + " 家";
+        track.appendChild(i);
+      });
+      line.appendChild(track);
+
+      line.appendChild(el("div", "n", seg.withEdges + " / " + total));
+      // 屏幕阅读器读到的是完整拆解，不是一条没有含义的进度条。
+      track.setAttribute("role", "img");
+      track.setAttribute("aria-label", (r.sector || "未分类") + "：共 " + total + " 家，"
+        + COV_ORDER.filter(function (k) { return seg[k]; })
+            .map(function (k) { return COV_LABEL[k] + " " + seg[k] + " 家"; })
+            .join("、"));
+      wrap.appendChild(line);
+    });
+
+    var key = el("div", "covkey");
+    COV_ORDER.forEach(function (k) {
+      if (!rows.some(function (r) { return covSeg(r)[k]; })) return;
+      var s = el("span");
+      var sw = el("i");
+      sw.style.background = COV_COLOR[k];
+      s.appendChild(sw);
+      s.appendChild(document.createTextNode(COV_LABEL[k]));
+      key.appendChild(s);
+    });
+    wrap.appendChild(key);
+
+    setText($("cov-foot"), anyStatus
+      ? "「无申报」不等于「这家公司没有供应链」，只表示它没有提交 Form SD——多数是因为规则对它不适用。"
+        + "「有申报未列名单」是规则允许的：Form SD 强制申报、不强制列出冶炼厂名单。"
+        + "这两类占多数，所以覆盖率永远到不了 100%，这是披露制度本身的上限。"
+      : "「有名单」以外的公司分三种情况：没有申报义务、申报了但正文未列名单、本轮取数失败。"
+        + "三者性质完全不同，在拿到逐家记录之前不在这里合并成一个数。");
+  }
+
   function perfOf(d, stageId) {
     var rows = (d.stagePerformance && d.stagePerformance.stages) || [];
     for (var i = 0; i < rows.length; i++) if (rows[i].stage === stageId) return rows[i];
@@ -339,6 +444,7 @@
     state.data = d;
     renderStatus(d);
     renderNotice(d);
+    renderCoverageBySector(d);
     renderStages(d);
     renderMethod(d);
     $("state").hidden = true;

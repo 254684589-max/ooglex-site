@@ -231,6 +231,46 @@ def check_coverage(payload: dict, counts: dict, edge_count: int, errors: list[st
         if reported and basis not in actual_basis:
             fail(errors, f"coverage.stageByBasis 多报了 {basis}={reported}，实际没有这类节点")
 
+    # 按板块的覆盖数字直接印在页面上，说错了就是对读者撒谎。逐板块重算一遍：
+    # 家数要对得上、分项要加得起来、有名单的家数不能超过实际有边的家数。
+    nodes = payload.get("nodes") or []
+    by_sector = coverage.get("bySector")
+    if by_sector is not None:
+        if not isinstance(by_sector, list):
+            fail(errors, "coverage.bySector 必须是数组")
+            return
+        actual: dict[str, dict[str, int]] = {}
+        for node in nodes:
+            key = node.get("sector") or "未分类"
+            row = actual.setdefault(key, {"companies": 0, "withEdges": 0})
+            row["companies"] += 1
+            if node.get("edgeCount"):
+                row["withEdges"] += 1
+        seen = set()
+        parts = ("withEdges", "filedNoList", "noFiling", "failed", "unscanned")
+        for row in by_sector:
+            name = row.get("sector")
+            seen.add(name)
+            truth = actual.get(name)
+            if truth is None:
+                fail(errors, f"coverage.bySector 多报了板块「{name}」，节点表里没有")
+                continue
+            if row.get("companies") != truth["companies"]:
+                fail(errors, f"coverage.bySector[{name}].companies 报告 "
+                             f"{row.get('companies')}，实际 {truth['companies']}")
+            if row.get("withEdges") != truth["withEdges"]:
+                fail(errors, f"coverage.bySector[{name}].withEdges 报告 "
+                             f"{row.get('withEdges')}，实际 {truth['withEdges']}")
+            # 分项之和必须等于家数。少加一项，页面上的进度条就会缺一截，
+            # 读者看到的比例是错的。
+            total = sum(row.get(k) or 0 for k in parts)
+            if total != truth["companies"]:
+                fail(errors, f"coverage.bySector[{name}] 分项之和 {total} "
+                             f"≠ 家数 {truth['companies']}")
+        for name in actual:
+            if name not in seen:
+                fail(errors, f"coverage.bySector 漏了板块「{name}」")
+
 
 def check_smelters(errors: list[str], edge_count: int) -> dict:
     """校验冶炼厂登记表。它带覆盖率声明，就必须和数据对得上。
@@ -348,6 +388,13 @@ def main() -> int:
         print(f"申报状态：有名单 {smelters.get('companiesWithList')} 家 · "
               f"有申报无名单 {smelters.get('companiesFiledNoList')} 家 · "
               f"无申报 {smelters.get('companiesNoFiling')} 家")
+    by_sector = (payload.get("coverage") or {}).get("bySector") or []
+    if by_sector:
+        top = "、".join(f"{r['sector']} {r['withEdges']}/{r['companies']}"
+                       for r in by_sector[:4])
+        unscanned = sum(r.get("unscanned") or 0 for r in by_sector)
+        print(f"按板块覆盖：{top} …"
+              + (f"（其中 {unscanned} 家尚无逐家申报状态）" if unscanned else ""))
     print(f"claimComplete = {(payload.get('coverage') or {}).get('claimComplete')}（必须恒为 false）")
 
     if errors:

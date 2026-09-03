@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-03T01:27:43Z",
+  "updatedAt": "2026-09-03T02:17:56Z",
   "asOf": "2026-09-02",
   "frequency": "daily",
   "status": "ok",
@@ -14598,6 +14598,118 @@
       },
       "note": "Form SD 强制申报、不强制列名单：有申报无名单的公司如实单列，不并入「无申报」。覆盖率因此永远到不了 100%，这是披露制度本身的上限，不是抓取缺陷。"
     },
+    "bySector": [
+      {
+        "sector": "科技",
+        "sectorEn": "Information Technology",
+        "companies": 84,
+        "withEdges": 34,
+        "filedNoList": 0,
+        "noFiling": 0,
+        "failed": 0,
+        "unscanned": 50
+      },
+      {
+        "sector": "工业",
+        "sectorEn": "Industrials",
+        "companies": 76,
+        "withEdges": 17,
+        "filedNoList": 0,
+        "noFiling": 0,
+        "failed": 0,
+        "unscanned": 59
+      },
+      {
+        "sector": "金融",
+        "sectorEn": "Financials",
+        "companies": 70,
+        "withEdges": 0,
+        "filedNoList": 0,
+        "noFiling": 0,
+        "failed": 0,
+        "unscanned": 70
+      },
+      {
+        "sector": "医疗健康",
+        "sectorEn": "Health Care",
+        "companies": 59,
+        "withEdges": 9,
+        "filedNoList": 0,
+        "noFiling": 0,
+        "failed": 0,
+        "unscanned": 50
+      },
+      {
+        "sector": "可选消费",
+        "sectorEn": "Consumer Discretionary",
+        "companies": 53,
+        "withEdges": 8,
+        "filedNoList": 0,
+        "noFiling": 0,
+        "failed": 0,
+        "unscanned": 45
+      },
+      {
+        "sector": "必需消费",
+        "sectorEn": "Consumer Staples",
+        "companies": 33,
+        "withEdges": 7,
+        "filedNoList": 0,
+        "noFiling": 0,
+        "failed": 0,
+        "unscanned": 26
+      },
+      {
+        "sector": "公用事业",
+        "sectorEn": "Industrials",
+        "companies": 32,
+        "withEdges": 1,
+        "filedNoList": 0,
+        "noFiling": 0,
+        "failed": 0,
+        "unscanned": 31
+      },
+      {
+        "sector": "房地产",
+        "sectorEn": "Real Estate",
+        "companies": 29,
+        "withEdges": 0,
+        "filedNoList": 0,
+        "noFiling": 0,
+        "failed": 0,
+        "unscanned": 29
+      },
+      {
+        "sector": "能源",
+        "sectorEn": "Energy",
+        "companies": 22,
+        "withEdges": 2,
+        "filedNoList": 0,
+        "noFiling": 0,
+        "failed": 0,
+        "unscanned": 20
+      },
+      {
+        "sector": "原材料",
+        "sectorEn": "Materials",
+        "companies": 20,
+        "withEdges": 5,
+        "filedNoList": 0,
+        "noFiling": 0,
+        "failed": 0,
+        "unscanned": 15
+      },
+      {
+        "sector": "通信服务",
+        "sectorEn": "Communication Services",
+        "companies": 17,
+        "withEdges": 2,
+        "filedNoList": 0,
+        "noFiling": 0,
+        "failed": 0,
+        "unscanned": 15
+      }
+    ],
     "stageByBasis": {
       "sic-refined": 495
     },

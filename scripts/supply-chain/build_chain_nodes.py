@@ -160,6 +160,51 @@ def load_form_sd_coverage() -> dict | None:
         return None
 
 
+def sector_coverage(nodes: list[dict], filing_status: dict[str, str]) -> list[dict]:
+    """按板块统计覆盖情况，并区分「没抓到」和「本来就不适用」。
+
+    页面上金融 0/70 与科技 34/84 是两种完全不同的 0。前者是 Form SD 的适用范围
+    决定的——规则只管产品中含 3TG 的发行人，银行没有产品；后者是这一轮没抓到，
+    以后可能补上。混在一起报，读者会把制度上限误读成抓取缺陷。
+
+    这里只统计事实（这家申报了没有、正文列名单没有），不给「该不该申报」下结论：
+    某家公司为什么不申报是它自己的判断，本函数无从得知，也不替它回答。
+    """
+    buckets: dict[str, dict] = {}
+    for node in nodes:
+        sector = node.get("sector") or "未分类"
+        row = buckets.setdefault(sector, {
+            "sector": sector,
+            "sectorEn": node.get("sectorEn"),
+            "companies": 0,
+            "withEdges": 0,
+            "filedNoList": 0,
+            "noFiling": 0,
+            "failed": 0,
+            "unscanned": 0,
+        })
+        row["companies"] += 1
+        if node.get("edgeCount"):
+            row["withEdges"] += 1
+            continue
+        state = filing_status.get(node["symbol"])
+        if state == "filed-no-list":
+            row["filedNoList"] += 1
+        elif state == "no-filing":
+            row["noFiling"] += 1
+        elif state == "failed":
+            row["failed"] += 1
+        elif state == "listed":
+            # 扫描说有名单、但边文件没写成：抽取器与发布路径不一致，属于缺陷，
+            # 不能算进「无申报」蒙混过去。
+            row["failed"] += 1
+        else:
+            # 没有逐家状态（抽取器还没跑过带 filingStatus 的版本）。
+            # 不猜原因，单列一档。
+            row["unscanned"] += 1
+    return sorted(buckets.values(), key=lambda r: -r["companies"])
+
+
 def assert_edge_contract(bundles: dict[str, dict]) -> None:
     """无证据不上图：写盘前硬校验，不靠自觉。
 
@@ -365,6 +410,17 @@ def build() -> None:
 
     form_sd_coverage = load_form_sd_coverage()
 
+    # 逐家申报状态盖到节点上，再按板块汇总。这是为了回答一个具体问题：
+    # 「为什么有的公司有数据、有的没有」。金融 0/70、房地产 0/29 不是抓取失败——
+    # Form SD 只适用于产品中含 3TG 的发行人，银行和 REIT 没有产品，本来就不申报。
+    # 把这件事算出来写进数据，而不是在页面上凭印象断言。
+    filing_status = (form_sd_coverage or {}).get("filingStatus") or {}
+    for node in nodes:
+        state = filing_status.get(node["symbol"])
+        if state:
+            node["formSdStatus"] = state
+    by_sector = sector_coverage(nodes, filing_status)
+
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     by_stage: dict[str, int] = {}
     for node in nodes:
@@ -409,6 +465,8 @@ def build() -> None:
             # Form SD 强制申报、不强制列名单，两者混在一起会把披露制度的上限
             # 说成抓取失败。
             "formSd": form_sd_coverage,
+            # 按板块拆开的覆盖情况。缺口的成因写在数据里，页面照实读。
+            "bySector": by_sector,
             # 按实际 stageBasis 分组。曾经把所有已判定的都记成 sector-initial，
             # 等于把 SIC 升级的功劳记在板块级口径头上、低报了数据质量的真实来源。
             "stageByBasis": by_basis,

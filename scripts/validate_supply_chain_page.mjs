@@ -113,6 +113,12 @@ async function main() {
   const port = server.address().port;
   const pageUrl = `http://127.0.0.1:${port}/apps/supply-chain/`;
 
+  // 页面上按板块印的家数拿这份数据对照。断言必须比对**数据文件**，
+  // 不能比对页面自己算出来的数——那样只是页面和自己一致。
+  const NODES = JSON.parse(await readFile(
+    path.join(ROOT, "apps/supply-chain/nodes.json"), "utf8"));
+  const SECTORS = (NODES.coverage && NODES.coverage.bySector) || [];
+
   const child = spawn(browserPath, [
     "--headless=new", "--disable-gpu", "--no-sandbox", "--remote-debugging-port=0",
     "--disable-dev-shm-usage", "about:blank"
@@ -193,6 +199,76 @@ async function main() {
       check(`触控区域不小于 44×44`, () => assert.equal(probe.undersizedTargets, 0));
       check(`环节卡片键盘可达`, () => assert.ok(probe.focusable));
       check(`初始不展开任何环节`, () => assert.equal(probe.expandedInitially, 0));
+
+      /* 按板块的覆盖情况。这一段直接回答「为什么有的公司有数据、有的没有」，
+         页面上印的每个数字都必须来自 nodes.json，不能由前端自己算出个近似值。
+         同时守两件事：进度条的分段必须加满（缺一段 = 比例是错的），
+         以及窄屏下这个三列网格不能把页面撑宽——上一次 360px 溢出 93px
+         就是网格项默认 min-width:auto 造成的。 */
+      const cov = await evaluate(`(() => {
+        const box = document.getElementById('cov');
+        if (!box || box.hidden) return { shown: false };
+        const rows = [...box.querySelectorAll('.covrow')].map(r => {
+          const segs = [...r.querySelectorAll('.t i')];
+          return {
+            sector: r.querySelector('.s').textContent,
+            num: r.querySelector('.n').textContent,
+            widthSum: Math.round(segs.reduce(
+              (a, i) => a + parseFloat(i.style.width || '0'), 0)),
+            label: r.querySelector('.t').getAttribute('aria-label') || '',
+            segs: segs.length
+          };
+        });
+        return {
+          shown: true,
+          heading: box.querySelector('h2').textContent,
+          lead: box.querySelector('#cov-lead').textContent,
+          foot: box.querySelector('#cov-foot').textContent,
+          rows,
+          keys: box.querySelectorAll('.covkey span').length,
+          overflow: box.scrollWidth - box.clientWidth
+        };
+      })()`);
+
+      check(`按板块覆盖区块已渲染`, () => assert.ok(cov.shown));
+      check(`板块数与节点表一致（${SECTORS.length}）`,
+        () => assert.equal(cov.rows.length, SECTORS.length));
+      check(`每行进度条分段加满 100%`, () => {
+        const bad = cov.rows.filter(r => Math.abs(r.widthSum - 100) > 1);
+        assert.equal(bad.length, 0,
+          bad.map(r => `${r.sector} 只有 ${r.widthSum}%`).join("；"));
+      });
+      check(`页面印的家数与 nodes.json 一致`, () => {
+        const bad = [];
+        for (const r of SECTORS) {
+          const row = cov.rows.find(x => x.sector === r.sector);
+          if (!row) { bad.push(`${r.sector} 未渲染`); continue; }
+          const want = `${r.withEdges} / ${r.companies}`;
+          if (row.num !== want) bad.push(`${r.sector} 显示「${row.num}」应为「${want}」`);
+        }
+        assert.equal(bad.length, 0, bad.join("；"));
+      });
+      check(`零覆盖板块给出原因而不是留空`, () => {
+        const zero = SECTORS.filter(r => !r.withEdges);
+        assert.ok(zero.length > 0, "样本里没有零覆盖板块，这条断言失去意义");
+        for (const r of zero) {
+          const row = cov.rows.find(x => x.sector === r.sector);
+          assert.ok(row && row.segs > 0, `${r.sector} 一段都没画，读者看不出原因`);
+        }
+      });
+      check(`每段进度条有可读的无障碍描述`, () => {
+        const bad = cov.rows.filter(r => !r.label.includes("共"));
+        assert.equal(bad.length, 0, bad.map(r => r.sector).join("、"));
+      });
+      check(`图例与实际用到的分类对应`, () => assert.ok(cov.keys > 0));
+      check(`不把「无申报」说成没有供应链`, () => {
+        // Form SD 不适用 ≠ 这家公司没有供应链。这句话说错了就是对读者撒谎。
+        if (!cov.foot.includes("无申报")) return;
+        assert.ok(cov.foot.includes("不等于"),
+          "提到「无申报」却没有澄清它不等于没有供应链");
+      });
+      check(`按板块区块无横向溢出`, () => assert.ok(cov.overflow <= 1,
+        `溢出 ${cov.overflow}px`));
 
       // 展开一个环节，检查公司表与判定依据
       const opened = await evaluate(`(() => {
@@ -333,7 +409,7 @@ async function main() {
     // 上一节守的是「空的时候说清楚为什么空」，这一节守的是「有数据的时候别说过头」。
     // 冶炼厂那一层最容易出的错是把「出现在申报人供应链中」写成「是供应商」——
     // 前者是申报原义，后者是我们替申报人下的结论，而且是错的。
-    const graph = JSON.parse(await readFile(path.join(ROOT, "apps/supply-chain/nodes.json"), "utf8"));
+    const graph = NODES;
     const withEdges = Object.keys(graph.edgeIndex || {}).sort();
     if (!withEdges.length) {
       console.log("\n── 公司视图 · 有冶炼厂数据 ── [跳过] 目前没有任何公司有边文件");

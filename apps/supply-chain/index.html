@@ -63,6 +63,30 @@
   .notice p + p { margin-top:5px; }
   .notice code { font-family:var(--mono); font-size:0.78rem; color:var(--text); }
 
+  /* ── 按板块的覆盖情况 ── */
+  .cov { padding:14px 16px; margin-bottom:16px; }
+  .cov h2 { font-size:0.92rem; font-weight:700; margin-bottom:5px; }
+  .cov > p { font-size:0.82rem; color:var(--dim); }
+  .cov > p + div { margin-top:11px; }
+  .cov > div + p { margin-top:11px; }
+  .covrow { display:grid; grid-template-columns:6.2em 1fr 8.5em; gap:9px;
+    align-items:center; padding:3px 0; font-size:0.78rem; }
+  .covrow .s { color:var(--text); font-weight:600; min-width:0;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .covrow .t { height:7px; border-radius:4px; background:rgba(255,255,255,.07);
+    overflow:hidden; display:flex; min-width:0; }
+  .covrow .t i { display:block; height:100%; }
+  .covrow .n { color:var(--faint); font-variant-numeric:tabular-nums;
+    text-align:right; font-family:var(--mono); font-size:0.72rem; }
+  .covkey { display:flex; flex-wrap:wrap; gap:5px 13px; margin-top:9px;
+    font-size:0.72rem; color:var(--faint); }
+  .covkey span { display:inline-flex; align-items:center; gap:5px; }
+  .covkey i { width:9px; height:9px; border-radius:2px; flex:none; }
+  @media (max-width:520px) {
+    .covrow { grid-template-columns:5.2em 1fr; row-gap:2px; }
+    .covrow .n { grid-column:2; text-align:left; }
+  }
+
   .sec-h { display:flex; align-items:baseline; gap:10px; margin:22px 2px 10px; flex-wrap:wrap; }
   .sec-h h2 { font-size:1.05rem; font-weight:800; }
   .sec-h span { font-size:0.76rem; color:var(--faint); }
@@ -164,6 +188,15 @@
     <p id="notice-basis"></p>
   </section>
 
+  <!-- 按板块拆开的覆盖情况。缺口的成因必须按板块讲清楚：金融 0/70 与科技 34/84
+       是两种不同的 0，前者是数据源的适用范围决定的，后者是还没抓到。 -->
+  <section class="glass cov" id="cov" hidden aria-label="按板块的覆盖情况">
+    <h2>为什么有的公司有数据、有的没有</h2>
+    <p id="cov-lead"></p>
+    <div id="cov-rows"></div>
+    <p id="cov-foot"></p>
+  </section>
+
   <div class="sec-h">
     <h2>实物价值链</h2>
     <span>从资源到终端，四个环节 · 点击展开该环节公司</span>
@@ -190,6 +223,6 @@
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="app.js?v=388a02c4" defer></script>
+<script src="app.js?v=6c2a6c90" defer></script>
 </body>
 </html>
