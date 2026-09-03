@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "bonds",
-  "generatedAt": "2026-09-01T22:34:06Z",
+  "generatedAt": "2026-09-02T23:14:56Z",
   "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-09-01T22:34:06Z",
-  "lastSuccessfulAt": "2026-09-01T22:34:06Z",
+  "lastAttemptAt": "2026-09-02T23:14:56Z",
+  "lastSuccessfulAt": "2026-09-02T23:14:56Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-09-01T22:34:06Z",
+  "publishedSnapshotAt": "2026-09-02T23:14:56Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -52,7 +52,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-09-01T22:34:06Z"
+      "lastSuccessAt": "2026-09-02T23:14:56Z"
     },
     {
       "id": "ecb-data-portal",
@@ -67,7 +67,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-09-01T22:34:06Z"
+      "lastSuccessAt": "2026-09-02T23:14:56Z"
     }
   ],
   "recovery": {
