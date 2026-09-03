@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "commodities",
-  "generatedAt": "2026-09-02T23:14:41Z",
-  "status": "healthy",
+  "generatedAt": "2026-09-03T21:52:05Z",
+  "status": "degraded",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-09-02T23:14:41Z",
-  "lastSuccessfulAt": "2026-09-02T23:14:41Z",
+  "lastAttemptAt": "2026-09-03T21:52:05Z",
+  "lastSuccessfulAt": "2026-09-03T21:52:05Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-09-02T23:14:41Z",
+  "publishedSnapshotAt": "2026-09-03T21:52:05Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -15,14 +15,14 @@
     "publishedRecords": 36,
     "dynamicRecords": 36,
     "counts": {
-      "market": 36,
-      "fallback": 0,
+      "market": 27,
+      "fallback": 9,
       "estimate": 0,
       "unknown": 0,
       "unavailable": 0
     },
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 100.0,
+    "freshCoveragePct": 75.0,
     "verifiedCoveragePct": 100.0,
     "availableCoveragePct": 100.0
   },
@@ -31,8 +31,8 @@
     "published": true,
     "producedRecords": 36,
     "counts": {
-      "market": 36,
-      "fallback": 0,
+      "market": 27,
+      "fallback": 9,
       "estimate": 0,
       "unknown": 0,
       "unavailable": 0
@@ -52,22 +52,22 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-09-02T23:14:41Z"
+      "lastSuccessAt": "2026-09-03T21:52:05Z"
     },
     {
       "id": "fred-imf",
       "name": "FRED / IMF Primary Commodity Prices",
       "role": "primary",
-      "status": "healthy",
+      "status": "degraded",
       "records": 31,
       "counts": {
-        "market": 31,
-        "fallback": 0,
+        "market": 22,
+        "fallback": 9,
         "estimate": 0,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-09-02T23:14:41Z"
+      "lastSuccessAt": "2026-09-03T21:52:05Z"
     }
   ],
   "recovery": {
