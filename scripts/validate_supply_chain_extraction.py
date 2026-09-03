@@ -37,6 +37,10 @@ FORM_SD_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             "supply-chain", "form_sd_parse.py")
 EXTRACT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             "supply-chain", "extract_form_sd.py")
+SUPPLIER_PROBE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                   "supply-chain", "probe_supplier_lists.py")
+NAMES_ZH_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             "supply-chain", "smelter_names_zh.py")
 
 # ── SIC → 价值链阶段 ────────────────────────────────────────────────────────
 # SIC 码全部取自探针在 Actions 机房实测到的真实值，不是凭印象写的。
@@ -297,6 +301,13 @@ def extract_names(module, text: str) -> list[str]:
             if len(e) > 4 and not e.lower().startswith("the compan")]
 
 
+def load_module(path: str, name: str):
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def load_extractor():
     """载入抽取器模块。它在导入时不发起任何请求，可离线加载。"""
     spec = importlib.util.spec_from_file_location("extract_form_sd", EXTRACT_PATH)
@@ -511,8 +522,61 @@ def main() -> int:
         extractor.OUT_DIR, extractor.SMELTERS_PATH = original_out, original_smelters
         shutil.rmtree(scratch, ignore_errors=True)
 
+    print("\n── 中文译名：宁可显示英文，也不半译不硬造 ────────────────────────")
+    zh = load_module(NAMES_ZH_PATH, "smelter_names_zh")
+    zh_cases = [
+        # 对照表命中，不限国别
+        ("Yunnan Tin Company Limited", "中国", "云南锡业股份有限公司"),
+        ("Mitsubishi Materials Corporation", "日本", "三菱综合材料株式会社"),
+        # 词表能拼全
+        ("Zhuzhou Smelting Group Co., Ltd", "中国", "株洲冶炼集团有限公司"),
+        # 含拼音字号：jin 可以是金/进/锦/晋，猜错就是给真公司安错名字 → 不给中文名
+        ("Jiangxi Jinxin Nonferrous Co., Ltd.", "中国", None),
+        # 非中文语境的企业不组合——直译成中文名等于凭空造名
+        ("Advanced Chemical Company", "美国", None),
+        ("Industrial Refining Company", "美国", None),
+        # 词表认不全 → 整条放弃，绝不半译
+        ("Chifeng Dajingzi Tin Industry Co., Ltd.", "中国", "赤峰大井子锡业有限公司"),
+        ("Metalor Technologies SA", "瑞士", None),
+        (None, "中国", None),
+        ("", "中国", None),
+    ]
+    for name, country, expected in zh_cases:
+        got = zh.translate(name, country)
+        ok = got == expected
+        if not ok:
+            failures.append(f"译名 {name!r}({country})：期望 {expected!r}，实际 {got!r}")
+        print(f"  [{'OK' if ok else 'XX'}] {str(name)[:40]:<42} → {got or '（英文原文）'}")
+
+    print("\n── 供应商名单探针：打分只排序候选，行为准则不得排在名单前 ────────")
+    probe = load_module(SUPPLIER_PROBE_PATH, "probe_supplier_lists")
+    rank_cases = [
+        ("https://www.apple.com/.../Apple-Supplier-List.pdf",
+         "https://www.apple.com/.../Supplier-Code-of-Conduct.pdf",
+         "名单应排在行为准则之前——上一轮就是被行为准则 PDF 骗了"),
+        ("https://about.nike.com/manufacturing-map.csv",
+         "https://about.nike.com/privacy.pdf",
+         "工厂地图应排在隐私政策之前"),
+        ("https://x.com/supplier-list.xlsx", "https://x.com/brochure.pdf",
+         "带 supplier-list 的表格应排在普通 PDF 之前"),
+    ]
+    for better, worse, why in rank_cases:
+        ok = probe.score(better) > probe.score(worse)
+        if not ok:
+            failures.append(f"打分 {why}：{probe.score(better)} 未高于 {probe.score(worse)}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}"
+              f"（{probe.score(better)} vs {probe.score(worse)}）")
+    # robots：被 Disallow 的路径必须认出来，不能抓
+    robots_ok = (probe.blocked("https://x.com/private/list.pdf", ["/private"]) == "/private"
+                 and probe.blocked("https://x.com/public/list.pdf", ["/private"]) is None
+                 and probe.blocked("https://x.com/a/b", ["/a/*"]) == "/a/*")
+    if not robots_ok:
+        failures.append("robots Disallow 判定错误——被禁的路径必须认出来不抓")
+    print(f"  [{'OK' if robots_ok else 'XX'}] robots Disallow 的路径不抓")
+
     total = (len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
-             + len(FORM_SD_CASES) + 6 + len(writes))
+             + len(FORM_SD_CASES) + 6 + len(writes)
+             + len(zh_cases) + len(rank_cases) + 1)
     print("\n" + "─" * 68)
     if failures:
         print(f"失败 {len(failures)}/{total}：")
