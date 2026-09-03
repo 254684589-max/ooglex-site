@@ -566,6 +566,25 @@ def main() -> int:
             failures.append(f"打分 {why}：{probe.score(better)} 未高于 {probe.score(worse)}")
         print(f"  [{'OK' if ok else 'XX'}] {why}"
               f"（{probe.score(better)} vs {probe.score(worse)}）")
+    # 阈值：只有明确指向名单的地址才算数。首轮把英伟达的《可持续发展报告》
+    # 算成了名单——它只是个恰好有文字的 PDF，打分 2 分。
+    threshold_cases = [
+        ("https://www.cisco.com/c/dam/en_us/about/supply-chain/cisco-supplier-list.pdf",
+         True, "思科供应商名单——真名单，必须过线"),
+        ("https://images.nvidia.com/NVIDIA-Sustainability-Report-Fiscal-Year-2026.pdf",
+         False, "英伟达可持续发展报告——不是名单，必须不过线（首轮就是这里判错的）"),
+        ("https://www.intel.com/documents/csr-2025-26-full-report.pdf",
+         False, "英特尔 CSR 报告——不是名单，必须不过线"),
+        ("https://www.cisco.com/c/dam/en_us/about/supply-chain/smelter-refiner-list.pdf",
+         True, "思科冶炼厂名单——是名单，必须过线"),
+    ]
+    for url, should_pass, why in threshold_cases:
+        got = probe.score(url) >= probe.LIST_SCORE
+        if got != should_pass:
+            failures.append(f"阈值 {why}：打分 {probe.score(url)}，"
+                            f"期望{'≥' if should_pass else '<'} {probe.LIST_SCORE}")
+        print(f"  [{'OK' if got == should_pass else 'XX'}] {why}（{probe.score(url)} 分）")
+
     # robots：被 Disallow 的路径必须认出来，不能抓
     robots_ok = (probe.blocked("https://x.com/private/list.pdf", ["/private"]) == "/private"
                  and probe.blocked("https://x.com/public/list.pdf", ["/private"]) is None
@@ -576,7 +595,7 @@ def main() -> int:
 
     total = (len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
-             + len(zh_cases) + len(rank_cases) + 1)
+             + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1)
     print("\n" + "─" * 68)
     if failures:
         print(f"失败 {len(failures)}/{total}：")

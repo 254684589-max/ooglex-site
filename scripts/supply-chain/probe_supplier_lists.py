@@ -52,14 +52,20 @@ UA = f"Ooglex Supply Chain Research/1.0 ({CONTACT})"
 # 网络设备（思科）、以及一家预期没有的（摩根大通）作为对照——
 # 没有的那家应当明确报「没有」，而不是被打分器凑出一个假候选。
 TARGETS = [
+    # 落地页多给几个：首轮苹果、耐克、惠普都因为种子地址不对而空手而归
+    # （惠普 404、耐克 404）。404 会如实报出来，不算断言，多试几个成本很低。
     ("AAPL", "苹果", ["https://www.apple.com/supplier-responsibility/",
-                      "https://www.apple.com/supply-chain/"]),
-    ("NKE", "耐克", ["https://about.nike.com/en/impact/manufacturing-map",
+                      "https://www.apple.com/supplier-responsibility/pdf/",
+                      "https://www.apple.com/environment/"]),
+    ("NKE", "耐克", ["https://about.nike.com/en/impact-resources",
+                     "https://about.nike.com/en/impact/manufacturing-map",
                      "https://about.nike.com/en/impact"]),
     ("DELL", "戴尔", ["https://www.dell.com/en-us/dt/corporate/social-impact/"
-                      "advancing-sustainability/sustainable-supply-chain.htm"]),
+                      "advancing-sustainability/sustainable-supply-chain.htm",
+                      "https://www.dell.com/en-us/dt/corporate/social-impact/"]),
     ("HPQ", "惠普", ["https://www.hp.com/us-en/hp-information/"
-                     "sustainable-impact/supply-chain.html"]),
+                     "sustainable-impact/supply-chain-responsibility.html",
+                     "https://www.hp.com/us-en/hp-information/sustainable-impact.html"]),
     ("INTC", "英特尔", ["https://www.intel.com/content/www/us/en/corporate-"
                         "responsibility/supply-chain.html"]),
     ("CSCO", "思科", ["https://www.cisco.com/c/en/us/about/"
@@ -70,6 +76,10 @@ TARGETS = [
 
 # 名单类文件的地址长什么样。打分只用于排序候选，不作为「这就是名单」的判据——
 # 判据是抓下来之后看内容。
+# 打到这个分才算「地址本身指向一份名单」——只有命中 supplier-list /
+# manufacturing-map / factory-list 这类明确词才够，「是个 PDF」（2 分）远远不够。
+LIST_SCORE = 10
+
 SCORE_RULES = [
     (12, r"supplier[-_]?list"),
     (12, r"supplier[-_]?responsibility[-_]?.*list"),
@@ -183,21 +193,34 @@ def pdf_text_sample(raw: bytes) -> dict:
     有就说明是文字型 PDF，标准库也能硬解；没有多半是扫描件，这条路走不通。
     """
     streams = re.findall(rb"stream\r?\n(.*?)endstream", raw[:4_000_000], re.S)
-    readable = 0
+    readable = inflated = 0
     sample = ""
     for chunk in streams[:60]:
         try:
             plain = zlib.decompress(chunk)
         except Exception:                          # noqa: BLE001
             continue
+        inflated += 1
         if b"Tj" in plain or b"TJ" in plain:
             readable += 1
             if not sample:
                 words = re.findall(rb"\(([^)\\]{2,60})\)", plain)[:14]
                 sample = " ".join(w.decode("latin-1", "replace") for w in words)
-    return {"streams": len(streams), "textStreams": readable,
+    # 文件用了哪些压缩方式。取不到文字时，这一栏决定了到底是谁的问题：
+    # 本探针只会 FlateDecode，遇到别的（如对象流、DCTDecode）是**我解不开**，
+    # 不是文件没有文字。英特尔那三份 CSR 报告被首轮误报成「多半是扫描件」，
+    # 就是把这两件事混为一谈。
+    filters = sorted(set(f.decode("ascii", "replace")
+                         for f in re.findall(rb"/(\w*Decode)", raw[:2_000_000])))
+    return {"streams": len(streams), "inflatedStreams": inflated,
+            "textStreams": readable, "filters": filters[:8],
             "textSample": sample[:160],
-            "extractable": readable > 0}
+            "extractable": readable > 0,
+            # 解开了流却没有文本操作符 → 才谈得上「可能是扫描件」；
+            # 一个流都解不开 → 是本探针的解析能力不够，与文件无关。
+            "verdict": ("可提取文字" if readable else
+                        "解开了流但没有文本操作符，可能是扫描件" if inflated else
+                        "本探针解不开这份 PDF 的压缩流——是探针能力不足，不能据此说文件没有文字")}
 
 
 def html_shape(raw: bytes) -> dict:
@@ -297,29 +320,45 @@ def main() -> None:
                 continue
             head = (f"{doc['kind']:<6} {doc['bytes'] // 1024:>5}KB")
             if doc["kind"] == "pdf":
-                print(f"       文档 [{'OK' if doc['extractable'] else 'XX'}] {head}  "
-                      f"流 {doc['streams']}，含文字的 {doc['textStreams']} → "
-                      f"{'可提取文字' if doc['extractable'] else '取不到文字（多半是扫描件）'}")
+                print(f"       文档 [{'OK' if doc['extractable'] else '--'}] {head}  "
+                      f"打分 {doc['score']}  流 {doc['streams']}"
+                      f"（解开 {doc['inflatedStreams']}，含文字 {doc['textStreams']}）"
+                      f"  压缩 {'/'.join(doc['filters']) or '未知'}")
+                print(f"            → {doc['verdict']}")
                 if doc.get("textSample"):
                     print(f"            文字样例：{doc['textSample'][:110]}")
             elif doc["kind"] == "html":
                 print(f"       文档 [{'OK' if doc['looksLikeList'] else '--'}] {head}  "
+                      f"打分 {doc['score']}  "
                       f"表格行 {doc['tableRows']}，公司后缀 {doc['corporateTokens']} → "
                       f"{'像名单' if doc['looksLikeList'] else '不像名单'}")
             else:
                 print(f"       文档 [--] {head}  {doc['url'][:60]}")
         print()
 
+    # **「PDF 里有文字」不等于「这是一份供应商名单」。**
+    # 首轮我就是这么判的，结果把英伟达的《可持续发展报告》算成了名单——
+    # 它只是一个恰好有文字的 PDF，打分只有 2（「是个 PDF」）。
+    # 判据改成两条同时成立：地址本身指向名单（打分 ≥ LIST_SCORE），且内容取得到。
     usable = [s for s, v in report["companies"].items()
-              if any(d.get("extractable") or d.get("looksLikeList")
+              if any(d.get("score", 0) >= LIST_SCORE
+                     and (d.get("extractable") or d.get("looksLikeList"))
                      for d in v.get("documents") or [])]
+    named_only = [s for s, v in report["companies"].items()
+                  if s not in usable
+                  and any(d.get("score", 0) >= LIST_SCORE for d in v.get("documents") or [])]
     print("── 结论 ────────────────────────────────────────────────────────────")
-    print(f"{len(usable)}/{len(TARGETS)} 家找到疑似可解析的名单：{', '.join(usable) or '无'}")
+    print(f"{len(usable)}/{len(TARGETS)} 家：地址指向名单**且**内容取得到 —— "
+          f"{', '.join(usable) or '无'}")
+    if named_only:
+        print(f"{len(named_only)} 家：地址指向名单但内容没取到 —— {', '.join(named_only)}")
     print(f"请求用掉 {MAX_REQUESTS - BUDGET.left}/{MAX_REQUESTS}")
     print("注意：打分只用于排序候选，**不是「这就是名单」的判据**——"
           "判据是把文档抓下来看内容，并由人逐条核对样例。"
           "上一轮就是靠猜地址失败的，这一轮的候选也要人看过才算数。")
-    report["verdict"] = {"usable": usable, "sampleSize": len(TARGETS),
+    report["verdict"] = {"usable": usable, "namedButUnread": named_only,
+                         "listScoreThreshold": LIST_SCORE,
+                         "sampleSize": len(TARGETS),
                          "requestsSpent": MAX_REQUESTS - BUDGET.left}
     out = os.environ.get("PROBE_OUTPUT")
     if out:
