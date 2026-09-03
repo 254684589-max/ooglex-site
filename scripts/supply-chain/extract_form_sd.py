@@ -65,6 +65,8 @@ SMELTERS_PATH = "apps/supply-chain/smelters.json"
 # 本轮拿到的公司数低于磁盘已有的这个比例，判定整轮取数异常，保留旧数据不覆盖。
 # 与 fetch_company_identity.py 的 MIN_SUCCESS_RATIO 同一个思路。
 MIN_KEEP_RATIO = 0.6
+# Form SD 每年 5 月 31 日前申报。只在申报季跑全量抓取，其余月份不动网络。
+FILING_SEASON = (5, 6, 7)
 # 边文件 + 登记表的体积上限。超了就中止——静态站点的数据文件会随站点发布，
 # 而且永久留在 git 历史里。实测每条边约 275 字节，30 MB 够放十万条以上；
 # 真撞上这条线，说明该先想清楚怎么存，而不是直接塞进仓库。
@@ -323,6 +325,8 @@ def main() -> int:
                          "「留空=全部」在工作流里不成立）")
     ap.add_argument("--limit", type=int, default=0, help="最多处理几家")
     ap.add_argument("--sample-rows", type=int, default=0, help="每家打印前 N 条明细")
+    ap.add_argument("--force", action="store_true",
+                    help="忽略「一年一次」的季节闸门，立即全量重抓")
     ap.add_argument("--rebuild-registry", action="store_true",
                     help="不联网，只按磁盘上已有的边文件重算 smelters.json——"
                          "登记表口径变了不必重跑整轮抓取。边文件一个字节都不动。")
@@ -348,6 +352,19 @@ def main() -> int:
     if not targets:
         print("[XX] 没有可处理的公司（identity.json 里没有 CIK？）")
         return 1
+
+    # ── 一年一次 ────────────────────────────────────────────────────────
+    # Form SD 每年 5 月 31 日前申报，一年只变一次。全量扫 495 家要发 1100 多次
+    # 请求、跑十几分钟，天天跑既拿不到新东西，也是在白占 SEC 的带宽。
+    # 因此只在申报季（5–7 月）跑；其余月份直接退出，磁盘上的数据原样保留。
+    # --force 可随时强制重抓。
+    month = datetime.now(timezone.utc).month
+    if not args.force and not args.dry_run and month not in FILING_SEASON:
+        print(f"当前 {month} 月不在 Form SD 申报季（{FILING_SEASON[0]}–{FILING_SEASON[-1]} 月），"
+              f"跳过全量抓取，保留现有数据。\n"
+              f"（Form SD 每年 5 月 31 日前申报，一年只变一次；"
+              f"要立即重抓加 --force）")
+        return 0
 
     parser = load_parser()
     print(f"待处理 {len(targets)} 家"
