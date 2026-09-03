@@ -1,13 +1,13 @@
 {
-  "updatedAt": "2026-09-03T11:10:19Z",
+  "updatedAt": "2026-09-03T16:23:13Z",
   "asOf": "2026-09-03",
   "source": "Google News · Yahoo Finance",
   "highlight": {
-    "title": "澳大利亚央行：未看到房地产市场调整带来系统性金融压力迹象",
-    "source": "观点网",
-    "link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTFBLMUFmNHpVMVVzQ0E4cVBhRUJpS0NGSzQ1RFJqUEVkUkZpQ0owRE1rMHhEaVp3emg5RjhaVXZJd3hLbW5SbDBkc3hpVmkxdm55MDNubGx3VGQ5SU1EQXJoVC1R?oc=5",
-    "published": 1788432092,
-    "category": "市场"
+    "title": "联合国裁军事务高级代表：叙利亚化学武器销毁工作取得重大进展",
+    "source": "UN News",
+    "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE5LWERHWDJRVlNKaEJGWE84WHJhdlV4QlZMb2RjeWZFbHl3MWxJdVhlVEliX3dPaHFsWGNDY2lnbWxVVC1XbDdfaU5veWxIM0NYQWRiR3kzUQ?oc=5",
+    "published": 1788451662,
+    "category": "国际"
   },
   "categories": [
     {
@@ -15,46 +15,46 @@
       "name": "市场",
       "items": [
         {
-          "title": "全球主要国债收益率持续走高 美国10年期国债收益率升至4.816%",
-          "source": "东方财富",
-          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFB6UFpsVnkzX0t5andKNy0yLThuajFxWDJvN3hET0ZaMmRydDNmTmRkX0VVajdmYlVWLVlrSEp1aEhDZTl5aGRqQkFwU2lsQVg1b1hndGpId19DQ0VjY0pqSg?oc=5",
-          "published": 1788410438
+          "title": "美联储理事沃勒发表言论后 美国国债收益率小幅走低",
+          "source": "eastmoney.com",
+          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE9HV2QxRkduNS1HQW5zODJJR3pkRUlCeUFWTV81VVdnYUgwRTlGQkJzdnQybmUtSFYtUnVrMXd1djRidW5jaTdBYzc0dTlETzZKMXNXRjk4bkhYalVLNmZYUA?oc=5",
+          "published": 1788439753
         },
         {
           "title": "不搞激进加息那套！日本央行倾向9月加息25基点，再伺机“提速”-市场参考",
           "source": "金十数据",
           "link": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE1OUzFCaFNqcHVMT1V1SlJLdnV1RUU3STJBZHBUQTNzVW9uMV9BMTgtMTNKVjVmVTJwNWE2b2gyT01vaE4wTHA3ZTE4clZpZUU?oc=5",
-          "published": 1788428189
+          "published": 1788446516
         },
         {
-          "title": "日本30年期国债拍卖结果好于预期，全球债市暂松一口气",
+          "title": "高质量发展看中国｜发展县域经济：湖南如何因地制宜？",
+          "source": "央广网",
+          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE95bFQ5MlptNXZ6Vi0xRHZBQjFsYUdRWmYxeWVJSnFMMkxMUXVFUkY0TGtUekFyb3dCVURzOU03WVlIRlpoYWk3b3pPSmhvcjQ3LVl4cEVLUGV1TUZwN21Tb3picWJtMm11TXlRYzN5TlM?oc=5",
+          "published": 1788440264
+        },
+        {
+          "title": "沃勒发言打击加息预期，美股高开，美债收益率走低，日元急升，布油突破96美元，现货黄金涨2%",
           "source": "华尔街见闻",
-          "link": "https://news.google.com/rss/articles/CBMiU0FVX3lxTFBqYm1pR2JCc2RabE9UUTlmT0ZuQ3pwMmxnX2gxUzF2cjd5OFFmUE1EYnp4a3N0LThVMlA4Y2lfd2dBT05rYl9UdG1ITnVzVWtNODY4?oc=5",
-          "published": 1788406601
+          "link": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE5faURMZFc3VDVpdzNJR1lJVmhMTmUwbzE4TndBbGpYN2E0T0FwNnBBT0Ewb2pic0lDaWgyQnA0UXM0ZkpHM0FjWExibHlTNzZpNE8w?oc=5",
+          "published": 1788443126
         },
         {
-          "title": "AI、电气化与资源竞争：全球经济的新逻辑",
-          "source": "Caixin Global",
-          "link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE9SRlVlMnFZdk0yUXpGRlcwRnhvZ0tYOUpJRmE3RjJrbTYxRHladTA5RWJPT0d5YURpVWNlYlJCRC1YVFF4UVpxV0FNWFhhUTd4d2FwX1NURnM0RzVKMHhBaVJ3?oc=5",
-          "published": 1788422100
+          "title": "日元汇率大幅反弹 美股三大期指涨跌不一 | 今夜看点",
+          "source": "财联社",
+          "link": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE9UUE5ONktTeXdkVWw1WllwYW1tRTNfSVZrUi1pSk91a3dONllIZkJSZzd5TmNreG95RnMyUXlDSUN2UlFCTmd2bw?oc=5",
+          "published": 1788429060
         },
         {
-          "title": "澳大利亚央行：未看到房地产市场调整带来系统性金融压力迹象",
-          "source": "观点网",
-          "link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTFBLMUFmNHpVMVVzQ0E4cVBhRUJpS0NGSzQ1RFJqUEVkUkZpQ0owRE1rMHhEaVp3emg5RjhaVXZJd3hLbW5SbDBkc3hpVmkxdm55MDNubGx3VGQ5SU1EQXJoVC1R?oc=5",
-          "published": 1788432092
-        },
-        {
-          "title": "财经慧说丨物流网“升级”，你的快递能更快吗",
+          "title": "中国经济面面观丨“暑期档”热度延续，文旅行业从“流量拉动”走向“留量沉淀”",
           "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNcDd6U3I3SjB3akFDMWZOS3drQjdKMnF2dDNTa0FVS295Y1hTRVBSM0dsdmN1b0sxbkNUZEtqalIzR0YwbGhIcjlVZm5vTDRwQjNBdnR0dDlkY3JGZjNCclQyU2NxQ21kc2hkQkFpeXR1TURDYi1tV2ZuSW9ySm9OZWh0bVNlcTUt?oc=5",
-          "published": 1788418812
+          "link": "https://news.google.com/rss/articles/CBMid0FVX3lxTFBWLVhCUlh5aDZINUV0djVfQktpVVlnMnhZQThMb0lfRXFOVzhQY2N3N215NFJlYTc3VVR0dVNDZldTZ0lYT1VhdlNmdlppV2l4cVFLdHhFRXF2UVREdy1TY19FTUI3QmI3bnZSajR4dVJYU3prdU53?oc=5",
+          "published": 1788433756
         },
         {
-          "title": "全球股市午后跳水，日韩半导体股下挫，美股三大期指集体走低，黄金直线拉升",
-          "source": "21财经",
-          "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNeHBYdXE1Yi1lQ2FaSDF2d1Y1X1N4WFRFM1dMQnFzclcwZVJwRXlHN1VleDNYRkIxbGRwZG55NFdqYW52cVE2aVZ1a0VVV0RDZFNnX0szYmpwazl5dnY3MFh4S002Qi1Ed0pxYTRqMWhhdDBKM1B0NWpveGJ0dG4wWFRDWDdUeXlCV1Rjcg?oc=5",
-          "published": 1788415620
+          "title": "展示品牌的担当与温度 “2026品牌公益行”启动",
+          "source": "经济参考报",
+          "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPOVlpR0FaSG9JcGdOUk1URmpZUFBpdEQ2ZC16Q2NSdFpFWEtKNzFjT2VtTy1yaVVabGdzcDU0Z1BxSkpIekdOWGNRLWFLRlgtTGJ6WExSdVpvWldXWW9DVzdvMm5JeENrZ3pBVmltQW5jczBGeDNZbmstR3d1RFhteQ?oc=5",
+          "published": 1788440306
         }
       ]
     },
@@ -63,46 +63,46 @@
       "name": "人工智能·科技",
       "items": [
         {
-          "title": "世赛赋能数字制造，技能拥抱AI变革——“魔都技能创享汇”走进模速空间",
-          "source": "上观新闻",
-          "link": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE1sMUEzRkRYWFRvT2pLWDUtcU5qcnlxUUhiTktSU3d6eVBEUzJqQll5dkw5c1RaczZtUUpveVpEcExUYkE5NnNucUxSWHVWNzVFRW5VVktYQlBSUQ?oc=5",
-          "published": 1788424560
+          "title": "焕“新”向智 科技创新引领产业升级",
+          "source": "新华网",
+          "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE80MHViTnNtYWtOdjl4am1qd25XWW1leDhYZzB6My01X09TMnB6MFA4LUtXUmQ4dU5tUDJWaXhEazloSjdOWTJrSzl3MThwcXJnT1lPeURXZEtZM05CdXNnWkhnMEdJOVFoYVJSR1pxdFQwSDZLVDdVczg3ak9udw?oc=5",
+          "published": 1788424871
         },
         {
-          "title": "3795人！亿万富翁创历史新高 AI造富潮下财富集中度攀升",
+          "title": "刘捷在杭州调研时强调：加快促进创新链和产业链深度融合 推动人工智能相关产业高质量发展",
+          "source": "新蓝网",
+          "link": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE1HT2RJNTVXRGVMa3lCTEJ4NXhCeF91WTFOTnpZV2Y0MjU1NUFSYXhvTVdhVV9GMi1oa1pTWV9VdUxPekhfM09RV29pWU93Rk0?oc=5",
+          "published": 1788435240
+        },
+        {
+          "title": "科技探遗丨探秘晋祠古今“黑科技”（上）",
+          "source": "中国科技网",
+          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBfYTdOSm93N3c2bTJqbXpXdXJ3RmFXVzRLS3JhbFhoS2hRNklYM01ZYmhNaGR3NjgwRlYxUmJRU1NXRFlZTkFaSWpFSnBFLUJhMzc3NUlYaW1jYWM2Z1Ixa2dJY3FxSFByLVNNTlVFaHA?oc=5",
+          "published": 1788435518
+        },
+        {
+          "title": "国产AI芯片“四小龙”中报透视：两家账面扭亏，现金流仍承压",
           "source": "21财经",
-          "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNOU1GUjN5VWt4WW05OW92UlEzeGdYOXdUM1pGOWhrUmdfZnJNUzdldTFIaWt3R1J3aVNDcVNSMlBtR1VpOGpkRXdWaDAwMEo4azlTd1BydTFxaENNMzY0SmlpMmdQVWNyUVZXQURFNVRfYko0cHBPUE1KakxWY1VlSzJ0ZXY2UmRxR2VRVEZxLWNiTmFY?oc=5",
-          "published": 1788428942
+          "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQT0t1dU11Q29IU2x4RG9wSUNHcElVRUtIVGZhU3NQZ2VzMHFHS3drdVEtUGZwSGpDeTJ0UThTUC1DOEhFQVZsRGgyS0VCeFZKTW8xYmo5bUxmYWhBN1F4RnI4MU91cjBiN3RpTFdoR3BNOV9rbmxfRDd3aUp3c2ZtbGRGRmF5WThFUmhrcg?oc=5",
+          "published": 1788439980
         },
         {
-          "title": "AI进车企：千问办公深入长安汽车“研产供销服”",
-          "source": "经济参考报",
-          "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxQRll5d2J2ZXIwSURORnZJWUliT1RSeWt2bk1QVWRyXzRLZ01DYzdBdExSZHlwMUdKMTNYM3RwMUNYNi1DeElfNVVueXdNaEN2MFN3dEh5b3ZZRl9rejNiT0tYUHBYMXhZR3R1STd5bS1qMFZZYmV0MXZMQkE1QmozMA?oc=5",
-          "published": 1788429210
+          "title": "押注开源推理！英伟达携手Equinix、Together AI推出企业AI推理方案",
+          "source": "财联社",
+          "link": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE55RjlmRmc3M1doWFBVWDZUYnBfR0dQRkpRc1p6NmhBYzgzQ1RFZjhaUXlhLXVjZFU3ekswb0daNDRlT292dTlRSg?oc=5",
+          "published": 1788425354
         },
         {
           "title": "AI中国·青春华章｜从深海到星空，青春正在作答！",
           "source": "央广网",
-          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE50YUdFRDdkNWd3OFBJdWJMZkpIaUxWTUJiVHd0dkdOTjVpNDVORlRBYTZ5VU9UYUQ0VWlOSEpiaXNCcHRpaE9DdVQ5SDRnUDlqbzE5dm1BRzNJOF9ZY2lNOERfR3dCWFJI?oc=5",
+          "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE1WOU5DVEJTRFVtQ0YtX2ZKdThVZTdGbnV0aHBId3d3ZHY1cElmMXZSY2k5LUJGY2ZwbnQ5NmY1YzV3WU1CQWljS1g2cjZmdWxOOVFKOFhSODBBLVFpWktEc04zZmIwLUU?oc=5",
           "published": 1788431860
         },
         {
-          "title": "科技日报看四川·科技创新市州行丨四川眉山：“1+N”体系发力 打通成果转化“最后一公里”",
-          "source": "中国科技网",
-          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE9JaHAwMjBicF9xb1FkYmFQeW80UmQzMXVOSlF2NEhDWmF6cWdhalpuQ3JJN2JFdXNaOElEYlV1UzVDbWtSMUVDYzNNSC1hZldJYVlhLU5BSjktYWdtakJzandVRk5STFNCZm44RUlDWHc?oc=5",
-          "published": 1788427803
-        },
-        {
-          "title": "充Token如同充话费！天猫上线AI充值中心，阿里云、智谱、Kimi都来了",
-          "source": "新京报",
-          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTFBSbXdfSjJrS0pTVmxvZExPa3NjM1MwQVFJR3p2UXNVVi1OVWVBOWx6Z3UzMTFNVlRIRXdCV1VjV3ZjdVRCS01rVFZ1c3NkMngtSkp6VFlZUUxCaVVhdEFZWFYwQjU?oc=5",
-          "published": 1788423660
-        },
-        {
-          "title": "RSI时代将至：谷歌、OpenAI、SSI正在发出同一个信号",
-          "source": "华尔街见闻",
-          "link": "https://news.google.com/rss/articles/CBMiU0FVX3lxTFBnellmeXZPQklHSVJmWlJYSnZBN1dpTXdxSHRiZU53Y2tEX1lJZnhsZkxaV1B0TU5yWDFrNFcyR3lBSnU4amFGb0ZVUnpSUV9iNE9z?oc=5",
-          "published": 1788403871
+          "title": "阜博集团与汶莱电信商合作建AI工厂 获25兆瓦数据中心容量",
+          "source": "观点网",
+          "link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTFBOMXNldjlvOHJkSnAxVno2NmNBTk9iX1dMbGN2UURRZUF2OWxpVjNDd3BUQUVwZEt0TUxjQkNLdFpac0RCWXA0X09TZjlySmVNMzF1azAzUEV0czRMZkZObWJB?oc=5",
+          "published": 1788440270
         }
       ]
     },
@@ -111,16 +111,10 @@
       "name": "娱乐",
       "items": [
         {
-          "title": "第83届威尼斯国际电影节开幕",
+          "title": "走进威尼斯电影节沉浸单元",
           "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1fOEJsaFgxcE1vS1E5dHo5V3dEbUVha29iLURuNHFSeEtxMzZFVFJHS0tadHV3SXVWZGxMMmJKUGFwcmJuX0NuMU1PSVJsQ09zUXRPUkxCOG5DQ3NxLXdfTVVUM2FCVl9tbDB0T3RGWXRwWlVfSHVIT2tWUHloMXc?oc=5",
-          "published": 1788376840
-        },
-        {
-          "title": "铭刻记忆 讴歌和平：大型舞台艺术电影《正义必胜》9月3日全国公映",
-          "source": "中国日报网",
-          "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE9oVXVZSVR2SThXekFwa095NllZX2tUdGh6RGRxZ0NndUM0anVEOXFUejgteDl4dmpXQU40Q3hOQ3Z2X084ejd1VjA1N1JJZFR6UUNxUVhZUm5sV2tOTm9QMGI2ejV4T3Z3WlcwazhpVi0xbjFJQ2VJbDkwaC0?oc=5",
-          "published": 1788404419
+          "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxPbmdDSWhLTE5zS1gwcWlacmRTd2tKRkt4QndPSXEyMjZ4ZnJFc25LNXhiV3NKNTBFRDljNTdaZ3FCQTBteVdud2RDQzg0THozNDJqREc0UThDYV9BdTdxUHVaaWtjMGxKaGt3TVRkSlhyQzBzYkk4by11RXMxc2FvMk5OMUozdw?oc=5",
+          "published": 1788444835
         },
         {
           "title": "一封信落成一座舞台 郑君炽首场内地个人音乐会上海落幕",
@@ -129,28 +123,34 @@
           "published": 1788428640
         },
         {
-          "title": "电影《天上的岑草》开机 李斯南挑战悲情男主",
-          "source": "凤凰网",
-          "link": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE1sVEU2NTdtZmFXUUFUZk8tRm1NNUxwTFpXYXhwSllkbGdzMGt1NFdYdWNkZ0xtS09MNllSb1I5Nnc1Sm9fTi1SXy1NUXI0Tkk?oc=5",
-          "published": 1788429853
+          "title": "中国作协副主席：不必再争论文学和电影究竟谁更重要",
+          "source": "jfdaily.com.cn",
+          "link": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBUTzhxcHZMQTE1a3JYc1VVU0RtdlAxY3pPVi1GWk01SkF5dUNrNEJyMW82TDFDRlI5VWIyYWRmakhUUWhVTmQ1TWk3NTJVS0R0aGJ6YUFBMjVIYy1WdVE?oc=5",
+          "published": 1788445380
         },
         {
-          "title": "市场生态重塑中，“非标”电影赢了",
-          "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMigwFBVV95cUxOeC1IT25SeDYzZmxIb2RVSDZZTWRRVHlyejhsNGRKbXNwcjFNN2pMUVlzUzhCZENuODlQZE1Rd3VVaVoxbHJmZTlmTnJNcDI4TVF4WFdvSGhrU2hkdlFoMXJodGJKSnBGNjBrcmkyWUNWd3lmamNFME5jY2k1V0hEQVNaWQ?oc=5",
-          "published": 1788400235
+          "title": "“丝路光影”中国电影展映推介活动在埃及开罗举行",
+          "source": "中国日报网",
+          "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE04YXlPZ2syVXhvbnBxQklKWWJTWm45NUNHMDgxNGZ1ZEo0aktyaVZfcE5BMmZqQUdIaG9qek1Xc2lfTUgyNkdsNGhUSU05SjIyMmZYX1lSWS1haTMyNVY4eTJFeTJKN2IySEZUQkpkRno5M3JqLUF1ZkFYcHM?oc=5",
+          "published": 1788404130
         },
         {
-          "title": "AI邂逅千年东坡 国风音乐剧《心安东坡》登陆厦门闽南大戏院",
-          "source": "fj.chinanews.com.cn",
-          "link": "https://news.google.com/rss/articles/CBMickFVX3lxTE5oQWswTnV4MUhxQkxIeWM5bTdkeUpvdXg0UG8tbVpXd1JZaHFNRzI4dEw4MHN3Z21UREpCX2RTWUZOeUpJaTc1c3ozY0drT3NZNzZ2NXdWS1d3Z1Rma1BVS3dBdEhtVVFsc1ptNVZmWXpYQQ?oc=5",
-          "published": 1788407714
+          "title": "原创国风音乐剧《心安东坡》首度亮相厦门_新闻频道",
+          "source": "厦门网",
+          "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTFBoMDNoRlEzbmRYelNUU0Fqd3RZN2R2bGZmaDJYWFRtM1A3a2lQVEtCRHQxS1lvQjZJZlNXRXh5aV9ETXFfeXBqNm00amI0aV9XazluemdzN1pENDFTeEpSOWdRTGE3YmIyRXc?oc=5",
+          "published": 1788449040
         },
         {
-          "title": "嘉善演唱会开票啦！就在明天，快来抢→",
-          "source": "新浪网",
-          "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE9tRlhFT1Vja3E4ckxlLWI5MDZOdUVoZ19EMWJvbWR1OUJQNTdSaFBUM2trWjF3WWlPLUZYNzVXY1NGR1NINEJvX2txSjM4Yi04ZEM4V3ZRQjYwYmJmb0dVWi1fLVNJa3RiczdFSnNUb2Q?oc=5",
-          "published": 1788430944
+          "title": "“金色蒲公英·黑土欢歌”极光音乐会9月6日开启",
+          "source": "hlj.cnr.cn",
+          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE1QcTYtS3d3UWpkekM1MmY2SjA1YklORnVqWW5aR09aUFBzZ0ZRazBscHpBV2ZBbU5kUmpWeFdUcll3aW9YaU5kVDNrMExnM0JDQlBLaTRYTEk2bzBSckdhSDh2enlBTzls?oc=5",
+          "published": 1788421934
+        },
+        {
+          "title": "文淇、倪虹洁、喻恩泰现身武汉！这部电影看哭一众观众",
+          "source": "荆楚网",
+          "link": "https://news.google.com/rss/articles/CBMickFVX3lxTE1PclVpTk1PTzlseHlSdXBQUVJnX2VDZ3ZSMzlDcGN3LUNlX284Y1phSlZhbmUtUGJxWkNDbVBtRTYwNXQxRnNYSl80bDlZWTZra09VMVNtajVqUUFYczFEaWhtV29aWG1Hc2Q0X1J4X2lCUQ?oc=5",
+          "published": 1788445500
         }
       ]
     },
@@ -159,16 +159,16 @@
       "name": "体育",
       "items": [
         {
-          "title": "足球——德国杯：拜仁慕尼黑胜奥斯纳布吕克",
-          "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE84R2FLYld2LVplYXhhU050MkRCUzE5ZFg1WkZKblVOckl0eFJ3OWFMNzE4aGpCS1FpTFBJUmdlMWZ3UjNiVk4tMi04NmFBel9ObHVtclhGTU1OREhpMTVyNmNFcVNHOTROX1BvNGc3TF9HLWQyemlXVHZOOG5BQlU?oc=5",
-          "published": 1788399353
+          "title": "体育总局答新京报：哪里群众多，健身资源就往哪里倾斜",
+          "source": "新京报",
+          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE9Ud2tNTmtqN1dKekFmOVUzOEJ4VEQxU2ljVkE2emZMRlBMOEVmLWVNUnNwV1BBSGVZdzhOWU5LYkQ5U285akR4eGVQRjZGbHBzOE5lV1hwUDEtUkFYUjQ2SlZzWG4?oc=5",
+          "published": 1788405420
         },
         {
-          "title": "国家体育总局：让各类主体都能成为竞技体育的合伙人",
+          "title": "国家体育总局：到2030年人均体育场地面积达到4平方米左右",
           "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMihwFBVV95cUxPWUFKMkllZHdnTGlCTkZ2Nm9ZcWd2SGNYQ1JIdGx5SkM3RHFTWlRFa2lDaF90eUdHUTRSbnRnZGNEbjVfSFlqdGcwOVNBcUlFVFNqMllhQ0cwVUpDeFdFLVQ2TEl1UDE1NXVpeml0djdrMUFNa2VsRjBXb2kwOVVkYnQtRElkeG8?oc=5",
-          "published": 1788416731
+          "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxNWUZRbGdISks2WlhaY2k5dVRCMmF5RTY3ajl4c18zN1lzRk1Yd1pTQ2tEV0lmU3piY3JHRnphZXNrSVBUQXhwQjZsM1BFLVFCNDJOZG5TZFFYRXZDSERkVVhKNXEtN1pqUllLMElPWFNYcGJrbmRzeW5NOUtHaXpzUg?oc=5",
+          "published": 1788417301
         },
         {
           "title": "中国初中、高中篮球联赛新赛季启动 寰铂体育获五年独家运营权",
@@ -177,28 +177,28 @@
           "published": 1788427303
         },
         {
-          "title": "事关“十五五”体育强国建设，这场发布会公布多项重点举措",
-          "source": "新华报业网",
-          "link": "https://news.google.com/rss/articles/CBMia0FVX3lxTFBNMHo4bHhucktmd21fYldTU0FvSG9qZThtdTI1Z0E1aGlTM05oWjJoOG9fVkVSQTZhSkNscFlIakxlU3M3QndCeWNTWjdEN0lCLTZLV2NudHB1NGI3OWVTNUJ0Y2ZSaGVBMUZN?oc=5",
-          "published": 1788413640
+          "title": "从沉寂到八强，陇原足球如何逆势突围？",
+          "source": "chinanews.com.cn",
+          "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5FUFNOZnJKTTV2UTVqMkozRUlscDgzSjFzSG1RZlhQVzh1bHNRRDNGdGV3NW5kOWY2bDQxZDZpMUR5MWx0bHB1Q0N3ZmtzYzZCYkN3WUZjYVRyQzlxRm54anUwdFBhZkZG?oc=5",
+          "published": 1788444362
         },
         {
-          "title": "锚定2030年体育产业总规模7万亿元目标，国家体育总局这样部署",
+          "title": "事关“十五五”体育强国建设，国家体育总局公布多项重点举措",
           "source": "21财经",
-          "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNbnlfRUtjTXlUUl9NN293QmNCSG9qdDNjZXZ5N0g5eGxmM2pyclowU3N6WVNuR2Vfb2VJbWp3b1l0aTBpcUJ3WE56QUtzOHk0VlhBRWN2ZVNNakJFWHZhdG9TbndHb3Z1LVFUb1pUNHJZcl92TFFvU3M0S2t3eEVhNGgwcUMzU2xWM0Y2Xw?oc=5",
-          "published": 1788421320
+          "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOTTJwTDVNMXVfaUx1ZHRrR1hHa2ZUTjBta1FURW4ySEdXT3lxck1ReTVSSHJxMUhBbDQxS2NWVF8tVXI2UXFLTWtkbmlWSGV0SlNDZURHSDBJYUxTZWRDZlBSbzR3VTVOb3d3N3ZrbVozaGlpdVZOME5XOEpxMkFsRGVmNnZxU2JQMG1SNQ?oc=5",
+          "published": 1788430920
         },
         {
-          "title": "中国发布丨国家体育总局：加大在边远地区青少年中推广普及体育力度",
-          "source": "中国网新闻中心",
-          "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTFBjOFNRU2NJWnBtT0QxYWc0Zjhac3hDZjRCVmRSTk5CNFU0MldlTnlFakFJMTVULUhPNExBYmRQb20zUHhqN2xpYVFiXzNLaW1uYVNLNFB2cWVDNk4tQk9UcjBjMUlEUm5Ud3c?oc=5",
-          "published": 1788415246
+          "title": "追光丨世界杯“中考”，中国女篮“关关难过关关过”",
+          "source": "新华网客户端",
+          "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxObHM5OENHUnltbWs5aTg1ckFyUHZ6QzBlaGtEZVFMNXhTUDN5WUJxaWtlQzQtMTdwWXJpZ21Cd2ctZEctSjV2OU10MEhHam9SSTU4c2xVazQ5YndIUlNHajBlUEZmS1lMQWJhdHNYU21jZkdVZFdhVXhtUkR2Wm9JV2EwMFE3ekhKVEVyb1gxeDJ2NGk3bmhiLS13?oc=5",
+          "published": 1788404673
         },
         {
-          "title": "国家体育总局：深化体育“饭圈”乱象整治，培育健康球迷文化",
-          "source": "新京报",
-          "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTFBUWm1SeUxRV3NacGQ3U0VwR3V5R2UwVUlNOWQwVlJEQ3NHaTJSaDhKWHNFS0l3bEpXWGVMVU1VY1VOOE5DSGlRV3JybVZ2SXlnOEZtMXNaNVI5SXpjeW9nNUZMcGE?oc=5",
-          "published": 1788402540
+          "title": "体育总局：力争到2030年体育产业总规模超7万亿元",
+          "source": "eastmoney.com",
+          "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFBuMHo1MFVrR0VkbENZNXFiUi1DY3k5VGlZc2RVSW55WThuNlBfTTVGQmVtVk90eUNlcFBnYzE4TmZYWnIwOGN0OHhBTVpiMGZQSExNQW5oTW9oVkN6TFFFOA?oc=5",
+          "published": 1788406896
         }
       ]
     },
@@ -207,46 +207,40 @@
       "name": "国际",
       "items": [
         {
-          "title": "中国经典歌剧《原野》在马德里开启欧洲巡演",
+          "title": "联合国裁军事务高级代表：叙利亚化学武器销毁工作取得重大进展",
+          "source": "UN News",
+          "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE5LWERHWDJRVlNKaEJGWE84WHJhdlV4QlZMb2RjeWZFbHl3MWxJdVhlVEliX3dPaHFsWGNDY2lnbWxVVC1XbDdfaU5veWxIM0NYQWRiR3kzUQ?oc=5",
+          "published": 1788451662
+        },
+        {
+          "title": "西藏吉隆泥石流灾害核心区通电",
           "source": "新华网",
-          "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE9ZOUFfV1pjTFEzVXVFRnU2MV9rZkpVWXprRTZOaEJ2MDVHekhRRzVFV2piWFNmOVBZOUFGZF9BV09TRlF4dmJBMEcwQnpYT2RlOFFtVzZzd2h4LXhYMG50UUJGMV9USy1wSFdoU3JHSnlzaEQ3UDJEanROUy1STW8?oc=5",
-          "published": 1788385758
+          "link": "https://news.google.com/rss/articles/CBMigwFBVV95cUxQNVVrc0FtSmt4VHR3QndVMjZ4eG9PU1hRLTFGdDNDWnZ4VjQyVzFFS0Y2WFdsMnMxak10RGVHZ2JuSFcta2ZIVlFibWFTTThxM0FHaFdTajUtakRoV1NFUHZReWE3bVZkc1hZUW0zMkpUV3hncEw1bjhuaHh6NnNyaXpIcw?oc=5",
+          "published": 1788437732
         },
         {
-          "title": "地质灾害气象风险预警：浙江福建等6省区部分地区风险较高",
-          "source": "天气网",
-          "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE42czUzcEttNE9rRk8za29pbWJDZmVYenV5ZEs5RE9lTzJzZDhEUnpTRVh6am4xeDdKRl90S2kwNHZrUnhrVTMxQzVuTERjMzljaDV2c2JTQm9jMkt1?oc=5",
-          "published": 1788429932
+          "title": "联合国报告：破1.5℃升温阈值在所难免 紧急救灾或挤出长期转型资金",
+          "source": "Caixin Global",
+          "link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE1uVThYbDR5UmUxbEttWjVReGphcm1PajFMWUUzdjhOOWlsbmNKbnp6bjNaaDc4NTBUZTRvSVg4WHhsS3VEQVJ1d1RpYU02T1ZaaHN3elF6SGxRcWkySWZnQm53?oc=5",
+          "published": 1788445440
         },
         {
-          "title": "乌克兰警告国际民用航空组织使用俄罗斯领空存在的风险",
-          "source": "RFI",
-          "link": "https://news.google.com/rss/articles/CBMiiwNBVV95cUxPR3NLb2NkZV9LNGlmc1hhY0RqOEdNWXlpM2FMSF8xLXB5MmIxVjhMMmh6N0toYlF1NHpPLU5rTkxtd1FaUVRoNFp3OXNiM3g4ODhfd05OMEF2T1NzTEViQjM4dHRwNFNzVHhrdlBQZ0MxZEV3ejRuakl4VXZySmUzam9qMWZibVNNZ3hscmw5X1VSRkVkdmR2dXRtaUlLZkwwWHlUV2VibXprbDN4X1NXM1VrZ0lfY2RIM1pPVTd3Q0VBNTBuOHJ3V19VcERja0t0OWxYRUhaQ1lYRlJLTDFjTEZjREYzTkJGUEhuWTRzeFBJZnN4bkxvVGZiYTY5RTQ5TzhwX0FZaFVLWWVqRTREMXFOREJQemRjYTBPd1dad1l6U1VFVENsTEV5LThhYTZLTEE1QkRHVjRSZHRYT1M1MFJ4dm5sRWZKVE5faXFuOVBGU1ZXWks5UzMyVFBYWlFDV1RxclB4Mm13M3EtdFVVTWFDQm1JZ0hKTnpscFNmaHZUc3NpU1cyb2ZDSQ?oc=5",
-          "published": 1788427728
+          "title": "国际篮联世界排名中国男篮仍位居第30名",
+          "source": "新华网",
+          "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxORFhGNVE1d0JwNFM5ZUh2VVdfajdjMDZ2dWFyUVVzdFNJUHhiMXEtbnlRT2pIa2VreHhHcGlYbkR5MUltSm5uYjAweGx1MHZtNmdJWVZGenl2dXF2NzA1UFpsWl9fTzRHa19TTkVBdk92ZE5MNXVTWUhlS0U5ZUs0QW5R?oc=5",
+          "published": 1788428260
         },
         {
-          "title": "我校廖林教授合作论文在会计学国际顶级期刊《Contemporary Accounting Research》在线发表",
-          "source": "南京审计大学",
-          "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1mRDVUTmgyUXVOd2RtTFlWWXk1UnVBUFJKN1dLNVB0VFNUZzVsVVdXZ3hoWXhnYVlkSE5RM2NGVHlUTzFmWHUwN1lMVkVKWDRkTFFuX1dqcHU0d01zYmN5dFMxY1dwdw?oc=5",
-          "published": 1788404528
+          "title": "2026年9月3日外交部发言人郭嘉昆主持例行记者会",
+          "source": "驻巴哈马大使馆",
+          "link": "https://news.google.com/rss/articles/CBMidEFVX3lxTE5pM19RVzBMTktDVUs0aWtTNVdhMFJMOEhJMEtkSmxhaXlJYnphY195a2Q2d2NMaDNwaGVZM1VNYmhEbG9Mc0ZkVG5idFRBRzdERzhjNjVkeUQ2NmpVdkRjaHpibzVFb1BybFhPUXI2MHpwLUFy?oc=5",
+          "published": 1788426660
         },
         {
-          "title": "台积电历史性扩张：全球在建晶圆工厂接近20座 设备采购预估值翻倍",
-          "source": "财联社",
-          "link": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE05aUVHd01URnNLbW0ySlc2VjlfX2VtZUUyT21DREMwVGctUTdWb2FQOGRhNHlvQ19WaFI3MFlUWExlaUpiSXBtSg?oc=5",
-          "published": 1788422520
-        },
-        {
-          "title": "台湾国际半导体展开幕 超过1300家厂商参展",
-          "source": "美国之音",
-          "link": "https://news.google.com/rss/articles/CBMic0FVX3lxTE9YTEV2cjNMZHhFNjBxQ1NfNnNLLXBPOEVrbnY3VEZUck1QaUk4ZXhURVpPZFl5UzVHdmVXTkhLNjhORkQ5NlRFUzZRb1psTDZpNUpGWVd1MnFmU0lzZXQwZncwVEZRbjkwQmZ2R2hpNmRUYlHSAXZBVV95cUxNT0FCbFc4a010NzJHU29qbFN3ZkdnMHB0M0EwQlVrWWtZeFFXZ1NoQnllTmxYcnl6T2ZyanBRZGFQdE5hSkI3dXJ4RDBJWGR6SXFZR3VyalVwejQ1UUw2ckJNUHZRWGx5V0JvM2cyRFNzNXVCQ1N3?oc=5",
-          "published": 1788408000
-        },
-        {
-          "title": "现场直击：日籍学者讲述中尼边境泥石流灾害亲身经历",
-          "source": "共同网",
-          "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE50X1ZYaW90eC1FMEFidDFHYmpKLV9RZVJhVHJlNnJyUnlqTDZOQ2h6UjFkcGxlcG9rQXJWanBUSjZ5azV5MkJOam5ER3Voc3h4UVNpZU9JWQ?oc=5",
-          "published": 1788420013
+          "title": "地缘扰动与海峡通航：原油市场本周核心动态盘点",
+          "source": "CME Group",
+          "link": "https://news.google.com/rss/articles/CBMingFBVV95cUxNUEJ3R1VCQlhZNDBuTE5vanBNaC1SaW9xN2hUVERJbFlEbjhGc08ycmVNQWhIcm8wOUVaZnhDZVVQRDRVdjlYMlNPVnNZMTlFUU1SbFVKZG1VNFdFSVJ2emlYbVJqNG5TVm9OLXl1MENXcjdBMnpDX3BsZjk2ankyOEJuZEhkbzA5bktpalJCNDNyQWpWSU43RE9NeFU1UQ?oc=5",
+          "published": 1788446505
         }
       ]
     }
@@ -255,43 +249,43 @@
     {
       "name": "标普500",
       "symbol": "^GSPC",
-      "price": 7666.6,
-      "changePct": 0.46,
+      "price": 7742.05,
+      "changePct": 0.98,
       "fmt": "idx"
     },
     {
       "name": "纳斯达克",
       "symbol": "^IXIC",
-      "price": 26217.83,
-      "changePct": 0.45,
+      "price": 26566.08,
+      "changePct": 1.33,
       "fmt": "idx"
     },
     {
       "name": "布伦特原油",
       "symbol": "BZ=F",
-      "price": 97.15,
-      "changePct": 1.59,
+      "price": 95.7,
+      "changePct": 0.07,
       "fmt": "usd"
     },
     {
       "name": "WTI原油",
       "symbol": "CL=F",
-      "price": 92.67,
-      "changePct": 1.82,
+      "price": 91.3,
+      "changePct": 0.32,
       "fmt": "usd"
     },
     {
       "name": "黄金",
       "symbol": "GC=F",
-      "price": 4473.8,
-      "changePct": 2.46,
+      "price": 4542.8,
+      "changePct": 4.04,
       "fmt": "usd"
     },
     {
       "name": "美元指数",
       "symbol": "DX-Y.NYB",
-      "price": 99.21,
-      "changePct": -0.35,
+      "price": 98.93,
+      "changePct": -0.64,
       "fmt": "idx"
     }
   ],
