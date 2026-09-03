@@ -11,9 +11,11 @@ name: Supply Chain Graph
 # Form SD 一年一报（每年 5 月 31 日前），抽取器因此不是每天都有新东西可取；
 # 它按申报号判断是否变化，没变就不重下文档。
 #
-# 两道校验都在提交之前跑，任一失败即不提交：
-#   validate_supply_chain_extraction —— 关系抽取规则的定位/点名/误报断言（离线）
+# 四道校验都在提交之前跑，任一失败即不提交：
+#   validate_asset_versions          —— 静态资源版本号（全站，防「新数据 + 旧代码」）
+#   validate_supply_chain_extraction —— 关系抽取规则的断言与写盘契约（离线）
 #   validate_supply_chain_graph      —— 发布文件契约，核心是「无证据不上图」
+#   validate_supply_chain_page       —— 浏览器渲染契约
 # 后者会拒绝任何没有可核验出处的关系边，也会拒绝把板块级推断显示成公司级结论。
 on:
   # 定点 cron 会被 GitHub 推迟数小时，改由 scheduler.yml 每日在窗口开启后统一触发。
@@ -70,6 +72,13 @@ jobs:
 
       - name: Build supply chain graph nodes
         run: python scripts/supply-chain/build_chain_nodes.py
+
+      # 静态资源版本号。**这一条是全站的，不只管产业链**——仓库没有 PR 触发的
+      # CI，而本工作流每天都跑，是唯一稳定的关口。
+      # 缘由：2026-09-03 苹果的公司页在用户手机上显示「本页已收录 20245 条」，
+      # 真实是 0。数据是新的、代码是缓存里的旧的——因为 <script src> 没有版本号。
+      - name: Validate static asset versions (site-wide)
+        run: python scripts/validate_asset_versions.py
 
       - name: Validate extraction rules
         run: python scripts/validate_supply_chain_extraction.py
