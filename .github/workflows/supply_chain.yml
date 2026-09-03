@@ -63,12 +63,19 @@ jobs:
 
       # Form SD 冲突矿产申报 → 冶炼厂关系边。这是本板块唯一有出处的关系数据。
       # 语义是「该冶炼厂出现在申报人的供应链中」，不是直接供货关系。
+      # **一年只跑一次**：脚本自带季节闸门，非申报季（5–7 月以外）直接退出，
+      # 不发任何请求。Form SD 一年一报，天天扫 495 家既拿不到新东西也白占带宽。
       # 失败不中断：边文件是上一次的产物，读不到新数据就沿用，不删不改。
       - name: Extract Form SD smelter lists
         continue-on-error: true
         env:
           SEC_CONTACT: ${{ vars.SEC_CONTACT }}
         run: python scripts/supply-chain/extract_form_sd.py
+
+      # 冶炼厂中文译名表。与带出处的申报数据分开发布——边文件里是申报原文，
+      # 译名是我们加的标注，混在一起会让「哪些是原文」分不清。
+      - name: Build smelter Chinese name table
+        run: python scripts/supply-chain/build_smelter_names_zh.py
 
       - name: Build supply chain graph nodes
         run: python scripts/supply-chain/build_chain_nodes.py
@@ -99,7 +106,7 @@ jobs:
           # 只暂存本工作流拥有的路径，不夹带任何其他改动。
           git add apps/supply-chain/nodes.json apps/supply-chain/health.json \
                   apps/supply-chain/identity.json apps/supply-chain/smelters.json \
-                  apps/supply-chain/edges
+                  apps/supply-chain/names-zh.json apps/supply-chain/edges
           if git diff --cached --quiet; then
             echo "生成结果与仓库一致，跳过提交和推送"
             exit 0

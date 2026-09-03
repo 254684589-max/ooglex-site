@@ -58,7 +58,17 @@
   ];
 
   var state = { data: null, node: null, view: "tier", tierSel: 2,
-                edges: null, edgeError: null };
+                edges: null, edgeError: null, zh: null };
+
+  /* 冶炼厂中文译名。查不到就显示英文原文——申报里写的就是英文，
+     半译出来的名字比纯英文更糟。译名表独立发布，拉不到不影响其它内容。 */
+  function zhKey(name) {
+    return String(name || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+  }
+  function zhName(name) {
+    var table = (state.zh && state.zh.names) || null;
+    return table ? (table[zhKey(name)] || null) : null;
+  }
 
   /* 这家公司有没有边文件。没有 ≠ 没申报，两者在页面上必须分开说。 */
   function edgeMeta() { return ((state.data || {}).edgeIndex || {})[state.node.symbol] || null; }
@@ -82,8 +92,13 @@
 
   /* ── 身份条：全部真实字段 ── */
   function renderIdent(n) {
-    $("c-zh").textContent = n.name || n.symbol;
-    $("c-en").textContent = [n.nameEn, n.symbol].filter(Boolean).join(" · ");
+    var zh = n.name || n.symbol;
+    $("c-zh").textContent = zh;
+    // 中文名缺失时上游会回退成英文名，此时主副标题内容相同，不重复显示
+    // （总览表早就这么处理了，这里漏了——Skyworks 的标题显示成
+    //  「Skyworks Solutions Skyworks Solutions · SWKS」）
+    $("c-en").textContent = [n.nameEn !== zh ? n.nameEn : null, n.symbol]
+      .filter(Boolean).join(" · ");
     var facts = $("c-facts");
     facts.textContent = "";
     function add(label, value, color) {
@@ -359,8 +374,12 @@
     head.style.cssText = "display:flex;justify-content:space-between;align-items:baseline;"
       + "gap:12px;flex-wrap:wrap;margin-bottom:10px;";
     head.appendChild(el("h3", null, "冶炼厂／精炼厂清单（" + rows.length + " 家）"));
+    var translated = rows.filter(function (e) { return zhName(e.name); }).length;
     var sub = el("span", null,
       "出现在该公司 Form SD 申报供应链中 · 不是直接供货关系 · 点厂名看原始申报"
+      + (translated
+          ? " · " + translated + " 家有中文译名（以英文原文为准）"
+          : "")
       // 全体同一种标识时在这里说一次就够，不必每行都挂一个标签
       + (mixed ? "" : (counts.cid ? " · 全部带 RMI 编号" : " · 全部只有名字、无 RMI 编号")));
     sub.style.cssText = "font-size:.72rem;color:var(--dim);";
@@ -372,17 +391,24 @@
       return String(a.name || a.from).localeCompare(String(b.name || b.from));
     }).forEach(function (e) {
       var item = el("div", "sm");
+      var english = e.name || e.from;
+      var chinese = zhName(e.name);
       var nm;
       if (docUrl) {
-        nm = el("a", "nm sm-nm", e.name || e.from);
+        nm = el("a", "nm sm-nm", chinese || english);
         nm.href = docUrl;
         nm.target = "_blank"; nm.rel = "noopener noreferrer";
         // 行号写进 title，核验时知道去原文第几行找
         if (e.row) nm.title = "原始申报第 " + e.row + " 行";
       } else {
-        nm = el("span", "nm", e.name || e.from);
+        nm = el("span", "nm", chinese || english);
       }
       item.appendChild(nm);
+      // 有中文名时英文原文仍然显示——中文是译名，核对以申报原文为准
+      if (chinese) {
+        var en = el("div", "en", english);
+        item.appendChild(en);
+      }
       var bits = [e.country || "国别未写明", (e.minerals || []).join("·") || "矿种未写明"];
       var meta = el("div", "meta", bits.join("  ·  "));
       if (e.cid) {
@@ -570,7 +596,7 @@
       if (!node) { fail("产业链节点表里没有 " + symbol + "。本板块目前只收录标普500成分股。"); return; }
       state.data = d; state.node = node;
       document.title = (node.name || symbol) + " 供应链视图 · 全球产业链";
-      return loadEdges().then(paint);
+      return Promise.all([loadEdges(), loadNamesZh()]).then(paint);
     })
     .catch(function (err) {
       fail("公司数据加载失败：" + (err && err.message ? err.message : "未知错误")
@@ -581,6 +607,14 @@
      总览页 495 家里绝大多数没有边文件，不该为此多发一次请求。
      拉失败不阻断整页：身份、环节、同行都是本地已有的真实数据，
      照常渲染，并在覆盖率声明里说清楚是加载失败而不是没有数据。 */
+  /* 译名表是显示层的补充，拉不到就显示英文原文，不算失败。 */
+  function loadNamesZh() {
+    return fetch("names-zh.json", { cache: "no-cache" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d && d.names) state.zh = d; })
+      .catch(function () { /* 显示英文原文即可 */ });
+  }
+
   function loadEdges() {
     var meta = edgeMeta();
     if (!meta || !meta.file) return Promise.resolve();
