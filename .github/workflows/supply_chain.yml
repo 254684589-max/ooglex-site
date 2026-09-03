@@ -1,11 +1,15 @@
 name: Supply Chain Graph
 
-# 生成产业链图谱发布文件：读站内标普成分股清单 → 生成 apps/supply-chain/nodes.json
-# 与 health.json → 提交回仓库。
+# 生成产业链图谱发布文件：读站内标普成分股清单 + SEC 申报 → 生成
+# apps/supply-chain/{nodes,health,identity,smelters}.json 与 edges/<代码>.json → 提交回仓库。
 #
-# 第 0 层只读站内数据，不发起任何外部请求、不新增数据源，因此没有密钥、没有上游接口
-# 风险；唯一的上游是 apps/companies/sp500.json，由 companies.yml 每日生成。调度上排在
-# companies 成功之后（与 asset_ranking 同一梯队）。
+# 上游有两处：站内 apps/companies/sp500.json（由 companies.yml 每日生成），以及 SEC
+# EDGAR（CIK/SIC 与 Form SD 冲突矿产申报）。SEC 那两步都是 continue-on-error——
+# 取数失败时构建读上一份缓存继续，不产出空数据、不让整条管道失败。没有密钥。
+# 调度上排在 companies 成功之后（与 asset_ranking 同一梯队）。
+#
+# Form SD 一年一报（每年 5 月 31 日前），抽取器因此不是每天都有新东西可取；
+# 它按申报号判断是否变化，没变就不重下文档。
 #
 # 两道校验都在提交之前跑，任一失败即不提交：
 #   validate_supply_chain_extraction —— 关系抽取规则的定位/点名/误报断言（离线）
@@ -25,7 +29,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 60
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
@@ -55,6 +59,15 @@ jobs:
           SEC_CONTACT: ${{ vars.SEC_CONTACT }}
         run: python scripts/supply-chain/fetch_company_identity.py
 
+      # Form SD 冲突矿产申报 → 冶炼厂关系边。这是本板块唯一有出处的关系数据。
+      # 语义是「该冶炼厂出现在申报人的供应链中」，不是直接供货关系。
+      # 失败不中断：边文件是上一次的产物，读不到新数据就沿用，不删不改。
+      - name: Extract Form SD smelter lists
+        continue-on-error: true
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: python scripts/supply-chain/extract_form_sd.py
+
       - name: Build supply chain graph nodes
         run: python scripts/supply-chain/build_chain_nodes.py
 
@@ -76,12 +89,13 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # 只暂存本工作流拥有的路径，不夹带任何其他改动。
           git add apps/supply-chain/nodes.json apps/supply-chain/health.json \
-                  apps/supply-chain/identity.json
+                  apps/supply-chain/identity.json apps/supply-chain/smelters.json \
+                  apps/supply-chain/edges
           if git diff --cached --quiet; then
             echo "生成结果与仓库一致，跳过提交和推送"
             exit 0
           fi
-          git commit -m "data: refresh supply chain graph nodes"
+          git commit -m "data: refresh supply chain graph nodes and Form SD edges"
           # 数据文件由本工作流独占生成。推送遇远端新提交时 rebase 重试，冲突以本次生成的
           # 版本为准（rebase 中 ours/theirs 语义互换，-X theirs 才是本地工作分支一侧）。
           for i in 1 2 3 4 5; do

@@ -1,0 +1,81 @@
+{
+  "contractVersion": 2,
+  "dataset": "supply-chain-edges",
+  "symbol": "CSCO",
+  "name": "思科",
+  "updatedAt": "2026-09-02T16:18:29Z",
+  "relation": {
+    "id": "smelter-in-supply-chain",
+    "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
+    "tier": "smelter"
+  },
+  "confidence": "disclosed",
+  "direction": {
+    "from": "smelter",
+    "to": "CSCO",
+    "toListed": true
+  },
+  "evidence": {
+    "sourceType": "sec-form-sd",
+    "url": "https://www.sec.gov/Archives/edgar/data/858877/000085887726000088/cmrcy25.htm",
+    "docDate": "2026-05-22",
+    "form": "SD",
+    "accession": "0000858877-26-000088",
+    "filingDate": "2026-05-22",
+    "reportDate": "",
+    "document": "cmrcy25.htm",
+    "indexUrl": "https://www.sec.gov/Archives/edgar/data/858877/000085887726000088/",
+    "totalSD": 7
+  },
+  "parse": {
+    "rowsScanned": 38,
+    "rowsWithCid": 0,
+    "nameOnly": 2,
+    "droppedNoCid": 0,
+    "unique": 2,
+    "namedRatio": 1.0,
+    "countryRatio": 1.0
+  },
+  "byCountry": {
+    "巴西": 1,
+    "老挝": 1
+  },
+  "byMineral": {
+    "钨": 2,
+    "锡": 2,
+    "钽": 1
+  },
+  "edges": [
+    {
+      "from": "NAME:gold-tantalum-tin-tungsten",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Gold, Tantalum, Tin, Tungsten",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "钨",
+        "钽",
+        "锡"
+      ],
+      "row": 18
+    },
+    {
+      "from": "NAME:united-kingdom-of-great-britain-and-northern-ireland",
+      "idType": "name-only",
+      "cid": null,
+      "name": "United Kingdom of Great Britain and Northern Ireland",
+      "country": "老挝",
+      "countryEn": "laos",
+      "minerals": [
+        "钨",
+        "锡"
+      ],
+      "row": 32
+    }
+  ],
+  "coverage": {
+    "claimComplete": false,
+    "note": "Form SD 强制申报、不强制列名单，本清单只是该公司披露的部分，且语义是「出现在供应链中」，不是直接供货。"
+  }
+}

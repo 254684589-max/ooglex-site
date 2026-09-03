@@ -329,6 +329,127 @@ async function main() {
       check(`图注不与层级卡重叠`, () => assert.equal(co.noteOverlaps, false));
     }
 
+    // ── 有冶炼厂数据的公司 ────────────────────────────────────────────
+    // 上一节守的是「空的时候说清楚为什么空」，这一节守的是「有数据的时候别说过头」。
+    // 冶炼厂那一层最容易出的错是把「出现在申报人供应链中」写成「是供应商」——
+    // 前者是申报原义，后者是我们替申报人下的结论，而且是错的。
+    const graph = JSON.parse(await readFile(path.join(ROOT, "apps/supply-chain/nodes.json"), "utf8"));
+    const withEdges = Object.keys(graph.edgeIndex || {}).sort();
+    if (!withEdges.length) {
+      console.log("\n── 公司视图 · 有冶炼厂数据 ── [跳过] 目前没有任何公司有边文件");
+    } else {
+      const target = withEdges[0];
+      const bundle = JSON.parse(await readFile(
+        path.join(ROOT, "apps/supply-chain/edges", `${target}.json`), "utf8"));
+      const expected = bundle.edges.length;
+      const countries = new Set(bundle.edges.map(e => e.country || "未归类")).size;
+      console.log(`\n── 公司视图 · 有冶炼厂数据（${target}，${expected} 条）──`);
+      await client.send("Emulation.setDeviceMetricsOverride",
+        { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false }, sessionId);
+      await client.send("Page.navigate",
+        { url: `http://127.0.0.1:${port}/apps/supply-chain/company.html?symbol=${target}` },
+        sessionId);
+      await evaluate(`new Promise((done, fail) => {
+        const deadline = Date.now() + 20000;
+        (function poll() {
+          if (document.querySelectorAll('#smelters .sm').length) return done(true);
+          if (Date.now() > deadline) return fail(new Error('20 秒内未渲染出冶炼厂清单'));
+          setTimeout(poll, 150);
+        })();
+      })`);
+
+      const ed = await evaluate(`(() => {
+        const text = document.body.innerText;
+        const picks = [...document.querySelectorAll('.pick')];
+        const smelterCard = picks[2];
+        // 冶炼厂清单里每一条的名字都应当是能点开原始申报的链接
+        const items = document.querySelectorAll('#smelters .sm');
+        const rows = document.querySelectorAll(
+          '#smelters a[href^="https://www.sec.gov/Archives"]');
+        // 线型必须在切视图之前读：切到地理视图会重建 #fig，层级卡就成了游离节点，
+        // getComputedStyle 对游离节点返回空串——那不是「线型不对」，是根本没量到。
+        const smelterBorder = smelterCard
+          ? getComputedStyle(smelterCard).borderTopStyle : 'missing';
+        const tierOneBorder = picks[0]
+          ? getComputedStyle(picks[0]).borderTopStyle : 'missing';
+        const smelterText = smelterCard ? smelterCard.innerText : '';
+        // 切到地理视图
+        const geoBtn = [...document.querySelectorAll('#seg button')]
+          .find(b => b.textContent.indexOf('地理') >= 0);
+        if (geoBtn) geoBtn.click();
+        const geoText = document.body.innerText;
+        return {
+          statesSemantics: text.indexOf('出现在申报人的供应链中') >= 0
+            || text.indexOf('出现在该公司 Form SD 申报供应链中') >= 0,
+          // 红线：不得把冶炼厂说成这家公司的供应商
+          callsThemSuppliers: text.indexOf('冶炼厂是') >= 0
+            || text.indexOf('的供应商包括') >= 0,
+          notComplete: text.indexOf('不是完整供应链') >= 0,
+          smelterCardSolid: smelterBorder,
+          smelterCardText: smelterText,
+          listLinks: rows.length,
+          listItems: items.length,
+          firstLink: rows.length ? rows[0].getAttribute('href') : '',
+          tierOneStillDashed: tierOneBorder,
+          geoShowsCountries: geoText.indexOf('个国家／地区') >= 0,
+          geoText: geoText.slice(0, 400),
+          bodyOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+        };
+      })()`);
+
+      check(`覆盖率声明写出真实条数`, () => assert.ok(
+        ed.smelterCardText.includes(`已收录 ${expected} 条`),
+        `卡片文字：${ed.smelterCardText.replace(/\n/g, " / ")}`));
+      check(`语义写的是「出现在供应链中」`, () => assert.ok(ed.statesSemantics));
+      check(`没有把冶炼厂说成供应商`, () => assert.equal(ed.callsThemSuppliers, false));
+      check(`「不是完整供应链」声明仍在`, () => assert.ok(ed.notComplete));
+      // 线型跟着数据走：这一层有已核验数据了才是实线
+      check(`有数据的冶炼厂层是实线`, () => assert.equal(ed.smelterCardSolid, "solid"));
+      // 但一级供应商仍然没有数据源，必须还是虚线
+      check(`无数据源的一级供应商仍是虚线`, () => assert.equal(ed.tierOneStillDashed, "dashed"));
+      check(`清单条数与边文件一致（${expected}）`, () => assert.equal(ed.listItems, expected));
+      check(`清单每条都能点开原始申报`, () => assert.equal(ed.listLinks, expected,
+        `${expected} 条里只有 ${ed.listLinks} 条可点开`));
+      check(`出处链接指向 SEC 申报归档`, () => assert.ok(
+        ed.firstLink.startsWith("https://www.sec.gov/Archives/"), ed.firstLink));
+      check(`地理视图按国别汇总（${countries} 个）`, () => assert.ok(ed.geoShowsCountries,
+        ed.geoText.slice(0, 120)));
+      check(`页面无横向溢出`, () => assert.ok(ed.bodyOverflow <= 1,
+        `溢出 ${ed.bodyOverflow}px`));
+
+      // 清单进主栏之后要在窄屏上复核一遍：几百条多列排布最容易撑破布局，
+      // 而这一段是新加的，之前三档宽度的断言没覆盖到它。
+      for (const [width, height] of [[360, 780], [768, 1024]]) {
+        await client.send("Emulation.setDeviceMetricsOverride",
+          { width, height, deviceScaleFactor: 1, mobile: width < 700 }, sessionId);
+        await client.send("Page.navigate",
+          { url: `http://127.0.0.1:${port}/apps/supply-chain/company.html?symbol=${target}` },
+          sessionId);
+        await evaluate(`new Promise((done, fail) => {
+          const deadline = Date.now() + 20000;
+          (function poll() {
+            if (document.querySelectorAll('#smelters .sm').length) return done(true);
+            if (Date.now() > deadline) return fail(new Error('20 秒内未渲染出冶炼厂清单'));
+            setTimeout(poll, 150);
+          })();
+        })`);
+        const narrow = await evaluate(`(() => {
+          const box = document.querySelector('#smelters');
+          return {
+            items: document.querySelectorAll('#smelters .sm').length,
+            page: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+            box: box ? box.scrollWidth - box.clientWidth : 0
+          };
+        })()`);
+        check(`${width}px 清单仍渲染 ${expected} 条`,
+          () => assert.equal(narrow.items, expected));
+        check(`${width}px 页面无横向溢出`, () => assert.ok(narrow.page <= 1,
+          `溢出 ${narrow.page}px`));
+        check(`${width}px 清单容器无横向溢出`, () => assert.ok(narrow.box <= 1,
+          `溢出 ${narrow.box}px`));
+      }
+    }
+
     // 未知代码要有明确说明，不能白屏
     console.log("\n── 公司视图 · 未知代码 ──");
     await client.send("Page.navigate",

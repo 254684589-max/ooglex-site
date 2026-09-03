@@ -1,11 +1,11 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "generatedAt": "2026-09-03T01:25:11Z",
+  "generatedAt": "2026-09-03T01:27:43Z",
   "status": "healthy",
   "historyStatus": "migrated",
-  "lastAttemptAt": "2026-09-03T01:25:11Z",
-  "lastSuccessfulAt": "2026-09-03T01:25:11Z",
+  "lastAttemptAt": "2026-09-03T01:27:43Z",
+  "lastSuccessfulAt": "2026-09-03T01:27:43Z",
   "consecutiveFailures": 0,
   "failureReason": null,
   "coverage": {
@@ -13,9 +13,23 @@
     "publishedNodes": 495,
     "stageResolvedPct": 100.0,
     "stageAmbiguousPct": 0.0,
-    "edges": 0
+    "edges": 20245,
+    "companiesWithEdges": 85
   },
   "sources": [
+    {
+      "id": "form-sd-smelters",
+      "name": "SEC EDGAR Form SD 冲突矿产申报",
+      "role": "edges",
+      "status": "healthy",
+      "mode": "filing",
+      "frequency": "annual",
+      "asOf": null,
+      "upstream": {
+        "dataset": "supply-chain-edges",
+        "path": "apps/supply-chain/edges"
+      }
+    },
     {
       "id": "sp500-members",
       "name": "站内标普500成分股清单",
@@ -30,5 +44,5 @@
       }
     }
   ],
-  "note": "第 0 层只依赖站内上游文件，不发起任何外部请求。stageAmbiguousPct 随 SIC 行业码细化与真实边反推逐步下降。"
+  "note": "构建脚本本身不发起外部请求，只读站内上游文件与抽取器产出的边文件。stageAmbiguousPct 随 SIC 行业码细化与真实边反推逐步下降。"
 }

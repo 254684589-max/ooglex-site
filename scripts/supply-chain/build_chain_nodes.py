@@ -1,21 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""生成产业链图谱第 0 层：节点表与价值链阶段初步口径。
+"""生成产业链图谱：节点表、价值链阶段口径，以及关系边的索引。
 
-**只读站内已有数据，不联网、不新增任何数据源。** 节点骨架直接来自
-`apps/companies/sp500.json`（站内每日更新的标普成分股清单），不另建第二套事实来源。
+**本脚本不联网、不自己造边。** 节点骨架来自 `apps/companies/sp500.json`
+（站内每日更新的标普成分股清单）；关系边由 `extract_form_sd.py` 从 SEC 申报里抽取后
+写在 `apps/supply-chain/edges/` 下，本脚本只负责读取、索引与逐条校验。
 
 ## 这一层做什么
 
-回答「每家公司处在产业链的哪一段」，但只到**板块级粗粒度**——因为当前可用的分类
-只有 GICS 一级板块（11 类）。按 `docs/SUPPLY_CHAIN_GRAPH.md` 第 5 节的方案 C：
-先用初步口径上线并逐节点标注来源，等第 2 层真实上下游边落地后再校正。
+1. 回答「每家公司处在产业链的哪一段」。SIC 行业码能判的用 SIC，判不了的退回板块级；
+   板块横跨多个阶段时不给结论，只给候选集。
+2. 把 `edges/` 下各公司的边汇成 `edgeIndex`，并对**每一条**边跑一遍证据契约。
 
-## 这一层刻意不做什么
+## 边不内联在 nodes.json 里
 
-**不产出任何关系边。** 边必须携带可核验的原始申报文件（见 `evidence` 契约），
-本层没有任何证据来源，因此 `edges` 恒为空数组。这不是待办事项，是契约：
-`assert_edge_contract()` 会在写盘前逐条硬校验，没有 evidence 的边一律拒绝写入。
+一家公司的冶炼厂名单动辄几百条。全塞进 nodes.json，总览页为了看六个环节就得下载
+几 MB，而它一条边都不需要。改为每家一个文件、公司页按需拉自己那一个；nodes.json
+只留索引，索引里带出处链接，不必先下文件就知道有没有边、边从哪来。
+
+## 契约对每一条边生效，不管它存在哪个文件里
+
+边必须携带可核验的原始申报文件（见 `evidence` 契约）。`assert_edge_contract()` 在写盘前
+逐条硬校验所有边文件里的所有边，任何一条不合格即中止，不写文件。
 
 模型「知道」台积电给英伟达代工——但没有出处的行业知识不是数据来源。本脚本不含
 任何硬编码的公司间关系。
@@ -46,6 +52,10 @@ IDENTITY_PATH = "apps/supply-chain/identity.json"
 OUT_DIR = "apps/supply-chain"
 NODES_PATH = os.path.join(OUT_DIR, "nodes.json")
 HEALTH_PATH = os.path.join(OUT_DIR, "health.json")
+# 关系边不内联在 nodes.json 里：一家公司的冶炼厂名单动辄几百条，全塞进来会让
+# 总览页为了看六个环节而下载几 MB。改为每家一个文件，公司页按需拉自己那一个。
+EDGES_DIR = os.path.join(OUT_DIR, "edges")
+SMELTERS_PATH = os.path.join(OUT_DIR, "smelters.json")
 
 # ── 价值链阶段定义 ──────────────────────────────────────────────────────────
 STAGES = [
@@ -119,30 +129,67 @@ def load_identity() -> dict:
         return {}
 
 
-def assert_edge_contract(edges: list[dict]) -> None:
+def load_edge_files() -> dict[str, dict]:
+    """读 edges/ 下每家公司的关系边文件。目录不存在就是「还没有边」，不是错误。"""
+    if not os.path.isdir(EDGES_DIR):
+        return {}
+    loaded: dict[str, dict] = {}
+    for name in sorted(os.listdir(EDGES_DIR)):
+        if not name.endswith(".json"):
+            continue
+        path = os.path.join(EDGES_DIR, name)
+        try:
+            with open(path, encoding="utf-8") as handle:
+                payload = json.load(handle)
+        except (OSError, ValueError) as exc:
+            # 坏文件不能当成「这家没有边」悄悄跳过——那会把故障显示成事实。
+            raise SystemExit(f"{path} 读不出来（{exc}），中止构建")
+        symbol = payload.get("symbol") or name[:-5]
+        if symbol != name[:-5]:
+            raise SystemExit(f"{path} 里的 symbol={symbol!r} 与文件名不符，中止")
+        loaded[symbol] = payload
+    return loaded
+
+
+def load_form_sd_coverage() -> dict | None:
+    """冶炼厂登记表里的覆盖率。没有这个文件就说明抽取器还没跑过。"""
+    try:
+        with open(SMELTERS_PATH, encoding="utf-8") as handle:
+            return (json.load(handle) or {}).get("coverage")
+    except (OSError, ValueError):
+        return None
+
+
+def assert_edge_contract(bundles: dict[str, dict]) -> None:
     """无证据不上图：写盘前硬校验，不靠自觉。
 
-    每条边必须携带非空 evidence[]，每条 evidence 必须能点开核验（URL + 文件日期）。
-    confidence 只有 disclosed / inferred 两档。任何一条不合格即中止，不写文件——
-    宁可不发布，也不发布来路不明的公司间关系。
+    契约 v2：出处在**文件级**——同一份申报里所有边的出处本就相同，提到文件级之后
+    结构上不可能出现某条边指向别的出处或没有出处。每条边则必须有 `row`，
+    把核验落到原始文档的具体一行。
+
+    任何一条不合格即中止，不写文件——宁可不发布，也不发布来路不明的公司间关系。
     """
     allowed_confidence = {"disclosed", "inferred"}
-    for i, edge in enumerate(edges):
-        where = f"edges[{i}] {edge.get('from')}→{edge.get('to')}"
-        if not edge.get("from") or not edge.get("to"):
-            raise ValueError(f"{where}：缺少 from / to")
-        if edge.get("confidence") not in allowed_confidence:
+    for symbol, bundle in sorted(bundles.items()):
+        where = f"edges/{symbol}.json"
+        if bundle.get("confidence") not in allowed_confidence:
             raise ValueError(f"{where}：confidence 必须是 {allowed_confidence}，"
-                             f"实际 {edge.get('confidence')!r}")
-        evidence = edge.get("evidence")
-        if not isinstance(evidence, list) or not evidence:
+                             f"实际 {bundle.get('confidence')!r}")
+        if not (bundle.get("relation") or {}).get("label"):
+            raise ValueError(f"{where}：缺少 relation.label，边的语义必须随数据发布")
+        evidence = bundle.get("evidence")
+        if not isinstance(evidence, dict) or not evidence:
             raise ValueError(f"{where}：没有 evidence，拒绝写入")
-        for j, item in enumerate(evidence):
-            if not isinstance(item, dict):
-                raise ValueError(f"{where} evidence[{j}]：格式错误")
-            for field in ("sourceType", "url", "docDate"):
-                if not item.get(field):
-                    raise ValueError(f"{where} evidence[{j}]：缺少可核验字段 {field}")
+        for field in ("sourceType", "url", "docDate"):
+            if not evidence.get(field):
+                raise ValueError(f"{where} evidence：缺少可核验字段 {field}")
+        if not str(evidence.get("url")).startswith("https://"):
+            raise ValueError(f"{where} evidence：出处必须是可点开的 https 链接")
+        for i, edge in enumerate(bundle.get("edges") or []):
+            if not edge.get("from"):
+                raise ValueError(f"{where} edges[{i}]：缺少 from")
+            if not isinstance(edge.get("row"), int) or edge["row"] < 1:
+                raise ValueError(f"{where} edges[{i}] {edge.get('from')}：缺少 row 定位")
 
 
 def load_members() -> tuple[list[dict], dict]:
@@ -287,8 +334,36 @@ def build() -> None:
     identity = load_identity()
     sic_module = load_sic_resolver()
     nodes = [build_node(m, identity, sic_module) for m in members if m.get("symbol")]
-    edges: list[dict] = []          # 第 0 层没有任何证据来源，恒为空
-    assert_edge_contract(edges)     # 契约从第 0 层就生效，不是以后再补
+
+    # 关系边：抽取器写在 edges/ 下，本脚本只读、只索引、只校验，不自己造边。
+    edge_files = load_edge_files()
+    all_edges = [e for payload in edge_files.values() for e in (payload.get("edges") or [])]
+    assert_edge_contract(edge_files)  # 契约对每个边文件与其每一条边生效
+
+    edge_index: dict[str, dict] = {}
+    edges_by_source: dict[str, int] = {}
+    for symbol, payload in sorted(edge_files.items()):
+        rows = payload.get("edges") or []
+        evidence = payload.get("evidence") or {}
+        edge_index[symbol] = {
+            "file": f"edges/{symbol}.json",
+            "count": len(rows),
+            "relation": (payload.get("relation") or {}).get("id"),
+            "filingDate": evidence.get("filingDate"),
+            "url": evidence.get("url"),
+        }
+        key = evidence.get("sourceType") or "unknown"
+        edges_by_source[key] = edges_by_source.get(key, 0) + len(rows)
+    node_ids = {n["id"] for n in nodes}
+    for node in nodes:
+        node["edgeCount"] = edge_index.get(node["id"], {}).get("count", 0)
+    orphans = sorted(set(edge_index) - node_ids)
+    if orphans:
+        # 边文件指向节点表里没有的公司：多半是成分股调整后遗留的旧文件。
+        # 留着会让公司页显示一份不再属于任何节点的名单。
+        raise SystemExit(f"边文件 {orphans} 不在节点表中，中止（请删除或重跑抽取器）")
+
+    form_sd_coverage = load_form_sd_coverage()
 
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     by_stage: dict[str, int] = {}
@@ -312,28 +387,38 @@ def build() -> None:
         "status": "ok",
         "source": "站内 apps/companies/sp500.json",
         "sourceUpstream": source_payload.get("listSource"),
-        "note": ("第 0 层：节点与价值链阶段初步口径。阶段由 GICS 一级板块映射得出，"
+        "note": ("节点与价值链阶段口径。阶段由 GICS 一级板块映射得出，"
                  "属板块级推断。板块横跨多个阶段时不给结论，只给 stageCandidates 候选集——"
                  "「微软=中间制造」即使加歧义标记也是错误断言，"
-                 "「微软=待细化（可能：中间制造/品牌整合/平台服务）」才是数据实际支持的说法。本层不产出任何关系边——边必须携带可核验的"
-                 "原始申报文件，写盘前逐条硬校验。"),
+                 "「微软=待细化（可能：中间制造/品牌整合/平台服务）」才是数据实际支持的说法。"
+                 "关系边不内联在本文件里，按公司分文件放在 edges/ 下、由 edgeIndex 索引——"
+                 "一家公司的冶炼厂名单动辄几百条，内联会让总览页为看六个环节下载几 MB。"
+                 "每条边都必须携带可核验的原始申报文件，写盘前逐条硬校验。"),
         "stages": STAGES,
         "nodes": nodes,
-        "edges": edges,
+        # 每家一个文件，公司页按需拉。索引里带出处链接，不必先下文件才知道有没有边。
+        "edgeIndex": edge_index,
         "stagePerformance": stage_performance(members, nodes, source_payload),
         "coverage": {
             "claimComplete": False,
             "nodesTotal": len(nodes),
-            "nodesWithEdges": 0,
-            "edgesTotal": 0,
-            "edgesBySource": {},
+            "nodesWithEdges": sum(1 for n in nodes if n["edgeCount"]),
+            "edgesTotal": len(all_edges),
+            "edgesBySource": edges_by_source,
+            # 抽取器实测到的申报形态。「有申报无名单」必须与「无申报」分开——
+            # Form SD 强制申报、不强制列名单，两者混在一起会把披露制度的上限
+            # 说成抓取失败。
+            "formSd": form_sd_coverage,
             # 按实际 stageBasis 分组。曾经把所有已判定的都记成 sector-initial，
             # 等于把 SIC 升级的功劳记在板块级口径头上、低报了数据质量的真实来源。
             "stageByBasis": by_basis,
             "stageResolvedNodes": resolved,
             "stageAmbiguousNodes": ambiguous,
             "note": ("本图谱只收录有公开出处的关系，不是完整供应链。"
-                     "当前尚无关系边。"),
+                     + ("当前尚无关系边。" if not all_edges else
+                        f"当前 {len(all_edges)} 条边全部来自 Form SD 冲突矿产申报，"
+                        f"语义是「该冶炼厂出现在申报人的供应链中」——间接、不含份额、"
+                        f"不含层级，不等于直接供货关系。")),
         },
         "dataQuality": {
             "contractVersion": CONTRACT_VERSION,
@@ -363,9 +448,19 @@ def build() -> None:
             "publishedNodes": len(nodes),
             "stageResolvedPct": round(100.0 * resolved / len(nodes), 1) if nodes else 0.0,
             "stageAmbiguousPct": round(100.0 * ambiguous / len(nodes), 1) if nodes else 0.0,
-            "edges": 0,
+            "edges": len(all_edges),
+            "companiesWithEdges": len(edge_index),
         },
-        "sources": [{
+        "sources": ([{
+            "id": "form-sd-smelters",
+            "name": "SEC EDGAR Form SD 冲突矿产申报",
+            "role": "edges",
+            "status": "healthy",
+            "mode": "filing",
+            "frequency": "annual",
+            "asOf": None,
+            "upstream": {"dataset": "supply-chain-edges", "path": EDGES_DIR},
+        }] if edge_index else []) + [{
             "id": "sp500-members",
             "name": "站内标普500成分股清单",
             "role": "upstream",
@@ -375,7 +470,7 @@ def build() -> None:
             "asOf": source_payload.get("asOf"),
             "upstream": {"dataset": "companies", "path": SOURCE_PATH},
         }],
-        "note": ("第 0 层只依赖站内上游文件，不发起任何外部请求。"
+        "note": ("构建脚本本身不发起外部请求，只读站内上游文件与抽取器产出的边文件。"
                  "stageAmbiguousPct 随 SIC 行业码细化与真实边反推逐步下降。"),
     }
 
@@ -390,7 +485,14 @@ def build() -> None:
     print(f"  已判定阶段 {resolved}（{health['coverage']['stageResolvedPct']}%）；"
           f"仅给候选集 {ambiguous}；板块未登记 {unknown}")
     print(f"  口径来源：{by_basis}")
-    print(f"  关系边 {len(edges)}（第 0 层无证据来源，契约已校验）")
+    print(f"  关系边 {len(all_edges)} 条，来自 {len(edge_index)} 家公司的边文件"
+          f"（契约已逐条校验）")
+    if edges_by_source:
+        print(f"  边的出处：{edges_by_source}")
+    if form_sd_coverage:
+        print(f"  Form SD：有名单 {form_sd_coverage.get('companiesWithList')} 家 · "
+              f"有申报无名单 {form_sd_coverage.get('companiesFiledNoList')} 家 · "
+              f"无申报 {form_sd_coverage.get('companiesNoFiling')} 家")
     perf = payload["stagePerformance"]
     active = [r for r in perf["stages"] if r["companies"]]
     print(f"  环节表现：{len(active)} 个环节有报价；"
