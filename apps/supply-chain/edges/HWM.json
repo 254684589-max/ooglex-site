@@ -1,0 +1,629 @@
+{
+  "contractVersion": 2,
+  "dataset": "supply-chain-edges",
+  "symbol": "HWM",
+  "name": "豪梅特航空",
+  "updatedAt": "2026-09-03T02:33:34Z",
+  "relation": {
+    "id": "smelter-in-supply-chain",
+    "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
+    "tier": "smelter"
+  },
+  "confidence": "disclosed",
+  "direction": {
+    "from": "smelter",
+    "to": "HWM",
+    "toListed": true
+  },
+  "evidence": {
+    "sourceType": "sec-form-sd",
+    "url": "https://www.sec.gov/Archives/edgar/data/4281/000110465926067247/tm2614644d1_ex1-01.htm",
+    "docDate": "2026-05-28",
+    "form": "SD",
+    "accession": "0001104659-26-067247",
+    "filingDate": "2026-05-28",
+    "reportDate": "",
+    "document": "tm2614644d1_ex1-01.htm",
+    "indexUrl": "https://www.sec.gov/Archives/edgar/data/4281/000110465926067247/",
+    "totalSD": 10
+  },
+  "parse": {
+    "rowsScanned": 105,
+    "rowsWithCid": 0,
+    "nameOnly": 49,
+    "droppedNoCid": 2,
+    "unique": 47,
+    "namedRatio": 1.0,
+    "countryRatio": 1.0
+  },
+  "byCountry": {
+    "中国": 23,
+    "美国": 6,
+    "日本": 4,
+    "巴西": 3,
+    "德国": 3,
+    "越南": 2,
+    "玻利维亚": 1,
+    "墨西哥": 1,
+    "印度": 1,
+    "爱沙尼亚": 1,
+    "泰国": 1,
+    "哈萨克斯坦": 1
+  },
+  "byMineral": {
+    "钽": 33,
+    "钨": 13,
+    "锡": 2
+  },
+  "edges": [
+    {
+      "from": "NAME:amg-brasil",
+      "idType": "name-only",
+      "cid": null,
+      "name": "AMG Brasil",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "钽"
+      ],
+      "row": 32
+    },
+    {
+      "from": "NAME:asia-tungsten-products-vietnam-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Asia Tungsten Products Vietnam Ltd.",
+      "country": "越南",
+      "countryEn": "vietnam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 68
+    },
+    {
+      "from": "NAME:changsha-south-tantalum-niobium-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Changsha South Tantalum Niobium Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 33
+    },
+    {
+      "from": "NAME:china-molybdenum-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "China Molybdenum Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 69
+    },
+    {
+      "from": "NAME:chongyi-zhangyuan-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Chongyi Zhangyuan Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 70
+    },
+    {
+      "from": "NAME:conformant",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Conformant",
+      "country": "玻利维亚",
+      "countryEn": "bolivia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 65
+    },
+    {
+      "from": "NAME:d-block-metals-llc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "D Block Metals, LLC",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 34
+    },
+    {
+      "from": "NAME:f-x-electro-materials-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "F&X Electro-Materials Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 35
+    },
+    {
+      "from": "NAME:fir-metals-resource-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "FIR Metals & Resource Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 36
+    },
+    {
+      "from": "NAME:ganzhou-jiangwu-ferrotungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ganzhou Jiangwu Ferrotungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 71
+    },
+    {
+      "from": "NAME:ganzhou-seadragon-w-mo-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ganzhou Seadragon W & Mo Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 72
+    },
+    {
+      "from": "NAME:global-advanced-metals-aizu",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Global Advanced Metals Aizu",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 37
+    },
+    {
+      "from": "NAME:global-advanced-metals-boyertown",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Global Advanced Metals Boyertown",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 38
+    },
+    {
+      "from": "NAME:global-tungsten-powders-llc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Global Tungsten & Powders LLC",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钨"
+      ],
+      "row": 73
+    },
+    {
+      "from": "NAME:h-c-starck-tungsten-gmbh",
+      "idType": "name-only",
+      "cid": null,
+      "name": "H.C. Starck Tungsten GmbH",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钨"
+      ],
+      "row": 74
+    },
+    {
+      "from": "NAME:hengyang-king-xing-lifeng-new-materials-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Hengyang King Xing Lifeng New Materials Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 39
+    },
+    {
+      "from": "NAME:hunan-shizhuyuan-nonferrous-metals-co-ltd-chenzhou-tungsten-products-branch",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Hunan Shizhuyuan Nonferrous Metals Co., Ltd. Chenzhou Tungsten Products Branch",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 75
+    },
+    {
+      "from": "NAME:jiangxi-dinghai-tantalum-niobium-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiangxi Dinghai Tantalum & Niobium Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 40
+    },
+    {
+      "from": "NAME:jiangxi-gan-bei-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiangxi Gan Bei Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 76
+    },
+    {
+      "from": "NAME:jiangxi-tuohong-new-raw-material",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiangxi Tuohong New Raw Material",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 41
+    },
+    {
+      "from": "NAME:jiujiang-jinxin-nonferrous-metals-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "JiuJiang JinXin Nonferrous Metals Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 42
+    },
+    {
+      "from": "NAME:jiujiang-tanbre-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiujiang Tanbre Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 43
+    },
+    {
+      "from": "NAME:jiujiang-zhongao-tantalum-niobium-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiujiang Zhongao Tantalum & Niobium Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 44
+    },
+    {
+      "from": "NAME:kemet-de-mexico",
+      "idType": "name-only",
+      "cid": null,
+      "name": "KEMET de Mexico",
+      "country": "墨西哥",
+      "countryEn": "mexico",
+      "minerals": [
+        "钽"
+      ],
+      "row": 45
+    },
+    {
+      "from": "NAME:masan-high-tech-materials",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Masan High-Tech Materials",
+      "country": "越南",
+      "countryEn": "vietnam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 77
+    },
+    {
+      "from": "NAME:materion-newton-inc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Materion Newton Inc.",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 46
+    },
+    {
+      "from": "NAME:metallurgical-products-india-pvt-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Metallurgical Products India Pvt., Ltd.",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "钽"
+      ],
+      "row": 47
+    },
+    {
+      "from": "NAME:mineracao-taboca-s-a",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Mineracao Taboca S.A.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "钽",
+        "锡"
+      ],
+      "row": 48
+    },
+    {
+      "from": "NAME:mitsui-kinzoku-company-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Mitsui Kinzoku Company, Limited",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 49
+    },
+    {
+      "from": "NAME:ningxia-orient-tantalum-industry-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ningxia Orient Tantalum Industry Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 50
+    },
+    {
+      "from": "NAME:npm-silmet-as",
+      "idType": "name-only",
+      "cid": null,
+      "name": "NPM Silmet AS",
+      "country": "爱沙尼亚",
+      "countryEn": "estonia",
+      "minerals": [
+        "钽"
+      ],
+      "row": 51
+    },
+    {
+      "from": "NAME:quantumclean",
+      "idType": "name-only",
+      "cid": null,
+      "name": "QuantumClean",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 52
+    },
+    {
+      "from": "NAME:resind-industria-e-comercio-ltda",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Resind Industria e Comercio Ltda.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "钽"
+      ],
+      "row": 53
+    },
+    {
+      "from": "NAME:rfh-yancheng-jinye-new-material-technology-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "RFH Yancheng Jinye New Material Technology Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 54
+    },
+    {
+      "from": "NAME:shinwon-tungsten-fujian-shanghang-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Shinwon Tungsten (Fujian Shanghang) Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 78
+    },
+    {
+      "from": "NAME:taki-chemical-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Taki Chemical Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 55
+    },
+    {
+      "from": "NAME:taniobis-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "TANIOBIS Co., Ltd.",
+      "country": "泰国",
+      "countryEn": "thailand",
+      "minerals": [
+        "钽"
+      ],
+      "row": 56
+    },
+    {
+      "from": "NAME:taniobis-gmbh",
+      "idType": "name-only",
+      "cid": null,
+      "name": "TANIOBIS GmbH",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钽"
+      ],
+      "row": 57
+    },
+    {
+      "from": "NAME:taniobis-japan-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "TANIOBIS Japan Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 58
+    },
+    {
+      "from": "NAME:taniobis-smelting-gmbh-co-kg",
+      "idType": "name-only",
+      "cid": null,
+      "name": "TANIOBIS Smelting GmbH & Co. KG",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钽"
+      ],
+      "row": 59
+    },
+    {
+      "from": "NAME:telex-metals",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Telex Metals",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 60
+    },
+    {
+      "from": "NAME:ulba-metallurgical-plant-jsc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ulba Metallurgical Plant JSC",
+      "country": "哈萨克斯坦",
+      "countryEn": "kazakhstan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 61
+    },
+    {
+      "from": "NAME:xiamen-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Xiamen Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 80
+    },
+    {
+      "from": "NAME:xiamen-tungsten-h-c-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Xiamen Tungsten (H.C.) Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 79
+    },
+    {
+      "from": "NAME:ximei-resources-guangdong-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "XIMEI RESOURCES (GUANGDONG) LIMITED",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 62
+    },
+    {
+      "from": "NAME:xinxing-haorong-electronic-material-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "XinXing HaoRong Electronic Material Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 63
+    },
+    {
+      "from": "NAME:yanling-jincheng-tantalum-niobium-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Yanling Jincheng Tantalum & Niobium Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 64
+    }
+  ],
+  "coverage": {
+    "claimComplete": false,
+    "note": "Form SD 强制申报、不强制列名单，本清单只是该公司披露的部分，且语义是「出现在供应链中」，不是直接供货。"
+  }
+}

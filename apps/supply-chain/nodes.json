@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-03T02:17:56Z",
+  "updatedAt": "2026-09-03T02:33:34Z",
   "asOf": "2026-09-02",
   "frequency": "daily",
   "status": "ok",
@@ -79,7 +79,8 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 239
+      "edgeCount": 239,
+      "formSdStatus": "listed"
     },
     {
       "id": "AAPL",
@@ -107,7 +108,8 @@
         "sic": 3571,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "GOOGL",
@@ -135,7 +137,8 @@
         "sic": 7370,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MSFT",
@@ -163,7 +166,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 157
+      "edgeCount": 157,
+      "formSdStatus": "listed"
     },
     {
       "id": "AMZN",
@@ -191,7 +195,8 @@
         "sic": 5961,
         "match": "sic-range"
       },
-      "edgeCount": 355
+      "edgeCount": 355,
+      "formSdStatus": "listed"
     },
     {
       "id": "AVGO",
@@ -219,7 +224,8 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "META",
@@ -247,7 +253,8 @@
         "sic": 7370,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "TSLA",
@@ -275,7 +282,8 @@
         "sic": 3711,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "LLY",
@@ -303,7 +311,8 @@
         "sic": 2834,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "BRK-B",
@@ -331,7 +340,8 @@
         "sic": 6331,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MU",
@@ -359,7 +369,8 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 184
+      "edgeCount": 184,
+      "formSdStatus": "listed"
     },
     {
       "id": "JPM",
@@ -387,7 +398,8 @@
         "sic": 6021,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "WMT",
@@ -415,7 +427,8 @@
         "sic": 5331,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "AMD",
@@ -443,7 +456,8 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 211
+      "edgeCount": 211,
+      "formSdStatus": "listed"
     },
     {
       "id": "V",
@@ -471,7 +485,8 @@
         "sic": 7389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "XOM",
@@ -499,7 +514,8 @@
         "sic": 2911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "JNJ",
@@ -527,7 +543,8 @@
         "sic": 2834,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MA",
@@ -555,7 +572,8 @@
         "sic": 7389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ABBV",
@@ -583,7 +601,8 @@
         "sic": 2834,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "INTC",
@@ -611,7 +630,8 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 209
+      "edgeCount": 209,
+      "formSdStatus": "listed"
     },
     {
       "id": "BAC",
@@ -639,7 +659,8 @@
         "sic": 6021,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CSCO",
@@ -667,7 +688,8 @@
         "sic": 3576,
         "match": "sic-exact"
       },
-      "edgeCount": 2
+      "edgeCount": 2,
+      "formSdStatus": "listed"
     },
     {
       "id": "CVX",
@@ -695,7 +717,8 @@
         "sic": 2911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ORCL",
@@ -723,7 +746,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "COST",
@@ -751,7 +775,8 @@
         "sic": 5331,
         "match": "sic-range"
       },
-      "edgeCount": 3
+      "edgeCount": 3,
+      "formSdStatus": "listed"
     },
     {
       "id": "PLTR",
@@ -779,7 +804,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "KO",
@@ -807,7 +833,8 @@
         "sic": 2080,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "MRK",
@@ -835,7 +862,8 @@
         "sic": 2834,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CAT",
@@ -863,7 +891,8 @@
         "sic": 3531,
         "match": "sic-range"
       },
-      "edgeCount": 1
+      "edgeCount": 1,
+      "formSdStatus": "listed"
     },
     {
       "id": "UNH",
@@ -891,7 +920,8 @@
         "sic": 6324,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "LRCX",
@@ -919,7 +949,8 @@
         "sic": 3559,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "NFLX",
@@ -947,7 +978,8 @@
         "sic": 7841,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "AMAT",
@@ -975,7 +1007,8 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 325
+      "edgeCount": 325,
+      "formSdStatus": "listed"
     },
     {
       "id": "GE",
@@ -1003,7 +1036,8 @@
         "sic": 3600,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "PG",
@@ -1031,7 +1065,8 @@
         "sic": 2840,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MS",
@@ -1059,7 +1094,8 @@
         "sic": 6211,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "DELL",
@@ -1087,7 +1123,8 @@
         "sic": 3571,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "HD",
@@ -1115,7 +1152,8 @@
         "sic": 5211,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "GS",
@@ -1143,7 +1181,8 @@
         "sic": 6211,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "PM",
@@ -1171,7 +1210,8 @@
         "sic": 2111,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "WFC",
@@ -1199,7 +1239,8 @@
         "sic": 6021,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "RTX",
@@ -1227,7 +1268,8 @@
         "sic": 3724,
         "match": "sic-exact"
       },
-      "edgeCount": 1
+      "edgeCount": 1,
+      "formSdStatus": "listed"
     },
     {
       "id": "GEV",
@@ -1255,7 +1297,8 @@
         "sic": 3600,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "AMGN",
@@ -1283,7 +1326,8 @@
         "sic": 2836,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ANET",
@@ -1311,7 +1355,8 @@
         "sic": 3576,
         "match": "sic-exact"
       },
-      "edgeCount": 281
+      "edgeCount": 281,
+      "formSdStatus": "listed"
     },
     {
       "id": "TXN",
@@ -1339,7 +1384,8 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 219
+      "edgeCount": 219,
+      "formSdStatus": "listed"
     },
     {
       "id": "SNDK",
@@ -1367,7 +1413,8 @@
         "sic": 3572,
         "match": "sic-exact"
       },
-      "edgeCount": 221
+      "edgeCount": 221,
+      "formSdStatus": "listed"
     },
     {
       "id": "C",
@@ -1395,7 +1442,8 @@
         "sic": 6021,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "TMO",
@@ -1423,7 +1471,8 @@
         "sic": 3829,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "LIN",
@@ -1451,7 +1500,8 @@
         "sic": 2810,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "AXP",
@@ -1479,7 +1529,8 @@
         "sic": 6199,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "KLAC",
@@ -1507,7 +1558,8 @@
         "sic": 3827,
         "match": "sic-range"
       },
-      "edgeCount": 281
+      "edgeCount": 281,
+      "formSdStatus": "listed"
     },
     {
       "id": "PANW",
@@ -1535,7 +1587,8 @@
         "sic": 3577,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "IBM",
@@ -1563,7 +1616,8 @@
         "sic": 3570,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CRM",
@@ -1591,7 +1645,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "VZ",
@@ -1619,7 +1674,8 @@
         "sic": 4813,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "TMUS",
@@ -1647,7 +1703,8 @@
         "sic": 4812,
         "match": "sic-range"
       },
-      "edgeCount": 197
+      "edgeCount": 197,
+      "formSdStatus": "listed"
     },
     {
       "id": "APH",
@@ -1675,7 +1732,8 @@
         "sic": 3678,
         "match": "sic-range"
       },
-      "edgeCount": 698
+      "edgeCount": 698,
+      "formSdStatus": "listed"
     },
     {
       "id": "ABT",
@@ -1703,7 +1761,8 @@
         "sic": 2834,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "PEP",
@@ -1731,7 +1790,8 @@
         "sic": 2080,
         "match": "sic-range"
       },
-      "edgeCount": 26
+      "edgeCount": 26,
+      "formSdStatus": "listed"
     },
     {
       "id": "DE",
@@ -1759,7 +1819,8 @@
         "sic": 3523,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "SCHW",
@@ -1787,7 +1848,8 @@
         "sic": 6211,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "DIS",
@@ -1815,7 +1877,8 @@
         "sic": 7990,
         "match": "sic-range"
       },
-      "edgeCount": 6
+      "edgeCount": 6,
+      "formSdStatus": "listed"
     },
     {
       "id": "GILD",
@@ -1843,7 +1906,8 @@
         "sic": 2836,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "MCD",
@@ -1871,7 +1935,8 @@
         "sic": 5812,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "STX",
@@ -1899,7 +1964,8 @@
         "sic": 3572,
         "match": "sic-exact"
       },
-      "edgeCount": 347
+      "edgeCount": 347,
+      "formSdStatus": "listed"
     },
     {
       "id": "MRVL",
@@ -1927,7 +1993,8 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "T",
@@ -1955,7 +2022,8 @@
         "sic": 4813,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "QCOM",
@@ -1983,7 +2051,8 @@
         "sic": 3663,
         "match": "sic-range"
       },
-      "edgeCount": 218
+      "edgeCount": 218,
+      "formSdStatus": "listed"
     },
     {
       "id": "ADI",
@@ -2011,7 +2080,8 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 222
+      "edgeCount": 222,
+      "formSdStatus": "listed"
     },
     {
       "id": "NEE",
@@ -2039,7 +2109,8 @@
         "sic": 4911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "UNP",
@@ -2067,7 +2138,8 @@
         "sic": 4011,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "BLK",
@@ -2095,7 +2167,8 @@
         "sic": 6211,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "WELL",
@@ -2123,7 +2196,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "COP",
@@ -2151,7 +2225,8 @@
         "sic": 2911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "PFE",
@@ -2179,7 +2254,8 @@
         "sic": 2834,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "BA",
@@ -2207,7 +2283,8 @@
         "sic": 3721,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "BX",
@@ -2235,7 +2312,8 @@
         "sic": 6282,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "UBER",
@@ -2263,7 +2341,8 @@
         "sic": 7389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "BKNG",
@@ -2291,7 +2370,8 @@
         "sic": 4700,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "WDC",
@@ -2319,7 +2399,8 @@
         "sic": 3572,
         "match": "sic-exact"
       },
-      "edgeCount": 209
+      "edgeCount": 209,
+      "formSdStatus": "listed"
     },
     {
       "id": "IBKR",
@@ -2347,7 +2428,8 @@
         "sic": 6211,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ETN",
@@ -2375,7 +2457,8 @@
         "sic": 3590,
         "match": "sic-range"
       },
-      "edgeCount": 298
+      "edgeCount": 298,
+      "formSdStatus": "listed"
     },
     {
       "id": "DHR",
@@ -2403,7 +2486,8 @@
         "sic": 3823,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "TJX",
@@ -2431,7 +2515,8 @@
         "sic": 5651,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "VRTX",
@@ -2459,7 +2544,8 @@
         "sic": 2834,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "NOW",
@@ -2487,7 +2573,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "BMY",
@@ -2515,7 +2602,8 @@
         "sic": 2834,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "NEM",
@@ -2543,7 +2631,8 @@
         "sic": 1040,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "COF",
@@ -2571,7 +2660,8 @@
         "sic": 6021,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ISRG",
@@ -2599,7 +2689,8 @@
         "sic": 3842,
         "match": "sic-range"
       },
-      "edgeCount": 328
+      "edgeCount": 328,
+      "formSdStatus": "listed"
     },
     {
       "id": "CB",
@@ -2627,7 +2718,8 @@
         "sic": 6331,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "HON",
@@ -2655,7 +2747,8 @@
         "sic": 3724,
         "match": "sic-exact"
       },
-      "edgeCount": 37
+      "edgeCount": 37,
+      "formSdStatus": "listed"
     },
     {
       "id": "PGR",
@@ -2683,7 +2776,8 @@
         "sic": 6331,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "SPGI",
@@ -2711,7 +2805,8 @@
         "sic": 7320,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "PLD",
@@ -2739,7 +2834,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CVS",
@@ -2767,7 +2863,8 @@
         "sic": 5912,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "GLW",
@@ -2795,7 +2892,8 @@
         "sic": 3357,
         "match": "sic-range"
       },
-      "edgeCount": 339
+      "edgeCount": 339,
+      "formSdStatus": "listed"
     },
     {
       "id": "LMT",
@@ -2823,7 +2921,8 @@
         "sic": 3760,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "SBUX",
@@ -2851,7 +2950,8 @@
         "sic": 5810,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 6,
+      "formSdStatus": "listed"
     },
     {
       "id": "SYK",
@@ -2879,7 +2979,8 @@
         "sic": 3841,
         "match": "sic-range"
       },
-      "edgeCount": 344
+      "edgeCount": 344,
+      "formSdStatus": "listed"
     },
     {
       "id": "PH",
@@ -2907,7 +3008,8 @@
         "sic": 3490,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MDT",
@@ -2935,7 +3037,8 @@
         "sic": 3845,
         "match": "sic-range"
       },
-      "edgeCount": 599
+      "edgeCount": 599,
+      "formSdStatus": "listed"
     },
     {
       "id": "MO",
@@ -2963,7 +3066,8 @@
         "sic": 2111,
         "match": "sic-range"
       },
-      "edgeCount": 41
+      "edgeCount": 41,
+      "formSdStatus": "listed"
     },
     {
       "id": "ACN",
@@ -2991,7 +3095,8 @@
         "sic": 7389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "FTNT",
@@ -3019,7 +3124,8 @@
         "sic": 3577,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MPC",
@@ -3047,7 +3153,8 @@
         "sic": 2911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ADP",
@@ -3075,7 +3182,8 @@
         "sic": 7374,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "LOW",
@@ -3103,7 +3211,8 @@
         "sic": 5211,
         "match": "sic-range"
       },
-      "edgeCount": 55
+      "edgeCount": 55,
+      "formSdStatus": "listed"
     },
     {
       "id": "ADBE",
@@ -3131,7 +3240,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "BNY",
@@ -3159,7 +3269,8 @@
         "sic": 6022,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ABNB",
@@ -3187,7 +3298,8 @@
         "sic": 7340,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "VLO",
@@ -3215,7 +3327,8 @@
         "sic": 2911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "MCK",
@@ -3243,7 +3356,8 @@
         "sic": 5122,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "APP",
@@ -3271,7 +3385,8 @@
         "sic": 7370,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "FCX",
@@ -3299,7 +3414,8 @@
         "sic": 1000,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CEG",
@@ -3327,7 +3443,8 @@
         "sic": 4911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "PSX",
@@ -3355,7 +3472,8 @@
         "sic": 2911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "HWM",
@@ -3383,7 +3501,8 @@
         "sic": 3350,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 47,
+      "formSdStatus": "listed"
     },
     {
       "id": "CME",
@@ -3411,7 +3530,8 @@
         "sic": 6200,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "EQIX",
@@ -3439,7 +3559,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "SO",
@@ -3467,7 +3588,8 @@
         "sic": 4911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "VRT",
@@ -3495,7 +3617,8 @@
         "sic": 3679,
         "match": "sic-range"
       },
-      "edgeCount": 329
+      "edgeCount": 329,
+      "formSdStatus": "listed"
     },
     {
       "id": "DASH",
@@ -3523,7 +3646,8 @@
         "sic": 7389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "GD",
@@ -3551,7 +3675,8 @@
         "sic": 3730,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "USB",
@@ -3579,7 +3704,8 @@
         "sic": 6021,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "PNC",
@@ -3607,7 +3733,8 @@
         "sic": 6021,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "TT",
@@ -3635,7 +3762,8 @@
         "sic": 3822,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "HOOD",
@@ -3663,7 +3791,8 @@
         "sic": 6211,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CMCSA",
@@ -3691,7 +3820,8 @@
         "sic": 4841,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "KKR",
@@ -3719,7 +3849,8 @@
         "sic": 6282,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "DUK",
@@ -3747,7 +3878,8 @@
         "sic": 4931,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "INTU",
@@ -3775,7 +3907,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 103
+      "edgeCount": 103,
+      "formSdStatus": "listed"
     },
     {
       "id": "WMB",
@@ -3803,7 +3936,8 @@
         "sic": 4922,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "PWR",
@@ -3831,7 +3965,8 @@
         "sic": 1731,
         "match": "sic-range"
       },
-      "edgeCount": 9
+      "edgeCount": 9,
+      "formSdStatus": "listed"
     },
     {
       "id": "MRSH",
@@ -3859,7 +3994,8 @@
         "sic": 6411,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CSX",
@@ -3887,7 +4023,8 @@
         "sic": 4011,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ICE",
@@ -3915,7 +4052,8 @@
         "sic": 6200,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "HCA",
@@ -3943,7 +4081,8 @@
         "sic": 8062,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ELV",
@@ -3971,7 +4110,8 @@
         "sic": 6324,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "WM",
@@ -3999,7 +4139,8 @@
         "sic": 4953,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "MMM",
@@ -4027,7 +4168,8 @@
         "sic": 3841,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "REGN",
@@ -4055,7 +4197,8 @@
         "sic": 2834,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "MAR",
@@ -4083,7 +4226,8 @@
         "sic": 7011,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "UPS",
@@ -4111,7 +4255,8 @@
         "sic": 4210,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "SLB",
@@ -4139,7 +4284,8 @@
         "sic": 1389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MCO",
@@ -4167,7 +4313,8 @@
         "sic": 7320,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "JCI",
@@ -4195,7 +4342,8 @@
         "sic": 3585,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CDNS",
@@ -4223,7 +4371,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "EMR",
@@ -4251,7 +4400,8 @@
         "sic": 3600,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "SHW",
@@ -4279,7 +4429,8 @@
         "sic": 5200,
         "match": "sic-range"
       },
-      "edgeCount": 7
+      "edgeCount": 7,
+      "formSdStatus": "listed"
     },
     {
       "id": "CVNA",
@@ -4307,7 +4458,8 @@
         "sic": 5500,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "AMT",
@@ -4335,7 +4487,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "MDLZ",
@@ -4363,7 +4516,8 @@
         "sic": 2000,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "SNPS",
@@ -4391,7 +4545,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MSI",
@@ -4419,7 +4574,8 @@
         "sic": 3663,
         "match": "sic-range"
       },
-      "edgeCount": 362
+      "edgeCount": 362,
+      "formSdStatus": "listed"
     },
     {
       "id": "CTAS",
@@ -4447,7 +4603,8 @@
         "sic": 2320,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "EOG",
@@ -4475,7 +4632,8 @@
         "sic": 1311,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ECL",
@@ -4503,7 +4661,8 @@
         "sic": 2840,
         "match": "sic-range"
       },
-      "edgeCount": 354
+      "edgeCount": 354,
+      "formSdStatus": "listed"
     },
     {
       "id": "TRV",
@@ -4531,7 +4690,8 @@
         "sic": 6331,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ITW",
@@ -4559,7 +4719,8 @@
         "sic": 3560,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "GM",
@@ -4587,7 +4748,8 @@
         "sic": 3711,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "APO",
@@ -4615,7 +4777,8 @@
         "sic": 6282,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CMI",
@@ -4643,7 +4806,8 @@
         "sic": 3510,
         "match": "sic-range"
       },
-      "edgeCount": 361
+      "edgeCount": 361,
+      "formSdStatus": "listed"
     },
     {
       "id": "FDX",
@@ -4671,7 +4835,8 @@
         "sic": 4513,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CI",
@@ -4699,7 +4864,8 @@
         "sic": 6324,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "DDOG",
@@ -4727,7 +4893,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "NOC",
@@ -4755,7 +4922,8 @@
         "sic": 3812,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "TGT",
@@ -4783,7 +4951,8 @@
         "sic": 5331,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ROST",
@@ -4811,7 +4980,8 @@
         "sic": 5651,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "NSC",
@@ -4839,7 +5009,8 @@
         "sic": 4011,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ORLY",
@@ -4867,7 +5038,8 @@
         "sic": 5531,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CL",
@@ -4895,7 +5067,8 @@
         "sic": 2844,
         "match": "sic-range"
       },
-      "edgeCount": 317
+      "edgeCount": 317,
+      "formSdStatus": "listed"
     },
     {
       "id": "BSX",
@@ -4923,7 +5096,8 @@
         "sic": 3841,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "WBD",
@@ -4951,7 +5125,8 @@
         "sic": 4841,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "RCL",
@@ -4979,7 +5154,8 @@
         "sic": 4400,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "KMI",
@@ -5007,7 +5183,8 @@
         "sic": 4922,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "HLT",
@@ -5035,7 +5212,8 @@
         "sic": 7011,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "AON",
@@ -5063,7 +5241,8 @@
         "sic": 6411,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "APD",
@@ -5091,7 +5270,8 @@
         "sic": 2810,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "HPE",
@@ -5119,7 +5299,8 @@
         "sic": 3570,
         "match": "sic-range"
       },
-      "edgeCount": 226
+      "edgeCount": 226,
+      "formSdStatus": "listed"
     },
     {
       "id": "RSG",
@@ -5147,7 +5328,8 @@
         "sic": 4953,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "SPG",
@@ -5175,7 +5357,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "AJG",
@@ -5203,7 +5386,8 @@
         "sic": 6411,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "BDX",
@@ -5231,7 +5415,8 @@
         "sic": 3841,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "LITE",
@@ -5259,7 +5444,8 @@
         "sic": 3669,
         "match": "sic-range"
       },
-      "edgeCount": 6
+      "edgeCount": 6,
+      "formSdStatus": "listed"
     },
     {
       "id": "AEP",
@@ -5287,7 +5473,8 @@
         "sic": 4911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ALL",
@@ -5315,7 +5502,8 @@
         "sic": 6331,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "COR",
@@ -5343,7 +5531,8 @@
         "sic": 5122,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "DLR",
@@ -5371,7 +5560,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "TDG",
@@ -5399,7 +5589,8 @@
         "sic": 3728,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "PCAR",
@@ -5427,7 +5618,8 @@
         "sic": 3711,
         "match": "sic-exact"
       },
-      "edgeCount": 361
+      "edgeCount": 361,
+      "formSdStatus": "listed"
     },
     {
       "id": "BKR",
@@ -5455,7 +5647,8 @@
         "sic": 3533,
         "match": "sic-range"
       },
-      "edgeCount": 341
+      "edgeCount": 341,
+      "formSdStatus": "listed"
     },
     {
       "id": "TFC",
@@ -5483,7 +5676,8 @@
         "sic": 6021,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "TRGP",
@@ -5511,7 +5705,8 @@
         "sic": 4922,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MET",
@@ -5539,7 +5734,8 @@
         "sic": 6311,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CRH",
@@ -5567,7 +5763,8 @@
         "sic": 3241,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "URI",
@@ -5595,7 +5792,8 @@
         "sic": 7359,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "GWW",
@@ -5623,7 +5821,8 @@
         "sic": 5000,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "OXY",
@@ -5651,7 +5850,8 @@
         "sic": 1311,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "OKE",
@@ -5679,7 +5879,8 @@
         "sic": 4923,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CTVA",
@@ -5707,7 +5908,8 @@
         "sic": 100,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "NUE",
@@ -5735,7 +5937,8 @@
         "sic": 3312,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MPWR",
@@ -5763,7 +5966,8 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 198
+      "edgeCount": 198,
+      "formSdStatus": "listed"
     },
     {
       "id": "MRNA",
@@ -5791,7 +5995,8 @@
         "sic": 2836,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "AFL",
@@ -5819,7 +6024,8 @@
         "sic": 6321,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "TEL",
@@ -5847,7 +6053,8 @@
         "sic": 5065,
         "match": "sic-range"
       },
-      "edgeCount": 472
+      "edgeCount": 472,
+      "formSdStatus": "listed"
     },
     {
       "id": "D",
@@ -5875,7 +6082,8 @@
         "sic": 4911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "NXPI",
@@ -5903,7 +6111,8 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 208
+      "edgeCount": 208,
+      "formSdStatus": "listed"
     },
     {
       "id": "CAH",
@@ -5931,7 +6140,8 @@
         "sic": 5122,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "O",
@@ -5959,7 +6169,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "FANG",
@@ -5987,7 +6198,8 @@
         "sic": 1311,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "NKE",
@@ -6015,7 +6227,8 @@
         "sic": 3021,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "F",
@@ -6043,7 +6256,8 @@
         "sic": 3711,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "KEYS",
@@ -6071,7 +6285,8 @@
         "sic": 3823,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "FAST",
@@ -6099,7 +6314,8 @@
         "sic": 5200,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "FIX",
@@ -6127,7 +6343,8 @@
         "sic": 1731,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "SRE",
@@ -6155,7 +6372,8 @@
         "sic": 4932,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "NDAQ",
@@ -6183,7 +6401,8 @@
         "sic": 6200,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "TER",
@@ -6211,7 +6430,8 @@
         "sic": 3825,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "AME",
@@ -6239,7 +6459,8 @@
         "sic": 3823,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "GRMN",
@@ -6267,7 +6488,8 @@
         "sic": 3812,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "PSA",
@@ -6295,7 +6517,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "WDAY",
@@ -6323,7 +6546,8 @@
         "sic": 7374,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "STT",
@@ -6351,7 +6575,8 @@
         "sic": 6022,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "EW",
@@ -6379,7 +6604,8 @@
         "sic": 3842,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CRWD",
@@ -6407,7 +6633,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "DAL",
@@ -6435,7 +6662,8 @@
         "sic": 4512,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ADSK",
@@ -6463,7 +6691,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CIEN",
@@ -6491,7 +6720,8 @@
         "sic": 3661,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "AMP",
@@ -6519,7 +6749,8 @@
         "sic": 6282,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CMG",
@@ -6547,7 +6778,8 @@
         "sic": 5812,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "FITB",
@@ -6575,7 +6807,8 @@
         "sic": 6022,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "XYZ",
@@ -6603,7 +6836,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ETR",
@@ -6631,7 +6865,8 @@
         "sic": 4911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "LHX",
@@ -6659,7 +6894,8 @@
         "sic": 3812,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "VST",
@@ -6687,7 +6923,8 @@
         "sic": 4911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "PYPL",
@@ -6715,7 +6952,8 @@
         "sic": 7389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "HUM",
@@ -6743,7 +6981,8 @@
         "sic": 6324,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "AZO",
@@ -6771,7 +7010,8 @@
         "sic": 5531,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CARR",
@@ -6799,7 +7039,8 @@
         "sic": 3585,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "WAB",
@@ -6827,7 +7068,8 @@
         "sic": 3743,
         "match": "sic-range"
       },
-      "edgeCount": 392
+      "edgeCount": 392,
+      "formSdStatus": "listed"
     },
     {
       "id": "EBAY",
@@ -6855,7 +7097,8 @@
         "sic": 7389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ROK",
@@ -6883,7 +7126,8 @@
         "sic": 3829,
         "match": "sic-range"
       },
-      "edgeCount": 691
+      "edgeCount": 691,
+      "formSdStatus": "listed"
     },
     {
       "id": "XEL",
@@ -6911,7 +7155,8 @@
         "sic": 4931,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "COIN",
@@ -6939,7 +7184,8 @@
         "sic": 6199,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "VEEV",
@@ -6967,7 +7213,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ARES",
@@ -6995,7 +7242,8 @@
         "sic": 6282,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "EXC",
@@ -7023,7 +7271,8 @@
         "sic": 4931,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "VTR",
@@ -7051,7 +7300,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "PAYX",
@@ -7079,7 +7329,8 @@
         "sic": 8700,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "KDP",
@@ -7107,7 +7358,8 @@
         "sic": 2080,
         "match": "sic-range"
       },
-      "edgeCount": 244
+      "edgeCount": 244,
+      "formSdStatus": "listed"
     },
     {
       "id": "IQV",
@@ -7135,7 +7387,8 @@
         "sic": 8731,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "MNST",
@@ -7163,7 +7416,8 @@
         "sic": 2086,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "A",
@@ -7191,7 +7445,8 @@
         "sic": 3826,
         "match": "sic-range"
       },
-      "edgeCount": 349
+      "edgeCount": 349,
+      "formSdStatus": "listed"
     },
     {
       "id": "COHR",
@@ -7219,7 +7474,8 @@
         "sic": 3827,
         "match": "sic-range"
       },
-      "edgeCount": 5
+      "edgeCount": 5,
+      "formSdStatus": "listed"
     },
     {
       "id": "IDXX",
@@ -7247,7 +7503,8 @@
         "sic": 2835,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ROP",
@@ -7275,7 +7532,8 @@
         "sic": 3823,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "LYV",
@@ -7303,7 +7561,8 @@
         "sic": 7900,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "YUM",
@@ -7331,7 +7590,8 @@
         "sic": 5812,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CBRE",
@@ -7359,7 +7619,8 @@
         "sic": 6500,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "PRU",
@@ -7387,7 +7648,8 @@
         "sic": 6311,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ADM",
@@ -7415,7 +7677,8 @@
         "sic": 2070,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "AXON",
@@ -7443,7 +7706,8 @@
         "sic": 3480,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MSCI",
@@ -7471,7 +7735,8 @@
         "sic": 7389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "AIG",
@@ -7499,7 +7764,8 @@
         "sic": 6331,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "DHI",
@@ -7527,7 +7793,8 @@
         "sic": 1531,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "TTWO",
@@ -7555,7 +7822,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ED",
@@ -7583,7 +7851,8 @@
         "sic": 4931,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "MCHP",
@@ -7611,7 +7880,8 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 329
+      "edgeCount": 329,
+      "formSdStatus": "listed"
     },
     {
       "id": "SYY",
@@ -7639,7 +7909,8 @@
         "sic": 5140,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ODFL",
@@ -7667,7 +7938,8 @@
         "sic": 4213,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "FLEX",
@@ -7695,7 +7967,8 @@
         "sic": 3672,
         "match": "sic-range"
       },
-      "edgeCount": 236
+      "edgeCount": 236,
+      "formSdStatus": "listed"
     },
     {
       "id": "HIG",
@@ -7723,7 +7996,8 @@
         "sic": 6331,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "KVUE",
@@ -7751,7 +8025,8 @@
         "sic": 2844,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "EL",
@@ -7779,7 +8054,8 @@
         "sic": 2844,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "PEG",
@@ -7807,7 +8083,8 @@
         "sic": 4931,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "KMB",
@@ -7835,7 +8112,8 @@
         "sic": 2670,
         "match": "sic-range"
       },
-      "edgeCount": 241
+      "edgeCount": 241,
+      "formSdStatus": "listed"
     },
     {
       "id": "HSY",
@@ -7863,7 +8141,8 @@
         "sic": 2060,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "KR",
@@ -7891,7 +8170,8 @@
         "sic": 5411,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "STLD",
@@ -7919,7 +8199,8 @@
         "sic": 3312,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "NTAP",
@@ -7947,7 +8228,8 @@
         "sic": 3572,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "EXPE",
@@ -7975,7 +8257,8 @@
         "sic": 4700,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "UAL",
@@ -8003,7 +8286,8 @@
         "sic": 4512,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "EQT",
@@ -8031,7 +8315,8 @@
         "sic": 1311,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "DXCM",
@@ -8059,7 +8344,8 @@
         "sic": 3841,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MTB",
@@ -8087,7 +8373,8 @@
         "sic": 6022,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "WEC",
@@ -8115,7 +8402,8 @@
         "sic": 4931,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ACGL",
@@ -8143,7 +8431,8 @@
         "sic": 6331,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "RJF",
@@ -8171,7 +8460,8 @@
         "sic": 6211,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "VMC",
@@ -8199,7 +8489,8 @@
         "sic": 1400,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "HBAN",
@@ -8227,7 +8518,8 @@
         "sic": 6021,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "NTRS",
@@ -8255,7 +8547,8 @@
         "sic": 6022,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "RMD",
@@ -8283,7 +8576,8 @@
         "sic": 3841,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CNC",
@@ -8311,7 +8605,8 @@
         "sic": 6324,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "IRM",
@@ -8339,7 +8634,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CCI",
@@ -8367,7 +8663,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "BIIB",
@@ -8395,7 +8692,8 @@
         "sic": 2836,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "EME",
@@ -8423,7 +8721,8 @@
         "sic": 1731,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CCL",
@@ -8451,7 +8750,8 @@
         "sic": 4400,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "GEHC",
@@ -8479,7 +8779,8 @@
         "sic": 3844,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "WTW",
@@ -8507,7 +8808,8 @@
         "sic": 6411,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ZTS",
@@ -8535,7 +8837,8 @@
         "sic": 2834,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "JBL",
@@ -8563,7 +8866,8 @@
         "sic": 3672,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "HAL",
@@ -8591,7 +8895,8 @@
         "sic": 1389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "KHC",
@@ -8619,7 +8924,8 @@
         "sic": 2030,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "MLM",
@@ -8647,7 +8953,8 @@
         "sic": 1400,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CBOE",
@@ -8675,7 +8982,8 @@
         "sic": 6200,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "DVN",
@@ -8703,7 +9011,8 @@
         "sic": 1311,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CTSH",
@@ -8731,7 +9040,8 @@
         "sic": 7371,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CPRT",
@@ -8759,7 +9069,8 @@
         "sic": 5500,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "FOXA",
@@ -8787,7 +9098,8 @@
         "sic": 4833,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "EXR",
@@ -8815,7 +9127,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "LVS",
@@ -8843,7 +9156,8 @@
         "sic": 7011,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CFG",
@@ -8871,7 +9185,8 @@
         "sic": 6022,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "PCG",
@@ -8899,7 +9214,8 @@
         "sic": 4931,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "IR",
@@ -8927,7 +9243,8 @@
         "sic": 3560,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "AEE",
@@ -8955,7 +9272,8 @@
         "sic": 4931,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "HPQ",
@@ -8983,7 +9301,8 @@
         "sic": 3570,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "DG",
@@ -9011,7 +9330,8 @@
         "sic": 5331,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ON",
@@ -9039,7 +9359,8 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 193
+      "edgeCount": 193,
+      "formSdStatus": "listed"
     },
     {
       "id": "DTE",
@@ -9067,7 +9388,8 @@
         "sic": 4911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "TDY",
@@ -9095,7 +9417,8 @@
         "sic": 3812,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ATO",
@@ -9123,7 +9446,8 @@
         "sic": 4924,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CASY",
@@ -9151,7 +9475,8 @@
         "sic": 5500,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "FISV",
@@ -9179,7 +9504,8 @@
         "sic": 7389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "VICI",
@@ -9207,7 +9533,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "MTD",
@@ -9235,7 +9562,8 @@
         "sic": 3826,
         "match": "sic-range"
       },
-      "edgeCount": 360
+      "edgeCount": 360,
+      "formSdStatus": "listed"
     },
     {
       "id": "OTIS",
@@ -9263,7 +9591,8 @@
         "sic": 3600,
         "match": "sic-range"
       },
-      "edgeCount": 332
+      "edgeCount": 332,
+      "formSdStatus": "listed"
     },
     {
       "id": "CPAY",
@@ -9291,7 +9620,8 @@
         "sic": 7389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "AWK",
@@ -9319,7 +9649,8 @@
         "sic": 4941,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "LH",
@@ -9347,7 +9678,8 @@
         "sic": 8071,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "WAT",
@@ -9375,7 +9707,8 @@
         "sic": 3826,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "FE",
@@ -9403,7 +9736,8 @@
         "sic": 4911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "DGX",
@@ -9431,7 +9765,8 @@
         "sic": 8071,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CINF",
@@ -9459,7 +9794,8 @@
         "sic": 6331,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ES",
@@ -9487,7 +9823,8 @@
         "sic": 4911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "SYF",
@@ -9515,7 +9852,8 @@
         "sic": 6199,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "VRSN",
@@ -9543,7 +9881,8 @@
         "sic": 7371,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "WSM",
@@ -9571,7 +9910,8 @@
         "sic": 5700,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "PPL",
@@ -9599,7 +9939,8 @@
         "sic": 4911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CNP",
@@ -9627,7 +9968,8 @@
         "sic": 4911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "INCY",
@@ -9655,7 +9997,8 @@
         "sic": 8731,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "FICO",
@@ -9683,7 +10026,8 @@
         "sic": 7389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "RF",
@@ -9711,7 +10055,8 @@
         "sic": 6021,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "WRB",
@@ -9739,7 +10084,8 @@
         "sic": 6331,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "XYL",
@@ -9767,7 +10113,8 @@
         "sic": 3561,
         "match": "sic-range"
       },
-      "edgeCount": 355
+      "edgeCount": 355,
+      "formSdStatus": "listed"
     },
     {
       "id": "DOV",
@@ -9795,7 +10142,8 @@
         "sic": 3530,
         "match": "sic-range"
       },
-      "edgeCount": 782
+      "edgeCount": 782,
+      "formSdStatus": "listed"
     },
     {
       "id": "TPL",
@@ -9823,7 +10171,8 @@
         "sic": 6792,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "DLTR",
@@ -9851,7 +10200,8 @@
         "sic": 5331,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "DRI",
@@ -9879,7 +10229,8 @@
         "sic": 5812,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "TPR",
@@ -9907,7 +10258,8 @@
         "sic": 3100,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "PPG",
@@ -9935,7 +10287,8 @@
         "sic": 2851,
         "match": "sic-range"
       },
-      "edgeCount": 27
+      "edgeCount": 27,
+      "formSdStatus": "listed"
     },
     {
       "id": "VRSK",
@@ -9963,7 +10316,8 @@
         "sic": 7374,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "Q",
@@ -9991,7 +10345,8 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "JBHT",
@@ -10019,7 +10374,8 @@
         "sic": 4213,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "BRO",
@@ -10047,7 +10403,8 @@
         "sic": 6411,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "EXPD",
@@ -10075,7 +10432,8 @@
         "sic": 4731,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "WST",
@@ -10103,7 +10461,8 @@
         "sic": 3841,
         "match": "sic-range"
       },
-      "edgeCount": 211
+      "edgeCount": 211,
+      "formSdStatus": "listed"
     },
     {
       "id": "PFG",
@@ -10131,7 +10490,8 @@
         "sic": 6321,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "SMCI",
@@ -10159,7 +10519,8 @@
         "sic": 3571,
         "match": "sic-exact"
       },
-      "edgeCount": 251
+      "edgeCount": 251,
+      "formSdStatus": "listed"
     },
     {
       "id": "VLTO",
@@ -10187,7 +10548,8 @@
         "sic": 3825,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "EXE",
@@ -10215,7 +10577,8 @@
         "sic": 1311,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "SW",
@@ -10243,7 +10606,8 @@
         "sic": 2650,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "HUBB",
@@ -10271,7 +10635,8 @@
         "sic": 3670,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "BG",
@@ -10299,7 +10664,8 @@
         "sic": 2070,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ULTA",
@@ -10327,7 +10693,8 @@
         "sic": 5990,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "PHM",
@@ -10355,7 +10722,8 @@
         "sic": 1531,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CHD",
@@ -10383,7 +10751,8 @@
         "sic": 2840,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "KEY",
@@ -10411,7 +10780,8 @@
         "sic": 6021,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "TROW",
@@ -10439,7 +10809,8 @@
         "sic": 6282,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "NRG",
@@ -10467,7 +10838,8 @@
         "sic": 4911,
         "match": "sic-range"
       },
-      "edgeCount": 219
+      "edgeCount": 219,
+      "formSdStatus": "listed"
     },
     {
       "id": "OMC",
@@ -10495,7 +10867,8 @@
         "sic": 7311,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "DOW",
@@ -10523,7 +10896,8 @@
         "sic": 2821,
         "match": "sic-range"
       },
-      "edgeCount": 41
+      "edgeCount": 41,
+      "formSdStatus": "listed"
     },
     {
       "id": "STE",
@@ -10551,7 +10925,8 @@
         "sic": 3842,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CHTR",
@@ -10579,7 +10954,8 @@
         "sic": 4841,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "EFX",
@@ -10607,7 +10983,8 @@
         "sic": 7320,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "L",
@@ -10635,7 +11012,8 @@
         "sic": 6331,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "STZ",
@@ -10663,7 +11041,8 @@
         "sic": 2080,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "IFF",
@@ -10691,7 +11070,8 @@
         "sic": 2860,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "FFIV",
@@ -10719,7 +11099,8 @@
         "sic": 3576,
         "match": "sic-exact"
       },
-      "edgeCount": 338
+      "edgeCount": 338,
+      "formSdStatus": "listed"
     },
     {
       "id": "GPN",
@@ -10747,7 +11128,8 @@
         "sic": 7389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "FSLR",
@@ -10775,7 +11157,8 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 93
+      "edgeCount": 93,
+      "formSdStatus": "listed"
     },
     {
       "id": "GIS",
@@ -10803,7 +11186,8 @@
         "sic": 2040,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "AMCR",
@@ -10831,7 +11215,8 @@
         "sic": 3990,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "FIS",
@@ -10859,7 +11244,8 @@
         "sic": 7389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "LYB",
@@ -10887,7 +11273,8 @@
         "sic": 2860,
         "match": "sic-range"
       },
-      "edgeCount": 1
+      "edgeCount": 1,
+      "formSdStatus": "listed"
     },
     {
       "id": "CF",
@@ -10915,7 +11302,8 @@
         "sic": 2870,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "EIX",
@@ -10943,7 +11331,8 @@
         "sic": 4911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CMS",
@@ -10971,7 +11360,8 @@
         "sic": 4931,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "PKG",
@@ -10999,7 +11389,8 @@
         "sic": 2650,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "LEN",
@@ -11027,7 +11418,8 @@
         "sic": 1520,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "BR",
@@ -11055,7 +11447,8 @@
         "sic": 7389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "RL",
@@ -11083,7 +11476,8 @@
         "sic": 2320,
         "match": "sic-range"
       },
-      "edgeCount": 217
+      "edgeCount": 217,
+      "formSdStatus": "listed"
     },
     {
       "id": "TSN",
@@ -11111,7 +11505,8 @@
         "sic": 2015,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "VTRS",
@@ -11139,7 +11534,8 @@
         "sic": 2834,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "SBAC",
@@ -11167,7 +11563,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "NI",
@@ -11195,7 +11592,8 @@
         "sic": 4931,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "SNA",
@@ -11223,7 +11621,8 @@
         "sic": 3420,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ZBH",
@@ -11251,7 +11650,8 @@
         "sic": 3842,
         "match": "sic-range"
       },
-      "edgeCount": 232
+      "edgeCount": 232,
+      "formSdStatus": "listed"
     },
     {
       "id": "IP",
@@ -11279,7 +11679,8 @@
         "sic": 2621,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "GPC",
@@ -11307,7 +11708,8 @@
         "sic": 5013,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CDW",
@@ -11335,7 +11737,8 @@
         "sic": 5961,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "LUV",
@@ -11363,7 +11766,8 @@
         "sic": 4512,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "EVRG",
@@ -11391,7 +11795,8 @@
         "sic": 4931,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "GEN",
@@ -11419,7 +11824,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 256
+      "edgeCount": 256,
+      "formSdStatus": "listed"
     },
     {
       "id": "TSCO",
@@ -11447,7 +11853,8 @@
         "sic": 5200,
         "match": "sic-range"
       },
-      "edgeCount": 5
+      "edgeCount": 5,
+      "formSdStatus": "listed"
     },
     {
       "id": "BBY",
@@ -11475,7 +11882,8 @@
         "sic": 5731,
         "match": "sic-range"
       },
-      "edgeCount": 218
+      "edgeCount": 218,
+      "formSdStatus": "listed"
     },
     {
       "id": "DD",
@@ -11503,7 +11911,8 @@
         "sic": 2821,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ESS",
@@ -11531,7 +11940,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "NDSN",
@@ -11559,7 +11969,8 @@
         "sic": 3569,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "LNT",
@@ -11587,7 +11998,8 @@
         "sic": 4931,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "J",
@@ -11615,7 +12027,8 @@
         "sic": 1600,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "FTV",
@@ -11643,7 +12056,8 @@
         "sic": 3823,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "PTC",
@@ -11671,7 +12085,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ROL",
@@ -11699,7 +12114,8 @@
         "sic": 7340,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "NWSA",
@@ -11727,7 +12143,8 @@
         "sic": 2711,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "BEN",
@@ -11755,7 +12172,8 @@
         "sic": 6282,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "INVH",
@@ -11783,7 +12201,8 @@
         "sic": 6510,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "NVR",
@@ -11811,7 +12230,8 @@
         "sic": 1531,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CHRW",
@@ -11839,7 +12259,8 @@
         "sic": 4731,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "BALL",
@@ -11867,7 +12288,8 @@
         "sic": 3411,
         "match": "sic-range"
       },
-      "edgeCount": 14
+      "edgeCount": 14,
+      "formSdStatus": "listed"
     },
     {
       "id": "LDOS",
@@ -11895,7 +12317,8 @@
         "sic": 7373,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ZBRA",
@@ -11923,7 +12346,8 @@
         "sic": 3560,
         "match": "sic-range"
       },
-      "edgeCount": 340
+      "edgeCount": 340,
+      "formSdStatus": "listed"
     },
     {
       "id": "WY",
@@ -11951,7 +12375,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "IEX",
@@ -11979,7 +12404,8 @@
         "sic": 3561,
         "match": "sic-range"
       },
-      "edgeCount": 245
+      "edgeCount": 245,
+      "formSdStatus": "listed"
     },
     {
       "id": "ALB",
@@ -12007,7 +12433,8 @@
         "sic": 2821,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "KIM",
@@ -12035,7 +12462,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "FDXF",
@@ -12063,7 +12491,8 @@
         "sic": 4513,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "SOLV",
@@ -12091,7 +12520,8 @@
         "sic": 3841,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "TYL",
@@ -12119,7 +12549,8 @@
         "sic": 7372,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "APA",
@@ -12147,7 +12578,8 @@
         "sic": 1311,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "AKAM",
@@ -12175,7 +12607,8 @@
         "sic": 7389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "HST",
@@ -12203,7 +12636,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "SWK",
@@ -12231,7 +12665,8 @@
         "sic": 3420,
         "match": "sic-range"
       },
-      "edgeCount": 337
+      "edgeCount": 337,
+      "formSdStatus": "listed"
     },
     {
       "id": "EG",
@@ -12259,7 +12694,8 @@
         "sic": 6331,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "MAA",
@@ -12287,7 +12723,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "RVTY",
@@ -12315,7 +12752,8 @@
         "sic": 3826,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "DOC",
@@ -12343,7 +12781,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "MKC",
@@ -12371,7 +12810,8 @@
         "sic": 2090,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "MAS",
@@ -12399,7 +12839,8 @@
         "sic": 3430,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 103,
+      "formSdStatus": "listed"
     },
     {
       "id": "TKO",
@@ -12427,7 +12868,8 @@
         "sic": 7900,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CRL",
@@ -12455,7 +12897,8 @@
         "sic": 8731,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "IVZ",
@@ -12483,7 +12926,8 @@
         "sic": 6282,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "AIZ",
@@ -12511,7 +12955,8 @@
         "sic": 6399,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "SJM",
@@ -12539,7 +12984,8 @@
         "sic": 2033,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "REG",
@@ -12567,7 +13013,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "TRMB",
@@ -12595,7 +13042,8 @@
         "sic": 3829,
         "match": "sic-range"
       },
-      "edgeCount": 329
+      "edgeCount": 329,
+      "formSdStatus": "listed"
     },
     {
       "id": "TXT",
@@ -12623,7 +13071,8 @@
         "sic": 3720,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "LULU",
@@ -12651,7 +13100,8 @@
         "sic": 2300,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "COO",
@@ -12679,7 +13129,8 @@
         "sic": 3851,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "GDDY",
@@ -12707,7 +13158,8 @@
         "sic": 7373,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "GL",
@@ -12735,7 +13187,8 @@
         "sic": 6311,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ALLE",
@@ -12763,7 +13216,8 @@
         "sic": 7381,
         "match": "sic-range"
       },
-      "edgeCount": 338
+      "edgeCount": 338,
+      "formSdStatus": "listed"
     },
     {
       "id": "AVY",
@@ -12791,7 +13245,8 @@
         "sic": 2670,
         "match": "sic-range"
       },
-      "edgeCount": 405
+      "edgeCount": 405,
+      "formSdStatus": "listed"
     },
     {
       "id": "BAX",
@@ -12819,7 +13274,8 @@
         "sic": 3841,
         "match": "sic-range"
       },
-      "edgeCount": 323
+      "edgeCount": 323,
+      "formSdStatus": "listed"
     },
     {
       "id": "HAS",
@@ -12847,7 +13303,8 @@
         "sic": 3944,
         "match": "sic-range"
       },
-      "edgeCount": 201
+      "edgeCount": 201,
+      "formSdStatus": "listed"
     },
     {
       "id": "LII",
@@ -12875,7 +13332,8 @@
         "sic": 3585,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CSGP",
@@ -12903,7 +13361,8 @@
         "sic": 7389,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "BF-B",
@@ -12931,7 +13390,8 @@
         "sic": 2080,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "IT",
@@ -12959,7 +13419,8 @@
         "sic": 8741,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "HRL",
@@ -12987,7 +13448,8 @@
         "sic": 2011,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ERIE",
@@ -13015,7 +13477,8 @@
         "sic": 6411,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "JKHY",
@@ -13043,7 +13506,8 @@
         "sic": 7373,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "UDR",
@@ -13071,7 +13535,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "PSKY",
@@ -13099,7 +13564,8 @@
         "sic": 4833,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "PNW",
@@ -13127,7 +13593,8 @@
         "sic": 4911,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "DECK",
@@ -13155,7 +13622,8 @@
         "sic": 3021,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "DPZ",
@@ -13183,7 +13651,8 @@
         "sic": 5140,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "DVA",
@@ -13211,7 +13680,8 @@
         "sic": 8090,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "HII",
@@ -13239,7 +13709,8 @@
         "sic": 3730,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ALGN",
@@ -13267,7 +13738,8 @@
         "sic": 3842,
         "match": "sic-range"
       },
-      "edgeCount": 238
+      "edgeCount": 238,
+      "formSdStatus": "listed"
     },
     {
       "id": "CLX",
@@ -13295,7 +13767,8 @@
         "sic": 2842,
         "match": "sic-range"
       },
-      "edgeCount": 19
+      "edgeCount": 19,
+      "formSdStatus": "listed"
     },
     {
       "id": "TECH",
@@ -13323,7 +13796,8 @@
         "sic": 2836,
         "match": "sic-exact"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "FDS",
@@ -13351,7 +13825,8 @@
         "sic": 7370,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "SWKS",
@@ -13379,7 +13854,8 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 194
+      "edgeCount": 194,
+      "formSdStatus": "listed"
     },
     {
       "id": "BXP",
@@ -13407,7 +13883,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "CPT",
@@ -13435,7 +13912,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "GNRC",
@@ -13463,7 +13941,8 @@
         "sic": 3621,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MGM",
@@ -13491,7 +13970,8 @@
         "sic": 7011,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "AES",
@@ -13519,7 +13999,8 @@
         "sic": 4991,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "UHS",
@@ -13547,7 +14028,8 @@
         "sic": 8062,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "PODD",
@@ -13575,7 +14057,8 @@
         "sic": 3841,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "HSIC",
@@ -13603,7 +14086,8 @@
         "sic": 5047,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "FRT",
@@ -13631,7 +14115,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "PNR",
@@ -13659,7 +14144,8 @@
         "sic": 3550,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "APTV",
@@ -13687,7 +14173,8 @@
         "sic": 3714,
         "match": "sic-exact"
       },
-      "edgeCount": 337
+      "edgeCount": 337,
+      "formSdStatus": "listed"
     },
     {
       "id": "WYNN",
@@ -13715,7 +14202,8 @@
         "sic": 7011,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "ARE",
@@ -13743,7 +14231,8 @@
         "sic": 6798,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "AOS",
@@ -13771,7 +14260,8 @@
         "sic": 3630,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MOS",
@@ -13799,7 +14289,8 @@
         "sic": 2870,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "TAP",
@@ -13827,7 +14318,8 @@
         "sic": 2082,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "NCLH",
@@ -13855,7 +14347,8 @@
         "sic": 4400,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "TTD",
@@ -13883,7 +14376,8 @@
         "sic": 7370,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "no-filing"
     },
     {
       "id": "BLDR",
@@ -13911,7 +14405,8 @@
         "sic": 5211,
         "match": "sic-range"
       },
-      "edgeCount": 0
+      "edgeCount": 0,
+      "formSdStatus": "filed-no-list"
     }
   ],
   "edgeIndex": {
@@ -14160,6 +14655,13 @@
       "filingDate": "2026-05-28",
       "url": "https://www.sec.gov/Archives/edgar/data/1645590/000164559026000048/exhibit101-conflictmineral.htm"
     },
+    "HWM": {
+      "file": "edges/HWM.json",
+      "count": 47,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/4281/000110465926067247/tm2614644d1_ex1-01.htm"
+    },
     "IEX": {
       "file": "edges/IEX.json",
       "count": 245,
@@ -14229,6 +14731,13 @@
       "relation": "smelter-in-supply-chain",
       "filingDate": "2026-05-28",
       "url": "https://www.sec.gov/Archives/edgar/data/1489393/000148939326000044/exhibit101conflictminerals.htm"
+    },
+    "MAS": {
+      "file": "edges/MAS.json",
+      "count": 103,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-06-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/62996/000006299626000019/exhibit101-conflictmineral.htm"
     },
     "MCHP": {
       "file": "edges/MCHP.json",
@@ -14376,6 +14885,13 @@
       "relation": "smelter-in-supply-chain",
       "filingDate": "2026-06-01",
       "url": "https://www.sec.gov/Archives/edgar/data/101829/000010182926000015/exhibit101-2026x06x01formsd.htm"
+    },
+    "SBUX": {
+      "file": "edges/SBUX.json",
+      "count": 6,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/829224/000082922426000099/a20260528-starbucksxex101c.htm"
     },
     "SHW": {
       "file": "edges/SHW.json",
@@ -14574,21 +15090,518 @@
   "coverage": {
     "claimComplete": false,
     "nodesTotal": 495,
-    "nodesWithEdges": 85,
-    "edgesTotal": 20245,
+    "nodesWithEdges": 88,
+    "edgesTotal": 20401,
     "edgesBySource": {
-      "sec-form-sd": 20245
+      "sec-form-sd": 20401
     },
     "formSd": {
       "claimComplete": false,
       "companiesScanned": 495,
-      "companiesWithList": 85,
-      "companiesFiledNoList": 149,
+      "companiesWithList": 88,
+      "companiesFiledNoList": 151,
       "companiesNoFiling": 256,
-      "companiesFailed": 5,
+      "companiesFailed": 0,
       "failedSymbols": [],
-      "companiesPublished": 85,
-      "edgesTotal": 20245,
+      "filingStatus": {
+        "A": "listed",
+        "AAPL": "filed-no-list",
+        "ABBV": "filed-no-list",
+        "ABNB": "no-filing",
+        "ABT": "filed-no-list",
+        "ACGL": "no-filing",
+        "ACN": "filed-no-list",
+        "ADBE": "no-filing",
+        "ADI": "listed",
+        "ADM": "no-filing",
+        "ADP": "no-filing",
+        "ADSK": "filed-no-list",
+        "AEE": "no-filing",
+        "AEP": "no-filing",
+        "AES": "no-filing",
+        "AFL": "no-filing",
+        "AIG": "no-filing",
+        "AIZ": "no-filing",
+        "AJG": "no-filing",
+        "AKAM": "no-filing",
+        "ALB": "filed-no-list",
+        "ALGN": "listed",
+        "ALL": "no-filing",
+        "ALLE": "listed",
+        "AMAT": "listed",
+        "AMCR": "filed-no-list",
+        "AMD": "listed",
+        "AME": "filed-no-list",
+        "AMGN": "no-filing",
+        "AMP": "no-filing",
+        "AMT": "no-filing",
+        "AMZN": "listed",
+        "ANET": "listed",
+        "AON": "no-filing",
+        "AOS": "filed-no-list",
+        "APA": "filed-no-list",
+        "APD": "filed-no-list",
+        "APH": "listed",
+        "APO": "no-filing",
+        "APP": "no-filing",
+        "APTV": "listed",
+        "ARE": "no-filing",
+        "ARES": "no-filing",
+        "ATO": "no-filing",
+        "AVGO": "filed-no-list",
+        "AVY": "listed",
+        "AWK": "no-filing",
+        "AXON": "filed-no-list",
+        "AXP": "no-filing",
+        "AZO": "no-filing",
+        "BA": "filed-no-list",
+        "BAC": "no-filing",
+        "BALL": "listed",
+        "BAX": "listed",
+        "BBY": "listed",
+        "BDX": "filed-no-list",
+        "BEN": "no-filing",
+        "BF-B": "no-filing",
+        "BG": "no-filing",
+        "BIIB": "no-filing",
+        "BKNG": "no-filing",
+        "BKR": "listed",
+        "BLDR": "filed-no-list",
+        "BLK": "no-filing",
+        "BMY": "no-filing",
+        "BNY": "no-filing",
+        "BR": "no-filing",
+        "BRK-B": "filed-no-list",
+        "BRO": "no-filing",
+        "BSX": "filed-no-list",
+        "BX": "no-filing",
+        "BXP": "no-filing",
+        "C": "no-filing",
+        "CAH": "filed-no-list",
+        "CARR": "filed-no-list",
+        "CASY": "no-filing",
+        "CAT": "listed",
+        "CB": "no-filing",
+        "CBOE": "no-filing",
+        "CBRE": "no-filing",
+        "CCI": "no-filing",
+        "CCL": "filed-no-list",
+        "CDNS": "filed-no-list",
+        "CDW": "no-filing",
+        "CEG": "no-filing",
+        "CF": "no-filing",
+        "CFG": "no-filing",
+        "CHD": "filed-no-list",
+        "CHRW": "no-filing",
+        "CHTR": "no-filing",
+        "CI": "no-filing",
+        "CIEN": "filed-no-list",
+        "CINF": "no-filing",
+        "CL": "listed",
+        "CLX": "listed",
+        "CMCSA": "filed-no-list",
+        "CME": "no-filing",
+        "CMG": "no-filing",
+        "CMI": "listed",
+        "CMS": "no-filing",
+        "CNC": "no-filing",
+        "CNP": "no-filing",
+        "COF": "no-filing",
+        "COHR": "listed",
+        "COIN": "no-filing",
+        "COO": "filed-no-list",
+        "COP": "filed-no-list",
+        "COR": "filed-no-list",
+        "COST": "listed",
+        "CPAY": "no-filing",
+        "CPRT": "no-filing",
+        "CPT": "no-filing",
+        "CRH": "filed-no-list",
+        "CRL": "filed-no-list",
+        "CRM": "no-filing",
+        "CRWD": "no-filing",
+        "CSCO": "listed",
+        "CSGP": "filed-no-list",
+        "CSX": "no-filing",
+        "CTAS": "filed-no-list",
+        "CTSH": "no-filing",
+        "CTVA": "no-filing",
+        "CVNA": "no-filing",
+        "CVS": "no-filing",
+        "CVX": "filed-no-list",
+        "D": "no-filing",
+        "DAL": "no-filing",
+        "DASH": "no-filing",
+        "DD": "filed-no-list",
+        "DDOG": "no-filing",
+        "DE": "filed-no-list",
+        "DECK": "filed-no-list",
+        "DELL": "filed-no-list",
+        "DG": "no-filing",
+        "DGX": "no-filing",
+        "DHI": "no-filing",
+        "DHR": "filed-no-list",
+        "DIS": "listed",
+        "DLR": "no-filing",
+        "DLTR": "no-filing",
+        "DOC": "no-filing",
+        "DOV": "listed",
+        "DOW": "listed",
+        "DPZ": "no-filing",
+        "DRI": "no-filing",
+        "DTE": "no-filing",
+        "DUK": "no-filing",
+        "DVA": "no-filing",
+        "DVN": "filed-no-list",
+        "DXCM": "filed-no-list",
+        "EBAY": "no-filing",
+        "ECL": "listed",
+        "ED": "no-filing",
+        "EFX": "no-filing",
+        "EG": "no-filing",
+        "EIX": "no-filing",
+        "EL": "filed-no-list",
+        "ELV": "no-filing",
+        "EME": "filed-no-list",
+        "EMR": "filed-no-list",
+        "EOG": "filed-no-list",
+        "EQIX": "no-filing",
+        "EQT": "filed-no-list",
+        "ERIE": "no-filing",
+        "ES": "no-filing",
+        "ESS": "no-filing",
+        "ETN": "listed",
+        "ETR": "no-filing",
+        "EVRG": "no-filing",
+        "EW": "filed-no-list",
+        "EXC": "no-filing",
+        "EXE": "filed-no-list",
+        "EXPD": "no-filing",
+        "EXPE": "no-filing",
+        "EXR": "no-filing",
+        "F": "filed-no-list",
+        "FANG": "filed-no-list",
+        "FAST": "filed-no-list",
+        "FCX": "filed-no-list",
+        "FDS": "no-filing",
+        "FDX": "no-filing",
+        "FDXF": "no-filing",
+        "FE": "no-filing",
+        "FFIV": "listed",
+        "FICO": "no-filing",
+        "FIS": "no-filing",
+        "FISV": "filed-no-list",
+        "FITB": "no-filing",
+        "FIX": "no-filing",
+        "FLEX": "listed",
+        "FOXA": "no-filing",
+        "FRT": "no-filing",
+        "FSLR": "listed",
+        "FTNT": "filed-no-list",
+        "FTV": "filed-no-list",
+        "GD": "filed-no-list",
+        "GDDY": "no-filing",
+        "GE": "filed-no-list",
+        "GEHC": "filed-no-list",
+        "GEN": "listed",
+        "GEV": "filed-no-list",
+        "GILD": "no-filing",
+        "GIS": "no-filing",
+        "GL": "no-filing",
+        "GLW": "listed",
+        "GM": "filed-no-list",
+        "GNRC": "filed-no-list",
+        "GOOGL": "filed-no-list",
+        "GPC": "no-filing",
+        "GPN": "filed-no-list",
+        "GRMN": "filed-no-list",
+        "GS": "no-filing",
+        "GWW": "no-filing",
+        "HAL": "filed-no-list",
+        "HAS": "listed",
+        "HBAN": "no-filing",
+        "HCA": "no-filing",
+        "HD": "filed-no-list",
+        "HIG": "no-filing",
+        "HII": "filed-no-list",
+        "HLT": "no-filing",
+        "HON": "listed",
+        "HOOD": "no-filing",
+        "HPE": "listed",
+        "HPQ": "filed-no-list",
+        "HRL": "no-filing",
+        "HSIC": "filed-no-list",
+        "HST": "no-filing",
+        "HSY": "filed-no-list",
+        "HUBB": "filed-no-list",
+        "HUM": "no-filing",
+        "HWM": "listed",
+        "IBKR": "no-filing",
+        "IBM": "filed-no-list",
+        "ICE": "no-filing",
+        "IDXX": "filed-no-list",
+        "IEX": "listed",
+        "IFF": "no-filing",
+        "INCY": "no-filing",
+        "INTC": "listed",
+        "INTU": "listed",
+        "INVH": "no-filing",
+        "IP": "no-filing",
+        "IQV": "no-filing",
+        "IR": "filed-no-list",
+        "IRM": "no-filing",
+        "ISRG": "listed",
+        "IT": "no-filing",
+        "ITW": "filed-no-list",
+        "IVZ": "no-filing",
+        "J": "filed-no-list",
+        "JBHT": "no-filing",
+        "JBL": "filed-no-list",
+        "JCI": "filed-no-list",
+        "JKHY": "no-filing",
+        "JNJ": "filed-no-list",
+        "JPM": "no-filing",
+        "KDP": "listed",
+        "KEY": "no-filing",
+        "KEYS": "filed-no-list",
+        "KHC": "no-filing",
+        "KIM": "no-filing",
+        "KKR": "no-filing",
+        "KLAC": "listed",
+        "KMB": "listed",
+        "KMI": "filed-no-list",
+        "KO": "no-filing",
+        "KR": "filed-no-list",
+        "KVUE": "filed-no-list",
+        "L": "no-filing",
+        "LDOS": "filed-no-list",
+        "LEN": "no-filing",
+        "LH": "filed-no-list",
+        "LHX": "filed-no-list",
+        "LII": "filed-no-list",
+        "LIN": "filed-no-list",
+        "LITE": "listed",
+        "LLY": "filed-no-list",
+        "LMT": "filed-no-list",
+        "LNT": "no-filing",
+        "LOW": "listed",
+        "LRCX": "filed-no-list",
+        "LULU": "filed-no-list",
+        "LUV": "no-filing",
+        "LVS": "no-filing",
+        "LYB": "listed",
+        "LYV": "no-filing",
+        "MA": "no-filing",
+        "MAA": "no-filing",
+        "MAR": "no-filing",
+        "MAS": "listed",
+        "MCD": "filed-no-list",
+        "MCHP": "listed",
+        "MCK": "filed-no-list",
+        "MCO": "no-filing",
+        "MDLZ": "no-filing",
+        "MDT": "listed",
+        "MET": "no-filing",
+        "META": "filed-no-list",
+        "MGM": "no-filing",
+        "MKC": "no-filing",
+        "MLM": "filed-no-list",
+        "MMM": "filed-no-list",
+        "MNST": "no-filing",
+        "MO": "listed",
+        "MOS": "filed-no-list",
+        "MPC": "no-filing",
+        "MPWR": "listed",
+        "MRK": "filed-no-list",
+        "MRNA": "no-filing",
+        "MRSH": "no-filing",
+        "MRVL": "filed-no-list",
+        "MS": "no-filing",
+        "MSCI": "no-filing",
+        "MSFT": "listed",
+        "MSI": "listed",
+        "MTB": "no-filing",
+        "MTD": "listed",
+        "MU": "listed",
+        "NCLH": "no-filing",
+        "NDAQ": "no-filing",
+        "NDSN": "filed-no-list",
+        "NEE": "filed-no-list",
+        "NEM": "filed-no-list",
+        "NFLX": "no-filing",
+        "NI": "no-filing",
+        "NKE": "filed-no-list",
+        "NOC": "filed-no-list",
+        "NOW": "no-filing",
+        "NRG": "listed",
+        "NSC": "no-filing",
+        "NTAP": "filed-no-list",
+        "NTRS": "no-filing",
+        "NUE": "filed-no-list",
+        "NVDA": "listed",
+        "NVR": "no-filing",
+        "NWSA": "no-filing",
+        "NXPI": "listed",
+        "O": "no-filing",
+        "ODFL": "no-filing",
+        "OKE": "filed-no-list",
+        "OMC": "no-filing",
+        "ON": "listed",
+        "ORCL": "filed-no-list",
+        "ORLY": "no-filing",
+        "OTIS": "listed",
+        "OXY": "filed-no-list",
+        "PANW": "filed-no-list",
+        "PAYX": "no-filing",
+        "PCAR": "listed",
+        "PCG": "no-filing",
+        "PEG": "no-filing",
+        "PEP": "listed",
+        "PFE": "filed-no-list",
+        "PFG": "no-filing",
+        "PG": "filed-no-list",
+        "PGR": "no-filing",
+        "PH": "filed-no-list",
+        "PHM": "no-filing",
+        "PKG": "no-filing",
+        "PLD": "no-filing",
+        "PLTR": "no-filing",
+        "PM": "filed-no-list",
+        "PNC": "no-filing",
+        "PNR": "filed-no-list",
+        "PNW": "no-filing",
+        "PODD": "filed-no-list",
+        "PPG": "listed",
+        "PPL": "no-filing",
+        "PRU": "no-filing",
+        "PSA": "no-filing",
+        "PSKY": "no-filing",
+        "PSX": "no-filing",
+        "PTC": "no-filing",
+        "PWR": "listed",
+        "PYPL": "no-filing",
+        "Q": "filed-no-list",
+        "QCOM": "listed",
+        "RCL": "no-filing",
+        "REG": "no-filing",
+        "REGN": "no-filing",
+        "RF": "no-filing",
+        "RJF": "no-filing",
+        "RL": "listed",
+        "RMD": "filed-no-list",
+        "ROK": "listed",
+        "ROL": "no-filing",
+        "ROP": "filed-no-list",
+        "ROST": "filed-no-list",
+        "RSG": "no-filing",
+        "RTX": "listed",
+        "RVTY": "filed-no-list",
+        "SBAC": "no-filing",
+        "SBUX": "listed",
+        "SCHW": "no-filing",
+        "SHW": "listed",
+        "SJM": "no-filing",
+        "SLB": "filed-no-list",
+        "SMCI": "listed",
+        "SNA": "filed-no-list",
+        "SNDK": "listed",
+        "SNPS": "filed-no-list",
+        "SO": "filed-no-list",
+        "SOLV": "filed-no-list",
+        "SPG": "no-filing",
+        "SPGI": "no-filing",
+        "SRE": "filed-no-list",
+        "STE": "filed-no-list",
+        "STLD": "filed-no-list",
+        "STT": "no-filing",
+        "STX": "listed",
+        "STZ": "no-filing",
+        "SW": "filed-no-list",
+        "SWK": "listed",
+        "SWKS": "listed",
+        "SYF": "no-filing",
+        "SYK": "listed",
+        "SYY": "no-filing",
+        "T": "no-filing",
+        "TAP": "no-filing",
+        "TDG": "filed-no-list",
+        "TDY": "filed-no-list",
+        "TECH": "filed-no-list",
+        "TEL": "listed",
+        "TER": "filed-no-list",
+        "TFC": "no-filing",
+        "TGT": "filed-no-list",
+        "TJX": "filed-no-list",
+        "TKO": "no-filing",
+        "TMO": "filed-no-list",
+        "TMUS": "listed",
+        "TPL": "no-filing",
+        "TPR": "filed-no-list",
+        "TRGP": "filed-no-list",
+        "TRMB": "listed",
+        "TROW": "no-filing",
+        "TRV": "no-filing",
+        "TSCO": "listed",
+        "TSLA": "filed-no-list",
+        "TSN": "no-filing",
+        "TT": "filed-no-list",
+        "TTD": "no-filing",
+        "TTWO": "no-filing",
+        "TXN": "listed",
+        "TXT": "filed-no-list",
+        "TYL": "no-filing",
+        "UAL": "no-filing",
+        "UBER": "no-filing",
+        "UDR": "no-filing",
+        "UHS": "no-filing",
+        "ULTA": "no-filing",
+        "UNH": "no-filing",
+        "UNP": "no-filing",
+        "UPS": "no-filing",
+        "URI": "filed-no-list",
+        "USB": "no-filing",
+        "V": "no-filing",
+        "VEEV": "no-filing",
+        "VICI": "no-filing",
+        "VLO": "no-filing",
+        "VLTO": "filed-no-list",
+        "VMC": "filed-no-list",
+        "VRSK": "no-filing",
+        "VRSN": "no-filing",
+        "VRT": "listed",
+        "VRTX": "no-filing",
+        "VST": "no-filing",
+        "VTR": "no-filing",
+        "VTRS": "no-filing",
+        "VZ": "no-filing",
+        "WAB": "listed",
+        "WAT": "filed-no-list",
+        "WBD": "no-filing",
+        "WDAY": "no-filing",
+        "WDC": "listed",
+        "WEC": "no-filing",
+        "WELL": "no-filing",
+        "WFC": "no-filing",
+        "WM": "no-filing",
+        "WMB": "filed-no-list",
+        "WMT": "filed-no-list",
+        "WRB": "no-filing",
+        "WSM": "filed-no-list",
+        "WST": "listed",
+        "WTW": "no-filing",
+        "WY": "no-filing",
+        "WYNN": "no-filing",
+        "XEL": "no-filing",
+        "XOM": "no-filing",
+        "XYL": "listed",
+        "XYZ": "filed-no-list",
+        "YUM": "no-filing",
+        "ZBH": "listed",
+        "ZBRA": "listed",
+        "ZTS": "filed-no-list"
+      },
+      "companiesPublished": 88,
+      "edgesTotal": 20401,
       "uniqueSmelters": 1713,
       "exactNameMatchWithCid": 681,
       "distinctAfterExactNameMatch": 1032,
@@ -14604,110 +15617,110 @@
         "sectorEn": "Information Technology",
         "companies": 84,
         "withEdges": 34,
-        "filedNoList": 0,
-        "noFiling": 0,
+        "filedNoList": 26,
+        "noFiling": 24,
         "failed": 0,
-        "unscanned": 50
+        "unscanned": 0
       },
       {
         "sector": "工业",
         "sectorEn": "Industrials",
         "companies": 76,
-        "withEdges": 17,
-        "filedNoList": 0,
-        "noFiling": 0,
+        "withEdges": 19,
+        "filedNoList": 36,
+        "noFiling": 21,
         "failed": 0,
-        "unscanned": 59
+        "unscanned": 0
       },
       {
         "sector": "金融",
         "sectorEn": "Financials",
         "companies": 70,
         "withEdges": 0,
-        "filedNoList": 0,
-        "noFiling": 0,
+        "filedNoList": 1,
+        "noFiling": 69,
         "failed": 0,
-        "unscanned": 70
+        "unscanned": 0
       },
       {
         "sector": "医疗健康",
         "sectorEn": "Health Care",
         "companies": 59,
         "withEdges": 9,
-        "filedNoList": 0,
-        "noFiling": 0,
+        "filedNoList": 29,
+        "noFiling": 21,
         "failed": 0,
-        "unscanned": 50
+        "unscanned": 0
       },
       {
         "sector": "可选消费",
         "sectorEn": "Consumer Discretionary",
         "companies": 53,
-        "withEdges": 8,
-        "filedNoList": 0,
-        "noFiling": 0,
+        "withEdges": 9,
+        "filedNoList": 15,
+        "noFiling": 29,
         "failed": 0,
-        "unscanned": 45
+        "unscanned": 0
       },
       {
         "sector": "必需消费",
         "sectorEn": "Consumer Staples",
         "companies": 33,
         "withEdges": 7,
-        "filedNoList": 0,
-        "noFiling": 0,
+        "filedNoList": 9,
+        "noFiling": 17,
         "failed": 0,
-        "unscanned": 26
+        "unscanned": 0
       },
       {
         "sector": "公用事业",
         "sectorEn": "Industrials",
         "companies": 32,
         "withEdges": 1,
-        "filedNoList": 0,
-        "noFiling": 0,
+        "filedNoList": 4,
+        "noFiling": 27,
         "failed": 0,
-        "unscanned": 31
+        "unscanned": 0
       },
       {
         "sector": "房地产",
         "sectorEn": "Real Estate",
         "companies": 29,
         "withEdges": 0,
-        "filedNoList": 0,
-        "noFiling": 0,
+        "filedNoList": 1,
+        "noFiling": 28,
         "failed": 0,
-        "unscanned": 29
+        "unscanned": 0
       },
       {
         "sector": "能源",
         "sectorEn": "Energy",
         "companies": 22,
         "withEdges": 2,
-        "filedNoList": 0,
-        "noFiling": 0,
+        "filedNoList": 15,
+        "noFiling": 5,
         "failed": 0,
-        "unscanned": 20
+        "unscanned": 0
       },
       {
         "sector": "原材料",
         "sectorEn": "Materials",
         "companies": 20,
         "withEdges": 5,
-        "filedNoList": 0,
-        "noFiling": 0,
+        "filedNoList": 12,
+        "noFiling": 3,
         "failed": 0,
-        "unscanned": 15
+        "unscanned": 0
       },
       {
         "sector": "通信服务",
         "sectorEn": "Communication Services",
         "companies": 17,
         "withEdges": 2,
-        "filedNoList": 0,
-        "noFiling": 0,
+        "filedNoList": 3,
+        "noFiling": 12,
         "failed": 0,
-        "unscanned": 15
+        "unscanned": 0
       }
     ],
     "stageByBasis": {
@@ -14715,7 +15728,7 @@
     },
     "stageResolvedNodes": 495,
     "stageAmbiguousNodes": 0,
-    "note": "本图谱只收录有公开出处的关系，不是完整供应链。当前 20245 条边全部来自 Form SD 冲突矿产申报，语义是「该冶炼厂出现在申报人的供应链中」——间接、不含份额、不含层级，不等于直接供货关系。"
+    "note": "本图谱只收录有公开出处的关系，不是完整供应链。当前 20401 条边全部来自 Form SD 冲突矿产申报，语义是「该冶炼厂出现在申报人的供应链中」——间接、不含份额、不含层级，不等于直接供货关系。"
   },
   "dataQuality": {
     "contractVersion": 1,

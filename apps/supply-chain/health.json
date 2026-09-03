@@ -1,11 +1,11 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "generatedAt": "2026-09-03T02:17:56Z",
+  "generatedAt": "2026-09-03T02:33:34Z",
   "status": "healthy",
   "historyStatus": "migrated",
-  "lastAttemptAt": "2026-09-03T02:17:56Z",
-  "lastSuccessfulAt": "2026-09-03T02:17:56Z",
+  "lastAttemptAt": "2026-09-03T02:33:34Z",
+  "lastSuccessfulAt": "2026-09-03T02:33:34Z",
   "consecutiveFailures": 0,
   "failureReason": null,
   "coverage": {
@@ -13,8 +13,8 @@
     "publishedNodes": 495,
     "stageResolvedPct": 100.0,
     "stageAmbiguousPct": 0.0,
-    "edges": 20245,
-    "companiesWithEdges": 85
+    "edges": 20401,
+    "companiesWithEdges": 88
   },
   "sources": [
     {
