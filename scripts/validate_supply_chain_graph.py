@@ -21,6 +21,7 @@ import sys
 NODES_PATH = "apps/supply-chain/nodes.json"
 HEALTH_PATH = "apps/supply-chain/health.json"
 EDGES_DIR = "apps/supply-chain/edges"
+SMELTERS_PATH = "apps/supply-chain/smelters.json"
 
 ALLOWED_CONFIDENCE = {"disclosed", "inferred"}
 ALLOWED_BASIS = {"sector-initial", "sector-ambiguous", "sic-refined", "edge-derived", "unknown"}
@@ -231,6 +232,78 @@ def check_coverage(payload: dict, counts: dict, edge_count: int, errors: list[st
             fail(errors, f"coverage.stageByBasis 多报了 {basis}={reported}，实际没有这类节点")
 
 
+def check_smelters(errors: list[str], edge_count: int) -> dict:
+    """校验冶炼厂登记表。它带覆盖率声明，就必须和数据对得上。
+
+    这里守的核心是**别把条目数说成实体数**：无编号条目里有大量与带编号条目同名的
+    （实测 876 条里 681 条），不分开报就会把约 1032 家说成 1713 家。
+    """
+    if not os.path.exists(SMELTERS_PATH):
+        return {}                                   # 抽取器还没跑过，不是错误
+    try:
+        with open(SMELTERS_PATH, encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except (OSError, ValueError) as exc:
+        fail(errors, f"{SMELTERS_PATH} 读不出来：{exc}")
+        return {}
+
+    coverage = payload.get("coverage") or {}
+    smelters = payload.get("smelters") or {}
+    if coverage.get("claimComplete") is not False:
+        fail(errors, "smelters.coverage.claimComplete 必须恒为 false")
+    if coverage.get("edgesTotal") != edge_count:
+        fail(errors, f"smelters.coverage.edgesTotal {coverage.get('edgesTotal')} "
+                     f"与实际边数 {edge_count} 不符")
+    if coverage.get("uniqueSmelters") != len(smelters):
+        fail(errors, f"smelters.coverage.uniqueSmelters {coverage.get('uniqueSmelters')} "
+                     f"与实际条目数 {len(smelters)} 不符")
+
+    by_id = {"rmi-cid": 0, "name-only": 0}
+    same_name = 0
+    for key, entry in smelters.items():
+        kind = entry.get("identifierType")
+        if kind not in by_id:
+            fail(errors, f"smelters[{key}]：identifierType {kind!r} 不在允许集")
+            continue
+        by_id[kind] += 1
+        if kind == "rmi-cid" and not entry.get("cid"):
+            fail(errors, f"smelters[{key}]：标为 rmi-cid 却没有 cid")
+        if kind == "name-only" and entry.get("cid"):
+            fail(errors, f"smelters[{key}]：标为 name-only 却带着 cid")
+        twin = entry.get("sameNameAs")
+        if not twin:
+            continue
+        same_name += 1
+        # sameNameAs 只记录「名字完全相同」这个事实，指向的必须是带编号的那一条，
+        # 否则它就不是「有编号可查」的线索，而是两条无编号条目互指。
+        if kind != "name-only":
+            fail(errors, f"smelters[{key}]：只有无编号条目才该带 sameNameAs")
+        elif twin not in smelters:
+            fail(errors, f"smelters[{key}].sameNameAs 指向不存在的 {twin}")
+        elif smelters[twin].get("identifierType") != "rmi-cid":
+            fail(errors, f"smelters[{key}].sameNameAs 指向的 {twin} 不是带编号条目")
+
+    reported = coverage.get("uniqueByIdentifier") or {}
+    for kind, actual in by_id.items():
+        if reported.get(kind) != actual:
+            fail(errors, f"smelters.coverage.uniqueByIdentifier[{kind}] "
+                         f"报告 {reported.get(kind)}，实际 {actual}")
+    if coverage.get("exactNameMatchWithCid") != same_name:
+        fail(errors, f"smelters.coverage.exactNameMatchWithCid "
+                     f"报告 {coverage.get('exactNameMatchWithCid')}，实际 {same_name}")
+    # 这一条是「别把条目数说成实体数」的落地：下限估计必须真的扣掉同名那部分
+    expected = len(smelters) - same_name
+    if coverage.get("distinctAfterExactNameMatch") != expected:
+        fail(errors, f"smelters.coverage.distinctAfterExactNameMatch "
+                     f"报告 {coverage.get('distinctAfterExactNameMatch')}，"
+                     f"应为条目数 {len(smelters)} − 同名 {same_name} = {expected}")
+    # 「有申报无名单」与「无申报」必须分开——合并会把披露制度的上限说成抓取失败
+    for field in ("companiesWithList", "companiesFiledNoList", "companiesNoFiling"):
+        if not isinstance(coverage.get(field), int):
+            fail(errors, f"smelters.coverage 缺少 {field}（三种申报状态必须分开计数）")
+    return coverage
+
+
 def check_health(errors: list[str], node_count: int) -> None:
     if not os.path.exists(HEALTH_PATH):
         fail(errors, f"缺少 {HEALTH_PATH}")
@@ -257,6 +330,7 @@ def main() -> int:
     counts = check_nodes(payload, errors)
     edge_count = check_edges(payload, errors)
     check_coverage(payload, counts, edge_count, errors)
+    smelters = check_smelters(errors, edge_count)
     check_health(errors, len(payload.get("nodes") or []))
 
     total_nodes = len(payload.get("nodes") or [])
@@ -265,6 +339,15 @@ def main() -> int:
     index = payload.get("edgeIndex") or {}
     print(f"关系边 {edge_count} 条，分布在 {len(index)} 个公司边文件里"
           + ("（全部携带可核验出处）" if edge_count else "（尚无证据来源）"))
+    if smelters:
+        print(f"冶炼厂登记表 {smelters.get('uniqueSmelters')} 条目"
+              f"（带编号 {(smelters.get('uniqueByIdentifier') or {}).get('rmi-cid')} · "
+              f"仅名字 {(smelters.get('uniqueByIdentifier') or {}).get('name-only')}）；"
+              f"其中 {smelters.get('exactNameMatchWithCid')} 条与带编号条目同名，"
+              f"扣掉后不同实体下限 {smelters.get('distinctAfterExactNameMatch')}")
+        print(f"申报状态：有名单 {smelters.get('companiesWithList')} 家 · "
+              f"有申报无名单 {smelters.get('companiesFiledNoList')} 家 · "
+              f"无申报 {smelters.get('companiesNoFiling')} 家")
     print(f"claimComplete = {(payload.get('coverage') or {}).get('claimComplete')}（必须恒为 false）")
 
     if errors:

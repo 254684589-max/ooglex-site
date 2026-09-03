@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-02T16:18:30Z",
+  "updatedAt": "2026-09-03T01:22:28Z",
   "asOf": "2026-09-01",
   "frequency": "daily",
   "status": "ok",
@@ -14582,13 +14582,15 @@
     "formSd": {
       "claimComplete": false,
       "companiesScanned": 495,
-      "companiesWithList": 85,
-      "companiesFiledNoList": 149,
-      "companiesNoFiling": 256,
-      "companiesFailed": 5,
+      "companiesWithList": 0,
+      "companiesFiledNoList": 0,
+      "companiesNoFiling": 0,
+      "companiesFailed": 0,
       "companiesPublished": 85,
       "edgesTotal": 20245,
       "uniqueSmelters": 1713,
+      "exactNameMatchWithCid": 681,
+      "distinctAfterExactNameMatch": 1032,
       "uniqueByIdentifier": {
         "rmi-cid": 837,
         "name-only": 876

@@ -41,6 +41,7 @@ import argparse
 import importlib.util
 import json
 import os
+import re
 import sys
 import time
 from datetime import datetime, timezone
@@ -79,6 +80,11 @@ def load_parser():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def _name_key(name: str | None) -> str:
+    """只用于比对「名字是不是完全一样」，不用于建标识。"""
+    return re.sub(r"[^a-z0-9]+", "", (name or "").lower())
 
 
 def write_if_changed(path: str, payload: dict, ignore: tuple = ("updatedAt",)) -> bool:
@@ -317,6 +323,9 @@ def main() -> int:
                          "「留空=全部」在工作流里不成立）")
     ap.add_argument("--limit", type=int, default=0, help="最多处理几家")
     ap.add_argument("--sample-rows", type=int, default=0, help="每家打印前 N 条明细")
+    ap.add_argument("--rebuild-registry", action="store_true",
+                    help="不联网，只按磁盘上已有的边文件重算 smelters.json——"
+                         "登记表口径变了不必重跑整轮抓取。边文件一个字节都不动。")
     args = ap.parse_args()
 
     with open(IDENTITY_PATH, encoding="utf-8") as handle:
@@ -346,7 +355,9 @@ def main() -> int:
 
     states: dict[str, list[str]] = {}
     results: list[dict] = []
-    for i, (symbol, cik) in enumerate(targets, 1):
+    # 重建模式下不取任何数：扫描列表置空，写盘阶段照常从磁盘重算登记表。
+    scan = [] if args.rebuild_registry else targets
+    for i, (symbol, cik) in enumerate(scan, 1):
         try:
             outcome = extract_company(symbol, cik, parser, verbose=bool(args.sample_rows))
         except Exception as exc:                   # noqa: BLE001
@@ -409,7 +420,31 @@ def main() -> int:
     #    每天往仓库里塞几 MB 无意义的 diff。
     existing = {name[:-5] for name in os.listdir(OUT_DIR)
                 if name.endswith(".json")} if os.path.isdir(OUT_DIR) else set()
-    if existing and len(listed) < MIN_KEEP_RATIO * len(existing):
+    # 重建模式沿用上一份的扫描口径。取不到就中止——宁可不重建，也不发布
+    # 一份「85 家有名单」被写成「0 家有名单」的覆盖率。
+    scan_counts: dict = {}
+    if args.rebuild_registry:
+        try:
+            with open(SMELTERS_PATH, encoding="utf-8") as handle:
+                prior = (json.load(handle) or {}).get("coverage") or {}
+        except (OSError, ValueError) as exc:
+            print(f"[XX] 重建模式读不到上一份 {SMELTERS_PATH}（{exc}），中止")
+            return 1
+        keys = ("companiesScanned", "companiesWithList", "companiesFiledNoList",
+                "companiesNoFiling", "companiesFailed")
+        # failedSymbols 是后加的字段，旧文件可能没有；缺了就沿用空列表，
+        # 不当成致命错误——但计数字段缺失仍然中止。
+        missing = [k for k in keys if prior.get(k) is None]
+        if missing:
+            print(f"[XX] 上一份覆盖率缺少 {missing}，无法沿用扫描口径，中止")
+            return 1
+        scan_counts = {k: prior[k] for k in keys}
+        scan_counts["failedSymbols"] = prior.get("failedSymbols") or []
+        print(f"沿用上一轮扫描口径：扫 {scan_counts['companiesScanned']} 家，"
+              f"其中 {scan_counts['companiesWithList']} 家有名单\n")
+
+    # 重建模式本来就一家都没取，这道闸门在那里没有意义。
+    if existing and not args.rebuild_registry and len(listed) < MIN_KEEP_RATIO * len(existing):
         print(f"\n[XX] 本轮只拿到 {len(listed)} 家的名单，磁盘上已有 {len(existing)} 家，"
               f"低于 {MIN_KEEP_RATIO:.0%} 阈值——判定整轮取数异常，保留现有数据不覆盖。")
         return 1
@@ -462,6 +497,24 @@ def main() -> int:
             entry["minerals"] = sorted(set(entry["minerals"]) | set(edge.get("minerals") or []))
             entry["filers"] = sorted(set(entry["filers"]) | {symbol})
 
+    # 无编号条目里有大量与带编号条目**同名**的——实测 876 条里 681 条名字完全一致。
+    # 不合并（没有编号就无从确认是同一家，`Aurubis AG` 与 `Aurubis AG, Hamburg`
+    # 正是反例），但必须把「名字完全相同」这个**事实**记下来，否则条目数会把
+    # 同一家数两次，约 1032 家报成 1713 家。
+    cid_by_name = {_name_key(v["name"]): key for key, v in registry.items()
+                   if v["identifierType"] == "rmi-cid" and v["name"]}
+    exact_matches = 0
+    for key, entry in registry.items():
+        if entry["identifierType"] != "name-only" or not entry["name"]:
+            continue
+        twin = cid_by_name.get(_name_key(entry["name"]))
+        if not twin:
+            continue
+        exact_matches += 1
+        # 记事实，不做断言：名字一模一样，但没有编号佐证，仍是两条独立条目。
+        entry["sameNameAs"] = twin
+        registry[twin]["alsoListedWithoutCid"] = True
+
     published_edges = sum(v["count"] for v in index.values())
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     smelters_payload = {
@@ -476,18 +529,36 @@ def main() -> int:
         "note": ("带 RMI 编号的条目按编号合并，跨申报人可靠；无编号的条目只能按"
                  "名字规范化归并，写法不同就会重复——两类分开统计，不混成一个数。"
                  "名字归一只处理大小写与标点，不做同义合并：宁可一家重复出现，"
-                 "不可两家被错并成一家。"),
+                 "不可两家被错并成一家。因此 uniqueSmelters 是**条目数**，"
+                 "不是「有多少家不同的冶炼厂」：无编号条目里有大量与带编号条目同名的，"
+                 "sameNameAs 记录了这个事实（只记录、不合并），"
+                 "distinctAfterExactNameMatch 是扣掉这部分后的下限估计。"),
         "companiesIndex": dict(sorted(index.items())),
         "coverage": {
             "claimComplete": False,
-            "companiesScanned": len(targets),
-            "companiesWithList": len(listed),
-            "companiesFiledNoList": len(filed_no_list),
-            "companiesNoFiling": len(no_filing),
-            "companiesFailed": len(failed),
+            # 这五个数来自本轮扫描，登记表重建模式下没有扫描——必须沿用上一份，
+            # 不能归零。归零会让页面把「495 家里 85 家有名单」显示成「0 家有名单」，
+            # 那是对事实的错误陈述，不是「暂无数据」。
+            **(scan_counts if args.rebuild_registry else {
+                "companiesScanned": len(targets),
+                "companiesWithList": len(listed),
+                "companiesFiledNoList": len(filed_no_list),
+                "companiesNoFiling": len(no_filing),
+                "companiesFailed": len(failed),
+                # 只报「失败 5 家」而不说是哪 5 家，等于没人能去核对。
+                # 名单写进数据，不只留在会过期的运行日志里。
+                "failedSymbols": sorted(failed)[:40],
+            }),
             "companiesPublished": len(index),
             "edgesTotal": published_edges,
+            # 条目数，不是「有多少家不同的冶炼厂」——见下面两个数。
             "uniqueSmelters": len(registry),
+            # 名字与某条带编号条目完全一致的无编号条目数。几乎肯定是同一家，
+            # 但没有编号佐证，所以只记录、不合并。
+            "exactNameMatchWithCid": exact_matches,
+            # 扣掉上面那部分后的下限估计。真实数目在这两个数之间——写法不同
+            # 但其实同一家的（Aurubis AG / Aurubis AG, Hamburg）仍算两条。
+            "distinctAfterExactNameMatch": len(registry) - exact_matches,
             "uniqueByIdentifier": {
                 "rmi-cid": sum(1 for v in registry.values()
                                if v["identifierType"] == "rmi-cid"),
