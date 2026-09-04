@@ -241,87 +241,83 @@
     return sum;
   }
 
-  function maxCap(d) {
-    var m = 0;
-    (d.stages || []).forEach(function (s) {
-      var v = capOf(d, s.id);
-      if (v > m) m = v;
-    });
-    return m || 1;
-  }
-
-  function stageCard(d, meta, capMax) {
+  /* 一个环节 = 一条带：表头（名称／家数／市值／涨跌）+ 始终铺开的细分构成
+     + 点开后就地展开的公司表。细分是主体，不藏在点击后面。 */
+  function stageBand(d, meta) {
     var p = perfOf(d, meta.id) || {};
     var total = countIn(d, meta.id);
-    var btn = el("button", "stage");
-    btn.type = "button";
-    btn.setAttribute("aria-expanded", "false");
-    btn.setAttribute("aria-controls", "panel");
-    btn.dataset.stage = meta.id;
+    var band = el("section", "band");
+    band.dataset.stage = meta.id;
 
-    var bar = el("div", "bar");
-    bar.style.background = STAGE_COLOR[meta.id] || "var(--dim)";
-    btn.appendChild(bar);
+    var hd = el("button", "bandhd");
+    hd.type = "button";
+    hd.setAttribute("aria-expanded", "false");
+    hd.style.borderLeftColor = STAGE_COLOR[meta.id] || "var(--dim)";
+    hd.appendChild(el("span", "nm", meta.label));
+    if (meta.labelEn) hd.appendChild(el("span", "en", meta.labelEn));
+    hd.appendChild(el("span", "spacer"));
 
-    // 标题独占一行不折行，英文降为 mono 小字副行
-    var hd = el("div", "hd");
-    hd.appendChild(el("div", "nm", meta.label));
-    if (meta.labelEn) hd.appendChild(el("div", "en", meta.labelEn));
-    btn.appendChild(hd);
-
-    // 主数字：家数。一卡一个主数，其余降级。
-    var big = el("div", "big");
-    big.appendChild(document.createTextNode(String(total)));
-    big.appendChild(el("s", null, "家"));
-    btn.appendChild(big);
-
-    if (meta.description) btn.appendChild(el("div", "desc", meta.description));
-
-    var cap$ = capOf(d, meta.id);
-    var track = el("div", "mcap");
-    var fill = el("i");
-    fill.style.width = Math.max(cap$ / capMax * 100, 1) + "%";
-    fill.style.background = STAGE_COLOR[meta.id] || "var(--dim)";
-    track.appendChild(fill);
-    btn.appendChild(track);
-
-    // 页脚只留市值与**一个**涨跌口径（等权）。市值加权与中位移到展开面板，
-    // 不是删掉——旧版三个数同样大小并排，六张卡 18 个百分数，读者抓不住重点。
-    var foot = el("div", "foot");
-    foot.appendChild(el("span", null, cap(cap$)));
+    var n = el("span", "n");
+    n.appendChild(document.createTextNode(String(total)));
+    n.appendChild(el("s", null, "家"));
+    hd.appendChild(n);
+    hd.appendChild(el("span", "mc", cap(capOf(d, meta.id))));
+    // 表头只留等权一个口径，另两个在细分条下面给全——是降级，不是删掉
     if (p.companies == null) {
-      foot.appendChild(el("span", null, "无表现数据"));
+      hd.appendChild(el("span", "mc", "无表现数据"));
     } else {
-      var b = el("b", cls(p.equalWeightPct), pct(p.equalWeightPct));
+      var b = el("span", "pc " + cls(p.equalWeightPct), pct(p.equalWeightPct));
       b.title = "等权涨跌";
-      foot.appendChild(b);
+      hd.appendChild(b);
     }
-    btn.appendChild(foot);
+    band.appendChild(hd);
 
-    // 没算出来不等于没变化，如实说明；参与统计的家数少于总数时点明差额
-    if (p.companies == null) {
-      btn.appendChild(el("div", "note", "本次未生成环节表现数据"));
-    } else if (p.companies < total) {
-      btn.appendChild(el("div", "note",
-        "等权涨跌按 " + p.companies + " 家有效报价计，另 "
-        + (total - p.companies) + " 家无有效报价"));
+    if (meta.description) band.appendChild(el("div", "banddesc", meta.description));
+
+    var list = (d.nodes || []).filter(function (x) { return x.stage === meta.id; })
+      .sort(function (a, b2) { return (b2.marketCap || 0) - (a.marketCap || 0); });
+
+    var panel = el("div", "panel");
+    panel.hidden = true;
+    panel.id = "panel-" + meta.id;
+
+    band.appendChild(renderSegments(d, meta.id, list, function (code) {
+      // 同一格再点一次收起；换一格就换内容，表始终在这条带子里面
+      var same = state.open === meta.id && state.seg === code;
+      state.open = same ? null : meta.id;
+      state.seg = same ? null : code;
+      renderStages(d);
+    }));
+    band.appendChild(panel);
+
+    hd.setAttribute("aria-controls", panel.id);
+    hd.addEventListener("click", function () {
+      var opening = !(state.open === meta.id && !state.seg);
+      state.open = opening ? meta.id : null;
+      state.seg = null;
+      renderStages(d);
+    });
+
+    if (state.open === meta.id) {
+      band.classList.add("open");
+      hd.setAttribute("aria-expanded", "true");
+      fillPanel(d, meta, list, panel);
+      panel.hidden = false;
     }
-
-    btn.addEventListener("click", function () { toggle(meta.id); });
-    return btn;
+    return band;
   }
 
   function renderStages(d) {
     var byId = {};
-    (d.stages || []).forEach(function (s) { byId[s.id] = s; });
-    // 市值横条按全部六个环节的最大值归一，链内链外用同一把尺子——
-    // 各归各的最大值会让两组的条长不可比。
-    var capMax = maxCap(d);
+    (d.stages || []).forEach(function (s2) { byId[s2.id] = s2; });
     [["chain", CHAIN], ["offchain", OFFCHAIN]].forEach(function (pair) {
       var host = $(pair[0]);
       host.textContent = "";
-      pair[1].forEach(function (id) {
-        if (byId[id]) host.appendChild(stageCard(d, byId[id], capMax));
+      pair[1].forEach(function (id, i) {
+        if (!byId[id]) return;
+        // 实物链四段之间画向下的箭头，表示顺序；链外两段之间不画
+        if (i && pair[0] === "chain") host.appendChild(el("div", "link"));
+        host.appendChild(stageBand(d, byId[id]));
       });
     });
   }
@@ -360,16 +356,14 @@
       + (v & 255) + "," + a + ")";
   }
 
-  function renderSegments(d, stageId, meta, list, onPick) {
+  function renderSegments(d, stageId, list, onPick) {
     var segs = segmentsOf(list);
     var shown = segs.slice(0, MAX_SEGS);
     var rest = segs.slice(MAX_SEGS);
     var restCount = rest.reduce(function (a, g) { return a + g.rows.length; }, 0);
 
+    // 口径只在区块标题里说一次。六条带子各印一遍同样的话，是六份噪音。
     var box = el("div", "segwrap");
-    box.appendChild(el("div", "lead",
-      "细分构成 · 按 SEC 行业码（SIC）两位大类，宽度即家数，点一格只看该组公司"));
-
     var row = el("div", "segrow");
     var colorVar = STAGE_COLOR[stageId] || "";
     // var(--sN) 拿不到字面色值，从计算样式里读回来再调浓淡
@@ -399,9 +393,10 @@
         (g.code ? "SIC " + g.code + " · " : "") + g.rows.length + " 家"));
       b.title = g.label + (g.labelEn ? "（" + g.labelEn + "）" : "")
         + " " + g.rows.length + " 家";
+      // 只报「点了哪一格」，要不要收起由调用方判断——两边都做一次切换会互相抵消
       b.addEventListener("click", function (ev) {
         ev.stopPropagation();
-        onPick(g.code === state.seg ? null : g.code);
+        onPick(g.code || "?");
       });
       row.appendChild(b);
     });
@@ -428,21 +423,9 @@
     return box;
   }
 
-  function renderPanel(d, stageId) {
-    var panel = $("panel");
+  /* 只负责填公司表。细分条由 stageBand 常驻渲染，不在这里重复一份。 */
+  function fillPanel(d, meta, all, panel) {
     panel.textContent = "";
-    var meta = null;
-    (d.stages || []).forEach(function (s) { if (s.id === stageId) meta = s; });
-    if (!meta) { panel.hidden = true; return; }
-
-    var all = (d.nodes || []).filter(function (n) { return n.stage === stageId; })
-      .sort(function (a, b) { return (b.marketCap || 0) - (a.marketCap || 0); });
-
-    panel.appendChild(renderSegments(d, stageId, meta, all, function (code) {
-      state.seg = code;
-      renderPanel(d, stageId);
-    }));
-
     var list = state.seg
       ? all.filter(function (n) { return (n.sicMajor || "?") === state.seg; })
       : all;
@@ -528,24 +511,6 @@
     if (list.length > MAX_ROWS) {
       panel.appendChild(el("div", "more",
         "另有 " + (list.length - MAX_ROWS) + " 家未显示。完整清单见站内公司榜。"));
-    }
-    panel.hidden = false;
-  }
-
-  function toggle(stageId) {
-    var opening = state.open !== stageId;
-    state.open = opening ? stageId : null;
-    // 换环节要清掉细分筛选：带着上一个环节的 SIC 码进来会筛出一张空表
-    state.seg = null;
-    Array.prototype.forEach.call(document.querySelectorAll(".stage"), function (b) {
-      b.setAttribute("aria-expanded", b.dataset.stage === state.open ? "true" : "false");
-    });
-    if (state.open) {
-      renderPanel(state.data, state.open);
-      $("panel").scrollIntoView({ block: "nearest",
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-    } else {
-      $("panel").hidden = true;
     }
   }
 
