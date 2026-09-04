@@ -393,48 +393,55 @@ _LEGAL_SUFFIX = re.compile(
 
 
 def _split_trailing_country(name: str) -> tuple[str, str | None, str | None]:
-    """有的申报把国别并在名字里（"Asahi Pretec Corp. Japan"），拆开。
+    """名字里带着国名时，取出国别；**只在有把握时才把名字截短**。
 
-    **拆错的代价比不拆大得多**：拆错砍掉的是公司的名字——那是它的身份；
-    不拆只是少一个国别属性，页面照实显示「未归类」即可。本文件开头就写着
-    「认不出来的保留原文、country 置 None——宁可显示未归类，也不硬塞一个国家」，
-    这里同一个道理。
+    这里要分开两个问题，上一版把它们混成了一个，两边都做错过：
 
-    实测踩过（已发布的数据里）：
+      一、这家公司**叫什么**  —— 截错就等于改了它的身份，代价最大
+      二、这一格**提到了哪个国家** —— 认出国名是在读，不是在猜
 
+    实测踩过两次，方向相反：
+
+      第一次（太松）：见空格就拿最后一个词试国名，试中就把前半段当名字。
         KEMET de Mexico                  →  砍成 "KEMET de"
         Umicore Precious Metals Thailand →  砍成 "Umicore Precious Metals"
         PT Premium Tin Indonesia         →  砍成 "PT Premium Tin"
-        Bangko Sentral ng Pilipinas (Central Bank of the Philippines)
-                                         →  砍成 "…(Central Bank of the"
+        四个都是名字本身就以国名收尾的合法实体。
 
-    四个都是**名字本身就以国名收尾**的合法实体，不是「名字 + 国别」拼在一起。
-    原来的规则见空格就按最后一个词试国名，所以全中招。
+      第二次（太紧）：改成不确定就不拆，结果**连国别一起丢了**。
+        无编号的行要「矿种 + 厂名 + 国别」三样齐全才收，国别一没，整行被弃，
+        卡特彼勒、迪士尼、乐天化学、相干、星巴克、陶氏六家的名单整份消失
+        （实测 88 → 80 家）。为了几个名字的准确度，赔掉六家公司的全部数据。
 
-    改成按分隔符区别对待：
+    正确的做法是两件事分开办：国名照认（进 country 字段），名字只在有把握时截。
 
-      逗号、破折号 —— 约定俗成的元数据分隔符（"Asahi Pretec Corp., Japan"），
-                      拆开风险低。
-      纯空格       —— 只有前半段以法律形式后缀（Corp. / Ltd. / GmbH…）收尾时才拆。
-                      "Asahi Pretec Corp. Japan" 拆；"Umicore Precious Metals
-                      Thailand" 不拆，因为 Metals 不是后缀。
+      有把握 —— 逗号、破折号这类约定俗成的元数据分隔符，
+                或前半段以法律形式后缀（Corp. / Ltd. / K.K. / S.A.…）收尾
+      没把握 —— 名字原样保留，国别照样给出
+
+    于是 "Asahi Pretec Corp. Japan" 截成 "Asahi Pretec Corp." + 日本；
+    "KEMET de Mexico" 名字不动，国别仍然是墨西哥——两样都对。
     """
-    for sep in (",", " - ", " – "):
+    for sep in (",", " - ", " \u2013 "):
         if sep not in name:
             continue
         head, _, tail = name.rpartition(sep)
         english, chinese = match_country(tail)
         if english and head.strip():
-            return head.strip(" ,-–"), english, chinese
-    # 纯空格：只有前半段像一个完整的公司名时才拆。
+            return head.strip(" ,-\u2013"), english, chinese
+
     head, _, tail = name.rpartition(" ")
+    if not head.strip():
+        return name, None, None
+    english, chinese = match_country(tail)
+    if not english:
+        return name, None, None
     # 去掉点再比后缀，"K.K." / "S.A." / "N.V." 这类带点写法才认得出来。
-    probe = head.strip(" ,-–").replace(".", "")
-    if head.strip() and _LEGAL_SUFFIX.search(probe):
-        english, chinese = match_country(tail)
-        if english:
-            return head.strip(" ,-–"), english, chinese
-    return name, None, None
+    confident = _LEGAL_SUFFIX.search(head.strip(" ,-\u2013").replace(".", ""))
+    if confident:
+        return head.strip(" ,-\u2013"), english, chinese
+    # 没把握就只取国别，名字一个字不动。
+    return name, english, chinese
 
 
 def parse_smelters(html: str) -> dict:

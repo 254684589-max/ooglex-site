@@ -638,17 +638,22 @@ def main() -> int:
 
     # 国名并在名字里的拆分。**拆错砍掉的是公司的身份，不拆只是少一个属性**，
     # 所以宁可不拆。下面前四条是已发布数据里真被砍过的名字，逐条钉死。
-    print("\n── 名字里的国名：宁可不拆，也不砍掉名字 ──────────────────────────")
+    print("\n── 名字里的国名：国别照认，名字只在有把握时才截 ──────────────────")
+    # 这一组前后踩过两次，方向相反，所以两边都要钉住：
+    #   太松 —— 见空格就拆，把「KEMET de Mexico」砍成「KEMET de」
+    #   太紧 —— 不确定就不拆，连国别一起丢，无编号的行因缺国别被整行弃掉，
+    #           六家公司的名单整份消失（实测 88 → 80 家）
+    # 正确解：名字保完整 **且** 国别照给。下面前四条两样都断言。
     split_cases = [
-        ("KEMET de Mexico", "KEMET de Mexico", None,
-         "已发布数据里被砍成「KEMET de」"),
-        ("Umicore Precious Metals Thailand", "Umicore Precious Metals Thailand", None,
-         "已发布数据里被砍成「Umicore Precious Metals」"),
-        ("PT Premium Tin Indonesia", "PT Premium Tin Indonesia", None,
-         "已发布数据里被砍成「PT Premium Tin」"),
+        ("KEMET de Mexico", "KEMET de Mexico", "mexico",
+         "名字保完整，国别照给（曾被砍成「KEMET de」）"),
+        ("Umicore Precious Metals Thailand", "Umicore Precious Metals Thailand",
+         "thailand", "名字保完整，国别照给（曾被砍成「Umicore Precious Metals」）"),
+        ("PT Premium Tin Indonesia", "PT Premium Tin Indonesia", "indonesia",
+         "名字保完整，国别照给（曾被砍成「PT Premium Tin」）"),
         ("Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
-         "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)", None,
-         "已发布数据里括号被砍掉一半"),
+         "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)", "philippines",
+         "括号完整，国别照给（曾被砍掉一半）"),
         ("Asahi Pretec Corp. Japan", "Asahi Pretec Corp.", "japan",
          "后缀收尾 + 国名，该拆"),
         ("Tanaka Kikinzoku Kogyo K.K. Japan", "Tanaka Kikinzoku Kogyo K.K.", "japan",
