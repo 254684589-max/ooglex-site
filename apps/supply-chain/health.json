@@ -1,11 +1,11 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "generatedAt": "2026-09-03T01:27:43Z",
+  "generatedAt": "2026-09-04T00:00:02Z",
   "status": "healthy",
   "historyStatus": "migrated",
-  "lastAttemptAt": "2026-09-03T01:27:43Z",
-  "lastSuccessfulAt": "2026-09-03T01:27:43Z",
+  "lastAttemptAt": "2026-09-04T00:00:02Z",
+  "lastSuccessfulAt": "2026-09-04T00:00:02Z",
   "consecutiveFailures": 0,
   "failureReason": null,
   "coverage": {
@@ -37,7 +37,7 @@
       "status": "healthy",
       "mode": "market",
       "frequency": "daily",
-      "asOf": "2026-09-02",
+      "asOf": "2026-09-03",
       "upstream": {
         "dataset": "companies",
         "path": "apps/companies/sp500.json"
