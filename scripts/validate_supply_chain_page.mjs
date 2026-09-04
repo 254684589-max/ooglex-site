@@ -270,6 +270,112 @@ async function main() {
       check(`按板块区块无横向溢出`, () => assert.ok(cov.overflow <= 1,
         `溢出 ${cov.overflow}px`));
 
+      /* 方案 A · 传导链。四段之间要有方向线索，链外两段不能有——
+         箭头表示实物流转的顺序，平台服务与支持性行业不在那条链上。
+         还要守住旧版最伤专业感的那个毛病：四字标题被挤到折行。 */
+      const chain = await evaluate(`(() => {
+        const cs = [...document.querySelectorAll('#chain .stage')];
+        const os = [...document.querySelectorAll('#offchain .stage')];
+        // display:none 的伪元素仍然报得出 content 与 width，必须一并看 display，
+        // 否则窄屏藏起来的箭头会被算成「画了」。
+        const arrowOn = (el) => {
+          const b = getComputedStyle(el, '::before');
+          return b.display !== 'none' && b.content !== 'none'
+            && b.width !== 'auto' && b.width !== '0px';
+        };
+        const wrapped = cs.concat(os).filter(el => {
+          const nm = el.querySelector('.nm');
+          if (!nm) return true;
+          const r = nm.getBoundingClientRect();
+          // 折行了高度就会翻倍：与自身行高比较，不写死像素
+          return r.height > parseFloat(getComputedStyle(nm).lineHeight) * 1.6;
+        }).map(el => el.querySelector('.nm') ? el.querySelector('.nm').textContent : '?');
+        return {
+          chainCount: cs.length,
+          offCount: os.length,
+          arrowsInChain: cs.filter(arrowOn).length,
+          arrowsOffChain: os.filter(arrowOn).length,
+          wrapped,
+          oneMainNumber: cs.concat(os).every(el =>
+            el.querySelectorAll('.big').length === 1),
+          pctPerCard: cs.concat(os).map(el =>
+            el.querySelectorAll('.foot b').length)
+        };
+      })()`);
+
+      check(`实物链四段 + 链外两段`, () => {
+        assert.equal(chain.chainCount, 4, `链内 ${chain.chainCount}`);
+        assert.equal(chain.offCount, 2, `链外 ${chain.offCount}`);
+      });
+      check(`环节标题不折行（旧版「上游资／源」）`, () => assert.equal(
+        chain.wrapped.length, 0, `折行的：${JSON.stringify(chain.wrapped)}`));
+      check(`每卡只有一个主数字`, () => assert.ok(chain.oneMainNumber));
+      check(`每卡只留一个涨跌口径`, () => assert.ok(
+        chain.pctPerCard.every(n => n <= 1),
+        `实际 ${JSON.stringify(chain.pctPerCard)}`));
+      if (width > 520) {
+        check(`链内有方向箭头（${width}px）`, () => assert.ok(
+          chain.arrowsInChain >= 1, `箭头 ${chain.arrowsInChain} 个`));
+        check(`链外不画箭头——它不在实物流转链条上`, () => assert.equal(
+          chain.arrowsOffChain, 0));
+      } else {
+        check(`窄屏单列时不画箭头（会指向错误方向）`, () => assert.equal(
+          chain.arrowsInChain, 0));
+      }
+
+      /* 方案 C · 真实流向。这是全站唯一一张带子宽度有实测含义的图，
+         所以要守的不是「画出来了」，而是**画的是不是那个数**，
+         以及**空缺有没有画出来**。 */
+      const fl = await evaluate(`(() => {
+        const sec = document.getElementById('flowsec');
+        if (!sec || sec.hidden) return { shown: false };
+        const box = document.getElementById('flow-chart');
+        return {
+          shown: true,
+          ribbons: box.querySelectorAll('path[fill-opacity]').length,
+          nodes: box.querySelectorAll('rect').length,
+          titles: [...box.querySelectorAll('path title')].map(t => t.textContent),
+          lead: document.getElementById('flow-lead').textContent,
+          sub: document.getElementById('flow-sub').textContent,
+          key: document.getElementById('flow-key').textContent,
+          labels: [...box.querySelectorAll('text')].map(t => t.textContent),
+          overflow: sec.scrollWidth - sec.clientWidth
+        };
+      })()`);
+
+      check(`流向图已渲染`, () => assert.ok(fl.shown));
+      check(`带子数与节点数都不为零`, () => {
+        assert.ok(fl.ribbons > 0, `带子 ${fl.ribbons}`);
+        assert.ok(fl.nodes > 0, `节点 ${fl.nodes}`);
+      });
+      check(`流向合计与 edgesTotal 一致`, () => {
+        const want = NODES.coverage.edgesTotal;
+        assert.ok(fl.lead.includes(String(want)),
+          `文案「${fl.lead.slice(0, 60)}」未写出 ${want}`);
+      });
+      check(`每条带子可查到具体条数`, () => {
+        assert.equal(fl.titles.length, fl.ribbons);
+        assert.ok(fl.titles.every(t => /[0-9]+ 条$/.test(t)),
+          `样例 ${JSON.stringify(fl.titles.slice(0, 2))}`);
+      });
+      check(`无出处的环节画成 0 条死头，不是筛掉`, () => {
+        const dead = (NODES.flow && NODES.flow.stagesWithoutEdges) || [];
+        if (!dead.length) return;
+        assert.ok(fl.labels.some(t => t.indexOf("0 条") === 0),
+          `无边环节 ${JSON.stringify(dead)} 未画出`);
+      });
+      check(`点明有多少家公司不在图中`, () => {
+        const without = NODES.coverage.nodesTotal - NODES.coverage.nodesWithEdges;
+        assert.ok(fl.key.includes(String(without)),
+          `图注未写出 ${without}：「${fl.key.slice(0, 70)}」`);
+      });
+      check(`不把冶炼厂说成供应商`, () => {
+        assert.ok(!/供应商/.test(fl.lead + fl.sub + fl.key),
+          "流向图文案出现「供应商」——语义是「出现在供应链中」，间接、不含份额");
+      });
+      check(`流向区块无横向溢出`, () => assert.ok(fl.overflow <= 1,
+        `溢出 ${fl.overflow}px`));
+
       // 展开一个环节，检查公司表与判定依据
       const opened = await evaluate(`(() => {
         document.querySelector('.stage').click();
@@ -280,7 +386,10 @@ async function main() {
         const links = panel.querySelectorAll('td.basis a[href^="https://"]').length;
         const headers = [...panel.querySelectorAll('th')].map(t => t.textContent.trim());
         const card = document.querySelector('.stage');
-        const cardText = card ? card.querySelector('.cnt').textContent : "";
+        // 主数字在 .big 里（「142」+ <s>家</s>）。旧版是 .cnt，改版后不存在了——
+        // 这条断言本身仍然要守：卡片写几家，展开的表就得有几行。
+        const bigEl = card && card.querySelector('.big');
+        const cardText = bigEl ? bigEl.textContent : "";
         // 用字符类而非 \d / \s：这段表达式在 JS 模板字面量里，反斜杠转义会被吃掉
         const cardMatch = cardText.match(/^([0-9]+) *家/);
         return {
@@ -316,6 +425,72 @@ async function main() {
         assert.equal(opened.rowCount, shown,
           `卡片写 ${opened.cardCount} 家，表格 ${opened.rowCount} 行`);
       });
+
+      /* 方案 B · SIC 二级细分。守两件事：显示的家数必须和 nodes.json 对得上
+         （不能是前端自己凑的近似），以及点一格真的只剩那一组公司。 */
+      const seg = await evaluate(`(() => {
+        const panel = document.getElementById('panel');
+        const segs = [...panel.querySelectorAll('.seg')];
+        const read = (b) => {
+          const m = b.querySelector('.sc').textContent.match(/SIC ([0-9]{2}) . ([0-9]+) 家/);
+          return m ? { code: m[1], n: Number(m[2]) } : null;
+        };
+        const before = segs.map(read);
+        const stage = document.querySelector('.stage').dataset.stage;
+        let after = null, cap = "";
+        if (segs.length) {
+          segs[0].click();
+          after = panel.querySelectorAll('tbody tr').length;
+          cap = panel.querySelector('.cap').textContent;
+        }
+        const clipped = [...panel.querySelectorAll('.seg')].filter(b => {
+          const sn = b.querySelector('.sn'), sc = b.querySelector('.sc');
+          return sn.scrollWidth > sn.clientWidth + 1
+            || sc.scrollWidth > sc.clientWidth + 1;
+        }).map(b => b.querySelector('.sn').textContent);
+        return {
+          stage, count: segs.length, before, after, cap, clipped,
+          pressed: [...panel.querySelectorAll('.seg')]
+            .filter(b => b.getAttribute('aria-pressed') === 'true').length,
+          rest: (panel.querySelector('.segwrap .rest') || {}).textContent || "",
+          allThree: panel.querySelectorAll('.perf2 b').length,
+          overflow: panel.scrollWidth - panel.clientWidth
+        };
+      })()`);
+
+      check(`环节展开后有 SIC 细分条`, () => assert.ok(seg.count > 0,
+        `细分条 ${seg.count} 个`));
+      check(`细分家数与 nodes.json 逐组一致`, () => {
+        const truth = {};
+        NODES.nodes.filter(n => n.stage === seg.stage).forEach(n => {
+          const k = n.sicMajor || "?";
+          truth[k] = (truth[k] || 0) + 1;
+        });
+        const bad = seg.before.filter(g => g && truth[g.code] !== g.n)
+          .map(g => `SIC ${g.code} 显示 ${g.n} 实际 ${truth[g.code]}`);
+        assert.equal(bad.length, 0, bad.join("；"));
+      });
+      check(`点一格只剩该组公司`, () => {
+        const first = seg.before[0];
+        assert.ok(first, "第一格读不出 SIC 码与家数");
+        assert.equal(seg.after, Math.min(first.n, 60),
+          `该组 ${first.n} 家，筛后 ${seg.after} 行`);
+      });
+      check(`筛选后表头写明是哪一组`, () => assert.ok(
+        seg.cap.includes("SIC"), `表头「${seg.cap.slice(0, 60)}」`));
+      check(`选中的格子有按下态`, () => assert.equal(seg.pressed, 1));
+      check(`未单列的小类如实说明有多少家`, () => {
+        if (!seg.rest) return;
+        assert.ok(/[0-9]+ 家/.test(seg.rest), `「${seg.rest}」`);
+      });
+      // 卡片上只留了等权，另两个口径降级到这里——是降级不是删掉
+      check(`三个涨跌口径在面板里给全`, () => assert.equal(seg.allThree, 3));
+      check(`细分区无横向溢出`, () => assert.ok(seg.overflow <= 1,
+        `溢出 ${seg.overflow}px`));
+      // 宽度按家数，最小的那几格会窄到把标签切成「金…」「造…」。
+      // 切掉的字是缺陷，所以给了 min-width；这条断言守住它别再退回去。
+      check(`细分标签不被切断`, () => assert.equal(seg.clipped.length, 0,
+        `被切断的：${JSON.stringify(seg.clipped)}`));
       check(`展开后页面仍无横向溢出`, () => assert.ok(opened.pageOverflowAfterOpen <= 1,
         `溢出 ${opened.pageOverflowAfterOpen}px`));
     }

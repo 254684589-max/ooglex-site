@@ -91,25 +91,111 @@
   .sec-h h2 { font-size:1.05rem; font-weight:800; }
   .sec-h span { font-size:0.76rem; color:var(--faint); }
 
-  /* ── 环节卡片 ── */
-  .chain { display:grid; gap:10px; grid-template-columns:repeat(4,1fr); }
-  .offchain { display:grid; gap:10px; grid-template-columns:repeat(2,1fr); margin-top:10px; }
-  .stage { padding:13px 14px; text-align:left; width:100%; cursor:pointer;
+  /* ── 环节卡片：一条链，不是六个并排的方块 ────────────────────────
+     旧版把六个环节平铺成六张一样的卡，读出来是六个互不相干的分类。
+     实物链四段之间加箭头给出方向；平台服务与支持性行业不在实物流转链条上，
+     用虚线分隔另起一组——虚线表示「支持」，不是「流转」。
+
+     箭头用伪元素画在两卡之间的空隙里，**细、无标注、不按粗细编码**：
+     站内没有环节到环节的关系数据（20,784 条边全是「公司 → 冶炼厂」），
+     给箭头标上流量就是画数据不支持的东西。 */
+  .chain { display:grid; gap:26px; grid-template-columns:repeat(4,1fr); }
+  .offchain { display:grid; gap:26px; grid-template-columns:repeat(2,1fr); }
+  .stage { position:relative; display:flex; flex-direction:column; gap:9px;
+    padding:14px 15px 13px; text-align:left; width:100%; cursor:pointer;
     background:linear-gradient(180deg, rgba(22,27,37,.94), rgba(16,20,28,.94));
     border:1px solid var(--line); border-radius:16px; color:inherit; font:inherit;
-    min-height:44px; transition:border-color .18s, transform .18s; }
+    min-height:44px; transition:border-color .18s; }
   .stage:hover { border-color:rgba(255,255,255,0.2); }
   .stage[aria-expanded="true"] { border-color:var(--accent); }
-  .stage .bar { height:3px; border-radius:2px; margin-bottom:9px; }
-  .stage .nm { font-weight:700; font-size:0.98rem; display:flex; align-items:baseline; gap:7px; }
-  .stage .nm small { color:var(--faint); font-weight:400; font-size:0.7rem; }
-  .stage .cnt { color:var(--dim); font-size:0.76rem; margin-top:3px; }
-  .stage .perf { display:flex; gap:12px; margin-top:9px; flex-wrap:wrap; }
-  .stage .perf div { font-size:0.72rem; color:var(--faint); }
-  .stage .perf b { display:block; font-family:var(--mono); font-size:0.98rem; font-weight:700;
-    font-variant-numeric:tabular-nums; margin-top:1px; }
-  .stage .perf .none { flex-basis:100%; color:var(--dim); font-size:0.72rem; line-height:1.45; }
+  .stage .bar { height:3px; border-radius:2px; }
+  /* 标题独占一行、不折行：旧版中英文并排挤掉宽度，四字标题被断成
+     「上游资／源」「中间制／造」，这一条最伤专业感。英文降为 mono 小字副行。 */
+  .stage .hd { display:flex; flex-direction:column; gap:2px; min-width:0; }
+  .stage .nm { font-weight:700; font-size:1.02rem; letter-spacing:-0.01em;
+    white-space:nowrap; }
+  .stage .en { color:var(--faint); font-weight:400; font-size:0.66rem;
+    font-family:var(--mono); letter-spacing:0.04em; line-height:1.3;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  /* 主数字只留家数。旧版每卡三个涨跌数同样大小，六张卡 18 个百分数，
+     一眼扫过去抓不住任何一个；另两个口径移到展开后的面板里，不丢。 */
+  .stage .big { font-family:var(--mono); font-size:1.62rem; font-weight:600;
+    font-variant-numeric:tabular-nums; line-height:1.05; }
+  .stage .big s { text-decoration:none; font-size:0.8rem; color:var(--faint);
+    margin-left:3px; }
+  .stage .desc { color:var(--dim); font-size:0.74rem; line-height:1.45; }
+  .stage .mcap { height:4px; border-radius:2px; background:rgba(255,255,255,0.07);
+    overflow:hidden; }
+  .stage .mcap i { display:block; height:100%; }
+  .stage .foot { display:flex; justify-content:space-between; align-items:baseline;
+    gap:8px; font-family:var(--mono); font-size:0.72rem; color:var(--faint);
+    line-height:1.2; font-variant-numeric:tabular-nums; }
+  .stage .foot b { font-weight:600; }
+  .stage .note { color:var(--faint); font-size:0.7rem; line-height:1.45; }
+
+  .chain .stage + .stage::before {
+    content:""; position:absolute; left:-22px; top:50%;
+    width:15px; height:1px; background:var(--faint); transform:translateY(-50%);
+  }
+  .chain .stage + .stage::after {
+    content:""; position:absolute; left:-12px; top:50%;
+    width:5px; height:5px; border-top:1.2px solid var(--faint);
+    border-right:1.2px solid var(--faint);
+    transform:translateY(-50%) rotate(45deg);
+  }
+  .offlabel { display:flex; align-items:center; gap:9px; margin:20px 2px 11px;
+    font-family:var(--mono); font-size:0.68rem; color:var(--faint);
+    letter-spacing:0.1em; }
+  .offlabel::after { content:""; flex:1; height:1px;
+    border-top:1px dashed rgba(255,255,255,0.16); }
   .up { color:var(--up); } .down { color:var(--down); } .flat { color:var(--dim); }
+
+  @media (max-width:860px) {
+    .chain { grid-template-columns:repeat(2,1fr); }
+    /* 两列时第 3 张卡换行到下一行，行首那张不该带箭头 */
+    .chain .stage:nth-child(3)::before,
+    .chain .stage:nth-child(3)::after { display:none; }
+  }
+  @media (max-width:520px) {
+    .chain, .offchain { grid-template-columns:1fr; gap:10px; }
+    .chain .stage + .stage::before, .chain .stage + .stage::after { display:none; }
+  }
+
+  /* ── 环节的细分构成：SIC 两位大类 ──────────────────────────────
+     「中间制造 142 家」说不出这 142 家是什么。按 SEC 官方 SIC 行业码展开，
+     宽度即家数，同一环节内部的轻重立刻分得开。点一格筛出该组公司。
+     分组只是把 SEC 的码换成中文名，不改归属，逐家可核验。 */
+  .segwrap { padding:12px 15px 14px; border-bottom:1px solid var(--line); }
+  .segwrap .lead { font-size:0.76rem; color:var(--faint); margin-bottom:9px; }
+  .segrow { display:flex; gap:3px; }
+  /* 宽度按家数，但给一个下限：最小的那几格按比例只有几十像素，标签会被切成
+     「金…」「造…」，切掉的字是缺陷。比例略被压缩只是取整误差，
+     而且每格都写着确切家数，数字本身从不含糊。 */
+  .seg { border-radius:7px; padding:9px 10px 10px; min-width:112px; overflow:hidden;
+    border:1px solid transparent; cursor:pointer; text-align:left;
+    color:inherit; font:inherit; min-height:44px;
+    transition:border-color .16s, background-color .16s; }
+  .seg:hover { border-color:rgba(255,255,255,0.28); }
+  .seg[aria-pressed="true"] { border-color:var(--accent); }
+  .seg .sn { font-size:0.78rem; font-weight:600; white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis; display:block; }
+  .seg .sc { font-family:var(--mono); font-size:0.68rem; opacity:0.75;
+    font-variant-numeric:tabular-nums; display:block; margin-top:2px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .segwrap .rest { font-size:0.72rem; color:var(--faint); margin-top:9px; }
+  .segwrap .perf2 { display:flex; gap:16px; flex-wrap:wrap; margin-top:11px;
+    font-size:0.72rem; color:var(--faint); }
+  .segwrap .perf2 b { font-family:var(--mono); font-size:0.86rem; font-weight:700;
+    font-variant-numeric:tabular-nums; margin-left:5px; }
+  /* 宽度不够时所有格子都会被压到 min-width，比例编码**完全失效**——
+     六个等宽的条形什么都没说，长标签还被切。与其留一张失真的图，
+     不如换成可读的两列，让每格里的家数文字承担量级。
+     阈值取 860px：六格 × 112px 下限 + 间距，再加面板内边距，
+     低于这个宽度就排不下一条还算得上比例的条。 */
+  @media (max-width:860px) {
+    .segrow { flex-wrap:wrap; }
+    .seg { flex:1 1 44% !important; }
+  }
 
   /* ── 展开的公司表 ── */
   .panel { margin-top:10px; padding:0; overflow:hidden; }
@@ -135,6 +221,21 @@
   td.basis a { color:var(--accent); text-decoration:none; }
   td.basis a:hover { text-decoration:underline; }
   .more { padding:11px 15px; color:var(--faint); font-size:0.78rem; border-top:1px solid var(--line); }
+
+  /* ── 真实流向：环节 → 冶炼厂所在国别 ──────────────────────────
+     **全站唯一一张带子宽度有实测含义的图。** 价值链那条链是定义顺序，
+     没有环节到环节的关系数据；真正逐条挂着申报出处的只有「公司 → 冶炼厂」，
+     所以能画成流量的只有这一层。 */
+  .flowsec { padding:16px 18px 18px; margin-top:10px; }
+  .flowsec .lead { font-size:0.8rem; color:var(--dim); margin-bottom:4px; }
+  .flowsec .sub2 { font-size:0.74rem; color:var(--faint); margin-bottom:14px; }
+  .flowscroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .flowscroll svg { display:block; min-width:640px; }
+  .flowkey { display:flex; gap:8px 18px; flex-wrap:wrap; margin-top:12px;
+    font-size:0.72rem; color:var(--faint); }
+  .flowkey span { display:inline-flex; align-items:center; gap:6px; }
+  .flowkey i { width:9px; height:9px; border-radius:2px; flex:none;
+    background:#2b3441; }
 
   /* ── 方法与来源 ── */
   details.meth { margin-top:18px; padding:0; }
@@ -199,17 +300,25 @@
 
   <div class="sec-h">
     <h2>实物价值链</h2>
-    <span>从资源到终端，四个环节 · 点击展开该环节公司</span>
+    <span>从资源到终端，箭头表示环节顺序 · 点击展开该环节公司与细分构成</span>
   </div>
   <div class="chain" id="chain"></div>
 
-  <div class="sec-h">
-    <h2>链外环节</h2>
-    <span>不直接位于实物流转链条上</span>
-  </div>
+  <div class="offlabel">链外环节 · 不在实物流转链条上</div>
   <div class="offchain" id="offchain"></div>
 
   <div class="glass panel" id="panel" hidden></div>
+
+  <div class="sec-h">
+    <h2>真实流向</h2>
+    <span>各环节的公司 → 全球冶炼厂所在国别 · 带子宽度是实测关系条数</span>
+  </div>
+  <section class="glass flowsec" id="flowsec" hidden aria-label="关系流向">
+    <p class="lead" id="flow-lead"></p>
+    <p class="sub2" id="flow-sub"></p>
+    <div class="flowscroll" id="flow-chart"></div>
+    <div class="flowkey" id="flow-key"></div>
+  </section>
 
   <details class="glass meth">
     <summary>数据方法与来源</summary>
@@ -223,6 +332,6 @@
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="app.js?v=6c2a6c90" defer></script>
+<script src="app.js?v=6a736349" defer></script>
 </body>
 </html>

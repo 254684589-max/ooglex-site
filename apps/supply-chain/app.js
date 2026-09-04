@@ -49,7 +49,7 @@
     "unknown": "未判定"
   };
 
-  var state = { data: null, open: null };
+  var state = { data: null, open: null, seg: null };
 
   function el(tag, className, text) {
     var n = document.createElement(tag);
@@ -231,7 +231,26 @@
     return n;
   }
 
-  function stageCard(d, meta) {
+  /* 环节的市值合计。不在数据里预算，因为它就是节点表的一次求和，
+     多一个字段就多一处可能对不上的数。 */
+  function capOf(d, stageId) {
+    var sum = 0;
+    (d.nodes || []).forEach(function (x) {
+      if (x.stage === stageId && isNum(x.marketCap)) sum += x.marketCap;
+    });
+    return sum;
+  }
+
+  function maxCap(d) {
+    var m = 0;
+    (d.stages || []).forEach(function (s) {
+      var v = capOf(d, s.id);
+      if (v > m) m = v;
+    });
+    return m || 1;
+  }
+
+  function stageCard(d, meta, capMax) {
     var p = perfOf(d, meta.id) || {};
     var total = countIn(d, meta.id);
     var btn = el("button", "stage");
@@ -244,31 +263,49 @@
     bar.style.background = STAGE_COLOR[meta.id] || "var(--dim)";
     btn.appendChild(bar);
 
-    var nm = el("div", "nm");
-    nm.appendChild(document.createTextNode(meta.label));
-    nm.appendChild(el("small", null, meta.labelEn || ""));
-    btn.appendChild(nm);
+    // 标题独占一行不折行，英文降为 mono 小字副行
+    var hd = el("div", "hd");
+    hd.appendChild(el("div", "nm", meta.label));
+    if (meta.labelEn) hd.appendChild(el("div", "en", meta.labelEn));
+    btn.appendChild(hd);
 
-    btn.appendChild(el("div", "cnt", total + " 家 · " + (meta.description || "")));
+    // 主数字：家数。一卡一个主数，其余降级。
+    var big = el("div", "big");
+    big.appendChild(document.createTextNode(String(total)));
+    big.appendChild(el("s", null, "家"));
+    btn.appendChild(big);
 
-    var perf = el("div", "perf");
+    if (meta.description) btn.appendChild(el("div", "desc", meta.description));
+
+    var cap$ = capOf(d, meta.id);
+    var track = el("div", "mcap");
+    var fill = el("i");
+    fill.style.width = Math.max(cap$ / capMax * 100, 1) + "%";
+    fill.style.background = STAGE_COLOR[meta.id] || "var(--dim)";
+    track.appendChild(fill);
+    btn.appendChild(track);
+
+    // 页脚只留市值与**一个**涨跌口径（等权）。市值加权与中位移到展开面板，
+    // 不是删掉——旧版三个数同样大小并排，六张卡 18 个百分数，读者抓不住重点。
+    var foot = el("div", "foot");
+    foot.appendChild(el("span", null, cap(cap$)));
     if (p.companies == null) {
-      // 没有表现数据时如实说明，不显示成「0%」或「持平」——没算出来不等于没变化
-      perf.appendChild(el("div", "none", "本次未生成环节表现数据"));
+      foot.appendChild(el("span", null, "无表现数据"));
     } else {
-      [["等权", p.equalWeightPct], ["市值加权", p.capWeightPct], ["中位", p.medianPct]]
-        .forEach(function (pair) {
-          var box = el("div", null, pair[0]);
-          box.appendChild(el("b", cls(pair[1]), pct(pair[1])));
-          perf.appendChild(box);
-        });
-      // 参与统计的公司少于该环节公司数时点明差额，避免读者以为涨跌覆盖全部
-      if (p.companies < total) {
-        perf.appendChild(el("div", "none",
-          "（涨跌按 " + p.companies + " 家有效报价计，另 " + (total - p.companies) + " 家无有效报价）"));
-      }
+      var b = el("b", cls(p.equalWeightPct), pct(p.equalWeightPct));
+      b.title = "等权涨跌";
+      foot.appendChild(b);
     }
-    btn.appendChild(perf);
+    btn.appendChild(foot);
+
+    // 没算出来不等于没变化，如实说明；参与统计的家数少于总数时点明差额
+    if (p.companies == null) {
+      btn.appendChild(el("div", "note", "本次未生成环节表现数据"));
+    } else if (p.companies < total) {
+      btn.appendChild(el("div", "note",
+        "等权涨跌按 " + p.companies + " 家有效报价计，另 "
+        + (total - p.companies) + " 家无有效报价"));
+    }
 
     btn.addEventListener("click", function () { toggle(meta.id); });
     return btn;
@@ -277,17 +314,119 @@
   function renderStages(d) {
     var byId = {};
     (d.stages || []).forEach(function (s) { byId[s.id] = s; });
+    // 市值横条按全部六个环节的最大值归一，链内链外用同一把尺子——
+    // 各归各的最大值会让两组的条长不可比。
+    var capMax = maxCap(d);
     [["chain", CHAIN], ["offchain", OFFCHAIN]].forEach(function (pair) {
       var host = $(pair[0]);
       host.textContent = "";
       pair[1].forEach(function (id) {
-        if (byId[id]) host.appendChild(stageCard(d, byId[id]));
+        if (byId[id]) host.appendChild(stageCard(d, byId[id], capMax));
       });
     });
   }
 
   /* ── 展开的公司表：逐家显示 SIC 与判定依据 ── */
   var MAX_ROWS = 60;
+  // 细分条最多列几格。再多每格就窄到放不下名字了，其余并进长尾说明——
+  // 是收拢长尾，不是省略：家数仍然算进合计，并在下面写明有多少家、属几个码。
+  var MAX_SEGS = 6;
+
+  /* 按 SIC 两位大类拆分一个环节。分组字段由构建脚本从 SEC 的 SIC 码算出，
+     页面只负责显示，不在这里自己编分类。 */
+  function segmentsOf(list) {
+    var by = {};
+    list.forEach(function (n) {
+      var code = n.sicMajor;
+      // 认不出大类的单独归一档，不硬塞进任何一组
+      var key = code || "?";
+      if (!by[key]) {
+        by[key] = { code: code, label: n.sicMajorLabel || "未归类",
+                    labelEn: n.sicMajorLabelEn || "", rows: [] };
+      }
+      by[key].rows.push(n);
+    });
+    return Object.keys(by).map(function (k) { return by[k]; })
+      .sort(function (a, b) { return b.rows.length - a.rows.length; });
+  }
+
+  function tint(hex, a) {
+    // STAGE_COLOR 存的是 var(--sN)，取不到字面值就退回一个中性底色，
+    // 不猜一个颜色出来。
+    var m = /^#([0-9a-f]{6})$/i.exec(hex || "");
+    if (!m) return "rgba(255,255,255," + (a * 0.5).toFixed(3) + ")";
+    var v = parseInt(m[1], 16);
+    return "rgba(" + ((v >> 16) & 255) + "," + ((v >> 8) & 255) + ","
+      + (v & 255) + "," + a + ")";
+  }
+
+  function renderSegments(d, stageId, meta, list, onPick) {
+    var segs = segmentsOf(list);
+    var shown = segs.slice(0, MAX_SEGS);
+    var rest = segs.slice(MAX_SEGS);
+    var restCount = rest.reduce(function (a, g) { return a + g.rows.length; }, 0);
+
+    var box = el("div", "segwrap");
+    box.appendChild(el("div", "lead",
+      "细分构成 · 按 SEC 行业码（SIC）两位大类，宽度即家数，点一格只看该组公司"));
+
+    var row = el("div", "segrow");
+    var colorVar = STAGE_COLOR[stageId] || "";
+    // var(--sN) 拿不到字面色值，从计算样式里读回来再调浓淡
+    var probe = document.createElement("span");
+    probe.style.color = colorVar;
+    document.body.appendChild(probe);
+    var rgb = getComputedStyle(probe).color;
+    document.body.removeChild(probe);
+    var base = /^rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(rgb);
+
+    shown.forEach(function (g, i) {
+      var b = el("button", "seg");
+      b.type = "button";
+      b.dataset.seg = g.code || "?";
+      b.setAttribute("aria-pressed", b.dataset.seg === state.seg ? "true" : "false");
+      b.style.flex = g.rows.length + " 1 0";
+      var a = 0.30 - i * 0.026;
+      if (a < 0.07) a = 0.07;
+      b.style.background = base
+        ? "rgba(" + base[1] + "," + base[2] + "," + base[3] + "," + a + ")"
+        : tint(null, a);
+      b.style.borderColor = base
+        ? "rgba(" + base[1] + "," + base[2] + "," + base[3] + ",0.34)"
+        : "transparent";
+      b.appendChild(el("span", "sn", g.label));
+      b.appendChild(el("span", "sc",
+        (g.code ? "SIC " + g.code + " · " : "") + g.rows.length + " 家"));
+      b.title = g.label + (g.labelEn ? "（" + g.labelEn + "）" : "")
+        + " " + g.rows.length + " 家";
+      b.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        onPick(g.code === state.seg ? null : g.code);
+      });
+      row.appendChild(b);
+    });
+    box.appendChild(row);
+
+    if (restCount) {
+      box.appendChild(el("div", "rest",
+        "另有 " + restCount + " 家分散在 " + rest.length
+        + " 个更小的行业码里，未单列。"));
+    }
+
+    // 卡片上只留了等权一个口径，另两个在这里给全——是降级，不是删掉
+    var p = perfOf(d, stageId) || {};
+    if (p.companies != null) {
+      var pf = el("div", "perf2");
+      [["等权", p.equalWeightPct], ["市值加权", p.capWeightPct],
+       ["中位", p.medianPct]].forEach(function (pair) {
+        var one = el("span", null, pair[0]);
+        one.appendChild(el("b", cls(pair[1]), pct(pair[1])));
+        pf.appendChild(one);
+      });
+      box.appendChild(pf);
+    }
+    return box;
+  }
 
   function renderPanel(d, stageId) {
     var panel = $("panel");
@@ -296,14 +435,30 @@
     (d.stages || []).forEach(function (s) { if (s.id === stageId) meta = s; });
     if (!meta) { panel.hidden = true; return; }
 
-    var list = (d.nodes || []).filter(function (n) { return n.stage === stageId; })
+    var all = (d.nodes || []).filter(function (n) { return n.stage === stageId; })
       .sort(function (a, b) { return (b.marketCap || 0) - (a.marketCap || 0); });
+
+    panel.appendChild(renderSegments(d, stageId, meta, all, function (code) {
+      state.seg = code;
+      renderPanel(d, stageId);
+    }));
+
+    var list = state.seg
+      ? all.filter(function (n) { return (n.sicMajor || "?") === state.seg; })
+      : all;
 
     var capBox = el("div", "cap");
     capBox.appendChild(el("b", null, meta.label));
+    if (state.seg) {
+      var pick = null;
+      segmentsOf(all).forEach(function (g) { if ((g.code || "?") === state.seg) pick = g; });
+      capBox.appendChild(document.createTextNode(
+        " · " + (pick ? pick.label : state.seg) + "（SIC " + state.seg + "）"));
+    }
     capBox.appendChild(document.createTextNode(
-      " · " + list.length + " 家，按市值排序" +
-      (list.length > MAX_ROWS ? "，显示前 " + MAX_ROWS + " 家" : "")));
+      " · " + list.length + " 家" + (state.seg ? "（全环节 " + all.length + " 家）" : "")
+      + "，按市值排序"
+      + (list.length > MAX_ROWS ? "，显示前 " + MAX_ROWS + " 家" : "")));
     panel.appendChild(capBox);
 
     var wrap = el("div", "tablewrap");
@@ -380,6 +535,8 @@
   function toggle(stageId) {
     var opening = state.open !== stageId;
     state.open = opening ? stageId : null;
+    // 换环节要清掉细分筛选：带着上一个环节的 SIC 码进来会筛出一张空表
+    state.seg = null;
     Array.prototype.forEach.call(document.querySelectorAll(".stage"), function (b) {
       b.setAttribute("aria-expanded", b.dataset.stage === state.open ? "true" : "false");
     });
@@ -390,6 +547,203 @@
     } else {
       $("panel").hidden = true;
     }
+  }
+
+  /* ── 真实流向：环节 → 冶炼厂所在国别 ──────────────────────────────
+     全站唯一一处带子宽度有实测含义的图。矩阵由构建脚本预算在 nodes.json 里，
+     页面不为一张总览图去下几十个边文件。
+
+     三条守则，都是「空缺要画出来」的具体形态：
+       · 一条边都没有的环节照画，画成灰色 0 条的死头，不筛掉
+       · 没有名单的公司在图注里点明数目，不能只画有数据的部分让人以为是全貌
+       · 语义写「出现在供应链中」，不写「供应商」——后者是我们替申报人下的结论 */
+  var FLOW_COUNTRY_COLOR = {
+    "中国": "var(--s2)", "日本": "var(--s3)", "美国": "var(--s4)",
+    "印度尼西亚": "var(--s1)", "巴西": "var(--s5)", "印度": "#d1785f",
+    "德国": "#8f9bb0", "未归类": "#4b5666", "其他": "#3a4553"
+  };
+  var FLOW_NS = "http://www.w3.org/2000/svg";
+
+  function svgEl(tag, attrs) {
+    var n = document.createElementNS(FLOW_NS, tag);
+    Object.keys(attrs || {}).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+    return n;
+  }
+
+  /* 标签避让：小节点只有几像素高，两行标签会压到下一个上去。
+     **只推标签，不动条子**——条子的高度是编码，推它等于改数据。 */
+  function declash(items, minGap, top, bottom) {
+    var out = items.map(function (it) { return { y: it.mid, it: it, mid: it.mid }; });
+    out.sort(function (a, b) { return a.mid - b.mid; });
+    var i;
+    for (i = 1; i < out.length; i++) {
+      if (out[i].y - out[i - 1].y < minGap) out[i].y = out[i - 1].y + minGap;
+    }
+    if (out.length && out[out.length - 1].y > bottom) {
+      out[out.length - 1].y = bottom;
+      for (i = out.length - 2; i >= 0; i--) {
+        if (out[i].y > out[i + 1].y - minGap) out[i].y = out[i + 1].y - minGap;
+      }
+    }
+    if (out.length && out[0].y < top) {
+      out[0].y = top;
+      for (i = 1; i < out.length; i++) {
+        if (out[i].y - out[i - 1].y < minGap) out[i].y = out[i - 1].y + minGap;
+      }
+    }
+    return out;
+  }
+
+  function renderFlow(d) {
+    var host = $("flowsec");
+    if (!host) return;
+    var flow = d.flow;
+    var chart = $("flow-chart");
+    chart.textContent = "";
+    if (!flow || !(flow.stages || []).length) { host.hidden = true; return; }
+    host.hidden = false;
+
+    var label = {};
+    (d.stages || []).forEach(function (s) { label[s.id] = s.label; });
+
+    // 一条边都没有的环节也画进来，画成 0 条的死头
+    var left = (flow.stages || []).map(function (r) {
+      return { id: r.stage, nm: label[r.stage] || r.stage, total: r.total,
+               by: r.byCountry || {} };
+    });
+    (flow.stagesWithoutEdges || []).forEach(function (id) {
+      left.push({ id: id, nm: label[id] || id, total: 0, by: {} });
+    });
+    // 按价值链顺序排，不按流量大小——这是一条链，顺序本身是信息
+    var order = (d.stages || []).map(function (s) { return s.id; });
+    left.sort(function (a, b) { return order.indexOf(a.id) - order.indexOf(b.id); });
+
+    var countries = flow.countries || [];
+    var ctot = flow.countryTotals || {};
+    var total = left.reduce(function (a, r) { return a + r.total; }, 0);
+    if (!total) { host.hidden = true; return; }
+
+    var W = 1000, PAD = 6, NODEW = 11, GAP = 27, LX = 150, RX = W - 156;
+    var H = 384;
+    var k = (H - PAD * Math.max(left.length, countries.length)) / total;
+
+    var y = 0, lp = {};
+    left.forEach(function (r) {
+      var h = Math.max(r.total * k, 3);
+      lp[r.id] = { y0: y, h: h, cur: y };
+      y += h + PAD;
+    });
+    var leftH = y - PAD;
+    var ry = 0, rp = {};
+    countries.forEach(function (c) {
+      var h = Math.max((ctot[c] || 0) * k, 3);
+      rp[c] = { y0: ry, h: h, cur: ry };
+      ry += h + PAD;
+    });
+    var rightH = ry - PAD;
+    var VH = Math.max(leftH, rightH, left.length * GAP + 24,
+                      countries.length * GAP + 24) + 22;
+    var loff = (VH - leftH) / 2, roff = (VH - rightH) / 2;
+
+    var svg = svgEl("svg", {
+      viewBox: "0 0 " + W + " " + VH, width: "100%", role: "img",
+      "aria-label": "各价值链环节的公司与其申报冶炼厂所在国别之间的关系条数流向图，共 "
+        + total + " 条"
+    });
+
+    // 先按固定次序算好几何，再按面积从大到小绘制，细带才不会被压住
+    var geo = {}, ribbons = [];
+    left.forEach(function (r) {
+      countries.forEach(function (c) {
+        var v = r.by[c] || 0;
+        if (!v) return;
+        var h = v * k;
+        geo[r.id + "|" + c] = { y1: loff + lp[r.id].cur, y2: roff + rp[c].cur,
+                                h: Math.max(h, 1) };
+        lp[r.id].cur += h; rp[c].cur += h;
+        ribbons.push({ r: r, c: c, v: v });
+      });
+    });
+    ribbons.sort(function (a, b) { return b.v - a.v; });
+
+    ribbons.forEach(function (rb) {
+      var g = geo[rb.r.id + "|" + rb.c];
+      var x1 = LX + NODEW, x2 = RX, cx = (x1 + x2) / 2;
+      var p = svgEl("path", {
+        d: "M" + x1 + "," + g.y1 + " C" + cx + "," + g.y1 + " " + cx + "," + g.y2
+           + " " + x2 + "," + g.y2 + " L" + x2 + "," + (g.y2 + g.h)
+           + " C" + cx + "," + (g.y2 + g.h) + " " + cx + "," + (g.y1 + g.h)
+           + " " + x1 + "," + (g.y1 + g.h) + " Z",
+        fill: FLOW_COUNTRY_COLOR[rb.c] || "var(--dim)", "fill-opacity": "0.3"
+      });
+      var t = svgEl("title", {});
+      t.textContent = rb.r.nm + " → " + rb.c + "　" + rb.v + " 条";
+      p.appendChild(t);
+      svg.appendChild(p);
+    });
+
+    function text(x, ty, str, anchor, fill, size, weight) {
+      var t = svgEl("text", { x: x, y: ty, "text-anchor": anchor, fill: fill,
+        "font-size": size, "font-family": "var(--mono)" });
+      if (weight) t.setAttribute("font-weight", weight);
+      t.textContent = str;
+      return t;
+    }
+    function leader(x, y1, y2) {
+      return svgEl("path", { d: "M" + x + "," + y1 + " L" + x + "," + y2,
+        stroke: "var(--line)", "stroke-width": "1", fill: "none" });
+    }
+
+    declash(left.map(function (r) {
+      return { mid: loff + lp[r.id].y0 + lp[r.id].h / 2, r: r };
+    }), GAP, 15, VH - 13).forEach(function (o) {
+      var r = o.it.r, box = lp[r.id], y0 = loff + box.y0, dead = !r.total;
+      svg.appendChild(svgEl("rect", { x: LX, y: y0, width: NODEW, height: box.h,
+        rx: 2, fill: dead ? "#2b3441" : (STAGE_COLOR[r.id] || "var(--dim)") }));
+      if (Math.abs(o.y - o.mid) > 2) svg.appendChild(leader(LX - 7, o.mid, o.y - 4));
+      svg.appendChild(text(LX - 12, o.y - 3, r.nm, "end",
+        dead ? "var(--faint)" : "var(--text)", "12.5", "600"));
+      svg.appendChild(text(LX - 12, o.y + 11,
+        dead ? "0 条 · 无出处" : r.total + " 条", "end",
+        dead ? "var(--faint)" : "var(--dim)", "10.5"));
+    });
+
+    declash(countries.map(function (c) {
+      return { mid: roff + rp[c].y0 + rp[c].h / 2, c: c };
+    }), GAP, 15, VH - 13).forEach(function (o) {
+      var c = o.it.c, box = rp[c], y0 = roff + box.y0, tx = RX + NODEW + 12;
+      svg.appendChild(svgEl("rect", { x: RX, y: y0, width: NODEW, height: box.h,
+        rx: 2, fill: FLOW_COUNTRY_COLOR[c] || "var(--dim)" }));
+      if (Math.abs(o.y - o.mid) > 2) {
+        svg.appendChild(leader(RX + NODEW + 7, o.mid, o.y - 4));
+      }
+      svg.appendChild(text(tx, o.y - 3, c, "start", "var(--text)", "12.5", "600"));
+      svg.appendChild(text(tx, o.y + 11, String(ctot[c] || 0), "start",
+        "var(--dim)", "10.5"));
+    });
+
+    chart.appendChild(svg);
+
+    var cov = d.coverage || {};
+    var withEdges = cov.nodesWithEdges || 0;
+    var without = (cov.nodesTotal || 0) - withEdges;
+    setText($("flow-lead"),
+      "共 " + total + " 条关系，指向 " + (flow.distinctCountries || 0)
+      + " 个国家或地区的冶炼厂。带子宽度是实测条数，不是示意。");
+    setText($("flow-sub"), flow.relationLabel
+      ? "语义：" + flow.relationLabel + "。"
+      : "");
+
+    var key = $("flow-key");
+    key.textContent = "";
+    var s1 = el("span");
+    s1.appendChild(el("i"));
+    s1.appendChild(document.createTextNode(
+      "灰色 = 无出处。另有 " + without + " 家公司没有冶炼厂名单，未出现在本图中"));
+    key.appendChild(s1);
+    key.appendChild(el("span", null,
+      "列出关系数最多的 " + (countries.length ? countries.length - 1 : 0)
+      + " 个国别，长尾并入「其他」，合计仍等于总条数"));
   }
 
   /* ── 方法与来源 ── */
@@ -446,6 +800,7 @@
     renderNotice(d);
     renderCoverageBySector(d);
     renderStages(d);
+    renderFlow(d);
     renderMethod(d);
     $("state").hidden = true;
   }

@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-04T10:58:37Z",
+  "updatedAt": "2026-09-04T11:07:32Z",
   "asOf": "2026-09-02",
   "frequency": "daily",
   "status": "ok",
@@ -73,6 +73,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3674：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001045810.json",
@@ -102,6 +105,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3571：电子计算机整机，设计与品牌为主（苹果、戴尔、惠普）",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000320193.json",
@@ -131,6 +137,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7370：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001652044.json",
@@ -160,6 +169,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000789019.json",
@@ -189,6 +201,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5961：零售贸易",
+      "sicMajor": "59",
+      "sicMajorLabel": "其他零售",
+      "sicMajorLabelEn": "Miscellaneous Retail",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001018724.json",
@@ -218,6 +233,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3674：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001730168.json",
@@ -247,6 +265,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7370：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001326801.json",
@@ -276,6 +297,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3711：整车制造",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001318605.json",
@@ -305,6 +329,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2834：成药制剂，面向终端市场的成品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000059478.json",
@@ -333,6 +360,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6331：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -363,6 +393,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3674：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000723125.json",
@@ -391,6 +424,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
       "stageNote": "SIC 6021：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -421,6 +457,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5331：零售贸易",
+      "sicMajor": "53",
+      "sicMajorLabel": "综合零售",
+      "sicMajorLabelEn": "General Merchandise Stores",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000104169.json",
@@ -450,6 +489,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3674：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000002488.json",
@@ -478,6 +520,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageNote": "SIC 7389：商业服务，含软件与数据处理",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -507,6 +552,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "29",
+      "sicMajorLabel": "石油炼制",
+      "sicMajorLabelEn": "Petroleum Refining",
       "stageNote": "SIC 2911：石油炼制与煤制品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -537,6 +585,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2834：成药制剂，面向终端市场的成品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000200406.json",
@@ -565,6 +616,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageNote": "SIC 7389：商业服务，含软件与数据处理",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -595,6 +649,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2834：成药制剂，面向终端市场的成品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001551152.json",
@@ -624,6 +681,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3674：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000050863.json",
@@ -652,6 +712,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
       "stageNote": "SIC 6021：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -682,6 +745,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3576：计算机通信设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000858877.json",
@@ -710,6 +776,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "29",
+      "sicMajorLabel": "石油炼制",
+      "sicMajorLabelEn": "Petroleum Refining",
       "stageNote": "SIC 2911：石油炼制与煤制品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -740,6 +809,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001341439.json",
@@ -769,6 +841,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5331：零售贸易",
+      "sicMajor": "53",
+      "sicMajorLabel": "综合零售",
+      "sicMajorLabelEn": "General Merchandise Stores",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000909832.json",
@@ -798,6 +873,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001321655.json",
@@ -827,6 +905,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2080：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000021344.json",
@@ -856,6 +937,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2834：成药制剂，面向终端市场的成品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000310158.json",
@@ -885,6 +969,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3531：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000018230.json",
@@ -914,6 +1001,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 6324：金融、保险与房地产",
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000731766.json",
@@ -943,6 +1033,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3559：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000707549.json",
@@ -972,6 +1065,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7841：其他服务、娱乐与传媒",
+      "sicMajor": "78",
+      "sicMajorLabel": "影视",
+      "sicMajorLabelEn": "Motion Pictures",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001065280.json",
@@ -1001,6 +1097,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3674：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000006951.json",
@@ -1030,6 +1129,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3600：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000040545.json",
@@ -1059,6 +1161,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2840：化工，多为下游行业的投入品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000080424.json",
@@ -1087,6 +1192,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6211：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -1117,6 +1225,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3571：电子计算机整机，设计与品牌为主（苹果、戴尔、惠普）",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001571996.json",
@@ -1146,6 +1257,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5211：零售贸易",
+      "sicMajor": "52",
+      "sicMajorLabel": "建材与家居零售",
+      "sicMajorLabelEn": "Building Materials & Garden Supply",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000354950.json",
@@ -1174,6 +1288,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6211：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -1204,6 +1321,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2111：食品饮料与烟草，面向终端消费",
+      "sicMajor": "21",
+      "sicMajorLabel": "烟草制品",
+      "sicMajorLabelEn": "Tobacco Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001413329.json",
@@ -1232,6 +1352,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
       "stageNote": "SIC 6021：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -1262,6 +1385,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3724：飞机发动机与零件",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000101829.json",
@@ -1291,6 +1417,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3600：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001996810.json",
@@ -1320,6 +1449,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2836：生物制品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000318154.json",
@@ -1349,6 +1481,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3576：计算机通信设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001596532.json",
@@ -1378,6 +1513,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3674：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000097476.json",
@@ -1407,6 +1545,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3572：计算机存储设备，是整机的零部件",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0002023554.json",
@@ -1435,6 +1576,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
       "stageNote": "SIC 6021：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -1465,6 +1609,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3829：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000097745.json",
@@ -1493,6 +1640,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageNote": "SIC 2810：化工，多为下游行业的投入品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -1522,6 +1672,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "61",
+      "sicMajorLabel": "非存款信贷机构",
+      "sicMajorLabelEn": "Nondepository Credit Institutions",
       "stageNote": "SIC 6199：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -1552,6 +1705,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3827：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000319201.json",
@@ -1581,6 +1737,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3577：计算机外围设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001327567.json",
@@ -1610,6 +1769,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3570：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000051143.json",
@@ -1639,6 +1801,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001108524.json",
@@ -1668,6 +1833,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4813：通信服务，网络承载与分发",
+      "sicMajor": "48",
+      "sicMajorLabel": "通信",
+      "sicMajorLabelEn": "Communications",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000732712.json",
@@ -1697,6 +1865,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4812：通信服务，网络承载与分发",
+      "sicMajor": "48",
+      "sicMajorLabel": "通信",
+      "sicMajorLabelEn": "Communications",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001283699.json",
@@ -1726,6 +1897,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3678：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000820313.json",
@@ -1755,6 +1929,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2834：成药制剂，面向终端市场的成品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000001800.json",
@@ -1784,6 +1961,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2080：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000077476.json",
@@ -1813,6 +1993,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3523：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000315189.json",
@@ -1841,6 +2024,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6211：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -1871,6 +2057,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7990：其他服务、娱乐与传媒",
+      "sicMajor": "79",
+      "sicMajorLabel": "娱乐与休闲服务",
+      "sicMajorLabelEn": "Amusement & Recreation Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001744489.json",
@@ -1900,6 +2089,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2836：生物制品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000882095.json",
@@ -1929,6 +2121,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5812：零售贸易",
+      "sicMajor": "58",
+      "sicMajorLabel": "餐饮",
+      "sicMajorLabelEn": "Eating & Drinking Places",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000063908.json",
@@ -1958,6 +2153,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3572：计算机存储设备，是整机的零部件",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001137789.json",
@@ -1987,6 +2185,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3674：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001835632.json",
@@ -2016,6 +2217,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4813：通信服务，网络承载与分发",
+      "sicMajor": "48",
+      "sicMajorLabel": "通信",
+      "sicMajorLabelEn": "Communications",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000732717.json",
@@ -2045,6 +2249,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3663：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000804328.json",
@@ -2074,6 +2281,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3674：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000006281.json",
@@ -2102,6 +2312,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4911：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -2132,6 +2345,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4011：运输与物流服务",
+      "sicMajor": "40",
+      "sicMajorLabel": "铁路运输",
+      "sicMajorLabelEn": "Railroad Transportation",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000100885.json",
@@ -2160,6 +2376,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6211：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -2189,6 +2408,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -2218,6 +2440,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "29",
+      "sicMajorLabel": "石油炼制",
+      "sicMajorLabelEn": "Petroleum Refining",
       "stageNote": "SIC 2911：石油炼制与煤制品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -2248,6 +2473,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2834：成药制剂，面向终端市场的成品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000078003.json",
@@ -2277,6 +2505,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3721：飞机整机",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000012927.json",
@@ -2305,6 +2536,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6282：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -2335,6 +2569,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7389：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001543151.json",
@@ -2364,6 +2601,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4700：运输与物流服务",
+      "sicMajor": "47",
+      "sicMajorLabel": "运输服务",
+      "sicMajorLabelEn": "Transportation Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001075531.json",
@@ -2393,6 +2633,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3572：计算机存储设备，是整机的零部件",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000106040.json",
@@ -2421,6 +2664,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6211：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -2451,6 +2697,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3590：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001551182.json",
@@ -2480,6 +2729,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3823：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000313616.json",
@@ -2509,6 +2761,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5651：零售贸易",
+      "sicMajor": "56",
+      "sicMajorLabel": "服装零售",
+      "sicMajorLabelEn": "Apparel & Accessory Stores",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000109198.json",
@@ -2538,6 +2793,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2834：成药制剂，面向终端市场的成品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000875320.json",
@@ -2567,6 +2825,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001373715.json",
@@ -2596,6 +2857,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2834：成药制剂，面向终端市场的成品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000014272.json",
@@ -2624,6 +2888,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
       "stageNote": "SIC 1040：采矿与油气开采",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -2653,6 +2920,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
       "stageNote": "SIC 6021：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -2683,6 +2953,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3842：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001035267.json",
@@ -2711,6 +2984,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6331：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -2741,6 +3017,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3724：飞机发动机与零件",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000773840.json",
@@ -2769,6 +3048,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6331：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -2798,6 +3080,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageNote": "SIC 7320：商业服务，含软件与数据处理",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -2827,6 +3112,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -2857,6 +3145,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5912：零售贸易",
+      "sicMajor": "59",
+      "sicMajorLabel": "其他零售",
+      "sicMajorLabelEn": "Miscellaneous Retail",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000064803.json",
@@ -2886,6 +3177,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3357：金属轧制、拉制与铸造，供下游装配",
+      "sicMajor": "33",
+      "sicMajorLabel": "金属冶炼与压延",
+      "sicMajorLabelEn": "Primary Metal Industries",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000024741.json",
@@ -2915,6 +3209,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3760：运输设备零部件",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000936468.json",
@@ -2944,6 +3241,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5810：零售贸易",
+      "sicMajor": "58",
+      "sicMajorLabel": "餐饮",
+      "sicMajorLabelEn": "Eating & Drinking Places",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000829224.json",
@@ -2973,6 +3273,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3841：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000310764.json",
@@ -3002,6 +3305,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3490：金属制品",
+      "sicMajor": "34",
+      "sicMajorLabel": "金属制品",
+      "sicMajorLabelEn": "Fabricated Metal Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000076334.json",
@@ -3031,6 +3337,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3845：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001613103.json",
@@ -3060,6 +3369,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2111：食品饮料与烟草，面向终端消费",
+      "sicMajor": "21",
+      "sicMajorLabel": "烟草制品",
+      "sicMajorLabelEn": "Tobacco Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000764180.json",
@@ -3089,6 +3401,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7389：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001467373.json",
@@ -3118,6 +3433,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3577：计算机外围设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001262039.json",
@@ -3146,6 +3464,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "29",
+      "sicMajorLabel": "石油炼制",
+      "sicMajorLabelEn": "Petroleum Refining",
       "stageNote": "SIC 2911：石油炼制与煤制品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -3176,6 +3497,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7374：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000008670.json",
@@ -3205,6 +3529,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5211：零售贸易",
+      "sicMajor": "52",
+      "sicMajorLabel": "建材与家居零售",
+      "sicMajorLabelEn": "Building Materials & Garden Supply",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000060667.json",
@@ -3234,6 +3561,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000796343.json",
@@ -3262,6 +3592,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
       "stageNote": "SIC 6022：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -3292,6 +3625,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7340：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001559720.json",
@@ -3320,6 +3656,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "29",
+      "sicMajorLabel": "石油炼制",
+      "sicMajorLabelEn": "Petroleum Refining",
       "stageNote": "SIC 2911：石油炼制与煤制品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -3350,6 +3689,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5122：批发贸易",
+      "sicMajor": "51",
+      "sicMajorLabel": "批发·非耐用品",
+      "sicMajorLabelEn": "Wholesale Trade - Nondurable Goods",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000927653.json",
@@ -3379,6 +3721,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7370：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001751008.json",
@@ -3407,6 +3752,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
       "stageNote": "SIC 1000：采矿与油气开采",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -3436,6 +3784,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4911：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -3465,6 +3816,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "29",
+      "sicMajorLabel": "石油炼制",
+      "sicMajorLabelEn": "Petroleum Refining",
       "stageNote": "SIC 2911：石油炼制与煤制品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -3495,6 +3849,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3350：金属轧制、拉制与铸造，供下游装配",
+      "sicMajor": "33",
+      "sicMajorLabel": "金属冶炼与压延",
+      "sicMajorLabelEn": "Primary Metal Industries",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000004281.json",
@@ -3523,6 +3880,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6200：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -3552,6 +3912,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -3581,6 +3944,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4911：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -3611,6 +3977,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3679：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001674101.json",
@@ -3640,6 +4009,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7389：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001792789.json",
@@ -3669,6 +4041,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3730：运输设备零部件",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000040533.json",
@@ -3697,6 +4072,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
       "stageNote": "SIC 6021：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -3726,6 +4104,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
       "stageNote": "SIC 6021：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -3756,6 +4137,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3822：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001466258.json",
@@ -3784,6 +4168,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6211：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -3814,6 +4201,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4841：通信服务，网络承载与分发",
+      "sicMajor": "48",
+      "sicMajorLabel": "通信",
+      "sicMajorLabelEn": "Communications",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001166691.json",
@@ -3842,6 +4232,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6282：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -3871,6 +4264,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4931：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -3901,6 +4297,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000896878.json",
@@ -3929,6 +4328,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4922：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -3959,6 +4361,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 1731：建筑与住宅开发，交付终端成品",
+      "sicMajor": "17",
+      "sicMajorLabel": "建筑专业承包",
+      "sicMajorLabelEn": "Special Trade Contractors",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001050915.json",
@@ -3987,6 +4392,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "64",
+      "sicMajorLabel": "保险代理与经纪",
+      "sicMajorLabelEn": "Insurance Agents & Brokers",
       "stageNote": "SIC 6411：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -4017,6 +4425,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4011：运输与物流服务",
+      "sicMajor": "40",
+      "sicMajorLabel": "铁路运输",
+      "sicMajorLabelEn": "Railroad Transportation",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000277948.json",
@@ -4045,6 +4456,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6200：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -4075,6 +4489,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 8062：医疗服务，面向终端患者",
+      "sicMajor": "80",
+      "sicMajorLabel": "医疗服务",
+      "sicMajorLabelEn": "Health Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000860730.json",
@@ -4104,6 +4521,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 6324：金融、保险与房地产",
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001156039.json",
@@ -4133,6 +4553,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4953：公用事业",
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000823768.json",
@@ -4162,6 +4585,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3841：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000066740.json",
@@ -4191,6 +4617,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2834：成药制剂，面向终端市场的成品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000872589.json",
@@ -4220,6 +4649,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7011：住宿与个人服务",
+      "sicMajor": "70",
+      "sicMajorLabel": "住宿",
+      "sicMajorLabelEn": "Hotels & Lodging",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001048286.json",
@@ -4249,6 +4681,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4210：运输与物流服务",
+      "sicMajor": "42",
+      "sicMajorLabel": "公路货运与仓储",
+      "sicMajorLabelEn": "Motor Freight & Warehousing",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001090727.json",
@@ -4277,6 +4712,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
       "stageNote": "SIC 1389：采矿与油气开采",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -4306,6 +4744,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageNote": "SIC 7320：商业服务，含软件与数据处理",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -4336,6 +4777,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3585：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000833444.json",
@@ -4365,6 +4809,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000813672.json",
@@ -4394,6 +4841,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3600：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000032604.json",
@@ -4422,6 +4872,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "52",
+      "sicMajorLabel": "建材与家居零售",
+      "sicMajorLabelEn": "Building Materials & Garden Supply",
       "stageNote": "SIC 5200：零售贸易",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -4452,6 +4905,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5500：零售贸易",
+      "sicMajor": "55",
+      "sicMajorLabel": "汽车经销与加油站",
+      "sicMajorLabelEn": "Auto Dealers & Service Stations",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001690820.json",
@@ -4480,6 +4936,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -4510,6 +4969,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2000：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001103982.json",
@@ -4539,6 +5001,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000883241.json",
@@ -4568,6 +5033,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3663：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000068505.json",
@@ -4597,6 +5065,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2320：服装成衣",
+      "sicMajor": "23",
+      "sicMajorLabel": "服装成衣",
+      "sicMajorLabelEn": "Apparel",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000723254.json",
@@ -4625,6 +5096,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
       "stageNote": "SIC 1311：采矿与油气开采",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -4654,6 +5128,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageNote": "SIC 2840：化工，多为下游行业的投入品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -4683,6 +5160,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6331：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -4713,6 +5193,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3560：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000049826.json",
@@ -4742,6 +5225,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3711：整车制造",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001467858.json",
@@ -4770,6 +5256,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6282：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -4800,6 +5289,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3510：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000026172.json",
@@ -4829,6 +5321,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4513：运输与物流服务",
+      "sicMajor": "45",
+      "sicMajorLabel": "航空运输",
+      "sicMajorLabelEn": "Transportation by Air",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001048911.json",
@@ -4858,6 +5353,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 6324：金融、保险与房地产",
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001739940.json",
@@ -4887,6 +5385,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001561550.json",
@@ -4916,6 +5417,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3812：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001133421.json",
@@ -4945,6 +5449,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5331：零售贸易",
+      "sicMajor": "53",
+      "sicMajorLabel": "综合零售",
+      "sicMajorLabelEn": "General Merchandise Stores",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000027419.json",
@@ -4974,6 +5481,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5651：零售贸易",
+      "sicMajor": "56",
+      "sicMajorLabel": "服装零售",
+      "sicMajorLabelEn": "Apparel & Accessory Stores",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000745732.json",
@@ -5003,6 +5513,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4011：运输与物流服务",
+      "sicMajor": "40",
+      "sicMajorLabel": "铁路运输",
+      "sicMajorLabelEn": "Railroad Transportation",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000702165.json",
@@ -5032,6 +5545,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5531：零售贸易",
+      "sicMajor": "55",
+      "sicMajorLabel": "汽车经销与加油站",
+      "sicMajorLabelEn": "Auto Dealers & Service Stations",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000898173.json",
@@ -5061,6 +5577,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2844：化工，多为下游行业的投入品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000021665.json",
@@ -5090,6 +5609,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3841：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000885725.json",
@@ -5119,6 +5641,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4841：通信服务，网络承载与分发",
+      "sicMajor": "48",
+      "sicMajorLabel": "通信",
+      "sicMajorLabelEn": "Communications",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001437107.json",
@@ -5148,6 +5673,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4400：运输与物流服务",
+      "sicMajor": "44",
+      "sicMajorLabel": "水上运输",
+      "sicMajorLabelEn": "Water Transportation",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000884887.json",
@@ -5176,6 +5704,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4922：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -5206,6 +5737,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7011：住宿与个人服务",
+      "sicMajor": "70",
+      "sicMajorLabel": "住宿",
+      "sicMajorLabelEn": "Hotels & Lodging",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001585689.json",
@@ -5234,6 +5768,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "64",
+      "sicMajorLabel": "保险代理与经纪",
+      "sicMajorLabelEn": "Insurance Agents & Brokers",
       "stageNote": "SIC 6411：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -5263,6 +5800,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageNote": "SIC 2810：化工，多为下游行业的投入品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -5293,6 +5833,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3570：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001645590.json",
@@ -5322,6 +5865,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4953：公用事业",
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001060391.json",
@@ -5350,6 +5896,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -5379,6 +5928,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "64",
+      "sicMajorLabel": "保险代理与经纪",
+      "sicMajorLabelEn": "Insurance Agents & Brokers",
       "stageNote": "SIC 6411：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -5409,6 +5961,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3841：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000010795.json",
@@ -5438,6 +5993,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3669：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001633978.json",
@@ -5466,6 +6024,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4911：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -5495,6 +6056,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6331：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -5525,6 +6089,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5122：批发贸易",
+      "sicMajor": "51",
+      "sicMajorLabel": "批发·非耐用品",
+      "sicMajorLabelEn": "Wholesale Trade - Nondurable Goods",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001140859.json",
@@ -5553,6 +6120,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -5583,6 +6153,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3728：飞机零部件",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001260221.json",
@@ -5612,6 +6185,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3711：整车制造",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000075362.json",
@@ -5640,6 +6216,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageNote": "SIC 3533：工业机械与设备",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -5669,6 +6248,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
       "stageNote": "SIC 6021：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -5698,6 +6280,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4922：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -5727,6 +6312,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6311：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -5756,6 +6344,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "32",
+      "sicMajorLabel": "非金属矿物制品",
+      "sicMajorLabelEn": "Stone, Clay & Glass",
       "stageNote": "SIC 3241：石料、陶土与玻璃制品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -5786,6 +6377,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7359：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001067701.json",
@@ -5815,6 +6409,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5000：批发贸易",
+      "sicMajor": "50",
+      "sicMajorLabel": "批发·耐用品",
+      "sicMajorLabelEn": "Wholesale Trade - Durable Goods",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000277135.json",
@@ -5843,6 +6440,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
       "stageNote": "SIC 1311：采矿与油气开采",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -5872,6 +6472,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4923：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -5901,6 +6504,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "01",
+      "sicMajorLabel": "种植业",
+      "sicMajorLabelEn": "Agricultural Production - Crops",
       "stageNote": "SIC 100：农林牧渔，初级产品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -5930,6 +6536,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "33",
+      "sicMajorLabel": "金属冶炼与压延",
+      "sicMajorLabelEn": "Primary Metal Industries",
       "stageNote": "SIC 3312：钢铁与有色金属冶炼精炼",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -5960,6 +6569,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3674：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001280452.json",
@@ -5989,6 +6601,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2836：生物制品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001682852.json",
@@ -6017,6 +6632,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6321：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -6047,6 +6665,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5065：批发贸易",
+      "sicMajor": "50",
+      "sicMajorLabel": "批发·耐用品",
+      "sicMajorLabelEn": "Wholesale Trade - Durable Goods",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001385157.json",
@@ -6075,6 +6696,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4911：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -6105,6 +6729,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3674：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001413447.json",
@@ -6134,6 +6761,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5122：批发贸易",
+      "sicMajor": "51",
+      "sicMajorLabel": "批发·非耐用品",
+      "sicMajorLabelEn": "Wholesale Trade - Nondurable Goods",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000721371.json",
@@ -6162,6 +6792,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -6191,6 +6824,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
       "stageNote": "SIC 1311：采矿与油气开采",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -6221,6 +6857,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3021：橡胶与塑料制品",
+      "sicMajor": "30",
+      "sicMajorLabel": "橡胶与塑料制品",
+      "sicMajorLabelEn": "Rubber & Plastics",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000320187.json",
@@ -6250,6 +6889,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3711：整车制造",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000037996.json",
@@ -6279,6 +6921,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3823：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001601046.json",
@@ -6308,6 +6953,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5200：零售贸易",
+      "sicMajor": "52",
+      "sicMajorLabel": "建材与家居零售",
+      "sicMajorLabelEn": "Building Materials & Garden Supply",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000815556.json",
@@ -6337,6 +6985,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 1731：建筑与住宅开发，交付终端成品",
+      "sicMajor": "17",
+      "sicMajorLabel": "建筑专业承包",
+      "sicMajorLabelEn": "Special Trade Contractors",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001035983.json",
@@ -6365,6 +7016,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4932：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -6394,6 +7048,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6200：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -6424,6 +7081,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3825：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000097210.json",
@@ -6453,6 +7113,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3823：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001037868.json",
@@ -6482,6 +7145,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3812：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001121788.json",
@@ -6510,6 +7176,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -6540,6 +7209,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7374：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001327811.json",
@@ -6568,6 +7240,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
       "stageNote": "SIC 6022：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -6598,6 +7273,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3842：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001099800.json",
@@ -6627,6 +7305,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001535527.json",
@@ -6656,6 +7337,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4512：运输与物流服务",
+      "sicMajor": "45",
+      "sicMajorLabel": "航空运输",
+      "sicMajorLabelEn": "Transportation by Air",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000027904.json",
@@ -6685,6 +7369,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000769397.json",
@@ -6714,6 +7401,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3661：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000936395.json",
@@ -6742,6 +7432,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6282：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -6772,6 +7465,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5812：零售贸易",
+      "sicMajor": "58",
+      "sicMajorLabel": "餐饮",
+      "sicMajorLabelEn": "Eating & Drinking Places",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001058090.json",
@@ -6800,6 +7496,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
       "stageNote": "SIC 6022：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -6829,6 +7528,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -6858,6 +7560,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4911：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -6888,6 +7593,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3812：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000202058.json",
@@ -6916,6 +7624,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4911：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -6945,6 +7656,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageNote": "SIC 7389：商业服务，含软件与数据处理",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -6975,6 +7689,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 6324：金融、保险与房地产",
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000049071.json",
@@ -7004,6 +7721,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5531：零售贸易",
+      "sicMajor": "55",
+      "sicMajorLabel": "汽车经销与加油站",
+      "sicMajorLabelEn": "Auto Dealers & Service Stations",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000866787.json",
@@ -7033,6 +7753,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3585：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001783180.json",
@@ -7062,6 +7785,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3743：运输设备零部件",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000943452.json",
@@ -7091,6 +7817,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7389：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001065088.json",
@@ -7120,6 +7849,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3829：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001024478.json",
@@ -7148,6 +7880,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4931：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -7177,6 +7912,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "61",
+      "sicMajorLabel": "非存款信贷机构",
+      "sicMajorLabelEn": "Nondepository Credit Institutions",
       "stageNote": "SIC 6199：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -7207,6 +7945,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001393052.json",
@@ -7235,6 +7976,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6282：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -7264,6 +8008,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4931：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -7293,6 +8040,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -7323,6 +8073,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 8700：法律、工程、管理等专业服务",
+      "sicMajor": "87",
+      "sicMajorLabel": "工程、会计与研究服务",
+      "sicMajorLabelEn": "Engineering & Management Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000723531.json",
@@ -7352,6 +8105,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2080：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001418135.json",
@@ -7381,6 +8137,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 8731：法律、工程、管理等专业服务",
+      "sicMajor": "87",
+      "sicMajorLabel": "工程、会计与研究服务",
+      "sicMajorLabelEn": "Engineering & Management Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001478242.json",
@@ -7410,6 +8169,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2086：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000865752.json",
@@ -7439,6 +8201,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3826：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001090872.json",
@@ -7468,6 +8233,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3827：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000820318.json",
@@ -7497,6 +8265,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2835：体外诊断试剂，是医疗服务的投入品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000874716.json",
@@ -7526,6 +8297,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3823：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000882835.json",
@@ -7555,6 +8329,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7900：其他服务、娱乐与传媒",
+      "sicMajor": "79",
+      "sicMajorLabel": "娱乐与休闲服务",
+      "sicMajorLabelEn": "Amusement & Recreation Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001335258.json",
@@ -7584,6 +8361,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5812：零售贸易",
+      "sicMajor": "58",
+      "sicMajorLabel": "餐饮",
+      "sicMajorLabelEn": "Eating & Drinking Places",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001041061.json",
@@ -7612,6 +8392,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "65",
+      "sicMajorLabel": "房地产",
+      "sicMajorLabelEn": "Real Estate",
       "stageNote": "SIC 6500：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -7641,6 +8424,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6311：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -7671,6 +8457,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2070：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000007084.json",
@@ -7700,6 +8489,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3480：金属制品",
+      "sicMajor": "34",
+      "sicMajorLabel": "金属制品",
+      "sicMajorLabelEn": "Fabricated Metal Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001069183.json",
@@ -7728,6 +8520,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageNote": "SIC 7389：商业服务，含软件与数据处理",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -7757,6 +8552,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6331：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -7787,6 +8585,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 1531：建筑与住宅开发，交付终端成品",
+      "sicMajor": "15",
+      "sicMajorLabel": "房屋建筑承包",
+      "sicMajorLabelEn": "Building Construction",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000882184.json",
@@ -7816,6 +8617,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000946581.json",
@@ -7844,6 +8648,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4931：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -7874,6 +8681,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3674：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000827054.json",
@@ -7903,6 +8713,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5140：批发贸易",
+      "sicMajor": "51",
+      "sicMajorLabel": "批发·非耐用品",
+      "sicMajorLabelEn": "Wholesale Trade - Nondurable Goods",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000096021.json",
@@ -7932,6 +8745,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4213：运输与物流服务",
+      "sicMajor": "42",
+      "sicMajorLabel": "公路货运与仓储",
+      "sicMajorLabelEn": "Motor Freight & Warehousing",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000878927.json",
@@ -7961,6 +8777,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3672：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000866374.json",
@@ -7989,6 +8808,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6331：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -8019,6 +8841,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2844：化工，多为下游行业的投入品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001944048.json",
@@ -8048,6 +8873,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2844：化工，多为下游行业的投入品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001001250.json",
@@ -8076,6 +8904,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4931：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -8106,6 +8937,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2670：造纸，是包装与印刷的投入品",
+      "sicMajor": "26",
+      "sicMajorLabel": "造纸与纸制品",
+      "sicMajorLabelEn": "Paper & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000055785.json",
@@ -8135,6 +8969,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2060：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000047111.json",
@@ -8164,6 +9001,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5411：零售贸易",
+      "sicMajor": "54",
+      "sicMajorLabel": "食品零售",
+      "sicMajorLabelEn": "Food Stores",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000056873.json",
@@ -8192,6 +9032,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "33",
+      "sicMajorLabel": "金属冶炼与压延",
+      "sicMajorLabelEn": "Primary Metal Industries",
       "stageNote": "SIC 3312：钢铁与有色金属冶炼精炼",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -8222,6 +9065,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3572：计算机存储设备，是整机的零部件",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001002047.json",
@@ -8251,6 +9097,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4700：运输与物流服务",
+      "sicMajor": "47",
+      "sicMajorLabel": "运输服务",
+      "sicMajorLabelEn": "Transportation Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001324424.json",
@@ -8280,6 +9129,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4512：运输与物流服务",
+      "sicMajor": "45",
+      "sicMajorLabel": "航空运输",
+      "sicMajorLabelEn": "Transportation by Air",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000100517.json",
@@ -8308,6 +9160,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
       "stageNote": "SIC 1311：采矿与油气开采",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -8338,6 +9193,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3841：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001093557.json",
@@ -8366,6 +9224,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
       "stageNote": "SIC 6022：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -8395,6 +9256,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4931：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -8424,6 +9288,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6331：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -8453,6 +9320,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6211：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -8482,6 +9352,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "14",
+      "sicMajorLabel": "非金属矿采选",
+      "sicMajorLabelEn": "Nonmetallic Minerals Mining",
       "stageNote": "SIC 1400：采矿与油气开采",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -8511,6 +9384,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
       "stageNote": "SIC 6021：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -8540,6 +9416,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
       "stageNote": "SIC 6022：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -8570,6 +9449,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3841：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000943819.json",
@@ -8599,6 +9481,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 6324：金融、保险与房地产",
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001071739.json",
@@ -8627,6 +9512,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -8656,6 +9544,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -8686,6 +9577,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2836：生物制品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000875045.json",
@@ -8715,6 +9609,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 1731：建筑与住宅开发，交付终端成品",
+      "sicMajor": "17",
+      "sicMajorLabel": "建筑专业承包",
+      "sicMajorLabelEn": "Special Trade Contractors",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000105634.json",
@@ -8744,6 +9641,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4400：运输与物流服务",
+      "sicMajor": "44",
+      "sicMajorLabel": "水上运输",
+      "sicMajorLabelEn": "Water Transportation",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000815097.json",
@@ -8773,6 +9673,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3844：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001932393.json",
@@ -8801,6 +9704,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "64",
+      "sicMajorLabel": "保险代理与经纪",
+      "sicMajorLabelEn": "Insurance Agents & Brokers",
       "stageNote": "SIC 6411：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -8831,6 +9737,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2834：成药制剂，面向终端市场的成品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001555280.json",
@@ -8860,6 +9769,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3672：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000898293.json",
@@ -8888,6 +9800,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
       "stageNote": "SIC 1389：采矿与油气开采",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -8918,6 +9833,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2030：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001637459.json",
@@ -8946,6 +9864,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "14",
+      "sicMajorLabel": "非金属矿采选",
+      "sicMajorLabelEn": "Nonmetallic Minerals Mining",
       "stageNote": "SIC 1400：采矿与油气开采",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -8975,6 +9896,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6200：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9004,6 +9928,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
       "stageNote": "SIC 1311：采矿与油气开采",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9034,6 +9961,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7371：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001058290.json",
@@ -9063,6 +9993,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5500：零售贸易",
+      "sicMajor": "55",
+      "sicMajorLabel": "汽车经销与加油站",
+      "sicMajorLabelEn": "Auto Dealers & Service Stations",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000900075.json",
@@ -9092,6 +10025,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4833：通信服务，网络承载与分发",
+      "sicMajor": "48",
+      "sicMajorLabel": "通信",
+      "sicMajorLabelEn": "Communications",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001754301.json",
@@ -9120,6 +10056,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9150,6 +10089,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7011：住宿与个人服务",
+      "sicMajor": "70",
+      "sicMajorLabel": "住宿",
+      "sicMajorLabelEn": "Hotels & Lodging",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001300514.json",
@@ -9178,6 +10120,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
       "stageNote": "SIC 6022：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9207,6 +10152,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4931：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9237,6 +10185,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3560：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001699150.json",
@@ -9265,6 +10216,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4931：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9295,6 +10249,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3570：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000047217.json",
@@ -9324,6 +10281,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5331：零售贸易",
+      "sicMajor": "53",
+      "sicMajorLabel": "综合零售",
+      "sicMajorLabelEn": "General Merchandise Stores",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000029534.json",
@@ -9353,6 +10313,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3674：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001097864.json",
@@ -9381,6 +10344,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4911：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9411,6 +10377,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3812：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001094285.json",
@@ -9439,6 +10408,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4924：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9469,6 +10441,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5500：零售贸易",
+      "sicMajor": "55",
+      "sicMajorLabel": "汽车经销与加油站",
+      "sicMajorLabelEn": "Auto Dealers & Service Stations",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000726958.json",
@@ -9497,6 +10472,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageNote": "SIC 7389：商业服务，含软件与数据处理",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9526,6 +10504,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9556,6 +10537,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3826：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001037646.json",
@@ -9585,6 +10569,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3600：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001781335.json",
@@ -9613,6 +10600,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageNote": "SIC 7389：商业服务，含软件与数据处理",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9642,6 +10632,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4941：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9672,6 +10665,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 8071：医疗服务，面向终端患者",
+      "sicMajor": "80",
+      "sicMajorLabel": "医疗服务",
+      "sicMajorLabelEn": "Health Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000920148.json",
@@ -9701,6 +10697,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3826：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001000697.json",
@@ -9729,6 +10728,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4911：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9759,6 +10761,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 8071：医疗服务，面向终端患者",
+      "sicMajor": "80",
+      "sicMajorLabel": "医疗服务",
+      "sicMajorLabelEn": "Health Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001022079.json",
@@ -9787,6 +10792,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6331：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9816,6 +10824,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4911：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9845,6 +10856,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "61",
+      "sicMajorLabel": "非存款信贷机构",
+      "sicMajorLabelEn": "Nondepository Credit Institutions",
       "stageNote": "SIC 6199：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9875,6 +10889,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7371：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001014473.json",
@@ -9904,6 +10921,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5700：零售贸易",
+      "sicMajor": "57",
+      "sicMajorLabel": "家居零售",
+      "sicMajorLabelEn": "Home Furniture & Furnishings Stores",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000719955.json",
@@ -9932,6 +10952,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4911：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9961,6 +10984,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4911：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -9991,6 +11017,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 8731：法律、工程、管理等专业服务",
+      "sicMajor": "87",
+      "sicMajorLabel": "工程、会计与研究服务",
+      "sicMajorLabelEn": "Engineering & Management Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000879169.json",
@@ -10020,6 +11049,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7389：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000814547.json",
@@ -10048,6 +11080,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
       "stageNote": "SIC 6021：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -10077,6 +11112,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6331：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -10107,6 +11145,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3561：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001524472.json",
@@ -10136,6 +11177,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3530：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000029905.json",
@@ -10164,6 +11208,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6792：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -10194,6 +11241,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5331：零售贸易",
+      "sicMajor": "53",
+      "sicMajorLabel": "综合零售",
+      "sicMajorLabelEn": "General Merchandise Stores",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000935703.json",
@@ -10223,6 +11273,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5812：零售贸易",
+      "sicMajor": "58",
+      "sicMajorLabel": "餐饮",
+      "sicMajorLabelEn": "Eating & Drinking Places",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000940944.json",
@@ -10252,6 +11305,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3100：皮革制品与鞋类",
+      "sicMajor": "31",
+      "sicMajorLabel": "皮革制品",
+      "sicMajorLabelEn": "Leather Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001116132.json",
@@ -10280,6 +11336,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageNote": "SIC 2851：化工，多为下游行业的投入品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -10310,6 +11369,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7374：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001442145.json",
@@ -10339,6 +11401,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3674：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0002058873.json",
@@ -10368,6 +11433,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4213：运输与物流服务",
+      "sicMajor": "42",
+      "sicMajorLabel": "公路货运与仓储",
+      "sicMajorLabelEn": "Motor Freight & Warehousing",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000728535.json",
@@ -10396,6 +11464,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "64",
+      "sicMajorLabel": "保险代理与经纪",
+      "sicMajorLabelEn": "Insurance Agents & Brokers",
       "stageNote": "SIC 6411：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -10426,6 +11497,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4731：运输与物流服务",
+      "sicMajor": "47",
+      "sicMajorLabel": "运输服务",
+      "sicMajorLabelEn": "Transportation Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000746515.json",
@@ -10455,6 +11529,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3841：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000105770.json",
@@ -10483,6 +11560,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6321：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -10513,6 +11593,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3571：电子计算机整机，设计与品牌为主（苹果、戴尔、惠普）",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001375365.json",
@@ -10542,6 +11625,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3825：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001967680.json",
@@ -10570,6 +11656,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
       "stageNote": "SIC 1311：采矿与油气开采",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -10599,6 +11688,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "26",
+      "sicMajorLabel": "造纸与纸制品",
+      "sicMajorLabelEn": "Paper & Allied Products",
       "stageNote": "SIC 2650：造纸，是包装与印刷的投入品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -10629,6 +11721,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3670：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000048898.json",
@@ -10658,6 +11753,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2070：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001996862.json",
@@ -10687,6 +11785,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5990：零售贸易",
+      "sicMajor": "59",
+      "sicMajorLabel": "其他零售",
+      "sicMajorLabelEn": "Miscellaneous Retail",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001403568.json",
@@ -10716,6 +11817,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 1531：建筑与住宅开发，交付终端成品",
+      "sicMajor": "15",
+      "sicMajorLabel": "房屋建筑承包",
+      "sicMajorLabelEn": "Building Construction",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000822416.json",
@@ -10745,6 +11849,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2840：化工，多为下游行业的投入品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000313927.json",
@@ -10773,6 +11880,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
       "stageNote": "SIC 6021：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -10802,6 +11912,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6282：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -10831,6 +11944,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4911：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -10861,6 +11977,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7311：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000029989.json",
@@ -10889,6 +12008,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageNote": "SIC 2821：化工，多为下游行业的投入品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -10919,6 +12041,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3842：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001757898.json",
@@ -10948,6 +12073,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4841：通信服务，网络承载与分发",
+      "sicMajor": "48",
+      "sicMajorLabel": "通信",
+      "sicMajorLabelEn": "Communications",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001091667.json",
@@ -10977,6 +12105,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7320：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000033185.json",
@@ -11005,6 +12136,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6331：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -11035,6 +12169,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2080：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000016918.json",
@@ -11063,6 +12200,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageNote": "SIC 2860：化工，多为下游行业的投入品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -11093,6 +12233,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3576：计算机通信设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001048695.json",
@@ -11121,6 +12264,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageNote": "SIC 7389：商业服务，含软件与数据处理",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -11151,6 +12297,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3674：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001274494.json",
@@ -11180,6 +12329,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2040：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000040704.json",
@@ -11208,6 +12360,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "39",
+      "sicMajorLabel": "其他制造业",
+      "sicMajorLabelEn": "Miscellaneous Manufacturing",
       "stageNote": "SIC 3990：其他制造业，多为终端产品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -11237,6 +12392,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageNote": "SIC 7389：商业服务，含软件与数据处理",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -11266,6 +12424,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageNote": "SIC 2860：化工，多为下游行业的投入品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -11295,6 +12456,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageNote": "SIC 2870：化工，多为下游行业的投入品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -11324,6 +12488,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4911：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -11353,6 +12520,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4931：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -11382,6 +12552,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "26",
+      "sicMajorLabel": "造纸与纸制品",
+      "sicMajorLabelEn": "Paper & Allied Products",
       "stageNote": "SIC 2650：造纸，是包装与印刷的投入品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -11412,6 +12585,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 1520：建筑与住宅开发，交付终端成品",
+      "sicMajor": "15",
+      "sicMajorLabel": "房屋建筑承包",
+      "sicMajorLabelEn": "Building Construction",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000920760.json",
@@ -11441,6 +12617,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7389：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001383312.json",
@@ -11470,6 +12649,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2320：服装成衣",
+      "sicMajor": "23",
+      "sicMajorLabel": "服装成衣",
+      "sicMajorLabelEn": "Apparel",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001037038.json",
@@ -11499,6 +12681,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2015：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000100493.json",
@@ -11528,6 +12713,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2834：成药制剂，面向终端市场的成品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001792044.json",
@@ -11556,6 +12744,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -11585,6 +12776,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4931：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -11615,6 +12809,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3420：金属制品",
+      "sicMajor": "34",
+      "sicMajorLabel": "金属制品",
+      "sicMajorLabelEn": "Fabricated Metal Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000091440.json",
@@ -11644,6 +12841,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3842：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001136869.json",
@@ -11672,6 +12872,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "26",
+      "sicMajorLabel": "造纸与纸制品",
+      "sicMajorLabelEn": "Paper & Allied Products",
       "stageNote": "SIC 2621：造纸，是包装与印刷的投入品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -11702,6 +12905,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5013：批发贸易",
+      "sicMajor": "50",
+      "sicMajorLabel": "批发·耐用品",
+      "sicMajorLabelEn": "Wholesale Trade - Durable Goods",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000040987.json",
@@ -11731,6 +12937,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5961：零售贸易",
+      "sicMajor": "59",
+      "sicMajorLabel": "其他零售",
+      "sicMajorLabelEn": "Miscellaneous Retail",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001402057.json",
@@ -11760,6 +12969,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4512：运输与物流服务",
+      "sicMajor": "45",
+      "sicMajorLabel": "航空运输",
+      "sicMajorLabelEn": "Transportation by Air",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000092380.json",
@@ -11788,6 +13000,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4931：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -11818,6 +13033,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000849399.json",
@@ -11847,6 +13065,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5200：零售贸易",
+      "sicMajor": "52",
+      "sicMajorLabel": "建材与家居零售",
+      "sicMajorLabelEn": "Building Materials & Garden Supply",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000916365.json",
@@ -11876,6 +13097,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5731：零售贸易",
+      "sicMajor": "57",
+      "sicMajorLabel": "家居零售",
+      "sicMajorLabelEn": "Home Furniture & Furnishings Stores",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000764478.json",
@@ -11905,6 +13129,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2821：化工，多为下游行业的投入品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001666700.json",
@@ -11933,6 +13160,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -11963,6 +13193,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3569：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000072331.json",
@@ -11991,6 +13224,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4931：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -12021,6 +13257,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 1600：建筑与住宅开发，交付终端成品",
+      "sicMajor": "16",
+      "sicMajorLabel": "重型工程建筑",
+      "sicMajorLabelEn": "Heavy Construction",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000052988.json",
@@ -12050,6 +13289,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3823：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001659166.json",
@@ -12079,6 +13321,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000857005.json",
@@ -12108,6 +13353,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7340：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000084839.json",
@@ -12137,6 +13385,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2711：出版与印刷，以内容为主",
+      "sicMajor": "27",
+      "sicMajorLabel": "印刷与出版",
+      "sicMajorLabelEn": "Printing & Publishing",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001564708.json",
@@ -12165,6 +13416,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6282：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -12194,6 +13448,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "65",
+      "sicMajorLabel": "房地产",
+      "sicMajorLabelEn": "Real Estate",
       "stageNote": "SIC 6510：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -12224,6 +13481,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 1531：建筑与住宅开发，交付终端成品",
+      "sicMajor": "15",
+      "sicMajorLabel": "房屋建筑承包",
+      "sicMajorLabelEn": "Building Construction",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000906163.json",
@@ -12253,6 +13513,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4731：运输与物流服务",
+      "sicMajor": "47",
+      "sicMajorLabel": "运输服务",
+      "sicMajorLabelEn": "Transportation Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001043277.json",
@@ -12281,6 +13544,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "34",
+      "sicMajorLabel": "金属制品",
+      "sicMajorLabelEn": "Fabricated Metal Products",
       "stageNote": "SIC 3411：金属制品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -12311,6 +13577,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7373：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001336920.json",
@@ -12340,6 +13609,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3560：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000877212.json",
@@ -12368,6 +13640,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -12398,6 +13673,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3561：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000832101.json",
@@ -12426,6 +13704,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageNote": "SIC 2821：化工，多为下游行业的投入品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -12455,6 +13736,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -12485,6 +13769,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4513：运输与物流服务",
+      "sicMajor": "45",
+      "sicMajorLabel": "航空运输",
+      "sicMajorLabelEn": "Transportation by Air",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0002082247.json",
@@ -12514,6 +13801,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3841：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001964738.json",
@@ -12543,6 +13833,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000860731.json",
@@ -12571,6 +13864,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
       "stageNote": "SIC 1311：采矿与油气开采",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -12601,6 +13897,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7389：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001086222.json",
@@ -12629,6 +13928,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -12659,6 +13961,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3420：金属制品",
+      "sicMajor": "34",
+      "sicMajorLabel": "金属制品",
+      "sicMajorLabelEn": "Fabricated Metal Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000093556.json",
@@ -12687,6 +13992,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6331：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -12716,6 +14024,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -12746,6 +14057,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3826：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000031791.json",
@@ -12774,6 +14088,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -12804,6 +14121,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2090：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000063754.json",
@@ -12833,6 +14153,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3430：金属制品",
+      "sicMajor": "34",
+      "sicMajorLabel": "金属制品",
+      "sicMajorLabelEn": "Fabricated Metal Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000062996.json",
@@ -12862,6 +14185,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7900：其他服务、娱乐与传媒",
+      "sicMajor": "79",
+      "sicMajorLabel": "娱乐与休闲服务",
+      "sicMajorLabelEn": "Amusement & Recreation Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001973266.json",
@@ -12891,6 +14217,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 8731：法律、工程、管理等专业服务",
+      "sicMajor": "87",
+      "sicMajorLabel": "工程、会计与研究服务",
+      "sicMajorLabelEn": "Engineering & Management Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001100682.json",
@@ -12919,6 +14248,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "62",
+      "sicMajorLabel": "证券与商品经纪",
+      "sicMajorLabelEn": "Security & Commodity Brokers",
       "stageNote": "SIC 6282：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -12948,6 +14280,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6399：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -12978,6 +14313,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2033：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000091419.json",
@@ -13006,6 +14344,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -13036,6 +14377,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3829：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000864749.json",
@@ -13065,6 +14409,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3720：运输设备零部件",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000217346.json",
@@ -13094,6 +14441,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2300：服装成衣",
+      "sicMajor": "23",
+      "sicMajorLabel": "服装成衣",
+      "sicMajorLabelEn": "Apparel",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001397187.json",
@@ -13123,6 +14473,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3851：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000711404.json",
@@ -13152,6 +14505,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7373：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001609711.json",
@@ -13180,6 +14536,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "63",
+      "sicMajorLabel": "保险公司",
+      "sicMajorLabelEn": "Insurance Carriers",
       "stageNote": "SIC 6311：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -13210,6 +14569,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7381：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001579241.json",
@@ -13238,6 +14600,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "26",
+      "sicMajorLabel": "造纸与纸制品",
+      "sicMajorLabelEn": "Paper & Allied Products",
       "stageNote": "SIC 2670：造纸，是包装与印刷的投入品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -13268,6 +14633,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3841：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000010456.json",
@@ -13297,6 +14665,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3944：其他制造业，多为终端产品",
+      "sicMajor": "39",
+      "sicMajorLabel": "其他制造业",
+      "sicMajorLabelEn": "Miscellaneous Manufacturing",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000046080.json",
@@ -13326,6 +14697,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3585：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001069202.json",
@@ -13354,6 +14728,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageNote": "SIC 7389：商业服务，含软件与数据处理",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -13384,6 +14761,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2080：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000014693.json",
@@ -13413,6 +14793,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 8741：法律、工程、管理等专业服务",
+      "sicMajor": "87",
+      "sicMajorLabel": "工程、会计与研究服务",
+      "sicMajorLabelEn": "Engineering & Management Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000749251.json",
@@ -13442,6 +14825,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2011：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000048465.json",
@@ -13470,6 +14856,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "64",
+      "sicMajorLabel": "保险代理与经纪",
+      "sicMajorLabelEn": "Insurance Agents & Brokers",
       "stageNote": "SIC 6411：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -13499,6 +14888,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageNote": "SIC 7373：商业服务，含软件与数据处理",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -13528,6 +14920,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -13558,6 +14953,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4833：通信服务，网络承载与分发",
+      "sicMajor": "48",
+      "sicMajorLabel": "通信",
+      "sicMajorLabelEn": "Communications",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0002041610.json",
@@ -13586,6 +14984,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4911：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -13616,6 +15017,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3021：橡胶与塑料制品",
+      "sicMajor": "30",
+      "sicMajorLabel": "橡胶与塑料制品",
+      "sicMajorLabelEn": "Rubber & Plastics",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000910521.json",
@@ -13645,6 +15049,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5140：批发贸易",
+      "sicMajor": "51",
+      "sicMajorLabel": "批发·非耐用品",
+      "sicMajorLabelEn": "Wholesale Trade - Nondurable Goods",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001286681.json",
@@ -13674,6 +15081,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 8090：医疗服务，面向终端患者",
+      "sicMajor": "80",
+      "sicMajorLabel": "医疗服务",
+      "sicMajorLabelEn": "Health Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000927066.json",
@@ -13703,6 +15113,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3730：运输设备零部件",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001501585.json",
@@ -13732,6 +15145,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3842：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001097149.json",
@@ -13761,6 +15177,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2842：化工，多为下游行业的投入品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000021076.json",
@@ -13790,6 +15209,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2836：生物制品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000842023.json",
@@ -13818,6 +15240,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageNote": "SIC 7370：商业服务，含软件与数据处理",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -13848,6 +15273,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3674：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000004127.json",
@@ -13876,6 +15304,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -13905,6 +15336,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -13935,6 +15369,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3621：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001474735.json",
@@ -13964,6 +15401,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7011：住宿与个人服务",
+      "sicMajor": "70",
+      "sicMajorLabel": "住宿",
+      "sicMajorLabelEn": "Hotels & Lodging",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000789570.json",
@@ -13992,6 +15432,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "49",
+      "sicMajorLabel": "电力燃气与水务",
+      "sicMajorLabelEn": "Electric, Gas & Sanitary Services",
       "stageNote": "SIC 4991：公用事业",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -14022,6 +15465,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 8062：医疗服务，面向终端患者",
+      "sicMajor": "80",
+      "sicMajorLabel": "医疗服务",
+      "sicMajorLabelEn": "Health Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000352915.json",
@@ -14051,6 +15497,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3841：仪器仪表与医疗器械",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001145197.json",
@@ -14080,6 +15529,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5047：批发贸易",
+      "sicMajor": "50",
+      "sicMajorLabel": "批发·耐用品",
+      "sicMajorLabelEn": "Wholesale Trade - Durable Goods",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001000228.json",
@@ -14108,6 +15560,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -14138,6 +15593,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3550：工业机械与设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000077360.json",
@@ -14167,6 +15625,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3714：机动车零部件",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001521332.json",
@@ -14196,6 +15657,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7011：住宿与个人服务",
+      "sicMajor": "70",
+      "sicMajorLabel": "住宿",
+      "sicMajorLabelEn": "Hotels & Lodging",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001174922.json",
@@ -14224,6 +15688,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "67",
+      "sicMajorLabel": "控股与投资机构",
+      "sicMajorLabelEn": "Holding & Other Investment Offices",
       "stageNote": "SIC 6798：金融、保险与房地产",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -14254,6 +15721,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 3630：电子与电气设备，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000091142.json",
@@ -14282,6 +15752,9 @@
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
       "stageNote": "SIC 2870：化工，多为下游行业的投入品",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
@@ -14312,6 +15785,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 2082：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0000024545.json",
@@ -14341,6 +15817,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 4400：运输与物流服务",
+      "sicMajor": "44",
+      "sicMajorLabel": "水上运输",
+      "sicMajorLabelEn": "Water Transportation",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001513761.json",
@@ -14370,6 +15849,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 7370：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001671933.json",
@@ -14399,6 +15881,9 @@
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
       "stageNote": "SIC 5211：零售贸易",
+      "sicMajor": "52",
+      "sicMajorLabel": "建材与家居零售",
+      "sicMajorLabelEn": "Building Materials & Garden Supply",
       "stageEvidence": {
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001316835.json",
@@ -15100,6 +16585,112 @@
       "staleQuote": 0,
       "noQuote": 0
     }
+  },
+  "flow": {
+    "relation": "smelter-in-supply-chain",
+    "relationLabel": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
+    "countries": [
+      "中国",
+      "日本",
+      "美国",
+      "印度尼西亚",
+      "巴西",
+      "未归类",
+      "印度",
+      "德国",
+      "其他"
+    ],
+    "countryTotals": {
+      "中国": 5101,
+      "日本": 1943,
+      "美国": 1583,
+      "印度尼西亚": 1414,
+      "巴西": 1014,
+      "未归类": 925,
+      "印度": 773,
+      "德国": 728,
+      "其他": 7324
+    },
+    "distinctCountries": 71,
+    "stages": [
+      {
+        "stage": "intermediate-manufacturing",
+        "total": 17051,
+        "byCountry": {
+          "中国": 4188,
+          "日本": 1575,
+          "美国": 1311,
+          "印度尼西亚": 1132,
+          "巴西": 829,
+          "未归类": 670,
+          "印度": 661,
+          "德国": 600,
+          "其他": 6085
+        }
+      },
+      {
+        "stage": "brand-integration",
+        "total": 1350,
+        "byCountry": {
+          "中国": 278,
+          "日本": 127,
+          "美国": 88,
+          "印度尼西亚": 83,
+          "巴西": 61,
+          "未归类": 215,
+          "印度": 36,
+          "德国": 43,
+          "其他": 419
+        }
+      },
+      {
+        "stage": "distribution-service",
+        "total": 1325,
+        "byCountry": {
+          "中国": 370,
+          "日本": 121,
+          "美国": 96,
+          "印度尼西亚": 97,
+          "巴西": 63,
+          "未归类": 40,
+          "印度": 46,
+          "德国": 41,
+          "其他": 451
+        }
+      },
+      {
+        "stage": "platform-service",
+        "total": 860,
+        "byCountry": {
+          "中国": 215,
+          "日本": 89,
+          "美国": 69,
+          "印度尼西亚": 88,
+          "巴西": 46,
+          "印度": 25,
+          "德国": 34,
+          "其他": 294
+        }
+      },
+      {
+        "stage": "supporting",
+        "total": 219,
+        "byCountry": {
+          "中国": 50,
+          "日本": 31,
+          "美国": 19,
+          "印度尼西亚": 14,
+          "巴西": 15,
+          "印度": 5,
+          "德国": 10,
+          "其他": 75
+        }
+      }
+    ],
+    "stagesWithoutEdges": [
+      "upstream-resource"
+    ],
+    "note": "带子宽度是实测关系条数，不是示意。语义与边文件一致：该冶炼厂出现在申报人的供应链中——间接、不含份额、不是直接供货。只覆盖有冶炼厂名单的公司，其余公司不出现在本图中。"
   },
   "coverage": {
     "claimComplete": false,

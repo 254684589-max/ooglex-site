@@ -160,6 +160,77 @@ def load_form_sd_coverage() -> dict | None:
         return None
 
 
+# 流向图上直接列出的国别数。其余并入「其他」——不是省略，是把长尾收拢，
+# 合计仍等于总边数。列太多的话每条带子细到看不见，反而什么都读不出来。
+FLOW_TOP_COUNTRIES = 8
+
+
+def stage_flow(nodes: list[dict], bundles: dict[str, dict]) -> dict:
+    """环节 → 冶炼厂所在国别的实测流量。
+
+    **这是全站唯一一处「流量」有实测含义的地方。** 图谱里那条价值链
+    （上游 → 中间 → 品牌 → 分销）是定义顺序，没有环节到环节的关系数据；
+    真正逐条挂着申报出处的，只有「公司 → 冶炼厂」这一层。所以带子的粗细
+    只能画这个，别的都是编的。
+
+    在这里预先算好，是因为按国别汇总要读全部边文件；让浏览器为了一张总览图
+    去下几十个文件，页面就废了。
+    """
+    stage_of = {n["symbol"]: n.get("stage") for n in nodes}
+    matrix: dict[str, dict[str, int]] = {}
+    totals: dict[str, int] = {}
+    relations: dict[str, str] = {}
+    for symbol, bundle in bundles.items():
+        stage = stage_of.get(symbol)
+        if not stage:
+            continue
+        # 语义从边文件里读，不在这里另写一份常量：两处各写一份，抽取器改了
+        # 这里就开始说旧话。
+        rel = bundle.get("relation") or {}
+        if rel.get("id"):
+            relations[rel["id"]] = rel.get("label") or ""
+        row = matrix.setdefault(stage, {})
+        for edge in bundle.get("edges") or []:
+            # 国别缺失如实记成「未归类」，不丢掉也不猜——丢掉会让合计对不上，
+            # 猜一个国家就是编数据。
+            key = edge.get("country") or "未归类"
+            row[key] = row.get(key, 0) + 1
+            totals[key] = totals.get(key, 0) + 1
+    top = [c for c, _ in sorted(totals.items(), key=lambda kv: -kv[1])[:FLOW_TOP_COUNTRIES]]
+    flows = []
+    for stage, row in matrix.items():
+        packed = {c: row.get(c, 0) for c in top}
+        rest = sum(row.values()) - sum(packed.values())
+        if rest:
+            packed["其他"] = rest
+        flows.append({"stage": stage, "total": sum(row.values()),
+                      "byCountry": {k: v for k, v in packed.items() if v}})
+    flows.sort(key=lambda r: -r["total"])
+    order = top + (["其他"] if any("其他" in f["byCountry"] for f in flows) else [])
+    # 多种关系混在一张图里的话，带子宽度就不是同一件事了，必须拦下。
+    if len(relations) > 1:
+        raise SystemExit(f"流向图里出现多种关系语义 {sorted(relations)}，"
+                         "带子宽度会失去统一含义，中止")
+    relation_id = next(iter(relations), None)
+    return {
+        "relation": relation_id,
+        "relationLabel": relations.get(relation_id or "", ""),
+        "countries": order,
+        "countryTotals": {c: (totals.get(c) if c != "其他"
+                              else sum(f["byCountry"].get("其他", 0) for f in flows))
+                          for c in order},
+        "distinctCountries": len(totals),
+        "stages": flows,
+        # 没有任何边的环节不会出现在 stages 里，但页面要把它画成 0 条的死头，
+        # 所以把「谁一条都没有」也算出来——空缺得画出来，不能只画有数据的部分。
+        "stagesWithoutEdges": sorted({n.get("stage") for n in nodes if n.get("stage")}
+                                     - set(matrix)),
+        "note": ("带子宽度是实测关系条数，不是示意。语义与边文件一致："
+                 "该冶炼厂出现在申报人的供应链中——间接、不含份额、不是直接供货。"
+                 "只覆盖有冶炼厂名单的公司，其余公司不出现在本图中。"),
+    }
+
+
 def sector_coverage(nodes: list[dict], filing_status: dict[str, str]) -> list[dict]:
     """按板块统计覆盖情况，并区分「没抓到」和「本来就不适用」。
 
@@ -292,6 +363,14 @@ def build_node(member: dict, identity: dict, sic_module) -> dict:
     if record.get("sic"):
         node["sic"] = int(record["sic"])
         node["sicDescription"] = record.get("sicDescription")
+        # 两位大类：把一个环节拆成看得见的构成（「中间制造 142 家」→
+        # 仪器仪表 39 / 半导体 31 / …）。只是把 SEC 的码换成中文名，
+        # 不改归属；认不出就不写这个字段，页面显示原始码。
+        major = sic_module.major_group(record["sic"]) if sic_module else None
+        if major:
+            node["sicMajor"] = major["code"]
+            node["sicMajorLabel"] = major["label"]
+            node["sicMajorLabelEn"] = major["labelEn"]
     resolved = sic_module.resolve(record.get("sic")) if sic_module else None
     if resolved:
         node["stage"] = resolved["stage"]
@@ -420,6 +499,7 @@ def build() -> None:
         if state:
             node["formSdStatus"] = state
     by_sector = sector_coverage(nodes, filing_status)
+    flow = stage_flow(nodes, edge_files)
 
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     by_stage: dict[str, int] = {}
@@ -455,6 +535,9 @@ def build() -> None:
         # 每家一个文件，公司页按需拉。索引里带出处链接，不必先下文件才知道有没有边。
         "edgeIndex": edge_index,
         "stagePerformance": stage_performance(members, nodes, source_payload),
+        # 环节 → 冶炼厂国别的实测流量。全站唯一一处带子宽度有实测含义的图，
+        # 在这里预算好，页面不必为一张总览图去下几十个边文件。
+        "flow": flow,
         "coverage": {
             "claimComplete": False,
             "nodesTotal": len(nodes),
