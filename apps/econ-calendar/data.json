@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-03T21:54:06Z",
-  "asOf": "2026-09-03",
+  "updatedAt": "2026-09-04T16:31:28Z",
+  "asOf": "2026-09-04",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-08-30 ~ 2026-09-05",
-  "count": 114,
+  "count": 115,
   "highCount": 15,
   "events": [
     {
@@ -1372,6 +1372,18 @@
       "impact": "medium",
       "forecast": "56.2",
       "previous": "55.1",
+      "actual": null
+    },
+    {
+      "ts": "2026-09-04T22:00:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Goolsbee Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
       "actual": null
     }
   ],
