@@ -32,14 +32,22 @@
   }
 
   var STAGE_COLOR = {
-    "upstream-resource": "var(--s1)", "intermediate-manufacturing": "var(--s2)",
-    "brand-integration": "var(--s3)", "distribution-service": "var(--s4)",
-    "platform-service": "var(--s5)", "supporting": "var(--s6)"
+    // 实物链八段：暖→冷的渐变，顺序本身是信息
+    "raw-material": "var(--s1)", "material-processing": "var(--s2)",
+    "component": "var(--s3)", "capital-equipment": "var(--s4)",
+    "finished-goods": "var(--s5)", "logistics": "var(--s6)",
+    "distribution": "var(--s7)", "end-service": "var(--s8)",
+    // 使能层四段：低饱和，视觉上退到后面
+    "energy-utility": "var(--e1)", "technology": "var(--e2)",
+    "financial": "var(--e3)", "circular": "var(--e4)"
   };
-  // 实物链四段按顺序展示；平台服务与支持性行业不在实物流转链条上，单独一组。
-  var CHAIN = ["upstream-resource", "intermediate-manufacturing",
-               "brand-integration", "distribution-service"];
-  var OFFCHAIN = ["platform-service", "supporting"];
+  /* 哪些环节在实物流转链条上，由数据里的 chain 字段说了算，不在页面里另写一份
+     名单——环节表改了页面就得跟着改，两处各写一份必然有一天对不上。 */
+  function chainIds(d, wanted) {
+    return (d.stages || []).filter(function (s) { return !!s.chain === wanted; })
+      .sort(function (a, b) { return (a.order || 0) - (b.order || 0); })
+      .map(function (s) { return s.id; });
+  }
 
   var BASIS_LABEL = {
     "sic-refined": "SEC 官方 SIC 行业码判定",
@@ -307,10 +315,37 @@
     return band;
   }
 
+  /* 环节段数与「同一 SIC 大类跨环节」的说明。段数从数据读，不写死在文案里——
+     写死的话调整分类就会留下一句过期的话（上一版就还写着「六个环节」）。 */
+  function renderChainNote(d) {
+    var chain = chainIds(d, true).length, off = chainIds(d, false).length;
+    var sub = $("chain-sub");
+    if (sub) {
+      setText(sub, "实物链 " + chain + " 段 + 使能层 " + off
+        + " 段，按 SEC 行业码（SIC）展开，宽度即家数 · 点一格只看该组公司");
+    }
+    // 一个 SIC 大类在几个环节里出现过
+    var seen = {};
+    (d.nodes || []).forEach(function (n) {
+      if (!n.sicMajor) return;
+      (seen[n.sicMajor] = seen[n.sicMajor] || {})[n.stage] = 1;
+    });
+    var spread = Object.keys(seen).filter(function (k) {
+      return Object.keys(seen[k]).length > 1;
+    }).length;
+    setText($("chain-note"), spread
+      ? "有 " + spread + " 个 SIC 大类横跨多个环节，因此同一个名字会在不同环节里各出现一次——"
+        + "这不是重复：化工里既有工业气体（材料加工）也有成药（整机与品牌），"
+        + "四位行业码才分得开，逐家依据见展开后表格的「判定依据」列。"
+      : "");
+  }
+
   function renderStages(d) {
+    renderChainNote(d);
     var byId = {};
     (d.stages || []).forEach(function (s2) { byId[s2.id] = s2; });
-    [["chain", CHAIN], ["offchain", OFFCHAIN]].forEach(function (pair) {
+    [["chain", chainIds(d, true)], ["offchain", chainIds(d, false)]]
+      .forEach(function (pair) {
       var host = $(pair[0]);
       host.textContent = "";
       pair[1].forEach(function (id, i) {

@@ -48,19 +48,40 @@ NAMES_ZH_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 # 分不出产业链位置；SIC 能分开。后两条是 33xx 拆分的回归——不拆的话康宁
 # （SIC 3357 有色线材拉制）会被误判成上游资源，它做的是玻璃基板与光纤。
 SIC_CASES: list[tuple[int, str, str]] = [
-    (3571, "苹果 电子计算机整机", "brand-integration"),
-    (3674, "英伟达 半导体", "intermediate-manufacturing"),
-    (7372, "微软 预装软件", "platform-service"),
-    (3312, "钢铁高炉", "upstream-resource"),
-    (3357, "康宁 有色线材", "intermediate-manufacturing"),
-    (3663, "高通 通信设备", "intermediate-manufacturing"),
-    (3559, "泛林 专用机械", "intermediate-manufacturing"),
-    (1311, "原油与天然气开采", "upstream-resource"),
-    (6022, "州立商业银行", "supporting"),
-    (5912, "药品零售", "distribution-service"),
-    (2834, "成药制剂", "brand-integration"),
-    (3714, "机动车零部件", "intermediate-manufacturing"),
-    (3711, "整车制造", "brand-integration"),
+    # 板块级分不开的，行业码要能分开
+    (3571, "苹果 电子计算机整机", "finished-goods"),
+    (3674, "英伟达 半导体", "component"),
+    (7372, "微软 预装软件", "technology"),
+    (3312, "钢铁高炉", "material-processing"),
+    (3357, "康宁 有色线材", "component"),
+    (3663, "高通 通信设备", "component"),
+    (1311, "原油与天然气开采", "raw-material"),
+    (6022, "州立商业银行", "financial"),
+    (5912, "药品零售", "distribution"),
+    (2834, "成药制剂", "finished-goods"),
+    (3714, "机动车零部件", "component"),
+    (3711, "整车制造", "finished-goods"),
+    # ── 以下是这次把六段扩成十二段时新拆出来的，每条都对应一个会判错的公司 ──
+    # 设备商与元器件商不同层：应用材料、泛林供给的是制造商，不是整机厂
+    (3559, "泛林 半导体专用设备", "capital-equipment"),
+    (3531, "卡特彼勒 工程机械", "capital-equipment"),
+    (3570, "IBM 计算机与办公设备", "capital-equipment"),
+    # 载客的不是物流。按两位码把 40–47 整段归物流会把这三类当成货运。
+    (4512, "达美 客运航空", "end-service"),
+    (4400, "皇家加勒比 邮轮", "end-service"),
+    (4700, "Booking 在线旅游", "end-service"),
+    (4513, "联邦快递 航空货运", "logistics"),
+    (4731, "C.H. Robinson 货代", "logistics"),
+    (4011, "联合太平洋 铁路", "logistics"),
+    # 电力是制造业的投入品，不是像银行那样的外围服务
+    (4911, "南方公司 电力", "energy-utility"),
+    # 逆向供应链：SCOR 模型的 Return
+    (4953, "废物管理公司 废弃物处理", "circular"),
+    # 化工要分开：工业化学品是投入品，日化是终端消费品
+    (2810, "林德 工业气体", "material-processing"),
+    (2840, "宝洁 肥皂洗涤", "finished-goods"),
+    # 电信是网络承载，归技术平台
+    (4813, "Verizon 电信", "technology"),
 ]
 
 # ── 反查上下文分类用例 ──────────────────────────────────────────────────────

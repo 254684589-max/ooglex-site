@@ -21,7 +21,11 @@
     --bg:#0a0d13; --card:#141922; --line:rgba(255,255,255,0.09);
     --text:#eaf0f3; --dim:#93a0b2; --faint:#5f6c7e; --accent:#4a90d9;
     --up:#3fae7d; --down:#e0554f; --warn:#e4b53d;
-    --s1:#c98b4b; --s2:#4a90d9; --s3:#7d6fd1; --s4:#3fae7d; --s5:#3aa8b8; --s6:#6b7a8d;
+    /* 实物链八段：从矿土到消费者的一条暖→冷渐变，顺序本身就是信息。
+       使能层四段用低饱和色，视觉上退到后面——它们横跨整条链，不参与流转。 */
+    --s1:#b0763f; --s2:#c9924b; --s3:#4a90d9; --s4:#6f7fd6;
+    --s5:#9b6fd1; --s6:#3aa8b8; --s7:#3fae7d; --s8:#66b06a;
+    --e1:#d9a63c; --e2:#7d93c4; --e3:#6b7a8d; --e4:#7f9c72;
     --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
   }
   body {
@@ -132,6 +136,8 @@
   .link::after { content:""; width:5px; height:5px; margin-top:-3px;
     border-right:1.2px solid currentColor; border-bottom:1.2px solid currentColor;
     transform:rotate(45deg); }
+  .chain-note { font-size:0.74rem; color:var(--faint); margin:0 2px 12px;
+    line-height:1.55; }
   .offlabel { display:flex; align-items:center; gap:9px; margin:16px 2px 11px;
     font-family:var(--mono); font-size:0.68rem; color:var(--faint);
     letter-spacing:0.1em; }
@@ -278,8 +284,11 @@
 
   <div class="sec-h">
     <h2>细分产业链</h2>
-    <span>六个环节按 SEC 行业码（SIC）展开，宽度即家数 · 点一格只看该组公司</span>
+    <span id="chain-sub">按 SEC 行业码（SIC）展开，宽度即家数 · 点一格只看该组公司</span>
   </div>
+  <!-- 同一个 SIC 大类会在多个环节里出现（化工既有工业气体也有成药），
+       这不是重复，是行业本身跨链。不说明的话读者会当成 bug。 -->
+  <p class="chain-note" id="chain-note"></p>
   <div class="bands" id="chain"></div>
 
   <div class="offlabel">链外环节 · 不在实物流转链条上</div>
@@ -308,6 +317,6 @@
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="app.js?v=f0b3c735" defer></script>
+<script src="app.js?v=276fdb02" defer></script>
 </body>
 </html>

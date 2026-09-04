@@ -29,74 +29,123 @@ SIC 是「比板块细」而不是「精确」**——节点仍标 `stageBasis: 
 """
 from __future__ import annotations
 
-STAGE_UPSTREAM = "upstream-resource"
-STAGE_INTERMEDIATE = "intermediate-manufacturing"
-STAGE_BRAND = "brand-integration"
-STAGE_DISTRIBUTION = "distribution-service"
-STAGE_PLATFORM = "platform-service"
-STAGE_SUPPORTING = "supporting"
+# ── 价值链环节 ────────────────────────────────────────────────────────────
+# 八段实物链 + 四层使能层。相比早先的六段，补上了四处专业框架里本该分开、
+# 而当时被并掉的东西：
+#
+#   物流与运输   原来并进「分销服务」。物流是链的**连接组织**，不是渠道；
+#                华尔街单独跟踪运价（BDI、集装箱、空运），并掉就没法看。
+#   资本设备     原来和零部件同属「中间制造」。应用材料、泛林、卡特彼勒是
+#                **供给制造商的设备商**，与德州仪器、英伟达这类元器件供应商
+#                在链上位置不同，混在一层等于说不出「谁供给谁」。
+#   能源与公用事业 原来算「支持性行业」。电力和天然气是制造业的**投入品**，
+#                不是像银行那样的外围服务。
+#   循环与废弃物   SCOR 模型里的 Return（逆向供应链）。冲突矿产本身就涉及
+#                回收金属，缺这一层框架就是单向的。
+STAGE_RAW = "raw-material"
+STAGE_MATERIAL = "material-processing"
+STAGE_COMPONENT = "component"
+STAGE_EQUIPMENT = "capital-equipment"
+STAGE_FINISHED = "finished-goods"
+STAGE_LOGISTICS = "logistics"
+STAGE_DISTRIBUTION = "distribution"
+STAGE_END_SERVICE = "end-service"
+STAGE_ENERGY = "energy-utility"
+STAGE_TECHNOLOGY = "technology"
+STAGE_FINANCIAL = "financial"
+STAGE_CIRCULAR = "circular"
 
-# ── 4 位精确覆盖：同一大类里阶段确实不同的那些 ──────────────────────────────
+
+# ── 4 位精确码：同一个大类里位置不同的，必须逐码拆 ──────────────────────────
+# 这张表的每一条都对应一个真实会判错的公司。两位码做不到的精度在这里补。
 EXACT: dict[int, tuple[str, str]] = {
-    # 35xx 机械与计算机：整机是品牌整合，零部件与设备是中间制造
-    3571: (STAGE_BRAND, "电子计算机整机，设计与品牌为主（苹果、戴尔、惠普）"),
-    3572: (STAGE_INTERMEDIATE, "计算机存储设备，是整机的零部件"),
-    3576: (STAGE_INTERMEDIATE, "计算机通信设备"),
-    3577: (STAGE_INTERMEDIATE, "计算机外围设备"),
-    3578: (STAGE_INTERMEDIATE, "计算与记账机器"),
-    # 37xx 运输设备：整车整机是品牌整合，零部件是中间制造
-    3711: (STAGE_BRAND, "整车制造"),
-    3713: (STAGE_BRAND, "卡车与客车车身"),
-    3714: (STAGE_INTERMEDIATE, "机动车零部件"),
-    3721: (STAGE_BRAND, "飞机整机"),
-    3724: (STAGE_INTERMEDIATE, "飞机发动机与零件"),
-    3728: (STAGE_INTERMEDIATE, "飞机零部件"),
-    # 283x 医药：成药与生物制品是面向终端的成品，诊断试剂是中间投入
-    2834: (STAGE_BRAND, "成药制剂，面向终端市场的成品"),
-    2836: (STAGE_BRAND, "生物制品"),
-    2835: (STAGE_INTERMEDIATE, "体外诊断试剂，是医疗服务的投入品"),
+    # 35xx 机械与计算机：整机是终端品牌，零部件是元器件，设备是资本品
+    3571: (STAGE_FINISHED, "电子计算机整机，设计与品牌为主（苹果、戴尔、惠普）"),
+    3570: (STAGE_EQUIPMENT, "计算机与办公设备，面向企业的资本支出（IBM、慧与）"),
+    3572: (STAGE_COMPONENT, "计算机存储设备，是整机的零部件"),
+    3576: (STAGE_COMPONENT, "计算机通信设备"),
+    3577: (STAGE_COMPONENT, "计算机外围设备"),
+    3578: (STAGE_COMPONENT, "计算与记账机器"),
+    # 37xx 运输设备：整车整机是终端品牌，零部件是元器件
+    3711: (STAGE_FINISHED, "整车制造"),
+    3713: (STAGE_FINISHED, "卡车与客车车身"),
+    3714: (STAGE_COMPONENT, "机动车零部件"),
+    3721: (STAGE_FINISHED, "飞机整机"),
+    3724: (STAGE_COMPONENT, "飞机发动机与零件"),
+    3728: (STAGE_COMPONENT, "飞机零部件"),
+    3730: (STAGE_FINISHED, "船舶制造"),
+    3760: (STAGE_FINISHED, "导弹与航天器整机"),
+    # 283x/284x 化工：成药与日化面向终端，诊断试剂是医疗服务的投入
+    2834: (STAGE_FINISHED, "成药制剂，面向终端市场的成品"),
+    2836: (STAGE_FINISHED, "生物制品"),
+    2835: (STAGE_COMPONENT, "体外诊断试剂，是医疗服务的投入品"),
+    # 44xx / 45xx 运输：**载客的不是物流**。水上运输在标普里全是邮轮公司，
+    # 4512 是客运航空，4700 是在线旅游平台（Booking、亿客行）——
+    # 按两位码把 40–47 整段归物流，会把邮轮和客运航空当成货运。
+    4512: (STAGE_END_SERVICE, "客运航空，面向消费者的服务"),
+    4513: (STAGE_LOGISTICS, "航空快递与货运（联邦快递）"),
+    4700: (STAGE_END_SERVICE, "在线旅游平台"),
+    4731: (STAGE_LOGISTICS, "货运代理与安排"),
 }
 
 # ── 4 位区间：比大类细、但不必逐码列举的段落 ────────────────────────────────
 RANGES: list[tuple[int, int, str, str]] = [
-    (100, 999, STAGE_UPSTREAM, "农林牧渔，初级产品"),
-    (1000, 1499, STAGE_UPSTREAM, "采矿与油气开采"),
-    (1500, 1799, STAGE_BRAND, "建筑与住宅开发，交付终端成品"),
-    (2000, 2199, STAGE_BRAND, "食品饮料与烟草，面向终端消费"),
-    (2200, 2299, STAGE_INTERMEDIATE, "纺织，是服装的投入品"),
-    (2300, 2399, STAGE_BRAND, "服装成衣"),
-    (2400, 2499, STAGE_UPSTREAM, "木材采伐与初加工"),
-    (2500, 2599, STAGE_BRAND, "家具"),
-    (2600, 2699, STAGE_INTERMEDIATE, "造纸，是包装与印刷的投入品"),
-    (2700, 2799, STAGE_PLATFORM, "出版与印刷，以内容为主"),
-    (2800, 2899, STAGE_INTERMEDIATE, "化工，多为下游行业的投入品"),
-    (2900, 2999, STAGE_UPSTREAM, "石油炼制与煤制品"),
-    (3000, 3099, STAGE_INTERMEDIATE, "橡胶与塑料制品"),
-    (3100, 3199, STAGE_BRAND, "皮革制品与鞋类"),
-    (3200, 3299, STAGE_INTERMEDIATE, "石料、陶土与玻璃制品"),
-    # 33xx 必须拆开：331x-334x 是高炉、轧钢与有色冶炼精炼（真上游）；
-    # 335x-339x 是把金属加工成线材、板材、铸件（给下游用的投入品，属中间制造）。
-    # 不拆的话康宁（SIC 3357 有色线材拉制）会被误判成上游资源——它做的是
+    (100, 999, STAGE_RAW, "农林牧渔，初级产品"),
+    (1000, 1499, STAGE_RAW, "采矿与油气开采"),
+    (1500, 1799, STAGE_FINISHED, "建筑与住宅开发，交付终端成品"),
+    (2000, 2199, STAGE_FINISHED, "食品饮料与烟草，面向终端消费"),
+    (2200, 2299, STAGE_MATERIAL, "纺织，是服装的投入品"),
+    (2300, 2399, STAGE_FINISHED, "服装成衣"),
+    (2400, 2499, STAGE_MATERIAL, "木材采伐与初加工"),
+    (2500, 2599, STAGE_FINISHED, "家具"),
+    (2600, 2699, STAGE_MATERIAL, "造纸，是包装与印刷的投入品"),
+    (2700, 2799, STAGE_TECHNOLOGY, "出版与内容，以内容为主"),
+    # 28xx 化工要分开：工业化学品是投入品，日化与药品是终端成品（见 EXACT）
+    (2800, 2839, STAGE_MATERIAL, "工业化学品，多为下游行业的投入品"),
+    (2840, 2849, STAGE_FINISHED, "肥皂洗涤与化妆品，面向终端消费"),
+    (2850, 2899, STAGE_MATERIAL, "涂料、农药与其他化学品"),
+    (2900, 2999, STAGE_MATERIAL, "石油炼制与煤制品"),
+    (3000, 3099, STAGE_MATERIAL, "橡胶与塑料制品"),
+    (3100, 3199, STAGE_FINISHED, "皮革制品与鞋类"),
+    (3200, 3299, STAGE_MATERIAL, "石料、陶土与玻璃制品"),
+    # 33xx 必须拆开：331x-334x 是高炉、轧钢与有色冶炼精炼（材料加工）；
+    # 335x-339x 是把金属加工成线材、板材、铸件（给下游装配用的元器件）。
+    # 不拆的话康宁（SIC 3357 有色线材拉制）会被误判成资源开采——它做的是
     # 玻璃基板与光纤，是不折不扣的中间投入（实测用例）。
-    (3300, 3349, STAGE_UPSTREAM, "钢铁与有色金属冶炼精炼"),
-    (3350, 3399, STAGE_INTERMEDIATE, "金属轧制、拉制与铸造，供下游装配"),
-    (3400, 3499, STAGE_INTERMEDIATE, "金属制品"),
-    (3500, 3599, STAGE_INTERMEDIATE, "工业机械与设备"),
-    (3600, 3699, STAGE_INTERMEDIATE, "电子与电气设备，含半导体"),
-    (3700, 3799, STAGE_INTERMEDIATE, "运输设备零部件"),
-    (3800, 3899, STAGE_INTERMEDIATE, "仪器仪表与医疗器械"),
-    (3900, 3999, STAGE_BRAND, "其他制造业，多为终端产品"),
-    (4000, 4799, STAGE_DISTRIBUTION, "运输与物流服务"),
-    (4800, 4899, STAGE_DISTRIBUTION, "通信服务，网络承载与分发"),
-    (4900, 4999, STAGE_SUPPORTING, "公用事业"),
+    (3300, 3349, STAGE_MATERIAL, "钢铁与有色金属冶炼精炼"),
+    (3350, 3399, STAGE_COMPONENT, "金属轧制、拉制与铸造，供下游装配"),
+    (3400, 3499, STAGE_COMPONENT, "金属制品"),
+    # 35xx 主体是资本设备：工程机械、半导体设备、工业机械。
+    # 整机与零部件已在 EXACT 里逐码拆出去。
+    (3500, 3569, STAGE_EQUIPMENT, "工业机械与专用设备，下游的资本支出"),
+    (3579, 3599, STAGE_EQUIPMENT, "办公与通用工业设备"),
+    (3600, 3699, STAGE_COMPONENT, "电子与电气元器件，含半导体"),
+    (3700, 3799, STAGE_COMPONENT, "运输设备零部件"),
+    (3800, 3899, STAGE_FINISHED, "仪器仪表与医疗器械，多为可直接交付的成品"),
+    (3900, 3999, STAGE_FINISHED, "其他制造业，多为终端产品"),
+    (4000, 4299, STAGE_LOGISTICS, "铁路、公路货运与仓储"),
+    (4300, 4399, STAGE_LOGISTICS, "邮政与快递"),
+    (4400, 4499, STAGE_END_SERVICE, "水上运输，标普成分股中为邮轮与客运"),
+    (4500, 4599, STAGE_LOGISTICS, "航空运输（客运见 EXACT 4512）"),
+    (4600, 4699, STAGE_LOGISTICS, "管道运输"),
+    (4700, 4799, STAGE_LOGISTICS, "运输服务与货代"),
+    (4800, 4899, STAGE_TECHNOLOGY, "电信与网络承载"),
+    # 49xx 拆开：电力燃气是投入品，废物处理是逆向供应链
+    (4900, 4949, STAGE_ENERGY, "电力、燃气与水务，制造业的投入品"),
+    (4950, 4959, STAGE_CIRCULAR, "废弃物处理与回收，逆向供应链"),
+    (4960, 4999, STAGE_ENERGY, "综合公用事业"),
     (5000, 5199, STAGE_DISTRIBUTION, "批发贸易"),
     (5200, 5999, STAGE_DISTRIBUTION, "零售贸易"),
-    (6000, 6799, STAGE_SUPPORTING, "金融、保险与房地产"),
-    (7000, 7299, STAGE_DISTRIBUTION, "住宿与个人服务"),
-    (7300, 7399, STAGE_PLATFORM, "商业服务，含软件与数据处理"),
-    (7400, 7999, STAGE_PLATFORM, "其他服务、娱乐与传媒"),
-    (8000, 8099, STAGE_DISTRIBUTION, "医疗服务，面向终端患者"),
-    (8100, 8999, STAGE_SUPPORTING, "法律、工程、管理等专业服务"),
+    (6000, 6799, STAGE_FINANCIAL, "金融、保险与房地产"),
+    (7000, 7299, STAGE_END_SERVICE, "住宿与个人服务"),
+    (7300, 7399, STAGE_TECHNOLOGY, "商业服务，含软件与数据处理"),
+    (7400, 7499, STAGE_FINANCIAL, "商业与管理服务"),
+    (7500, 7599, STAGE_END_SERVICE, "汽车修理与租赁"),
+    (7600, 7799, STAGE_END_SERVICE, "维修服务"),
+    (7800, 7899, STAGE_TECHNOLOGY, "影视与流媒体"),
+    (7900, 7999, STAGE_END_SERVICE, "娱乐与休闲服务"),
+    (8000, 8099, STAGE_END_SERVICE, "医疗服务，面向终端患者"),
+    (8100, 8999, STAGE_FINANCIAL, "法律、工程、会计等专业服务"),
 ]
 
 
