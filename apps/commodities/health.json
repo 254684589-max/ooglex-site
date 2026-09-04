@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "commodities",
-  "generatedAt": "2026-09-03T21:52:05Z",
+  "generatedAt": "2026-09-04T21:44:26Z",
   "status": "degraded",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-09-03T21:52:05Z",
-  "lastSuccessfulAt": "2026-09-03T21:52:05Z",
+  "lastAttemptAt": "2026-09-04T21:44:26Z",
+  "lastSuccessfulAt": "2026-09-04T21:44:26Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-09-03T21:52:05Z",
+  "publishedSnapshotAt": "2026-09-04T21:44:26Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -15,14 +15,14 @@
     "publishedRecords": 36,
     "dynamicRecords": 36,
     "counts": {
-      "market": 27,
-      "fallback": 9,
+      "market": 25,
+      "fallback": 11,
       "estimate": 0,
       "unknown": 0,
       "unavailable": 0
     },
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 75.0,
+    "freshCoveragePct": 69.44,
     "verifiedCoveragePct": 100.0,
     "availableCoveragePct": 100.0
   },
@@ -31,8 +31,8 @@
     "published": true,
     "producedRecords": 36,
     "counts": {
-      "market": 27,
-      "fallback": 9,
+      "market": 25,
+      "fallback": 11,
       "estimate": 0,
       "unknown": 0,
       "unavailable": 0
@@ -52,7 +52,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-09-03T21:52:05Z"
+      "lastSuccessAt": "2026-09-04T21:44:26Z"
     },
     {
       "id": "fred-imf",
@@ -61,13 +61,13 @@
       "status": "degraded",
       "records": 31,
       "counts": {
-        "market": 22,
-        "fallback": 9,
+        "market": 20,
+        "fallback": 11,
         "estimate": 0,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-09-03T21:52:05Z"
+      "lastSuccessAt": "2026-09-04T21:44:26Z"
     }
   ],
   "recovery": {
