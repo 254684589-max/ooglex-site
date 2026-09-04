@@ -593,6 +593,40 @@ def main() -> int:
         failures.append("robots Disallow 判定错误——被禁的路径必须认出来不抓")
     print(f"  [{'OK' if robots_ok else 'XX'}] robots Disallow 的路径不抓")
 
+    # 国名并在名字里的拆分。**拆错砍掉的是公司的身份，不拆只是少一个属性**，
+    # 所以宁可不拆。下面前四条是已发布数据里真被砍过的名字，逐条钉死。
+    print("\n── 名字里的国名：宁可不拆，也不砍掉名字 ──────────────────────────")
+    split_cases = [
+        ("KEMET de Mexico", "KEMET de Mexico", None,
+         "已发布数据里被砍成「KEMET de」"),
+        ("Umicore Precious Metals Thailand", "Umicore Precious Metals Thailand", None,
+         "已发布数据里被砍成「Umicore Precious Metals」"),
+        ("PT Premium Tin Indonesia", "PT Premium Tin Indonesia", None,
+         "已发布数据里被砍成「PT Premium Tin」"),
+        ("Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
+         "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)", None,
+         "已发布数据里括号被砍掉一半"),
+        ("Asahi Pretec Corp. Japan", "Asahi Pretec Corp.", "japan",
+         "后缀收尾 + 国名，该拆"),
+        ("Tanaka Kikinzoku Kogyo K.K. Japan", "Tanaka Kikinzoku Kogyo K.K.", "japan",
+         "带点的后缀也认得出来"),
+        ("Dowa Metals & Mining Co., Ltd., Japan", "Dowa Metals & Mining Co., Ltd.",
+         "japan", "逗号是约定俗成的分隔符，该拆"),
+        ("Metalor Technologies SA - Switzerland", "Metalor Technologies SA",
+         "switzerland", "破折号同理"),
+        ("Yunnan Tin Company Limited", "Yunnan Tin Company Limited", None,
+         "结尾没有国名，不动"),
+    ]
+    for raw, want_name, want_country, why in split_cases:
+        got_name, got_country, _ = load_form_sd()._split_trailing_country(raw)
+        ok = got_name == want_name and got_country == want_country
+        if not ok:
+            failures.append(f"国名拆分 {raw!r}：期望 ({want_name!r}, {want_country!r})，"
+                            f"实际 ({got_name!r}, {got_country!r})")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+        print(f"        {raw[:56]:<58} → {got_name[:44]!r}"
+              + (f" + {got_country}" if got_country else ""))
+
     # 申报文档的过滤规则。抽取器用它决定读哪几份，「有申报但没抽到名单」的
     # 探针用同一个函数显示「哪些文件被挡掉了」——两处共用，改坏了两处一起错，
     # 而且探针会开始说假话，所以逐条钉死。
@@ -614,7 +648,7 @@ def main() -> int:
         print(f"  [{'OK' if ok else 'XX'}] {why}"
               f"（{name} → {got or '会读'}）")
 
-    total = (len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
+    total = (len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1)
     print("\n" + "─" * 68)

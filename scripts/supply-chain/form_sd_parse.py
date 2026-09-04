@@ -363,14 +363,56 @@ def _looks_like_company(name: str) -> bool:
     return bool(_CORPORATE.search(text)) or len(text.split()) >= 2
 
 
+# 公司名末尾的法律形式后缀。用途见 _split_trailing_country：只有名字已经
+# 以后缀收尾时，后面跟的国名才是**附加的元数据**；否则它多半是名字本身的一部分。
+_LEGAL_SUFFIX = re.compile(
+    r"(?:corp|corporation|inc|ltd|limited|llc|llp|co|company|group|holdings?|"
+    r"gmbh|ag|kg|sa|sas|sarl|nv|bv|plc|pte|pty|kk|sdn|bhd|jsc|ojsc|pjsc|ooo|oao|"
+    r"spa|srl|ab|as|oy|oyj|kft|doo|zrt|cjsc|pt|tbk|sac|cia|sl)\.?$",
+    re.I)
+
+
 def _split_trailing_country(name: str) -> tuple[str, str | None, str | None]:
-    """有的申报把国别并在名字里（"Asahi Pretec Corp. Japan"），拆开。"""
-    for sep in (",", " - ", " – ", " "):
+    """有的申报把国别并在名字里（"Asahi Pretec Corp. Japan"），拆开。
+
+    **拆错的代价比不拆大得多**：拆错砍掉的是公司的名字——那是它的身份；
+    不拆只是少一个国别属性，页面照实显示「未归类」即可。本文件开头就写着
+    「认不出来的保留原文、country 置 None——宁可显示未归类，也不硬塞一个国家」，
+    这里同一个道理。
+
+    实测踩过（已发布的数据里）：
+
+        KEMET de Mexico                  →  砍成 "KEMET de"
+        Umicore Precious Metals Thailand →  砍成 "Umicore Precious Metals"
+        PT Premium Tin Indonesia         →  砍成 "PT Premium Tin"
+        Bangko Sentral ng Pilipinas (Central Bank of the Philippines)
+                                         →  砍成 "…(Central Bank of the"
+
+    四个都是**名字本身就以国名收尾**的合法实体，不是「名字 + 国别」拼在一起。
+    原来的规则见空格就按最后一个词试国名，所以全中招。
+
+    改成按分隔符区别对待：
+
+      逗号、破折号 —— 约定俗成的元数据分隔符（"Asahi Pretec Corp., Japan"），
+                      拆开风险低。
+      纯空格       —— 只有前半段以法律形式后缀（Corp. / Ltd. / GmbH…）收尾时才拆。
+                      "Asahi Pretec Corp. Japan" 拆；"Umicore Precious Metals
+                      Thailand" 不拆，因为 Metals 不是后缀。
+    """
+    for sep in (",", " - ", " – "):
         if sep not in name:
             continue
         head, _, tail = name.rpartition(sep)
         english, chinese = match_country(tail)
         if english and head.strip():
+            return head.strip(" ,-–"), english, chinese
+    # 纯空格：只有前半段像一个完整的公司名时才拆。
+    head, _, tail = name.rpartition(" ")
+    # 去掉点再比后缀，"K.K." / "S.A." / "N.V." 这类带点写法才认得出来。
+    probe = head.strip(" ,-–").replace(".", "")
+    if head.strip() and _LEGAL_SUFFIX.search(probe):
+        english, chinese = match_country(tail)
+        if english:
             return head.strip(" ,-–"), english, chinese
     return name, None, None
 
