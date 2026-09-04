@@ -12,6 +12,9 @@ name: Supply Chain Source Probe
 #              供人逐条核对，不写任何文件。接不接入发布由人决定，不由脚本的自动结论决定。
 #   supplier —— 第二条数据源：公司自己发布的供应商名单（一级供应商那一层）。
 #              只读，回答「找得到吗／什么格式／解得开吗／许可允许吗」四件事。
+#   usaspending —— 第三条数据源：美国联邦采购（分包 = 一级供应关系）。
+#              选它是因为适用范围与 Form SD 正交，能补金融／房地产／公用事业
+#              那几个 Form SD 结构上永远够不着的板块。
 #   flow    —— 物流通道层。IMF PortWatch、纽约联储 GSCPI、世界银行与 FRED 政府口径序列。
 #
 # 许可是本领域的主要风险：BDI、Drewry WCI、Freightos FBX、Xeneta、ISM 供应商交付
@@ -124,6 +127,29 @@ jobs:
           path: /tmp/supply-chain-probe/supplier-lists.json
           if-no-files-found: warn
           retention-days: 7
+
+  # 第三条源：美国联邦采购。**它的价值在于适用范围与 Form SD 正交。**
+  # 按板块拆开覆盖率之后看得很清楚：金融 0/70、房地产 0/29、公用事业 1/32——
+  # 这些 0 不是抓取失败，Form SD 只管产品里含 3TG 的发行人，银行没有产品。
+  # 要补这几个板块只能换源，而联邦采购管的是「谁向政府卖了什么」，与矿无关。
+  # 真正想要的是 FFATA 强制披露的**分包**（总包商 → 分包商），那是一级供应关系。
+  usaspending:
+    name: 联邦采购 · 第三条源可行性
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Probe USAspending federal procurement
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: python scripts/supply-chain/probe_usaspending.py
 
   # Form SD 抽取器上线前的人工核对关口。**dry-run，不写任何文件。**
   # 上一轮的教训：探针的自动结论说「可进入抽取器开发」，但把抽出来的名字打出来
