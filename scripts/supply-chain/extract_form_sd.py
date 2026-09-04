@@ -154,6 +154,23 @@ def latest_form_sd(cik: int) -> dict | None:
     return None
 
 
+def skip_reason(name: str) -> str | None:
+    """这份文档要不要跳过，以及为什么。返回 None 表示会读。
+
+    单独抽出来是因为 probe_form_sd_no_list.py 要用同一套规则去显示
+    「哪些文件被规则挡掉了」。两边各写一份的话，规则一改探针就开始说假话——
+    而那个探针的全部价值就在于如实显示被挡掉的文件。
+    """
+    low = name.lower()
+    if not low.endswith((".htm", ".html")):
+        return "非 HTML"
+    if low.startswith("0"):
+        return "文件名以 0 开头"
+    if "index" in low:
+        return "文件名含 index"
+    return None
+
+
 def list_documents(index_url: str) -> list[dict]:
     """按体积倒序列出该次申报的真实文档。
 
@@ -166,8 +183,7 @@ def list_documents(index_url: str) -> list[dict]:
     documents = []
     for item in ((payload.get("directory") or {}).get("item")) or []:
         name = str(item.get("name") or "")
-        low = name.lower()
-        if not low.endswith((".htm", ".html")) or low.startswith("0") or "index" in low:
+        if skip_reason(name):
             continue
         try:
             size = int(item.get("size") or 0)
@@ -409,6 +425,13 @@ def main() -> int:
     filed_no_list = states.get("filed-no-list", [])
     no_filing = states.get("no-filing", [])
     failed = [s for k, v in states.items() if k in ("error", "index-failed", "doc-failed") for s in v]
+    # 逐家的申报状态。只报「495 家里 85 家有名单」，读者无法判断自己关心的那家
+    # 属于哪一类，也就无法判断「没数据」是抓取失败还是这家本来就不申报。
+    # 摩根大通没有实体产品，Form SD 对它根本不适用——这件事必须能按公司查到，
+    # 否则页面上金融板块的 0 会被读成「还没抓」。
+    filing_status = {r["symbol"]: ("failed" if r["state"] in
+                                   ("error", "index-failed", "doc-failed") else r["state"])
+                     for r in results}
     total_edges = sum(r["parse"]["unique"] for r in results if r["state"] == "listed")
     total_cid = sum(r["parse"]["rowsWithCid"] for r in results if r["state"] == "listed")
     total_name_only = sum(r["parse"]["nameOnly"] for r in results if r["state"] == "listed")
@@ -457,6 +480,8 @@ def main() -> int:
             return 1
         scan_counts = {k: prior[k] for k in keys}
         scan_counts["failedSymbols"] = prior.get("failedSymbols") or []
+        # 同 failedSymbols：后加的字段，旧文件没有就留空，不当致命错误。
+        scan_counts["filingStatus"] = prior.get("filingStatus") or {}
         print(f"沿用上一轮扫描口径：扫 {scan_counts['companiesScanned']} 家，"
               f"其中 {scan_counts['companiesWithList']} 家有名单\n")
 
@@ -565,6 +590,8 @@ def main() -> int:
                 # 只报「失败 5 家」而不说是哪 5 家，等于没人能去核对。
                 # 名单写进数据，不只留在会过期的运行日志里。
                 "failedSymbols": sorted(failed)[:40],
+                # 逐家状态，供页面按板块解释缺口的成因。
+                "filingStatus": dict(sorted(filing_status.items())),
             }),
             "companiesPublished": len(index),
             "edgesTotal": published_edges,

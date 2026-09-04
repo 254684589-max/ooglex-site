@@ -20,6 +20,17 @@ name: Supply Chain Graph
 on:
   # 定点 cron 会被 GitHub 推迟数小时，改由 scheduler.yml 每日在窗口开启后统一触发。
   workflow_dispatch:
+    inputs:
+      # Form SD 抽取器自带申报季闸门（5–7 月以外不发请求）。改了解析规则或要补
+      # 字段时需要在季外重跑一次，这个开关就是干这个的。
+      # 用 choice 而不是留空的字符串：workflow_dispatch 会把空字符串替换成默认值，
+      # 「留空 = 关闭」这种约定在这里不成立（上一轮 --tickers 就是这么踩的）。
+      force_form_sd:
+        description: '季外强制重跑 Form SD 抽取器（改了解析规则或要补字段时用）'
+        required: false
+        default: 'no'
+        type: choice
+        options: ['no', 'yes']
 
 permissions:
   contents: write
@@ -70,7 +81,9 @@ jobs:
         continue-on-error: true
         env:
           SEC_CONTACT: ${{ vars.SEC_CONTACT }}
-        run: python scripts/supply-chain/extract_form_sd.py
+        run: |
+          python scripts/supply-chain/extract_form_sd.py \
+            ${{ inputs.force_form_sd == 'yes' && '--force' || '' }}
 
       # 冶炼厂中文译名表。与带出处的申报数据分开发布——边文件里是申报原文，
       # 译名是我们加的标注，混在一起会让「哪些是原文」分不清。

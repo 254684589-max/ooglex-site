@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "AVY",
   "name": "Avery Dennison",
-  "updatedAt": "2026-09-02T16:18:29Z",
+  "updatedAt": "2026-09-04T10:58:37Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -617,7 +617,7 @@
       "from": "CID000438",
       "idType": "rmi-cid",
       "cid": "CID000438",
-      "name": "Plurinational State of",
+      "name": "Plurinational State of Bolivia",
       "country": "玻利维亚",
       "countryEn": "bolivia",
       "minerals": [

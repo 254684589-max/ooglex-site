@@ -4,12 +4,19 @@ name: Supply Chain Source Probe
 # 不写仓库、不提交任何数据，只把探测报告作为构建产物留存。
 #
 # 这是「先探后建」的第一步，也是常备工具：往供应链清单里加任何一条序列、或动抽取
-# 规则之前先跑一次。三个 job 互不依赖，一个失败不影响另外两个：
+# 规则之前先跑一次。四个 job 互不依赖，一个失败不影响其它：
 #
 #   graph   —— 公司图谱主线。先跑离线抽取规则校验（不联网、快、失败即停），再实测
 #              SEC EDGAR 能不能规模化抽出带出处的供应链关系。
 #   extract —— Form SD 抽取器 dry-run。把真实解析出的冶炼厂名／国别／矿种打到日志里
 #              供人逐条核对，不写任何文件。接不接入发布由人决定，不由脚本的自动结论决定。
+#   supplier —— 第二条数据源：公司自己发布的供应商名单（一级供应商那一层）。
+#              只读，回答「找得到吗／什么格式／解得开吗／许可允许吗」四件事。
+#   usaspending —— 第三条数据源：美国联邦采购（分包 = 一级供应关系）。
+#              选它是因为适用范围与 Form SD 正交，能补金融／房地产／公用事业
+#              那几个 Form SD 结构上永远够不着的板块。
+#   nolist  —— 「有申报但没抽到名单」151 家的申报文件清单。查这一档是制度上限
+#              还是抽取器漏看（PDF 附件、名字以 0 开头、只看最大 4 份）。
 #   flow    —— 物流通道层。IMF PortWatch、纽约联储 GSCPI、世界银行与 FRED 政府口径序列。
 #
 # 许可是本领域的主要风险：BDI、Drewry WCI、Freightos FBX、Xeneta、ISM 供应商交付
@@ -87,6 +94,88 @@ jobs:
           path: /tmp/supply-chain-probe/edgar*.json
           if-no-files-found: warn
           retention-days: 7
+
+  # 第二条数据源的可行性探测：公司自己发布的供应商名单。
+  # 冶炼厂那层是第三层、语义是「出现在供应链中」；一级供应商 SEC 给不了，
+  # 但公司自己会发布（苹果前 200 大供应商、耐克制造工厂地图）。
+  # 只读，不写任何数据文件，不建任何边——先探后建。
+  supplier:
+    name: 供应商名单 · 第二条源可行性
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate extraction rules (offline)
+        run: python scripts/validate_supply_chain_extraction.py
+
+      - name: Probe company-published supplier lists
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+          PROBE_OUTPUT: /tmp/supply-chain-probe/supplier-lists.json
+        run: python scripts/supply-chain/probe_supplier_lists.py
+
+      - name: Upload supplier list probe report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: supply-chain-supplier-${{ github.run_attempt }}
+          path: /tmp/supply-chain-probe/supplier-lists.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  # 第三条源：美国联邦采购。**它的价值在于适用范围与 Form SD 正交。**
+  # 按板块拆开覆盖率之后看得很清楚：金融 0/70、房地产 0/29、公用事业 1/32——
+  # 这些 0 不是抓取失败，Form SD 只管产品里含 3TG 的发行人，银行没有产品。
+  # 要补这几个板块只能换源，而联邦采购管的是「谁向政府卖了什么」，与矿无关。
+  # 真正想要的是 FFATA 强制披露的**分包**（总包商 → 分包商），那是一级供应关系。
+  usaspending:
+    name: 联邦采购 · 第三条源可行性
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Probe USAspending federal procurement
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: python scripts/supply-chain/probe_usaspending.py
+
+  # 「有申报但没抽到名单」那 151 家，名单到底在不在申报里。
+  # 这一档是甲（本来就没列，制度上限）还是乙（在里面但抽取器没看到，是缺陷），
+  # 差别是「这条源到头了」还是「还有 151 家可以补」——只能看真实文件清单。
+  nolist:
+    name: 有申报无名单 · 151 家的文件清单
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate extraction rules (offline)
+        run: python scripts/validate_supply_chain_extraction.py
+
+      - name: List documents of filings with no smelter table
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: python scripts/supply-chain/probe_form_sd_no_list.py
 
   # Form SD 抽取器上线前的人工核对关口。**dry-run，不写任何文件。**
   # 上一轮的教训：探针的自动结论说「可进入抽取器开发」，但把抽出来的名字打出来

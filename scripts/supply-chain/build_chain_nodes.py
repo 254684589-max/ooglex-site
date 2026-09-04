@@ -160,6 +160,122 @@ def load_form_sd_coverage() -> dict | None:
         return None
 
 
+# 流向图上直接列出的国别数。其余并入「其他」——不是省略，是把长尾收拢，
+# 合计仍等于总边数。列太多的话每条带子细到看不见，反而什么都读不出来。
+FLOW_TOP_COUNTRIES = 8
+
+
+def stage_flow(nodes: list[dict], bundles: dict[str, dict]) -> dict:
+    """环节 → 冶炼厂所在国别的实测流量。
+
+    **这是全站唯一一处「流量」有实测含义的地方。** 图谱里那条价值链
+    （上游 → 中间 → 品牌 → 分销）是定义顺序，没有环节到环节的关系数据；
+    真正逐条挂着申报出处的，只有「公司 → 冶炼厂」这一层。所以带子的粗细
+    只能画这个，别的都是编的。
+
+    在这里预先算好，是因为按国别汇总要读全部边文件；让浏览器为了一张总览图
+    去下几十个文件，页面就废了。
+    """
+    stage_of = {n["symbol"]: n.get("stage") for n in nodes}
+    matrix: dict[str, dict[str, int]] = {}
+    totals: dict[str, int] = {}
+    relations: dict[str, str] = {}
+    for symbol, bundle in bundles.items():
+        stage = stage_of.get(symbol)
+        if not stage:
+            continue
+        # 语义从边文件里读，不在这里另写一份常量：两处各写一份，抽取器改了
+        # 这里就开始说旧话。
+        rel = bundle.get("relation") or {}
+        if rel.get("id"):
+            relations[rel["id"]] = rel.get("label") or ""
+        row = matrix.setdefault(stage, {})
+        for edge in bundle.get("edges") or []:
+            # 国别缺失如实记成「未归类」，不丢掉也不猜——丢掉会让合计对不上，
+            # 猜一个国家就是编数据。
+            key = edge.get("country") or "未归类"
+            row[key] = row.get(key, 0) + 1
+            totals[key] = totals.get(key, 0) + 1
+    top = [c for c, _ in sorted(totals.items(), key=lambda kv: -kv[1])[:FLOW_TOP_COUNTRIES]]
+    flows = []
+    for stage, row in matrix.items():
+        packed = {c: row.get(c, 0) for c in top}
+        rest = sum(row.values()) - sum(packed.values())
+        if rest:
+            packed["其他"] = rest
+        flows.append({"stage": stage, "total": sum(row.values()),
+                      "byCountry": {k: v for k, v in packed.items() if v}})
+    flows.sort(key=lambda r: -r["total"])
+    order = top + (["其他"] if any("其他" in f["byCountry"] for f in flows) else [])
+    # 多种关系混在一张图里的话，带子宽度就不是同一件事了，必须拦下。
+    if len(relations) > 1:
+        raise SystemExit(f"流向图里出现多种关系语义 {sorted(relations)}，"
+                         "带子宽度会失去统一含义，中止")
+    relation_id = next(iter(relations), None)
+    return {
+        "relation": relation_id,
+        "relationLabel": relations.get(relation_id or "", ""),
+        "countries": order,
+        "countryTotals": {c: (totals.get(c) if c != "其他"
+                              else sum(f["byCountry"].get("其他", 0) for f in flows))
+                          for c in order},
+        "distinctCountries": len(totals),
+        "stages": flows,
+        # 没有任何边的环节不会出现在 stages 里，但页面要把它画成 0 条的死头，
+        # 所以把「谁一条都没有」也算出来——空缺得画出来，不能只画有数据的部分。
+        "stagesWithoutEdges": sorted({n.get("stage") for n in nodes if n.get("stage")}
+                                     - set(matrix)),
+        "note": ("带子宽度是实测关系条数，不是示意。语义与边文件一致："
+                 "该冶炼厂出现在申报人的供应链中——间接、不含份额、不是直接供货。"
+                 "只覆盖有冶炼厂名单的公司，其余公司不出现在本图中。"),
+    }
+
+
+def sector_coverage(nodes: list[dict], filing_status: dict[str, str]) -> list[dict]:
+    """按板块统计覆盖情况，并区分「没抓到」和「本来就不适用」。
+
+    页面上金融 0/70 与科技 34/84 是两种完全不同的 0。前者是 Form SD 的适用范围
+    决定的——规则只管产品中含 3TG 的发行人，银行没有产品；后者是这一轮没抓到，
+    以后可能补上。混在一起报，读者会把制度上限误读成抓取缺陷。
+
+    这里只统计事实（这家申报了没有、正文列名单没有），不给「该不该申报」下结论：
+    某家公司为什么不申报是它自己的判断，本函数无从得知，也不替它回答。
+    """
+    buckets: dict[str, dict] = {}
+    for node in nodes:
+        sector = node.get("sector") or "未分类"
+        row = buckets.setdefault(sector, {
+            "sector": sector,
+            "sectorEn": node.get("sectorEn"),
+            "companies": 0,
+            "withEdges": 0,
+            "filedNoList": 0,
+            "noFiling": 0,
+            "failed": 0,
+            "unscanned": 0,
+        })
+        row["companies"] += 1
+        if node.get("edgeCount"):
+            row["withEdges"] += 1
+            continue
+        state = filing_status.get(node["symbol"])
+        if state == "filed-no-list":
+            row["filedNoList"] += 1
+        elif state == "no-filing":
+            row["noFiling"] += 1
+        elif state == "failed":
+            row["failed"] += 1
+        elif state == "listed":
+            # 扫描说有名单、但边文件没写成：抽取器与发布路径不一致，属于缺陷，
+            # 不能算进「无申报」蒙混过去。
+            row["failed"] += 1
+        else:
+            # 没有逐家状态（抽取器还没跑过带 filingStatus 的版本）。
+            # 不猜原因，单列一档。
+            row["unscanned"] += 1
+    return sorted(buckets.values(), key=lambda r: -r["companies"])
+
+
 def assert_edge_contract(bundles: dict[str, dict]) -> None:
     """无证据不上图：写盘前硬校验，不靠自觉。
 
@@ -247,6 +363,14 @@ def build_node(member: dict, identity: dict, sic_module) -> dict:
     if record.get("sic"):
         node["sic"] = int(record["sic"])
         node["sicDescription"] = record.get("sicDescription")
+        # 两位大类：把一个环节拆成看得见的构成（「中间制造 142 家」→
+        # 仪器仪表 39 / 半导体 31 / …）。只是把 SEC 的码换成中文名，
+        # 不改归属；认不出就不写这个字段，页面显示原始码。
+        major = sic_module.major_group(record["sic"]) if sic_module else None
+        if major:
+            node["sicMajor"] = major["code"]
+            node["sicMajorLabel"] = major["label"]
+            node["sicMajorLabelEn"] = major["labelEn"]
     resolved = sic_module.resolve(record.get("sic")) if sic_module else None
     if resolved:
         node["stage"] = resolved["stage"]
@@ -365,6 +489,18 @@ def build() -> None:
 
     form_sd_coverage = load_form_sd_coverage()
 
+    # 逐家申报状态盖到节点上，再按板块汇总。这是为了回答一个具体问题：
+    # 「为什么有的公司有数据、有的没有」。金融 0/70、房地产 0/29 不是抓取失败——
+    # Form SD 只适用于产品中含 3TG 的发行人，银行和 REIT 没有产品，本来就不申报。
+    # 把这件事算出来写进数据，而不是在页面上凭印象断言。
+    filing_status = (form_sd_coverage or {}).get("filingStatus") or {}
+    for node in nodes:
+        state = filing_status.get(node["symbol"])
+        if state:
+            node["formSdStatus"] = state
+    by_sector = sector_coverage(nodes, filing_status)
+    flow = stage_flow(nodes, edge_files)
+
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     by_stage: dict[str, int] = {}
     for node in nodes:
@@ -399,6 +535,9 @@ def build() -> None:
         # 每家一个文件，公司页按需拉。索引里带出处链接，不必先下文件才知道有没有边。
         "edgeIndex": edge_index,
         "stagePerformance": stage_performance(members, nodes, source_payload),
+        # 环节 → 冶炼厂国别的实测流量。全站唯一一处带子宽度有实测含义的图，
+        # 在这里预算好，页面不必为一张总览图去下几十个边文件。
+        "flow": flow,
         "coverage": {
             "claimComplete": False,
             "nodesTotal": len(nodes),
@@ -409,6 +548,8 @@ def build() -> None:
             # Form SD 强制申报、不强制列名单，两者混在一起会把披露制度的上限
             # 说成抓取失败。
             "formSd": form_sd_coverage,
+            # 按板块拆开的覆盖情况。缺口的成因写在数据里，页面照实读。
+            "bySector": by_sector,
             # 按实际 stageBasis 分组。曾经把所有已判定的都记成 sector-initial，
             # 等于把 SIC 升级的功劳记在板块级口径头上、低报了数据质量的真实来源。
             "stageByBasis": by_basis,

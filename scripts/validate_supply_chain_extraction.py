@@ -37,6 +37,10 @@ FORM_SD_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             "supply-chain", "form_sd_parse.py")
 EXTRACT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             "supply-chain", "extract_form_sd.py")
+SUPPLIER_PROBE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                   "supply-chain", "probe_supplier_lists.py")
+NAMES_ZH_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             "supply-chain", "smelter_names_zh.py")
 
 # ── SIC → 价值链阶段 ────────────────────────────────────────────────────────
 # SIC 码全部取自探针在 Actions 机房实测到的真实值，不是凭印象写的。
@@ -191,6 +195,18 @@ FORM_SD_FIXTURES: dict[str, str] = {
 <tr><td>Tantalum</td><td>D Block Metals, LLC</td><td>UNITED STATES OF AMERICA</td></tr>
 <tr><td>Gold</td><td>Global Advanced Metals Aizu</td><td>JAPAN</td></tr>
 </table>""",
+    # 迪尔 2026 年报告的真实形状：矿种列里带元素符号 —— Gold (Au)。
+    # 那份 531KB 的报告里 483 行有 402 行是这个形状，一条都没抽出来：
+    # "Gold (Au)" 去掉标点剩 ["gold", "au"]，"au" 不是矿种词，严格匹配一票否决整格。
+    # 402 家真冶炼厂卡在括号里的元素符号上。
+    "mineral-with-symbol": """
+<table>
+<tr><th>Metal</th><th>Smelter or Refiner Name</th><th>Country</th></tr>
+<tr><td>Gold (Au)</td><td>Al Etihad Gold Refinery DMCC</td><td>UNITED ARAB EMIRATES</td></tr>
+<tr><td>Gold (Au)</td><td>L'Orfebre S.A.</td><td>ANDORRA</td></tr>
+<tr><td>Tin (Sn)</td><td>Torecom</td><td>KOREA, REPUBLIC OF</td></tr>
+<tr><td>Tungsten (W)</td><td>Ta Chen Stainless Pipe Co.</td><td>TAIWAN</td></tr>
+</table>""",
     # 微软 2026 年报告的真实形状：三列**全是国名**的原产国附录，一家冶炼厂都没有。
     # 早期的「丢弃行」启发式把这 274 行当成漏收的冶炼厂，虚报了规则的代价。
     "country-columns": """
@@ -256,6 +272,12 @@ FORM_SD_CASES = [
       "NAME:changsha-south-tantalum-niobium-co":
           ("Changsha South Tantalum Niobium Co", "中国", {"钽"}),
       "NAME:d-block-metals-llc": ("D Block Metals, LLC", "美国", {"钽"})}),
+    # 矿种列带元素符号：照收。厂名里含 "Ta" 的那行不得被当成矿种列吞掉。
+    ("mineral-with-symbol", 4, 0, 4,
+     {"NAME:al-etihad-gold-refinery-dmcc":
+          ("Al Etihad Gold Refinery DMCC", "阿联酋", {"金"}),
+      "NAME:l-orfebre-s-a": ("L'Orfebre S.A.", "安道尔", {"金"}),
+      "NAME:ta-chen-stainless-pipe-co": ("Ta Chen Stainless Pipe Co.", "中国台湾", {"钨"})}),
     # 纯国名附录：一条都不能收，也不能算成「漏收的冶炼厂」
     ("country-columns", 0, 0, 0, {}),
     # 国别 × 矿种矩阵：有国名有矿种但没有厂名列，同样一条都不收
@@ -295,6 +317,13 @@ def locate(module, text: str) -> list[str]:
 def extract_names(module, text: str) -> list[str]:
     return [e.strip() for e in re.findall(module.NAMED_ENTITY_PATTERN, text)
             if len(e) > 4 and not e.lower().startswith("the compan")]
+
+
+def load_module(path: str, name: str):
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def load_extractor():
@@ -511,8 +540,165 @@ def main() -> int:
         extractor.OUT_DIR, extractor.SMELTERS_PATH = original_out, original_smelters
         shutil.rmtree(scratch, ignore_errors=True)
 
-    total = (len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
-             + len(FORM_SD_CASES) + 6 + len(writes))
+    print("\n── 中文译名：宁可显示英文，也不半译不硬造 ────────────────────────")
+    zh = load_module(NAMES_ZH_PATH, "smelter_names_zh")
+    zh_cases = [
+        # 对照表命中，不限国别
+        ("Yunnan Tin Company Limited", "中国", "云南锡业股份有限公司"),
+        ("Mitsubishi Materials Corporation", "日本", "三菱综合材料株式会社"),
+        # 词表能拼全
+        ("Zhuzhou Smelting Group Co., Ltd", "中国", "株洲冶炼集团有限公司"),
+        # 含拼音字号：jin 可以是金/进/锦/晋，猜错就是给真公司安错名字 → 不给中文名
+        ("Jiangxi Jinxin Nonferrous Co., Ltd.", "中国", None),
+        # 非中文语境的企业不组合——直译成中文名等于凭空造名
+        ("Advanced Chemical Company", "美国", None),
+        ("Industrial Refining Company", "美国", None),
+        # 词表认不全 → 整条放弃，绝不半译
+        ("Chifeng Dajingzi Tin Industry Co., Ltd.", "中国", "赤峰大井子锡业有限公司"),
+        ("Metalor Technologies SA", "瑞士", None),
+        (None, "中国", None),
+        ("", "中国", None),
+    ]
+    for name, country, expected in zh_cases:
+        got = zh.translate(name, country)
+        ok = got == expected
+        if not ok:
+            failures.append(f"译名 {name!r}({country})：期望 {expected!r}，实际 {got!r}")
+        print(f"  [{'OK' if ok else 'XX'}] {str(name)[:40]:<42} → {got or '（英文原文）'}")
+
+    print("\n── 供应商名单探针：打分只排序候选，行为准则不得排在名单前 ────────")
+    probe = load_module(SUPPLIER_PROBE_PATH, "probe_supplier_lists")
+    rank_cases = [
+        ("https://www.apple.com/.../Apple-Supplier-List.pdf",
+         "https://www.apple.com/.../Supplier-Code-of-Conduct.pdf",
+         "名单应排在行为准则之前——上一轮就是被行为准则 PDF 骗了"),
+        ("https://about.nike.com/manufacturing-map.csv",
+         "https://about.nike.com/privacy.pdf",
+         "工厂地图应排在隐私政策之前"),
+        ("https://x.com/supplier-list.xlsx", "https://x.com/brochure.pdf",
+         "带 supplier-list 的表格应排在普通 PDF 之前"),
+    ]
+    for better, worse, why in rank_cases:
+        ok = probe.score(better) > probe.score(worse)
+        if not ok:
+            failures.append(f"打分 {why}：{probe.score(better)} 未高于 {probe.score(worse)}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}"
+              f"（{probe.score(better)} vs {probe.score(worse)}）")
+    # 阈值：只有明确指向名单的地址才算数。首轮把英伟达的《可持续发展报告》
+    # 算成了名单——它只是个恰好有文字的 PDF，打分 2 分。
+    threshold_cases = [
+        ("https://www.cisco.com/c/dam/en_us/about/supply-chain/cisco-supplier-list.pdf",
+         True, "思科供应商名单——真名单，必须过线"),
+        ("https://images.nvidia.com/NVIDIA-Sustainability-Report-Fiscal-Year-2026.pdf",
+         False, "英伟达可持续发展报告——不是名单，必须不过线（首轮就是这里判错的）"),
+        ("https://www.intel.com/documents/csr-2025-26-full-report.pdf",
+         False, "英特尔 CSR 报告——不是名单，必须不过线"),
+        ("https://www.cisco.com/c/dam/en_us/about/supply-chain/smelter-refiner-list.pdf",
+         True, "思科冶炼厂名单——是名单，必须过线"),
+    ]
+    for url, should_pass, why in threshold_cases:
+        got = probe.score(url) >= probe.LIST_SCORE
+        if got != should_pass:
+            failures.append(f"阈值 {why}：打分 {probe.score(url)}，"
+                            f"期望{'≥' if should_pass else '<'} {probe.LIST_SCORE}")
+        print(f"  [{'OK' if got == should_pass else 'XX'}] {why}（{probe.score(url)} 分）")
+
+    # robots：被 Disallow 的路径必须认出来，不能抓
+    robots_ok = (probe.blocked("https://x.com/private/list.pdf", ["/private"]) == "/private"
+                 and probe.blocked("https://x.com/public/list.pdf", ["/private"]) is None
+                 and probe.blocked("https://x.com/a/b", ["/a/*"]) == "/a/*")
+    if not robots_ok:
+        failures.append("robots Disallow 判定错误——被禁的路径必须认出来不抓")
+    print(f"  [{'OK' if robots_ok else 'XX'}] robots Disallow 的路径不抓")
+
+    # 元素符号。加进来的是 Au/Sn/Ta/W，**只在严格匹配里认**——放进宽松正则的话
+    # 正文里每个 "W" 都会被当成钨。两条都要守：该认的认出来，不该吞的不吞。
+    print("\n── 矿种列里的元素符号：认得出来，又不能吞掉厂名 ──────────────────")
+    fsd = load_form_sd()
+    symbol_cases = [
+        ("Gold (Au)", {"金"}, "迪尔那 402 行卡住的就是这个形状"),
+        ("Tin (Sn)", {"锡"}, "锡"),
+        ("Tungsten (W)", {"钨"}, "钨"),
+        ("Tantalum (Ta)", {"钽"}, "钽"),
+        ("Tungsten (W), Tantalum (Ta), Tin (Sn), Gold (Au)",
+         {"锡", "钽", "钨", "金"}, "四种写在一格"),
+        ("Ta Chen Stainless Pipe Co.", set(), "厂名里有 Ta，不得当成矿种列"),
+        ("Al Etihad Gold Refinery DMCC", set(), "厂名里有 Gold，不得当成矿种列"),
+        ("Changsha South Tantalum Niobium Co., Ltd.", set(),
+         "厂名里有 Tantalum，不得当成矿种列"),
+        ("UNITED ARAB EMIRATES", set(), "国名不是矿种列"),
+    ]
+    for text, want, why in symbol_cases:
+        got = fsd.mineral_cell(text)
+        ok = got == want
+        if not ok:
+            failures.append(f"矿种列 {text!r}：期望 {want}，实际 {got}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}"
+              f"（{text[:44]} → {sorted(got) or '非矿种列'}）")
+
+    # 国名并在名字里的拆分。**拆错砍掉的是公司的身份，不拆只是少一个属性**，
+    # 所以宁可不拆。下面前四条是已发布数据里真被砍过的名字，逐条钉死。
+    print("\n── 名字里的国名：国别照认，名字只在有把握时才截 ──────────────────")
+    # 这一组前后踩过两次，方向相反，所以两边都要钉住：
+    #   太松 —— 见空格就拆，把「KEMET de Mexico」砍成「KEMET de」
+    #   太紧 —— 不确定就不拆，连国别一起丢，无编号的行因缺国别被整行弃掉，
+    #           六家公司的名单整份消失（实测 88 → 80 家）
+    # 正确解：名字保完整 **且** 国别照给。下面前四条两样都断言。
+    split_cases = [
+        ("KEMET de Mexico", "KEMET de Mexico", "mexico",
+         "名字保完整，国别照给（曾被砍成「KEMET de」）"),
+        ("Umicore Precious Metals Thailand", "Umicore Precious Metals Thailand",
+         "thailand", "名字保完整，国别照给（曾被砍成「Umicore Precious Metals」）"),
+        ("PT Premium Tin Indonesia", "PT Premium Tin Indonesia", "indonesia",
+         "名字保完整，国别照给（曾被砍成「PT Premium Tin」）"),
+        ("Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
+         "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)", "philippines",
+         "括号完整，国别照给（曾被砍掉一半）"),
+        ("Asahi Pretec Corp. Japan", "Asahi Pretec Corp.", "japan",
+         "后缀收尾 + 国名，该拆"),
+        ("Tanaka Kikinzoku Kogyo K.K. Japan", "Tanaka Kikinzoku Kogyo K.K.", "japan",
+         "带点的后缀也认得出来"),
+        ("Dowa Metals & Mining Co., Ltd., Japan", "Dowa Metals & Mining Co., Ltd.",
+         "japan", "逗号是约定俗成的分隔符，该拆"),
+        ("Metalor Technologies SA - Switzerland", "Metalor Technologies SA",
+         "switzerland", "破折号同理"),
+        ("Yunnan Tin Company Limited", "Yunnan Tin Company Limited", None,
+         "结尾没有国名，不动"),
+    ]
+    for raw, want_name, want_country, why in split_cases:
+        got_name, got_country, _ = load_form_sd()._split_trailing_country(raw)
+        ok = got_name == want_name and got_country == want_country
+        if not ok:
+            failures.append(f"国名拆分 {raw!r}：期望 ({want_name!r}, {want_country!r})，"
+                            f"实际 ({got_name!r}, {got_country!r})")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+        print(f"        {raw[:56]:<58} → {got_name[:44]!r}"
+              + (f" + {got_country}" if got_country else ""))
+
+    # 申报文档的过滤规则。抽取器用它决定读哪几份，「有申报但没抽到名单」的
+    # 探针用同一个函数显示「哪些文件被挡掉了」——两处共用，改坏了两处一起错，
+    # 而且探针会开始说假话，所以逐条钉死。
+    print("\n── 申报文档过滤：读哪些、跳哪些，两处共用同一套规则 ──────────────")
+    skip_cases = [
+        ("tm2514567d1_sd.htm", None, "正常的申报正文要读"),
+        ("nvda-20250531xsdex101.htm", None, "冲突矿产报告附件要读"),
+        ("R2.htm", None, "大写文件名不受影响"),
+        ("0001104659-25-064234-index.htm", "文件名以 0 开头", "索引文件跳过"),
+        ("Financial_Report.xlsx", "非 HTML", "非 HTML 跳过"),
+        ("cmr-2025.pdf", "非 HTML", "PDF 目前跳过——这正是探针要暴露的那一类"),
+        ("form-sd-index.html", "文件名含 index", "含 index 的跳过"),
+    ]
+    for name, expected, why in skip_cases:
+        got = extractor.skip_reason(name)
+        ok = got == expected
+        if not ok:
+            failures.append(f"过滤规则 {name!r}：期望 {expected!r}，实际 {got!r}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}"
+              f"（{name} → {got or '会读'}）")
+
+    total = (len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
+             + len(FORM_SD_CASES) + 6 + len(writes)
+             + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1)
     print("\n" + "─" * 68)
     if failures:
         print(f"失败 {len(failures)}/{total}：")

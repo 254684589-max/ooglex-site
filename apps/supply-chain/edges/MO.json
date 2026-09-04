@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "MO",
   "name": "奥驰亚",
-  "updatedAt": "2026-09-02T16:18:30Z",
+  "updatedAt": "2026-09-04T10:58:37Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -63,7 +63,7 @@
       "from": "NAME:argentina-australia-austria-belgium-bolivia-brazil-bulgaria-burundi-canada-chile",
       "idType": "name-only",
       "cid": null,
-      "name": "Argentina; Australia; Austria; Belgium; Bolivia; Brazil; Bulgaria; Burundi; Canada; Chile; China; Chinese Taipei; Congo, Democratic Republic of the; Croatia; Czech Republic; Denmark; Estonia; Finland; France; Germany; Greece; Hong Kong; Hungary; India; Indonesia; Ireland; Israel; Italy; Japan; Korea, Republic of; Laos; Latvia; Lithuania; Luxembourg; Malaysia; Malta; Mexico; Mongolia; Morocco; Myanmar; Namibia; Netherlands; New Zealand; Nigeria; Peru; Philippines; Poland; Portugal; Puerto Rico; Romania; Russia; Rwanda; Serbia; Singapore; Slovakia; Slovenia; South Africa; Spain; Sweden; Switzerland; Tanzania; Thailand; Tunisia; Turkey; Uganda; Ukraine; United Arab Emirates; United Kingdom of Great Britain and Northern Ireland; United States of America; Uruguay; Vietnam;",
+      "name": "Argentina; Australia; Austria; Belgium; Bolivia; Brazil; Bulgaria; Burundi; Canada; Chile; China; Chinese Taipei; Congo, Democratic Republic of the; Croatia; Czech Republic; Denmark; Estonia; Finland; France; Germany; Greece; Hong Kong; Hungary; India; Indonesia; Ireland; Israel; Italy; Japan; Korea, Republic of; Laos; Latvia; Lithuania; Luxembourg; Malaysia; Malta; Mexico; Mongolia; Morocco; Myanmar; Namibia; Netherlands; New Zealand; Nigeria; Peru; Philippines; Poland; Portugal; Puerto Rico; Romania; Russia; Rwanda; Serbia; Singapore; Slovakia; Slovenia; South Africa; Spain; Sweden; Switzerland; Tanzania; Thailand; Tunisia; Turkey; Uganda; Ukraine; United Arab Emirates; United Kingdom of Great Britain and Northern Ireland; United States of America; Uruguay; Vietnam; Zambia",
       "country": "赞比亚",
       "countryEn": "zambia",
       "minerals": [
@@ -75,7 +75,7 @@
       "from": "NAME:argentina-australia-azerbaijan-belgium-bolivia-bosnia-and-herzegovina-botswana-b",
       "idType": "name-only",
       "cid": null,
-      "name": "Argentina; Australia; Azerbaijan; Belgium; Bolivia; Bosnia and Herzegovina; Botswana; Brazil; Bulgaria; Burkina Faso; Cambodia; Canada; Chile; China; Colombia; Congo, Democratic Republic of the; Côte d'Ivoire; Dominican Republic; Ecuador; Egypt; Eswatini; Fiji; Finland; France; French Guiana; Georgia; Germany; Ghana; Greece; Guinea; Guyana; Honduras; Hong Kong; Indonesia; Italy; Japan; Kazakhstan; Kenya; Korea, Republic of; Kyrgyzstan; Lao People's Democratic Republic; Liberia; Madagascar; Malaysia; Mali; Mauritania; Mexico; Mongolia; Morocco; Mozambique; Namibia; New Zealand; Nicaragua; Niger; Nigeria; Panama; Papua New Guinea; Peru; Philippines; Saudi Arabia; Senegal; Solomon Islands; Slovakia; South Africa; Spain; Sudan; Suriname; Sweden; Tajikistan; Tanzania; Thailand; Turkey; United States of America; Uzbekistan; Zambia;",
+      "name": "Argentina; Australia; Azerbaijan; Belgium; Bolivia; Bosnia and Herzegovina; Botswana; Brazil; Bulgaria; Burkina Faso; Cambodia; Canada; Chile; China; Colombia; Congo, Democratic Republic of the; Côte d'Ivoire; Dominican Republic; Ecuador; Egypt; Eswatini; Fiji; Finland; France; French Guiana; Georgia; Germany; Ghana; Greece; Guinea; Guyana; Honduras; Hong Kong; Indonesia; Italy; Japan; Kazakhstan; Kenya; Korea, Republic of; Kyrgyzstan; Lao People's Democratic Republic; Liberia; Madagascar; Malaysia; Mali; Mauritania; Mexico; Mongolia; Morocco; Mozambique; Namibia; New Zealand; Nicaragua; Niger; Nigeria; Panama; Papua New Guinea; Peru; Philippines; Saudi Arabia; Senegal; Solomon Islands; Slovakia; South Africa; Spain; Sudan; Suriname; Sweden; Tajikistan; Tanzania; Thailand; Turkey; United States of America; Uzbekistan; Zambia; Zimbabwe",
       "country": "津巴布韦",
       "countryEn": "zimbabwe",
       "minerals": [
@@ -87,7 +87,7 @@
       "from": "NAME:australia-austria-bolivia-brazil-burundi-canada-china-chinese-taipei-congo-democ",
       "idType": "name-only",
       "cid": null,
-      "name": "Australia; Austria; Bolivia; Brazil; Burundi; Canada; China; Chinese Taipei; Congo, Democratic Republic of the; France; Germany; India; Ireland; Israel; Japan; Kazakhstan; Korea, Republic of; Malaysia; Mexico; Mongolia; Myanmar; Netherlands; Nigeria; Portugal; Russia; Rwanda; Singapore; South Africa; Spain; Switzerland; Tanzania; Thailand; Turkey; Uganda; Ukraine; United Arab Emirates; United Kingdom of Great Britain and Northern Ireland; United States of America;",
+      "name": "Australia; Austria; Bolivia; Brazil; Burundi; Canada; China; Chinese Taipei; Congo, Democratic Republic of the; France; Germany; India; Ireland; Israel; Japan; Kazakhstan; Korea, Republic of; Malaysia; Mexico; Mongolia; Myanmar; Netherlands; Nigeria; Portugal; Russia; Rwanda; Singapore; South Africa; Spain; Switzerland; Tanzania; Thailand; Turkey; Uganda; Ukraine; United Arab Emirates; United Kingdom of Great Britain and Northern Ireland; United States of America; Vietnam",
       "country": "越南",
       "countryEn": "vietnam",
       "minerals": [
@@ -99,7 +99,7 @@
       "from": "NAME:australia-belarus-brazil-burundi-canada-china-chinese-taipei-congo-democratic-re",
       "idType": "name-only",
       "cid": null,
-      "name": "Australia; Belarus; Brazil; Burundi; Canada; China; Chinese Taipei; Congo, Democratic Republic of the; Czech Republic; El Salvador; Estonia; Ethiopia; France; Germany; Hong Kong; India; Indonesia; Ireland; Israel; Japan; Kazakhstan; Korea, Republic of; Madagascar; Mexico; Mozambique; Nigeria; Russia; Rwanda; Sierra Leone; Singapore; Spain; Thailand; United Kingdom of Great Britain and Northern Ireland; United States of America;",
+      "name": "Australia; Belarus; Brazil; Burundi; Canada; China; Chinese Taipei; Congo, Democratic Republic of the; Czech Republic; El Salvador; Estonia; Ethiopia; France; Germany; Hong Kong; India; Indonesia; Ireland; Israel; Japan; Kazakhstan; Korea, Republic of; Madagascar; Mexico; Mozambique; Nigeria; Russia; Rwanda; Sierra Leone; Singapore; Spain; Thailand; United Kingdom of Great Britain and Northern Ireland; United States of America; Zimbabwe",
       "country": "津巴布韦",
       "countryEn": "zimbabwe",
       "minerals": [

@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "CSCO",
   "name": "思科",
-  "updatedAt": "2026-09-02T16:18:29Z",
+  "updatedAt": "2026-09-04T10:41:06Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -30,36 +30,20 @@
   "parse": {
     "rowsScanned": 38,
     "rowsWithCid": 0,
-    "nameOnly": 2,
+    "nameOnly": 1,
     "droppedNoCid": 0,
-    "unique": 2,
+    "unique": 1,
     "namedRatio": 1.0,
     "countryRatio": 1.0
   },
   "byCountry": {
-    "巴西": 1,
     "老挝": 1
   },
   "byMineral": {
-    "钨": 2,
-    "锡": 2,
-    "钽": 1
+    "钨": 1,
+    "锡": 1
   },
   "edges": [
-    {
-      "from": "NAME:gold-tantalum-tin-tungsten",
-      "idType": "name-only",
-      "cid": null,
-      "name": "Gold, Tantalum, Tin, Tungsten",
-      "country": "巴西",
-      "countryEn": "brazil",
-      "minerals": [
-        "钨",
-        "钽",
-        "锡"
-      ],
-      "row": 18
-    },
     {
       "from": "NAME:united-kingdom-of-great-britain-and-northern-ireland",
       "idType": "name-only",

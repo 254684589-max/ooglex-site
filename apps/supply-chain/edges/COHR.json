@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "COHR",
   "name": "相干公司",
-  "updatedAt": "2026-09-02T16:18:29Z",
+  "updatedAt": "2026-09-04T10:58:37Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -50,10 +50,10 @@
   },
   "edges": [
     {
-      "from": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the",
+      "from": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
       "idType": "name-only",
       "cid": null,
-      "name": "Bangko Sentral ng Pilipinas (Central Bank of the",
+      "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
       "country": "菲律宾",
       "countryEn": "philippines",
       "minerals": [
@@ -62,10 +62,10 @@
       "row": 120
     },
     {
-      "from": "NAME:gold-by-gold",
+      "from": "NAME:gold-by-gold-colombia",
       "idType": "name-only",
       "cid": null,
-      "name": "Gold by Gold",
+      "name": "Gold by Gold Colombia",
       "country": "哥伦比亚",
       "countryEn": "colombia",
       "minerals": [
@@ -74,10 +74,10 @@
       "row": 200
     },
     {
-      "from": "NAME:kemet-de",
+      "from": "NAME:kemet-de-mexico",
       "idType": "name-only",
       "cid": null,
-      "name": "KEMET de",
+      "name": "KEMET de Mexico",
       "country": "墨西哥",
       "countryEn": "mexico",
       "minerals": [
@@ -86,10 +86,10 @@
       "row": 218
     },
     {
-      "from": "NAME:pt-premium-tin",
+      "from": "NAME:pt-premium-tin-indonesia",
       "idType": "name-only",
       "cid": null,
-      "name": "PT Premium Tin",
+      "name": "PT Premium Tin Indonesia",
       "country": "印度尼西亚",
       "countryEn": "indonesia",
       "minerals": [
@@ -98,10 +98,10 @@
       "row": 270
     },
     {
-      "from": "NAME:umicore-precious-metals",
+      "from": "NAME:umicore-precious-metals-thailand",
       "idType": "name-only",
       "cid": null,
-      "name": "Umicore Precious Metals",
+      "name": "Umicore Precious Metals Thailand",
       "country": "泰国",
       "countryEn": "thailand",
       "minerals": [

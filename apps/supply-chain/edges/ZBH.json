@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "ZBH",
   "name": "Zimmer Biomet",
-  "updatedAt": "2026-09-02T16:18:30Z",
+  "updatedAt": "2026-09-04T10:58:37Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -2058,7 +2058,7 @@
       "from": "CID002704",
       "idType": "rmi-cid",
       "cid": "CID002704",
-      "name": "UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN",
+      "name": "UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND",
       "country": "爱尔兰",
       "countryEn": "ireland",
       "minerals": [
@@ -2070,7 +2070,7 @@
       "from": "CID002705",
       "idType": "rmi-cid",
       "cid": "CID002705",
-      "name": "UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN",
+      "name": "UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND",
       "country": "爱尔兰",
       "countryEn": "ireland",
       "minerals": [

@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "ANET",
   "name": "Arista Networks",
-  "updatedAt": "2026-09-02T16:18:29Z",
+  "updatedAt": "2026-09-04T10:58:37Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -187,7 +187,7 @@
       "from": "CID000128",
       "idType": "rmi-cid",
       "cid": "CID000128",
-      "name": "Bangko Sentral ng Pilipinas (Central Bank of the",
+      "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
       "country": "菲律宾",
       "countryEn": "philippines",
       "minerals": [
@@ -367,7 +367,7 @@
       "from": "CID000313",
       "idType": "rmi-cid",
       "cid": "CID000313",
-      "name": "PT Premium Tin",
+      "name": "PT Premium Tin Indonesia",
       "country": "印度尼西亚",
       "countryEn": "indonesia",
       "minerals": [
@@ -1795,7 +1795,7 @@
       "from": "CID002314",
       "idType": "rmi-cid",
       "cid": "CID002314",
-      "name": "Umicore Precious Metals",
+      "name": "Umicore Precious Metals Thailand",
       "country": "泰国",
       "countryEn": "thailand",
       "minerals": [
@@ -2095,7 +2095,7 @@
       "from": "CID002539",
       "idType": "rmi-cid",
       "cid": "CID002539",
-      "name": "KEMET de",
+      "name": "KEMET de Mexico",
       "country": "墨西哥",
       "countryEn": "mexico",
       "minerals": [
@@ -3139,7 +3139,7 @@
       "from": "CID003641",
       "idType": "rmi-cid",
       "cid": "CID003641",
-      "name": "Gold by Gold",
+      "name": "Gold by Gold Colombia",
       "country": "哥伦比亚",
       "countryEn": "colombia",
       "minerals": [

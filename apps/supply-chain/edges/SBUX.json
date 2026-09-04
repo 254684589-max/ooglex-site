@@ -1,8 +1,8 @@
 {
   "contractVersion": 2,
   "dataset": "supply-chain-edges",
-  "symbol": "LITE",
-  "name": "Lumentum Holdings Inc.",
+  "symbol": "SBUX",
+  "name": "星巴克",
   "updatedAt": "2026-09-04T10:58:37Z",
   "relation": {
     "id": "smelter-in-supply-chain",
@@ -12,26 +12,26 @@
   "confidence": "disclosed",
   "direction": {
     "from": "smelter",
-    "to": "LITE",
+    "to": "SBUX",
     "toListed": true
   },
   "evidence": {
     "sourceType": "sec-form-sd",
-    "url": "https://www.sec.gov/Archives/edgar/data/1633978/000162828026039600/ex101conflictmineralsrepor.htm",
-    "docDate": "2026-06-01",
+    "url": "https://www.sec.gov/Archives/edgar/data/829224/000082922426000099/a20260528-starbucksxex101c.htm",
+    "docDate": "2026-05-29",
     "form": "SD",
-    "accession": "0001628280-26-039600",
-    "filingDate": "2026-06-01",
+    "accession": "0000829224-26-000099",
+    "filingDate": "2026-05-29",
     "reportDate": "",
-    "document": "ex101conflictmineralsrepor.htm",
-    "indexUrl": "https://www.sec.gov/Archives/edgar/data/1633978/000162828026039600/",
-    "totalSD": 9
+    "document": "a20260528-starbucksxex101c.htm",
+    "indexUrl": "https://www.sec.gov/Archives/edgar/data/829224/000082922426000099/",
+    "totalSD": 11
   },
   "parse": {
-    "rowsScanned": 329,
+    "rowsScanned": 408,
     "rowsWithCid": 0,
     "nameOnly": 6,
-    "droppedNoCid": 0,
+    "droppedNoCid": 2,
     "unique": 6,
     "namedRatio": 1.0,
     "countryRatio": 1.0
@@ -59,7 +59,7 @@
       "minerals": [
         "金"
       ],
-      "row": 13
+      "row": 27
     },
     {
       "from": "NAME:gold-by-gold-colombia",
@@ -71,7 +71,7 @@
       "minerals": [
         "金"
       ],
-      "row": 154
+      "row": 58
     },
     {
       "from": "NAME:kemet-de-mexico",
@@ -83,7 +83,7 @@
       "minerals": [
         "钽"
       ],
-      "row": 193
+      "row": 211
     },
     {
       "from": "NAME:pt-arsed-indonesia",
@@ -95,7 +95,7 @@
       "minerals": [
         "锡"
       ],
-      "row": 289
+      "row": 285
     },
     {
       "from": "NAME:pt-premium-tin-indonesia",
@@ -107,7 +107,7 @@
       "minerals": [
         "锡"
       ],
-      "row": 212
+      "row": 295
     },
     {
       "from": "NAME:umicore-precious-metals-thailand",
@@ -119,7 +119,7 @@
       "minerals": [
         "金"
       ],
-      "row": 95
+      "row": 184
     }
   ],
   "coverage": {

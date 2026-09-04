@@ -313,19 +313,39 @@ def match_mineral(text: str) -> str | None:
 
 _FILLER = {"and", "or", "amp", "the"}
 
+# 元素符号。**只在 mineral_cell 的严格匹配里用，绝不能进 MINERAL_PATTERN**——
+# 那是个宽松正则，把 \bw\b 放进去会把正文里每一个 "W" 都当成钨。
+#
+# 缘由：迪尔那份 531KB 的冲突矿产报告，483 行里 402 行是这个形状——
+#
+#     Gold (Au) | Al Etihad Gold Refinery DMCC | UNITED ARAB EMIRATES
+#     Gold (Au) | L'Orfebre S.A.               | ANDORRA
+#     Gold (Au) | SOLEIL METALS (Chala One Plant) | PERU
+#
+# 一份排版规整的真名单，402 家冶炼厂，一条都没抽出来。原因就是 "Gold (Au)"
+# 去掉标点后剩下 ["gold", "au"]，而 "au" 既不是矿种词也不是填充词，
+# 严格匹配一票否决整格。**卡在括号里的元素符号上，不是卡在别的地方。**
+_SYMBOLS = {"sn": "锡", "ta": "钽", "w": "钨", "au": "金"}
+
 
 def mineral_cell(text: str) -> set[str]:
     """严格匹配：整个格子都是矿种词才算「矿种列」。
 
     不能用宽松匹配：`Changsha South Tantalum Niobium Co` 里也有 Tantalum，
     按宽松匹配会被当成矿种列吞掉，那正是英伟达名单里冶炼厂名所在的那一列。
+
+    「整格都是矿种词」这条本身仍然是严格的——加进来的只是元素符号，
+    而且必须与矿种词同格出现或单独成格才成立。`Ta Chen Stainless` 里有 "Ta"，
+    但 "chen" 不是矿种词，整格照样一票否决。
     """
     token = re.sub(r"[^A-Za-z ]", " ", text or "").strip()
-    if not token or len(token) > 24:
+    if not token or len(token) > 48:
         return set()
     words = [w.lower() for w in token.split()]
     picked = {MINERALS[w] for w in words if w in MINERALS}
-    if not picked or any(w not in MINERALS and w not in _FILLER for w in words):
+    picked |= {_SYMBOLS[w] for w in words if w in _SYMBOLS}
+    if not picked or any(w not in MINERALS and w not in _SYMBOLS and w not in _FILLER
+                         for w in words):
         return set()
     return picked
 
@@ -363,16 +383,65 @@ def _looks_like_company(name: str) -> bool:
     return bool(_CORPORATE.search(text)) or len(text.split()) >= 2
 
 
+# 公司名末尾的法律形式后缀。用途见 _split_trailing_country：只有名字已经
+# 以后缀收尾时，后面跟的国名才是**附加的元数据**；否则它多半是名字本身的一部分。
+_LEGAL_SUFFIX = re.compile(
+    r"(?:corp|corporation|inc|ltd|limited|llc|llp|co|company|group|holdings?|"
+    r"gmbh|ag|kg|sa|sas|sarl|nv|bv|plc|pte|pty|kk|sdn|bhd|jsc|ojsc|pjsc|ooo|oao|"
+    r"spa|srl|ab|as|oy|oyj|kft|doo|zrt|cjsc|pt|tbk|sac|cia|sl)\.?$",
+    re.I)
+
+
 def _split_trailing_country(name: str) -> tuple[str, str | None, str | None]:
-    """有的申报把国别并在名字里（"Asahi Pretec Corp. Japan"），拆开。"""
-    for sep in (",", " - ", " – ", " "):
+    """名字里带着国名时，取出国别；**只在有把握时才把名字截短**。
+
+    这里要分开两个问题，上一版把它们混成了一个，两边都做错过：
+
+      一、这家公司**叫什么**  —— 截错就等于改了它的身份，代价最大
+      二、这一格**提到了哪个国家** —— 认出国名是在读，不是在猜
+
+    实测踩过两次，方向相反：
+
+      第一次（太松）：见空格就拿最后一个词试国名，试中就把前半段当名字。
+        KEMET de Mexico                  →  砍成 "KEMET de"
+        Umicore Precious Metals Thailand →  砍成 "Umicore Precious Metals"
+        PT Premium Tin Indonesia         →  砍成 "PT Premium Tin"
+        四个都是名字本身就以国名收尾的合法实体。
+
+      第二次（太紧）：改成不确定就不拆，结果**连国别一起丢了**。
+        无编号的行要「矿种 + 厂名 + 国别」三样齐全才收，国别一没，整行被弃，
+        卡特彼勒、迪士尼、乐天化学、相干、星巴克、陶氏六家的名单整份消失
+        （实测 88 → 80 家）。为了几个名字的准确度，赔掉六家公司的全部数据。
+
+    正确的做法是两件事分开办：国名照认（进 country 字段），名字只在有把握时截。
+
+      有把握 —— 逗号、破折号这类约定俗成的元数据分隔符，
+                或前半段以法律形式后缀（Corp. / Ltd. / K.K. / S.A.…）收尾
+      没把握 —— 名字原样保留，国别照样给出
+
+    于是 "Asahi Pretec Corp. Japan" 截成 "Asahi Pretec Corp." + 日本；
+    "KEMET de Mexico" 名字不动，国别仍然是墨西哥——两样都对。
+    """
+    for sep in (",", " - ", " \u2013 "):
         if sep not in name:
             continue
         head, _, tail = name.rpartition(sep)
         english, chinese = match_country(tail)
         if english and head.strip():
-            return head.strip(" ,-–"), english, chinese
-    return name, None, None
+            return head.strip(" ,-\u2013"), english, chinese
+
+    head, _, tail = name.rpartition(" ")
+    if not head.strip():
+        return name, None, None
+    english, chinese = match_country(tail)
+    if not english:
+        return name, None, None
+    # 去掉点再比后缀，"K.K." / "S.A." / "N.V." 这类带点写法才认得出来。
+    confident = _LEGAL_SUFFIX.search(head.strip(" ,-\u2013").replace(".", ""))
+    if confident:
+        return head.strip(" ,-\u2013"), english, chinese
+    # 没把握就只取国别，名字一个字不动。
+    return name, english, chinese
 
 
 def parse_smelters(html: str) -> dict:
