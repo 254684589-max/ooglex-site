@@ -195,6 +195,18 @@ FORM_SD_FIXTURES: dict[str, str] = {
 <tr><td>Tantalum</td><td>D Block Metals, LLC</td><td>UNITED STATES OF AMERICA</td></tr>
 <tr><td>Gold</td><td>Global Advanced Metals Aizu</td><td>JAPAN</td></tr>
 </table>""",
+    # 迪尔 2026 年报告的真实形状：矿种列里带元素符号 —— Gold (Au)。
+    # 那份 531KB 的报告里 483 行有 402 行是这个形状，一条都没抽出来：
+    # "Gold (Au)" 去掉标点剩 ["gold", "au"]，"au" 不是矿种词，严格匹配一票否决整格。
+    # 402 家真冶炼厂卡在括号里的元素符号上。
+    "mineral-with-symbol": """
+<table>
+<tr><th>Metal</th><th>Smelter or Refiner Name</th><th>Country</th></tr>
+<tr><td>Gold (Au)</td><td>Al Etihad Gold Refinery DMCC</td><td>UNITED ARAB EMIRATES</td></tr>
+<tr><td>Gold (Au)</td><td>L'Orfebre S.A.</td><td>ANDORRA</td></tr>
+<tr><td>Tin (Sn)</td><td>Torecom</td><td>KOREA, REPUBLIC OF</td></tr>
+<tr><td>Tungsten (W)</td><td>Ta Chen Stainless Pipe Co.</td><td>TAIWAN</td></tr>
+</table>""",
     # 微软 2026 年报告的真实形状：三列**全是国名**的原产国附录，一家冶炼厂都没有。
     # 早期的「丢弃行」启发式把这 274 行当成漏收的冶炼厂，虚报了规则的代价。
     "country-columns": """
@@ -260,6 +272,12 @@ FORM_SD_CASES = [
       "NAME:changsha-south-tantalum-niobium-co":
           ("Changsha South Tantalum Niobium Co", "中国", {"钽"}),
       "NAME:d-block-metals-llc": ("D Block Metals, LLC", "美国", {"钽"})}),
+    # 矿种列带元素符号：照收。厂名里含 "Ta" 的那行不得被当成矿种列吞掉。
+    ("mineral-with-symbol", 4, 0, 4,
+     {"NAME:al-etihad-gold-refinery-dmcc":
+          ("Al Etihad Gold Refinery DMCC", "阿联酋", {"金"}),
+      "NAME:l-orfebre-s-a": ("L'Orfebre S.A.", "安道尔", {"金"}),
+      "NAME:ta-chen-stainless-pipe-co": ("Ta Chen Stainless Pipe Co.", "中国台湾", {"钨"})}),
     # 纯国名附录：一条都不能收，也不能算成「漏收的冶炼厂」
     ("country-columns", 0, 0, 0, {}),
     # 国别 × 矿种矩阵：有国名有矿种但没有厂名列，同样一条都不收
@@ -593,6 +611,31 @@ def main() -> int:
         failures.append("robots Disallow 判定错误——被禁的路径必须认出来不抓")
     print(f"  [{'OK' if robots_ok else 'XX'}] robots Disallow 的路径不抓")
 
+    # 元素符号。加进来的是 Au/Sn/Ta/W，**只在严格匹配里认**——放进宽松正则的话
+    # 正文里每个 "W" 都会被当成钨。两条都要守：该认的认出来，不该吞的不吞。
+    print("\n── 矿种列里的元素符号：认得出来，又不能吞掉厂名 ──────────────────")
+    fsd = load_form_sd()
+    symbol_cases = [
+        ("Gold (Au)", {"金"}, "迪尔那 402 行卡住的就是这个形状"),
+        ("Tin (Sn)", {"锡"}, "锡"),
+        ("Tungsten (W)", {"钨"}, "钨"),
+        ("Tantalum (Ta)", {"钽"}, "钽"),
+        ("Tungsten (W), Tantalum (Ta), Tin (Sn), Gold (Au)",
+         {"锡", "钽", "钨", "金"}, "四种写在一格"),
+        ("Ta Chen Stainless Pipe Co.", set(), "厂名里有 Ta，不得当成矿种列"),
+        ("Al Etihad Gold Refinery DMCC", set(), "厂名里有 Gold，不得当成矿种列"),
+        ("Changsha South Tantalum Niobium Co., Ltd.", set(),
+         "厂名里有 Tantalum，不得当成矿种列"),
+        ("UNITED ARAB EMIRATES", set(), "国名不是矿种列"),
+    ]
+    for text, want, why in symbol_cases:
+        got = fsd.mineral_cell(text)
+        ok = got == want
+        if not ok:
+            failures.append(f"矿种列 {text!r}：期望 {want}，实际 {got}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}"
+              f"（{text[:44]} → {sorted(got) or '非矿种列'}）")
+
     # 国名并在名字里的拆分。**拆错砍掉的是公司的身份，不拆只是少一个属性**，
     # 所以宁可不拆。下面前四条是已发布数据里真被砍过的名字，逐条钉死。
     print("\n── 名字里的国名：宁可不拆，也不砍掉名字 ──────────────────────────")
@@ -648,7 +691,7 @@ def main() -> int:
         print(f"  [{'OK' if ok else 'XX'}] {why}"
               f"（{name} → {got or '会读'}）")
 
-    total = (len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
+    total = (len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1)
     print("\n" + "─" * 68)

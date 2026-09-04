@@ -313,19 +313,39 @@ def match_mineral(text: str) -> str | None:
 
 _FILLER = {"and", "or", "amp", "the"}
 
+# 元素符号。**只在 mineral_cell 的严格匹配里用，绝不能进 MINERAL_PATTERN**——
+# 那是个宽松正则，把 \bw\b 放进去会把正文里每一个 "W" 都当成钨。
+#
+# 缘由：迪尔那份 531KB 的冲突矿产报告，483 行里 402 行是这个形状——
+#
+#     Gold (Au) | Al Etihad Gold Refinery DMCC | UNITED ARAB EMIRATES
+#     Gold (Au) | L'Orfebre S.A.               | ANDORRA
+#     Gold (Au) | SOLEIL METALS (Chala One Plant) | PERU
+#
+# 一份排版规整的真名单，402 家冶炼厂，一条都没抽出来。原因就是 "Gold (Au)"
+# 去掉标点后剩下 ["gold", "au"]，而 "au" 既不是矿种词也不是填充词，
+# 严格匹配一票否决整格。**卡在括号里的元素符号上，不是卡在别的地方。**
+_SYMBOLS = {"sn": "锡", "ta": "钽", "w": "钨", "au": "金"}
+
 
 def mineral_cell(text: str) -> set[str]:
     """严格匹配：整个格子都是矿种词才算「矿种列」。
 
     不能用宽松匹配：`Changsha South Tantalum Niobium Co` 里也有 Tantalum，
     按宽松匹配会被当成矿种列吞掉，那正是英伟达名单里冶炼厂名所在的那一列。
+
+    「整格都是矿种词」这条本身仍然是严格的——加进来的只是元素符号，
+    而且必须与矿种词同格出现或单独成格才成立。`Ta Chen Stainless` 里有 "Ta"，
+    但 "chen" 不是矿种词，整格照样一票否决。
     """
     token = re.sub(r"[^A-Za-z ]", " ", text or "").strip()
-    if not token or len(token) > 24:
+    if not token or len(token) > 48:
         return set()
     words = [w.lower() for w in token.split()]
     picked = {MINERALS[w] for w in words if w in MINERALS}
-    if not picked or any(w not in MINERALS and w not in _FILLER for w in words):
+    picked |= {_SYMBOLS[w] for w in words if w in _SYMBOLS}
+    if not picked or any(w not in MINERALS and w not in _SYMBOLS and w not in _FILLER
+                         for w in words):
         return set()
     return picked
 
