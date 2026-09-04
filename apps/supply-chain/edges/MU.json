@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "MU",
   "name": "美光",
-  "updatedAt": "2026-09-02T16:18:30Z",
+  "updatedAt": "2026-09-04T10:32:16Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -30,9 +30,9 @@
   "parse": {
     "rowsScanned": 265,
     "rowsWithCid": 0,
-    "nameOnly": 188,
+    "nameOnly": 187,
     "droppedNoCid": 4,
-    "unique": 184,
+    "unique": 183,
     "namedRatio": 1.0,
     "countryRatio": 1.0
   },
@@ -62,7 +62,6 @@
     "奥地利": 2,
     "泰国": 2,
     "瑞典": 1,
-    "中国台湾": 1,
     "坦桑尼亚": 1,
     "哥伦比亚": 1,
     "波兰": 1,
@@ -80,7 +79,7 @@
   },
   "byMineral": {
     "金": 81,
-    "锡": 48,
+    "锡": 47,
     "钽": 30,
     "钨": 29
   },
@@ -396,18 +395,6 @@
         "锡"
       ],
       "row": 131
-    },
-    {
-      "from": "NAME:chinese-taipei",
-      "idType": "name-only",
-      "cid": null,
-      "name": "Chinese Taipei",
-      "country": "中国台湾",
-      "countryEn": "taiwan",
-      "minerals": [
-        "锡"
-      ],
-      "row": 169
     },
     {
       "from": "NAME:chongyi-zhangyuan-tungsten-co-ltd",

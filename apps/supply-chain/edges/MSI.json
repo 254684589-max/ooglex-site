@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "MSI",
   "name": "摩托罗拉系统",
-  "updatedAt": "2026-09-02T16:18:30Z",
+  "updatedAt": "2026-09-04T10:32:16Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -34,7 +34,7 @@
     "droppedNoCid": 0,
     "unique": 362,
     "namedRatio": 0.994,
-    "countryRatio": 1.0
+    "countryRatio": 0.994
   },
   "byCountry": {
     "中国": 86,
@@ -68,7 +68,7 @@
     "玻利维亚": 2,
     "波兰": 2,
     "爱沙尼亚": 2,
-    "爱尔兰": 2,
+    "未归类": 2,
     "法国": 2,
     "乌干达": 2,
     "卢旺达": 2,
@@ -2875,9 +2875,9 @@
       "from": "CID002704",
       "idType": "rmi-cid",
       "cid": "CID002704",
-      "name": "UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN",
-      "country": "爱尔兰",
-      "countryEn": "ireland",
+      "name": "UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "钨"
       ],
@@ -2887,9 +2887,9 @@
       "from": "CID002705",
       "idType": "rmi-cid",
       "cid": "CID002705",
-      "name": "UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN",
-      "country": "爱尔兰",
-      "countryEn": "ireland",
+      "name": "UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "钽"
       ],

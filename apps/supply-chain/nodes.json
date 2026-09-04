@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-03T02:33:34Z",
+  "updatedAt": "2026-09-04T10:32:17Z",
   "asOf": "2026-09-02",
   "frequency": "daily",
   "status": "ok",
@@ -369,7 +369,7 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 184,
+      "edgeCount": 183,
       "formSdStatus": "listed"
     },
     {
@@ -892,7 +892,7 @@
         "match": "sic-range"
       },
       "edgeCount": 1,
-      "formSdStatus": "listed"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "UNH",
@@ -1878,7 +1878,7 @@
         "match": "sic-range"
       },
       "edgeCount": 6,
-      "formSdStatus": "listed"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "GILD",
@@ -2951,7 +2951,7 @@
         "match": "sic-range"
       },
       "edgeCount": 6,
-      "formSdStatus": "listed"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "SYK",
@@ -3066,7 +3066,7 @@
         "sic": 2111,
         "match": "sic-range"
       },
-      "edgeCount": 41,
+      "edgeCount": 37,
       "formSdStatus": "listed"
     },
     {
@@ -3965,7 +3965,7 @@
         "sic": 1731,
         "match": "sic-range"
       },
-      "edgeCount": 9,
+      "edgeCount": 2,
       "formSdStatus": "listed"
     },
     {
@@ -5299,7 +5299,7 @@
         "sic": 3570,
         "match": "sic-range"
       },
-      "edgeCount": 226,
+      "edgeCount": 225,
       "formSdStatus": "listed"
     },
     {
@@ -5445,7 +5445,7 @@
         "match": "sic-range"
       },
       "edgeCount": 6,
-      "formSdStatus": "listed"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "AEP",
@@ -7475,7 +7475,7 @@
         "match": "sic-range"
       },
       "edgeCount": 5,
-      "formSdStatus": "listed"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "IDXX",
@@ -8722,7 +8722,7 @@
         "match": "sic-range"
       },
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "failed"
     },
     {
       "id": "CCL",
@@ -9562,7 +9562,7 @@
         "sic": 3826,
         "match": "sic-range"
       },
-      "edgeCount": 360,
+      "edgeCount": 359,
       "formSdStatus": "listed"
     },
     {
@@ -10549,7 +10549,7 @@
         "match": "sic-range"
       },
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "failed"
     },
     {
       "id": "EXE",
@@ -10897,7 +10897,7 @@
         "match": "sic-range"
       },
       "edgeCount": 41,
-      "formSdStatus": "listed"
+      "formSdStatus": "failed"
     },
     {
       "id": "STE",
@@ -11274,7 +11274,7 @@
         "match": "sic-range"
       },
       "edgeCount": 1,
-      "formSdStatus": "listed"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CF",
@@ -13275,7 +13275,7 @@
         "match": "sic-range"
       },
       "edgeCount": 323,
-      "formSdStatus": "listed"
+      "formSdStatus": "failed"
     },
     {
       "id": "HAS",
@@ -13942,7 +13942,7 @@
         "match": "sic-range"
       },
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "failed"
     },
     {
       "id": "MGM",
@@ -14406,7 +14406,7 @@
         "match": "sic-range"
       },
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "failed"
     }
   ],
   "edgeIndex": {
@@ -14650,7 +14650,7 @@
     },
     "HPE": {
       "file": "edges/HPE.json",
-      "count": 226,
+      "count": 225,
       "relation": "smelter-in-supply-chain",
       "filingDate": "2026-05-28",
       "url": "https://www.sec.gov/Archives/edgar/data/1645590/000164559026000048/exhibit101-conflictmineral.htm"
@@ -14755,7 +14755,7 @@
     },
     "MO": {
       "file": "edges/MO.json",
-      "count": 41,
+      "count": 37,
       "relation": "smelter-in-supply-chain",
       "filingDate": "2026-05-28",
       "url": "https://www.sec.gov/Archives/edgar/data/764180/000076418026000079/exhibit1012026.htm"
@@ -14783,14 +14783,14 @@
     },
     "MTD": {
       "file": "edges/MTD.json",
-      "count": 360,
+      "count": 359,
       "relation": "smelter-in-supply-chain",
       "filingDate": "2026-05-29",
       "url": "https://www.sec.gov/Archives/edgar/data/1037646/000103764626000040/conflictmineralsreport2026.htm"
     },
     "MU": {
       "file": "edges/MU.json",
-      "count": 184,
+      "count": 183,
       "relation": "smelter-in-supply-chain",
       "filingDate": "2026-05-20",
       "url": "https://www.sec.gov/Archives/edgar/data/723125/000072312526000008/exhibit101conflictminerals.htm"
@@ -14853,7 +14853,7 @@
     },
     "PWR": {
       "file": "edges/PWR.json",
-      "count": 9,
+      "count": 2,
       "relation": "smelter-in-supply-chain",
       "filingDate": "2026-06-01",
       "url": "https://www.sec.gov/Archives/edgar/data/1050915/000119312526251568/d111320dex101.htm"
@@ -15091,18 +15091,25 @@
     "claimComplete": false,
     "nodesTotal": 495,
     "nodesWithEdges": 88,
-    "edgesTotal": 20401,
+    "edgesTotal": 20387,
     "edgesBySource": {
-      "sec-form-sd": 20401
+      "sec-form-sd": 20387
     },
     "formSd": {
       "claimComplete": false,
       "companiesScanned": 495,
-      "companiesWithList": 88,
-      "companiesFiledNoList": 151,
+      "companiesWithList": 80,
+      "companiesFiledNoList": 153,
       "companiesNoFiling": 256,
-      "companiesFailed": 0,
-      "failedSymbols": [],
+      "companiesFailed": 6,
+      "failedSymbols": [
+        "BAX",
+        "BLDR",
+        "DOW",
+        "EME",
+        "GNRC",
+        "VLTO"
+      ],
       "filingStatus": {
         "A": "listed",
         "AAPL": "filed-no-list",
@@ -15157,7 +15164,7 @@
         "BA": "filed-no-list",
         "BAC": "no-filing",
         "BALL": "listed",
-        "BAX": "listed",
+        "BAX": "failed",
         "BBY": "listed",
         "BDX": "filed-no-list",
         "BEN": "no-filing",
@@ -15166,7 +15173,7 @@
         "BIIB": "no-filing",
         "BKNG": "no-filing",
         "BKR": "listed",
-        "BLDR": "filed-no-list",
+        "BLDR": "failed",
         "BLK": "no-filing",
         "BMY": "no-filing",
         "BNY": "no-filing",
@@ -15180,7 +15187,7 @@
         "CAH": "filed-no-list",
         "CARR": "filed-no-list",
         "CASY": "no-filing",
-        "CAT": "listed",
+        "CAT": "filed-no-list",
         "CB": "no-filing",
         "CBOE": "no-filing",
         "CBRE": "no-filing",
@@ -15207,7 +15214,7 @@
         "CNC": "no-filing",
         "CNP": "no-filing",
         "COF": "no-filing",
-        "COHR": "listed",
+        "COHR": "filed-no-list",
         "COIN": "no-filing",
         "COO": "filed-no-list",
         "COP": "filed-no-list",
@@ -15241,12 +15248,12 @@
         "DGX": "no-filing",
         "DHI": "no-filing",
         "DHR": "filed-no-list",
-        "DIS": "listed",
+        "DIS": "filed-no-list",
         "DLR": "no-filing",
         "DLTR": "no-filing",
         "DOC": "no-filing",
         "DOV": "listed",
-        "DOW": "listed",
+        "DOW": "failed",
         "DPZ": "no-filing",
         "DRI": "no-filing",
         "DTE": "no-filing",
@@ -15262,7 +15269,7 @@
         "EIX": "no-filing",
         "EL": "filed-no-list",
         "ELV": "no-filing",
-        "EME": "filed-no-list",
+        "EME": "failed",
         "EMR": "filed-no-list",
         "EOG": "filed-no-list",
         "EQIX": "no-filing",
@@ -15310,7 +15317,7 @@
         "GL": "no-filing",
         "GLW": "listed",
         "GM": "filed-no-list",
-        "GNRC": "filed-no-list",
+        "GNRC": "failed",
         "GOOGL": "filed-no-list",
         "GPC": "no-filing",
         "GPN": "filed-no-list",
@@ -15380,7 +15387,7 @@
         "LHX": "filed-no-list",
         "LII": "filed-no-list",
         "LIN": "filed-no-list",
-        "LITE": "listed",
+        "LITE": "filed-no-list",
         "LLY": "filed-no-list",
         "LMT": "filed-no-list",
         "LNT": "no-filing",
@@ -15389,7 +15396,7 @@
         "LULU": "filed-no-list",
         "LUV": "no-filing",
         "LVS": "no-filing",
-        "LYB": "listed",
+        "LYB": "filed-no-list",
         "LYV": "no-filing",
         "MA": "no-filing",
         "MAA": "no-filing",
@@ -15497,7 +15504,7 @@
         "RTX": "listed",
         "RVTY": "filed-no-list",
         "SBAC": "no-filing",
-        "SBUX": "listed",
+        "SBUX": "filed-no-list",
         "SCHW": "no-filing",
         "SHW": "listed",
         "SJM": "no-filing",
@@ -15564,7 +15571,7 @@
         "VEEV": "no-filing",
         "VICI": "no-filing",
         "VLO": "no-filing",
-        "VLTO": "filed-no-list",
+        "VLTO": "failed",
         "VMC": "filed-no-list",
         "VRSK": "no-filing",
         "VRSN": "no-filing",
@@ -15601,13 +15608,13 @@
         "ZTS": "filed-no-list"
       },
       "companiesPublished": 88,
-      "edgesTotal": 20401,
-      "uniqueSmelters": 1713,
+      "edgesTotal": 20387,
+      "uniqueSmelters": 1706,
       "exactNameMatchWithCid": 681,
-      "distinctAfterExactNameMatch": 1032,
+      "distinctAfterExactNameMatch": 1025,
       "uniqueByIdentifier": {
         "rmi-cid": 837,
-        "name-only": 876
+        "name-only": 869
       },
       "note": "Form SD 强制申报、不强制列名单：有申报无名单的公司如实单列，不并入「无申报」。覆盖率因此永远到不了 100%，这是披露制度本身的上限，不是抓取缺陷。"
     },
@@ -15627,9 +15634,9 @@
         "sectorEn": "Industrials",
         "companies": 76,
         "withEdges": 19,
-        "filedNoList": 36,
+        "filedNoList": 32,
         "noFiling": 21,
-        "failed": 0,
+        "failed": 4,
         "unscanned": 0
       },
       {
@@ -15728,7 +15735,7 @@
     },
     "stageResolvedNodes": 495,
     "stageAmbiguousNodes": 0,
-    "note": "本图谱只收录有公开出处的关系，不是完整供应链。当前 20401 条边全部来自 Form SD 冲突矿产申报，语义是「该冶炼厂出现在申报人的供应链中」——间接、不含份额、不含层级，不等于直接供货关系。"
+    "note": "本图谱只收录有公开出处的关系，不是完整供应链。当前 20387 条边全部来自 Form SD 冲突矿产申报，语义是「该冶炼厂出现在申报人的供应链中」——间接、不含份额、不含层级，不等于直接供货关系。"
   },
   "dataQuality": {
     "contractVersion": 1,

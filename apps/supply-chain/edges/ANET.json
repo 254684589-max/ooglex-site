@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "ANET",
   "name": "Arista Networks",
-  "updatedAt": "2026-09-02T16:18:29Z",
+  "updatedAt": "2026-09-04T10:32:16Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -34,15 +34,10 @@
     "droppedNoCid": 0,
     "unique": 281,
     "namedRatio": 0.993,
-    "countryRatio": 0.018
+    "countryRatio": 0.0
   },
   "byCountry": {
-    "未归类": 276,
-    "菲律宾": 1,
-    "印度尼西亚": 1,
-    "泰国": 1,
-    "墨西哥": 1,
-    "哥伦比亚": 1
+    "未归类": 281
   },
   "byMineral": {
     "金": 145,
@@ -187,9 +182,9 @@
       "from": "CID000128",
       "idType": "rmi-cid",
       "cid": "CID000128",
-      "name": "Bangko Sentral ng Pilipinas (Central Bank of the",
-      "country": "菲律宾",
-      "countryEn": "philippines",
+      "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "金"
       ],
@@ -367,9 +362,9 @@
       "from": "CID000313",
       "idType": "rmi-cid",
       "cid": "CID000313",
-      "name": "PT Premium Tin",
-      "country": "印度尼西亚",
-      "countryEn": "indonesia",
+      "name": "PT Premium Tin Indonesia",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "锡"
       ],
@@ -1795,9 +1790,9 @@
       "from": "CID002314",
       "idType": "rmi-cid",
       "cid": "CID002314",
-      "name": "Umicore Precious Metals",
-      "country": "泰国",
-      "countryEn": "thailand",
+      "name": "Umicore Precious Metals Thailand",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "金"
       ],
@@ -2095,9 +2090,9 @@
       "from": "CID002539",
       "idType": "rmi-cid",
       "cid": "CID002539",
-      "name": "KEMET de",
-      "country": "墨西哥",
-      "countryEn": "mexico",
+      "name": "KEMET de Mexico",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "钽"
       ],
@@ -3139,9 +3134,9 @@
       "from": "CID003641",
       "idType": "rmi-cid",
       "cid": "CID003641",
-      "name": "Gold by Gold",
-      "country": "哥伦比亚",
-      "countryEn": "colombia",
+      "name": "Gold by Gold Colombia",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "金"
       ],

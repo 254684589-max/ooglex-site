@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "MTD",
   "name": "梅特勒-托利多",
-  "updatedAt": "2026-09-02T16:18:30Z",
+  "updatedAt": "2026-09-04T10:32:16Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -30,9 +30,9 @@
   "parse": {
     "rowsScanned": 393,
     "rowsWithCid": 0,
-    "nameOnly": 367,
+    "nameOnly": 365,
     "droppedNoCid": 1,
-    "unique": 360,
+    "unique": 359,
     "namedRatio": 1.0,
     "countryRatio": 1.0
   },
@@ -88,14 +88,13 @@
     "智利": 1,
     "荷兰": 1,
     "法国": 1,
-    "立陶宛": 1,
-    "爱尔兰": 1
+    "立陶宛": 1
   },
   "byMineral": {
     "金": 177,
     "锡": 84,
-    "钨": 57,
-    "钽": 49
+    "钨": 56,
+    "钽": 48
   },
   "edges": [
     {
@@ -4111,19 +4110,6 @@
         "钨"
       ],
       "row": 389
-    },
-    {
-      "from": "NAME:united-kingdom-of-great-britain-and-northern",
-      "idType": "name-only",
-      "cid": null,
-      "name": "United Kingdom of Great Britain and Northern",
-      "country": "爱尔兰",
-      "countryEn": "ireland",
-      "minerals": [
-        "钨",
-        "钽"
-      ],
-      "row": 108
     },
     {
       "from": "NAME:united-precious-metal-refining-inc",

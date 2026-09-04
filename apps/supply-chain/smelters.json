@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-smelters",
-  "updatedAt": "2026-09-03T02:33:34Z",
+  "updatedAt": "2026-09-04T10:32:16Z",
   "frequency": "annual",
   "status": "ok",
   "source": "SEC EDGAR Form SD 冲突矿产申报",
@@ -218,7 +218,7 @@
     },
     "HPE": {
       "file": "edges/HPE.json",
-      "count": 226,
+      "count": 225,
       "filingDate": "2026-05-28",
       "accession": "0001645590-26-000048"
     },
@@ -308,7 +308,7 @@
     },
     "MO": {
       "file": "edges/MO.json",
-      "count": 41,
+      "count": 37,
       "filingDate": "2026-05-28",
       "accession": "0000764180-26-000079"
     },
@@ -332,13 +332,13 @@
     },
     "MTD": {
       "file": "edges/MTD.json",
-      "count": 360,
+      "count": 359,
       "filingDate": "2026-05-29",
       "accession": "0001037646-26-000040"
     },
     "MU": {
       "file": "edges/MU.json",
-      "count": 184,
+      "count": 183,
       "filingDate": "2026-05-20",
       "accession": "0000723125-26-000008"
     },
@@ -392,7 +392,7 @@
     },
     "PWR": {
       "file": "edges/PWR.json",
-      "count": 9,
+      "count": 2,
       "filingDate": "2026-06-01",
       "accession": "0001193125-26-251568"
     },
@@ -544,11 +544,18 @@
   "coverage": {
     "claimComplete": false,
     "companiesScanned": 495,
-    "companiesWithList": 88,
-    "companiesFiledNoList": 151,
+    "companiesWithList": 80,
+    "companiesFiledNoList": 153,
     "companiesNoFiling": 256,
-    "companiesFailed": 0,
-    "failedSymbols": [],
+    "companiesFailed": 6,
+    "failedSymbols": [
+      "BAX",
+      "BLDR",
+      "DOW",
+      "EME",
+      "GNRC",
+      "VLTO"
+    ],
     "filingStatus": {
       "A": "listed",
       "AAPL": "filed-no-list",
@@ -603,7 +610,7 @@
       "BA": "filed-no-list",
       "BAC": "no-filing",
       "BALL": "listed",
-      "BAX": "listed",
+      "BAX": "failed",
       "BBY": "listed",
       "BDX": "filed-no-list",
       "BEN": "no-filing",
@@ -612,7 +619,7 @@
       "BIIB": "no-filing",
       "BKNG": "no-filing",
       "BKR": "listed",
-      "BLDR": "filed-no-list",
+      "BLDR": "failed",
       "BLK": "no-filing",
       "BMY": "no-filing",
       "BNY": "no-filing",
@@ -626,7 +633,7 @@
       "CAH": "filed-no-list",
       "CARR": "filed-no-list",
       "CASY": "no-filing",
-      "CAT": "listed",
+      "CAT": "filed-no-list",
       "CB": "no-filing",
       "CBOE": "no-filing",
       "CBRE": "no-filing",
@@ -653,7 +660,7 @@
       "CNC": "no-filing",
       "CNP": "no-filing",
       "COF": "no-filing",
-      "COHR": "listed",
+      "COHR": "filed-no-list",
       "COIN": "no-filing",
       "COO": "filed-no-list",
       "COP": "filed-no-list",
@@ -687,12 +694,12 @@
       "DGX": "no-filing",
       "DHI": "no-filing",
       "DHR": "filed-no-list",
-      "DIS": "listed",
+      "DIS": "filed-no-list",
       "DLR": "no-filing",
       "DLTR": "no-filing",
       "DOC": "no-filing",
       "DOV": "listed",
-      "DOW": "listed",
+      "DOW": "failed",
       "DPZ": "no-filing",
       "DRI": "no-filing",
       "DTE": "no-filing",
@@ -708,7 +715,7 @@
       "EIX": "no-filing",
       "EL": "filed-no-list",
       "ELV": "no-filing",
-      "EME": "filed-no-list",
+      "EME": "failed",
       "EMR": "filed-no-list",
       "EOG": "filed-no-list",
       "EQIX": "no-filing",
@@ -756,7 +763,7 @@
       "GL": "no-filing",
       "GLW": "listed",
       "GM": "filed-no-list",
-      "GNRC": "filed-no-list",
+      "GNRC": "failed",
       "GOOGL": "filed-no-list",
       "GPC": "no-filing",
       "GPN": "filed-no-list",
@@ -826,7 +833,7 @@
       "LHX": "filed-no-list",
       "LII": "filed-no-list",
       "LIN": "filed-no-list",
-      "LITE": "listed",
+      "LITE": "filed-no-list",
       "LLY": "filed-no-list",
       "LMT": "filed-no-list",
       "LNT": "no-filing",
@@ -835,7 +842,7 @@
       "LULU": "filed-no-list",
       "LUV": "no-filing",
       "LVS": "no-filing",
-      "LYB": "listed",
+      "LYB": "filed-no-list",
       "LYV": "no-filing",
       "MA": "no-filing",
       "MAA": "no-filing",
@@ -943,7 +950,7 @@
       "RTX": "listed",
       "RVTY": "filed-no-list",
       "SBAC": "no-filing",
-      "SBUX": "listed",
+      "SBUX": "filed-no-list",
       "SCHW": "no-filing",
       "SHW": "listed",
       "SJM": "no-filing",
@@ -1010,7 +1017,7 @@
       "VEEV": "no-filing",
       "VICI": "no-filing",
       "VLO": "no-filing",
-      "VLTO": "filed-no-list",
+      "VLTO": "failed",
       "VMC": "filed-no-list",
       "VRSK": "no-filing",
       "VRSN": "no-filing",
@@ -1047,13 +1054,13 @@
       "ZTS": "filed-no-list"
     },
     "companiesPublished": 88,
-    "edgesTotal": 20401,
-    "uniqueSmelters": 1713,
+    "edgesTotal": 20387,
+    "uniqueSmelters": 1706,
     "exactNameMatchWithCid": 681,
-    "distinctAfterExactNameMatch": 1032,
+    "distinctAfterExactNameMatch": 1025,
     "uniqueByIdentifier": {
       "rmi-cid": 837,
-      "name-only": 876
+      "name-only": 869
     },
     "note": "Form SD 强制申报、不强制列名单：有申报无名单的公司如实单列，不并入「无申报」。覆盖率因此永远到不了 100%，这是披露制度本身的上限，不是抓取缺陷。"
   },
@@ -17041,9 +17048,9 @@
       "id": "CID002662",
       "cid": "CID002662",
       "identifierType": "rmi-cid",
-      "name": "United Kingdom Of Great Britain and Northern",
-      "country": "爱尔兰",
-      "countryEn": "ireland",
+      "name": "United Kingdom Of Great Britain and Northern Ireland",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "锡"
       ],
@@ -17141,9 +17148,9 @@
       "id": "CID002704",
       "cid": "CID002704",
       "identifierType": "rmi-cid",
-      "name": "UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN",
-      "country": "爱尔兰",
-      "countryEn": "ireland",
+      "name": "UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND",
+      "country": "英国",
+      "countryEn": "united kingdom",
       "minerals": [
         "钨"
       ],
@@ -17162,9 +17169,9 @@
       "id": "CID002705",
       "cid": "CID002705",
       "identifierType": "rmi-cid",
-      "name": "UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN",
-      "country": "爱尔兰",
-      "countryEn": "ireland",
+      "name": "UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND",
+      "country": "英国",
+      "countryEn": "united kingdom",
       "minerals": [
         "钽"
       ],
@@ -19189,9 +19196,9 @@
       "id": "CID003047",
       "cid": "CID003047",
       "identifierType": "rmi-cid",
-      "name": "United Kingdom Of Great Britain and Northern",
-      "country": "爱尔兰",
-      "countryEn": "ireland",
+      "name": "United Kingdom Of Great Britain and Northern Ireland",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "锡"
       ],
@@ -24499,34 +24506,6 @@
       ],
       "sameNameAs": "CID002809"
     },
-    "NAME:argentina-australia-austria-belgium-bolivia-brazil-bulgaria-burundi-canada-chile": {
-      "id": "NAME:argentina-australia-austria-belgium-bolivia-brazil-bulgaria-burundi-canada-chile",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Argentina; Australia; Austria; Belgium; Bolivia; Brazil; Bulgaria; Burundi; Canada; Chile; China; Chinese Taipei; Congo, Democratic Republic of the; Croatia; Czech Republic; Denmark; Estonia; Finland; France; Germany; Greece; Hong Kong; Hungary; India; Indonesia; Ireland; Israel; Italy; Japan; Korea, Republic of; Laos; Latvia; Lithuania; Luxembourg; Malaysia; Malta; Mexico; Mongolia; Morocco; Myanmar; Namibia; Netherlands; New Zealand; Nigeria; Peru; Philippines; Poland; Portugal; Puerto Rico; Romania; Russia; Rwanda; Serbia; Singapore; Slovakia; Slovenia; South Africa; Spain; Sweden; Switzerland; Tanzania; Thailand; Tunisia; Turkey; Uganda; Ukraine; United Arab Emirates; United Kingdom of Great Britain and Northern Ireland; United States of America; Uruguay; Vietnam;",
-      "country": "赞比亚",
-      "countryEn": "zambia",
-      "minerals": [
-        "锡"
-      ],
-      "filers": [
-        "MO"
-      ]
-    },
-    "NAME:argentina-australia-azerbaijan-belgium-bolivia-bosnia-and-herzegovina-botswana-b": {
-      "id": "NAME:argentina-australia-azerbaijan-belgium-bolivia-bosnia-and-herzegovina-botswana-b",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Argentina; Australia; Azerbaijan; Belgium; Bolivia; Bosnia and Herzegovina; Botswana; Brazil; Bulgaria; Burkina Faso; Cambodia; Canada; Chile; China; Colombia; Congo, Democratic Republic of the; Côte d'Ivoire; Dominican Republic; Ecuador; Egypt; Eswatini; Fiji; Finland; France; French Guiana; Georgia; Germany; Ghana; Greece; Guinea; Guyana; Honduras; Hong Kong; Indonesia; Italy; Japan; Kazakhstan; Kenya; Korea, Republic of; Kyrgyzstan; Lao People's Democratic Republic; Liberia; Madagascar; Malaysia; Mali; Mauritania; Mexico; Mongolia; Morocco; Mozambique; Namibia; New Zealand; Nicaragua; Niger; Nigeria; Panama; Papua New Guinea; Peru; Philippines; Saudi Arabia; Senegal; Solomon Islands; Slovakia; South Africa; Spain; Sudan; Suriname; Sweden; Tajikistan; Tanzania; Thailand; Turkey; United States of America; Uzbekistan; Zambia;",
-      "country": "津巴布韦",
-      "countryEn": "zimbabwe",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "MO"
-      ]
-    },
     "NAME:arget-sac": {
       "id": "NAME:arget-sac",
       "cid": null,
@@ -25241,34 +25220,6 @@
         "SYK"
       ]
     },
-    "NAME:australia-austria-bolivia-brazil-burundi-canada-china-chinese-taipei-congo-democ": {
-      "id": "NAME:australia-austria-bolivia-brazil-burundi-canada-china-chinese-taipei-congo-democ",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Australia; Austria; Bolivia; Brazil; Burundi; Canada; China; Chinese Taipei; Congo, Democratic Republic of the; France; Germany; India; Ireland; Israel; Japan; Kazakhstan; Korea, Republic of; Malaysia; Mexico; Mongolia; Myanmar; Netherlands; Nigeria; Portugal; Russia; Rwanda; Singapore; South Africa; Spain; Switzerland; Tanzania; Thailand; Turkey; Uganda; Ukraine; United Arab Emirates; United Kingdom of Great Britain and Northern Ireland; United States of America;",
-      "country": "越南",
-      "countryEn": "vietnam",
-      "minerals": [
-        "钨"
-      ],
-      "filers": [
-        "MO"
-      ]
-    },
-    "NAME:australia-belarus-brazil-burundi-canada-china-chinese-taipei-congo-democratic-re": {
-      "id": "NAME:australia-belarus-brazil-burundi-canada-china-chinese-taipei-congo-democratic-re",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Australia; Belarus; Brazil; Burundi; Canada; China; Chinese Taipei; Congo, Democratic Republic of the; Czech Republic; El Salvador; Estonia; Ethiopia; France; Germany; Hong Kong; India; Indonesia; Ireland; Israel; Japan; Kazakhstan; Korea, Republic of; Madagascar; Mexico; Mozambique; Nigeria; Russia; Rwanda; Sierra Leone; Singapore; Spain; Thailand; United Kingdom of Great Britain and Northern Ireland; United States of America;",
-      "country": "津巴布韦",
-      "countryEn": "zimbabwe",
-      "minerals": [
-        "钽"
-      ],
-      "filers": [
-        "MO"
-      ]
-    },
     "NAME:avon-specialty-metals-ltd": {
       "id": "NAME:avon-specialty-metals-ltd",
       "cid": null,
@@ -25372,7 +25323,6 @@
         "COHR",
         "DIS",
         "LITE",
-        "PWR",
         "SBUX"
       ]
     },
@@ -26171,20 +26121,6 @@
       ],
       "filers": [
         "LOW"
-      ]
-    },
-    "NAME:chinese-taipei": {
-      "id": "NAME:chinese-taipei",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Chinese Taipei",
-      "country": "中国台湾",
-      "countryEn": "taiwan",
-      "minerals": [
-        "锡"
-      ],
-      "filers": [
-        "MU"
       ]
     },
     "NAME:chofu-works": {
@@ -29493,9 +29429,7 @@
       "filers": [
         "COHR",
         "DIS",
-        "HPE",
         "LITE",
-        "PWR",
         "SBUX"
       ]
     },
@@ -32897,7 +32831,6 @@
         "COHR",
         "DIS",
         "LITE",
-        "PWR",
         "SBUX"
       ]
     },
@@ -36630,20 +36563,6 @@
         "APH"
       ]
     },
-    "NAME:o-m-manufacturing": {
-      "id": "NAME:o-m-manufacturing",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "O.M. Manufacturing",
-      "country": "菲律宾",
-      "countryEn": "philippines",
-      "minerals": [
-        "锡"
-      ],
-      "filers": [
-        "PWR"
-      ]
-    },
     "NAME:o-m-manufacturing-philippines-inc": {
       "id": "NAME:o-m-manufacturing-philippines-inc",
       "cid": null,
@@ -37764,7 +37683,6 @@
       "filers": [
         "DIS",
         "LITE",
-        "PWR",
         "SBUX"
       ]
     },
@@ -38539,7 +38457,6 @@
         "DIS",
         "LITE",
         "LYB",
-        "PWR",
         "SBUX"
       ]
     },
@@ -42984,7 +42901,6 @@
         "COHR",
         "DIS",
         "LITE",
-        "PWR",
         "SBUX"
       ]
     },
@@ -43138,22 +43054,6 @@
       ],
       "sameNameAs": "CID001986"
     },
-    "NAME:united-kingdom-of-great-britain-and-northern": {
-      "id": "NAME:united-kingdom-of-great-britain-and-northern",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "United Kingdom of Great Britain and Northern",
-      "country": "爱尔兰",
-      "countryEn": "ireland",
-      "minerals": [
-        "钨",
-        "钽"
-      ],
-      "filers": [
-        "MTD"
-      ],
-      "sameNameAs": "CID003047"
-    },
     "NAME:united-kingdom-of-great-britain-and-northern-ireland": {
       "id": "NAME:united-kingdom-of-great-britain-and-northern-ireland",
       "cid": null,
@@ -43167,7 +43067,8 @@
       ],
       "filers": [
         "CSCO"
-      ]
+      ],
+      "sameNameAs": "CID003047"
     },
     "NAME:united-precious-metal-refining-inc": {
       "id": "NAME:united-precious-metal-refining-inc",
