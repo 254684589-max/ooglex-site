@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "DOV",
   "name": "多佛",
-  "updatedAt": "2026-09-04T10:32:16Z",
+  "updatedAt": "2026-09-04T10:58:37Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -34,7 +34,7 @@
     "droppedNoCid": 0,
     "unique": 782,
     "namedRatio": 0.997,
-    "countryRatio": 0.994
+    "countryRatio": 0.999
   },
   "byCountry": {
     "中国": 277,
@@ -60,10 +60,10 @@
     "哈萨克斯坦": 5,
     "菲律宾": 5,
     "秘鲁": 5,
-    "未归类": 5,
     "加拿大": 4,
     "西班牙": 4,
     "卢旺达": 4,
+    "爱尔兰": 4,
     "乌兹别克斯坦": 3,
     "土耳其": 3,
     "墨西哥": 3,
@@ -96,6 +96,7 @@
     "毛里塔尼亚": 1,
     "Congo, Democratic Republic Of The": 1,
     "坦桑尼亚": 1,
+    "未归类": 1,
     "格鲁吉亚": 1
   },
   "byMineral": {
@@ -7031,8 +7032,8 @@
       "idType": "rmi-cid",
       "cid": "CID002662",
       "name": "United Kingdom Of Great Britain and Northern Ireland",
-      "country": null,
-      "countryEn": null,
+      "country": "爱尔兰",
+      "countryEn": "ireland",
       "minerals": [
         "锡"
       ],
@@ -7067,8 +7068,8 @@
       "idType": "rmi-cid",
       "cid": "CID002704",
       "name": "United Kingdom Of Great Britain and Northern Ireland",
-      "country": null,
-      "countryEn": null,
+      "country": "爱尔兰",
+      "countryEn": "ireland",
       "minerals": [
         "钨"
       ],
@@ -7079,8 +7080,8 @@
       "idType": "rmi-cid",
       "cid": "CID002705",
       "name": "United Kingdom Of Great Britain and Northern Ireland",
-      "country": null,
-      "countryEn": null,
+      "country": "爱尔兰",
+      "countryEn": "ireland",
       "minerals": [
         "钽"
       ],
@@ -7944,8 +7945,8 @@
       "idType": "rmi-cid",
       "cid": "CID003047",
       "name": "United Kingdom Of Great Britain and Northern Ireland",
-      "country": null,
-      "countryEn": null,
+      "country": "爱尔兰",
+      "countryEn": "ireland",
       "minerals": [
         "锡"
       ],

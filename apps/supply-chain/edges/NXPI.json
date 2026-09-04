@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "NXPI",
   "name": "恩智浦",
-  "updatedAt": "2026-09-04T10:32:16Z",
+  "updatedAt": "2026-09-04T10:58:37Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -31,7 +31,7 @@
     "rowsScanned": 288,
     "rowsWithCid": 0,
     "nameOnly": 213,
-    "droppedNoCid": 0,
+    "droppedNoCid": 1,
     "unique": 208,
     "namedRatio": 1.0,
     "countryRatio": 1.0

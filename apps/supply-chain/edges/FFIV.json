@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "FFIV",
   "name": "F5, Inc.",
-  "updatedAt": "2026-09-04T10:32:16Z",
+  "updatedAt": "2026-09-04T10:58:37Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -31,7 +31,7 @@
     "rowsScanned": 563,
     "rowsWithCid": 338,
     "nameOnly": 0,
-    "droppedNoCid": 0,
+    "droppedNoCid": 1,
     "unique": 338,
     "namedRatio": 0.994,
     "countryRatio": 1.0

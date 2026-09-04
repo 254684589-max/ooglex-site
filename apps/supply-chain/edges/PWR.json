@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "PWR",
   "name": "Quanta Services",
-  "updatedAt": "2026-09-04T10:32:16Z",
+  "updatedAt": "2026-09-04T10:58:37Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -30,20 +30,39 @@
   "parse": {
     "rowsScanned": 419,
     "rowsWithCid": 0,
-    "nameOnly": 2,
+    "nameOnly": 9,
     "droppedNoCid": 0,
-    "unique": 2,
+    "unique": 9,
     "namedRatio": 1.0,
     "countryRatio": 1.0
   },
   "byCountry": {
+    "菲律宾": 2,
+    "印度尼西亚": 2,
     "马来西亚": 1,
-    "蒙古": 1
+    "蒙古": 1,
+    "哥伦比亚": 1,
+    "墨西哥": 1,
+    "泰国": 1
   },
   "byMineral": {
-    "锡": 2
+    "锡": 5,
+    "金": 3,
+    "钽": 1
   },
   "edges": [
+    {
+      "from": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
+      "country": "菲律宾",
+      "countryEn": "philippines",
+      "minerals": [
+        "金"
+      ],
+      "row": 44
+    },
     {
       "from": "NAME:congo-brazzaville",
       "idType": "name-only",
@@ -67,6 +86,78 @@
         "锡"
       ],
       "row": 409
+    },
+    {
+      "from": "NAME:gold-by-gold-colombia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Gold by Gold Colombia",
+      "country": "哥伦比亚",
+      "countryEn": "colombia",
+      "minerals": [
+        "金"
+      ],
+      "row": 112
+    },
+    {
+      "from": "NAME:kemet-de-mexico",
+      "idType": "name-only",
+      "cid": null,
+      "name": "KEMET de Mexico",
+      "country": "墨西哥",
+      "countryEn": "mexico",
+      "minerals": [
+        "钽"
+      ],
+      "row": 173
+    },
+    {
+      "from": "NAME:o-m-manufacturing-philippines",
+      "idType": "name-only",
+      "cid": null,
+      "name": "O.M. Manufacturing Philippines",
+      "country": "菲律宾",
+      "countryEn": "philippines",
+      "minerals": [
+        "锡"
+      ],
+      "row": 249
+    },
+    {
+      "from": "NAME:pt-arsed-indonesia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Arsed Indonesia",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 271
+    },
+    {
+      "from": "NAME:pt-premium-tin-indonesia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Premium Tin Indonesia",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 280
+    },
+    {
+      "from": "NAME:umicore-precious-metals-thailand",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Umicore Precious Metals Thailand",
+      "country": "泰国",
+      "countryEn": "thailand",
+      "minerals": [
+        "金"
+      ],
+      "row": 356
     }
   ],
   "coverage": {

@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-04T10:41:06Z",
+  "updatedAt": "2026-09-04T10:58:37Z",
   "asOf": "2026-09-02",
   "frequency": "daily",
   "status": "ok",
@@ -369,7 +369,7 @@
         "sic": 3674,
         "match": "sic-range"
       },
-      "edgeCount": 183,
+      "edgeCount": 184,
       "formSdStatus": "listed"
     },
     {
@@ -892,7 +892,7 @@
         "match": "sic-range"
       },
       "edgeCount": 1,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "listed"
     },
     {
       "id": "UNH",
@@ -1878,7 +1878,7 @@
         "match": "sic-range"
       },
       "edgeCount": 6,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "listed"
     },
     {
       "id": "GILD",
@@ -2951,7 +2951,7 @@
         "match": "sic-range"
       },
       "edgeCount": 6,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "listed"
     },
     {
       "id": "SYK",
@@ -3066,7 +3066,7 @@
         "sic": 2111,
         "match": "sic-range"
       },
-      "edgeCount": 37,
+      "edgeCount": 41,
       "formSdStatus": "listed"
     },
     {
@@ -3820,8 +3820,8 @@
         "sic": 4841,
         "match": "sic-range"
       },
-      "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "edgeCount": 7,
+      "formSdStatus": "listed"
     },
     {
       "id": "KKR",
@@ -3965,7 +3965,7 @@
         "sic": 1731,
         "match": "sic-range"
       },
-      "edgeCount": 2,
+      "edgeCount": 9,
       "formSdStatus": "listed"
     },
     {
@@ -5299,7 +5299,7 @@
         "sic": 3570,
         "match": "sic-range"
       },
-      "edgeCount": 225,
+      "edgeCount": 226,
       "formSdStatus": "listed"
     },
     {
@@ -5445,7 +5445,7 @@
         "match": "sic-range"
       },
       "edgeCount": 6,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "listed"
     },
     {
       "id": "AEP",
@@ -7475,7 +7475,7 @@
         "match": "sic-range"
       },
       "edgeCount": 5,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "listed"
     },
     {
       "id": "IDXX",
@@ -9562,7 +9562,7 @@
         "sic": 3826,
         "match": "sic-range"
       },
-      "edgeCount": 359,
+      "edgeCount": 360,
       "formSdStatus": "listed"
     },
     {
@@ -11274,7 +11274,7 @@
         "match": "sic-range"
       },
       "edgeCount": 1,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "listed"
     },
     {
       "id": "CF",
@@ -14536,6 +14536,13 @@
       "filingDate": "2026-06-01",
       "url": "https://www.sec.gov/Archives/edgar/data/21076/000120677426000303/clx4645541-ex101.htm"
     },
+    "CMCSA": {
+      "file": "edges/CMCSA.json",
+      "count": 7,
+      "relation": "smelter-in-supply-chain",
+      "filingDate": "2026-05-22",
+      "url": "https://www.sec.gov/Archives/edgar/data/1166691/000162828026037566/a2026-exhibit101.htm"
+    },
     "CMI": {
       "file": "edges/CMI.json",
       "count": 361,
@@ -14657,7 +14664,7 @@
     },
     "HPE": {
       "file": "edges/HPE.json",
-      "count": 225,
+      "count": 226,
       "relation": "smelter-in-supply-chain",
       "filingDate": "2026-05-28",
       "url": "https://www.sec.gov/Archives/edgar/data/1645590/000164559026000048/exhibit101-conflictmineral.htm"
@@ -14762,7 +14769,7 @@
     },
     "MO": {
       "file": "edges/MO.json",
-      "count": 37,
+      "count": 41,
       "relation": "smelter-in-supply-chain",
       "filingDate": "2026-05-28",
       "url": "https://www.sec.gov/Archives/edgar/data/764180/000076418026000079/exhibit1012026.htm"
@@ -14790,14 +14797,14 @@
     },
     "MTD": {
       "file": "edges/MTD.json",
-      "count": 359,
+      "count": 360,
       "relation": "smelter-in-supply-chain",
       "filingDate": "2026-05-29",
       "url": "https://www.sec.gov/Archives/edgar/data/1037646/000103764626000040/conflictmineralsreport2026.htm"
     },
     "MU": {
       "file": "edges/MU.json",
-      "count": 183,
+      "count": 184,
       "relation": "smelter-in-supply-chain",
       "filingDate": "2026-05-20",
       "url": "https://www.sec.gov/Archives/edgar/data/723125/000072312526000008/exhibit101conflictminerals.htm"
@@ -14860,7 +14867,7 @@
     },
     "PWR": {
       "file": "edges/PWR.json",
-      "count": 2,
+      "count": 9,
       "relation": "smelter-in-supply-chain",
       "filingDate": "2026-06-01",
       "url": "https://www.sec.gov/Archives/edgar/data/1050915/000119312526251568/d111320dex101.htm"
@@ -15097,16 +15104,16 @@
   "coverage": {
     "claimComplete": false,
     "nodesTotal": 495,
-    "nodesWithEdges": 89,
-    "edgesTotal": 20784,
+    "nodesWithEdges": 90,
+    "edgesTotal": 20805,
     "edgesBySource": {
-      "sec-form-sd": 20784
+      "sec-form-sd": 20805
     },
     "formSd": {
       "claimComplete": false,
       "companiesScanned": 495,
-      "companiesWithList": 83,
-      "companiesFiledNoList": 156,
+      "companiesWithList": 90,
+      "companiesFiledNoList": 149,
       "companiesNoFiling": 256,
       "companiesFailed": 0,
       "failedSymbols": [],
@@ -15187,7 +15194,7 @@
         "CAH": "filed-no-list",
         "CARR": "filed-no-list",
         "CASY": "no-filing",
-        "CAT": "filed-no-list",
+        "CAT": "listed",
         "CB": "no-filing",
         "CBOE": "no-filing",
         "CBRE": "no-filing",
@@ -15206,7 +15213,7 @@
         "CINF": "no-filing",
         "CL": "listed",
         "CLX": "listed",
-        "CMCSA": "filed-no-list",
+        "CMCSA": "listed",
         "CME": "no-filing",
         "CMG": "no-filing",
         "CMI": "listed",
@@ -15214,7 +15221,7 @@
         "CNC": "no-filing",
         "CNP": "no-filing",
         "COF": "no-filing",
-        "COHR": "filed-no-list",
+        "COHR": "listed",
         "COIN": "no-filing",
         "COO": "filed-no-list",
         "COP": "filed-no-list",
@@ -15248,7 +15255,7 @@
         "DGX": "no-filing",
         "DHI": "no-filing",
         "DHR": "filed-no-list",
-        "DIS": "filed-no-list",
+        "DIS": "listed",
         "DLR": "no-filing",
         "DLTR": "no-filing",
         "DOC": "no-filing",
@@ -15387,7 +15394,7 @@
         "LHX": "filed-no-list",
         "LII": "filed-no-list",
         "LIN": "filed-no-list",
-        "LITE": "filed-no-list",
+        "LITE": "listed",
         "LLY": "filed-no-list",
         "LMT": "filed-no-list",
         "LNT": "no-filing",
@@ -15396,7 +15403,7 @@
         "LULU": "filed-no-list",
         "LUV": "no-filing",
         "LVS": "no-filing",
-        "LYB": "filed-no-list",
+        "LYB": "listed",
         "LYV": "no-filing",
         "MA": "no-filing",
         "MAA": "no-filing",
@@ -15504,7 +15511,7 @@
         "RTX": "listed",
         "RVTY": "filed-no-list",
         "SBAC": "no-filing",
-        "SBUX": "filed-no-list",
+        "SBUX": "listed",
         "SCHW": "no-filing",
         "SHW": "listed",
         "SJM": "no-filing",
@@ -15607,8 +15614,8 @@
         "ZBRA": "listed",
         "ZTS": "filed-no-list"
       },
-      "companiesPublished": 89,
-      "edgesTotal": 20784,
+      "companiesPublished": 90,
+      "edgesTotal": 20805,
       "uniqueSmelters": 1705,
       "exactNameMatchWithCid": 681,
       "distinctAfterExactNameMatch": 1024,
@@ -15723,8 +15730,8 @@
         "sector": "通信服务",
         "sectorEn": "Communication Services",
         "companies": 17,
-        "withEdges": 2,
-        "filedNoList": 3,
+        "withEdges": 3,
+        "filedNoList": 2,
         "noFiling": 12,
         "failed": 0,
         "unscanned": 0
@@ -15735,7 +15742,7 @@
     },
     "stageResolvedNodes": 495,
     "stageAmbiguousNodes": 0,
-    "note": "本图谱只收录有公开出处的关系，不是完整供应链。当前 20784 条边全部来自 Form SD 冲突矿产申报，语义是「该冶炼厂出现在申报人的供应链中」——间接、不含份额、不含层级，不等于直接供货关系。"
+    "note": "本图谱只收录有公开出处的关系，不是完整供应链。当前 20805 条边全部来自 Form SD 冲突矿产申报，语义是「该冶炼厂出现在申报人的供应链中」——间接、不含份额、不含层级，不等于直接供货关系。"
   },
   "dataQuality": {
     "contractVersion": 1,

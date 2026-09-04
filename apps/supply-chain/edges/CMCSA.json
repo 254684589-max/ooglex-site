@@ -1,8 +1,8 @@
 {
   "contractVersion": 2,
   "dataset": "supply-chain-edges",
-  "symbol": "SBUX",
-  "name": "星巴克",
+  "symbol": "CMCSA",
+  "name": "康卡斯特",
   "updatedAt": "2026-09-04T10:58:37Z",
   "relation": {
     "id": "smelter-in-supply-chain",
@@ -12,40 +12,41 @@
   "confidence": "disclosed",
   "direction": {
     "from": "smelter",
-    "to": "SBUX",
+    "to": "CMCSA",
     "toListed": true
   },
   "evidence": {
     "sourceType": "sec-form-sd",
-    "url": "https://www.sec.gov/Archives/edgar/data/829224/000082922426000099/a20260528-starbucksxex101c.htm",
-    "docDate": "2026-05-29",
+    "url": "https://www.sec.gov/Archives/edgar/data/1166691/000162828026037566/a2026-exhibit101.htm",
+    "docDate": "2026-05-22",
     "form": "SD",
-    "accession": "0000829224-26-000099",
-    "filingDate": "2026-05-29",
+    "accession": "0001628280-26-037566",
+    "filingDate": "2026-05-22",
     "reportDate": "",
-    "document": "a20260528-starbucksxex101c.htm",
-    "indexUrl": "https://www.sec.gov/Archives/edgar/data/829224/000082922426000099/",
-    "totalSD": 11
+    "document": "a2026-exhibit101.htm",
+    "indexUrl": "https://www.sec.gov/Archives/edgar/data/1166691/000162828026037566/",
+    "totalSD": 5
   },
   "parse": {
-    "rowsScanned": 408,
+    "rowsScanned": 351,
     "rowsWithCid": 0,
-    "nameOnly": 6,
-    "droppedNoCid": 2,
-    "unique": 6,
+    "nameOnly": 7,
+    "droppedNoCid": 1,
+    "unique": 7,
     "namedRatio": 1.0,
     "countryRatio": 1.0
   },
   "byCountry": {
     "印度尼西亚": 2,
     "菲律宾": 1,
+    "缅甸": 1,
     "哥伦比亚": 1,
     "墨西哥": 1,
     "泰国": 1
   },
   "byMineral": {
     "金": 3,
-    "锡": 2,
+    "锡": 3,
     "钽": 1
   },
   "edges": [
@@ -59,7 +60,19 @@
       "minerals": [
         "金"
       ],
-      "row": 27
+      "row": 25
+    },
+    {
+      "from": "NAME:ds-myanmar",
+      "idType": "name-only",
+      "cid": null,
+      "name": "DS Myanmar",
+      "country": "缅甸",
+      "countryEn": "myanmar",
+      "minerals": [
+        "锡"
+      ],
+      "row": 205
     },
     {
       "from": "NAME:gold-by-gold-colombia",
@@ -71,7 +84,7 @@
       "minerals": [
         "金"
       ],
-      "row": 58
+      "row": 52
     },
     {
       "from": "NAME:kemet-de-mexico",
@@ -83,7 +96,7 @@
       "minerals": [
         "钽"
       ],
-      "row": 211
+      "row": 170
     },
     {
       "from": "NAME:pt-arsed-indonesia",
@@ -95,7 +108,7 @@
       "minerals": [
         "锡"
       ],
-      "row": 285
+      "row": 237
     },
     {
       "from": "NAME:pt-premium-tin-indonesia",
@@ -107,7 +120,7 @@
       "minerals": [
         "锡"
       ],
-      "row": 295
+      "row": 251
     },
     {
       "from": "NAME:umicore-precious-metals-thailand",
@@ -119,7 +132,7 @@
       "minerals": [
         "金"
       ],
-      "row": 184
+      "row": 144
     }
   ],
   "coverage": {

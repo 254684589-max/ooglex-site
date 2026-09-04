@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "RL",
   "name": "拉夫劳伦",
-  "updatedAt": "2026-09-04T10:32:16Z",
+  "updatedAt": "2026-09-04T10:58:37Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -31,13 +31,17 @@
     "rowsScanned": 261,
     "rowsWithCid": 218,
     "nameOnly": 0,
-    "droppedNoCid": 0,
+    "droppedNoCid": 1,
     "unique": 217,
     "namedRatio": 0.995,
-    "countryRatio": 0.0
+    "countryRatio": 0.018
   },
   "byCountry": {
-    "未归类": 217
+    "未归类": 213,
+    "菲律宾": 1,
+    "印度尼西亚": 1,
+    "墨西哥": 1,
+    "哥伦比亚": 1
   },
   "byMineral": {
     "金": 94,
@@ -183,8 +187,8 @@
       "idType": "rmi-cid",
       "cid": "CID000128",
       "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
-      "country": null,
-      "countryEn": null,
+      "country": "菲律宾",
+      "countryEn": "philippines",
       "minerals": [
         "金"
       ],
@@ -315,8 +319,8 @@
       "idType": "rmi-cid",
       "cid": "CID000313",
       "name": "PT Premium Tin Indonesia",
-      "country": null,
-      "countryEn": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
       "minerals": [
         "锡"
       ],
@@ -1779,8 +1783,8 @@
       "idType": "rmi-cid",
       "cid": "CID002539",
       "name": "KEMET de Mexico",
-      "country": null,
-      "countryEn": null,
+      "country": "墨西哥",
+      "countryEn": "mexico",
       "minerals": [
         "钽"
       ],
@@ -2475,8 +2479,8 @@
       "idType": "rmi-cid",
       "cid": "CID003641",
       "name": "Gold by Gold Colombia",
-      "country": null,
-      "countryEn": null,
+      "country": "哥伦比亚",
+      "countryEn": "colombia",
       "minerals": [
         "金"
       ],
