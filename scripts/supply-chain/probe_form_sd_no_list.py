@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 import time
 from urllib import error, request
@@ -51,6 +52,16 @@ UA = f"Ooglex Supply Chain Research/1.0 ({CONTACT})"
 # 「哪些文件被现有规则挡掉了」——规则各写一份的话，抽取器一改探针就开始说假话。
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from extract_form_sd import skip_reason           # noqa: E402
+
+# 文件名像不像一份冲突矿产报告。只用于给人排查线索，不作任何自动判定——
+# 申报人给文件起什么名字是它自己的事，猜不中很正常。
+# 「d」是 Workiva 那套模板里代替小数点的写法：de-20260518xex1d01.htm = Exhibit 1.01
+_CMR_HINT = re.compile(r"conflict|cmr|ex\s*1[-_.d]?01|exhibit\s*1[-_.d]?01", re.I)
+
+
+def _looks_like_cmr(name: str) -> bool:
+    return bool(_CMR_HINT.search(name))
+
 
 NODES_PATH = "apps/supply-chain/nodes.json"
 IDENTITY_PATH = "apps/supply-chain/identity.json"
@@ -112,7 +123,7 @@ def main() -> int:
           "重点看：有没有名字像冲突矿产报告、却因为不是 HTML 或名字以 0 开头被跳过的。\n")
 
     sample = targets[:MAX_COMPANIES]
-    stats = {"pdf": 0, "zero": 0, "over4": 0, "clean": 0, "failed": 0}
+    stats = {"cmr": 0, "pdf": 0, "lost": 0, "over4": 0, "clean": 0, "failed": 0}
     for node in sample:
         symbol = node["symbol"]
         cik = node.get("cik") or (identity.get(symbol) or {}).get("cik")
@@ -153,22 +164,34 @@ def main() -> int:
         rows.sort(key=lambda r: -r[1])
 
         kept = [r for r in rows if r[2] is None]
-        pdfs = [r for r in rows if r[0].lower().endswith(".pdf")]
-        zeros = [r for r in rows if r[2] == "文件名以 0 开头"]
+        # 被跳过的 0 字节索引文件不是损失——那正是规则要跳的东西。
+        # 首轮把它们算进「现有规则整份看不到」，40 家全中招，看着像发现了大金矿，
+        # 其实一个都不是。**只有被跳过且有实质体积的文件才可能是损失。**
+        pdfs = [r for r in rows if r[0].lower().endswith(".pdf") and r[1] > 4096]
+        lost = [r for r in rows if r[2] and r[1] > 8192
+                and not r[0].lower().endswith((".jpg", ".jpeg", ".png", ".gif",
+                                               ".xsd", ".xml", ".zip", ".txt"))]
+        # 真正该问的问题：这份申报里有没有一份**会读的**冲突矿产报告附件？
+        # 有，却没抽到名单 —— 那就不是文件没选对，是解析器解不出来。
+        cmr = [r for r in kept if _looks_like_cmr(r[0]) and r[1] > 8192]
         if pdfs:
             stats["pdf"] += 1
-        if zeros:
-            stats["zero"] += 1
+        if lost:
+            stats["lost"] += 1
         if len(kept) > 4:
             stats["over4"] += 1
-        if not pdfs and not zeros and len(kept) <= 4:
+        if cmr:
+            stats["cmr"] += 1
+        elif not pdfs and not lost:
             stats["clean"] += 1
 
         flags = []
+        if cmr:
+            flags.append(f"有会读的冲突矿产报告 {cmr[0][1] // 1024}KB，却没抽到名单")
         if pdfs:
-            flags.append(f"PDF {len(pdfs)} 份")
-        if zeros:
-            flags.append(f"名字以 0 开头 {len(zeros)} 份")
+            flags.append(f"PDF {len(pdfs)} 份（{pdfs[0][1] // 1024}KB）")
+        if lost:
+            flags.append(f"被跳过的实质文件 {len(lost)} 份")
         if len(kept) > 4:
             flags.append(f"HTML {len(kept)} 份超过只看 4 份的上限")
         mark = "!!" if flags else "--"
@@ -183,14 +206,20 @@ def main() -> int:
 
     print("\n── 结论 ────────────────────────────────────────────────────────")
     print(f"抽样 {len(sample)} 家：")
-    print(f"  含 PDF 附件            {stats['pdf']} 家 —— 现有规则整份看不到")
-    print(f"  含名字以 0 开头的文件   {stats['zero']} 家 —— 现有规则整份看不到")
-    print(f"  HTML 超过 4 份         {stats['over4']} 家 —— 第 5 份起看不到")
-    print(f"  三条都不沾            {stats['clean']} 家 —— 这些多半真的没列名单")
-    print(f"  查不到／失败          {stats['failed']} 家")
-    print("\n注意：上面的计数只说明**现有规则会不会漏看某些文件**，"
-          "不说明那些文件里真有名单。")
-    print("要判断名单在不在，得点开上面的归档地址看原文——"
+    print(f"  有会读的冲突矿产报告却没抽到名单  {stats['cmr']} 家"
+          "  ←← 文件选对了，是**解析器**解不出来")
+    print(f"  冲突矿产报告是 PDF               {stats['pdf']} 家"
+          "  ←← 现有规则整份看不到")
+    print(f"  有被跳过的实质文件               {stats['lost']} 家")
+    print(f"  会读的 HTML 超过 4 份            {stats['over4']} 家 —— 第 5 份起看不到")
+    print(f"  以上都不沾                      {stats['clean']} 家 —— 这些多半真的没列名单")
+    print(f"  查不到／失败                    {stats['failed']} 家")
+    print("\n注意一：0 字节的 index / index-headers 文件被跳过**不是损失**，"
+          "那正是规则要跳的东西。")
+    print("        首轮把它们算进「看不到的文件」，40 家全中招，看着像发现了大金矿，"
+          "其实一个都不是。")
+    print("注意二：上面的计数只说明**文件层面**的情况，不说明那些文件里真有名单。")
+    print("        要判断名单在不在，得点开上面的归档地址看原文——"
           "这一步由人做，本探针不替它下结论。")
     return 0
 
