@@ -15,6 +15,8 @@ name: Supply Chain Source Probe
 #   usaspending —— 第三条数据源：美国联邦采购（分包 = 一级供应关系）。
 #              选它是因为适用范围与 Form SD 正交，能补金融／房地产／公用事业
 #              那几个 Form SD 结构上永远够不着的板块。
+#   nolist  —— 「有申报但没抽到名单」151 家的申报文件清单。查这一档是制度上限
+#              还是抽取器漏看（PDF 附件、名字以 0 开头、只看最大 4 份）。
 #   flow    —— 物流通道层。IMF PortWatch、纽约联储 GSCPI、世界银行与 FRED 政府口径序列。
 #
 # 许可是本领域的主要风险：BDI、Drewry WCI、Freightos FBX、Xeneta、ISM 供应商交付
@@ -150,6 +152,30 @@ jobs:
         env:
           SEC_CONTACT: ${{ vars.SEC_CONTACT }}
         run: python scripts/supply-chain/probe_usaspending.py
+
+  # 「有申报但没抽到名单」那 151 家，名单到底在不在申报里。
+  # 这一档是甲（本来就没列，制度上限）还是乙（在里面但抽取器没看到，是缺陷），
+  # 差别是「这条源到头了」还是「还有 151 家可以补」——只能看真实文件清单。
+  nolist:
+    name: 有申报无名单 · 151 家的文件清单
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate extraction rules (offline)
+        run: python scripts/validate_supply_chain_extraction.py
+
+      - name: List documents of filings with no smelter table
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: python scripts/supply-chain/probe_form_sd_no_list.py
 
   # Form SD 抽取器上线前的人工核对关口。**dry-run，不写任何文件。**
   # 上一轮的教训：探针的自动结论说「可进入抽取器开发」，但把抽出来的名字打出来

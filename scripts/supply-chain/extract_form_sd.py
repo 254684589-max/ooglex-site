@@ -154,6 +154,23 @@ def latest_form_sd(cik: int) -> dict | None:
     return None
 
 
+def skip_reason(name: str) -> str | None:
+    """这份文档要不要跳过，以及为什么。返回 None 表示会读。
+
+    单独抽出来是因为 probe_form_sd_no_list.py 要用同一套规则去显示
+    「哪些文件被规则挡掉了」。两边各写一份的话，规则一改探针就开始说假话——
+    而那个探针的全部价值就在于如实显示被挡掉的文件。
+    """
+    low = name.lower()
+    if not low.endswith((".htm", ".html")):
+        return "非 HTML"
+    if low.startswith("0"):
+        return "文件名以 0 开头"
+    if "index" in low:
+        return "文件名含 index"
+    return None
+
+
 def list_documents(index_url: str) -> list[dict]:
     """按体积倒序列出该次申报的真实文档。
 
@@ -166,8 +183,7 @@ def list_documents(index_url: str) -> list[dict]:
     documents = []
     for item in ((payload.get("directory") or {}).get("item")) or []:
         name = str(item.get("name") or "")
-        low = name.lower()
-        if not low.endswith((".htm", ".html")) or low.startswith("0") or "index" in low:
+        if skip_reason(name):
             continue
         try:
             size = int(item.get("size") or 0)

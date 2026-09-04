@@ -593,7 +593,28 @@ def main() -> int:
         failures.append("robots Disallow 判定错误——被禁的路径必须认出来不抓")
     print(f"  [{'OK' if robots_ok else 'XX'}] robots Disallow 的路径不抓")
 
-    total = (len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
+    # 申报文档的过滤规则。抽取器用它决定读哪几份，「有申报但没抽到名单」的
+    # 探针用同一个函数显示「哪些文件被挡掉了」——两处共用，改坏了两处一起错，
+    # 而且探针会开始说假话，所以逐条钉死。
+    print("\n── 申报文档过滤：读哪些、跳哪些，两处共用同一套规则 ──────────────")
+    skip_cases = [
+        ("tm2514567d1_sd.htm", None, "正常的申报正文要读"),
+        ("nvda-20250531xsdex101.htm", None, "冲突矿产报告附件要读"),
+        ("R2.htm", None, "大写文件名不受影响"),
+        ("0001104659-25-064234-index.htm", "文件名以 0 开头", "索引文件跳过"),
+        ("Financial_Report.xlsx", "非 HTML", "非 HTML 跳过"),
+        ("cmr-2025.pdf", "非 HTML", "PDF 目前跳过——这正是探针要暴露的那一类"),
+        ("form-sd-index.html", "文件名含 index", "含 index 的跳过"),
+    ]
+    for name, expected, why in skip_cases:
+        got = extractor.skip_reason(name)
+        ok = got == expected
+        if not ok:
+            failures.append(f"过滤规则 {name!r}：期望 {expected!r}，实际 {got!r}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}"
+              f"（{name} → {got or '会读'}）")
+
+    total = (len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1)
     print("\n" + "─" * 68)
