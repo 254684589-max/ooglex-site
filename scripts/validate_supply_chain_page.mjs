@@ -189,7 +189,9 @@ async function main() {
         };
       })()`);
 
-      check(`六个环节带渲染`, () => assert.equal(probe.stageCount, 6));
+      check(`环节带数与环节表一致`, () => assert.equal(
+        probe.stageCount, NODES.stages.length,
+        `页面 ${probe.stageCount} 条，环节表 ${NODES.stages.length} 段`));
       check(`「不是完整供应链」声明可见`, () => assert.ok(probe.hasCompletenessDisclaimer));
       check(`关系边状态已说明`, () => assert.ok(probe.hasEdgeStatement));
       check(`阶段判定口径已说明`, () => assert.ok(probe.hasBasisLine));
@@ -295,9 +297,13 @@ async function main() {
         };
       })()`);
 
-      check(`实物链四段 + 链外两段`, () => {
-        assert.equal(chain.chainCount, 4, `链内 ${chain.chainCount}`);
-        assert.equal(chain.offCount, 2, `链外 ${chain.offCount}`);
+      // 段数从环节表推导，不写死。写死的话每次调整分类都要改测试，
+      // 而测试本该守的是「页面画的和数据说的一致」，不是某个具体数字。
+      const CHAIN_N = NODES.stages.filter(s => s.chain).length;
+      const OFF_N = NODES.stages.filter(s => !s.chain).length;
+      check(`实物链 ${CHAIN_N} 段 + 使能层 ${OFF_N} 段`, () => {
+        assert.equal(chain.chainCount, CHAIN_N, `链内 ${chain.chainCount}`);
+        assert.equal(chain.offCount, OFF_N, `链外 ${chain.offCount}`);
       });
       check(`环节标题不折行（旧版「上游资／源」）`, () => assert.equal(
         chain.wrapped.length, 0, `折行的：${JSON.stringify(chain.wrapped)}`));
@@ -310,8 +316,8 @@ async function main() {
       check(`表头只留一个涨跌口径`, () => assert.ok(
         chain.pctPerBand.every(n => n <= 1),
         `实际 ${JSON.stringify(chain.pctPerBand)}`));
-      check(`实物四段之间有顺序箭头（3 个）`, () => assert.equal(
-        chain.linksInChain, 3, `箭头 ${chain.linksInChain} 个`));
+      check(`实物链各段之间有顺序箭头（${CHAIN_N - 1} 个）`, () => assert.equal(
+        chain.linksInChain, CHAIN_N - 1, `箭头 ${chain.linksInChain} 个`));
       check(`链外不画箭头——它不在实物流转链条上`, () => assert.equal(
         chain.linksOffChain, 0));
 

@@ -58,19 +58,33 @@ EDGES_DIR = os.path.join(OUT_DIR, "edges")
 SMELTERS_PATH = os.path.join(OUT_DIR, "smelters.json")
 
 # ── 价值链阶段定义 ──────────────────────────────────────────────────────────
+# 八段实物链 + 四层使能层。chain=True 的在实物流转链条上、按 order 首尾相接；
+# chain=False 的横跨整条链，不参与流转（能源是投入、金融是外围服务）。
 STAGES = [
-    {"id": "upstream-resource", "label": "上游资源", "labelEn": "Upstream Resources",
-     "order": 1, "description": "能源与原材料的开采、初加工"},
-    {"id": "intermediate-manufacturing", "label": "中间制造", "labelEn": "Intermediate Manufacturing",
-     "order": 2, "description": "零部件、设备与资本品制造"},
-    {"id": "brand-integration", "label": "品牌整合", "labelEn": "Brand & Integration",
-     "order": 3, "description": "面向终端市场的品牌与系统集成"},
-    {"id": "distribution-service", "label": "分销服务", "labelEn": "Distribution & Services",
-     "order": 4, "description": "零售、物流与终端服务"},
-    {"id": "platform-service", "label": "平台服务", "labelEn": "Platform Services",
-     "order": 5, "description": "软件、互联网与通信平台"},
-    {"id": "supporting", "label": "支持性行业", "labelEn": "Supporting Industries",
-     "order": 6, "description": "金融、地产、公用事业等不直接位于实物链上的行业"},
+    {"id": "raw-material", "label": "资源开采", "labelEn": "Raw Materials",
+     "order": 1, "chain": True, "description": "矿产、油气与农林原料的开采"},
+    {"id": "material-processing", "label": "材料加工", "labelEn": "Materials Processing",
+     "order": 2, "chain": True, "description": "冶炼、化工、炼油与造纸，产出下游的投入品"},
+    {"id": "component", "label": "零部件与元器件", "labelEn": "Components",
+     "order": 3, "chain": True, "description": "半导体、电子元件与金属结构件"},
+    {"id": "capital-equipment", "label": "资本设备", "labelEn": "Capital Equipment",
+     "order": 4, "chain": True, "description": "供给制造环节的机械与专用设备"},
+    {"id": "finished-goods", "label": "整机与品牌", "labelEn": "Finished Goods & Brands",
+     "order": 5, "chain": True, "description": "面向终端市场的整机、成药与消费品牌"},
+    {"id": "logistics", "label": "物流与运输", "labelEn": "Logistics & Transport",
+     "order": 6, "chain": True, "description": "铁路、货运、空运与货代，链条的连接组织"},
+    {"id": "distribution", "label": "分销与零售", "labelEn": "Distribution & Retail",
+     "order": 7, "chain": True, "description": "批发与零售渠道"},
+    {"id": "end-service", "label": "终端服务", "labelEn": "End Services",
+     "order": 8, "chain": True, "description": "医疗、住宿、客运与售后等面向消费者的服务"},
+    {"id": "energy-utility", "label": "能源与公用事业", "labelEn": "Energy & Utilities",
+     "order": 9, "chain": False, "description": "电力、燃气与水务——是制造业的投入品，不是外围服务"},
+    {"id": "technology", "label": "技术与平台", "labelEn": "Technology & Platforms",
+     "order": 10, "chain": False, "description": "软件、电信承载与内容平台"},
+    {"id": "financial", "label": "金融与专业服务", "labelEn": "Financial & Professional",
+     "order": 11, "chain": False, "description": "银行、保险、地产与工程会计等专业服务"},
+    {"id": "circular", "label": "循环与废弃物", "labelEn": "Circular & Waste",
+     "order": 12, "chain": False, "description": "废弃物处理与材料回收，逆向供应链"},
 ]
 STAGE_IDS = {s["id"] for s in STAGES}
 
@@ -80,30 +94,35 @@ STAGE_IDS = {s["id"] for s in STAGES}
 # 「微软 = 待细化（可能：中间制造/品牌整合/平台服务）」才是这份数据实际支持的说法。
 # 候选集会随 SIC 行业码或真实上下游边收敛为单一阶段。
 SECTOR_STAGE_MAP: dict[str, dict] = {
-    "Energy": {"stage": "upstream-resource"},
-    "Materials": {"stage": "upstream-resource"},
-    "Financials": {"stage": "supporting"},
-    "Real Estate": {"stage": "supporting"},
-    "Utilities": {"stage": "supporting"},
+    "Financials": {"stage": "financial"},
+    "Real Estate": {"stage": "financial"},
+    "Utilities": {"stage": "energy-utility"},
+    "Energy": {
+        "candidates": ["raw-material", "material-processing"],
+        "reason": "能源板块横跨油气开采与炼制，板块级分不开埃克森与康菲的位置"},
+    "Materials": {
+        "candidates": ["raw-material", "material-processing", "component"],
+        "reason": "原材料板块横跨采矿、冶炼与金属加工件"},
     "Industrials": {
-        "candidates": ["intermediate-manufacturing", "distribution-service"],
-        "reason": "工业板块横跨资本品制造与运输物流服务，板块级无法判定单家公司"},
+        "candidates": ["capital-equipment", "finished-goods", "logistics"],
+        "reason": "工业板块横跨资本设备、整机制造与运输物流，三者在链上位置完全不同"},
     "Information Technology": {
-        "candidates": ["intermediate-manufacturing", "brand-integration", "platform-service"],
-        "reason": "科技板块同时含半导体（中间制造）、硬件（品牌整合）与软件（平台服务），"
-                  "同板块的英伟达、苹果与微软位置完全不同"},
+        "candidates": ["component", "capital-equipment", "finished-goods", "technology"],
+        "reason": "科技板块同时含半导体（元器件）、半导体设备（资本设备）、"
+                  "整机（品牌）与软件（技术平台），同板块的英伟达、应用材料、"
+                  "苹果与微软位置完全不同"},
     "Communication Services": {
-        "candidates": ["platform-service", "distribution-service"],
-        "reason": "通信服务横跨互联网平台与电信运营"},
+        "candidates": ["technology", "end-service"],
+        "reason": "通信服务横跨网络承载、内容平台与娱乐服务"},
     "Consumer Discretionary": {
-        "candidates": ["intermediate-manufacturing", "brand-integration", "distribution-service"],
-        "reason": "可选消费横跨整车与耐用品制造、品牌与零售分销"},
+        "candidates": ["finished-goods", "distribution", "end-service"],
+        "reason": "可选消费横跨整车与耐用品制造、零售分销与消费服务"},
     "Consumer Staples": {
-        "candidates": ["brand-integration", "distribution-service"],
+        "candidates": ["finished-goods", "distribution"],
         "reason": "必需消费横跨食品饮料生产与商超分销"},
     "Health Care": {
-        "candidates": ["intermediate-manufacturing", "distribution-service"],
-        "reason": "医疗健康横跨制药与器械制造和医疗服务"},
+        "candidates": ["finished-goods", "component", "end-service"],
+        "reason": "医疗健康横跨制药与器械（成品）、诊断试剂（投入品）与医疗服务"},
 }
 
 
