@@ -41,6 +41,10 @@ on:
         description: '外国发行人探针回溯几个季度的 EDGAR 全量索引'
         required: false
         default: '4'
+      extra_ciks:
+        description: 'dry-run 临时追加不在公司池里的公司，格式 代码:CIK，逗号分隔'
+        required: false
+        default: ''
       only:
         description: '只跑哪些 job（逗号分隔：graph/supplier/usaspending/nolist/extract/flow/foreign；留空跑全部）'
         required: false
@@ -222,6 +226,7 @@ jobs:
           python scripts/supply-chain/extract_form_sd.py \
             --dry-run \
             --tickers '${{ inputs.tickers }}' \
+            --extra-ciks '${{ inputs.extra_ciks }}' \
             --limit '${{ inputs.limit }}' \
             --sample-rows 12
 

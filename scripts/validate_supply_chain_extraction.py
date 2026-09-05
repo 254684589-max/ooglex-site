@@ -958,11 +958,37 @@ def main() -> int:
             failures.append(f"链表自洽：{why} 不成立")
         print(f"  [{'OK' if ok else 'XX'}] {why}")
 
+    # --extra-ciks 是「先探后建」的口子：拿几家还不在公司池里的公司做 dry-run。
+    # 危险的是它被用来写盘——那等于绕过公司池直接发布。守住这道闸。
+    print("\n── 临时追加公司只允许 dry-run ────────────────────────────────────")
+    import io as _io
+    import contextlib as _ctx
+    guard_cases = [
+        (["x", "--extra-ciks", "TSM:1046179"], 1, "不加 --dry-run 必须拒绝"),
+        (["x", "--extra-ciks", "TSM:notanumber", "--dry-run"], 1, "CIK 不是数字要拒绝"),
+        (["x", "--extra-ciks", "TSM", "--dry-run"], 1, "少了冒号要拒绝"),
+    ]
+    for argv, expect, why in guard_cases:
+        saved = sys.argv
+        sys.argv = argv
+        buf = _io.StringIO()
+        try:
+            with _ctx.redirect_stdout(buf):
+                got = extractor.main()
+        except SystemExit as exc:                  # noqa: PERF203
+            got = exc.code
+        finally:
+            sys.argv = saved
+        ok = got == expect
+        if not ok:
+            failures.append(f"追加公司闸门 {why}：期望返回 {expect}，实际 {got}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}（返回 {got}）")
+
     total = (len(pdf_cases) + 4 + len(kind_cases) + len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
-             + len(chain_cases) + len(chain_self))
+             + len(chain_cases) + len(chain_self) + len(guard_cases))
     print("\n" + "─" * 68)
     if failures:
         print(f"失败 {len(failures)}/{total}：")

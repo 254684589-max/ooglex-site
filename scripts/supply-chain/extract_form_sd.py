@@ -350,6 +350,12 @@ def main() -> int:
                     help="逗号分隔，限定公司；留空或写 ALL 表示全部。"
                          "（写 ALL 是因为 GitHub 会把空字符串输入替换成默认值，"
                          "「留空=全部」在工作流里不成立）")
+    ap.add_argument("--extra-ciks", default="",
+                    help="临时追加不在 identity.json 里的公司，格式 代码:CIK，逗号分隔"
+                         "（如 TSM:1046179,ASML:937966）。用途是**先探后建**：先拿几家"
+                         "外国私人发行人做 dry-run，确认解析器对它们的申报也有效，"
+                         "再决定要不要建正式的公司池。只在 --dry-run 下允许——"
+                         "不经过公司池就写盘，等于绕过发布口径。")
     ap.add_argument("--limit", type=int, default=0, help="最多处理几家")
     ap.add_argument("--sample-rows", type=int, default=0, help="每家打印前 N 条明细")
     ap.add_argument("--force", action="store_true",
@@ -374,6 +380,33 @@ def main() -> int:
         wanted = []
     targets = [(t, v["cik"]) for t, v in sorted(identity.items())
                if v.get("cik") and (not wanted or t.upper() in wanted)]
+
+    # 临时追加的公司。只用于 dry-run 核对，不进任何写盘路径。
+    if args.extra_ciks:
+        if not args.dry_run:
+            print("[XX] --extra-ciks 只允许配合 --dry-run 使用："
+                  "不经过公司池就写盘等于绕过发布口径")
+            return 1
+        seen = {t.upper() for t, _ in targets}
+        for item in args.extra_ciks.split(","):
+            item = item.strip()
+            if not item:
+                continue
+            if ":" not in item:
+                print(f"[XX] --extra-ciks 项 {item!r} 不是 代码:CIK 的形式")
+                return 1
+            code, _, raw = item.partition(":")
+            code = code.strip().upper()
+            try:
+                cik = int(raw.strip())
+            except ValueError:
+                print(f"[XX] --extra-ciks 项 {item!r} 的 CIK 不是数字")
+                return 1
+            if code in seen:
+                continue
+            seen.add(code)
+            targets.append((code, cik))
+        targets.sort(key=lambda pair: pair[0])
     if args.limit:
         targets = targets[:args.limit]
     if not targets:
