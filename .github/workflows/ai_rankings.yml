@@ -26,6 +26,18 @@ jobs:
           AA_API_KEY: ${{ secrets.AA_API_KEY }}
         run: python scripts/ai-rankings/build_rankings.py
 
+      # 静态资源版本号（全站）：数据是新的、代码是缓存里的旧的，页面就会拿旧渲染
+      # 逻辑显示新数据。
+      - name: Validate static asset versions (site-wide)
+        run: python scripts/validate_asset_versions.py
+
+      # 页面契约：三档宽度渲染、排名区只收多榜模型、单榜模型必须出现且不给名次、
+      # 待补榜分值与 data.json 逐个比对。**数据对了但页面把「还没有可比的分」渲染成
+      # 「这个模型不存在」，同样是骗人**，所以这道在提交前跑；失败就不提交，保留
+      # 上一份好数据。
+      - name: Validate page contract (browser)
+        run: node scripts/ai-rankings/validate_rankings_page.mjs
+
       - name: Commit data
         run: |
           git config user.name "github-actions[bot]"

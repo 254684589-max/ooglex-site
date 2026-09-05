@@ -160,7 +160,9 @@
       var n = g.ranked.length;
       html += "<div class='sechead'><b>暂只有 1 榜数据 · 不参与综合排名（" + g.pending.length + " 个）</b>" +
         "<span>综合参考分要求至少两个榜都给出成绩；只有一个榜的模型没法跨榜归一化，" +
-        "硬排会把它顶到虚高的位置。刚发布的模型通常先被一个榜收录，等第二个榜出分后会自动并入上面的排名。</span></div>" +
+        "硬排会把它顶到虚高的位置。刚发布的模型通常先被一个榜收录，等第二个榜出分后会自动并入上面的排名。" +
+        "本区按各自那一榜内的相对位置排序，只为方便浏览，<b>不代表跨榜高下</b>——" +
+        "Elo 与 LiveBench 均分口径不同，绝对值不可直接比较。</span></div>" +
         g.pending.map(function (m, i) { return rowcard(m, null, n + i); }).join("");
     }
     list.innerHTML = html;
