@@ -632,6 +632,13 @@ async function main() {
             tag: (box.querySelector('.cfhd .tag') || {}).textContent || '',
             warn: (box.querySelector('.cfwarn') || {}).textContent || '',
             tagVisible: !!(box.querySelector('.cfhd .tag') || {}).offsetParent,
+            lineageChips: [...box.querySelectorAll('.lnstrip .lnchip:not(.me)')]
+              .map(a => (a.childNodes[0] || {}).textContent || ''),
+            lineageCap: (box.querySelector('.lncap') || {}).textContent || '',
+            lineageScrolls: (() => {
+              const st = box.querySelector('.lnstrip');
+              return !!st && getComputedStyle(st).overflowX === 'auto';
+            })(),
             overflow: Math.max(0, document.documentElement.scrollWidth - window.innerWidth)
           };
         })()`);
@@ -657,7 +664,47 @@ async function main() {
           assert.match(flow.warn, /只有申报文件说了算/);
           assert.match(flow.warn, /不指名任何公司/);
         });
-        check(`上下游块无横向溢出`, () => assert.ok(flow.overflow <= 1,
+        // 完整路径是**在 77 条声明连线上做多跳可达**，不是新的断言。
+      // 因此断言拿同一套连线在 Node 里独立算一遍，比对页面画出来的是不是那个集合。
+      check(`完整路径与框架连线独立算出的结果一致`, () => {
+        const links = (NODES.chainLinks || []).filter(l => l.direction !== "counterflow");
+        const reach = (id, dir) => {
+          const seen = new Set([id]); let front = [id];
+          for (let i = 0; i < 12 && front.length; i++) {
+            const next = [];
+            front.forEach((cur) => links.forEach((l) => {
+              const a = dir === "up" ? l.to : l.from;
+              const b = dir === "up" ? l.from : l.to;
+              if (a === cur && !seen.has(b)) { seen.add(b); next.push(b); }
+            }));
+            front = next;
+          }
+          seen.delete(id); return seen;
+        };
+        const want = new Set([...reach(PICKED.id, "up"), ...reach(PICKED.id, "down")]);
+        const meta = {}; (NODES.chains || []).forEach(c => { meta[c.id] = c.label; });
+        const wantLabels = new Set([...want].map(id => meta[id]).filter(Boolean));
+        const got = new Set(flow.lineageChips);
+        wantLabels.forEach((lb) => assert.ok(got.has(lb),
+          `路径里少了 ${lb}（页面画了 ${got.size} 个，独立算出 ${wantLabels.size} 个）`));
+        got.forEach((lb) => assert.ok(wantLabels.has(lb),
+          `路径里多画了 ${lb}——多跳可达只能从那 77 条连线推出来`));
+      });
+      check(`路径说明写清这是框架、不是实测关系`, () => {
+        assert.match(flow.lineageCap, /框架/);
+        assert.ok(/不是实测/.test(flow.lineageCap),
+          `说明没写清它不是实测关系：${flow.lineageCap}`);
+      });
+      check(`路径说明写明逆向边不参与推导`, () => {
+        assert.match(flow.lineageCap, /逆向边/,
+          `没说逆向边的处理：${flow.lineageCap}`);
+      });
+      check(`路径说明里没有漏出的星号`, () => assert.ok(!flow.lineageCap.includes("*"),
+        `实际：${flow.lineageCap}`));
+      check(`路径条在自身容器内滚动，页面不横向溢出`, () => {
+        assert.ok(flow.lineageScrolls, "路径条没有设成容器内滚动");
+      });
+      check(`上下游块无横向溢出`, () => assert.ok(flow.overflow <= 1,
           `溢出 ${flow.overflow}px`));
 
         // 点上游一条要能跳过去，否则这张图只能看不能走
@@ -1237,6 +1284,78 @@ async function main() {
         check(`${width}px 清单容器无横向溢出`, () => assert.ok(narrow.box <= 1,
           `溢出 ${narrow.box}px`));
       }
+
+      // 清单筛选。**筛选只能取子集，不能把总量说小**——标题里必须同时印
+      // 「筛出多少 / 共多少」，并且说清隐藏的那些仍在申报里。
+      console.log("\n── 公司视图 · 冶炼厂清单筛选 ──");
+      await client.send("Page.navigate",
+        { url: `http://127.0.0.1:${port}/apps/supply-chain/company.html?symbol=${target}` },
+        sessionId);
+      const flt = await evaluate(`new Promise((done) => {
+        const deadline = Date.now() + 20000;
+        (function poll() {
+          const bar = document.querySelector('.smfilt');
+          const items = document.querySelectorAll('.smelters .sm');
+          if (bar && items.length) {
+            const groups = [...document.querySelectorAll('.smfilt .fg')].map((g) => ({
+              label: (g.querySelector('.lb') || {}).textContent || '',
+              buttons: [...g.querySelectorAll('.fb')].map((b) => b.textContent.trim()),
+              more: (g.querySelector('.more') || {}).textContent || '',
+            }));
+            // 点第一个真正的筛选按钮。**不能用 :not(:first-child) 跳过「全部」**——
+            // .fg 的第一个子节点是标签 span，「全部」是第二个，那样选中的正是
+            // 「全部」，点了等于没点，断言会以为功能坏了。用未按下状态来选。
+            const first = document.querySelector('.smfilt .fg .fb[aria-pressed="false"]');
+            const before = items.length;
+            const beforeTitle = (document.querySelector('.smelters h3') || {}).textContent || '';
+            first.click();
+            setTimeout(() => {
+              done({
+                groups, before, beforeTitle,
+                chosen: first.textContent.trim(),
+                after: document.querySelectorAll('.smelters .sm').length,
+                afterTitle: (document.querySelector('.smelters h3') || {}).textContent || '',
+                clearNote: (document.querySelector('.smclear') || {}).textContent || '',
+                overflow: Math.max(0,
+                  document.documentElement.scrollWidth - window.innerWidth),
+              });
+            }, 400);
+            return;
+          }
+          if (Date.now() > deadline) return done(null);
+          setTimeout(poll, 120);
+        })();
+      })`);
+      check(`清单有矿种与国别两组筛选`, () => {
+        assert.ok(flt, "筛选条没渲染出来");
+        const labels = flt.groups.map((g) => g.label);
+        assert.ok(labels.includes("矿种") && labels.includes("国别"),
+          `实际分组：${labels.join("/")}`);
+      });
+      check(`筛选后只剩子集，且确实变少了`, () => {
+        assert.ok(flt.after > 0, "筛完一条不剩");
+        assert.ok(flt.after < flt.before,
+          `筛前 ${flt.before} 条、筛后 ${flt.after} 条——没筛掉任何东西`);
+      });
+      check(`标题同时印「筛出多少 / 共多少」，不把总量说小`, () => {
+        assert.match(flt.afterTitle, /筛出/, `筛后标题：${flt.afterTitle}`);
+        assert.ok(flt.afterTitle.includes(String(flt.before)),
+          `筛后标题没印总数 ${flt.before}：${flt.afterTitle}`);
+        assert.ok(flt.afterTitle.includes(String(flt.after)),
+          `筛后标题没印筛出数 ${flt.after}：${flt.afterTitle}`);
+      });
+      check(`说清隐藏的那些仍在申报里`, () => {
+        assert.match(flt.clearNote, /仍在这份申报里/, `实际：${flt.clearNote}`);
+        assert.ok(flt.clearNote.includes(String(flt.before - flt.after)),
+          `没说隐藏了多少家：${flt.clearNote}`);
+      });
+      check(`取值多于上限时说明「另有 N 个未单列」而不是默默截断`, () => {
+        const country = flt.groups.filter((g) => g.label === "国别")[0];
+        if (!country || !country.more) return;      // 没超上限就不查
+        assert.match(country.more, /另有 \d+ 个未单列/, `实际：${country.more}`);
+      });
+      check(`筛选后无横向溢出`, () => assert.ok(flt.overflow <= 1,
+        `溢出 ${flt.overflow}px`));
     }
 
     // 外国私人发行人这一池：没有市值、没有板块。页面必须说清那是口径如此，

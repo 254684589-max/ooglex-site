@@ -204,6 +204,31 @@
   padding:12px 14px; margin:0 0 16px;
 }
 .chainflow .cfhd { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+
+/* 完整路径。此前只画一跳，读者看得到「化工 → 半导体」，看不到
+   「石油 → 化工 → 半导体」这条路径本身——而横轴的价值恰恰在路径上。
+   宽表在自身容器里横向滚动，页面 body 绝不横向溢出。 */
+.chainflow .lineage { margin:2px 0 12px; }
+.chainflow .lncap { font-size:.7rem; color:var(--dim); line-height:1.55; margin-bottom:9px; }
+.chainflow .lnstrip { display:flex; gap:9px; align-items:flex-start;
+  overflow-x:auto; padding-bottom:6px; }
+.chainflow .lncol { display:flex; flex-direction:column; gap:4px; flex:0 0 auto;
+  min-width:96px; max-width:190px; padding:7px 8px; border-radius:9px;
+  border:1px dashed var(--line); }
+.chainflow .lncol.self { border-style:solid; border-color:rgba(74,144,217,.5);
+  background:rgba(74,144,217,.08); }
+/* 使能层单列一格：它们不参与分层（横跨所有层），但入边是真的，不能丢。 */
+.chainflow .lncol.cross { border-color:rgba(228,181,61,.35); }
+.chainflow .lncol.cross .lv { color:var(--warn); }
+.chainflow .lncol .lv { font-family:var(--mono); font-size:.6rem; color:var(--faint);
+  letter-spacing:.4px; }
+.chainflow .lnchip { display:flex; align-items:baseline; gap:5px; text-decoration:none;
+  font-size:.72rem; color:var(--text); padding:3px 5px; border-radius:5px;
+  background:rgba(255,255,255,.03); }
+a.lnchip:hover { background:rgba(74,144,217,.16); }
+.chainflow .lnchip.me { font-weight:700; background:transparent; }
+.chainflow .lnchip s { text-decoration:none; font-size:.62rem; color:var(--faint);
+  font-family:var(--mono); margin-left:auto; }
 .chainflow .cfhd b { font-size:14px; }
 .chainflow .cfhd .tag {
   font-size:11px; color:var(--faint);
@@ -478,6 +503,6 @@
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="app.js?v=2243c385" defer></script>
+<script src="app.js?v=8e3ff8a9" defer></script>
 </body>
 </html>

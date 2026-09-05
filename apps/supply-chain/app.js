@@ -528,6 +528,108 @@
     return row;
   }
 
+  // 沿 77 条框架连线走**多跳**，得到一条链的完整上游谱系与下游触达。
+  //
+  // 页面此前只画一跳：选中半导体，看得到「化工 → 半导体」，看不到
+  // 「石油 → 化工 → 半导体」这条路径本身。而这个板块的横轴价值恰恰在路径上。
+  //
+  // **逆向边（回收料返上游那六条）不参与推导**：它们是声明过的剪边，
+  // 沿着它们走会绕回起点，把「上游」算成一个环。
+  //
+  // 语义仍然是**框架，不是实测关系**：说的是「按产业结构，这条链的投入
+  // 间接来自哪几条链」，不是「这两条链上的公司之间有供货」。
+  function chainLineage(d, id, dir) {
+    var links = (d.chainLinks || []).filter(function (l) {
+      return l.direction !== "counterflow";
+    });
+    var seen = {}, out = [];
+    var frontier = [id];
+    seen[id] = true;
+    var hops = 0;
+    while (frontier.length && hops < 12) {          // 12 > 层数上限，够走到头
+      hops += 1;
+      var next = [];
+      frontier.forEach(function (cur) {
+        links.forEach(function (l) {
+          var from = dir === "up" ? l.to : l.from;
+          var to = dir === "up" ? l.from : l.to;
+          if (from !== cur || seen[to]) return;
+          seen[to] = true;
+          next.push(to);
+          out.push({ id: to, via: cur, flow: l.flow, hop: hops });
+        });
+      });
+      frontier = next;
+    }
+    return out;
+  }
+
+  // 把谱系按层号分组。层号是 sic_chains 算出来的，不是这里现编的。
+  //
+  // **没有层号的使能链不能静默丢掉。** 它们不参与分层是因为横跨所有层，
+  // 但「石油 → 物流（运输燃料）」是一条真的入边——把物流从「石油的下游」里
+  // 抹掉，路径就少说了一段。单独归到「使能层」一格，不塞进任何一层。
+  function byLayer(d, items) {
+    var meta = {};
+    (d.chains || []).forEach(function (c) { meta[c.id] = c; });
+    var buckets = {}, cross = [];
+    items.forEach(function (it) {
+      var c = meta[it.id];
+      if (!c) return;
+      var row = { chain: c, hop: it.hop, flow: it.flow };
+      if (c.layer == null) cross.push(row);
+      else (buckets[c.layer] = buckets[c.layer] || []).push(row);
+    });
+    var out = Object.keys(buckets).map(Number).sort(function (a, b) { return a - b; })
+      .map(function (L) { return { layer: L, items: buckets[L] }; });
+    if (cross.length) out.push({ layer: null, items: cross });
+    return out;
+  }
+
+  function renderLineage(d, host, meta) {
+    var up = byLayer(d, chainLineage(d, meta.id, "up"));
+    var down = byLayer(d, chainLineage(d, meta.id, "down"));
+    if (!up.length && !down.length) return;
+
+    var wrap = el("div", "lineage");
+    var cap = el("p", "lncap",
+      "按 " + ((d.chainLinks || []).filter(function (l) {
+        return l.direction !== "counterflow";
+      }).length) + " 条正向框架连线推出的完整路径：这条链的投入间接来自左边几层，"
+      + "产出间接流向右边几层。**这是产业结构框架，不是实测的公司间关系**——"
+      + "逆向边（回收料返上游那几条）不参与推导，否则「上游」会算成一个环；"
+      + "横跨全链的使能链没有层号，单列一格——它们不参与分层，"
+      + "但入边是真的（石油给物流的是运输燃料），不能丢。");
+    cap.textContent = cap.textContent.replace(/\*\*/g, "");
+    wrap.appendChild(cap);
+
+    var strip = el("div", "lnstrip");
+    function column(group, cls) {
+      var col = el("div", "lncol " + cls + (group.layer == null ? " cross" : ""));
+      col.appendChild(el("span", "lv",
+        group.layer == null ? "使能层" : ("L" + group.layer)));
+      group.items.forEach(function (it) {
+        var a = el("a", "lnchip");
+        a.href = "?chain=" + encodeURIComponent(it.chain.id);
+        a.appendChild(document.createTextNode(it.chain.label));
+        a.appendChild(el("s", null, String(it.chain.count) + " 家"));
+        a.title = "第 " + it.hop + " 跳可达" + (it.flow ? "：" + it.flow : "");
+        col.appendChild(a);
+      });
+      return col;
+    }
+    up.forEach(function (g) { strip.appendChild(column(g, "up")); });
+    var self = el("div", "lncol self");
+    self.appendChild(el("span", "lv", "L" + (meta.layer == null ? "?" : meta.layer)));
+    var me = el("span", "lnchip me", meta.label);
+    me.appendChild(el("s", null, String(meta.count) + " 家"));
+    self.appendChild(me);
+    strip.appendChild(self);
+    down.forEach(function (g) { strip.appendChild(column(g, "down")); });
+    wrap.appendChild(strip);
+    host.appendChild(wrap);
+  }
+
   function renderChainFlow(d) {
     var host = $("chainflow");
     if (!host) return;
@@ -545,6 +647,9 @@
     hd.appendChild(el("b", null, meta.label + " 的上下游"));
     hd.appendChild(el("span", "tag", "产业结构框架"));
     host.appendChild(hd);
+
+    // 先给完整路径（多跳），再给直接相邻那一跳的明细。
+    renderLineage(d, host, meta);
 
     if (cross) {
       // 使能链没有连线不是数据缺失，是刻意的。不说明的话页面上就是个断头。
