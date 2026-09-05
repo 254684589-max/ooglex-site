@@ -1,0 +1,219 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""只读探测：点名几家公司，把它们 Form SD 里**每一份文档的真实内容形态**打出来。
+
+## 这条探针要回答两个 P1 问题
+
+一、**洛马／埃森哲／丹纳赫那三份「整份没有表格」的报告，名单到底在不在。**
+    上一轮只数出 `<table>0 <tr>0`，那只说明「没有 HTML 表格」，
+    不说明「没有名单」——名单可能排成段落、列表，或者干脆是张图。
+    待办里写着「要点开原文看名单在不在，**不要猜**」，这就是点开原文。
+
+二、**PDF 附件里有没有名单。** 抽取器的 `list_documents` 只收 .htm/.html，
+    麦当劳的 formsd2026.pdf（493KB）整份看不到。`pdf_text.py` 已经能解 PDF，
+    但接线之前得先看清 PDF 里到底有没有东西——**先探后建**。
+
+## 只打印，不判定
+
+打的是：文件清单（含被规则过滤掉的，标明理由）、每份的体积与类型、
+HTML 的标签计数与正文抽样、PDF 的解析裁决与文字抽样。
+
+**不给「有名单／没名单」的结论。** 这个项目每一次改对规则都是靠人看原始数据，
+没有一次是靠脚本的自动结论；上一轮探针的自动结论还判错过两处。
+
+不写任何数据文件，不建任何边。
+"""
+from __future__ import annotations
+
+import argparse
+import importlib.util
+import json
+import os
+import re
+import sys
+import time
+from html.parser import HTMLParser
+from urllib import error, request
+
+TIMEOUT = 45
+GAP = 0.20
+BODY_LIMIT = 24_000_000
+SAMPLE = 1200              # 正文抽样字符数
+
+CONTACT = os.environ.get("SEC_CONTACT", "contact via https://www.ooglex.com")
+UA = f"Ooglex Supply Chain Research/1.0 ({CONTACT})"
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from extract_form_sd import skip_reason, latest_form_sd, _fetch   # noqa: E402
+
+
+def load_pdf_text():
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pdf_text.py")
+    spec = importlib.util.spec_from_file_location("pdf_text", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+class _Text(HTMLParser):
+    """抽出可见正文，并顺带统计结构标签。
+
+    统计 li/p/br 是因为**名单不一定排成表格**：有的申报把冶炼厂排成项目符号，
+    有的每行一个 <p>。只数 table/tr 会把这两种都说成「没有名单」。
+    """
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.parts: list[str] = []
+        self.counts: dict[str, int] = {}
+        self._skip = 0
+
+    def handle_starttag(self, tag, attrs):
+        self.counts[tag] = self.counts.get(tag, 0) + 1
+        if tag in ("script", "style"):
+            self._skip += 1
+
+    def handle_endtag(self, tag):
+        if tag in ("script", "style") and self._skip:
+            self._skip -= 1
+
+    def handle_data(self, data):
+        if not self._skip and data.strip():
+            self.parts.append(data.strip())
+
+    def text(self) -> str:
+        return re.sub(r"\s+", " ", " ".join(self.parts)).strip()
+
+
+def list_all_documents(index_url: str) -> list[dict]:
+    """列出申报目录里的**全部**文件，包括现有规则会过滤掉的。"""
+    payload = json.loads(_fetch(index_url.rstrip("/") + "/index.json",
+                                accept="application/json").decode("utf-8", "replace"))
+    out = []
+    for item in ((payload.get("directory") or {}).get("item")) or []:
+        name = str(item.get("name") or "")
+        try:
+            size = int(item.get("size") or 0)
+        except (TypeError, ValueError):
+            size = 0
+        out.append({"name": name, "size": size, "skip": skip_reason(name)})
+    out.sort(key=lambda d: -d["size"])
+    return out
+
+
+# 名单里几乎一定会出现的词。**只作为给人看的线索，不作判定**——
+# 命中不代表有名单，不命中也不代表没有。
+_HINT = re.compile(r"smelter|refiner|CID\d{6}|CID\s?\d{6}|冶炼", re.I)
+
+
+def probe_company(symbol: str, cik: int, pdf_mod, max_docs: int) -> None:
+    print(f"\n{'=' * 72}\n{symbol}  CIK {cik}")
+    try:
+        filing = latest_form_sd(cik)
+    except Exception as exc:                       # noqa: BLE001
+        # 探针在 Actions 里一次跑好几家，一家取不到不该把整轮带走——
+        # 后面那几家的原始内容才是这轮要看的东西。
+        print(f"  [XX] 取申报清单失败：{type(exc).__name__}: {exc}")
+        return
+    time.sleep(GAP)
+    if not filing:
+        print("  没有 Form SD 申报")
+        return
+    print(f"  申报 {filing['accession']}  {filing['filingDate']}  共 {filing['totalSD']} 份 SD")
+    print(f"  {filing['indexUrl']}")
+    try:
+        docs = list_all_documents(filing["indexUrl"])
+    except Exception as exc:                       # noqa: BLE001
+        print(f"  [XX] 目录取不到：{type(exc).__name__}: {exc}")
+        return
+    time.sleep(GAP)
+
+    print(f"\n  目录里共 {len(docs)} 个文件（按体积倒序，标出被现有规则挡掉的）：")
+    for d in docs:
+        mark = f"  ← 抽取器跳过：{d['skip']}" if d["skip"] else ""
+        print(f"    {d['size']:>9,}  {d['name']}{mark}")
+
+    # 逐份取内容。**包括被规则挡掉的**——本探针的价值就在于看见被挡掉的东西。
+    looked = 0
+    for d in docs:
+        low = d["name"].lower()
+        if not low.endswith((".htm", ".html", ".pdf", ".txt")):
+            continue
+        if d["size"] < 2000:                       # 索引与占位文件
+            continue
+        if looked >= max_docs:
+            print(f"\n  （只看前 {max_docs} 份，其余略）")
+            break
+        looked += 1
+        url = filing["indexUrl"] + d["name"]
+        print(f"\n  ── {d['name']}  {d['size']:,} 字节"
+              + (f"  [现有规则会跳过：{d['skip']}]" if d["skip"] else "") + " ──")
+        try:
+            raw = _fetch(url, accept="*/*")
+        except Exception as exc:                   # noqa: BLE001
+            print(f"    [XX] 取不到：{type(exc).__name__}: {exc}")
+            continue
+        time.sleep(GAP)
+
+        if low.endswith(".pdf"):
+            got = pdf_mod.pdf_to_text(raw)
+            print(f"    PDF 裁决={got['verdict']}  页 {got.get('pages')}  "
+                  f"字符 {got['chars']}  流 {got['decoded']}/{got['streams']}  "
+                  f"加密={got['encrypted']}  过滤器={got['filters']}")
+            text = got["text"]
+        else:
+            parser = _Text()
+            try:
+                parser.feed(raw.decode("utf-8", "replace"))
+            except Exception as exc:               # noqa: BLE001
+                print(f"    [XX] HTML 解析异常：{type(exc).__name__}: {exc}")
+                continue
+            c = parser.counts
+            print(f"    标签：table {c.get('table',0)}  tr {c.get('tr',0)}  "
+                  f"td {c.get('td',0)}  li {c.get('li',0)}  p {c.get('p',0)}  "
+                  f"br {c.get('br',0)}  div {c.get('div',0)}  img {c.get('img',0)}")
+            text = parser.text()
+
+        hits = _HINT.findall(text)
+        print(f"    正文 {len(text)} 字符；线索词命中 {len(hits)} 次"
+              + (f"（前几个：{hits[:6]}）" if hits else ""))
+        if text:
+            print(f"    开头：{text[:SAMPLE]}")
+            if len(text) > SAMPLE * 2:
+                mid = len(text) // 2
+                print(f"    中段：{text[mid:mid + SAMPLE]}")
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--tickers", required=True,
+                    help="逗号分隔的公司代码，例如 LMT,ACN,DHR,MCD")
+    ap.add_argument("--max-docs", type=int, default=3,
+                    help="每家最多看几份文档正文（默认 3）")
+    args = ap.parse_args()
+
+    with open("apps/supply-chain/identity.json", encoding="utf-8") as handle:
+        identity = (json.load(handle) or {}).get("companies") or {}
+
+    wanted = [t.strip().upper() for t in args.tickers.split(",") if t.strip()]
+    print("只读探针：不写任何文件，不建任何边。")
+    print(f"目标 {len(wanted)} 家：{'、'.join(wanted)}")
+
+    pdf_mod = load_pdf_text()
+    missing = []
+    for symbol in wanted:
+        record = identity.get(symbol)
+        cik = (record or {}).get("cik")
+        if not cik:
+            missing.append(symbol)
+            continue
+        probe_company(symbol, int(cik), pdf_mod, args.max_docs)
+
+    if missing:
+        print(f"\n[!!] 身份表里没有 CIK，跳过：{'、'.join(missing)}")
+    print("\n结论请人看上面的原始内容得出——本探针不判定有没有名单。")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
