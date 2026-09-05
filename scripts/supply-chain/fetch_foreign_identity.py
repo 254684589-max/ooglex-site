@@ -277,20 +277,40 @@ def main() -> int:
     # 定不出国别的，把 SEC 那几个字段的**原值**原样打出来。
     # 台积电、本田、沃达丰这一批三个字段全空，光看结论只能看出「没有」，
     # 看不出「SEC 到底写了什么」——不打出来就只能靠猜，而猜就是编。
-    unresolved = [(item, meta) for item, meta in metas
-                  if region.resolve_country(meta, code_map)["country"] is None]
-    if unresolved:
-        print(f"\n定不出国别的 {len(unresolved)} 家，SEC 原值如下：")
-        for item, meta in unresolved:
-            addresses = meta.get("addresses") or {}
-            biz = addresses.get("business") or {}
-            mail = addresses.get("mailing") or {}
-            print(f"  {item['primary']['ticker']:6s} {(meta.get('name') or '')[:32]:34s}"
-                  f" inc={meta.get('stateOfIncorporation')!r}"
-                  f"/{meta.get('stateOfIncorporationDescription')!r}"
-                  f" biz={biz.get('stateOrCountry')!r}/{biz.get('stateOrCountryDescription')!r}"
-                  f" mail={mail.get('stateOrCountry')!r}/{mail.get('stateOrCountryDescription')!r}"
-                  f" 地址其余键={sorted(set(biz) - {'stateOrCountry', 'stateOrCountryDescription'})}")
+    # 定不出国别的，把 SEC 那几个字段的**原值**连同地址块其余的键一起记进
+    # 产出文件。台积电、本田、沃达丰这一批光看结论只能看出「没有」，
+    # 看不出「SEC 到底写了什么」——不留原值就只能靠猜，而猜就是编。
+    #
+    # 写进数据而不是只打日志：Actions 的日志会过期、下载还受出网策略限制，
+    # 而这问题要跨好几轮才查得清。留在文件里，谁都能直接查。
+    unresolved_geo: dict[str, dict] = {}
+    for item, meta in metas:
+        if region.resolve_country(meta, code_map)["country"] is not None:
+            continue
+        addresses = meta.get("addresses") or {}
+        biz = addresses.get("business") or {}
+        mail = addresses.get("mailing") or {}
+        unresolved_geo[item["primary"]["ticker"]] = {
+            "name": meta.get("name"),
+            "stateOfIncorporation": meta.get("stateOfIncorporation"),
+            "stateOfIncorporationDescription": meta.get("stateOfIncorporationDescription"),
+            "businessStateOrCountry": biz.get("stateOrCountry"),
+            "businessStateOrCountryDescription": biz.get("stateOrCountryDescription"),
+            "mailingStateOrCountry": mail.get("stateOrCountry"),
+            "mailingStateOrCountryDescription": mail.get("stateOrCountryDescription"),
+            # 地址块里还有哪些键。也许国别根本不在我读的那两个字段里。
+            "businessKeys": sorted(biz),
+            # submissions 顶层还有哪些看着像地理信息的键，同理。
+            "metaKeys": sorted(k for k in meta
+                               if any(w in k.lower()
+                                      for w in ("state", "country", "address", "phone",
+                                                "fiscal", "entity", "category"))),
+        }
+    if unresolved_geo:
+        print(f"\n定不出国别的 {len(unresolved_geo)} 家，SEC 原值已写入产出文件的 "
+              f"unresolvedGeo；抽样：")
+        for ticker in sorted(unresolved_geo)[:4]:
+            print(f"  {ticker}: {json.dumps(unresolved_geo[ticker], ensure_ascii=False)}")
 
     from collections import Counter
     basis_count = Counter(v.get("countryBasis") or "未标注" for v in companies.values())
@@ -311,6 +331,8 @@ def main() -> int:
     out = {
         "contractVersion": CONTRACT_VERSION,
         "dataset": "supply-chain-foreign-issuers",
+        # 见上：定不出国别的那几家，SEC 原值留在这里备查。
+        "unresolvedGeo": unresolved_geo,
         "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "source": "SEC EDGAR 季度全量索引 + submissions（公共领域）",
         "note": ("在美上市的外国私人发行人（报 20-F／40-F）中**同时报 Form SD** 的那一批。"
