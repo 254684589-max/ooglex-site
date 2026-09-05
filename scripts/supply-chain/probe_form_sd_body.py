@@ -102,8 +102,15 @@ def list_all_documents(index_url: str) -> list[dict]:
 
 
 # 名单里几乎一定会出现的词。**只作为给人看的线索，不作判定**——
-# 命中不代表有名单，不命中也不代表没有。
-_HINT = re.compile(r"smelter|refiner|CID\d{6}|CID\s?\d{6}|冶炼", re.I)
+# 命中不代表有名单，不命中也不代表没有。分开计数是因为它们的分量完全不同：
+# smelter／refiner 在尽职调查叙述里满天飞；**CID 编号只会出现在真名单里**。
+_HINTS = {
+    "CID编号": re.compile(r"\bCID[\s\-_]?\d{4,6}\b", re.I),
+    "smelter": re.compile(r"smelter", re.I),
+    "refiner": re.compile(r"refiner", re.I),
+    "国名样本": re.compile(r"\b(CHINA|JAPAN|BRAZIL|INDONESIA|MALAYSIA|PERU|BOLIVIA)\b"),
+    "附录": re.compile(r"\b(appendix|annex|exhibit\s+[A-Z]|schedule\s+[A-Z])\b", re.I),
+}
 
 
 def probe_company(symbol: str, cik: int, pdf_mod, max_docs: int) -> None:
@@ -174,14 +181,22 @@ def probe_company(symbol: str, cik: int, pdf_mod, max_docs: int) -> None:
                   f"br {c.get('br',0)}  div {c.get('div',0)}  img {c.get('img',0)}")
             text = parser.text()
 
-        hits = _HINT.findall(text)
-        print(f"    正文 {len(text)} 字符；线索词命中 {len(hits)} 次"
-              + (f"（前几个：{hits[:6]}）" if hits else ""))
+        # 线索词分开计数。**CID 编号是决定性的那个**：真名单几乎一定带 RMI 编号，
+        # 而 smelter/refiner 在尽职调查的叙述正文里满天飞，数它只能说明这份报告
+        # 在谈冶炼厂，说明不了它在**列**冶炼厂。
+        counts = {k: len(rx.findall(text)) for k, rx in _HINTS.items()}
+        print(f"    正文 {len(text)} 字符；线索词："
+              + "  ".join(f"{k}={v}" for k, v in counts.items()))
         if text:
             print(f"    开头：{text[:SAMPLE]}")
             if len(text) > SAMPLE * 2:
                 mid = len(text) // 2
                 print(f"    中段：{text[mid:mid + SAMPLE]}")
+            # **结尾必须打**。冲突矿产报告的冶炼厂名单绝大多数是**附录**，
+            # 排在正文最后。只看开头和中段就下「没有名单」的结论，
+            # 正是这个项目反复栽的那个跟头——把结果说多。
+            if len(text) > SAMPLE:
+                print(f"    结尾：{text[-SAMPLE:]}")
 
 
 def main() -> int:
