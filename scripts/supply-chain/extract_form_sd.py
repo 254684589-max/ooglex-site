@@ -258,7 +258,10 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
     # 13p-1 冲突矿产（有冶炼厂名单）与 13q-1 资源开采付款（向各国政府付了多少钱）。
     # 康菲、纽蒙特申报的是后者，那套披露里**本来就没有冶炼厂这个概念**，
     # 把它们记成「申报了但正文未列名单」等于暗示「本可以列却没列」。
-    kind = parser.disclosure_kind(best_html or "")
+    # 判据同时看结构与用词：目录里有 XBRL 渲染件说明这是 13q-1（付款数据必须
+    # 标记），力拓、壳牌那种「正文里天然带 smelter/refiner」的误判由它挡住。
+    xbrl = parser.filing_is_xbrl_tagged([d["name"] for d in documents])
+    kind = parser.disclosure_kind(best_html or "", xbrl_tagged=xbrl)
     outcome["disclosureKind"] = kind
     outcome["state"] = ("resource-extraction" if kind == "resource-extraction"
                         else "filed-no-list")

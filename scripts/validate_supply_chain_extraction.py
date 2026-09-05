@@ -821,6 +821,52 @@ def main() -> int:
             failures.append(f"披露类型 {html[:40]!r}：期望 {want}，实际 {got}")
         print(f"  [{'OK' if ok else 'XX'}] {why}（→ {got}）")
 
+    # 只按用词判会对矿业与能源公司系统性判错——它们的业务词就是 smelter 和
+    # refinery。2026-09-05 实测：力拓 formsd2025govpayment.htm、壳牌
+    # shel-20251231.htm（表格是「保加利亚能源部 658,383」）都被判成「未列名单」。
+    # 结构判据来自 SEC 的要求本身：13q-1 的付款数据必须内联 XBRL 标记，
+    # 13p-1 没有这个要求，所以目录里有没有 XBRL 渲染件不受正文用词影响。
+    print("\n── 矿业与能源公司：光看用词会判错，得看结构 ──────────────────────")
+    _RIO = ("<p>Rio Tinto payments to governments report under Section 1504. "
+            "Projects include our aluminium smelter at Kitimat.</p>")
+    _SHELL = ("<p>Payments to governments 2025. MINISTRY OF ENERGY BULGARIA 658,383. "
+              "Our refinery operations in Germany.</p>")
+    _SONY = ("<p>Conflict Minerals Report under Rule 13p-1. Smelter and refiner list. "
+             "Not a payments to governments report.</p>")
+    xbrl_cases = [
+        (_RIO, True, "resource-extraction",
+         "力拓：有铝冶炼厂，但这份是 1504 付款报告，XBRL 标记说明它是 13q-1"),
+        (_SHELL, True, "resource-extraction", "壳牌：有炼油厂，同上"),
+        (_SONY, True, "conflict-minerals",
+         "索尼：即使带 XBRL，正文是 13p-1 报告就不能判成资源开采"),
+        (_RIO, False, "conflict-minerals",
+         "同一份文件没有 XBRL 线索时仍按旧规则走——保留「宁可不摘」的偏向"),
+    ]
+    for html, xbrl, want, why in xbrl_cases:
+        got = load_form_sd().disclosure_kind(html, xbrl_tagged=xbrl)
+        ok = got == want
+        if not ok:
+            failures.append(f"披露类型（XBRL={xbrl}）{why}：期望 {want}，实际 {got}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}（→ {got}）")
+
+    # XBRL 判据本身：认的是文件名形状，别把普通附件也当成 XBRL 渲染件
+    xbrl_name_cases = [
+        (["formsd2025govpayment.htm", "R4.htm", "R1.htm"], True, "R4.htm 是 XBRL 渲染件"),
+        (["aem-20260601xex2d01.htm", "MetaLinks.json"], True, "MetaLinks.json 同理"),
+        (["agi-20251231.htm", "agi-20251231_htm.xml"], True, "_htm.xml 同理"),
+        (["a2025conflictmineralsreport.htm", "formsd.htm"], True is False,
+         "ASML：纯冲突矿产报告，没有 XBRL 渲染件"),
+        (["dp246807_ex0101.htm", "dp246807_sd.htm"], False, "ASE：同上"),
+        (["Report.htm", "R.htm"], False, "R 后面没数字的不算"),
+        ([], False, "空目录不算"),
+    ]
+    for names, want, why in xbrl_name_cases:
+        got = load_form_sd().filing_is_xbrl_tagged(names)
+        ok = got == want
+        if not ok:
+            failures.append(f"XBRL 判据 {why}：期望 {want}，实际 {got}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
     # 申报文档的过滤规则。抽取器用它决定读哪几份，「有申报但没抽到名单」的
     # 探针用同一个函数显示「哪些文件被挡掉了」——两处共用，改坏了两处一起错，
     # 而且探针会开始说假话，所以逐条钉死。
@@ -988,7 +1034,8 @@ def main() -> int:
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
-             + len(chain_cases) + len(chain_self) + len(guard_cases))
+             + len(chain_cases) + len(chain_self) + len(guard_cases)
+             + len(xbrl_cases) + len(xbrl_name_cases))
     print("\n" + "─" * 68)
     if failures:
         print(f"失败 {len(failures)}/{total}：")

@@ -465,6 +465,13 @@ _EXTRACTION_MARKS = (
     "payments to governments",
     "government payments",
 )
+# 报告标题级的特征。**不能拿 "rule 13p-1" 当强特征**：Form SD 的封面把两条规则
+# 都印在勾选框里（勾没勾都印），所以每一份 SD 的封面都含 13p-1 三个字。
+# "Conflict Minerals Report" 是报告名，13q-1 付款报告里不会出现。
+_MINERAL_TITLE = (
+    "conflict minerals report",
+    "conflict mineral report",
+)
 _MINERAL_MARKS = (
     "conflict minerals",
     "rule 13p-1",
@@ -475,19 +482,66 @@ _MINERAL_MARKS = (
 )
 
 
-def disclosure_kind(html: str) -> str:
+# XBRL 渲染文件的名字形状。SEC 从 2024 年起要求 13q-1 资源开采付款用内联 XBRL
+# 标记，13p-1 冲突矿产没有这个要求——所以「申报目录里有没有 XBRL 渲染件」
+# 是一条**结构性**判据，不受正文用词影响。
+_XBRL_RENDER = re.compile(r"^R\d+\.html?$", re.I)
+
+
+def filing_is_xbrl_tagged(names) -> bool:
+    """这份申报是不是做了 XBRL 标记（看目录里的文件名，不看正文）。"""
+    for name in names or ():
+        base = str(name).strip()
+        if _XBRL_RENDER.match(base):
+            return True
+        low = base.lower()
+        if low.endswith("_htm.xml") or low == "metalinks.json":
+            return True
+    return False
+
+
+def disclosure_kind(html: str, xbrl_tagged: bool = False) -> str:
     """这份申报是冲突矿产还是资源开采付款。
 
     返回 "conflict-minerals" / "resource-extraction" / "unknown"。
-    两类特征都出现时以冲突矿产为准——冲突矿产报告里提一句 1504 很常见，
-    反过来资源开采付款报告里不会成段讲冶炼厂。**宁可判成冲突矿产**：
-    判错成资源开采会把一份真名单从统计里摘出去，那是把结果说少；
-    判错成冲突矿产只是留在原来那一档，不损失信息。
+
+    **只在没抽到名单时才会调用它**，所以它决定的不是「要不要这份名单」，
+    而是「这家没有名单的原因怎么写」。写错了就是对读者说错话：
+    「有申报但没列名单」暗示本可以列却没列，而 13q-1 那套披露里根本没有
+    冶炼厂这个概念。
+
+    ## 只按用词判会出错，实测过
+
+    第一版的规则是「出现矿产词就判冲突矿产」，理由是冲突矿产报告里提一句
+    1504 很常见。拿外国发行人一跑就露馅了：
+
+        力拓  formsd2025govpayment.htm  —— 通篇是向各国政府的付款，判成了「未列名单」
+        壳牌  shel-20251231.htm         —— 表格是「保加利亚能源部 658,383」，同样判错
+
+    原因很直白：**力拓有铝冶炼厂、壳牌有炼油厂**，"smelter" 与 "refiner"
+    是它们的业务词，出现在 13q-1 报告里再正常不过。矿业与能源公司正是
+    资源开采付款申报的主力，这条规则对它们系统性地判错。
+
+    ## 改法：先看结构，再看用词
+
+    13q-1 的付款数据必须用内联 XBRL 标记，13p-1 没有这个要求。目录里有没有
+    XBRL 渲染件（R4.htm / *_htm.xml / MetaLinks.json）不受正文用词影响。
+    因此：**有 XBRL 标记且正文有开采类特征 → 资源开采付款**；其余情况仍按
+    用词判，并保留原来「宁可判成冲突矿产」的偏向。
     """
     text = re.sub(r"<[^>]+>", " ", html or "").lower()
-    if any(m in text for m in _MINERAL_MARKS):
+    # 标题级特征最先看：叫「冲突矿产报告」的就是冲突矿产报告，XBRL 也翻不了案。
+    # 少了这一步，一份 13p-1 报告只要提一句 payments to governments 又恰好带
+    # XBRL，就会被判成资源开采——离线夹具就是这么把第一版拦下来的。
+    if any(m in text for m in _MINERAL_TITLE):
         return "conflict-minerals"
-    if any(m in text for m in _EXTRACTION_MARKS):
+    has_minerals = any(m in text for m in _MINERAL_MARKS)
+    has_extraction = any(m in text for m in _EXTRACTION_MARKS)
+    if xbrl_tagged and has_extraction:
+        return "resource-extraction"
+    if has_minerals:
+        return "conflict-minerals"
+    if has_extraction:
         return "resource-extraction"
     return "unknown"
 
