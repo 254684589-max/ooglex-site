@@ -94,6 +94,11 @@ def build_peers(smelters: dict) -> dict:
             "minerals": row.get("minerals") or [],
             "identifierType": row.get("identifierType"),
             "filerCount": len(filers),
+            # **把申报人代码一并带上。** 页面此前只印得出「49 家」，
+            # 读者看得到这个数、看不到是哪 49 家——而咽喉点暴露反查
+            # 正是这份数据最有价值的读法。榜单只有 30 行、每行几十个代码，
+            # 体积可以忽略；靠页面另载 1.1MB 的登记表去查是本末倒置。
+            "filers": sorted(filers),
         })
     concentration.sort(key=lambda r: (-r["filerCount"], str(r["name"] or "")))
 
