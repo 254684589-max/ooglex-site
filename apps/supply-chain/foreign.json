@@ -2745,5 +2745,517 @@
     }
   ],
   "source": "SEC EDGAR 季度全量索引 + submissions（公共领域）",
-  "updatedAt": "2026-09-05T11:55:41Z"
+  "unresolvedGeo": {
+    "BLDP": {
+      "businessKeys": [
+        "city",
+        "country",
+        "countryCode",
+        "foreignStateTerritory",
+        "isForeignLocation",
+        "stateOrCountry",
+        "stateOrCountryDescription",
+        "street1",
+        "street2",
+        "zipCode"
+      ],
+      "businessStateOrCountry": null,
+      "businessStateOrCountryDescription": null,
+      "mailingStateOrCountry": null,
+      "mailingStateOrCountryDescription": null,
+      "metaKeys": [
+        "addresses",
+        "category",
+        "entityType",
+        "fiscalYearEnd",
+        "phone",
+        "stateOfIncorporation",
+        "stateOfIncorporationDescription"
+      ],
+      "name": "Ballard Power Systems Inc.",
+      "stateOfIncorporation": "",
+      "stateOfIncorporationDescription": ""
+    },
+    "BTE": {
+      "businessKeys": [
+        "city",
+        "country",
+        "countryCode",
+        "foreignStateTerritory",
+        "isForeignLocation",
+        "stateOrCountry",
+        "stateOrCountryDescription",
+        "street1",
+        "street2",
+        "zipCode"
+      ],
+      "businessStateOrCountry": null,
+      "businessStateOrCountryDescription": null,
+      "mailingStateOrCountry": null,
+      "mailingStateOrCountryDescription": null,
+      "metaKeys": [
+        "addresses",
+        "category",
+        "entityType",
+        "fiscalYearEnd",
+        "phone",
+        "stateOfIncorporation",
+        "stateOfIncorporationDescription"
+      ],
+      "name": "BAYTEX ENERGY CORP.",
+      "stateOfIncorporation": "",
+      "stateOfIncorporationDescription": ""
+    },
+    "BTI": {
+      "businessKeys": [
+        "city",
+        "country",
+        "countryCode",
+        "foreignStateTerritory",
+        "isForeignLocation",
+        "stateOrCountry",
+        "stateOrCountryDescription",
+        "street1",
+        "street2",
+        "zipCode"
+      ],
+      "businessStateOrCountry": null,
+      "businessStateOrCountryDescription": null,
+      "mailingStateOrCountry": null,
+      "mailingStateOrCountryDescription": null,
+      "metaKeys": [
+        "addresses",
+        "category",
+        "entityType",
+        "fiscalYearEnd",
+        "phone",
+        "stateOfIncorporation",
+        "stateOfIncorporationDescription"
+      ],
+      "name": "British American Tobacco p.l.c.",
+      "stateOfIncorporation": "",
+      "stateOfIncorporationDescription": ""
+    },
+    "CCJ": {
+      "businessKeys": [
+        "city",
+        "country",
+        "countryCode",
+        "foreignStateTerritory",
+        "isForeignLocation",
+        "stateOrCountry",
+        "stateOrCountryDescription",
+        "street1",
+        "street2",
+        "zipCode"
+      ],
+      "businessStateOrCountry": null,
+      "businessStateOrCountryDescription": null,
+      "mailingStateOrCountry": null,
+      "mailingStateOrCountryDescription": null,
+      "metaKeys": [
+        "addresses",
+        "category",
+        "entityType",
+        "fiscalYearEnd",
+        "phone",
+        "stateOfIncorporation",
+        "stateOfIncorporationDescription"
+      ],
+      "name": "CAMECO CORP",
+      "stateOfIncorporation": "",
+      "stateOfIncorporationDescription": ""
+    },
+    "CHT": {
+      "businessKeys": [
+        "city",
+        "country",
+        "countryCode",
+        "foreignStateTerritory",
+        "isForeignLocation",
+        "stateOrCountry",
+        "stateOrCountryDescription",
+        "street1",
+        "street2",
+        "zipCode"
+      ],
+      "businessStateOrCountry": null,
+      "businessStateOrCountryDescription": null,
+      "mailingStateOrCountry": null,
+      "mailingStateOrCountryDescription": null,
+      "metaKeys": [
+        "addresses",
+        "category",
+        "entityType",
+        "fiscalYearEnd",
+        "phone",
+        "stateOfIncorporation",
+        "stateOfIncorporationDescription"
+      ],
+      "name": "CHUNGHWA TELECOM CO LTD",
+      "stateOfIncorporation": "",
+      "stateOfIncorporationDescription": ""
+    },
+    "DRD": {
+      "businessKeys": [
+        "city",
+        "country",
+        "countryCode",
+        "foreignStateTerritory",
+        "isForeignLocation",
+        "stateOrCountry",
+        "stateOrCountryDescription",
+        "street1",
+        "street2",
+        "zipCode"
+      ],
+      "businessStateOrCountry": null,
+      "businessStateOrCountryDescription": null,
+      "mailingStateOrCountry": null,
+      "mailingStateOrCountryDescription": null,
+      "metaKeys": [
+        "addresses",
+        "category",
+        "entityType",
+        "fiscalYearEnd",
+        "phone",
+        "stateOfIncorporation",
+        "stateOfIncorporationDescription"
+      ],
+      "name": "DRDGOLD LTD",
+      "stateOfIncorporation": "",
+      "stateOfIncorporationDescription": ""
+    },
+    "DSWL": {
+      "businessKeys": [
+        "city",
+        "country",
+        "countryCode",
+        "foreignStateTerritory",
+        "isForeignLocation",
+        "stateOrCountry",
+        "stateOrCountryDescription",
+        "street1",
+        "street2",
+        "zipCode"
+      ],
+      "businessStateOrCountry": null,
+      "businessStateOrCountryDescription": null,
+      "mailingStateOrCountry": null,
+      "mailingStateOrCountryDescription": null,
+      "metaKeys": [
+        "addresses",
+        "category",
+        "entityType",
+        "fiscalYearEnd",
+        "phone",
+        "stateOfIncorporation",
+        "stateOfIncorporationDescription"
+      ],
+      "name": "DESWELL INDUSTRIES INC",
+      "stateOfIncorporation": "",
+      "stateOfIncorporationDescription": ""
+    },
+    "HBM": {
+      "businessKeys": [
+        "city",
+        "country",
+        "countryCode",
+        "foreignStateTerritory",
+        "isForeignLocation",
+        "stateOrCountry",
+        "stateOrCountryDescription",
+        "street1",
+        "street2",
+        "zipCode"
+      ],
+      "businessStateOrCountry": null,
+      "businessStateOrCountryDescription": null,
+      "mailingStateOrCountry": null,
+      "mailingStateOrCountryDescription": null,
+      "metaKeys": [
+        "addresses",
+        "category",
+        "entityType",
+        "fiscalYearEnd",
+        "phone",
+        "stateOfIncorporation",
+        "stateOfIncorporationDescription"
+      ],
+      "name": "Hudbay Minerals Inc.",
+      "stateOfIncorporation": "",
+      "stateOfIncorporationDescription": ""
+    },
+    "HMC": {
+      "businessKeys": [
+        "city",
+        "country",
+        "countryCode",
+        "foreignStateTerritory",
+        "isForeignLocation",
+        "stateOrCountry",
+        "stateOrCountryDescription",
+        "street1",
+        "street2",
+        "zipCode"
+      ],
+      "businessStateOrCountry": null,
+      "businessStateOrCountryDescription": null,
+      "mailingStateOrCountry": null,
+      "mailingStateOrCountryDescription": null,
+      "metaKeys": [
+        "addresses",
+        "category",
+        "entityType",
+        "fiscalYearEnd",
+        "phone",
+        "stateOfIncorporation",
+        "stateOfIncorporationDescription"
+      ],
+      "name": "HONDA MOTOR CO LTD",
+      "stateOfIncorporation": "",
+      "stateOfIncorporationDescription": ""
+    },
+    "HMY": {
+      "businessKeys": [
+        "city",
+        "country",
+        "countryCode",
+        "foreignStateTerritory",
+        "isForeignLocation",
+        "stateOrCountry",
+        "stateOrCountryDescription",
+        "street1",
+        "street2",
+        "zipCode"
+      ],
+      "businessStateOrCountry": null,
+      "businessStateOrCountryDescription": null,
+      "mailingStateOrCountry": null,
+      "mailingStateOrCountryDescription": null,
+      "metaKeys": [
+        "addresses",
+        "category",
+        "entityType",
+        "fiscalYearEnd",
+        "phone",
+        "stateOfIncorporation",
+        "stateOfIncorporationDescription"
+      ],
+      "name": "HARMONY GOLD MINING CO LTD",
+      "stateOfIncorporation": "",
+      "stateOfIncorporationDescription": ""
+    },
+    "MTLS": {
+      "businessKeys": [
+        "city",
+        "country",
+        "countryCode",
+        "foreignStateTerritory",
+        "isForeignLocation",
+        "stateOrCountry",
+        "stateOrCountryDescription",
+        "street1",
+        "street2",
+        "zipCode"
+      ],
+      "businessStateOrCountry": null,
+      "businessStateOrCountryDescription": null,
+      "mailingStateOrCountry": null,
+      "mailingStateOrCountryDescription": null,
+      "metaKeys": [
+        "addresses",
+        "category",
+        "entityType",
+        "fiscalYearEnd",
+        "phone",
+        "stateOfIncorporation",
+        "stateOfIncorporationDescription"
+      ],
+      "name": "MATERIALISE NV",
+      "stateOfIncorporation": "",
+      "stateOfIncorporationDescription": ""
+    },
+    "SHEL": {
+      "businessKeys": [
+        "city",
+        "country",
+        "countryCode",
+        "foreignStateTerritory",
+        "isForeignLocation",
+        "stateOrCountry",
+        "stateOrCountryDescription",
+        "street1",
+        "street2",
+        "zipCode"
+      ],
+      "businessStateOrCountry": null,
+      "businessStateOrCountryDescription": null,
+      "mailingStateOrCountry": null,
+      "mailingStateOrCountryDescription": null,
+      "metaKeys": [
+        "addresses",
+        "category",
+        "entityType",
+        "fiscalYearEnd",
+        "phone",
+        "stateOfIncorporation",
+        "stateOfIncorporationDescription"
+      ],
+      "name": "Shell plc",
+      "stateOfIncorporation": "DC",
+      "stateOfIncorporationDescription": "DC"
+    },
+    "SNN": {
+      "businessKeys": [
+        "city",
+        "country",
+        "countryCode",
+        "foreignStateTerritory",
+        "isForeignLocation",
+        "stateOrCountry",
+        "stateOrCountryDescription",
+        "street1",
+        "street2",
+        "zipCode"
+      ],
+      "businessStateOrCountry": null,
+      "businessStateOrCountryDescription": null,
+      "mailingStateOrCountry": null,
+      "mailingStateOrCountryDescription": null,
+      "metaKeys": [
+        "addresses",
+        "category",
+        "entityType",
+        "fiscalYearEnd",
+        "phone",
+        "stateOfIncorporation",
+        "stateOfIncorporationDescription"
+      ],
+      "name": "SMITH & NEPHEW PLC",
+      "stateOfIncorporation": "",
+      "stateOfIncorporationDescription": ""
+    },
+    "STVN": {
+      "businessKeys": [
+        "city",
+        "country",
+        "countryCode",
+        "foreignStateTerritory",
+        "isForeignLocation",
+        "stateOrCountry",
+        "stateOrCountryDescription",
+        "street1",
+        "street2",
+        "zipCode"
+      ],
+      "businessStateOrCountry": null,
+      "businessStateOrCountryDescription": null,
+      "mailingStateOrCountry": null,
+      "mailingStateOrCountryDescription": null,
+      "metaKeys": [
+        "addresses",
+        "category",
+        "entityType",
+        "fiscalYearEnd",
+        "phone",
+        "stateOfIncorporation",
+        "stateOfIncorporationDescription"
+      ],
+      "name": "Stevanato Group S.p.A.",
+      "stateOfIncorporation": "",
+      "stateOfIncorporationDescription": ""
+    },
+    "TATT": {
+      "businessKeys": [
+        "city",
+        "country",
+        "countryCode",
+        "foreignStateTerritory",
+        "isForeignLocation",
+        "stateOrCountry",
+        "stateOrCountryDescription",
+        "street1",
+        "street2",
+        "zipCode"
+      ],
+      "businessStateOrCountry": null,
+      "businessStateOrCountryDescription": null,
+      "mailingStateOrCountry": null,
+      "mailingStateOrCountryDescription": null,
+      "metaKeys": [
+        "addresses",
+        "category",
+        "entityType",
+        "fiscalYearEnd",
+        "phone",
+        "stateOfIncorporation",
+        "stateOfIncorporationDescription"
+      ],
+      "name": "TAT TECHNOLOGIES LTD",
+      "stateOfIncorporation": "",
+      "stateOfIncorporationDescription": ""
+    },
+    "TSM": {
+      "businessKeys": [
+        "city",
+        "country",
+        "countryCode",
+        "foreignStateTerritory",
+        "isForeignLocation",
+        "stateOrCountry",
+        "stateOrCountryDescription",
+        "street1",
+        "street2",
+        "zipCode"
+      ],
+      "businessStateOrCountry": null,
+      "businessStateOrCountryDescription": null,
+      "mailingStateOrCountry": null,
+      "mailingStateOrCountryDescription": null,
+      "metaKeys": [
+        "addresses",
+        "category",
+        "entityType",
+        "fiscalYearEnd",
+        "phone",
+        "stateOfIncorporation",
+        "stateOfIncorporationDescription"
+      ],
+      "name": "TAIWAN SEMICONDUCTOR MANUFACTURING CO LTD",
+      "stateOfIncorporation": "",
+      "stateOfIncorporationDescription": ""
+    },
+    "VOD": {
+      "businessKeys": [
+        "city",
+        "country",
+        "countryCode",
+        "foreignStateTerritory",
+        "isForeignLocation",
+        "stateOrCountry",
+        "stateOrCountryDescription",
+        "street1",
+        "street2",
+        "zipCode"
+      ],
+      "businessStateOrCountry": null,
+      "businessStateOrCountryDescription": null,
+      "mailingStateOrCountry": null,
+      "mailingStateOrCountryDescription": null,
+      "metaKeys": [
+        "addresses",
+        "category",
+        "entityType",
+        "fiscalYearEnd",
+        "phone",
+        "stateOfIncorporation",
+        "stateOfIncorporationDescription"
+      ],
+      "name": "VODAFONE GROUP PUBLIC LTD CO",
+      "stateOfIncorporation": "",
+      "stateOfIncorporationDescription": ""
+    }
+  },
+  "updatedAt": "2026-09-05T12:02:15Z"
 }
