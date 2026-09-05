@@ -1378,6 +1378,74 @@
     return _bySym[sym];
   }
 
+  /* ── 国别暴露 ──────────────────────────────────────────────────────
+     **条数与暴露家数是两个读数，只印一个会把风险读反。**
+     印度尼西亚按条数排第 4（6.6%），按暴露家数却排第 1（118 家，高于中国的
+     107 家）——几乎每一家有名单的公司都沾到印尼的锡。页面两个都印，
+     条的宽度按**暴露家数**画，因为这一屏回答的是「多少家沾到」。 */
+  var EXPO_ROWS = 20;
+
+  function renderExposure(d) {
+    var sec = $("expsec");
+    if (!sec) return;
+    // 与 upstreamConcentration 同级放在顶层，不在 coverage 里——
+    // 两个同类的榜单放两个地方，迟早有人（包括我自己）读错路径。
+    var rows = d.countryExposure || [];
+    if (!rows.length) { sec.hidden = true; return; }
+    sec.hidden = false;
+
+    var listed = Object.keys(d.edgeIndex || {}).length;
+    var edgesTotal = (d.coverage || {}).edgesTotal || 0;
+    var shown = rows.slice(0, EXPO_ROWS);
+    setText($("expo-lead"),
+      "按冶炼厂所在国别看暴露面：左边是**有多少家申报人的名单里出现过该国的厂**，"
+        .replace(/\*\*/g, "")
+      + "右边是关系条数。分母是有名单的 " + listed + " 家公司（不是全部 "
+      + ((d.coverage || {}).nodesTotal || 0) + " 家）。共 " + rows.length
+      + " 个国别，下面列前 " + shown.length + " 个。");
+
+    var host = $("expo-rows");
+    host.textContent = "";
+    shown.forEach(function (r, i) {
+      var line = el("div", "exprow");
+      line.appendChild(el("span", "rk", String(i + 1)));
+      line.appendChild(el("span", "nm", r.country || "未写明"));
+      var bar = el("span", "bar");
+      bar.style.flexBasis = Math.max(3, (r.filerShare || 0) * 100) + "%";
+      bar.style.flexGrow = "0";
+      line.appendChild(bar);
+      var n = el("span", "n");
+      n.appendChild(document.createTextNode(String(r.filerCount)));
+      n.appendChild(el("s", null, " 家 " + Math.round((r.filerShare || 0) * 100) + "%"));
+      line.appendChild(n);
+      var ed = el("span", "ed", fmt(r.edges) + " 条");
+      line.appendChild(ed);
+      line.title = (r.country || "未写明") + "：" + r.filerCount + " 家有名单的公司"
+        + "（共 " + listed + " 家）的申报名单里出现过该国的冶炼厂，占 "
+        + Math.round((r.filerShare || 0) * 100) + "%；"
+        + "关系 " + r.edges + " 条，占全部 " + edgesTotal + " 条的 "
+        + (edgesTotal ? (r.edges / edgesTotal * 100).toFixed(1) : 0) + "%。"
+        + "「出现在名单里」不等于采购关系。";
+      host.appendChild(line);
+    });
+
+    // 两个读数排名不一致时把它说出来——那正是这一屏存在的理由。
+    var byEdges = rows.slice().sort(function (a, b) { return b.edges - a.edges; });
+    var note = "";
+    if (byEdges.length && rows.length && byEdges[0].country !== rows[0].country) {
+      note = "注意两列排名不同：按暴露家数第一的是「" + rows[0].country
+        + "」（" + rows[0].filerCount + " 家），按关系条数第一的是「"
+        + byEdges[0].country + "」（" + fmt(byEdges[0].edges) + " 条）。"
+        + "条数说的是图谱里有多少分量落在那里，家数说的是暴露面有多宽，"
+        + "两者不是一回事。";
+    }
+    setText($("expo-foot"), note
+      + "本屏与上游集中度同源，都是从申报名单里数出来的，不含推断。"
+      + "「某国的冶炼厂出现在这些公司的名单里」不说明它们与那些冶炼厂之间"
+      + "有直接采购关系——冶炼厂在供应链的第三层，申报的原义是"
+      + "「出现在本公司供应链中」。");
+  }
+
   function renderConcentration(d) {
     var sec = $("concsec");
     if (!sec) return;
@@ -1576,6 +1644,7 @@
     renderStages(d);
     renderFlow(d);
     renderConcentration(d);
+    renderExposure(d);
     renderMethod(d);
     $("state").hidden = true;
   }

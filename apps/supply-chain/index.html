@@ -279,6 +279,34 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
 
 /* 上游集中度。条的长度就是家数，与「真实流向」同一套语义：宽度有实测含义。 */
 .concsec { padding:14px 16px; margin:0 0 18px; }
+/* 国别暴露：与集中度那块同一套读法，读者不必学两种界面。
+   两条数值列——左边是暴露家数（宽度按它画），右边是关系条数。 */
+.expsec { padding:14px 16px; margin:0 0 18px; }
+.expsec .lead { font-size:13px; margin-bottom:10px; }
+.exprow { display:flex; align-items:center; gap:8px; padding:3px 0; }
+.exprow .rk { width:22px; flex:none; font-size:11px; color:var(--faint);
+  font-family:var(--mono); text-align:right; }
+.exprow .nm { flex:0 1 26%; min-width:0; font-size:12px; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap; }
+/* 条用 flex-basis 画比例，**必须允许收缩**（flex-shrink 不为 0），
+   否则各列固定宽度加起来比容器宽，整页横向溢出 4px。 */
+.exprow .bar { flex:1 1 20px; height:9px; border-radius:3px; min-width:12px;
+  background:linear-gradient(90deg, rgba(74,144,217,.85), rgba(74,144,217,.45)); }
+.exprow .n { flex:0 1 auto; min-width:78px; text-align:right; font-family:var(--mono);
+  font-size:11px; color:var(--text); white-space:nowrap; }
+.exprow .n s { text-decoration:none; color:var(--faint); }
+.exprow .ed { flex:0 1 auto; min-width:66px; text-align:right; font-family:var(--mono);
+  font-size:11px; color:var(--dim); white-space:nowrap; }
+@media (max-width:560px) {
+  /* 窄屏收窄各列，**但不隐藏「条数」**。
+     隐藏它会让断言读到读者看不见的数（textContent 对 display:none 照样返回），
+     那种断言等于没有——这一页的规矩是「画的是不是那个数」，
+     前提是它真的画出来了。 */
+  .exprow .nm { flex:0 1 30%; font-size:11px; }
+  .exprow .n { min-width:62px; font-size:10px; }
+  .exprow .ed { min-width:52px; font-size:10px; }
+  .exprow .rk { display:none; }
+}
 .concsec .lead { font-size:13px; margin-bottom:10px; }
 .concrow { display:flex; align-items:center; gap:8px; padding:3px 0; }
 /* 咽喉点反查：点开看是哪 N 家申报人。语义仍止于「共同列入」。 */
@@ -536,6 +564,20 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
     <p class="foot2" id="conc-foot"></p>
   </section>
 
+  <div class="sec-h">
+    <h2>国别暴露</h2>
+    <span id="expo-sub">同一个国别被多少家申报人的名单碰到 · 与「条数」是两个不同的读数</span>
+  </div>
+  <!-- **条数与暴露家数经常排出完全不同的名次，只印一个会把风险读反。**
+       印度尼西亚按条数排第 4（6.6%），按暴露家数却排第 1——几乎每一家有名单
+       的公司都沾到印尼的锡。Sankey 画的是环节 → 国别的流量，回答不了
+       「多少家公司沾到某国」，所以单列这一份。 -->
+  <section class="glass expsec" id="expsec" hidden aria-label="按国别的上游暴露">
+    <p class="lead" id="expo-lead"></p>
+    <div id="expo-rows"></div>
+    <p class="foot2" id="expo-foot"></p>
+  </section>
+
   <details class="glass meth">
     <summary>数据方法与来源</summary>
     <div class="body" id="method"></div>
@@ -548,6 +590,6 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="app.js?v=40f48b62" defer></script>
+<script src="app.js?v=54341f57" defer></script>
 </body>
 </html>
