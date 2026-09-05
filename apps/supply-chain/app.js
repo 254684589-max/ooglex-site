@@ -194,9 +194,25 @@
       } else {
         lead2.hidden = false;
         var n2 = byCountry.reduce(function (a, r) { return a + (r.companies || 0); }, 0);
+        // 国别取自哪个 SEC 字段，必须照数据写。营业地址回答的是「办公室在哪」，
+        // 对在美上市的外国发行人往往是它的美国办公室（爱尔康显示得州、
+        // 壳牌显示华盛顿特区）；注册地回答的是「依哪国法律成立」，偏差在
+        // 开曼／泽西这类控股架构。两者不是一回事，不能笼统说成「公司在哪国」。
+        var basis = (d.coverage && d.coverage.countryBasis) || {};
+        var byInc = basis["state-of-incorporation"] || 0;
+        var byAddr = (basis["business-address"] || 0) + (basis["mailing-address"] || 0);
+        var noBasis = basis.unknown || 0;
+        var note = "";
+        if (byInc || byAddr || noBasis) {
+          note = "国别取自 SEC 备案：其中 " + byInc + " 家按注册地（依哪国法律成立，"
+            + "开曼、泽西这类控股架构会记到注册地而不是实际总部）、"
+            + byAddr + " 家按备案地址"
+            + (noBasis ? "，另有 " + noBasis + " 家 SEC 备案里没有可用的地区字段，列为未归类" : "")
+            + "。";
+        }
         setText(lead2, "另有在美上市的外国私人发行人 " + n2
           + " 家（报 20-F／40-F 且同时报 Form SD 的那一批）。它们没有站内板块分类，"
-          + "下面按国别拆——注意这一栏的口径是国别，不是板块。");
+          + "下面按国别拆——注意这一栏的口径是国别，不是板块。" + note);
         drawCovRows(rows2, byCountry);
       }
     }

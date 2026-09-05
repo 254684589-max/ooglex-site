@@ -97,6 +97,19 @@ COUNTRIES: dict[str, str] = {
     "mali": "马里", "burkina faso": "布基纳法索", "egypt": "埃及", "morocco": "摩洛哥",
     "australia": "澳大利亚", "new zealand": "新西兰", "papua new guinea": "巴布亚新几内亚",
     "kazakstan": "哈萨克斯坦",
+    # 以下这批多半不会出现在冶炼厂所在国，但会出现在**注册地**——
+    # 在美上市的外国发行人大量用开曼／泽西／百慕大的控股架构申报。
+    # 表里没有它们的话，注册地一律落进「未归类」，等于把这批公司丢掉。
+    "bermuda": "百慕大", "cayman islands": "开曼群岛",
+    "british virgin islands": "英属维尔京群岛",
+    "virgin islands, british": "英属维尔京群岛",
+    "jersey": "泽西岛", "guernsey": "根西岛", "isle of man": "马恩岛",
+    "gibraltar": "直布罗陀", "marshall islands": "马绍尔群岛",
+    "bahamas": "巴哈马", "barbados": "巴巴多斯", "mauritius": "毛里求斯",
+    "curacao": "库拉索", "curaçao": "库拉索",
+    "netherlands antilles": "荷属安的列斯",
+    "moldova": "摩尔多瓦", "moldova, republic of": "摩尔多瓦",
+    "togo": "多哥", "benin": "贝宁",
     # 以下多见于「原产国」附录而非冶炼厂所在国。表不全的代价是把国名当成厂名：
     # 微软那份三列国名附录里，Andorra 因为不在表里就被当成了漏收的冶炼厂行。
     "andorra": "安道尔", "antigua and barbuda": "安提瓜和巴布达", "madagascar": "马达加斯加",

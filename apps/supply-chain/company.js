@@ -114,6 +114,27 @@
     if (stageLabel) add("环节", stageLabel.label, STAGE_COLOR[n.stage]);
     if (n.cik != null) add("CIK", String(n.cik));
     if (isNum(n.marketCap)) add("市值", cap(n.marketCap));
+    // 外国私人发行人这一池：没有站内行情、没有站内板块分类，
+    // 什么都不显示会让读者以为是数据缺失。如实说明它属于哪一池、
+    // 国别取自哪个字段——「注册地」和「总部在哪」不是一回事。
+    if (n.pool === "sec-foreign-issuer") {
+      if (n.country) {
+        add("国别", n.country + (n.region ? "（" + n.region + "）" : ""));
+      }
+      if (n.exchange) add("上市地", n.exchange);
+      var why = n.countryBasis === "state-of-incorporation"
+        ? "国别取自 SEC 备案的注册地（依哪国法律成立），不等于总部所在地"
+        : (n.countryBasis ? "国别取自 SEC 备案地址" : "SEC 备案里没有可用的地区字段");
+      var tip = $("c-pool");
+      if (tip) {
+        tip.hidden = false;
+        tip.textContent = "在美上市的外国私人发行人（报 20-F／40-F）。"
+          + "站内公司榜只收标普500成分股，因此这一家没有市值与板块分类——"
+          + "是口径如此，不是取数失败。" + why + "。";
+      }
+    } else if ($("c-pool")) {
+      $("c-pool").hidden = true;
+    }
   }
 
   /* ── 覆盖率声明：本页最重要的一段 ── */
@@ -716,7 +737,13 @@
       var symbol = param("symbol");
       if (!symbol) { fail("网址里没有指定公司代码。请从产业链页面的公司表进入。"); return; }
       var node = d.nodes.filter(function (x) { return (x.symbol || "").toUpperCase() === symbol; })[0];
-      if (!node) { fail("产业链节点表里没有 " + symbol + "。本板块目前只收录标普500成分股。"); return; }
+      if (!node) {
+        // 收录范围随池扩张，写死「只收标普500」会在扩池后变成假话。
+        // 照数据报当前实际收了多少家。
+        fail("产业链节点表里没有 " + symbol + "。本板块目前收录 " + d.nodes.length
+             + " 家公司：标普500成分股，以及在美上市、同时申报 Form SD 的外国私人发行人。");
+        return;
+      }
       state.data = d; state.node = node;
       document.title = (node.name || symbol) + " 供应链视图 · 全球产业链";
       return Promise.all([loadEdges(), loadNamesZh(), loadPeers()]).then(paint);

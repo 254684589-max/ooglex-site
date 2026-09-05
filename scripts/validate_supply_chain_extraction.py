@@ -1336,12 +1336,63 @@ def main() -> int:
             failures.append(f"撤回判据：{why} 不成立")
         print(f"  [{'OK' if ok else 'XX'}] {why}")
 
+    print("\n── 国别：折成真国家，且说清是从哪个字段来的 ──────────────────────")
+    region = load_module(os.path.join(os.path.dirname(EXTRACT_PATH), "edgar_region.py"),
+                         "edgar_region")
+    # 代码表从 EDGAR 自己的配对里长出来：别家申报带了描述，就用它补上这一家。
+    code_map = region.build_code_map([
+        ("F5", "TAIWAN"), ("F5", "TAIWAN"), ("A6", "Ontario, Canada"),
+        ("V8", "Switzerland"), ("XX", ""), ("", "Japan"),
+    ])
+    _TSMC = {"stateOfIncorporation": "F5",
+             "addresses": {"business": {"stateOrCountry": "F5"}}}
+    _ALCON = {"stateOfIncorporation": "V8",
+              "addresses": {"business": {"stateOrCountry": "TX",
+                                         "stateOrCountryDescription": "TX"}}}
+    _NOTHING = {"addresses": {"business": {}}}
+    region_cases = [
+        (region.split_region("Ontario, Canada") == ("Canada", "Ontario"),
+         "「Ontario, Canada」折成加拿大＋安大略——46 家加拿大公司不该占 6 行"),
+        (region.split_region("Canada (Federal Level)") == ("Canada", None),
+         "「Canada (Federal Level)」也是加拿大"),
+        (region.split_region("Korea, Republic of") == ("Korea, Republic of", None),
+         "「Korea, Republic of」整条保留——按最后一个逗号硬拆会得出一个叫「Republic of」的国家"),
+        (region.split_region("Taiwan, Province of China")[0] == "Taiwan, Province of China",
+         "ISO 倒装写法不拆"),
+        (region.split_region("Israel") == ("Israel", None),
+         "本来就是国名的原样返回"),
+        (region.split_region("") == (None, None),
+         "空值返回空，不编造"),
+        (region.describe("F5", None, code_map) == "TAIWAN",
+         "只有代码没有描述时，查 EDGAR 别处给出的同一代码"),
+        (region.describe("ZZ9", None, code_map) is None,
+         "代码表里没有、又不是美国州代码——留空不猜"),
+        (region.describe("NY", None, code_map) == "United States",
+         "美国州代码只能确定到国家这一级"),
+        (region.resolve_country(_TSMC, code_map)["country"] == "TAIWAN",
+         "台积电：营业地址没有描述，靠代码表补出来（此前这一家国别是空的）"),
+        (region.resolve_country(_ALCON, code_map)["country"] == "Switzerland",
+         "爱尔康：注册地瑞士优先于营业地址的 TX——TX 是它的美国办公室，不是国别"),
+        (region.resolve_country(_ALCON, code_map)["countryBasis"] == "state-of-incorporation",
+         "并记下这个结论取自注册地，页面照实标"),
+        (region.resolve_country(_NOTHING, code_map)["country"] is None,
+         "什么字段都没有就是未归类——宁可留空，不硬塞一个国家"),
+        (region.build_code_map([("a6", "Ontario, Canada")]).get("A6") == "Ontario, Canada",
+         "代码大小写归一"),
+        (region.build_code_map([("F5", "")]) == {},
+         "只有代码没有描述的配对进不了表——那是要补的对象，不是依据"),
+    ]
+    for ok, why in region_cases:
+        if not ok:
+            failures.append(f"国别：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
     total = (len(pdf_cases) + 4 + len(kind_cases) + len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
-             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases)
+             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases)
              + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:

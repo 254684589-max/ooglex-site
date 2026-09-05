@@ -52,6 +52,10 @@
   .fact { font-size:.72rem; color:var(--dim); border:1px solid var(--line);
     border-radius:999px; padding:3px 11px; }
   .fact b { color:var(--text); }
+  /* 外国发行人的口径说明。.ident 是 flex 容器，不给 flex-basis:100% 的话
+     这段会被挤到代码胶囊那一行去，360px 下直接把身份条撑破。 */
+  #c-pool { flex:0 0 100%; font-size:.72rem; color:var(--dim); line-height:1.5;
+    margin-top:2px; }
 
   .notice { padding:12px 15px; border-left:3px solid var(--warn); margin-bottom:13px; }
   .notice h2 { font-size:.88rem; font-weight:700; color:#f0cf85; margin-bottom:4px; }
@@ -219,6 +223,7 @@
         <span class="en" id="c-en"></span>
       </div>
       <div class="facts" id="c-facts"></div>
+      <p id="c-pool" hidden></p>
     </div>
 
     <section class="glass notice" aria-label="数据范围声明">
@@ -249,6 +254,6 @@
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="company.js?v=f3363089" defer></script>
+<script src="company.js?v=54233b2c" defer></script>
 </body>
 </html>

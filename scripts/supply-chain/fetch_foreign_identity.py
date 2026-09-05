@@ -55,6 +55,7 @@ from edgar_index import (                          # noqa: E402
     TICKERS_EXCHANGE_URL, _get_json, _why, parse_index_line,
     recent_quarters, stream_lines,
 )
+import edgar_region as region                      # noqa: E402
 
 SP500_PATH = "apps/companies/sp500.json"
 OUT_PATH = "apps/supply-chain/foreign.json"
@@ -132,6 +133,10 @@ def load_sp500_symbols() -> set:
                     for m in (json.load(handle).get("members") or []) if m.get("symbol")}
     except (OSError, ValueError):
         return set()
+
+
+def cik_of(item: dict) -> int:
+    return int(item["cik"])
 
 
 def load_previous() -> dict:
@@ -221,7 +226,7 @@ def main() -> int:
 
     # 逐家取 submissions：公司名、SIC、国别、交易所。与标普那侧同一套字段，
     # 这样节点构建不必为两个池写两套逻辑。
-    companies: dict[str, dict] = {}
+    metas: list[tuple[dict, dict]] = []          # (chosen item, submissions meta)
     failed = 0
     print(f"\n逐家取 submissions（{len(chosen)} 家）")
     for item in chosen:
@@ -232,23 +237,45 @@ def main() -> int:
         except Exception:                          # noqa: BLE001
             failed += 1
             continue
-        biz = (meta.get("addresses") or {}).get("business") or {}
+        metas.append((item, meta))
+
+    # 先扫一遍全部结果，把 EDGAR 自己给出的「地区代码 ↔ 描述」收集成表，
+    # 再拿它去补那些只有代码没有描述的公司（台积电、本田那一批）。
+    # 表由数据长出来而不是我硬编：记错一个代码就是把一家公司放到别的国家去。
+    code_map = region.build_code_map(
+        pair for _, meta in metas for pair in region.address_pairs(meta))
+    print(f"EDGAR 自带的地区代码表：{len(code_map)} 个代码带描述")
+
+    companies: dict[str, dict] = {}
+    for item, meta in metas:
         symbol = item["primary"]["ticker"]
+        place = region.resolve_country(meta, code_map)
         companies[symbol] = {
             "symbol": symbol,
-            "cik": cik,
-            "name": (meta.get("name") or foreign[cik]["name"] or symbol).strip(),
+            "cik": cik_of(item),
+            "name": (meta.get("name") or foreign[item["cik"]]["name"] or symbol).strip(),
             "sic": int(meta["sic"]) if str(meta.get("sic") or "").isdigit() else None,
             "sicDescription": meta.get("sicDescription"),
-            "country": (biz.get("stateOrCountryDescription")
-                        or meta.get("stateOfIncorporationDescription")
-                        or meta.get("stateOfIncorporation")),
+            # country 是国家，region 是它下面那一级（省／州）。曾经把
+            # 「Ontario, Canada」整条当国别，加拿大在按国别的表里出现六次。
+            "country": place["country"],
+            "region": place["region"],
+            # 这个结论是从哪个字段来的。注册地与营业地址的偏差方向不同，
+            # 页面要照实标，不能让读者以为两者是一回事。
+            "countryBasis": place["countryBasis"],
+            "countryCode": place["countryCode"],
             "exchange": item["primary"].get("exchange"),
             "tickers": sorted({c["ticker"] for c in item["candidates"]}),
             "annualForm": "20-F/40-F",
-            "lastAnnual": foreign[cik]["last"],
+            "lastAnnual": foreign[item["cik"]]["last"],
         }
     print(f"取到 {len(companies)} 家，失败 {failed} 家")
+
+    from collections import Counter
+    basis_count = Counter(v.get("countryBasis") or "未标注" for v in companies.values())
+    print("国别取自：" + "、".join(f"{k} {v} 家" for k, v in basis_count.most_common()))
+    top = Counter(v.get("country") or "未标注" for v in companies.values())
+    print("国别分布：" + "、".join(f"{k} {v}" for k, v in top.most_common(10)))
 
     previous = load_previous()
     prior = previous.get("companies") or {}

@@ -1155,6 +1155,43 @@ async function main() {
       }
     }
 
+    // 外国私人发行人这一池：没有市值、没有板块。页面必须说清那是口径如此，
+    // 不是取数失败——什么都不写的话读者只会以为数据缺了一块。
+    console.log("\n── 公司视图 · 外国私人发行人 ──");
+    await client.send("Page.navigate",
+      { url: `http://127.0.0.1:${port}/apps/supply-chain/company.html?symbol=TSM` }, sessionId);
+    const fpi = await evaluate(`new Promise((done) => {
+      const deadline = Date.now() + 20000;
+      (function poll() {
+        const p = document.getElementById('c-pool');
+        const zh = document.getElementById('c-zh');
+        if (zh && zh.textContent && p) {
+          return done({
+            shown: !p.hidden,
+            text: p.textContent || "",
+            facts: (document.getElementById('c-facts') || {}).textContent || "",
+            overflow: Math.max(0, document.documentElement.scrollWidth - window.innerWidth),
+          });
+        }
+        if (Date.now() > deadline) return done({ shown: false, text: "", facts: "", overflow: 0 });
+        setTimeout(poll, 120);
+      })();
+    })`);
+    check(`外国发行人页显示所属池的说明`, () => assert.ok(fpi.shown,
+      "c-pool 没显示——这一池没有市值也没有板块，不说明就是个哑缺口"));
+    check(`说明写清没有市值是口径而非取数失败`, () => assert.ok(
+      fpi.text.includes("不是取数失败") && fpi.text.includes("外国私人发行人"),
+      `实际：${fpi.text.slice(0, 80)}`));
+    check(`说明里写明国别取自哪个字段`, () => assert.ok(
+      /注册地|备案地址|没有可用的地区字段/.test(fpi.text),
+      `实际：${fpi.text.slice(0, 80)}`));
+    check(`说明里没有漏出的星号`, () => assert.ok(!fpi.text.includes("*"),
+      `实际：${fpi.text.slice(0, 80)}`));
+    check(`身份条不显示市值（这一池没有站内行情）`, () => assert.ok(
+      !fpi.facts.includes("市值"), `实际：${fpi.facts.slice(0, 80)}`));
+    check(`外国发行人页无横向溢出`, () => assert.ok(fpi.overflow <= 1,
+      `溢出 ${fpi.overflow}px`));
+
     // 未知代码要有明确说明，不能白屏
     console.log("\n── 公司视图 · 未知代码 ──");
     await client.send("Page.navigate",

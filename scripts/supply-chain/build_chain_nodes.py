@@ -493,6 +493,31 @@ def apply_identity(node: dict, record: dict, sic_module, chain_module=None) -> d
     return node
 
 
+def _country_map() -> dict[str, str]:
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "form_sd_parse.py")
+    spec = importlib.util.spec_from_file_location("_form_sd_for_nodes", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.COUNTRIES
+
+
+_COUNTRIES_ZH: dict[str, str] | None = None
+
+
+def country_zh(name: str | None) -> str | None:
+    """SEC 写的国名 → 中文名。表里没有的**原样返回**，不硬塞译名。
+
+    这个站是中文站，国别列一半中文一半英文会很难看；但认不出来时照原文写，
+    比按字面猜一个译名强——猜错一个国名就是把一家公司放到别的国家去。
+    """
+    global _COUNTRIES_ZH
+    if not name:
+        return None
+    if _COUNTRIES_ZH is None:
+        _COUNTRIES_ZH = _country_map()
+    return _COUNTRIES_ZH.get(name.strip().lower(), name.strip())
+
+
 def build_foreign_node(record: dict, sic_module, chain_module=None) -> dict:
     """外国私人发行人的节点。
 
@@ -515,7 +540,17 @@ def build_foreign_node(record: dict, sic_module, chain_module=None) -> dict:
         "logo": None,
         "listed": True,
         "pool": "sec-foreign-issuer",
-        "country": record.get("country"),
+        # country 是国家的中文名（页面显示用），countryEn 保留 SEC 的原文，
+        # region 是它下面那一级（省／州）。三个分开存，页面要哪个取哪个——
+        # 曾经只存一个字段、把「Ontario, Canada」整条当国别，
+        # 于是「按国别」的表里加拿大出现了六次。
+        "country": country_zh(record.get("country")),
+        "countryEn": record.get("country"),
+        "region": record.get("region"),
+        # 这个国别是从注册地还是营业地址来的。两者偏差方向不同
+        # （注册地偏向开曼／泽西这类控股架构，营业地址偏向美国办公室），
+        # 页面必须照实标，不能让读者以为它是「公司总部在哪」。
+        "countryBasis": record.get("countryBasis"),
         "exchange": record.get("exchange"),
         "cik": None,
         "sic": None,
@@ -679,8 +714,15 @@ def build() -> None:
     # 那池没有站内板块分类，按国别拆——全塞进「未分类」就是一个 147 家的黑箱。
     by_sector = sector_coverage([n for n in nodes if n.get("pool") != "sec-foreign-issuer"],
                                 filing_status)
-    by_country = sector_coverage([n for n in nodes if n.get("pool") == "sec-foreign-issuer"],
-                                 filing_status, key="country", label="sector")
+    foreign_nodes_all = [n for n in nodes if n.get("pool") == "sec-foreign-issuer"]
+    by_country = sector_coverage(foreign_nodes_all, filing_status,
+                                 key="country", label="sector")
+    # 国别是从哪个字段来的，逐档计数。注册地与营业地址偏差方向不同，
+    # 页面得照实说是哪一种，不能笼统说成「公司在哪个国家」。
+    country_basis: dict[str, int] = {}
+    for node in foreign_nodes_all:
+        key = node.get("countryBasis") or "unknown"
+        country_basis[key] = country_basis.get(key, 0) + 1
     # 边文件还在、但最近一轮扫描没再抽到名单的公司。抽取器**不删有效历史数据**
     # （AGENTS.md：不得删除有效历史数据来掩盖抓取失败），所以文件保留着上一轮的
     # 结果；但覆盖率报的是本轮扫描口径，两个数就会差几家。
@@ -813,6 +855,8 @@ def build() -> None:
             # 外国发行人按国别。字段名沿用 sector 是为了让页面复用同一套渲染，
             # 但语义是国别——页面上必须写清楚，不能让读者以为这是板块。
             "byCountry": by_country,
+            # 上面那一栏的国别各自来自哪个 SEC 字段。页面照这个数说话。
+            "countryBasis": country_basis,
             # 见上：边来自更早的扫描，本轮未复现。列出代码，读者可自己核对。
             "edgesFromEarlierScan": stale,
             # 按实际 stageBasis 分组。曾经把所有已判定的都记成 sector-initial，
