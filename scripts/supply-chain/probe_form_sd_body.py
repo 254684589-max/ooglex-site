@@ -113,7 +113,8 @@ _HINTS = {
 }
 
 
-def probe_company(symbol: str, cik: int, pdf_mod, max_docs: int) -> None:
+def probe_company(symbol: str, cik: int, pdf_mod, max_docs: int,
+                  ledger: list[dict]) -> None:
     print(f"\n{'=' * 72}\n{symbol}  CIK {cik}")
     try:
         filing = latest_form_sd(cik)
@@ -162,6 +163,7 @@ def probe_company(symbol: str, cik: int, pdf_mod, max_docs: int) -> None:
             continue
         time.sleep(GAP)
 
+        counts_tags: dict[str, int] | None = None
         if low.endswith(".pdf"):
             got = pdf_mod.pdf_to_text(raw)
             print(f"    PDF 裁决={got['verdict']}  页 {got.get('pages')}  "
@@ -175,7 +177,7 @@ def probe_company(symbol: str, cik: int, pdf_mod, max_docs: int) -> None:
             except Exception as exc:               # noqa: BLE001
                 print(f"    [XX] HTML 解析异常：{type(exc).__name__}: {exc}")
                 continue
-            c = parser.counts
+            c = counts_tags = parser.counts
             print(f"    标签：table {c.get('table',0)}  tr {c.get('tr',0)}  "
                   f"td {c.get('td',0)}  li {c.get('li',0)}  p {c.get('p',0)}  "
                   f"br {c.get('br',0)}  div {c.get('div',0)}  img {c.get('img',0)}")
@@ -185,6 +187,14 @@ def probe_company(symbol: str, cik: int, pdf_mod, max_docs: int) -> None:
         # 而 smelter/refiner 在尽职调查的叙述正文里满天飞，数它只能说明这份报告
         # 在谈冶炼厂，说明不了它在**列**冶炼厂。
         counts = {k: len(rx.findall(text)) for k, rx in _HINTS.items()}
+        # 记进汇总表。**Actions 的日志只读得到末尾那一段**，而每份文档的正文
+        # 抽样又很长，前面几家会被挤出可读范围。所以把各份的计数在收尾处
+        # 再列一遍——列的是数，不是结论。
+        ledger.append({"symbol": symbol, "name": d["name"], "size": d["size"],
+                       "skip": d["skip"], "chars": len(text),
+                       "table": (counts_tags or {}).get("table", 0),
+                       "tr": (counts_tags or {}).get("tr", 0),
+                       **counts})
         print(f"    正文 {len(text)} 字符；线索词："
               + "  ".join(f"{k}={v}" for k, v in counts.items()))
         if text:
@@ -215,6 +225,7 @@ def main() -> int:
     print(f"目标 {len(wanted)} 家：{'、'.join(wanted)}")
 
     pdf_mod = load_pdf_text()
+    ledger: list[dict] = []
     missing = []
     for symbol in wanted:
         record = identity.get(symbol)
@@ -222,10 +233,22 @@ def main() -> int:
         if not cik:
             missing.append(symbol)
             continue
-        probe_company(symbol, int(cik), pdf_mod, args.max_docs)
+        probe_company(symbol, int(cik), pdf_mod, args.max_docs, ledger)
 
     if missing:
         print(f"\n[!!] 身份表里没有 CIK，跳过：{'、'.join(missing)}")
+
+    if ledger:
+        print(f"\n{'=' * 72}\n汇总（每份文档一行，全是计数，不含结论）\n")
+        print(f"  {'代码':<6} {'文件':<34} {'字节':>9} {'正文':>7} "
+              f"{'table':>5} {'tr':>4} {'CID':>4} {'smelt':>5} {'国名':>4} {'附录':>4}")
+        for r in ledger:
+            print(f"  {r['symbol']:<6} {r['name'][:34]:<34} {r['size']:>9,} "
+                  f"{r['chars']:>7} {r['table']:>5} {r['tr']:>4} "
+                  f"{r['CID编号']:>4} {r['smelter']:>5} {r['国名样本']:>4} {r['附录']:>4}")
+        print("\n  CID 编号那一列是决定性的：真名单几乎一定带 RMI 编号，")
+        print("  而 smelter 在尽职调查的叙述正文里满天飞，说明不了在列名单。")
+
     print("\n结论请人看上面的原始内容得出——本探针不判定有没有名单。")
     return 0
 
