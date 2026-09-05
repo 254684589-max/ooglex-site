@@ -59,6 +59,9 @@ UA = f"Ooglex Supply Chain Research/1.0 ({CONTACT})"
 
 IDENTITY_PATH = "apps/supply-chain/identity.json"
 SP500_PATH = "apps/companies/sp500.json"
+# 第二个公司池：在美上市的外国私人发行人里同时报 Form SD 的那一批，
+# 由 fetch_foreign_identity.py 生成。缺失时只扫标普那一池，不中断。
+FOREIGN_PATH = "apps/supply-chain/foreign.json"
 OUT_DIR = "apps/supply-chain/edges"
 SMELTERS_PATH = "apps/supply-chain/smelters.json"
 
@@ -256,7 +259,35 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
         outcome["state"] = "doc-failed"
         return outcome
     outcome["parse"] = best
+
+    # 披露类型先判，再决定这份「名单」算不算数。**顺序很重要**：
+    # 13q-1 资源开采付款那套披露里根本没有冶炼厂这个概念，它的表格是
+    # 「国家 | 政府机构 | 金额」。而无编号行的判据是「矿种 + 厂名 + 国别 三者齐全」，
+    # 一行「India | Gold | …」的付款记录恰好能满足——艾芬豪那份 ESTMA 就这么
+    # 抽出了一家叫「La India」的「冶炼厂」（印度、金），实测确认。
+    #
+    # 所以：这份申报是资源开采付款、且一个 RMI 编号都没有时，那些行不是冶炼厂。
+    # RMI 编号是全球统一标识，付款表里不可能出现，所以**有编号的行照收**——
+    # 万一某家同时报了两套，真名单不会被这道闸误伤。
+    xbrl = parser.filing_is_xbrl_tagged([d["name"] for d in documents])
+    evidence = parser.disclosure_evidence("\n".join(all_html) or best_html or "",
+                                          xbrl_tagged=xbrl)
+    kind = evidence["kind"]
+    if verbose:
+        print(f"       判披露类型：{kind}（{evidence['why']}；XBRL {'有' if xbrl else '无'}）")
+        print(f"         矿产特征 {evidence['minerals'][:4]}")
+        print(f"         开采特征 {evidence['extraction'][:4]}")
+
     if best["unique"]:
+        if kind == "resource-extraction" and not best["rowsWithCid"]:
+            outcome["state"] = "resource-extraction"
+            outcome["disclosureKind"] = kind
+            outcome["disclosureWhy"] = evidence["why"]
+            outcome["droppedAsPaymentRows"] = best["unique"]
+            if verbose:
+                print(f"       [!!] 判为资源开采付款，{best['unique']} 行无编号的"
+                      "「名单」按付款记录处理，不当冶炼厂发布")
+            return outcome
         outcome["state"] = "listed"
         return outcome
     # 没抽到名单时先分清这是哪一套披露。Form SD 底下有两套互不相干的规则：
@@ -265,18 +296,8 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
     # 把它们记成「申报了但正文未列名单」等于暗示「本可以列却没列」。
     # 判据同时看结构与用词：目录里有 XBRL 渲染件说明这是 13q-1（付款数据必须
     # 标记），力拓、壳牌那种「正文里天然带 smelter/refiner」的误判由它挡住。
-    xbrl = parser.filing_is_xbrl_tagged([d["name"] for d in documents])
-    evidence = parser.disclosure_evidence("\n".join(all_html) or best_html or "",
-                                          xbrl_tagged=xbrl)
-    kind = evidence["kind"]
     outcome["disclosureKind"] = kind
     outcome["disclosureWhy"] = evidence["why"]
-    if verbose:
-        # 这条规则改了三版，每一版都是靠看真实输出发现错的。把依据打出来，
-        # 下一次就不必再加一轮日志才知道「为什么判成这样」。
-        print(f"       判披露类型：{kind}（{evidence['why']}；XBRL {'有' if xbrl else '无'}）")
-        print(f"         矿产特征 {evidence['minerals'][:4]}")
-        print(f"         开采特征 {evidence['extraction'][:4]}")
     outcome["state"] = ("resource-extraction" if kind == "resource-extraction"
                         else "filed-no-list")
     return outcome
@@ -359,6 +380,22 @@ def build_edges(outcome: dict, name_zh: str | None) -> dict:
     }
 
 
+def should_withdraw(outcome: dict) -> bool:
+    """这一家此前发布的边该不该撤回。
+
+    只有一种情形为真：本轮判定这份申报是 13q-1 资源开采付款披露
+    （里面根本没有冶炼厂这个概念），而解析器确实从付款表里抠出过行
+    （droppedAsPaymentRows）。那几行是错的，留着等于继续声称申报人的
+    供应链里有一家名叫某个矿区的冶炼厂。
+
+    取数失败、文档取不到、解析异常、有申报无名单——一律返回 False。
+    那些是「没抓到」，不是「抓错了」，删掉就成了拿删数据掩盖抓取失败。
+    """
+    if outcome.get("state") != "resource-extraction":
+        return False
+    return bool(outcome.get("droppedAsPaymentRows"))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true",
@@ -384,7 +421,7 @@ def main() -> int:
 
     with open(IDENTITY_PATH, encoding="utf-8") as handle:
         identity = (json.load(handle) or {}).get("companies") or {}
-    names = {}
+    names: dict[str, str | None] = {}
     try:
         with open(SP500_PATH, encoding="utf-8") as handle:
             names = {m["symbol"]: m.get("name") for m in
@@ -392,11 +429,31 @@ def main() -> int:
     except (OSError, ValueError):
         pass
 
+    # ── 第二个公司池：外国私人发行人 ────────────────────────────────────
+    # 探针与 dry-run 都证过这批公司抽得出名单（索尼 322 家、台积电 190 家、
+    # 丰田 226 家）。这里把它们接进正式抽取路径，与标普那池同一套解析规则。
+    foreign: dict[str, dict] = {}
+    try:
+        with open(FOREIGN_PATH, encoding="utf-8") as handle:
+            foreign = (json.load(handle) or {}).get("companies") or {}
+    except (OSError, ValueError):
+        pass
+    pool_of: dict[str, str] = {t: "sp500" for t in identity}
+    for symbol, row in foreign.items():
+        # 代码撞了以标普那侧为准。撞码不会报错，只会让一家美国公司的边
+        # 悄悄挂到外国公司名下——节点那侧同样这么挡。
+        if symbol in identity:
+            continue
+        pool_of[symbol] = "sec-foreign-issuer"
+        names.setdefault(symbol, row.get("name"))
+
     wanted = [t.strip().upper() for t in args.tickers.split(",") if t.strip()]
     if "ALL" in wanted:
         wanted = []
-    targets = [(t, v["cik"]) for t, v in sorted(identity.items())
-               if v.get("cik") and (not wanted or t.upper() in wanted)]
+    pairs = [(t, v["cik"]) for t, v in sorted(identity.items()) if v.get("cik")]
+    pairs += [(s, foreign[s]["cik"]) for s in sorted(foreign)
+              if foreign[s].get("cik") and pool_of.get(s) == "sec-foreign-issuer"]
+    targets = [(t, cik) for t, cik in pairs if not wanted or t.upper() in wanted]
 
     # 临时追加的公司。只用于 dry-run 核对，不进任何写盘路径。
     if args.extra_ciks:
@@ -444,7 +501,13 @@ def main() -> int:
         return 0
 
     parser = load_parser()
+    by_pool: dict[str, int] = {}
+    for symbol, _ in targets:
+        by_pool[pool_of.get(symbol, "sp500")] = by_pool.get(
+            pool_of.get(symbol, "sp500"), 0) + 1
     print(f"待处理 {len(targets)} 家"
+          + (f"（标普 {by_pool.get('sp500', 0)} + 外国发行人 "
+             f"{by_pool.get('sec-foreign-issuer', 0)}）" if foreign else "")
           + ("（dry-run，不写文件）" if args.dry_run else "") + "\n")
 
     states: dict[str, list[str]] = {}
@@ -558,6 +621,27 @@ def main() -> int:
         return 1
 
     os.makedirs(OUT_DIR, exist_ok=True)
+
+    # ── 撤回已判定为付款记录的边文件 ──────────────────────────────────────
+    # 「不得删除有效历史数据来掩盖抓取失败」是硬规矩，但这一档不是抓取失败：
+    # 是我们**认定这份申报根本不是冶炼厂名单**（13q-1 付款披露里没有冶炼厂
+    # 这个概念），此前发布的那几行是从付款表里误抠出来的。
+    # 留着它才是错的——那等于继续声称艾芬豪的供应链里有一家叫「La India」的冶炼厂。
+    #
+    # **只在这一种情形下删**：state 是 resource-extraction 且本轮明确标了
+    # droppedAsPaymentRows。取数失败、文档取不到、解析异常一律不删。
+    withdrawn: list[str] = []
+    for outcome in results:
+        if not should_withdraw(outcome):
+            continue
+        path = os.path.join(OUT_DIR, f"{outcome['symbol']}.json")
+        if os.path.exists(path):
+            os.remove(path)
+            withdrawn.append(outcome["symbol"])
+    if withdrawn:
+        print(f"\n撤回 {len(withdrawn)} 家的边文件：本轮判定其申报是 13q-1 资源开采付款，"
+              f"此前那几行是从付款表里误抠出来的，不是冶炼厂——{'、'.join(withdrawn)}")
+
     written = kept = unchanged = 0
     for outcome in results:
         if outcome["state"] != "listed":
@@ -661,6 +745,24 @@ def main() -> int:
                 "failedSymbols": sorted(failed)[:40],
                 # 逐家状态，供页面按板块解释缺口的成因。
                 "filingStatus": dict(sorted(filing_status.items())),
+                # 两个池分开报。合成一个数的话，「有名单 89/495」会变成
+                # 「89/642」——分母悄悄换了，覆盖率看着就掉了一截，
+                # 而实际上是新扫了一批公司，不是原来那批变差了。
+                "byPool": {
+                    pool: {
+                        "scanned": sum(1 for sym, _ in targets
+                                       if pool_of.get(sym, "sp500") == pool),
+                        "withList": sum(1 for sym in listed
+                                        if pool_of.get(sym, "sp500") == pool),
+                        "filedNoList": sum(1 for sym in filed_no_list
+                                           if pool_of.get(sym, "sp500") == pool),
+                        "resourceExtraction": sum(1 for sym in resource_extraction
+                                                  if pool_of.get(sym, "sp500") == pool),
+                        "noFiling": sum(1 for sym in no_filing
+                                        if pool_of.get(sym, "sp500") == pool),
+                    }
+                    for pool in sorted(set(pool_of.values()))
+                },
             }),
             "companiesPublished": len(index),
             "edgesTotal": published_edges,

@@ -55,6 +55,7 @@ from edgar_index import (                          # noqa: E402
     TICKERS_EXCHANGE_URL, _get_json, _why, parse_index_line,
     recent_quarters, stream_lines,
 )
+import edgar_region as region                      # noqa: E402
 
 SP500_PATH = "apps/companies/sp500.json"
 OUT_PATH = "apps/supply-chain/foreign.json"
@@ -132,6 +133,10 @@ def load_sp500_symbols() -> set:
                     for m in (json.load(handle).get("members") or []) if m.get("symbol")}
     except (OSError, ValueError):
         return set()
+
+
+def cik_of(item: dict) -> int:
+    return int(item["cik"])
 
 
 def load_previous() -> dict:
@@ -221,7 +226,7 @@ def main() -> int:
 
     # 逐家取 submissions：公司名、SIC、国别、交易所。与标普那侧同一套字段，
     # 这样节点构建不必为两个池写两套逻辑。
-    companies: dict[str, dict] = {}
+    metas: list[tuple[dict, dict]] = []          # (chosen item, submissions meta)
     failed = 0
     print(f"\n逐家取 submissions（{len(chosen)} 家）")
     for item in chosen:
@@ -232,23 +237,93 @@ def main() -> int:
         except Exception:                          # noqa: BLE001
             failed += 1
             continue
-        biz = (meta.get("addresses") or {}).get("business") or {}
+        metas.append((item, meta))
+
+    # 先扫一遍全部结果，把 EDGAR 自己给出的「地区代码 ↔ 描述」收集成表，
+    # 再拿它去补那些只有代码没有描述的公司（台积电、本田那一批）。
+    # 表由数据长出来而不是我硬编：记错一个代码就是把一家公司放到别的国家去。
+    code_map = region.build_code_map(
+        pair for _, meta in metas for pair in region.address_pairs(meta))
+    print(f"EDGAR 自带的地区代码表：{len(code_map)} 个代码带描述")
+
+    companies: dict[str, dict] = {}
+    for item, meta in metas:
         symbol = item["primary"]["ticker"]
+        place = region.resolve_country(meta, code_map)
         companies[symbol] = {
             "symbol": symbol,
-            "cik": cik,
-            "name": (meta.get("name") or foreign[cik]["name"] or symbol).strip(),
+            "cik": cik_of(item),
+            "name": (meta.get("name") or foreign[item["cik"]]["name"] or symbol).strip(),
             "sic": int(meta["sic"]) if str(meta.get("sic") or "").isdigit() else None,
             "sicDescription": meta.get("sicDescription"),
-            "country": (biz.get("stateOrCountryDescription")
-                        or meta.get("stateOfIncorporationDescription")
-                        or meta.get("stateOfIncorporation")),
+            # country 是国家，region 是它下面那一级（省／州）。曾经把
+            # 「Ontario, Canada」整条当国别，加拿大在按国别的表里出现六次。
+            "country": place["country"],
+            "region": place["region"],
+            # 这个结论是从哪个字段来的。注册地与营业地址的偏差方向不同，
+            # 页面要照实标，不能让读者以为两者是一回事。
+            "countryBasis": place["countryBasis"],
+            "countryCode": place["countryCode"],
+            # 被判定不可用的字段（例如「营业地址只说到美国某个州」）。
+            # 留着是为了让「为什么这家没有国别」在数据里查得到，而不是只剩一个空值。
+            "countryRejected": place.get("countryRejected"),
             "exchange": item["primary"].get("exchange"),
             "tickers": sorted({c["ticker"] for c in item["candidates"]}),
             "annualForm": "20-F/40-F",
-            "lastAnnual": foreign[cik]["last"],
+            "lastAnnual": foreign[item["cik"]]["last"],
         }
     print(f"取到 {len(companies)} 家，失败 {failed} 家")
+
+    # 定不出国别的，把 SEC 那几个字段的**原值**原样打出来。
+    # 台积电、本田、沃达丰这一批三个字段全空，光看结论只能看出「没有」，
+    # 看不出「SEC 到底写了什么」——不打出来就只能靠猜，而猜就是编。
+    # 定不出国别的，把 SEC 那几个字段的**原值**连同地址块其余的键一起记进
+    # 产出文件。台积电、本田、沃达丰这一批光看结论只能看出「没有」，
+    # 看不出「SEC 到底写了什么」——不留原值就只能靠猜，而猜就是编。
+    #
+    # 写进数据而不是只打日志：Actions 的日志会过期、下载还受出网策略限制，
+    # 而这问题要跨好几轮才查得清。留在文件里，谁都能直接查。
+    unresolved_geo: dict[str, dict] = {}
+    for item, meta in metas:
+        if region.resolve_country(meta, code_map)["country"] is not None:
+            continue
+        addresses = meta.get("addresses") or {}
+        biz = addresses.get("business") or {}
+        mail = addresses.get("mailing") or {}
+        unresolved_geo[item["primary"]["ticker"]] = {
+            "name": meta.get("name"),
+            "stateOfIncorporation": meta.get("stateOfIncorporation"),
+            "stateOfIncorporationDescription": meta.get("stateOfIncorporationDescription"),
+            "businessStateOrCountry": biz.get("stateOrCountry"),
+            "businessStateOrCountryDescription": biz.get("stateOrCountryDescription"),
+            "mailingStateOrCountry": mail.get("stateOrCountry"),
+            "mailingStateOrCountryDescription": mail.get("stateOrCountryDescription"),
+            # 境外那一套字段的**值**。上一版只存了键名，结果看得见
+            # 「有 country 这个键」却看不见它写的是什么——等于只走到一半。
+            "businessCountry": biz.get("country"),
+            "businessCountryCode": biz.get("countryCode"),
+            "businessForeignStateTerritory": biz.get("foreignStateTerritory"),
+            "businessIsForeignLocation": biz.get("isForeignLocation"),
+            "mailingCountry": mail.get("country"),
+            # 地址块里还有哪些键。也许国别根本不在我读的那两个字段里。
+            "businessKeys": sorted(biz),
+            # submissions 顶层还有哪些看着像地理信息的键，同理。
+            "metaKeys": sorted(k for k in meta
+                               if any(w in k.lower()
+                                      for w in ("state", "country", "address", "phone",
+                                                "fiscal", "entity", "category"))),
+        }
+    if unresolved_geo:
+        print(f"\n定不出国别的 {len(unresolved_geo)} 家，SEC 原值已写入产出文件的 "
+              f"unresolvedGeo；抽样：")
+        for ticker in sorted(unresolved_geo)[:4]:
+            print(f"  {ticker}: {json.dumps(unresolved_geo[ticker], ensure_ascii=False)}")
+
+    from collections import Counter
+    basis_count = Counter(v.get("countryBasis") or "未标注" for v in companies.values())
+    print("国别取自：" + "、".join(f"{k} {v} 家" for k, v in basis_count.most_common()))
+    top = Counter(v.get("country") or "未标注" for v in companies.values())
+    print("国别分布：" + "、".join(f"{k} {v}" for k, v in top.most_common(10)))
 
     previous = load_previous()
     prior = previous.get("companies") or {}
@@ -263,6 +338,8 @@ def main() -> int:
     out = {
         "contractVersion": CONTRACT_VERSION,
         "dataset": "supply-chain-foreign-issuers",
+        # 见上：定不出国别的那几家，SEC 原值留在这里备查。
+        "unresolvedGeo": unresolved_geo,
         "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "source": "SEC EDGAR 季度全量索引 + submissions（公共领域）",
         "note": ("在美上市的外国私人发行人（报 20-F／40-F）中**同时报 Form SD** 的那一批。"

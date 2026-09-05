@@ -302,8 +302,13 @@ def stage_flow(nodes: list[dict], bundles: dict[str, dict]) -> dict:
     }
 
 
-def sector_coverage(nodes: list[dict], filing_status: dict[str, str]) -> list[dict]:
-    """按板块统计覆盖情况，并区分「没抓到」和「本来就不适用」。
+def sector_coverage(nodes: list[dict], filing_status: dict[str, str],
+                    key: str = "sector", label: str = "sector") -> list[dict]:
+    """按某个维度统计覆盖情况，并区分「没抓到」和「本来就不适用」。
+
+    `key` 是分组字段：标普那池按 GICS 板块（sector），外国发行人那池按国别
+    （country）——它们没有站内板块分类，全塞进「未分类」等于一个 147 家的
+    黑箱，读者看不出任何东西。
 
     页面上金融 0/70 与科技 34/84 是两种完全不同的 0。前者是 Form SD 的适用范围
     决定的——规则只管产品中含 3TG 的发行人，银行没有产品；后者是这一轮没抓到，
@@ -314,10 +319,10 @@ def sector_coverage(nodes: list[dict], filing_status: dict[str, str]) -> list[di
     """
     buckets: dict[str, dict] = {}
     for node in nodes:
-        sector = node.get("sector") or "未分类"
+        sector = node.get(key) or "未分类"
         row = buckets.setdefault(sector, {
-            "sector": sector,
-            "sectorEn": node.get("sectorEn"),
+            label: sector,
+            "sectorEn": node.get("sectorEn") if key == "sector" else None,
             "companies": 0,
             "withEdges": 0,
             "filedNoList": 0,
@@ -488,6 +493,42 @@ def apply_identity(node: dict, record: dict, sic_module, chain_module=None) -> d
     return node
 
 
+def load_company_names_zh():
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "company_names_zh.py")
+    spec = importlib.util.spec_from_file_location("company_names_zh", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+names_zh = load_company_names_zh()
+
+
+def _country_map() -> dict[str, str]:
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "form_sd_parse.py")
+    spec = importlib.util.spec_from_file_location("_form_sd_for_nodes", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.COUNTRIES
+
+
+_COUNTRIES_ZH: dict[str, str] | None = None
+
+
+def country_zh(name: str | None) -> str | None:
+    """SEC 写的国名 → 中文名。表里没有的**原样返回**，不硬塞译名。
+
+    这个站是中文站，国别列一半中文一半英文会很难看；但认不出来时照原文写，
+    比按字面猜一个译名强——猜错一个国名就是把一家公司放到别的国家去。
+    """
+    global _COUNTRIES_ZH
+    if not name:
+        return None
+    if _COUNTRIES_ZH is None:
+        _COUNTRIES_ZH = _country_map()
+    return _COUNTRIES_ZH.get(name.strip().lower(), name.strip())
+
+
 def build_foreign_node(record: dict, sic_module, chain_module=None) -> dict:
     """外国私人发行人的节点。
 
@@ -500,7 +541,10 @@ def build_foreign_node(record: dict, sic_module, chain_module=None) -> dict:
     node = {
         "id": symbol,
         "symbol": symbol,
-        "name": record.get("name") or symbol,
+        # 中文名只在确有通用叫法时才有（台积电、阿斯麦这类）；
+        # 给不出可靠译名的 name 就等于 nameEn，页面照英文原文显示。
+        # 半译出来的名字看着像中文名，其实是编的，比英文原文更糟。
+        "name": names_zh.name_for(record.get("name")) or record.get("name") or symbol,
         "nameEn": record.get("name") or symbol,
         # 站内板块分类只覆盖标普成分股，这批公司没有，如实留空——
         # 环节与产业链都由 SIC 判，不依赖板块。
@@ -510,7 +554,17 @@ def build_foreign_node(record: dict, sic_module, chain_module=None) -> dict:
         "logo": None,
         "listed": True,
         "pool": "sec-foreign-issuer",
-        "country": record.get("country"),
+        # country 是国家的中文名（页面显示用），countryEn 保留 SEC 的原文，
+        # region 是它下面那一级（省／州）。三个分开存，页面要哪个取哪个——
+        # 曾经只存一个字段、把「Ontario, Canada」整条当国别，
+        # 于是「按国别」的表里加拿大出现了六次。
+        "country": country_zh(record.get("country")),
+        "countryEn": record.get("country"),
+        "region": record.get("region"),
+        # 这个国别是从注册地还是营业地址来的。两者偏差方向不同
+        # （注册地偏向开曼／泽西这类控股架构，营业地址偏向美国办公室），
+        # 页面必须照实标，不能让读者以为它是「公司总部在哪」。
+        "countryBasis": record.get("countryBasis"),
         "exchange": record.get("exchange"),
         "cik": None,
         "sic": None,
@@ -669,13 +723,40 @@ def build() -> None:
         state = filing_status.get(node["symbol"])
         if state:
             node["formSdStatus"] = state
-    by_sector = sector_coverage(nodes, filing_status)
+    # 两个池分开统计。标普那池按 GICS 板块（读者熟悉的口径，也是缺口成因最能
+    # 讲清楚的维度：金融 0/70 是制度上限，科技 34/84 是还没抓到）；外国发行人
+    # 那池没有站内板块分类，按国别拆——全塞进「未分类」就是一个 147 家的黑箱。
+    by_sector = sector_coverage([n for n in nodes if n.get("pool") != "sec-foreign-issuer"],
+                                filing_status)
+    foreign_nodes_all = [n for n in nodes if n.get("pool") == "sec-foreign-issuer"]
+    by_country = sector_coverage(foreign_nodes_all, filing_status,
+                                 key="country", label="sector")
+    # 国别是从哪个字段来的，逐档计数。注册地与营业地址偏差方向不同，
+    # 页面得照实说是哪一种，不能笼统说成「公司在哪个国家」。
+    country_basis: dict[str, int] = {}
+    for node in foreign_nodes_all:
+        key = node.get("countryBasis") or "unknown"
+        country_basis[key] = country_basis.get(key, 0) + 1
+    # 中文名覆盖情况。**没有中文名不是缺口**：加拿大初级矿商本来就没有通用
+    # 中文名，显示英文原文是正确结果。报这个数是为了让「对照表写错了」露头——
+    # 表里有一条却在数据里找不到对应公司，就说明那条键抄错了。
+    zh_named = sum(1 for n in foreign_nodes_all if n.get("name") != n.get("nameEn"))
+    live_names = {n.get("nameEn") for n in foreign_nodes_all}
+    zh_orphans = sorted(k for k in names_zh.NAMES if k not in live_names)
+    if zh_orphans:
+        print(f"[!!] 中文名对照表里有 {len(zh_orphans)} 条在数据里找不到对应公司"
+              f"（键抄错了）：{'、'.join(zh_orphans[:5])}")
     # 边文件还在、但最近一轮扫描没再抽到名单的公司。抽取器**不删有效历史数据**
     # （AGENTS.md：不得删除有效历史数据来掩盖抓取失败），所以文件保留着上一轮的
     # 结果；但覆盖率报的是本轮扫描口径，两个数就会差几家。
     # 差额必须由数据解释，不能留成一个说不清的 1。
+    #
+    # 判据是「本轮没抽到名单」，不是某一个具体状态。曾经只列 filed-no-list，
+    # 结果一批被改判成 13q-1 资源开采付款的公司边文件还在、状态却变成了
+    # resource-extraction，差额一家都没进这张表，契约直接拦下发布。
+    # 差额的定义只能是「有边 且 本轮状态不是 listed」，包括本轮压根没扫到的。
     stale = sorted(n["symbol"] for n in nodes
-                   if n.get("edgeCount") and filing_status.get(n["symbol"]) == "filed-no-list")
+                   if n.get("edgeCount") and filing_status.get(n["symbol"]) != "listed")
     flow = stage_flow(nodes, edge_files)
 
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -794,6 +875,18 @@ def build() -> None:
             "formSd": form_sd_coverage,
             # 按板块拆开的覆盖情况。缺口的成因写在数据里，页面照实读。
             "bySector": by_sector,
+            # 外国发行人按国别。字段名沿用 sector 是为了让页面复用同一套渲染，
+            # 但语义是国别——页面上必须写清楚，不能让读者以为这是板块。
+            "byCountry": by_country,
+            # 上面那一栏的国别各自来自哪个 SEC 字段。页面照这个数说话。
+            "countryBasis": country_basis,
+            # 中文名：有通用译名的家数、对照表总条数、以及对不上号的条目。
+            # orphans 非空就是对照表写错了，契约会拦。
+            "foreignNameZh": {
+                "named": zh_named,
+                "glossary": len(names_zh.NAMES),
+                "orphans": zh_orphans,
+            },
             # 见上：边来自更早的扫描，本轮未复现。列出代码，读者可自己核对。
             "edgesFromEarlierScan": stale,
             # 按实际 stageBasis 分组。曾经把所有已判定的都记成 sector-initial，

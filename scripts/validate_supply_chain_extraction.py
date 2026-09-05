@@ -835,8 +835,11 @@ def main() -> int:
             "Projects include our aluminium smelter at Kitimat.</p>")
     _SHELL = ("<p>Payments to governments 2025. MINISTRY OF ENERGY BULGARIA 658,383. "
               "Our refinery operations in Germany.</p>")
-    _SONY = ("<p>Conflict Minerals Report under Rule 13p-1. Smelter and refiner list. "
-             "Not a payments to governments report.</p>")
+    # 原来这条写的是「Not a payments to governments report」，本意是测否定，
+    # 但子串匹配做不到否定检测——夹具在考一个判据根本没有的能力。
+    # 换成真实形状：一份冲突矿产报告不会出现付款披露的用词。
+    _SONY = ("<p>Item 1.01 Conflict Minerals Disclosure and Report under Rule 13p-1. "
+             "Smelter and refiner list follows.</p>")
     # 力拓那一份第一轮没被拦住：它排在最前的 R4.htm 是张 XBRL 渲染表，通篇数字，
     # 一个特征词都没有。真正写着报的是哪一套的是 Form SD 的条目标题，在另一份
     # 文件里——所以抽取器改为把取到的几份合起来判，判据也改用条目标题。
@@ -853,8 +856,8 @@ def main() -> int:
          "把几份合起来看，条目标题 2.01 就出现了——力拓这一档由此归位"),
         (_TESLA_LIKE, False, "conflict-minerals",
          "条目标题 1.01：报的是冲突矿产，只是没列名单"),
-        (_TESLA_LIKE + _RIO_COVER, False, "resource-extraction",
-         "两个条目都出现时判资源开采：填 2.01 是主动信息，1.01 可能只是模板"),
+        (_TESLA_LIKE + _RIO_COVER, False, "conflict-minerals",
+         "两个条目标题都在但没有 XBRL：模板本来就印着两节标题，不算数"),
     ]
     for html, xbrl, want, why in title_cases:
         got = load_form_sd().disclosure_kind(html, xbrl_tagged=xbrl)
@@ -869,8 +872,8 @@ def main() -> int:
         (_SHELL, True, "resource-extraction", "壳牌：有炼油厂，同上"),
         (_SONY, True, "conflict-minerals",
          "索尼：即使带 XBRL，正文是 13p-1 报告就不能判成资源开采"),
-        (_RIO, False, "conflict-minerals",
-         "同一份文件没有 XBRL 线索时仍按旧规则走——保留「宁可不摘」的偏向"),
+        (_RIO, False, "resource-extraction",
+         "正文明写「向各国政府的付款」——这是模板上没有的强特征，不靠 XBRL 也成立"),
     ]
     for html, xbrl, want, why in xbrl_cases:
         got = load_form_sd().disclosure_kind(html, xbrl_tagged=xbrl)
@@ -1283,12 +1286,168 @@ def main() -> int:
         failures.append(f"外国发行人主代码：撞上标普代码时应退让，实际 {got}")
     print(f"  [{'OK' if ok else 'XX'}] 撞上标普代码时退让到备用代码，不覆盖苹果")
 
+    # 付款表不是冶炼厂名单。这条闸门守的是**「说多」的最后一步**：
+    # 判据判对了披露类型，可解析器仍从付款表里抠出了几行「冶炼厂」。
+    # 艾芬豪那份 ESTMA 实测抽出一家叫「La India」的厂（印度、金）——
+    # 那是一行付款记录，不是冶炼厂。
+    print("\n── 付款表里抠出来的不是冶炼厂 ───────────────────────────────────")
+    _PAY_ROWS = """<html><body>
+      <p>Item 2.01 Resource Extraction Issuer Disclosure. ESTMA Report.</p>
+      <table>
+        <tr><th>Country</th><th>Payee</th><th>Mineral</th><th>Amount</th></tr>
+        <tr><td>India</td><td>La India</td><td>Gold</td><td>150,000</td></tr>
+        <tr><td>Canada</td><td>Federal Government</td><td>Gold</td><td>947,350,000</td></tr>
+      </table></body></html>"""
+    pay = load_form_sd()
+    pay_parse = pay.parse_smelters(_PAY_ROWS)
+    pay_kind = pay.disclosure_evidence(_PAY_ROWS, xbrl_tagged=True)
+    pay_cases = [
+        (pay_kind["kind"] == "resource-extraction",
+         "付款报告判为资源开采付款（强特征 ESTMA）"),
+        (pay_parse["rowsWithCid"] == 0,
+         "付款表里没有 RMI 编号——这正是抽取器该起疑的地方"),
+        (pay_parse["unique"] > 0,
+         "解析器确实会从付款表里抠出行来（不假装它不会）"),
+    ]
+    for ok, why in pay_cases:
+        if not ok:
+            failures.append(f"付款表：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+    # 判定成付款披露还不够，此前误发布的边文件必须撤回——不然页面会继续
+    # 声称艾芬豪的供应链里有一家名叫「La India」的冶炼厂（那是个矿区）。
+    # 撤回的判据必须窄：只撤「抓错了」，绝不撤「没抓到」。
+    withdraw = load_extractor().should_withdraw
+    withdraw_cases = [
+        (withdraw({"state": "resource-extraction", "droppedAsPaymentRows": 2}),
+         "判成付款披露、且确实从付款表抠出过行——撤回"),
+        (not withdraw({"state": "resource-extraction", "droppedAsPaymentRows": 0}),
+         "判成付款披露但本来就没抠出行——没有错数据要撤，不动"),
+        (not withdraw({"state": "listed", "droppedAsPaymentRows": 5}),
+         "本轮正常抽到名单的不撤"),
+        (not withdraw({"state": "filed-no-list"}),
+         "有申报无名单不撤——那是披露制度的上限，不是错数据"),
+        (not withdraw({"state": "index-failed", "why": "HTTP 500"}),
+         "取数失败不撤——删掉就成了拿删数据掩盖抓取失败"),
+        (not withdraw({"state": "no-filing"}),
+         "本轮查不到申报不撤"),
+    ]
+    for ok, why in withdraw_cases:
+        if not ok:
+            failures.append(f"撤回判据：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
+    print("\n── 国别：折成真国家，且说清是从哪个字段来的 ──────────────────────")
+    region = load_module(os.path.join(os.path.dirname(EXTRACT_PATH), "edgar_region.py"),
+                         "edgar_region")
+    # 代码表从 EDGAR 自己的配对里长出来：别家申报带了描述，就用它补上这一家。
+    code_map = region.build_code_map([
+        ("F5", "TAIWAN"), ("F5", "TAIWAN"), ("A6", "Ontario, Canada"),
+        ("V8", "Switzerland"), ("XX", ""), ("", "Japan"),
+    ])
+    _TSMC = {"stateOfIncorporation": "F5",
+             "addresses": {"business": {"stateOrCountry": "F5"}}}
+    _ALCON = {"stateOfIncorporation": "V8",
+              "addresses": {"business": {"stateOrCountry": "TX",
+                                         "stateOrCountryDescription": "TX"}}}
+    _NOTHING = {"addresses": {"business": {}}}
+    region_cases = [
+        (region.split_region("Ontario, Canada") == ("Canada", "Ontario"),
+         "「Ontario, Canada」折成加拿大＋安大略——46 家加拿大公司不该占 6 行"),
+        (region.split_region("Canada (Federal Level)") == ("Canada", None),
+         "「Canada (Federal Level)」也是加拿大"),
+        (region.split_region("Korea, Republic of") == ("Korea, Republic of", None),
+         "「Korea, Republic of」整条保留——按最后一个逗号硬拆会得出一个叫「Republic of」的国家"),
+        (region.split_region("Taiwan, Province of China")[0] == "Taiwan, Province of China",
+         "ISO 倒装写法不拆"),
+        (region.split_region("Israel") == ("Israel", None),
+         "本来就是国名的原样返回"),
+        (region.split_region("") == (None, None),
+         "空值返回空，不编造"),
+        (region.describe("F5", None, code_map) == "TAIWAN",
+         "只有代码没有描述时，查 EDGAR 别处给出的同一代码"),
+        (region.describe("ZZ9", None, code_map) is None,
+         "代码表里没有、又不是美国州代码——留空不猜"),
+        (region.describe("NY", None, code_map) == "NY",
+         "美国州代码原样返回，交给上层判定——这一池里它基本是美国办公室，不是国别"),
+        (region.describe(None, "DC", code_map) == "DC",
+         "描述字段里直接躺着两字母代码时也认出来（壳牌那条 description 就是 'DC'）"),
+        (region.resolve_country(
+            {"stateOfIncorporation": "", "stateOfIncorporationDescription": "DC",
+             "addresses": {"business": {"stateOrCountry": "V8",
+                                        "stateOrCountryDescription": "Switzerland"}}},
+            code_map)["country"] == "Switzerland",
+         "注册地只说到美国某个州时跳过它、换下一个字段，不硬写成美国"),
+        (region.resolve_country(
+            {"stateOfIncorporationDescription": "DC", "addresses": {"business": {}}},
+            code_map)["country"] is None,
+         "全部字段都只说到美国某个州就是未归类——把壳牌说成美国公司是错的"),
+        (region.resolve_country(
+            {"stateOfIncorporationDescription": "DC", "addresses": {"business": {}}},
+            code_map)["countryRejected"] == ["state-of-incorporation=DC"],
+         "并记下是哪个字段被判定不可用，「为什么没有国别」在数据里查得到"),
+        (region.resolve_country(_TSMC, code_map)["country"] == "TAIWAN",
+         "台积电：营业地址没有描述，靠代码表补出来（此前这一家国别是空的）"),
+        # EDGAR 地址块有两套并行字段。境外公司的国别在 country / countryCode /
+        # foreignStateTerritory 里，stateOrCountry 是 None——只读后者的话，
+        # 恰恰是台积电、本田、沃达丰这些最典型的外国公司全成了空值。
+        (region.address_country({"country": "Taiwan", "countryCode": "F5",
+                                 "foreignStateTerritory": "Hsinchu",
+                                 "stateOrCountry": None}) == ("Taiwan", "Hsinchu"),
+         "境外地址：从 country / foreignStateTerritory 读，不是 stateOrCountry"),
+        (region.address_country({"stateOrCountry": "CA",
+                                 "stateOrCountryDescription": "California"}) == (None, None),
+         "美国境内地址没有 country 字段，这条路返回空、交给原来那套"),
+        (region.address_country({}) == (None, None), "空地址块返回空"),
+        # country 字段里也会写「省, 国」。第一版这条快路原样返回，
+        # 四家加拿大公司当场又按省分行——这一轮开头修掉的 bug 从新代码路径复发。
+        (region.address_country({"country": "Ontario, Canada"}) == ("Canada", "Ontario"),
+         "country 字段里写着「省, 国」时照样折成加拿大，不绕过 split_region"),
+        (region.address_country({"country": "Canada (Federal Level)"}) == ("Canada", None),
+         "「Canada (Federal Level)」在这条路上也折成加拿大"),
+        (region.address_country({"country": "Ontario, Canada",
+                                 "foreignStateTerritory": "ON"}) == ("Canada", "ON"),
+         "有 foreignStateTerritory 时用它当下级地区，没有才用逗号前那半"),
+        (region.resolve_country(
+            {"stateOfIncorporation": "",
+             "addresses": {"business": {"country": "Taiwan",
+                                        "foreignStateTerritory": "Hsinchu",
+                                        "stateOrCountry": None}}},
+            code_map)["country"] == "Taiwan",
+         "台积电真实形状：注册地为空、境外地址补上——16 家全空就是这么来的"),
+        (region.resolve_country(
+            {"stateOfIncorporation": "V8",
+             "stateOfIncorporationDescription": "Switzerland",
+             "addresses": {"business": {"country": None, "stateOrCountry": "TX",
+                                        "stateOrCountryDescription": "TX"}}},
+            code_map)["country"] == "Switzerland",
+         "加了境外字段之后，爱尔康仍然是注册地瑞士优先，没被营业地址盖掉"),
+        (region.resolve_country(
+            {"stateOfIncorporationDescription": "DC",
+             "addresses": {"business": {"country": "United Kingdom"}}},
+            code_map)["country"] == "United Kingdom",
+         "壳牌：DC 被跳过后落到境外地址的英国，不再是未归类"),
+        (region.resolve_country(_ALCON, code_map)["country"] == "Switzerland",
+         "爱尔康：注册地瑞士优先于营业地址的 TX——TX 是它的美国办公室，不是国别"),
+        (region.resolve_country(_ALCON, code_map)["countryBasis"] == "state-of-incorporation",
+         "并记下这个结论取自注册地，页面照实标"),
+        (region.resolve_country(_NOTHING, code_map)["country"] is None,
+         "什么字段都没有就是未归类——宁可留空，不硬塞一个国家"),
+        (region.build_code_map([("a6", "Ontario, Canada")]).get("A6") == "Ontario, Canada",
+         "代码大小写归一"),
+        (region.build_code_map([("F5", "")]) == {},
+         "只有代码没有描述的配对进不了表——那是要补的对象，不是依据"),
+    ]
+    for ok, why in region_cases:
+        if not ok:
+            failures.append(f"国别：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
     total = (len(pdf_cases) + 4 + len(kind_cases) + len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
-             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1
+             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases)
              + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:

@@ -210,7 +210,9 @@ async function main() {
       const cov = await evaluate(`(() => {
         const box = document.getElementById('cov');
         if (!box || box.hidden) return { shown: false };
-        const rows = [...box.querySelectorAll('.covrow')].map(r => {
+        // 只数板块那一栏。外国发行人按国别的行在 #cov-country-rows 里，
+        // 混着数会把 11 个板块数成 52 行——这正是第一版失败的形态。
+        const rows = [...box.querySelectorAll('#cov-rows .covrow')].map(r => {
           const segs = [...r.querySelectorAll('.t i')];
           return {
             sector: r.querySelector('.s').textContent,
@@ -227,7 +229,10 @@ async function main() {
           lead: box.querySelector('#cov-lead').textContent,
           foot: box.querySelector('#cov-foot').textContent,
           rows,
-          keys: box.querySelectorAll('.covkey span').length,
+          keys: box.querySelectorAll('#cov-rows .covkey span').length,
+          countryRows: box.querySelectorAll('#cov-country-rows .covrow').length,
+          countryLead: (box.querySelector('#cov-country-lead') || {}).textContent || '',
+          countryLeadHidden: !!(box.querySelector('#cov-country-lead') || {}).hidden,
           overflow: box.scrollWidth - box.clientWidth
         };
       })()`);
@@ -269,6 +274,29 @@ async function main() {
         assert.ok(cov.foot.includes("不等于"),
           "提到「无申报」却没有澄清它不等于没有供应链");
       });
+      /* 第二个池按国别。守的是**分母没有被悄悄换掉**：板块那一栏是标普 495 家，
+         国别这一栏是外国发行人 147 家，两栏加起来才是 642。混成一栏的话，
+         「金融 0/70」这类制度上限的解释就被稀释了。 */
+      const COUNTRIES = (NODES.coverage || {}).byCountry || [];
+      if (COUNTRIES.length) {
+        const foreignN = COUNTRIES.reduce((a, r) => a + (r.companies || 0), 0);
+        check(`外国发行人按国别单列（${COUNTRIES.length} 个国别 / ${foreignN} 家）`, () => {
+          assert.ok(!cov.countryLeadHidden, "国别栏的说明被藏起来了");
+          assert.equal(cov.countryRows, COUNTRIES.length,
+            `页面 ${cov.countryRows} 行，数据 ${COUNTRIES.length} 行`);
+        });
+        check(`说清这一栏的口径是国别不是板块`, () => {
+          assert.match(cov.countryLead, /口径是国别，不是板块/);
+          assert.ok(cov.countryLead.includes(String(foreignN)),
+            `说明里没写家数：${cov.countryLead}`);
+        });
+        check(`板块那一栏仍只统计标普池（${SECTORS.length} 个板块）`, () => {
+          const sectorN = SECTORS.reduce((a, r) => a + (r.companies || 0), 0);
+          assert.equal(sectorN + foreignN, NODES.nodes.length,
+            `板块 ${sectorN} + 国别 ${foreignN} ≠ 全池 ${NODES.nodes.length}`);
+        });
+      }
+
       check(`按板块区块无横向溢出`, () => assert.ok(cov.overflow <= 1,
         `溢出 ${cov.overflow}px`));
 
@@ -1126,6 +1154,43 @@ async function main() {
           `溢出 ${narrow.box}px`));
       }
     }
+
+    // 外国私人发行人这一池：没有市值、没有板块。页面必须说清那是口径如此，
+    // 不是取数失败——什么都不写的话读者只会以为数据缺了一块。
+    console.log("\n── 公司视图 · 外国私人发行人 ──");
+    await client.send("Page.navigate",
+      { url: `http://127.0.0.1:${port}/apps/supply-chain/company.html?symbol=TSM` }, sessionId);
+    const fpi = await evaluate(`new Promise((done) => {
+      const deadline = Date.now() + 20000;
+      (function poll() {
+        const p = document.getElementById('c-pool');
+        const zh = document.getElementById('c-zh');
+        if (zh && zh.textContent && p) {
+          return done({
+            shown: !p.hidden,
+            text: p.textContent || "",
+            facts: (document.getElementById('c-facts') || {}).textContent || "",
+            overflow: Math.max(0, document.documentElement.scrollWidth - window.innerWidth),
+          });
+        }
+        if (Date.now() > deadline) return done({ shown: false, text: "", facts: "", overflow: 0 });
+        setTimeout(poll, 120);
+      })();
+    })`);
+    check(`外国发行人页显示所属池的说明`, () => assert.ok(fpi.shown,
+      "c-pool 没显示——这一池没有市值也没有板块，不说明就是个哑缺口"));
+    check(`说明写清没有市值是口径而非取数失败`, () => assert.ok(
+      fpi.text.includes("不是取数失败") && fpi.text.includes("外国私人发行人"),
+      `实际：${fpi.text.slice(0, 80)}`));
+    check(`说明里写明国别取自哪个字段`, () => assert.ok(
+      /注册地|备案地址|没有可用的地区字段/.test(fpi.text),
+      `实际：${fpi.text.slice(0, 80)}`));
+    check(`说明里没有漏出的星号`, () => assert.ok(!fpi.text.includes("*"),
+      `实际：${fpi.text.slice(0, 80)}`));
+    check(`身份条不显示市值（这一池没有站内行情）`, () => assert.ok(
+      !fpi.facts.includes("市值"), `实际：${fpi.facts.slice(0, 80)}`));
+    check(`外国发行人页无横向溢出`, () => assert.ok(fpi.overflow <= 1,
+      `溢出 ${fpi.overflow}px`));
 
     // 未知代码要有明确说明，不能白屏
     console.log("\n── 公司视图 · 未知代码 ──");
