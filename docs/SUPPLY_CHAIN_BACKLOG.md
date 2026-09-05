@@ -59,7 +59,7 @@ Return 层，框架上必须有；标普 500 里就这么多是事实，页面�
 | SEC Form SD 冲突矿产 | ✅ **已接入** | 唯一在产的关系源 |
 | SEC 正向抽取（10-K 客户集中度） | ❌ 否决 | ASC 280 要求披露幅度、不要求披露身份 |
 | SEC 全文检索反查 | ❌ 否决 | 「提到」≠「有供应关系」，误报率不可接受 |
-| 公司自发布供应商名单 | ⚠️ 八家里只有思科可用 | 苹果落地页无名单链接、耐克/惠普 404、戴尔 403 |
+| 公司自发布供应商名单 | ⚠️ 八家里只有思科可用，**但内容已能读出** | 见下 |
 | USAspending 联邦采购 | ⚠️ 暂不接 | 想补的板块恰恰没有分包记录；按名字搜有假阳性（搜 Leidos 出 KALEIDOSCOPE）；需 UEI 锚点 |
 | BDI / Drewry / Freightos / Xeneta | ❌ 许可禁止 | 商业授权，与已放弃的 SPX／DXY／LBMA 同类 |
 
@@ -84,11 +84,26 @@ Return 层，框架上必须有；标普 500 里就这么多是事实，页面�
 
 验收：每修一处，重跑全量后 diff「有名单」家数，并抽检新入库公司的名字与国别。
 
-### P2 · 思科供应商名单抽取器
+### P2 · 思科名单抽取器（地基已通，2026-09-05 实测）
 
-探针确认思科有两份可用文档（`cisco-supplier-list.pdf` 25 分、
-`smelter-refiner-list.pdf` 16 分），是**一级供应商**那一层——比冶炼厂
-更接近用户要的东西。卡在同一个 PDF 文本抽取问题上，与 P1 第二项同一块地基。
+PDF 抽取器上线后复跑探针，思科两份文档的内容**已经读得出来**：
+
+    cisco-supplier-list.pdf   256KB  打分 25 → 1 页 1,969 字
+        「Cisco Supplier List — Cisco products are made by a complex
+          global network of manufacturing partners…」
+    smelter-refiner-list.pdf  475KB  打分 16 → 9 页 19,273 字
+        「Cisco Responsible Minerals 3TG Smelter…」
+
+**这是 Form SD 之外第一份读得出内容的一手名单。** 下一步是把这 9 页文本
+解成条目并挂上出处。注意两件事：
+
+- 语义与 Form SD 的冶炼厂**不同**：思科那份供应商名单是一级供应商，
+  不能沿用 `smelter-in-supply-chain` 那条关系，要新定义并写清含义。
+- 现有解析器是**按 HTML 表格**写的，PDF 出来的是文本行，需要另一套行解析，
+  不能直接复用。
+
+对照组行为正确：摩根大通无候选；英特尔三份 PDF 仍解不开，如实报
+「本探针能力不足，不能据此说文件没有文字」，不假装是扫描件。
 
 ### P3 · 层级（Tier 1 / 2 / 3）
 
