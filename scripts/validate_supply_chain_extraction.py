@@ -1105,12 +1105,76 @@ def main() -> int:
             failures.append(f"链间上下游：{why} 不成立")
         print(f"  [{'OK' if ok else 'XX'}] {why}")
 
+    # 链的层次。**这是本轮最容易悄悄出错的一段**：第一版对有环的图直接做最长路径
+    # 松弛，算出 241 层、30 条回流边——层数比链数还多十倍，页面照画不会报错。
+    # 所以这里钉的不是「算得出层次」，是「算出来的层次讲得通」。
+    print("\n── 链的层次：算得出、讲得通、算不出就报错 ─────────────────────────")
+    layers = chains_mod.chain_layers()
+    lay = layers["layer"]
+    depth = layers["depth"]
+    cross = chains_mod.CROSS_CUTTING
+    layer_self = [
+        (0 < depth <= len(chains_mod.CHAINS),
+         f"层数 {depth} 不超过链数——第一版算出 241 层就是这么露馅的"),
+        (all(c in lay for c, _, _ in chains_mod.CHAINS if c not in cross),
+         "每条非使能链都有层次"),
+        (not any(c in lay for c in cross), "使能链不参与分层，不硬塞进某一层"),
+        (len(layers["back"]) == len(chains_mod.COUNTERFLOW),
+         "逆向边数与声明的一致"),
+        (all(why.strip() for why in chains_mod.COUNTERFLOW.values()),
+         "每条逆向边都写清为什么剪它"),
+        (all(pair in {(a, b) for a, b, _ in chains_mod.CHAIN_LINKS}
+             for pair in chains_mod.COUNTERFLOW),
+         "逆向边都真的在连线表里，没有写错方向的幽灵边"),
+    ]
+    for ok, why in layer_self:
+        if not ok:
+            failures.append(f"链的层次：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
+    # 层次讲不讲得通，只有拿具体的链对比才知道。这几条是行业常识的方向。
+    def _lv(cid):
+        return lay.get(cid)
+    order_cases = [
+        (_lv("oil-gas") < _lv("chemicals"), "石油在化工上游"),
+        (_lv("chemicals") < _lv("semiconductor"), "化工在半导体上游"),
+        (_lv("semiconductor") < _lv("computing-hardware"), "半导体在计算硬件上游"),
+        (_lv("computing-hardware") < _lv("software-cloud"), "计算硬件在软件云上游"),
+        (_lv("mining-metals") < _lv("semiconductor"), "采矿在半导体上游"),
+        (_lv("mining-metals") < _lv("automotive"), "采矿在汽车上游"),
+        (_lv("utilities-power") < _lv("computing-hardware"), "电力在数据中心上游"),
+        (_lv("textiles-apparel") < _lv("retail-distribution"), "纺织服装在零售上游"),
+        # 第一版把采矿排到了半导体下面，就是靠这类对比才看出荒唐
+        (_lv("mining-metals") < _lv("industrial-machinery") + 1,
+         "采矿不该排在工业机械下游太远"),
+    ]
+    for ok, why in order_cases:
+        if not ok:
+            failures.append(f"层次方向：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
+    # 剪不干净就必须报错，不能悄悄给个错的层次
+    print("  [--] 断环不干净时要报错：临时加一条制造新环的连线")
+    _saved = list(chains_mod.CHAIN_LINKS)
+    try:
+        chains_mod.CHAIN_LINKS.append(("retail-distribution", "oil-gas", "临时造的环"))
+        raised = False
+        try:
+            chains_mod.chain_layers()
+        except RuntimeError:
+            raised = True
+        if not raised:
+            failures.append("链的层次：制造出环之后仍然算出了层次，没有报错")
+        print(f"  [{'OK' if raised else 'XX'}] 有环算不出层次时抛错，不给一个错的层次")
+    finally:
+        chains_mod.CHAIN_LINKS[:] = _saved
+
     total = (len(pdf_cases) + 4 + len(kind_cases) + len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
-             + len(link_self) + len(loop_cases)
+             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1
              + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:

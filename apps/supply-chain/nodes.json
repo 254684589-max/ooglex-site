@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-05T06:24:45Z",
+  "updatedAt": "2026-09-05T08:44:37Z",
   "asOf": "2026-09-04",
   "frequency": "daily",
   "status": "ok",
@@ -112,140 +112,160 @@
       "label": "农业与食品",
       "labelEn": "Agriculture & Food",
       "count": 23,
-      "edgeCount": 668
+      "edgeCount": 668,
+      "layer": 6
     },
     {
       "id": "mining-metals",
       "label": "采矿与金属",
       "labelEn": "Mining & Metals",
       "count": 7,
-      "edgeCount": 47
+      "edgeCount": 47,
+      "layer": 2
     },
     {
       "id": "oil-gas",
       "label": "石油与天然气",
       "labelEn": "Oil & Gas",
       "count": 23,
-      "edgeCount": 341
+      "edgeCount": 341,
+      "layer": 0
     },
     {
       "id": "utilities-power",
       "label": "电力与公用事业",
       "labelEn": "Power & Utilities",
       "count": 40,
-      "edgeCount": 589
+      "edgeCount": 589,
+      "layer": 1
     },
     {
       "id": "chemicals",
       "label": "化工与新材料",
       "labelEn": "Chemicals & Materials",
       "count": 25,
-      "edgeCount": 759
+      "edgeCount": 759,
+      "layer": 4
     },
     {
       "id": "packaging-paper",
       "label": "包装与纸业",
       "labelEn": "Packaging & Paper",
       "count": 6,
-      "edgeCount": 660
+      "edgeCount": 660,
+      "layer": 5
     },
     {
       "id": "construction-building",
       "label": "建筑与建材",
       "labelEn": "Construction & Building",
       "count": 17,
-      "edgeCount": 9
+      "edgeCount": 9,
+      "layer": 5
     },
     {
       "id": "semiconductor",
       "label": "半导体",
       "labelEn": "Semiconductors",
       "count": 21,
-      "edgeCount": 3346
+      "edgeCount": 3346,
+      "layer": 5
     },
     {
       "id": "electronics-components",
       "label": "电子元器件",
       "labelEn": "Electronic Components",
       "count": 17,
-      "edgeCount": 2992
+      "edgeCount": 2992,
+      "layer": 5
     },
     {
       "id": "computing-hardware",
       "label": "计算与数据中心硬件",
       "labelEn": "Computing & Datacenter Hardware",
       "count": 15,
-      "edgeCount": 1874
+      "edgeCount": 1874,
+      "layer": 6
     },
     {
       "id": "communications",
       "label": "通信与网络",
       "labelEn": "Communications & Networking",
       "count": 18,
-      "edgeCount": 2035
+      "edgeCount": 2035,
+      "layer": 7
     },
     {
       "id": "software-cloud",
       "label": "软件与云服务",
       "labelEn": "Software & Cloud",
       "count": 31,
-      "edgeCount": 516
+      "edgeCount": 516,
+      "layer": 8
     },
     {
       "id": "industrial-machinery",
       "label": "工业机械与自动化",
       "labelEn": "Industrial Machinery",
       "count": 52,
-      "edgeCount": 6227
+      "edgeCount": 6227,
+      "layer": 3
     },
     {
       "id": "automotive",
       "label": "汽车",
       "labelEn": "Automotive",
       "count": 11,
-      "edgeCount": 698
+      "edgeCount": 698,
+      "layer": 6
     },
     {
       "id": "aerospace-defense",
       "label": "航空航天与国防",
       "labelEn": "Aerospace & Defense",
       "count": 13,
-      "edgeCount": 38
+      "edgeCount": 38,
+      "layer": 6
     },
     {
       "id": "pharma-biotech",
       "label": "医药与生物科技",
       "labelEn": "Pharma & Biotech",
       "count": 27,
-      "edgeCount": 709
+      "edgeCount": 709,
+      "layer": 6
     },
     {
       "id": "medtech-health",
       "label": "医疗器械与医疗服务",
       "labelEn": "Medtech & Health Services",
       "count": 35,
-      "edgeCount": 2984
+      "edgeCount": 2984,
+      "layer": 7
     },
     {
       "id": "textiles-apparel",
       "label": "纺织服装与鞋类",
       "labelEn": "Textiles & Apparel",
       "count": 4,
-      "edgeCount": 217
+      "edgeCount": 217,
+      "layer": 7
     },
     {
       "id": "consumer-goods",
       "label": "日用消费品",
       "labelEn": "Consumer Goods",
       "count": 13,
-      "edgeCount": 932
+      "edgeCount": 932,
+      "layer": 7
     },
     {
       "id": "retail-distribution",
       "label": "零售与分销",
       "labelEn": "Retail & Distribution",
       "count": 39,
-      "edgeCount": 1121
+      "edgeCount": 1121,
+      "layer": 8
     },
     {
       "id": "logistics-transport",
@@ -259,14 +279,16 @@
       "label": "旅游休闲与餐饮",
       "labelEn": "Travel, Leisure & Dining",
       "count": 21,
-      "edgeCount": 12
+      "edgeCount": 12,
+      "layer": 9
     },
     {
       "id": "media-entertainment",
       "label": "传媒与娱乐",
       "labelEn": "Media & Entertainment",
       "count": 8,
-      "edgeCount": 7
+      "edgeCount": 7,
+      "layer": 9
     },
     {
       "id": "financial-services",
@@ -294,7 +316,8 @@
       "label": "环保与循环经济",
       "labelEn": "Environmental & Circular",
       "count": 2,
-      "edgeCount": 0
+      "edgeCount": 0,
+      "layer": 9
     }
   ],
   "chainLinks": [
@@ -302,463 +325,617 @@
       "from": "mining-metals",
       "to": "chemicals",
       "flow": "金属矿与冶炼产物是无机化工的原料",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "mining-metals",
       "to": "semiconductor",
       "flow": "高纯多晶硅、溅射靶材、稀有金属",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "mining-metals",
       "to": "electronics-components",
       "flow": "铜、金、锡——导电与焊接金属",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "mining-metals",
       "to": "construction-building",
       "flow": "钢材与建筑用金属制品",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "mining-metals",
       "to": "automotive",
       "flow": "车身钢板与铝合金",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "mining-metals",
       "to": "industrial-machinery",
       "flow": "结构件、传动件与刀具材料",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "mining-metals",
       "to": "packaging-paper",
       "flow": "金属罐用铝材与马口铁",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "mining-metals",
       "to": "aerospace-defense",
       "flow": "钛合金与高温合金",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "oil-gas",
       "to": "chemicals",
       "flow": "石脑油与天然气是石化的起点",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "oil-gas",
       "to": "utilities-power",
       "flow": "燃气与燃料油发电",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "oil-gas",
       "to": "logistics-transport",
       "flow": "运输燃料",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "oil-gas",
       "to": "construction-building",
       "flow": "沥青与建筑防水材料",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "agri-food",
       "to": "consumer-goods",
       "flow": "食用油脂、糖、香料等日化与食品原料",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "agri-food",
       "to": "textiles-apparel",
       "flow": "棉、毛与皮革",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "agri-food",
       "to": "retail-distribution",
       "flow": "食品饮料进入商超与餐饮渠道",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "chemicals",
       "to": "semiconductor",
       "flow": "电子特气、光刻胶、CMP 抛光液、湿电子化学品",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "chemicals",
       "to": "electronics-components",
       "flow": "环氧树脂、覆铜板材料、导电胶",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "chemicals",
       "to": "pharma-biotech",
       "flow": "原料药中间体与试剂",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "chemicals",
       "to": "textiles-apparel",
       "flow": "涤纶、锦纶等合成纤维与染料",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "chemicals",
       "to": "packaging-paper",
       "flow": "聚乙烯、聚丙烯等包装用树脂",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "chemicals",
       "to": "construction-building",
       "flow": "涂料、粘合剂与混凝土外加剂",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "chemicals",
       "to": "automotive",
       "flow": "轮胎橡胶、内饰塑料与电池材料",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "chemicals",
       "to": "agri-food",
       "flow": "化肥与农药",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "chemicals",
       "to": "consumer-goods",
       "flow": "洗涤与化妆品配方原料",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "utilities-power",
       "to": "semiconductor",
       "flow": "晶圆厂是连续运行的用电大户",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "utilities-power",
       "to": "computing-hardware",
       "flow": "数据中心的电力与冷却",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "utilities-power",
       "to": "mining-metals",
       "flow": "电解铝与电炉炼钢的电耗",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "utilities-power",
       "to": "chemicals",
       "flow": "电解与蒸汽供热",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "construction-building",
       "to": "real-estate",
       "flow": "建成的物业与基础设施",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "construction-building",
       "to": "utilities-power",
       "flow": "电厂、电网与输配电工程",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "counterflow",
+      "counterflowWhy": "建电厂与电网是资本形成，方向与电力持续外供相反"
     },
     {
       "from": "construction-building",
       "to": "computing-hardware",
       "flow": "数据中心厂房与配电工程",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "industrial-machinery",
       "to": "semiconductor",
       "flow": "光刻、刻蚀、沉积、量测与封测设备",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "industrial-machinery",
       "to": "automotive",
       "flow": "冲压、焊装、涂装与总装产线",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "industrial-machinery",
       "to": "agri-food",
       "flow": "农业机械与食品加工设备",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "industrial-machinery",
       "to": "chemicals",
       "flow": "反应器、泵阀与分离设备",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "industrial-machinery",
       "to": "mining-metals",
       "flow": "采矿、破碎与冶炼设备",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "counterflow",
+      "counterflowWhy": "采矿冶炼设备是资本投入，方向与矿料持续外供相反"
     },
     {
       "from": "industrial-machinery",
       "to": "construction-building",
       "flow": "工程机械",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "industrial-machinery",
       "to": "packaging-paper",
       "flow": "造纸机与包装机械",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "industrial-machinery",
       "to": "pharma-biotech",
       "flow": "制药设备与洁净车间系统",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "semiconductor",
       "to": "computing-hardware",
       "flow": "处理器、存储、加速卡",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "semiconductor",
       "to": "communications",
       "flow": "基带、射频与光通信芯片",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "semiconductor",
       "to": "automotive",
       "flow": "车规 MCU、功率器件与传感器",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "semiconductor",
       "to": "industrial-machinery",
       "flow": "工业控制与驱动芯片",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "counterflow",
+      "counterflowWhy": "工业控制芯片回流到设备厂——与「设备→半导体」互为供给"
     },
     {
       "from": "semiconductor",
       "to": "medtech-health",
       "flow": "医学影像与监护设备的芯片",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "semiconductor",
       "to": "consumer-goods",
       "flow": "家电与消费电子芯片",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "semiconductor",
       "to": "aerospace-defense",
       "flow": "航天级与抗辐照器件",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "electronics-components",
       "to": "computing-hardware",
       "flow": "电路板、连接器、被动元件",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "electronics-components",
       "to": "communications",
       "flow": "通信设备的元件与模块",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "electronics-components",
       "to": "automotive",
       "flow": "线束、连接器与电子模块",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "electronics-components",
       "to": "medtech-health",
       "flow": "医疗电子的元件",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "electronics-components",
       "to": "aerospace-defense",
       "flow": "机载与星载电子元件",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "computing-hardware",
       "to": "software-cloud",
       "flow": "服务器与存储是云与 AI 算力的载体",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "computing-hardware",
       "to": "communications",
       "flow": "网络设备与交换硬件",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "communications",
       "to": "software-cloud",
       "flow": "承载网络与带宽",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "communications",
       "to": "media-entertainment",
       "flow": "内容分发的传输通道",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "software-cloud",
       "to": "media-entertainment",
       "flow": "流媒体与内容平台的技术底座",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "software-cloud",
       "to": "financial-services",
       "flow": "支付、清算与风控系统",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "automotive",
       "to": "retail-distribution",
       "flow": "整车经销与售后配件",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "automotive",
       "to": "logistics-transport",
       "flow": "商用车构成公路运力",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "aerospace-defense",
       "to": "logistics-transport",
       "flow": "货机与航空货运运力",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "aerospace-defense",
       "to": "travel-leisure",
       "flow": "民航客机",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "pharma-biotech",
       "to": "medtech-health",
       "flow": "药品进入诊疗环节",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "pharma-biotech",
       "to": "retail-distribution",
       "flow": "药品批发与药店",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "medtech-health",
       "to": "retail-distribution",
       "flow": "器械与耗材的分销",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "textiles-apparel",
       "to": "retail-distribution",
       "flow": "成衣与鞋类进入零售",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "consumer-goods",
       "to": "retail-distribution",
       "flow": "日用品进入商超与电商",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "packaging-paper",
       "to": "agri-food",
       "flow": "食品饮料包装",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "packaging-paper",
       "to": "consumer-goods",
       "flow": "日用品包装",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "packaging-paper",
       "to": "pharma-biotech",
       "flow": "药品包装",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "retail-distribution",
       "to": "travel-leisure",
       "flow": "餐饮与门店消费",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "retail-distribution",
       "to": "waste-circular",
       "flow": "消费后的包装与产品废弃物",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "computing-hardware",
       "to": "waste-circular",
       "flow": "退役服务器与电子废弃物",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "automotive",
       "to": "waste-circular",
       "flow": "报废汽车拆解",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "construction-building",
       "to": "waste-circular",
       "flow": "建筑与拆除垃圾",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "forward",
+      "counterflowWhy": null
     },
     {
       "from": "waste-circular",
       "to": "mining-metals",
       "flow": "再生金属回炉，与原生矿并行供料",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "counterflow",
+      "counterflowWhy": "再生金属返回冶炼，与原生矿并行"
     },
     {
       "from": "waste-circular",
       "to": "chemicals",
       "flow": "再生塑料与化学回收原料",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "counterflow",
+      "counterflowWhy": "再生塑料返回化工"
     },
     {
       "from": "waste-circular",
       "to": "packaging-paper",
       "flow": "废纸回收再制浆",
-      "basis": "framework"
+      "basis": "framework",
+      "direction": "counterflow",
+      "counterflowWhy": "废纸返回制浆"
     }
   ],
   "chainCrossCutting": {
@@ -20094,6 +20271,8 @@
     "chainsTotal": 27,
     "chainUnclassified": 0,
     "chainLinksTotal": 77,
+    "chainDepth": 10,
+    "chainCounterflow": 6,
     "chainMulti": 118,
     "nodesTotal": 495,
     "nodesWithEdges": 90,

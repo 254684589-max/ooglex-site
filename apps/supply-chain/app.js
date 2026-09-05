@@ -252,8 +252,28 @@
     return null;
   }
 
-  /* 链的选择条。链是**分类**，不是边：选中一条链只是把公司筛出来，
-     不声称同一条链上的两家公司之间有供应关系。这句话写在条子下面。 */
+  /* 链的选择条，按**层次**排：一进页面就看得出谁在上游、谁在下游。
+     层次由 77 条上下游连线算出（最长路径），不是手工排的——手排的话改一条连线
+     层次就和连线对不上，而且没人看得出对不上。
+     链是**分类**，不是边：选中一条链只是把公司筛出来，不声称同一条链上的
+     两家公司之间有供应关系。这句话写在条子下面。 */
+  function chainChip(d, id, label, count, edges) {
+    var b = el("button", "chip" + (state.chain === id ? " on" : ""));
+    b.type = "button";
+    b.setAttribute("aria-pressed", state.chain === id ? "true" : "false");
+    b.appendChild(el("span", "cl", label));
+    b.appendChild(el("span", "cc", count + " 家"));
+    if (edges) b.appendChild(el("span", "ce", edges + " 条关系"));
+    b.addEventListener("click", function () {
+      state.chain = state.chain === id ? null : id;
+      // 换链之后旧的展开位置多半已经空了，一并收起，不留一格空表
+      state.open = null;
+      state.seg = null;
+      renderStages(d);
+    });
+    return b;
+  }
+
   function renderChainPicker(d) {
     var host = $("chainpick");
     if (!host) return;
@@ -262,30 +282,62 @@
     if (!rows.length) { host.hidden = true; return; }
     host.hidden = false;
 
-    var mk = function (id, label, count, edges) {
-      var b = el("button", "chip" + (state.chain === id ? " on" : ""));
-      b.type = "button";
-      b.setAttribute("aria-pressed", state.chain === id ? "true" : "false");
-      b.appendChild(el("span", "cl", label));
-      b.appendChild(el("span", "cc", count + " 家"));
-      if (edges) b.appendChild(el("span", "ce", edges + " 条关系"));
-      b.addEventListener("click", function () {
-        state.chain = state.chain === id ? null : id;
-        // 换链之后旧的展开位置多半已经空了，一并收起，不留一格空表
-        state.open = null;
-        state.seg = null;
-        renderStages(d);
-      });
-      return b;
-    };
-
-    var allBtn = mk(null, "全部产业链", (d.nodes || []).length,
+    var all = chainChip(d, null, "全部产业链", (d.nodes || []).length,
       (d.coverage && d.coverage.edgesTotal) || 0);
-    if (!state.chain) allBtn.classList.add("on");
-    host.appendChild(allBtn);
+    if (!state.chain) all.classList.add("on");
+    var top = el("div", "picktop");
+    top.appendChild(all);
+    var depth = (d.coverage || {}).chainDepth || 0;
+    if (depth) {
+      top.appendChild(el("span", "pickhint",
+        "下面按上下游层次排：越靠上越上游，共 " + depth
+        + " 层，由 " + ((d.coverage || {}).chainLinksTotal || 0)
+        + " 条连线算出，不是手工排的"));
+    }
+    host.appendChild(top);
+
+    // 有 layer 的按层排；没有 layer 的是横跨全链的使能链，单独一行。
+    var byLayer = {}, cross = [];
     rows.forEach(function (c) {
-      host.appendChild(mk(c.id, c.label, c.count, c.edgeCount));
+      if (typeof c.layer === "number") {
+        (byLayer[c.layer] = byLayer[c.layer] || []).push(c);
+      } else {
+        cross.push(c);
+      }
     });
+    var levels = Object.keys(byLayer).map(Number).sort(function (a, b) { return a - b; });
+
+    levels.forEach(function (lv, i) {
+      var band = el("div", "picklv");
+      var tag = el("span", "lv");
+      tag.appendChild(document.createTextNode("L" + lv));
+      // 首尾给个方向感。中间不硬起名字——名字会随连线漂移，而层号不会。
+      if (i === 0) tag.appendChild(el("s", null, "最上游"));
+      else if (i === levels.length - 1) tag.appendChild(el("s", null, "最终端"));
+      band.appendChild(tag);
+      var wrap = el("div", "lvchips");
+      byLayer[lv].sort(function (a, b) { return b.count - a.count; })
+        .forEach(function (c) {
+          wrap.appendChild(chainChip(d, c.id, c.label, c.count, c.edgeCount));
+        });
+      band.appendChild(wrap);
+      host.appendChild(band);
+    });
+
+    if (cross.length) {
+      var band2 = el("div", "picklv cross");
+      var t2 = el("span", "lv");
+      t2.appendChild(document.createTextNode("使能"));
+      t2.appendChild(el("s", null, "横跨全链"));
+      band2.appendChild(t2);
+      var w2 = el("div", "lvchips");
+      cross.sort(function (a, b) { return b.count - a.count; })
+        .forEach(function (c) {
+          w2.appendChild(chainChip(d, c.id, c.label, c.count, c.edgeCount));
+        });
+      band2.appendChild(w2);
+      host.appendChild(band2);
+    }
   }
 
   /* 链间上下游。**这一段画的是产业结构框架，不是实测关系**——与那两万条
@@ -299,13 +351,22 @@
   function linkRow(d, link, dir) {
     var otherId = dir === "up" ? link.from : link.to;
     var meta = chainMeta(d, otherId);
-    var row = el("button", "flowlink");
+    var back = link.direction === "counterflow";
+    var row = el("button", "flowlink" + (back ? " back" : ""));
     row.type = "button";
     row.appendChild(el("span", "ar", dir === "up" ? "←" : "→"));
     row.appendChild(el("span", "nm", meta ? meta.label : otherId));
     row.appendChild(el("span", "fl", link.flow || ""));
+    if (back) {
+      // 逆向边是实物链本来的形态（回收料返上游、设备与芯片互供），
+      // 不标出来的话读者会以为分层排错了。
+      var tg = el("span", "bk", "逆向");
+      tg.title = link.counterflowWhy || "与所在环的主流向相反";
+      row.appendChild(tg);
+    }
     row.title = (dir === "up" ? "上游：" : "下游：") + (meta ? meta.label : otherId)
-      + " · " + (link.flow || "");
+      + " · " + (link.flow || "")
+      + (back ? "（逆向：" + (link.counterflowWhy || "") + "）" : "");
     row.addEventListener("click", function () {
       state.chain = otherId;
       state.open = null;

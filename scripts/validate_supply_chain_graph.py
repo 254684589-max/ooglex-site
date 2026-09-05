@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 import json
+import re
 import os
 import sys
 
@@ -505,6 +506,77 @@ def check_chain_links(payload: dict, errors: list[str]) -> None:
     if count != len(links):
         fail(errors, f"coverage.chainLinksTotal {count} 与实际 {len(links)} 条不符")
 
+    # 层次：页面按它排上下游，排错了整页的方向感就是错的，而且不会报错。
+    coverage = payload.get("coverage") or {}
+    depth = coverage.get("chainDepth") or 0
+    layered = [r for r in (payload.get("chains") or []) if isinstance(r.get("layer"), int)]
+    if depth:
+        if depth > len(payload.get("chains") or []):
+            fail(errors, f"层数 {depth} 超过链数——第一版对有环的图硬算就是这个形态")
+        for row in layered:
+            if not 0 <= row["layer"] < depth:
+                fail(errors, f"链 {row['id']} 的层次 {row['layer']} 越界（共 {depth} 层）")
+        for row in payload.get("chains") or []:
+            in_cross = row.get("id") in cross
+            if in_cross and isinstance(row.get("layer"), int):
+                fail(errors, f"使能链 {row['id']} 不该有层次——它横跨全链，"
+                             "塞进某一层是假的")
+            if not in_cross and row.get("layer") is None:
+                fail(errors, f"链 {row['id']} 没有层次，页面排不出它的上下游位置")
+
+    # 逆向边：数目要与 coverage 对得上，且每条都得说清为什么是逆向的
+    back = [l for l in links if l.get("direction") == "counterflow"]
+    want_back = coverage.get("chainCounterflow")
+    if want_back is not None and want_back != len(back):
+        fail(errors, f"coverage.chainCounterflow {want_back} 与实际 {len(back)} 条不符")
+    for link in links:
+        direction = link.get("direction")
+        if direction not in ("forward", "counterflow"):
+            fail(errors, f"链间上下游 {link.get('from')}→{link.get('to')} 的 direction "
+                         f"是 {direction!r}，只能是 forward 或 counterflow")
+        if direction == "counterflow" and not (link.get("counterflowWhy") or "").strip():
+            fail(errors, f"逆向边 {link.get('from')}→{link.get('to')} 没写为什么是逆向的")
+
+
+def check_home_card(payload: dict, errors: list[str]) -> None:
+    """站点首页那张卡片上印的数，必须等于 nodes.json 里的数。
+
+    首页是静态 HTML，里面的数字不会自己更新——写死之后数据一变它就开始说假话，
+    而且没有任何东西会报错。这个板块已经栽过同一类跟头（手机上苹果页显示
+    「本页已收录 20245 条」而真值是 0），所以凡是印在页面上的数都得有人比对。
+    卡片上不印某个数是可以的；印了就必须对。
+    """
+    path = "index.html"
+    try:
+        with open(path, encoding="utf-8") as handle:
+            html = handle.read()
+    except OSError:
+        return                              # 首页不在就不查，不是本契约的职责
+    match = re.search(r'href="apps/supply-chain/"(.*?)</a>', html, re.S)
+    if not match:
+        fail(errors, f"{path} 里找不到全球产业链的入口卡片")
+        return
+    card = match.group(1)
+
+    coverage = payload.get("coverage") or {}
+    expect = [
+        (coverage.get("nodesTotal"), "公司数"),
+        (coverage.get("chainsTotal"), "产业链条数"),
+        (coverage.get("chainLinksTotal"), "链间上下游条数"),
+        (coverage.get("edgesTotal"), "关系条数"),
+        (len(payload.get("stages") or []), "价值链环节数"),
+    ]
+    printed = set(re.findall(r"\d+", card))
+    for value, label in expect:
+        if value is None:
+            continue
+        # 只查「印了的数对不对」：卡片上没提这个数不算错，提了就必须等于真值。
+        near = re.search(r"(\d+)\s*(?:家|条产业链|条|个价值链环节)", card)
+        if str(value) not in printed and near:
+            # 找不到这个真值，但卡片上确实印了同类的数——多半是数据变了文案没跟上
+            fail(errors, f"{path} 的产业链卡片没有印出正确的{label} {value}，"
+                         f"卡片上的数是 {sorted(printed)}——静态文案与数据脱节了")
+
 
 def check_health(errors: list[str], node_count: int) -> None:
     if not os.path.exists(HEALTH_PATH):
@@ -534,6 +606,7 @@ def main() -> int:
     check_coverage(payload, counts, edge_count, errors)
     check_chains(payload, errors)
     check_chain_links(payload, errors)
+    check_home_card(payload, errors)
     check_no_conflict_markers(errors)
     smelters = check_smelters(errors, edge_count)
     check_health(errors, len(payload.get("nodes") or []))
