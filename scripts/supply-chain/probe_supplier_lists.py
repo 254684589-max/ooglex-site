@@ -198,19 +198,29 @@ def pdf_text_sample(raw: bytes) -> dict:
     英特尔那三份 ASCII85 包一层的整份解不开，还被报成「多半是扫描件」。
     """
     r = pdf_text.pdf_to_text(raw)
-    verdict = {
-        "text": "可提取文字",
-        "image-only": "流解开了但没有文本操作符，多半是扫描件",
-        "undecodable": "本探针解不开这份 PDF 的压缩流——是探针能力不足，"
-                       "不能据此说文件没有文字",
-        "no-pages": "找不到页面对象：xref 形态特殊或文件损坏",
-        "not-pdf": "不是 PDF",
-    }.get(r["verdict"], r["verdict"])
+    # **字段名必须对上调用方的契约。** 调用方先设 doc["kind"] = "pdf" 再 update()，
+    # 所以这里不能有同名的 kind——曾经有，把 "pdf" 覆盖成了 "text"，
+    # 于是 PDF 那条显示分支整个没走，extractable 也没设，
+    # 思科三份明明解出了文字，结论却报「0/8 家，内容没取到」。
     return {
-        "streams": r["streams"], "inflated": r["decoded"], "readable": r["chars"],
-        "pages": r["pages"], "filters": r["filters"], "encrypted": r["encrypted"],
-        "verdict": verdict, "kind": r["verdict"],
-        "sample": re.sub(r"\s+", " ", r["text"][:160]).strip(),
+        "extractable": r["verdict"] == "text" and r["chars"] > 0,
+        "pdfVerdict": r["verdict"],
+        "verdict": {
+            "text": f"可提取文字（{r['pages']} 页，{r['chars']} 字）",
+            "image-only": "流解开了但没有文本操作符，多半是扫描件",
+            "undecodable": "本探针解不开这份 PDF 的压缩流——是探针能力不足，"
+                           "不能据此说文件没有文字",
+            "no-pages": "找不到页面对象：xref 形态特殊或文件损坏",
+            "not-pdf": "不是 PDF",
+        }.get(r["verdict"], r["verdict"]),
+        "streams": r["streams"],
+        "inflatedStreams": r["decoded"],
+        "textStreams": r["chars"] and r["decoded"] or 0,
+        "pages": r["pages"],
+        "filters": r["filters"],
+        "encrypted": r["encrypted"],
+        "unmapped": r["unmapped"],
+        "textSample": re.sub(r"\s+", " ", r["text"][:200]).strip(),
     }
 
 

@@ -767,6 +767,31 @@ def main() -> int:
         failures.append(f"PDF 转义与字距：{esc!r}")
     print(f"  [{'OK' if esc_ok else 'XX'}] 括号转义与 TJ 字距（→ {esc!r}）")
 
+    # pdf_text_sample 的返回会被 doc.update() 并进调用方的字典，所以它**不能带
+    # 与调用方同名的键**。曾经带了个 kind，把 doc["kind"]="pdf" 覆盖成 "text"，
+    # 于是 PDF 的显示分支整个没走、extractable 没设，思科三份明明解出了文字，
+    # 结论却报「0/8 家，内容没取到」——靠读 Actions 日志才发现。钉死这个契约。
+    print("\n── 探针字段契约：辅助函数不得覆盖调用方的键 ──────────────────────")
+    sample = probe.pdf_text_sample(_pdf(SMELTER, "Fl"))
+    need = ("extractable", "verdict", "streams", "inflatedStreams",
+            "textStreams", "filters", "textSample")
+    missing = [k for k in need if k not in sample]
+    clash = [k for k in ("kind", "url", "score", "bytes", "contentType") if k in sample]
+    contract_ok = not missing and not clash
+    if not contract_ok:
+        failures.append(f"探针字段契约：缺 {missing}，撞名 {clash}")
+    print(f"  [{'OK' if contract_ok else 'XX'}] 显示与判据要的键齐全，且不与调用方撞名"
+          f"（缺 {missing or '无'}，撞名 {clash or '无'}）")
+    extract_ok = sample["extractable"] is True
+    if not extract_ok:
+        failures.append(f"探针 extractable：解出文字的 PDF 应为 True，实际 {sample['extractable']!r}")
+    print(f"  [{'OK' if extract_ok else 'XX'}] 解出文字的 PDF → extractable=True")
+    blind = probe.pdf_text_sample(_pdf(b"q 1 0 0 1 0 0 cm /Im0 Do Q", "Fl"))
+    blind_ok = blind["extractable"] is False
+    if not blind_ok:
+        failures.append("探针 extractable：扫描件不得报 True")
+    print(f"  [{'OK' if blind_ok else 'XX'}] 扫描件 → extractable=False，不假装取到了")
+
     # Form SD 底下是两套互不相干的披露：13p-1 冲突矿产（有冶炼厂名单）与
     # 13q-1 资源开采付款（向各国政府付了多少钱）。把后者算进「申报了但没列名单」
     # 等于暗示「本可以列却没列」，而那套披露里根本没有冶炼厂这个概念。
@@ -812,7 +837,7 @@ def main() -> int:
         print(f"  [{'OK' if ok else 'XX'}] {why}"
               f"（{name} → {got or '会读'}）")
 
-    total = (len(pdf_cases) + 1 + len(kind_cases) + len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
+    total = (len(pdf_cases) + 4 + len(kind_cases) + len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1)
     print("\n" + "─" * 68)
