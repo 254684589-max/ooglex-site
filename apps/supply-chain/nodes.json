@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-05T20:17:08Z",
+  "updatedAt": "2026-09-05T23:19:03Z",
   "asOf": "2026-09-04",
   "frequency": "daily",
   "status": "ok",
@@ -34319,9 +34319,9 @@
         "stage": "component",
         "label": "零部件与元器件",
         "companies": 55,
-        "equalWeightPct": -0.9,
-        "capWeightPct": 2.53,
-        "medianPct": -0.74
+        "equalWeightPct": 0.06,
+        "capWeightPct": 2.89,
+        "medianPct": -0.66
       },
       {
         "stage": "capital-equipment",
