@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-05T09:50:37Z",
+  "updatedAt": "2026-09-05T09:55:41Z",
   "asOf": "2026-09-04",
   "frequency": "daily",
   "status": "ok",
@@ -111,7 +111,7 @@
       "id": "agri-food",
       "label": "农业与食品",
       "labelEn": "Agriculture & Food",
-      "count": 23,
+      "count": 25,
       "edgeCount": 668,
       "layer": 6
     },
@@ -119,7 +119,7 @@
       "id": "mining-metals",
       "label": "采矿与金属",
       "labelEn": "Mining & Metals",
-      "count": 7,
+      "count": 55,
       "edgeCount": 47,
       "layer": 2
     },
@@ -127,7 +127,7 @@
       "id": "oil-gas",
       "label": "石油与天然气",
       "labelEn": "Oil & Gas",
-      "count": 23,
+      "count": 36,
       "edgeCount": 341,
       "layer": 0
     },
@@ -135,7 +135,7 @@
       "id": "utilities-power",
       "label": "电力与公用事业",
       "labelEn": "Power & Utilities",
-      "count": 40,
+      "count": 42,
       "edgeCount": 589,
       "layer": 1
     },
@@ -143,7 +143,7 @@
       "id": "chemicals",
       "label": "化工与新材料",
       "labelEn": "Chemicals & Materials",
-      "count": 25,
+      "count": 32,
       "edgeCount": 759,
       "layer": 4
     },
@@ -159,7 +159,7 @@
       "id": "construction-building",
       "label": "建筑与建材",
       "labelEn": "Construction & Building",
-      "count": 17,
+      "count": 25,
       "edgeCount": 9,
       "layer": 5
     },
@@ -167,7 +167,7 @@
       "id": "semiconductor",
       "label": "半导体",
       "labelEn": "Semiconductors",
-      "count": 21,
+      "count": 38,
       "edgeCount": 3346,
       "layer": 5
     },
@@ -175,7 +175,7 @@
       "id": "electronics-components",
       "label": "电子元器件",
       "labelEn": "Electronic Components",
-      "count": 17,
+      "count": 30,
       "edgeCount": 2992,
       "layer": 5
     },
@@ -183,7 +183,7 @@
       "id": "computing-hardware",
       "label": "计算与数据中心硬件",
       "labelEn": "Computing & Datacenter Hardware",
-      "count": 15,
+      "count": 18,
       "edgeCount": 1874,
       "layer": 6
     },
@@ -191,7 +191,7 @@
       "id": "communications",
       "label": "通信与网络",
       "labelEn": "Communications & Networking",
-      "count": 18,
+      "count": 32,
       "edgeCount": 2035,
       "layer": 7
     },
@@ -199,7 +199,7 @@
       "id": "software-cloud",
       "label": "软件与云服务",
       "labelEn": "Software & Cloud",
-      "count": 31,
+      "count": 37,
       "edgeCount": 516,
       "layer": 8
     },
@@ -207,7 +207,7 @@
       "id": "industrial-machinery",
       "label": "工业机械与自动化",
       "labelEn": "Industrial Machinery",
-      "count": 52,
+      "count": 59,
       "edgeCount": 6227,
       "layer": 3
     },
@@ -215,7 +215,7 @@
       "id": "automotive",
       "label": "汽车",
       "labelEn": "Automotive",
-      "count": 11,
+      "count": 19,
       "edgeCount": 698,
       "layer": 6
     },
@@ -223,7 +223,7 @@
       "id": "aerospace-defense",
       "label": "航空航天与国防",
       "labelEn": "Aerospace & Defense",
-      "count": 13,
+      "count": 16,
       "edgeCount": 38,
       "layer": 6
     },
@@ -231,7 +231,7 @@
       "id": "pharma-biotech",
       "label": "医药与生物科技",
       "labelEn": "Pharma & Biotech",
-      "count": 27,
+      "count": 33,
       "edgeCount": 709,
       "layer": 6
     },
@@ -239,7 +239,7 @@
       "id": "medtech-health",
       "label": "医疗器械与医疗服务",
       "labelEn": "Medtech & Health Services",
-      "count": 35,
+      "count": 40,
       "edgeCount": 2984,
       "layer": 7
     },
@@ -247,7 +247,7 @@
       "id": "textiles-apparel",
       "label": "纺织服装与鞋类",
       "labelEn": "Textiles & Apparel",
-      "count": 4,
+      "count": 8,
       "edgeCount": 217,
       "layer": 7
     },
@@ -255,7 +255,7 @@
       "id": "consumer-goods",
       "label": "日用消费品",
       "labelEn": "Consumer Goods",
-      "count": 13,
+      "count": 17,
       "edgeCount": 932,
       "layer": 7
     },
@@ -263,7 +263,7 @@
       "id": "retail-distribution",
       "label": "零售与分销",
       "labelEn": "Retail & Distribution",
-      "count": 39,
+      "count": 42,
       "edgeCount": 1121,
       "layer": 8
     },
@@ -278,7 +278,7 @@
       "id": "travel-leisure",
       "label": "旅游休闲与餐饮",
       "labelEn": "Travel, Leisure & Dining",
-      "count": 21,
+      "count": 23,
       "edgeCount": 12,
       "layer": 9
     },
@@ -294,7 +294,7 @@
       "id": "financial-services",
       "label": "金融服务",
       "labelEn": "Financial Services",
-      "count": 71,
+      "count": 72,
       "edgeCount": 0
     },
     {
@@ -308,7 +308,7 @@
       "id": "business-services",
       "label": "商业与专业服务",
       "labelEn": "Business & Professional Services",
-      "count": 29,
+      "count": 32,
       "edgeCount": 338
     },
     {
@@ -20210,6 +20210,5771 @@
       "pool": "sp500",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
+    },
+    {
+      "id": "AAUC",
+      "symbol": "AAUC",
+      "name": "Allied Gold Corp",
+      "nameEn": "Allied Gold Corp",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "cik": 1993344,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001993344.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "AEM",
+      "symbol": "AEM",
+      "name": "AGNICO EAGLE MINES LTD",
+      "nameEn": "AGNICO EAGLE MINES LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "cik": 2809,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000002809.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "AG",
+      "symbol": "AG",
+      "name": "FIRST MAJESTIC SILVER CORP",
+      "nameEn": "FIRST MAJESTIC SILVER CORP",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "cik": 1308648,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001308648.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "AGI",
+      "symbol": "AGI",
+      "name": "ALAMOS GOLD INC",
+      "nameEn": "ALAMOS GOLD INC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "cik": 1178819,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001178819.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "ALC",
+      "symbol": "ALC",
+      "name": "ALCON INC",
+      "nameEn": "ALCON INC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "TX",
+      "exchange": "NYSE",
+      "cik": 1167379,
+      "sic": 3851,
+      "sicDescription": "Ophthalmic Goods",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3851：仪器仪表与医疗器械，多为可直接交付的成品",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001167379.json",
+        "sic": 3851,
+        "match": "sic-range"
+      },
+      "chains": [
+        "medtech-health",
+        "consumer-goods"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "眼科用品",
+      "edgeCount": 0
+    },
+    {
+      "id": "ALLT",
+      "symbol": "ALLT",
+      "name": "Allot Ltd.",
+      "nameEn": "Allot Ltd.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "cik": 1365767,
+      "sic": 3576,
+      "sicDescription": "Computer Communications Equipment",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3576：计算机通信设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001365767.json",
+        "sic": 3576,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "computing-hardware",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "计算机通信设备",
+      "edgeCount": 0
+    },
+    {
+      "id": "APWC",
+      "symbol": "APWC",
+      "name": "ASIA PACIFIC WIRE & CABLE CORP LTD",
+      "nameEn": "ASIA PACIFIC WIRE & CABLE CORP LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Taiwan",
+      "exchange": "Nasdaq",
+      "cik": 1026980,
+      "sic": 3357,
+      "sicDescription": "Drawing & Insulating of  Nonferrous Wire",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3357：金属轧制、拉制与铸造，供下游装配",
+      "sicMajor": "33",
+      "sicMajorLabel": "金属冶炼与压延",
+      "sicMajorLabelEn": "Primary Metal Industries",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001026980.json",
+        "sic": 3357,
+        "match": "sic-range"
+      },
+      "chains": [
+        "electronics-components",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "绝缘导线与光纤拉制：光纤是通信骨干，不是采矿",
+      "edgeCount": 0
+    },
+    {
+      "id": "ARCO",
+      "symbol": "ARCO",
+      "name": "Arcos Dorados Holdings Inc.",
+      "nameEn": "Arcos Dorados Holdings Inc.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Uruguay",
+      "exchange": "NYSE",
+      "cik": 1508478,
+      "sic": 5812,
+      "sicDescription": "Retail-Eating  Places",
+      "stage": "distribution",
+      "stageCandidates": [
+        "distribution"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 5812：零售贸易",
+      "sicMajor": "58",
+      "sicMajorLabel": "餐饮",
+      "sicMajorLabelEn": "Eating & Drinking Places",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001508478.json",
+        "sic": 5812,
+        "match": "sic-range"
+      },
+      "chains": [
+        "retail-distribution",
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "餐饮",
+      "edgeCount": 0
+    },
+    {
+      "id": "ARM",
+      "symbol": "ARM",
+      "name": "ARM HOLDINGS PLC /UK",
+      "nameEn": "ARM HOLDINGS PLC /UK",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "United Kingdom",
+      "exchange": "Nasdaq",
+      "cik": 1973239,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3674：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001973239.json",
+        "sic": 3674,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
+      "edgeCount": 0
+    },
+    {
+      "id": "ASM",
+      "symbol": "ASM",
+      "name": "AVINO SILVER & GOLD MINES LTD",
+      "nameEn": "AVINO SILVER & GOLD MINES LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "cik": 316888,
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1000：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000316888.json",
+        "sic": 1000,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "ASML",
+      "symbol": "ASML",
+      "name": "ASML HOLDING NV",
+      "nameEn": "ASML HOLDING NV",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Netherlands",
+      "exchange": "Nasdaq",
+      "cik": 937966,
+      "sic": 3559,
+      "sicDescription": "Special Industry Machinery, NEC",
+      "stage": "capital-equipment",
+      "stageCandidates": [
+        "capital-equipment"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3559：工业机械与专用设备，下游的资本支出",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000937966.json",
+        "sic": 3559,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "专用工业机械 NEC：半导体前道设备申报在这一码下",
+      "edgeCount": 0
+    },
+    {
+      "id": "ASND",
+      "symbol": "ASND",
+      "name": "Ascendis Pharma A/S",
+      "nameEn": "Ascendis Pharma A/S",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Denmark",
+      "exchange": "Nasdaq",
+      "cik": 1612042,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 2834：成药制剂，面向终端市场的成品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001612042.json",
+        "sic": 2834,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "成药制剂",
+      "edgeCount": 0
+    },
+    {
+      "id": "ASX",
+      "symbol": "ASX",
+      "name": "ASE Technology Holding Co., Ltd.",
+      "nameEn": "ASE Technology Holding Co., Ltd.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Taiwan",
+      "exchange": "NYSE",
+      "cik": 1122411,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3674：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001122411.json",
+        "sic": 3674,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
+      "edgeCount": 0
+    },
+    {
+      "id": "AU",
+      "symbol": "AU",
+      "name": "AngloGold Ashanti PLC",
+      "nameEn": "AngloGold Ashanti PLC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "United Kingdom",
+      "exchange": "NYSE",
+      "cik": 1973832,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001973832.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "AUDC",
+      "symbol": "AUDC",
+      "name": "AUDIOCODES LTD",
+      "nameEn": "AUDIOCODES LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "cik": 1086434,
+      "sic": 3661,
+      "sicDescription": "Telephone & Telegraph Apparatus",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3661：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001086434.json",
+        "sic": 3661,
+        "match": "sic-range"
+      },
+      "chains": [
+        "electronics-components",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "电话电报设备",
+      "edgeCount": 0
+    },
+    {
+      "id": "B",
+      "symbol": "B",
+      "name": "BARRICK MINING CORP",
+      "nameEn": "BARRICK MINING CORP",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "cik": 756894,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000756894.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "BABA",
+      "symbol": "BABA",
+      "name": "Alibaba Group Holding Ltd",
+      "nameEn": "Alibaba Group Holding Ltd",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Hong Kong",
+      "exchange": "NYSE",
+      "cik": 1577552,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "stage": "technology",
+      "stageCandidates": [
+        "technology"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 7389：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001577552.json",
+        "sic": 7389,
+        "match": "sic-range"
+      },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
+      "edgeCount": 0
+    },
+    {
+      "id": "BGI",
+      "symbol": "BGI",
+      "name": "BIRKS GROUP INC.",
+      "nameEn": "BIRKS GROUP INC.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Quebec, Canada",
+      "exchange": "NYSE",
+      "cik": 1179821,
+      "sic": 5944,
+      "sicDescription": "Retail-Jewelry Stores",
+      "stage": "distribution",
+      "stageCandidates": [
+        "distribution"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 5944：零售贸易",
+      "sicMajor": "59",
+      "sicMajorLabel": "其他零售",
+      "sicMajorLabelEn": "Miscellaneous Retail",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001179821.json",
+        "sic": 5944,
+        "match": "sic-range"
+      },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
+      "edgeCount": 0
+    },
+    {
+      "id": "BHP",
+      "symbol": "BHP",
+      "name": "BHP Group Ltd",
+      "nameEn": "BHP Group Ltd",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Australia",
+      "exchange": "NYSE",
+      "cik": 811809,
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1000：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000811809.json",
+        "sic": 1000,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "BIRK",
+      "symbol": "BIRK",
+      "name": "Birkenstock Holding plc",
+      "nameEn": "Birkenstock Holding plc",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Jersey",
+      "exchange": "NYSE",
+      "cik": 1977102,
+      "sic": 3140,
+      "sicDescription": "Footwear, (No Rubber)",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3140：皮革制品与鞋类",
+      "sicMajor": "31",
+      "sicMajorLabel": "皮革制品",
+      "sicMajorLabelEn": "Leather Products",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001977102.json",
+        "sic": 3140,
+        "match": "sic-range"
+      },
+      "chains": [
+        "textiles-apparel"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "皮革与鞋类",
+      "edgeCount": 0
+    },
+    {
+      "id": "BLDP",
+      "symbol": "BLDP",
+      "name": "Ballard Power Systems Inc.",
+      "nameEn": "Ballard Power Systems Inc.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "",
+      "exchange": "Nasdaq",
+      "cik": 1453015,
+      "sic": 3620,
+      "sicDescription": "Electrical Industrial Apparatus",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3620：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001453015.json",
+        "sic": 3620,
+        "match": "sic-range"
+      },
+      "chains": [
+        "electronics-components"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电气设备与元件",
+      "edgeCount": 0
+    },
+    {
+      "id": "BP",
+      "symbol": "BP",
+      "name": "BP PLC",
+      "nameEn": "BP PLC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "United Kingdom",
+      "exchange": "NYSE",
+      "cik": 313807,
+      "sic": 2911,
+      "sicDescription": "Petroleum Refining",
+      "stage": "material-processing",
+      "stageCandidates": [
+        "material-processing"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 2911：石油炼制与煤制品",
+      "sicMajor": "29",
+      "sicMajorLabel": "石油炼制",
+      "sicMajorLabelEn": "Petroleum Refining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000313807.json",
+        "sic": 2911,
+        "match": "sic-range"
+      },
+      "chains": [
+        "oil-gas",
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "石油炼制与煤制品：炼化一体，两条链都在",
+      "edgeCount": 0
+    },
+    {
+      "id": "BRSL",
+      "symbol": "BRSL",
+      "name": "Brightstar Lottery PLC",
+      "nameEn": "Brightstar Lottery PLC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "United Kingdom",
+      "exchange": "NYSE",
+      "cik": 1619762,
+      "sic": 7990,
+      "sicDescription": "Services-Miscellaneous Amusement & Recreation",
+      "stage": "end-service",
+      "stageCandidates": [
+        "end-service"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 7990：娱乐与休闲服务",
+      "sicMajor": "79",
+      "sicMajorLabel": "娱乐与休闲服务",
+      "sicMajorLabelEn": "Amusement & Recreation Services",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001619762.json",
+        "sic": 7990,
+        "match": "sic-range"
+      },
+      "chains": [
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "娱乐与休闲",
+      "edgeCount": 0
+    },
+    {
+      "id": "BTE",
+      "symbol": "BTE",
+      "name": "BAYTEX ENERGY CORP.",
+      "nameEn": "BAYTEX ENERGY CORP.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "",
+      "exchange": "NYSE",
+      "cik": 1279495,
+      "sic": 1381,
+      "sicDescription": "Drilling Oil & Gas Wells",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1381：采矿与油气开采",
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001279495.json",
+        "sic": 1381,
+        "match": "sic-range"
+      },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
+      "edgeCount": 0
+    },
+    {
+      "id": "BTG",
+      "symbol": "BTG",
+      "name": "B2GOLD CORP",
+      "nameEn": "B2GOLD CORP",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "cik": 1429937,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001429937.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "BTI",
+      "symbol": "BTI",
+      "name": "British American Tobacco p.l.c.",
+      "nameEn": "British American Tobacco p.l.c.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "",
+      "exchange": "NYSE",
+      "cik": 1303523,
+      "sic": 2111,
+      "sicDescription": "Cigarettes",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 2111：食品饮料与烟草，面向终端消费",
+      "sicMajor": "21",
+      "sicMajorLabel": "烟草制品",
+      "sicMajorLabelEn": "Tobacco Products",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001303523.json",
+        "sic": 2111,
+        "match": "sic-range"
+      },
+      "chains": [
+        "consumer-goods"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "烟草制品按终端消费品处理，不并入食品链",
+      "edgeCount": 0
+    },
+    {
+      "id": "BUD",
+      "symbol": "BUD",
+      "name": "Anheuser-Busch InBev SA/NV",
+      "nameEn": "Anheuser-Busch InBev SA/NV",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Belgium",
+      "exchange": "NYSE",
+      "cik": 1668717,
+      "sic": 2082,
+      "sicDescription": "Malt Beverages",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 2082：食品饮料与烟草，面向终端消费",
+      "sicMajor": "20",
+      "sicMajorLabel": "食品与饮料",
+      "sicMajorLabelEn": "Food & Kindred Products",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001668717.json",
+        "sic": 2082,
+        "match": "sic-range"
+      },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
+      "edgeCount": 0
+    },
+    {
+      "id": "CAE",
+      "symbol": "CAE",
+      "name": "CAE INC",
+      "nameEn": "CAE INC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Quebec, Canada",
+      "exchange": "Nasdaq",
+      "cik": 1173382,
+      "sic": 3690,
+      "sicDescription": "Miscellaneous Electrical Machinery, Equipment & Supplies",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3690：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001173382.json",
+        "sic": 3690,
+        "match": "sic-range"
+      },
+      "chains": [
+        "electronics-components"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电子元器件",
+      "edgeCount": 0
+    },
+    {
+      "id": "CAMT",
+      "symbol": "CAMT",
+      "name": "CAMTEK LTD",
+      "nameEn": "CAMTEK LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "cik": 1109138,
+      "sic": 3827,
+      "sicDescription": "Optical Instruments & Lenses",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3827：仪器仪表与医疗器械，多为可直接交付的成品",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001109138.json",
+        "sic": 3827,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "光学仪器与镜头：光刻与光通信共用",
+      "edgeCount": 0
+    },
+    {
+      "id": "CCJ",
+      "symbol": "CCJ",
+      "name": "CAMECO CORP",
+      "nameEn": "CAMECO CORP",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "",
+      "exchange": "NYSE",
+      "cik": 1009001,
+      "sic": 1090,
+      "sicDescription": "Miscellaneous Metal Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1090：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001009001.json",
+        "sic": 1090,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "CGAU",
+      "symbol": "CGAU",
+      "name": "Centerra Gold Inc.",
+      "nameEn": "Centerra Gold Inc.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "cik": 1854640,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001854640.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "CGNT",
+      "symbol": "CGNT",
+      "name": "Cognyte Software Ltd.",
+      "nameEn": "Cognyte Software Ltd.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "cik": 1824814,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "stage": "technology",
+      "stageCandidates": [
+        "technology"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001824814.json",
+        "sic": 7372,
+        "match": "sic-range"
+      },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
+      "edgeCount": 0
+    },
+    {
+      "id": "CHT",
+      "symbol": "CHT",
+      "name": "CHUNGHWA TELECOM CO LTD",
+      "nameEn": "CHUNGHWA TELECOM CO LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "",
+      "exchange": "NYSE",
+      "cik": 1132924,
+      "sic": 4812,
+      "sicDescription": "Radiotelephone Communications",
+      "stage": "technology",
+      "stageCandidates": [
+        "technology"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 4812：电信与网络承载",
+      "sicMajor": "48",
+      "sicMajorLabel": "通信",
+      "sicMajorLabelEn": "Communications",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001132924.json",
+        "sic": 4812,
+        "match": "sic-range"
+      },
+      "chains": [
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "无线通信",
+      "edgeCount": 0
+    },
+    {
+      "id": "CNL",
+      "symbol": "CNL",
+      "name": "Collective Mining Ltd.",
+      "nameEn": "Collective Mining Ltd.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Ontario, Canada",
+      "exchange": "Nasdaq",
+      "cik": 1953575,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001953575.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "CNQ",
+      "symbol": "CNQ",
+      "name": "CANADIAN NATURAL RESOURCES Ltd",
+      "nameEn": "CANADIAN NATURAL RESOURCES Ltd",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Alberta, Canada",
+      "exchange": "NYSE",
+      "cik": 1017413,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1311：采矿与油气开采",
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001017413.json",
+        "sic": 1311,
+        "match": "sic-range"
+      },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
+      "edgeCount": 0
+    },
+    {
+      "id": "CRNT",
+      "symbol": "CRNT",
+      "name": "CERAGON NETWORKS LTD",
+      "nameEn": "CERAGON NETWORKS LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "cik": 1119769,
+      "sic": 3663,
+      "sicDescription": "Radio & Tv Broadcasting & Communications Equipment",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3663：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001119769.json",
+        "sic": 3663,
+        "match": "sic-range"
+      },
+      "chains": [
+        "electronics-components",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "广播电视与通信设备",
+      "edgeCount": 0
+    },
+    {
+      "id": "CSIQ",
+      "symbol": "CSIQ",
+      "name": "Canadian Solar Inc.",
+      "nameEn": "Canadian Solar Inc.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Ontario, Canada",
+      "exchange": "Nasdaq",
+      "cik": 1375877,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3674：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001375877.json",
+        "sic": 3674,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
+      "edgeCount": 0
+    },
+    {
+      "id": "CX",
+      "symbol": "CX",
+      "name": "CEMEX SAB DE CV",
+      "nameEn": "CEMEX SAB DE CV",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Mexico",
+      "exchange": "NYSE",
+      "cik": 1076378,
+      "sic": 3241,
+      "sicDescription": "Cement, Hydraulic",
+      "stage": "material-processing",
+      "stageCandidates": [
+        "material-processing"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3241：石料、陶土与玻璃制品",
+      "sicMajor": "32",
+      "sicMajorLabel": "非金属矿物制品",
+      "sicMajorLabelEn": "Stone, Clay & Glass",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001076378.json",
+        "sic": 3241,
+        "match": "sic-range"
+      },
+      "chains": [
+        "construction-building"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "石料、陶土与玻璃",
+      "edgeCount": 0
+    },
+    {
+      "id": "CYD",
+      "symbol": "CYD",
+      "name": "CHINA YUCHAI INTERNATIONAL LTD",
+      "nameEn": "CHINA YUCHAI INTERNATIONAL LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Singapore",
+      "exchange": "NYSE",
+      "cik": 932695,
+      "sic": 3510,
+      "sicDescription": "Engines & Turbines",
+      "stage": "capital-equipment",
+      "stageCandidates": [
+        "capital-equipment"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3510：工业机械与专用设备，下游的资本支出",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000932695.json",
+        "sic": 3510,
+        "match": "sic-range"
+      },
+      "chains": [
+        "utilities-power",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "发动机与涡轮：发电设备",
+      "edgeCount": 0
+    },
+    {
+      "id": "DOO",
+      "symbol": "DOO",
+      "name": "BRP Inc.",
+      "nameEn": "BRP Inc.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Quebec, Canada",
+      "exchange": "Nasdaq",
+      "cik": 1748797,
+      "sic": 3790,
+      "sicDescription": "Miscellaneous Transportation Equipment",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3790：运输设备零部件",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001748797.json",
+        "sic": 3790,
+        "match": "sic-range"
+      },
+      "chains": [
+        "consumer-goods"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "其他运输工具",
+      "edgeCount": 0
+    },
+    {
+      "id": "DRD",
+      "symbol": "DRD",
+      "name": "DRDGOLD LTD",
+      "nameEn": "DRDGOLD LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "",
+      "exchange": "NYSE",
+      "cik": 1023512,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001023512.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "DSGX",
+      "symbol": "DSGX",
+      "name": "DESCARTES SYSTEMS GROUP INC",
+      "nameEn": "DESCARTES SYSTEMS GROUP INC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Ontario, Canada",
+      "exchange": "Nasdaq",
+      "cik": 1050140,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "stage": "technology",
+      "stageCandidates": [
+        "technology"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001050140.json",
+        "sic": 7372,
+        "match": "sic-range"
+      },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
+      "edgeCount": 0
+    },
+    {
+      "id": "DSWL",
+      "symbol": "DSWL",
+      "name": "DESWELL INDUSTRIES INC",
+      "nameEn": "DESWELL INDUSTRIES INC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "",
+      "exchange": "Nasdaq",
+      "cik": 946936,
+      "sic": 3089,
+      "sicDescription": "Plastics Products, NEC",
+      "stage": "material-processing",
+      "stageCandidates": [
+        "material-processing"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3089：橡胶与塑料制品",
+      "sicMajor": "30",
+      "sicMajorLabel": "橡胶与塑料制品",
+      "sicMajorLabelEn": "Rubber & Plastics",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000946936.json",
+        "sic": 3089,
+        "match": "sic-range"
+      },
+      "chains": [
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "橡胶与塑料制品",
+      "edgeCount": 0
+    },
+    {
+      "id": "E",
+      "symbol": "E",
+      "name": "ENI SPA",
+      "nameEn": "ENI SPA",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Italy",
+      "exchange": "NYSE",
+      "cik": 1002242,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1311：采矿与油气开采",
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001002242.json",
+        "sic": 1311,
+        "match": "sic-range"
+      },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
+      "edgeCount": 0
+    },
+    {
+      "id": "EFXT",
+      "symbol": "EFXT",
+      "name": "Enerflex Ltd.",
+      "nameEn": "Enerflex Ltd.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Canada (Federal Level)",
+      "exchange": "NYSE",
+      "cik": 1904856,
+      "sic": 3560,
+      "sicDescription": "General Industrial Machinery & Equipment",
+      "stage": "capital-equipment",
+      "stageCandidates": [
+        "capital-equipment"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3560：工业机械与专用设备，下游的资本支出",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001904856.json",
+        "sic": 3560,
+        "match": "sic-range"
+      },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备",
+      "edgeCount": 0
+    },
+    {
+      "id": "EGO",
+      "symbol": "EGO",
+      "name": "ELDORADO GOLD CORP /FI",
+      "nameEn": "ELDORADO GOLD CORP /FI",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "cik": 918608,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000918608.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "ELTK",
+      "symbol": "ELTK",
+      "name": "ELTEK LTD",
+      "nameEn": "ELTEK LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "cik": 1024672,
+      "sic": 3672,
+      "sicDescription": "Printed Circuit Boards",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3672：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001024672.json",
+        "sic": 3672,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor",
+        "electronics-components"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "印制电路板",
+      "edgeCount": 0
+    },
+    {
+      "id": "EMBJ",
+      "symbol": "EMBJ",
+      "name": "EMBRAER S.A.",
+      "nameEn": "EMBRAER S.A.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Brazil",
+      "exchange": "NYSE",
+      "cik": 1355444,
+      "sic": 3721,
+      "sicDescription": "Aircraft",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3721：飞机整机",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001355444.json",
+        "sic": 3721,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "aerospace-defense"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "航空器与发动机",
+      "edgeCount": 0
+    },
+    {
+      "id": "EQNR",
+      "symbol": "EQNR",
+      "name": "EQUINOR ASA",
+      "nameEn": "EQUINOR ASA",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Norway",
+      "exchange": "NYSE",
+      "cik": 1140625,
+      "sic": 2911,
+      "sicDescription": "Petroleum Refining",
+      "stage": "material-processing",
+      "stageCandidates": [
+        "material-processing"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 2911：石油炼制与煤制品",
+      "sicMajor": "29",
+      "sicMajorLabel": "石油炼制",
+      "sicMajorLabelEn": "Petroleum Refining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001140625.json",
+        "sic": 2911,
+        "match": "sic-range"
+      },
+      "chains": [
+        "oil-gas",
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "石油炼制与煤制品：炼化一体，两条链都在",
+      "edgeCount": 0
+    },
+    {
+      "id": "EQX",
+      "symbol": "EQX",
+      "name": "Equinox Gold Corp.",
+      "nameEn": "Equinox Gold Corp.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "cik": 1756607,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001756607.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "ERIC",
+      "symbol": "ERIC",
+      "name": "ERICSSON LM TELEPHONE CO",
+      "nameEn": "ERICSSON LM TELEPHONE CO",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Sweden",
+      "exchange": "Nasdaq",
+      "cik": 717826,
+      "sic": 3663,
+      "sicDescription": "Radio & Tv Broadcasting & Communications Equipment",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3663：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000717826.json",
+        "sic": 3663,
+        "match": "sic-range"
+      },
+      "chains": [
+        "electronics-components",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "广播电视与通信设备",
+      "edgeCount": 0
+    },
+    {
+      "id": "ERO",
+      "symbol": "ERO",
+      "name": "Ero Copper Corp.",
+      "nameEn": "Ero Copper Corp.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "cik": 1853860,
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1000：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001853860.json",
+        "sic": 1000,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "ESLT",
+      "symbol": "ESLT",
+      "name": "ELBIT SYSTEMS LTD",
+      "nameEn": "ELBIT SYSTEMS LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "cik": 1027664,
+      "sic": 3728,
+      "sicDescription": "Aircraft Parts & Auxiliary Equipment, NEC",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3728：飞机零部件",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001027664.json",
+        "sic": 3728,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "aerospace-defense"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "航空器与发动机",
+      "edgeCount": 0
+    },
+    {
+      "id": "FMS",
+      "symbol": "FMS",
+      "name": "Fresenius Medical Care AG",
+      "nameEn": "Fresenius Medical Care AG",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Germany",
+      "exchange": "NYSE",
+      "cik": 1333141,
+      "sic": 8090,
+      "sicDescription": "Services-Misc Health & Allied Services, NEC",
+      "stage": "end-service",
+      "stageCandidates": [
+        "end-service"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 8090：医疗服务，面向终端患者",
+      "sicMajor": "80",
+      "sicMajorLabel": "医疗服务",
+      "sicMajorLabelEn": "Health Services",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001333141.json",
+        "sic": 8090,
+        "match": "sic-range"
+      },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗服务",
+      "edgeCount": 0
+    },
+    {
+      "id": "FNV",
+      "symbol": "FNV",
+      "name": "FRANCO NEVADA Corp",
+      "nameEn": "FRANCO NEVADA Corp",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "cik": 1456346,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001456346.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "FSM",
+      "symbol": "FSM",
+      "name": "FORTUNA MINING CORP.",
+      "nameEn": "FORTUNA MINING CORP.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "cik": 1341335,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001341335.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "GAU",
+      "symbol": "GAU",
+      "name": "Galiano Gold Inc.",
+      "nameEn": "Galiano Gold Inc.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "cik": 1377757,
+      "sic": 1400,
+      "sicDescription": "Mining & Quarrying of  Nonmetallic Minerals (No Fuels)",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1400：采矿与油气开采",
+      "sicMajor": "14",
+      "sicMajorLabel": "非金属矿采选",
+      "sicMajorLabelEn": "Nonmetallic Minerals Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001377757.json",
+        "sic": 1400,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals",
+        "construction-building"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "非金属矿采：砂石骨料主要供建筑",
+      "edgeCount": 0
+    },
+    {
+      "id": "GFS",
+      "symbol": "GFS",
+      "name": "GLOBALFOUNDRIES Inc.",
+      "nameEn": "GLOBALFOUNDRIES Inc.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "NY",
+      "exchange": "Nasdaq",
+      "cik": 1709048,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3674：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001709048.json",
+        "sic": 3674,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
+      "edgeCount": 0
+    },
+    {
+      "id": "GGB",
+      "symbol": "GGB",
+      "name": "GERDAU S.A.",
+      "nameEn": "GERDAU S.A.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Brazil",
+      "exchange": "NYSE",
+      "cik": 1073404,
+      "sic": 3310,
+      "sicDescription": "Steel Works, Blast Furnaces & Rolling & Finishing Mills",
+      "stage": "material-processing",
+      "stageCandidates": [
+        "material-processing"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3310：钢铁与有色金属冶炼精炼",
+      "sicMajor": "33",
+      "sicMajorLabel": "金属冶炼与压延",
+      "sicMajorLabelEn": "Primary Metal Industries",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001073404.json",
+        "sic": 3310,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属冶炼与加工",
+      "edgeCount": 0
+    },
+    {
+      "id": "GIL",
+      "symbol": "GIL",
+      "name": "Gildan Activewear Inc.",
+      "nameEn": "Gildan Activewear Inc.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Canada (Federal Level)",
+      "exchange": "NYSE",
+      "cik": 1061894,
+      "sic": 2300,
+      "sicDescription": "Apparel & Other Finishd Prods of  Fabrics & Similar Matl",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 2300：服装成衣",
+      "sicMajor": "23",
+      "sicMajorLabel": "服装成衣",
+      "sicMajorLabelEn": "Apparel",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001061894.json",
+        "sic": 2300,
+        "match": "sic-range"
+      },
+      "chains": [
+        "textiles-apparel"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "服装",
+      "edgeCount": 0
+    },
+    {
+      "id": "GILT",
+      "symbol": "GILT",
+      "name": "GILAT SATELLITE NETWORKS LTD",
+      "nameEn": "GILAT SATELLITE NETWORKS LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "VA",
+      "exchange": "Nasdaq",
+      "cik": 897322,
+      "sic": 3663,
+      "sicDescription": "Radio & Tv Broadcasting & Communications Equipment",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3663：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000897322.json",
+        "sic": 3663,
+        "match": "sic-range"
+      },
+      "chains": [
+        "electronics-components",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "广播电视与通信设备",
+      "edgeCount": 0
+    },
+    {
+      "id": "GOOS",
+      "symbol": "GOOS",
+      "name": "Canada Goose Holdings Inc.",
+      "nameEn": "Canada Goose Holdings Inc.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "cik": 1690511,
+      "sic": 2300,
+      "sicDescription": "Apparel & Other Finishd Prods of  Fabrics & Similar Matl",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 2300：服装成衣",
+      "sicMajor": "23",
+      "sicMajorLabel": "服装成衣",
+      "sicMajorLabelEn": "Apparel",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001690511.json",
+        "sic": 2300,
+        "match": "sic-range"
+      },
+      "chains": [
+        "textiles-apparel"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "服装",
+      "edgeCount": 0
+    },
+    {
+      "id": "GPRK",
+      "symbol": "GPRK",
+      "name": "GeoPark Ltd",
+      "nameEn": "GeoPark Ltd",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Colombia",
+      "exchange": "NYSE",
+      "cik": 1464591,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1311：采矿与油气开采",
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001464591.json",
+        "sic": 1311,
+        "match": "sic-range"
+      },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
+      "edgeCount": 0
+    },
+    {
+      "id": "GSK",
+      "symbol": "GSK",
+      "name": "GSK plc",
+      "nameEn": "GSK plc",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "United Kingdom",
+      "exchange": "NYSE",
+      "cik": 1131399,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 2834：成药制剂，面向终端市场的成品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001131399.json",
+        "sic": 2834,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "成药制剂",
+      "edgeCount": 0
+    },
+    {
+      "id": "GSM",
+      "symbol": "GSM",
+      "name": "Ferroglobe PLC",
+      "nameEn": "Ferroglobe PLC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "United Kingdom",
+      "exchange": "Nasdaq",
+      "cik": 1639877,
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1000：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001639877.json",
+        "sic": 1000,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "HBM",
+      "symbol": "HBM",
+      "name": "Hudbay Minerals Inc.",
+      "nameEn": "Hudbay Minerals Inc.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "",
+      "exchange": "NYSE",
+      "cik": 1322422,
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1000：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001322422.json",
+        "sic": 1000,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "HIMX",
+      "symbol": "HIMX",
+      "name": "Himax Technologies, Inc.",
+      "nameEn": "Himax Technologies, Inc.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Cayman Islands",
+      "exchange": "Nasdaq",
+      "cik": 1342338,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3674：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001342338.json",
+        "sic": 3674,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
+      "edgeCount": 0
+    },
+    {
+      "id": "HLN",
+      "symbol": "HLN",
+      "name": "Haleon plc",
+      "nameEn": "Haleon plc",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "United Kingdom",
+      "exchange": "NYSE",
+      "cik": 1900304,
+      "sic": 2844,
+      "sicDescription": "Perfumes, Cosmetics & Other Toilet Preparations",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 2844：肥皂洗涤与化妆品，面向终端消费",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001900304.json",
+        "sic": 2844,
+        "match": "sic-range"
+      },
+      "chains": [
+        "chemicals",
+        "consumer-goods"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "香水与化妆品",
+      "edgeCount": 0
+    },
+    {
+      "id": "HMC",
+      "symbol": "HMC",
+      "name": "HONDA MOTOR CO LTD",
+      "nameEn": "HONDA MOTOR CO LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "",
+      "exchange": "NYSE",
+      "cik": 715153,
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3711：整车制造",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000715153.json",
+        "sic": 3711,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "automotive"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "汽车整车",
+      "edgeCount": 0
+    },
+    {
+      "id": "HMY",
+      "symbol": "HMY",
+      "name": "HARMONY GOLD MINING CO LTD",
+      "nameEn": "HARMONY GOLD MINING CO LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "",
+      "exchange": "NYSE",
+      "cik": 1023514,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001023514.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "HSLV",
+      "symbol": "HSLV",
+      "name": "Highlander Silver Corp.",
+      "nameEn": "Highlander Silver Corp.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "cik": 2013223,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0002013223.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "IAG",
+      "symbol": "IAG",
+      "name": "IAMGOLD CORP",
+      "nameEn": "IAMGOLD CORP",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "cik": 1203464,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001203464.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "IMOS",
+      "symbol": "IMOS",
+      "name": "CHIPMOS TECHNOLOGIES INC",
+      "nameEn": "CHIPMOS TECHNOLOGIES INC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Taiwan",
+      "exchange": "Nasdaq",
+      "cik": 1123134,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3674：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001123134.json",
+        "sic": 3674,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
+      "edgeCount": 0
+    },
+    {
+      "id": "INVZ",
+      "symbol": "INVZ",
+      "name": "Innoviz Technologies Ltd.",
+      "nameEn": "Innoviz Technologies Ltd.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "cik": 1835654,
+      "sic": 3714,
+      "sicDescription": "Motor Vehicle Parts & Accessories",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3714：机动车零部件",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001835654.json",
+        "sic": 3714,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "automotive"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "汽车整车；汽车零部件",
+      "edgeCount": 0
+    },
+    {
+      "id": "ISOU",
+      "symbol": "ISOU",
+      "name": "IsoEnergy Ltd.",
+      "nameEn": "IsoEnergy Ltd.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "cik": 1997377,
+      "sic": 1090,
+      "sicDescription": "Miscellaneous Metal Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1090：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001997377.json",
+        "sic": 1090,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "ITRN",
+      "symbol": "ITRN",
+      "name": "Ituran Location & Control Ltd.",
+      "nameEn": "Ituran Location & Control Ltd.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "cik": 1337117,
+      "sic": 5065,
+      "sicDescription": "Wholesale-Electronic Parts & Equipment, NEC",
+      "stage": "distribution",
+      "stageCandidates": [
+        "distribution"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 5065：批发贸易",
+      "sicMajor": "50",
+      "sicMajorLabel": "批发·耐用品",
+      "sicMajorLabelEn": "Wholesale Trade - Durable Goods",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001337117.json",
+        "sic": 5065,
+        "match": "sic-range"
+      },
+      "chains": [
+        "electronics-components",
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "电子元件批发",
+      "edgeCount": 0
+    },
+    {
+      "id": "IX",
+      "symbol": "IX",
+      "name": "ORIX CORP",
+      "nameEn": "ORIX CORP",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Japan",
+      "exchange": "NYSE",
+      "cik": 1070304,
+      "sic": 6159,
+      "sicDescription": "Miscellaneous Business Credit Institution",
+      "stage": "financial",
+      "stageCandidates": [
+        "financial"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 6159：金融、保险与房地产",
+      "sicMajor": "61",
+      "sicMajorLabel": "非存款信贷机构",
+      "sicMajorLabelEn": "Nondepository Credit Institutions",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001070304.json",
+        "sic": 6159,
+        "match": "sic-range"
+      },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
+      "edgeCount": 0
+    },
+    {
+      "id": "JKS",
+      "symbol": "JKS",
+      "name": "JinkoSolar Holding Co., Ltd.",
+      "nameEn": "JinkoSolar Holding Co., Ltd.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "China",
+      "exchange": "NYSE",
+      "cik": 1481513,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3674：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001481513.json",
+        "sic": 3674,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
+      "edgeCount": 0
+    },
+    {
+      "id": "KARO",
+      "symbol": "KARO",
+      "name": "Karooooo Ltd.",
+      "nameEn": "Karooooo Ltd.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Singapore",
+      "exchange": "Nasdaq",
+      "cik": 1828102,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "stage": "technology",
+      "stageCandidates": [
+        "technology"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001828102.json",
+        "sic": 7372,
+        "match": "sic-range"
+      },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
+      "edgeCount": 0
+    },
+    {
+      "id": "KRNT",
+      "symbol": "KRNT",
+      "name": "Kornit Digital Ltd.",
+      "nameEn": "Kornit Digital Ltd.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "cik": 1625791,
+      "sic": 3555,
+      "sicDescription": "Printing Trades Machinery & Equipment",
+      "stage": "capital-equipment",
+      "stageCandidates": [
+        "capital-equipment"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3555：工业机械与专用设备，下游的资本支出",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001625791.json",
+        "sic": 3555,
+        "match": "sic-range"
+      },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备",
+      "edgeCount": 0
+    },
+    {
+      "id": "LAR",
+      "symbol": "LAR",
+      "name": "Lithium Argentina AG",
+      "nameEn": "Lithium Argentina AG",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Switzerland",
+      "exchange": "NYSE",
+      "cik": 1440972,
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1000：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001440972.json",
+        "sic": 1000,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "LGO",
+      "symbol": "LGO",
+      "name": "Largo Inc.",
+      "nameEn": "Largo Inc.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Ontario, Canada",
+      "exchange": "Nasdaq",
+      "cik": 1400438,
+      "sic": 1400,
+      "sicDescription": "Mining & Quarrying of  Nonmetallic Minerals (No Fuels)",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1400：采矿与油气开采",
+      "sicMajor": "14",
+      "sicMajorLabel": "非金属矿采选",
+      "sicMajorLabelEn": "Nonmetallic Minerals Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001400438.json",
+        "sic": 1400,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals",
+        "construction-building"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "非金属矿采：砂石骨料主要供建筑",
+      "edgeCount": 0
+    },
+    {
+      "id": "LPL",
+      "symbol": "LPL",
+      "name": "LG Display Co., Ltd.",
+      "nameEn": "LG Display Co., Ltd.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Korea, Republic of",
+      "exchange": "NYSE",
+      "cik": 1290109,
+      "sic": 3679,
+      "sicDescription": "Electronic Components, NEC",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3679：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001290109.json",
+        "sic": 3679,
+        "match": "sic-range"
+      },
+      "chains": [
+        "electronics-components"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电子元器件",
+      "edgeCount": 0
+    },
+    {
+      "id": "MAKO",
+      "symbol": "MAKO",
+      "name": "Mako Mining Corp.",
+      "nameEn": "Mako Mining Corp.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "British Columbia, Canada",
+      "exchange": "Nasdaq",
+      "cik": 1784930,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001784930.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "MGA",
+      "symbol": "MGA",
+      "name": "MAGNA INTERNATIONAL INC",
+      "nameEn": "MAGNA INTERNATIONAL INC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "cik": 749098,
+      "sic": 3714,
+      "sicDescription": "Motor Vehicle Parts & Accessories",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3714：机动车零部件",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000749098.json",
+        "sic": 3714,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "automotive"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "汽车整车；汽车零部件",
+      "edgeCount": 0
+    },
+    {
+      "id": "MINE",
+      "symbol": "MINE",
+      "name": "MAYFAIR GOLD CORP.",
+      "nameEn": "MAYFAIR GOLD CORP.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "cik": 1823255,
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1000：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001823255.json",
+        "sic": 1000,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "MT",
+      "symbol": "MT",
+      "name": "ArcelorMittal",
+      "nameEn": "ArcelorMittal",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Luxembourg",
+      "exchange": "NYSE",
+      "cik": 1243429,
+      "sic": 3312,
+      "sicDescription": "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)",
+      "stage": "material-processing",
+      "stageCandidates": [
+        "material-processing"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3312：钢铁与有色金属冶炼精炼",
+      "sicMajor": "33",
+      "sicMajorLabel": "金属冶炼与压延",
+      "sicMajorLabelEn": "Primary Metal Industries",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001243429.json",
+        "sic": 3312,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals",
+        "construction-building"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "钢铁冶炼：建筑与制造共同的上游",
+      "edgeCount": 0
+    },
+    {
+      "id": "MTLS",
+      "symbol": "MTLS",
+      "name": "MATERIALISE NV",
+      "nameEn": "MATERIALISE NV",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "",
+      "exchange": "Nasdaq",
+      "cik": 1091223,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "stage": "technology",
+      "stageCandidates": [
+        "technology"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001091223.json",
+        "sic": 7372,
+        "match": "sic-range"
+      },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
+      "edgeCount": 0
+    },
+    {
+      "id": "NFGC",
+      "symbol": "NFGC",
+      "name": "New Found Gold Corp.",
+      "nameEn": "New Found Gold Corp.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "cik": 1840616,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001840616.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "NICE",
+      "symbol": "NICE",
+      "name": "NICE Ltd.",
+      "nameEn": "NICE Ltd.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "cik": 1003935,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "stage": "technology",
+      "stageCandidates": [
+        "technology"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001003935.json",
+        "sic": 7372,
+        "match": "sic-range"
+      },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
+      "edgeCount": 0
+    },
+    {
+      "id": "NMG",
+      "symbol": "NMG",
+      "name": "Nouveau Monde Graphite Inc.",
+      "nameEn": "Nouveau Monde Graphite Inc.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Canada (Federal Level)",
+      "exchange": "NYSE",
+      "cik": 1649752,
+      "sic": 1090,
+      "sicDescription": "Miscellaneous Metal Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1090：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001649752.json",
+        "sic": 1090,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "NOK",
+      "symbol": "NOK",
+      "name": "NOKIA CORP",
+      "nameEn": "NOKIA CORP",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Finland",
+      "exchange": "NYSE",
+      "cik": 924613,
+      "sic": 3663,
+      "sicDescription": "Radio & Tv Broadcasting & Communications Equipment",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3663：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000924613.json",
+        "sic": 3663,
+        "match": "sic-range"
+      },
+      "chains": [
+        "electronics-components",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "广播电视与通信设备",
+      "edgeCount": 0
+    },
+    {
+      "id": "NTR",
+      "symbol": "NTR",
+      "name": "Nutrien Ltd.",
+      "nameEn": "Nutrien Ltd.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Saskatchewan, Canada",
+      "exchange": "NYSE",
+      "cik": 1725964,
+      "sic": 2870,
+      "sicDescription": "Agricultural Chemicals",
+      "stage": "material-processing",
+      "stageCandidates": [
+        "material-processing"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 2870：涂料、农药与其他化学品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001725964.json",
+        "sic": 2870,
+        "match": "sic-range"
+      },
+      "chains": [
+        "agri-food",
+        "chemicals"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "农用化学品：化肥农药是农业的投入品",
+      "edgeCount": 0
+    },
+    {
+      "id": "NVMI",
+      "symbol": "NVMI",
+      "name": "NOVA LTD.",
+      "nameEn": "NOVA LTD.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "cik": 1109345,
+      "sic": 3827,
+      "sicDescription": "Optical Instruments & Lenses",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3827：仪器仪表与医疗器械，多为可直接交付的成品",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001109345.json",
+        "sic": 3827,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "光学仪器与镜头：光刻与光通信共用",
+      "edgeCount": 0
+    },
+    {
+      "id": "NVO",
+      "symbol": "NVO",
+      "name": "NOVO NORDISK A S",
+      "nameEn": "NOVO NORDISK A S",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Denmark",
+      "exchange": "NYSE",
+      "cik": 353278,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 2834：成药制剂，面向终端市场的成品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000353278.json",
+        "sic": 2834,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "成药制剂",
+      "edgeCount": 0
+    },
+    {
+      "id": "NYAX",
+      "symbol": "NYAX",
+      "name": "Nayax Ltd.",
+      "nameEn": "Nayax Ltd.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "cik": 1901279,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "stage": "technology",
+      "stageCandidates": [
+        "technology"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 7372：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001901279.json",
+        "sic": 7372,
+        "match": "sic-range"
+      },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
+      "edgeCount": 0
+    },
+    {
+      "id": "OBE",
+      "symbol": "OBE",
+      "name": "OBSIDIAN ENERGY LTD.",
+      "nameEn": "OBSIDIAN ENERGY LTD.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Alberta, Canada",
+      "exchange": "NYSE",
+      "cik": 1334388,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1311：采矿与油气开采",
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001334388.json",
+        "sic": 1311,
+        "match": "sic-range"
+      },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
+      "edgeCount": 0
+    },
+    {
+      "id": "OGG",
+      "symbol": "OGG",
+      "name": "Osisko Gold Group Inc.",
+      "nameEn": "Osisko Gold Group Inc.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Canada (Federal Level)",
+      "exchange": "NYSE",
+      "cik": 1431852,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001431852.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "PAAS",
+      "symbol": "PAAS",
+      "name": "PAN AMERICAN SILVER CORP",
+      "nameEn": "PAN AMERICAN SILVER CORP",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "cik": 771992,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000771992.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "PHG",
+      "symbol": "PHG",
+      "name": "KONINKLIJKE PHILIPS NV",
+      "nameEn": "KONINKLIJKE PHILIPS NV",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Netherlands",
+      "exchange": "NYSE",
+      "cik": 313216,
+      "sic": 3844,
+      "sicDescription": "X-Ray Apparatus & Tubes & Related Irradiation Apparatus",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3844：仪器仪表与医疗器械，多为可直接交付的成品",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000313216.json",
+        "sic": 3844,
+        "match": "sic-range"
+      },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
+      "edgeCount": 0
+    },
+    {
+      "id": "PKX",
+      "symbol": "PKX",
+      "name": "POSCO HOLDINGS INC.",
+      "nameEn": "POSCO HOLDINGS INC.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Korea, Republic of",
+      "exchange": "NYSE",
+      "cik": 889132,
+      "sic": 3312,
+      "sicDescription": "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)",
+      "stage": "material-processing",
+      "stageCandidates": [
+        "material-processing"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3312：钢铁与有色金属冶炼精炼",
+      "sicMajor": "33",
+      "sicMajorLabel": "金属冶炼与压延",
+      "sicMajorLabelEn": "Primary Metal Industries",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000889132.json",
+        "sic": 3312,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals",
+        "construction-building"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "钢铁冶炼：建筑与制造共同的上游",
+      "edgeCount": 0
+    },
+    {
+      "id": "PSNY",
+      "symbol": "PSNY",
+      "name": "Polestar Automotive Holding UK PLC",
+      "nameEn": "Polestar Automotive Holding UK PLC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Sweden",
+      "exchange": "Nasdaq",
+      "cik": 1884082,
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3711：整车制造",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001884082.json",
+        "sic": 3711,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "automotive"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "汽车整车",
+      "edgeCount": 0
+    },
+    {
+      "id": "QGEN",
+      "symbol": "QGEN",
+      "name": "QIAGEN N.V.",
+      "nameEn": "QIAGEN N.V.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Netherlands",
+      "exchange": "NYSE",
+      "cik": 1015820,
+      "sic": 2836,
+      "sicDescription": "Biological Products, (No Diagnostic Substances)",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 2836：生物制品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001015820.json",
+        "sic": 2836,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "生物制品",
+      "edgeCount": 0
+    },
+    {
+      "id": "RACE",
+      "symbol": "RACE",
+      "name": "Ferrari N.V.",
+      "nameEn": "Ferrari N.V.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Italy",
+      "exchange": "NYSE",
+      "cik": 1648416,
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3711：整车制造",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001648416.json",
+        "sic": 3711,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "automotive"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "汽车整车",
+      "edgeCount": 0
+    },
+    {
+      "id": "RDWR",
+      "symbol": "RDWR",
+      "name": "RADWARE LTD",
+      "nameEn": "RADWARE LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "cik": 1094366,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "stage": "technology",
+      "stageCandidates": [
+        "technology"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 7389：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001094366.json",
+        "sic": 7389,
+        "match": "sic-range"
+      },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
+      "edgeCount": 0
+    },
+    {
+      "id": "RIO",
+      "symbol": "RIO",
+      "name": "RIO TINTO PLC",
+      "nameEn": "RIO TINTO PLC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "United Kingdom",
+      "exchange": "NYSE",
+      "cik": 863064,
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1000：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000863064.json",
+        "sic": 1000,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "RTNTF",
+      "symbol": "RTNTF",
+      "name": "RIO TINTO LTD",
+      "nameEn": "RIO TINTO LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Australia",
+      "exchange": "OTC",
+      "cik": 887028,
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1000：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000887028.json",
+        "sic": 1000,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "RTO",
+      "symbol": "RTO",
+      "name": "RENTOKIL INITIAL PLC /FI",
+      "nameEn": "RENTOKIL INITIAL PLC /FI",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "United Kingdom",
+      "exchange": "NYSE",
+      "cik": 930157,
+      "sic": 8741,
+      "sicDescription": "Services-Management Services",
+      "stage": "financial",
+      "stageCandidates": [
+        "financial"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 8741：法律、工程、会计等专业服务",
+      "sicMajor": "87",
+      "sicMajorLabel": "工程、会计与研究服务",
+      "sicMajorLabelEn": "Engineering & Management Services",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000930157.json",
+        "sic": 8741,
+        "match": "sic-range"
+      },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工程、会计与管理服务",
+      "edgeCount": 0
+    },
+    {
+      "id": "SA",
+      "symbol": "SA",
+      "name": "SEABRIDGE GOLD INC",
+      "nameEn": "SEABRIDGE GOLD INC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "cik": 1231346,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001231346.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "SBSW",
+      "symbol": "SBSW",
+      "name": "Sibanye Stillwater Ltd",
+      "nameEn": "Sibanye Stillwater Ltd",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "South Africa",
+      "exchange": "NYSE",
+      "cik": 1786909,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001786909.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "SHEL",
+      "symbol": "SHEL",
+      "name": "Shell plc",
+      "nameEn": "Shell plc",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "DC",
+      "exchange": "NYSE",
+      "cik": 1306965,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1311：采矿与油气开采",
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001306965.json",
+        "sic": 1311,
+        "match": "sic-range"
+      },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
+      "edgeCount": 0
+    },
+    {
+      "id": "SHMD",
+      "symbol": "SHMD",
+      "name": "SCHMID Group N.V.",
+      "nameEn": "SCHMID Group N.V.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Netherlands",
+      "exchange": "Nasdaq",
+      "cik": 1987240,
+      "sic": 3590,
+      "sicDescription": "Misc Industrial & Commercial Machinery & Equipment",
+      "stage": "capital-equipment",
+      "stageCandidates": [
+        "capital-equipment"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3590：办公与通用工业设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001987240.json",
+        "sic": 3590,
+        "match": "sic-range"
+      },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备",
+      "edgeCount": 0
+    },
+    {
+      "id": "SID",
+      "symbol": "SID",
+      "name": "NATIONAL STEEL CO",
+      "nameEn": "NATIONAL STEEL CO",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Brazil",
+      "exchange": "NYSE",
+      "cik": 1049659,
+      "sic": 3310,
+      "sicDescription": "Steel Works, Blast Furnaces & Rolling & Finishing Mills",
+      "stage": "material-processing",
+      "stageCandidates": [
+        "material-processing"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3310：钢铁与有色金属冶炼精炼",
+      "sicMajor": "33",
+      "sicMajorLabel": "金属冶炼与压延",
+      "sicMajorLabelEn": "Primary Metal Industries",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001049659.json",
+        "sic": 3310,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属冶炼与加工",
+      "edgeCount": 0
+    },
+    {
+      "id": "SILC",
+      "symbol": "SILC",
+      "name": "SILICOM LTD.",
+      "nameEn": "SILICOM LTD.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "cik": 916793,
+      "sic": 3576,
+      "sicDescription": "Computer Communications Equipment",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3576：计算机通信设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000916793.json",
+        "sic": 3576,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "computing-hardware",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "计算机通信设备",
+      "edgeCount": 0
+    },
+    {
+      "id": "SIMO",
+      "symbol": "SIMO",
+      "name": "Silicon Motion Technology CORP",
+      "nameEn": "Silicon Motion Technology CORP",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Hong Kong",
+      "exchange": "Nasdaq",
+      "cik": 1329394,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3674：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001329394.json",
+        "sic": 3674,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
+      "edgeCount": 0
+    },
+    {
+      "id": "SNN",
+      "symbol": "SNN",
+      "name": "SMITH & NEPHEW PLC",
+      "nameEn": "SMITH & NEPHEW PLC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "",
+      "exchange": "NYSE",
+      "cik": 845982,
+      "sic": 3842,
+      "sicDescription": "Orthopedic, Prosthetic & Surgical Appliances & Supplies",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3842：仪器仪表与医疗器械，多为可直接交付的成品",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000845982.json",
+        "sic": 3842,
+        "match": "sic-range"
+      },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
+      "edgeCount": 0
+    },
+    {
+      "id": "SNT",
+      "symbol": "SNT",
+      "name": "Senstar Technologies Corp",
+      "nameEn": "Senstar Technologies Corp",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Ontario, Canada",
+      "exchange": "Nasdaq",
+      "cik": 1993727,
+      "sic": 3669,
+      "sicDescription": "Communications Equipment, NEC",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3669：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001993727.json",
+        "sic": 3669,
+        "match": "sic-range"
+      },
+      "chains": [
+        "electronics-components",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "通信设备 NEC",
+      "edgeCount": 0
+    },
+    {
+      "id": "SNY",
+      "symbol": "SNY",
+      "name": "Sanofi",
+      "nameEn": "Sanofi",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "France",
+      "exchange": "Nasdaq",
+      "cik": 1121404,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 2834：成药制剂，面向终端市场的成品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001121404.json",
+        "sic": 2834,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "成药制剂",
+      "edgeCount": 0
+    },
+    {
+      "id": "SONY",
+      "symbol": "SONY",
+      "name": "Sony Group Corp",
+      "nameEn": "Sony Group Corp",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Japan",
+      "exchange": "NYSE",
+      "cik": 313838,
+      "sic": 3651,
+      "sicDescription": "Household Audio & Video Equipment",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3651：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000313838.json",
+        "sic": 3651,
+        "match": "sic-range"
+      },
+      "chains": [
+        "electronics-components"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "照明与通信设备",
+      "edgeCount": 0
+    },
+    {
+      "id": "SQNS",
+      "symbol": "SQNS",
+      "name": "SEQUANS COMMUNICATIONS",
+      "nameEn": "SEQUANS COMMUNICATIONS",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "France",
+      "exchange": "NYSE",
+      "cik": 1383395,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3674：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001383395.json",
+        "sic": 3674,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
+      "edgeCount": 0
+    },
+    {
+      "id": "SSL",
+      "symbol": "SSL",
+      "name": "SASOL LTD",
+      "nameEn": "SASOL LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "South Africa",
+      "exchange": "NYSE",
+      "cik": 314590,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1311：采矿与油气开采",
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000314590.json",
+        "sic": 1311,
+        "match": "sic-range"
+      },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
+      "edgeCount": 0
+    },
+    {
+      "id": "SSYS",
+      "symbol": "SSYS",
+      "name": "STRATASYS LTD.",
+      "nameEn": "STRATASYS LTD.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "MN",
+      "exchange": "Nasdaq",
+      "cik": 1517396,
+      "sic": 3577,
+      "sicDescription": "Computer Peripheral Equipment, NEC",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3577：计算机外围设备",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001517396.json",
+        "sic": 3577,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "computing-hardware",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备；计算机与外围设备",
+      "edgeCount": 0
+    },
+    {
+      "id": "STLA",
+      "symbol": "STLA",
+      "name": "Stellantis N.V.",
+      "nameEn": "Stellantis N.V.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Netherlands",
+      "exchange": "NYSE",
+      "cik": 1605484,
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3711：整车制造",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001605484.json",
+        "sic": 3711,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "automotive"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "汽车整车",
+      "edgeCount": 0
+    },
+    {
+      "id": "STM",
+      "symbol": "STM",
+      "name": "STMicroelectronics N.V.",
+      "nameEn": "STMicroelectronics N.V.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Netherlands",
+      "exchange": "NYSE",
+      "cik": 932787,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3674：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000932787.json",
+        "sic": 3674,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
+      "edgeCount": 0
+    },
+    {
+      "id": "STVN",
+      "symbol": "STVN",
+      "name": "Stevanato Group S.p.A.",
+      "nameEn": "Stevanato Group S.p.A.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "",
+      "exchange": "NYSE",
+      "cik": 1849853,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3841：仪器仪表与医疗器械，多为可直接交付的成品",
+      "sicMajor": "38",
+      "sicMajorLabel": "仪器仪表与医疗器械",
+      "sicMajorLabelEn": "Instruments & Related Products",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001849853.json",
+        "sic": 3841,
+        "match": "sic-range"
+      },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
+      "edgeCount": 0
+    },
+    {
+      "id": "SU",
+      "symbol": "SU",
+      "name": "SUNCOR ENERGY INC",
+      "nameEn": "SUNCOR ENERGY INC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Alberta, Canada",
+      "exchange": "NYSE",
+      "cik": 311337,
+      "sic": 2911,
+      "sicDescription": "Petroleum Refining",
+      "stage": "material-processing",
+      "stageCandidates": [
+        "material-processing"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 2911：石油炼制与煤制品",
+      "sicMajor": "29",
+      "sicMajorLabel": "石油炼制",
+      "sicMajorLabelEn": "Petroleum Refining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000311337.json",
+        "sic": 2911,
+        "match": "sic-range"
+      },
+      "chains": [
+        "oil-gas",
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "石油炼制与煤制品：炼化一体，两条链都在",
+      "edgeCount": 0
+    },
+    {
+      "id": "SVM",
+      "symbol": "SVM",
+      "name": "SILVERCORP METALS INC",
+      "nameEn": "SILVERCORP METALS INC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "cik": 1340677,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001340677.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "TAK",
+      "symbol": "TAK",
+      "name": "TAKEDA PHARMACEUTICAL CO LTD",
+      "nameEn": "TAKEDA PHARMACEUTICAL CO LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Japan",
+      "exchange": "NYSE",
+      "cik": 1395064,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 2834：成药制剂，面向终端市场的成品",
+      "sicMajor": "28",
+      "sicMajorLabel": "化工与制药",
+      "sicMajorLabelEn": "Chemicals & Allied Products",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001395064.json",
+        "sic": 2834,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "成药制剂",
+      "edgeCount": 0
+    },
+    {
+      "id": "TATT",
+      "symbol": "TATT",
+      "name": "TAT TECHNOLOGIES LTD",
+      "nameEn": "TAT TECHNOLOGIES LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "",
+      "exchange": "Nasdaq",
+      "cik": 808439,
+      "sic": 3724,
+      "sicDescription": "Aircraft Engines & Engine Parts",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3724：飞机发动机与零件",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000808439.json",
+        "sic": 3724,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "aerospace-defense"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "航空器与发动机",
+      "edgeCount": 0
+    },
+    {
+      "id": "TECK",
+      "symbol": "TECK",
+      "name": "TECK RESOURCES LTD",
+      "nameEn": "TECK RESOURCES LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "cik": 886986,
+      "sic": 1400,
+      "sicDescription": "Mining & Quarrying of  Nonmetallic Minerals (No Fuels)",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1400：采矿与油气开采",
+      "sicMajor": "14",
+      "sicMajorLabel": "非金属矿采选",
+      "sicMajorLabelEn": "Nonmetallic Minerals Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000886986.json",
+        "sic": 1400,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals",
+        "construction-building"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "非金属矿采：砂石骨料主要供建筑",
+      "edgeCount": 0
+    },
+    {
+      "id": "TGB",
+      "symbol": "TGB",
+      "name": "Trekor Metals Ltd",
+      "nameEn": "Trekor Metals Ltd",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "cik": 878518,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000878518.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "TII",
+      "symbol": "TII",
+      "name": "Titan Mining Corp",
+      "nameEn": "Titan Mining Corp",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "NY",
+      "exchange": "NYSE",
+      "cik": 1791703,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001791703.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "TKC",
+      "symbol": "TKC",
+      "name": "TURKCELL ILETISIM HIZMETLERI A S",
+      "nameEn": "TURKCELL ILETISIM HIZMETLERI A S",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Turkey",
+      "exchange": "NYSE",
+      "cik": 1071321,
+      "sic": 4813,
+      "sicDescription": "Telephone Communications (No Radiotelephone)",
+      "stage": "technology",
+      "stageCandidates": [
+        "technology"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 4813：电信与网络承载",
+      "sicMajor": "48",
+      "sicMajorLabel": "通信",
+      "sicMajorLabelEn": "Communications",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001071321.json",
+        "sic": 4813,
+        "match": "sic-range"
+      },
+      "chains": [
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "固网通信",
+      "edgeCount": 0
+    },
+    {
+      "id": "TM",
+      "symbol": "TM",
+      "name": "TOYOTA MOTOR CORP/",
+      "nameEn": "TOYOTA MOTOR CORP/",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Japan",
+      "exchange": "NYSE",
+      "cik": 1094517,
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3711：整车制造",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001094517.json",
+        "sic": 3711,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "automotive"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "汽车整车",
+      "edgeCount": 0
+    },
+    {
+      "id": "TRX",
+      "symbol": "TRX",
+      "name": "TRX GOLD Corp",
+      "nameEn": "TRX GOLD Corp",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "cik": 1173643,
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1040：采矿与油气开采",
+      "sicMajor": "10",
+      "sicMajorLabel": "金属矿采选",
+      "sicMajorLabelEn": "Metal Mining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001173643.json",
+        "sic": 1040,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
+      "edgeCount": 0
+    },
+    {
+      "id": "TS",
+      "symbol": "TS",
+      "name": "TENARIS SA",
+      "nameEn": "TENARIS SA",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Luxembourg",
+      "exchange": "NYSE",
+      "cik": 1190723,
+      "sic": 3312,
+      "sicDescription": "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)",
+      "stage": "material-processing",
+      "stageCandidates": [
+        "material-processing"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3312：钢铁与有色金属冶炼精炼",
+      "sicMajor": "33",
+      "sicMajorLabel": "金属冶炼与压延",
+      "sicMajorLabelEn": "Primary Metal Industries",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001190723.json",
+        "sic": 3312,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals",
+        "construction-building"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "钢铁冶炼：建筑与制造共同的上游",
+      "edgeCount": 0
+    },
+    {
+      "id": "TSEM",
+      "symbol": "TSEM",
+      "name": "TOWER SEMICONDUCTOR LTD",
+      "nameEn": "TOWER SEMICONDUCTOR LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "cik": 928876,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3674：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000928876.json",
+        "sic": 3674,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
+      "edgeCount": 0
+    },
+    {
+      "id": "TSM",
+      "symbol": "TSM",
+      "name": "TAIWAN SEMICONDUCTOR MANUFACTURING CO LTD",
+      "nameEn": "TAIWAN SEMICONDUCTOR MANUFACTURING CO LTD",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "",
+      "exchange": "NYSE",
+      "cik": 1046179,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3674：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001046179.json",
+        "sic": 3674,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
+      "edgeCount": 0
+    },
+    {
+      "id": "TTE",
+      "symbol": "TTE",
+      "name": "TotalEnergies SE",
+      "nameEn": "TotalEnergies SE",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "France",
+      "exchange": "NYSE",
+      "cik": 879764,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1311：采矿与油气开采",
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000879764.json",
+        "sic": 1311,
+        "match": "sic-range"
+      },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
+      "edgeCount": 0
+    },
+    {
+      "id": "TX",
+      "symbol": "TX",
+      "name": "Ternium S.A.",
+      "nameEn": "Ternium S.A.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Luxembourg",
+      "exchange": "NYSE",
+      "cik": 1342874,
+      "sic": 3312,
+      "sicDescription": "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)",
+      "stage": "material-processing",
+      "stageCandidates": [
+        "material-processing"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3312：钢铁与有色金属冶炼精炼",
+      "sicMajor": "33",
+      "sicMajorLabel": "金属冶炼与压延",
+      "sicMajorLabelEn": "Primary Metal Industries",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001342874.json",
+        "sic": 3312,
+        "match": "sic-range"
+      },
+      "chains": [
+        "mining-metals",
+        "construction-building"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "钢铁冶炼：建筑与制造共同的上游",
+      "edgeCount": 0
+    },
+    {
+      "id": "UMC",
+      "symbol": "UMC",
+      "name": "UNITED MICROELECTRONICS CORP",
+      "nameEn": "UNITED MICROELECTRONICS CORP",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Taiwan",
+      "exchange": "NYSE",
+      "cik": 1033767,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3674：电子与电气元器件，含半导体",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001033767.json",
+        "sic": 3674,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
+      "edgeCount": 0
+    },
+    {
+      "id": "VET",
+      "symbol": "VET",
+      "name": "VERMILION ENERGY INC.",
+      "nameEn": "VERMILION ENERGY INC.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Alberta, Canada",
+      "exchange": "NYSE",
+      "cik": 1293135,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "stage": "raw-material",
+      "stageCandidates": [
+        "raw-material"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 1311：采矿与油气开采",
+      "sicMajor": "13",
+      "sicMajorLabel": "石油与天然气开采",
+      "sicMajorLabelEn": "Oil & Gas Extraction",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001293135.json",
+        "sic": 1311,
+        "match": "sic-range"
+      },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
+      "edgeCount": 0
+    },
+    {
+      "id": "VFS",
+      "symbol": "VFS",
+      "name": "VinFast Auto Ltd.",
+      "nameEn": "VinFast Auto Ltd.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Singapore",
+      "exchange": "Nasdaq",
+      "cik": 1913510,
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3711：整车制造",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001913510.json",
+        "sic": 3711,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "automotive"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "汽车整车",
+      "edgeCount": 0
+    },
+    {
+      "id": "VOD",
+      "symbol": "VOD",
+      "name": "VODAFONE GROUP PUBLIC LTD CO",
+      "nameEn": "VODAFONE GROUP PUBLIC LTD CO",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "",
+      "exchange": "Nasdaq",
+      "cik": 839923,
+      "sic": 4812,
+      "sicDescription": "Radiotelephone Communications",
+      "stage": "technology",
+      "stageCandidates": [
+        "technology"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 4812：电信与网络承载",
+      "sicMajor": "48",
+      "sicMajorLabel": "通信",
+      "sicMajorLabelEn": "Communications",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000839923.json",
+        "sic": 4812,
+        "match": "sic-range"
+      },
+      "chains": [
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "无线通信",
+      "edgeCount": 0
+    },
+    {
+      "id": "WPRT",
+      "symbol": "WPRT",
+      "name": "WESTPORT FUEL SYSTEMS INC.",
+      "nameEn": "WESTPORT FUEL SYSTEMS INC.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "British Columbia, Canada",
+      "exchange": "Nasdaq",
+      "cik": 1370416,
+      "sic": 3510,
+      "sicDescription": "Engines & Turbines",
+      "stage": "capital-equipment",
+      "stageCandidates": [
+        "capital-equipment"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 3510：工业机械与专用设备，下游的资本支出",
+      "sicMajor": "35",
+      "sicMajorLabel": "机械与计算机设备",
+      "sicMajorLabelEn": "Machinery & Computer Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001370416.json",
+        "sic": 3510,
+        "match": "sic-range"
+      },
+      "chains": [
+        "utilities-power",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "发动机与涡轮：发电设备",
+      "edgeCount": 0
+    },
+    {
+      "id": "YPF",
+      "symbol": "YPF",
+      "name": "YPF SOCIEDAD ANONIMA",
+      "nameEn": "YPF SOCIEDAD ANONIMA",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Argentina",
+      "exchange": "NYSE",
+      "cik": 904851,
+      "sic": 2911,
+      "sicDescription": "Petroleum Refining",
+      "stage": "material-processing",
+      "stageCandidates": [
+        "material-processing"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 2911：石油炼制与煤制品",
+      "sicMajor": "29",
+      "sicMajorLabel": "石油炼制",
+      "sicMajorLabelEn": "Petroleum Refining",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000904851.json",
+        "sic": 2911,
+        "match": "sic-range"
+      },
+      "chains": [
+        "oil-gas",
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "石油炼制与煤制品：炼化一体，两条链都在",
+      "edgeCount": 0
+    },
+    {
+      "id": "ZGN",
+      "symbol": "ZGN",
+      "name": "Ermenegildo Zegna N.V.",
+      "nameEn": "Ermenegildo Zegna N.V.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "Italy",
+      "exchange": "NYSE",
+      "cik": 1877787,
+      "sic": 2300,
+      "sicDescription": "Apparel & Other Finishd Prods of  Fabrics & Similar Matl",
+      "stage": "finished-goods",
+      "stageCandidates": [
+        "finished-goods"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 2300：服装成衣",
+      "sicMajor": "23",
+      "sicMajorLabel": "服装成衣",
+      "sicMajorLabelEn": "Apparel",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001877787.json",
+        "sic": 2300,
+        "match": "sic-range"
+      },
+      "chains": [
+        "textiles-apparel"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "服装",
+      "edgeCount": 0
     }
   ],
   "edgeIndex": {
@@ -21106,14 +26871,14 @@
     "chainLinksTotal": 77,
     "chainDepth": 10,
     "poolSp500": 495,
-    "poolForeignIssuer": 0,
+    "poolForeignIssuer": 147,
     "poolForeignSkippedCollision": 0,
-    "nodesWithoutQuote": 0,
+    "nodesWithoutQuote": 147,
     "upstreamPairs": 1914,
     "upstreamConcentrationTotal": 1213,
     "chainCounterflow": 6,
-    "chainMulti": 118,
-    "nodesTotal": 495,
+    "chainMulti": 150,
+    "nodesTotal": 642,
     "nodesWithEdges": 90,
     "edgesTotal": 20805,
     "edgesBySource": {
@@ -21638,6 +27403,17 @@
     },
     "bySector": [
       {
+        "sector": "未分类",
+        "sectorEn": null,
+        "companies": 147,
+        "withEdges": 0,
+        "filedNoList": 0,
+        "noFiling": 0,
+        "resourceExtraction": 0,
+        "failed": 0,
+        "unscanned": 147
+      },
+      {
         "sector": "科技",
         "sectorEn": "Information Technology",
         "companies": 84,
@@ -21763,31 +27539,31 @@
       "ECL"
     ],
     "stageByBasis": {
-      "sic-refined": 495
+      "sic-refined": 642
     },
-    "stageResolvedNodes": 495,
+    "stageResolvedNodes": 642,
     "stageAmbiguousNodes": 0,
     "note": "本图谱只收录有公开出处的关系，不是完整供应链。当前 20805 条边全部来自 Form SD 冲突矿产申报，语义是「该冶炼厂出现在申报人的供应链中」——间接、不含份额、不含层级，不等于直接供货关系。"
   },
   "dataQuality": {
     "contractVersion": 1,
     "status": "ok",
-    "total": 495,
+    "total": 642,
     "byStage": {
-      "component": 55,
-      "finished-goods": 106,
-      "technology": 65,
-      "distribution": 39,
-      "financial": 102,
-      "material-processing": 26,
-      "capital-equipment": 20,
-      "end-service": 21,
+      "component": 88,
+      "finished-goods": 132,
+      "technology": 76,
+      "distribution": 42,
+      "financial": 104,
+      "material-processing": 39,
+      "capital-equipment": 26,
+      "end-service": 23,
       "energy-utility": 35,
       "logistics": 10,
-      "raw-material": 14,
+      "raw-material": 65,
       "circular": 2
     },
-    "resolvedStage": 495,
+    "resolvedStage": 642,
     "ambiguousStage": 0,
     "unknownStage": 0
   }
