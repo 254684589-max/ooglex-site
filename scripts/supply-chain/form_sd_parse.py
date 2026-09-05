@@ -455,16 +455,28 @@ def _split_trailing_country(name: str) -> tuple[str, str | None, str | None]:
 # 那一档，多半就是这么来的。
 #
 # 判据取自文档正文的固有词，不猜文件名——文件名叫什么是申报人的自由。
-_EXTRACTION_MARKS = (
-    "resource extraction",
-    "section 1504",
-    "rule 13q-1",
-    "13q-1",
-    "extractive sector transparency",
+# 开采类特征分两档，**分档的理由是 Form SD 的空白模板本身就印着第二节的标题**。
+#
+# 强特征：只有真的报了资源开采付款才会出现。ESTMA 是加拿大法案名、
+#         「payments to governments」是报告标题，空白表上都没有。
+# 弱特征：条目标题与规则编号，模板上就印着，**申报人只填第一节时照样在文件里**。
+#         单凭它们判会把苹果、福特、雅诗兰黛都判成资源开采申报人（实测 77 家）。
+_EXTRACTION_STRONG = (
     "estma",
+    "extractive sector transparency",
     "payments to governments",
     "government payments",
+    "resource extraction payment",
 )
+_EXTRACTION_WEAK = (
+    # 冲突矿产报告里顺带提一句 1504 很常见，不能当强特征
+    "section 1504",
+    "resource extraction issuer disclosure",
+    "resource extraction",
+    "rule 13q-1",
+    "13q-1",
+)
+_EXTRACTION_MARKS = _EXTRACTION_STRONG + _EXTRACTION_WEAK
 # Form SD 有固定的条目标题，这是这份表最可靠的结构信号：
 #
 #     Item 1.01  Conflict Minerals Disclosure and Report     ← 13p-1
@@ -555,36 +567,46 @@ def disclosure_evidence(html: str, xbrl_tagged: bool = False) -> dict:
     hit = lambda marks: [m for m in marks if m in text]     # noqa: E731
     m_title, e_title = hit(_MINERAL_TITLE), hit(_EXTRACTION_TITLE)
     m_mark, e_mark = hit(_MINERAL_MARKS), hit(_EXTRACTION_MARKS)
+    e_strong, e_weak = hit(_EXTRACTION_STRONG), hit(_EXTRACTION_WEAK)
 
     def out(kind: str, why: str) -> dict:
         return {"kind": kind, "why": why,
                 "minerals": m_title + m_mark, "extraction": e_title + e_mark}
 
-    # 条目标题最先看，它直接说明这份 SD 报的是哪一套。
+    # ## 判据的核心是 XBRL，不是用词。这一条被真实数据打回来两次才定下。
     #
-    # **两个都出现时判资源开采。** 这与直觉相反，但 2026-09-05 的实测把话说死了：
-    # 22 份真申报逐份打出命中的特征，13q-1 申报人的文件里两个条目标题**同时出现**：
+    # 上一版把「条目标题」排在最前，理由是 13q-1 申报人的文件里 Item 2.01 会出现。
+    # 拿 22 份**精选**申报（13 家已知报开采 + 几家已知报矿产）验证全对，于是上线。
+    # **全量一跑就露馅：标普 495 家里 77 家被判成资源开采付款**，里面有苹果、
+    # 艾伯维、博通、铿腾、福特、雅诗兰黛——医疗 14 家、科技 12 家，全无可能。
     #
-    #     CRH   矿产 ['conflict minerals disclosure', ...]  开采 ['resource extraction issuer disclosure', ...]
-    #     DVN   矿产 ['conflict minerals disclosure', ...]  开采 ['resource extraction issuer disclosure', ...]
-    #     NEM   矿产 ['conflict minerals disclosure', ...]  开采 ['resource extraction issuer disclosure', ...]
+    # 原因与当初否掉 'rule 13p-1' 的一模一样，方向反过来：**Form SD 的空白模板
+    # 把两节标题都印在表上**（Section 1 冲突矿产 / Section 2 资源开采），
+    # 用整套模板提交的申报人即使只填第一节，第二节的标题照样在文件里。
+    # 「标题出现」不等于「这一节填了」。精选样本里没有这种申报人，所以没暴露。
     #
-    # 封面模板把两个条目都印出来，而 13p-1 申报人不会去**填** Item 2.01。
-    # 所以 2.01 出现是主动信息，1.01 出现可能只是模板。特斯拉那份是反例：
-    # 只命中 'conflict minerals disclosure'、没有 XBRL，判冲突矿产无名单，正确。
+    # 结构判据不受这个影响：SEC 要求 13q-1 的付款数据内联 XBRL 标记，13p-1 没有
+    # 这个要求。目录里有没有 XBRL 渲染件是申报人**做了什么**，不是模板上印了什么。
     #
-    # 同一批数据也再次确认了那条不能用的特征：'rule 13p-1' 在几乎每一份 13q-1
-    # 申报里都出现——封面把两条规则都印在勾选框里，勾没勾都印。
-    if e_title:
-        return out("resource-extraction", f"条目标题 {e_title[0]!r}")
+    #     有 XBRL + 有开采特征  → 资源开采付款
+    #     其余                  → 按矿产特征判，判不出就说判不出
+    #
+    # 教训还是那一条：**精选样本验证不了「不该命中的那一类」**，
+    # 要看全量分布才知道有没有说多。
+    # 一、强特征：空白模板上没有的词，出现就说明真的报了这一套
+    if e_strong:
+        return out("resource-extraction", f"开采强特征 {e_strong[0]!r}")
+    # 二、只有弱特征时，靠 XBRL 结构佐证——SEC 要求 13q-1 的付款数据内联 XBRL 标记，
+    #     13p-1 没有这个要求。有没有 XBRL 是申报人做了什么，不是模板上印了什么。
+    if xbrl_tagged and e_weak:
+        return out("resource-extraction", f"XBRL 标记 + 弱特征 {e_weak[0]!r}")
     if m_title:
         return out("conflict-minerals", f"条目标题 {m_title[0]!r}")
-    if xbrl_tagged and e_mark:
-        return out("resource-extraction", f"XBRL 标记 + {e_mark[0]!r}")
     if m_mark:
         return out("conflict-minerals", f"用词 {m_mark[0]!r}")
-    if e_mark:
-        return out("resource-extraction", f"用词 {e_mark[0]!r}")
+    if e_weak:
+        # 只有模板上就有的弱特征、又没有 XBRL：判不出来就说判不出来
+        return out("unknown", f"只有模板级弱特征 {e_weak[0]!r}，无 XBRL 佐证")
     return out("unknown", "没有任何特征")
 
 

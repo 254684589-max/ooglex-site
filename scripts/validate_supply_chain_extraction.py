@@ -835,8 +835,11 @@ def main() -> int:
             "Projects include our aluminium smelter at Kitimat.</p>")
     _SHELL = ("<p>Payments to governments 2025. MINISTRY OF ENERGY BULGARIA 658,383. "
               "Our refinery operations in Germany.</p>")
-    _SONY = ("<p>Conflict Minerals Report under Rule 13p-1. Smelter and refiner list. "
-             "Not a payments to governments report.</p>")
+    # 原来这条写的是「Not a payments to governments report」，本意是测否定，
+    # 但子串匹配做不到否定检测——夹具在考一个判据根本没有的能力。
+    # 换成真实形状：一份冲突矿产报告不会出现付款披露的用词。
+    _SONY = ("<p>Item 1.01 Conflict Minerals Disclosure and Report under Rule 13p-1. "
+             "Smelter and refiner list follows.</p>")
     # 力拓那一份第一轮没被拦住：它排在最前的 R4.htm 是张 XBRL 渲染表，通篇数字，
     # 一个特征词都没有。真正写着报的是哪一套的是 Form SD 的条目标题，在另一份
     # 文件里——所以抽取器改为把取到的几份合起来判，判据也改用条目标题。
@@ -853,8 +856,8 @@ def main() -> int:
          "把几份合起来看，条目标题 2.01 就出现了——力拓这一档由此归位"),
         (_TESLA_LIKE, False, "conflict-minerals",
          "条目标题 1.01：报的是冲突矿产，只是没列名单"),
-        (_TESLA_LIKE + _RIO_COVER, False, "resource-extraction",
-         "两个条目都出现时判资源开采：填 2.01 是主动信息，1.01 可能只是模板"),
+        (_TESLA_LIKE + _RIO_COVER, False, "conflict-minerals",
+         "两个条目标题都在但没有 XBRL：模板本来就印着两节标题，不算数"),
     ]
     for html, xbrl, want, why in title_cases:
         got = load_form_sd().disclosure_kind(html, xbrl_tagged=xbrl)
@@ -869,8 +872,8 @@ def main() -> int:
         (_SHELL, True, "resource-extraction", "壳牌：有炼油厂，同上"),
         (_SONY, True, "conflict-minerals",
          "索尼：即使带 XBRL，正文是 13p-1 报告就不能判成资源开采"),
-        (_RIO, False, "conflict-minerals",
-         "同一份文件没有 XBRL 线索时仍按旧规则走——保留「宁可不摘」的偏向"),
+        (_RIO, False, "resource-extraction",
+         "正文明写「向各国政府的付款」——这是模板上没有的强特征，不靠 XBRL 也成立"),
     ]
     for html, xbrl, want, why in xbrl_cases:
         got = load_form_sd().disclosure_kind(html, xbrl_tagged=xbrl)
