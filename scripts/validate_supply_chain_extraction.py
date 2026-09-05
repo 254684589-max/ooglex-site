@@ -44,8 +44,10 @@ SUPPLIER_PROBE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                    "supply-chain", "probe_supplier_lists.py")
 NAMES_ZH_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              "supply-chain", "smelter_names_zh.py")
-FOREIGN_PROBE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                  "supply-chain", "probe_foreign_issuers.py")
+EDGAR_INDEX_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                "supply-chain", "edgar_index.py")
+FOREIGN_FETCH_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                  "supply-chain", "fetch_foreign_identity.py")
 CHAINS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                            "supply-chain", "sic_chains.py")
 PEERS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -921,7 +923,7 @@ def main() -> int:
     # master.idx 是管道分隔的，选它而不是定宽的 form.idx 就是因为定宽在长公司名
     # 上会串列；下面第三条负例就是那种会把定宽解析器骗过去的行。
     print("\n── 外国发行人探针：索引解析、季度回溯、归档目录 ─────────────────")
-    foreign = _load(FOREIGN_PROBE_PATH, "probe_foreign_issuers")
+    foreign = _load(EDGAR_INDEX_PATH, "edgar_index")
     index_cases = [
         ("1046179|TAIWAN SEMICONDUCTOR MANUFACTURING CO LTD|20-F|2025-04-17|"
          "edgar/data/1046179/0001046179-25-000012.txt",
@@ -1245,12 +1247,48 @@ def main() -> int:
         failures.append("上游重叠：关系标签没写明它不表示业务往来")
     print(f"  [{'OK' if has_neg else 'XX'}] 关系标签写明「不表示两家之间有业务往来」")
 
+    # 外国发行人的主代码选择。**这是撞码事故的唯一防线**：同一家公司有多个代码，
+    # 选错不会报错，只会让一家美国公司的节点被一家外国公司悄悄顶掉。
+    print("\n── 外国发行人：主代码选得稳，且绝不覆盖标普池 ────────────────────")
+    ff = _load(FOREIGN_FETCH_PATH, "fetch_foreign_identity")
+    asml = [{"ticker": "ASMLF", "exchange": "OTC"},
+            {"ticker": "ASML", "exchange": "Nasdaq"}]
+    baba = [{"ticker": "BBAAY", "exchange": "OTC"},
+            {"ticker": "BABAF", "exchange": "OTC"},
+            {"ticker": "BABA", "exchange": "NYSE"}]
+    pick_cases = [
+        (ff.pick_primary(asml, set())["ticker"] == "ASML",
+         "ASML/ASMLF 选主板那个，不选 OTC 粉单"),
+        (ff.pick_primary(baba, set())["ticker"] == "BABA", "三个代码选 NYSE 那个"),
+        (ff.pick_primary(list(reversed(asml)), set())["ticker"] == "ASML",
+         "换输入顺序结果不变——同一份数据必须永远选出同一个代码"),
+        (ff.pick_primary(asml, {"ASML"})["ticker"] == "ASMLF",
+         "主代码被占用就退到下一个，不硬抢"),
+        (ff.pick_primary(asml, {"ASML", "ASMLF"}) is None,
+         "全被占用返回 None——宁可少收一家，也不覆盖既有节点"),
+        (ff.exchange_rank("NYSE") < ff.exchange_rank("OTC"), "NYSE 优先于 OTC"),
+        (ff.exchange_rank("") > ff.exchange_rank("OTC"), "认不出的交易所排最后"),
+    ]
+    for ok, why in pick_cases:
+        if not ok:
+            failures.append(f"外国发行人主代码：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
+    # 撞码演练：拿真实标普代码当占用集，确认不会被顶掉
+    sp_taken = {"AAPL", "NVDA", "MSFT"}
+    fake = [{"ticker": "AAPL", "exchange": "NYSE"}, {"ticker": "AAPLX", "exchange": "OTC"}]
+    got = ff.pick_primary(fake, sp_taken)
+    ok = got and got["ticker"] == "AAPLX"
+    if not ok:
+        failures.append(f"外国发行人主代码：撞上标普代码时应退让，实际 {got}")
+    print(f"  [{'OK' if ok else 'XX'}] 撞上标普代码时退让到备用代码，不覆盖苹果")
+
     total = (len(pdf_cases) + 4 + len(kind_cases) + len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
-             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3
+             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1
              + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:

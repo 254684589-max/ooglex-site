@@ -46,7 +46,7 @@ on:
         required: false
         default: ''
       only:
-        description: '只跑哪些 job（逗号分隔：graph/supplier/usaspending/nolist/extract/flow/foreign；留空跑全部）'
+        description: '只跑哪些 job（graph/supplier/usaspending/nolist/extract/flow/foreign/foreignfetch；留空跑全部）'
         required: false
         default: ''
 
@@ -257,6 +257,33 @@ jobs:
           path: /tmp/supply-chain-probe/flow.json
           if-no-files-found: warn
           retention-days: 7
+
+  # 外国发行人取数的 dry-run 核对。**不写任何文件**，把选出来的主代码、SIC、
+  # 国别打到日志里给人看。撞码是这一步唯一会造成真实损害的事故（一家美国公司的
+  # 节点被外国公司顶掉），所以核对的重点是「跳过了哪几家、为什么跳」。
+  foreignfetch:
+    name: 外国发行人池 · 取数 dry-run
+    if: ${{ inputs.only == '' || contains(inputs.only, 'foreignfetch') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate extraction rules (offline)
+        run: python scripts/validate_supply_chain_extraction.py
+
+      - name: Fetch foreign issuer identity (dry run)
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: |
+          python scripts/supply-chain/fetch_foreign_identity.py \
+            --dry-run --quarters '${{ inputs.quarters }}'
 
   # 公司池的边界。**「扩池只增加节点，不增加边」是这一步最大的风险**，
   # 所以这个探针的核心输出只有一个数：外国发行人里同时报 Form SD 的有几家。
