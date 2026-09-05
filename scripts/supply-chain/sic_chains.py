@@ -400,6 +400,29 @@ CHAIN_LINKS: list[tuple[str, str, str]] = [
     ("waste-circular", "packaging-paper", "废纸回收再制浆"),
 ]
 
+# 逆向边：与所在环的主流向相反的那一条。分层要有拓扑序，有环就没有拓扑序，
+# 所以每个环都得剪开一刀——**剪哪一条是语义问题，不是图论问题**，在这里写死。
+#
+# 第一版让深度优先自己按遍历顺序找回边，它把「采矿 → 化工」剪了，于是采矿被排到
+# 第 5 层、排在半导体下面，整条链倒过来。拓扑上没错，语义上荒唐。
+# 谁供给谁我知道，就该由我写出来，并且写清为什么剪这一条。
+#
+# 剪完还有环就报错，不给层次——第一版正是靠「悄悄给个错的层次」算出 241 层的，
+# 而下面第三条环（采矿→化工→建筑→电力→采矿）就是报错逼出来的：
+# 四条边全是真的，我起初没看见它们首尾相接。
+COUNTERFLOW: dict[tuple[str, str], str] = {
+    # 回收环：SCOR 模型的 Return，再生料逆着物料流回到上游
+    ("waste-circular", "mining-metals"): "再生金属返回冶炼，与原生矿并行",
+    ("waste-circular", "chemicals"): "再生塑料返回化工",
+    ("waste-circular", "packaging-paper"): "废纸返回制浆",
+    # 设备环：设备厂供给半导体，半导体又供给设备厂的控制系统。主流向是设备在上游。
+    ("semiconductor", "industrial-machinery"): "工业控制芯片回流到设备厂——与「设备→半导体」互为供给",
+    # 资本形成环：采矿→化工→建筑→电力→采矿。电力是持续外供的投入品，
+    # 而「建电厂电网」是一次性资本形成，方向与电力外供相反，剪这一条。
+    ("construction-building", "utilities-power"): "建电厂与电网是资本形成，方向与电力持续外供相反",
+    ("industrial-machinery", "mining-metals"): "采矿冶炼设备是资本投入，方向与矿料持续外供相反",
+}
+
 # 横跨全部产业链的使能链：不逐条连，但要说明它横跨，而不是假装它没有下游。
 CROSS_CUTTING: dict[str, str] = {
     "financial-services": "资金、保险与支付横跨全部产业链，不逐条连线",
@@ -419,7 +442,9 @@ def chain_links() -> list[dict]:
     for src, dst, flow in CHAIN_LINKS:
         if src not in CHAIN_INDEX or dst not in CHAIN_INDEX:
             continue                       # 写错 id 的连线直接丢掉，不让它变成幽灵节点
-        out.append({"from": src, "to": dst, "flow": flow, "basis": "framework"})
+        out.append({"from": src, "to": dst, "flow": flow, "basis": "framework",
+                    "direction": "counterflow" if (src, dst) in COUNTERFLOW else "forward",
+                    "counterflowWhy": COUNTERFLOW.get((src, dst))})
     return out
 
 
@@ -431,3 +456,88 @@ def upstream_of(chain_id: str) -> list[dict]:
 def downstream_of(chain_id: str) -> list[dict]:
     """这条链供给谁。"""
     return [l for l in chain_links() if l["from"] == chain_id]
+
+
+# ── 链的层次：从连线里算出来，不手工指定 ──────────────────────────────────
+# 要的是「一进页面就看得出谁在上游、谁在下游」。层次**不手工排**——手排的话
+# 我一改连线，层次就和连线对不上，而且没人看得出对不上。改为从 CHAIN_LINKS 算。
+#
+# ## 第一版是错的，靠打印结果发现
+#
+# 第一版直接对全图做最长路径松弛，结果是 **241 层、30 条边被判成回流**：
+# 实物链有回路（采矿 → 化工 → … → 环保 → 采矿），松弛在环里一圈圈往上顶，
+# 顶到迭代上限为止。层数比链数还多十倍，一眼就知道不对。
+#
+# ## 正确的做法：先断环，再分层
+#
+# 深度优先遍历，指向**当前还在栈上**的节点的边就是回边（back edge）——
+# 那正是环的入口。把回边拿掉，剩下的是有向无环图，再做最长路径就收敛了。
+# 回边不是错误，是实物链本来的形态：SCOR 模型的 Return 段，回收料返回上游。
+#
+# 遍历顺序固定（先入度为 0 的源头，再按链表顺序），所以同一份连线永远算出
+# 同一个结果——层次是数据的函数，不是运行顺序的函数。
+def _has_cycle(flow: list[tuple[str, str]], order: list[str]) -> list[str] | None:
+    """剪掉回流边之后还有没有环。有就说明连线表自相矛盾，要人来看，不能糊过去。
+
+    返回环上的节点序列（供报错时打印），没有环返回 None。
+    """
+    adj: dict[str, list[str]] = {}
+    for src, dst in flow:
+        adj.setdefault(src, []).append(dst)
+    state: dict[str, int] = {}
+    stack: list[str] = []
+
+    def visit(node: str) -> list[str] | None:
+        state[node] = 1
+        stack.append(node)
+        for nxt in adj.get(node, ()):
+            if state.get(nxt) == 1:
+                return stack[stack.index(nxt):] + [nxt]
+            if nxt not in state:
+                found = visit(nxt)
+                if found:
+                    return found
+        state[node] = 2
+        stack.pop()
+        return None
+
+    for node in order:
+        if node not in state:
+            found = visit(node)
+            if found:
+                return found
+    return None
+
+
+def chain_layers() -> dict:
+    """算出每条链的层次，并带上回流边。
+
+    返回 {"layer": {链: 层号}, "back": [[from, to], ...], "depth": 层数}。
+    横跨全链的使能链不参与分层——它们没有固定位置，硬塞进某一层是假的。
+    """
+    order = [cid for cid, _, _ in CHAINS if cid not in CROSS_CUTTING]
+    flow = [(s, d) for s, d, _ in CHAIN_LINKS
+            if s not in CROSS_CUTTING and d not in CROSS_CUTTING]
+    back = [(s, d) for s, d in flow if (s, d) in COUNTERFLOW]
+    dag = [(s, d) for s, d in flow if (s, d) not in COUNTERFLOW]
+
+    cycle = _has_cycle(dag, order)
+    if cycle:
+        # 悄悄给个错的层次比报错糟得多：第一版就是这么算出 241 层的。
+        raise RuntimeError("剪掉逆向边后仍有环，层次算不出来（把这个环里方向与主流向"
+                           "相反的那条加进 COUNTERFLOW，并写清为什么）："
+                           + " → ".join(CHAIN_ZH.get(c, c) for c in cycle))
+
+    layer = {cid: 0 for cid in order}
+    for _ in range(len(order) + 1):
+        moved = False
+        for src, dst in dag:
+            if layer[dst] < layer[src] + 1:
+                layer[dst] = layer[src] + 1
+                moved = True
+        if not moved:
+            break
+
+    return {"layer": layer,
+            "back": sorted([list(e) for e in back]),
+            "depth": (max(layer.values()) + 1) if layer else 0}

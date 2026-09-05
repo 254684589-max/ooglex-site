@@ -339,6 +339,56 @@ async function main() {
         };
       })()`);
       check(`横轴选择条已渲染`, () => assert.ok(cp.shown));
+
+      /* 层次排布。守的是**页面画的层等于数据算的层**——层次是由 77 条连线算出来的，
+         页面自己排一套的话，改一条连线两边就会悄悄对不上。 */
+      const DEPTH = (NODES.coverage || {}).chainDepth || 0;
+      if (DEPTH) {
+        const lv = await evaluate(`(() => {
+          const bands = [...document.querySelectorAll('#chainpick .picklv')];
+          return {
+            bands: bands.length,
+            crossBands: document.querySelectorAll('#chainpick .picklv.cross').length,
+            rows: bands.map(b => ({
+              tag: (b.querySelector('.lv') || {}).textContent || '',
+              chains: [...b.querySelectorAll('.chip .cl')].map(x => x.textContent)
+            })),
+            hint: (document.querySelector('#chainpick .pickhint') || {}).textContent || ''
+          };
+        })()`);
+        const CROSS_IDS = Object.keys(NODES.chainCrossCutting || {});
+        const layered = (NODES.chains || []).filter(c => c.count > 0 && typeof c.layer === "number");
+        const crossShown = (NODES.chains || []).filter(c => c.count > 0 && CROSS_IDS.includes(c.id));
+        const usedLayers = [...new Set(layered.map(c => c.layer))].sort((a, b) => a - b);
+
+        check(`层次行数 = 用到的层数 ${usedLayers.length}${crossShown.length ? " + 使能层" : ""}`,
+          () => assert.equal(lv.bands, usedLayers.length + (crossShown.length ? 1 : 0),
+            `页面 ${lv.bands} 行`));
+        check(`每条链画在数据说的那一层`, () => {
+          usedLayers.forEach((n, i) => {
+            const want = layered.filter(c => c.layer === n).map(c => c.label).sort();
+            const got = [...(lv.rows[i].chains || [])].sort();
+            assert.deepEqual(got, want,
+              `L${n} 页面 ${JSON.stringify(got)}，数据 ${JSON.stringify(want)}`);
+          });
+        });
+        check(`使能链单独一行，不塞进任何一层`, () => {
+          if (!crossShown.length) return;
+          assert.equal(lv.crossBands, 1, `使能行 ${lv.crossBands} 个`);
+          const got = [...(lv.rows[lv.rows.length - 1].chains || [])].sort();
+          assert.deepEqual(got, crossShown.map(c => c.label).sort());
+        });
+        check(`首尾标出方向感（最上游／最终端）`, () => {
+          assert.match(lv.rows[0].tag, /最上游/, `首行「${lv.rows[0].tag}」`);
+          assert.match(lv.rows[usedLayers.length - 1].tag, /最终端/,
+            `末层「${lv.rows[usedLayers.length - 1].tag}」`);
+        });
+        check(`说明层次是算出来的，不是手工排的`, () => {
+          assert.match(lv.hint, /不是手工排的/);
+          assert.match(lv.hint, new RegExp(String(DEPTH) + " 层"));
+        });
+      }
+
       check(`链数与数据一致（${CHAINS.length} 条 + 全部）`, () => assert.equal(
         cp.chips, CHAINS.length + 1, `页面 ${cp.chips} 个 chip`));
       check(`每条链的家数取自数据，不在前端现编`, () => {
@@ -429,6 +479,7 @@ async function main() {
             up: rows.filter(r => (r.querySelector('.ar') || {}).textContent === '←').length,
             down: rows.filter(r => (r.querySelector('.ar') || {}).textContent === '→').length,
             withFlow: rows.filter(r => ((r.querySelector('.fl') || {}).textContent || '').trim()).length,
+            back: rows.filter(r => r.querySelector('.bk')).length,
             total: rows.length,
             tag: (box.querySelector('.cfhd .tag') || {}).textContent || '',
             warn: (box.querySelector('.cfwarn') || {}).textContent || '',
@@ -444,6 +495,11 @@ async function main() {
         });
         check(`每条都写清流动的是什么，不是光画箭头`, () => assert.equal(
           flow.withFlow, flow.total, `${flow.total} 条里只有 ${flow.withFlow} 条写了`));
+        // 逆向边不标出来，读者会以为分层排错了
+        const backN = LINKS.filter(l => l.direction === "counterflow"
+          && (l.from === PICKED.id || l.to === PICKED.id)).length;
+        check(`逆向边标出「逆向」（本链 ${backN} 条）`, () => assert.equal(
+          flow.back, backN, `页面标了 ${flow.back} 条`));
         check(`「产业结构框架」标签可见`, () => {
           assert.match(flow.tag, /产业结构框架/);
           assert.ok(flow.tagVisible, "标签在 DOM 里但不可见，等同于没写");

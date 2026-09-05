@@ -571,6 +571,20 @@ def build() -> None:
         by_basis[key] = by_basis.get(key, 0) + 1
     # ── 横轴统计 ──────────────────────────────────────────────────────
     # 只统计，不新建归属：家数从节点上已有的 chains 数出来，改不了任何一家的链。
+    chain_links = chain_module.chain_links() if chain_module else []
+    chain_cross = dict(chain_module.CROSS_CUTTING) if chain_module else {}
+    # 层次由连线算出（最长路径），不手工排——手排的话改一条连线，层次就和连线
+    # 对不上，而且没人看得出对不上。算不出来时宁可不给层次，不给个错的。
+    chain_depth = 0
+    chain_layer: dict[str, int] = {}
+    if chain_module:
+        try:
+            layers = chain_module.chain_layers()
+            chain_layer = layers["layer"]
+            chain_depth = layers["depth"]
+        except RuntimeError as exc:
+            print(f"[!!] 链的层次算不出来，本轮不写 layer 字段：{exc}")
+
     chain_rows: list[dict] = []
     if chain_module:
         chain_edges: dict[str, int] = {}
@@ -582,13 +596,15 @@ def build() -> None:
             for cid in node.get("chains") or []:
                 counts[cid] = counts.get(cid, 0) + 1
         for cid, zh, en in chain_module.CHAINS:
-            chain_rows.append({
+            row = {
                 "id": cid, "label": zh, "labelEn": en,
                 "count": counts.get(cid, 0),
                 "edgeCount": chain_edges.get(cid, 0),
-            })
-    chain_links = chain_module.chain_links() if chain_module else []
-    chain_cross = dict(chain_module.CROSS_CUTTING) if chain_module else {}
+            }
+            # 使能链不参与分层：它们横跨全链，硬塞进某一层是假的。
+            if cid in chain_layer:
+                row["layer"] = chain_layer[cid]
+            chain_rows.append(row)
     chain_unclassified = sum(1 for n in nodes if not (n.get("chains") or []))
     chain_multi = sum(1 for n in nodes if len(n.get("chains") or []) > 1)
 
@@ -635,6 +651,9 @@ def build() -> None:
             "chainsTotal": len(chain_rows),
             "chainUnclassified": chain_unclassified,
             "chainLinksTotal": len(chain_links),
+            "chainDepth": chain_depth,
+            "chainCounterflow": sum(1 for l in chain_links
+                                    if l.get("direction") == "counterflow"),
             "chainMulti": chain_multi,
             "nodesTotal": len(nodes),
             "nodesWithEdges": sum(1 for n in nodes if n["edgeCount"]),
@@ -731,6 +750,9 @@ def build() -> None:
     if chain_rows:
         print(f"  横轴：{len(chain_rows)} 条一级产业链，链间上下游 {len(chain_links)} 条"
               f"（框架，非实测关系）；{len(chain_cross)} 条标为横跨全链")
+        if chain_depth:
+            print(f"  层次：{chain_depth} 层（由连线算出），"
+                  f"逆向边 {sum(1 for l in chain_links if l.get('direction') == 'counterflow')} 条")
     if form_sd_coverage:
         print(f"  Form SD：有名单 {form_sd_coverage.get('companiesWithList')} 家 · "
               f"有申报无名单 {form_sd_coverage.get('companiesFiledNoList')} 家 · "
