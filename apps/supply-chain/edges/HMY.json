@@ -1,0 +1,220 @@
+{
+  "contractVersion": 2,
+  "dataset": "supply-chain-edges",
+  "symbol": "HMY",
+  "name": "HARMONY GOLD MINING CO LTD",
+  "updatedAt": "2026-09-05T10:22:50Z",
+  "relation": {
+    "id": "smelter-in-supply-chain",
+    "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
+    "tier": "smelter"
+  },
+  "confidence": "disclosed",
+  "direction": {
+    "from": "smelter",
+    "to": "HMY",
+    "toListed": true
+  },
+  "evidence": {
+    "sourceType": "sec-form-sd",
+    "url": "https://www.sec.gov/Archives/edgar/data/1023514/000162828026003705/hmy-20250630_d2.htm",
+    "docDate": "2026-01-28",
+    "form": "SD",
+    "accession": "0001628280-26-003705",
+    "filingDate": "2026-01-28",
+    "reportDate": "",
+    "document": "hmy-20250630_d2.htm",
+    "indexUrl": "https://www.sec.gov/Archives/edgar/data/1023514/000162828026003705/",
+    "totalSD": 3
+  },
+  "parse": {
+    "rowsScanned": 64,
+    "rowsWithCid": 0,
+    "nameOnly": 30,
+    "droppedNoCid": 4,
+    "unique": 14,
+    "namedRatio": 1.0,
+    "countryRatio": 1.0
+  },
+  "byCountry": {
+    "南非": 13,
+    "巴布亚新几内亚": 1
+  },
+  "byMineral": {
+    "金": 14
+  },
+  "edges": [
+    {
+      "from": "NAME:african-rainbow-minerals-gold-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "African Rainbow Minerals Gold Limited",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 33
+    },
+    {
+      "from": "NAME:avgold-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Avgold Limited",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 12
+    },
+    {
+      "from": "NAME:chemwes-proprietary-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Chemwes (Proprietary) Limited",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 34
+    },
+    {
+      "from": "NAME:covalent-water-company-proprietary-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Covalent Water Company (Proprietary) Limited",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 37
+    },
+    {
+      "from": "NAME:freegold-harmony-proprietary-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Freegold (Harmony) Proprietary Limited",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 39
+    },
+    {
+      "from": "NAME:golden-core-trade-and-invest-proprietary-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Golden Core Trade and Invest (Proprietary) Limited",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 42
+    },
+    {
+      "from": "NAME:harmony-gold-mining-company-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Harmony Gold Mining Company Limited",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 45
+    },
+    {
+      "from": "NAME:harmony-moab-khotsong-operations-proprietary-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Harmony Moab Khotsong Operations (Proprietary) Limited",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 48
+    },
+    {
+      "from": "NAME:kalahari-goldridge-mining-company-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Kalahari Goldridge Mining Company Limited",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 53
+    },
+    {
+      "from": "NAME:morobe-consolidated-goldfields-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Morobe Consolidated Goldfields Limited",
+      "country": "巴布亚新几内亚",
+      "countryEn": "papua new guinea",
+      "minerals": [
+        "金"
+      ],
+      "row": 25
+    },
+    {
+      "from": "NAME:national-nuclear-regulator",
+      "idType": "name-only",
+      "cid": null,
+      "name": "National Nuclear Regulator",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 32
+    },
+    {
+      "from": "NAME:randfontein-estates-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Randfontein Estates Limited",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 57
+    },
+    {
+      "from": "NAME:south-african-revenue-service",
+      "idType": "name-only",
+      "cid": null,
+      "name": "South African Revenue Service",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 31
+    },
+    {
+      "from": "NAME:tswelopele-beneficiation-operation-proprietary-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Tswelopele Beneficiation Operation (Proprietary) Limited",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 58
+    }
+  ],
+  "coverage": {
+    "claimComplete": false,
+    "note": "Form SD 强制申报、不强制列名单，本清单只是该公司披露的部分，且语义是「出现在供应链中」，不是直接供货。"
+  }
+}
