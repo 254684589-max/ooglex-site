@@ -28,6 +28,7 @@ import re
 import sys
 import base64
 import zlib
+from datetime import date
 
 PROBE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                           "supply-chain", "probe_edgar_relationships.py")
@@ -43,6 +44,8 @@ SUPPLIER_PROBE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                    "supply-chain", "probe_supplier_lists.py")
 NAMES_ZH_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              "supply-chain", "smelter_names_zh.py")
+FOREIGN_PROBE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                  "supply-chain", "probe_foreign_issuers.py")
 
 # ── SIC → 价值链阶段 ────────────────────────────────────────────────────────
 # SIC 码全部取自探针在 Actions 机房实测到的真实值，不是凭印象写的。
@@ -837,9 +840,75 @@ def main() -> int:
         print(f"  [{'OK' if ok else 'XX'}] {why}"
               f"（{name} → {got or '会读'}）")
 
+    # 外国私人发行人探针的纯函数。这个探针要拿 EDGAR 季度全量索引数几万行，
+    # 解析错一行不会报错，只会**悄悄少算一家**——所以三个解析函数逐条钉死。
+    # master.idx 是管道分隔的，选它而不是定宽的 form.idx 就是因为定宽在长公司名
+    # 上会串列；下面第三条负例就是那种会把定宽解析器骗过去的行。
+    print("\n── 外国发行人探针：索引解析、季度回溯、归档目录 ─────────────────")
+    foreign = _load(FOREIGN_PROBE_PATH, "probe_foreign_issuers")
+    index_cases = [
+        ("1046179|TAIWAN SEMICONDUCTOR MANUFACTURING CO LTD|20-F|2025-04-17|"
+         "edgar/data/1046179/0001046179-25-000012.txt",
+         {"cik": 1046179, "form": "20-F", "date": "2025-04-17"},
+         "20-F 正常行"),
+        ("937966|ASML HOLDING NV|SD|2025-05-28|edgar/data/937966/0000937966-25-000031.txt",
+         {"cik": 937966, "form": "SD", "date": "2025-05-28"},
+         "SD 正常行"),
+        ("320193|APPLE INC.|10-K|2025-11-01|edgar/data/320193/0000320193-25-000123.txt",
+         {"cik": 320193, "form": "10-K", "date": "2025-11-01"},
+         "公司名里有句点不影响"),
+        ("1000229|CORE  MOLDING  TECHNOLOGIES  INC|SD|2025-05-30|"
+         "edgar/data/1000229/0001000229-25-000004.txt",
+         {"cik": 1000229, "form": "SD", "date": "2025-05-30"},
+         "公司名里有连续空格——定宽解析会串列，管道分隔不会"),
+        ("CIK|Company Name|Form Type|Date Filed|Filename", None, "表头不当数据行"),
+        ("--------------------------------------------------------", None, "分隔线不当数据行"),
+        ("", None, "空行不当数据行"),
+    ]
+    for line, expected, why in index_cases:
+        got = foreign.parse_index_line(line)
+        if expected is None:
+            ok = got is None
+        else:
+            ok = bool(got) and all(got.get(k) == v for k, v in expected.items())
+        if not ok:
+            failures.append(f"索引解析 {why}：期望 {expected!r}，实际 {got!r}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}"
+              f"（→ {got['form'] + ' CIK ' + str(got['cik']) if got else '不是数据行'}）")
+
+    # 季度回溯要跨年。跨错了就会去取一个不存在的季度，然后把「取不到」
+    # 误报成「这季度没人申报」——那是个会一路传到结论里的错。
+    quarter_cases = [
+        (date(2026, 9, 5), 4, [(2026, 3), (2026, 2), (2026, 1), (2025, 4)], "本季度往回数四个，跨年"),
+        (date(2026, 1, 15), 3, [(2026, 1), (2025, 4), (2025, 3)], "一月：立刻跨年"),
+        (date(2026, 12, 31), 2, [(2026, 4), (2026, 3)], "年末不跨年"),
+    ]
+    for today, count, expected, why in quarter_cases:
+        got = foreign.recent_quarters(today, count)
+        ok = got == expected
+        if not ok:
+            failures.append(f"季度回溯 {why}：期望 {expected}，实际 {got}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}"
+              f"（{'、'.join(f'{y}Q{q}' for y, q in got)}）")
+
+    dir_cases = [
+        (937966, "edgar/data/937966/0000937966-25-000031.txt",
+         "https://www.sec.gov/Archives/edgar/data/937966/000093796625000031/",
+         "归档路径推出申报目录"),
+        (320193, "edgar/data/320193/0000320193-25-000123-index.htm", None,
+         "不是 .txt 归档就推不出来，返回 None 而不是拼个错地址"),
+    ]
+    for cik, path, expected, why in dir_cases:
+        got = foreign.accession_dir(cik, path)
+        ok = got == expected
+        if not ok:
+            failures.append(f"归档目录 {why}：期望 {expected!r}，实际 {got!r}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
     total = (len(pdf_cases) + 4 + len(kind_cases) + len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
-             + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1)
+             + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
+             + len(index_cases) + len(quarter_cases) + len(dir_cases))
     print("\n" + "─" * 68)
     if failures:
         print(f"失败 {len(failures)}/{total}：")

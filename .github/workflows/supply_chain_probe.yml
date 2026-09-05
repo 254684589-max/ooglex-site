@@ -18,6 +18,10 @@ name: Supply Chain Source Probe
 #   nolist  —— 「有申报但没抽到名单」151 家的申报文件清单。查这一档是制度上限
 #              还是抽取器漏看（PDF 附件、名字以 0 开头、只看最大 4 份）。
 #   flow    —— 物流通道层。IMF PortWatch、纽约联储 GSCPI、世界银行与 FRED 政府口径序列。
+#   foreign —— 公司池的边界。现在池子是标普 500，单一国家指数，画不出全球产业链。
+#              MSCI ACWI／S&P Global 1200 因成分股专有、再分发要授权而走不通；
+#              SEC 外国私人发行人（20-F／40-F）是许可干净的替代。**要查的关键不是
+#              够不够得到那些公司，是它们申不申报 Form SD**——申报才同时带来边。
 #
 # 许可是本领域的主要风险：BDI、Drewry WCI、Freightos FBX、Xeneta、ISM 供应商交付
 # 全是商业授权，与仓库已因许可放弃的 SPX／DXY／LBMA 定盘价同类。报告里 [!!] 标记的
@@ -33,6 +37,14 @@ on:
         description: 'dry-run 最多处理几家（tickers 留空时生效）'
         required: false
         default: '0'
+      quarters:
+        description: '外国发行人探针回溯几个季度的 EDGAR 全量索引'
+        required: false
+        default: '4'
+      only:
+        description: '只跑哪些 job（逗号分隔：graph/supplier/usaspending/nolist/extract/flow/foreign；留空跑全部）'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -44,6 +56,7 @@ concurrency:
 jobs:
   graph:
     name: 公司图谱 · EDGAR 关系抽取可行性
+    if: ${{ inputs.only == '' || contains(inputs.only, 'graph') }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -101,6 +114,7 @@ jobs:
   # 只读，不写任何数据文件，不建任何边——先探后建。
   supplier:
     name: 供应商名单 · 第二条源可行性
+    if: ${{ inputs.only == '' || contains(inputs.only, 'supplier') }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -137,6 +151,7 @@ jobs:
   # 真正想要的是 FFATA 强制披露的**分包**（总包商 → 分包商），那是一级供应关系。
   usaspending:
     name: 联邦采购 · 第三条源可行性
+    if: ${{ inputs.only == '' || contains(inputs.only, 'usaspending') }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -158,6 +173,7 @@ jobs:
   # 差别是「这条源到头了」还是「还有 151 家可以补」——只能看真实文件清单。
   nolist:
     name: 有申报无名单 · 151 家的文件清单
+    if: ${{ inputs.only == '' || contains(inputs.only, 'nolist') }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -183,6 +199,7 @@ jobs:
   # 解析结果打到日志里给人看，是否接入发布由人决定。
   extract:
     name: Form SD 抽取器 · dry-run 人工核对
+    if: ${{ inputs.only == '' || contains(inputs.only, 'extract') }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -210,6 +227,7 @@ jobs:
 
   flow:
     name: 物流通道 · 来源可用性与许可
+    if: ${{ inputs.only == '' || contains(inputs.only, 'flow') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -232,5 +250,44 @@ jobs:
         with:
           name: supply-chain-flow-${{ github.run_attempt }}
           path: /tmp/supply-chain-probe/flow.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  # 公司池的边界。**「扩池只增加节点，不增加边」是这一步最大的风险**，
+  # 所以这个探针的核心输出只有一个数：外国发行人里同时报 Form SD 的有几家。
+  # 那个数大，扩池就同时长节点和边；小，就得先解决边的来源，不是先扩池。
+  # 顺带把 SEC 够不到的那几家（三星、宁德时代、西门子、施耐德、LVMH）按名字
+  # 在全量登记名录里搜一遍——搜不到就是这条路的硬上限，要报出来，不能藏。
+  foreign:
+    name: 公司池边界 · 外国私人发行人能不能当母池
+    if: ${{ inputs.only == '' || contains(inputs.only, 'foreign') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      # 索引解析错一行不会报错，只会悄悄少算一家。先过离线夹具。
+      - name: Validate extraction rules (offline)
+        run: python scripts/validate_supply_chain_extraction.py
+
+      - name: Probe SEC foreign private issuers
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+          PROBE_OUTPUT: /tmp/supply-chain-probe/foreign-issuers.json
+          PROBE_QUARTERS: ${{ inputs.quarters }}
+        run: python scripts/supply-chain/probe_foreign_issuers.py
+
+      - name: Upload foreign issuer probe report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: supply-chain-foreign-${{ github.run_attempt }}
+          path: /tmp/supply-chain-probe/foreign-issuers.json
           if-no-files-found: warn
           retention-days: 7
