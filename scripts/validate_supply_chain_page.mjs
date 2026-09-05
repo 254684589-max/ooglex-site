@@ -607,6 +607,46 @@ async function main() {
         assert.equal(cleared.empty, 0, "取消筛选后不该还有空环节");
       });
 
+      /* 公司查找。642 家而页面上零个输入框是硬伤——这一段守的是它**找得到、
+         说得准、不默默截断**：命中哪一项要标出来，超上限要说还有多少家，
+         一条不中要说清本板块不是全市场。 */
+      const look = await evaluate(`(async () => {
+        const i = document.getElementById('q'), L = document.getElementById('qlist');
+        if (!i || !L) return null;
+        const probe = (q) => {
+          i.value = q; i.dispatchEvent(new Event('input'));
+          return {
+            hidden: L.hidden,
+            rows: [...L.querySelectorAll('a')].map((a) => ({
+              text: a.textContent, href: a.getAttribute('href') })),
+            note: (L.querySelector('.qnone') || {}).textContent || '',
+          };
+        };
+        const first = ${JSON.stringify(NODES.nodes[0].symbol)};
+        return { bySymbol: probe(first), noHit: probe('zzzzqqqq'), empty: probe('') };
+      })()`);
+      check(`总览页有公司查找入口`, () => assert.ok(look, "没有 #q 输入框"));
+      check(`按代码查得到，且链接指向该公司页`, () => {
+        const want = NODES.nodes[0].symbol;
+        assert.ok(look.bySymbol.rows.length, `查 ${want} 一条都没有`);
+        assert.ok(look.bySymbol.rows[0].href.includes(encodeURIComponent(want)),
+          `第一条链接是 ${look.bySymbol.rows[0].href}`);
+      });
+      check(`结果里标出命中的是哪一项`, () => {
+        assert.match(look.bySymbol.rows[0].text, /配(代码|中文名|英文名)/,
+          `实际：${look.bySymbol.rows[0].text}`);
+      });
+      check(`结果里说明这家有没有关系数据`, () => {
+        assert.ok(/条关系|暂无关系数据/.test(look.bySymbol.rows[0].text),
+          `实际：${look.bySymbol.rows[0].text}`);
+      });
+      check(`查不到时说清本板块不是全市场`, () => {
+        assert.equal(look.noHit.rows.length, 0, "乱输也匹配出了公司");
+        assert.match(look.noHit.note, /不是全市场/, `实际：${look.noHit.note}`);
+      });
+      check(`清空输入后结果收起`, () => assert.ok(look.empty.hidden,
+        "清空后下拉还开着"));
+
       /* 链间上下游。这一段守的不只是「画出来了」，更是**它没有冒充实测数据**：
          框架标签要在、区分那句话要在、每条线要写清流动的是什么。
          这块界线是本板块最重要的一条，被样式藏起来等同于没写。 */
@@ -854,6 +894,52 @@ async function main() {
             assert.match(cc.foot, /不做同义合并/);
           });
         }
+        /* 咽喉点反查。数据层给每行带了 filers，页面点开列出那几家。
+           **这一段最要守的是语义没有跟着放大**：展开后仍然只是「共同列入」，
+           不是采购关系，也不是这几家公司之间有往来。 */
+        const CROW = CONC[0] || {};
+        if (CROW.filers && CROW.filers.length) {
+          const back = await evaluate(`(() => {
+            const btn = document.querySelector('#conc-rows .expand');
+            if (!btn) return null;
+            btn.click();
+            const box = document.querySelector('.concfilers');
+            if (!box) return null;
+            return {
+              chips: [...box.querySelectorAll('.cf-chip s')].map(e => e.textContent),
+              hrefs: [...box.querySelectorAll('.cf-chip')].map(
+                a => a.getAttribute('href') || ''),
+              cap: (box.querySelector('.cf-cap') || {}).textContent || '',
+              expanded: btn.getAttribute('aria-expanded'),
+              overflow: Math.max(0,
+                document.documentElement.scrollWidth - window.innerWidth),
+            };
+          })()`);
+          check(`集中度榜首可点开，列出的正是数据里那几家`, () => {
+            assert.ok(back, "没有展开按钮或展开区");
+            assert.deepEqual(back.chips.slice().sort(), CROW.filers.slice().sort(),
+              `页面列了 ${back.chips.length} 家，数据里是 ${CROW.filers.length} 家`);
+          });
+          check(`每一家都点得进它自己的公司页`, () => {
+            back.hrefs.forEach((h) => assert.match(h, /company\.html\?symbol=/, h));
+          });
+          check(`展开后语义没有放大：仍然只是「共同列入」`, () => {
+            assert.match(back.cap, /共同列入/, `实际：${back.cap}`);
+            assert.match(back.cap, /不表示/, `实际：${back.cap}`);
+            assert.ok(back.cap.includes("采购关系"), `实际：${back.cap}`);
+            assert.ok(back.cap.includes("业务往来"), `实际：${back.cap}`);
+            assert.ok(!back.cap.includes("供应商"),
+              `展开的说明里出现了「供应商」：${back.cap}`);
+            assert.ok(!back.cap.includes("*"), `漏出星号：${back.cap}`);
+          });
+          check(`展开态可被辅助技术读到`, () => assert.equal(back.expanded, "true"));
+          check(`展开后无横向溢出`, () => assert.ok(back.overflow <= 1,
+            `溢出 ${back.overflow}px`));
+        } else {
+          console.log("  [--] 集中度反查：本轮数据还没带 filers，跳过"
+            + "（数据流水线跑过之后这一段自动生效）");
+        }
+
         check(`上游集中度无横向溢出`, () => assert.ok(cc.overflow <= 1,
           `溢出 ${cc.overflow}px`));
       }

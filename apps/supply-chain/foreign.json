@@ -2723,7 +2723,7 @@
       "unparsed": 7
     },
     {
-      "bytes": 4271146,
+      "bytes": 4272415,
       "gzip": true,
       "quarter": "2026QTR2",
       "rows": 353168,
@@ -2737,7 +2737,7 @@
       "unparsed": 7
     },
     {
-      "bytes": 3399984,
+      "bytes": 3400142,
       "gzip": true,
       "quarter": "2025QTR4",
       "rows": 276466,
@@ -2746,5 +2746,5 @@
   ],
   "source": "SEC EDGAR 季度全量索引 + submissions（公共领域）",
   "unresolvedGeo": {},
-  "updatedAt": "2026-09-05T12:15:06Z"
+  "updatedAt": "2026-09-05T19:45:12Z"
 }

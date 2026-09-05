@@ -216,6 +216,110 @@
     return head;
   }
 
+  /* ── 公司查找 ────────────────────────────────────────────────────────
+     642 家而页面上零个输入框。匹配代码、中文名与英文名三项，
+     **匹配到哪一项就在结果里标出来**——不标的话，搜「台积电」出来一行
+     「TSM TAIWAN SEMICONDUCTOR…」，读者不知道是哪个字段命中的。
+     结果里同时印这家有没有关系数据，省得点进去才发现是空的。 */
+  var QMAX = 12;
+
+  function lookupRows(d, q) {
+    var s = String(q || "").trim().toLowerCase();
+    if (!s) return [];
+    var out = [];
+    (d.nodes || []).forEach(function (n) {
+      var sym = String(n.symbol || "").toLowerCase();
+      var zh = String(n.name || "");
+      var en = String(n.nameEn || "").toLowerCase();
+      var hit = null, rank = 9;
+      if (sym === s) { hit = "代码"; rank = 0; }
+      else if (sym.indexOf(s) === 0) { hit = "代码"; rank = 1; }
+      else if (zh.indexOf(q.trim()) >= 0) { hit = "中文名"; rank = 2; }
+      else if (en.indexOf(s) === 0) { hit = "英文名"; rank = 3; }
+      else if (en.indexOf(s) >= 0) { hit = "英文名"; rank = 4; }
+      else if (sym.indexOf(s) >= 0) { hit = "代码"; rank = 5; }
+      if (hit) out.push({ node: n, hit: hit, rank: rank });
+    });
+    out.sort(function (a, b) {
+      return a.rank - b.rank
+        || (b.node.edgeCount || 0) - (a.node.edgeCount || 0)
+        || String(a.node.symbol).localeCompare(String(b.node.symbol));
+    });
+    return out;
+  }
+
+  function initLookup(d) {
+    var input = $("q"), list = $("qlist");
+    if (!input || !list) return;
+    var cur = -1, rows = [];
+
+    function close() {
+      list.hidden = true; list.textContent = ""; cur = -1; rows = [];
+      input.setAttribute("aria-expanded", "false");
+    }
+
+    function draw() {
+      var all = lookupRows(d, input.value);
+      rows = all.slice(0, QMAX);
+      list.textContent = "";
+      if (!input.value.trim()) { close(); return; }
+      if (!rows.length) {
+        var none = el("div", "qnone", "没有匹配的公司。本板块收录 "
+          + ((d.coverage || {}).nodesTotal || 0) + " 家，不是全市场。");
+        list.appendChild(none);
+        list.hidden = false;
+        input.setAttribute("aria-expanded", "true");
+        return;
+      }
+      rows.forEach(function (r, i) {
+        var n = r.node;
+        var a = el("a", i === cur ? "on" : null);
+        a.href = "company.html?symbol=" + encodeURIComponent(n.symbol || "");
+        a.setAttribute("role", "option");
+        a.setAttribute("aria-selected", i === cur ? "true" : "false");
+        a.appendChild(el("span", "qs", n.symbol || ""));
+        a.appendChild(document.createTextNode(n.name || n.nameEn || ""));
+        // 命中在哪一项 + 有没有关系数据，都在这一行里说清
+        a.appendChild(el("span", "qm", "配" + r.hit
+          + " · " + (n.edgeCount ? (n.edgeCount + " 条关系") : "暂无关系数据")));
+        list.appendChild(a);
+      });
+      if (all.length > QMAX) {
+        // 截断必须说出来，否则读者会以为只有这几家匹配
+        list.appendChild(el("div", "qnone",
+          "另有 " + (all.length - QMAX) + " 家匹配未列出，输入更完整的名称可缩小范围"));
+      }
+      list.hidden = false;
+      input.setAttribute("aria-expanded", "true");
+    }
+
+    input.addEventListener("input", function () { cur = -1; draw(); });
+    input.addEventListener("keydown", function (ev) {
+      if (ev.key === "Escape") { input.value = ""; close(); return; }
+      if (!rows.length) return;
+      if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
+        ev.preventDefault();
+        cur += (ev.key === "ArrowDown" ? 1 : -1);
+        if (cur < 0) cur = rows.length - 1;
+        if (cur >= rows.length) cur = 0;
+        draw();
+        var on = list.querySelector("a.on");
+        if (on && on.scrollIntoView) on.scrollIntoView({ block: "nearest" });
+      } else if (ev.key === "Enter") {
+        // 没有用方向键选时，回车去第一条——这是终端里的习惯动作
+        var pick = rows[cur >= 0 ? cur : 0];
+        if (pick) {
+          ev.preventDefault();
+          location.href = "company.html?symbol="
+            + encodeURIComponent(pick.node.symbol || "");
+        }
+      }
+    });
+    document.addEventListener("click", function (ev) {
+      if (!input.contains(ev.target) && !list.contains(ev.target)) close();
+    });
+  }
+
   function renderCoverageBySector(d) {
     var box = $("cov");
     if (!box) return;
@@ -1265,6 +1369,15 @@
   /* 上游集中度：一家冶炼厂被多少家申报人共同列入。
      这是本板块少见的、完全不需要推断的读数——名单里数出来的。
      但分母是**有名单的那 90 家**，不是 495 家，不写清就是在夸大覆盖。 */
+  var _bySym = null;
+  function nodeBySymbol(d, sym) {
+    if (!_bySym) {
+      _bySym = {};
+      (d.nodes || []).forEach(function (n) { _bySym[n.symbol] = n; });
+    }
+    return _bySym[sym];
+  }
+
   function renderConcentration(d) {
     var sec = $("concsec");
     if (!sec) return;
@@ -1312,6 +1425,44 @@
       bar.style.flexGrow = "0";
       line.appendChild(bar);
       line.appendChild(el("span", "n", row.filerCount + " 家"));
+      // 点开看是**哪** N 家。此前只印得出数字，读者看得到「49 家」、
+      // 看不到是哪 49 家——而咽喉点的暴露反查正是这份数据最有价值的读法。
+      // **语义不变**：仍然只是「这 N 家的申报名单里都有它」，
+      // 不是采购关系，展开的那一段里再写一次。
+      var names = row.filers || [];
+      if (names.length) {
+        var more = el("button", "expand");
+        more.type = "button";
+        more.setAttribute("aria-expanded", "false");
+        more.textContent = "看是哪几家";
+        var box = el("div", "concfilers");
+        box.hidden = true;
+        var cap = el("p", "cf-cap",
+          "这 " + names.length + " 家申报人的 Form SD 名单里都出现了「"
+          + (row.name || row.id) + "」。**只是共同列入，不表示它们与这家冶炼厂"
+          + "之间有采购关系，也不表示这几家公司之间有业务往来。**");
+        cap.textContent = cap.textContent.replace(/\*\*/g, "");
+        box.appendChild(cap);
+        var chips = el("div", "cf-chips");
+        names.forEach(function (sym) {
+          var node = nodeBySymbol(d, sym);
+          var a = el("a", "cf-chip");
+          a.href = "company.html?symbol=" + encodeURIComponent(sym);
+          a.appendChild(document.createTextNode((node && node.name) || sym));
+          a.appendChild(el("s", null, sym));
+          chips.appendChild(a);
+        });
+        box.appendChild(chips);
+        more.onclick = function () {
+          box.hidden = !box.hidden;
+          more.setAttribute("aria-expanded", box.hidden ? "false" : "true");
+          more.textContent = box.hidden ? "看是哪几家" : "收起";
+        };
+        line.appendChild(more);
+        host.appendChild(line);
+        host.appendChild(box);
+        return;
+      }
       line.title = (row.name || "") + "（" + (row.country || "未标注") + "）"
         + " 出现在 " + row.filerCount + " 家申报人的名单里，占有名单公司的 "
         + Math.round(ratio * 100) + "%"
@@ -1421,6 +1572,7 @@
     renderStatus(d);
     renderNotice(d);
     renderCoverageBySector(d);
+    initLookup(d);
     renderStages(d);
     renderFlow(d);
     renderConcentration(d);

@@ -53,6 +53,26 @@
     -webkit-background-clip:text; background-clip:text; color:transparent; }
   .title p { color:var(--dim); margin-top:6px; font-size:0.88rem; }
   .statusrow { display:flex; justify-content:center; gap:9px; margin-top:10px; flex-wrap:wrap; }
+  /* 公司查找 */
+  .lookup { position:relative; max-width:520px; margin:12px auto 0; }
+  .lookup input { width:100%; font:inherit; font-size:.84rem; color:var(--text);
+    background:rgba(255,255,255,.04); border:1px solid var(--line);
+    border-radius:11px; padding:11px 14px; min-height:44px; }
+  .lookup input::placeholder { color:var(--faint); }
+  .lookup input:focus { outline:none; border-color:rgba(74,144,217,.55);
+    background:rgba(74,144,217,.07); }
+  .qlist { position:absolute; left:0; right:0; top:calc(100% + 5px); z-index:20;
+    max-height:min(58vh,380px); overflow-y:auto; border-radius:12px;
+    border:1px solid var(--line); background:#141922;
+    box-shadow:0 24px 60px -20px rgba(0,0,0,.9); }
+  .qlist a, .qlist .qnone { display:block; padding:9px 13px; text-decoration:none;
+    color:var(--text); font-size:.8rem; border-bottom:1px solid var(--line); }
+  .qlist a:last-child { border-bottom:0; }
+  .qlist a:hover, .qlist a.on { background:rgba(74,144,217,.16); }
+  .qlist .qs { font-family:var(--mono); font-size:.72rem; color:var(--accent);
+    margin-right:8px; }
+  .qlist .qm { font-size:.68rem; color:var(--faint); margin-left:7px; }
+  .qlist .qnone { color:var(--dim); }
   .status { display:inline-flex; align-items:center; gap:7px; font-size:0.78rem; padding:4px 13px;
     border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,0.03); color:var(--dim); }
   .status b { color:var(--text); font-weight:600; font-variant-numeric:tabular-nums; }
@@ -261,6 +281,22 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
 .concsec { padding:14px 16px; margin:0 0 18px; }
 .concsec .lead { font-size:13px; margin-bottom:10px; }
 .concrow { display:flex; align-items:center; gap:8px; padding:3px 0; }
+/* 咽喉点反查：点开看是哪 N 家申报人。语义仍止于「共同列入」。 */
+.concrow .expand { appearance:none; font:inherit; font-size:11px; cursor:pointer;
+  color:var(--accent); background:transparent; border:0; padding:4px 6px;
+  min-height:30px; white-space:nowrap; flex:none; }
+.concrow .expand:hover { text-decoration:underline; }
+.concfilers { margin:2px 0 10px 26px; padding:9px 11px; border-radius:9px;
+  border:1px solid var(--line); background:rgba(255,255,255,.02); }
+.concfilers .cf-cap { font-size:11px; color:var(--dim); line-height:1.55;
+  margin-bottom:8px; }
+.concfilers .cf-chips { display:flex; flex-wrap:wrap; gap:5px; }
+.concfilers .cf-chip { display:inline-flex; align-items:baseline; gap:5px;
+  text-decoration:none; font-size:12px; color:var(--text);
+  background:rgba(255,255,255,.04); border-radius:6px; padding:3px 8px; }
+.concfilers .cf-chip:hover { background:rgba(74,144,217,.18); }
+.concfilers .cf-chip s { text-decoration:none; font-family:var(--mono);
+  font-size:10px; color:var(--faint); }
 .concrow .rk { width:22px; flex:none; font-size:11px; color:var(--faint);
   text-align:right; font-variant-numeric:tabular-nums; }
 .concrow .nm { flex:0 0 34%; min-width:0; font-size:12px;
@@ -421,6 +457,15 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
     <h1>全球产业链</h1>
     <p id="subtitle">Global Supply Chain</p>
     <div class="statusrow" id="statusrow"></div>
+    <!-- 公司查找。642 家而页面上零个输入框，要打开某一家得先猜它在 12 个环节的
+         哪一个、展开后在几十家里翻——专业终端都有代码／名称查找，这是硬伤。 -->
+    <div class="lookup">
+      <input id="q" type="search" autocomplete="off" spellcheck="false"
+             placeholder="查公司：代码、中文名或英文名（如 TSM / 台积电 / Apple）"
+             aria-label="查找公司" aria-controls="qlist" aria-expanded="false"
+             role="combobox">
+      <div id="qlist" class="qlist" role="listbox" hidden></div>
+    </div>
   </div>
 
   <section class="glass notice" aria-label="数据范围声明">
@@ -503,6 +548,6 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="app.js?v=8e3ff8a9" defer></script>
+<script src="app.js?v=40f48b62" defer></script>
 </body>
 </html>
