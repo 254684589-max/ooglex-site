@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-05T11:48:31Z",
+  "updatedAt": "2026-09-05T11:55:42Z",
   "asOf": "2026-09-04",
   "frequency": "daily",
   "status": "ok",
@@ -22814,10 +22814,10 @@
       "logo": null,
       "listed": true,
       "pool": "sec-foreign-issuer",
-      "country": "VA",
-      "countryEn": "VA",
+      "country": "以色列",
+      "countryEn": "Israel",
       "region": null,
-      "countryBasis": "business-address",
+      "countryBasis": "mailing-address",
       "exchange": "Nasdaq",
       "cik": 897322,
       "sic": 3663,
@@ -24973,10 +24973,10 @@
       "logo": null,
       "listed": true,
       "pool": "sec-foreign-issuer",
-      "country": "DC",
-      "countryEn": "DC",
+      "country": null,
+      "countryEn": null,
       "region": null,
-      "countryBasis": "state-of-incorporation",
+      "countryBasis": null,
       "exchange": "NYSE",
       "cik": 1306965,
       "sic": 1311,
@@ -28560,8 +28560,8 @@
       {
         "sector": "以色列",
         "sectorEn": null,
-        "companies": 17,
-        "withEdges": 12,
+        "companies": 18,
+        "withEdges": 13,
         "filedNoList": 5,
         "noFiling": 0,
         "resourceExtraction": 0,
@@ -28571,11 +28571,11 @@
       {
         "sector": "未分类",
         "sectorEn": null,
-        "companies": 16,
+        "companies": 17,
         "withEdges": 5,
         "filedNoList": 6,
         "noFiling": 0,
-        "resourceExtraction": 5,
+        "resourceExtraction": 6,
         "failed": 0,
         "unscanned": 0
       },
@@ -28844,17 +28844,6 @@
         "unscanned": 0
       },
       {
-        "sector": "VA",
-        "sectorEn": null,
-        "companies": 1,
-        "withEdges": 1,
-        "filedNoList": 0,
-        "noFiling": 0,
-        "resourceExtraction": 0,
-        "failed": 0,
-        "unscanned": 0
-      },
-      {
         "sector": "芬兰",
         "sectorEn": null,
         "companies": 1,
@@ -28862,17 +28851,6 @@
         "filedNoList": 0,
         "noFiling": 0,
         "resourceExtraction": 0,
-        "failed": 0,
-        "unscanned": 0
-      },
-      {
-        "sector": "DC",
-        "sectorEn": null,
-        "companies": 1,
-        "withEdges": 0,
-        "filedNoList": 0,
-        "noFiling": 0,
-        "resourceExtraction": 1,
         "failed": 0,
         "unscanned": 0
       },
@@ -28900,9 +28878,10 @@
       }
     ],
     "countryBasis": {
-      "state-of-incorporation": 109,
-      "business-address": 22,
-      "unknown": 16
+      "state-of-incorporation": 108,
+      "business-address": 21,
+      "unknown": 17,
+      "mailing-address": 1
     },
     "foreignNameZh": {
       "named": 61,
