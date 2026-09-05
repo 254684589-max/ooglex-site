@@ -121,6 +121,36 @@
 
   /* 所属产业链与上下游。虚线块 + 那句区分说明，与总览页同一套语义：
      分类与框架是一层，能点开原始申报的冶炼厂关系是另一层，不混。 */
+  /* 上游冶炼厂重叠。**实线**边框：这是实测数据，与产业链框架那个虚线块
+     在视觉上就该分开。同一页里实线=有原始申报，虚线=行业通识框架。 */
+  .peerbox .pcap { font-size:.68rem; color:var(--dim); margin:6px 0 8px; }
+  .peerbox .pcap2 {
+    font-size:.68rem; color:var(--dim); margin:12px 0 4px;
+    border-top:1px solid var(--line); padding-top:9px;
+  }
+  .peerbox .peer {
+    display:flex; align-items:baseline; gap:6px; padding:4px 5px;
+    border-radius:5px; text-decoration:none; color:var(--text);
+  }
+  .peerbox .peer:hover { background:rgba(127,127,127,0.12); }
+  .peerbox .peer .nm { font-size:.75rem; flex:1 1 auto; min-width:0;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .peerbox .peer .sym { font-size:.62rem; color:var(--faint); flex:none; }
+  .peerbox .peer .sh { font-size:.72rem; font-weight:600; flex:none;
+    font-variant-numeric:tabular-nums; }
+  .peerbox .peer .of { font-size:.62rem; color:var(--faint); flex:none; }
+  .peerbox .pshare {
+    display:flex; align-items:baseline; gap:6px; padding:3px 5px; font-size:.7rem;
+  }
+  .peerbox .pshare .nm { flex:1 1 auto; min-width:0;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .peerbox .pshare .ct { font-size:.62rem; color:var(--dim); flex:none; }
+  .peerbox .pshare .sh { font-size:.62rem; color:var(--faint); flex:none; }
+  .peerbox .pwarn {
+    font-size:.66rem; color:var(--faint); line-height:1.6;
+    margin-top:10px; padding-top:8px; border-top:1px solid var(--line);
+  }
+
   .chainbox .mychains { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 4px; }
   .chainbox .cpill {
     font-size:.72rem; padding:3px 9px; border-radius:999px; text-decoration:none;
@@ -219,6 +249,6 @@
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="company.js?v=3a22ac41" defer></script>
+<script src="company.js?v=f3363089" defer></script>
 </body>
 </html>

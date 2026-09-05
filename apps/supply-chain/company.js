@@ -58,7 +58,7 @@
   ];
 
   var state = { data: null, node: null, view: "tier", tierSel: 2,
-                edges: null, edgeError: null, zh: null };
+                edges: null, edgeError: null, zh: null, peers: null };
 
   /* 冶炼厂中文译名。查不到就显示英文原文——申报里写的就是英文，
      半译出来的名字比纯英文更糟。译名表独立发布，拉不到不影响其它内容。 */
@@ -557,6 +557,56 @@
     side.appendChild(peers);
 
     // 本页真实数据清单
+    // ── 上游冶炼厂重叠 ────────────────────────────────────────────────
+    // 这是本页唯一一条公司 ↔ 公司的关系，而且它是**两份原始申报的交集**：
+    // 甲的名单里有 X、乙的名单里也有 X。没有一个字是推断出来的。
+    // 但语义只到这里为止：共同暴露，不是业务往来。这句话必须写在块里。
+    var pv = state.peers && (state.peers.companies || {})[n.symbol];
+    if (pv && (pv.peers || []).length) {
+      var nameOf = {};
+      (d.nodes || []).forEach(function (x) { nameOf[x.symbol] = x.name || x.symbol; });
+
+      var pbox = el("div", "glass peerbox");
+      pbox.style.cssText = "padding:13px 15px;";
+      pbox.appendChild(el("h3", null, "上游冶炼厂重叠"));
+      pbox.appendChild(el("p", "pcap",
+        "本公司名单 " + pv.total + " 家；与 " + pv.peerCount
+        + " 家申报人有重叠，下面按重叠数排前 "
+        + Math.min((pv.peers || []).length, pv.peerCount) + " 名。"));
+
+      (pv.peers || []).forEach(function (row) {
+        var a = el("a", "peer");
+        a.href = "company.html?symbol=" + encodeURIComponent(row.symbol);
+        a.appendChild(el("span", "nm", nameOf[row.symbol] || row.symbol));
+        a.appendChild(el("span", "sym", row.symbol));
+        a.appendChild(el("span", "sh", row.shared + " 家"));
+        // 只给「重叠 236 家」看不出这是多是少，得知道对方名单有多大
+        a.appendChild(el("span", "of", "/ 对方 " + row.peerTotal + " 家"));
+        a.title = (nameOf[row.symbol] || row.symbol) + "：两家名单里有 "
+          + row.shared + " 家相同的冶炼厂（本公司 " + pv.total
+          + " 家 · 对方 " + row.peerTotal + " 家）";
+        pbox.appendChild(a);
+      });
+
+      if ((pv.topShared || []).length) {
+        pbox.appendChild(el("div", "pcap2", "本公司名单里被最多同行共同申报的"));
+        pv.topShared.forEach(function (row) {
+          var line = el("div", "pshare");
+          line.appendChild(el("span", "nm", zhName(row.name) || row.name || row.id));
+          if (row.country) line.appendChild(el("span", "ct", row.country));
+          line.appendChild(el("span", "sh", row.filerCount + " 家共同申报"));
+          pbox.appendChild(line);
+        });
+      }
+
+      pbox.appendChild(el("p", "pwarn",
+        "重叠来自两份可点开的原始申报的交集，不含推断。但它只表示两家的上游"
+        + "冶炼环节有共同暴露，不表示两家之间有业务往来、供货或合作。"
+        + "另外：只有名字的冶炼厂按规范化名字合并，同一家厂写法不同会被算成两条，"
+        + "所以这个数只会少算不会多算。"));
+      side.appendChild(pbox);
+    }
+
     // ── 所属产业链与它的上下游 ────────────────────────────────────────
     // 「点开一家公司能看到它在链条上的位置」——这一块回答的就是这句话。
     // 但要分清两层：**这家公司在哪条链上**是按它申报的 SIC 码判的分类；
@@ -634,6 +684,7 @@
     [["身份与市值", "站内公司榜"], ["环节判定", "SEC 官方 SIC 行业码"],
      ["同行业公司", sameSic.length + " 家"], ["同环节公司", sameStage + " 家"],
      ["冶炼厂关系", rows.length + " 条"],
+     ["上游重叠", pv ? (pv.peerCount + " 家申报人") : "0 家"],
      ["产业链归属", (n.chains || []).length + " 条链（按 SIC 分类）"],
      ["链间上下游", "产业结构框架，非实测"],
      ["一级／二级供应商", "0 条（无数据源）"]].forEach(function (pair) {
@@ -668,7 +719,7 @@
       if (!node) { fail("产业链节点表里没有 " + symbol + "。本板块目前只收录标普500成分股。"); return; }
       state.data = d; state.node = node;
       document.title = (node.name || symbol) + " 供应链视图 · 全球产业链";
-      return Promise.all([loadEdges(), loadNamesZh()]).then(paint);
+      return Promise.all([loadEdges(), loadNamesZh(), loadPeers()]).then(paint);
     })
     .catch(function (err) {
       fail("公司数据加载失败：" + (err && err.message ? err.message : "未知错误")
@@ -679,6 +730,17 @@
      总览页 495 家里绝大多数没有边文件，不该为此多发一次请求。
      拉失败不阻断整页：身份、环节、同行都是本地已有的真实数据，
      照常渲染，并在覆盖率声明里说清楚是加载失败而不是没有数据。 */
+  /* 上游重叠。只在这家公司确实有名单时才拉——没有名单就不可能有重叠，
+     为它多发一次请求是白发。拉不到不阻断整页：这一块不显示，其余照常。 */
+  function loadPeers() {
+    var idx = ((state.data || {}).edgeIndex || {})[state.node.symbol];
+    if (!idx) return Promise.resolve();
+    return fetch("peers.json", { cache: "no-cache" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d && d.companies) state.peers = d; })
+      .catch(function () { /* 这一块不显示即可，不影响其它内容 */ });
+  }
+
   /* 译名表是显示层的补充，拉不到就显示英文原文，不算失败。 */
   function loadNamesZh() {
     return fetch("names-zh.json", { cache: "no-cache" })

@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-05T08:44:37Z",
+  "updatedAt": "2026-09-05T09:25:27Z",
   "asOf": "2026-09-04",
   "frequency": "daily",
   "status": "ok",
@@ -944,6 +944,344 @@
     "business-services": "咨询、人力、检测与认证横跨全部产业链，不逐条连线",
     "logistics-transport": "运输与仓储衔接每一段实物流转，不逐条连线"
   },
+  "upstreamConcentration": [
+    {
+      "id": "NAME:kemet-de-mexico",
+      "name": "KEMET de Mexico",
+      "nameZh": null,
+      "country": "墨西哥",
+      "minerals": [
+        "钽"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 40
+    },
+    {
+      "id": "NAME:china-tin-group-co-ltd",
+      "name": "China Tin Group Co., Ltd.",
+      "nameZh": null,
+      "country": "中国",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 39
+    },
+    {
+      "id": "NAME:pt-mitra-stania-prima",
+      "name": "PT Mitra Stania Prima",
+      "nameZh": null,
+      "country": "印度尼西亚",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 39
+    },
+    {
+      "id": "NAME:pt-timah-tbk-mentok",
+      "name": "PT Timah Tbk Mentok",
+      "nameZh": null,
+      "country": "印度尼西亚",
+      "minerals": [
+        "钨",
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 39
+    },
+    {
+      "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
+      "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
+      "nameZh": null,
+      "country": "菲律宾",
+      "minerals": [
+        "金"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 38
+    },
+    {
+      "id": "NAME:chongyi-zhangyuan-tungsten-co-ltd",
+      "name": "Chongyi Zhangyuan Tungsten Co., Ltd.",
+      "nameZh": null,
+      "country": "中国",
+      "minerals": [
+        "钨",
+        "钽"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 38
+    },
+    {
+      "id": "NAME:fenix-metals",
+      "name": "Fenix Metals",
+      "nameZh": null,
+      "country": "波兰",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 38
+    },
+    {
+      "id": "NAME:mitsubishi-materials-corporation",
+      "name": "Mitsubishi Materials Corporation",
+      "nameZh": null,
+      "country": "日本",
+      "minerals": [
+        "金",
+        "钨",
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 38
+    },
+    {
+      "id": "NAME:pt-atd-makmur-mandiri-jaya",
+      "name": "PT ATD Makmur Mandiri Jaya",
+      "nameZh": null,
+      "country": "印度尼西亚",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 38
+    },
+    {
+      "id": "NAME:pt-premium-tin-indonesia",
+      "name": "PT Premium Tin Indonesia",
+      "nameZh": null,
+      "country": "印度尼西亚",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 38
+    },
+    {
+      "id": "NAME:pt-timah-tbk-kundur",
+      "name": "PT Timah Tbk Kundur",
+      "nameZh": null,
+      "country": "印度尼西亚",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 38
+    },
+    {
+      "id": "NAME:xiamen-tungsten-co-ltd",
+      "name": "Xiamen Tungsten Co., Ltd.",
+      "nameZh": null,
+      "country": "中国",
+      "minerals": [
+        "钨"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 38
+    },
+    {
+      "id": "NAME:gejiu-non-ferrous-metal-processing-co-ltd",
+      "name": "Gejiu Non-Ferrous Metal Processing Co., Ltd.",
+      "nameZh": null,
+      "country": "中国",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 37
+    },
+    {
+      "id": "NAME:luna-smelter-ltd",
+      "name": "Luna Smelter, Ltd.",
+      "nameZh": null,
+      "country": "卢旺达",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 37
+    },
+    {
+      "id": "NAME:metallic-resources-inc",
+      "name": "Metallic Resources, Inc.",
+      "nameZh": null,
+      "country": "美国",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 37
+    },
+    {
+      "id": "CID001182",
+      "name": "Minsur",
+      "nameZh": null,
+      "country": "秘鲁",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "rmi-cid",
+      "filerCount": 37
+    },
+    {
+      "id": "CID001898",
+      "name": "Thaisarco",
+      "nameZh": null,
+      "country": "泰国",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "rmi-cid",
+      "filerCount": 37
+    },
+    {
+      "id": "CID002180",
+      "name": "Tin Smelting Branch of Yunnan Tin Co., Ltd.",
+      "nameZh": null,
+      "country": "中国",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "rmi-cid",
+      "filerCount": 37
+    },
+    {
+      "id": "NAME:tin-smelting-branch-of-yunnan-tin-co-ltd",
+      "name": "Tin Smelting Branch of Yunnan Tin Co., Ltd.",
+      "nameZh": null,
+      "country": "中国",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 37
+    },
+    {
+      "id": "NAME:aurubis-beerse",
+      "name": "Aurubis Beerse",
+      "nameZh": null,
+      "country": "比利时",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 36
+    },
+    {
+      "id": "NAME:aurubis-berango",
+      "name": "Aurubis Berango",
+      "nameZh": null,
+      "country": "西班牙",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 36
+    },
+    {
+      "id": "NAME:chenzhou-yunxiang-mining-and-metallurgy-co-ltd",
+      "name": "Chenzhou Yunxiang Mining and Metallurgy Co., Ltd.",
+      "nameZh": null,
+      "country": "中国",
+      "minerals": [
+        "金",
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 36
+    },
+    {
+      "id": "NAME:ganzhou-seadragon-w-mo-co-ltd",
+      "name": "Ganzhou Seadragon W & Mo Co., Ltd.",
+      "nameZh": null,
+      "country": "中国",
+      "minerals": [
+        "钨"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 36
+    },
+    {
+      "id": "NAME:gold-by-gold-colombia",
+      "name": "Gold by Gold Colombia",
+      "nameZh": null,
+      "country": "哥伦比亚",
+      "minerals": [
+        "金"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 36
+    },
+    {
+      "id": "NAME:magnu-s-minerais-metais-e-ligas-ltda",
+      "name": "Magnu’s Minerais Metais e Ligas Ltda.",
+      "nameZh": null,
+      "country": "巴西",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 36
+    },
+    {
+      "id": "NAME:mineracao-taboca-s-a",
+      "name": "Mineracao Taboca S.A.",
+      "nameZh": null,
+      "country": "巴西",
+      "minerals": [
+        "钽",
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 36
+    },
+    {
+      "id": "CID001337",
+      "name": "Operaciones Metalurgicas S.A.",
+      "nameZh": null,
+      "country": "玻利维亚",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "rmi-cid",
+      "filerCount": 36
+    },
+    {
+      "id": "NAME:pt-prima-timah-utama",
+      "name": "PT Prima Timah Utama",
+      "nameZh": null,
+      "country": "印度尼西亚",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 36
+    },
+    {
+      "id": "NAME:pt-rajehan-ariq",
+      "name": "PT Rajehan Ariq",
+      "nameZh": null,
+      "country": "印度尼西亚",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "name-only",
+      "filerCount": 36
+    },
+    {
+      "id": "CID001482",
+      "name": "PT Timah Tbk Mentok",
+      "nameZh": null,
+      "country": "印度尼西亚",
+      "minerals": [
+        "锡"
+      ],
+      "identifierType": "rmi-cid",
+      "filerCount": 36
+    }
+  ],
   "nodes": [
     {
       "id": "NVDA",
@@ -20272,6 +20610,8 @@
     "chainUnclassified": 0,
     "chainLinksTotal": 77,
     "chainDepth": 10,
+    "upstreamPairs": 1914,
+    "upstreamConcentrationTotal": 1213,
     "chainCounterflow": 6,
     "chainMulti": 118,
     "nodesTotal": 495,

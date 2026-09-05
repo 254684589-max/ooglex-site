@@ -48,6 +48,8 @@ FOREIGN_PROBE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                   "supply-chain", "probe_foreign_issuers.py")
 CHAINS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                            "supply-chain", "sic_chains.py")
+PEERS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                          "supply-chain", "smelter_peers.py")
 
 # ── SIC → 价值链阶段 ────────────────────────────────────────────────────────
 # SIC 码全部取自探针在 Actions 机房实测到的真实值，不是凭印象写的。
@@ -1169,12 +1171,86 @@ def main() -> int:
     finally:
         chains_mod.CHAIN_LINKS[:] = _saved
 
+    # 上游重叠：本板块第一条公司 ↔ 公司的关系。它是两份申报名单的交集，
+    # 最大的风险是**多算**——把同一条数两遍、或把重叠说成业务关系。
+    # 夹具是手搓的小登记表，每条都能用手算出正确答案。
+    print("\n── 上游重叠：两份名单的交集，只会少算不会多算 ────────────────────")
+    peers_mod = _load(PEERS_PATH, "smelter_peers")
+    fixture = {
+        # 甲乙丙三家共用；甲乙再共用一家；丙自己独有一家；还有一条没人申报
+        "CID000001": {"id": "CID000001", "name": "Alpha Smelter", "country": "日本",
+                      "identifierType": "rmi-cid", "minerals": ["锡"],
+                      "filers": ["AAA", "BBB", "CCC"]},
+        "CID000002": {"id": "CID000002", "name": "Beta Refinery", "country": "德国",
+                      "identifierType": "rmi-cid", "minerals": ["金"],
+                      "filers": ["AAA", "BBB"]},
+        "NAME:gamma": {"id": "NAME:gamma", "name": "Gamma Works", "country": "巴西",
+                       "identifierType": "name-only", "minerals": ["钽"],
+                       "filers": ["CCC"]},
+        "NAME:orphan": {"id": "NAME:orphan", "name": "Orphan Ltd", "country": "美国",
+                        "identifierType": "name-only", "minerals": ["钨"], "filers": []},
+    }
+    got = peers_mod.build_peers(fixture)
+    comp = got["companies"]
+
+    def _shared(sym, other):
+        for row in comp.get(sym, {}).get("peers", []):
+            if row["symbol"] == other:
+                return row["shared"]
+        return None
+
+    peer_cases = [
+        (comp["AAA"]["total"] == 2, "甲名单 2 家（手算）"),
+        (comp["CCC"]["total"] == 2, "丙名单 2 家（手算）"),
+        (got["pairs"] == 3, "三对：甲乙、甲丙、乙丙"),
+        (_shared("AAA", "BBB") == 2, "甲乙共用 2 家"),
+        (_shared("AAA", "CCC") == 1, "甲丙只共用 Alpha 一家"),
+        (_shared("BBB", "CCC") == 1, "乙丙同上"),
+        (_shared("AAA", "BBB") == _shared("BBB", "AAA"), "两边对称"),
+        ("DDD" not in comp, "没申报过的公司不出现"),
+        (all(r["filerCount"] >= 2 for r in got["concentration"]),
+         "集中度榜只收被两家以上共同申报的——一家不构成集中"),
+        (got["concentration"][0]["name"] == "Alpha Smelter",
+         "集中度第一是被三家申报的 Alpha"),
+        (got["concentration"] == sorted(got["concentration"],
+                                        key=lambda r: -r["filerCount"]),
+         "集中度榜按家数降序"),
+        (got["concentrationTotal"] == 2,
+         "集中度分母是「被两家以上共同申报」的 2 条（Alpha、Beta），不是全表"),
+        (got["smeltersTotal"] == 4, "登记表总数照实给 4 条，含只有一家和无人申报的"),
+    ]
+    for ok, why in peer_cases:
+        if not ok:
+            failures.append(f"上游重叠：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
+    # 重叠数**不可能**超过任何一方的名单长度。这条是「多算」的照妖镜。
+    over = []
+    for sym, row in comp.items():
+        for peer in row["peers"]:
+            if peer["shared"] > row["total"] or peer["shared"] > peer["peerTotal"]:
+                over.append((sym, peer["symbol"]))
+    if over:
+        failures.append(f"上游重叠：重叠数超过名单长度 {over}")
+    print(f"  [{'OK' if not over else 'XX'}] 重叠数不超过任何一方的名单长度")
+
+    # 语义：关系标签不得把重叠说成供应或合作
+    label = peers_mod.RELATION.get("label", "")
+    clean = not any(w in label for w in ("供应商", "合作", "客户", "供货"))
+    if not clean:
+        failures.append(f"上游重叠：关系标签把重叠说过头了——{label!r}")
+    print(f"  [{'OK' if clean else 'XX'}] 关系标签没把重叠说成供应或合作")
+    has_neg = "不表示" in label
+    if not has_neg:
+        failures.append("上游重叠：关系标签没写明它不表示业务往来")
+    print(f"  [{'OK' if has_neg else 'XX'}] 关系标签写明「不表示两家之间有业务往来」")
+
     total = (len(pdf_cases) + 4 + len(kind_cases) + len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
-             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1
+             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3
              + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:

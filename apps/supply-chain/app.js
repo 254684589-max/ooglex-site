@@ -983,6 +983,79 @@
   }
 
   /* ── 方法与来源 ── */
+  /* 上游集中度：一家冶炼厂被多少家申报人共同列入。
+     这是本板块少见的、完全不需要推断的读数——名单里数出来的。
+     但分母是**有名单的那 90 家**，不是 495 家，不写清就是在夸大覆盖。 */
+  function renderConcentration(d) {
+    var sec = $("concsec");
+    if (!sec) return;
+    var rows = d.upstreamConcentration || [];
+    if (!rows.length) { sec.hidden = true; return; }
+    sec.hidden = false;
+
+    var cov = d.coverage || {};
+    var listed = Object.keys(d.edgeIndex || {}).length;
+    setText($("conc-lead"),
+      "被最多申报人共同列入的 " + rows.length + " 家冶炼厂。分母是有名单的 "
+      + listed + " 家公司（不是全部 " + (cov.nodesTotal || 0)
+      + " 家）；登记表共 " + (cov.upstreamConcentrationTotal || 0)
+      + " 家被两家以上共同申报。");
+
+    var host = $("conc-rows");
+    host.textContent = "";
+    // 同一家厂可能被拆成两条：一部分申报人给了 RMI 编号、一部分只给名字，
+    // 而登记表**刻意不做同义合并**（宁可一家重复出现，不可两家被错并成一家）。
+    // 榜单上就会出现两行同名——不解释的话看起来像 bug，所以标出来并写清。
+    var seen = {};
+    rows.forEach(function (r) {
+      var k = (r.name || "").toLowerCase();
+      seen[k] = (seen[k] || 0) + 1;
+    });
+    var splitNames = Object.keys(seen).filter(function (k) { return seen[k] > 1; });
+
+    rows.forEach(function (row, i) {
+      var line = el("div", "concrow");
+      line.appendChild(el("span", "rk", String(i + 1)));
+      var nm = el("span", "nm", row.nameZh || row.name || row.id);
+      if (splitNames.indexOf((row.name || "").toLowerCase()) >= 0) {
+        var mark = el("s", null, "同名另有一条");
+        mark.title = "这家厂在登记表里有两条：一部分申报人给了 RMI 编号、"
+          + "一部分只给名字。登记表不做同义合并，所以它的真实共同申报数比这一行更高。";
+        nm.appendChild(mark);
+      }
+      line.appendChild(nm);
+      line.appendChild(el("span", "ct", row.country || "—"));
+      var bar = el("span", "bar");
+      // 分母用**有名单的公司数**而不是榜首：40/90 说得出「四成有名单的公司都列了它」，
+      // 而 40/40 只会让前 30 名的条子长得一模一样，什么也没说。
+      var ratio = listed ? row.filerCount / listed : 0;
+      bar.style.flexBasis = Math.max(3, ratio * 100) + "%";
+      bar.style.flexGrow = "0";
+      line.appendChild(bar);
+      line.appendChild(el("span", "n", row.filerCount + " 家"));
+      line.title = (row.name || "") + "（" + (row.country || "未标注") + "）"
+        + " 出现在 " + row.filerCount + " 家申报人的名单里，占有名单公司的 "
+        + Math.round(ratio * 100) + "%"
+        + " · 标识：" + (row.identifierType === "rmi-cid"
+            ? "RMI 编号 " + row.id : "仅有名字")
+        + ((row.minerals || []).length ? " · " + row.minerals.join("、") : "");
+      host.appendChild(line);
+    });
+
+    setText($("conc-foot"),
+      "条的长度是「占有名单公司的比例」，分母 " + listed + " 家。"
+      + "「被 N 家共同列入」只说明这 N 家的申报名单里都有它，"
+      + "不说明它们与这家冶炼厂之间有直接采购关系——冶炼厂在供应链的第三层，"
+      + "申报的原义是「出现在本公司供应链中」。"
+      + (splitNames.length
+        ? "榜单上有 " + splitNames.length + " 个名字出现两次：同一家厂"
+          + "一部分申报人给了 RMI 编号、一部分只给名字，登记表刻意不做同义合并"
+          + "（宁可一家重复出现，不可两家被错并成一家），因此这几家的真实共同申报数"
+          + "比任一行都高。"
+        : "")
+      + "整体上这个数只会少算不会多算。");
+  }
+
   function renderMethod(d) {
     var host = $("method");
     host.textContent = "";
@@ -1059,6 +1132,7 @@
     renderCoverageBySector(d);
     renderStages(d);
     renderFlow(d);
+    renderConcentration(d);
     renderMethod(d);
     $("state").hidden = true;
   }
