@@ -45,8 +45,20 @@ on:
         description: 'dry-run 临时追加不在公司池里的公司，格式 代码:CIK，逗号分隔'
         required: false
         default: ''
+      body_tickers:
+        description: 'body 探针要点开哪几家的申报正文（逗号分隔；留空则按 body_status 取样）'
+        required: false
+        default: 'LMT,ACN,DHR,MCD'
+      body_status:
+        description: 'body 探针改按申报状态取样（例如 filed-no-list），填了就忽略 body_tickers'
+        required: false
+        default: ''
+      body_limit:
+        description: 'body 探针按状态取样时最多看几家'
+        required: false
+        default: '40'
       only:
-        description: '只跑哪些 job（graph/supplier/usaspending/nolist/extract/flow/foreign/foreignfetch；留空跑全部）'
+        description: '只跑哪些 job（graph/supplier/usaspending/nolist/body/extract/flow/foreign/foreignfetch；留空跑全部）'
         required: false
         default: ''
 
@@ -196,6 +208,43 @@ jobs:
         env:
           SEC_CONTACT: ${{ vars.SEC_CONTACT }}
         run: python scripts/supply-chain/probe_form_sd_no_list.py
+
+  # 点开指定几家申报的**每一份文档正文**。nolist 那条只列文件清单，回答不了
+  # 「文件里到底有没有名单」——洛马／埃森哲／丹纳赫的报告 33–34KB 却 <table>0，
+  # 只数标签只能说明「没有 HTML 表格」，不能说明「没有名单」：名单可能排成
+  # 段落或列表，也可能是张图。麦当劳那份 493KB 的 PDF 同理，现有规则整份跳过。
+  # **先探后建**：接 PDF 之前先看清 PDF 里有没有东西。
+  body:
+    name: 有申报无名单 · 点开正文看名单在不在
+    if: ${{ inputs.only == '' || contains(inputs.only, 'body') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate extraction rules (offline)
+        run: python scripts/validate_supply_chain_extraction.py
+
+      - name: Print raw document bodies of selected filings
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: |
+          if [ -n '${{ inputs.body_status }}' ]; then
+            # 按状态取样：要看的是这一档的**分布**，不是我挑出来的那几家。
+            # --quiet 只留文件清单与收尾汇总，否则几十家的正文会把日志撑爆。
+            python scripts/supply-chain/probe_form_sd_body.py \
+              --from-status '${{ inputs.body_status }}' \
+              --limit '${{ inputs.body_limit }}' --max-docs 2 --quiet
+          else
+            python scripts/supply-chain/probe_form_sd_body.py \
+              --tickers '${{ inputs.body_tickers }}' --max-docs 3
+          fi
 
   # Form SD 抽取器上线前的人工核对关口。**dry-run，不写任何文件。**
   # 上一轮的教训：探针的自动结论说「可进入抽取器开发」，但把抽出来的名字打出来
