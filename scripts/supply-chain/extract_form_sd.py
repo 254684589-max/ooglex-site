@@ -59,6 +59,9 @@ UA = f"Ooglex Supply Chain Research/1.0 ({CONTACT})"
 
 IDENTITY_PATH = "apps/supply-chain/identity.json"
 SP500_PATH = "apps/companies/sp500.json"
+# 第二个公司池：在美上市的外国私人发行人里同时报 Form SD 的那一批，
+# 由 fetch_foreign_identity.py 生成。缺失时只扫标普那一池，不中断。
+FOREIGN_PATH = "apps/supply-chain/foreign.json"
 OUT_DIR = "apps/supply-chain/edges"
 SMELTERS_PATH = "apps/supply-chain/smelters.json"
 
@@ -384,7 +387,7 @@ def main() -> int:
 
     with open(IDENTITY_PATH, encoding="utf-8") as handle:
         identity = (json.load(handle) or {}).get("companies") or {}
-    names = {}
+    names: dict[str, str | None] = {}
     try:
         with open(SP500_PATH, encoding="utf-8") as handle:
             names = {m["symbol"]: m.get("name") for m in
@@ -392,11 +395,31 @@ def main() -> int:
     except (OSError, ValueError):
         pass
 
+    # ── 第二个公司池：外国私人发行人 ────────────────────────────────────
+    # 探针与 dry-run 都证过这批公司抽得出名单（索尼 322 家、台积电 190 家、
+    # 丰田 226 家）。这里把它们接进正式抽取路径，与标普那池同一套解析规则。
+    foreign: dict[str, dict] = {}
+    try:
+        with open(FOREIGN_PATH, encoding="utf-8") as handle:
+            foreign = (json.load(handle) or {}).get("companies") or {}
+    except (OSError, ValueError):
+        pass
+    pool_of: dict[str, str] = {t: "sp500" for t in identity}
+    for symbol, row in foreign.items():
+        # 代码撞了以标普那侧为准。撞码不会报错，只会让一家美国公司的边
+        # 悄悄挂到外国公司名下——节点那侧同样这么挡。
+        if symbol in identity:
+            continue
+        pool_of[symbol] = "sec-foreign-issuer"
+        names.setdefault(symbol, row.get("name"))
+
     wanted = [t.strip().upper() for t in args.tickers.split(",") if t.strip()]
     if "ALL" in wanted:
         wanted = []
-    targets = [(t, v["cik"]) for t, v in sorted(identity.items())
-               if v.get("cik") and (not wanted or t.upper() in wanted)]
+    pairs = [(t, v["cik"]) for t, v in sorted(identity.items()) if v.get("cik")]
+    pairs += [(s, foreign[s]["cik"]) for s in sorted(foreign)
+              if foreign[s].get("cik") and pool_of.get(s) == "sec-foreign-issuer"]
+    targets = [(t, cik) for t, cik in pairs if not wanted or t.upper() in wanted]
 
     # 临时追加的公司。只用于 dry-run 核对，不进任何写盘路径。
     if args.extra_ciks:
@@ -444,7 +467,13 @@ def main() -> int:
         return 0
 
     parser = load_parser()
+    by_pool: dict[str, int] = {}
+    for symbol, _ in targets:
+        by_pool[pool_of.get(symbol, "sp500")] = by_pool.get(
+            pool_of.get(symbol, "sp500"), 0) + 1
     print(f"待处理 {len(targets)} 家"
+          + (f"（标普 {by_pool.get('sp500', 0)} + 外国发行人 "
+             f"{by_pool.get('sec-foreign-issuer', 0)}）" if foreign else "")
           + ("（dry-run，不写文件）" if args.dry_run else "") + "\n")
 
     states: dict[str, list[str]] = {}
@@ -661,6 +690,24 @@ def main() -> int:
                 "failedSymbols": sorted(failed)[:40],
                 # 逐家状态，供页面按板块解释缺口的成因。
                 "filingStatus": dict(sorted(filing_status.items())),
+                # 两个池分开报。合成一个数的话，「有名单 89/495」会变成
+                # 「89/642」——分母悄悄换了，覆盖率看着就掉了一截，
+                # 而实际上是新扫了一批公司，不是原来那批变差了。
+                "byPool": {
+                    pool: {
+                        "scanned": sum(1 for sym, _ in targets
+                                       if pool_of.get(sym, "sp500") == pool),
+                        "withList": sum(1 for sym in listed
+                                        if pool_of.get(sym, "sp500") == pool),
+                        "filedNoList": sum(1 for sym in filed_no_list
+                                           if pool_of.get(sym, "sp500") == pool),
+                        "resourceExtraction": sum(1 for sym in resource_extraction
+                                                  if pool_of.get(sym, "sp500") == pool),
+                        "noFiling": sum(1 for sym in no_filing
+                                        if pool_of.get(sym, "sp500") == pool),
+                    }
+                    for pool in sorted(set(pool_of.values()))
+                },
             }),
             "companiesPublished": len(index),
             "edgesTotal": published_edges,
