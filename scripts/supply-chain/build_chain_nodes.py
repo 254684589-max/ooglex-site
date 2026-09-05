@@ -587,6 +587,8 @@ def build() -> None:
                 "count": counts.get(cid, 0),
                 "edgeCount": chain_edges.get(cid, 0),
             })
+    chain_links = chain_module.chain_links() if chain_module else []
+    chain_cross = dict(chain_module.CROSS_CUTTING) if chain_module else {}
     chain_unclassified = sum(1 for n in nodes if not (n.get("chains") or []))
     chain_multi = sum(1 for n in nodes if len(n.get("chains") or []) > 1)
 
@@ -614,6 +616,12 @@ def build() -> None:
         # 横轴：一级产业链。counts 在这里算好，页面不必遍历 495 个节点再统计。
         # multi 是「同时在多条链上」的家数——这个数不小，是这套模型的常态而非例外。
         "chains": chain_rows,
+        # 链与链之间的上下游。**这是产业结构框架，不是实测的公司间关系**：
+        # 「半导体的上游包含化工」与「半导体属于零部件层」同类，是定义不是断言。
+        # 与 edgeIndex 指向的那两万条严格分开——那些每条都指名申报人与冶炼厂、
+        # 都能点开原始申报。两者在数据、页面、文案三处都不得混为一谈。
+        "chainLinks": chain_links,
+        "chainCrossCutting": chain_cross,
         "nodes": nodes,
         # 每家一个文件，公司页按需拉。索引里带出处链接，不必先下文件才知道有没有边。
         "edgeIndex": edge_index,
@@ -626,6 +634,7 @@ def build() -> None:
             # 横轴覆盖：未归类的家数要露出来，为 0 才说明这张表覆盖到了全部申报码。
             "chainsTotal": len(chain_rows),
             "chainUnclassified": chain_unclassified,
+            "chainLinksTotal": len(chain_links),
             "chainMulti": chain_multi,
             "nodesTotal": len(nodes),
             "nodesWithEdges": sum(1 for n in nodes if n["edgeCount"]),
@@ -719,6 +728,9 @@ def build() -> None:
           f"（契约已逐条校验）")
     if edges_by_source:
         print(f"  边的出处：{edges_by_source}")
+    if chain_rows:
+        print(f"  横轴：{len(chain_rows)} 条一级产业链，链间上下游 {len(chain_links)} 条"
+              f"（框架，非实测关系）；{len(chain_cross)} 条标为横跨全链")
     if form_sd_coverage:
         print(f"  Form SD：有名单 {form_sd_coverage.get('companiesWithList')} 家 · "
               f"有申报无名单 {form_sd_coverage.get('companiesFiledNoList')} 家 · "

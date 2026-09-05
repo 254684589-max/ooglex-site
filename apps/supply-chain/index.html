@@ -153,6 +153,39 @@
 .chainpick .chip .cl { font-size:13px; }
 .chainpick .chip .cc { font-size:11px; color:var(--dim); }
 .chainpick .chip .ce { font-size:11px; color:var(--faint); }
+
+/* 链间上下游。刻意做成**虚线框**：与实测数据的实线卡片一眼分得开。
+   右上角那枚「产业结构框架」标签不是装饰，是这一块的身份声明。 */
+.chainflow {
+  border:1px dashed var(--line); border-radius:10px;
+  padding:12px 14px; margin:0 0 16px;
+}
+.chainflow .cfhd { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.chainflow .cfhd b { font-size:14px; }
+.chainflow .cfhd .tag {
+  font-size:11px; color:var(--faint);
+  border:1px dashed var(--line); border-radius:999px; padding:1px 7px;
+}
+.chainflow .cfcol { margin:8px 0 0; }
+.chainflow .cfcap { font-size:11px; color:var(--dim); margin-bottom:4px; }
+.chainflow .flowlink {
+  display:flex; align-items:baseline; gap:8px; width:100%;
+  padding:4px 6px; border:0; background:transparent; color:inherit;
+  font:inherit; text-align:left; cursor:pointer; border-radius:6px;
+}
+.chainflow .flowlink:hover { background:rgba(127,127,127,0.12); }
+.chainflow .flowlink .ar { color:var(--faint); flex:none; }
+.chainflow .flowlink .nm { font-size:13px; flex:none; }
+.chainflow .flowlink .fl { font-size:11px; color:var(--dim); }
+.chainflow .cfnote { font-size:11px; color:var(--dim); margin:4px 0; }
+.chainflow .cfwarn {
+  font-size:11px; color:var(--faint); line-height:1.6;
+  margin-top:10px; padding-top:8px; border-top:1px dashed var(--line);
+}
+@media (max-width:640px) {
+  .chainflow .flowlink { flex-wrap:wrap; gap:2px 8px; }
+  .chainflow .flowlink .fl { flex-basis:100%; padding-left:18px; }
+}
 /* 筛链之后没覆盖到的环节：画出来但压暗。藏起来会让人以为这条链就这么短。 */
 .band.empty { opacity:.42; }
 .band.empty .bandhd { cursor:default; }
@@ -311,6 +344,9 @@
   <!-- 同一个 SIC 大类会在多个环节里出现（化工既有工业气体也有成药），
        这不是重复，是行业本身跨链。不说明的话读者会当成 bug。 -->
   <p class="chain-note" id="chain-note"></p>
+  <!-- 链间上下游。单独一块、单独的样式、单独一句说明：它是产业结构框架，
+       与那两万条能点开原始申报的关系不在同一个视觉层里，也不许被读成同一类。 -->
+  <div class="chainflow" id="chainflow" hidden aria-label="本链的上下游"></div>
   <div class="bands" id="chain"></div>
 
   <div class="offlabel">链外环节 · 不在实物流转链条上</div>
@@ -339,6 +375,6 @@
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="app.js?v=fb660e6e" defer></script>
+<script src="app.js?v=ede4b142" defer></script>
 </body>
 </html>
