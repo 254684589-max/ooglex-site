@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-05T11:04:08Z",
+  "updatedAt": "2026-09-05T11:40:55Z",
   "asOf": "2026-09-04",
   "frequency": "daily",
   "status": "ok",
@@ -120,7 +120,7 @@
       "label": "采矿与金属",
       "labelEn": "Mining & Metals",
       "count": 55,
-      "edgeCount": 123,
+      "edgeCount": 61,
       "layer": 2
     },
     {
@@ -160,7 +160,7 @@
       "label": "建筑与建材",
       "labelEn": "Construction & Building",
       "count": 25,
-      "edgeCount": 28,
+      "edgeCount": 23,
       "layer": 5
     },
     {
@@ -1356,7 +1356,7 @@
       "chainNote": "工业机械与设备；计算机与外围设备",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "GOOGL",
@@ -1394,7 +1394,7 @@
       "chainNote": "计算机编程与数据处理",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MSFT",
@@ -1508,7 +1508,7 @@
       "chainNote": "半导体与相关器件",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "META",
@@ -1546,7 +1546,7 @@
       "chainNote": "计算机编程与数据处理",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "TSLA",
@@ -2041,7 +2041,7 @@
       "chainNote": "预打包软件",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ABBV",
@@ -2079,7 +2079,7 @@
       "chainNote": "成药制剂",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "BAC",
@@ -2424,7 +2424,7 @@
       "chainNote": "成药制剂",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "AMAT",
@@ -2539,7 +2539,7 @@
       "chainNote": "电气设备与元件",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "DELL",
@@ -2731,7 +2731,7 @@
       "chainNote": "零售贸易",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "GS",
@@ -2960,7 +2960,7 @@
       "chainNote": "电气设备与元件",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ANET",
@@ -3803,7 +3803,7 @@
       "chainNote": "餐饮",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "T",
@@ -4223,7 +4223,7 @@
       "chainNote": "成药制剂",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "WDC",
@@ -4490,7 +4490,7 @@
       "chainNote": "零售贸易",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "NOW",
@@ -5025,7 +5025,7 @@
       "chainNote": "金属制品",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "LMT",
@@ -5714,7 +5714,7 @@
       "chainNote": "药品批发",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ADBE",
@@ -6019,7 +6019,7 @@
       "chainNote": "电力燃气水务",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "TT",
@@ -6786,7 +6786,7 @@
       "chainNote": "医疗与外科器械",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "UPS",
@@ -7130,7 +7130,7 @@
       "chainNote": "预打包软件",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CTAS",
@@ -7206,7 +7206,7 @@
       "chainNote": "汽车整车",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MDLZ",
@@ -7359,7 +7359,7 @@
       "chainNote": "工业机械与设备",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MSI",
@@ -7665,7 +7665,7 @@
       "chainNote": "零售贸易",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CI",
@@ -7934,7 +7934,7 @@
       "chainNote": "医疗与外科器械",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CL",
@@ -8624,7 +8624,7 @@
       "chainNote": "药品批发",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "TFC",
@@ -8893,7 +8893,7 @@
       "chainNote": "天然气长输管道",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "TEL",
@@ -9353,7 +9353,7 @@
       "chainNote": "汽车整车",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "O",
@@ -9429,7 +9429,7 @@
       "chainNote": "零售贸易",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "NKE",
@@ -9583,7 +9583,7 @@
       "chainNote": "电学测量仪器",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "KEYS",
@@ -9621,7 +9621,7 @@
       "chainNote": "测量与控制仪器",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "SRE",
@@ -9736,7 +9736,7 @@
       "chainNote": "测量与控制仪器",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CRWD",
@@ -9851,7 +9851,7 @@
       "chainNote": "仪器仪表；搜索、导航与航空系统",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "PSA",
@@ -9966,7 +9966,7 @@
       "chainNote": "医疗与外科器械",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "WDAY",
@@ -10157,7 +10157,7 @@
       "chainNote": "暖通空调与商用制冷",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "XYZ",
@@ -10195,7 +10195,7 @@
       "chainNote": "预打包软件",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ETR",
@@ -11193,7 +11193,7 @@
       "chainNote": "体外诊断试剂：既是药企产品也是医疗服务投入",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MSCI",
@@ -11347,7 +11347,7 @@
       "chainNote": "测量与控制仪器",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ADM",
@@ -11806,7 +11806,7 @@
       "chainNote": "香水与化妆品",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "PEG",
@@ -11999,7 +11999,7 @@
       "chainNote": "香水与化妆品",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MTB",
@@ -12114,7 +12114,7 @@
       "chainNote": "钢铁冶炼：建筑与制造共同的上游",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "IRM",
@@ -12572,7 +12572,7 @@
       "chainNote": "电气工程施工：电网与数据中心的建设方",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "RMD",
@@ -12726,7 +12726,7 @@
       "chainNote": "印制电路板",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "BIIB",
@@ -12840,7 +12840,7 @@
       "chainNote": "成药制剂",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "WTW",
@@ -13069,7 +13069,7 @@
       "chainNote": "油气开采与油服",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "MLM",
@@ -13146,7 +13146,7 @@
       "chainNote": "工业机械与设备",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CFG",
@@ -13261,7 +13261,7 @@
       "chainNote": "工业机械与设备；计算机与外围设备",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "KHC",
@@ -13643,7 +13643,7 @@
       "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "DTE",
@@ -14179,7 +14179,7 @@
       "chainNote": "实验室分析仪器：药企与医院共同的上游",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "VRSN",
@@ -14675,7 +14675,7 @@
       "chainNote": "半导体与相关器件",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "PFG",
@@ -14981,7 +14981,7 @@
       "chainNote": "皮革与鞋类",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "HUBB",
@@ -15745,7 +15745,7 @@
       "chainNote": "医疗与外科器械",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "GPN",
@@ -15783,7 +15783,7 @@
       "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "EIX",
@@ -16165,7 +16165,7 @@
       "chainNote": "其他制造业",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "LEN",
@@ -16470,7 +16470,7 @@
       "chainNote": "金属制品",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "VTRS",
@@ -18107,7 +18107,7 @@
       "chainNote": "实验室分析仪器：药企与医院共同的上游",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "DOC",
@@ -18451,7 +18451,7 @@
       "chainNote": "暖通空调与商用制冷",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "COO",
@@ -18490,7 +18490,7 @@
       "chainNote": "眼科用品",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ALLE",
@@ -18794,7 +18794,7 @@
       "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "IT",
@@ -19521,7 +19521,7 @@
       "chainNote": "电机与发电机",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "BXP",
@@ -19788,7 +19788,7 @@
       "chainNote": "医疗器械批发",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "FRT",
@@ -19902,7 +19902,7 @@
       "chainNote": "工业机械与设备",
       "pool": "sp500",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "WYNN",
@@ -20246,8 +20246,8 @@
       ],
       "chainBasis": "sic-range",
       "chainNote": "金属矿开采",
-      "edgeCount": 2,
-      "formSdStatus": "listed"
+      "edgeCount": 0,
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "AEM",
@@ -20286,8 +20286,8 @@
       ],
       "chainBasis": "sic-range",
       "chainNote": "金属矿开采",
-      "edgeCount": 1,
-      "formSdStatus": "listed"
+      "edgeCount": 0,
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "AG",
@@ -20408,7 +20408,7 @@
       "chainBasis": "sic-exact",
       "chainNote": "眼科用品",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ALLT",
@@ -20610,8 +20610,8 @@
       ],
       "chainBasis": "sic-range",
       "chainNote": "金属矿开采",
-      "edgeCount": 1,
-      "formSdStatus": "listed"
+      "edgeCount": 0,
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "ASML",
@@ -20692,7 +20692,7 @@
       "chainBasis": "sic-exact",
       "chainNote": "成药制剂",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ASX",
@@ -20772,7 +20772,7 @@
       "chainBasis": "sic-range",
       "chainNote": "金属矿开采",
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "AUDC",
@@ -21013,7 +21013,7 @@
       "chainBasis": "sic-range",
       "chainNote": "皮革与鞋类",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "BLDP",
@@ -21294,7 +21294,7 @@
       "chainBasis": "sic-range",
       "chainNote": "食品饮料",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CAE",
@@ -21495,7 +21495,7 @@
       "chainBasis": "sic-exact",
       "chainNote": "预打包软件",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CHT",
@@ -21696,7 +21696,7 @@
       "chainBasis": "sic-exact",
       "chainNote": "半导体与相关器件",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "CX",
@@ -21777,7 +21777,7 @@
       "chainBasis": "sic-exact",
       "chainNote": "发动机与涡轮：发电设备",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "DOO",
@@ -21817,7 +21817,7 @@
       "chainBasis": "sic-range",
       "chainNote": "其他运输工具",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "DRD",
@@ -21937,7 +21937,7 @@
       "chainBasis": "sic-range",
       "chainNote": "橡胶与塑料制品",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "E",
@@ -22218,8 +22218,8 @@
       ],
       "chainBasis": "sic-range",
       "chainNote": "金属矿开采",
-      "edgeCount": 24,
-      "formSdStatus": "listed"
+      "edgeCount": 0,
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "ERIC",
@@ -22500,8 +22500,8 @@
       ],
       "chainBasis": "sic-exact",
       "chainNote": "非金属矿采：砂石骨料主要供建筑",
-      "edgeCount": 5,
-      "formSdStatus": "listed"
+      "edgeCount": 0,
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "GFS",
@@ -22621,7 +22621,7 @@
       "chainBasis": "sic-range",
       "chainNote": "服装",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "GILT",
@@ -22702,7 +22702,7 @@
       "chainBasis": "sic-range",
       "chainNote": "服装",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "GPRK",
@@ -22782,7 +22782,7 @@
       "chainBasis": "sic-exact",
       "chainNote": "成药制剂",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "GSM",
@@ -22943,7 +22943,7 @@
       "chainBasis": "sic-exact",
       "chainNote": "香水与化妆品",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "HMC",
@@ -23022,8 +23022,8 @@
       ],
       "chainBasis": "sic-range",
       "chainNote": "金属矿开采",
-      "edgeCount": 14,
-      "formSdStatus": "listed"
+      "edgeCount": 0,
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "HSLV",
@@ -23183,7 +23183,7 @@
       "chainBasis": "sic-range",
       "chainNote": "汽车整车；汽车零部件",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "ISOU",
@@ -23304,7 +23304,7 @@
       "chainBasis": "sic-range",
       "chainNote": "银行、券商与保险",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "JKS",
@@ -23344,7 +23344,7 @@
       "chainBasis": "sic-exact",
       "chainNote": "半导体与相关器件",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "KARO",
@@ -23384,7 +23384,7 @@
       "chainBasis": "sic-exact",
       "chainNote": "预打包软件",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "KRNT",
@@ -23785,8 +23785,8 @@
       ],
       "chainBasis": "sic-range",
       "chainNote": "金属矿开采",
-      "edgeCount": 1,
-      "formSdStatus": "listed"
+      "edgeCount": 0,
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "NICE",
@@ -24390,7 +24390,7 @@
       "chainBasis": "sic-range",
       "chainNote": "汽车整车",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "RDWR",
@@ -24589,8 +24589,8 @@
       ],
       "chainBasis": "sic-range",
       "chainNote": "金属矿开采",
-      "edgeCount": 4,
-      "formSdStatus": "listed"
+      "edgeCount": 0,
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "SBSW",
@@ -24629,8 +24629,8 @@
       ],
       "chainBasis": "sic-range",
       "chainNote": "金属矿开采",
-      "edgeCount": 10,
-      "formSdStatus": "listed"
+      "edgeCount": 0,
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "SHEL",
@@ -24952,7 +24952,7 @@
       "chainBasis": "sic-exact",
       "chainNote": "成药制剂",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "SONY",
@@ -25153,7 +25153,7 @@
       "chainBasis": "sic-range",
       "chainNote": "汽车整车",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "STM",
@@ -25233,7 +25233,7 @@
       "chainBasis": "sic-range",
       "chainNote": "医疗与外科器械",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "SU",
@@ -25435,7 +25435,7 @@
       "chainBasis": "sic-exact",
       "chainNote": "非金属矿采：砂石骨料主要供建筑",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "TGB",
@@ -25716,7 +25716,7 @@
       "chainBasis": "sic-exact",
       "chainNote": "半导体与相关器件",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "TSM",
@@ -25997,7 +25997,7 @@
       "chainBasis": "sic-exact",
       "chainNote": "无线通信",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "WPRT",
@@ -26119,7 +26119,7 @@
       "chainBasis": "sic-range",
       "chainNote": "服装",
       "edgeCount": 0,
-      "formSdStatus": "resource-extraction"
+      "formSdStatus": "filed-no-list"
     }
   ],
   "edgeIndex": {
@@ -26130,26 +26130,12 @@
       "filingDate": "2026-05-29",
       "url": "https://www.sec.gov/Archives/edgar/data/1090872/000119312526248281/a-ex1_01.htm"
     },
-    "AAUC": {
-      "file": "edges/AAUC.json",
-      "count": 2,
-      "relation": "smelter-in-supply-chain",
-      "filingDate": "2026-08-17",
-      "url": "https://www.sec.gov/Archives/edgar/data/1993344/000110465926097896/aauc-20260817xsd.htm"
-    },
     "ADI": {
       "file": "edges/ADI.json",
       "count": 222,
       "relation": "smelter-in-supply-chain",
       "filingDate": "2026-05-22",
       "url": "https://www.sec.gov/Archives/edgar/data/6281/000119312526235474/d130534dex101.htm"
-    },
-    "AEM": {
-      "file": "edges/AEM.json",
-      "count": 1,
-      "relation": "smelter-in-supply-chain",
-      "filingDate": "2026-06-01",
-      "url": "https://www.sec.gov/Archives/edgar/data/2809/000110465926068824/R2.htm"
     },
     "ALGN": {
       "file": "edges/ALGN.json",
@@ -26213,13 +26199,6 @@
       "relation": "smelter-in-supply-chain",
       "filingDate": "2026-05-28",
       "url": "https://www.sec.gov/Archives/edgar/data/1521332/000152133226000051/aptv123125cmrex101.htm"
-    },
-    "ASM": {
-      "file": "edges/ASM.json",
-      "count": 1,
-      "relation": "smelter-in-supply-chain",
-      "filingDate": "2026-09-03",
-      "url": "https://www.sec.gov/Archives/edgar/data/316888/000147793226005378/avino_sd.htm"
     },
     "ASX": {
       "file": "edges/ASX.json",
@@ -26417,13 +26396,6 @@
       "filingDate": "2026-05-26",
       "url": "https://www.sec.gov/Archives/edgar/data/1355444/000129281426003177/ex1-01.htm"
     },
-    "EQX": {
-      "file": "edges/EQX.json",
-      "count": 24,
-      "relation": "smelter-in-supply-chain",
-      "filingDate": "2026-06-05",
-      "url": "https://www.sec.gov/Archives/edgar/data/1756607/000106299326003072/R5.htm"
-    },
     "ERIC": {
       "file": "edges/ERIC.json",
       "count": 501,
@@ -26458,13 +26430,6 @@
       "relation": "smelter-in-supply-chain",
       "filingDate": "2026-06-01",
       "url": "https://www.sec.gov/Archives/edgar/data/1274494/000127449426000151/ex101conflictmineralsrepor.htm"
-    },
-    "GAU": {
-      "file": "edges/GAU.json",
-      "count": 5,
-      "relation": "smelter-in-supply-chain",
-      "filingDate": "2026-06-22",
-      "url": "https://www.sec.gov/Archives/edgar/data/1377757/000106299326003278/R5.htm"
     },
     "GEN": {
       "file": "edges/GEN.json",
@@ -26514,13 +26479,6 @@
       "relation": "smelter-in-supply-chain",
       "filingDate": "2026-05-26",
       "url": "https://www.sec.gov/Archives/edgar/data/715153/000119312526237757/d121587dex101.htm"
-    },
-    "HMY": {
-      "file": "edges/HMY.json",
-      "count": 14,
-      "relation": "smelter-in-supply-chain",
-      "filingDate": "2026-01-28",
-      "url": "https://www.sec.gov/Archives/edgar/data/1023514/000162828026003705/hmy-20250630_d2.htm"
     },
     "HON": {
       "file": "edges/HON.json",
@@ -26697,13 +26655,6 @@
       "filingDate": "2026-05-20",
       "url": "https://www.sec.gov/Archives/edgar/data/723125/000072312526000008/exhibit101conflictminerals.htm"
     },
-    "NFGC": {
-      "file": "edges/NFGC.json",
-      "count": 1,
-      "relation": "smelter-in-supply-chain",
-      "filingDate": "2026-07-07",
-      "url": "https://www.sec.gov/Archives/edgar/data/1840616/000110465926081330/nfgc-20260707xsd.htm"
-    },
     "NOK": {
       "file": "edges/NOK.json",
       "count": 330,
@@ -26850,20 +26801,6 @@
       "relation": "smelter-in-supply-chain",
       "filingDate": "2026-06-01",
       "url": "https://www.sec.gov/Archives/edgar/data/101829/000010182926000015/exhibit101-2026x06x01formsd.htm"
-    },
-    "SA": {
-      "file": "edges/SA.json",
-      "count": 4,
-      "relation": "smelter-in-supply-chain",
-      "filingDate": "2026-06-03",
-      "url": "https://www.sec.gov/Archives/edgar/data/1231346/000121390026064558/R5.htm"
-    },
-    "SBSW": {
-      "file": "edges/SBSW.json",
-      "count": 10,
-      "relation": "smelter-in-supply-chain",
-      "filingDate": "2026-04-24",
-      "url": "https://www.sec.gov/Archives/edgar/data/1786909/000162828026027018/sbsw-20251231.htm"
     },
     "SBUX": {
       "file": "edges/SBUX.json",
@@ -27201,15 +27138,15 @@
     "countryTotals": {
       "中国": 7387,
       "日本": 2802,
-      "美国": 2299,
+      "美国": 2291,
       "印度尼西亚": 2049,
       "未归类": 1844,
-      "巴西": 1477,
-      "印度": 1191,
+      "巴西": 1475,
+      "印度": 1190,
       "德国": 1052,
-      "其他": 10937
+      "其他": 10886
     },
-    "distinctCountries": 74,
+    "distinctCountries": 72,
     "stages": [
       {
         "stage": "component",
@@ -27335,21 +27272,12 @@
           "未归类": 141,
           "其他": 3
         }
-      },
-      {
-        "stage": "raw-material",
-        "total": 62,
-        "byCountry": {
-          "美国": 8,
-          "巴西": 2,
-          "印度": 1,
-          "其他": 51
-        }
       }
     ],
     "stagesWithoutEdges": [
       "circular",
-      "logistics"
+      "logistics",
+      "raw-material"
     ],
     "note": "带子宽度是实测关系条数，不是示意。语义与边文件一致：该冶炼厂出现在申报人的供应链中——间接、不含份额、不是直接供货。只覆盖有冶炼厂名单的公司，其余公司不出现在本图中。"
   },
@@ -27363,30 +27291,30 @@
     "poolForeignIssuer": 147,
     "poolForeignSkippedCollision": 0,
     "nodesWithoutQuote": 147,
-    "upstreamPairs": 3929,
-    "upstreamConcentrationTotal": 1272,
+    "upstreamPairs": 3928,
+    "upstreamConcentrationTotal": 1271,
     "chainCounterflow": 6,
     "chainMulti": 150,
     "nodesTotal": 642,
-    "nodesWithEdges": 136,
-    "edgesTotal": 31038,
+    "nodesWithEdges": 127,
+    "edgesTotal": 30976,
     "edgesBySource": {
-      "sec-form-sd": 31038
+      "sec-form-sd": 30976
     },
     "formSd": {
       "claimComplete": false,
       "companiesScanned": 642,
-      "companiesWithList": 136,
-      "companiesFiledNoList": 103,
+      "companiesWithList": 127,
+      "companiesFiledNoList": 186,
       "companiesNoFiling": 256,
-      "companiesResourceExtraction": 147,
+      "companiesResourceExtraction": 73,
       "companiesFailed": 0,
       "failedSymbols": [],
       "filingStatus": {
         "A": "listed",
-        "AAPL": "resource-extraction",
-        "AAUC": "listed",
-        "ABBV": "resource-extraction",
+        "AAPL": "filed-no-list",
+        "AAUC": "resource-extraction",
+        "ABBV": "filed-no-list",
         "ABNB": "no-filing",
         "ABT": "filed-no-list",
         "ACGL": "no-filing",
@@ -27397,7 +27325,7 @@
         "ADP": "no-filing",
         "ADSK": "filed-no-list",
         "AEE": "no-filing",
-        "AEM": "listed",
+        "AEM": "resource-extraction",
         "AEP": "no-filing",
         "AES": "no-filing",
         "AFL": "no-filing",
@@ -27408,15 +27336,15 @@
         "AJG": "no-filing",
         "AKAM": "no-filing",
         "ALB": "filed-no-list",
-        "ALC": "resource-extraction",
+        "ALC": "filed-no-list",
         "ALGN": "listed",
         "ALL": "no-filing",
         "ALLE": "listed",
         "ALLT": "listed",
         "AMAT": "listed",
-        "AMCR": "resource-extraction",
+        "AMCR": "filed-no-list",
         "AMD": "listed",
-        "AME": "resource-extraction",
+        "AME": "filed-no-list",
         "AMGN": "no-filing",
         "AMP": "no-filing",
         "AMT": "no-filing",
@@ -27435,14 +27363,14 @@
         "ARE": "no-filing",
         "ARES": "no-filing",
         "ARM": "filed-no-list",
-        "ASM": "listed",
+        "ASM": "resource-extraction",
         "ASML": "filed-no-list",
-        "ASND": "resource-extraction",
+        "ASND": "filed-no-list",
         "ASX": "listed",
         "ATO": "no-filing",
-        "AU": "filed-no-list",
+        "AU": "resource-extraction",
         "AUDC": "listed",
-        "AVGO": "resource-extraction",
+        "AVGO": "filed-no-list",
         "AVY": "listed",
         "AWK": "no-filing",
         "AXON": "filed-no-list",
@@ -27462,7 +27390,7 @@
         "BGI": "filed-no-list",
         "BHP": "resource-extraction",
         "BIIB": "no-filing",
-        "BIRK": "resource-extraction",
+        "BIRK": "filed-no-list",
         "BKNG": "no-filing",
         "BKR": "listed",
         "BLDP": "listed",
@@ -27475,18 +27403,18 @@
         "BRK-B": "filed-no-list",
         "BRO": "no-filing",
         "BRSL": "listed",
-        "BSX": "resource-extraction",
+        "BSX": "filed-no-list",
         "BTE": "resource-extraction",
         "BTG": "resource-extraction",
         "BTI": "listed",
-        "BUD": "resource-extraction",
+        "BUD": "filed-no-list",
         "BX": "no-filing",
         "BXP": "no-filing",
         "C": "no-filing",
         "CAE": "filed-no-list",
         "CAH": "filed-no-list",
         "CAMT": "listed",
-        "CARR": "resource-extraction",
+        "CARR": "filed-no-list",
         "CASY": "no-filing",
         "CAT": "listed",
         "CB": "no-filing",
@@ -27495,13 +27423,13 @@
         "CCI": "no-filing",
         "CCJ": "resource-extraction",
         "CCL": "filed-no-list",
-        "CDNS": "resource-extraction",
+        "CDNS": "filed-no-list",
         "CDW": "no-filing",
         "CEG": "no-filing",
         "CF": "no-filing",
         "CFG": "no-filing",
         "CGAU": "resource-extraction",
-        "CGNT": "resource-extraction",
+        "CGNT": "filed-no-list",
         "CHD": "filed-no-list",
         "CHRW": "no-filing",
         "CHT": "filed-no-list",
@@ -27523,9 +27451,9 @@
         "COF": "no-filing",
         "COHR": "listed",
         "COIN": "no-filing",
-        "COO": "resource-extraction",
+        "COO": "filed-no-list",
         "COP": "resource-extraction",
-        "COR": "resource-extraction",
+        "COR": "filed-no-list",
         "COST": "listed",
         "CPAY": "no-filing",
         "CPRT": "no-filing",
@@ -27536,8 +27464,8 @@
         "CRNT": "listed",
         "CRWD": "no-filing",
         "CSCO": "listed",
-        "CSGP": "resource-extraction",
-        "CSIQ": "resource-extraction",
+        "CSGP": "filed-no-list",
+        "CSIQ": "filed-no-list",
         "CSX": "no-filing",
         "CTAS": "filed-no-list",
         "CTSH": "no-filing",
@@ -27546,7 +27474,7 @@
         "CVS": "no-filing",
         "CVX": "filed-no-list",
         "CX": "resource-extraction",
-        "CYD": "resource-extraction",
+        "CYD": "filed-no-list",
         "D": "no-filing",
         "DAL": "no-filing",
         "DASH": "no-filing",
@@ -27563,14 +27491,14 @@
         "DLR": "no-filing",
         "DLTR": "no-filing",
         "DOC": "no-filing",
-        "DOO": "resource-extraction",
+        "DOO": "filed-no-list",
         "DOV": "listed",
         "DOW": "listed",
         "DPZ": "no-filing",
         "DRD": "resource-extraction",
         "DRI": "no-filing",
         "DSGX": "filed-no-list",
-        "DSWL": "resource-extraction",
+        "DSWL": "filed-no-list",
         "DTE": "no-filing",
         "DUK": "no-filing",
         "DVA": "no-filing",
@@ -27585,17 +27513,17 @@
         "EG": "no-filing",
         "EGO": "resource-extraction",
         "EIX": "no-filing",
-        "EL": "resource-extraction",
+        "EL": "filed-no-list",
         "ELTK": "listed",
         "ELV": "no-filing",
         "EMBJ": "listed",
-        "EME": "resource-extraction",
+        "EME": "filed-no-list",
         "EMR": "filed-no-list",
         "EOG": "resource-extraction",
         "EQIX": "no-filing",
         "EQNR": "resource-extraction",
         "EQT": "resource-extraction",
-        "EQX": "listed",
+        "EQX": "resource-extraction",
         "ERIC": "listed",
         "ERIE": "no-filing",
         "ERO": "resource-extraction",
@@ -27605,15 +27533,15 @@
         "ETN": "listed",
         "ETR": "no-filing",
         "EVRG": "no-filing",
-        "EW": "resource-extraction",
+        "EW": "filed-no-list",
         "EXC": "no-filing",
         "EXE": "resource-extraction",
         "EXPD": "no-filing",
         "EXPE": "no-filing",
         "EXR": "no-filing",
-        "F": "resource-extraction",
+        "F": "filed-no-list",
         "FANG": "resource-extraction",
-        "FAST": "resource-extraction",
+        "FAST": "filed-no-list",
         "FCX": "resource-extraction",
         "FDS": "no-filing",
         "FDX": "no-filing",
@@ -27622,7 +27550,7 @@
         "FFIV": "listed",
         "FICO": "no-filing",
         "FIS": "no-filing",
-        "FISV": "resource-extraction",
+        "FISV": "filed-no-list",
         "FITB": "no-filing",
         "FIX": "no-filing",
         "FLEX": "listed",
@@ -27634,52 +27562,52 @@
         "FSM": "resource-extraction",
         "FTNT": "filed-no-list",
         "FTV": "filed-no-list",
-        "GAU": "listed",
+        "GAU": "resource-extraction",
         "GD": "filed-no-list",
         "GDDY": "no-filing",
-        "GE": "resource-extraction",
+        "GE": "filed-no-list",
         "GEHC": "filed-no-list",
         "GEN": "listed",
-        "GEV": "resource-extraction",
+        "GEV": "filed-no-list",
         "GFS": "listed",
         "GGB": "filed-no-list",
-        "GIL": "resource-extraction",
+        "GIL": "filed-no-list",
         "GILD": "no-filing",
         "GILT": "listed",
         "GIS": "no-filing",
         "GL": "no-filing",
         "GLW": "listed",
-        "GM": "resource-extraction",
-        "GNRC": "resource-extraction",
-        "GOOGL": "resource-extraction",
-        "GOOS": "resource-extraction",
+        "GM": "filed-no-list",
+        "GNRC": "filed-no-list",
+        "GOOGL": "filed-no-list",
+        "GOOS": "filed-no-list",
         "GPC": "no-filing",
-        "GPN": "resource-extraction",
+        "GPN": "filed-no-list",
         "GPRK": "resource-extraction",
-        "GRMN": "resource-extraction",
+        "GRMN": "filed-no-list",
         "GS": "no-filing",
-        "GSK": "resource-extraction",
+        "GSK": "filed-no-list",
         "GSM": "resource-extraction",
         "GWW": "no-filing",
-        "HAL": "resource-extraction",
+        "HAL": "filed-no-list",
         "HAS": "listed",
         "HBAN": "no-filing",
         "HBM": "resource-extraction",
         "HCA": "no-filing",
-        "HD": "resource-extraction",
+        "HD": "filed-no-list",
         "HIG": "no-filing",
         "HII": "filed-no-list",
         "HIMX": "listed",
-        "HLN": "resource-extraction",
+        "HLN": "filed-no-list",
         "HLT": "no-filing",
         "HMC": "listed",
-        "HMY": "listed",
+        "HMY": "resource-extraction",
         "HON": "listed",
         "HOOD": "no-filing",
         "HPE": "listed",
-        "HPQ": "resource-extraction",
+        "HPQ": "filed-no-list",
         "HRL": "no-filing",
-        "HSIC": "resource-extraction",
+        "HSIC": "filed-no-list",
         "HSLV": "resource-extraction",
         "HST": "no-filing",
         "HSY": "filed-no-list",
@@ -27690,7 +27618,7 @@
         "IBKR": "no-filing",
         "IBM": "filed-no-list",
         "ICE": "no-filing",
-        "IDXX": "resource-extraction",
+        "IDXX": "filed-no-list",
         "IEX": "listed",
         "IFF": "no-filing",
         "IMOS": "filed-no-list",
@@ -27698,30 +27626,30 @@
         "INTC": "listed",
         "INTU": "listed",
         "INVH": "no-filing",
-        "INVZ": "resource-extraction",
+        "INVZ": "filed-no-list",
         "IP": "no-filing",
         "IQV": "no-filing",
-        "IR": "resource-extraction",
+        "IR": "filed-no-list",
         "IRM": "no-filing",
         "ISOU": "resource-extraction",
         "ISRG": "listed",
         "IT": "no-filing",
         "ITRN": "listed",
-        "ITW": "resource-extraction",
+        "ITW": "filed-no-list",
         "IVZ": "no-filing",
-        "IX": "resource-extraction",
+        "IX": "filed-no-list",
         "J": "filed-no-list",
         "JBHT": "no-filing",
-        "JBL": "resource-extraction",
+        "JBL": "filed-no-list",
         "JCI": "filed-no-list",
         "JKHY": "no-filing",
-        "JKS": "resource-extraction",
+        "JKS": "filed-no-list",
         "JNJ": "filed-no-list",
         "JPM": "no-filing",
-        "KARO": "resource-extraction",
+        "KARO": "filed-no-list",
         "KDP": "listed",
         "KEY": "no-filing",
-        "KEYS": "resource-extraction",
+        "KEYS": "filed-no-list",
         "KHC": "no-filing",
         "KIM": "no-filing",
         "KKR": "no-filing",
@@ -27731,7 +27659,7 @@
         "KO": "no-filing",
         "KR": "filed-no-list",
         "KRNT": "listed",
-        "KVUE": "resource-extraction",
+        "KVUE": "filed-no-list",
         "L": "no-filing",
         "LAR": "resource-extraction",
         "LDOS": "filed-no-list",
@@ -27739,7 +27667,7 @@
         "LGO": "resource-extraction",
         "LH": "filed-no-list",
         "LHX": "filed-no-list",
-        "LII": "resource-extraction",
+        "LII": "filed-no-list",
         "LIN": "filed-no-list",
         "LITE": "listed",
         "LLY": "filed-no-list",
@@ -27758,26 +27686,26 @@
         "MAKO": "resource-extraction",
         "MAR": "no-filing",
         "MAS": "listed",
-        "MCD": "resource-extraction",
+        "MCD": "filed-no-list",
         "MCHP": "listed",
-        "MCK": "resource-extraction",
+        "MCK": "filed-no-list",
         "MCO": "no-filing",
         "MDLZ": "no-filing",
         "MDT": "listed",
         "MET": "no-filing",
-        "META": "resource-extraction",
+        "META": "filed-no-list",
         "MGA": "filed-no-list",
         "MGM": "no-filing",
         "MINE": "resource-extraction",
         "MKC": "no-filing",
         "MLM": "resource-extraction",
-        "MMM": "resource-extraction",
+        "MMM": "filed-no-list",
         "MNST": "no-filing",
         "MO": "listed",
         "MOS": "filed-no-list",
         "MPC": "no-filing",
         "MPWR": "listed",
-        "MRK": "resource-extraction",
+        "MRK": "filed-no-list",
         "MRNA": "no-filing",
         "MRSH": "no-filing",
         "MRVL": "filed-no-list",
@@ -27795,7 +27723,7 @@
         "NDSN": "filed-no-list",
         "NEE": "resource-extraction",
         "NEM": "resource-extraction",
-        "NFGC": "listed",
+        "NFGC": "resource-extraction",
         "NFLX": "no-filing",
         "NI": "no-filing",
         "NICE": "filed-no-list",
@@ -27824,7 +27752,7 @@
         "OKE": "resource-extraction",
         "OMC": "no-filing",
         "ON": "listed",
-        "ORCL": "resource-extraction",
+        "ORCL": "filed-no-list",
         "ORLY": "no-filing",
         "OTIS": "listed",
         "OXY": "resource-extraction",
@@ -27835,11 +27763,11 @@
         "PCG": "no-filing",
         "PEG": "no-filing",
         "PEP": "listed",
-        "PFE": "resource-extraction",
+        "PFE": "filed-no-list",
         "PFG": "no-filing",
         "PG": "filed-no-list",
         "PGR": "no-filing",
-        "PH": "resource-extraction",
+        "PH": "filed-no-list",
         "PHG": "listed",
         "PHM": "no-filing",
         "PKG": "no-filing",
@@ -27848,7 +27776,7 @@
         "PLTR": "no-filing",
         "PM": "filed-no-list",
         "PNC": "no-filing",
-        "PNR": "resource-extraction",
+        "PNR": "filed-no-list",
         "PNW": "no-filing",
         "PODD": "filed-no-list",
         "PPG": "listed",
@@ -27861,10 +27789,10 @@
         "PTC": "no-filing",
         "PWR": "listed",
         "PYPL": "no-filing",
-        "Q": "resource-extraction",
+        "Q": "filed-no-list",
         "QCOM": "listed",
         "QGEN": "filed-no-list",
-        "RACE": "resource-extraction",
+        "RACE": "filed-no-list",
         "RCL": "no-filing",
         "RDWR": "listed",
         "REG": "no-filing",
@@ -27876,16 +27804,16 @@
         "RMD": "filed-no-list",
         "ROK": "listed",
         "ROL": "no-filing",
-        "ROP": "resource-extraction",
+        "ROP": "filed-no-list",
         "ROST": "filed-no-list",
         "RSG": "no-filing",
         "RTNTF": "resource-extraction",
         "RTO": "listed",
         "RTX": "listed",
-        "RVTY": "resource-extraction",
-        "SA": "listed",
+        "RVTY": "filed-no-list",
+        "SA": "resource-extraction",
         "SBAC": "no-filing",
-        "SBSW": "listed",
+        "SBSW": "resource-extraction",
         "SBUX": "listed",
         "SCHW": "no-filing",
         "SHEL": "resource-extraction",
@@ -27897,13 +27825,13 @@
         "SJM": "no-filing",
         "SLB": "resource-extraction",
         "SMCI": "listed",
-        "SNA": "resource-extraction",
+        "SNA": "filed-no-list",
         "SNDK": "listed",
         "SNN": "listed",
         "SNPS": "filed-no-list",
         "SNT": "listed",
-        "SNY": "resource-extraction",
-        "SO": "resource-extraction",
+        "SNY": "filed-no-list",
+        "SO": "filed-no-list",
         "SOLV": "filed-no-list",
         "SONY": "listed",
         "SPG": "no-filing",
@@ -27912,12 +27840,12 @@
         "SRE": "resource-extraction",
         "SSL": "filed-no-list",
         "SSYS": "listed",
-        "STE": "resource-extraction",
-        "STLA": "resource-extraction",
-        "STLD": "resource-extraction",
+        "STE": "filed-no-list",
+        "STLA": "filed-no-list",
+        "STLD": "filed-no-list",
         "STM": "listed",
         "STT": "no-filing",
-        "STVN": "resource-extraction",
+        "STVN": "filed-no-list",
         "STX": "listed",
         "STZ": "no-filing",
         "SU": "resource-extraction",
@@ -27935,29 +27863,29 @@
         "TDG": "filed-no-list",
         "TDY": "filed-no-list",
         "TECH": "filed-no-list",
-        "TECK": "resource-extraction",
+        "TECK": "filed-no-list",
         "TEL": "listed",
-        "TER": "resource-extraction",
+        "TER": "filed-no-list",
         "TFC": "no-filing",
         "TGB": "resource-extraction",
-        "TGT": "resource-extraction",
+        "TGT": "filed-no-list",
         "TII": "resource-extraction",
-        "TJX": "resource-extraction",
+        "TJX": "filed-no-list",
         "TKC": "filed-no-list",
         "TKO": "no-filing",
         "TM": "listed",
         "TMO": "filed-no-list",
         "TMUS": "listed",
         "TPL": "no-filing",
-        "TPR": "resource-extraction",
-        "TRGP": "resource-extraction",
+        "TPR": "filed-no-list",
+        "TRGP": "filed-no-list",
         "TRMB": "listed",
         "TROW": "no-filing",
         "TRV": "no-filing",
         "TRX": "resource-extraction",
         "TS": "filed-no-list",
         "TSCO": "listed",
-        "TSEM": "resource-extraction",
+        "TSEM": "filed-no-list",
         "TSLA": "filed-no-list",
         "TSM": "listed",
         "TSN": "no-filing",
@@ -27988,7 +27916,7 @@
         "VLO": "no-filing",
         "VLTO": "filed-no-list",
         "VMC": "resource-extraction",
-        "VOD": "resource-extraction",
+        "VOD": "filed-no-list",
         "VRSK": "no-filing",
         "VRSN": "no-filing",
         "VRT": "listed",
@@ -27998,7 +27926,7 @@
         "VTRS": "no-filing",
         "VZ": "no-filing",
         "WAB": "listed",
-        "WAT": "resource-extraction",
+        "WAT": "filed-no-list",
         "WBD": "no-filing",
         "WDAY": "no-filing",
         "WDC": "listed",
@@ -28018,38 +27946,38 @@
         "XEL": "no-filing",
         "XOM": "no-filing",
         "XYL": "listed",
-        "XYZ": "resource-extraction",
+        "XYZ": "filed-no-list",
         "YPF": "resource-extraction",
         "YUM": "no-filing",
         "ZBH": "listed",
         "ZBRA": "listed",
-        "ZGN": "resource-extraction",
-        "ZTS": "resource-extraction"
+        "ZGN": "filed-no-list",
+        "ZTS": "filed-no-list"
       },
       "byPool": {
         "sec-foreign-issuer": {
           "scanned": 147,
-          "withList": 46,
-          "filedNoList": 31,
-          "resourceExtraction": 70,
+          "withList": 37,
+          "filedNoList": 55,
+          "resourceExtraction": 55,
           "noFiling": 0
         },
         "sp500": {
           "scanned": 495,
           "withList": 90,
-          "filedNoList": 72,
-          "resourceExtraction": 77,
+          "filedNoList": 131,
+          "resourceExtraction": 18,
           "noFiling": 256
         }
       },
-      "companiesPublished": 136,
-      "edgesTotal": 31038,
-      "uniqueSmelters": 1826,
+      "companiesPublished": 127,
+      "edgesTotal": 30976,
+      "uniqueSmelters": 1765,
       "exactNameMatchWithCid": 682,
-      "distinctAfterExactNameMatch": 1144,
+      "distinctAfterExactNameMatch": 1083,
       "uniqueByIdentifier": {
         "rmi-cid": 848,
-        "name-only": 978
+        "name-only": 917
       },
       "note": "Form SD 强制申报、不强制列名单：有申报无名单的公司如实单列，不并入「无申报」。覆盖率因此永远到不了 100%，这是披露制度本身的上限，不是抓取缺陷。"
     },
@@ -28059,9 +27987,9 @@
         "sectorEn": "Information Technology",
         "companies": 84,
         "withEdges": 34,
-        "filedNoList": 14,
+        "filedNoList": 26,
         "noFiling": 24,
-        "resourceExtraction": 12,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28070,9 +27998,9 @@
         "sectorEn": "Industrials",
         "companies": 76,
         "withEdges": 20,
-        "filedNoList": 20,
+        "filedNoList": 35,
         "noFiling": 21,
-        "resourceExtraction": 15,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28092,9 +28020,9 @@
         "sectorEn": "Health Care",
         "companies": 59,
         "withEdges": 9,
-        "filedNoList": 15,
+        "filedNoList": 29,
         "noFiling": 21,
-        "resourceExtraction": 14,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28103,9 +28031,9 @@
         "sectorEn": "Consumer Discretionary",
         "companies": 53,
         "withEdges": 9,
-        "filedNoList": 8,
+        "filedNoList": 15,
         "noFiling": 29,
-        "resourceExtraction": 7,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28114,9 +28042,9 @@
         "sectorEn": "Consumer Staples",
         "companies": 33,
         "withEdges": 7,
-        "filedNoList": 6,
+        "filedNoList": 9,
         "noFiling": 17,
-        "resourceExtraction": 3,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28125,9 +28053,9 @@
         "sectorEn": "Industrials",
         "companies": 32,
         "withEdges": 1,
-        "filedNoList": 0,
+        "filedNoList": 2,
         "noFiling": 27,
-        "resourceExtraction": 4,
+        "resourceExtraction": 2,
         "failed": 0,
         "unscanned": 0
       },
@@ -28136,9 +28064,9 @@
         "sectorEn": "Real Estate",
         "companies": 29,
         "withEdges": 0,
-        "filedNoList": 0,
+        "filedNoList": 1,
         "noFiling": 28,
-        "resourceExtraction": 1,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28147,9 +28075,9 @@
         "sectorEn": "Energy",
         "companies": 22,
         "withEdges": 2,
-        "filedNoList": 2,
+        "filedNoList": 4,
         "noFiling": 5,
-        "resourceExtraction": 13,
+        "resourceExtraction": 11,
         "failed": 0,
         "unscanned": 0
       },
@@ -28158,9 +28086,9 @@
         "sectorEn": "Materials",
         "companies": 20,
         "withEdges": 5,
-        "filedNoList": 6,
+        "filedNoList": 7,
         "noFiling": 3,
-        "resourceExtraction": 6,
+        "resourceExtraction": 5,
         "failed": 0,
         "unscanned": 0
       },
@@ -28169,9 +28097,9 @@
         "sectorEn": "Communication Services",
         "companies": 17,
         "withEdges": 3,
-        "filedNoList": 0,
+        "filedNoList": 2,
         "noFiling": 12,
-        "resourceExtraction": 2,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       }
@@ -28181,10 +28109,10 @@
         "sector": "Ontario, Canada",
         "sectorEn": null,
         "companies": 17,
-        "withEdges": 4,
-        "filedNoList": 2,
+        "withEdges": 1,
+        "filedNoList": 4,
         "noFiling": 0,
-        "resourceExtraction": 11,
+        "resourceExtraction": 12,
         "failed": 0,
         "unscanned": 0
       },
@@ -28192,10 +28120,10 @@
         "sector": "British Columbia, Canada",
         "sectorEn": null,
         "companies": 17,
-        "withEdges": 4,
-        "filedNoList": 1,
+        "withEdges": 0,
+        "filedNoList": 2,
         "noFiling": 0,
-        "resourceExtraction": 12,
+        "resourceExtraction": 15,
         "failed": 0,
         "unscanned": 0
       },
@@ -28204,9 +28132,9 @@
         "sectorEn": null,
         "companies": 16,
         "withEdges": 11,
-        "filedNoList": 2,
+        "filedNoList": 5,
         "noFiling": 0,
-        "resourceExtraction": 3,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28214,10 +28142,10 @@
         "sector": "未分类",
         "sectorEn": null,
         "companies": 16,
-        "withEdges": 6,
-        "filedNoList": 3,
+        "withEdges": 5,
+        "filedNoList": 6,
         "noFiling": 0,
-        "resourceExtraction": 7,
+        "resourceExtraction": 5,
         "failed": 0,
         "unscanned": 0
       },
@@ -28226,9 +28154,9 @@
         "sectorEn": null,
         "companies": 9,
         "withEdges": 2,
-        "filedNoList": 2,
+        "filedNoList": 3,
         "noFiling": 0,
-        "resourceExtraction": 5,
+        "resourceExtraction": 4,
         "failed": 0,
         "unscanned": 0
       },
@@ -28237,9 +28165,9 @@
         "sectorEn": null,
         "companies": 6,
         "withEdges": 3,
-        "filedNoList": 2,
+        "filedNoList": 3,
         "noFiling": 0,
-        "resourceExtraction": 1,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28270,9 +28198,9 @@
         "sectorEn": null,
         "companies": 4,
         "withEdges": 1,
-        "filedNoList": 0,
+        "filedNoList": 1,
         "noFiling": 0,
-        "resourceExtraction": 3,
+        "resourceExtraction": 2,
         "failed": 0,
         "unscanned": 0
       },
@@ -28281,9 +28209,9 @@
         "sectorEn": null,
         "companies": 4,
         "withEdges": 2,
-        "filedNoList": 1,
+        "filedNoList": 2,
         "noFiling": 0,
-        "resourceExtraction": 1,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28292,9 +28220,9 @@
         "sectorEn": null,
         "companies": 3,
         "withEdges": 0,
-        "filedNoList": 2,
+        "filedNoList": 3,
         "noFiling": 0,
-        "resourceExtraction": 1,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28303,9 +28231,9 @@
         "sectorEn": null,
         "companies": 3,
         "withEdges": 0,
-        "filedNoList": 1,
+        "filedNoList": 3,
         "noFiling": 0,
-        "resourceExtraction": 2,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28314,9 +28242,9 @@
         "sectorEn": null,
         "companies": 3,
         "withEdges": 0,
-        "filedNoList": 1,
+        "filedNoList": 3,
         "noFiling": 0,
-        "resourceExtraction": 2,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28347,9 +28275,9 @@
         "sectorEn": null,
         "companies": 3,
         "withEdges": 0,
-        "filedNoList": 2,
+        "filedNoList": 3,
         "noFiling": 0,
-        "resourceExtraction": 1,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28358,9 +28286,9 @@
         "sectorEn": null,
         "companies": 2,
         "withEdges": 0,
-        "filedNoList": 1,
+        "filedNoList": 2,
         "noFiling": 0,
-        "resourceExtraction": 1,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28423,10 +28351,10 @@
         "sector": "South Africa",
         "sectorEn": null,
         "companies": 2,
-        "withEdges": 1,
+        "withEdges": 0,
         "filedNoList": 1,
         "noFiling": 0,
-        "resourceExtraction": 0,
+        "resourceExtraction": 1,
         "failed": 0,
         "unscanned": 0
       },
@@ -28435,9 +28363,9 @@
         "sectorEn": null,
         "companies": 1,
         "withEdges": 0,
-        "filedNoList": 0,
+        "filedNoList": 1,
         "noFiling": 0,
-        "resourceExtraction": 1,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28457,9 +28385,9 @@
         "sectorEn": null,
         "companies": 1,
         "withEdges": 0,
-        "filedNoList": 0,
+        "filedNoList": 1,
         "noFiling": 0,
-        "resourceExtraction": 1,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28468,9 +28396,9 @@
         "sectorEn": null,
         "companies": 1,
         "withEdges": 0,
-        "filedNoList": 0,
+        "filedNoList": 1,
         "noFiling": 0,
-        "resourceExtraction": 1,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28545,9 +28473,9 @@
         "sectorEn": null,
         "companies": 1,
         "withEdges": 0,
-        "filedNoList": 0,
+        "filedNoList": 1,
         "noFiling": 0,
-        "resourceExtraction": 1,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -28635,7 +28563,7 @@
     },
     "stageResolvedNodes": 642,
     "stageAmbiguousNodes": 0,
-    "note": "本图谱只收录有公开出处的关系，不是完整供应链。当前 31038 条边全部来自 Form SD 冲突矿产申报，语义是「该冶炼厂出现在申报人的供应链中」——间接、不含份额、不含层级，不等于直接供货关系。"
+    "note": "本图谱只收录有公开出处的关系，不是完整供应链。当前 30976 条边全部来自 Form SD 冲突矿产申报，语义是「该冶炼厂出现在申报人的供应链中」——间接、不含份额、不含层级，不等于直接供货关系。"
   },
   "dataQuality": {
     "contractVersion": 1,

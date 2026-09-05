@@ -110,12 +110,6 @@
       ],
       "total": 349
     },
-    "AAUC": {
-      "peerCount": 0,
-      "peers": [],
-      "topShared": [],
-      "total": 2
-    },
     "ADI": {
       "peerCount": 67,
       "peers": [
@@ -225,12 +219,6 @@
         }
       ],
       "total": 222
-    },
-    "AEM": {
-      "peerCount": 0,
-      "peers": [],
-      "topShared": [],
-      "total": 1
     },
     "ALGN": {
       "peerCount": 59,
@@ -1221,26 +1209,6 @@
         }
       ],
       "total": 337
-    },
-    "ASM": {
-      "peerCount": 1,
-      "peers": [
-        {
-          "peerTotal": 1,
-          "shared": 1,
-          "symbol": "NFGC"
-        }
-      ],
-      "topShared": [
-        {
-          "country": "加拿大",
-          "filerCount": 2,
-          "id": "NAME:british-columbia",
-          "name": "British Columbia",
-          "nameZh": null
-        }
-      ],
-      "total": 1
     },
     "ASX": {
       "peerCount": 100,
@@ -4169,12 +4137,6 @@
       ],
       "total": 341
     },
-    "EQX": {
-      "peerCount": 0,
-      "peers": [],
-      "topShared": [],
-      "total": 24
-    },
     "ERIC": {
       "peerCount": 59,
       "peers": [
@@ -4724,12 +4686,6 @@
         }
       ],
       "total": 93
-    },
-    "GAU": {
-      "peerCount": 0,
-      "peers": [],
-      "topShared": [],
-      "total": 5
     },
     "GEN": {
       "peerCount": 66,
@@ -5465,12 +5421,6 @@
         }
       ],
       "total": 225
-    },
-    "HMY": {
-      "peerCount": 0,
-      "peers": [],
-      "topShared": [],
-      "total": 14
     },
     "HON": {
       "peerCount": 56,
@@ -8187,26 +8137,6 @@
       ],
       "total": 184
     },
-    "NFGC": {
-      "peerCount": 1,
-      "peers": [
-        {
-          "peerTotal": 1,
-          "shared": 1,
-          "symbol": "ASM"
-        }
-      ],
-      "topShared": [
-        {
-          "country": "加拿大",
-          "filerCount": 2,
-          "id": "NAME:british-columbia",
-          "name": "British Columbia",
-          "nameZh": null
-        }
-      ],
-      "total": 1
-    },
     "NOK": {
       "peerCount": 59,
       "peers": [
@@ -10481,18 +10411,6 @@
         }
       ],
       "total": 1
-    },
-    "SA": {
-      "peerCount": 0,
-      "peers": [],
-      "topShared": [],
-      "total": 4
-    },
-    "SBSW": {
-      "peerCount": 0,
-      "peers": [],
-      "topShared": [],
-      "total": 10
     },
     "SBUX": {
       "peerCount": 63,
@@ -13783,10 +13701,10 @@
   },
   "contractVersion": 1,
   "coverage": {
-    "companies": 136,
+    "companies": 127,
     "maxPeersPerCompany": 12,
     "maxSharedPerCompany": 6,
-    "pairs": 3929,
+    "pairs": 3928,
     "understatesOverlap": true
   },
   "dataset": "supply-chain-peers",
@@ -13796,5 +13714,5 @@
     "id": "shared-smelter-upstream",
     "label": "两家申报人的冶炼厂名单里出现了同一批冶炼厂（上游共同暴露，不表示两家之间有业务往来）"
   },
-  "updatedAt": "2026-09-05T11:04:08Z"
+  "updatedAt": "2026-09-05T11:40:55Z"
 }

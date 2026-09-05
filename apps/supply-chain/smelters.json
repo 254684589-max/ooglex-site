@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-smelters",
-  "updatedAt": "2026-09-05T10:22:51Z",
+  "updatedAt": "2026-09-05T11:40:06Z",
   "frequency": "annual",
   "status": "ok",
   "source": "SEC EDGAR Form SD 冲突矿产申报",
@@ -18,23 +18,11 @@
       "filingDate": "2026-05-29",
       "accession": "0001193125-26-248281"
     },
-    "AAUC": {
-      "file": "edges/AAUC.json",
-      "count": 2,
-      "filingDate": "2026-08-17",
-      "accession": "0001104659-26-097896"
-    },
     "ADI": {
       "file": "edges/ADI.json",
       "count": 222,
       "filingDate": "2026-05-22",
       "accession": "0001193125-26-235474"
-    },
-    "AEM": {
-      "file": "edges/AEM.json",
-      "count": 1,
-      "filingDate": "2026-06-01",
-      "accession": "0001104659-26-068824"
     },
     "ALGN": {
       "file": "edges/ALGN.json",
@@ -89,12 +77,6 @@
       "count": 337,
       "filingDate": "2026-05-28",
       "accession": "0001521332-26-000051"
-    },
-    "ASM": {
-      "file": "edges/ASM.json",
-      "count": 1,
-      "filingDate": "2026-09-03",
-      "accession": "0001477932-26-005378"
     },
     "ASX": {
       "file": "edges/ASX.json",
@@ -264,12 +246,6 @@
       "filingDate": "2026-05-26",
       "accession": "0001292814-26-003177"
     },
-    "EQX": {
-      "file": "edges/EQX.json",
-      "count": 24,
-      "filingDate": "2026-06-05",
-      "accession": "0001062993-26-003072"
-    },
     "ERIC": {
       "file": "edges/ERIC.json",
       "count": 501,
@@ -299,12 +275,6 @@
       "count": 93,
       "filingDate": "2026-06-01",
       "accession": "0001274494-26-000151"
-    },
-    "GAU": {
-      "file": "edges/GAU.json",
-      "count": 5,
-      "filingDate": "2026-06-22",
-      "accession": "0001062993-26-003278"
     },
     "GEN": {
       "file": "edges/GEN.json",
@@ -347,12 +317,6 @@
       "count": 225,
       "filingDate": "2026-05-26",
       "accession": "0001193125-26-237757"
-    },
-    "HMY": {
-      "file": "edges/HMY.json",
-      "count": 14,
-      "filingDate": "2026-01-28",
-      "accession": "0001628280-26-003705"
     },
     "HON": {
       "file": "edges/HON.json",
@@ -504,12 +468,6 @@
       "filingDate": "2026-05-20",
       "accession": "0000723125-26-000008"
     },
-    "NFGC": {
-      "file": "edges/NFGC.json",
-      "count": 1,
-      "filingDate": "2026-07-07",
-      "accession": "0001104659-26-081330"
-    },
     "NOK": {
       "file": "edges/NOK.json",
       "count": 330,
@@ -635,18 +593,6 @@
       "count": 1,
       "filingDate": "2026-06-01",
       "accession": "0000101829-26-000015"
-    },
-    "SA": {
-      "file": "edges/SA.json",
-      "count": 4,
-      "filingDate": "2026-06-03",
-      "accession": "0001213900-26-064558"
-    },
-    "SBSW": {
-      "file": "edges/SBSW.json",
-      "count": 10,
-      "filingDate": "2026-04-24",
-      "accession": "0001628280-26-027018"
     },
     "SBUX": {
       "file": "edges/SBUX.json",
@@ -832,17 +778,17 @@
   "coverage": {
     "claimComplete": false,
     "companiesScanned": 642,
-    "companiesWithList": 136,
-    "companiesFiledNoList": 103,
+    "companiesWithList": 127,
+    "companiesFiledNoList": 186,
     "companiesNoFiling": 256,
-    "companiesResourceExtraction": 147,
+    "companiesResourceExtraction": 73,
     "companiesFailed": 0,
     "failedSymbols": [],
     "filingStatus": {
       "A": "listed",
-      "AAPL": "resource-extraction",
-      "AAUC": "listed",
-      "ABBV": "resource-extraction",
+      "AAPL": "filed-no-list",
+      "AAUC": "resource-extraction",
+      "ABBV": "filed-no-list",
       "ABNB": "no-filing",
       "ABT": "filed-no-list",
       "ACGL": "no-filing",
@@ -853,7 +799,7 @@
       "ADP": "no-filing",
       "ADSK": "filed-no-list",
       "AEE": "no-filing",
-      "AEM": "listed",
+      "AEM": "resource-extraction",
       "AEP": "no-filing",
       "AES": "no-filing",
       "AFL": "no-filing",
@@ -864,15 +810,15 @@
       "AJG": "no-filing",
       "AKAM": "no-filing",
       "ALB": "filed-no-list",
-      "ALC": "resource-extraction",
+      "ALC": "filed-no-list",
       "ALGN": "listed",
       "ALL": "no-filing",
       "ALLE": "listed",
       "ALLT": "listed",
       "AMAT": "listed",
-      "AMCR": "resource-extraction",
+      "AMCR": "filed-no-list",
       "AMD": "listed",
-      "AME": "resource-extraction",
+      "AME": "filed-no-list",
       "AMGN": "no-filing",
       "AMP": "no-filing",
       "AMT": "no-filing",
@@ -891,14 +837,14 @@
       "ARE": "no-filing",
       "ARES": "no-filing",
       "ARM": "filed-no-list",
-      "ASM": "listed",
+      "ASM": "resource-extraction",
       "ASML": "filed-no-list",
-      "ASND": "resource-extraction",
+      "ASND": "filed-no-list",
       "ASX": "listed",
       "ATO": "no-filing",
-      "AU": "filed-no-list",
+      "AU": "resource-extraction",
       "AUDC": "listed",
-      "AVGO": "resource-extraction",
+      "AVGO": "filed-no-list",
       "AVY": "listed",
       "AWK": "no-filing",
       "AXON": "filed-no-list",
@@ -918,7 +864,7 @@
       "BGI": "filed-no-list",
       "BHP": "resource-extraction",
       "BIIB": "no-filing",
-      "BIRK": "resource-extraction",
+      "BIRK": "filed-no-list",
       "BKNG": "no-filing",
       "BKR": "listed",
       "BLDP": "listed",
@@ -931,18 +877,18 @@
       "BRK-B": "filed-no-list",
       "BRO": "no-filing",
       "BRSL": "listed",
-      "BSX": "resource-extraction",
+      "BSX": "filed-no-list",
       "BTE": "resource-extraction",
       "BTG": "resource-extraction",
       "BTI": "listed",
-      "BUD": "resource-extraction",
+      "BUD": "filed-no-list",
       "BX": "no-filing",
       "BXP": "no-filing",
       "C": "no-filing",
       "CAE": "filed-no-list",
       "CAH": "filed-no-list",
       "CAMT": "listed",
-      "CARR": "resource-extraction",
+      "CARR": "filed-no-list",
       "CASY": "no-filing",
       "CAT": "listed",
       "CB": "no-filing",
@@ -951,13 +897,13 @@
       "CCI": "no-filing",
       "CCJ": "resource-extraction",
       "CCL": "filed-no-list",
-      "CDNS": "resource-extraction",
+      "CDNS": "filed-no-list",
       "CDW": "no-filing",
       "CEG": "no-filing",
       "CF": "no-filing",
       "CFG": "no-filing",
       "CGAU": "resource-extraction",
-      "CGNT": "resource-extraction",
+      "CGNT": "filed-no-list",
       "CHD": "filed-no-list",
       "CHRW": "no-filing",
       "CHT": "filed-no-list",
@@ -979,9 +925,9 @@
       "COF": "no-filing",
       "COHR": "listed",
       "COIN": "no-filing",
-      "COO": "resource-extraction",
+      "COO": "filed-no-list",
       "COP": "resource-extraction",
-      "COR": "resource-extraction",
+      "COR": "filed-no-list",
       "COST": "listed",
       "CPAY": "no-filing",
       "CPRT": "no-filing",
@@ -992,8 +938,8 @@
       "CRNT": "listed",
       "CRWD": "no-filing",
       "CSCO": "listed",
-      "CSGP": "resource-extraction",
-      "CSIQ": "resource-extraction",
+      "CSGP": "filed-no-list",
+      "CSIQ": "filed-no-list",
       "CSX": "no-filing",
       "CTAS": "filed-no-list",
       "CTSH": "no-filing",
@@ -1002,7 +948,7 @@
       "CVS": "no-filing",
       "CVX": "filed-no-list",
       "CX": "resource-extraction",
-      "CYD": "resource-extraction",
+      "CYD": "filed-no-list",
       "D": "no-filing",
       "DAL": "no-filing",
       "DASH": "no-filing",
@@ -1019,14 +965,14 @@
       "DLR": "no-filing",
       "DLTR": "no-filing",
       "DOC": "no-filing",
-      "DOO": "resource-extraction",
+      "DOO": "filed-no-list",
       "DOV": "listed",
       "DOW": "listed",
       "DPZ": "no-filing",
       "DRD": "resource-extraction",
       "DRI": "no-filing",
       "DSGX": "filed-no-list",
-      "DSWL": "resource-extraction",
+      "DSWL": "filed-no-list",
       "DTE": "no-filing",
       "DUK": "no-filing",
       "DVA": "no-filing",
@@ -1041,17 +987,17 @@
       "EG": "no-filing",
       "EGO": "resource-extraction",
       "EIX": "no-filing",
-      "EL": "resource-extraction",
+      "EL": "filed-no-list",
       "ELTK": "listed",
       "ELV": "no-filing",
       "EMBJ": "listed",
-      "EME": "resource-extraction",
+      "EME": "filed-no-list",
       "EMR": "filed-no-list",
       "EOG": "resource-extraction",
       "EQIX": "no-filing",
       "EQNR": "resource-extraction",
       "EQT": "resource-extraction",
-      "EQX": "listed",
+      "EQX": "resource-extraction",
       "ERIC": "listed",
       "ERIE": "no-filing",
       "ERO": "resource-extraction",
@@ -1061,15 +1007,15 @@
       "ETN": "listed",
       "ETR": "no-filing",
       "EVRG": "no-filing",
-      "EW": "resource-extraction",
+      "EW": "filed-no-list",
       "EXC": "no-filing",
       "EXE": "resource-extraction",
       "EXPD": "no-filing",
       "EXPE": "no-filing",
       "EXR": "no-filing",
-      "F": "resource-extraction",
+      "F": "filed-no-list",
       "FANG": "resource-extraction",
-      "FAST": "resource-extraction",
+      "FAST": "filed-no-list",
       "FCX": "resource-extraction",
       "FDS": "no-filing",
       "FDX": "no-filing",
@@ -1078,7 +1024,7 @@
       "FFIV": "listed",
       "FICO": "no-filing",
       "FIS": "no-filing",
-      "FISV": "resource-extraction",
+      "FISV": "filed-no-list",
       "FITB": "no-filing",
       "FIX": "no-filing",
       "FLEX": "listed",
@@ -1090,52 +1036,52 @@
       "FSM": "resource-extraction",
       "FTNT": "filed-no-list",
       "FTV": "filed-no-list",
-      "GAU": "listed",
+      "GAU": "resource-extraction",
       "GD": "filed-no-list",
       "GDDY": "no-filing",
-      "GE": "resource-extraction",
+      "GE": "filed-no-list",
       "GEHC": "filed-no-list",
       "GEN": "listed",
-      "GEV": "resource-extraction",
+      "GEV": "filed-no-list",
       "GFS": "listed",
       "GGB": "filed-no-list",
-      "GIL": "resource-extraction",
+      "GIL": "filed-no-list",
       "GILD": "no-filing",
       "GILT": "listed",
       "GIS": "no-filing",
       "GL": "no-filing",
       "GLW": "listed",
-      "GM": "resource-extraction",
-      "GNRC": "resource-extraction",
-      "GOOGL": "resource-extraction",
-      "GOOS": "resource-extraction",
+      "GM": "filed-no-list",
+      "GNRC": "filed-no-list",
+      "GOOGL": "filed-no-list",
+      "GOOS": "filed-no-list",
       "GPC": "no-filing",
-      "GPN": "resource-extraction",
+      "GPN": "filed-no-list",
       "GPRK": "resource-extraction",
-      "GRMN": "resource-extraction",
+      "GRMN": "filed-no-list",
       "GS": "no-filing",
-      "GSK": "resource-extraction",
+      "GSK": "filed-no-list",
       "GSM": "resource-extraction",
       "GWW": "no-filing",
-      "HAL": "resource-extraction",
+      "HAL": "filed-no-list",
       "HAS": "listed",
       "HBAN": "no-filing",
       "HBM": "resource-extraction",
       "HCA": "no-filing",
-      "HD": "resource-extraction",
+      "HD": "filed-no-list",
       "HIG": "no-filing",
       "HII": "filed-no-list",
       "HIMX": "listed",
-      "HLN": "resource-extraction",
+      "HLN": "filed-no-list",
       "HLT": "no-filing",
       "HMC": "listed",
-      "HMY": "listed",
+      "HMY": "resource-extraction",
       "HON": "listed",
       "HOOD": "no-filing",
       "HPE": "listed",
-      "HPQ": "resource-extraction",
+      "HPQ": "filed-no-list",
       "HRL": "no-filing",
-      "HSIC": "resource-extraction",
+      "HSIC": "filed-no-list",
       "HSLV": "resource-extraction",
       "HST": "no-filing",
       "HSY": "filed-no-list",
@@ -1146,7 +1092,7 @@
       "IBKR": "no-filing",
       "IBM": "filed-no-list",
       "ICE": "no-filing",
-      "IDXX": "resource-extraction",
+      "IDXX": "filed-no-list",
       "IEX": "listed",
       "IFF": "no-filing",
       "IMOS": "filed-no-list",
@@ -1154,30 +1100,30 @@
       "INTC": "listed",
       "INTU": "listed",
       "INVH": "no-filing",
-      "INVZ": "resource-extraction",
+      "INVZ": "filed-no-list",
       "IP": "no-filing",
       "IQV": "no-filing",
-      "IR": "resource-extraction",
+      "IR": "filed-no-list",
       "IRM": "no-filing",
       "ISOU": "resource-extraction",
       "ISRG": "listed",
       "IT": "no-filing",
       "ITRN": "listed",
-      "ITW": "resource-extraction",
+      "ITW": "filed-no-list",
       "IVZ": "no-filing",
-      "IX": "resource-extraction",
+      "IX": "filed-no-list",
       "J": "filed-no-list",
       "JBHT": "no-filing",
-      "JBL": "resource-extraction",
+      "JBL": "filed-no-list",
       "JCI": "filed-no-list",
       "JKHY": "no-filing",
-      "JKS": "resource-extraction",
+      "JKS": "filed-no-list",
       "JNJ": "filed-no-list",
       "JPM": "no-filing",
-      "KARO": "resource-extraction",
+      "KARO": "filed-no-list",
       "KDP": "listed",
       "KEY": "no-filing",
-      "KEYS": "resource-extraction",
+      "KEYS": "filed-no-list",
       "KHC": "no-filing",
       "KIM": "no-filing",
       "KKR": "no-filing",
@@ -1187,7 +1133,7 @@
       "KO": "no-filing",
       "KR": "filed-no-list",
       "KRNT": "listed",
-      "KVUE": "resource-extraction",
+      "KVUE": "filed-no-list",
       "L": "no-filing",
       "LAR": "resource-extraction",
       "LDOS": "filed-no-list",
@@ -1195,7 +1141,7 @@
       "LGO": "resource-extraction",
       "LH": "filed-no-list",
       "LHX": "filed-no-list",
-      "LII": "resource-extraction",
+      "LII": "filed-no-list",
       "LIN": "filed-no-list",
       "LITE": "listed",
       "LLY": "filed-no-list",
@@ -1214,26 +1160,26 @@
       "MAKO": "resource-extraction",
       "MAR": "no-filing",
       "MAS": "listed",
-      "MCD": "resource-extraction",
+      "MCD": "filed-no-list",
       "MCHP": "listed",
-      "MCK": "resource-extraction",
+      "MCK": "filed-no-list",
       "MCO": "no-filing",
       "MDLZ": "no-filing",
       "MDT": "listed",
       "MET": "no-filing",
-      "META": "resource-extraction",
+      "META": "filed-no-list",
       "MGA": "filed-no-list",
       "MGM": "no-filing",
       "MINE": "resource-extraction",
       "MKC": "no-filing",
       "MLM": "resource-extraction",
-      "MMM": "resource-extraction",
+      "MMM": "filed-no-list",
       "MNST": "no-filing",
       "MO": "listed",
       "MOS": "filed-no-list",
       "MPC": "no-filing",
       "MPWR": "listed",
-      "MRK": "resource-extraction",
+      "MRK": "filed-no-list",
       "MRNA": "no-filing",
       "MRSH": "no-filing",
       "MRVL": "filed-no-list",
@@ -1251,7 +1197,7 @@
       "NDSN": "filed-no-list",
       "NEE": "resource-extraction",
       "NEM": "resource-extraction",
-      "NFGC": "listed",
+      "NFGC": "resource-extraction",
       "NFLX": "no-filing",
       "NI": "no-filing",
       "NICE": "filed-no-list",
@@ -1280,7 +1226,7 @@
       "OKE": "resource-extraction",
       "OMC": "no-filing",
       "ON": "listed",
-      "ORCL": "resource-extraction",
+      "ORCL": "filed-no-list",
       "ORLY": "no-filing",
       "OTIS": "listed",
       "OXY": "resource-extraction",
@@ -1291,11 +1237,11 @@
       "PCG": "no-filing",
       "PEG": "no-filing",
       "PEP": "listed",
-      "PFE": "resource-extraction",
+      "PFE": "filed-no-list",
       "PFG": "no-filing",
       "PG": "filed-no-list",
       "PGR": "no-filing",
-      "PH": "resource-extraction",
+      "PH": "filed-no-list",
       "PHG": "listed",
       "PHM": "no-filing",
       "PKG": "no-filing",
@@ -1304,7 +1250,7 @@
       "PLTR": "no-filing",
       "PM": "filed-no-list",
       "PNC": "no-filing",
-      "PNR": "resource-extraction",
+      "PNR": "filed-no-list",
       "PNW": "no-filing",
       "PODD": "filed-no-list",
       "PPG": "listed",
@@ -1317,10 +1263,10 @@
       "PTC": "no-filing",
       "PWR": "listed",
       "PYPL": "no-filing",
-      "Q": "resource-extraction",
+      "Q": "filed-no-list",
       "QCOM": "listed",
       "QGEN": "filed-no-list",
-      "RACE": "resource-extraction",
+      "RACE": "filed-no-list",
       "RCL": "no-filing",
       "RDWR": "listed",
       "REG": "no-filing",
@@ -1332,16 +1278,16 @@
       "RMD": "filed-no-list",
       "ROK": "listed",
       "ROL": "no-filing",
-      "ROP": "resource-extraction",
+      "ROP": "filed-no-list",
       "ROST": "filed-no-list",
       "RSG": "no-filing",
       "RTNTF": "resource-extraction",
       "RTO": "listed",
       "RTX": "listed",
-      "RVTY": "resource-extraction",
-      "SA": "listed",
+      "RVTY": "filed-no-list",
+      "SA": "resource-extraction",
       "SBAC": "no-filing",
-      "SBSW": "listed",
+      "SBSW": "resource-extraction",
       "SBUX": "listed",
       "SCHW": "no-filing",
       "SHEL": "resource-extraction",
@@ -1353,13 +1299,13 @@
       "SJM": "no-filing",
       "SLB": "resource-extraction",
       "SMCI": "listed",
-      "SNA": "resource-extraction",
+      "SNA": "filed-no-list",
       "SNDK": "listed",
       "SNN": "listed",
       "SNPS": "filed-no-list",
       "SNT": "listed",
-      "SNY": "resource-extraction",
-      "SO": "resource-extraction",
+      "SNY": "filed-no-list",
+      "SO": "filed-no-list",
       "SOLV": "filed-no-list",
       "SONY": "listed",
       "SPG": "no-filing",
@@ -1368,12 +1314,12 @@
       "SRE": "resource-extraction",
       "SSL": "filed-no-list",
       "SSYS": "listed",
-      "STE": "resource-extraction",
-      "STLA": "resource-extraction",
-      "STLD": "resource-extraction",
+      "STE": "filed-no-list",
+      "STLA": "filed-no-list",
+      "STLD": "filed-no-list",
       "STM": "listed",
       "STT": "no-filing",
-      "STVN": "resource-extraction",
+      "STVN": "filed-no-list",
       "STX": "listed",
       "STZ": "no-filing",
       "SU": "resource-extraction",
@@ -1391,29 +1337,29 @@
       "TDG": "filed-no-list",
       "TDY": "filed-no-list",
       "TECH": "filed-no-list",
-      "TECK": "resource-extraction",
+      "TECK": "filed-no-list",
       "TEL": "listed",
-      "TER": "resource-extraction",
+      "TER": "filed-no-list",
       "TFC": "no-filing",
       "TGB": "resource-extraction",
-      "TGT": "resource-extraction",
+      "TGT": "filed-no-list",
       "TII": "resource-extraction",
-      "TJX": "resource-extraction",
+      "TJX": "filed-no-list",
       "TKC": "filed-no-list",
       "TKO": "no-filing",
       "TM": "listed",
       "TMO": "filed-no-list",
       "TMUS": "listed",
       "TPL": "no-filing",
-      "TPR": "resource-extraction",
-      "TRGP": "resource-extraction",
+      "TPR": "filed-no-list",
+      "TRGP": "filed-no-list",
       "TRMB": "listed",
       "TROW": "no-filing",
       "TRV": "no-filing",
       "TRX": "resource-extraction",
       "TS": "filed-no-list",
       "TSCO": "listed",
-      "TSEM": "resource-extraction",
+      "TSEM": "filed-no-list",
       "TSLA": "filed-no-list",
       "TSM": "listed",
       "TSN": "no-filing",
@@ -1444,7 +1390,7 @@
       "VLO": "no-filing",
       "VLTO": "filed-no-list",
       "VMC": "resource-extraction",
-      "VOD": "resource-extraction",
+      "VOD": "filed-no-list",
       "VRSK": "no-filing",
       "VRSN": "no-filing",
       "VRT": "listed",
@@ -1454,7 +1400,7 @@
       "VTRS": "no-filing",
       "VZ": "no-filing",
       "WAB": "listed",
-      "WAT": "resource-extraction",
+      "WAT": "filed-no-list",
       "WBD": "no-filing",
       "WDAY": "no-filing",
       "WDC": "listed",
@@ -1474,38 +1420,38 @@
       "XEL": "no-filing",
       "XOM": "no-filing",
       "XYL": "listed",
-      "XYZ": "resource-extraction",
+      "XYZ": "filed-no-list",
       "YPF": "resource-extraction",
       "YUM": "no-filing",
       "ZBH": "listed",
       "ZBRA": "listed",
-      "ZGN": "resource-extraction",
-      "ZTS": "resource-extraction"
+      "ZGN": "filed-no-list",
+      "ZTS": "filed-no-list"
     },
     "byPool": {
       "sec-foreign-issuer": {
         "scanned": 147,
-        "withList": 46,
-        "filedNoList": 31,
-        "resourceExtraction": 70,
+        "withList": 37,
+        "filedNoList": 55,
+        "resourceExtraction": 55,
         "noFiling": 0
       },
       "sp500": {
         "scanned": 495,
         "withList": 90,
-        "filedNoList": 72,
-        "resourceExtraction": 77,
+        "filedNoList": 131,
+        "resourceExtraction": 18,
         "noFiling": 256
       }
     },
-    "companiesPublished": 136,
-    "edgesTotal": 31038,
-    "uniqueSmelters": 1826,
+    "companiesPublished": 127,
+    "edgesTotal": 30976,
+    "uniqueSmelters": 1765,
     "exactNameMatchWithCid": 682,
-    "distinctAfterExactNameMatch": 1144,
+    "distinctAfterExactNameMatch": 1083,
     "uniqueByIdentifier": {
       "rmi-cid": 848,
-      "name-only": 978
+      "name-only": 917
     },
     "note": "Form SD 强制申报、不强制列名单：有申报无名单的公司如实单列，不并入「无申报」。覆盖率因此永远到不了 100%，这是披露制度本身的上限，不是抓取缺陷。"
   },
@@ -30207,20 +30153,6 @@
         "XYL"
       ]
     },
-    "NAME:african-rainbow-minerals-gold-limited": {
-      "id": "NAME:african-rainbow-minerals-gold-limited",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "African Rainbow Minerals Gold Limited",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "HMY"
-      ]
-    },
     "NAME:agosi-ag": {
       "id": "NAME:agosi-ag",
       "cid": null,
@@ -31163,20 +31095,6 @@
       ],
       "sameNameAs": "CID000077"
     },
-    "NAME:aroland-first-nation": {
-      "id": "NAME:aroland-first-nation",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Aroland First Nation",
-      "country": "加拿大",
-      "countryEn": "canada",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
-    },
     "NAME:artek-llc": {
       "id": "NAME:artek-llc",
       "cid": null,
@@ -31763,20 +31681,6 @@
       ],
       "sameNameAs": "CID003013"
     },
-    "NAME:aurizona-fazenda-rdm-santa-luz": {
-      "id": "NAME:aurizona-fazenda-rdm-santa-luz",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Aurizona, Fazenda, RDM, Santa Luz",
-      "country": "巴西",
-      "countryEn": "brazil",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
-    },
     "NAME:aurubis-ag": {
       "id": "NAME:aurubis-ag",
       "cid": null,
@@ -32029,20 +31933,6 @@
       ],
       "filers": [
         "MO"
-      ]
-    },
-    "NAME:avgold-limited": {
-      "id": "NAME:avgold-limited",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Avgold Limited",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "HMY"
       ]
     },
     "NAME:avon-specialty-metals-ltd": {
@@ -32397,21 +32287,6 @@
       ],
       "sameNameAs": "CID000169"
     },
-    "NAME:british-columbia": {
-      "id": "NAME:british-columbia",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "British Columbia",
-      "country": "加拿大",
-      "countryEn": "canada",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "ASM",
-        "NFGC"
-      ]
-    },
     "NAME:c-hafner-gmbh-co-kg": {
       "id": "NAME:c-hafner-gmbh-co-kg",
       "cid": null,
@@ -32491,20 +32366,6 @@
         "DE"
       ],
       "sameNameAs": "CID003421"
-    },
-    "NAME:california-imperial-country": {
-      "id": "NAME:california-imperial-country",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "California Imperial Country",
-      "country": "美国",
-      "countryEn": "united states",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
     },
     "NAME:caridad": {
       "id": "NAME:caridad",
@@ -32733,20 +32594,6 @@
         "WST"
       ],
       "sameNameAs": "CID000211"
-    },
-    "NAME:chemwes-proprietary-limited": {
-      "id": "NAME:chemwes-proprietary-limited",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Chemwes (Proprietary) Limited",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "HMY"
-      ]
     },
     "NAME:chenzhou-diamond-tungsten-products-co-ltd": {
       "id": "NAME:chenzhou-diamond-tungsten-products-co-ltd",
@@ -33553,20 +33400,6 @@
       ],
       "sameNameAs": "CID004010"
     },
-    "NAME:community-and-social-responsibility-payments": {
-      "id": "NAME:community-and-social-responsibility-payments",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Community and social responsibility payments",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "SBSW"
-      ]
-    },
     "NAME:conecsus-llc": {
       "id": "NAME:conecsus-llc",
       "cid": null,
@@ -33664,20 +33497,6 @@
         "APH"
       ],
       "sameNameAs": "CID000296"
-    },
-    "NAME:covalent-water-company-proprietary-limited": {
-      "id": "NAME:covalent-water-company-proprietary-limited",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Covalent Water Company (Proprietary) Limited",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "HMY"
-      ]
     },
     "NAME:cp-metals-inc": {
       "id": "NAME:cp-metals-inc",
@@ -34356,20 +34175,6 @@
       ],
       "sameNameAs": "CID002867"
     },
-    "NAME:department-of-water-and-sanitation": {
-      "id": "NAME:department-of-water-and-sanitation",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Department of Water and Sanitation",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "SBSW"
-      ]
-    },
     "NAME:dijllah-gold-refinery-fzc": {
       "id": "NAME:dijllah-gold-refinery-fzc",
       "cid": null,
@@ -34911,34 +34716,6 @@
         "APH"
       ],
       "sameNameAs": "CID002590"
-    },
-    "NAME:eastern-borosi-el-limon-la-libertad-el-paste-pavon": {
-      "id": "NAME:eastern-borosi-el-limon-la-libertad-el-paste-pavon",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Eastern Borosi, El Limon, La Libertad, El Paste, Pavon",
-      "country": "尼加拉瓜",
-      "countryEn": "nicaragua",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
-    },
-    "NAME:eastern-borosi-el-limon-la-libertad-pavon": {
-      "id": "NAME:eastern-borosi-el-limon-la-libertad-pavon",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Eastern Borosi, El Limon, La Libertad, Pavon",
-      "country": "尼加拉瓜",
-      "countryEn": "nicaragua",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
     },
     "NAME:eco-system-recycling-co-ltd": {
       "id": "NAME:eco-system-recycling-co-ltd",
@@ -35594,20 +35371,6 @@
         "ELTK"
       ]
     },
-    "NAME:ergo-mining-proprietary-limited3": {
-      "id": "NAME:ergo-mining-proprietary-limited3",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Ergo Mining Proprietary Limited3",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "SBSW"
-      ]
-    },
     "NAME:estanho-de-rond-nia-s-a": {
       "id": "NAME:estanho-de-rond-nia-s-a",
       "cid": null,
@@ -35716,20 +35479,6 @@
         "MTD"
       ],
       "sameNameAs": "CID000458"
-    },
-    "NAME:ezulwini-mining-company-proprietary-limited": {
-      "id": "NAME:ezulwini-mining-company-proprietary-limited",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Ezulwini Mining Company Proprietary Limited",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "SBSW"
-      ]
     },
     "NAME:f-x-electro-materials-ltd": {
       "id": "NAME:f-x-electro-materials-ltd",
@@ -35895,34 +35644,6 @@
         "APH"
       ],
       "sameNameAs": "CID002355"
-    },
-    "NAME:far-west-gold-recoveries-proprietary-limited3": {
-      "id": "NAME:far-west-gold-recoveries-proprietary-limited3",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Far West Gold Recoveries Proprietary Limited3",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "SBSW"
-      ]
-    },
-    "NAME:federal-government-of-mexico": {
-      "id": "NAME:federal-government-of-mexico",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Federal Government of Mexico",
-      "country": "墨西哥",
-      "countryEn": "mexico",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
     },
     "NAME:feinh-tte-halsbr-cke-gmbh": {
       "id": "NAME:feinh-tte-halsbr-cke-gmbh",
@@ -36144,20 +35865,6 @@
         "APH"
       ],
       "sameNameAs": "CID000480"
-    },
-    "NAME:freegold-harmony-proprietary-limited": {
-      "id": "NAME:freegold-harmony-proprietary-limited",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Freegold (Harmony) Proprietary Limited",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "HMY"
-      ]
     },
     "NAME:fujairah-gold-fzc": {
       "id": "NAME:fujairah-gold-fzc",
@@ -37179,48 +36886,6 @@
       ],
       "sameNameAs": "CID002852"
     },
-    "NAME:ghana-gold-board": {
-      "id": "NAME:ghana-gold-board",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Ghana Gold Board",
-      "country": "加纳",
-      "countryEn": "ghana",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "GAU"
-      ]
-    },
-    "NAME:ghana-revenue-authority": {
-      "id": "NAME:ghana-revenue-authority",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Ghana Revenue Authority",
-      "country": "加纳",
-      "countryEn": "ghana",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "GAU"
-      ]
-    },
-    "NAME:ginoogaming-first-nation": {
-      "id": "NAME:ginoogaming-first-nation",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Ginoogaming First Nation",
-      "country": "加拿大",
-      "countryEn": "canada",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
-    },
     "NAME:glencore-canada-corporation-ccr-refinery": {
       "id": "NAME:glencore-canada-corporation-ccr-refinery",
       "cid": null,
@@ -37756,76 +37421,6 @@
         "VRT"
       ],
       "sameNameAs": "CID002243"
-    },
-    "NAME:golden-core-trade-and-invest-proprietary-limited": {
-      "id": "NAME:golden-core-trade-and-invest-proprietary-limited",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Golden Core Trade and Invest (Proprietary) Limited",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "HMY"
-      ]
-    },
-    "NAME:government-of-canada": {
-      "id": "NAME:government-of-canada",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Government of Canada",
-      "country": "加拿大",
-      "countryEn": "canada",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
-    },
-    "NAME:government-of-nicaragua": {
-      "id": "NAME:government-of-nicaragua",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Government of Nicaragua",
-      "country": "尼加拉瓜",
-      "countryEn": "nicaragua",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
-    },
-    "NAME:government-of-northwest-territories": {
-      "id": "NAME:government-of-northwest-territories",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Government of Northwest Territories",
-      "country": "加拿大",
-      "countryEn": "canada",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "SA"
-      ]
-    },
-    "NAME:government-of-the-united-states": {
-      "id": "NAME:government-of-the-united-states",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Government of the United States",
-      "country": "美国",
-      "countryEn": "united states",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
     },
     "NAME:great-wall-precious-metals-co-ltd-of-cbpm": {
       "id": "NAME:great-wall-precious-metals-co-ltd-of-cbpm",
@@ -38656,34 +38251,6 @@
         "XYL"
       ],
       "sameNameAs": "CID003978"
-    },
-    "NAME:harmony-gold-mining-company-limited": {
-      "id": "NAME:harmony-gold-mining-company-limited",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Harmony Gold Mining Company Limited",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "HMY"
-      ]
-    },
-    "NAME:harmony-moab-khotsong-operations-proprietary-limited": {
-      "id": "NAME:harmony-moab-khotsong-operations-proprietary-limited",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Harmony Moab Khotsong Operations (Proprietary) Limited",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "HMY"
-      ]
     },
     "NAME:hebei-anruisai-renewable-resources-recycling-co-ltd": {
       "id": "NAME:hebei-anruisai-renewable-resources-recycling-co-ltd",
@@ -41753,20 +41320,6 @@
       ],
       "sameNameAs": "CID003497"
     },
-    "NAME:kalahari-goldridge-mining-company-limited": {
-      "id": "NAME:kalahari-goldridge-mining-company-limited",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Kalahari Goldridge Mining Company Limited",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "HMY"
-      ]
-    },
     "NAME:kaloti-precious-metals": {
       "id": "NAME:kaloti-precious-metals",
       "cid": null,
@@ -42913,20 +42466,6 @@
       ],
       "sameNameAs": "CID002762"
     },
-    "NAME:la-india": {
-      "id": "NAME:la-india",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "La India",
-      "country": "印度",
-      "countryEn": "india",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "AEM"
-      ]
-    },
     "NAME:laos-southern-mining-smelting-sole-co-ltd": {
       "id": "NAME:laos-southern-mining-smelting-sole-co-ltd",
       "cid": null,
@@ -43207,20 +42746,6 @@
       ],
       "filers": [
         "XYL"
-      ]
-    },
-    "NAME:long-lake-58-first-nation": {
-      "id": "NAME:long-lake-58-first-nation",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Long Lake 58 First Nation",
-      "country": "加拿大",
-      "countryEn": "canada",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
       ]
     },
     "NAME:longnan-chuangyue-environmental-protection-technology-development-co-ltd": {
@@ -44314,20 +43839,6 @@
       ],
       "sameNameAs": "CID002500"
     },
-    "NAME:mesquite-castle-mountain": {
-      "id": "NAME:mesquite-castle-mountain",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Mesquite, Castle Mountain",
-      "country": "美国",
-      "countryEn": "united states",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
-    },
     "NAME:meta-materials": {
       "id": "NAME:meta-materials",
       "cid": null,
@@ -45089,20 +44600,6 @@
         "AUDC"
       ]
     },
-    "NAME:metis-nation-of-ontario": {
-      "id": "NAME:metis-nation-of-ontario",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Metis Nation of Ontario",
-      "country": "加拿大",
-      "countryEn": "canada",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
-    },
     "NAME:midwest-tungsten-wire-co": {
       "id": "NAME:midwest-tungsten-wire-co",
       "cid": null,
@@ -45317,34 +44814,6 @@
         "WST"
       ]
     },
-    "NAME:minerals-commission": {
-      "id": "NAME:minerals-commission",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Minerals Commission",
-      "country": "加纳",
-      "countryEn": "ghana",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "GAU"
-      ]
-    },
-    "NAME:minerals-income-investment-fund": {
-      "id": "NAME:minerals-income-investment-fund",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Minerals Income Investment Fund",
-      "country": "加纳",
-      "countryEn": "ghana",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "GAU"
-      ]
-    },
     "NAME:ming-li-jia-smelt-metal-factory": {
       "id": "NAME:ming-li-jia-smelt-metal-factory",
       "cid": null,
@@ -45426,20 +44895,6 @@
       ],
       "sameNameAs": "CID004065"
     },
-    "NAME:ministry-of-lands-and-natural-resources-department-administrator-of-stool-lands": {
-      "id": "NAME:ministry-of-lands-and-natural-resources-department-administrator-of-stool-lands",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Ministry of Lands and Natural Resources Department Administrator of Stool Lands",
-      "country": "加纳",
-      "countryEn": "ghana",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "GAU"
-      ]
-    },
     "NAME:minmetals-ganzhou-tin-co-ltd": {
       "id": "NAME:minmetals-ganzhou-tin-co-ltd",
       "cid": null,
@@ -45456,20 +44911,6 @@
         "AUDC"
       ],
       "sameNameAs": "CID001181"
-    },
-    "NAME:minodahmun-development-lp": {
-      "id": "NAME:minodahmun-development-lp",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Minodahmun Development LP",
-      "country": "加拿大",
-      "countryEn": "canada",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
     },
     "NAME:minsur": {
       "id": "NAME:minsur",
@@ -45940,20 +45381,6 @@
         "APH"
       ]
     },
-    "NAME:morobe-consolidated-goldfields-limited": {
-      "id": "NAME:morobe-consolidated-goldfields-limited",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Morobe Consolidated Goldfields Limited",
-      "country": "巴布亚新几内亚",
-      "countryEn": "papua new guinea",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "HMY"
-      ]
-    },
     "NAME:morris-and-watson": {
       "id": "NAME:morris-and-watson",
       "cid": null,
@@ -46042,62 +45469,6 @@
         "XYL"
       ],
       "sameNameAs": "CID001204"
-    },
-    "NAME:municipal-government-of-mexico": {
-      "id": "NAME:municipal-government-of-mexico",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Municipal Government of Mexico",
-      "country": "墨西哥",
-      "countryEn": "mexico",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
-    },
-    "NAME:municipality-of-greenstone": {
-      "id": "NAME:municipality-of-greenstone",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Municipality of Greenstone",
-      "country": "加拿大",
-      "countryEn": "canada",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
-    },
-    "NAME:municipality-of-larreynaga": {
-      "id": "NAME:municipality-of-larreynaga",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Municipality of Larreynaga",
-      "country": "尼加拉瓜",
-      "countryEn": "nicaragua",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
-    },
-    "NAME:municipality-of-rancho-grande": {
-      "id": "NAME:municipality-of-rancho-grande",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Municipality of Rancho Grande",
-      "country": "尼加拉瓜",
-      "countryEn": "nicaragua",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
     },
     "NAME:nadir-metal-rafineri-san-ve-tic-a": {
       "id": "NAME:nadir-metal-rafineri-san-ve-tic-a",
@@ -46304,20 +45675,6 @@
         "APH"
       ],
       "sameNameAs": "CID001234"
-    },
-    "NAME:national-nuclear-regulator": {
-      "id": "NAME:national-nuclear-regulator",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "National Nuclear Regulator",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "HMY"
-      ]
     },
     "NAME:navoi-mining-and-metallurgical-combinat": {
       "id": "NAME:navoi-mining-and-metallurgical-combinat",
@@ -47402,20 +46759,6 @@
         "WAB"
       ]
     },
-    "NAME:ontario": {
-      "id": "NAME:ontario",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Ontario",
-      "country": "加拿大",
-      "countryEn": "canada",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "AAUC"
-      ]
-    },
     "NAME:ooo-technolom-1": {
       "id": "NAME:ooo-technolom-1",
       "cid": null,
@@ -47644,20 +46987,6 @@
         "ALLT",
         "BRSL",
         "GEN"
-      ]
-    },
-    "NAME:pan-calibre-real-state": {
-      "id": "NAME:pan-calibre-real-state",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Pan, Calibre Real State",
-      "country": "美国",
-      "countryEn": "united states",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
       ]
     },
     "NAME:pan-light-corporation": {
@@ -48297,34 +47626,6 @@
       ],
       "filers": [
         "XYL"
-      ]
-    },
-    "NAME:province-of-ontario": {
-      "id": "NAME:province-of-ontario",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Province of Ontario",
-      "country": "加拿大",
-      "countryEn": "canada",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
-    },
-    "NAME:provincial-government-of-british-columbia": {
-      "id": "NAME:provincial-government-of-british-columbia",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Provincial Government of British Columbia",
-      "country": "加拿大",
-      "countryEn": "canada",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "SA"
       ]
     },
     "NAME:pt-alam-lestari-kencana": {
@@ -50348,48 +49649,6 @@
       ],
       "sameNameAs": "CID001512"
     },
-    "NAME:rand-uranium-proprietary-limited": {
-      "id": "NAME:rand-uranium-proprietary-limited",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Rand Uranium Proprietary Limited",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "SBSW"
-      ]
-    },
-    "NAME:randfontein-estates-limited": {
-      "id": "NAME:randfontein-estates-limited",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Randfontein Estates Limited",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "HMY"
-      ]
-    },
-    "NAME:receiver-general-for-canada": {
-      "id": "NAME:receiver-general-for-canada",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Receiver General for Canada",
-      "country": "加拿大",
-      "countryEn": "canada",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "SA"
-      ]
-    },
     "NAME:recognized": {
       "id": "NAME:recognized",
       "cid": null,
@@ -50804,20 +50063,6 @@
         "APH"
       ]
     },
-    "NAME:royal-bank-plaza-north-tower-200-bay-street-suite-2200-toronto-ontario": {
-      "id": "NAME:royal-bank-plaza-north-tower-200-bay-street-suite-2200-toronto-ontario",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Royal Bank Plaza, North Tower, 200 Bay Street, Suite 2200, Toronto, Ontario",
-      "country": "加拿大",
-      "countryEn": "canada",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "AAUC"
-      ]
-    },
     "NAME:royal-canadian-mint": {
       "id": "NAME:royal-canadian-mint",
       "cid": null,
@@ -51014,20 +50259,6 @@
         "XYL"
       ],
       "sameNameAs": "CID005068"
-    },
-    "NAME:sa-gold-beatrix-driefontein-kloof-gold-corporate": {
-      "id": "NAME:sa-gold-beatrix-driefontein-kloof-gold-corporate",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "SA gold (Beatrix Driefontein, Kloof, Gold corporate)",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "SBSW"
-      ]
     },
     "NAME:saamp": {
       "id": "NAME:saamp",
@@ -51377,20 +50608,6 @@
         "XYL"
       ],
       "sameNameAs": "CID001562"
-    },
-    "NAME:san-bernandino-county": {
-      "id": "NAME:san-bernandino-county",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "San Bernandino County",
-      "country": "美国",
-      "countryEn": "united states",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
     },
     "NAME:sancus-zfs-l-orfebre-sa": {
       "id": "NAME:sancus-zfs-l-orfebre-sa",
@@ -52299,20 +51516,6 @@
       ],
       "sameNameAs": "CID002588"
     },
-    "NAME:sibanye-gold-proprietary-limited": {
-      "id": "NAME:sibanye-gold-proprietary-limited",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Sibanye Gold Proprietary Limited",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "SBSW"
-      ]
-    },
     "NAME:sichuan-guanghan-jiangnan-casting-smelters": {
       "id": "NAME:sichuan-guanghan-jiangnan-casting-smelters",
       "cid": null,
@@ -52774,34 +51977,6 @@
       ],
       "sameNameAs": "CID001769"
     },
-    "NAME:south-african-revenue-service": {
-      "id": "NAME:south-african-revenue-service",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "South African Revenue Service",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "HMY"
-      ]
-    },
-    "NAME:south-african-revenue-service-sars": {
-      "id": "NAME:south-african-revenue-service-sars",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "South African Revenue Service (SARS)",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "SBSW"
-      ]
-    },
     "NAME:south-east-nonferrous-metal-company-limited-of-hengyang-city": {
       "id": "NAME:south-east-nonferrous-metal-company-limited-of-hengyang-city",
       "cid": null,
@@ -52883,48 +52058,6 @@
         "APH"
       ],
       "sameNameAs": "CID001783"
-    },
-    "NAME:state-government-of-minas-gerais": {
-      "id": "NAME:state-government-of-minas-gerais",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "State Government of Minas Gerais",
-      "country": "巴西",
-      "countryEn": "brazil",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
-    },
-    "NAME:state-of-california": {
-      "id": "NAME:state-of-california",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "State of California",
-      "country": "美国",
-      "countryEn": "united states",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
-    },
-    "NAME:state-of-nevada": {
-      "id": "NAME:state-of-nevada",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "State of Nevada",
-      "country": "美国",
-      "countryEn": "united states",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "EQX"
-      ]
     },
     "NAME:state-research-institute-center-for-physical-sciences-and-technology": {
       "id": "NAME:state-research-institute-center-for-physical-sciences-and-technology",
@@ -54754,20 +53887,6 @@
         "APH"
       ]
     },
-    "NAME:tswelopele-beneficiation-operation-proprietary-limited": {
-      "id": "NAME:tswelopele-beneficiation-operation-proprietary-limited",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Tswelopele Beneficiation Operation (Proprietary) Limited",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "HMY"
-      ]
-    },
     "NAME:tungamoy-metals-inc": {
       "id": "NAME:tungamoy-metals-inc",
       "cid": null,
@@ -55147,20 +54266,6 @@
       ],
       "sameNameAs": "CID001981"
     },
-    "NAME:undergroun-d-mining-and-open-pit": {
-      "id": "NAME:undergroun-d-mining-and-open-pit",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "Undergroun d Mining and Open Pit",
-      "country": "南非",
-      "countryEn": "south africa",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "SBSW"
-      ]
-    },
     "NAME:unecha-refractory-metals-plant": {
       "id": "NAME:unecha-refractory-metals-plant",
       "cid": null,
@@ -55308,20 +54413,6 @@
         "XYL"
       ],
       "sameNameAs": "CID001993"
-    },
-    "NAME:united-states-bureau-of-land-management": {
-      "id": "NAME:united-states-bureau-of-land-management",
-      "cid": null,
-      "identifierType": "name-only",
-      "name": "United States Bureau of Land Management",
-      "country": "美国",
-      "countryEn": "united states",
-      "minerals": [
-        "金"
-      ],
-      "filers": [
-        "SA"
-      ]
     },
     "NAME:united-states-of-america-japan-germany-uzbekistan-brazil-switzerland-turkey-phil": {
       "id": "NAME:united-states-of-america-japan-germany-uzbekistan-brazil-switzerland-turkey-phil",
