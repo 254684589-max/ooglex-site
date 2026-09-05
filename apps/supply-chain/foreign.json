@@ -1,0 +1,2157 @@
+{
+  "companies": {
+    "AAUC": {
+      "annualForm": "20-F/40-F",
+      "cik": 1993344,
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-04-01",
+      "name": "Allied Gold Corp",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "AAUC",
+      "tickers": [
+        "AAUC"
+      ]
+    },
+    "AEM": {
+      "annualForm": "20-F/40-F",
+      "cik": 2809,
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-19",
+      "name": "AGNICO EAGLE MINES LTD",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "AEM",
+      "tickers": [
+        "AEM",
+        "AEMRF"
+      ]
+    },
+    "AG": {
+      "annualForm": "20-F/40-F",
+      "cik": 1308648,
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-31",
+      "name": "FIRST MAJESTIC SILVER CORP",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "AG",
+      "tickers": [
+        "AG"
+      ]
+    },
+    "AGI": {
+      "annualForm": "20-F/40-F",
+      "cik": 1178819,
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-26",
+      "name": "ALAMOS GOLD INC",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "AGI",
+      "tickers": [
+        "AGI"
+      ]
+    },
+    "ALC": {
+      "annualForm": "20-F/40-F",
+      "cik": 1167379,
+      "country": "TX",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-24",
+      "name": "ALCON INC",
+      "sic": 3851,
+      "sicDescription": "Ophthalmic Goods",
+      "symbol": "ALC",
+      "tickers": [
+        "ALC"
+      ]
+    },
+    "ALLT": {
+      "annualForm": "20-F/40-F",
+      "cik": 1365767,
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-31",
+      "name": "Allot Ltd.",
+      "sic": 3576,
+      "sicDescription": "Computer Communications Equipment",
+      "symbol": "ALLT",
+      "tickers": [
+        "ALLT"
+      ]
+    },
+    "APWC": {
+      "annualForm": "20-F/40-F",
+      "cik": 1026980,
+      "country": "Taiwan",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-04-29",
+      "name": "ASIA PACIFIC WIRE & CABLE CORP LTD",
+      "sic": 3357,
+      "sicDescription": "Drawing & Insulating of  Nonferrous Wire",
+      "symbol": "APWC",
+      "tickers": [
+        "APWC"
+      ]
+    },
+    "ARCO": {
+      "annualForm": "20-F/40-F",
+      "cik": 1508478,
+      "country": "Uruguay",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-04-30",
+      "name": "Arcos Dorados Holdings Inc.",
+      "sic": 5812,
+      "sicDescription": "Retail-Eating  Places",
+      "symbol": "ARCO",
+      "tickers": [
+        "ARCO"
+      ]
+    },
+    "ARM": {
+      "annualForm": "20-F/40-F",
+      "cik": 1973239,
+      "country": "United Kingdom",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-05-26",
+      "name": "ARM HOLDINGS PLC /UK",
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "symbol": "ARM",
+      "tickers": [
+        "ARM"
+      ]
+    },
+    "ASM": {
+      "annualForm": "20-F/40-F",
+      "cik": 316888,
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-27",
+      "name": "AVINO SILVER & GOLD MINES LTD",
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "symbol": "ASM",
+      "tickers": [
+        "ASM"
+      ]
+    },
+    "ASML": {
+      "annualForm": "20-F/40-F",
+      "cik": 937966,
+      "country": "Netherlands",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-02-25",
+      "name": "ASML HOLDING NV",
+      "sic": 3559,
+      "sicDescription": "Special Industry Machinery, NEC",
+      "symbol": "ASML",
+      "tickers": [
+        "ASML",
+        "ASMLF"
+      ]
+    },
+    "ASND": {
+      "annualForm": "20-F/40-F",
+      "cik": 1612042,
+      "country": "Denmark",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-02-11",
+      "name": "Ascendis Pharma A/S",
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "symbol": "ASND",
+      "tickers": [
+        "ASND"
+      ]
+    },
+    "ASX": {
+      "annualForm": "20-F/40-F",
+      "cik": 1122411,
+      "country": "Taiwan",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-04-01",
+      "name": "ASE Technology Holding Co., Ltd.",
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "symbol": "ASX",
+      "tickers": [
+        "ASX"
+      ]
+    },
+    "AU": {
+      "annualForm": "20-F/40-F",
+      "cik": 1973832,
+      "country": "United Kingdom",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-26",
+      "name": "AngloGold Ashanti PLC",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "AU",
+      "tickers": [
+        "AU"
+      ]
+    },
+    "AUDC": {
+      "annualForm": "20-F/40-F",
+      "cik": 1086434,
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-30",
+      "name": "AUDIOCODES LTD",
+      "sic": 3661,
+      "sicDescription": "Telephone & Telegraph Apparatus",
+      "symbol": "AUDC",
+      "tickers": [
+        "AUDC"
+      ]
+    },
+    "B": {
+      "annualForm": "20-F/40-F",
+      "cik": 756894,
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-27",
+      "name": "BARRICK MINING CORP",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "B",
+      "tickers": [
+        "B"
+      ]
+    },
+    "BABA": {
+      "annualForm": "20-F/40-F",
+      "cik": 1577552,
+      "country": "Hong Kong",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-05-20",
+      "name": "Alibaba Group Holding Ltd",
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "symbol": "BABA",
+      "tickers": [
+        "BABA",
+        "BABAF",
+        "BBAAY"
+      ]
+    },
+    "BGI": {
+      "annualForm": "20-F/40-F",
+      "cik": 1179821,
+      "country": "Quebec, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-07-21",
+      "name": "BIRKS GROUP INC.",
+      "sic": 5944,
+      "sicDescription": "Retail-Jewelry Stores",
+      "symbol": "BGI",
+      "tickers": [
+        "BGI",
+        "BGICF"
+      ]
+    },
+    "BHP": {
+      "annualForm": "20-F/40-F",
+      "cik": 811809,
+      "country": "Australia",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-08-18",
+      "name": "BHP Group Ltd",
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "symbol": "BHP",
+      "tickers": [
+        "BHP",
+        "BHPLF"
+      ]
+    },
+    "BIRK": {
+      "annualForm": "20-F/40-F",
+      "cik": 1977102,
+      "country": "Jersey",
+      "exchange": "NYSE",
+      "lastAnnual": "2025-12-18",
+      "name": "Birkenstock Holding plc",
+      "sic": 3140,
+      "sicDescription": "Footwear, (No Rubber)",
+      "symbol": "BIRK",
+      "tickers": [
+        "BIRK"
+      ]
+    },
+    "BLDP": {
+      "annualForm": "20-F/40-F",
+      "cik": 1453015,
+      "country": "",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-12",
+      "name": "Ballard Power Systems Inc.",
+      "sic": 3620,
+      "sicDescription": "Electrical Industrial Apparatus",
+      "symbol": "BLDP",
+      "tickers": [
+        "BLDP"
+      ]
+    },
+    "BP": {
+      "annualForm": "20-F/40-F",
+      "cik": 313807,
+      "country": "United Kingdom",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-06",
+      "name": "BP PLC",
+      "sic": 2911,
+      "sicDescription": "Petroleum Refining",
+      "symbol": "BP",
+      "tickers": [
+        "BP",
+        "BPAQF",
+        "BPPFF"
+      ]
+    },
+    "BRSL": {
+      "annualForm": "20-F/40-F",
+      "cik": 1619762,
+      "country": "United Kingdom",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-24",
+      "name": "Brightstar Lottery PLC",
+      "sic": 7990,
+      "sicDescription": "Services-Miscellaneous Amusement & Recreation",
+      "symbol": "BRSL",
+      "tickers": [
+        "BRSL"
+      ]
+    },
+    "BTE": {
+      "annualForm": "20-F/40-F",
+      "cik": 1279495,
+      "country": "",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-05",
+      "name": "BAYTEX ENERGY CORP.",
+      "sic": 1381,
+      "sicDescription": "Drilling Oil & Gas Wells",
+      "symbol": "BTE",
+      "tickers": [
+        "BTE"
+      ]
+    },
+    "BTG": {
+      "annualForm": "20-F/40-F",
+      "cik": 1429937,
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-11",
+      "name": "B2GOLD CORP",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "BTG",
+      "tickers": [
+        "BTG"
+      ]
+    },
+    "BTI": {
+      "annualForm": "20-F/40-F",
+      "cik": 1303523,
+      "country": "",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-13",
+      "name": "British American Tobacco p.l.c.",
+      "sic": 2111,
+      "sicDescription": "Cigarettes",
+      "symbol": "BTI",
+      "tickers": [
+        "BTAFF",
+        "BTI"
+      ]
+    },
+    "BUD": {
+      "annualForm": "20-F/40-F",
+      "cik": 1668717,
+      "country": "Belgium",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-03",
+      "name": "Anheuser-Busch InBev SA/NV",
+      "sic": 2082,
+      "sicDescription": "Malt Beverages",
+      "symbol": "BUD",
+      "tickers": [
+        "BUD",
+        "BUDFF"
+      ]
+    },
+    "CAE": {
+      "annualForm": "20-F/40-F",
+      "cik": 1173382,
+      "country": "Quebec, Canada",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-06-22",
+      "name": "CAE INC",
+      "sic": 3690,
+      "sicDescription": "Miscellaneous Electrical Machinery, Equipment & Supplies",
+      "symbol": "CAE",
+      "tickers": [
+        "CAE"
+      ]
+    },
+    "CAMT": {
+      "annualForm": "20-F/40-F",
+      "cik": 1109138,
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-19",
+      "name": "CAMTEK LTD",
+      "sic": 3827,
+      "sicDescription": "Optical Instruments & Lenses",
+      "symbol": "CAMT",
+      "tickers": [
+        "CAMT"
+      ]
+    },
+    "CCJ": {
+      "annualForm": "20-F/40-F",
+      "cik": 1009001,
+      "country": "",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-19",
+      "name": "CAMECO CORP",
+      "sic": 1090,
+      "sicDescription": "Miscellaneous Metal Ores",
+      "symbol": "CCJ",
+      "tickers": [
+        "CCJ"
+      ]
+    },
+    "CGAU": {
+      "annualForm": "20-F/40-F",
+      "cik": 1854640,
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-23",
+      "name": "Centerra Gold Inc.",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "CGAU",
+      "tickers": [
+        "CGAU"
+      ]
+    },
+    "CGNT": {
+      "annualForm": "20-F/40-F",
+      "cik": 1824814,
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-25",
+      "name": "Cognyte Software Ltd.",
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "symbol": "CGNT",
+      "tickers": [
+        "CGNT"
+      ]
+    },
+    "CHT": {
+      "annualForm": "20-F/40-F",
+      "cik": 1132924,
+      "country": "",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-04-15",
+      "name": "CHUNGHWA TELECOM CO LTD",
+      "sic": 4812,
+      "sicDescription": "Radiotelephone Communications",
+      "symbol": "CHT",
+      "tickers": [
+        "CHT"
+      ]
+    },
+    "CNL": {
+      "annualForm": "20-F/40-F",
+      "cik": 1953575,
+      "country": "Ontario, Canada",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-31",
+      "name": "Collective Mining Ltd.",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "CNL",
+      "tickers": [
+        "CNL"
+      ]
+    },
+    "CNQ": {
+      "annualForm": "20-F/40-F",
+      "cik": 1017413,
+      "country": "Alberta, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-26",
+      "name": "CANADIAN NATURAL RESOURCES Ltd",
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "symbol": "CNQ",
+      "tickers": [
+        "CNQ"
+      ]
+    },
+    "CRNT": {
+      "annualForm": "20-F/40-F",
+      "cik": 1119769,
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-04-15",
+      "name": "CERAGON NETWORKS LTD",
+      "sic": 3663,
+      "sicDescription": "Radio & Tv Broadcasting & Communications Equipment",
+      "symbol": "CRNT",
+      "tickers": [
+        "CRNT"
+      ]
+    },
+    "CSIQ": {
+      "annualForm": "20-F/40-F",
+      "cik": 1375877,
+      "country": "Ontario, Canada",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-04-10",
+      "name": "Canadian Solar Inc.",
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "symbol": "CSIQ",
+      "tickers": [
+        "CSIQ"
+      ]
+    },
+    "CX": {
+      "annualForm": "20-F/40-F",
+      "cik": 1076378,
+      "country": "Mexico",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-04-24",
+      "name": "CEMEX SAB DE CV",
+      "sic": 3241,
+      "sicDescription": "Cement, Hydraulic",
+      "symbol": "CX",
+      "tickers": [
+        "CX",
+        "CXMSF"
+      ]
+    },
+    "CYD": {
+      "annualForm": "20-F/40-F",
+      "cik": 932695,
+      "country": "Singapore",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-04-29",
+      "name": "CHINA YUCHAI INTERNATIONAL LTD",
+      "sic": 3510,
+      "sicDescription": "Engines & Turbines",
+      "symbol": "CYD",
+      "tickers": [
+        "CYD"
+      ]
+    },
+    "DOO": {
+      "annualForm": "20-F/40-F",
+      "cik": 1748797,
+      "country": "Quebec, Canada",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-26",
+      "name": "BRP Inc.",
+      "sic": 3790,
+      "sicDescription": "Miscellaneous Transportation Equipment",
+      "symbol": "DOO",
+      "tickers": [
+        "DOO"
+      ]
+    },
+    "DRD": {
+      "annualForm": "20-F/40-F",
+      "cik": 1023512,
+      "country": "",
+      "exchange": "NYSE",
+      "lastAnnual": "2025-10-30",
+      "name": "DRDGOLD LTD",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "DRD",
+      "tickers": [
+        "DRD",
+        "DRDGF"
+      ]
+    },
+    "DSGX": {
+      "annualForm": "20-F/40-F",
+      "cik": 1050140,
+      "country": "Ontario, Canada",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-11",
+      "name": "DESCARTES SYSTEMS GROUP INC",
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "symbol": "DSGX",
+      "tickers": [
+        "DSGX"
+      ]
+    },
+    "DSWL": {
+      "annualForm": "20-F/40-F",
+      "cik": 946936,
+      "country": "",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-07-30",
+      "name": "DESWELL INDUSTRIES INC",
+      "sic": 3089,
+      "sicDescription": "Plastics Products, NEC",
+      "symbol": "DSWL",
+      "tickers": [
+        "DSWL"
+      ]
+    },
+    "E": {
+      "annualForm": "20-F/40-F",
+      "cik": 1002242,
+      "country": "Italy",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-23",
+      "name": "ENI SPA",
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "symbol": "E",
+      "tickers": [
+        "E",
+        "EIPAF"
+      ]
+    },
+    "EFXT": {
+      "annualForm": "20-F/40-F",
+      "cik": 1904856,
+      "country": "Canada (Federal Level)",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-26",
+      "name": "Enerflex Ltd.",
+      "sic": 3560,
+      "sicDescription": "General Industrial Machinery & Equipment",
+      "symbol": "EFXT",
+      "tickers": [
+        "EFXT"
+      ]
+    },
+    "EGO": {
+      "annualForm": "20-F/40-F",
+      "cik": 918608,
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-27",
+      "name": "ELDORADO GOLD CORP /FI",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "EGO",
+      "tickers": [
+        "EGO"
+      ]
+    },
+    "ELTK": {
+      "annualForm": "20-F/40-F",
+      "cik": 1024672,
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-26",
+      "name": "ELTEK LTD",
+      "sic": 3672,
+      "sicDescription": "Printed Circuit Boards",
+      "symbol": "ELTK",
+      "tickers": [
+        "ELTK"
+      ]
+    },
+    "EMBJ": {
+      "annualForm": "20-F/40-F",
+      "cik": 1355444,
+      "country": "Brazil",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-30",
+      "name": "EMBRAER S.A.",
+      "sic": 3721,
+      "sicDescription": "Aircraft",
+      "symbol": "EMBJ",
+      "tickers": [
+        "EMBJ"
+      ]
+    },
+    "EQNR": {
+      "annualForm": "20-F/40-F",
+      "cik": 1140625,
+      "country": "Norway",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-19",
+      "name": "EQUINOR ASA",
+      "sic": 2911,
+      "sicDescription": "Petroleum Refining",
+      "symbol": "EQNR",
+      "tickers": [
+        "EQNR",
+        "STOHF"
+      ]
+    },
+    "EQX": {
+      "annualForm": "20-F/40-F",
+      "cik": 1756607,
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-31",
+      "name": "Equinox Gold Corp.",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "EQX",
+      "tickers": [
+        "EQX"
+      ]
+    },
+    "ERIC": {
+      "annualForm": "20-F/40-F",
+      "cik": 717826,
+      "country": "Sweden",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-12",
+      "name": "ERICSSON LM TELEPHONE CO",
+      "sic": 3663,
+      "sicDescription": "Radio & Tv Broadcasting & Communications Equipment",
+      "symbol": "ERIC",
+      "tickers": [
+        "ERIC",
+        "ERIXF"
+      ]
+    },
+    "ERO": {
+      "annualForm": "20-F/40-F",
+      "cik": 1853860,
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-30",
+      "name": "Ero Copper Corp.",
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "symbol": "ERO",
+      "tickers": [
+        "ERO"
+      ]
+    },
+    "ESLT": {
+      "annualForm": "20-F/40-F",
+      "cik": 1027664,
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-17",
+      "name": "ELBIT SYSTEMS LTD",
+      "sic": 3728,
+      "sicDescription": "Aircraft Parts & Auxiliary Equipment, NEC",
+      "symbol": "ESLT",
+      "tickers": [
+        "ESLT"
+      ]
+    },
+    "FMS": {
+      "annualForm": "20-F/40-F",
+      "cik": 1333141,
+      "country": "Germany",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-24",
+      "name": "Fresenius Medical Care AG",
+      "sic": 8090,
+      "sicDescription": "Services-Misc Health & Allied Services, NEC",
+      "symbol": "FMS",
+      "tickers": [
+        "FMCQF",
+        "FMS"
+      ]
+    },
+    "FNV": {
+      "annualForm": "20-F/40-F",
+      "cik": 1456346,
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-19",
+      "name": "FRANCO NEVADA Corp",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "FNV",
+      "tickers": [
+        "FNV"
+      ]
+    },
+    "FSM": {
+      "annualForm": "20-F/40-F",
+      "cik": 1341335,
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-26",
+      "name": "FORTUNA MINING CORP.",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "FSM",
+      "tickers": [
+        "FSM"
+      ]
+    },
+    "GAU": {
+      "annualForm": "20-F/40-F",
+      "cik": 1377757,
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-12",
+      "name": "Galiano Gold Inc.",
+      "sic": 1400,
+      "sicDescription": "Mining & Quarrying of  Nonmetallic Minerals (No Fuels)",
+      "symbol": "GAU",
+      "tickers": [
+        "GAU"
+      ]
+    },
+    "GFS": {
+      "annualForm": "20-F/40-F",
+      "cik": 1709048,
+      "country": "NY",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-02-27",
+      "name": "GLOBALFOUNDRIES Inc.",
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "symbol": "GFS",
+      "tickers": [
+        "GFS"
+      ]
+    },
+    "GGB": {
+      "annualForm": "20-F/40-F",
+      "cik": 1073404,
+      "country": "Brazil",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-13",
+      "name": "GERDAU S.A.",
+      "sic": 3310,
+      "sicDescription": "Steel Works, Blast Furnaces & Rolling & Finishing Mills",
+      "symbol": "GGB",
+      "tickers": [
+        "GGB"
+      ]
+    },
+    "GIL": {
+      "annualForm": "20-F/40-F",
+      "cik": 1061894,
+      "country": "Canada (Federal Level)",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-26",
+      "name": "Gildan Activewear Inc.",
+      "sic": 2300,
+      "sicDescription": "Apparel & Other Finishd Prods of  Fabrics & Similar Matl",
+      "symbol": "GIL",
+      "tickers": [
+        "GIL"
+      ]
+    },
+    "GILT": {
+      "annualForm": "20-F/40-F",
+      "cik": 897322,
+      "country": "VA",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-16",
+      "name": "GILAT SATELLITE NETWORKS LTD",
+      "sic": 3663,
+      "sicDescription": "Radio & Tv Broadcasting & Communications Equipment",
+      "symbol": "GILT",
+      "tickers": [
+        "GILT"
+      ]
+    },
+    "GOOS": {
+      "annualForm": "20-F/40-F",
+      "cik": 1690511,
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-05-15",
+      "name": "Canada Goose Holdings Inc.",
+      "sic": 2300,
+      "sicDescription": "Apparel & Other Finishd Prods of  Fabrics & Similar Matl",
+      "symbol": "GOOS",
+      "tickers": [
+        "GOOS"
+      ]
+    },
+    "GPRK": {
+      "annualForm": "20-F/40-F",
+      "cik": 1464591,
+      "country": "Colombia",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-31",
+      "name": "GeoPark Ltd",
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "symbol": "GPRK",
+      "tickers": [
+        "GPRK"
+      ]
+    },
+    "GSK": {
+      "annualForm": "20-F/40-F",
+      "cik": 1131399,
+      "country": "United Kingdom",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-06",
+      "name": "GSK plc",
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "symbol": "GSK",
+      "tickers": [
+        "GLAXF",
+        "GSK"
+      ]
+    },
+    "GSM": {
+      "annualForm": "20-F/40-F",
+      "cik": 1639877,
+      "country": "United Kingdom",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-26",
+      "name": "Ferroglobe PLC",
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "symbol": "GSM",
+      "tickers": [
+        "GSM"
+      ]
+    },
+    "HBM": {
+      "annualForm": "20-F/40-F",
+      "cik": 1322422,
+      "country": "",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-27",
+      "name": "Hudbay Minerals Inc.",
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "symbol": "HBM",
+      "tickers": [
+        "HBM"
+      ]
+    },
+    "HIMX": {
+      "annualForm": "20-F/40-F",
+      "cik": 1342338,
+      "country": "Cayman Islands",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-27",
+      "name": "Himax Technologies, Inc.",
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "symbol": "HIMX",
+      "tickers": [
+        "HIMX"
+      ]
+    },
+    "HLN": {
+      "annualForm": "20-F/40-F",
+      "cik": 1900304,
+      "country": "United Kingdom",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-13",
+      "name": "Haleon plc",
+      "sic": 2844,
+      "sicDescription": "Perfumes, Cosmetics & Other Toilet Preparations",
+      "symbol": "HLN",
+      "tickers": [
+        "HLN",
+        "HLNCF"
+      ]
+    },
+    "HMC": {
+      "annualForm": "20-F/40-F",
+      "cik": 715153,
+      "country": "",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-06-18",
+      "name": "HONDA MOTOR CO LTD",
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
+      "symbol": "HMC",
+      "tickers": [
+        "HMC",
+        "HNDAF"
+      ]
+    },
+    "HMY": {
+      "annualForm": "20-F/40-F",
+      "cik": 1023514,
+      "country": "",
+      "exchange": "NYSE",
+      "lastAnnual": "2025-10-31",
+      "name": "HARMONY GOLD MINING CO LTD",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "HMY",
+      "tickers": [
+        "HGMCF",
+        "HMY"
+      ]
+    },
+    "HSLV": {
+      "annualForm": "20-F/40-F",
+      "cik": 2013223,
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-31",
+      "name": "Highlander Silver Corp.",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "HSLV",
+      "tickers": [
+        "HSLV"
+      ]
+    },
+    "IAG": {
+      "annualForm": "20-F/40-F",
+      "cik": 1203464,
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-18",
+      "name": "IAMGOLD CORP",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "IAG",
+      "tickers": [
+        "IAG"
+      ]
+    },
+    "IMOS": {
+      "annualForm": "20-F/40-F",
+      "cik": 1123134,
+      "country": "Taiwan",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-04-14",
+      "name": "CHIPMOS TECHNOLOGIES INC",
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "symbol": "IMOS",
+      "tickers": [
+        "IMOS"
+      ]
+    },
+    "INVZ": {
+      "annualForm": "20-F/40-F",
+      "cik": 1835654,
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-04",
+      "name": "Innoviz Technologies Ltd.",
+      "sic": 3714,
+      "sicDescription": "Motor Vehicle Parts & Accessories",
+      "symbol": "INVZ",
+      "tickers": [
+        "INVZ"
+      ]
+    },
+    "ISOU": {
+      "annualForm": "20-F/40-F",
+      "cik": 1997377,
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-27",
+      "name": "IsoEnergy Ltd.",
+      "sic": 1090,
+      "sicDescription": "Miscellaneous Metal Ores",
+      "symbol": "ISOU",
+      "tickers": [
+        "ISOU"
+      ]
+    },
+    "ITRN": {
+      "annualForm": "20-F/40-F",
+      "cik": 1337117,
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-04-23",
+      "name": "Ituran Location & Control Ltd.",
+      "sic": 5065,
+      "sicDescription": "Wholesale-Electronic Parts & Equipment, NEC",
+      "symbol": "ITRN",
+      "tickers": [
+        "ITRN"
+      ]
+    },
+    "IX": {
+      "annualForm": "20-F/40-F",
+      "cik": 1070304,
+      "country": "Japan",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-06-22",
+      "name": "ORIX CORP",
+      "sic": 6159,
+      "sicDescription": "Miscellaneous Business Credit Institution",
+      "symbol": "IX",
+      "tickers": [
+        "IX",
+        "ORXCF"
+      ]
+    },
+    "JKS": {
+      "annualForm": "20-F/40-F",
+      "cik": 1481513,
+      "country": "China",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-04-29",
+      "name": "JinkoSolar Holding Co., Ltd.",
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "symbol": "JKS",
+      "tickers": [
+        "JKS"
+      ]
+    },
+    "KARO": {
+      "annualForm": "20-F/40-F",
+      "cik": 1828102,
+      "country": "Singapore",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-06-09",
+      "name": "Karooooo Ltd.",
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "symbol": "KARO",
+      "tickers": [
+        "KARO"
+      ]
+    },
+    "KRNT": {
+      "annualForm": "20-F/40-F",
+      "cik": 1625791,
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-26",
+      "name": "Kornit Digital Ltd.",
+      "sic": 3555,
+      "sicDescription": "Printing Trades Machinery & Equipment",
+      "symbol": "KRNT",
+      "tickers": [
+        "KRNT"
+      ]
+    },
+    "LAR": {
+      "annualForm": "20-F/40-F",
+      "cik": 1440972,
+      "country": "Switzerland",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-23",
+      "name": "Lithium Argentina AG",
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "symbol": "LAR",
+      "tickers": [
+        "LAR"
+      ]
+    },
+    "LGO": {
+      "annualForm": "20-F/40-F",
+      "cik": 1400438,
+      "country": "Ontario, Canada",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-04-02",
+      "name": "Largo Inc.",
+      "sic": 1400,
+      "sicDescription": "Mining & Quarrying of  Nonmetallic Minerals (No Fuels)",
+      "symbol": "LGO",
+      "tickers": [
+        "LGO"
+      ]
+    },
+    "LPL": {
+      "annualForm": "20-F/40-F",
+      "cik": 1290109,
+      "country": "Korea, Republic of",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-04-28",
+      "name": "LG Display Co., Ltd.",
+      "sic": 3679,
+      "sicDescription": "Electronic Components, NEC",
+      "symbol": "LPL",
+      "tickers": [
+        "LPL"
+      ]
+    },
+    "MAKO": {
+      "annualForm": "20-F/40-F",
+      "cik": 1784930,
+      "country": "British Columbia, Canada",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-04-29",
+      "name": "Mako Mining Corp.",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "MAKO",
+      "tickers": [
+        "MAKO"
+      ]
+    },
+    "MGA": {
+      "annualForm": "20-F/40-F",
+      "cik": 749098,
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-27",
+      "name": "MAGNA INTERNATIONAL INC",
+      "sic": 3714,
+      "sicDescription": "Motor Vehicle Parts & Accessories",
+      "symbol": "MGA",
+      "tickers": [
+        "MGA"
+      ]
+    },
+    "MINE": {
+      "annualForm": "20-F/40-F",
+      "cik": 1823255,
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-04-14",
+      "name": "MAYFAIR GOLD CORP.",
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "symbol": "MINE",
+      "tickers": [
+        "MINE"
+      ]
+    },
+    "MT": {
+      "annualForm": "20-F/40-F",
+      "cik": 1243429,
+      "country": "Luxembourg",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-06",
+      "name": "ArcelorMittal",
+      "sic": 3312,
+      "sicDescription": "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)",
+      "symbol": "MT",
+      "tickers": [
+        "AMSYF",
+        "ARCXF",
+        "MT"
+      ]
+    },
+    "MTLS": {
+      "annualForm": "20-F/40-F",
+      "cik": 1091223,
+      "country": "",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-04-23",
+      "name": "MATERIALISE NV",
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "symbol": "MTLS",
+      "tickers": [
+        "MTLS"
+      ]
+    },
+    "NFGC": {
+      "annualForm": "20-F/40-F",
+      "cik": 1840616,
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-25",
+      "name": "New Found Gold Corp.",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "NFGC",
+      "tickers": [
+        "NFGC"
+      ]
+    },
+    "NICE": {
+      "annualForm": "20-F/40-F",
+      "cik": 1003935,
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-02-26",
+      "name": "NICE Ltd.",
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "symbol": "NICE",
+      "tickers": [
+        "NCSYF",
+        "NICE"
+      ]
+    },
+    "NMG": {
+      "annualForm": "20-F/40-F",
+      "cik": 1649752,
+      "country": "Canada (Federal Level)",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-26",
+      "name": "Nouveau Monde Graphite Inc.",
+      "sic": 1090,
+      "sicDescription": "Miscellaneous Metal Ores",
+      "symbol": "NMG",
+      "tickers": [
+        "NMG"
+      ]
+    },
+    "NOK": {
+      "annualForm": "20-F/40-F",
+      "cik": 924613,
+      "country": "Finland",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-05",
+      "name": "NOKIA CORP",
+      "sic": 3663,
+      "sicDescription": "Radio & Tv Broadcasting & Communications Equipment",
+      "symbol": "NOK",
+      "tickers": [
+        "NOK",
+        "NOKBF"
+      ]
+    },
+    "NTR": {
+      "annualForm": "20-F/40-F",
+      "cik": 1725964,
+      "country": "Saskatchewan, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-27",
+      "name": "Nutrien Ltd.",
+      "sic": 2870,
+      "sicDescription": "Agricultural Chemicals",
+      "symbol": "NTR",
+      "tickers": [
+        "NTR"
+      ]
+    },
+    "NVMI": {
+      "annualForm": "20-F/40-F",
+      "cik": 1109345,
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-02-17",
+      "name": "NOVA LTD.",
+      "sic": 3827,
+      "sicDescription": "Optical Instruments & Lenses",
+      "symbol": "NVMI",
+      "tickers": [
+        "NVMI"
+      ]
+    },
+    "NVO": {
+      "annualForm": "20-F/40-F",
+      "cik": 353278,
+      "country": "Denmark",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-04",
+      "name": "NOVO NORDISK A S",
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "symbol": "NVO",
+      "tickers": [
+        "NONOF",
+        "NVO"
+      ]
+    },
+    "NYAX": {
+      "annualForm": "20-F/40-F",
+      "cik": 1901279,
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-09",
+      "name": "Nayax Ltd.",
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "symbol": "NYAX",
+      "tickers": [
+        "NYAX"
+      ]
+    },
+    "OBE": {
+      "annualForm": "20-F/40-F",
+      "cik": 1334388,
+      "country": "Alberta, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-19",
+      "name": "OBSIDIAN ENERGY LTD.",
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "symbol": "OBE",
+      "tickers": [
+        "OBE"
+      ]
+    },
+    "OGG": {
+      "annualForm": "20-F/40-F",
+      "cik": 1431852,
+      "country": "Canada (Federal Level)",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-30",
+      "name": "Osisko Gold Group Inc.",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "OGG",
+      "tickers": [
+        "OGG",
+        "OGGWZ",
+        "OSDVF"
+      ]
+    },
+    "PAAS": {
+      "annualForm": "20-F/40-F",
+      "cik": 771992,
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-18",
+      "name": "PAN AMERICAN SILVER CORP",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "PAAS",
+      "tickers": [
+        "PAAS",
+        "PAASF"
+      ]
+    },
+    "PHG": {
+      "annualForm": "20-F/40-F",
+      "cik": 313216,
+      "country": "Netherlands",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-19",
+      "name": "KONINKLIJKE PHILIPS NV",
+      "sic": 3844,
+      "sicDescription": "X-Ray Apparatus & Tubes & Related Irradiation Apparatus",
+      "symbol": "PHG",
+      "tickers": [
+        "PHG",
+        "RYLPF"
+      ]
+    },
+    "PKX": {
+      "annualForm": "20-F/40-F",
+      "cik": 889132,
+      "country": "Korea, Republic of",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-04-29",
+      "name": "POSCO HOLDINGS INC.",
+      "sic": 3312,
+      "sicDescription": "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)",
+      "symbol": "PKX",
+      "tickers": [
+        "PKX"
+      ]
+    },
+    "PSNY": {
+      "annualForm": "20-F/40-F",
+      "cik": 1884082,
+      "country": "Sweden",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-04-17",
+      "name": "Polestar Automotive Holding UK PLC",
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
+      "symbol": "PSNY",
+      "tickers": [
+        "PLSAY",
+        "PSNY",
+        "PSNYW"
+      ]
+    },
+    "QGEN": {
+      "annualForm": "20-F/40-F",
+      "cik": 1015820,
+      "country": "Netherlands",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-20",
+      "name": "QIAGEN N.V.",
+      "sic": 2836,
+      "sicDescription": "Biological Products, (No Diagnostic Substances)",
+      "symbol": "QGEN",
+      "tickers": [
+        "QGEN"
+      ]
+    },
+    "RACE": {
+      "annualForm": "20-F/40-F",
+      "cik": 1648416,
+      "country": "Italy",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-19",
+      "name": "Ferrari N.V.",
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
+      "symbol": "RACE",
+      "tickers": [
+        "RACE"
+      ]
+    },
+    "RDWR": {
+      "annualForm": "20-F/40-F",
+      "cik": 1094366,
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-31",
+      "name": "RADWARE LTD",
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "symbol": "RDWR",
+      "tickers": [
+        "RDWR"
+      ]
+    },
+    "RIO": {
+      "annualForm": "20-F/40-F",
+      "cik": 863064,
+      "country": "United Kingdom",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-19",
+      "name": "RIO TINTO PLC",
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "symbol": "RIO",
+      "tickers": [
+        "RIO",
+        "RTPPF"
+      ]
+    },
+    "RTNTF": {
+      "annualForm": "20-F/40-F",
+      "cik": 887028,
+      "country": "Australia",
+      "exchange": "OTC",
+      "lastAnnual": "2026-02-19",
+      "name": "RIO TINTO LTD",
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "symbol": "RTNTF",
+      "tickers": [
+        "RTNTF"
+      ]
+    },
+    "RTO": {
+      "annualForm": "20-F/40-F",
+      "cik": 930157,
+      "country": "United Kingdom",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-25",
+      "name": "RENTOKIL INITIAL PLC /FI",
+      "sic": 8741,
+      "sicDescription": "Services-Management Services",
+      "symbol": "RTO",
+      "tickers": [
+        "RKLIF",
+        "RTO"
+      ]
+    },
+    "SA": {
+      "annualForm": "20-F/40-F",
+      "cik": 1231346,
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-27",
+      "name": "SEABRIDGE GOLD INC",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "SA",
+      "tickers": [
+        "SA"
+      ]
+    },
+    "SBSW": {
+      "annualForm": "20-F/40-F",
+      "cik": 1786909,
+      "country": "South Africa",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-04-24",
+      "name": "Sibanye Stillwater Ltd",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "SBSW",
+      "tickers": [
+        "SBSW",
+        "SBYSF"
+      ]
+    },
+    "SHEL": {
+      "annualForm": "20-F/40-F",
+      "cik": 1306965,
+      "country": "DC",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-12",
+      "name": "Shell plc",
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "symbol": "SHEL",
+      "tickers": [
+        "RYDAF",
+        "SHEL"
+      ]
+    },
+    "SHMD": {
+      "annualForm": "20-F/40-F",
+      "cik": 1987240,
+      "country": "Netherlands",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-05-15",
+      "name": "SCHMID Group N.V.",
+      "sic": 3590,
+      "sicDescription": "Misc Industrial & Commercial Machinery & Equipment",
+      "symbol": "SHMD",
+      "tickers": [
+        "SHMD",
+        "SHMDW"
+      ]
+    },
+    "SID": {
+      "annualForm": "20-F/40-F",
+      "cik": 1049659,
+      "country": "Brazil",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-04-30",
+      "name": "NATIONAL STEEL CO",
+      "sic": 3310,
+      "sicDescription": "Steel Works, Blast Furnaces & Rolling & Finishing Mills",
+      "symbol": "SID",
+      "tickers": [
+        "SID"
+      ]
+    },
+    "SILC": {
+      "annualForm": "20-F/40-F",
+      "cik": 916793,
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-04-28",
+      "name": "SILICOM LTD.",
+      "sic": 3576,
+      "sicDescription": "Computer Communications Equipment",
+      "symbol": "SILC",
+      "tickers": [
+        "SILC"
+      ]
+    },
+    "SIMO": {
+      "annualForm": "20-F/40-F",
+      "cik": 1329394,
+      "country": "Hong Kong",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-04-30",
+      "name": "Silicon Motion Technology CORP",
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "symbol": "SIMO",
+      "tickers": [
+        "SIMO"
+      ]
+    },
+    "SNN": {
+      "annualForm": "20-F/40-F",
+      "cik": 845982,
+      "country": "",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-16",
+      "name": "SMITH & NEPHEW PLC",
+      "sic": 3842,
+      "sicDescription": "Orthopedic, Prosthetic & Surgical Appliances & Supplies",
+      "symbol": "SNN",
+      "tickers": [
+        "SNN",
+        "SNNUF"
+      ]
+    },
+    "SNT": {
+      "annualForm": "20-F/40-F",
+      "cik": 1993727,
+      "country": "Ontario, Canada",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-05-14",
+      "name": "Senstar Technologies Corp",
+      "sic": 3669,
+      "sicDescription": "Communications Equipment, NEC",
+      "symbol": "SNT",
+      "tickers": [
+        "SNT"
+      ]
+    },
+    "SNY": {
+      "annualForm": "20-F/40-F",
+      "cik": 1121404,
+      "country": "France",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-02-17",
+      "name": "Sanofi",
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "symbol": "SNY",
+      "tickers": [
+        "SNY",
+        "SNYNF"
+      ]
+    },
+    "SONY": {
+      "annualForm": "20-F/40-F",
+      "cik": 313838,
+      "country": "Japan",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-06-18",
+      "name": "Sony Group Corp",
+      "sic": 3651,
+      "sicDescription": "Household Audio & Video Equipment",
+      "symbol": "SONY",
+      "tickers": [
+        "SNEJF",
+        "SONY"
+      ]
+    },
+    "SQNS": {
+      "annualForm": "20-F/40-F",
+      "cik": 1383395,
+      "country": "France",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-05-11",
+      "name": "SEQUANS COMMUNICATIONS",
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "symbol": "SQNS",
+      "tickers": [
+        "SQNS"
+      ]
+    },
+    "SSL": {
+      "annualForm": "20-F/40-F",
+      "cik": 314590,
+      "country": "South Africa",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-09-01",
+      "name": "SASOL LTD",
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "symbol": "SSL",
+      "tickers": [
+        "SASOF",
+        "SSL"
+      ]
+    },
+    "SSYS": {
+      "annualForm": "20-F/40-F",
+      "cik": 1517396,
+      "country": "MN",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-05",
+      "name": "STRATASYS LTD.",
+      "sic": 3577,
+      "sicDescription": "Computer Peripheral Equipment, NEC",
+      "symbol": "SSYS",
+      "tickers": [
+        "SSYS"
+      ]
+    },
+    "STLA": {
+      "annualForm": "20-F/40-F",
+      "cik": 1605484,
+      "country": "Netherlands",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-26",
+      "name": "Stellantis N.V.",
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
+      "symbol": "STLA",
+      "tickers": [
+        "STLA"
+      ]
+    },
+    "STM": {
+      "annualForm": "20-F/40-F",
+      "cik": 932787,
+      "country": "Netherlands",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-26",
+      "name": "STMicroelectronics N.V.",
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "symbol": "STM",
+      "tickers": [
+        "STM",
+        "STMEF"
+      ]
+    },
+    "STVN": {
+      "annualForm": "20-F/40-F",
+      "cik": 1849853,
+      "country": "",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-04",
+      "name": "Stevanato Group S.p.A.",
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+      "symbol": "STVN",
+      "tickers": [
+        "STVN"
+      ]
+    },
+    "SU": {
+      "annualForm": "20-F/40-F",
+      "cik": 311337,
+      "country": "Alberta, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-26",
+      "name": "SUNCOR ENERGY INC",
+      "sic": 2911,
+      "sicDescription": "Petroleum Refining",
+      "symbol": "SU",
+      "tickers": [
+        "SU"
+      ]
+    },
+    "SVM": {
+      "annualForm": "20-F/40-F",
+      "cik": 1340677,
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-06-30",
+      "name": "SILVERCORP METALS INC",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "SVM",
+      "tickers": [
+        "SVM"
+      ]
+    },
+    "TAK": {
+      "annualForm": "20-F/40-F",
+      "cik": 1395064,
+      "country": "Japan",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-06-17",
+      "name": "TAKEDA PHARMACEUTICAL CO LTD",
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "symbol": "TAK",
+      "tickers": [
+        "TAK",
+        "TKPHF"
+      ]
+    },
+    "TATT": {
+      "annualForm": "20-F/40-F",
+      "cik": 808439,
+      "country": "",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-03-18",
+      "name": "TAT TECHNOLOGIES LTD",
+      "sic": 3724,
+      "sicDescription": "Aircraft Engines & Engine Parts",
+      "symbol": "TATT",
+      "tickers": [
+        "TATT"
+      ]
+    },
+    "TECK": {
+      "annualForm": "20-F/40-F",
+      "cik": 886986,
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-02-19",
+      "name": "TECK RESOURCES LTD",
+      "sic": 1400,
+      "sicDescription": "Mining & Quarrying of  Nonmetallic Minerals (No Fuels)",
+      "symbol": "TECK",
+      "tickers": [
+        "TCKRF",
+        "TECK"
+      ]
+    },
+    "TGB": {
+      "annualForm": "20-F/40-F",
+      "cik": 878518,
+      "country": "British Columbia, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-31",
+      "name": "Trekor Metals Ltd",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "TGB",
+      "tickers": [
+        "TGB"
+      ]
+    },
+    "TII": {
+      "annualForm": "20-F/40-F",
+      "cik": 1791703,
+      "country": "NY",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-27",
+      "name": "Titan Mining Corp",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "TII",
+      "tickers": [
+        "TII"
+      ]
+    },
+    "TKC": {
+      "annualForm": "20-F/40-F",
+      "cik": 1071321,
+      "country": "Turkey",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-04-17",
+      "name": "TURKCELL ILETISIM HIZMETLERI A S",
+      "sic": 4813,
+      "sicDescription": "Telephone Communications (No Radiotelephone)",
+      "symbol": "TKC",
+      "tickers": [
+        "TKC"
+      ]
+    },
+    "TM": {
+      "annualForm": "20-F/40-F",
+      "cik": 1094517,
+      "country": "Japan",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-06-10",
+      "name": "TOYOTA MOTOR CORP/",
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
+      "symbol": "TM",
+      "tickers": [
+        "TM",
+        "TOYOF"
+      ]
+    },
+    "TRX": {
+      "annualForm": "20-F/40-F",
+      "cik": 1173643,
+      "country": "Ontario, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2025-12-01",
+      "name": "TRX GOLD Corp",
+      "sic": 1040,
+      "sicDescription": "Gold and Silver Ores",
+      "symbol": "TRX",
+      "tickers": [
+        "TRX"
+      ]
+    },
+    "TS": {
+      "annualForm": "20-F/40-F",
+      "cik": 1190723,
+      "country": "Luxembourg",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-31",
+      "name": "TENARIS SA",
+      "sic": 3312,
+      "sicDescription": "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)",
+      "symbol": "TS",
+      "tickers": [
+        "TNRSF",
+        "TS"
+      ]
+    },
+    "TSEM": {
+      "annualForm": "20-F/40-F",
+      "cik": 928876,
+      "country": "Israel",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-04-30",
+      "name": "TOWER SEMICONDUCTOR LTD",
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "symbol": "TSEM",
+      "tickers": [
+        "TSEM"
+      ]
+    },
+    "TSM": {
+      "annualForm": "20-F/40-F",
+      "cik": 1046179,
+      "country": "",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-04-16",
+      "name": "TAIWAN SEMICONDUCTOR MANUFACTURING CO LTD",
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "symbol": "TSM",
+      "tickers": [
+        "TSM",
+        "TSMWF"
+      ]
+    },
+    "TTE": {
+      "annualForm": "20-F/40-F",
+      "cik": 879764,
+      "country": "France",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-27",
+      "name": "TotalEnergies SE",
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "symbol": "TTE",
+      "tickers": [
+        "TTE"
+      ]
+    },
+    "TX": {
+      "annualForm": "20-F/40-F",
+      "cik": 1342874,
+      "country": "Luxembourg",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-31",
+      "name": "Ternium S.A.",
+      "sic": 3312,
+      "sicDescription": "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)",
+      "symbol": "TX",
+      "tickers": [
+        "TX"
+      ]
+    },
+    "UMC": {
+      "annualForm": "20-F/40-F",
+      "cik": 1033767,
+      "country": "Taiwan",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-04-30",
+      "name": "UNITED MICROELECTRONICS CORP",
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "symbol": "UMC",
+      "tickers": [
+        "UMC"
+      ]
+    },
+    "VET": {
+      "annualForm": "20-F/40-F",
+      "cik": 1293135,
+      "country": "Alberta, Canada",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-04",
+      "name": "VERMILION ENERGY INC.",
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "symbol": "VET",
+      "tickers": [
+        "VET"
+      ]
+    },
+    "VFS": {
+      "annualForm": "20-F/40-F",
+      "cik": 1913510,
+      "country": "Singapore",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-04-30",
+      "name": "VinFast Auto Ltd.",
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
+      "symbol": "VFS",
+      "tickers": [
+        "VFS",
+        "VFSWW"
+      ]
+    },
+    "VOD": {
+      "annualForm": "20-F/40-F",
+      "cik": 839923,
+      "country": "",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-05-22",
+      "name": "VODAFONE GROUP PUBLIC LTD CO",
+      "sic": 4812,
+      "sicDescription": "Radiotelephone Communications",
+      "symbol": "VOD",
+      "tickers": [
+        "VOD",
+        "VODPF"
+      ]
+    },
+    "WPRT": {
+      "annualForm": "20-F/40-F",
+      "cik": 1370416,
+      "country": "British Columbia, Canada",
+      "exchange": "Nasdaq",
+      "lastAnnual": "2026-04-23",
+      "name": "WESTPORT FUEL SYSTEMS INC.",
+      "sic": 3510,
+      "sicDescription": "Engines & Turbines",
+      "symbol": "WPRT",
+      "tickers": [
+        "WPRT"
+      ]
+    },
+    "YPF": {
+      "annualForm": "20-F/40-F",
+      "cik": 904851,
+      "country": "Argentina",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-26",
+      "name": "YPF SOCIEDAD ANONIMA",
+      "sic": 2911,
+      "sicDescription": "Petroleum Refining",
+      "symbol": "YPF",
+      "tickers": [
+        "YPF"
+      ]
+    },
+    "ZGN": {
+      "annualForm": "20-F/40-F",
+      "cik": 1877787,
+      "country": "Italy",
+      "exchange": "NYSE",
+      "lastAnnual": "2026-03-20",
+      "name": "Ermenegildo Zegna N.V.",
+      "sic": 2300,
+      "sicDescription": "Apparel & Other Finishd Prods of  Fabrics & Similar Matl",
+      "symbol": "ZGN",
+      "tickers": [
+        "ZGN"
+      ]
+    }
+  },
+  "contractVersion": 1,
+  "coverage": {
+    "bothAnnualAndFormSd": 147,
+    "foreignAnnualFilers": 1222,
+    "formSdFilers": 1033,
+    "published": 147,
+    "skippedNoTicker": 0,
+    "skippedTickerCollision": 0,
+    "submissionsFailed": 0,
+    "withTicker": 147,
+    "withoutSic": 0
+  },
+  "dataset": "supply-chain-foreign-issuers",
+  "note": "在美上市的外国私人发行人（报 20-F／40-F）中**同时报 Form SD** 的那一批。只收这一批，是因为报 Form SD 才可能带来冶炼厂名单，也就是加进来同时带节点和边；只增加孤立节点的扩池没有意义。按 CIK 去重，主代码按交易所优先级选定，与标普池撞码的一律跳过而不是覆盖。",
+  "quarters": [
+    {
+      "bytes": 2979142,
+      "gzip": true,
+      "quarter": "2026QTR3",
+      "rows": 236914,
+      "unparsed": 7
+    },
+    {
+      "bytes": 4272410,
+      "gzip": true,
+      "quarter": "2026QTR2",
+      "rows": 353168,
+      "unparsed": 7
+    },
+    {
+      "bytes": 4439273,
+      "gzip": true,
+      "quarter": "2026QTR1",
+      "rows": 370055,
+      "unparsed": 7
+    },
+    {
+      "bytes": 3400142,
+      "gzip": true,
+      "quarter": "2025QTR4",
+      "rows": 276466,
+      "unparsed": 7
+    }
+  ],
+  "source": "SEC EDGAR 季度全量索引 + submissions（公共领域）",
+  "updatedAt": "2026-09-05T09:55:40Z"
+}

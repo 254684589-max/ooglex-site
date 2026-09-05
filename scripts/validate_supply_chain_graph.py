@@ -544,6 +544,55 @@ PEERS_PATH = "apps/supply-chain/peers.json"
 _OVERSTATED = ("供应商", "合作", "伙伴", "客户", "供货")
 
 
+def check_pools(payload: dict, errors: list[str]) -> None:
+    """两个公司池的契约。守的是「哪些数适用于哪一批公司」不被混起来。
+
+    标普那 495 家有站内报价，外国私人发行人那批没有。把两批合成一个数说
+    「642 家」，读者会以为它们都有市值与当日涨跌——而市值合计与环节涨跌
+    的分母里根本没有后者。所以两个池必须分开计数，且**外国发行人的
+    marketCap 必须是 null，不能是 0**：0 会被市值加权当成真值算进去。
+    """
+    nodes = payload.get("nodes") or []
+    if not nodes:
+        return
+    coverage = payload.get("coverage") or {}
+    pools: dict[str, int] = {}
+    for node in nodes:
+        pool = node.get("pool")
+        if pool not in ("sp500", "sec-foreign-issuer"):
+            fail(errors, f"{node.get('symbol')} 的 pool 是 {pool!r}，"
+                         "只能是 sp500 或 sec-foreign-issuer")
+            continue
+        pools[pool] = pools.get(pool, 0) + 1
+        if pool == "sec-foreign-issuer":
+            if node.get("marketCap") is not None:
+                fail(errors, f"{node.get('symbol')} 是外国发行人却带了市值 "
+                             f"{node.get('marketCap')!r}——站内没有它的报价，"
+                             "写进去就是造数")
+            if not node.get("cik"):
+                fail(errors, f"外国发行人 {node.get('symbol')} 没有 CIK，"
+                             "它是这批公司唯一的实体锚点")
+
+    for key, pool in (("poolSp500", "sp500"),
+                      ("poolForeignIssuer", "sec-foreign-issuer")):
+        want = coverage.get(key)
+        if want is not None and want != pools.get(pool, 0):
+            fail(errors, f"coverage.{key} {want} 与实际 {pools.get(pool, 0)} 家不符")
+
+    without_quote = sum(1 for n in nodes if n.get("marketCap") is None)
+    if coverage.get("nodesWithoutQuote") not in (None, without_quote):
+        fail(errors, f"coverage.nodesWithoutQuote {coverage.get('nodesWithoutQuote')} "
+                     f"与实际 {without_quote} 家不符")
+
+    # 环节涨跌的分母只能是有报价的那批。混进无报价的公司会伪造当日表现。
+    perf = payload.get("stagePerformance") or {}
+    counted = sum(row.get("companies") or 0 for row in perf.get("stages") or [])
+    quoted = sum(1 for n in nodes if n.get("marketCap") is not None)
+    if counted > quoted:
+        fail(errors, f"环节涨跌统计了 {counted} 家，超过有报价的 {quoted} 家——"
+                     "无报价的公司被算进均值了")
+
+
 def check_peers(payload: dict, errors: list[str]) -> None:
     """上游重叠的契约。守三件事：不多算、说得准、两边对得上。
 
@@ -626,10 +675,18 @@ def check_peers(payload: dict, errors: list[str]) -> None:
 def check_home_card(payload: dict, errors: list[str]) -> None:
     """站点首页那张卡片上印的数，必须等于 nodes.json 里的数。
 
-    首页是静态 HTML，里面的数字不会自己更新——写死之后数据一变它就开始说假话，
-    而且没有任何东西会报错。这个板块已经栽过同一类跟头（手机上苹果页显示
-    「本页已收录 20245 条」而真值是 0），所以凡是印在页面上的数都得有人比对。
-    卡片上不印某个数是可以的；印了就必须对。
+    首页是静态 HTML，写死的数字不会自己更新，数据一变它就开始说假话且无人报错。
+    这个板块栽过同一类跟头（手机上苹果页显示「本页已收录 20245 条」而真值是 0）。
+
+    ## 只钉**结构性**的数
+
+    第一版把公司数和关系条数也钉了进去，结果外国发行人一入池（495 → 500）
+    整条数据管道就被这道校验挡住——而那是一次完全正常的数据变化。
+    换成分次元件（成分股增减、抽到新名单）都会漂的数，不该由静态文案承担。
+
+    因此改为：卡片上用 `data-sc="<键>"` 显式标出要校验的数，只校验被标出来的；
+    公司数与关系条数这类会漂的干脆不印在首页。要加新的数就加标记，
+    不标就不查——把「查什么」写在页面上，而不是让校验去猜。
     """
     path = "index.html"
     try:
@@ -644,23 +701,27 @@ def check_home_card(payload: dict, errors: list[str]) -> None:
     card = match.group(1)
 
     coverage = payload.get("coverage") or {}
-    expect = [
-        (coverage.get("nodesTotal"), "公司数"),
-        (coverage.get("chainsTotal"), "产业链条数"),
-        (coverage.get("chainLinksTotal"), "链间上下游条数"),
-        (coverage.get("edgesTotal"), "关系条数"),
-        (len(payload.get("stages") or []), "价值链环节数"),
-    ]
-    printed = set(re.findall(r"\d+", card))
-    for value, label in expect:
-        if value is None:
+    truth = {
+        "stages": len(payload.get("stages") or []),
+        "chains": coverage.get("chainsTotal"),
+        "chainLinks": coverage.get("chainLinksTotal"),
+        "chainDepth": coverage.get("chainDepth"),
+    }
+    marked = re.findall(r'data-sc="([^"]+)"[^>]*>([^<]*)<', card)
+    if not marked:
+        fail(errors, f"{path} 的产业链卡片一个 data-sc 标记都没有——"
+                     "没有标记就没人保证卡片上的数还是真的")
+        return
+    for key, shown in marked:
+        if key not in truth:
+            fail(errors, f"{path} 卡片标了未知的键 data-sc={key!r}")
             continue
-        # 只查「印了的数对不对」：卡片上没提这个数不算错，提了就必须等于真值。
-        near = re.search(r"(\d+)\s*(?:家|条产业链|条|个价值链环节)", card)
-        if str(value) not in printed and near:
-            # 找不到这个真值，但卡片上确实印了同类的数——多半是数据变了文案没跟上
-            fail(errors, f"{path} 的产业链卡片没有印出正确的{label} {value}，"
-                         f"卡片上的数是 {sorted(printed)}——静态文案与数据脱节了")
+        want = truth[key]
+        if want is None:
+            continue
+        if shown.strip() != str(want):
+            fail(errors, f"{path} 卡片上的{key} 写着 {shown.strip()}，"
+                         f"实际是 {want}——静态文案与数据脱节了")
 
 
 def check_health(errors: list[str], node_count: int) -> None:
@@ -691,6 +752,7 @@ def main() -> int:
     check_coverage(payload, counts, edge_count, errors)
     check_chains(payload, errors)
     check_chain_links(payload, errors)
+    check_pools(payload, errors)
     check_peers(payload, errors)
     check_home_card(payload, errors)
     check_no_conflict_markers(errors)

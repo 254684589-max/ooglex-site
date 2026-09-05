@@ -340,6 +340,42 @@ async function main() {
       })()`);
       check(`横轴选择条已渲染`, () => assert.ok(cp.shown));
 
+      /* 两个公司池。**这一段守的是「哪些数适用于哪一批公司」不被混起来**：
+         外国私人发行人站内没有报价，市值合计与环节涨跌都不含它们。
+         页面把 500 家印在一起而不说这件事，读者就会以为都有市值。 */
+      const FOREIGN_N = (NODES.coverage || {}).poolForeignIssuer || 0;
+      if (FOREIGN_N) {
+        const pool = await evaluate(`(() => {
+          const m = document.getElementById('method');
+          const marked = [...document.querySelectorAll('#chain .bandhd .mc s, #offchain .bandhd .mc s')];
+          return {
+            method: m ? m.textContent : '',
+            starred: marked.length,
+            starTitles: marked.map(x => (x.parentNode || {}).title || '')
+          };
+        })()`);
+        check(`方法区说明两个公司池（外国发行人 ${FOREIGN_N} 家）`, () => {
+          assert.ok(pool.method.includes(String(FOREIGN_N)),
+            "方法区没提外国发行人的家数");
+          assert.match(pool.method, /站内没有它们的报价/);
+          assert.match(pool.method, /市值合计与环节涨跌都不含这批公司/);
+        });
+        check(`说明为什么只收报 Form SD 的那一批`, () => assert.match(
+          pool.method, /只增加孤立节点的扩池没有意义/));
+        check(`说明指数商名单因许可未采用`, () => assert.match(
+          pool.method, /再分发要授权/));
+        // 有无报价公司的环节，市值要打星并说清差在哪几家
+        if (pool.starred) {
+          check(`市值打星处说清只含有报价的几家`, () => {
+            assert.ok(pool.starTitles.every(t => /有站内报价/.test(t)),
+              `实际：${JSON.stringify(pool.starTitles.slice(0, 2))}`);
+          });
+        }
+        check(`方法区没有漏出的 Markdown 星号`, () => assert.ok(
+          !/\*\*/.test(pool.method)));
+      }
+
+
       /* 层次排布。守的是**页面画的层等于数据算的层**——层次是由 77 条连线算出来的，
          页面自己排一套的话，改一条连线两边就会悄悄对不上。 */
       const DEPTH = (NODES.coverage || {}).chainDepth || 0;

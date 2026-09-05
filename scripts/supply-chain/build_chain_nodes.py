@@ -59,6 +59,9 @@ SMELTERS_PATH = os.path.join(OUT_DIR, "smelters.json")
 # 公司两两之间的上游重叠。单独一个文件：只有公司页用得上，
 # 总览页不该为了六个环节多下 120KB。
 PEERS_PATH = os.path.join(OUT_DIR, "peers.json")
+# 第二个公司池：在美上市的外国私人发行人里同时报 Form SD 的那一批。
+# 由 fetch_foreign_identity.py 生成；缺失时只出标普那 495 家，不中断构建。
+FOREIGN_PATH = os.path.join(OUT_DIR, "foreign.json")
 
 # ── 价值链阶段定义 ──────────────────────────────────────────────────────────
 # 八段实物链 + 四层使能层。chain=True 的在实物流转链条上、按 order 首尾相接；
@@ -154,6 +157,15 @@ def load_chain_resolver():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def load_foreign_pool() -> dict:
+    """读外国私人发行人池。没有这个文件就是「还没取过」，不是错误。"""
+    try:
+        with open(FOREIGN_PATH, encoding="utf-8") as handle:
+            return (json.load(handle) or {}).get("companies") or {}
+    except (OSError, ValueError):
+        return {}
 
 
 def load_peers_builder():
@@ -418,9 +430,20 @@ def build_node(member: dict, identity: dict, sic_module, chain_module=None) -> d
         node["stageAmbiguous"] = True
         node["stageNote"] = mapping["reason"]
 
+    apply_identity(node, identity.get(node["symbol"]) or {}, sic_module, chain_module)
+    return node
+
+
+def apply_identity(node: dict, record: dict, sic_module, chain_module=None) -> dict:
+    """把 SEC 的 CIK／SIC 落到节点上，并据此判环节与产业链。
+
+    **两个公司池共用这一份。** 标普那侧的 record 来自 identity.json，外国发行人
+    那侧来自 foreign.json，字段形状一样（cik / sic / sicDescription）。
+    各写一套的话，改了一处另一处就开始按旧规则判——而判定依据那一列会照样显示，
+    没有任何东西会报错。
+    """
     # ── SIC 升级：板块级判不出来的，用 SEC 行业码再判一次 ──────────────────
     # 只在 SIC 能给出结论时覆盖，且如实记录依据；SIC 判不了就保留板块级结果。
-    record = identity.get(node["symbol"]) or {}
     if record.get("cik"):
         node["cik"] = int(record["cik"])
     if record.get("sic"):
@@ -462,6 +485,43 @@ def build_node(member: dict, identity: dict, sic_module, chain_module=None) -> d
     else:
         node["chains"] = []
         node["chainBasis"] = "unknown"
+    return node
+
+
+def build_foreign_node(record: dict, sic_module, chain_module=None) -> dict:
+    """外国私人发行人的节点。
+
+    与标普那侧最大的不同是**没有站内报价**：`marketCap` 与当日涨跌都取不到。
+    这里如实留 None，绝不用 0 顶替——0 会被市值加权当成真值算进去，
+    等于凭空造一个「市值为零」的公司。环节涨跌的分母也因此不含这批公司，
+    构建日志与页面都要把这件事说出来。
+    """
+    symbol = record.get("symbol")
+    node = {
+        "id": symbol,
+        "symbol": symbol,
+        "name": record.get("name") or symbol,
+        "nameEn": record.get("name") or symbol,
+        # 站内板块分类只覆盖标普成分股，这批公司没有，如实留空——
+        # 环节与产业链都由 SIC 判，不依赖板块。
+        "sector": None,
+        "sectorEn": None,
+        "marketCap": None,
+        "logo": None,
+        "listed": True,
+        "pool": "sec-foreign-issuer",
+        "country": record.get("country"),
+        "exchange": record.get("exchange"),
+        "cik": None,
+        "sic": None,
+        "sicDescription": None,
+        "stage": None,
+        "stageCandidates": [],
+        "stageBasis": "unknown",
+        "stageAmbiguous": True,
+        "stageNote": "外国私人发行人，站内无板块分类；环节由 SEC 行业码判定",
+    }
+    apply_identity(node, record, sic_module, chain_module)
     return node
 
 
@@ -537,6 +597,28 @@ def build() -> None:
     chain_module = load_chain_resolver()
     nodes = [build_node(m, identity, sic_module, chain_module)
              for m in members if m.get("symbol")]
+    for node in nodes:
+        node["pool"] = "sp500"
+
+    # ── 第二个池：外国私人发行人 ──────────────────────────────────────────
+    # 公司池此前只有标普 500，半导体链上没有 ASML 和台积电根本画不出来。
+    # 代码冲突在取数那一步就跳过了，这里再挡一道：撞码不会报错，只会让一家
+    # 美国公司的节点被外国公司悄悄顶掉，而页面上看不出任何异常。
+    foreign_pool = load_foreign_pool()
+    taken = {n["symbol"] for n in nodes}
+    foreign_nodes = []
+    dropped_collision = []
+    for symbol in sorted(foreign_pool):
+        if symbol in taken:
+            dropped_collision.append(symbol)
+            continue
+        taken.add(symbol)
+        foreign_nodes.append(
+            build_foreign_node(foreign_pool[symbol], sic_module, chain_module))
+    if dropped_collision:
+        print(f"[!!] 外国发行人有 {len(dropped_collision)} 个代码与标普池相同，"
+              f"已跳过（不覆盖）：{'、'.join(dropped_collision[:10])}")
+    nodes.extend(foreign_nodes)
 
     # 关系边：抽取器写在 edges/ 下，本脚本只读、只索引、只校验，不自己造边。
     edge_files = load_edge_files()
@@ -691,6 +773,12 @@ def build() -> None:
             "chainUnclassified": chain_unclassified,
             "chainLinksTotal": len(chain_links),
             "chainDepth": chain_depth,
+            # 两个池分开计数。合成一个数会让读者以为 642 家都有市值与当日涨跌，
+            # 而外国发行人那批站内没有报价。
+            "poolSp500": sum(1 for n in nodes if n.get("pool") == "sp500"),
+            "poolForeignIssuer": len(foreign_nodes),
+            "poolForeignSkippedCollision": len(dropped_collision),
+            "nodesWithoutQuote": sum(1 for n in nodes if n.get("marketCap") is None),
             "upstreamPairs": (peers or {}).get("pairs", 0),
             "upstreamConcentrationTotal": (peers or {}).get("concentrationTotal", 0),
             "chainCounterflow": sum(1 for l in chain_links
@@ -788,6 +876,9 @@ def build() -> None:
           f"（契约已逐条校验）")
     if edges_by_source:
         print(f"  边的出处：{edges_by_source}")
+    if foreign_nodes:
+        print(f"  外国私人发行人 {len(foreign_nodes)} 家已入池"
+              f"（站内无报价，不参与环节涨跌与市值合计）")
     if chain_rows:
         print(f"  横轴：{len(chain_rows)} 条一级产业链，链间上下游 {len(chain_links)} 条"
               f"（框架，非实测关系）；{len(chain_cross)} 条标为横跨全链")
