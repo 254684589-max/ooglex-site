@@ -236,6 +236,41 @@ def load_form_sd_coverage() -> dict | None:
 FLOW_TOP_COUNTRIES = 8
 
 
+def country_exposure(bundles: dict[str, dict], listed: int) -> list[dict]:
+    """按冶炼厂所在国别，算两个**含义完全不同**的数。
+
+    - `edges`：多少条关系跑经该国——图谱里有多少分量落在那里；
+    - `filers`：多少家申报人的名单里出现过该国的厂——**暴露面有多宽**。
+
+    这两个数经常排出完全不同的名次，而只印其中一个会把风险读反：
+    印度尼西亚按条数排第 4（6.6%），按暴露家数却排第 1（118 家，高于中国的
+    107 家）——几乎每一家有名单的公司都沾到印尼的锡。Sankey 画的是
+    环节 → 国别的流量，回答不了「多少家公司沾到某国」，所以单列这一份。
+
+    语义与别处一致：**只是「该国的冶炼厂出现在这些公司的名单里」**，
+    不是采购关系，也不表示这些公司之间有往来。
+    """
+    edges: dict[str, int] = {}
+    filers: dict[str, set] = {}
+    for symbol, bundle in bundles.items():
+        for edge in (bundle.get("edges") or []):
+            key = edge.get("country") or "未写明"
+            edges[key] = edges.get(key, 0) + 1
+            filers.setdefault(key, set()).add(symbol)
+    rows = [{
+        "country": c,
+        "edges": edges[c],
+        "filerCount": len(filers[c]),
+        # 逐家列出，页面可以点开反查——与集中度那块同一套读法。
+        "filers": sorted(filers[c]),
+        # 占「有名单的公司」的比例。分母不是全池 642 家：没有名单的公司
+        # 不可能暴露在任何国别上，混进分母会把每一档都稀释成假的小数。
+        "filerShare": round(len(filers[c]) / listed, 4) if listed else 0,
+    } for c in edges]
+    rows.sort(key=lambda r: (-r["filerCount"], -r["edges"], r["country"]))
+    return rows
+
+
 def stage_flow(nodes: list[dict], bundles: dict[str, dict]) -> dict:
     """环节 → 冶炼厂所在国别的实测流量。
 
@@ -758,6 +793,7 @@ def build() -> None:
     stale = sorted(n["symbol"] for n in nodes
                    if n.get("edgeCount") and filing_status.get(n["symbol"]) != "listed")
     flow = stage_flow(nodes, edge_files)
+    exposure = country_exposure(edge_files, len(edge_files))
 
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     by_stage: dict[str, int] = {}
@@ -840,6 +876,9 @@ def build() -> None:
         # 上游集中度：一家冶炼厂被多少家申报人共同列入。榜单放这里是因为总览页
         # 已经会下 nodes.json，不必为十几行多发一次请求；逐家的重叠在 peers.json。
         "upstreamConcentration": (peers or {}).get("concentration") or [],
+        # 按国别的暴露面。edges 与 filerCount 是两个不同的读数，页面两个都印
+        # ——只印一个会把风险读反（见 country_exposure 的说明）。
+        "countryExposure": exposure,
         "nodes": nodes,
         # 每家一个文件，公司页按需拉。索引里带出处链接，不必先下文件才知道有没有边。
         "edgeIndex": edge_index,
