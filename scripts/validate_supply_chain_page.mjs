@@ -321,6 +321,94 @@ async function main() {
       check(`链外不画箭头——它不在实物流转链条上`, () => assert.equal(
         chain.linksOffChain, 0));
 
+      /* 横轴：一级产业链筛选。这一段守的是**二维模型没有变成一句口号**——
+         选一条链，屏幕上的家数要真的跟着变，而且变成的那个数要等于数据里
+         写的那个数。另外守两条诚实性：筛完不能拿全环节的涨跌冒充该链的涨跌；
+         页面必须写明「链是分类不是关系」，否则读者会把同链两家当成有供应关系。 */
+      const CHAINS = (NODES.chains || []).filter(c => c.count > 0);
+      const PICKED = CHAINS.find(c => c.id === "semiconductor") || CHAINS[0] || {};
+      const cp = await evaluate(`(() => {
+        const host = document.getElementById('chainpick');
+        if (!host || host.hidden) return { shown: false };
+        const chips = [...host.querySelectorAll('.chip')];
+        return {
+          shown: true,
+          chips: chips.length,
+          labels: chips.map(c => (c.querySelector('.cl') || {}).textContent),
+          counts: chips.map(c => (c.querySelector('.cc') || {}).textContent)
+        };
+      })()`);
+      check(`横轴选择条已渲染`, () => assert.ok(cp.shown));
+      check(`链数与数据一致（${CHAINS.length} 条 + 全部）`, () => assert.equal(
+        cp.chips, CHAINS.length + 1, `页面 ${cp.chips} 个 chip`));
+      check(`每条链的家数取自数据，不在前端现编`, () => {
+        CHAINS.forEach(c => {
+          const i = cp.labels.indexOf(c.label);
+          assert.ok(i >= 0, `${c.label} 没画出来`);
+          assert.equal(cp.counts[i], c.count + " 家",
+            `${c.label} 页面写 ${cp.counts[i]}，数据是 ${c.count} 家`);
+        });
+      });
+
+      // 真点一下，看家数是否跟着变；该链没覆盖的环节要留在页面上并标空，不能藏
+      const picked = await evaluate(`(() => {
+        const label = ${JSON.stringify(PICKED.label || "")};
+        const chips = [...document.querySelectorAll('#chainpick .chip')];
+        const chip = chips.find(c => (c.querySelector('.cl') || {}).textContent === label);
+        if (!chip) return { found: false };
+        chip.click();
+        const bands = [...document.querySelectorAll('#chain .band, #offchain .band')];
+        const nOf = b => parseInt((b.querySelector('.n') || {}).textContent, 10) || 0;
+        return {
+          found: true,
+          bands: bands.length,
+          empty: bands.filter(b => b.classList.contains('empty')).length,
+          total: bands.reduce((a, b) => a + nOf(b), 0),
+          pcs: document.querySelectorAll('#chain .pc, #offchain .pc').length,
+          sub: (document.getElementById('chain-sub') || {}).textContent || "",
+          note: (document.getElementById('chain-note') || {}).textContent || "",
+          overflow: Math.max(0, document.documentElement.scrollWidth - window.innerWidth)
+        };
+      })()`);
+      check(`选中「${PICKED.label}」后各环节家数合计等于数据（${PICKED.count}）`, () => {
+        assert.ok(picked.found, "选择条上找不到这条链");
+        // 一家公司只落在一个环节上，所以各环节家数之和必须正好等于该链家数
+        assert.equal(picked.total, PICKED.count,
+          `页面各环节合计 ${picked.total}，数据说 ${PICKED.count}`);
+      });
+      check(`该链没覆盖的环节留在页面上并标空`, () => {
+        assert.equal(picked.bands, NODES.stages.length,
+          `筛选后只剩 ${picked.bands} 条带子——藏起来会让人以为这条链就这么短`);
+        assert.ok(picked.empty > 0,
+          "这条链铺满了全部环节？与家数对不上，先看数据");
+      });
+      check(`筛选后不拿全环节涨跌冒充该链涨跌`, () => assert.equal(
+        picked.pcs, 0, `还显示着 ${picked.pcs} 个涨跌`));
+      check(`筛选说明写清「链是分类不是关系」`, () => assert.ok(
+        /链是分类，不是关系/.test(picked.note),
+        `实际：${picked.note.slice(0, 60)}`));
+      check(`标题写明这条链落在几个环节上`, () => assert.ok(
+        /落在 \d+ \/ \d+ 个环节上/.test(picked.sub), `实际：${picked.sub}`));
+      check(`筛选后无横向溢出`, () => assert.ok(picked.overflow <= 1,
+        `溢出 ${picked.overflow}px`));
+
+      // 再点一次要能取消，否则用户被困在一条链里
+      const cleared = await evaluate(`(() => {
+        const label = ${JSON.stringify(PICKED.label || "")};
+        const chips = [...document.querySelectorAll('#chainpick .chip')];
+        const chip = chips.find(c => (c.querySelector('.cl') || {}).textContent === label);
+        chip.click();
+        const bands = [...document.querySelectorAll('#chain .band, #offchain .band')];
+        const nOf = b => parseInt((b.querySelector('.n') || {}).textContent, 10) || 0;
+        return { total: bands.reduce((a, b) => a + nOf(b), 0),
+                 empty: bands.filter(b => b.classList.contains('empty')).length };
+      })()`);
+      check(`再点一次取消筛选，回到全池`, () => {
+        assert.equal(cleared.total, NODES.nodes.length,
+          `取消后合计 ${cleared.total}，全池 ${NODES.nodes.length}`);
+        assert.equal(cleared.empty, 0, "取消筛选后不该还有空环节");
+      });
+
       /* 方案 C · 真实流向。这是全站唯一一张带子宽度有实测含义的图，
          所以要守的不是「画出来了」，而是**画的是不是那个数**，
          以及**空缺有没有画出来**。 */

@@ -139,6 +139,20 @@ def load_sic_resolver():
     return module
 
 
+def load_chain_resolver():
+    """载入 SIC → 一级产业链映射（图的横轴）。缺失时返回 None，节点不带链，
+    页面照常显示纵轴——与 SIC 阶段判定同一条退路，不因为缺一张表就中断构建。"""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sic_chains.py")
+    if not os.path.exists(path):
+        return None
+    spec = importlib.util.spec_from_file_location("sic_chains", path)
+    if spec is None or spec.loader is None:
+        return None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def load_identity() -> dict:
     """读 SIC 缓存。没有就返回空——阶段判定退回板块级，不中断构建。"""
     try:
@@ -340,7 +354,7 @@ def load_members() -> tuple[list[dict], dict]:
     return members, payload
 
 
-def build_node(member: dict, identity: dict, sic_module) -> dict:
+def build_node(member: dict, identity: dict, sic_module, chain_module=None) -> dict:
     sector_en = member.get("sector") if member.get("sector") in SECTOR_STAGE_MAP else member.get("sectorEn")
     mapping = SECTOR_STAGE_MAP.get(sector_en or "")
     node = {
@@ -408,6 +422,20 @@ def build_node(member: dict, identity: dict, sic_module) -> dict:
             "sic": resolved["sic"],
             "match": resolved["basis"],
         }
+
+    # ── 横轴：这家公司在哪条产业链上 ────────────────────────────────────
+    # 与纵轴同一个输入（申报的 SIC 码）、同一条退路（判不出就不写）。
+    # 一家可以在多条链上——SIC 3533 油气田机械既在油气链也在工业机械链，
+    # 硬压成一条才是失真。**链是分类，不是边**：同一条链上的两家公司之间
+    # 有没有供应关系，只有申报文件说了算。
+    chains = chain_module.resolve_chains(record.get("sic")) if chain_module else None
+    if chains:
+        node["chains"] = chains["chains"]
+        node["chainBasis"] = chains["basis"]
+        node["chainNote"] = chains["note"]
+    else:
+        node["chains"] = []
+        node["chainBasis"] = "unknown"
     return node
 
 
@@ -480,7 +508,9 @@ def build() -> None:
     members, source_payload = load_members()
     identity = load_identity()
     sic_module = load_sic_resolver()
-    nodes = [build_node(m, identity, sic_module) for m in members if m.get("symbol")]
+    chain_module = load_chain_resolver()
+    nodes = [build_node(m, identity, sic_module, chain_module)
+             for m in members if m.get("symbol")]
 
     # 关系边：抽取器写在 edges/ 下，本脚本只读、只索引、只校验，不自己造边。
     edge_files = load_edge_files()
@@ -539,6 +569,27 @@ def build() -> None:
     for node in nodes:
         key = node.get("stageBasis") or "unknown"
         by_basis[key] = by_basis.get(key, 0) + 1
+    # ── 横轴统计 ──────────────────────────────────────────────────────
+    # 只统计，不新建归属：家数从节点上已有的 chains 数出来，改不了任何一家的链。
+    chain_rows: list[dict] = []
+    if chain_module:
+        chain_edges: dict[str, int] = {}
+        for node in nodes:
+            for cid in node.get("chains") or []:
+                chain_edges[cid] = chain_edges.get(cid, 0) + (node.get("edgeCount") or 0)
+        counts: dict[str, int] = {}
+        for node in nodes:
+            for cid in node.get("chains") or []:
+                counts[cid] = counts.get(cid, 0) + 1
+        for cid, zh, en in chain_module.CHAINS:
+            chain_rows.append({
+                "id": cid, "label": zh, "labelEn": en,
+                "count": counts.get(cid, 0),
+                "edgeCount": chain_edges.get(cid, 0),
+            })
+    chain_unclassified = sum(1 for n in nodes if not (n.get("chains") or []))
+    chain_multi = sum(1 for n in nodes if len(n.get("chains") or []) > 1)
+
     resolved = sum(1 for n in nodes if n.get("stage"))
     ambiguous = sum(1 for n in nodes if n.get("stageBasis") == "sector-ambiguous")
     unknown = sum(1 for n in nodes if n.get("stageBasis") == "unknown")
@@ -560,6 +611,9 @@ def build() -> None:
                  "一家公司的冶炼厂名单动辄几百条，内联会让总览页为看六个环节下载几 MB。"
                  "每条边都必须携带可核验的原始申报文件，写盘前逐条硬校验。"),
         "stages": STAGES,
+        # 横轴：一级产业链。counts 在这里算好，页面不必遍历 495 个节点再统计。
+        # multi 是「同时在多条链上」的家数——这个数不小，是这套模型的常态而非例外。
+        "chains": chain_rows,
         "nodes": nodes,
         # 每家一个文件，公司页按需拉。索引里带出处链接，不必先下文件才知道有没有边。
         "edgeIndex": edge_index,
@@ -569,6 +623,10 @@ def build() -> None:
         "flow": flow,
         "coverage": {
             "claimComplete": False,
+            # 横轴覆盖：未归类的家数要露出来，为 0 才说明这张表覆盖到了全部申报码。
+            "chainsTotal": len(chain_rows),
+            "chainUnclassified": chain_unclassified,
+            "chainMulti": chain_multi,
             "nodesTotal": len(nodes),
             "nodesWithEdges": sum(1 for n in nodes if n["edgeCount"]),
             "edgesTotal": len(all_edges),

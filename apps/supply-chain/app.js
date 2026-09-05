@@ -57,7 +57,7 @@
     "unknown": "未判定"
   };
 
-  var state = { data: null, open: null, seg: null };
+  var state = { data: null, open: null, seg: null, chain: null };
 
   function el(tag, className, text) {
     var n = document.createElement(tag);
@@ -235,10 +235,63 @@
     return null;
   }
 
+  /* ── 横轴：一级产业链筛选 ── */
+  /* 全页只有这一处决定「哪些公司算数」。家数、市值、细分条、公司表都从它取——
+     各处各写一遍过滤条件的话，筛选一开总有一处对不上。 */
+  function visibleNodes(d) {
+    var all = d.nodes || [];
+    if (!state.chain) return all;
+    return all.filter(function (n) {
+      return (n.chains || []).indexOf(state.chain) >= 0;
+    });
+  }
+
+  function chainMeta(d, id) {
+    var rows = d.chains || [];
+    for (var i = 0; i < rows.length; i++) if (rows[i].id === id) return rows[i];
+    return null;
+  }
+
+  /* 链的选择条。链是**分类**，不是边：选中一条链只是把公司筛出来，
+     不声称同一条链上的两家公司之间有供应关系。这句话写在条子下面。 */
+  function renderChainPicker(d) {
+    var host = $("chainpick");
+    if (!host) return;
+    host.textContent = "";
+    var rows = (d.chains || []).filter(function (c) { return c.count > 0; });
+    if (!rows.length) { host.hidden = true; return; }
+    host.hidden = false;
+
+    var mk = function (id, label, count, edges) {
+      var b = el("button", "chip" + (state.chain === id ? " on" : ""));
+      b.type = "button";
+      b.setAttribute("aria-pressed", state.chain === id ? "true" : "false");
+      b.appendChild(el("span", "cl", label));
+      b.appendChild(el("span", "cc", count + " 家"));
+      if (edges) b.appendChild(el("span", "ce", edges + " 条关系"));
+      b.addEventListener("click", function () {
+        state.chain = state.chain === id ? null : id;
+        // 换链之后旧的展开位置多半已经空了，一并收起，不留一格空表
+        state.open = null;
+        state.seg = null;
+        renderStages(d);
+      });
+      return b;
+    };
+
+    var allBtn = mk(null, "全部产业链", (d.nodes || []).length,
+      (d.coverage && d.coverage.edgesTotal) || 0);
+    if (!state.chain) allBtn.classList.add("on");
+    host.appendChild(allBtn);
+    rows.forEach(function (c) {
+      host.appendChild(mk(c.id, c.label, c.count, c.edgeCount));
+    });
+  }
+
   /* ── 环节卡片 ── */
   function countIn(d, stageId) {
     var n = 0;
-    (d.nodes || []).forEach(function (x) { if (x.stage === stageId) n++; });
+    visibleNodes(d).forEach(function (x) { if (x.stage === stageId) n++; });
     return n;
   }
 
@@ -246,7 +299,7 @@
      多一个字段就多一处可能对不上的数。 */
   function capOf(d, stageId) {
     var sum = 0;
-    (d.nodes || []).forEach(function (x) {
+    visibleNodes(d).forEach(function (x) {
       if (x.stage === stageId && isNum(x.marketCap)) sum += x.marketCap;
     });
     return sum;
@@ -272,20 +325,43 @@
     n.appendChild(document.createTextNode(String(total)));
     n.appendChild(el("s", null, "家"));
     hd.appendChild(n);
-    hd.appendChild(el("span", "mc", cap(capOf(d, meta.id))));
-    // 表头只留等权一个口径，另两个在细分条下面给全——是降级，不是删掉
-    if (p.companies == null) {
-      hd.appendChild(el("span", "mc", "无表现数据"));
-    } else {
-      var b = el("span", "pc " + cls(p.equalWeightPct), pct(p.equalWeightPct));
-      b.title = "等权涨跌";
-      hd.appendChild(b);
+    // 空环节不印市值与涨跌：0 亿和一句「涨跌见全部」都是噪音，
+    // 这条带子要说的只有一件事——这一段没有公司。
+    if (total) {
+      hd.appendChild(el("span", "mc", cap(capOf(d, meta.id))));
+      // 表头只留等权一个口径，另两个在细分条下面给全——是降级，不是删掉
+      if (state.chain) {
+        // 环节涨跌是构建时按**整个环节**算好的，筛出一条链之后这个数不再对应
+        // 屏幕上这批公司。节点表里没有逐家涨跌，算不出筛后口径——那就不显示，
+        // 不拿全环节的数冒充该链的数。
+        var na = el("span", "mc", "涨跌见全部");
+        na.title = "环节涨跌按整个环节预算，筛选产业链后不对应当前这批公司，故不显示";
+        hd.appendChild(na);
+      } else if (p.companies == null) {
+        hd.appendChild(el("span", "mc", "无表现数据"));
+      } else {
+        var b = el("span", "pc " + cls(p.equalWeightPct), pct(p.equalWeightPct));
+        b.title = "等权涨跌";
+        hd.appendChild(b);
+      }
     }
     band.appendChild(hd);
 
+    if (state.chain && !total) {
+      // 筛出一条链之后，它没覆盖到的环节**照样画出来**并标空。
+      // 藏起来会让人以为这条链就是这么短；空着才看得见缺口在哪一段——
+      // 「半导体链上游没有公司」正是当前公司池只有标普 500 造成的结果。
+      band.classList.add("empty");
+      hd.disabled = true;
+      band.appendChild(el("div", "banddesc",
+        "本池中这条链在该环节没有公司——可能是这条链本就不经过这一段，"
+        + "也可能是该段的公司不在当前公司池里。"));
+      return band;
+    }
+
     if (meta.description) band.appendChild(el("div", "banddesc", meta.description));
 
-    var list = (d.nodes || []).filter(function (x) { return x.stage === meta.id; })
+    var list = visibleNodes(d).filter(function (x) { return x.stage === meta.id; })
       .sort(function (a, b2) { return (b2.marketCap || 0) - (a.marketCap || 0); });
 
     var panel = el("div", "panel");
@@ -323,9 +399,28 @@
   function renderChainNote(d) {
     var chain = chainIds(d, true).length, off = chainIds(d, false).length;
     var sub = $("chain-sub");
+    var picked = state.chain ? chainMeta(d, state.chain) : null;
     if (sub) {
-      setText(sub, "实物链 " + chain + " 段 + 使能层 " + off
-        + " 段，按 SEC 行业码（SIC）展开，宽度即家数 · 点一格只看该组公司");
+      if (picked) {
+        // 这条链落在几个环节上，是这个二维模型最有用的一个读数
+        var hit = 0;
+        (d.stages || []).forEach(function (st) { if (countIn(d, st.id)) hit++; });
+        setText(sub, picked.label + "：" + picked.count + " 家，落在 " + hit
+          + " / " + (chain + off) + " 个环节上"
+          + (picked.edgeCount ? " · 已抽到关系 " + picked.edgeCount + " 条" : "")
+          + " · 再点一次取消筛选");
+      } else {
+        setText(sub, "实物链 " + chain + " 段 + 使能层 " + off
+          + " 段，按 SEC 行业码（SIC）展开，宽度即家数 · 点一格只看该组公司");
+      }
+    }
+    if (picked) {
+      setText($("chain-note"),
+        "产业链归属按公司向 SEC 申报的四位行业码（SIC）判定，规则公开、逐家可核验，"
+        + "一家可以同时在多条链上（全池 " + ((d.coverage || {}).chainMulti || 0)
+        + " 家如此）。链是分类，不是关系——选中一条链只是把公司筛出来，"
+        + "不表示同一条链上的两家公司之间有供应关系——那只能来自申报文件。");
+      return;
     }
     // 一个 SIC 大类在几个环节里出现过
     var seen = {};
@@ -344,6 +439,7 @@
   }
 
   function renderStages(d) {
+    renderChainPicker(d);
     renderChainNote(d);
     var byId = {};
     (d.stages || []).forEach(function (s2) { byId[s2.id] = s2; });
@@ -447,7 +543,7 @@
     }
 
     // 卡片上只留了等权一个口径，另两个在这里给全——是降级，不是删掉
-    var p = perfOf(d, stageId) || {};
+    var p = state.chain ? {} : (perfOf(d, stageId) || {});
     if (p.companies != null) {
       var pf = el("div", "perf2");
       [["等权", p.equalWeightPct], ["市值加权", p.capWeightPct],
@@ -770,6 +866,16 @@
       "苹果、英伟达与微软同属「科技」但产业链位置完全不同；SIC 分别为 3571 电子计算机整机、" +
       "3674 半导体、7372 预装软件，可以分开。每家公司的 SIC 与判定依据见各环节表格，" +
       "并附可点开的原始申报链接。");
+    if ((d.chains || []).length) {
+      para("产业链归属：", "同一套 SIC 码的第二个用途。纵向的 " + (d.stages || []).length
+        + " 个环节说的是「在链上的哪一层」，横向的 " + d.chains.length
+        + " 条一级产业链说的是「在哪条链上」——只分层不分链的话，半导体设备与农机会"
+        + "落在同一格里，看着像邻居，其实一辈子不发生关系。归属由行业码按公开规则映射，"
+        + "不按公司名分派；一家可以同时在多条链上（全池 "
+        + ((d.coverage || {}).chainMulti || 0) + " 家如此），因为 SIC 3533 油气田机械"
+        + "本来就既在油气链也在工业机械链。"
+        + "链是分类，不是关系：同一条链上的两家公司之间有没有供应关系，只有申报文件说了算。");
+    }
     para("环节涨跌：", perf.method || "");
     para("剔除口径：", "阶段未判定 " + (ex.stageNotResolved || 0) + " 家不摊入任何环节；" +
       "报价过期 " + (ex.staleQuote || 0) + " 家不计入均值；无报价 " + (ex.noQuote || 0) + " 家单独计。");
