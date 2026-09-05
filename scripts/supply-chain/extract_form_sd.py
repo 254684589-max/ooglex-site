@@ -214,6 +214,10 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
 
     best: dict | None = None
     best_html = ""          # 判定披露类型要看正文，不能只看解析结果
+    # 光看「最像名单的那一份」不够：力拓那份申报里排在最前的是 R4.htm，
+    # 一张 XBRL 渲染表，通篇数字没有一句说明；真正写着报的是哪一套的是
+    # 另一份 formsd2025govpayment.htm。所以判披露类型时把取到的几份**合起来看**。
+    all_html: list[str] = []
     for doc in documents[:MAX_DOCS_PER_FILING]:
         url = filing["indexUrl"] + doc["name"]
         try:
@@ -223,6 +227,7 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
                 print(f"       [XX] {doc['name']}：{_why(exc)}")
             time.sleep(GAP)
             continue
+        all_html.append(html)
         result = parser.parse_smelters(html)
         result["document"] = doc["name"]
         result["url"] = url
@@ -261,7 +266,8 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
     # 判据同时看结构与用词：目录里有 XBRL 渲染件说明这是 13q-1（付款数据必须
     # 标记），力拓、壳牌那种「正文里天然带 smelter/refiner」的误判由它挡住。
     xbrl = parser.filing_is_xbrl_tagged([d["name"] for d in documents])
-    kind = parser.disclosure_kind(best_html or "", xbrl_tagged=xbrl)
+    kind = parser.disclosure_kind("\n".join(all_html) or best_html or "",
+                                  xbrl_tagged=xbrl)
     outcome["disclosureKind"] = kind
     outcome["state"] = ("resource-extraction" if kind == "resource-extraction"
                         else "filed-no-list")

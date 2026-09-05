@@ -833,6 +833,32 @@ def main() -> int:
               "Our refinery operations in Germany.</p>")
     _SONY = ("<p>Conflict Minerals Report under Rule 13p-1. Smelter and refiner list. "
              "Not a payments to governments report.</p>")
+    # 力拓那一份第一轮没被拦住：它排在最前的 R4.htm 是张 XBRL 渲染表，通篇数字，
+    # 一个特征词都没有。真正写着报的是哪一套的是 Form SD 的条目标题，在另一份
+    # 文件里——所以抽取器改为把取到的几份合起来判，判据也改用条目标题。
+    _RIO_XBRL_PAGE = ("<p>[2] Payments reported are net of a cash refund. "
+                      "IDEA: XBRL DOCUMENT Do Not Remove This Comment</p>")
+    _RIO_COVER = ("<p>Item 2.01 Resource Extraction Issuer Disclosure and Report. "
+                  "Rio Tinto plc, London SW1Y 4AD, United Kingdom.</p>")
+    _TESLA_LIKE = ("<p>Item 1.01 Conflict Minerals Disclosure and Report. "
+                   "We describe our due diligence process. No list is provided.</p>")
+    title_cases = [
+        (_RIO_XBRL_PAGE, True, "unknown",
+         "只看那张 XBRL 渲染表：一个特征词都没有，判不出来就说判不出来"),
+        (_RIO_XBRL_PAGE + _RIO_COVER, True, "resource-extraction",
+         "把几份合起来看，条目标题 2.01 就出现了——力拓这一档由此归位"),
+        (_TESLA_LIKE, False, "conflict-minerals",
+         "条目标题 1.01：报的是冲突矿产，只是没列名单"),
+        (_TESLA_LIKE + _RIO_COVER, False, "conflict-minerals",
+         "两个条目都写了说明两套都报——判冲突矿产，只有它才可能有名单"),
+    ]
+    for html, xbrl, want, why in title_cases:
+        got = load_form_sd().disclosure_kind(html, xbrl_tagged=xbrl)
+        ok = got == want
+        if not ok:
+            failures.append(f"条目标题判据 {why}：期望 {want}，实际 {got}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}（→ {got}）")
+
     xbrl_cases = [
         (_RIO, True, "resource-extraction",
          "力拓：有铝冶炼厂，但这份是 1504 付款报告，XBRL 标记说明它是 13q-1"),
@@ -1035,7 +1061,7 @@ def main() -> int:
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
-             + len(xbrl_cases) + len(xbrl_name_cases))
+             + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:
         print(f"失败 {len(failures)}/{total}：")

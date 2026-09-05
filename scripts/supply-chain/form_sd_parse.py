@@ -465,12 +465,24 @@ _EXTRACTION_MARKS = (
     "payments to governments",
     "government payments",
 )
-# 报告标题级的特征。**不能拿 "rule 13p-1" 当强特征**：Form SD 的封面把两条规则
-# 都印在勾选框里（勾没勾都印），所以每一份 SD 的封面都含 13p-1 三个字。
-# "Conflict Minerals Report" 是报告名，13q-1 付款报告里不会出现。
+# Form SD 有固定的条目标题，这是这份表最可靠的结构信号：
+#
+#     Item 1.01  Conflict Minerals Disclosure and Report     ← 13p-1
+#     Item 2.01  Resource Extraction Issuer Disclosure       ← 13q-1
+#
+# 申报人报哪一套就写哪个条目，不会两个都写（除非真的两套都报）。
+#
+# **不能拿 "rule 13p-1" 当强特征**：Form SD 的封面把两条规则都印在勾选框里，
+# 勾没勾都印，所以每一份 SD 都含 13p-1 三个字。条目标题不一样，它只在
+# 真的报了那一套时才出现。
 _MINERAL_TITLE = (
+    "conflict minerals disclosure",
     "conflict minerals report",
     "conflict mineral report",
+)
+_EXTRACTION_TITLE = (
+    "resource extraction issuer disclosure",
+    "resource extraction payment",
 )
 _MINERAL_MARKS = (
     "conflict minerals",
@@ -530,11 +542,14 @@ def disclosure_kind(html: str, xbrl_tagged: bool = False) -> str:
     用词判，并保留原来「宁可判成冲突矿产」的偏向。
     """
     text = re.sub(r"<[^>]+>", " ", html or "").lower()
-    # 标题级特征最先看：叫「冲突矿产报告」的就是冲突矿产报告，XBRL 也翻不了案。
-    # 少了这一步，一份 13p-1 报告只要提一句 payments to governments 又恰好带
-    # XBRL，就会被判成资源开采——离线夹具就是这么把第一版拦下来的。
-    if any(m in text for m in _MINERAL_TITLE):
+    # 条目标题最先看，它直接说明这份 SD 报的是哪一套。
+    # 两个都出现时判冲突矿产：那说明申报人两套都报了，而只有 13p-1 才可能有名单。
+    minerals_title = any(m in text for m in _MINERAL_TITLE)
+    extraction_title = any(m in text for m in _EXTRACTION_TITLE)
+    if minerals_title:
         return "conflict-minerals"
+    if extraction_title:
+        return "resource-extraction"
     has_minerals = any(m in text for m in _MINERAL_MARKS)
     has_extraction = any(m in text for m in _EXTRACTION_MARKS)
     if xbrl_tagged and has_extraction:
