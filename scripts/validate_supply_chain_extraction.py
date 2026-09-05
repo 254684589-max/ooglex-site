@@ -849,8 +849,8 @@ def main() -> int:
          "把几份合起来看，条目标题 2.01 就出现了——力拓这一档由此归位"),
         (_TESLA_LIKE, False, "conflict-minerals",
          "条目标题 1.01：报的是冲突矿产，只是没列名单"),
-        (_TESLA_LIKE + _RIO_COVER, False, "conflict-minerals",
-         "两个条目都写了说明两套都报——判冲突矿产，只有它才可能有名单"),
+        (_TESLA_LIKE + _RIO_COVER, False, "resource-extraction",
+         "两个条目都出现时判资源开采：填 2.01 是主动信息，1.01 可能只是模板"),
     ]
     for html, xbrl, want, why in title_cases:
         got = load_form_sd().disclosure_kind(html, xbrl_tagged=xbrl)

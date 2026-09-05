@@ -541,24 +541,41 @@ def disclosure_kind(html: str, xbrl_tagged: bool = False) -> str:
     因此：**有 XBRL 标记且正文有开采类特征 → 资源开采付款**；其余情况仍按
     用词判，并保留原来「宁可判成冲突矿产」的偏向。
     """
+    return disclosure_evidence(html, xbrl_tagged)["kind"]
+
+
+def disclosure_evidence(html: str, xbrl_tagged: bool = False) -> dict:
+    """同上，但把**哪条特征命中了**一并返回，供 dry-run 打到日志里给人核对。
+
+    分出这个函数是有原因的：这条规则改了三版，每一版都是靠看真实输出发现错的，
+    而每一次「为什么判成这样」都得重新加一轮日志才知道。判据把自己的依据带出来，
+    下次就不用再猜。返回 {"kind", "why", "minerals", "extraction"}。
+    """
     text = re.sub(r"<[^>]+>", " ", html or "").lower()
+    hit = lambda marks: [m for m in marks if m in text]     # noqa: E731
+    m_title, e_title = hit(_MINERAL_TITLE), hit(_EXTRACTION_TITLE)
+    m_mark, e_mark = hit(_MINERAL_MARKS), hit(_EXTRACTION_MARKS)
+
+    def out(kind: str, why: str) -> dict:
+        return {"kind": kind, "why": why,
+                "minerals": m_title + m_mark, "extraction": e_title + e_mark}
+
     # 条目标题最先看，它直接说明这份 SD 报的是哪一套。
-    # 两个都出现时判冲突矿产：那说明申报人两套都报了，而只有 13p-1 才可能有名单。
-    minerals_title = any(m in text for m in _MINERAL_TITLE)
-    extraction_title = any(m in text for m in _EXTRACTION_TITLE)
-    if minerals_title:
-        return "conflict-minerals"
-    if extraction_title:
-        return "resource-extraction"
-    has_minerals = any(m in text for m in _MINERAL_MARKS)
-    has_extraction = any(m in text for m in _EXTRACTION_MARKS)
-    if xbrl_tagged and has_extraction:
-        return "resource-extraction"
-    if has_minerals:
-        return "conflict-minerals"
-    if has_extraction:
-        return "resource-extraction"
-    return "unknown"
+    # **两个都出现时判资源开采**，这与直觉相反，是实测逼出来的：13q-1 申报人的
+    # 封面常把两个条目都印出来（表格模板如此），而 13p-1 申报人不会去填
+    # 「Item 2.01 Resource Extraction Issuer Disclosure」。所以 2.01 出现是主动
+    # 信息，1.01 出现可能只是模板。纽蒙特、康菲那几家就是这么被判反的。
+    if e_title:
+        return out("resource-extraction", f"条目标题 {e_title[0]!r}")
+    if m_title:
+        return out("conflict-minerals", f"条目标题 {m_title[0]!r}")
+    if xbrl_tagged and e_mark:
+        return out("resource-extraction", f"XBRL 标记 + {e_mark[0]!r}")
+    if m_mark:
+        return out("conflict-minerals", f"用词 {m_mark[0]!r}")
+    if e_mark:
+        return out("resource-extraction", f"用词 {e_mark[0]!r}")
+    return out("unknown", "没有任何特征")
 
 
 def parse_smelters(html: str) -> dict:

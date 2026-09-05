@@ -266,9 +266,17 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
     # 判据同时看结构与用词：目录里有 XBRL 渲染件说明这是 13q-1（付款数据必须
     # 标记），力拓、壳牌那种「正文里天然带 smelter/refiner」的误判由它挡住。
     xbrl = parser.filing_is_xbrl_tagged([d["name"] for d in documents])
-    kind = parser.disclosure_kind("\n".join(all_html) or best_html or "",
-                                  xbrl_tagged=xbrl)
+    evidence = parser.disclosure_evidence("\n".join(all_html) or best_html or "",
+                                          xbrl_tagged=xbrl)
+    kind = evidence["kind"]
     outcome["disclosureKind"] = kind
+    outcome["disclosureWhy"] = evidence["why"]
+    if verbose:
+        # 这条规则改了三版，每一版都是靠看真实输出发现错的。把依据打出来，
+        # 下一次就不必再加一轮日志才知道「为什么判成这样」。
+        print(f"       判披露类型：{kind}（{evidence['why']}；XBRL {'有' if xbrl else '无'}）")
+        print(f"         矿产特征 {evidence['minerals'][:4]}")
+        print(f"         开采特征 {evidence['extraction'][:4]}")
     outcome["state"] = ("resource-extraction" if kind == "resource-extraction"
                         else "filed-no-list")
     return outcome
