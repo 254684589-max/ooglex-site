@@ -252,8 +252,13 @@ def check_coverage(payload: dict, counts: dict, edge_count: int, errors: list[st
         if not isinstance(by_sector, list):
             fail(errors, "coverage.bySector 必须是数组")
             return
+        # bySector 只统计标普那一池。外国发行人没有站内板块分类，按国别单列在
+        # byCountry 里——把它们算进「未分类」等于一个 147 家的黑箱，而且会把
+        # 「金融 0/70」这类制度上限的解释稀释掉。两栏加起来才是全池。
         actual: dict[str, dict[str, int]] = {}
         for node in nodes:
+            if node.get("pool") == "sec-foreign-issuer":
+                continue
             key = node.get("sector") or "未分类"
             row = actual.setdefault(key, {"companies": 0, "withEdges": 0})
             row["companies"] += 1
@@ -284,6 +289,35 @@ def check_coverage(payload: dict, counts: dict, edge_count: int, errors: list[st
         for name in actual:
             if name not in seen:
                 fail(errors, f"coverage.bySector 漏了板块「{name}」")
+
+    by_country = coverage.get("byCountry")
+    if by_country is not None:
+        if not isinstance(by_country, list):
+            fail(errors, "coverage.byCountry 必须是数组")
+            return
+        truth_country: dict[str, int] = {}
+        for node in nodes:
+            if node.get("pool") != "sec-foreign-issuer":
+                continue
+            truth_country[node.get("country") or "未分类"] = truth_country.get(
+                node.get("country") or "未分类", 0) + 1
+        for row in by_country:
+            name = row.get("sector")          # 字段名复用，语义是国别
+            if name not in truth_country:
+                fail(errors, f"coverage.byCountry 多报了国别「{name}」，节点表里没有")
+            elif row.get("companies") != truth_country[name]:
+                fail(errors, f"coverage.byCountry[{name}] 报告 {row.get('companies')}，"
+                             f"实际 {truth_country[name]}")
+        missing = set(truth_country) - {r.get("sector") for r in by_country}
+        for name in sorted(missing):
+            fail(errors, f"coverage.byCountry 漏了国别「{name}」")
+
+        # 两栏之和必须等于全池。差一家就说明有公司两栏都没进——页面上它就消失了。
+        both = (sum(r.get("companies") or 0 for r in (by_sector or []))
+                + sum(r.get("companies") or 0 for r in by_country))
+        if by_sector is not None and both != len(nodes):
+            fail(errors, f"按板块 + 按国别 合计 {both} 家，全池 {len(nodes)} 家——"
+                         "有公司两栏都没进，页面上会直接消失")
 
 
 def check_smelters(errors: list[str], edge_count: int) -> dict:

@@ -302,8 +302,13 @@ def stage_flow(nodes: list[dict], bundles: dict[str, dict]) -> dict:
     }
 
 
-def sector_coverage(nodes: list[dict], filing_status: dict[str, str]) -> list[dict]:
-    """按板块统计覆盖情况，并区分「没抓到」和「本来就不适用」。
+def sector_coverage(nodes: list[dict], filing_status: dict[str, str],
+                    key: str = "sector", label: str = "sector") -> list[dict]:
+    """按某个维度统计覆盖情况，并区分「没抓到」和「本来就不适用」。
+
+    `key` 是分组字段：标普那池按 GICS 板块（sector），外国发行人那池按国别
+    （country）——它们没有站内板块分类，全塞进「未分类」等于一个 147 家的
+    黑箱，读者看不出任何东西。
 
     页面上金融 0/70 与科技 34/84 是两种完全不同的 0。前者是 Form SD 的适用范围
     决定的——规则只管产品中含 3TG 的发行人，银行没有产品；后者是这一轮没抓到，
@@ -314,10 +319,10 @@ def sector_coverage(nodes: list[dict], filing_status: dict[str, str]) -> list[di
     """
     buckets: dict[str, dict] = {}
     for node in nodes:
-        sector = node.get("sector") or "未分类"
+        sector = node.get(key) or "未分类"
         row = buckets.setdefault(sector, {
-            "sector": sector,
-            "sectorEn": node.get("sectorEn"),
+            label: sector,
+            "sectorEn": node.get("sectorEn") if key == "sector" else None,
             "companies": 0,
             "withEdges": 0,
             "filedNoList": 0,
@@ -669,7 +674,13 @@ def build() -> None:
         state = filing_status.get(node["symbol"])
         if state:
             node["formSdStatus"] = state
-    by_sector = sector_coverage(nodes, filing_status)
+    # 两个池分开统计。标普那池按 GICS 板块（读者熟悉的口径，也是缺口成因最能
+    # 讲清楚的维度：金融 0/70 是制度上限，科技 34/84 是还没抓到）；外国发行人
+    # 那池没有站内板块分类，按国别拆——全塞进「未分类」就是一个 147 家的黑箱。
+    by_sector = sector_coverage([n for n in nodes if n.get("pool") != "sec-foreign-issuer"],
+                                filing_status)
+    by_country = sector_coverage([n for n in nodes if n.get("pool") == "sec-foreign-issuer"],
+                                 filing_status, key="country", label="sector")
     # 边文件还在、但最近一轮扫描没再抽到名单的公司。抽取器**不删有效历史数据**
     # （AGENTS.md：不得删除有效历史数据来掩盖抓取失败），所以文件保留着上一轮的
     # 结果；但覆盖率报的是本轮扫描口径，两个数就会差几家。
@@ -794,6 +805,9 @@ def build() -> None:
             "formSd": form_sd_coverage,
             # 按板块拆开的覆盖情况。缺口的成因写在数据里，页面照实读。
             "bySector": by_sector,
+            # 外国发行人按国别。字段名沿用 sector 是为了让页面复用同一套渲染，
+            # 但语义是国别——页面上必须写清楚，不能让读者以为这是板块。
+            "byCountry": by_country,
             # 见上：边来自更早的扫描，本轮未复现。列出代码，读者可自己核对。
             "edgesFromEarlierScan": stale,
             # 按实际 stageBasis 分组。曾经把所有已判定的都记成 sector-initial，

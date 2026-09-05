@@ -83,6 +83,8 @@
   .covrow .t i { display:block; height:100%; }
   .covrow .n { color:var(--faint); font-variant-numeric:tabular-nums;
     text-align:right; font-family:var(--mono); font-size:0.72rem; }
+  .cov-sub { font-size:0.8rem; color:var(--dim); margin:14px 0 8px;
+    padding-top:11px; border-top:1px solid var(--line); }
   .covkey { display:flex; flex-wrap:wrap; gap:5px 13px; margin-top:9px;
     font-size:0.72rem; color:var(--faint); }
   .covkey span { display:inline-flex; align-items:center; gap:5px; }
@@ -384,6 +386,10 @@
     <h2>为什么有的公司有数据、有的没有</h2>
     <p id="cov-lead"></p>
     <div id="cov-rows"></div>
+    <!-- 第二个池按国别拆。它们没有站内板块分类，全塞进「未分类」等于一个
+         147 家的黑箱；按国别拆至少看得出这批公司来自哪里、哪一档缺得多。 -->
+    <p class="cov-sub" id="cov-country-lead" hidden></p>
+    <div id="cov-country-rows"></div>
     <p id="cov-foot"></p>
   </section>
 

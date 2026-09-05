@@ -179,7 +179,40 @@
       : "当前唯一的关系数据源是 SEC 的 Form SD 冲突矿产申报，它只适用于产品中含钽锡钨金的发行人。"
         + "本轮尚无逐家申报状态记录，因此只列出各板块有名单的家数，不推断其余公司没有数据的原因。");
 
-    var wrap = $("cov-rows");
+    drawCovRows($("cov-rows"), rows);
+
+    // ── 第二个池：外国发行人按国别 ────────────────────────────────────
+    // 它们没有站内板块分类。全塞进「未分类」就是一个 147 家的黑箱，
+    // 按国别拆至少看得出这批公司来自哪里、哪一档缺得多。
+    var byCountry = (d.coverage && d.coverage.byCountry) || [];
+    var lead2 = $("cov-country-lead");
+    var rows2 = $("cov-country-rows");
+    if (rows2) rows2.textContent = "";
+    if (lead2) {
+      if (!byCountry.length) {
+        lead2.hidden = true;
+      } else {
+        lead2.hidden = false;
+        var n2 = byCountry.reduce(function (a, r) { return a + (r.companies || 0); }, 0);
+        setText(lead2, "另有在美上市的外国私人发行人 " + n2
+          + " 家（报 20-F／40-F 且同时报 Form SD 的那一批）。它们没有站内板块分类，"
+          + "下面按国别拆——注意这一栏的口径是国别，不是板块。");
+        drawCovRows(rows2, byCountry);
+      }
+    }
+
+    setText($("cov-foot"), anyStatus
+      ? "「无申报」不等于「这家公司没有供应链」，只表示它没有提交 Form SD——多数是因为规则对它不适用。"
+        + "「有申报未列名单」是规则允许的：Form SD 强制申报、不强制列出冶炼厂名单。"
+        + "这两类占多数，所以覆盖率永远到不了 100%，这是披露制度本身的上限。"
+      : "「有名单」以外的公司分三种情况：没有申报义务、申报了但正文未列名单、本轮取数失败。"
+        + "三者性质完全不同，在拿到逐家记录之前不在这里合并成一个数。");
+  }
+
+  /* 画一组覆盖率行。两个池共用——各写一套的话，改了配色或分档，另一处就
+     会用旧口径显示，而两栏看着一模一样，没人分得出哪一栏是旧的。 */
+  function drawCovRows(wrap, rows) {
+    if (!wrap) return;
     wrap.textContent = "";
     rows.forEach(function (r) {
       var seg = covSeg(r);
@@ -220,13 +253,6 @@
       key.appendChild(s);
     });
     wrap.appendChild(key);
-
-    setText($("cov-foot"), anyStatus
-      ? "「无申报」不等于「这家公司没有供应链」，只表示它没有提交 Form SD——多数是因为规则对它不适用。"
-        + "「有申报未列名单」是规则允许的：Form SD 强制申报、不强制列出冶炼厂名单。"
-        + "这两类占多数，所以覆盖率永远到不了 100%，这是披露制度本身的上限。"
-      : "「有名单」以外的公司分三种情况：没有申报义务、申报了但正文未列名单、本轮取数失败。"
-        + "三者性质完全不同，在拿到逐家记录之前不在这里合并成一个数。");
   }
 
   function perfOf(d, stageId) {

@@ -210,7 +210,9 @@ async function main() {
       const cov = await evaluate(`(() => {
         const box = document.getElementById('cov');
         if (!box || box.hidden) return { shown: false };
-        const rows = [...box.querySelectorAll('.covrow')].map(r => {
+        // 只数板块那一栏。外国发行人按国别的行在 #cov-country-rows 里，
+        // 混着数会把 11 个板块数成 52 行——这正是第一版失败的形态。
+        const rows = [...box.querySelectorAll('#cov-rows .covrow')].map(r => {
           const segs = [...r.querySelectorAll('.t i')];
           return {
             sector: r.querySelector('.s').textContent,
@@ -227,7 +229,10 @@ async function main() {
           lead: box.querySelector('#cov-lead').textContent,
           foot: box.querySelector('#cov-foot').textContent,
           rows,
-          keys: box.querySelectorAll('.covkey span').length,
+          keys: box.querySelectorAll('#cov-rows .covkey span').length,
+          countryRows: box.querySelectorAll('#cov-country-rows .covrow').length,
+          countryLead: (box.querySelector('#cov-country-lead') || {}).textContent || '',
+          countryLeadHidden: !!(box.querySelector('#cov-country-lead') || {}).hidden,
           overflow: box.scrollWidth - box.clientWidth
         };
       })()`);
@@ -269,6 +274,29 @@ async function main() {
         assert.ok(cov.foot.includes("不等于"),
           "提到「无申报」却没有澄清它不等于没有供应链");
       });
+      /* 第二个池按国别。守的是**分母没有被悄悄换掉**：板块那一栏是标普 495 家，
+         国别这一栏是外国发行人 147 家，两栏加起来才是 642。混成一栏的话，
+         「金融 0/70」这类制度上限的解释就被稀释了。 */
+      const COUNTRIES = (NODES.coverage || {}).byCountry || [];
+      if (COUNTRIES.length) {
+        const foreignN = COUNTRIES.reduce((a, r) => a + (r.companies || 0), 0);
+        check(`外国发行人按国别单列（${COUNTRIES.length} 个国别 / ${foreignN} 家）`, () => {
+          assert.ok(!cov.countryLeadHidden, "国别栏的说明被藏起来了");
+          assert.equal(cov.countryRows, COUNTRIES.length,
+            `页面 ${cov.countryRows} 行，数据 ${COUNTRIES.length} 行`);
+        });
+        check(`说清这一栏的口径是国别不是板块`, () => {
+          assert.match(cov.countryLead, /口径是国别，不是板块/);
+          assert.ok(cov.countryLead.includes(String(foreignN)),
+            `说明里没写家数：${cov.countryLead}`);
+        });
+        check(`板块那一栏仍只统计标普池（${SECTORS.length} 个板块）`, () => {
+          const sectorN = SECTORS.reduce((a, r) => a + (r.companies || 0), 0);
+          assert.equal(sectorN + foreignN, NODES.nodes.length,
+            `板块 ${sectorN} + 国别 ${foreignN} ≠ 全池 ${NODES.nodes.length}`);
+        });
+      }
+
       check(`按板块区块无横向溢出`, () => assert.ok(cov.overflow <= 1,
         `溢出 ${cov.overflow}px`));
 
