@@ -650,7 +650,7 @@ async function main() {
       /* 国别暴露。这一屏存在的理由是**条数与暴露家数是两个读数**——
          只印一个会把风险读反（印尼按条数第 4、按暴露家数第 1）。
          所以断言盯的是：两个数都印了、都等于数据、排名不一致时说出来了。 */
-      const EXPO = (NODES.coverage || {}).countryExposure || [];
+      const EXPO = NODES.countryExposure || [];
       if (EXPO.length) {
         const listedN2 = Object.keys(NODES.edgeIndex || {}).length;
         const ex = await evaluate(`(() => {

@@ -1388,7 +1388,9 @@
   function renderExposure(d) {
     var sec = $("expsec");
     if (!sec) return;
-    var rows = (d.coverage || {}).countryExposure || [];
+    // 与 upstreamConcentration 同级放在顶层，不在 coverage 里——
+    // 两个同类的榜单放两个地方，迟早有人（包括我自己）读错路径。
+    var rows = d.countryExposure || [];
     if (!rows.length) { sec.hidden = true; return; }
     sec.hidden = false;
 
