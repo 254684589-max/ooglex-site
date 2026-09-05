@@ -2716,28 +2716,28 @@
   "note": "在美上市的外国私人发行人（报 20-F／40-F）中**同时报 Form SD** 的那一批。只收这一批，是因为报 Form SD 才可能带来冶炼厂名单，也就是加进来同时带节点和边；只增加孤立节点的扩池没有意义。按 CIK 去重，主代码按交易所优先级选定，与标普池撞码的一律跳过而不是覆盖。",
   "quarters": [
     {
-      "bytes": 2978479,
+      "bytes": 2977145,
       "gzip": true,
       "quarter": "2026QTR3",
       "rows": 236914,
       "unparsed": 7
     },
     {
-      "bytes": 4271172,
+      "bytes": 4271542,
       "gzip": true,
       "quarter": "2026QTR2",
       "rows": 353168,
       "unparsed": 7
     },
     {
-      "bytes": 4439726,
+      "bytes": 4439595,
       "gzip": true,
       "quarter": "2026QTR1",
       "rows": 370055,
       "unparsed": 7
     },
     {
-      "bytes": 3400222,
+      "bytes": 3400259,
       "gzip": true,
       "quarter": "2025QTR4",
       "rows": 276466,
@@ -2746,5 +2746,5 @@
   ],
   "source": "SEC EDGAR 季度全量索引 + submissions（公共领域）",
   "unresolvedGeo": {},
-  "updatedAt": "2026-09-05T20:12:52Z"
+  "updatedAt": "2026-09-05T20:17:07Z"
 }
