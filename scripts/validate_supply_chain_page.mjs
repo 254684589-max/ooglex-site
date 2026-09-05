@@ -647,6 +647,66 @@ async function main() {
       check(`清空输入后结果收起`, () => assert.ok(look.empty.hidden,
         "清空后下拉还开着"));
 
+      /* 国别暴露。这一屏存在的理由是**条数与暴露家数是两个读数**——
+         只印一个会把风险读反（印尼按条数第 4、按暴露家数第 1）。
+         所以断言盯的是：两个数都印了、都等于数据、排名不一致时说出来了。 */
+      const EXPO = (NODES.coverage || {}).countryExposure || [];
+      if (EXPO.length) {
+        const listedN2 = Object.keys(NODES.edgeIndex || {}).length;
+        const ex = await evaluate(`(() => {
+          const box = document.getElementById('expsec');
+          if (!box || box.hidden) return { shown: false };
+          const rows = [...box.querySelectorAll('.exprow')];
+          return {
+            shown: true,
+            count: rows.length,
+            names: rows.map(r => (r.querySelector('.nm') || {}).textContent || ''),
+            filers: rows.map(r => parseInt(
+              ((r.querySelector('.n') || {}).textContent || '').trim(), 10) || 0),
+            edges: rows.map(r => ((r.querySelector('.ed') || {}).textContent || '')
+              .replace(/[^0-9]/g, '')),
+            lead: (document.getElementById('expo-lead') || {}).textContent || '',
+            foot: (document.getElementById('expo-foot') || {}).textContent || '',
+            overflow: Math.max(0,
+              document.documentElement.scrollWidth - window.innerWidth),
+          };
+        })()`);
+        check(`国别暴露已渲染`, () => assert.ok(ex.shown, "区块没显示"));
+        check(`暴露家数逐行等于数据，且降序`, () => {
+          const want = EXPO.slice(0, ex.count);
+          assert.deepEqual(ex.filers, want.map(r => r.filerCount));
+          assert.deepEqual(ex.names, want.map(r => r.country));
+        });
+        check(`关系条数也印了，且等于数据`, () => {
+          const want = EXPO.slice(0, ex.count).map(r => String(r.edges));
+          assert.deepEqual(ex.edges, want,
+            "条数列没印或对不上——只印暴露家数会把风险读反");
+        });
+        check(`分母说清是有名单的 ${listedN2} 家，不是全部 ${NODES.nodes.length} 家`, () => {
+          assert.ok(ex.lead.includes(String(listedN2)), `导语：${ex.lead}`);
+          assert.match(ex.lead, /不是全部/);
+        });
+        // 两个读数排名不同时必须就地说出来——那正是这一屏存在的理由
+        const byEdges = EXPO.slice().sort((a, b) => b.edges - a.edges);
+        if (byEdges[0].country !== EXPO[0].country) {
+          check(`两列排名不一致时页面把这件事说出来`, () => {
+            assert.match(ex.foot, /排名不同/, `页脚：${ex.foot}`);
+            assert.ok(ex.foot.includes(EXPO[0].country)
+              && ex.foot.includes(byEdges[0].country),
+              `页脚没点名那两个国别：${ex.foot}`);
+          });
+        }
+        check(`不把「出现在名单里」说成采购关系`, () => {
+          assert.match(ex.foot, /不说明.*直接采购关系/, `页脚：${ex.foot}`);
+          assert.ok(!ex.foot.includes("供应商"), `页脚出现「供应商」：${ex.foot}`);
+        });
+        check(`国别暴露无横向溢出`, () => assert.ok(ex.overflow <= 1,
+          `溢出 ${ex.overflow}px`));
+      } else {
+        console.log("  [--] 国别暴露：本轮数据还没带 countryExposure，跳过"
+          + "（数据流水线跑过之后这一段自动生效）");
+      }
+
       /* 链间上下游。这一段守的不只是「画出来了」，更是**它没有冒充实测数据**：
          框架标签要在、区分那句话要在、每条线要写清流动的是什么。
          这块界线是本板块最重要的一条，被样式藏起来等同于没写。 */
