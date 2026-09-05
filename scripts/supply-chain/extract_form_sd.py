@@ -214,6 +214,10 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
 
     best: dict | None = None
     best_html = ""          # 判定披露类型要看正文，不能只看解析结果
+    # 光看「最像名单的那一份」不够：力拓那份申报里排在最前的是 R4.htm，
+    # 一张 XBRL 渲染表，通篇数字没有一句说明；真正写着报的是哪一套的是
+    # 另一份 formsd2025govpayment.htm。所以判披露类型时把取到的几份**合起来看**。
+    all_html: list[str] = []
     for doc in documents[:MAX_DOCS_PER_FILING]:
         url = filing["indexUrl"] + doc["name"]
         try:
@@ -223,6 +227,7 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
                 print(f"       [XX] {doc['name']}：{_why(exc)}")
             time.sleep(GAP)
             continue
+        all_html.append(html)
         result = parser.parse_smelters(html)
         result["document"] = doc["name"]
         result["url"] = url
@@ -258,8 +263,20 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
     # 13p-1 冲突矿产（有冶炼厂名单）与 13q-1 资源开采付款（向各国政府付了多少钱）。
     # 康菲、纽蒙特申报的是后者，那套披露里**本来就没有冶炼厂这个概念**，
     # 把它们记成「申报了但正文未列名单」等于暗示「本可以列却没列」。
-    kind = parser.disclosure_kind(best_html or "")
+    # 判据同时看结构与用词：目录里有 XBRL 渲染件说明这是 13q-1（付款数据必须
+    # 标记），力拓、壳牌那种「正文里天然带 smelter/refiner」的误判由它挡住。
+    xbrl = parser.filing_is_xbrl_tagged([d["name"] for d in documents])
+    evidence = parser.disclosure_evidence("\n".join(all_html) or best_html or "",
+                                          xbrl_tagged=xbrl)
+    kind = evidence["kind"]
     outcome["disclosureKind"] = kind
+    outcome["disclosureWhy"] = evidence["why"]
+    if verbose:
+        # 这条规则改了三版，每一版都是靠看真实输出发现错的。把依据打出来，
+        # 下一次就不必再加一轮日志才知道「为什么判成这样」。
+        print(f"       判披露类型：{kind}（{evidence['why']}；XBRL {'有' if xbrl else '无'}）")
+        print(f"         矿产特征 {evidence['minerals'][:4]}")
+        print(f"         开采特征 {evidence['extraction'][:4]}")
     outcome["state"] = ("resource-extraction" if kind == "resource-extraction"
                         else "filed-no-list")
     return outcome
@@ -350,6 +367,12 @@ def main() -> int:
                     help="逗号分隔，限定公司；留空或写 ALL 表示全部。"
                          "（写 ALL 是因为 GitHub 会把空字符串输入替换成默认值，"
                          "「留空=全部」在工作流里不成立）")
+    ap.add_argument("--extra-ciks", default="",
+                    help="临时追加不在 identity.json 里的公司，格式 代码:CIK，逗号分隔"
+                         "（如 TSM:1046179,ASML:937966）。用途是**先探后建**：先拿几家"
+                         "外国私人发行人做 dry-run，确认解析器对它们的申报也有效，"
+                         "再决定要不要建正式的公司池。只在 --dry-run 下允许——"
+                         "不经过公司池就写盘，等于绕过发布口径。")
     ap.add_argument("--limit", type=int, default=0, help="最多处理几家")
     ap.add_argument("--sample-rows", type=int, default=0, help="每家打印前 N 条明细")
     ap.add_argument("--force", action="store_true",
@@ -374,6 +397,33 @@ def main() -> int:
         wanted = []
     targets = [(t, v["cik"]) for t, v in sorted(identity.items())
                if v.get("cik") and (not wanted or t.upper() in wanted)]
+
+    # 临时追加的公司。只用于 dry-run 核对，不进任何写盘路径。
+    if args.extra_ciks:
+        if not args.dry_run:
+            print("[XX] --extra-ciks 只允许配合 --dry-run 使用："
+                  "不经过公司池就写盘等于绕过发布口径")
+            return 1
+        seen = {t.upper() for t, _ in targets}
+        for item in args.extra_ciks.split(","):
+            item = item.strip()
+            if not item:
+                continue
+            if ":" not in item:
+                print(f"[XX] --extra-ciks 项 {item!r} 不是 代码:CIK 的形式")
+                return 1
+            code, _, raw = item.partition(":")
+            code = code.strip().upper()
+            try:
+                cik = int(raw.strip())
+            except ValueError:
+                print(f"[XX] --extra-ciks 项 {item!r} 的 CIK 不是数字")
+                return 1
+            if code in seen:
+                continue
+            seen.add(code)
+            targets.append((code, cik))
+        targets.sort(key=lambda pair: pair[0])
     if args.limit:
         targets = targets[:args.limit]
     if not targets:

@@ -465,6 +465,25 @@ _EXTRACTION_MARKS = (
     "payments to governments",
     "government payments",
 )
+# Form SD 有固定的条目标题，这是这份表最可靠的结构信号：
+#
+#     Item 1.01  Conflict Minerals Disclosure and Report     ← 13p-1
+#     Item 2.01  Resource Extraction Issuer Disclosure       ← 13q-1
+#
+# 申报人报哪一套就写哪个条目，不会两个都写（除非真的两套都报）。
+#
+# **不能拿 "rule 13p-1" 当强特征**：Form SD 的封面把两条规则都印在勾选框里，
+# 勾没勾都印，所以每一份 SD 都含 13p-1 三个字。条目标题不一样，它只在
+# 真的报了那一套时才出现。
+_MINERAL_TITLE = (
+    "conflict minerals disclosure",
+    "conflict minerals report",
+    "conflict mineral report",
+)
+_EXTRACTION_TITLE = (
+    "resource extraction issuer disclosure",
+    "resource extraction payment",
+)
 _MINERAL_MARKS = (
     "conflict minerals",
     "rule 13p-1",
@@ -475,21 +494,98 @@ _MINERAL_MARKS = (
 )
 
 
-def disclosure_kind(html: str) -> str:
+# XBRL 渲染文件的名字形状。SEC 从 2024 年起要求 13q-1 资源开采付款用内联 XBRL
+# 标记，13p-1 冲突矿产没有这个要求——所以「申报目录里有没有 XBRL 渲染件」
+# 是一条**结构性**判据，不受正文用词影响。
+_XBRL_RENDER = re.compile(r"^R\d+\.html?$", re.I)
+
+
+def filing_is_xbrl_tagged(names) -> bool:
+    """这份申报是不是做了 XBRL 标记（看目录里的文件名，不看正文）。"""
+    for name in names or ():
+        base = str(name).strip()
+        if _XBRL_RENDER.match(base):
+            return True
+        low = base.lower()
+        if low.endswith("_htm.xml") or low == "metalinks.json":
+            return True
+    return False
+
+
+def disclosure_kind(html: str, xbrl_tagged: bool = False) -> str:
     """这份申报是冲突矿产还是资源开采付款。
 
     返回 "conflict-minerals" / "resource-extraction" / "unknown"。
-    两类特征都出现时以冲突矿产为准——冲突矿产报告里提一句 1504 很常见，
-    反过来资源开采付款报告里不会成段讲冶炼厂。**宁可判成冲突矿产**：
-    判错成资源开采会把一份真名单从统计里摘出去，那是把结果说少；
-    判错成冲突矿产只是留在原来那一档，不损失信息。
+
+    **只在没抽到名单时才会调用它**，所以它决定的不是「要不要这份名单」，
+    而是「这家没有名单的原因怎么写」。写错了就是对读者说错话：
+    「有申报但没列名单」暗示本可以列却没列，而 13q-1 那套披露里根本没有
+    冶炼厂这个概念。
+
+    ## 只按用词判会出错，实测过
+
+    第一版的规则是「出现矿产词就判冲突矿产」，理由是冲突矿产报告里提一句
+    1504 很常见。拿外国发行人一跑就露馅了：
+
+        力拓  formsd2025govpayment.htm  —— 通篇是向各国政府的付款，判成了「未列名单」
+        壳牌  shel-20251231.htm         —— 表格是「保加利亚能源部 658,383」，同样判错
+
+    原因很直白：**力拓有铝冶炼厂、壳牌有炼油厂**，"smelter" 与 "refiner"
+    是它们的业务词，出现在 13q-1 报告里再正常不过。矿业与能源公司正是
+    资源开采付款申报的主力，这条规则对它们系统性地判错。
+
+    ## 改法：先看结构，再看用词
+
+    13q-1 的付款数据必须用内联 XBRL 标记，13p-1 没有这个要求。目录里有没有
+    XBRL 渲染件（R4.htm / *_htm.xml / MetaLinks.json）不受正文用词影响。
+    因此：**有 XBRL 标记且正文有开采类特征 → 资源开采付款**；其余情况仍按
+    用词判，并保留原来「宁可判成冲突矿产」的偏向。
+    """
+    return disclosure_evidence(html, xbrl_tagged)["kind"]
+
+
+def disclosure_evidence(html: str, xbrl_tagged: bool = False) -> dict:
+    """同上，但把**哪条特征命中了**一并返回，供 dry-run 打到日志里给人核对。
+
+    分出这个函数是有原因的：这条规则改了三版，每一版都是靠看真实输出发现错的，
+    而每一次「为什么判成这样」都得重新加一轮日志才知道。判据把自己的依据带出来，
+    下次就不用再猜。返回 {"kind", "why", "minerals", "extraction"}。
     """
     text = re.sub(r"<[^>]+>", " ", html or "").lower()
-    if any(m in text for m in _MINERAL_MARKS):
-        return "conflict-minerals"
-    if any(m in text for m in _EXTRACTION_MARKS):
-        return "resource-extraction"
-    return "unknown"
+    hit = lambda marks: [m for m in marks if m in text]     # noqa: E731
+    m_title, e_title = hit(_MINERAL_TITLE), hit(_EXTRACTION_TITLE)
+    m_mark, e_mark = hit(_MINERAL_MARKS), hit(_EXTRACTION_MARKS)
+
+    def out(kind: str, why: str) -> dict:
+        return {"kind": kind, "why": why,
+                "minerals": m_title + m_mark, "extraction": e_title + e_mark}
+
+    # 条目标题最先看，它直接说明这份 SD 报的是哪一套。
+    #
+    # **两个都出现时判资源开采。** 这与直觉相反，但 2026-09-05 的实测把话说死了：
+    # 22 份真申报逐份打出命中的特征，13q-1 申报人的文件里两个条目标题**同时出现**：
+    #
+    #     CRH   矿产 ['conflict minerals disclosure', ...]  开采 ['resource extraction issuer disclosure', ...]
+    #     DVN   矿产 ['conflict minerals disclosure', ...]  开采 ['resource extraction issuer disclosure', ...]
+    #     NEM   矿产 ['conflict minerals disclosure', ...]  开采 ['resource extraction issuer disclosure', ...]
+    #
+    # 封面模板把两个条目都印出来，而 13p-1 申报人不会去**填** Item 2.01。
+    # 所以 2.01 出现是主动信息，1.01 出现可能只是模板。特斯拉那份是反例：
+    # 只命中 'conflict minerals disclosure'、没有 XBRL，判冲突矿产无名单，正确。
+    #
+    # 同一批数据也再次确认了那条不能用的特征：'rule 13p-1' 在几乎每一份 13q-1
+    # 申报里都出现——封面把两条规则都印在勾选框里，勾没勾都印。
+    if e_title:
+        return out("resource-extraction", f"条目标题 {e_title[0]!r}")
+    if m_title:
+        return out("conflict-minerals", f"条目标题 {m_title[0]!r}")
+    if xbrl_tagged and e_mark:
+        return out("resource-extraction", f"XBRL 标记 + {e_mark[0]!r}")
+    if m_mark:
+        return out("conflict-minerals", f"用词 {m_mark[0]!r}")
+    if e_mark:
+        return out("resource-extraction", f"用词 {e_mark[0]!r}")
+    return out("unknown", "没有任何特征")
 
 
 def parse_smelters(html: str) -> dict:

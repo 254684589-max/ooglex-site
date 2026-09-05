@@ -821,6 +821,78 @@ def main() -> int:
             failures.append(f"披露类型 {html[:40]!r}：期望 {want}，实际 {got}")
         print(f"  [{'OK' if ok else 'XX'}] {why}（→ {got}）")
 
+    # 只按用词判会对矿业与能源公司系统性判错——它们的业务词就是 smelter 和
+    # refinery。2026-09-05 实测：力拓 formsd2025govpayment.htm、壳牌
+    # shel-20251231.htm（表格是「保加利亚能源部 658,383」）都被判成「未列名单」。
+    # 结构判据来自 SEC 的要求本身：13q-1 的付款数据必须内联 XBRL 标记，
+    # 13p-1 没有这个要求，所以目录里有没有 XBRL 渲染件不受正文用词影响。
+    print("\n── 矿业与能源公司：光看用词会判错，得看结构 ──────────────────────")
+    _RIO = ("<p>Rio Tinto payments to governments report under Section 1504. "
+            "Projects include our aluminium smelter at Kitimat.</p>")
+    _SHELL = ("<p>Payments to governments 2025. MINISTRY OF ENERGY BULGARIA 658,383. "
+              "Our refinery operations in Germany.</p>")
+    _SONY = ("<p>Conflict Minerals Report under Rule 13p-1. Smelter and refiner list. "
+             "Not a payments to governments report.</p>")
+    # 力拓那一份第一轮没被拦住：它排在最前的 R4.htm 是张 XBRL 渲染表，通篇数字，
+    # 一个特征词都没有。真正写着报的是哪一套的是 Form SD 的条目标题，在另一份
+    # 文件里——所以抽取器改为把取到的几份合起来判，判据也改用条目标题。
+    _RIO_XBRL_PAGE = ("<p>[2] Payments reported are net of a cash refund. "
+                      "IDEA: XBRL DOCUMENT Do Not Remove This Comment</p>")
+    _RIO_COVER = ("<p>Item 2.01 Resource Extraction Issuer Disclosure and Report. "
+                  "Rio Tinto plc, London SW1Y 4AD, United Kingdom.</p>")
+    _TESLA_LIKE = ("<p>Item 1.01 Conflict Minerals Disclosure and Report. "
+                   "We describe our due diligence process. No list is provided.</p>")
+    title_cases = [
+        (_RIO_XBRL_PAGE, True, "unknown",
+         "只看那张 XBRL 渲染表：一个特征词都没有，判不出来就说判不出来"),
+        (_RIO_XBRL_PAGE + _RIO_COVER, True, "resource-extraction",
+         "把几份合起来看，条目标题 2.01 就出现了——力拓这一档由此归位"),
+        (_TESLA_LIKE, False, "conflict-minerals",
+         "条目标题 1.01：报的是冲突矿产，只是没列名单"),
+        (_TESLA_LIKE + _RIO_COVER, False, "resource-extraction",
+         "两个条目都出现时判资源开采：填 2.01 是主动信息，1.01 可能只是模板"),
+    ]
+    for html, xbrl, want, why in title_cases:
+        got = load_form_sd().disclosure_kind(html, xbrl_tagged=xbrl)
+        ok = got == want
+        if not ok:
+            failures.append(f"条目标题判据 {why}：期望 {want}，实际 {got}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}（→ {got}）")
+
+    xbrl_cases = [
+        (_RIO, True, "resource-extraction",
+         "力拓：有铝冶炼厂，但这份是 1504 付款报告，XBRL 标记说明它是 13q-1"),
+        (_SHELL, True, "resource-extraction", "壳牌：有炼油厂，同上"),
+        (_SONY, True, "conflict-minerals",
+         "索尼：即使带 XBRL，正文是 13p-1 报告就不能判成资源开采"),
+        (_RIO, False, "conflict-minerals",
+         "同一份文件没有 XBRL 线索时仍按旧规则走——保留「宁可不摘」的偏向"),
+    ]
+    for html, xbrl, want, why in xbrl_cases:
+        got = load_form_sd().disclosure_kind(html, xbrl_tagged=xbrl)
+        ok = got == want
+        if not ok:
+            failures.append(f"披露类型（XBRL={xbrl}）{why}：期望 {want}，实际 {got}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}（→ {got}）")
+
+    # XBRL 判据本身：认的是文件名形状，别把普通附件也当成 XBRL 渲染件
+    xbrl_name_cases = [
+        (["formsd2025govpayment.htm", "R4.htm", "R1.htm"], True, "R4.htm 是 XBRL 渲染件"),
+        (["aem-20260601xex2d01.htm", "MetaLinks.json"], True, "MetaLinks.json 同理"),
+        (["agi-20251231.htm", "agi-20251231_htm.xml"], True, "_htm.xml 同理"),
+        (["a2025conflictmineralsreport.htm", "formsd.htm"], True is False,
+         "ASML：纯冲突矿产报告，没有 XBRL 渲染件"),
+        (["dp246807_ex0101.htm", "dp246807_sd.htm"], False, "ASE：同上"),
+        (["Report.htm", "R.htm"], False, "R 后面没数字的不算"),
+        ([], False, "空目录不算"),
+    ]
+    for names, want, why in xbrl_name_cases:
+        got = load_form_sd().filing_is_xbrl_tagged(names)
+        ok = got == want
+        if not ok:
+            failures.append(f"XBRL 判据 {why}：期望 {want}，实际 {got}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
     # 申报文档的过滤规则。抽取器用它决定读哪几份，「有申报但没抽到名单」的
     # 探针用同一个函数显示「哪些文件被挡掉了」——两处共用，改坏了两处一起错，
     # 而且探针会开始说假话，所以逐条钉死。
@@ -958,11 +1030,38 @@ def main() -> int:
             failures.append(f"链表自洽：{why} 不成立")
         print(f"  [{'OK' if ok else 'XX'}] {why}")
 
+    # --extra-ciks 是「先探后建」的口子：拿几家还不在公司池里的公司做 dry-run。
+    # 危险的是它被用来写盘——那等于绕过公司池直接发布。守住这道闸。
+    print("\n── 临时追加公司只允许 dry-run ────────────────────────────────────")
+    import io as _io
+    import contextlib as _ctx
+    guard_cases = [
+        (["x", "--extra-ciks", "TSM:1046179"], 1, "不加 --dry-run 必须拒绝"),
+        (["x", "--extra-ciks", "TSM:notanumber", "--dry-run"], 1, "CIK 不是数字要拒绝"),
+        (["x", "--extra-ciks", "TSM", "--dry-run"], 1, "少了冒号要拒绝"),
+    ]
+    for argv, expect, why in guard_cases:
+        saved = sys.argv
+        sys.argv = argv
+        buf = _io.StringIO()
+        try:
+            with _ctx.redirect_stdout(buf):
+                got = extractor.main()
+        except SystemExit as exc:                  # noqa: PERF203
+            got = exc.code
+        finally:
+            sys.argv = saved
+        ok = got == expect
+        if not ok:
+            failures.append(f"追加公司闸门 {why}：期望返回 {expect}，实际 {got}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}（返回 {got}）")
+
     total = (len(pdf_cases) + 4 + len(kind_cases) + len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
-             + len(chain_cases) + len(chain_self))
+             + len(chain_cases) + len(chain_self) + len(guard_cases)
+             + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:
         print(f"失败 {len(failures)}/{total}：")
