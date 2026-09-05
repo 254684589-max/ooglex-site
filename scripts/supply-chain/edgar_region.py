@@ -123,18 +123,26 @@ def build_code_map(records) -> dict[str, str]:
 
 def describe(code: str | None, description: str | None,
              code_map: dict[str, str]) -> str | None:
-    """拿到这条地区的描述文本：优先用它自带的，缺了就查代码表。"""
+    """拿到这条地区的描述文本：优先用它自带的，缺了就查代码表。
+
+    描述字段里**也可能直接躺着一个两字母代码**——壳牌那条
+    `stateOfIncorporationDescription` 就是字符串 "DC"。所以拿到描述之后
+    仍要过一遍代码表，不能因为「有描述」就当它是国名。
+    """
     text = (description or "").strip()
-    if text:
+    if text and not (len(text) == 2 and text.upper() in US_STATES):
         return text
-    key = (code or "").strip().upper()
+    key = (text or code or "").strip().upper()
     if not key:
         return None
     if key in code_map:
         return code_map[key]
     if key in US_STATES:
-        # 代码表里没见过它带描述，但这是美国州代码——能确定的只有国家。
-        return "United States"
+        # 是美国州代码。**这一池是外国私人发行人**（报 20-F／40-F），
+        # 真在美国注册的公司报的是 10-K 而不是 20-F，所以这里出现美国州
+        # 代码基本都是 SEC 记录里的美国办公室或代理人，不是这家公司的国别。
+        # 返回代码本身，由 resolve_country 判定不可用、换下一个字段。
+        return key
     return None
 
 
@@ -158,6 +166,7 @@ def resolve_country(meta: dict, code_map: dict[str, str]) -> dict:
          (addresses.get("mailing") or {}).get("stateOrCountry"),
          (addresses.get("mailing") or {}).get("stateOrCountryDescription")),
     ]
+    rejected: list[str] = []
     for basis, code, description in attempts:
         text = describe(code, description, code_map)
         if not text:
@@ -165,10 +174,16 @@ def resolve_country(meta: dict, code_map: dict[str, str]) -> dict:
         country, region = split_region(text)
         if not country:
             continue
+        if len(country) == 2 and country.upper() in US_STATES:
+            # 只能确定到「美国某个州」。对这一池来说那不是国别（见 describe），
+            # 硬写成美国会把壳牌说成美国公司。记下来，换下一个字段。
+            rejected.append(f"{basis}={country.upper()}")
+            continue
         return {"country": country, "region": region, "countryBasis": basis,
-                "countryCode": (code or "").strip().upper() or None}
+                "countryCode": (code or "").strip().upper() or None,
+                "countryRejected": rejected or None}
     return {"country": None, "region": None, "countryBasis": None,
-            "countryCode": None}
+            "countryCode": None, "countryRejected": rejected or None}
 
 
 def address_pairs(meta: dict):

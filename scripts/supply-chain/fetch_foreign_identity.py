@@ -264,12 +264,33 @@ def main() -> int:
             # 页面要照实标，不能让读者以为两者是一回事。
             "countryBasis": place["countryBasis"],
             "countryCode": place["countryCode"],
+            # 被判定不可用的字段（例如「营业地址只说到美国某个州」）。
+            # 留着是为了让「为什么这家没有国别」在数据里查得到，而不是只剩一个空值。
+            "countryRejected": place.get("countryRejected"),
             "exchange": item["primary"].get("exchange"),
             "tickers": sorted({c["ticker"] for c in item["candidates"]}),
             "annualForm": "20-F/40-F",
             "lastAnnual": foreign[item["cik"]]["last"],
         }
     print(f"取到 {len(companies)} 家，失败 {failed} 家")
+
+    # 定不出国别的，把 SEC 那几个字段的**原值**原样打出来。
+    # 台积电、本田、沃达丰这一批三个字段全空，光看结论只能看出「没有」，
+    # 看不出「SEC 到底写了什么」——不打出来就只能靠猜，而猜就是编。
+    unresolved = [(item, meta) for item, meta in metas
+                  if region.resolve_country(meta, code_map)["country"] is None]
+    if unresolved:
+        print(f"\n定不出国别的 {len(unresolved)} 家，SEC 原值如下：")
+        for item, meta in unresolved:
+            addresses = meta.get("addresses") or {}
+            biz = addresses.get("business") or {}
+            mail = addresses.get("mailing") or {}
+            print(f"  {item['primary']['ticker']:6s} {(meta.get('name') or '')[:32]:34s}"
+                  f" inc={meta.get('stateOfIncorporation')!r}"
+                  f"/{meta.get('stateOfIncorporationDescription')!r}"
+                  f" biz={biz.get('stateOrCountry')!r}/{biz.get('stateOrCountryDescription')!r}"
+                  f" mail={mail.get('stateOrCountry')!r}/{mail.get('stateOrCountryDescription')!r}"
+                  f" 地址其余键={sorted(set(biz) - {'stateOrCountry', 'stateOrCountryDescription'})}")
 
     from collections import Counter
     basis_count = Counter(v.get("countryBasis") or "未标注" for v in companies.values())
