@@ -380,11 +380,81 @@
   /* ── 右栏：出处 + 同行 + 真实数据清单 ── */
   /* ── 冶炼厂清单（主栏）──
      这一页唯一的真实关系数据。厂名即链接，点开就是这条边的原始申报文件。 */
+  // 清单筛选：矿种（3TG）× 国别。两个维度都已在边数据里，不需要新取数。
+  // **筛选只是取子集，不改变任何一条边的语义**——每条仍然是「该冶炼厂出现在
+  // 申报人的供应链中」，仍然点得开原始申报。
+  var filt = { mineral: "", country: "" };
+
+  function matchFilter(e) {
+    if (filt.mineral && (e.minerals || []).indexOf(filt.mineral) < 0) return false;
+    if (filt.country && (e.country || "未写明") !== filt.country) return false;
+    return true;
+  }
+
+  // 某一维的取值分布。计数用的是**另一维已筛之后**的集合，
+  // 这样按钮上的数就是「点下去会得到几条」，不是一个对不上的总数。
+  function facet(rows, key, other) {
+    var map = {};
+    rows.forEach(function (e) {
+      if (!other(e)) return;
+      var vals = key === "mineral"
+        ? (e.minerals && e.minerals.length ? e.minerals : ["未写明"])
+        : [e.country || "未写明"];
+      vals.forEach(function (v) { map[v] = (map[v] || 0) + 1; });
+    });
+    return Object.keys(map).map(function (k) { return { k: k, n: map[k] }; })
+      .sort(function (a, b) { return b.n - a.n || a.k.localeCompare(b.k); });
+  }
+
+  function filterBar(rows, onChange) {
+    var bar = el("div", "smfilt");
+    function group(label, key, items, cap) {
+      if (items.length < 2) return;              // 只有一类就不必给筛选
+      var g = el("div", "fg");
+      g.appendChild(el("span", "lb", label));
+      var all = el("button", "fb" + (filt[key] ? "" : " on"));
+      all.type = "button";
+      all.textContent = "全部";
+      all.setAttribute("aria-pressed", filt[key] ? "false" : "true");
+      all.onclick = function () { filt[key] = ""; onChange(); };
+      g.appendChild(all);
+      items.slice(0, cap).forEach(function (it) {
+        var b = el("button", "fb" + (filt[key] === it.k ? " on" : ""));
+        b.type = "button";
+        b.setAttribute("aria-pressed", filt[key] === it.k ? "true" : "false");
+        b.appendChild(document.createTextNode(it.k));
+        b.appendChild(el("s", null, String(it.n)));
+        b.onclick = function () {
+          filt[key] = (filt[key] === it.k) ? "" : it.k;
+          onChange();
+        };
+        g.appendChild(b);
+      });
+      if (items.length > cap) {
+        var rest = items.slice(cap).reduce(function (a, x) { return a + x.n; }, 0);
+        // **不说「其余」两个字就成了截断**：读者会以为这就是全部取值。
+        g.appendChild(el("span", "more",
+          "另有 " + (items.length - cap) + " 个未单列（" + rest + " 条）"));
+      }
+      bar.appendChild(g);
+    }
+    group("矿种", "mineral",
+      facet(rows, "mineral", function (e) {
+        return !filt.country || (e.country || "未写明") === filt.country;
+      }), 6);
+    group("国别", "country",
+      facet(rows, "country", function (e) {
+        return !filt.mineral || (e.minerals || []).indexOf(filt.mineral) >= 0;
+      }), 10);
+    return bar;
+  }
+
   function renderSmelters() {
     var host = $("smelters");
     host.textContent = "";
-    var rows = edgeRows();
-    if (!rows.length) return;
+    var all = edgeRows();
+    if (!all.length) return;
+    var rows = all.filter(matchFilter);
 
     var counts = idCounts();
     var mixed = counts.cid > 0 && counts.nameOnly > 0;
@@ -394,7 +464,11 @@
     var head = el("div", null, null);
     head.style.cssText = "display:flex;justify-content:space-between;align-items:baseline;"
       + "gap:12px;flex-wrap:wrap;margin-bottom:10px;";
-    head.appendChild(el("h3", null, "冶炼厂／精炼厂清单（" + rows.length + " 家）"));
+    // 标题永远同时印「筛出多少」与「共多少」。只印筛出的那个数，读者一眼
+    // 看过去会以为这家公司就这么几条——筛选不能把总量说小。
+    head.appendChild(el("h3", null, rows.length === all.length
+      ? "冶炼厂／精炼厂清单（" + all.length + " 家）"
+      : "冶炼厂／精炼厂清单（筛出 " + rows.length + " 家 / 共 " + all.length + " 家）"));
     var translated = rows.filter(function (e) { return zhName(e.name); }).length;
     var sub = el("span", null,
       "出现在该公司 Form SD 申报供应链中 · 不是直接供货关系 · 点厂名看原始申报"
@@ -406,6 +480,15 @@
     sub.style.cssText = "font-size:.72rem;color:var(--dim);";
     head.appendChild(sub);
     box.appendChild(head);
+    box.appendChild(filterBar(all, function () { renderSmelters(); }));
+    if (rows.length !== all.length) {
+      var back = el("p", "smclear",
+        "已筛选：" + [filt.mineral && ("矿种 " + filt.mineral),
+                      filt.country && ("国别 " + filt.country)]
+          .filter(Boolean).join(" · ")
+        + "。隐藏了 " + (all.length - rows.length) + " 家，它们仍在这份申报里。");
+      box.appendChild(back);
+    }
 
     var grid = el("div", "grid");
     rows.slice().sort(function (a, b) {

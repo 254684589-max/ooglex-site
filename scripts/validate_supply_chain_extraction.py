@@ -1126,6 +1126,16 @@ def main() -> int:
         (all(c in lay for c, _, _ in chains_mod.CHAINS if c not in cross),
          "每条非使能链都有层次"),
         (not any(c in lay for c in cross), "使能链不参与分层，不硬塞进某一层"),
+        # 「不参与分层」和「不逐条连」是**两个不同的判断**，曾经被写成一句
+        # 「不逐条连线」——而数据里物流有 3 条入边、金融 1 条、房地产 1 条，
+        # 且都是真的投入（石油给物流的是运输燃料）。文案与数据打架，
+        # 路径视图还把物流从「石油的下游」里静默丢掉了。
+        (any(t in cross for _, t, _ in chains_mod.CHAIN_LINKS),
+         "使能链确实带入边——这条断言在的意义是：别再退回「不逐条连线」那句话"),
+        (not any(f in cross for f, _, _ in chains_mod.CHAIN_LINKS),
+         "使能链没有出边：它向外供给所有链，逐条连会画出 100 多条没信息量的线"),
+        (all("其出向不逐条连线" in why or "出向" in why for why in cross.values()),
+         "使能链的说明必须点明「不逐条连」说的是**出向**，不能笼统说不连线"),
         (len(layers["back"]) == len(chains_mod.COUNTERFLOW),
          "逆向边数与声明的一致"),
         (all(why.strip() for why in chains_mod.COUNTERFLOW.values()),
