@@ -28,6 +28,10 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
 TIMEOUT = 25
 
+AXES = ("arena", "livebench", "aa")
+WEIGHTS = {"arena": 0.4, "livebench": 0.3, "aa": 0.3}
+TOP_N = 40                         # data.json 只保留前 N 名，其余留在源里不写盘
+
 # ---------------------------------------------------------------- 基础请求
 
 def http_get(url, headers=None, tries=2):
@@ -286,21 +290,12 @@ def load_prev():
         return None
 
 
-def build():
-    print("抓取 LMArena…"); arena = fetch_arena()
-    print("抓取 LiveBench…"); lb = fetch_livebench()
-    print("抓取 Artificial Analysis…"); aa = fetch_aa()
+def merge_sources(arena, lb, aa, prev_models):
+    """三源合并成模型清单（不评分、不排序、不截断）。
 
-    prev = load_prev()
-    prev_models = {m["id"]: m for m in (prev or {}).get("models", [])}
-
-    if not arena and not lb and not aa:
-        if prev:
-            print("三源全部失败：保留上次 data.json 不覆盖")
-            return 0
-        print("三源全部失败且无历史数据")
-        return 1
-
+    与探测脚本共用同一份合并口径：认不出厂商的长尾模型不进榜；某轴本次整体失败时
+    逐模型沿用上次 data.json 的值，避免把「这次没抓到」写成「这个模型没有分」。
+    """
     keys = set()
     for src in (arena, lb, aa):
         if src:
@@ -342,13 +337,16 @@ def build():
             if m["price"] is None:
                 m["price"] = old.get("price")
         models.append(m)
+    return models
 
-    # 综合参考分（与前端同口径）：≥2 榜才计综合，单榜模型排在其后
+
+def score_models(models):
+    """写入 `_combo` 并按其降序排序（与前端同口径）：≥2 榜才计综合，单榜模型排在其后。"""
     def ranges(key):
         vs = [m[key] for m in models if isinstance(m[key], (int, float))]
         return (min(vs), max(vs)) if vs else None
-    rng = {k: ranges(k) for k in ("arena", "livebench", "aa")}
-    wts = {"arena": 0.4, "livebench": 0.3, "aa": 0.3}
+    rng = {k: ranges(k) for k in AXES}
+    wts = WEIGHTS
     for m in models:
         s = w = 0.0
         n_axes = 0
@@ -363,7 +361,25 @@ def build():
                 best_single = max(best_single, nv)
         m["_combo"] = (1 + s / w) if n_axes >= 2 else best_single
     models.sort(key=lambda m: m["_combo"], reverse=True)
-    models = models[:40]
+    return models
+
+
+def build():
+    print("抓取 LMArena…"); arena = fetch_arena()
+    print("抓取 LiveBench…"); lb = fetch_livebench()
+    print("抓取 Artificial Analysis…"); aa = fetch_aa()
+
+    prev = load_prev()
+    prev_models = {m["id"]: m for m in (prev or {}).get("models", [])}
+
+    if not arena and not lb and not aa:
+        if prev:
+            print("三源全部失败：保留上次 data.json 不覆盖")
+            return 0
+        print("三源全部失败且无历史数据")
+        return 1
+
+    models = score_models(merge_sources(arena, lb, aa, prev_models))[:TOP_N]
     for m in models:
         m.pop("_combo", None)
 

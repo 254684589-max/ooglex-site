@@ -1,0 +1,56 @@
+name: AI Rankings Source Probe
+
+# 只读探测：三个评测榜在 Actions 机房里到底有没有某个模型，以及它为什么没进 data.json。
+# 不写仓库、不提交任何数据，报告同时打进日志与构建产物。
+#
+# 这是常备工具：有人问「某某新模型怎么没上榜」时先跑一次，把「源头还没收录」和
+# 「被本站规则挡掉」分开——两者的处理方式完全相反，猜错就会去改一个不存在的 bug。
+on:
+  workflow_dispatch:
+    inputs:
+      find:
+        description: '要查的模型关键词，逗号分隔，例如 gpt-6,astra'
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ai-rankings-probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Self-test probe logic offline
+        run: python scripts/ai-rankings/probe_rankings_sources.py --self-test
+
+      - name: Probe ranking sources
+        env:
+          AA_API_KEY: ${{ secrets.AA_API_KEY }}   # 可选轴：没配就跳过 AA
+          FIND: ${{ inputs.find }}                # 经环境变量传入，不拼进命令行
+        run: |
+          mkdir -p /tmp/ai-rankings-probe
+          python scripts/ai-rankings/probe_rankings_sources.py --find "$FIND" \
+            | tee /tmp/ai-rankings-probe/report.txt
+
+      - name: Upload probe report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: ai-rankings-probe-${{ github.run_attempt }}
+          path: /tmp/ai-rankings-probe
+          if-no-files-found: warn
+          retention-days: 7
