@@ -211,6 +211,18 @@ def check_coverage(payload: dict, counts: dict, edge_count: int, errors: list[st
         fail(errors, f"coverage.nodesTotal {coverage.get('nodesTotal')} 与实际节点数不符")
     if coverage.get("edgesTotal") != edge_count:
         fail(errors, f"coverage.edgesTotal {coverage.get('edgesTotal')} 与实际边数不符")
+    # nodesWithEdges（实际发布了几家的边）与 formSd.companiesWithList（本轮扫描
+    # 抽到几家名单）本就可能差几家：抽取器不删有效历史数据，上一轮抓到、这一轮
+    # 没复现的公司边文件仍在。差额必须与 edgesFromEarlierScan 逐家对得上，
+    # 对不上就是别处出了问题，不能糊弄过去。
+    listed_now = ((coverage.get("formSd") or {}).get("companiesWithList"))
+    stale = coverage.get("edgesFromEarlierScan")
+    if listed_now is not None and stale is not None:
+        published = coverage.get("nodesWithEdges") or 0
+        if published - listed_now != len(stale):
+            fail(errors, f"发布了 {published} 家的边、本轮扫描只抽到 {listed_now} 家，"
+                         f"差 {published - listed_now} 家，但 edgesFromEarlierScan "
+                         f"只列了 {len(stale)} 家——差额没有交代清楚")
     with_edges = sum(1 for n in payload.get("nodes") or [] if n.get("edgeCount"))
     if coverage.get("nodesWithEdges") != with_edges:
         fail(errors, f"coverage.nodesWithEdges {coverage.get('nodesWithEdges')} "
@@ -430,6 +442,9 @@ def main() -> int:
         unscanned = sum(r.get("unscanned") or 0 for r in by_sector)
         print(f"按板块覆盖：{top} …"
               + (f"（其中 {unscanned} 家尚无逐家申报状态）" if unscanned else ""))
+    stale_list = (payload.get("coverage") or {}).get("edgesFromEarlierScan") or []
+    if stale_list:
+        print(f"边来自更早扫描（本轮未复现，文件按规矩保留）：{', '.join(stale_list)}")
     print(f"claimComplete = {(payload.get('coverage') or {}).get('claimComplete')}（必须恒为 false）")
 
     if errors:

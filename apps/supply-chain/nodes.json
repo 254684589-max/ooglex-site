@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-05T01:18:47Z",
+  "updatedAt": "2026-09-05T01:21:07Z",
   "asOf": "2026-09-03",
   "frequency": "daily",
   "status": "ok",
@@ -17482,6 +17482,9 @@
         "failed": 0,
         "unscanned": 0
       }
+    ],
+    "edgesFromEarlierScan": [
+      "ECL"
     ],
     "stageByBasis": {
       "sic-refined": 495
