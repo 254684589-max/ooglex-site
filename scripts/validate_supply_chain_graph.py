@@ -247,7 +247,8 @@ def check_coverage(payload: dict, counts: dict, edge_count: int, errors: list[st
             if node.get("edgeCount"):
                 row["withEdges"] += 1
         seen = set()
-        parts = ("withEdges", "filedNoList", "noFiling", "failed", "unscanned")
+        parts = ("withEdges", "filedNoList", "noFiling", "resourceExtraction",
+                 "failed", "unscanned")
         for row in by_sector:
             name = row.get("sector")
             seen.add(name)

@@ -696,6 +696,30 @@ def main() -> int:
         print(f"        {raw[:56]:<58} → {got_name[:44]!r}"
               + (f" + {got_country}" if got_country else ""))
 
+    # Form SD 底下是两套互不相干的披露：13p-1 冲突矿产（有冶炼厂名单）与
+    # 13q-1 资源开采付款（向各国政府付了多少钱）。把后者算进「申报了但没列名单」
+    # 等于暗示「本可以列却没列」，而那套披露里根本没有冶炼厂这个概念。
+    print("\n── 披露类型：冲突矿产还是资源开采付款 ────────────────────────────")
+    kind_cases = [
+        ("<p>Conflict Minerals Report for the reporting period</p>",
+         "conflict-minerals", "冲突矿产报告"),
+        ("<p>Our smelter and refiner due diligence covered 3TG</p>",
+         "conflict-minerals", "提到冶炼厂即为冲突矿产"),
+        ("<p>Form SD filed under Rule 13q-1, payments to governments</p>",
+         "resource-extraction", "康菲那一类：资源开采付款"),
+        ("<p>Extractive Sector Transparency Measures Act (ESTMA) Report</p>",
+         "resource-extraction", "纽蒙特那一类：ESTMA"),
+        ("<p>Conflict Minerals Report. See also Section 1504.</p>",
+         "conflict-minerals", "两类都提时以冲突矿产为准——宁可不摘，不可少报"),
+        ("<p>Nothing relevant</p>", "unknown", "都不像就返回 unknown，不猜"),
+    ]
+    for html, want, why in kind_cases:
+        got = load_form_sd().disclosure_kind(html)
+        ok = got == want
+        if not ok:
+            failures.append(f"披露类型 {html[:40]!r}：期望 {want}，实际 {got}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}（→ {got}）")
+
     # 申报文档的过滤规则。抽取器用它决定读哪几份，「有申报但没抽到名单」的
     # 探针用同一个函数显示「哪些文件被挡掉了」——两处共用，改坏了两处一起错，
     # 而且探针会开始说假话，所以逐条钉死。
@@ -717,7 +741,7 @@ def main() -> int:
         print(f"  [{'OK' if ok else 'XX'}] {why}"
               f"（{name} → {got or '会读'}）")
 
-    total = (len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
+    total = (len(kind_cases) + len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1)
     print("\n" + "─" * 68)

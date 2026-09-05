@@ -444,6 +444,54 @@ def _split_trailing_country(name: str) -> tuple[str, str | None, str | None]:
     return name, english, chinese
 
 
+# Form SD 底下其实是**两套互不相干的披露**：
+#   13p-1  冲突矿产（Conflict Minerals）—— 有冶炼厂名单的是这一套
+#   13q-1  资源开采付款（Resource Extraction Payments，即 Section 1504）
+#          —— 油气与矿业公司申报向各国政府付了多少钱，与冶炼厂毫无关系
+#
+# 康菲的 sd-2024df1504.htm、纽蒙特的 a2025formsd-estma.htm 都是后者。
+# 把它们算进「申报了但正文未列名单」是错的：那句话暗示「本可以列却没列」，
+# 而事实是**这套披露里本来就没有冶炼厂这个概念**。能源板块 15/22 家落在
+# 那一档，多半就是这么来的。
+#
+# 判据取自文档正文的固有词，不猜文件名——文件名叫什么是申报人的自由。
+_EXTRACTION_MARKS = (
+    "resource extraction",
+    "section 1504",
+    "rule 13q-1",
+    "13q-1",
+    "extractive sector transparency",
+    "estma",
+    "payments to governments",
+    "government payments",
+)
+_MINERAL_MARKS = (
+    "conflict minerals",
+    "rule 13p-1",
+    "13p-1",
+    "smelter",
+    "refiner",
+    "3tg",
+)
+
+
+def disclosure_kind(html: str) -> str:
+    """这份申报是冲突矿产还是资源开采付款。
+
+    返回 "conflict-minerals" / "resource-extraction" / "unknown"。
+    两类特征都出现时以冲突矿产为准——冲突矿产报告里提一句 1504 很常见，
+    反过来资源开采付款报告里不会成段讲冶炼厂。**宁可判成冲突矿产**：
+    判错成资源开采会把一份真名单从统计里摘出去，那是把结果说少；
+    判错成冲突矿产只是留在原来那一档，不损失信息。
+    """
+    text = re.sub(r"<[^>]+>", " ", html or "").lower()
+    if any(m in text for m in _MINERAL_MARKS):
+        return "conflict-minerals"
+    if any(m in text for m in _EXTRACTION_MARKS):
+        return "resource-extraction"
+    return "unknown"
+
+
 def parse_smelters(html: str) -> dict:
     """从一份冲突矿产报告里抽出冶炼厂清单。
 

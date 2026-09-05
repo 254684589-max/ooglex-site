@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-04T16:25:00Z",
+  "updatedAt": "2026-09-05T01:04:22Z",
   "asOf": "2026-09-03",
   "frequency": "daily",
   "status": "ok",
@@ -17367,6 +17367,7 @@
         "withEdges": 34,
         "filedNoList": 26,
         "noFiling": 24,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -17377,6 +17378,7 @@
         "withEdges": 20,
         "filedNoList": 35,
         "noFiling": 21,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -17387,6 +17389,7 @@
         "withEdges": 0,
         "filedNoList": 1,
         "noFiling": 69,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -17397,6 +17400,7 @@
         "withEdges": 9,
         "filedNoList": 29,
         "noFiling": 21,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -17407,6 +17411,7 @@
         "withEdges": 9,
         "filedNoList": 15,
         "noFiling": 29,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -17417,6 +17422,7 @@
         "withEdges": 7,
         "filedNoList": 9,
         "noFiling": 17,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -17427,6 +17433,7 @@
         "withEdges": 1,
         "filedNoList": 4,
         "noFiling": 27,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -17437,6 +17444,7 @@
         "withEdges": 0,
         "filedNoList": 1,
         "noFiling": 28,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -17447,6 +17455,7 @@
         "withEdges": 2,
         "filedNoList": 15,
         "noFiling": 5,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -17457,6 +17466,7 @@
         "withEdges": 5,
         "filedNoList": 12,
         "noFiling": 3,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -17467,6 +17477,7 @@
         "withEdges": 3,
         "filedNoList": 2,
         "noFiling": 12,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       }

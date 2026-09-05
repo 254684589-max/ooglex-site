@@ -270,6 +270,7 @@ def sector_coverage(nodes: list[dict], filing_status: dict[str, str]) -> list[di
             "withEdges": 0,
             "filedNoList": 0,
             "noFiling": 0,
+            "resourceExtraction": 0,
             "failed": 0,
             "unscanned": 0,
         })
@@ -282,6 +283,9 @@ def sector_coverage(nodes: list[dict], filing_status: dict[str, str]) -> list[di
             row["filedNoList"] += 1
         elif state == "no-filing":
             row["noFiling"] += 1
+        elif state == "resource-extraction":
+            # 申报的是资源开采付款，不是冲突矿产——那套披露里没有冶炼厂这个概念
+            row["resourceExtraction"] += 1
         elif state == "failed":
             row["failed"] += 1
         elif state == "listed":

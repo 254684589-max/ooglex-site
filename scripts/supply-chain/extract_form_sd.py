@@ -213,6 +213,7 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
     time.sleep(GAP)
 
     best: dict | None = None
+    best_html = ""          # 判定披露类型要看正文，不能只看解析结果
     for doc in documents[:MAX_DOCS_PER_FILING]:
         url = filing["indexUrl"] + doc["name"]
         try:
@@ -242,6 +243,7 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
         time.sleep(GAP)
         if best is None or result["unique"] > best["unique"]:
             best = result
+            best_html = html
         if result["unique"] > 0:
             break                                  # 找到名单就停，不多下
 
@@ -249,8 +251,17 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
         outcome["state"] = "doc-failed"
         return outcome
     outcome["parse"] = best
-    # 有申报但没名单，是这份披露的真实形态，不是抓取失败——分开记。
-    outcome["state"] = "listed" if best["unique"] else "filed-no-list"
+    if best["unique"]:
+        outcome["state"] = "listed"
+        return outcome
+    # 没抽到名单时先分清这是哪一套披露。Form SD 底下有两套互不相干的规则：
+    # 13p-1 冲突矿产（有冶炼厂名单）与 13q-1 资源开采付款（向各国政府付了多少钱）。
+    # 康菲、纽蒙特申报的是后者，那套披露里**本来就没有冶炼厂这个概念**，
+    # 把它们记成「申报了但正文未列名单」等于暗示「本可以列却没列」。
+    kind = parser.disclosure_kind(best_html or "")
+    outcome["disclosureKind"] = kind
+    outcome["state"] = ("resource-extraction" if kind == "resource-extraction"
+                        else "filed-no-list")
     return outcome
 
 
@@ -424,6 +435,7 @@ def main() -> int:
     listed = states.get("listed", [])
     filed_no_list = states.get("filed-no-list", [])
     no_filing = states.get("no-filing", [])
+    resource_extraction = states.get("resource-extraction", [])
     failed = [s for k, v in states.items() if k in ("error", "index-failed", "doc-failed") for s in v]
     # 逐家的申报状态。只报「495 家里 85 家有名单」，读者无法判断自己关心的那家
     # 属于哪一类，也就无法判断「没数据」是抓取失败还是这家本来就不申报。
@@ -438,6 +450,7 @@ def main() -> int:
 
     print("\n── 结论 ────────────────────────────────────────────────────────────")
     print(f"有名单 {len(listed)} 家 · 有申报无名单 {len(filed_no_list)} 家 · "
+          f"申报的是资源开采付款 {len(resource_extraction)} 家 · "
           f"无申报 {len(no_filing)} 家 · 失败 {len(failed)} 家")
     print(f"冶炼厂关系边合计 {total_edges} 条"
           f"（带 RMI 编号 {total_cid} · 仅有名字 {total_name_only}）")
@@ -472,6 +485,9 @@ def main() -> int:
             return 1
         keys = ("companiesScanned", "companiesWithList", "companiesFiledNoList",
                 "companiesNoFiling", "companiesFailed")
+        # 后加的字段，旧文件没有就留空，不当致命错误
+        scan_counts["companiesResourceExtraction"] = prior.get(
+            "companiesResourceExtraction") or 0
         # failedSymbols 是后加的字段，旧文件可能没有；缺了就沿用空列表，
         # 不当成致命错误——但计数字段缺失仍然中止。
         missing = [k for k in keys if prior.get(k) is None]
@@ -586,6 +602,9 @@ def main() -> int:
                 "companiesWithList": len(listed),
                 "companiesFiledNoList": len(filed_no_list),
                 "companiesNoFiling": len(no_filing),
+                # 申报的是 13q-1 资源开采付款，不是 13p-1 冲突矿产——
+                # 那套披露里没有冶炼厂这个概念，不能算进「未列名单」。
+                "companiesResourceExtraction": len(resource_extraction),
                 "companiesFailed": len(failed),
                 # 只报「失败 5 家」而不说是哪 5 家，等于没人能去核对。
                 # 名单写进数据，不只留在会过期的运行日志里。
