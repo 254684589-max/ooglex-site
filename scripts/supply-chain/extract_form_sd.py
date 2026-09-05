@@ -259,7 +259,35 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
         outcome["state"] = "doc-failed"
         return outcome
     outcome["parse"] = best
+
+    # 披露类型先判，再决定这份「名单」算不算数。**顺序很重要**：
+    # 13q-1 资源开采付款那套披露里根本没有冶炼厂这个概念，它的表格是
+    # 「国家 | 政府机构 | 金额」。而无编号行的判据是「矿种 + 厂名 + 国别 三者齐全」，
+    # 一行「India | Gold | …」的付款记录恰好能满足——艾芬豪那份 ESTMA 就这么
+    # 抽出了一家叫「La India」的「冶炼厂」（印度、金），实测确认。
+    #
+    # 所以：这份申报是资源开采付款、且一个 RMI 编号都没有时，那些行不是冶炼厂。
+    # RMI 编号是全球统一标识，付款表里不可能出现，所以**有编号的行照收**——
+    # 万一某家同时报了两套，真名单不会被这道闸误伤。
+    xbrl = parser.filing_is_xbrl_tagged([d["name"] for d in documents])
+    evidence = parser.disclosure_evidence("\n".join(all_html) or best_html or "",
+                                          xbrl_tagged=xbrl)
+    kind = evidence["kind"]
+    if verbose:
+        print(f"       判披露类型：{kind}（{evidence['why']}；XBRL {'有' if xbrl else '无'}）")
+        print(f"         矿产特征 {evidence['minerals'][:4]}")
+        print(f"         开采特征 {evidence['extraction'][:4]}")
+
     if best["unique"]:
+        if kind == "resource-extraction" and not best["rowsWithCid"]:
+            outcome["state"] = "resource-extraction"
+            outcome["disclosureKind"] = kind
+            outcome["disclosureWhy"] = evidence["why"]
+            outcome["droppedAsPaymentRows"] = best["unique"]
+            if verbose:
+                print(f"       [!!] 判为资源开采付款，{best['unique']} 行无编号的"
+                      "「名单」按付款记录处理，不当冶炼厂发布")
+            return outcome
         outcome["state"] = "listed"
         return outcome
     # 没抽到名单时先分清这是哪一套披露。Form SD 底下有两套互不相干的规则：
@@ -268,18 +296,8 @@ def extract_company(symbol: str, cik: int, parser, verbose: bool = False) -> dic
     # 把它们记成「申报了但正文未列名单」等于暗示「本可以列却没列」。
     # 判据同时看结构与用词：目录里有 XBRL 渲染件说明这是 13q-1（付款数据必须
     # 标记），力拓、壳牌那种「正文里天然带 smelter/refiner」的误判由它挡住。
-    xbrl = parser.filing_is_xbrl_tagged([d["name"] for d in documents])
-    evidence = parser.disclosure_evidence("\n".join(all_html) or best_html or "",
-                                          xbrl_tagged=xbrl)
-    kind = evidence["kind"]
     outcome["disclosureKind"] = kind
     outcome["disclosureWhy"] = evidence["why"]
-    if verbose:
-        # 这条规则改了三版，每一版都是靠看真实输出发现错的。把依据打出来，
-        # 下一次就不必再加一轮日志才知道「为什么判成这样」。
-        print(f"       判披露类型：{kind}（{evidence['why']}；XBRL {'有' if xbrl else '无'}）")
-        print(f"         矿产特征 {evidence['minerals'][:4]}")
-        print(f"         开采特征 {evidence['extraction'][:4]}")
     outcome["state"] = ("resource-extraction" if kind == "resource-extraction"
                         else "filed-no-list")
     return outcome

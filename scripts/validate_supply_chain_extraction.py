@@ -1286,12 +1286,42 @@ def main() -> int:
         failures.append(f"外国发行人主代码：撞上标普代码时应退让，实际 {got}")
     print(f"  [{'OK' if ok else 'XX'}] 撞上标普代码时退让到备用代码，不覆盖苹果")
 
+    # 付款表不是冶炼厂名单。这条闸门守的是**「说多」的最后一步**：
+    # 判据判对了披露类型，可解析器仍从付款表里抠出了几行「冶炼厂」。
+    # 艾芬豪那份 ESTMA 实测抽出一家叫「La India」的厂（印度、金）——
+    # 那是一行付款记录，不是冶炼厂。
+    print("\n── 付款表里抠出来的不是冶炼厂 ───────────────────────────────────")
+    _PAY_ROWS = """<html><body>
+      <p>Item 2.01 Resource Extraction Issuer Disclosure. ESTMA Report.</p>
+      <table>
+        <tr><th>Country</th><th>Payee</th><th>Mineral</th><th>Amount</th></tr>
+        <tr><td>India</td><td>La India</td><td>Gold</td><td>150,000</td></tr>
+        <tr><td>Canada</td><td>Federal Government</td><td>Gold</td><td>947,350,000</td></tr>
+      </table></body></html>"""
+    pay = load_form_sd()
+    pay_parse = pay.parse_smelters(_PAY_ROWS)
+    pay_kind = pay.disclosure_evidence(_PAY_ROWS, xbrl_tagged=True)
+    pay_cases = [
+        (pay_kind["kind"] == "resource-extraction",
+         "付款报告判为资源开采付款（强特征 ESTMA）"),
+        (pay_parse["rowsWithCid"] == 0,
+         "付款表里没有 RMI 编号——这正是抽取器该起疑的地方"),
+        (pay_parse["unique"] > 0,
+         "解析器确实会从付款表里抠出行来（不假装它不会）"),
+    ]
+    for ok, why in pay_cases:
+        if not ok:
+            failures.append(f"付款表：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+    print("  [--] 抽取器据此把这类行按付款记录处理，不当冶炼厂发布"
+          "（判据在 extract_company，见 resource-extraction 分支）")
+
     total = (len(pdf_cases) + 4 + len(kind_cases) + len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
-             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1
+             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases)
              + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:
