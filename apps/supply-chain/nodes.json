@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-05T02:55:57Z",
+  "updatedAt": "2026-09-05T03:48:46Z",
   "asOf": "2026-09-04",
   "frequency": "daily",
   "status": "ok",
@@ -106,6 +106,197 @@
       "description": "废弃物处理与材料回收，逆向供应链"
     }
   ],
+  "chains": [
+    {
+      "id": "agri-food",
+      "label": "农业与食品",
+      "labelEn": "Agriculture & Food",
+      "count": 23,
+      "edgeCount": 668
+    },
+    {
+      "id": "mining-metals",
+      "label": "采矿与金属",
+      "labelEn": "Mining & Metals",
+      "count": 7,
+      "edgeCount": 47
+    },
+    {
+      "id": "oil-gas",
+      "label": "石油与天然气",
+      "labelEn": "Oil & Gas",
+      "count": 23,
+      "edgeCount": 341
+    },
+    {
+      "id": "utilities-power",
+      "label": "电力与公用事业",
+      "labelEn": "Power & Utilities",
+      "count": 40,
+      "edgeCount": 589
+    },
+    {
+      "id": "chemicals",
+      "label": "化工与新材料",
+      "labelEn": "Chemicals & Materials",
+      "count": 25,
+      "edgeCount": 759
+    },
+    {
+      "id": "packaging-paper",
+      "label": "包装与纸业",
+      "labelEn": "Packaging & Paper",
+      "count": 6,
+      "edgeCount": 660
+    },
+    {
+      "id": "construction-building",
+      "label": "建筑与建材",
+      "labelEn": "Construction & Building",
+      "count": 17,
+      "edgeCount": 9
+    },
+    {
+      "id": "semiconductor",
+      "label": "半导体",
+      "labelEn": "Semiconductors",
+      "count": 21,
+      "edgeCount": 3346
+    },
+    {
+      "id": "electronics-components",
+      "label": "电子元器件",
+      "labelEn": "Electronic Components",
+      "count": 17,
+      "edgeCount": 2992
+    },
+    {
+      "id": "computing-hardware",
+      "label": "计算与数据中心硬件",
+      "labelEn": "Computing & Datacenter Hardware",
+      "count": 15,
+      "edgeCount": 1874
+    },
+    {
+      "id": "communications",
+      "label": "通信与网络",
+      "labelEn": "Communications & Networking",
+      "count": 18,
+      "edgeCount": 2035
+    },
+    {
+      "id": "software-cloud",
+      "label": "软件与云服务",
+      "labelEn": "Software & Cloud",
+      "count": 31,
+      "edgeCount": 516
+    },
+    {
+      "id": "industrial-machinery",
+      "label": "工业机械与自动化",
+      "labelEn": "Industrial Machinery",
+      "count": 52,
+      "edgeCount": 6227
+    },
+    {
+      "id": "automotive",
+      "label": "汽车",
+      "labelEn": "Automotive",
+      "count": 11,
+      "edgeCount": 698
+    },
+    {
+      "id": "aerospace-defense",
+      "label": "航空航天与国防",
+      "labelEn": "Aerospace & Defense",
+      "count": 13,
+      "edgeCount": 38
+    },
+    {
+      "id": "pharma-biotech",
+      "label": "医药与生物科技",
+      "labelEn": "Pharma & Biotech",
+      "count": 27,
+      "edgeCount": 709
+    },
+    {
+      "id": "medtech-health",
+      "label": "医疗器械与医疗服务",
+      "labelEn": "Medtech & Health Services",
+      "count": 35,
+      "edgeCount": 2984
+    },
+    {
+      "id": "textiles-apparel",
+      "label": "纺织服装与鞋类",
+      "labelEn": "Textiles & Apparel",
+      "count": 4,
+      "edgeCount": 217
+    },
+    {
+      "id": "consumer-goods",
+      "label": "日用消费品",
+      "labelEn": "Consumer Goods",
+      "count": 13,
+      "edgeCount": 932
+    },
+    {
+      "id": "retail-distribution",
+      "label": "零售与分销",
+      "labelEn": "Retail & Distribution",
+      "count": 39,
+      "edgeCount": 1121
+    },
+    {
+      "id": "logistics-transport",
+      "label": "物流与运输",
+      "labelEn": "Logistics & Transportation",
+      "count": 16,
+      "edgeCount": 392
+    },
+    {
+      "id": "travel-leisure",
+      "label": "旅游休闲与餐饮",
+      "labelEn": "Travel, Leisure & Dining",
+      "count": 21,
+      "edgeCount": 12
+    },
+    {
+      "id": "media-entertainment",
+      "label": "传媒与娱乐",
+      "labelEn": "Media & Entertainment",
+      "count": 8,
+      "edgeCount": 7
+    },
+    {
+      "id": "financial-services",
+      "label": "金融服务",
+      "labelEn": "Financial Services",
+      "count": 71,
+      "edgeCount": 0
+    },
+    {
+      "id": "real-estate",
+      "label": "房地产",
+      "labelEn": "Real Estate",
+      "count": 29,
+      "edgeCount": 0
+    },
+    {
+      "id": "business-services",
+      "label": "商业与专业服务",
+      "labelEn": "Business & Professional Services",
+      "count": 29,
+      "edgeCount": 338
+    },
+    {
+      "id": "waste-circular",
+      "label": "环保与循环经济",
+      "labelEn": "Environmental & Circular",
+      "count": 2,
+      "edgeCount": 0
+    }
+  ],
   "nodes": [
     {
       "id": "NVDA",
@@ -136,6 +327,11 @@
         "sic": 3674,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
       "edgeCount": 239,
       "formSdStatus": "listed"
     },
@@ -168,6 +364,12 @@
         "sic": 3571,
         "match": "sic-exact"
       },
+      "chains": [
+        "computing-hardware",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备；计算机与外围设备",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -200,6 +402,11 @@
         "sic": 7370,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "计算机编程与数据处理",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -232,6 +439,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 157,
       "formSdStatus": "listed"
     },
@@ -264,6 +476,11 @@
         "sic": 5961,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 355,
       "formSdStatus": "listed"
     },
@@ -296,6 +513,11 @@
         "sic": 3674,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -328,6 +550,11 @@
         "sic": 7370,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "计算机编程与数据处理",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -360,6 +587,11 @@
         "sic": 3711,
         "match": "sic-exact"
       },
+      "chains": [
+        "automotive"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "汽车整车",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -392,6 +624,11 @@
         "sic": 3674,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
       "edgeCount": 184,
       "formSdStatus": "listed"
     },
@@ -424,6 +661,11 @@
         "sic": 6331,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -456,6 +698,11 @@
         "sic": 2834,
         "match": "sic-exact"
       },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "成药制剂",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -488,6 +735,11 @@
         "sic": 6021,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -520,6 +772,11 @@
         "sic": 5331,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -552,6 +809,11 @@
         "sic": 3674,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
       "edgeCount": 211,
       "formSdStatus": "listed"
     },
@@ -584,6 +846,11 @@
         "sic": 7389,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -616,6 +883,11 @@
         "sic": 2834,
         "match": "sic-exact"
       },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "成药制剂",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -648,6 +920,12 @@
         "sic": 2911,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas",
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "石油炼制与煤制品：炼化一体，两条链都在",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -680,6 +958,11 @@
         "sic": 7389,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -712,6 +995,11 @@
         "sic": 3674,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
       "edgeCount": 209,
       "formSdStatus": "listed"
     },
@@ -744,6 +1032,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -776,6 +1069,11 @@
         "sic": 2834,
         "match": "sic-exact"
       },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "成药制剂",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -808,6 +1106,11 @@
         "sic": 6021,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -840,6 +1143,12 @@
         "sic": 3576,
         "match": "sic-exact"
       },
+      "chains": [
+        "computing-hardware",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "计算机通信设备",
       "edgeCount": 1,
       "formSdStatus": "listed"
     },
@@ -872,6 +1181,12 @@
         "sic": 2911,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas",
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "石油炼制与煤制品：炼化一体，两条链都在",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -904,6 +1219,11 @@
         "sic": 5331,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 3,
       "formSdStatus": "listed"
     },
@@ -936,6 +1256,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -968,6 +1293,12 @@
         "sic": 3559,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "专用工业机械 NEC：半导体前道设备申报在这一码下",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -1000,6 +1331,11 @@
         "sic": 2080,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -1032,6 +1368,11 @@
         "sic": 3531,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备",
       "edgeCount": 1,
       "formSdStatus": "listed"
     },
@@ -1064,6 +1405,11 @@
         "sic": 2834,
         "match": "sic-exact"
       },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "成药制剂",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -1096,6 +1442,11 @@
         "sic": 3674,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
       "edgeCount": 325,
       "formSdStatus": "listed"
     },
@@ -1128,6 +1479,12 @@
         "sic": 6324,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health",
+        "financial-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "医疗保险计划：医疗支付方",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -1160,6 +1517,11 @@
         "sic": 3600,
         "match": "sic-range"
       },
+      "chains": [
+        "electronics-components"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电气设备与元件",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -1192,6 +1554,12 @@
         "sic": 3571,
         "match": "sic-exact"
       },
+      "chains": [
+        "computing-hardware",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备；计算机与外围设备",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -1224,6 +1592,11 @@
         "sic": 6211,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -1256,6 +1629,12 @@
         "sic": 2840,
         "match": "sic-range"
       },
+      "chains": [
+        "chemicals",
+        "consumer-goods"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "肥皂洗涤与化妆品：配方来自化工，卖给消费者",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -1288,6 +1667,11 @@
         "sic": 7841,
         "match": "sic-range"
       },
+      "chains": [
+        "media-entertainment"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "影音租赁：流媒体申报在这一码下",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -1320,6 +1704,11 @@
         "sic": 5211,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -1352,6 +1741,11 @@
         "sic": 6211,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -1384,6 +1778,11 @@
         "sic": 2111,
         "match": "sic-range"
       },
+      "chains": [
+        "consumer-goods"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "烟草制品按终端消费品处理，不并入食品链",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -1416,6 +1815,11 @@
         "sic": 6021,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -1448,6 +1852,11 @@
         "sic": 3724,
         "match": "sic-exact"
       },
+      "chains": [
+        "aerospace-defense"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "航空器与发动机",
       "edgeCount": 1,
       "formSdStatus": "listed"
     },
@@ -1480,6 +1889,12 @@
         "sic": 3572,
         "match": "sic-exact"
       },
+      "chains": [
+        "computing-hardware",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备；计算机与外围设备",
       "edgeCount": 221,
       "formSdStatus": "listed"
     },
@@ -1512,6 +1927,11 @@
         "sic": 3600,
         "match": "sic-range"
       },
+      "chains": [
+        "electronics-components"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电气设备与元件",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -1544,6 +1964,12 @@
         "sic": 3576,
         "match": "sic-exact"
       },
+      "chains": [
+        "computing-hardware",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "计算机通信设备",
       "edgeCount": 281,
       "formSdStatus": "listed"
     },
@@ -1576,6 +2002,12 @@
         "sic": 3827,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "光学仪器与镜头：光刻与光通信共用",
       "edgeCount": 281,
       "formSdStatus": "listed"
     },
@@ -1608,6 +2040,11 @@
         "sic": 2836,
         "match": "sic-exact"
       },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "生物制品",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -1640,6 +2077,11 @@
         "sic": 3674,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
       "edgeCount": 219,
       "formSdStatus": "listed"
     },
@@ -1672,6 +2114,11 @@
         "sic": 6021,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -1704,6 +2151,11 @@
         "sic": 3829,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "测量与控制仪器",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -1736,6 +2188,12 @@
         "sic": 3577,
         "match": "sic-exact"
       },
+      "chains": [
+        "computing-hardware",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备；计算机与外围设备",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -1768,6 +2226,11 @@
         "sic": 6199,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -1800,6 +2263,11 @@
         "sic": 2810,
         "match": "sic-range"
       },
+      "chains": [
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "化学工业",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -1832,6 +2300,12 @@
         "sic": 3570,
         "match": "sic-exact"
       },
+      "chains": [
+        "computing-hardware",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备；计算机与外围设备",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -1864,6 +2338,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -1896,6 +2375,11 @@
         "sic": 4813,
         "match": "sic-range"
       },
+      "chains": [
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "固网通信",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -1928,6 +2412,11 @@
         "sic": 4812,
         "match": "sic-range"
       },
+      "chains": [
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "无线通信",
       "edgeCount": 197,
       "formSdStatus": "listed"
     },
@@ -1960,6 +2449,11 @@
         "sic": 3674,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -1992,6 +2486,12 @@
         "sic": 3572,
         "match": "sic-exact"
       },
+      "chains": [
+        "computing-hardware",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备；计算机与外围设备",
       "edgeCount": 347,
       "formSdStatus": "listed"
     },
@@ -2024,6 +2524,11 @@
         "sic": 6211,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -2056,6 +2561,11 @@
         "sic": 2834,
         "match": "sic-exact"
       },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "成药制剂",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -2088,6 +2598,11 @@
         "sic": 2080,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
       "edgeCount": 26,
       "formSdStatus": "listed"
     },
@@ -2120,6 +2635,11 @@
         "sic": 2836,
         "match": "sic-exact"
       },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "生物制品",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -2152,6 +2672,12 @@
         "sic": 3523,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "农业机械",
       "edgeCount": 398,
       "formSdStatus": "listed"
     },
@@ -2184,6 +2710,11 @@
         "sic": 7990,
         "match": "sic-range"
       },
+      "chains": [
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "娱乐与休闲",
       "edgeCount": 6,
       "formSdStatus": "listed"
     },
@@ -2216,6 +2747,12 @@
         "sic": 5812,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution",
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "餐饮",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -2248,6 +2785,11 @@
         "sic": 4813,
         "match": "sic-range"
       },
+      "chains": [
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "固网通信",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -2280,6 +2822,12 @@
         "sic": 3663,
         "match": "sic-range"
       },
+      "chains": [
+        "electronics-components",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "广播电视与通信设备",
       "edgeCount": 218,
       "formSdStatus": "listed"
     },
@@ -2312,6 +2860,11 @@
         "sic": 3674,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
       "edgeCount": 222,
       "formSdStatus": "listed"
     },
@@ -2344,6 +2897,11 @@
         "sic": 6211,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -2376,6 +2934,11 @@
         "sic": 4911,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -2408,6 +2971,11 @@
         "sic": 4011,
         "match": "sic-range"
       },
+      "chains": [
+        "logistics-transport"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "铁路、公路货运与仓储",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -2440,6 +3008,11 @@
         "sic": 3721,
         "match": "sic-exact"
       },
+      "chains": [
+        "aerospace-defense"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "航空器与发动机",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -2472,6 +3045,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -2504,6 +3082,11 @@
         "sic": 6282,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -2536,6 +3119,12 @@
         "sic": 2911,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas",
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "石油炼制与煤制品：炼化一体，两条链都在",
       "edgeCount": 0,
       "formSdStatus": "resource-extraction"
     },
@@ -2568,6 +3157,11 @@
         "sic": 2834,
         "match": "sic-exact"
       },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "成药制剂",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -2600,6 +3194,12 @@
         "sic": 3572,
         "match": "sic-exact"
       },
+      "chains": [
+        "computing-hardware",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备；计算机与外围设备",
       "edgeCount": 209,
       "formSdStatus": "listed"
     },
@@ -2632,6 +3232,11 @@
         "sic": 3590,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备",
       "edgeCount": 298,
       "formSdStatus": "listed"
     },
@@ -2664,6 +3269,11 @@
         "sic": 6211,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -2696,6 +3306,11 @@
         "sic": 7389,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -2728,6 +3343,11 @@
         "sic": 4700,
         "match": "sic-exact"
       },
+      "chains": [
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "旅行服务与在线旅游平台",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -2760,6 +3380,11 @@
         "sic": 3823,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "测量与控制仪器",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -2792,6 +3417,11 @@
         "sic": 5651,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -2824,6 +3454,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -2856,6 +3491,11 @@
         "sic": 2834,
         "match": "sic-exact"
       },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "成药制剂",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -2888,6 +3528,11 @@
         "sic": 1040,
         "match": "sic-range"
       },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
       "edgeCount": 0,
       "formSdStatus": "resource-extraction"
     },
@@ -2920,6 +3565,11 @@
         "sic": 2834,
         "match": "sic-exact"
       },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "成药制剂",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -2952,6 +3602,11 @@
         "sic": 6021,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -2984,6 +3639,12 @@
         "sic": 3357,
         "match": "sic-range"
       },
+      "chains": [
+        "electronics-components",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "绝缘导线与光纤拉制：光纤是通信骨干，不是采矿",
       "edgeCount": 339,
       "formSdStatus": "listed"
     },
@@ -3016,6 +3677,11 @@
         "sic": 3724,
         "match": "sic-exact"
       },
+      "chains": [
+        "aerospace-defense"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "航空器与发动机",
       "edgeCount": 37,
       "formSdStatus": "listed"
     },
@@ -3048,6 +3714,11 @@
         "sic": 6331,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -3080,6 +3751,12 @@
         "sic": 7320,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services",
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "征信与信用报告",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -3112,6 +3789,11 @@
         "sic": 3842,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
       "edgeCount": 328,
       "formSdStatus": "listed"
     },
@@ -3144,6 +3826,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -3176,6 +3863,11 @@
         "sic": 6331,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -3208,6 +3900,12 @@
         "sic": 5912,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health",
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "药店",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -3240,6 +3938,11 @@
         "sic": 3490,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属制品",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -3272,6 +3975,11 @@
         "sic": 3760,
         "match": "sic-exact"
       },
+      "chains": [
+        "aerospace-defense"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "导弹与航天器",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -3304,6 +4012,11 @@
         "sic": 3845,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
       "edgeCount": 599,
       "formSdStatus": "listed"
     },
@@ -3336,6 +4049,12 @@
         "sic": 5810,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution",
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "餐饮",
       "edgeCount": 6,
       "formSdStatus": "listed"
     },
@@ -3368,6 +4087,11 @@
         "sic": 3841,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
       "edgeCount": 344,
       "formSdStatus": "listed"
     },
@@ -3400,6 +4124,11 @@
         "sic": 2111,
         "match": "sic-range"
       },
+      "chains": [
+        "consumer-goods"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "烟草制品按终端消费品处理，不并入食品链",
       "edgeCount": 41,
       "formSdStatus": "listed"
     },
@@ -3432,6 +4161,11 @@
         "sic": 5211,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 55,
       "formSdStatus": "listed"
     },
@@ -3464,6 +4198,12 @@
         "sic": 3577,
         "match": "sic-exact"
       },
+      "chains": [
+        "computing-hardware",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备；计算机与外围设备",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -3496,6 +4236,11 @@
         "sic": 7389,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -3528,6 +4273,12 @@
         "sic": 2911,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas",
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "石油炼制与煤制品：炼化一体，两条链都在",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -3560,6 +4311,11 @@
         "sic": 6022,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -3592,6 +4348,11 @@
         "sic": 7374,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "数据处理与托管",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -3624,6 +4385,12 @@
         "sic": 2911,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas",
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "石油炼制与煤制品：炼化一体，两条链都在",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -3656,6 +4423,11 @@
         "sic": 6211,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -3688,6 +4460,11 @@
         "sic": 7340,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "商业服务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -3720,6 +4497,11 @@
         "sic": 3679,
         "match": "sic-range"
       },
+      "chains": [
+        "electronics-components"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电子元器件",
       "edgeCount": 329,
       "formSdStatus": "listed"
     },
@@ -3752,6 +4534,11 @@
         "sic": 7370,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "计算机编程与数据处理",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -3784,6 +4571,11 @@
         "sic": 4911,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -3816,6 +4608,12 @@
         "sic": 5122,
         "match": "sic-range"
       },
+      "chains": [
+        "pharma-biotech",
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "药品批发",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -3848,6 +4646,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -3880,6 +4683,11 @@
         "sic": 1000,
         "match": "sic-range"
       },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属矿开采",
       "edgeCount": 0,
       "formSdStatus": "resource-extraction"
     },
@@ -3912,6 +4720,11 @@
         "sic": 3350,
         "match": "sic-range"
       },
+      "chains": [
+        "mining-metals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属冶炼与加工",
       "edgeCount": 47,
       "formSdStatus": "listed"
     },
@@ -3944,6 +4757,12 @@
         "sic": 2911,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas",
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "石油炼制与煤制品：炼化一体，两条链都在",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -3976,6 +4795,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4008,6 +4832,11 @@
         "sic": 6200,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4040,6 +4869,11 @@
         "sic": 3678,
         "match": "sic-range"
       },
+      "chains": [
+        "electronics-components"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电子元器件",
       "edgeCount": 698,
       "formSdStatus": "listed"
     },
@@ -4072,6 +4906,11 @@
         "sic": 4911,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -4104,6 +4943,12 @@
         "sic": 3822,
         "match": "sic-range"
       },
+      "chains": [
+        "construction-building",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "楼宇自控",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -4136,6 +4981,11 @@
         "sic": 6021,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4168,6 +5018,11 @@
         "sic": 6021,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4200,6 +5055,12 @@
         "sic": 3730,
         "match": "sic-exact"
       },
+      "chains": [
+        "aerospace-defense",
+        "logistics-transport"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "船舶建造：民用船属运输装备，军船属国防，SIC 分不开，两条都挂",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -4232,6 +5093,11 @@
         "sic": 6282,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4264,6 +5130,12 @@
         "sic": 4841,
         "match": "sic-range"
       },
+      "chains": [
+        "communications",
+        "media-entertainment"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "有线电视",
       "edgeCount": 7,
       "formSdStatus": "listed"
     },
@@ -4296,6 +5168,12 @@
         "sic": 1731,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power",
+        "construction-building"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "电气工程施工：电网与数据中心的建设方",
       "edgeCount": 9,
       "formSdStatus": "listed"
     },
@@ -4328,6 +5206,11 @@
         "sic": 4931,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4360,6 +5243,11 @@
         "sic": 7389,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4392,6 +5280,11 @@
         "sic": 4011,
         "match": "sic-range"
       },
+      "chains": [
+        "logistics-transport"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "铁路、公路货运与仓储",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4424,6 +5317,11 @@
         "sic": 6200,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4456,6 +5354,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 103,
       "formSdStatus": "listed"
     },
@@ -4488,6 +5391,12 @@
         "sic": 4922,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas",
+        "utilities-power"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "天然气长输管道",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -4520,6 +5429,11 @@
         "sic": 8062,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗服务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4552,6 +5466,11 @@
         "sic": 6411,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4584,6 +5503,11 @@
         "sic": 7011,
         "match": "sic-range"
       },
+      "chains": [
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "住宿",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4616,6 +5540,12 @@
         "sic": 6324,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health",
+        "financial-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "医疗保险计划：医疗支付方",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4648,6 +5578,12 @@
         "sic": 3585,
         "match": "sic-range"
       },
+      "chains": [
+        "construction-building",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "暖通空调与商用制冷",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -4680,6 +5616,11 @@
         "sic": 4953,
         "match": "sic-range"
       },
+      "chains": [
+        "waste-circular"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "废弃物处理",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4712,6 +5653,11 @@
         "sic": 3841,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -4744,6 +5690,11 @@
         "sic": 4210,
         "match": "sic-range"
       },
+      "chains": [
+        "logistics-transport"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "铁路、公路货运与仓储",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4776,6 +5727,12 @@
         "sic": 7320,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services",
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "征信与信用报告",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4808,6 +5765,11 @@
         "sic": 1389,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
       "edgeCount": 0,
       "formSdStatus": "resource-extraction"
     },
@@ -4840,6 +5802,11 @@
         "sic": 3600,
         "match": "sic-range"
       },
+      "chains": [
+        "electronics-components"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电气设备与元件",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -4872,6 +5839,11 @@
         "sic": 2834,
         "match": "sic-exact"
       },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "成药制剂",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4904,6 +5876,11 @@
         "sic": 5200,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 7,
       "formSdStatus": "listed"
     },
@@ -4936,6 +5913,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -4968,6 +5950,12 @@
         "sic": 5500,
         "match": "sic-range"
       },
+      "chains": [
+        "automotive",
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "汽车经销与加油站",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -5000,6 +5988,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -5032,6 +6025,11 @@
         "sic": 2320,
         "match": "sic-range"
       },
+      "chains": [
+        "textiles-apparel"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "服装",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -5064,6 +6062,11 @@
         "sic": 3711,
         "match": "sic-exact"
       },
+      "chains": [
+        "automotive"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "汽车整车",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -5096,6 +6099,11 @@
         "sic": 2000,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -5128,6 +6136,12 @@
         "sic": 2840,
         "match": "sic-range"
       },
+      "chains": [
+        "chemicals",
+        "consumer-goods"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "肥皂洗涤与化妆品：配方来自化工，卖给消费者",
       "edgeCount": 354,
       "formSdStatus": "filed-no-list"
     },
@@ -5160,6 +6174,11 @@
         "sic": 6331,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -5192,6 +6211,11 @@
         "sic": 3560,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -5224,6 +6248,12 @@
         "sic": 3663,
         "match": "sic-range"
       },
+      "chains": [
+        "electronics-components",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "广播电视与通信设备",
       "edgeCount": 362,
       "formSdStatus": "listed"
     },
@@ -5256,6 +6286,12 @@
         "sic": 3510,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "发动机与涡轮：发电设备",
       "edgeCount": 361,
       "formSdStatus": "listed"
     },
@@ -5288,6 +6324,11 @@
         "sic": 1311,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
       "edgeCount": 0,
       "formSdStatus": "resource-extraction"
     },
@@ -5320,6 +6361,11 @@
         "sic": 6282,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -5352,6 +6398,11 @@
         "sic": 4513,
         "match": "sic-exact"
       },
+      "chains": [
+        "logistics-transport"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "航空快递",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -5384,6 +6435,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -5416,6 +6472,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -5448,6 +6509,11 @@
         "sic": 5331,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -5480,6 +6546,12 @@
         "sic": 6324,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health",
+        "financial-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "医疗保险计划：医疗支付方",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -5512,6 +6584,11 @@
         "sic": 5651,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -5544,6 +6621,11 @@
         "sic": 4011,
         "match": "sic-range"
       },
+      "chains": [
+        "logistics-transport"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "铁路、公路货运与仓储",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -5576,6 +6658,12 @@
         "sic": 3812,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery",
+        "aerospace-defense"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "仪器仪表；搜索、导航与航空系统",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -5608,6 +6696,12 @@
         "sic": 5531,
         "match": "sic-range"
       },
+      "chains": [
+        "automotive",
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "汽车用品零售",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -5640,6 +6734,11 @@
         "sic": 4400,
         "match": "sic-range"
       },
+      "chains": [
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "水上运输：标普成分股中为邮轮",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -5672,6 +6771,11 @@
         "sic": 3841,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -5704,6 +6808,12 @@
         "sic": 2844,
         "match": "sic-range"
       },
+      "chains": [
+        "chemicals",
+        "consumer-goods"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "香水与化妆品",
       "edgeCount": 317,
       "formSdStatus": "listed"
     },
@@ -5736,6 +6846,12 @@
         "sic": 4841,
         "match": "sic-range"
       },
+      "chains": [
+        "communications",
+        "media-entertainment"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "有线电视",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -5768,6 +6884,11 @@
         "sic": 7011,
         "match": "sic-range"
       },
+      "chains": [
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "住宿",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -5800,6 +6921,12 @@
         "sic": 4922,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas",
+        "utilities-power"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "天然气长输管道",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -5832,6 +6959,11 @@
         "sic": 6411,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -5864,6 +6996,12 @@
         "sic": 3570,
         "match": "sic-exact"
       },
+      "chains": [
+        "computing-hardware",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备；计算机与外围设备",
       "edgeCount": 226,
       "formSdStatus": "listed"
     },
@@ -5896,6 +7034,12 @@
         "sic": 3669,
         "match": "sic-range"
       },
+      "chains": [
+        "electronics-components",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "通信设备 NEC",
       "edgeCount": 6,
       "formSdStatus": "listed"
     },
@@ -5928,6 +7072,11 @@
         "sic": 4953,
         "match": "sic-range"
       },
+      "chains": [
+        "waste-circular"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "废弃物处理",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -5960,6 +7109,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -5992,6 +7146,11 @@
         "sic": 4911,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -6024,6 +7183,11 @@
         "sic": 6411,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -6056,6 +7220,11 @@
         "sic": 2810,
         "match": "sic-range"
       },
+      "chains": [
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "化学工业",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -6088,6 +7257,11 @@
         "sic": 3841,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -6120,6 +7294,11 @@
         "sic": 6331,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -6152,6 +7331,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -6184,6 +7368,11 @@
         "sic": 3711,
         "match": "sic-exact"
       },
+      "chains": [
+        "automotive"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "汽车整车",
       "edgeCount": 361,
       "formSdStatus": "listed"
     },
@@ -6216,6 +7405,11 @@
         "sic": 3728,
         "match": "sic-exact"
       },
+      "chains": [
+        "aerospace-defense"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "航空器与发动机",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -6248,6 +7442,12 @@
         "sic": 5122,
         "match": "sic-range"
       },
+      "chains": [
+        "pharma-biotech",
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "药品批发",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -6280,6 +7480,11 @@
         "sic": 6021,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -6312,6 +7517,12 @@
         "sic": 7359,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery",
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "设备租赁",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -6344,6 +7555,11 @@
         "sic": 3241,
         "match": "sic-range"
       },
+      "chains": [
+        "construction-building"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "石料、陶土与玻璃",
       "edgeCount": 0,
       "formSdStatus": "resource-extraction"
     },
@@ -6376,6 +7592,12 @@
         "sic": 3533,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "油气田机械",
       "edgeCount": 341,
       "formSdStatus": "listed"
     },
@@ -6408,6 +7630,11 @@
         "sic": 6311,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -6440,6 +7667,11 @@
         "sic": 5000,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "批发贸易",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -6472,6 +7704,12 @@
         "sic": 4922,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas",
+        "utilities-power"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "天然气长输管道",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -6504,6 +7742,12 @@
         "sic": 5065,
         "match": "sic-range"
       },
+      "chains": [
+        "electronics-components",
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "电子元件批发",
       "edgeCount": 472,
       "formSdStatus": "listed"
     },
@@ -6536,6 +7780,11 @@
         "sic": 3674,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
       "edgeCount": 198,
       "formSdStatus": "listed"
     },
@@ -6568,6 +7817,12 @@
         "sic": 4923,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas",
+        "utilities-power"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "天然气输配",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -6600,6 +7855,11 @@
         "sic": 6321,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -6632,6 +7892,11 @@
         "sic": 1311,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
       "edgeCount": 0,
       "formSdStatus": "resource-extraction"
     },
@@ -6664,6 +7929,12 @@
         "sic": 3312,
         "match": "sic-range"
       },
+      "chains": [
+        "mining-metals",
+        "construction-building"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "钢铁冶炼：建筑与制造共同的上游",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -6696,6 +7967,11 @@
         "sic": 100,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "农林牧渔",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -6728,6 +8004,11 @@
         "sic": 4911,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -6760,6 +8041,12 @@
         "sic": 5122,
         "match": "sic-range"
       },
+      "chains": [
+        "pharma-biotech",
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "药品批发",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -6792,6 +8079,11 @@
         "sic": 2836,
         "match": "sic-exact"
       },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "生物制品",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -6824,6 +8116,11 @@
         "sic": 3674,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
       "edgeCount": 208,
       "formSdStatus": "listed"
     },
@@ -6856,6 +8153,11 @@
         "sic": 3711,
         "match": "sic-exact"
       },
+      "chains": [
+        "automotive"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "汽车整车",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -6888,6 +8190,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -6920,6 +8227,11 @@
         "sic": 5200,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -6952,6 +8264,11 @@
         "sic": 3021,
         "match": "sic-range"
       },
+      "chains": [
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "橡胶与塑料制品",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -6984,6 +8301,12 @@
         "sic": 1731,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power",
+        "construction-building"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "电气工程施工：电网与数据中心的建设方",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7016,6 +8339,11 @@
         "sic": 1311,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -7048,6 +8376,12 @@
         "sic": 3825,
         "match": "sic-range"
       },
+      "chains": [
+        "electronics-components",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "电学测量仪器",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -7080,6 +8414,11 @@
         "sic": 3823,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "测量与控制仪器",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -7112,6 +8451,12 @@
         "sic": 4932,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas",
+        "utilities-power"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "燃气与综合公用事业",
       "edgeCount": 0,
       "formSdStatus": "resource-extraction"
     },
@@ -7144,6 +8489,11 @@
         "sic": 6200,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7176,6 +8526,11 @@
         "sic": 3823,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "测量与控制仪器",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -7208,6 +8563,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7240,6 +8600,11 @@
         "sic": 6022,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7272,6 +8637,12 @@
         "sic": 3812,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery",
+        "aerospace-defense"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "仪器仪表；搜索、导航与航空系统",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -7304,6 +8675,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7336,6 +8712,12 @@
         "sic": 4512,
         "match": "sic-exact"
       },
+      "chains": [
+        "logistics-transport",
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "定期航空：客运为主，腹舱带货",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7368,6 +8750,11 @@
         "sic": 3842,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -7400,6 +8787,11 @@
         "sic": 7374,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "数据处理与托管",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7432,6 +8824,11 @@
         "sic": 6282,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7464,6 +8861,11 @@
         "sic": 4911,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7496,6 +8898,11 @@
         "sic": 6022,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7528,6 +8935,12 @@
         "sic": 3585,
         "match": "sic-range"
       },
+      "chains": [
+        "construction-building",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "暖通空调与商用制冷",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -7560,6 +8973,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -7592,6 +9010,11 @@
         "sic": 4911,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7624,6 +9047,12 @@
         "sic": 5531,
         "match": "sic-range"
       },
+      "chains": [
+        "automotive",
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "汽车用品零售",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7656,6 +9085,11 @@
         "sic": 6199,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7688,6 +9122,11 @@
         "sic": 7389,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7720,6 +9159,11 @@
         "sic": 3829,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "测量与控制仪器",
       "edgeCount": 691,
       "formSdStatus": "listed"
     },
@@ -7752,6 +9196,12 @@
         "sic": 6324,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health",
+        "financial-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "医疗保险计划：医疗支付方",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7784,6 +9234,12 @@
         "sic": 3743,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery",
+        "logistics-transport"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "铁路装备",
       "edgeCount": 392,
       "formSdStatus": "listed"
     },
@@ -7816,6 +9272,12 @@
         "sic": 3812,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery",
+        "aerospace-defense"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "仪器仪表；搜索、导航与航空系统",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -7848,6 +9310,12 @@
         "sic": 5812,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution",
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "餐饮",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7880,6 +9348,11 @@
         "sic": 4931,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7912,6 +9385,11 @@
         "sic": 6282,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -7944,6 +9422,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -7976,6 +9459,11 @@
         "sic": 7389,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8008,6 +9496,12 @@
         "sic": 3661,
         "match": "sic-range"
       },
+      "chains": [
+        "electronics-components",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "电话电报设备",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -8040,6 +9534,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8072,6 +9571,12 @@
         "sic": 3827,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "光学仪器与镜头：光刻与光通信共用",
       "edgeCount": 5,
       "formSdStatus": "listed"
     },
@@ -8104,6 +9609,12 @@
         "sic": 8731,
         "match": "sic-range"
       },
+      "chains": [
+        "pharma-biotech",
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业化研究外包，主体是药物研发",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8136,6 +9647,11 @@
         "sic": 4931,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8168,6 +9684,11 @@
         "sic": 2080,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
       "edgeCount": 244,
       "formSdStatus": "listed"
     },
@@ -8200,6 +9721,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8232,6 +9758,11 @@
         "sic": 8700,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工程、会计与管理服务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8264,6 +9795,11 @@
         "sic": 6500,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "房地产经营",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8296,6 +9832,11 @@
         "sic": 2086,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8328,6 +9869,12 @@
         "sic": 3826,
         "match": "sic-range"
       },
+      "chains": [
+        "pharma-biotech",
+        "medtech-health"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "实验室分析仪器：药企与医院共同的上游",
       "edgeCount": 349,
       "formSdStatus": "listed"
     },
@@ -8360,6 +9907,11 @@
         "sic": 6311,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8392,6 +9944,12 @@
         "sic": 2835,
         "match": "sic-exact"
       },
+      "chains": [
+        "pharma-biotech",
+        "medtech-health"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "体外诊断试剂：既是药企产品也是医疗服务投入",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -8424,6 +9982,11 @@
         "sic": 7389,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8456,6 +10019,12 @@
         "sic": 3480,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery",
+        "aerospace-defense"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属制品；军械",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -8488,6 +10057,12 @@
         "sic": 5812,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution",
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "餐饮",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8520,6 +10095,11 @@
         "sic": 3823,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "测量与控制仪器",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -8552,6 +10132,11 @@
         "sic": 2070,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8584,6 +10169,11 @@
         "sic": 1531,
         "match": "sic-range"
       },
+      "chains": [
+        "construction-building"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "建筑施工与住宅开发",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8616,6 +10206,11 @@
         "sic": 7900,
         "match": "sic-range"
       },
+      "chains": [
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "娱乐与休闲",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8648,6 +10243,11 @@
         "sic": 6331,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8680,6 +10280,11 @@
         "sic": 3674,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
       "edgeCount": 329,
       "formSdStatus": "listed"
     },
@@ -8712,6 +10317,12 @@
         "sic": 3672,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor",
+        "electronics-components"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "印制电路板",
       "edgeCount": 236,
       "formSdStatus": "listed"
     },
@@ -8744,6 +10355,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8776,6 +10392,11 @@
         "sic": 4931,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8808,6 +10429,11 @@
         "sic": 4213,
         "match": "sic-range"
       },
+      "chains": [
+        "logistics-transport"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "铁路、公路货运与仓储",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8840,6 +10466,12 @@
         "sic": 5140,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food",
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "食品批发",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8872,6 +10504,11 @@
         "sic": 6331,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8904,6 +10541,12 @@
         "sic": 2844,
         "match": "sic-range"
       },
+      "chains": [
+        "chemicals",
+        "consumer-goods"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "香水与化妆品",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -8936,6 +10579,11 @@
         "sic": 4931,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -8968,6 +10616,12 @@
         "sic": 3572,
         "match": "sic-exact"
       },
+      "chains": [
+        "computing-hardware",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备；计算机与外围设备",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -9000,6 +10654,12 @@
         "sic": 4512,
         "match": "sic-exact"
       },
+      "chains": [
+        "logistics-transport",
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "定期航空：客运为主，腹舱带货",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -9032,6 +10692,11 @@
         "sic": 5411,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -9064,6 +10729,12 @@
         "sic": 2844,
         "match": "sic-range"
       },
+      "chains": [
+        "chemicals",
+        "consumer-goods"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "香水与化妆品",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -9096,6 +10767,11 @@
         "sic": 6022,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -9128,6 +10804,11 @@
         "sic": 2060,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -9160,6 +10841,12 @@
         "sic": 3312,
         "match": "sic-range"
       },
+      "chains": [
+        "mining-metals",
+        "construction-building"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "钢铁冶炼：建筑与制造共同的上游",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -9192,6 +10879,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -9224,6 +10916,11 @@
         "sic": 2670,
         "match": "sic-range"
       },
+      "chains": [
+        "packaging-paper"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "造纸与纸制品",
       "edgeCount": 241,
       "formSdStatus": "listed"
     },
@@ -9256,6 +10953,11 @@
         "sic": 6211,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -9288,6 +10990,11 @@
         "sic": 1311,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
       "edgeCount": 0,
       "formSdStatus": "resource-extraction"
     },
@@ -9320,6 +11027,11 @@
         "sic": 4931,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -9352,6 +11064,11 @@
         "sic": 6022,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -9384,6 +11101,11 @@
         "sic": 6021,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -9416,6 +11138,11 @@
         "sic": 6331,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -9448,6 +11175,11 @@
         "sic": 4700,
         "match": "sic-exact"
       },
+      "chains": [
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "旅行服务与在线旅游平台",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -9480,6 +11212,12 @@
         "sic": 1400,
         "match": "sic-range"
       },
+      "chains": [
+        "mining-metals",
+        "construction-building"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "非金属矿采：砂石骨料主要供建筑",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -9512,6 +11250,11 @@
         "sic": 3841,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -9544,6 +11287,12 @@
         "sic": 1731,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power",
+        "construction-building"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "电气工程施工：电网与数据中心的建设方",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -9576,6 +11325,11 @@
         "sic": 3841,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -9608,6 +11362,12 @@
         "sic": 6324,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health",
+        "financial-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "医疗保险计划：医疗支付方",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -9640,6 +11400,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -9672,6 +11437,12 @@
         "sic": 3672,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor",
+        "electronics-components"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "印制电路板",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -9704,6 +11475,11 @@
         "sic": 2836,
         "match": "sic-exact"
       },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "生物制品",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -9736,6 +11512,11 @@
         "sic": 4400,
         "match": "sic-range"
       },
+      "chains": [
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "水上运输：标普成分股中为邮轮",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -9768,6 +11549,11 @@
         "sic": 2834,
         "match": "sic-exact"
       },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "成药制剂",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -9800,6 +11586,11 @@
         "sic": 6411,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -9832,6 +11623,11 @@
         "sic": 4931,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -9864,6 +11660,11 @@
         "sic": 3844,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -9896,6 +11697,12 @@
         "sic": 5500,
         "match": "sic-range"
       },
+      "chains": [
+        "automotive",
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "汽车经销与加油站",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -9928,6 +11735,11 @@
         "sic": 6200,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -9960,6 +11772,11 @@
         "sic": 1389,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -9992,6 +11809,12 @@
         "sic": 1400,
         "match": "sic-range"
       },
+      "chains": [
+        "mining-metals",
+        "construction-building"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "非金属矿采：砂石骨料主要供建筑",
       "edgeCount": 0,
       "formSdStatus": "resource-extraction"
     },
@@ -10024,6 +11847,11 @@
         "sic": 3560,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -10056,6 +11884,11 @@
         "sic": 6022,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10088,6 +11921,11 @@
         "sic": 1311,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
       "edgeCount": 0,
       "formSdStatus": "resource-extraction"
     },
@@ -10120,6 +11958,12 @@
         "sic": 3570,
         "match": "sic-exact"
       },
+      "chains": [
+        "computing-hardware",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备；计算机与外围设备",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -10152,6 +11996,11 @@
         "sic": 2030,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10184,6 +12033,11 @@
         "sic": 7371,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "软件开发服务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10216,6 +12070,11 @@
         "sic": 4931,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10248,6 +12107,11 @@
         "sic": 7011,
         "match": "sic-range"
       },
+      "chains": [
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "住宿",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10280,6 +12144,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10312,6 +12181,11 @@
         "sic": 5331,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10344,6 +12218,11 @@
         "sic": 3674,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
       "edgeCount": 193,
       "formSdStatus": "listed"
     },
@@ -10376,6 +12255,12 @@
         "sic": 4833,
         "match": "sic-range"
       },
+      "chains": [
+        "communications",
+        "media-entertainment"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "电视广播",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10408,6 +12293,12 @@
         "sic": 3812,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery",
+        "aerospace-defense"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "仪器仪表；搜索、导航与航空系统",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -10440,6 +12331,11 @@
         "sic": 7389,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -10472,6 +12368,11 @@
         "sic": 4911,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10504,6 +12405,12 @@
         "sic": 5500,
         "match": "sic-range"
       },
+      "chains": [
+        "automotive",
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "汽车经销与加油站",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10536,6 +12443,12 @@
         "sic": 4924,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas",
+        "utilities-power"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "天然气配售，直接面对终端",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10568,6 +12481,11 @@
         "sic": 4941,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "水务：与电力同属公用事业",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10600,6 +12518,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10632,6 +12555,11 @@
         "sic": 3600,
         "match": "sic-range"
       },
+      "chains": [
+        "electronics-components"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电气设备与元件",
       "edgeCount": 332,
       "formSdStatus": "listed"
     },
@@ -10664,6 +12592,11 @@
         "sic": 7389,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10696,6 +12629,12 @@
         "sic": 3826,
         "match": "sic-range"
       },
+      "chains": [
+        "pharma-biotech",
+        "medtech-health"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "实验室分析仪器：药企与医院共同的上游",
       "edgeCount": 360,
       "formSdStatus": "listed"
     },
@@ -10728,6 +12667,11 @@
         "sic": 4911,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10760,6 +12704,11 @@
         "sic": 6199,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10792,6 +12741,11 @@
         "sic": 5700,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -10824,6 +12778,11 @@
         "sic": 8071,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗服务",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -10856,6 +12815,11 @@
         "sic": 4911,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10888,6 +12852,12 @@
         "sic": 3826,
         "match": "sic-range"
       },
+      "chains": [
+        "pharma-biotech",
+        "medtech-health"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "实验室分析仪器：药企与医院共同的上游",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -10920,6 +12890,11 @@
         "sic": 7371,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "软件开发服务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10952,6 +12927,11 @@
         "sic": 6331,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -10984,6 +12964,11 @@
         "sic": 4911,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11016,6 +13001,11 @@
         "sic": 8071,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗服务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11048,6 +13038,11 @@
         "sic": 6021,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11080,6 +13075,11 @@
         "sic": 3530,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备",
       "edgeCount": 782,
       "formSdStatus": "listed"
     },
@@ -11112,6 +13112,11 @@
         "sic": 4911,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11144,6 +13149,11 @@
         "sic": 4213,
         "match": "sic-range"
       },
+      "chains": [
+        "logistics-transport"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "铁路、公路货运与仓储",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11176,6 +13186,11 @@
         "sic": 6331,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11208,6 +13223,12 @@
         "sic": 3571,
         "match": "sic-exact"
       },
+      "chains": [
+        "computing-hardware",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备；计算机与外围设备",
       "edgeCount": 251,
       "formSdStatus": "listed"
     },
@@ -11240,6 +13261,12 @@
         "sic": 8731,
         "match": "sic-range"
       },
+      "chains": [
+        "pharma-biotech",
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业化研究外包，主体是药物研发",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11272,6 +13299,11 @@
         "sic": 5331,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11304,6 +13336,11 @@
         "sic": 3674,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -11336,6 +13373,11 @@
         "sic": 6321,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11368,6 +13410,11 @@
         "sic": 3561,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备",
       "edgeCount": 355,
       "formSdStatus": "listed"
     },
@@ -11400,6 +13447,11 @@
         "sic": 4911,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 219,
       "formSdStatus": "listed"
     },
@@ -11432,6 +13484,11 @@
         "sic": 2851,
         "match": "sic-range"
       },
+      "chains": [
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "化学工业",
       "edgeCount": 27,
       "formSdStatus": "listed"
     },
@@ -11464,6 +13521,12 @@
         "sic": 6792,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas",
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "油气矿区权益",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11496,6 +13559,12 @@
         "sic": 5812,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution",
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "餐饮",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11528,6 +13597,11 @@
         "sic": 4731,
         "match": "sic-exact"
       },
+      "chains": [
+        "logistics-transport"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "货运代理",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11560,6 +13634,11 @@
         "sic": 3100,
         "match": "sic-range"
       },
+      "chains": [
+        "textiles-apparel"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "皮革与鞋类",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -11592,6 +13671,11 @@
         "sic": 3670,
         "match": "sic-range"
       },
+      "chains": [
+        "electronics-components"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电子元器件",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -11624,6 +13708,11 @@
         "sic": 5990,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11656,6 +13745,11 @@
         "sic": 7374,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "数据处理与托管",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11688,6 +13782,11 @@
         "sic": 6411,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11720,6 +13819,11 @@
         "sic": 2650,
         "match": "sic-range"
       },
+      "chains": [
+        "packaging-paper"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "造纸与纸制品",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -11752,6 +13856,11 @@
         "sic": 3841,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
       "edgeCount": 211,
       "formSdStatus": "listed"
     },
@@ -11784,6 +13893,11 @@
         "sic": 6021,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11816,6 +13930,12 @@
         "sic": 3825,
         "match": "sic-range"
       },
+      "chains": [
+        "electronics-components",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "电学测量仪器",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -11848,6 +13968,11 @@
         "sic": 1531,
         "match": "sic-range"
       },
+      "chains": [
+        "construction-building"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "建筑施工与住宅开发",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11880,6 +14005,11 @@
         "sic": 6282,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11912,6 +14042,12 @@
         "sic": 7311,
         "match": "sic-range"
       },
+      "chains": [
+        "media-entertainment",
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "广告代理",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -11944,6 +14080,11 @@
         "sic": 1311,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
       "edgeCount": 0,
       "formSdStatus": "resource-extraction"
     },
@@ -11976,6 +14117,12 @@
         "sic": 2840,
         "match": "sic-range"
       },
+      "chains": [
+        "chemicals",
+        "consumer-goods"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "肥皂洗涤与化妆品：配方来自化工，卖给消费者",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -12008,6 +14155,11 @@
         "sic": 2070,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12040,6 +14192,11 @@
         "sic": 6331,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12072,6 +14229,11 @@
         "sic": 3674,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
       "edgeCount": 93,
       "formSdStatus": "listed"
     },
@@ -12104,6 +14266,12 @@
         "sic": 3576,
         "match": "sic-exact"
       },
+      "chains": [
+        "computing-hardware",
+        "communications"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "计算机通信设备",
       "edgeCount": 338,
       "formSdStatus": "listed"
     },
@@ -12136,6 +14304,11 @@
         "sic": 2080,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12168,6 +14341,11 @@
         "sic": 2860,
         "match": "sic-range"
       },
+      "chains": [
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "化学工业",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12200,6 +14378,11 @@
         "sic": 3842,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -12232,6 +14415,11 @@
         "sic": 7389,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -12264,6 +14452,11 @@
         "sic": 4911,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12296,6 +14489,11 @@
         "sic": 7389,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12328,6 +14526,11 @@
         "sic": 7389,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12360,6 +14563,12 @@
         "sic": 4841,
         "match": "sic-range"
       },
+      "chains": [
+        "communications",
+        "media-entertainment"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "有线电视",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12392,6 +14601,11 @@
         "sic": 2320,
         "match": "sic-range"
       },
+      "chains": [
+        "textiles-apparel"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "服装",
       "edgeCount": 217,
       "formSdStatus": "listed"
     },
@@ -12424,6 +14638,12 @@
         "sic": 7320,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services",
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "征信与信用报告",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12456,6 +14676,11 @@
         "sic": 2821,
         "match": "sic-range"
       },
+      "chains": [
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "化学工业",
       "edgeCount": 41,
       "formSdStatus": "listed"
     },
@@ -12488,6 +14713,11 @@
         "sic": 2650,
         "match": "sic-range"
       },
+      "chains": [
+        "packaging-paper"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "造纸与纸制品",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12520,6 +14750,11 @@
         "sic": 4931,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12552,6 +14787,11 @@
         "sic": 3990,
         "match": "sic-range"
       },
+      "chains": [
+        "consumer-goods"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "其他制造业",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -12584,6 +14824,11 @@
         "sic": 1520,
         "match": "sic-range"
       },
+      "chains": [
+        "construction-building"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "建筑施工与住宅开发",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12616,6 +14861,11 @@
         "sic": 2860,
         "match": "sic-range"
       },
+      "chains": [
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "化学工业",
       "edgeCount": 1,
       "formSdStatus": "listed"
     },
@@ -12648,6 +14898,12 @@
         "sic": 2870,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food",
+        "chemicals"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "农用化学品：化肥农药是农业的投入品",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12680,6 +14936,11 @@
         "sic": 2040,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12712,6 +14973,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12744,6 +15010,11 @@
         "sic": 7389,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12776,6 +15047,11 @@
         "sic": 4931,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12808,6 +15084,11 @@
         "sic": 3420,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属制品",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -12840,6 +15121,11 @@
         "sic": 2834,
         "match": "sic-exact"
       },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "成药制剂",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12872,6 +15158,11 @@
         "sic": 2621,
         "match": "sic-range"
       },
+      "chains": [
+        "packaging-paper"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "造纸与纸制品",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12904,6 +15195,11 @@
         "sic": 5961,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12936,6 +15232,12 @@
         "sic": 4512,
         "match": "sic-exact"
       },
+      "chains": [
+        "logistics-transport",
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "定期航空：客运为主，腹舱带货",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -12968,6 +15270,12 @@
         "sic": 5013,
         "match": "sic-range"
       },
+      "chains": [
+        "automotive",
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "汽车配件批发",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13000,6 +15308,11 @@
         "sic": 3842,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
       "edgeCount": 232,
       "formSdStatus": "listed"
     },
@@ -13032,6 +15345,11 @@
         "sic": 5731,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 218,
       "formSdStatus": "listed"
     },
@@ -13064,6 +15382,11 @@
         "sic": 4931,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13096,6 +15419,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 256,
       "formSdStatus": "listed"
     },
@@ -13128,6 +15456,11 @@
         "sic": 5200,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 5,
       "formSdStatus": "listed"
     },
@@ -13160,6 +15493,11 @@
         "sic": 2015,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13192,6 +15530,11 @@
         "sic": 6282,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13224,6 +15567,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13256,6 +15604,11 @@
         "sic": 2821,
         "match": "sic-range"
       },
+      "chains": [
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "化学工业",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -13288,6 +15641,11 @@
         "sic": 3569,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -13320,6 +15678,11 @@
         "sic": 4931,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13352,6 +15715,11 @@
         "sic": 3823,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "测量与控制仪器",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -13384,6 +15752,11 @@
         "sic": 4731,
         "match": "sic-exact"
       },
+      "chains": [
+        "logistics-transport"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "货运代理",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13416,6 +15789,11 @@
         "sic": 3560,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备",
       "edgeCount": 340,
       "formSdStatus": "listed"
     },
@@ -13448,6 +15826,11 @@
         "sic": 7340,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "商业服务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13480,6 +15863,11 @@
         "sic": 1600,
         "match": "sic-range"
       },
+      "chains": [
+        "construction-building"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "建筑施工与住宅开发",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -13512,6 +15900,11 @@
         "sic": 2711,
         "match": "sic-range"
       },
+      "chains": [
+        "media-entertainment"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "出版印刷",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13544,6 +15937,11 @@
         "sic": 1531,
         "match": "sic-range"
       },
+      "chains": [
+        "construction-building"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "建筑施工与住宅开发",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13576,6 +15974,11 @@
         "sic": 6510,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "房地产经营",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13608,6 +16011,11 @@
         "sic": 7373,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "系统集成",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -13640,6 +16048,11 @@
         "sic": 3411,
         "match": "sic-range"
       },
+      "chains": [
+        "packaging-paper"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "金属罐是包装，不是金属加工的终点",
       "edgeCount": 14,
       "formSdStatus": "listed"
     },
@@ -13672,6 +16085,11 @@
         "sic": 3561,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备",
       "edgeCount": 245,
       "formSdStatus": "listed"
     },
@@ -13704,6 +16122,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13736,6 +16159,11 @@
         "sic": 4513,
         "match": "sic-exact"
       },
+      "chains": [
+        "logistics-transport"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "航空快递",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13768,6 +16196,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13800,6 +16233,11 @@
         "sic": 3841,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -13832,6 +16270,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13864,6 +16307,11 @@
         "sic": 7372,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13896,6 +16344,11 @@
         "sic": 7389,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13928,6 +16381,11 @@
         "sic": 6331,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13960,6 +16418,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -13992,6 +16455,11 @@
         "sic": 1311,
         "match": "sic-range"
       },
+      "chains": [
+        "oil-gas"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "油气开采与油服",
       "edgeCount": 0,
       "formSdStatus": "resource-extraction"
     },
@@ -14024,6 +16492,11 @@
         "sic": 3420,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属制品",
       "edgeCount": 337,
       "formSdStatus": "listed"
     },
@@ -14056,6 +16529,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -14088,6 +16566,11 @@
         "sic": 2821,
         "match": "sic-range"
       },
+      "chains": [
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "化学工业",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -14120,6 +16603,11 @@
         "sic": 6282,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -14152,6 +16640,11 @@
         "sic": 3430,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "金属制品",
       "edgeCount": 103,
       "formSdStatus": "listed"
     },
@@ -14184,6 +16677,12 @@
         "sic": 3826,
         "match": "sic-range"
       },
+      "chains": [
+        "pharma-biotech",
+        "medtech-health"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "实验室分析仪器：药企与医院共同的上游",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -14216,6 +16715,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -14248,6 +16752,11 @@
         "sic": 6399,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -14280,6 +16789,11 @@
         "sic": 2090,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -14312,6 +16826,11 @@
         "sic": 7900,
         "match": "sic-range"
       },
+      "chains": [
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "娱乐与休闲",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -14344,6 +16863,12 @@
         "sic": 8731,
         "match": "sic-range"
       },
+      "chains": [
+        "pharma-biotech",
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业化研究外包，主体是药物研发",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -14376,6 +16901,11 @@
         "sic": 3829,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "测量与控制仪器",
       "edgeCount": 329,
       "formSdStatus": "listed"
     },
@@ -14408,6 +16938,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -14440,6 +16975,11 @@
         "sic": 3720,
         "match": "sic-range"
       },
+      "chains": [
+        "aerospace-defense"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "航空器与发动机",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -14472,6 +17012,12 @@
         "sic": 3585,
         "match": "sic-range"
       },
+      "chains": [
+        "construction-building",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "暖通空调与商用制冷",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -14504,6 +17050,12 @@
         "sic": 3851,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health",
+        "consumer-goods"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "眼科用品",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -14536,6 +17088,11 @@
         "sic": 7381,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "商业服务",
       "edgeCount": 338,
       "formSdStatus": "listed"
     },
@@ -14568,6 +17125,11 @@
         "sic": 6311,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -14600,6 +17162,11 @@
         "sic": 7373,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "系统集成",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -14632,6 +17199,11 @@
         "sic": 2033,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -14664,6 +17236,11 @@
         "sic": 2670,
         "match": "sic-range"
       },
+      "chains": [
+        "packaging-paper"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "造纸与纸制品",
       "edgeCount": 405,
       "formSdStatus": "listed"
     },
@@ -14696,6 +17273,11 @@
         "sic": 3841,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
       "edgeCount": 323,
       "formSdStatus": "listed"
     },
@@ -14728,6 +17310,11 @@
         "sic": 3944,
         "match": "sic-range"
       },
+      "chains": [
+        "consumer-goods"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "其他制造业",
       "edgeCount": 201,
       "formSdStatus": "listed"
     },
@@ -14760,6 +17347,11 @@
         "sic": 7389,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -14792,6 +17384,11 @@
         "sic": 8741,
         "match": "sic-range"
       },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工程、会计与管理服务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -14824,6 +17421,11 @@
         "sic": 2080,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -14856,6 +17458,11 @@
         "sic": 3021,
         "match": "sic-range"
       },
+      "chains": [
+        "chemicals"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "橡胶与塑料制品",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -14888,6 +17495,11 @@
         "sic": 2011,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -14920,6 +17532,11 @@
         "sic": 7373,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "系统集成",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -14952,6 +17569,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -14984,6 +17606,11 @@
         "sic": 8090,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗服务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -15016,6 +17643,11 @@
         "sic": 4911,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "电力燃气水务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -15048,6 +17680,12 @@
         "sic": 4833,
         "match": "sic-range"
       },
+      "chains": [
+        "communications",
+        "media-entertainment"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "电视广播",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -15080,6 +17718,11 @@
         "sic": 6411,
         "match": "sic-range"
       },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -15112,6 +17755,11 @@
         "sic": 2300,
         "match": "sic-range"
       },
+      "chains": [
+        "textiles-apparel"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "服装",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -15144,6 +17792,11 @@
         "sic": 3842,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
       "edgeCount": 238,
       "formSdStatus": "listed"
     },
@@ -15176,6 +17829,11 @@
         "sic": 2836,
         "match": "sic-exact"
       },
+      "chains": [
+        "pharma-biotech"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "生物制品",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -15208,6 +17866,12 @@
         "sic": 5140,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food",
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "食品批发",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -15240,6 +17904,12 @@
         "sic": 3730,
         "match": "sic-exact"
       },
+      "chains": [
+        "aerospace-defense",
+        "logistics-transport"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "船舶建造：民用船属运输装备，军船属国防，SIC 分不开，两条都挂",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -15272,6 +17942,12 @@
         "sic": 2842,
         "match": "sic-range"
       },
+      "chains": [
+        "chemicals",
+        "consumer-goods"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "专用清洁用品",
       "edgeCount": 19,
       "formSdStatus": "listed"
     },
@@ -15304,6 +17980,11 @@
         "sic": 3674,
         "match": "sic-range"
       },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
       "edgeCount": 194,
       "formSdStatus": "listed"
     },
@@ -15336,6 +18017,11 @@
         "sic": 7370,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "计算机编程与数据处理",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -15368,6 +18054,12 @@
         "sic": 3621,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power",
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "电机与发电机",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -15400,6 +18092,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -15432,6 +18129,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -15464,6 +18166,11 @@
         "sic": 8062,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗服务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -15496,6 +18203,11 @@
         "sic": 7011,
         "match": "sic-range"
       },
+      "chains": [
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "住宿",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -15528,6 +18240,11 @@
         "sic": 4991,
         "match": "sic-range"
       },
+      "chains": [
+        "utilities-power"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "热电联产与小型发电",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -15560,6 +18277,11 @@
         "sic": 3841,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "医疗与外科器械",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -15592,6 +18314,12 @@
         "sic": 5047,
         "match": "sic-range"
       },
+      "chains": [
+        "medtech-health",
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "医疗器械批发",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -15624,6 +18352,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -15656,6 +18389,11 @@
         "sic": 3714,
         "match": "sic-exact"
       },
+      "chains": [
+        "automotive"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "汽车整车；汽车零部件",
       "edgeCount": 337,
       "formSdStatus": "listed"
     },
@@ -15688,6 +18426,11 @@
         "sic": 3550,
         "match": "sic-range"
       },
+      "chains": [
+        "industrial-machinery"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "工业机械与设备",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -15720,6 +18463,11 @@
         "sic": 7011,
         "match": "sic-range"
       },
+      "chains": [
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "住宿",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -15752,6 +18500,11 @@
         "sic": 6798,
         "match": "sic-range"
       },
+      "chains": [
+        "real-estate"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -15784,6 +18537,11 @@
         "sic": 3630,
         "match": "sic-range"
       },
+      "chains": [
+        "consumer-goods"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "家用电器",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -15816,6 +18574,12 @@
         "sic": 2870,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food",
+        "chemicals"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "农用化学品：化肥农药是农业的投入品",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -15848,6 +18612,11 @@
         "sic": 2082,
         "match": "sic-range"
       },
+      "chains": [
+        "agri-food"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "食品饮料",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -15880,6 +18649,11 @@
         "sic": 5211,
         "match": "sic-range"
       },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
       "edgeCount": 0,
       "formSdStatus": "filed-no-list"
     },
@@ -15912,6 +18686,11 @@
         "sic": 4400,
         "match": "sic-range"
       },
+      "chains": [
+        "travel-leisure"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "水上运输：标普成分股中为邮轮",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -15944,6 +18723,11 @@
         "sic": 7370,
         "match": "sic-range"
       },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "计算机编程与数据处理",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     }
@@ -16837,6 +19621,9 @@
   },
   "coverage": {
     "claimComplete": false,
+    "chainsTotal": 27,
+    "chainUnclassified": 0,
+    "chainMulti": 118,
     "nodesTotal": 495,
     "nodesWithEdges": 90,
     "edgesTotal": 20805,

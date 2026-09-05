@@ -46,6 +46,8 @@ NAMES_ZH_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              "supply-chain", "smelter_names_zh.py")
 FOREIGN_PROBE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                   "supply-chain", "probe_foreign_issuers.py")
+CHAINS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                           "supply-chain", "sic_chains.py")
 
 # ── SIC → 价值链阶段 ────────────────────────────────────────────────────────
 # SIC 码全部取自探针在 Actions 机房实测到的真实值，不是凭印象写的。
@@ -905,10 +907,62 @@ def main() -> int:
             failures.append(f"归档目录 {why}：期望 {expected!r}，实际 {got!r}")
         print(f"  [{'OK' if ok else 'XX'}] {why}")
 
+    # 横轴：SIC → 一级产业链。这张表决定「哪条链上有哪些公司」，判错了整页跟着错，
+    # 而且错得很安静——公司还在，只是挂到了别的链上。逐条钉死会判错的那些码。
+    print("\n── 横轴：SIC → 一级产业链 ─────────────────────────────────────────")
+    chains_mod = _load(CHAINS_PATH, "sic_chains")
+    chain_cases = [
+        (3674, ["semiconductor"], "英伟达申报码：半导体"),
+        (3559, ["semiconductor", "industrial-machinery"],
+         "半导体前道设备申报在专用机械 NEC 下，两条链都算"),
+        (3533, ["industrial-machinery", "oil-gas"], "油气田机械天然跨两条链"),
+        (6324, ["medtech-health", "financial-services"], "医疗保险计划是支付方，也是保险"),
+        (3357, ["communications", "electronics-components"],
+         "康宁的码：光纤属通信，不能因为字面是「拉丝」就判成采矿"),
+        (2911, ["oil-gas", "chemicals"],
+         "炼油：区间表最初漏了 2900-2999，六家石油巨头全无归属——覆盖检查抓出来的"),
+        (4512, ["logistics-transport", "travel-leisure"],
+         "客运航空以载客为主：载客的不是物流，这条此前在纵轴上踩过"),
+        (2834, ["pharma-biotech"], "成药"),
+        (6798, ["real-estate"], "REIT"),
+        (None, None, "没有码就不给链，不硬塞"),
+        ("", None, "空码同上"),
+        (9999, None, "认不出的码返回 None，页面显示未归类"),
+    ]
+    for sic, expected, why in chain_cases:
+        got = chains_mod.resolve_chains(sic)
+        if expected is None:
+            ok = got is None
+            shown = "未归类"
+        else:
+            ok = bool(got) and got["chains"] == sorted(
+                expected, key=lambda c: chains_mod.CHAIN_INDEX[c])
+            shown = "/".join(got["chains"]) if got else "无"
+        if not ok:
+            failures.append(f"产业链 {why}：期望 {expected}，实际 {got}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}（{sic} → {shown}）")
+
+    # 链表本身的自洽：id 不重样、每条链都有中英文名、EXACT/RANGES 里不能出现
+    # 表上没有的 id——写错一个 id 不会报错，只会让那条链永远是空的。
+    ids = [cid for cid, _, _ in chains_mod.CHAINS]
+    chain_self = [
+        (len(ids) == len(set(ids)), "链 id 不重复"),
+        (all(zh and en for _, zh, en in chains_mod.CHAINS), "每条链都有中英文名"),
+        (all(c in chains_mod.CHAIN_INDEX
+             for v, _ in chains_mod.EXACT.values() for c in v), "精确表里没有野 id"),
+        (all(c in chains_mod.CHAIN_INDEX
+             for _, _, v, _ in chains_mod.RANGES for c in v), "区间表里没有野 id"),
+    ]
+    for ok, why in chain_self:
+        if not ok:
+            failures.append(f"链表自洽：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
     total = (len(pdf_cases) + 4 + len(kind_cases) + len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
-             + len(index_cases) + len(quarter_cases) + len(dir_cases))
+             + len(index_cases) + len(quarter_cases) + len(dir_cases)
+             + len(chain_cases) + len(chain_self))
     print("\n" + "─" * 68)
     if failures:
         print(f"失败 {len(failures)}/{total}：")

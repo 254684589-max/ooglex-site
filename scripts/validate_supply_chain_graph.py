@@ -390,6 +390,60 @@ def check_no_conflict_markers(errors: list[str]) -> None:
                     fail(errors, f"{path} 不是合法 JSON：{exc}")
 
 
+def check_chains(payload: dict, errors: list[str]) -> None:
+    """横轴契约：链表与节点上的归属必须对得上。
+
+    这里守的不是「有没有链」，是**页面读到的数与节点表算出来的数是同一个**。
+    链的家数是构建时预算进 chains[].count 的，页面直接印；预算错了页面就跟着
+    印错，而且看不出来——所以在这里按节点重新数一遍。
+    """
+    rows = payload.get("chains")
+    if rows is None:
+        return                      # 横轴模块缺失时构建不写这个字段，属已知降级
+    if not isinstance(rows, list) or not rows:
+        fail(errors, "chains 字段存在但为空——要么写全，要么别写")
+        return
+
+    ids = [r.get("id") for r in rows]
+    if len(ids) != len(set(ids)):
+        fail(errors, "chains 里有重复的 id")
+
+    tally: dict[str, int] = {}
+    tally_edges: dict[str, int] = {}
+    unclassified = 0
+    for node in payload.get("nodes") or []:
+        got = node.get("chains")
+        if got is None:
+            fail(errors, f"{node.get('symbol')} 没有 chains 字段——横轴要么全有要么全无")
+            return
+        if not got:
+            unclassified += 1
+        for cid in got:
+            if cid not in ids:
+                fail(errors, f"{node.get('symbol')} 挂在未登记的链 {cid!r} 上")
+            tally[cid] = tally.get(cid, 0) + 1
+            tally_edges[cid] = tally_edges.get(cid, 0) + (node.get("edgeCount") or 0)
+
+    for row in rows:
+        cid = row.get("id")
+        if row.get("count") != tally.get(cid, 0):
+            fail(errors, f"链 {cid} 家数 {row.get('count')} 与节点实际 "
+                         f"{tally.get(cid, 0)} 不符")
+        if row.get("edgeCount") != tally_edges.get(cid, 0):
+            fail(errors, f"链 {cid} 关系数 {row.get('edgeCount')} 与节点实际 "
+                         f"{tally_edges.get(cid, 0)} 不符")
+        if not row.get("label") or not row.get("labelEn"):
+            fail(errors, f"链 {cid} 缺中文或英文名")
+
+    coverage = payload.get("coverage") or {}
+    if coverage.get("chainUnclassified") != unclassified:
+        fail(errors, f"coverage.chainUnclassified {coverage.get('chainUnclassified')} "
+                     f"与实际 {unclassified} 不符")
+    # 未归类不是错误，但必须如实报出来；这里只在数对不上时失败。
+    if unclassified:
+        print(f"[!!] 有 {unclassified} 家没有产业链归属——SIC 表没覆盖到它们的码")
+
+
 def check_health(errors: list[str], node_count: int) -> None:
     if not os.path.exists(HEALTH_PATH):
         fail(errors, f"缺少 {HEALTH_PATH}")
@@ -416,6 +470,7 @@ def main() -> int:
     counts = check_nodes(payload, errors)
     edge_count = check_edges(payload, errors)
     check_coverage(payload, counts, edge_count, errors)
+    check_chains(payload, errors)
     check_no_conflict_markers(errors)
     smelters = check_smelters(errors, edge_count)
     check_health(errors, len(payload.get("nodes") or []))
