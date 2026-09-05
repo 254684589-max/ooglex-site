@@ -143,16 +143,19 @@
     withEdges: "有名单",
     filedNoList: "有申报未列名单",
     noFiling: "无申报",
+    resourceExtraction: "申报资源开采付款",
     failed: "取数失败",
     unknown: "无逐家记录"
   };
-  var COV_ORDER = ["withEdges", "filedNoList", "noFiling", "failed", "unknown"];
+  var COV_ORDER = ["withEdges", "filedNoList", "resourceExtraction", "noFiling",
+                   "failed", "unknown"];
 
   function covSeg(row) {
     return {
       withEdges: row.withEdges || 0,
       filedNoList: row.filedNoList || 0,
       noFiling: row.noFiling || 0,
+      resourceExtraction: row.resourceExtraction || 0,
       failed: row.failed || 0,
       unknown: row.unscanned || 0
     };

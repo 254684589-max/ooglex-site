@@ -39,6 +39,10 @@ import time
 import zlib
 from urllib import error, parse, request
 
+# 标准库实现的 PDF 文本抽取。与抽取器共用同一份实现，两处各写一份必然会分叉。
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import pdf_text                                    # noqa: E402
+
 TIMEOUT = 30
 GAP = 0.8                  # 对方是普通企业站，比 SEC 更客气些
 MAX_REQUESTS = 80
@@ -187,40 +191,37 @@ def find_candidates(text: str, base: str) -> list[tuple[int, str]]:
 
 
 def pdf_text_sample(raw: bytes) -> dict:
-    """不装依赖判断 PDF 里有没有可提取的文字。
+    """用 pdf_text 抽字。判据分三种，**不把「我解不开」说成「文件没有文字」**。
 
-    解 FlateDecode 流对象，看里面有没有 PDF 文本操作符（Tj / TJ）。
-    有就说明是文字型 PDF，标准库也能硬解；没有多半是扫描件，这条路走不通。
+    早先这里是拿正则在原始字节上找 stream…endstream 再 zlib 解压，吐出来的是
+    「A Pr ot ocol  f or Prioritizin g」这种掉字的东西，而且只会 FlateDecode，
+    英特尔那三份 ASCII85 包一层的整份解不开，还被报成「多半是扫描件」。
     """
-    streams = re.findall(rb"stream\r?\n(.*?)endstream", raw[:4_000_000], re.S)
-    readable = inflated = 0
-    sample = ""
-    for chunk in streams[:60]:
-        try:
-            plain = zlib.decompress(chunk)
-        except Exception:                          # noqa: BLE001
-            continue
-        inflated += 1
-        if b"Tj" in plain or b"TJ" in plain:
-            readable += 1
-            if not sample:
-                words = re.findall(rb"\(([^)\\]{2,60})\)", plain)[:14]
-                sample = " ".join(w.decode("latin-1", "replace") for w in words)
-    # 文件用了哪些压缩方式。取不到文字时，这一栏决定了到底是谁的问题：
-    # 本探针只会 FlateDecode，遇到别的（如对象流、DCTDecode）是**我解不开**，
-    # 不是文件没有文字。英特尔那三份 CSR 报告被首轮误报成「多半是扫描件」，
-    # 就是把这两件事混为一谈。
-    filters = sorted(set(f.decode("ascii", "replace")
-                         for f in re.findall(rb"/(\w*Decode)", raw[:2_000_000])))
-    return {"streams": len(streams), "inflatedStreams": inflated,
-            "textStreams": readable, "filters": filters[:8],
-            "textSample": sample[:160],
-            "extractable": readable > 0,
-            # 解开了流却没有文本操作符 → 才谈得上「可能是扫描件」；
-            # 一个流都解不开 → 是本探针的解析能力不够，与文件无关。
-            "verdict": ("可提取文字" if readable else
-                        "解开了流但没有文本操作符，可能是扫描件" if inflated else
-                        "本探针解不开这份 PDF 的压缩流——是探针能力不足，不能据此说文件没有文字")}
+    r = pdf_text.pdf_to_text(raw)
+    # **字段名必须对上调用方的契约。** 调用方先设 doc["kind"] = "pdf" 再 update()，
+    # 所以这里不能有同名的 kind——曾经有，把 "pdf" 覆盖成了 "text"，
+    # 于是 PDF 那条显示分支整个没走，extractable 也没设，
+    # 思科三份明明解出了文字，结论却报「0/8 家，内容没取到」。
+    return {
+        "extractable": r["verdict"] == "text" and r["chars"] > 0,
+        "pdfVerdict": r["verdict"],
+        "verdict": {
+            "text": f"可提取文字（{r['pages']} 页，{r['chars']} 字）",
+            "image-only": "流解开了但没有文本操作符，多半是扫描件",
+            "undecodable": "本探针解不开这份 PDF 的压缩流——是探针能力不足，"
+                           "不能据此说文件没有文字",
+            "no-pages": "找不到页面对象：xref 形态特殊或文件损坏",
+            "not-pdf": "不是 PDF",
+        }.get(r["verdict"], r["verdict"]),
+        "streams": r["streams"],
+        "inflatedStreams": r["decoded"],
+        "textStreams": r["chars"] and r["decoded"] or 0,
+        "pages": r["pages"],
+        "filters": r["filters"],
+        "encrypted": r["encrypted"],
+        "unmapped": r["unmapped"],
+        "textSample": re.sub(r"\s+", " ", r["text"][:200]).strip(),
+    }
 
 
 def html_shape(raw: bytes) -> dict:

@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-04T23:58:03Z",
+  "updatedAt": "2026-09-05T02:55:57Z",
   "asOf": "2026-09-04",
   "frequency": "daily",
   "status": "ok",
@@ -2537,7 +2537,7 @@
         "match": "sic-range"
       },
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "PFE",
@@ -2889,7 +2889,7 @@
         "match": "sic-range"
       },
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "BMY",
@@ -3881,7 +3881,7 @@
         "match": "sic-range"
       },
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "HWM",
@@ -4809,7 +4809,7 @@
         "match": "sic-range"
       },
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "EMR",
@@ -5129,7 +5129,7 @@
         "match": "sic-range"
       },
       "edgeCount": 354,
-      "formSdStatus": "listed"
+      "formSdStatus": "filed-no-list"
     },
     {
       "id": "TRV",
@@ -5289,7 +5289,7 @@
         "match": "sic-range"
       },
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "APO",
@@ -6345,7 +6345,7 @@
         "match": "sic-range"
       },
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "BKR",
@@ -6633,7 +6633,7 @@
         "match": "sic-range"
       },
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "NUE",
@@ -7113,7 +7113,7 @@
         "match": "sic-range"
       },
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "NDAQ",
@@ -9289,7 +9289,7 @@
         "match": "sic-range"
       },
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "WEC",
@@ -9993,7 +9993,7 @@
         "match": "sic-range"
       },
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "IR",
@@ -10089,7 +10089,7 @@
         "match": "sic-range"
       },
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "HPQ",
@@ -11945,7 +11945,7 @@
         "match": "sic-range"
       },
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "CHD",
@@ -13993,7 +13993,7 @@
         "match": "sic-range"
       },
       "edgeCount": 0,
-      "formSdStatus": "filed-no-list"
+      "formSdStatus": "resource-extraction"
     },
     {
       "id": "SWK",
@@ -16846,9 +16846,10 @@
     "formSd": {
       "claimComplete": false,
       "companiesScanned": 495,
-      "companiesWithList": 90,
-      "companiesFiledNoList": 149,
+      "companiesWithList": 89,
+      "companiesFiledNoList": 137,
       "companiesNoFiling": 256,
+      "companiesResourceExtraction": 13,
       "companiesFailed": 0,
       "failedSymbols": [],
       "filingStatus": {
@@ -16887,7 +16888,7 @@
         "ANET": "listed",
         "AON": "no-filing",
         "AOS": "filed-no-list",
-        "APA": "filed-no-list",
+        "APA": "resource-extraction",
         "APD": "filed-no-list",
         "APH": "listed",
         "APO": "no-filing",
@@ -16958,13 +16959,13 @@
         "COHR": "listed",
         "COIN": "no-filing",
         "COO": "filed-no-list",
-        "COP": "filed-no-list",
+        "COP": "resource-extraction",
         "COR": "filed-no-list",
         "COST": "listed",
         "CPAY": "no-filing",
         "CPRT": "no-filing",
         "CPT": "no-filing",
-        "CRH": "filed-no-list",
+        "CRH": "resource-extraction",
         "CRL": "filed-no-list",
         "CRM": "no-filing",
         "CRWD": "no-filing",
@@ -17000,10 +17001,10 @@
         "DTE": "no-filing",
         "DUK": "no-filing",
         "DVA": "no-filing",
-        "DVN": "filed-no-list",
+        "DVN": "resource-extraction",
         "DXCM": "filed-no-list",
         "EBAY": "no-filing",
-        "ECL": "listed",
+        "ECL": "filed-no-list",
         "ED": "no-filing",
         "EFX": "no-filing",
         "EG": "no-filing",
@@ -17012,9 +17013,9 @@
         "ELV": "no-filing",
         "EME": "filed-no-list",
         "EMR": "filed-no-list",
-        "EOG": "filed-no-list",
+        "EOG": "resource-extraction",
         "EQIX": "no-filing",
-        "EQT": "filed-no-list",
+        "EQT": "resource-extraction",
         "ERIE": "no-filing",
         "ES": "no-filing",
         "ESS": "no-filing",
@@ -17023,14 +17024,14 @@
         "EVRG": "no-filing",
         "EW": "filed-no-list",
         "EXC": "no-filing",
-        "EXE": "filed-no-list",
+        "EXE": "resource-extraction",
         "EXPD": "no-filing",
         "EXPE": "no-filing",
         "EXR": "no-filing",
         "F": "filed-no-list",
         "FANG": "filed-no-list",
         "FAST": "filed-no-list",
-        "FCX": "filed-no-list",
+        "FCX": "resource-extraction",
         "FDS": "no-filing",
         "FDX": "no-filing",
         "FDXF": "no-filing",
@@ -17153,7 +17154,7 @@
         "META": "filed-no-list",
         "MGM": "no-filing",
         "MKC": "no-filing",
-        "MLM": "filed-no-list",
+        "MLM": "resource-extraction",
         "MMM": "filed-no-list",
         "MNST": "no-filing",
         "MO": "listed",
@@ -17175,7 +17176,7 @@
         "NDAQ": "no-filing",
         "NDSN": "filed-no-list",
         "NEE": "filed-no-list",
-        "NEM": "filed-no-list",
+        "NEM": "resource-extraction",
         "NFLX": "no-filing",
         "NI": "no-filing",
         "NKE": "filed-no-list",
@@ -17198,7 +17199,7 @@
         "ORCL": "filed-no-list",
         "ORLY": "no-filing",
         "OTIS": "listed",
-        "OXY": "filed-no-list",
+        "OXY": "resource-extraction",
         "PANW": "filed-no-list",
         "PAYX": "no-filing",
         "PCAR": "listed",
@@ -17249,7 +17250,7 @@
         "SCHW": "no-filing",
         "SHW": "listed",
         "SJM": "no-filing",
-        "SLB": "filed-no-list",
+        "SLB": "resource-extraction",
         "SMCI": "listed",
         "SNA": "filed-no-list",
         "SNDK": "listed",
@@ -17258,7 +17259,7 @@
         "SOLV": "filed-no-list",
         "SPG": "no-filing",
         "SPGI": "no-filing",
-        "SRE": "filed-no-list",
+        "SRE": "resource-extraction",
         "STE": "filed-no-list",
         "STLD": "filed-no-list",
         "STT": "no-filing",
@@ -17367,6 +17368,7 @@
         "withEdges": 34,
         "filedNoList": 26,
         "noFiling": 24,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -17377,6 +17379,7 @@
         "withEdges": 20,
         "filedNoList": 35,
         "noFiling": 21,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -17387,6 +17390,7 @@
         "withEdges": 0,
         "filedNoList": 1,
         "noFiling": 69,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -17397,6 +17401,7 @@
         "withEdges": 9,
         "filedNoList": 29,
         "noFiling": 21,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -17407,6 +17412,7 @@
         "withEdges": 9,
         "filedNoList": 15,
         "noFiling": 29,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -17417,6 +17423,7 @@
         "withEdges": 7,
         "filedNoList": 9,
         "noFiling": 17,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -17425,8 +17432,9 @@
         "sectorEn": "Industrials",
         "companies": 32,
         "withEdges": 1,
-        "filedNoList": 4,
+        "filedNoList": 3,
         "noFiling": 27,
+        "resourceExtraction": 1,
         "failed": 0,
         "unscanned": 0
       },
@@ -17437,6 +17445,7 @@
         "withEdges": 0,
         "filedNoList": 1,
         "noFiling": 28,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       },
@@ -17445,8 +17454,9 @@
         "sectorEn": "Energy",
         "companies": 22,
         "withEdges": 2,
-        "filedNoList": 15,
+        "filedNoList": 7,
         "noFiling": 5,
+        "resourceExtraction": 8,
         "failed": 0,
         "unscanned": 0
       },
@@ -17455,8 +17465,9 @@
         "sectorEn": "Materials",
         "companies": 20,
         "withEdges": 5,
-        "filedNoList": 12,
+        "filedNoList": 8,
         "noFiling": 3,
+        "resourceExtraction": 4,
         "failed": 0,
         "unscanned": 0
       },
@@ -17467,9 +17478,13 @@
         "withEdges": 3,
         "filedNoList": 2,
         "noFiling": 12,
+        "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 0
       }
+    ],
+    "edgesFromEarlierScan": [
+      "ECL"
     ],
     "stageByBasis": {
       "sic-refined": 495

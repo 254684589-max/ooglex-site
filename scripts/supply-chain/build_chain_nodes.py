@@ -270,6 +270,7 @@ def sector_coverage(nodes: list[dict], filing_status: dict[str, str]) -> list[di
             "withEdges": 0,
             "filedNoList": 0,
             "noFiling": 0,
+            "resourceExtraction": 0,
             "failed": 0,
             "unscanned": 0,
         })
@@ -282,6 +283,9 @@ def sector_coverage(nodes: list[dict], filing_status: dict[str, str]) -> list[di
             row["filedNoList"] += 1
         elif state == "no-filing":
             row["noFiling"] += 1
+        elif state == "resource-extraction":
+            # 申报的是资源开采付款，不是冲突矿产——那套披露里没有冶炼厂这个概念
+            row["resourceExtraction"] += 1
         elif state == "failed":
             row["failed"] += 1
         elif state == "listed":
@@ -518,6 +522,12 @@ def build() -> None:
         if state:
             node["formSdStatus"] = state
     by_sector = sector_coverage(nodes, filing_status)
+    # 边文件还在、但最近一轮扫描没再抽到名单的公司。抽取器**不删有效历史数据**
+    # （AGENTS.md：不得删除有效历史数据来掩盖抓取失败），所以文件保留着上一轮的
+    # 结果；但覆盖率报的是本轮扫描口径，两个数就会差几家。
+    # 差额必须由数据解释，不能留成一个说不清的 1。
+    stale = sorted(n["symbol"] for n in nodes
+                   if n.get("edgeCount") and filing_status.get(n["symbol"]) == "filed-no-list")
     flow = stage_flow(nodes, edge_files)
 
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -569,6 +579,8 @@ def build() -> None:
             "formSd": form_sd_coverage,
             # 按板块拆开的覆盖情况。缺口的成因写在数据里，页面照实读。
             "bySector": by_sector,
+            # 见上：边来自更早的扫描，本轮未复现。列出代码，读者可自己核对。
+            "edgesFromEarlierScan": stale,
             # 按实际 stageBasis 分组。曾经把所有已判定的都记成 sector-initial，
             # 等于把 SIC 升级的功劳记在板块级口径头上、低报了数据质量的真实来源。
             "stageByBasis": by_basis,

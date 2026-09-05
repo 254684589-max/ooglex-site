@@ -26,6 +26,8 @@ import json
 import os
 import re
 import sys
+import base64
+import zlib
 
 PROBE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                           "supply-chain", "probe_edgar_relationships.py")
@@ -696,6 +698,124 @@ def main() -> int:
         print(f"        {raw[:56]:<58} → {got_name[:44]!r}"
               + (f" + {got_country}" if got_country else ""))
 
+    # ── PDF 文本抽取 ────────────────────────────────────────────────────
+    # 麦当劳的冲突矿产报告与思科的一级供应商名单都是 PDF，现有规则只收 HTML，
+    # 整份看不到。仓库不装新依赖，所以用标准库实现，夹具就地构造、完全离线可复算。
+    #
+    # 第一版扫了**所有**流，把字体程序也算进内容——CFF/TrueType 的二进制里恰好
+    # 会出现 "Tj" 字节，于是从一份 121KB 的真 PDF 里解出 22,853 个字符的乱码，
+    # 还报成 verdict=text。改为只从页面的 /Contents 取字后，同一份文件得到
+    # 10 页 4,505 字的干净文本。**把结果说多**是这个项目反复踩的方向，钉死它。
+    print("\n── PDF 文本抽取：解得开的解，解不开的如实说 ──────────────────────")
+    pdf = load_module(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                   "supply-chain", "pdf_text.py"), "pdf_text")
+
+    def _pdf(content: bytes, filt: str | None = None) -> bytes:
+        """最小但合法的单页 PDF。filt 决定内容流用哪种过滤器。"""
+        if filt == "Fl":
+            body, f = zlib.compress(content), b"/Filter /FlateDecode "
+        elif filt == "A85Fl":
+            body = base64.a85encode(zlib.compress(content)) + b"~>"
+            f = b"/Filter [/ASCII85Decode /FlateDecode] "
+        elif filt == "AHx":
+            body, f = content.hex().encode() + b">", b"/Filter /ASCIIHexDecode "
+        else:
+            body, f = content, b""
+        objs = [
+            b"<< /Type /Catalog /Pages 2 0 R >>",
+            b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+            b"<< /Type /Page /Parent 2 0 R /Contents 4 0 R "
+            b"/Resources << /Font << /F1 5 0 R >> >> >>",
+            b"<< " + f + b"/Length " + str(len(body)).encode()
+            + b" >>\nstream\n" + body + b"\nendstream",
+            b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+        ]
+        out = b"%PDF-1.5\n"
+        for i, o in enumerate(objs, 1):
+            out += str(i).encode() + b" 0 obj\n" + o + b"\nendobj\n"
+        return out + b"trailer\n<< /Root 1 0 R >>\n%%EOF"
+
+    # 真实冶炼厂行的形状：括号转义、多个 Tj、TJ 字距数组
+    SMELTER = (b"BT /F1 12 Tf (Gold \\(Au\\)) Tj 0 -14 Td "
+               b"(Al Etihad Gold Refinery DMCC) Tj 0 -14 Td "
+               b"[(UNITED) -300 (ARAB) -300 (EMIRATES)] TJ ET")
+    pdf_cases = [
+        ("未压缩", _pdf(SMELTER), "text", "Al Etihad Gold Refinery DMCC"),
+        ("FlateDecode", _pdf(SMELTER, "Fl"), "text", "Al Etihad Gold Refinery DMCC"),
+        # 英特尔那三份就是 ASCII85 包一层，旧解析器整份解不开
+        ("ASCII85+Flate", _pdf(SMELTER, "A85Fl"), "text", "UNITED ARAB EMIRATES"),
+        ("ASCIIHex", _pdf(SMELTER, "AHx"), "text", "Gold (Au)"),
+        # 扫描件：解开了流但没有文本操作符。**不得假装有字**
+        ("只有图像", _pdf(b"q 100 0 0 100 0 0 cm /Im0 Do Q", "Fl"), "image-only", None),
+        ("不是 PDF", b"just some bytes", "not-pdf", None),
+    ]
+    for label, raw, want_verdict, want_text in pdf_cases:
+        got = pdf.pdf_to_text(raw)
+        ok = got["verdict"] == want_verdict
+        if ok and want_text:
+            ok = want_text in got["text"]
+        if not ok:
+            failures.append(f"PDF {label}：verdict={got['verdict']} "
+                            f"text={got['text'][:60]!r}")
+        print(f"  [{'OK' if ok else 'XX'}] {label}"
+              f"（verdict={got['verdict']}，{got['chars']} 字）")
+
+    # 括号转义与 TJ 字距：字掉了就是这里掉的
+    esc = pdf.extract_text(b"BT (a\\(b\\)c) Tj [(for) -300 (the)] TJ ET")[0]
+    esc_ok = "a(b)c" in esc and "for the" in esc
+    if not esc_ok:
+        failures.append(f"PDF 转义与字距：{esc!r}")
+    print(f"  [{'OK' if esc_ok else 'XX'}] 括号转义与 TJ 字距（→ {esc!r}）")
+
+    # pdf_text_sample 的返回会被 doc.update() 并进调用方的字典，所以它**不能带
+    # 与调用方同名的键**。曾经带了个 kind，把 doc["kind"]="pdf" 覆盖成 "text"，
+    # 于是 PDF 的显示分支整个没走、extractable 没设，思科三份明明解出了文字，
+    # 结论却报「0/8 家，内容没取到」——靠读 Actions 日志才发现。钉死这个契约。
+    print("\n── 探针字段契约：辅助函数不得覆盖调用方的键 ──────────────────────")
+    sample = probe.pdf_text_sample(_pdf(SMELTER, "Fl"))
+    need = ("extractable", "verdict", "streams", "inflatedStreams",
+            "textStreams", "filters", "textSample")
+    missing = [k for k in need if k not in sample]
+    clash = [k for k in ("kind", "url", "score", "bytes", "contentType") if k in sample]
+    contract_ok = not missing and not clash
+    if not contract_ok:
+        failures.append(f"探针字段契约：缺 {missing}，撞名 {clash}")
+    print(f"  [{'OK' if contract_ok else 'XX'}] 显示与判据要的键齐全，且不与调用方撞名"
+          f"（缺 {missing or '无'}，撞名 {clash or '无'}）")
+    extract_ok = sample["extractable"] is True
+    if not extract_ok:
+        failures.append(f"探针 extractable：解出文字的 PDF 应为 True，实际 {sample['extractable']!r}")
+    print(f"  [{'OK' if extract_ok else 'XX'}] 解出文字的 PDF → extractable=True")
+    blind = probe.pdf_text_sample(_pdf(b"q 1 0 0 1 0 0 cm /Im0 Do Q", "Fl"))
+    blind_ok = blind["extractable"] is False
+    if not blind_ok:
+        failures.append("探针 extractable：扫描件不得报 True")
+    print(f"  [{'OK' if blind_ok else 'XX'}] 扫描件 → extractable=False，不假装取到了")
+
+    # Form SD 底下是两套互不相干的披露：13p-1 冲突矿产（有冶炼厂名单）与
+    # 13q-1 资源开采付款（向各国政府付了多少钱）。把后者算进「申报了但没列名单」
+    # 等于暗示「本可以列却没列」，而那套披露里根本没有冶炼厂这个概念。
+    print("\n── 披露类型：冲突矿产还是资源开采付款 ────────────────────────────")
+    kind_cases = [
+        ("<p>Conflict Minerals Report for the reporting period</p>",
+         "conflict-minerals", "冲突矿产报告"),
+        ("<p>Our smelter and refiner due diligence covered 3TG</p>",
+         "conflict-minerals", "提到冶炼厂即为冲突矿产"),
+        ("<p>Form SD filed under Rule 13q-1, payments to governments</p>",
+         "resource-extraction", "康菲那一类：资源开采付款"),
+        ("<p>Extractive Sector Transparency Measures Act (ESTMA) Report</p>",
+         "resource-extraction", "纽蒙特那一类：ESTMA"),
+        ("<p>Conflict Minerals Report. See also Section 1504.</p>",
+         "conflict-minerals", "两类都提时以冲突矿产为准——宁可不摘，不可少报"),
+        ("<p>Nothing relevant</p>", "unknown", "都不像就返回 unknown，不猜"),
+    ]
+    for html, want, why in kind_cases:
+        got = load_form_sd().disclosure_kind(html)
+        ok = got == want
+        if not ok:
+            failures.append(f"披露类型 {html[:40]!r}：期望 {want}，实际 {got}")
+        print(f"  [{'OK' if ok else 'XX'}] {why}（→ {got}）")
+
     # 申报文档的过滤规则。抽取器用它决定读哪几份，「有申报但没抽到名单」的
     # 探针用同一个函数显示「哪些文件被挡掉了」——两处共用，改坏了两处一起错，
     # 而且探针会开始说假话，所以逐条钉死。
@@ -717,7 +837,7 @@ def main() -> int:
         print(f"  [{'OK' if ok else 'XX'}] {why}"
               f"（{name} → {got or '会读'}）")
 
-    total = (len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
+    total = (len(pdf_cases) + 4 + len(kind_cases) + len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1)
     print("\n" + "─" * 68)

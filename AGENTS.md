@@ -17,6 +17,15 @@ Ooglex 当前采用静态HTML、CSS和原生JavaScript前端，Python脚本生�
 3. 与任务直接相关的现有页面、脚本、数据和工作流
 4. `CHANGELOG.md`
 
+动全球产业链板块（`apps/supply-chain/`）之前，另读：
+
+- `docs/SUPPLY_CHAIN_BACKLOG.md` —— 当前状态与待办（这是台账，每次推进后更新）
+- `.claude/skills/supply-chain/SKILL.md` —— 开发口径、踩过的坑、四道校验与收尾
+- `docs/SUPPLY_CHAIN_GRAPH.md` / `docs/SUPPLY_CHAIN_SOURCES.md` —— 历史实测结论与许可红线
+
+该板块的第一条规则：**框架可以用行业通识建，公司间的关系必须有可核验的原始出处。**
+模型的行业知识不是数据源。
+
 ## 不可违反的规则
 
 1. 保留现有网站功能、URL和数据管道。未经明确要求，不删除、重命名或替换现有栏目。
