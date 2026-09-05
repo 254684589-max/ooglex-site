@@ -85,6 +85,16 @@ jobs:
           python scripts/supply-chain/extract_form_sd.py \
             ${{ inputs.force_form_sd == 'yes' && '--force' || '' }}
 
+      # 外国私人发行人（报 20-F／40-F 且报 Form SD 的那一批）。公司池此前只有
+      # 标普 500，半导体链上没有 ASML 和台积电根本画不出来。只收同时报 SD 的，
+      # 因为报 SD 才可能带来冶炼厂名单——只增加孤立节点的扩池没有意义。
+      # 失败不中断：构建脚本读不到这份缓存时只出标普那 495 家，不产出空数据。
+      - name: Fetch SEC foreign private issuers
+        continue-on-error: true
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: python scripts/supply-chain/fetch_foreign_identity.py
+
       # 冶炼厂中文译名表。与带出处的申报数据分开发布——边文件里是申报原文，
       # 译名是我们加的标注，混在一起会让「哪些是原文」分不清。
       - name: Build smelter Chinese name table
@@ -119,7 +129,8 @@ jobs:
           # 只暂存本工作流拥有的路径，不夹带任何其他改动。
           git add apps/supply-chain/nodes.json apps/supply-chain/health.json \
                   apps/supply-chain/identity.json apps/supply-chain/smelters.json \
-                  apps/supply-chain/names-zh.json apps/supply-chain/edges
+                  apps/supply-chain/names-zh.json apps/supply-chain/edges \
+                  apps/supply-chain/peers.json apps/supply-chain/foreign.json
           if git diff --cached --quiet; then
             echo "生成结果与仓库一致，跳过提交和推送"
             exit 0

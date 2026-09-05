@@ -464,7 +464,19 @@
     // 空环节不印市值与涨跌：0 亿和一句「涨跌见全部」都是噪音，
     // 这条带子要说的只有一件事——这一段没有公司。
     if (total) {
-      hd.appendChild(el("span", "mc", cap(capOf(d, meta.id))));
+      // 市值合计只含有站内报价的公司。外国发行人那批没有报价，如实不计入，
+      // 并在这一格的提示里说出来——不说的话「18 家 / 10.98 万亿」看着像
+      // 18 家的合计，其实是 15 家的。
+      var quoted = visibleNodes(d).filter(function (x) {
+        return x.stage === meta.id && isNum(x.marketCap);
+      }).length;
+      var mcEl = el("span", "mc", cap(capOf(d, meta.id)));
+      mcEl.title = total === quoted
+        ? "本环节 " + total + " 家的市值合计"
+        : "本环节 " + total + " 家里 " + quoted + " 家有站内报价，市值合计只含这 "
+          + quoted + " 家；其余是外国私人发行人，站内无报价";
+      if (total !== quoted) mcEl.appendChild(el("s", null, "*"));
+      hd.appendChild(mcEl);
       // 表头只留等权一个口径，另两个在细分条下面给全——是降级，不是删掉
       if (state.chain) {
         // 环节涨跌是构建时按**整个环节**算好的，筛出一条链之后这个数不再对应
@@ -1085,6 +1097,18 @@
         + ((d.coverage || {}).chainMulti || 0) + " 家如此），因为 SIC 3533 油气田机械"
         + "本来就既在油气链也在工业机械链。"
         + "链是分类，不是关系：同一条链上的两家公司之间有没有供应关系，只有申报文件说了算。");
+    }
+    var cov = d.coverage || {};
+    if (cov.poolForeignIssuer) {
+      para("公司池：", "两个池。标普 500 成分股 " + cov.poolSp500 + " 家来自站内公司榜，"
+        + "有市值与当日涨跌；在美上市的外国私人发行人 " + cov.poolForeignIssuer
+        + " 家来自 SEC EDGAR（报 20-F／40-F 且同时报 Form SD 的那一批），"
+        + "站内没有它们的报价——市值合计与环节涨跌都不含这批公司，"
+        + "带 * 的市值即为此。收这一批而不是全部一千余家外国发行人，是因为报 "
+        + "Form SD 才可能带来冶炼厂名单，也就是加进来同时带节点和边；"
+        + "只增加孤立节点的扩池没有意义。"
+        + "指数商的成分股名单（MSCI ACWI、S&P Global 1200）是专有数据，"
+        + "再分发要授权，因此没有采用。");
     }
     para("环节涨跌：", perf.method || "");
     para("剔除口径：", "阶段未判定 " + (ex.stageNotResolved || 0) + " 家不摊入任何环节；" +
