@@ -618,6 +618,23 @@ def check_pools(payload: dict, errors: list[str]) -> None:
         fail(errors, f"coverage.nodesWithoutQuote {coverage.get('nodesWithoutQuote')} "
                      f"与实际 {without_quote} 家不符")
 
+    # 中文名对照表。**没有中文名不是错误**（多数加拿大初级矿商本就没有通用
+    # 译名，显示英文原文是对的），要拦的是两件事：
+    # 一、表里有条目在数据里找不到对应公司——那条键抄错了，白写；
+    # 二、报的家数与节点里实际有译名的家数对不上——覆盖率在说假话。
+    name_zh = coverage.get("foreignNameZh")
+    if isinstance(name_zh, dict):
+        orphans = name_zh.get("orphans") or []
+        if orphans:
+            fail(errors, f"中文名对照表里 {len(orphans)} 条在数据里找不到对应公司，"
+                         f"键抄错了：{'、'.join(map(str, orphans[:5]))}")
+        named = sum(1 for n in nodes
+                    if n.get("pool") == "sec-foreign-issuer"
+                    and n.get("name") and n.get("name") != n.get("nameEn"))
+        if name_zh.get("named") not in (None, named):
+            fail(errors, f"coverage.foreignNameZh.named {name_zh.get('named')} "
+                         f"与实际有中文名的 {named} 家不符")
+
     # 环节涨跌的分母只能是有报价的那批。混进无报价的公司会伪造当日表现。
     perf = payload.get("stagePerformance") or {}
     counted = sum(row.get("companies") or 0 for row in perf.get("stages") or [])

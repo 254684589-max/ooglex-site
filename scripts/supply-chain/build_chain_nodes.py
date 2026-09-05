@@ -493,6 +493,17 @@ def apply_identity(node: dict, record: dict, sic_module, chain_module=None) -> d
     return node
 
 
+def load_company_names_zh():
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "company_names_zh.py")
+    spec = importlib.util.spec_from_file_location("company_names_zh", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+names_zh = load_company_names_zh()
+
+
 def _country_map() -> dict[str, str]:
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "form_sd_parse.py")
     spec = importlib.util.spec_from_file_location("_form_sd_for_nodes", path)
@@ -530,7 +541,10 @@ def build_foreign_node(record: dict, sic_module, chain_module=None) -> dict:
     node = {
         "id": symbol,
         "symbol": symbol,
-        "name": record.get("name") or symbol,
+        # 中文名只在确有通用叫法时才有（台积电、阿斯麦这类）；
+        # 给不出可靠译名的 name 就等于 nameEn，页面照英文原文显示。
+        # 半译出来的名字看着像中文名，其实是编的，比英文原文更糟。
+        "name": names_zh.name_for(record.get("name")) or record.get("name") or symbol,
         "nameEn": record.get("name") or symbol,
         # 站内板块分类只覆盖标普成分股，这批公司没有，如实留空——
         # 环节与产业链都由 SIC 判，不依赖板块。
@@ -723,6 +737,15 @@ def build() -> None:
     for node in foreign_nodes_all:
         key = node.get("countryBasis") or "unknown"
         country_basis[key] = country_basis.get(key, 0) + 1
+    # 中文名覆盖情况。**没有中文名不是缺口**：加拿大初级矿商本来就没有通用
+    # 中文名，显示英文原文是正确结果。报这个数是为了让「对照表写错了」露头——
+    # 表里有一条却在数据里找不到对应公司，就说明那条键抄错了。
+    zh_named = sum(1 for n in foreign_nodes_all if n.get("name") != n.get("nameEn"))
+    live_names = {n.get("nameEn") for n in foreign_nodes_all}
+    zh_orphans = sorted(k for k in names_zh.NAMES if k not in live_names)
+    if zh_orphans:
+        print(f"[!!] 中文名对照表里有 {len(zh_orphans)} 条在数据里找不到对应公司"
+              f"（键抄错了）：{'、'.join(zh_orphans[:5])}")
     # 边文件还在、但最近一轮扫描没再抽到名单的公司。抽取器**不删有效历史数据**
     # （AGENTS.md：不得删除有效历史数据来掩盖抓取失败），所以文件保留着上一轮的
     # 结果；但覆盖率报的是本轮扫描口径，两个数就会差几家。
@@ -857,6 +880,13 @@ def build() -> None:
             "byCountry": by_country,
             # 上面那一栏的国别各自来自哪个 SEC 字段。页面照这个数说话。
             "countryBasis": country_basis,
+            # 中文名：有通用译名的家数、对照表总条数、以及对不上号的条目。
+            # orphans 非空就是对照表写错了，契约会拦。
+            "foreignNameZh": {
+                "named": zh_named,
+                "glossary": len(names_zh.NAMES),
+                "orphans": zh_orphans,
+            },
             # 见上：边来自更早的扫描，本轮未复现。列出代码，读者可自己核对。
             "edgesFromEarlierScan": stale,
             # 按实际 stageBasis 分组。曾经把所有已判定的都记成 sector-initial，
