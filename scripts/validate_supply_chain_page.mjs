@@ -607,6 +607,62 @@ async function main() {
         assert.ok(!/供应商/.test(fl.lead + fl.sub + fl.key),
           "流向图文案出现「供应商」——语义是「出现在供应链中」，间接、不含份额");
       });
+      /* 上游集中度。这是本页少见的、完全不需要推断的读数，也正因如此最容易被
+         读成「这 N 家都从它采购」。守两件事：数对得上，以及那句澄清在。 */
+      const CONC = NODES.upstreamConcentration || [];
+      if (CONC.length) {
+        const listedN = Object.keys(NODES.edgeIndex || {}).length;
+        const cc = await evaluate(`(() => {
+          const sec = document.getElementById('concsec');
+          if (!sec || sec.hidden) return { shown: false };
+          const rows = [...sec.querySelectorAll('.concrow')];
+          return {
+            shown: true,
+            count: rows.length,
+            names: rows.map(r => (r.querySelector('.nm') || {}).textContent || ''),
+            nums: rows.map(r => parseInt((r.querySelector('.n') || {}).textContent, 10)),
+            marks: rows.filter(r => r.querySelector('.nm s')).length,
+            lead: (document.getElementById('conc-lead') || {}).textContent || '',
+            foot: (document.getElementById('conc-foot') || {}).textContent || '',
+            overflow: Math.max(0, document.documentElement.scrollWidth - window.innerWidth)
+          };
+        })()`);
+        check(`上游集中度已渲染（${CONC.length} 行）`, () => {
+          assert.ok(cc.shown, "区块没显示");
+          assert.equal(cc.count, CONC.length, `页面 ${cc.count} 行`);
+        });
+        check(`每行的家数取自数据且降序`, () => {
+          assert.deepEqual(cc.nums, CONC.map(r => r.filerCount));
+          const desc = cc.nums.every((n, i) => i === 0 || cc.nums[i - 1] >= n);
+          assert.ok(desc, `不是降序：${JSON.stringify(cc.nums.slice(0, 8))}`);
+        });
+        check(`说清分母是有名单的 ${listedN} 家，不是全部 ${NODES.nodes.length} 家`, () => {
+          assert.ok(cc.lead.includes(String(listedN)), `导语：${cc.lead}`);
+          assert.match(cc.lead, /不是全部/);
+        });
+        check(`不把「共同列入」说成直接采购`, () => {
+          assert.match(cc.foot, /不说明.*直接采购关系/);
+          assert.match(cc.foot, /只会少算/);
+        });
+        // 同名两条是登记表刻意不合并的结果，页面必须标出来，否则看起来像 bug
+        const dupNames = new Set();
+        const seenName = new Map();
+        CONC.forEach(r => {
+          const k = (r.name || "").toLowerCase();
+          if (seenName.has(k)) dupNames.add(k);
+          seenName.set(k, true);
+        });
+        if (dupNames.size) {
+          check(`同名多条被标出并解释（${dupNames.size} 组）`, () => {
+            assert.ok(cc.marks >= dupNames.size * 2,
+              `标记 ${cc.marks} 个，至少该有 ${dupNames.size * 2} 个`);
+            assert.match(cc.foot, /不做同义合并/);
+          });
+        }
+        check(`上游集中度无横向溢出`, () => assert.ok(cc.overflow <= 1,
+          `溢出 ${cc.overflow}px`));
+      }
+
       check(`流向区块无横向溢出`, () => assert.ok(fl.overflow <= 1,
         `溢出 ${fl.overflow}px`));
 
@@ -948,6 +1004,59 @@ async function main() {
         ed.geoText.slice(0, 120)));
       check(`页面无横向溢出`, () => assert.ok(ed.bodyOverflow <= 1,
         `溢出 ${ed.bodyOverflow}px`));
+
+      /* 公司页的上游冶炼厂重叠。这是全站唯一一条公司 ↔ 公司的关系，
+         最容易被读成「苹果的供应商是这些」——而那正是不能说的话。 */
+      let PEERS = null;
+      try {
+        PEERS = JSON.parse(await readFile(path.join(ROOT, "apps/supply-chain/peers.json"), "utf8"));
+      } catch { /* 还没算过就跳过这一组 */ }
+      const myPeer = PEERS && (PEERS.companies || {})[target];
+      if (myPeer && (myPeer.peers || []).length) {
+        const pb = await evaluate(`(() => {
+          const box = document.querySelector('.peerbox');
+          if (!box) return { shown: false };
+          const rows = [...box.querySelectorAll('.peer')];
+          return {
+            shown: true,
+            count: rows.length,
+            shared: rows.map(a => parseInt((a.querySelector('.sh')||{}).textContent, 10)),
+            hrefs: rows.map(a => a.getAttribute('href')),
+            cap: (box.querySelector('.pcap') || {}).textContent || '',
+            topShared: box.querySelectorAll('.pshare').length,
+            warn: (box.querySelector('.pwarn') || {}).textContent || '',
+            warnVisible: !!(box.querySelector('.pwarn') || {}).offsetParent
+          };
+        })()`, sessionId);
+        check(`${target} 页显示上游重叠（${myPeer.peers.length} 家）`, () => {
+          assert.ok(pb.shown, "没渲染出上游重叠块");
+          assert.equal(pb.count, myPeer.peers.length, `页面 ${pb.count} 行`);
+        });
+        check(`重叠数取自 peers.json，且降序`, () => {
+          assert.deepEqual(pb.shared, myPeer.peers.map(p => p.shared));
+          const desc = pb.shared.every((n, i) => i === 0 || pb.shared[i - 1] >= n);
+          assert.ok(desc, `不是降序：${JSON.stringify(pb.shared)}`);
+        });
+        check(`重叠不超过本公司名单长度 ${myPeer.total}`, () => {
+          const over = pb.shared.filter(n => n > myPeer.total);
+          assert.equal(over.length, 0, `有 ${over.length} 行超过`);
+        });
+        check(`导语写明本公司名单多大、共有多少家重叠`, () => {
+          assert.ok(pb.cap.includes(String(myPeer.total)), `导语：${pb.cap}`);
+          assert.ok(pb.cap.includes(String(myPeer.peerCount)));
+        });
+        check(`可点进对方公司页`, () => assert.ok(
+          pb.hrefs.every(h => /company\.html\?symbol=/.test(h || "")),
+          `实际 ${JSON.stringify(pb.hrefs.slice(0, 3))}`));
+        check(`写明重叠不表示业务往来`, () => {
+          assert.ok(pb.warnVisible, "说明在 DOM 里但不可见，等同于没写");
+          assert.match(pb.warn, /不表示两家之间有业务往来/);
+          assert.match(pb.warn, /只会少算/);
+        });
+        check(`上游重叠的说明里没有漏出的星号`, () => assert.ok(
+          !/\*\*/.test(pb.warn), `实际：${pb.warn.slice(0, 60)}`));
+      }
+
 
       // 清单进主栏之后要在窄屏上复核一遍：几百条多列排布最容易撑破布局，
       // 而这一段是新加的，之前三档宽度的断言没覆盖到它。

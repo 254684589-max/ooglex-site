@@ -56,6 +56,9 @@ HEALTH_PATH = os.path.join(OUT_DIR, "health.json")
 # 总览页为了看六个环节而下载几 MB。改为每家一个文件，公司页按需拉自己那一个。
 EDGES_DIR = os.path.join(OUT_DIR, "edges")
 SMELTERS_PATH = os.path.join(OUT_DIR, "smelters.json")
+# 公司两两之间的上游重叠。单独一个文件：只有公司页用得上，
+# 总览页不该为了六个环节多下 120KB。
+PEERS_PATH = os.path.join(OUT_DIR, "peers.json")
 
 # ── 价值链阶段定义 ──────────────────────────────────────────────────────────
 # 八段实物链 + 四层使能层。chain=True 的在实物流转链条上、按 order 首尾相接；
@@ -151,6 +154,29 @@ def load_chain_resolver():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def load_peers_builder():
+    """载入上游重叠的计算模块。缺失时返回 None，本轮不写 peers.json——
+    与 SIC 那两张表同一条退路，不因为缺一个模块就中断构建。"""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "smelter_peers.py")
+    if not os.path.exists(path):
+        return None
+    spec = importlib.util.spec_from_file_location("smelter_peers", path)
+    if spec is None or spec.loader is None:
+        return None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def load_smelter_registry() -> dict:
+    """读冶炼厂登记表本体（算上游重叠要用它的 filers）。"""
+    try:
+        with open(SMELTERS_PATH, encoding="utf-8") as handle:
+            return (json.load(handle) or {}).get("smelters") or {}
+    except (OSError, ValueError):
+        return {}
 
 
 def load_identity() -> dict:
@@ -540,6 +566,16 @@ def build() -> None:
         # 留着会让公司页显示一份不再属于任何节点的名单。
         raise SystemExit(f"边文件 {orphans} 不在节点表中，中止（请删除或重跑抽取器）")
 
+    # ── 上游重叠：本板块第一条公司 ↔ 公司的关系 ──────────────────────────
+    # 它是两份原始申报的**直接交集**（甲的名单里有 X、乙的名单里也有 X），
+    # 不是推断。语义就到这里为止：共同暴露，不是业务往来。
+    peers_module = load_peers_builder()
+    peers = None
+    if peers_module:
+        registry = load_smelter_registry()
+        if registry:
+            peers = peers_module.build_peers(registry)
+
     form_sd_coverage = load_form_sd_coverage()
 
     # 逐家申报状态盖到节点上，再按板块汇总。这是为了回答一个具体问题：
@@ -638,6 +674,9 @@ def build() -> None:
         # 都能点开原始申报。两者在数据、页面、文案三处都不得混为一谈。
         "chainLinks": chain_links,
         "chainCrossCutting": chain_cross,
+        # 上游集中度：一家冶炼厂被多少家申报人共同列入。榜单放这里是因为总览页
+        # 已经会下 nodes.json，不必为十几行多发一次请求；逐家的重叠在 peers.json。
+        "upstreamConcentration": (peers or {}).get("concentration") or [],
         "nodes": nodes,
         # 每家一个文件，公司页按需拉。索引里带出处链接，不必先下文件才知道有没有边。
         "edgeIndex": edge_index,
@@ -652,6 +691,8 @@ def build() -> None:
             "chainUnclassified": chain_unclassified,
             "chainLinksTotal": len(chain_links),
             "chainDepth": chain_depth,
+            "upstreamPairs": (peers or {}).get("pairs", 0),
+            "upstreamConcentrationTotal": (peers or {}).get("concentrationTotal", 0),
             "chainCounterflow": sum(1 for l in chain_links
                                     if l.get("direction") == "counterflow"),
             "chainMulti": chain_multi,
@@ -753,6 +794,37 @@ def build() -> None:
         if chain_depth:
             print(f"  层次：{chain_depth} 层（由连线算出），"
                   f"逆向边 {sum(1 for l in chain_links if l.get('direction') == 'counterflow')} 条")
+    # peers.json 单独写盘。没算出来就不写，也不删旧的——与「不拿坏结果覆盖好数据」
+    # 同一条规矩。
+    if peers:
+        peers_payload = {
+            "contractVersion": CONTRACT_VERSION,
+            "dataset": "supply-chain-peers",
+            "updatedAt": now,
+            "relation": peers_module.RELATION,
+            "note": ("两家申报人的冶炼厂名单里出现了同一批冶炼厂，由两份原始申报的"
+                     "交集得出，不含任何推断。**不表示两家之间有业务往来**，"
+                     "表示的是上游冶炼环节的共同暴露。"
+                     "只有名字的冶炼厂按规范化名字合并，同一家厂写法不同会被算成两条，"
+                     "因此本口径**只会少算不会多算**。"),
+            "coverage": {
+                "companies": len(peers["companies"]),
+                "pairs": peers["pairs"],
+                "maxPeersPerCompany": peers["maxPeers"],
+                "maxSharedPerCompany": peers["maxShared"],
+                "understatesOverlap": True,
+            },
+            "companies": peers["companies"],
+        }
+        with open(PEERS_PATH, "w", encoding="utf-8") as handle:
+            json.dump(peers_payload, handle, ensure_ascii=False, indent=2, sort_keys=True)
+        print(f"  上游重叠：{len(peers['companies'])} 家申报人、{peers['pairs']} 对"
+              f" → {PEERS_PATH}")
+        top = (peers.get("concentration") or [])[:1]
+        if top:
+            print(f"  上游集中度最高：{top[0]['name']}（{top[0]['filerCount']} 家共同申报）"
+                  f"，榜单取前 {len(peers['concentration'])}/{peers['concentrationTotal']}")
+
     if form_sd_coverage:
         print(f"  Form SD：有名单 {form_sd_coverage.get('companiesWithList')} 家 · "
               f"有申报无名单 {form_sd_coverage.get('companiesFiledNoList')} 家 · "

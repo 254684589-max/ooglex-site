@@ -202,6 +202,32 @@
   font-size:11px; color:var(--faint); line-height:1.6;
   margin-top:10px; padding-top:8px; border-top:1px dashed var(--line);
 }
+
+/* 上游集中度。条的长度就是家数，与「真实流向」同一套语义：宽度有实测含义。 */
+.concsec { padding:14px 16px; margin:0 0 18px; }
+.concsec .lead { font-size:13px; margin-bottom:10px; }
+.concrow { display:flex; align-items:center; gap:8px; padding:3px 0; }
+.concrow .rk { width:22px; flex:none; font-size:11px; color:var(--faint);
+  text-align:right; font-variant-numeric:tabular-nums; }
+.concrow .nm { flex:0 0 34%; min-width:0; font-size:12px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+/* 同名两条的标记。不合并是登记表的规矩，但要让读者看得出为什么有两行。 */
+.concrow .nm s { text-decoration:none; font-size:9px; color:var(--warn);
+  border:1px solid currentColor; border-radius:999px; padding:0 5px; margin-left:6px; }
+.concrow .ct { flex:none; font-size:11px; color:var(--dim); width:74px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.concrow .bar { flex:1 1 auto; height:9px; border-radius:3px; min-width:20px;
+  background:linear-gradient(90deg, var(--s3), var(--s2)); }
+.concrow .n { flex:none; font-size:11px; width:52px; text-align:right;
+  font-variant-numeric:tabular-nums; }
+.concsec .foot2 { font-size:11px; color:var(--faint); line-height:1.6;
+  margin-top:10px; padding-top:9px; border-top:1px solid var(--line); }
+@media (max-width:560px) {
+  .concrow { flex-wrap:wrap; gap:2px 6px; }
+  .concrow .nm { flex:1 1 auto; }
+  .concrow .ct { width:auto; }
+  .concrow .bar { flex-basis:100%; order:9; }
+}
 @media (max-width:560px) {
   .chainpick .picklv { flex-wrap:wrap; gap:2px; }
   .chainpick .lv { width:auto; padding-top:2px; }
@@ -389,6 +415,18 @@
     <div class="flowkey" id="flow-key"></div>
   </section>
 
+  <div class="sec-h">
+    <h2>上游集中度</h2>
+    <span id="conc-sub">同一家冶炼厂被多少家申报人共同列入 · 全部来自申报名单，不含推断</span>
+  </div>
+  <!-- 这是本板块少见的、完全不需要推断的风险读数：名单里数出来的。
+       但分母必须说清是 90 家有名单的公司，不是 495 家。 -->
+  <section class="glass concsec" id="concsec" hidden aria-label="上游集中度">
+    <p class="lead" id="conc-lead"></p>
+    <div id="conc-rows"></div>
+    <p class="foot2" id="conc-foot"></p>
+  </section>
+
   <details class="glass meth">
     <summary>数据方法与来源</summary>
     <div class="body" id="method"></div>
@@ -401,6 +439,6 @@
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="app.js?v=fda368a4" defer></script>
+<script src="app.js?v=ffcdbb10" defer></script>
 </body>
 </html>

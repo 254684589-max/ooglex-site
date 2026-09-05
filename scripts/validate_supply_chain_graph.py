@@ -538,6 +538,91 @@ def check_chain_links(payload: dict, errors: list[str]) -> None:
             fail(errors, f"逆向边 {link.get('from')}→{link.get('to')} 没写为什么是逆向的")
 
 
+PEERS_PATH = "apps/supply-chain/peers.json"
+# 升格词。上游重叠是「两家名单里有同一批冶炼厂」，说成供应商／合作／伙伴
+# 都是替申报人下结论，而且是错的——这正是本板块最想守住的那条线。
+_OVERSTATED = ("供应商", "合作", "伙伴", "客户", "供货")
+
+
+def check_peers(payload: dict, errors: list[str]) -> None:
+    """上游重叠的契约。守三件事：不多算、说得准、两边对得上。
+
+    这是本板块第一条公司 ↔ 公司的关系，也因此是最容易说过头的一条。
+    它只是两份申报名单的交集，**不表示两家之间有任何业务往来**。
+    """
+    if not os.path.exists(PEERS_PATH):
+        return                              # 还没算过不是错误
+    try:
+        with open(PEERS_PATH, encoding="utf-8") as handle:
+            peers = json.load(handle)
+    except (OSError, ValueError) as exc:
+        fail(errors, f"{PEERS_PATH} 读不出来：{exc}")
+        return
+
+    relation = peers.get("relation") or {}
+    if relation.get("id") != "shared-smelter-upstream":
+        fail(errors, f"peers.relation.id 是 {relation.get('id')!r}，口径变了要同步契约")
+    text = (relation.get("label") or "") + (peers.get("note") or "")
+    for word in _OVERSTATED:
+        if word in text and "不表示" not in text.split(word)[0][-24:]:
+            # 出现升格词而附近没有否定，多半是把重叠说成了业务关系
+            if f"不表示两家之间有业务往来" not in text:
+                fail(errors, f"peers 的说明里出现「{word}」却没有澄清——"
+                             "上游重叠不是供应关系")
+                break
+    if "只会少算" not in (peers.get("note") or ""):
+        fail(errors, "peers.note 没写明这个口径只会少算——"
+                     "读者会把重叠数当成精确值")
+
+    coverage = peers.get("coverage") or {}
+    if coverage.get("understatesOverlap") is not True:
+        fail(errors, "peers.coverage.understatesOverlap 必须为 true")
+
+    companies = peers.get("companies") or {}
+    with_edges = set((payload.get("edgeIndex") or {}))
+    counts: dict[tuple[str, str], int] = {}
+    for symbol, row in companies.items():
+        if symbol not in with_edges:
+            fail(errors, f"peers 里的 {symbol} 没有边文件——没有名单就不可能有重叠")
+        total = row.get("total") or 0
+        for peer in row.get("peers") or []:
+            other = peer.get("symbol")
+            shared = peer.get("shared") or 0
+            peer_total = peer.get("peerTotal") or 0
+            if other == symbol:
+                fail(errors, f"peers 里 {symbol} 与自己重叠")
+            # 重叠不可能超过任何一方的名单长度。超了就是算法把同一条数了两遍。
+            if shared > total or (peer_total and shared > peer_total):
+                fail(errors, f"peers {symbol}↔{other} 重叠 {shared} 超过名单长度"
+                             f"（{total} / {peer_total}）——多算了")
+            if shared <= 0:
+                fail(errors, f"peers {symbol}↔{other} 重叠 {shared}，不该列出来")
+            counts[(symbol, other)] = shared
+
+    # 对称性：两边都列出对方时，数必须一样。列表有上限，所以只查两边都在的那些。
+    for (left, right), count in counts.items():
+        mirror = counts.get((right, left))
+        if mirror is not None and mirror != count:
+            fail(errors, f"peers {left}↔{right} 两边对不上：{count} vs {mirror}")
+
+    # 集中度榜：一家冶炼厂被多少家共同申报，不可能超过有名单的公司数
+    listed = len(with_edges)
+    rows = payload.get("upstreamConcentration") or []
+    total_rows = (payload.get("coverage") or {}).get("upstreamConcentrationTotal") or 0
+    if len(rows) > total_rows:
+        fail(errors, f"集中度榜 {len(rows)} 条多于总数 {total_rows}")
+    for row in rows:
+        n = row.get("filerCount") or 0
+        if n > listed:
+            fail(errors, f"冶炼厂 {row.get('name')!r} 被 {n} 家申报，"
+                         f"超过有名单的 {listed} 家——数错了")
+        if n < 2:
+            fail(errors, f"冶炼厂 {row.get('name')!r} 只有 {n} 家申报，"
+                         "不构成集中度，不该上榜")
+    if rows != sorted(rows, key=lambda r: -(r.get("filerCount") or 0)):
+        fail(errors, "集中度榜没有按家数降序——页面按顺序显示，排错就是排行榜错")
+
+
 def check_home_card(payload: dict, errors: list[str]) -> None:
     """站点首页那张卡片上印的数，必须等于 nodes.json 里的数。
 
@@ -606,6 +691,7 @@ def main() -> int:
     check_coverage(payload, counts, edge_count, errors)
     check_chains(payload, errors)
     check_chain_links(payload, errors)
+    check_peers(payload, errors)
     check_home_card(payload, errors)
     check_no_conflict_markers(errors)
     smelters = check_smelters(errors, edge_count)
