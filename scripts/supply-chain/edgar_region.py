@@ -161,10 +161,16 @@ def address_country(block: dict | None) -> tuple[str | None, str | None]:
     数据落在另一套字段里。`isForeignLocation` 就是这两套的开关。
     """
     block = block or {}
-    country = (block.get("country") or "").strip()
-    if country:
-        return country, (block.get("foreignStateTerritory") or "").strip() or None
-    return None, None
+    raw = (block.get("country") or "").strip()
+    if not raw:
+        return None, None
+    # **这个字段里也可能写着「省, 国」**：加拿大那几家的 country 直接就是
+    # 「Ontario, Canada」。所以它同样要过 split_region——这条快路第一版
+    # 原样返回，四家加拿大公司立刻又变回按省分行，正是这一轮开头修掉的那个 bug
+    # 从新加的代码路径上重新长了出来。新开一条路就得把老规矩一起带过去。
+    country, region_name = split_region(raw)
+    territory = (block.get("foreignStateTerritory") or "").strip()
+    return country, (territory or region_name or None)
 
 
 def resolve_country(meta: dict, code_map: dict[str, str]) -> dict:

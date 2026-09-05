@@ -1398,6 +1398,15 @@ def main() -> int:
                                  "stateOrCountryDescription": "California"}) == (None, None),
          "美国境内地址没有 country 字段，这条路返回空、交给原来那套"),
         (region.address_country({}) == (None, None), "空地址块返回空"),
+        # country 字段里也会写「省, 国」。第一版这条快路原样返回，
+        # 四家加拿大公司当场又按省分行——这一轮开头修掉的 bug 从新代码路径复发。
+        (region.address_country({"country": "Ontario, Canada"}) == ("Canada", "Ontario"),
+         "country 字段里写着「省, 国」时照样折成加拿大，不绕过 split_region"),
+        (region.address_country({"country": "Canada (Federal Level)"}) == ("Canada", None),
+         "「Canada (Federal Level)」在这条路上也折成加拿大"),
+        (region.address_country({"country": "Ontario, Canada",
+                                 "foreignStateTerritory": "ON"}) == ("Canada", "ON"),
+         "有 foreignStateTerritory 时用它当下级地区，没有才用逗号前那半"),
         (region.resolve_country(
             {"stateOfIncorporation": "",
              "addresses": {"business": {"country": "Taiwan",
