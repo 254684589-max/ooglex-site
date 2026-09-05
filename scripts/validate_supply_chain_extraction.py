@@ -1336,6 +1336,42 @@ def main() -> int:
             failures.append(f"撤回判据：{why} 不成立")
         print(f"  [{'OK' if ok else 'XX'}] {why}")
 
+    print("\n── 正文探针：数得准，才谈得上拿它下结论 ────────────────────────")
+    # 这条探针的计数被用来判定「洛马／埃森哲／丹纳赫到底有没有名单」，
+    # 也被用来判定「PDF 接不接」。**数错了就会得出错的结论**，所以钉住。
+    body = load_module(os.path.join(os.path.dirname(EXTRACT_PATH),
+                                    "probe_form_sd_body.py"), "probe_form_sd_body")
+    _HTML = ("<html><body><h1>Conflict Minerals Report</h1>"
+             "<table><tr><td>Gold</td><td>CID001234</td></tr></table>"
+             "<script>var x = 'smelter smelter smelter';</script>"
+             "<style>.a{content:'refiner'}</style>"
+             "<ul><li>One</li><li>Two</li></ul></body></html>")
+    tp = body._Text()
+    tp.feed(_HTML)
+    body_cases = [
+        (tp.counts.get("table") == 1 and tp.counts.get("tr") == 1,
+         "表格与行数得对"),
+        (tp.counts.get("li") == 2,
+         "项目符号也数——名单不一定排成表格"),
+        ("smelter" not in tp.text(),
+         "script 里的字不算正文：否则一段脚本就能把「有名单」的线索刷上去"),
+        ("refiner" not in tp.text(),
+         "style 里的字同样不算"),
+        ("CID001234" in tp.text(),
+         "表格里的编号要留在正文里——CID 是判定的决定性线索"),
+        (body._HINTS["CID编号"].findall("CID001234 CID 001234 CID-001234")
+         == ["CID001234", "CID 001234", "CID-001234"],
+         "CID 三种写法都认（各家格式不一）"),
+        (not body._HINTS["CID编号"].findall("ACID001234x"),
+         "不把词中间的 CID 当编号"),
+        (body.skip_reason("formsd2026.pdf") == "非 HTML",
+         "PDF 现在仍被抽取器跳过——探针照实标出来，不假装它读了"),
+    ]
+    for ok, why in body_cases:
+        if not ok:
+            failures.append(f"正文探针：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
     print("\n── 国别：折成真国家，且说清是从哪个字段来的 ──────────────────────")
     region = load_module(os.path.join(os.path.dirname(EXTRACT_PATH), "edgar_region.py"),
                          "edgar_region")
@@ -1447,7 +1483,7 @@ def main() -> int:
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
-             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases)
+             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases) + len(body_cases)
              + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:
