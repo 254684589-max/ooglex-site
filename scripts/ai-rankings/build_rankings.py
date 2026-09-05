@@ -11,7 +11,8 @@
   - 三源相互独立，单源失败不影响其余；该轴逐模型沿用上次 data.json 的值；
   - 三源全部失败则保留上次 data.json，绝不用空/脏数据覆盖好数据；
   - 结果按「综合参考分」排序（三轴各自 min-max 归一化后加权 0.4/0.3/0.3，
-    至少两榜有数据才计综合分，单榜模型排在其后）。
+    至少两榜有数据才计综合分，单榜模型排在其后）；
+  - 多榜与单榜的写盘名额分开算，新模型只被一个榜收录时不会被截断规则悄悄丢掉。
 """
 import csv
 import io
@@ -30,7 +31,11 @@ TIMEOUT = 25
 
 AXES = ("arena", "livebench", "aa")
 WEIGHTS = {"arena": 0.4, "livebench": 0.3, "aa": 0.3}
-TOP_N = 40                         # data.json 只保留前 N 名，其余留在源里不写盘
+TOP_N = 40                         # 多榜模型（≥2 榜、有综合分）写进 data.json 的名额
+TOP_SINGLE = 12                    # 单榜模型的名额，与多榜名额分开算。定 12 是因为单榜
+                                   # 这一段挤满了已上榜模型的 effort/变体条目（Fable 5.1
+                                   # Max Effort、Opus 5 …），留窄了真正的新模型会被它们挤掉：
+                                   # 2026-09-05 GPT-6 Astra 在单榜里只排第 7。
 
 # ---------------------------------------------------------------- 基础请求
 
@@ -340,6 +345,24 @@ def merge_sources(arena, lb, aa, prev_models):
     return models
 
 
+def axis_count(m):
+    """这个模型有几个榜给出了分数。"""
+    return sum(1 for k in AXES if isinstance(m.get(k), (int, float)))
+
+
+def select_for_output(ranked):
+    """按两类名额挑出写进 data.json 的模型：多榜前 TOP_N + 单榜前 TOP_SINGLE。
+
+    两类分开算是有意的。合在一起截断的话，单榜模型永远排在多榜模型之后，名额被多榜
+    模型占满就会被整体挤掉——**刚发布的模型必然只有一两个榜收录，正是最该出现却最
+    容易被这条截断规则悄悄丢掉的一批**（2026-09-05：GPT-6 Astra 只有 LiveBench 有
+    分，合并后排第 45 名，就是这样掉出 data.json 的）。
+    """
+    multi = [m for m in ranked if axis_count(m) >= 2][:TOP_N]
+    single = [m for m in ranked if axis_count(m) == 1][:TOP_SINGLE]
+    return multi + single          # 仍保持「单榜排在多榜之后」的既有顺序
+
+
 def score_models(models):
     """写入 `_combo` 并按其降序排序（与前端同口径）：≥2 榜才计综合，单榜模型排在其后。"""
     def ranges(key):
@@ -379,7 +402,7 @@ def build():
         print("三源全部失败且无历史数据")
         return 1
 
-    models = score_models(merge_sources(arena, lb, aa, prev_models))[:TOP_N]
+    models = select_for_output(score_models(merge_sources(arena, lb, aa, prev_models)))
     for m in models:
         m.pop("_combo", None)
 

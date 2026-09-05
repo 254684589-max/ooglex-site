@@ -32,9 +32,12 @@
     { key: "open", label: "🔓 开源模型" }
   ];
   var AXES = [
-    { key: "arena", short: "Arena", color: "var(--arena)", fmt: function (v) { return Math.round(v); } },
-    { key: "livebench", short: "LiveB", color: "var(--lb)", fmt: function (v) { return v.toFixed(1); } },
-    { key: "aa", short: "智能", color: "var(--aa)", fmt: function (v) { return v.toFixed(1); } }
+    { key: "arena", short: "Arena", name: "竞技场", lab: "Arena Elo", color: "var(--arena)",
+      fmt: function (v) { return Math.round(v); } },
+    { key: "livebench", short: "LiveB", name: "LiveBench", lab: "LiveBench 均分", color: "var(--lb)",
+      fmt: function (v) { return v.toFixed(1); } },
+    { key: "aa", short: "智能", name: "智能指数", lab: "智能指数", color: "var(--aa)",
+      fmt: function (v) { return v.toFixed(1); } }
   ];
   var W = { arena: 0.4, livebench: 0.3, aa: 0.3 };
 
@@ -61,9 +64,14 @@
       m._axes = Object.keys(m._n).length;
       /* 综合分要求至少两个榜有数据，避免单榜模型被归一化顶到满分 */
       m._combo = m._axes >= 2 ? (sum / wsum) * 100 : null;
+      /* 单榜模型没有综合分，但要能在「待补榜」区里按它那一榜的成绩排序 */
+      m._single = m._axes === 1 ? m._n[Object.keys(m._n)[0]] : null;
     });
   }
 
+  /* 当前页分两组：ranked 参与排名；pending 只有一个榜有数据，单列不参与综合排名。
+     刚发布的模型必然先只被一个榜收录——把它们从综合页整个滤掉，页面就会看起来
+     「新模型没上榜」，而真相是本站还没有可比的分。 */
   function currentList() {
     var ms = DATA.models.slice();
     if (tab === "open") ms = ms.filter(function (m) { return m.open; });
@@ -73,53 +81,88 @@
         return (m.name + " " + m.org + " " + (m.orgCn || "")).toLowerCase().indexOf(q) >= 0;
       });
     }
-    var key = (tab === "combo" || tab === "open") ? "_combo" : tab;
-    ms = ms.filter(function (m) { return isNum(key === "_combo" ? m._combo : m[key]); });
-    ms.sort(function (a, b) {
-      var va = key === "_combo" ? a._combo : a[key], vb = key === "_combo" ? b._combo : b[key];
+    var combo = (tab === "combo" || tab === "open");
+    var key = combo ? "_combo" : tab;
+    var ranked = ms.filter(function (m) { return isNum(combo ? m._combo : m[key]); });
+    ranked.sort(function (a, b) {
+      var va = combo ? a._combo : a[key], vb = combo ? b._combo : b[key];
       return vb - va;
     });
-    return ms;
+    var pending = combo
+      ? ms.filter(function (m) { return !isNum(m._combo) && isNum(m._single); })
+      : [];
+    pending.sort(function (a, b) { return b._single - a._single; });
+    return { ranked: ranked, pending: pending };
+  }
+
+  /* 单榜模型唯一有数据的那个榜 */
+  function soleAxis(m) {
+    for (var i = 0; i < AXES.length; i++) {
+      if (isNum(m[AXES[i].key])) return AXES[i];
+    }
+    return null;
   }
 
   function mainScore(m) {
-    if (tab === "arena") return { v: Math.round(m.arena), lab: "Arena Elo" };
-    if (tab === "livebench") return { v: m.livebench.toFixed(1), lab: "LiveBench 均分" };
-    if (tab === "aa") return { v: m.aa.toFixed(1), lab: "智能指数" };
+    for (var i = 0; i < AXES.length; i++) {
+      if (tab === AXES[i].key) return { v: AXES[i].fmt(m[AXES[i].key]), lab: AXES[i].lab };
+    }
+    if (!isNum(m._combo)) {                       /* 待补榜：给出它那一榜的原始分，不编综合分 */
+      var ax = soleAxis(m);
+      return { v: ax ? ax.fmt(m[ax.key]) : "—", lab: "待补榜" };
+    }
     return { v: m._combo.toFixed(1), lab: m._axes < 3 ? "综合 · 基于 " + m._axes + " 榜" : "综合参考分" };
   }
 
-  function render() {
-    var list = $("list"), ms = currentList();
-    if (!ms.length) { list.innerHTML = "<div class='empty'>没有匹配的模型</div>"; return; }
-    var html = ms.map(function (m, i) {
-      var col = ORG[m.org] || "#8aa6ff";
-      var ini = esc(m.org.replace(/ .*/, "").slice(0, 2));
-      var slug = ORG_LOGO[m.org];
-      var logo = slug
-        ? "<img src='logos/" + slug + ".png' alt='' loading='lazy' " +
-          "onerror=\"this.style.display='none';this.nextElementSibling.style.display='block'\">" +
-          "<span class='ini' style='display:none'>" + ini + "</span>"
-        : "<span class='ini'>" + ini + "</span>";
-      var bars = AXES.map(function (a) {
-        var has = isNum(m[a.key]) && m._n[a.key] !== undefined;
-        var w = has ? Math.max(4, m._n[a.key] * 100) : 0;
-        return "<div class='bar" + (has ? "" : " na") + "'><span>" + a.short + "</span>" +
-          "<span class='tk'><i style='width:" + w.toFixed(1) + "%;background:" + a.color + "'></i></span>" +
-          "<span class='v'>" + (has ? AXES.filter(function (x) { return x.key === a.key; })[0].fmt(m[a.key]) : "—") + "</span></div>";
-      }).join("");
-      var sc = mainScore(m);
-      return "<div class='rowcard' style='animation-delay:" + Math.min(i * 22, 400) + "ms'>" +
-        "<div class='rk" + (i < 3 ? " top" : "") + "'>" + (i + 1) + "</div>" +
-        "<div class='logo' style='color:" + col + "'>" + logo + "</div>" +
-        "<div class='info'><div class='nm'>" + esc(m.name) +
-          " <span class='tag " + (m.open ? "open'>开源" : "closed'>闭源") + "</span></div>" +
-          "<div class='meta'>" + (m.flag || "") + " " + esc(m.orgCn || m.org) +
-          (m.ctx ? " · 上下文 " + esc(m.ctx) : "") + "</div></div>" +
-        "<div class='bars'>" + bars + "</div>" +
-        "<div class='score'><div class='big'>" + sc.v + "</div><div class='lab'>" + sc.lab + "</div></div>" +
-        "</div>";
+  /* 一张模型卡。rank 为 null 表示不参与排名（待补榜），名次位显示「—」而不是编号：
+     给它一个名次就等于宣称它和上面那些多榜模型比出了高下，而这正是没有的事。 */
+  function rowcard(m, rank, order) {
+    var col = ORG[m.org] || "#8aa6ff";
+    var ini = esc(m.org.replace(/ .*/, "").slice(0, 2));
+    var slug = ORG_LOGO[m.org];
+    var logo = slug
+      ? "<img src='logos/" + slug + ".png' alt='' loading='lazy' " +
+        "onerror=\"this.style.display='none';this.nextElementSibling.style.display='block'\">" +
+        "<span class='ini' style='display:none'>" + ini + "</span>"
+      : "<span class='ini'>" + ini + "</span>";
+    var bars = AXES.map(function (a) {
+      var has = isNum(m[a.key]) && m._n[a.key] !== undefined;
+      var w = has ? Math.max(4, m._n[a.key] * 100) : 0;
+      return "<div class='bar" + (has ? "" : " na") + "'><span>" + a.short + "</span>" +
+        "<span class='tk'><i style='width:" + w.toFixed(1) + "%;background:" + a.color + "'></i></span>" +
+        "<span class='v'>" + (has ? a.fmt(m[a.key]) : "—") + "</span></div>";
     }).join("");
+    var sc = mainScore(m);
+    var pending = rank === null;
+    var ax = pending ? soleAxis(m) : null;
+    return "<div class='rowcard" + (pending ? " pending" : "") +
+      "' style='animation-delay:" + Math.min(order * 22, 400) + "ms'>" +
+      "<div class='rk" + (pending ? " na'>—" : (rank <= 3 ? " top'>" : "'>") + rank) + "</div>" +
+      "<div class='logo' style='color:" + col + "'>" + logo + "</div>" +
+      "<div class='info'><div class='nm'>" + esc(m.name) +
+        " <span class='tag " + (m.open ? "open'>开源" : "closed'>闭源") + "</span>" +
+        (ax ? " <span class='tag pend'>仅 " + esc(ax.name) + " 有分</span>" : "") + "</div>" +
+        "<div class='meta'>" + (m.flag || "") + " " + esc(m.orgCn || m.org) +
+        (m.ctx ? " · 上下文 " + esc(m.ctx) : "") + "</div></div>" +
+      "<div class='bars'>" + bars + "</div>" +
+      "<div class='score'><div class='big'>" + sc.v + "</div><div class='lab'>" + sc.lab + "</div></div>" +
+      "</div>";
+  }
+
+  function render() {
+    var list = $("list"), g = currentList();
+    if (!g.ranked.length && !g.pending.length) {
+      list.innerHTML = "<div class='empty'>没有匹配的模型</div>";
+      return;
+    }
+    var html = g.ranked.map(function (m, i) { return rowcard(m, i + 1, i); }).join("");
+    if (g.pending.length) {
+      var n = g.ranked.length;
+      html += "<div class='sechead'><b>暂只有 1 榜数据 · 不参与综合排名（" + g.pending.length + " 个）</b>" +
+        "<span>综合参考分要求至少两个榜都给出成绩；只有一个榜的模型没法跨榜归一化，" +
+        "硬排会把它顶到虚高的位置。刚发布的模型通常先被一个榜收录，等第二个榜出分后会自动并入上面的排名。</span></div>" +
+        g.pending.map(function (m, i) { return rowcard(m, null, n + i); }).join("");
+    }
     list.innerHTML = html;
   }
 

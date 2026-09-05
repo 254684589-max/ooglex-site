@@ -42,10 +42,6 @@ def hits(src, needles):
     return sorted(out)
 
 
-def axis_count(m):
-    return sum(1 for k in br.AXES if isinstance(m.get(k), (int, float)))
-
-
 def report(arena, lb, aa, prev, needles, top):
     """把三源与合并结果打成人可读的报告。返回结论行的列表，便于自检断言。"""
     srcs = [("Arena", arena), ("LiveBench", lb), ("AA", aa)]
@@ -79,23 +75,25 @@ def report(arena, lb, aa, prev, needles, top):
 
     prev_models = {m["id"]: m for m in (prev or {}).get("models", [])}
     ranked = br.score_models(br.merge_sources(arena, lb, aa, prev_models))
+    picked = {id(m) for m in br.select_for_output(ranked)}
 
-    print(f"\n=== 四、合并排序（共 {len(ranked)} 个；data.json 只收前 {br.TOP_N} 名）===")
+    print(f"\n=== 四、合并排序（共 {len(ranked)} 个；data.json 收多榜前 {br.TOP_N} 名 "
+          f"+ 单榜前 {br.TOP_SINGLE} 名）===")
     for i, m in enumerate(ranked[:top], 1):
-        mark = "  " if i <= br.TOP_N else "✂ "
-        print(f"  {mark}{i:>3}. {m['name']:<26} {axis_count(m)} 榜  综合 {m['_combo']:.4f}  "
+        mark = "  " if id(m) in picked else "✂ "
+        print(f"  {mark}{i:>3}. {m['name']:<26} {br.axis_count(m)} 榜  综合 {m['_combo']:.4f}  "
               f"arena={m['arena']} lb={m['livebench']} aa={m['aa']}")
     if len(ranked) > top:
         print(f"  …… 其余 {len(ranked) - top} 个略")
 
-    multi = [m for m in ranked if axis_count(m) >= 2]
-    single = [m for m in ranked if axis_count(m) == 1]
-    first_single = next((i for i, m in enumerate(ranked, 1) if axis_count(m) == 1), None)
+    multi = [m for m in ranked if br.axis_count(m) >= 2]
+    single = [m for m in ranked if br.axis_count(m) == 1]
+    first_single = next((i for i, m in enumerate(ranked, 1) if br.axis_count(m) == 1), None)
     print("\n=== 五、单榜模型的处境 ===")
     print(f"  ≥2 榜 {len(multi)} 个，单榜 {len(single)} 个；单榜模型一律排在多榜模型之后，"
           f"第一个单榜模型位于第 {first_single} 名。")
-    print(f"  因此单榜模型能进 data.json 的名额只有 {max(0, br.TOP_N - len(multi))} 个；"
-          "且前端「综合」页会把单榜模型整个滤掉（综合分为空），只在对应的单榜页里出现。")
+    print(f"  单榜有自己的 {br.TOP_SINGLE} 个名额（不与多榜的 {br.TOP_N} 个抢），"
+          "进了 data.json 后在前端「综合」页单列成「待补榜」区，不参与综合排名。")
 
     print("\n=== 六、结论 ===")
     lines = []
@@ -110,13 +108,15 @@ def report(arena, lb, aa, prev, needles, top):
                          "（多半是认不出厂商：merge_sources 会跳过 org 为空的长尾模型）。")
         else:
             for i, m in rows:
-                n_ax = axis_count(m)
-                if i <= br.TOP_N:
-                    verdict = f"进 data.json（第 {i} 名）"
+                n_ax = br.axis_count(m)
+                quota = br.TOP_N if n_ax >= 2 else br.TOP_SINGLE
+                if id(m) in picked:
+                    verdict = f"进 data.json（合并第 {i} 名）"
                     if n_ax < 2:
-                        verdict += "，但只有 1 榜有数据，前端「综合」页看不到它"
+                        verdict += "，只有 1 榜有数据，前端「综合」页把它放在「待补榜」区"
                 else:
-                    verdict = f"排第 {i} 名，被前 {br.TOP_N} 名截断挡在 data.json 之外"
+                    verdict = (f"排第 {i} 名，超出{'多' if n_ax >= 2 else '单'}榜类的 "
+                               f"{quota} 个名额，挡在 data.json 之外")
                 lines.append(f"「{n}」：命中 {'/'.join(in_src)}；{n_ax} 榜有数据 → {verdict}")
     for ln in lines or ["（未给 --find，无结论）"]:
         print("  " + ln)
@@ -137,7 +137,7 @@ def self_test():
     joined = "\n".join(lines)
     checks = [
         ("2 榜有数据" in joined and "alpha" in joined, "两榜模型应判为 2 榜有数据"),
-        ("前端「综合」页看不到它" in joined, "单榜模型应提示前端综合页看不到"),
+        ("待补榜" in joined, "单榜模型应提示落在前端待补榜区"),
         ("合并阶段被丢弃" in joined, "认不出厂商的模型应判为合并阶段被丢弃"),
         ("三源都没有" in joined, "源里没有的名字应判为源头没收录"),
     ]
