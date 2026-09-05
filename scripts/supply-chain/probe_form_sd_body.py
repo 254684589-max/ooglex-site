@@ -114,7 +114,7 @@ _HINTS = {
 
 
 def probe_company(symbol: str, cik: int, pdf_mod, max_docs: int,
-                  ledger: list[dict]) -> None:
+                  ledger: list[dict], quiet: bool = False) -> None:
     print(f"\n{'=' * 72}\n{symbol}  CIK {cik}")
     try:
         filing = latest_form_sd(cik)
@@ -136,10 +136,11 @@ def probe_company(symbol: str, cik: int, pdf_mod, max_docs: int,
         return
     time.sleep(GAP)
 
-    print(f"\n  目录里共 {len(docs)} 个文件（按体积倒序，标出被现有规则挡掉的）：")
-    for d in docs:
-        mark = f"  ← 抽取器跳过：{d['skip']}" if d["skip"] else ""
-        print(f"    {d['size']:>9,}  {d['name']}{mark}")
+    if not quiet:
+        print(f"\n  目录里共 {len(docs)} 个文件（按体积倒序，标出被现有规则挡掉的）：")
+        for d in docs:
+            mark = f"  ← 抽取器跳过：{d['skip']}" if d["skip"] else ""
+            print(f"    {d['size']:>9,}  {d['name']}{mark}")
 
     # 逐份取内容。**包括被规则挡掉的**——本探针的价值就在于看见被挡掉的东西。
     looked = 0
@@ -154,8 +155,9 @@ def probe_company(symbol: str, cik: int, pdf_mod, max_docs: int,
             break
         looked += 1
         url = filing["indexUrl"] + d["name"]
-        print(f"\n  ── {d['name']}  {d['size']:,} 字节"
-              + (f"  [现有规则会跳过：{d['skip']}]" if d["skip"] else "") + " ──")
+        if not quiet:
+            print(f"\n  ── {d['name']}  {d['size']:,} 字节"
+                  + (f"  [现有规则会跳过：{d['skip']}]" if d["skip"] else "") + " ──")
         try:
             raw = _fetch(url, accept="*/*")
         except Exception as exc:                   # noqa: BLE001
@@ -166,9 +168,9 @@ def probe_company(symbol: str, cik: int, pdf_mod, max_docs: int,
         counts_tags: dict[str, int] | None = None
         if low.endswith(".pdf"):
             got = pdf_mod.pdf_to_text(raw)
-            print(f"    PDF 裁决={got['verdict']}  页 {got.get('pages')}  "
-                  f"字符 {got['chars']}  流 {got['decoded']}/{got['streams']}  "
-                  f"加密={got['encrypted']}  过滤器={got['filters']}")
+            print(f"    [PDF] {symbol} {d['name']} 裁决={got['verdict']}  "
+                  f"页 {got.get('pages')}  字符 {got['chars']}  "
+                  f"流 {got['decoded']}/{got['streams']}  加密={got['encrypted']}")
             text = got["text"]
         else:
             parser = _Text()
@@ -178,9 +180,10 @@ def probe_company(symbol: str, cik: int, pdf_mod, max_docs: int,
                 print(f"    [XX] HTML 解析异常：{type(exc).__name__}: {exc}")
                 continue
             c = counts_tags = parser.counts
-            print(f"    标签：table {c.get('table',0)}  tr {c.get('tr',0)}  "
+            if not quiet:
+                print(f"    标签：table {c.get('table',0)}  tr {c.get('tr',0)}  "
                   f"td {c.get('td',0)}  li {c.get('li',0)}  p {c.get('p',0)}  "
-                  f"br {c.get('br',0)}  div {c.get('div',0)}  img {c.get('img',0)}")
+                      f"br {c.get('br',0)}  div {c.get('div',0)}  img {c.get('img',0)}")
             text = parser.text()
 
         # 线索词分开计数。**CID 编号是决定性的那个**：真名单几乎一定带 RMI 编号，
@@ -195,9 +198,10 @@ def probe_company(symbol: str, cik: int, pdf_mod, max_docs: int,
                        "table": (counts_tags or {}).get("table", 0),
                        "tr": (counts_tags or {}).get("tr", 0),
                        **counts})
-        print(f"    正文 {len(text)} 字符；线索词："
-              + "  ".join(f"{k}={v}" for k, v in counts.items()))
-        if text:
+        if not quiet:
+            print(f"    正文 {len(text)} 字符；线索词："
+                  + "  ".join(f"{k}={v}" for k, v in counts.items()))
+        if text and not quiet:
             print(f"    开头：{text[:SAMPLE]}")
             if len(text) > SAMPLE * 2:
                 mid = len(text) // 2
@@ -211,8 +215,15 @@ def probe_company(symbol: str, cik: int, pdf_mod, max_docs: int,
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--tickers", required=True,
+    ap.add_argument("--tickers",
                     help="逗号分隔的公司代码，例如 LMT,ACN,DHR,MCD")
+    ap.add_argument("--from-status",
+                    help="改从 nodes.json 的逐家申报状态里取目标，例如 filed-no-list")
+    ap.add_argument("--limit", type=int, default=0,
+                    help="配合 --from-status：最多看几家")
+    ap.add_argument("--quiet", action="store_true",
+                    help="只打文件清单与收尾汇总，不打正文抽样。"
+                         "扫几十家时正文会把日志撑爆，而要看的是**分布**")
     ap.add_argument("--max-docs", type=int, default=3,
                     help="每家最多看几份文档正文（默认 3）")
     args = ap.parse_args()
@@ -220,7 +231,23 @@ def main() -> int:
     with open("apps/supply-chain/identity.json", encoding="utf-8") as handle:
         identity = (json.load(handle) or {}).get("companies") or {}
 
-    wanted = [t.strip().upper() for t in args.tickers.split(",") if t.strip()]
+    if args.from_status:
+        # 从实际发布的逐家申报状态里取，而不是我手写一串代码——
+        # 手写的话看到的永远是我挑出来的那几家，看不到这一档的真实分布。
+        with open("apps/supply-chain/nodes.json", encoding="utf-8") as handle:
+            status = (((json.load(handle) or {}).get("coverage") or {})
+                      .get("formSd") or {}).get("filingStatus") or {}
+        wanted = sorted(k for k, v in status.items() if v == args.from_status)
+        if args.limit:
+            wanted = wanted[:args.limit]
+        print(f"从申报状态 {args.from_status!r} 取出 {len(wanted)} 家"
+              + (f"（该档共 {sum(1 for v in status.values() if v == args.from_status)} 家）"
+                 if args.limit else ""))
+    elif args.tickers:
+        wanted = [t.strip().upper() for t in args.tickers.split(",") if t.strip()]
+    else:
+        print("[XX] 要么给 --tickers，要么给 --from-status")
+        return 1
     print("只读探针：不写任何文件，不建任何边。")
     print(f"目标 {len(wanted)} 家：{'、'.join(wanted)}")
 
@@ -233,7 +260,7 @@ def main() -> int:
         if not cik:
             missing.append(symbol)
             continue
-        probe_company(symbol, int(cik), pdf_mod, args.max_docs, ledger)
+        probe_company(symbol, int(cik), pdf_mod, args.max_docs, ledger, args.quiet)
 
     if missing:
         print(f"\n[!!] 身份表里没有 CIK，跳过：{'、'.join(missing)}")
