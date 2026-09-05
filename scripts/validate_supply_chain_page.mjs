@@ -182,6 +182,18 @@ async function main() {
           hasEdgeStatement: text.includes('尚无企业间关系边') || text.includes('带出处的关系'),
           hasBasisLine: text.includes('阶段判定口径'),
           statusChips: document.querySelectorAll('#statusrow .status').length,
+          bandCov: [...document.querySelectorAll('#chain .band, #offchain .band')]
+            .map(b => ({ stage: b.dataset.stage,
+                         text: ((b.querySelector('.bandcov') || {}).textContent || ''),
+                         why: ((b.querySelector('.bandcov') || {}).title || '') })),
+          statusText: (document.getElementById('statusrow') || {}).textContent || "",
+          subtitle: (document.getElementById('subtitle') || {}).textContent || "",
+          freqStruck: (() => {
+            const e = document.querySelector('#statusrow .freq s');
+            if (!e) return false;
+            const d = getComputedStyle(e).textDecorationLine || '';
+            return d.indexOf('line-through') >= 0;
+          })(),
           bodyOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
           undersizedTargets: small,
           focusable: stages.every(b => b.tagName === 'BUTTON' && b.tabIndex >= 0),
@@ -195,7 +207,64 @@ async function main() {
       check(`「不是完整供应链」声明可见`, () => assert.ok(probe.hasCompletenessDisclaimer));
       check(`关系边状态已说明`, () => assert.ok(probe.hasEdgeStatement));
       check(`阶段判定口径已说明`, () => assert.ok(probe.hasBasisLine));
-      check(`状态条 4 项（数据日/更新/公司/频率）`, () => assert.equal(probe.statusChips, 4));
+      // 摘要条要印的是**主量级**：公司、关系、申报人、冶炼厂。此前只有四项，
+      // 读者看不到「有多少条关系、来自几家申报人」。断言盯的是「印的是不是
+      // 那个数」，不是「印了几格」——格数会随设计变，数不该变。
+      check(`摘要条印出主量级且与数据一致`, () => {
+        const cov = NODES.coverage || {};
+        const want = [cov.nodesTotal, cov.edgesTotal, cov.nodesWithEdges,
+                      (cov.formSd || {}).uniqueSmelters];
+        const got = probe.statusText.replace(/,/g, "");
+        want.forEach((n) => {
+          assert.ok(n == null || got.includes(String(n)),
+            `摘要条里没有 ${n}：${probe.statusText.slice(0, 120)}`);
+        });
+      });
+      // 「频率 每日」曾经单独一格，那是误导：关系数据一年一次，只有行情每日。
+      check(`频率分开说：关系一年一次、行情每日`, () => {
+        assert.match(probe.statusText, /关系一年一次/);
+        assert.match(probe.statusText, /行情每日/);
+        // <s> 默认带删除线。「行情每日」被划掉，意思正好反过来——
+        // 读者会以为这一项作废了。
+        assert.ok(!probe.freqStruck, "「行情每日」被画上了删除线");
+      });
+      // 副标题写死过「标普500成分股按价值链环节分层」，扩池到 642 家之后
+      // 那句话就成了假话。现在照数据渲染，断言拿 nodes.json 的池子数比对。
+      check(`副标题照数据写，不是写死的`, () => {
+        const cov = NODES.coverage || {};
+        if (cov.poolSp500 && cov.poolForeignIssuer) {
+          assert.ok(probe.subtitle.includes(String(cov.poolSp500))
+            && probe.subtitle.includes(String(cov.poolForeignIssuer)),
+            `副标题没写两个池的家数：${probe.subtitle}`);
+        }
+        assert.ok(!/^标普500成分股按价值链环节分层/.test(probe.subtitle),
+          "副标题还是那句写死的旧文案");
+      });
+      // 每张环节卡片上的覆盖数，必须等于 nodes.json 里那一段的真值——
+      // 断言盯「画的是不是那个数」，不是「画出来了没有」。
+      check(`环节卡片的覆盖数逐段等于 nodes.json`, () => {
+        assert.ok(probe.bandCov.length, "一张环节卡片都没有覆盖标记");
+        probe.bandCov.forEach((b) => {
+          const want = NODES.nodes.filter(n => n.stage === b.stage);
+          const withEdges = want.filter(n => n.edgeCount).length;
+          if (!want.length) return;
+          assert.ok(b.text.replace(/\s/g, "").startsWith(withEdges + "/" + want.length),
+            `${b.stage} 卡片印 ${b.text.trim()}，数据是 ${withEdges}/${want.length}`);
+        });
+      });
+      // 不同的 0 要说成不同的 0：资源开采那 65 家是报了 13q-1 付款披露，
+      // 物流与运输那 10 家是压根没申报。混成一个空白就是在说假话。
+      check(`0 覆盖的环节就地写清成因，且不同的 0 说法不同`, () => {
+        const zero = probe.bandCov.filter((b) => /^0\//.test(b.text.replace(/\s/g, "")));
+        assert.ok(zero.length, "没有 0 覆盖的环节，这条断言失去意义时应删掉");
+        zero.forEach((b) => {
+          assert.ok(b.why.length > 20, `${b.stage} 的 0 没有成因说明`);
+          assert.ok(!/^本环节 \d+ 家：。/.test(b.why), `${b.stage} 的成因是空的`);
+        });
+        const reasons = new Set(zero.map(b => b.why));
+        assert.ok(reasons.size > 1,
+          "所有 0 覆盖环节给的是同一句话——不同的 0 被混成了一种");
+      });
       check(`页面无横向溢出`, () => assert.ok(probe.bodyOverflow <= 1,
         `溢出 ${probe.bodyOverflow}px`));
       check(`触控区域不小于 44×44`, () => assert.equal(probe.undersizedTargets, 0));
@@ -231,6 +300,12 @@ async function main() {
           rows,
           keys: box.querySelectorAll('#cov-rows .covkey span').length,
           countryRows: box.querySelectorAll('#cov-country-rows .covrow').length,
+          // 每行右侧印的是「有出处 / 共几家」。把分母加起来，就能验证
+          // 长尾并入「其他」之后**合计仍等于全池**——那才是真正的契约。
+          countryShown: [...box.querySelectorAll('#cov-country-rows .covrow .n')]
+            .map(e => parseInt((e.textContent.split('/')[1] || '0').trim(), 10) || 0),
+          countryLastLabel: (([...box.querySelectorAll('#cov-country-rows .covrow .s')]
+            .pop() || {}).textContent) || '',
           countryLead: (box.querySelector('#cov-country-lead') || {}).textContent || '',
           countryLeadHidden: !!(box.querySelector('#cov-country-lead') || {}).hidden,
           overflow: box.scrollWidth - box.clientWidth
@@ -280,10 +355,19 @@ async function main() {
       const COUNTRIES = (NODES.coverage || {}).byCountry || [];
       if (COUNTRIES.length) {
         const foreignN = COUNTRIES.reduce((a, r) => a + (r.companies || 0), 0);
-        check(`外国发行人按国别单列（${COUNTRIES.length} 个国别 / ${foreignN} 家）`, () => {
+        // 国别 30 行里 11 行只有 1 家，长尾把版面撑长却读不出东西，因此并入
+        // 「其他」。断言不再盯行数（行数会随取舍变），改盯**合计**：
+        // 显示出来的行加起来必须仍等于全池——那是「不是省略，是收拢」的证据。
+        check(`外国发行人按国别单列，合计仍等于全池 ${foreignN} 家`, () => {
           assert.ok(!cov.countryLeadHidden, "国别栏的说明被藏起来了");
-          assert.equal(cov.countryRows, COUNTRIES.length,
-            `页面 ${cov.countryRows} 行，数据 ${COUNTRIES.length} 行`);
+          const shown = cov.countryShown.reduce((a, b) => a + b, 0);
+          assert.equal(shown, foreignN,
+            `页面各行合计 ${shown}，全池 ${foreignN}——长尾被丢了，不是收拢`);
+        });
+        check(`长尾收进「其他」而不是截断`, () => {
+          if (COUNTRIES.length <= cov.countryRows) return;   // 没折叠就不查
+          assert.match(cov.countryLastLabel, /其他/,
+            `最后一行是 ${cov.countryLastLabel}，没有「其他」这一行就是截断`);
         });
         check(`说清这一栏的口径是国别不是板块`, () => {
           assert.match(cov.countryLead, /口径是国别，不是板块/);

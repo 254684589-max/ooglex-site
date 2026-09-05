@@ -68,13 +68,32 @@
 
   /* ── 顶部状态：来源、数据日、更新时间必须可见 ── */
   function renderStatus(d) {
+    var cov = d.coverage || {};
+    // 副标题照数据写。写死「标普500成分股按价值链环节分层」的那一版，在
+    // 外国发行人入池、变成 642 家之后就成了假话——与首页卡片栽的是同一个跟头：
+    // 静态文案里的数字不会自己更新，数据一变它就开始说错话且无人报错。
+    var sub = $("subtitle");
+    if (sub) {
+      var sp = cov.poolSp500, fo = cov.poolForeignIssuer;
+      setText(sub, (sp && fo
+        ? "标普500成分股 " + sp + " 家 + 在美上市外国私人发行人 " + fo + " 家"
+        : (cov.nodesTotal || "—") + " 家公司")
+        + "，按 12 个价值链环节 × " + (cov.chainsTotal || "—")
+        + " 条一级产业链两维定位 · Global Supply Chain");
+    }
+
     var row = $("statusrow");
     row.textContent = "";
+    // 专业口径的摘要条：先给量级，再给新鲜度。此前只有四项，读者看不到
+    // 「有多少条关系、来自几家申报人」——那才是这个板块的主量级。
     var items = [
+      ["公司", (cov.nodesTotal != null ? fmt(cov.nodesTotal) : "—") + " 家"],
+      ["关系", (cov.edgesTotal != null ? fmt(cov.edgesTotal) : "—") + " 条"],
+      ["申报人", (cov.nodesWithEdges != null ? fmt(cov.nodesWithEdges) : "—") + " 家"],
+      ["冶炼厂", (((cov.formSd || {}).uniqueSmelters) != null
+                   ? fmt(cov.formSd.uniqueSmelters) : "—") + " 家"],
       ["数据日", d.asOf || "—"],
-      ["更新", relTime(d.updatedAt) || "—"],
-      ["公司", (d.coverage && d.coverage.nodesTotal != null ? d.coverage.nodesTotal : "—") + " 家"],
-      ["频率", d.frequency === "daily" ? "每日" : (d.frequency || "—")]
+      ["更新", relTime(d.updatedAt) || "—"]
     ];
     items.forEach(function (pair) {
       var s = el("span", "status");
@@ -82,6 +101,20 @@
       s.appendChild(el("b", null, pair[1]));
       row.appendChild(s);
     });
+    // 「频率 每日」曾经单独占一格，那是误导：**关系数据一年一次**
+    // （Form SD 每年 5 月 31 日前申报，抽取器自带申报季闸门），每日刷新的
+    // 只有行情。两种频率并在一个词里，读者会以为供应链关系天天在变。
+    var freq = el("span", "status freq");
+    freq.appendChild(document.createTextNode("频率 "));
+    freq.appendChild(el("b", null, "关系一年一次"));
+    freq.appendChild(el("s", null, " · 行情每日"));
+    freq.title = "Form SD 每年 5 月 31 日前申报，冶炼厂关系一年只变一次；"
+      + "市值与涨跌来自站内行情，每日更新。";
+    row.appendChild(freq);
+  }
+
+  function fmt(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
   /* ── 覆盖率声明：这一段是本页的诚实性底线，不得省略或弱化 ── */
@@ -161,6 +194,28 @@
     };
   }
 
+  // 国别栏直接列 30 行，其中 11 行只有 1 家——长尾把版面撑得很长，
+  // 却读不出任何东西。并入「其他」，与真实流向图那边 FLOW_TOP_COUNTRIES
+  // 同一套口径：**不是省略，是把长尾收拢，合计仍等于全池**。
+  var COUNTRY_ROWS = 12;
+
+  function foldTail(rows, keep) {
+    if (!rows || rows.length <= keep + 1) return rows || [];
+    var head = rows.slice(0, keep);
+    var tail = rows.slice(keep);
+    var merged = { sector: "其他 " + tail.length + " 个国别／地区", companies: 0,
+                   withEdges: 0, filedNoList: 0, resourceExtraction: 0,
+                   noFiling: 0, failed: 0, unscanned: 0 };
+    tail.forEach(function (r) {
+      ["companies", "withEdges", "filedNoList", "resourceExtraction",
+       "noFiling", "failed", "unscanned"].forEach(function (k) {
+        merged[k] = (merged[k] || 0) + (r[k] || 0);
+      });
+    });
+    head.push(merged);
+    return head;
+  }
+
   function renderCoverageBySector(d) {
     var box = $("cov");
     if (!box) return;
@@ -171,6 +226,23 @@
     var anyStatus = rows.some(function (r) {
       return (r.filedNoList || 0) + (r.noFiling || 0) + (r.failed || 0) > 0;
     });
+
+    // 折叠头上照实印关键数字。这个面板默认收起，但收起的是**明细**，
+    // 不是结论——一眼要能看到「642 家里只有 127 家有关系数据」。
+    var cv = d.coverage || {};
+    var sum = $("cov-sum");
+    if (sum) {
+      var withEdges = cv.nodesWithEdges || 0;
+      var totalN = cv.nodesTotal || 0;
+      sum.textContent = "";
+      sum.appendChild(document.createTextNode("全池 "));
+      sum.appendChild(el("b", null, String(totalN)));
+      sum.appendChild(document.createTextNode(" 家里 "));
+      sum.appendChild(el("b", null, String(withEdges)));
+      sum.appendChild(document.createTextNode(" 家有出处关系（"
+        + (totalN ? Math.round(withEdges / totalN * 100) : 0)
+        + "%）· 点开看各板块与国别为什么差这么多"));
+    }
 
     setText($("cov-lead"), anyStatus
       ? "当前唯一的关系数据源是 SEC 的 Form SD 冲突矿产申报，它只适用于产品中含钽锡钨金的发行人。"
@@ -213,7 +285,7 @@
         setText(lead2, "另有在美上市的外国私人发行人 " + n2
           + " 家（报 20-F／40-F 且同时报 Form SD 的那一批）。它们没有站内板块分类，"
           + "下面按国别拆——注意这一栏的口径是国别，不是板块。" + note);
-        drawCovRows(rows2, byCountry);
+        drawCovRows(rows2, foldTail(byCountry, COUNTRY_ROWS));
       }
     }
 
@@ -227,6 +299,42 @@
 
   /* 画一组覆盖率行。两个池共用——各写一套的话，改了配色或分档，另一处就
      会用旧口径显示，而两栏看着一模一样，没人分得出哪一栏是旧的。 */
+  // 逐环节的申报状态分布。分档取自节点自带的 formSdStatus，与页顶那张
+  // 总表同源，因此两处的数永远对得上——各算各的迟早会对不上。
+  function stageCoverage(d, stageId) {
+    var out = { withEdges: 0, listed: 0, filedNoList: 0,
+                resourceExtraction: 0, noFiling: 0, unknown: 0 };
+    visibleNodes(d).forEach(function (n) {
+      if (n.stage !== stageId) return;
+      if (n.edgeCount) out.withEdges += 1;
+      var k = n.formSdStatus;
+      if (k === "listed") out.listed += 1;
+      else if (k === "filed-no-list") out.filedNoList += 1;
+      else if (k === "resource-extraction") out.resourceExtraction += 1;
+      else if (k === "no-filing") out.noFiling += 1;
+      else out.unknown += 1;
+    });
+    return out;
+  }
+
+  // 把「为什么这一段是这个数」写成一句话。**不同的 0 要说成不同的 0。**
+  function coverWhy(st, total) {
+    var bits = [];
+    if (st.listed) bits.push("有名单 " + st.listed + " 家");
+    if (st.filedNoList) bits.push("有申报但正文未列名单 " + st.filedNoList + " 家");
+    if (st.resourceExtraction) {
+      bits.push("申报的是 13q-1 资源开采付款 " + st.resourceExtraction
+        + " 家（那套披露里没有冶炼厂这个概念）");
+    }
+    if (st.noFiling) {
+      bits.push("无 Form SD 申报 " + st.noFiling
+        + " 家（规则只管产品含钽锡钨金的发行人，多数不适用）");
+    }
+    if (st.unknown) bits.push("尚无逐家申报状态 " + st.unknown + " 家");
+    return "本环节 " + total + " 家：" + bits.join("；")
+      + "。「无申报」不等于这些公司没有供应链。";
+  }
+
   function drawCovRows(wrap, rows) {
     if (!wrap) return;
     wrap.textContent = "";
@@ -519,6 +627,18 @@
           + quoted + " 家；其余是外国私人发行人，站内无报价";
       if (total !== quoted) mcEl.appendChild(el("s", null, "*"));
       hd.appendChild(mcEl);
+
+      // 这一段有多少家带出处关系。**覆盖率要写在读者正在看的地方**——
+      // 此前只在页顶那张总表里，读者看到「金融与专业服务 104 家」根本
+      // 无从知道它是 0/104；而各段的 0 成因完全不同：资源开采那 65 家里
+      // 59 家报的是 13q-1 资源开采付款（那套披露里没有冶炼厂这个概念），
+      // 物流与运输 10 家则是全部无申报。两种 0 混成一个空白就是在说假话。
+      var st = stageCoverage(d, meta.id);
+      var covEl = el("span", "bandcov" + (st.withEdges ? "" : " zero"));
+      covEl.appendChild(el("b", null, st.withEdges + "/" + total));
+      covEl.appendChild(el("s", null, " 有出处"));
+      covEl.title = coverWhy(st, total);
+      hd.appendChild(covEl);
       // 表头只留等权一个口径，另两个在细分条下面给全——是降级，不是删掉
       if (state.chain) {
         // 环节涨跌是构建时按**整个环节**算好的，筛出一条链之后这个数不再对应

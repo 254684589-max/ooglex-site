@@ -7,11 +7,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>全球产业链 · 标普500公司的价值链位置</title>
-<meta name="description" content="标普500成分股按价值链环节分层：上游资源、中间制造、品牌整合、分销服务、平台服务与支持性行业。阶段由 SEC 官方 SIC 行业码判定，逐家可查依据，每日更新。">
+<meta name="description" content="标普500成分股与在美上市外国私人发行人按价值链环节与产业链两维定位：12 个环节 × 27 条一级产业链，链间上下游标出谁供给谁。环节与产业链由 SEC 官方 SIC 行业码判定，逐家可查依据；冶炼厂关系逐条附原始申报出处。">
 <link rel="canonical" href="https://www.ooglex.com/apps/supply-chain/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="全球产业链 · 标普500公司的价值链位置">
-<meta property="og:description" content="标普500成分股按价值链环节分层，阶段由 SEC 官方 SIC 行业码判定，逐家可查依据，每日更新。">
+<meta property="og:description" content="标普500成分股与在美上市外国私人发行人按价值链环节与产业链两维定位，判定依据与关系出处逐条可查。">
 <meta property="og:url" content="https://www.ooglex.com/apps/supply-chain/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -55,7 +55,11 @@
   .statusrow { display:flex; justify-content:center; gap:9px; margin-top:10px; flex-wrap:wrap; }
   .status { display:inline-flex; align-items:center; gap:7px; font-size:0.78rem; padding:4px 13px;
     border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,0.03); color:var(--dim); }
-  .status b { color:var(--text); font-weight:600; }
+  .status b { color:var(--text); font-weight:600; font-variant-numeric:tabular-nums; }
+  /* 频率那格里的次要说明。**必须显式去掉删除线**——<s> 默认带 line-through，
+     「行情每日」被划掉，读者会以为这一项作废了，意思正好反过来。 */
+  .status s { text-decoration:none; color:var(--faint); font-size:0.72rem; }
+  .status.freq { cursor:help; }
 
   .glass { background:linear-gradient(180deg, rgba(22,27,37,.94), rgba(16,20,28,.94));
     border:1px solid var(--line); border-radius:18px;
@@ -69,11 +73,25 @@
   .notice code { font-family:var(--mono); font-size:0.78rem; color:var(--text); }
 
   /* ── 按板块的覆盖情况 ── */
-  .cov { padding:14px 16px; margin-bottom:16px; }
-  .cov h2 { font-size:0.92rem; font-weight:700; margin-bottom:5px; }
+  .cov { padding:0; margin-bottom:16px; }
+  /* 折叠头：与页尾「方法」那个面板同一套视觉，读者一眼看得出「这里可以点开」。
+     summary 里除了标题还印一行关键数字——**收起不等于藏起来**。 */
+  .cov > summary { padding:13px 16px; cursor:pointer; list-style:none;
+    display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .cov > summary::-webkit-details-marker { display:none; }
+  .cov > summary::before { content:"▸"; color:var(--accent); transition:transform .18s;
+    align-self:center; }
+  .cov[open] > summary::before { transform:rotate(90deg); }
+  .cov > summary:hover { background:rgba(255,255,255,.03); }
+  .cov > summary h2 { font-size:0.92rem; font-weight:700; margin:0; }
+  .cov #cov-sum { font-size:0.78rem; color:var(--dim); }
+  .cov #cov-sum b { color:var(--text); font-variant-numeric:tabular-nums; }
+  .cov > p, .cov > div { margin-left:16px; margin-right:16px; }
   .cov > p { font-size:0.82rem; color:var(--dim); }
   .cov > p + div { margin-top:11px; }
   .cov > div + p { margin-top:11px; }
+  .cov > p:last-child { padding-bottom:15px; }
+  .cov > div:last-child { padding-bottom:15px; }
   .covrow { display:grid; grid-template-columns:6.2em 1fr 8.5em; gap:9px;
     align-items:center; padding:3px 0; font-size:0.78rem; }
   .covrow .s { color:var(--text); font-weight:600; min-width:0;
@@ -128,6 +146,13 @@
     font-variant-numeric:tabular-nums; }
   /* 市值合计不含无站内报价的公司时打个星，鼠标悬停说明差在哪几家 */
   .bandhd .mc s { text-decoration:none; color:var(--warn); margin-left:1px; }
+  /* 这一段有多少家带出处关系。绿色=有，灰色=一家都没有——**不同的 0 要看得出
+     是不同的 0**，具体成因在 title 里逐档写清。 */
+  .bandhd .bandcov { font-family:var(--mono); font-size:0.74rem; margin-left:9px;
+    white-space:nowrap; cursor:help; }
+  .bandhd .bandcov b { color:var(--up); font-weight:600; }
+  .bandhd .bandcov s { text-decoration:none; color:var(--faint); }
+  .bandhd .bandcov.zero b { color:var(--faint); }
   .bandhd .pc { font-family:var(--mono); font-size:0.82rem; font-weight:700;
     font-variant-numeric:tabular-nums; }
   .banddesc { padding:0 15px 11px; font-size:0.74rem; color:var(--dim);
@@ -369,7 +394,7 @@
 
   <div class="title">
     <h1>全球产业链</h1>
-    <p>标普500成分股按价值链环节分层 · Global Supply Chain</p>
+    <p id="subtitle">Global Supply Chain</p>
     <div class="statusrow" id="statusrow"></div>
   </div>
 
@@ -382,8 +407,14 @@
 
   <!-- 按板块拆开的覆盖情况。缺口的成因必须按板块讲清楚：金融 0/70 与科技 34/84
        是两种不同的 0，前者是数据源的适用范围决定的，后者是还没抓到。 -->
-  <section class="glass cov" id="cov" hidden aria-label="按板块的覆盖情况">
-    <h2>为什么有的公司有数据、有的没有</h2>
+  <!-- 覆盖率明细收进可展开面板。此前它占 1,329px（全页 20%）且排在**所有**
+       产业链内容之前，读者要滚过两屏才看得到这个板块真正的产品——专业终端的
+       口径是数据在前、方法与口径按需展开。
+       **收起不等于藏起来**：summary 那一行照实印关键数字，「不是完整供应链」
+       那句声明留在上面的 notice 里始终可见（那是真实性要求，不是版式偏好），
+       每个环节卡片上也就地写了自己那一段的覆盖。 -->
+  <details class="glass cov" id="cov" hidden aria-label="按板块的覆盖情况">
+    <summary><h2>为什么有的公司有数据、有的没有</h2><span id="cov-sum"></span></summary>
     <p id="cov-lead"></p>
     <div id="cov-rows"></div>
     <!-- 第二个池按国别拆。它们没有站内板块分类，全塞进「未分类」等于一个
@@ -391,7 +422,7 @@
     <p class="cov-sub" id="cov-country-lead" hidden></p>
     <div id="cov-country-rows"></div>
     <p id="cov-foot"></p>
-  </section>
+  </details>
 
   <div class="sec-h">
     <h2>细分产业链</h2>
@@ -447,6 +478,6 @@
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="app.js?v=fc9849c4" defer></script>
+<script src="app.js?v=2243c385" defer></script>
 </body>
 </html>
