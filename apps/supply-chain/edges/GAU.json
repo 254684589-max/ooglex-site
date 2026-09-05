@@ -1,0 +1,111 @@
+{
+  "contractVersion": 2,
+  "dataset": "supply-chain-edges",
+  "symbol": "GAU",
+  "name": "Galiano Gold Inc.",
+  "updatedAt": "2026-09-05T10:22:50Z",
+  "relation": {
+    "id": "smelter-in-supply-chain",
+    "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
+    "tier": "smelter"
+  },
+  "confidence": "disclosed",
+  "direction": {
+    "from": "smelter",
+    "to": "GAU",
+    "toListed": true
+  },
+  "evidence": {
+    "sourceType": "sec-form-sd",
+    "url": "https://www.sec.gov/Archives/edgar/data/1377757/000106299326003278/R5.htm",
+    "docDate": "2026-06-22",
+    "form": "SD",
+    "accession": "0001062993-26-003278",
+    "filingDate": "2026-06-22",
+    "reportDate": "",
+    "document": "R5.htm",
+    "indexUrl": "https://www.sec.gov/Archives/edgar/data/1377757/000106299326003278/",
+    "totalSD": 3
+  },
+  "parse": {
+    "rowsScanned": 64,
+    "rowsWithCid": 0,
+    "nameOnly": 7,
+    "droppedNoCid": 0,
+    "unique": 5,
+    "namedRatio": 1.0,
+    "countryRatio": 1.0
+  },
+  "byCountry": {
+    "加纳": 5
+  },
+  "byMineral": {
+    "金": 5
+  },
+  "edges": [
+    {
+      "from": "NAME:ghana-gold-board",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ghana Gold Board",
+      "country": "加纳",
+      "countryEn": "ghana",
+      "minerals": [
+        "金"
+      ],
+      "row": 15
+    },
+    {
+      "from": "NAME:ghana-revenue-authority",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ghana Revenue Authority",
+      "country": "加纳",
+      "countryEn": "ghana",
+      "minerals": [
+        "金"
+      ],
+      "row": 3
+    },
+    {
+      "from": "NAME:minerals-commission",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Minerals Commission",
+      "country": "加纳",
+      "countryEn": "ghana",
+      "minerals": [
+        "金"
+      ],
+      "row": 11
+    },
+    {
+      "from": "NAME:minerals-income-investment-fund",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Minerals Income Investment Fund",
+      "country": "加纳",
+      "countryEn": "ghana",
+      "minerals": [
+        "金"
+      ],
+      "row": 9
+    },
+    {
+      "from": "NAME:ministry-of-lands-and-natural-resources-department-administrator-of-stool-lands",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ministry of Lands and Natural Resources Department Administrator of Stool Lands",
+      "country": "加纳",
+      "countryEn": "ghana",
+      "minerals": [
+        "金"
+      ],
+      "row": 13
+    }
+  ],
+  "coverage": {
+    "claimComplete": false,
+    "note": "Form SD 强制申报、不强制列名单，本清单只是该公司披露的部分，且语义是「出现在供应链中」，不是直接供货。"
+  }
+}

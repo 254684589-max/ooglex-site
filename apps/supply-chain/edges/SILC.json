@@ -1,0 +1,4702 @@
+{
+  "contractVersion": 2,
+  "dataset": "supply-chain-edges",
+  "symbol": "SILC",
+  "name": "SILICOM LTD.",
+  "updatedAt": "2026-09-05T10:22:50Z",
+  "relation": {
+    "id": "smelter-in-supply-chain",
+    "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
+    "tier": "smelter"
+  },
+  "confidence": "disclosed",
+  "direction": {
+    "from": "smelter",
+    "to": "SILC",
+    "toListed": true
+  },
+  "evidence": {
+    "sourceType": "sec-form-sd",
+    "url": "https://www.sec.gov/Archives/edgar/data/916793/000117891326002076/exhibit_1-02.htm",
+    "docDate": "2026-04-13",
+    "form": "SD",
+    "accession": "0001178913-26-002076",
+    "filingDate": "2026-04-13",
+    "reportDate": "",
+    "document": "exhibit_1-02.htm",
+    "indexUrl": "https://www.sec.gov/Archives/edgar/data/916793/000117891326002076/",
+    "totalSD": 13
+  },
+  "parse": {
+    "rowsScanned": 407,
+    "rowsWithCid": 383,
+    "nameOnly": 4,
+    "droppedNoCid": 0,
+    "unique": 383,
+    "namedRatio": 0.013,
+    "countryRatio": 0.997
+  },
+  "byCountry": {
+    "中国": 90,
+    "印度尼西亚": 33,
+    "日本": 31,
+    "美国": 27,
+    "印度": 20,
+    "巴西": 19,
+    "俄罗斯": 17,
+    "德国": 14,
+    "韩国": 13,
+    "越南": 10,
+    "中国台湾": 8,
+    "瑞士": 6,
+    "南非": 6,
+    "阿联酋": 6,
+    "秘鲁": 5,
+    "菲律宾": 5,
+    "意大利": 5,
+    "马来西亚": 5,
+    "哈萨克斯坦": 4,
+    "泰国": 4,
+    "卢旺达": 3,
+    "捷克": 3,
+    "土耳其": 3,
+    "墨西哥": 3,
+    "加拿大": 3,
+    "西班牙": 3,
+    "澳大利亚": 3,
+    "乌兹别克斯坦": 2,
+    "玻利维亚": 2,
+    "波兰": 2,
+    "爱沙尼亚": 2,
+    "比利时": 2,
+    "奥地利": 2,
+    "法国": 2,
+    "缅甸": 2,
+    "刚果（金）": 1,
+    "瑞典": 1,
+    "吉尔吉斯斯坦": 1,
+    "沙特阿拉伯": 1,
+    "新加坡": 1,
+    "新西兰": 1,
+    "荷兰": 1,
+    "葡萄牙": 1,
+    "安道尔": 1,
+    "智利": 1,
+    "立陶宛": 1,
+    "加纳": 1,
+    "挪威": 1,
+    "哥伦比亚": 1,
+    "CONGO, DEMOCRATIC REPUBLIC OF THE": 1,
+    "坦桑尼亚": 1,
+    "乌干达": 1,
+    "未归类": 1
+  },
+  "byMineral": {
+    "金": 180,
+    "锡": 97,
+    "钨": 63,
+    "钽": 43
+  },
+  "edges": [
+    {
+      "from": "NAME:china-brazil-india-japan-estonia-united-states-of-america-russian-federation-kaz",
+      "idType": "name-only",
+      "cid": null,
+      "name": "China, Brazil, India, Japan, Estonia, United States of America, Russian Federation, Kazakhstan, Mexico, Thailand, Germany",
+      "country": "卢旺达",
+      "countryEn": "rwanda",
+      "minerals": [
+        "钽"
+      ],
+      "row": 16
+    },
+    {
+      "from": "NAME:china-united-states-of-america-indonesia-japan-bolivia-plurinational-state-of-br",
+      "idType": "name-only",
+      "cid": null,
+      "name": "China, United States of America, Indonesia, Japan, Bolivia (Plurinational State of), Brazil, Germany, Poland, Malaysia, Peru, Russian Federation, Thailand, Taiwan (Province of China), Viet Nam, Philippines, Belgium, Spain, Myanmar, Rwanda, India, Uganda, Australia",
+      "country": "刚果（金）",
+      "countryEn": "democratic republic of the congo",
+      "minerals": [
+        "锡"
+      ],
+      "row": 18
+    },
+    {
+      "from": "NAME:china-united-states-of-america-japan-austria-viet-nam-germany-russian-federation",
+      "idType": "name-only",
+      "cid": null,
+      "name": "China, United States of America, Japan, Austria, Viet Nam, Germany, Russian Federation, Philippines, Brazil, Taiwan (Province of China), Korea (Republic of), Malaysia, Lao People’s Democratic Republic",
+      "country": "捷克",
+      "countryEn": "czechia",
+      "minerals": [
+        "钨"
+      ],
+      "row": 17
+    },
+    {
+      "from": "NAME:united-states-of-america-japan-germany-uzbekistan-brazil-switzerland-turkey-phil",
+      "idType": "name-only",
+      "cid": null,
+      "name": "United States of America, Japan, Germany, Uzbekistan, Brazil, Switzerland, Turkey, Philippines, Sweden, Mexico, Canada, China, Italy, Korea (Republic of), Russian Federation, Kazakhstan, Kyrgyzstan, Saudi Arabia, Singapore, South Africa, Spain, Belgium, Australia, New Zealand, Czechia, Thailand, India, Poland, United Arab Emirates, Netherlands, Portugal, France, Andorra, Austria, Malaysia, Chile, Lithuania, Ghana, Norway, Colombia, Tanzania",
+      "country": "秘鲁",
+      "countryEn": "peru",
+      "minerals": [
+        "金"
+      ],
+      "row": 15
+    },
+    {
+      "from": "CID000004",
+      "idType": "rmi-cid",
+      "cid": "CID000004",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钨"
+      ],
+      "row": 345
+    },
+    {
+      "from": "CID000015",
+      "idType": "rmi-cid",
+      "cid": "CID000015",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 122
+    },
+    {
+      "from": "CID000019",
+      "idType": "rmi-cid",
+      "cid": "CID000019",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 123
+    },
+    {
+      "from": "CID000035",
+      "idType": "rmi-cid",
+      "cid": "CID000035",
+      "name": null,
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 124
+    },
+    {
+      "from": "CID000041",
+      "idType": "rmi-cid",
+      "cid": "CID000041",
+      "name": null,
+      "country": "乌兹别克斯坦",
+      "countryEn": "uzbekistan",
+      "minerals": [
+        "金"
+      ],
+      "row": 125
+    },
+    {
+      "from": "CID000058",
+      "idType": "rmi-cid",
+      "cid": "CID000058",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "金"
+      ],
+      "row": 126
+    },
+    {
+      "from": "CID000077",
+      "idType": "rmi-cid",
+      "cid": "CID000077",
+      "name": null,
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 127
+    },
+    {
+      "from": "CID000082",
+      "idType": "rmi-cid",
+      "cid": "CID000082",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 128
+    },
+    {
+      "from": "CID000090",
+      "idType": "rmi-cid",
+      "cid": "CID000090",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 129
+    },
+    {
+      "from": "CID000103",
+      "idType": "rmi-cid",
+      "cid": "CID000103",
+      "name": null,
+      "country": "土耳其",
+      "countryEn": "turkey",
+      "minerals": [
+        "金"
+      ],
+      "row": 130
+    },
+    {
+      "from": "CID000105",
+      "idType": "rmi-cid",
+      "cid": "CID000105",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钨"
+      ],
+      "row": 346
+    },
+    {
+      "from": "CID000113",
+      "idType": "rmi-cid",
+      "cid": "CID000113",
+      "name": null,
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 131
+    },
+    {
+      "from": "CID000128",
+      "idType": "rmi-cid",
+      "cid": "CID000128",
+      "name": null,
+      "country": "菲律宾",
+      "countryEn": "philippines",
+      "minerals": [
+        "金"
+      ],
+      "row": 132
+    },
+    {
+      "from": "CID000157",
+      "idType": "rmi-cid",
+      "cid": "CID000157",
+      "name": null,
+      "country": "瑞典",
+      "countryEn": "sweden",
+      "minerals": [
+        "金"
+      ],
+      "row": 133
+    },
+    {
+      "from": "CID000176",
+      "idType": "rmi-cid",
+      "cid": "CID000176",
+      "name": null,
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 134
+    },
+    {
+      "from": "CID000180",
+      "idType": "rmi-cid",
+      "cid": "CID000180",
+      "name": null,
+      "country": "墨西哥",
+      "countryEn": "mexico",
+      "minerals": [
+        "金"
+      ],
+      "row": 135
+    },
+    {
+      "from": "CID000185",
+      "idType": "rmi-cid",
+      "cid": "CID000185",
+      "name": null,
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "金"
+      ],
+      "row": 136
+    },
+    {
+      "from": "CID000189",
+      "idType": "rmi-cid",
+      "cid": "CID000189",
+      "name": null,
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 137
+    },
+    {
+      "from": "CID000197",
+      "idType": "rmi-cid",
+      "cid": "CID000197",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 138
+    },
+    {
+      "from": "CID000211",
+      "idType": "rmi-cid",
+      "cid": "CID000211",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 303
+    },
+    {
+      "from": "CID000218",
+      "idType": "rmi-cid",
+      "cid": "CID000218",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 347
+    },
+    {
+      "from": "CID000228",
+      "idType": "rmi-cid",
+      "cid": "CID000228",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 25
+    },
+    {
+      "from": "CID000233",
+      "idType": "rmi-cid",
+      "cid": "CID000233",
+      "name": null,
+      "country": "意大利",
+      "countryEn": "italy",
+      "minerals": [
+        "金"
+      ],
+      "row": 139
+    },
+    {
+      "from": "CID000258",
+      "idType": "rmi-cid",
+      "cid": "CID000258",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 348
+    },
+    {
+      "from": "CID000264",
+      "idType": "rmi-cid",
+      "cid": "CID000264",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 140
+    },
+    {
+      "from": "CID000281",
+      "idType": "rmi-cid",
+      "cid": "CID000281",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 349
+    },
+    {
+      "from": "CID000291",
+      "idType": "rmi-cid",
+      "cid": "CID000291",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 304
+    },
+    {
+      "from": "CID000292",
+      "idType": "rmi-cid",
+      "cid": "CID000292",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "锡"
+      ],
+      "row": 26
+    },
+    {
+      "from": "CID000309",
+      "idType": "rmi-cid",
+      "cid": "CID000309",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 27
+    },
+    {
+      "from": "CID000313",
+      "idType": "rmi-cid",
+      "cid": "CID000313",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 28
+    },
+    {
+      "from": "CID000343",
+      "idType": "rmi-cid",
+      "cid": "CID000343",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 141
+    },
+    {
+      "from": "CID000359",
+      "idType": "rmi-cid",
+      "cid": "CID000359",
+      "name": null,
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 142
+    },
+    {
+      "from": "CID000377",
+      "idType": "rmi-cid",
+      "cid": "CID000377",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 29
+    },
+    {
+      "from": "CID000401",
+      "idType": "rmi-cid",
+      "cid": "CID000401",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 143
+    },
+    {
+      "from": "CID000402",
+      "idType": "rmi-cid",
+      "cid": "CID000402",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "锡"
+      ],
+      "row": 30
+    },
+    {
+      "from": "CID000425",
+      "idType": "rmi-cid",
+      "cid": "CID000425",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 144
+    },
+    {
+      "from": "CID000438",
+      "idType": "rmi-cid",
+      "cid": "CID000438",
+      "name": null,
+      "country": "玻利维亚",
+      "countryEn": "bolivia plurinational state of",
+      "minerals": [
+        "锡"
+      ],
+      "row": 31
+    },
+    {
+      "from": "CID000448",
+      "idType": "rmi-cid",
+      "cid": "CID000448",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 32
+    },
+    {
+      "from": "CID000460",
+      "idType": "rmi-cid",
+      "cid": "CID000460",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 305
+    },
+    {
+      "from": "CID000466",
+      "idType": "rmi-cid",
+      "cid": "CID000466",
+      "name": null,
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "锡"
+      ],
+      "row": 33
+    },
+    {
+      "from": "CID000468",
+      "idType": "rmi-cid",
+      "cid": "CID000468",
+      "name": null,
+      "country": "波兰",
+      "countryEn": "poland",
+      "minerals": [
+        "锡"
+      ],
+      "row": 34
+    },
+    {
+      "from": "CID000493",
+      "idType": "rmi-cid",
+      "cid": "CID000493",
+      "name": null,
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "金"
+      ],
+      "row": 145
+    },
+    {
+      "from": "CID000522",
+      "idType": "rmi-cid",
+      "cid": "CID000522",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 146
+    },
+    {
+      "from": "CID000538",
+      "idType": "rmi-cid",
+      "cid": "CID000538",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 35
+    },
+    {
+      "from": "CID000555",
+      "idType": "rmi-cid",
+      "cid": "CID000555",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 36
+    },
+    {
+      "from": "CID000568",
+      "idType": "rmi-cid",
+      "cid": "CID000568",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钨"
+      ],
+      "row": 350
+    },
+    {
+      "from": "CID000616",
+      "idType": "rmi-cid",
+      "cid": "CID000616",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 306
+    },
+    {
+      "from": "CID000651",
+      "idType": "rmi-cid",
+      "cid": "CID000651",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 147
+    },
+    {
+      "from": "CID000671",
+      "idType": "rmi-cid",
+      "cid": "CID000671",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 148
+    },
+    {
+      "from": "CID000689",
+      "idType": "rmi-cid",
+      "cid": "CID000689",
+      "name": null,
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 149
+    },
+    {
+      "from": "CID000694",
+      "idType": "rmi-cid",
+      "cid": "CID000694",
+      "name": null,
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 150
+    },
+    {
+      "from": "CID000707",
+      "idType": "rmi-cid",
+      "cid": "CID000707",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 151
+    },
+    {
+      "from": "CID000711",
+      "idType": "rmi-cid",
+      "cid": "CID000711",
+      "name": null,
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 152
+    },
+    {
+      "from": "CID000766",
+      "idType": "rmi-cid",
+      "cid": "CID000766",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 351
+    },
+    {
+      "from": "CID000767",
+      "idType": "rmi-cid",
+      "cid": "CID000767",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 153
+    },
+    {
+      "from": "CID000769",
+      "idType": "rmi-cid",
+      "cid": "CID000769",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 352
+    },
+    {
+      "from": "CID000773",
+      "idType": "rmi-cid",
+      "cid": "CID000773",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 154
+    },
+    {
+      "from": "CID000778",
+      "idType": "rmi-cid",
+      "cid": "CID000778",
+      "name": null,
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 155
+    },
+    {
+      "from": "CID000801",
+      "idType": "rmi-cid",
+      "cid": "CID000801",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 156
+    },
+    {
+      "from": "CID000807",
+      "idType": "rmi-cid",
+      "cid": "CID000807",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 157
+    },
+    {
+      "from": "CID000814",
+      "idType": "rmi-cid",
+      "cid": "CID000814",
+      "name": null,
+      "country": "土耳其",
+      "countryEn": "turkey",
+      "minerals": [
+        "金"
+      ],
+      "row": 158
+    },
+    {
+      "from": "CID000823",
+      "idType": "rmi-cid",
+      "cid": "CID000823",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 159
+    },
+    {
+      "from": "CID000825",
+      "idType": "rmi-cid",
+      "cid": "CID000825",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钨"
+      ],
+      "row": 353
+    },
+    {
+      "from": "CID000855",
+      "idType": "rmi-cid",
+      "cid": "CID000855",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 160
+    },
+    {
+      "from": "CID000914",
+      "idType": "rmi-cid",
+      "cid": "CID000914",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 307
+    },
+    {
+      "from": "CID000917",
+      "idType": "rmi-cid",
+      "cid": "CID000917",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 308
+    },
+    {
+      "from": "CID000920",
+      "idType": "rmi-cid",
+      "cid": "CID000920",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 161
+    },
+    {
+      "from": "CID000924",
+      "idType": "rmi-cid",
+      "cid": "CID000924",
+      "name": null,
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "金"
+      ],
+      "row": 162
+    },
+    {
+      "from": "CID000929",
+      "idType": "rmi-cid",
+      "cid": "CID000929",
+      "name": null,
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "金"
+      ],
+      "row": 163
+    },
+    {
+      "from": "CID000937",
+      "idType": "rmi-cid",
+      "cid": "CID000937",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 164
+    },
+    {
+      "from": "CID000942",
+      "idType": "rmi-cid",
+      "cid": "CID000942",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 37
+    },
+    {
+      "from": "CID000956",
+      "idType": "rmi-cid",
+      "cid": "CID000956",
+      "name": null,
+      "country": "哈萨克斯坦",
+      "countryEn": "kazakhstan",
+      "minerals": [
+        "金"
+      ],
+      "row": 165
+    },
+    {
+      "from": "CID000957",
+      "idType": "rmi-cid",
+      "cid": "CID000957",
+      "name": null,
+      "country": "哈萨克斯坦",
+      "countryEn": "kazakhstan",
+      "minerals": [
+        "金"
+      ],
+      "row": 166
+    },
+    {
+      "from": "CID000966",
+      "idType": "rmi-cid",
+      "cid": "CID000966",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钨"
+      ],
+      "row": 354
+    },
+    {
+      "from": "CID000969",
+      "idType": "rmi-cid",
+      "cid": "CID000969",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 167
+    },
+    {
+      "from": "CID000981",
+      "idType": "rmi-cid",
+      "cid": "CID000981",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 168
+    },
+    {
+      "from": "CID001029",
+      "idType": "rmi-cid",
+      "cid": "CID001029",
+      "name": null,
+      "country": "吉尔吉斯斯坦",
+      "countryEn": "kyrgyzstan",
+      "minerals": [
+        "金"
+      ],
+      "row": 169
+    },
+    {
+      "from": "CID001032",
+      "idType": "rmi-cid",
+      "cid": "CID001032",
+      "name": null,
+      "country": "沙特阿拉伯",
+      "countryEn": "saudi arabia",
+      "minerals": [
+        "金"
+      ],
+      "row": 170
+    },
+    {
+      "from": "CID001056",
+      "idType": "rmi-cid",
+      "cid": "CID001056",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 171
+    },
+    {
+      "from": "CID001058",
+      "idType": "rmi-cid",
+      "cid": "CID001058",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 172
+    },
+    {
+      "from": "CID001070",
+      "idType": "rmi-cid",
+      "cid": "CID001070",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 38
+    },
+    {
+      "from": "CID001076",
+      "idType": "rmi-cid",
+      "cid": "CID001076",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "钽"
+      ],
+      "row": 309
+    },
+    {
+      "from": "CID001078",
+      "idType": "rmi-cid",
+      "cid": "CID001078",
+      "name": null,
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 173
+    },
+    {
+      "from": "CID001093",
+      "idType": "rmi-cid",
+      "cid": "CID001093",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 174
+    },
+    {
+      "from": "CID001105",
+      "idType": "rmi-cid",
+      "cid": "CID001105",
+      "name": null,
+      "country": "马来西亚",
+      "countryEn": "malaysia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 39
+    },
+    {
+      "from": "CID001113",
+      "idType": "rmi-cid",
+      "cid": "CID001113",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 175
+    },
+    {
+      "from": "CID001119",
+      "idType": "rmi-cid",
+      "cid": "CID001119",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 176
+    },
+    {
+      "from": "CID001142",
+      "idType": "rmi-cid",
+      "cid": "CID001142",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "锡"
+      ],
+      "row": 40
+    },
+    {
+      "from": "CID001147",
+      "idType": "rmi-cid",
+      "cid": "CID001147",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 177
+    },
+    {
+      "from": "CID001149",
+      "idType": "rmi-cid",
+      "cid": "CID001149",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 178
+    },
+    {
+      "from": "CID001152",
+      "idType": "rmi-cid",
+      "cid": "CID001152",
+      "name": null,
+      "country": "新加坡",
+      "countryEn": "singapore",
+      "minerals": [
+        "金"
+      ],
+      "row": 179
+    },
+    {
+      "from": "CID001153",
+      "idType": "rmi-cid",
+      "cid": "CID001153",
+      "name": null,
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 180
+    },
+    {
+      "from": "CID001157",
+      "idType": "rmi-cid",
+      "cid": "CID001157",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 181
+    },
+    {
+      "from": "CID001161",
+      "idType": "rmi-cid",
+      "cid": "CID001161",
+      "name": null,
+      "country": "墨西哥",
+      "countryEn": "mexico",
+      "minerals": [
+        "金"
+      ],
+      "row": 182
+    },
+    {
+      "from": "CID001163",
+      "idType": "rmi-cid",
+      "cid": "CID001163",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "钽"
+      ],
+      "row": 310
+    },
+    {
+      "from": "CID001173",
+      "idType": "rmi-cid",
+      "cid": "CID001173",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 41
+    },
+    {
+      "from": "CID001175",
+      "idType": "rmi-cid",
+      "cid": "CID001175",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "钽"
+      ],
+      "row": 311
+    },
+    {
+      "from": "CID001182",
+      "idType": "rmi-cid",
+      "cid": "CID001182",
+      "name": null,
+      "country": "秘鲁",
+      "countryEn": "peru",
+      "minerals": [
+        "锡"
+      ],
+      "row": 42
+    },
+    {
+      "from": "CID001188",
+      "idType": "rmi-cid",
+      "cid": "CID001188",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 183
+    },
+    {
+      "from": "CID001191",
+      "idType": "rmi-cid",
+      "cid": "CID001191",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "锡"
+      ],
+      "row": 43
+    },
+    {
+      "from": "CID001192",
+      "idType": "rmi-cid",
+      "cid": "CID001192",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 312
+    },
+    {
+      "from": "CID001193",
+      "idType": "rmi-cid",
+      "cid": "CID001193",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 184
+    },
+    {
+      "from": "CID001200",
+      "idType": "rmi-cid",
+      "cid": "CID001200",
+      "name": null,
+      "country": "爱沙尼亚",
+      "countryEn": "estonia",
+      "minerals": [
+        "钽"
+      ],
+      "row": 313
+    },
+    {
+      "from": "CID001204",
+      "idType": "rmi-cid",
+      "cid": "CID001204",
+      "name": null,
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "金"
+      ],
+      "row": 185
+    },
+    {
+      "from": "CID001220",
+      "idType": "rmi-cid",
+      "cid": "CID001220",
+      "name": null,
+      "country": "土耳其",
+      "countryEn": "turkey",
+      "minerals": [
+        "金"
+      ],
+      "row": 186
+    },
+    {
+      "from": "CID001231",
+      "idType": "rmi-cid",
+      "cid": "CID001231",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 44
+    },
+    {
+      "from": "CID001236",
+      "idType": "rmi-cid",
+      "cid": "CID001236",
+      "name": null,
+      "country": "乌兹别克斯坦",
+      "countryEn": "uzbekistan",
+      "minerals": [
+        "金"
+      ],
+      "row": 187
+    },
+    {
+      "from": "CID001259",
+      "idType": "rmi-cid",
+      "cid": "CID001259",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 188
+    },
+    {
+      "from": "CID001277",
+      "idType": "rmi-cid",
+      "cid": "CID001277",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 314
+    },
+    {
+      "from": "CID001305",
+      "idType": "rmi-cid",
+      "cid": "CID001305",
+      "name": null,
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "锡"
+      ],
+      "row": 45
+    },
+    {
+      "from": "CID001314",
+      "idType": "rmi-cid",
+      "cid": "CID001314",
+      "name": null,
+      "country": "泰国",
+      "countryEn": "thailand",
+      "minerals": [
+        "锡"
+      ],
+      "row": 46
+    },
+    {
+      "from": "CID001325",
+      "idType": "rmi-cid",
+      "cid": "CID001325",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 189
+    },
+    {
+      "from": "CID001326",
+      "idType": "rmi-cid",
+      "cid": "CID001326",
+      "name": null,
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "金"
+      ],
+      "row": 190
+    },
+    {
+      "from": "CID001337",
+      "idType": "rmi-cid",
+      "cid": "CID001337",
+      "name": null,
+      "country": "玻利维亚",
+      "countryEn": "bolivia plurinational state of",
+      "minerals": [
+        "锡"
+      ],
+      "row": 47
+    },
+    {
+      "from": "CID001352",
+      "idType": "rmi-cid",
+      "cid": "CID001352",
+      "name": null,
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 191
+    },
+    {
+      "from": "CID001362",
+      "idType": "rmi-cid",
+      "cid": "CID001362",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 192
+    },
+    {
+      "from": "CID001386",
+      "idType": "rmi-cid",
+      "cid": "CID001386",
+      "name": null,
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "金"
+      ],
+      "row": 193
+    },
+    {
+      "from": "CID001397",
+      "idType": "rmi-cid",
+      "cid": "CID001397",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "金"
+      ],
+      "row": 194
+    },
+    {
+      "from": "CID001399",
+      "idType": "rmi-cid",
+      "cid": "CID001399",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 48
+    },
+    {
+      "from": "CID001402",
+      "idType": "rmi-cid",
+      "cid": "CID001402",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 49
+    },
+    {
+      "from": "CID001406",
+      "idType": "rmi-cid",
+      "cid": "CID001406",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 50
+    },
+    {
+      "from": "CID001419",
+      "idType": "rmi-cid",
+      "cid": "CID001419",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 51
+    },
+    {
+      "from": "CID001421",
+      "idType": "rmi-cid",
+      "cid": "CID001421",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 52
+    },
+    {
+      "from": "CID001428",
+      "idType": "rmi-cid",
+      "cid": "CID001428",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 53
+    },
+    {
+      "from": "CID001453",
+      "idType": "rmi-cid",
+      "cid": "CID001453",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 54
+    },
+    {
+      "from": "CID001458",
+      "idType": "rmi-cid",
+      "cid": "CID001458",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 55
+    },
+    {
+      "from": "CID001460",
+      "idType": "rmi-cid",
+      "cid": "CID001460",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 56
+    },
+    {
+      "from": "CID001463",
+      "idType": "rmi-cid",
+      "cid": "CID001463",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 57
+    },
+    {
+      "from": "CID001468",
+      "idType": "rmi-cid",
+      "cid": "CID001468",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 58
+    },
+    {
+      "from": "CID001477",
+      "idType": "rmi-cid",
+      "cid": "CID001477",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 59
+    },
+    {
+      "from": "CID001482",
+      "idType": "rmi-cid",
+      "cid": "CID001482",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 60
+    },
+    {
+      "from": "CID001486",
+      "idType": "rmi-cid",
+      "cid": "CID001486",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 61
+    },
+    {
+      "from": "CID001490",
+      "idType": "rmi-cid",
+      "cid": "CID001490",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 62
+    },
+    {
+      "from": "CID001493",
+      "idType": "rmi-cid",
+      "cid": "CID001493",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 63
+    },
+    {
+      "from": "CID001498",
+      "idType": "rmi-cid",
+      "cid": "CID001498",
+      "name": null,
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 195
+    },
+    {
+      "from": "CID001508",
+      "idType": "rmi-cid",
+      "cid": "CID001508",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 315
+    },
+    {
+      "from": "CID001512",
+      "idType": "rmi-cid",
+      "cid": "CID001512",
+      "name": null,
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 196
+    },
+    {
+      "from": "CID001522",
+      "idType": "rmi-cid",
+      "cid": "CID001522",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 316
+    },
+    {
+      "from": "CID001534",
+      "idType": "rmi-cid",
+      "cid": "CID001534",
+      "name": null,
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "金"
+      ],
+      "row": 197
+    },
+    {
+      "from": "CID001539",
+      "idType": "rmi-cid",
+      "cid": "CID001539",
+      "name": null,
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 64
+    },
+    {
+      "from": "CID001546",
+      "idType": "rmi-cid",
+      "cid": "CID001546",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 198
+    },
+    {
+      "from": "CID001555",
+      "idType": "rmi-cid",
+      "cid": "CID001555",
+      "name": null,
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 199
+    },
+    {
+      "from": "CID001562",
+      "idType": "rmi-cid",
+      "cid": "CID001562",
+      "name": null,
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 200
+    },
+    {
+      "from": "CID001585",
+      "idType": "rmi-cid",
+      "cid": "CID001585",
+      "name": null,
+      "country": "西班牙",
+      "countryEn": "spain",
+      "minerals": [
+        "金"
+      ],
+      "row": 201
+    },
+    {
+      "from": "CID001619",
+      "idType": "rmi-cid",
+      "cid": "CID001619",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 202
+    },
+    {
+      "from": "CID001622",
+      "idType": "rmi-cid",
+      "cid": "CID001622",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 203
+    },
+    {
+      "from": "CID001736",
+      "idType": "rmi-cid",
+      "cid": "CID001736",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 204
+    },
+    {
+      "from": "CID001756",
+      "idType": "rmi-cid",
+      "cid": "CID001756",
+      "name": null,
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "金"
+      ],
+      "row": 205
+    },
+    {
+      "from": "CID001758",
+      "idType": "rmi-cid",
+      "cid": "CID001758",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 65
+    },
+    {
+      "from": "CID001761",
+      "idType": "rmi-cid",
+      "cid": "CID001761",
+      "name": null,
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "金"
+      ],
+      "row": 206
+    },
+    {
+      "from": "CID001769",
+      "idType": "rmi-cid",
+      "cid": "CID001769",
+      "name": null,
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钽"
+      ],
+      "row": 317
+    },
+    {
+      "from": "CID001798",
+      "idType": "rmi-cid",
+      "cid": "CID001798",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 207
+    },
+    {
+      "from": "CID001810",
+      "idType": "rmi-cid",
+      "cid": "CID001810",
+      "name": null,
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "金"
+      ],
+      "row": 208
+    },
+    {
+      "from": "CID001869",
+      "idType": "rmi-cid",
+      "cid": "CID001869",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 318
+    },
+    {
+      "from": "CID001875",
+      "idType": "rmi-cid",
+      "cid": "CID001875",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 209
+    },
+    {
+      "from": "CID001891",
+      "idType": "rmi-cid",
+      "cid": "CID001891",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 319
+    },
+    {
+      "from": "CID001898",
+      "idType": "rmi-cid",
+      "cid": "CID001898",
+      "name": null,
+      "country": "泰国",
+      "countryEn": "thailand",
+      "minerals": [
+        "锡"
+      ],
+      "row": 66
+    },
+    {
+      "from": "CID001908",
+      "idType": "rmi-cid",
+      "cid": "CID001908",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 67
+    },
+    {
+      "from": "CID001909",
+      "idType": "rmi-cid",
+      "cid": "CID001909",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 210
+    },
+    {
+      "from": "CID001916",
+      "idType": "rmi-cid",
+      "cid": "CID001916",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 211
+    },
+    {
+      "from": "CID001938",
+      "idType": "rmi-cid",
+      "cid": "CID001938",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 212
+    },
+    {
+      "from": "CID001947",
+      "idType": "rmi-cid",
+      "cid": "CID001947",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 213
+    },
+    {
+      "from": "CID001955",
+      "idType": "rmi-cid",
+      "cid": "CID001955",
+      "name": null,
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 214
+    },
+    {
+      "from": "CID001969",
+      "idType": "rmi-cid",
+      "cid": "CID001969",
+      "name": null,
+      "country": "哈萨克斯坦",
+      "countryEn": "kazakhstan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 320
+    },
+    {
+      "from": "CID001980",
+      "idType": "rmi-cid",
+      "cid": "CID001980",
+      "name": null,
+      "country": "比利时",
+      "countryEn": "belgium",
+      "minerals": [
+        "金"
+      ],
+      "row": 215
+    },
+    {
+      "from": "CID001993",
+      "idType": "rmi-cid",
+      "cid": "CID001993",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 68
+    },
+    {
+      "from": "CID002003",
+      "idType": "rmi-cid",
+      "cid": "CID002003",
+      "name": null,
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 217
+    },
+    {
+      "from": "CID002015",
+      "idType": "rmi-cid",
+      "cid": "CID002015",
+      "name": null,
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "锡"
+      ],
+      "row": 69
+    },
+    {
+      "from": "CID002030",
+      "idType": "rmi-cid",
+      "cid": "CID002030",
+      "name": null,
+      "country": "澳大利亚",
+      "countryEn": "australia",
+      "minerals": [
+        "金"
+      ],
+      "row": 218
+    },
+    {
+      "from": "CID002036",
+      "idType": "rmi-cid",
+      "cid": "CID002036",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 70
+    },
+    {
+      "from": "CID002044",
+      "idType": "rmi-cid",
+      "cid": "CID002044",
+      "name": null,
+      "country": "奥地利",
+      "countryEn": "austria",
+      "minerals": [
+        "钨"
+      ],
+      "row": 355
+    },
+    {
+      "from": "CID002082",
+      "idType": "rmi-cid",
+      "cid": "CID002082",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 356
+    },
+    {
+      "from": "CID002100",
+      "idType": "rmi-cid",
+      "cid": "CID002100",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 219
+    },
+    {
+      "from": "CID002129",
+      "idType": "rmi-cid",
+      "cid": "CID002129",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 220
+    },
+    {
+      "from": "CID002158",
+      "idType": "rmi-cid",
+      "cid": "CID002158",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 71
+    },
+    {
+      "from": "CID002180",
+      "idType": "rmi-cid",
+      "cid": "CID002180",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 72
+    },
+    {
+      "from": "CID002224",
+      "idType": "rmi-cid",
+      "cid": "CID002224",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 221
+    },
+    {
+      "from": "CID002243",
+      "idType": "rmi-cid",
+      "cid": "CID002243",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 222
+    },
+    {
+      "from": "CID002282",
+      "idType": "rmi-cid",
+      "cid": "CID002282",
+      "name": null,
+      "country": "新西兰",
+      "countryEn": "new zealand",
+      "minerals": [
+        "金"
+      ],
+      "row": 223
+    },
+    {
+      "from": "CID002290",
+      "idType": "rmi-cid",
+      "cid": "CID002290",
+      "name": null,
+      "country": "捷克",
+      "countryEn": "czechia",
+      "minerals": [
+        "金"
+      ],
+      "row": 224
+    },
+    {
+      "from": "CID002312",
+      "idType": "rmi-cid",
+      "cid": "CID002312",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 225
+    },
+    {
+      "from": "CID002313",
+      "idType": "rmi-cid",
+      "cid": "CID002313",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 357
+    },
+    {
+      "from": "CID002314",
+      "idType": "rmi-cid",
+      "cid": "CID002314",
+      "name": null,
+      "country": "泰国",
+      "countryEn": "thailand",
+      "minerals": [
+        "金"
+      ],
+      "row": 226
+    },
+    {
+      "from": "CID002315",
+      "idType": "rmi-cid",
+      "cid": "CID002315",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 358
+    },
+    {
+      "from": "CID002316",
+      "idType": "rmi-cid",
+      "cid": "CID002316",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 359
+    },
+    {
+      "from": "CID002317",
+      "idType": "rmi-cid",
+      "cid": "CID002317",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 360
+    },
+    {
+      "from": "CID002318",
+      "idType": "rmi-cid",
+      "cid": "CID002318",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 361
+    },
+    {
+      "from": "CID002319",
+      "idType": "rmi-cid",
+      "cid": "CID002319",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 362
+    },
+    {
+      "from": "CID002320",
+      "idType": "rmi-cid",
+      "cid": "CID002320",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 363
+    },
+    {
+      "from": "CID002321",
+      "idType": "rmi-cid",
+      "cid": "CID002321",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 364
+    },
+    {
+      "from": "CID002455",
+      "idType": "rmi-cid",
+      "cid": "CID002455",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 73
+    },
+    {
+      "from": "CID002459",
+      "idType": "rmi-cid",
+      "cid": "CID002459",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 227
+    },
+    {
+      "from": "CID002468",
+      "idType": "rmi-cid",
+      "cid": "CID002468",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 74
+    },
+    {
+      "from": "CID002492",
+      "idType": "rmi-cid",
+      "cid": "CID002492",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 321
+    },
+    {
+      "from": "CID002494",
+      "idType": "rmi-cid",
+      "cid": "CID002494",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 365
+    },
+    {
+      "from": "CID002500",
+      "idType": "rmi-cid",
+      "cid": "CID002500",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 75
+    },
+    {
+      "from": "CID002502",
+      "idType": "rmi-cid",
+      "cid": "CID002502",
+      "name": null,
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 366
+    },
+    {
+      "from": "CID002503",
+      "idType": "rmi-cid",
+      "cid": "CID002503",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 76
+    },
+    {
+      "from": "CID002504",
+      "idType": "rmi-cid",
+      "cid": "CID002504",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 322
+    },
+    {
+      "from": "CID002505",
+      "idType": "rmi-cid",
+      "cid": "CID002505",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 323
+    },
+    {
+      "from": "CID002506",
+      "idType": "rmi-cid",
+      "cid": "CID002506",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 324
+    },
+    {
+      "from": "CID002508",
+      "idType": "rmi-cid",
+      "cid": "CID002508",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 325
+    },
+    {
+      "from": "CID002509",
+      "idType": "rmi-cid",
+      "cid": "CID002509",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 228
+    },
+    {
+      "from": "CID002511",
+      "idType": "rmi-cid",
+      "cid": "CID002511",
+      "name": null,
+      "country": "波兰",
+      "countryEn": "poland",
+      "minerals": [
+        "金"
+      ],
+      "row": 229
+    },
+    {
+      "from": "CID002512",
+      "idType": "rmi-cid",
+      "cid": "CID002512",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 326
+    },
+    {
+      "from": "CID002513",
+      "idType": "rmi-cid",
+      "cid": "CID002513",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 368
+    },
+    {
+      "from": "CID002516",
+      "idType": "rmi-cid",
+      "cid": "CID002516",
+      "name": null,
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "金"
+      ],
+      "row": 230
+    },
+    {
+      "from": "CID002517",
+      "idType": "rmi-cid",
+      "cid": "CID002517",
+      "name": null,
+      "country": "菲律宾",
+      "countryEn": "philippines",
+      "minerals": [
+        "锡"
+      ],
+      "row": 77
+    },
+    {
+      "from": "CID002525",
+      "idType": "rmi-cid",
+      "cid": "CID002525",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 231
+    },
+    {
+      "from": "CID002527",
+      "idType": "rmi-cid",
+      "cid": "CID002527",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 232
+    },
+    {
+      "from": "CID002539",
+      "idType": "rmi-cid",
+      "cid": "CID002539",
+      "name": null,
+      "country": "墨西哥",
+      "countryEn": "mexico",
+      "minerals": [
+        "钽"
+      ],
+      "row": 327
+    },
+    {
+      "from": "CID002541",
+      "idType": "rmi-cid",
+      "cid": "CID002541",
+      "name": null,
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钨"
+      ],
+      "row": 369
+    },
+    {
+      "from": "CID002542",
+      "idType": "rmi-cid",
+      "cid": "CID002542",
+      "name": null,
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钨"
+      ],
+      "row": 370
+    },
+    {
+      "from": "CID002543",
+      "idType": "rmi-cid",
+      "cid": "CID002543",
+      "name": null,
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 371
+    },
+    {
+      "from": "CID002544",
+      "idType": "rmi-cid",
+      "cid": "CID002544",
+      "name": null,
+      "country": "泰国",
+      "countryEn": "thailand",
+      "minerals": [
+        "钽"
+      ],
+      "row": 328
+    },
+    {
+      "from": "CID002545",
+      "idType": "rmi-cid",
+      "cid": "CID002545",
+      "name": null,
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钽"
+      ],
+      "row": 329
+    },
+    {
+      "from": "CID002547",
+      "idType": "rmi-cid",
+      "cid": "CID002547",
+      "name": null,
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钽"
+      ],
+      "row": 330
+    },
+    {
+      "from": "CID002548",
+      "idType": "rmi-cid",
+      "cid": "CID002548",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 331
+    },
+    {
+      "from": "CID002549",
+      "idType": "rmi-cid",
+      "cid": "CID002549",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 332
+    },
+    {
+      "from": "CID002550",
+      "idType": "rmi-cid",
+      "cid": "CID002550",
+      "name": null,
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钽"
+      ],
+      "row": 333
+    },
+    {
+      "from": "CID002551",
+      "idType": "rmi-cid",
+      "cid": "CID002551",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 372
+    },
+    {
+      "from": "CID002557",
+      "idType": "rmi-cid",
+      "cid": "CID002557",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 334
+    },
+    {
+      "from": "CID002558",
+      "idType": "rmi-cid",
+      "cid": "CID002558",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 335
+    },
+    {
+      "from": "CID002560",
+      "idType": "rmi-cid",
+      "cid": "CID002560",
+      "name": null,
+      "country": "阿联酋",
+      "countryEn": "united arab emirates",
+      "minerals": [
+        "金"
+      ],
+      "row": 233
+    },
+    {
+      "from": "CID002561",
+      "idType": "rmi-cid",
+      "cid": "CID002561",
+      "name": null,
+      "country": "阿联酋",
+      "countryEn": "united arab emirates",
+      "minerals": [
+        "金"
+      ],
+      "row": 234
+    },
+    {
+      "from": "CID002562",
+      "idType": "rmi-cid",
+      "cid": "CID002562",
+      "name": null,
+      "country": "阿联酋",
+      "countryEn": "united arab emirates",
+      "minerals": [
+        "金"
+      ],
+      "row": 235
+    },
+    {
+      "from": "CID002570",
+      "idType": "rmi-cid",
+      "cid": "CID002570",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 78
+    },
+    {
+      "from": "CID002572",
+      "idType": "rmi-cid",
+      "cid": "CID002572",
+      "name": null,
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "锡"
+      ],
+      "row": 79
+    },
+    {
+      "from": "CID002573",
+      "idType": "rmi-cid",
+      "cid": "CID002573",
+      "name": null,
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "锡"
+      ],
+      "row": 80
+    },
+    {
+      "from": "CID002574",
+      "idType": "rmi-cid",
+      "cid": "CID002574",
+      "name": null,
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "锡"
+      ],
+      "row": 81
+    },
+    {
+      "from": "CID002580",
+      "idType": "rmi-cid",
+      "cid": "CID002580",
+      "name": null,
+      "country": "意大利",
+      "countryEn": "italy",
+      "minerals": [
+        "金"
+      ],
+      "row": 236
+    },
+    {
+      "from": "CID002582",
+      "idType": "rmi-cid",
+      "cid": "CID002582",
+      "name": null,
+      "country": "荷兰",
+      "countryEn": "netherlands",
+      "minerals": [
+        "金"
+      ],
+      "row": 237
+    },
+    {
+      "from": "CID002584",
+      "idType": "rmi-cid",
+      "cid": "CID002584",
+      "name": null,
+      "country": "阿联酋",
+      "countryEn": "united arab emirates",
+      "minerals": [
+        "金"
+      ],
+      "row": 238
+    },
+    {
+      "from": "CID002588",
+      "idType": "rmi-cid",
+      "cid": "CID002588",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 239
+    },
+    {
+      "from": "CID002589",
+      "idType": "rmi-cid",
+      "cid": "CID002589",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钨"
+      ],
+      "row": 373
+    },
+    {
+      "from": "CID002593",
+      "idType": "rmi-cid",
+      "cid": "CID002593",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 82
+    },
+    {
+      "from": "CID002605",
+      "idType": "rmi-cid",
+      "cid": "CID002605",
+      "name": null,
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 240
+    },
+    {
+      "from": "CID002606",
+      "idType": "rmi-cid",
+      "cid": "CID002606",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "金"
+      ],
+      "row": 241
+    },
+    {
+      "from": "CID002615",
+      "idType": "rmi-cid",
+      "cid": "CID002615",
+      "name": null,
+      "country": "哈萨克斯坦",
+      "countryEn": "kazakhstan",
+      "minerals": [
+        "金"
+      ],
+      "row": 242
+    },
+    {
+      "from": "CID002641",
+      "idType": "rmi-cid",
+      "cid": "CID002641",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 374
+    },
+    {
+      "from": "CID002645",
+      "idType": "rmi-cid",
+      "cid": "CID002645",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 375
+    },
+    {
+      "from": "CID002649",
+      "idType": "rmi-cid",
+      "cid": "CID002649",
+      "name": null,
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 376
+    },
+    {
+      "from": "CID002696",
+      "idType": "rmi-cid",
+      "cid": "CID002696",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 83
+    },
+    {
+      "from": "CID002703",
+      "idType": "rmi-cid",
+      "cid": "CID002703",
+      "name": null,
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "锡"
+      ],
+      "row": 84
+    },
+    {
+      "from": "CID002706",
+      "idType": "rmi-cid",
+      "cid": "CID002706",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 85
+    },
+    {
+      "from": "CID002707",
+      "idType": "rmi-cid",
+      "cid": "CID002707",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "钽"
+      ],
+      "row": 336
+    },
+    {
+      "from": "CID002708",
+      "idType": "rmi-cid",
+      "cid": "CID002708",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 243
+    },
+    {
+      "from": "CID002724",
+      "idType": "rmi-cid",
+      "cid": "CID002724",
+      "name": null,
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 377
+    },
+    {
+      "from": "CID002750",
+      "idType": "rmi-cid",
+      "cid": "CID002750",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 244
+    },
+    {
+      "from": "CID002756",
+      "idType": "rmi-cid",
+      "cid": "CID002756",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 86
+    },
+    {
+      "from": "CID002760",
+      "idType": "rmi-cid",
+      "cid": "CID002760",
+      "name": null,
+      "country": "葡萄牙",
+      "countryEn": "portugal",
+      "minerals": [
+        "金"
+      ],
+      "row": 245
+    },
+    {
+      "from": "CID002761",
+      "idType": "rmi-cid",
+      "cid": "CID002761",
+      "name": null,
+      "country": "法国",
+      "countryEn": "france",
+      "minerals": [
+        "金"
+      ],
+      "row": 246
+    },
+    {
+      "from": "CID002762",
+      "idType": "rmi-cid",
+      "cid": "CID002762",
+      "name": null,
+      "country": "安道尔",
+      "countryEn": "andorra",
+      "minerals": [
+        "金"
+      ],
+      "row": 247
+    },
+    {
+      "from": "CID002763",
+      "idType": "rmi-cid",
+      "cid": "CID002763",
+      "name": null,
+      "country": "意大利",
+      "countryEn": "italy",
+      "minerals": [
+        "金"
+      ],
+      "row": 248
+    },
+    {
+      "from": "CID002765",
+      "idType": "rmi-cid",
+      "cid": "CID002765",
+      "name": null,
+      "country": "意大利",
+      "countryEn": "italy",
+      "minerals": [
+        "金"
+      ],
+      "row": 249
+    },
+    {
+      "from": "CID002773",
+      "idType": "rmi-cid",
+      "cid": "CID002773",
+      "name": null,
+      "country": "比利时",
+      "countryEn": "belgium",
+      "minerals": [
+        "锡"
+      ],
+      "row": 87
+    },
+    {
+      "from": "CID002774",
+      "idType": "rmi-cid",
+      "cid": "CID002774",
+      "name": null,
+      "country": "西班牙",
+      "countryEn": "spain",
+      "minerals": [
+        "锡"
+      ],
+      "row": 88
+    },
+    {
+      "from": "CID002776",
+      "idType": "rmi-cid",
+      "cid": "CID002776",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 89
+    },
+    {
+      "from": "CID002778",
+      "idType": "rmi-cid",
+      "cid": "CID002778",
+      "name": null,
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 250
+    },
+    {
+      "from": "CID002779",
+      "idType": "rmi-cid",
+      "cid": "CID002779",
+      "name": null,
+      "country": "奥地利",
+      "countryEn": "austria",
+      "minerals": [
+        "金"
+      ],
+      "row": 251
+    },
+    {
+      "from": "CID002816",
+      "idType": "rmi-cid",
+      "cid": "CID002816",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 90
+    },
+    {
+      "from": "CID002827",
+      "idType": "rmi-cid",
+      "cid": "CID002827",
+      "name": null,
+      "country": "菲律宾",
+      "countryEn": "philippines",
+      "minerals": [
+        "钨"
+      ],
+      "row": 378
+    },
+    {
+      "from": "CID002833",
+      "idType": "rmi-cid",
+      "cid": "CID002833",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "钨"
+      ],
+      "row": 379
+    },
+    {
+      "from": "CID002835",
+      "idType": "rmi-cid",
+      "cid": "CID002835",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 91
+    },
+    {
+      "from": "CID002842",
+      "idType": "rmi-cid",
+      "cid": "CID002842",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 337
+    },
+    {
+      "from": "CID002844",
+      "idType": "rmi-cid",
+      "cid": "CID002844",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 92
+    },
+    {
+      "from": "CID002845",
+      "idType": "rmi-cid",
+      "cid": "CID002845",
+      "name": null,
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 380
+    },
+    {
+      "from": "CID002850",
+      "idType": "rmi-cid",
+      "cid": "CID002850",
+      "name": null,
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 252
+    },
+    {
+      "from": "CID002852",
+      "idType": "rmi-cid",
+      "cid": "CID002852",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 253
+    },
+    {
+      "from": "CID002853",
+      "idType": "rmi-cid",
+      "cid": "CID002853",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 254
+    },
+    {
+      "from": "CID002857",
+      "idType": "rmi-cid",
+      "cid": "CID002857",
+      "name": null,
+      "country": "马来西亚",
+      "countryEn": "malaysia",
+      "minerals": [
+        "金"
+      ],
+      "row": 255
+    },
+    {
+      "from": "CID002858",
+      "idType": "rmi-cid",
+      "cid": "CID002858",
+      "name": null,
+      "country": "马来西亚",
+      "countryEn": "malaysia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 93
+    },
+    {
+      "from": "CID002863",
+      "idType": "rmi-cid",
+      "cid": "CID002863",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 256
+    },
+    {
+      "from": "CID002867",
+      "idType": "rmi-cid",
+      "cid": "CID002867",
+      "name": null,
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 257
+    },
+    {
+      "from": "CID002872",
+      "idType": "rmi-cid",
+      "cid": "CID002872",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 258
+    },
+    {
+      "from": "CID002893",
+      "idType": "rmi-cid",
+      "cid": "CID002893",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 259
+    },
+    {
+      "from": "CID002918",
+      "idType": "rmi-cid",
+      "cid": "CID002918",
+      "name": null,
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 260
+    },
+    {
+      "from": "CID002919",
+      "idType": "rmi-cid",
+      "cid": "CID002919",
+      "name": null,
+      "country": "智利",
+      "countryEn": "chile",
+      "minerals": [
+        "金"
+      ],
+      "row": 261
+    },
+    {
+      "from": "CID002920",
+      "idType": "rmi-cid",
+      "cid": "CID002920",
+      "name": null,
+      "country": "澳大利亚",
+      "countryEn": "australia",
+      "minerals": [
+        "金"
+      ],
+      "row": 262
+    },
+    {
+      "from": "CID002973",
+      "idType": "rmi-cid",
+      "cid": "CID002973",
+      "name": null,
+      "country": "意大利",
+      "countryEn": "italy",
+      "minerals": [
+        "金"
+      ],
+      "row": 263
+    },
+    {
+      "from": "CID003116",
+      "idType": "rmi-cid",
+      "cid": "CID003116",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 94
+    },
+    {
+      "from": "CID003153",
+      "idType": "rmi-cid",
+      "cid": "CID003153",
+      "name": null,
+      "country": "立陶宛",
+      "countryEn": "lithuania",
+      "minerals": [
+        "金"
+      ],
+      "row": 265
+    },
+    {
+      "from": "CID003186",
+      "idType": "rmi-cid",
+      "cid": "CID003186",
+      "name": null,
+      "country": "加纳",
+      "countryEn": "ghana",
+      "minerals": [
+        "金"
+      ],
+      "row": 266
+    },
+    {
+      "from": "CID003189",
+      "idType": "rmi-cid",
+      "cid": "CID003189",
+      "name": null,
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 267
+    },
+    {
+      "from": "CID003190",
+      "idType": "rmi-cid",
+      "cid": "CID003190",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 95
+    },
+    {
+      "from": "CID003191",
+      "idType": "rmi-cid",
+      "cid": "CID003191",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 338
+    },
+    {
+      "from": "CID003205",
+      "idType": "rmi-cid",
+      "cid": "CID003205",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 96
+    },
+    {
+      "from": "CID003208",
+      "idType": "rmi-cid",
+      "cid": "CID003208",
+      "name": null,
+      "country": "缅甸",
+      "countryEn": "myanmar",
+      "minerals": [
+        "锡"
+      ],
+      "row": 97
+    },
+    {
+      "from": "CID003324",
+      "idType": "rmi-cid",
+      "cid": "CID003324",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 269
+    },
+    {
+      "from": "CID003325",
+      "idType": "rmi-cid",
+      "cid": "CID003325",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "锡"
+      ],
+      "row": 98
+    },
+    {
+      "from": "CID003348",
+      "idType": "rmi-cid",
+      "cid": "CID003348",
+      "name": null,
+      "country": "阿联酋",
+      "countryEn": "united arab emirates",
+      "minerals": [
+        "金"
+      ],
+      "row": 270
+    },
+    {
+      "from": "CID003356",
+      "idType": "rmi-cid",
+      "cid": "CID003356",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 99
+    },
+    {
+      "from": "CID003379",
+      "idType": "rmi-cid",
+      "cid": "CID003379",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 100
+    },
+    {
+      "from": "CID003380",
+      "idType": "rmi-cid",
+      "cid": "CID003380",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 101
+    },
+    {
+      "from": "CID003381",
+      "idType": "rmi-cid",
+      "cid": "CID003381",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 102
+    },
+    {
+      "from": "CID003382",
+      "idType": "rmi-cid",
+      "cid": "CID003382",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 271
+    },
+    {
+      "from": "CID003383",
+      "idType": "rmi-cid",
+      "cid": "CID003383",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 272
+    },
+    {
+      "from": "CID003387",
+      "idType": "rmi-cid",
+      "cid": "CID003387",
+      "name": null,
+      "country": "卢旺达",
+      "countryEn": "rwanda",
+      "minerals": [
+        "锡"
+      ],
+      "row": 103
+    },
+    {
+      "from": "CID003397",
+      "idType": "rmi-cid",
+      "cid": "CID003397",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 104
+    },
+    {
+      "from": "CID003407",
+      "idType": "rmi-cid",
+      "cid": "CID003407",
+      "name": null,
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 381
+    },
+    {
+      "from": "CID003408",
+      "idType": "rmi-cid",
+      "cid": "CID003408",
+      "name": null,
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 382
+    },
+    {
+      "from": "CID003409",
+      "idType": "rmi-cid",
+      "cid": "CID003409",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "锡"
+      ],
+      "row": 105
+    },
+    {
+      "from": "CID003410",
+      "idType": "rmi-cid",
+      "cid": "CID003410",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 106
+    },
+    {
+      "from": "CID003416",
+      "idType": "rmi-cid",
+      "cid": "CID003416",
+      "name": null,
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 383
+    },
+    {
+      "from": "CID003417",
+      "idType": "rmi-cid",
+      "cid": "CID003417",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 384
+    },
+    {
+      "from": "CID003424",
+      "idType": "rmi-cid",
+      "cid": "CID003424",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 273
+    },
+    {
+      "from": "CID003425",
+      "idType": "rmi-cid",
+      "cid": "CID003425",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 274
+    },
+    {
+      "from": "CID003427",
+      "idType": "rmi-cid",
+      "cid": "CID003427",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "钨"
+      ],
+      "row": 385
+    },
+    {
+      "from": "CID003449",
+      "idType": "rmi-cid",
+      "cid": "CID003449",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 107
+    },
+    {
+      "from": "CID003461",
+      "idType": "rmi-cid",
+      "cid": "CID003461",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 275
+    },
+    {
+      "from": "CID003463",
+      "idType": "rmi-cid",
+      "cid": "CID003463",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 276
+    },
+    {
+      "from": "CID003468",
+      "idType": "rmi-cid",
+      "cid": "CID003468",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "钨"
+      ],
+      "row": 386
+    },
+    {
+      "from": "CID003486",
+      "idType": "rmi-cid",
+      "cid": "CID003486",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 108
+    },
+    {
+      "from": "CID003487",
+      "idType": "rmi-cid",
+      "cid": "CID003487",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 277
+    },
+    {
+      "from": "CID003488",
+      "idType": "rmi-cid",
+      "cid": "CID003488",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 278
+    },
+    {
+      "from": "CID003489",
+      "idType": "rmi-cid",
+      "cid": "CID003489",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 279
+    },
+    {
+      "from": "CID003490",
+      "idType": "rmi-cid",
+      "cid": "CID003490",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 280
+    },
+    {
+      "from": "CID003497",
+      "idType": "rmi-cid",
+      "cid": "CID003497",
+      "name": null,
+      "country": "挪威",
+      "countryEn": "norway",
+      "minerals": [
+        "金"
+      ],
+      "row": 281
+    },
+    {
+      "from": "CID003500",
+      "idType": "rmi-cid",
+      "cid": "CID003500",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 282
+    },
+    {
+      "from": "CID003524",
+      "idType": "rmi-cid",
+      "cid": "CID003524",
+      "name": null,
+      "country": "西班牙",
+      "countryEn": "spain",
+      "minerals": [
+        "锡"
+      ],
+      "row": 109
+    },
+    {
+      "from": "CID003548",
+      "idType": "rmi-cid",
+      "cid": "CID003548",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 283
+    },
+    {
+      "from": "CID003553",
+      "idType": "rmi-cid",
+      "cid": "CID003553",
+      "name": null,
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 387
+    },
+    {
+      "from": "CID003557",
+      "idType": "rmi-cid",
+      "cid": "CID003557",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 284
+    },
+    {
+      "from": "CID003575",
+      "idType": "rmi-cid",
+      "cid": "CID003575",
+      "name": null,
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 285
+    },
+    {
+      "from": "CID003582",
+      "idType": "rmi-cid",
+      "cid": "CID003582",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 110
+    },
+    {
+      "from": "CID003583",
+      "idType": "rmi-cid",
+      "cid": "CID003583",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 339
+    },
+    {
+      "from": "CID003609",
+      "idType": "rmi-cid",
+      "cid": "CID003609",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 388
+    },
+    {
+      "from": "CID003612",
+      "idType": "rmi-cid",
+      "cid": "CID003612",
+      "name": null,
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 389
+    },
+    {
+      "from": "CID003614",
+      "idType": "rmi-cid",
+      "cid": "CID003614",
+      "name": null,
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 390
+    },
+    {
+      "from": "CID003615",
+      "idType": "rmi-cid",
+      "cid": "CID003615",
+      "name": null,
+      "country": "法国",
+      "countryEn": "france",
+      "minerals": [
+        "金"
+      ],
+      "row": 286
+    },
+    {
+      "from": "CID003641",
+      "idType": "rmi-cid",
+      "cid": "CID003641",
+      "name": null,
+      "country": "哥伦比亚",
+      "countryEn": "colombia",
+      "minerals": [
+        "金"
+      ],
+      "row": 287
+    },
+    {
+      "from": "CID003643",
+      "idType": "rmi-cid",
+      "cid": "CID003643",
+      "name": null,
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 391
+    },
+    {
+      "from": "CID003662",
+      "idType": "rmi-cid",
+      "cid": "CID003662",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 392
+    },
+    {
+      "from": "CID003663",
+      "idType": "rmi-cid",
+      "cid": "CID003663",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 288
+    },
+    {
+      "from": "CID003666",
+      "idType": "rmi-cid",
+      "cid": "CID003666",
+      "name": null,
+      "country": "阿联酋",
+      "countryEn": "united arab emirates",
+      "minerals": [
+        "金"
+      ],
+      "row": 289
+    },
+    {
+      "from": "CID003690",
+      "idType": "rmi-cid",
+      "cid": "CID003690",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 290
+    },
+    {
+      "from": "CID003831",
+      "idType": "rmi-cid",
+      "cid": "CID003831",
+      "name": null,
+      "country": "缅甸",
+      "countryEn": "myanmar",
+      "minerals": [
+        "锡"
+      ],
+      "row": 111
+    },
+    {
+      "from": "CID003868",
+      "idType": "rmi-cid",
+      "cid": "CID003868",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 112
+    },
+    {
+      "from": "CID003926",
+      "idType": "rmi-cid",
+      "cid": "CID003926",
+      "name": null,
+      "country": "爱沙尼亚",
+      "countryEn": "estonia",
+      "minerals": [
+        "钽"
+      ],
+      "row": 340
+    },
+    {
+      "from": "CID003973",
+      "idType": "rmi-cid",
+      "cid": "CID003973",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 341
+    },
+    {
+      "from": "CID003978",
+      "idType": "rmi-cid",
+      "cid": "CID003978",
+      "name": null,
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "钨"
+      ],
+      "row": 393
+    },
+    {
+      "from": "CID003993",
+      "idType": "rmi-cid",
+      "cid": "CID003993",
+      "name": null,
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 394
+    },
+    {
+      "from": "CID004010",
+      "idType": "rmi-cid",
+      "cid": "CID004010",
+      "name": null,
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "金"
+      ],
+      "row": 291
+    },
+    {
+      "from": "CID004034",
+      "idType": "rmi-cid",
+      "cid": "CID004034",
+      "name": null,
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 395
+    },
+    {
+      "from": "CID004054",
+      "idType": "rmi-cid",
+      "cid": "CID004054",
+      "name": null,
+      "country": "卢旺达",
+      "countryEn": "rwanda",
+      "minerals": [
+        "钽"
+      ],
+      "row": 342
+    },
+    {
+      "from": "CID004056",
+      "idType": "rmi-cid",
+      "cid": "CID004056",
+      "name": null,
+      "country": "马来西亚",
+      "countryEn": "malaysia",
+      "minerals": [
+        "钨"
+      ],
+      "row": 396
+    },
+    {
+      "from": "CID004060",
+      "idType": "rmi-cid",
+      "cid": "CID004060",
+      "name": null,
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "钨"
+      ],
+      "row": 397
+    },
+    {
+      "from": "CID004065",
+      "idType": "rmi-cid",
+      "cid": "CID004065",
+      "name": null,
+      "country": "CONGO, DEMOCRATIC REPUBLIC OF THE",
+      "countryEn": "congo democratic republic of the",
+      "minerals": [
+        "锡"
+      ],
+      "row": 113
+    },
+    {
+      "from": "CID004068",
+      "idType": "rmi-cid",
+      "cid": "CID004068",
+      "name": null,
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钨"
+      ],
+      "row": 398
+    },
+    {
+      "from": "CID004397",
+      "idType": "rmi-cid",
+      "cid": "CID004397",
+      "name": null,
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 399
+    },
+    {
+      "from": "CID004403",
+      "idType": "rmi-cid",
+      "cid": "CID004403",
+      "name": null,
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "锡"
+      ],
+      "row": 114
+    },
+    {
+      "from": "CID004430",
+      "idType": "rmi-cid",
+      "cid": "CID004430",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 400
+    },
+    {
+      "from": "CID004431",
+      "idType": "rmi-cid",
+      "cid": "CID004431",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 343
+    },
+    {
+      "from": "CID004434",
+      "idType": "rmi-cid",
+      "cid": "CID004434",
+      "name": null,
+      "country": "马来西亚",
+      "countryEn": "malaysia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 115
+    },
+    {
+      "from": "CID004435",
+      "idType": "rmi-cid",
+      "cid": "CID004435",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 292
+    },
+    {
+      "from": "CID004438",
+      "idType": "rmi-cid",
+      "cid": "CID004438",
+      "name": null,
+      "country": "菲律宾",
+      "countryEn": "philippines",
+      "minerals": [
+        "钨"
+      ],
+      "row": 401
+    },
+    {
+      "from": "CID004491",
+      "idType": "rmi-cid",
+      "cid": "CID004491",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 293
+    },
+    {
+      "from": "CID004506",
+      "idType": "rmi-cid",
+      "cid": "CID004506",
+      "name": null,
+      "country": "坦桑尼亚",
+      "countryEn": "tanzania united republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 294
+    },
+    {
+      "from": "CID004604",
+      "idType": "rmi-cid",
+      "cid": "CID004604",
+      "name": null,
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 295
+    },
+    {
+      "from": "CID004610",
+      "idType": "rmi-cid",
+      "cid": "CID004610",
+      "name": null,
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 296
+    },
+    {
+      "from": "CID004619",
+      "idType": "rmi-cid",
+      "cid": "CID004619",
+      "name": null,
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 402
+    },
+    {
+      "from": "CID004692",
+      "idType": "rmi-cid",
+      "cid": "CID004692",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "锡"
+      ],
+      "row": 116
+    },
+    {
+      "from": "CID004697",
+      "idType": "rmi-cid",
+      "cid": "CID004697",
+      "name": null,
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 297
+    },
+    {
+      "from": "CID004704",
+      "idType": "rmi-cid",
+      "cid": "CID004704",
+      "name": null,
+      "country": "秘鲁",
+      "countryEn": "peru",
+      "minerals": [
+        "金"
+      ],
+      "row": 298
+    },
+    {
+      "from": "CID004705",
+      "idType": "rmi-cid",
+      "cid": "CID004705",
+      "name": null,
+      "country": "秘鲁",
+      "countryEn": "peru",
+      "minerals": [
+        "金"
+      ],
+      "row": 299
+    },
+    {
+      "from": "CID004714",
+      "idType": "rmi-cid",
+      "cid": "CID004714",
+      "name": null,
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 300
+    },
+    {
+      "from": "CID004724",
+      "idType": "rmi-cid",
+      "cid": "CID004724",
+      "name": null,
+      "country": "乌干达",
+      "countryEn": "uganda",
+      "minerals": [
+        "锡"
+      ],
+      "row": 117
+    },
+    {
+      "from": "CID004754",
+      "idType": "rmi-cid",
+      "cid": "CID004754",
+      "name": null,
+      "country": "澳大利亚",
+      "countryEn": "australia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 118
+    },
+    {
+      "from": "CID004755",
+      "idType": "rmi-cid",
+      "cid": "CID004755",
+      "name": null,
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "金"
+      ],
+      "row": 301
+    },
+    {
+      "from": "CID004796",
+      "idType": "rmi-cid",
+      "cid": "CID004796",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 119
+    },
+    {
+      "from": "CID004797",
+      "idType": "rmi-cid",
+      "cid": "CID004797",
+      "name": null,
+      "country": "菲律宾",
+      "countryEn": "philippines",
+      "minerals": [
+        "钨"
+      ],
+      "row": 403
+    },
+    {
+      "from": "CID004813",
+      "idType": "rmi-cid",
+      "cid": "CID004813",
+      "name": null,
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 344
+    },
+    {
+      "from": "CID005012",
+      "idType": "rmi-cid",
+      "cid": "CID005012",
+      "name": null,
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 404
+    },
+    {
+      "from": "CID005014",
+      "idType": "rmi-cid",
+      "cid": "CID005014",
+      "name": null,
+      "country": "秘鲁",
+      "countryEn": "peru",
+      "minerals": [
+        "金"
+      ],
+      "row": 302
+    },
+    {
+      "from": "CID005017",
+      "idType": "rmi-cid",
+      "cid": "CID005017",
+      "name": "LAO PEOPLE'S DEMOCRATIC REPUBLIC",
+      "country": null,
+      "countryEn": null,
+      "minerals": [
+        "钨"
+      ],
+      "row": 405
+    },
+    {
+      "from": "CID005067",
+      "idType": "rmi-cid",
+      "cid": "CID005067",
+      "name": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 120
+    },
+    {
+      "from": "CID005068",
+      "idType": "rmi-cid",
+      "cid": "CID005068",
+      "name": null,
+      "country": "捷克",
+      "countryEn": "czechia",
+      "minerals": [
+        "钨"
+      ],
+      "row": 406
+    },
+    {
+      "from": "CID005189",
+      "idType": "rmi-cid",
+      "cid": "CID005189",
+      "name": null,
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "锡"
+      ],
+      "row": 121
+    },
+    {
+      "from": "CID005248",
+      "idType": "rmi-cid",
+      "cid": "CID005248",
+      "name": null,
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "钨"
+      ],
+      "row": 407
+    }
+  ],
+  "coverage": {
+    "claimComplete": false,
+    "note": "Form SD 强制申报、不强制列名单，本清单只是该公司披露的部分，且语义是「出现在供应链中」，不是直接供货。"
+  }
+}

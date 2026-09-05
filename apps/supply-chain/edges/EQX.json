@@ -1,0 +1,343 @@
+{
+  "contractVersion": 2,
+  "dataset": "supply-chain-edges",
+  "symbol": "EQX",
+  "name": "Equinox Gold Corp.",
+  "updatedAt": "2026-09-05T10:22:50Z",
+  "relation": {
+    "id": "smelter-in-supply-chain",
+    "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
+    "tier": "smelter"
+  },
+  "confidence": "disclosed",
+  "direction": {
+    "from": "smelter",
+    "to": "EQX",
+    "toListed": true
+  },
+  "evidence": {
+    "sourceType": "sec-form-sd",
+    "url": "https://www.sec.gov/Archives/edgar/data/1756607/000106299326003072/R5.htm",
+    "docDate": "2026-06-05",
+    "form": "SD",
+    "accession": "0001062993-26-003072",
+    "filingDate": "2026-06-05",
+    "reportDate": "",
+    "document": "R5.htm",
+    "indexUrl": "https://www.sec.gov/Archives/edgar/data/1756607/000106299326003072/",
+    "totalSD": 3
+  },
+  "parse": {
+    "rowsScanned": 316,
+    "rowsWithCid": 0,
+    "nameOnly": 35,
+    "droppedNoCid": 0,
+    "unique": 24,
+    "namedRatio": 1.0,
+    "countryRatio": 1.0
+  },
+  "byCountry": {
+    "加拿大": 8,
+    "美国": 7,
+    "尼加拉瓜": 5,
+    "巴西": 2,
+    "墨西哥": 2
+  },
+  "byMineral": {
+    "金": 24
+  },
+  "edges": [
+    {
+      "from": "NAME:aroland-first-nation",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Aroland First Nation",
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "金"
+      ],
+      "row": 67
+    },
+    {
+      "from": "NAME:aurizona-fazenda-rdm-santa-luz",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Aurizona, Fazenda, RDM, Santa Luz",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "金"
+      ],
+      "row": 35
+    },
+    {
+      "from": "NAME:california-imperial-country",
+      "idType": "name-only",
+      "cid": null,
+      "name": "California Imperial Country",
+      "country": "美国",
+      "countryEn": "united states",
+      "minerals": [
+        "金"
+      ],
+      "row": 9
+    },
+    {
+      "from": "NAME:eastern-borosi-el-limon-la-libertad-el-paste-pavon",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Eastern Borosi, El Limon, La Libertad, El Paste, Pavon",
+      "country": "尼加拉瓜",
+      "countryEn": "nicaragua",
+      "minerals": [
+        "金"
+      ],
+      "row": 47
+    },
+    {
+      "from": "NAME:eastern-borosi-el-limon-la-libertad-pavon",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Eastern Borosi, El Limon, La Libertad, Pavon",
+      "country": "尼加拉瓜",
+      "countryEn": "nicaragua",
+      "minerals": [
+        "金"
+      ],
+      "row": 43
+    },
+    {
+      "from": "NAME:federal-government-of-mexico",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Federal Government of Mexico",
+      "country": "墨西哥",
+      "countryEn": "mexico",
+      "minerals": [
+        "金"
+      ],
+      "row": 27
+    },
+    {
+      "from": "NAME:ginoogaming-first-nation",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ginoogaming First Nation",
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "金"
+      ],
+      "row": 65
+    },
+    {
+      "from": "NAME:government-of-canada",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Government of Canada",
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "金"
+      ],
+      "row": 71
+    },
+    {
+      "from": "NAME:government-of-nicaragua",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Government of Nicaragua",
+      "country": "尼加拉瓜",
+      "countryEn": "nicaragua",
+      "minerals": [
+        "金"
+      ],
+      "row": 49
+    },
+    {
+      "from": "NAME:government-of-the-united-states",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Government of the United States",
+      "country": "美国",
+      "countryEn": "united states",
+      "minerals": [
+        "金"
+      ],
+      "row": 17
+    },
+    {
+      "from": "NAME:long-lake-58-first-nation",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Long Lake 58 First Nation",
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "金"
+      ],
+      "row": 57
+    },
+    {
+      "from": "NAME:mesquite-castle-mountain",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Mesquite, Castle Mountain",
+      "country": "美国",
+      "countryEn": "united states",
+      "minerals": [
+        "金"
+      ],
+      "row": 3
+    },
+    {
+      "from": "NAME:metis-nation-of-ontario",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Metis Nation of Ontario",
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "金"
+      ],
+      "row": 59
+    },
+    {
+      "from": "NAME:minodahmun-development-lp",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Minodahmun Development LP",
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "金"
+      ],
+      "row": 69
+    },
+    {
+      "from": "NAME:municipal-government-of-mexico",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Municipal Government of Mexico",
+      "country": "墨西哥",
+      "countryEn": "mexico",
+      "minerals": [
+        "金"
+      ],
+      "row": 33
+    },
+    {
+      "from": "NAME:municipality-of-greenstone",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Municipality of Greenstone",
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "金"
+      ],
+      "row": 61
+    },
+    {
+      "from": "NAME:municipality-of-larreynaga",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Municipality of Larreynaga",
+      "country": "尼加拉瓜",
+      "countryEn": "nicaragua",
+      "minerals": [
+        "金"
+      ],
+      "row": 51
+    },
+    {
+      "from": "NAME:municipality-of-rancho-grande",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Municipality of Rancho Grande",
+      "country": "尼加拉瓜",
+      "countryEn": "nicaragua",
+      "minerals": [
+        "金"
+      ],
+      "row": 53
+    },
+    {
+      "from": "NAME:pan-calibre-real-state",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Pan, Calibre Real State",
+      "country": "美国",
+      "countryEn": "united states",
+      "minerals": [
+        "金"
+      ],
+      "row": 23
+    },
+    {
+      "from": "NAME:province-of-ontario",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Province of Ontario",
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "金"
+      ],
+      "row": 55
+    },
+    {
+      "from": "NAME:san-bernandino-county",
+      "idType": "name-only",
+      "cid": null,
+      "name": "San Bernandino County",
+      "country": "美国",
+      "countryEn": "united states",
+      "minerals": [
+        "金"
+      ],
+      "row": 13
+    },
+    {
+      "from": "NAME:state-government-of-minas-gerais",
+      "idType": "name-only",
+      "cid": null,
+      "name": "State Government of Minas Gerais",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "金"
+      ],
+      "row": 41
+    },
+    {
+      "from": "NAME:state-of-california",
+      "idType": "name-only",
+      "cid": null,
+      "name": "State of California",
+      "country": "美国",
+      "countryEn": "united states",
+      "minerals": [
+        "金"
+      ],
+      "row": 5
+    },
+    {
+      "from": "NAME:state-of-nevada",
+      "idType": "name-only",
+      "cid": null,
+      "name": "State of Nevada",
+      "country": "美国",
+      "countryEn": "united states",
+      "minerals": [
+        "金"
+      ],
+      "row": 21
+    }
+  ],
+  "coverage": {
+    "claimComplete": false,
+    "note": "Form SD 强制申报、不强制列名单，本清单只是该公司披露的部分，且语义是「出现在供应链中」，不是直接供货。"
+  }
+}
