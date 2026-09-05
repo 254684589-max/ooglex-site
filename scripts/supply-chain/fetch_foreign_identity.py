@@ -298,6 +298,13 @@ def main() -> int:
             "businessStateOrCountryDescription": biz.get("stateOrCountryDescription"),
             "mailingStateOrCountry": mail.get("stateOrCountry"),
             "mailingStateOrCountryDescription": mail.get("stateOrCountryDescription"),
+            # 境外那一套字段的**值**。上一版只存了键名，结果看得见
+            # 「有 country 这个键」却看不见它写的是什么——等于只走到一半。
+            "businessCountry": biz.get("country"),
+            "businessCountryCode": biz.get("countryCode"),
+            "businessForeignStateTerritory": biz.get("foreignStateTerritory"),
+            "businessIsForeignLocation": biz.get("isForeignLocation"),
+            "mailingCountry": mail.get("country"),
             # 地址块里还有哪些键。也许国别根本不在我读的那两个字段里。
             "businessKeys": sorted(biz),
             # submissions 顶层还有哪些看着像地理信息的键，同理。

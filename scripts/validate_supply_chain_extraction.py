@@ -1387,6 +1387,36 @@ def main() -> int:
          "并记下是哪个字段被判定不可用，「为什么没有国别」在数据里查得到"),
         (region.resolve_country(_TSMC, code_map)["country"] == "TAIWAN",
          "台积电：营业地址没有描述，靠代码表补出来（此前这一家国别是空的）"),
+        # EDGAR 地址块有两套并行字段。境外公司的国别在 country / countryCode /
+        # foreignStateTerritory 里，stateOrCountry 是 None——只读后者的话，
+        # 恰恰是台积电、本田、沃达丰这些最典型的外国公司全成了空值。
+        (region.address_country({"country": "Taiwan", "countryCode": "F5",
+                                 "foreignStateTerritory": "Hsinchu",
+                                 "stateOrCountry": None}) == ("Taiwan", "Hsinchu"),
+         "境外地址：从 country / foreignStateTerritory 读，不是 stateOrCountry"),
+        (region.address_country({"stateOrCountry": "CA",
+                                 "stateOrCountryDescription": "California"}) == (None, None),
+         "美国境内地址没有 country 字段，这条路返回空、交给原来那套"),
+        (region.address_country({}) == (None, None), "空地址块返回空"),
+        (region.resolve_country(
+            {"stateOfIncorporation": "",
+             "addresses": {"business": {"country": "Taiwan",
+                                        "foreignStateTerritory": "Hsinchu",
+                                        "stateOrCountry": None}}},
+            code_map)["country"] == "Taiwan",
+         "台积电真实形状：注册地为空、境外地址补上——16 家全空就是这么来的"),
+        (region.resolve_country(
+            {"stateOfIncorporation": "V8",
+             "stateOfIncorporationDescription": "Switzerland",
+             "addresses": {"business": {"country": None, "stateOrCountry": "TX",
+                                        "stateOrCountryDescription": "TX"}}},
+            code_map)["country"] == "Switzerland",
+         "加了境外字段之后，爱尔康仍然是注册地瑞士优先，没被营业地址盖掉"),
+        (region.resolve_country(
+            {"stateOfIncorporationDescription": "DC",
+             "addresses": {"business": {"country": "United Kingdom"}}},
+            code_map)["country"] == "United Kingdom",
+         "壳牌：DC 被跳过后落到境外地址的英国，不再是未归类"),
         (region.resolve_country(_ALCON, code_map)["country"] == "Switzerland",
          "爱尔康：注册地瑞士优先于营业地址的 TX——TX 是它的美国办公室，不是国别"),
         (region.resolve_country(_ALCON, code_map)["countryBasis"] == "state-of-incorporation",

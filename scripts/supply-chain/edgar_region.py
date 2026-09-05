@@ -146,6 +146,27 @@ def describe(code: str | None, description: str | None,
     return None
 
 
+def address_country(block: dict | None) -> tuple[str | None, str | None]:
+    """从一个地址块里读国别。返回 (国家, 下级地区)。
+
+    **EDGAR 的地址块有两套并行字段，读错一套就会把最该认出来的公司认成空。**
+
+    - 美国境内：`stateOrCountry` 是州代码、`stateOrCountryDescription` 是州名，
+      `country` 一类的字段是空的。
+    - 境外：`country` / `countryCode` 才有值，`foreignStateTerritory` 放省／州，
+      而 `stateOrCountry` 是 **None**。
+
+    最初只读 `stateOrCountry` 那一套，于是台积电、本田、沃达丰、英美烟草、
+    中华电信这些**最典型的外国公司**国别全是空的——恰恰因为它们真的在境外，
+    数据落在另一套字段里。`isForeignLocation` 就是这两套的开关。
+    """
+    block = block or {}
+    country = (block.get("country") or "").strip()
+    if country:
+        return country, (block.get("foreignStateTerritory") or "").strip() or None
+    return None, None
+
+
 def resolve_country(meta: dict, code_map: dict[str, str]) -> dict:
     """定这家公司的国别，并说明这个结论是从哪个字段来的。
 
@@ -168,6 +189,15 @@ def resolve_country(meta: dict, code_map: dict[str, str]) -> dict:
     ]
     rejected: list[str] = []
     for basis, code, description in attempts:
+        # 地址那两档先走境外字段：有 country 就直接用，不必绕代码表。
+        if basis.endswith("-address"):
+            key = basis.split("-")[0]
+            country, region_name = address_country(addresses.get(key))
+            if country:
+                return {"country": country, "region": region_name,
+                        "countryBasis": basis, "countryCode":
+                        ((addresses.get(key) or {}).get("countryCode") or "").strip() or None,
+                        "countryRejected": rejected or None}
         text = describe(code, description, code_map)
         if not text:
             continue
