@@ -444,6 +444,68 @@ def check_chains(payload: dict, errors: list[str]) -> None:
         print(f"[!!] 有 {unclassified} 家没有产业链归属——SIC 表没覆盖到它们的码")
 
 
+def check_chain_links(payload: dict, errors: list[str]) -> None:
+    """链间上下游的契约。**这一道守的是「框架不许冒充证据」**。
+
+    链间上下游是产业结构常识（「半导体的上游包含化工」），与 edges/ 里那两万条
+    指名申报人与冶炼厂、必须能点开原始申报的关系是两回事。两者一旦混在一起，
+    整块板块最重要的那条界线就没了——读者会以为「半导体→汽车」也是从某份文件里
+    抽出来的。所以这里逐条钉死：只能连已登记的链、两端都不许是公司、
+    必须自报 basis=framework、必须写清流动的是什么。
+    """
+    links = payload.get("chainLinks")
+    if links is None:
+        return                      # 横轴模块缺失时不写这个字段，属已知降级
+    if not isinstance(links, list):
+        fail(errors, "chainLinks 不是列表")
+        return
+
+    chain_ids = {row.get("id") for row in (payload.get("chains") or [])}
+    symbols = {n.get("symbol") for n in (payload.get("nodes") or [])}
+    seen: set[tuple[str, str]] = set()
+    for link in links:
+        src, dst = link.get("from"), link.get("to")
+        where = f"{src}→{dst}"
+        if src not in chain_ids or dst not in chain_ids:
+            fail(errors, f"链间上下游 {where} 连到了未登记的链")
+            continue
+        if src == dst:
+            fail(errors, f"链间上下游 {where} 自己连自己")
+        # 两端必须是链，不能是公司。写错了就是把框架伪装成公司级关系。
+        if src in symbols or dst in symbols:
+            fail(errors, f"链间上下游 {where} 的一端是公司代码——框架不得指名公司")
+        if link.get("basis") != "framework":
+            fail(errors, f"链间上下游 {where} 的 basis 不是 framework"
+                         f"（实际 {link.get('basis')!r}）——它不能被当成有出处的边")
+        # 只画箭头不说流动的是什么，等于没说话
+        if not (link.get("flow") or "").strip():
+            fail(errors, f"链间上下游 {where} 没写流动的是什么")
+        # 出处字段一个都不许有：有了就说明有人在往框架里塞证据字段
+        for key in ("sourceType", "url", "docDate", "evidence"):
+            if key in link:
+                fail(errors, f"链间上下游 {where} 带了 {key} 字段——"
+                             "框架不得携带出处，出处只属于 edges/")
+        if (src, dst) in seen:
+            fail(errors, f"链间上下游 {where} 重复")
+        seen.add((src, dst))
+
+    # 没有连线的链只允许是标了「横跨全链」的那几条。一条链既没有上下游、
+    # 又没被说明为什么没有，页面上就是个断头——读者只会当成数据缺失。
+    cross = payload.get("chainCrossCutting") or {}
+    linked = {l.get("from") for l in links} | {l.get("to") for l in links}
+    for row in payload.get("chains") or []:
+        cid = row.get("id")
+        if cid in linked or cid in cross:
+            continue
+        if row.get("count"):
+            fail(errors, f"链 {cid} 有 {row['count']} 家公司却既无上下游、"
+                         "也没标为横跨全链——页面上会是个没有解释的断头")
+
+    count = (payload.get("coverage") or {}).get("chainLinksTotal")
+    if count != len(links):
+        fail(errors, f"coverage.chainLinksTotal {count} 与实际 {len(links)} 条不符")
+
+
 def check_health(errors: list[str], node_count: int) -> None:
     if not os.path.exists(HEALTH_PATH):
         fail(errors, f"缺少 {HEALTH_PATH}")
@@ -471,6 +533,7 @@ def main() -> int:
     edge_count = check_edges(payload, errors)
     check_coverage(payload, counts, edge_count, errors)
     check_chains(payload, errors)
+    check_chain_links(payload, errors)
     check_no_conflict_markers(errors)
     smelters = check_smelters(errors, edge_count)
     check_health(errors, len(payload.get("nodes") or []))

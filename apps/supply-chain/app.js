@@ -288,6 +288,81 @@
     });
   }
 
+  /* 链间上下游。**这一段画的是产业结构框架，不是实测关系**——与那两万条
+     指名申报人与冶炼厂、能点开原始申报的边不是一回事，所以它自己有一块区域、
+     自己的样式、自己那句说明，不与实测数据放在同一个视觉层里。 */
+  function linksOf(d, chainId, dir) {
+    var key = dir === "up" ? "to" : "from";
+    return (d.chainLinks || []).filter(function (l) { return l[key] === chainId; });
+  }
+
+  function linkRow(d, link, dir) {
+    var otherId = dir === "up" ? link.from : link.to;
+    var meta = chainMeta(d, otherId);
+    var row = el("button", "flowlink");
+    row.type = "button";
+    row.appendChild(el("span", "ar", dir === "up" ? "←" : "→"));
+    row.appendChild(el("span", "nm", meta ? meta.label : otherId));
+    row.appendChild(el("span", "fl", link.flow || ""));
+    row.title = (dir === "up" ? "上游：" : "下游：") + (meta ? meta.label : otherId)
+      + " · " + (link.flow || "");
+    row.addEventListener("click", function () {
+      state.chain = otherId;
+      state.open = null;
+      state.seg = null;
+      renderStages(d);
+      var host = $("chainpick");
+      if (host && host.scrollIntoView) host.scrollIntoView({ block: "start" });
+    });
+    return row;
+  }
+
+  function renderChainFlow(d) {
+    var host = $("chainflow");
+    if (!host) return;
+    host.textContent = "";
+    if (!state.chain) { host.hidden = true; return; }
+    var meta = chainMeta(d, state.chain);
+    if (!meta) { host.hidden = true; return; }
+    host.hidden = false;
+
+    var up = linksOf(d, state.chain, "up");
+    var down = linksOf(d, state.chain, "down");
+    var cross = (d.chainCrossCutting || {})[state.chain];
+
+    var hd = el("div", "cfhd");
+    hd.appendChild(el("b", null, meta.label + " 的上下游"));
+    hd.appendChild(el("span", "tag", "产业结构框架"));
+    host.appendChild(hd);
+
+    if (cross) {
+      // 使能链没有连线不是数据缺失，是刻意的。不说明的话页面上就是个断头。
+      host.appendChild(el("p", "cfnote", cross + "——" +
+        "逐条连会画出上百条线且没有信息量，因此这里不列。"));
+    }
+
+    [["up", "上游 · 谁供给它", up], ["down", "下游 · 它供给谁", down]]
+      .forEach(function (pair) {
+        if (!pair[2].length) return;
+        var col = el("div", "cfcol");
+        col.appendChild(el("div", "cfcap", pair[1] + "（" + pair[2].length + "）"));
+        pair[2].forEach(function (link) { col.appendChild(linkRow(d, link, pair[0])); });
+        host.appendChild(col);
+      });
+
+    if (!up.length && !down.length && !cross) {
+      host.appendChild(el("p", "cfnote", "本链在框架里暂无上下游连线。"));
+    }
+
+    // 这句话是这一块的底线，任何时候都要在，且要说清与实测数据的区别
+    host.appendChild(el("p", "cfwarn",
+      "以上是产业结构框架（谁给谁供料），按行业通识定义，不指名任何公司，"
+      + "因此不附出处。它与本页那 "
+      + ((d.coverage || {}).edgesTotal || 0)
+      + " 条关系不是一回事——那些每一条都指名一家申报人和一家冶炼厂，"
+      + "都能点开原始申报。同一条链上的两家公司之间有没有供应关系，只有申报文件说了算。"));
+  }
+
   /* ── 环节卡片 ── */
   function countIn(d, stageId) {
     var n = 0;
@@ -441,6 +516,7 @@
   function renderStages(d) {
     renderChainPicker(d);
     renderChainNote(d);
+    renderChainFlow(d);
     var byId = {};
     (d.stages || []).forEach(function (s2) { byId[s2.id] = s2; });
     [["chain", chainIds(d, true)], ["offchain", chainIds(d, false)]]
@@ -903,8 +979,20 @@
     setText(s, message);
   }
 
+  /* 公司页链到总览页时带 ?chain=<id>。认不出的 id 一律忽略，不硬选一条——
+     宁可显示全池，也不要让读者以为自己看的是某条链。 */
+  function chainFromUrl(d) {
+    var m = /[?&]chain=([^&#]+)/.exec(location.search || "");
+    if (!m) return null;
+    var want = decodeURIComponent(m[1]);
+    var rows = d.chains || [];
+    for (var i = 0; i < rows.length; i++) if (rows[i].id === want) return want;
+    return null;
+  }
+
   function render(d) {
     state.data = d;
+    state.chain = chainFromUrl(d);
     renderStatus(d);
     renderNotice(d);
     renderCoverageBySector(d);

@@ -409,6 +409,98 @@ async function main() {
         assert.equal(cleared.empty, 0, "取消筛选后不该还有空环节");
       });
 
+      /* 链间上下游。这一段守的不只是「画出来了」，更是**它没有冒充实测数据**：
+         框架标签要在、区分那句话要在、每条线要写清流动的是什么。
+         这块界线是本板块最重要的一条，被样式藏起来等同于没写。 */
+      const LINKS = NODES.chainLinks || [];
+      if (LINKS.length) {
+        const upN = LINKS.filter(l => l.to === PICKED.id).length;
+        const downN = LINKS.filter(l => l.from === PICKED.id).length;
+        const flow = await evaluate(`(() => {
+          const label = ${JSON.stringify(PICKED.label || "")};
+          const chips = [...document.querySelectorAll('#chainpick .chip')];
+          const before = document.getElementById('chainflow').hidden;
+          chips.find(c => (c.querySelector('.cl') || {}).textContent === label).click();
+          const box = document.getElementById('chainflow');
+          const rows = [...box.querySelectorAll('.flowlink')];
+          return {
+            hiddenBeforePick: before,
+            shown: !box.hidden,
+            up: rows.filter(r => (r.querySelector('.ar') || {}).textContent === '←').length,
+            down: rows.filter(r => (r.querySelector('.ar') || {}).textContent === '→').length,
+            withFlow: rows.filter(r => ((r.querySelector('.fl') || {}).textContent || '').trim()).length,
+            total: rows.length,
+            tag: (box.querySelector('.cfhd .tag') || {}).textContent || '',
+            warn: (box.querySelector('.cfwarn') || {}).textContent || '',
+            tagVisible: !!(box.querySelector('.cfhd .tag') || {}).offsetParent,
+            overflow: Math.max(0, document.documentElement.scrollWidth - window.innerWidth)
+          };
+        })()`);
+        check(`未选链时上下游块不显示`, () => assert.ok(flow.hiddenBeforePick));
+        check(`选中「${PICKED.label}」后上下游块出现`, () => assert.ok(flow.shown));
+        check(`上游 ${upN} 条 / 下游 ${downN} 条与数据一致`, () => {
+          assert.equal(flow.up, upN, `页面上游 ${flow.up}`);
+          assert.equal(flow.down, downN, `页面下游 ${flow.down}`);
+        });
+        check(`每条都写清流动的是什么，不是光画箭头`, () => assert.equal(
+          flow.withFlow, flow.total, `${flow.total} 条里只有 ${flow.withFlow} 条写了`));
+        check(`「产业结构框架」标签可见`, () => {
+          assert.match(flow.tag, /产业结构框架/);
+          assert.ok(flow.tagVisible, "标签在 DOM 里但不可见，等同于没写");
+        });
+        check(`写明它与实测关系不是一回事`, () => {
+          assert.match(flow.warn, /不是一回事/);
+          assert.match(flow.warn, /只有申报文件说了算/);
+          assert.match(flow.warn, /不指名任何公司/);
+        });
+        check(`上下游块无横向溢出`, () => assert.ok(flow.overflow <= 1,
+          `溢出 ${flow.overflow}px`));
+
+        // 点上游一条要能跳过去，否则这张图只能看不能走
+        const hop = await evaluate(`(() => {
+          const row = document.querySelector('#chainflow .flowlink');
+          const target = (row.querySelector('.nm') || {}).textContent;
+          row.click();
+          return { target,
+            picked: (document.querySelector('#chainpick .chip.on .cl') || {}).textContent };
+        })()`);
+        check(`点上下游能跳到那条链`, () => assert.equal(hop.picked, hop.target,
+          `点了「${hop.target}」，选中的却是「${hop.picked}」`));
+
+        // 使能链没有连线是刻意的，必须给出解释而不是留一块空白
+        const CROSS = Object.keys(NODES.chainCrossCutting || {});
+        if (CROSS.length) {
+          const crossRow = (NODES.chains || []).find(c => c.id === CROSS[0] && c.count > 0);
+          if (crossRow) {
+            const cx = await evaluate(`(() => {
+              const label = ${JSON.stringify("")} ;
+              const chips = [...document.querySelectorAll('#chainpick .chip')];
+              const chip = chips.find(c => (c.querySelector('.cl') || {}).textContent
+                === ${JSON.stringify(crossRow.label)});
+              chip.click();
+              const box = document.getElementById('chainflow');
+              return { note: (box.querySelector('.cfnote') || {}).textContent || '',
+                       rows: box.querySelectorAll('.flowlink').length };
+            })()`);
+            check(`横跨全链的「${crossRow.label}」给出解释而非留空`, () => {
+              assert.match(cx.note, /横跨全部产业链|衔接每一段/,
+                `实际：「${cx.note}」`);
+            });
+          }
+        }
+
+        // 这一段点了好几次 chip，页面还停在某条链上。后面的断言都按全池写，
+        // 不复位就会在一张筛过的页面上跑——上一版正是这么炸的（Uncaught）。
+        const reset = await evaluate(`(() => {
+          const all = document.querySelector('#chainpick .chip');
+          if (all) all.click();
+          const on = document.querySelector('#chainpick .chip.on .cl');
+          return { back: (on || {}).textContent || '' };
+        })()`);
+        check(`上下游测完复位回全池`, () => assert.match(reset.back, /全部产业链/,
+          `复位后停在「${reset.back}」，后面的断言会在筛过的页面上跑`));
+      }
+
       /* 方案 C · 真实流向。这是全站唯一一张带子宽度有实测含义的图，
          所以要守的不是「画出来了」，而是**画的是不是那个数**，
          以及**空缺有没有画出来**。 */
@@ -661,6 +753,56 @@ async function main() {
       // 点击不得销毁被聚焦的元素，否则键盘用户按回车后焦点就丢了
       check(`选中后焦点仍在被点的卡片上`, () => assert.equal(co.keptFocus, true));
       check(`图注不与层级卡重叠`, () => assert.equal(co.noteOverlaps, false));
+
+      /* 公司页的所属产业链与上下游。守两件事：数与 nodes.json 一致，
+         以及那句「不表示这家公司与上下游企业之间有供应关系」在——
+         这一块最容易被读成「苹果的供应商是这些」，而那正是不能说的话。 */
+      const AAPL = (NODES.nodes || []).find(n => n.symbol === "AAPL") || {};
+      const MYCH = AAPL.chains || [];
+      if (MYCH.length && (NODES.chainLinks || []).length) {
+        const wantUp = new Set((NODES.chainLinks || [])
+          .filter(l => MYCH.includes(l.to) && !MYCH.includes(l.from)).map(l => l.from));
+        const wantDown = new Set((NODES.chainLinks || [])
+          .filter(l => MYCH.includes(l.from) && !MYCH.includes(l.to)).map(l => l.to));
+        const cb = await evaluate(`(() => {
+          const box = document.querySelector('.chainbox');
+          if (!box) return { shown: false };
+          const links = [...box.querySelectorAll('.clink')];
+          return {
+            shown: true,
+            pills: [...box.querySelectorAll('.cpill')].map(a => a.textContent),
+            pillHrefs: [...box.querySelectorAll('.cpill')].map(a => a.getAttribute('href')),
+            up: links.filter(a => (a.querySelector('.ar')||{}).textContent === '←').length,
+            down: links.filter(a => (a.querySelector('.ar')||{}).textContent === '→').length,
+            withFlow: links.filter(a => ((a.querySelector('.fl')||{}).textContent||'').trim()).length,
+            total: links.length,
+            warn: (box.querySelector('.cwarn') || {}).textContent || '',
+            warnVisible: !!(box.querySelector('.cwarn') || {}).offsetParent
+          };
+        })()`, sessionId);
+        check(`公司页显示所属产业链`, () => {
+          assert.ok(cb.shown, "没渲染出所属产业链块");
+          assert.equal(cb.pills.length, MYCH.length,
+            `页面 ${cb.pills.length} 条链，数据说 ${MYCH.length} 条`);
+        });
+        check(`上游 ${wantUp.size} 条 / 下游 ${wantDown.size} 条与数据一致`, () => {
+          assert.equal(cb.up, wantUp.size, `页面上游 ${cb.up}`);
+          assert.equal(cb.down, wantDown.size, `页面下游 ${cb.down}`);
+        });
+        check(`每条上下游都写清流动的是什么`, () => assert.equal(
+          cb.withFlow, cb.total, `${cb.total} 条里只有 ${cb.withFlow} 条写了`));
+        check(`链名可点回总览页并带上 chain 参数`, () => assert.ok(
+          cb.pillHrefs.every(h => /\?chain=/.test(h || "")),
+          `实际 ${JSON.stringify(cb.pillHrefs)}`));
+        check(`写明它不表示这家公司与上下游有供应关系`, () => {
+          assert.ok(cb.warnVisible, "说明在 DOM 里但不可见，等同于没写");
+          assert.match(cb.warn, /不表示这家公司与上下游企业之间有供应关系/);
+          assert.match(cb.warn, /只能来自申报文件/);
+        });
+        // 星号会原样显示——上一轮在总览页栽过一次，这里一并钉住
+        check(`说明里没有漏出的 Markdown 星号`, () => assert.ok(
+          !/\*\*/.test(cb.warn), `实际：${cb.warn.slice(0, 60)}`));
+      }
     }
 
     // ── 有冶炼厂数据的公司 ────────────────────────────────────────────

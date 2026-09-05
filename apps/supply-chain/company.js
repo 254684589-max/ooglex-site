@@ -557,6 +557,76 @@
     side.appendChild(peers);
 
     // 本页真实数据清单
+    // ── 所属产业链与它的上下游 ────────────────────────────────────────
+    // 「点开一家公司能看到它在链条上的位置」——这一块回答的就是这句话。
+    // 但要分清两层：**这家公司在哪条链上**是按它申报的 SIC 码判的分类；
+    // **链与链之间的上下游**是产业结构框架。两层都不是「这家公司供货给谁」，
+    // 那种话只能来自申报文件，本页目前只有冶炼厂那一条真关系。
+    var myChains = n.chains || [];
+    if (myChains.length && (d.chainLinks || []).length) {
+      var chainOf = {};
+      (d.chains || []).forEach(function (c) { chainOf[c.id] = c; });
+
+      var box = el("div", "glass chainbox");
+      box.style.cssText = "padding:13px 15px;";
+      var h = el("h3", null, "所属产业链");
+      box.appendChild(h);
+
+      var mine = el("div", "mychains");
+      myChains.forEach(function (cid) {
+        var c = chainOf[cid];
+        var a = el("a", "cpill", c ? c.label : cid);
+        a.href = "./?chain=" + encodeURIComponent(cid);
+        a.title = (c ? c.label : cid) + "：在总览页查看这条链";
+        mine.appendChild(a);
+      });
+      box.appendChild(mine);
+      if (myChains.length > 1) {
+        box.appendChild(el("p", "cnote",
+          "同时在 " + myChains.length + " 条链上——申报的行业码本身就横跨多条链，"
+          + "不是重复。"));
+      }
+
+      // 上下游按这家公司所在的**全部**链合并，去掉它自己已在的链
+      var seen = {}, up = [], down = [];
+      (d.chainLinks || []).forEach(function (l) {
+        if (myChains.indexOf(l.to) >= 0 && myChains.indexOf(l.from) < 0) {
+          if (!seen["u" + l.from]) { seen["u" + l.from] = 1; up.push(l); }
+        }
+        if (myChains.indexOf(l.from) >= 0 && myChains.indexOf(l.to) < 0) {
+          if (!seen["d" + l.to]) { seen["d" + l.to] = 1; down.push(l); }
+        }
+      });
+
+      [["上游 · 谁供给这些链", up, "from", "←"],
+       ["下游 · 这些链供给谁", down, "to", "→"]].forEach(function (pair) {
+        if (!pair[1].length) return;
+        box.appendChild(el("div", "ccap", pair[0] + "（" + pair[1].length + "）"));
+        pair[1].forEach(function (l) {
+          var otherId = l[pair[2]];
+          var c = chainOf[otherId];
+          var a = el("a", "clink");
+          a.href = "./?chain=" + encodeURIComponent(otherId);
+          a.appendChild(el("span", "ar", pair[3]));
+          a.appendChild(el("span", "nm", c ? c.label : otherId));
+          a.appendChild(el("span", "fl", l.flow || ""));
+          box.appendChild(a);
+        });
+      });
+
+      var cross = (d.chainCrossCutting || {});
+      var crossHit = myChains.filter(function (c) { return cross[c]; });
+      if (crossHit.length) {
+        box.appendChild(el("p", "cnote", cross[crossHit[0]] + "。"));
+      }
+
+      box.appendChild(el("p", "cwarn",
+        "产业链归属按本公司申报的 SIC 行业码判定；链与链之间的上下游是产业结构框架，"
+        + "按行业通识定义。两者都不表示这家公司与上下游企业之间有供应关系——"
+        + "那只能来自申报文件，本页目前只有冶炼厂那一类。"));
+      side.appendChild(box);
+    }
+
     var real = el("div", "glass");
     real.style.cssText = "padding:13px 15px;";
     real.appendChild(el("h3", null, "本页哪些是真实数据"));
@@ -564,6 +634,8 @@
     [["身份与市值", "站内公司榜"], ["环节判定", "SEC 官方 SIC 行业码"],
      ["同行业公司", sameSic.length + " 家"], ["同环节公司", sameStage + " 家"],
      ["冶炼厂关系", rows.length + " 条"],
+     ["产业链归属", (n.chains || []).length + " 条链（按 SIC 分类）"],
+     ["链间上下游", "产业结构框架，非实测"],
      ["一级／二级供应商", "0 条（无数据源）"]].forEach(function (pair) {
       var kv = el("div", "kv");
       kv.appendChild(el("span", null, pair[0]));

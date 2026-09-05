@@ -281,3 +281,153 @@ def resolve_chains(sic: int | str | None) -> dict | None:
     if not hits:
         return None
     return {"chains": _ordered(hits), "basis": "sic-range", "note": "；".join(reasons)}
+
+
+# ── 链间上下游 ────────────────────────────────────────────────────────────
+# 横轴回答「这家公司在哪条链上」，这张表回答「这条链的上游和下游是谁」。
+#
+# ## 这是框架，不是边
+#
+# 「半导体链的上游包含化工链」与「半导体属于零部件层」是同一类陈述：**产业结构
+# 常识，是定义不是断言**，不指名任何两家公司，因此不需要逐条出处。它与 edges/
+# 里那两万条**完全不同**——那些每一条都指名一家申报人与一家冶炼厂，都必须能点开
+# 原始申报。两者在数据里分开存放（chainLinks vs edges）、在页面上分开显示、
+# 在文案里分开说明，任何时候都不得混为一谈。
+#
+# ## 连线的两条规矩
+#
+# 一、**只连直接的一跳，且构成对方的主要投入。** 石油 → 化工 → 合成纤维 → 服装，
+#     中间每一跳都连，但不从石油直接连到服装——那样连出来的是一张糊成一团的网，
+#     读者反而看不出传导顺序。
+# 二、**横跨全链的使能链不逐条连。** 金融、商业服务、物流、地产供给几乎所有链，
+#     逐条连会画出 100 多条线且没有信息量。这几条标为 cross-cutting，页面上写明
+#     「横跨全部产业链，未逐条连线」，而不是假装它们没有下游。
+#
+# 每条连线都要写清**流动的是什么**。只画一个箭头等于没说话：读者需要知道
+# 化工给半导体的是电子气体与光刻胶，不是「某种化学品」。
+CHAIN_LINKS: list[tuple[str, str, str]] = [
+    # 采矿与金属：实物链的最上游，几乎所有制造业的起点
+    ("mining-metals", "chemicals", "金属矿与冶炼产物是无机化工的原料"),
+    ("mining-metals", "semiconductor", "高纯多晶硅、溅射靶材、稀有金属"),
+    ("mining-metals", "electronics-components", "铜、金、锡——导电与焊接金属"),
+    ("mining-metals", "construction-building", "钢材与建筑用金属制品"),
+    ("mining-metals", "automotive", "车身钢板与铝合金"),
+    ("mining-metals", "industrial-machinery", "结构件、传动件与刀具材料"),
+    ("mining-metals", "packaging-paper", "金属罐用铝材与马口铁"),
+    ("mining-metals", "aerospace-defense", "钛合金与高温合金"),
+    # 石油与天然气
+    ("oil-gas", "chemicals", "石脑油与天然气是石化的起点"),
+    ("oil-gas", "utilities-power", "燃气与燃料油发电"),
+    ("oil-gas", "logistics-transport", "运输燃料"),
+    ("oil-gas", "construction-building", "沥青与建筑防水材料"),
+    # 农业与食品
+    ("agri-food", "consumer-goods", "食用油脂、糖、香料等日化与食品原料"),
+    ("agri-food", "textiles-apparel", "棉、毛与皮革"),
+    ("agri-food", "retail-distribution", "食品饮料进入商超与餐饮渠道"),
+    # 化工与新材料：制造业的通用投入品
+    ("chemicals", "semiconductor", "电子特气、光刻胶、CMP 抛光液、湿电子化学品"),
+    ("chemicals", "electronics-components", "环氧树脂、覆铜板材料、导电胶"),
+    ("chemicals", "pharma-biotech", "原料药中间体与试剂"),
+    ("chemicals", "textiles-apparel", "涤纶、锦纶等合成纤维与染料"),
+    ("chemicals", "packaging-paper", "聚乙烯、聚丙烯等包装用树脂"),
+    ("chemicals", "construction-building", "涂料、粘合剂与混凝土外加剂"),
+    ("chemicals", "automotive", "轮胎橡胶、内饰塑料与电池材料"),
+    ("chemicals", "agri-food", "化肥与农药"),
+    ("chemicals", "consumer-goods", "洗涤与化妆品配方原料"),
+    # 电力与公用事业：不是所有链都逐条连，只连电力构成主要成本的那几条
+    ("utilities-power", "semiconductor", "晶圆厂是连续运行的用电大户"),
+    ("utilities-power", "computing-hardware", "数据中心的电力与冷却"),
+    ("utilities-power", "mining-metals", "电解铝与电炉炼钢的电耗"),
+    ("utilities-power", "chemicals", "电解与蒸汽供热"),
+    # 建筑与建材
+    ("construction-building", "real-estate", "建成的物业与基础设施"),
+    ("construction-building", "utilities-power", "电厂、电网与输配电工程"),
+    ("construction-building", "computing-hardware", "数据中心厂房与配电工程"),
+    # 工业机械与自动化：各链的资本设备来源
+    ("industrial-machinery", "semiconductor", "光刻、刻蚀、沉积、量测与封测设备"),
+    ("industrial-machinery", "automotive", "冲压、焊装、涂装与总装产线"),
+    ("industrial-machinery", "agri-food", "农业机械与食品加工设备"),
+    ("industrial-machinery", "chemicals", "反应器、泵阀与分离设备"),
+    ("industrial-machinery", "mining-metals", "采矿、破碎与冶炼设备"),
+    ("industrial-machinery", "construction-building", "工程机械"),
+    ("industrial-machinery", "packaging-paper", "造纸机与包装机械"),
+    ("industrial-machinery", "pharma-biotech", "制药设备与洁净车间系统"),
+    # 半导体：现代制造业的公共中间品
+    ("semiconductor", "computing-hardware", "处理器、存储、加速卡"),
+    ("semiconductor", "communications", "基带、射频与光通信芯片"),
+    ("semiconductor", "automotive", "车规 MCU、功率器件与传感器"),
+    ("semiconductor", "industrial-machinery", "工业控制与驱动芯片"),
+    ("semiconductor", "medtech-health", "医学影像与监护设备的芯片"),
+    ("semiconductor", "consumer-goods", "家电与消费电子芯片"),
+    ("semiconductor", "aerospace-defense", "航天级与抗辐照器件"),
+    # 电子元器件
+    ("electronics-components", "computing-hardware", "电路板、连接器、被动元件"),
+    ("electronics-components", "communications", "通信设备的元件与模块"),
+    ("electronics-components", "automotive", "线束、连接器与电子模块"),
+    ("electronics-components", "medtech-health", "医疗电子的元件"),
+    ("electronics-components", "aerospace-defense", "机载与星载电子元件"),
+    # 计算硬件与通信
+    ("computing-hardware", "software-cloud", "服务器与存储是云与 AI 算力的载体"),
+    ("computing-hardware", "communications", "网络设备与交换硬件"),
+    ("communications", "software-cloud", "承载网络与带宽"),
+    ("communications", "media-entertainment", "内容分发的传输通道"),
+    ("software-cloud", "media-entertainment", "流媒体与内容平台的技术底座"),
+    ("software-cloud", "financial-services", "支付、清算与风控系统"),
+    # 制成品向终端
+    ("automotive", "retail-distribution", "整车经销与售后配件"),
+    ("automotive", "logistics-transport", "商用车构成公路运力"),
+    ("aerospace-defense", "logistics-transport", "货机与航空货运运力"),
+    ("aerospace-defense", "travel-leisure", "民航客机"),
+    ("pharma-biotech", "medtech-health", "药品进入诊疗环节"),
+    ("pharma-biotech", "retail-distribution", "药品批发与药店"),
+    ("medtech-health", "retail-distribution", "器械与耗材的分销"),
+    ("textiles-apparel", "retail-distribution", "成衣与鞋类进入零售"),
+    ("consumer-goods", "retail-distribution", "日用品进入商超与电商"),
+    ("packaging-paper", "agri-food", "食品饮料包装"),
+    ("packaging-paper", "consumer-goods", "日用品包装"),
+    ("packaging-paper", "pharma-biotech", "药品包装"),
+    ("retail-distribution", "travel-leisure", "餐饮与门店消费"),
+    # 逆向：SCOR 模型的 Return。缺这一段整个框架就是单向的，
+    # 而实物链本来是**闭环**：消费后的废弃物回到冶炼与制浆，再变成新料。
+    # 进环保链的几条（谁产生废弃物）与出环保链的几条（再生料去哪）都要有，
+    # 只画一半就等于说回收出来的东西凭空产生。
+    ("retail-distribution", "waste-circular", "消费后的包装与产品废弃物"),
+    ("computing-hardware", "waste-circular", "退役服务器与电子废弃物"),
+    ("automotive", "waste-circular", "报废汽车拆解"),
+    ("construction-building", "waste-circular", "建筑与拆除垃圾"),
+    ("waste-circular", "mining-metals", "再生金属回炉，与原生矿并行供料"),
+    ("waste-circular", "chemicals", "再生塑料与化学回收原料"),
+    ("waste-circular", "packaging-paper", "废纸回收再制浆"),
+]
+
+# 横跨全部产业链的使能链：不逐条连，但要说明它横跨，而不是假装它没有下游。
+CROSS_CUTTING: dict[str, str] = {
+    "financial-services": "资金、保险与支付横跨全部产业链，不逐条连线",
+    "real-estate": "厂房、仓储与办公物业横跨全部产业链，不逐条连线",
+    "business-services": "咨询、人力、检测与认证横跨全部产业链，不逐条连线",
+    "logistics-transport": "运输与仓储衔接每一段实物流转，不逐条连线",
+}
+
+
+def chain_links() -> list[dict]:
+    """链间上下游，规范化成可直接写进 nodes.json 的形状。
+
+    每条带 basis="framework"：这是**产业结构框架**，与 edges/ 里那两万条
+    必须有原始申报的公司级关系不是一回事，任何时候都不得混在一起。
+    """
+    out = []
+    for src, dst, flow in CHAIN_LINKS:
+        if src not in CHAIN_INDEX or dst not in CHAIN_INDEX:
+            continue                       # 写错 id 的连线直接丢掉，不让它变成幽灵节点
+        out.append({"from": src, "to": dst, "flow": flow, "basis": "framework"})
+    return out
+
+
+def upstream_of(chain_id: str) -> list[dict]:
+    """谁供给这条链。"""
+    return [l for l in chain_links() if l["to"] == chain_id]
+
+
+def downstream_of(chain_id: str) -> list[dict]:
+    """这条链供给谁。"""
+    return [l for l in chain_links() if l["from"] == chain_id]

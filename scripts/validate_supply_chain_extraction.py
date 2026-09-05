@@ -1056,11 +1056,61 @@ def main() -> int:
             failures.append(f"追加公司闸门 {why}：期望返回 {expect}，实际 {got}")
         print(f"  [{'OK' if ok else 'XX'}] {why}（返回 {got}）")
 
+    # 链间上下游。这张表是**框架**，最大的风险不是写错一条线，而是它被当成
+    # 有出处的关系——所以断言分两类：表本身自洽，以及它绝不携带出处字段。
+    print("\n── 链间上下游：框架自洽，且不得冒充证据 ─────────────────────────")
+    links = chains_mod.chain_links()
+    link_pairs = {(l["from"], l["to"]) for l in links}
+    ids = [cid for cid, _, _ in chains_mod.CHAINS]
+    linked = {l["from"] for l in links} | {l["to"] for l in links}
+    link_self = [
+        (all(l["from"] in chains_mod.CHAIN_INDEX and l["to"] in chains_mod.CHAIN_INDEX
+             for l in links), "两端都是已登记的链"),
+        (all(l["from"] != l["to"] for l in links), "没有自己连自己"),
+        (len(link_pairs) == len(links), "没有重复的连线"),
+        (all(l["basis"] == "framework" for l in links), "每条都自报 framework"),
+        (all((l.get("flow") or "").strip() for l in links), "每条都写清流动的是什么"),
+        (all(not any(k in l for k in ("sourceType", "url", "docDate"))
+             for l in links), "一条都不带出处字段——出处只属于 edges/"),
+        (all(c in linked or c in chains_mod.CROSS_CUTTING for c in ids),
+         "没有既无连线又没标横跨全链的断头"),
+        (all(c in chains_mod.CHAIN_INDEX for c in chains_mod.CROSS_CUTTING),
+         "使能链的 id 都在链表里"),
+    ]
+    for ok, why in link_self:
+        if not ok:
+            failures.append(f"链间上下游：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
+    # 闭环：实物链本来是回路，消费后的废弃物回到冶炼与制浆再变成新料。
+    # 只画一半（有再生料出来、没有废弃物进去）等于说回收的东西凭空产生。
+    loop_cases = [
+        (bool(chains_mod.upstream_of("waste-circular")),
+         "环保链有上游——废弃物从哪来说得出"),
+        (bool(chains_mod.downstream_of("waste-circular")),
+         "环保链有下游——再生料去哪说得出"),
+        (("waste-circular", "mining-metals") in link_pairs,
+         "再生金属回到采矿与金属，闭环合上"),
+        (("chemicals", "semiconductor") in link_pairs,
+         "化工 → 半导体：电子气体与光刻胶这一跳在"),
+        (("industrial-machinery", "semiconductor") in link_pairs,
+         "工业机械 → 半导体：设备这一跳在"),
+        (("semiconductor", "computing-hardware") in link_pairs,
+         "半导体 → 计算硬件：芯片这一跳在"),
+        (("mining-metals", "textiles-apparel") not in link_pairs,
+         "不连跨好几跳的远关系——那样连出来的是糊成一团的网"),
+    ]
+    for ok, why in loop_cases:
+        if not ok:
+            failures.append(f"链间上下游：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
     total = (len(pdf_cases) + 4 + len(kind_cases) + len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
+             + len(link_self) + len(loop_cases)
              + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:
