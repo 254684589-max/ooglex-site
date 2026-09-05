@@ -380,6 +380,22 @@ def build_edges(outcome: dict, name_zh: str | None) -> dict:
     }
 
 
+def should_withdraw(outcome: dict) -> bool:
+    """这一家此前发布的边该不该撤回。
+
+    只有一种情形为真：本轮判定这份申报是 13q-1 资源开采付款披露
+    （里面根本没有冶炼厂这个概念），而解析器确实从付款表里抠出过行
+    （droppedAsPaymentRows）。那几行是错的，留着等于继续声称申报人的
+    供应链里有一家名叫某个矿区的冶炼厂。
+
+    取数失败、文档取不到、解析异常、有申报无名单——一律返回 False。
+    那些是「没抓到」，不是「抓错了」，删掉就成了拿删数据掩盖抓取失败。
+    """
+    if outcome.get("state") != "resource-extraction":
+        return False
+    return bool(outcome.get("droppedAsPaymentRows"))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true",
@@ -605,6 +621,27 @@ def main() -> int:
         return 1
 
     os.makedirs(OUT_DIR, exist_ok=True)
+
+    # ── 撤回已判定为付款记录的边文件 ──────────────────────────────────────
+    # 「不得删除有效历史数据来掩盖抓取失败」是硬规矩，但这一档不是抓取失败：
+    # 是我们**认定这份申报根本不是冶炼厂名单**（13q-1 付款披露里没有冶炼厂
+    # 这个概念），此前发布的那几行是从付款表里误抠出来的。
+    # 留着它才是错的——那等于继续声称艾芬豪的供应链里有一家叫「La India」的冶炼厂。
+    #
+    # **只在这一种情形下删**：state 是 resource-extraction 且本轮明确标了
+    # droppedAsPaymentRows。取数失败、文档取不到、解析异常一律不删。
+    withdrawn: list[str] = []
+    for outcome in results:
+        if not should_withdraw(outcome):
+            continue
+        path = os.path.join(OUT_DIR, f"{outcome['symbol']}.json")
+        if os.path.exists(path):
+            os.remove(path)
+            withdrawn.append(outcome["symbol"])
+    if withdrawn:
+        print(f"\n撤回 {len(withdrawn)} 家的边文件：本轮判定其申报是 13q-1 资源开采付款，"
+              f"此前那几行是从付款表里误抠出来的，不是冶炼厂——{'、'.join(withdrawn)}")
+
     written = kept = unchanged = 0
     for outcome in results:
         if outcome["state"] != "listed":

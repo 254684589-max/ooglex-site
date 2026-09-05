@@ -1313,15 +1313,35 @@ def main() -> int:
         if not ok:
             failures.append(f"付款表：{why} 不成立")
         print(f"  [{'OK' if ok else 'XX'}] {why}")
-    print("  [--] 抽取器据此把这类行按付款记录处理，不当冶炼厂发布"
-          "（判据在 extract_company，见 resource-extraction 分支）")
+    # 判定成付款披露还不够，此前误发布的边文件必须撤回——不然页面会继续
+    # 声称艾芬豪的供应链里有一家名叫「La India」的冶炼厂（那是个矿区）。
+    # 撤回的判据必须窄：只撤「抓错了」，绝不撤「没抓到」。
+    withdraw = load_extractor().should_withdraw
+    withdraw_cases = [
+        (withdraw({"state": "resource-extraction", "droppedAsPaymentRows": 2}),
+         "判成付款披露、且确实从付款表抠出过行——撤回"),
+        (not withdraw({"state": "resource-extraction", "droppedAsPaymentRows": 0}),
+         "判成付款披露但本来就没抠出行——没有错数据要撤，不动"),
+        (not withdraw({"state": "listed", "droppedAsPaymentRows": 5}),
+         "本轮正常抽到名单的不撤"),
+        (not withdraw({"state": "filed-no-list"}),
+         "有申报无名单不撤——那是披露制度的上限，不是错数据"),
+        (not withdraw({"state": "index-failed", "why": "HTTP 500"}),
+         "取数失败不撤——删掉就成了拿删数据掩盖抓取失败"),
+        (not withdraw({"state": "no-filing"}),
+         "本轮查不到申报不撤"),
+    ]
+    for ok, why in withdraw_cases:
+        if not ok:
+            failures.append(f"撤回判据：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
 
     total = (len(pdf_cases) + 4 + len(kind_cases) + len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
-             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases)
+             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases)
              + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:

@@ -685,8 +685,13 @@ def build() -> None:
     # （AGENTS.md：不得删除有效历史数据来掩盖抓取失败），所以文件保留着上一轮的
     # 结果；但覆盖率报的是本轮扫描口径，两个数就会差几家。
     # 差额必须由数据解释，不能留成一个说不清的 1。
+    #
+    # 判据是「本轮没抽到名单」，不是某一个具体状态。曾经只列 filed-no-list，
+    # 结果一批被改判成 13q-1 资源开采付款的公司边文件还在、状态却变成了
+    # resource-extraction，差额一家都没进这张表，契约直接拦下发布。
+    # 差额的定义只能是「有边 且 本轮状态不是 listed」，包括本轮压根没扫到的。
     stale = sorted(n["symbol"] for n in nodes
-                   if n.get("edgeCount") and filing_status.get(n["symbol"]) == "filed-no-list")
+                   if n.get("edgeCount") and filing_status.get(n["symbol"]) != "listed")
     flow = stage_flow(nodes, edge_files)
 
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
