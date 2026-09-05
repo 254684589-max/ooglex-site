@@ -561,10 +561,20 @@ def disclosure_evidence(html: str, xbrl_tagged: bool = False) -> dict:
                 "minerals": m_title + m_mark, "extraction": e_title + e_mark}
 
     # 条目标题最先看，它直接说明这份 SD 报的是哪一套。
-    # **两个都出现时判资源开采**，这与直觉相反，是实测逼出来的：13q-1 申报人的
-    # 封面常把两个条目都印出来（表格模板如此），而 13p-1 申报人不会去填
-    # 「Item 2.01 Resource Extraction Issuer Disclosure」。所以 2.01 出现是主动
-    # 信息，1.01 出现可能只是模板。纽蒙特、康菲那几家就是这么被判反的。
+    #
+    # **两个都出现时判资源开采。** 这与直觉相反，但 2026-09-05 的实测把话说死了：
+    # 22 份真申报逐份打出命中的特征，13q-1 申报人的文件里两个条目标题**同时出现**：
+    #
+    #     CRH   矿产 ['conflict minerals disclosure', ...]  开采 ['resource extraction issuer disclosure', ...]
+    #     DVN   矿产 ['conflict minerals disclosure', ...]  开采 ['resource extraction issuer disclosure', ...]
+    #     NEM   矿产 ['conflict minerals disclosure', ...]  开采 ['resource extraction issuer disclosure', ...]
+    #
+    # 封面模板把两个条目都印出来，而 13p-1 申报人不会去**填** Item 2.01。
+    # 所以 2.01 出现是主动信息，1.01 出现可能只是模板。特斯拉那份是反例：
+    # 只命中 'conflict minerals disclosure'、没有 XBRL，判冲突矿产无名单，正确。
+    #
+    # 同一批数据也再次确认了那条不能用的特征：'rule 13p-1' 在几乎每一份 13q-1
+    # 申报里都出现——封面把两条规则都印在勾选框里，勾没勾都印。
     if e_title:
         return out("resource-extraction", f"条目标题 {e_title[0]!r}")
     if m_title:
