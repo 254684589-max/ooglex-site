@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-smelters",
-  "updatedAt": "2026-09-06T03:30:24Z",
+  "updatedAt": "2026-09-06T12:43:54Z",
   "frequency": "annual",
   "status": "ok",
   "source": "SEC EDGAR Form SD 冲突矿产申报",
@@ -783,10 +783,10 @@
   },
   "coverage": {
     "claimComplete": false,
-    "companiesScanned": 1689,
+    "companiesScanned": 1688,
     "companiesWithList": 128,
     "companiesFiledNoList": 195,
-    "companiesNoFiling": 1269,
+    "companiesNoFiling": 1268,
     "companiesResourceExtraction": 97,
     "companiesFailed": 0,
     "failedSymbols": [],
@@ -2326,7 +2326,6 @@
       "USAS": "resource-extraction",
       "USB": "no-filing",
       "USEA": "no-filing",
-      "USREF": "no-filing",
       "UTSI": "no-filing",
       "UXIN": "no-filing",
       "UZX": "no-filing",
@@ -2443,6 +2442,7 @@
       "YDDL": "no-filing",
       "YDES": "no-filing",
       "YDKG": "no-filing",
+      "YFOR": "no-filing",
       "YI": "no-filing",
       "YIBO": "no-filing",
       "YJ": "no-filing",
@@ -2458,7 +2458,6 @@
       "YTRA": "no-filing",
       "YUM": "no-filing",
       "YXT": "no-filing",
-      "YYGH": "no-filing",
       "ZBAO": "no-filing",
       "ZBH": "listed",
       "ZBRA": "listed",
@@ -2483,11 +2482,11 @@
     },
     "byPool": {
       "sec-foreign-issuer": {
-        "scanned": 1194,
+        "scanned": 1193,
         "withList": 38,
         "filedNoList": 64,
         "resourceExtraction": 79,
-        "noFiling": 1013
+        "noFiling": 1012
       },
       "sp500": {
         "scanned": 495,

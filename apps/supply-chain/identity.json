@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-identity",
-  "updatedAt": "2026-09-06T04:13:40Z",
+  "updatedAt": "2026-09-06T12:04:47Z",
   "source": "SEC EDGAR company_tickers.json + data.sec.gov/submissions",
   "sourceUrl": "https://www.sec.gov/os/accessing-edgar-data",
   "expected": 495,
