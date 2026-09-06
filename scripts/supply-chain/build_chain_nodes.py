@@ -551,7 +551,12 @@ def build_node(member: dict, identity: dict, sic_module, chain_module=None) -> d
     node = {
         "id": member.get("symbol"),
         "symbol": member.get("symbol"),
-        "name": member.get("name"),
+        # 站内公司榜给的名字优先（它对标普成分股本来就多半是中文）；
+        # 榜上只有英文的，再查中文名对照表。**两个来源要有明确先后**——
+        # 表接上来之前，Uber、Kenvue 这两条一直是孤儿：键没错，只是标普池
+        # 根本不查这张表，而孤儿检查如实报了出来。
+        "name": (member.get("name") if member.get("name") != member.get("nameEn")
+                 else (names_zh.name_for(member.get("nameEn")) or member.get("name"))),
         "nameEn": member.get("nameEn"),
         "sector": member.get("sector"),
         "sectorEn": member.get("sectorEn"),
@@ -947,7 +952,10 @@ def build() -> None:
     # 中文名，显示英文原文是正确结果。报这个数是为了让「对照表写错了」露头——
     # 表里有一条却在数据里找不到对应公司，就说明那条键抄错了。
     zh_named = sum(1 for n in foreign_nodes_all if n.get("name") != n.get("nameEn"))
-    live_names = {n.get("nameEn") for n in foreign_nodes_all}
+    # 孤儿检查要扫**所有**用这张表的池子。只扫外国发行人的话，接到标普池
+    # 上的条目会被误报成孤儿（本轮 Uber、Kenvue 就是这么冒出来的）。
+    live_names = ({n.get("nameEn") for n in foreign_nodes_all}
+                  | {n.get("nameEn") for n in nodes if n.get("pool") == "sp500"})
     zh_orphans = sorted(k for k in names_zh.NAMES if k not in live_names)
     if zh_orphans:
         print(f"[!!] 中文名对照表里有 {len(zh_orphans)} 条在数据里找不到对应公司"
