@@ -299,6 +299,32 @@ async function main() {
         assert.equal(zeroNoLine.length, 0,
           `0 覆盖却没写成因：${zeroNoLine.map(b => b.stage).join("、")}`);
       });
+      /* 市值合计算了谁。扩池之后有站内报价的比例掉到 9%~55%（资源开采
+         153 家里只有 14 家），而市值就印在家数旁边——读者必然把两个数配成
+         一对。一个星号扛不住这个落差，说明也不能只挂在 hover 上。
+         这条钉的是：**口径写在看得见的地方，且数字与 nodes.json 对得上**。 */
+      check(`市值合计的口径写在页面上，数字与数据一致`, () => {
+        const isNum = (v) => typeof v === "number" && isFinite(v);
+        let checked = 0;
+        probe.bandCov.forEach((b) => {
+          const grp = NODES.nodes.filter((n) => n.stage === b.stage);
+          if (!grp.length) return;
+          const quoted = grp.filter((n) => isNum(n.marketCap)).length;
+          if (quoted === grp.length) return;        // 全有报价就不必写
+          checked += 1;
+          assert.ok(b.whyShown, `${b.stage} 的口径行不可见`);
+          if (!quoted) {
+            assert.match(b.whyText, /全部没有站内报价/,
+              `${b.stage} 一家报价都没有，却没说明：${b.whyText}`);
+            return;
+          }
+          assert.ok(b.whyText.includes(quoted + "/" + grp.length),
+            `${b.stage} 没写出报价覆盖 ${quoted}/${grp.length}：${b.whyText}`);
+          assert.match(b.whyText, /不是本环节的总市值/,
+            `${b.stage} 没说清这不是总市值：${b.whyText}`);
+        });
+        assert.ok(checked > 0, "没有一个环节存在报价缺口，这条断言失去意义时应删掉");
+      });
       /* 覆盖率的分母。**扩池只增加节点、不增加边**，所以「占全池多少」会随
          名录变大而变小——只印这一个数，读者会把名录扩大读成数据变差；而只印
          「占申报人多少」，又是拿小分母把覆盖率说好看。两个都印，才既不夸大
@@ -424,10 +450,18 @@ async function main() {
           assert.match(cov.countryLastLabel, /其他/,
             `最后一行是 ${cov.countryLastLabel}，没有「其他」这一行就是截断`);
         });
-        check(`说清这一栏的口径是国别不是板块`, () => {
-          assert.match(cov.countryLead, /口径是国别，不是板块/);
+        check(`说清这一栏的口径是地理不是板块，且写明按经营地`, () => {
+          assert.match(cov.countryLead, /口径是(国别|地理)，不是板块/,
+            `实际：${cov.countryLead.slice(0, 80)}`);
           assert.ok(cov.countryLead.includes(String(foreignN)),
             `说明里没写家数：${cov.countryLead}`);
+          /* 汇总用的是经营地（离岸注册者折回营业地址）。**说明必须跟着口径走**
+             ——改了汇总不改这句话，页面就在说假话，而这正是最难被发现的一类错：
+             数字全对，只有那句解释是旧的。 */
+          assert.match(cov.countryLead, /经营地/,
+            `没说清是按经营地汇总：${cov.countryLead.slice(0, 120)}`);
+          assert.match(cov.countryLead, /开曼|离岸|只做登记/,
+            `没说清为什么不用注册地：${cov.countryLead.slice(0, 160)}`);
         });
         check(`板块那一栏仍只统计标普池（${SECTORS.length} 个板块）`, () => {
           const sectorN = SECTORS.reduce((a, r) => a + (r.companies || 0), 0);

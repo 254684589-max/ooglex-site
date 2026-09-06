@@ -296,12 +296,16 @@ def check_coverage(payload: dict, counts: dict, edge_count: int, errors: list[st
         if not isinstance(by_country, list):
             fail(errors, "coverage.byCountry 必须是数组")
             return
+        # 比对的是 **geoCountry（经营地）**，不是 country（注册地）。
+        # 注册地那一栏第一名是开曼群岛 340 家，它回答不了「这条产业链在哪」；
+        # 汇总改口径之后这里也得跟着改——否则这道校验会拿旧口径去卡新数据，
+        # 报出一堆「多报了国别 X」，看着像数据错，其实是校验没跟上。
         truth_country: dict[str, int] = {}
         for node in nodes:
             if node.get("pool") != "sec-foreign-issuer":
                 continue
-            truth_country[node.get("country") or "未分类"] = truth_country.get(
-                node.get("country") or "未分类", 0) + 1
+            key = node.get("geoCountry") or node.get("country") or "未分类"
+            truth_country[key] = truth_country.get(key, 0) + 1
         for row in by_country:
             name = row.get("sector")          # 字段名复用，语义是国别
             if name not in truth_country:

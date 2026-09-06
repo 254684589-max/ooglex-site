@@ -272,6 +272,7 @@ def main() -> int:
     for item, meta in metas:
         symbol = item["primary"]["ticker"]
         place = region.resolve_country(meta, code_map)
+        operating = region.operating_location(meta, code_map)
         companies[symbol] = {
             "symbol": symbol,
             "cik": cik_of(item),
@@ -289,6 +290,14 @@ def main() -> int:
             # 被判定不可用的字段（例如「营业地址只说到美国某个州」）。
             # 留着是为了让「为什么这家没有国别」在数据里查得到，而不是只剩一个空值。
             "countryRejected": place.get("countryRejected"),
+            # 注册地是离岸法域时，它回答不了「这家公司在哪做生意」。
+            # 1,194 家里 413 家（35%）注册在开曼／BVI／马绍尔／百慕大，
+            # 开曼一家就 340 家——没有一家公司在那里生产任何东西。
+            # 营业地另算一份，两个结论都留着，页面再决定怎么显示。
+            "offshoreIncorporation": region.is_offshore(place["country"]),
+            "operatingCountry": operating["country"],
+            "operatingRegion": operating["region"],
+            "operatingBasis": operating["basis"],
             "exchange": item["primary"].get("exchange"),
             "tickers": sorted({c["ticker"] for c in item["candidates"]}),
             "annualForm": "20-F/40-F",
@@ -352,7 +361,26 @@ def main() -> int:
     basis_count = Counter(v.get("countryBasis") or "未标注" for v in companies.values())
     print("国别取自：" + "、".join(f"{k} {v} 家" for k, v in basis_count.most_common()))
     top = Counter(v.get("country") or "未标注" for v in companies.values())
-    print("国别分布：" + "、".join(f"{k} {v}" for k, v in top.most_common(10)))
+    print("注册地分布：" + "、".join(f"{k} {v}" for k, v in top.most_common(10)))
+
+    # 离岸注册这一档单独报。**这是本轮要回答的问题**：注册地是控股架构地时，
+    # 营业地址接得上吗？接不上就只能照实说「只知道注册在开曼」，不能猜。
+    off = {s: v for s, v in companies.items() if v.get("offshoreIncorporation")}
+    print(f"\n注册在离岸法域 {len(off)} 家（{round(len(off) / max(len(companies), 1) * 100)}%）"
+          f"；其中营业地址定得出位置的 "
+          f"{sum(1 for v in off.values() if v.get('operatingCountry'))} 家")
+    op = Counter(v.get("operatingCountry") or "定不出" for v in off.values())
+    print("  离岸注册者的营业地：" + "、".join(f"{k} {v}" for k, v in op.most_common(12)))
+    print("  抽样 8 家：")
+    for symbol in sorted(off)[:8]:
+        v = off[symbol]
+        print(f"    {symbol:<7} {str(v['name'])[:30]:<30} 注册 {v['country']:<22}"
+              f" 营业 {str(v.get('operatingCountry')):<18} 取自 {v.get('operatingBasis')}")
+    # 全池口径：换成营业地之后国别分布长什么样，直接打出来对比。
+    both = Counter((v.get("operatingCountry") or v.get("country") or "未标注")
+                   for v in companies.values())
+    print("\n若以营业地优先（离岸注册者用营业地，其余不变）："
+          + "、".join(f"{k} {v}" for k, v in both.most_common(10)))
 
     previous = load_previous()
     prior = previous.get("companies") or {}
