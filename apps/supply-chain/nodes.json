@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-06T03:53:42Z",
+  "updatedAt": "2026-09-06T04:20:02Z",
   "asOf": "2026-09-04",
   "frequency": "daily",
   "status": "ok",
@@ -119,7 +119,7 @@
       "id": "mining-metals",
       "label": "采矿与金属",
       "labelEn": "Mining & Metals",
-      "count": 124,
+      "count": 123,
       "edgeCount": 61,
       "layer": 2
     },
@@ -73618,49 +73618,6 @@
       "formSdStatus": "no-filing"
     },
     {
-      "id": "USREF",
-      "symbol": "USREF",
-      "name": "Tactical Resources Corp.",
-      "nameEn": "Tactical Resources Corp.",
-      "sector": null,
-      "sectorEn": null,
-      "marketCap": null,
-      "logo": null,
-      "listed": true,
-      "pool": "sec-foreign-issuer",
-      "country": "加拿大",
-      "countryEn": "Canada",
-      "region": "British Columbia",
-      "countryBasis": "state-of-incorporation",
-      "exchange": "OTC",
-      "cik": 2037786,
-      "sic": 1000,
-      "sicDescription": "Metal Mining",
-      "stage": "raw-material",
-      "stageCandidates": [
-        "raw-material"
-      ],
-      "stageBasis": "sic-refined",
-      "stageAmbiguous": false,
-      "stageNote": "SIC 1000：采矿与油气开采",
-      "sicMajor": "10",
-      "sicMajorLabel": "金属矿采选",
-      "sicMajorLabelEn": "Metal Mining",
-      "stageEvidence": {
-        "sourceType": "sec-submissions-sic",
-        "url": "https://data.sec.gov/submissions/CIK0002037786.json",
-        "sic": 1000,
-        "match": "sic-range"
-      },
-      "chains": [
-        "mining-metals"
-      ],
-      "chainBasis": "sic-range",
-      "chainNote": "金属矿开采",
-      "edgeCount": 0,
-      "formSdStatus": "no-filing"
-    },
-    {
       "id": "UTSI",
       "symbol": "UTSI",
       "name": "UTSTARCOM HOLDINGS CORP.",
@@ -77155,6 +77112,48 @@
       "formSdStatus": "no-filing"
     },
     {
+      "id": "YFOR",
+      "symbol": "YFOR",
+      "name": "YY Group Holding Ltd.",
+      "nameEn": "YY Group Holding Ltd.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-foreign-issuer",
+      "country": "英属维尔京群岛",
+      "countryEn": "Virgin Islands, British",
+      "region": null,
+      "countryBasis": "state-of-incorporation",
+      "exchange": "Nasdaq",
+      "cik": 1985337,
+      "sic": 7363,
+      "sicDescription": "Services-Help Supply Services",
+      "stage": "technology",
+      "stageCandidates": [
+        "technology"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "SIC 7363：商业服务，含软件与数据处理",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001985337.json",
+        "sic": 7363,
+        "match": "sic-range"
+      },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "商业服务",
+      "edgeCount": 0
+    },
+    {
       "id": "YI",
       "symbol": "YI",
       "name": "111, Inc.",
@@ -77757,49 +77756,6 @@
       ],
       "chainBasis": "sic-exact",
       "chainNote": "预打包软件",
-      "edgeCount": 0,
-      "formSdStatus": "no-filing"
-    },
-    {
-      "id": "YYGH",
-      "symbol": "YYGH",
-      "name": "YY Group Holding Ltd.",
-      "nameEn": "YY Group Holding Ltd.",
-      "sector": null,
-      "sectorEn": null,
-      "marketCap": null,
-      "logo": null,
-      "listed": true,
-      "pool": "sec-foreign-issuer",
-      "country": "英属维尔京群岛",
-      "countryEn": "Virgin Islands, British",
-      "region": null,
-      "countryBasis": "state-of-incorporation",
-      "exchange": "Nasdaq",
-      "cik": 1985337,
-      "sic": 7363,
-      "sicDescription": "Services-Help Supply Services",
-      "stage": "technology",
-      "stageCandidates": [
-        "technology"
-      ],
-      "stageBasis": "sic-refined",
-      "stageAmbiguous": false,
-      "stageNote": "SIC 7363：商业服务，含软件与数据处理",
-      "sicMajor": "73",
-      "sicMajorLabel": "商业服务",
-      "sicMajorLabelEn": "Business Services",
-      "stageEvidence": {
-        "sourceType": "sec-submissions-sic",
-        "url": "https://data.sec.gov/submissions/CIK0001985337.json",
-        "sic": 7363,
-        "match": "sic-range"
-      },
-      "chains": [
-        "business-services"
-      ],
-      "chainBasis": "sic-range",
-      "chainNote": "商业服务",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -79752,14 +79708,14 @@
     "chainLinksTotal": 77,
     "chainDepth": 10,
     "poolSp500": 495,
-    "poolForeignIssuer": 1194,
+    "poolForeignIssuer": 1193,
     "poolForeignSkippedCollision": 0,
-    "nodesWithoutQuote": 1194,
+    "nodesWithoutQuote": 1193,
     "upstreamPairs": 3996,
     "upstreamConcentrationTotal": 1271,
     "chainCounterflow": 6,
     "chainMulti": 234,
-    "nodesTotal": 1689,
+    "nodesTotal": 1688,
     "nodesWithEdges": 128,
     "edgesTotal": 31320,
     "edgesBySource": {
@@ -81630,10 +81586,10 @@
       {
         "sector": "加拿大",
         "sectorEn": null,
-        "companies": 207,
+        "companies": 206,
         "withEdges": 3,
         "filedNoList": 11,
-        "noFiling": 145,
+        "noFiling": 144,
         "resourceExtraction": 48,
         "failed": 0,
         "unscanned": 0
@@ -81655,10 +81611,10 @@
         "companies": 63,
         "withEdges": 0,
         "filedNoList": 1,
-        "noFiling": 62,
+        "noFiling": 61,
         "resourceExtraction": 0,
         "failed": 0,
-        "unscanned": 0
+        "unscanned": 1
       },
       {
         "sector": "英国",
@@ -82245,7 +82201,7 @@
       }
     ],
     "countryBasis": {
-      "state-of-incorporation": 976,
+      "state-of-incorporation": 975,
       "business-address": 208,
       "unknown": 9,
       "mailing-address": 1
@@ -82257,16 +82213,16 @@
     },
     "edgesFromEarlierScan": [],
     "stageByBasis": {
-      "sic-refined": 1689
+      "sic-refined": 1688
     },
-    "stageResolvedNodes": 1689,
+    "stageResolvedNodes": 1688,
     "stageAmbiguousNodes": 0,
     "note": "本图谱只收录有公开出处的关系，不是完整供应链。当前 31320 条边全部来自 Form SD 冲突矿产申报，语义是「该冶炼厂出现在申报人的供应链中」——间接、不含份额、不含层级，不等于直接供货关系。"
   },
   "dataQuality": {
     "contractVersion": 1,
     "status": "ok",
-    "total": 1689,
+    "total": 1688,
     "byStage": {
       "component": 147,
       "finished-goods": 334,
@@ -82278,10 +82234,10 @@
       "end-service": 125,
       "energy-utility": 64,
       "logistics": 31,
-      "raw-material": 153,
+      "raw-material": 152,
       "circular": 6
     },
-    "resolvedStage": 1689,
+    "resolvedStage": 1688,
     "ambiguousStage": 0,
     "unknownStage": 0
   }
