@@ -1302,7 +1302,10 @@
   function renderFlow(d) {
     var host = $("flowsec");
     if (!host) return;
-    var flow = d.flow;
+    // 筛了链就画这条链自己的流向。上一轮没有按链的桑基，只能在页面上写
+    // 「这张图仍是全池口径」——那是照实声明，不是该长期留着的状态。
+    var scF = riskScope(d);
+    var flow = scF.flow || d.flow;
     var chart = $("flow-chart");
     chart.textContent = "";
     if (!flow || !(flow.stages || []).length) { host.hidden = true; return; }
@@ -1432,17 +1435,7 @@
     var cov = d.coverage || {};
     var withEdges = cov.nodesWithEdges || 0;
     var without = (cov.nodesTotal || 0) - withEdges;
-    // 这张桑基是「环节 → 国别」，没有按链预算的版本。筛了链之后**不能装作
-    // 它是这条链的图**——宁可明说它仍是全池，并把这条链自己的两个数印出来，
-    // 也不能让读者把全池的带子读成半导体的带子。
-    var scF = riskScope(d);
-    setText($("flow-lead"),
-      (scF.chain
-        ? "已筛出「" + scF.label + "」，但这张流向图仍是全池口径（按链的流向尚未预算）。"
-          + "这条链自己的数是 " + scF.edges + " 条关系、"
-          + ((d.chainRisk || {})[scF.chain] || {}).countries + " 个国别，"
-          + "见下面两节。"
-        : "当前口径：全池，未筛选产业链。")
+    setText($("flow-lead"), scopeNote(scF)
       + " 共 " + total + " 条关系，指向 " + (flow.distinctCountries || 0)
       + " 个国家或地区的冶炼厂。带子宽度是实测条数，不是示意。");
     setText($("flow-sub"), flow.relationLabel
@@ -1509,13 +1502,15 @@
         exposure: d.countryExposure || [],
         exposureTotal: (d.countryExposure || []).length,
         concentration: d.upstreamConcentration || [],
-        concentrationTotal: cov.upstreamConcentrationTotal || 0 };
+        concentrationTotal: cov.upstreamConcentrationTotal || 0,
+        flow: d.flow };
     }
     var meta = chainMeta(d, cid);
     return { chain: cid, label: (meta && meta.label ? meta.label : cid),
       listed: r.filers || 0, edges: r.edges || 0,
       exposure: r.exposure || [], exposureTotal: r.exposureTotal || 0,
-      concentration: r.concentration || [], concentrationTotal: r.concentrationTotal || 0 };
+      concentration: r.concentration || [], concentrationTotal: r.concentrationTotal || 0,
+      flow: r.flow || null };
   }
 
   // 当前口径写成一句话，每个面板开头都印。不印的话读者无从判断手上这张表

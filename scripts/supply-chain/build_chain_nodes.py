@@ -325,6 +325,7 @@ def chain_risk(nodes: list[dict], bundles: dict[str, dict], registry: dict) -> d
     不是采购关系，也不表示这些公司之间有业务往来。分母是**这条链里有名单的
     公司数**，不是这条链的全部公司数：没有名单的公司不可能暴露在任何国别上。
     """
+    # stage_flow 定义在本函数之后，Python 到调用时才解析名字，顺序无妨。
     members: dict[str, set] = {}
     for node in nodes:
         if not node.get("edgeCount"):
@@ -356,7 +357,12 @@ def chain_risk(nodes: list[dict], bundles: dict[str, dict], registry: dict) -> d
                 "filers": hit,
             })
         conc.sort(key=lambda r: (-r["filerCount"], str(r["name"] or "")))
+        # 这条链自己的「环节 → 国别」流向。全局那份只有 1.75KB，24 条链加起来
+        # 约 42KB（gzip 后 4KB），完全划算——上一轮因为没有它，只能在页面上
+        # 写「这张图仍是全池口径」，那是照实声明，不是应该长期留着的状态。
+        chain_nodes = [n for n in nodes if n["symbol"] in symbols]
         out[cid] = {
+            "flow": stage_flow(chain_nodes, sub_bundles),
             "filers": len(sub_bundles),
             "edges": sum(len(b.get("edges") or []) for b in sub_bundles.values()),
             "countries": len(expo),
@@ -716,6 +722,7 @@ def build_foreign_node(record: dict, sic_module, chain_module=None,
         "offshoreIncorporation": offshore,
         "operatingCountry": country_zh(record.get("operatingCountry")),
         "operatingCountryEn": record.get("operatingCountry"),
+        "operatingRegion": record.get("operatingRegion"),
         "operatingBasis": record.get("operatingBasis"),
         "geoCountry": country_zh(record.get("operatingCountry")
                                  if offshore and record.get("operatingCountry")
