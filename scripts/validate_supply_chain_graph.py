@@ -723,6 +723,54 @@ def check_peers(payload: dict, errors: list[str]) -> None:
         fail(errors, "集中度榜没有按家数降序——页面按顺序显示，排错就是排行榜错")
 
 
+def check_page_meta(payload: dict, errors: list[str]) -> None:
+    """页面的 title / og:title / description 不得停在旧口径。
+
+    这一条是**补上一次没修干净的漏**：两轮前把首屏那句「标普500成分股按价值链
+    环节分层」改成照数据渲染，却漏了 `<title>`、`og:title` 与公司页的
+    description——而那三处正是浏览器标签页、搜索结果与社交分享看到的文案。
+    只修看得见的那一处、漏掉 meta，等于没修。
+
+    静态 HTML 里的文案不会自己更新，所以只能由契约来盯：
+    **凡是断言板块只收标普500的措辞，一律拦下**；写了链数环节数的，
+    必须与数据对得上。
+    """
+    coverage = payload.get("coverage") or {}
+    files = {
+        "apps/supply-chain/index.html": ("title", "og:title", "description"),
+        "apps/supply-chain/company.html": ("title", "description"),
+    }
+    # 「只收标普500」的说法。板块早已是标普 495 + 外国私人发行人 147。
+    stale = re.compile(r"标普\s*500\s*公司|单家标普\s*500|只收录标普\s*500|"
+                       r"标普500成分股按价值链环节分层")
+    for path in files:
+        try:
+            with open(path, encoding="utf-8") as handle:
+                html = handle.read()
+        except OSError:
+            continue
+        head = html.split("</head>", 1)[0]
+        # 报行号：title 与 og:title 往往写着同一句话，只报措辞会打出两行
+        # 一模一样的错，读的人不知道该改哪一处。
+        for lineno, line in enumerate(head.splitlines(), 1):
+            for match in stale.findall(line):
+                fail(errors, f"{path}:{lineno} 的 head 里还写着「{match}」——"
+                             f"板块已是 {coverage.get('nodesTotal')} 家"
+                             f"（标普 {coverage.get('poolSp500')} + 外国发行人 "
+                             f"{coverage.get('poolForeignIssuer')}），这句话是假的")
+        # 写了链数或环节数的，必须与数据一致——写死的数字迟早对不上。
+        for label, want in (("条一级产业链", coverage.get("chainsTotal")),
+                            ("条产业链", coverage.get("chainsTotal")),
+                            ("个价值链环节", len(payload.get("stages") or [])),
+                            ("个环节", len(payload.get("stages") or []))):
+            if want is None:
+                continue
+            for got in re.findall(r"(\d+)\s*" + label, head):
+                if int(got) != want:
+                    fail(errors, f"{path} 的 head 里写着「{got} {label}」，"
+                                 f"数据是 {want}")
+
+
 def check_home_card(payload: dict, errors: list[str]) -> None:
     """站点首页那张卡片上印的数，必须等于 nodes.json 里的数。
 
@@ -806,6 +854,7 @@ def main() -> int:
     check_pools(payload, errors)
     check_peers(payload, errors)
     check_home_card(payload, errors)
+    check_page_meta(payload, errors)
     check_no_conflict_markers(errors)
     smelters = check_smelters(errors, edge_count)
     check_health(errors, len(payload.get("nodes") or []))
