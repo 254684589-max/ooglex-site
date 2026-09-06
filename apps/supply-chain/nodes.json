@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-06T07:04:03Z",
+  "updatedAt": "2026-09-06T07:24:42Z",
   "asOf": "2026-09-04",
   "frequency": "daily",
   "status": "ok",
@@ -93734,6 +93734,7 @@
     "chainDepth": 10,
     "poolSp500": 495,
     "poolForeignIssuer": 1193,
+    "poolDomesticFiler": 0,
     "poolForeignSkippedCollision": 0,
     "nodesWithoutQuote": 1193,
     "upstreamPairs": 3996,

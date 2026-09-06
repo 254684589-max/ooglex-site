@@ -62,6 +62,7 @@ PEERS_PATH = os.path.join(OUT_DIR, "peers.json")
 # 第二个公司池：在美上市的外国私人发行人里同时报 Form SD 的那一批。
 # 由 fetch_foreign_identity.py 生成；缺失时只出标普那 495 家，不中断构建。
 FOREIGN_PATH = os.path.join(OUT_DIR, "foreign.json")
+DOMESTIC_PATH = os.path.join(OUT_DIR, "domestic.json")
 
 # ── 价值链阶段定义 ──────────────────────────────────────────────────────────
 # 八段实物链 + 四层使能层。chain=True 的在实物流转链条上、按 order 首尾相接；
@@ -185,6 +186,15 @@ def load_foreign_pool() -> dict:
     """读外国私人发行人池。没有这个文件就是「还没取过」，不是错误。"""
     try:
         with open(FOREIGN_PATH, encoding="utf-8") as handle:
+            return (json.load(handle) or {}).get("companies") or {}
+    except (OSError, ValueError):
+        return {}
+
+
+def load_domestic_pool() -> dict:
+    """读报 10-K 的美国本土发行人池（标普之外的那批）。缺文件不是错误。"""
+    try:
+        with open(DOMESTIC_PATH, encoding="utf-8") as handle:
             return (json.load(handle) or {}).get("companies") or {}
     except (OSError, ValueError):
         return {}
@@ -838,6 +848,36 @@ def build() -> None:
               f"已跳过（不覆盖）：{'、'.join(dropped_collision[:10])}")
     nodes.extend(foreign_nodes)
 
+    # ── 第三个池：报 10-K 的美国本土发行人（标普之外）────────────────────
+    # 探针实测 SEC 这条路的上限是 6,076 家，此前只收了 1,688 家——差的就是
+    # 这一批。**它比按标普成分收许可更干净**：指数成分名单是指数商的专有
+    # 数据，10-K 全量是政府公开记录。
+    #
+    # 与外国发行人那池同一套节点构建：没有站内报价（marketCap 恒为 None，
+    # 不是 0）、没有站内板块分类，环节与产业链全由 SIC 判。
+    # 撞码同样只跳不覆盖——这一池排在最后，撞了就是它让路。
+    domestic_pool = load_domestic_pool()
+    domestic_nodes = []
+    dropped_domestic = []
+    for symbol in sorted(domestic_pool):
+        if symbol in taken:
+            dropped_domestic.append(symbol)
+            continue
+        taken.add(symbol)
+        node = build_foreign_node(domestic_pool[symbol], sic_module, chain_module,
+                                  region_module)
+        # 池标识要分开：页面按池说明「为什么没有市值」，两池的理由不同——
+        # 外国发行人是站内行情只覆盖标普，本土非成分股是同一个原因，
+        # 但读者要能看出这家到底属于哪一批，不能混成一个「非标普」黑箱。
+        node["pool"] = "sec-domestic-filer"
+        node["stageNote"] = ("报 10-K 的美国本土发行人（非标普成分股），"
+                             "站内无板块分类；环节由 SEC 行业码判定")
+        domestic_nodes.append(node)
+    if dropped_domestic:
+        print(f"[!!] 本土发行人有 {len(dropped_domestic)} 个代码与前两池相同，"
+              f"已跳过（不覆盖）：{'、'.join(dropped_domestic[:10])}")
+    nodes.extend(domestic_nodes)
+
     # 关系边：抽取器写在 edges/ 下，本脚本只读、只索引、只校验，不自己造边。
     edge_files = load_edge_files()
     all_edges = [e for payload in edge_files.values() for e in (payload.get("edges") or [])]
@@ -1033,6 +1073,9 @@ def build() -> None:
             # 而外国发行人那批站内没有报价。
             "poolSp500": sum(1 for n in nodes if n.get("pool") == "sp500"),
             "poolForeignIssuer": len(foreign_nodes),
+            # 第三池：报 10-K 的美国本土发行人（标普之外）。与前两池分开计数——
+            # 三批公司的「为什么没有市值」理由不同，混成一个数就说不清了。
+            "poolDomesticFiler": len(domestic_nodes),
             "poolForeignSkippedCollision": len(dropped_collision),
             "nodesWithoutQuote": sum(1 for n in nodes if n.get("marketCap") is None),
             "upstreamPairs": (peers or {}).get("pairs", 0),
