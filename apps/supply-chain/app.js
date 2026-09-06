@@ -595,6 +595,7 @@
       state.open = null;
       state.seg = null;
       renderStages(d);
+      renderRisk(d);
     });
     return b;
   }
@@ -697,6 +698,7 @@
       state.open = null;
       state.seg = null;
       renderStages(d);
+      renderRisk(d);
       var host = $("chainpick");
       if (host && host.scrollIntoView) host.scrollIntoView({ block: "start" });
     });
@@ -1430,8 +1432,18 @@
     var cov = d.coverage || {};
     var withEdges = cov.nodesWithEdges || 0;
     var without = (cov.nodesTotal || 0) - withEdges;
+    // 这张桑基是「环节 → 国别」，没有按链预算的版本。筛了链之后**不能装作
+    // 它是这条链的图**——宁可明说它仍是全池，并把这条链自己的两个数印出来，
+    // 也不能让读者把全池的带子读成半导体的带子。
+    var scF = riskScope(d);
     setText($("flow-lead"),
-      "共 " + total + " 条关系，指向 " + (flow.distinctCountries || 0)
+      (scF.chain
+        ? "已筛出「" + scF.label + "」，但这张流向图仍是全池口径（按链的流向尚未预算）。"
+          + "这条链自己的数是 " + scF.edges + " 条关系、"
+          + ((d.chainRisk || {})[scF.chain] || {}).countries + " 个国别，"
+          + "见下面两节。"
+        : "当前口径：全池，未筛选产业链。")
+      + " 共 " + total + " 条关系，指向 " + (flow.distinctCountries || 0)
       + " 个国家或地区的冶炼厂。带子宽度是实测条数，不是示意。");
     setText($("flow-sub"), flow.relationLabel
       ? "语义：" + flow.relationLabel + "。"
@@ -1469,23 +1481,71 @@
      条的宽度按**暴露家数**画，因为这一屏回答的是「多少家沾到」。 */
   var EXPO_ROWS = 20;
 
+  /* 三个风险面板的口径来源。
+
+     **筛了链就必须跟着筛。** 这三块此前完全不读 state.chain：读者点「半导体」，
+     环节卡筛到 48 家，往下滚读到的却是 23 条链合计的「31,320 条关系、
+     72 个国别、128 家分母」——数字本身没错，错在它回答的不是读者以为的那个
+     问题。在筛选语境下印全局数字并且一个字不说，等于把全局风险说成这条链的。
+
+     按链的那一份由构建脚本预算（chainRisk），不是页面现场从边文件算——
+     总览页不该为此另载 8.6MB 的边目录。 */
+  // 三块一起重绘。**换链时漏掉任何一块，那一块就还在印上一次的口径**——
+  // 比一开始不筛更糟，因为读者会以为它已经跟着变了。
+  function renderRisk(d) {
+    renderFlow(d);
+    renderConcentration(d);
+    renderExposure(d);
+  }
+
+  function riskScope(d) {
+    var cid = state.chain;
+    var r = cid && (d.chainRisk || {})[cid];
+    if (!r) {
+      var cov = d.coverage || {};
+      return { chain: null, label: "全池",
+        listed: Object.keys(d.edgeIndex || {}).length,
+        edges: cov.edgesTotal || 0,
+        exposure: d.countryExposure || [],
+        exposureTotal: (d.countryExposure || []).length,
+        concentration: d.upstreamConcentration || [],
+        concentrationTotal: cov.upstreamConcentrationTotal || 0 };
+    }
+    var meta = chainMeta(d, cid);
+    return { chain: cid, label: (meta && meta.label ? meta.label : cid),
+      listed: r.filers || 0, edges: r.edges || 0,
+      exposure: r.exposure || [], exposureTotal: r.exposureTotal || 0,
+      concentration: r.concentration || [], concentrationTotal: r.concentrationTotal || 0 };
+  }
+
+  // 当前口径写成一句话，每个面板开头都印。不印的话读者无从判断手上这张表
+  // 是全池还是某条链——两者差着一个数量级。
+  function scopeNote(sc) {
+    return sc.chain
+      ? "当前口径：已筛出「" + sc.label + "」这一条产业链，下面只算这条链里有名单的 "
+        + sc.listed + " 家公司、" + sc.edges + " 条关系。"
+      : "当前口径：全池，未筛选产业链。";
+  }
+
   function renderExposure(d) {
     var sec = $("expsec");
     if (!sec) return;
     // 与 upstreamConcentration 同级放在顶层，不在 coverage 里——
     // 两个同类的榜单放两个地方，迟早有人（包括我自己）读错路径。
-    var rows = d.countryExposure || [];
+    var sc = riskScope(d);
+    var rows = sc.exposure;
     if (!rows.length) { sec.hidden = true; return; }
     sec.hidden = false;
 
-    var listed = Object.keys(d.edgeIndex || {}).length;
-    var edgesTotal = (d.coverage || {}).edgesTotal || 0;
+    var listed = sc.listed;
+    // 分母跟着口径走：筛了链就用这条链的关系总数，否则百分比会拿全池 31,320
+    // 去除以这条链的几千条，每一档都被稀释成假的小数。
+    var edgesTotal = sc.edges;
     var shown = rows.slice(0, EXPO_ROWS);
-    setText($("expo-lead"),
-      "按冶炼厂所在国别看暴露面：左边是**有多少家申报人的名单里出现过该国的厂**，"
-        .replace(/\*\*/g, "")
+    setText($("expo-lead"), scopeNote(sc)
+      + " 按冶炼厂所在国别看暴露面：左边是有多少家申报人的名单里出现过该国的厂，"
       + "右边是关系条数。分母是有名单的 " + listed + " 家公司（不是全部 "
-      + ((d.coverage || {}).nodesTotal || 0) + " 家）。共 " + rows.length
+      + ((d.coverage || {}).nodesTotal || 0) + " 家）。共 " + sc.exposureTotal
       + " 个国别，下面列前 " + shown.length + " 个。");
 
     var host = $("expo-rows");
@@ -1533,17 +1593,22 @@
   function renderConcentration(d) {
     var sec = $("concsec");
     if (!sec) return;
-    var rows = d.upstreamConcentration || [];
+    var sc = riskScope(d);
+    var rows = sc.concentration;
     if (!rows.length) { sec.hidden = true; return; }
     sec.hidden = false;
 
     var cov = d.coverage || {};
-    var listed = Object.keys(d.edgeIndex || {}).length;
-    setText($("conc-lead"),
-      "被最多申报人共同列入的 " + rows.length + " 家冶炼厂。分母是有名单的 "
+    var listed = sc.listed;
+    setText($("conc-lead"), scopeNote(sc)
+      + " 被最多申报人共同列入的 " + rows.length + " 家冶炼厂。分母是有名单的 "
       + listed + " 家公司（不是全部 " + (cov.nodesTotal || 0)
-      + " 家）；登记表共 " + (cov.upstreamConcentrationTotal || 0)
-      + " 家被两家以上共同申报。");
+      + " 家）；本口径下共 " + sc.concentrationTotal
+      + " 家被两家以上共同申报"
+      + (sc.concentrationTotal > rows.length
+          ? "，下面列前 " + rows.length + " 家（另有 "
+            + (sc.concentrationTotal - rows.length) + " 家未列出）" : "")
+      + "。");
 
     var host = $("conc-rows");
     host.textContent = "";
@@ -1726,9 +1791,7 @@
     renderCoverageBySector(d);
     initLookup(d);
     renderStages(d);
-    renderFlow(d);
-    renderConcentration(d);
-    renderExposure(d);
+    renderRisk(d);
     renderMethod(d);
     $("state").hidden = true;
   }

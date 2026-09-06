@@ -293,6 +293,81 @@ def country_exposure(bundles: dict[str, dict], listed: int) -> list[dict]:
     return rows
 
 
+
+# 按链切的风险读数各留多少行。页面上这两块本来就折叠，取前 12 行够读，
+# 再多每行细到看不清；行数不够时页面照实说「另有 N 行未列出」，不静默截断。
+CHAIN_RISK_ROWS = 12
+
+
+def chain_risk(nodes: list[dict], bundles: dict[str, dict], registry: dict) -> dict:
+    """按产业链切一份风险读数：国别暴露 + 上游集中度。
+
+    ## 为什么非切不可
+
+    页面允许筛出某一条产业链。筛完之后环节卡跟着变，而「真实流向 / 上游集中度 /
+    国别暴露」这三块此前**一动不动**——读者筛到半导体，环节卡显示 48 家，
+    往下滚读到的却是 23 条链合计的「31,320 条关系、72 个国别、128 家分母」。
+
+    **在筛选语境下印全局数字，并且一个字不说，等于把全局风险说成这条链的风险。**
+    这是这个板块最该避免的一类错：数字本身没错，错在它回答的不是读者以为的
+    那个问题。
+
+    ## 集中度为什么要从登记表重算
+
+    不能拿全局榜单前 30 去按链筛。那样留下的只有「既是全局咽喉、又属于这条链」
+    的厂，而**一条链自己的咽喉点很可能根本不在全局前 30 里**——半导体的关键
+    冶炼厂未必是被最多公司共同列入的那几家。按链筛全局榜单会漏掉它们，
+    还看不出漏了。所以从登记表全量重算，每条链各排各的。
+
+    ## 口径不变
+
+    仍然只是「该冶炼厂／该国的厂出现在这些申报人的名单里」——共同暴露，
+    不是采购关系，也不表示这些公司之间有业务往来。分母是**这条链里有名单的
+    公司数**，不是这条链的全部公司数：没有名单的公司不可能暴露在任何国别上。
+    """
+    members: dict[str, set] = {}
+    for node in nodes:
+        if not node.get("edgeCount"):
+            continue                            # 没名单的公司进不了任何分母
+        for cid in (node.get("chains") or []):
+            members.setdefault(cid, set()).add(node["symbol"])
+
+    out: dict[str, dict] = {}
+    for cid, symbols in members.items():
+        sub_bundles = {s: b for s, b in bundles.items() if s in symbols}
+        if not sub_bundles:
+            continue
+        expo = country_exposure(sub_bundles, len(sub_bundles))
+        for row in expo:
+            row.pop("filers", None)             # 逐家反查留给全局那一份，按链只报数
+        conc = []
+        for row in (registry or {}).values():
+            hit = sorted({f for f in (row.get("filers") or []) if f} & symbols)
+            if len(hit) < 2:                    # 只被一家列入不叫「集中」
+                continue
+            conc.append({
+                "id": row.get("id"),
+                "name": row.get("name"),
+                "nameZh": row.get("nameZh"),
+                "country": row.get("country"),
+                "minerals": row.get("minerals") or [],
+                "identifierType": row.get("identifierType"),
+                "filerCount": len(hit),
+                "filers": hit,
+            })
+        conc.sort(key=lambda r: (-r["filerCount"], str(r["name"] or "")))
+        out[cid] = {
+            "filers": len(sub_bundles),
+            "edges": sum(len(b.get("edges") or []) for b in sub_bundles.values()),
+            "countries": len(expo),
+            "exposure": expo[:CHAIN_RISK_ROWS],
+            "exposureTotal": len(expo),
+            "concentration": conc[:CHAIN_RISK_ROWS],
+            "concentrationTotal": len(conc),
+        }
+    return out
+
+
 def stage_flow(nodes: list[dict], bundles: dict[str, dict]) -> dict:
     """环节 → 冶炼厂所在国别的实测流量。
 
@@ -842,6 +917,9 @@ def build() -> None:
     stale = sorted(n["symbol"] for n in nodes
                    if n.get("edgeCount") and filing_status.get(n["symbol"]) != "listed")
     flow = stage_flow(nodes, edge_files)
+    # 按链切的风险读数。见 chain_risk() 的注释：页面能筛链，风险面板就必须
+    # 跟着筛，否则筛选语境下印的是全局数。
+    by_chain_risk = chain_risk(nodes, edge_files, registry if peers_module else {})
     exposure = country_exposure(edge_files, len(edge_files))
 
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -925,6 +1003,8 @@ def build() -> None:
         # 上游集中度：一家冶炼厂被多少家申报人共同列入。榜单放这里是因为总览页
         # 已经会下 nodes.json，不必为十几行多发一次请求；逐家的重叠在 peers.json。
         "upstreamConcentration": (peers or {}).get("concentration") or [],
+        # 逐链一份，键是链 id。页面筛到某条链时用这一份，不筛时用上面那份全局的。
+        "chainRisk": by_chain_risk,
         # 按国别的暴露面。edges 与 filerCount 是两个不同的读数，页面两个都印
         # ——只印一个会把风险读反（见 country_exposure 的说明）。
         "countryExposure": exposure,
