@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "whats-latest",
-  "generatedAt": "2026-09-05T20:17:53Z",
+  "generatedAt": "2026-09-06T04:34:42Z",
   "status": "healthy",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-09-05T20:17:53Z",
-  "lastSuccessfulAt": "2026-09-05T20:17:53Z",
+  "lastAttemptAt": "2026-09-06T04:34:42Z",
+  "lastSuccessfulAt": "2026-09-06T04:34:42Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-09-05T20:17:53Z",
+  "publishedSnapshotAt": "2026-09-06T04:34:42Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -45,8 +45,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-09-05T20:17:53Z",
-      "lastSuccessAt": "2026-09-05T20:17:53Z"
+      "lastAttemptAt": "2026-09-06T04:34:42Z",
+      "lastSuccessAt": "2026-09-06T04:34:42Z"
     },
     {
       "id": "tech-news",
@@ -57,8 +57,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-09-05T20:17:53Z",
-      "lastSuccessAt": "2026-09-05T20:17:53Z"
+      "lastAttemptAt": "2026-09-06T04:34:42Z",
+      "lastSuccessAt": "2026-09-06T04:34:42Z"
     },
     {
       "id": "ent-news",
@@ -69,8 +69,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-09-05T20:17:53Z",
-      "lastSuccessAt": "2026-09-05T20:17:53Z"
+      "lastAttemptAt": "2026-09-06T04:34:42Z",
+      "lastSuccessAt": "2026-09-06T04:34:42Z"
     },
     {
       "id": "sports-news",
@@ -81,8 +81,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-09-05T20:17:53Z",
-      "lastSuccessAt": "2026-09-05T20:17:53Z"
+      "lastAttemptAt": "2026-09-06T04:34:42Z",
+      "lastSuccessAt": "2026-09-06T04:34:42Z"
     },
     {
       "id": "world-news",
@@ -93,8 +93,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-09-05T20:17:53Z",
-      "lastSuccessAt": "2026-09-05T20:17:53Z"
+      "lastAttemptAt": "2026-09-06T04:34:42Z",
+      "lastSuccessAt": "2026-09-06T04:34:42Z"
     },
     {
       "id": "market-quotes",
@@ -105,8 +105,8 @@
       "status": "healthy",
       "mode": "fresh",
       "published": true,
-      "lastAttemptAt": "2026-09-05T20:17:53Z",
-      "lastSuccessAt": "2026-09-05T20:17:53Z"
+      "lastAttemptAt": "2026-09-06T04:34:42Z",
+      "lastSuccessAt": "2026-09-06T04:34:42Z"
     }
   ],
   "policy": {
