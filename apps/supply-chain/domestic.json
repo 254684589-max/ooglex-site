@@ -102098,28 +102098,28 @@
   "note": "报 10-K 的美国本土发行人中，标普 500 之外的那些。标普那批本来就是这一批的子集，已在池中、且有站内报价，按 CIK 与代码双重跳过，绝不覆盖。排除 SIC 6770 空白支票公司（定义上不是经营实体）与没有 SIC 的（环节与产业链判不出来，接不进模型）。**这一池只增加节点、不增加关系边**——Form SD 是冶炼厂边的唯一来源，逐家由 filesFormSd 标出；公司家数变多不表示关系覆盖变好。",
   "quarters": [
     {
-      "bytes": 2978742,
+      "bytes": 2977145,
       "gzip": true,
       "quarter": "2026QTR3",
       "rows": 236914,
       "unparsed": 7
     },
     {
-      "bytes": 4272410,
+      "bytes": 4271542,
       "gzip": true,
       "quarter": "2026QTR2",
       "rows": 353168,
       "unparsed": 7
     },
     {
-      "bytes": 4438088,
+      "bytes": 4439595,
       "gzip": true,
       "quarter": "2026QTR1",
       "rows": 370055,
       "unparsed": 7
     },
     {
-      "bytes": 3399461,
+      "bytes": 3400259,
       "gzip": true,
       "quarter": "2025QTR4",
       "rows": 276466,
@@ -102127,5 +102127,5 @@
     }
   ],
   "source": "SEC EDGAR 季度全量索引 + submissions（公共领域）",
-  "updatedAt": "2026-09-06T13:50:44Z"
+  "updatedAt": "2026-09-06T23:38:19Z"
 }

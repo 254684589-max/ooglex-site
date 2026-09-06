@@ -30288,28 +30288,28 @@
   "note": "在美上市的外国私人发行人（报 20-F／40-F）全体，不再限于同时报 Form SD 的那一批。**多收的这些只增加节点、不增加关系边**——Form SD 是冶炼厂边的唯一来源，不报 SD 的公司没有边是规则不适用，不是抽取失败，逐家由 filesFormSd 标出。因此公司家数变多不表示关系覆盖变好，页面必须把两者分开说。按 CIK 去重，主代码按交易所优先级选定，与标普池撞码的一律跳过而不是覆盖。",
   "quarters": [
     {
-      "bytes": 2978742,
+      "bytes": 2977145,
       "gzip": true,
       "quarter": "2026QTR3",
       "rows": 236914,
       "unparsed": 7
     },
     {
-      "bytes": 4272410,
+      "bytes": 4271542,
       "gzip": true,
       "quarter": "2026QTR2",
       "rows": 353168,
       "unparsed": 7
     },
     {
-      "bytes": 4438088,
+      "bytes": 4439595,
       "gzip": true,
       "quarter": "2026QTR1",
       "rows": 370055,
       "unparsed": 7
     },
     {
-      "bytes": 3399461,
+      "bytes": 3400259,
       "gzip": true,
       "quarter": "2025QTR4",
       "rows": 276466,
@@ -30634,5 +30634,5 @@
       "stateOfIncorporationDescription": ""
     }
   },
-  "updatedAt": "2026-09-06T13:27:22Z"
+  "updatedAt": "2026-09-06T23:15:20Z"
 }

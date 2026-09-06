@@ -1,8 +1,8 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-06T17:55:05Z",
-  "asOf": "2026-09-04",
+  "updatedAt": "2026-09-06T23:38:22Z",
+  "asOf": "2026-09-06",
   "frequency": "daily",
   "status": "ok",
   "source": "站内 apps/companies/sp500.json",
@@ -15634,6 +15634,12 @@
         "poolCompanies": 0
       },
       {
+        "country": "刚果（金）",
+        "smelters": 3,
+        "inPool": 0,
+        "poolCompanies": 0
+      },
+      {
         "country": "加纳",
         "smelters": 3,
         "inPool": 0,
@@ -15736,24 +15742,6 @@
         "poolCompanies": 0
       },
       {
-        "country": "CONGO, DEMOCRATIC REPUBLIC OF THE",
-        "smelters": 1,
-        "inPool": 0,
-        "poolCompanies": 0
-      },
-      {
-        "country": "Congo, Democratic Republic of the",
-        "smelters": 1,
-        "inPool": 0,
-        "poolCompanies": 0
-      },
-      {
-        "country": "刚果（金）",
-        "smelters": 1,
-        "inPool": 0,
-        "poolCompanies": 0
-      },
-      {
         "country": "斯洛伐克",
         "smelters": 1,
         "inPool": 0,
@@ -15783,7 +15771,7 @@
     "basis": "多德-弗兰克法案 §1502 / SEC Rule 13p-1 界定的受涵盖国家",
     "countries": 10,
     "countriesSeen": 6,
-    "smelters": 21,
+    "smelters": 23,
     "edges": 582,
     "filerCount": 104,
     "filers": [
@@ -15897,7 +15885,7 @@
         "country": "刚果（金）",
         "edges": 92,
         "filerCount": 91,
-        "smelters": 1
+        "smelters": 3
       },
       {
         "country": "安哥拉",
@@ -320384,7 +320372,7 @@
     }
   },
   "stagePerformance": {
-    "asOf": "2026-09-04",
+    "asOf": "2026-09-06",
     "source": "站内 apps/companies/sp500.json",
     "method": "按价值链环节汇总当日涨跌；等权与市值加权并列给出，不互相冒充。行情值沿用站内成分股文件，未重算。",
     "stages": [
