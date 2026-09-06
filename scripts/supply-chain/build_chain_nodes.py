@@ -338,6 +338,65 @@ def smelter_reach(registry: dict, nodes: list[dict]) -> dict:
     }
 
 
+# 多德-弗兰克法案 §1502 与 SEC Rule 13p-1 定义的「受涵盖国家」：
+# 刚果民主共和国，及与之接壤的九国。**这是法定清单，不是本板块的判断**——
+# Form SD 这套披露制度就是为这十个国家立的，公司之所以要逐家列出冶炼厂，
+# 正是为了说明自己的钽锡钨金有没有为这一地区的武装冲突提供资金。
+#
+# 页面此前一个字都没提。读者看到「卢旺达 10 家厂」，不知道那正是这套制度
+# 盯着的地方；也就无从理解这份名单为什么存在。
+#
+# **要紧的是别把它读成指控。** 一座厂出现在某公司的名单里，说明的是
+# 「该公司的尽责调查覆盖到了它」——那是制度在运转，不是「这家公司用了
+# 冲突矿产」。RMI 另有合规冶炼厂认证，认证过的厂同样在受涵盖国家里。
+COVERED_COUNTRIES = ("刚果（金）", "安哥拉", "布隆迪", "中非", "刚果（布）",
+                     "卢旺达", "南苏丹", "坦桑尼亚", "乌干达", "赞比亚")
+COVERED_BASIS = "多德-弗兰克法案 §1502 / SEC Rule 13p-1 界定的受涵盖国家"
+
+
+def covered_country_exposure(bundles: dict[str, dict], registry: dict) -> dict:
+    """受涵盖国家的暴露面。口径与国别暴露一致，只是把范围收到法定十国。"""
+    covered = set(COVERED_COUNTRIES)
+    smelters: dict[str, int] = {}
+    for entry in (registry or {}).values():
+        country = entry.get("country")
+        if country in covered:
+            smelters[country] = smelters.get(country, 0) + 1
+    per_country: dict[str, dict] = {}
+    filers: set[str] = set()
+    edges_total = 0
+    for symbol, bundle in (bundles or {}).items():
+        for edge in bundle.get("edges") or []:
+            country = edge.get("country")
+            if country not in covered:
+                continue
+            row = per_country.setdefault(country, {"country": country, "edges": 0,
+                                                   "filers": set()})
+            row["edges"] += 1
+            row["filers"].add(symbol)
+            filers.add(symbol)
+            edges_total += 1
+    rows = []
+    for country in COVERED_COUNTRIES:            # 按法定清单顺序，不按数量排
+        row = per_country.get(country)
+        rows.append({
+            "country": country,
+            "edges": (row or {}).get("edges", 0),
+            "filerCount": len((row or {}).get("filers", ())),
+            "smelters": smelters.get(country, 0),
+        })
+    return {
+        "basis": COVERED_BASIS,
+        "countries": len(COVERED_COUNTRIES),
+        "countriesSeen": sum(1 for r in rows if r["edges"]),
+        "smelters": sum(smelters.values()),
+        "edges": edges_total,
+        "filerCount": len(filers),
+        "filers": sorted(filers),
+        "byCountry": rows,
+    }
+
+
 def country_exposure(bundles: dict[str, dict], listed: int) -> list[dict]:
     """按冶炼厂所在国别，算两个**含义完全不同**的数。
 
@@ -1156,6 +1215,7 @@ def build() -> None:
     # 这张图在哪儿断掉：另一端的 1,767 家冶炼厂里有多少是池内公司。
     # 见 smelter_reach() 的注释——这是口径说明，不是缺陷报告。
     reach = smelter_reach(registry if peers_module else {}, nodes)
+    covered = covered_country_exposure(edge_files, registry if peers_module else {})
 
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     by_stage: dict[str, int] = {}
@@ -1246,6 +1306,10 @@ def build() -> None:
         # 链条另一端的可达性。**这是这份数据最重要的一条边界读数**：
         # 页面靠它说清「点得进去的那一端有多大」，不必让读者去猜。
         "smelterReach": reach,
+        # 受涵盖国家（法定十国）。**这套数据存在的理由就写在这一份里**：
+        # 没有 §1502 就没有 Form SD，也就没有这张图。页面必须标出来，
+        # 同时必须写清「出现在名单里 ≠ 用了冲突矿产」。
+        "coveredCountries": covered,
         "nodes": nodes,
         # 每家一个文件，公司页按需拉。索引里带出处链接，不必先下文件才知道有没有边。
         "edgeIndex": edge_index,

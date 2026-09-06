@@ -981,6 +981,101 @@ def check_form_sd_flag(payload: dict, errors: list[str]) -> None:
           f"其中被判「无申报」的 {len(bad)} 家")
 
 
+# 多德-弗兰克法案 §1502 / SEC Rule 13p-1 的受涵盖国家：刚果民主共和国
+# 及与之接壤的九国。**这里独立写一份，不从构建脚本 import。** 共用一份常量
+# 的话，改错了两边一起错、校验照样通过；分开写，任何一侧的改动都要在两个
+# 地方同时说明理由才过得去——法定清单值得这个代价。
+COVERED_STATUTORY = frozenset({
+    "刚果（金）", "安哥拉", "布隆迪", "中非", "刚果（布）",
+    "卢旺达", "南苏丹", "坦桑尼亚", "乌干达", "赞比亚",
+})
+
+
+def load_bundles(payload: dict) -> dict:
+    """按 edgeIndex 读出全部边文件。读不出来的跳过——check_edges 已经报过了，
+    这里再报一遍只会让同一个问题刷两屏。"""
+    out: dict = {}
+    for symbol in (payload.get("edgeIndex") or {}):
+        path = os.path.join(EDGES_DIR, f"{symbol}.json")
+        try:
+            with open(path, encoding="utf-8") as handle:
+                out[symbol] = json.load(handle)
+        except (OSError, ValueError):
+            continue
+    return out
+
+
+def check_covered_countries(payload: dict, bundles: dict, errors: list[str]) -> None:
+    """受涵盖国家：这套数据的法定理由，清单不许悄悄变。"""
+    cc = payload.get("coveredCountries")
+    if not isinstance(cc, dict):
+        fail(errors, "缺少 coveredCountries——Form SD 的立法依据是 §1502，"
+                     "页面靠这一份说明这批数据为什么存在")
+        return
+    rows = cc.get("byCountry") or []
+    listed = {r.get("country") for r in rows}
+    extra = listed - COVERED_STATUTORY
+    missing = COVERED_STATUTORY - listed
+    if extra:
+        fail(errors, f"coveredCountries 多了非法定国家 {sorted(extra)}——"
+                     f"这是 §1502 的法定清单，不能自行增补")
+    if missing:
+        fail(errors, f"coveredCountries 少了法定国家 {sorted(missing)}——"
+                     f"数据里没出现也要列出来，读者才知道清单有十国")
+    if cc.get("countries") != len(COVERED_STATUTORY):
+        fail(errors, f"coveredCountries.countries = {cc.get('countries')}，"
+                     f"法定是 {len(COVERED_STATUTORY)} 国")
+    # 逐国比对边数与申报人数，口径与 countryExposure 必须一致。
+    truth_edges: dict[str, int] = {}
+    truth_filers: dict[str, set] = {}
+    for symbol, bundle in (bundles or {}).items():
+        for edge in bundle.get("edges") or []:
+            country = edge.get("country")
+            if country in COVERED_STATUTORY:
+                truth_edges[country] = truth_edges.get(country, 0) + 1
+                truth_filers.setdefault(country, set()).add(symbol)
+    for row in rows:
+        name = row.get("country")
+        if row.get("edges") != truth_edges.get(name, 0):
+            fail(errors, f"coveredCountries[{name}].edges = {row.get('edges')}，"
+                         f"实际 {truth_edges.get(name, 0)}")
+        if row.get("filerCount") != len(truth_filers.get(name, ())):
+            fail(errors, f"coveredCountries[{name}].filerCount = "
+                         f"{row.get('filerCount')}，实际 "
+                         f"{len(truth_filers.get(name, ()))}")
+    if cc.get("edges") != sum(truth_edges.values()):
+        fail(errors, f"coveredCountries.edges = {cc.get('edges')}，"
+                     f"实际 {sum(truth_edges.values())}")
+    if not str(cc.get("basis") or "").strip():
+        fail(errors, "coveredCountries.basis 为空——法定依据必须随数据发布，"
+                     "否则页面无从说明这十国凭什么单列")
+    print(f"[OK] 受涵盖国家：法定 {cc.get('countries')} 国，本轮数据出现 "
+          f"{cc.get('countriesSeen')} 国 · 冶炼厂 {cc.get('smelters')} 家 · "
+          f"关系 {cc.get('edges')} 条 · 申报人 {cc.get('filerCount')} 家")
+
+
+def check_country_names(bundles: dict, errors: list[str]) -> None:
+    """**没有一个国别可以带着英文原文发布。**
+
+    `match_country` 有一条「认得出是国家但没有译名，照原文写」的分支，
+    设计上是诚实的兜底。但它一旦真的被走到，页面上就会出现
+    "CONGO, DEMOCRATIC REPUBLIC OF THE" 这样的行——而且同一个国家的四种
+    大小写写法各算一行，刚果（金）因此在国别榜上被拆开，哪一行都不排名。
+
+    实测就是这么发生的：75 条边、5 种写法，全是受涵盖国家。所以兜底保留，
+    但**发布侧一条都不许有**：真出现了，就该去补国别表，而不是让它上线。
+    """
+    seen: dict[str, int] = {}
+    for bundle in (bundles or {}).values():
+        for edge in bundle.get("edges") or []:
+            country = edge.get("country")
+            if country and not re.search(r"[一-鿿]", str(country)):
+                seen[country] = seen.get(country, 0) + 1
+    for name, count in sorted(seen.items(), key=lambda kv: -kv[1]):
+        fail(errors, f"国别「{name}」{count} 条带着英文原文发布——"
+                     f"去 form_sd_parse.COUNTRIES 补这个写法，别让它上页面")
+
+
 def check_smelter_reach(payload: dict, errors: list[str]) -> None:
     """链条另一端的可达性读数——**这是这份数据的边界，不能悄悄消失**。
 
@@ -1106,6 +1201,9 @@ def main() -> int:
     check_form_sd_flag(payload, errors)
     check_chain_risk(payload, errors)
     check_smelter_reach(payload, errors)
+    bundles = load_bundles(payload)
+    check_covered_countries(payload, bundles, errors)
+    check_country_names(bundles, errors)
     check_no_conflict_markers(errors)
     smelters = check_smelters(errors, edge_count)
     check_health(errors, len(payload.get("nodes") or []))

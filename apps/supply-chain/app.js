@@ -1591,6 +1591,7 @@
     renderFlow(d);
     renderConcentration(d);
     renderExposure(d);
+    renderCovered(d);
   }
 
   function riskScope(d) {
@@ -1634,12 +1635,78 @@
     return null;
   }
 
+  // 多德-弗兰克 §1502 / SEC Rule 13p-1 的受涵盖国家。**清单来自数据，
+  // 不在页面里硬编**——法定清单改了（比如加一国），改构建脚本一处即可，
+  // 页面不会留下一份对不上的旧名单。这正是第十三轮 head 里那句
+  // 「标普500公司」栽的跟头：写死的清单不会自己更新。
+  function coveredSet(d) {
+    var rows = ((d.coveredCountries || {}).byCountry) || [];
+    var set = {};
+    rows.forEach(function (r) { if (r.country) set[r.country] = true; });
+    return set;
+  }
+
+  function renderCovered(d) {
+    var sec = $("cov1502");
+    if (!sec) return;
+    var cc = d.coveredCountries || {};
+    var rows = (cc.byCountry || []).filter(function (r) {
+      return r.edges || r.smelters;          // 法定十国里数据中出现过的
+    });
+    if (!rows.length) { sec.hidden = true; return; }
+    sec.hidden = false;
+
+    var listed = (d.coverage || {}).nodesWithEdges || 0;
+    setText($("cov1502-lead"),
+      "本板块的关系数据全部来自 Form SD 冲突矿产申报，而这套申报制度的立法"
+      + "依据是" + (cc.basis || "多德-弗兰克法案 §1502")
+      + "：刚果（金）及九个接壤国。公司之所以要逐家列出冶炼厂，正是为了说明"
+      + "自己的钽、锡、钨、金有没有为这一地区的武装冲突提供资金。"
+      + "法定 " + (cc.countries || 10) + " 国里，本轮数据中出现了 "
+      + (cc.countriesSeen || rows.length) + " 国：登记表里有 "
+      + fmt(cc.smelters || 0) + " 家冶炼厂，被 " + fmt(cc.filerCount || 0)
+      + " 家申报人（共 " + fmt(listed) + " 家有名单）列入，合计 "
+      + fmt(cc.edges || 0) + " 条。");
+
+    var host = $("cov1502-rows");
+    host.textContent = "";
+    rows.forEach(function (r) {
+      var line = el("div", "cvrow");
+      line.appendChild(el("span", "nm", r.country));
+      line.appendChild(el("span", "cv", "受涵盖国"));
+      var n = el("span", "n");
+      n.appendChild(document.createTextNode(fmt(r.filerCount)));
+      n.appendChild(el("s", null, " 家申报人"));
+      line.appendChild(n);
+      var ed = el("span", "ed");
+      ed.appendChild(document.createTextNode(fmt(r.edges)));
+      ed.appendChild(el("s", null, " 条"));
+      line.appendChild(ed);
+      var sm = el("span", "sm");
+      sm.appendChild(document.createTextNode(fmt(r.smelters)));
+      sm.appendChild(el("s", null, " 家厂"));
+      line.appendChild(sm);
+      line.title = r.country + "：登记表里 " + r.smelters + " 家冶炼厂；"
+        + r.filerCount + " 家申报人的名单里出现过，合计 " + r.edges + " 条。"
+        + "「厂」数来自冶炼厂登记表，「条」数来自各家申报名单，两者分母不同。";
+      host.appendChild(line);
+    });
+
+    // **这一段是本屏最要紧的一句话。** 没有它，整屏会被读成指控。
+    setText($("cov1502-foot"),
+"出现在名单里不等于该公司使用了冲突矿产，恰恰相反：Form SD 要求的是"
+      + "尽责调查，一座厂被列出来，说明这家公司的调查覆盖到了它——那是制度"
+      + "在运转。受涵盖国家里同样有通过 RMI 合规认证的冶炼厂。"
+      + "本屏只回答「这十个国家在这批申报里出现了多少」，不评价任何一家公司。");
+  }
+
   function renderExposure(d) {
     var sec = $("expsec");
     if (!sec) return;
     // 与 upstreamConcentration 同级放在顶层，不在 coverage 里——
     // 两个同类的榜单放两个地方，迟早有人（包括我自己）读错路径。
     var sc = riskScope(d);
+    var COVERED = coveredSet(d);
     var rows = sc.exposure;
     if (!rows.length) { sec.hidden = true; return; }
     sec.hidden = false;
@@ -1676,6 +1743,14 @@
       // 它们是民营精炼厂与非铁金属集团，本来就不上市。
       // 不写这一格，读者会以为「暴露在印尼」还能顺着点下去；写了才看得出
       // 这份数据到冶炼厂这一层为止。
+      // 受涵盖国的行就地标出来。读者顺着榜单看到卢旺达时，不必先滚到
+      // 下一屏才知道这一行的性质与「日本 107 家厂」不是一回事。
+      if (COVERED[r.country]) {
+        var cv = el("span", "cv", "受涵盖国");
+        cv.title = "多德-弗兰克 §1502 界定的受涵盖国家——这套申报制度就是"
+          + "为这十国立的。出现在名单里不等于用了冲突矿产。";
+        line.appendChild(cv);
+      }
       var rc = reachOf(d, r.country);
       if (rc) {
         var rr = el("span", "rch");

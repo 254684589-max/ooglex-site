@@ -115,6 +115,13 @@ jobs:
 
       # 冶炼厂中文译名表。与带出处的申报数据分开发布——边文件里是申报原文，
       # 译名是我们加的标注，混在一起会让「哪些是原文」分不清。
+      # 抽取器只在申报季跑，而这一步是纯本地文件变换（不联网）：把边文件里
+      # 漏译的国别过一遍国别表，再按 RMI CID 从登记表回填缺失的国别。
+      # **必须在抽取器之后、构建之前**——构建读的是这些边文件。
+      # 幂等：没有可改的就零改动，季外照跑不出问题。
+      - name: Backfill smelter country on published edges
+        run: python scripts/supply-chain/backfill_edge_country.py
+
       - name: Build smelter Chinese name table
         run: python scripts/supply-chain/build_smelter_names_zh.py
 

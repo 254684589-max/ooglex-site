@@ -192,9 +192,51 @@ KNOWN_COUNTRIES = {
     "western sahara", "yemen", "zambia", "zimbabwe",
 }
 
+def _flat(text: str) -> str:
+    """去标点、压空白、小写。比对前的统一形态。"""
+    key = re.sub(r"[^a-z ]", " ", str(text or "").lower())
+    return re.sub(r"\s+", " ", key).strip()
+
+
+def _inverted(text: str) -> str:
+    """把逗号倒装式折成正读："Congo, Democratic Republic of the" → 正读。
+
+    **这是第二次栽在倒装式上了。** 上一次是 EDGAR 的
+    "Virgin Islands, British"，63 家公司悄悄没匹配上；这次是申报里的
+    "CONGO, DEMOCRATIC REPUBLIC OF THE"——表里存的是
+    "congo, the democratic republic of the"（逗号后多一个 the），去标点后
+    两串差一个词，于是落到「认得出是国家但没有译名」那条分支，把英文原文
+    发到了页面上。刚果（金）因此在国别榜上被拆成 5 行，哪一行都不排名。
+
+    而刚果（金）不是随便哪个国家：**Form SD 这套披露制度就是为它立的**。
+
+    倒装折叠对**表和查询两边同时做**才管用：
+      · 查询 "congo, democratic republic of the" 折成 "democratic republic
+        of the congo"，命中表里第 92 行；
+      · 表里 "tanzania, united republic of" 折成 "united republic of
+        tanzania"，命中申报里那种写法。
+    只折一边，两个方向各漏一半。
+    """
+    raw = str(text or "")
+    if "," not in raw:
+        return _flat(raw)
+    parts = [p.strip() for p in raw.split(",") if p.strip()]
+    return _flat(" ".join(reversed(parts)))
+
+
+def _index(pairs) -> dict:
+    """原形与倒装形都进索引；先到先得，不覆盖已有键。"""
+    out: dict = {}
+    for key, value in pairs:
+        for form in (_flat(key), _inverted(key)):
+            if form:
+                out.setdefault(form, value)
+    return out
+
+
 # 去掉标点后再比对，容忍 "Korea, Republic of" / "Korea Republic of" 之类差异
-_COUNTRY_KEYS = {re.sub(r"[^a-z ]", "", k): v for k, v in COUNTRIES.items()}
-_KNOWN_KEYS = {re.sub(r"[^a-z ]", "", k) for k in KNOWN_COUNTRIES}
+_COUNTRY_KEYS = _index(COUNTRIES.items())
+_KNOWN_KEYS = set(_index((k, k) for k in KNOWN_COUNTRIES))
 
 # 明显不是冶炼厂名的格子：表头、序号、空白
 _HEADER_WORDS = re.compile(
@@ -306,15 +348,17 @@ def match_country(text: str) -> tuple[str | None, str | None]:
     照原文写出来，比硬塞一个译名诚实，也比认不出（会被当成厂名）安全。
     """
     raw = (text or "").strip()
-    key = re.sub(r"[^a-z ]", " ", raw.lower())
-    key = re.sub(r"\s+", " ", key).strip()
+    key = _flat(raw)
     if not key or len(key) > 60:
         return None, None
-    hit = _COUNTRY_KEYS.get(key)
-    if hit:
-        return key, hit
-    if key in _KNOWN_KEYS:
-        return key, raw
+    # 原形与倒装形都试。命中哪一个都返回同一个规范键，下游不必关心写法。
+    for form in (key, _inverted(raw)):
+        hit = _COUNTRY_KEYS.get(form)
+        if hit:
+            return form, hit
+    for form in (key, _inverted(raw)):
+        if form in _KNOWN_KEYS:
+            return form, raw          # 认得出是国家但没有译名，照原文写
     return None, None
 
 

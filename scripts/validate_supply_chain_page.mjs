@@ -1049,6 +1049,90 @@ async function main() {
         });
         check(`国别暴露无横向溢出`, () => assert.ok(ex.overflow <= 1,
           `溢出 ${ex.overflow}px`));
+
+        /* 受涵盖国家。**这是本板块唯一一处法定口径**：没有多德-弗兰克
+           §1502 就没有 Form SD，也就没有这张图。此前页面一个字没提，
+           读者看到「卢旺达 10 家厂」不知道那正是这套制度盯着的地方。
+
+           两件事一起守：法定十国的清单不许在页面上被改动或漏印，以及
+           **那句「不等于用了冲突矿产」必须在**——少了它，整屏会被读成
+           对 104 家公司的指控，而数据根本不支持那个读法。 */
+        const CC = NODES.coveredCountries || {};
+        if ((CC.byCountry || []).length) {
+          const cv = await evaluate(`(() => {
+            const box = document.getElementById('cov1502');
+            if (!box || box.hidden) return { shown: false };
+            const rows = [...box.querySelectorAll('.cvrow')];
+            return {
+              shown: true,
+              rows: rows.map(r => ({
+                country: (r.querySelector('.nm') || {}).textContent || '',
+                filers: ((r.querySelector('.n') || {}).textContent || '')
+                  .replace(/[^0-9]/g, ''),
+                edges: ((r.querySelector('.ed') || {}).textContent || '')
+                  .replace(/[^0-9]/g, ''),
+                badge: !!(r.querySelector('.cv')
+                  && r.querySelector('.cv').getClientRects().length)
+              })),
+              lead: (document.getElementById('cov1502-lead') || {}).textContent || '',
+              foot: (document.getElementById('cov1502-foot') || {}).textContent || '',
+              // 国别暴露榜里被标记的行——标记要落在正确的行上，不能乱标
+              marked: [...document.querySelectorAll('#expo-rows .exprow')]
+                .filter(r => r.querySelector('.cv'))
+                .map(r => (r.querySelector('.nm') || {}).textContent || ''),
+              overflow: Math.max(0,
+                document.documentElement.scrollWidth - window.innerWidth)
+            };
+          })()`);
+          const SEEN = (CC.byCountry || []).filter(r => r.edges || r.smelters);
+          check(`受涵盖国家区块已渲染`, () => assert.ok(cv.shown,
+            "没渲染——这套数据的立法依据在页面上就消失了"));
+          check(`逐行等于数据（${SEEN.length} 个出现过的国家）`, () => {
+            assert.equal(cv.rows.length, SEEN.length,
+              `页面 ${cv.rows.length} 行，数据 ${SEEN.length} 行`);
+            const bad = [];
+            SEEN.forEach(w => {
+              const got = cv.rows.find(r => r.country === w.country);
+              if (!got) { bad.push(`${w.country} 未渲染`); return; }
+              if (got.edges !== String(w.edges))
+                bad.push(`${w.country} 条数「${got.edges}」应为 ${w.edges}`);
+              if (got.filers !== String(w.filerCount))
+                bad.push(`${w.country} 申报人「${got.filers}」应为 ${w.filerCount}`);
+            });
+            assert.equal(bad.length, 0, bad.join("；"));
+          });
+          check(`每行的「受涵盖国」标记看得见`, () => {
+            const blind = cv.rows.filter(r => !r.badge).length;
+            assert.equal(blind, 0,
+              `${blind}/${cv.rows.length} 行没有可见标记`);
+          });
+          check(`写明法定依据是 §1502`, () => {
+            assert.match(cv.lead, /1502/, `导语：${cv.lead.slice(0, 140)}`);
+            assert.ok(/刚果/.test(cv.lead),
+              `导语没点名刚果：${cv.lead.slice(0, 140)}`);
+          });
+          /* 这一条是本屏的底线。数据说的是「这些公司披露了这些厂」，
+             说成「这些公司用了冲突矿产」就是凭同一份数据讲了另一件事。 */
+          check(`不把「出现在名单里」说成使用了冲突矿产`, () => {
+            assert.match(cv.foot, /不等于.*冲突矿产|不等于该公司使用/,
+              `页脚缺少这句界线：${cv.foot.slice(0, 160)}`);
+            assert.match(cv.foot, /尽责调查/,
+              `没说清 Form SD 要求的是尽责调查：${cv.foot.slice(0, 160)}`);
+          });
+          check(`国别暴露榜上的受涵盖国被就地标出`, () => {
+            const want = new Set(SEEN.map(r => r.country));
+            const wrong = cv.marked.filter(c => !want.has(c));
+            assert.equal(wrong.length, 0,
+              `标错了行：${wrong.join("、")}——非受涵盖国被标成了受涵盖国`);
+            const shownCovered = ex.names.filter(c => want.has(c));
+            assert.deepEqual(cv.marked.slice().sort(),
+              shownCovered.slice().sort(),
+              `榜上出现的受涵盖国 ${shownCovered.join("、")}，`
+              + `标了 ${cv.marked.join("、") || "（无）"}`);
+          });
+          check(`受涵盖国家区块无横向溢出`, () => assert.ok(cv.overflow <= 1,
+            `溢出 ${cv.overflow}px`));
+        }
       } else {
         console.log("  [--] 国别暴露：本轮数据还没带 countryExposure，跳过"
           + "（数据流水线跑过之后这一段自动生效）");
@@ -1944,6 +2028,69 @@ async function main() {
       });
       check(`筛选后无横向溢出`, () => assert.ok(flt.overflow <= 1,
         `溢出 ${flt.overflow}px`));
+    }
+
+    /* 按 CID 回填的国别。丰田、飞利浦、安波福那几份申报的国别列没被抽取器
+       认出来，98% 的条目原本是空的——`parse.countryRatio` 早记着 0.02，
+       而页面照印一屏「未写明」，一个字不解释。
+
+       现在按 RMI CID 从登记表补上了（同一个编号就是同一座厂），但**那不是
+       本份申报写的**，所以每条补过的都要标出来。守两件事：补回来的国别
+       真的显示了，以及那一格的来源标记看得见——不标的话读者会以为丰田
+       那份申报里真写了国别。 */
+    let BACKFILLED = null;
+    for (const sym of Object.keys(NODES.edgeIndex || {})) {
+      let bundle;
+      try {
+        bundle = JSON.parse(await readFile(
+          path.join(ROOT, `apps/supply-chain/edges/${sym}.json`), "utf8"));
+      } catch { continue; }
+      const n = (bundle.edges || [])
+        .filter(e => e.countryBasis === "rmi-registry").length;
+      // 取补得最多的那家，样本大、断言才有分量
+      if (n && (!BACKFILLED || n > BACKFILLED.n)) BACKFILLED = { symbol: sym, n };
+    }
+    if (BACKFILLED) {
+      console.log(`\n── 公司视图 · 国别按 CID 回填（${BACKFILLED.symbol}，`
+        + `${BACKFILLED.n} 条）──`);
+      await client.send("Page.navigate", { url: `http://127.0.0.1:${port}`
+        + `/apps/supply-chain/company.html?symbol=${BACKFILLED.symbol}` }, sessionId);
+      const bf = await evaluate(`new Promise((done) => {
+        const deadline = Date.now() + 20000;
+        (function poll() {
+          const items = document.querySelectorAll('#smelters .grid .meta');
+          if (items.length) {
+            const marks = [...document.querySelectorAll('#smelters .grid .meta .cid')]
+              .filter(e => (e.textContent || '').indexOf('登记表') >= 0);
+            return done({
+              rows: items.length,
+              marks: marks.length,
+              seen: marks.filter(e => e.getClientRects().length > 0).length,
+              titled: marks.filter(e => /RMI|登记表/.test(e.title || '')).length,
+              unknown: [...items].filter(
+                e => /国别未写明/.test(e.textContent || '')).length,
+              overflow: Math.max(0,
+                document.documentElement.scrollWidth - window.innerWidth)
+            });
+          }
+          if (Date.now() > deadline) return done({ rows: 0 });
+          setTimeout(poll, 120);
+        })();
+      })`);
+      check(`回填过的公司页真的印出了国别`, () => {
+        assert.ok(bf.rows > 0, "冶炼厂清单没渲染");
+        assert.ok(bf.unknown < bf.rows,
+          `${bf.rows} 条里 ${bf.unknown} 条仍是「国别未写明」——回填没生效`);
+      });
+      check(`补来的国别标出依据，且标记看得见`, () => {
+        assert.ok(bf.marks > 0, "一条都没标「国别据登记表」——"
+          + "读者会以为这是本份申报写的");
+        assert.equal(bf.marks - bf.seen, 0,
+          `${bf.marks - bf.seen} 个标记有文本却没有布局盒`);
+        assert.equal(bf.marks - bf.titled, 0, "标记没有说明来源的悬浮文字");
+      });
+      check(`回填后公司页无横向溢出`, () => assert.ok(bf.overflow <= 1,
+        `溢出 ${bf.overflow}px`));
     }
 
     // 外国私人发行人这一池：没有市值、没有板块。页面必须说清那是口径如此，
