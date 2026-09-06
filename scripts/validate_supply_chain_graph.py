@@ -921,7 +921,16 @@ def check_chain_risk(payload: dict, errors: list[str]) -> None:
                 break
         if len(row.get("exposure") or []) > (row.get("exposureTotal") or 0):
             fail(errors, f"chainRisk[{cid}] 列出的国别比总数还多")
-    print(f"按链风险：{len(risk)} 条链，分母与集中度口径均与全局一致")
+        # 按链的流向：带子加起来必须等于这条链的关系数。对不上就说明桑基画的
+        # 是另一批边——而图上看不出来，读者只会以为这条链就这么点流量。
+        flow = row.get("flow") or {}
+        if flow:
+            drawn = sum(st.get("total") or 0 for st in (flow.get("stages") or []))
+            if drawn != row.get("edges"):
+                fail(errors, f"chainRisk[{cid}].flow 带子合计 {drawn} ≠ "
+                             f"这条链的关系数 {row.get('edges')}")
+    with_flow = sum(1 for r in risk.values() if r.get("flow"))
+    print(f"按链风险：{len(risk)} 条链（{with_flow} 条带流向图），分母、集中度与流向合计均与全局一致")
 
 
 def main() -> int:

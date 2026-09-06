@@ -634,11 +634,20 @@ async function main() {
             "再点一次没有回到全池——筛选是可逆的，回不去就是状态泄漏");
           assert.equal(rk.restored.expo, rk.before.expo, "国别暴露没回到全池");
         });
-        check(`按链的流向图照实说它仍是全池口径，不冒充这条链`, () => {
-          assert.match(rk.after.flow, /仍是全池口径/,
-            `流向图没声明口径：${rk.after.flow.slice(0, 120)}`);
+        /* 流向桑基也按链画。上一轮没有按链的版本，只能在页面上声明「这张图
+           仍是全池口径」——照实说不算错，但那是缺口不是终点。现在按链预算了
+           （24 条链共 81KB），断言从「必须声明是全池」翻成「必须画这条链自己的」：
+           带子总数要等于这条链的关系数，不能还是 31,320。 */
+        check(`流向图按链重画，总数等于这条链的关系数`, () => {
           assert.ok(rk.after.flow.includes(String(RISK.edges)),
-            `没给出这条链自己的关系数 ${RISK.edges}：${rk.after.flow.slice(0, 120)}`);
+            `没印这条链的关系数 ${RISK.edges}：${rk.after.flow.slice(0, 130)}`);
+          assert.ok(!/仍是全池口径/.test(rk.after.flow),
+            `还在声明「仍是全池口径」，说明没接上按链的流向：${rk.after.flow.slice(0, 130)}`);
+          const all = String((NODES.coverage || {}).edgesTotal || 0);
+          assert.ok(!rk.after.flow.includes(all),
+            `流向图还在印全池的 ${all} 条：${rk.after.flow.slice(0, 130)}`);
+          assert.ok(rk.after.flow.indexOf(PICKED.label) >= 0,
+            `没写清当前是哪条链：${rk.after.flow.slice(0, 130)}`);
         });
       }
 
@@ -1825,6 +1834,55 @@ async function main() {
       !fpi.facts.includes("市值"), `实际：${fpi.facts.slice(0, 80)}`));
     check(`外国发行人页无横向溢出`, () => assert.ok(fpi.overflow <= 1,
       `溢出 ${fpi.overflow}px`));
+
+    /* 注册在离岸法域的那一批（1,193 家里 422 家注册地 ≠ 经营地）。
+
+       **这一段守的是两个页面对同一家公司说同一句话。** 总览页的国别汇总改用
+       经营地之后（开曼 340 家折回中国 236、新加坡 79…），公司页一度还只印
+       注册地——读者在总览页看到「中国 236 家」，点进来却写着「国别 开曼群岛」。
+       两处都印注册地至少是一致的错；一处经营地一处注册地是自相矛盾，更糟。
+
+       注册地不删：它是备案事实，而且「注册在开曼」本身是信息（控股架构）。
+       两个都印、各自标清是什么。 */
+    const OFFSHORE_ONE = (NODES.nodes || []).find(
+      (n) => n.offshoreIncorporation && n.geoCountry && n.geoCountry !== n.country);
+    if (OFFSHORE_ONE) {
+      console.log(`\n── 公司视图 · 离岸注册（${OFFSHORE_ONE.symbol}）──`);
+      await client.send("Page.navigate", { url:
+        `http://127.0.0.1:${port}/apps/supply-chain/company.html?symbol=${OFFSHORE_ONE.symbol}` },
+        sessionId);
+      const off = await evaluate(`new Promise((done) => {
+        const deadline = Date.now() + 20000;
+        (function poll() {
+          const st = document.getElementById('state');
+          if (st && st.hidden) {
+            return done({
+              facts: (document.getElementById('c-facts') || {}).textContent || "",
+              pool: (document.getElementById('c-pool') || {}).textContent || "",
+              overflow: Math.max(0,
+                document.documentElement.scrollWidth - window.innerWidth),
+            });
+          }
+          if (Date.now() > deadline) return done({ facts: "", pool: "", overflow: 0 });
+          setTimeout(poll, 120);
+        })();
+      })`);
+      check(`离岸注册的公司页同时印经营地与注册地`, () => {
+        assert.match(off.facts, /经营地/, `身份条没有「经营地」：${off.facts.slice(0, 90)}`);
+        assert.match(off.facts, /注册地/, `身份条没有「注册地」：${off.facts.slice(0, 90)}`);
+        assert.ok(off.facts.includes(OFFSHORE_ONE.geoCountry),
+          `没印经营地 ${OFFSHORE_ONE.geoCountry}：${off.facts.slice(0, 90)}`);
+        assert.ok(off.facts.includes(OFFSHORE_ONE.country),
+          `没印注册地 ${OFFSHORE_ONE.country}：${off.facts.slice(0, 90)}`);
+      });
+      check(`并说清为什么不拿注册地当国别，以及与总览页口径一致`, () => {
+        assert.match(off.pool, /只做登记|回答不了/, `实际：${off.pool.slice(0, 120)}`);
+        assert.match(off.pool, /总览页.*(一致|也是)/,
+          `没说清与总览页同口径：${off.pool.slice(0, 140)}`);
+      });
+      check(`离岸公司页无横向溢出`, () => assert.ok(off.overflow <= 1,
+        `溢出 ${off.overflow}px`));
+    }
 
     // 未知代码要有明确说明，不能白屏
     console.log("\n── 公司视图 · 未知代码 ──");

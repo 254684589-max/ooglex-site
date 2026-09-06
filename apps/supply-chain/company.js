@@ -118,13 +118,31 @@
     // 什么都不显示会让读者以为是数据缺失。如实说明它属于哪一池、
     // 国别取自哪个字段——「注册地」和「总部在哪」不是一回事。
     if (n.pool === "sec-foreign-issuer") {
-      if (n.country) {
+      // **经营地在前，注册地在后。**
+      //
+      // 总览页的地理汇总用的是经营地（开曼 340 家折回中国 236、新加坡 79…），
+      // 而这里此前只印注册地——422 家注册地≠经营地的公司，读者在总览页看到
+      // 「中国 236 家」，点进来却写着「国别 开曼群岛」。**两个页面对同一家
+      // 公司说了不同的话**，比两处都印注册地更糟。
+      //
+      // 注册地不删：它是 SEC 备案里的事实，而且「注册在开曼」本身是信息
+      // （控股架构）。两个都印、各自标清是什么，读者才能自己判断。
+      var offshore = n.offshoreIncorporation && n.geoCountry
+        && n.geoCountry !== n.country;
+      if (offshore) {
+        add("经营地", n.geoCountry + (n.operatingRegion ? "（" + n.operatingRegion + "）" : ""));
+        add("注册地", n.country);
+      } else if (n.country) {
         add("国别", n.country + (n.region ? "（" + n.region + "）" : ""));
       }
       if (n.exchange) add("上市地", n.exchange);
-      var why = n.countryBasis === "state-of-incorporation"
-        ? "国别取自 SEC 备案的注册地（依哪国法律成立），不等于总部所在地"
-        : (n.countryBasis ? "国别取自 SEC 备案地址" : "SEC 备案里没有可用的地区字段");
+      var why = offshore
+        ? "这家注册在" + n.country + "——开曼、英属维尔京、马绍尔、百慕大这类法域"
+          + "只做登记，注册地回答不了「在哪做生意」，所以按 SEC 备案的营业地址"
+          + "记为经营地；总览页的国别汇总用的也是经营地，两处一致"
+        : (n.countryBasis === "state-of-incorporation"
+            ? "国别取自 SEC 备案的注册地（依哪国法律成立），不等于总部所在地"
+            : (n.countryBasis ? "国别取自 SEC 备案地址" : "SEC 备案里没有可用的地区字段"));
       var tip = $("c-pool");
       if (tip) {
         tip.hidden = false;
