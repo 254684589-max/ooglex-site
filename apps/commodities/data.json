@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-05T21:37:20Z",
+  "updatedAt": "2026-09-06T21:37:41Z",
   "asOf": "2026-09-01",
   "frequency": "mixed",
   "status": "partial",
@@ -23,7 +23,7 @@
         "status": "ok",
         "source": "FRED / U.S. EIA",
         "asOf": "2026-09-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "daily",
         "note": "欧洲布伦特原油现货离岸价，与站内的 ICE 布油期货是现货与期货两个口径"
       }
@@ -44,7 +44,7 @@
         "status": "ok",
         "source": "FRED / U.S. EIA",
         "asOf": "2026-09-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "daily",
         "note": "美国天然气基准现货价，与站内 NYMEX 天然气期货口径不同"
       }
@@ -65,7 +65,7 @@
         "status": "ok",
         "source": "FRED / U.S. EIA",
         "asOf": "2026-09-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "daily",
         "note": "德州蒙贝尔维尤丙烷现货，天然气液（NGL）的基准价"
       }
@@ -86,7 +86,7 @@
         "status": "ok",
         "source": "FRED / U.S. EIA",
         "asOf": "2026-09-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "daily",
         "note": "美国墨西哥湾沿岸航空煤油现货价"
       }
@@ -107,7 +107,7 @@
         "status": "ok",
         "source": "FRED / U.S. EIA",
         "asOf": "2026-08-31",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "weekly",
         "note": "全美普通汽油零售均价，含税，是终端零售价而非批发或期货价"
       }
@@ -128,7 +128,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly",
         "note": "纽卡斯尔港动力煤离岸价"
       }
@@ -149,7 +149,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly",
         "note": "日本到岸液化天然气价格"
       }
@@ -170,7 +170,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly",
         "note": "八氧化三铀（U3O8）现货价"
       }
@@ -191,7 +191,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly",
         "note": "中国到岸铁矿石（含铁量62%）价格"
       }
@@ -212,7 +212,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly",
         "note": "伦敦金属交易所镍现货价"
       }
@@ -233,7 +233,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly",
         "note": "伦敦金属交易所锌现货价"
       }
@@ -254,7 +254,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly",
         "note": "伦敦金属交易所铅现货价"
       }
@@ -275,7 +275,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly",
         "note": "伦敦金属交易所锡现货价"
       }
@@ -296,7 +296,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly",
         "note": "马来西亚棕榈油价格"
       }
@@ -316,7 +316,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly"
       }
     },
@@ -335,7 +335,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly"
       }
     },
@@ -354,7 +354,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly"
       }
     },
@@ -373,7 +373,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly"
       }
     },
@@ -392,7 +392,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly"
       }
     },
@@ -411,7 +411,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly"
       }
     },
@@ -430,7 +430,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly"
       }
     },
@@ -449,7 +449,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly"
       }
     },
@@ -468,7 +468,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-05T21:37:20Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly"
       }
     },
@@ -481,14 +481,15 @@
       "changePct": -1.13,
       "previousAsOf": "2026-06-01",
       "frequency": "monthly",
-      "stale": false,
+      "stale": true,
       "dataMeta": {
-        "mode": "market",
-        "status": "ok",
+        "mode": "fallback",
+        "status": "stale",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
         "updatedAt": "2026-09-05T21:37:20Z",
-        "frequency": "monthly"
+        "frequency": "monthly",
+        "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
     },
     {
@@ -500,14 +501,15 @@
       "changePct": 0.29,
       "previousAsOf": "2026-06-01",
       "frequency": "monthly",
-      "stale": false,
+      "stale": true,
       "dataMeta": {
-        "mode": "market",
-        "status": "ok",
+        "mode": "fallback",
+        "status": "stale",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
         "updatedAt": "2026-09-05T21:37:20Z",
-        "frequency": "monthly"
+        "frequency": "monthly",
+        "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
     },
     {
@@ -519,14 +521,15 @@
       "changePct": -2.87,
       "previousAsOf": "2026-06-01",
       "frequency": "monthly",
-      "stale": false,
+      "stale": true,
       "dataMeta": {
-        "mode": "market",
-        "status": "ok",
+        "mode": "fallback",
+        "status": "stale",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
         "updatedAt": "2026-09-05T21:37:20Z",
-        "frequency": "monthly"
+        "frequency": "monthly",
+        "note": "本轮请求失败，沿用上一份逐条有效值。"
       }
     },
     {
@@ -578,15 +581,14 @@
       "changePct": -4.82,
       "previousAsOf": "2026-06-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-02T23:14:41Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-09-06T21:37:41Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -598,15 +600,14 @@
       "changePct": 7.87,
       "previousAsOf": "2026-06-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-02T23:14:41Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-09-06T21:37:41Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -618,15 +619,14 @@
       "changePct": 1.87,
       "previousAsOf": "2026-06-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-02T23:14:41Z",
-        "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "updatedAt": "2026-09-06T21:37:41Z",
+        "frequency": "monthly"
       }
     },
     {
@@ -639,15 +639,15 @@
       "changePct": -0.73,
       "previousAsOf": "2026-06-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-02T23:14:41Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "note": "涵盖能源与非能源初级商品的加权指数，是指数点位而不是任何单一商品价格"
       }
     },
     {
@@ -660,15 +660,15 @@
       "changePct": -0.05,
       "previousAsOf": "2026-06-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-02T23:14:41Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "note": "原油、天然气与煤炭的加权指数"
       }
     },
     {
@@ -681,15 +681,15 @@
       "changePct": -1.87,
       "previousAsOf": "2026-06-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-02T23:14:41Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "note": "基本金属与铁矿石的加权指数"
       }
     },
     {
@@ -702,15 +702,15 @@
       "changePct": 1.13,
       "previousAsOf": "2026-06-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-02T23:14:41Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "note": "谷物、植物油、肉类与海产的加权指数"
       }
     },
     {
@@ -723,15 +723,15 @@
       "changePct": -0.68,
       "previousAsOf": "2026-06-01",
       "frequency": "monthly",
-      "stale": true,
+      "stale": false,
       "dataMeta": {
-        "mode": "fallback",
-        "status": "stale",
+        "mode": "market",
+        "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-02T23:14:41Z",
+        "updatedAt": "2026-09-06T21:37:41Z",
         "frequency": "monthly",
-        "note": "本轮请求失败，沿用上一份逐条有效值。"
+        "note": "木材、棉花、羊毛与橡胶的加权指数"
       }
     }
   ],
@@ -740,8 +740,8 @@
     "status": "partial",
     "total": 36,
     "counts": {
-      "market": 26,
-      "fallback": 10,
+      "market": 31,
+      "fallback": 5,
       "estimate": 0,
       "unknown": 0,
       "unavailable": 0
