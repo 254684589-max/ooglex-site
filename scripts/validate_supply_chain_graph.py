@@ -583,13 +583,22 @@ PEERS_PATH = "apps/supply-chain/peers.json"
 _OVERSTATED = ("供应商", "合作", "伙伴", "客户", "供货")
 
 
-def check_pools(payload: dict, errors: list[str]) -> None:
-    """两个公司池的契约。守的是「哪些数适用于哪一批公司」不被混起来。
+# 允许的公司池。**加新池必须同时改这里**——2026-09-06 扩到第三池时忘了，
+# 数据全跑完（取数 27 分钟、抽取器 16 分钟）才被这道校验拦下，白跑一轮。
+# 拦得对：契约不认识的数据本来就不该发布。教训写在这儿，下次加池先看这行。
+POOLS = ("sp500", "sec-foreign-issuer", "sec-domestic-filer")
 
-    标普那 495 家有站内报价，外国私人发行人那批没有。把两批合成一个数说
-    「642 家」，读者会以为它们都有市值与当日涨跌——而市值合计与环节涨跌
-    的分母里根本没有后者。所以两个池必须分开计数，且**外国发行人的
-    marketCap 必须是 null，不能是 0**：0 会被市值加权当成真值算进去。
+# 没有站内报价的池。站内行情管道只覆盖标普成分股，其余两池一律 marketCap=None。
+POOLS_WITHOUT_QUOTE = ("sec-foreign-issuer", "sec-domestic-filer")
+
+
+def check_pools(payload: dict, errors: list[str]) -> None:
+    """三个公司池的契约。守的是「哪些数适用于哪一批公司」不被混起来。
+
+    标普那 495 家有站内报价，外国私人发行人与本土 10-K 申报人都没有。
+    把三批合成一个数，读者会以为它们都有市值与当日涨跌——而市值合计与
+    环节涨跌的分母里根本没有后两者。所以三个池必须分开计数，且
+    **无报价池的 marketCap 必须是 null，不能是 0**：0 会被市值加权当成真值。
     """
     nodes = payload.get("nodes") or []
     if not nodes:
@@ -598,22 +607,23 @@ def check_pools(payload: dict, errors: list[str]) -> None:
     pools: dict[str, int] = {}
     for node in nodes:
         pool = node.get("pool")
-        if pool not in ("sp500", "sec-foreign-issuer"):
+        if pool not in POOLS:
             fail(errors, f"{node.get('symbol')} 的 pool 是 {pool!r}，"
-                         "只能是 sp500 或 sec-foreign-issuer")
+                         f"只能是 {'、'.join(POOLS)}")
             continue
         pools[pool] = pools.get(pool, 0) + 1
-        if pool == "sec-foreign-issuer":
+        if pool in POOLS_WITHOUT_QUOTE:
             if node.get("marketCap") is not None:
-                fail(errors, f"{node.get('symbol')} 是外国发行人却带了市值 "
+                fail(errors, f"{node.get('symbol')}（{pool}）带了市值 "
                              f"{node.get('marketCap')!r}——站内没有它的报价，"
                              "写进去就是造数")
             if not node.get("cik"):
-                fail(errors, f"外国发行人 {node.get('symbol')} 没有 CIK，"
+                fail(errors, f"{node.get('symbol')}（{pool}）没有 CIK，"
                              "它是这批公司唯一的实体锚点")
 
     for key, pool in (("poolSp500", "sp500"),
-                      ("poolForeignIssuer", "sec-foreign-issuer")):
+                      ("poolForeignIssuer", "sec-foreign-issuer"),
+                      ("poolDomesticFiler", "sec-domestic-filer")):
         want = coverage.get(key)
         if want is not None and want != pools.get(pool, 0):
             fail(errors, f"coverage.{key} {want} 与实际 {pools.get(pool, 0)} 家不符")
@@ -636,6 +646,8 @@ def check_pools(payload: dict, errors: list[str]) -> None:
         named = sum(1 for n in nodes
                     if n.get("pool") == "sec-foreign-issuer"
                     and n.get("name") and n.get("name") != n.get("nameEn"))
+        # 这一项只统计外国发行人池——本土池与标普池的中文名各有来源，
+        # 混进来会让「对照表覆盖了多少」这个数说不清是谁的覆盖。
         if name_zh.get("named") not in (None, named):
             fail(errors, f"coverage.foreignNameZh.named {name_zh.get('named')} "
                          f"与实际有中文名的 {named} 家不符")

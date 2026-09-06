@@ -935,9 +935,22 @@ def build() -> None:
     # 两个池分开统计。标普那池按 GICS 板块（读者熟悉的口径，也是缺口成因最能
     # 讲清楚的维度：金融 0/70 是制度上限，科技 34/84 是还没抓到）；外国发行人
     # 那池没有站内板块分类，按国别拆——全塞进「未分类」就是一个 147 家的黑箱。
-    by_sector = sector_coverage([n for n in nodes if n.get("pool") != "sec-foreign-issuer"],
-                                filing_status)
+    # 三个池各按各自最能说清缺口的维度拆。
+    #
+    # 标普池按 GICS 板块（读者熟悉，也最能讲清成因：金融 0/70 是制度上限）。
+    # 外国发行人按经营地。**本土 10-K 申报人这一池两样都没有**——站内公司榜
+    # 只收标普成分股，所以它们没有板块；它们又几乎全是美国公司，按国别拆
+    # 只会得到一行「美国 4,180 家」。
+    #
+    # 如果不给它单独一栏，这 4,180 家会掉进标普那栏的「未分类」——
+    # 一个比此前担心过的「147 家黑箱」大 28 倍的黑箱。按 SIC 大类拆：
+    # 那是它们唯一有的、且本板块全程都在用的分类轴。
+    by_sector = sector_coverage(
+        [n for n in nodes if n.get("pool") == "sp500"], filing_status)
     foreign_nodes_all = [n for n in nodes if n.get("pool") == "sec-foreign-issuer"]
+    domestic_nodes_all = [n for n in nodes if n.get("pool") == "sec-domestic-filer"]
+    by_sic_major = sector_coverage(domestic_nodes_all, filing_status,
+                                   key="sicMajorLabel", label="sector")
     # 按**经营地**汇总，不按注册地。见节点构建处那段：注册地这一栏的第一名
     # 是开曼群岛 340 家，它回答不了「这条产业链在哪」。
     by_country = sector_coverage(foreign_nodes_all, filing_status,
@@ -1104,6 +1117,9 @@ def build() -> None:
             # 外国发行人按国别。字段名沿用 sector 是为了让页面复用同一套渲染，
             # 但语义是国别——页面上必须写清楚，不能让读者以为这是板块。
             "byCountry": by_country,
+            # 第三池按 SIC 大类。键名沿用 sector（与另两栏同一套渲染），
+            # 语义是行业大类——页面必须写清，不能让读者以为是 GICS 板块。
+            "bySicMajor": by_sic_major,
             # 上面那一栏的国别各自来自哪个 SEC 字段。页面照这个数说话。
             "countryBasis": country_basis,
             # 中文名：有通用译名的家数、对照表总条数、以及对不上号的条目。

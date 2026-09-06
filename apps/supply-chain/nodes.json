@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-06T07:24:42Z",
+  "updatedAt": "2026-09-06T08:55:03Z",
   "asOf": "2026-09-04",
   "frequency": "daily",
   "status": "ok",
@@ -18124,7 +18124,7 @@
     {
       "id": "UBER",
       "symbol": "UBER",
-      "name": "Uber",
+      "name": "优步",
       "nameEn": "Uber",
       "sector": "科技",
       "sectorEn": "Industrials",
@@ -25746,7 +25746,7 @@
     {
       "id": "KVUE",
       "symbol": "KVUE",
-      "name": "Kenvue",
+      "name": "科赴",
       "nameEn": "Kenvue",
       "sector": "必需消费",
       "sectorEn": "Consumer Staples",
@@ -33993,7 +33993,7 @@
     {
       "id": "AACG",
       "symbol": "AACG",
-      "name": "ATA Creativity Global",
+      "name": "全美在线",
       "nameEn": "ATA Creativity Global",
       "sector": null,
       "sectorEn": null,
@@ -34042,7 +34042,7 @@
     {
       "id": "AAPG",
       "symbol": "AAPG",
-      "name": "ASCENTAGE PHARMA GROUP INTERNATIONAL",
+      "name": "亚盛医药",
       "nameEn": "ASCENTAGE PHARMA GROUP INTERNATIONAL",
       "sector": null,
       "sectorEn": null,
@@ -34532,7 +34532,7 @@
     {
       "id": "ADAG",
       "symbol": "ADAG",
-      "name": "Adagene Inc.",
+      "name": "天演药业",
       "nameEn": "Adagene Inc.",
       "sector": null,
       "sectorEn": null,
@@ -35808,7 +35808,7 @@
     {
       "id": "AIJTY",
       "symbol": "AIJTY",
-      "name": "Jianpu Technology Inc.",
+      "name": "简普科技",
       "nameEn": "Jianpu Technology Inc.",
       "sector": null,
       "sectorEn": null,
@@ -37035,7 +37035,7 @@
     {
       "id": "APWC",
       "symbol": "APWC",
-      "name": "ASIA PACIFIC WIRE & CABLE CORP LTD",
+      "name": "亚太电线电缆",
       "nameEn": "ASIA PACIFIC WIRE & CABLE CORP LTD",
       "sector": null,
       "sectorEn": null,
@@ -37921,7 +37921,7 @@
     {
       "id": "ATAT",
       "symbol": "ATAT",
-      "name": "Atour Lifestyle Holdings Ltd",
+      "name": "亚朵",
       "nameEn": "Atour Lifestyle Holdings Ltd",
       "sector": null,
       "sectorEn": null,
@@ -38117,7 +38117,7 @@
     {
       "id": "ATHM",
       "symbol": "ATHM",
-      "name": "Autohome Inc.",
+      "name": "汽车之家",
       "nameEn": "Autohome Inc.",
       "sector": null,
       "sectorEn": null,
@@ -39736,7 +39736,7 @@
     {
       "id": "BEKE",
       "symbol": "BEKE",
-      "name": "KE Holdings Inc.",
+      "name": "贝壳",
       "nameEn": "KE Holdings Inc.",
       "sector": null,
       "sectorEn": null,
@@ -40275,7 +40275,7 @@
     {
       "id": "BIDU",
       "symbol": "BIDU",
-      "name": "Baidu, Inc.",
+      "name": "百度",
       "nameEn": "Baidu, Inc.",
       "sector": null,
       "sectorEn": null,
@@ -40324,7 +40324,7 @@
     {
       "id": "BILI",
       "symbol": "BILI",
-      "name": "Bilibili Inc.",
+      "name": "哔哩哔哩",
       "nameEn": "Bilibili Inc.",
       "sector": null,
       "sectorEn": null,
@@ -41307,7 +41307,7 @@
     {
       "id": "BNR",
       "symbol": "BNR",
-      "name": "Burning Rock Biotech Ltd",
+      "name": "燃石医学",
       "nameEn": "Burning Rock Biotech Ltd",
       "sector": null,
       "sectorEn": null,
@@ -43026,7 +43026,7 @@
     {
       "id": "BZ",
       "symbol": "BZ",
-      "name": "Kanzhun Ltd",
+      "name": "看准科技",
       "nameEn": "Kanzhun Ltd",
       "sector": null,
       "sectorEn": null,
@@ -43075,7 +43075,7 @@
     {
       "id": "BZUN",
       "symbol": "BZUN",
-      "name": "Baozun Inc.",
+      "name": "宝尊电商",
       "nameEn": "Baozun Inc.",
       "sector": null,
       "sectorEn": null,
@@ -43615,7 +43615,7 @@
     {
       "id": "CCG",
       "symbol": "CCG",
-      "name": "Cheche Group Inc.",
+      "name": "车车科技",
       "nameEn": "Cheche Group Inc.",
       "sector": null,
       "sectorEn": null,
@@ -44351,7 +44351,7 @@
     {
       "id": "CHA",
       "symbol": "CHA",
-      "name": "Chagee Holdings Ltd.",
+      "name": "霸王茶姬",
       "nameEn": "Chagee Holdings Ltd.",
       "sector": null,
       "sectorEn": null,
@@ -45234,7 +45234,7 @@
     {
       "id": "CLPS",
       "symbol": "CLPS",
-      "name": "CLPS Inc",
+      "name": "华钦科技",
       "nameEn": "CLPS Inc",
       "sector": null,
       "sectorEn": null,
@@ -45479,7 +45479,7 @@
     {
       "id": "CMCM",
       "symbol": "CMCM",
-      "name": "Cheetah Mobile Inc.",
+      "name": "猎豹移动",
       "nameEn": "Cheetah Mobile Inc.",
       "sector": null,
       "sectorEn": null,
@@ -47395,7 +47395,7 @@
     {
       "id": "DAO",
       "symbol": "DAO",
-      "name": "Youdao, Inc.",
+      "name": "网易有道",
       "nameEn": "Youdao, Inc.",
       "sector": null,
       "sectorEn": null,
@@ -48032,7 +48032,7 @@
     {
       "id": "DIDIY",
       "symbol": "DIDIY",
-      "name": "DiDi Global Inc.",
+      "name": "滴滴",
       "nameEn": "DiDi Global Inc.",
       "sector": null,
       "sectorEn": null,
@@ -48522,7 +48522,7 @@
     {
       "id": "DOYU",
       "symbol": "DOYU",
-      "name": "DouYu International Holdings Ltd",
+      "name": "斗鱼",
       "nameEn": "DouYu International Holdings Ltd",
       "sector": null,
       "sectorEn": null,
@@ -48669,7 +48669,7 @@
     {
       "id": "DQ",
       "symbol": "DQ",
-      "name": "DAQO NEW ENERGY CORP.",
+      "name": "大全新能源",
       "nameEn": "DAQO NEW ENERGY CORP.",
       "sector": null,
       "sectorEn": null,
@@ -49110,7 +49110,7 @@
     {
       "id": "DUO",
       "symbol": "DUO",
-      "name": "Fangdd Network Group Ltd.",
+      "name": "房多多",
       "nameEn": "Fangdd Network Group Ltd.",
       "sector": null,
       "sectorEn": null,
@@ -49453,7 +49453,7 @@
     {
       "id": "ECX",
       "symbol": "ECX",
-      "name": "ECARX Holdings Inc.",
+      "name": "亿咖通科技",
       "nameEn": "ECARX Holdings Inc.",
       "sector": null,
       "sectorEn": null,
@@ -49943,7 +49943,7 @@
     {
       "id": "EH",
       "symbol": "EH",
-      "name": "EHang Holdings Ltd",
+      "name": "亿航智能",
       "nameEn": "EHang Holdings Ltd",
       "sector": null,
       "sectorEn": null,
@@ -52104,7 +52104,7 @@
     {
       "id": "FENG",
       "symbol": "FENG",
-      "name": "Phoenix New Media Ltd",
+      "name": "凤凰新媒体",
       "nameEn": "Phoenix New Media Ltd",
       "sector": null,
       "sectorEn": null,
@@ -52301,7 +52301,7 @@
     {
       "id": "FINV",
       "symbol": "FINV",
-      "name": "FinVolution Group",
+      "name": "信也科技",
       "nameEn": "FinVolution Group",
       "sector": null,
       "sectorEn": null,
@@ -53379,7 +53379,7 @@
     {
       "id": "FUTU",
       "symbol": "FUTU",
-      "name": "Futu Holdings Ltd",
+      "name": "富途控股",
       "nameEn": "Futu Holdings Ltd",
       "sector": null,
       "sectorEn": null,
@@ -53822,7 +53822,7 @@
     {
       "id": "GDS",
       "symbol": "GDS",
-      "name": "GDS Holdings Ltd",
+      "name": "万国数据",
       "nameEn": "GDS Holdings Ltd",
       "sector": null,
       "sectorEn": null,
@@ -54459,7 +54459,7 @@
     {
       "id": "GGR",
       "symbol": "GGR",
-      "name": "Gogoro Inc.",
+      "name": "睿能创意",
       "nameEn": "Gogoro Inc.",
       "sector": null,
       "sectorEn": null,
@@ -54508,7 +54508,7 @@
     {
       "id": "GHG",
       "symbol": "GHG",
-      "name": "GreenTree Hospitality Group Ltd.",
+      "name": "格林酒店集团",
       "nameEn": "GreenTree Hospitality Group Ltd.",
       "sector": null,
       "sectorEn": null,
@@ -55783,7 +55783,7 @@
     {
       "id": "GOTU",
       "symbol": "GOTU",
-      "name": "Gaotu Techedu Inc.",
+      "name": "高途",
       "nameEn": "Gaotu Techedu Inc.",
       "sector": null,
       "sectorEn": null,
@@ -57011,7 +57011,7 @@
     {
       "id": "HCM",
       "symbol": "HCM",
-      "name": "HUTCHMED (China) Ltd",
+      "name": "和黄医药",
       "nameEn": "HUTCHMED (China) Ltd",
       "sector": null,
       "sectorEn": null,
@@ -58092,7 +58092,7 @@
     {
       "id": "HSAI",
       "symbol": "HSAI",
-      "name": "Hesai Group",
+      "name": "禾赛科技",
       "nameEn": "Hesai Group",
       "sector": null,
       "sectorEn": null,
@@ -58337,7 +58337,7 @@
     {
       "id": "HTHT",
       "symbol": "HTHT",
-      "name": "H World Group Ltd",
+      "name": "华住集团",
       "nameEn": "H World Group Ltd",
       "sector": null,
       "sectorEn": null,
@@ -58681,7 +58681,7 @@
     {
       "id": "HUIZ",
       "symbol": "HUIZ",
-      "name": "Huize Holding Ltd",
+      "name": "慧择",
       "nameEn": "Huize Holding Ltd",
       "sector": null,
       "sectorEn": null,
@@ -58730,7 +58730,7 @@
     {
       "id": "HUYA",
       "symbol": "HUYA",
-      "name": "HUYA Inc.",
+      "name": "虎牙",
       "nameEn": "HUYA Inc.",
       "sector": null,
       "sectorEn": null,
@@ -59024,7 +59024,7 @@
     {
       "id": "ICG",
       "symbol": "ICG",
-      "name": "Intchains Group Ltd",
+      "name": "芯动科技",
       "nameEn": "Intchains Group Ltd",
       "sector": null,
       "sectorEn": null,
@@ -59467,7 +59467,7 @@
     {
       "id": "IH",
       "symbol": "IH",
-      "name": "iHuman Inc.",
+      "name": "洪恩教育",
       "nameEn": "iHuman Inc.",
       "sector": null,
       "sectorEn": null,
@@ -60644,7 +60644,7 @@
     {
       "id": "IQ",
       "symbol": "IQ",
-      "name": "iQIYI, Inc.",
+      "name": "爱奇艺",
       "nameEn": "iQIYI, Inc.",
       "sector": null,
       "sectorEn": null,
@@ -61331,7 +61331,7 @@
     {
       "id": "JD",
       "symbol": "JD",
-      "name": "JD.com, Inc.",
+      "name": "京东",
       "nameEn": "JD.com, Inc.",
       "sector": null,
       "sectorEn": null,
@@ -61527,7 +61527,7 @@
     {
       "id": "JFIN",
       "symbol": "JFIN",
-      "name": "Jiayin Group Inc.",
+      "name": "嘉银科技",
       "nameEn": "Jiayin Group Inc.",
       "sector": null,
       "sectorEn": null,
@@ -62361,7 +62361,7 @@
     {
       "id": "KC",
       "symbol": "KC",
-      "name": "Kingsoft Cloud Holdings Ltd",
+      "name": "金山云",
       "nameEn": "Kingsoft Cloud Holdings Ltd",
       "sector": null,
       "sectorEn": null,
@@ -63098,7 +63098,7 @@
     {
       "id": "KRKR",
       "symbol": "KRKR",
-      "name": "36Kr Holdings Inc.",
+      "name": "36氪",
       "nameEn": "36Kr Holdings Inc.",
       "sector": null,
       "sectorEn": null,
@@ -63540,7 +63540,7 @@
     {
       "id": "LANV",
       "symbol": "LANV",
-      "name": "Lanvin Group Holdings Ltd",
+      "name": "复朗集团",
       "nameEn": "Lanvin Group Holdings Ltd",
       "sector": null,
       "sectorEn": null,
@@ -64129,7 +64129,7 @@
     {
       "id": "LI",
       "symbol": "LI",
-      "name": "Li Auto Inc.",
+      "name": "理想汽车",
       "nameEn": "Li Auto Inc.",
       "sector": null,
       "sectorEn": null,
@@ -64374,7 +64374,7 @@
     {
       "id": "LKNCY",
       "symbol": "LKNCY",
-      "name": "Luckin Coffee Inc.",
+      "name": "瑞幸咖啡",
       "nameEn": "Luckin Coffee Inc.",
       "sector": null,
       "sectorEn": null,
@@ -64620,7 +64620,7 @@
     {
       "id": "LOT",
       "symbol": "LOT",
-      "name": "Lotus Technology Inc.",
+      "name": "路特斯科技",
       "nameEn": "Lotus Technology Inc.",
       "sector": null,
       "sectorEn": null,
@@ -65014,7 +65014,7 @@
     {
       "id": "LU",
       "symbol": "LU",
-      "name": "Lufax Holding Ltd",
+      "name": "陆金所",
       "nameEn": "Lufax Holding Ltd",
       "sector": null,
       "sectorEn": null,
@@ -65210,7 +65210,7 @@
     {
       "id": "LX",
       "symbol": "LX",
-      "name": "LexinFintech Holdings Ltd.",
+      "name": "乐信",
       "nameEn": "LexinFintech Holdings Ltd.",
       "sector": null,
       "sectorEn": null,
@@ -66927,7 +66927,7 @@
     {
       "id": "MLCO",
       "symbol": "MLCO",
-      "name": "Melco Resorts & Entertainment LTD",
+      "name": "新濠博亚娱乐",
       "nameEn": "Melco Resorts & Entertainment LTD",
       "sector": null,
       "sectorEn": null,
@@ -67368,7 +67368,7 @@
     {
       "id": "MNSO",
       "symbol": "MNSO",
-      "name": "MINISO Group Holding Ltd",
+      "name": "名创优品",
       "nameEn": "MINISO Group Holding Ltd",
       "sector": null,
       "sectorEn": null,
@@ -67515,7 +67515,7 @@
     {
       "id": "MOGU",
       "symbol": "MOGU",
-      "name": "MOGU Inc.",
+      "name": "蘑菇街",
       "nameEn": "MOGU Inc.",
       "sector": null,
       "sectorEn": null,
@@ -67613,7 +67613,7 @@
     {
       "id": "MOMO",
       "symbol": "MOMO",
-      "name": "Hello Group Inc.",
+      "name": "挚文集团",
       "nameEn": "Hello Group Inc.",
       "sector": null,
       "sectorEn": null,
@@ -67858,7 +67858,7 @@
     {
       "id": "MSC",
       "symbol": "MSC",
-      "name": "STUDIO CITY INTERNATIONAL HOLDINGS Ltd",
+      "name": "新濠影汇",
       "nameEn": "STUDIO CITY INTERNATIONAL HOLDINGS Ltd",
       "sector": null,
       "sectorEn": null,
@@ -68596,7 +68596,7 @@
     {
       "id": "NAAS",
       "symbol": "NAAS",
-      "name": "NaaS Technology Inc.",
+      "name": "能链智电",
       "nameEn": "NaaS Technology Inc.",
       "sector": null,
       "sectorEn": null,
@@ -69233,7 +69233,7 @@
     {
       "id": "NCTY",
       "symbol": "NCTY",
-      "name": "The9 LTD",
+      "name": "第九城市",
       "nameEn": "The9 LTD",
       "sector": null,
       "sectorEn": null,
@@ -69773,7 +69773,7 @@
     {
       "id": "NIO",
       "symbol": "NIO",
-      "name": "NIO Inc.",
+      "name": "蔚来",
       "nameEn": "NIO Inc.",
       "sector": null,
       "sectorEn": null,
@@ -69871,7 +69871,7 @@
     {
       "id": "NIU",
       "symbol": "NIU",
-      "name": "Niu Technologies",
+      "name": "小牛电动",
       "nameEn": "Niu Technologies",
       "sector": null,
       "sectorEn": null,
@@ -70264,7 +70264,7 @@
     {
       "id": "NOAH",
       "symbol": "NOAH",
-      "name": "NOAH HOLDINGS LTD",
+      "name": "诺亚控股",
       "nameEn": "NOAH HOLDINGS LTD",
       "sector": null,
       "sectorEn": null,
@@ -70706,7 +70706,7 @@
     {
       "id": "NTES",
       "symbol": "NTES",
-      "name": "NetEase, Inc.",
+      "name": "网易",
       "nameEn": "NetEase, Inc.",
       "sector": null,
       "sectorEn": null,
@@ -73406,7 +73406,7 @@
     {
       "id": "PERF",
       "symbol": "PERF",
-      "name": "Perfect Corp.",
+      "name": "玩美移动",
       "nameEn": "Perfect Corp.",
       "sector": null,
       "sectorEn": null,
@@ -74730,7 +74730,7 @@
     {
       "id": "PONY",
       "symbol": "PONY",
-      "name": "Pony AI Inc.",
+      "name": "小马智行",
       "nameEn": "Pony AI Inc.",
       "sector": null,
       "sectorEn": null,
@@ -75612,7 +75612,7 @@
     {
       "id": "QFIN",
       "symbol": "QFIN",
-      "name": "Qfin Holdings, Inc.",
+      "name": "奇富科技",
       "nameEn": "Qfin Holdings, Inc.",
       "sector": null,
       "sectorEn": null,
@@ -75710,7 +75710,7 @@
     {
       "id": "QH",
       "symbol": "QH",
-      "name": "QUHUO Ltd",
+      "name": "趣活",
       "nameEn": "QUHUO Ltd",
       "sector": null,
       "sectorEn": null,
@@ -76841,7 +76841,7 @@
     {
       "id": "RERE",
       "symbol": "RERE",
-      "name": "ATRenew Inc.",
+      "name": "万物新生",
       "nameEn": "ATRenew Inc.",
       "sector": null,
       "sectorEn": null,
@@ -77184,7 +77184,7 @@
     {
       "id": "RLX",
       "symbol": "RLX",
-      "name": "RLX Technology Inc.",
+      "name": "雾芯科技",
       "nameEn": "RLX Technology Inc.",
       "sector": null,
       "sectorEn": null,
@@ -80817,7 +80817,7 @@
     {
       "id": "SOHU",
       "symbol": "SOHU",
-      "name": "Sohu.com Ltd",
+      "name": "搜狐",
       "nameEn": "Sohu.com Ltd",
       "sector": null,
       "sectorEn": null,
@@ -81751,7 +81751,7 @@
     {
       "id": "STG",
       "symbol": "STG",
-      "name": "Sunlands Technology Group",
+      "name": "尚德机构",
       "nameEn": "Sunlands Technology Group",
       "sector": null,
       "sectorEn": null,
@@ -82683,7 +82683,7 @@
     {
       "id": "SY",
       "symbol": "SY",
-      "name": "So-Young International Inc.",
+      "name": "新氧",
       "nameEn": "So-Young International Inc.",
       "sector": null,
       "sectorEn": null,
@@ -82879,7 +82879,7 @@
     {
       "id": "TAL",
       "symbol": "TAL",
-      "name": "TAL Education Group",
+      "name": "好未来",
       "nameEn": "TAL Education Group",
       "sector": null,
       "sectorEn": null,
@@ -84158,7 +84158,7 @@
     {
       "id": "TIGR",
       "symbol": "TIGR",
-      "name": "UP Fintech Holding Ltd",
+      "name": "老虎证券",
       "nameEn": "UP Fintech Holding Ltd",
       "sector": null,
       "sectorEn": null,
@@ -84845,7 +84845,7 @@
     {
       "id": "TME",
       "symbol": "TME",
-      "name": "Tencent Music Entertainment Group",
+      "name": "腾讯音乐",
       "nameEn": "Tencent Music Entertainment Group",
       "sector": null,
       "sectorEn": null,
@@ -85090,7 +85090,7 @@
     {
       "id": "TOUR",
       "symbol": "TOUR",
-      "name": "Tuniu Corp",
+      "name": "途牛",
       "nameEn": "Tuniu Corp",
       "sector": null,
       "sectorEn": null,
@@ -86124,7 +86124,7 @@
     {
       "id": "TUYA",
       "symbol": "TUYA",
-      "name": "Tuya Inc.",
+      "name": "涂鸦智能",
       "nameEn": "Tuya Inc.",
       "sector": null,
       "sectorEn": null,
@@ -86420,7 +86420,7 @@
     {
       "id": "UCL",
       "symbol": "UCL",
-      "name": "uCloudlink Group Inc.",
+      "name": "优克联",
       "nameEn": "uCloudlink Group Inc.",
       "sector": null,
       "sectorEn": null,
@@ -87011,7 +87011,7 @@
     {
       "id": "UXIN",
       "symbol": "UXIN",
-      "name": "Uxin Ltd",
+      "name": "优信",
       "nameEn": "Uxin Ltd",
       "sector": null,
       "sectorEn": null,
@@ -87550,7 +87550,7 @@
     {
       "id": "VIOT",
       "symbol": "VIOT",
-      "name": "Viomi Technology Co., Ltd",
+      "name": "云米科技",
       "nameEn": "Viomi Technology Co., Ltd",
       "sector": null,
       "sectorEn": null,
@@ -87599,7 +87599,7 @@
     {
       "id": "VIPS",
       "symbol": "VIPS",
-      "name": "Vipshop Holdings Ltd",
+      "name": "唯品会",
       "nameEn": "Vipshop Holdings Ltd",
       "sector": null,
       "sectorEn": null,
@@ -87993,7 +87993,7 @@
     {
       "id": "VNET",
       "symbol": "VNET",
-      "name": "VNET Group, Inc.",
+      "name": "世纪互联",
       "nameEn": "VNET Group, Inc.",
       "sector": null,
       "sectorEn": null,
@@ -88731,7 +88731,7 @@
     {
       "id": "WB",
       "symbol": "WB",
-      "name": "WEIBO Corp",
+      "name": "微博",
       "nameEn": "WEIBO Corp",
       "sector": null,
       "sectorEn": null,
@@ -88976,7 +88976,7 @@
     {
       "id": "WDH",
       "symbol": "WDH",
-      "name": "Waterdrop Inc.",
+      "name": "水滴公司",
       "nameEn": "Waterdrop Inc.",
       "sector": null,
       "sectorEn": null,
@@ -89319,7 +89319,7 @@
     {
       "id": "WIMI",
       "symbol": "WIMI",
-      "name": "WiMi Hologram Cloud Inc.",
+      "name": "微美全息",
       "nameEn": "WiMi Hologram Cloud Inc.",
       "sector": null,
       "sectorEn": null,
@@ -89813,7 +89813,7 @@
     {
       "id": "WRD",
       "symbol": "WRD",
-      "name": "WeRide Inc.",
+      "name": "文远知行",
       "nameEn": "WeRide Inc.",
       "sector": null,
       "sectorEn": null,
@@ -90304,7 +90304,7 @@
     {
       "id": "XNET",
       "symbol": "XNET",
-      "name": "Xunlei Ltd",
+      "name": "迅雷",
       "nameEn": "Xunlei Ltd",
       "sector": null,
       "sectorEn": null,
@@ -90402,7 +90402,7 @@
     {
       "id": "XPEV",
       "symbol": "XPEV",
-      "name": "XPENG INC.",
+      "name": "小鹏汽车",
       "nameEn": "XPENG INC.",
       "sector": null,
       "sectorEn": null,
@@ -90989,7 +90989,7 @@
     {
       "id": "YI",
       "symbol": "YI",
-      "name": "111, Inc.",
+      "name": "1药网",
       "nameEn": "111, Inc.",
       "sector": null,
       "sectorEn": null,
@@ -91089,7 +91089,7 @@
     {
       "id": "YJ",
       "symbol": "YJ",
-      "name": "Yunji Inc.",
+      "name": "云集",
       "nameEn": "Yunji Inc.",
       "sector": null,
       "sectorEn": null,
@@ -91187,7 +91187,7 @@
     {
       "id": "YMM",
       "symbol": "YMM",
-      "name": "Full Truck Alliance Co. Ltd.",
+      "name": "满帮集团",
       "nameEn": "Full Truck Alliance Co. Ltd.",
       "sector": null,
       "sectorEn": null,
@@ -91384,7 +91384,7 @@
     {
       "id": "YQ",
       "symbol": "YQ",
-      "name": "17 Education & Technology Group Inc.",
+      "name": "一起教育科技",
       "nameEn": "17 Education & Technology Group Inc.",
       "sector": null,
       "sectorEn": null,
@@ -91433,7 +91433,7 @@
     {
       "id": "YRD",
       "symbol": "YRD",
-      "name": "Yiren Digital Ltd.",
+      "name": "宜人智科",
       "nameEn": "Yiren Digital Ltd.",
       "sector": null,
       "sectorEn": null,
@@ -91482,7 +91482,7 @@
     {
       "id": "YSG",
       "symbol": "YSG",
-      "name": "Yatsen Holding Ltd",
+      "name": "逸仙电商",
       "nameEn": "Yatsen Holding Ltd",
       "sector": null,
       "sectorEn": null,
@@ -91630,7 +91630,7 @@
     {
       "id": "YXT",
       "symbol": "YXT",
-      "name": "YXT.COM GROUP HOLDING Ltd",
+      "name": "云学堂",
       "nameEn": "YXT.COM GROUP HOLDING Ltd",
       "sector": null,
       "sectorEn": null,
@@ -91875,7 +91875,7 @@
     {
       "id": "ZEPP",
       "symbol": "ZEPP",
-      "name": "Zepp Health Corp",
+      "name": "华米科技",
       "nameEn": "Zepp Health Corp",
       "sector": null,
       "sectorEn": null,
@@ -91974,7 +91974,7 @@
     {
       "id": "ZH",
       "symbol": "ZH",
-      "name": "Zhihu Inc.",
+      "name": "知乎",
       "nameEn": "Zhihu Inc.",
       "sector": null,
       "sectorEn": null,
@@ -92170,7 +92170,7 @@
     {
       "id": "ZKH",
       "symbol": "ZKH",
-      "name": "ZKH Group Ltd",
+      "name": "震坤行",
       "nameEn": "ZKH Group Ltd",
       "sector": null,
       "sectorEn": null,
@@ -92464,7 +92464,7 @@
     {
       "id": "ZTO",
       "symbol": "ZTO",
-      "name": "ZTO Express (Cayman) Inc.",
+      "name": "中通快递",
       "nameEn": "ZTO Express (Cayman) Inc.",
       "sector": null,
       "sectorEn": null,
@@ -96248,6 +96248,7 @@
         "unscanned": 0
       }
     ],
+    "bySicMajor": [],
     "countryBasis": {
       "state-of-incorporation": 975,
       "business-address": 208,
@@ -96255,8 +96256,8 @@
       "mailing-address": 1
     },
     "foreignNameZh": {
-      "named": 61,
-      "glossary": 61,
+      "named": 157,
+      "glossary": 159,
       "orphans": []
     },
     "edgesFromEarlierScan": [],
