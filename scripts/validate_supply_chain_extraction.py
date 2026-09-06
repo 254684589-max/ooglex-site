@@ -1346,6 +1346,28 @@ def main() -> int:
             failures.append(f"撤回判据：{why} 不成立")
         print(f"  [{'OK' if ok else 'XX'}] {why}")
 
+    print("\n── 供应商名单探针：许可这一问必须答，不能只答技术 ──────────────")
+    # 这条探针曾经**只查 robots.txt**，报告一路绿灯、格式解得开、内容读得出，
+    # 看着像张准入通行证——而许可这一问从头到尾没人答过。
+    # robots 允许抓取 ≠ 许可允许再分发：前者是站长对爬虫的礼貌约定，
+    # 后者决定本站能不能把它的内容整理成数据集重新发布。
+    sup = load_module(os.path.join(os.path.dirname(EXTRACT_PATH),
+                                   "probe_supplier_lists.py"), "probe_supplier_lists")
+    lic_cases = [
+        (getattr(sup, "LICENSE_CLASS", "") == "PRIV",
+         "公司自行发布的文档定为 PRIV"),
+        ("不许登记" in getattr(sup, "LICENSE_VERDICT", ""),
+         "结论就是「不许登记」，不留模棱两可的措辞"),
+        ("书面许可" in getattr(sup, "LICENSE_VERDICT", ""),
+         "写明日后要接入的前置条件是拿到书面许可"),
+        ("SUPPLY_CHAIN_SOURCES" in getattr(sup, "LICENSE_VERDICT", ""),
+         "指向许可文档，读者查得到依据"),
+    ]
+    for ok, why in lic_cases:
+        if not ok:
+            failures.append(f"供应商名单探针：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
     print("\n── 正文探针：数得准，才谈得上拿它下结论 ────────────────────────")
     # 这条探针的计数被用来判定「洛马／埃森哲／丹纳赫到底有没有名单」，
     # 也被用来判定「PDF 接不接」。**数错了就会得出错的结论**，所以钉住。
@@ -1493,7 +1515,7 @@ def main() -> int:
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
-             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases) + len(body_cases)
+             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases) + len(body_cases) + len(lic_cases)
              + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:
