@@ -67,6 +67,23 @@
   }
 
   /* ── 顶部状态：来源、数据日、更新时间必须可见 ── */
+  /* SEC 申报人类别 → 中文标签。
+
+     **原值留在数据里，译名只在这里加**——与「边文件里是申报原文、译名是
+     我们加的标注」同一条规矩。SEC 的 category 常常是组合串
+     （"Non-accelerated Filer, Smaller Reporting Company"），所以按关键词
+     判而不是全串比对；认不出的原样显示，不硬塞一个中文。
+
+     分档依据是**公众持股量**（流通股 × 股价），不是总市值，而且一年只在
+     财年末重定一次。页面上一律说「申报人类别」，绝不说成市值区间。 */
+  // 档位标签由构建脚本拆好后随数据下来（见 build_chain_nodes.split_filer_category）。
+  // 上一版在这里用 indexOf 解析 SEC 的 "A<br>B<br>C" 原串，认不出就 return raw——
+  // 于是 477 家「<br>Emerging growth company」把 HTML 标记原样印到了屏幕上，
+  // 而 14 个原串归到 7 个标签、面板里同一个档印两行。**解析属于数据层**：
+  // 放在渲染层，数据本身就永远是脏的，校验也钉不住。
+  var LARGE_FILER = "大型加速申报人";
+  function isLargeFiler(tier) { return tier === LARGE_FILER; }
+
   function renderStatus(d) {
     var cov = d.coverage || {};
     // 副标题照数据写。写死「标普500成分股按价值链环节分层」的那一版，在
@@ -74,12 +91,23 @@
     // 静态文案里的数字不会自己更新，数据一变它就开始说错话且无人报错。
     var sub = $("subtitle");
     if (sub) {
-      var sp = cov.poolSp500, fo = cov.poolForeignIssuer;
-      setText(sub, (sp && fo
-        ? "标普500成分股 " + sp + " 家 + 在美上市外国私人发行人 " + fo + " 家"
-        : (cov.nodesTotal || "—") + " 家公司")
-        + "，按 12 个价值链环节 × " + (cov.chainsTotal || "—")
-        + " 条一级产业链两维定位 · Global Supply Chain");
+      // **池子的构成照数据列，加一个池就得在这里露面。**
+      // 写死两个池的那一版，在本土 10-K 那 4,209 家入池之后就成了假话：
+      // 副标题只说 1,688 家的来路，摘要条却印「公司 5,897 家」——
+      // 两个数当场对不上，而 4,209 家在首屏上根本不存在。
+      // 与第十三轮 head 里那句「标普500公司」是同一类错，只是这次在渲染
+      // 文案里，扫 head 的那道校验管不到。
+      var pools = [
+        [cov.poolSp500, "标普500成分股"],
+        [cov.poolForeignIssuer, "在美上市外国私人发行人"],
+        [cov.poolDomesticFiler, "报 10-K 的美国本土发行人"]
+      ].filter(function (x) { return x[0]; });
+      var lead = pools.length
+        ? pools.map(function (x) { return x[1] + " " + fmt(x[0]) + " 家"; }).join(" + ")
+        : fmt(cov.nodesTotal || 0) + " 家公司";
+      setText(sub, lead
+        + "，按 " + ((d.stages || []).length || "—") + " 个价值链环节 × "
+        + (cov.chainsTotal || "—") + " 条一级产业链两维定位 · Global Supply Chain");
     }
 
     var row = $("statusrow");
@@ -88,6 +116,16 @@
     // 「有多少条关系、来自几家申报人」——那才是这个板块的主量级。
     var items = [
       ["公司", (cov.nodesTotal != null ? fmt(cov.nodesTotal) : "—") + " 家"],
+      // **5,897 家里有多少是真正的大公司。** 池子扩到全体 SEC 申报人之后，
+      // 家数把苹果和一家 500 万美元的壳公司算得一样重，而站内报价只覆盖
+      // 8%——这一格用 SEC 自己的分档回答，覆盖 5,315 家（90%）。
+      // 余下的是新上市公司，档位要到财年末才评，不是取数失败。
+      ["大型申报人", (function () {
+        var rows = cov.byFilerCategory || [];
+        var big = rows.filter(function (r) { return isLargeFiler(r.sector); })
+          .reduce(function (a, r) { return a + (r.companies || 0); }, 0);
+        return rows.length ? fmt(big) + " 家" : "—";
+      })()],
       ["关系", (cov.edgesTotal != null ? fmt(cov.edgesTotal) : "—") + " 条"],
       ["申报人", (cov.nodesWithEdges != null ? fmt(cov.nodesWithEdges) : "—") + " 家"],
       ["冶炼厂", (((cov.formSd || {}).uniqueSmelters) != null
@@ -434,6 +472,48 @@
           + "它们又几乎全在美国，按国别拆只会得到一行。"
           + "下面按 SEC 行业码的大类拆——注意这一栏的口径是行业大类，不是 GICS 板块。");
         drawCovRows(rows3, foldTail(bySic, COUNTRY_ROWS));
+      }
+    }
+
+    // ── 规模轴：全池按 SEC 申报人类别 ───────────────────────────────
+    // **与上面三栏不是一回事**：那三栏把全池切成互不重叠的三份，这一栏是
+    // 同一批公司换一把尺子量，它自己覆盖全池——所以标题说「全池」，
+    // 不说「另有」，免得读者以为又是一批新公司。
+    var byCat = (d.coverage && d.coverage.byFilerCategory) || [];
+    var lead4 = $("cov-cat-lead");
+    var rows4 = $("cov-cat-rows");
+    if (rows4) rows4.textContent = "";
+    if (lead4) {
+      var meaningful = byCat.filter(function (r) { return r.sector; });
+      if (!meaningful.length
+          || (meaningful.length === 1 && meaningful[0].sector === "未分类")) {
+        lead4.hidden = true;                      // 还没取到这个字段就整栏不出
+      } else {
+        lead4.hidden = false;
+        var big = byCat.filter(function (r) { return isLargeFiler(r.sector); })
+          .reduce(function (a, r) { return a + (r.companies || 0); }, 0);
+        var quoted = (d.nodes || []).filter(function (x) {
+          return isNum(x.marketCap);
+        }).length;
+        // **覆盖率照数算，不照愿望写。** 这句话上一版写的是「SEC 的分档
+        // 100% 覆盖」——拆开 category 之后才看清，479 家新上市公司只有
+        // 「新兴成长」身份、加速档要到财年末才评，另有 103 家整栏没取到。
+        // 数字全对而只有解释是旧的，是最难发现的错，所以这里从数据现算。
+        var tiered = byCat.filter(function (r) {
+          return r.sector && r.sector !== "未分类" && r.sector !== "未标注档位";
+        }).reduce(function (a, r) { return a + (r.companies || 0); }, 0);
+        var totalN = cv.nodesTotal || 0;
+        setText(lead4, "全池 " + fmt(totalN) + " 家按规模：其中 "
+          + fmt(big) + " 家是大型加速申报人（SEC 按公众持股量 ≥ 7 亿美元划的档）。"
+          + "用这条轴而不是市值，是因为站内行情只覆盖标普成分股 " + fmt(quoted)
+          + " 家（" + Math.round(quoted / (totalN || 1) * 100) + "%），"
+          + "而 SEC 的分档覆盖 " + fmt(tiered) + " 家（"
+          + Math.round(tiered / (totalN || 1) * 100) + "%）、三个池同一把尺子。"
+          + "余下 " + fmt(totalN - tiered) + " 家分两种：新上市公司的档位要到"
+          + "财年末才评（记「未标注档位」），以及本轮没取到这一栏的（记「未分类」）。"
+          + "注意它按公众持股量分档、一年只重定一次，不是市值区间；"
+          + "「小型申报公司」「新兴成长公司」是另外两种身份，不占这条轴。");
+        drawCovRows(rows4, byCat);
       }
     }
 
@@ -1544,6 +1624,16 @@
       : "当前口径：全池，未筛选产业链。";
   }
 
+  // 该国的冶炼厂在不在池内。见 build_chain_nodes.smelter_reach() 的注释：
+  // 这是口径说明，不是缺陷——冶炼厂本来就不该是上市公司。
+  function reachOf(d, country) {
+    var rows = ((d.smelterReach || {}).byCountry) || [];
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].country === country) return rows[i];
+    }
+    return null;
+  }
+
   function renderExposure(d) {
     var sec = $("expsec");
     if (!sec) return;
@@ -1581,6 +1671,19 @@
       line.appendChild(n);
       var ed = el("span", "ed", fmt(r.edges) + " 条");
       line.appendChild(ed);
+      // **这张图在哪儿断掉。** 该国有多少家冶炼厂、其中几家是池内公司
+      // （也就是几家点得进去）。中国 588 家里 0 家、印尼 155 家里 0 家——
+      // 它们是民营精炼厂与非铁金属集团，本来就不上市。
+      // 不写这一格，读者会以为「暴露在印尼」还能顺着点下去；写了才看得出
+      // 这份数据到冶炼厂这一层为止。
+      var rc = reachOf(d, r.country);
+      if (rc) {
+        var rr = el("span", "rch");
+        rr.appendChild(document.createTextNode(fmt(rc.smelters) + " 厂"));
+        rr.appendChild(el("s", null, rc.inPool ? " · " + rc.inPool + " 家可点开"
+                                               : " · 均不在池内"));
+        line.appendChild(rr);
+      }
       line.title = (r.country || "未写明") + "：" + r.filerCount + " 家有名单的公司"
         + "（共 " + listed + " 家）的申报名单里出现过该国的冶炼厂，占 "
         + Math.round((r.filerShare || 0) * 100) + "%；"

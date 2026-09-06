@@ -251,6 +251,21 @@ def main() -> int:
             "operatingBasis": operating["basis"],
             "exchange": item["primary"].get("exchange"),
             "tickers": sorted({c["ticker"] for c in item["candidates"]}),
+            # ── 规模：SEC 自己的申报人类别 ────────────────────────────────
+            # 扩到 5,897 家之后站内报价只覆盖 495 家（8%），逐环节 4%~22%——
+            # 板块分不出苹果和一家 500 万美元的壳公司，而每个环节卡上的家数
+            # 把它们算得一样重。
+            #
+            # `category` 是 SEC 按**公众持股量**给的监管分档
+            # （Large accelerated ≥7 亿美元 / Accelerated 0.75~7 亿 /
+            #  Non-accelerated / Smaller reporting），**100% 覆盖、政府公开
+            # 记录、零许可问题**——正是市值给不了的那条轴。
+            #
+            # 它不是市值：分档按公众持股量（流通股 × 股价）而非总市值，且
+            # 一年只在财年末重定一次。页面必须照实说是「申报人类别」，
+            # 不能当成市值区间来用。
+            "filerCategory": (meta.get("category") or "").strip() or None,
+            "entityType": (meta.get("entityType") or "").strip() or None,
             "annualForm": "10-K",
             "lastAnnual": filers[item["cik"]]["last"],
             "filesFormSd": item["cik"] in sd_ciks,
@@ -261,6 +276,10 @@ def main() -> int:
           f"无 SIC {dropped['no_sic']:,} 家")
     print(f"  其中报 Form SD 的 {sd_yes} 家——不报的那些结构上不会有冶炼厂边")
 
+    from collections import Counter as _C
+    _cat = _C(v.get("filerCategory") or "未标注" for v in companies.values())
+    print("申报人类别（SEC 按公众持股量分档）："
+          + "、".join(f"{k} {v}" for k, v in _cat.most_common()))
     from collections import Counter
     top = Counter(v.get("sicDescription") or "未标注" for v in companies.values())
     print("  行业前 8：" + "、".join(f"{k[:22]} {v}" for k, v in top.most_common(8)))

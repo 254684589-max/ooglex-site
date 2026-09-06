@@ -349,6 +349,54 @@ def check_coverage(payload: dict, counts: dict, edge_count: int, errors: list[st
         for name in sorted(set(truth_sic) - {r.get("sector") for r in by_sic}):
             fail(errors, f"coverage.bySicMajor 漏了行业大类「{name}」")
 
+    # ── 规模轴：全池按申报人类别 ─────────────────────────────────────────
+    # **这一栏与上面三栏不是一回事**：三栏是把全池切成互不重叠的三份
+    # （标普/外国/本土），加起来等于全池；这一栏是**同一批公司换一把尺子量**，
+    # 它自己就覆盖全池。合计校验里不能把它算进去，否则会重复计数。
+    by_cat = coverage.get("byFilerCategory")
+    if by_cat is not None:
+        if not isinstance(by_cat, list):
+            fail(errors, "coverage.byFilerCategory 必须是数组")
+            return
+        # **这条轴按拆好的档位分，不按 SEC 的原串。** SEC 的 category 是
+        # "A<br>B<br>C" 拼串，直接当轴用会把 HTML 标记印到屏幕上、把同一个档
+        # 拆成好几行、还把「小型申报公司」「新兴成长公司」这两种**不是规模**
+        # 的身份混进规模轴。拆分在 build_chain_nodes.split_filer_category，
+        # 这里守住它的产物不许再退回原串。
+        truth_cat: dict[str, int] = {}
+        for node in nodes:
+            key = node.get("filerTier") or "未分类"
+            truth_cat[key] = truth_cat.get(key, 0) + 1
+        for name in truth_cat:
+            if "<br>" in name or "<" in name:
+                fail(errors, f"申报人档位「{name}」里带着 HTML 标记——"
+                             f"SEC 原串没拆就当轴用了，这一格会原样印到屏幕上")
+            if name not in TIERS_OK:
+                fail(errors, f"申报人档位「{name}」不在允许集 {sorted(TIERS_OK)}——"
+                             f"这条轴只能是公众持股量档位，"
+                             f"「小型申报公司」「新兴成长公司」是另外两种身份，不占轴")
+        # 两个旗标各自独立，且**不得与档位相互覆盖**：一家公司可以既是
+        # 非加速申报人又是小型申报公司，那是两件事同时成立，不是矛盾。
+        for node in nodes:
+            for flag in ("smallerReporting", "emergingGrowth"):
+                if node.get(flag) is not None and not isinstance(node[flag], bool):
+                    fail(errors, f"{node.get('symbol')}.{flag} 必须是布尔值，"
+                                 f"实际 {node[flag]!r}")
+                    break
+        for row in by_cat:
+            name = row.get("sector")          # 字段名复用，语义是申报人类别
+            if name not in truth_cat:
+                fail(errors, f"coverage.byFilerCategory 多报了类别「{name}」，节点表里没有")
+            elif row.get("companies") != truth_cat[name]:
+                fail(errors, f"coverage.byFilerCategory[{name}] 报告 "
+                             f"{row.get('companies')}，实际 {truth_cat[name]}")
+        for name in sorted(set(truth_cat) - {r.get("sector") for r in by_cat}):
+            fail(errors, f"coverage.byFilerCategory 漏了类别「{name}」")
+        total_cat = sum(r.get("companies") or 0 for r in by_cat)
+        if total_cat != len(nodes):
+            fail(errors, f"按申报人类别合计 {total_cat} 家 ≠ 全池 {len(nodes)} 家——"
+                         "这一栏量的是同一批公司，必须覆盖全池")
+
     # 三栏之和必须等于全池。差一家就说明有公司三栏都没进——页面上它就消失了。
     # **每加一个池就要在这里加一项**，否则这条校验会把新池报成「消失的公司」。
     if by_sector is not None:
@@ -620,6 +668,12 @@ _OVERSTATED = ("供应商", "合作", "伙伴", "客户", "供货")
 # 允许的公司池。**加新池必须同时改这里**——2026-09-06 扩到第三池时忘了，
 # 数据全跑完（取数 27 分钟、抽取器 16 分钟）才被这道校验拦下，白跑一轮。
 # 拦得对：契约不认识的数据本来就不该发布。教训写在这儿，下次加池先看这行。
+# 规模轴只能取这五个值：三个公众持股量档位，加上两种「没有档位」的说明。
+# 加新值必须同时改构建脚本的 split_filer_category 与页面的档位说明——
+# 三处任一处漏改，页面上就会出现一个没人解释过的档。
+TIERS_OK = frozenset({"大型加速申报人", "加速申报人", "非加速申报人",
+                      "未标注档位", "未分类"})
+
 POOLS = ("sp500", "sec-foreign-issuer", "sec-domestic-filer")
 
 # 没有站内报价的池。站内行情管道只覆盖标普成分股，其余两池一律 marketCap=None。
@@ -927,6 +981,59 @@ def check_form_sd_flag(payload: dict, errors: list[str]) -> None:
           f"其中被判「无申报」的 {len(bad)} 家")
 
 
+def check_smelter_reach(payload: dict, errors: list[str]) -> None:
+    """链条另一端的可达性读数——**这是这份数据的边界，不能悄悄消失**。
+
+    冶炼厂那一端有 1,767 家，其中能对上池内公司的只有个位数。页面靠这一份
+    在每个国别后面写「N 厂 · 均不在池内」，读者才看得出这张图到冶炼厂这一层
+    为止、点不下去。这一份一旦不产出，页面那一格连同它承载的界线一起消失，
+    **而页面不会报错**——所以在发布契约里硬性要求，不给「没有就跳过」的余地。
+
+    校验的是它与登记表、节点表对不对得上，不是它数得大不大：
+    reach 只会因为匹配放宽而变大，而放宽匹配正是**最容易把「同名」说成
+    「同一家」的地方**，所以 inPool 必须逐条能在节点表里找到落点。
+    """
+    reach = payload.get("smelterReach")
+    if not isinstance(reach, dict):
+        fail(errors, "缺少 smelterReach——冶炼厂那一端的可达性读数是页面"
+                     "「均不在池内」那一格的唯一来源，不产出等于悄悄抹掉这条界线")
+        return
+    registry = payload.get("smelters") or payload.get("smelterRegistry") or []
+    if isinstance(registry, dict):
+        registry = list(registry.values())
+    if registry and reach.get("smeltersTotal") != len(registry):
+        fail(errors, f"smelterReach.smeltersTotal = {reach.get('smeltersTotal')}，"
+                     f"登记表实际 {len(registry)} 条")
+    in_pool = reach.get("smeltersInPool")
+    total = reach.get("smeltersTotal") or 0
+    if not isinstance(in_pool, int) or in_pool < 0 or in_pool > total:
+        fail(errors, f"smelterReach.smeltersInPool = {in_pool!r}，"
+                     f"必须是 0~{total} 的整数")
+    symbols = {n.get("symbol") for n in (payload.get("nodes") or [])}
+    for sym in (reach.get("companies") or []):
+        if isinstance(sym, str) and sym not in symbols:
+            fail(errors, f"smelterReach.companies 里的「{sym}」不在节点表里——"
+                         f"匹配放宽把不在池里的名字算成了池内公司")
+    rows = reach.get("byCountry") or []
+    if not isinstance(rows, list):
+        fail(errors, "smelterReach.byCountry 必须是列表")
+        return
+    seen: set = set()
+    for row in rows:
+        country = row.get("country")
+        if country in seen:
+            fail(errors, f"smelterReach.byCountry 里「{country}」出现了两次")
+        seen.add(country)
+        if (row.get("inPool") or 0) > (row.get("smelters") or 0):
+            fail(errors, f"smelterReach「{country}」在池内的冶炼厂 {row.get('inPool')} "
+                         f"家，比该国冶炼厂总数 {row.get('smelters')} 家还多")
+    if rows and sum(r.get("inPool") or 0 for r in rows) != in_pool:
+        fail(errors, f"smelterReach 各国在池内合计 "
+                     f"{sum(r.get('inPool') or 0 for r in rows)}，与总数 {in_pool} 不符")
+    print(f"[OK] 冶炼厂可达性：{total} 家里 {in_pool} 条对上池内公司"
+          f"（去重 {reach.get('distinctCompanies')} 家），按国别 {len(rows)} 行")
+
+
 def check_chain_risk(payload: dict, errors: list[str]) -> None:
     """按链切的风险读数，口径必须与全局那份一致。
 
@@ -998,6 +1105,7 @@ def main() -> int:
     check_page_meta(payload, errors)
     check_form_sd_flag(payload, errors)
     check_chain_risk(payload, errors)
+    check_smelter_reach(payload, errors)
     check_no_conflict_markers(errors)
     smelters = check_smelters(errors, edge_count)
     check_health(errors, len(payload.get("nodes") or []))
