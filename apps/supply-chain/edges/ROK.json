@@ -37,39 +37,39 @@
     "countryRatio": 0.959
   },
   "byCountry": {
-    "中国": 223,
-    "印度尼西亚": 65,
-    "美国": 56,
+    "中国": 233,
+    "印度尼西亚": 66,
+    "美国": 57,
     "日本": 44,
-    "未归类": 28,
-    "巴西": 26,
+    "巴西": 27,
     "印度": 23,
     "德国": 22,
     "俄罗斯": 22,
     "韩国": 19,
-    "中国台湾": 17,
+    "中国台湾": 19,
     "越南": 15,
+    "泰国": 9,
     "马来西亚": 9,
     "阿联酋": 9,
-    "泰国": 8,
-    "瑞士": 7,
-    "意大利": 6,
+    "瑞士": 8,
+    "意大利": 7,
     "比利时": 6,
+    "奥地利": 6,
     "南非": 6,
     "菲律宾": 5,
-    "奥地利": 5,
+    "未归类": 5,
+    "澳大利亚": 5,
     "哈萨克斯坦": 4,
     "秘鲁": 4,
-    "澳大利亚": 4,
     "卢旺达": 4,
     "乌兹别克斯坦": 3,
     "土耳其": 3,
     "墨西哥": 3,
     "加拿大": 3,
     "玻利维亚": 3,
+    "新加坡": 3,
     "西班牙": 3,
     "哥伦比亚": 3,
-    "新加坡": 2,
     "爱沙尼亚": 2,
     "荷兰": 2,
     "捷克": 2,
@@ -84,8 +84,10 @@
     "新西兰": 1,
     "津巴布韦": 1,
     "苏丹": 1,
+    "爱尔兰": 1,
     "葡萄牙": 1,
     "安道尔": 1,
+    "北马其顿": 1,
     "赞比亚": 1,
     "智利": 1,
     "立陶宛": 1,
@@ -1439,12 +1441,13 @@
       "idType": "rmi-cid",
       "cid": "CID000790",
       "name": "IMPAG AG",
-      "country": null,
-      "countryEn": null,
+      "country": "瑞士",
+      "countryEn": "switzerland",
       "minerals": [
         "锡"
       ],
-      "row": 1379
+      "row": 1379,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID000801",
@@ -2399,12 +2402,13 @@
       "idType": "rmi-cid",
       "cid": "CID001246",
       "name": "Ney Metals and Alloys",
-      "country": null,
-      "countryEn": null,
+      "country": "美国",
+      "countryEn": "united states of america",
       "minerals": [
         "锡"
       ],
-      "row": 1373
+      "row": 1373,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID001252",
@@ -2615,12 +2619,13 @@
       "idType": "rmi-cid",
       "cid": "CID001371",
       "name": "Plansee SE Liezen",
-      "country": null,
-      "countryEn": null,
+      "country": "奥地利",
+      "countryEn": "austria",
       "minerals": [
         "钨"
       ],
-      "row": 1335
+      "row": 1335,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID001383",
@@ -3323,12 +3328,13 @@
       "idType": "rmi-cid",
       "cid": "CID001616",
       "name": "Shandong penglai gold smelter",
-      "country": null,
-      "countryEn": null,
+      "country": "中国",
+      "countryEn": "china",
       "minerals": [
         "金"
       ],
-      "row": 1351
+      "row": 1351,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID001619",
@@ -3455,12 +3461,13 @@
       "idType": "rmi-cid",
       "cid": "CID001748",
       "name": "Sizer Metals PTE Ltd",
-      "country": null,
-      "countryEn": null,
+      "country": "新加坡",
+      "countryEn": "singapore",
       "minerals": [
         "锡"
       ],
-      "row": 1349
+      "row": 1349,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID001754",
@@ -3623,12 +3630,13 @@
       "idType": "rmi-cid",
       "cid": "CID001840",
       "name": "Tai Perng",
-      "country": null,
-      "countryEn": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
       "minerals": [
         "金"
       ],
-      "row": 1381
+      "row": 1381,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID001841",
@@ -3695,12 +3703,13 @@
       "idType": "rmi-cid",
       "cid": "CID001857",
       "name": "TAIWAN TOTAI CO., LTD.",
-      "country": null,
-      "countryEn": null,
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
       "minerals": [
         "金"
       ],
-      "row": 1383
+      "row": 1383,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID001859",
@@ -4043,12 +4052,13 @@
       "idType": "rmi-cid",
       "cid": "CID001998",
       "name": "Ultracore Co., Ltd.",
-      "country": null,
-      "countryEn": null,
+      "country": "泰国",
+      "countryEn": "thailand",
       "minerals": [
         "锡"
       ],
-      "row": 1365
+      "row": 1365,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002003",
@@ -4259,12 +4269,13 @@
       "idType": "rmi-cid",
       "cid": "CID002076",
       "name": "Xiamen JInbo Metal Co., Ltd.",
-      "country": null,
-      "countryEn": null,
+      "country": "中国",
+      "countryEn": "china",
       "minerals": [
         "金"
       ],
-      "row": 1347
+      "row": 1347,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002082",
@@ -4427,12 +4438,13 @@
       "idType": "rmi-cid",
       "cid": "CID002166",
       "name": "Yunnan Geiju Smelting Corp.",
-      "country": null,
-      "countryEn": null,
+      "country": "中国",
+      "countryEn": "china",
       "minerals": [
         "锡"
       ],
-      "row": 1385
+      "row": 1385,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002173",
@@ -4487,12 +4499,13 @@
       "idType": "rmi-cid",
       "cid": "CID002201",
       "name": "Zhaojun Maifu",
-      "country": null,
-      "countryEn": null,
+      "country": "中国",
+      "countryEn": "china",
       "minerals": [
         "金"
       ],
-      "row": 1363
+      "row": 1363,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002205",
@@ -4535,12 +4548,13 @@
       "idType": "rmi-cid",
       "cid": "CID002220",
       "name": "Zhongshan Jinye Smelting Co.,Ltd",
-      "country": null,
-      "countryEn": null,
+      "country": "中国",
+      "countryEn": "china",
       "minerals": [
         "锡"
       ],
-      "row": 1367
+      "row": 1367,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002221",
@@ -4895,12 +4909,13 @@
       "idType": "rmi-cid",
       "cid": "CID002386",
       "name": "Nantong Tongjie Electrical Co., Ltd.",
-      "country": null,
-      "countryEn": null,
+      "country": "中国",
+      "countryEn": "china",
       "minerals": [
         "钽"
       ],
-      "row": 1353
+      "row": 1353,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002408",
@@ -4943,12 +4958,13 @@
       "idType": "rmi-cid",
       "cid": "CID002428",
       "name": "Xiamen Honglu Tungsten Molybdenum Co., Ltd.",
-      "country": null,
-      "countryEn": null,
+      "country": "中国",
+      "countryEn": "china",
       "minerals": [
         "锡"
       ],
-      "row": 1375
+      "row": 1375,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002436",
@@ -6035,12 +6051,13 @@
       "idType": "rmi-cid",
       "cid": "CID002662",
       "name": "5N Plus",
-      "country": null,
-      "countryEn": null,
+      "country": "爱尔兰",
+      "countryEn": "ireland",
       "minerals": [
         "锡"
       ],
-      "row": 1357
+      "row": 1357,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002696",
@@ -6155,36 +6172,39 @@
       "idType": "rmi-cid",
       "cid": "CID002739",
       "name": "Hop Hing electroplating factory Zhejiang",
-      "country": null,
-      "countryEn": null,
+      "country": "中国",
+      "countryEn": "china",
       "minerals": [
         "金"
       ],
-      "row": 1369
+      "row": 1369,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002743",
       "idType": "rmi-cid",
       "cid": "CID002743",
       "name": "SuZhou ShenChuang recycling Ltd.",
-      "country": null,
-      "countryEn": null,
+      "country": "中国",
+      "countryEn": "china",
       "minerals": [
         "金"
       ],
-      "row": 1371
+      "row": 1371,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002745",
       "idType": "rmi-cid",
       "cid": "CID002745",
       "name": "Tsai Brother industries",
-      "country": null,
-      "countryEn": null,
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
       "minerals": [
         "金"
       ],
-      "row": 1359
+      "row": 1359,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002750",
@@ -6563,12 +6583,13 @@
       "idType": "rmi-cid",
       "cid": "CID002847",
       "name": "PRG Dooel",
-      "country": null,
-      "countryEn": null,
+      "country": "北马其顿",
+      "countryEn": "north macedonia",
       "minerals": [
         "钽"
       ],
-      "row": 1329
+      "row": 1329,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002848",
@@ -6827,12 +6848,13 @@
       "idType": "rmi-cid",
       "cid": "CID002914",
       "name": "Rio Tinto Group",
-      "country": null,
-      "countryEn": null,
+      "country": "澳大利亚",
+      "countryEn": "australia",
       "minerals": [
         "金"
       ],
-      "row": 1387
+      "row": 1387,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002918",
@@ -6875,12 +6897,13 @@
       "idType": "rmi-cid",
       "cid": "CID002946",
       "name": "Xianghualing Tin Industry Co., Ltd.",
-      "country": null,
-      "countryEn": null,
+      "country": "中国",
+      "countryEn": "china",
       "minerals": [
         "锡"
       ],
-      "row": 1339
+      "row": 1339,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002973",
@@ -6899,12 +6922,13 @@
       "idType": "rmi-cid",
       "cid": "CID003088",
       "name": "AMG Mining Mibra Mine",
-      "country": null,
-      "countryEn": null,
+      "country": "巴西",
+      "countryEn": "brazil",
       "minerals": [
         "钽"
       ],
-      "row": 1341
+      "row": 1341,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID003116",
@@ -7211,12 +7235,13 @@
       "idType": "rmi-cid",
       "cid": "CID003395",
       "name": "OMODEO A. E S. METALLEGHE SRL",
-      "country": null,
-      "countryEn": null,
+      "country": "意大利",
+      "countryEn": "italy",
       "minerals": [
         "锡"
       ],
-      "row": 1319
+      "row": 1319,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID003396",

@@ -69,7 +69,7 @@
     "坦桑尼亚": 1,
     "哥伦比亚": 1,
     "新加坡": 1,
-    "Congo, Democratic Republic of the": 1,
+    "刚果（金）": 1,
     "秘鲁": 1,
     "爱沙尼亚": 1,
     "智利": 1,
@@ -1604,8 +1604,8 @@
       "idType": "name-only",
       "cid": null,
       "name": "Mining Minerals Resources SARL",
-      "country": "Congo, Democratic Republic of the",
-      "countryEn": "congo democratic republic of the",
+      "country": "刚果（金）",
+      "countryEn": "democratic republic of the congo",
       "minerals": [
         "锡"
       ],

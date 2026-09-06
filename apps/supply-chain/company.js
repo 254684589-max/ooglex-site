@@ -541,8 +541,20 @@
         var en = el("div", "en", english);
         item.appendChild(en);
       }
+      // **国别这一格的依据要写出来。** 丰田、飞利浦那几份申报的国别列没被
+      // 抽取器认出来，98% 的条目原本是空的；现在按 RMI CID 从冶炼厂登记表
+      // 补上了——CID 是设施的全球唯一编号，别家申报人写的国别说的就是同一
+      // 座厂。但那毕竟不是**本份申报**写的，不标出来读者会以为是。
       var bits = [e.country || "国别未写明", (e.minerals || []).join("·") || "矿种未写明"];
       var meta = el("div", "meta", bits.join("  ·  "));
+      if (e.countryBasis === "rmi-registry") {
+        meta.appendChild(document.createTextNode("  ·  "));
+        var rb = el("span", "cid", "国别据登记表");
+        rb.title = "本份申报未写明该厂国别；此处按 RMI 冶炼厂编号（"
+          + (e.cid || "CID") + "）从登记表取，即其他申报人对同一座厂的登记。"
+          + "登记表内写法不一致的一律留空，不取多数。";
+        meta.appendChild(rb);
+      }
       if (e.cid) {
         meta.appendChild(document.createTextNode("  ·  "));
         meta.appendChild(el("span", "cid", e.cid));

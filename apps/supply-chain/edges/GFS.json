@@ -66,7 +66,7 @@
     "马来西亚": 1,
     "新加坡": 1,
     "墨西哥": 1,
-    "Congo, Democratic Republic Of The": 1,
+    "刚果（金）": 1,
     "爱沙尼亚": 1,
     "玻利维亚": 1,
     "智利": 1,
@@ -1325,8 +1325,8 @@
       "idType": "name-only",
       "cid": null,
       "name": "Mining Minerals Resources SARL",
-      "country": "Congo, Democratic Republic Of The",
-      "countryEn": "congo democratic republic of the",
+      "country": "刚果（金）",
+      "countryEn": "democratic republic of the congo",
       "minerals": [
         "锡"
       ],

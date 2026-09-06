@@ -57,6 +57,7 @@
     "西班牙": 4,
     "菲律宾": 3,
     "墨西哥": 3,
+    "加拿大": 3,
     "波兰": 3,
     "澳大利亚": 3,
     "马来西亚": 3,
@@ -64,7 +65,6 @@
     "乌兹别克斯坦": 2,
     "玻利维亚": 2,
     "土耳其": 2,
-    "加拿大": 2,
     "秘鲁": 2,
     "爱沙尼亚": 2,
     "比利时": 2,
@@ -73,7 +73,6 @@
     "法国": 2,
     "乌干达": 2,
     "瑞典": 1,
-    "未归类": 1,
     "吉尔吉斯斯坦": 1,
     "新加坡": 1,
     "新西兰": 1,
@@ -86,7 +85,7 @@
     "加纳": 1,
     "挪威": 1,
     "哥伦比亚": 1,
-    "CONGO, DEMOCRATIC REPUBLIC OF THE": 1,
+    "刚果（金）": 1,
     "坦桑尼亚": 1
   },
   "byMineral": {
@@ -281,12 +280,13 @@
       "idType": "rmi-cid",
       "cid": "CID000185",
       "name": "Glencore Canada Corporation – CCR Refinery",
-      "country": null,
-      "countryEn": null,
+      "country": "加拿大",
+      "countryEn": "canada",
       "minerals": [
         "金"
       ],
-      "row": 63
+      "row": 63,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID000189",
@@ -3737,8 +3737,8 @@
       "idType": "rmi-cid",
       "cid": "CID004065",
       "name": "Mining Minerals Resources SARL",
-      "country": "CONGO, DEMOCRATIC REPUBLIC OF THE",
-      "countryEn": "congo democratic republic of the",
+      "country": "刚果（金）",
+      "countryEn": "democratic republic of the congo",
       "minerals": [
         "锡"
       ],

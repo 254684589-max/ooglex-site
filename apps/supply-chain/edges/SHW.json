@@ -37,7 +37,12 @@
     "countryRatio": 0.0
   },
   "byCountry": {
-    "未归类": 7
+    "中国": 2,
+    "马来西亚": 1,
+    "秘鲁": 1,
+    "玻利维亚": 1,
+    "印度尼西亚": 1,
+    "泰国": 1
   },
   "byMineral": {
     "锡": 7
@@ -48,84 +53,91 @@
       "idType": "rmi-cid",
       "cid": "CID001105",
       "name": "Malaysia Smelting Corporation (MSC)",
-      "country": null,
-      "countryEn": null,
+      "country": "马来西亚",
+      "countryEn": "malaysia",
       "minerals": [
         "锡"
       ],
-      "row": 18
+      "row": 18,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID001182",
       "idType": "rmi-cid",
       "cid": "CID001182",
       "name": "Minsur",
-      "country": null,
-      "countryEn": null,
+      "country": "秘鲁",
+      "countryEn": "peru",
       "minerals": [
         "锡"
       ],
-      "row": 19
+      "row": 19,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID001337",
       "idType": "rmi-cid",
       "cid": "CID001337",
       "name": "Operaciones Metalurgicas S.A.",
-      "country": null,
-      "countryEn": null,
+      "country": "玻利维亚",
+      "countryEn": "bolivia plurinational state of",
       "minerals": [
         "锡"
       ],
-      "row": 20
+      "row": 20,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID001482",
       "idType": "rmi-cid",
       "cid": "CID001482",
       "name": "PT Timah Tbk Mentok",
-      "country": null,
-      "countryEn": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
       "minerals": [
         "锡"
       ],
-      "row": 21
+      "row": 21,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID001898",
       "idType": "rmi-cid",
       "cid": "CID001898",
       "name": "Thailand Smelting and Refining Co., Ltd.",
-      "country": null,
-      "countryEn": null,
+      "country": "泰国",
+      "countryEn": "thailand",
       "minerals": [
         "锡"
       ],
-      "row": 22
+      "row": 22,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002158",
       "idType": "rmi-cid",
       "cid": "CID002158",
       "name": "Yunnan Chengfeng Non-ferrous Metals Co., Ltd.",
-      "country": null,
-      "countryEn": null,
+      "country": "中国",
+      "countryEn": "china",
       "minerals": [
         "锡"
       ],
-      "row": 24
+      "row": 24,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002180",
       "idType": "rmi-cid",
       "cid": "CID002180",
       "name": "Tin Smelting Branch of Yunnan Tin Co., Ltd.",
-      "country": null,
-      "countryEn": null,
+      "country": "中国",
+      "countryEn": "china",
       "minerals": [
         "锡"
       ],
-      "row": 23
+      "row": 23,
+      "countryBasis": "rmi-registry"
     }
   ],
   "coverage": {

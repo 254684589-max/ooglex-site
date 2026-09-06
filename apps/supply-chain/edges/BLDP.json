@@ -37,7 +37,7 @@
     "countryRatio": 0.993
   },
   "byCountry": {
-    "中国": 104,
+    "中国": 105,
     "印度尼西亚": 41,
     "日本": 33,
     "美国": 31,
@@ -62,7 +62,6 @@
     "加拿大": 3,
     "西班牙": 3,
     "澳大利亚": 3,
-    "未归类": 3,
     "卢旺达": 3,
     "乌兹别克斯坦": 2,
     "玻利维亚": 2,
@@ -85,14 +84,16 @@
     "荷兰": 1,
     "葡萄牙": 1,
     "安道尔": 1,
+    "北马其顿": 1,
     "赞比亚": 1,
     "智利": 1,
     "立陶宛": 1,
     "加纳": 1,
     "挪威": 1,
     "哥伦比亚": 1,
-    "Congo, Democratic Republic Of The": 1,
-    "坦桑尼亚": 1
+    "刚果（金）": 1,
+    "坦桑尼亚": 1,
+    "未归类": 1
   },
   "byMineral": {
     "金": 193,
@@ -3718,12 +3719,13 @@
       "idType": "rmi-cid",
       "cid": "CID002844",
       "name": "HuiChang Hill Tin Industry Co., Ltd.",
-      "country": null,
-      "countryEn": null,
+      "country": "中国",
+      "countryEn": "china",
       "minerals": [
         "锡"
       ],
-      "row": 308
+      "row": 308,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002845",
@@ -3742,12 +3744,13 @@
       "idType": "rmi-cid",
       "cid": "CID002847",
       "name": "Macedonia, The Former Yugoslav Republic Of",
-      "country": null,
-      "countryEn": null,
+      "country": "北马其顿",
+      "countryEn": "north macedonia",
       "minerals": [
         "钽"
       ],
-      "row": 241
+      "row": 241,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002848",
@@ -4894,8 +4897,8 @@
       "idType": "rmi-cid",
       "cid": "CID004065",
       "name": "Mining Minerals Resources SARL",
-      "country": "Congo, Democratic Republic Of The",
-      "countryEn": "congo democratic republic of the",
+      "country": "刚果（金）",
+      "countryEn": "democratic republic of the congo",
       "minerals": [
         "锡"
       ],

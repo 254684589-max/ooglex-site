@@ -38,7 +38,7 @@
   },
   "byCountry": {
     "中国": 92,
-    "印度尼西亚": 55,
+    "印度尼西亚": 56,
     "日本": 31,
     "美国": 27,
     "巴西": 19,
@@ -53,12 +53,12 @@
     "阿联酋": 6,
     "菲律宾": 5,
     "意大利": 5,
-    "未归类": 4,
     "哈萨克斯坦": 4,
     "马来西亚": 4,
     "比利时": 4,
     "泰国": 4,
     "乌兹别克斯坦": 3,
+    "土耳其": 3,
     "墨西哥": 3,
     "加拿大": 3,
     "西班牙": 3,
@@ -210,12 +210,13 @@
       "idType": "rmi-cid",
       "cid": "CID000103",
       "name": "Atasay Kuyumculuk Sanayi Ve Ticaret A.S.",
-      "country": null,
-      "countryEn": null,
+      "country": "土耳其",
+      "countryEn": "turkey",
       "minerals": [
         "金"
       ],
-      "row": 14
+      "row": 14,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID000105",
@@ -918,12 +919,13 @@
       "idType": "rmi-cid",
       "cid": "CID000814",
       "name": "Istanbul Gold Refinery",
-      "country": null,
-      "countryEn": null,
+      "country": "土耳其",
+      "countryEn": "turkey",
       "minerals": [
         "金"
       ],
-      "row": 75
+      "row": 75,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID000823",
@@ -1482,12 +1484,13 @@
       "idType": "rmi-cid",
       "cid": "CID001220",
       "name": "Nadir Metal Rafineri San. Ve Tic. A.S.",
-      "country": null,
-      "countryEn": null,
+      "country": "土耳其",
+      "countryEn": "turkey",
       "minerals": [
         "金"
       ],
-      "row": 124
+      "row": 124,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID001231",
@@ -1962,12 +1965,13 @@
       "idType": "rmi-cid",
       "cid": "CID001486",
       "name": "Smelter not yet identified",
-      "country": null,
-      "countryEn": null,
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
       "minerals": [
         "锡"
       ],
-      "row": 166
+      "row": 166,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID001490",

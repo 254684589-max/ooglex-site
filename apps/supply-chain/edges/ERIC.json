@@ -65,13 +65,13 @@
     "土耳其": 3,
     "墨西哥": 3,
     "加拿大": 3,
-    "未归类": 3,
     "卢旺达": 3,
     "玻利维亚": 2,
     "波兰": 2,
     "爱沙尼亚": 2,
     "荷兰": 2,
     "捷克": 2,
+    "未归类": 2,
     "法国": 2,
     "乌干达": 2,
     "缅甸": 2,
@@ -86,13 +86,14 @@
     "苏丹": 1,
     "葡萄牙": 1,
     "安道尔": 1,
+    "北马其顿": 1,
     "赞比亚": 1,
     "智利": 1,
     "立陶宛": 1,
     "加纳": 1,
     "挪威": 1,
     "毛里塔尼亚": 1,
-    "CONGO, DEMOCRATIC REPUBLIC OF THE": 1,
+    "刚果（金）": 1,
     "坦桑尼亚": 1,
     "格鲁吉亚": 1
   },
@@ -4214,12 +4215,13 @@
       "idType": "rmi-cid",
       "cid": "CID002847",
       "name": "NORTH MACEDONIA, REPUBLIC OF",
-      "country": null,
-      "countryEn": null,
+      "country": "北马其顿",
+      "countryEn": "north macedonia",
       "minerals": [
         "钽"
       ],
-      "row": 472
+      "row": 472,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID002848",
@@ -5322,8 +5324,8 @@
       "idType": "rmi-cid",
       "cid": "CID004065",
       "name": "Mining Minerals Resources SARL",
-      "country": "CONGO, DEMOCRATIC REPUBLIC OF THE",
-      "countryEn": "congo democratic republic of the",
+      "country": "刚果（金）",
+      "countryEn": "democratic republic of the congo",
       "minerals": [
         "锡"
       ],

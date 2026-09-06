@@ -37,7 +37,7 @@
     "countryRatio": 0.0
   },
   "byCountry": {
-    "未归类": 1
+    "中国": 1
   },
   "byMineral": {
     "未标注": 1
@@ -48,10 +48,11 @@
       "idType": "rmi-cid",
       "cid": "CID001909",
       "name": null,
-      "country": null,
-      "countryEn": null,
+      "country": "中国",
+      "countryEn": "china",
       "minerals": [],
-      "row": 9
+      "row": 9,
+      "countryBasis": "rmi-registry"
     }
   ],
   "coverage": {

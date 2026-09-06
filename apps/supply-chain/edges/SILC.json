@@ -64,6 +64,7 @@
     "加拿大": 3,
     "西班牙": 3,
     "澳大利亚": 3,
+    "刚果（金）": 2,
     "乌兹别克斯坦": 2,
     "玻利维亚": 2,
     "波兰": 2,
@@ -72,7 +73,6 @@
     "奥地利": 2,
     "法国": 2,
     "缅甸": 2,
-    "刚果（金）": 1,
     "瑞典": 1,
     "吉尔吉斯斯坦": 1,
     "沙特阿拉伯": 1,
@@ -86,7 +86,6 @@
     "加纳": 1,
     "挪威": 1,
     "哥伦比亚": 1,
-    "CONGO, DEMOCRATIC REPUBLIC OF THE": 1,
     "坦桑尼亚": 1,
     "乌干达": 1,
     "未归类": 1
@@ -4315,8 +4314,8 @@
       "idType": "rmi-cid",
       "cid": "CID004065",
       "name": null,
-      "country": "CONGO, DEMOCRATIC REPUBLIC OF THE",
-      "countryEn": "congo democratic republic of the",
+      "country": "刚果（金）",
+      "countryEn": "democratic republic of the congo",
       "minerals": [
         "锡"
       ],
