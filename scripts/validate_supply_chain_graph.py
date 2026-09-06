@@ -253,12 +253,22 @@ def check_coverage(payload: dict, counts: dict, edge_count: int, errors: list[st
         if not isinstance(by_sector, list):
             fail(errors, "coverage.bySector 必须是数组")
             return
-        # bySector 只统计标普那一池。外国发行人没有站内板块分类，按国别单列在
-        # byCountry 里——把它们算进「未分类」等于一个 147 家的黑箱，而且会把
-        # 「金融 0/70」这类制度上限的解释稀释掉。两栏加起来才是全池。
+        # **三个池，三栏，各按各自唯一可用的维度拆。**
+        #
+        #   bySector    仅 sp500       按 GICS 板块（只有这一池有）
+        #   byCountry   外国发行人      按经营地
+        #   bySicMajor  本土 10-K 申报人 按 SIC 大类（板块与国别两样都没有）
+        #
+        # 把没有板块的池算进「未分类」，等于造一个几千家的黑箱，还会把
+        # 「金融 0/70」这类制度上限的解释稀释掉。**三栏加起来才是全池。**
+        #
+        # 这里用白名单（== sp500）而不是黑名单（!= 外国发行人）：本轮加第三池时
+        # 黑名单悄悄把 4,210 家吞进了「未分类」，跑完 41 分钟才被下面那条
+        # 合计校验拦下。**判据要说「收谁」，不要说「除了谁」**——
+        # 加一个池，黑名单就错一次，白名单只会漏报、不会误收。
         actual: dict[str, dict[str, int]] = {}
         for node in nodes:
-            if node.get("pool") == "sec-foreign-issuer":
+            if node.get("pool") != "sp500":
                 continue
             key = node.get("sector") or "未分类"
             row = actual.setdefault(key, {"companies": 0, "withEdges": 0})
@@ -317,12 +327,36 @@ def check_coverage(payload: dict, counts: dict, edge_count: int, errors: list[st
         for name in sorted(missing):
             fail(errors, f"coverage.byCountry 漏了国别「{name}」")
 
-        # 两栏之和必须等于全池。差一家就说明有公司两栏都没进——页面上它就消失了。
-        both = (sum(r.get("companies") or 0 for r in (by_sector or []))
-                + sum(r.get("companies") or 0 for r in by_country))
-        if by_sector is not None and both != len(nodes):
-            fail(errors, f"按板块 + 按国别 合计 {both} 家，全池 {len(nodes)} 家——"
-                         "有公司两栏都没进，页面上会直接消失")
+    # ── 第三栏：本土 10-K 申报人按 SIC 大类 ──────────────────────────────
+    by_sic = coverage.get("bySicMajor")
+    if by_sic is not None:
+        if not isinstance(by_sic, list):
+            fail(errors, "coverage.bySicMajor 必须是数组")
+            return
+        truth_sic: dict[str, int] = {}
+        for node in nodes:
+            if node.get("pool") != "sec-domestic-filer":
+                continue
+            key = node.get("sicMajorLabel") or "未分类"
+            truth_sic[key] = truth_sic.get(key, 0) + 1
+        for row in by_sic:
+            name = row.get("sector")          # 字段名复用，语义是行业大类
+            if name not in truth_sic:
+                fail(errors, f"coverage.bySicMajor 多报了行业大类「{name}」，节点表里没有")
+            elif row.get("companies") != truth_sic[name]:
+                fail(errors, f"coverage.bySicMajor[{name}] 报告 {row.get('companies')}，"
+                             f"实际 {truth_sic[name]}")
+        for name in sorted(set(truth_sic) - {r.get("sector") for r in by_sic}):
+            fail(errors, f"coverage.bySicMajor 漏了行业大类「{name}」")
+
+    # 三栏之和必须等于全池。差一家就说明有公司三栏都没进——页面上它就消失了。
+    # **每加一个池就要在这里加一项**，否则这条校验会把新池报成「消失的公司」。
+    if by_sector is not None:
+        shown = sum(sum(r.get("companies") or 0 for r in (col or []))
+                    for col in (by_sector, by_country, by_sic))
+        if shown != len(nodes):
+            fail(errors, f"按板块 + 按经营地 + 按行业大类 合计 {shown} 家，"
+                         f"全池 {len(nodes)} 家——有公司哪一栏都没进，页面上会直接消失")
 
 
 def check_smelters(errors: list[str], edge_count: int) -> dict:

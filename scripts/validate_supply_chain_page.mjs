@@ -428,6 +428,11 @@ async function main() {
           countryLastLabel: (([...box.querySelectorAll('#cov-country-rows .covrow .s')]
             .pop() || {}).textContent) || '',
           countryLead: (box.querySelector('#cov-country-lead') || {}).textContent || '',
+          sicLead: (box.querySelector('#cov-sic-lead') || {}).textContent || '',
+          sicShown: (() => {
+            const e = box.querySelector('#cov-sic-lead');
+            return !!(e && !e.hidden && e.offsetHeight > 0);
+          })(),
           countryLeadHidden: !!(box.querySelector('#cov-country-lead') || {}).hidden,
           overflow: box.scrollWidth - box.clientWidth
         };
@@ -503,11 +508,25 @@ async function main() {
           assert.match(cov.countryLead, /开曼|离岸|只做登记/,
             `没说清为什么不用注册地：${cov.countryLead.slice(0, 160)}`);
         });
-        check(`板块那一栏仍只统计标普池（${SECTORS.length} 个板块）`, () => {
-          const sectorN = SECTORS.reduce((a, r) => a + (r.companies || 0), 0);
-          assert.equal(sectorN + foreignN, NODES.nodes.length,
-            `板块 ${sectorN} + 国别 ${foreignN} ≠ 全池 ${NODES.nodes.length}`);
+        /* 三栏加起来必须等于全池。**每加一个池就要在这里加一项**，
+           否则新池的公司在页面上直接消失——覆盖率面板漏掉它们，
+           而每个数字看着都对。本轮加第三池时这条正是拦下来的那道关口。 */
+        check(`三栏加起来等于全池（板块 ${SECTORS.length} 个）`, () => {
+          const sum = (rows) => (rows || []).reduce((a, r) => a + (r.companies || 0), 0);
+          const sectorN = sum(SECTORS);
+          const sicN = sum((NODES.coverage || {}).bySicMajor);
+          assert.equal(sectorN + foreignN + sicN, NODES.nodes.length,
+            `板块 ${sectorN} + 经营地 ${foreignN} + 行业大类 ${sicN} `
+            + `≠ 全池 ${NODES.nodes.length}——有公司哪一栏都没进`);
         });
+        if (((NODES.coverage || {}).bySicMajor || []).length) {
+          check(`本土 10-K 申报人单列一栏，并写清是行业大类不是板块`, () => {
+            assert.ok(cov.sicShown, "第三栏没渲染——这几千家会掉进「未分类」黑箱");
+            assert.match(cov.sicLead, /行业大类/, `实际：${cov.sicLead.slice(0, 100)}`);
+            assert.match(cov.sicLead, /不是 GICS 板块|不是板块/,
+              `没说清与板块的区别：${cov.sicLead.slice(0, 120)}`);
+          });
+        }
       }
 
       check(`按板块区块无横向溢出`, () => assert.ok(cov.overflow <= 1,
