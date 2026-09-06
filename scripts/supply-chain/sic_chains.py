@@ -212,6 +212,12 @@ RANGES: list[tuple[int, int, tuple[str, ...], str]] = [
     (3720, 3729, ("aerospace-defense",), "航空器与发动机"),
     (3730, 3739, ("logistics-transport",), "船舶"),
     (3740, 3749, ("logistics-transport",), "铁路装备"),
+    # 375x 两轮车。原表 3749 之后直接跳到 3760，把这一段漏了——池子里只有标普
+    # 500 时没有公司落在这里，扩到全体在美上市外国发行人之后就露出来了
+    # （EZGO、LOBO 两家中国电动两轮车厂，SIC 3751，判不出产业链）。
+    # 归入汽车链是**定义**不是断言：两轮车与汽车共用整车组装、动力电池、
+    # 零部件与经销这同一条价值链，GICS 也把摩托车厂放在 Automobiles 之下。
+    (3750, 3759, ("automotive",), "摩托车与自行车"),
     (3760, 3769, ("aerospace-defense",), "导弹与航天器"),
     (3790, 3799, ("consumer-goods",), "其他运输工具"),
     (3800, 3819, ("industrial-machinery",), "仪器仪表"),

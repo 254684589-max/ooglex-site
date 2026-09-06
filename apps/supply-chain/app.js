@@ -338,14 +338,26 @@
     if (sum) {
       var withEdges = cv.nodesWithEdges || 0;
       var totalN = cv.nodesTotal || 0;
+      // **两个分母，两件事，都要印出来。**
+      //
+      // 127/1689 = 8% 说的是「这份公司名录里有多大比例带关系数据」；
+      // 127/313 = 41% 说的是「在这套申报规则管得着的公司里，抽到了多大比例」。
+      // 只印前者，读者会把「名录扩大」读成「数据变差」——而多出来的那一千余家
+      // 是外国私人发行人里不报 Form SD 的，规则根本不适用，不是抓漏了。
+      // 只印后者，就是拿一个小分母把覆盖率说好看，正是这个板块一直在防的事。
+      var filers = filerCount(d);
       sum.textContent = "";
       sum.appendChild(document.createTextNode("全池 "));
       sum.appendChild(el("b", null, String(totalN)));
-      sum.appendChild(document.createTextNode(" 家里 "));
+      sum.appendChild(document.createTextNode(" 家 · 有出处关系 "));
       sum.appendChild(el("b", null, String(withEdges)));
-      sum.appendChild(document.createTextNode(" 家有出处关系（"
-        + (totalN ? Math.round(withEdges / totalN * 100) : 0)
-        + "%）· 点开看各板块与国别为什么差这么多"));
+      sum.appendChild(document.createTextNode(" 家（占全池 "
+        + (totalN ? Math.round(withEdges / totalN * 100) : 0) + "%"));
+      if (filers) {
+        sum.appendChild(document.createTextNode("，占报过 Form SD 的 "
+          + filers + " 家的 " + Math.round(withEdges / filers * 100) + "%"));
+      }
+      sum.appendChild(document.createTextNode("）· 点开看各板块与国别为什么差这么多"));
     }
 
     setText($("cov-lead"), anyStatus
@@ -421,6 +433,18 @@
     return out;
   }
 
+  // 关系数据**结构上**能覆盖到的公司数：报过 Form SD 的那些。
+  // 不报 SD 的公司没有边不是缺口，是规则不适用——把它们算进分母，
+  // 等于把「不适用」记成「我们没做到」。
+  function filerCount(d) {
+    var n = 0;
+    (d.nodes || []).forEach(function (x) {
+      var k = x.formSdStatus;
+      if (k === "listed" || k === "filed-no-list" || k === "resource-extraction") n += 1;
+    });
+    return n;
+  }
+
   // 把「为什么这一段是这个数」写成一句话。**不同的 0 要说成不同的 0。**
   function coverWhy(st, total) {
     var bits = [];
@@ -437,6 +461,29 @@
     if (st.unknown) bits.push("尚无逐家申报状态 " + st.unknown + " 家");
     return "本环节 " + total + " 家：" + bits.join("；")
       + "。「无申报」不等于这些公司没有供应链。";
+  }
+
+  // 同一份分档，写成一行**看得见**的字。
+  //
+  // 此前分档只写进 covEl.title——那是 hover 提示，**手机上没有 hover，
+  // 等于这句话不存在**。而公司池从 642 家扩到 1,689 家之后，「有出处」
+  // 会掉到个位数百分比：这时候把「为什么没覆盖」藏在提示里，读者只会
+  // 得出「这个板块的数据很差」，而真相是多出来的那一千余家**根本不适用
+  // 这套申报规则**——不是抓漏了，是规则不管它们。
+  //
+  // 所以这一行是扩池的附带条件之一（见 fetch_foreign_identity.py 开头），
+  // 由 validate_supply_chain_page.mjs 钉住，不是可选的美化。
+  function coverLine(st, total) {
+    var bits = [];
+    if (st.filedNoList) bits.push("有申报未列名单 " + st.filedNoList + " 家");
+    if (st.resourceExtraction) {
+      bits.push("申报的是 13q-1 资源开采付款 " + st.resourceExtraction + " 家");
+    }
+    if (st.noFiling) bits.push("未报 Form SD、规则不适用 " + st.noFiling + " 家");
+    if (st.unknown) bits.push("尚无逐家申报状态 " + st.unknown + " 家");
+    if (!bits.length) return "";
+    return "未覆盖的 " + (total - st.withEdges) + " 家：" + bits.join(" · ")
+      + (st.noFiling ? "。未报申报不等于这些公司没有供应链。" : "。");
   }
 
   function drawCovRows(wrap, rows) {
@@ -879,6 +926,12 @@
     }
 
     if (meta.description) band.appendChild(el("div", "banddesc", meta.description));
+    // 分档解释就地写出来，不藏在 hover 里。放在环节说明下面而不是表头里：
+    // 表头一行已经有名称／家数／市值／有出处／涨跌五格，再塞一句话会挤爆窄屏。
+    if (total) {
+      var why = coverLine(stageCoverage(d, meta.id), total);
+      if (why) band.appendChild(el("div", "bandwhy", why));
+    }
 
     var list = visibleNodes(d).filter(function (x) { return x.stage === meta.id; })
       .sort(function (a, b2) { return (b2.marketCap || 0) - (a.marketCap || 0); });

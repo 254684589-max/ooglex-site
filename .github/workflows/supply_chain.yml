@@ -42,7 +42,11 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # 60 分钟是按「季外、池子 642 家」定的，那时抽取器根本不发请求。
+    # 扩到 1,689 家之后，一次 --force 全量扫描要逐家取 submissions，
+    # 加上外国发行人取数本身的 1,194 家，实测量级已经顶到原上限。
+    # 放宽到 150 分钟：作业只占用它真正用掉的时间，留出余量比卡在悬崖边好。
+    timeout-minutes: 150
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
@@ -72,10 +76,22 @@ jobs:
           SEC_CONTACT: ${{ vars.SEC_CONTACT }}
         run: python scripts/supply-chain/fetch_company_identity.py
 
+      # 外国私人发行人（在美上市、报 20-F／40-F 的全体）。公司池此前只有标普 500，
+      # 半导体链上没有 ASML 和台积电根本画不出来。
+      # **这一步必须排在抽取器之前。** 抽取器要扫的公司名单就是这份文件产出的；
+      # 排在后面的话，新入池的公司永远要等下一轮才被扫到状态——本轮扩池
+      # 147 → 约 1,194 家，那就是一千多家挂着「尚无申报状态」发布出去。
+      # 失败不中断：构建脚本读不到这份缓存时只出标普那 495 家，不产出空数据。
+      - name: Fetch SEC foreign private issuers
+        continue-on-error: true
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: python scripts/supply-chain/fetch_foreign_identity.py
+
       # Form SD 冲突矿产申报 → 冶炼厂关系边。这是本板块唯一有出处的关系数据。
       # 语义是「该冶炼厂出现在申报人的供应链中」，不是直接供货关系。
       # **一年只跑一次**：脚本自带季节闸门，非申报季（5–7 月以外）直接退出，
-      # 不发任何请求。Form SD 一年一报，天天扫 495 家既拿不到新东西也白占带宽。
+      # 不发任何请求。Form SD 一年一报，天天扫 1,689 家既拿不到新东西也白占带宽。
       # 失败不中断：边文件是上一次的产物，读不到新数据就沿用，不删不改。
       - name: Extract Form SD smelter lists
         continue-on-error: true
@@ -84,16 +100,6 @@ jobs:
         run: |
           python scripts/supply-chain/extract_form_sd.py \
             ${{ inputs.force_form_sd == 'yes' && '--force' || '' }}
-
-      # 外国私人发行人（报 20-F／40-F 且报 Form SD 的那一批）。公司池此前只有
-      # 标普 500，半导体链上没有 ASML 和台积电根本画不出来。只收同时报 SD 的，
-      # 因为报 SD 才可能带来冶炼厂名单——只增加孤立节点的扩池没有意义。
-      # 失败不中断：构建脚本读不到这份缓存时只出标普那 495 家，不产出空数据。
-      - name: Fetch SEC foreign private issuers
-        continue-on-error: true
-        env:
-          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
-        run: python scripts/supply-chain/fetch_foreign_identity.py
 
       # 冶炼厂中文译名表。与带出处的申报数据分开发布——边文件里是申报原文，
       # 译名是我们加的标注，混在一起会让「哪些是原文」分不清。
