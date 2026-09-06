@@ -149,7 +149,7 @@ jobs:
                   apps/supply-chain/identity.json apps/supply-chain/smelters.json \
                   apps/supply-chain/names-zh.json apps/supply-chain/edges \
                   apps/supply-chain/peers.json apps/supply-chain/foreign.json \
-        apps/supply-chain/domestic.json
+                  apps/supply-chain/domestic.json
           if git diff --cached --quiet; then
             echo "生成结果与仓库一致，跳过提交和推送"
             exit 0
