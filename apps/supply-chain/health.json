@@ -1,11 +1,11 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "generatedAt": "2026-09-06T04:29:04Z",
+  "generatedAt": "2026-09-06T06:43:11Z",
   "status": "healthy",
   "historyStatus": "migrated",
-  "lastAttemptAt": "2026-09-06T04:29:04Z",
-  "lastSuccessfulAt": "2026-09-06T04:29:04Z",
+  "lastAttemptAt": "2026-09-06T06:43:11Z",
+  "lastSuccessfulAt": "2026-09-06T06:43:11Z",
   "consecutiveFailures": 0,
   "failureReason": null,
   "coverage": {

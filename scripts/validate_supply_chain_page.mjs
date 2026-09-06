@@ -145,6 +145,20 @@ async function main() {
   try {
     const { targetId } = await client.send("Target.createTarget", { url: "about:blank" });
     const { sessionId } = await client.send("Target.attachToTarget", { targetId, flatten: true });
+    /* 未捕获异常的总闸。**这一条要防的不是某个功能，是「整块没渲染出来」。**
+       本轮删掉一个变量声明却留下两处使用，ReferenceError 在 fetch().then()
+       链里抛出——浏览器把它当成 unhandled rejection 咽掉，页面只是少了方法区
+       和后面所有收尾，而 15 条断言各自报「内容不对」，没有一条指出真正原因，
+       排查花的时间比修复长得多。
+       监听器必须在**页面脚本之前**注入，navigate 之后再 evaluate 就晚了。 */
+    await client.send("Page.addScriptToEvaluateOnNewDocument", {
+      source: "window.__pageErrors = [];"
+        + "addEventListener('error', function (e) {"
+        + "  window.__pageErrors.push('error: ' + (e.message || e.type)); });"
+        + "addEventListener('unhandledrejection', function (e) {"
+        + "  var r = e.reason; window.__pageErrors.push("
+        + "    'unhandledrejection: ' + ((r && (r.stack || r.message)) || String(r))); });"
+    }, sessionId);
     const evaluate = async (expression) => {
       const result = await client.send("Runtime.evaluate", {
         expression, returnByValue: true, awaitPromise: true
@@ -351,6 +365,32 @@ async function main() {
       check(`触控区域不小于 44×44`, () => assert.equal(probe.undersizedTargets, 0));
       check(`环节卡片键盘可达`, () => assert.ok(probe.focusable));
       check(`初始不展开任何环节`, () => assert.equal(probe.expandedInitially, 0));
+      /* 渲染中途抛异常的总闸。
+
+         本轮删掉一个变量声明却留下两处使用，ReferenceError 在 render() 里抛出，
+         被 fetch 链尾部的 .catch 接住 → 页面显示「加载失败」横幅、但前半截内容
+         已经画出来了，看着只是「后面几块是空的」。**15 条断言各自报「内容不对」，
+         没有一条说得出原因**，排查花的时间比修复长得多。
+
+         第一版只收 unhandledrejection，什么都没抓到——异常被 .catch 处理过，
+         按定义就不是「未捕获」。真正的信号是那条**本不该出现的错误横幅**：
+         正常路径上它必须是隐藏的，出现就说明渲染半路断了，而且它自带原因。 */
+      const loadState = await evaluate(`(() => {
+        const e = document.getElementById('state');
+        if (!e) return { shown: false, cls: '', text: '' };
+        return { shown: !e.hidden && e.offsetHeight > 0,
+                 cls: e.className || '',
+                 text: (e.textContent || '').trim().slice(0, 160) };
+      })()`);
+      const pageErrors = await evaluate(`(window.__pageErrors || []).slice(0, 4)`);
+      check(`渲染没有中途失败（错误横幅不出现）`, () => {
+        assert.equal(loadState.shown, false,
+          `页面显示了状态横幅（class=${loadState.cls}）：${loadState.text}`);
+        assert.ok(!/\berr\b/.test(loadState.cls),
+          `状态元素被标成错误态：${loadState.text}`);
+        assert.deepEqual(pageErrors, [],
+          `另有未捕获异常：${pageErrors.join(" | ")}`);
+      });
 
       /* 按板块的覆盖情况。这一段直接回答「为什么有的公司有数据、有的没有」，
          页面上印的每个数字都必须来自 nodes.json，不能由前端自己算出个近似值。
@@ -540,6 +580,67 @@ async function main() {
         };
       })()`);
       check(`横轴选择条已渲染`, () => assert.ok(cp.shown));
+
+      /* 筛了链，风险面板必须跟着筛。
+
+         这三块（真实流向 / 上游集中度 / 国别暴露）此前完全不读筛选状态：
+         读者点「半导体」，环节卡筛到 48 家，往下滚读到的却是 23 条链合计的
+         「31,320 条关系、72 个国别、128 家分母」。**数字本身没错，错在它
+         回答的不是读者以为的那个问题**——在筛选语境下印全局数并且一个字不说，
+         等于把全局风险说成这条链的风险。
+
+         断言比对的是 nodes.json 里 chainRisk 的真值，不是页面自己算的数。 */
+      const RISK = (NODES.chainRisk || {})[PICKED.id];
+      if (RISK) {
+        const rk = await evaluate(`(() => {
+          const chip = [...document.querySelectorAll('#chainpick .chip')]
+            .find(c => c.getAttribute('data-chain') === ${JSON.stringify(PICKED.id)}
+              || ((c.querySelector('.cl') || {}).textContent || '').trim()
+                 === ${JSON.stringify(PICKED.label || "")});
+          const read = () => ({
+            conc: (document.getElementById('conc-lead') || {}).textContent || '',
+            expo: (document.getElementById('expo-lead') || {}).textContent || '',
+            flow: (document.getElementById('flow-lead') || {}).textContent || '',
+            rows: document.querySelectorAll('#expo-rows .exprow').length
+          });
+          const before = read();
+          if (!chip) return { clicked: false, before };
+          chip.click();
+          const after = read();
+          // **点完必须点回去。** 这个探针改的是页面状态，不还原的话后面
+          // 每一条断言都在筛过的页面上跑——上一版就是这么让整个套件炸掉的。
+          chip.click();
+          return { clicked: true, before, after, restored: read() };
+        })()`);
+        check(`筛出「${PICKED.label}」后风险面板跟着换口径`, () => {
+          assert.ok(rk.clicked, "没找到该链的筛选按钮");
+          assert.notEqual(rk.after.conc, rk.before.conc, "上游集中度没跟着变");
+          assert.notEqual(rk.after.expo, rk.before.expo, "国别暴露没跟着变");
+        });
+        check(`筛选后印的是这条链的分母，不是全池的`, () => {
+          const all = String((NODES.coverage || {}).nodesWithEdges || 0);
+          [["上游集中度", rk.after.conc], ["国别暴露", rk.after.expo]].forEach(
+            ([name, text]) => {
+              assert.ok(text.includes(String(RISK.filers)),
+                `${name}没印这条链有名单的 ${RISK.filers} 家：${text.slice(0, 110)}`);
+              assert.ok(text.indexOf(PICKED.label) >= 0,
+                `${name}没写清当前筛的是哪条链：${text.slice(0, 110)}`);
+              assert.ok(!new RegExp("有名单的 " + all + " 家").test(text),
+                `${name}还在印全池分母 ${all} 家：${text.slice(0, 110)}`);
+            });
+        });
+        check(`取消筛选后风险面板回到全池口径`, () => {
+          assert.equal(rk.restored.conc, rk.before.conc,
+            "再点一次没有回到全池——筛选是可逆的，回不去就是状态泄漏");
+          assert.equal(rk.restored.expo, rk.before.expo, "国别暴露没回到全池");
+        });
+        check(`按链的流向图照实说它仍是全池口径，不冒充这条链`, () => {
+          assert.match(rk.after.flow, /仍是全池口径/,
+            `流向图没声明口径：${rk.after.flow.slice(0, 120)}`);
+          assert.ok(rk.after.flow.includes(String(RISK.edges)),
+            `没给出这条链自己的关系数 ${RISK.edges}：${rk.after.flow.slice(0, 120)}`);
+        });
+      }
 
       /* 两个公司池。**这一段守的是「哪些数适用于哪一批公司」不被混起来**：
          外国私人发行人站内没有报价，市值合计与环节涨跌都不含它们。
@@ -1467,6 +1568,18 @@ async function main() {
         ed.geoText.slice(0, 120)));
       check(`页面无横向溢出`, () => assert.ok(ed.bodyOverflow <= 1,
         `溢出 ${ed.bodyOverflow}px`));
+      const coState = await evaluate(`(() => {
+        const e = document.getElementById('state');
+        const errs = (window.__pageErrors || []).slice(0, 4);
+        return { shown: !!(e && !e.hidden && e.offsetHeight > 0),
+                 cls: (e && e.className) || '',
+                 text: ((e && e.textContent) || '').trim().slice(0, 160), errs };
+      })()`);
+      check(`公司页渲染没有中途失败`, () => {
+        assert.equal(coState.shown, false,
+          `显示了状态横幅（${coState.cls}）：${coState.text}`);
+        assert.deepEqual(coState.errs, [], `未捕获异常：${coState.errs.join(" | ")}`);
+      });
 
       /* 公司页的上游冶炼厂重叠。这是全站唯一一条公司 ↔ 公司的关系，
          最容易被读成「苹果的供应商是这些」——而那正是不能说的话。 */

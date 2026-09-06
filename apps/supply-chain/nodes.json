@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-06T04:29:04Z",
+  "updatedAt": "2026-09-06T06:43:11Z",
   "asOf": "2026-09-04",
   "frequency": "daily",
   "status": "ok",
@@ -2964,6 +2964,5560 @@
       ]
     }
   ],
+  "chainRisk": {
+    "semiconductor": {
+      "filers": 25,
+      "edges": 5002,
+      "countries": 62,
+      "exposure": [
+        {
+          "country": "印度尼西亚",
+          "edges": 364,
+          "filerCount": 24,
+          "filerShare": 0.96
+        },
+        {
+          "country": "泰国",
+          "edges": 68,
+          "filerCount": 24,
+          "filerShare": 0.96
+        },
+        {
+          "country": "中国",
+          "edges": 1183,
+          "filerCount": 23,
+          "filerShare": 0.92
+        },
+        {
+          "country": "日本",
+          "edges": 606,
+          "filerCount": 23,
+          "filerShare": 0.92
+        },
+        {
+          "country": "美国",
+          "edges": 425,
+          "filerCount": 23,
+          "filerShare": 0.92
+        },
+        {
+          "country": "巴西",
+          "edges": 281,
+          "filerCount": 23,
+          "filerShare": 0.92
+        },
+        {
+          "country": "西班牙",
+          "edges": 67,
+          "filerCount": 23,
+          "filerShare": 0.92
+        },
+        {
+          "country": "玻利维亚",
+          "edges": 46,
+          "filerCount": 23,
+          "filerShare": 0.92
+        },
+        {
+          "country": "比利时",
+          "edges": 45,
+          "filerCount": 23,
+          "filerShare": 0.92
+        },
+        {
+          "country": "波兰",
+          "edges": 44,
+          "filerCount": 23,
+          "filerShare": 0.92
+        },
+        {
+          "country": "马来西亚",
+          "edges": 41,
+          "filerCount": 23,
+          "filerShare": 0.92
+        },
+        {
+          "country": "德国",
+          "edges": 207,
+          "filerCount": 22,
+          "filerShare": 0.88
+        }
+      ],
+      "exposureTotal": 62,
+      "concentration": [
+        {
+          "id": "NAME:alpha-assembly-solutions-inc",
+          "name": "Alpha Assembly Solutions Inc",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 14,
+          "filers": [
+            "ADI",
+            "AMD",
+            "ELTK",
+            "FSLR",
+            "GFS",
+            "INTC",
+            "MCHP",
+            "MU",
+            "NVDA",
+            "NVMI",
+            "NXPI",
+            "ON",
+            "TSM",
+            "TXN"
+          ]
+        },
+        {
+          "id": "NAME:aurubis-berango",
+          "name": "Aurubis Berango",
+          "nameZh": null,
+          "country": "西班牙",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 14,
+          "filers": [
+            "ADI",
+            "AMD",
+            "ELTK",
+            "FSLR",
+            "GFS",
+            "INTC",
+            "MCHP",
+            "MU",
+            "NVDA",
+            "NVMI",
+            "NXPI",
+            "ON",
+            "TSM",
+            "TXN"
+          ]
+        },
+        {
+          "id": "NAME:chenzhou-yunxiang-mining-and-metallurgy-co-ltd",
+          "name": "Chenzhou Yunxiang Mining and Metallurgy Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "金",
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 14,
+          "filers": [
+            "ADI",
+            "AMD",
+            "ELTK",
+            "FSLR",
+            "GFS",
+            "INTC",
+            "MCHP",
+            "MU",
+            "NVDA",
+            "NVMI",
+            "NXPI",
+            "ON",
+            "TSM",
+            "TXN"
+          ]
+        },
+        {
+          "id": "NAME:chifeng-dajingzi-tin-industry-co-ltd",
+          "name": "Chifeng Dajingzi Tin Industry Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 14,
+          "filers": [
+            "ADI",
+            "AMD",
+            "ELTK",
+            "FSLR",
+            "GFS",
+            "INTC",
+            "MCHP",
+            "MU",
+            "NVDA",
+            "NVMI",
+            "NXPI",
+            "ON",
+            "TSM",
+            "TXN"
+          ]
+        },
+        {
+          "id": "NAME:china-tin-group-co-ltd",
+          "name": "China Tin Group Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 14,
+          "filers": [
+            "ADI",
+            "AMD",
+            "ELTK",
+            "FSLR",
+            "GFS",
+            "INTC",
+            "MCHP",
+            "MU",
+            "NVDA",
+            "NVMI",
+            "NXPI",
+            "ON",
+            "TSM",
+            "TXN"
+          ]
+        },
+        {
+          "id": "NAME:magnu-s-minerais-metais-e-ligas-ltda",
+          "name": "Magnu’s Minerais Metais e Ligas Ltda.",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 14,
+          "filers": [
+            "ADI",
+            "AMD",
+            "ELTK",
+            "FSLR",
+            "GFS",
+            "INTC",
+            "MCHP",
+            "MU",
+            "NVDA",
+            "NVMI",
+            "NXPI",
+            "ON",
+            "TSM",
+            "TXN"
+          ]
+        },
+        {
+          "id": "NAME:malaysia-smelting-corporation-berhad-port-klang",
+          "name": "Malaysia Smelting Corporation Berhad (Port Klang)",
+          "nameZh": null,
+          "country": "马来西亚",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 14,
+          "filers": [
+            "ADI",
+            "AMD",
+            "ELTK",
+            "FSLR",
+            "GFS",
+            "INTC",
+            "MCHP",
+            "MU",
+            "NVDA",
+            "NVMI",
+            "NXPI",
+            "ON",
+            "TSM",
+            "TXN"
+          ]
+        },
+        {
+          "id": "NAME:metallic-resources-inc",
+          "name": "Metallic Resources, Inc.",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 14,
+          "filers": [
+            "ADI",
+            "AMD",
+            "ELTK",
+            "FSLR",
+            "GFS",
+            "INTC",
+            "MCHP",
+            "MU",
+            "NVDA",
+            "NVMI",
+            "NXPI",
+            "ON",
+            "TSM",
+            "TXN"
+          ]
+        },
+        {
+          "id": "NAME:mineracao-taboca-s-a",
+          "name": "Mineracao Taboca S.A.",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "钽",
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 14,
+          "filers": [
+            "ADI",
+            "AMD",
+            "ELTK",
+            "FSLR",
+            "GFS",
+            "INTC",
+            "MCHP",
+            "MU",
+            "NVDA",
+            "NVMI",
+            "NXPI",
+            "ON",
+            "TSM",
+            "TXN"
+          ]
+        },
+        {
+          "id": "NAME:mitsubishi-materials-corporation",
+          "name": "Mitsubishi Materials Corporation",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金",
+            "钨",
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 14,
+          "filers": [
+            "ADI",
+            "AMD",
+            "ELTK",
+            "FSLR",
+            "GFS",
+            "INTC",
+            "MCHP",
+            "MU",
+            "NVDA",
+            "NVMI",
+            "NXPI",
+            "ON",
+            "TSM",
+            "TXN"
+          ]
+        },
+        {
+          "id": "NAME:operaciones-metalurgicas-s-a",
+          "name": "Operaciones Metalurgicas S.A.",
+          "nameZh": null,
+          "country": "玻利维亚",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 14,
+          "filers": [
+            "ADI",
+            "AMD",
+            "ELTK",
+            "FSLR",
+            "GFS",
+            "INTC",
+            "MCHP",
+            "MU",
+            "NVDA",
+            "NVMI",
+            "NXPI",
+            "ON",
+            "TSM",
+            "TXN"
+          ]
+        },
+        {
+          "id": "NAME:pt-atd-makmur-mandiri-jaya",
+          "name": "PT ATD Makmur Mandiri Jaya",
+          "nameZh": null,
+          "country": "印度尼西亚",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 14,
+          "filers": [
+            "ADI",
+            "AMD",
+            "ELTK",
+            "FSLR",
+            "GFS",
+            "INTC",
+            "MCHP",
+            "MU",
+            "NVDA",
+            "NVMI",
+            "NXPI",
+            "ON",
+            "TSM",
+            "TXN"
+          ]
+        }
+      ],
+      "concentrationTotal": 720
+    },
+    "software-cloud": {
+      "filers": 4,
+      "edges": 840,
+      "countries": 54,
+      "exposure": [
+        {
+          "country": "中国",
+          "edges": 219,
+          "filerCount": 4,
+          "filerShare": 1.0
+        },
+        {
+          "country": "日本",
+          "edges": 85,
+          "filerCount": 4,
+          "filerShare": 1.0
+        },
+        {
+          "country": "印度尼西亚",
+          "edges": 82,
+          "filerCount": 4,
+          "filerShare": 1.0
+        },
+        {
+          "country": "美国",
+          "edges": 66,
+          "filerCount": 4,
+          "filerShare": 1.0
+        },
+        {
+          "country": "巴西",
+          "edges": 45,
+          "filerCount": 4,
+          "filerShare": 1.0
+        },
+        {
+          "country": "德国",
+          "edges": 32,
+          "filerCount": 4,
+          "filerShare": 1.0
+        },
+        {
+          "country": "印度",
+          "edges": 23,
+          "filerCount": 4,
+          "filerShare": 1.0
+        },
+        {
+          "country": "越南",
+          "edges": 20,
+          "filerCount": 4,
+          "filerShare": 1.0
+        },
+        {
+          "country": "中国台湾",
+          "edges": 17,
+          "filerCount": 4,
+          "filerShare": 1.0
+        },
+        {
+          "country": "泰国",
+          "edges": 14,
+          "filerCount": 4,
+          "filerShare": 1.0
+        },
+        {
+          "country": "菲律宾",
+          "edges": 12,
+          "filerCount": 4,
+          "filerShare": 1.0
+        },
+        {
+          "country": "西班牙",
+          "edges": 9,
+          "filerCount": 4,
+          "filerShare": 1.0
+        }
+      ],
+      "exposureTotal": 54,
+      "concentration": [
+        {
+          "id": "NAME:a-l-m-t-corp",
+          "name": "A.L.M.T. Corp.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 4,
+          "filers": [
+            "GEN",
+            "INTU",
+            "MSFT",
+            "NYAX"
+          ]
+        },
+        {
+          "id": "NAME:china-tin-group-co-ltd",
+          "name": "China Tin Group Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 4,
+          "filers": [
+            "GEN",
+            "INTU",
+            "MSFT",
+            "NYAX"
+          ]
+        },
+        {
+          "id": "NAME:chongyi-zhangyuan-tungsten-co-ltd",
+          "name": "Chongyi Zhangyuan Tungsten Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "钨",
+            "钽"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 4,
+          "filers": [
+            "GEN",
+            "INTU",
+            "MSFT",
+            "NYAX"
+          ]
+        },
+        {
+          "id": "NAME:dowa",
+          "name": "Dowa",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金",
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 4,
+          "filers": [
+            "GEN",
+            "INTU",
+            "MSFT",
+            "NYAX"
+          ]
+        },
+        {
+          "id": "NAME:f-x-electro-materials-ltd",
+          "name": "F&X Electro-Materials Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 4,
+          "filers": [
+            "GEN",
+            "INTU",
+            "MSFT",
+            "NYAX"
+          ]
+        },
+        {
+          "id": "NAME:fenix-metals",
+          "name": "Fenix Metals",
+          "nameZh": null,
+          "country": "波兰",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 4,
+          "filers": [
+            "GEN",
+            "INTU",
+            "MSFT",
+            "NYAX"
+          ]
+        },
+        {
+          "id": "NAME:gejiu-non-ferrous-metal-processing-co-ltd",
+          "name": "Gejiu Non-Ferrous Metal Processing Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 4,
+          "filers": [
+            "GEN",
+            "INTU",
+            "MSFT",
+            "NYAX"
+          ]
+        },
+        {
+          "id": "NAME:global-advanced-metals-aizu",
+          "name": "Global Advanced Metals Aizu",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 4,
+          "filers": [
+            "GEN",
+            "INTU",
+            "MSFT",
+            "NYAX"
+          ]
+        },
+        {
+          "id": "NAME:global-advanced-metals-boyertown",
+          "name": "Global Advanced Metals Boyertown",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 4,
+          "filers": [
+            "GEN",
+            "INTU",
+            "MSFT",
+            "NYAX"
+          ]
+        },
+        {
+          "id": "NAME:guangdong-xianglu-tungsten-co-ltd",
+          "name": "Guangdong Xianglu Tungsten Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 4,
+          "filers": [
+            "GEN",
+            "INTU",
+            "MSFT",
+            "NYAX"
+          ]
+        },
+        {
+          "id": "NAME:h-c-starck-tungsten-gmbh",
+          "name": "H.C. Starck Tungsten GmbH",
+          "nameZh": null,
+          "country": "德国",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 4,
+          "filers": [
+            "GEN",
+            "INTU",
+            "MSFT",
+            "NYAX"
+          ]
+        },
+        {
+          "id": "NAME:hengyang-king-xing-lifeng-new-materials-co-ltd",
+          "name": "Hengyang King Xing Lifeng New Materials Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 4,
+          "filers": [
+            "GEN",
+            "INTU",
+            "MSFT",
+            "NYAX"
+          ]
+        }
+      ],
+      "concentrationTotal": 242
+    },
+    "retail-distribution": {
+      "filers": 9,
+      "edges": 1585,
+      "countries": 58,
+      "exposure": [
+        {
+          "country": "中国",
+          "edges": 471,
+          "filerCount": 7,
+          "filerShare": 0.7778
+        },
+        {
+          "country": "印度尼西亚",
+          "edges": 105,
+          "filerCount": 7,
+          "filerShare": 0.7778
+        },
+        {
+          "country": "菲律宾",
+          "edges": 19,
+          "filerCount": 6,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "泰国",
+          "edges": 18,
+          "filerCount": 6,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "墨西哥",
+          "edges": 13,
+          "filerCount": 6,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "日本",
+          "edges": 126,
+          "filerCount": 5,
+          "filerShare": 0.5556
+        },
+        {
+          "country": "美国",
+          "edges": 104,
+          "filerCount": 5,
+          "filerShare": 0.5556
+        },
+        {
+          "country": "巴西",
+          "edges": 72,
+          "filerCount": 5,
+          "filerShare": 0.5556
+        },
+        {
+          "country": "中国台湾",
+          "edges": 35,
+          "filerCount": 5,
+          "filerShare": 0.5556
+        },
+        {
+          "country": "马来西亚",
+          "edges": 21,
+          "filerCount": 5,
+          "filerShare": 0.5556
+        },
+        {
+          "country": "西班牙",
+          "edges": 14,
+          "filerCount": 5,
+          "filerShare": 0.5556
+        },
+        {
+          "country": "比利时",
+          "edges": 13,
+          "filerCount": 5,
+          "filerShare": 0.5556
+        }
+      ],
+      "exposureTotal": 58,
+      "concentration": [
+        {
+          "id": "NAME:china-tin-group-co-ltd",
+          "name": "China Tin Group Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 4,
+          "filers": [
+            "AMZN",
+            "BBY",
+            "LOW",
+            "TSCO"
+          ]
+        },
+        {
+          "id": "NAME:pt-premium-tin-indonesia",
+          "name": "PT Premium Tin Indonesia",
+          "nameZh": null,
+          "country": "印度尼西亚",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 4,
+          "filers": [
+            "AMZN",
+            "BBY",
+            "LOW",
+            "SBUX"
+          ]
+        },
+        {
+          "id": "NAME:pt-timah-tbk-kundur",
+          "name": "PT Timah Tbk Kundur",
+          "nameZh": null,
+          "country": "印度尼西亚",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 4,
+          "filers": [
+            "AMZN",
+            "BBY",
+            "LOW",
+            "TSCO"
+          ]
+        },
+        {
+          "id": "NAME:xiamen-tungsten-co-ltd",
+          "name": "Xiamen Tungsten Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 4,
+          "filers": [
+            "AMZN",
+            "BBY",
+            "LOW",
+            "TSCO"
+          ]
+        },
+        {
+          "id": "NAME:aurubis-beerse",
+          "name": "Aurubis Beerse",
+          "nameZh": null,
+          "country": "比利时",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "AMZN",
+            "BBY",
+            "LOW"
+          ]
+        },
+        {
+          "id": "NAME:aurubis-berango",
+          "name": "Aurubis Berango",
+          "nameZh": null,
+          "country": "西班牙",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "AMZN",
+            "BBY",
+            "LOW"
+          ]
+        },
+        {
+          "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
+          "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
+          "nameZh": null,
+          "country": "菲律宾",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "AMZN",
+            "BBY",
+            "SBUX"
+          ]
+        },
+        {
+          "id": "NAME:chenzhou-yunxiang-mining-and-metallurgy-co-ltd",
+          "name": "Chenzhou Yunxiang Mining and Metallurgy Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "金",
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "AMZN",
+            "BBY",
+            "LOW"
+          ]
+        },
+        {
+          "id": "NAME:china-molybdenum-tungsten-co-ltd",
+          "name": "China Molybdenum Tungsten Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "AMZN",
+            "BBY",
+            "LOW"
+          ]
+        },
+        {
+          "id": "NAME:chongyi-zhangyuan-tungsten-co-ltd",
+          "name": "Chongyi Zhangyuan Tungsten Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "钨",
+            "钽"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "AMZN",
+            "BBY",
+            "LOW"
+          ]
+        },
+        {
+          "id": "NAME:fenix-metals",
+          "name": "Fenix Metals",
+          "nameZh": null,
+          "country": "波兰",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "AMZN",
+            "BBY",
+            "LOW"
+          ]
+        },
+        {
+          "id": "CID002315",
+          "name": "Ganzhou Jiangwu Ferrotungsten Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 3,
+          "filers": [
+            "COST",
+            "ITRN",
+            "TEL"
+          ]
+        }
+      ],
+      "concentrationTotal": 625
+    },
+    "computing-hardware": {
+      "filers": 11,
+      "edges": 2859,
+      "countries": 59,
+      "exposure": [
+        {
+          "country": "印度尼西亚",
+          "edges": 190,
+          "filerCount": 10,
+          "filerShare": 0.9091
+        },
+        {
+          "country": "菲律宾",
+          "edges": 39,
+          "filerCount": 10,
+          "filerShare": 0.9091
+        },
+        {
+          "country": "泰国",
+          "edges": 30,
+          "filerCount": 10,
+          "filerShare": 0.9091
+        },
+        {
+          "country": "墨西哥",
+          "edges": 23,
+          "filerCount": 10,
+          "filerShare": 0.9091
+        },
+        {
+          "country": "哥伦比亚",
+          "edges": 10,
+          "filerCount": 10,
+          "filerShare": 0.9091
+        },
+        {
+          "country": "中国",
+          "edges": 616,
+          "filerCount": 9,
+          "filerShare": 0.8182
+        },
+        {
+          "country": "日本",
+          "edges": 262,
+          "filerCount": 9,
+          "filerShare": 0.8182
+        },
+        {
+          "country": "美国",
+          "edges": 203,
+          "filerCount": 9,
+          "filerShare": 0.8182
+        },
+        {
+          "country": "巴西",
+          "edges": 137,
+          "filerCount": 9,
+          "filerShare": 0.8182
+        },
+        {
+          "country": "印度",
+          "edges": 102,
+          "filerCount": 9,
+          "filerShare": 0.8182
+        },
+        {
+          "country": "德国",
+          "edges": 97,
+          "filerCount": 9,
+          "filerShare": 0.8182
+        },
+        {
+          "country": "韩国",
+          "edges": 83,
+          "filerCount": 9,
+          "filerShare": 0.8182
+        }
+      ],
+      "exposureTotal": 59,
+      "concentration": [
+        {
+          "id": "NAME:a-l-m-t-corp",
+          "name": "A.L.M.T. Corp.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 7,
+          "filers": [
+            "ALLT",
+            "HPE",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WDC"
+          ]
+        },
+        {
+          "id": "NAME:amg-brasil",
+          "name": "AMG Brasil",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 7,
+          "filers": [
+            "ALLT",
+            "HPE",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WDC"
+          ]
+        },
+        {
+          "id": "NAME:abington-reldan-metals-llc",
+          "name": "Abington Reldan Metals, LLC",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 7,
+          "filers": [
+            "ALLT",
+            "HPE",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WDC"
+          ]
+        },
+        {
+          "id": "NAME:advanced-chemical-company",
+          "name": "Advanced Chemical Company",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 7,
+          "filers": [
+            "ALLT",
+            "HPE",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WDC"
+          ]
+        },
+        {
+          "id": "NAME:aida-chemical-industries-co-ltd",
+          "name": "Aida Chemical Industries Co., Ltd.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 7,
+          "filers": [
+            "ALLT",
+            "HPE",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WDC"
+          ]
+        },
+        {
+          "id": "NAME:almalyk-mining-and-metallurgical-complex-ammc",
+          "name": "Almalyk Mining and Metallurgical Complex (AMMC)",
+          "nameZh": null,
+          "country": "乌兹别克斯坦",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 7,
+          "filers": [
+            "ALLT",
+            "HPE",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WDC"
+          ]
+        },
+        {
+          "id": "NAME:alpha-assembly-solutions-inc",
+          "name": "Alpha Assembly Solutions Inc",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 7,
+          "filers": [
+            "ALLT",
+            "HPE",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WDC"
+          ]
+        },
+        {
+          "id": "NAME:argor-heraeus-s-a",
+          "name": "Argor-Heraeus S.A.",
+          "nameZh": null,
+          "country": "瑞士",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 7,
+          "filers": [
+            "ALLT",
+            "HPE",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WDC"
+          ]
+        },
+        {
+          "id": "NAME:asahi-refining-canada-ltd",
+          "name": "Asahi Refining Canada Ltd.",
+          "nameZh": null,
+          "country": "加拿大",
+          "minerals": [
+            "金",
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 7,
+          "filers": [
+            "ALLT",
+            "HPE",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WDC"
+          ]
+        },
+        {
+          "id": "NAME:asahi-refining-usa-inc",
+          "name": "Asahi Refining USA Inc.",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 7,
+          "filers": [
+            "ALLT",
+            "HPE",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WDC"
+          ]
+        },
+        {
+          "id": "NAME:asaka-riken-co-ltd",
+          "name": "Asaka Riken Co., Ltd.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金",
+            "钽"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 7,
+          "filers": [
+            "ALLT",
+            "HPE",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WDC"
+          ]
+        },
+        {
+          "id": "NAME:asia-tungsten-products-vietnam-ltd",
+          "name": "Asia Tungsten Products Vietnam Ltd.",
+          "nameZh": null,
+          "country": "越南",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 7,
+          "filers": [
+            "ALLT",
+            "HPE",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WDC"
+          ]
+        }
+      ],
+      "concentrationTotal": 693
+    },
+    "communications": {
+      "filers": 21,
+      "edges": 5644,
+      "countries": 64,
+      "exposure": [
+        {
+          "country": "印度尼西亚",
+          "edges": 352,
+          "filerCount": 20,
+          "filerShare": 0.9524
+        },
+        {
+          "country": "菲律宾",
+          "edges": 72,
+          "filerCount": 20,
+          "filerShare": 0.9524
+        },
+        {
+          "country": "泰国",
+          "edges": 64,
+          "filerCount": 20,
+          "filerShare": 0.9524
+        },
+        {
+          "country": "墨西哥",
+          "edges": 49,
+          "filerCount": 20,
+          "filerShare": 0.9524
+        },
+        {
+          "country": "哥伦比亚",
+          "edges": 24,
+          "filerCount": 20,
+          "filerShare": 0.9524
+        },
+        {
+          "country": "中国",
+          "edges": 1315,
+          "filerCount": 16,
+          "filerShare": 0.7619
+        },
+        {
+          "country": "日本",
+          "edges": 485,
+          "filerCount": 16,
+          "filerShare": 0.7619
+        },
+        {
+          "country": "美国",
+          "edges": 411,
+          "filerCount": 16,
+          "filerShare": 0.7619
+        },
+        {
+          "country": "巴西",
+          "edges": 268,
+          "filerCount": 16,
+          "filerShare": 0.7619
+        },
+        {
+          "country": "印度",
+          "edges": 260,
+          "filerCount": 16,
+          "filerShare": 0.7619
+        },
+        {
+          "country": "德国",
+          "edges": 185,
+          "filerCount": 16,
+          "filerShare": 0.7619
+        },
+        {
+          "country": "韩国",
+          "edges": 175,
+          "filerCount": 16,
+          "filerShare": 0.7619
+        }
+      ],
+      "exposureTotal": 64,
+      "concentration": [
+        {
+          "id": "CID003926",
+          "name": "5D Production OU",
+          "nameZh": null,
+          "country": "爱沙尼亚",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "ANET",
+            "CAMT",
+            "ERIC",
+            "FFIV",
+            "GILT",
+            "GLW",
+            "KLAC",
+            "MSI",
+            "NOK",
+            "SILC"
+          ]
+        },
+        {
+          "id": "CID000004",
+          "name": "A.L.M.T. Corp.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "ANET",
+            "CAMT",
+            "ERIC",
+            "FFIV",
+            "GILT",
+            "GLW",
+            "KLAC",
+            "MSI",
+            "NOK",
+            "SILC"
+          ]
+        },
+        {
+          "id": "CID001076",
+          "name": "AMG Brasil",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "ANET",
+            "CAMT",
+            "ERIC",
+            "FFIV",
+            "GILT",
+            "GLW",
+            "KLAC",
+            "MSI",
+            "NOK",
+            "SILC"
+          ]
+        },
+        {
+          "id": "CID000082",
+          "name": "ASAHI METALFINE, Inc.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "ANET",
+            "CAMT",
+            "ERIC",
+            "FFIV",
+            "GILT",
+            "GLW",
+            "KLAC",
+            "MSI",
+            "NOK",
+            "SILC"
+          ]
+        },
+        {
+          "id": "CID002708",
+          "name": "Abington Reldan Metals, LLC",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "ANET",
+            "CAMT",
+            "ERIC",
+            "FFIV",
+            "GILT",
+            "GLW",
+            "KLAC",
+            "MSI",
+            "NOK",
+            "SILC"
+          ]
+        },
+        {
+          "id": "CID000015",
+          "name": "Advanced Chemical Company",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "ANET",
+            "CAMT",
+            "ERIC",
+            "FFIV",
+            "GILT",
+            "GLW",
+            "KLAC",
+            "MSI",
+            "NOK",
+            "SILC"
+          ]
+        },
+        {
+          "id": "CID000035",
+          "name": "Agosi AG",
+          "nameZh": null,
+          "country": "德国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "ANET",
+            "CAMT",
+            "ERIC",
+            "FFIV",
+            "GILT",
+            "GLW",
+            "KLAC",
+            "MSI",
+            "NOK",
+            "SILC"
+          ]
+        },
+        {
+          "id": "CID000019",
+          "name": "Aida Chemical Industries Co., Ltd.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "ANET",
+            "CAMT",
+            "ERIC",
+            "FFIV",
+            "GILT",
+            "GLW",
+            "KLAC",
+            "MSI",
+            "NOK",
+            "SILC"
+          ]
+        },
+        {
+          "id": "CID000041",
+          "name": "Almalyk Mining and Metallurgical Complex (AMMC)",
+          "nameZh": null,
+          "country": "乌兹别克斯坦",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "ANET",
+            "CAMT",
+            "ERIC",
+            "FFIV",
+            "GILT",
+            "GLW",
+            "KLAC",
+            "MSI",
+            "NOK",
+            "SILC"
+          ]
+        },
+        {
+          "id": "CID000292",
+          "name": "Alpha Assembly Solutions Inc",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "ANET",
+            "CAMT",
+            "ERIC",
+            "FFIV",
+            "GILT",
+            "GLW",
+            "KLAC",
+            "MSI",
+            "NOK",
+            "SILC"
+          ]
+        },
+        {
+          "id": "CID002703",
+          "name": "An Vinh Joint Stock Mineral Processing Company",
+          "nameZh": null,
+          "country": "越南",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "ANET",
+            "CAMT",
+            "ERIC",
+            "FFIV",
+            "GILT",
+            "GLW",
+            "KLAC",
+            "MSI",
+            "NOK",
+            "SILC"
+          ]
+        },
+        {
+          "id": "CID000058",
+          "name": "AngloGold Ashanti Corrego do Sitio Mineracao",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "ANET",
+            "CAMT",
+            "ERIC",
+            "FFIV",
+            "GILT",
+            "GLW",
+            "KLAC",
+            "MSI",
+            "NOK",
+            "SILC"
+          ]
+        }
+      ],
+      "concentrationTotal": 777
+    },
+    "industrial-machinery": {
+      "filers": 23,
+      "edges": 7602,
+      "countries": 67,
+      "exposure": [
+        {
+          "country": "墨西哥",
+          "edges": 60,
+          "filerCount": 23,
+          "filerShare": 1.0
+        },
+        {
+          "country": "中国",
+          "edges": 1980,
+          "filerCount": 22,
+          "filerShare": 0.9565
+        },
+        {
+          "country": "日本",
+          "edges": 679,
+          "filerCount": 22,
+          "filerShare": 0.9565
+        },
+        {
+          "country": "美国",
+          "edges": 582,
+          "filerCount": 22,
+          "filerShare": 0.9565
+        },
+        {
+          "country": "印度尼西亚",
+          "edges": 512,
+          "filerCount": 22,
+          "filerShare": 0.9565
+        },
+        {
+          "country": "巴西",
+          "edges": 367,
+          "filerCount": 22,
+          "filerShare": 0.9565
+        },
+        {
+          "country": "德国",
+          "edges": 267,
+          "filerCount": 22,
+          "filerShare": 0.9565
+        },
+        {
+          "country": "韩国",
+          "edges": 242,
+          "filerCount": 22,
+          "filerShare": 0.9565
+        },
+        {
+          "country": "中国台湾",
+          "edges": 177,
+          "filerCount": 22,
+          "filerShare": 0.9565
+        },
+        {
+          "country": "瑞士",
+          "edges": 132,
+          "filerCount": 22,
+          "filerShare": 0.9565
+        },
+        {
+          "country": "南非",
+          "edges": 102,
+          "filerCount": 22,
+          "filerShare": 0.9565
+        },
+        {
+          "country": "菲律宾",
+          "edges": 89,
+          "filerCount": 22,
+          "filerShare": 0.9565
+        }
+      ],
+      "exposureTotal": 67,
+      "concentration": [
+        {
+          "id": "NAME:aida-chemical-industries-co-ltd",
+          "name": "Aida Chemical Industries Co., Ltd.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 12,
+          "filers": [
+            "DE",
+            "ETN",
+            "HPE",
+            "KRNT",
+            "MAS",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WAB",
+            "WDC",
+            "XYL"
+          ]
+        },
+        {
+          "id": "NAME:alpha-assembly-solutions-inc",
+          "name": "Alpha Assembly Solutions Inc",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 12,
+          "filers": [
+            "DE",
+            "ETN",
+            "HPE",
+            "KRNT",
+            "MAS",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WAB",
+            "WDC",
+            "XYL"
+          ]
+        },
+        {
+          "id": "NAME:argor-heraeus-s-a",
+          "name": "Argor-Heraeus S.A.",
+          "nameZh": null,
+          "country": "瑞士",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 12,
+          "filers": [
+            "DE",
+            "ETN",
+            "HPE",
+            "KRNT",
+            "MAS",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WAB",
+            "WDC",
+            "XYL"
+          ]
+        },
+        {
+          "id": "NAME:asahi-refining-canada-ltd",
+          "name": "Asahi Refining Canada Ltd.",
+          "nameZh": null,
+          "country": "加拿大",
+          "minerals": [
+            "金",
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 12,
+          "filers": [
+            "DE",
+            "ETN",
+            "HPE",
+            "KRNT",
+            "MAS",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WAB",
+            "WDC",
+            "XYL"
+          ]
+        },
+        {
+          "id": "NAME:asahi-refining-usa-inc",
+          "name": "Asahi Refining USA Inc.",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 12,
+          "filers": [
+            "DE",
+            "ETN",
+            "HPE",
+            "KRNT",
+            "MAS",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WAB",
+            "WDC",
+            "XYL"
+          ]
+        },
+        {
+          "id": "NAME:asaka-riken-co-ltd",
+          "name": "Asaka Riken Co., Ltd.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金",
+            "钽"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 12,
+          "filers": [
+            "DE",
+            "ETN",
+            "HPE",
+            "KRNT",
+            "MAS",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WAB",
+            "WDC",
+            "XYL"
+          ]
+        },
+        {
+          "id": "NAME:aurubis-beerse",
+          "name": "Aurubis Beerse",
+          "nameZh": null,
+          "country": "比利时",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 12,
+          "filers": [
+            "DE",
+            "ETN",
+            "HPE",
+            "KRNT",
+            "MAS",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WAB",
+            "WDC",
+            "XYL"
+          ]
+        },
+        {
+          "id": "NAME:aurubis-berango",
+          "name": "Aurubis Berango",
+          "nameZh": null,
+          "country": "西班牙",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 12,
+          "filers": [
+            "DE",
+            "ETN",
+            "HPE",
+            "KRNT",
+            "MAS",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WAB",
+            "WDC",
+            "XYL"
+          ]
+        },
+        {
+          "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
+          "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
+          "nameZh": null,
+          "country": "菲律宾",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 12,
+          "filers": [
+            "DE",
+            "ETN",
+            "HPE",
+            "KRNT",
+            "MAS",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WAB",
+            "WDC",
+            "XYL"
+          ]
+        },
+        {
+          "id": "NAME:c-hafner-gmbh-co-kg",
+          "name": "C. Hafner GmbH + Co. KG",
+          "nameZh": null,
+          "country": "德国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 12,
+          "filers": [
+            "DE",
+            "ETN",
+            "HPE",
+            "KRNT",
+            "MAS",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WAB",
+            "WDC",
+            "XYL"
+          ]
+        },
+        {
+          "id": "NAME:chenzhou-yunxiang-mining-and-metallurgy-co-ltd",
+          "name": "Chenzhou Yunxiang Mining and Metallurgy Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "金",
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 12,
+          "filers": [
+            "DE",
+            "ETN",
+            "HPE",
+            "KRNT",
+            "MAS",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WAB",
+            "WDC",
+            "XYL"
+          ]
+        },
+        {
+          "id": "NAME:chimet-s-p-a",
+          "name": "Chimet S.p.A.",
+          "nameZh": null,
+          "country": "意大利",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 12,
+          "filers": [
+            "DE",
+            "ETN",
+            "HPE",
+            "KRNT",
+            "MAS",
+            "SMCI",
+            "SNDK",
+            "SSYS",
+            "STX",
+            "WAB",
+            "WDC",
+            "XYL"
+          ]
+        }
+      ],
+      "concentrationTotal": 1073
+    },
+    "aerospace-defense": {
+      "filers": 3,
+      "edges": 379,
+      "countries": 54,
+      "exposure": [
+        {
+          "country": "奥地利",
+          "edges": 4,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "中国",
+          "edges": 82,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "日本",
+          "edges": 36,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "美国",
+          "edges": 28,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "印度",
+          "edges": 20,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "巴西",
+          "edges": 19,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "德国",
+          "edges": 17,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "越南",
+          "edges": 10,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "瑞士",
+          "edges": 9,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "泰国",
+          "edges": 6,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "南非",
+          "edges": 5,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "哈萨克斯坦",
+          "edges": 5,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        }
+      ],
+      "exposureTotal": 54,
+      "concentration": [
+        {
+          "id": "CID002044",
+          "name": "Wolfram Bergbau und Hutten AG",
+          "nameZh": null,
+          "country": "奥地利",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 3,
+          "filers": [
+            "EMBJ",
+            "HON",
+            "RTX"
+          ]
+        },
+        {
+          "id": "CID000004",
+          "name": "A.L.M.T. Corp.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "EMBJ",
+            "HON"
+          ]
+        },
+        {
+          "id": "CID001076",
+          "name": "AMG Brasil",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "EMBJ",
+            "HON"
+          ]
+        },
+        {
+          "id": "CID000041",
+          "name": "Almalyk Mining and Metallurgical Complex (AMMC)",
+          "nameZh": null,
+          "country": "乌兹别克斯坦",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "EMBJ",
+            "HON"
+          ]
+        },
+        {
+          "id": "CID000058",
+          "name": "AngloGold Ashanti Corrego do Sitio Mineracao",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "EMBJ",
+            "HON"
+          ]
+        },
+        {
+          "id": "CID000920",
+          "name": "Asahi Refining USA Inc.",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "EMBJ",
+            "HON"
+          ]
+        },
+        {
+          "id": "CID002502",
+          "name": "Asia Tungsten Products Vietnam Ltd.",
+          "nameZh": null,
+          "country": "越南",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "EMBJ",
+            "HON"
+          ]
+        },
+        {
+          "id": "CID002773",
+          "name": "Aurubis Beerse",
+          "nameZh": null,
+          "country": "比利时",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "EMBJ",
+            "HON"
+          ]
+        },
+        {
+          "id": "CID000185",
+          "name": "CCR Refinery - Glencore Canada Corporation",
+          "nameZh": null,
+          "country": "加拿大",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "EMBJ",
+            "HON"
+          ]
+        },
+        {
+          "id": "CID000291",
+          "name": "Guangdong Rising Rare Metals-EO Materials Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "EMBJ",
+            "HON"
+          ]
+        },
+        {
+          "id": "CID002541",
+          "name": "H.C. Starck Tungsten GmbH",
+          "nameZh": null,
+          "country": "德国",
+          "minerals": [
+            "钨",
+            "钽"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "EMBJ",
+            "HON"
+          ]
+        },
+        {
+          "id": "CID000694",
+          "name": "Heimerle + Meule GmbH",
+          "nameZh": null,
+          "country": "德国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "EMBJ",
+            "HON"
+          ]
+        }
+      ],
+      "concentrationTotal": 37
+    },
+    "agri-food": {
+      "filers": 3,
+      "edges": 668,
+      "countries": 55,
+      "exposure": [
+        {
+          "country": "中国",
+          "edges": 157,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "日本",
+          "edges": 63,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "印度尼西亚",
+          "edges": 55,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "韩国",
+          "edges": 23,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "中国台湾",
+          "edges": 16,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "瑞士",
+          "edges": 13,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "马来西亚",
+          "edges": 10,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "泰国",
+          "edges": 9,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "比利时",
+          "edges": 8,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "秘鲁",
+          "edges": 7,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "波兰",
+          "edges": 5,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "玻利维亚",
+          "edges": 5,
+          "filerCount": 3,
+          "filerShare": 1.0
+        }
+      ],
+      "exposureTotal": 55,
+      "concentration": [
+        {
+          "id": "CID000077",
+          "name": "Argor-Heraeus S.A.",
+          "nameZh": null,
+          "country": "瑞士",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "KDP",
+            "PEP"
+          ]
+        },
+        {
+          "id": "CID002773",
+          "name": "Aurubis Beerse",
+          "nameZh": null,
+          "country": "比利时",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "KDP",
+            "PEP"
+          ]
+        },
+        {
+          "id": "CID001070",
+          "name": "China Tin Group Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "KDP",
+            "PEP"
+          ]
+        },
+        {
+          "id": "CID000401",
+          "name": "Dowa",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "KDP",
+            "PEP"
+          ]
+        },
+        {
+          "id": "CID000438",
+          "name": "EM Vinto",
+          "nameZh": null,
+          "country": "玻利维亚",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "KDP",
+            "PEP"
+          ]
+        },
+        {
+          "id": "CID000468",
+          "name": "Fenix Metals",
+          "nameZh": null,
+          "country": "波兰",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "KDP",
+            "PEP"
+          ]
+        },
+        {
+          "id": "CID000538",
+          "name": "Gejiu Non-Ferrous Metal Processing Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "KDP",
+            "PEP"
+          ]
+        },
+        {
+          "id": "CID003116",
+          "name": "Guangdong Hanhe Non-Ferrous Metal Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "KDP",
+            "PEP"
+          ]
+        },
+        {
+          "id": "CID000707",
+          "name": "Heraeus Metals Hong Kong Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "KDP",
+            "PEP"
+          ]
+        },
+        {
+          "id": "CID000855",
+          "name": "Jiangxi Copper Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "KDP",
+            "PEP"
+          ]
+        },
+        {
+          "id": "CID001078",
+          "name": "LS MnM Inc.",
+          "nameZh": null,
+          "country": "韩国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "KDP",
+            "PEP"
+          ]
+        },
+        {
+          "id": "CID004434",
+          "name": "Malaysia Smelting Corporation Berhad (Port Klang)",
+          "nameZh": null,
+          "country": "马来西亚",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "KDP",
+            "PEP"
+          ]
+        }
+      ],
+      "concentrationTotal": 25
+    },
+    "travel-leisure": {
+      "filers": 3,
+      "edges": 464,
+      "countries": 54,
+      "exposure": [
+        {
+          "country": "印度尼西亚",
+          "edges": 52,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "墨西哥",
+          "edges": 7,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "泰国",
+          "edges": 7,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "菲律宾",
+          "edges": 7,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "哥伦比亚",
+          "edges": 5,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "中国",
+          "edges": 111,
+          "filerCount": 1,
+          "filerShare": 0.3333
+        },
+        {
+          "country": "美国",
+          "edges": 35,
+          "filerCount": 1,
+          "filerShare": 0.3333
+        },
+        {
+          "country": "日本",
+          "edges": 32,
+          "filerCount": 1,
+          "filerShare": 0.3333
+        },
+        {
+          "country": "印度",
+          "edges": 21,
+          "filerCount": 1,
+          "filerShare": 0.3333
+        },
+        {
+          "country": "俄罗斯",
+          "edges": 20,
+          "filerCount": 1,
+          "filerShare": 0.3333
+        },
+        {
+          "country": "巴西",
+          "edges": 19,
+          "filerCount": 1,
+          "filerShare": 0.3333
+        },
+        {
+          "country": "德国",
+          "edges": 17,
+          "filerCount": 1,
+          "filerShare": 0.3333
+        }
+      ],
+      "exposureTotal": 54,
+      "concentration": [
+        {
+          "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
+          "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
+          "nameZh": null,
+          "country": "菲律宾",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "BRSL",
+            "DIS",
+            "SBUX"
+          ]
+        },
+        {
+          "id": "NAME:gold-by-gold-colombia",
+          "name": "Gold by Gold Colombia",
+          "nameZh": null,
+          "country": "哥伦比亚",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "BRSL",
+            "DIS",
+            "SBUX"
+          ]
+        },
+        {
+          "id": "NAME:kemet-de-mexico",
+          "name": "KEMET de Mexico",
+          "nameZh": null,
+          "country": "墨西哥",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "BRSL",
+            "DIS",
+            "SBUX"
+          ]
+        },
+        {
+          "id": "NAME:pt-arsed-indonesia",
+          "name": "PT Arsed Indonesia",
+          "nameZh": null,
+          "country": "印度尼西亚",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "BRSL",
+            "DIS",
+            "SBUX"
+          ]
+        },
+        {
+          "id": "NAME:pt-premium-tin-indonesia",
+          "name": "PT Premium Tin Indonesia",
+          "nameZh": null,
+          "country": "印度尼西亚",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "BRSL",
+            "DIS",
+            "SBUX"
+          ]
+        },
+        {
+          "id": "NAME:umicore-precious-metals-thailand",
+          "name": "Umicore Precious Metals Thailand",
+          "nameZh": null,
+          "country": "泰国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "BRSL",
+            "DIS",
+            "SBUX"
+          ]
+        }
+      ],
+      "concentrationTotal": 6
+    },
+    "electronics-components": {
+      "filers": 21,
+      "edges": 7095,
+      "countries": 66,
+      "exposure": [
+        {
+          "country": "印度尼西亚",
+          "edges": 460,
+          "filerCount": 21,
+          "filerShare": 1.0
+        },
+        {
+          "country": "泰国",
+          "edges": 78,
+          "filerCount": 21,
+          "filerShare": 1.0
+        },
+        {
+          "country": "中国",
+          "edges": 1884,
+          "filerCount": 20,
+          "filerShare": 0.9524
+        },
+        {
+          "country": "日本",
+          "edges": 596,
+          "filerCount": 20,
+          "filerShare": 0.9524
+        },
+        {
+          "country": "美国",
+          "edges": 536,
+          "filerCount": 20,
+          "filerShare": 0.9524
+        },
+        {
+          "country": "巴西",
+          "edges": 339,
+          "filerCount": 20,
+          "filerShare": 0.9524
+        },
+        {
+          "country": "瑞士",
+          "edges": 113,
+          "filerCount": 20,
+          "filerShare": 0.9524
+        },
+        {
+          "country": "菲律宾",
+          "edges": 87,
+          "filerCount": 20,
+          "filerShare": 0.9524
+        },
+        {
+          "country": "马来西亚",
+          "edges": 78,
+          "filerCount": 20,
+          "filerShare": 0.9524
+        },
+        {
+          "country": "西班牙",
+          "edges": 64,
+          "filerCount": 20,
+          "filerShare": 0.9524
+        },
+        {
+          "country": "秘鲁",
+          "edges": 61,
+          "filerCount": 20,
+          "filerShare": 0.9524
+        },
+        {
+          "country": "比利时",
+          "edges": 59,
+          "filerCount": 20,
+          "filerShare": 0.9524
+        }
+      ],
+      "exposureTotal": 66,
+      "concentration": [
+        {
+          "id": "CID000004",
+          "name": "A.L.M.T. Corp.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "BLDP",
+            "ERIC",
+            "FLEX",
+            "GILT",
+            "GLW",
+            "ITRN",
+            "MSI",
+            "NOK",
+            "OTIS",
+            "TEL"
+          ]
+        },
+        {
+          "id": "CID001076",
+          "name": "AMG Brasil",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "BLDP",
+            "ERIC",
+            "FLEX",
+            "GILT",
+            "GLW",
+            "ITRN",
+            "MSI",
+            "NOK",
+            "OTIS",
+            "TEL"
+          ]
+        },
+        {
+          "id": "CID000082",
+          "name": "ASAHI METALFINE, Inc.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "BLDP",
+            "ERIC",
+            "FLEX",
+            "GILT",
+            "GLW",
+            "ITRN",
+            "MSI",
+            "NOK",
+            "OTIS",
+            "TEL"
+          ]
+        },
+        {
+          "id": "CID002708",
+          "name": "Abington Reldan Metals, LLC",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "BLDP",
+            "ERIC",
+            "FLEX",
+            "GILT",
+            "GLW",
+            "ITRN",
+            "MSI",
+            "NOK",
+            "OTIS",
+            "TEL"
+          ]
+        },
+        {
+          "id": "CID000015",
+          "name": "Advanced Chemical Company",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "BLDP",
+            "ERIC",
+            "FLEX",
+            "GILT",
+            "GLW",
+            "ITRN",
+            "MSI",
+            "NOK",
+            "OTIS",
+            "TEL"
+          ]
+        },
+        {
+          "id": "CID000035",
+          "name": "Agosi AG",
+          "nameZh": null,
+          "country": "德国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "BLDP",
+            "ERIC",
+            "FLEX",
+            "GILT",
+            "GLW",
+            "ITRN",
+            "MSI",
+            "NOK",
+            "OTIS",
+            "TEL"
+          ]
+        },
+        {
+          "id": "CID000019",
+          "name": "Aida Chemical Industries Co., Ltd.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "BLDP",
+            "ERIC",
+            "FLEX",
+            "GILT",
+            "GLW",
+            "ITRN",
+            "MSI",
+            "NOK",
+            "OTIS",
+            "TEL"
+          ]
+        },
+        {
+          "id": "CID000041",
+          "name": "Almalyk Mining and Metallurgical Complex (AMMC)",
+          "nameZh": null,
+          "country": "乌兹别克斯坦",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "BLDP",
+            "ERIC",
+            "FLEX",
+            "GILT",
+            "GLW",
+            "ITRN",
+            "MSI",
+            "NOK",
+            "OTIS",
+            "TEL"
+          ]
+        },
+        {
+          "id": "CID000292",
+          "name": "Alpha Assembly Solutions Inc",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "BLDP",
+            "ERIC",
+            "FLEX",
+            "GILT",
+            "GLW",
+            "ITRN",
+            "MSI",
+            "NOK",
+            "OTIS",
+            "TEL"
+          ]
+        },
+        {
+          "id": "CID000058",
+          "name": "AngloGold Ashanti Corrego do Sitio Mineracao",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "BLDP",
+            "ERIC",
+            "FLEX",
+            "GILT",
+            "GLW",
+            "ITRN",
+            "MSI",
+            "NOK",
+            "OTIS",
+            "TEL"
+          ]
+        },
+        {
+          "id": "CID000077",
+          "name": "Argor-Heraeus S.A.",
+          "nameZh": null,
+          "country": "瑞士",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "BLDP",
+            "ERIC",
+            "FLEX",
+            "GILT",
+            "GLW",
+            "ITRN",
+            "MSI",
+            "NOK",
+            "OTIS",
+            "TEL"
+          ]
+        },
+        {
+          "id": "CID000924",
+          "name": "Asahi Refining Canada Ltd.",
+          "nameZh": null,
+          "country": "加拿大",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 10,
+          "filers": [
+            "BLDP",
+            "ERIC",
+            "FLEX",
+            "GILT",
+            "GLW",
+            "ITRN",
+            "MSI",
+            "NOK",
+            "OTIS",
+            "TEL"
+          ]
+        }
+      ],
+      "concentrationTotal": 969
+    },
+    "medtech-health": {
+      "filers": 11,
+      "edges": 3307,
+      "countries": 67,
+      "exposure": [
+        {
+          "country": "印度尼西亚",
+          "edges": 185,
+          "filerCount": 11,
+          "filerShare": 1.0
+        },
+        {
+          "country": "菲律宾",
+          "edges": 39,
+          "filerCount": 11,
+          "filerShare": 1.0
+        },
+        {
+          "country": "泰国",
+          "edges": 36,
+          "filerCount": 11,
+          "filerShare": 1.0
+        },
+        {
+          "country": "墨西哥",
+          "edges": 28,
+          "filerCount": 11,
+          "filerShare": 1.0
+        },
+        {
+          "country": "哥伦比亚",
+          "edges": 13,
+          "filerCount": 11,
+          "filerShare": 1.0
+        },
+        {
+          "country": "中国",
+          "edges": 747,
+          "filerCount": 9,
+          "filerShare": 0.8182
+        },
+        {
+          "country": "日本",
+          "edges": 274,
+          "filerCount": 9,
+          "filerShare": 0.8182
+        },
+        {
+          "country": "美国",
+          "edges": 236,
+          "filerCount": 9,
+          "filerShare": 0.8182
+        },
+        {
+          "country": "巴西",
+          "edges": 150,
+          "filerCount": 9,
+          "filerShare": 0.8182
+        },
+        {
+          "country": "印度",
+          "edges": 129,
+          "filerCount": 9,
+          "filerShare": 0.8182
+        },
+        {
+          "country": "德国",
+          "edges": 102,
+          "filerCount": 9,
+          "filerShare": 0.8182
+        },
+        {
+          "country": "韩国",
+          "edges": 95,
+          "filerCount": 9,
+          "filerShare": 0.8182
+        }
+      ],
+      "exposureTotal": 67,
+      "concentration": [
+        {
+          "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
+          "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
+          "nameZh": null,
+          "country": "菲律宾",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 6,
+          "filers": [
+            "BAX",
+            "ISRG",
+            "MTD",
+            "SNN",
+            "SYK",
+            "WST"
+          ]
+        },
+        {
+          "id": "NAME:gold-by-gold-colombia",
+          "name": "Gold by Gold Colombia",
+          "nameZh": null,
+          "country": "哥伦比亚",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 6,
+          "filers": [
+            "BAX",
+            "ISRG",
+            "MTD",
+            "SNN",
+            "SYK",
+            "WST"
+          ]
+        },
+        {
+          "id": "NAME:kemet-de-mexico",
+          "name": "KEMET de Mexico",
+          "nameZh": null,
+          "country": "墨西哥",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 6,
+          "filers": [
+            "BAX",
+            "ISRG",
+            "MTD",
+            "SNN",
+            "SYK",
+            "WST"
+          ]
+        },
+        {
+          "id": "NAME:pt-premium-tin-indonesia",
+          "name": "PT Premium Tin Indonesia",
+          "nameZh": null,
+          "country": "印度尼西亚",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 6,
+          "filers": [
+            "BAX",
+            "ISRG",
+            "MTD",
+            "SNN",
+            "SYK",
+            "WST"
+          ]
+        },
+        {
+          "id": "CID000004",
+          "name": "A.L.M.T. Corp.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 5,
+          "filers": [
+            "A",
+            "ALGN",
+            "MDT",
+            "PHG",
+            "ZBH"
+          ]
+        },
+        {
+          "id": "NAME:a-l-m-t-corp",
+          "name": "A.L.M.T. Corp.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 5,
+          "filers": [
+            "BAX",
+            "ISRG",
+            "MTD",
+            "SYK",
+            "WST"
+          ]
+        },
+        {
+          "id": "CID001076",
+          "name": "AMG Brasil",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 5,
+          "filers": [
+            "A",
+            "ALGN",
+            "MDT",
+            "PHG",
+            "ZBH"
+          ]
+        },
+        {
+          "id": "NAME:amg-brasil",
+          "name": "AMG Brasil",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 5,
+          "filers": [
+            "BAX",
+            "ISRG",
+            "MTD",
+            "SYK",
+            "WST"
+          ]
+        },
+        {
+          "id": "CID000082",
+          "name": "ASAHI METALFINE, Inc.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 5,
+          "filers": [
+            "A",
+            "ALGN",
+            "MDT",
+            "PHG",
+            "ZBH"
+          ]
+        },
+        {
+          "id": "CID002708",
+          "name": "Abington Reldan Metals, LLC",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 5,
+          "filers": [
+            "A",
+            "ALGN",
+            "MDT",
+            "PHG",
+            "ZBH"
+          ]
+        },
+        {
+          "id": "NAME:abington-reldan-metals-llc",
+          "name": "Abington Reldan Metals, LLC",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 5,
+          "filers": [
+            "BAX",
+            "ISRG",
+            "MTD",
+            "SYK",
+            "WST"
+          ]
+        },
+        {
+          "id": "CID000015",
+          "name": "Advanced Chemical Company",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 5,
+          "filers": [
+            "A",
+            "ALGN",
+            "MDT",
+            "PHG",
+            "ZBH"
+          ]
+        }
+      ],
+      "concentrationTotal": 726
+    },
+    "consumer-goods": {
+      "filers": 6,
+      "edges": 1118,
+      "countries": 57,
+      "exposure": [
+        {
+          "country": "中国",
+          "edges": 283,
+          "filerCount": 6,
+          "filerShare": 1.0
+        },
+        {
+          "country": "印度尼西亚",
+          "edges": 67,
+          "filerCount": 6,
+          "filerShare": 1.0
+        },
+        {
+          "country": "马来西亚",
+          "edges": 12,
+          "filerCount": 6,
+          "filerShare": 1.0
+        },
+        {
+          "country": "玻利维亚",
+          "edges": 11,
+          "filerCount": 6,
+          "filerShare": 1.0
+        },
+        {
+          "country": "日本",
+          "edges": 122,
+          "filerCount": 5,
+          "filerShare": 0.8333
+        },
+        {
+          "country": "美国",
+          "edges": 90,
+          "filerCount": 5,
+          "filerShare": 0.8333
+        },
+        {
+          "country": "巴西",
+          "edges": 60,
+          "filerCount": 5,
+          "filerShare": 0.8333
+        },
+        {
+          "country": "韩国",
+          "edges": 39,
+          "filerCount": 5,
+          "filerShare": 0.8333
+        },
+        {
+          "country": "越南",
+          "edges": 25,
+          "filerCount": 5,
+          "filerShare": 0.8333
+        },
+        {
+          "country": "哈萨克斯坦",
+          "edges": 15,
+          "filerCount": 5,
+          "filerShare": 0.8333
+        },
+        {
+          "country": "泰国",
+          "edges": 15,
+          "filerCount": 5,
+          "filerShare": 0.8333
+        },
+        {
+          "country": "比利时",
+          "edges": 10,
+          "filerCount": 5,
+          "filerShare": 0.8333
+        }
+      ],
+      "exposureTotal": 57,
+      "concentration": [
+        {
+          "id": "NAME:aurubis-beerse",
+          "name": "Aurubis Beerse",
+          "nameZh": null,
+          "country": "比利时",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "BTI",
+            "CLX",
+            "ECL"
+          ]
+        },
+        {
+          "id": "CID001070",
+          "name": "China Tin Group Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 3,
+          "filers": [
+            "CL",
+            "HAS",
+            "MO"
+          ]
+        },
+        {
+          "id": "CID000258",
+          "name": "Chongyi Zhangyuan Tungsten Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 3,
+          "filers": [
+            "CL",
+            "HAS",
+            "MO"
+          ]
+        },
+        {
+          "id": "CID000402",
+          "name": "Dowa",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 3,
+          "filers": [
+            "CL",
+            "HAS",
+            "MO"
+          ]
+        },
+        {
+          "id": "CID000460",
+          "name": "F&X Electro-Materials Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 3,
+          "filers": [
+            "CL",
+            "HAS",
+            "MO"
+          ]
+        },
+        {
+          "id": "NAME:fenix-metals",
+          "name": "Fenix Metals",
+          "nameZh": null,
+          "country": "波兰",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "BTI",
+            "CLX",
+            "ECL"
+          ]
+        },
+        {
+          "id": "CID002494",
+          "name": "Ganzhou Seadragon W & Mo Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 3,
+          "filers": [
+            "CL",
+            "HAS",
+            "MO"
+          ]
+        },
+        {
+          "id": "CID002243",
+          "name": "Gold Refinery of Zijin Mining Group Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 3,
+          "filers": [
+            "CL",
+            "HAS",
+            "MO"
+          ]
+        },
+        {
+          "id": "CID003116",
+          "name": "Guangdong Hanhe Non-Ferrous Metal Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 3,
+          "filers": [
+            "CL",
+            "HAS",
+            "MO"
+          ]
+        },
+        {
+          "id": "NAME:guangdong-hanhe-non-ferrous-metal-co-ltd",
+          "name": "Guangdong Hanhe Non-Ferrous Metal Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "BTI",
+            "CLX",
+            "ECL"
+          ]
+        },
+        {
+          "id": "CID002492",
+          "name": "Hengyang King Xing Lifeng New Materials Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 3,
+          "filers": [
+            "CL",
+            "HAS",
+            "MO"
+          ]
+        },
+        {
+          "id": "CID002513",
+          "name": "Hunan Shizhuyuan Nonferrous Metals Co., Ltd. Chenzhou Tungsten Products Branch",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 3,
+          "filers": [
+            "CL",
+            "HAS",
+            "MO"
+          ]
+        }
+      ],
+      "concentrationTotal": 377
+    },
+    "mining-metals": {
+      "filers": 2,
+      "edges": 61,
+      "countries": 16,
+      "exposure": [
+        {
+          "country": "中国",
+          "edges": 30,
+          "filerCount": 2,
+          "filerShare": 1.0
+        },
+        {
+          "country": "越南",
+          "edges": 3,
+          "filerCount": 2,
+          "filerShare": 1.0
+        },
+        {
+          "country": "美国",
+          "edges": 6,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "日本",
+          "edges": 4,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "巴西",
+          "edges": 3,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "德国",
+          "edges": 3,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "印度尼西亚",
+          "edges": 2,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "韩国",
+          "edges": 2,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "中国台湾",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "印度",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "哈萨克斯坦",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "墨西哥",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 0.5
+        }
+      ],
+      "exposureTotal": 16,
+      "concentration": [],
+      "concentrationTotal": 0
+    },
+    "media-entertainment": {
+      "filers": 1,
+      "edges": 7,
+      "countries": 6,
+      "exposure": [
+        {
+          "country": "印度尼西亚",
+          "edges": 2,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "哥伦比亚",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "墨西哥",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "泰国",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "缅甸",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "菲律宾",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 1.0
+        }
+      ],
+      "exposureTotal": 6,
+      "concentration": [],
+      "concentrationTotal": 0
+    },
+    "utilities-power": {
+      "filers": 3,
+      "edges": 589,
+      "countries": 55,
+      "exposure": [
+        {
+          "country": "印度尼西亚",
+          "edges": 32,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "菲律宾",
+          "edges": 9,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "泰国",
+          "edges": 8,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "墨西哥",
+          "edges": 6,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "马来西亚",
+          "edges": 6,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "哥伦比亚",
+          "edges": 3,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "中国",
+          "edges": 136,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "日本",
+          "edges": 63,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "美国",
+          "edges": 47,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "巴西",
+          "edges": 34,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "印度",
+          "edges": 25,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "德国",
+          "edges": 24,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        }
+      ],
+      "exposureTotal": 55,
+      "concentration": [
+        {
+          "id": "CID000004",
+          "name": "A.L.M.T. Corp.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "CMI",
+            "NRG"
+          ]
+        },
+        {
+          "id": "CID001076",
+          "name": "AMG Brasil",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "CMI",
+            "NRG"
+          ]
+        },
+        {
+          "id": "CID000082",
+          "name": "ASAHI METALFINE, Inc.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "CMI",
+            "NRG"
+          ]
+        },
+        {
+          "id": "CID002708",
+          "name": "Abington Reldan Metals, LLC",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "CMI",
+            "NRG"
+          ]
+        },
+        {
+          "id": "CID000015",
+          "name": "Advanced Chemical Company",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "CMI",
+            "NRG"
+          ]
+        },
+        {
+          "id": "CID000035",
+          "name": "Agosi AG",
+          "nameZh": null,
+          "country": "德国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "CMI",
+            "NRG"
+          ]
+        },
+        {
+          "id": "CID000019",
+          "name": "Aida Chemical Industries Co., Ltd.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "CMI",
+            "NRG"
+          ]
+        },
+        {
+          "id": "CID000041",
+          "name": "Almalyk Mining and Metallurgical Complex (AMMC)",
+          "nameZh": null,
+          "country": "乌兹别克斯坦",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "CMI",
+            "NRG"
+          ]
+        },
+        {
+          "id": "CID000292",
+          "name": "Alpha Assembly Solutions Inc",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "CMI",
+            "NRG"
+          ]
+        },
+        {
+          "id": "CID000058",
+          "name": "AngloGold Ashanti Corrego do Sitio Mineracao",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "CMI",
+            "NRG"
+          ]
+        },
+        {
+          "id": "CID000077",
+          "name": "Argor-Heraeus S.A.",
+          "nameZh": null,
+          "country": "瑞士",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "CMI",
+            "NRG"
+          ]
+        },
+        {
+          "id": "CID000924",
+          "name": "Asahi Refining Canada Ltd.",
+          "nameZh": null,
+          "country": "加拿大",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "CMI",
+            "NRG"
+          ]
+        }
+      ],
+      "concentrationTotal": 219
+    },
+    "construction-building": {
+      "filers": 2,
+      "edges": 23,
+      "countries": 12,
+      "exposure": [
+        {
+          "country": "印度尼西亚",
+          "edges": 4,
+          "filerCount": 2,
+          "filerShare": 1.0
+        },
+        {
+          "country": "中国",
+          "edges": 7,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "菲律宾",
+          "edges": 2,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "韩国",
+          "edges": 2,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "中国台湾",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "哥伦比亚",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "墨西哥",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "泰国",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "蒙古",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "越南",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "马来西亚",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 0.5
+        },
+        {
+          "country": "马达加斯加",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 0.5
+        }
+      ],
+      "exposureTotal": 12,
+      "concentration": [],
+      "concentrationTotal": 0
+    },
+    "chemicals": {
+      "filers": 6,
+      "edges": 759,
+      "countries": 56,
+      "exposure": [
+        {
+          "country": "印度尼西亚",
+          "edges": 56,
+          "filerCount": 6,
+          "filerShare": 1.0
+        },
+        {
+          "country": "中国",
+          "edges": 176,
+          "filerCount": 5,
+          "filerShare": 0.8333
+        },
+        {
+          "country": "巴西",
+          "edges": 42,
+          "filerCount": 5,
+          "filerShare": 0.8333
+        },
+        {
+          "country": "玻利维亚",
+          "edges": 9,
+          "filerCount": 5,
+          "filerShare": 0.8333
+        },
+        {
+          "country": "比利时",
+          "edges": 8,
+          "filerCount": 5,
+          "filerShare": 0.8333
+        },
+        {
+          "country": "波兰",
+          "edges": 8,
+          "filerCount": 5,
+          "filerShare": 0.8333
+        },
+        {
+          "country": "日本",
+          "edges": 64,
+          "filerCount": 4,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "美国",
+          "edges": 59,
+          "filerCount": 4,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "泰国",
+          "edges": 10,
+          "filerCount": 4,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "马来西亚",
+          "edges": 10,
+          "filerCount": 4,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "秘鲁",
+          "edges": 8,
+          "filerCount": 4,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "卢旺达",
+          "edges": 7,
+          "filerCount": 4,
+          "filerShare": 0.6667
+        }
+      ],
+      "exposureTotal": 56,
+      "concentration": [
+        {
+          "id": "NAME:aurubis-beerse",
+          "name": "Aurubis Beerse",
+          "nameZh": null,
+          "country": "比利时",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "CLX",
+            "ECL",
+            "PPG"
+          ]
+        },
+        {
+          "id": "NAME:fenix-metals",
+          "name": "Fenix Metals",
+          "nameZh": null,
+          "country": "波兰",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "CLX",
+            "ECL",
+            "PPG"
+          ]
+        },
+        {
+          "id": "NAME:mineracao-taboca-s-a",
+          "name": "Mineracao Taboca S.A.",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "钽",
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "CLX",
+            "ECL",
+            "PPG"
+          ]
+        },
+        {
+          "id": "NAME:pt-mitra-stania-prima",
+          "name": "PT Mitra Stania Prima",
+          "nameZh": null,
+          "country": "印度尼西亚",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "CLX",
+            "ECL",
+            "PPG"
+          ]
+        },
+        {
+          "id": "NAME:pt-timah-tbk-kundur",
+          "name": "PT Timah Tbk Kundur",
+          "nameZh": null,
+          "country": "印度尼西亚",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "CLX",
+            "ECL",
+            "PPG"
+          ]
+        },
+        {
+          "id": "NAME:pt-timah-tbk-mentok",
+          "name": "PT Timah Tbk Mentok",
+          "nameZh": null,
+          "country": "印度尼西亚",
+          "minerals": [
+            "钨",
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "CLX",
+            "ECL",
+            "PPG"
+          ]
+        },
+        {
+          "id": "NAME:tin-smelting-branch-of-yunnan-tin-co-ltd",
+          "name": "Tin Smelting Branch of Yunnan Tin Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 3,
+          "filers": [
+            "CLX",
+            "ECL",
+            "PPG"
+          ]
+        },
+        {
+          "id": "CID000292",
+          "name": "Alpha Assembly Solutions Inc",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "CL",
+            "DOW"
+          ]
+        },
+        {
+          "id": "NAME:argor-heraeus-s-a",
+          "name": "Argor-Heraeus S.A.",
+          "nameZh": null,
+          "country": "瑞士",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 2,
+          "filers": [
+            "ECL",
+            "PPG"
+          ]
+        },
+        {
+          "id": "NAME:asahi-refining-canada-ltd",
+          "name": "Asahi Refining Canada Ltd.",
+          "nameZh": null,
+          "country": "加拿大",
+          "minerals": [
+            "金",
+            "锡"
+          ],
+          "identifierType": "name-only",
+          "filerCount": 2,
+          "filers": [
+            "ECL",
+            "PPG"
+          ]
+        },
+        {
+          "id": "CID002773",
+          "name": "Aurubis Beerse",
+          "nameZh": null,
+          "country": "比利时",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "CL",
+            "DOW"
+          ]
+        },
+        {
+          "id": "CID002774",
+          "name": "Aurubis Berango",
+          "nameZh": null,
+          "country": "西班牙",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "CL",
+            "DOW"
+          ]
+        }
+      ],
+      "concentrationTotal": 76
+    },
+    "automotive": {
+      "filers": 5,
+      "edges": 1483,
+      "countries": 55,
+      "exposure": [
+        {
+          "country": "印度尼西亚",
+          "edges": 40,
+          "filerCount": 5,
+          "filerShare": 1.0
+        },
+        {
+          "country": "菲律宾",
+          "edges": 12,
+          "filerCount": 5,
+          "filerShare": 1.0
+        },
+        {
+          "country": "墨西哥",
+          "edges": 9,
+          "filerCount": 5,
+          "filerShare": 1.0
+        },
+        {
+          "country": "哥伦比亚",
+          "edges": 5,
+          "filerCount": 5,
+          "filerShare": 1.0
+        },
+        {
+          "country": "未写明",
+          "edges": 773,
+          "filerCount": 4,
+          "filerShare": 0.8
+        },
+        {
+          "country": "越南",
+          "edges": 20,
+          "filerCount": 3,
+          "filerShare": 0.6
+        },
+        {
+          "country": "泰国",
+          "edges": 9,
+          "filerCount": 3,
+          "filerShare": 0.6
+        },
+        {
+          "country": "中国",
+          "edges": 158,
+          "filerCount": 2,
+          "filerShare": 0.4
+        },
+        {
+          "country": "日本",
+          "edges": 62,
+          "filerCount": 2,
+          "filerShare": 0.4
+        },
+        {
+          "country": "美国",
+          "edges": 53,
+          "filerCount": 2,
+          "filerShare": 0.4
+        },
+        {
+          "country": "印度",
+          "edges": 39,
+          "filerCount": 2,
+          "filerShare": 0.4
+        },
+        {
+          "country": "俄罗斯",
+          "edges": 36,
+          "filerCount": 2,
+          "filerShare": 0.4
+        }
+      ],
+      "exposureTotal": 55,
+      "concentration": [
+        {
+          "id": "CID000004",
+          "name": "A.L.M.T. Corp.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 5,
+          "filers": [
+            "APTV",
+            "HMC",
+            "PCAR",
+            "PSNY",
+            "TM"
+          ]
+        },
+        {
+          "id": "CID001076",
+          "name": "AMG Brasil",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 5,
+          "filers": [
+            "APTV",
+            "HMC",
+            "PCAR",
+            "PSNY",
+            "TM"
+          ]
+        },
+        {
+          "id": "CID000082",
+          "name": "ASAHI METALFINE, Inc.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 5,
+          "filers": [
+            "APTV",
+            "HMC",
+            "PCAR",
+            "PSNY",
+            "TM"
+          ]
+        },
+        {
+          "id": "CID002708",
+          "name": "Abington Reldan Metals, LLC",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 5,
+          "filers": [
+            "APTV",
+            "HMC",
+            "PCAR",
+            "PSNY",
+            "TM"
+          ]
+        },
+        {
+          "id": "CID000015",
+          "name": "Advanced Chemical Company",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 5,
+          "filers": [
+            "APTV",
+            "HMC",
+            "PCAR",
+            "PSNY",
+            "TM"
+          ]
+        },
+        {
+          "id": "CID000035",
+          "name": "Agosi AG",
+          "nameZh": null,
+          "country": "德国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 5,
+          "filers": [
+            "APTV",
+            "HMC",
+            "PCAR",
+            "PSNY",
+            "TM"
+          ]
+        },
+        {
+          "id": "CID000019",
+          "name": "Aida Chemical Industries Co., Ltd.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 5,
+          "filers": [
+            "APTV",
+            "HMC",
+            "PCAR",
+            "PSNY",
+            "TM"
+          ]
+        },
+        {
+          "id": "CID000041",
+          "name": "Almalyk Mining and Metallurgical Complex (AMMC)",
+          "nameZh": null,
+          "country": "乌兹别克斯坦",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 5,
+          "filers": [
+            "APTV",
+            "HMC",
+            "PCAR",
+            "PSNY",
+            "TM"
+          ]
+        },
+        {
+          "id": "CID000292",
+          "name": "Alpha Assembly Solutions Inc",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 5,
+          "filers": [
+            "APTV",
+            "HMC",
+            "PCAR",
+            "PSNY",
+            "TM"
+          ]
+        },
+        {
+          "id": "CID000058",
+          "name": "AngloGold Ashanti Corrego do Sitio Mineracao",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 5,
+          "filers": [
+            "APTV",
+            "HMC",
+            "PCAR",
+            "PSNY",
+            "TM"
+          ]
+        },
+        {
+          "id": "CID000077",
+          "name": "Argor-Heraeus S.A.",
+          "nameZh": null,
+          "country": "瑞士",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 5,
+          "filers": [
+            "APTV",
+            "HMC",
+            "PCAR",
+            "PSNY",
+            "TM"
+          ]
+        },
+        {
+          "id": "CID000924",
+          "name": "Asahi Refining Canada Ltd.",
+          "nameZh": null,
+          "country": "加拿大",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 5,
+          "filers": [
+            "APTV",
+            "HMC",
+            "PCAR",
+            "PSNY",
+            "TM"
+          ]
+        }
+      ],
+      "concentrationTotal": 355
+    },
+    "oil-gas": {
+      "filers": 1,
+      "edges": 341,
+      "countries": 52,
+      "exposure": [
+        {
+          "country": "中国",
+          "edges": 76,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "日本",
+          "edges": 32,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "美国",
+          "edges": 26,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "印度",
+          "edges": 19,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "俄罗斯",
+          "edges": 17,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "印度尼西亚",
+          "edges": 17,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "巴西",
+          "edges": 17,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "德国",
+          "edges": 12,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "韩国",
+          "edges": 11,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "越南",
+          "edges": 9,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "中国台湾",
+          "edges": 8,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "瑞士",
+          "edges": 6,
+          "filerCount": 1,
+          "filerShare": 1.0
+        }
+      ],
+      "exposureTotal": 52,
+      "concentration": [],
+      "concentrationTotal": 0
+    },
+    "logistics-transport": {
+      "filers": 1,
+      "edges": 392,
+      "countries": 50,
+      "exposure": [
+        {
+          "country": "中国",
+          "edges": 138,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "日本",
+          "edges": 30,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "美国",
+          "edges": 24,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "印度",
+          "edges": 17,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "巴西",
+          "edges": 17,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "印度尼西亚",
+          "edges": 16,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "俄罗斯",
+          "edges": 15,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "德国",
+          "edges": 13,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "越南",
+          "edges": 11,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "韩国",
+          "edges": 10,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "中国台湾",
+          "edges": 9,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "南非",
+          "edges": 6,
+          "filerCount": 1,
+          "filerShare": 1.0
+        }
+      ],
+      "exposureTotal": 50,
+      "concentration": [],
+      "concentrationTotal": 0
+    },
+    "pharma-biotech": {
+      "filers": 2,
+      "edges": 709,
+      "countries": 57,
+      "exposure": [
+        {
+          "country": "中国",
+          "edges": 169,
+          "filerCount": 2,
+          "filerShare": 1.0
+        },
+        {
+          "country": "日本",
+          "edges": 61,
+          "filerCount": 2,
+          "filerShare": 1.0
+        },
+        {
+          "country": "美国",
+          "edges": 58,
+          "filerCount": 2,
+          "filerShare": 1.0
+        },
+        {
+          "country": "印度",
+          "edges": 39,
+          "filerCount": 2,
+          "filerShare": 1.0
+        },
+        {
+          "country": "俄罗斯",
+          "edges": 36,
+          "filerCount": 2,
+          "filerShare": 1.0
+        },
+        {
+          "country": "印度尼西亚",
+          "edges": 35,
+          "filerCount": 2,
+          "filerShare": 1.0
+        },
+        {
+          "country": "巴西",
+          "edges": 35,
+          "filerCount": 2,
+          "filerShare": 1.0
+        },
+        {
+          "country": "韩国",
+          "edges": 24,
+          "filerCount": 2,
+          "filerShare": 1.0
+        },
+        {
+          "country": "德国",
+          "edges": 23,
+          "filerCount": 2,
+          "filerShare": 1.0
+        },
+        {
+          "country": "越南",
+          "edges": 19,
+          "filerCount": 2,
+          "filerShare": 1.0
+        },
+        {
+          "country": "中国台湾",
+          "edges": 16,
+          "filerCount": 2,
+          "filerShare": 1.0
+        },
+        {
+          "country": "阿联酋",
+          "edges": 14,
+          "filerCount": 2,
+          "filerShare": 1.0
+        }
+      ],
+      "exposureTotal": 57,
+      "concentration": [],
+      "concentrationTotal": 0
+    },
+    "packaging-paper": {
+      "filers": 3,
+      "edges": 660,
+      "countries": 53,
+      "exposure": [
+        {
+          "country": "中国",
+          "edges": 154,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "印度尼西亚",
+          "edges": 88,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "美国",
+          "edges": 46,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "巴西",
+          "edges": 33,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "瑞士",
+          "edges": 12,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "比利时",
+          "edges": 7,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "波兰",
+          "edges": 5,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "新加坡",
+          "edges": 3,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "日本",
+          "edges": 59,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "印度",
+          "edges": 23,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "德国",
+          "edges": 23,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "越南",
+          "edges": 20,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        }
+      ],
+      "exposureTotal": 53,
+      "concentration": [
+        {
+          "id": "CID000468",
+          "name": "Fenix Metals",
+          "nameZh": null,
+          "country": "波兰",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "AVY",
+            "BALL"
+          ]
+        },
+        {
+          "id": "CID001149",
+          "name": "Metalor Technologies (Hong Kong) Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "AVY",
+            "BALL"
+          ]
+        },
+        {
+          "id": "CID001152",
+          "name": "Metalor Technologies (Singapore) Pte., Ltd.",
+          "nameZh": null,
+          "country": "新加坡",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "AVY",
+            "BALL"
+          ]
+        },
+        {
+          "id": "CID001147",
+          "name": "Metalor Technologies (Suzhou) Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "AVY",
+            "BALL"
+          ]
+        },
+        {
+          "id": "CID001153",
+          "name": "Metalor Technologies S.A.",
+          "nameZh": null,
+          "country": "瑞士",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "AVY",
+            "BALL"
+          ]
+        },
+        {
+          "id": "CID001157",
+          "name": "Metalor USA Refining Corporation",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "AVY",
+            "BALL"
+          ]
+        },
+        {
+          "id": "CID001182",
+          "name": "Minsur",
+          "nameZh": null,
+          "country": "秘鲁",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "AVY",
+            "BALL"
+          ]
+        },
+        {
+          "id": "CID001337",
+          "name": "Operaciones Metalurgicas S.A.",
+          "nameZh": null,
+          "country": "玻利维亚",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "AVY",
+            "BALL"
+          ]
+        },
+        {
+          "id": "CID001453",
+          "name": "PT Mitra Stania Prima",
+          "nameZh": null,
+          "country": "印度尼西亚",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "AVY",
+            "BALL"
+          ]
+        },
+        {
+          "id": "CID001458",
+          "name": "PT Prima Timah Utama",
+          "nameZh": null,
+          "country": "印度尼西亚",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "AVY",
+            "BALL"
+          ]
+        },
+        {
+          "id": "CID003868",
+          "name": "PT Putera Sarana Shakti (PT PSS)",
+          "nameZh": null,
+          "country": "印度尼西亚",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "AVY",
+            "BALL"
+          ]
+        },
+        {
+          "id": "CID002180",
+          "name": "Tin Smelting Branch of Yunnan Tin Co., Ltd.",
+          "nameZh": null,
+          "country": "中国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "AVY",
+            "BALL"
+          ]
+        }
+      ],
+      "concentrationTotal": 14
+    },
+    "textiles-apparel": {
+      "filers": 1,
+      "edges": 217,
+      "countries": 5,
+      "exposure": [
+        {
+          "country": "未写明",
+          "edges": 213,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "印度尼西亚",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "哥伦比亚",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "墨西哥",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 1.0
+        },
+        {
+          "country": "菲律宾",
+          "edges": 1,
+          "filerCount": 1,
+          "filerShare": 1.0
+        }
+      ],
+      "exposureTotal": 5,
+      "concentration": [],
+      "concentrationTotal": 0
+    },
+    "business-services": {
+      "filers": 3,
+      "edges": 699,
+      "countries": 53,
+      "exposure": [
+        {
+          "country": "菲律宾",
+          "edges": 9,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "泰国",
+          "edges": 8,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "墨西哥",
+          "edges": 6,
+          "filerCount": 3,
+          "filerShare": 1.0
+        },
+        {
+          "country": "中国",
+          "edges": 129,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "日本",
+          "edges": 60,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "美国",
+          "edges": 47,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "印度尼西亚",
+          "edges": 32,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "巴西",
+          "edges": 30,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "印度",
+          "edges": 22,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "德国",
+          "edges": 21,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "韩国",
+          "edges": 18,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        },
+        {
+          "country": "中国台湾",
+          "edges": 14,
+          "filerCount": 2,
+          "filerShare": 0.6667
+        }
+      ],
+      "exposureTotal": 53,
+      "concentration": [
+        {
+          "id": "CID000004",
+          "name": "A.L.M.T. Corp.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "钨"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "ALLE",
+            "RTO"
+          ]
+        },
+        {
+          "id": "CID001076",
+          "name": "AMG Brasil",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "钽"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "ALLE",
+            "RTO"
+          ]
+        },
+        {
+          "id": "CID000082",
+          "name": "ASAHI METALFINE, Inc.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "ALLE",
+            "RTO"
+          ]
+        },
+        {
+          "id": "CID000035",
+          "name": "Agosi AG",
+          "nameZh": null,
+          "country": "德国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "ALLE",
+            "RTO"
+          ]
+        },
+        {
+          "id": "CID000019",
+          "name": "Aida Chemical Industries Co., Ltd.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "ALLE",
+            "RTO"
+          ]
+        },
+        {
+          "id": "CID000292",
+          "name": "Alpha Assembly Solutions Inc",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "ALLE",
+            "RTO"
+          ]
+        },
+        {
+          "id": "CID000058",
+          "name": "AngloGold Ashanti Corrego do Sitio Mineracao",
+          "nameZh": null,
+          "country": "巴西",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "ALLE",
+            "RTO"
+          ]
+        },
+        {
+          "id": "CID000077",
+          "name": "Argor-Heraeus S.A.",
+          "nameZh": null,
+          "country": "瑞士",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "ALLE",
+            "RTO"
+          ]
+        },
+        {
+          "id": "CID000920",
+          "name": "Asahi Refining USA Inc.",
+          "nameZh": null,
+          "country": "美国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "ALLE",
+            "RTO"
+          ]
+        },
+        {
+          "id": "CID000090",
+          "name": "Asaka Riken Co., Ltd.",
+          "nameZh": null,
+          "country": "日本",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "ALLE",
+            "RTO"
+          ]
+        },
+        {
+          "id": "CID000113",
+          "name": "Aurubis AG",
+          "nameZh": null,
+          "country": "德国",
+          "minerals": [
+            "金"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "ALLE",
+            "RTO"
+          ]
+        },
+        {
+          "id": "CID002773",
+          "name": "Aurubis Beerse",
+          "nameZh": null,
+          "country": "比利时",
+          "minerals": [
+            "锡"
+          ],
+          "identifierType": "rmi-cid",
+          "filerCount": 2,
+          "filers": [
+            "ALLE",
+            "RTO"
+          ]
+        }
+      ],
+      "concentrationTotal": 137
+    }
+  },
   "countryExposure": [
     {
       "country": "印度尼西亚",

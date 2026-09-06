@@ -881,6 +881,49 @@ def check_form_sd_flag(payload: dict, errors: list[str]) -> None:
           f"其中被判「无申报」的 {len(bad)} 家")
 
 
+def check_chain_risk(payload: dict, errors: list[str]) -> None:
+    """按链切的风险读数，口径必须与全局那份一致。
+
+    页面筛到某条链时用这一份。它最容易出的错不是算错，而是**口径悄悄变宽**：
+    分母混进没有名单的公司、集中度收进只被一家列入的厂——两者都会把这条链的
+    风险说得比实际大，而页面上看不出来。
+    """
+    risk = payload.get("chainRisk")
+    if risk is None:
+        print("[--] 没有 chainRisk（构建脚本还没产出这一份），本轮跳过按链风险校验")
+        return
+    if not isinstance(risk, dict):
+        fail(errors, "chainRisk 必须是对象（链 id → 读数）")
+        return
+    known = {c.get("id") for c in (payload.get("chains") or [])}
+    nodes = payload.get("nodes") or []
+    # 每条链里**有名单**的公司数——按链风险的分母只能是它
+    truth: dict[str, int] = {}
+    for node in nodes:
+        if not node.get("edgeCount"):
+            continue
+        for cid in (node.get("chains") or []):
+            truth[cid] = truth.get(cid, 0) + 1
+    for cid, row in risk.items():
+        if cid not in known:
+            fail(errors, f"chainRisk 里的「{cid}」不在 chains 列表里")
+            continue
+        if row.get("filers") != truth.get(cid):
+            fail(errors, f"chainRisk[{cid}].filers = {row.get('filers')}，"
+                         f"实际这条链里有名单的公司 {truth.get(cid)} 家")
+        for item in (row.get("concentration") or []):
+            if (item.get("filerCount") or 0) < 2:
+                fail(errors, f"chainRisk[{cid}] 收了只被 {item.get('filerCount')} "
+                             f"家列入的冶炼厂——「集中」的口径是 ≥2，与全局那份必须一致")
+                break
+            if len(item.get("filers") or []) != item.get("filerCount"):
+                fail(errors, f"chainRisk[{cid}] 某条 filerCount 与 filers 长度不符")
+                break
+        if len(row.get("exposure") or []) > (row.get("exposureTotal") or 0):
+            fail(errors, f"chainRisk[{cid}] 列出的国别比总数还多")
+    print(f"按链风险：{len(risk)} 条链，分母与集中度口径均与全局一致")
+
+
 def main() -> int:
     if not os.path.exists(NODES_PATH):
         print(f"[XX] 缺少 {NODES_PATH}")
@@ -899,6 +942,7 @@ def main() -> int:
     check_home_card(payload, errors)
     check_page_meta(payload, errors)
     check_form_sd_flag(payload, errors)
+    check_chain_risk(payload, errors)
     check_no_conflict_markers(errors)
     smelters = check_smelters(errors, edge_count)
     check_health(errors, len(payload.get("nodes") or []))
