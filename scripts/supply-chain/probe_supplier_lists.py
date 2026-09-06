@@ -22,7 +22,16 @@
    所以逐个记录 Content-Type 与体积，不预设。
 3. **PDF 能不能取到文字**——用 zlib 解 PDF 流对象、看有没有可读文本，
    这是不装依赖能做的最粗判断。取不到文字就是扫描件，这条路对那家公司走不通。
-4. **许可与礼貌**——先读 robots.txt。被 Disallow 的路径不抓，如实记下来。
+4. **许可与礼貌**——两件不同的事，必须分开答：
+   - **礼貌**：先读 robots.txt，被 Disallow 的路径不抓，如实记下来；
+   - **许可**：按 `SUPPLY_CHAIN_SOURCES.md` §4 逐条标 `GOV` / `IGO` / `PRIV`，
+     **`PRIV` 一律拦下**。
+
+   这一条曾经只做了前半截。结果是：报告里 robots 一路绿灯、格式解得开、
+   内容读得出，看着像张准入通行证——而**许可这一问从头到尾没人答过**。
+   `robots.txt 允许抓取` 与 `许可允许再分发` 是两码事：前者是站长对爬虫的
+   礼貌约定，后者决定本站能不能把它的内容整理成数据集重新发布。
+   现在每家都必须打出许可结论，取得到但不许登记的以 `[!!]` 标出。
 
 ## 边界
 
@@ -293,14 +302,31 @@ def probe(symbol: str, zh: str, pages: list[str]) -> dict:
     return entry
 
 
+# 许可结论。**这不是探测出来的，是按 SUPPLY_CHAIN_SOURCES.md §4 的规矩定的**：
+# 公司自行发布的文档属于 PRIV，PRIV 一律拦下。写死在这里是为了让报告每一次
+# 都把这一问答出来——上一版只查 robots.txt，报告看着像通行证，
+# 而许可这一问从头到尾没人答过（见 SOURCES.md §2.1）。
+LICENSE_CLASS = "PRIV"
+LICENSE_VERDICT = ("不许登记：公司自行发布的文档属 PRIV，"
+                   "按 SUPPLY_CHAIN_SOURCES.md §4 一律拦下；"
+                   "§2.1 逐条写了为什么它与 SEC 申报不能类推。"
+                   "要接入的前置条件是拿到发布方书面许可。")
+
+
 def main() -> None:
-    print("── 公司自己发布的供应商名单：找得到吗、什么格式、解得开吗 ──────────\n")
+    print("── 公司自己发布的供应商名单：找得到吗、什么格式、解得开吗、许可准不准 ──\n")
+    print(f"[!!] 许可结论（全部目标）：{LICENSE_CLASS} —— {LICENSE_VERDICT}")
+    print("     下面的「取得到／解得开」只回答技术问题。"
+          "**技术通过不等于许可通过**，这两件事这个探针分开报。\n")
     report: dict = {"companies": {}}
     for symbol, zh, pages in TARGETS:
         entry = probe(symbol, zh, pages)
         report["companies"][symbol] = entry
         robots = entry["robots"]
-        print(f"[--] {symbol:<5} {zh:<6} robots {'可读' if robots.get('ok') else robots.get('why')}"
+        entry["licenseClass"] = LICENSE_CLASS
+        entry["licenseVerdict"] = LICENSE_VERDICT
+        print(f"[!!] {symbol:<5} {zh:<6} 许可 {LICENSE_CLASS} · 不许登记"
+              f"　｜　robots {'可读' if robots.get('ok') else robots.get('why')}"
               f"（Disallow {len(robots.get('disallow') or [])} 条）")
         for page in entry["pages"]:
             if page.get("skipped"):
