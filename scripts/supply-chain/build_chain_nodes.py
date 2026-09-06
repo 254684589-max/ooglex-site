@@ -589,6 +589,7 @@ def build_node(member: dict, identity: dict, sic_module, chain_module=None) -> d
         node["stageNote"] = mapping["reason"]
 
     apply_identity(node, identity.get(node["symbol"]) or {}, sic_module, chain_module)
+    node["filerCategory"] = (identity.get(node["symbol"]) or {}).get("filerCategory")
     return node
 
 
@@ -734,6 +735,10 @@ def build_foreign_node(record: dict, sic_module, chain_module=None,
         #
         # 折完仍落在离岸法域的 51 家不是缺陷：SEC 手上只有那个地址，
         # 说「只知道注册在开曼」是诚实答案，猜一个国家才是编。
+        # SEC 按公众持股量分的申报人档。**这是全池唯一 100% 覆盖的规模轴**
+        # ——站内报价只有标普那 495 家（8%）。它不是市值：按公众持股量而非
+        # 总市值，一年只在财年末重定一次，页面必须照实说是「申报人类别」。
+        "filerCategory": record.get("filerCategory"),
         "offshoreIncorporation": offshore,
         "operatingCountry": country_zh(record.get("operatingCountry")),
         "operatingCountryEn": record.get("operatingCountry"),
@@ -972,6 +977,11 @@ def build() -> None:
     domestic_nodes_all = [n for n in nodes if n.get("pool") == "sec-domestic-filer"]
     by_sic_major = sector_coverage(domestic_nodes_all, filing_status,
                                    key="sicMajorLabel", label="sector")
+    # 全池按申报人类别。这是唯一一条**三个池通用、100% 覆盖**的规模轴，
+    # 页面靠它回答「这 5,897 家里有多少是真正的大公司」——市值答不了，
+    # 它只覆盖 8%。
+    by_filer_category = sector_coverage(nodes, filing_status,
+                                        key="filerCategory", label="sector")
     # 按**经营地**汇总，不按注册地。见节点构建处那段：注册地这一栏的第一名
     # 是开曼群岛 340 家，它回答不了「这条产业链在哪」。
     by_country = sector_coverage(foreign_nodes_all, filing_status,
@@ -1141,6 +1151,8 @@ def build() -> None:
             # 第三池按 SIC 大类。键名沿用 sector（与另两栏同一套渲染），
             # 语义是行业大类——页面必须写清，不能让读者以为是 GICS 板块。
             "bySicMajor": by_sic_major,
+            # 键名沿用 sector（与另外三栏同一套渲染），语义是申报人类别。
+            "byFilerCategory": by_filer_category,
             # 上面那一栏的国别各自来自哪个 SEC 字段。页面照这个数说话。
             "countryBasis": country_basis,
             # 中文名：有通用译名的家数、对照表总条数、以及对不上号的条目。

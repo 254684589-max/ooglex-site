@@ -86,6 +86,10 @@ def main() -> int:
                 "cik": int(cik),
                 "sic": int(sub["sic"]) if str(sub.get("sic", "")).isdigit() else None,
                 "sicDescription": sub.get("sicDescription"),
+                # SEC 按公众持股量给的申报人分档。站内报价只覆盖标普这一池，
+                # 扩到 5,897 家之后是 8%——这条轴 100% 覆盖，且是政府分类，
+                # 三个池都存同一个字段，页面才能按同一把尺子比。
+                "filerCategory": (sub.get("category") or "").strip() or None,
                 "secName": sub.get("name"),
             }
         except Exception as exc:                   # noqa: BLE001

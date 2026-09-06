@@ -349,6 +349,33 @@ def check_coverage(payload: dict, counts: dict, edge_count: int, errors: list[st
         for name in sorted(set(truth_sic) - {r.get("sector") for r in by_sic}):
             fail(errors, f"coverage.bySicMajor 漏了行业大类「{name}」")
 
+    # ── 规模轴：全池按申报人类别 ─────────────────────────────────────────
+    # **这一栏与上面三栏不是一回事**：三栏是把全池切成互不重叠的三份
+    # （标普/外国/本土），加起来等于全池；这一栏是**同一批公司换一把尺子量**，
+    # 它自己就覆盖全池。合计校验里不能把它算进去，否则会重复计数。
+    by_cat = coverage.get("byFilerCategory")
+    if by_cat is not None:
+        if not isinstance(by_cat, list):
+            fail(errors, "coverage.byFilerCategory 必须是数组")
+            return
+        truth_cat: dict[str, int] = {}
+        for node in nodes:
+            key = node.get("filerCategory") or "未分类"
+            truth_cat[key] = truth_cat.get(key, 0) + 1
+        for row in by_cat:
+            name = row.get("sector")          # 字段名复用，语义是申报人类别
+            if name not in truth_cat:
+                fail(errors, f"coverage.byFilerCategory 多报了类别「{name}」，节点表里没有")
+            elif row.get("companies") != truth_cat[name]:
+                fail(errors, f"coverage.byFilerCategory[{name}] 报告 "
+                             f"{row.get('companies')}，实际 {truth_cat[name]}")
+        for name in sorted(set(truth_cat) - {r.get("sector") for r in by_cat}):
+            fail(errors, f"coverage.byFilerCategory 漏了类别「{name}」")
+        total_cat = sum(r.get("companies") or 0 for r in by_cat)
+        if total_cat != len(nodes):
+            fail(errors, f"按申报人类别合计 {total_cat} 家 ≠ 全池 {len(nodes)} 家——"
+                         "这一栏量的是同一批公司，必须覆盖全池")
+
     # 三栏之和必须等于全池。差一家就说明有公司三栏都没进——页面上它就消失了。
     # **每加一个池就要在这里加一项**，否则这条校验会把新池报成「消失的公司」。
     if by_sector is not None:
