@@ -111,7 +111,7 @@
       "total": 349
     },
     "ADI": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 698,
@@ -177,42 +177,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -441,7 +441,7 @@
       "total": 338
     },
     "ALLT": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 443,
@@ -462,6 +462,11 @@
           "peerTotal": 251,
           "shared": 237,
           "symbol": "SMCI"
+        },
+        {
+          "peerTotal": 344,
+          "shared": 235,
+          "symbol": "NVX"
         },
         {
           "peerTotal": 398,
@@ -497,52 +502,47 @@
           "peerTotal": 339,
           "shared": 222,
           "symbol": "KRNT"
-        },
-        {
-          "peerTotal": 339,
-          "shared": 222,
-          "symbol": "NVMI"
         }
       ],
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -661,7 +661,7 @@
       "total": 325
     },
     "AMD": {
-      "peerCount": 66,
+      "peerCount": 67,
       "peers": [
         {
           "peerTotal": 443,
@@ -727,42 +727,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -771,7 +771,7 @@
       "total": 211
     },
     "AMZN": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 443,
@@ -792,6 +792,11 @@
           "peerTotal": 398,
           "shared": 284,
           "symbol": "DE"
+        },
+        {
+          "peerTotal": 344,
+          "shared": 279,
+          "symbol": "NVX"
         },
         {
           "peerTotal": 338,
@@ -827,52 +832,47 @@
           "peerTotal": 329,
           "shared": 271,
           "symbol": "VRT"
-        },
-        {
-          "peerTotal": 360,
-          "shared": 267,
-          "symbol": "MTD"
         }
       ],
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -991,7 +991,7 @@
       "total": 281
     },
     "APH": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 443,
@@ -1057,42 +1057,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -1211,7 +1211,7 @@
       "total": 337
     },
     "ASX": {
-      "peerCount": 100,
+      "peerCount": 101,
       "peers": [
         {
           "peerTotal": 782,
@@ -1321,7 +1321,7 @@
       "total": 232
     },
     "AUDC": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 698,
@@ -1364,6 +1364,11 @@
           "symbol": "MTD"
         },
         {
+          "peerTotal": 344,
+          "shared": 334,
+          "symbol": "NVX"
+        },
+        {
           "peerTotal": 354,
           "shared": 333,
           "symbol": "ECL"
@@ -1377,52 +1382,47 @@
           "peerTotal": 392,
           "shared": 328,
           "symbol": "WAB"
-        },
-        {
-          "peerTotal": 324,
-          "shared": 323,
-          "symbol": "NYAX"
         }
       ],
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -1651,7 +1651,7 @@
       "total": 14
     },
     "BAX": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 329,
@@ -1717,42 +1717,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -1761,7 +1761,7 @@
       "total": 323
     },
     "BBY": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 398,
@@ -1827,42 +1827,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -2091,7 +2091,7 @@
       "total": 431
     },
     "BRSL": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 698,
@@ -2117,6 +2117,11 @@
           "peerTotal": 339,
           "shared": 326,
           "symbol": "NVMI"
+        },
+        {
+          "peerTotal": 344,
+          "shared": 326,
+          "symbol": "NVX"
         },
         {
           "peerTotal": 339,
@@ -2147,52 +2152,47 @@
           "peerTotal": 324,
           "shared": 312,
           "symbol": "NYAX"
-        },
-        {
-          "peerTotal": 328,
-          "shared": 306,
-          "symbol": "ISRG"
         }
       ],
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -2201,7 +2201,7 @@
       "total": 452
     },
     "BTI": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 338,
@@ -2267,42 +2267,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -2421,7 +2421,7 @@
       "total": 346
     },
     "CAT": {
-      "peerCount": 54,
+      "peerCount": 55,
       "peers": [
         {
           "peerTotal": 222,
@@ -2487,7 +2487,7 @@
       "topShared": [
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
@@ -2606,7 +2606,7 @@
       "total": 317
     },
     "CLX": {
-      "peerCount": 62,
+      "peerCount": 63,
       "peers": [
         {
           "peerTotal": 344,
@@ -2672,42 +2672,42 @@
       "topShared": [
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:pt-atd-makmur-mandiri-jaya",
           "name": "PT ATD Makmur Mandiri Jaya",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:pt-timah-tbk-kundur",
           "name": "PT Timah Tbk Kundur",
           "nameZh": null
         },
         {
           "country": "中国",
-          "filerCount": 53,
+          "filerCount": 54,
           "id": "NAME:tin-smelting-branch-of-yunnan-tin-co-ltd",
           "name": "Tin Smelting Branch of Yunnan Tin Co., Ltd.",
           "nameZh": null
@@ -2716,7 +2716,7 @@
       "total": 19
     },
     "CMCSA": {
-      "peerCount": 63,
+      "peerCount": 64,
       "peers": [
         {
           "peerTotal": 698,
@@ -2782,28 +2782,28 @@
       "topShared": [
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:pt-premium-tin-indonesia",
           "name": "PT Premium Tin Indonesia",
           "nameZh": null
         },
         {
           "country": "哥伦比亚",
-          "filerCount": 50,
+          "filerCount": 51,
           "id": "NAME:gold-by-gold-colombia",
           "name": "Gold by Gold Colombia",
           "nameZh": null
@@ -2817,7 +2817,7 @@
         },
         {
           "country": "泰国",
-          "filerCount": 33,
+          "filerCount": 34,
           "id": "NAME:umicore-precious-metals-thailand",
           "name": "Umicore Precious Metals Thailand",
           "nameZh": null
@@ -2936,7 +2936,7 @@
       "total": 361
     },
     "COHR": {
-      "peerCount": 61,
+      "peerCount": 62,
       "peers": [
         {
           "peerTotal": 355,
@@ -3002,35 +3002,35 @@
       "topShared": [
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:pt-premium-tin-indonesia",
           "name": "PT Premium Tin Indonesia",
           "nameZh": null
         },
         {
           "country": "哥伦比亚",
-          "filerCount": 50,
+          "filerCount": 51,
           "id": "NAME:gold-by-gold-colombia",
           "name": "Gold by Gold Colombia",
           "nameZh": null
         },
         {
           "country": "泰国",
-          "filerCount": 33,
+          "filerCount": 34,
           "id": "NAME:umicore-precious-metals-thailand",
           "name": "Umicore Precious Metals Thailand",
           "nameZh": null
@@ -3128,7 +3128,7 @@
       "total": 3
     },
     "CRNT": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 339,
@@ -3194,42 +3194,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -3258,7 +3258,7 @@
       "total": 1
     },
     "DE": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 698,
@@ -3324,42 +3324,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -3368,7 +3368,7 @@
       "total": 398
     },
     "DIS": {
-      "peerCount": 63,
+      "peerCount": 64,
       "peers": [
         {
           "peerTotal": 355,
@@ -3434,28 +3434,28 @@
       "topShared": [
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:pt-premium-tin-indonesia",
           "name": "PT Premium Tin Indonesia",
           "nameZh": null
         },
         {
           "country": "哥伦比亚",
-          "filerCount": 50,
+          "filerCount": 51,
           "id": "NAME:gold-by-gold-colombia",
           "name": "Gold by Gold Colombia",
           "nameZh": null
@@ -3469,7 +3469,7 @@
         },
         {
           "country": "泰国",
-          "filerCount": 33,
+          "filerCount": 34,
           "id": "NAME:umicore-precious-metals-thailand",
           "name": "Umicore Precious Metals Thailand",
           "nameZh": null
@@ -3698,7 +3698,7 @@
       "total": 41
     },
     "ECL": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 698,
@@ -3764,42 +3764,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -3918,7 +3918,7 @@
       "total": 337
     },
     "ELTK": {
-      "peerCount": 65,
+      "peerCount": 66,
       "peers": [
         {
           "peerTotal": 263,
@@ -3984,42 +3984,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
         },
         {
           "country": "日本",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:mitsubishi-materials-corporation",
           "name": "Mitsubishi Materials Corporation",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:pt-atd-makmur-mandiri-jaya",
           "name": "PT ATD Makmur Mandiri Jaya",
           "nameZh": null
@@ -4248,7 +4248,7 @@
       "total": 501
     },
     "ETN": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 360,
@@ -4314,42 +4314,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -4578,7 +4578,7 @@
       "total": 236
     },
     "FSLR": {
-      "peerCount": 64,
+      "peerCount": 65,
       "peers": [
         {
           "peerTotal": 698,
@@ -4604,6 +4604,11 @@
           "peerTotal": 355,
           "shared": 82,
           "symbol": "AMZN"
+        },
+        {
+          "peerTotal": 344,
+          "shared": 81,
+          "symbol": "NVX"
         },
         {
           "peerTotal": 360,
@@ -4634,52 +4639,47 @@
           "peerTotal": 323,
           "shared": 75,
           "symbol": "BAX"
-        },
-        {
-          "peerTotal": 328,
-          "shared": 75,
-          "symbol": "ISRG"
         }
       ],
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
         },
         {
           "country": "日本",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:mitsubishi-materials-corporation",
           "name": "Mitsubishi Materials Corporation",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:pt-atd-makmur-mandiri-jaya",
           "name": "PT ATD Makmur Mandiri Jaya",
           "nameZh": null
@@ -4688,7 +4688,7 @@
       "total": 93
     },
     "GEN": {
-      "peerCount": 66,
+      "peerCount": 67,
       "peers": [
         {
           "peerTotal": 452,
@@ -4709,6 +4709,11 @@
           "peerTotal": 398,
           "shared": 192,
           "symbol": "DE"
+        },
+        {
+          "peerTotal": 344,
+          "shared": 188,
+          "symbol": "NVX"
         },
         {
           "peerTotal": 360,
@@ -4744,52 +4749,47 @@
           "peerTotal": 339,
           "shared": 173,
           "symbol": "NVMI"
-        },
-        {
-          "peerTotal": 324,
-          "shared": 173,
-          "symbol": "NYAX"
         }
       ],
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
         },
         {
           "country": "日本",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:mitsubishi-materials-corporation",
           "name": "Mitsubishi Materials Corporation",
           "nameZh": null
@@ -4798,7 +4798,7 @@
       "total": 256
     },
     "GFS": {
-      "peerCount": 65,
+      "peerCount": 66,
       "peers": [
         {
           "peerTotal": 323,
@@ -4831,6 +4831,11 @@
           "symbol": "NVDA"
         },
         {
+          "peerTotal": 344,
+          "shared": 175,
+          "symbol": "NVX"
+        },
+        {
           "peerTotal": 251,
           "shared": 175,
           "symbol": "SMCI"
@@ -4854,52 +4859,47 @@
           "peerTotal": 339,
           "shared": 174,
           "symbol": "NVMI"
-        },
-        {
-          "peerTotal": 324,
-          "shared": 174,
-          "symbol": "NYAX"
         }
       ],
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
         },
         {
           "country": "日本",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:mitsubishi-materials-corporation",
           "name": "Mitsubishi Materials Corporation",
           "nameZh": null
@@ -5533,7 +5533,7 @@
       "total": 37
     },
     "HPE": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 360,
@@ -5599,42 +5599,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -5643,7 +5643,7 @@
       "total": 226
     },
     "HWM": {
-      "peerCount": 64,
+      "peerCount": 65,
       "peers": [
         {
           "peerTotal": 209,
@@ -5696,55 +5696,55 @@
           "symbol": "NVDA"
         },
         {
+          "peerTotal": 344,
+          "shared": 45,
+          "symbol": "NVX"
+        },
+        {
           "peerTotal": 218,
           "shared": 45,
           "symbol": "QCOM"
-        },
-        {
-          "peerTotal": 251,
-          "shared": 45,
-          "symbol": "SMCI"
         }
       ],
       "topShared": [
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "中国",
-          "filerCount": 53,
+          "filerCount": 54,
           "id": "NAME:chongyi-zhangyuan-tungsten-co-ltd",
           "name": "Chongyi Zhangyuan Tungsten Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "中国",
-          "filerCount": 53,
+          "filerCount": 54,
           "id": "NAME:xiamen-tungsten-co-ltd",
           "name": "Xiamen Tungsten Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "巴西",
-          "filerCount": 52,
+          "filerCount": 53,
           "id": "NAME:mineracao-taboca-s-a",
           "name": "Mineracao Taboca S.A.",
           "nameZh": null
         },
         {
           "country": "中国",
-          "filerCount": 51,
+          "filerCount": 52,
           "id": "NAME:ganzhou-seadragon-w-mo-co-ltd",
           "name": "Ganzhou Seadragon W & Mo Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "中国",
-          "filerCount": 51,
+          "filerCount": 52,
           "id": "NAME:xiamen-tungsten-h-c-co-ltd",
           "name": "Xiamen Tungsten (H.C.) Co., Ltd.",
           "nameZh": null
@@ -5863,7 +5863,7 @@
       "total": 245
     },
     "INTC": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 398,
@@ -5929,42 +5929,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -5973,7 +5973,7 @@
       "total": 209
     },
     "INTU": {
-      "peerCount": 65,
+      "peerCount": 66,
       "peers": [
         {
           "peerTotal": 338,
@@ -6031,50 +6031,50 @@
           "symbol": "BRSL"
         },
         {
-          "peerTotal": 322,
+          "peerTotal": 344,
           "shared": 99,
-          "symbol": "SONY"
+          "symbol": "NVX"
         }
       ],
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -6083,7 +6083,7 @@
       "total": 103
     },
     "ISRG": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 329,
@@ -6149,42 +6149,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -6523,7 +6523,7 @@
       "total": 281
     },
     "KMB": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 452,
@@ -6534,6 +6534,11 @@
           "peerTotal": 443,
           "shared": 214,
           "symbol": "AUDC"
+        },
+        {
+          "peerTotal": 344,
+          "shared": 212,
+          "symbol": "NVX"
         },
         {
           "peerTotal": 263,
@@ -6579,52 +6584,47 @@
           "peerTotal": 339,
           "shared": 195,
           "symbol": "NVMI"
-        },
-        {
-          "peerTotal": 339,
-          "shared": 195,
-          "symbol": "SSYS"
         }
       ],
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
         },
         {
           "country": "日本",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:mitsubishi-materials-corporation",
           "name": "Mitsubishi Materials Corporation",
           "nameZh": null
@@ -6633,7 +6633,7 @@
       "total": 241
     },
     "KRNT": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 339,
@@ -6699,42 +6699,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -6743,7 +6743,7 @@
       "total": 339
     },
     "LITE": {
-      "peerCount": 63,
+      "peerCount": 64,
       "peers": [
         {
           "peerTotal": 355,
@@ -6809,28 +6809,28 @@
       "topShared": [
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:pt-premium-tin-indonesia",
           "name": "PT Premium Tin Indonesia",
           "nameZh": null
         },
         {
           "country": "哥伦比亚",
-          "filerCount": 50,
+          "filerCount": 51,
           "id": "NAME:gold-by-gold-colombia",
           "name": "Gold by Gold Colombia",
           "nameZh": null
@@ -6844,7 +6844,7 @@
         },
         {
           "country": "泰国",
-          "filerCount": 33,
+          "filerCount": 34,
           "id": "NAME:umicore-precious-metals-thailand",
           "name": "Umicore Precious Metals Thailand",
           "nameZh": null
@@ -6853,7 +6853,7 @@
       "total": 6
     },
     "LOW": {
-      "peerCount": 65,
+      "peerCount": 66,
       "peers": [
         {
           "peerTotal": 452,
@@ -6919,42 +6919,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
         },
         {
           "country": "日本",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:mitsubishi-materials-corporation",
           "name": "Mitsubishi Materials Corporation",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:pt-atd-makmur-mandiri-jaya",
           "name": "PT ATD Makmur Mandiri Jaya",
           "nameZh": null
@@ -6963,7 +6963,7 @@
       "total": 55
     },
     "LPL": {
-      "peerCount": 65,
+      "peerCount": 66,
       "peers": [
         {
           "peerTotal": 698,
@@ -7029,42 +7029,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -7073,7 +7073,7 @@
       "total": 213
     },
     "LYB": {
-      "peerCount": 53,
+      "peerCount": 54,
       "peers": [
         {
           "peerTotal": 222,
@@ -7139,7 +7139,7 @@
       "topShared": [
         {
           "country": "印度尼西亚",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:pt-premium-tin-indonesia",
           "name": "PT Premium Tin Indonesia",
           "nameZh": null
@@ -7148,7 +7148,7 @@
       "total": 1
     },
     "MAS": {
-      "peerCount": 65,
+      "peerCount": 66,
       "peers": [
         {
           "peerTotal": 392,
@@ -7214,42 +7214,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
         },
         {
           "country": "日本",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:mitsubishi-materials-corporation",
           "name": "Mitsubishi Materials Corporation",
           "nameZh": null
@@ -7258,7 +7258,7 @@
       "total": 103
     },
     "MCHP": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 698,
@@ -7324,42 +7324,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -7698,7 +7698,7 @@
       "total": 198
     },
     "MSFT": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 698,
@@ -7746,6 +7746,11 @@
           "symbol": "WAB"
         },
         {
+          "peerTotal": 344,
+          "shared": 129,
+          "symbol": "NVX"
+        },
+        {
           "peerTotal": 222,
           "shared": 127,
           "symbol": "ADI"
@@ -7754,52 +7759,47 @@
           "peerTotal": 355,
           "shared": 127,
           "symbol": "XYL"
-        },
-        {
-          "peerTotal": 354,
-          "shared": 126,
-          "symbol": "ECL"
         }
       ],
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
         },
         {
           "country": "日本",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:mitsubishi-materials-corporation",
           "name": "Mitsubishi Materials Corporation",
           "nameZh": null
@@ -7918,7 +7918,7 @@
       "total": 362
     },
     "MTD": {
-      "peerCount": 68,
+      "peerCount": 69,
       "peers": [
         {
           "peerTotal": 698,
@@ -7984,42 +7984,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -8028,7 +8028,7 @@
       "total": 360
     },
     "MU": {
-      "peerCount": 66,
+      "peerCount": 67,
       "peers": [
         {
           "peerTotal": 263,
@@ -8094,42 +8094,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "日本",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:mitsubishi-materials-corporation",
           "name": "Mitsubishi Materials Corporation",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:pt-atd-makmur-mandiri-jaya",
           "name": "PT ATD Makmur Mandiri Jaya",
           "nameZh": null
@@ -8358,7 +8358,7 @@
       "total": 219
     },
     "NVDA": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 251,
@@ -8411,55 +8411,55 @@
           "symbol": "NVMI"
         },
         {
+          "peerTotal": 344,
+          "shared": 216,
+          "symbol": "NVX"
+        },
+        {
           "peerTotal": 339,
           "shared": 216,
           "symbol": "SSYS"
-        },
-        {
-          "peerTotal": 221,
-          "shared": 214,
-          "symbol": "SNDK"
         }
       ],
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -8468,7 +8468,7 @@
       "total": 239
     },
     "NVMI": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 339,
@@ -8534,42 +8534,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -8577,8 +8577,118 @@
       ],
       "total": 339
     },
+    "NVX": {
+      "peerCount": 68,
+      "peers": [
+        {
+          "peerTotal": 443,
+          "shared": 334,
+          "symbol": "AUDC"
+        },
+        {
+          "peerTotal": 452,
+          "shared": 326,
+          "symbol": "BRSL"
+        },
+        {
+          "peerTotal": 698,
+          "shared": 324,
+          "symbol": "APH"
+        },
+        {
+          "peerTotal": 398,
+          "shared": 322,
+          "symbol": "DE"
+        },
+        {
+          "peerTotal": 338,
+          "shared": 311,
+          "symbol": "CRNT"
+        },
+        {
+          "peerTotal": 339,
+          "shared": 311,
+          "symbol": "KRNT"
+        },
+        {
+          "peerTotal": 339,
+          "shared": 311,
+          "symbol": "NVMI"
+        },
+        {
+          "peerTotal": 339,
+          "shared": 311,
+          "symbol": "SSYS"
+        },
+        {
+          "peerTotal": 354,
+          "shared": 304,
+          "symbol": "ECL"
+        },
+        {
+          "peerTotal": 324,
+          "shared": 303,
+          "symbol": "NYAX"
+        },
+        {
+          "peerTotal": 355,
+          "shared": 303,
+          "symbol": "XYL"
+        },
+        {
+          "peerTotal": 323,
+          "shared": 297,
+          "symbol": "BAX"
+        }
+      ],
+      "topShared": [
+        {
+          "country": "中国",
+          "filerCount": 56,
+          "id": "NAME:china-tin-group-co-ltd",
+          "name": "China Tin Group Co., Ltd.",
+          "nameZh": null
+        },
+        {
+          "country": "墨西哥",
+          "filerCount": 56,
+          "id": "NAME:kemet-de-mexico",
+          "name": "KEMET de Mexico",
+          "nameZh": null
+        },
+        {
+          "country": "印度尼西亚",
+          "filerCount": 56,
+          "id": "NAME:pt-mitra-stania-prima",
+          "name": "PT Mitra Stania Prima",
+          "nameZh": null
+        },
+        {
+          "country": "印度尼西亚",
+          "filerCount": 56,
+          "id": "NAME:pt-timah-tbk-mentok",
+          "name": "PT Timah Tbk Mentok",
+          "nameZh": null
+        },
+        {
+          "country": "菲律宾",
+          "filerCount": 55,
+          "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
+          "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
+          "nameZh": null
+        },
+        {
+          "country": "波兰",
+          "filerCount": 55,
+          "id": "NAME:fenix-metals",
+          "name": "Fenix Metals",
+          "nameZh": null
+        }
+      ],
+      "total": 344
+    },
     "NXPI": {
-      "peerCount": 65,
+      "peerCount": 66,
       "peers": [
         {
           "peerTotal": 213,
@@ -8644,42 +8754,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -8688,7 +8798,7 @@
       "total": 208
     },
     "NYAX": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 339,
@@ -8741,55 +8851,55 @@
           "symbol": "XYL"
         },
         {
+          "peerTotal": 344,
+          "shared": 303,
+          "symbol": "NVX"
+        },
+        {
           "peerTotal": 317,
           "shared": 303,
           "symbol": "SNT"
-        },
-        {
-          "peerTotal": 323,
-          "shared": 298,
-          "symbol": "BAX"
         }
       ],
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -8798,7 +8908,7 @@
       "total": 324
     },
     "ON": {
-      "peerCount": 65,
+      "peerCount": 66,
       "peers": [
         {
           "peerTotal": 213,
@@ -8864,42 +8974,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -9458,7 +9568,7 @@
       "total": 14
     },
     "PPG": {
-      "peerCount": 56,
+      "peerCount": 57,
       "peers": [
         {
           "peerTotal": 263,
@@ -9524,42 +9634,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
         },
         {
           "country": "日本",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:mitsubishi-materials-corporation",
           "name": "Mitsubishi Materials Corporation",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:pt-timah-tbk-kundur",
           "name": "PT Timah Tbk Kundur",
           "nameZh": null
@@ -9678,7 +9788,7 @@
       "total": 334
     },
     "PWR": {
-      "peerCount": 63,
+      "peerCount": 64,
       "peers": [
         {
           "peerTotal": 355,
@@ -9744,28 +9854,28 @@
       "topShared": [
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:pt-premium-tin-indonesia",
           "name": "PT Premium Tin Indonesia",
           "nameZh": null
         },
         {
           "country": "哥伦比亚",
-          "filerCount": 50,
+          "filerCount": 51,
           "id": "NAME:gold-by-gold-colombia",
           "name": "Gold by Gold Colombia",
           "nameZh": null
@@ -9779,7 +9889,7 @@
         },
         {
           "country": "泰国",
-          "filerCount": 33,
+          "filerCount": 34,
           "id": "NAME:umicore-precious-metals-thailand",
           "name": "Umicore Precious Metals Thailand",
           "nameZh": null
@@ -9788,7 +9898,7 @@
       "total": 9
     },
     "QCOM": {
-      "peerCount": 66,
+      "peerCount": 67,
       "peers": [
         {
           "peerTotal": 360,
@@ -9854,42 +9964,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
         },
         {
           "country": "日本",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:mitsubishi-materials-corporation",
           "name": "Mitsubishi Materials Corporation",
           "nameZh": null
@@ -9898,7 +10008,7 @@
       "total": 218
     },
     "RDWR": {
-      "peerCount": 66,
+      "peerCount": 67,
       "peers": [
         {
           "peerTotal": 263,
@@ -9964,42 +10074,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -10413,7 +10523,7 @@
       "total": 1
     },
     "SBUX": {
-      "peerCount": 63,
+      "peerCount": 64,
       "peers": [
         {
           "peerTotal": 355,
@@ -10479,28 +10589,28 @@
       "topShared": [
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:pt-premium-tin-indonesia",
           "name": "PT Premium Tin Indonesia",
           "nameZh": null
         },
         {
           "country": "哥伦比亚",
-          "filerCount": 50,
+          "filerCount": 51,
           "id": "NAME:gold-by-gold-colombia",
           "name": "Gold by Gold Colombia",
           "nameZh": null
@@ -10514,7 +10624,7 @@
         },
         {
           "country": "泰国",
-          "filerCount": 33,
+          "filerCount": 34,
           "id": "NAME:umicore-precious-metals-thailand",
           "name": "Umicore Precious Metals Thailand",
           "nameZh": null
@@ -10853,7 +10963,7 @@
       "total": 383
     },
     "SMCI": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 443,
@@ -10891,6 +11001,11 @@
           "symbol": "MTD"
         },
         {
+          "peerTotal": 344,
+          "shared": 226,
+          "symbol": "NVX"
+        },
+        {
           "peerTotal": 338,
           "shared": 222,
           "symbol": "CRNT"
@@ -10909,52 +11024,47 @@
           "peerTotal": 339,
           "shared": 222,
           "symbol": "SSYS"
-        },
-        {
-          "peerTotal": 317,
-          "shared": 219,
-          "symbol": "SNT"
         }
       ],
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -10963,7 +11073,7 @@
       "total": 251
     },
     "SNDK": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 251,
@@ -11021,50 +11131,50 @@
           "symbol": "SSYS"
         },
         {
-          "peerTotal": 392,
+          "peerTotal": 344,
           "shared": 201,
-          "symbol": "WAB"
+          "symbol": "NVX"
         }
       ],
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -11073,7 +11183,7 @@
       "total": 221
     },
     "SNN": {
-      "peerCount": 63,
+      "peerCount": 64,
       "peers": [
         {
           "peerTotal": 355,
@@ -11139,28 +11249,28 @@
       "topShared": [
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:pt-premium-tin-indonesia",
           "name": "PT Premium Tin Indonesia",
           "nameZh": null
         },
         {
           "country": "哥伦比亚",
-          "filerCount": 50,
+          "filerCount": 51,
           "id": "NAME:gold-by-gold-colombia",
           "name": "Gold by Gold Colombia",
           "nameZh": null
@@ -11174,7 +11284,7 @@
         },
         {
           "country": "泰国",
-          "filerCount": 33,
+          "filerCount": 34,
           "id": "NAME:umicore-precious-metals-thailand",
           "name": "Umicore Precious Metals Thailand",
           "nameZh": null
@@ -11183,7 +11293,7 @@
       "total": 6
     },
     "SNT": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 338,
@@ -11249,42 +11359,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -11293,7 +11403,7 @@
       "total": 317
     },
     "SONY": {
-      "peerCount": 66,
+      "peerCount": 67,
       "peers": [
         {
           "peerTotal": 698,
@@ -11359,42 +11469,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -11403,7 +11513,7 @@
       "total": 322
     },
     "SSYS": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 339,
@@ -11469,42 +11579,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -11513,7 +11623,7 @@
       "total": 339
     },
     "STM": {
-      "peerCount": 105,
+      "peerCount": 106,
       "peers": [
         {
           "peerTotal": 405,
@@ -11623,7 +11733,7 @@
       "total": 239
     },
     "STX": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 698,
@@ -11689,42 +11799,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -11953,7 +12063,7 @@
       "total": 194
     },
     "SYK": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 354,
@@ -12019,42 +12129,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -12283,7 +12393,7 @@
       "total": 226
     },
     "TMUS": {
-      "peerCount": 65,
+      "peerCount": 66,
       "peers": [
         {
           "peerTotal": 239,
@@ -12349,42 +12459,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -12503,7 +12613,7 @@
       "total": 329
     },
     "TSCO": {
-      "peerCount": 56,
+      "peerCount": 57,
       "peers": [
         {
           "peerTotal": 222,
@@ -12569,28 +12679,28 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:pt-timah-tbk-kundur",
           "name": "PT Timah Tbk Kundur",
           "nameZh": null
         },
         {
           "country": "中国",
-          "filerCount": 53,
+          "filerCount": 54,
           "id": "NAME:tin-smelting-branch-of-yunnan-tin-co-ltd",
           "name": "Tin Smelting Branch of Yunnan Tin Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "中国",
-          "filerCount": 53,
+          "filerCount": 54,
           "id": "NAME:xiamen-tungsten-co-ltd",
           "name": "Xiamen Tungsten Co., Ltd.",
           "nameZh": null
@@ -12599,7 +12709,7 @@
       "total": 5
     },
     "TSM": {
-      "peerCount": 65,
+      "peerCount": 66,
       "peers": [
         {
           "peerTotal": 347,
@@ -12665,42 +12775,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -12709,7 +12819,7 @@
       "total": 190
     },
     "TXN": {
-      "peerCount": 66,
+      "peerCount": 67,
       "peers": [
         {
           "peerTotal": 360,
@@ -12775,42 +12885,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -12929,7 +13039,7 @@
       "total": 81
     },
     "VRT": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 328,
@@ -12995,42 +13105,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -13039,7 +13149,7 @@
       "total": 329
     },
     "WAB": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 698,
@@ -13105,42 +13215,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -13149,7 +13259,7 @@
       "total": 392
     },
     "WDC": {
-      "peerCount": 66,
+      "peerCount": 67,
       "peers": [
         {
           "peerTotal": 698,
@@ -13215,42 +13325,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -13259,7 +13369,7 @@
       "total": 209
     },
     "WST": {
-      "peerCount": 66,
+      "peerCount": 67,
       "peers": [
         {
           "peerTotal": 360,
@@ -13325,42 +13435,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -13369,7 +13479,7 @@
       "total": 211
     },
     "XYL": {
-      "peerCount": 67,
+      "peerCount": 68,
       "peers": [
         {
           "peerTotal": 698,
@@ -13435,42 +13545,42 @@
       "topShared": [
         {
           "country": "中国",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:china-tin-group-co-ltd",
           "name": "China Tin Group Co., Ltd.",
           "nameZh": null
         },
         {
           "country": "墨西哥",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:kemet-de-mexico",
           "name": "KEMET de Mexico",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-mitra-stania-prima",
           "name": "PT Mitra Stania Prima",
           "nameZh": null
         },
         {
           "country": "印度尼西亚",
-          "filerCount": 55,
+          "filerCount": 56,
           "id": "NAME:pt-timah-tbk-mentok",
           "name": "PT Timah Tbk Mentok",
           "nameZh": null
         },
         {
           "country": "菲律宾",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
           "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
           "nameZh": null
         },
         {
           "country": "波兰",
-          "filerCount": 54,
+          "filerCount": 55,
           "id": "NAME:fenix-metals",
           "name": "Fenix Metals",
           "nameZh": null
@@ -13701,10 +13811,10 @@
   },
   "contractVersion": 1,
   "coverage": {
-    "companies": 127,
+    "companies": 128,
     "maxPeersPerCompany": 12,
     "maxSharedPerCompany": 6,
-    "pairs": 3928,
+    "pairs": 3996,
     "understatesOverlap": true
   },
   "dataset": "supply-chain-peers",
@@ -13714,5 +13824,5 @@
     "id": "shared-smelter-upstream",
     "label": "两家申报人的冶炼厂名单里出现了同一批冶炼厂（上游共同暴露，不表示两家之间有业务往来）"
   },
-  "updatedAt": "2026-09-05T23:19:03Z"
+  "updatedAt": "2026-09-06T03:30:25Z"
 }
