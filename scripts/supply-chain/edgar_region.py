@@ -222,6 +222,59 @@ def resolve_country(meta: dict, code_map: dict[str, str]) -> dict:
             "countryCode": None, "countryRejected": rejected or None}
 
 
+
+# 离岸法域：注册在这里的公司**几乎不在这里经营**。
+# 开曼、BVI、马绍尔、百慕大是控股架构与航运注册的惯用地，
+# 把它们当产业地理会得出「开曼群岛是第一大制造国」这种结论。
+#
+# 这张表只用来**标记**，不用来改写国别——注册地仍然照实记录，
+# 页面据此决定要不要同时显示营业地。名单取自这一池里实际出现的
+# 法域，不是我凭印象列的通用离岸清单。
+OFFSHORE = frozenset({
+    "Cayman Islands", "British Virgin Islands", "Marshall Islands",
+    "Bermuda", "Bahamas", "Jersey", "Guernsey", "Isle of Man",
+    "Gibraltar", "Panama", "Curacao", "Anguilla", "Turks and Caicos Islands",
+    "Saint Kitts and Nevis", "Seychelles", "Mauritius",
+})
+
+
+def is_offshore(country) -> bool:
+    return (country or "").strip() in OFFSHORE
+
+
+def operating_location(meta: dict, code_map: dict[str, str]) -> dict:
+    """从**营业地址**定位置，与注册地各算各的。
+
+    与 `resolve_country()` 的区别只有一条：顺序反过来，先营业后邮寄，
+    完全不看注册地。两个结论都留着，页面才能在注册地是控股架构时
+    说清「注册在开曼、办公室在苏州」。
+
+    美国州码在这里**不拒绝**。`resolve_country()` 拒绝它是对的——
+    壳牌有华盛顿办公室不代表它是美国公司；但这个函数问的正是
+    「办公室在哪」，「德克萨斯」就是一个有效答案。两个函数问的问题
+    不同，所以对同一个字段的处理也该不同。
+    """
+    addresses = meta.get("addresses") or {}
+    for basis in ("business", "mailing"):
+        block = addresses.get(basis) or {}
+        country, region_name = address_country(block)
+        if country:
+            return {"country": country, "region": region_name,
+                    "basis": f"{basis}-address"}
+        text = describe(block.get("stateOrCountry"),
+                        block.get("stateOrCountryDescription"), code_map)
+        if not text:
+            continue
+        country, region = split_region(text)
+        if not country:
+            continue
+        if len(country) == 2 and country.upper() in US_STATES:
+            # 只说到州就是美国境内。对「办公室在哪」这个问题，这是有效答案。
+            return {"country": "United States", "region": country.upper(),
+                    "basis": f"{basis}-address"}
+        return {"country": country, "region": region, "basis": f"{basis}-address"}
+    return {"country": None, "region": None, "basis": None}
+
 def address_pairs(meta: dict):
     """这家公司贡献给代码表的全部「代码 ↔ 描述」配对。"""
     addresses = meta.get("addresses") or {}
