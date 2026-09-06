@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-06T17:43:27Z",
+  "updatedAt": "2026-09-06T17:55:05Z",
   "asOf": "2026-09-04",
   "frequency": "daily",
   "status": "ok",
@@ -15634,12 +15634,6 @@
         "poolCompanies": 0
       },
       {
-        "country": "刚果（金）",
-        "smelters": 3,
-        "inPool": 0,
-        "poolCompanies": 0
-      },
-      {
         "country": "加纳",
         "smelters": 3,
         "inPool": 0,
@@ -15742,6 +15736,24 @@
         "poolCompanies": 0
       },
       {
+        "country": "CONGO, DEMOCRATIC REPUBLIC OF THE",
+        "smelters": 1,
+        "inPool": 0,
+        "poolCompanies": 0
+      },
+      {
+        "country": "Congo, Democratic Republic of the",
+        "smelters": 1,
+        "inPool": 0,
+        "poolCompanies": 0
+      },
+      {
+        "country": "刚果（金）",
+        "smelters": 1,
+        "inPool": 0,
+        "poolCompanies": 0
+      },
+      {
         "country": "斯洛伐克",
         "smelters": 1,
         "inPool": 0,
@@ -15771,7 +15783,7 @@
     "basis": "多德-弗兰克法案 §1502 / SEC Rule 13p-1 界定的受涵盖国家",
     "countries": 10,
     "countriesSeen": 6,
-    "smelters": 23,
+    "smelters": 21,
     "edges": 582,
     "filerCount": 104,
     "filers": [
@@ -15885,7 +15897,7 @@
         "country": "刚果（金）",
         "edges": 92,
         "filerCount": 91,
-        "smelters": 3
+        "smelters": 1
       },
       {
         "country": "安哥拉",

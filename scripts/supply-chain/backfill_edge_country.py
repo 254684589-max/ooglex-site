@@ -36,6 +36,12 @@
 **回填的边必须留下痕迹。** 每条补过的边带 `countryBasis: "rmi-registry"`，
 页面据此说明这一格来自登记表而不是本份申报。不留痕迹的话，读者会以为
 丰田那份申报里真写了国别。
+
+**写回时的缩进必须与产出方一致（`indent=2`）。** 第一版写的是紧凑格式，
+结果 smelters.json 从 5.8 万行塌成一行、单次提交 37.5 万行删除——内容一条
+没少，但**流水线会自己跟自己打架**：抽取器按 indent=2 产出、本脚本压平、
+下一轮抽取器再展开，每跑一次都是一次全文件改写，改动内容淹没在格式噪声里，
+再也没人看得出这轮实际改了什么。管道里每个写同一个文件的脚本，格式必须统一。
 """
 from __future__ import annotations
 
@@ -157,7 +163,7 @@ def main() -> int:
         if changed:
             bundle["byCountry"] = rebuild_by_country(bundle.get("edges") or [])
             with open(path, "w", encoding="utf-8") as handle:
-                json.dump(bundle, handle, ensure_ascii=False, separators=(",", ":"))
+                json.dump(bundle, handle, ensure_ascii=False, indent=2)
             touched[bundle.get("symbol") or path] = changed
 
     print(f"改写英文原文国别 {fixed_name} 条 · 按 CID 回填 {filled} 条")
@@ -178,7 +184,7 @@ def main() -> int:
             reg_fixed += 1
     if reg_fixed:
         with open(SMELTERS_PATH, "w", encoding="utf-8") as handle:
-            json.dump(registry, handle, ensure_ascii=False, separators=(",", ":"))
+            json.dump(registry, handle, ensure_ascii=False, indent=2)
     print(f"登记表改写 {reg_fixed} 条")
     return 0
 
