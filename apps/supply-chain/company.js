@@ -416,7 +416,7 @@
       all.type = "button";
       all.textContent = "全部";
       all.setAttribute("aria-pressed", filt[key] ? "false" : "true");
-      all.onclick = function () { filt[key] = ""; onChange(); };
+      all.onclick = function () { filt[key] = ""; shownCount = PAGE; onChange(); };
       g.appendChild(all);
       items.slice(0, cap).forEach(function (it) {
         var b = el("button", "fb" + (filt[key] === it.k ? " on" : ""));
@@ -426,6 +426,7 @@
         b.appendChild(el("s", null, String(it.n)));
         b.onclick = function () {
           filt[key] = (filt[key] === it.k) ? "" : it.k;
+          shownCount = PAGE;          // 换了筛选就回到第一批，否则会停在上一次的位置
           onChange();
         };
         g.appendChild(b);
@@ -448,6 +449,13 @@
       }), 10);
     return bar;
   }
+
+  // 一次画多少条。349 条在桌面是三列 8,802px，**在手机上是一列 22,201px**
+  // ——65 屏。那不是设计决定，是没想过手机的结果。
+  // 分批展开，但**总数永远印在标题里、按钮上写清还剩多少**：
+  // 这个板块的规矩是不静默截断，渐进展开与截断的差别就在于说不说得出剩下多少。
+  var PAGE = 60;
+  var shownCount = PAGE;
 
   function renderSmelters() {
     var host = $("smelters");
@@ -491,9 +499,11 @@
     }
 
     var grid = el("div", "grid");
-    rows.slice().sort(function (a, b) {
+    var ordered = rows.slice().sort(function (a, b) {
       return String(a.name || a.from).localeCompare(String(b.name || b.from));
-    }).forEach(function (e) {
+    });
+    var visible = ordered.slice(0, shownCount);
+    visible.forEach(function (e) {
       var item = el("div", "sm");
       var english = e.name || e.from;
       var chinese = zhName(e.name);
@@ -528,6 +538,27 @@
       grid.appendChild(item);
     });
     box.appendChild(grid);
+
+    // 「还有 N 家」。**写清还剩多少才叫渐进展开，不写就是截断。**
+    if (ordered.length > visible.length) {
+      var left = ordered.length - visible.length;
+      var more = el("button", "smmore");
+      more.type = "button";
+      more.textContent = "再显示 " + Math.min(PAGE, left) + " 家（还有 " + left + " 家）";
+      more.onclick = function () { shownCount += PAGE; renderSmelters(); };
+      box.appendChild(more);
+      var allBtn = el("button", "smmore alt");
+      allBtn.type = "button";
+      allBtn.textContent = "一次全部展开（" + ordered.length + " 家）";
+      allBtn.onclick = function () { shownCount = ordered.length; renderSmelters(); };
+      box.appendChild(allBtn);
+    } else if (ordered.length > PAGE) {
+      var fold = el("button", "smmore alt");
+      fold.type = "button";
+      fold.textContent = "收起（只看前 " + PAGE + " 家）";
+      fold.onclick = function () { shownCount = PAGE; renderSmelters(); };
+      box.appendChild(fold);
+    }
     host.appendChild(box);
   }
 

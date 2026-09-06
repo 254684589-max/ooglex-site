@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>公司供应链视图 · 全球产业链</title>
-<meta name="description" content="查看单家标普500公司在全球产业链中的位置：SEC 官方 SIC 行业码判定的价值链环节、同行业同环节公司，以及可核验的原始申报出处。">
+<meta name="description" content="查看单家公司在全球产业链中的位置：SEC 官方 SIC 行业码判定的价值链环节、同行业同环节公司，以及逐条附原始申报出处的冶炼厂关系。收录标普500成分股与在美上市的外国私人发行人。">
 <link rel="canonical" href="https://www.ooglex.com/apps/supply-chain/company.html">
 <meta name="robots" content="noindex">
 <style>
@@ -123,6 +123,16 @@
     font-family:var(--mono); font-size:.66rem; }
   .smfilt .more { font-size:.66rem; color:var(--faint); }
   .smclear { font-size:.72rem; color:var(--warn); margin-bottom:9px; }
+  /* 分批展开。349 条在手机上一列摊开是 22,201px（65 屏）——那不是设计决定，
+     是没想过手机。按钮上必须写清**还剩多少**：渐进展开与截断的差别就在这里。 */
+  .smmore { display:inline-flex; align-items:center; justify-content:center;
+    appearance:none; font:inherit; font-size:.78rem; cursor:pointer;
+    margin:12px 8px 0 0; padding:9px 16px; min-height:44px; border-radius:10px;
+    color:var(--text); background:rgba(74,144,217,.14);
+    border:1px solid rgba(74,144,217,.4); }
+  .smmore:hover { background:rgba(74,144,217,.22); }
+  .smmore.alt { color:var(--dim); background:transparent; border-color:var(--line); }
+  .smmore.alt:hover { color:var(--text); background:rgba(255,255,255,.04); }
 
   /* 可选中的层级卡 */
   .picks { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:10px; }
@@ -273,6 +283,6 @@
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="company.js?v=7d6c4a87" defer></script>
+<script src="company.js?v=f4bde219" defer></script>
 </body>
 </html>

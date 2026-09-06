@@ -1302,6 +1302,19 @@ async function main() {
         const tierOneBorder = picks[0]
           ? getComputedStyle(picks[0]).borderTopStyle : 'missing';
         const smelterText = smelterCard ? smelterCard.innerText : '';
+        // 分批展开的三件事要在切地理视图之前读完：按钮文案、按钮印的总数、
+        // 点开之后的真实条数。切视图会重建卡片，之后再去点按钮读到的是另一棵树。
+        const moreBtns = (kw) => {
+          const b = [...document.querySelectorAll('#smelters .smmore')]
+            .find((x) => x.textContent.indexOf(kw) >= 0);
+          return b || null;
+        };
+        const moreEl = moreBtns('还有');
+        const allEl = moreBtns('全部展开');
+        const moreBtn = moreEl ? moreEl.textContent.trim() : '';
+        const allBtn = allEl ? allEl.textContent.trim() : '';
+        if (allEl) allEl.click();
+        const afterExpandAll = document.querySelectorAll('#smelters .sm').length;
         // 切到地理视图
         const geoBtn = [...document.querySelectorAll('#seg button')]
           .find(b => b.textContent.indexOf('地理') >= 0);
@@ -1318,6 +1331,7 @@ async function main() {
           smelterCardText: smelterText,
           listLinks: rows.length,
           listItems: items.length,
+          moreBtn, allBtn, afterExpandAll,
           firstLink: rows.length ? rows[0].getAttribute('href') : '',
           tierOneStillDashed: tierOneBorder,
           geoShowsCountries: geoText.indexOf('个国家／地区') >= 0,
@@ -1336,8 +1350,27 @@ async function main() {
       check(`有数据的冶炼厂层是实线`, () => assert.equal(ed.smelterCardSolid, "solid"));
       // 但一级供应商仍然没有数据源，必须还是虚线
       check(`无数据源的一级供应商仍是虚线`, () => assert.equal(ed.tierOneStillDashed, "dashed"));
-      check(`清单条数与边文件一致（${expected}）`, () => assert.equal(ed.listItems, expected));
-      check(`清单每条都能点开原始申报`, () => assert.equal(ed.listLinks, expected,
+      // 349 条在手机上一列摊开是 22,201px（65 屏）。改为分批展开——
+      // **渐进展开与截断的差别在于说不说得出剩下多少**，所以断言盯的是：
+      // 默认只画一批、按钮上写清还剩多少、点「全部展开」后一条不少。
+      check(`清单默认分批展开，不是一次摊开 ${expected} 条`, () => {
+        assert.ok(ed.listItems < expected,
+          `默认就画了 ${ed.listItems} 条，没有分批`);
+        assert.ok(ed.listItems > 0, "一条都没画");
+      });
+      check(`按钮上写清还剩多少家，不是默默截断`, () => {
+        assert.match(ed.moreBtn, /还有\s*\d+\s*家/, `按钮文案：${ed.moreBtn}`);
+        const left = parseInt((ed.moreBtn.match(/还有\s*(\d+)\s*家/) || [])[1], 10);
+        assert.equal(left, expected - ed.listItems,
+          `按钮说还有 ${left} 家，实际还剩 ${expected - ed.listItems} 家`);
+      });
+      check(`「一次全部展开」写明总数并且真的全展开`, () => {
+        assert.ok(ed.allBtn.includes(String(expected)),
+          `按钮没印总数 ${expected}：${ed.allBtn}`);
+        assert.equal(ed.afterExpandAll, expected,
+          `点全部展开后只有 ${ed.afterExpandAll} 条，应为 ${expected}`);
+      });
+      check(`已画出的每条都能点开原始申报`, () => assert.equal(ed.listLinks, ed.listItems,
         `${expected} 条里只有 ${ed.listLinks} 条可点开`));
       check(`出处链接指向 SEC 申报归档`, () => assert.ok(
         ed.firstLink.startsWith("https://www.sec.gov/Archives/"), ed.firstLink));
@@ -1417,14 +1450,29 @@ async function main() {
         })`);
         const narrow = await evaluate(`(() => {
           const box = document.querySelector('#smelters');
+          const more = [...document.querySelectorAll('#smelters .smmore')]
+            .find((x) => x.textContent.indexOf('还有') >= 0);
           return {
             items: document.querySelectorAll('#smelters .sm').length,
+            more: more ? more.textContent.trim() : '',
             page: document.documentElement.scrollWidth - document.documentElement.clientWidth,
             box: box ? box.scrollWidth - box.clientWidth : 0
           };
         })()`);
-        check(`${width}px 清单仍渲染 ${expected} 条`,
-          () => assert.equal(narrow.items, expected));
+        // 窄屏同样分批。这一条要守的不是「画满 349」，而是**画出来的那些
+        // 加上按钮说的剩余数，等于总数**——分批不能把总量说小。
+        check(`${width}px 分批展开后条数与按钮口径自洽`, () => {
+          assert.ok(narrow.items > 0, "窄屏一条都没画");
+          assert.ok(narrow.items <= expected,
+            `窄屏画了 ${narrow.items} 条，超过总数 ${expected}`);
+          if (narrow.items < expected) {
+            assert.match(narrow.more || "", /还有\s*\d+\s*家/,
+              `窄屏按钮没写剩余数：${narrow.more}`);
+            const left = parseInt(((narrow.more || "").match(/还有\s*(\d+)\s*家/) || [])[1], 10);
+            assert.equal(narrow.items + left, expected,
+              `窄屏画 ${narrow.items} + 按钮说剩 ${left} ≠ 总数 ${expected}`);
+          }
+        });
         check(`${width}px 页面无横向溢出`, () => assert.ok(narrow.page <= 1,
           `溢出 ${narrow.page}px`));
         check(`${width}px 清单容器无横向溢出`, () => assert.ok(narrow.box <= 1,
@@ -1452,15 +1500,36 @@ async function main() {
             // .fg 的第一个子节点是标签 span，「全部」是第二个，那样选中的正是
             // 「全部」，点了等于没点，断言会以为功能坏了。用未按下状态来选。
             const first = document.querySelector('.smfilt .fg .fb[aria-pressed="false"]');
-            const before = items.length;
+            // 清单改成分批展开之后，**DOM 里的条数不再等于总数**。拿当前批次的
+            // 60 当「筛前共多少」，断言就会反过来逼标题去印 60——那正是这一组
+            // 要拦的错。所以每次数之前先点「一次全部展开」，数到底。
+            const expandAll = () => {
+              const b = [...document.querySelectorAll('.smelters .smmore')]
+                .find((x) => x.textContent.indexOf('全部展开') >= 0);
+              if (b) b.click();
+            };
+            const leftText = () => {
+              const b = [...document.querySelectorAll('.smelters .smmore')]
+                .find((x) => x.textContent.indexOf('还有') >= 0);
+              return b ? b.textContent.trim() : '';
+            };
+            const beforeVisible = items.length;
             const beforeTitle = (document.querySelector('.smelters h3') || {}).textContent || '';
+            expandAll();
+            const grandTotal = document.querySelectorAll('.smelters .sm').length;
             first.click();
             setTimeout(() => {
+              // 换筛选会把批次重置回第一批，所以这里先量分批口径，再展开数总数
+              const afterVisible = document.querySelectorAll('.smelters .sm').length;
+              const afterMore = leftText();
+              const afterTitle =
+                (document.querySelector('.smelters h3') || {}).textContent || '';
+              expandAll();
               done({
-                groups, before, beforeTitle,
+                groups, beforeVisible, grandTotal, beforeTitle,
                 chosen: first.textContent.trim(),
-                after: document.querySelectorAll('.smelters .sm').length,
-                afterTitle: (document.querySelector('.smelters h3') || {}).textContent || '',
+                afterVisible, afterMore, afterTitle,
+                afterTotal: document.querySelectorAll('.smelters .sm').length,
                 clearNote: (document.querySelector('.smclear') || {}).textContent || '',
                 overflow: Math.max(0,
                   document.documentElement.scrollWidth - window.innerWidth),
@@ -1478,21 +1547,35 @@ async function main() {
         assert.ok(labels.includes("矿种") && labels.includes("国别"),
           `实际分组：${labels.join("/")}`);
       });
+      check(`展开到底数得出申报里的全部 ${expected} 条`, () => assert.equal(
+        flt.grandTotal, expected,
+        `点完「一次全部展开」只数到 ${flt.grandTotal} 条，申报里有 ${expected} 条`));
       check(`筛选后只剩子集，且确实变少了`, () => {
-        assert.ok(flt.after > 0, "筛完一条不剩");
-        assert.ok(flt.after < flt.before,
-          `筛前 ${flt.before} 条、筛后 ${flt.after} 条——没筛掉任何东西`);
+        assert.ok(flt.afterTotal > 0, "筛完一条不剩");
+        assert.ok(flt.afterTotal < flt.grandTotal,
+          `筛前 ${flt.grandTotal} 条、筛后 ${flt.afterTotal} 条——没筛掉任何东西`);
       });
       check(`标题同时印「筛出多少 / 共多少」，不把总量说小`, () => {
+        // 「共多少」必须是申报里的总数，不能是当前批次画出来的那几条
         assert.match(flt.afterTitle, /筛出/, `筛后标题：${flt.afterTitle}`);
-        assert.ok(flt.afterTitle.includes(String(flt.before)),
-          `筛后标题没印总数 ${flt.before}：${flt.afterTitle}`);
-        assert.ok(flt.afterTitle.includes(String(flt.after)),
-          `筛后标题没印筛出数 ${flt.after}：${flt.afterTitle}`);
+        assert.ok(flt.afterTitle.includes(String(expected)),
+          `筛后标题没印总数 ${expected}：${flt.afterTitle}`);
+        assert.ok(flt.afterTitle.includes(String(flt.afterTotal)),
+          `筛后标题没印筛出数 ${flt.afterTotal}：${flt.afterTitle}`);
+      });
+      check(`筛完仍然分批，按钮口径跟着筛后总数走`, () => {
+        assert.ok(flt.afterVisible <= flt.afterTotal,
+          `筛后画了 ${flt.afterVisible} 条，超过筛后总数 ${flt.afterTotal}`);
+        if (flt.afterTotal > flt.afterVisible) {
+          assert.match(flt.afterMore, /还有\s*\d+\s*家/, `筛后按钮：${flt.afterMore}`);
+          const left = parseInt((flt.afterMore.match(/还有\s*(\d+)\s*家/) || [])[1], 10);
+          assert.equal(flt.afterVisible + left, flt.afterTotal,
+            `筛后画 ${flt.afterVisible} + 按钮说剩 ${left} ≠ 筛后总数 ${flt.afterTotal}`);
+        }
       });
       check(`说清隐藏的那些仍在申报里`, () => {
         assert.match(flt.clearNote, /仍在这份申报里/, `实际：${flt.clearNote}`);
-        assert.ok(flt.clearNote.includes(String(flt.before - flt.after)),
+        assert.ok(flt.clearNote.includes(String(expected - flt.afterTotal)),
           `没说隐藏了多少家：${flt.clearNote}`);
       });
       check(`取值多于上限时说明「另有 N 个未单列」而不是默默截断`, () => {
