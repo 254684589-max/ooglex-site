@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-06T03:30:25Z",
+  "updatedAt": "2026-09-06T03:53:42Z",
   "asOf": "2026-09-04",
   "frequency": "daily",
   "status": "ok",
@@ -215,7 +215,7 @@
       "id": "automotive",
       "label": "汽车",
       "labelEn": "Automotive",
-      "count": 35,
+      "count": 37,
       "edgeCount": 1483,
       "layer": 6
     },
@@ -42738,13 +42738,13 @@
       "cik": 1806904,
       "sic": 3751,
       "sicDescription": "Motorcycles, Bicycles & Parts",
-      "stage": "component",
+      "stage": "finished-goods",
       "stageCandidates": [
-        "component"
+        "finished-goods"
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
-      "stageNote": "SIC 3751：运输设备零部件",
+      "stageNote": "SIC 3751：摩托车与自行车整机",
       "sicMajor": "37",
       "sicMajorLabel": "运输设备",
       "sicMajorLabelEn": "Transportation Equipment",
@@ -42752,10 +42752,13 @@
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001806904.json",
         "sic": 3751,
-        "match": "sic-range"
+        "match": "sic-exact"
       },
-      "chains": [],
-      "chainBasis": "unknown",
+      "chains": [
+        "automotive"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "摩托车与自行车",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -53936,13 +53939,13 @@
       "cik": 1932072,
       "sic": 3751,
       "sicDescription": "Motorcycles, Bicycles & Parts",
-      "stage": "component",
+      "stage": "finished-goods",
       "stageCandidates": [
-        "component"
+        "finished-goods"
       ],
       "stageBasis": "sic-refined",
       "stageAmbiguous": false,
-      "stageNote": "SIC 3751：运输设备零部件",
+      "stageNote": "SIC 3751：摩托车与自行车整机",
       "sicMajor": "37",
       "sicMajorLabel": "运输设备",
       "sicMajorLabelEn": "Transportation Equipment",
@@ -53950,10 +53953,13 @@
         "sourceType": "sec-submissions-sic",
         "url": "https://data.sec.gov/submissions/CIK0001932072.json",
         "sic": 3751,
-        "match": "sic-range"
+        "match": "sic-exact"
       },
-      "chains": [],
-      "chainBasis": "unknown",
+      "chains": [
+        "automotive"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "摩托车与自行车",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
     },
@@ -79742,7 +79748,7 @@
   "coverage": {
     "claimComplete": false,
     "chainsTotal": 27,
-    "chainUnclassified": 2,
+    "chainUnclassified": 0,
     "chainLinksTotal": 77,
     "chainDepth": 10,
     "poolSp500": 495,
@@ -82262,8 +82268,8 @@
     "status": "ok",
     "total": 1689,
     "byStage": {
-      "component": 149,
-      "finished-goods": 332,
+      "component": 147,
+      "finished-goods": 334,
       "technology": 307,
       "distribution": 108,
       "financial": 298,
