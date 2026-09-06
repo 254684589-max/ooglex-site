@@ -386,21 +386,31 @@
         // 对在美上市的外国发行人往往是它的美国办公室（爱尔康显示得州、
         // 壳牌显示华盛顿特区）；注册地回答的是「依哪国法律成立」，偏差在
         // 开曼／泽西这类控股架构。两者不是一回事，不能笼统说成「公司在哪国」。
-        var basis = (d.coverage && d.coverage.countryBasis) || {};
-        var byInc = basis["state-of-incorporation"] || 0;
-        var byAddr = (basis["business-address"] || 0) + (basis["mailing-address"] || 0);
-        var noBasis = basis.unknown || 0;
-        var note = "";
-        if (byInc || byAddr || noBasis) {
-          note = "国别取自 SEC 备案：其中 " + byInc + " 家按注册地（依哪国法律成立，"
-            + "开曼、泽西这类控股架构会记到注册地而不是实际总部）、"
-            + byAddr + " 家按备案地址"
-            + (noBasis ? "，另有 " + noBasis + " 家 SEC 备案里没有可用的地区字段，列为未归类" : "")
-            + "。";
-        }
+        // **这一栏按经营地，不按注册地。**
+        // 注册地那一栏的第一名是开曼群岛 340 家——而没有一家公司在那里生产
+        // 任何东西。开曼／BVI／马绍尔／百慕大这类法域只做登记，拿它当产业
+        // 地理会得出「开曼是第一大制造国」。折回营业地之后才是一张产业地图。
+        // 说明必须跟着口径走：这段话此前写的是「按注册地」，改了汇总却不改
+        // 这句，页面就在说假话。
+        var foreignNodes = (d.nodes || []).filter(function (x) {
+          return x.pool === "sec-foreign-issuer";
+        });
+        var offs = foreignNodes.filter(function (x) {
+          return x.offshoreIncorporation && x.operatingCountry;
+        }).length;
+        var stillOff = foreignNodes.filter(function (x) {
+          return x.offshoreIncorporation && x.geoCountry === x.country;
+        }).length;
+        var noBasis = ((d.coverage && d.coverage.countryBasis) || {}).unknown || 0;
+        var note = "口径是经营地，不是注册地：" + (n2 - offs) + " 家用 SEC 备案的注册地，"
+          + offs + " 家注册在开曼、英属维尔京、马绍尔、百慕大这类只做登记的法域，"
+          + "改用备案的营业地址——它们的注册地回答不了「这家公司在哪做生意」。"
+          + (stillOff ? "其中 " + stillOff + " 家的营业地址本身也在离岸法域，"
+              + "照实保留：SEC 手上只有那个地址，猜一个国家才是编造。" : "")
+          + (noBasis ? "另有 " + noBasis + " 家备案里没有可用的地区字段，列为未归类。" : "");
         setText(lead2, "另有在美上市的外国私人发行人 " + n2
-          + " 家（报 20-F／40-F 且同时报 Form SD 的那一批）。它们没有站内板块分类，"
-          + "下面按国别拆——注意这一栏的口径是国别，不是板块。" + note);
+          + " 家（报 20-F／40-F 的全体，不限于报 Form SD 的）。它们没有站内板块分类，"
+          + "下面按经营地拆——注意这一栏的口径是地理，不是板块。" + note);
         drawCovRows(rows2, foldTail(byCountry, COUNTRY_ROWS));
       }
     }

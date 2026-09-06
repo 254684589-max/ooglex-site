@@ -238,8 +238,29 @@ OFFSHORE = frozenset({
 })
 
 
+def _canon(name) -> str:
+    """把 EDGAR 的倒装式国名折成正读，再比对。
+
+    EDGAR 用的是「主名, 限定词」这种排序友好的写法：
+    `Virgin Islands, British`、`Korea, Republic of`、`Taiwan, Province of China`。
+    我第一版把离岸表按自己顺口的说法写成 "British Virgin Islands"，于是
+    63 家 BVI 注册的公司一家都没命中——**凭记忆写标识符就是在编数据**，
+    哪怕它长得像个正确的国名。
+
+    折的是整类写法，不是补一条字面量：下次再出现别的倒装名，这里照样命中。
+    """
+    text = " ".join(str(name or "").split()).strip().lower()
+    if "," in text:
+        parts = [p.strip() for p in text.split(",") if p.strip()]
+        text = " ".join(reversed(parts))
+    return text
+
+
+_OFFSHORE_CANON = frozenset(_canon(x) for x in OFFSHORE)
+
+
 def is_offshore(country) -> bool:
-    return (country or "").strip() in OFFSHORE
+    return _canon(country) in _OFFSHORE_CANON
 
 
 def operating_location(meta: dict, code_map: dict[str, str]) -> dict:

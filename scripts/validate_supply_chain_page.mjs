@@ -450,10 +450,18 @@ async function main() {
           assert.match(cov.countryLastLabel, /其他/,
             `最后一行是 ${cov.countryLastLabel}，没有「其他」这一行就是截断`);
         });
-        check(`说清这一栏的口径是国别不是板块`, () => {
-          assert.match(cov.countryLead, /口径是国别，不是板块/);
+        check(`说清这一栏的口径是地理不是板块，且写明按经营地`, () => {
+          assert.match(cov.countryLead, /口径是(国别|地理)，不是板块/,
+            `实际：${cov.countryLead.slice(0, 80)}`);
           assert.ok(cov.countryLead.includes(String(foreignN)),
             `说明里没写家数：${cov.countryLead}`);
+          /* 汇总用的是经营地（离岸注册者折回营业地址）。**说明必须跟着口径走**
+             ——改了汇总不改这句话，页面就在说假话，而这正是最难被发现的一类错：
+             数字全对，只有那句解释是旧的。 */
+          assert.match(cov.countryLead, /经营地/,
+            `没说清是按经营地汇总：${cov.countryLead.slice(0, 120)}`);
+          assert.match(cov.countryLead, /开曼|离岸|只做登记/,
+            `没说清为什么不用注册地：${cov.countryLead.slice(0, 160)}`);
         });
         check(`板块那一栏仍只统计标普池（${SECTORS.length} 个板块）`, () => {
           const sectorN = SECTORS.reduce((a, r) => a + (r.companies || 0), 0);

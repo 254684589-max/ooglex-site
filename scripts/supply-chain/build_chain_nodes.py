@@ -145,6 +145,28 @@ def load_sic_resolver():
     return module
 
 
+def load_region():
+    """载入 EDGAR 地理归一模块。
+
+    离岸判定**在构建时现算**，不用 foreign.json 里存着的那个标记。
+    理由：那张表改一次，存下来的标记就全过期了，要重新联网取数才能生效——
+    而判定规则的修正远比取数频繁。第一版把 BVI 写成 "British Virgin Islands"、
+    EDGAR 实际写 "Virgin Islands, British"，63 家一家没命中；修好归一之后
+    若还依赖存下来的标记，就得再跑一轮 25 分钟的取数才看得到效果。
+
+    缺失时返回 None：地理汇总退回注册地口径，不中断构建。
+    """
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "edgar_region.py")
+    if not os.path.exists(path):
+        return None
+    spec = importlib.util.spec_from_file_location("edgar_region", path)
+    if spec is None or spec.loader is None:
+        return None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def load_chain_resolver():
     """载入 SIC → 一级产业链映射（图的横轴）。缺失时返回 None，节点不带链，
     页面照常显示纵轴——与 SIC 阶段判定同一条退路，不因为缺一张表就中断构建。"""
@@ -564,7 +586,8 @@ def country_zh(name: str | None) -> str | None:
     return _COUNTRIES_ZH.get(name.strip().lower(), name.strip())
 
 
-def build_foreign_node(record: dict, sic_module, chain_module=None) -> dict:
+def build_foreign_node(record: dict, sic_module, chain_module=None,
+                      region_module=None) -> dict:
     """外国私人发行人的节点。
 
     与标普那侧最大的不同是**没有站内报价**：`marketCap` 与当日涨跌都取不到。
@@ -573,6 +596,9 @@ def build_foreign_node(record: dict, sic_module, chain_module=None) -> dict:
     构建日志与页面都要把这件事说出来。
     """
     symbol = record.get("symbol")
+    # 离岸判定现算，不读 record 里存着的标记——见 load_region() 的注释。
+    offshore = bool(region_module.is_offshore(record.get("country"))
+                    if region_module else record.get("offshoreIncorporation"))
     node = {
         "id": symbol,
         "symbol": symbol,
@@ -600,6 +626,25 @@ def build_foreign_node(record: dict, sic_module, chain_module=None) -> dict:
         # （注册地偏向开曼／泽西这类控股架构，营业地址偏向美国办公室），
         # 页面必须照实标，不能让读者以为它是「公司总部在哪」。
         "countryBasis": record.get("countryBasis"),
+        # ── 注册地 ≠ 产业地理 ───────────────────────────────────────────
+        # 1,194 家里 415 家注册在开曼／BVI／马绍尔／百慕大这类只做登记的
+        # 法域，开曼一家就 340 家，是全池第一大「国家」——而没有一家公司
+        # 在那里生产任何东西。实测：这 415 家的营业地址 **100% 定得出位置**，
+        # 折回去是中国 176、新加坡 43、香港 37、希腊 19（马绍尔注册的航运）。
+        #
+        # 所以按地理汇总时用 geoCountry：离岸注册的用营业地，其余不变。
+        # **注册地本身照样留着**（country／countryEn），不是改写而是并存——
+        # 公司页两个都显示，读者要能看出这家是「注册开曼、经营在中国」。
+        #
+        # 折完仍落在离岸法域的 51 家不是缺陷：SEC 手上只有那个地址，
+        # 说「只知道注册在开曼」是诚实答案，猜一个国家才是编。
+        "offshoreIncorporation": offshore,
+        "operatingCountry": country_zh(record.get("operatingCountry")),
+        "operatingCountryEn": record.get("operatingCountry"),
+        "operatingBasis": record.get("operatingBasis"),
+        "geoCountry": country_zh(record.get("operatingCountry")
+                                 if offshore and record.get("operatingCountry")
+                                 else record.get("country")),
         "exchange": record.get("exchange"),
         "cik": None,
         "sic": None,
@@ -684,6 +729,7 @@ def build() -> None:
     identity = load_identity()
     sic_module = load_sic_resolver()
     chain_module = load_chain_resolver()
+    region_module = load_region()
     nodes = [build_node(m, identity, sic_module, chain_module)
              for m in members if m.get("symbol")]
     for node in nodes:
@@ -703,7 +749,8 @@ def build() -> None:
             continue
         taken.add(symbol)
         foreign_nodes.append(
-            build_foreign_node(foreign_pool[symbol], sic_module, chain_module))
+            build_foreign_node(foreign_pool[symbol], sic_module, chain_module,
+                               region_module))
     if dropped_collision:
         print(f"[!!] 外国发行人有 {len(dropped_collision)} 个代码与标普池相同，"
               f"已跳过（不覆盖）：{'、'.join(dropped_collision[:10])}")
@@ -764,8 +811,10 @@ def build() -> None:
     by_sector = sector_coverage([n for n in nodes if n.get("pool") != "sec-foreign-issuer"],
                                 filing_status)
     foreign_nodes_all = [n for n in nodes if n.get("pool") == "sec-foreign-issuer"]
+    # 按**经营地**汇总，不按注册地。见节点构建处那段：注册地这一栏的第一名
+    # 是开曼群岛 340 家，它回答不了「这条产业链在哪」。
     by_country = sector_coverage(foreign_nodes_all, filing_status,
-                                 key="country", label="sector")
+                                 key="geoCountry", label="sector")
     # 国别是从哪个字段来的，逐档计数。注册地与营业地址偏差方向不同，
     # 页面得照实说是哪一种，不能笼统说成「公司在哪个国家」。
     country_basis: dict[str, int] = {}
