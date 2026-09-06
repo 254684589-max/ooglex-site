@@ -473,6 +473,20 @@
   //
   // 所以这一行是扩池的附带条件之一（见 fetch_foreign_identity.py 开头），
   // 由 validate_supply_chain_page.mjs 钉住，不是可选的美化。
+  // 市值合计覆盖了多少家。**扩池之后这句话从脚注变成了必需**——
+  // 各环节有站内报价的比例掉到 9%~55%（资源开采 153 家里只有 14 家），
+  // 而市值就印在家数旁边，读者一眼看过去必然把两个数配成一对。
+  // 一个星号扛不住这个落差，说明也不能只挂在 hover 上（手机没有 hover）。
+  function capLine(quoted, total) {
+    if (!total || quoted === total) return "";
+    if (!quoted) {
+      return "本环节 " + total + " 家全部没有站内报价，因此不给市值合计"
+        + "——这一池是外国私人发行人，站内不收行情，不是取数失败。";
+    }
+    return "市值合计只含 " + quoted + "/" + total + " 家有站内报价的公司，"
+      + "不是本环节的总市值（其余是外国私人发行人，站内无行情）。";
+  }
+
   function coverLine(st, total) {
     var bits = [];
     if (st.filedNoList) bits.push("有申报未列名单 " + st.filedNoList + " 家");
@@ -876,12 +890,13 @@
       var quoted = visibleNodes(d).filter(function (x) {
         return x.stage === meta.id && isNum(x.marketCap);
       }).length;
-      var mcEl = el("span", "mc", cap(capOf(d, meta.id)));
+      // 一家有报价的都没有时，合计必然是 0——印一个「0 亿」是假的，
+      // 那不是「这一段不值钱」，是「这一段没有报价」。两件事不能长得一样。
+      var mcEl = el("span", "mc", quoted ? cap(capOf(d, meta.id)) : "无站内报价");
       mcEl.title = total === quoted
         ? "本环节 " + total + " 家的市值合计"
-        : "本环节 " + total + " 家里 " + quoted + " 家有站内报价，市值合计只含这 "
-          + quoted + " 家；其余是外国私人发行人，站内无报价";
-      if (total !== quoted) mcEl.appendChild(el("s", null, "*"));
+        : capLine(quoted, total);
+      if (quoted && total !== quoted) mcEl.appendChild(el("s", null, "*"));
       hd.appendChild(mcEl);
 
       // 这一段有多少家带出处关系。**覆盖率要写在读者正在看的地方**——
@@ -929,7 +944,13 @@
     // 分档解释就地写出来，不藏在 hover 里。放在环节说明下面而不是表头里：
     // 表头一行已经有名称／家数／市值／有出处／涨跌五格，再塞一句话会挤爆窄屏。
     if (total) {
-      var why = coverLine(stageCoverage(d, meta.id), total);
+      // 这一行是本环节的**数据口径**：关系覆盖到哪儿为止、市值合计算了谁。
+      // 两条都曾经只活在 hover 提示里，手机上等于没写过。
+      var quotedN = visibleNodes(d).filter(function (x) {
+        return x.stage === meta.id && isNum(x.marketCap);
+      }).length;
+      var why = [coverLine(stageCoverage(d, meta.id), total),
+                 capLine(quotedN, total)].filter(Boolean).join(" ");
       if (why) band.appendChild(el("div", "bandwhy", why));
     }
 
