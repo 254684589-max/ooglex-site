@@ -177,6 +177,12 @@
     font-variant-numeric:tabular-nums; }
   .banddesc { padding:0 15px 11px; font-size:0.74rem; color:var(--dim);
     margin-top:-4px; }
+  /* 「为什么这一段没覆盖」。必须**看得见**——此前只在 hover 提示里，
+     手机上根本读不到。左侧一道竖线把它与环节说明区分开：上一行说这一段
+     是什么，这一行说这一段的数据到哪儿为止。 */
+  .bandwhy { margin:0 15px 12px; padding:7px 10px; font-size:0.72rem;
+    line-height:1.65; color:var(--dim); border-left:2px solid var(--faint);
+    background:rgba(255,255,255,.025); border-radius:0 5px 5px 0; }
 
   /* 环节之间的顺序箭头。只在实物链四段之间画。 */
   .link { display:flex; justify-content:center; align-items:center;
@@ -590,6 +596,6 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="app.js?v=54341f57" defer></script>
+<script src="app.js?v=5cb9732f" defer></script>
 </body>
 </html>

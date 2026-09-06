@@ -15,15 +15,33 @@ SPX／DXY／LBMA 定盘价同类（见 docs/SUPPLY_CHAIN_SOURCES.md 第 2 节）
 许可干净的替代是 SEC 自己：外国私人发行人在美上市要报 20-F（非加拿大）或
 40-F（加拿大 MJDS），文件全在 EDGAR，公共领域，与现有管线同源。
 
-## 只收「同时报 Form SD」的那一批
+## 从「只收 147 家」改为全收（2026-09-06，项目所有者授权）
 
 2026-09-05 的探针数出来：1,222 家报 20-F／40-F，其中 1,194 家有美股代码，
-**147 家同时报 Form SD**。只收这 147 家，理由是此前反复说的一条——
+**147 家同时报 Form SD**。当初只收那 147 家，理由是——
 
     扩公司范围只增加节点，不增加边。图上多 500 个孤立的点不叫产业链。
 
-报 Form SD 意味着它有可能带来冶炼厂名单，也就是**同时带来节点和边**。
-不报的那一千余家先不收：等有了适用它们的边来源再说，不为凑数把点画上去。
+**这条判决现在推翻，但推翻的不是它的事实，是它的前提。** 事实一点没变：
+多收的那一千余家确实一条边都不会带来，「有出处」的比例会从 127/642（19.8%）
+掉到 127/1,689（7.5%）。摆给项目所有者看过这个数之后，授权照做。
+
+之所以可以做，是因为那句话真正怕的是**读者把点数当成关系覆盖**。
+只要页面把「家数」与「有出处」分开说死、并且把分档理由写在看得见的地方，
+多出来的点就只是一份更全的公司名录，不会被读成产业链关系。
+
+**因此这个改动是有附带条件的，条件不成立就得改回去：**
+
+一、`formSdStatus` 必须逐家给到，`no-filing` 这一档不能变成一个笼统的空白；
+二、环节卡上的「N/M 有出处」旁边必须有**可见的**分档说明（不是 hover 提示，
+   手机上没有 hover）；
+三、页面任何位置不得把节点数增长表述为关系覆盖改善。
+
+这三条由 `validate_supply_chain_graph.py` 与 `validate_supply_chain_page.mjs`
+钉住，不靠自觉。
+
+**够不到的仍然够不到：** 三星、LVMH、现代不在 EDGAR，不在美上市就不在 EDGAR。
+扩到 1,194 家也补不上这一块，不能因为池子大了就说板块覆盖全球。
 
 ## 三件必须做对的事
 
@@ -163,12 +181,16 @@ def main() -> int:
         print("[XX] 一个季度的索引都没取到，保留上一份缓存")
         return 1
 
-    both = sorted(set(foreign) & sd_ciks)
+    sd_foreign = set(foreign) & sd_ciks
+    # 全收：报 20-F／40-F 的都要，报不报 SD 只作标记。见文件开头那段判决。
+    selected = sorted(foreign)
     print(f"\n外国发行人年报申报人 {len(foreign):,} 家 · 报 SD 的 {len(sd_ciks):,} 家"
-          f" · 两者都有 {len(both):,} 家")
-    if not both:
-        print("[XX] 交集为空，与 2026-09-05 实测的 147 家差得太远，判定取数异常，"
-              "保留上一份缓存")
+          f" · 两者都有 {len(sd_foreign):,} 家")
+    if not sd_foreign:
+        # 交集为空说明 SD 那一侧根本没扫到。此时仍能产出节点，但每一家都会被
+        # 标成「不报 SD」——那是**假数据**，比少一批公司糟得多，所以照样中止。
+        print("[XX] 交集为空，与 2026-09-05 实测的 147 家差得太远，说明 SD 那侧没扫到；"
+              "继续下去会把每一家都标成「不报 Form SD」，那是假数据。保留上一份缓存")
         return 1
 
     # 代码与交易所。没有代码的接不进以 ticker 为键的数据模型，只能先放着。
@@ -202,7 +224,7 @@ def main() -> int:
     chosen: list[dict] = []
     no_ticker: list[int] = []
     collided: list[str] = []
-    for cik in both:
+    for cik in selected:
         candidates = by_cik.get(cik) or []
         if not candidates:
             no_ticker.append(cik)
@@ -270,9 +292,16 @@ def main() -> int:
             "exchange": item["primary"].get("exchange"),
             "tickers": sorted({c["ticker"] for c in item["candidates"]}),
             "annualForm": "20-F/40-F",
+            # 这家**结构上**可不可能有冶炼厂边：Form SD 是边的唯一来源，
+            # 不报 SD 的公司没有边不是抽取失败，是规则根本不适用。
+            # 页面靠这个字段把「没抽到」与「不可能有」分开说。
+            "filesFormSd": item["cik"] in sd_foreign,
             "lastAnnual": foreign[item["cik"]]["last"],
         }
-    print(f"取到 {len(companies)} 家，失败 {failed} 家")
+    sd_yes = sum(1 for v in companies.values() if v.get("filesFormSd"))
+    print(f"取到 {len(companies)} 家，失败 {failed} 家"
+          f"（其中报 Form SD {sd_yes} 家 · 不报 {len(companies) - sd_yes} 家——"
+          f"不报的那些结构上不会有冶炼厂边）")
 
     # 定不出国别的，把 SEC 那几个字段的**原值**原样打出来。
     # 台积电、本田、沃达丰这一批三个字段全空，光看结论只能看出「没有」，
@@ -342,15 +371,19 @@ def main() -> int:
         "unresolvedGeo": unresolved_geo,
         "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "source": "SEC EDGAR 季度全量索引 + submissions（公共领域）",
-        "note": ("在美上市的外国私人发行人（报 20-F／40-F）中**同时报 Form SD** 的那一批。"
-                 "只收这一批，是因为报 Form SD 才可能带来冶炼厂名单，也就是加进来"
-                 "同时带节点和边；只增加孤立节点的扩池没有意义。"
+        "note": ("在美上市的外国私人发行人（报 20-F／40-F）全体，不再限于同时报 Form SD 的那一批。"
+                 "**多收的这些只增加节点、不增加关系边**——Form SD 是冶炼厂边的唯一来源，"
+                 "不报 SD 的公司没有边是规则不适用，不是抽取失败，逐家由 filesFormSd 标出。"
+                 "因此公司家数变多不表示关系覆盖变好，页面必须把两者分开说。"
                  "按 CIK 去重，主代码按交易所优先级选定，与标普池撞码的一律跳过而"
                  "不是覆盖。"),
         "coverage": {
             "foreignAnnualFilers": len(foreign),
             "formSdFilers": len(sd_ciks),
-            "bothAnnualAndFormSd": len(both),
+            "bothAnnualAndFormSd": len(sd_foreign),
+            # 收进来的里面有多少家结构上可能有边。这个数才是「关系覆盖」的分母，
+            # published 不是——把 published 当分母会把不适用的公司算成缺口。
+            "publishedFilesFormSd": sd_yes,
             "withTicker": len(chosen) + len(collided),
             "published": len(companies),
             "skippedNoTicker": len(no_ticker),

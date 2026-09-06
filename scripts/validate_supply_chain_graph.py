@@ -20,6 +20,7 @@ import os
 import sys
 
 NODES_PATH = "apps/supply-chain/nodes.json"
+FOREIGN_PATH = "apps/supply-chain/foreign.json"
 HEALTH_PATH = "apps/supply-chain/health.json"
 EDGES_DIR = "apps/supply-chain/edges"
 SMELTERS_PATH = "apps/supply-chain/smelters.json"
@@ -838,6 +839,44 @@ def check_health(errors: list[str], node_count: int) -> None:
         fail(errors, f"health.status {health.get('status')!r} 不在允许集")
 
 
+def check_form_sd_flag(payload: dict, errors: list[str]) -> None:
+    """索引扫到「报过 Form SD」的公司，抽取器不能说它「无申报」。
+
+    两个来源各扫各的：`fetch_foreign_identity.py` 扫的是季度全量索引（近四个
+    季度），`extract_form_sd.py` 逐家取 submissions（全量历史）。**全量历史是
+    近四季的超集**，所以方向是单向的——
+
+        索引说报过 ⟹ 抽取器不能说「从未申报」（说了就是漏了一份文件）
+        索引说没报 ⇏ 抽取器一定说没报（四个季度之前报的，索引本来就看不到）
+
+    只钉住有方向的那一半。反过来钉就会把「更早年份报过」误判成错误。
+
+    这条是扩池到全量外国私人发行人的配套：一千多家被标成「未报 Form SD、
+    规则不适用」并据此从覆盖率分母里排除，那个标记要是错的，排除就是在
+    粉饰覆盖率。
+    """
+    try:
+        with open(FOREIGN_PATH, encoding="utf-8") as handle:
+            companies = (json.load(handle) or {}).get("companies") or {}
+    except (OSError, ValueError):
+        return                                     # 还没跑过取数就跳过
+    flagged = {s for s, v in companies.items() if v.get("filesFormSd")}
+    if not flagged:
+        # 整份文件一个都没标，说明还是改造前的旧产物。不当作错误，但要说出来，
+        # 免得这条校验静默地什么都没查——静默通过等于这条断言不存在。
+        print("[--] foreign.json 里没有 filesFormSd 标记（旧版产物），"
+              "索引↔抽取器的交叉校验本轮跳过")
+        return
+    status = {n.get("symbol"): n.get("formSdStatus")
+              for n in (payload.get("nodes") or [])}
+    bad = sorted(s for s in flagged if status.get(s) == "no-filing")
+    if bad:
+        fail(errors, f"{len(bad)} 家在季度索引里报过 Form SD，抽取器却判为「无申报」，"
+                     f"说明漏读了申报：{'、'.join(bad[:8])}")
+    print(f"索引↔抽取器交叉校验：{len(flagged)} 家标了报过 Form SD，"
+          f"其中被判「无申报」的 {len(bad)} 家")
+
+
 def main() -> int:
     if not os.path.exists(NODES_PATH):
         print(f"[XX] 缺少 {NODES_PATH}")
@@ -855,6 +894,7 @@ def main() -> int:
     check_peers(payload, errors)
     check_home_card(payload, errors)
     check_page_meta(payload, errors)
+    check_form_sd_flag(payload, errors)
     check_no_conflict_markers(errors)
     smelters = check_smelters(errors, edge_count)
     check_health(errors, len(payload.get("nodes") or []))

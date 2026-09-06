@@ -183,9 +183,24 @@ async function main() {
           hasBasisLine: text.includes('阶段判定口径'),
           statusChips: document.querySelectorAll('#statusrow .status').length,
           bandCov: [...document.querySelectorAll('#chain .band, #offchain .band')]
-            .map(b => ({ stage: b.dataset.stage,
-                         text: ((b.querySelector('.bandcov') || {}).textContent || ''),
-                         why: ((b.querySelector('.bandcov') || {}).title || '') })),
+            .map(b => {
+              // why 读的是 title（hover 提示），**手机上根本读不到**；
+              // whyText 读的是 .bandwhy，那才是读者真看得见的字。
+              // 两个都收：断言要能分出「写了但看不见」和「压根没写」。
+              const w = b.querySelector('.bandwhy');
+              return { stage: b.dataset.stage,
+                       text: ((b.querySelector('.bandcov') || {}).textContent || ''),
+                       why: ((b.querySelector('.bandcov') || {}).title || ''),
+                       whyText: w ? w.textContent.trim() : '',
+                       whyShown: !!(w && w.offsetHeight > 0
+                         && getComputedStyle(w).visibility !== 'hidden') };
+            }),
+          covSum: (document.getElementById('cov-sum') || {}).textContent || '',
+          covSumShown: (() => {
+            const e = document.getElementById('cov-sum');
+            return !!(e && e.offsetHeight > 0
+              && getComputedStyle(e).visibility !== 'hidden');
+          })(),
           statusText: (document.getElementById('statusrow') || {}).textContent || "",
           subtitle: (document.getElementById('subtitle') || {}).textContent || "",
           freqStruck: (() => {
@@ -264,6 +279,46 @@ async function main() {
         const reasons = new Set(zero.map(b => b.why));
         assert.ok(reasons.size > 1,
           "所有 0 覆盖环节给的是同一句话——不同的 0 被混成了一种");
+      });
+      /* 成因必须**看得见**，不能只挂在 title 上。
+         上面那条断言读的是 .bandcov 的 title——那是 hover 提示，手机上没有
+         hover，等于这句话不存在，而断言照样过。**静默通过等于这条断言不存在**。
+         公司池扩到一千多家之后「有出处」会掉到个位数百分比，这时候把「为什么
+         没覆盖」藏在提示里，读者只会得出「数据很差」，而真相是那些公司根本
+         不适用这套申报规则。所以这里盯的是渲染出来的 .bandwhy。 */
+      check(`未覆盖的成因写在页面上，不是只挂在 hover 提示里`, () => {
+        const has = probe.bandCov.filter((b) => b.whyText);
+        assert.ok(has.length, "一个环节都没有可见的成因行（.bandwhy 全缺）");
+        has.forEach((b) => {
+          assert.ok(b.whyShown, `${b.stage} 的成因行在 DOM 里但不可见，等同于没写`);
+          assert.match(b.whyText, /未覆盖的 \d+ 家/, `${b.stage}：${b.whyText}`);
+        });
+        // 每一个 0 覆盖的环节都必须有这一行——正是那些最会被读错的段
+        const zeroNoLine = probe.bandCov
+          .filter((b) => /^0\//.test(b.text.replace(/\s/g, "")) && !b.whyText);
+        assert.equal(zeroNoLine.length, 0,
+          `0 覆盖却没写成因：${zeroNoLine.map(b => b.stage).join("、")}`);
+      });
+      /* 覆盖率的分母。**扩池只增加节点、不增加边**，所以「占全池多少」会随
+         名录变大而变小——只印这一个数，读者会把名录扩大读成数据变差；而只印
+         「占申报人多少」，又是拿小分母把覆盖率说好看。两个都印，才既不夸大
+         也不自贬。这条断言钉的就是「两个都在」。 */
+      check(`覆盖率同时印全池分母与「报过 Form SD」分母`, () => {
+        assert.ok(probe.covSumShown, "覆盖率结论行不可见");
+        const cv = NODES.coverage || {};
+        const filers = NODES.nodes.filter((n) => ["listed", "filed-no-list",
+          "resource-extraction"].indexOf(n.formSdStatus) >= 0).length;
+        const flat = probe.covSum.replace(/\s/g, "");
+        assert.ok(flat.includes(String(cv.nodesTotal)),
+          `没印全池家数 ${cv.nodesTotal}：${probe.covSum}`);
+        assert.ok(flat.includes(String(cv.nodesWithEdges)),
+          `没印有出处家数 ${cv.nodesWithEdges}：${probe.covSum}`);
+        assert.ok(filers > 0, "算不出报过 Form SD 的家数，这条断言失去意义");
+        assert.ok(flat.includes(String(filers)),
+          `没印报过 Form SD 的 ${filers} 家——只用全池当分母会把「规则不适用」`
+          + `记成「我们没做到」：${probe.covSum}`);
+        assert.match(probe.covSum, /Form\s*SD/,
+          `没说清第二个分母是什么口径：${probe.covSum}`);
       });
       check(`页面无横向溢出`, () => assert.ok(probe.bodyOverflow <= 1,
         `溢出 ${probe.bodyOverflow}px`));
