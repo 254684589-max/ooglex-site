@@ -58,7 +58,7 @@ on:
         required: false
         default: '40'
       only:
-        description: '只跑哪些 job（graph/supplier/usaspending/nolist/body/extract/flow/foreign/foreignfetch；留空跑全部）'
+        description: '只跑哪些 job（graph/supplier/usaspending/nolist/body/extract/flow/foreign/foreignfetch/ceiling；留空跑全部）'
         required: false
         default: ''
 
@@ -70,6 +70,32 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  ceiling:
+    name: 池子上限 · SEC 这条路最多能扩到多少家 + 中文名有没有源
+    if: ${{ inputs.only == '' || contains(inputs.only, 'ceiling') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      # 两个问题一次答完：
+      # 一、外国私人发行人那条路已取尽（1,222 家全收了），真正没动的是报 10-K
+      #     的美国本土发行人——与外国发行人同源、同为政府公开记录，而且比
+      #     「按标普成分收」许可更干净（指数成分名单是指数商的专有数据）。
+      # 二、1,688 家里 1,355 家显示英文原名，其中 326 家经营地在两岸三地，
+      #     它们**本来就有官方中文名**。查 SEC 备案元数据带不带中文——带的话
+      #     是政府公开记录可直接用，不带就得另找源，而那是许可决策。
+      - name: Probe pool ceiling and Chinese-name source
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: python scripts/supply-chain/probe_pool_ceiling.py
+
   graph:
     name: 公司图谱 · EDGAR 关系抽取可行性
     if: ${{ inputs.only == '' || contains(inputs.only, 'graph') }}
