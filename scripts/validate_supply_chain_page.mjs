@@ -257,17 +257,30 @@ async function main() {
         // 读者会以为这一项作废了。
         assert.ok(!probe.freqStruck, "「行情每日」被画上了删除线");
       });
-      // 副标题写死过「标普500成分股按价值链环节分层」，扩池到 642 家之后
-      // 那句话就成了假话。现在照数据渲染，断言拿 nodes.json 的池子数比对。
-      check(`副标题照数据写，不是写死的`, () => {
+      /* 副标题写死过「标普500成分股按价值链环节分层」，扩池到 642 家之后
+         那句话就成了假话。改成照数据渲染之后又栽了一次：写死两个池，
+         本土 10-K 那 4,209 家入池后在首屏上根本不存在，而摘要条却印
+         「公司 5,897 家」——两个数当场对不上。
+
+         所以这条不再逐个池点名，改成**把副标题里的家数加起来，必须等于
+         全池**。加一个池而不在副标题露面，这条就会失败；池子改名、顺序
+         调整都不影响。 */
+      check(`副标题列全所有公司池，家数加起来等于全池`, () => {
         const cov = NODES.coverage || {};
-        if (cov.poolSp500 && cov.poolForeignIssuer) {
-          assert.ok(probe.subtitle.includes(String(cov.poolSp500))
-            && probe.subtitle.includes(String(cov.poolForeignIssuer)),
-            `副标题没写两个池的家数：${probe.subtitle}`);
-        }
         assert.ok(!/^标普500成分股按价值链环节分层/.test(probe.subtitle),
           "副标题还是那句写死的旧文案");
+        const pools = [cov.poolSp500, cov.poolForeignIssuer, cov.poolDomesticFiler]
+          .filter((n) => n);
+        if (!pools.length) return;
+        // 副标题里出现的数（去掉千分位）逐个取出来
+        const shown = (probe.subtitle.match(/[\d,]+(?=\s*家)/g) || [])
+          .map((t) => parseInt(t.replace(/,/g, ""), 10)).filter((n) => n > 0);
+        const sum = shown.reduce((a, b) => a + b, 0);
+        assert.equal(sum, cov.nodesTotal,
+          `副标题里的家数加起来 ${sum}，全池 ${cov.nodesTotal}——`
+          + `有池子没在首屏露面：${probe.subtitle}`);
+        pools.forEach((n) => assert.ok(shown.indexOf(n) >= 0,
+          `副标题漏了一个 ${n} 家的池：${probe.subtitle}`));
       });
       // 每张环节卡片上的覆盖数，必须等于 nodes.json 里那一段的真值——
       // 断言盯「画的是不是那个数」，不是「画出来了没有」。

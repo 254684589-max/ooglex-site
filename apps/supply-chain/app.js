@@ -67,6 +67,35 @@
   }
 
   /* ── 顶部状态：来源、数据日、更新时间必须可见 ── */
+  /* SEC 申报人类别 → 中文标签。
+
+     **原值留在数据里，译名只在这里加**——与「边文件里是申报原文、译名是
+     我们加的标注」同一条规矩。SEC 的 category 常常是组合串
+     （"Non-accelerated Filer, Smaller Reporting Company"），所以按关键词
+     判而不是全串比对；认不出的原样显示，不硬塞一个中文。
+
+     分档依据是**公众持股量**（流通股 × 股价），不是总市值，而且一年只在
+     财年末重定一次。页面上一律说「申报人类别」，绝不说成市值区间。 */
+  function filerLabel(raw) {
+    var t = String(raw || "").toLowerCase();
+    if (!t) return "未标注";
+    if (t.indexOf("large accelerated") >= 0) return "大型加速申报人（公众持股 ≥ 7 亿美元）";
+    if (t.indexOf("accelerated") >= 0 && t.indexOf("non-accelerated") < 0
+        && t.indexOf("non accelerated") < 0) {
+      return "加速申报人（0.75 ~ 7 亿美元）";
+    }
+    if (t.indexOf("smaller reporting") >= 0 && t.indexOf("accelerated") >= 0) {
+      return "非加速 · 小型申报公司";
+    }
+    if (t.indexOf("smaller reporting") >= 0) return "小型申报公司";
+    if (t.indexOf("accelerated") >= 0) return "非加速申报人";
+    return raw;                                   // 认不出就照原文，不硬译
+  }
+
+  function isLargeFiler(raw) {
+    return String(raw || "").toLowerCase().indexOf("large accelerated") >= 0;
+  }
+
   function renderStatus(d) {
     var cov = d.coverage || {};
     // 副标题照数据写。写死「标普500成分股按价值链环节分层」的那一版，在
@@ -74,12 +103,23 @@
     // 静态文案里的数字不会自己更新，数据一变它就开始说错话且无人报错。
     var sub = $("subtitle");
     if (sub) {
-      var sp = cov.poolSp500, fo = cov.poolForeignIssuer;
-      setText(sub, (sp && fo
-        ? "标普500成分股 " + sp + " 家 + 在美上市外国私人发行人 " + fo + " 家"
-        : (cov.nodesTotal || "—") + " 家公司")
-        + "，按 12 个价值链环节 × " + (cov.chainsTotal || "—")
-        + " 条一级产业链两维定位 · Global Supply Chain");
+      // **池子的构成照数据列，加一个池就得在这里露面。**
+      // 写死两个池的那一版，在本土 10-K 那 4,209 家入池之后就成了假话：
+      // 副标题只说 1,688 家的来路，摘要条却印「公司 5,897 家」——
+      // 两个数当场对不上，而 4,209 家在首屏上根本不存在。
+      // 与第十三轮 head 里那句「标普500公司」是同一类错，只是这次在渲染
+      // 文案里，扫 head 的那道校验管不到。
+      var pools = [
+        [cov.poolSp500, "标普500成分股"],
+        [cov.poolForeignIssuer, "在美上市外国私人发行人"],
+        [cov.poolDomesticFiler, "报 10-K 的美国本土发行人"]
+      ].filter(function (x) { return x[0]; });
+      var lead = pools.length
+        ? pools.map(function (x) { return x[1] + " " + fmt(x[0]) + " 家"; }).join(" + ")
+        : fmt(cov.nodesTotal || 0) + " 家公司";
+      setText(sub, lead
+        + "，按 " + ((d.stages || []).length || "—") + " 个价值链环节 × "
+        + (cov.chainsTotal || "—") + " 条一级产业链两维定位 · Global Supply Chain");
     }
 
     var row = $("statusrow");
@@ -88,6 +128,15 @@
     // 「有多少条关系、来自几家申报人」——那才是这个板块的主量级。
     var items = [
       ["公司", (cov.nodesTotal != null ? fmt(cov.nodesTotal) : "—") + " 家"],
+      // **5,897 家里有多少是真正的大公司。** 池子扩到全体 SEC 申报人之后，
+      // 家数把苹果和一家 500 万美元的壳公司算得一样重，而站内报价只覆盖
+      // 8%——这一格用 SEC 自己的分档回答，它 100% 覆盖。
+      ["大型申报人", (function () {
+        var rows = cov.byFilerCategory || [];
+        var big = rows.filter(function (r) { return isLargeFiler(r.sector); })
+          .reduce(function (a, r) { return a + (r.companies || 0); }, 0);
+        return rows.length ? fmt(big) + " 家" : "—";
+      })()],
       ["关系", (cov.edgesTotal != null ? fmt(cov.edgesTotal) : "—") + " 条"],
       ["申报人", (cov.nodesWithEdges != null ? fmt(cov.nodesWithEdges) : "—") + " 家"],
       ["冶炼厂", (((cov.formSd || {}).uniqueSmelters) != null
@@ -434,6 +483,38 @@
           + "它们又几乎全在美国，按国别拆只会得到一行。"
           + "下面按 SEC 行业码的大类拆——注意这一栏的口径是行业大类，不是 GICS 板块。");
         drawCovRows(rows3, foldTail(bySic, COUNTRY_ROWS));
+      }
+    }
+
+    // ── 规模轴：全池按 SEC 申报人类别 ───────────────────────────────
+    // **与上面三栏不是一回事**：那三栏把全池切成互不重叠的三份，这一栏是
+    // 同一批公司换一把尺子量，它自己覆盖全池——所以标题说「全池」，
+    // 不说「另有」，免得读者以为又是一批新公司。
+    var byCat = (d.coverage && d.coverage.byFilerCategory) || [];
+    var lead4 = $("cov-cat-lead");
+    var rows4 = $("cov-cat-rows");
+    if (rows4) rows4.textContent = "";
+    if (lead4) {
+      var meaningful = byCat.filter(function (r) { return r.sector; });
+      if (!meaningful.length
+          || (meaningful.length === 1 && meaningful[0].sector === "未分类")) {
+        lead4.hidden = true;                      // 还没取到这个字段就整栏不出
+      } else {
+        lead4.hidden = false;
+        var big = byCat.filter(function (r) { return isLargeFiler(r.sector); })
+          .reduce(function (a, r) { return a + (r.companies || 0); }, 0);
+        var quoted = (d.nodes || []).filter(function (x) {
+          return isNum(x.marketCap);
+        }).length;
+        setText(lead4, "全池 " + fmt(cv.nodesTotal || 0) + " 家按规模：其中 "
+          + fmt(big) + " 家是大型加速申报人（SEC 按公众持股量 ≥ 7 亿美元划的档）。"
+          + "用这条轴而不是市值，是因为站内行情只覆盖标普成分股 " + fmt(quoted)
+          + " 家（" + Math.round(quoted / (cv.nodesTotal || 1) * 100) + "%），"
+          + "而 SEC 的分档 100% 覆盖、三个池同一把尺子。"
+          + "注意它按公众持股量分档、一年只在财年末重定一次，不是市值区间。");
+        drawCovRows(rows4, byCat.map(function (r) {
+          return Object.assign({}, r, { sector: filerLabel(r.sector) });
+        }));
       }
     }
 
