@@ -446,6 +446,18 @@ async function main() {
             const e = box.querySelector('#cov-sic-lead');
             return !!(e && !e.hidden && e.offsetHeight > 0);
           })(),
+          catLead: (box.querySelector('#cov-cat-lead') || {}).textContent || '',
+          catShown: (() => {
+            const e = box.querySelector('#cov-cat-lead');
+            return !!(e && !e.hidden && e.offsetHeight > 0);
+          })(),
+          catRows: [...box.querySelectorAll('#cov-cat-rows .covrow')].map(r => ({
+            sector: (r.querySelector('.s') || {}).textContent || '',
+            num: (r.querySelector('.n') || {}).textContent || ''
+          })),
+          bigMetric: (([...document.querySelectorAll('#statusrow .status')]
+            .find(e => (e.textContent || '').indexOf('大型申报人') === 0) || {})
+            .textContent) || '',
           countryLeadHidden: !!(box.querySelector('#cov-country-lead') || {}).hidden,
           overflow: box.scrollWidth - box.clientWidth
         };
@@ -538,6 +550,64 @@ async function main() {
             assert.match(cov.sicLead, /行业大类/, `实际：${cov.sicLead.slice(0, 100)}`);
             assert.match(cov.sicLead, /不是 GICS 板块|不是板块/,
               `没说清与板块的区别：${cov.sicLead.slice(0, 120)}`);
+          });
+        }
+      }
+
+      /* 规模轴（申报人档位）。这一栏是**唯一一条三个池通用的规模尺**——
+         站内报价只覆盖标普那 495 家（8%），市值答不了「这 5,897 家里
+         哪些是大公司」。
+
+         它上一版栽的跟头值得逐条钉住：SEC 的 category 是 "A<br>B<br>C"
+         拼串，渲染层用 indexOf 去解析，于是 477 家的标签是
+         「<br>Emerging growth company」——**HTML 标记原样印在屏幕上**，
+         14 个原串归到 7 个标签、同一个档印两行，而且「小型申报公司」
+         「新兴成长公司」这两种**不是规模**的身份混进了规模轴。
+         解析已挪回构建脚本，这里守住页面不再退回去。 */
+      const CATS = (NODES.coverage || {}).byFilerCategory || [];
+      if (CATS.length) {
+        check(`规模轴单列一栏并渲染`, () => assert.ok(cov.catShown,
+          "第四栏没渲染——市值只覆盖 8%，没有这条轴就答不了「谁是大公司」"));
+        check(`档位逐行等于数据，且不重复`, () => {
+          assert.equal(cov.catRows.length, CATS.length,
+            `页面 ${cov.catRows.length} 行，数据 ${CATS.length} 档`);
+          const bad = [];
+          for (const r of CATS) {
+            const row = cov.catRows.find(x => x.sector === r.sector);
+            if (!row) { bad.push(`${r.sector} 未渲染`); continue; }
+            const want = `${r.withEdges} / ${r.companies}`;
+            if (row.num !== want) bad.push(`${r.sector}「${row.num}」应为「${want}」`);
+          }
+          assert.equal(bad.length, 0, bad.join("；"));
+          const labels = cov.catRows.map(r => r.sector);
+          assert.equal(new Set(labels).size, labels.length,
+            `有档印了两行：${labels.join(" / ")}`);
+        });
+        check(`档位标签里没有漏出的 HTML 标记`, () => {
+          const dirty = cov.catRows.filter(r => /[<>]/.test(r.sector));
+          assert.equal(dirty.length, 0,
+            `${dirty.map(r => r.sector).join("；")}——SEC 原串没拆就印出来了`);
+        });
+        /* **覆盖率照数说。** 这条轴不是 100% 覆盖：新上市公司的档位要到
+           财年末才评。数字全对而只有解释是旧的，是最难发现的错。 */
+        const tiered = CATS.filter(r => r.sector !== "未分类"
+          && r.sector !== "未标注档位")
+          .reduce((a, r) => a + (r.companies || 0), 0);
+        check(`不把这条轴说成 100% 覆盖（实际 ${tiered}/${NODES.nodes.length}）`, () => {
+          assert.ok(cov.catLead.includes(String(tiered).replace(
+              /\B(?=(\d{3})+(?!\d))/g, ",")),
+            `导语没印真实覆盖 ${tiered} 家：${cov.catLead.slice(0, 160)}`);
+          assert.ok(!/分档\s*100%\s*覆盖/.test(cov.catLead),
+            `还在说「100% 覆盖」：${cov.catLead.slice(0, 160)}`);
+          assert.match(cov.catLead, /不是市值区间/,
+            `没说清它不是市值：${cov.catLead.slice(0, 160)}`);
+        });
+        const bigRow = CATS.find(r => r.sector === "大型加速申报人");
+        if (bigRow && cov.bigMetric) {
+          check(`摘要条的「大型申报人」等于这一栏的大型加速档`, () => {
+            assert.ok(cov.bigMetric.includes(String(bigRow.companies).replace(
+                /\B(?=(\d{3})+(?!\d))/g, ",")),
+              `摘要条印「${cov.bigMetric}」，这一栏是 ${bigRow.companies} 家`);
           });
         }
       }
@@ -896,6 +966,13 @@ async function main() {
               ((r.querySelector('.n') || {}).textContent || '').trim(), 10) || 0),
             edges: rows.map(r => ((r.querySelector('.ed') || {}).textContent || '')
               .replace(/[^0-9]/g, '')),
+            reach: rows.map(r => {
+              const c = r.querySelector('.rch');
+              // textContent 对 display:none 照样返回文本，所以同时量可见性：
+              // 没有布局盒 = 读者看不到 = 这一格等于没写。
+              return c ? { text: (c.textContent || '').trim(),
+                           seen: c.getClientRects().length > 0 } : null;
+            }),
             lead: (document.getElementById('expo-lead') || {}).textContent || '',
             foot: (document.getElementById('expo-foot') || {}).textContent || '',
             overflow: Math.max(0,
@@ -913,6 +990,45 @@ async function main() {
           assert.deepEqual(ex.edges, want,
             "条数列没印或对不上——只印暴露家数会把风险读反");
         });
+        /* 这一列是**这份数据的边界读数**：该国有多少家冶炼厂、其中几家点得开。
+           全库 1,767 家冶炼厂里只有 6 条能对上池内公司（去重 2 家），中国 588
+           家里 0 家、印尼 155 家里 0 家——冶炼厂本来就多是非上市的民营精炼厂。
+           不印这一格，读者会以为「暴露在印尼」还能顺着点下去；印了才看得出
+           这张图到冶炼厂这一层为止。所以它不能哪天悄悄消失，也不能被样式藏起来。 */
+        const REACH = ((NODES.smelterReach || {}).byCountry) || [];
+        if (REACH.length) {
+          const want = ex.names.map(c => REACH.find(r => r.country === c) || null);
+          check(`每行印出该国冶炼厂数与其中几家在池内`, () => {
+            want.forEach((w, i) => {
+              if (!w) return;                        // 数据里没这国就不该有这一格
+              const got = ex.reach[i];
+              assert.ok(got, `第 ${i + 1} 行「${ex.names[i]}」缺这一格`);
+              assert.ok(got.text.includes(String(w.smelters).replace(
+                  /\B(?=(\d{3})+(?!\d))/g, ",")),
+                `「${ex.names[i]}」没印 ${w.smelters} 家冶炼厂：${got.text}`);
+              assert.ok(w.inPool
+                  ? got.text.includes(String(w.inPool))
+                  : /均不在池内/.test(got.text),
+                `「${ex.names[i]}」在池内的是 ${w.inPool} 家，印的是：${got.text}`);
+            });
+          });
+          check(`这一列看得见，不是被样式藏起来的`, () => {
+            const have = ex.reach.filter(Boolean);
+            assert.ok(have.length, "一行都没渲染出这一格");
+            const blind = have.filter(r => !r.seen).length;
+            assert.equal(blind, 0,
+              `${blind}/${have.length} 格有文本却没有布局盒——藏起来等于没写`);
+          });
+          const zero = REACH.filter(r => !r.inPool).length;
+          check(`页面说清全库 ${NODES.smelterReach.smeltersTotal} 家冶炼厂里只有`
+            + ` ${NODES.smelterReach.distinctCompanies} 家是池内公司`, () => {
+            const txt = ex.lead + ex.foot;
+            assert.ok(/冶炼厂|不在池内|点得开|点开/.test(txt + ex.reach.map(
+                r => (r || {}).text || '').join('')),
+              "整屏没有一处说明冶炼厂这一层的可达性");
+            assert.ok(zero > 0, "口径变了：现在每个国别都有池内冶炼厂，断言该重写");
+          });
+        }
         check(`分母说清是有名单的 ${listedN2} 家，不是全部 ${NODES.nodes.length} 家`, () => {
           assert.ok(ex.lead.includes(String(listedN2)), `导语：${ex.lead}`);
           assert.match(ex.lead, /不是全部/);

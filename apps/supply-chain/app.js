@@ -76,25 +76,13 @@
 
      分档依据是**公众持股量**（流通股 × 股价），不是总市值，而且一年只在
      财年末重定一次。页面上一律说「申报人类别」，绝不说成市值区间。 */
-  function filerLabel(raw) {
-    var t = String(raw || "").toLowerCase();
-    if (!t) return "未标注";
-    if (t.indexOf("large accelerated") >= 0) return "大型加速申报人（公众持股 ≥ 7 亿美元）";
-    if (t.indexOf("accelerated") >= 0 && t.indexOf("non-accelerated") < 0
-        && t.indexOf("non accelerated") < 0) {
-      return "加速申报人（0.75 ~ 7 亿美元）";
-    }
-    if (t.indexOf("smaller reporting") >= 0 && t.indexOf("accelerated") >= 0) {
-      return "非加速 · 小型申报公司";
-    }
-    if (t.indexOf("smaller reporting") >= 0) return "小型申报公司";
-    if (t.indexOf("accelerated") >= 0) return "非加速申报人";
-    return raw;                                   // 认不出就照原文，不硬译
-  }
-
-  function isLargeFiler(raw) {
-    return String(raw || "").toLowerCase().indexOf("large accelerated") >= 0;
-  }
+  // 档位标签由构建脚本拆好后随数据下来（见 build_chain_nodes.split_filer_category）。
+  // 上一版在这里用 indexOf 解析 SEC 的 "A<br>B<br>C" 原串，认不出就 return raw——
+  // 于是 477 家「<br>Emerging growth company」把 HTML 标记原样印到了屏幕上，
+  // 而 14 个原串归到 7 个标签、面板里同一个档印两行。**解析属于数据层**：
+  // 放在渲染层，数据本身就永远是脏的，校验也钉不住。
+  var LARGE_FILER = "大型加速申报人";
+  function isLargeFiler(tier) { return tier === LARGE_FILER; }
 
   function renderStatus(d) {
     var cov = d.coverage || {};
@@ -130,7 +118,8 @@
       ["公司", (cov.nodesTotal != null ? fmt(cov.nodesTotal) : "—") + " 家"],
       // **5,897 家里有多少是真正的大公司。** 池子扩到全体 SEC 申报人之后，
       // 家数把苹果和一家 500 万美元的壳公司算得一样重，而站内报价只覆盖
-      // 8%——这一格用 SEC 自己的分档回答，它 100% 覆盖。
+      // 8%——这一格用 SEC 自己的分档回答，覆盖 5,315 家（90%）。
+      // 余下的是新上市公司，档位要到财年末才评，不是取数失败。
       ["大型申报人", (function () {
         var rows = cov.byFilerCategory || [];
         var big = rows.filter(function (r) { return isLargeFiler(r.sector); })
@@ -506,15 +495,25 @@
         var quoted = (d.nodes || []).filter(function (x) {
           return isNum(x.marketCap);
         }).length;
-        setText(lead4, "全池 " + fmt(cv.nodesTotal || 0) + " 家按规模：其中 "
+        // **覆盖率照数算，不照愿望写。** 这句话上一版写的是「SEC 的分档
+        // 100% 覆盖」——拆开 category 之后才看清，479 家新上市公司只有
+        // 「新兴成长」身份、加速档要到财年末才评，另有 103 家整栏没取到。
+        // 数字全对而只有解释是旧的，是最难发现的错，所以这里从数据现算。
+        var tiered = byCat.filter(function (r) {
+          return r.sector && r.sector !== "未分类" && r.sector !== "未标注档位";
+        }).reduce(function (a, r) { return a + (r.companies || 0); }, 0);
+        var totalN = cv.nodesTotal || 0;
+        setText(lead4, "全池 " + fmt(totalN) + " 家按规模：其中 "
           + fmt(big) + " 家是大型加速申报人（SEC 按公众持股量 ≥ 7 亿美元划的档）。"
           + "用这条轴而不是市值，是因为站内行情只覆盖标普成分股 " + fmt(quoted)
-          + " 家（" + Math.round(quoted / (cv.nodesTotal || 1) * 100) + "%），"
-          + "而 SEC 的分档 100% 覆盖、三个池同一把尺子。"
-          + "注意它按公众持股量分档、一年只在财年末重定一次，不是市值区间。");
-        drawCovRows(rows4, byCat.map(function (r) {
-          return Object.assign({}, r, { sector: filerLabel(r.sector) });
-        }));
+          + " 家（" + Math.round(quoted / (totalN || 1) * 100) + "%），"
+          + "而 SEC 的分档覆盖 " + fmt(tiered) + " 家（"
+          + Math.round(tiered / (totalN || 1) * 100) + "%）、三个池同一把尺子。"
+          + "余下 " + fmt(totalN - tiered) + " 家分两种：新上市公司的档位要到"
+          + "财年末才评（记「未标注档位」），以及本轮没取到这一栏的（记「未分类」）。"
+          + "注意它按公众持股量分档、一年只重定一次，不是市值区间；"
+          + "「小型申报公司」「新兴成长公司」是另外两种身份，不占这条轴。");
+        drawCovRows(rows4, byCat);
       }
     }
 
@@ -1625,6 +1624,16 @@
       : "当前口径：全池，未筛选产业链。";
   }
 
+  // 该国的冶炼厂在不在池内。见 build_chain_nodes.smelter_reach() 的注释：
+  // 这是口径说明，不是缺陷——冶炼厂本来就不该是上市公司。
+  function reachOf(d, country) {
+    var rows = ((d.smelterReach || {}).byCountry) || [];
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].country === country) return rows[i];
+    }
+    return null;
+  }
+
   function renderExposure(d) {
     var sec = $("expsec");
     if (!sec) return;
@@ -1662,6 +1671,19 @@
       line.appendChild(n);
       var ed = el("span", "ed", fmt(r.edges) + " 条");
       line.appendChild(ed);
+      // **这张图在哪儿断掉。** 该国有多少家冶炼厂、其中几家是池内公司
+      // （也就是几家点得进去）。中国 588 家里 0 家、印尼 155 家里 0 家——
+      // 它们是民营精炼厂与非铁金属集团，本来就不上市。
+      // 不写这一格，读者会以为「暴露在印尼」还能顺着点下去；写了才看得出
+      // 这份数据到冶炼厂这一层为止。
+      var rc = reachOf(d, r.country);
+      if (rc) {
+        var rr = el("span", "rch");
+        rr.appendChild(document.createTextNode(fmt(rc.smelters) + " 厂"));
+        rr.appendChild(el("s", null, rc.inPool ? " · " + rc.inPool + " 家可点开"
+                                               : " · 均不在池内"));
+        line.appendChild(rr);
+      }
       line.title = (r.country || "未写明") + "：" + r.filerCount + " 家有名单的公司"
         + "（共 " + listed + " 家）的申报名单里出现过该国的冶炼厂，占 "
         + Math.round((r.filerShare || 0) * 100) + "%；"

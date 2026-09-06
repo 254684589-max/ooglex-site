@@ -39,6 +39,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import re
 import os
 from datetime import datetime, timezone
 
@@ -266,6 +267,75 @@ def load_form_sd_coverage() -> dict | None:
 # 流向图上直接列出的国别数。其余并入「其他」——不是省略，是把长尾收拢，
 # 合计仍等于总边数。列太多的话每条带子细到看不见，反而什么都读不出来。
 FLOW_TOP_COUNTRIES = 8
+
+
+
+# 公司名归一：去掉法律后缀再比。「Rio Tinto Group」与「Rio Tinto plc」是同一家，
+# 但「Advanced Chemical Company」与「AMD」不是——所以只认**整串相等**，
+# 不做首词或前两词的模糊匹配。宽松匹配试过：1,767 家里「命中」268 家（15%），
+# 逐条看全是碰撞（American Iron and Metal → AXP）。**一条假的连线比没有连线糟。**
+_CORP_SUFFIX = re.compile(
+    r'\b(inc|corp|corporation|co|ltd|limited|llc|plc|sa|nv|ag|kk|gmbh|'
+    r'holdings?|group|company|the)\b')
+
+
+def _match_key(name) -> str:
+    text = re.sub(r'[^a-z0-9 ]', ' ', str(name or '').lower())
+    text = _CORP_SUFFIX.sub(' ', text)
+    return ' '.join(text.split())
+
+
+def smelter_reach(registry: dict, nodes: list[dict]) -> dict:
+    """**这张图在哪儿断掉。**
+
+    板块的一端是 5,897 家美股上市公司，另一端是申报原文里的 1,767 家冶炼厂。
+    这个函数量的是两端重叠多少——也就是「读者点得进去的那一端有多大」。
+
+    实测结果是 0.3%：严格匹配只对上 6 条、去重后 2 家实体（Materion、力拓）。
+    按国别看更直白：印尼 155 家冶炼厂 vs 池内 3 家印尼公司；俄罗斯 49 vs 0。
+    那些冶炼厂是中国、印尼的民营精炼厂，日本的非铁金属集团——**没有一家在
+    美股上市**，进不了以 SEC 申报为基础的池子。
+
+    ## 为什么要把这个数画出来
+
+    页面此前只在免责声明里写「不是完整供应链」。那句话是对的，但读者看不出
+    **边界具体在哪**。把「该国 155 家冶炼厂，其中 0 家点得进去」印在国别暴露
+    那一行旁边，读者自己就能看懂这张图为什么只能画到这一层——比一句概括
+    有力得多。
+
+    这不是缺陷报告，是**口径说明**：冶炼厂本来就不该是上市公司。
+    """
+    pool_keys: dict[str, str] = {}
+    pool_country: dict[str, int] = {}
+    for node in nodes:
+        key = _match_key(node.get("nameEn"))
+        if key and len(key) >= 4:
+            pool_keys.setdefault(key, node["symbol"])
+        c = node.get("geoCountry") or node.get("country")
+        if c:
+            pool_country[c] = pool_country.get(c, 0) + 1
+
+    by_country: dict[str, dict] = {}
+    matched: set = set()
+    for row in (registry or {}).values():
+        country = row.get("country") or "未写明"
+        slot = by_country.setdefault(country, {"country": country, "smelters": 0,
+                                               "inPool": 0, "poolCompanies": 0})
+        slot["smelters"] += 1
+        key = _match_key(row.get("name"))
+        if key and len(key) >= 4 and key in pool_keys:
+            slot["inPool"] += 1
+            matched.add(pool_keys[key])
+    for country, slot in by_country.items():
+        slot["poolCompanies"] = pool_country.get(country, 0)
+    rows = sorted(by_country.values(), key=lambda r: (-r["smelters"], r["country"]))
+    return {
+        "smeltersTotal": len(registry or {}),
+        "smeltersInPool": sum(r["inPool"] for r in rows),
+        "distinctCompanies": len(matched),
+        "companies": sorted(matched),
+        "byCountry": rows,
+    }
 
 
 def country_exposure(bundles: dict[str, dict], listed: int) -> list[dict]:
@@ -589,8 +659,67 @@ def build_node(member: dict, identity: dict, sic_module, chain_module=None) -> d
         node["stageNote"] = mapping["reason"]
 
     apply_identity(node, identity.get(node["symbol"]) or {}, sic_module, chain_module)
-    node["filerCategory"] = (identity.get(node["symbol"]) or {}).get("filerCategory")
+    _cat = split_filer_category(
+        (identity.get(node["symbol"]) or {}).get("filerCategory"))
+    node["filerCategory"] = _cat["raw"]
+    node["filerTier"] = _cat["tier"]
+    node["smallerReporting"] = _cat["smallerReporting"]
+    node["emergingGrowth"] = _cat["emergingGrowth"]
     return node
+
+
+# SEC `category` 是**几个身份拼在一起的字符串**，用 <br> 连接，例如
+# "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company"。
+# 直接拿它当一条轴，会同时犯三个错：
+#
+#   1. **HTML 标记漏到屏幕上**——477 家的 category 是 "<br>Emerging growth
+#      company"（前段为空），页面认不出就照原文印，读者看到的是尖括号；
+#   2. **同一档拆成好几行**——14 个原始串归到 7 个档，覆盖率面板里
+#      「非加速 · 小型申报公司」会印两行（1,175 家和 362 家），读者要么
+#      看成 bug，要么把它当成两个不同的档；
+#   3. **两把尺混在一根轴上**——「小型申报公司」是披露规模档，
+#      「新兴成长公司」是 JOBS 法案的**上市年限**身份（上市 ≤5 年），
+#      两者都不是公众持股量档位。把它们与「大型加速申报人」并排，
+#      这根轴就不再是规模轴了。
+#
+# 所以在这里拆开：**档位只取加速申报人那一级**（大型加速 / 加速 / 非加速），
+# 那才是按公众持股量分的；另外两个身份各自成旗标，不占轴。477 家只有
+# 新兴成长身份、没有加速档的，档位就是**真的没有**——它们刚上市，
+# 档位要到财年末才定，写「未标注」是照实说，不是取数失败。
+_FILER_TIERS = (
+    ("large accelerated", "大型加速申报人"),   # 公众持股 ≥ 7 亿美元
+    ("non-accelerated", "非加速申报人"),       # < 0.75 亿，或不满足时间条件
+    ("accelerated", "加速申报人"),             # 0.75 ~ 7 亿
+)
+
+
+def split_filer_category(raw) -> dict:
+    """把 SEC 的 category 串拆成｛档位, 小型申报, 新兴成长｝三件事。
+
+    顺序要紧："non-accelerated" 里含子串 "accelerated"，先判前者才不会
+    把非加速读成加速。上一版在页面上用 indexOf 判，正是靠一条额外的
+    「且不含 non-accelerated」补丁绕开这件事——补丁写在渲染层，
+    数据层就永远是脏的。
+    """
+    parts = [p.strip() for p in str(raw or "").split("<br>") if p.strip()]
+    joined = " ".join(parts).lower()
+    tier = None
+    for needle, label in _FILER_TIERS:
+        if needle in joined:
+            tier = label
+            break
+    # 「SEC 给了 category 但里面没有加速档」与「SEC 根本没给 category」
+    # 是两件事，不能都塞进「未分类」：前者是 477 家新上市公司**档位还没定**
+    # （加速档在财年末才评），后者才是这一栏没取到数。分开写，读者才看得出
+    # 哪一格是制度使然、哪一格是缺口。
+    if tier is None and parts:
+        tier = "未标注档位"
+    return {
+        "tier": tier,
+        "smallerReporting": "smaller reporting" in joined,
+        "emergingGrowth": "emerging growth" in joined,
+        "raw": " · ".join(parts) or None,
+    }
 
 
 def apply_identity(node: dict, record: dict, sic_module, chain_module=None) -> dict:
@@ -696,6 +825,7 @@ def build_foreign_node(record: dict, sic_module, chain_module=None,
     # 离岸判定现算，不读 record 里存着的标记——见 load_region() 的注释。
     offshore = bool(region_module.is_offshore(record.get("country"))
                     if region_module else record.get("offshoreIncorporation"))
+    cat = split_filer_category(record.get("filerCategory"))
     node = {
         "id": symbol,
         "symbol": symbol,
@@ -738,7 +868,10 @@ def build_foreign_node(record: dict, sic_module, chain_module=None,
         # SEC 按公众持股量分的申报人档。**这是全池唯一 100% 覆盖的规模轴**
         # ——站内报价只有标普那 495 家（8%）。它不是市值：按公众持股量而非
         # 总市值，一年只在财年末重定一次，页面必须照实说是「申报人类别」。
-        "filerCategory": record.get("filerCategory"),
+        "filerCategory": cat["raw"],
+        "filerTier": cat["tier"],
+        "smallerReporting": cat["smallerReporting"],
+        "emergingGrowth": cat["emergingGrowth"],
         "offshoreIncorporation": offshore,
         "operatingCountry": country_zh(record.get("operatingCountry")),
         "operatingCountryEn": record.get("operatingCountry"),
@@ -981,7 +1114,7 @@ def build() -> None:
     # 页面靠它回答「这 5,897 家里有多少是真正的大公司」——市值答不了，
     # 它只覆盖 8%。
     by_filer_category = sector_coverage(nodes, filing_status,
-                                        key="filerCategory", label="sector")
+                                        key="filerTier", label="sector")
     # 按**经营地**汇总，不按注册地。见节点构建处那段：注册地这一栏的第一名
     # 是开曼群岛 340 家，它回答不了「这条产业链在哪」。
     by_country = sector_coverage(foreign_nodes_all, filing_status,
@@ -1020,6 +1153,9 @@ def build() -> None:
     # 跟着筛，否则筛选语境下印的是全局数。
     by_chain_risk = chain_risk(nodes, edge_files, registry if peers_module else {})
     exposure = country_exposure(edge_files, len(edge_files))
+    # 这张图在哪儿断掉：另一端的 1,767 家冶炼厂里有多少是池内公司。
+    # 见 smelter_reach() 的注释——这是口径说明，不是缺陷报告。
+    reach = smelter_reach(registry if peers_module else {}, nodes)
 
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     by_stage: dict[str, int] = {}
@@ -1107,6 +1243,9 @@ def build() -> None:
         # 按国别的暴露面。edges 与 filerCount 是两个不同的读数，页面两个都印
         # ——只印一个会把风险读反（见 country_exposure 的说明）。
         "countryExposure": exposure,
+        # 链条另一端的可达性。**这是这份数据最重要的一条边界读数**：
+        # 页面靠它说清「点得进去的那一端有多大」，不必让读者去猜。
+        "smelterReach": reach,
         "nodes": nodes,
         # 每家一个文件，公司页按需拉。索引里带出处链接，不必先下文件才知道有没有边。
         "edgeIndex": edge_index,
