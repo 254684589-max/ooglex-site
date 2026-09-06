@@ -864,6 +864,7 @@ def build() -> None:
     domestic_pool = load_domestic_pool()
     domestic_nodes = []
     dropped_domestic = []
+    dropped_no_stage: list[tuple] = []
     for symbol in sorted(domestic_pool):
         if symbol in taken:
             dropped_domestic.append(symbol)
@@ -877,10 +878,30 @@ def build() -> None:
         node["pool"] = "sec-domestic-filer"
         node["stageNote"] = ("报 10-K 的美国本土发行人（非标普成分股），"
                              "站内无板块分类；环节由 SEC 行业码判定")
+        # 判不出环节的不收。取数脚本已经挡掉「没有 SIC」的，但**有 SIC 却
+        # 落在两张表的空隙里**是另一回事——4,884 家美国申报人用到的行业码
+        # 比标普 500 那 495 家宽得多，表里必然有洞。
+        #
+        # 这种公司进来会在页面上**彻底消失**：环节卡按 stage 分组，没有 stage
+        # 就哪一格都不进，而覆盖率那三栏按国别/行业大类分组、照样把它算进去，
+        # 于是「三栏合计」与「屏幕上数得出的家数」差一家。run 30 就是被
+        # 浏览器契约的「取消筛选后回到全池」这条抓住的（5,897 ≠ 5,898）。
+        #
+        # 与「没有 SIC 不收」同一条理由：这不是数据缺失，是这家接不进模型。
+        # 落下的码打出来——下次要补表，得知道补哪几个。
+        if not node.get("stage"):
+            dropped_no_stage.append((node.get("symbol"), node.get("sic")))
+            taken.discard(node["symbol"])
+            continue
         domestic_nodes.append(node)
     if dropped_domestic:
         print(f"[!!] 本土发行人有 {len(dropped_domestic)} 个代码与前两池相同，"
               f"已跳过（不覆盖）：{'、'.join(dropped_domestic[:10])}")
+    if dropped_no_stage:
+        codes = sorted({str(sic) for _, sic in dropped_no_stage if sic})
+        print(f"[!!] 本土发行人有 {len(dropped_no_stage)} 家判不出环节，未收录"
+              f"（SIC 表的空隙，要补的码：{'、'.join(codes[:20])}"
+              + ("…" if len(codes) > 20 else "") + "）")
     nodes.extend(domestic_nodes)
 
     # 关系边：抽取器写在 edges/ 下，本脚本只读、只索引、只校验，不自己造边。
