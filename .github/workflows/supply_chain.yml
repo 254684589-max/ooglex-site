@@ -42,11 +42,12 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    # 60 分钟是按「季外、池子 642 家」定的，那时抽取器根本不发请求。
-    # 扩到 1,689 家之后，一次 --force 全量扫描要逐家取 submissions，
-    # 加上外国发行人取数本身的 1,194 家，实测量级已经顶到原上限。
-    # 放宽到 150 分钟：作业只占用它真正用掉的时间，留出余量比卡在悬崖边好。
-    timeout-minutes: 150
+    # 池子从 642 → 1,688 → 约 6,000 家，每次都要重估这个数。
+    # 本轮四步联网：标普 495 家约 3 分钟、外国发行人 1,193 家约 7 分钟、
+    # 本土 10-K 约 4,300 家约 25 分钟、抽取器 --force 全量扫约 6,000 家约 55 分钟。
+    # 合计约 90 分钟。放宽到 240：作业只占用它真正用掉的时间，
+    # 首次跑大池宁可留足余量，也不要卡在悬崖边上白丢一轮。
+    timeout-minutes: 240
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
@@ -87,6 +88,17 @@ jobs:
         env:
           SEC_CONTACT: ${{ vars.SEC_CONTACT }}
         run: python scripts/supply-chain/fetch_foreign_identity.py
+
+      # 报 10-K 的美国本土发行人（标普之外）。探针实测 SEC 这条路的上限是
+      # 6,076 家，此前只收 1,688 家——差的就是这一批。
+      # **必须排在外国发行人之后、抽取器之前**：它读 foreign.json 来避开撞码，
+      # 而抽取器要扫的名单由这两步共同决定。
+      # 失败不中断：构建脚本读不到这份缓存时第三池为空，前两池照常出。
+      - name: Fetch SEC domestic 10-K filers
+        continue-on-error: true
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: python scripts/supply-chain/fetch_domestic_identity.py
 
       # Form SD 冲突矿产申报 → 冶炼厂关系边。这是本板块唯一有出处的关系数据。
       # 语义是「该冶炼厂出现在申报人的供应链中」，不是直接供货关系。
@@ -136,7 +148,8 @@ jobs:
           git add apps/supply-chain/nodes.json apps/supply-chain/health.json \
                   apps/supply-chain/identity.json apps/supply-chain/smelters.json \
                   apps/supply-chain/names-zh.json apps/supply-chain/edges \
-                  apps/supply-chain/peers.json apps/supply-chain/foreign.json
+                  apps/supply-chain/peers.json apps/supply-chain/foreign.json \
+                  apps/supply-chain/domestic.json
           if git diff --cached --quiet; then
             echo "生成结果与仓库一致，跳过提交和推送"
             exit 0

@@ -415,6 +415,28 @@
       }
     }
 
+    // ── 第三个池：本土 10-K 申报人按 SIC 大类 ────────────────────────
+    // 板块与国别两样都没有：站内公司榜只收标普成分股，而它们几乎全是美国
+    // 公司。不单列就会掉进上面那栏的「未分类」，成为一个几千家的黑箱。
+    var bySic = (d.coverage && d.coverage.bySicMajor) || [];
+    var lead3 = $("cov-sic-lead");
+    var rows3 = $("cov-sic-rows");
+    if (rows3) rows3.textContent = "";
+    if (lead3) {
+      if (!bySic.length) {
+        lead3.hidden = true;
+      } else {
+        lead3.hidden = false;
+        var n3 = bySic.reduce(function (a, r) { return a + (r.companies || 0); }, 0);
+        setText(lead3, "另有报 10-K 的美国本土发行人 " + n3
+          + " 家（标普成分股之外的那些）。站内公司榜只收标普成分股，"
+          + "所以这一池没有市值与板块分类——是口径如此，不是取数失败；"
+          + "它们又几乎全在美国，按国别拆只会得到一行。"
+          + "下面按 SEC 行业码的大类拆——注意这一栏的口径是行业大类，不是 GICS 板块。");
+        drawCovRows(rows3, foldTail(bySic, COUNTRY_ROWS));
+      }
+    }
+
     setText($("cov-foot"), anyStatus
       ? "「无申报」不等于「这家公司没有供应链」，只表示它没有提交 Form SD——多数是因为规则对它不适用。"
         + "「有申报未列名单」是规则允许的：Form SD 强制申报、不强制列出冶炼厂名单。"

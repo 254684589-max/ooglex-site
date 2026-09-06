@@ -253,12 +253,22 @@ def check_coverage(payload: dict, counts: dict, edge_count: int, errors: list[st
         if not isinstance(by_sector, list):
             fail(errors, "coverage.bySector 必须是数组")
             return
-        # bySector 只统计标普那一池。外国发行人没有站内板块分类，按国别单列在
-        # byCountry 里——把它们算进「未分类」等于一个 147 家的黑箱，而且会把
-        # 「金融 0/70」这类制度上限的解释稀释掉。两栏加起来才是全池。
+        # **三个池，三栏，各按各自唯一可用的维度拆。**
+        #
+        #   bySector    仅 sp500       按 GICS 板块（只有这一池有）
+        #   byCountry   外国发行人      按经营地
+        #   bySicMajor  本土 10-K 申报人 按 SIC 大类（板块与国别两样都没有）
+        #
+        # 把没有板块的池算进「未分类」，等于造一个几千家的黑箱，还会把
+        # 「金融 0/70」这类制度上限的解释稀释掉。**三栏加起来才是全池。**
+        #
+        # 这里用白名单（== sp500）而不是黑名单（!= 外国发行人）：本轮加第三池时
+        # 黑名单悄悄把 4,210 家吞进了「未分类」，跑完 41 分钟才被下面那条
+        # 合计校验拦下。**判据要说「收谁」，不要说「除了谁」**——
+        # 加一个池，黑名单就错一次，白名单只会漏报、不会误收。
         actual: dict[str, dict[str, int]] = {}
         for node in nodes:
-            if node.get("pool") == "sec-foreign-issuer":
+            if node.get("pool") != "sp500":
                 continue
             key = node.get("sector") or "未分类"
             row = actual.setdefault(key, {"companies": 0, "withEdges": 0})
@@ -317,12 +327,36 @@ def check_coverage(payload: dict, counts: dict, edge_count: int, errors: list[st
         for name in sorted(missing):
             fail(errors, f"coverage.byCountry 漏了国别「{name}」")
 
-        # 两栏之和必须等于全池。差一家就说明有公司两栏都没进——页面上它就消失了。
-        both = (sum(r.get("companies") or 0 for r in (by_sector or []))
-                + sum(r.get("companies") or 0 for r in by_country))
-        if by_sector is not None and both != len(nodes):
-            fail(errors, f"按板块 + 按国别 合计 {both} 家，全池 {len(nodes)} 家——"
-                         "有公司两栏都没进，页面上会直接消失")
+    # ── 第三栏：本土 10-K 申报人按 SIC 大类 ──────────────────────────────
+    by_sic = coverage.get("bySicMajor")
+    if by_sic is not None:
+        if not isinstance(by_sic, list):
+            fail(errors, "coverage.bySicMajor 必须是数组")
+            return
+        truth_sic: dict[str, int] = {}
+        for node in nodes:
+            if node.get("pool") != "sec-domestic-filer":
+                continue
+            key = node.get("sicMajorLabel") or "未分类"
+            truth_sic[key] = truth_sic.get(key, 0) + 1
+        for row in by_sic:
+            name = row.get("sector")          # 字段名复用，语义是行业大类
+            if name not in truth_sic:
+                fail(errors, f"coverage.bySicMajor 多报了行业大类「{name}」，节点表里没有")
+            elif row.get("companies") != truth_sic[name]:
+                fail(errors, f"coverage.bySicMajor[{name}] 报告 {row.get('companies')}，"
+                             f"实际 {truth_sic[name]}")
+        for name in sorted(set(truth_sic) - {r.get("sector") for r in by_sic}):
+            fail(errors, f"coverage.bySicMajor 漏了行业大类「{name}」")
+
+    # 三栏之和必须等于全池。差一家就说明有公司三栏都没进——页面上它就消失了。
+    # **每加一个池就要在这里加一项**，否则这条校验会把新池报成「消失的公司」。
+    if by_sector is not None:
+        shown = sum(sum(r.get("companies") or 0 for r in (col or []))
+                    for col in (by_sector, by_country, by_sic))
+        if shown != len(nodes):
+            fail(errors, f"按板块 + 按经营地 + 按行业大类 合计 {shown} 家，"
+                         f"全池 {len(nodes)} 家——有公司哪一栏都没进，页面上会直接消失")
 
 
 def check_smelters(errors: list[str], edge_count: int) -> dict:
@@ -583,13 +617,22 @@ PEERS_PATH = "apps/supply-chain/peers.json"
 _OVERSTATED = ("供应商", "合作", "伙伴", "客户", "供货")
 
 
-def check_pools(payload: dict, errors: list[str]) -> None:
-    """两个公司池的契约。守的是「哪些数适用于哪一批公司」不被混起来。
+# 允许的公司池。**加新池必须同时改这里**——2026-09-06 扩到第三池时忘了，
+# 数据全跑完（取数 27 分钟、抽取器 16 分钟）才被这道校验拦下，白跑一轮。
+# 拦得对：契约不认识的数据本来就不该发布。教训写在这儿，下次加池先看这行。
+POOLS = ("sp500", "sec-foreign-issuer", "sec-domestic-filer")
 
-    标普那 495 家有站内报价，外国私人发行人那批没有。把两批合成一个数说
-    「642 家」，读者会以为它们都有市值与当日涨跌——而市值合计与环节涨跌
-    的分母里根本没有后者。所以两个池必须分开计数，且**外国发行人的
-    marketCap 必须是 null，不能是 0**：0 会被市值加权当成真值算进去。
+# 没有站内报价的池。站内行情管道只覆盖标普成分股，其余两池一律 marketCap=None。
+POOLS_WITHOUT_QUOTE = ("sec-foreign-issuer", "sec-domestic-filer")
+
+
+def check_pools(payload: dict, errors: list[str]) -> None:
+    """三个公司池的契约。守的是「哪些数适用于哪一批公司」不被混起来。
+
+    标普那 495 家有站内报价，外国私人发行人与本土 10-K 申报人都没有。
+    把三批合成一个数，读者会以为它们都有市值与当日涨跌——而市值合计与
+    环节涨跌的分母里根本没有后两者。所以三个池必须分开计数，且
+    **无报价池的 marketCap 必须是 null，不能是 0**：0 会被市值加权当成真值。
     """
     nodes = payload.get("nodes") or []
     if not nodes:
@@ -598,22 +641,23 @@ def check_pools(payload: dict, errors: list[str]) -> None:
     pools: dict[str, int] = {}
     for node in nodes:
         pool = node.get("pool")
-        if pool not in ("sp500", "sec-foreign-issuer"):
+        if pool not in POOLS:
             fail(errors, f"{node.get('symbol')} 的 pool 是 {pool!r}，"
-                         "只能是 sp500 或 sec-foreign-issuer")
+                         f"只能是 {'、'.join(POOLS)}")
             continue
         pools[pool] = pools.get(pool, 0) + 1
-        if pool == "sec-foreign-issuer":
+        if pool in POOLS_WITHOUT_QUOTE:
             if node.get("marketCap") is not None:
-                fail(errors, f"{node.get('symbol')} 是外国发行人却带了市值 "
+                fail(errors, f"{node.get('symbol')}（{pool}）带了市值 "
                              f"{node.get('marketCap')!r}——站内没有它的报价，"
                              "写进去就是造数")
             if not node.get("cik"):
-                fail(errors, f"外国发行人 {node.get('symbol')} 没有 CIK，"
+                fail(errors, f"{node.get('symbol')}（{pool}）没有 CIK，"
                              "它是这批公司唯一的实体锚点")
 
     for key, pool in (("poolSp500", "sp500"),
-                      ("poolForeignIssuer", "sec-foreign-issuer")):
+                      ("poolForeignIssuer", "sec-foreign-issuer"),
+                      ("poolDomesticFiler", "sec-domestic-filer")):
         want = coverage.get(key)
         if want is not None and want != pools.get(pool, 0):
             fail(errors, f"coverage.{key} {want} 与实际 {pools.get(pool, 0)} 家不符")
@@ -636,6 +680,8 @@ def check_pools(payload: dict, errors: list[str]) -> None:
         named = sum(1 for n in nodes
                     if n.get("pool") == "sec-foreign-issuer"
                     and n.get("name") and n.get("name") != n.get("nameEn"))
+        # 这一项只统计外国发行人池——本土池与标普池的中文名各有来源，
+        # 混进来会让「对照表覆盖了多少」这个数说不清是谁的覆盖。
         if name_zh.get("named") not in (None, named):
             fail(errors, f"coverage.foreignNameZh.named {name_zh.get('named')} "
                          f"与实际有中文名的 {named} 家不符")

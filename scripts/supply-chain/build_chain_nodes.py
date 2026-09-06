@@ -62,6 +62,7 @@ PEERS_PATH = os.path.join(OUT_DIR, "peers.json")
 # 第二个公司池：在美上市的外国私人发行人里同时报 Form SD 的那一批。
 # 由 fetch_foreign_identity.py 生成；缺失时只出标普那 495 家，不中断构建。
 FOREIGN_PATH = os.path.join(OUT_DIR, "foreign.json")
+DOMESTIC_PATH = os.path.join(OUT_DIR, "domestic.json")
 
 # ── 价值链阶段定义 ──────────────────────────────────────────────────────────
 # 八段实物链 + 四层使能层。chain=True 的在实物流转链条上、按 order 首尾相接；
@@ -185,6 +186,15 @@ def load_foreign_pool() -> dict:
     """读外国私人发行人池。没有这个文件就是「还没取过」，不是错误。"""
     try:
         with open(FOREIGN_PATH, encoding="utf-8") as handle:
+            return (json.load(handle) or {}).get("companies") or {}
+    except (OSError, ValueError):
+        return {}
+
+
+def load_domestic_pool() -> dict:
+    """读报 10-K 的美国本土发行人池（标普之外的那批）。缺文件不是错误。"""
+    try:
+        with open(DOMESTIC_PATH, encoding="utf-8") as handle:
             return (json.load(handle) or {}).get("companies") or {}
     except (OSError, ValueError):
         return {}
@@ -541,7 +551,12 @@ def build_node(member: dict, identity: dict, sic_module, chain_module=None) -> d
     node = {
         "id": member.get("symbol"),
         "symbol": member.get("symbol"),
-        "name": member.get("name"),
+        # 站内公司榜给的名字优先（它对标普成分股本来就多半是中文）；
+        # 榜上只有英文的，再查中文名对照表。**两个来源要有明确先后**——
+        # 表接上来之前，Uber、Kenvue 这两条一直是孤儿：键没错，只是标普池
+        # 根本不查这张表，而孤儿检查如实报了出来。
+        "name": (member.get("name") if member.get("name") != member.get("nameEn")
+                 else (names_zh.name_for(member.get("nameEn")) or member.get("name"))),
         "nameEn": member.get("nameEn"),
         "sector": member.get("sector"),
         "sectorEn": member.get("sectorEn"),
@@ -838,6 +853,57 @@ def build() -> None:
               f"已跳过（不覆盖）：{'、'.join(dropped_collision[:10])}")
     nodes.extend(foreign_nodes)
 
+    # ── 第三个池：报 10-K 的美国本土发行人（标普之外）────────────────────
+    # 探针实测 SEC 这条路的上限是 6,076 家，此前只收了 1,688 家——差的就是
+    # 这一批。**它比按标普成分收许可更干净**：指数成分名单是指数商的专有
+    # 数据，10-K 全量是政府公开记录。
+    #
+    # 与外国发行人那池同一套节点构建：没有站内报价（marketCap 恒为 None，
+    # 不是 0）、没有站内板块分类，环节与产业链全由 SIC 判。
+    # 撞码同样只跳不覆盖——这一池排在最后，撞了就是它让路。
+    domestic_pool = load_domestic_pool()
+    domestic_nodes = []
+    dropped_domestic = []
+    dropped_no_stage: list[tuple] = []
+    for symbol in sorted(domestic_pool):
+        if symbol in taken:
+            dropped_domestic.append(symbol)
+            continue
+        taken.add(symbol)
+        node = build_foreign_node(domestic_pool[symbol], sic_module, chain_module,
+                                  region_module)
+        # 池标识要分开：页面按池说明「为什么没有市值」，两池的理由不同——
+        # 外国发行人是站内行情只覆盖标普，本土非成分股是同一个原因，
+        # 但读者要能看出这家到底属于哪一批，不能混成一个「非标普」黑箱。
+        node["pool"] = "sec-domestic-filer"
+        node["stageNote"] = ("报 10-K 的美国本土发行人（非标普成分股），"
+                             "站内无板块分类；环节由 SEC 行业码判定")
+        # 判不出环节的不收。取数脚本已经挡掉「没有 SIC」的，但**有 SIC 却
+        # 落在两张表的空隙里**是另一回事——4,884 家美国申报人用到的行业码
+        # 比标普 500 那 495 家宽得多，表里必然有洞。
+        #
+        # 这种公司进来会在页面上**彻底消失**：环节卡按 stage 分组，没有 stage
+        # 就哪一格都不进，而覆盖率那三栏按国别/行业大类分组、照样把它算进去，
+        # 于是「三栏合计」与「屏幕上数得出的家数」差一家。run 30 就是被
+        # 浏览器契约的「取消筛选后回到全池」这条抓住的（5,897 ≠ 5,898）。
+        #
+        # 与「没有 SIC 不收」同一条理由：这不是数据缺失，是这家接不进模型。
+        # 落下的码打出来——下次要补表，得知道补哪几个。
+        if not node.get("stage"):
+            dropped_no_stage.append((node.get("symbol"), node.get("sic")))
+            taken.discard(node["symbol"])
+            continue
+        domestic_nodes.append(node)
+    if dropped_domestic:
+        print(f"[!!] 本土发行人有 {len(dropped_domestic)} 个代码与前两池相同，"
+              f"已跳过（不覆盖）：{'、'.join(dropped_domestic[:10])}")
+    if dropped_no_stage:
+        codes = sorted({str(sic) for _, sic in dropped_no_stage if sic})
+        print(f"[!!] 本土发行人有 {len(dropped_no_stage)} 家判不出环节，未收录"
+              f"（SIC 表的空隙，要补的码：{'、'.join(codes[:20])}"
+              + ("…" if len(codes) > 20 else "") + "）")
+    nodes.extend(domestic_nodes)
+
     # 关系边：抽取器写在 edges/ 下，本脚本只读、只索引、只校验，不自己造边。
     edge_files = load_edge_files()
     all_edges = [e for payload in edge_files.values() for e in (payload.get("edges") or [])]
@@ -890,9 +956,22 @@ def build() -> None:
     # 两个池分开统计。标普那池按 GICS 板块（读者熟悉的口径，也是缺口成因最能
     # 讲清楚的维度：金融 0/70 是制度上限，科技 34/84 是还没抓到）；外国发行人
     # 那池没有站内板块分类，按国别拆——全塞进「未分类」就是一个 147 家的黑箱。
-    by_sector = sector_coverage([n for n in nodes if n.get("pool") != "sec-foreign-issuer"],
-                                filing_status)
+    # 三个池各按各自最能说清缺口的维度拆。
+    #
+    # 标普池按 GICS 板块（读者熟悉，也最能讲清成因：金融 0/70 是制度上限）。
+    # 外国发行人按经营地。**本土 10-K 申报人这一池两样都没有**——站内公司榜
+    # 只收标普成分股，所以它们没有板块；它们又几乎全是美国公司，按国别拆
+    # 只会得到一行「美国 4,180 家」。
+    #
+    # 如果不给它单独一栏，这 4,180 家会掉进标普那栏的「未分类」——
+    # 一个比此前担心过的「147 家黑箱」大 28 倍的黑箱。按 SIC 大类拆：
+    # 那是它们唯一有的、且本板块全程都在用的分类轴。
+    by_sector = sector_coverage(
+        [n for n in nodes if n.get("pool") == "sp500"], filing_status)
     foreign_nodes_all = [n for n in nodes if n.get("pool") == "sec-foreign-issuer"]
+    domestic_nodes_all = [n for n in nodes if n.get("pool") == "sec-domestic-filer"]
+    by_sic_major = sector_coverage(domestic_nodes_all, filing_status,
+                                   key="sicMajorLabel", label="sector")
     # 按**经营地**汇总，不按注册地。见节点构建处那段：注册地这一栏的第一名
     # 是开曼群岛 340 家，它回答不了「这条产业链在哪」。
     by_country = sector_coverage(foreign_nodes_all, filing_status,
@@ -907,7 +986,10 @@ def build() -> None:
     # 中文名，显示英文原文是正确结果。报这个数是为了让「对照表写错了」露头——
     # 表里有一条却在数据里找不到对应公司，就说明那条键抄错了。
     zh_named = sum(1 for n in foreign_nodes_all if n.get("name") != n.get("nameEn"))
-    live_names = {n.get("nameEn") for n in foreign_nodes_all}
+    # 孤儿检查要扫**所有**用这张表的池子。只扫外国发行人的话，接到标普池
+    # 上的条目会被误报成孤儿（本轮 Uber、Kenvue 就是这么冒出来的）。
+    live_names = ({n.get("nameEn") for n in foreign_nodes_all}
+                  | {n.get("nameEn") for n in nodes if n.get("pool") == "sp500"})
     zh_orphans = sorted(k for k in names_zh.NAMES if k not in live_names)
     if zh_orphans:
         print(f"[!!] 中文名对照表里有 {len(zh_orphans)} 条在数据里找不到对应公司"
@@ -1033,6 +1115,9 @@ def build() -> None:
             # 而外国发行人那批站内没有报价。
             "poolSp500": sum(1 for n in nodes if n.get("pool") == "sp500"),
             "poolForeignIssuer": len(foreign_nodes),
+            # 第三池：报 10-K 的美国本土发行人（标普之外）。与前两池分开计数——
+            # 三批公司的「为什么没有市值」理由不同，混成一个数就说不清了。
+            "poolDomesticFiler": len(domestic_nodes),
             "poolForeignSkippedCollision": len(dropped_collision),
             "nodesWithoutQuote": sum(1 for n in nodes if n.get("marketCap") is None),
             "upstreamPairs": (peers or {}).get("pairs", 0),
@@ -1053,6 +1138,9 @@ def build() -> None:
             # 外国发行人按国别。字段名沿用 sector 是为了让页面复用同一套渲染，
             # 但语义是国别——页面上必须写清楚，不能让读者以为这是板块。
             "byCountry": by_country,
+            # 第三池按 SIC 大类。键名沿用 sector（与另两栏同一套渲染），
+            # 语义是行业大类——页面必须写清，不能让读者以为是 GICS 板块。
+            "bySicMajor": by_sic_major,
             # 上面那一栏的国别各自来自哪个 SEC 字段。页面照这个数说话。
             "countryBasis": country_basis,
             # 中文名：有通用译名的家数、对照表总条数、以及对不上号的条目。

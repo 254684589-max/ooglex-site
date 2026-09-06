@@ -1405,6 +1405,28 @@ def main() -> int:
         print(f"  [{'OK' if ok else 'XX'}] {why}")
 
     print("\n── 国别：折成真国家，且说清是从哪个字段来的 ──────────────────────")
+    # ── 中文名对照表的卫生检查 ─────────────────────────────────────────
+    # 表是逐家人工核对进去的，最容易混进来的不是错译，是**没定下来的占位**：
+    # 写作时留一个「某某? 不确定」打算回头再查，然后它就上线了。
+    # 一条不确定的中文名比英文原文糟得多——它看着像个确定答案。
+    names_zh = load_module(os.path.join(os.path.dirname(EXTRACT_PATH),
+                                        "company_names_zh.py"), "company_names_zh")
+    zh_bad = sorted(k for k, v in names_zh.NAMES.items()
+                    if any(m in v for m in ("?", "？", "不确定", "待查", "TODO", "待定")))
+    zh_latin = sorted(k for k, v in names_zh.NAMES.items()
+                      if not any("\u4e00" <= ch <= "\u9fff" for ch in v))
+    zh_dup = sorted(k for k in names_zh.NAMES if k != k.strip())
+    for label, bad, why in (
+            ("含不确定标记", zh_bad, "拿不准就不该进表——不确定的中文名看着像确定答案"),
+            ("没有一个汉字", zh_latin, "值里没有汉字说明它不是中文名，收它没有意义"),
+            ("键有首尾空白", zh_dup, "键照抄 SEC 名称串时带了空白，查表会失配")):
+        ok = not bad
+        if not ok:
+            failures.append(f"中文名表 {label}：{'、'.join(bad[:5])}——{why}")
+        print(f"  [{'OK' if ok else 'XX'}] 中文名表没有{label}"
+              + ("" if ok else f"：{'、'.join(bad[:3])}"))
+    print(f"  [OK] 中文名表共 {len(names_zh.NAMES)} 条")
+
     region = load_module(os.path.join(os.path.dirname(EXTRACT_PATH), "edgar_region.py"),
                          "edgar_region")
     # 代码表从 EDGAR 自己的配对里长出来：别家申报带了描述，就用它补上这一家。
