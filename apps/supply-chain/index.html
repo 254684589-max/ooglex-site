@@ -310,6 +310,29 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
 .exprow .rch s { text-decoration:none; }
 /* 受涵盖国家的标记。**这一格不是装饰**：它说明该行为什么值得看第二眼。
    用文字而不是纯色块——颜色对色觉障碍读者与灰度打印都会消失。 */
+/* 矿种行。四行而已，但每行要并排放几个读数，窄屏靠缩字号与换行，
+   不隐藏——隐藏了断言就会读到读者看不见的数。 */
+.mrow { display:flex; align-items:center; gap:8px; padding:6px 0;
+  border-bottom:1px solid var(--line); }
+.mrow:last-child { border-bottom:0; }
+.mrow .nm { flex:0 0 auto; min-width:44px; font-weight:600; }
+.mrow .bar { flex:1 1 auto; height:6px; border-radius:3px; background:var(--line);
+  position:relative; overflow:hidden; min-width:24px; }
+.mrow .bar i { position:absolute; left:0; top:0; bottom:0; border-radius:3px;
+  background:var(--accent); display:block; }
+.mrow .n, .mrow .hh, .mrow .cc2 { flex:0 1 auto; min-width:88px; text-align:right;
+  font-family:var(--mono); font-size:11px; color:var(--dim); white-space:nowrap; }
+.mrow .cc2 { color:var(--warn); }
+.mrow s { text-decoration:none; color:var(--faint); }
+.simnote { margin:10px 0 0; padding:9px 11px; border-radius:8px;
+  background:rgba(228,181,61,.08); border:1px solid rgba(228,181,61,.22);
+  font-size:12px; line-height:1.65; color:var(--dim); }
+@media (max-width:560px) {
+  .mrow { flex-wrap:wrap; gap:6px; }
+  .mrow .nm { flex:0 0 40px; font-size:12px; }
+  .mrow .bar { flex:1 1 60px; }
+  .mrow .n, .mrow .hh, .mrow .cc2 { min-width:64px; font-size:10px; }
+}
 .exprow .cv, .cvrow .cv { flex:0 0 auto; font-size:10px; padding:1px 5px;
   border-radius:4px; background:rgba(228,181,61,.15);
   color:var(--warn); white-space:nowrap; }
@@ -606,6 +629,23 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
     <p class="lead" id="conc-lead"></p>
     <div id="conc-rows"></div>
     <p class="foot2" id="conc-foot"></p>
+    <!-- **读懂上面那份榜单的前提。** 「被 56 家共同列入」听着像强信号，
+         实测不是：这些名单本身高度雷同（中位 Jaccard 0.89），重叠大是常态。 -->
+    <p class="simnote" id="sim-note" hidden></p>
+</section>
+
+  <!-- 矿种。**§1502 点名的就是这四种矿**（钽锡钨金，业内叫 3TG），
+       而页面此前只在一处 hover 里提过它们。四种矿的上游结构差得很远：
+       按国别看是「中国最大」，按矿种才看得出钨和钽的中国集中度是金的三倍，
+       而冲突地区暴露反而走的是锡和金——两件事在合并的国别榜上都看不出来。 -->
+  <div class="sec-h">
+    <h2>按矿种</h2>
+    <span id="mineral-sub">钽 · 锡 · 钨 · 金 —— §1502 点名的四种矿，结构各不相同</span>
+  </div>
+  <section class="glass minsec" id="minsec" hidden aria-label="按矿种的上游结构">
+    <p class="lead" id="mineral-lead"></p>
+    <div id="mineral-rows"></div>
+    <p class="foot2" id="mineral-foot"></p>
   </section>
 
   <div class="sec-h">
@@ -649,6 +689,6 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="app.js?v=70ca4421" defer></script>
+<script src="app.js?v=fb58e44d" defer></script>
 </body>
 </html>

@@ -1591,7 +1591,9 @@
     renderFlow(d);
     renderConcentration(d);
     renderExposure(d);
+    renderMinerals(d);
     renderCovered(d);
+    renderSimilarity(d);
   }
 
   function riskScope(d) {
@@ -1644,6 +1646,101 @@
     var set = {};
     rows.forEach(function (r) { if (r.country) set[r.country] = true; });
     return set;
+  }
+
+  // §1502 点名的四种矿。**这条轴此前只在一处 hover 里出现过。**
+  function renderMinerals(d) {
+    var sec = $("minsec");
+    if (!sec) return;
+    var mv = d.mineralView || {};
+    // 「未写明」不单列成一档矿：它是缺字段，不是第五种矿。合并统计在页脚说。
+    var rows = (mv.rows || []).filter(function (r) {
+      return r.mineral && r.mineral !== "未写明";
+    });
+    if (!rows.length) { sec.hidden = true; return; }
+    sec.hidden = false;
+
+    var unknown = (mv.rows || []).filter(function (r) {
+      return r.mineral === "未写明";
+    })[0];
+    var maxEdges = rows.reduce(function (a, r) {
+      return Math.max(a, r.edges || 0);
+    }, 1);
+    setText($("mineral-lead"),
+      "多德-弗兰克 §1502 管的就是钽、锡、钨、金四种（业内叫 3TG）。"
+      + "四种矿的上游结构差得很远，合在一起看会读错：按国别排是「中国最大」，"
+      + "按矿种才看得出钨和钽的中国集中度是金的三倍，而受涵盖国家的暴露"
+      + "反而主要走锡和金。集中度用 HHI，分档取美国司法部／联邦贸易委员会"
+      + "《横向合并指引》的口径。");
+
+    var host = $("mineral-rows");
+    host.textContent = "";
+    rows.forEach(function (r) {
+      var line = el("div", "mrow");
+      line.appendChild(el("span", "nm", r.mineral));
+      var bar = el("span", "bar");
+      var fill = el("i");
+      fill.style.width = Math.max(3, (r.edges / maxEdges) * 100) + "%";
+      bar.appendChild(fill);
+      line.appendChild(bar);
+      var n = el("span", "n");
+      n.appendChild(document.createTextNode(fmt(r.edges)));
+      n.appendChild(el("s", null, " 条 · " + fmt(r.smelters) + " 厂"));
+      line.appendChild(n);
+      var hh = el("span", "hh");
+      hh.appendChild(document.createTextNode("HHI " + fmt(r.hhi)));
+      hh.appendChild(el("s", null, " " + r.hhiBand + " · " + r.topCountry
+        + Math.round((r.topShare || 0) * 100) + "%"));
+      line.appendChild(hh);
+      var cc = el("span", "cc2");
+      cc.appendChild(document.createTextNode(fmt(r.coveredEdges)));
+      cc.appendChild(el("s", null, " 条受涵盖国"));
+      line.appendChild(cc);
+      line.title = r.mineral + "：" + r.edges + " 条关系、" + r.smelters
+        + " 家冶炼厂、" + r.filerCount + " 家申报人，分布在 " + r.countries
+        + " 个国别。最大来源国 " + r.topCountry + " 占 "
+        + Math.round((r.topShare || 0) * 100) + "%，国别 HHI " + r.hhi
+        + "（" + r.hhiBand + "）。其中 " + r.coveredEdges
+        + " 条落在 §1502 受涵盖国家。"
+        + (r.unknownCountry ? "另有 " + r.unknownCountry + " 条国别未写明，"
+           + "不计入集中度。" : "");
+      host.appendChild(line);
+    });
+
+    // **这句话必须跟着 HHI 一起出现。** 没有它，2224 会被读成「钽的采购
+    // 有 22% 集中在一家」之类的意思，而数据根本不含采购量。
+    setText($("mineral-foot"),
+      "HHI 按已披露冶炼厂条目的国别分布计算，不是采购量——Form SD 不要求"
+      + "申报采购量，一条关系只说明「这座厂出现在申报人的供应链中」。"
+      + "所以「钨 HHI " + (rows.filter(function (r) { return r.mineral === "钨"; })[0]
+        || {}).hhi + "」要读成「已披露的钨冶炼厂里四成在中国」，"
+      + "不能读成「四成的钨来自中国」。"
+      + (unknown ? "另有 " + fmt(unknown.edges) + " 条关系没写明矿种，"
+         + "未列为一档——那是缺字段，不是第五种矿。" : ""));
+  }
+
+  // 名单彼此有多像。**这是读懂「上游重叠」的前提**，不是花絮。
+  function renderSimilarity(d) {
+    var note = $("sim-note");
+    if (!note) return;
+    var s = d.listSimilarity || {};
+    if (!s.companies) { note.hidden = true; return; }
+    note.hidden = false;
+    setText(note,
+      "读这份榜单前先知道一件事：这些名单彼此高度雷同。"
+      + s.companies + " 家名单不少于 " + s.floor + " 条的公司里，"
+      + "与自己最相似的那一家的重合度（Jaccard）中位数是 "
+      + s.medianJaccard.toFixed(2) + "，有 " + s.atLeast90 + " 家 ≥0.90，"
+      + s.identical + " 家与另一家完全相同；中位公司名单里"
+      + (s.medianUniqueShare <= 0.005
+         ? "每一家冶炼厂都被别的申报人也列了（独有比例 0%）"
+         : "独有比例只有 " + Math.round(s.medianUniqueShare * 100) + "%")
+      + "。原因是这些名单在很大程度上是同一份 RMI 合规冶炼厂名录的再现——"
+      + "它们是合规产物，不是各家自己的供应画像。"
+      + "所以重叠大是常态，不是信号；真正值得看第二眼的是独有比例高的那几家，"
+      + "例如 " + (s.mostDistinct || []).slice(0, 3).map(function (x) {
+          return x.symbol + " " + Math.round(x.uniqueShare * 100) + "%";
+        }).join("、") + "。");
   }
 
   function renderCovered(d) {

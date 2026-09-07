@@ -354,6 +354,173 @@ COVERED_COUNTRIES = ("刚果（金）", "安哥拉", "布隆迪", "中非", "刚
 COVERED_BASIS = "多德-弗兰克法案 §1502 / SEC Rule 13p-1 界定的受涵盖国家"
 
 
+# 赫芬达尔-赫希曼指数的分档，取美国司法部／联邦贸易委员会《横向合并指引》
+# 的口径（<1500 未集中 / 1500~2500 中度 / >2500 高度）。用这套而不是自定阈值，
+# 是因为它是公开、可核对、被广泛引用的标准——自己划线等于自己发明一把尺。
+# 边界照原文取：指引写的是「1500 以下未集中；**1500 到 2500** 中度；
+# **2500 以上** 高度」。所以 1500 属中度、2500 属中度，只有严格大于 2500
+# 才是高度。第一版两处都用了严格大于，1500 整会被判成「未集中」——
+# **既然点名引用了这套标准，就不能在边界上跟它差一档**。
+def hhi_band(index: int) -> str:
+    if index > 2500:
+        return "高度集中"
+    if index >= 1500:
+        return "中度集中"
+    return "未集中"
+
+
+def hhi(counter: dict) -> tuple[int, str]:
+    """按份额平方和算集中度。返回（指数, 档位）。
+
+    **这里算的是「名单构成」的集中度，不是采购集中度。** Form SD 不带采购量，
+    一条边只说明「这座厂出现在申报人的供应链中」。所以「钨的国别 HHI 2140」
+    要读成「已披露的钨冶炼厂里 42% 在中国」，不能读成「42% 的钨来自中国」。
+    这句话必须跟着这个数一起出现，页面上也一样。
+    """
+    total = sum(counter.values())
+    if not total:
+        return 0, "无数据"
+    index = round(sum((v / total) ** 2 for v in counter.values()) * 10000)
+    return index, hhi_band(index)
+
+
+def mineral_view(bundles: dict[str, dict], covered: tuple) -> dict:
+    """按矿种切一遍。**这是 §1502 点名的那条轴，页面上此前一个字都没有。**
+
+    Form SD 管的就是钽、锡、钨、金四种（业内叫 3TG）。四种矿的上游结构差得
+    很远，混在一起看会得出一个错的结论：
+
+        钨  中国 42%  HHI 2140  受涵盖国 0 条
+        钽  中国 42%  HHI 2218  受涵盖国 94 条
+        锡  印尼 25%  HHI 1436  受涵盖国 293 条
+        金  中国 16%  HHI  703  受涵盖国 191 条
+
+    按国别看是「中国最大」，**按矿种看才发现钨和钽的中国集中度是金的三倍，
+    而冲突地区暴露反而走的是锡和金**。这两件事在合并的国别榜上都看不出来。
+    """
+    covered_set = set(covered)
+    per: dict[str, dict] = {}
+    for symbol, bundle in (bundles or {}).items():
+        for edge in bundle.get("edges") or []:
+            country = edge.get("country") or "未写明"
+            key = edge.get("cid") or ("name:" + str(edge.get("name") or ""))
+            for mineral in (edge.get("minerals") or ["未写明"]):
+                row = per.setdefault(mineral, {
+                    "mineral": mineral, "edges": 0, "filers": set(),
+                    "smelters": set(), "byCountry": {}, "covered": 0,
+                })
+                row["edges"] += 1
+                row["filers"].add(symbol)
+                row["smelters"].add(key)
+                row["byCountry"][country] = row["byCountry"].get(country, 0) + 1
+                if country in covered_set:
+                    row["covered"] += 1
+    rows = []
+    for row in per.values():
+        # 国别集中度只在**写明国别**的条目上算。把「未写明」当成一个国家，
+        # 会让缺字段的公司显得集中——那是缺口，不是集中。
+        known = {k: v for k, v in row["byCountry"].items() if k != "未写明"}
+        index, band = hhi(known)
+        top = max(known.items(), key=lambda kv: kv[1]) if known else ("未写明", 0)
+        total_known = sum(known.values())
+        rows.append({
+            "mineral": row["mineral"],
+            "edges": row["edges"],
+            "filerCount": len(row["filers"]),
+            "smelters": len(row["smelters"]),
+            "countries": len(known),
+            "topCountry": top[0],
+            "topShare": round(top[1] / total_known, 4) if total_known else 0,
+            "hhi": index,
+            "hhiBand": band,
+            "coveredEdges": row["covered"],
+            "unknownCountry": row["byCountry"].get("未写明", 0),
+        })
+    rows.sort(key=lambda r: -r["edges"])
+    return {
+        "basis": "赫芬达尔-赫希曼指数（HHI），分档取美国司法部／联邦贸易委员会"
+                 "《横向合并指引》：<1500 未集中 · 1500~2500 中度 · >2500 高度",
+        "note": "HHI 按已披露冶炼厂条目的国别分布计算，不是采购量——"
+                "Form SD 不要求申报采购量。",
+        "rows": rows,
+    }
+
+
+def list_similarity(bundles: dict[str, dict], floor: int = 30) -> dict:
+    """这些名单彼此有多像。**这是读懂「上游重叠」的前提。**
+
+    公司页会告诉读者「你和另外 59 家申报人有重叠，最多的一家重叠 349 家厂」。
+    单看这个数会以为两家的供应链高度耦合。实测不是：
+
+        与最相似一家的 Jaccard 中位 0.89 · 49/108 家 ≥0.90 · 最高 1.00（完全相同）
+        中位公司的名单里，**每一家厂都被别的申报人也列了**（比例 1.000）
+
+    也就是说这些名单在很大程度上是**同一份 RMI 合规冶炼厂名录的再现**，
+    是合规产物，不是各家自己的供应画像。重叠大是常态，不是信号；真正值得
+    看第二眼的是**独有比例高**的那几家。
+
+    这一份还是一条「不要做什么」的依据：**公司级上游集中度排行不做**。
+    HHI 与名单长度的对数相关 -0.49，而名单长短反映的是披露保守程度，
+    排出来会是一份伪装成风险榜的名单长度榜。
+    """
+    sets: dict[str, set] = {}
+    for symbol, bundle in (bundles or {}).items():
+        keys = {e.get("cid") or ("name:" + str(e.get("name") or ""))
+                for e in (bundle.get("edges") or [])}
+        if len(keys) >= floor:
+            sets[symbol] = keys
+    if len(sets) < 2:
+        return {}
+    symbols = sorted(sets)
+    union_all = {}
+    rows = []
+    for a in symbols:
+        best_j, best_b = 0.0, None
+        for b in symbols:
+            if a == b:
+                continue
+            inter = len(sets[a] & sets[b])
+            union = len(sets[a] | sets[b])
+            j = inter / union if union else 0.0
+            if j > best_j:
+                best_j, best_b = j, b
+        others = set()
+        for b in symbols:
+            if b != a:
+                others |= sets[b]
+        shared = len(sets[a] & others)
+        rows.append({
+            "symbol": a,
+            "listed": len(sets[a]),
+            "closest": best_b,
+            "jaccard": round(best_j, 4),
+            "uniqueCount": len(sets[a]) - shared,
+            "uniqueShare": round((len(sets[a]) - shared) / len(sets[a]), 4),
+        })
+        union_all[a] = shared
+    js = sorted(r["jaccard"] for r in rows)
+    median = js[len(js) // 2]
+    unique_sorted = sorted(rows, key=lambda r: -r["uniqueShare"])
+    return {
+        "floor": floor,
+        "companies": len(rows),
+        "medianJaccard": round(median, 4),
+        "atLeast90": sum(1 for r in rows if r["jaccard"] >= 0.90),
+        "identical": sum(1 for r in rows if r["jaccard"] >= 0.999),
+        "medianUniqueShare": round(
+            sorted(r["uniqueShare"] for r in rows)[len(rows) // 2], 4),
+        # 独有比例最高的几家才是真正「名单不一样」的，值得单独点名。
+        "mostDistinct": [
+            {k: r[k] for k in ("symbol", "listed", "uniqueCount", "uniqueShare")}
+            for r in unique_sorted[:8]
+        ],
+        "byCompany": {r["symbol"]: {"closest": r["closest"],
+                                    "jaccard": r["jaccard"],
+                                    "uniqueShare": r["uniqueShare"]}
+                      for r in rows},
+    }
+
+
 def covered_country_exposure(bundles: dict[str, dict], registry: dict) -> dict:
     """受涵盖国家的暴露面。口径与国别暴露一致，只是把范围收到法定十国。"""
     covered = set(COVERED_COUNTRIES)
@@ -1216,6 +1383,8 @@ def build() -> None:
     # 见 smelter_reach() 的注释——这是口径说明，不是缺陷报告。
     reach = smelter_reach(registry if peers_module else {}, nodes)
     covered = covered_country_exposure(edge_files, registry if peers_module else {})
+    minerals = mineral_view(edge_files, COVERED_COUNTRIES)
+    similarity = list_similarity(edge_files)
 
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     by_stage: dict[str, int] = {}
@@ -1310,6 +1479,12 @@ def build() -> None:
         # 没有 §1502 就没有 Form SD，也就没有这张图。页面必须标出来，
         # 同时必须写清「出现在名单里 ≠ 用了冲突矿产」。
         "coveredCountries": covered,
+        # §1502 点名的四种矿。四种的上游结构差得很远，合在一起看会读错——
+        # 按国别是「中国最大」，按矿种才看得出冲突地区暴露走的是锡和金。
+        "mineralView": minerals,
+        # 这些名单彼此有多像。**这是读懂「上游重叠」的前提**：重叠大是常态
+        # （中位 Jaccard 0.89），不是信号。
+        "listSimilarity": similarity,
         "nodes": nodes,
         # 每家一个文件，公司页按需拉。索引里带出处链接，不必先下文件才知道有没有边。
         "edgeIndex": edge_index,

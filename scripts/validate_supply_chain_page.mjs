@@ -1050,6 +1050,100 @@ async function main() {
         check(`国别暴露无横向溢出`, () => assert.ok(ex.overflow <= 1,
           `溢出 ${ex.overflow}px`));
 
+        /* 矿种。§1502 点名的就是钽锡钨金四种，而页面此前只在一处 hover 里
+           提过它们。这一屏守两件事：四种矿的读数逐行等于数据，以及**那句
+           「HHI 不是采购量」必须在**——Form SD 不含采购量，少了这句话，
+           「钨 HHI 2161」会被读成「四成的钨来自中国」，那是数据不支持的。 */
+        const MV = (NODES.mineralView || {}).rows || [];
+        const REAL = MV.filter(r => r.mineral && r.mineral !== "未写明");
+        if (REAL.length) {
+          const mn = await evaluate(`(() => {
+            const box = document.getElementById('minsec');
+            if (!box || box.hidden) return { shown: false };
+            return {
+              shown: true,
+              rows: [...box.querySelectorAll('.mrow')].map(r => ({
+                mineral: (r.querySelector('.nm') || {}).textContent || '',
+                n: (r.querySelector('.n') || {}).textContent || '',
+                hhi: (r.querySelector('.hh') || {}).textContent || '',
+                cov: (r.querySelector('.cc2') || {}).textContent || '',
+                seen: r.getClientRects().length > 0
+              })),
+              lead: (document.getElementById('mineral-lead') || {}).textContent || '',
+              foot: (document.getElementById('mineral-foot') || {}).textContent || '',
+              overflow: Math.max(0,
+                document.documentElement.scrollWidth - window.innerWidth)
+            };
+          })()`);
+          check(`矿种区块已渲染（${REAL.length} 种）`, () => {
+            assert.ok(mn.shown, "区块没显示");
+            assert.equal(mn.rows.length, REAL.length,
+              `页面 ${mn.rows.length} 行，数据 ${REAL.length} 种`);
+          });
+          check(`每种矿的条数、HHI、受涵盖国条数都等于数据`, () => {
+            const bad = [];
+            REAL.forEach(w => {
+              const got = mn.rows.find(r => r.mineral === w.mineral);
+              if (!got) { bad.push(`${w.mineral} 未渲染`); return; }
+              const digits = t => (t || '').replace(/[^0-9]/g, '');
+              if (digits(got.n).indexOf(String(w.edges)) !== 0)
+                bad.push(`${w.mineral} 条数「${got.n}」应含 ${w.edges}`);
+              const grp = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              if (!got.hhi.includes(grp(w.hhi)))
+                bad.push(`${w.mineral} HHI「${got.hhi}」应为 ${w.hhi}`);
+              if (!got.hhi.includes(w.hhiBand))
+                bad.push(`${w.mineral} 没印档位「${w.hhiBand}」`);
+              if (digits(got.cov) !== String(w.coveredEdges))
+                bad.push(`${w.mineral} 受涵盖国「${got.cov}」应为 ${w.coveredEdges}`);
+            });
+            assert.equal(bad.length, 0, bad.join("；"));
+          });
+          check(`矿种行都看得见`, () => {
+            const blind = mn.rows.filter(r => !r.seen).length;
+            assert.equal(blind, 0, `${blind}/${mn.rows.length} 行没有布局盒`);
+          });
+          /* 这一条是本屏的底线。数据里没有采购量，把 HHI 说成采购集中度
+             就是凭这份数据讲了另一件事。 */
+          check(`写明 HHI 不是采购量`, () => {
+            assert.match(mn.foot, /不是采购量/, `页脚：${mn.foot.slice(0, 160)}`);
+            assert.match(mn.foot, /不要求.*采购量|不含采购量/,
+              `没说清 Form SD 本身不含这个字段：${mn.foot.slice(0, 160)}`);
+          });
+          check(`分档写明取自公开标准，不是自定阈值`, () => {
+            assert.match(mn.lead, /司法部|联邦贸易委员会|横向合并指引/,
+              `导语没写分档依据：${mn.lead.slice(0, 160)}`);
+          });
+          check(`矿种区块无横向溢出`, () => assert.ok(mn.overflow <= 1,
+            `溢出 ${mn.overflow}px`));
+        }
+
+        /* 名单雷同度。**这是读懂上游集中度与上游重叠的前提，不是花絮。**
+           实测中位 Jaccard 0.89、中位公司名单里每一家厂都被别家也列了——
+           少了这句话，「被 56 家共同列入」和「重叠 349 家」都会被当成强信号，
+           而真正的解释是这些名单本身就是同一份名录的再现。 */
+        const SIM = NODES.listSimilarity || {};
+        if (SIM.companies) {
+          const sm = await evaluate(`(() => {
+            const e = document.getElementById('sim-note');
+            if (!e || e.hidden) return { shown: false };
+            return { shown: true, text: e.textContent || '',
+                     seen: e.getClientRects().length > 0 };
+          })()`);
+          check(`上游集中度旁写明名单雷同度`, () => {
+            assert.ok(sm.shown && sm.seen,
+              "没渲染或看不见——缺了它，这份榜单会被读成供应链耦合信号");
+            assert.ok(sm.text.includes(SIM.medianJaccard.toFixed(2)),
+              `没印中位重合度 ${SIM.medianJaccard.toFixed(2)}：${sm.text.slice(0, 140)}`);
+            assert.ok(sm.text.includes(String(SIM.atLeast90)),
+              `没印 ≥0.90 的家数 ${SIM.atLeast90}：${sm.text.slice(0, 140)}`);
+          });
+          check(`说清重叠大是常态而非信号`, () => {
+            assert.match(sm.text, /常态|不是信号/, `实际：${sm.text.slice(0, 160)}`);
+            assert.match(sm.text, /RMI|名录/,
+              `没给出原因（同一份名录的再现）：${sm.text.slice(0, 160)}`);
+          });
+        }
+
         /* 受涵盖国家。**这是本板块唯一一处法定口径**：没有多德-弗兰克
            §1502 就没有 Form SD，也就没有这张图。此前页面一个字没提，
            读者看到「卢旺达 10 家厂」不知道那正是这套制度盯着的地方。

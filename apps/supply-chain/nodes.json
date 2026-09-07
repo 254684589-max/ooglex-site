@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-06T17:55:05Z",
+  "updatedAt": "2026-09-07T00:35:07Z",
   "asOf": "2026-09-04",
   "frequency": "daily",
   "status": "ok",
@@ -15634,6 +15634,12 @@
         "poolCompanies": 0
       },
       {
+        "country": "刚果（金）",
+        "smelters": 3,
+        "inPool": 0,
+        "poolCompanies": 0
+      },
+      {
         "country": "加纳",
         "smelters": 3,
         "inPool": 0,
@@ -15736,24 +15742,6 @@
         "poolCompanies": 0
       },
       {
-        "country": "CONGO, DEMOCRATIC REPUBLIC OF THE",
-        "smelters": 1,
-        "inPool": 0,
-        "poolCompanies": 0
-      },
-      {
-        "country": "Congo, Democratic Republic of the",
-        "smelters": 1,
-        "inPool": 0,
-        "poolCompanies": 0
-      },
-      {
-        "country": "刚果（金）",
-        "smelters": 1,
-        "inPool": 0,
-        "poolCompanies": 0
-      },
-      {
         "country": "斯洛伐克",
         "smelters": 1,
         "inPool": 0,
@@ -15783,7 +15771,7 @@
     "basis": "多德-弗兰克法案 §1502 / SEC Rule 13p-1 界定的受涵盖国家",
     "countries": 10,
     "countriesSeen": 6,
-    "smelters": 21,
+    "smelters": 23,
     "edges": 582,
     "filerCount": 104,
     "filers": [
@@ -15897,7 +15885,7 @@
         "country": "刚果（金）",
         "edges": 92,
         "filerCount": 91,
-        "smelters": 1
+        "smelters": 3
       },
       {
         "country": "安哥拉",
@@ -15954,6 +15942,677 @@
         "smelters": 3
       }
     ]
+  },
+  "mineralView": {
+    "basis": "赫芬达尔-赫希曼指数（HHI），分档取美国司法部／联邦贸易委员会《横向合并指引》：<1500 未集中 · 1500~2500 中度 · >2500 高度",
+    "note": "HHI 按已披露冶炼厂条目的国别分布计算，不是采购量——Form SD 不要求申报采购量。",
+    "rows": [
+      {
+        "mineral": "金",
+        "edges": 14469,
+        "filerCount": 113,
+        "smelters": 748,
+        "countries": 53,
+        "topCountry": "中国",
+        "topShare": 0.155,
+        "hhi": 705,
+        "hhiBand": "未集中",
+        "coveredEdges": 191,
+        "unknownCountry": 27
+      },
+      {
+        "mineral": "锡",
+        "edges": 8201,
+        "filerCount": 124,
+        "smelters": 674,
+        "countries": 40,
+        "topCountry": "印度尼西亚",
+        "topShare": 0.2503,
+        "hhi": 1443,
+        "hhiBand": "未集中",
+        "coveredEdges": 293,
+        "unknownCountry": 20
+      },
+      {
+        "mineral": "钨",
+        "edges": 4924,
+        "filerCount": 110,
+        "smelters": 320,
+        "countries": 25,
+        "topCountry": "中国",
+        "topShare": 0.425,
+        "hhi": 2161,
+        "hhiBand": "中度集中",
+        "coveredEdges": 0,
+        "unknownCountry": 25
+      },
+      {
+        "mineral": "钽",
+        "edges": 3894,
+        "filerCount": 114,
+        "smelters": 219,
+        "countries": 24,
+        "topCountry": "中国",
+        "topShare": 0.4222,
+        "hhi": 2224,
+        "hhiBand": "中度集中",
+        "coveredEdges": 94,
+        "unknownCountry": 5
+      },
+      {
+        "mineral": "未写明",
+        "edges": 218,
+        "filerCount": 5,
+        "smelters": 217,
+        "countries": 52,
+        "topCountry": "中国",
+        "topShare": 0.1651,
+        "hhi": 643,
+        "hhiBand": "未集中",
+        "coveredEdges": 4,
+        "unknownCountry": 0
+      }
+    ]
+  },
+  "listSimilarity": {
+    "floor": 30,
+    "companies": 108,
+    "medianJaccard": 0.8894,
+    "atLeast90": 49,
+    "identical": 8,
+    "medianUniqueShare": 0.0,
+    "mostDistinct": [
+      {
+        "symbol": "APH",
+        "listed": 698,
+        "uniqueCount": 182,
+        "uniqueShare": 0.2607
+      },
+      {
+        "symbol": "ELTK",
+        "listed": 51,
+        "uniqueCount": 11,
+        "uniqueShare": 0.2157
+      },
+      {
+        "symbol": "DOV",
+        "listed": 782,
+        "uniqueCount": 117,
+        "uniqueShare": 0.1496
+      },
+      {
+        "symbol": "AMZN",
+        "listed": 355,
+        "uniqueCount": 51,
+        "uniqueShare": 0.1437
+      },
+      {
+        "symbol": "LOW",
+        "listed": 55,
+        "uniqueCount": 7,
+        "uniqueShare": 0.1273
+      },
+      {
+        "symbol": "MO",
+        "listed": 41,
+        "uniqueCount": 4,
+        "uniqueShare": 0.0976
+      },
+      {
+        "symbol": "AUDC",
+        "listed": 443,
+        "uniqueCount": 35,
+        "uniqueShare": 0.079
+      },
+      {
+        "symbol": "ROK",
+        "listed": 691,
+        "uniqueCount": 38,
+        "uniqueShare": 0.055
+      }
+    ],
+    "byCompany": {
+      "A": {
+        "closest": "GILT",
+        "jaccard": 1.0,
+        "uniqueShare": 0.0
+      },
+      "ADI": {
+        "closest": "INTC",
+        "jaccard": 0.8186,
+        "uniqueShare": 0.027
+      },
+      "ALGN": {
+        "closest": "NRG",
+        "jaccard": 0.8884,
+        "uniqueShare": 0.0
+      },
+      "ALLE": {
+        "closest": "EFXT",
+        "jaccard": 0.997,
+        "uniqueShare": 0.0
+      },
+      "ALLT": {
+        "closest": "SMCI",
+        "jaccard": 0.8556,
+        "uniqueShare": 0.0114
+      },
+      "AMAT": {
+        "closest": "EFXT",
+        "jaccard": 0.9644,
+        "uniqueShare": 0.0
+      },
+      "AMD": {
+        "closest": "RDWR",
+        "jaccard": 0.8609,
+        "uniqueShare": 0.0
+      },
+      "AMZN": {
+        "closest": "BAX",
+        "jaccard": 0.5586,
+        "uniqueShare": 0.1437
+      },
+      "ANET": {
+        "closest": "CL",
+        "jaccard": 0.8864,
+        "uniqueShare": 0.0
+      },
+      "APH": {
+        "closest": "DE",
+        "jaccard": 0.5657,
+        "uniqueShare": 0.2607
+      },
+      "APTV": {
+        "closest": "NOK",
+        "jaccard": 0.9792,
+        "uniqueShare": 0.0
+      },
+      "ASX": {
+        "closest": "TM",
+        "jaccard": 0.9163,
+        "uniqueShare": 0.0
+      },
+      "AUDC": {
+        "closest": "NVMI",
+        "jaccard": 0.7378,
+        "uniqueShare": 0.079
+      },
+      "AVY": {
+        "closest": "SILC",
+        "jaccard": 0.8411,
+        "uniqueShare": 0.0
+      },
+      "BAX": {
+        "closest": "VRT",
+        "jaccard": 0.9818,
+        "uniqueShare": 0.0
+      },
+      "BBY": {
+        "closest": "INTC",
+        "jaccard": 0.8894,
+        "uniqueShare": 0.0046
+      },
+      "BKR": {
+        "closest": "EMBJ",
+        "jaccard": 1.0,
+        "uniqueShare": 0.0
+      },
+      "BLDP": {
+        "closest": "SILC",
+        "jaccard": 0.8416,
+        "uniqueShare": 0.0
+      },
+      "BRSL": {
+        "closest": "NVMI",
+        "jaccard": 0.7011,
+        "uniqueShare": 0.031
+      },
+      "BTI": {
+        "closest": "AMD",
+        "jaccard": 0.7964,
+        "uniqueShare": 0.0108
+      },
+      "CAMT": {
+        "closest": "SHMD",
+        "jaccard": 0.9185,
+        "uniqueShare": 0.0
+      },
+      "CL": {
+        "closest": "PHG",
+        "jaccard": 1.0,
+        "uniqueShare": 0.0
+      },
+      "CMI": {
+        "closest": "MSI",
+        "jaccard": 0.9435,
+        "uniqueShare": 0.0
+      },
+      "CRNT": {
+        "closest": "NVMI",
+        "jaccard": 0.9971,
+        "uniqueShare": 0.0
+      },
+      "DE": {
+        "closest": "MTD",
+        "jaccard": 0.8398,
+        "uniqueShare": 0.0
+      },
+      "DOV": {
+        "closest": "ROK",
+        "jaccard": 0.7855,
+        "uniqueShare": 0.1496
+      },
+      "DOW": {
+        "closest": "MPWR",
+        "jaccard": 0.195,
+        "uniqueShare": 0.0
+      },
+      "ECL": {
+        "closest": "XYL",
+        "jaccard": 0.9532,
+        "uniqueShare": 0.0056
+      },
+      "EFXT": {
+        "closest": "SWK",
+        "jaccard": 1.0,
+        "uniqueShare": 0.0
+      },
+      "ELTK": {
+        "closest": "LOW",
+        "jaccard": 0.3766,
+        "uniqueShare": 0.2157
+      },
+      "EMBJ": {
+        "closest": "BKR",
+        "jaccard": 1.0,
+        "uniqueShare": 0.0
+      },
+      "ERIC": {
+        "closest": "BLDP",
+        "jaccard": 0.8239,
+        "uniqueShare": 0.006
+      },
+      "ETN": {
+        "closest": "SONY",
+        "jaccard": 0.8675,
+        "uniqueShare": 0.0067
+      },
+      "FFIV": {
+        "closest": "GLW",
+        "jaccard": 0.9971,
+        "uniqueShare": 0.0
+      },
+      "FLEX": {
+        "closest": "ZBH",
+        "jaccard": 0.9831,
+        "uniqueShare": 0.0
+      },
+      "FSLR": {
+        "closest": "MSFT",
+        "jaccard": 0.4286,
+        "uniqueShare": 0.0215
+      },
+      "GEN": {
+        "closest": "BRSL",
+        "jaccard": 0.5292,
+        "uniqueShare": 0.0117
+      },
+      "GFS": {
+        "closest": "ON",
+        "jaccard": 0.8137,
+        "uniqueShare": 0.0
+      },
+      "GILT": {
+        "closest": "A",
+        "jaccard": 1.0,
+        "uniqueShare": 0.0
+      },
+      "GLW": {
+        "closest": "FFIV",
+        "jaccard": 0.9971,
+        "uniqueShare": 0.0
+      },
+      "HAS": {
+        "closest": "MPWR",
+        "jaccard": 0.9,
+        "uniqueShare": 0.0
+      },
+      "HMC": {
+        "closest": "TM",
+        "jaccard": 0.9956,
+        "uniqueShare": 0.0
+      },
+      "HON": {
+        "closest": "RTO",
+        "jaccard": 0.1987,
+        "uniqueShare": 0.0
+      },
+      "HPE": {
+        "closest": "BBY",
+        "jaccard": 0.7011,
+        "uniqueShare": 0.0398
+      },
+      "HWM": {
+        "closest": "MSFT",
+        "jaccard": 0.283,
+        "uniqueShare": 0.0
+      },
+      "IEX": {
+        "closest": "ALGN",
+        "jaccard": 0.8649,
+        "uniqueShare": 0.0
+      },
+      "INTC": {
+        "closest": "BBY",
+        "jaccard": 0.8894,
+        "uniqueShare": 0.0
+      },
+      "INTU": {
+        "closest": "BTI",
+        "jaccard": 0.445,
+        "uniqueShare": 0.0194
+      },
+      "ISRG": {
+        "closest": "VRT",
+        "jaccard": 0.997,
+        "uniqueShare": 0.0
+      },
+      "ITRN": {
+        "closest": "TEL",
+        "jaccard": 0.8758,
+        "uniqueShare": 0.0
+      },
+      "KDP": {
+        "closest": "ALGN",
+        "jaccard": 0.8682,
+        "uniqueShare": 0.0
+      },
+      "KLAC": {
+        "closest": "BKR",
+        "jaccard": 0.8187,
+        "uniqueShare": 0.0036
+      },
+      "KMB": {
+        "closest": "ALLT",
+        "jaccard": 0.697,
+        "uniqueShare": 0.0498
+      },
+      "KRNT": {
+        "closest": "NVMI",
+        "jaccard": 0.9595,
+        "uniqueShare": 0.0
+      },
+      "LOW": {
+        "closest": "ELTK",
+        "jaccard": 0.3766,
+        "uniqueShare": 0.1273
+      },
+      "LPL": {
+        "closest": "NXPI",
+        "jaccard": 0.9673,
+        "uniqueShare": 0.0
+      },
+      "MAS": {
+        "closest": "BBY",
+        "jaccard": 0.4525,
+        "uniqueShare": 0.0
+      },
+      "MCHP": {
+        "closest": "SONY",
+        "jaccard": 0.9491,
+        "uniqueShare": 0.0061
+      },
+      "MDT": {
+        "closest": "ROK",
+        "jaccard": 0.8118,
+        "uniqueShare": 0.01
+      },
+      "MO": {
+        "closest": "UMC",
+        "jaccard": 0.3261,
+        "uniqueShare": 0.0976
+      },
+      "MPWR": {
+        "closest": "SWKS",
+        "jaccard": 0.96,
+        "uniqueShare": 0.0
+      },
+      "MSFT": {
+        "closest": "SMCI",
+        "jaccard": 0.5396,
+        "uniqueShare": 0.0064
+      },
+      "MSI": {
+        "closest": "CMI",
+        "jaccard": 0.9435,
+        "uniqueShare": 0.0
+      },
+      "MTD": {
+        "closest": "SONY",
+        "jaccard": 0.884,
+        "uniqueShare": 0.0056
+      },
+      "MU": {
+        "closest": "AMD",
+        "jaccard": 0.7713,
+        "uniqueShare": 0.0054
+      },
+      "NOK": {
+        "closest": "TRMB",
+        "jaccard": 0.9909,
+        "uniqueShare": 0.0
+      },
+      "NRG": {
+        "closest": "RL",
+        "jaccard": 0.8957,
+        "uniqueShare": 0.0
+      },
+      "NVDA": {
+        "closest": "SMCI",
+        "jaccard": 0.9291,
+        "uniqueShare": 0.0
+      },
+      "NVMI": {
+        "closest": "CRNT",
+        "jaccard": 0.9971,
+        "uniqueShare": 0.0
+      },
+      "NVX": {
+        "closest": "CRNT",
+        "jaccard": 0.8383,
+        "uniqueShare": 0.0174
+      },
+      "NXPI": {
+        "closest": "LPL",
+        "jaccard": 0.9673,
+        "uniqueShare": 0.0
+      },
+      "NYAX": {
+        "closest": "NVMI",
+        "jaccard": 0.9558,
+        "uniqueShare": 0.0
+      },
+      "ON": {
+        "closest": "NXPI",
+        "jaccard": 0.8826,
+        "uniqueShare": 0.0
+      },
+      "OTIS": {
+        "closest": "CL",
+        "jaccard": 0.9258,
+        "uniqueShare": 0.0
+      },
+      "PCAR": {
+        "closest": "A",
+        "jaccard": 0.9613,
+        "uniqueShare": 0.0
+      },
+      "PHG": {
+        "closest": "CL",
+        "jaccard": 1.0,
+        "uniqueShare": 0.0
+      },
+      "PSNY": {
+        "closest": "ALLE",
+        "jaccard": 0.9882,
+        "uniqueShare": 0.0
+      },
+      "QCOM": {
+        "closest": "TXN",
+        "jaccard": 0.8836,
+        "uniqueShare": 0.0046
+      },
+      "RDWR": {
+        "closest": "AMD",
+        "jaccard": 0.8609,
+        "uniqueShare": 0.0046
+      },
+      "RL": {
+        "closest": "NRG",
+        "jaccard": 0.8957,
+        "uniqueShare": 0.0
+      },
+      "ROK": {
+        "closest": "MDT",
+        "jaccard": 0.8118,
+        "uniqueShare": 0.055
+      },
+      "RTO": {
+        "closest": "HAS",
+        "jaccard": 0.5753,
+        "uniqueShare": 0.0
+      },
+      "SHMD": {
+        "closest": "CAMT",
+        "jaccard": 0.9185,
+        "uniqueShare": 0.0
+      },
+      "SILC": {
+        "closest": "SHMD",
+        "jaccard": 0.8954,
+        "uniqueShare": 0.0104
+      },
+      "SMCI": {
+        "closest": "NVDA",
+        "jaccard": 0.9291,
+        "uniqueShare": 0.0
+      },
+      "SNDK": {
+        "closest": "NVDA",
+        "jaccard": 0.8548,
+        "uniqueShare": 0.0136
+      },
+      "SNT": {
+        "closest": "CRNT",
+        "jaccard": 0.9096,
+        "uniqueShare": 0.0
+      },
+      "SONY": {
+        "closest": "MCHP",
+        "jaccard": 0.9491,
+        "uniqueShare": 0.0
+      },
+      "SSYS": {
+        "closest": "NVMI",
+        "jaccard": 0.9941,
+        "uniqueShare": 0.0
+      },
+      "STM": {
+        "closest": "RL",
+        "jaccard": 0.8537,
+        "uniqueShare": 0.0
+      },
+      "STX": {
+        "closest": "MTD",
+        "jaccard": 0.8704,
+        "uniqueShare": 0.0029
+      },
+      "SWK": {
+        "closest": "EFXT",
+        "jaccard": 1.0,
+        "uniqueShare": 0.0
+      },
+      "SWKS": {
+        "closest": "MPWR",
+        "jaccard": 0.96,
+        "uniqueShare": 0.0
+      },
+      "SYK": {
+        "closest": "ECL",
+        "jaccard": 0.7761,
+        "uniqueShare": 0.0465
+      },
+      "TEL": {
+        "closest": "ITRN",
+        "jaccard": 0.8758,
+        "uniqueShare": 0.0021
+      },
+      "TM": {
+        "closest": "HMC",
+        "jaccard": 0.9956,
+        "uniqueShare": 0.0
+      },
+      "TMUS": {
+        "closest": "RDWR",
+        "jaccard": 0.84,
+        "uniqueShare": 0.0
+      },
+      "TRMB": {
+        "closest": "NOK",
+        "jaccard": 0.9909,
+        "uniqueShare": 0.0
+      },
+      "TSM": {
+        "closest": "NXPI",
+        "jaccard": 0.7768,
+        "uniqueShare": 0.0053
+      },
+      "TXN": {
+        "closest": "INTC",
+        "jaccard": 0.8855,
+        "uniqueShare": 0.0046
+      },
+      "UMC": {
+        "closest": "RTO",
+        "jaccard": 0.4062,
+        "uniqueShare": 0.0
+      },
+      "VRT": {
+        "closest": "ISRG",
+        "jaccard": 0.997,
+        "uniqueShare": 0.0
+      },
+      "WAB": {
+        "closest": "MTD",
+        "jaccard": 0.7287,
+        "uniqueShare": 0.0051
+      },
+      "WDC": {
+        "closest": "LPL",
+        "jaccard": 0.9269,
+        "uniqueShare": 0.0
+      },
+      "WST": {
+        "closest": "LPL",
+        "jaccard": 0.8355,
+        "uniqueShare": 0.0379
+      },
+      "XYL": {
+        "closest": "ECL",
+        "jaccard": 0.9532,
+        "uniqueShare": 0.0169
+      },
+      "ZBH": {
+        "closest": "FLEX",
+        "jaccard": 0.9831,
+        "uniqueShare": 0.0
+      },
+      "ZBRA": {
+        "closest": "BKR",
+        "jaccard": 0.9971,
+        "uniqueShare": 0.0
+      }
+    }
   },
   "nodes": [
     {
