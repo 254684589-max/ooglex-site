@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "ROK",
   "name": "罗克韦尔自动化",
-  "updatedAt": "2026-09-02T16:18:30Z",
+  "updatedAt": "2026-09-07T03:29:53Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -34,12 +34,12 @@
     "droppedNoCid": 0,
     "unique": 691,
     "namedRatio": 0.997,
-    "countryRatio": 0.959
+    "countryRatio": 0.961
   },
   "byCountry": {
     "中国": 233,
-    "印度尼西亚": 66,
-    "美国": 57,
+    "印度尼西亚": 65,
+    "美国": 58,
     "日本": 44,
     "巴西": 27,
     "印度": 23,
@@ -57,8 +57,8 @@
     "奥地利": 6,
     "南非": 6,
     "菲律宾": 5,
-    "未归类": 5,
     "澳大利亚": 5,
+    "未归类": 4,
     "哈萨克斯坦": 4,
     "秘鲁": 4,
     "卢旺达": 4,
@@ -95,7 +95,8 @@
     "挪威": 1,
     "毛里塔尼亚": 1,
     "刚果（金）": 1,
-    "坦桑尼亚": 1
+    "坦桑尼亚": 1,
+    "老挝": 1
   },
   "byMineral": {
     "金": 274,
@@ -3630,13 +3631,12 @@
       "idType": "rmi-cid",
       "cid": "CID001840",
       "name": "Tai Perng",
-      "country": "印度尼西亚",
-      "countryEn": "indonesia",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "金"
       ],
-      "row": 1381,
-      "countryBasis": "rmi-registry"
+      "row": 1381
     },
     {
       "from": "CID001841",
@@ -7055,12 +7055,13 @@
       "idType": "rmi-cid",
       "cid": "CID003194",
       "name": "Geib Refining Corp.",
-      "country": null,
-      "countryEn": null,
+      "country": "美国",
+      "countryEn": "united states of america",
       "minerals": [
         "锡"
       ],
-      "row": 1323
+      "row": 1323,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID003195",
@@ -8364,8 +8365,8 @@
       "idType": "rmi-cid",
       "cid": "CID005017",
       "name": "LAOS SOUTHERN MINING SMELTING SOLE CO.,LTD",
-      "country": null,
-      "countryEn": null,
+      "country": "老挝",
+      "countryEn": "lao people s democratic republic",
       "minerals": [
         "钨"
       ],

@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "RTO",
   "name": "RENTOKIL INITIAL PLC /FI",
-  "updatedAt": "2026-09-05T10:22:50Z",
+  "updatedAt": "2026-09-07T03:29:54Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -37,20 +37,20 @@
     "countryRatio": 0.021
   },
   "byCountry": {
-    "中国": 34,
-    "日本": 23,
-    "美国": 16,
+    "中国": 33,
+    "日本": 22,
+    "美国": 15,
+    "未归类": 10,
     "德国": 10,
     "巴西": 9,
     "瑞士": 5,
-    "俄罗斯": 4,
     "泰国": 4,
-    "印度尼西亚": 4,
-    "未归类": 3,
-    "韩国": 3,
+    "俄罗斯": 3,
+    "印度尼西亚": 3,
     "菲律宾": 2,
     "加拿大": 2,
     "土耳其": 2,
+    "韩国": 2,
     "墨西哥": 2,
     "西班牙": 2,
     "比利时": 2,
@@ -59,7 +59,6 @@
     "意大利": 1,
     "玻利维亚": 1,
     "波兰": 1,
-    "马来西亚": 1,
     "新加坡": 1,
     "秘鲁": 1,
     "爱沙尼亚": 1,
@@ -341,13 +340,12 @@
       "idType": "rmi-cid",
       "cid": "CID000402",
       "name": "Dowa",
-      "country": "日本",
-      "countryEn": "japan",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "锡"
       ],
-      "row": 105,
-      "countryBasis": "rmi-registry"
+      "row": 105
     },
     {
       "from": "CID000438",
@@ -432,13 +430,12 @@
       "idType": "rmi-cid",
       "cid": "CID000568",
       "name": "Global Tungsten & Powders Corp.",
-      "country": "美国",
-      "countryEn": "united states of america",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "钨"
       ],
-      "row": 139,
-      "countryBasis": "rmi-registry"
+      "row": 139
     },
     {
       "from": "CID000616",
@@ -730,13 +727,12 @@
       "idType": "rmi-cid",
       "cid": "CID001105",
       "name": "Malaysia Smelting Corporation (MSC)",
-      "country": "马来西亚",
-      "countryEn": "malaysia",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "锡"
       ],
-      "row": 111,
-      "countryBasis": "rmi-registry"
+      "row": 111
     },
     {
       "from": "CID001113",
@@ -963,13 +959,12 @@
       "idType": "rmi-cid",
       "cid": "CID001277",
       "name": "Ningxia Orient Tantalum Industry Co., Ltd.",
-      "country": "中国",
-      "countryEn": "china",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "钽"
       ],
-      "row": 82,
-      "countryBasis": "rmi-registry"
+      "row": 82
     },
     {
       "from": "CID001314",
@@ -1041,13 +1036,12 @@
       "idType": "rmi-cid",
       "cid": "CID001460",
       "name": "PT Refined Bangka Tin",
-      "country": "印度尼西亚",
-      "countryEn": "indonesia",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "锡"
       ],
-      "row": 118,
-      "countryBasis": "rmi-registry"
+      "row": 118
     },
     {
       "from": "CID001498",
@@ -1093,13 +1087,12 @@
       "idType": "rmi-cid",
       "cid": "CID001555",
       "name": "Samduck Precious Metals",
-      "country": "韩国",
-      "countryEn": "korea republic of",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "金"
       ],
-      "row": 51,
-      "countryBasis": "rmi-registry"
+      "row": 51
     },
     {
       "from": "CID001585",
@@ -1832,13 +1825,12 @@
       "idType": "rmi-cid",
       "cid": "CID002649",
       "name": "Hydrometallurg, JSC",
-      "country": "俄罗斯",
-      "countryEn": "russian federation",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "钨"
       ],
-      "row": 156,
-      "countryBasis": "rmi-registry"
+      "row": 156
     },
     {
       "from": "CID002706",

@@ -72,7 +72,6 @@
     "捷克": 2,
     "法国": 2,
     "乌干达": 2,
-    "未归类": 2,
     "瑞典": 1,
     "吉尔吉斯斯坦": 1,
     "沙特阿拉伯": 1,
@@ -89,7 +88,9 @@
     "缅甸": 1,
     "挪威": 1,
     "哥伦比亚": 1,
-    "坦桑尼亚": 1
+    "未归类": 1,
+    "坦桑尼亚": 1,
+    "老挝": 1
   },
   "byMineral": {
     "金": 186,
@@ -4363,12 +4364,13 @@
       "idType": "rmi-cid",
       "cid": "CID005017",
       "name": "LAOS SOUTHERN MINING SMELTING SOLE CO.,LTD",
-      "country": null,
-      "countryEn": null,
+      "country": "老挝",
+      "countryEn": "lao people s democratic republic",
       "minerals": [
         "钨"
       ],
-      "row": 355
+      "row": 355,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID005067",

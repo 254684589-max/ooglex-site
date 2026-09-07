@@ -1,0 +1,740 @@
+{
+  "contractVersion": 2,
+  "dataset": "supply-chain-edges",
+  "symbol": "OLN",
+  "name": "OLIN Corp",
+  "updatedAt": "2026-09-07T03:29:54Z",
+  "relation": {
+    "id": "smelter-in-supply-chain",
+    "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
+    "tier": "smelter"
+  },
+  "confidence": "disclosed",
+  "direction": {
+    "from": "smelter",
+    "to": "OLN",
+    "toListed": true
+  },
+  "evidence": {
+    "sourceType": "sec-form-sd",
+    "url": "https://www.sec.gov/Archives/edgar/data/74303/000007430326000066/exhibit101.htm",
+    "docDate": "2026-05-29",
+    "form": "SD",
+    "accession": "0000074303-26-000066",
+    "filingDate": "2026-05-29",
+    "reportDate": "",
+    "document": "exhibit101.htm",
+    "indexUrl": "https://www.sec.gov/Archives/edgar/data/74303/000007430326000066/",
+    "totalSD": 10
+  },
+  "parse": {
+    "rowsScanned": 163,
+    "rowsWithCid": 0,
+    "nameOnly": 57,
+    "droppedNoCid": 0,
+    "unique": 56,
+    "namedRatio": 1.0,
+    "countryRatio": 1.0
+  },
+  "byCountry": {
+    "中国": 15,
+    "印度尼西亚": 11,
+    "美国": 8,
+    "越南": 3,
+    "德国": 3,
+    "日本": 2,
+    "玻利维亚": 2,
+    "中国台湾": 2,
+    "巴西": 2,
+    "比利时": 1,
+    "波兰": 1,
+    "卢旺达": 1,
+    "马来西亚": 1,
+    "以色列": 1,
+    "秘鲁": 1,
+    "泰国": 1,
+    "奥地利": 1
+  },
+  "byMineral": {
+    "锡": 29,
+    "钨": 27
+  },
+  "edges": [
+    {
+      "from": "NAME:a-l-m-t-corp",
+      "idType": "name-only",
+      "cid": null,
+      "name": "A.L.M.T. Corp.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钨"
+      ],
+      "row": 102
+    },
+    {
+      "from": "NAME:alpha",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Alpha",
+      "country": "美国",
+      "countryEn": "usa",
+      "minerals": [
+        "锡"
+      ],
+      "row": 103
+    },
+    {
+      "from": "NAME:alpha-assembly-solutions-inc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Alpha Assembly Solutions Inc.",
+      "country": "美国",
+      "countryEn": "usa",
+      "minerals": [
+        "锡"
+      ],
+      "row": 154
+    },
+    {
+      "from": "NAME:asia-tungsten-products-vietnam-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Asia Tungsten Products Vietnam Ltd.",
+      "country": "越南",
+      "countryEn": "vietnam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 160
+    },
+    {
+      "from": "NAME:aurubis-beerse-n-v-formerly-known-as-metallo-belgium-n-v",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Aurubis Beerse N.V. (formerly known as Metallo Belgium N.V.)",
+      "country": "比利时",
+      "countryEn": "belgium",
+      "minerals": [
+        "锡"
+      ],
+      "row": 127
+    },
+    {
+      "from": "NAME:china-tin-group-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "China Tin Group Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 152
+    },
+    {
+      "from": "NAME:chongyi-zhangyan-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Chongyi Zhangyan Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 104
+    },
+    {
+      "from": "NAME:cv-venus-inti-perkasa",
+      "idType": "name-only",
+      "cid": null,
+      "name": "CV Venus Inti Perkasa",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 105
+    },
+    {
+      "from": "NAME:dowa",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Dowa",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "锡"
+      ],
+      "row": 150
+    },
+    {
+      "from": "NAME:em-vinto",
+      "idType": "name-only",
+      "cid": null,
+      "name": "EM Vinto",
+      "country": "玻利维亚",
+      "countryEn": "bolivia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 106
+    },
+    {
+      "from": "NAME:fenix-metals",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Fenix Metals",
+      "country": "波兰",
+      "countryEn": "poland",
+      "minerals": [
+        "锡"
+      ],
+      "row": 107
+    },
+    {
+      "from": "NAME:fujian-xinlu-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Fujian Xinlu Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 108
+    },
+    {
+      "from": "NAME:ganzhou-seadragon-w-mo-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ganzhou Seadragon W & Mo Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 109
+    },
+    {
+      "from": "NAME:global-tungsten-powders-llc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Global Tungsten & Powders LLC",
+      "country": "美国",
+      "countryEn": "usa",
+      "minerals": [
+        "钨"
+      ],
+      "row": 110
+    },
+    {
+      "from": "NAME:guangdong-hanhe-non-ferrous-metal-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Guangdong Hanhe Non-Ferrous Metal Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 111
+    },
+    {
+      "from": "NAME:guangdong-xianglu-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Guangdong Xianglu Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 112
+    },
+    {
+      "from": "NAME:h-c-starck-smelting-gmbh-co-kg",
+      "idType": "name-only",
+      "cid": null,
+      "name": "H.C. Starck Smelting GmbH & Co. KG",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钨"
+      ],
+      "row": 153
+    },
+    {
+      "from": "NAME:h-c-starck-tungsten-gmbh",
+      "idType": "name-only",
+      "cid": null,
+      "name": "H.C. Starck Tungsten GmbH",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钨"
+      ],
+      "row": 113
+    },
+    {
+      "from": "NAME:hubei-green-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Hubei Green Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 114
+    },
+    {
+      "from": "NAME:hunan-shizhuyuan-nonferrous-metals-co-ltd-chenzhou-tungsten-products-branch",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Hunan Shizhuyuan Nonferrous Metals Co., Ltd. Chenzhou Tungsten Products Branch",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 115
+    },
+    {
+      "from": "NAME:jiangwu-h-c-starck-tungsten-products-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiangwu H.C. Starck Tungsten Products Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 117
+    },
+    {
+      "from": "NAME:jiangxi-gan-bei-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiangxi Gan Bei Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 119
+    },
+    {
+      "from": "NAME:jiangxi-xinsheng-tungsten-industry-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiangxi Xinsheng Tungsten Industry Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 118
+    },
+    {
+      "from": "NAME:jiangxi-yaosheng-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiangxi Yaosheng Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 116
+    },
+    {
+      "from": "NAME:jing-yuan-tungsten-technology-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jing Yuan Tungsten Technology Co., Ltd.",
+      "country": "中国台湾",
+      "countryEn": "taiwan",
+      "minerals": [
+        "钨"
+      ],
+      "row": 161
+    },
+    {
+      "from": "NAME:kennametal-fallon",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Kennametal Fallon",
+      "country": "美国",
+      "countryEn": "usa",
+      "minerals": [
+        "钨"
+      ],
+      "row": 120
+    },
+    {
+      "from": "NAME:kennametal-huntsville",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Kennametal Huntsville",
+      "country": "美国",
+      "countryEn": "usa",
+      "minerals": [
+        "钨"
+      ],
+      "row": 121
+    },
+    {
+      "from": "NAME:lianyou-metals-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Lianyou Metals Co., Ltd.",
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 124
+    },
+    {
+      "from": "NAME:luna-smelter-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Luna Smelter, Ltd.",
+      "country": "卢旺达",
+      "countryEn": "rwanda",
+      "minerals": [
+        "锡"
+      ],
+      "row": 156
+    },
+    {
+      "from": "NAME:malaysia-smelting-corporation-msc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Malaysia Smelting Corporation (MSC)",
+      "country": "马来西亚",
+      "countryEn": "malaysia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 125
+    },
+    {
+      "from": "NAME:masan-high-tech-materials",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Masan High-Tech Materials",
+      "country": "越南",
+      "countryEn": "vietnam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 126
+    },
+    {
+      "from": "NAME:metal-tech",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Metal-Tech",
+      "country": "以色列",
+      "countryEn": "israel",
+      "minerals": [
+        "钨"
+      ],
+      "row": 128
+    },
+    {
+      "from": "NAME:metallic-resources-inc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Metallic Resources, Inc.",
+      "country": "美国",
+      "countryEn": "usa",
+      "minerals": [
+        "锡"
+      ],
+      "row": 151
+    },
+    {
+      "from": "NAME:mineracao-taboca-s-a",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Mineracao Taboca S.A.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 129
+    },
+    {
+      "from": "NAME:minsur",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Minsur",
+      "country": "秘鲁",
+      "countryEn": "peru",
+      "minerals": [
+        "锡"
+      ],
+      "row": 131
+    },
+    {
+      "from": "NAME:niagara-refining-llc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Niagara Refining LLC",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钨"
+      ],
+      "row": 132
+    },
+    {
+      "from": "NAME:operaciones-metalurgicas-s-a",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Operaciones Metalurgicas S.A.",
+      "country": "玻利维亚",
+      "countryEn": "bolivia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 133
+    },
+    {
+      "from": "NAME:pt-arsed-indonesia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Arsed Indonesia",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 149
+    },
+    {
+      "from": "NAME:pt-atd-makmur-mandiri-jaya",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT ATD Makmur Mandiri Jaya",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 134
+    },
+    {
+      "from": "NAME:pt-bangka-prima-tin",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Bangka Prima Tin",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 159
+    },
+    {
+      "from": "NAME:pt-menara-cipta-mulia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Menara Cipta Mulia",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 162
+    },
+    {
+      "from": "NAME:pt-mitra-stania-prima",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Mitra Stania Prima",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 135
+    },
+    {
+      "from": "NAME:pt-mitra-sukses-globalindo",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Mitra Sukses Globalindo",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 136
+    },
+    {
+      "from": "NAME:pt-refined-bangka-tin",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Refined Bangka Tin",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 137
+    },
+    {
+      "from": "NAME:pt-stanindo-inti-perkasa",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Stanindo Inti Perkasa",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 163
+    },
+    {
+      "from": "NAME:pt-timah-tbk-kundur",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Timah Tbk Kundur",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 138
+    },
+    {
+      "from": "NAME:pt-timah-tbk-mentok",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Timah Tbk Mentok",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 139
+    },
+    {
+      "from": "NAME:taniobis-smelting-gmbh-co-kg",
+      "idType": "name-only",
+      "cid": null,
+      "name": "TANIOBIS Smelting GmbH & Co. KG",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钨"
+      ],
+      "row": 140
+    },
+    {
+      "from": "NAME:thaisarco",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Thaisarco",
+      "country": "泰国",
+      "countryEn": "thailand",
+      "minerals": [
+        "锡"
+      ],
+      "row": 141
+    },
+    {
+      "from": "NAME:tin-technology-refining",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Tin Technology & Refining",
+      "country": "美国",
+      "countryEn": "usa",
+      "minerals": [
+        "锡"
+      ],
+      "row": 142
+    },
+    {
+      "from": "NAME:tungsten-vietnam-joint-stock-company",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Tungsten Vietnam Joint Stock Company",
+      "country": "越南",
+      "countryEn": "vietnam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 143
+    },
+    {
+      "from": "NAME:white-solder-metalurgia-e-minera-o-ltda",
+      "idType": "name-only",
+      "cid": null,
+      "name": "White Solder Metalurgia e Mineração Ltda.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 147
+    },
+    {
+      "from": "NAME:wolfram-bergbau-und-hutten-ag",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Wolfram Bergbau und Hutten AG",
+      "country": "奥地利",
+      "countryEn": "austria",
+      "minerals": [
+        "钨"
+      ],
+      "row": 148
+    },
+    {
+      "from": "NAME:xiamen-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Xiamen Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 144
+    },
+    {
+      "from": "NAME:xiamen-tungsten-h-c-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Xiamen Tungsten (H.C.) Co. Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 145
+    },
+    {
+      "from": "NAME:yunnan-tin-company-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Yunnan Tin Company Limited",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 146
+    }
+  ],
+  "coverage": {
+    "claimComplete": false,
+    "note": "Form SD 强制申报、不强制列名单，本清单只是该公司披露的部分，且语义是「出现在供应链中」，不是直接供货。"
+  }
+}

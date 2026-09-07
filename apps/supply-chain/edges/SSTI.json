@@ -1,0 +1,89 @@
+{
+  "contractVersion": 2,
+  "dataset": "supply-chain-edges",
+  "symbol": "SSTI",
+  "name": "SOUNDTHINKING, INC.",
+  "updatedAt": "2026-09-07T03:29:54Z",
+  "relation": {
+    "id": "smelter-in-supply-chain",
+    "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
+    "tier": "smelter"
+  },
+  "confidence": "disclosed",
+  "direction": {
+    "from": "smelter",
+    "to": "SSTI",
+    "toListed": true
+  },
+  "evidence": {
+    "sourceType": "sec-form-sd",
+    "url": "https://www.sec.gov/Archives/edgar/data/1351636/000156459021029915/ssti-ex101_72.htm",
+    "docDate": "2021-05-26",
+    "form": "SD",
+    "accession": "0001564590-21-029915",
+    "filingDate": "2021-05-26",
+    "reportDate": "",
+    "document": "ssti-ex101_72.htm",
+    "indexUrl": "https://www.sec.gov/Archives/edgar/data/1351636/000156459021029915/",
+    "totalSD": 2
+  },
+  "parse": {
+    "rowsScanned": 47,
+    "rowsWithCid": 3,
+    "nameOnly": 0,
+    "droppedNoCid": 1,
+    "unique": 3,
+    "namedRatio": 1.0,
+    "countryRatio": 1.0
+  },
+  "byCountry": {
+    "印度尼西亚": 1,
+    "中国": 1,
+    "比利时": 1
+  },
+  "byMineral": {
+    "锡": 3
+  },
+  "edges": [
+    {
+      "from": "CID001482",
+      "idType": "rmi-cid",
+      "cid": "CID001482",
+      "name": "PT Timah Tbk Mentok",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 10
+    },
+    {
+      "from": "CID002180",
+      "idType": "rmi-cid",
+      "cid": "CID002180",
+      "name": "Yunnan Tin Company Limited",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 9
+    },
+    {
+      "from": "CID002773",
+      "idType": "rmi-cid",
+      "cid": "CID002773",
+      "name": "Metallo Belgium N.V.",
+      "country": "比利时",
+      "countryEn": "belgium",
+      "minerals": [
+        "锡"
+      ],
+      "row": 11
+    }
+  ],
+  "coverage": {
+    "claimComplete": false,
+    "note": "Form SD 强制申报、不强制列名单，本清单只是该公司披露的部分，且语义是「出现在供应链中」，不是直接供货。"
+  }
+}

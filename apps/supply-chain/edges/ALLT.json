@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "ALLT",
   "name": "Allot Ltd.",
-  "updatedAt": "2026-09-05T10:22:50Z",
+  "updatedAt": "2026-09-07T03:29:54Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -30,9 +30,9 @@
   "parse": {
     "rowsScanned": 296,
     "rowsWithCid": 0,
-    "nameOnly": 269,
+    "nameOnly": 270,
     "droppedNoCid": 0,
-    "unique": 263,
+    "unique": 264,
     "namedRatio": 1.0,
     "countryRatio": 1.0
   },
@@ -72,6 +72,7 @@
     "坦桑尼亚": 1,
     "哥伦比亚": 1,
     "安道尔": 1,
+    "老挝": 1,
     "新加坡": 1,
     "刚果（金）": 1,
     "爱沙尼亚": 1,
@@ -83,7 +84,7 @@
   "byMineral": {
     "金": 106,
     "锡": 86,
-    "钨": 42,
+    "钨": 43,
     "钽": 35
   },
   "edges": [
@@ -1515,6 +1516,18 @@
         "金"
       ],
       "row": 77
+    },
+    {
+      "from": "NAME:laos-southern-mining-smelting-sole-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "LAOS SOUTHERN MINING SMELTING SOLE CO.,LTD",
+      "country": "老挝",
+      "countryEn": "lao people s democratic republic",
+      "minerals": [
+        "钨"
+      ],
+      "row": 280
     },
     {
       "from": "NAME:lianyou-metals-co-ltd",

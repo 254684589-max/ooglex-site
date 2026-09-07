@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "SHW",
   "name": "宣伟",
-  "updatedAt": "2026-09-02T16:18:30Z",
+  "updatedAt": "2026-09-07T03:29:53Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -38,7 +38,7 @@
   },
   "byCountry": {
     "中国": 2,
-    "马来西亚": 1,
+    "未归类": 1,
     "秘鲁": 1,
     "玻利维亚": 1,
     "印度尼西亚": 1,
@@ -53,13 +53,12 @@
       "idType": "rmi-cid",
       "cid": "CID001105",
       "name": "Malaysia Smelting Corporation (MSC)",
-      "country": "马来西亚",
-      "countryEn": "malaysia",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "锡"
       ],
-      "row": 18,
-      "countryBasis": "rmi-registry"
+      "row": 18
     },
     {
       "from": "CID001182",
