@@ -477,6 +477,52 @@ def main() -> int:
         failures.append("未知国名必须返回 (None, None)，不得猜")
     print(f"  [{'OK' if unknown_ok else 'XX'}] 未知国名不猜              返回 None")
 
+    # **认得出的国家一律要有中文名。** match_country 有一条「认得出是国家但
+    # 没有译名，照原文写」的兜底分支——设计上诚实，可它一旦真被走到，页面上
+    # 就会出现 "AMERICAN SAMOA" 这样的行，而同一个国家的不同大小写各算一行。
+    # run 34 就是这么被发布契约拦下的（South Sudan / VENEZUELA (BOLIVARIAN
+    # REPUBLIC OF) / AMERICAN SAMOA），而当时实测有 65 个同类地雷没踩到。
+    #
+    # 补完之后要有人守着：**往 KNOWN_COUNTRIES 加国家而不加译名，洞就又开了。**
+    # 这条断言就是那个守门人，它不看有没有爆，只看还有没有雷。
+    cjk = re.compile(r"[一-鿿]")
+    no_zh = sorted(n for n in form_sd.KNOWN_COUNTRIES
+                   if not cjk.search(form_sd.match_country(n)[1] or ""))
+    if no_zh:
+        failures.append(f"这些国家认得出却没有中文名，会把英文原文发到页面上："
+                        f"{no_zh[:12]}{' …' if len(no_zh) > 12 else ''}"
+                        f"（共 {len(no_zh)} 个）——去 COUNTRIES 补")
+    print(f"  [{'OK' if not no_zh else 'XX'}] 认得出的国家都有中文名  "
+          f"{len(form_sd.KNOWN_COUNTRIES)} 个识别项，缺译名 {len(no_zh)} 个")
+
+    # 折叠倒装式之后不得出现一键多国——那会把公司放到别国，比没译名严重得多
+    folded: dict = {}
+    clash = []
+    for key, zh in form_sd.COUNTRIES.items():
+        for form in (form_sd._flat(key), form_sd._inverted(key)):
+            if not form:
+                continue
+            if folded.setdefault(form, zh) != zh:
+                clash.append((form, folded[form], zh))
+    if clash:
+        failures.append(f"倒装折叠把不同国家折到同一个键：{clash[:5]}")
+    print(f"  [{'OK' if not clash else 'XX'}] 折叠后无一键多国        "
+          f"{len(folded)} 个查找键")
+
+    # 几对最容易写混的，逐条钉住。写错一个就是把公司放到别国。
+    pairs = [("Dominica", "多米尼克"), ("Dominican Republic", "多米尼加"),
+             ("Guinea", "几内亚"), ("Guinea-Bissau", "几内亚比绍"),
+             ("Equatorial Guinea", "赤道几内亚"),
+             ("Saint Martin", "法属圣马丁"), ("Sint Maarten", "荷属圣马丁"),
+             ("Congo", "刚果（布）"),
+             ("Congo, Democratic Republic of the", "刚果（金）"),
+             ("South Sudan", "南苏丹"), ("South Georgia", "南乔治亚和南桑威奇群岛")]
+    wrong = [(n, w, form_sd.match_country(n)[1]) for n, w in pairs
+             if form_sd.match_country(n)[1] != w]
+    if wrong:
+        failures.append(f"易混国名对错了：{wrong}")
+    print(f"  [{'OK' if not wrong else 'XX'}] 易混国名逐对核过        {len(pairs)} 对")
+
     # 严格矿种列：整格是矿种词才算，含矿种词的厂名不得被吞成矿种列
     strict = [("Gold", True), ("Tin", True), ("Tin/Tungsten", True), ("Gold and Tin", True),
               ("Changsha South Tantalum Niobium Co", False), ("Gold Refinery Ltd", False),

@@ -226,7 +226,60 @@ def _inverted(text: str) -> str:
 
 def _index(pairs) -> dict:
     """原形与倒装形都进索引；先到先得，不覆盖已有键。"""
-    out: dict = {}
+    out: dict = {
+    # ── 一次补全：认得出的国家一律要有中文名 ──────────────────────────────
+    # run 34 被发布契约拦下，原因是新池的申报里冒出三个没有译名的写法
+    # （South Sudan、VENEZUELA (BOLIVARIAN REPUBLIC OF)、AMERICAN SAMOA），
+    # 走了「认得出是国家但没有译名，照原文写」那条兜底分支。
+    #
+    # **不打地鼠。** 逐个补那三条，下次换一批小国照样再爆一次。实测
+    # KNOWN_COUNTRIES 里有 65 个走这条分支——它们全是地雷，只是还没踩到。
+    # 补齐之后，兜底分支对**认得出的国家**永不触发，剩下的只有真正没见过的
+    # 写法，那才是该报出来让人补的。
+    #
+    # 其中 South Sudan 是 §1502 受涵盖国家：与上一轮刚果（金）同一类漏网，
+    # 这次哨兵在上线前抓住了。
+    #
+    # 几个容易写混的，逐条核过：多米尼克(Dominica) ≠ 多米尼加(Dominican
+    # Republic)；几内亚 / 几内亚比绍 / 赤道几内亚是三个国家；法属圣马丁
+    # (Saint Martin) 与荷属圣马丁(Sint Maarten) 是同岛两治；南乔治亚是岛，
+    # 不是格鲁吉亚。**凭印象写错一个就是把公司放到别国。**
+    "aland islands": "奥兰群岛", "american samoa": "美属萨摩亚",
+    "anguilla": "安圭拉", "antarctica": "南极洲", "aruba": "阿鲁巴",
+    "belize": "伯利兹", "bonaire": "博奈尔", "bouvet island": "布韦岛",
+    "british indian ocean territory": "英属印度洋领地",
+    "cabo verde": "佛得角", "cape verde": "佛得角",
+    "christmas island": "圣诞岛", "cocos islands": "科科斯群岛",
+    "congo democratic republic of the": "刚果（金）",
+    "cook islands": "库克群岛", "cote divoire": "科特迪瓦",
+    "dominica": "多米尼克", "el salvador": "萨尔瓦多",
+    "equatorial guinea": "赤道几内亚", "falkland islands": "福克兰群岛",
+    "faroe islands": "法罗群岛", "french southern territories": "法属南部领地",
+    "gambia": "冈比亚", "grenada": "格林纳达", "guadeloupe": "瓜德罗普",
+    "guinea bissau": "几内亚比绍", "holy see": "梵蒂冈",
+    "kiribati": "基里巴斯", "lao peoples democratic republic": "老挝",
+    "macao": "中国澳门", "maldives": "马尔代夫", "martinique": "马提尼克",
+    "mayotte": "马约特", "micronesia federated states of": "密克罗尼西亚联邦",
+    "montserrat": "蒙特塞拉特", "nauru": "瑙鲁", "niue": "纽埃",
+    "norfolk island": "诺福克岛", "northern mariana islands": "北马里亚纳群岛",
+    "palau": "帕劳", "palestine state of": "巴勒斯坦", "reunion": "留尼汪",
+    "saint barthelemy": "圣巴泰勒米", "saint helena": "圣赫勒拿",
+    "saint kitts and nevis": "圣基茨和尼维斯", "saint lucia": "圣卢西亚",
+    "saint martin": "法属圣马丁", "sint maarten": "荷属圣马丁",
+    "saint pierre and miquelon": "圣皮埃尔和密克隆",
+    "saint vincent and the grenadines": "圣文森特和格林纳丁斯",
+    "sao tome and principe": "圣多美和普林西比", "seychelles": "塞舌尔",
+    "south georgia": "南乔治亚和南桑威奇群岛", "south sudan": "南苏丹",
+    "svalbard": "斯瓦尔巴和扬马延", "tokelau": "托克劳",
+    "turks and caicos islands": "特克斯和凯科斯群岛", "tuvalu": "图瓦卢",
+    "united states minor outlying islands": "美国本土外小岛屿",
+    "venezuela bolivarian republic of": "委内瑞拉",
+    # 光写 "Virgin Islands" 在英文里就分不出英属还是美属；中文照样不点明，
+    # **不替原文补它没说的信息**。带限定词的两条各自映射。
+    "virgin islands": "维尔京群岛", "virgin islands us": "美属维尔京群岛",
+    "wallis and futuna": "瓦利斯和富图纳", "western sahara": "西撒哈拉",
+    "comoros": "科摩罗",
+}
     for key, value in pairs:
         for form in (_flat(key), _inverted(key)):
             if form:
