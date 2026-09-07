@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "BRSL",
   "name": "Brightstar Lottery PLC",
-  "updatedAt": "2026-09-05T10:22:50Z",
+  "updatedAt": "2026-09-07T03:29:54Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -30,9 +30,9 @@
   "parse": {
     "rowsScanned": 523,
     "rowsWithCid": 0,
-    "nameOnly": 469,
+    "nameOnly": 470,
     "droppedNoCid": 0,
-    "unique": 452,
+    "unique": 453,
     "namedRatio": 1.0,
     "countryRatio": 1.0
   },
@@ -84,6 +84,7 @@
     "吉尔吉斯斯坦": 1,
     "沙特阿拉伯": 1,
     "安道尔": 1,
+    "老挝": 1,
     "新加坡": 1,
     "刚果（金）": 1,
     "新西兰": 1,
@@ -95,7 +96,7 @@
   "byMineral": {
     "金": 207,
     "锡": 122,
-    "钨": 76,
+    "钨": 77,
     "钽": 56
   },
   "edges": [
@@ -2709,6 +2710,18 @@
       "row": 243
     },
     {
+      "from": "NAME:laos-southern-mining-smelting-sole-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "LAOS SOUTHERN MINING SMELTING SOLE CO.,LTD",
+      "country": "老挝",
+      "countryEn": "lao people s democratic republic",
+      "minerals": [
+        "钨"
+      ],
+      "row": 233
+    },
+    {
       "from": "NAME:lianyou-metals-co-ltd",
       "idType": "name-only",
       "cid": null,
@@ -3195,7 +3208,7 @@
       "cid": null,
       "name": "Mining Minerals Resources SARL",
       "country": "刚果（金）",
-      "countryEn": "democratic republic of the congo",
+      "countryEn": "congo democratic republic of the",
       "minerals": [
         "锡"
       ],

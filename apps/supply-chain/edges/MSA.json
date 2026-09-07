@@ -1,0 +1,7930 @@
+{
+  "contractVersion": 2,
+  "dataset": "supply-chain-edges",
+  "symbol": "MSA",
+  "name": "MSA Safety Inc",
+  "updatedAt": "2026-09-07T03:29:54Z",
+  "relation": {
+    "id": "smelter-in-supply-chain",
+    "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
+    "tier": "smelter"
+  },
+  "confidence": "disclosed",
+  "direction": {
+    "from": "smelter",
+    "to": "MSA",
+    "toListed": true
+  },
+  "evidence": {
+    "sourceType": "sec-form-sd",
+    "url": "https://www.sec.gov/Archives/edgar/data/66570/000006657026000017/a2025formsdexhibit-101.htm",
+    "docDate": "2026-05-28",
+    "form": "SD",
+    "accession": "0000066570-26-000017",
+    "filingDate": "2026-05-28",
+    "reportDate": "",
+    "document": "a2025formsdexhibit-101.htm",
+    "indexUrl": "https://www.sec.gov/Archives/edgar/data/66570/000006657026000017/",
+    "totalSD": 12
+  },
+  "parse": {
+    "rowsScanned": 709,
+    "rowsWithCid": 348,
+    "nameOnly": 321,
+    "droppedNoCid": 0,
+    "unique": 650,
+    "namedRatio": 1.0,
+    "countryRatio": 1.0
+  },
+  "byCountry": {
+    "中国": 199,
+    "印度尼西亚": 66,
+    "美国": 51,
+    "日本": 47,
+    "巴西": 25,
+    "德国": 24,
+    "韩国": 23,
+    "俄罗斯": 23,
+    "印度": 22,
+    "越南": 16,
+    "中国台湾": 14,
+    "阿联酋": 8,
+    "瑞士": 8,
+    "南非": 7,
+    "马来西亚": 7,
+    "泰国": 7,
+    "意大利": 6,
+    "哈萨克斯坦": 5,
+    "秘鲁": 5,
+    "比利时": 5,
+    "菲律宾": 5,
+    "加拿大": 4,
+    "西班牙": 4,
+    "澳大利亚": 4,
+    "卢旺达": 4,
+    "奥地利": 4,
+    "哥伦比亚": 3,
+    "捷克": 3,
+    "新加坡": 3,
+    "乌兹别克斯坦": 3,
+    "土耳其": 3,
+    "墨西哥": 3,
+    "智利": 2,
+    "缅甸": 2,
+    "荷兰": 2,
+    "中国香港": 2,
+    "玻利维亚": 2,
+    "波兰": 2,
+    "爱沙尼亚": 2,
+    "法国": 2,
+    "乌干达": 2,
+    "美属萨摩亚": 1,
+    "埃塞俄比亚": 1,
+    "斯洛伐克": 1,
+    "北马其顿": 1,
+    "毛里塔尼亚": 1,
+    "爱尔兰": 1,
+    "赞比亚": 1,
+    "瑞典": 1,
+    "吉尔吉斯斯坦": 1,
+    "沙特阿拉伯": 1,
+    "新西兰": 1,
+    "津巴布韦": 1,
+    "苏丹": 1,
+    "葡萄牙": 1,
+    "安道尔": 1,
+    "立陶宛": 1,
+    "加纳": 1,
+    "挪威": 1,
+    "刚果（金）": 1,
+    "坦桑尼亚": 1,
+    "老挝": 1
+  },
+  "byMineral": {
+    "金": 259,
+    "锡": 217,
+    "钨": 112,
+    "钽": 77
+  },
+  "edges": [
+    {
+      "from": "NAME:5n-plus",
+      "idType": "name-only",
+      "cid": null,
+      "name": "5N Plus",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "锡"
+      ],
+      "row": 361
+    },
+    {
+      "from": "NAME:a-l-m-t-corp",
+      "idType": "name-only",
+      "cid": null,
+      "name": "A.L.M.T. Corp.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钨",
+        "锡"
+      ],
+      "row": 364
+    },
+    {
+      "from": "NAME:academy-precious-metals-china-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Academy Precious Metals (China) Co. LTD",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 12
+    },
+    {
+      "from": "NAME:aktyubinsk-copper-company-too",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Aktyubinsk Copper Company TOO",
+      "country": "哈萨克斯坦",
+      "countryEn": "kazakhstan",
+      "minerals": [
+        "金"
+      ],
+      "row": 17
+    },
+    {
+      "from": "NAME:alpha-metals-korea-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Alpha Metals Korea Ltd",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "锡"
+      ],
+      "row": 366
+    },
+    {
+      "from": "NAME:alta-group",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Alta Group",
+      "country": "美属萨摩亚",
+      "countryEn": "american samoa",
+      "minerals": [
+        "钨"
+      ],
+      "row": 595
+    },
+    {
+      "from": "NAME:amalgamet-inc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Amalgamet Inc",
+      "country": "秘鲁",
+      "countryEn": "peru",
+      "minerals": [
+        "锡"
+      ],
+      "row": 367
+    },
+    {
+      "from": "NAME:american-iron-and-metal",
+      "idType": "name-only",
+      "cid": null,
+      "name": "American Iron and Metal",
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "锡"
+      ],
+      "row": 368
+    },
+    {
+      "from": "NAME:an-thai-minerals-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "An Thai Minerals Co., Ltd.",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "锡"
+      ],
+      "row": 369
+    },
+    {
+      "from": "NAME:angelcast-enterprise-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Angelcast Enterprise Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 371
+    },
+    {
+      "from": "NAME:anhui-herrman-impex-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "ANHUI HERRMAN IMPEX CO., LTD",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 282
+    },
+    {
+      "from": "NAME:arco-alloys-corp",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Arco Alloys Corp.",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "锡"
+      ],
+      "row": 372
+    },
+    {
+      "from": "NAME:ary-aurum-plus",
+      "idType": "name-only",
+      "cid": null,
+      "name": "ARY Aurum Plus",
+      "country": "阿联酋",
+      "countryEn": "united arab emirates",
+      "minerals": [
+        "金"
+      ],
+      "row": 24
+    },
+    {
+      "from": "NAME:asaka-riken-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Asaka Riken Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 283
+    },
+    {
+      "from": "NAME:aura-ii",
+      "idType": "name-only",
+      "cid": null,
+      "name": "AURA-II",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 33
+    },
+    {
+      "from": "NAME:axismateria-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Axismateria LTD.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钨"
+      ],
+      "row": 600
+    },
+    {
+      "from": "NAME:baiyin-nonferrous-group-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Baiyin Nonferrous Group Co.,Ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 35
+    },
+    {
+      "from": "NAME:balver-zinn-josef-jost-gmbh-co-kg",
+      "idType": "name-only",
+      "cid": null,
+      "name": "BALVER ZINN Josef Jost GmbH & Co. KG",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "锡"
+      ],
+      "row": 375
+    },
+    {
+      "from": "NAME:bauer-walser-ag",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Bauer Walser AG",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 38
+    },
+    {
+      "from": "NAME:beijing-zenith-materials",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Beijing Zenith Materials",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 601
+    },
+    {
+      "from": "NAME:beseem-mining-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "BESEEM MINING CO., LTD.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 604
+    },
+    {
+      "from": "NAME:c-i-metales-procesados-industriales-sas",
+      "idType": "name-only",
+      "cid": null,
+      "name": "C.I Metales Procesados Industriales SAS",
+      "country": "哥伦比亚",
+      "countryEn": "colombia",
+      "minerals": [
+        "金"
+      ],
+      "row": 41
+    },
+    {
+      "from": "NAME:cabot-global-advanced-metals",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Cabot (Global Advanced Metals)",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 285
+    },
+    {
+      "from": "NAME:central-bank-of-the-dpr-of-korea",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Central Bank of the DPR of Korea",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 45
+    },
+    {
+      "from": "NAME:cfc-cooperativa-dos-fundidores-de-cassiterita-da-amazonia-ltda",
+      "idType": "name-only",
+      "cid": null,
+      "name": "CFC Cooperativa dos Fundidores de Cassiterita da Amazonia Ltda.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 376
+    },
+    {
+      "from": "NAME:changchun-up-optotech-holding-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Changchun UP Optotech (Holding) Co.,Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 605
+    },
+    {
+      "from": "NAME:changsha-south-tantalum-niobium-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Changsha South Tantalum Niobium Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 286
+    },
+    {
+      "from": "NAME:changzhou-chemical-research-institute-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Changzhou Chemical Research Institute Co., LTD",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 47
+    },
+    {
+      "from": "NAME:china-gold-deal-investment-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "China Gold Deal Investment Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 51
+    },
+    {
+      "from": "NAME:china-gold-international-resources-corp-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "China Gold International Resources Corp. Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 52
+    },
+    {
+      "from": "NAME:china-national-gold-group-corporation",
+      "idType": "name-only",
+      "cid": null,
+      "name": "China National Gold Group Corporation",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 53
+    },
+    {
+      "from": "NAME:china-national-nonferrous-metals-imp-exp-jiangxi-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "China National Nonferrous Metals Imp. & Exp. Jiangxi Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 607
+    },
+    {
+      "from": "NAME:chongyi-zhangyuan-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Chongyi Zhangyuan Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 287
+    },
+    {
+      "from": "NAME:cmt-rare-metal-advanced-materials-hunan-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "CMT Rare Metal Advanced Materials (Hunan) Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 288
+    },
+    {
+      "from": "NAME:cnmc-guangxi-pgma-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "CNMC (Guangxi) PGMA Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 380
+    },
+    {
+      "from": "NAME:codelco",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Codelco",
+      "country": "智利",
+      "countryEn": "chile",
+      "minerals": [
+        "金"
+      ],
+      "row": 55
+    },
+    {
+      "from": "NAME:colt-refining",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Colt Refining",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 57
+    },
+    {
+      "from": "NAME:cookson-group",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Cookson Group",
+      "country": "西班牙",
+      "countryEn": "spain",
+      "minerals": [
+        "金"
+      ],
+      "row": 58
+    },
+    {
+      "from": "NAME:cooperativa-metalurgica-de-rondonia-ltda",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Cooperativa Metalurgica de Rondonia Ltda.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 381
+    },
+    {
+      "from": "NAME:cp-metals-inc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "CP Metals Inc.",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钨",
+        "钽"
+      ],
+      "row": 289
+    },
+    {
+      "from": "NAME:cv-ayi-jaya",
+      "idType": "name-only",
+      "cid": null,
+      "name": "CV Ayi Jaya",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 384
+    },
+    {
+      "from": "NAME:cv-dua-sekawan",
+      "idType": "name-only",
+      "cid": null,
+      "name": "CV Dua Sekawan",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 385
+    },
+    {
+      "from": "NAME:cv-duta-putra-bangka",
+      "idType": "name-only",
+      "cid": null,
+      "name": "CV Duta Putra Bangka",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 388
+    },
+    {
+      "from": "NAME:cv-gita-pesona",
+      "idType": "name-only",
+      "cid": null,
+      "name": "CV Gita Pesona",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 389
+    },
+    {
+      "from": "NAME:cv-makmur-jaya",
+      "idType": "name-only",
+      "cid": null,
+      "name": "CV Makmur Jaya",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 390
+    },
+    {
+      "from": "NAME:cv-united-smelting",
+      "idType": "name-only",
+      "cid": null,
+      "name": "CV United Smelting",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 391
+    },
+    {
+      "from": "NAME:cv-venus-inti-perkasa",
+      "idType": "name-only",
+      "cid": null,
+      "name": "CV Venus Inti Perkasa",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 392
+    },
+    {
+      "from": "NAME:da-nang-processing-import-and-export-joint-stock",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Da Nang Processing Import and Export Joint Stock",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "锡"
+      ],
+      "row": 393
+    },
+    {
+      "from": "NAME:daejin-indus-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Daejin Indus Co., Ltd.",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 59
+    },
+    {
+      "from": "NAME:daeryongenc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "DaeryongENC",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 60
+    },
+    {
+      "from": "NAME:dayu-jincheng-tungsten-industry-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Dayu Jincheng Tungsten Industry Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 612
+    },
+    {
+      "from": "NAME:dayu-weiliang-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Dayu Weiliang Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 613
+    },
+    {
+      "from": "NAME:dingnan-jiawang-huanbao-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "DingNan JiaWang HuanBao Co. LTD",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 394
+    },
+    {
+      "from": "NAME:doduco-contacts-and-refining-gmbh",
+      "idType": "name-only",
+      "cid": null,
+      "name": "DODUCO Contacts and Refining GmbH",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 64
+    },
+    {
+      "from": "NAME:dong-guan-shi-xi-da-han-xi-product-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "DONG GUAN SHI XI DA HAN XI PRODUCT CO., LTD",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 395
+    },
+    {
+      "from": "NAME:dongguan-standard-electronic-material-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Dongguan Standard Electronic Material.Co.,Ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 65
+    },
+    {
+      "from": "NAME:dragon-silver-holdings-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Dragon Silver Holdings Limited",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 399
+    },
+    {
+      "from": "NAME:ds-myanmar",
+      "idType": "name-only",
+      "cid": null,
+      "name": "DS Myanmar",
+      "country": "缅甸",
+      "countryEn": "myanmar",
+      "minerals": [
+        "锡"
+      ],
+      "row": 400
+    },
+    {
+      "from": "NAME:duoluoshan",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Duoluoshan",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 291
+    },
+    {
+      "from": "NAME:e-s-r-electronics",
+      "idType": "name-only",
+      "cid": null,
+      "name": "E.S.R. Electronics",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 292
+    },
+    {
+      "from": "NAME:elemetal-refining-llc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Elemetal Refining, LLC",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金",
+        "锡"
+      ],
+      "row": 72
+    },
+    {
+      "from": "NAME:esg-edelmetallservice-gmbh-co-kg",
+      "idType": "name-only",
+      "cid": null,
+      "name": "ESG Edelmetallservice GmbH & Co. KG",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 79
+    },
+    {
+      "from": "NAME:ethiopian-minerals-development-share-company",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ethiopian Minerals Development Share Company",
+      "country": "埃塞俄比亚",
+      "countryEn": "ethiopia",
+      "minerals": [
+        "钽"
+      ],
+      "row": 293
+    },
+    {
+      "from": "NAME:exotech-inc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Exotech Inc.",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 294
+    },
+    {
+      "from": "NAME:faggi-enrico-s-p-a",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Faggi Enrico S.p.A.",
+      "country": "意大利",
+      "countryEn": "italy",
+      "minerals": [
+        "金"
+      ],
+      "row": 80
+    },
+    {
+      "from": "NAME:feinh-tte-halsbr-cke-gmbh",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Feinhütte Halsbrücke GmbH",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "锡"
+      ],
+      "row": 406
+    },
+    {
+      "from": "NAME:fujian-ganmin-raremetal-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Fujian Ganmin RareMetal Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 615
+    },
+    {
+      "from": "NAME:fujian-jinxin-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Fujian Jinxin Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 616
+    },
+    {
+      "from": "NAME:gannon-scott",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Gannon & Scott",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 297
+    },
+    {
+      "from": "NAME:ganxian-shirui-new-material-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ganxian Shirui New Material Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 618
+    },
+    {
+      "from": "NAME:ganzhou-haichuang-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ganzhou Haichuang Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 619
+    },
+    {
+      "from": "NAME:ganzhou-hongfei-tungsten-molybdenum-materials-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ganzhou Hongfei Tungsten & Molybdenum Materials Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 620
+    },
+    {
+      "from": "NAME:ganzhou-huaxing-tungsten-products-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ganzhou Huaxing Tungsten Products Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 621
+    },
+    {
+      "from": "NAME:ganzhou-non-ferrous-metals-smelting-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ganzhou Non-ferrous Metals Smelting Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 623
+    },
+    {
+      "from": "NAME:ganzhou-sunny-non-ferrous-metals-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ganzhou Sunny Non-Ferrous Metals Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 625
+    },
+    {
+      "from": "NAME:ganzhou-yatai-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ganzhou Yatai Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 626
+    },
+    {
+      "from": "NAME:geib-refining-corporation",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Geib Refining Corporation",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 84
+    },
+    {
+      "from": "NAME:gejiu-fengming-metallurgy-chemical-plant",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Gejiu Fengming Metallurgy Chemical Plant",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 409
+    },
+    {
+      "from": "NAME:gejiu-jinye-mineral-company",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Gejiu Jinye Mineral Company",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 410
+    },
+    {
+      "from": "NAME:gold-bell-group",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Gold Bell Group",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 416
+    },
+    {
+      "from": "NAME:guangxi-hua-tin-gold-minute-fee-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "GUANGXI HUA TIN GOLD MINUTE FEE, LTD.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 418
+    },
+    {
+      "from": "NAME:guangxi-non-ferrous-metals-group-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Guangxi Non-ferrous Metals Group Co..ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 419
+    },
+    {
+      "from": "NAME:guangxi-zhongshan-jin-yi-smelting-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Guangxi Zhongshan Jin Yi Smelting Co., Ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 420
+    },
+    {
+      "from": "NAME:guanyang-guida-nonferrous-metal-smelting-plant",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Guanyang Guida Nonferrous Metal Smelting Plant",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 421
+    },
+    {
+      "from": "NAME:guizhou-zhenhua-xinyun-technology-ltd-kaili-branch",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Guizhou Zhenhua Xinyun Technology Ltd., Kaili branch",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 301
+    },
+    {
+      "from": "NAME:h-c-starck-gmbh-laufenburg",
+      "idType": "name-only",
+      "cid": null,
+      "name": "H.C. Starck GmbH Laufenburg",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钽"
+      ],
+      "row": 304
+    },
+    {
+      "from": "NAME:hang-seng-technology",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Hang Seng Technology",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 95
+    },
+    {
+      "from": "NAME:henan-yuguang-gold-lead-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Henan Yuguang Gold & Lead Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 98
+    },
+    {
+      "from": "NAME:heraeus-deutschland-gmbh-co-kg",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Heraeus Deutschland GmbH & Co. KG",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "锡"
+      ],
+      "row": 422
+    },
+    {
+      "from": "NAME:heraeus-metals-hong-kong-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Heraeus Metals Hong Kong Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 423
+    },
+    {
+      "from": "NAME:heraeus-precious-metals-north-america-hpmn",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Heraeus Precious Metals North America (HPMN)",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 101
+    },
+    {
+      "from": "NAME:hezhou-jinwei-tin-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Hezhou Jinwei Tin Co., Ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 427
+    },
+    {
+      "from": "NAME:hi-temp-specialty-metals-inc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Hi-Temp Specialty Metals, Inc.",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 306
+    },
+    {
+      "from": "NAME:hightech-components-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "HighTech Components Co., Ltd.",
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 428
+    },
+    {
+      "from": "NAME:hongqiao-metals-kunshan-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Hongqiao Metals (Kunshan) Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 429
+    },
+    {
+      "from": "NAME:house-of-currency-of-brazil-casa-da-moeda-do-brazil",
+      "idType": "name-only",
+      "cid": null,
+      "name": "House of Currency of Brazil (Casa da Moeda do Brazil)",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "金"
+      ],
+      "row": 102
+    },
+    {
+      "from": "NAME:huichang-jinshunda-tin-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Huichang Jinshunda Tin Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 431
+    },
+    {
+      "from": "NAME:huizhou-lian-jing-metal-material-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "HUIZHOU LIAN JING METAL MATERIAL CO.,LTD",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 432
+    },
+    {
+      "from": "NAME:hunan-chenzhou-mining-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Hunan Chenzhou Mining Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 632
+    },
+    {
+      "from": "NAME:hunan-chuangda-vanadium-tungsten-co-ltd-wuji",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Hunan Chuangda Vanadium Tungsten Co., Ltd. Wuji",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 633
+    },
+    {
+      "from": "NAME:hunan-chuangda-vanadium-tungsten-co-ltd-yanglin",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Hunan Chuangda Vanadium Tungsten Co., Ltd. Yanglin",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 634
+    },
+    {
+      "from": "NAME:hunan-litian-tungsten-industry-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Hunan Litian Tungsten Industry Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 636
+    },
+    {
+      "from": "NAME:hunan-xianghualing-tin-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Hunan Xianghualing Tin Co. ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 433
+    },
+    {
+      "from": "NAME:hung-cheong-metal-manufacturing-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Hung Cheong Metal Manufacturing Limited",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 105
+    },
+    {
+      "from": "NAME:hutti-gold-mines-company-limited-hgml",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Hutti Gold Mines Company Limited (HGML)",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 106
+    },
+    {
+      "from": "NAME:i-pex-inc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "I-PEX Inc.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金",
+        "锡"
+      ],
+      "row": 114
+    },
+    {
+      "from": "NAME:ibf-ind-brasileira-de-ferrolligas-ltda",
+      "idType": "name-only",
+      "cid": null,
+      "name": "IBF IND Brasileira de Ferrolligas Ltda",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 434
+    },
+    {
+      "from": "NAME:impala-platinum-rustenburg-smelter",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Impala Platinum - Rustenburg Smelter",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 109
+    },
+    {
+      "from": "NAME:impala-refineries-base-metals-refinery-bmr",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Impala Refineries – Base Metals Refinery (BMR)",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 110
+    },
+    {
+      "from": "NAME:jean-goldschmidt-international-s-a",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jean GOLDSCHMIDT INTERNATIONAL S.A.",
+      "country": "比利时",
+      "countryEn": "belgium",
+      "minerals": [
+        "锡"
+      ],
+      "row": 436
+    },
+    {
+      "from": "NAME:jiangxi-ketai-advanced-material-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiangxi Ketai Advanced Material Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 437
+    },
+    {
+      "from": "NAME:jiangxi-richsea-new-materials-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiangxi Richsea New Materials Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 645
+    },
+    {
+      "from": "NAME:jiangxi-tungsten-industry-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiangxi Tungsten Industry Co Ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 647
+    },
+    {
+      "from": "NAME:jiangxi-xianglu-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiangxi Xianglu Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 648
+    },
+    {
+      "from": "NAME:jiangxi-xiushui-xianggan-nonferrous-metals-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiangxi Xiushui Xianggan Nonferrous Metals Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 650
+    },
+    {
+      "from": "NAME:jiangxi-yaosheng-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiangxi Yaosheng Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 439
+    },
+    {
+      "from": "NAME:jiangxi-yichun",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiangxi Yichun",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 310
+    },
+    {
+      "from": "NAME:jinlong-copper-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jinlong Copper Co.,Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 121
+    },
+    {
+      "from": "NAME:jiujiang-janny-new-material-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiujiang Janny New Material Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 311
+    },
+    {
+      "from": "NAME:ju-tai-industrial-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "JU TAI INDUSTRIAL CO.,LTD",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 440
+    },
+    {
+      "from": "NAME:jx-nippon-mining-metals-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "JX Nippon Mining & Metals Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 315
+    },
+    {
+      "from": "NAME:kemet-blue-powder",
+      "idType": "name-only",
+      "cid": null,
+      "name": "KEMET Blue Powder",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 316
+    },
+    {
+      "from": "NAME:kennametal-huntsville",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Kennametal Huntsville",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "锡"
+      ],
+      "row": 442
+    },
+    {
+      "from": "NAME:kgets-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "KGETS Co., Ltd.",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "钨"
+      ],
+      "row": 657
+    },
+    {
+      "from": "NAME:king-tan-tantalum-industry-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "King-Tan Tantalum Industry Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 318
+    },
+    {
+      "from": "NAME:kinross-gold-corporation",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Kinross Gold Corporation",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "锡"
+      ],
+      "row": 443
+    },
+    {
+      "from": "NAME:kobe-steel-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "KOBE STEEL, LTD.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 444
+    },
+    {
+      "from": "NAME:koki-company-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "KOKI Company Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "锡"
+      ],
+      "row": 445
+    },
+    {
+      "from": "NAME:korea-metal-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Korea Metal Co., Ltd.",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 135
+    },
+    {
+      "from": "NAME:kovohute-pribram-nastupnicka-a-s",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Kovohute Pribram nastupnicka, a. s.",
+      "country": "捷克",
+      "countryEn": "czechia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 446
+    },
+    {
+      "from": "NAME:kp-sanghvi-international-pvt-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "KP Sanghvi International Pvt Ltd",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 137
+    },
+    {
+      "from": "NAME:kunshan-jinli-chemical-industry-reagents-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Kunshan Jinli chemical industry reagents co.,Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 139
+    },
+    {
+      "from": "NAME:kyocera-group",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Kyocera Group",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 140
+    },
+    {
+      "from": "NAME:lingbao-jinyuan-mining-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Lingbao Jinyuan Mining Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 447
+    },
+    {
+      "from": "NAME:linwu-xianggui-ore-smelting-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Linwu Xianggui Ore Smelting Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 448
+    },
+    {
+      "from": "NAME:m-s-eco-tropical-resources",
+      "idType": "name-only",
+      "cid": null,
+      "name": "M/s ECO Tropical Resources",
+      "country": "新加坡",
+      "countryEn": "singapore",
+      "minerals": [
+        "锡"
+      ],
+      "row": 451
+    },
+    {
+      "from": "NAME:ma-on-shuguang-smelting-plant",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ma On Shuguang Smelting Plant",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 452
+    },
+    {
+      "from": "NAME:materials-eco-refining-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Materials Eco-Refining CO.,LTD",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "锡"
+      ],
+      "row": 456
+    },
+    {
+      "from": "NAME:medeko-cast-s-r-o",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Medeko cast, s.r.o.",
+      "country": "斯洛伐克",
+      "countryEn": "slovakia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 457
+    },
+    {
+      "from": "NAME:meta-materials",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Meta Materials",
+      "country": "北马其顿",
+      "countryEn": "north macedonia",
+      "minerals": [
+        "钽"
+      ],
+      "row": 320
+    },
+    {
+      "from": "NAME:metahub-industries-sdn-bhd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Metahub Industries Sdn. Bhd.",
+      "country": "马来西亚",
+      "countryEn": "malaysia",
+      "minerals": [
+        "金",
+        "锡"
+      ],
+      "row": 155
+    },
+    {
+      "from": "NAME:metal-do-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "METAL DO CO.,LTD",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 321
+    },
+    {
+      "from": "NAME:metalor-technologies-s-a",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Metalor Technologies S.A.",
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "锡"
+      ],
+      "row": 461
+    },
+    {
+      "from": "NAME:meterion-advanced-materials-thin-film-products",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Meterion Advanced Materials Thin Film Products",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钨",
+        "钽"
+      ],
+      "row": 323
+    },
+    {
+      "from": "NAME:minchali-metal-industry-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Minchali Metal Industry Co.,Ltd",
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 462
+    },
+    {
+      "from": "NAME:ming-li-jia-smelt-metal-factory",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ming Li Jia Smelt Metal Factory",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 464
+    },
+    {
+      "from": "NAME:minmetals-ganzhou-tin-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Minmetals Ganzhou Tin Co. Ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨",
+        "锡"
+      ],
+      "row": 466
+    },
+    {
+      "from": "NAME:mitsui-mining-and-smelting-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Mitsui Mining and Smelting Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钨"
+      ],
+      "row": 667
+    },
+    {
+      "from": "NAME:morris-and-watson-gold-coast",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Morris and Watson Gold Coast",
+      "country": "澳大利亚",
+      "countryEn": "australia",
+      "minerals": [
+        "金"
+      ],
+      "row": 171
+    },
+    {
+      "from": "NAME:nanchang-cemented-carbide-limited-liability-company",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Nanchang Cemented Carbide Limited Liability Company",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 670
+    },
+    {
+      "from": "NAME:ney-metals-and-alloys",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ney Metals and Alloys",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "锡"
+      ],
+      "row": 472
+    },
+    {
+      "from": "NAME:nihon-superior-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Nihon Superior Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金",
+        "锡"
+      ],
+      "row": 179
+    },
+    {
+      "from": "NAME:ningxia-orient-tantalum-industry-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ningxia Orient Tantalum Industry Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 672
+    },
+    {
+      "from": "NAME:novosibirsk",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Novosibirsk",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "金"
+      ],
+      "row": 181
+    },
+    {
+      "from": "NAME:nyrstar-clarksville",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Nyrstar Clarksville",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 182
+    },
+    {
+      "from": "NAME:ojsc-kolyma-refinery",
+      "idType": "name-only",
+      "cid": null,
+      "name": "OJSC Kolyma Refinery",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "金"
+      ],
+      "row": 186
+    },
+    {
+      "from": "NAME:phoenix-metal-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Phoenix Metal Ltd.",
+      "country": "卢旺达",
+      "countryEn": "rwanda",
+      "minerals": [
+        "锡"
+      ],
+      "row": 480
+    },
+    {
+      "from": "NAME:plansee-group",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Plansee Group",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钨"
+      ],
+      "row": 679
+    },
+    {
+      "from": "NAME:plansee-se-liezen",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Plansee SE Liezen",
+      "country": "奥地利",
+      "countryEn": "austria",
+      "minerals": [
+        "钽"
+      ],
+      "row": 328
+    },
+    {
+      "from": "NAME:plansee-se-reutte",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Plansee SE Reutte",
+      "country": "奥地利",
+      "countryEn": "austria",
+      "minerals": [
+        "钽"
+      ],
+      "row": 329
+    },
+    {
+      "from": "NAME:pm-kalco-inc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PM Kalco Inc",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 330
+    },
+    {
+      "from": "NAME:pobedit-jsc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Pobedit, JSC",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 680
+    },
+    {
+      "from": "NAME:praxair-n-v",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Praxair N.V.",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钨"
+      ],
+      "row": 681
+    },
+    {
+      "from": "NAME:precious-metal-sales",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Precious Metal Sales",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 190
+    },
+    {
+      "from": "NAME:pt-alam-lestari-kencana",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Alam Lestari Kencana",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 483
+    },
+    {
+      "from": "NAME:pt-aneka-tambang-persero-tbk",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Aneka Tambang (Persero) Tbk",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 484
+    },
+    {
+      "from": "NAME:pt-aries-kencana-sejahtera",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Aries Kencana Sejahtera",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 485
+    },
+    {
+      "from": "NAME:pt-artha-cipta-langgeng",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Artha Cipta Langgeng",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 487
+    },
+    {
+      "from": "NAME:pt-babel-inti-perkasa",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Babel Inti Perkasa",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 489
+    },
+    {
+      "from": "NAME:pt-babel-surya-alam-lestari",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Babel Surya Alam Lestari",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 490
+    },
+    {
+      "from": "NAME:pt-bangka-kudai-tin",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Bangka Kudai Tin",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 491
+    },
+    {
+      "from": "NAME:pt-bangka-putra-karya",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Bangka Putra Karya",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 493
+    },
+    {
+      "from": "NAME:pt-bangka-serumpun",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Bangka Serumpun",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 494
+    },
+    {
+      "from": "NAME:pt-bangka-timah-utama-sejahtera",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Bangka Timah Utama Sejahtera",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 495
+    },
+    {
+      "from": "NAME:pt-bangka-tin-industry",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Bangka Tin Industry",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 496
+    },
+    {
+      "from": "NAME:pt-belitung-industri-sejahtera",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Belitung Industri Sejahtera",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 497
+    },
+    {
+      "from": "NAME:pt-billitin-makmur-lestari",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT BilliTin Makmur Lestari",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 498
+    },
+    {
+      "from": "NAME:pt-bukit-timah",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Bukit Timah",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 499
+    },
+    {
+      "from": "NAME:pt-citralogam-alphasejahtera",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT. CITRALOGAM ALPHASEJAHTERA",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 541
+    },
+    {
+      "from": "NAME:pt-ds-jaya-abadi",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT DS Jaya Abadi",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 501
+    },
+    {
+      "from": "NAME:pt-eunindo-usaha-mandiri",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Eunindo Usaha Mandiri",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 502
+    },
+    {
+      "from": "NAME:pt-fang-di-multindo",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Fang Di MulTindo",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 503
+    },
+    {
+      "from": "NAME:pt-hp-metals-indonesia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT HP Metals Indonesia",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 504
+    },
+    {
+      "from": "NAME:pt-inti-stania-prima",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Inti Stania Prima",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 505
+    },
+    {
+      "from": "NAME:pt-justindo",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Justindo",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 506
+    },
+    {
+      "from": "NAME:pt-karimun-mining",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Karimun Mining",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 507
+    },
+    {
+      "from": "NAME:pt-kijang-jaya-mandiri",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Kijang Jaya Mandiri",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 508
+    },
+    {
+      "from": "NAME:pt-koba-tin",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Koba Tin",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 509
+    },
+    {
+      "from": "NAME:pt-lautan-harmonis-sejahtera",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Lautan Harmonis Sejahtera",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 510
+    },
+    {
+      "from": "NAME:pt-masbro-alam-stania",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Masbro Alam Stania",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 511
+    },
+    {
+      "from": "NAME:pt-menara-cipta-mulia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Menara Cipta Mulia",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 512
+    },
+    {
+      "from": "NAME:pt-mitra-graha-raya",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Mitra Graha Raya",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 513
+    },
+    {
+      "from": "NAME:pt-o-m-indonesia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT O.M. Indonesia",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 518
+    },
+    {
+      "from": "NAME:pt-panca-mega-persada",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Panca Mega Persada",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 519
+    },
+    {
+      "from": "NAME:pt-rajawali-rimba-perkasa",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Rajawali Rimba Perkasa",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 523
+    },
+    {
+      "from": "NAME:pt-refined-bangka-tin",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT REFINED BANGKA TIN",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 525
+    },
+    {
+      "from": "NAME:pt-sariwiguna-binasentosa",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Sariwiguna Binasentosa",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 526
+    },
+    {
+      "from": "NAME:pt-seirama-tin-investment",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Seirama Tin investment",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 527
+    },
+    {
+      "from": "NAME:pt-singkep-times-utama",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Singkep Times Utama",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 528
+    },
+    {
+      "from": "NAME:pt-stanindo-inti-perkasa",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Stanindo Inti Perkasa",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 529
+    },
+    {
+      "from": "NAME:pt-sukses-inti-makmur-sim",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Sukses Inti Makmur (SIM)",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 530
+    },
+    {
+      "from": "NAME:pt-sumber-jaya-indah",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Sumber Jaya Indah",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 531
+    },
+    {
+      "from": "NAME:pt-supra-sukses-trinusa",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Supra Sukses Trinusa",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 532
+    },
+    {
+      "from": "NAME:pt-timah-nusantara",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Timah Nusantara",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 533
+    },
+    {
+      "from": "NAME:pt-timah-persero-tbk",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Timah (Persero) Tbk",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "金"
+      ],
+      "row": 193
+    },
+    {
+      "from": "NAME:pt-tinindo-inter-nusa",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Tinindo Inter Nusa",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 536
+    },
+    {
+      "from": "NAME:pt-tirus-putra-mandiri",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Tirus Putra Mandiri",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 537
+    },
+    {
+      "from": "NAME:pt-tommy-utama",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Tommy Utama",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 538
+    },
+    {
+      "from": "NAME:pt-wahana-perkit-jaya",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Wahana Perkit Jaya",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 539
+    },
+    {
+      "from": "NAME:pt-yinchendo-mining-industry",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Yinchendo Mining Industry",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 540
+    },
+    {
+      "from": "NAME:qsil-metals-hermsdorf-gmbh",
+      "idType": "name-only",
+      "cid": null,
+      "name": "QSIL Metals Hermsdorf GmbH",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钽"
+      ],
+      "row": 332
+    },
+    {
+      "from": "NAME:quantumclean",
+      "idType": "name-only",
+      "cid": null,
+      "name": "QuantumClean",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 333
+    },
+    {
+      "from": "NAME:redring-solder-m-sdn-bhd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "RedRing Solder (M) Sdn. Bhd.",
+      "country": "马来西亚",
+      "countryEn": "malaysia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 542
+    },
+    {
+      "from": "NAME:republic-metals-corporation",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Republic Metals Corporation",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 199
+    },
+    {
+      "from": "NAME:rfh-recycling-metals-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "RFH Recycling Metals Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 335
+    },
+    {
+      "from": "NAME:rian-resources-sdn-bhd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Rian Resources SDN. BHD.",
+      "country": "马来西亚",
+      "countryEn": "malaysia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 544
+    },
+    {
+      "from": "NAME:rui-da-hung",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Rui Da Hung",
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 337
+    },
+    {
+      "from": "NAME:samhwa-non-ferrorus-metal-ind-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Samhwa non-ferrorus Metal ind.co.ltd",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "锡"
+      ],
+      "row": 547
+    },
+    {
+      "from": "NAME:sancus-zfs-l-orfebre-sa",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Sancus ZFS (L’Orfebre, SA)",
+      "country": "哥伦比亚",
+      "countryEn": "colombia",
+      "minerals": [
+        "金"
+      ],
+      "row": 209
+    },
+    {
+      "from": "NAME:sanher-tungsten-vietnam-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Sanher Tungsten Vietnam Co., Ltd.",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 683
+    },
+    {
+      "from": "NAME:sanmenxia-hengsheng-science-and-technology-r-d-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "SANMENXIA HENGSHENG SCIENCE AND TECHNOLOGY R&D CO.,LTD",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 210
+    },
+    {
+      "from": "NAME:saxonia-edelmetalle-gmbh",
+      "idType": "name-only",
+      "cid": null,
+      "name": "SAXONIA Edelmetalle GmbH",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 211
+    },
+    {
+      "from": "NAME:schone-edelmetaal-b-v",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Schone Edelmetaal B.V.",
+      "country": "荷兰",
+      "countryEn": "netherlands",
+      "minerals": [
+        "金"
+      ],
+      "row": 212
+    },
+    {
+      "from": "NAME:scotiamocatta-the-bank-of-nova-scotia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "ScotiaMocatta, The Bank of Nova Scotia",
+      "country": "中国香港",
+      "countryEn": "hong kong",
+      "minerals": [
+        "金"
+      ],
+      "row": 213
+    },
+    {
+      "from": "NAME:sellem-industries-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Sellem Industries Ltd.",
+      "country": "毛里塔尼亚",
+      "countryEn": "mauritania",
+      "minerals": [
+        "金"
+      ],
+      "row": 214
+    },
+    {
+      "from": "NAME:senju-metal-industry-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Senju Metal Industry Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "锡"
+      ],
+      "row": 548
+    },
+    {
+      "from": "NAME:shan-tou-shi-yong-yuan-jin-shu-zai-sheng-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Shan Tou Shi Yong Yuan Jin Shu Zai Sheng Co. Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金",
+        "锡"
+      ],
+      "row": 216
+    },
+    {
+      "from": "NAME:shandong-yanggu-xiangguang-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Shandong Yanggu Xiangguang Co. Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 222
+    },
+    {
+      "from": "NAME:shandong-zhongkuang-group-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Shandong Zhongkuang Group Co.,Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 224
+    },
+    {
+      "from": "NAME:shang-hai-gold-exchange",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Shang Hai Gold Exchange",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 225
+    },
+    {
+      "from": "NAME:shanghai-jiangxi-metals-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Shanghai Jiangxi Metals Co. Ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 338
+    },
+    {
+      "from": "NAME:shanghai-yueqiang-metal-products-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "ShangHai YueQiang Metal Products Co., LTD",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 550
+    },
+    {
+      "from": "NAME:shangrao-xuri-smelting-factory",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Shangrao Xuri Smelting Factory",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 551
+    },
+    {
+      "from": "NAME:shenzhen-heng-zhong-industry-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Shenzhen Heng Zhong Industry Co.,Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 227
+    },
+    {
+      "from": "NAME:shenzhen-yi-cheng-industrial",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Shenzhen Yi Cheng Industrial",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 552
+    },
+    {
+      "from": "NAME:sigma-tin-alloy-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "SIGMA TIN ALLOY CO., LTD",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 553
+    },
+    {
+      "from": "NAME:sincemat-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Sincemat Co, Ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 687
+    },
+    {
+      "from": "NAME:sino-platinum-metals-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Sino-platinum Metals CO.,Ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 233
+    },
+    {
+      "from": "NAME:sizer-metals-pte-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "SIZER METALS PTE LTD",
+      "country": "新加坡",
+      "countryEn": "singapore",
+      "minerals": [
+        "锡"
+      ],
+      "row": 554
+    },
+    {
+      "from": "NAME:so-accurate-group-inc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "So Accurate Group, Inc.",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 234
+    },
+    {
+      "from": "NAME:soft-metais-ltda",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Soft Metais Ltda.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 555
+    },
+    {
+      "from": "NAME:soleil-metals-chala-one-plant",
+      "idType": "name-only",
+      "cid": null,
+      "name": "SOLEIL METALS (Chala One Plant)",
+      "country": "秘鲁",
+      "countryEn": "peru",
+      "minerals": [
+        "金"
+      ],
+      "row": 237
+    },
+    {
+      "from": "NAME:soleil-metals-yakari-plant",
+      "idType": "name-only",
+      "cid": null,
+      "name": "SOLEIL METALS (YAKARI Plant)",
+      "country": "秘鲁",
+      "countryEn": "peru",
+      "minerals": [
+        "金"
+      ],
+      "row": 238
+    },
+    {
+      "from": "NAME:south-east-nonferrous-metal-company-limited-of-hengyang-city",
+      "idType": "name-only",
+      "cid": null,
+      "name": "South-East Nonferrous Metal Company Limited of Hengyang City",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 688
+    },
+    {
+      "from": "NAME:spectro-alloys-corp",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Spectro Alloys Corp",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "锡"
+      ],
+      "row": 556
+    },
+    {
+      "from": "NAME:standard-bank-group",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Standard Bank Group",
+      "country": "中国香港",
+      "countryEn": "hong kong",
+      "minerals": [
+        "金"
+      ],
+      "row": 240
+    },
+    {
+      "from": "NAME:sumitomo-metal-mining-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Sumitomo Metal Mining Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钨",
+        "锡"
+      ],
+      "row": 557
+    },
+    {
+      "from": "NAME:suntain-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "SUNTAIN CO., LTD.",
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "金"
+      ],
+      "row": 245
+    },
+    {
+      "from": "NAME:suzhou-jun-xiang-electronic-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Suzhou Jun Xiang Electronic Co., Ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 559
+    },
+    {
+      "from": "NAME:suzhou-nuonengda-chemical-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "SUZHOU NUONENGDA CHEMICAL CO.,LTD",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 560
+    },
+    {
+      "from": "NAME:suzhou-xingrui-noble-metal-material-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Suzhou Xingrui Noble Metal Material Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 247
+    },
+    {
+      "from": "NAME:taegutec-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "TaeguTec Ltd.",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "钨"
+      ],
+      "row": 690
+    },
+    {
+      "from": "NAME:tai-zhou-chang-san-jiao-electron-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Tai zhou chang san Jiao electron Co.,Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 249
+    },
+    {
+      "from": "NAME:taicang-city-nancang-metal-material-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Taicang City Nancang Metal Material Co.,Ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 561
+    },
+    {
+      "from": "NAME:taike-technology-suzhou",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Taike Technology (Suzhou)",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 340
+    },
+    {
+      "from": "NAME:tamura-corporation",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Tamura Corporation",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "锡"
+      ],
+      "row": 565
+    },
+    {
+      "from": "NAME:tantalite-resources",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Tantalite Resources",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "钽"
+      ],
+      "row": 348
+    },
+    {
+      "from": "NAME:tejing-vietnam-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Tejing (Vietnam) Tungsten Co., Ltd.",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 692
+    },
+    {
+      "from": "NAME:thai-nguyen-mining-and-metallurgy-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Thai Nguyen Mining and Metallurgy Co., Ltd.",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "锡"
+      ],
+      "row": 566
+    },
+    {
+      "from": "NAME:thaisarco",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Thaisarco",
+      "country": "泰国",
+      "countryEn": "thailand",
+      "minerals": [
+        "钨"
+      ],
+      "row": 693
+    },
+    {
+      "from": "NAME:tianshui-long-bo-technology-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "TIANSHUI LONG BO TECHNOLOGY CO.,LTD",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 568
+    },
+    {
+      "from": "NAME:tin-plating-gejiu",
+      "idType": "name-only",
+      "cid": null,
+      "name": "TIN PLATING GEJIU",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 569
+    },
+    {
+      "from": "NAME:tokin-electronics-thailand-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "TOKIN Electronics (Thailand) Co., Ltd.",
+      "country": "泰国",
+      "countryEn": "thailand",
+      "minerals": [
+        "钽"
+      ],
+      "row": 350
+    },
+    {
+      "from": "NAME:tongding-metal-material-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Tongding Metal Material Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 572
+    },
+    {
+      "from": "NAME:tranzact-inc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Tranzact, Inc.",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 351
+    },
+    {
+      "from": "NAME:tratho-metal-quimica",
+      "idType": "name-only",
+      "cid": null,
+      "name": "TRATHO Metal Quimica",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 573
+    },
+    {
+      "from": "NAME:tsai-brother-industries",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Tsai Brother Industries",
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "金"
+      ],
+      "row": 256
+    },
+    {
+      "from": "NAME:tsk-pretech",
+      "idType": "name-only",
+      "cid": null,
+      "name": "TSK Pretech",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 257
+    },
+    {
+      "from": "NAME:tungsten-diversified-industries-llc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Tungsten Diversified Industries LLC",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钨"
+      ],
+      "row": 695
+    },
+    {
+      "from": "NAME:ultracore-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ultracore Co., Ltd.",
+      "country": "泰国",
+      "countryEn": "thailand",
+      "minerals": [
+        "锡"
+      ],
+      "row": 575
+    },
+    {
+      "from": "NAME:ulvac-inc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "ULVAC, Inc.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 353
+    },
+    {
+      "from": "NAME:umicore-brasil-ltda",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Umicore Brasil Ltda.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "金"
+      ],
+      "row": 258
+    },
+    {
+      "from": "NAME:union-bank-of-switzerland-ubs",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Union Bank of Switzerland (UBS)",
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 263
+    },
+    {
+      "from": "NAME:united-kingdom-of-great-britain-and-northern-ireland",
+      "idType": "name-only",
+      "cid": null,
+      "name": "UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND",
+      "country": "爱尔兰",
+      "countryEn": "ireland",
+      "minerals": [
+        "金",
+        "钨",
+        "钽",
+        "锡"
+      ],
+      "row": 146
+    },
+    {
+      "from": "NAME:universal-precious-metals-refining-zambia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Universal Precious Metals Refining Zambia",
+      "country": "赞比亚",
+      "countryEn": "zambia",
+      "minerals": [
+        "金"
+      ],
+      "row": 265
+    },
+    {
+      "from": "NAME:uzbekistan-technological-metallurgical-complex-jsc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Uzbekistan Technological Metallurgical Complex JSC",
+      "country": "乌兹别克斯坦",
+      "countryEn": "uzbekistan",
+      "minerals": [
+        "钨"
+      ],
+      "row": 698
+    },
+    {
+      "from": "NAME:v-d-new-materials-jiangsu-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "V&D New Materials (Jiangsu) Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 354
+    },
+    {
+      "from": "NAME:value-trading-bv",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Value Trading BV",
+      "country": "比利时",
+      "countryEn": "belgium",
+      "minerals": [
+        "金"
+      ],
+      "row": 267
+    },
+    {
+      "from": "NAME:vietnam-youngsun-tungsten-industry-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Vietnam Youngsun Tungsten Industry Co., Ltd.",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 699
+    },
+    {
+      "from": "NAME:welley-solder-corporation",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Welley Solder Corporation",
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 577
+    },
+    {
+      "from": "NAME:westfalenzinn",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Westfalenzinn",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "锡"
+      ],
+      "row": 578
+    },
+    {
+      "from": "NAME:westmetall-gmbh-co-kg",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Westmetall GmbH & Co. KG",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "锡"
+      ],
+      "row": 579
+    },
+    {
+      "from": "NAME:woltech-korea-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Woltech Korea Co., Ltd.",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "钨"
+      ],
+      "row": 701
+    },
+    {
+      "from": "NAME:wuxi-yunxi-sanye-solder-factory",
+      "idType": "name-only",
+      "cid": null,
+      "name": "WUXI YUNXI SANYE SOLDER FACTORY",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 582
+    },
+    {
+      "from": "NAME:wuzhong-group",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Wuzhong Group",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 271
+    },
+    {
+      "from": "NAME:xiamen-golden-egret-special-alloy-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Xiamen Golden Egret Special Alloy Co. Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 702
+    },
+    {
+      "from": "NAME:xiamen-honglu-tungsten-molybdenum-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Xiamen Honglu Tungsten Molybdenum Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨",
+        "锡"
+      ],
+      "row": 583
+    },
+    {
+      "from": "NAME:xiamen-yiquan-precision-metal-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "XiaMen YiQuan Precision Metal Co., Ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 584
+    },
+    {
+      "from": "NAME:ximei-resources-guizhou-technology-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "XIMEI RESOURCES(GUIZHOU) TECHNOLOGY CO., LTD.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 356
+    },
+    {
+      "from": "NAME:xin-furukawa-metal-wuxi-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Xin Furukawa Metal ( Wuxi ) Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 585
+    },
+    {
+      "from": "NAME:xinfeng-huarui-tungsten-molybdenum-new-material-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Xinfeng Huarui Tungsten & Molybdenum New Material Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 706
+    },
+    {
+      "from": "NAME:xinhai-rendan-shaoguan-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Xinhai Rendan Shaoguan Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 707
+    },
+    {
+      "from": "NAME:xinxing-haorong-electronic-material-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "XinXing HaoRong Electronic Material Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 357
+    },
+    {
+      "from": "NAME:yamato-denki-ind-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Yamato Denki Ind. Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 273
+    },
+    {
+      "from": "NAME:yantai-zhaojin-kanfort-precious-metals-incorporated-company",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Yantai Zhaojin Kanfort Precious Metals Incorporated Company",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 274
+    },
+    {
+      "from": "NAME:yichun-jin-yang-rare-metal-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Yichun Jin Yang Rare Metal Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 359
+    },
+    {
+      "from": "NAME:yifeng-tin-industry-chenzhou-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Yifeng Tin Industry (Chenzhou) Co Ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 586
+    },
+    {
+      "from": "NAME:yunnan-gold-mining-group-co-ltd-ygmg",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Yunnan Gold Mining Group Co., Ltd. (YGMG)",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 277
+    },
+    {
+      "from": "NAME:zhe-jiang-guang-yuan-noble-metal-smelting-factory",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Zhe Jiang Guang Yuan Noble Metal Smelting Factory",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 278
+    },
+    {
+      "from": "NAME:zhongshan-jinye-smelting-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Zhongshan Jinye Smelting Co., Ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 589
+    },
+    {
+      "from": "NAME:zhuhai-horyison-solder-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Zhuhai Horyison Solder Co.,Ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 590
+    },
+    {
+      "from": "NAME:zhuzhou-cemented-carbide-group-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Zhuzhou Cemented Carbide Group Co. Ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨",
+        "钽"
+      ],
+      "row": 360
+    },
+    {
+      "from": "CID000004",
+      "idType": "rmi-cid",
+      "cid": "CID000004",
+      "name": "A.L.M.T. Corp.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钨"
+      ],
+      "row": 592
+    },
+    {
+      "from": "CID000015",
+      "idType": "rmi-cid",
+      "cid": "CID000015",
+      "name": "Advanced Chemical Company",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 13
+    },
+    {
+      "from": "CID000019",
+      "idType": "rmi-cid",
+      "cid": "CID000019",
+      "name": "Aida Chemical Industries Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 16
+    },
+    {
+      "from": "CID000035",
+      "idType": "rmi-cid",
+      "cid": "CID000035",
+      "name": "Agosi AG",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 15
+    },
+    {
+      "from": "CID000041",
+      "idType": "rmi-cid",
+      "cid": "CID000041",
+      "name": "Almalyk Mining and Metallurgical Complex (AMMC)",
+      "country": "乌兹别克斯坦",
+      "countryEn": "uzbekistan",
+      "minerals": [
+        "金"
+      ],
+      "row": 21
+    },
+    {
+      "from": "CID000058",
+      "idType": "rmi-cid",
+      "cid": "CID000058",
+      "name": "AngloGold Ashanti Corrego do Sitio Mineracao",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "金"
+      ],
+      "row": 22
+    },
+    {
+      "from": "CID000077",
+      "idType": "rmi-cid",
+      "cid": "CID000077",
+      "name": "Argor-Heraeus S.A.",
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 23
+    },
+    {
+      "from": "CID000082",
+      "idType": "rmi-cid",
+      "cid": "CID000082",
+      "name": "ASAHI METALFINE, Inc.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 25
+    },
+    {
+      "from": "CID000090",
+      "idType": "rmi-cid",
+      "cid": "CID000090",
+      "name": "Asaka Riken Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 28
+    },
+    {
+      "from": "CID000103",
+      "idType": "rmi-cid",
+      "cid": "CID000103",
+      "name": "Atasay Kuyumculuk Sanayi Ve Ticaret A.S.",
+      "country": "土耳其",
+      "countryEn": "turkey",
+      "minerals": [
+        "金"
+      ],
+      "row": 29
+    },
+    {
+      "from": "CID000105",
+      "idType": "rmi-cid",
+      "cid": "CID000105",
+      "name": "Kennametal Huntsville",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钨"
+      ],
+      "row": 656
+    },
+    {
+      "from": "CID000113",
+      "idType": "rmi-cid",
+      "cid": "CID000113",
+      "name": "Aurubis AG",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 34
+    },
+    {
+      "from": "CID000128",
+      "idType": "rmi-cid",
+      "cid": "CID000128",
+      "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
+      "country": "菲律宾",
+      "countryEn": "philippines",
+      "minerals": [
+        "金"
+      ],
+      "row": 37
+    },
+    {
+      "from": "CID000157",
+      "idType": "rmi-cid",
+      "cid": "CID000157",
+      "name": "Boliden Ronnskar",
+      "country": "瑞典",
+      "countryEn": "sweden",
+      "minerals": [
+        "金"
+      ],
+      "row": 39
+    },
+    {
+      "from": "CID000176",
+      "idType": "rmi-cid",
+      "cid": "CID000176",
+      "name": "C. Hafner GmbH + Co. KG",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 40
+    },
+    {
+      "from": "CID000180",
+      "idType": "rmi-cid",
+      "cid": "CID000180",
+      "name": "Caridad",
+      "country": "墨西哥",
+      "countryEn": "mexico",
+      "minerals": [
+        "金"
+      ],
+      "row": 42
+    },
+    {
+      "from": "CID000185",
+      "idType": "rmi-cid",
+      "cid": "CID000185",
+      "name": "CCR Refinery - Glencore Canada Corporation",
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "金"
+      ],
+      "row": 43
+    },
+    {
+      "from": "CID000189",
+      "idType": "rmi-cid",
+      "cid": "CID000189",
+      "name": "Cendres + Metaux S.A.",
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 44
+    },
+    {
+      "from": "CID000197",
+      "idType": "rmi-cid",
+      "cid": "CID000197",
+      "name": "Yunnan Copper Industry Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 276
+    },
+    {
+      "from": "CID000218",
+      "idType": "rmi-cid",
+      "cid": "CID000218",
+      "name": "Guangdong Xianglu Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 628
+    },
+    {
+      "from": "CID000228",
+      "idType": "rmi-cid",
+      "cid": "CID000228",
+      "name": "Chenzhou Yunxiang Mining and Metallurgy Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 377
+    },
+    {
+      "from": "CID000233",
+      "idType": "rmi-cid",
+      "cid": "CID000233",
+      "name": "Chimet S.p.A.",
+      "country": "意大利",
+      "countryEn": "italy",
+      "minerals": [
+        "金"
+      ],
+      "row": 48
+    },
+    {
+      "from": "CID000258",
+      "idType": "rmi-cid",
+      "cid": "CID000258",
+      "name": "Chongyi Zhangyuan Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 608
+    },
+    {
+      "from": "CID000264",
+      "idType": "rmi-cid",
+      "cid": "CID000264",
+      "name": "Chugai Mining",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 54
+    },
+    {
+      "from": "CID000281",
+      "idType": "rmi-cid",
+      "cid": "CID000281",
+      "name": "CNMC (Guangxi) PGMA Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 609
+    },
+    {
+      "from": "CID000291",
+      "idType": "rmi-cid",
+      "cid": "CID000291",
+      "name": "Guangdong Rising Rare Metals-EO Materials Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 300
+    },
+    {
+      "from": "CID000292",
+      "idType": "rmi-cid",
+      "cid": "CID000292",
+      "name": "Alpha Assembly Solutions Inc",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "锡"
+      ],
+      "row": 365
+    },
+    {
+      "from": "CID000313",
+      "idType": "rmi-cid",
+      "cid": "CID000313",
+      "name": "PT Premium Tin Indonesia",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 520
+    },
+    {
+      "from": "CID000343",
+      "idType": "rmi-cid",
+      "cid": "CID000343",
+      "name": "Daye Non-Ferrous Metals Mining Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 61
+    },
+    {
+      "from": "CID000359",
+      "idType": "rmi-cid",
+      "cid": "CID000359",
+      "name": "DSC (Do Sung Corporation)",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 68
+    },
+    {
+      "from": "CID000377",
+      "idType": "rmi-cid",
+      "cid": "CID000377",
+      "name": "Dongguan Best Alloys Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 396
+    },
+    {
+      "from": "CID000401",
+      "idType": "rmi-cid",
+      "cid": "CID000401",
+      "name": "Dowa",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 67
+    },
+    {
+      "from": "CID000402",
+      "idType": "rmi-cid",
+      "cid": "CID000402",
+      "name": "Dowa",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "锡"
+      ],
+      "row": 398
+    },
+    {
+      "from": "CID000425",
+      "idType": "rmi-cid",
+      "cid": "CID000425",
+      "name": "Eco-System Recycling Co., Ltd. East Plant",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 69
+    },
+    {
+      "from": "CID000438",
+      "idType": "rmi-cid",
+      "cid": "CID000438",
+      "name": "EM Vinto",
+      "country": "玻利维亚",
+      "countryEn": "bolivia plurinational state of",
+      "minerals": [
+        "锡"
+      ],
+      "row": 403
+    },
+    {
+      "from": "CID000448",
+      "idType": "rmi-cid",
+      "cid": "CID000448",
+      "name": "Estanho de Rondonia S.A.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 404
+    },
+    {
+      "from": "CID000460",
+      "idType": "rmi-cid",
+      "cid": "CID000460",
+      "name": "F&X Electro-Materials Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 295
+    },
+    {
+      "from": "CID000468",
+      "idType": "rmi-cid",
+      "cid": "CID000468",
+      "name": "Fenix Metals",
+      "country": "波兰",
+      "countryEn": "poland",
+      "minerals": [
+        "锡"
+      ],
+      "row": 407
+    },
+    {
+      "from": "CID000493",
+      "idType": "rmi-cid",
+      "cid": "CID000493",
+      "name": "JSC Novosibirsk Refinery",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "金"
+      ],
+      "row": 123
+    },
+    {
+      "from": "CID000522",
+      "idType": "rmi-cid",
+      "cid": "CID000522",
+      "name": "Refinery of Seemine Gold Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 197
+    },
+    {
+      "from": "CID000538",
+      "idType": "rmi-cid",
+      "cid": "CID000538",
+      "name": "Gejiu Non-Ferrous Metal Processing Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 412
+    },
+    {
+      "from": "CID000555",
+      "idType": "rmi-cid",
+      "cid": "CID000555",
+      "name": "Gejiu Zili Mining And Metallurgy Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 414
+    },
+    {
+      "from": "CID000568",
+      "idType": "rmi-cid",
+      "cid": "CID000568",
+      "name": "Global Tungsten & Powders LLC",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钨"
+      ],
+      "row": 627
+    },
+    {
+      "from": "CID000616",
+      "idType": "rmi-cid",
+      "cid": "CID000616",
+      "name": "XIMEI RESOURCES (GUANGDONG) LIMITED",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 355
+    },
+    {
+      "from": "CID000651",
+      "idType": "rmi-cid",
+      "cid": "CID000651",
+      "name": "Guoda Safina High-Tech Environmental Refinery Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 94
+    },
+    {
+      "from": "CID000671",
+      "idType": "rmi-cid",
+      "cid": "CID000671",
+      "name": "Hangzhou Fuchunjiang Smelting Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 96
+    },
+    {
+      "from": "CID000689",
+      "idType": "rmi-cid",
+      "cid": "CID000689",
+      "name": "LT Metal Ltd.",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 149
+    },
+    {
+      "from": "CID000694",
+      "idType": "rmi-cid",
+      "cid": "CID000694",
+      "name": "Heimerle + Meule GmbH",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 97
+    },
+    {
+      "from": "CID000707",
+      "idType": "rmi-cid",
+      "cid": "CID000707",
+      "name": "Heraeus Metals Hong Kong Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 100
+    },
+    {
+      "from": "CID000711",
+      "idType": "rmi-cid",
+      "cid": "CID000711",
+      "name": "Heraeus Germany GmbH Co. KG",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 99
+    },
+    {
+      "from": "CID000767",
+      "idType": "rmi-cid",
+      "cid": "CID000767",
+      "name": "Hunan Chenzhou Mining Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 103
+    },
+    {
+      "from": "CID000769",
+      "idType": "rmi-cid",
+      "cid": "CID000769",
+      "name": "Hunan Jintai New Material Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 635
+    },
+    {
+      "from": "CID000773",
+      "idType": "rmi-cid",
+      "cid": "CID000773",
+      "name": "Hunan Guiyang yinxing Nonferrous Smelting Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 104
+    },
+    {
+      "from": "CID000778",
+      "idType": "rmi-cid",
+      "cid": "CID000778",
+      "name": "HwaSeong CJ Co., Ltd.",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 107
+    },
+    {
+      "from": "CID000801",
+      "idType": "rmi-cid",
+      "cid": "CID000801",
+      "name": "Inner Mongolia Qiankun Gold and Silver Refinery Share Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 112
+    },
+    {
+      "from": "CID000807",
+      "idType": "rmi-cid",
+      "cid": "CID000807",
+      "name": "Ishifuku Metal Industry Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 115
+    },
+    {
+      "from": "CID000814",
+      "idType": "rmi-cid",
+      "cid": "CID000814",
+      "name": "Istanbul Gold Refinery",
+      "country": "土耳其",
+      "countryEn": "turkey",
+      "minerals": [
+        "金"
+      ],
+      "row": 116
+    },
+    {
+      "from": "CID000823",
+      "idType": "rmi-cid",
+      "cid": "CID000823",
+      "name": "Japan Mint",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 119
+    },
+    {
+      "from": "CID000825",
+      "idType": "rmi-cid",
+      "cid": "CID000825",
+      "name": "Japan New Metals Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钨"
+      ],
+      "row": 639
+    },
+    {
+      "from": "CID000855",
+      "idType": "rmi-cid",
+      "cid": "CID000855",
+      "name": "Jiangxi Copper Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 120
+    },
+    {
+      "from": "CID000914",
+      "idType": "rmi-cid",
+      "cid": "CID000914",
+      "name": "JiuJiang JinXin Nonferrous Metals Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 312
+    },
+    {
+      "from": "CID000917",
+      "idType": "rmi-cid",
+      "cid": "CID000917",
+      "name": "Jiujiang Tanbre Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 313
+    },
+    {
+      "from": "CID000920",
+      "idType": "rmi-cid",
+      "cid": "CID000920",
+      "name": "Asahi Refining USA Inc.",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 27
+    },
+    {
+      "from": "CID000924",
+      "idType": "rmi-cid",
+      "cid": "CID000924",
+      "name": "Asahi Refining Canada Ltd.",
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "金"
+      ],
+      "row": 26
+    },
+    {
+      "from": "CID000927",
+      "idType": "rmi-cid",
+      "cid": "CID000927",
+      "name": "JSC Ekaterinburg Non-Ferrous Metal Processing Plant",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "金"
+      ],
+      "row": 122
+    },
+    {
+      "from": "CID000929",
+      "idType": "rmi-cid",
+      "cid": "CID000929",
+      "name": "JSC Uralelectromed",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "金"
+      ],
+      "row": 124
+    },
+    {
+      "from": "CID000937",
+      "idType": "rmi-cid",
+      "cid": "CID000937",
+      "name": "JX Nippon Mining & Metals Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 125
+    },
+    {
+      "from": "CID000942",
+      "idType": "rmi-cid",
+      "cid": "CID000942",
+      "name": "Gejiu Kai Meng Industry and Trade LLC",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 411
+    },
+    {
+      "from": "CID000956",
+      "idType": "rmi-cid",
+      "cid": "CID000956",
+      "name": "Kazakhmys Smelting LLC",
+      "country": "哈萨克斯坦",
+      "countryEn": "kazakhstan",
+      "minerals": [
+        "金"
+      ],
+      "row": 128
+    },
+    {
+      "from": "CID000957",
+      "idType": "rmi-cid",
+      "cid": "CID000957",
+      "name": "Kazzinc",
+      "country": "哈萨克斯坦",
+      "countryEn": "kazakhstan",
+      "minerals": [
+        "金"
+      ],
+      "row": 129
+    },
+    {
+      "from": "CID000966",
+      "idType": "rmi-cid",
+      "cid": "CID000966",
+      "name": "Kennametal Fallon",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钨"
+      ],
+      "row": 655
+    },
+    {
+      "from": "CID000969",
+      "idType": "rmi-cid",
+      "cid": "CID000969",
+      "name": "Kennecott Utah Copper LLC",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 130
+    },
+    {
+      "from": "CID000981",
+      "idType": "rmi-cid",
+      "cid": "CID000981",
+      "name": "Kojima Chemicals Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 134
+    },
+    {
+      "from": "CID001029",
+      "idType": "rmi-cid",
+      "cid": "CID001029",
+      "name": "Kyrgyzaltyn JSC",
+      "country": "吉尔吉斯斯坦",
+      "countryEn": "kyrgyzstan",
+      "minerals": [
+        "金"
+      ],
+      "row": 141
+    },
+    {
+      "from": "CID001032",
+      "idType": "rmi-cid",
+      "cid": "CID001032",
+      "name": "L'azurde Company For Jewelry",
+      "country": "沙特阿拉伯",
+      "countryEn": "saudi arabia",
+      "minerals": [
+        "金"
+      ],
+      "row": 143
+    },
+    {
+      "from": "CID001056",
+      "idType": "rmi-cid",
+      "cid": "CID001056",
+      "name": "Lingbao Gold Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 144
+    },
+    {
+      "from": "CID001058",
+      "idType": "rmi-cid",
+      "cid": "CID001058",
+      "name": "Lingbao Jinyuan Tonghui Refinery Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 145
+    },
+    {
+      "from": "CID001070",
+      "idType": "rmi-cid",
+      "cid": "CID001070",
+      "name": "China Tin Group Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 379
+    },
+    {
+      "from": "CID001076",
+      "idType": "rmi-cid",
+      "cid": "CID001076",
+      "name": "AMG Brasil",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "钽"
+      ],
+      "row": 281
+    },
+    {
+      "from": "CID001078",
+      "idType": "rmi-cid",
+      "cid": "CID001078",
+      "name": "LS MnM Inc.",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 148
+    },
+    {
+      "from": "CID001093",
+      "idType": "rmi-cid",
+      "cid": "CID001093",
+      "name": "Luoyang Zijin Yinhui Gold Refinery Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 150
+    },
+    {
+      "from": "CID001113",
+      "idType": "rmi-cid",
+      "cid": "CID001113",
+      "name": "Materion",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 152
+    },
+    {
+      "from": "CID001119",
+      "idType": "rmi-cid",
+      "cid": "CID001119",
+      "name": "Matsuda Sangyo Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 153
+    },
+    {
+      "from": "CID001142",
+      "idType": "rmi-cid",
+      "cid": "CID001142",
+      "name": "Metallic Resources, Inc.",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "锡"
+      ],
+      "row": 460
+    },
+    {
+      "from": "CID001147",
+      "idType": "rmi-cid",
+      "cid": "CID001147",
+      "name": "Metalor Technologies (Suzhou) Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 160
+    },
+    {
+      "from": "CID001149",
+      "idType": "rmi-cid",
+      "cid": "CID001149",
+      "name": "Metalor Technologies (Hong Kong) Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 158
+    },
+    {
+      "from": "CID001152",
+      "idType": "rmi-cid",
+      "cid": "CID001152",
+      "name": "Metalor Technologies (Singapore) Pte., Ltd.",
+      "country": "新加坡",
+      "countryEn": "singapore",
+      "minerals": [
+        "金"
+      ],
+      "row": 159
+    },
+    {
+      "from": "CID001153",
+      "idType": "rmi-cid",
+      "cid": "CID001153",
+      "name": "Metalor Technologies S.A.",
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 161
+    },
+    {
+      "from": "CID001157",
+      "idType": "rmi-cid",
+      "cid": "CID001157",
+      "name": "Metalor USA Refining Corporation",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 162
+    },
+    {
+      "from": "CID001161",
+      "idType": "rmi-cid",
+      "cid": "CID001161",
+      "name": "Metalurgica Met-Mex Penoles S.A. De C.V.",
+      "country": "墨西哥",
+      "countryEn": "mexico",
+      "minerals": [
+        "金"
+      ],
+      "row": 163
+    },
+    {
+      "from": "CID001163",
+      "idType": "rmi-cid",
+      "cid": "CID001163",
+      "name": "Metallurgical Products India Pvt., Ltd.",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "钽"
+      ],
+      "row": 322
+    },
+    {
+      "from": "CID001173",
+      "idType": "rmi-cid",
+      "cid": "CID001173",
+      "name": "Mineracao Taboca S.A.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 463
+    },
+    {
+      "from": "CID001175",
+      "idType": "rmi-cid",
+      "cid": "CID001175",
+      "name": "Mineracao Taboca S.A.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "钽"
+      ],
+      "row": 324
+    },
+    {
+      "from": "CID001182",
+      "idType": "rmi-cid",
+      "cid": "CID001182",
+      "name": "Minsur",
+      "country": "秘鲁",
+      "countryEn": "peru",
+      "minerals": [
+        "锡"
+      ],
+      "row": 467
+    },
+    {
+      "from": "CID001188",
+      "idType": "rmi-cid",
+      "cid": "CID001188",
+      "name": "Mitsubishi Materials Corporation",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 165
+    },
+    {
+      "from": "CID001191",
+      "idType": "rmi-cid",
+      "cid": "CID001191",
+      "name": "Mitsubishi Materials Corporation",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "锡"
+      ],
+      "row": 470
+    },
+    {
+      "from": "CID001192",
+      "idType": "rmi-cid",
+      "cid": "CID001192",
+      "name": "Mitsui Mining and Smelting Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 325
+    },
+    {
+      "from": "CID001193",
+      "idType": "rmi-cid",
+      "cid": "CID001193",
+      "name": "Mitsui Mining and Smelting Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 166
+    },
+    {
+      "from": "CID001200",
+      "idType": "rmi-cid",
+      "cid": "CID001200",
+      "name": "NPM Silmet AS",
+      "country": "爱沙尼亚",
+      "countryEn": "estonia",
+      "minerals": [
+        "钽"
+      ],
+      "row": 327
+    },
+    {
+      "from": "CID001204",
+      "idType": "rmi-cid",
+      "cid": "CID001204",
+      "name": "Moscow Special Alloys Processing Plant",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "金"
+      ],
+      "row": 172
+    },
+    {
+      "from": "CID001220",
+      "idType": "rmi-cid",
+      "cid": "CID001220",
+      "name": "Nadir Metal Rafineri San. Ve Tic. A.S.",
+      "country": "土耳其",
+      "countryEn": "turkey",
+      "minerals": [
+        "金"
+      ],
+      "row": 173
+    },
+    {
+      "from": "CID001231",
+      "idType": "rmi-cid",
+      "cid": "CID001231",
+      "name": "Jiangxi New Nanshan Technology Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 438
+    },
+    {
+      "from": "CID001236",
+      "idType": "rmi-cid",
+      "cid": "CID001236",
+      "name": "Navoi Mining and Metallurgical Combinat",
+      "country": "乌兹别克斯坦",
+      "countryEn": "uzbekistan",
+      "minerals": [
+        "金"
+      ],
+      "row": 174
+    },
+    {
+      "from": "CID001259",
+      "idType": "rmi-cid",
+      "cid": "CID001259",
+      "name": "Nihon Material Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 178
+    },
+    {
+      "from": "CID001277",
+      "idType": "rmi-cid",
+      "cid": "CID001277",
+      "name": "Ningxia Orient Tantalum Industry Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 326
+    },
+    {
+      "from": "CID001305",
+      "idType": "rmi-cid",
+      "cid": "CID001305",
+      "name": "Novosibirsk Tin Combine",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "锡"
+      ],
+      "row": 475
+    },
+    {
+      "from": "CID001314",
+      "idType": "rmi-cid",
+      "cid": "CID001314",
+      "name": "O.M. Manufacturing (Thailand) Co., Ltd.",
+      "country": "泰国",
+      "countryEn": "thailand",
+      "minerals": [
+        "锡"
+      ],
+      "row": 476
+    },
+    {
+      "from": "CID001325",
+      "idType": "rmi-cid",
+      "cid": "CID001325",
+      "name": "Ohura Precious Metal Industry Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 184
+    },
+    {
+      "from": "CID001326",
+      "idType": "rmi-cid",
+      "cid": "CID001326",
+      "name": "OJSC \"The Gulidov Krasnoyarsk Non-Ferrous Metals Plant\" (OJSC Krastsvetmet)",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "金"
+      ],
+      "row": 185
+    },
+    {
+      "from": "CID001337",
+      "idType": "rmi-cid",
+      "cid": "CID001337",
+      "name": "Operaciones Metalurgicas S.A.",
+      "country": "玻利维亚",
+      "countryEn": "bolivia plurinational state of",
+      "minerals": [
+        "锡"
+      ],
+      "row": 478
+    },
+    {
+      "from": "CID001352",
+      "idType": "rmi-cid",
+      "cid": "CID001352",
+      "name": "MKS PAMP SA",
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 167
+    },
+    {
+      "from": "CID001362",
+      "idType": "rmi-cid",
+      "cid": "CID001362",
+      "name": "Penglai Penggang Gold Industry Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 188
+    },
+    {
+      "from": "CID001386",
+      "idType": "rmi-cid",
+      "cid": "CID001386",
+      "name": "Prioksky Plant of Non-Ferrous Metals",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "金"
+      ],
+      "row": 191
+    },
+    {
+      "from": "CID001397",
+      "idType": "rmi-cid",
+      "cid": "CID001397",
+      "name": "PT Aneka Tambang (Persero) Tbk",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "金"
+      ],
+      "row": 192
+    },
+    {
+      "from": "CID001453",
+      "idType": "rmi-cid",
+      "cid": "CID001453",
+      "name": "PT Mitra Stania Prima",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 514
+    },
+    {
+      "from": "CID001458",
+      "idType": "rmi-cid",
+      "cid": "CID001458",
+      "name": "PT Prima Timah Utama",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 521
+    },
+    {
+      "from": "CID001477",
+      "idType": "rmi-cid",
+      "cid": "CID001477",
+      "name": "PT Timah Tbk Kundur",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 534
+    },
+    {
+      "from": "CID001482",
+      "idType": "rmi-cid",
+      "cid": "CID001482",
+      "name": "PT Timah Tbk Mentok",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 535
+    },
+    {
+      "from": "CID001498",
+      "idType": "rmi-cid",
+      "cid": "CID001498",
+      "name": "PX Precinox S.A.",
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 194
+    },
+    {
+      "from": "CID001512",
+      "idType": "rmi-cid",
+      "cid": "CID001512",
+      "name": "Rand Refinery (Pty) Ltd.",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 196
+    },
+    {
+      "from": "CID001522",
+      "idType": "rmi-cid",
+      "cid": "CID001522",
+      "name": "Yanling Jincheng Tantalum & Niobium Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 358
+    },
+    {
+      "from": "CID001534",
+      "idType": "rmi-cid",
+      "cid": "CID001534",
+      "name": "Royal Canadian Mint",
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "金"
+      ],
+      "row": 200
+    },
+    {
+      "from": "CID001539",
+      "idType": "rmi-cid",
+      "cid": "CID001539",
+      "name": "Rui Da Hung",
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 546
+    },
+    {
+      "from": "CID001546",
+      "idType": "rmi-cid",
+      "cid": "CID001546",
+      "name": "Sabin Metal Corp.",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 202
+    },
+    {
+      "from": "CID001555",
+      "idType": "rmi-cid",
+      "cid": "CID001555",
+      "name": "Samduck Precious Metals",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 207
+    },
+    {
+      "from": "CID001562",
+      "idType": "rmi-cid",
+      "cid": "CID001562",
+      "name": "SAMWON METALS Corp.",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 208
+    },
+    {
+      "from": "CID001585",
+      "idType": "rmi-cid",
+      "cid": "CID001585",
+      "name": "SEMPSA Joyeria Plateria S.A.",
+      "country": "西班牙",
+      "countryEn": "spain",
+      "minerals": [
+        "金"
+      ],
+      "row": 215
+    },
+    {
+      "from": "CID001619",
+      "idType": "rmi-cid",
+      "cid": "CID001619",
+      "name": "Shandong Tiancheng Biological Gold Industrial Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 221
+    },
+    {
+      "from": "CID001622",
+      "idType": "rmi-cid",
+      "cid": "CID001622",
+      "name": "Shandong Zhaojin Gold & Silver Refinery Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 223
+    },
+    {
+      "from": "CID001736",
+      "idType": "rmi-cid",
+      "cid": "CID001736",
+      "name": "Sichuan Tianze Precious Metals Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 231
+    },
+    {
+      "from": "CID001756",
+      "idType": "rmi-cid",
+      "cid": "CID001756",
+      "name": "SOE Shyolkovsky Factory of Secondary Precious Metals",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "金"
+      ],
+      "row": 235
+    },
+    {
+      "from": "CID001761",
+      "idType": "rmi-cid",
+      "cid": "CID001761",
+      "name": "Solar Applied Materials Technology Corp.",
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "金"
+      ],
+      "row": 236
+    },
+    {
+      "from": "CID001769",
+      "idType": "rmi-cid",
+      "cid": "CID001769",
+      "name": "Solikamsk Magnesium Works OAO",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钽"
+      ],
+      "row": 339
+    },
+    {
+      "from": "CID001798",
+      "idType": "rmi-cid",
+      "cid": "CID001798",
+      "name": "Sumitomo Metal Mining Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 243
+    },
+    {
+      "from": "CID001810",
+      "idType": "rmi-cid",
+      "cid": "CID001810",
+      "name": "Super Dragon Technology Co., Ltd.",
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "金"
+      ],
+      "row": 246
+    },
+    {
+      "from": "CID001869",
+      "idType": "rmi-cid",
+      "cid": "CID001869",
+      "name": "Taki Chemical Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 341
+    },
+    {
+      "from": "CID001875",
+      "idType": "rmi-cid",
+      "cid": "CID001875",
+      "name": "Tanaka Kikinzoku Kogyo K.K.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 250
+    },
+    {
+      "from": "CID001891",
+      "idType": "rmi-cid",
+      "cid": "CID001891",
+      "name": "Telex Metals",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 349
+    },
+    {
+      "from": "CID001898",
+      "idType": "rmi-cid",
+      "cid": "CID001898",
+      "name": "Thaisarco",
+      "country": "泰国",
+      "countryEn": "thailand",
+      "minerals": [
+        "锡"
+      ],
+      "row": 567
+    },
+    {
+      "from": "CID001908",
+      "idType": "rmi-cid",
+      "cid": "CID001908",
+      "name": "Gejiu Yunxin Nonferrous Electrolysis Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 413
+    },
+    {
+      "from": "CID001909",
+      "idType": "rmi-cid",
+      "cid": "CID001909",
+      "name": "Great Wall Precious Metals Co., Ltd. of CBPM",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 92
+    },
+    {
+      "from": "CID001916",
+      "idType": "rmi-cid",
+      "cid": "CID001916",
+      "name": "Shandong gold smelting Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 217
+    },
+    {
+      "from": "CID001938",
+      "idType": "rmi-cid",
+      "cid": "CID001938",
+      "name": "Tokuriki Honten Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 252
+    },
+    {
+      "from": "CID001947",
+      "idType": "rmi-cid",
+      "cid": "CID001947",
+      "name": "Tongling Nonferrous Metals Group Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 253
+    },
+    {
+      "from": "CID001955",
+      "idType": "rmi-cid",
+      "cid": "CID001955",
+      "name": "Torecom",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 255
+    },
+    {
+      "from": "CID001969",
+      "idType": "rmi-cid",
+      "cid": "CID001969",
+      "name": "Ulba Metallurgical Plant JSC",
+      "country": "哈萨克斯坦",
+      "countryEn": "kazakhstan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 352
+    },
+    {
+      "from": "CID001980",
+      "idType": "rmi-cid",
+      "cid": "CID001980",
+      "name": "Umicore S.A. Business Unit Precious Metals Refining",
+      "country": "比利时",
+      "countryEn": "belgium",
+      "minerals": [
+        "金"
+      ],
+      "row": 260
+    },
+    {
+      "from": "CID001993",
+      "idType": "rmi-cid",
+      "cid": "CID001993",
+      "name": "United Precious Metal Refining, Inc.",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 264
+    },
+    {
+      "from": "CID002003",
+      "idType": "rmi-cid",
+      "cid": "CID002003",
+      "name": "Valcambi S.A.",
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 266
+    },
+    {
+      "from": "CID002015",
+      "idType": "rmi-cid",
+      "cid": "CID002015",
+      "name": "VQB Mineral and Trading Group JSC",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "锡"
+      ],
+      "row": 576
+    },
+    {
+      "from": "CID002030",
+      "idType": "rmi-cid",
+      "cid": "CID002030",
+      "name": "Western Australian Mint (T/a The Perth Mint)",
+      "country": "澳大利亚",
+      "countryEn": "australia",
+      "minerals": [
+        "金"
+      ],
+      "row": 269
+    },
+    {
+      "from": "CID002036",
+      "idType": "rmi-cid",
+      "cid": "CID002036",
+      "name": "White Solder Metalurgia e Mineracao Ltda.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 580
+    },
+    {
+      "from": "CID002044",
+      "idType": "rmi-cid",
+      "cid": "CID002044",
+      "name": "Wolfram Bergbau und Hutten AG",
+      "country": "奥地利",
+      "countryEn": "austria",
+      "minerals": [
+        "钨"
+      ],
+      "row": 700
+    },
+    {
+      "from": "CID002082",
+      "idType": "rmi-cid",
+      "cid": "CID002082",
+      "name": "Xiamen Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 705
+    },
+    {
+      "from": "CID002100",
+      "idType": "rmi-cid",
+      "cid": "CID002100",
+      "name": "Yamakin Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 272
+    },
+    {
+      "from": "CID002129",
+      "idType": "rmi-cid",
+      "cid": "CID002129",
+      "name": "Yokohama Metal Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 275
+    },
+    {
+      "from": "CID002158",
+      "idType": "rmi-cid",
+      "cid": "CID002158",
+      "name": "Yunnan Chengfeng Non-ferrous Metals Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 587
+    },
+    {
+      "from": "CID002180",
+      "idType": "rmi-cid",
+      "cid": "CID002180",
+      "name": "Tin Smelting Branch of Yunnan Tin Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 570
+    },
+    {
+      "from": "CID002224",
+      "idType": "rmi-cid",
+      "cid": "CID002224",
+      "name": "Zhongyuan Gold Smelter of Zhongjin Gold Corporation",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 279
+    },
+    {
+      "from": "CID002243",
+      "idType": "rmi-cid",
+      "cid": "CID002243",
+      "name": "Gold Refinery of Zijin Mining Group Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 89
+    },
+    {
+      "from": "CID002282",
+      "idType": "rmi-cid",
+      "cid": "CID002282",
+      "name": "Morris and Watson",
+      "country": "新西兰",
+      "countryEn": "new zealand",
+      "minerals": [
+        "金"
+      ],
+      "row": 170
+    },
+    {
+      "from": "CID002290",
+      "idType": "rmi-cid",
+      "cid": "CID002290",
+      "name": "Safina a.s.",
+      "country": "捷克",
+      "countryEn": "czechia",
+      "minerals": [
+        "金"
+      ],
+      "row": 204
+    },
+    {
+      "from": "CID002312",
+      "idType": "rmi-cid",
+      "cid": "CID002312",
+      "name": "Guangdong Jinding Gold Limited",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 93
+    },
+    {
+      "from": "CID002313",
+      "idType": "rmi-cid",
+      "cid": "CID002313",
+      "name": "Jiangxi Minmetals Gao'an Non-ferrous Metals Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 644
+    },
+    {
+      "from": "CID002314",
+      "idType": "rmi-cid",
+      "cid": "CID002314",
+      "name": "Umicore Precious Metals Thailand",
+      "country": "泰国",
+      "countryEn": "thailand",
+      "minerals": [
+        "金"
+      ],
+      "row": 259
+    },
+    {
+      "from": "CID002315",
+      "idType": "rmi-cid",
+      "cid": "CID002315",
+      "name": "Ganzhou Jiangwu Ferrotungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 622
+    },
+    {
+      "from": "CID002316",
+      "idType": "rmi-cid",
+      "cid": "CID002316",
+      "name": "Jiangxi Yaosheng Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 651
+    },
+    {
+      "from": "CID002317",
+      "idType": "rmi-cid",
+      "cid": "CID002317",
+      "name": "Jiangxi Xinsheng Tungsten Industry Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 649
+    },
+    {
+      "from": "CID002318",
+      "idType": "rmi-cid",
+      "cid": "CID002318",
+      "name": "Jiangxi Tonggu Non-ferrous Metallurgical & Chemical Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 646
+    },
+    {
+      "from": "CID002319",
+      "idType": "rmi-cid",
+      "cid": "CID002319",
+      "name": "Malipo Haiyu Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 663
+    },
+    {
+      "from": "CID002320",
+      "idType": "rmi-cid",
+      "cid": "CID002320",
+      "name": "Xiamen Tungsten (H.C.) Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 704
+    },
+    {
+      "from": "CID002321",
+      "idType": "rmi-cid",
+      "cid": "CID002321",
+      "name": "Jiangxi Gan Bei Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 641
+    },
+    {
+      "from": "CID002468",
+      "idType": "rmi-cid",
+      "cid": "CID002468",
+      "name": "Magnu's Minerais Metais e Ligas Ltda.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 454
+    },
+    {
+      "from": "CID002492",
+      "idType": "rmi-cid",
+      "cid": "CID002492",
+      "name": "Hengyang King Xing Lifeng New Materials Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 305
+    },
+    {
+      "from": "CID002494",
+      "idType": "rmi-cid",
+      "cid": "CID002494",
+      "name": "Ganzhou Seadragon W & Mo Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 624
+    },
+    {
+      "from": "CID002500",
+      "idType": "rmi-cid",
+      "cid": "CID002500",
+      "name": "Melt Metais e Ligas S.A.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 458
+    },
+    {
+      "from": "CID002502",
+      "idType": "rmi-cid",
+      "cid": "CID002502",
+      "name": "Asia Tungsten Products Vietnam Ltd.",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 598
+    },
+    {
+      "from": "CID002503",
+      "idType": "rmi-cid",
+      "cid": "CID002503",
+      "name": "PT ATD Makmur Mandiri Jaya",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 488
+    },
+    {
+      "from": "CID002504",
+      "idType": "rmi-cid",
+      "cid": "CID002504",
+      "name": "D Block Metals, LLC",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 290
+    },
+    {
+      "from": "CID002505",
+      "idType": "rmi-cid",
+      "cid": "CID002505",
+      "name": "FIR Metals & Resource Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 296
+    },
+    {
+      "from": "CID002506",
+      "idType": "rmi-cid",
+      "cid": "CID002506",
+      "name": "Jiujiang Zhongao Tantalum & Niobium Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 314
+    },
+    {
+      "from": "CID002509",
+      "idType": "rmi-cid",
+      "cid": "CID002509",
+      "name": "MMTC-PAMP India Pvt., Ltd.",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 168
+    },
+    {
+      "from": "CID002511",
+      "idType": "rmi-cid",
+      "cid": "CID002511",
+      "name": "KGHM Polska Miedz Spolka Akcyjna",
+      "country": "波兰",
+      "countryEn": "poland",
+      "minerals": [
+        "金"
+      ],
+      "row": 131
+    },
+    {
+      "from": "CID002512",
+      "idType": "rmi-cid",
+      "cid": "CID002512",
+      "name": "Jiangxi Dinghai Tantalum & Niobium Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 307
+    },
+    {
+      "from": "CID002513",
+      "idType": "rmi-cid",
+      "cid": "CID002513",
+      "name": "Hunan Shizhuyuan Nonferrous Metals Co., Ltd. Chenzhou Tungsten Products Branch",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 637
+    },
+    {
+      "from": "CID002515",
+      "idType": "rmi-cid",
+      "cid": "CID002515",
+      "name": "Fidelity Printers and Refiners Ltd.",
+      "country": "津巴布韦",
+      "countryEn": "zimbabwe",
+      "minerals": [
+        "金"
+      ],
+      "row": 81
+    },
+    {
+      "from": "CID002516",
+      "idType": "rmi-cid",
+      "cid": "CID002516",
+      "name": "Singway Technology Co., Ltd.",
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "金"
+      ],
+      "row": 232
+    },
+    {
+      "from": "CID002517",
+      "idType": "rmi-cid",
+      "cid": "CID002517",
+      "name": "O.M. Manufacturing Philippines, Inc.",
+      "country": "菲律宾",
+      "countryEn": "philippines",
+      "minerals": [
+        "锡"
+      ],
+      "row": 477
+    },
+    {
+      "from": "CID002525",
+      "idType": "rmi-cid",
+      "cid": "CID002525",
+      "name": "Shandong Humon Smelting Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 218
+    },
+    {
+      "from": "CID002527",
+      "idType": "rmi-cid",
+      "cid": "CID002527",
+      "name": "Shenzhen Zhonghenglong Real Industry Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 229
+    },
+    {
+      "from": "CID002539",
+      "idType": "rmi-cid",
+      "cid": "CID002539",
+      "name": "KEMET de Mexico",
+      "country": "墨西哥",
+      "countryEn": "mexico",
+      "minerals": [
+        "钽"
+      ],
+      "row": 317
+    },
+    {
+      "from": "CID002541",
+      "idType": "rmi-cid",
+      "cid": "CID002541",
+      "name": "H.C. Starck Tungsten GmbH",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钨"
+      ],
+      "row": 629
+    },
+    {
+      "from": "CID002542",
+      "idType": "rmi-cid",
+      "cid": "CID002542",
+      "name": "TANIOBIS Smelting GmbH & Co. KG",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钨"
+      ],
+      "row": 691
+    },
+    {
+      "from": "CID002543",
+      "idType": "rmi-cid",
+      "cid": "CID002543",
+      "name": "Masan High-Tech Materials",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 664
+    },
+    {
+      "from": "CID002544",
+      "idType": "rmi-cid",
+      "cid": "CID002544",
+      "name": "TANIOBIS Co., Ltd.",
+      "country": "泰国",
+      "countryEn": "thailand",
+      "minerals": [
+        "钽"
+      ],
+      "row": 342
+    },
+    {
+      "from": "CID002545",
+      "idType": "rmi-cid",
+      "cid": "CID002545",
+      "name": "TANIOBIS GmbH",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钽"
+      ],
+      "row": 343
+    },
+    {
+      "from": "CID002548",
+      "idType": "rmi-cid",
+      "cid": "CID002548",
+      "name": "Materion Newton Inc.",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 319
+    },
+    {
+      "from": "CID002549",
+      "idType": "rmi-cid",
+      "cid": "CID002549",
+      "name": "TANIOBIS Japan Co., Ltd.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 344
+    },
+    {
+      "from": "CID002550",
+      "idType": "rmi-cid",
+      "cid": "CID002550",
+      "name": "TANIOBIS Smelting GmbH & Co. KG",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "钽"
+      ],
+      "row": 345
+    },
+    {
+      "from": "CID002551",
+      "idType": "rmi-cid",
+      "cid": "CID002551",
+      "name": "Jiangwu H.C. Starck Tungsten Products Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 640
+    },
+    {
+      "from": "CID002557",
+      "idType": "rmi-cid",
+      "cid": "CID002557",
+      "name": "Global Advanced Metals Boyertown",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钽"
+      ],
+      "row": 299
+    },
+    {
+      "from": "CID002558",
+      "idType": "rmi-cid",
+      "cid": "CID002558",
+      "name": "Global Advanced Metals Aizu",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 298
+    },
+    {
+      "from": "CID002560",
+      "idType": "rmi-cid",
+      "cid": "CID002560",
+      "name": "Al Etihad Gold Refinery DMCC",
+      "country": "阿联酋",
+      "countryEn": "united arab emirates",
+      "minerals": [
+        "金"
+      ],
+      "row": 18
+    },
+    {
+      "from": "CID002561",
+      "idType": "rmi-cid",
+      "cid": "CID002561",
+      "name": "Emirates Gold DMCC",
+      "country": "阿联酋",
+      "countryEn": "united arab emirates",
+      "minerals": [
+        "金"
+      ],
+      "row": 78
+    },
+    {
+      "from": "CID002562",
+      "idType": "rmi-cid",
+      "cid": "CID002562",
+      "name": "International Precious Metal Refiners",
+      "country": "阿联酋",
+      "countryEn": "united arab emirates",
+      "minerals": [
+        "金"
+      ],
+      "row": 113
+    },
+    {
+      "from": "CID002563",
+      "idType": "rmi-cid",
+      "cid": "CID002563",
+      "name": "Kaloti Precious Metals",
+      "country": "阿联酋",
+      "countryEn": "united arab emirates",
+      "minerals": [
+        "金"
+      ],
+      "row": 127
+    },
+    {
+      "from": "CID002567",
+      "idType": "rmi-cid",
+      "cid": "CID002567",
+      "name": "Sudan Gold Refinery",
+      "country": "苏丹",
+      "countryEn": "sudan",
+      "minerals": [
+        "金"
+      ],
+      "row": 242
+    },
+    {
+      "from": "CID002572",
+      "idType": "rmi-cid",
+      "cid": "CID002572",
+      "name": "Electro-Mechanical Facility of the Cao Bang Minerals & Metallurgy Joint Stock Company",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "锡"
+      ],
+      "row": 401
+    },
+    {
+      "from": "CID002573",
+      "idType": "rmi-cid",
+      "cid": "CID002573",
+      "name": "Nghe Tinh Non-Ferrous Metals Joint Stock Company",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "锡"
+      ],
+      "row": 473
+    },
+    {
+      "from": "CID002574",
+      "idType": "rmi-cid",
+      "cid": "CID002574",
+      "name": "Tuyen Quang Non-Ferrous Metals Joint Stock Company",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "锡"
+      ],
+      "row": 574
+    },
+    {
+      "from": "CID002580",
+      "idType": "rmi-cid",
+      "cid": "CID002580",
+      "name": "RMI",
+      "country": "意大利",
+      "countryEn": "italy",
+      "minerals": [
+        "金"
+      ],
+      "row": 248
+    },
+    {
+      "from": "CID002582",
+      "idType": "rmi-cid",
+      "cid": "CID002582",
+      "name": "REMONDIS PMR B.V.",
+      "country": "荷兰",
+      "countryEn": "netherlands",
+      "minerals": [
+        "金"
+      ],
+      "row": 198
+    },
+    {
+      "from": "CID002584",
+      "idType": "rmi-cid",
+      "cid": "CID002584",
+      "name": "Fujairah Gold FZC",
+      "country": "阿联酋",
+      "countryEn": "united arab emirates",
+      "minerals": [
+        "金"
+      ],
+      "row": 82
+    },
+    {
+      "from": "CID002587",
+      "idType": "rmi-cid",
+      "cid": "CID002587",
+      "name": "Industrial Refining Company",
+      "country": "比利时",
+      "countryEn": "belgium",
+      "minerals": [
+        "金"
+      ],
+      "row": 111
+    },
+    {
+      "from": "CID002588",
+      "idType": "rmi-cid",
+      "cid": "CID002588",
+      "name": "Shirpur Gold Refinery Ltd.",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 230
+    },
+    {
+      "from": "CID002589",
+      "idType": "rmi-cid",
+      "cid": "CID002589",
+      "name": "Niagara Refining LLC",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "钨"
+      ],
+      "row": 671
+    },
+    {
+      "from": "CID002593",
+      "idType": "rmi-cid",
+      "cid": "CID002593",
+      "name": "PT Rajehan Ariq",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 524
+    },
+    {
+      "from": "CID002605",
+      "idType": "rmi-cid",
+      "cid": "CID002605",
+      "name": "Korea Zinc Co., Ltd.",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 136
+    },
+    {
+      "from": "CID002606",
+      "idType": "rmi-cid",
+      "cid": "CID002606",
+      "name": "Marsam Metals",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "金"
+      ],
+      "row": 151
+    },
+    {
+      "from": "CID002615",
+      "idType": "rmi-cid",
+      "cid": "CID002615",
+      "name": "TOO Tau-Ken-Altyn",
+      "country": "哈萨克斯坦",
+      "countryEn": "kazakhstan",
+      "minerals": [
+        "金"
+      ],
+      "row": 254
+    },
+    {
+      "from": "CID002641",
+      "idType": "rmi-cid",
+      "cid": "CID002641",
+      "name": "China Molybdenum Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 606
+    },
+    {
+      "from": "CID002649",
+      "idType": "rmi-cid",
+      "cid": "CID002649",
+      "name": "Hydrometallurg, JSC",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 638
+    },
+    {
+      "from": "CID002696",
+      "idType": "rmi-cid",
+      "cid": "CID002696",
+      "name": "PT Cipta Persada Mulia",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 500
+    },
+    {
+      "from": "CID002703",
+      "idType": "rmi-cid",
+      "cid": "CID002703",
+      "name": "An Vinh Joint Stock Mineral Processing Company",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "锡"
+      ],
+      "row": 370
+    },
+    {
+      "from": "CID002706",
+      "idType": "rmi-cid",
+      "cid": "CID002706",
+      "name": "Resind Industria e Comercio Ltda.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 543
+    },
+    {
+      "from": "CID002707",
+      "idType": "rmi-cid",
+      "cid": "CID002707",
+      "name": "Resind Industria e Comercio Ltda.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "钽"
+      ],
+      "row": 334
+    },
+    {
+      "from": "CID002708",
+      "idType": "rmi-cid",
+      "cid": "CID002708",
+      "name": "Abington Reldan Metals, LLC",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 11
+    },
+    {
+      "from": "CID002724",
+      "idType": "rmi-cid",
+      "cid": "CID002724",
+      "name": "Unecha Refractory metals plant",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 697
+    },
+    {
+      "from": "CID002750",
+      "idType": "rmi-cid",
+      "cid": "CID002750",
+      "name": "Shenzhen CuiLu Gold Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 226
+    },
+    {
+      "from": "CID002756",
+      "idType": "rmi-cid",
+      "cid": "CID002756",
+      "name": "Super Ligas",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 558
+    },
+    {
+      "from": "CID002760",
+      "idType": "rmi-cid",
+      "cid": "CID002760",
+      "name": "Albino Mountinho Lda.",
+      "country": "葡萄牙",
+      "countryEn": "portugal",
+      "minerals": [
+        "金"
+      ],
+      "row": 19
+    },
+    {
+      "from": "CID002761",
+      "idType": "rmi-cid",
+      "cid": "CID002761",
+      "name": "SAAMP",
+      "country": "法国",
+      "countryEn": "france",
+      "minerals": [
+        "金"
+      ],
+      "row": 201
+    },
+    {
+      "from": "CID002762",
+      "idType": "rmi-cid",
+      "cid": "CID002762",
+      "name": "L'Orfebre S.A.",
+      "country": "安道尔",
+      "countryEn": "andorra",
+      "minerals": [
+        "金"
+      ],
+      "row": 147
+    },
+    {
+      "from": "CID002763",
+      "idType": "rmi-cid",
+      "cid": "CID002763",
+      "name": "RMI",
+      "country": "意大利",
+      "countryEn": "italy",
+      "minerals": [
+        "金"
+      ],
+      "row": 9
+    },
+    {
+      "from": "CID002765",
+      "idType": "rmi-cid",
+      "cid": "CID002765",
+      "name": "Italpreziosi",
+      "country": "意大利",
+      "countryEn": "italy",
+      "minerals": [
+        "金"
+      ],
+      "row": 117
+    },
+    {
+      "from": "CID002773",
+      "idType": "rmi-cid",
+      "cid": "CID002773",
+      "name": "Aurubis Beerse",
+      "country": "比利时",
+      "countryEn": "belgium",
+      "minerals": [
+        "锡"
+      ],
+      "row": 373
+    },
+    {
+      "from": "CID002774",
+      "idType": "rmi-cid",
+      "cid": "CID002774",
+      "name": "Aurubis Berango",
+      "country": "西班牙",
+      "countryEn": "spain",
+      "minerals": [
+        "锡"
+      ],
+      "row": 374
+    },
+    {
+      "from": "CID002776",
+      "idType": "rmi-cid",
+      "cid": "CID002776",
+      "name": "PT Bangka Prima Tin",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 492
+    },
+    {
+      "from": "CID002778",
+      "idType": "rmi-cid",
+      "cid": "CID002778",
+      "name": "WIELAND Edelmetalle GmbH",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 270
+    },
+    {
+      "from": "CID002779",
+      "idType": "rmi-cid",
+      "cid": "CID002779",
+      "name": "Ogussa Osterreichische Gold- und Silber-Scheideanstalt GmbH",
+      "country": "奥地利",
+      "countryEn": "austria",
+      "minerals": [
+        "金"
+      ],
+      "row": 183
+    },
+    {
+      "from": "CID002827",
+      "idType": "rmi-cid",
+      "cid": "CID002827",
+      "name": "Philippine Chuangxin Industrial Co., Inc.",
+      "country": "菲律宾",
+      "countryEn": "philippines",
+      "minerals": [
+        "钨"
+      ],
+      "row": 678
+    },
+    {
+      "from": "CID002833",
+      "idType": "rmi-cid",
+      "cid": "CID002833",
+      "name": "ACL Metais Eireli",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "钨"
+      ],
+      "row": 593
+    },
+    {
+      "from": "CID002842",
+      "idType": "rmi-cid",
+      "cid": "CID002842",
+      "name": "Jiangxi Tuohong New Raw Material",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 309
+    },
+    {
+      "from": "CID002844",
+      "idType": "rmi-cid",
+      "cid": "CID002844",
+      "name": "HuiChang Hill Tin Industry Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 430
+    },
+    {
+      "from": "CID002845",
+      "idType": "rmi-cid",
+      "cid": "CID002845",
+      "name": "Moliren Ltd.",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 668
+    },
+    {
+      "from": "CID002850",
+      "idType": "rmi-cid",
+      "cid": "CID002850",
+      "name": "AU Traders and Refiners",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 31
+    },
+    {
+      "from": "CID002852",
+      "idType": "rmi-cid",
+      "cid": "CID002852",
+      "name": "GGC Gujrat Gold Centre Pvt. Ltd.",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 86
+    },
+    {
+      "from": "CID002853",
+      "idType": "rmi-cid",
+      "cid": "CID002853",
+      "name": "Sai Refinery",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 205
+    },
+    {
+      "from": "CID002857",
+      "idType": "rmi-cid",
+      "cid": "CID002857",
+      "name": "Modeltech Sdn Bhd",
+      "country": "马来西亚",
+      "countryEn": "malaysia",
+      "minerals": [
+        "金"
+      ],
+      "row": 169
+    },
+    {
+      "from": "CID002858",
+      "idType": "rmi-cid",
+      "cid": "CID002858",
+      "name": "Modeltech Sdn Bhd",
+      "country": "马来西亚",
+      "countryEn": "malaysia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 471
+    },
+    {
+      "from": "CID002863",
+      "idType": "rmi-cid",
+      "cid": "CID002863",
+      "name": "Bangalore Refinery",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 36
+    },
+    {
+      "from": "CID002865",
+      "idType": "rmi-cid",
+      "cid": "CID002865",
+      "name": "KYSHTYM COPPER-ELECTROLYTIC PLANT ZAO",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "金"
+      ],
+      "row": 142
+    },
+    {
+      "from": "CID002867",
+      "idType": "rmi-cid",
+      "cid": "CID002867",
+      "name": "Degussa Sonne / Mond Goldhandel GmbH",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 62
+    },
+    {
+      "from": "CID002872",
+      "idType": "rmi-cid",
+      "cid": "CID002872",
+      "name": "Pease & Curren",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 187
+    },
+    {
+      "from": "CID002893",
+      "idType": "rmi-cid",
+      "cid": "CID002893",
+      "name": "JALAN & Company",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 118
+    },
+    {
+      "from": "CID002918",
+      "idType": "rmi-cid",
+      "cid": "CID002918",
+      "name": "SungEel HiMetal Co., Ltd.",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 244
+    },
+    {
+      "from": "CID002919",
+      "idType": "rmi-cid",
+      "cid": "CID002919",
+      "name": "Planta Recuperadora de Metales SpA",
+      "country": "智利",
+      "countryEn": "chile",
+      "minerals": [
+        "金"
+      ],
+      "row": 189
+    },
+    {
+      "from": "CID002920",
+      "idType": "rmi-cid",
+      "cid": "CID002920",
+      "name": "ABC Refinery Pty Ltd.",
+      "country": "澳大利亚",
+      "countryEn": "australia",
+      "minerals": [
+        "金"
+      ],
+      "row": 10
+    },
+    {
+      "from": "CID002973",
+      "idType": "rmi-cid",
+      "cid": "CID002973",
+      "name": "Safimet S.p.A",
+      "country": "意大利",
+      "countryEn": "italy",
+      "minerals": [
+        "金"
+      ],
+      "row": 203
+    },
+    {
+      "from": "CID003116",
+      "idType": "rmi-cid",
+      "cid": "CID003116",
+      "name": "Guangdong Hanhe Non-Ferrous Metal Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 417
+    },
+    {
+      "from": "CID003153",
+      "idType": "rmi-cid",
+      "cid": "CID003153",
+      "name": "State Research Institute Center for Physical Sciences and Technology",
+      "country": "立陶宛",
+      "countryEn": "lithuania",
+      "minerals": [
+        "金"
+      ],
+      "row": 241
+    },
+    {
+      "from": "CID003185",
+      "idType": "rmi-cid",
+      "cid": "CID003185",
+      "name": "African Gold Refinery",
+      "country": "乌干达",
+      "countryEn": "uganda",
+      "minerals": [
+        "金"
+      ],
+      "row": 14
+    },
+    {
+      "from": "CID003186",
+      "idType": "rmi-cid",
+      "cid": "CID003186",
+      "name": "Gold Coast Refinery",
+      "country": "加纳",
+      "countryEn": "ghana",
+      "minerals": [
+        "金"
+      ],
+      "row": 88
+    },
+    {
+      "from": "CID003189",
+      "idType": "rmi-cid",
+      "cid": "CID003189",
+      "name": "NH Recytech Company",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 177
+    },
+    {
+      "from": "CID003190",
+      "idType": "rmi-cid",
+      "cid": "CID003190",
+      "name": "Chifeng Dajingzi Tin Industry Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 378
+    },
+    {
+      "from": "CID003208",
+      "idType": "rmi-cid",
+      "cid": "CID003208",
+      "name": "Pongpipat Company Limited",
+      "country": "缅甸",
+      "countryEn": "myanmar",
+      "minerals": [
+        "锡"
+      ],
+      "row": 481
+    },
+    {
+      "from": "CID003324",
+      "idType": "rmi-cid",
+      "cid": "CID003324",
+      "name": "QG Refining, LLC",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 195
+    },
+    {
+      "from": "CID003325",
+      "idType": "rmi-cid",
+      "cid": "CID003325",
+      "name": "Tin Technology & Refining",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "锡"
+      ],
+      "row": 571
+    },
+    {
+      "from": "CID003348",
+      "idType": "rmi-cid",
+      "cid": "CID003348",
+      "name": "Dijllah Gold Refinery FZC",
+      "country": "阿联酋",
+      "countryEn": "united arab emirates",
+      "minerals": [
+        "金"
+      ],
+      "row": 63
+    },
+    {
+      "from": "CID003356",
+      "idType": "rmi-cid",
+      "cid": "CID003356",
+      "name": "Dongguan CiEXPO Environmental Engineering Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 397
+    },
+    {
+      "from": "CID003379",
+      "idType": "rmi-cid",
+      "cid": "CID003379",
+      "name": "Ma'anshan Weitai Tin Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 453
+    },
+    {
+      "from": "CID003382",
+      "idType": "rmi-cid",
+      "cid": "CID003382",
+      "name": "CGR Metalloys Pvt Ltd.",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 46
+    },
+    {
+      "from": "CID003383",
+      "idType": "rmi-cid",
+      "cid": "CID003383",
+      "name": "Sovereign Metals",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 239
+    },
+    {
+      "from": "CID003387",
+      "idType": "rmi-cid",
+      "cid": "CID003387",
+      "name": "Luna Smelter, Ltd.",
+      "country": "卢旺达",
+      "countryEn": "rwanda",
+      "minerals": [
+        "锡"
+      ],
+      "row": 450
+    },
+    {
+      "from": "CID003397",
+      "idType": "rmi-cid",
+      "cid": "CID003397",
+      "name": "Yunnan Yunfan Non-ferrous Metals Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 588
+    },
+    {
+      "from": "CID003407",
+      "idType": "rmi-cid",
+      "cid": "CID003407",
+      "name": "Lianyou Metals Co., Ltd.",
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 659
+    },
+    {
+      "from": "CID003408",
+      "idType": "rmi-cid",
+      "cid": "CID003408",
+      "name": "JSC \"Kirovgrad Hard Alloys Plant\"",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 653
+    },
+    {
+      "from": "CID003409",
+      "idType": "rmi-cid",
+      "cid": "CID003409",
+      "name": "Precious Minerals and Smelting Limited",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "锡"
+      ],
+      "row": 482
+    },
+    {
+      "from": "CID003410",
+      "idType": "rmi-cid",
+      "cid": "CID003410",
+      "name": "Gejiu City Fuxiang Industry and Trade Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 408
+    },
+    {
+      "from": "CID003416",
+      "idType": "rmi-cid",
+      "cid": "CID003416",
+      "name": "NPP Tyazhmetprom LLC",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 673
+    },
+    {
+      "from": "CID003417",
+      "idType": "rmi-cid",
+      "cid": "CID003417",
+      "name": "Hubei Green Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 631
+    },
+    {
+      "from": "CID003424",
+      "idType": "rmi-cid",
+      "cid": "CID003424",
+      "name": "Eco-System Recycling Co., Ltd. North Plant",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 70
+    },
+    {
+      "from": "CID003425",
+      "idType": "rmi-cid",
+      "cid": "CID003425",
+      "name": "Eco-System Recycling Co., Ltd. West Plant",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 71
+    },
+    {
+      "from": "CID003427",
+      "idType": "rmi-cid",
+      "cid": "CID003427",
+      "name": "Albasteel Industria e Comercio de Ligas Para Fundicao Ltd.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "钨"
+      ],
+      "row": 594
+    },
+    {
+      "from": "CID003449",
+      "idType": "rmi-cid",
+      "cid": "CID003449",
+      "name": "PT Mitra Sukses Globalindo",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 515
+    },
+    {
+      "from": "CID003461",
+      "idType": "rmi-cid",
+      "cid": "CID003461",
+      "name": "Augmont Enterprises Private Limited",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 32
+    },
+    {
+      "from": "CID003463",
+      "idType": "rmi-cid",
+      "cid": "CID003463",
+      "name": "Kundan Care Products Ltd.",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 138
+    },
+    {
+      "from": "CID003468",
+      "idType": "rmi-cid",
+      "cid": "CID003468",
+      "name": "Cronimet Brasil Ltda",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "钨"
+      ],
+      "row": 611
+    },
+    {
+      "from": "CID003486",
+      "idType": "rmi-cid",
+      "cid": "CID003486",
+      "name": "CRM Fundicao De Metais E Comercio De Equipamentos Eletronicos Do Brasil Ltda",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 382
+    },
+    {
+      "from": "CID003487",
+      "idType": "rmi-cid",
+      "cid": "CID003487",
+      "name": "Emerald Jewel Industry India Limited (Unit 1)",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 74
+    },
+    {
+      "from": "CID003488",
+      "idType": "rmi-cid",
+      "cid": "CID003488",
+      "name": "Emerald Jewel Industry India Limited (Unit 2)",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 75
+    },
+    {
+      "from": "CID003489",
+      "idType": "rmi-cid",
+      "cid": "CID003489",
+      "name": "Emerald Jewel Industry India Limited (Unit 3)",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 76
+    },
+    {
+      "from": "CID003490",
+      "idType": "rmi-cid",
+      "cid": "CID003490",
+      "name": "Emerald Jewel Industry India Limited (Unit 4)",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 77
+    },
+    {
+      "from": "CID003497",
+      "idType": "rmi-cid",
+      "cid": "CID003497",
+      "name": "K.A. Rasmussen",
+      "country": "挪威",
+      "countryEn": "norway",
+      "minerals": [
+        "金"
+      ],
+      "row": 126
+    },
+    {
+      "from": "CID003500",
+      "idType": "rmi-cid",
+      "cid": "CID003500",
+      "name": "Alexy Metals",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 20
+    },
+    {
+      "from": "CID003524",
+      "idType": "rmi-cid",
+      "cid": "CID003524",
+      "name": "CRM Synergies",
+      "country": "西班牙",
+      "countryEn": "spain",
+      "minerals": [
+        "锡"
+      ],
+      "row": 383
+    },
+    {
+      "from": "CID003548",
+      "idType": "rmi-cid",
+      "cid": "CID003548",
+      "name": "MD Overseas",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 154
+    },
+    {
+      "from": "CID003553",
+      "idType": "rmi-cid",
+      "cid": "CID003553",
+      "name": "Artek LLC",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 597
+    },
+    {
+      "from": "CID003557",
+      "idType": "rmi-cid",
+      "cid": "CID003557",
+      "name": "Metallix Refining Inc.",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 157
+    },
+    {
+      "from": "CID003575",
+      "idType": "rmi-cid",
+      "cid": "CID003575",
+      "name": "Metal Concentrators SA (Pty) Ltd.",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 156
+    },
+    {
+      "from": "CID003582",
+      "idType": "rmi-cid",
+      "cid": "CID003582",
+      "name": "Fabrica Auricchio Industria e Comercio Ltda.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 405
+    },
+    {
+      "from": "CID003583",
+      "idType": "rmi-cid",
+      "cid": "CID003583",
+      "name": "RFH Yancheng Jinye New Material Technology Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 336
+    },
+    {
+      "from": "CID003609",
+      "idType": "rmi-cid",
+      "cid": "CID003609",
+      "name": "Fujian Xinlu Tungsten Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 617
+    },
+    {
+      "from": "CID003612",
+      "idType": "rmi-cid",
+      "cid": "CID003612",
+      "name": "OOO “Technolom” 2",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 675
+    },
+    {
+      "from": "CID003614",
+      "idType": "rmi-cid",
+      "cid": "CID003614",
+      "name": "OOO “Technolom” 1",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 674
+    },
+    {
+      "from": "CID003615",
+      "idType": "rmi-cid",
+      "cid": "CID003615",
+      "name": "WEEEREFINING",
+      "country": "法国",
+      "countryEn": "france",
+      "minerals": [
+        "金"
+      ],
+      "row": 268
+    },
+    {
+      "from": "CID003641",
+      "idType": "rmi-cid",
+      "cid": "CID003641",
+      "name": "Gold by Gold Colombia",
+      "country": "哥伦比亚",
+      "countryEn": "colombia",
+      "minerals": [
+        "金"
+      ],
+      "row": 87
+    },
+    {
+      "from": "CID003643",
+      "idType": "rmi-cid",
+      "cid": "CID003643",
+      "name": "LLC Vostok",
+      "country": "俄罗斯",
+      "countryEn": "russian federation",
+      "minerals": [
+        "钨"
+      ],
+      "row": 661
+    },
+    {
+      "from": "CID003662",
+      "idType": "rmi-cid",
+      "cid": "CID003662",
+      "name": "YUDU ANSHENG TUNGSTEN CO., LTD.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 708
+    },
+    {
+      "from": "CID003663",
+      "idType": "rmi-cid",
+      "cid": "CID003663",
+      "name": "Dongwu Gold Group",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 66
+    },
+    {
+      "from": "CID003666",
+      "idType": "rmi-cid",
+      "cid": "CID003666",
+      "name": "SAM Precious Metals FZ-LLC",
+      "country": "阿联酋",
+      "countryEn": "united arab emirates",
+      "minerals": [
+        "金"
+      ],
+      "row": 206
+    },
+    {
+      "from": "CID003690",
+      "idType": "rmi-cid",
+      "cid": "CID003690",
+      "name": "NOBLE METAL SERVICES",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 180
+    },
+    {
+      "from": "CID003868",
+      "idType": "rmi-cid",
+      "cid": "CID003868",
+      "name": "PT Putera Sarana Shakti (PT PSS)",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 522
+    },
+    {
+      "from": "CID003926",
+      "idType": "rmi-cid",
+      "cid": "CID003926",
+      "name": "5D Production OU",
+      "country": "爱沙尼亚",
+      "countryEn": "estonia",
+      "minerals": [
+        "钽"
+      ],
+      "row": 280
+    },
+    {
+      "from": "CID003978",
+      "idType": "rmi-cid",
+      "cid": "CID003978",
+      "name": "HANNAE FOR T Co., Ltd.",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "钨"
+      ],
+      "row": 630
+    },
+    {
+      "from": "CID003993",
+      "idType": "rmi-cid",
+      "cid": "CID003993",
+      "name": "Tungsten Vietnam Joint Stock Company",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 696
+    },
+    {
+      "from": "CID004010",
+      "idType": "rmi-cid",
+      "cid": "CID004010",
+      "name": "Coimpa Industrial LTDA",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "金"
+      ],
+      "row": 56
+    },
+    {
+      "from": "CID004034",
+      "idType": "rmi-cid",
+      "cid": "CID004034",
+      "name": "Nam Viet Cromit Joint Stock Company",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 669
+    },
+    {
+      "from": "CID004054",
+      "idType": "rmi-cid",
+      "cid": "CID004054",
+      "name": "PowerX Ltd.",
+      "country": "卢旺达",
+      "countryEn": "rwanda",
+      "minerals": [
+        "钽"
+      ],
+      "row": 331
+    },
+    {
+      "from": "CID004056",
+      "idType": "rmi-cid",
+      "cid": "CID004056",
+      "name": "MALAMET SMELTING SDN. BHD.",
+      "country": "马来西亚",
+      "countryEn": "malaysia",
+      "minerals": [
+        "钨"
+      ],
+      "row": 662
+    },
+    {
+      "from": "CID004060",
+      "idType": "rmi-cid",
+      "cid": "CID004060",
+      "name": "DONGKUK INDUSTRIES CO., LTD.",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "钨"
+      ],
+      "row": 614
+    },
+    {
+      "from": "CID004065",
+      "idType": "rmi-cid",
+      "cid": "CID004065",
+      "name": "Mining Minerals Resources SARL",
+      "country": "刚果（金）",
+      "countryEn": "congo democratic republic of the",
+      "minerals": [
+        "锡"
+      ],
+      "row": 465
+    },
+    {
+      "from": "CID004397",
+      "idType": "rmi-cid",
+      "cid": "CID004397",
+      "name": "Lianyou Resources Co., Ltd.",
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 660
+    },
+    {
+      "from": "CID004403",
+      "idType": "rmi-cid",
+      "cid": "CID004403",
+      "name": "Takehara PVD Materials Plant / PVD Materials Division of MITSUI MINING & SMELTING CO., LTD.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "锡"
+      ],
+      "row": 564
+    },
+    {
+      "from": "CID004430",
+      "idType": "rmi-cid",
+      "cid": "CID004430",
+      "name": "Shinwon Tungsten (Fujian Shanghang) Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 686
+    },
+    {
+      "from": "CID004434",
+      "idType": "rmi-cid",
+      "cid": "CID004434",
+      "name": "Malaysia Smelting Corporation Berhad (Port Klang)",
+      "country": "马来西亚",
+      "countryEn": "malaysia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 455
+    },
+    {
+      "from": "CID004435",
+      "idType": "rmi-cid",
+      "cid": "CID004435",
+      "name": "SHENZHEN JINJUNWEI RESOURCE COMPREHENSIVE DEVELOPMENT CO., LTD.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 228
+    },
+    {
+      "from": "CID004438",
+      "idType": "rmi-cid",
+      "cid": "CID004438",
+      "name": "Philippine Carreytech Metal Corp.",
+      "country": "菲律宾",
+      "countryEn": "philippines",
+      "minerals": [
+        "钨"
+      ],
+      "row": 677
+    },
+    {
+      "from": "CID004491",
+      "idType": "rmi-cid",
+      "cid": "CID004491",
+      "name": "TITAN COMPANY LIMITED, JEWELLERY DIVISION",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 251
+    },
+    {
+      "from": "CID004506",
+      "idType": "rmi-cid",
+      "cid": "CID004506",
+      "name": "GG Refinery Ltd.",
+      "country": "坦桑尼亚",
+      "countryEn": "tanzania united republic of",
+      "minerals": [
+        "金"
+      ],
+      "row": 85
+    },
+    {
+      "from": "CID004619",
+      "idType": "rmi-cid",
+      "cid": "CID004619",
+      "name": "KENEE MINING VIETNAM COMPANY LIMITED",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 654
+    },
+    {
+      "from": "CID004692",
+      "idType": "rmi-cid",
+      "cid": "CID004692",
+      "name": "RIKAYAA GREENTECH PRIVATE LIMITED",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "锡"
+      ],
+      "row": 545
+    },
+    {
+      "from": "CID004697",
+      "idType": "rmi-cid",
+      "cid": "CID004697",
+      "name": "Attero Recycling Pvt Ltd",
+      "country": "印度",
+      "countryEn": "india",
+      "minerals": [
+        "金"
+      ],
+      "row": 30
+    },
+    {
+      "from": "CID004714",
+      "idType": "rmi-cid",
+      "cid": "CID004714",
+      "name": "Impala Platinum - Platinum Metals Refinery (PMR)",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 108
+    },
+    {
+      "from": "CID004724",
+      "idType": "rmi-cid",
+      "cid": "CID004724",
+      "name": "Woodcross Smelting Company Limited",
+      "country": "乌干达",
+      "countryEn": "uganda",
+      "minerals": [
+        "锡"
+      ],
+      "row": 581
+    },
+    {
+      "from": "CID004754",
+      "idType": "rmi-cid",
+      "cid": "CID004754",
+      "name": "Global Advanced Metals Greenbushes Pty Ltd.",
+      "country": "澳大利亚",
+      "countryEn": "australia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 415
+    },
+    {
+      "from": "CID004755",
+      "idType": "rmi-cid",
+      "cid": "CID004755",
+      "name": "Elite Industech Co., Ltd.",
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "金"
+      ],
+      "row": 73
+    },
+    {
+      "from": "CID004796",
+      "idType": "rmi-cid",
+      "cid": "CID004796",
+      "name": "Longnan Chuangyue Environmental Protection Technology Development Co., Ltd",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 449
+    },
+    {
+      "from": "CID004797",
+      "idType": "rmi-cid",
+      "cid": "CID004797",
+      "name": "Philippine Bonway Manufacturing Industrial Corporation",
+      "country": "菲律宾",
+      "countryEn": "philippines",
+      "minerals": [
+        "钨"
+      ],
+      "row": 676
+    },
+    {
+      "from": "CID004813",
+      "idType": "rmi-cid",
+      "cid": "CID004813",
+      "name": "Jiangxi Suns Nonferrous Materials Co. Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "钽"
+      ],
+      "row": 308
+    },
+    {
+      "from": "CID005006",
+      "idType": "rmi-cid",
+      "cid": "CID005006",
+      "name": "Gasabo Gold Refinery Ltd",
+      "country": "卢旺达",
+      "countryEn": "rwanda",
+      "minerals": [
+        "金"
+      ],
+      "row": 83
+    },
+    {
+      "from": "CID005012",
+      "idType": "rmi-cid",
+      "cid": "CID005012",
+      "name": "Jing Yuan Tungsten Technology Co., Ltd.",
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "钨"
+      ],
+      "row": 652
+    },
+    {
+      "from": "CID005014",
+      "idType": "rmi-cid",
+      "cid": "CID005014",
+      "name": "Minera Titan del Peru SRL (MTP) - Belen Plant",
+      "country": "秘鲁",
+      "countryEn": "peru",
+      "minerals": [
+        "金"
+      ],
+      "row": 164
+    },
+    {
+      "from": "CID005017",
+      "idType": "rmi-cid",
+      "cid": "CID005017",
+      "name": "LAOS SOUTHERN MINING SMELTING SOLE CO.,LTD",
+      "country": "老挝",
+      "countryEn": "lao people s democratic republic",
+      "minerals": [
+        "钨"
+      ],
+      "row": 658
+    },
+    {
+      "from": "CID005067",
+      "idType": "rmi-cid",
+      "cid": "CID005067",
+      "name": "PT Arsed Indonesia",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 486
+    },
+    {
+      "from": "CID005068",
+      "idType": "rmi-cid",
+      "cid": "CID005068",
+      "name": "S.P.T. spol.s r.o.",
+      "country": "捷克",
+      "countryEn": "czechia",
+      "minerals": [
+        "钨"
+      ],
+      "row": 682
+    },
+    {
+      "from": "CID005189",
+      "idType": "rmi-cid",
+      "cid": "CID005189",
+      "name": "P Kay Metal, Inc",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "锡"
+      ],
+      "row": 479
+    },
+    {
+      "from": "CID005248",
+      "idType": "rmi-cid",
+      "cid": "CID005248",
+      "name": "Tungamoy Metals Inc.",
+      "country": "韩国",
+      "countryEn": "korea republic of",
+      "minerals": [
+        "钨"
+      ],
+      "row": 694
+    }
+  ],
+  "coverage": {
+    "claimComplete": false,
+    "note": "Form SD 强制申报、不强制列名单，本清单只是该公司披露的部分，且语义是「出现在供应链中」，不是直接供货。"
+  }
+}

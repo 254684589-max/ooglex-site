@@ -1,0 +1,1093 @@
+{
+  "contractVersion": 2,
+  "dataset": "supply-chain-edges",
+  "symbol": "SLNH",
+  "name": "Soluna Holdings, Inc",
+  "updatedAt": "2026-09-07T03:29:54Z",
+  "relation": {
+    "id": "smelter-in-supply-chain",
+    "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
+    "tier": "smelter"
+  },
+  "confidence": "disclosed",
+  "direction": {
+    "from": "smelter",
+    "to": "SLNH",
+    "toListed": true
+  },
+  "evidence": {
+    "sourceType": "sec-form-sd",
+    "url": "https://www.sec.gov/Archives/edgar/data/64463/000100329721000065/mtisd.htm",
+    "docDate": "2021-06-01",
+    "form": "SD",
+    "accession": "0001003297-21-000065",
+    "filingDate": "2021-06-01",
+    "reportDate": "",
+    "document": "mtisd.htm",
+    "indexUrl": "https://www.sec.gov/Archives/edgar/data/64463/000100329721000065/",
+    "totalSD": 5
+  },
+  "parse": {
+    "rowsScanned": 100,
+    "rowsWithCid": 0,
+    "nameOnly": 85,
+    "droppedNoCid": 0,
+    "unique": 85,
+    "namedRatio": 1.0,
+    "countryRatio": 1.0
+  },
+  "byCountry": {
+    "印度尼西亚": 21,
+    "中国": 16,
+    "美国": 9,
+    "德国": 5,
+    "巴西": 5,
+    "瑞士": 4,
+    "加拿大": 3,
+    "日本": 3,
+    "玻利维亚": 2,
+    "墨西哥": 2,
+    "比利时": 2,
+    "泰国": 2,
+    "中国台湾": 2,
+    "菲律宾": 1,
+    "瑞典": 1,
+    "意大利": 1,
+    "波兰": 1,
+    "土耳其": 1,
+    "马来西亚": 1,
+    "新加坡": 1,
+    "秘鲁": 1,
+    "南非": 1
+  },
+  "byMineral": {
+    "锡": 45,
+    "金": 40
+  },
+  "edges": [
+    {
+      "from": "NAME:advanced-chemical-company",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Advanced Chemical Company",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 13
+    },
+    {
+      "from": "NAME:allgemeine-gold-und-silberscheideanstalt-a-g",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Allgemeine Gold-und Silberscheideanstalt A.G.",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 14
+    },
+    {
+      "from": "NAME:alpha-metals",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Alpha Metals",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "锡"
+      ],
+      "row": 15
+    },
+    {
+      "from": "NAME:anglogold-ashanti-corrego-do-sitio-mineracao",
+      "idType": "name-only",
+      "cid": null,
+      "name": "AngloGold Ashanti Corrego do Sitio Mineracao",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "金"
+      ],
+      "row": 16
+    },
+    {
+      "from": "NAME:argor-heraeus-s-a",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Argor-Heraeus S.A.",
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 17
+    },
+    {
+      "from": "NAME:asahi-refining-canada-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Asahi Refining Canada Ltd.",
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "金"
+      ],
+      "row": 18
+    },
+    {
+      "from": "NAME:asahi-refining-usa-inc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Asahi Refining USA Inc.",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 19
+    },
+    {
+      "from": "NAME:aurubis-ag",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Aurubis AG",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 20
+    },
+    {
+      "from": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
+      "country": "菲律宾",
+      "countryEn": "philippines",
+      "minerals": [
+        "金"
+      ],
+      "row": 21
+    },
+    {
+      "from": "NAME:boliden-ab",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Boliden AB",
+      "country": "瑞典",
+      "countryEn": "sweden",
+      "minerals": [
+        "金"
+      ],
+      "row": 22
+    },
+    {
+      "from": "NAME:c-hafner-gmbh-co-kg",
+      "idType": "name-only",
+      "cid": null,
+      "name": "C. Hafner GmbH + Co. KG",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 23
+    },
+    {
+      "from": "NAME:ccr-refinery-glencore-canada-corporation",
+      "idType": "name-only",
+      "cid": null,
+      "name": "CCR Refinery - Glencore Canada Corporation",
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "金"
+      ],
+      "row": 24
+    },
+    {
+      "from": "NAME:chifeng-dajingzi-tin-industry-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Chifeng Dajingzi Tin Industry Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 25
+    },
+    {
+      "from": "NAME:chimet-s-p-a",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Chimet S.p.A.",
+      "country": "意大利",
+      "countryEn": "italy",
+      "minerals": [
+        "金"
+      ],
+      "row": 26
+    },
+    {
+      "from": "NAME:china-tin-group-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "China Tin Group Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 27
+    },
+    {
+      "from": "NAME:cookson",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Cookson",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "锡"
+      ],
+      "row": 28
+    },
+    {
+      "from": "NAME:cv-ayi-jaya",
+      "idType": "name-only",
+      "cid": null,
+      "name": "CV Ayi Jaya",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 29
+    },
+    {
+      "from": "NAME:cv-united-smelting",
+      "idType": "name-only",
+      "cid": null,
+      "name": "CV United Smelting",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 30
+    },
+    {
+      "from": "NAME:cv-venus-inti-perkasa",
+      "idType": "name-only",
+      "cid": null,
+      "name": "CV Venus Inti Perkasa",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 31
+    },
+    {
+      "from": "NAME:dowa",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Dowa",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 32
+    },
+    {
+      "from": "NAME:em-vinto",
+      "idType": "name-only",
+      "cid": null,
+      "name": "EM Vinto",
+      "country": "玻利维亚",
+      "countryEn": "bolivia plurinational state of",
+      "minerals": [
+        "锡"
+      ],
+      "row": 33
+    },
+    {
+      "from": "NAME:fenix-metals",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Fenix Metals",
+      "country": "波兰",
+      "countryEn": "poland",
+      "minerals": [
+        "锡"
+      ],
+      "row": 34
+    },
+    {
+      "from": "NAME:geib-refining-corporation",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Geib Refining Corporation",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 35
+    },
+    {
+      "from": "NAME:gejiu-non-ferrous-metal-processing-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Gejiu Non-Ferrous Metal Processing Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 36
+    },
+    {
+      "from": "NAME:gejiu-yunxin-nonferrous-electrolysis-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Gejiu Yunxin Nonferrous Electrolysis Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 37
+    },
+    {
+      "from": "NAME:guangdong-hanhe-non-ferrous-metal-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Guangdong Hanhe Non-Ferrous Metal Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 38
+    },
+    {
+      "from": "NAME:guangdong-jinding-gold-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Guangdong Jinding Gold Limited",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 39
+    },
+    {
+      "from": "NAME:heimerle-meule-gmbh",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Heimerle + Meule GmbH",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 40
+    },
+    {
+      "from": "NAME:heraeus-ltd-hong-kong",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Heraeus Ltd. Hong Kong",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 41
+    },
+    {
+      "from": "NAME:heraeus-metals-hong-kong-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Heraeus Metals Hong Kong Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 42
+    },
+    {
+      "from": "NAME:heraeus-precious-metals-gmbh-co-kg",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Heraeus Precious Metals GmbH & Co. KG",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "金"
+      ],
+      "row": 43
+    },
+    {
+      "from": "NAME:huichang-jinshunda-tin-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Huichang Jinshunda Tin Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 44
+    },
+    {
+      "from": "NAME:istanbul-gold-refinery",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Istanbul Gold Refinery",
+      "country": "土耳其",
+      "countryEn": "turkey",
+      "minerals": [
+        "金"
+      ],
+      "row": 45
+    },
+    {
+      "from": "NAME:kennecott-utah-copper-llc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Kennecott Utah Copper LLC",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 46
+    },
+    {
+      "from": "NAME:magnu-s-minerais-metais-e-ligas-ltda",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Magnu's Minerais Metais e Ligas Ltda.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 47
+    },
+    {
+      "from": "NAME:malaysia-smelting-corporation-msc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Malaysia Smelting Corporation (MSC)",
+      "country": "马来西亚",
+      "countryEn": "malaysia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 48
+    },
+    {
+      "from": "NAME:metal-rgica-met-mex-pe-oles-s-a-de-c-v",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Metalúrgica Met-Mex Peñoles, S.A. de C.V",
+      "country": "墨西哥",
+      "countryEn": "mexico",
+      "minerals": [
+        "金"
+      ],
+      "row": 57
+    },
+    {
+      "from": "NAME:metallic-resources-inc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Metallic Resources, Inc.",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "锡"
+      ],
+      "row": 49
+    },
+    {
+      "from": "NAME:metallo-belgium-n-v",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Metallo Belgium N.V.",
+      "country": "比利时",
+      "countryEn": "belgium",
+      "minerals": [
+        "锡"
+      ],
+      "row": 50
+    },
+    {
+      "from": "NAME:metalor-technologies-hong-kong-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Metalor Technologies (Hong Kong) Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 51
+    },
+    {
+      "from": "NAME:metalor-technologies-s-a",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Metalor Technologies S.A.",
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 54
+    },
+    {
+      "from": "NAME:metalor-technologies-singapore-pte-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Metalor Technologies (Singapore) Pte., Ltd.",
+      "country": "新加坡",
+      "countryEn": "singapore",
+      "minerals": [
+        "金"
+      ],
+      "row": 52
+    },
+    {
+      "from": "NAME:metalor-technologies-suzhou-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Metalor Technologies (Suzhou) Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 53
+    },
+    {
+      "from": "NAME:metalor-usa-refining-corporation",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Metalor USA Refining Corporation",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 55
+    },
+    {
+      "from": "NAME:metalurgica-met-mex-penoles-s-a-de-c-v",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Metalurgica Met-Mex Penoles S.A. De C.V.",
+      "country": "墨西哥",
+      "countryEn": "mexico",
+      "minerals": [
+        "金"
+      ],
+      "row": 56
+    },
+    {
+      "from": "NAME:mineracao-taboca-s-a",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Mineracao Taboca S.A.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 58
+    },
+    {
+      "from": "NAME:minsur",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Minsur",
+      "country": "秘鲁",
+      "countryEn": "peru",
+      "minerals": [
+        "锡"
+      ],
+      "row": 59
+    },
+    {
+      "from": "NAME:mitsubishi-materials-corporation",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Mitsubishi Materials Corporation",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "锡"
+      ],
+      "row": 60
+    },
+    {
+      "from": "NAME:o-m-manufacturing-thailand-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "O.M. Manufacturing (Thailand) Co., Ltd.",
+      "country": "泰国",
+      "countryEn": "thailand",
+      "minerals": [
+        "锡"
+      ],
+      "row": 61
+    },
+    {
+      "from": "NAME:operaciones-metalurgicas-s-a",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Operaciones Metalurgicas S.A.",
+      "country": "玻利维亚",
+      "countryEn": "bolivia plurinational state of",
+      "minerals": [
+        "锡"
+      ],
+      "row": 62
+    },
+    {
+      "from": "NAME:pamp-s-a",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PAMP S.A.",
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 63
+    },
+    {
+      "from": "NAME:pt-aries-kencana-sejahtera",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Aries Kencana Sejahtera",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 64
+    },
+    {
+      "from": "NAME:pt-artha-cipta-langgeng",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Artha Cipta Langgeng",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 65
+    },
+    {
+      "from": "NAME:pt-bangka-prima-tin",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Bangka Prima Tin",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 66
+    },
+    {
+      "from": "NAME:pt-bangka-serumpun",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Bangka Serumpun",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 67
+    },
+    {
+      "from": "NAME:pt-bangka-tin-industry",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Bangka Tin Industry",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 68
+    },
+    {
+      "from": "NAME:pt-belitung-industri-sejahtera",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Belitung Industri Sejahtera",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 69
+    },
+    {
+      "from": "NAME:pt-bukit-timah",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Bukit Timah",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 70
+    },
+    {
+      "from": "NAME:pt-ds-jaya-abadi",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT DS Jaya Abadi",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 71
+    },
+    {
+      "from": "NAME:pt-inti-stania-prima",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Inti Stania Prima",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 72
+    },
+    {
+      "from": "NAME:pt-menara-cipta-mulia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Menara Cipta Mulia",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 73
+    },
+    {
+      "from": "NAME:pt-mitra-stania-prima",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Mitra Stania Prima",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 74
+    },
+    {
+      "from": "NAME:pt-panca-mega-persada",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Panca Mega Persada",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 75
+    },
+    {
+      "from": "NAME:pt-refined-bangka-tin",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Refined Bangka Tin",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 76
+    },
+    {
+      "from": "NAME:pt-sariwiguna-binasentosa",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Sariwiguna Binasentosa",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 77
+    },
+    {
+      "from": "NAME:pt-stanindo-inti-perkasa",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Stanindo Inti Perkasa",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 78
+    },
+    {
+      "from": "NAME:pt-sukses-inti-makmur",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Sukses Inti Makmur",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 79
+    },
+    {
+      "from": "NAME:pt-timah-tbk-mentok",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Timah Tbk Mentok",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 80
+    },
+    {
+      "from": "NAME:pt-tinindo-inter-nusa",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Tinindo Inter Nusa",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 81
+    },
+    {
+      "from": "NAME:rand-refinery-pty-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Rand Refinery (Pty) Ltd.",
+      "country": "南非",
+      "countryEn": "south africa",
+      "minerals": [
+        "金"
+      ],
+      "row": 82
+    },
+    {
+      "from": "NAME:royal-canadian-mint",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Royal Canadian Mint",
+      "country": "加拿大",
+      "countryEn": "canada",
+      "minerals": [
+        "金"
+      ],
+      "row": 83
+    },
+    {
+      "from": "NAME:rui-da-hung",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Rui Da Hung",
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 84
+    },
+    {
+      "from": "NAME:shandong-zhaojin-gold-silver-refinery-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Shandong Zhaojin Gold & Silver Refinery Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 85
+    },
+    {
+      "from": "NAME:solar-applied-materials-technology-corp",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Solar Applied Materials Technology Corp.",
+      "country": "中国台湾",
+      "countryEn": "taiwan province of china",
+      "minerals": [
+        "金"
+      ],
+      "row": 86
+    },
+    {
+      "from": "NAME:tanaka-kikinzoku-kogyo-k-k",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Tanaka Kikinzoku Kogyo K.K.",
+      "country": "日本",
+      "countryEn": "japan",
+      "minerals": [
+        "金"
+      ],
+      "row": 87
+    },
+    {
+      "from": "NAME:thaisarco",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Thaisarco",
+      "country": "泰国",
+      "countryEn": "thailand",
+      "minerals": [
+        "锡"
+      ],
+      "row": 88
+    },
+    {
+      "from": "NAME:the-refinery-of-shandong-gold-mining-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "The Refinery of Shandong Gold Mining Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 89
+    },
+    {
+      "from": "NAME:umicore-brasil-ltda",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Umicore Brasil Ltda.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "金"
+      ],
+      "row": 90
+    },
+    {
+      "from": "NAME:umicore-s-a-business-unit-precious-metals-refining",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Umicore S.A. Business Unit Precious Metals Refining",
+      "country": "比利时",
+      "countryEn": "belgium",
+      "minerals": [
+        "金"
+      ],
+      "row": 91
+    },
+    {
+      "from": "NAME:united-precious-metal-refining-inc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "United Precious Metal Refining, Inc.",
+      "country": "美国",
+      "countryEn": "united states of america",
+      "minerals": [
+        "金"
+      ],
+      "row": 92
+    },
+    {
+      "from": "NAME:valcambi-s-a",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Valcambi S.A.",
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 93
+    },
+    {
+      "from": "NAME:white-solder-metalurgia-e-mineracao-ltda",
+      "idType": "name-only",
+      "cid": null,
+      "name": "White Solder Metalurgia e Mineracao Ltda.",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "锡"
+      ],
+      "row": 94
+    },
+    {
+      "from": "NAME:yunnan-chengfeng-non-ferrous-metals-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Yunnan Chengfeng Non-ferrous Metals Co., Ltd.",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 95
+    },
+    {
+      "from": "NAME:yunnan-tin-company-limited",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Yunnan Tin Company Limited",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "锡"
+      ],
+      "row": 96
+    },
+    {
+      "from": "NAME:zhongyuan-gold-smelter-of-zhongjin-gold-corporation",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Zhongyuan Gold Smelter of Zhongjin Gold Corporation",
+      "country": "中国",
+      "countryEn": "china",
+      "minerals": [
+        "金"
+      ],
+      "row": 97
+    }
+  ],
+  "coverage": {
+    "claimComplete": false,
+    "note": "Form SD 强制申报、不强制列名单，本清单只是该公司披露的部分，且语义是「出现在供应链中」，不是直接供货。"
+  }
+}

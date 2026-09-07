@@ -463,6 +463,59 @@ async function main() {
         };
       })()`);
 
+      /* 区块导航。**这一页在手机上 15.2 屏**，产业链骨架占 1~9.1 屏，五个
+         分析面板全在它后面——「受涵盖国家」落在 14.3 屏处。没有导航，往下面
+         加的每一块都是加在读者看不见的地方。
+
+         守三件事：每个**显示了的**区块都要在导航里有一枚（漏一枚就等于那块
+         又消失了）、每枚都点得到真实存在的锚点（写死清单会指向空处）、
+         导航自己横向滚而**不撑宽页面**。 */
+      const nav = await evaluate(`(() => {
+        const n = document.getElementById('secnav');
+        if (!n || n.hidden) return { shown: false };
+        const links = [...n.querySelectorAll('a')];
+        // 页面上「显示了的」区块：有 h2 且它管的那块没有 hidden
+        const heads = [...document.querySelectorAll(
+          '.sec-h > h2, .sechead > h2, .notice > h2, details > summary > h2')];
+        const visible = heads.filter(h2 => {
+          const owner = h2.closest('section, details');
+          if (owner) return !owner.hidden;
+          let next = (h2.parentElement || {}).nextElementSibling;
+          while (next && next.nodeName !== 'SECTION'
+                 && !next.classList.contains('bands')) next = next.nextElementSibling;
+          return !!next && !next.hidden;
+        }).map(h2 => (h2.getAttribute('data-nav') || h2.textContent || '').trim());
+        return {
+          shown: true,
+          chips: links.map(a => (a.textContent || '').trim()),
+          hrefs: links.map(a => a.getAttribute('href') || ''),
+          dead: links.filter(a => !document.querySelector(a.getAttribute('href')))
+            .map(a => a.getAttribute('href')),
+          visible,
+          seen: links.filter(a => a.getClientRects().length > 0).length,
+          navScroll: Math.max(0, n.scrollWidth - n.clientWidth),
+          pageOverflow: Math.max(0,
+            document.documentElement.scrollWidth - window.innerWidth)
+        };
+      })()`);
+      check(`区块导航已渲染`, () => assert.ok(nav.shown,
+        "没有导航——这一页 15 屏，下半页的面板等于不存在"));
+      check(`每个显示了的区块都在导航里有一枚`, () => {
+        assert.deepEqual(nav.chips, nav.visible,
+          `导航 ${nav.chips.join("、")}；页面上显示的是 ${nav.visible.join("、")}`);
+      });
+      check(`每枚都指向真实存在的锚点`, () => {
+        assert.deepEqual(nav.dead, [],
+          `这些跳不到任何地方：${nav.dead.join("、")}`);
+      });
+      check(`每枚都看得见`, () => assert.equal(nav.seen, nav.chips.length,
+        `${nav.chips.length - nav.seen} 枚有文本却没有布局盒`));
+      /* 导航自身横向滚是设计，页面横向滚是缺陷——这一页反复钉住的一条契约。 */
+      check(`导航横向滚在自己内部，不撑宽页面`, () => {
+        assert.ok(nav.pageOverflow <= 1,
+          `页面横向溢出 ${nav.pageOverflow}px——导航把页面撑宽了`);
+      });
+
       check(`按板块覆盖区块已渲染`, () => assert.ok(cov.shown));
       check(`板块数与节点表一致（${SECTORS.length}）`,
         () => assert.equal(cov.rows.length, SECTORS.length));
@@ -1049,6 +1102,100 @@ async function main() {
         });
         check(`国别暴露无横向溢出`, () => assert.ok(ex.overflow <= 1,
           `溢出 ${ex.overflow}px`));
+
+        /* 矿种。§1502 点名的就是钽锡钨金四种，而页面此前只在一处 hover 里
+           提过它们。这一屏守两件事：四种矿的读数逐行等于数据，以及**那句
+           「HHI 不是采购量」必须在**——Form SD 不含采购量，少了这句话，
+           「钨 HHI 2161」会被读成「四成的钨来自中国」，那是数据不支持的。 */
+        const MV = (NODES.mineralView || {}).rows || [];
+        const REAL = MV.filter(r => r.mineral && r.mineral !== "未写明");
+        if (REAL.length) {
+          const mn = await evaluate(`(() => {
+            const box = document.getElementById('minsec');
+            if (!box || box.hidden) return { shown: false };
+            return {
+              shown: true,
+              rows: [...box.querySelectorAll('.mrow')].map(r => ({
+                mineral: (r.querySelector('.nm') || {}).textContent || '',
+                n: (r.querySelector('.n') || {}).textContent || '',
+                hhi: (r.querySelector('.hh') || {}).textContent || '',
+                cov: (r.querySelector('.cc2') || {}).textContent || '',
+                seen: r.getClientRects().length > 0
+              })),
+              lead: (document.getElementById('mineral-lead') || {}).textContent || '',
+              foot: (document.getElementById('mineral-foot') || {}).textContent || '',
+              overflow: Math.max(0,
+                document.documentElement.scrollWidth - window.innerWidth)
+            };
+          })()`);
+          check(`矿种区块已渲染（${REAL.length} 种）`, () => {
+            assert.ok(mn.shown, "区块没显示");
+            assert.equal(mn.rows.length, REAL.length,
+              `页面 ${mn.rows.length} 行，数据 ${REAL.length} 种`);
+          });
+          check(`每种矿的条数、HHI、受涵盖国条数都等于数据`, () => {
+            const bad = [];
+            REAL.forEach(w => {
+              const got = mn.rows.find(r => r.mineral === w.mineral);
+              if (!got) { bad.push(`${w.mineral} 未渲染`); return; }
+              const digits = t => (t || '').replace(/[^0-9]/g, '');
+              if (digits(got.n).indexOf(String(w.edges)) !== 0)
+                bad.push(`${w.mineral} 条数「${got.n}」应含 ${w.edges}`);
+              const grp = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              if (!got.hhi.includes(grp(w.hhi)))
+                bad.push(`${w.mineral} HHI「${got.hhi}」应为 ${w.hhi}`);
+              if (!got.hhi.includes(w.hhiBand))
+                bad.push(`${w.mineral} 没印档位「${w.hhiBand}」`);
+              if (digits(got.cov) !== String(w.coveredEdges))
+                bad.push(`${w.mineral} 受涵盖国「${got.cov}」应为 ${w.coveredEdges}`);
+            });
+            assert.equal(bad.length, 0, bad.join("；"));
+          });
+          check(`矿种行都看得见`, () => {
+            const blind = mn.rows.filter(r => !r.seen).length;
+            assert.equal(blind, 0, `${blind}/${mn.rows.length} 行没有布局盒`);
+          });
+          /* 这一条是本屏的底线。数据里没有采购量，把 HHI 说成采购集中度
+             就是凭这份数据讲了另一件事。 */
+          check(`写明 HHI 不是采购量`, () => {
+            assert.match(mn.foot, /不是采购量/, `页脚：${mn.foot.slice(0, 160)}`);
+            assert.match(mn.foot, /不要求.*采购量|不含采购量/,
+              `没说清 Form SD 本身不含这个字段：${mn.foot.slice(0, 160)}`);
+          });
+          check(`分档写明取自公开标准，不是自定阈值`, () => {
+            assert.match(mn.lead, /司法部|联邦贸易委员会|横向合并指引/,
+              `导语没写分档依据：${mn.lead.slice(0, 160)}`);
+          });
+          check(`矿种区块无横向溢出`, () => assert.ok(mn.overflow <= 1,
+            `溢出 ${mn.overflow}px`));
+        }
+
+        /* 名单雷同度。**这是读懂上游集中度与上游重叠的前提，不是花絮。**
+           实测中位 Jaccard 0.89、中位公司名单里每一家厂都被别家也列了——
+           少了这句话，「被 56 家共同列入」和「重叠 349 家」都会被当成强信号，
+           而真正的解释是这些名单本身就是同一份名录的再现。 */
+        const SIM = NODES.listSimilarity || {};
+        if (SIM.companies) {
+          const sm = await evaluate(`(() => {
+            const e = document.getElementById('sim-note');
+            if (!e || e.hidden) return { shown: false };
+            return { shown: true, text: e.textContent || '',
+                     seen: e.getClientRects().length > 0 };
+          })()`);
+          check(`上游集中度旁写明名单雷同度`, () => {
+            assert.ok(sm.shown && sm.seen,
+              "没渲染或看不见——缺了它，这份榜单会被读成供应链耦合信号");
+            assert.ok(sm.text.includes(SIM.medianJaccard.toFixed(2)),
+              `没印中位重合度 ${SIM.medianJaccard.toFixed(2)}：${sm.text.slice(0, 140)}`);
+            assert.ok(sm.text.includes(String(SIM.atLeast90)),
+              `没印 ≥0.90 的家数 ${SIM.atLeast90}：${sm.text.slice(0, 140)}`);
+          });
+          check(`说清重叠大是常态而非信号`, () => {
+            assert.match(sm.text, /常态|不是信号/, `实际：${sm.text.slice(0, 160)}`);
+            assert.match(sm.text, /RMI|名录/,
+              `没给出原因（同一份名录的再现）：${sm.text.slice(0, 160)}`);
+          });
+        }
 
         /* 受涵盖国家。**这是本板块唯一一处法定口径**：没有多德-弗兰克
            §1502 就没有 Form SD，也就没有这张图。此前页面一个字没提，

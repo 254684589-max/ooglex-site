@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "APTV",
   "name": "Aptiv",
-  "updatedAt": "2026-09-04T10:58:37Z",
+  "updatedAt": "2026-09-07T03:29:53Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -37,24 +37,23 @@
     "countryRatio": 0.021
   },
   "byCountry": {
-    "中国": 76,
-    "日本": 30,
-    "美国": 26,
+    "中国": 74,
+    "日本": 29,
+    "美国": 25,
+    "未归类": 20,
     "印度": 19,
     "巴西": 17,
-    "俄罗斯": 17,
-    "印度尼西亚": 16,
+    "印度尼西亚": 15,
+    "俄罗斯": 15,
     "德国": 11,
-    "韩国": 11,
-    "未归类": 10,
-    "越南": 9,
+    "韩国": 10,
+    "越南": 8,
     "瑞士": 6,
     "阿联酋": 6,
     "意大利": 5,
     "中国台湾": 5,
     "菲律宾": 4,
     "哈萨克斯坦": 4,
-    "马来西亚": 4,
     "秘鲁": 4,
     "泰国": 4,
     "南非": 4,
@@ -63,7 +62,7 @@
     "加拿大": 3,
     "西班牙": 3,
     "澳大利亚": 3,
-    "卢旺达": 3,
+    "马来西亚": 3,
     "玻利维亚": 2,
     "波兰": 2,
     "土耳其": 2,
@@ -73,6 +72,7 @@
     "捷克": 2,
     "法国": 2,
     "乌干达": 2,
+    "卢旺达": 2,
     "瑞典": 1,
     "吉尔吉斯斯坦": 1,
     "新加坡": 1,
@@ -85,7 +85,8 @@
     "加纳": 1,
     "挪威": 1,
     "哥伦比亚": 1,
-    "坦桑尼亚": 1
+    "坦桑尼亚": 1,
+    "老挝": 1
   },
   "byMineral": {
     "金": 176,
@@ -499,13 +500,12 @@
       "idType": "rmi-cid",
       "cid": "CID000402",
       "name": "Dowa",
-      "country": "日本",
-      "countryEn": "japan",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "锡"
       ],
-      "row": 243,
-      "countryBasis": "rmi-registry"
+      "row": 243
     },
     {
       "from": "CID000425",
@@ -616,13 +616,12 @@
       "idType": "rmi-cid",
       "cid": "CID000568",
       "name": "Global Tungsten & Powders LLC.",
-      "country": "美国",
-      "countryEn": "united states of america",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "钨"
       ],
-      "row": 316,
-      "countryBasis": "rmi-registry"
+      "row": 316
     },
     {
       "from": "CID000616",
@@ -1083,13 +1082,12 @@
       "idType": "rmi-cid",
       "cid": "CID001105",
       "name": "Malaysia Smelting Corporation (MSC)",
-      "country": "马来西亚",
-      "countryEn": "malaysia",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "锡"
       ],
-      "row": 263,
-      "countryBasis": "rmi-registry"
+      "row": 263
     },
     {
       "from": "CID001113",
@@ -1394,13 +1392,12 @@
       "idType": "rmi-cid",
       "cid": "CID001277",
       "name": "Ningxia Orient Tantalum Industry Co., Ltd.",
-      "country": "中国",
-      "countryEn": "china",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "钽"
       ],
-      "row": 215,
-      "countryBasis": "rmi-registry"
+      "row": 215
     },
     {
       "from": "CID001305",
@@ -1498,13 +1495,12 @@
       "idType": "rmi-cid",
       "cid": "CID001386",
       "name": "Prioksky Plant of Non-Ferrous Metals",
-      "country": "俄罗斯",
-      "countryEn": "russian federation",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "金"
       ],
-      "row": 139,
-      "countryBasis": "rmi-registry"
+      "row": 139
     },
     {
       "from": "CID001397",
@@ -1654,13 +1650,12 @@
       "idType": "rmi-cid",
       "cid": "CID001555",
       "name": "Samduck Precious Metals",
-      "country": "韩国",
-      "countryEn": "korea republic of",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "金"
       ],
-      "row": 151,
-      "countryBasis": "rmi-registry"
+      "row": 151
     },
     {
       "from": "CID001562",
@@ -1978,13 +1973,12 @@
       "idType": "rmi-cid",
       "cid": "CID002015",
       "name": "VQB Mineral and Trading Group JSC",
-      "country": "越南",
-      "countryEn": "viet nam",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "锡"
       ],
-      "row": 302,
-      "countryBasis": "rmi-registry"
+      "row": 302
     },
     {
       "from": "CID002030",
@@ -2185,13 +2179,12 @@
       "idType": "rmi-cid",
       "cid": "CID002315",
       "name": "Ganzhou Jiangwu Ferrotungsten Co., Ltd.",
-      "country": "中国",
-      "countryEn": "china",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "钨"
       ],
-      "row": 314,
-      "countryBasis": "rmi-registry"
+      "row": 314
     },
     {
       "from": "CID002316",
@@ -2717,13 +2710,12 @@
       "idType": "rmi-cid",
       "cid": "CID002570",
       "name": "CV Ayi Jaya",
-      "country": "印度尼西亚",
-      "countryEn": "indonesia",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "锡"
       ],
-      "row": 240,
-      "countryBasis": "rmi-registry"
+      "row": 240
     },
     {
       "from": "CID002572",
@@ -2886,13 +2878,12 @@
       "idType": "rmi-cid",
       "cid": "CID002649",
       "name": "Hydrometallurg, JSC",
-      "country": "俄罗斯",
-      "countryEn": "russian federation",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "钨"
       ],
-      "row": 322,
-      "countryBasis": "rmi-registry"
+      "row": 322
     },
     {
       "from": "CID002660",
@@ -3822,7 +3813,7 @@
       "cid": "CID003504",
       "name": "Conecsus LLC",
       "country": "美国",
-      "countryEn": "usa",
+      "countryEn": "united states of america",
       "minerals": [
         "锡"
       ],
@@ -4080,13 +4071,12 @@
       "idType": "rmi-cid",
       "cid": "CID004054",
       "name": "PowerX Ltd.",
-      "country": "卢旺达",
-      "countryEn": "rwanda",
+      "country": null,
+      "countryEn": null,
       "minerals": [
         "钽"
       ],
-      "row": 217,
-      "countryBasis": "rmi-registry"
+      "row": 217
     },
     {
       "from": "CID004065",
@@ -4400,12 +4390,13 @@
       "idType": "rmi-cid",
       "cid": "CID005017",
       "name": "LAOS SOUTHERN MINING SMELTING SOLE CO.,LTD",
-      "country": null,
-      "countryEn": null,
+      "country": "老挝",
+      "countryEn": "lao people s democratic republic",
       "minerals": [
         "钨"
       ],
-      "row": 334
+      "row": 334,
+      "countryBasis": "rmi-registry"
     },
     {
       "from": "CID005067",

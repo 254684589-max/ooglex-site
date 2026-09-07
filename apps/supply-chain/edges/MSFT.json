@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "MSFT",
   "name": "微软",
-  "updatedAt": "2026-09-02T16:18:30Z",
+  "updatedAt": "2026-09-07T03:29:53Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -1049,7 +1049,7 @@
       "cid": null,
       "name": "Mining Minerals Resources SARL",
       "country": "刚果（金）",
-      "countryEn": "democratic republic of the congo",
+      "countryEn": "congo democratic republic of the",
       "minerals": [
         "锡"
       ],

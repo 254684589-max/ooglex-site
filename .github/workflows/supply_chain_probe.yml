@@ -41,6 +41,18 @@ on:
         description: '外国发行人探针回溯几个季度的 EDGAR 全量索引'
         required: false
         default: '4'
+      ex21_sample:
+        description: '附件21 探针抽多少家公司'
+        required: false
+        default: '60'
+      hist_sample:
+        description: '历年 Form SD 探针抽多少家公司'
+        required: false
+        default: '12'
+      hist_years:
+        description: '历年 Form SD 探针每家回溯几份申报'
+        required: false
+        default: '4'
       extra_ciks:
         description: 'dry-run 临时追加不在公司池里的公司，格式 代码:CIK，逗号分隔'
         required: false
@@ -398,3 +410,60 @@ jobs:
           path: /tmp/supply-chain-probe/foreign-issuers.json
           if-no-files-found: warn
           retention-days: 7
+
+  # ── 用免费公开源补「缺的那 25%」──────────────────────────────────────
+  # 台账里那张进度表上，关系类型只有 1 种、时间维度是 0%。此前的结论是
+  # 「差的不是工作量，是数据许可」——四条关系源逐条判死。这两个探针问的是
+  # 同一个问题的另一面：**还有没有许可干净、免费、政府公开的路没走过。**
+  # 两条都是 EDGAR（GOV），与现有管线同源，不引入任何新许可。
+
+  ex21:
+    name: 附件21 子公司 · 能不能把冶炼厂接回池内
+    if: ${{ inputs.only == '' || contains(inputs.only, 'ex21') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      # 第十九轮量出：1,767 家冶炼厂里按名字只能对上 2 家池内公司。
+      # 那句「冶炼厂本来就不上市」可能只对了一半——冶炼厂常常是上市公司的
+      # **子公司**，按母公司名字当然匹配不上。附件 21 是公司自己申报的
+      # 「这些实体归我」清单，正好补这一层。
+      - name: Probe Exhibit 21 subsidiary lists
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+          EX21_SAMPLE: ${{ inputs.ex21_sample }}
+        run: python scripts/supply-chain/probe_ex21_subsidiaries.py
+
+  sdhistory:
+    name: 历年 Form SD · 时间维度有没有信息量
+    if: ${{ inputs.only == '' || contains(inputs.only, 'sdhistory') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate extraction rules (offline)
+        run: python scripts/validate_supply_chain_extraction.py
+
+      # 时间维度是进度表上唯一一个 0%，也是唯一**不需要新源、不涉及许可**的
+      # 一块：Form SD 一年一报，EDGAR 历年都留着，抽取器只是每次丢掉旧的。
+      # 先问一句再决定建不建：**年年报的是不是同一份名单**。
+      - name: Probe historical Form SD filings
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+          HIST_SAMPLE: ${{ inputs.hist_sample }}
+          HIST_YEARS: ${{ inputs.hist_years }}
+        run: python scripts/supply-chain/probe_form_sd_history.py

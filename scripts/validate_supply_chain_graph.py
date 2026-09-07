@@ -1005,6 +1005,94 @@ def load_bundles(payload: dict) -> dict:
     return out
 
 
+def check_mineral_view(payload: dict, bundles: dict, errors: list[str]) -> None:
+    """按矿种的读数，以及**HHI 的分档必须和它自称的标准一致**。
+
+    这一份点名引用了美国司法部／联邦贸易委员会《横向合并指引》的分档。
+    引用了就得对得上：指引写的是「1500 以下未集中、1500 到 2500 中度、
+    2500 以上高度」，边界上差一档就是拿别人的名义说自己的话。
+    """
+    mv = payload.get("mineralView")
+    if not isinstance(mv, dict):
+        fail(errors, "缺少 mineralView——§1502 点名的四种矿是这批数据的定义轴")
+        return
+    rows = mv.get("rows") or []
+    truth: dict[str, int] = {}
+    covered: dict[str, int] = {}
+    for bundle in (bundles or {}).values():
+        for edge in bundle.get("edges") or []:
+            country = edge.get("country")
+            for mineral in (edge.get("minerals") or ["未写明"]):
+                truth[mineral] = truth.get(mineral, 0) + 1
+                if country in COVERED_STATUTORY:
+                    covered[mineral] = covered.get(mineral, 0) + 1
+    seen = {r.get("mineral") for r in rows}
+    for name in sorted(set(truth) - seen):
+        fail(errors, f"mineralView 漏了矿种「{name}」（{truth[name]} 条）")
+    for row in rows:
+        name = row.get("mineral")
+        if row.get("edges") != truth.get(name):
+            fail(errors, f"mineralView[{name}].edges = {row.get('edges')}，"
+                         f"实际 {truth.get(name)}")
+        if row.get("coveredEdges") != covered.get(name, 0):
+            fail(errors, f"mineralView[{name}].coveredEdges = "
+                         f"{row.get('coveredEdges')}，实际 {covered.get(name, 0)}")
+        index, band = row.get("hhi"), row.get("hhiBand")
+        if not isinstance(index, int) or not 0 <= index <= 10000:
+            fail(errors, f"mineralView[{name}].hhi = {index!r}，HHI 只能是 0~10000")
+            continue
+        want = ("高度集中" if index > 2500 else
+                "中度集中" if index >= 1500 else "未集中")
+        if band != want:
+            fail(errors, f"mineralView[{name}] HHI {index} 标成「{band}」，"
+                         f"按司法部／联邦贸易委员会的分档应是「{want}」")
+        share = row.get("topShare")
+        if share is not None and not 0 <= share <= 1:
+            fail(errors, f"mineralView[{name}].topShare = {share}，应是 0~1 的占比")
+    if "采购量" not in str(mv.get("note") or ""):
+        fail(errors, "mineralView.note 没写明 HHI 不是采购量——"
+                     "Form SD 不含采购量，缺这句话数据会被读成另一件事")
+    print(f"[OK] 矿种：{len(rows)} 种 · "
+          + " · ".join(f"{r['mineral']} HHI {r['hhi']}（{r['hhiBand']}）"
+                       for r in rows if r.get("mineral") != "未写明"))
+
+
+def check_list_similarity(payload: dict, errors: list[str]) -> None:
+    """名单雷同度。这一份是**读懂上游重叠与上游集中度的前提**。
+
+    实测中位 Jaccard 0.89——这些名单在很大程度上是同一份 RMI 合规冶炼厂
+    名录的再现。页面靠它说清「重叠大是常态，不是信号」。不产出这一份，
+    那句话就没有依据，两个面板都会被读成供应链耦合的证据。
+    """
+    sim = payload.get("listSimilarity")
+    if not isinstance(sim, dict) or not sim.get("companies"):
+        fail(errors, "缺少 listSimilarity——没有它，「重叠 349 家」会被读成"
+                     "两家供应链高度耦合，而真正的解释是名单本身雷同")
+        return
+    symbols = {n.get("symbol") for n in (payload.get("nodes") or [])}
+    for key in ("medianJaccard", "medianUniqueShare"):
+        value = sim.get(key)
+        if not isinstance(value, (int, float)) or not 0 <= value <= 1:
+            fail(errors, f"listSimilarity.{key} = {value!r}，应是 0~1")
+    if (sim.get("atLeast90") or 0) > sim["companies"]:
+        fail(errors, "listSimilarity.atLeast90 比样本总数还大")
+    for row in (sim.get("mostDistinct") or []):
+        if row.get("symbol") not in symbols:
+            fail(errors, f"listSimilarity.mostDistinct 里的「{row.get('symbol')}」"
+                         f"不在节点表里")
+    for symbol, row in (sim.get("byCompany") or {}).items():
+        if symbol not in symbols:
+            fail(errors, f"listSimilarity.byCompany 里的「{symbol}」不在节点表里")
+            break
+        closest = row.get("closest")
+        if closest is not None and closest == symbol:
+            fail(errors, f"listSimilarity[{symbol}] 把自己算成了最相似的一家")
+            break
+    print(f"[OK] 名单雷同度：{sim['companies']} 家 · 中位 Jaccard "
+          f"{sim['medianJaccard']} · ≥0.90 有 {sim['atLeast90']} 家 · "
+          f"完全相同 {sim.get('identical')} 家")
+
+
 def check_covered_countries(payload: dict, bundles: dict, errors: list[str]) -> None:
     """受涵盖国家：这套数据的法定理由，清单不许悄悄变。"""
     cc = payload.get("coveredCountries")
@@ -1204,6 +1292,8 @@ def main() -> int:
     bundles = load_bundles(payload)
     check_covered_countries(payload, bundles, errors)
     check_country_names(bundles, errors)
+    check_mineral_view(payload, bundles, errors)
+    check_list_similarity(payload, errors)
     check_no_conflict_markers(errors)
     smelters = check_smelters(errors, edge_count)
     check_health(errors, len(payload.get("nodes") or []))

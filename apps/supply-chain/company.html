@@ -183,6 +183,14 @@
     font-size:.66rem; color:var(--faint); line-height:1.6;
     margin-top:10px; padding-top:8px; border-top:1px solid var(--line);
   }
+  /* 「重叠大是常态」那一段。与 .pwarn 分开是有原因的：契约里那条
+     「写明重叠不表示业务往来」的断言取第一个 .pwarn，共用类名会把它顶掉。
+     视觉上给一点底色，因为它是读上面那份榜单的前提，不是脚注。 */
+  .peerbox .psim {
+    font-size:.66rem; color:var(--dim); line-height:1.65; margin-top:10px;
+    padding:8px 10px; border-radius:7px; background:rgba(228,181,61,.08);
+    border:1px solid rgba(228,181,61,.22);
+  }
 
   .chainbox .mychains { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 4px; }
   .chainbox .cpill {
@@ -283,6 +291,6 @@
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="company.js?v=2fa4a0a2" defer></script>
+<script src="company.js?v=2b13f1a6" defer></script>
 </body>
 </html>

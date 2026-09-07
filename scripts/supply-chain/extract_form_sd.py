@@ -62,6 +62,7 @@ SP500_PATH = "apps/companies/sp500.json"
 # 第二个公司池：在美上市的外国私人发行人里同时报 Form SD 的那一批，
 # 由 fetch_foreign_identity.py 生成。缺失时只扫标普那一池，不中断。
 FOREIGN_PATH = "apps/supply-chain/foreign.json"
+DOMESTIC_PATH = "apps/supply-chain/domestic.json"
 OUT_DIR = "apps/supply-chain/edges"
 SMELTERS_PATH = "apps/supply-chain/smelters.json"
 
@@ -438,6 +439,20 @@ def main() -> int:
             foreign = (json.load(handle) or {}).get("companies") or {}
     except (OSError, ValueError):
         pass
+    # ── 第三个公司池：报 10-K 的美国本土发行人 ──────────────────────────
+    # **这一池第十八轮就进了节点表，却一直没进抽取路径。** 结果是
+    # `filingStatus` 里只有 1,688 家，而节点表有 5,897 家——「有名单 128 家
+    # 占全池 2.2%」这个数因此被低估：分母涨了 3.5 倍，分子还是老池的。
+    #
+    # Form SD 是**美国本土申报人的主场**（规则 13p-1 针对的就是它们），
+    # 这一池不扫，等于把最该有名单的那批公司排除在外。
+    domestic: dict[str, dict] = {}
+    try:
+        with open(DOMESTIC_PATH, encoding="utf-8") as handle:
+            domestic = (json.load(handle) or {}).get("companies") or {}
+    except (OSError, ValueError):
+        pass
+
     pool_of: dict[str, str] = {t: "sp500" for t in identity}
     for symbol, row in foreign.items():
         # 代码撞了以标普那侧为准。撞码不会报错，只会让一家美国公司的边
@@ -446,6 +461,12 @@ def main() -> int:
             continue
         pool_of[symbol] = "sec-foreign-issuer"
         names.setdefault(symbol, row.get("name"))
+    for symbol, row in domestic.items():
+        # 撞码同样以先到的池为准，判据说「收谁」：只收两个池都没有的代码。
+        if symbol in pool_of:
+            continue
+        pool_of[symbol] = "sec-domestic-filer"
+        names.setdefault(symbol, row.get("name"))
 
     wanted = [t.strip().upper() for t in args.tickers.split(",") if t.strip()]
     if "ALL" in wanted:
@@ -453,6 +474,8 @@ def main() -> int:
     pairs = [(t, v["cik"]) for t, v in sorted(identity.items()) if v.get("cik")]
     pairs += [(s, foreign[s]["cik"]) for s in sorted(foreign)
               if foreign[s].get("cik") and pool_of.get(s) == "sec-foreign-issuer"]
+    pairs += [(s, domestic[s]["cik"]) for s in sorted(domestic)
+              if domestic[s].get("cik") and pool_of.get(s) == "sec-domestic-filer"]
     targets = [(t, cik) for t, cik in pairs if not wanted or t.upper() in wanted]
 
     # 临时追加的公司。只用于 dry-run 核对，不进任何写盘路径。
@@ -505,9 +528,15 @@ def main() -> int:
     for symbol, _ in targets:
         by_pool[pool_of.get(symbol, "sp500")] = by_pool.get(
             pool_of.get(symbol, "sp500"), 0) + 1
+    # **这行按数据写，不写死池名。** 上一版把两个池的名字硬编在这里，
+    # 第三池接进来之后它照旧只印「标普 N + 外国发行人 M」——总数对、
+    # 构成漏了一整池。与首屏副标题栽的是同一个跟头，只是这次在日志里，
+    # 没有断言管得到。加一个池，这行自己就会多一项。
+    POOL_ZH = {"sp500": "标普", "sec-foreign-issuer": "外国发行人",
+               "sec-domestic-filer": "本土 10-K 申报人"}
+    parts = [f"{POOL_ZH.get(p, p)} {by_pool[p]}" for p in sorted(by_pool)]
     print(f"待处理 {len(targets)} 家"
-          + (f"（标普 {by_pool.get('sp500', 0)} + 外国发行人 "
-             f"{by_pool.get('sec-foreign-issuer', 0)}）" if foreign else "")
+          + (f"（{' + '.join(parts)}）" if parts else "")
           + ("（dry-run，不写文件）" if args.dry_run else "") + "\n")
 
     states: dict[str, list[str]] = {}

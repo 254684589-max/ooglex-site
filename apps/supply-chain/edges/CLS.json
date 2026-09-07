@@ -1,0 +1,321 @@
+{
+  "contractVersion": 2,
+  "dataset": "supply-chain-edges",
+  "symbol": "CLS",
+  "name": "CELESTICA INC",
+  "updatedAt": "2026-09-07T03:29:54Z",
+  "relation": {
+    "id": "smelter-in-supply-chain",
+    "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
+    "tier": "smelter"
+  },
+  "confidence": "disclosed",
+  "direction": {
+    "from": "smelter",
+    "to": "CLS",
+    "toListed": true
+  },
+  "evidence": {
+    "sourceType": "sec-form-sd",
+    "url": "https://www.sec.gov/Archives/edgar/data/1030894/000110465926055617/tm2613227d1_ex1-01.htm",
+    "docDate": "2026-05-05",
+    "form": "SD",
+    "accession": "0001104659-26-055617",
+    "filingDate": "2026-05-05",
+    "reportDate": "",
+    "document": "tm2613227d1_ex1-01.htm",
+    "indexUrl": "https://www.sec.gov/Archives/edgar/data/1030894/000110465926055617/",
+    "totalSD": 13
+  },
+  "parse": {
+    "rowsScanned": 882,
+    "rowsWithCid": 0,
+    "nameOnly": 22,
+    "droppedNoCid": 0,
+    "unique": 21,
+    "namedRatio": 1.0,
+    "countryRatio": 1.0
+  },
+  "byCountry": {
+    "印度尼西亚": 4,
+    "越南": 2,
+    "菲律宾": 2,
+    "墨西哥": 2,
+    "津巴布韦": 1,
+    "荷兰": 1,
+    "瑞士": 1,
+    "韩国": 1,
+    "缅甸": 1,
+    "哥伦比亚": 1,
+    "巴西": 1,
+    "法国": 1,
+    "德国": 1,
+    "泰国": 1,
+    "赞比亚": 1
+  },
+  "byMineral": {
+    "锡": 11,
+    "金": 8,
+    "钨": 2,
+    "钽": 1
+  },
+  "edges": [
+    {
+      "from": "NAME:algeria-australia-belgium-bolivia-plurinational-state-of-brazil-canada-china-cze",
+      "idType": "name-only",
+      "cid": null,
+      "name": "ALGERIA, AUSTRALIA, BELGIUM, BOLIVIA (PLURINATIONAL STATE OF), BRAZIL, CANADA, CHINA, CZECH REPUBLIC, DEMOCRATIC REPUBLIC OF CONGO, FRANCE, GERMANY, HONG KONG, INDIA, INDONESIA, ITALY, JAPAN, LUXEMBOURG, MALAYSIA, MEXICO, MYANMAR, NETHERLANDS, NEW ZEALAND, PERU, PHILIPPINES, POLAND, REPUBLIC OF KOREA, RUSSIAN FEDERATION, RWANDA, SINGAPORE, SLOVAKIA, SPAIN, SWITZERLAND, TAIWAN, THAILAND, TURKEY, UGANDA, UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND, UNITED STATES OF AMERICA, UNKNOWN",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "锡"
+      ],
+      "row": 876
+    },
+    {
+      "from": "NAME:andorra-australia-austria-belgium-brazil-canada-chile-china-colombia-czech-repub",
+      "idType": "name-only",
+      "cid": null,
+      "name": "ANDORRA, AUSTRALIA, AUSTRIA, BELGIUM, BRAZIL, CANADA, CHILE, CHINA, COLOMBIA, CZECH REPUBLIC, DEMOCRATIC PEOPLE'S REPUBLIC OF KOREA, FRANCE, GERMANY, GHANA, HONG KONG, INDIA, INDONESIA, ITALY, JAPAN, KAZAKHSTAN, KYRGYZSTAN, LITHUANIA, MALAYSIA, MAURITANIA, MEXICO, NETHERLANDS, NEW ZEALAND, NORWAY, PERU, PHILIPPINES, POLAND, PORTUGAL, REPUBLIC OF KOREA, RUSSIAN FEDERATION, RWANDA, SAUDI ARABIA, SINGAPORE, SOUTH AFRICA, SPAIN, SUDAN, SWEDEN, SWITZERLAND, TAIWAN, THAILAND, TURKEY, UGANDA, UNITED ARAB EMIRATES, UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND, UNITED REPUBLIC OF TANZANIA, UNITED STATES OF AMERICA, UNKNOWN, UZBEKISTAN, ZAMBIA",
+      "country": "津巴布韦",
+      "countryEn": "zimbabwe",
+      "minerals": [
+        "金"
+      ],
+      "row": 874
+    },
+    {
+      "from": "NAME:aurubis-netherlands",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Aurubis Netherlands",
+      "country": "荷兰",
+      "countryEn": "netherlands",
+      "minerals": [
+        "锡"
+      ],
+      "row": 426
+    },
+    {
+      "from": "NAME:austria-brazil-canada-china-czech-republic-france-georgia-germany-india-indonesi",
+      "idType": "name-only",
+      "cid": null,
+      "name": "AUSTRIA, BRAZIL, CANADA, CHINA, CZECH REPUBLIC, FRANCE, GEORGIA, GERMANY, INDIA, INDONESIA, JAPAN, LAO PEOPLE'S DEMOCRATIC REPUBLIC, LUXEMBOURG, MALAYSIA, PHILIPPINES, REPUBLIC OF KOREA, RUSSIAN FEDERATION, TAIWAN, THAILAND, UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND, UNITED STATES OF AMERICA, UNKNOWN, UZBEKISTAN",
+      "country": "越南",
+      "countryEn": "viet nam",
+      "minerals": [
+        "钨"
+      ],
+      "row": 877
+    },
+    {
+      "from": "NAME:bangko-sentral-ng-pilipinas-central-bank-of-the-philippines",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Bangko Sentral ng Pilipinas (Central Bank of the Philippines)",
+      "country": "菲律宾",
+      "countryEn": "philippines",
+      "minerals": [
+        "金"
+      ],
+      "row": 40
+    },
+    {
+      "from": "NAME:bank-of-switzerland",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Bank of Switzerland",
+      "country": "瑞士",
+      "countryEn": "switzerland",
+      "minerals": [
+        "金"
+      ],
+      "row": 41
+    },
+    {
+      "from": "NAME:central-bank-of-the-dpr-of-korea",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Central Bank of the DPR of Korea",
+      "country": "韩国",
+      "countryEn": "korea",
+      "minerals": [
+        "金"
+      ],
+      "row": 49
+    },
+    {
+      "from": "NAME:ds-myanmar",
+      "idType": "name-only",
+      "cid": null,
+      "name": "DS Myanmar",
+      "country": "缅甸",
+      "countryEn": "myanmar",
+      "minerals": [
+        "锡"
+      ],
+      "row": 466
+    },
+    {
+      "from": "NAME:gold-by-gold-colombia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Gold by Gold Colombia",
+      "country": "哥伦比亚",
+      "countryEn": "colombia",
+      "minerals": [
+        "金"
+      ],
+      "row": 100
+    },
+    {
+      "from": "NAME:house-of-currency-of-brazil-casa-da-moeda-do-brazil",
+      "idType": "name-only",
+      "cid": null,
+      "name": "House of Currency of Brazil (Casa da Moeda do Brazil)",
+      "country": "巴西",
+      "countryEn": "brazil",
+      "minerals": [
+        "金"
+      ],
+      "row": 118
+    },
+    {
+      "from": "NAME:ind-minera-mexico",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ind. Minera Mexico",
+      "country": "墨西哥",
+      "countryEn": "mexico",
+      "minerals": [
+        "锡"
+      ],
+      "row": 515
+    },
+    {
+      "from": "NAME:kemet-de-mexico",
+      "idType": "name-only",
+      "cid": null,
+      "name": "KEMET de Mexico",
+      "country": "墨西哥",
+      "countryEn": "mexico",
+      "minerals": [
+        "钽"
+      ],
+      "row": 361
+    },
+    {
+      "from": "NAME:kme-france",
+      "idType": "name-only",
+      "cid": null,
+      "name": "KME France",
+      "country": "法国",
+      "countryEn": "france",
+      "minerals": [
+        "锡"
+      ],
+      "row": 528
+    },
+    {
+      "from": "NAME:kme-germany",
+      "idType": "name-only",
+      "cid": null,
+      "name": "KME Germany",
+      "country": "德国",
+      "countryEn": "germany",
+      "minerals": [
+        "锡"
+      ],
+      "row": 529
+    },
+    {
+      "from": "NAME:pt-arsed-indonesia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Arsed Indonesia",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 599
+    },
+    {
+      "from": "NAME:pt-hp-metals-indonesia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT HP Metals Indonesia",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "钨",
+        "锡"
+      ],
+      "row": 618
+    },
+    {
+      "from": "NAME:pt-o-m-indonesia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT O.M. Indonesia",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 631
+    },
+    {
+      "from": "NAME:pt-premium-tin-indonesia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "PT Premium Tin Indonesia",
+      "country": "印度尼西亚",
+      "countryEn": "indonesia",
+      "minerals": [
+        "锡"
+      ],
+      "row": 633
+    },
+    {
+      "from": "NAME:qualitek-delta-philippines",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Qualitek delta philippines",
+      "country": "菲律宾",
+      "countryEn": "philippines",
+      "minerals": [
+        "锡"
+      ],
+      "row": 654
+    },
+    {
+      "from": "NAME:umicore-precious-metals-thailand",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Umicore Precious Metals Thailand",
+      "country": "泰国",
+      "countryEn": "thailand",
+      "minerals": [
+        "金"
+      ],
+      "row": 287
+    },
+    {
+      "from": "NAME:universal-precious-metals-refining-zambia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Universal Precious Metals Refining Zambia",
+      "country": "赞比亚",
+      "countryEn": "zambia",
+      "minerals": [
+        "金"
+      ],
+      "row": 290
+    }
+  ],
+  "coverage": {
+    "claimComplete": false,
+    "note": "Form SD 强制申报、不强制列名单，本清单只是该公司披露的部分，且语义是「出现在供应链中」，不是直接供货。"
+  }
+}

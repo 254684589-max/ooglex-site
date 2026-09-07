@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "NVX",
   "name": "NOVONIX Ltd",
-  "updatedAt": "2026-09-06T03:30:24Z",
+  "updatedAt": "2026-09-07T03:29:54Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -30,9 +30,9 @@
   "parse": {
     "rowsScanned": 457,
     "rowsWithCid": 0,
-    "nameOnly": 423,
+    "nameOnly": 424,
     "droppedNoCid": 0,
-    "unique": 344,
+    "unique": 345,
     "namedRatio": 1.0,
     "countryRatio": 1.0
   },
@@ -81,6 +81,7 @@
     "吉尔吉斯斯坦": 1,
     "沙特阿拉伯": 1,
     "安道尔": 1,
+    "老挝": 1,
     "新加坡": 1,
     "秘鲁": 1,
     "刚果（金）": 1,
@@ -94,7 +95,7 @@
   "byMineral": {
     "金": 178,
     "锡": 92,
-    "钨": 47,
+    "钨": 48,
     "钽": 37
   },
   "edges": [
@@ -2034,6 +2035,18 @@
       "row": 13
     },
     {
+      "from": "NAME:laos-southern-mining-smelting-sole-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "LAOS SOUTHERN MINING SMELTING SOLE CO.,LTD",
+      "country": "老挝",
+      "countryEn": "lao people s democratic republic",
+      "minerals": [
+        "钨"
+      ],
+      "row": 449
+    },
+    {
       "from": "NAME:lianyou-metals-co-ltd",
       "idType": "name-only",
       "cid": null,
@@ -2448,7 +2461,7 @@
       "cid": null,
       "name": "Mining Minerals Resources SARL",
       "country": "刚果（金）",
-      "countryEn": "democratic republic of the congo",
+      "countryEn": "congo democratic republic of the",
       "minerals": [
         "锡"
       ],

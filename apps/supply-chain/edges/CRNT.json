@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "CRNT",
   "name": "CERAGON NETWORKS LTD",
-  "updatedAt": "2026-09-05T10:22:50Z",
+  "updatedAt": "2026-09-07T03:29:54Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -30,9 +30,9 @@
   "parse": {
     "rowsScanned": 431,
     "rowsWithCid": 0,
-    "nameOnly": 345,
+    "nameOnly": 346,
     "droppedNoCid": 0,
-    "unique": 338,
+    "unique": 339,
     "namedRatio": 1.0,
     "countryRatio": 1.0
   },
@@ -82,6 +82,7 @@
     "吉尔吉斯斯坦": 1,
     "沙特阿拉伯": 1,
     "安道尔": 1,
+    "老挝": 1,
     "新加坡": 1,
     "刚果（金）": 1,
     "新西兰": 1,
@@ -94,7 +95,7 @@
   "byMineral": {
     "金": 180,
     "锡": 73,
-    "钨": 57,
+    "钨": 58,
     "钽": 35
   },
   "edges": [
@@ -2092,6 +2093,18 @@
       "row": 159
     },
     {
+      "from": "NAME:laos-southern-mining-smelting-sole-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "LAOS SOUTHERN MINING SMELTING SOLE CO.,LTD",
+      "country": "老挝",
+      "countryEn": "lao people s democratic republic",
+      "minerals": [
+        "钨"
+      ],
+      "row": 375
+    },
+    {
       "from": "NAME:lianyou-metals-co-ltd",
       "idType": "name-only",
       "cid": null,
@@ -2506,7 +2519,7 @@
       "cid": null,
       "name": "Mining Minerals Resources SARL",
       "country": "刚果（金）",
-      "countryEn": "democratic republic of the congo",
+      "countryEn": "congo democratic republic of the",
       "minerals": [
         "锡"
       ],

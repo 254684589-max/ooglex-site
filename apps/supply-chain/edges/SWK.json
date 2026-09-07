@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "SWK",
   "name": "Stanley Black & Decker",
-  "updatedAt": "2026-09-02T16:18:30Z",
+  "updatedAt": "2026-09-07T03:29:53Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -31,7 +31,7 @@
     "rowsScanned": 397,
     "rowsWithCid": 337,
     "nameOnly": 0,
-    "droppedNoCid": 4,
+    "droppedNoCid": 3,
     "unique": 337,
     "namedRatio": 0.994,
     "countryRatio": 1.0

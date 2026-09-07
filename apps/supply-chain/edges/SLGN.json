@@ -1,0 +1,433 @@
+{
+  "contractVersion": 2,
+  "dataset": "supply-chain-edges",
+  "symbol": "SLGN",
+  "name": "SILGAN HOLDINGS INC",
+  "updatedAt": "2026-09-07T03:29:54Z",
+  "relation": {
+    "id": "smelter-in-supply-chain",
+    "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
+    "tier": "smelter"
+  },
+  "confidence": "disclosed",
+  "direction": {
+    "from": "smelter",
+    "to": "SLGN",
+    "toListed": true
+  },
+  "evidence": {
+    "sourceType": "sec-form-sd",
+    "url": "https://www.sec.gov/Archives/edgar/data/849869/000162828026039153/exhibit101to2026formsd.htm",
+    "docDate": "2026-05-29",
+    "form": "SD",
+    "accession": "0001628280-26-039153",
+    "filingDate": "2026-05-29",
+    "reportDate": "",
+    "document": "exhibit101to2026formsd.htm",
+    "indexUrl": "https://www.sec.gov/Archives/edgar/data/849869/000162828026039153/",
+    "totalSD": 13
+  },
+  "parse": {
+    "rowsScanned": 43,
+    "rowsWithCid": 0,
+    "nameOnly": 31,
+    "droppedNoCid": 0,
+    "unique": 31,
+    "namedRatio": 1.0,
+    "countryRatio": 1.0
+  },
+  "byCountry": {
+    "刚果（金）": 9,
+    "卢旺达": 7,
+    "刚果（布）": 5,
+    "中非": 3,
+    "赞比亚": 2,
+    "坦桑尼亚": 2,
+    "南苏丹": 2,
+    "布隆迪": 1
+  },
+  "byMineral": {
+    "钽": 17,
+    "锡": 6,
+    "钨": 6,
+    "金": 2
+  },
+  "edges": [
+    {
+      "from": "NAME:amg-brasil",
+      "idType": "name-only",
+      "cid": null,
+      "name": "AMG Brasil",
+      "country": "刚果（金）",
+      "countryEn": "drc",
+      "minerals": [
+        "钽"
+      ],
+      "row": 21
+    },
+    {
+      "from": "NAME:angola-central-african-republic-uganda-rwanda-drc-zambia-south-sudan-congo-tanza",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Angola, Central African Republic, Uganda, Rwanda, DRC, Zambia, South Sudan, Congo, Tanzania",
+      "country": "布隆迪",
+      "countryEn": "burundi",
+      "minerals": [
+        "钽"
+      ],
+      "row": 15
+    },
+    {
+      "from": "NAME:angola-drc-zambia-south-sudan-tanzania-uganda-central-african-republic-congo-bur",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Angola, DRC, Zambia, South Sudan, Tanzania, Uganda, Central African Republic, Congo, Burundi",
+      "country": "卢旺达",
+      "countryEn": "rwanda",
+      "minerals": [
+        "钽"
+      ],
+      "row": 18
+    },
+    {
+      "from": "NAME:aurubis-beerse",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Aurubis Beerse",
+      "country": "刚果（金）",
+      "countryEn": "drc",
+      "minerals": [
+        "锡"
+      ],
+      "row": 22
+    },
+    {
+      "from": "NAME:burundi-drc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Burundi, DRC",
+      "country": "卢旺达",
+      "countryEn": "rwanda",
+      "minerals": [
+        "钨"
+      ],
+      "row": 28
+    },
+    {
+      "from": "NAME:central-african-republic-congo-burundi-uganda-south-sudan-drc-rwanda-drc-drc-tan",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Central African Republic, Congo, Burundi, Uganda, South Sudan, DRC, Rwanda, DRC, DRC, Tanzania, Angola",
+      "country": "赞比亚",
+      "countryEn": "zambia",
+      "minerals": [
+        "钽"
+      ],
+      "row": 16
+    },
+    {
+      "from": "NAME:central-african-republic-tanzania-burundi-rwanda-uganda-congo-south-sudan-zambia",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Central African Republic, Tanzania, Burundi, Rwanda, Uganda, Congo, South Sudan, Zambia, DRC, Angola",
+      "country": "卢旺达",
+      "countryEn": "rwanda",
+      "minerals": [
+        "钽"
+      ],
+      "row": 12
+    },
+    {
+      "from": "NAME:chongyi-zhangyuan-tungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Chongyi Zhangyuan Tungsten Co., Ltd.",
+      "country": "刚果（金）",
+      "countryEn": "drc",
+      "minerals": [
+        "钨"
+      ],
+      "row": 33
+    },
+    {
+      "from": "NAME:congo",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Congo",
+      "country": "刚果（金）",
+      "countryEn": "drc",
+      "minerals": [
+        "锡"
+      ],
+      "row": 25
+    },
+    {
+      "from": "NAME:congo-drc-south-sudan-burundi-angola-rwanda-zambia-uganda-tanzania",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Congo, DRC, South Sudan, Burundi, Angola, Rwanda, Zambia, Uganda, Tanzania",
+      "country": "中非",
+      "countryEn": "central african republic",
+      "minerals": [
+        "钽"
+      ],
+      "row": 4
+    },
+    {
+      "from": "NAME:congo-south-sudan-zambia-angola-burundi-central-african-republic-tanzania-uganda",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Congo, South Sudan, Zambia, Angola, Burundi, Central African Republic, Tanzania, Uganda, DRC",
+      "country": "卢旺达",
+      "countryEn": "rwanda",
+      "minerals": [
+        "钽"
+      ],
+      "row": 20
+    },
+    {
+      "from": "NAME:drc-central-african-republic-congo-burundi-angola-south-sudan-zambia-uganda",
+      "idType": "name-only",
+      "cid": null,
+      "name": "DRC, Central African Republic, Congo, Burundi, Angola, South Sudan, Zambia, Uganda",
+      "country": "坦桑尼亚",
+      "countryEn": "tanzania",
+      "minerals": [
+        "锡"
+      ],
+      "row": 27
+    },
+    {
+      "from": "NAME:drc-uganda-angola-rwanda-south-sudan-zambia-congo-tanzania-burundi",
+      "idType": "name-only",
+      "cid": null,
+      "name": "DRC, Uganda, Angola, Rwanda, South Sudan, Zambia, Congo, Tanzania, Burundi",
+      "country": "中非",
+      "countryEn": "central african republic",
+      "minerals": [
+        "钽"
+      ],
+      "row": 5
+    },
+    {
+      "from": "NAME:ganzhou-jiangwu-ferrotungsten-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Ganzhou Jiangwu Ferrotungsten Co., Ltd.",
+      "country": "刚果（金）",
+      "countryEn": "drc",
+      "minerals": [
+        "钨"
+      ],
+      "row": 29
+    },
+    {
+      "from": "NAME:global-advanced-metals-aizu",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Global Advanced Metals Aizu",
+      "country": "刚果（布）",
+      "countryEn": "congo",
+      "minerals": [
+        "钽"
+      ],
+      "row": 3
+    },
+    {
+      "from": "NAME:h-c-starck-tungsten-gmbh",
+      "idType": "name-only",
+      "cid": null,
+      "name": "H.C. Starck Tungsten GmbH",
+      "country": "卢旺达",
+      "countryEn": "rwanda",
+      "minerals": [
+        "钨"
+      ],
+      "row": 32
+    },
+    {
+      "from": "NAME:jiangxi-copper-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiangxi Copper Co., Ltd.",
+      "country": "卢旺达",
+      "countryEn": "rwanda",
+      "minerals": [
+        "金"
+      ],
+      "row": 43
+    },
+    {
+      "from": "NAME:jiangxi-xinsheng-tungsten-industry-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiangxi Xinsheng Tungsten Industry Co., Ltd.",
+      "country": "刚果（金）",
+      "countryEn": "drc",
+      "minerals": [
+        "钨"
+      ],
+      "row": 36
+    },
+    {
+      "from": "NAME:jiujiang-zhongao-tantalum-niobium-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Jiujiang Zhongao Tantalum & Niobium Co., Ltd.",
+      "country": "刚果（金）",
+      "countryEn": "drc",
+      "minerals": [
+        "钽"
+      ],
+      "row": 17
+    },
+    {
+      "from": "NAME:magnu-s-minerais-metais-e-ligas-ltda",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Magnu's Minerais Metais e Ligas Ltda.",
+      "country": "刚果（金）",
+      "countryEn": "drc",
+      "minerals": [
+        "锡"
+      ],
+      "row": 26
+    },
+    {
+      "from": "NAME:mitsubishi-materials-corporation",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Mitsubishi Materials Corporation",
+      "country": "刚果（布）",
+      "countryEn": "congo",
+      "minerals": [
+        "金"
+      ],
+      "row": 39
+    },
+    {
+      "from": "NAME:operaciones-metalurgicas-s-a",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Operaciones Metalurgicas S.A.",
+      "country": "刚果（金）",
+      "countryEn": "drc",
+      "minerals": [
+        "锡"
+      ],
+      "row": 24
+    },
+    {
+      "from": "NAME:rwanda-burundi",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Rwanda, Burundi",
+      "country": "刚果（布）",
+      "countryEn": "congo",
+      "minerals": [
+        "钽"
+      ],
+      "row": 9
+    },
+    {
+      "from": "NAME:rwanda-burundi-central-african-republic-congo-uganda-south-sudan-angola-tanzania",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Rwanda, Burundi, Central African Republic, Congo, Uganda, South Sudan, Angola, Tanzania, DRC",
+      "country": "赞比亚",
+      "countryEn": "zambia",
+      "minerals": [
+        "钽"
+      ],
+      "row": 14
+    },
+    {
+      "from": "NAME:rwanda-congo-drc-south-sudan-uganda-angola-central-african-republic-burundi-zamb",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Rwanda, Congo, DRC, South Sudan, Uganda, Angola, Central African Republic, Burundi, Zambia",
+      "country": "坦桑尼亚",
+      "countryEn": "tanzania",
+      "minerals": [
+        "锡"
+      ],
+      "row": 23
+    },
+    {
+      "from": "NAME:rwanda-tanzania-central-african-republic-zambia-angola-burundi-congo-uganda-drc",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Rwanda, Tanzania, Central African Republic, Zambia, Angola, Burundi, Congo, Uganda, DRC",
+      "country": "南苏丹",
+      "countryEn": "south sudan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 8
+    },
+    {
+      "from": "NAME:south-sudan-angola-tanzania-burundi-uganda-drc-rwanda-central-african-republic-z",
+      "idType": "name-only",
+      "cid": null,
+      "name": "South Sudan, Angola, Tanzania, Burundi, Uganda, DRC, Rwanda, Central African Republic, Zambia",
+      "country": "刚果（布）",
+      "countryEn": "congo",
+      "minerals": [
+        "钽"
+      ],
+      "row": 7
+    },
+    {
+      "from": "NAME:south-sudan-uganda-angola-congo-rwanda-burundi-zambia-tanzania",
+      "idType": "name-only",
+      "cid": null,
+      "name": "South Sudan, Uganda, Angola, Congo, Rwanda, Burundi, Zambia, Tanzania",
+      "country": "中非",
+      "countryEn": "central african republic",
+      "minerals": [
+        "钽"
+      ],
+      "row": 19
+    },
+    {
+      "from": "NAME:taniobis-japan-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "TANIOBIS Japan Co., Ltd.",
+      "country": "卢旺达",
+      "countryEn": "rwanda",
+      "minerals": [
+        "钽"
+      ],
+      "row": 10
+    },
+    {
+      "from": "NAME:tanzania-rwanda-burundi-uganda-central-african-republic-drc-burundi-congo-rwanda",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Tanzania, Rwanda, Burundi, Uganda, Central African Republic, DRC, Burundi, Congo, Rwanda, Angola, DRC, Zambia",
+      "country": "南苏丹",
+      "countryEn": "south sudan",
+      "minerals": [
+        "钽"
+      ],
+      "row": 13
+    },
+    {
+      "from": "NAME:uganda-rwanda-angola-zambia-burundi-central-african-republic-south-sudan-tanzani",
+      "idType": "name-only",
+      "cid": null,
+      "name": "Uganda, Rwanda, Angola, Zambia, Burundi, Central African Republic, South Sudan, Tanzania",
+      "country": "刚果（布）",
+      "countryEn": "congo",
+      "minerals": [
+        "钨"
+      ],
+      "row": 31
+    }
+  ],
+  "coverage": {
+    "claimComplete": false,
+    "note": "Form SD 强制申报、不强制列名单，本清单只是该公司披露的部分，且语义是「出现在供应链中」，不是直接供货。"
+  }
+}

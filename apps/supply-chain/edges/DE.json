@@ -3,7 +3,7 @@
   "dataset": "supply-chain-edges",
   "symbol": "DE",
   "name": "迪尔",
-  "updatedAt": "2026-09-04T10:58:37Z",
+  "updatedAt": "2026-09-07T03:29:53Z",
   "relation": {
     "id": "smelter-in-supply-chain",
     "label": "该冶炼厂出现在申报人的供应链中（间接、不含份额、不含层级）",
@@ -30,9 +30,9 @@
   "parse": {
     "rowsScanned": 483,
     "rowsWithCid": 0,
-    "nameOnly": 406,
+    "nameOnly": 407,
     "droppedNoCid": 1,
-    "unique": 398,
+    "unique": 399,
     "namedRatio": 1.0,
     "countryRatio": 1.0
   },
@@ -84,6 +84,7 @@
     "吉尔吉斯斯坦": 1,
     "沙特阿拉伯": 1,
     "安道尔": 1,
+    "老挝": 1,
     "新加坡": 1,
     "刚果（金）": 1,
     "新西兰": 1,
@@ -96,7 +97,7 @@
   "byMineral": {
     "金": 194,
     "锡": 103,
-    "钨": 65,
+    "钨": 66,
     "钽": 43
   },
   "edges": [
@@ -2311,6 +2312,18 @@
       "row": 11
     },
     {
+      "from": "NAME:laos-southern-mining-smelting-sole-co-ltd",
+      "idType": "name-only",
+      "cid": null,
+      "name": "LAOS SOUTHERN MINING SMELTING SOLE CO.,LTD",
+      "country": "老挝",
+      "countryEn": "lao people s democratic republic",
+      "minerals": [
+        "钨"
+      ],
+      "row": 417
+    },
+    {
       "from": "NAME:lianyou-metals-co-ltd",
       "idType": "name-only",
       "cid": null,
@@ -2749,7 +2762,7 @@
       "cid": null,
       "name": "Mining Minerals Resources SARL",
       "country": "刚果（金）",
-      "countryEn": "democratic republic of the congo",
+      "countryEn": "congo democratic republic of the",
       "minerals": [
         "锡"
       ],

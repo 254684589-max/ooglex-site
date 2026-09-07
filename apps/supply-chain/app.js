@@ -1591,7 +1591,10 @@
     renderFlow(d);
     renderConcentration(d);
     renderExposure(d);
+    renderMinerals(d);
     renderCovered(d);
+    renderSimilarity(d);
+    renderNav();
   }
 
   function riskScope(d) {
@@ -1644,6 +1647,175 @@
     var set = {};
     rows.forEach(function (r) { if (r.country) set[r.country] = true; });
     return set;
+  }
+
+  // §1502 点名的四种矿。**这条轴此前只在一处 hover 里出现过。**
+  /* 区块导航。**清单按渲染后实际可见的区块现生成，不写死。**
+
+     实测这一页在手机上 15.2 屏，产业链骨架占 1~9.1 屏，五个分析面板全在它
+     后面——读者要滚过 8 屏目录才看得到第一个风险读数，而「受涵盖国家」
+     落在 14.3 屏处。这几轮往下面加的面板，等于一直加在读者看不见的地方。
+
+     写死清单会在区块增减时指向空处（有几个区块要等数据到了才 hidden=false），
+     与首屏副标题栽的是同一类跟头。所以这里扫 DOM：拿到每个标题，看它后面那个
+     区块是不是真的显示了，显示才进导航。 */
+  function renderNav() {
+    var nav = $("secnav");
+    if (!nav) return;
+    var heads = document.querySelectorAll(
+      ".sec-h > h2, .sechead > h2, .notice > h2, details > summary > h2");
+    var items = [];
+    Array.prototype.forEach.call(heads, function (h2, i) {
+      // 这个标题管的那一块显示了吗。标题在 .sec-h/.sechead 里时，区块是它的
+      // 下一个兄弟；在 .notice/summary 里时，标题自己就在区块内。
+      var owner = h2.closest("section, details");
+      var target = owner;
+      if (!owner) {
+        var next = (h2.parentElement || {}).nextElementSibling;
+        while (next && next.nodeName !== "SECTION" && !next.classList.contains("bands")) {
+          next = next.nextElementSibling;
+        }
+        target = next;
+      }
+      if (!target || target.hidden) return;         // 没数据的区块不进导航
+      var anchorEl = owner ? owner : h2.parentElement;
+      if (!anchorEl.id) anchorEl.id = "sec-" + i;
+      // 标题可以长（它要把话说清楚），但导航是一枚小胶囊。允许标题带
+      // data-nav 给一个短名——**改的是导航的显示，不是标题本身**。
+      items.push({ id: anchorEl.id,
+                   label: (h2.getAttribute("data-nav")
+                           || h2.textContent || "").trim() });
+    });
+    if (items.length < 2) { nav.hidden = true; return; }
+    nav.hidden = false;
+    nav.textContent = "";
+    items.forEach(function (it) {
+      var a = el("a", null, it.label);
+      a.href = "#" + it.id;
+      a.setAttribute("data-sec", it.id);
+      nav.appendChild(a);
+    });
+
+    // 当前读到哪一块。用 IntersectionObserver 而不是 scroll 事件——后者在
+    // 15 屏的页面上每帧都要重算位置，手机上会掉帧。
+    if (!window.IntersectionObserver) return;
+    var links = {};
+    Array.prototype.forEach.call(nav.querySelectorAll("a"), function (a) {
+      links[a.getAttribute("data-sec")] = a;
+    });
+    var seen = {};
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { seen[e.target.id] = e.isIntersecting; });
+      var current = null;
+      items.forEach(function (it) { if (seen[it.id]) current = current || it.id; });
+      Object.keys(links).forEach(function (id) {
+        links[id].classList.toggle("on", id === current);
+      });
+      // 当前那一枚要留在可视范围内，否则读到第 7 块时导航还停在第 1 枚。
+      if (current && links[current] && nav.scrollWidth > nav.clientWidth) {
+        var a = links[current];
+        var left = a.offsetLeft - nav.clientWidth / 2 + a.offsetWidth / 2;
+        nav.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
+      }
+    }, { rootMargin: "-52px 0px -70% 0px" });
+    items.forEach(function (it) {
+      var node = document.getElementById(it.id);
+      if (node) io.observe(node);
+    });
+  }
+
+  function renderMinerals(d) {
+    var sec = $("minsec");
+    if (!sec) return;
+    var mv = d.mineralView || {};
+    // 「未写明」不单列成一档矿：它是缺字段，不是第五种矿。合并统计在页脚说。
+    var rows = (mv.rows || []).filter(function (r) {
+      return r.mineral && r.mineral !== "未写明";
+    });
+    if (!rows.length) { sec.hidden = true; return; }
+    sec.hidden = false;
+
+    var unknown = (mv.rows || []).filter(function (r) {
+      return r.mineral === "未写明";
+    })[0];
+    var maxEdges = rows.reduce(function (a, r) {
+      return Math.max(a, r.edges || 0);
+    }, 1);
+    setText($("mineral-lead"),
+      "多德-弗兰克 §1502 管的就是钽、锡、钨、金四种（业内叫 3TG）。"
+      + "四种矿的上游结构差得很远，合在一起看会读错：按国别排是「中国最大」，"
+      + "按矿种才看得出钨和钽的中国集中度是金的三倍，而受涵盖国家的暴露"
+      + "反而主要走锡和金。集中度用 HHI，分档取美国司法部／联邦贸易委员会"
+      + "《横向合并指引》的口径。");
+
+    var host = $("mineral-rows");
+    host.textContent = "";
+    rows.forEach(function (r) {
+      var line = el("div", "mrow");
+      line.appendChild(el("span", "nm", r.mineral));
+      var bar = el("span", "bar");
+      var fill = el("i");
+      fill.style.width = Math.max(3, (r.edges / maxEdges) * 100) + "%";
+      bar.appendChild(fill);
+      line.appendChild(bar);
+      var n = el("span", "n");
+      n.appendChild(document.createTextNode(fmt(r.edges)));
+      n.appendChild(el("s", null, " 条 · " + fmt(r.smelters) + " 厂"));
+      line.appendChild(n);
+      var hh = el("span", "hh");
+      hh.appendChild(document.createTextNode("HHI " + fmt(r.hhi)));
+      hh.appendChild(el("s", null, " " + r.hhiBand + " · " + r.topCountry
+        + Math.round((r.topShare || 0) * 100) + "%"));
+      line.appendChild(hh);
+      var cc = el("span", "cc2");
+      cc.appendChild(document.createTextNode(fmt(r.coveredEdges)));
+      cc.appendChild(el("s", null, " 条受涵盖国"));
+      line.appendChild(cc);
+      line.title = r.mineral + "：" + r.edges + " 条关系、" + r.smelters
+        + " 家冶炼厂、" + r.filerCount + " 家申报人，分布在 " + r.countries
+        + " 个国别。最大来源国 " + r.topCountry + " 占 "
+        + Math.round((r.topShare || 0) * 100) + "%，国别 HHI " + r.hhi
+        + "（" + r.hhiBand + "）。其中 " + r.coveredEdges
+        + " 条落在 §1502 受涵盖国家。"
+        + (r.unknownCountry ? "另有 " + r.unknownCountry + " 条国别未写明，"
+           + "不计入集中度。" : "");
+      host.appendChild(line);
+    });
+
+    // **这句话必须跟着 HHI 一起出现。** 没有它，2224 会被读成「钽的采购
+    // 有 22% 集中在一家」之类的意思，而数据根本不含采购量。
+    setText($("mineral-foot"),
+      "HHI 按已披露冶炼厂条目的国别分布计算，不是采购量——Form SD 不要求"
+      + "申报采购量，一条关系只说明「这座厂出现在申报人的供应链中」。"
+      + "所以「钨 HHI " + (rows.filter(function (r) { return r.mineral === "钨"; })[0]
+        || {}).hhi + "」要读成「已披露的钨冶炼厂里四成在中国」，"
+      + "不能读成「四成的钨来自中国」。"
+      + (unknown ? "另有 " + fmt(unknown.edges) + " 条关系没写明矿种，"
+         + "未列为一档——那是缺字段，不是第五种矿。" : ""));
+  }
+
+  // 名单彼此有多像。**这是读懂「上游重叠」的前提**，不是花絮。
+  function renderSimilarity(d) {
+    var note = $("sim-note");
+    if (!note) return;
+    var s = d.listSimilarity || {};
+    if (!s.companies) { note.hidden = true; return; }
+    note.hidden = false;
+    setText(note,
+      "读这份榜单前先知道一件事：这些名单彼此高度雷同。"
+      + s.companies + " 家名单不少于 " + s.floor + " 条的公司里，"
+      + "与自己最相似的那一家的重合度（Jaccard）中位数是 "
+      + s.medianJaccard.toFixed(2) + "，有 " + s.atLeast90 + " 家 ≥0.90，"
+      + s.identical + " 家与另一家完全相同；中位公司名单里"
+      + (s.medianUniqueShare <= 0.005
+         ? "每一家冶炼厂都被别的申报人也列了（独有比例 0%）"
+         : "独有比例只有 " + Math.round(s.medianUniqueShare * 100) + "%")
+      + "。原因是这些名单在很大程度上是同一份 RMI 合规冶炼厂名录的再现——"
+      + "它们是合规产物，不是各家自己的供应画像。"
+      + "所以重叠大是常态，不是信号；真正值得看第二眼的是独有比例高的那几家，"
+      + "例如 " + (s.mostDistinct || []).slice(0, 3).map(function (x) {
+          return x.symbol + " " + Math.round(x.uniqueShare * 100) + "%";
+        }).join("、") + "。");
   }
 
   function renderCovered(d) {

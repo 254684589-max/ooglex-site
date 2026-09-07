@@ -132,6 +132,27 @@
     .covrow .n { grid-column:2; text-align:left; }
   }
 
+  /* 吸顶的区块导航。横向可滚，**自身滚动不撑宽页面**——页面级横向溢出是
+     这一页反复钉住的一条契约。 */
+  .secnav { position:sticky; top:0; z-index:30; display:flex; gap:6px;
+    overflow-x:auto; overflow-y:hidden; scrollbar-width:none;
+    padding:8px 2px; margin:0 0 4px;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line); }
+  .secnav::-webkit-scrollbar { display:none; }
+  .secnav a { flex:0 0 auto; font-size:.72rem; padding:5px 11px; border-radius:999px;
+    text-decoration:none; color:var(--dim); border:1px solid var(--line);
+    white-space:nowrap; transition:color .15s, border-color .15s; }
+  .secnav a:hover { color:var(--text); border-color:var(--dim); }
+  .secnav a.on { color:var(--text); border-color:var(--accent);
+    background:color-mix(in srgb, var(--accent) 14%, transparent); }
+  /* 锚点跳转时把吸顶条的高度让出来，否则标题会被压在导航底下。 */
+  .sec-h, .sechead, .notice { scroll-margin-top:52px; }
+  @media (max-width:560px) {
+    .secnav { padding:7px 2px; gap:5px; }
+    .secnav a { font-size:.68rem; padding:4px 9px; }
+  }
   .sec-h { display:flex; align-items:baseline; gap:10px; margin:22px 2px 10px; flex-wrap:wrap; }
   .sec-h h2 { font-size:1.05rem; font-weight:800; }
   .sec-h span { font-size:0.76rem; color:var(--faint); }
@@ -310,6 +331,29 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
 .exprow .rch s { text-decoration:none; }
 /* 受涵盖国家的标记。**这一格不是装饰**：它说明该行为什么值得看第二眼。
    用文字而不是纯色块——颜色对色觉障碍读者与灰度打印都会消失。 */
+/* 矿种行。四行而已，但每行要并排放几个读数，窄屏靠缩字号与换行，
+   不隐藏——隐藏了断言就会读到读者看不见的数。 */
+.mrow { display:flex; align-items:center; gap:8px; padding:6px 0;
+  border-bottom:1px solid var(--line); }
+.mrow:last-child { border-bottom:0; }
+.mrow .nm { flex:0 0 auto; min-width:44px; font-weight:600; }
+.mrow .bar { flex:1 1 auto; height:6px; border-radius:3px; background:var(--line);
+  position:relative; overflow:hidden; min-width:24px; }
+.mrow .bar i { position:absolute; left:0; top:0; bottom:0; border-radius:3px;
+  background:var(--accent); display:block; }
+.mrow .n, .mrow .hh, .mrow .cc2 { flex:0 1 auto; min-width:88px; text-align:right;
+  font-family:var(--mono); font-size:11px; color:var(--dim); white-space:nowrap; }
+.mrow .cc2 { color:var(--warn); }
+.mrow s { text-decoration:none; color:var(--faint); }
+.simnote { margin:10px 0 0; padding:9px 11px; border-radius:8px;
+  background:rgba(228,181,61,.08); border:1px solid rgba(228,181,61,.22);
+  font-size:12px; line-height:1.65; color:var(--dim); }
+@media (max-width:560px) {
+  .mrow { flex-wrap:wrap; gap:6px; }
+  .mrow .nm { flex:0 0 40px; font-size:12px; }
+  .mrow .bar { flex:1 1 60px; }
+  .mrow .n, .mrow .hh, .mrow .cc2 { min-width:64px; font-size:10px; }
+}
 .exprow .cv, .cvrow .cv { flex:0 0 auto; font-size:10px; padding:1px 5px;
   border-radius:4px; background:rgba(228,181,61,.15);
   color:var(--warn); white-space:nowrap; }
@@ -528,8 +572,16 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
     </div>
   </div>
 
+  <!-- **区块导航。** 实测：手机上这一页 15.2 屏，产业链骨架占 1~9.1 屏，
+       五个分析面板全在它后面——读者要滚过 8 屏目录才看得到第一个风险读数，
+       而「受涵盖国家」（这套数据的法定理由）落在 14.3 屏处，等于不存在。
+       这几轮我一直在往下面加面板，等于一直往读者看不见的地方加东西。
+       清单按**渲染后实际可见的区块**现生成，不写死——写死的清单在区块增减时
+       会指向空处，与首屏副标题栽的是同一类跟头。 -->
+  <nav class="secnav" id="secnav" hidden aria-label="页内区块导航"></nav>
+
   <section class="glass notice" aria-label="数据范围声明">
-    <h2>关于本页数据范围</h2>
+    <h2 data-nav="数据范围">关于本页数据范围</h2>
     <p id="notice-coverage">本板块只收录有公开出处的信息，<b>不是完整供应链</b>。</p>
     <p id="notice-edges"></p>
     <p id="notice-basis"></p>
@@ -544,7 +596,7 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
        那句声明留在上面的 notice 里始终可见（那是真实性要求，不是版式偏好），
        每个环节卡片上也就地写了自己那一段的覆盖。 -->
   <details class="glass cov" id="cov" hidden aria-label="按板块的覆盖情况">
-    <summary><h2>为什么有的公司有数据、有的没有</h2><span id="cov-sum"></span></summary>
+    <summary><h2 data-nav="覆盖缺口">为什么有的公司有数据、有的没有</h2><span id="cov-sum"></span></summary>
     <p id="cov-lead"></p>
     <div id="cov-rows"></div>
     <!-- 第二个池按国别拆。它们没有站内板块分类，全塞进「未分类」等于一个
@@ -606,6 +658,23 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
     <p class="lead" id="conc-lead"></p>
     <div id="conc-rows"></div>
     <p class="foot2" id="conc-foot"></p>
+    <!-- **读懂上面那份榜单的前提。** 「被 56 家共同列入」听着像强信号，
+         实测不是：这些名单本身高度雷同（中位 Jaccard 0.89），重叠大是常态。 -->
+    <p class="simnote" id="sim-note" hidden></p>
+</section>
+
+  <!-- 矿种。**§1502 点名的就是这四种矿**（钽锡钨金，业内叫 3TG），
+       而页面此前只在一处 hover 里提过它们。四种矿的上游结构差得很远：
+       按国别看是「中国最大」，按矿种才看得出钨和钽的中国集中度是金的三倍，
+       而冲突地区暴露反而走的是锡和金——两件事在合并的国别榜上都看不出来。 -->
+  <div class="sec-h">
+    <h2>按矿种</h2>
+    <span id="mineral-sub">钽 · 锡 · 钨 · 金 —— §1502 点名的四种矿，结构各不相同</span>
+  </div>
+  <section class="glass minsec" id="minsec" hidden aria-label="按矿种的上游结构">
+    <p class="lead" id="mineral-lead"></p>
+    <div id="mineral-rows"></div>
+    <p class="foot2" id="mineral-foot"></p>
   </section>
 
   <div class="sec-h">
@@ -649,6 +718,6 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="app.js?v=70ca4421" defer></script>
+<script src="app.js?v=3403fe2f" defer></script>
 </body>
 </html>
