@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-06T21:39:37Z",
-  "asOf": "2026-09-06",
+  "updatedAt": "2026-09-07T17:50:23Z",
+  "asOf": "2026-09-07",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-09-06 ~ 2026-09-12",
-  "count": 78,
+  "count": 81,
   "highCount": 10,
   "events": [
     {
@@ -343,6 +343,18 @@
       "actual": null
     },
     {
+      "ts": "2026-09-08T13:15:00Z",
+      "ccy": "GBP",
+      "country": "英国",
+      "flag": "🇬🇧",
+      "title": "Monetary Policy Report Hearings",
+      "titleEn": "Monetary Policy Report Hearings",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
       "ts": "2026-09-08T19:00:00Z",
       "ccy": "USD",
       "country": "美国",
@@ -374,7 +386,7 @@
       "title": "CPI（消费者物价指数） 同比",
       "titleEn": "CPI y/y",
       "impact": "low",
-      "forecast": "0.9%",
+      "forecast": "0.8%",
       "previous": "0.5%",
       "actual": null
     },
@@ -448,6 +460,18 @@
       "impact": "low",
       "forecast": null,
       "previous": "11.8K",
+      "actual": null
+    },
+    {
+      "ts": "2026-09-09T17:00:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "欧央行行长讲话",
+      "titleEn": "ECB President Lagarde Speaks",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
@@ -868,6 +892,18 @@
       "impact": "high",
       "forecast": "3.4%",
       "previous": "3.4%",
+      "actual": null
+    },
+    {
+      "ts": "2026-09-11T14:00:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "欧央行行长讲话",
+      "titleEn": "ECB President Lagarde Speaks",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
