@@ -463,6 +463,59 @@ async function main() {
         };
       })()`);
 
+      /* 区块导航。**这一页在手机上 15.2 屏**，产业链骨架占 1~9.1 屏，五个
+         分析面板全在它后面——「受涵盖国家」落在 14.3 屏处。没有导航，往下面
+         加的每一块都是加在读者看不见的地方。
+
+         守三件事：每个**显示了的**区块都要在导航里有一枚（漏一枚就等于那块
+         又消失了）、每枚都点得到真实存在的锚点（写死清单会指向空处）、
+         导航自己横向滚而**不撑宽页面**。 */
+      const nav = await evaluate(`(() => {
+        const n = document.getElementById('secnav');
+        if (!n || n.hidden) return { shown: false };
+        const links = [...n.querySelectorAll('a')];
+        // 页面上「显示了的」区块：有 h2 且它管的那块没有 hidden
+        const heads = [...document.querySelectorAll(
+          '.sec-h > h2, .sechead > h2, .notice > h2, details > summary > h2')];
+        const visible = heads.filter(h2 => {
+          const owner = h2.closest('section, details');
+          if (owner) return !owner.hidden;
+          let next = (h2.parentElement || {}).nextElementSibling;
+          while (next && next.nodeName !== 'SECTION'
+                 && !next.classList.contains('bands')) next = next.nextElementSibling;
+          return !!next && !next.hidden;
+        }).map(h2 => (h2.getAttribute('data-nav') || h2.textContent || '').trim());
+        return {
+          shown: true,
+          chips: links.map(a => (a.textContent || '').trim()),
+          hrefs: links.map(a => a.getAttribute('href') || ''),
+          dead: links.filter(a => !document.querySelector(a.getAttribute('href')))
+            .map(a => a.getAttribute('href')),
+          visible,
+          seen: links.filter(a => a.getClientRects().length > 0).length,
+          navScroll: Math.max(0, n.scrollWidth - n.clientWidth),
+          pageOverflow: Math.max(0,
+            document.documentElement.scrollWidth - window.innerWidth)
+        };
+      })()`);
+      check(`区块导航已渲染`, () => assert.ok(nav.shown,
+        "没有导航——这一页 15 屏，下半页的面板等于不存在"));
+      check(`每个显示了的区块都在导航里有一枚`, () => {
+        assert.deepEqual(nav.chips, nav.visible,
+          `导航 ${nav.chips.join("、")}；页面上显示的是 ${nav.visible.join("、")}`);
+      });
+      check(`每枚都指向真实存在的锚点`, () => {
+        assert.deepEqual(nav.dead, [],
+          `这些跳不到任何地方：${nav.dead.join("、")}`);
+      });
+      check(`每枚都看得见`, () => assert.equal(nav.seen, nav.chips.length,
+        `${nav.chips.length - nav.seen} 枚有文本却没有布局盒`));
+      /* 导航自身横向滚是设计，页面横向滚是缺陷——这一页反复钉住的一条契约。 */
+      check(`导航横向滚在自己内部，不撑宽页面`, () => {
+        assert.ok(nav.pageOverflow <= 1,
+          `页面横向溢出 ${nav.pageOverflow}px——导航把页面撑宽了`);
+      });
+
       check(`按板块覆盖区块已渲染`, () => assert.ok(cov.shown));
       check(`板块数与节点表一致（${SECTORS.length}）`,
         () => assert.equal(cov.rows.length, SECTORS.length));

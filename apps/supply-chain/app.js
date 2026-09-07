@@ -1594,6 +1594,7 @@
     renderMinerals(d);
     renderCovered(d);
     renderSimilarity(d);
+    renderNav();
   }
 
   function riskScope(d) {
@@ -1649,6 +1650,80 @@
   }
 
   // §1502 点名的四种矿。**这条轴此前只在一处 hover 里出现过。**
+  /* 区块导航。**清单按渲染后实际可见的区块现生成，不写死。**
+
+     实测这一页在手机上 15.2 屏，产业链骨架占 1~9.1 屏，五个分析面板全在它
+     后面——读者要滚过 8 屏目录才看得到第一个风险读数，而「受涵盖国家」
+     落在 14.3 屏处。这几轮往下面加的面板，等于一直加在读者看不见的地方。
+
+     写死清单会在区块增减时指向空处（有几个区块要等数据到了才 hidden=false），
+     与首屏副标题栽的是同一类跟头。所以这里扫 DOM：拿到每个标题，看它后面那个
+     区块是不是真的显示了，显示才进导航。 */
+  function renderNav() {
+    var nav = $("secnav");
+    if (!nav) return;
+    var heads = document.querySelectorAll(
+      ".sec-h > h2, .sechead > h2, .notice > h2, details > summary > h2");
+    var items = [];
+    Array.prototype.forEach.call(heads, function (h2, i) {
+      // 这个标题管的那一块显示了吗。标题在 .sec-h/.sechead 里时，区块是它的
+      // 下一个兄弟；在 .notice/summary 里时，标题自己就在区块内。
+      var owner = h2.closest("section, details");
+      var target = owner;
+      if (!owner) {
+        var next = (h2.parentElement || {}).nextElementSibling;
+        while (next && next.nodeName !== "SECTION" && !next.classList.contains("bands")) {
+          next = next.nextElementSibling;
+        }
+        target = next;
+      }
+      if (!target || target.hidden) return;         // 没数据的区块不进导航
+      var anchorEl = owner ? owner : h2.parentElement;
+      if (!anchorEl.id) anchorEl.id = "sec-" + i;
+      // 标题可以长（它要把话说清楚），但导航是一枚小胶囊。允许标题带
+      // data-nav 给一个短名——**改的是导航的显示，不是标题本身**。
+      items.push({ id: anchorEl.id,
+                   label: (h2.getAttribute("data-nav")
+                           || h2.textContent || "").trim() });
+    });
+    if (items.length < 2) { nav.hidden = true; return; }
+    nav.hidden = false;
+    nav.textContent = "";
+    items.forEach(function (it) {
+      var a = el("a", null, it.label);
+      a.href = "#" + it.id;
+      a.setAttribute("data-sec", it.id);
+      nav.appendChild(a);
+    });
+
+    // 当前读到哪一块。用 IntersectionObserver 而不是 scroll 事件——后者在
+    // 15 屏的页面上每帧都要重算位置，手机上会掉帧。
+    if (!window.IntersectionObserver) return;
+    var links = {};
+    Array.prototype.forEach.call(nav.querySelectorAll("a"), function (a) {
+      links[a.getAttribute("data-sec")] = a;
+    });
+    var seen = {};
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { seen[e.target.id] = e.isIntersecting; });
+      var current = null;
+      items.forEach(function (it) { if (seen[it.id]) current = current || it.id; });
+      Object.keys(links).forEach(function (id) {
+        links[id].classList.toggle("on", id === current);
+      });
+      // 当前那一枚要留在可视范围内，否则读到第 7 块时导航还停在第 1 枚。
+      if (current && links[current] && nav.scrollWidth > nav.clientWidth) {
+        var a = links[current];
+        var left = a.offsetLeft - nav.clientWidth / 2 + a.offsetWidth / 2;
+        nav.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
+      }
+    }, { rootMargin: "-52px 0px -70% 0px" });
+    items.forEach(function (it) {
+      var node = document.getElementById(it.id);
+      if (node) io.observe(node);
+    });
+  }
+
   function renderMinerals(d) {
     var sec = $("minsec");
     if (!sec) return;

@@ -132,6 +132,27 @@
     .covrow .n { grid-column:2; text-align:left; }
   }
 
+  /* 吸顶的区块导航。横向可滚，**自身滚动不撑宽页面**——页面级横向溢出是
+     这一页反复钉住的一条契约。 */
+  .secnav { position:sticky; top:0; z-index:30; display:flex; gap:6px;
+    overflow-x:auto; overflow-y:hidden; scrollbar-width:none;
+    padding:8px 2px; margin:0 0 4px;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line); }
+  .secnav::-webkit-scrollbar { display:none; }
+  .secnav a { flex:0 0 auto; font-size:.72rem; padding:5px 11px; border-radius:999px;
+    text-decoration:none; color:var(--dim); border:1px solid var(--line);
+    white-space:nowrap; transition:color .15s, border-color .15s; }
+  .secnav a:hover { color:var(--text); border-color:var(--dim); }
+  .secnav a.on { color:var(--text); border-color:var(--accent);
+    background:color-mix(in srgb, var(--accent) 14%, transparent); }
+  /* 锚点跳转时把吸顶条的高度让出来，否则标题会被压在导航底下。 */
+  .sec-h, .sechead, .notice { scroll-margin-top:52px; }
+  @media (max-width:560px) {
+    .secnav { padding:7px 2px; gap:5px; }
+    .secnav a { font-size:.68rem; padding:4px 9px; }
+  }
   .sec-h { display:flex; align-items:baseline; gap:10px; margin:22px 2px 10px; flex-wrap:wrap; }
   .sec-h h2 { font-size:1.05rem; font-weight:800; }
   .sec-h span { font-size:0.76rem; color:var(--faint); }
@@ -551,8 +572,16 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
     </div>
   </div>
 
+  <!-- **区块导航。** 实测：手机上这一页 15.2 屏，产业链骨架占 1~9.1 屏，
+       五个分析面板全在它后面——读者要滚过 8 屏目录才看得到第一个风险读数，
+       而「受涵盖国家」（这套数据的法定理由）落在 14.3 屏处，等于不存在。
+       这几轮我一直在往下面加面板，等于一直往读者看不见的地方加东西。
+       清单按**渲染后实际可见的区块**现生成，不写死——写死的清单在区块增减时
+       会指向空处，与首屏副标题栽的是同一类跟头。 -->
+  <nav class="secnav" id="secnav" hidden aria-label="页内区块导航"></nav>
+
   <section class="glass notice" aria-label="数据范围声明">
-    <h2>关于本页数据范围</h2>
+    <h2 data-nav="数据范围">关于本页数据范围</h2>
     <p id="notice-coverage">本板块只收录有公开出处的信息，<b>不是完整供应链</b>。</p>
     <p id="notice-edges"></p>
     <p id="notice-basis"></p>
@@ -567,7 +596,7 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
        那句声明留在上面的 notice 里始终可见（那是真实性要求，不是版式偏好），
        每个环节卡片上也就地写了自己那一段的覆盖。 -->
   <details class="glass cov" id="cov" hidden aria-label="按板块的覆盖情况">
-    <summary><h2>为什么有的公司有数据、有的没有</h2><span id="cov-sum"></span></summary>
+    <summary><h2 data-nav="覆盖缺口">为什么有的公司有数据、有的没有</h2><span id="cov-sum"></span></summary>
     <p id="cov-lead"></p>
     <div id="cov-rows"></div>
     <!-- 第二个池按国别拆。它们没有站内板块分类，全塞进「未分类」等于一个
@@ -689,6 +718,6 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="app.js?v=fb58e44d" defer></script>
+<script src="app.js?v=3403fe2f" defer></script>
 </body>
 </html>
