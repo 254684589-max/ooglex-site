@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-09-06T21:37:26Z",
-  "asOf": "2026-09-06",
+  "updatedAt": "2026-09-07T21:26:42Z",
+  "asOf": "2026-09-07",
   "frequency": "daily",
   "status": "ok",
   "defaultPeriod": "ytd",
@@ -69,7 +69,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -83,7 +83,7 @@
         "w1": -2.09,
         "m1": -1.93,
         "ytd": 29.16,
-        "y1": 52.7
+        "y1": 48.98
       },
       "stale": false,
       "dataMeta": {
@@ -91,7 +91,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -99,21 +99,21 @@
       "name": "德国DAX",
       "category": "equity",
       "symbol": "^GDAXI",
-      "price": 26046.4004,
+      "price": 26006.5293,
       "returns": {
-        "d1": 0.17,
-        "w1": -1.97,
-        "m1": -0.31,
-        "ytd": 6.35,
-        "y1": 9.58
+        "d1": -0.15,
+        "w1": -0.96,
+        "m1": -1.19,
+        "ytd": 6.19,
+        "y1": 9.24
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -127,7 +127,7 @@
         "w1": 0.26,
         "m1": -1.02,
         "ytd": 0.08,
-        "y1": 2.36
+        "y1": 0.07
       },
       "stale": false,
       "dataMeta": {
@@ -135,7 +135,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -149,7 +149,7 @@
         "w1": 1.79,
         "m1": 3.95,
         "ytd": 24.88,
-        "y1": 35.03
+        "y1": 34.66
       },
       "stale": false,
       "dataMeta": {
@@ -157,7 +157,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -171,7 +171,7 @@
         "w1": -5.26,
         "m1": -8.16,
         "ytd": -2.18,
-        "y1": 3.75
+        "y1": 1.38
       },
       "stale": false,
       "dataMeta": {
@@ -179,7 +179,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-07-17",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -187,21 +187,21 @@
       "name": "新西兰NZ50",
       "category": "equity",
       "symbol": "^NZ50",
-      "price": 13974.1797,
+      "price": 13942.8301,
       "returns": {
-        "d1": 0.0,
-        "w1": 1.5,
-        "m1": 0.12,
-        "ytd": 3.14,
-        "y1": 6.4
+        "d1": -0.22,
+        "w1": 1.13,
+        "m1": 0.86,
+        "ytd": 2.91,
+        "y1": 4.98
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -215,7 +215,7 @@
         "w1": -0.97,
         "m1": -2.63,
         "ytd": -10.21,
-        "y1": -5.21
+        "y1": -5.29
       },
       "stale": false,
       "dataMeta": {
@@ -223,7 +223,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -237,7 +237,7 @@
         "w1": -0.95,
         "m1": -2.4,
         "ytd": 3.35,
-        "y1": 2.03
+        "y1": 1.77
       },
       "stale": false,
       "dataMeta": {
@@ -245,7 +245,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -259,7 +259,7 @@
         "w1": -3.16,
         "m1": -1.82,
         "ytd": 1.12,
-        "y1": 13.19
+        "y1": 8.48
       },
       "stale": false,
       "dataMeta": {
@@ -267,7 +267,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily",
         "note": "以人民币中证500ETF价格收益率代理；可能存在跟踪误差、分红与费用差异。"
       },
@@ -286,21 +286,21 @@
       "name": "欧洲STOXX600",
       "category": "equity",
       "symbol": "^STOXX",
-      "price": 649.88,
+      "price": 649.9,
       "returns": {
-        "d1": 0.12,
-        "w1": -0.81,
-        "m1": -1.1,
-        "ytd": 9.63,
-        "y1": 18.14
+        "d1": 0.0,
+        "w1": -0.18,
+        "m1": -1.57,
+        "ytd": 9.64,
+        "y1": 17.73
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -308,21 +308,21 @@
       "name": "英国富时100",
       "category": "equity",
       "symbol": "^FTSE",
-      "price": 10831.0996,
+      "price": 10822.1299,
       "returns": {
-        "d1": -0.0,
-        "w1": 0.06,
-        "m1": -0.53,
-        "ytd": 9.06,
-        "y1": 17.51
+        "d1": -0.08,
+        "w1": -0.02,
+        "m1": -0.72,
+        "ytd": 8.97,
+        "y1": 17.36
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -330,21 +330,21 @@
       "name": "法国CAC40",
       "category": "equity",
       "symbol": "^FCHI",
-      "price": 8278.7695,
+      "price": 8306.1504,
       "returns": {
-        "d1": -0.09,
-        "w1": -1.46,
-        "m1": -4.5,
-        "ytd": 1.59,
-        "y1": 7.53
+        "d1": 0.33,
+        "w1": -0.34,
+        "m1": -4.69,
+        "ytd": 1.92,
+        "y1": 7.39
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -358,7 +358,7 @@
         "w1": -1.5,
         "m1": 1.35,
         "ytd": 58.68,
-        "y1": 108.92
+        "y1": 107.7
       },
       "stale": false,
       "dataMeta": {
@@ -366,7 +366,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -388,7 +388,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -410,7 +410,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -424,7 +424,7 @@
         "w1": 0.47,
         "m1": 4.35,
         "ytd": 60.72,
-        "y1": 92.52
+        "y1": 89.64
       },
       "stale": false,
       "dataMeta": {
@@ -432,7 +432,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -454,7 +454,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -462,21 +462,21 @@
       "name": "瑞士SMI",
       "category": "equity",
       "symbol": "^SSMI",
-      "price": 14395.9404,
+      "price": 14279.3799,
       "returns": {
-        "d1": 0.01,
-        "w1": -0.03,
-        "m1": -1.07,
-        "ytd": 8.51,
-        "y1": 16.25
+        "d1": -0.81,
+        "w1": -0.05,
+        "m1": -1.83,
+        "ytd": 7.63,
+        "y1": 15.97
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -484,21 +484,21 @@
       "name": "西班牙IBEX35",
       "category": "equity",
       "symbol": "^IBEX",
-      "price": 20050.6992,
+      "price": 20021.8008,
       "returns": {
-        "d1": 0.25,
-        "w1": 0.04,
-        "m1": -0.03,
-        "ytd": 15.85,
-        "y1": 34.4
+        "d1": -0.14,
+        "w1": 0.24,
+        "m1": -0.76,
+        "ytd": 15.68,
+        "y1": 33.46
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -506,21 +506,21 @@
       "name": "意大利富时MIB",
       "category": "equity",
       "symbol": "FTSEMIB.MI",
-      "price": 52100.0,
+      "price": 52229.5703,
       "returns": {
-        "d1": -0.28,
-        "w1": -0.98,
-        "m1": -2.52,
-        "ytd": 15.92,
-        "y1": 24.08
+        "d1": 0.25,
+        "w1": -0.73,
+        "m1": -2.77,
+        "ytd": 16.21,
+        "y1": 25.18
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -528,21 +528,21 @@
       "name": "墨西哥IPC",
       "category": "equity",
       "symbol": "^MXX",
-      "price": 64866.6094,
+      "price": 64727.5391,
       "returns": {
-        "d1": -0.87,
-        "w1": -0.94,
-        "m1": -2.49,
-        "ytd": 0.87,
-        "y1": 8.35
+        "d1": -0.21,
+        "w1": -1.07,
+        "m1": -3.3,
+        "ytd": 0.65,
+        "y1": 6.72
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -556,7 +556,7 @@
         "w1": 1.82,
         "m1": 4.49,
         "ytd": -23.25,
-        "y1": -15.65
+        "y1": -14.55
       },
       "stale": false,
       "dataMeta": {
@@ -564,7 +564,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -578,7 +578,7 @@
         "w1": 2.9,
         "m1": 4.4,
         "ytd": 14.92,
-        "y1": 35.07
+        "y1": 33.31
       },
       "stale": false,
       "dataMeta": {
@@ -586,7 +586,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -594,21 +594,21 @@
       "name": "荷兰AEX",
       "category": "equity",
       "symbol": "^AEX",
-      "price": 1113.5,
+      "price": 1115.42,
       "returns": {
-        "d1": 0.8,
-        "w1": 0.11,
-        "m1": 0.19,
-        "ytd": 17.05,
-        "y1": 23.7
+        "d1": 0.17,
+        "w1": 0.87,
+        "m1": 0.36,
+        "ytd": 17.25,
+        "y1": 23.29
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -616,21 +616,21 @@
       "name": "比利时BEL20",
       "category": "equity",
       "symbol": "^BFX",
-      "price": 5852.54,
+      "price": 5800.9199,
       "returns": {
-        "d1": -0.45,
-        "w1": -0.28,
-        "m1": 1.33,
-        "ytd": 15.24,
-        "y1": 23.33
+        "d1": -0.88,
+        "w1": -0.57,
+        "m1": 0.4,
+        "ytd": 14.23,
+        "y1": 21.01
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -638,21 +638,21 @@
       "name": "瑞典OMXS30",
       "category": "equity",
       "symbol": "^OMX",
-      "price": 3284.0801,
+      "price": 3291.8403,
       "returns": {
-        "d1": 0.18,
-        "w1": -1.42,
-        "m1": -1.29,
-        "ytd": 13.91,
-        "y1": 25.95
+        "d1": 0.24,
+        "w1": -0.52,
+        "m1": -0.62,
+        "ytd": 14.18,
+        "y1": 24.68
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -660,21 +660,21 @@
       "name": "奥地利ATX",
       "category": "equity",
       "symbol": "^ATX",
-      "price": 6858.2798,
+      "price": 6905.3599,
       "returns": {
-        "d1": 0.85,
-        "w1": 1.06,
-        "m1": 2.3,
-        "ytd": 28.76,
-        "y1": 48.38
+        "d1": 0.69,
+        "w1": 2.03,
+        "m1": 3.8,
+        "ytd": 29.65,
+        "y1": 48.6
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -688,7 +688,7 @@
         "w1": -4.3,
         "m1": 2.26,
         "ytd": 24.43,
-        "y1": 29.4
+        "y1": 34.1
       },
       "stale": false,
       "dataMeta": {
@@ -696,7 +696,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -718,7 +718,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily",
         "note": "以波兰 ETF（美元计）代理，含汇率影响"
       },
@@ -734,7 +734,7 @@
         "w1": 1.08,
         "m1": 3.27,
         "ytd": 30.12,
-        "y1": 30.86
+        "y1": 29.45
       },
       "stale": false,
       "dataMeta": {
@@ -742,7 +742,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-07-17",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -756,7 +756,7 @@
         "w1": -1.03,
         "m1": -2.29,
         "ytd": 1.67,
-        "y1": 8.23
+        "y1": 7.73
       },
       "stale": false,
       "dataMeta": {
@@ -764,7 +764,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -778,7 +778,7 @@
         "w1": 1.87,
         "m1": 4.73,
         "ytd": 5.8,
-        "y1": 4.87
+        "y1": 4.95
       },
       "stale": false,
       "dataMeta": {
@@ -786,7 +786,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-07-17",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -808,7 +808,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily",
         "note": "以智利 ETF（美元计）代理，含汇率影响"
       },
@@ -818,21 +818,21 @@
       "name": "阿根廷MERVAL",
       "category": "equity",
       "symbol": "^MERV",
-      "price": 3049122.0,
+      "price": 3034598.75,
       "returns": {
-        "d1": -0.29,
-        "w1": 2.34,
-        "m1": -3.4,
-        "ytd": -0.08,
-        "y1": 53.2
+        "d1": -0.48,
+        "w1": 0.02,
+        "m1": -1.69,
+        "ytd": -0.56,
+        "y1": 75.11
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -854,7 +854,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -868,7 +868,7 @@
         "w1": -0.84,
         "m1": -7.36,
         "ytd": -16.81,
-        "y1": -18.25
+        "y1": -20.5
       },
       "stale": false,
       "dataMeta": {
@@ -876,7 +876,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily",
         "note": "以恒生科技指数 ETF（港元计）代理"
       },
@@ -887,21 +887,21 @@
       "category": "equity",
       "note": "CBOE标普500波动率指数，衡量期权隐含波动率，不是可交易标的",
       "symbol": "^VIX",
-      "price": 14.53,
+      "price": 15.3,
       "returns": {
-        "d1": 1.47,
-        "w1": 0.69,
-        "m1": -8.1,
-        "ytd": -2.81,
-        "y1": -5.03
+        "d1": 5.3,
+        "w1": 2.55,
+        "m1": 2.68,
+        "ytd": 2.34,
+        "y1": 1.26
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -909,21 +909,21 @@
       "name": "欧元区斯托克50",
       "category": "equity",
       "symbol": "^STOXX50E",
-      "price": 6392.9302,
+      "price": 6403.9902,
       "returns": {
-        "d1": 0.16,
-        "w1": -1.43,
-        "m1": -1.3,
-        "ytd": 10.29,
-        "y1": 19.57
+        "d1": 0.17,
+        "w1": -0.25,
+        "m1": -1.84,
+        "ytd": 10.49,
+        "y1": 19.41
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -931,21 +931,21 @@
       "name": "泛欧Euronext100",
       "category": "equity",
       "symbol": "^N100",
-      "price": 1910.53,
+      "price": 1917.04,
       "returns": {
-        "d1": 0.19,
-        "w1": -0.86,
-        "m1": -2.41,
-        "ytd": 11.03,
-        "y1": 20.37
+        "d1": 0.34,
+        "w1": 0.09,
+        "m1": -2.64,
+        "ytd": 11.41,
+        "y1": 20.26
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -953,21 +953,21 @@
       "name": "德国MDAX中盘",
       "category": "equity",
       "symbol": "^MDAXI",
-      "price": 32355.3203,
+      "price": 32405.4395,
       "returns": {
-        "d1": 0.3,
-        "w1": -2.04,
-        "m1": -0.22,
-        "ytd": 5.68,
-        "y1": 8.6
+        "d1": 0.15,
+        "w1": -0.98,
+        "m1": -0.01,
+        "ytd": 5.84,
+        "y1": 6.41
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -975,21 +975,21 @@
       "name": "德国SDAX小盘",
       "category": "equity",
       "symbol": "^SDAXI",
-      "price": 18734.0391,
+      "price": 18753.4805,
       "returns": {
-        "d1": 0.74,
-        "w1": -1.37,
-        "m1": 0.97,
-        "ytd": 9.08,
-        "y1": 13.8
+        "d1": 0.1,
+        "w1": -0.96,
+        "m1": 0.5,
+        "ytd": 9.19,
+        "y1": 12.01
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -997,21 +997,21 @@
       "name": "德国TecDAX科技",
       "category": "equity",
       "symbol": "^TECDAX",
-      "price": 4022.75,
+      "price": 4055.52,
       "returns": {
-        "d1": -0.12,
-        "w1": -2.35,
-        "m1": 1.93,
-        "ytd": 11.06,
-        "y1": 11.01
+        "d1": 0.81,
+        "w1": -0.67,
+        "m1": -0.33,
+        "ytd": 11.96,
+        "y1": 11.57
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1019,21 +1019,21 @@
       "name": "挪威OSEBX",
       "category": "equity",
       "symbol": "OSEBX.OL",
-      "price": 2103.6299,
+      "price": 2098.0701,
       "returns": {
-        "d1": -0.1,
-        "w1": 0.18,
-        "m1": 4.48,
-        "ytd": 24.64,
-        "y1": 29.08
+        "d1": -0.26,
+        "w1": -0.95,
+        "m1": 3.56,
+        "ytd": 24.31,
+        "y1": 28.51
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1041,21 +1041,21 @@
       "name": "丹麦OMXC25",
       "category": "equity",
       "symbol": "^OMXC25",
-      "price": 1912.14,
+      "price": 1911.8654,
       "returns": {
-        "d1": -0.2,
-        "w1": -0.6,
-        "m1": 5.1,
-        "ytd": 4.82,
-        "y1": 14.83
+        "d1": -0.01,
+        "w1": -0.0,
+        "m1": 3.56,
+        "ytd": 4.81,
+        "y1": 15.39
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1063,21 +1063,21 @@
       "name": "芬兰OMXH25",
       "category": "equity",
       "symbol": "^OMXH25",
-      "price": 6454.8198,
+      "price": 6495.3242,
       "returns": {
-        "d1": 0.81,
-        "w1": -0.92,
-        "m1": 3.75,
-        "ytd": 13.17,
-        "y1": 30.67
+        "d1": 0.63,
+        "w1": 0.83,
+        "m1": 4.11,
+        "ytd": 13.88,
+        "y1": 29.51
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1085,21 +1085,21 @@
       "name": "爱尔兰ISEQ",
       "category": "equity",
       "symbol": "^ISEQ",
-      "price": 14513.9004,
+      "price": 14377.9502,
       "returns": {
-        "d1": 0.86,
-        "w1": 2.15,
-        "m1": 3.55,
-        "ytd": 10.8,
-        "y1": 29.07
+        "d1": -0.94,
+        "w1": 1.16,
+        "m1": 0.4,
+        "ytd": 9.76,
+        "y1": 26.09
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1113,7 +1113,7 @@
         "w1": -2.62,
         "m1": -1.51,
         "ytd": 15.4,
-        "y1": 20.41
+        "y1": 21.3
       },
       "stale": false,
       "dataMeta": {
@@ -1121,7 +1121,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-07-17",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1129,21 +1129,21 @@
       "name": "葡萄牙PSI",
       "category": "equity",
       "symbol": "PSI20.LS",
-      "price": 9388.7695,
+      "price": 9419.1299,
       "returns": {
-        "d1": -0.14,
-        "w1": -0.45,
-        "m1": 2.32,
-        "ytd": 13.62,
-        "y1": 21.16
+        "d1": 0.32,
+        "w1": -0.19,
+        "m1": 2.59,
+        "ytd": 13.98,
+        "y1": 21.47
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1151,21 +1151,21 @@
       "name": "拉脱维亚里加全指",
       "category": "equity",
       "symbol": "^OMXRGI",
-      "price": 960.13,
+      "price": 967.1394,
       "returns": {
-        "d1": -0.48,
-        "w1": 0.5,
-        "m1": 3.43,
-        "ytd": 3.73,
-        "y1": 4.21
+        "d1": 0.73,
+        "w1": 0.88,
+        "m1": 4.53,
+        "ytd": 4.49,
+        "y1": 4.97
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1173,21 +1173,21 @@
       "name": "立陶宛维尔纽斯全指",
       "category": "equity",
       "symbol": "^OMXVGI",
-      "price": 1507.37,
+      "price": 1501.9146,
       "returns": {
-        "d1": 0.26,
-        "w1": 0.38,
-        "m1": 0.14,
-        "ytd": 12.68,
-        "y1": 22.32
+        "d1": -0.36,
+        "w1": 0.3,
+        "m1": 0.02,
+        "ytd": 12.27,
+        "y1": 21.87
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1195,12 +1195,12 @@
       "name": "爱沙尼亚塔林全指",
       "category": "equity",
       "symbol": "^OMXTGI",
-      "price": 2169.9299,
+      "price": 2170.0293,
       "returns": {
-        "d1": 1.09,
-        "w1": 1.2,
-        "m1": 0.72,
-        "ytd": 5.73,
+        "d1": 0.0,
+        "w1": 1.18,
+        "m1": 0.6,
+        "ytd": 5.74,
         "y1": 8.06
       },
       "stale": false,
@@ -1208,8 +1208,8 @@
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1231,7 +1231,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1253,7 +1253,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1275,7 +1275,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1289,7 +1289,7 @@
         "w1": 0.06,
         "m1": -0.11,
         "ytd": 13.05,
-        "y1": 18.45
+        "y1": 18.41
       },
       "stale": false,
       "dataMeta": {
@@ -1297,7 +1297,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1311,7 +1311,7 @@
         "w1": -0.56,
         "m1": 1.33,
         "ytd": -0.98,
-        "y1": 4.36
+        "y1": 2.7
       },
       "stale": false,
       "dataMeta": {
@@ -1319,7 +1319,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1333,7 +1333,7 @@
         "w1": -3.13,
         "m1": -4.43,
         "ytd": -0.06,
-        "y1": 11.54
+        "y1": 6.71
       },
       "stale": false,
       "dataMeta": {
@@ -1341,7 +1341,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1355,7 +1355,7 @@
         "w1": -1.15,
         "m1": -2.95,
         "ytd": -8.54,
-        "y1": -3.38
+        "y1": -3.53
       },
       "stale": false,
       "dataMeta": {
@@ -1363,7 +1363,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1377,7 +1377,7 @@
         "w1": 0.76,
         "m1": -0.57,
         "ytd": -4.02,
-        "y1": -4.27
+        "y1": -6.21
       },
       "stale": false,
       "dataMeta": {
@@ -1385,7 +1385,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1407,7 +1407,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-07-16",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1421,7 +1421,7 @@
         "w1": -1.06,
         "m1": -2.23,
         "ytd": 1.96,
-        "y1": 1.15
+        "y1": 0.76
       },
       "stale": false,
       "dataMeta": {
@@ -1429,7 +1429,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1443,7 +1443,7 @@
         "w1": -0.97,
         "m1": -2.39,
         "ytd": 2.94,
-        "y1": 1.88
+        "y1": 1.58
       },
       "stale": false,
       "dataMeta": {
@@ -1451,7 +1451,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1459,21 +1459,21 @@
       "name": "南非全股指数",
       "category": "equity",
       "symbol": "^J203.JO",
-      "price": 116725.7969,
+      "price": 116988.9609,
       "returns": {
-        "d1": 0.03,
-        "w1": -1.22,
-        "m1": 1.14,
-        "ytd": 0.77,
-        "y1": 16.22
+        "d1": 0.23,
+        "w1": 0.63,
+        "m1": -0.45,
+        "ytd": 1.0,
+        "y1": 13.83
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1483,9 +1483,9 @@
       "symbol": "GC=F",
       "price": 4476.6001,
       "returns": {
-        "d1": -0.34,
-        "w1": -0.03,
-        "m1": 5.44,
+        "d1": 1.06,
+        "w1": 1.03,
+        "m1": 3.13,
         "ytd": 3.49,
         "y1": 23.05
       },
@@ -1494,8 +1494,8 @@
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1505,9 +1505,9 @@
       "symbol": "SI=F",
       "price": 66.748,
       "returns": {
-        "d1": -0.34,
-        "w1": -0.37,
-        "m1": 7.49,
+        "d1": 1.06,
+        "w1": 0.8,
+        "m1": 5.39,
         "ytd": -4.83,
         "y1": 61.13
       },
@@ -1516,8 +1516,8 @@
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1528,9 +1528,9 @@
       "symbol": "ALI=F",
       "price": 3473.25,
       "returns": {
-        "d1": 0.3,
-        "w1": 2.81,
-        "m1": 3.19,
+        "d1": 0.99,
+        "w1": 2.87,
+        "m1": 3.4,
         "ytd": 19.51,
         "y1": 38.32
       },
@@ -1539,8 +1539,8 @@
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1551,9 +1551,9 @@
       "symbol": "HG=F",
       "price": 6.6825,
       "returns": {
-        "d1": 1.6,
-        "w1": 1.84,
-        "m1": -0.31,
+        "d1": 1.3,
+        "w1": 1.35,
+        "m1": 1.7,
         "ytd": 18.69,
         "y1": 48.81
       },
@@ -1562,8 +1562,8 @@
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1573,9 +1573,9 @@
       "symbol": "CL=F",
       "price": 91.48,
       "returns": {
-        "d1": 0.2,
-        "w1": 9.69,
-        "m1": 21.62,
+        "d1": 0.0,
+        "w1": 6.67,
+        "m1": 17.01,
         "ytd": 59.32,
         "y1": 46.93
       },
@@ -1584,8 +1584,8 @@
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1595,9 +1595,9 @@
       "symbol": "BZ=F",
       "price": 96.28,
       "returns": {
-        "d1": 0.8,
-        "w1": 7.8,
-        "m1": 21.18,
+        "d1": 0.0,
+        "w1": 6.4,
+        "m1": 15.24,
         "ytd": 58.23,
         "y1": 45.83
       },
@@ -1606,8 +1606,8 @@
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1617,9 +1617,9 @@
       "symbol": "NG=F",
       "price": 2.975,
       "returns": {
-        "d1": 2.13,
-        "w1": 3.01,
-        "m1": 10.68,
+        "d1": 0.0,
+        "w1": 1.36,
+        "m1": 11.76,
         "ytd": -19.29,
         "y1": -3.72
       },
@@ -1628,8 +1628,8 @@
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1639,9 +1639,9 @@
       "symbol": "PL=F",
       "price": 1826.0,
       "returns": {
-        "d1": -0.13,
-        "w1": -1.17,
-        "m1": 5.1,
+        "d1": 0.27,
+        "w1": 2.1,
+        "m1": 4.34,
         "ytd": -10.25,
         "y1": 32.24
       },
@@ -1650,8 +1650,8 @@
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1661,9 +1661,9 @@
       "symbol": "PA=F",
       "price": 1403.9,
       "returns": {
-        "d1": -1.54,
-        "w1": -1.73,
-        "m1": 2.87,
+        "d1": 0.99,
+        "w1": 3.01,
+        "m1": 2.17,
         "ytd": -13.83,
         "y1": 23.21
       },
@@ -1672,8 +1672,8 @@
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1681,13 +1681,13 @@
       "name": "CBOT小麦",
       "category": "commodity",
       "symbol": "ZW=F",
-      "price": 734.0,
+      "price": 716.0,
       "returns": {
-        "d1": -0.27,
-        "w1": -4.3,
-        "m1": 14.29,
-        "ytd": 44.77,
-        "y1": 45.2
+        "d1": -2.72,
+        "w1": -6.65,
+        "m1": 11.48,
+        "ytd": 41.22,
+        "y1": 41.64
       },
       "stale": false,
       "dataMeta": {
@@ -1695,7 +1695,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1703,13 +1703,13 @@
       "name": "CBOT玉米",
       "category": "commodity",
       "symbol": "ZC=F",
-      "price": 536.75,
+      "price": 512.0,
       "returns": {
-        "d1": 4.17,
-        "w1": 4.83,
-        "m1": 22.9,
-        "ytd": 21.92,
-        "y1": 33.19
+        "d1": -0.63,
+        "w1": 0.0,
+        "m1": 17.23,
+        "ytd": 16.3,
+        "y1": 27.05
       },
       "stale": false,
       "dataMeta": {
@@ -1717,7 +1717,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1725,13 +1725,13 @@
       "name": "CBOT大豆",
       "category": "commodity",
       "symbol": "ZS=F",
-      "price": 1309.75,
+      "price": 1293.75,
       "returns": {
-        "d1": 0.27,
-        "w1": 2.62,
-        "m1": 13.74,
-        "ytd": 27.1,
-        "y1": 29.23
+        "d1": -0.96,
+        "w1": 1.37,
+        "m1": 12.35,
+        "ytd": 25.55,
+        "y1": 27.65
       },
       "stale": false,
       "dataMeta": {
@@ -1739,7 +1739,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1747,13 +1747,13 @@
       "name": "ICE咖啡",
       "category": "commodity",
       "symbol": "KC=F",
-      "price": 292.9,
+      "price": 324.25,
       "returns": {
-        "d1": -9.7,
-        "w1": -15.31,
-        "m1": -10.4,
-        "ytd": -16.01,
-        "y1": -26.37
+        "d1": -0.03,
+        "w1": -6.25,
+        "m1": -0.81,
+        "ytd": -7.03,
+        "y1": -18.49
       },
       "stale": false,
       "dataMeta": {
@@ -1761,7 +1761,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1769,13 +1769,13 @@
       "name": "ICE白糖",
       "category": "commodity",
       "symbol": "SB=F",
-      "price": 18.02,
+      "price": 18.07,
       "returns": {
-        "d1": -0.28,
-        "w1": 2.62,
-        "m1": 18.94,
-        "ytd": 20.05,
-        "y1": 15.29
+        "d1": 0.0,
+        "w1": 2.9,
+        "m1": 19.27,
+        "ytd": 20.39,
+        "y1": 15.61
       },
       "stale": false,
       "dataMeta": {
@@ -1783,7 +1783,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1805,7 +1805,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1815,9 +1815,9 @@
       "symbol": "HO=F",
       "price": 4.5402,
       "returns": {
-        "d1": -1.16,
-        "w1": 4.21,
-        "m1": 19.6,
+        "d1": 0.0,
+        "w1": 1.0,
+        "m1": 16.34,
         "ytd": 114.1,
         "y1": 96.38
       },
@@ -1826,8 +1826,8 @@
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1837,9 +1837,9 @@
       "symbol": "RB=F",
       "price": 3.2146,
       "returns": {
-        "d1": 2.54,
-        "w1": -7.89,
-        "m1": 13.24,
+        "d1": 0.0,
+        "w1": -6.47,
+        "m1": 7.68,
         "ytd": 88.5,
         "y1": 64.13
       },
@@ -1848,8 +1848,8 @@
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1857,13 +1857,13 @@
       "name": "ICE可可",
       "category": "commodity",
       "symbol": "CC=F",
-      "price": 6175.0,
+      "price": 6082.0,
       "returns": {
-        "d1": 1.95,
-        "w1": -5.39,
-        "m1": 4.98,
-        "ytd": 1.81,
-        "y1": -13.41
+        "d1": 0.41,
+        "w1": -6.82,
+        "m1": 3.4,
+        "ytd": 0.28,
+        "y1": -14.71
       },
       "stale": false,
       "dataMeta": {
@@ -1871,7 +1871,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1879,13 +1879,13 @@
       "name": "ICE橙汁",
       "category": "commodity",
       "symbol": "OJ=F",
-      "price": 155.05,
+      "price": 138.15,
       "returns": {
-        "d1": 12.56,
-        "w1": 16.62,
-        "m1": -1.68,
-        "ytd": -24.44,
-        "y1": -32.7
+        "d1": 0.29,
+        "w1": 3.91,
+        "m1": -12.4,
+        "ytd": -32.68,
+        "y1": -40.04
       },
       "stale": false,
       "dataMeta": {
@@ -1893,7 +1893,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1901,13 +1901,13 @@
       "name": "CBOT燕麦",
       "category": "commodity",
       "symbol": "ZO=F",
-      "price": 368.75,
+      "price": 343.5,
       "returns": {
-        "d1": 7.66,
-        "w1": 5.73,
-        "m1": 16.51,
-        "ytd": 21.9,
-        "y1": 23.95
+        "d1": 0.29,
+        "w1": -1.51,
+        "m1": 8.53,
+        "ytd": 13.55,
+        "y1": 15.46
       },
       "stale": false,
       "dataMeta": {
@@ -1915,7 +1915,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1923,13 +1923,13 @@
       "name": "CBOT糙米",
       "category": "commodity",
       "symbol": "ZR=F",
-      "price": 15.87,
+      "price": 15.38,
       "returns": {
-        "d1": 4.17,
-        "w1": 5.41,
-        "m1": 12.91,
-        "ytd": 65.4,
-        "y1": 39.89
+        "d1": 0.95,
+        "w1": 2.16,
+        "m1": 9.43,
+        "ytd": 60.29,
+        "y1": 35.57
       },
       "stale": false,
       "dataMeta": {
@@ -1937,7 +1937,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1945,13 +1945,13 @@
       "name": "CBOT豆油",
       "category": "commodity",
       "symbol": "ZL=F",
-      "price": 69.27,
+      "price": 68.78,
       "returns": {
-        "d1": -0.33,
-        "w1": -1.87,
-        "m1": 2.24,
-        "ytd": 44.1,
-        "y1": 36.55
+        "d1": -1.04,
+        "w1": -2.56,
+        "m1": 1.52,
+        "ytd": 43.08,
+        "y1": 35.58
       },
       "stale": false,
       "dataMeta": {
@@ -1959,7 +1959,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -1967,13 +1967,13 @@
       "name": "CBOT豆粕",
       "category": "commodity",
       "symbol": "ZM=F",
-      "price": 355.1,
+      "price": 345.3,
       "returns": {
-        "d1": 2.87,
-        "w1": 5.0,
-        "m1": 14.81,
-        "ytd": 20.58,
-        "y1": 24.73
+        "d1": 0.03,
+        "w1": 2.1,
+        "m1": 11.64,
+        "ytd": 17.25,
+        "y1": 21.29
       },
       "stale": false,
       "dataMeta": {
@@ -1981,7 +1981,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2003,7 +2003,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2011,13 +2011,13 @@
       "name": "CME饲牛",
       "category": "commodity",
       "symbol": "GF=F",
-      "price": 320.15,
+      "price": 324.825,
       "returns": {
-        "d1": -1.75,
-        "w1": -0.23,
-        "m1": -9.39,
-        "ytd": -8.59,
-        "y1": -11.3
+        "d1": -0.31,
+        "w1": 1.22,
+        "m1": -8.07,
+        "ytd": -7.26,
+        "y1": -10.01
       },
       "stale": false,
       "dataMeta": {
@@ -2025,7 +2025,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2047,7 +2047,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2055,13 +2055,13 @@
       "name": "CME木材",
       "category": "commodity",
       "symbol": "LBR=F",
-      "price": 566.5,
+      "price": 568.5,
       "returns": {
-        "d1": -1.31,
-        "w1": -0.18,
-        "m1": -2.24,
-        "ytd": 5.2,
-        "y1": 7.6
+        "d1": -0.96,
+        "w1": 0.18,
+        "m1": -1.9,
+        "ytd": 5.57,
+        "y1": 7.98
       },
       "stale": false,
       "dataMeta": {
@@ -2069,7 +2069,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2078,13 +2078,13 @@
       "category": "commodity",
       "note": "堪萨斯硬红冬小麦期货，与CBOT软红冬小麦（ZW=F）是两个不同品种",
       "symbol": "KE=F",
-      "price": 802.25,
+      "price": 786.75,
       "returns": {
-        "d1": 0.47,
-        "w1": -3.08,
-        "m1": 12.44,
-        "ytd": 55.85,
-        "y1": 62.98
+        "d1": -1.47,
+        "w1": -4.95,
+        "m1": 10.27,
+        "ytd": 52.84,
+        "y1": 59.83
       },
       "stale": false,
       "dataMeta": {
@@ -2092,7 +2092,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2115,7 +2115,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2138,7 +2138,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2161,7 +2161,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2172,9 +2172,9 @@
       "symbol": "TTF=F",
       "price": 71.952,
       "returns": {
-        "d1": 0.2,
-        "w1": 7.42,
-        "m1": 37.3,
+        "d1": 0.0,
+        "w1": 3.07,
+        "m1": 29.54,
         "ytd": 155.5,
         "y1": 117.61
       },
@@ -2183,8 +2183,8 @@
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2195,9 +2195,9 @@
       "symbol": "HRC=F",
       "price": 1243.0,
       "returns": {
-        "d1": 1.64,
-        "w1": 3.15,
-        "m1": 4.19,
+        "d1": 1.39,
+        "w1": 2.98,
+        "m1": 4.02,
         "ytd": 32.94,
         "y1": 53.84
       },
@@ -2206,8 +2206,8 @@
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2216,13 +2216,13 @@
       "category": "commodity",
       "note": "三类牛奶期货，乳制品定价基准",
       "symbol": "DC=F",
-      "price": 16.39,
+      "price": 16.18,
       "returns": {
-        "d1": 0.37,
-        "w1": -1.62,
-        "m1": -2.15,
-        "ytd": 7.69,
-        "y1": -7.19
+        "d1": -0.92,
+        "w1": -2.88,
+        "m1": -3.4,
+        "ytd": 6.31,
+        "y1": -8.38
       },
       "stale": false,
       "dataMeta": {
@@ -2230,7 +2230,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2239,13 +2239,13 @@
       "category": "commodity",
       "note": "现金结算奶酪期货",
       "symbol": "CSC=F",
-      "price": 1.578,
+      "price": 1.563,
       "returns": {
-        "d1": 0.06,
-        "w1": -2.65,
-        "m1": -2.53,
-        "ytd": 8.98,
-        "y1": -12.82
+        "d1": -0.89,
+        "w1": -3.58,
+        "m1": -3.46,
+        "ytd": 7.94,
+        "y1": -13.65
       },
       "stale": false,
       "dataMeta": {
@@ -2253,7 +2253,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2276,7 +2276,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2284,21 +2284,21 @@
       "name": "美元兑日元",
       "category": "fx",
       "symbol": "USDJPY=X",
-      "price": 156.094,
+      "price": 154.34,
       "returns": {
-        "d1": 0.28,
-        "w1": -2.52,
-        "m1": -1.46,
-        "ytd": -0.2,
-        "y1": 5.48
+        "d1": -1.19,
+        "w1": -3.38,
+        "m1": -2.57,
+        "ytd": -1.33,
+        "y1": 4.04
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2306,21 +2306,21 @@
       "name": "美元指数",
       "category": "fx",
       "symbol": "DX-Y.NYB",
-      "price": 99.16,
+      "price": 99.176,
       "returns": {
-        "d1": 0.16,
-        "w1": -0.54,
-        "m1": -0.53,
-        "ytd": 0.9,
-        "y1": 1.75
+        "d1": 0.02,
+        "w1": -0.26,
+        "m1": -0.43,
+        "ytd": 0.91,
+        "y1": 1.77
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2328,21 +2328,21 @@
       "name": "美元兑人民币",
       "category": "fx",
       "symbol": "USDCNY=X",
-      "price": 6.7013,
+      "price": 6.7103,
       "returns": {
-        "d1": -0.26,
-        "w1": -0.37,
-        "m1": -0.7,
-        "ytd": -4.21,
-        "y1": -6.16
+        "d1": -0.01,
+        "w1": -0.23,
+        "m1": -0.57,
+        "ytd": -4.09,
+        "y1": -5.92
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2350,21 +2350,21 @@
       "name": "英镑兑美元",
       "category": "fx",
       "symbol": "GBPUSD=X",
-      "price": 1.3518,
+      "price": 1.3542,
       "returns": {
-        "d1": -0.11,
-        "w1": -0.17,
-        "m1": 0.46,
-        "ytd": 0.37,
-        "y1": 0.57
+        "d1": 0.18,
+        "w1": -0.06,
+        "m1": 0.64,
+        "ytd": 0.55,
+        "y1": 0.36
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2372,21 +2372,21 @@
       "name": "欧元兑美元",
       "category": "fx",
       "symbol": "EURUSD=X",
-      "price": 1.1613,
+      "price": 1.1628,
       "returns": {
-        "d1": -0.13,
-        "w1": 0.21,
-        "m1": 0.77,
-        "ytd": -1.14,
-        "y1": -0.41
+        "d1": 0.12,
+        "w1": 0.09,
+        "m1": 0.9,
+        "ytd": -1.02,
+        "y1": -0.73
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2394,21 +2394,21 @@
       "name": "澳元兑美元",
       "category": "fx",
       "symbol": "AUDUSD=X",
-      "price": 0.7203,
+      "price": 0.7219,
       "returns": {
-        "d1": 0.02,
-        "w1": 0.56,
-        "m1": 2.41,
-        "ytd": 7.54,
-        "y1": 10.06
+        "d1": 0.18,
+        "w1": 0.64,
+        "m1": 2.64,
+        "ytd": 7.78,
+        "y1": 10.14
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2416,21 +2416,21 @@
       "name": "美元兑加元",
       "category": "fx",
       "symbol": "USDCAD=X",
-      "price": 1.383,
+      "price": 1.3814,
       "returns": {
-        "d1": 0.29,
-        "w1": -0.5,
-        "m1": -1.31,
-        "ytd": 0.99,
-        "y1": 0.27
+        "d1": -0.14,
+        "w1": -0.27,
+        "m1": -1.43,
+        "ytd": 0.87,
+        "y1": -0.14
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2438,21 +2438,21 @@
       "name": "美元兑瑞郎",
       "category": "fx",
       "symbol": "USDCHF=X",
-      "price": 0.8093,
+      "price": 0.8091,
       "returns": {
-        "d1": 0.23,
-        "w1": 0.06,
-        "m1": -0.38,
-        "ytd": 2.23,
-        "y1": 0.69
+        "d1": -0.11,
+        "w1": 0.11,
+        "m1": -0.41,
+        "ytd": 2.19,
+        "y1": 1.24
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2460,21 +2460,21 @@
       "name": "纽元兑美元",
       "category": "fx",
       "symbol": "NZDUSD=X",
-      "price": 0.5883,
+      "price": 0.5878,
       "returns": {
-        "d1": -0.05,
-        "w1": -0.63,
-        "m1": 0.25,
-        "ytd": 1.57,
-        "y1": 0.03
+        "d1": -0.09,
+        "w1": -0.76,
+        "m1": 0.16,
+        "ytd": 1.49,
+        "y1": -0.19
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2482,21 +2482,21 @@
       "name": "美元兑韩元",
       "category": "fx",
       "symbol": "USDKRW=X",
-      "price": 1345.1801,
+      "price": 1345.0,
       "returns": {
-        "d1": -0.75,
-        "w1": -2.32,
-        "m1": -5.42,
-        "ytd": -6.45,
-        "y1": -3.2
+        "d1": -0.0,
+        "w1": -1.58,
+        "m1": -5.43,
+        "ytd": -6.46,
+        "y1": -2.92
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2506,19 +2506,19 @@
       "symbol": "USDINR=X",
       "price": 94.475,
       "returns": {
-        "d1": -0.02,
-        "w1": -0.95,
+        "d1": 0.05,
+        "w1": -0.67,
         "m1": -0.88,
         "ytd": 5.24,
-        "y1": 7.27
+        "y1": 7.13
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2526,21 +2526,21 @@
       "name": "美元兑新加坡元",
       "category": "fx",
       "symbol": "USDSGD=X",
-      "price": 1.2663,
+      "price": 1.2657,
       "returns": {
-        "d1": -0.03,
-        "w1": -0.65,
-        "m1": -1.33,
-        "ytd": -1.37,
-        "y1": -1.68
+        "d1": -0.1,
+        "w1": -0.4,
+        "m1": -1.38,
+        "ytd": -1.42,
+        "y1": -1.55
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2548,21 +2548,21 @@
       "name": "美元兑巴西雷亚尔",
       "category": "fx",
       "symbol": "USDBRL=X",
-      "price": 5.1249,
+      "price": 5.1259,
       "returns": {
-        "d1": 0.47,
-        "w1": -1.28,
-        "m1": 0.06,
-        "ytd": -6.42,
-        "y1": -5.93
+        "d1": -0.01,
+        "w1": -1.08,
+        "m1": 0.08,
+        "ytd": -6.4,
+        "y1": -5.29
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2570,21 +2570,21 @@
       "name": "美元兑港元",
       "category": "fx",
       "symbol": "USDHKD=X",
-      "price": 7.8404,
+      "price": 7.8388,
       "returns": {
-        "d1": 0.01,
-        "w1": 0.01,
-        "m1": -0.05,
-        "ytd": 0.77,
-        "y1": 0.51
+        "d1": -0.02,
+        "w1": -0.0,
+        "m1": -0.07,
+        "ytd": 0.75,
+        "y1": 0.52
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2592,21 +2592,21 @@
       "name": "美元兑墨西哥比索",
       "category": "fx",
       "symbol": "USDMXN=X",
-      "price": 16.876,
+      "price": 16.9105,
       "returns": {
-        "d1": -0.2,
-        "w1": -0.91,
-        "m1": -1.91,
-        "ytd": -6.13,
-        "y1": -9.79
+        "d1": 0.15,
+        "w1": -0.52,
+        "m1": -1.71,
+        "ytd": -5.94,
+        "y1": -9.7
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2614,21 +2614,21 @@
       "name": "美元兑南非兰特",
       "category": "fx",
       "symbol": "USDZAR=X",
-      "price": 15.951,
+      "price": 15.9873,
       "returns": {
-        "d1": -0.17,
-        "w1": -1.35,
-        "m1": -2.39,
-        "ytd": -3.83,
-        "y1": -9.65
+        "d1": 0.17,
+        "w1": -0.65,
+        "m1": -2.17,
+        "ytd": -3.61,
+        "y1": -9.17
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2636,21 +2636,21 @@
       "name": "美元兑土耳其里拉",
       "category": "fx",
       "symbol": "USDTRY=X",
-      "price": 48.4112,
+      "price": 48.4202,
       "returns": {
-        "d1": -0.04,
-        "w1": 0.34,
-        "m1": 1.58,
-        "ytd": 12.71,
-        "y1": 17.62
+        "d1": -0.01,
+        "w1": 0.32,
+        "m1": 1.6,
+        "ytd": 12.73,
+        "y1": 17.37
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2658,21 +2658,21 @@
       "name": "美元兑泰铢",
       "category": "fx",
       "symbol": "USDTHB=X",
-      "price": 32.87,
+      "price": 32.83,
       "returns": {
-        "d1": -0.06,
-        "w1": -0.6,
-        "m1": -0.69,
-        "ytd": 4.52,
-        "y1": 1.86
+        "d1": -0.27,
+        "w1": -0.89,
+        "m1": -0.82,
+        "ytd": 4.39,
+        "y1": 2.34
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2680,21 +2680,21 @@
       "name": "美元兑瑞典克朗",
       "category": "fx",
       "symbol": "USDSEK=X",
-      "price": 9.5585,
+      "price": 9.5832,
       "returns": {
-        "d1": 0.26,
-        "w1": -0.5,
-        "m1": 0.49,
-        "ytd": 3.96,
-        "y1": 1.44
+        "d1": 0.08,
+        "w1": 0.07,
+        "m1": 0.75,
+        "ytd": 4.22,
+        "y1": 2.14
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2702,21 +2702,21 @@
       "name": "美元兑挪威克朗",
       "category": "fx",
       "symbol": "USDNOK=X",
-      "price": 9.2988,
+      "price": 9.2531,
       "returns": {
-        "d1": 0.17,
-        "w1": -0.67,
-        "m1": -2.46,
-        "ytd": -7.49,
-        "y1": -7.35
+        "d1": -0.48,
+        "w1": -0.93,
+        "m1": -2.94,
+        "ytd": -7.94,
+        "y1": -7.65
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2724,21 +2724,21 @@
       "name": "欧元兑日元",
       "category": "fx",
       "symbol": "EURJPY=X",
-      "price": 181.151,
+      "price": 179.391,
       "returns": {
-        "d1": 0.08,
-        "w1": -2.37,
-        "m1": -0.76,
-        "ytd": -1.4,
-        "y1": 4.99
+        "d1": -1.11,
+        "w1": -3.34,
+        "m1": -1.73,
+        "ytd": -2.36,
+        "y1": 3.24
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2746,21 +2746,21 @@
       "name": "欧元兑英镑",
       "category": "fx",
       "symbol": "EURGBP=X",
-      "price": 0.8584,
+      "price": 0.858,
       "returns": {
         "d1": -0.13,
-        "w1": 0.3,
-        "m1": 0.22,
-        "ytd": -1.59,
-        "y1": -1.05
+        "w1": 0.07,
+        "m1": 0.18,
+        "ytd": -1.63,
+        "y1": -1.15
       },
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "Yahoo Finance",
-        "asOf": "2026-09-06",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "asOf": "2026-09-07",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2775,7 +2775,7 @@
         "w1": 0.16,
         "m1": 0.31,
         "ytd": 1.53,
-        "y1": -0.18
+        "y1": 0.21
       },
       "stale": false,
       "dataMeta": {
@@ -2783,7 +2783,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2806,7 +2806,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2829,7 +2829,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2852,7 +2852,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2875,7 +2875,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2898,7 +2898,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2921,7 +2921,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2944,7 +2944,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2967,7 +2967,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -2990,7 +2990,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     },
@@ -3013,7 +3013,7 @@
         "status": "ok",
         "source": "Yahoo Finance",
         "asOf": "2026-09-04",
-        "updatedAt": "2026-09-06T21:37:26Z",
+        "updatedAt": "2026-09-07T21:26:42Z",
         "frequency": "daily"
       }
     }
