@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-08T22:58:07Z",
-  "asOf": "2026-09-08",
+  "updatedAt": "2026-09-09T16:49:28Z",
+  "asOf": "2026-09-09",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-09-06 ~ 2026-09-12",
-  "count": 80,
+  "count": 81,
   "highCount": 10,
   "events": [
     {
@@ -427,7 +427,7 @@
       "actual": null
     },
     {
-      "ts": "2026-09-09T09:42:00Z",
+      "ts": "2026-09-09T09:33:00Z",
       "ccy": "EUR",
       "country": "欧元区",
       "flag": "🇪🇺",
@@ -439,19 +439,7 @@
       "actual": null
     },
     {
-      "ts": "2026-09-09T12:15:00Z",
-      "ccy": "USD",
-      "country": "美国",
-      "flag": "🇺🇸",
-      "title": "就业人数变化",
-      "titleEn": "ADP Weekly Employment Change",
-      "impact": "low",
-      "forecast": null,
-      "previous": null,
-      "actual": null
-    },
-    {
-      "ts": "2026-09-09T12:16:00Z",
+      "ts": "2026-09-09T12:14:00Z",
       "ccy": "USD",
       "country": "美国",
       "flag": "🇺🇸",
@@ -460,6 +448,18 @@
       "impact": "low",
       "forecast": null,
       "previous": "11.8K",
+      "actual": null
+    },
+    {
+      "ts": "2026-09-09T12:15:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "就业人数变化",
+      "titleEn": "ADP Weekly Employment Change",
+      "impact": "low",
+      "forecast": null,
+      "previous": "10.0K",
       "actual": null
     },
     {
@@ -532,6 +532,18 @@
       "impact": "low",
       "forecast": null,
       "previous": "4.9%",
+      "actual": null
+    },
+    {
+      "ts": "2026-09-10T01:15:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "央行官员讲话",
+      "titleEn": "President Trump Speaks",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
@@ -662,7 +674,7 @@
       "title": "天然气库存",
       "titleEn": "Natural Gas Storage",
       "impact": "low",
-      "forecast": null,
+      "forecast": "35B",
       "previous": "30B",
       "actual": null
     },
@@ -674,7 +686,7 @@
       "title": "原油库存",
       "titleEn": "Crude Oil Inventories",
       "impact": "low",
-      "forecast": null,
+      "forecast": "-1.4M",
       "previous": "-4.5M",
       "actual": null
     },
@@ -943,7 +955,7 @@
       "actual": null
     },
     {
-      "ts": "2026-09-12T07:30:00Z",
+      "ts": "2026-09-12T08:00:00Z",
       "ccy": "EUR",
       "country": "欧元区",
       "flag": "🇪🇺",
