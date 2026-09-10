@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-09-09T21:54:31Z",
-  "asOf": "2026-09-07",
+  "updatedAt": "2026-09-10T21:50:28Z",
+  "asOf": "2026-09-09",
   "frequency": "mixed",
   "status": "partial",
   "source": "FRED (U.S. EIA / IMF Primary Commodity Prices)",
@@ -13,17 +13,17 @@
       "group": "energy",
       "unit": "美元/桶",
       "note": "欧洲布伦特原油现货离岸价，与站内的 ICE 布油期货是现货与期货两个口径",
-      "price": 96.02,
-      "changePct": 6.99,
-      "previousAsOf": "2026-08-28",
+      "price": 109.51,
+      "changePct": 3.19,
+      "previousAsOf": "2026-09-08",
       "frequency": "daily",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "FRED / U.S. EIA",
-        "asOf": "2026-09-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "asOf": "2026-09-09",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "daily",
         "note": "欧洲布伦特原油现货离岸价，与站内的 ICE 布油期货是现货与期货两个口径"
       }
@@ -34,17 +34,17 @@
       "group": "energy",
       "unit": "美元/百万英热",
       "note": "美国天然气基准现货价，与站内 NYMEX 天然气期货口径不同",
-      "price": 2.9,
-      "changePct": 0.0,
-      "previousAsOf": "2026-08-31",
+      "price": 2.81,
+      "changePct": -3.1,
+      "previousAsOf": "2026-09-08",
       "frequency": "daily",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "FRED / U.S. EIA",
-        "asOf": "2026-09-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "asOf": "2026-09-09",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "daily",
         "note": "美国天然气基准现货价，与站内 NYMEX 天然气期货口径不同"
       }
@@ -55,17 +55,17 @@
       "group": "energy",
       "unit": "美元/加仑",
       "note": "德州蒙贝尔维尤丙烷现货，天然气液（NGL）的基准价",
-      "price": 0.736,
-      "changePct": 8.24,
-      "previousAsOf": "2026-08-31",
+      "price": 0.833,
+      "changePct": 2.97,
+      "previousAsOf": "2026-09-08",
       "frequency": "daily",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "FRED / U.S. EIA",
-        "asOf": "2026-09-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "asOf": "2026-09-09",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "daily",
         "note": "德州蒙贝尔维尤丙烷现货，天然气液（NGL）的基准价"
       }
@@ -76,17 +76,17 @@
       "group": "energy",
       "unit": "美元/加仑",
       "note": "美国墨西哥湾沿岸航空煤油现货价",
-      "price": 4.19,
-      "changePct": 4.2,
-      "previousAsOf": "2026-08-31",
+      "price": 4.341,
+      "changePct": 5.21,
+      "previousAsOf": "2026-09-08",
       "frequency": "daily",
       "stale": false,
       "dataMeta": {
         "mode": "market",
         "status": "ok",
         "source": "FRED / U.S. EIA",
-        "asOf": "2026-09-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "asOf": "2026-09-09",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "daily",
         "note": "美国墨西哥湾沿岸航空煤油现货价"
       }
@@ -107,7 +107,7 @@
         "status": "ok",
         "source": "FRED / U.S. EIA",
         "asOf": "2026-09-07",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "weekly",
         "note": "全美普通汽油零售均价，含税，是终端零售价而非批发或期货价"
       }
@@ -128,7 +128,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "monthly",
         "note": "纽卡斯尔港动力煤离岸价"
       }
@@ -149,7 +149,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "monthly",
         "note": "日本到岸液化天然气价格"
       }
@@ -170,7 +170,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "monthly",
         "note": "八氧化三铀（U3O8）现货价"
       }
@@ -191,7 +191,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "monthly",
         "note": "中国到岸铁矿石（含铁量62%）价格"
       }
@@ -212,7 +212,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "monthly",
         "note": "伦敦金属交易所镍现货价"
       }
@@ -233,7 +233,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "monthly",
         "note": "伦敦金属交易所锌现货价"
       }
@@ -254,7 +254,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "monthly",
         "note": "伦敦金属交易所铅现货价"
       }
@@ -275,7 +275,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "monthly",
         "note": "伦敦金属交易所锡现货价"
       }
@@ -296,7 +296,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "monthly",
         "note": "马来西亚棕榈油价格"
       }
@@ -316,7 +316,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "monthly"
       }
     },
@@ -335,7 +335,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "monthly"
       }
     },
@@ -354,7 +354,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "monthly"
       }
     },
@@ -373,7 +373,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "monthly"
       }
     },
@@ -392,7 +392,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "monthly"
       }
     },
@@ -411,7 +411,7 @@
         "status": "ok",
         "source": "FRED / IMF Primary Commodity Prices",
         "asOf": "2026-07-01",
-        "updatedAt": "2026-09-09T21:54:31Z",
+        "updatedAt": "2026-09-10T21:50:28Z",
         "frequency": "monthly"
       }
     },
