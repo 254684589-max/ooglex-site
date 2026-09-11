@@ -1316,10 +1316,14 @@ async function main() {
       if (HISTORY && Object.keys(HISTORY.companies || {}).length) {
         const HC = HISTORY.companies || {};
         const HCOV = HISTORY.coverage || {};
+        // 门槛取自数据，不在断言里写死——写死就会变成「页面和断言各有一套」。
+        const RANK_FLOOR = HISTORY.minBaseForRanking || 0;
         const want = Object.keys(HC).map(sym => {
           const ch = (HC[sym].changes || []).filter(c => c.comparable)[0];
           return ch ? { symbol: sym, ch } : null;
-        }).filter(Boolean).sort((a, b) => (b.ch.rate || 0) - (a.ch.rate || 0))
+        }).filter(Boolean)
+          .filter(x => (x.ch.baseWithCid || 0) >= RANK_FLOOR)
+          .sort((a, b) => (b.ch.rate || 0) - (a.ch.rate || 0))
           .slice(0, 20);
         const hi = await evaluate(`(() => {
           const box = document.getElementById('histsec');
@@ -1394,6 +1398,38 @@ async function main() {
           assert.match(hi.foot, /不是整份名单|不是整份/,
             `没把范围界清：${hi.foot.slice(0, 180)}`);
         });
+        check(`分母太小的不参与排名，并说清为什么`, () => {
+          assert.ok(RANK_FLOOR > 0,
+            `history.minBaseForRanking = ${JSON.stringify(HISTORY.minBaseForRanking)}`
+            + "，门槛要随数据发布，页面才能照它筛");
+          // 榜上不许出现分母低于门槛的
+          const bad = want.filter(w => (w.ch.baseWithCid || 0) < RANK_FLOOR);
+          assert.equal(bad.length, 0, `分母不足的上了榜：${bad.map(w => w.symbol).join("、")}`);
+          const small = Object.keys(HC).map(sym =>
+            (HC[sym].changes || []).filter(c => c.comparable)[0])
+            .filter(c => c && (c.baseWithCid || 0) < RANK_FLOOR).length;
+          if (small) {
+            assert.ok(hi.foot.includes(String(small)) && hi.foot.includes(String(RANK_FLOOR)),
+              `页脚没说清有 ${small} 家因分母不足 ${RANK_FLOOR} 未参与排名：`
+              + hi.foot.slice(0, 300));
+          }
+        });
+        check(`分不清的那些移出榜单并说清为什么`, () => {
+          const n = HCOV.oneSidedSetAside || 0;
+          if (!n) return;                       // 没有就没这句话可说
+          assert.ok(hi.foot.includes(String(n)),
+            `页脚没印被移出的 ${n} 组：${hi.foot.slice(0, 260)}`);
+          assert.match(hi.foot, /分不开|区分不了/,
+            `没说清这是「判不了」而不是「判它错」：${hi.foot.slice(0, 260)}`);
+          // 被移出的不许还留在榜上
+          const aside = new Set();
+          Object.keys(HC).forEach(sym => {
+            (HC[sym].changes || []).forEach(c => { if (c.oneSided) aside.add(sym + c.from + c.to); });
+          });
+          const onBoard = want.filter(w => aside.has(w.symbol + w.ch.from + w.ch.to));
+          assert.equal(onBoard.length, 0,
+            `被判分不清的年度对还在榜上：${onBoard.map(w => w.symbol).join("、")}`);
+        });
         check(`不可比的年度标为不可比，不按 0 算`, () => {
           assert.match(hi.foot, /不可比|不按 0/, `页脚：${hi.foot.slice(0, 180)}`);
           /* 编号覆盖率这条前置条件也要印出来，而且印的必须是数据里那个数——
@@ -1420,6 +1456,13 @@ async function main() {
           assert.ok(/Form SD/.test(hi.lead), `导语：${hi.lead.slice(0, 160)}`);
           assert.ok(hi.lead.includes(String(HCOV.pairsComparable || 0)),
             `导语没印可比组数 ${HCOV.pairsComparable}：${hi.lead.slice(0, 160)}`);
+          // 最大值不许再出现在导语里：分母从几条到几百条，最大值只反映最小的
+          // 那个分母。改印 90 分位，并且印的必须是数据里那个数。
+          const p90 = Math.round((HCOV.p90Rate || 0) * 100);
+          assert.ok(hi.lead.includes(p90 + "%"),
+            `导语没印 90 分位 ${p90}%：${hi.lead.slice(0, 200)}`);
+          assert.ok(!/最大\s*[0-9]/.test(hi.lead),
+            `导语还在印最大值：${hi.lead.slice(0, 200)}`);
         });
         /* 导航这一条读的是 nav.chips——**首次渲染后、任何点击之前**那一份。
            曾经在这里就地读 #secnav，结果恒为通过：前面的流向断言点过链条

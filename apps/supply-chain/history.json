@@ -108,7 +108,8 @@
           "baseWithCid": 270,
           "rate": 0.3963,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -206,7 +207,8 @@
           "baseWithCid": 273,
           "rate": 0.3114,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -267,7 +269,8 @@
           "baseWithCid": 284,
           "rate": 0.1514,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -367,7 +370,8 @@
           "baseWithCid": 222,
           "rate": 0.2117,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -427,7 +431,8 @@
           "baseWithCid": 147,
           "rate": 0.5374,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -452,7 +457,8 @@
           "baseWithCid": 155,
           "rate": 0.0516,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -541,7 +547,8 @@
           "baseWithCid": 342,
           "rate": 0.0702,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.0
@@ -626,7 +633,8 @@
           "baseWithCid": 228,
           "rate": 0.1404,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -687,7 +695,8 @@
           "baseWithCid": 104,
           "rate": 1.25,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -705,7 +714,8 @@
           "baseWithCid": 103,
           "rate": 0.0097,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -784,7 +794,8 @@
           "baseWithCid": 167,
           "rate": 0.1557,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -832,7 +843,8 @@
           "baseWithCid": 157,
           "rate": 0.1911,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -887,7 +899,8 @@
           "baseWithCid": 144,
           "rate": 0.2569,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -975,7 +988,8 @@
           "baseWithCid": 231,
           "rate": 0.1515,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -1034,7 +1048,8 @@
           "baseWithCid": 254,
           "rate": 0.1614,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -1097,7 +1112,8 @@
           "baseWithCid": 330,
           "rate": 0.2606,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -1199,7 +1215,8 @@
           "baseWithCid": 343,
           "rate": 0.1429,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -1305,7 +1322,8 @@
           "baseWithCid": 342,
           "rate": 0.1082,
           "cidCoverageFrom": 0.9971,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -1400,7 +1418,8 @@
           "baseWithCid": 300,
           "rate": 0.3867,
           "cidCoverageFrom": 0.8219,
-          "cidCoverageTo": 0.9971
+          "cidCoverageTo": 0.9971,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -1479,7 +1498,8 @@
           "baseWithCid": 347,
           "rate": 0.2565,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 0.8219
+          "cidCoverageTo": 0.8219,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -1571,7 +1591,8 @@
           "baseWithCid": 138,
           "rate": 0.3406,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -1627,7 +1648,8 @@
           "baseWithCid": 136,
           "rate": 0.2794,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -1679,7 +1701,8 @@
           "baseWithCid": 130,
           "rate": 0.2615,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -1790,7 +1813,8 @@
           "baseWithCid": 359,
           "rate": 0.1616,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -1831,7 +1855,8 @@
           "baseWithCid": 346,
           "rate": 0.0665,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -1888,7 +1913,8 @@
           "baseWithCid": 373,
           "rate": 0.1046,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -1988,7 +2014,8 @@
           "baseWithCid": 361,
           "rate": 0.2604,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -2075,7 +2102,8 @@
           "baseWithCid": 341,
           "rate": 0.2287,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -2122,7 +2150,8 @@
           "baseWithCid": 354,
           "rate": 0.0819,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -2216,7 +2245,8 @@
           "baseWithCid": 342,
           "rate": 0.1199,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -2277,7 +2307,8 @@
           "baseWithCid": 347,
           "rate": 0.1239,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -2320,7 +2351,8 @@
           "baseWithCid": 346,
           "rate": 0.0723,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -2431,7 +2463,8 @@
           "baseWithCid": 365,
           "rate": 0.1726,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -2478,7 +2511,8 @@
           "baseWithCid": 335,
           "rate": 0.0896,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -2514,7 +2548,8 @@
           "baseWithCid": 335,
           "rate": 0.0537,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -2565,64 +2600,15 @@
           "baseWithCid": 24,
           "rate": 0.2083,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
           "to": "2025",
-          "comparable": true,
-          "basis": "rmi-cid",
-          "addedCount": 1,
-          "droppedCount": 194,
-          "added": [
-            "CID004065"
-          ],
-          "dropped": [
-            "CID000004",
-            "CID000015",
-            "CID000019",
-            "CID000035",
-            "CID000041",
-            "CID000058",
-            "CID000077",
-            "CID000082",
-            "CID000090",
-            "CID000105",
-            "CID000113",
-            "CID000128",
-            "CID000157",
-            "CID000176",
-            "CID000185",
-            "CID000189",
-            "CID000218",
-            "CID000233",
-            "CID000258",
-            "CID000264",
-            "CID000291",
-            "CID000292",
-            "CID000309",
-            "CID000313",
-            "CID000359",
-            "CID000401",
-            "CID000402",
-            "CID000425",
-            "CID000438",
-            "CID000448",
-            "CID000460",
-            "CID000555",
-            "CID000568",
-            "CID000616",
-            "CID000689",
-            "CID000694",
-            "CID000707",
-            "CID000711",
-            "CID000766",
-            "CID000769"
-          ],
-          "addedOmitted": 0,
-          "droppedOmitted": 154,
-          "baseWithCid": 217,
-          "rate": 0.8986,
+          "comparable": false,
+          "note": "217 条 → 24 条，新增 1、消失 194——一边整批进出、另一边几乎没动静。申报人真的大改名单，与那一年只解析到部分文档，在数据上分不开，需核对原文",
+          "oneSided": true,
           "cidCoverageFrom": 1.0,
           "cidCoverageTo": 1.0
         }
@@ -2742,7 +2728,8 @@
           "baseWithCid": 305,
           "rate": 0.2262,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -2834,7 +2821,8 @@
           "baseWithCid": 289,
           "rate": 0.2907,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -2878,7 +2866,8 @@
           "baseWithCid": 299,
           "rate": 0.087,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -2971,7 +2960,8 @@
           "baseWithCid": 249,
           "rate": 0.1606,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 0.9871
+          "cidCoverageTo": 0.9871,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -3018,7 +3008,8 @@
           "baseWithCid": 230,
           "rate": 0.1261,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -3074,7 +3065,8 @@
           "baseWithCid": 250,
           "rate": 0.152,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.9871
@@ -3127,7 +3119,8 @@
           "baseWithCid": 2,
           "rate": 0.5,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -3146,7 +3139,8 @@
           "baseWithCid": 4,
           "rate": 0.5,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -3168,7 +3162,8 @@
           "baseWithCid": 6,
           "rate": 0.6667,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -3286,7 +3281,8 @@
           "baseWithCid": 238,
           "rate": 0.395,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -3325,7 +3321,8 @@
           "baseWithCid": 255,
           "rate": 0.0824,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.0
@@ -3416,7 +3413,8 @@
           "baseWithCid": 282,
           "rate": 0.1809,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -3480,7 +3478,8 @@
           "baseWithCid": 250,
           "rate": 0.184,
           "cidCoverageFrom": 0.996,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -3533,7 +3532,8 @@
           "baseWithCid": 2,
           "rate": 0.5,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -3553,7 +3553,8 @@
           "baseWithCid": 2,
           "rate": 1.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -3569,7 +3570,8 @@
           "baseWithCid": 2,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -3681,7 +3683,8 @@
           "baseWithCid": 369,
           "rate": 0.1789,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -3716,7 +3719,8 @@
           "baseWithCid": 351,
           "rate": 0.0513,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -3758,7 +3762,8 @@
           "baseWithCid": 343,
           "rate": 0.07,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -3880,7 +3885,8 @@
           "baseWithCid": 350,
           "rate": 0.3229,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -3959,7 +3965,8 @@
           "baseWithCid": 361,
           "rate": 0.169,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -4014,7 +4021,8 @@
           "baseWithCid": 348,
           "rate": 0.1063,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -4092,7 +4100,8 @@
           "baseWithCid": 54,
           "rate": 0.463,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -4129,7 +4138,8 @@
           "baseWithCid": 39,
           "rate": 0.4872,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -4158,7 +4168,8 @@
           "baseWithCid": 40,
           "rate": 0.275,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -4250,7 +4261,8 @@
           "baseWithCid": 346,
           "rate": 0.1127,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -4332,7 +4344,8 @@
           "baseWithCid": 298,
           "rate": 0.3221,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -4402,7 +4415,8 @@
           "baseWithCid": 335,
           "rate": 0.1821,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -4471,7 +4485,8 @@
           "baseWithCid": 24,
           "rate": 0.6667,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -4589,7 +4604,8 @@
           "baseWithCid": 362,
           "rate": 0.1685,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -4629,7 +4645,8 @@
           "baseWithCid": 354,
           "rate": 0.0621,
           "cidCoverageFrom": 0.9861,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -4723,7 +4740,8 @@
           "baseWithCid": 341,
           "rate": 0.1202,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -4787,7 +4805,8 @@
           "baseWithCid": 307,
           "rate": 0.1498,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -4828,7 +4847,8 @@
           "baseWithCid": 302,
           "rate": 0.0762,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -4936,7 +4956,8 @@
           "baseWithCid": 387,
           "rate": 0.1912,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -5004,7 +5025,8 @@
           "baseWithCid": 502,
           "rate": 0.2689,
           "cidCoverageFrom": 0.9331,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -5102,7 +5124,8 @@
           "baseWithCid": 502,
           "rate": 0.2869,
           "cidCoverageFrom": 0.9941,
-          "cidCoverageTo": 0.9331
+          "cidCoverageTo": 0.9331,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -5203,7 +5226,8 @@
           "baseWithCid": 321,
           "rate": 0.1495,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -5286,7 +5310,8 @@
           "baseWithCid": 299,
           "rate": 0.2408,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -5353,7 +5378,8 @@
           "baseWithCid": 298,
           "rate": 0.1644,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -5404,7 +5430,8 @@
           "baseWithCid": 366,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -5459,7 +5486,8 @@
           "baseWithCid": 345,
           "rate": 0.1072,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -5475,7 +5503,8 @@
           "baseWithCid": 345,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -5550,7 +5579,8 @@
           "baseWithCid": 389,
           "rate": 0.0566,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -5597,7 +5627,8 @@
           "baseWithCid": 374,
           "rate": 0.0775,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -5656,7 +5687,8 @@
           "baseWithCid": 349,
           "rate": 0.1175,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -5721,7 +5753,8 @@
           "baseWithCid": 78,
           "rate": 0.1538,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -5782,7 +5815,8 @@
           "baseWithCid": 178,
           "rate": 0.5955,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -5866,7 +5900,8 @@
           "baseWithCid": 151,
           "rate": 0.5232,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -5917,7 +5952,8 @@
           "baseWithCid": 346,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -5933,7 +5969,8 @@
           "baseWithCid": 346,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -5971,7 +6008,8 @@
           "baseWithCid": 350,
           "rate": 0.0571,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -6059,7 +6097,8 @@
           "baseWithCid": 314,
           "rate": 0.1115,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -6110,7 +6149,8 @@
           "baseWithCid": 331,
           "rate": 0.0997,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -6162,7 +6202,8 @@
           "baseWithCid": 309,
           "rate": 0.11,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -6213,7 +6254,8 @@
           "baseWithCid": 338,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -6285,7 +6327,8 @@
           "baseWithCid": 342,
           "rate": 0.1579,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -6349,7 +6392,8 @@
           "baseWithCid": 224,
           "rate": 0.5804,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -6437,7 +6481,8 @@
           "baseWithCid": 368,
           "rate": 0.0951,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -6503,7 +6548,8 @@
           "baseWithCid": 370,
           "rate": 0.1297,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -6566,7 +6612,8 @@
           "baseWithCid": 343,
           "rate": 0.1312,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -6672,7 +6719,8 @@
           "baseWithCid": 365,
           "rate": 0.1589,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -6704,7 +6752,8 @@
           "baseWithCid": 350,
           "rate": 0.0429,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -6748,7 +6797,8 @@
           "baseWithCid": 340,
           "rate": 0.0765,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -6798,7 +6848,8 @@
           "baseWithCid": 3,
           "rate": 1.3333,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 2
         },
         {
           "from": "2023",
@@ -6824,7 +6875,8 @@
           "baseWithCid": 5,
           "rate": 1.6,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -6926,7 +6978,8 @@
           "baseWithCid": 366,
           "rate": 0.3689,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -7014,7 +7067,8 @@
           "baseWithCid": 336,
           "rate": 0.2679,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -7044,7 +7098,8 @@
           "baseWithCid": 332,
           "rate": 0.0361,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -7095,7 +7150,8 @@
           "baseWithCid": 1,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -7111,7 +7167,8 @@
           "baseWithCid": 1,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -7130,7 +7187,8 @@
           "baseWithCid": 3,
           "rate": 0.6667,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -7181,7 +7239,8 @@
           "baseWithCid": 56,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -7197,7 +7256,8 @@
           "baseWithCid": 56,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -7213,7 +7273,8 @@
           "baseWithCid": 56,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -7279,7 +7340,8 @@
           "baseWithCid": 347,
           "rate": 0.0375,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -7336,7 +7398,8 @@
           "baseWithCid": 303,
           "rate": 0.1452,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -7434,7 +7497,8 @@
           "baseWithCid": 314,
           "rate": 0.3599,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -7509,7 +7573,8 @@
           "baseWithCid": 235,
           "rate": 0.0936,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -7581,7 +7646,8 @@
           "baseWithCid": 225,
           "rate": 0.24,
           "cidCoverageFrom": 0.9956,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -7657,7 +7723,8 @@
           "baseWithCid": 280,
           "rate": 0.325,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 0.9956
+          "cidCoverageTo": 0.9956,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -7749,7 +7816,8 @@
           "baseWithCid": 365,
           "rate": 0.8438,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 0.9985
+          "cidCoverageTo": 0.9985,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -7781,7 +7849,8 @@
           "baseWithCid": 355,
           "rate": 0.0394,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -7826,7 +7895,8 @@
           "baseWithCid": 344,
           "rate": 0.0785,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.9985
@@ -7924,7 +7994,8 @@
           "baseWithCid": 703,
           "rate": 0.1266,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -7987,7 +8058,8 @@
           "baseWithCid": 595,
           "rate": 0.1983,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -8044,7 +8116,8 @@
           "baseWithCid": 344,
           "rate": 0.7297,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -8121,7 +8194,8 @@
           "baseWithCid": 53,
           "rate": 0.4528,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -8154,7 +8228,8 @@
           "baseWithCid": 42,
           "rate": 0.3571,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -8180,7 +8255,8 @@
           "baseWithCid": 40,
           "rate": 0.2,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -8250,7 +8326,8 @@
           "baseWithCid": 332,
           "rate": 0.0512,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2021",
@@ -8294,7 +8371,8 @@
           "baseWithCid": 334,
           "rate": 0.0778,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2020",
@@ -8363,7 +8441,8 @@
           "baseWithCid": 307,
           "rate": 0.1661,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -8467,7 +8546,8 @@
           "baseWithCid": 376,
           "rate": 0.1622,
           "cidCoverageFrom": 0.9921,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -8520,7 +8600,8 @@
           "baseWithCid": 353,
           "rate": 0.0992,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 0.9921
+          "cidCoverageTo": 0.9921,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -8563,7 +8644,8 @@
           "baseWithCid": 344,
           "rate": 0.0727,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -8657,7 +8739,8 @@
           "baseWithCid": 360,
           "rate": 0.1139,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -8774,7 +8857,8 @@
           "baseWithCid": 363,
           "rate": 0.1653,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -8814,7 +8898,8 @@
           "baseWithCid": 351,
           "rate": 0.0627,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -8920,7 +9005,8 @@
           "baseWithCid": 372,
           "rate": 0.1613,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -8956,7 +9042,8 @@
           "baseWithCid": 353,
           "rate": 0.0538,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -8995,7 +9082,8 @@
           "baseWithCid": 344,
           "rate": 0.061,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -9051,7 +9139,8 @@
           "baseWithCid": 3,
           "rate": 1.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -9072,7 +9161,8 @@
           "baseWithCid": 4,
           "rate": 0.75,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -9088,7 +9178,8 @@
           "baseWithCid": 4,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -9220,7 +9311,8 @@
           "baseWithCid": 427,
           "rate": 0.356,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -9277,7 +9369,8 @@
           "baseWithCid": 351,
           "rate": 0.2165,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -9346,7 +9439,8 @@
           "baseWithCid": 497,
           "rate": 0.338,
           "cidCoverageFrom": 0.998,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -9445,7 +9539,8 @@
           "baseWithCid": 13,
           "rate": 3.6923,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -9461,62 +9556,15 @@
           "baseWithCid": 13,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
           "to": "2024",
-          "comparable": true,
-          "basis": "rmi-cid",
-          "addedCount": 0,
-          "droppedCount": 303,
-          "added": [],
-          "dropped": [
-            "CID000015",
-            "CID000019",
-            "CID000035",
-            "CID000041",
-            "CID000058",
-            "CID000077",
-            "CID000082",
-            "CID000090",
-            "CID000103",
-            "CID000113",
-            "CID000128",
-            "CID000157",
-            "CID000176",
-            "CID000180",
-            "CID000185",
-            "CID000189",
-            "CID000197",
-            "CID000211",
-            "CID000218",
-            "CID000228",
-            "CID000233",
-            "CID000258",
-            "CID000264",
-            "CID000281",
-            "CID000292",
-            "CID000309",
-            "CID000343",
-            "CID000359",
-            "CID000401",
-            "CID000402",
-            "CID000425",
-            "CID000438",
-            "CID000448",
-            "CID000460",
-            "CID000468",
-            "CID000493",
-            "CID000522",
-            "CID000538",
-            "CID000555",
-            "CID000568"
-          ],
-          "addedOmitted": 0,
-          "droppedOmitted": 263,
-          "baseWithCid": 316,
-          "rate": 0.9589,
+          "comparable": false,
+          "note": "316 条 → 13 条，新增 0、消失 303——一边整批进出、另一边几乎没动静。申报人真的大改名单，与那一年只解析到部分文档，在数据上分不开，需核对原文",
+          "oneSided": true,
           "cidCoverageFrom": 1.0,
           "cidCoverageTo": 1.0
         }
@@ -9569,7 +9617,8 @@
           "baseWithCid": 387,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -9625,7 +9674,8 @@
           "baseWithCid": 371,
           "rate": 0.1024,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -9687,7 +9737,8 @@
           "baseWithCid": 347,
           "rate": 0.1268,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -9791,7 +9842,8 @@
           "baseWithCid": 367,
           "rate": 0.1553,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -9825,7 +9877,8 @@
           "baseWithCid": 350,
           "rate": 0.0486,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -9865,7 +9918,8 @@
           "baseWithCid": 344,
           "rate": 0.064,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -9987,7 +10041,8 @@
           "baseWithCid": 351,
           "rate": 0.2023,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -10017,7 +10072,8 @@
           "baseWithCid": 355,
           "rate": 0.0338,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -10062,7 +10118,8 @@
           "baseWithCid": 344,
           "rate": 0.0785,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -10158,7 +10215,8 @@
           "baseWithCid": 255,
           "rate": 0.1686,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -10209,7 +10267,8 @@
           "baseWithCid": 230,
           "rate": 0.1435,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -10258,7 +10317,8 @@
           "baseWithCid": 235,
           "rate": 0.1319,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -10353,7 +10413,8 @@
           "baseWithCid": 337,
           "rate": 0.1246,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -10426,7 +10487,8 @@
           "baseWithCid": 371,
           "rate": 0.1725,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -10494,7 +10556,8 @@
           "baseWithCid": 343,
           "rate": 0.1458,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -10545,7 +10608,8 @@
           "baseWithCid": 1,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -10561,7 +10625,8 @@
           "baseWithCid": 1,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -10577,7 +10642,8 @@
           "baseWithCid": 1,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -10668,7 +10734,8 @@
           "baseWithCid": 311,
           "rate": 0.1029,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2017",
@@ -10746,7 +10813,8 @@
           "baseWithCid": 341,
           "rate": 0.2053,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.0
@@ -10837,7 +10905,8 @@
           "baseWithCid": 311,
           "rate": 0.1029,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2017",
@@ -10915,7 +10984,8 @@
           "baseWithCid": 341,
           "rate": 0.2053,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.0
@@ -11006,7 +11076,8 @@
           "baseWithCid": 361,
           "rate": 0.1053,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -11054,7 +11125,8 @@
           "baseWithCid": 347,
           "rate": 0.0865,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -11110,7 +11182,8 @@
           "baseWithCid": 331,
           "rate": 0.1148,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -11222,7 +11295,8 @@
           "baseWithCid": 365,
           "rate": 0.1753,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -11254,7 +11328,8 @@
           "baseWithCid": 350,
           "rate": 0.0429,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -11296,7 +11371,8 @@
           "baseWithCid": 342,
           "rate": 0.0702,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -11397,7 +11473,8 @@
           "baseWithCid": 284,
           "rate": 0.169,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -11483,7 +11560,8 @@
           "baseWithCid": 255,
           "rate": 0.3333,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -11548,7 +11626,8 @@
           "baseWithCid": 302,
           "rate": 0.202,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -11653,7 +11732,8 @@
           "baseWithCid": 441,
           "rate": 0.263,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -11719,7 +11799,8 @@
           "baseWithCid": 325,
           "rate": 0.4062,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -11791,7 +11872,8 @@
           "baseWithCid": 117,
           "rate": 2.0171,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -11897,7 +11979,8 @@
           "baseWithCid": 365,
           "rate": 0.1589,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -11929,7 +12012,8 @@
           "baseWithCid": 350,
           "rate": 0.0429,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -11970,7 +12054,8 @@
           "baseWithCid": 343,
           "rate": 0.0671,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -12066,7 +12151,8 @@
           "baseWithCid": 204,
           "rate": 0.2108,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -12118,7 +12204,8 @@
           "baseWithCid": 208,
           "rate": 0.1635,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -12182,7 +12269,8 @@
           "baseWithCid": 138,
           "rate": 0.5942,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -12222,57 +12310,9 @@
         {
           "from": "2025",
           "to": "2026",
-          "comparable": true,
-          "basis": "rmi-cid",
-          "addedCount": 0,
-          "droppedCount": 348,
-          "added": [],
-          "dropped": [
-            "CID000004",
-            "CID000015",
-            "CID000019",
-            "CID000035",
-            "CID000041",
-            "CID000058",
-            "CID000077",
-            "CID000082",
-            "CID000090",
-            "CID000103",
-            "CID000105",
-            "CID000113",
-            "CID000128",
-            "CID000157",
-            "CID000176",
-            "CID000180",
-            "CID000185",
-            "CID000189",
-            "CID000218",
-            "CID000228",
-            "CID000233",
-            "CID000258",
-            "CID000264",
-            "CID000281",
-            "CID000291",
-            "CID000292",
-            "CID000309",
-            "CID000313",
-            "CID000343",
-            "CID000359",
-            "CID000401",
-            "CID000402",
-            "CID000425",
-            "CID000438",
-            "CID000448",
-            "CID000460",
-            "CID000468",
-            "CID000493",
-            "CID000522",
-            "CID000538"
-          ],
-          "addedOmitted": 0,
-          "droppedOmitted": 308,
-          "baseWithCid": 368,
-          "rate": 0.9457,
+          "comparable": false,
+          "note": "368 条 → 20 条，新增 0、消失 348——一边整批进出、另一边几乎没动静。申报人真的大改名单，与那一年只解析到部分文档，在数据上分不开，需核对原文",
+          "oneSided": true,
           "cidCoverageFrom": 1.0,
           "cidCoverageTo": 1.0
         },
@@ -12318,7 +12358,8 @@
           "baseWithCid": 350,
           "rate": 0.0743,
           "cidCoverageFrom": 0.9972,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -12368,7 +12409,8 @@
           "baseWithCid": 336,
           "rate": 0.0952,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 0.9972
+          "cidCoverageTo": 0.9972,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -12479,7 +12521,8 @@
           "baseWithCid": 365,
           "rate": 0.1726,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -12511,7 +12554,8 @@
           "baseWithCid": 350,
           "rate": 0.0429,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -12550,7 +12594,8 @@
           "baseWithCid": 345,
           "rate": 0.0609,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -12636,7 +12681,8 @@
           "baseWithCid": 240,
           "rate": 0.1375,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -12695,7 +12741,8 @@
           "baseWithCid": 217,
           "rate": 0.1889,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -12735,7 +12782,8 @@
           "baseWithCid": 221,
           "rate": 0.0995,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -12805,7 +12853,8 @@
           "baseWithCid": 48,
           "rate": 0.3542,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -12833,7 +12882,8 @@
           "baseWithCid": 48,
           "rate": 0.2083,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -12875,7 +12925,8 @@
           "baseWithCid": 30,
           "rate": 0.8,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -12973,7 +13024,8 @@
           "baseWithCid": 342,
           "rate": 0.1316,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -13028,7 +13080,8 @@
           "baseWithCid": 353,
           "rate": 0.1048,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -13073,7 +13126,8 @@
           "baseWithCid": 344,
           "rate": 0.0785,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -13179,7 +13233,8 @@
           "baseWithCid": 252,
           "rate": 0.2103,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -13268,7 +13323,8 @@
           "baseWithCid": 286,
           "rate": 0.3357,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -13329,7 +13385,8 @@
           "baseWithCid": 335,
           "rate": 0.1642,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -13438,7 +13495,8 @@
           "baseWithCid": 369,
           "rate": 0.1707,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -13475,7 +13533,8 @@
           "baseWithCid": 354,
           "rate": 0.0537,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -13520,7 +13579,8 @@
           "baseWithCid": 343,
           "rate": 0.0787,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -13612,7 +13672,8 @@
           "baseWithCid": 190,
           "rate": 0.2474,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -13680,7 +13741,8 @@
           "baseWithCid": 222,
           "rate": 0.2342,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -13753,7 +13815,8 @@
           "baseWithCid": 301,
           "rate": 0.3621,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -13886,7 +13949,8 @@
           "baseWithCid": 431,
           "rate": 0.3457,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -13942,7 +14006,8 @@
           "baseWithCid": 392,
           "rate": 0.0995,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -14001,7 +14066,8 @@
           "baseWithCid": 563,
           "rate": 0.3073,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -14122,7 +14188,8 @@
           "baseWithCid": 261,
           "rate": 0.9923,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -14154,7 +14221,8 @@
           "baseWithCid": 246,
           "rate": 0.061,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -14231,7 +14299,8 @@
           "baseWithCid": 327,
           "rate": 0.3639,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -14311,7 +14380,8 @@
           "baseWithCid": 237,
           "rate": 0.1139,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -14365,7 +14435,8 @@
           "baseWithCid": 251,
           "rate": 0.1434,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -14418,7 +14489,8 @@
           "baseWithCid": 246,
           "rate": 0.1423,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -14544,7 +14616,8 @@
           "baseWithCid": 578,
           "rate": 0.1401,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -14642,7 +14715,8 @@
           "baseWithCid": 687,
           "rate": 0.3013,
           "cidCoverageFrom": 0.9985,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -14699,7 +14773,8 @@
           "baseWithCid": 344,
           "rate": 0.9971,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 0.9985
+          "cidCoverageTo": 0.9985,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -14804,7 +14879,8 @@
           "baseWithCid": 289,
           "rate": 0.1799,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -14870,7 +14946,8 @@
           "baseWithCid": 297,
           "rate": 0.1616,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -14923,7 +15000,8 @@
           "baseWithCid": 292,
           "rate": 0.1199,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -15028,7 +15106,8 @@
           "baseWithCid": 377,
           "rate": 0.3607,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -15083,7 +15162,8 @@
           "baseWithCid": 370,
           "rate": 0.1,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -15171,7 +15251,8 @@
           "baseWithCid": 380,
           "rate": 0.1842,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -15263,7 +15344,8 @@
           "baseWithCid": 31,
           "rate": 2.7742,
           "cidCoverageFrom": 0.9688,
-          "cidCoverageTo": 0.9722
+          "cidCoverageTo": 0.9722,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -15328,7 +15410,8 @@
           "baseWithCid": 64,
           "rate": 0.7344,
           "cidCoverageFrom": 0.9846,
-          "cidCoverageTo": 0.9688
+          "cidCoverageTo": 0.9688,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.9722
@@ -15434,7 +15517,8 @@
           "baseWithCid": 372,
           "rate": 0.164,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -15471,7 +15555,8 @@
           "baseWithCid": 352,
           "rate": 0.0568,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -15514,7 +15599,8 @@
           "baseWithCid": 343,
           "rate": 0.0729,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -15608,7 +15694,8 @@
           "baseWithCid": 252,
           "rate": 0.1627,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -15684,7 +15771,8 @@
           "baseWithCid": 272,
           "rate": 0.2132,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -15760,7 +15848,8 @@
           "baseWithCid": 230,
           "rate": 0.3391,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -15811,7 +15900,8 @@
           "baseWithCid": 9,
           "rate": 0.5556,
           "cidCoverageFrom": 0.8182,
-          "cidCoverageTo": 0.8889
+          "cidCoverageTo": 0.8889,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -15838,7 +15928,8 @@
           "baseWithCid": 14,
           "rate": 0.6429,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 0.8182
+          "cidCoverageTo": 0.8182,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.8889
@@ -15930,7 +16021,8 @@
           "baseWithCid": 367,
           "rate": 0.1063,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -15988,7 +16080,8 @@
           "baseWithCid": 371,
           "rate": 0.1078,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -16046,7 +16139,8 @@
           "baseWithCid": 343,
           "rate": 0.1166,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -16163,7 +16257,8 @@
           "baseWithCid": 242,
           "rate": 0.5744,
           "cidCoverageFrom": 0.9837,
-          "cidCoverageTo": 0.9881
+          "cidCoverageTo": 0.9881,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -16184,7 +16279,8 @@
           "baseWithCid": 246,
           "rate": 0.0163,
           "cidCoverageFrom": 0.984,
-          "cidCoverageTo": 0.9837
+          "cidCoverageTo": 0.9837,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -16223,7 +16319,8 @@
           "baseWithCid": 235,
           "rate": 0.0894,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 0.984
+          "cidCoverageTo": 0.984,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.9881
@@ -16339,7 +16436,8 @@
           "baseWithCid": 344,
           "rate": 0.2907,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 3
         }
       ],
       "trackableShare": 1.0
@@ -16398,7 +16496,8 @@
           "baseWithCid": 50,
           "rate": 0.14,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -16426,7 +16525,8 @@
           "baseWithCid": 54,
           "rate": 0.1852,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -16450,7 +16550,8 @@
           "baseWithCid": 52,
           "rate": 0.1154,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -16551,7 +16652,8 @@
           "baseWithCid": 365,
           "rate": 0.1479,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -16590,7 +16692,8 @@
           "baseWithCid": 343,
           "rate": 0.0641,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -16624,7 +16727,8 @@
           "baseWithCid": 343,
           "rate": 0.0466,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -16725,7 +16829,8 @@
           "baseWithCid": 244,
           "rate": 0.1475,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.0
@@ -16829,7 +16934,8 @@
           "baseWithCid": 65,
           "rate": 0.9077,
           "cidCoverageFrom": 0.9848,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -16897,7 +17003,8 @@
           "baseWithCid": 33,
           "rate": 1.5758,
           "cidCoverageFrom": 0.8919,
-          "cidCoverageTo": 0.9848
+          "cidCoverageTo": 0.9848,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -16938,7 +17045,8 @@
           "baseWithCid": 42,
           "rate": 0.5476,
           "cidCoverageFrom": 0.875,
-          "cidCoverageTo": 0.8919
+          "cidCoverageTo": 0.8919,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -17030,7 +17138,8 @@
           "baseWithCid": 374,
           "rate": 0.6016,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -17070,7 +17179,8 @@
           "baseWithCid": 354,
           "rate": 0.0621,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -17116,7 +17226,8 @@
           "baseWithCid": 342,
           "rate": 0.0819,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -17222,7 +17333,8 @@
           "baseWithCid": 380,
           "rate": 0.1395,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -17279,7 +17391,8 @@
           "baseWithCid": 355,
           "rate": 0.1099,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -17323,7 +17436,8 @@
           "baseWithCid": 345,
           "rate": 0.0754,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -17363,57 +17477,9 @@
         {
           "from": "2025",
           "to": "2026",
-          "comparable": true,
-          "basis": "rmi-cid",
-          "addedCount": 0,
-          "droppedCount": 225,
-          "added": [],
-          "dropped": [
-            "CID000004",
-            "CID000015",
-            "CID000019",
-            "CID000035",
-            "CID000041",
-            "CID000058",
-            "CID000077",
-            "CID000082",
-            "CID000090",
-            "CID000113",
-            "CID000128",
-            "CID000157",
-            "CID000176",
-            "CID000185",
-            "CID000211",
-            "CID000218",
-            "CID000228",
-            "CID000233",
-            "CID000264",
-            "CID000291",
-            "CID000292",
-            "CID000309",
-            "CID000313",
-            "CID000359",
-            "CID000401",
-            "CID000425",
-            "CID000438",
-            "CID000448",
-            "CID000468",
-            "CID000538",
-            "CID000555",
-            "CID000568",
-            "CID000689",
-            "CID000694",
-            "CID000707",
-            "CID000711",
-            "CID000766",
-            "CID000801",
-            "CID000807",
-            "CID000814"
-          ],
-          "addedOmitted": 0,
-          "droppedOmitted": 185,
-          "baseWithCid": 262,
-          "rate": 0.8588,
+          "comparable": false,
+          "note": "262 条 → 37 条，新增 0、消失 225——一边整批进出、另一边几乎没动静。申报人真的大改名单，与那一年只解析到部分文档，在数据上分不开，需核对原文",
+          "oneSided": true,
           "cidCoverageFrom": 0.985,
           "cidCoverageTo": 0.9024
         },
@@ -17513,62 +17579,15 @@
           "baseWithCid": 253,
           "rate": 0.4704,
           "cidCoverageFrom": 0.9844,
-          "cidCoverageTo": 0.985
+          "cidCoverageTo": 0.985,
+          "yearGap": 6
         },
         {
           "from": "2018",
           "to": "2019",
-          "comparable": true,
-          "basis": "rmi-cid",
-          "addedCount": 236,
-          "droppedCount": 0,
-          "added": [
-            "CID000004",
-            "CID000015",
-            "CID000019",
-            "CID000035",
-            "CID000041",
-            "CID000058",
-            "CID000082",
-            "CID000090",
-            "CID000092",
-            "CID000105",
-            "CID000113",
-            "CID000157",
-            "CID000176",
-            "CID000185",
-            "CID000189",
-            "CID000211",
-            "CID000218",
-            "CID000228",
-            "CID000233",
-            "CID000258",
-            "CID000264",
-            "CID000291",
-            "CID000292",
-            "CID000306",
-            "CID000309",
-            "CID000313",
-            "CID000328",
-            "CID000359",
-            "CID000362",
-            "CID000401",
-            "CID000402",
-            "CID000425",
-            "CID000438",
-            "CID000456",
-            "CID000460",
-            "CID000468",
-            "CID000493",
-            "CID000499",
-            "CID000555",
-            "CID000568"
-          ],
-          "dropped": [],
-          "addedOmitted": 196,
-          "droppedOmitted": 0,
-          "baseWithCid": 17,
-          "rate": 13.8824,
+          "comparable": false,
+          "note": "17 条 → 253 条，新增 236、消失 0——一边整批进出、另一边几乎没动静。申报人真的大改名单，与那一年只解析到部分文档，在数据上分不开，需核对原文",
+          "oneSided": true,
           "cidCoverageFrom": 0.8947,
           "cidCoverageTo": 0.9844
         }
@@ -17666,7 +17685,8 @@
           "baseWithCid": 200,
           "rate": 0.255,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -17727,7 +17747,8 @@
           "baseWithCid": 253,
           "rate": 0.2332,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -17802,7 +17823,8 @@
           "baseWithCid": 211,
           "rate": 0.3602,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -17905,7 +17927,8 @@
           "baseWithCid": 361,
           "rate": 0.144,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -17946,7 +17969,8 @@
           "baseWithCid": 344,
           "rate": 0.0669,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -17997,7 +18021,8 @@
           "baseWithCid": 327,
           "rate": 0.1009,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -18095,7 +18120,8 @@
           "baseWithCid": 113,
           "rate": 0.8407,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -18158,7 +18184,8 @@
           "baseWithCid": 108,
           "rate": 0.4167,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -18213,7 +18240,8 @@
           "baseWithCid": 119,
           "rate": 0.3109,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -18307,7 +18335,8 @@
           "baseWithCid": 367,
           "rate": 0.1117,
           "cidCoverageFrom": 0.5977,
-          "cidCoverageTo": 0.5354
+          "cidCoverageTo": 0.5354,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -18359,7 +18388,8 @@
           "baseWithCid": 349,
           "rate": 0.0974,
           "cidCoverageFrom": 0.5522,
-          "cidCoverageTo": 0.5977
+          "cidCoverageTo": 0.5977,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -18400,7 +18430,8 @@
           "baseWithCid": 350,
           "rate": 0.0657,
           "cidCoverageFrom": 0.6387,
-          "cidCoverageTo": 0.5522
+          "cidCoverageTo": 0.5522,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.5354
@@ -18495,7 +18526,8 @@
           "baseWithCid": 390,
           "rate": 0.1077,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -18544,7 +18576,8 @@
           "baseWithCid": 363,
           "rate": 0.0854,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -18601,7 +18634,8 @@
           "baseWithCid": 338,
           "rate": 0.1154,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -18717,7 +18751,8 @@
           "baseWithCid": 150,
           "rate": 0.42,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -18750,7 +18785,8 @@
           "baseWithCid": 151,
           "rate": 0.0993,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -18798,7 +18834,8 @@
           "baseWithCid": 159,
           "rate": 0.1887,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -18892,7 +18929,8 @@
           "baseWithCid": 254,
           "rate": 0.1969,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 0.991
+          "cidCoverageTo": 0.991,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -19003,7 +19041,8 @@
           "baseWithCid": 521,
           "rate": 0.2649,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -19071,7 +19110,8 @@
           "baseWithCid": 448,
           "rate": 0.2076,
           "cidCoverageFrom": 0.9978,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -19168,7 +19208,8 @@
           "baseWithCid": 336,
           "rate": 0.131,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -19226,7 +19267,8 @@
           "baseWithCid": 344,
           "rate": 0.1163,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -19273,7 +19315,8 @@
           "baseWithCid": 337,
           "rate": 0.0861,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -19350,7 +19393,8 @@
           "baseWithCid": 377,
           "rate": 0.0637,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -19403,7 +19447,8 @@
           "baseWithCid": 358,
           "rate": 0.0978,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -19449,7 +19494,8 @@
           "baseWithCid": 344,
           "rate": 0.0814,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -19551,7 +19597,8 @@
           "baseWithCid": 228,
           "rate": 0.2149,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -19611,64 +19658,15 @@
           "baseWithCid": 331,
           "rate": 0.3233,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
           "to": "2024",
-          "comparable": true,
-          "basis": "rmi-cid",
-          "addedCount": 265,
-          "droppedCount": 1,
-          "added": [
-            "CID000004",
-            "CID000015",
-            "CID000019",
-            "CID000035",
-            "CID000041",
-            "CID000058",
-            "CID000077",
-            "CID000082",
-            "CID000103",
-            "CID000113",
-            "CID000128",
-            "CID000157",
-            "CID000176",
-            "CID000180",
-            "CID000185",
-            "CID000189",
-            "CID000218",
-            "CID000233",
-            "CID000264",
-            "CID000281",
-            "CID000309",
-            "CID000313",
-            "CID000343",
-            "CID000359",
-            "CID000401",
-            "CID000425",
-            "CID000438",
-            "CID000448",
-            "CID000460",
-            "CID000468",
-            "CID000493",
-            "CID000522",
-            "CID000555",
-            "CID000651",
-            "CID000671",
-            "CID000689",
-            "CID000694",
-            "CID000766",
-            "CID000767",
-            "CID000778"
-          ],
-          "dropped": [
-            "CID000875"
-          ],
-          "addedOmitted": 225,
-          "droppedOmitted": 0,
-          "baseWithCid": 67,
-          "rate": 3.9701,
+          "comparable": false,
+          "note": "67 条 → 331 条，新增 265、消失 1——一边整批进出、另一边几乎没动静。申报人真的大改名单，与那一年只解析到部分文档，在数据上分不开，需核对原文",
+          "oneSided": true,
           "cidCoverageFrom": 1.0,
           "cidCoverageTo": 1.0
         }
@@ -19746,7 +19744,8 @@
           "baseWithCid": 217,
           "rate": 0.106,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -19814,7 +19813,8 @@
           "baseWithCid": 247,
           "rate": 0.2024,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -19858,7 +19858,8 @@
           "baseWithCid": 235,
           "rate": 0.1106,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -19944,7 +19945,8 @@
           "baseWithCid": 365,
           "rate": 0.0904,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -19985,7 +19987,8 @@
           "baseWithCid": 350,
           "rate": 0.0657,
           "cidCoverageFrom": 0.9972,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -20027,7 +20030,8 @@
           "baseWithCid": 342,
           "rate": 0.0702,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 0.9972
+          "cidCoverageTo": 0.9972,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -20142,7 +20146,8 @@
           "baseWithCid": 189,
           "rate": 0.2646,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.0
@@ -20186,7 +20191,8 @@
           "baseWithCid": 344,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -20202,7 +20208,8 @@
           "baseWithCid": 344,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -20313,7 +20320,8 @@
           "baseWithCid": 430,
           "rate": 0.3116,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -20400,7 +20408,8 @@
           "baseWithCid": 550,
           "rate": 0.3236,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -20457,7 +20466,8 @@
           "baseWithCid": 350,
           "rate": 0.5714,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -20515,37 +20525,15 @@
           "baseWithCid": 10,
           "rate": 0.5,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
           "to": "2025",
-          "comparable": true,
-          "basis": "rmi-cid",
-          "addedCount": 2,
-          "droppedCount": 12,
-          "added": [
-            "CID002036",
-            "CID003387"
-          ],
-          "dropped": [
-            "CID001070",
-            "CID001399",
-            "CID001406",
-            "CID001453",
-            "CID001460",
-            "CID002180",
-            "CID002468",
-            "CID002503",
-            "CID002835",
-            "CID003381",
-            "CID003449",
-            "CID004065"
-          ],
-          "addedOmitted": 0,
-          "droppedOmitted": 0,
-          "baseWithCid": 20,
-          "rate": 0.7,
+          "comparable": false,
+          "note": "20 条 → 10 条，新增 2、消失 12——一边整批进出、另一边几乎没动静。申报人真的大改名单，与那一年只解析到部分文档，在数据上分不开，需核对原文",
+          "oneSided": true,
           "cidCoverageFrom": 1.0,
           "cidCoverageTo": 1.0
         },
@@ -20572,7 +20560,8 @@
           "baseWithCid": 19,
           "rate": 0.3684,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -20669,7 +20658,8 @@
           "baseWithCid": 338,
           "rate": 0.1302,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -20732,7 +20722,8 @@
           "baseWithCid": 307,
           "rate": 0.1466,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -20811,7 +20802,8 @@
           "baseWithCid": 318,
           "rate": 0.1918,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -20902,7 +20894,8 @@
           "baseWithCid": 370,
           "rate": 0.1027,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -20942,7 +20935,8 @@
           "baseWithCid": 350,
           "rate": 0.0629,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -20982,7 +20976,8 @@
           "baseWithCid": 344,
           "rate": 0.064,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -21064,7 +21059,8 @@
           "baseWithCid": 376,
           "rate": 0.0771,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -21119,7 +21115,8 @@
           "baseWithCid": 359,
           "rate": 0.1031,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -21166,7 +21163,8 @@
           "baseWithCid": 344,
           "rate": 0.0843,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -21231,62 +21229,15 @@
           "baseWithCid": 16,
           "rate": 0.75,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
           "to": "2025",
-          "comparable": true,
-          "basis": "rmi-cid",
-          "addedCount": 0,
-          "droppedCount": 43,
-          "added": [],
-          "dropped": [
-            "CID000228",
-            "CID000292",
-            "CID000309",
-            "CID000402",
-            "CID000438",
-            "CID000460",
-            "CID000468",
-            "CID001070",
-            "CID001142",
-            "CID001173",
-            "CID001182",
-            "CID001191",
-            "CID001337",
-            "CID001399",
-            "CID001402",
-            "CID001406",
-            "CID001428",
-            "CID001453",
-            "CID001458",
-            "CID001460",
-            "CID001463",
-            "CID001468",
-            "CID001477",
-            "CID001490",
-            "CID001539",
-            "CID002036",
-            "CID002224",
-            "CID002455",
-            "CID002503",
-            "CID002593",
-            "CID002696",
-            "CID002773",
-            "CID002774",
-            "CID002816",
-            "CID002835",
-            "CID003116",
-            "CID003205",
-            "CID003325",
-            "CID003381",
-            "CID003387"
-          ],
-          "addedOmitted": 0,
-          "droppedOmitted": 3,
-          "baseWithCid": 59,
-          "rate": 0.7288,
+          "comparable": false,
+          "note": "59 条 → 16 条，新增 0、消失 43——一边整批进出、另一边几乎没动静。申报人真的大改名单，与那一年只解析到部分文档，在数据上分不开，需核对原文",
+          "oneSided": true,
           "cidCoverageFrom": 1.0,
           "cidCoverageTo": 1.0
         },
@@ -21320,7 +21271,8 @@
           "baseWithCid": 47,
           "rate": 0.2979,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -21411,7 +21363,8 @@
           "baseWithCid": 313,
           "rate": 0.1214,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -21459,7 +21412,8 @@
           "baseWithCid": 329,
           "rate": 0.0912,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -21510,7 +21464,8 @@
           "baseWithCid": 310,
           "rate": 0.1065,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -21566,7 +21521,8 @@
           "baseWithCid": 384,
           "rate": 0.026,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -21616,7 +21572,8 @@
           "baseWithCid": 366,
           "rate": 0.0874,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -21660,7 +21617,8 @@
           "baseWithCid": 13,
           "rate": 0.3846,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -21747,7 +21705,8 @@
           "baseWithCid": 193,
           "rate": 0.1762,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -21813,7 +21772,8 @@
           "baseWithCid": 343,
           "rate": 0.484,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -21876,7 +21836,8 @@
           "baseWithCid": 221,
           "rate": 0.5973,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -21977,7 +21938,8 @@
           "baseWithCid": 372,
           "rate": 0.1478,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -22017,7 +21979,8 @@
           "baseWithCid": 354,
           "rate": 0.0621,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -22058,7 +22021,8 @@
           "baseWithCid": 343,
           "rate": 0.0671,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -22158,7 +22122,8 @@
           "baseWithCid": 364,
           "rate": 0.1621,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -22189,7 +22154,8 @@
           "baseWithCid": 350,
           "rate": 0.04,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -22279,7 +22245,8 @@
           "baseWithCid": 221,
           "rate": 0.1674,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -22323,7 +22290,8 @@
           "baseWithCid": 233,
           "rate": 0.1116,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -22377,7 +22345,8 @@
           "baseWithCid": 229,
           "rate": 0.1572,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -22481,7 +22450,8 @@
           "baseWithCid": 368,
           "rate": 0.1522,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -22519,7 +22489,8 @@
           "baseWithCid": 347,
           "rate": 0.0605,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -22554,7 +22525,8 @@
           "baseWithCid": 342,
           "rate": 0.0497,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -22644,7 +22616,8 @@
           "baseWithCid": 206,
           "rate": 0.1796,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -22695,7 +22668,8 @@
           "baseWithCid": 191,
           "rate": 0.1728,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -22754,7 +22728,8 @@
           "baseWithCid": 202,
           "rate": 0.203,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -22824,7 +22799,8 @@
           "baseWithCid": 375,
           "rate": 0.0827,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -22922,7 +22898,8 @@
           "baseWithCid": 337,
           "rate": 0.1335,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -22978,7 +22955,8 @@
           "baseWithCid": 347,
           "rate": 0.1095,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -23026,7 +23004,8 @@
           "baseWithCid": 343,
           "rate": 0.0875,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -23082,7 +23061,8 @@
           "baseWithCid": 219,
           "rate": 0.0183,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -23141,7 +23121,8 @@
           "baseWithCid": 188,
           "rate": 0.2181,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2020",
@@ -23239,7 +23220,8 @@
           "baseWithCid": 179,
           "rate": 0.6648,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 4
         }
       ],
       "trackableShare": 1.0
@@ -23332,7 +23314,8 @@
           "baseWithCid": 352,
           "rate": 0.1136,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -23369,7 +23352,8 @@
           "baseWithCid": 345,
           "rate": 0.0551,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -23444,7 +23428,8 @@
           "baseWithCid": 320,
           "rate": 0.1844,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -23542,7 +23527,8 @@
           "baseWithCid": 345,
           "rate": 0.1304,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -23601,7 +23587,8 @@
           "baseWithCid": 352,
           "rate": 0.1165,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -23642,7 +23629,8 @@
           "baseWithCid": 347,
           "rate": 0.0663,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -23725,7 +23713,8 @@
           "baseWithCid": 223,
           "rate": 0.1345,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -23782,62 +23771,15 @@
           "baseWithCid": 236,
           "rate": 0.1653,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
           "to": "2024",
-          "comparable": true,
-          "basis": "rmi-cid",
-          "addedCount": 177,
-          "droppedCount": 0,
-          "added": [
-            "CID000004",
-            "CID000015",
-            "CID000019",
-            "CID000035",
-            "CID000041",
-            "CID000058",
-            "CID000082",
-            "CID000090",
-            "CID000105",
-            "CID000113",
-            "CID000128",
-            "CID000157",
-            "CID000176",
-            "CID000185",
-            "CID000189",
-            "CID000218",
-            "CID000258",
-            "CID000264",
-            "CID000291",
-            "CID000309",
-            "CID000359",
-            "CID000401",
-            "CID000425",
-            "CID000448",
-            "CID000460",
-            "CID000568",
-            "CID000616",
-            "CID000689",
-            "CID000694",
-            "CID000707",
-            "CID000711",
-            "CID000766",
-            "CID000769",
-            "CID000801",
-            "CID000807",
-            "CID000814",
-            "CID000823",
-            "CID000825",
-            "CID000855",
-            "CID000914"
-          ],
-          "dropped": [],
-          "addedOmitted": 137,
-          "droppedOmitted": 0,
-          "baseWithCid": 59,
-          "rate": 3.0,
+          "comparable": false,
+          "note": "59 条 → 236 条，新增 177、消失 0——一边整批进出、另一边几乎没动静。申报人真的大改名单，与那一年只解析到部分文档，在数据上分不开，需核对原文",
+          "oneSided": true,
           "cidCoverageFrom": 1.0,
           "cidCoverageTo": 1.0
         }
@@ -23951,7 +23893,8 @@
           "baseWithCid": 116,
           "rate": 1.0776,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -23983,7 +23926,8 @@
           "baseWithCid": 126,
           "rate": 0.1111,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -24038,7 +23982,8 @@
           "baseWithCid": 117,
           "rate": 0.3162,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -24137,7 +24082,8 @@
           "baseWithCid": 613,
           "rate": 0.1468,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -24235,7 +24181,8 @@
           "baseWithCid": 623,
           "rate": 0.1573,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -24326,7 +24273,8 @@
           "baseWithCid": 666,
           "rate": 0.1637,
           "cidCoverageFrom": 0.9985,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -24363,7 +24311,8 @@
           "baseWithCid": 144,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -24430,7 +24379,8 @@
           "baseWithCid": 28,
           "rate": 0.5,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -24458,7 +24408,8 @@
           "baseWithCid": 26,
           "rate": 0.3846,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -24480,7 +24431,8 @@
           "baseWithCid": 24,
           "rate": 0.1667,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -24580,7 +24532,8 @@
           "baseWithCid": 393,
           "rate": 0.1883,
           "cidCoverageFrom": 0.9975,
-          "cidCoverageTo": 0.997
+          "cidCoverageTo": 0.997,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -24624,7 +24577,8 @@
           "baseWithCid": 369,
           "rate": 0.0705,
           "cidCoverageFrom": 0.9973,
-          "cidCoverageTo": 0.9975
+          "cidCoverageTo": 0.9975,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -24687,7 +24641,8 @@
           "baseWithCid": 334,
           "rate": 0.1347,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 0.9973
+          "cidCoverageTo": 0.9973,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.997
@@ -24755,7 +24710,8 @@
           "baseWithCid": 220,
           "rate": 0.0682,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -24792,7 +24748,8 @@
           "baseWithCid": 211,
           "rate": 0.09,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -24855,7 +24812,8 @@
           "baseWithCid": 288,
           "rate": 0.3021,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -24971,7 +24929,8 @@
           "baseWithCid": 352,
           "rate": 0.1932,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -24996,7 +24955,8 @@
           "baseWithCid": 344,
           "rate": 0.0233,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -25031,7 +24991,8 @@
           "baseWithCid": 343,
           "rate": 0.0496,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -25068,165 +25029,8 @@
           "baseWithCid": 360,
           "rate": 0.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
-        }
-      ],
-      "trackableShare": 1.0
-    },
-    "SHW": {
-      "years": [
-        {
-          "date": "2026-05-20",
-          "year": "2026",
-          "listed": 7,
-          "withCid": 7,
-          "nameOnly": 0
-        },
-        {
-          "date": "2025-06-02",
-          "year": "2025",
-          "listed": 30,
-          "withCid": 30,
-          "nameOnly": 0
-        },
-        {
-          "date": "2024-05-30",
-          "year": "2024",
-          "listed": 9,
-          "withCid": 8,
-          "nameOnly": 1
-        },
-        {
-          "date": "2023-05-26",
-          "year": "2023",
-          "listed": 32,
-          "withCid": 32,
-          "nameOnly": 0
-        }
-      ],
-      "changes": [
-        {
-          "from": "2025",
-          "to": "2026",
-          "comparable": true,
-          "basis": "rmi-cid",
-          "addedCount": 0,
-          "droppedCount": 23,
-          "added": [],
-          "dropped": [
-            "CID000438",
-            "CID000468",
-            "CID001070",
-            "CID001142",
-            "CID001173",
-            "CID001231",
-            "CID001314",
-            "CID001399",
-            "CID001406",
-            "CID001453",
-            "CID001458",
-            "CID001460",
-            "CID001468",
-            "CID001477",
-            "CID001539",
-            "CID002036",
-            "CID002503",
-            "CID002773",
-            "CID002774",
-            "CID002835",
-            "CID003205",
-            "CID003325",
-            "CID003381"
-          ],
-          "addedOmitted": 0,
-          "droppedOmitted": 0,
-          "baseWithCid": 30,
-          "rate": 0.7667,
-          "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
-        },
-        {
-          "from": "2024",
-          "to": "2025",
-          "comparable": true,
-          "basis": "rmi-cid",
-          "addedCount": 23,
-          "droppedCount": 1,
-          "added": [
-            "CID000438",
-            "CID000468",
-            "CID001070",
-            "CID001142",
-            "CID001173",
-            "CID001231",
-            "CID001314",
-            "CID001399",
-            "CID001406",
-            "CID001453",
-            "CID001458",
-            "CID001460",
-            "CID001468",
-            "CID001477",
-            "CID001539",
-            "CID002036",
-            "CID002503",
-            "CID002773",
-            "CID002774",
-            "CID002835",
-            "CID003205",
-            "CID003325",
-            "CID003381"
-          ],
-          "dropped": [
-            "CID002320"
-          ],
-          "addedOmitted": 0,
-          "droppedOmitted": 0,
-          "baseWithCid": 8,
-          "rate": 3.0,
-          "cidCoverageFrom": 0.8889,
-          "cidCoverageTo": 1.0
-        },
-        {
-          "from": "2023",
-          "to": "2024",
-          "comparable": true,
-          "basis": "rmi-cid",
-          "addedCount": 0,
-          "droppedCount": 24,
-          "added": [],
-          "dropped": [
-            "CID000309",
-            "CID000438",
-            "CID000468",
-            "CID001070",
-            "CID001173",
-            "CID001231",
-            "CID001314",
-            "CID001399",
-            "CID001406",
-            "CID001428",
-            "CID001453",
-            "CID001458",
-            "CID001460",
-            "CID001477",
-            "CID001490",
-            "CID001539",
-            "CID002036",
-            "CID002503",
-            "CID002773",
-            "CID002774",
-            "CID002835",
-            "CID003205",
-            "CID003325",
-            "CID003381"
-          ],
-          "addedOmitted": 0,
-          "droppedOmitted": 0,
-          "baseWithCid": 32,
-          "rate": 0.75,
-          "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 0.8889
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -25301,7 +25105,8 @@
           "baseWithCid": 377,
           "rate": 0.0584,
           "cidCoverageFrom": 0.9895,
-          "cidCoverageTo": 0.9896
+          "cidCoverageTo": 0.9896,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -25366,7 +25171,8 @@
           "baseWithCid": 331,
           "rate": 0.1813,
           "cidCoverageFrom": 0.991,
-          "cidCoverageTo": 0.9895
+          "cidCoverageTo": 0.9895,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -25416,7 +25222,8 @@
           "baseWithCid": 349,
           "rate": 0.0917,
           "cidCoverageFrom": 0.9915,
-          "cidCoverageTo": 0.991
+          "cidCoverageTo": 0.991,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.9896
@@ -25521,7 +25328,8 @@
           "baseWithCid": 365,
           "rate": 0.1096,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.0
@@ -25626,7 +25434,8 @@
           "baseWithCid": 365,
           "rate": 0.1096,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.0
@@ -25719,7 +25528,8 @@
           "baseWithCid": 232,
           "rate": 0.1724,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -25824,7 +25634,8 @@
           "baseWithCid": 333,
           "rate": 0.4204,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -25941,7 +25752,8 @@
           "baseWithCid": 148,
           "rate": 0.6284,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -25977,64 +25789,15 @@
           "baseWithCid": 134,
           "rate": 0.1343,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
           "to": "2024",
-          "comparable": true,
-          "basis": "rmi-cid",
-          "addedCount": 1,
-          "droppedCount": 152,
-          "added": [
-            "CID001352"
-          ],
-          "dropped": [
-            "CID000015",
-            "CID000035",
-            "CID000041",
-            "CID000103",
-            "CID000157",
-            "CID000180",
-            "CID000189",
-            "CID000197",
-            "CID000228",
-            "CID000264",
-            "CID000281",
-            "CID000343",
-            "CID000359",
-            "CID000448",
-            "CID000493",
-            "CID000522",
-            "CID000555",
-            "CID000568",
-            "CID000651",
-            "CID000671",
-            "CID000689",
-            "CID000767",
-            "CID000773",
-            "CID000778",
-            "CID000801",
-            "CID000823",
-            "CID000875",
-            "CID000927",
-            "CID000929",
-            "CID000942",
-            "CID000956",
-            "CID000957",
-            "CID001029",
-            "CID001032",
-            "CID001056",
-            "CID001058",
-            "CID001093",
-            "CID001204",
-            "CID001236",
-            "CID001326"
-          ],
-          "addedOmitted": 0,
-          "droppedOmitted": 112,
-          "baseWithCid": 285,
-          "rate": 0.5368,
+          "comparable": false,
+          "note": "285 条 → 134 条，新增 1、消失 152——一边整批进出、另一边几乎没动静。申报人真的大改名单，与那一年只解析到部分文档，在数据上分不开，需核对原文",
+          "oneSided": true,
           "cidCoverageFrom": 1.0,
           "cidCoverageTo": 1.0
         }
@@ -26131,7 +25894,8 @@
           "baseWithCid": 214,
           "rate": 0.1963,
           "cidCoverageFrom": 0.9953,
-          "cidCoverageTo": 0.995
+          "cidCoverageTo": 0.995,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -26177,7 +25941,8 @@
           "baseWithCid": 202,
           "rate": 0.1386,
           "cidCoverageFrom": 0.9951,
-          "cidCoverageTo": 0.9953
+          "cidCoverageTo": 0.9953,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -26254,7 +26019,8 @@
           "baseWithCid": 224,
           "rate": 0.2679,
           "cidCoverageFrom": 0.9912,
-          "cidCoverageTo": 0.9951
+          "cidCoverageTo": 0.9951,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.995
@@ -26296,7 +26062,8 @@
           "baseWithCid": 2,
           "rate": 1.5,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -26381,7 +26148,8 @@
           "baseWithCid": 367,
           "rate": 0.0872,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -26416,7 +26184,8 @@
           "baseWithCid": 360,
           "rate": 0.0472,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -26497,7 +26266,8 @@
           "baseWithCid": 379,
           "rate": 0.0792,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -26564,7 +26334,8 @@
           "baseWithCid": 368,
           "rate": 0.1332,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -26638,7 +26409,8 @@
           "baseWithCid": 227,
           "rate": 0.0925,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 0.9958
+          "cidCoverageTo": 0.9958,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -26687,7 +26459,8 @@
           "baseWithCid": 230,
           "rate": 0.1348,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -26740,7 +26513,8 @@
           "baseWithCid": 251,
           "rate": 0.1394,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.9958
@@ -26823,7 +26597,8 @@
           "baseWithCid": 372,
           "rate": 0.0806,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -26866,7 +26641,8 @@
           "baseWithCid": 353,
           "rate": 0.0708,
           "cidCoverageFrom": 0.9972,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -26912,7 +26688,8 @@
           "baseWithCid": 341,
           "rate": 0.0821,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 0.9972
+          "cidCoverageTo": 0.9972,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -27018,7 +26795,8 @@
           "baseWithCid": 403,
           "rate": 0.2283,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -27073,7 +26851,8 @@
           "baseWithCid": 368,
           "rate": 0.1005,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -27131,7 +26910,8 @@
           "baseWithCid": 342,
           "rate": 0.117,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -27171,59 +26951,9 @@
         {
           "from": "2025",
           "to": "2026",
-          "comparable": true,
-          "basis": "rmi-cid",
-          "addedCount": 2,
-          "droppedCount": 39,
-          "added": [
-            "CID002180",
-            "CID003582"
-          ],
-          "dropped": [
-            "CID000092",
-            "CID000189",
-            "CID000362",
-            "CID000456",
-            "CID000493",
-            "CID000555",
-            "CID000769",
-            "CID000875",
-            "CID000929",
-            "CID000942",
-            "CID001029",
-            "CID001204",
-            "CID001326",
-            "CID001386",
-            "CID001555",
-            "CID001756",
-            "CID001769",
-            "CID002314",
-            "CID002459",
-            "CID002500",
-            "CID002516",
-            "CID002560",
-            "CID002561",
-            "CID002606",
-            "CID002645",
-            "CID002649",
-            "CID002724",
-            "CID002761",
-            "CID002763",
-            "CID002777",
-            "CID002830",
-            "CID002833",
-            "CID002843",
-            "CID002845",
-            "CID002847",
-            "CID002850",
-            "CID002973",
-            "CID003195",
-            "CID003388"
-          ],
-          "addedOmitted": 0,
-          "droppedOmitted": 0,
-          "baseWithCid": 46,
-          "rate": 0.8913,
+          "comparable": false,
+          "note": "46 条 → 9 条，新增 2、消失 39——一边整批进出、另一边几乎没动静。申报人真的大改名单，与那一年只解析到部分文档，在数据上分不开，需核对原文",
+          "oneSided": true,
           "cidCoverageFrom": 1.0,
           "cidCoverageTo": 1.0
         },
@@ -27246,7 +26976,8 @@
           "baseWithCid": 42,
           "rate": 0.0952,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -27290,7 +27021,8 @@
           "baseWithCid": 48,
           "rate": 0.5417,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -27378,7 +27110,8 @@
           "baseWithCid": 481,
           "rate": 0.0728,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -27457,7 +27190,8 @@
           "baseWithCid": 675,
           "rate": 0.3496,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -27514,7 +27248,8 @@
           "baseWithCid": 445,
           "rate": 0.5169,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -27600,7 +27335,8 @@
           "baseWithCid": 208,
           "rate": 0.1923,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -27658,7 +27394,8 @@
           "baseWithCid": 222,
           "rate": 0.1802,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -27752,7 +27489,8 @@
           "baseWithCid": 344,
           "rate": 0.1192,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -27810,7 +27548,8 @@
           "baseWithCid": 354,
           "rate": 0.113,
           "cidCoverageFrom": 0.9972,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -27855,7 +27594,8 @@
           "baseWithCid": 343,
           "rate": 0.0787,
           "cidCoverageFrom": 0.9942,
-          "cidCoverageTo": 0.9972
+          "cidCoverageTo": 0.9972,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -27958,7 +27698,8 @@
           "baseWithCid": 296,
           "rate": 0.1689,
           "cidCoverageFrom": 0.9834,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -28003,7 +27744,8 @@
           "baseWithCid": 271,
           "rate": 0.0996,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 0.9834
+          "cidCoverageTo": 0.9834,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -28081,7 +27823,8 @@
           "baseWithCid": 259,
           "rate": 0.2317,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -28184,7 +27927,8 @@
           "baseWithCid": 370,
           "rate": 0.1459,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -28226,7 +27970,8 @@
           "baseWithCid": 345,
           "rate": 0.0725,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -28266,7 +28011,8 @@
           "baseWithCid": 345,
           "rate": 0.0638,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -28347,7 +28093,8 @@
           "baseWithCid": 40,
           "rate": 0.7,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -28405,7 +28152,8 @@
           "baseWithCid": 76,
           "rate": 0.5263,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -28463,7 +28211,8 @@
           "baseWithCid": 40,
           "rate": 1.0,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -28566,7 +28315,8 @@
           "baseWithCid": 227,
           "rate": 0.2203,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -28604,7 +28354,8 @@
           "baseWithCid": 229,
           "rate": 0.0873,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -28649,7 +28400,8 @@
           "baseWithCid": 234,
           "rate": 0.1154,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -28760,7 +28512,8 @@
           "baseWithCid": 87,
           "rate": 0.6667,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -28830,62 +28583,15 @@
           "baseWithCid": 83,
           "rate": 0.6265,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
           "to": "2024",
-          "comparable": true,
-          "basis": "rmi-cid",
-          "addedCount": 0,
-          "droppedCount": 128,
-          "added": [],
-          "dropped": [
-            "CID000015",
-            "CID000019",
-            "CID000035",
-            "CID000041",
-            "CID000058",
-            "CID000090",
-            "CID000128",
-            "CID000157",
-            "CID000176",
-            "CID000189",
-            "CID000211",
-            "CID000218",
-            "CID000228",
-            "CID000264",
-            "CID000292",
-            "CID000359",
-            "CID000401",
-            "CID000425",
-            "CID000438",
-            "CID000468",
-            "CID000689",
-            "CID000694",
-            "CID000766",
-            "CID000769",
-            "CID000801",
-            "CID000814",
-            "CID000823",
-            "CID000855",
-            "CID000875",
-            "CID000920",
-            "CID000957",
-            "CID000969",
-            "CID000981",
-            "CID001070",
-            "CID001076",
-            "CID001078",
-            "CID001142",
-            "CID001147",
-            "CID001149",
-            "CID001152"
-          ],
-          "addedOmitted": 0,
-          "droppedOmitted": 88,
-          "baseWithCid": 211,
-          "rate": 0.6066,
+          "comparable": false,
+          "note": "211 条 → 83 条，新增 0、消失 128——一边整批进出、另一边几乎没动静。申报人真的大改名单，与那一年只解析到部分文档，在数据上分不开，需核对原文",
+          "oneSided": true,
           "cidCoverageFrom": 1.0,
           "cidCoverageTo": 1.0
         }
@@ -28987,7 +28693,8 @@
           "baseWithCid": 348,
           "rate": 0.342,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -29069,7 +28776,8 @@
           "baseWithCid": 338,
           "rate": 0.1893,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -29117,7 +28825,8 @@
           "baseWithCid": 334,
           "rate": 0.0898,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -29226,7 +28935,8 @@
           "baseWithCid": 569,
           "rate": 0.0984,
           "cidCoverageFrom": 0.9982,
-          "cidCoverageTo": 0.9601
+          "cidCoverageTo": 0.9601,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -29286,7 +28996,8 @@
           "baseWithCid": 401,
           "rate": 0.4289,
           "cidCoverageFrom": 0.9975,
-          "cidCoverageTo": 0.9982
+          "cidCoverageTo": 0.9982,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -29367,7 +29078,8 @@
           "baseWithCid": 576,
           "rate": 0.3837,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 0.9975
+          "cidCoverageTo": 0.9975,
+          "yearGap": 1
         }
       ],
       "trackableShare": 0.9601
@@ -29448,7 +29160,8 @@
           "baseWithCid": 206,
           "rate": 0.1359,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -29498,7 +29211,8 @@
           "baseWithCid": 218,
           "rate": 0.1468,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -29538,7 +29252,8 @@
           "baseWithCid": 228,
           "rate": 0.0965,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -29671,7 +29386,8 @@
           "baseWithCid": 284,
           "rate": 0.7394,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -29769,7 +29485,8 @@
           "baseWithCid": 354,
           "rate": 0.5254,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -29812,7 +29529,8 @@
           "baseWithCid": 345,
           "rate": 0.0725,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -29908,7 +29626,8 @@
           "baseWithCid": 247,
           "rate": 0.1741,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -29945,7 +29664,8 @@
           "baseWithCid": 242,
           "rate": 0.0785,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -30005,7 +29725,8 @@
           "baseWithCid": 238,
           "rate": 0.1765,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -30119,7 +29840,8 @@
           "baseWithCid": 365,
           "rate": 0.1836,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -30162,7 +29884,8 @@
           "baseWithCid": 348,
           "rate": 0.0718,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -30213,7 +29936,8 @@
           "baseWithCid": 339,
           "rate": 0.0973,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
@@ -30325,7 +30049,8 @@
           "baseWithCid": 307,
           "rate": 0.2671,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2024",
@@ -30397,7 +30122,8 @@
           "baseWithCid": 239,
           "rate": 0.4017,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         },
         {
           "from": "2023",
@@ -30468,22 +30194,26 @@
           "baseWithCid": 295,
           "rate": 0.278,
           "cidCoverageFrom": 1.0,
-          "cidCoverageTo": 1.0
+          "cidCoverageTo": 1.0,
+          "yearGap": 1
         }
       ],
       "trackableShare": 1.0
     }
   },
   "coverage": {
-    "companiesTracked": 170,
+    "companiesTracked": 169,
     "companiesWithList": 369,
-    "pairsComparable": 459,
-    "medianRate": 0.1514,
-    "minRate": 0.0,
-    "maxRate": 13.8824,
+    "pairsComparable": 444,
+    "adjacentPairs": 440,
+    "medianRate": 0.1459,
+    "p90Rate": 0.5232,
     "trackableShare": 0.9572,
+    "oneSidedSetAside": 12,
+    "belowRankingBase": 8,
     "failed": [],
     "failedCount": 0
   },
-  "updatedAt": "2026-09-11T05:57:46Z"
+  "updatedAt": "2026-09-11T05:57:46Z",
+  "minBaseForRanking": 10
 }

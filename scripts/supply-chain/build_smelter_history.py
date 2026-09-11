@@ -69,6 +69,39 @@ LIST_CAP = int(os.environ.get("HISTORY_LIST_CAP", "40"))
 # 阈值随数据一起发布，页面照它说话。
 MIN_CID_COVERAGE = float(os.environ.get("HISTORY_MIN_CID_COVERAGE", "0.5"))
 
+# ── 单边整批变动：报不了，因为分不清 ───────────────────────────────────────
+#
+# 实测这一形状 15 组（459 组里 3.3%）：
+#
+#     ERII 2023→2024   316 →  13 条   新增   0   消失 303
+#     HAYW 2025→2026   368 →  20 条   新增   0   消失 348
+#     NRG  2023→2024    67 → 331 条   新增 265   消失   1
+#
+# 一边整批进出、另一边几乎没动静。**这有两种同样说得通的解释**：申报人真的
+# 大改了名单口径，或者那一年只解析到了文档的一部分。两者在数据上完全一样，
+# 要分清必须调出原文逐份核对——而本容器取不到 SEC。
+#
+# 所以标不可比，写明「需核对原文」。不是判它错，是**说清楚我判不了**。
+# 放着不管的后果是它们会占据榜首：按变动率排序时这 15 组里有 4 组进前 10。
+ONESIDED_SMALL = 2       # 「另一边几乎没动静」＝ ≤2 条
+ONESIDED_RATIO = 2       # 条数差一倍以上
+ONESIDED_FLOOR = 20      # 规模太小的不算（3→1 条说明不了什么，且变动率本就有界）
+
+# 榜单排名要求的最小分母。**比值要成为「率」，分母得够大。**
+# 实测 444 组可比里 19 组分母 <10，而它们占了榜单前 20 的 4 席：
+# SOUNDTHINKING 分母 2、好市多分母 3——加两座减一座就印成「150%」。
+# 那不是换厂强度，是分母太小。数据里照留，**只是不参与按比例排的榜**，
+# 并在页脚报出有多少家因此没上榜。
+MIN_BASE_FOR_RANKING = int(os.environ.get("HISTORY_MIN_BASE_RANK", "10"))
+
+
+def onesided(added: int, dropped: int, base: int, new: int) -> bool:
+    """一边整批进出、另一边几乎没动静，且条数差一倍以上、规模够大。"""
+    hi, lo = max(base, new), min(base, new)
+    return (min(added, dropped) <= ONESIDED_SMALL
+            and hi >= ONESIDED_RATIO * max(1, lo)
+            and hi >= ONESIDED_FLOOR)
+
 CONTACT = os.environ.get("SEC_CONTACT", "contact via https://www.ooglex.com")
 UA = f"Ooglex Supply Chain Research/1.0 ({CONTACT})"
 NODES_PATH = "apps/supply-chain/nodes.json"
@@ -191,7 +224,101 @@ def parse_one(parser, cik: int, accession: str) -> tuple[set, int, int]:
     return best
 
 
+def summarise(companies: dict, targets_n: int, failed: list) -> dict:
+    """按当前规则重算 coverage。产出方与 --repair 共用同一份实现。"""
+    rates = [c["rate"] for comp in companies.values() for c in comp["changes"]
+             if c.get("comparable") and c.get("yearGap") == 1]
+    rates.sort()
+    median = rates[len(rates) // 2] if rates else 0.0
+    p90 = rates[min(len(rates) - 1, int(len(rates) * 0.9))] if rates else 0.0
+    pairs = sum(1 for comp in companies.values() for c in comp["changes"]
+                if c.get("comparable"))
+    with_cid = sum(y["withCid"] for c in companies.values() for y in c["years"][:1])
+    listed = sum(y["listed"] for c in companies.values() for y in c["years"][:1])
+    onesided_n = sum(1 for comp in companies.values() for c in comp["changes"]
+                     if c.get("oneSided"))
+    return {
+        "companiesTracked": len(companies),
+        "companiesWithList": targets_n,
+        "pairsComparable": pairs,
+        "adjacentPairs": len(rates),
+        "medianRate": round(median, 4),
+        "p90Rate": round(p90, 4),
+        "trackableShare": round(with_cid / max(1, listed), 4),
+        # 分不清是「真的大改名单」还是「只解析到部分文档」的那些，单独报数。
+        "oneSidedSetAside": onesided_n,
+        # 分母太小、不参与按比例排名的公司数（数据里照留）
+        "belowRankingBase": sum(
+            1 for comp in companies.values()
+            for c in comp["changes"][:1]
+            if c.get("comparable") and (c.get("baseWithCid") or 0) < MIN_BASE_FOR_RANKING),
+        "failed": failed[:20],
+        "failedCount": len(failed),
+    }
+
+
+def repair() -> int:
+    """按当前规则重判已发布的 history.json。纯本地变换，不发起网络请求。
+
+    与 backfill_edge_country.py 同一条理由：**重新抽取历年申报要跑近一小时的
+    网络回溯，而规则变了不该每次都重跑**。判据全是已发布数据里现成的字段
+    （新增数、消失数、分母、年份），离线就能重算。
+
+    幂等：产出方已经按同一套规则写过的文件，跑这个不会有任何改动。
+    """
+    with open(OUT_PATH, encoding="utf-8") as handle:
+        doc = json.load(handle)
+    companies = doc.get("companies") or {}
+    moved = gapped = 0
+    for sym, comp in companies.items():
+        rebuilt = []
+        for ch in comp.get("changes") or []:
+            if not ch.get("comparable"):
+                rebuilt.append(ch)
+                continue
+            base = ch.get("baseWithCid") or 0
+            a, d = ch.get("addedCount", 0), ch.get("droppedCount", 0)
+            new_n = base - d + a
+            if onesided(a, d, base, new_n):
+                rebuilt.append({
+                    "from": ch["from"], "to": ch["to"], "comparable": False,
+                    "note": (f"{base} 条 → {new_n} 条，新增 {a}、消失 {d}"
+                             "——一边整批进出、另一边几乎没动静。申报人真的大改"
+                             "名单，与那一年只解析到部分文档，在数据上分不开，"
+                             "需核对原文"),
+                    "oneSided": True,
+                    "cidCoverageFrom": ch.get("cidCoverageFrom"),
+                    "cidCoverageTo": ch.get("cidCoverageTo")})
+                moved += 1
+                continue
+            ch["yearGap"] = int(ch["to"]) - int(ch["from"])
+            if ch["yearGap"] != 1:
+                gapped += 1
+            rebuilt.append(ch)
+        comp["changes"] = rebuilt
+    # 一组可比都不剩的公司要摘掉——与产出方同一条规矩。
+    dropped = [s for s, c in companies.items()
+               if not any(x.get("comparable") for x in c["changes"])]
+    for s in dropped:
+        del companies[s]
+    doc["minCidCoverage"] = doc.get("minCidCoverage", MIN_CID_COVERAGE)
+    doc["minBaseForRanking"] = MIN_BASE_FOR_RANKING
+    doc["coverage"] = summarise(companies,
+                                (doc.get("coverage") or {}).get("companiesWithList", 0),
+                                (doc.get("coverage") or {}).get("failed") or [])
+    with open(OUT_PATH, "w", encoding="utf-8") as handle:
+        json.dump(doc, handle, ensure_ascii=False, indent=2)
+    cov = doc["coverage"]
+    print(f"改判单边整批变动 {moved} 组 · 标出跨多年 {gapped} 组 · "
+          f"整家摘掉 {len(dropped)} 家（{'、'.join(dropped[:6])}）")
+    print(f"可比 {cov['pairsComparable']} 组（其中真正相邻的 {cov['adjacentPairs']} 组）"
+          f" · 中位 {cov['medianRate'] * 100:.1f}% · 90 分位 {cov['p90Rate'] * 100:.0f}%")
+    return 0
+
+
 def main() -> int:
+    if "--repair" in sys.argv:
+        return repair()
     try:
         import form_sd_parse as parser
     except Exception as exc:                       # noqa: BLE001
@@ -253,11 +380,27 @@ def main() -> int:
                 continue
             added = sorted(a - b)
             dropped = sorted(b - a)
+            if onesided(len(added), len(dropped), len(b), len(a)):
+                changes.append({
+                    "from": old["year"], "to": new["year"], "comparable": False,
+                    "note": (f"{len(b)} 条 → {len(a)} 条，新增 {len(added)}、"
+                             f"消失 {len(dropped)}——一边整批进出、另一边几乎没动静。"
+                             "申报人真的大改名单，与那一年只解析到部分文档，"
+                             "在数据上分不开，需核对原文"),
+                    "oneSided": True,
+                    "cidCoverageFrom": round(cov_old, 4),
+                    "cidCoverageTo": round(cov_new, 4)})
+                continue
+            # 跨度必须如实标。四份申报里若缺了中间几年（MO 实测是
+            # 2026/2025/2019/2018），「列表里相邻」并不等于「年份相邻」，
+            # 把跨 6 年的变动混进「年度变动率」的中位数就是换了口径还不说。
+            gap = int(new["year"]) - int(old["year"])
             rate = (len(added) + len(dropped)) / len(b)
-            rates.append(rate)
+            if gap == 1:
+                rates.append(rate)
             changes.append({
                 "from": old["year"], "to": new["year"], "comparable": True,
-                "basis": "rmi-cid",
+                "basis": "rmi-cid", "yearGap": gap,
                 "addedCount": len(added), "droppedCount": len(dropped),
                 "added": added[:LIST_CAP], "dropped": dropped[:LIST_CAP],
                 "addedOmitted": max(0, len(added) - LIST_CAP),
@@ -286,6 +429,10 @@ def main() -> int:
 
     rates.sort()
     median = rates[len(rates) // 2] if rates else 0.0
+    # **不发布最大值。** 分母从 2 条到 500 条不等，最大值永远由最小的那个分母
+    # 决定（实测 MO 2018→2019：基年 19 条、次年 257 条 = 1388%，算术没错，
+    # 但它说的是「那年名单很短」，不是「换厂最猛」）。90 分位才是能读的高位。
+    p90 = rates[min(len(rates) - 1, int(len(rates) * 0.9))] if rates else 0.0
     with_cid = sum(y["withCid"] for c in companies.values() for y in c["years"][:1])
     listed = sum(y["listed"] for c in companies.values() for y in c["years"][:1])
     out = {
@@ -299,20 +446,10 @@ def main() -> int:
         # 按编号比对的前置条件，随数据发布——页面要能照着说，而不是我在代码里
         # 定了个数、页面上写另一个数。
         "minCidCoverage": MIN_CID_COVERAGE,
+        # 榜单的最小分母，随数据发布——页面照它筛、照它说。
+        "minBaseForRanking": MIN_BASE_FOR_RANKING,
         "companies": companies,
-        "coverage": {
-            "companiesTracked": len(companies),
-            "companiesWithList": len(targets),
-            "pairsComparable": len(rates),
-            "medianRate": round(median, 4),
-            "minRate": round(rates[0], 4) if rates else 0,
-            "maxRate": round(rates[-1], 4) if rates else 0,
-            # **这个比例必须跟着中位数一起发布。** 17% 的变动只覆盖三成条目，
-            # 不写出来读者会当成整份名单的换厂率。
-            "trackableShare": round(with_cid / max(1, listed), 4),
-            "failed": failed[:20],
-            "failedCount": len(failed),
-        },
+        "coverage": summarise(companies, len(targets), failed),
         "updatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
     }
     with open(OUT_PATH, "w", encoding="utf-8") as handle:
