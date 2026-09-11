@@ -41,6 +41,14 @@ on:
         description: '外国发行人探针回溯几个季度的 EDGAR 全量索引'
         required: false
         default: '4'
+      backfill_sample:
+        description: 阶段1 抽样家数（默认 120）
+        required: false
+        default: '120'
+      backfill_years:
+        description: 阶段1 每家回溯几份 SD（默认 4）
+        required: false
+        default: '4'
       ex21_sample:
         description: '附件21 探针抽多少家公司'
         required: false
@@ -70,7 +78,7 @@ on:
         required: false
         default: '40'
       only:
-        description: '只跑哪些 job（graph/supplier/usaspending/nolist/body/extract/flow/foreign/foreignfetch/ceiling；留空跑全部）'
+        description: '只跑哪些 job（backfill/ex21/sdhistory/graph/supplier/usaspending/nolist/body/extract/flow/foreign/foreignfetch/ceiling；留空跑全部）'
         required: false
         default: ''
 
@@ -225,6 +233,33 @@ jobs:
   # 「有申报但没抽到名单」那 151 家，名单到底在不在申报里。
   # 这一档是甲（本来就没列，制度上限）还是乙（在里面但抽取器没看到，是缺陷），
   # 差别是「这条源到头了」还是「还有 151 家可以补」——只能看真实文件清单。
+  backfill:
+    name: 补名单工程 阶段1 · 历年 Form SD 能不能补当年空缺
+    if: ${{ inputs.only == '' || contains(inputs.only, 'backfill') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      # 670 家交了 Form SD 但正文里没有可解析的名单。其中有多少家在**过去
+      # 某一年**列过？那些历年名单同样是可核验的 SEC 原始申报，按这个板块的
+      # 证据标准够格上图，只是必须标明年份（阶段 0 已经把年份标注做好了）。
+      #
+      # 判据写死在脚本文件头：命中率 ≥10% 才建，<10% 判「收益不足」。
+      # 取到 0 份申报则报「结论无效」并非零退出，不得据此判死。
+      - name: Probe historical Form SD backfill
+        env:
+          SEC_CONTACT: ${{ secrets.SEC_CONTACT }}
+          BACKFILL_SAMPLE: ${{ inputs.backfill_sample }}
+          BACKFILL_YEARS: ${{ inputs.backfill_years }}
+        run: python scripts/supply-chain/probe_form_sd_backfill.py
+
   nolist:
     name: 有申报无名单 · 151 家的文件清单
     if: ${{ inputs.only == '' || contains(inputs.only, 'nolist') }}
