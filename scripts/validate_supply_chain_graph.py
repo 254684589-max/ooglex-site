@@ -1336,6 +1336,10 @@ def check_history(payload: dict, errors: list[str]) -> dict:
     if "RMI" not in note or "名字" not in note:
         fail(errors, "history.note 没说清「只比带 RMI 编号的条目、只有名字的不计入」")
 
+    rank_floor = hist.get("minBaseForRanking")
+    if not isinstance(rank_floor, int) or rank_floor < 1:
+        fail(errors, f"history.minBaseForRanking = {rank_floor!r}，必须是正整数"
+                     "——榜单的最小分母要随数据发布，页面才能照它筛")
     floor = hist.get("minCidCoverage")
     if not isinstance(floor, (int, float)) or not 0 < floor <= 1:
         fail(errors, f"history.minCidCoverage = {floor!r}，必须是 (0,1] 的真实比例"
@@ -1344,7 +1348,8 @@ def check_history(payload: dict, errors: list[str]) -> dict:
 
     cov = hist.get("coverage") or {}
     for key in ("companiesTracked", "companiesWithList", "pairsComparable",
-                "medianRate", "trackableShare"):
+                "adjacentPairs", "medianRate", "p90Rate", "trackableShare",
+                "oneSidedSetAside", "belowRankingBase"):
         if key not in cov:
             fail(errors, f"history.coverage 缺 {key}")
     share = cov.get("trackableShare")
@@ -1354,6 +1359,13 @@ def check_history(payload: dict, errors: list[str]) -> dict:
                      "必须是 (0,1] 的真实比例——它是中位数的适用范围")
     if not isinstance(cov.get("medianRate"), (int, float)):
         fail(errors, "history.coverage.medianRate 不是数")
+    # **最大值不许再发布。** 分母从几条到几百条不等，最大值永远由最小的那个
+    # 分母决定（MO 2018→2019 基年 19 条 → 1388%）。发布它就是把「那年名单很短」
+    # 说成「换厂最猛」。
+    for gone in ("maxRate", "minRate"):
+        if gone in cov:
+            fail(errors, f"history.coverage 仍在发布 {gone}——分母跨两个数量级时"
+                         "极值只反映最小的分母，改用 p90Rate")
 
     symbols = {n.get("symbol") for n in (payload.get("nodes") or [])}
     companies = hist.get("companies") or {}
@@ -1366,6 +1378,7 @@ def check_history(payload: dict, errors: list[str]) -> dict:
                      f"{'、'.join(orphan[:6])}——页面查不到公司名")
 
     pairs = bad_rate = zeroed = no_basis = low_cov = 0
+    no_gap = onesided_live = 0
     for sym, entry in companies.items():
         changes = entry.get("changes") or []
         if not any(c.get("comparable") for c in changes):
@@ -1382,7 +1395,14 @@ def check_history(payload: dict, errors: list[str]) -> dict:
                                  "标了不可比却没写原因")
                 # 因覆盖率不足判不可比的，两年的覆盖率必须在，而且真的不足——
                 # 契约自己算一遍，不信产出方的结论（与 HHI 分档同一条做法）。
-                if floor is not None and a is not None and b is not None \
+                #
+                # **只对「因覆盖率而不可比」的那一类生效。** 单边整批变动那一类
+                # 也带着这两个字段（它们是上下文，不是判据），第一版没分原因，
+                # 于是把 12 组单边整批全报成「判据与结论不一致」。
+                # 判不可比的原因不止一种，检查就得按原因分开。
+                if change.get("oneSided"):
+                    pass
+                elif floor is not None and a is not None and b is not None \
                         and min(a, b) >= floor:
                     fail(errors, f"{sym} {change.get('from')}→{change.get('to')} "
                                  f"标了不可比，但两年编号覆盖率 {a}/{b} 都不低于 "
@@ -1391,6 +1411,18 @@ def check_history(payload: dict, errors: list[str]) -> dict:
             pairs += 1
             if change.get("basis") != "rmi-cid":
                 no_basis += 1
+            # 跨度必须标出来：列表里相邻不等于年份相邻（MO 实测 2019→2025
+            # 中间缺了五年），把跨 6 年的变动混进「年度变动率」就是换了口径。
+            if not isinstance(change.get("yearGap"), int):
+                no_gap += 1
+            elif change["yearGap"] != int(change["to"]) - int(change["from"]):
+                no_gap += 1
+            # 判为可比的，不许还符合「单边整批变动」那个形状
+            base = change.get("baseWithCid") or 0
+            a2, d2 = change.get("addedCount", 0), change.get("droppedCount", 0)
+            hi2, lo2 = max(base, base - d2 + a2), min(base, base - d2 + a2)
+            if min(a2, d2) <= 2 and hi2 >= 2 * max(1, lo2) and hi2 >= 20:
+                onesided_live += 1
             # 可比的反过来也要成立：覆盖率必须真的够。缺字段同样算违约——
             # 没有它，读者无从判断这一对该不该信。
             if floor is not None:
@@ -1418,6 +1450,12 @@ def check_history(payload: dict, errors: list[str]) -> dict:
                      "不许按 0 混进统计")
     if no_basis:
         fail(errors, f"{no_basis} 组可比年度没标 basis=rmi-cid")
+    if no_gap:
+        fail(errors, f"{no_gap} 组可比年度的 yearGap 缺失或与 from/to 对不上")
+    if onesided_live:
+        fail(errors, f"{onesided_live} 组「一边整批进出、另一边几乎没动静」仍判为可比"
+                     "——这种形状分不清是真的大改名单还是只解析到部分文档，"
+                     "必须标不可比并移出榜单")
     if low_cov:
         fail(errors, f"{low_cov} 组判为可比，但两年的编号覆盖率缺字段或低于 "
                      f"{floor}——覆盖率差太远时按编号比只反映编号覆盖率的变化")
@@ -1429,9 +1467,12 @@ def check_history(payload: dict, errors: list[str]) -> dict:
     if len(companies) != cov.get("companiesTracked"):
         fail(errors, f"coverage.companiesTracked = {cov.get('companiesTracked')}，"
                      f"实际 {len(companies)} 家")
-    print(f"历年名单变动：可比 {len(companies)} 家 · {pairs} 组年度对比 · "
-          f"变动率中位 {(cov.get('medianRate') or 0) * 100:.1f}%"
-          f"（只覆盖带编号的 {(share or 0) * 100:.0f}% 条目）")
+    print(f"历年名单变动：可比 {len(companies)} 家 · {pairs} 组年度对比"
+          f"（真正相邻的 {cov.get('adjacentPairs')} 组）· "
+          f"变动率中位 {(cov.get('medianRate') or 0) * 100:.1f}%、"
+          f"90 分位 {(cov.get('p90Rate') or 0) * 100:.0f}%"
+          f"（只覆盖带编号的 {(share or 0) * 100:.0f}% 条目；"
+          f"另有 {cov.get('oneSidedSetAside')} 组单边整批变动已移出）")
     return hist
 
 

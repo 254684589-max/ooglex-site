@@ -1757,6 +1757,14 @@
       })[0];
       if (ch) rows.push({ symbol: sym, ch: ch });
     });
+    // **比值要成为「率」，分母得够大。** 分母 2 的公司加两座减一座就是 150%，
+    // 会把分母 116、真加了 106 座的公司挤下去。门槛来自数据（minBaseForRanking），
+    // 不在这里写死；被挡下的照样留在数据里，页脚报数。
+    var floor = h.minBaseForRanking || 0;
+    var small = rows.filter(function (r) {
+      return (r.ch.baseWithCid || 0) < floor;
+    }).length;
+    rows = rows.filter(function (r) { return (r.ch.baseWithCid || 0) >= floor; });
     rows.sort(function (a, b) { return (b.ch.rate || 0) - (a.ch.rate || 0); });
 
     var pct = function (v) { return Math.round((v || 0) * 100) + "%"; };
@@ -1767,8 +1775,12 @@
       + "可比公司 " + fmt(cov.companiesTracked || 0) + " 家（有名单的共 "
       + fmt(cov.companiesWithList || 0) + " 家）· 年度对比 "
       + fmt(cov.pairsComparable || 0) + " 组 · 变动率中位 "
-      + pct(cov.medianRate) + "（最小 " + pct(cov.minRate)
-      + " · 最大 " + pct(cov.maxRate) + "）。下面按最近一个可比年度的变动率排。");
+      + pct(cov.medianRate) + "、90 分位 " + pct(cov.p90Rate)
+      // **不印最大值。** 分母从几条到几百条不等，最大值永远由最小的那个分母
+      // 决定（实测某家基年只有 19 条、次年 257 条 = 1388%，算术没错，但它说的
+      // 是「那年名单很短」，不是「换厂最猛」）。
+      + "（中位与分位只统计真正相邻的两年，共 " + fmt(cov.adjacentPairs || 0)
+      + " 组）。下面按最近一个可比年度的变动率排。");
 
     var host = $("hist-rows");
     host.textContent = "";
@@ -1806,6 +1818,14 @@
       + pct(h.minCidCoverage) + "）的年度标为不可比，不按 0 计入"
       + "——实测有申报人中途才开始写编号，那会得出「新增 306 座」，"
       + "而它只是编号覆盖率变了。"
+      + (cov.oneSidedSetAside
+         ? "另有 " + cov.oneSidedSetAside + " 组是一边整批进出、另一边几乎没动静"
+           + "（例如某家从 316 条变成 13 条、一条新增都没有）：申报人真的大改名单，"
+           + "与那一年只解析到部分文档，在数据上分不开，**已标为不可比并移出上表**"
+           + "——这是说清楚判不了，不是判它错。" : "")
+      + (small ? "另有 " + small + " 家最近一个可比年度的带编号条目不足 "
+         + floor + " 条，比例失真（两三条时加一座就是几十个百分点），"
+         + "不参与上面的排名，数据里照留。" : "")
       + (cov.failedCount ? "另有 " + cov.failedCount + " 家本轮取数失败，"
          + "保留不撤——失败不等于没有变动。" : ""));
   }
