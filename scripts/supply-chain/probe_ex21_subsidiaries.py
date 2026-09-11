@@ -192,7 +192,20 @@ def load_smelters() -> dict[str, dict]:
 
 
 def find_ex21(cik: int) -> tuple[str | None, str]:
-    """在最近的 10-K 里找 EX-21 附件。返回（URL, 说明）。"""
+    """在最近的 10-K 里找 EX-21 附件。返回（URL, 说明）。
+
+    **第一版在 60 家上全报「索引里没有 EX-21」，那是解析坏了，不是申报里没有**
+    ——样本里有伊利诺伊工具和马丁玛丽埃塔这种大型工业企业，它们依
+    Regulation S-K Item 601(b)(21) 必附子公司清单。而探针当时照旧打印
+    「命中 0 家 → 判死」，**把取数失败冒充成了业务事实**，正是本板块反复
+    禁止的那件事。
+
+    改成两条路，按可靠性排序，并且取不到时把**实际看到的文件名打出来**——
+    不然下一次失败照样无从诊断：
+
+      一、申报目录 index.json 的文件名（最稳，不依赖索引页的排版）；
+      二、索引页正文里「文件名 ↔ 附件类型」那一行（兜底，放宽到同一行内）。
+    """
     url = f"https://data.sec.gov/submissions/CIK{cik:010d}.json"
     meta = json.loads(fetch(url).decode("utf-8", "replace"))
     recent = (meta.get("filings") or {}).get("recent") or {}
@@ -202,22 +215,39 @@ def find_ex21(cik: int) -> tuple[str | None, str]:
         if form not in ("10-K", "10-K/A"):
             continue
         acc = accession.replace("-", "")
-        index = (f"https://www.sec.gov/Archives/edgar/data/{cik}/{acc}/"
-                 f"{accession}-index.htm")
+        base = f"https://www.sec.gov/Archives/edgar/data/{cik}/{acc}"
+        # 路一：目录清单里的文件名。EX-21 的命名高度套路化
+        # （ex21.htm / ex-21_1.htm / exhibit21.htm / a10-kex21.htm …）。
+        names: list[str] = []
         try:
-            page = to_text(fetch(index))
+            listing = json.loads(fetch(f"{base}/index.json")
+                                 .decode("utf-8", "replace"))
+            names = [item.get("name") or "" for item in
+                     ((listing.get("directory") or {}).get("item") or [])]
+        except Exception:                          # noqa: BLE001
+            names = []
+        pat = re.compile(r"ex[\-_]?21(\D|$)|exhibit[\-_ ]?21", re.I)
+        for name in names:
+            if name.lower().endswith((".htm", ".html", ".txt")) and pat.search(name):
+                return f"{base}/{name}", "ok（按目录文件名）"
+
+        # 路二：索引页那张表。文件名与附件类型在同一行，中间隔着制表位。
+        try:
+            page = to_text(fetch(f"{base}/{accession}-index.htm"))
         except Exception as exc:                   # noqa: BLE001
             return None, f"取申报索引失败：{why(exc)}"
-        # 索引页把附件类型与文件名列在一起。找 EX-21 那一行的文件名。
-        hit = re.search(r"([A-Za-z0-9_\-.]+\.(?:htm|html|txt))[^\n]{0,120}?EX-21",
-                        page, re.I)
-        if not hit:
-            hit = re.search(r"EX-21[^\n]{0,160}?([A-Za-z0-9_\-.]+\.(?:htm|html|txt))",
-                            page, re.I)
-        if not hit:
-            return None, "该 10-K 的索引里没有 EX-21"
-        return (f"https://www.sec.gov/Archives/edgar/data/{cik}/{acc}/"
-                f"{hit.group(1)}"), "ok"
+        for line in page.split("\n"):
+            if not re.search(r"\bEX-21", line, re.I):
+                continue
+            doc = re.search(r"([A-Za-z0-9_\-.]+\.(?:htm|html|txt))", line, re.I)
+            if doc:
+                return f"{base}/{doc.group(1)}", "ok（按索引页）"
+
+        # **取不到就把看到的东西打出来。** 只说「没有」等于把诊断线索丢掉。
+        sample = [n for n in names if n.lower().endswith((".htm", ".txt"))][:6]
+        return None, ("该 10-K 里找不到 EX-21；目录文件名样例：»"
+                      + "、".join(sample) + "«" if sample
+                      else "该 10-K 里找不到 EX-21，且目录清单也取不到")
     return None, "近期没有 10-K"
 
 
@@ -308,6 +338,14 @@ def main() -> int:
     scaled = len(seen_smelters) * (len(pool) / max(1, len(sample)))
     print(f"按抽样比例外推全池约 {scaled:.0f} 家（**只是量级参考，不是结论**："
           f"子公司多的大公司与壳公司分布不均，真要建必须全量跑）")
+    # **取到 0 份附件就没有判决权。** 命中 0 条在这种情况下说明的是探针取不到
+    # 数据，不是「子公司里没有冶炼厂」。把前者写成后者，就是拿抓取失败冒充
+    # 业务事实——第八轮那 77 家误判就是这么来的。
+    if not got:
+        print("[XX] **结论无效**：一份附件 21 都没取到，本探针没有测到它要测的东西。")
+        print("     先修取附件那一步，再重探。**不得据此判死。**")
+        print(f"\n请求预算：用掉 {MAX_REQUESTS - BUDGET.left} / {MAX_REQUESTS}")
+        return 2
     if len(seen_smelters) * (len(pool) / max(1, len(sample))) >= 50:
         print("判据：命中量级达到「值得建」——下一步全量跑并接入发布路径")
     elif seen_smelters:
