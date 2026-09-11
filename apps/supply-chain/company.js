@@ -150,6 +150,15 @@
           + "站内公司榜只收标普500成分股，因此这一家没有市值与板块分类——"
           + "是口径如此，不是取数失败。" + why + "。";
       }
+    } else if (n.poolConfirmedThisScan === false && n.poolNote) {
+      // 身份沿用上一轮的那几家。**这件事必须说在公司页上**：它的申报出处没变，
+      // 但「本轮 SEC 清单里没有这一家」是读者判断新鲜度的依据，藏起来就等于
+      // 让上一轮的身份冒充本轮确认过的。
+      var note = $("c-pool");
+      if (note) {
+        note.hidden = false;
+        note.textContent = n.poolNote + "。";
+      }
     } else if ($("c-pool")) {
       $("c-pool").hidden = true;
     }

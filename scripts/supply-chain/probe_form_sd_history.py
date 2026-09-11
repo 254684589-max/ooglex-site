@@ -176,9 +176,10 @@ def main() -> int:
         if not filings:
             print(f"[--] {symbol:6} EDGAR 上没有 SD 申报")
             continue
-        years: list[tuple[str, set]] = []
+        years: list[tuple[str, set, set]] = []
         for filing in filings:
             names: set = set()
+            cids: set = set()
             for url in exhibit_urls(int(cik), filing["accession"]):
                 try:
                     raw = fetch(url)
@@ -195,24 +196,33 @@ def main() -> int:
                     key = (row.get("cid") or row.get("name") or "").strip()
                     if key:
                         names.add(key)
+                    # **只看带编号的那一份，才是干净的跨年比对。** 见下面
+                    # cid_only 的说明：按名字比对，一个拼写差异就会同时造出
+                    # 一条假新增和一条假消失。
+                    cid = (row.get("cid") or "").strip()
+                    if cid:
+                        cids.add(cid)
                 if names:
                     break
-            years.append((filing["date"], names))
-        got = [(d, n) for d, n in years if n]
+            years.append((filing["date"], names, cids))
+        got = [(d, n, c) for d, n, c in years if n]
         print(f"[{'OK' if got else '--'}] {symbol:6} SD 申报 {len(filings)} 份 · "
-              + " · ".join(f"{d[:4]} {len(n) or '解不开'}" for d, n in years))
+              + " · ".join(f"{d[:4]} {len(n) or '解不开'}" for d, n, _ in years))
         if len(got) >= 2:
             deltas = []
-            for (d1, a), (d2, b) in zip(got, got[1:]):
-                added = len(a - b)
-                dropped = len(b - a)
-                base = max(1, len(b))
-                deltas.append((d1[:4], d2[:4], added, dropped,
-                               (added + dropped) / base))
+            for (d1, a, ac), (d2, b, bc) in zip(got, got[1:]):
+                def rate(x: set, y: set) -> tuple[int, int, float]:
+                    return len(x - y), len(y - x), (len(x - y) + len(y - x)) / max(1, len(y))
+                add_all, drop_all, r_all = rate(a, b)
+                add_cid, drop_cid, r_cid = rate(ac, bc)
+                deltas.append((d1[:4], d2[:4], add_all, drop_all, r_all,
+                               len(ac), len(bc), r_cid if (ac and bc) else None))
             per_company.append({"symbol": symbol, "deltas": deltas})
-            for y1, y2, add, drop, rate in deltas:
+            for y1, y2, add, drop, r_all, nac, nbc, r_cid in deltas:
+                tail = (f"｜只看带编号的（{nbc}→{nac} 条）变动 {r_cid * 100:5.1f}%"
+                        if r_cid is not None else "｜该年没有带编号的条目，算不了")
                 print(f"        {y2} → {y1}：新增 {add:4} · 消失 {drop:4} · "
-                      f"变动率 {rate * 100:5.1f}%")
+                      f"变动率 {r_all * 100:6.1f}%{tail}")
 
     print("\n" + "─" * 74)
     if not per_company:
@@ -220,10 +230,29 @@ def main() -> int:
               "无效，要么 EDGAR 上就只有一份。**不能据此说「名单没变化」。**")
         return 0
     rates = [d[4] for row in per_company for d in row["deltas"]]
+    cid_rates = [d[7] for row in per_company for d in row["deltas"]
+                 if d[7] is not None]
     median = statistics.median(rates)
     print(f"可比公司 {len(per_company)} 家 · 相邻年度对比 {len(rates)} 组")
-    print(f"变动率：中位 {median * 100:.1f}% · 最小 {min(rates) * 100:.1f}%"
+    print(f"按全部条目：中位 {median * 100:.1f}% · 最小 {min(rates) * 100:.1f}%"
           f" · 最大 {max(rates) * 100:.1f}%")
+    if cid_rates:
+        cid_median = statistics.median(cid_rates)
+        print(f"**只看带 RMI 编号的：中位 {cid_median * 100:.1f}% · "
+              f"最小 {min(cid_rates) * 100:.1f}% · 最大 {max(cid_rates) * 100:.1f}%"
+              f"（{len(cid_rates)} 组）**")
+        print()
+        print("两套口径差多少，就是「按名字比对」掺进去多少假变动：登记表里"
+              f"只有三成条目带编号，剩下七成靠名字匹配，**一个拼写差异同时造出"
+              "一条假新增和一条假消失**。上一版只报全部条目那一套，于是看到"
+              "SLGN 31 家厂的名单相邻年「换掉 50 家」、MO 变动率 1273%——"
+              "那不是换厂，那是同一座厂在两年里换了写法。")
+        print("**带编号那一套才是可信的换厂率**；要建时间维度，跨年身份只能认编号。")
+        median = cid_median          # 判据按可信的那一套走
+    else:
+        print("[!!] 没有一组能只按编号比对——**本次结论不可信**，"
+              "按名字比对的变动率掺着拼写差异，不能当换厂率用。")
+        print()
     print()
     if median >= 0.05:
         print("判据：中位变动率 ≥5% —— **值得建**。时间维度有信息量，"

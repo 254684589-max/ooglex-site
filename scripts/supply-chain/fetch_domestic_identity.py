@@ -58,6 +58,7 @@ US_ANNUAL = {"10-K", "10-K/A", "10-KSB"}
 SP500_PATH = "apps/companies/sp500.json"
 FOREIGN_PATH = "apps/supply-chain/foreign.json"
 OUT_PATH = "apps/supply-chain/domestic.json"
+EDGES_DIR = "apps/supply-chain/edges"
 CONTRACT_VERSION = 1
 
 # 空白支票公司（SPAC）。定义上不是经营实体，没有产品也没有供应链。
@@ -139,6 +140,71 @@ def load_taken() -> tuple[set, set]:
     except (OSError, ValueError, TypeError):
         pass
     return tickers, ciks
+
+
+def evidence_symbols_on_disk() -> set:
+    """仓库里已发布过申报证据的公司代码。"""
+    if not os.path.isdir(EDGES_DIR):
+        return set()
+    return {n[:-5] for n in os.listdir(EDGES_DIR) if n.endswith(".json")}
+
+
+def carry_forward_with_evidence(companies: dict, prior: dict, taken_ciks: set,
+                                carried_from=None, evidence=None) -> list[str]:
+    """有申报证据的公司，本轮没收录也要留住。
+
+    **实测**（run 39，2026-09-11）：SEC 的 submissions 这一轮没给 LEG 带
+    `sic`，上面那条「无 SIC 不收」就把它排除了（本轮 4,208 家 vs 上一轮
+    4,210 家、无 SIC 55 家）。可它的 Form SD 名单早已发布在
+    edges/LEG.json 里、带着 2026-05-29 的申报出处。结果下游
+    build_chain_nodes 发现「边文件不在节点表中」直接中止——**整条流水线
+    连续两轮死掉，生产数据从 9 月 9 日起就没再更新过**。
+
+    字段这一分钟没返回，不等于这家公司不存在。这与既有的两条规矩同源：
+    「不得删除有效历史数据来掩盖抓取失败」、「取数失败≠没有」。
+
+    **收谁**（判据说收谁，不说除了谁）：
+
+        上一轮发布过 且 本轮没收录 且 仓库里有它的 edges/<代码>.json
+
+    为什么只收有边文件的：那些是**手里握着可核验申报**的公司，掉了就会让
+    已发布的名单失去归属。没有边文件的公司掉出去就掉出去——池子本来就该
+    随申报情况缩，替所有掉队的公司续命才是真的在编池子。
+
+    两道防撞：代码被本轮别家占了、或 CIK 已在前两池，都不续——续了就是
+    拿旧公司盖住新公司。
+
+    续下来的记录标 `confirmedThisScan: false`，**下游据此说明这一家的身份
+    来自上一轮**，不假装本轮确认过。
+    """
+    evidence = evidence_symbols_on_disk() if evidence is None else evidence
+    carried: list[str] = []
+    for symbol in sorted(evidence - set(companies)):
+        record = prior.get(symbol)
+        if not record:
+            continue                               # 不是这一池的（标普或外国发行人）
+        if int(record.get("cik") or 0) in taken_ciks:
+            continue                               # 已在前两池，本池不该有它
+        kept = dict(record)
+        kept["confirmedThisScan"] = False
+        kept["carryBasis"] = "has-published-filing-evidence"
+        kept["carriedFrom"] = carried_from
+        companies[symbol] = kept
+        carried.append(symbol)
+    # 本轮确认过的，把上一轮可能留下的续命标记清掉——**标记必须反映本轮**。
+    # 这个循环要扫本轮收录的全部公司，不能只扫没有边文件的那些：第一版按
+    # `set(companies) - evidence` 扫，于是一家续命过、这一轮又被确认到的公司
+    # （它当然有边文件）被跳过，标记永远留着，页面会一直印「本轮清单里没有
+    # 这一家」。正常流程里 companies 的记录是逐字段新建的、带不进旧标记，
+    # 所以这是一道防御——但防御写错了方向，就只是看着像有防御。
+    for symbol, record in list(companies.items()):
+        if symbol in carried:
+            continue
+        if record.get("confirmedThisScan") is False:
+            companies[symbol] = {k: v for k, v in record.items()
+                                 if k not in ("confirmedThisScan", "carryBasis",
+                                              "carriedFrom")}
+    return carried
 
 
 def main() -> int:
@@ -296,6 +362,17 @@ def main() -> int:
               "判定取数异常，保留现有缓存不覆盖")
         return 1
 
+    # 有申报证据的公司，本轮没收录也要留住。判据与理由见
+    # carry_forward_with_evidence() 的文档——那是 run 39 让整条流水线
+    # 连续两轮中止的根因。
+    carried = carry_forward_with_evidence(
+        companies, prior, taken_ciks, previous.get("updatedAt"))
+    if carried:
+        print(f"[!!] {len(carried)} 家本轮未收录但仓库里有已发布的申报证据，"
+              f"沿用上一轮身份并标记 confirmedThisScan=false：{'、'.join(carried)}")
+        print("     （取数失败或字段缺失≠这家公司不存在；删掉它会让已发布的"
+              "冶炼厂名单失去归属，并中止整条流水线）")
+
     out = {
         "contractVersion": CONTRACT_VERSION,
         "dataset": "supply-chain-domestic-filers",
@@ -318,6 +395,9 @@ def main() -> int:
             "droppedNoSic": dropped["no_sic"],
             "submissionsFailed": failed,
             "publishedFilesFormSd": sd_yes,
+            # 本轮没收录、靠已发布申报证据留下来的。0 是常态，非 0 要能解释。
+            "carriedForward": len(carried),
+            "carriedForwardSymbols": carried[:40],
         },
         "quarters": [dict(s) for s in stats],
         "companies": companies,

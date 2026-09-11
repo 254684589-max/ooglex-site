@@ -24,6 +24,7 @@ FOREIGN_PATH = "apps/supply-chain/foreign.json"
 HEALTH_PATH = "apps/supply-chain/health.json"
 EDGES_DIR = "apps/supply-chain/edges"
 SMELTERS_PATH = "apps/supply-chain/smelters.json"
+HISTORY_PATH = "apps/supply-chain/history.json"
 
 ALLOWED_CONFIDENCE = {"disclosed", "inferred"}
 ALLOWED_BASIS = {"sector-initial", "sector-ambiguous", "sic-refined", "edge-derived", "unknown"}
@@ -1269,6 +1270,171 @@ def check_chain_risk(payload: dict, errors: list[str]) -> None:
     print(f"按链风险：{len(risk)} 条链（{with_flow} 条带流向图），分母、集中度与流向合计均与全局一致")
 
 
+def check_carried_forward(payload: dict, errors: list[str]) -> None:
+    """身份沿用上一轮的公司必须带着痕迹，而且不能悄悄变多。
+
+    取数侧对「本轮没收录但仓库里有已发布申报证据」的公司续命（run 39 因为
+    SEC 这一轮没给 LEG 带 sic，把它排除掉，整条流水线连续两轮中止）。续命是
+    对的，**但不标出来就是拿上一轮的身份冒充本轮确认过的**——与补来的国别
+    必须标 countryBasis 同一条理由。
+
+    所以这里钉两件事：
+
+        标了 poolConfirmedThisScan=false 的，必须同时有说明（页面要印它）
+        续命的家数必须远小于池子本身 —— 续命是例外，不是常态
+
+    上限取有名单的公司数（369）：续命只可能发生在有边文件的公司上，
+    超过这个数说明判据写错了。真超了要去查取数，不是放宽这里。
+    """
+    nodes = payload.get("nodes") or []
+    carried = [n for n in nodes if n.get("poolConfirmedThisScan") is False]
+    if not carried:
+        return
+    index = payload.get("edgeIndex") or {}
+    for node in carried:
+        if not node.get("poolNote"):
+            fail(errors, f"{node.get('symbol')} 标了身份沿用上一轮却没有 poolNote"
+                         "——页面就没话可印，等于没标")
+        if node.get("symbol") not in index:
+            # 判据是「有已发布的申报证据」。没有边文件却被续命，说明续的不是
+            # 这一类，池子在凭空变大。
+            fail(errors, f"{node.get('symbol')} 身份沿用上一轮，但它没有边文件"
+                         "——续命的判据是「手里有已发布的申报证据」，不符合")
+    if len(carried) > len(index):
+        fail(errors, f"身份沿用上一轮的有 {len(carried)} 家，超过有名单的 "
+                     f"{len(index)} 家——续命是例外，这个数说明判据写错了")
+    print(f"身份沿用上一轮：{len(carried)} 家（"
+          + "、".join(n.get("symbol") for n in carried[:8])
+          + ("…" if len(carried) > 8 else "") + "），均已标注来源")
+
+
+def check_history(payload: dict, errors: list[str]) -> dict:
+    """历年名单变动的发布契约。文件可以不在（要联网才产出），在就必须守住口径。
+
+    这一份最容易出的不是算错，是**把口径说宽**。跨年身份只认 RMI CID——那是
+    冶炼厂设施的全球唯一编号；七成条目只有名字，按名字比对一个拼写差异就同时
+    造出一条假新增和一条假消失（探针第一版因此报出「31 家厂一年换掉 50 家」
+    「变动率 1273%」）。所以这里钉四件事：
+
+        basis 必须是 rmi-cid ——口径写在数据里，不能只写在页面上
+        trackableShare 必须随中位数一起发布 —— 17% 只覆盖带编号的那部分
+        不可比的年度不得带 rate —— 取不到不等于没变动，不许按 0 混进统计
+        每家的公司代码都要在节点表里 —— 页面要拿它查公司名
+
+    变动率本身也校一遍：rate 必须等于 (新增+消失)/该年带编号条数。页面直接印
+    这个数，数据里算错了页面照印错。
+    """
+    if not os.path.exists(HISTORY_PATH):
+        print("历年名单变动：本轮没有 history.json（回溯历年申报要联网，跳过）")
+        return {}
+    with open(HISTORY_PATH, encoding="utf-8") as handle:
+        hist = json.load(handle)
+    if hist.get("basis") != "rmi-cid":
+        fail(errors, f"history.basis = {hist.get('basis')!r}，必须是 'rmi-cid'"
+                     "——跨年身份只认 RMI 编号，口径要写在数据里")
+    note = str(hist.get("note") or "")
+    if "RMI" not in note or "名字" not in note:
+        fail(errors, "history.note 没说清「只比带 RMI 编号的条目、只有名字的不计入」")
+
+    floor = hist.get("minCidCoverage")
+    if not isinstance(floor, (int, float)) or not 0 < floor <= 1:
+        fail(errors, f"history.minCidCoverage = {floor!r}，必须是 (0,1] 的真实比例"
+                     "——按编号比对的前置条件要随数据发布，页面才能照它说话")
+        floor = None
+
+    cov = hist.get("coverage") or {}
+    for key in ("companiesTracked", "companiesWithList", "pairsComparable",
+                "medianRate", "trackableShare"):
+        if key not in cov:
+            fail(errors, f"history.coverage 缺 {key}")
+    share = cov.get("trackableShare")
+    if not isinstance(share, (int, float)) or not 0 < share <= 1:
+        # **这个比例必须是真数。** 缺了它，「中位变动 17%」会被读成整份名单的换厂率。
+        fail(errors, f"history.coverage.trackableShare = {share!r}，"
+                     "必须是 (0,1] 的真实比例——它是中位数的适用范围")
+    if not isinstance(cov.get("medianRate"), (int, float)):
+        fail(errors, "history.coverage.medianRate 不是数")
+
+    symbols = {n.get("symbol") for n in (payload.get("nodes") or [])}
+    companies = hist.get("companies") or {}
+    if not companies:
+        fail(errors, "history.companies 为空——不得发布空的历年数据"
+                     "（取不到应原样保留旧文件）")
+    orphan = sorted(set(companies) - symbols)
+    if orphan:
+        fail(errors, f"{len(orphan)} 家历年数据的代码不在节点表里："
+                     f"{'、'.join(orphan[:6])}——页面查不到公司名")
+
+    pairs = bad_rate = zeroed = no_basis = low_cov = 0
+    for sym, entry in companies.items():
+        changes = entry.get("changes") or []
+        if not any(c.get("comparable") for c in changes):
+            fail(errors, f"{sym} 一组可比年度都没有，不该出现在 history.companies 里")
+        for change in changes:
+            a = change.get("cidCoverageFrom")
+            b = change.get("cidCoverageTo")
+            if not change.get("comparable"):
+                # 不可比就只留说明。带上 rate 等于拿 0 充当「没变」。
+                if "rate" in change:
+                    zeroed += 1
+                if not change.get("note"):
+                    fail(errors, f"{sym} {change.get('from')}→{change.get('to')} "
+                                 "标了不可比却没写原因")
+                # 因覆盖率不足判不可比的，两年的覆盖率必须在，而且真的不足——
+                # 契约自己算一遍，不信产出方的结论（与 HHI 分档同一条做法）。
+                if floor is not None and a is not None and b is not None \
+                        and min(a, b) >= floor:
+                    fail(errors, f"{sym} {change.get('from')}→{change.get('to')} "
+                                 f"标了不可比，但两年编号覆盖率 {a}/{b} 都不低于 "
+                                 f"{floor}——判据与结论不一致")
+                continue
+            pairs += 1
+            if change.get("basis") != "rmi-cid":
+                no_basis += 1
+            # 可比的反过来也要成立：覆盖率必须真的够。缺字段同样算违约——
+            # 没有它，读者无从判断这一对该不该信。
+            if floor is not None:
+                if a is None or b is None:
+                    low_cov += 1
+                elif min(a, b) < floor:
+                    low_cov += 1
+            base = change.get("baseWithCid") or 0
+            want = (change.get("addedCount", 0) + change.get("droppedCount", 0)) / base \
+                if base else None
+            got = change.get("rate")
+            if want is None or not isinstance(got, (int, float)) \
+                    or abs(got - want) > 0.0051:
+                bad_rate += 1
+                if bad_rate <= 3:
+                    fail(errors, f"{sym} {change.get('from')}→{change.get('to')} "
+                                 f"rate {got} ≠ (新增{change.get('addedCount')}+"
+                                 f"消失{change.get('droppedCount')})/"
+                                 f"带编号{base} = {want}")
+        trackable = entry.get("trackableShare")
+        if not isinstance(trackable, (int, float)) or not 0 <= trackable <= 1:
+            fail(errors, f"{sym}.trackableShare = {trackable!r} 不是 [0,1] 的比例")
+    if zeroed:
+        fail(errors, f"{zeroed} 组不可比的年度带了 rate——取不到不等于没变动，"
+                     "不许按 0 混进统计")
+    if no_basis:
+        fail(errors, f"{no_basis} 组可比年度没标 basis=rmi-cid")
+    if low_cov:
+        fail(errors, f"{low_cov} 组判为可比，但两年的编号覆盖率缺字段或低于 "
+                     f"{floor}——覆盖率差太远时按编号比只反映编号覆盖率的变化")
+    if bad_rate > 3:
+        fail(errors, f"另有 {bad_rate - 3} 组 rate 与分子分母对不上")
+    if pairs != cov.get("pairsComparable"):
+        fail(errors, f"coverage.pairsComparable = {cov.get('pairsComparable')}，"
+                     f"逐条数出来是 {pairs}")
+    if len(companies) != cov.get("companiesTracked"):
+        fail(errors, f"coverage.companiesTracked = {cov.get('companiesTracked')}，"
+                     f"实际 {len(companies)} 家")
+    print(f"历年名单变动：可比 {len(companies)} 家 · {pairs} 组年度对比 · "
+          f"变动率中位 {(cov.get('medianRate') or 0) * 100:.1f}%"
+          f"（只覆盖带编号的 {(share or 0) * 100:.0f}% 条目）")
+    return hist
+
+
 def main() -> int:
     if not os.path.exists(NODES_PATH):
         print(f"[XX] 缺少 {NODES_PATH}")
@@ -1294,6 +1460,8 @@ def main() -> int:
     check_country_names(bundles, errors)
     check_mineral_view(payload, bundles, errors)
     check_list_similarity(payload, errors)
+    check_history(payload, errors)
+    check_carried_forward(payload, errors)
     check_no_conflict_markers(errors)
     smelters = check_smelters(errors, edge_count)
     check_health(errors, len(payload.get("nodes") or []))

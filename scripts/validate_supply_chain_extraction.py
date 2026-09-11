@@ -1601,6 +1601,244 @@ def main() -> int:
         (region.build_code_map([("F5", "")]) == {},
          "只有代码没有描述的配对进不了表——那是要补的对象，不是依据"),
     ]
+    # 有申报证据的公司掉出本轮取数时的续命规则。run 39 这一轮 SEC 的
+    # submissions 没给 LEG 带 sic，取数侧按「无 SIC 不收」把它排除，已发布的
+    # edges/LEG.json 成了孤儿，build_chain_nodes 直接中止——**整条流水线连续
+    # 两轮死掉，生产数据冻了两天**。续命是对的，但判据必须窄、标记必须反映
+    # 本轮，所以这几条在这里守着。
+    print("\n── 续命：有申报证据的公司掉出本轮取数 ────────────────────────────")
+    import importlib.util as _ilu
+    _spec = _ilu.spec_from_file_location(
+        "fetch_domestic_identity",
+        os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     "supply-chain", "fetch_domestic_identity.py"))
+    _fdi = _ilu.module_from_spec(_spec)
+    _spec.loader.exec_module(_fdi)
+    _prior = {
+        "LEG": {"symbol": "LEG", "cik": 58492, "sic": 2510},
+        "GONE": {"symbol": "GONE", "cik": 999, "sic": 3674},
+        "MOVED": {"symbol": "MOVED", "cik": 777, "sic": 3674},
+        "STALE": {"symbol": "STALE", "cik": 555, "sic": 3674,
+                  "confirmedThisScan": False,
+                  "carryBasis": "has-published-filing-evidence"},
+    }
+    _ev = {"LEG", "MOVED", "STALE", "AAPL"}
+    _a = {}
+    _carried_a = _fdi.carry_forward_with_evidence(_a, _prior, {777}, "x", _ev)
+    _b = {"STALE": dict(_prior["STALE"]), "AAPL": {"symbol": "AAPL", "cik": 320193}}
+    _fdi.carry_forward_with_evidence(_b, _prior, {777}, "x", _ev)
+    _c = {"X": {"symbol": "X", "cik": 1, "confirmedThisScan": False}}
+    _fdi.carry_forward_with_evidence(_c, {}, set(), None, _ev)
+    carry_cases = [
+        ("LEG" in _a and _a["LEG"]["sic"] == 2510,
+         "有已发布申报证据、本轮没收录的，连同它的 SIC 一起留住"),
+        (_a.get("LEG", {}).get("confirmedThisScan") is False
+         and _a["LEG"].get("carryBasis") == "has-published-filing-evidence",
+         "留下来的带着「本轮未确认」与依据——不标就是冒充本轮确认过"),
+        ("GONE" not in _a,
+         "没有边文件的掉出去就掉出去：替所有掉队公司续命才是在编池子"),
+        ("MOVED" not in _a,
+         "CIK 已在前两池的不续——续了就是拿旧公司盖住新公司"),
+        ("confirmedThisScan" not in _b.get("STALE", {}),
+         "上一轮续过、本轮确认到了，旧标记要清掉（它有边文件也照清）"),
+        ("confirmedThisScan" not in _c.get("X", {}),
+         "没有边文件的也照清——标记必须反映本轮"),
+        (len(_carried_a) <= len(_ev),
+         "续命家数不会超过有边文件的家数"),
+    ]
+    for ok, why in carry_cases:
+        if not ok:
+            failures.append(f"续命：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
+    # 产出方与发布契约对不对得上。**读代码不算验证**：本地开发用的那份构造数据
+    # 违反了契约里的一条（有公司一组可比年度都没有），而真正的产出方恰好会跳过
+    # 这种公司——也就是说，两边到底一致不一致，构造数据根本测不出来。
+    #
+    # 这里不造产出，而是把产出方的网络层换掉，让它走自己的真实代码路径（解析、
+    # 跨年比对、汇总、序列化全是它自己的），再拿它写出的文件过契约。历年回溯要
+    # 联网，而 SEC 在开发容器里取不到，所以这是唯一能在本地守住这条的办法。
+    print("\n── 历年变动：产出方的产出过不过发布契约 ──────────────────────────")
+    import tempfile
+    import io as _io
+    _hspec = _ilu.spec_from_file_location(
+        "build_smelter_history",
+        os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     "supply-chain", "build_smelter_history.py"))
+    _H = _ilu.module_from_spec(_hspec)
+    _hspec.loader.exec_module(_H)
+    _gspec = _ilu.spec_from_file_location(
+        "validate_supply_chain_graph",
+        os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     "validate_supply_chain_graph.py"))
+    _G = _ilu.module_from_spec(_gspec)
+    _gspec.loader.exec_module(_G)
+
+    # 三种形态各一家：两年都有编号（可比）· 新的一年只有名字（该年不可比）·
+    # 只有一份申报（产出方应整家跳过）。编号必须是 CID+4~6 位，三位认不出来。
+    _FILINGS = {111: ["0001-26-1", "0001-25-1", "0001-24-1"],
+                222: ["0002-26-1", "0002-25-1", "0002-24-1"],
+                333: ["0003-26-1"],
+                444: ["0004-26-1", "0004-25-1"],
+                555: ["0005-26-1", "0005-25-1", "0005-24-1"]}
+    _DATES = {"26": "2026-05-20", "25": "2025-05-20", "24": "2024-05-20"}
+    _SHEETS = {
+        "0001-26-1": [("Alpha Smelter", "CID1001", "China"),
+                      ("Delta Smelter", "CID1004", "Japan"),
+                      ("Gamma Smelter", "CID1003", "Brazil")],
+        "0001-25-1": [("Alpha Smelter", "CID1001", "China"),
+                      ("Beta Smelter", "CID1002", "Peru"),
+                      ("Gamma Smelter", "CID1003", "Brazil")],
+        "0001-24-1": [("Alpha Smelter", "CID1001", "China"),
+                      ("Beta Smelter", "CID1002", "Peru")],
+        "0002-26-1": [("Nameonly Works", "", "China"), ("Other Works", "", "Peru")],
+        "0002-25-1": [("Zeta Smelter", "CID2101", "China"),
+                      ("Eta Smelter", "CID2102", "Peru")],
+        "0002-24-1": [("Zeta Smelter", "CID2101", "China")],
+        "0003-26-1": [("Solo Smelter", "CID3201", "Chile")],
+    }
+    # DDD：每份申报里两个附件——正文只列 2 家，冲突矿产报告列 30 家。
+    # 取第一个能解出行的就会读到 2 家，于是「少了 28 座」被记成换厂。
+    _SHORT = {"0004-26-1": [("Short One", "CID4001", "China"),
+                            ("Short Two", "CID4002", "Peru")],
+              "0004-25-1": [("Short One", "CID4001", "China"),
+                            ("Short Two", "CID4002", "Peru")]}
+    _LONG = {"0004-26-1": [(f"Full Works {i}", f"CID4{i:03d}", "China")
+                           for i in range(100, 130)],
+             "0004-25-1": [(f"Full Works {i}", f"CID4{i:03d}", "China")
+                           for i in range(100, 130)]}
+    # EEE 照 ALLE 的真实形状搭：条目数三年都是 20，但 2024 年只有 2 条带编号
+    # （10%）——申报人那年没写编号。按编号比对会得出「新增 18」，那是编号覆盖率
+    # 变了，不是换厂。
+    #
+    # **必须给它一对可比的年度**，否则产出方会整家跳过（一组可比都没有就不收），
+    # 那条断言就会因为「公司不在产出里」而恒为通过——我第一版正是这样，
+    # 写了个 `or "EEE" not in companies` 的退路，等于什么都没验。
+    _EEE = {
+        "0005-26-1": [(f"Eee Works {i}", f"CID5{i:03d}", "China")
+                      for i in range(100, 120)],
+        "0005-25-1": [(f"Eee Works {i}", f"CID5{i:03d}", "China")
+                      for i in range(100, 120)],
+        "0005-24-1": ([(f"Eee Works {i}", f"CID5{i:03d}", "China")
+                       for i in range(100, 102)]
+                      + [(f"Eee Works {i}", "", "China") for i in range(102, 120)]),
+    }
+
+    def _sheet(rows):
+        head = ("<tr><th>Smelter Name</th><th>Smelter ID</th>"
+                "<th>Country</th><th>Metal</th></tr>")
+        body = "".join(f"<tr><td>{n}</td><td>{c}</td><td>{k}</td><td>Tin</td></tr>"
+                       for n, c, k in rows)
+        return f"<html><body><table>{head}{body}</table></body></html>".encode()
+
+    def _stub(url: str) -> bytes:
+        if "submissions/CIK" in url:
+            cik = int(url.split("CIK")[1].split(".json")[0])
+            accs = _FILINGS.get(cik, [])
+            return json.dumps({"filings": {"recent": {
+                "form": ["SD"] * len(accs), "accessionNumber": accs,
+                "filingDate": [_DATES[a.split("-")[1]] for a in accs]}}}).encode()
+        if url.endswith("index.json"):
+            acc = url.rsplit("/", 2)[-2]
+            names = [f"{acc}ex101.htm"]
+            if acc in {a.replace("-", "") for a in _SHORT}:
+                # 短的排在前面（文件名排序就会这样），正是第一版踩的坑
+                names = [f"{acc}exa.htm", f"{acc}exb.htm"]
+            return json.dumps({"directory": {"item": [{"name": n} for n in names]}}).encode()
+        for acc, rows in _SHEETS.items():
+            if acc.replace("-", "") in url:
+                return _sheet(rows)
+        for acc in _SHORT:
+            bare = acc.replace("-", "")
+            if bare in url:
+                return _sheet(_SHORT[acc] if url.endswith("exa.htm") else _LONG[acc])
+        for acc, rows in _EEE.items():
+            if acc.replace("-", "") in url:
+                return _sheet(rows)
+        raise RuntimeError(f"测试桩没准备这个 URL：{url}")
+
+    _H.fetch, _H.GAP = _stub, 0
+    _tmp = tempfile.mkdtemp()
+    _H.OUT_PATH = os.path.join(_tmp, "history.json")
+    _H.NODES_PATH = os.path.join(_tmp, "nodes.json")
+    with open(_H.NODES_PATH, "w", encoding="utf-8") as _h:
+        json.dump({"nodes": [{"symbol": s, "cik": c} for s, c in
+                             (("AAA", 111), ("BBB", 222), ("CCC", 333),
+                              ("DDD", 444), ("EEE", 555))],
+                   "edgeIndex": {k: {} for k in
+                                 ("AAA", "BBB", "CCC", "DDD", "EEE")}}, _h)
+    import contextlib
+    with contextlib.redirect_stdout(_io.StringIO()):
+        _H.main()
+    with open(_H.OUT_PATH, encoding="utf-8") as _h:
+        _PROD = json.load(_h)
+    _payload = {"nodes": [{"symbol": s} for s in
+                          ("AAA", "BBB", "CCC", "DDD", "EEE")]}
+
+    def _contract(doc):
+        path = os.path.join(_tmp, "probe.json")
+        with open(path, "w", encoding="utf-8") as h:
+            json.dump(doc, h, ensure_ascii=False)
+        _G.HISTORY_PATH = path
+        errs: list = []
+        with contextlib.redirect_stdout(_io.StringIO()):
+            _G.check_history(_payload, errs)
+        return errs
+
+    def _broken(mutate):
+        doc = json.loads(json.dumps(_PROD))
+        mutate(doc)
+        return bool(_contract(doc))
+
+    _aaa = _PROD.get("companies", {}).get("AAA", {}).get("changes", [{}])
+    hist_cases = [
+        (not _contract(_PROD), "产出方自己跑出来的文件，发布契约全部通过"),
+        ("CCC" not in (_PROD.get("companies") or {}),
+         "只有一份申报的公司整家不收——一份算不出变动"),
+        (any(not c.get("comparable") for c in
+             _PROD.get("companies", {}).get("BBB", {}).get("changes", [])),
+         "某年没有带编号条目时标不可比，而不是按 0 算成「没变」"),
+        (abs((_aaa[0].get("rate") or 0) - 2 / 3) < 0.001 and _aaa[0].get("baseWithCid") == 3,
+         "变动率＝(新增+消失)/该年带编号条数：1+1 over 3 = 0.667"),
+        (((_PROD.get("companies") or {}).get("DDD", {}).get("years") or [{}])[0]
+         .get("listed") == 30,
+         "一份申报里有长短两个附件时取条目最多的那个（30 条，不是 2 条）"
+         "——取错附件会把「少了 28 座」记成换厂"),
+        (any(not c.get("comparable") and "10%" in (c.get("note") or "")
+             and c.get("cidCoverageFrom") is not None
+             for c in (_PROD.get("companies") or {}).get("EEE", {}).get("changes", [])),
+         "两年编号覆盖率差太远时标不可比，并把两年的覆盖率写进说明"
+         "（ALLE 实测 7% 比 100%，按编号比会得出「新增 306」）"),
+        (any(c.get("comparable") for c in
+             (_PROD.get("companies") or {}).get("EEE", {}).get("changes", [])),
+         "同一家公司里覆盖率够的那一对照旧可比——不是整家作废"),
+        ((_PROD.get("minCidCoverage") or 0) > 0,
+         "按编号比对的前置条件随数据发布，页面照它说话"),
+        (_broken(lambda d: d.update(basis="name")), "契约咬得住：basis 改成按名字比对"),
+        (_broken(lambda d: d["coverage"].pop("trackableShare")),
+         "契约咬得住：拿掉 trackableShare"),
+        (_broken(lambda d: d["coverage"].update(trackableShare=0)),
+         "契约咬得住：trackableShare 写成 0"),
+        (_broken(lambda d: d["companies"]["AAA"]["changes"][0].update(rate=0.9)),
+         "契约咬得住：rate 与分子分母对不上"),
+        (_broken(lambda d: d["companies"]["BBB"]["changes"][0].update(rate=0.0)),
+         "契约咬得住：给不可比的年度塞一个 0"),
+        (_broken(lambda d: d["companies"]["BBB"]["changes"][0].pop("note")),
+         "契约咬得住：不可比却不写原因"),
+        (_broken(lambda d: d["companies"].update(ZZZ=d["companies"]["AAA"])),
+         "契约咬得住：公司代码不在节点表里"),
+        (_broken(lambda d: d["coverage"].update(pairsComparable=99)),
+         "契约咬得住：可比组数与逐条数出来的不一致"),
+        (_broken(lambda d: d["companies"]["AAA"]["changes"][0].pop("basis")),
+         "契约咬得住：可比年度没标 basis=rmi-cid"),
+        (_broken(lambda d: d.update(note="随便一句话")),
+         "契约咬得住：note 里不说明只比带编号的"),
+    ]
+    for ok, why in hist_cases:
+        if not ok:
+            failures.append(f"历年变动：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
     for ok, why in region_cases:
         if not ok:
             failures.append(f"国别：{why} 不成立")
@@ -1611,7 +1849,7 @@ def main() -> int:
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
-             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases) + len(body_cases) + len(lic_cases)
+             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases) + len(carry_cases) + len(hist_cases) + len(body_cases) + len(lic_cases)
              + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:
