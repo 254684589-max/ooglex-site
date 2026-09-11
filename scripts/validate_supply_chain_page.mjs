@@ -118,6 +118,12 @@ async function main() {
   const NODES = JSON.parse(await readFile(
     path.join(ROOT, "apps/supply-chain/nodes.json"), "utf8"));
   const SECTORS = (NODES.coverage && NODES.coverage.bySector) || [];
+  /* 历年变动是单独一份文件，页面也单独拉。旧部署没有它，所以**文件不在就
+     跳过这一段，不算失败**；在，就必须等它渲染完再断言——它比主渲染晚到，
+     不等就会让区块导航那条断言在「两边都还没有名单变动」时虚过。 */
+  const HISTORY = await readFile(
+    path.join(ROOT, "apps/supply-chain/history.json"), "utf8")
+    .then(t => JSON.parse(t)).catch(() => null);
 
   const child = spawn(browserPath, [
     "--headless=new", "--disable-gpu", "--no-sandbox", "--remote-debugging-port=0",
@@ -182,6 +188,21 @@ async function main() {
           setTimeout(poll, 120);
         })();
       })`);
+      if (HISTORY && Object.keys(HISTORY.companies || {}).length) {
+        // 这一块走的是第二条 fetch，比主渲染晚。**等它落地再往下断言**，
+        // 否则后面那些「显示了的区块都要进导航」会在它还没出来时虚过。
+        await evaluate(`new Promise((done, fail) => {
+          const deadline = Date.now() + 20000;
+          (function poll() {
+            const e = document.getElementById('histsec');
+            if (e && !e.hidden && document.querySelectorAll('#hist-rows .hrow').length)
+              return done(true);
+            if (Date.now() > deadline)
+              return fail(new Error('20 秒内未渲染出名单变动区块'));
+            setTimeout(poll, 120);
+          })();
+        })`);
+      }
 
       const probe = await evaluate(`(() => {
         const text = document.body.innerText;
@@ -1283,6 +1304,125 @@ async function main() {
       } else {
         console.log("  [--] 国别暴露：本轮数据还没带 countryExposure，跳过"
           + "（数据流水线跑过之后这一段自动生效）");
+      }
+
+      /* 名单变动（历年）。**这一屏的风险不在画错，在口径被读宽。**
+
+         变动只统计带 RMI 编号的条目：编号是冶炼厂设施的全球唯一标识，跨年
+         可比；七成条目只有名字，按名字比一个拼写差异就同时造出一条假新增和
+         一条假消失——探针第一版正是这么得出「31 家厂一年换掉 50 家」的。
+         所以守的是四件事：逐行等于数据、**追得动的占比必须与变动率同屏**、
+         不可比的年度不按 0 计入、以及它得进区块导航（上一条栽过一次）。 */
+      if (HISTORY && Object.keys(HISTORY.companies || {}).length) {
+        const HC = HISTORY.companies || {};
+        const HCOV = HISTORY.coverage || {};
+        const want = Object.keys(HC).map(sym => {
+          const ch = (HC[sym].changes || []).filter(c => c.comparable)[0];
+          return ch ? { symbol: sym, ch } : null;
+        }).filter(Boolean).sort((a, b) => (b.ch.rate || 0) - (a.ch.rate || 0))
+          .slice(0, 20);
+        const hi = await evaluate(`(() => {
+          const box = document.getElementById('histsec');
+          if (!box || box.hidden) return { shown: false };
+          return {
+            shown: true,
+            rows: [...box.querySelectorAll('.hrow')].map(r => ({
+              name: (r.querySelector('.nm') || {}).textContent || '',
+              years: (r.querySelector('.yr') || {}).textContent || '',
+              added: (r.querySelector('.ad') || {}).textContent || '',
+              dropped: (r.querySelector('.dr') || {}).textContent || '',
+              rate: (r.querySelector('.rt') || {}).textContent || '',
+              title: r.title || '',
+              // display:none 的节点 textContent 照样有字——必须量布局盒
+              seen: r.getClientRects().length > 0
+            })),
+            lead: (document.getElementById('hist-lead') || {}).textContent || '',
+            foot: (document.getElementById('hist-foot') || {}).textContent || '',
+            overflow: Math.max(0,
+              document.documentElement.scrollWidth - window.innerWidth)
+          };
+        })()`);
+        const NAME_OF = {};
+        (NODES.nodes || []).forEach(n => { NAME_OF[n.symbol] = n.name || n.symbol; });
+        check(`名单变动区块已渲染（${want.length} 行）`, () => {
+          assert.ok(hi.shown, "区块没显示——时间维度在页面上就不存在");
+          assert.equal(hi.rows.length, want.length,
+            `页面 ${hi.rows.length} 行，数据前 ${want.length} 家`);
+        });
+        check(`逐行的年度、新增、消失、变动率都等于数据`, () => {
+          const bad = [];
+          const digits = t => (t || '').replace(/[^0-9]/g, '');
+          want.forEach((w, i) => {
+            const got = hi.rows[i];
+            if (!got) { bad.push(`${w.symbol} 第 ${i + 1} 行缺失`); return; }
+            const label = NAME_OF[w.symbol] || w.symbol;
+            if (got.name !== label)
+              bad.push(`第 ${i + 1} 行是「${got.name}」应为「${label}」`);
+            if (got.years !== `${w.ch.from}→${w.ch.to}`)
+              bad.push(`${label} 年度「${got.years}」应为 ${w.ch.from}→${w.ch.to}`);
+            if (digits(got.added) !== String(w.ch.addedCount))
+              bad.push(`${label} 新增「${got.added}」应为 ${w.ch.addedCount}`);
+            if (digits(got.dropped) !== String(w.ch.droppedCount))
+              bad.push(`${label} 消失「${got.dropped}」应为 ${w.ch.droppedCount}`);
+            const pct = String(Math.round((w.ch.rate || 0) * 100));
+            if (digits(got.rate) !== pct)
+              bad.push(`${label} 变动率「${got.rate}」应为 ${pct}%`);
+          });
+          assert.equal(bad.length, 0, bad.join("；"));
+        });
+        check(`按变动率从高到低排，读者先看到动得最多的`, () => {
+          const nums = hi.rows.map(r => Number((r.rate || '').replace(/[^0-9]/g, '')));
+          const sorted = nums.slice().sort((a, b) => b - a);
+          assert.deepEqual(nums, sorted, `页面顺序：${nums.join(",")}`);
+        });
+        check(`每行都写明分母是该年带编号的条数`, () => {
+          const bad = want.filter((w, i) => {
+            const t = (hi.rows[i] || {}).title || '';
+            return !t.includes(String(w.ch.baseWithCid)) || !/RMI/.test(t);
+          }).map(w => w.symbol);
+          assert.equal(bad.length, 0,
+            `没写分母或没写口径：${bad.join("、")}`);
+        });
+        /* 本屏的底线。「中位变动 17%」只覆盖带编号的那部分条目，
+           不把这个比例印在同一屏，它就会被读成整份名单的换厂率。 */
+        check(`追得动的占比与变动率同屏`, () => {
+          const share = Math.round((HCOV.trackableShare || 0) * 100);
+          assert.ok(hi.foot.includes(String(share) + "%"),
+            `页脚没印 ${share}%：${hi.foot.slice(0, 180)}`);
+          assert.match(hi.foot, /只有名字.*不计入|不计入.*只有名字/,
+            `没说清只有名字的条目被排除：${hi.foot.slice(0, 180)}`);
+          assert.match(hi.foot, /不是整份名单|不是整份/,
+            `没把范围界清：${hi.foot.slice(0, 180)}`);
+        });
+        check(`不可比的年度标为不可比，不按 0 算`, () => {
+          assert.match(hi.foot, /不可比|不按 0/, `页脚：${hi.foot.slice(0, 180)}`);
+          const zeroed = Object.values(HC).some(c =>
+            (c.changes || []).some(x => !x.comparable && x.rate !== undefined));
+          assert.ok(!zeroed, "数据里给不可比的年度写了变动率");
+        });
+        check(`变动率是按 RMI 编号算的，导语写明了`, () => {
+          assert.ok(/Form SD/.test(hi.lead), `导语：${hi.lead.slice(0, 160)}`);
+          assert.ok(hi.lead.includes(String(HCOV.pairsComparable || 0)),
+            `导语没印可比组数 ${HCOV.pairsComparable}：${hi.lead.slice(0, 160)}`);
+        });
+        /* 导航这一条读的是 nav.chips——**首次渲染后、任何点击之前**那一份。
+           曾经在这里就地读 #secnav，结果恒为通过：前面的流向断言点过链条
+           芯片，而点击会走 renderRisk → renderNav 把导航重建好，等于在验
+           「修好之后是不是修好了」。名单变动来自第二条 fetch，要守的正是
+           首次渲染那一刻它有没有进导航。 */
+        check(`名单变动进了区块导航`, () => assert.ok(
+          (nav.chips || []).some(c => c.includes("名单变动")),
+          `首次渲染的导航里没有名单变动：${(nav.chips || []).join("、")}`
+          + "——区块显示了而导航没跟上，等于滚不到它那一屏就看不见"));
+        check(`每一行都看得见`, () => {
+          const blind = hi.rows.filter(r => !r.seen).length;
+          assert.equal(blind, 0, `${blind}/${hi.rows.length} 行没有布局盒`);
+        });
+        check(`名单变动区块无横向溢出`, () => assert.ok(hi.overflow <= 1,
+          `溢出 ${hi.overflow}px`));
+      } else {
+        console.log("  [--] 名单变动：本轮还没有 history.json，跳过"
+          + "（回溯历年申报要联网，Actions 跑过之后这一段自动生效）");
       }
 
       /* 链间上下游。这一段守的不只是「画出来了」，更是**它没有冒充实测数据**：

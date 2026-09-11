@@ -1601,6 +1601,56 @@ def main() -> int:
         (region.build_code_map([("F5", "")]) == {},
          "只有代码没有描述的配对进不了表——那是要补的对象，不是依据"),
     ]
+    # 有申报证据的公司掉出本轮取数时的续命规则。run 39 这一轮 SEC 的
+    # submissions 没给 LEG 带 sic，取数侧按「无 SIC 不收」把它排除，已发布的
+    # edges/LEG.json 成了孤儿，build_chain_nodes 直接中止——**整条流水线连续
+    # 两轮死掉，生产数据冻了两天**。续命是对的，但判据必须窄、标记必须反映
+    # 本轮，所以这几条在这里守着。
+    print("\n── 续命：有申报证据的公司掉出本轮取数 ────────────────────────────")
+    import importlib.util as _ilu
+    _spec = _ilu.spec_from_file_location(
+        "fetch_domestic_identity",
+        os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     "supply-chain", "fetch_domestic_identity.py"))
+    _fdi = _ilu.module_from_spec(_spec)
+    _spec.loader.exec_module(_fdi)
+    _prior = {
+        "LEG": {"symbol": "LEG", "cik": 58492, "sic": 2510},
+        "GONE": {"symbol": "GONE", "cik": 999, "sic": 3674},
+        "MOVED": {"symbol": "MOVED", "cik": 777, "sic": 3674},
+        "STALE": {"symbol": "STALE", "cik": 555, "sic": 3674,
+                  "confirmedThisScan": False,
+                  "carryBasis": "has-published-filing-evidence"},
+    }
+    _ev = {"LEG", "MOVED", "STALE", "AAPL"}
+    _a = {}
+    _carried_a = _fdi.carry_forward_with_evidence(_a, _prior, {777}, "x", _ev)
+    _b = {"STALE": dict(_prior["STALE"]), "AAPL": {"symbol": "AAPL", "cik": 320193}}
+    _fdi.carry_forward_with_evidence(_b, _prior, {777}, "x", _ev)
+    _c = {"X": {"symbol": "X", "cik": 1, "confirmedThisScan": False}}
+    _fdi.carry_forward_with_evidence(_c, {}, set(), None, _ev)
+    carry_cases = [
+        ("LEG" in _a and _a["LEG"]["sic"] == 2510,
+         "有已发布申报证据、本轮没收录的，连同它的 SIC 一起留住"),
+        (_a.get("LEG", {}).get("confirmedThisScan") is False
+         and _a["LEG"].get("carryBasis") == "has-published-filing-evidence",
+         "留下来的带着「本轮未确认」与依据——不标就是冒充本轮确认过"),
+        ("GONE" not in _a,
+         "没有边文件的掉出去就掉出去：替所有掉队公司续命才是在编池子"),
+        ("MOVED" not in _a,
+         "CIK 已在前两池的不续——续了就是拿旧公司盖住新公司"),
+        ("confirmedThisScan" not in _b.get("STALE", {}),
+         "上一轮续过、本轮确认到了，旧标记要清掉（它有边文件也照清）"),
+        ("confirmedThisScan" not in _c.get("X", {}),
+         "没有边文件的也照清——标记必须反映本轮"),
+        (len(_carried_a) <= len(_ev),
+         "续命家数不会超过有边文件的家数"),
+    ]
+    for ok, why in carry_cases:
+        if not ok:
+            failures.append(f"续命：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
     for ok, why in region_cases:
         if not ok:
             failures.append(f"国别：{why} 不成立")
@@ -1611,7 +1661,7 @@ def main() -> int:
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
-             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases) + len(body_cases) + len(lic_cases)
+             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases) + len(carry_cases) + len(body_cases) + len(lic_cases)
              + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:

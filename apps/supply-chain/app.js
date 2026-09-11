@@ -1659,9 +1659,16 @@
      写死清单会在区块增减时指向空处（有几个区块要等数据到了才 hidden=false），
      与首屏副标题栽的是同一类跟头。所以这里扫 DOM：拿到每个标题，看它后面那个
      区块是不是真的显示了，显示才进导航。 */
+  /* 导航可以重建，而且必须能重建：有区块（名单变动）是另一条 fetch 回来才
+     显示的，那时导航早画完了——第二十二轮就栽在这里，区块显示了、导航里没有，
+     等于那一块又消失了。重建时**先断开上一轮的观察器**，否则它还攥着已被
+     textContent="" 摘掉的旧链接，每次滚动都在给游离节点刷 class。 */
+  var navIo = null;
+
   function renderNav() {
     var nav = $("secnav");
     if (!nav) return;
+    if (navIo) { navIo.disconnect(); navIo = null; }
     var heads = document.querySelectorAll(
       ".sec-h > h2, .sechead > h2, .notice > h2, details > summary > h2");
     var items = [];
@@ -1704,7 +1711,7 @@
       links[a.getAttribute("data-sec")] = a;
     });
     var seen = {};
-    var io = new IntersectionObserver(function (entries) {
+    var io = navIo = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) { seen[e.target.id] = e.isIntersecting; });
       var current = null;
       items.forEach(function (it) { if (seen[it.id]) current = current || it.id; });
@@ -1722,6 +1729,82 @@
       var node = document.getElementById(it.id);
       if (node) io.observe(node);
     });
+  }
+
+  /* 历年名单变动。**存量只说明现状，变动说明方向。**
+
+     这一块的口径只有一条要紧：跨年身份只认 RMI 编号。七成条目只有名字，
+     按名字比对一个拼写差异就同时造出一条假新增和一条假消失——所以必须
+     同时印「追得动的占多少」，否则读者会把 17% 当成整份名单的换厂率。 */
+  function renderHistory(h, d) {
+    var sec = $("histsec");
+    if (!sec) return;
+    var NAME_OF = {};
+    (((d || {}).nodes) || []).forEach(function (n) {
+      NAME_OF[n.symbol] = n.name || n.symbol;
+    });
+    var cov = (h || {}).coverage || {};
+    var comps = (h || {}).companies || {};
+    var syms = Object.keys(comps);
+    if (!syms.length) { sec.hidden = true; return; }
+    sec.hidden = false;
+
+    // 取每家最近一个可比年度对，按变动率排序——读者要看的是谁动得最多。
+    var rows = [];
+    syms.forEach(function (sym) {
+      var ch = (comps[sym].changes || []).filter(function (c) {
+        return c.comparable;
+      })[0];
+      if (ch) rows.push({ symbol: sym, ch: ch });
+    });
+    rows.sort(function (a, b) { return (b.ch.rate || 0) - (a.ch.rate || 0); });
+
+    var pct = function (v) { return Math.round((v || 0) * 100) + "%"; };
+    setText($("hist-lead"),
+      "Form SD 一年一报，EDGAR 留着历年申报。回溯 " + (h.years || 4)
+      + " 年后能看出每家今年新进了哪座冶炼厂、砍掉了哪座——"
+      + "存量名单只说明现状，变动才说明方向。"
+      + "可比公司 " + fmt(cov.companiesTracked || 0) + " 家（有名单的共 "
+      + fmt(cov.companiesWithList || 0) + " 家）· 年度对比 "
+      + fmt(cov.pairsComparable || 0) + " 组 · 变动率中位 "
+      + pct(cov.medianRate) + "（最小 " + pct(cov.minRate)
+      + " · 最大 " + pct(cov.maxRate) + "）。下面按最近一个可比年度的变动率排。");
+
+    var host = $("hist-rows");
+    host.textContent = "";
+    rows.slice(0, 20).forEach(function (r) {
+      var line = el("div", "hrow");
+      line.appendChild(el("span", "nm", NAME_OF[r.symbol] || r.symbol));
+      line.appendChild(el("span", "yr", r.ch.from + "→" + r.ch.to));
+      var ad = el("span", "ad");
+      ad.appendChild(document.createTextNode("+" + fmt(r.ch.addedCount)));
+      ad.appendChild(el("s", null, " 新增"));
+      line.appendChild(ad);
+      var dr = el("span", "dr");
+      dr.appendChild(document.createTextNode("−" + fmt(r.ch.droppedCount)));
+      dr.appendChild(el("s", null, " 消失"));
+      line.appendChild(dr);
+      var rt = el("span", "rt");
+      rt.appendChild(document.createTextNode(pct(r.ch.rate)));
+      rt.appendChild(el("s", null, " 变动"));
+      line.appendChild(rt);
+      line.title = (NAME_OF[r.symbol] || r.symbol) + "：" + r.ch.from + " → "
+        + r.ch.to + " 新增 " + r.ch.addedCount + " 座、消失 "
+        + r.ch.droppedCount + " 座，分母是该年带 RMI 编号的 "
+        + r.ch.baseWithCid + " 条。只比带编号的条目——只有名字的跨年追不了。";
+      host.appendChild(line);
+    });
+
+    // **这句话必须跟着那个百分比一起出现。** 没有它，17% 会被读成整份名单的
+    // 换厂率，而它只覆盖带编号的那三成。
+    setText($("hist-foot"),
+      "跨年身份只认 RMI 编号：编号是冶炼厂设施的全球唯一标识，换一年仍是同一座厂。"
+      + "只有名字的条目不计入变动——一个拼写差异就会同时造出一条假新增和一条假消失。"
+      + "本轮追得动的条目占 " + pct(cov.trackableShare)
+      + "，所以上面的变动率说的是**这部分**的换厂情况，不是整份名单。"
+      + "某一年没有带编号条目的公司标为不可比，不按 0 计入。"
+      + (cov.failedCount ? "另有 " + cov.failedCount + " 家本轮取数失败，"
+         + "保留不撤——失败不等于没有变动。" : ""));
   }
 
   function renderMinerals(d) {
@@ -2173,6 +2256,19 @@
         throw new Error("数据文件为空或结构不符");
       }
       render(d);
+      // 历年变动单独拉。**拉不到不算失败**：它是新产物，旧部署没有这个文件，
+      // 那一块不出就行——不能让它把主渲染拖进错误路径（第十六轮那次
+      // 未捕获异常就是这么把整页带塌的）。
+      fetch("history.json", { cache: "no-cache" })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (h) {
+          if (!h) return;
+          renderHistory(h, d);
+          // **这一块是刚显示出来的，导航得重扫一遍。** 不重扫，名单变动
+          // 就只有滚到它才看得见。
+          renderNav();
+        })
+        .catch(function () { /* 没有历年数据就不画这一块 */ });
     })
     .catch(function (err) {
       fail("产业链数据加载失败：" + (err && err.message ? err.message : "未知错误") +

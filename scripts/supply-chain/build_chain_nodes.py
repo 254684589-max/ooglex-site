@@ -1242,6 +1242,15 @@ def build() -> None:
         node["pool"] = "sec-domestic-filer"
         node["stageNote"] = ("报 10-K 的美国本土发行人（非标普成分股），"
                              "站内无板块分类；环节由 SEC 行业码判定")
+        # 身份沿用上一轮的要留痕。取数脚本在「本轮没收录但仓库里有它已发布的
+        # 申报证据」时续命（见 fetch_domestic_identity 里那段），不标出来，
+        # 页面就会把上一轮的身份当成本轮确认过的——与 countryBasis 同一条理由：
+        # **补来的值必须带着它是补来的这件事一起走。**
+        if domestic_pool[symbol].get("confirmedThisScan") is False:
+            node["poolConfirmedThisScan"] = False
+            node["poolNote"] = ("本轮 SEC 申报人清单里没有这一家（多为字段缺失或"
+                                "取数失败），身份沿用上一轮；它的冶炼厂名单来自"
+                                "已发布的 Form SD 申报，出处未变")
         # 判不出环节的不收。取数脚本已经挡掉「没有 SIC」的，但**有 SIC 却
         # 落在两张表的空隙里**是另一回事——4,884 家美国申报人用到的行业码
         # 比标普 500 那 495 家宽得多，表里必然有洞。
@@ -1262,10 +1271,17 @@ def build() -> None:
         print(f"[!!] 本土发行人有 {len(dropped_domestic)} 个代码与前两池相同，"
               f"已跳过（不覆盖）：{'、'.join(dropped_domestic[:10])}")
     if dropped_no_stage:
+        # 代码和公司都要打出来。只打 SIC 时遇到「这家压根没有 SIC」就打出一个
+        # 空括号（run 39 就是这样），日志里看不出掉的是谁，而下游一旦因为它
+        # 中止，排查得从头重跑二十分钟的取数。
         codes = sorted({str(sic) for _, sic in dropped_no_stage if sic})
+        who = "、".join(f"{sym}({sic if sic else '无 SIC'})"
+                        for sym, sic in dropped_no_stage[:12])
         print(f"[!!] 本土发行人有 {len(dropped_no_stage)} 家判不出环节，未收录"
-              f"（SIC 表的空隙，要补的码：{'、'.join(codes[:20])}"
-              + ("…" if len(codes) > 20 else "") + "）")
+              f"：{who}" + ("…" if len(dropped_no_stage) > 12 else "")
+              + (f"（SIC 表的空隙，要补的码：{'、'.join(codes[:20])}"
+                 + ("…" if len(codes) > 20 else "") + "）" if codes else
+                 "（都没有 SIC，不是表的空隙）"))
     nodes.extend(domestic_nodes)
 
     # 关系边：抽取器写在 edges/ 下，本脚本只读、只索引、只校验，不自己造边。
@@ -1292,9 +1308,30 @@ def build() -> None:
         node["edgeCount"] = edge_index.get(node["id"], {}).get("count", 0)
     orphans = sorted(set(edge_index) - node_ids)
     if orphans:
-        # 边文件指向节点表里没有的公司：多半是成分股调整后遗留的旧文件。
-        # 留着会让公司页显示一份不再属于任何节点的名单。
-        raise SystemExit(f"边文件 {orphans} 不在节点表中，中止（请删除或重跑抽取器）")
+        # 边文件指向节点表里没有的公司。留着会让公司页显示一份不再属于任何
+        # 节点的名单，所以这里仍然中止——但**中止的理由必须写清楚**，否则
+        # 下一个人只看到一句「请删除或重跑抽取器」，而删除恰恰是不许做的
+        # （AGENTS.md：不得删除有效历史数据来掩盖抓取失败）。
+        #
+        # run 39 这一条是取数侧的字段缺失造成的：SEC 这一轮没给 LEG 带 sic，
+        # 取数脚本按「无 SIC 不收」排除了它，已发布的边文件就成了孤儿，
+        # 整条流水线连续两轮中止。那个根因已在 fetch_domestic_identity 里
+        # 修掉（有申报证据的续命并标记）。剩下还能触发这里的，是真的不一致：
+        # 代码被改名、撞码让路、或者 SIC 落在表的空隙里判不出环节。
+        detail = []
+        for symbol in orphans:
+            if symbol in domestic_pool:
+                why = "在本土池里但没进节点表（撞码让路或判不出环节，见上面的 [!!]）"
+            elif any(symbol == sym for sym, _ in dropped_no_stage):
+                why = "判不出环节被剔除（补 SIC 表）"
+            else:
+                why = "三个池都没有这家（代码改名，或取数侧把它丢了）"
+            detail.append(f"{symbol}：{why}")
+        raise SystemExit(
+            "边文件不在节点表中，中止——公司页会显示一份没有归属的名单：\n  "
+            + "\n  ".join(detail)
+            + "\n处理顺序：先查取数侧为什么少了这家（**不要删边文件**，"
+            "那是可核验的申报证据）；确属代码改名的，按新代码重跑抽取器。")
 
     # ── 上游重叠：本板块第一条公司 ↔ 公司的关系 ──────────────────────────
     # 它是两份原始申报的**直接交集**（甲的名单里有 X、乙的名单里也有 X），
