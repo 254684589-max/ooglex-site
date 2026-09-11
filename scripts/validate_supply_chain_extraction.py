@@ -1678,7 +1678,9 @@ def main() -> int:
     # 只有一份申报（产出方应整家跳过）。编号必须是 CID+4~6 位，三位认不出来。
     _FILINGS = {111: ["0001-26-1", "0001-25-1", "0001-24-1"],
                 222: ["0002-26-1", "0002-25-1", "0002-24-1"],
-                333: ["0003-26-1"]}
+                333: ["0003-26-1"],
+                444: ["0004-26-1", "0004-25-1"],
+                555: ["0005-26-1", "0005-25-1", "0005-24-1"]}
     _DATES = {"26": "2026-05-20", "25": "2025-05-20", "24": "2024-05-20"}
     _SHEETS = {
         "0001-26-1": [("Alpha Smelter", "CID1001", "China"),
@@ -1694,6 +1696,32 @@ def main() -> int:
                       ("Eta Smelter", "CID2102", "Peru")],
         "0002-24-1": [("Zeta Smelter", "CID2101", "China")],
         "0003-26-1": [("Solo Smelter", "CID3201", "Chile")],
+    }
+    # DDD：每份申报里两个附件——正文只列 2 家，冲突矿产报告列 30 家。
+    # 取第一个能解出行的就会读到 2 家，于是「少了 28 座」被记成换厂。
+    _SHORT = {"0004-26-1": [("Short One", "CID4001", "China"),
+                            ("Short Two", "CID4002", "Peru")],
+              "0004-25-1": [("Short One", "CID4001", "China"),
+                            ("Short Two", "CID4002", "Peru")]}
+    _LONG = {"0004-26-1": [(f"Full Works {i}", f"CID4{i:03d}", "China")
+                           for i in range(100, 130)],
+             "0004-25-1": [(f"Full Works {i}", f"CID4{i:03d}", "China")
+                           for i in range(100, 130)]}
+    # EEE 照 ALLE 的真实形状搭：条目数三年都是 20，但 2024 年只有 2 条带编号
+    # （10%）——申报人那年没写编号。按编号比对会得出「新增 18」，那是编号覆盖率
+    # 变了，不是换厂。
+    #
+    # **必须给它一对可比的年度**，否则产出方会整家跳过（一组可比都没有就不收），
+    # 那条断言就会因为「公司不在产出里」而恒为通过——我第一版正是这样，
+    # 写了个 `or "EEE" not in companies` 的退路，等于什么都没验。
+    _EEE = {
+        "0005-26-1": [(f"Eee Works {i}", f"CID5{i:03d}", "China")
+                      for i in range(100, 120)],
+        "0005-25-1": [(f"Eee Works {i}", f"CID5{i:03d}", "China")
+                      for i in range(100, 120)],
+        "0005-24-1": ([(f"Eee Works {i}", f"CID5{i:03d}", "China")
+                       for i in range(100, 102)]
+                      + [(f"Eee Works {i}", "", "China") for i in range(102, 120)]),
     }
 
     def _sheet(rows):
@@ -1712,8 +1740,19 @@ def main() -> int:
                 "filingDate": [_DATES[a.split("-")[1]] for a in accs]}}}).encode()
         if url.endswith("index.json"):
             acc = url.rsplit("/", 2)[-2]
-            return json.dumps({"directory": {"item": [{"name": f"{acc}ex101.htm"}]}}).encode()
+            names = [f"{acc}ex101.htm"]
+            if acc in {a.replace("-", "") for a in _SHORT}:
+                # 短的排在前面（文件名排序就会这样），正是第一版踩的坑
+                names = [f"{acc}exa.htm", f"{acc}exb.htm"]
+            return json.dumps({"directory": {"item": [{"name": n} for n in names]}}).encode()
         for acc, rows in _SHEETS.items():
+            if acc.replace("-", "") in url:
+                return _sheet(rows)
+        for acc in _SHORT:
+            bare = acc.replace("-", "")
+            if bare in url:
+                return _sheet(_SHORT[acc] if url.endswith("exa.htm") else _LONG[acc])
+        for acc, rows in _EEE.items():
             if acc.replace("-", "") in url:
                 return _sheet(rows)
         raise RuntimeError(f"测试桩没准备这个 URL：{url}")
@@ -1724,14 +1763,17 @@ def main() -> int:
     _H.NODES_PATH = os.path.join(_tmp, "nodes.json")
     with open(_H.NODES_PATH, "w", encoding="utf-8") as _h:
         json.dump({"nodes": [{"symbol": s, "cik": c} for s, c in
-                             (("AAA", 111), ("BBB", 222), ("CCC", 333))],
-                   "edgeIndex": {"AAA": {}, "BBB": {}, "CCC": {}}}, _h)
+                             (("AAA", 111), ("BBB", 222), ("CCC", 333),
+                              ("DDD", 444), ("EEE", 555))],
+                   "edgeIndex": {k: {} for k in
+                                 ("AAA", "BBB", "CCC", "DDD", "EEE")}}, _h)
     import contextlib
     with contextlib.redirect_stdout(_io.StringIO()):
         _H.main()
     with open(_H.OUT_PATH, encoding="utf-8") as _h:
         _PROD = json.load(_h)
-    _payload = {"nodes": [{"symbol": s} for s in ("AAA", "BBB", "CCC")]}
+    _payload = {"nodes": [{"symbol": s} for s in
+                          ("AAA", "BBB", "CCC", "DDD", "EEE")]}
 
     def _contract(doc):
         path = os.path.join(_tmp, "probe.json")
@@ -1758,8 +1800,20 @@ def main() -> int:
          "某年没有带编号条目时标不可比，而不是按 0 算成「没变」"),
         (abs((_aaa[0].get("rate") or 0) - 2 / 3) < 0.001 and _aaa[0].get("baseWithCid") == 3,
          "变动率＝(新增+消失)/该年带编号条数：1+1 over 3 = 0.667"),
-        (abs((_PROD.get("coverage") or {}).get("trackableShare", 0) - 0.6) < 0.001,
-         "追得动的占比按条目算：3 条带编号 / 5 条登记 = 60%"),
+        (((_PROD.get("companies") or {}).get("DDD", {}).get("years") or [{}])[0]
+         .get("listed") == 30,
+         "一份申报里有长短两个附件时取条目最多的那个（30 条，不是 2 条）"
+         "——取错附件会把「少了 28 座」记成换厂"),
+        (any(not c.get("comparable") and "10%" in (c.get("note") or "")
+             and c.get("cidCoverageFrom") is not None
+             for c in (_PROD.get("companies") or {}).get("EEE", {}).get("changes", [])),
+         "两年编号覆盖率差太远时标不可比，并把两年的覆盖率写进说明"
+         "（ALLE 实测 7% 比 100%，按编号比会得出「新增 306」）"),
+        (any(c.get("comparable") for c in
+             (_PROD.get("companies") or {}).get("EEE", {}).get("changes", [])),
+         "同一家公司里覆盖率够的那一对照旧可比——不是整家作废"),
+        ((_PROD.get("minCidCoverage") or 0) > 0,
+         "按编号比对的前置条件随数据发布，页面照它说话"),
         (_broken(lambda d: d.update(basis="name")), "契约咬得住：basis 改成按名字比对"),
         (_broken(lambda d: d["coverage"].pop("trackableShare")),
          "契约咬得住：拿掉 trackableShare"),

@@ -1396,6 +1396,11 @@ async function main() {
         });
         check(`不可比的年度标为不可比，不按 0 算`, () => {
           assert.match(hi.foot, /不可比|不按 0/, `页脚：${hi.foot.slice(0, 180)}`);
+          // 编号覆盖率这条前置条件也要印出来，而且印的必须是数据里那个数——
+          // 代码里定一个、页面上写另一个，是最难发现的那类错。
+          const floor = Math.round((HISTORY.minCidCoverage || 0) * 100);
+          assert.ok(hi.foot.includes(floor + "%"),
+            `页脚没印编号覆盖率门槛 ${floor}%：${hi.foot.slice(0, 220)}`);
           const zeroed = Object.values(HC).some(c =>
             (c.changes || []).some(x => !x.comparable && x.rate !== undefined));
           assert.ok(!zeroed, "数据里给不可比的年度写了变动率");

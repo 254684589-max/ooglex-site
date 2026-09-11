@@ -52,10 +52,22 @@ TIMEOUT = 30
 GAP = 0.20
 BODY_LIMIT = 12_000_000
 YEARS = int(os.environ.get("HISTORY_YEARS", "4"))
-MAX_REQUESTS = int(os.environ.get("HISTORY_MAX_REQUESTS", "9000"))
+# 每份申报现在要把候选附件都解一遍（见 parse_one），请求数比「取第一个」
+# 多几倍。预算按 369 家 × 4 份 × (1 索引 + 最多 6 份文档) 留足。
+MAX_REQUESTS = int(os.environ.get("HISTORY_MAX_REQUESTS", "24000"))
 # 每个年度对里，逐条列出的新增／消失上限。超出只报数，并写明「另有 N 条未单列」
 # ——默默截断会让读者以为那就是全部。
 LIST_CAP = int(os.environ.get("HISTORY_LIST_CAP", "40"))
+# 一个年度对要能按编号比，**两年都得有过半条目带编号**。
+#
+# 实测 ALLE：条目数四年稳在 354/370/343/338，而带编号的是 24/38/343/338——
+# 申报人自己在 2025 年开始写编号了。拿「7% 带编号」的一年去比「100% 带编号」
+# 的一年，得出「新增 306、消失 1」，那不是换厂，是编号覆盖率变了。
+#
+# 半数这条线是可以说清的：编号条目低于一半时，它只是这份名单的少数样本，
+# 年度差异由「哪些条目刚好带了编号」主导，而不是由供应链变化主导。
+# 阈值随数据一起发布，页面照它说话。
+MIN_CID_COVERAGE = float(os.environ.get("HISTORY_MIN_CID_COVERAGE", "0.5"))
 
 CONTACT = os.environ.get("SEC_CONTACT", "contact via https://www.ooglex.com")
 UA = f"Ooglex Supply Chain Research/1.0 ({CONTACT})"
@@ -132,8 +144,33 @@ def exhibit_urls(cik: int, accession: str) -> list[str]:
     return [f"{base}/{n}" for n in docs[:6]]
 
 
+# 一份申报里认为「名单已经拿全」的行数。到了这个量级就不再试别的附件，省请求。
+RICH_ENOUGH = 100
+
+
 def parse_one(parser, cik: int, accession: str) -> tuple[set, int, int]:
-    """返回（该年的 CID 集合, 总条目数, 只有名字的条目数）。"""
+    """返回（该年的 CID 集合, 总条目数, 只有名字的条目数）。
+
+    **取这份申报里条目最多的那个附件，不是第一个能解出东西的。**
+
+    第一版是「谁先解出行就用谁」，跑出来的数一眼就不对：
+
+        SHW   32 → 9 → 30 → 7 条       ERII  316 → 13 → 13 → 49 条
+        HAYW  336 → 351 → 368 → 20 条  MO     19 → 257 → 266 → 41 条
+
+    没有公司会这一年报 368 座厂、下一年报 20 座，更不会来回跳。真相是一份
+    Form SD 提交里常有**两份东西**：正文（只列几家或一句话带过）和冲突矿产
+    报告附件（完整的表）。文件名排序一变，先解出行的就成了那份短的，于是
+    「少了 348 座」被记成换厂——而它只是我取错了附件。
+
+    这一条比按名字比对更阴险：ERII 2023→2024 的变动率只有 96%，**按数值筛
+    异常永远筛不到它**，只有看「新增 0 / 消失 303」这个形状才看得出来。
+
+    所以逐个附件都解一遍，取条目最多的。代价是请求数翻几倍（预算已相应放大），
+    换来的是不把取错附件说成企业换了供应链。parse_smelters 只收像冶炼厂行的
+    行（带编号，或厂名＋国别＋矿种齐全），所以「条目最多」不会被财务表带偏。
+    """
+    best: tuple[set, int, int] = (set(), 0, 0)
     for url in exhibit_urls(cik, accession):
         try:
             raw = fetch(url)
@@ -144,12 +181,14 @@ def parse_one(parser, cik: int, accession: str) -> tuple[set, int, int]:
         except Exception:                          # noqa: BLE001
             continue
         rows = parsed.get("smelters") or []
-        if not rows:
+        if len(rows) <= best[1]:
             continue
         cids = {(r.get("cid") or "").strip() for r in rows if (r.get("cid") or "").strip()}
         name_only = sum(1 for r in rows if not (r.get("cid") or "").strip())
-        return cids, len(rows), name_only
-    return set(), 0, 0
+        best = (cids, len(rows), name_only)
+        if len(rows) >= RICH_ENOUGH:
+            break                                  # 已经是完整表，不必再试
+    return best
 
 
 def main() -> int:
@@ -192,11 +231,25 @@ def main() -> int:
         changes = []
         for new, old in zip(years, years[1:]):
             a, b = new["_cids"], old["_cids"]
+            cov_new = new["withCid"] / max(1, new["listed"])
+            cov_old = old["withCid"] / max(1, old["listed"])
             if not a or not b:
                 # **一边没有带编号的条目就算不了**，如实标出来，不拿 0 充当「没变」。
                 changes.append({"from": old["year"], "to": new["year"],
                                 "comparable": False,
                                 "note": "该年没有带 RMI 编号的条目，跨年无法比对"})
+                continue
+            if min(cov_new, cov_old) < MIN_CID_COVERAGE:
+                # 见 MIN_CID_COVERAGE 的注释：编号覆盖率差太远时，差异说的是
+                # 「哪些条目带了编号」而不是供应链变化。如实标不可比。
+                changes.append({
+                    "from": old["year"], "to": new["year"], "comparable": False,
+                    "note": (f"{old['year']} 年 {cov_old * 100:.0f}%、"
+                             f"{new['year']} 年 {cov_new * 100:.0f}% 的条目带 RMI 编号，"
+                             f"不足 {MIN_CID_COVERAGE * 100:.0f}%——按编号比对只会"
+                             "反映编号覆盖率的变化，不是换厂"),
+                    "cidCoverageFrom": round(cov_old, 4),
+                    "cidCoverageTo": round(cov_new, 4)})
                 continue
             added = sorted(a - b)
             dropped = sorted(b - a)
@@ -210,6 +263,8 @@ def main() -> int:
                 "addedOmitted": max(0, len(added) - LIST_CAP),
                 "droppedOmitted": max(0, len(dropped) - LIST_CAP),
                 "baseWithCid": len(b), "rate": round(rate, 4),
+                "cidCoverageFrom": round(cov_old, 4),
+                "cidCoverageTo": round(cov_new, 4),
             })
         if not any(c.get("comparable") for c in changes):
             continue
@@ -241,6 +296,9 @@ def main() -> int:
                 "跨年可比；只有名字的条目一个拼写差异就会同时造出一条假新增和"
                 "一条假消失，因此不计入。下面的 trackableShare 是追得动的比例。",
         "years": YEARS,
+        # 按编号比对的前置条件，随数据发布——页面要能照着说，而不是我在代码里
+        # 定了个数、页面上写另一个数。
+        "minCidCoverage": MIN_CID_COVERAGE,
         "companies": companies,
         "coverage": {
             "companiesTracked": len(companies),

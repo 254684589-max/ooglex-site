@@ -1336,6 +1336,12 @@ def check_history(payload: dict, errors: list[str]) -> dict:
     if "RMI" not in note or "名字" not in note:
         fail(errors, "history.note 没说清「只比带 RMI 编号的条目、只有名字的不计入」")
 
+    floor = hist.get("minCidCoverage")
+    if not isinstance(floor, (int, float)) or not 0 < floor <= 1:
+        fail(errors, f"history.minCidCoverage = {floor!r}，必须是 (0,1] 的真实比例"
+                     "——按编号比对的前置条件要随数据发布，页面才能照它说话")
+        floor = None
+
     cov = hist.get("coverage") or {}
     for key in ("companiesTracked", "companiesWithList", "pairsComparable",
                 "medianRate", "trackableShare"):
@@ -1359,12 +1365,14 @@ def check_history(payload: dict, errors: list[str]) -> dict:
         fail(errors, f"{len(orphan)} 家历年数据的代码不在节点表里："
                      f"{'、'.join(orphan[:6])}——页面查不到公司名")
 
-    pairs = bad_rate = zeroed = no_basis = 0
+    pairs = bad_rate = zeroed = no_basis = low_cov = 0
     for sym, entry in companies.items():
         changes = entry.get("changes") or []
         if not any(c.get("comparable") for c in changes):
             fail(errors, f"{sym} 一组可比年度都没有，不该出现在 history.companies 里")
         for change in changes:
+            a = change.get("cidCoverageFrom")
+            b = change.get("cidCoverageTo")
             if not change.get("comparable"):
                 # 不可比就只留说明。带上 rate 等于拿 0 充当「没变」。
                 if "rate" in change:
@@ -1372,10 +1380,24 @@ def check_history(payload: dict, errors: list[str]) -> dict:
                 if not change.get("note"):
                     fail(errors, f"{sym} {change.get('from')}→{change.get('to')} "
                                  "标了不可比却没写原因")
+                # 因覆盖率不足判不可比的，两年的覆盖率必须在，而且真的不足——
+                # 契约自己算一遍，不信产出方的结论（与 HHI 分档同一条做法）。
+                if floor is not None and a is not None and b is not None \
+                        and min(a, b) >= floor:
+                    fail(errors, f"{sym} {change.get('from')}→{change.get('to')} "
+                                 f"标了不可比，但两年编号覆盖率 {a}/{b} 都不低于 "
+                                 f"{floor}——判据与结论不一致")
                 continue
             pairs += 1
             if change.get("basis") != "rmi-cid":
                 no_basis += 1
+            # 可比的反过来也要成立：覆盖率必须真的够。缺字段同样算违约——
+            # 没有它，读者无从判断这一对该不该信。
+            if floor is not None:
+                if a is None or b is None:
+                    low_cov += 1
+                elif min(a, b) < floor:
+                    low_cov += 1
             base = change.get("baseWithCid") or 0
             want = (change.get("addedCount", 0) + change.get("droppedCount", 0)) / base \
                 if base else None
@@ -1396,6 +1418,9 @@ def check_history(payload: dict, errors: list[str]) -> dict:
                      "不许按 0 混进统计")
     if no_basis:
         fail(errors, f"{no_basis} 组可比年度没标 basis=rmi-cid")
+    if low_cov:
+        fail(errors, f"{low_cov} 组判为可比，但两年的编号覆盖率缺字段或低于 "
+                     f"{floor}——覆盖率差太远时按编号比只反映编号覆盖率的变化")
     if bad_rate > 3:
         fail(errors, f"另有 {bad_rate - 3} 组 rate 与分子分母对不上")
     if pairs != cov.get("pairsComparable"):
