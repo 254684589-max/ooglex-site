@@ -32,12 +32,18 @@
 禁令——附件 21 探针第一轮 60/60 报「没有」，实际是我的文件名正则挡掉了所有
 真实形态。
 
-## 文档选择必须用「取条目最多的」，不能用「第一个解出行的」
+## 文档按**体积**降序读，解出带编号的就收手
 
 一份 Form SD 提交里常有两份东西：正文（只列几家或一句话带过）和冲突矿产
-报告附件（完整表格）。第二十二轮实测过：按「第一个解出行的」会读到那份短的，
-于是 SHW 的条目数在 32 → 9 → 30 → 7 之间来回跳。**这个探针要是重蹈那个覆辙，
-会把「有名单」误判成「没名单」，方向正好是自我否定。**
+报告附件（完整表格）。按文件名排序会读到正文那份短的（第二十二轮实测：
+SHW 的条目数在 32 → 9 → 30 → 7 之间来回跳）。
+
+第一版按文件名排序、每份申报读 6 个文档全解一遍，**跑 68 分钟没跑完**，
+而且与生产抽取器（`extract_form_sd.list_documents()` 按 size 降序）不一致：
+文档多于 6 个时最大那份可能被截掉，「有名单」会被读成「没名单」。
+
+现在按体积降序读、最多 3 个、**解出带编号条目就立刻返回**——判据问的是
+「这一年有没有带编号的名单」，不是「最全的名单有多大」，不必全解一遍。
 
 ## 只读
 
@@ -61,8 +67,9 @@ YEARS = int(os.environ.get("BACKFILL_YEARS", "4"))
 MAX_REQUESTS = int(os.environ.get("BACKFILL_MAX_REQUESTS", "9000"))
 # 判据。改这个数等于改判据，必须连同上面的理由一起改。
 HIT_FLOOR = float(os.environ.get("BACKFILL_HIT_FLOOR", "0.10"))
-# 一份文档解出这么多条就不再试别的附件（省请求）。与 build_smelter_history 同值。
-RICH_ENOUGH = 100
+# 每份申报最多读几个文档。按体积降序，最大那份几乎一定是完整名单表，
+# 所以 3 个足够；第一版读 6 个且按文件名排序，跑 68 分钟没跑完。
+MAX_DOCS = int(os.environ.get("BACKFILL_MAX_DOCS", "3"))
 
 CONTACT = os.environ.get("SEC_CONTACT", "contact via https://www.ooglex.com")
 UA = f"Ooglex Supply Chain Research/1.0 ({CONTACT})"
@@ -125,23 +132,50 @@ def sd_filings(cik: int, limit: int) -> list[dict]:
 
 
 def exhibit_urls(cik: int, accession: str) -> list[str]:
+    """这份申报里值得一读的文档，**按体积从大到小**。
+
+    第一版按文件名排序（"ex" 开头的优先），跑了 68 分钟还没完，而且排序方式
+    与生产抽取器不一致——`extract_form_sd.list_documents()` 是按 `size` 降序取的。
+    两处不一致有两个后果，方向都不好：
+
+    一、**慢**。要把 6 份文档全解一遍才敢说「这年没名单」，而冲突矿产报告
+        附件常有几百 KB 到几 MB。
+    二、**假阴性**。文档超过 6 个时，最大那份（几乎一定是完整名单表）可能
+        排在名字序后面被截掉，于是「有名单」被读成「没名单」。
+
+    按体积降序同时解决两件事：最可能是名单的那份排第一，命中后立刻收手。
+    跳过的规则也与生产抽取器对齐（`skip_reason`）：整份提交的 .txt 以 0 开头，
+    它把所有附件拼在一起，解起来又大又慢，而真名单一定另有单独附件。
+    """
     acc = accession.replace("-", "")
     base = f"https://www.sec.gov/Archives/edgar/data/{cik}/{acc}"
     try:
         listing = json.loads(fetch(f"{base}/index.json").decode("utf-8", "replace"))
     except Exception:                              # noqa: BLE001
         return []
-    names = [item.get("name") or "" for item in
-             ((listing.get("directory") or {}).get("item") or [])]
-    docs = [n for n in names if n.lower().endswith((".htm", ".html", ".txt"))]
-    docs.sort(key=lambda n: (0 if "ex" in n.lower() else 1, n))
-    return [f"{base}/{n}" for n in docs[:6]]
+    docs = []
+    for item in ((listing.get("directory") or {}).get("item") or []):
+        name = str(item.get("name") or "")
+        low = name.lower()
+        if not low.endswith((".htm", ".html")):
+            continue
+        if low.startswith("0") or "index" in low:  # 与 extract_form_sd 同一条规则
+            continue
+        try:
+            size = int(item.get("size") or 0)
+        except (TypeError, ValueError):
+            size = 0
+        docs.append((size, name))
+    docs.sort(reverse=True)
+    return [f"{base}/{n}" for _, n in docs[:MAX_DOCS]]
 
 
-def best_parse(parser, cik: int, accession: str) -> tuple[int, int, str]:
-    """取这份申报里条目最多的那个附件。返回（条目数, 带编号数, 文档名）。
+def first_with_cid(parser, cik: int, accession: str) -> tuple[int, int, str]:
+    """按体积从大到小读，**解出带编号的条目就立刻返回**。
 
-    见文件头：用「第一个解出行的」会读到正文那份短的，把有名单误判成没名单。
+    命中定义是「这一年有没有带 RMI 编号的名单」，不是「这一年最全的名单有多大」。
+    所以不必把每份文档都解一遍——第一份带编号的就足以回答判据要问的问题。
+    这是第一版跑 68 分钟没跑完的主因。
     """
     best = (0, 0, "")
     for url in exhibit_urls(cik, accession):
@@ -154,12 +188,11 @@ def best_parse(parser, cik: int, accession: str) -> tuple[int, int, str]:
         except Exception:                          # noqa: BLE001
             continue
         rows = parsed.get("smelters") or []
-        if len(rows) <= best[0]:
-            continue
         cids = sum(1 for r in rows if (r.get("cid") or "").strip())
-        best = (len(rows), cids, url.rsplit("/", 1)[-1])
-        if len(rows) >= RICH_ENOUGH:
-            break
+        if cids > 0:
+            return (len(rows), cids, url.rsplit("/", 1)[-1])
+        if len(rows) > best[0]:
+            best = (len(rows), 0, url.rsplit("/", 1)[-1])
     return best
 
 
@@ -231,7 +264,7 @@ def main() -> int:
             continue
         best_year = None
         for filing in filings[1:]:                 # 跳过最新那份（已知没名单）
-            rows, cids, doc = best_parse(parser, cik, filing["accession"])
+            rows, cids, doc = first_with_cid(parser, cik, filing["accession"])
             if cids > 0:
                 best_year = (filing["date"][:4], rows, cids, doc)
                 break
