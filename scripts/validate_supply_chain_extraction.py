@@ -1651,6 +1651,140 @@ def main() -> int:
             failures.append(f"续命：{why} 不成立")
         print(f"  [{'OK' if ok else 'XX'}] {why}")
 
+    # 产出方与发布契约对不对得上。**读代码不算验证**：本地开发用的那份构造数据
+    # 违反了契约里的一条（有公司一组可比年度都没有），而真正的产出方恰好会跳过
+    # 这种公司——也就是说，两边到底一致不一致，构造数据根本测不出来。
+    #
+    # 这里不造产出，而是把产出方的网络层换掉，让它走自己的真实代码路径（解析、
+    # 跨年比对、汇总、序列化全是它自己的），再拿它写出的文件过契约。历年回溯要
+    # 联网，而 SEC 在开发容器里取不到，所以这是唯一能在本地守住这条的办法。
+    print("\n── 历年变动：产出方的产出过不过发布契约 ──────────────────────────")
+    import tempfile
+    import io as _io
+    _hspec = _ilu.spec_from_file_location(
+        "build_smelter_history",
+        os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     "supply-chain", "build_smelter_history.py"))
+    _H = _ilu.module_from_spec(_hspec)
+    _hspec.loader.exec_module(_H)
+    _gspec = _ilu.spec_from_file_location(
+        "validate_supply_chain_graph",
+        os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     "validate_supply_chain_graph.py"))
+    _G = _ilu.module_from_spec(_gspec)
+    _gspec.loader.exec_module(_G)
+
+    # 三种形态各一家：两年都有编号（可比）· 新的一年只有名字（该年不可比）·
+    # 只有一份申报（产出方应整家跳过）。编号必须是 CID+4~6 位，三位认不出来。
+    _FILINGS = {111: ["0001-26-1", "0001-25-1", "0001-24-1"],
+                222: ["0002-26-1", "0002-25-1", "0002-24-1"],
+                333: ["0003-26-1"]}
+    _DATES = {"26": "2026-05-20", "25": "2025-05-20", "24": "2024-05-20"}
+    _SHEETS = {
+        "0001-26-1": [("Alpha Smelter", "CID1001", "China"),
+                      ("Delta Smelter", "CID1004", "Japan"),
+                      ("Gamma Smelter", "CID1003", "Brazil")],
+        "0001-25-1": [("Alpha Smelter", "CID1001", "China"),
+                      ("Beta Smelter", "CID1002", "Peru"),
+                      ("Gamma Smelter", "CID1003", "Brazil")],
+        "0001-24-1": [("Alpha Smelter", "CID1001", "China"),
+                      ("Beta Smelter", "CID1002", "Peru")],
+        "0002-26-1": [("Nameonly Works", "", "China"), ("Other Works", "", "Peru")],
+        "0002-25-1": [("Zeta Smelter", "CID2101", "China"),
+                      ("Eta Smelter", "CID2102", "Peru")],
+        "0002-24-1": [("Zeta Smelter", "CID2101", "China")],
+        "0003-26-1": [("Solo Smelter", "CID3201", "Chile")],
+    }
+
+    def _sheet(rows):
+        head = ("<tr><th>Smelter Name</th><th>Smelter ID</th>"
+                "<th>Country</th><th>Metal</th></tr>")
+        body = "".join(f"<tr><td>{n}</td><td>{c}</td><td>{k}</td><td>Tin</td></tr>"
+                       for n, c, k in rows)
+        return f"<html><body><table>{head}{body}</table></body></html>".encode()
+
+    def _stub(url: str) -> bytes:
+        if "submissions/CIK" in url:
+            cik = int(url.split("CIK")[1].split(".json")[0])
+            accs = _FILINGS.get(cik, [])
+            return json.dumps({"filings": {"recent": {
+                "form": ["SD"] * len(accs), "accessionNumber": accs,
+                "filingDate": [_DATES[a.split("-")[1]] for a in accs]}}}).encode()
+        if url.endswith("index.json"):
+            acc = url.rsplit("/", 2)[-2]
+            return json.dumps({"directory": {"item": [{"name": f"{acc}ex101.htm"}]}}).encode()
+        for acc, rows in _SHEETS.items():
+            if acc.replace("-", "") in url:
+                return _sheet(rows)
+        raise RuntimeError(f"测试桩没准备这个 URL：{url}")
+
+    _H.fetch, _H.GAP = _stub, 0
+    _tmp = tempfile.mkdtemp()
+    _H.OUT_PATH = os.path.join(_tmp, "history.json")
+    _H.NODES_PATH = os.path.join(_tmp, "nodes.json")
+    with open(_H.NODES_PATH, "w", encoding="utf-8") as _h:
+        json.dump({"nodes": [{"symbol": s, "cik": c} for s, c in
+                             (("AAA", 111), ("BBB", 222), ("CCC", 333))],
+                   "edgeIndex": {"AAA": {}, "BBB": {}, "CCC": {}}}, _h)
+    import contextlib
+    with contextlib.redirect_stdout(_io.StringIO()):
+        _H.main()
+    with open(_H.OUT_PATH, encoding="utf-8") as _h:
+        _PROD = json.load(_h)
+    _payload = {"nodes": [{"symbol": s} for s in ("AAA", "BBB", "CCC")]}
+
+    def _contract(doc):
+        path = os.path.join(_tmp, "probe.json")
+        with open(path, "w", encoding="utf-8") as h:
+            json.dump(doc, h, ensure_ascii=False)
+        _G.HISTORY_PATH = path
+        errs: list = []
+        with contextlib.redirect_stdout(_io.StringIO()):
+            _G.check_history(_payload, errs)
+        return errs
+
+    def _broken(mutate):
+        doc = json.loads(json.dumps(_PROD))
+        mutate(doc)
+        return bool(_contract(doc))
+
+    _aaa = _PROD.get("companies", {}).get("AAA", {}).get("changes", [{}])
+    hist_cases = [
+        (not _contract(_PROD), "产出方自己跑出来的文件，发布契约全部通过"),
+        ("CCC" not in (_PROD.get("companies") or {}),
+         "只有一份申报的公司整家不收——一份算不出变动"),
+        (any(not c.get("comparable") for c in
+             _PROD.get("companies", {}).get("BBB", {}).get("changes", [])),
+         "某年没有带编号条目时标不可比，而不是按 0 算成「没变」"),
+        (abs((_aaa[0].get("rate") or 0) - 2 / 3) < 0.001 and _aaa[0].get("baseWithCid") == 3,
+         "变动率＝(新增+消失)/该年带编号条数：1+1 over 3 = 0.667"),
+        (abs((_PROD.get("coverage") or {}).get("trackableShare", 0) - 0.6) < 0.001,
+         "追得动的占比按条目算：3 条带编号 / 5 条登记 = 60%"),
+        (_broken(lambda d: d.update(basis="name")), "契约咬得住：basis 改成按名字比对"),
+        (_broken(lambda d: d["coverage"].pop("trackableShare")),
+         "契约咬得住：拿掉 trackableShare"),
+        (_broken(lambda d: d["coverage"].update(trackableShare=0)),
+         "契约咬得住：trackableShare 写成 0"),
+        (_broken(lambda d: d["companies"]["AAA"]["changes"][0].update(rate=0.9)),
+         "契约咬得住：rate 与分子分母对不上"),
+        (_broken(lambda d: d["companies"]["BBB"]["changes"][0].update(rate=0.0)),
+         "契约咬得住：给不可比的年度塞一个 0"),
+        (_broken(lambda d: d["companies"]["BBB"]["changes"][0].pop("note")),
+         "契约咬得住：不可比却不写原因"),
+        (_broken(lambda d: d["companies"].update(ZZZ=d["companies"]["AAA"])),
+         "契约咬得住：公司代码不在节点表里"),
+        (_broken(lambda d: d["coverage"].update(pairsComparable=99)),
+         "契约咬得住：可比组数与逐条数出来的不一致"),
+        (_broken(lambda d: d["companies"]["AAA"]["changes"][0].pop("basis")),
+         "契约咬得住：可比年度没标 basis=rmi-cid"),
+        (_broken(lambda d: d.update(note="随便一句话")),
+         "契约咬得住：note 里不说明只比带编号的"),
+    ]
+    for ok, why in hist_cases:
+        if not ok:
+            failures.append(f"历年变动：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
     for ok, why in region_cases:
         if not ok:
             failures.append(f"国别：{why} 不成立")
@@ -1661,7 +1795,7 @@ def main() -> int:
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
-             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases) + len(carry_cases) + len(body_cases) + len(lic_cases)
+             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases) + len(carry_cases) + len(hist_cases) + len(body_cases) + len(lic_cases)
              + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:
