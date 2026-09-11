@@ -54,6 +54,8 @@
   .fact b { color:var(--text); }
   /* 外国发行人的口径说明。.ident 是 flex 容器，不给 flex-basis:100% 的话
      这段会被挤到代码胶囊那一行去，360px 下直接把身份条撑破。 */
+  /* 旧名单的警示。用 --warn 而不是 --down：它不是错误，是口径。 */
+  .pstale { color:var(--warn); display:block; margin-bottom:4px; }
   #c-pool { flex:0 0 100%; font-size:.72rem; color:var(--dim); line-height:1.5;
     margin-top:2px; }
 
@@ -291,6 +293,6 @@
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="company.js?v=4e26990d" defer></script>
+<script src="company.js?v=4d3cf061" defer></script>
 </body>
 </html>

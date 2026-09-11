@@ -800,6 +800,49 @@ def sector_coverage(nodes: list[dict], filing_status: dict[str, str],
     return sorted(buckets.values(), key=lambda r: -r["companies"])
 
 
+
+def edge_age(edge_files: dict, edge_index: dict) -> dict:
+    """名单是哪一年申报的。**这一栏此前一个字都没有。**
+
+    公司页印了申报日，而总览页那五个分析面板（国别暴露、上游集中度、按矿种、
+    受涵盖国家、名单变动）把 86,220 条边不分年份混在一起算，读者无从知道
+    自己看的是不是当年的名单。
+
+    实测（2026-09-11）：94.2% 的边来自 2026 年申报，但有 3,752 条（4.4%）
+    来自 2025 年以前，最老的是 2016 年 AROC 那 365 条——十年前的名单，
+    和今年的名单在榜单上等价。
+
+    为什么会有旧名单：抽取器取的是**最近一份能解出名单的申报**。公司停报
+    Form SD（不再使用 3TG，或被并购），最后那份就一直留着。留着是对的——
+    它是可核验的原始申报，删掉就是拿删数据掩盖覆盖缺口。**但必须标出年份。**
+
+    这里只统计，不做任何过滤：旧名单照样参与计算，只是页面要说清楚有多少。
+    """
+    by_year: dict[str, dict] = {}
+    for symbol, info in edge_index.items():
+        year = str((info.get("filingDate") or "")[:4] or "未标")
+        row = by_year.setdefault(year, {"year": year, "companies": 0, "edges": 0})
+        row["companies"] += 1
+        row["edges"] += info.get("count") or 0
+    rows = sorted(by_year.values(), key=lambda r: r["year"], reverse=True)
+    total = sum(r["edges"] for r in rows)
+    latest = rows[0]["year"] if rows else None
+    # 「陈旧」的判据写死在这里并随数据发布：早于最新申报季前一年的。
+    # Form SD 一年一报，所以落后两年及以上才算陈旧——落后一年可能只是
+    # 今年的申报季还没到。
+    stale_before = str(int(latest) - 1) if (latest or "").isdigit() else None
+    stale = [r for r in rows if stale_before and r["year"] < stale_before]
+    return {
+        "byYear": rows,
+        "latestYear": latest,
+        "staleBefore": stale_before,
+        "staleCompanies": sum(r["companies"] for r in stale),
+        "staleEdges": sum(r["edges"] for r in stale),
+        "staleShare": round(sum(r["edges"] for r in stale) / max(1, total), 4),
+        "oldestYear": rows[-1]["year"] if rows else None,
+    }
+
+
 def assert_edge_contract(bundles: dict[str, dict]) -> None:
     """无证据不上图：写盘前硬校验，不靠自觉。
 
@@ -1579,6 +1622,9 @@ def build() -> None:
             },
             # 见上：边来自更早的扫描，本轮未复现。列出代码，读者可自己核对。
             "edgesFromEarlierScan": stale,
+            # 名单是哪一年申报的。见 edge_age() ——公司页印了申报日，
+            # 总览页此前一个字没说，十年前的名单和今年的在榜单上等价。
+            "edgeAge": edge_age(edge_files, edge_index),
             # 按实际 stageBasis 分组。曾经把所有已判定的都记成 sector-initial，
             # 等于把 SIC 升级的功劳记在板块级口径头上、低报了数据质量的真实来源。
             "stageByBasis": by_basis,

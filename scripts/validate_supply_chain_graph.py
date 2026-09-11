@@ -1270,6 +1270,52 @@ def check_chain_risk(payload: dict, errors: list[str]) -> None:
     print(f"按链风险：{len(risk)} 条链（{with_flow} 条带流向图），分母、集中度与流向合计均与全局一致")
 
 
+def check_edge_age(payload: dict, errors: list[str]) -> None:
+    """名单年龄必须发布，而且必须与边文件逐家对得上。
+
+    公司页早就印着申报日，总览页却把全部关系边不分年份混在一起算——十年前的
+    名单和今年的名单在榜单上等价，读者无从知道。所以这一栏要随数据发布，
+    并由契约自己数一遍：**不信产出方的汇总，重算**（与 HHI 分档同一条做法）。
+    """
+    cov = payload.get("coverage") or {}
+    age = cov.get("edgeAge")
+    if not isinstance(age, dict):
+        fail(errors, "coverage 缺 edgeAge——名单年龄不发布，页面就只能把"
+                     "十年前的名单当成当前状态")
+        return
+    index = payload.get("edgeIndex") or {}
+    counted: dict[str, dict] = {}
+    for info in index.values():
+        year = str((info.get("filingDate") or "")[:4] or "未标")
+        row = counted.setdefault(year, {"companies": 0, "edges": 0})
+        row["companies"] += 1
+        row["edges"] += info.get("count") or 0
+    rows = {r.get("year"): r for r in (age.get("byYear") or [])}
+    if set(rows) != set(counted):
+        fail(errors, f"edgeAge.byYear 的年份集合 {sorted(rows)} 与边文件数出来的 "
+                     f"{sorted(counted)} 不一致")
+    for year, want in counted.items():
+        got = rows.get(year) or {}
+        if got.get("companies") != want["companies"] or got.get("edges") != want["edges"]:
+            fail(errors, f"edgeAge {year} 年报 {got.get('companies')} 家/"
+                         f"{got.get('edges')} 条，逐家数出来是 "
+                         f"{want['companies']} 家/{want['edges']} 条")
+    floor = age.get("staleBefore")
+    if not floor:
+        fail(errors, "edgeAge.staleBefore 缺失——判据要随数据发布，页面才能照它标")
+        return
+    stale = [r for y, r in counted.items() if y < str(floor)]
+    if age.get("staleCompanies") != sum(r["companies"] for r in stale):
+        fail(errors, f"edgeAge.staleCompanies = {age.get('staleCompanies')}，"
+                     f"重算是 {sum(r['companies'] for r in stale)}")
+    if age.get("staleEdges") != sum(r["edges"] for r in stale):
+        fail(errors, f"edgeAge.staleEdges = {age.get('staleEdges')}，"
+                     f"重算是 {sum(r['edges'] for r in stale)}")
+    print(f"名单年龄：最新 {age.get('latestYear')} 年 · 最老 {age.get('oldestYear')} 年 · "
+          f"早于 {floor} 年的 {age.get('staleCompanies')} 家 / "
+          f"{age.get('staleEdges')} 条（{(age.get('staleShare') or 0) * 100:.1f}%）")
+
+
 def check_carried_forward(payload: dict, errors: list[str]) -> None:
     """身份沿用上一轮的公司必须带着痕迹，而且不能悄悄变多。
 
@@ -1503,6 +1549,7 @@ def main() -> int:
     check_list_similarity(payload, errors)
     check_history(payload, errors)
     check_carried_forward(payload, errors)
+    check_edge_age(payload, errors)
     check_no_conflict_markers(errors)
     smelters = check_smelters(errors, edge_count)
     check_health(errors, len(payload.get("nodes") or []))

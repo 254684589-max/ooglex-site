@@ -398,6 +398,34 @@
       sum.appendChild(document.createTextNode("）· 点开看各板块与国别为什么差这么多"));
     }
 
+    /* 名单是哪一年申报的。**此前总览页一个字没说。**
+
+       公司页印了申报日，而下面那五个分析面板（真实流向、上游集中度、按矿种、
+       国别暴露、受涵盖国家）把全部关系边不分年份混在一起算——实测 94% 来自
+       最新申报季，但有 4.3% 来自更早，最老的是 2016 年那 365 条。十年前的
+       名单和今年的名单在榜单上完全等价，而读者无从知道。
+
+       旧名单不删：它是可核验的原始申报，删掉就是拿删数据掩盖覆盖缺口
+       （AGENTS.md 的规矩）。**但必须标出来。** */
+    var age = cv.edgeAge || {};
+    var aged = $("cov-age");
+    if (aged && age.staleCompanies) {
+      aged.hidden = false;
+      aged.textContent = "下面各面板的关系边按申报年份分布："
+        + age.latestYear + " 年 "
+        + fmt((age.byYear || []).filter(function (r) {
+            return r.year === age.latestYear; })[0].edges || 0)
+        + " 条，另有 " + fmt(age.staleEdges) + " 条（"
+        + Math.round((age.staleShare || 0) * 100) + "%）来自 " + age.staleBefore
+        + " 年以前的申报、分布在 " + age.staleCompanies + " 家公司，最老一份是 "
+        + age.oldestYear + " 年。"
+        + "抽取器取的是每家最近一份能解出名单的申报——公司停报 Form SD 之后，"
+        + "最后那份就一直留着。留着是对的（它是可核验的原始申报），"
+        + "**但它参与了下面每一个读数的计算**，所以在这里说明。";
+    } else if (aged) {
+      aged.hidden = true;
+    }
+
     setText($("cov-lead"), anyStatus
       ? "当前唯一的关系数据源是 SEC 的 Form SD 冲突矿产申报，它只适用于产品中含钽锡钨金的发行人。"
         + "因此各板块的覆盖率差别很大，而且有些板块的空白不会随时间填上——银行和 REIT 没有实体产品，"

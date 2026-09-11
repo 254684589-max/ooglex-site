@@ -1306,6 +1306,36 @@ async function main() {
           + "（数据流水线跑过之后这一段自动生效）");
       }
 
+      /* 名单年龄。**总览页此前一个字没说。**
+
+         公司页印了申报日，而下面五个分析面板把全部关系边不分年份混在一起算：
+         实测 94% 来自最新申报季，4.3% 来自更早，最老的是 2016 年那 365 条。
+         旧名单不删（它是可核验的原始申报），但十年前的名单参与了每一个读数，
+         不说就是让它冒充现状。 */
+      const AGE = (NODES.coverage || {}).edgeAge || {};
+      if (AGE.staleCompanies) {
+        const ag = await evaluate(`(() => {
+          const e = document.getElementById('cov-age');
+          if (!e || e.hidden) return { shown: false };
+          return { shown: true, text: e.textContent || '',
+                   seen: e.getClientRects().length > 0 };
+        })()`);
+        check(`总览页说明关系边的申报年份分布`, () => {
+          assert.ok(ag.shown && ag.seen,
+            "没渲染或看不见——十年前的名单会被当成当前状态");
+          assert.ok(ag.text.includes(String(AGE.staleCompanies)),
+            `没印陈旧家数 ${AGE.staleCompanies}：${ag.text.slice(0, 200)}`);
+          assert.ok(ag.text.includes(String(AGE.oldestYear)),
+            `没印最老年份 ${AGE.oldestYear}：${ag.text.slice(0, 200)}`);
+        });
+        check(`说清旧名单为什么留着，以及它参与了计算`, () => {
+          assert.match(ag.text, /停报|最近一份/,
+            `没说清旧名单是怎么来的：${ag.text.slice(0, 220)}`);
+          assert.match(ag.text, /参与/,
+            `没说清它参与了下面每个读数：${ag.text.slice(0, 220)}`);
+        });
+      }
+
       /* 名单变动（历年）。**这一屏的风险不在画错，在口径被读宽。**
 
          变动只统计带 RMI 编号的条目：编号是冶炼厂设施的全球唯一标识，跨年
@@ -2437,6 +2467,64 @@ async function main() {
       });
       check(`回填后公司页无横向溢出`, () => assert.ok(bf.overflow <= 1,
         `溢出 ${bf.overflow}px`));
+    }
+
+    /* 名单来自很多年前的那 18 家。**标题上必须说，不能只留在右栏的申报日里。**
+
+       读者先看到的是标题「本页收录 365 家冶炼厂」，那句话读起来就是当前状态；
+       右栏的申报日要往下看才看得到。实测最老一份是 2016 年——十年前的名单
+       不标出来，等于让它冒充现状。 */
+    const AGE2 = (NODES.coverage || {}).edgeAge || {};
+    const STALE_ONE = AGE2.staleBefore
+      ? Object.entries(NODES.edgeIndex || {})
+          .filter(([, v]) => String((v.filingDate || "").slice(0, 4))
+                             < String(AGE2.staleBefore))
+          .sort((a, b) => (a[1].filingDate || "").localeCompare(b[1].filingDate || ""))[0]
+      : null;
+    if (STALE_ONE) {
+      const [sym, info] = STALE_ONE;
+      const year = String(info.filingDate).slice(0, 4);
+      console.log(`\n── 公司视图 · 名单来自 ${year} 年（${sym}）──`);
+      await client.send("Page.navigate",
+        { url: `http://127.0.0.1:${port}/apps/supply-chain/company.html?symbol=${sym}` },
+        sessionId);
+      const st = await evaluate(`new Promise((done) => {
+        const deadline = Date.now() + 20000;
+        (function poll() {
+          const t = document.getElementById('n-title');
+          if (t && t.textContent) return done({
+            title: t.textContent,
+            body: (document.getElementById('n-body') || {}).textContent || '',
+            mark: (() => {
+              const b = document.querySelector('#n-body .pstale');
+              return b ? { text: b.textContent,
+                           seen: b.getClientRects().length > 0 } : null;
+            })(),
+            overflow: Math.max(0,
+              document.documentElement.scrollWidth - window.innerWidth)
+          });
+          if (Date.now() > deadline) return done({ title: '' });
+          setTimeout(poll, 120);
+        })();
+      })`);
+      check(`标题上就写明名单是 ${year} 年的`, () => {
+        assert.ok(st.title.includes(year),
+          `标题没印年份：${st.title}`);
+        assert.ok(!/均带可核验出处$/.test(st.title),
+          `标题还在用「均带可核验出处」那句，读起来像当前状态：${st.title}`);
+      });
+      check(`旧名单的标记看得见`, () => {
+        assert.ok(st.mark && st.mark.seen,
+          "没有 .pstale 标记或它没有布局盒——在 DOM 里但看不见等于没写");
+        assert.ok(st.mark.text.includes("不是当前状态"),
+          `标记没说清这不是现状：${(st.mark || {}).text}`);
+      });
+      check(`说清旧名单为什么不撤`, () => {
+        assert.match(st.body, /不撤|掩盖/,
+          `没说清为什么留着：${st.body.slice(0, 220)}`);
+      });
+      check(`旧名单公司页无横向溢出`, () => assert.ok(st.overflow <= 1,
+        `溢出 ${st.overflow}px`));
     }
 
     // 外国私人发行人这一池：没有市值、没有板块。页面必须说清那是口径如此，
