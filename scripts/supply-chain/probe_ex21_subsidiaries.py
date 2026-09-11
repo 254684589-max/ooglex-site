@@ -161,8 +161,24 @@ def parse_entities(text: str) -> list[str]:
     return out
 
 
+# 金属矿业相关的 SIC 大类：10 金属矿开采 · 12 煤 · 14 非金属矿 ·
+# 33 一次金属冶炼与加工 · 34 金属制品。池内共 293 家（NEM、FCX、NUE、STLD…）。
+METAL_SIC_MAJORS = frozenset({10, 12, 14, 33, 34})
+FRAME = os.environ.get("EX21_FRAME", "metal")
+
+
 def load_pool() -> list[tuple[str, int]]:
-    """取本土 10-K 申报人。EX-21 是 10-K 的附件，只有这一池有。"""
+    """取本土 10-K 申报人。EX-21 是 10-K 的附件，只有这一池有。
+
+    **抽样框默认收窄到金属矿业（EX21_FRAME=metal）。** 上一轮在全池 4,705 家
+    上均匀抽样，抽到的是耐克、MGNI、TRMK 这类消费／科技／金融公司——
+    而这个探针要验的假设是「冶炼厂是某家上市公司的子公司」，那只可能在
+    **金属矿业公司**身上成立。16 家解出 566 个实体、0 命中，说明不了任何事：
+    **对照组选错了，阴性结果就没有信息量。**
+
+    这不是挑样本凑结论——判据在文件头写死了，而且收窄的是「可能为真的范围」，
+    不是「我希望为真的范围」。要看全池分布就传 EX21_FRAME=all。
+    """
     targets: list[tuple[str, int]] = []
     for path in (IDENTITY_PATH, DOMESTIC_PATH):
         try:
@@ -173,11 +189,23 @@ def load_pool() -> list[tuple[str, int]]:
         for symbol, row in rows.items():
             if row.get("cik"):
                 targets.append((symbol, int(row["cik"])))
+    sic_of: dict[str, int] = {}
+    try:
+        with open("apps/supply-chain/nodes.json", encoding="utf-8") as handle:
+            for node in (json.load(handle).get("nodes") or []):
+                if node.get("sic"):
+                    sic_of[node["symbol"]] = int(node["sic"])
+    except (OSError, ValueError):
+        pass
     seen: set[str] = set()
     unique = []
     for symbol, cik in sorted(targets):
         if symbol in seen:
             continue
+        if FRAME == "metal":
+            sic = sic_of.get(symbol)
+            if sic is None or sic // 100 not in METAL_SIC_MAJORS:
+                continue
         seen.add(symbol)
         unique.append((symbol, cik))
     return unique
@@ -226,17 +254,40 @@ def find_ex21(cik: int) -> tuple[str | None, str]:
                      ((listing.get("directory") or {}).get("item") or [])]
         except Exception:                          # noqa: BLE001
             names = []
-        pat = re.compile(r"ex[\-_]?21(\D|$)|exhibit[\-_ ]?21", re.I)
-        for name in names:
-            if name.lower().endswith((".htm", ".html", ".txt")) and pat.search(name):
-                return f"{base}/{name}", "ok（按目录文件名）"
+        # **上一版的守卫正好挡掉了最常见的真实形态。** 它要求 "ex21" 后面跟
+        # 非数字，而附件 21 的文件名几乎都带子编号或年份：
+        #
+        #     msiex212025.htm · bowl-ex211x062826subsidiar.htm
+        #     fy202510-kex211.htm · aphoenity_ex2100.htm · a10-k2025exx21.htm
+        #
+        # 放开数字，并允许 "exx21"（有些申报人双写 ex）。
+        #
+        # 代价是 `ex21.htm` 在命名上**分不清附件 21（子公司清单）与附件 2.1
+        # （收购协议）**——S-K 两者都可能落到同一个文件名。所以文件名只当
+        # **候选**，命中后还要看正文像不像一份实体清单；真正权威的类型在
+        # 索引页的 Type 列，那是路二。
+        pat = re.compile(r"ex+[\-_]?21|exhibit[\-_ ]?21", re.I)
+        cands = [n for n in names
+                 if n.lower().endswith((".htm", ".html", ".txt")) and pat.search(n)]
+        for name in cands:
+            try:
+                body = to_text(fetch(f"{base}/{name}"))
+            except Exception:                      # noqa: BLE001
+                continue
+            # 子公司清单的特征：要么自称 subsidiaries，要么密集列注册地。
+            # 收购协议（附件 2.1）不会有这两样。
+            if re.search(r"(?i)subsidiar", body) or len(parse_entities(body)) >= 5:
+                return f"{base}/{name}", "ok（按目录文件名 + 正文核对）"
 
         # 路二：索引页那张表。文件名与附件类型在同一行，中间隔着制表位。
         try:
             page = to_text(fetch(f"{base}/{accession}-index.htm"))
         except Exception as exc:                   # noqa: BLE001
             return None, f"取申报索引失败：{why(exc)}"
+        ex2_lines = []
         for line in page.split("\n"):
+            if re.search(r"\bEX-2", line, re.I):
+                ex2_lines.append(" ".join(line.split())[:90])
             if not re.search(r"\bEX-21", line, re.I):
                 continue
             doc = re.search(r"([A-Za-z0-9_\-.]+\.(?:htm|html|txt))", line, re.I)
@@ -244,10 +295,15 @@ def find_ex21(cik: int) -> tuple[str | None, str]:
                 return f"{base}/{doc.group(1)}", "ok（按索引页）"
 
         # **取不到就把看到的东西打出来。** 只说「没有」等于把诊断线索丢掉。
+        # **两条路都失败时，把两边看到的东西都打出来。** 上一轮只打了文件名，
+        # 于是路二为什么也没命中，只能靠猜。
         sample = [n for n in names if n.lower().endswith((".htm", ".txt"))][:6]
-        return None, ("该 10-K 里找不到 EX-21；目录文件名样例：»"
-                      + "、".join(sample) + "«" if sample
-                      else "该 10-K 里找不到 EX-21，且目录清单也取不到")
+        detail = "文件名：»" + "、".join(sample) + "«" if sample else "目录清单取不到"
+        if cands:
+            detail += f"；候选 {cands} 但正文不像实体清单"
+        if ex2_lines:
+            detail += "；索引页含 EX-2 的行：»" + " / ".join(ex2_lines[:3]) + "«"
+        return None, "找不到 EX-21（" + detail + "）"
     return None, "近期没有 10-K"
 
 
@@ -275,7 +331,8 @@ def main() -> int:
     # 均匀抽样，不挑大公司——挑了就只会证明大公司有附件 21。
     step = max(1, len(pool) // SAMPLE)
     sample = pool[::step][:SAMPLE]
-    print(f"公司池 {len(pool)} 家，均匀抽 {len(sample)} 家探测\n")
+    print(f"抽样框：{FRAME}（metal = 仅金属矿业 SIC {10,12,14,33,34}xx）\n"
+          f"框内 {len(pool)} 家，均匀抽 {len(sample)} 家探测\n")
 
     got = fail = 0
     total_entities = 0
