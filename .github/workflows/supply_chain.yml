@@ -25,6 +25,16 @@ on:
       # 字段时需要在季外重跑一次，这个开关就是干这个的。
       # 用 choice 而不是留空的字符串：workflow_dispatch 会把空字符串替换成默认值，
       # 「留空 = 关闭」这种约定在这里不成立（上一轮 --tickers 就是这么踩的）。
+      # 历年名单变动那一步要回溯四年申报，而它前面的三步取数加抽取器要跑
+      # 八十分钟。只想重算变动时没必要再扫一遍全池——这个开关跳过取数与
+      # 抽取，直接用仓库里已有的 identity/foreign/domestic 与边文件。
+      # **跳过的是取数，不是校验**：四道校验照跑，契约照拦。
+      skip_fetch:
+        description: '跳过三步取数与抽取器，只重算后续产物（历年变动、构建、校验）'
+        required: false
+        default: 'no'
+        type: choice
+        options: ['no', 'yes']
       force_form_sd:
         description: '季外强制重跑 Form SD 抽取器（改了解析规则或要补字段时用）'
         required: false
@@ -72,6 +82,7 @@ jobs:
       # 苹果 3571 品牌整合 / 英伟达 3674 中间制造 / 微软 7372 平台服务。
       # 失败不中断：构建脚本读不到缓存时自动退回板块级口径，不产出空数据。
       - name: Fetch SEC company identity (CIK + SIC)
+        if: ${{ inputs.skip_fetch != 'yes' }}
         continue-on-error: true
         env:
           SEC_CONTACT: ${{ vars.SEC_CONTACT }}
@@ -84,6 +95,7 @@ jobs:
       # 147 → 约 1,194 家，那就是一千多家挂着「尚无申报状态」发布出去。
       # 失败不中断：构建脚本读不到这份缓存时只出标普那 495 家，不产出空数据。
       - name: Fetch SEC foreign private issuers
+        if: ${{ inputs.skip_fetch != 'yes' }}
         continue-on-error: true
         env:
           SEC_CONTACT: ${{ vars.SEC_CONTACT }}
@@ -95,6 +107,7 @@ jobs:
       # 而抽取器要扫的名单由这两步共同决定。
       # 失败不中断：构建脚本读不到这份缓存时第三池为空，前两池照常出。
       - name: Fetch SEC domestic 10-K filers
+        if: ${{ inputs.skip_fetch != 'yes' }}
         continue-on-error: true
         env:
           SEC_CONTACT: ${{ vars.SEC_CONTACT }}
@@ -106,6 +119,7 @@ jobs:
       # 不发任何请求。Form SD 一年一报，天天扫 1,689 家既拿不到新东西也白占带宽。
       # 失败不中断：边文件是上一次的产物，读不到新数据就沿用，不删不改。
       - name: Extract Form SD smelter lists
+        if: ${{ inputs.skip_fetch != 'yes' }}
         continue-on-error: true
         env:
           SEC_CONTACT: ${{ vars.SEC_CONTACT }}
@@ -128,7 +142,7 @@ jobs:
       # 与抽取器同一套规矩：季外不跑（靠 --force 开）、失败不中断、
       # **取不到就保留已有文件，不写空数据**。
       - name: Build smelter history (year-over-year changes)
-        if: ${{ inputs.force_form_sd == 'yes' }}
+        if: ${{ inputs.force_form_sd == 'yes' || inputs.skip_fetch == 'yes' }}
         continue-on-error: true
         env:
           SEC_CONTACT: ${{ vars.SEC_CONTACT }}
