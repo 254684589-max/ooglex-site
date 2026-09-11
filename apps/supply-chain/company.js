@@ -169,12 +169,39 @@
     var rows = edgeRows();
     var meta = edgeMeta();
     var counts = idCounts();
+    /* 名单有多老，要写在**标题上**，不能只留在右栏的「申报日」里。
+
+       实测有 18 家公司的名单来自 2025 年以前，最老的是 2016 年、365 条。
+       右栏确实印着申报日，但读者是先看标题「本页收录 365 家冶炼厂」，
+       那句话读起来就是当前状态。十年前的名单不标出来，等于让它冒充现状。
+
+       判据来自数据（coverage.edgeAge.staleBefore），不在这里写死年份。 */
+    var age = ((state.data.coverage || {}).edgeAge) || {};
+    // edgeMeta() 对没有边的公司返回 **null**（苹果、特斯拉都是这一档），
+    // 直接读 meta.filingDate 会抛 TypeError，整页渲染中断——浏览器契约
+    // 那条「20 秒内未渲染出层级卡」当场抓住了。
+    var filedYear = String(((meta || {}).filingDate || "").slice(0, 4));
+    var isStale = !!(rows.length && age.staleBefore && filedYear
+                     && filedYear < String(age.staleBefore));
     $("n-title").textContent = rows.length
-      ? "本页收录 " + rows.length + " 家冶炼厂，均带可核验出处"
+      ? (isStale
+          ? "本页收录 " + rows.length + " 家冶炼厂，来自 " + filedYear
+            + " 年的申报——这家公司此后没有再提交可解析的名单"
+          : "本页收录 " + rows.length + " 家冶炼厂，均带可核验出处")
       : "本页尚未收录任何供应链关系";
     var p = $("n-body");
     p.textContent = "";
     if (rows.length) {
+      if (isStale) {
+        // 旧名单为什么留着，以及它意味着什么——两句都要说。
+        var w = el("b", "pstale",
+          "这份名单是 " + filedYear + " 年的，不是当前状态。");
+        p.appendChild(w);
+        p.appendChild(document.createTextNode(
+          "抽取器取的是最近一份能解出名单的申报；这家公司此后或已停报 Form SD、"
+          + "或申报里不再列名单。名单不撤——它是可核验的原始申报，"
+          + "撤掉就成了拿删数据掩盖缺口——但它反映的是 " + filedYear + " 年的供应链。"));
+      }
       p.appendChild(document.createTextNode(
         "全部来自该公司的 Form SD 冲突矿产申报，每一条都能点开原始文件核对。"
         + "语义是「该冶炼厂出现在申报人的供应链中」——间接、不含份额、不含层级，"

@@ -105,6 +105,11 @@
   .cov > summary:hover { background:rgba(255,255,255,.03); }
   .cov > summary h2 { font-size:0.92rem; font-weight:700; margin:0; }
   .cov #cov-sum { font-size:0.78rem; color:var(--dim); }
+  /* 名单年龄。收在覆盖缺口面板里，但它管的是**下面所有面板**的口径，
+     所以字号与正文同级、不压成脚注。 */
+  .covage { margin:10px 0 0; padding:9px 11px; font-size:.76rem; line-height:1.65;
+            color:var(--dim); border-left:2px solid var(--warn);
+            background:rgba(255,255,255,.02); border-radius:0 5px 5px 0; }
   .cov #cov-sum b { color:var(--text); font-variant-numeric:tabular-nums; }
   .cov > p, .cov > div { margin-left:16px; margin-right:16px; }
   .cov > p { font-size:0.82rem; color:var(--dim); }
@@ -617,6 +622,7 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
        每个环节卡片上也就地写了自己那一段的覆盖。 -->
   <details class="glass cov" id="cov" hidden aria-label="按板块的覆盖情况">
     <summary><h2 data-nav="覆盖缺口">为什么有的公司有数据、有的没有</h2><span id="cov-sum"></span></summary>
+      <p id="cov-age" class="covage" hidden></p>
     <p id="cov-lead"></p>
     <div id="cov-rows"></div>
     <!-- 第二个池按国别拆。它们没有站内板块分类，全塞进「未分类」等于一个
@@ -755,6 +761,6 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
     <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
   </footer>
 </div>
-<script src="app.js?v=c716b386" defer></script>
+<script src="app.js?v=f2d6b4a1" defer></script>
 </body>
 </html>

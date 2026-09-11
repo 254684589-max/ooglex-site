@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-11T06:31:51Z",
+  "updatedAt": "2026-09-11T15:43:31Z",
   "asOf": "2026-09-10",
   "frequency": "daily",
   "status": "ok",
@@ -350860,6 +350860,66 @@
       "orphans": []
     },
     "edgesFromEarlierScan": [],
+    "edgeAge": {
+      "byYear": [
+        {
+          "year": "2026",
+          "companies": 345,
+          "edges": 81251
+        },
+        {
+          "year": "2025",
+          "companies": 6,
+          "edges": 1217
+        },
+        {
+          "year": "2024",
+          "companies": 2,
+          "edges": 8
+        },
+        {
+          "year": "2023",
+          "companies": 3,
+          "edges": 1017
+        },
+        {
+          "year": "2021",
+          "companies": 3,
+          "edges": 320
+        },
+        {
+          "year": "2020",
+          "companies": 2,
+          "edges": 512
+        },
+        {
+          "year": "2019",
+          "companies": 3,
+          "edges": 550
+        },
+        {
+          "year": "2018",
+          "companies": 2,
+          "edges": 612
+        },
+        {
+          "year": "2017",
+          "companies": 2,
+          "edges": 368
+        },
+        {
+          "year": "2016",
+          "companies": 1,
+          "edges": 365
+        }
+      ],
+      "latestYear": "2026",
+      "staleBefore": "2025",
+      "staleCompanies": 18,
+      "staleEdges": 3752,
+      "staleShare": 0.0435,
+      "oldestYear": "2016"
+    },
     "stageByBasis": {
       "sic-refined": 5897
     },
