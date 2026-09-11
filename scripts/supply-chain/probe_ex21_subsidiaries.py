@@ -284,15 +284,26 @@ def find_ex21(cik: int) -> tuple[str | None, str]:
             page = to_text(fetch(f"{base}/{accession}-index.htm"))
         except Exception as exc:                   # noqa: BLE001
             return None, f"取申报索引失败：{why(exc)}"
-        ex2_lines = []
-        for line in page.split("\n"):
-            if re.search(r"\bEX-2", line, re.I):
-                ex2_lines.append(" ".join(line.split())[:90])
-            if not re.search(r"\bEX-21", line, re.I):
+        # **类型与文件名不一定在同一行。** 有些申报代理的索引页排版会让
+        # to_text 把它们切开，上一轮的诊断就印出了只有 »EX-21.1« 的行——
+        # 那说明索引页确实有这个附件，只是文件名落在相邻行。这类公司的文件名
+        # 恰恰是 ex_868885.htm 这种流水号，路一的命名规则一个都认不出来，
+        # 所以这条跨行配对不是锦上添花，是这 29 家里大部分的唯一出路。
+        lines = page.split("\n")
+        ex2_lines = [" ".join(x.split())[:90] for x in lines
+                     if re.search(r"\bEX-2", x, re.I)]
+        doc_re = re.compile(r"([A-Za-z0-9_\-.]+\.(?:htm|html|txt))", re.I)
+        for i, line in enumerate(lines):
+            if not re.search(r"\bEX-21(\.|\b)", line, re.I):
                 continue
-            doc = re.search(r"([A-Za-z0-9_\-.]+\.(?:htm|html|txt))", line, re.I)
-            if doc:
-                return f"{base}/{doc.group(1)}", "ok（按索引页）"
+            # 先看本行，再看前后各两行——表格一行被切开时文件名就在邻近。
+            for j in (i, i - 1, i + 1, i - 2, i + 2):
+                if not 0 <= j < len(lines):
+                    continue
+                doc = doc_re.search(lines[j])
+                if doc and not doc.group(1).lower().endswith(".txt"):
+                    return (f"{base}/{doc.group(1)}",
+                            f"ok（按索引页{'' if j == i else '·邻行'}）")
 
         # **取不到就把看到的东西打出来。** 只说「没有」等于把诊断线索丢掉。
         # **两条路都失败时，把两边看到的东西都打出来。** 上一轮只打了文件名，

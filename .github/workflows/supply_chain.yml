@@ -122,6 +122,18 @@ jobs:
       - name: Backfill smelter country on published edges
         run: python scripts/supply-chain/backfill_edge_country.py
 
+      # 历年名单变动。**时间维度**：抽取器只取最新一份，这一步回溯历年申报，
+      # 算出每年新增／砍掉了哪些冶炼厂。探针 run 36 已实测值得建：带 RMI 编号
+      # 口径的中位变动率 17.4%（远高于 5% 门槛）。
+      # 与抽取器同一套规矩：季外不跑（靠 --force 开）、失败不中断、
+      # **取不到就保留已有文件，不写空数据**。
+      - name: Build smelter history (year-over-year changes)
+        if: ${{ inputs.force_form_sd == 'yes' }}
+        continue-on-error: true
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: python scripts/supply-chain/build_smelter_history.py
+
       - name: Build smelter Chinese name table
         run: python scripts/supply-chain/build_smelter_names_zh.py
 
@@ -156,7 +168,8 @@ jobs:
                   apps/supply-chain/identity.json apps/supply-chain/smelters.json \
                   apps/supply-chain/names-zh.json apps/supply-chain/edges \
                   apps/supply-chain/peers.json apps/supply-chain/foreign.json \
-                  apps/supply-chain/domestic.json
+                  apps/supply-chain/domestic.json \
+                  apps/supply-chain/history.json
           if git diff --cached --quiet; then
             echo "生成结果与仓库一致，跳过提交和推送"
             exit 0
