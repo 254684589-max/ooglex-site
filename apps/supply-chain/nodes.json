@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-12T00:59:22Z",
+  "updatedAt": "2026-09-12T01:16:01Z",
   "asOf": "2026-09-10",
   "frequency": "daily",
   "status": "ok",
@@ -349288,6 +349288,11 @@
         "name-only": 1505
       },
       "note": "Form SD 强制申报、不强制列名单：有申报无名单的公司如实单列，不并入「无申报」。覆盖率因此永远到不了 100%，这是披露制度本身的上限，不是抓取缺陷。",
+      "indexSaysFiled": {
+        "companies": 0,
+        "symbols": [],
+        "indexFlagged": 147
+      },
       "noFilingByStage": [
         {
           "stage": "financial",

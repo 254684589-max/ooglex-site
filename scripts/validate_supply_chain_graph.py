@@ -974,12 +974,41 @@ def check_form_sd_flag(payload: dict, errors: list[str]) -> None:
         return
     status = {n.get("symbol"): n.get("formSdStatus")
               for n in (payload.get("nodes") or [])}
+    # 这一条**不再是「有就中止」**。理由写在 build_chain_nodes.py 里那一段：
+    # run 42 因为 1 家（AEC）中止了整轮发布，结果 5,906 家的数据冻在三天前，
+    # 比如实标注那一家糟得多。现在的要求是三条：
+    #   一、这种公司**不许叫「无申报」**（那会把它从覆盖率分母里排除，是粉饰）；
+    #   二、它们要被数出来、随数据发布，页面照实说「我们这边没读到」；
+    #   三、**数量超过上限才中止**——少数几家是索引与抽取器的长尾边界
+    #       （季度交界、撤回的申报、改名改 CIK），成片出现才是抽取器回归。
     bad = sorted(s for s in flagged if status.get(s) == "no-filing")
     if bad:
-        fail(errors, f"{len(bad)} 家在季度索引里报过 Form SD，抽取器却判为「无申报」，"
-                     f"说明漏读了申报：{'、'.join(bad[:8])}")
-    print(f"索引↔抽取器交叉校验：{len(flagged)} 家标了报过 Form SD，"
-          f"其中被判「无申报」的 {len(bad)} 家")
+        fail(errors, f"{len(bad)} 家在季度索引里报过 Form SD，却仍被标成「无申报」"
+                     f"——这一档必须标 index-says-filed，否则就从覆盖率分母里"
+                     f"漏掉了：{'、'.join(bad[:8])}")
+    marked = sorted(s for s in flagged if status.get(s) == "index-says-filed")
+    published = (((payload.get("coverage") or {}).get("formSd") or {})
+                 .get("indexSaysFiled") or {})
+    if marked or published:
+        if published.get("companies") != len(marked):
+            fail(errors, f"indexSaysFiled 报 {published.get('companies')} 家，"
+                         f"契约按节点表数出来 {len(marked)} 家")
+        if published.get("indexFlagged") != len(flagged):
+            fail(errors, f"indexSaysFiled.indexFlagged 报 "
+                         f"{published.get('indexFlagged')}，实际索引标记 {len(flagged)} 家")
+        listed = published.get("symbols") or []
+        if listed != marked[:len(listed)]:
+            fail(errors, "indexSaysFiled.symbols 与节点表里那一档对不上——"
+                         "列不出是哪几家，就没法人工去核对")
+        # 上限：绝对 5 家，或索引标记数的 5%，取较大者。抽取器整体回归会远超这个数。
+        ceiling = max(5, round(len(flagged) * 0.05))
+        if len(marked) > ceiling:
+            fail(errors, f"索引说报过但本轮没读到 {len(marked)} 家，超过上限 "
+                         f"{ceiling}——这不是长尾边界，是抽取器漏了一片，"
+                         f"必须先修抽取器再发布")
+    print(f"索引↔交叉校验：{len(flagged)} 家标了报过 Form SD，"
+          f"其中标成 index-says-filed 的 {len(marked)} 家、"
+          f"仍被错标成「无申报」的 {len(bad)} 家")
 
 
 # 多德-弗兰克法案 §1502 / SEC Rule 13p-1 的受涵盖国家：刚果民主共和国
