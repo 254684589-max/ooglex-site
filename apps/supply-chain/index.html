@@ -15,6 +15,10 @@
 <meta property="og:url" content="https://www.ooglex.com/apps/supply-chain/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/assets/theme.css">
+<script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js" defer></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -576,6 +580,30 @@ a.lnchip:hover { background:rgba(74,144,217,.16); }
   @media (prefers-contrast: more) {
     :root { --line:rgba(255,255,255,0.28); --dim:#c2ccd8; --faint:#93a0b2; }
   }
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"], html[data-theme="paper"] { --s1: #946435; --s2: #92652c; --s3: #2770bc; --s4: #5265ce; --s5: #8853c8; --s6: #297884; --s7: #2d7c59; --s8: #3f7b43; --e1: #8d681b; --e2: #4f6dae; --e3: #626f81; --e4: #5d7552; }
+html[data-theme="ft"] .title h1, html[data-theme="paper"] .title h1 { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
+html[data-theme="ft"] .lookup input, html[data-theme="paper"] .lookup input { background: var(--tint-2); }
+html[data-theme="ft"] .qlist, html[data-theme="paper"] .qlist { background: var(--panel2); box-shadow: 0 24px 60px -20px rgba(120,92,64,0.20); }
+html[data-theme="ft"] .status, html[data-theme="paper"] .status { background: var(--tint-1); }
+html[data-theme="ft"] .glass, html[data-theme="paper"] .glass { background: linear-gradient(180deg, var(--panel2), var(--panel2)); box-shadow: 0 24px 60px -34px rgba(120,92,64,0.20), inset 0 1px 0 rgba(255,255,255,.05); }
+html[data-theme="ft"] .notice h2, html[data-theme="paper"] .notice h2 { color: #8e6813; }
+html[data-theme="ft"] .cov > summary:hover, html[data-theme="paper"] .cov > summary:hover { background: var(--tint-1); }
+html[data-theme="ft"] .covage, html[data-theme="paper"] .covage { background: var(--tint-1); }
+html[data-theme="ft"] .covrow .t, html[data-theme="paper"] .covrow .t { background: var(--tint-3); }
+html[data-theme="ft"] .band, html[data-theme="paper"] .band { background: linear-gradient(180deg, var(--panel2), var(--panel2)); }
+html[data-theme="ft"] .bandhd:hover, html[data-theme="paper"] .bandhd:hover { background: var(--tint-1); }
+html[data-theme="ft"] .bandwhy, html[data-theme="paper"] .bandwhy { background: var(--tint-1); }
+html[data-theme="ft"] .chainflow .lnchip, html[data-theme="paper"] .chainflow .lnchip { background: var(--tint-1); }
+html[data-theme="ft"] .concfilers, html[data-theme="paper"] .concfilers { background: var(--tint-1); }
+html[data-theme="ft"] .concfilers .cf-chip, html[data-theme="paper"] .concfilers .cf-chip { background: var(--tint-2); }
+html[data-theme="ft"] .offlabel::after, html[data-theme="paper"] .offlabel::after { border-top: 1px dashed var(--line-strong); }
+html[data-theme="ft"] .seg:hover, html[data-theme="paper"] .seg:hover { border-color: var(--line-strong); }
+html[data-theme="ft"] th, html[data-theme="paper"] th { background: var(--panel2); }
+html[data-theme="ft"] tbody tr, html[data-theme="paper"] tbody tr { border-bottom: 1px solid var(--line); }
+html[data-theme="ft"] .flowkey i, html[data-theme="paper"] .flowkey i { background: var(--panel2); }
+html[data-theme="ft"] .state.err, html[data-theme="paper"] .state.err { color: #c83b32; }
+/* ==== 浅色主题兜底 结束 ==== */
 </style>
 </head>
 <body>

@@ -7,6 +7,10 @@
   <meta name="description" content="标普500成分股的当日热力图：按行业分块、按市值定面积、按当日涨跌上色。逐块标注涨跌数字，另有图例与数据表，颜色不是唯一编码。数据由站内每日公开管道生成。">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <meta name="theme-color" content="#070a0f">
+  <link rel="stylesheet" href="/assets/theme.css">
+  <script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+  (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+  <script src="/assets/theme.js" defer></script>
   <style>
     :root {
       color-scheme: dark;
@@ -179,7 +183,15 @@
       .wrap { padding: 0 14px 40px; }
       .heat-limit { flex: 1 1 auto; }
     }
-  </style>
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] .panel, html[data-theme="paper"] .panel { background: linear-gradient(180deg, var(--panel2), var(--panel2)); }
+html[data-theme="ft"] .heat-limit, html[data-theme="paper"] .heat-limit { background: var(--tint-3); }
+html[data-theme="ft"] .zoomctl button, html[data-theme="paper"] .zoomctl button { background: var(--tint-3); }
+html[data-theme="ft"] .bubble-dot, html[data-theme="paper"] .bubble-dot { stroke: var(--line); }
+html[data-theme="ft"] #heat-tip, html[data-theme="paper"] #heat-tip { background: var(--panel2); box-shadow: 0 10px 26px rgba(120,92,64,0.20); }
+html[data-theme="ft"] #heat-table-toggle, html[data-theme="paper"] #heat-table-toggle { background: var(--tint-3); }
+/* ==== 浅色主题兜底 结束 ==== */
+</style>
 </head>
 <body>
   <div class="wrap">

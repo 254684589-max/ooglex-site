@@ -375,3 +375,37 @@
 @media (prefers-reduced-motion: reduce) {
   .market-globe-shell { transition: none; }
 }
+
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] .risk-hud-raw, html[data-theme="paper"] .risk-hud-raw { background: radial-gradient(circle at 50% 50%, var(--panel2) 0 54%, transparent 55%),
+    conic-gradient(rgba(126, 170, 198, .2) 0 360deg); }
+html[data-theme="ft"] .risk-radar-values text, html[data-theme="paper"] .risk-radar-values text { fill: #5591a2; stroke: var(--line); }
+html[data-theme="ft"] .risk-region-glow, html[data-theme="paper"] .risk-region-glow { fill: rgba(21,146,192,0.18); }
+html[data-theme="ft"] .risk-region.region-pressure-positive .risk-region-glow, html[data-theme="paper"] .risk-region.region-pressure-positive .risk-region-glow { fill: rgba(37,155,101,0.34); }
+html[data-theme="ft"] .risk-region.region-pressure-neutral .risk-region-glow, html[data-theme="paper"] .risk-region.region-pressure-neutral .risk-region-glow { fill: rgba(21,147,185,0.26); }
+html[data-theme="ft"] .risk-region.region-pressure-watch .risk-region-glow, html[data-theme="paper"] .risk-region.region-pressure-watch .risk-region-glow { fill: rgba(187,122,21,0.58); }
+html[data-theme="ft"] .risk-region.region-pressure-high .risk-region-glow, html[data-theme="paper"] .risk-region.region-pressure-high .risk-region-glow { fill: rgba(223,98,25,0.72); }
+html[data-theme="ft"] .risk-map-labels text, html[data-theme="paper"] .risk-map-labels text { stroke: var(--line); }
+html[data-theme="ft"] .risk-card[data-signal-id="fear-greed"], html[data-theme="paper"] .risk-card[data-signal-id="fear-greed"] { --hud-accent: #926610; }
+html[data-theme="ft"] .risk-card[data-signal-id="ofr-fsi"], html[data-theme="paper"] .risk-card[data-signal-id="ofr-fsi"] { --hud-accent: #ab5713; }
+html[data-theme="ft"] .risk-card .risk-hud-percent, html[data-theme="paper"] .risk-card .risk-hud-percent { background: radial-gradient(circle at 50% 50%, var(--panel2) 0 54%, transparent 55%),
+    conic-gradient(from -90deg, var(--hud-accent) 0 var(--risk-hud-progress), rgba(69, 212, 255, .1) var(--risk-hud-progress) 360deg); }
+html[data-theme="ft"] .market-insight-card, html[data-theme="paper"] .market-insight-card { background: radial-gradient(240px 150px at 82% 0, rgba(244, 182, 75, .09), transparent 70%),
+    linear-gradient(150deg, var(--panel2), var(--panel2)); }
+@media (min-width: 1041px) {
+  html[data-theme="ft"] body[data-terminal-view="overview"] .orbit-panel, html[data-theme="paper"] body[data-terminal-view="overview"] .orbit-panel { background: radial-gradient(420px 230px at 52% 54%, rgba(23, 133, 188, .2), transparent 70%),
+      linear-gradient(135deg, var(--bg), var(--bg)); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .risk-radar-panel, html[data-theme="paper"] body[data-terminal-view="overview"] .risk-radar-panel { background: radial-gradient(circle at 50% 48%, rgba(21, 120, 164, .13), transparent 62%),
+      linear-gradient(rgba(69, 212, 255, .028) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(69, 212, 255, .028) 1px, transparent 1px),
+      var(--bg); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .risk-radar-grid polygon, html[data-theme="paper"] body[data-terminal-view="overview"] .risk-radar-grid polygon { stroke: rgba(21,147,189,0.31); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .risk-radar-grid path, html[data-theme="paper"] body[data-terminal-view="overview"] .risk-radar-grid path { stroke: rgba(21,147,189,0.31); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .risk-radar-fill, html[data-theme="paper"] body[data-terminal-view="overview"] .risk-radar-fill { fill: rgba(19,149,175,0.23); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .risk-radar-score, html[data-theme="paper"] body[data-terminal-view="overview"] .risk-radar-score { border-top: 1px solid #1e95b8; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .risk-card, html[data-theme="paper"] body[data-terminal-view="overview"] .risk-card { background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--hud-accent) 8%, transparent), transparent 55%),
+      linear-gradient(180deg, var(--bg), var(--bg)); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .risk-change, html[data-theme="paper"] body[data-terminal-view="overview"] .risk-change { color: #4d7386; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] #global-risk-map-status, html[data-theme="paper"] body[data-terminal-view="overview"] #global-risk-map-status { border-color: #1e95b8; }
+}
+/* ==== 浅色主题兜底 结束 ==== */

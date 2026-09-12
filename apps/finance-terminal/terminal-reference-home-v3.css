@@ -789,3 +789,35 @@
   /* 品牌字距按参考稿收紧一档。 */
   body[data-terminal-view="overview"] .brand-lockup strong { letter-spacing: 0.075em; }
 }
+
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"], html[data-theme="paper"] { --aurora-violet: #824aeb; --aurora-magenta: #b119e4; }
+html[data-theme="ft"] .section-nav a + a::before, html[data-theme="paper"] .section-nav a + a::before { color: rgba(75,114,144,0.45); }
+html[data-theme="ft"] .terminal-mode-switch a + a::before, html[data-theme="paper"] .terminal-mode-switch a + a::before { color: rgba(75,114,144,0.45); }
+html[data-theme="ft"] .terminal-mode-switch, html[data-theme="paper"] .terminal-mode-switch { background: var(--tint-3); }
+html[data-theme="ft"] .aurora-evidence > *:nth-child(3), html[data-theme="paper"] .aurora-evidence > *:nth-child(3) { --evidence-color: #1374ae; color: #1374ae; }
+html[data-theme="ft"] .aurora-evidence strong, html[data-theme="paper"] .aurora-evidence strong { color: #597280; }
+html[data-theme="ft"] .aurora-evidence span, html[data-theme="paper"] .aurora-evidence span { color: #587188; }
+html[data-theme="ft"] .aurora-hud-ring, html[data-theme="paper"] .aurora-hud-ring { background: radial-gradient(circle, var(--panel2) 0 62%, transparent 63%),
+    radial-gradient(circle, color-mix(in srgb, var(--hud-color) 10%, transparent) 0 74%, transparent 75%); }
+html[data-theme="ft"] .aurora-hud small, html[data-theme="paper"] .aurora-hud small { color: #597187; }
+html[data-theme="ft"] .orbit-link, html[data-theme="paper"] .orbit-link { stroke: rgba(33,148,179,0.88); stroke: rgba(21,147,186,0.82); }
+html[data-theme="ft"] .orbit-link-far, html[data-theme="paper"] .orbit-link-far { stroke: rgba(24,142,216,0.5); stroke: rgba(25,142,221,0.46); }
+html[data-theme="ft"] #market-grid .asset-card::before, html[data-theme="paper"] #market-grid .asset-card::before { --badge: #107892; --badge-ink: var(--panel2); box-shadow: 0 0 12px color-mix(in srgb, var(--badge) 42%, transparent),
+    inset 0 -1px 3px rgba(120,92,64,0.13) !important; }
+html[data-theme="ft"] #market-grid .asset-card:nth-child(1)::before, html[data-theme="paper"] #market-grid .asset-card:nth-child(1)::before { --badge: #da181e; --badge-ink: #7c6a6a; }
+html[data-theme="ft"] #market-grid .asset-card:nth-child(2)::before, html[data-theme="paper"] #market-grid .asset-card:nth-child(2)::before { --badge: #1969df; --badge-ink: #676f7c; }
+html[data-theme="ft"] #market-grid .asset-card:nth-child(3)::before, html[data-theme="paper"] #market-grid .asset-card:nth-child(3)::before { --badge: #5c7086; --badge-ink: var(--panel2); }
+html[data-theme="ft"] #market-grid .asset-card:nth-child(4)::before, html[data-theme="paper"] #market-grid .asset-card:nth-child(4)::before { --badge: #8d6810; --badge-ink: var(--panel2); }
+html[data-theme="ft"] #market-grid .asset-card:nth-child(5)::before, html[data-theme="paper"] #market-grid .asset-card:nth-child(5)::before { --badge: #62707b; --badge-ink: var(--panel2); }
+html[data-theme="ft"] #market-grid .asset-card:nth-child(6)::before, html[data-theme="paper"] #market-grid .asset-card:nth-child(6)::before { --badge: #a05f12; --badge-ink: var(--panel2); }
+html[data-theme="ft"] .official-trend.trend-neutral .sparkline .area, html[data-theme="paper"] .official-trend.trend-neutral .sparkline .area { fill: rgba(109,139,167,0.14); }
+html[data-theme="ft"] .preview-nodes circle, html[data-theme="paper"] .preview-nodes circle { stroke: var(--line); }
+html[data-theme="ft"] .grade-high, html[data-theme="paper"] .grade-high { color: var(--on-accent); }
+html[data-theme="ft"] .grade-low, html[data-theme="paper"] .grade-low { color: var(--on-accent); }
+html[data-theme="ft"] .preview-quote-change.is-flat, html[data-theme="paper"] .preview-quote-change.is-flat { color: #55718b; }
+@media (min-width: 1041px) {
+  html[data-theme="ft"] body[data-terminal-view="overview"] .market-grid::before, html[data-theme="paper"] body[data-terminal-view="overview"] .market-grid::before { border-top: 1.5px solid #1e9bb8; border-bottom: 1.5px solid #1e90b8; background: radial-gradient(130% 170% at 50% 0, rgba(27, 130, 190, .32), transparent 66%),
+      linear-gradient(180deg, var(--bg), var(--bg)); }
+}
+/* ==== 浅色主题兜底 结束 ==== */

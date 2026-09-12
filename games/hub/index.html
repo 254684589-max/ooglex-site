@@ -15,6 +15,10 @@
 <meta property="og:url" content="https://www.ooglex.com/games/hub/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/assets/theme.css">
+<script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js" defer></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root { --bg:#0b0d16; --card:#161a28; --line:rgba(255,255,255,0.09); --text:#eef1f8; --dim:#99a0b8; --accent:#7c5cff; }
@@ -60,6 +64,13 @@
 
   footer { margin-top:24px; text-align:center; color:var(--dim); font-size:0.8rem; }
   @media (max-width:480px){ .hero h1 { font-size:1.6rem; } }
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] .hero h1, html[data-theme="paper"] .hero h1 { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
+html[data-theme="ft"] .game, html[data-theme="paper"] .game { box-shadow: 0 22px 54px -34px rgba(120,92,64,0.20); }
+html[data-theme="ft"] .cover::after, html[data-theme="paper"] .cover::after { background: linear-gradient(180deg, transparent 55%, var(--tint-2)); }
+html[data-theme="ft"] .cv-gta, html[data-theme="paper"] .cv-gta { background: linear-gradient(180deg,var(--panel2) 0%,#8a2a6a 40%,#ff6b35 78%,#ffd24a 100%); }
+html[data-theme="ft"] .cv-ra, html[data-theme="paper"] .cv-ra { background: linear-gradient(180deg,var(--panel2) 0%,var(--panel2) 45%,#b2321e 80%,#e8a13a 100%); }
+/* ==== 浅色主题兜底 结束 ==== */
 </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
 </head>

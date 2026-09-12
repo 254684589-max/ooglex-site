@@ -15,6 +15,10 @@
 <meta property="og:url" content="https://www.ooglex.com/apps/econ-calendar/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/assets/theme.css">
+<script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js" defer></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root { --bg:#0a0b10; --panel:#151823; --line:rgba(255,255,255,0.09); --text:#eef1f7; --dim:#9099ad;
@@ -93,6 +97,12 @@
     .ev .vals { grid-area:vals; justify-content:flex-start; gap:18px; }
     .cell { align-items:flex-start; }
   }
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] .title h1 .b, html[data-theme="paper"] .title h1 .b { color: var(--on-accent); }
+html[data-theme="ft"] .status.live, html[data-theme="paper"] .status.live { color: #1f7d50; }
+html[data-theme="ft"] .tabs button.on, html[data-theme="paper"] .tabs button.on { color: var(--on-accent); }
+html[data-theme="ft"] .day .dh, html[data-theme="paper"] .day .dh { background: linear-gradient(180deg,var(--bg),var(--sticky-bg)); }
+/* ==== 浅色主题兜底 结束 ==== */
 </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
 </head>

@@ -253,3 +253,14 @@
   body[data-terminal-view="overview"] .orbit-link,
   body[data-terminal-view="overview"] .aurora-gateway-preview::after { animation: none; }
 }
+
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+@media (min-width: 1041px) {
+  html[data-theme="ft"] body[data-terminal-view="overview"] .market-globe-shell::before, html[data-theme="paper"] body[data-terminal-view="overview"] .market-globe-shell::before { border: 1px solid #1e9bb8; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .orbit-grid path, html[data-theme="paper"] body[data-terminal-view="overview"] .orbit-grid path { stroke: rgba(33,146,191,0.082); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .orbit-link, html[data-theme="paper"] body[data-terminal-view="overview"] .orbit-link { stroke: rgba(37,148,177,0.9); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .orbit-link-far, html[data-theme="paper"] body[data-terminal-view="overview"] .orbit-link-far { stroke: rgba(109,127,239,0.62); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .orbit-clock, html[data-theme="paper"] body[data-terminal-view="overview"] .orbit-clock { background: linear-gradient(90deg, var(--tint-1), var(--tint-3), var(--tint-1)); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .market-orbit figcaption, html[data-theme="paper"] body[data-terminal-view="overview"] .market-orbit figcaption { background: var(--tint-3); }
+}
+/* ==== 浅色主题兜底 结束 ==== */

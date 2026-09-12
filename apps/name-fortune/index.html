@@ -15,6 +15,10 @@
 <meta property="og:url" content="https://www.ooglex.com/apps/name-fortune/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/assets/theme.css">
+<script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js" defer></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -131,6 +135,22 @@
     .title h1 { font-size:2.2rem; letter-spacing:8px; }
     .bigname { font-size:2.4rem; letter-spacing:10px; }
   }
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] .card, html[data-theme="paper"] .card { background: linear-gradient(160deg, var(--panel2), var(--panel2)); box-shadow: 0 8px 40px rgba(120,92,64,0.20); }
+html[data-theme="ft"] input, html[data-theme="paper"] input { background: var(--panel); }
+html[data-theme="ft"] select, html[data-theme="paper"] select { background: var(--panel); }
+html[data-theme="ft"] .btn, html[data-theme="paper"] .btn { border: 1px solid #b87c1e; }
+html[data-theme="ft"] .taiji, html[data-theme="paper"] .taiji { background: linear-gradient(90deg, #efe6d4 50%, var(--panel2) 50%); }
+html[data-theme="ft"] .taiji::before, html[data-theme="paper"] .taiji::before { background: radial-gradient(circle at center, var(--panel2) 8px, #efe6d4 9px); }
+html[data-theme="ft"] .taiji::after, html[data-theme="paper"] .taiji::after { background: radial-gradient(circle at center, #efe6d4 8px, var(--panel2) 9px); }
+html[data-theme="ft"] .pillar, html[data-theme="paper"] .pillar { background: var(--tint-3); }
+html[data-theme="ft"] .wxbar, html[data-theme="paper"] .wxbar { background: var(--tint-3); }
+html[data-theme="ft"] .e金, html[data-theme="paper"] .e金 { color: #766e53; }
+html[data-theme="ft"] .e木, html[data-theme="paper"] .e木 { color: #357d35; }
+html[data-theme="ft"] .e水, html[data-theme="paper"] .e水 { color: #2171b9; }
+html[data-theme="ft"] .e火, html[data-theme="paper"] .e火 { color: #c73d16; }
+html[data-theme="ft"] .e土, html[data-theme="paper"] .e土 { color: #876a1f; }
+/* ==== 浅色主题兜底 结束 ==== */
 </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
 </head>

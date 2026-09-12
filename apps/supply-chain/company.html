@@ -10,6 +10,10 @@
 <meta name="description" content="查看单家公司在全球产业链中的位置：SEC 官方 SIC 行业码判定的价值链环节、同行业同环节公司，以及逐条附原始申报出处的冶炼厂关系。收录标普500成分股与在美上市的外国私人发行人。">
 <link rel="canonical" href="https://www.ooglex.com/apps/supply-chain/company.html">
 <meta name="robots" content="noindex">
+<link rel="stylesheet" href="/assets/theme.css">
+<script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js" defer></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -249,6 +253,18 @@
   }
   @media (prefers-reduced-motion: reduce) { * { animation:none !important; transition:none !important; } }
   @media (prefers-contrast: more) { :root { --line:rgba(255,255,255,0.28); --dim:#c2ccd8; } }
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"], html[data-theme="paper"] { --s1: #97632d; --s2: #2770bc; --s3: #6e5ecc; --s4: #2d7c59; --s5: #297884; --s6: #626f81; }
+html[data-theme="ft"] .glass, html[data-theme="paper"] .glass { background: linear-gradient(180deg, var(--panel2), var(--panel2)); box-shadow: 0 24px 60px -34px rgba(120,92,64,0.20), inset 0 1px 0 rgba(255,255,255,.05); }
+html[data-theme="ft"] .chip.ok, html[data-theme="paper"] .chip.ok { color: #2d7c59; }
+html[data-theme="ft"] .notice h2, html[data-theme="paper"] .notice h2 { color: #8e6813; }
+html[data-theme="ft"] .seg, html[data-theme="paper"] .seg { background: var(--tint-1); }
+html[data-theme="ft"] .smfilt .fb, html[data-theme="paper"] .smfilt .fb { background: var(--tint-1); }
+html[data-theme="ft"] .smmore.alt:hover, html[data-theme="paper"] .smmore.alt:hover { background: var(--tint-2); }
+html[data-theme="ft"] .pick, html[data-theme="paper"] .pick { background: linear-gradient(180deg, var(--panel2), var(--panel2)); }
+html[data-theme="ft"] .peer, html[data-theme="paper"] .peer { border-bottom: 1px solid var(--line); }
+html[data-theme="ft"] .state.err, html[data-theme="paper"] .state.err { color: #c83b32; }
+/* ==== 浅色主题兜底 结束 ==== */
 </style>
 </head>
 <body>

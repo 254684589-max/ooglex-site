@@ -519,3 +519,47 @@ html[data-finance-terminal-page] { overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) {
   body[data-terminal-view="overview"] .aurora-gateway-preview::after { display: none; }
 }
+
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] .preview-flow-row em, html[data-theme="paper"] .preview-flow-row em { color: #55718b; }
+html[data-theme="ft"] .preview-event-row time, html[data-theme="paper"] .preview-event-row time { color: #567286; }
+html[data-theme="ft"] .event-grade, html[data-theme="paper"] .event-grade { color: #567286; }
+html[data-theme="ft"] .event-grade.grade-high, html[data-theme="paper"] .event-grade.grade-high { color: #da181d; }
+html[data-theme="ft"] .event-grade.grade-medium, html[data-theme="paper"] .event-grade.grade-medium { color: #926610; }
+html[data-theme="ft"] .event-grade.grade-low, html[data-theme="paper"] .event-grade.grade-low { color: #11779c; }
+html[data-theme="ft"] .event-grade.grade-holiday, html[data-theme="paper"] .event-grade.grade-holiday { color: #55718b; }
+@media (min-width: 1041px) {
+  html[data-theme="ft"] body[data-terminal-view="overview"], html[data-theme="paper"] body[data-terminal-view="overview"] { background: radial-gradient(circle at 7% 14%, rgba(113, 211, 255, .34) 0 1px, transparent 1.35px),
+      radial-gradient(circle at 83% 19%, rgba(203, 230, 255, .26) 0 1px, transparent 1.25px),
+      radial-gradient(circle at 69% 38%, rgba(81, 184, 255, .22) 0 1px, transparent 1.2px),
+      radial-gradient(72vw 31vw at 54% 24%, rgba(6, 90, 153, .19), transparent 68%),
+      linear-gradient(180deg, var(--bg) 0, var(--bg) 49%, var(--bg) 100%); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .orbit-panel, html[data-theme="paper"] body[data-terminal-view="overview"] .orbit-panel { background: linear-gradient(rgba(52, 160, 207, .035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(52, 160, 207, .035) 1px, transparent 1px),
+      radial-gradient(ellipse at 61% 55%, rgba(22, 132, 205, .23), transparent 49%),
+      radial-gradient(ellipse at 50% 47%, rgba(30, 83, 164, .12), transparent 72%),
+      linear-gradient(90deg, var(--bg), var(--tint-2) 55%, var(--tint-1)); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] #page-title > strong, html[data-theme="paper"] body[data-terminal-view="overview"] #page-title > strong { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .aurora-evidence, html[data-theme="paper"] body[data-terminal-view="overview"] .aurora-evidence { background: linear-gradient(90deg, rgba(33, 142, 193, .08), transparent 48%, rgba(33, 142, 193, .06)),
+      var(--panel); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .aurora-hud-ring, html[data-theme="paper"] body[data-terminal-view="overview"] .aurora-hud-ring { background: repeating-conic-gradient(from -43deg, color-mix(in srgb, var(--hud-color) 58%, transparent) 0 1.2deg, transparent 1.2deg 10deg),
+      radial-gradient(circle, var(--bg) 0 61%, transparent 62%),
+      radial-gradient(circle, color-mix(in srgb, var(--hud-color) 10%, transparent) 0 74%, transparent 75%); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .market-grid::before, html[data-theme="paper"] body[data-terminal-view="overview"] .market-grid::before { background: repeating-linear-gradient(90deg, transparent 0 10.8%, rgba(95, 207, 244, .035) 10.9%, transparent 11%),
+      radial-gradient(130% 170% at 50% 0, rgba(31, 151, 214, .38), transparent 66%),
+      linear-gradient(180deg, var(--bg), var(--bg)); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .market-grid::after, html[data-theme="paper"] body[data-terminal-view="overview"] .market-grid::after { border-bottom: 1px solid #1e94b8; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .aurora-gateway, html[data-theme="paper"] body[data-terminal-view="overview"] .aurora-gateway { background: linear-gradient(var(--gateway-color), var(--gateway-color)) left top / 1.3vw 1px no-repeat,
+      linear-gradient(var(--gateway-color), var(--gateway-color)) left top / 1px 1.3vw no-repeat,
+      linear-gradient(var(--gateway-color), var(--gateway-color)) right bottom / 1.3vw 1px no-repeat,
+      linear-gradient(var(--gateway-color), var(--gateway-color)) right bottom / 1px 1.3vw no-repeat,
+      radial-gradient(22vw 8vw at 48% 0, color-mix(in srgb, var(--gateway-color) 13%, transparent), transparent 74%),
+      linear-gradient(145deg, var(--bg), var(--bg)); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .aurora-gateway-preview, html[data-theme="paper"] body[data-terminal-view="overview"] .aurora-gateway-preview { background: linear-gradient(color-mix(in srgb, var(--gateway-color) 8%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--gateway-color) 8%, transparent) 1px, transparent 1px),
+      radial-gradient(ellipse at 50% 48%, color-mix(in srgb, var(--gateway-color) 5%, transparent), transparent 70%),
+      var(--panel); box-shadow: inset 0 0 1.6vw rgba(120,92,64,0.16); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .aurora-statusbar, html[data-theme="paper"] body[data-terminal-view="overview"] .aurora-statusbar { background: linear-gradient(90deg, rgba(28, 121, 169, .04), transparent 40%, rgba(28, 121, 169, .04)),
+      var(--bg); }
+}
+/* ==== 浅色主题兜底 结束 ==== */

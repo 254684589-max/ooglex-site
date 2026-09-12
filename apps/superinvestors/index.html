@@ -15,6 +15,10 @@
 <meta property="og:url" content="https://www.ooglex.com/apps/superinvestors/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/assets/theme.css">
+<script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js" defer></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -163,6 +167,28 @@
     .tile .v { font-size:1.4rem; }
     .wrow .dt { flex-basis:60px; font-size:0.7rem; }
   }
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] .title h1, html[data-theme="paper"] .title h1 { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
+html[data-theme="ft"] .status, html[data-theme="paper"] .status { background: var(--tint-1); }
+html[data-theme="ft"] .status.live, html[data-theme="paper"] .status.live { color: #6e5fc9; }
+html[data-theme="ft"] .status.demo, html[data-theme="paper"] .status.demo { color: #926610; }
+html[data-theme="ft"] .jump, html[data-theme="paper"] .jump { background: var(--tint-1); }
+html[data-theme="ft"] .jump:hover, html[data-theme="paper"] .jump:hover { border-color: var(--line-strong); }
+html[data-theme="ft"] .glass, html[data-theme="paper"] .glass { background: linear-gradient(180deg, var(--panel2), var(--panel2)); box-shadow: 0 24px 60px -34px rgba(120,92,64,0.20), inset 0 1px 0 rgba(255,255,255,.05); }
+html[data-theme="ft"] .avatar, html[data-theme="paper"] .avatar { color: var(--ink); text-shadow: 0 1px 2px rgba(120,92,64,0.18); box-shadow: inset 0 -2px 6px rgba(120,92,64,0.14), 0 2px 8px rgba(120,92,64,0.16); }
+html[data-theme="ft"] .avatar.logo img, html[data-theme="paper"] .avatar.logo img { background: var(--panel); }
+html[data-theme="ft"] .trow, html[data-theme="paper"] .trow { border-bottom: 1px solid var(--line); }
+html[data-theme="ft"] .invbody, html[data-theme="paper"] .invbody { border-top: 1px solid var(--line); }
+html[data-theme="ft"] .c-new, html[data-theme="paper"] .c-new { color: #2d7d49; }
+html[data-theme="ft"] .c-add, html[data-theme="paper"] .c-add { color: #177a7f; }
+html[data-theme="ft"] .c-trim, html[data-theme="paper"] .c-trim { color: #ac5713; }
+html[data-theme="ft"] .c-exit, html[data-theme="paper"] .c-exit { color: #d12e27; }
+html[data-theme="ft"] .move, html[data-theme="paper"] .move { background: var(--tint-1); }
+html[data-theme="ft"] .wbar span, html[data-theme="paper"] .wbar span { color: var(--on-accent); }
+html[data-theme="ft"] .divider, html[data-theme="paper"] .divider { border-top: 1px dashed var(--line); }
+html[data-theme="ft"] .aaiifoot b.bu, html[data-theme="paper"] .aaiifoot b.bu { color: #2d7d49; }
+html[data-theme="ft"] .aaiifoot b.be, html[data-theme="paper"] .aaiifoot b.be { color: #d12e27; }
+/* ==== 浅色主题兜底 结束 ==== */
 </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
 </head>

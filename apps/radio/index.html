@@ -30,6 +30,10 @@ if (matchMedia('(display-mode: standalone)').matches || navigator.standalone || 
 <meta property="og:description" content="转动地球，点亮世界各地的电台，实时收听全球广播。">
 <meta property="og:url" content="https://www.ooglex.com/apps/radio/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<link rel="stylesheet" href="/assets/theme.css">
+<script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js" defer></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root{
@@ -255,6 +259,37 @@ if (matchMedia('(display-mode: standalone)').matches || navigator.standalone || 
     color:var(--dim); font-size:0.78rem; cursor:pointer; padding:2px 4px; }
   #inAppBar .iaClose:hover{ color:var(--ink); }
   @keyframes iaBounce{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(3px,-4px); } }
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] body, html[data-theme="paper"] body { background: var(--bg); }
+html[data-theme="ft"] #space, html[data-theme="paper"] #space { background: radial-gradient(1200px 700px at 72% 18%, rgba(91,140,255,0.18), transparent 60%),
+      radial-gradient(900px 600px at 20% 82%, rgba(157,108,255,0.15), transparent 60%),
+      radial-gradient(circle at 50% 50%, var(--panel2) 0%, var(--panel2) 70%, var(--panel2) 100%); }
+html[data-theme="ft"] .brand .logo, html[data-theme="paper"] .brand .logo { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
+html[data-theme="ft"] #player, html[data-theme="paper"] #player { box-shadow: 0 12px 40px rgba(120,92,64,0.20); }
+html[data-theme="ft"] #player .favbtn.is, html[data-theme="paper"] #player .favbtn.is { color: #8a690f; }
+html[data-theme="ft"] #player .ptab, html[data-theme="paper"] #player .ptab { background: var(--tint-2); }
+html[data-theme="ft"] #player .ptab.on, html[data-theme="paper"] #player .ptab.on { color: var(--on-accent); }
+html[data-theme="ft"] #player .prow:hover, html[data-theme="paper"] #player .prow:hover { background: var(--tint-2); }
+html[data-theme="ft"] #player .prow.on, html[data-theme="paper"] #player .prow.on { border-color: #1eb86b; }
+html[data-theme="ft"] #player .pr-star.is, html[data-theme="paper"] #player .pr-star.is { color: #8a690f; }
+html[data-theme="ft"] #player .state.err, html[data-theme="paper"] #player .state.err { color: #d12e17; }
+html[data-theme="ft"] #player button, html[data-theme="paper"] #player button { background: var(--tint-2); }
+html[data-theme="ft"] #player button.play, html[data-theme="paper"] #player button.play { color: var(--on-accent); }
+html[data-theme="ft"] #reticle, html[data-theme="paper"] #reticle { border: 2px solid var(--line-strong); box-shadow: 0 0 0 1px rgba(120,92,64,0.16), 0 0 22px rgba(120,92,64,0.07); }
+html[data-theme="ft"] #reticle::after, html[data-theme="paper"] #reticle::after { background: var(--panel); box-shadow: 0 0 6px rgba(120,92,64,0.14); }
+html[data-theme="ft"] #rtip, html[data-theme="paper"] #rtip { background: var(--tint-3); }
+html[data-theme="ft"] #intro, html[data-theme="paper"] #intro { background: var(--tint-3); }
+html[data-theme="ft"] #intro .box, html[data-theme="paper"] #intro .box { box-shadow: 0 20px 60px rgba(120,92,64,0.20); }
+html[data-theme="ft"] #intro h2, html[data-theme="paper"] #intro h2 { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
+html[data-theme="ft"] #intro .go, html[data-theme="paper"] #intro .go { color: var(--on-accent); }
+html[data-theme="ft"] #installModal, html[data-theme="paper"] #installModal { background: var(--tint-3); }
+html[data-theme="ft"] #installModal .imBox, html[data-theme="paper"] #installModal .imBox { box-shadow: 0 20px 60px rgba(120,92,64,0.20); }
+html[data-theme="ft"] #installModal h2, html[data-theme="paper"] #installModal h2 { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
+html[data-theme="ft"] #imInstallNow, html[data-theme="paper"] #imInstallNow { color: var(--on-accent); }
+html[data-theme="ft"] .imSteps.hot, html[data-theme="paper"] .imSteps.hot { border-color: #1eb86b; }
+html[data-theme="ft"] .imApk, html[data-theme="paper"] .imApk { border: 1px solid #1eb86b; }
+html[data-theme="ft"] #inAppBar, html[data-theme="paper"] #inAppBar { background: linear-gradient(180deg, var(--panel2), var(--panel2)); border-bottom: 1px solid #1eb86b; box-shadow: 0 8px 24px rgba(120,92,64,0.20); }
+/* ==== 浅色主题兜底 结束 ==== */
 </style>
 </head>
 <body>

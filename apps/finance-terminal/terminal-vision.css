@@ -1171,3 +1171,79 @@ body::after {
   .market-node circle { stroke: CanvasText; }
   .globe-land { fill: transparent; }
 }
+
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"], html[data-theme="paper"] { --vision-bg: var(--panel2); --vision-panel: var(--panel2); --vision-line: rgba(19,119,151,0.21); --vision-line-strong: rgba(17,119,151,0.48); --vision-cyan: #117796; --vision-amber: #956411; --vision-grid: rgba(44,118,148,0.075); }
+html[data-theme="ft"] body, html[data-theme="paper"] body { background: radial-gradient(850px 470px at 42% 12%, rgba(20, 111, 162, 0.16), transparent 72%),
+    radial-gradient(700px 420px at 93% 36%, rgba(14, 72, 105, 0.11), transparent 74%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg) 52%, var(--bg) 100%); }
+html[data-theme="ft"] .terminal-rail, html[data-theme="paper"] .terminal-rail { background: var(--sticky-bg); box-shadow: 0 18px 50px rgba(120,92,64,0.16), inset 0 0 24px rgba(29, 160, 208, 0.04); }
+html[data-theme="ft"] .brand-mark, html[data-theme="paper"] .brand-mark { border-color: #1e95b8; }
+html[data-theme="ft"] .public-beta-chip, html[data-theme="paper"] .public-beta-chip { border: 1px solid #1e95b8; }
+html[data-theme="ft"] .stable-v1-chip, html[data-theme="paper"] .stable-v1-chip { border: 1px solid #1e95b8; }
+html[data-theme="ft"] .market-tape, html[data-theme="paper"] .market-tape { background: var(--panel); }
+html[data-theme="ft"] .section-nav, html[data-theme="paper"] .section-nav { background: var(--panel2); }
+html[data-theme="ft"] .orbit-panel, html[data-theme="paper"] .orbit-panel { background: linear-gradient(135deg, var(--panel2), var(--panel2)),
+    var(--vision-panel); }
+html[data-theme="ft"] .telemetry-card, html[data-theme="paper"] .telemetry-card { background: linear-gradient(135deg, var(--panel2), var(--panel2)),
+    var(--vision-panel); }
+html[data-theme="ft"] .orbit-copy::after, html[data-theme="paper"] .orbit-copy::after { background: linear-gradient(90deg, var(--panel2), transparent); }
+html[data-theme="ft"] .orbit-grid path, html[data-theme="paper"] .orbit-grid path { stroke: rgba(59,146,180,0.08); }
+html[data-theme="ft"] .globe-halo, html[data-theme="paper"] .globe-halo { stroke: rgba(21,147,191,0.13); }
+html[data-theme="ft"] .globe-sphere, html[data-theme="paper"] .globe-sphere { stroke: rgba(20,148,182,0.66); }
+html[data-theme="ft"] .globe-line, html[data-theme="paper"] .globe-line { stroke: rgba(21,147,191,0.24); }
+html[data-theme="ft"] .globe-land, html[data-theme="paper"] .globe-land { fill: rgba(41,145,193,0.24); stroke: rgba(21,147,190,0.65); }
+html[data-theme="ft"] .orbit-arc-cyan, html[data-theme="paper"] .orbit-arc-cyan { stroke: rgba(21,147,185,0.66); }
+html[data-theme="ft"] .orbit-arc-amber, html[data-theme="paper"] .orbit-arc-amber { stroke: rgba(184,124,20,0.7); }
+html[data-theme="ft"] .market-node .node-pulse, html[data-theme="paper"] .market-node .node-pulse { stroke: rgba(21,147,185,0.5); }
+html[data-theme="ft"] .market-node-amber .node-pulse, html[data-theme="paper"] .market-node-amber .node-pulse { stroke: rgba(184,124,20,0.55); }
+html[data-theme="ft"] .orbit-clock, html[data-theme="paper"] .orbit-clock { border: 1px solid #1e95b8; background: var(--sticky-bg); }
+html[data-theme="ft"] .orbit-clock b, html[data-theme="paper"] .orbit-clock b { color: #337690; }
+html[data-theme="ft"] .orbit-session.session-open, html[data-theme="paper"] .orbit-session.session-open { color: #197e4a; }
+html[data-theme="ft"] .telemetry-radar, html[data-theme="paper"] .telemetry-radar { border: 1px solid #1e95b8; }
+html[data-theme="ft"] .telemetry-radar i, html[data-theme="paper"] .telemetry-radar i { border: 1px solid #1e95b8; }
+html[data-theme="ft"] .hero-telemetry .meta-item, html[data-theme="paper"] .hero-telemetry .meta-item { background: var(--panel); }
+html[data-theme="ft"] .asset-card, html[data-theme="paper"] .asset-card { background: linear-gradient(150deg, var(--panel2), var(--panel2)),
+    var(--vision-panel); }
+html[data-theme="ft"] .risk-card, html[data-theme="paper"] .risk-card { background: linear-gradient(150deg, var(--panel2), var(--panel2)),
+    var(--vision-panel); }
+html[data-theme="ft"] .research-card, html[data-theme="paper"] .research-card { background: linear-gradient(150deg, var(--panel2), var(--panel2)),
+    var(--vision-panel); }
+html[data-theme="ft"] .information-card, html[data-theme="paper"] .information-card { background: linear-gradient(150deg, var(--panel2), var(--panel2)),
+    var(--vision-panel); }
+html[data-theme="ft"] .operation-card, html[data-theme="paper"] .operation-card { background: linear-gradient(150deg, var(--panel2), var(--panel2)),
+    var(--vision-panel); }
+html[data-theme="ft"] .asset-card:hover, html[data-theme="paper"] .asset-card:hover { background: linear-gradient(150deg, var(--panel2), var(--panel2)); }
+html[data-theme="ft"] .risk-hud-percent, html[data-theme="paper"] .risk-hud-percent { background: radial-gradient(circle at 50% 50%, var(--panel2) 0 54%, transparent 55%),
+    conic-gradient(from -90deg, var(--vision-cyan) 0 var(--risk-hud-progress), rgba(69, 212, 255, 0.1) var(--risk-hud-progress) 360deg); }
+html[data-theme="ft"] .risk-hud-gauge::before, html[data-theme="paper"] .risk-hud-gauge::before { border: 1px solid #1e95b8; }
+html[data-theme="ft"] .risk-hud-gauge::after, html[data-theme="paper"] .risk-hud-gauge::after { border: 1px dashed #1e95b8; }
+html[data-theme="ft"] .global-risk-map, html[data-theme="paper"] .global-risk-map { background: radial-gradient(620px 310px at 35% 48%, rgba(23, 109, 154, 0.12), transparent 72%),
+    linear-gradient(145deg, var(--panel2), var(--panel2)); }
+html[data-theme="ft"] .risk-map-grid path, html[data-theme="paper"] .risk-map-grid path { stroke: rgba(21,147,185,0.07); }
+html[data-theme="ft"] .risk-region path, html[data-theme="paper"] .risk-region path { stroke: rgba(21,146,192,0.58); }
+html[data-theme="ft"] .risk-region.region-pressure-positive path, html[data-theme="paper"] .risk-region.region-pressure-positive path { fill: rgba(39,154,112,0.24); stroke: rgba(37,155,101,0.76); }
+html[data-theme="ft"] .risk-region.region-pressure-neutral path, html[data-theme="paper"] .risk-region.region-pressure-neutral path { stroke: rgba(21,147,188,0.78); }
+html[data-theme="ft"] .risk-region.region-pressure-watch path, html[data-theme="paper"] .risk-region.region-pressure-watch path { fill: rgba(184,124,20,0.38); stroke: rgba(181,126,20,0.92); }
+html[data-theme="ft"] .risk-region.region-pressure-high path, html[data-theme="paper"] .risk-region.region-pressure-high path { fill: rgba(231,91,39,0.5); stroke: #c07815; }
+html[data-theme="ft"] .risk-region.region-no-data path, html[data-theme="paper"] .risk-region.region-no-data path { fill: var(--line); stroke: rgba(115,140,153,0.28); }
+html[data-theme="ft"] .risk-map-labels text, html[data-theme="paper"] .risk-map-labels text { fill: rgba(79,145,168,0.68); }
+html[data-theme="ft"] .risk-region-row.region-pressure-high strong, html[data-theme="paper"] .risk-region-row.region-pressure-high strong { color: #bc4a15; }
+html[data-theme="ft"] .pipeline-command, html[data-theme="paper"] .pipeline-command { background: linear-gradient(90deg, var(--panel2), var(--panel2)),
+    var(--vision-panel); }
+html[data-theme="ft"] .stable-v1-ring, html[data-theme="paper"] .stable-v1-ring { background: radial-gradient(circle, var(--panel2) 0 54%, transparent 55%),
+    conic-gradient(from -90deg, var(--vision-cyan) 0 var(--stable-progress), rgba(69, 212, 255, 0.1) var(--stable-progress) 360deg); }
+html[data-theme="ft"] .stable-v1-ring::before, html[data-theme="paper"] .stable-v1-ring::before { border: 1px solid #1e95b8; }
+html[data-theme="ft"] .pipeline-nodes > span, html[data-theme="paper"] .pipeline-nodes > span { background: var(--panel); }
+@media (prefers-contrast: more) {
+  html[data-theme="ft"] .terminal-rail, html[data-theme="paper"] .terminal-rail { border-color: #1e95b8; }
+  html[data-theme="ft"] .market-tape, html[data-theme="paper"] .market-tape { border-color: #1e95b8; }
+  html[data-theme="ft"] .orbit-panel, html[data-theme="paper"] .orbit-panel { border-color: #1e95b8; }
+  html[data-theme="ft"] .telemetry-card, html[data-theme="paper"] .telemetry-card { border-color: #1e95b8; }
+  html[data-theme="ft"] .asset-card, html[data-theme="paper"] .asset-card { border-color: #1e95b8; }
+  html[data-theme="ft"] .risk-card, html[data-theme="paper"] .risk-card { border-color: #1e95b8; }
+  html[data-theme="ft"] .research-card, html[data-theme="paper"] .research-card { border-color: #1e95b8; }
+  html[data-theme="ft"] .information-card, html[data-theme="paper"] .information-card { border-color: #1e95b8; }
+  html[data-theme="ft"] .operation-card, html[data-theme="paper"] .operation-card { border-color: #1e95b8; }
+}
+/* ==== 浅色主题兜底 结束 ==== */

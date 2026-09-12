@@ -32,6 +32,10 @@ try{ if (localStorage.getItem('ooglex_tv_gate') === '1') document.documentElemen
 <meta property="og:description" content="转动地球，点亮世界各地的电视台，实时观看全球直播。">
 <meta property="og:url" content="https://www.ooglex.com/apps/tv/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<link rel="stylesheet" href="/assets/theme.css">
+<script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js" defer></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root{
@@ -282,6 +286,45 @@ try{ if (localStorage.getItem('ooglex_tv_gate') === '1') document.documentElemen
     background:linear-gradient(135deg,var(--cyan),var(--blue)); color:#04121b; font-weight:800; font-size:1rem; font-family:inherit; letter-spacing:3px;
   }
   #gate #gerr{ color:#ff8a7a; font-size:0.82rem; margin-top:12px; min-height:1.1em; }
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] body, html[data-theme="paper"] body { background: var(--bg); }
+html[data-theme="ft"] #space, html[data-theme="paper"] #space { background: radial-gradient(1200px 700px at 72% 18%, rgba(91,140,255,0.18), transparent 60%),
+      radial-gradient(900px 600px at 20% 82%, rgba(157,108,255,0.15), transparent 60%),
+      radial-gradient(circle at 50% 50%, var(--panel2) 0%, var(--panel2) 70%, var(--panel2) 100%); }
+html[data-theme="ft"] .brand .logo, html[data-theme="paper"] .brand .logo { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
+html[data-theme="ft"] #player, html[data-theme="paper"] #player { box-shadow: 0 12px 40px rgba(120,92,64,0.20); }
+html[data-theme="ft"] #stage, html[data-theme="paper"] #stage { background: var(--panel2); }
+html[data-theme="ft"] #stage video, html[data-theme="paper"] #stage video { background: var(--panel2); }
+html[data-theme="ft"] #stage .badge, html[data-theme="paper"] #stage .badge { background: var(--tint-3); }
+html[data-theme="ft"] #player .favbtn.is, html[data-theme="paper"] #player .favbtn.is { color: #8a690f; }
+html[data-theme="ft"] #player .logo img, html[data-theme="paper"] #player .logo img { background: var(--panel2); }
+html[data-theme="ft"] #player .state.err, html[data-theme="paper"] #player .state.err { color: #d12e17; }
+html[data-theme="ft"] #player button, html[data-theme="paper"] #player button { background: var(--tint-2); }
+html[data-theme="ft"] #player button.play, html[data-theme="paper"] #player button.play { color: var(--on-accent); }
+html[data-theme="ft"] #player .ptab, html[data-theme="paper"] #player .ptab { background: var(--tint-2); }
+html[data-theme="ft"] #player .ptab.on, html[data-theme="paper"] #player .ptab.on { color: var(--on-accent); }
+html[data-theme="ft"] #player .prow:hover, html[data-theme="paper"] #player .prow:hover { background: var(--tint-2); }
+html[data-theme="ft"] #player .pr-star.is, html[data-theme="paper"] #player .pr-star.is { color: #8a690f; }
+html[data-theme="ft"] #reticle, html[data-theme="paper"] #reticle { border: 2px solid var(--line-strong); box-shadow: 0 0 0 1px rgba(120,92,64,0.16), 0 0 22px rgba(120,92,64,0.07); }
+html[data-theme="ft"] #reticle::after, html[data-theme="paper"] #reticle::after { background: var(--panel); box-shadow: 0 0 6px rgba(120,92,64,0.14); }
+html[data-theme="ft"] #rtip, html[data-theme="paper"] #rtip { background: var(--tint-3); }
+html[data-theme="ft"] #intro, html[data-theme="paper"] #intro { background: var(--tint-3); }
+html[data-theme="ft"] #intro .box, html[data-theme="paper"] #intro .box { box-shadow: 0 20px 60px rgba(120,92,64,0.20); }
+html[data-theme="ft"] #intro h2, html[data-theme="paper"] #intro h2 { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
+html[data-theme="ft"] #intro .go, html[data-theme="paper"] #intro .go { color: var(--on-accent); }
+html[data-theme="ft"] #installModal, html[data-theme="paper"] #installModal { background: var(--tint-3); }
+html[data-theme="ft"] #installModal .imBox, html[data-theme="paper"] #installModal .imBox { box-shadow: 0 20px 60px rgba(120,92,64,0.20); }
+html[data-theme="ft"] #installModal h2, html[data-theme="paper"] #installModal h2 { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
+html[data-theme="ft"] #imInstallNow, html[data-theme="paper"] #imInstallNow { color: var(--on-accent); }
+html[data-theme="ft"] #inAppBar, html[data-theme="paper"] #inAppBar { background: linear-gradient(180deg, var(--panel2), var(--panel2)); box-shadow: 0 8px 24px rgba(120,92,64,0.20); }
+html[data-theme="ft"] #gate, html[data-theme="paper"] #gate { background: radial-gradient(1200px 700px at 72% 18%, rgba(91,140,255,0.12), transparent 60%),
+      radial-gradient(circle at 50% 50%, var(--panel2) 0%, var(--panel2) 72%, var(--panel2) 100%); }
+html[data-theme="ft"] #gate .gbox, html[data-theme="paper"] #gate .gbox { box-shadow: 0 20px 60px rgba(120,92,64,0.20); }
+html[data-theme="ft"] #gate h2, html[data-theme="paper"] #gate h2 { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
+html[data-theme="ft"] #gate input, html[data-theme="paper"] #gate input { background: var(--tint-2); }
+html[data-theme="ft"] #gate button, html[data-theme="paper"] #gate button { color: var(--on-accent); }
+html[data-theme="ft"] #gate #gerr, html[data-theme="paper"] #gate #gerr { color: #d12e17; }
+/* ==== 浅色主题兜底 结束 ==== */
 </style>
 </head>
 <body>

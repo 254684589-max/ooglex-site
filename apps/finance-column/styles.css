@@ -257,3 +257,35 @@ footer a { color: var(--blue); text-decoration: none; }
   .lh-stats { justify-content: center; }
   .pager { grid-template-columns: 1fr; }
 }
+
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"], html[data-theme="paper"] { --card-2: var(--panel2); }
+html[data-theme="ft"] .hero .kicker, html[data-theme="paper"] .hero .kicker { border: 1px solid #b8891e; }
+html[data-theme="ft"] .hero h1, html[data-theme="paper"] .hero h1 { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); background: linear-gradient(94deg, #f3c969, var(--panel) 42%, #8aa6ff 82%); }
+html[data-theme="ft"] .results, html[data-theme="paper"] .results { background: var(--panel2); box-shadow: 0 24px 60px -20px rgba(120,92,64,0.20); }
+html[data-theme="ft"] .ritem:hover, html[data-theme="paper"] .ritem:hover { background: var(--tint-2); }
+html[data-theme="ft"] .results mark, html[data-theme="paper"] .results mark { color: var(--ink); }
+html[data-theme="ft"] .intro-card, html[data-theme="paper"] .intro-card { background: linear-gradient(180deg, var(--panel2), var(--panel2)); box-shadow: 0 20px 50px -34px rgba(120,92,64,0.20), inset 0 1px 0 rgba(255, 255, 255, 0.04); }
+html[data-theme="ft"] .layer-card, html[data-theme="paper"] .layer-card { background: linear-gradient(180deg, var(--panel2), var(--panel2)); box-shadow: 0 20px 50px -34px rgba(120,92,64,0.20), inset 0 1px 0 rgba(255, 255, 255, 0.04); }
+html[data-theme="ft"] .mchip, html[data-theme="paper"] .mchip { color: #656d8c; background: var(--tint-2); }
+html[data-theme="ft"] .mchip.new, html[data-theme="paper"] .mchip.new { border-color: #b8891e; }
+html[data-theme="ft"] .lpill.on, html[data-theme="paper"] .lpill.on { background: var(--tint-2); }
+html[data-theme="ft"] .layer-hero, html[data-theme="paper"] .layer-hero { background: linear-gradient(135deg, var(--tint-2), var(--tint-3)); }
+html[data-theme="ft"] .layer-hero p, html[data-theme="paper"] .layer-hero p { color: #656d8c; }
+html[data-theme="ft"] .new-badge, html[data-theme="paper"] .new-badge { border: 1px solid #b8891e; }
+html[data-theme="ft"] .term, html[data-theme="paper"] .term { background: linear-gradient(180deg, var(--panel2), var(--panel2)); }
+html[data-theme="ft"] .dg-card, html[data-theme="paper"] .dg-card { background: linear-gradient(180deg, var(--panel2), var(--panel2)); box-shadow: 0 20px 50px -34px rgba(120,92,64,0.20), inset 0 1px 0 rgba(255, 255, 255, 0.04); }
+html[data-theme="ft"] .dg-flow, html[data-theme="paper"] .dg-flow { background: radial-gradient(120% 120% at 50% 0%, rgba(138,166,255,.06), transparent 60%), var(--panel2); }
+html[data-theme="ft"] .dg-flow .dg-zoom, html[data-theme="paper"] .dg-flow .dg-zoom { color: var(--ink); background: var(--tint-3); }
+html[data-theme="ft"] .dg-chain, html[data-theme="paper"] .dg-chain { color: #656e85; }
+html[data-theme="ft"] .dg-node, html[data-theme="paper"] .dg-node { color: #656d8c; background: var(--tint-2); }
+html[data-theme="ft"] .flow .fedge, html[data-theme="paper"] .flow .fedge { stroke: var(--line); }
+html[data-theme="ft"] .fnode, html[data-theme="paper"] .fnode { background: linear-gradient(180deg, var(--panel2), var(--panel2)); }
+html[data-theme="ft"] .fnode.hot, html[data-theme="paper"] .fnode.hot { background: linear-gradient(180deg, color-mix(in srgb, var(--ac) 26%, var(--panel2)), var(--panel2)); }
+html[data-theme="ft"] .fn-t, html[data-theme="paper"] .fn-t { color: var(--ink); }
+html[data-theme="ft"] .fn-s, html[data-theme="paper"] .fn-s { color: #636e86; }
+html[data-theme="ft"] .fnode.hot .fn-s, html[data-theme="paper"] .fnode.hot .fn-s { color: #616d90; }
+html[data-theme="ft"] .fedge-label, html[data-theme="paper"] .fedge-label { color: #5f6d95; background: var(--panel2); }
+html[data-theme="ft"] .lightbox, html[data-theme="paper"] .lightbox { background: var(--panel2); }
+html[data-theme="ft"] .lb-close, html[data-theme="paper"] .lb-close { color: var(--ink); }
+/* ==== 浅色主题兜底 结束 ==== */

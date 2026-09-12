@@ -36,3 +36,23 @@
   .panel-entry,
   .detail-link { min-height: 44px; }
 }
+
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] .globe-atmosphere, html[data-theme="paper"] .globe-atmosphere { stroke: rgba(21,147,185,0.62); }
+html[data-theme="ft"] .globe-graticule ellipse, html[data-theme="paper"] .globe-graticule ellipse { stroke: rgba(21,147,186,0.27); }
+html[data-theme="ft"] .globe-graticule path, html[data-theme="paper"] .globe-graticule path { stroke: rgba(21,147,186,0.27); }
+html[data-theme="ft"] .earth-lights circle, html[data-theme="paper"] .earth-lights circle { fill: #ae8013; }
+html[data-theme="ft"] .risk-radar-panel, html[data-theme="paper"] .risk-radar-panel { background: var(--panel2); }
+html[data-theme="ft"] .risk-radar-grid polygon, html[data-theme="paper"] .risk-radar-grid polygon { stroke: rgba(21,147,186,0.22); }
+html[data-theme="ft"] .risk-radar-grid path, html[data-theme="paper"] .risk-radar-grid path { stroke: rgba(21,147,186,0.22); }
+html[data-theme="ft"] .risk-radar-grid polygon:first-child, html[data-theme="paper"] .risk-radar-grid polygon:first-child { stroke: rgba(21,147,186,0.45); }
+html[data-theme="ft"] .risk-radar-fill, html[data-theme="paper"] .risk-radar-fill { fill: rgba(20,148,177,0.2); stroke: #1494b1; }
+html[data-theme="ft"] .risk-radar-points circle, html[data-theme="paper"] .risk-radar-points circle { fill: #1395ae; stroke: var(--line); }
+html[data-theme="ft"] .risk-radar-labels text, html[data-theme="paper"] .risk-radar-labels text { fill: #5f8ea7; }
+html[data-theme="ft"] .risk-region.region-pressure-positive path, html[data-theme="paper"] .risk-region.region-pressure-positive path { stroke: rgba(21,147,185,0.82); }
+html[data-theme="ft"] .risk-region.region-pressure-watch path, html[data-theme="paper"] .risk-region.region-pressure-watch path { fill: rgba(199,116,22,0.48); }
+html[data-theme="ft"] .risk-region.region-pressure-high path, html[data-theme="paper"] .risk-region.region-pressure-high path { fill: rgba(209,109,23,0.66); }
+@media(min-width:1041px) {
+  html[data-theme="ft"] body[data-terminal-view=overview] .risk-radar-panel, html[data-theme="paper"] body[data-terminal-view=overview] .risk-radar-panel { background: linear-gradient(rgba(69,212,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(69,212,255,.025) 1px,transparent 1px),var(--panel); }
+}
+/* ==== 浅色主题兜底 结束 ==== */

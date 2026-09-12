@@ -903,3 +903,11 @@ body[data-terminal-view="overview"] #market-grid .asset-details { display: none;
    视图里原样保留——元素仍在DOM中，既有契约与抽屉入口不受影响。 */
 body[data-terminal-view="overview"] #market-grid .detail-open,
 body[data-terminal-view="overview"] #market-grid .watch-toggle { display: none; }
+
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+@media (min-width: 1041px) {
+  html[data-theme="ft"] body[data-terminal-view="overview"] .section-nav a[aria-current="page"], html[data-theme="paper"] body[data-terminal-view="overview"] .section-nav a[aria-current="page"] { border-color: #1e95b8; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .terminal-rail a[aria-current="page"], html[data-theme="paper"] body[data-terminal-view="overview"] .terminal-rail a[aria-current="page"] { border-color: #1e95b8; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] #main-content > section, html[data-theme="paper"] body[data-terminal-view="overview"] #main-content > section { background: var(--panel); }
+}
+/* ==== 浅色主题兜底 结束 ==== */

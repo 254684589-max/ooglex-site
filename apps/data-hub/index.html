@@ -15,6 +15,10 @@
 <meta property="og:url" content="https://www.ooglex.com/apps/data-hub/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/assets/theme.css">
+<script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js" defer></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -97,6 +101,13 @@
 
   @media (max-width:720px) { .lead.show { grid-template-columns:1fr; gap:24px; } .grid { gap:0 24px; } }
   @media (prefers-reduced-motion:reduce) { * { transition:none !important; } }
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] .lead.show, html[data-theme="paper"] .lead.show { border-bottom: 1px solid var(--line); }
+html[data-theme="ft"] .lead .side .sr, html[data-theme="paper"] .lead .side .sr { border-top: 1px solid var(--line); }
+html[data-theme="ft"] .art, html[data-theme="paper"] .art { border-top: 1px solid var(--line); }
+html[data-theme="ft"] .art .row, html[data-theme="paper"] .art .row { border-top: 1px dotted var(--line); }
+html[data-theme="ft"] footer, html[data-theme="paper"] footer { border-top: 1px solid var(--line); }
+/* ==== 浅色主题兜底 结束 ==== */
 </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
 </head>

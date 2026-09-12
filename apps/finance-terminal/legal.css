@@ -52,3 +52,10 @@ li { margin: 7px 0; color: #d6deea; }
 @media (forced-colors: active) {
   .legal-intro, .notice, .legal-back { border: 1px solid CanvasText; }
 }
+
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] .legal-intro, html[data-theme="paper"] .legal-intro { border: 1px solid #1e95b8; }
+html[data-theme="ft"] p, html[data-theme="paper"] p { color: #626f83; }
+html[data-theme="ft"] li, html[data-theme="paper"] li { color: #626f83; }
+html[data-theme="ft"] .notice, html[data-theme="paper"] .notice { color: #846b31; }
+/* ==== 浅色主题兜底 结束 ==== */

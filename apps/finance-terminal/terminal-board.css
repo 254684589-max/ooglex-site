@@ -362,3 +362,26 @@
   .board-spark-dot, .board-live i { animation: none; }
   .board-cell-price.live-tick-up, .board-cell-price.live-tick-down { animation: none; }
 }
+
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] .board-search, html[data-theme="paper"] .board-search { background: var(--tint-3); }
+html[data-theme="ft"] .board-tab, html[data-theme="paper"] .board-tab { background: var(--tint-3); }
+html[data-theme="ft"] .board-tab[data-category="commodity"], html[data-theme="paper"] .board-tab[data-category="commodity"] { --accent: #936510; --accent-soft: rgba(147,101,16,0.12); }
+html[data-theme="ft"] [data-board-category="commodity"], html[data-theme="paper"] [data-board-category="commodity"] { --accent: #936510; --accent-soft: rgba(147,101,16,0.12); }
+html[data-theme="ft"] .board-tab[data-category="index"], html[data-theme="paper"] .board-tab[data-category="index"] { --accent: #117796; --accent-soft: rgba(17,119,150,0.12); }
+html[data-theme="ft"] [data-board-category="index"], html[data-theme="paper"] [data-board-category="index"] { --accent: #117796; --accent-soft: rgba(17,119,150,0.12); }
+html[data-theme="ft"] .board-tab[data-category="stock"], html[data-theme="paper"] .board-tab[data-category="stock"] { --accent: #7750eb; --accent-soft: rgba(119,80,235,0.13); }
+html[data-theme="ft"] [data-board-category="stock"], html[data-theme="paper"] [data-board-category="stock"] { --accent: #7750eb; --accent-soft: rgba(119,80,235,0.13); }
+html[data-theme="ft"] .board-tab[data-category="fx"], html[data-theme="paper"] .board-tab[data-category="fx"] { --accent: #207b72; --accent-soft: rgba(32,123,114,0.12); }
+html[data-theme="ft"] [data-board-category="fx"], html[data-theme="paper"] [data-board-category="fx"] { --accent: #207b72; --accent-soft: rgba(32,123,114,0.12); }
+html[data-theme="ft"] .board-tab[data-category="crypto"], html[data-theme="paper"] .board-tab[data-category="crypto"] { --accent: #a75a13; --accent-soft: rgba(167,90,19,0.12); }
+html[data-theme="ft"] [data-board-category="crypto"], html[data-theme="paper"] [data-board-category="crypto"] { --accent: #a75a13; --accent-soft: rgba(167,90,19,0.12); }
+html[data-theme="ft"] .board-tab[data-category="bond"], html[data-theme="paper"] .board-tab[data-category="bond"] { --accent: #2d65e8; --accent-soft: rgba(45,101,232,0.13); }
+html[data-theme="ft"] [data-board-category="bond"], html[data-theme="paper"] [data-board-category="bond"] { --accent: #2d65e8; --accent-soft: rgba(45,101,232,0.13); }
+html[data-theme="ft"] .board-group-link, html[data-theme="paper"] .board-group-link { border: 1px solid #1e95b8; color: var(--cyan, #117796); }
+html[data-theme="ft"] .board-group-link:hover, html[data-theme="paper"] .board-group-link:hover { border-color: var(--cyan, #1e95b8); }
+html[data-theme="ft"] .board-group-link:focus-visible, html[data-theme="paper"] .board-group-link:focus-visible { outline: 2px solid var(--cyan, #1e95b8); }
+html[data-theme="ft"] .board-group-head, html[data-theme="paper"] .board-group-head { background: var(--tint-3); }
+html[data-theme="ft"] .board-row-head, html[data-theme="paper"] .board-row-head { background: var(--panel); }
+html[data-theme="ft"] .board-toggle, html[data-theme="paper"] .board-toggle { background: var(--tint-3); }
+/* ==== 浅色主题兜底 结束 ==== */

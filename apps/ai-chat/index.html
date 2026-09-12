@@ -17,6 +17,10 @@
 <meta property="og:url" content="https://www.ooglex.com/apps/ai-chat/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/assets/theme.css">
+<script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js" defer></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -206,6 +210,28 @@
     background:rgba(77,217,160,0.08); border:1px solid rgba(77,217,160,0.35); color:var(--green);
     border-radius:9px; padding:9px 12px; font-size:0.83rem; margin-top:12px; line-height:1.6;
   }
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] header, html[data-theme="paper"] header { background: var(--panel2); }
+html[data-theme="ft"] header h1, html[data-theme="paper"] header h1 { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
+html[data-theme="ft"] .hbtn, html[data-theme="paper"] .hbtn { background: var(--tint-2); }
+html[data-theme="ft"] #netTip, html[data-theme="paper"] #netTip { color: #806c3f; }
+html[data-theme="ft"] #netTip b, html[data-theme="paper"] #netTip b { color: #946515; }
+html[data-theme="ft"] #netTipClose, html[data-theme="paper"] #netTipClose { color: #946515; }
+html[data-theme="ft"] .msg.ai .av, html[data-theme="paper"] .msg.ai .av { background: var(--tint-2); }
+html[data-theme="ft"] .act:hover, html[data-theme="paper"] .act:hover { background: var(--tint-3); }
+html[data-theme="ft"] .bubble tr:nth-child(even) td, html[data-theme="paper"] .bubble tr:nth-child(even) td { background: var(--tint-1); }
+html[data-theme="ft"] .bubble code, html[data-theme="paper"] .bubble code { background: var(--tint-3); }
+html[data-theme="ft"] .bubble pre, html[data-theme="paper"] .bubble pre { background: var(--tint-3); }
+html[data-theme="ft"] #inputBar, html[data-theme="paper"] #inputBar { background: var(--panel2); }
+html[data-theme="ft"] #drawerMask, html[data-theme="paper"] #drawerMask { background: var(--tint-3); }
+html[data-theme="ft"] .conv:hover, html[data-theme="paper"] .conv:hover { background: var(--tint-2); }
+html[data-theme="ft"] .conv .del:hover, html[data-theme="paper"] .conv .del:hover { color: #c73d29; }
+html[data-theme="ft"] #mask, html[data-theme="paper"] #mask { background: var(--tint-3); }
+html[data-theme="ft"] #setPanel input, html[data-theme="paper"] #setPanel input { background: var(--tint-3); }
+html[data-theme="ft"] #setPanel select, html[data-theme="paper"] #setPanel select { background: var(--tint-3); }
+html[data-theme="ft"] #setPanel textarea, html[data-theme="paper"] #setPanel textarea { background: var(--tint-3); }
+html[data-theme="ft"] #cancelBtn, html[data-theme="paper"] #cancelBtn { background: var(--tint-3); }
+/* ==== 浅色主题兜底 结束 ==== */
 </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
 </head>
