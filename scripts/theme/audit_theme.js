@@ -6,7 +6,7 @@ const fs = require('fs');
    判定口径见 docs/THEME.md。 */
 const path = require('path');
 const ROOT = path.resolve(__dirname, '../..');
-const SKIP = ['.git', 'home-redesign', 'docs', 'node_modules'];
+const SKIP = ['.git', 'home-redesign', 'terminal-redesign', 'docs', 'node_modules'];
 function walkDir(dir, out = []) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const rel = path.relative(ROOT, path.join(dir, e.name));
