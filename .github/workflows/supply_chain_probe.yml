@@ -260,7 +260,7 @@ jobs:
       # 取到 0 份 10-K 或 0 份 EX-10 附件则报「结论无效」并非零退出。
       - name: Probe EX-10 material contracts
         env:
-          SEC_CONTACT: ${{ secrets.SEC_CONTACT }}
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
           EX10_SAMPLE: ${{ inputs.ex10_sample }}
         run: python scripts/supply-chain/probe_ex10_contracts.py
 
@@ -286,7 +286,7 @@ jobs:
       # 取到 0 份申报则报「结论无效」并非零退出，不得据此判死。
       - name: Probe historical Form SD backfill
         env:
-          SEC_CONTACT: ${{ secrets.SEC_CONTACT }}
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
           BACKFILL_SAMPLE: ${{ inputs.backfill_sample }}
           BACKFILL_YEARS: ${{ inputs.backfill_years }}
         run: python scripts/supply-chain/probe_form_sd_backfill.py

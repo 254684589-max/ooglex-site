@@ -115,6 +115,12 @@ NOT_SUPPLY = re.compile(
     r"consulting|underwriting|retention|separation|transition\s+services|"
     r"registration\s+rights|stockholders?|shareholders?)\s+agreement"
     r"|(?:equity|incentive|option|restricted\s+stock|compensation)\s+plan"
+    # 实测（run 42）补两条。CAHO 那份「PURCHASE AND ACQUISITION AGREEMENT」
+    # 被上面的 purchas\w* 收进来了，而它是一份**并购**文件——全样本唯一那
+    # 「1 份命中」就是它，真实可用数是 0。RAPH 的认购协议同理。
+    # 两条都只收实测见过的形态，不替没见过的形态提前立规则。
+    r"|acquisition\s+agreement"
+    r"|subscription\s+agreement"
     r")\b", re.I)
 
 # 首段的双方。合同惯例是 "by and between A ... and B"。

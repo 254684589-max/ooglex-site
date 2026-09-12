@@ -44,18 +44,85 @@
   var TIERS = [
     { id: "t1", name: "一级供应商", role: "直接供货", real: false,
       body: "直接向该公司供货的企业。",
-      gap: "没有免费数据源。两条路线已实测否决：客户集中度披露（ASC 280）要求披露占比但不要求写客户名；" +
-           "EDGAR 全文反查按词频排序，提及某公司最多的往往是起诉它的人，不是供应它的人。" },
+      // 这一栏为什么空着，是整个板块被问得最多的一件事。
+      // **把实测过的四条路逐条列出来，而不是说一句「没有数据源」**——
+      // 读者要能判断这是「还没做」还是「做过了、做不成」。
+      gap: "没有免费数据源。SEC 这条路上四种办法都已实测否决："
+         + "①客户集中度披露（ASC 280）要求披露占比但不要求写客户名；"
+         + "②EDGAR 全文反查按词频排序，提及某公司最多的往往是起诉它的人；"
+         + "③10-K 附件 21 子公司清单列的是法律实体，与冶炼厂设施名严格同名 0 条；"
+         + "④10-K 附件 10 材料合同（2026-09-12 实测 80 家）——找到附件的 61 家里，"
+         + "标题属于供货／制造／分销类的只有 10 份，而其中 4 份真合同的对方名称"
+         + "按保密处理规则可以涂掉。"
+         + "所以这一栏的 0 不是「还没做」，是免费公开源里没有横跨全行业、"
+         + "点名「谁向谁供货」的记录。" },
     { id: "t2", name: "二级供应商", role: "供应商的供应商", real: false,
       body: "更上游一层。",
       gap: "一级都拿不到，二级更无从谈起。" },
     { id: "t3", name: "冶炼厂／精炼厂", role: "锡 · 钽 · 钨 · 金", real: true,
       body: "来自该公司的 Form SD 冲突矿产申报。语义是「该冶炼厂出现在申报人的供应链中」" +
-            "——间接、不含份额、不含层级，不等于直接供货关系。",
-      pending: "这家公司提交了 Form SD，但申报正文里没有可解析的冶炼厂名单。" +
-               "Form SD 强制申报、不强制列名单，因此这一栏空着是披露本身的形态，" +
-               "不是抓取失败。" }
+            "——间接、不含份额、不含层级，不等于直接供货关系。" }
   ];
+
+  /* 这一栏为什么空着——**按该公司的真实申报状态分档，不说一句通用的话**。
+     原来只有一句「这家公司提交了 Form SD，但申报正文里没有名单」，而池内
+     4,697 家（79.7%）从未提交过任何 Form SD，161 家提交的是资源开采付款
+     披露。对这 4,858 家，那句话是假的，而页面照样印了出来。
+
+     每档的措辞分三件事说清：**我们测到了什么、依据哪条规则、还有什么没测**。
+     `no-filing` 那档尤其不能把推断写成结论——没查到申报只说明没有记录，
+     不等于已经确认这家公司不在 Rule 13p-1 的适用范围内。 */
+  var T3_EMPTY = {
+    "filed-no-list": {
+      chip: "本次申报无名单",
+      text: "这家公司提交了 Form SD，但申报正文里没有可解析的冶炼厂名单。"
+          + "Dodd-Frank §1502 / SEC Rule 13p-1 强制申报、不强制列名单，"
+          + "因此这一栏空着是披露本身的形态，不是抓取失败。"
+    },
+    "no-filing": {
+      chip: "未见申报",
+      text: "我们在 EDGAR 上没有查到这家公司的任何 Form SD 申报。"
+          + "Rule 13p-1 只覆盖产品中含锡／钽／钨／金的发行人，"
+          + "池内没有申报记录的 4,697 家里绝大多数在金融、服务与平台环节，"
+          + "结构上不该有冶炼厂。但「没查到申报」本身只说明没有记录——"
+          + "它不等于已经确认这家公司不适用该规则。"
+    },
+    "resource-extraction": {
+      chip: "申报属另一类",
+      text: "这家公司提交的是资源开采付款披露（§1504 / Rule 13q-1），"
+          + "不是冲突矿产申报（§1502 / Rule 13p-1）。前者报的是向各国政府"
+          + "支付的款项，那套披露里没有冶炼厂这个概念，因此这一栏不会有名单。"
+    },
+    "failed": {
+      chip: "抽取缺陷",
+      text: "扫描认定这家公司的申报里有名单，但边文件没有写成。"
+          + "这是我们这边的缺陷，不是披露的形态——单列一档，"
+          + "不混进「未见申报」那一栏蒙混过去。"
+    },
+    "": {
+      chip: "未测",
+      text: "这家公司还没有被带申报状态的那一版抽取器扫过，"
+          + "所以这一栏为什么空着，我们还没有测过。不猜原因。"
+    }
+  };
+
+  /* 状态在中文里的短名，给摘要栏用。键与 T3_EMPTY 一致。 */
+  var SD_LABEL = {
+    "listed": "已申报并列出名单",
+    "filed-no-list": "已申报、正文无名单",
+    "no-filing": "未见 Form SD 申报",
+    "resource-extraction": "申报的是资源开采付款",
+    "failed": "扫到名单但未写成（缺陷）",
+    "": "未测"
+  };
+
+  function t3Empty(node) {
+    var st = (node && node.formSdStatus) || "";
+    // 状态写着 listed 而这里一条都没有 = 抽取器与发布路径不一致，是缺陷。
+    // 节点构建那一侧（build_chain_nodes.py）就是这么归档的，两边口径要一致。
+    if (st === "listed") st = "failed";
+    return T3_EMPTY[st] || T3_EMPTY[""];
+  }
 
   var state = { data: null, node: null, view: "tier", tierSel: 2,
                 edges: null, edgeError: null, zh: null, peers: null };
@@ -401,8 +468,10 @@
       hd.appendChild(dot);
       hd.appendChild(el("b", null, t.name));
       var count = i === 2 ? edgeRows().length : 0;
+      // 冶炼厂这一栏空着的原因有四种，原来一律写「本次申报无名单」——
+      // 对从未申报的 4,697 家和申报了另一类的 161 家，那是假话。
       var tag = el("span", count ? "chip ok" : "chip",
-        count ? "已核验" : (t.real ? "本次申报无名单" : "无数据源"));
+        count ? "已核验" : (t.real ? t3Empty(n).chip : "无数据源"));
       tag.style.marginLeft = "auto";
       hd.appendChild(tag);
       b.appendChild(hd);
@@ -690,12 +759,15 @@
           okBox.appendChild(da);
         }
       } else {
-        var pend = el("div", null, t.pending);
+        var pend = el("div", null, t3Empty(n).text);
         pend.style.cssText = "font-size:.73rem;color:var(--dim);margin-bottom:6px;";
         okBox.appendChild(pend);
       }
       if (n.cik != null) {
-        var a = el("a", null, "该公司的全部 Form SD 申报 →");
+        // 没有名单时这条链接就是核验入口：点开看到「无匹配申报」，
+        // 正好证实页面上那句「未见申报」，所以文案要说出它是去核验的。
+        var a = el("a", null, rows.length ? "该公司的全部 Form SD 申报 →"
+                                          : "到 EDGAR 核验这家公司的 Form SD 申报 →");
         a.href = edgarUrl(n.cik);
         a.target = "_blank"; a.rel = "noopener noreferrer";
         a.style.cssText = "font-size:.78rem;color:var(--accent);text-decoration:none;"
@@ -905,6 +977,9 @@
     [["身份与市值", "站内公司榜"], ["环节判定", "SEC 官方 SIC 行业码"],
      ["同行业公司", sameSic.length + " 家"], ["同环节公司", sameStage + " 家"],
      ["冶炼厂关系", rows.length + " 条"],
+     // 四档状态直接印出来。没有这一行，读者看到「0 条」只能猜是抓漏了还是
+     // 本来就没有——而这两件事在这套数据里是 79.7% 与 11.4% 的差别。
+     ["Form SD 申报状态", SD_LABEL[n.formSdStatus || ""] || SD_LABEL[""]],
      ["上游重叠", pv ? (pv.peerCount + " 家申报人") : "0 家"],
      ["产业链归属", (n.chains || []).length + " 条链（按 SIC 分类）"],
      ["链间上下游", "产业结构框架，非实测"],

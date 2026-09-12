@@ -2527,6 +2527,146 @@ async function main() {
         `溢出 ${st.overflow}px`));
     }
 
+    /* 一级供应商那一格的 0，**必须读成实测结论，不能读成待办**。
+       SEC 四条路（客户集中度、全文反查、附件 21、附件 10）已逐条实测否决，
+       页面原来写「一级与二级供应商仍无数据源」——那个「仍」把判决降格成了
+       进度条。这一段同时盯两处：总览页那句声明、公司页第一张卡片的出处框。 */
+    console.log("\n── 一级供应商：0 条要说成实测结论，不是待办 ──");
+    await client.send("Page.navigate", { url: pageUrl }, sessionId);
+    const t1ov = await evaluate(`new Promise((done) => {
+      const deadline = Date.now() + 25000;
+      (function poll() {
+        const n = document.getElementById('notice-edges');
+        if (n && n.textContent) return done({ text: n.textContent });
+        if (Date.now() > deadline) return done({ text: '' });
+        setTimeout(poll, 150);
+      })();
+    })`);
+    check(`总览页把四条路说成已实测否决`, () => {
+      assert.match(t1ov.text, /已逐条实测否决/,
+        `声明里没说是实测否决：${t1ov.text.slice(0, 260)}`);
+      assert.match(t1ov.text, /附件 10/,
+        `四条路没列全（缺附件 10）：${t1ov.text.slice(0, 260)}`);
+    });
+    check(`总览页不再用「仍无数据源」这种待办口气`, () => {
+      assert.ok(!/仍无数据源/.test(t1ov.text),
+        `还在写「仍无数据源」：${t1ov.text.slice(0, 260)}`);
+    });
+
+    await client.send("Page.navigate",
+      { url: `http://127.0.0.1:${port}/apps/supply-chain/company.html?symbol=AAPL` },
+      sessionId);
+    const t1co = await evaluate(`new Promise((done) => {
+      const deadline = Date.now() + 25000;
+      (function poll() {
+        const first = document.querySelector('#fig .picks button:nth-child(1)');
+        if (!first) { if (Date.now() > deadline) return done({ src: '' });
+                      return setTimeout(poll, 150); }
+        first.click();
+        const side = document.getElementById('side');
+        const box = side && Array.prototype.find.call(
+          side.querySelectorAll('.glass'),
+          (b) => (b.querySelector('h3') || {}).textContent
+                 && b.querySelector('h3').textContent.indexOf('出处 · 一级供应商') === 0);
+        if (box) return done({
+          src: box.textContent || '',
+          seen: box.getClientRects().length > 0,
+          overflow: Math.max(0,
+            document.documentElement.scrollWidth - window.innerWidth)
+        });
+        if (Date.now() > deadline) return done({ src: '' });
+        setTimeout(poll, 150);
+      })();
+    })`);
+    check(`公司页逐条列出四条已否决的路`, () => {
+      assert.ok(t1co.seen, "一级供应商的出处框没有布局盒");
+      for (const key of ["客户集中度", "全文反查", "附件 21", "附件 10"]) {
+        assert.ok(t1co.src.indexOf(key) >= 0,
+          `没列到「${key}」：${t1co.src.slice(0, 300)}`);
+      }
+    });
+    check(`公司页说清这个 0 不是「还没做」`, () => {
+      assert.match(t1co.src, /不是「还没做」/,
+        `没把这句说出来：${t1co.src.slice(0, 300)}`);
+    });
+    check(`一级供应商视图无横向溢出`, () => assert.ok(t1co.overflow <= 1,
+      `溢出 ${t1co.overflow}px`));
+
+    /* 冶炼厂这一栏空着的四种原因，页面必须分开说。
+       原来只有一句通用话「这家公司提交了 Form SD，但申报正文里没有名单」，
+       而池内 4,697 家（79.7%）**从未提交过任何 Form SD**，161 家提交的是
+       资源开采付款披露——对这 4,858 家，那句话是**假的**。
+
+       所以这一段的核心断言不是「有没有写解释」，是**没申报的那一档不许出现
+       「提交了 Form SD」这个说法**。只验「写了点什么」抓不到这个错：
+       原来那句话也是「写了点什么」。 */
+    const SD_PICK = {};
+    for (const node of NODES.nodes || []) {
+      const st = node.formSdStatus || "";
+      if (!st || st === "listed") continue;
+      if (node.edgeCount) continue;          // 有名单的不在这一段里
+      if (!SD_PICK[st]) SD_PICK[st] = node.symbol;
+    }
+    const SD_EXPECT = {
+      "filed-no-list": { want: /提交了 Form SD/, chip: "本次申报无名单" },
+      "no-filing": { want: /没有查到这家公司的任何 Form SD 申报/,
+                     chip: "未见申报" },
+      "resource-extraction": { want: /资源开采付款披露/, chip: "申报属另一类" }
+    };
+    for (const [st, sym] of Object.entries(SD_PICK)) {
+      const spec = SD_EXPECT[st];
+      if (!spec) continue;                   // failed 那档实测为 0 家，不编造
+      console.log(`\n── 公司视图 · 申报状态 ${st}（${sym}）──`);
+      await client.send("Page.navigate",
+        { url: `http://127.0.0.1:${port}/apps/supply-chain/company.html?symbol=${sym}` },
+        sessionId);
+      const sd = await evaluate(`new Promise((done) => {
+        const deadline = Date.now() + 20000;
+        (function poll() {
+          const side = document.getElementById('side');
+          const box = side && Array.prototype.find.call(
+            side.querySelectorAll('.glass'),
+            (b) => (b.querySelector('h3') || {}).textContent
+                   && b.querySelector('h3').textContent.indexOf('出处 · 冶炼厂') === 0);
+          if (box) {
+            const chip = document.querySelector('#fig .picks button:nth-child(3) .chip');
+            return done({
+              src: box.textContent || '',
+              seen: box.getClientRects().length > 0,
+              chip: chip ? chip.textContent : null,
+              facts: (document.getElementById('side') || {}).textContent || '',
+              overflow: Math.max(0,
+                document.documentElement.scrollWidth - window.innerWidth)
+            });
+          }
+          if (Date.now() > deadline) return done({ src: '' });
+          setTimeout(poll, 120);
+        })();
+      })`);
+      check(`${st}：说的是这一档自己的原因`, () => {
+        assert.ok(sd.seen, "出处框没有布局盒——在 DOM 里但看不见等于没写");
+        assert.match(sd.src, spec.want,
+          `${sym} 的出处框没写这一档的原因：${sd.src.slice(0, 260)}`);
+      });
+      if (st !== "filed-no-list") {
+        check(`${st}：不许说成「提交了 Form SD 但没名单」`, () => {
+          assert.ok(!/提交了 Form SD，但申报正文里没有/.test(sd.src),
+            `${sym} 从未提交冲突矿产申报，页面却印着那句话：`
+            + sd.src.slice(0, 260));
+        });
+      }
+      check(`${st}：层级卡片上的标签跟着状态走`, () => {
+        assert.equal(sd.chip, spec.chip,
+          `第三张卡片的标签是「${sd.chip}」，这一档应当是「${spec.chip}」`);
+      });
+      check(`${st}：摘要栏印出申报状态本身`, () => {
+        assert.match(sd.facts, /Form SD 申报状态/,
+          "摘要栏没有这一行——只看到「冶炼厂关系 0 条」分不清是抓漏了还是本来没有");
+      });
+      check(`${st}：公司页无横向溢出`, () => assert.ok(sd.overflow <= 1,
+        `溢出 ${sd.overflow}px`));
+    }
+
     // 外国私人发行人这一池：没有市值、没有板块。页面必须说清那是口径如此，
     // 不是取数失败——什么都不写的话读者只会以为数据缺了一块。
     console.log("\n── 公司视图 · 外国私人发行人 ──");
