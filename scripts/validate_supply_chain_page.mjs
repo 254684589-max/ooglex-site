@@ -2606,7 +2606,10 @@ async function main() {
     const SD_PICK = {};
     for (const node of NODES.nodes || []) {
       const st = node.formSdStatus || "";
-      if (!st || st === "listed") continue;
+      // 空状态（「未测」）也要取样。run 43 之后池子涨到 5,906 家，其中 23 家
+      // 还没被带申报状态的抽取器扫过——**那一档在页面上有文案，却一条断言
+      // 都没跑过**。跳过 listed 是因为有名单时走另一条渲染路径。
+      if (st === "listed") continue;
       if (node.edgeCount) continue;          // 有名单的不在这一段里
       if (!SD_PICK[st]) SD_PICK[st] = node.symbol;
     }
@@ -2619,12 +2622,16 @@ async function main() {
       // 真实出现的状态）。`validate_supply_chain_extraction.py` 那边用静态
       // 比对保证文案一直在；这里管的是**它真的渲染出来的时候长什么样**。
       // 复现办法：给一家 no-filing 的外国发行人打上 filesFormSd 再重建。
-      "index-says-filed": { want: /没有读到那份申报/, chip: "索引有、本轮未读到" }
+      "index-says-filed": { want: /没有读到那份申报/, chip: "索引有、本轮未读到" },
+      // 键是空串：节点上没有 formSdStatus 的那一档。**不猜原因**是这一档
+      // 文案的要点——我们只知道还没扫过，不知道它为什么没有名单。
+      "": { want: /还没有被带申报状态的那一版抽取器扫过/, chip: "未测" }
     };
     for (const [st, sym] of Object.entries(SD_PICK)) {
       const spec = SD_EXPECT[st];
       if (!spec) continue;                   // failed 那档实测为 0 家，不编造
-      console.log(`\n── 公司视图 · 申报状态 ${st}（${sym}）──`);
+      const label = st || "（未测）";
+      console.log(`\n── 公司视图 · 申报状态 ${label}（${sym}）──`);
       await client.send("Page.navigate",
         { url: `http://127.0.0.1:${port}/apps/supply-chain/company.html?symbol=${sym}` },
         sessionId);
@@ -2651,13 +2658,13 @@ async function main() {
           setTimeout(poll, 120);
         })();
       })`);
-      check(`${st}：说的是这一档自己的原因`, () => {
+      check(`${label}：说的是这一档自己的原因`, () => {
         assert.ok(sd.seen, "出处框没有布局盒——在 DOM 里但看不见等于没写");
         assert.match(sd.src, spec.want,
           `${sym} 的出处框没写这一档的原因：${sd.src.slice(0, 260)}`);
       });
       if (st === "index-says-filed") {
-        check(`${st}：说清这是我们这边的缺口，不是披露的形态`, () => {
+        check(`${label}：说清这是我们这边的缺口，不是披露的形态`, () => {
           assert.match(sd.src, /我们这边的缺口/,
             `没说清责任在哪边：${sd.src.slice(0, 300)}`);
           // 第一版这里写的是「不许出现『未见申报』这四个字」，结果把页面
@@ -2707,21 +2714,21 @@ async function main() {
         });
       }
       if (st !== "filed-no-list") {
-        check(`${st}：不许说成「提交了 Form SD 但没名单」`, () => {
+        check(`${label}：不许说成「提交了 Form SD 但没名单」`, () => {
           assert.ok(!/提交了 Form SD，但申报正文里没有/.test(sd.src),
             `${sym} 从未提交冲突矿产申报，页面却印着那句话：`
             + sd.src.slice(0, 260));
         });
       }
-      check(`${st}：层级卡片上的标签跟着状态走`, () => {
+      check(`${label}：层级卡片上的标签跟着状态走`, () => {
         assert.equal(sd.chip, spec.chip,
           `第三张卡片的标签是「${sd.chip}」，这一档应当是「${spec.chip}」`);
       });
-      check(`${st}：摘要栏印出申报状态本身`, () => {
+      check(`${label}：摘要栏印出申报状态本身`, () => {
         assert.match(sd.facts, /Form SD 申报状态/,
           "摘要栏没有这一行——只看到「冶炼厂关系 0 条」分不清是抓漏了还是本来没有");
       });
-      check(`${st}：公司页无横向溢出`, () => assert.ok(sd.overflow <= 1,
+      check(`${label}：公司页无横向溢出`, () => assert.ok(sd.overflow <= 1,
         `溢出 ${sd.overflow}px`));
     }
 

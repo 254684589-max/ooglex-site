@@ -1911,6 +1911,14 @@ def main() -> int:
         _company = fh.read()
     SD_STATES = ["listed", "filed-no-list", "no-filing", "resource-extraction",
                  "failed", "index-says-filed"]
+    # 空串那一档（节点上没有 formSdStatus，页面印「未测」）单独钉：它不是构建
+    # 脚本赋的值，而是**没有赋值**的状态，所以上面那个「构建脚本里有这个字符串」
+    # 的检查对它不适用。run 43 之后它有 23 家真公司，在那之前一直是 0 家——
+    # **0 家的时候页面文案照样要在**，否则哪天池子一涨就印不出话来。
+    state_cases_extra = [
+        ('"": {' in _company, '公司页 T3_EMPTY 有空串（未测）那一档的文案'),
+        ('"": "未测"' in _company, '公司页 SD_LABEL 有空串那一档的中文短名'),
+    ]
     state_cases = []
     for st in SD_STATES:
         state_cases.append((f'"{st}"' in _builder,
@@ -1927,6 +1935,7 @@ def main() -> int:
     state_cases.append((_page_states <= set(SD_STATES),
                         f"公司页没有构建脚本产不出来的状态档"
                         f"（多出来的：{sorted(_page_states - set(SD_STATES))}）"))
+    state_cases.extend(state_cases_extra)
     for ok, whytext in state_cases:
         if not ok:
             failures.append(f"申报状态：{whytext} 不成立")
