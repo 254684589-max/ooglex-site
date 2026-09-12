@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>金融终端改版三方案对照 · Ooglex</title>
+<meta name="description" content="Ooglex 金融终端改版草案：经典彭博、Eikon 工作台、机构研究台三个版式方案的对照说明与改动清单。">
+<style>
+  :root{
+    --bg:#0f1216; --panel:#161a20; --panel2:#1b2028; --head:#0b0e12;
+    --line:#252c35; --line2:#39414c;
+    --ink:#e2e6eb; --ink2:#b0b8c2; --dim:#828a95; --faint:#5f6772;
+    --amber:#ffa028; --orange:#ff7a1a; --blue:#5b9bd5;
+    --up:#31b07c; --dn:#dd5a4f;
+    --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Segoe UI",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  a:focus-visible{outline:1px solid var(--blue);outline-offset:2px}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  .cap{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+  table{width:100%;border-collapse:collapse}
+  code{font-family:var(--mono);font-size:12.5px;color:var(--ink2)}
+
+  header{border-bottom:1px solid var(--line2);padding:30px 0 20px}
+  header h1{font-size:26px;font-weight:600;letter-spacing:-.01em;margin-top:4px}
+  header p{margin-top:10px;color:var(--ink2);max-width:76ch}
+  header .meta{margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--dim)}
+
+  section{padding:30px 0 0}
+  h2{font-size:17px;font-weight:600;padding-bottom:8px;border-bottom:1px solid var(--line2);display:flex;align-items:baseline;gap:12px}
+  h2 .r{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--faint);font-weight:400}
+
+  .opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
+  .opt{background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column}
+  .sw{height:104px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;padding:10px 12px;font-family:var(--mono);font-size:10px}
+  .sw .tag{position:absolute;left:12px;bottom:9px;letter-spacing:.14em}
+  .sw-a{background:#000}
+  .sw-a .strip{background:var(--amber);color:#000;font-weight:700;padding:1px 6px;display:inline-block;letter-spacing:.1em}
+  .sw-a .tag{color:var(--amber)}
+  .sw-a .n{color:#fff;font-size:22px;font-weight:700;margin-top:8px;display:block}
+  .sw-b{background:#0d1013}
+  .sw-b .tick{border-left:2px solid var(--orange);padding-left:8px;color:#dfe4ea;font-family:var(--sans);font-size:12px;font-weight:600}
+  .sw-b .tag{color:var(--orange)}
+  .sw-b .n{color:var(--orange);font-size:22px;font-weight:700;margin-top:10px;display:block}
+  .sw-c{background:#101319}
+  .sw-c .k{color:#616a75;letter-spacing:.14em}
+  .sw-c .tag{color:var(--blue)}
+  .sw-c .n{color:var(--blue);font-size:22px;font-weight:700;margin-top:4px;display:block}
+  .sw-c .bar{height:7px;background:#1c212a;margin-top:9px;position:relative}
+  .sw-c .bar i{position:absolute;left:0;top:0;bottom:0;width:62%;background:var(--up)}
+
+  .opt .bd{padding:14px 14px 16px;display:flex;flex-direction:column;flex:1}
+  .opt h3{font-size:16px;font-weight:600}
+  .opt h3 em{font-style:normal;display:block;font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--faint);margin-top:3px}
+  .opt p{margin-top:9px;font-size:12.5px;color:var(--ink2);line-height:1.7}
+  .opt ul{margin:10px 0 0;padding:0;list-style:none;font-size:12px;color:var(--dim)}
+  .opt li{padding:3px 0 3px 13px;position:relative;line-height:1.6}
+  .opt li::before{content:"—";position:absolute;left:0;color:var(--line2)}
+  .opt .go{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);display:flex;align-items:baseline;gap:12px;font-size:13px}
+  .opt .go a{font-weight:600;border-bottom:1px solid currentColor;padding-bottom:1px}
+  .opt.a .go a{color:var(--amber)} .opt.b .go a{color:var(--orange)} .opt.c .go a{color:var(--blue)}
+  .opt .fit{margin-left:auto;font-size:11px;color:var(--faint);text-align:right}
+
+  th{text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--faint);font-weight:400;padding:9px 14px 9px 0;border-bottom:1px solid var(--line2)}
+  td{padding:10px 14px 10px 0;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--ink2);vertical-align:top}
+  td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
+  td .m{display:block;font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:2px}
+  .del{color:var(--dn)} .add{color:var(--up)} .kept{color:var(--dim)}
+
+  .facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:16px}
+  .facts div{background:var(--panel);padding:12px 14px}
+  .facts .k{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
+  .facts .v{display:block;font-size:12.5px;margin-top:4px;color:var(--ink)}
+
+  footer{margin-top:36px;border-top:1px solid var(--line2);padding:14px 0 44px;font-size:11.5px;color:var(--dim)}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:5px 22px}
+  footer a{color:var(--ink2)}
+  footer .r{margin-left:auto}
+
+  @media (max-width:980px){ .opts{grid-template-columns:1fr} .facts{grid-template-columns:1fr} }
+  @media (max-width:600px){
+    .wrap{padding:0 14px}
+    header h1{font-size:21px}
+    table,thead,tbody,th,td,tr{display:block}
+    thead{display:none}
+    td{padding:5px 0;border-bottom:0}
+    tr{padding:11px 0;border-bottom:1px solid var(--line)}
+    footer .r{margin-left:0}
+  }
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <span class="cap">Draft · 未上线 · 仅供评审</span>
+  <h1>金融终端改版：三个彭博风格方案</h1>
+  <p>三份草案都按专业终端的口径重做：信息密度优先、装饰归零、数字表格化。数据全部取站内既有 <code>data.json</code>（9 个数据源），无新增依赖、无后端、无第三方脚本。现有终端 <code>/apps/finance-terminal/</code> 一行未改。</p>
+  <div class="meta">草案目录 /terminal-redesign/ · 均已加 noindex，不参与搜索收录 · 选定一版后再改造现有终端</div>
+</div></header>
+
+<div class="wrap">
+
+  <section>
+    <h2>三个方案<span class="r">Options</span></h2>
+    <div class="opts">
+
+      <article class="opt a">
+        <div class="sw sw-a">
+          <span class="strip">报价板 QUOTE BOARD</span>
+          <span class="n">52 中性</span>
+          <span class="tag">BLACK · AMBER · MONO</span>
+        </div>
+        <div class="bd">
+          <h3>方案A 经典彭博<em>Bloomberg Classic</em></h3>
+          <p>最贴近真实彭博屏：纯黑底、琥珀键色、顶部命令行与 F1–F6 功能键行，面板标题是实色色条，全等宽字体 11px 密排。</p>
+          <ul>
+            <li>观感最「专业终端」，一眼就知道是行情终端而非网站</li>
+            <li>信息密度最高，1440px 一屏放得下 7 个面板</li>
+            <li>字号最小，长时间阅读和手机上最吃力</li>
+          </ul>
+          <div class="go"><a href="a-classic.html">打开方案A →</a><span class="fit">适合：专业感优先</span></div>
+        </div>
+      </article>
+
+      <article class="opt b">
+        <div class="sw sw-b">
+          <span class="tick">报价表 QUOTES</span>
+          <span class="n">133 标的</span>
+          <span class="tag">SLATE · ORANGE · SORTABLE</span>
+        </div>
+        <div class="bd">
+          <h3>方案B 工作台<em>Eikon Workbench</em></h3>
+          <p>Refinitiv Eikon 的路子：左侧功能栏、主区是一张可点击表头排序的全量报价表（133 个标的，可按品类筛选、可检索），右侧一列分析模块。</p>
+          <ul>
+            <li>唯一带真交互的一版：排序、筛选、检索都能用</li>
+            <li>一张表看全站所有标的，不用在页面之间跳</li>
+            <li>三列布局对窄屏不友好，已做断点但信息要折叠</li>
+          </ul>
+          <div class="go"><a href="b-workbench.html">打开方案B →</a><span class="fit">适合：真实查数效率</span></div>
+        </div>
+      </article>
+
+      <article class="opt c">
+        <div class="sw sw-c">
+          <span class="k">宏观机制 REGIME</span>
+          <span class="n">52 中性</span>
+          <span class="bar"><i></i></span>
+          <span class="tag">NEUTRAL · BLUE · MIXED TYPE</span>
+        </div>
+        <div class="bd">
+          <h3>方案C 研究台<em>Research Desk</em></h3>
+          <p>机构研究台的组织方式：顶部六联读数条，主区是跨资产强弱排行（按年初至今排序的横向条），每个模块标题下直接写清来源与数据日期。</p>
+          <ul>
+            <li>字号最大（13px）、混排字体，最耐读</li>
+            <li>强弱排行是另两版没有的分析视图，一眼看出谁强谁弱</li>
+            <li>密度最低，同屏信息量约为方案A 的六成</li>
+          </ul>
+          <div class="go"><a href="c-desk.html">打开方案C →</a><span class="fit">适合：可读性与可解释性</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>相对现有终端改了什么<span class="r">Changes</span></h2>
+    <table>
+      <thead><tr><th>项目</th><th>现有终端</th><th>三份草案</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>首屏主体</td>
+          <td>3D 地球 + 卫星轨道 + 光晕环<span class="m">占掉约一屏高度，不承载数据</span></td>
+          <td class="add">报价表／报价板占主位，首屏即是可读数字</td>
+        </tr>
+        <tr>
+          <td>配色</td>
+          <td>青蓝霓虹 + 多重发光描边</td>
+          <td class="add">单一强调色（琥珀／橙／蓝各一版），颜色只用于涨跌与分档</td>
+        </tr>
+        <tr>
+          <td>装饰</td>
+          <td>渐变环、光晕、毛玻璃、圆角卡片</td>
+          <td class="add">1px 分隔线、直角、无投影、无渐变</td>
+        </tr>
+        <tr>
+          <td>字体</td>
+          <td>无衬线为主，数字未表格化</td>
+          <td class="add">数字统一等宽 + <code>tabular-nums</code> 右对齐；方案A 全等宽，方案C 标签无衬线／数字等宽</td>
+        </tr>
+        <tr>
+          <td>样式表</td>
+          <td>12 个 CSS 文件同时加载，约 260KB<span class="m">aurora / vision / command-center / v2–v7 历次迭代都还在</span></td>
+          <td class="add">每份草案单文件内联，24–28KB</td>
+        </tr>
+        <tr>
+          <td>第三方脚本</td>
+          <td>TradingView 组件（DIA / GLD 报价）</td>
+          <td class="add">草案不加载；两项 ETF 代理改为留位说明，选定后再决定是否保留</td>
+        </tr>
+        <tr>
+          <td>数据口径</td>
+          <td>页脚统一说明</td>
+          <td class="add">每个面板／模块各自标注来源、数据日期、频率、状态；代理关系逐条上标</td>
+        </tr>
+        <tr>
+          <td class="kept">保留未动</td>
+          <td colspan="2" class="kept">现有 <code>/apps/finance-terminal/</code> 全部文件、所有 <code>data.json</code> 读取路径、站内其他页面。草案只读数据，不写任何东西。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>三份草案的共同事实<span class="r">Common</span></h2>
+    <div class="facts">
+      <div><span class="k">数据源</span><span class="v">9 个站内 JSON：大类资产、公司、商品、宏观雷达、美债曲线、恐慌贪婪、OFR、经济日历、要闻</span></div>
+      <div><span class="k">新增依赖</span><span class="v">无。单文件 HTML + 原生 JS</span></div>
+      <div><span class="k">响应式</span><span class="v">已按 360 / 768 / 1280 / 1440px 四档核对，无横向溢出</span></div>
+      <div><span class="k">失败状态</span><span class="v">每个模块独立捕获，单源失败不影响其余；提示可见，不以零值静默覆盖</span></div>
+      <div><span class="k">主题</span><span class="v">草案仅深色——专业终端本身是深色语言；选定后再决定是否接站内三套主题</span></div>
+      <div><span class="k">上线状态</span><span class="v">未部署。仅供评审，noindex</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>下一步<span class="r">Next</span></h2>
+    <table>
+      <tbody>
+        <tr><td>1</td><td>三版各开一遍（建议手机 + 电脑都看），定一版，或指出要从哪版取哪部分——例如「B 的报价表 + C 的强弱排行 + A 的功能键行」</td></tr>
+        <tr><td>2</td><td>定版后梳理现有终端的 12 个样式表与 30 余个模块：哪些视图保留、哪些并入、哪些下线（这一步才是真正的工作量）</td></tr>
+        <tr><td>3</td><td>逐块迁移，每迁一块跑一次仓库自带的终端契约（board / visuals / loader 三个校验器）</td></tr>
+        <tr><td>4</td><td>决定是否保留 TradingView 组件与 3D 地球（地球可以保留为独立视图，不占首屏）</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:14px;font-size:13px;color:var(--ink2)">
+      现有终端仍在线：<a href="../apps/finance-terminal/" style="border-bottom:1px solid var(--line2)">打开当前终端 →</a>
+    </p>
+  </section>
+
+</div>
+
+<footer><div class="wrap">
+  <span>© 2026 Ooglex · 终端改版草案</span>
+  <a href="../">站点首页</a>
+  <a href="../home-redesign/">首页改版草案</a>
+  <span class="r">数据仅供研究参考，不构成投资建议</span>
+</div></footer>
+
+</body>
+</html>

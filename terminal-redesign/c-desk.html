@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>方案C 研究台 · Ooglex金融终端改版草案</title>
+<meta name="description" content="Ooglex 金融终端改版方案C：机构研究台草案——读数条、跨资产强弱排行、逐模块标注来源与数据日期，数据取自站内真实 data.json。">
+<style>
+  :root{
+    --bg:#101319; --panel:#161a21; --panel2:#1c212a; --head:#0c0f14;
+    --line:#262c36; --line2:#39414d;
+    --ink:#e3e7ec; --ink2:#b3bac4; --dim:#848c97; --faint:#616a75;
+    --accent:#5b9bd5; --accent2:#8fc0e8;
+    --up:#31b07c; --dn:#dd5a4f; --warn:#c9963c;
+    --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Segoe UI",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  a:focus-visible{outline:1px solid var(--accent);outline-offset:2px}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+  .u{color:var(--up)} .d{color:var(--dn)} .f{color:var(--faint)}
+  table{width:100%;border-collapse:collapse}
+  .wrap{max-width:1560px;margin:0 auto;padding:0 18px}
+
+  .draft{background:#1b212a;border-bottom:1px solid var(--line);font-size:12px;color:var(--ink2)}
+  .draft .wrap{display:flex;flex-wrap:wrap;gap:4px 16px;padding:7px 18px}
+  .draft b{color:var(--accent2)}
+  .draft a{color:var(--accent);border-bottom:1px solid #2c4a66}
+
+  /* ── 来源与状态条：这一版把「数据从哪来」放在最显眼的位置 ── */
+  .srcbar{background:var(--head);border-bottom:1px solid var(--line)}
+  .srcbar .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:0;min-height:34px;font-family:var(--mono);font-size:11px;color:var(--dim)}
+  .srcbar .brand{font-family:var(--sans);font-size:14px;font-weight:700;letter-spacing:.18em;color:var(--ink);padding-right:18px}
+  .srcbar span{padding:0 14px;border-left:1px solid var(--line);white-space:nowrap}
+  .srcbar b{color:var(--ink2);font-weight:600}
+  .srcbar .ok{color:var(--up)} .srcbar .warn{color:var(--warn)} .srcbar .err{color:var(--dn)}
+  .srcbar .r{margin-left:auto;border-left:0}
+
+  nav.sec{border-bottom:1px solid var(--line);background:var(--panel)}
+  nav.sec .wrap{display:flex;flex-wrap:wrap;gap:0}
+  nav.sec a{padding:9px 15px;font-size:13px;color:var(--ink2);border-bottom:2px solid transparent}
+  nav.sec a:hover{color:var(--ink)}
+  nav.sec a.on{color:#fff;border-bottom-color:var(--accent)}
+  nav.sec .r{margin-left:auto;padding:9px 0;font-size:11.5px;color:var(--faint)}
+
+  /* ── 读数条 ── */
+  .kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+  .kpis > div{background:var(--panel);padding:12px 14px 11px;min-width:0}
+  .kpis .k{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
+  .kpis .v{display:block;font-family:var(--mono);font-size:26px;font-weight:700;line-height:1.1;margin-top:6px;letter-spacing:-.02em}
+  .kpis .v small{font-family:var(--sans);font-size:12px;font-weight:500;letter-spacing:0;margin-left:7px}
+  .kpis .n{display:block;font-size:11px;color:var(--dim);margin-top:4px;line-height:1.5}
+
+  /* ── 模块栅格 ── */
+  main{padding:16px 0 0}
+  .cols{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:16px}
+  .stack{display:flex;flex-direction:column;gap:16px;min-width:0}
+  .mod{background:var(--panel);border:1px solid var(--line);min-width:0}
+  .mod > header{padding:10px 14px 8px;border-bottom:1px solid var(--line)}
+  .mod > header .ttl{display:flex;align-items:baseline;gap:10px}
+  .mod > header h2{font-size:14.5px;font-weight:600}
+  .mod > header em{font-style:normal;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--faint)}
+  .mod > header .r{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+  /* 每个模块标题下直接写清口径——这一版的核心主张 */
+  .mod > header .meta{margin-top:3px;font-size:11px;color:var(--dim);line-height:1.5}
+
+  /* 强弱排行 */
+  .rank{padding:10px 14px 12px}
+  .rank .row{display:grid;grid-template-columns:118px minmax(0,1fr) 62px;gap:10px;align-items:center;padding:3px 0}
+  .rank .nm{font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rank .track{position:relative;height:11px;background:var(--panel2)}
+  .rank .track i{position:absolute;top:0;bottom:0}
+  .rank .track .zero{position:absolute;top:-2px;bottom:-2px;width:1px;background:var(--line2)}
+  .rank .vv{text-align:right;font-family:var(--mono);font-size:12px;font-weight:600}
+  .rank .axis{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--faint);margin-top:6px;padding-left:128px}
+
+  /* 分区表 */
+  .dt{font-size:12.5px}
+  .dt th{text-align:right;font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--dim);font-weight:400;padding:7px 14px 7px 0;border-bottom:1px solid var(--line)}
+  .dt th:first-child{text-align:left;padding-left:14px}
+  .dt td{text-align:right;padding:6px 14px 6px 0;white-space:nowrap;border-bottom:1px solid rgba(38,44,54,.6)}
+  .dt td:first-child{text-align:left;padding-left:14px}
+  .dt tr:hover td{background:rgba(91,155,213,.06)}
+  .dt .grp td{background:var(--head);color:var(--accent2);font-family:var(--mono);font-size:10px;letter-spacing:.14em;padding:5px 14px}
+  .dt .grp:hover td{background:var(--head)}
+  .dt .px{font-family:var(--mono);color:#fff;font-weight:600}
+  .dt .sym{font-family:var(--mono);font-size:10px;color:var(--faint);margin-left:6px}
+  .dt sup{color:var(--warn);font-size:9px}
+
+  .cv{padding:12px 14px}
+  .cv svg{display:block;width:100%;height:auto}
+  .cv .lg{display:flex;flex-wrap:wrap;gap:3px 16px;font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-top:6px}
+  .cv .lg b{color:var(--ink2)}
+
+  .sig{font-size:12.5px}
+  .sig td{padding:5px 14px 5px 0;border-bottom:1px solid rgba(38,44,54,.6);text-align:right}
+  .sig td:first-child{text-align:left;padding-left:14px;color:var(--ink2)}
+  .sig .meter{display:block;height:3px;background:var(--panel2);position:relative;width:70px;margin-left:auto}
+  .sig .meter i{position:absolute;left:0;top:0;bottom:0}
+
+  .evt li{list-style:none;display:flex;gap:10px;padding:6px 14px;border-bottom:1px solid rgba(38,44,54,.6);font-size:12.5px}
+  .evt .tm{font-family:var(--mono);font-size:11px;color:var(--dim);flex:0 0 auto;width:80px}
+  .evt .imp{flex:0 0 auto;width:4px}
+  .evt .imp.h{background:var(--dn)} .evt .imp.m{background:var(--warn)}
+  .evt .tx{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .evt .vv{flex:0 0 auto;font-family:var(--mono);font-size:11px}
+
+  .news li{list-style:none;padding:7px 14px;border-bottom:1px solid rgba(38,44,54,.6);font-size:12.5px;line-height:1.5}
+  .news a{display:block}
+  .news a:hover{color:var(--accent2)}
+  .news .m{display:block;font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:2px}
+
+  footer{margin-top:20px;border-top:1px solid var(--line);padding:12px 0 34px;color:var(--faint);font-size:11.5px}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:4px 20px}
+  footer a{color:var(--dim)}
+  footer .r{margin-left:auto}
+
+  @media (max-width:1240px){ .kpis{grid-template-columns:repeat(3,minmax(0,1fr))} }
+  @media (max-width:1000px){
+    .cols{grid-template-columns:1fr}
+    .dt .col-x{display:none}
+  }
+  /* 宽内容只在自己的容器内滚动，页面本身不横向滚动 */
+  .tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  @media (max-width:620px){
+    .tscroll .dt{min-width:430px}
+    .wrap{padding:0 12px}
+    .draft .wrap,.srcbar .wrap{padding-left:12px;padding-right:12px}
+    .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .kpis .v{font-size:22px}
+    .srcbar .r{margin-left:0}
+    .rank .row{grid-template-columns:92px minmax(0,1fr) 56px;gap:8px}
+    .rank .axis{padding-left:100px}
+    footer .r{margin-left:0}
+  }
+</style>
+</head>
+<body>
+
+<div class="draft"><div class="wrap">
+  <b>终端改版草案 · 方案C「研究台」</b>
+  <span>读数条 + 跨资产强弱排行 + 逐模块标注来源与数据日期 · 中性深色、克制蓝、混排字体（标签无衬线／数字等宽）</span>
+  <a href="./">返回三方案对照</a>
+</div></div>
+
+<div class="srcbar"><div class="wrap">
+  <a class="brand" href="../">OOGLEX</a>
+  <span>状态 <b id="st-status">读取中</b></span>
+  <span>报价日期 <b class="num" id="st-asof">—</b></span>
+  <span>最近更新 <b class="num" id="st-upd">—</b></span>
+  <span>口径 <b>日频收盘 · 非实时报价</b></span>
+  <span class="r" id="st-src">来源读取中</span>
+</div></div>
+
+<nav class="sec"><div class="wrap">
+  <a class="on" href="#rank">跨资产强弱</a>
+  <a href="#board">品类行情</a>
+  <a href="#macro">宏观机制</a>
+  <a href="#curve">美债曲线</a>
+  <a href="#events">经济日历</a>
+  <a href="#news">要闻</a>
+  <span class="r">草案演示 · 导航为锚点跳转</span>
+</div></nav>
+
+<div class="kpis" id="kpis">
+  <div><span class="k">宏观机制 Regime</span><span class="v" id="k-regime">—</span><span class="n">七类信号加权，0–100 相对分位</span></div>
+  <div><span class="k">恐慌贪婪 F&amp;G</span><span class="v" id="k-fear">—</span><span class="n">7 项情绪指标合成</span></div>
+  <div><span class="k">10 年期美债</span><span class="v" id="k-dgs10">—</span><span class="n">FRED / 美国财政部 H.15</span></div>
+  <div><span class="k">美元指数</span><span class="v" id="k-dxy">—</span><span class="n">日频收盘</span></div>
+  <div><span class="k">WTI 原油</span><span class="v" id="k-wti">—</span><span class="n">期货合约代理</span></div>
+  <div><span class="k">金融压力 FSI</span><span class="v" id="k-fsi">—</span><span class="n">OFR，负值＝低于历史均值</span></div>
+</div>
+
+<main class="wrap">
+  <div class="cols">
+
+    <div class="stack">
+      <section class="mod" id="rank">
+        <header>
+          <div class="ttl"><h2>跨资产强弱</h2><em>CROSS-ASSET · YTD</em><span class="r" id="rk-asof">—</span></div>
+          <p class="meta" id="rk-meta">按年初至今涨跌幅排序；口径为各标的自身价格变动，不做汇率或再投资调整。</p>
+        </header>
+        <div class="rank" id="rk-body"></div>
+      </section>
+
+      <section class="mod" id="board">
+        <header>
+          <div class="ttl"><h2>品类行情</h2><em>BY CATEGORY</em><span class="r" id="bd-meta">—</span></div>
+          <p class="meta" id="bd-meta2">读取中…</p>
+        </header>
+        <div class="tscroll">
+          <table class="dt">
+            <thead><tr><th>标的</th><th>最新</th><th>日</th><th class="col-x">周</th><th class="col-x">月</th><th>年初至今</th></tr></thead>
+            <tbody id="bd-body"><tr><td colspan="6" style="text-align:left;color:var(--dim)">读取中…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <div class="stack">
+      <section class="mod" id="macro">
+        <header>
+          <div class="ttl"><h2>宏观机制</h2><em>REGIME SIGNALS</em><span class="r" id="rg-asof">—</span></div>
+          <p class="meta" id="rg-meta">读取中…</p>
+        </header>
+        <div style="padding:10px 14px 4px"><p id="rg-desc" style="font-size:12.5px;color:var(--ink2)">正在读取宏观雷达数据。</p></div>
+        <table class="sig"><tbody id="sig-body"></tbody></table>
+      </section>
+
+      <section class="mod" id="curve">
+        <header>
+          <div class="ttl"><h2>美债收益率曲线</h2><em>YIELD CURVE</em><span class="r" id="cv-asof">—</span></div>
+          <p class="meta" id="cv-meta">读取中…</p>
+        </header>
+        <div class="cv">
+          <svg id="cv-svg" viewBox="0 0 460 160" preserveAspectRatio="none" role="img" aria-label="美国国债收益率曲线"></svg>
+          <div class="lg" id="cv-lg"></div>
+        </div>
+      </section>
+
+      <section class="mod" id="events">
+        <header>
+          <div class="ttl"><h2>经济日历</h2><em>CALENDAR</em><span class="r" id="cal-week">—</span></div>
+          <p class="meta" id="cal-meta">读取中…</p>
+        </header>
+        <ul class="evt" id="cal-body"></ul>
+      </section>
+
+      <section class="mod" id="news">
+        <header>
+          <div class="ttl"><h2>要闻</h2><em>HEADLINES</em><span class="r" id="nw-asof">—</span></div>
+          <p class="meta" id="nw-meta">读取中…</p>
+        </header>
+        <ul class="news" id="nw-body"></ul>
+      </section>
+    </div>
+
+  </div>
+</main>
+
+<footer><div class="wrap">
+  <span>© 2026 Ooglex · 终端改版草案 · 未上线</span>
+  <a href="../apps/finance-terminal/">当前终端</a>
+  <a href="../">站点首页</a>
+  <span class="r">数据仅供研究参考，不构成投资建议</span>
+</div></footer>
+
+<script>
+/* 方案C 数据装配：全部取站内既有 data.json，无后端、无第三方脚本。 */
+(function () {
+  var BASE = "../apps/";
+  function $(id) { return document.getElementById(id); }
+  function isNum(x) { return typeof x === "number" && isFinite(x); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]; }); }
+  function getJSON(p) { return fetch(BASE + p).then(function (r) { if (!r.ok) throw new Error(p); return r.json(); }); }
+  function fmt(x) {
+    if (!isNum(x)) return "—";
+    return x >= 1000 ? x.toLocaleString("en-US", { maximumFractionDigits: 0 })
+         : x >= 100 ? x.toFixed(1) : x >= 10 ? x.toFixed(2) : x.toFixed(3);
+  }
+  function pct(p) {
+    if (!isNum(p)) return '<span class="f">—</span>';
+    return '<span class="num ' + (p >= 0 ? "u" : "d") + '">' + (p >= 0 ? "+" : "−") + Math.abs(p).toFixed(2) + "%</span>";
+  }
+  function statusZh(s) { return { ok:"正常", partial:"部分缺失", stale:"数据过期", error:"读取失败" }[s] || (s || "—"); }
+  function utc(s) { return String(s || "").replace("T", " ").replace("Z", "Z"); }
+
+  /* ── 行情：强弱排行 + 品类分区表 + 三个读数 ── */
+  var RANK = ["标普500","纳斯达克综合","欧洲STOXX600","日经225","沪深300","恒生指数",
+              "COMEX黄金","NYMEX WTI原油","LME铜","美元指数","美国长期国债","美国高收益债"];
+  var GROUPS = [
+    { key:"equity", label:"股票指数 · EQUITY", rows:["标普500","纳斯达克综合","欧洲STOXX600","日经225","沪深300","恒生指数","标普500波动率VIX"] },
+    { key:"fx", label:"外汇 · FX", rows:["美元指数","欧元兑美元","美元兑日元","美元兑人民币"] },
+    { key:"bond", label:"债券（ETF 代理）· FIXED INCOME", proxy:1, rows:["美国长期国债","美国投资级公司债","美国高收益债","中国国债"] },
+    { key:"commodity", label:"商品（期货代理）· COMMODITIES", proxy:1, rows:["COMEX黄金","NYMEX WTI原油","LME铜","NYMEX天然气"] }
+  ];
+  getJSON("asset-tracker/data.json").then(function (d) {
+    var by = {};
+    (d.assets || []).forEach(function (a) { by[a.name] = a; });
+
+    /* 强弱排行 */
+    var items = RANK.map(function (n) { return by[n]; }).filter(function (a) { return a && isNum((a.returns || {}).ytd); })
+      .sort(function (a, b) { return b.returns.ytd - a.returns.ytd; });
+    var mx = Math.max.apply(null, items.map(function (a) { return Math.abs(a.returns.ytd); })) || 1;
+    $("rk-body").innerHTML = items.map(function (a) {
+      var v = a.returns.ytd, w = Math.abs(v) / mx * 50;
+      var left = v >= 0 ? 50 : 50 - w;
+      return '<div class="row"><span class="nm">' + esc(a.name) + "</span>" +
+        '<span class="track"><span class="zero" style="left:50%"></span>' +
+        '<i style="left:' + left + "%;width:" + w + "%;background:" + (v >= 0 ? "var(--up)" : "var(--dn)") + '"></i></span>' +
+        '<span class="vv" style="color:' + (v >= 0 ? "var(--up)" : "var(--dn)") + '">' +
+        (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(1) + "%</span></div>";
+    }).join("");
+    $("rk-body").insertAdjacentHTML("beforeend",
+      '<div class="axis"><span>−' + mx.toFixed(0) + "%</span><span>0</span><span>+" + mx.toFixed(0) + "%</span></div>");
+    $("rk-asof").textContent = d.asOf || "—";
+    $("rk-meta").textContent = "按年初至今涨跌幅排序 · 来源 " + (d.source || "—") + " · 数据日期 " + (d.asOf || "—") +
+      " · 口径为各标的自身价格变动，不做汇率或再投资调整";
+
+    /* 分区表 */
+    var html = "";
+    GROUPS.forEach(function (g) {
+      html += '<tr class="grp"><td colspan="6">' + esc(g.label) + "</td></tr>";
+      g.rows.forEach(function (n) {
+        var a = by[n];
+        if (!a) return;
+        var r = a.returns || {};
+        html += "<tr><td>" + esc(a.name) + (g.proxy ? "<sup>1</sup>" : "") +
+          '<span class="sym">' + esc(a.symbol || "") + "</span></td>" +
+          '<td class="px">' + fmt(a.price) + "</td><td>" + pct(r.d1) + '</td><td class="col-x">' + pct(r.w1) +
+          '</td><td class="col-x">' + pct(r.m1) + "</td><td>" + pct(r.ytd) + "</td></tr>";
+      });
+    });
+    $("bd-body").innerHTML = html;
+    $("bd-meta").textContent = (d.asOf || "—");
+    $("bd-meta2").textContent = "来源 " + (d.source || "—") + " · 日频收盘价，非交易所实时报价 · ¹ 债券以对应 ETF 代理、商品以期货合约代理 · 站内共 " +
+      ((d.dataQuality || {}).total || (d.assets || []).length) + " 个标的";
+
+    /* 读数条里的两项行情 */
+    var dxy = by["美元指数"], wti = by["NYMEX WTI原油"];
+    if (dxy && isNum(dxy.price)) $("k-dxy").innerHTML = fmt(dxy.price) + "<small>" + pct((dxy.returns || {}).d1) + "</small>";
+    if (wti && isNum(wti.price)) $("k-wti").innerHTML = fmt(wti.price) + "<small>" + pct((wti.returns || {}).d1) + "</small>";
+
+    $("st-asof").textContent = d.asOf || "—";
+    $("st-upd").textContent = utc(d.updatedAt);
+    var st = statusZh(d.status || "ok");
+    $("st-status").textContent = st;
+    $("st-status").className = st === "正常" ? "ok" : st === "读取失败" ? "err" : "warn";
+    $("st-src").textContent = "行情 " + (d.source || "—");
+  }).catch(function () {
+    $("bd-body").innerHTML = '<tr><td colspan="6" style="text-align:left" class="d">行情数据读取失败</td></tr>';
+    $("rk-body").innerHTML = '<p class="d" style="font-size:12.5px">强弱排行不可用：行情数据读取失败。</p>';
+    $("st-status").textContent = "读取失败"; $("st-status").className = "err";
+  });
+
+  /* ── 宏观机制 ── */
+  getJSON("macro-radar/data.json").then(function (d) {
+    var rg = d.regime || {}, sc = rg.score;
+    var col = !isNum(sc) ? "#848c97" : sc < 35 ? "#dd5a4f" : sc < 48 ? "#cf7f3e" : sc < 58 ? "#c9963c" : sc < 68 ? "#8fb85c" : "#31b07c";
+    $("k-regime").innerHTML = (isNum(sc) ? sc : "—") + '<small style="color:' + col + '">' + esc(rg.labelZh || "") + "</small>";
+    $("k-regime").style.color = col;
+    $("rg-asof").textContent = d.asOf || "—";
+    if (rg.desc) $("rg-desc").textContent = rg.desc;
+    $("rg-meta").textContent = "来源 " + (d.source || "—") + " · 数据日期 " + (d.asOf || "—") + " · 日频 · 0–100 相对分位读数，非绝对水平";
+    $("sig-body").innerHTML = (d.signals || []).map(function (s) {
+      var v = isNum(s.score) ? s.score : null;
+      var c = v == null ? "#848c97" : v < 40 ? "#dd5a4f" : v <= 60 ? "#c9963c" : "#31b07c";
+      return "<tr><td>" + esc(s.zh || s.key) + '<span style="color:var(--faint);font-size:11px"> ' + esc(s.statusZh || "") + "</span></td>" +
+        '<td><span class="meter"><i style="width:' + (v == null ? 0 : v) + "%;background:" + c + '"></i></span></td>' +
+        '<td class="num" style="color:' + c + ';font-weight:600">' + (v == null ? "—" : v) + "</td></tr>";
+    }).join("");
+  }).catch(function () {
+    $("rg-desc").textContent = "宏观雷达数据读取失败。";
+    $("k-regime").innerHTML = '—<small>读取失败</small>';
+  });
+
+  /* ── 美债曲线 ── */
+  getJSON("macro-radar/curve.json").then(function (d) {
+    var t = (d.tenors || []).filter(function (x) { return isNum(x.value); });
+    if (t.length < 3) throw new Error("curve");
+    var ten = t.find(function (x) { return x.label === "10Y"; });
+    if (ten) $("k-dgs10").innerHTML = ten.value.toFixed(2) + "<small>%</small>";
+    var W = 460, H = 160, L = 36, R = 8, T = 10, B = 20;
+    var lo = Math.min.apply(null, t.map(function (x) { return x.value; }));
+    var hi = Math.max.apply(null, t.map(function (x) { return x.value; }));
+    var pad = (hi - lo) * .25 || .2; lo -= pad; hi += pad;
+    function X(i) { return L + (W - L - R) * i / (t.length - 1); }
+    function Y(v) { return T + (H - T - B) * (hi - v) / (hi - lo); }
+    var ns = "http://www.w3.org/2000/svg", svg = $("cv-svg");
+    function add(tag, at, txt) {
+      var e = document.createElementNS(ns, tag);
+      Object.keys(at).forEach(function (k) { e.setAttribute(k, at[k]); });
+      if (txt != null) e.textContent = txt;
+      svg.appendChild(e); return e;
+    }
+    [0, .25, .5, .75, 1].forEach(function (f) {
+      var v = lo + (hi - lo) * f;
+      add("line", { x1:L, y1:Y(v), x2:W - R, y2:Y(v), stroke:"#262c36", "stroke-width":1 });
+      if (f === 0 || f === .5 || f === 1)
+        add("text", { x:2, y:Y(v) + 3, fill:"#616a75", "font-size":9.5, "font-family":"monospace" }, v.toFixed(2));
+    });
+    add("polyline", { points:t.map(function (x, i) { return X(i) + "," + Y(x.value); }).join(" "),
+                      fill:"none", stroke:"#5b9bd5", "stroke-width":1.6, "stroke-linejoin":"round" });
+    t.forEach(function (x, i) {
+      add("circle", { cx:X(i), cy:Y(x.value), r:2, fill:"#8fc0e8" });
+      add("text", { x:X(i), y:H - 6, fill:"#616a75", "font-size":9, "font-family":"monospace", "text-anchor":"middle" }, x.label);
+    });
+    $("cv-asof").textContent = d.asOf || "—";
+    $("cv-lg").innerHTML = (d.spreads || []).map(function (s) {
+      var c = s.inverted ? "var(--dn)" : "var(--up)";
+      return "<span>" + esc(s.id) + ' 期限差 <b style="color:' + c + '">' +
+        (isNum(s.value) ? (s.value >= 0 ? "+" : "−") + Math.abs(s.value).toFixed(2) : "—") + "</b>" + (s.inverted ? "（倒挂）" : "") + "</span>";
+    }).join("");
+    $("cv-meta").textContent = "来源 " + (d.source || "—") + " · 数据日期 " + (d.asOf || "—") + " · 日频 · 十一个期限各取一条官方序列，某期限当日无观测即留空，不插值";
+  }).catch(function () { $("cv-meta").textContent = "曲线数据读取失败。"; });
+
+  /* ── 恐慌贪婪 / OFR ── */
+  getJSON("fear-greed/data.json").then(function (d) {
+    var sc = d.score;
+    var col = !isNum(sc) ? "#848c97" : sc < 45 ? "#dd5a4f" : sc <= 55 ? "#c9963c" : "#31b07c";
+    $("k-fear").innerHTML = (isNum(sc) ? sc : "—") + '<small style="color:' + col + '">' + esc(d.ratingZh || "") + "</small>";
+    $("k-fear").style.color = col;
+  }).catch(function () { $("k-fear").innerHTML = '—<small>读取失败</small>'; });
+
+  getJSON("ofr-monitor/data.json").then(function (d) {
+    var fsi = (d.fsi || {}).value;
+    if (isNum(fsi)) {
+      $("k-fsi").textContent = (fsi >= 0 ? "+" : "−") + Math.abs(fsi).toFixed(2);
+      $("k-fsi").style.color = fsi > 0 ? "var(--dn)" : "var(--up)";
+    }
+  }).catch(function () {});
+
+  /* ── 经济日历 ── */
+  getJSON("econ-calendar/data.json").then(function (d) {
+    var now = Date.now();
+    var ev = (d.events || []).filter(function (e) { return e.impact === "high" || e.impact === "medium"; })
+      .sort(function (a, b) { return new Date(a.ts) - new Date(b.ts); });
+    var future = ev.filter(function (e) { return new Date(e.ts).getTime() >= now; });
+    var past = ev.filter(function (e) { return new Date(e.ts).getTime() < now; }).reverse();
+    var use = future.slice(0, 4);
+    while (use.length < 8 && past.length) use.push(past.shift());
+    use.sort(function (a, b) { return new Date(a.ts) - new Date(b.ts); });
+    $("cal-body").innerHTML = use.map(function (e) {
+      var t = new Date(e.ts);
+      function p2(n) { return n < 10 ? "0" + n : n; }
+      var tm = (t.getUTCMonth() + 1) + "-" + p2(t.getUTCDate()) + " " + p2(t.getUTCHours()) + ":" + p2(t.getUTCMinutes());
+      var done = !!e.actual;
+      var vv = done ? "实际 " + e.actual : (e.forecast ? "预测 " + e.forecast : "待公布");
+      return '<li><span class="tm">' + tm + '</span><span class="imp ' + (e.impact === "high" ? "h" : "m") + '"></span>' +
+        '<span class="tx">' + esc((e.ccy ? e.ccy + " " : "") + (e.title || "")) + "</span>" +
+        '<span class="vv" style="color:' + (done ? "var(--ink)" : "var(--faint)") + '">' + esc(vv) + "</span></li>";
+    }).join("") || '<li><span class="tx">本周无高/中影响事件</span></li>';
+    $("cal-week").textContent = d.weekOf || d.asOf || "—";
+    $("cal-meta").textContent = "来源 " + (d.source || "—") + " · 本周 " + (d.count || "—") + " 项（高影响 " + (d.highCount || "—") +
+      " 项）· 仅列高/中影响 · 时间为 UTC · 灰色为尚未公布，白色为已回填实际值";
+  }).catch(function () { $("cal-meta").textContent = "日历数据读取失败。"; });
+
+  /* ── 要闻 ── */
+  getJSON("whats-latest/data.json").then(function (d) {
+    var items = [];
+    (d.categories || []).forEach(function (c) {
+      (c.items || []).slice(0, 3).forEach(function (it) { items.push({ cat:c.name, it:it }); });
+    });
+    items = items.slice(0, 6);
+    $("nw-body").innerHTML = items.map(function (x) {
+      var t = x.it.published ? new Date(x.it.published * 1000) : null;
+      function p2(n) { return n < 10 ? "0" + n : n; }
+      var tm = t ? (t.getUTCMonth() + 1) + "-" + p2(t.getUTCDate()) + " " + p2(t.getUTCHours()) + ":" + p2(t.getUTCMinutes()) + " UTC" : "";
+      return '<li><a href="' + esc(x.it.link || "#") + '" target="_blank" rel="noopener">' + esc(x.it.title || "") +
+        '<span class="m">' + esc(x.it.source || "") + (tm ? " · " + tm : "") + " · " + esc(x.cat || "") + "</span></a></li>";
+    }).join("") || '<li>暂无要闻</li>';
+    $("nw-asof").textContent = d.asOf || "—";
+    $("nw-meta").textContent = "来源 " + (d.source || "—") + " · 数据日期 " + (d.asOf || "—") +
+      " · 日内多次更新 · 仅作信息聚合，每条链接回原文，不代表本站观点";
+  }).catch(function () { $("nw-meta").textContent = "要闻数据读取失败。"; });
+})();
+</script>
+</body>
+</html>

@@ -42,7 +42,7 @@ import sys
 BANNER_START = "/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */"
 BANNER_END = "/* ==== 浅色主题兜底 结束 ==== */"
 
-SKIP_PREFIXES = (".git/", "home-redesign/", "docs/", "node_modules/")
+SKIP_PREFIXES = (".git/", "home-redesign/", "terminal-redesign/", "docs/", "node_modules/")
 
 # 画面由整屏 canvas / iframe 主导、固定深色的页面：不生成浅色覆盖
 LOCKED = {
