@@ -71,24 +71,42 @@ UA = f"Ooglex Supply Chain Research/1.0 ({CONTACT})"
 # 候选端点。**逐个打、把真实状态与键名打出来**，不预设哪个能用。
 # 每条给一个取列表的 URL 和一个「这条记录的叙述文字在哪些键里」的候选清单。
 CANDIDATES = [
-    ("nhtsa-recalls", "https://api.nhtsa.gov/recalls/recallsByVehicle"
-                      "?make=honda&model=accord&modelYear=2020"),
-    ("nhtsa-products", "https://api.nhtsa.gov/products/vehicle/models"
-                       "?modelYear=2020&make=honda&issueType=r"),
-    ("openfda-device", "https://api.fda.gov/device/recall.json?limit=100"),
-    ("openfda-food", "https://api.fda.gov/food/enforcement.json?limit=100"),
-    ("openfda-drug", "https://api.fda.gov/drug/enforcement.json?limit=100"),
-    ("cpsc-recalls", "https://www.saferproducts.gov/RestWebServices/Recall"
-                     "?format=json&RecallDateStart=2023-01-01"),
+    # **第一版这里写死了 make=honda&model=accord&modelYear=2020**，结果 NHTSA
+    # 只取到 5 条——而汽车召回恰恰是最可能点名零部件厂的一类（高田气囊就是
+    # 典型）。那不是「NHTSA 给不出关系」，是我只看了 5 条本田雅阁。
+    # 改成多给几个车型年份，并把每个源的配额分开，不让一个源吃掉全部预算。
+    ("nhtsa-recalls", [
+        "https://api.nhtsa.gov/recalls/recallsByVehicle"
+        f"?make={mk}&model={md}&modelYear={yr}"
+        for mk, md, yr in (("honda", "accord", "2020"), ("ford", "escape", "2021"),
+                           ("toyota", "camry", "2020"), ("gm", "silverado", "2021"),
+                           ("bmw", "3-series", "2020"), ("nissan", "rogue", "2021"),
+                           ("hyundai", "sonata", "2020"), ("tesla", "model 3", "2021"),
+                           ("chrysler", "pacifica", "2020"), ("subaru", "outback", "2021"))
+    ]),
+    ("openfda-device", ["https://api.fda.gov/device/recall.json?limit=100"]),
+    ("openfda-food", ["https://api.fda.gov/food/enforcement.json?limit=100"]),
+    ("openfda-drug", ["https://api.fda.gov/drug/enforcement.json?limit=100"]),
+    ("cpsc-recalls", ["https://www.saferproducts.gov/RestWebServices/Recall"
+                      "?format=json&RecallDateStart=2023-01-01"]),
 ]
+# 每个源最多取多少条。**分开配额**：第一版按顺序吃预算，food 取到第 95 条就
+# 把 200 用满了，drug 拿到 100 条却一条都没进统计。
+PER_SOURCE = int(os.environ.get("RECALL_PER_SOURCE", "60"))
+
 # 叙述文字可能在的键。按真实返回里有的用。
 TEXT_KEYS = ("Consequence", "Remedy", "Summary", "NHTSAActionNumber",
              "Component", "Notes", "product_description", "reason_for_recall",
              "code_info", "Description", "Title", "ConsumerContact",
              "res_event_number", "root_cause_description", "action")
-# 召回方名字可能在的键。
-FIRM_KEYS = ("Manufacturer", "recalling_firm", "firm_name", "Firms",
-             "manufacturer_name", "Name", "CompanyName")
+# 召回方名字可能在的键。**第一版只写了单数 Manufacturer**，于是 CPSC 那
+# 1,483 条被整源跳过——它的字段叫 `Manufacturers`（复数）。而 CPSC 恰恰是
+# 唯一一个**自带结构化当事方列表**的源（Manufacturers / Importers /
+# Retailers / Distributors），比从叙述里猜好得多。把它跳过是这一轮最大的漏。
+FIRM_KEYS = ("Manufacturer", "Manufacturers", "recalling_firm", "firm_name",
+             "Firms", "manufacturer_name", "Name", "CompanyName")
+# 结构化的「另一方」字段：有这些就不必从叙述里猜。顺序即优先级。
+PARTY_LIST_KEYS = ("Manufacturers", "Importers", "Distributors", "Retailers")
 
 # 从叙述里抓第二家公司。
 #
@@ -187,12 +205,43 @@ def narrative(row: dict) -> str:
     return " ".join(parts)
 
 
+def flat_names(value) -> list[str]:
+    """把一个字段里的公司名摊平。**形状不猜**：字符串、字符串列表、
+    以及 [{"Name": ...}] 这三种都认，其它一律忽略。"""
+    out = []
+    if isinstance(value, str) and value.strip():
+        out.append(value.strip())
+    elif isinstance(value, list):
+        for item in value:
+            if isinstance(item, str) and item.strip():
+                out.append(item.strip())
+            elif isinstance(item, dict):
+                for k in ("Name", "name", "CompanyName", "Company"):
+                    if isinstance(item.get(k), str) and item[k].strip():
+                        out.append(item[k].strip())
+                        break
+    return out
+
+
 def firm_of(row: dict) -> str:
     for key in FIRM_KEYS:
-        value = row.get(key)
-        if isinstance(value, str) and value.strip():
-            return value.strip()
+        names = flat_names(row.get(key))
+        if names:
+            return names[0]
     return ""
+
+
+def structured_party(row: dict, firm: str, pool: dict) -> tuple[str, bool] | None:
+    """结构化字段里的另一方。**有这个就不从叙述里猜**——字段里的名字是
+    申报人填的，比正则从句子里抠出来的可靠得多。"""
+    for key in PARTY_LIST_KEYS:
+        for name in flat_names(row.get(key)):
+            if len(name) < 4 or same_entity(name, firm):
+                continue
+            if NOT_A_COMPANY.search(name) or NOT_A_FIRM.search(name):
+                continue
+            return name, norm(name) in pool
+    return None
 
 
 def second_party(text: str, firm: str, pool: dict) -> tuple[str, bool] | None:
@@ -222,28 +271,43 @@ def second_party(text: str, firm: str, pool: dict) -> tuple[str, bool] | None:
     return None
 
 
-def discover() -> list[tuple[str, str, list[dict], list[str]]]:
-    """逐个打候选端点，返回活着的那些 (标签, url, 记录, 字段名)。"""
+def discover() -> list[tuple[str, list[dict]]]:
+    """逐个打候选端点，返回活着的那些 (标签, 记录)。每个源按 PER_SOURCE 限量。"""
     print("── 〇、先打每个候选端点，把状态与字段名打出来（不凭记忆写）──────────")
     alive = []
-    for label, url in CANDIDATES:
-        payload, note = get(url)
-        rows = rows_of(payload)
-        if not rows:
-            shape = type(payload).__name__ if payload is not None else "无"
-            print(f"  [--] {label:<16} {note}（剥不出记录列表，外层是 {shape}）")
+    for label, urls in CANDIDATES:
+        got: list[dict] = []
+        notes = []
+        for url in urls:
+            if len(got) >= PER_SOURCE:
+                break
+            payload, note = get(url)
+            rows = rows_of(payload)
+            notes.append(f"{note}/{len(rows)}")
+            got.extend(rows[:PER_SOURCE - len(got)])
+        if not got:
+            print(f"  [--] {label:<16} {'、'.join(notes[:3])}（剥不出记录）")
             continue
-        keys = sorted(rows[0].keys())
-        print(f"  [OK] {label:<16} {note}，{len(rows)} 条")
-        print(f"       字段名：{'、'.join(keys)[:260]}")
-        firm_key = next((k for k in FIRM_KEYS if k in rows[0]), None)
-        text_keys = [k for k in TEXT_KEYS if isinstance(rows[0].get(k), str)]
+        first = got[0]
+        keys = sorted(first.keys())
+        print(f"  [OK] {label:<16} {'、'.join(notes[:3])} → 收 {len(got)} 条")
+        print(f"       字段名：{'、'.join(keys)[:230]}")
+        firm_key = next((k for k in FIRM_KEYS if k in first), None)
+        text_keys = [k for k in TEXT_KEYS if isinstance(first.get(k), str)]
+        party_keys = [k for k in PARTY_LIST_KEYS if k in first]
         print(f"       召回方字段：{firm_key or '（没有）'} · "
+              f"结构化当事方：{'、'.join(party_keys) or '（没有）'} · "
               f"叙述字段：{'、'.join(text_keys) or '（没有）'}")
-        if not firm_key or not text_keys:
-            print("       [--] 缺召回方或叙述字段，这个端点给不出关系，跳过")
+        # 结构化当事方字段的**真实值**打一条出来——形状不猜。
+        for key in party_keys[:3]:
+            print(f"       {key} 样例：{json.dumps(first.get(key), ensure_ascii=False)[:150]}")
+        if not firm_key:
+            print("       [--] 连召回方都没有，这个端点给不出关系，跳过")
             continue
-        alive.append((label, url, rows, keys))
+        if not text_keys and not party_keys:
+            print("       [--] 既没有叙述也没有结构化当事方，跳过")
+            continue
+        alive.append((label, got))
     return alive
 
 
@@ -269,14 +333,15 @@ def main() -> int:
           f"能点名对方的 ≥{HIT_FLOOR} 条才建")
     print("**这条源自带负面偏向**：只有出过问题的供应关系才被记录。"
           "若建，页面必须写明它是事故清单、不是供应商名单。")
-    print("逐层报数：取到记录 → 召回方锚回池内 → 正文点到第二家 → 第二家可用\n")
+    print("逐层报数：取到记录 → 召回方锚回池内 → 点到第二家（先结构化字段，"
+          "没有才退到叙述）→ 第二家在不在池内\n")
 
-    seen = in_pool = named = both = 0
+    seen = in_pool = named = both = from_struct = 0
     per_source: dict[str, list[int]] = {}
-    hits: list[tuple[str, str, str, bool]] = []
+    hits: list[tuple[str, str, str, bool, str]] = []
     no_second: list[str] = []
 
-    for label, _url, rows, _keys in alive:
+    for label, rows in alive:
         stat = per_source.setdefault(label, [0, 0, 0])
         for row in rows:
             if seen >= SAMPLE:
@@ -284,26 +349,32 @@ def main() -> int:
             seen += 1
             stat[0] += 1
             firm = firm_of(row)
-            symbol = pool.get(norm(firm))
-            if symbol:
+            if pool.get(norm(firm)):
                 in_pool += 1
                 stat[1] += 1
-            found = second_party(narrative(row), firm, pool)
+            # **先结构化、再叙述**：字段里的名字是申报人填的，比正则从句子里
+            # 抠出来的可靠。两条路都走不通才算点不到。
+            found, how = structured_party(row, firm, pool), "字段"
+            if not found:
+                found, how = second_party(narrative(row), firm, pool), "叙述"
             if not found:
                 if len(no_second) < 10 and firm:
                     no_second.append(f"{label}/{firm[:30]}")
                 continue
             named += 1
             stat[2] += 1
+            if how == "字段":
+                from_struct += 1
             if found[1]:
                 both += 1
             if len(hits) < 40:
-                hits.append((label, firm[:34], found[0][:44], found[1]))
+                hits.append((label, firm[:30], found[0][:40], found[1], how))
 
     print("─" * 74)
     print(f"取到召回记录 {seen} 条 · 请求 {BUDGET.used}")
     print(f"  召回方能锚回池内 {in_pool} 条")
-    print(f"  正文点到第二家公司 **{named} 条**")
+    print(f"  点到第二家公司 **{named} 条**"
+          f"（其中来自结构化字段 {from_struct} 条、来自叙述 {named - from_struct} 条）")
     print(f"    第二家也在池内（双向边）{both} 条")
     print("  按来源拆（取到 / 召回方在池内 / 点到第二家）：")
     for label, (a, b, c) in per_source.items():
@@ -319,9 +390,9 @@ def main() -> int:
             print(f"   {line}")
     if hits:
         print("\n点到第二家的，逐条列出（**人工核对用，别只看计数**）：")
-        for label, firm, other, inside in hits:
+        for label, firm, other, inside, how in hits:
             tag = "池内" if inside else "池外"
-            print(f"   {label:<15} {firm:<36} → {other:<46} | {tag}")
+            print(f"   {label:<15} {firm:<32} → {other:<42} | {tag} | {how}")
 
     print("\n" + "─" * 74)
     print(f"判据：点名对方 {named} 条（门槛 {HIT_FLOOR}）"

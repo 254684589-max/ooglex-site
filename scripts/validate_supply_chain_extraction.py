@@ -1950,6 +1950,36 @@ def main() -> int:
     _got2 = _rc.second_party("supplied by Bosch GmbH.", "Ford Motor Company", _pool)
     recall_cases.append((_got2 is not None and _got2[1] is False,
                          "池内判定：Bosch 不在池内时标 False"))
+    # 结构化当事方字段。**这一段钉的是第一轮漏掉整条源的那个错**：
+    # CPSC 返回 1,483 条、字段叫 `Manufacturers`（复数），而我只写了单数，
+    # 于是唯一一个自带结构化当事方列表的源被整源跳过了。
+    # 形状也不许猜——字符串、字符串列表、[{"Name": …}] 三种都认，其它忽略。
+    for _value, _want in [("Acme Inc", ["Acme Inc"]),
+                          (["A Corp", "B Ltd"], ["A Corp", "B Ltd"]),
+                          ([{"Name": "C GmbH"}, {"name": "D Co"}], ["C GmbH", "D Co"]),
+                          ([{"Country": "CN"}], []), (None, []), (123, [])]:
+        recall_cases.append((_rc.flat_names(_value) == _want,
+                             f"当事方字段摊平：{str(_value)[:30]} → {_want}"))
+    recall_cases.append(("Manufacturers" in _rc.FIRM_KEYS,
+                         "FIRM_KEYS 里有复数 Manufacturers（CPSC 用的是复数，"
+                         "第一轮因此整源跳过）"))
+    recall_cases.append((tuple(_rc.PARTY_LIST_KEYS)[:1] == ("Manufacturers",),
+                         "结构化当事方优先看 Manufacturers，不是零售方"))
+    _pool2 = {_names.norm("Mattel Inc"): "MAT", _names.norm("Target Corporation"): "TGT"}
+    for _row, _firm, _want2, _whyrow in [
+        ({"Manufacturers": [{"Name": "Foxconn Technology Co"}]}, "Mattel Inc",
+         "Foxconn Technology Co", "制造方列表里的名字直接用，不从叙述里猜"),
+        ({"Manufacturers": [{"Name": "Mattel Inc"}],
+          "Retailers": [{"Name": "Target Corporation"}]}, "Mattel Inc",
+         "Target Corporation", "制造方就是召回方时落到下一个字段"),
+        ({"Manufacturers": [{"Name": "Mattel Inc"}]}, "Mattel Inc", None,
+         "只有召回方自己，不算关系"),
+        ({"Importers": ["Consumer Product Safety Commission"]}, "Acme Inc", None,
+         "机构不算当事方"),
+    ]:
+        _g = _rc.structured_party(_row, _firm, _pool2)
+        recall_cases.append(((_g[0] if _g else None) == _want2,
+                             f"结构化当事方：{_whyrow}"))
     for ok, whytext in recall_cases:
         if not ok:
             failures.append(f"{whytext} 不成立")
