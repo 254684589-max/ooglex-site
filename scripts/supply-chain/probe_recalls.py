@@ -52,6 +52,7 @@ import os
 import re
 import sys
 import time
+from http import client
 from urllib import error, parse, request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -75,9 +76,12 @@ CANDIDATES = [
     # 只取到 5 条——而汽车召回恰恰是最可能点名零部件厂的一类（高田气囊就是
     # 典型）。那不是「NHTSA 给不出关系」，是我只看了 5 条本田雅阁。
     # 改成多给几个车型年份，并把每个源的配额分开，不让一个源吃掉全部预算。
+    # **URL 一律 urlencode**。第一版用 f-string 拼，"model 3" 里那个空格让
+    # urllib 抛 InvalidURL 直接把整轮打挂——而 accord／escape 没有空格，
+    # 所以上一跑看不出来。参数里有空格是常态，不是特例。
     ("nhtsa-recalls", [
-        "https://api.nhtsa.gov/recalls/recallsByVehicle"
-        f"?make={mk}&model={md}&modelYear={yr}"
+        "https://api.nhtsa.gov/recalls/recallsByVehicle?" + parse.urlencode(
+            {"make": mk, "model": md, "modelYear": yr})
         for mk, md, yr in (("honda", "accord", "2020"), ("ford", "escape", "2021"),
                            ("toyota", "camry", "2020"), ("gm", "silverado", "2021"),
                            ("bmw", "3-series", "2020"), ("nissan", "rogue", "2021"),
@@ -177,7 +181,9 @@ def get(url: str) -> tuple[object | None, str]:
         except Exception:                                    # noqa: BLE001
             pass
         return None, f"HTTP {exc.code} {detail}"
-    except (error.URLError, ValueError, OSError) as exc:
+    except (error.URLError, ValueError, OSError, client.HTTPException) as exc:
+        # **一个端点坏掉不该把整轮打挂。** 上一跑就是这么死的：一条 URL 非法，
+        # 异常穿出去，其余五个源一条都没跑。这里兜住并如实报出来。
         return None, f"{type(exc).__name__}: {exc}"
     finally:
         time.sleep(GAP)
