@@ -21,7 +21,10 @@ Regulation S-K Item 601(b)(10) 要求上市公司把**重大合同**作为附件
 ## 判据（**探之前写死，不许探完再定**）
 
     抽样      全池按环节分层取 100 家
-    范围      每家最近一份 10-K 的 EX-10.x 附件，最多读 6 份
+    范围      每家最近 12 份 10-K／10-Q／8-K 里的 EX-10.x 附件，最多读 6 份
+              （第一版只看最近一份 10-K，实测 80 家里 48 家的 10-K 目录**只有
+               审计师同意书与认证**——材料合同以「引用并入」指向更早的 8-K，
+               范围选错了，阴性结果没有信息量）
     命中      附件标题命中供货类关键词 **且** 从首段解出交易对方
     判据      能稳定解出交易对方的 ≥15 份 → 值得建
               <15 份                     → 判「收益不足」，写进判决表
@@ -72,6 +75,11 @@ GAP = 0.20
 BODY_LIMIT = 300_000
 SAMPLE = int(os.environ.get("EX10_SAMPLE", "100"))
 MAX_EXHIBITS = int(os.environ.get("EX10_MAX_EXHIBITS", "6"))
+# 每家回看几份申报。**只看最近一份 10-K 是错的**：实测 80 家里 48 家的 10-K
+# 目录里只有 ex23（审计师同意书）、ex31/ex32（认证）和 10-K 正文本身——
+# 材料合同按惯例以「引用并入」指向更早的 8-K／10-Q，不在最新这份里。
+MAX_FILINGS = int(os.environ.get("EX10_MAX_FILINGS", "12"))
+WANT_FORMS = ("10-K", "10-Q", "8-K")
 MAX_REQUESTS = int(os.environ.get("EX10_MAX_REQUESTS", "6000"))
 # 判据。改这个数等于改判据，必须连同上面的理由一起改。
 HIT_FLOOR = int(os.environ.get("EX10_HIT_FLOOR", "15"))
@@ -113,6 +121,17 @@ NOT_SUPPLY = re.compile(
 PARTIES = re.compile(
     r"by\s+and\s+between\s+(.{3,120}?)\s+and\s+(.{3,120}?)(?:[.,;]|\s+\()",
     re.I | re.S)
+
+# 首段里常见的套话，一个公司名都没有——解出这些等于没解出。
+BOILERPLATE = re.compile(
+    r"\b(the\s+persons?|entities\s+listed|schedule\s+[IVX0-9]|"
+    r"purchasers?|investors?|holders?|parties\s+hereto|signator|"
+    r"each\s+of\s+the|undersigned|lenders?|guarantors?)\b", re.I)
+# 公司主体后缀。有它基本可以确定是一家实体，没有就再看有没有两个大写词。
+SUFFIX = re.compile(
+    r"\b(inc|corp|corporation|company|co|llc|l\.?l\.?c|ltd|limited|plc|"
+    r"gmbh|s\.?a|n\.?v|a\.?g|kg|oy|ab|as|bv|pte|sdn|bhd|kk|"
+    r"holdings?|group|industries|technologies|laborator)\b\.?", re.I)
 
 TAG = re.compile(r"<[^>]+>")
 WS = re.compile(r"\s+")
@@ -168,17 +187,21 @@ def text_of(raw: bytes) -> str:
     return WS.sub(" ", body).strip()
 
 
-def latest_10k(cik: int) -> dict | None:
+def recent_filings(cik: int, limit: int) -> list[dict]:
+    """近若干份 10-K／10-Q／8-K。**不能只看最近一份 10-K**，见 MAX_FILINGS 的注释。"""
     url = f"https://data.sec.gov/submissions/CIK{cik:010d}.json"
     meta = json.loads(fetch(url).decode("utf-8", "replace"))
     recent = (meta.get("filings") or {}).get("recent") or {}
+    rows = []
     for form, accession, date in zip(
             recent.get("form") or [], recent.get("accessionNumber") or [],
             recent.get("filingDate") or []):
-        if form != "10-K":
+        if form not in WANT_FORMS:
             continue
-        return {"accession": accession, "date": date}
-    return None
+        rows.append({"form": form, "accession": accession, "date": date})
+        if len(rows) >= limit:
+            break
+    return rows
 
 
 def ex10_urls(cik: int, accession: str) -> tuple[list[str], list[str]]:
@@ -233,9 +256,19 @@ def counterparty(body: str, issuer: str) -> str | None:
     def is_issuer(name: str) -> bool:
         key = re.sub(r"[^a-z]", "", name.lower())
         return bool(issuer_key) and issuer_key in key
+    # **套话不是公司名。** 实测 TARA 解出的「对方」是
+    # "the persons and entities listed on Schedule I attached hereto"——
+    # 那是证券购买协议里的认购人清单。收进来就是把融资文件当成供应关系，
+    # 方向是假阳性，而且是最难看的那种：判据虚高全靠它。
     for name in (right, left):
-        if not is_issuer(name) and 3 < len(name) < 120:
-            return name
+        if is_issuer(name) or not (3 < len(name) < 120):
+            continue
+        if BOILERPLATE.search(name):
+            continue
+        # 真公司名总带一个主体后缀或至少两个大写词
+        if not SUFFIX.search(name) and len(re.findall(r"\b[A-Z][\w&.]+", name)) < 2:
+            continue
+        return name
     return None
 
 
@@ -273,56 +306,65 @@ def main() -> int:
         symbol = node.get("symbol")
         name = node.get("nameEn") or node.get("name") or symbol
         try:
-            filing = latest_10k(int(node["cik"]))
+            filings = recent_filings(int(node["cik"]), MAX_FILINGS)
         except Exception as exc:                   # noqa: BLE001
             failed += 1
             if failed <= 5:
                 print(f"[--] {symbol:6} 取申报清单失败：{why(exc)}")
             continue
-        if not filing:
+        if not filings:
             continue
         got10k += 1
-        urls, all_names = ex10_urls(int(node["cik"]), filing["accession"])
-        if not urls:
-            if len(no_ex_samples) < 6 and all_names:
-                no_ex_samples.append(f"{symbol}：{'、'.join(all_names[:5])}")
-            continue
-        withex += 1
-        for url in urls:
-            try:
-                body = text_of(fetch(url))
-            except Exception:                      # noqa: BLE001
+        found_ex = False
+        done = False
+        for filing in filings:
+            if done:
+                break
+            urls, all_names = ex10_urls(int(node["cik"]), filing["accession"])
+            if not urls:
+                if len(no_ex_samples) < 6 and all_names and not found_ex:
+                    no_ex_samples.append(
+                        f"{symbol} {filing['form']}：{'、'.join(all_names[:5])}")
                 continue
-            kind, title = classify(body)
-            if kind != "supply":
-                continue
-            supply += 1
-            other = counterparty(body, name)
-            if other:
-                named += 1
-                hits.append((symbol, other, title, url.rsplit("/", 1)[-1]))
-                print(f"[OK] {symbol:6} → {other[:46]:48} | {(title or '')[:40]}")
-            elif len(supply_no_party) < 8:
-                supply_no_party.append(f"{symbol}：{(title or '')[:60]}")
-            break                                  # 一家一份就够回答判据
+            if not found_ex:
+                found_ex = True
+                withex += 1
+            for url in urls:
+                try:
+                    body = text_of(fetch(url))
+                except Exception:                  # noqa: BLE001
+                    continue
+                kind, title = classify(body)
+                if kind != "supply":
+                    continue
+                supply += 1
+                other = counterparty(body, name)
+                if other:
+                    named += 1
+                    hits.append((symbol, other, title, url.rsplit("/", 1)[-1]))
+                    print(f"[OK] {symbol:6} → {other[:46]:48} | {(title or '')[:40]}")
+                elif len(supply_no_party) < 10:
+                    supply_no_party.append(f"{symbol}：{(title or '')[:60]}")
+                done = True                        # 一家一份就够回答判据
+                break
         if i % 20 == 0:
             print(f"     … 已处理 {i}/{len(sample)}，解出 {named} 份，"
                   f"请求用掉 {MAX_REQUESTS - BUDGET.left}")
 
     print("\n" + "─" * 74)
     if not got10k:
-        print("[XX] **结论无效**：一家的 10-K 都没取到。这是取数失败，不是业务事实——")
+        print("[XX] **结论无效**：一家的申报清单都没取到。这是取数失败，不是业务事实——")
         print("     先修取数再重探，不得据此判死。")
         return 2
     if not withex:
-        print("[XX] **结论无效**：取到了 10-K，但一份 EX-10 附件都没找到。")
+        print("[XX] **结论无效**：取到了申报清单，但一份 EX-10 附件都没找到。")
         print("     多半是文件名规则的问题（附件 21 那轮就是），实际文件名样例：")
         for line in no_ex_samples:
             print(f"       {line}")
         return 2
 
-    print(f"取到 10-K {got10k} 家 · 失败 {failed} 家 · 请求 {MAX_REQUESTS - BUDGET.left}")
-    print(f"  其中找到 EX-10 附件的 {withex} 家（{withex / max(1, got10k) * 100:.0f}%）")
+    print(f"取到申报清单 {got10k} 家 · 失败 {failed} 家 · 请求 {MAX_REQUESTS - BUDGET.left}")
+    print(f"  近 {MAX_FILINGS} 份 10-K/10-Q/8-K 里找到 EX-10 附件的 {withex} 家（{withex / max(1, got10k) * 100:.0f}%）")
     print(f"  附件标题像供货类合同的 {supply} 份")
     print(f"  **从首段解出交易对方的 {named} 份**")
     if no_ex_samples:
