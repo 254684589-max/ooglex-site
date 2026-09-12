@@ -45,6 +45,10 @@ on:
         description: 阶段2 抽样家数（默认 100）
         required: false
         default: '100'
+      uei_sample:
+        description: 阶段3 抽样家数（默认 100）
+        required: false
+        default: '100'
       backfill_sample:
         description: 阶段1 抽样家数（默认 120）
         required: false
@@ -82,7 +86,7 @@ on:
         required: false
         default: '40'
       only:
-        description: '只跑哪些 job（ex10/backfill/ex21/sdhistory/graph/supplier/usaspending/nolist/body/extract/flow/foreign/foreignfetch/ceiling；留空跑全部）'
+        description: '只跑哪些 job（uei/ex10/backfill/ex21/sdhistory/graph/supplier/usaspending/nolist/body/extract/flow/foreign/foreignfetch/ceiling；留空跑全部）'
         required: false
         default: ''
 
@@ -263,6 +267,35 @@ jobs:
           SEC_CONTACT: ${{ vars.SEC_CONTACT }}
           EX10_SAMPLE: ${{ inputs.ex10_sample }}
         run: python scripts/supply-chain/probe_ex10_contracts.py
+
+  uei:
+    name: 补名单工程 阶段3 · USAspending 分包能不能给出一级供应关系
+    if: ${{ inputs.only == '' || contains(inputs.only, 'uei') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      # 第一轮（probe_usaspending.py）的结论停在「暂不接」，两条理由混在一起：
+      # 按名字搜有假阳性（搜 Leidos 出 KALEIDOSCOPE）是**仪器问题**；金融／
+      # 房地产／公用事业没有分包记录是**源本身的形状**。本轮把两者分开量：
+      # 先把认名做成能锚定（严格同名 + 身份唯一），再量增量。
+      #
+      # 判据写死在脚本文件头，两道闸门都过才建：
+      #   Gate A 准确性 —— 锚定的公司里错配 > 5% 判死
+      #   Gate B 增量  —— 能产出具名分包关系的 ≥15 家才建
+      # 取到 0 条总包记录、或返回里没有身份字段 → 报「结论无效」并非零退出。
+      - name: Probe USAspending subawards with UEI anchor
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+          UEI_SAMPLE: ${{ inputs.uei_sample }}
+        run: python scripts/supply-chain/probe_usaspending_uei.py
 
   backfill:
     name: 补名单工程 阶段1 · 历年 Form SD 能不能补当年空缺

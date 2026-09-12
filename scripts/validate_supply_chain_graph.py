@@ -974,12 +974,41 @@ def check_form_sd_flag(payload: dict, errors: list[str]) -> None:
         return
     status = {n.get("symbol"): n.get("formSdStatus")
               for n in (payload.get("nodes") or [])}
+    # 这一条**不再是「有就中止」**。理由写在 build_chain_nodes.py 里那一段：
+    # run 42 因为 1 家（AEC）中止了整轮发布，结果 5,906 家的数据冻在三天前，
+    # 比如实标注那一家糟得多。现在的要求是三条：
+    #   一、这种公司**不许叫「无申报」**（那会把它从覆盖率分母里排除，是粉饰）；
+    #   二、它们要被数出来、随数据发布，页面照实说「我们这边没读到」；
+    #   三、**数量超过上限才中止**——少数几家是索引与抽取器的长尾边界
+    #       （季度交界、撤回的申报、改名改 CIK），成片出现才是抽取器回归。
     bad = sorted(s for s in flagged if status.get(s) == "no-filing")
     if bad:
-        fail(errors, f"{len(bad)} 家在季度索引里报过 Form SD，抽取器却判为「无申报」，"
-                     f"说明漏读了申报：{'、'.join(bad[:8])}")
-    print(f"索引↔抽取器交叉校验：{len(flagged)} 家标了报过 Form SD，"
-          f"其中被判「无申报」的 {len(bad)} 家")
+        fail(errors, f"{len(bad)} 家在季度索引里报过 Form SD，却仍被标成「无申报」"
+                     f"——这一档必须标 index-says-filed，否则就从覆盖率分母里"
+                     f"漏掉了：{'、'.join(bad[:8])}")
+    marked = sorted(s for s in flagged if status.get(s) == "index-says-filed")
+    published = (((payload.get("coverage") or {}).get("formSd") or {})
+                 .get("indexSaysFiled") or {})
+    if marked or published:
+        if published.get("companies") != len(marked):
+            fail(errors, f"indexSaysFiled 报 {published.get('companies')} 家，"
+                         f"契约按节点表数出来 {len(marked)} 家")
+        if published.get("indexFlagged") != len(flagged):
+            fail(errors, f"indexSaysFiled.indexFlagged 报 "
+                         f"{published.get('indexFlagged')}，实际索引标记 {len(flagged)} 家")
+        listed = published.get("symbols") or []
+        if listed != marked[:len(listed)]:
+            fail(errors, "indexSaysFiled.symbols 与节点表里那一档对不上——"
+                         "列不出是哪几家，就没法人工去核对")
+        # 上限：绝对 5 家，或索引标记数的 5%，取较大者。抽取器整体回归会远超这个数。
+        ceiling = max(5, round(len(flagged) * 0.05))
+        if len(marked) > ceiling:
+            fail(errors, f"索引说报过但本轮没读到 {len(marked)} 家，超过上限 "
+                         f"{ceiling}——这不是长尾边界，是抽取器漏了一片，"
+                         f"必须先修抽取器再发布")
+    print(f"索引↔交叉校验：{len(flagged)} 家标了报过 Form SD，"
+          f"其中标成 index-says-filed 的 {len(marked)} 家、"
+          f"仍被错标成「无申报」的 {len(bad)} 家")
 
 
 # 多德-弗兰克法案 §1502 / SEC Rule 13p-1 的受涵盖国家：刚果民主共和国
@@ -1270,6 +1299,62 @@ def check_chain_risk(payload: dict, errors: list[str]) -> None:
     print(f"按链风险：{len(risk)} 条链（{with_flow} 条带流向图），分母、集中度与流向合计均与全局一致")
 
 
+def check_no_filing_by_stage(payload: dict, errors: list[str]) -> None:
+    """「未申报」那一档按环节拆开，必须发布，而且契约自己重算一遍。
+
+    这一栏存在的理由是拦住一句具体的错话。规划文档里曾写「未申报的 4,697 家里
+    4,651 家落在金融/服务/平台环节，结构上就不该有冶炼厂」——真数一拆就知道
+    那是错的：最大一档金融与专业服务 1,365 家（29%），第二大档是**整机与品牌
+    1,095 家（23%）**，那一档的产品里完全可能含 3TG。把「未申报」一律解释成
+    「结构上不适用」是替申报人下结论。
+
+    两个分母都得在：`companiesNoFiling` 是抽取器扫过的口径，`noFilingInNodes`
+    是进了节点表的口径，差额来自没有行业码的公司（放不到价值链轴上）。
+    **逐档相加必须等于后者**，而且前者不得小于后者——少一个分母，读者就会把
+    「逐档加起来比总数少」读成漏算。
+    """
+    cov = payload.get("coverage") or {}
+    sd = cov.get("formSd")
+    if not isinstance(sd, dict):
+        fail(errors, "coverage 缺 formSd")
+        return
+    rows = sd.get("noFilingByStage")
+    if not isinstance(rows, list) or not rows:
+        fail(errors, "coverage.formSd 缺 noFilingByStage——"
+                     "不拆开就只能拿「结构上不该有」一句话盖过去")
+        return
+    in_nodes = sd.get("noFilingInNodes")
+    scanned = sd.get("companiesNoFiling")
+    if not isinstance(in_nodes, int):
+        fail(errors, "coverage.formSd 缺 noFilingInNodes——"
+                     "逐档相加没有可比的分母，差额会被读成漏算")
+        return
+    # 不信产出方的汇总，按节点表重算一遍。
+    counted: dict[str, int] = {}
+    for node in payload.get("nodes") or []:
+        if node.get("formSdStatus") != "no-filing":
+            continue
+        key = node.get("stage") or "未判定"
+        counted[key] = counted.get(key, 0) + 1
+    got = {r.get("stage"): r.get("companies") for r in rows}
+    if got != counted:
+        fail(errors, f"noFilingByStage 与节点表数出来的不一致："
+                     f"发布 {sorted(got.items())}，重算 {sorted(counted.items())}")
+    total = sum(r.get("companies") or 0 for r in rows)
+    if total != in_nodes:
+        fail(errors, f"noFilingByStage 逐档相加 {total} ≠ noFilingInNodes {in_nodes}")
+    if isinstance(scanned, int) and in_nodes > scanned:
+        fail(errors, f"noFilingInNodes {in_nodes} 比 companiesNoFiling {scanned} 还大——"
+                     "节点表口径不可能超过扫过的口径")
+    stage_ids = {s.get("id") for s in (payload.get("stages") or [])}
+    for row in rows:
+        if row.get("stage") not in stage_ids and row.get("stage") != "未判定":
+            fail(errors, f"noFilingByStage 里的环节 {row.get('stage')!r} 不在 stages 表里")
+        if not row.get("label"):
+            fail(errors, f"noFilingByStage 里 {row.get('stage')!r} 没有中文标签——"
+                         "页面只能印 id，读者看不懂")
+
+
 def check_edge_age(payload: dict, errors: list[str]) -> None:
     """名单年龄必须发布，而且必须与边文件逐家对得上。
 
@@ -1550,6 +1635,7 @@ def main() -> int:
     check_history(payload, errors)
     check_carried_forward(payload, errors)
     check_edge_age(payload, errors)
+    check_no_filing_by_stage(payload, errors)
     check_no_conflict_markers(errors)
     smelters = check_smelters(errors, edge_count)
     check_health(errors, len(payload.get("nodes") or []))

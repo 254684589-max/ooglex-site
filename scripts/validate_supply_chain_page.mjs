@@ -2542,11 +2542,13 @@ async function main() {
         setTimeout(poll, 150);
       })();
     })`);
-    check(`总览页把四条路说成已实测否决`, () => {
+    check(`总览页把五条路说成已实测否决`, () => {
       assert.match(t1ov.text, /已逐条实测否决/,
         `声明里没说是实测否决：${t1ov.text.slice(0, 260)}`);
-      assert.match(t1ov.text, /附件 10/,
-        `四条路没列全（缺附件 10）：${t1ov.text.slice(0, 260)}`);
+      for (const key of ["附件 10", "联邦采购"]) {
+        assert.ok(t1ov.text.indexOf(key) >= 0,
+          `五条路没列全（缺「${key}」）：${t1ov.text.slice(0, 300)}`);
+      }
     });
     check(`总览页不再用「仍无数据源」这种待办口气`, () => {
       assert.ok(!/仍无数据源/.test(t1ov.text),
@@ -2578,9 +2580,10 @@ async function main() {
         setTimeout(poll, 150);
       })();
     })`);
-    check(`公司页逐条列出四条已否决的路`, () => {
+    check(`公司页逐条列出五条已否决的路`, () => {
       assert.ok(t1co.seen, "一级供应商的出处框没有布局盒");
-      for (const key of ["客户集中度", "全文反查", "附件 21", "附件 10"]) {
+      for (const key of ["客户集中度", "全文反查", "附件 21", "附件 10",
+                         "USAspending"]) {
         assert.ok(t1co.src.indexOf(key) >= 0,
           `没列到「${key}」：${t1co.src.slice(0, 300)}`);
       }
@@ -2651,12 +2654,37 @@ async function main() {
       if (st === "no-filing") {
         // 页面上印的每个数字都必须来自 nodes.json。第一版我把家数写死成
         // 4,697，而同一轮数据里已经是 4,698——写死的数字会悄悄变成错的。
-        const want = ((NODES.coverage || {}).formSd || {}).companiesNoFiling;
+        const FSD = (NODES.coverage || {}).formSd || {};
+        // **分母必须是节点表口径**：这句话说的是「池内」，而
+        // companiesNoFiling 数的是抽取器扫过的公司，多出一家不在池内的。
+        const want = FSD.noFilingInNodes;
         check(`no-filing：家数取自 nodes.json，不是写死的`, () => {
           assert.ok(typeof want === "number" && want > 0,
-            `nodes.json 里没有 companiesNoFiling，断言无从比对：${want}`);
+            `nodes.json 里没有 noFilingInNodes，断言无从比对：${want}`);
           assert.ok(sd.src.indexOf(want.toLocaleString("en-US") + " 家") >= 0,
             `页面没印 ${want.toLocaleString("en-US")} 家：${sd.src.slice(0, 260)}`);
+          assert.ok(sd.src.indexOf(String(FSD.companiesNoFiling) + " 家") < 0
+                    || FSD.companiesNoFiling === want,
+            `页面印的是扫过口径 ${FSD.companiesNoFiling}，但这句话说的是「池内」`);
+        });
+        // 分布要真的印出来，而且要印到第二档——只说最大一档是金融，
+        // 读者会以为其余都是金融类，而第二大档是整机与品牌。
+        const top = (FSD.noFilingByStage || []).slice(0, 2);
+        check(`no-filing：按环节的分布印到第二档，且数字与 nodes.json 一致`, () => {
+          assert.equal(top.length, 2,
+            `noFilingByStage 不足两档，断言无从比对：${JSON.stringify(top)}`);
+          for (const row of top) {
+            assert.ok(sd.src.indexOf(row.label) >= 0,
+              `没印环节「${row.label}」：${sd.src.slice(0, 320)}`);
+            assert.ok(sd.src.indexOf(row.companies.toLocaleString("en-US")) >= 0,
+              `没印「${row.label}」的家数 ${row.companies}：${sd.src.slice(0, 320)}`);
+          }
+        });
+        check(`no-filing：不把「未申报」说成「结构上不适用」`, () => {
+          assert.match(sd.src, /不能一律解释成/,
+            `没说清这一点：${sd.src.slice(0, 320)}`);
+          assert.ok(sd.src.indexOf("**") < 0,
+            `文案里漏出了星号：${sd.src.slice(0, 320)}`);
         });
       }
       if (st !== "filed-no-list") {

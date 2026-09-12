@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-11T15:43:31Z",
+  "updatedAt": "2026-09-12T01:16:01Z",
   "asOf": "2026-09-10",
   "frequency": "daily",
   "status": "ok",
@@ -349287,7 +349287,75 @@
         "rmi-cid": 861,
         "name-only": 1505
       },
-      "note": "Form SD 强制申报、不强制列名单：有申报无名单的公司如实单列，不并入「无申报」。覆盖率因此永远到不了 100%，这是披露制度本身的上限，不是抓取缺陷。"
+      "note": "Form SD 强制申报、不强制列名单：有申报无名单的公司如实单列，不并入「无申报」。覆盖率因此永远到不了 100%，这是披露制度本身的上限，不是抓取缺陷。",
+      "indexSaysFiled": {
+        "companies": 0,
+        "symbols": [],
+        "indexFlagged": 147
+      },
+      "noFilingByStage": [
+        {
+          "stage": "financial",
+          "label": "金融与专业服务",
+          "companies": 1365
+        },
+        {
+          "stage": "finished-goods",
+          "label": "整机与品牌",
+          "companies": 1095
+        },
+        {
+          "stage": "technology",
+          "label": "技术与平台",
+          "companies": 825
+        },
+        {
+          "stage": "end-service",
+          "label": "终端服务",
+          "companies": 311
+        },
+        {
+          "stage": "distribution",
+          "label": "分销与零售",
+          "companies": 298
+        },
+        {
+          "stage": "raw-material",
+          "label": "资源开采",
+          "companies": 217
+        },
+        {
+          "stage": "component",
+          "label": "零部件与元器件",
+          "companies": 172
+        },
+        {
+          "stage": "material-processing",
+          "label": "材料加工",
+          "companies": 153
+        },
+        {
+          "stage": "energy-utility",
+          "label": "能源与公用事业",
+          "companies": 134
+        },
+        {
+          "stage": "logistics",
+          "label": "物流与运输",
+          "companies": 62
+        },
+        {
+          "stage": "capital-equipment",
+          "label": "资本设备",
+          "companies": 46
+        },
+        {
+          "stage": "circular",
+          "label": "循环与废弃物",
+          "companies": 19
+        }
+      ],
+      "noFilingInNodes": 4697
     },
     "bySector": [
       {

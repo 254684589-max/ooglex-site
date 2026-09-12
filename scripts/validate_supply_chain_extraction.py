@@ -1844,6 +1844,44 @@ def main() -> int:
             failures.append(f"国别：{why} 不成立")
         print(f"  [{'OK' if ok else 'XX'}] {why}")
 
+    print("\n── 申报状态：每一档都得有页面文案，不能只躺在数据里 ────────────")
+    # **这条不能靠数据驱动。** 浏览器契约那一段是按 nodes.json 里**真实出现的**
+    # 状态取样的，而 index-says-filed 这一档生产数据里通常是 0 家——那样断言
+    # 会静默通过，等于不存在。所以改成静态比对：抽取器／构建脚本能产出的每一档，
+    # 公司页都必须有 T3_EMPTY 文案与 SD_LABEL 短名。
+    #
+    # 列表写死在这里，但**同时要求每一档在构建脚本里真的出现过**——否则这份
+    # 列表自己就会过期，「页面覆盖了全部状态」变成一句空话。
+    _root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    with open(os.path.join(_root, "scripts/supply-chain/build_chain_nodes.py"),
+              encoding="utf-8") as fh:
+        _builder = fh.read()
+    with open(os.path.join(_root, "apps/supply-chain/company.js"),
+              encoding="utf-8") as fh:
+        _company = fh.read()
+    SD_STATES = ["listed", "filed-no-list", "no-filing", "resource-extraction",
+                 "failed", "index-says-filed"]
+    state_cases = []
+    for st in SD_STATES:
+        state_cases.append((f'"{st}"' in _builder,
+                            f"构建脚本里确实有 {st} 这一档（列表没过期）"))
+        # listed 有名单时走另一条渲染路径，不需要 T3_EMPTY 文案；其余都要。
+        if st != "listed":
+            state_cases.append((f'"{st}": {{' in _company,
+                                f"公司页 T3_EMPTY 有 {st} 的文案"))
+        state_cases.append((f'"{st}":' in _company,
+                            f"公司页 SD_LABEL 有 {st} 的中文短名"))
+    # 反过来也查一遍：页面上不许出现构建脚本产不出来的档，否则是死文案。
+    import re as _re
+    _page_states = set(_re.findall(r'^\s*"([a-z][a-z-]*)":\s*\{', _company, _re.M))
+    state_cases.append((_page_states <= set(SD_STATES),
+                        f"公司页没有构建脚本产不出来的状态档"
+                        f"（多出来的：{sorted(_page_states - set(SD_STATES))}）"))
+    for ok, whytext in state_cases:
+        if not ok:
+            failures.append(f"申报状态：{whytext} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {whytext}")
+
     print("\n── 接线：SEC 联系方式取的是仓库变量，不是密钥 ────────────────────")
     # 这条是本轮自己踩的：两个新探针 job 写成 `secrets.SEC_CONTACT`，而仓库里
     # 这个值**存在变量里**（supply_chain_probe.yml 自己的注释写着「项目所有者
@@ -1888,7 +1926,7 @@ def main() -> int:
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
-             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases) + len(carry_cases) + len(hist_cases) + len(wire_cases) + len(body_cases) + len(lic_cases)
+             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases) + len(carry_cases) + len(hist_cases) + len(wire_cases) + len(state_cases) + len(body_cases) + len(lic_cases)
              + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:
