@@ -110,7 +110,32 @@ TEXT_KEYS = ("Consequence", "Remedy", "Summary", "NHTSAActionNumber",
 FIRM_KEYS = ("Manufacturer", "Manufacturers", "recalling_firm", "firm_name",
              "Firms", "manufacturer_name", "Name", "CompanyName")
 # 结构化的「另一方」字段：有这些就不必从叙述里猜。顺序即优先级。
-PARTY_LIST_KEYS = ("Manufacturers", "Importers", "Distributors", "Retailers")
+#
+# **Retailers 与 Distributors 被移出去了。** 第一版把它们也算「对方」，
+# 于是 run 50 的 41 条「命中」里大半是这样的：
+#
+#     → Amazon.com from March 20                  （零售渠道）
+#     → Walmart Inc., of Bentonville, Arkansas    （零售渠道 + 地址）
+#
+# 「在沃尔玛卖」是下游分销，不是供应关系。**判据过了，但过在不该算的东西上
+# ——这个方向比之前几轮的假阴性危险得多**：假阴性只是白跑一轮，假阳性会把
+# 一条不成立的源建进图里。
+#
+# 只留 Manufacturers 与 Importers：制造与进口都在申报人的**上游**。
+PARTY_LIST_KEYS = ("Manufacturers", "Importers")
+# CPSC 的名字后面常挂着地址（「X, of Bentonville, Arkansas」「X, of Draper, Utah」），
+# 还有 dba 别名。地址不是名字的一部分，进池比对之前要切掉。
+ADDR_TAIL = re.compile(r",\s*(?:of|in)\s+[A-Z][^,]*(?:,.*)?$|,\s*d/?b/?a\s+.*$", re.I)
+# 「from March 20」这类尾巴同理：那是销售期间，不是公司名。
+DATE_TAIL = re.compile(r"\s+from\s+(?:January|February|March|April|May|June|July|"
+                       r"August|September|October|November|December)\b.*$", re.I)
+
+
+def clean_name(name: str) -> str:
+    """把地址、dba 别名、销售期间这些尾巴从名字上切掉。"""
+    text = DATE_TAIL.sub("", str(name or "").strip())
+    text = ADDR_TAIL.sub("", text).strip(" ,.;:")
+    return " ".join(text.split())
 
 # 从叙述里抓第二家公司。
 #
@@ -238,10 +263,16 @@ def firm_of(row: dict) -> str:
 
 
 def structured_party(row: dict, firm: str, pool: dict) -> tuple[str, bool] | None:
+    # **没有召回方就没有关系。** run 50 有大半条「命中」是这样的：CPSC 的
+    # Manufacturers 是空数组，firm 取成空串，于是一条 A→B 的边只有 B。
+    # 一边缺失的东西不是关系，先挡在这里。
+    if not str(firm or "").strip():
+        return None
     """结构化字段里的另一方。**有这个就不从叙述里猜**——字段里的名字是
     申报人填的，比正则从句子里抠出来的可靠得多。"""
     for key in PARTY_LIST_KEYS:
-        for name in flat_names(row.get(key)):
+        for raw in flat_names(row.get(key)):
+            name = clean_name(raw)
             if len(name) < 4 or same_entity(name, firm):
                 continue
             if NOT_A_COMPANY.search(name) or NOT_A_FIRM.search(name):

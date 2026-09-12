@@ -1963,15 +1963,37 @@ def main() -> int:
     recall_cases.append(("Manufacturers" in _rc.FIRM_KEYS,
                          "FIRM_KEYS 里有复数 Manufacturers（CPSC 用的是复数，"
                          "第一轮因此整源跳过）"))
-    recall_cases.append((tuple(_rc.PARTY_LIST_KEYS)[:1] == ("Manufacturers",),
-                         "结构化当事方优先看 Manufacturers，不是零售方"))
+    recall_cases.append((tuple(_rc.PARTY_LIST_KEYS) == ("Manufacturers", "Importers"),
+                         "结构化当事方只收制造方与进口方——**零售与分销不算供应关系**"
+                         "（run 50 的 41 条「命中」大半是「在沃尔玛卖」那一类，"
+                         "判据过在了不该算的东西上，方向是假阳性）"))
+    for _raw, _want3 in [("Walmart Inc., of Bentonville, Arkansas", "Walmart Inc"),
+                         ("Goal Zero, of Draper, Utah", "Goal Zero"),
+                         ("Amazon.com from March 20", "Amazon.com"),
+                         ("Shenzhen Jinhe Trade Co., Ltd., dba Mystery",
+                          "Shenzhen Jinhe Trade Co., Ltd"),
+                         ("Takata Corporation", "Takata Corporation")]:
+        recall_cases.append((_rc.clean_name(_raw) == _want3,
+                             f"名字去尾巴：{_raw[:34]} → {_want3}"))
+    recall_cases.append((_rc.structured_party(
+        {"Manufacturers": [], "Retailers": [{"Name": "Walmart Inc."}]}, "", {}) is None,
+        "召回方为空时不算关系——一边缺失的东西不是边"))
+    recall_cases.append((_rc.structured_party(
+        {"Retailers": [{"Name": "Walmart Inc."}]}, "Acme Toys Inc", {}) is None,
+        "只有零售方时不算关系"))
     _pool2 = {_names.norm("Mattel Inc"): "MAT", _names.norm("Target Corporation"): "TGT"}
     for _row, _firm, _want2, _whyrow in [
         ({"Manufacturers": [{"Name": "Foxconn Technology Co"}]}, "Mattel Inc",
          "Foxconn Technology Co", "制造方列表里的名字直接用，不从叙述里猜"),
+        # **这一条本来写错了**：第一版期望「制造方就是召回方时落到 Retailers」，
+        # 而零售方是下游分销、不是供应关系——那条断言把代码的错一起钉住了。
+        # 同一轮里写的断言会替代码背书，所以改判据时要连断言一起重看。
         ({"Manufacturers": [{"Name": "Mattel Inc"}],
           "Retailers": [{"Name": "Target Corporation"}]}, "Mattel Inc",
-         "Target Corporation", "制造方就是召回方时落到下一个字段"),
+         None, "制造方就是召回方、其余只有零售方时，没有供应关系"),
+        ({"Manufacturers": [{"Name": "Mattel Inc"}],
+          "Importers": [{"Name": "Acme Import Co"}]}, "Mattel Inc",
+         "Acme Import Co", "制造方就是召回方时落到进口方（进口方在上游）"),
         ({"Manufacturers": [{"Name": "Mattel Inc"}]}, "Mattel Inc", None,
          "只有召回方自己，不算关系"),
         ({"Importers": ["Consumer Product Safety Commission"]}, "Acme Inc", None,
