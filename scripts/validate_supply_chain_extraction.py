@@ -1894,6 +1894,67 @@ def main() -> int:
             failures.append(f"公司名口径：{whytext} 不成立")
         print(f"  [{'OK' if ok else 'XX'}] {whytext}")
 
+    print("\n── 召回正文：「点名对方」必须是被明说为供应方 ──────────────────────")
+    # 这一段钉的是阶段 5 探针里一次**设计错误**，以及它的三个真实假阳性。
+    #
+    # 第一版按「正文里的大写短语」抓第二家公司，我自己写的 12 条用例全过了
+    # （因为用例是照着实现写的）；拿真实召回文字一试，三个假阳性当场出来：
+    #
+    #     「Certain Ford Escape and Lincoln Corsair vehicles…」 → Ford Escape（车型）
+    #     「the Fisher-Price Rock 'n Play Sleeper…」            → Fisher-Price Rock（产品）
+    #     「reported to the National Highway Traffic Safety Administration」 → 那个机构
+    #
+    # 修法不是再补排除词，是**改口径**：名字出现在正文里说明不了任何事，
+    # 必须有明说的线索词（manufactured/supplied/produced by…）才算「点名对方」。
+    # 判据数的是条数，抓错一条就虚高一条，所以这几条要一直钉着。
+    _rc = _load(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            "supply-chain", "probe_recalls.py"), "probe_recalls")
+    _pool = {_names.norm("Honda Motor Co., Ltd."): "HMC",
+             _names.norm("Takata Corporation"): "TKT"}
+    recall_pairs = [
+        ("Certain Ford Escape and Lincoln Corsair vehicles may lose power.",
+         "Ford Motor Company", None, "车型名不算供应方（第一版抓出 Ford Escape）"),
+        ("Consumers should stop using the Fisher-Price Rock 'n Play Sleeper.",
+         "Mattel Inc", None, "产品名不算（第一版抓出 Fisher-Price Rock）"),
+        ("The defect was reported to the National Highway Traffic Safety "
+         "Administration.", "Honda Motor Co., Ltd.", None,
+         "政府机构不算（第一版整个机构名都抓了）"),
+        ("The product was sold at Walmart and Target stores nationwide.",
+         "Acme Toys Inc", None, "零售渠道不是供应方"),
+        ("The inflators were manufactured by Takata Corporation in 2010.",
+         "Honda Motor Co., Ltd.", "Takata Corporation", "manufactured by 才算"),
+        ("The cylinder supplied by Bosch GmbH may leak.",
+         "Ford Motor Company", "Bosch GmbH", "supplied by"),
+        ("Component supplier is Nidec Corporation.", "Tesla Inc",
+         "Nidec Corporation", "supplier is"),
+        ("The cells were sourced from LG Energy Solution Ltd.",
+         "Hyundai Motor Company", "LG Energy Solution Ltd", "sourced from"),
+        ("The inflators were manufactured by Honda Motor Co., Ltd.",
+         "Honda Motor Co., Ltd.", None, "线索词后面是召回方自己，不是关系"),
+        ("The part was manufactured by the supplier.", "Acme Inc", None,
+         "线索词后面是套话"),
+        ("The part was manufactured by a federal agency.", "Acme Inc", None,
+         "线索词后面是机构"),
+        ("Owners should contact their dealer.", "Honda Motor Co., Ltd.", None,
+         "没有线索词就不算点名"),
+    ]
+    recall_cases = []
+    for text, firm, want, whyrow in recall_pairs:
+        got = _rc.second_party(text, firm, _pool)
+        recall_cases.append(((got[0] if got else None) == want,
+                             f"召回点名：{whyrow}"))
+    _got = _rc.second_party("manufactured by Takata Corporation.",
+                            "Honda Motor Co., Ltd.", _pool)
+    recall_cases.append((_got is not None and _got[1] is True,
+                         "池内判定：Takata 在池内时标 True"))
+    _got2 = _rc.second_party("supplied by Bosch GmbH.", "Ford Motor Company", _pool)
+    recall_cases.append((_got2 is not None and _got2[1] is False,
+                         "池内判定：Bosch 不在池内时标 False"))
+    for ok, whytext in recall_cases:
+        if not ok:
+            failures.append(f"{whytext} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {whytext}")
+
     print("\n── 申报状态：每一档都得有页面文案，不能只躺在数据里 ────────────")
     # **这条不能靠数据驱动。** 浏览器契约那一段是按 nodes.json 里**真实出现的**
     # 状态取样的，而 index-says-filed 这一档生产数据里通常是 0 家——那样断言
@@ -1985,7 +2046,7 @@ def main() -> int:
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
-             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases) + len(carry_cases) + len(hist_cases) + len(wire_cases) + len(state_cases) + len(name_cases) + len(body_cases) + len(lic_cases)
+             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases) + len(carry_cases) + len(hist_cases) + len(wire_cases) + len(state_cases) + len(name_cases) + len(recall_cases) + len(body_cases) + len(lic_cases)
              + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:
