@@ -2542,12 +2542,12 @@ async function main() {
         setTimeout(poll, 150);
       })();
     })`);
-    check(`总览页把五条路说成已实测否决`, () => {
+    check(`总览页把六条路说成已实测否决`, () => {
       assert.match(t1ov.text, /已逐条实测否决/,
         `声明里没说是实测否决：${t1ov.text.slice(0, 260)}`);
-      for (const key of ["附件 10", "联邦采购"]) {
+      for (const key of ["附件 10", "联邦采购", "FCC"]) {
         assert.ok(t1ov.text.indexOf(key) >= 0,
-          `五条路没列全（缺「${key}」）：${t1ov.text.slice(0, 300)}`);
+          `六条路没列全（缺「${key}」）：${t1ov.text.slice(0, 300)}`);
       }
     });
     check(`总览页不再用「仍无数据源」这种待办口气`, () => {
@@ -2580,10 +2580,10 @@ async function main() {
         setTimeout(poll, 150);
       })();
     })`);
-    check(`公司页逐条列出五条已否决的路`, () => {
+    check(`公司页逐条列出六条已否决的路`, () => {
       assert.ok(t1co.seen, "一级供应商的出处框没有布局盒");
       for (const key of ["客户集中度", "全文反查", "附件 21", "附件 10",
-                         "USAspending"]) {
+                         "USAspending", "FCC 设备认证"]) {
         assert.ok(t1co.src.indexOf(key) >= 0,
           `没列到「${key}」：${t1co.src.slice(0, 300)}`);
       }
@@ -2614,7 +2614,12 @@ async function main() {
       "filed-no-list": { want: /提交了 Form SD/, chip: "本次申报无名单" },
       "no-filing": { want: /没有查到这家公司的任何 Form SD 申报/,
                      chip: "未见申报" },
-      "resource-extraction": { want: /资源开采付款披露/, chip: "申报属另一类" }
+      "resource-extraction": { want: /资源开采付款披露/, chip: "申报属另一类" },
+      // 这一档生产数据里通常是 0 家，所以这条断言平时不跑（SD_PICK 只收
+      // 真实出现的状态）。`validate_supply_chain_extraction.py` 那边用静态
+      // 比对保证文案一直在；这里管的是**它真的渲染出来的时候长什么样**。
+      // 复现办法：给一家 no-filing 的外国发行人打上 filesFormSd 再重建。
+      "index-says-filed": { want: /没有读到那份申报/, chip: "索引有、本轮未读到" }
     };
     for (const [st, sym] of Object.entries(SD_PICK)) {
       const spec = SD_EXPECT[st];
@@ -2651,6 +2656,20 @@ async function main() {
         assert.match(sd.src, spec.want,
           `${sym} 的出处框没写这一档的原因：${sd.src.slice(0, 260)}`);
       });
+      if (st === "index-says-filed") {
+        check(`${st}：说清这是我们这边的缺口，不是披露的形态`, () => {
+          assert.match(sd.src, /我们这边的缺口/,
+            `没说清责任在哪边：${sd.src.slice(0, 300)}`);
+          // 第一版这里写的是「不许出现『未见申报』这四个字」，结果把页面
+          // **否定**它的那句话也一起判成违规了（「它既不算『未见申报』」）。
+          // **防御写错了方向**：该要求的是页面把自己与那一档区分开，
+          // 而不是禁止提到它。标签本身由下面那条 chip 断言管。
+          assert.match(sd.src, /既不算「未见申报」/,
+            `没有把自己与「未见申报」区分开：${sd.src.slice(0, 300)}`);
+          assert.match(sd.facts, /索引有申报、本轮未读到/,
+            `摘要栏没有这一档的短名：${sd.facts.slice(0, 200)}`);
+        });
+      }
       if (st === "no-filing") {
         // 页面上印的每个数字都必须来自 nodes.json。第一版我把家数写死成
         // 4,697，而同一轮数据里已经是 4,698——写死的数字会悄悄变成错的。
