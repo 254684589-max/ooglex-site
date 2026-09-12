@@ -185,6 +185,15 @@ html[data-theme="paper"] span[style*="color:#f472b6"] {
   color: var(--ink) !important;
 }
 
+/* 站标（内联行星标记）：浅色主题下转单色——行星填墨色、星环用主题强调色，
+   与旁边同样已回落为墨色的 OOGLEX 字标保持一套观感。 */
+html[data-theme="ft"] .logo-mark .lm-planet,
+html[data-theme="paper"] .logo-mark .lm-planet { fill: var(--ink); }
+html[data-theme="ft"] .logo-mark .lm-ring,
+html[data-theme="paper"] .logo-mark .lm-ring { stroke: var(--accent); }
+html[data-theme="ft"] .logo-mark .lm-hi,
+html[data-theme="paper"] .logo-mark .lm-hi { fill: var(--panel); opacity: .5; }
+
 /* 首页品牌渐变字：浅色下取消裁剪填充，回落为墨色 */
 html[data-theme="ft"] .grad-text,
 html[data-theme="paper"] .grad-text {

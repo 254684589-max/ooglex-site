@@ -83,7 +83,16 @@
     }
     nav .container { display: flex; align-items: center; height: 62px; max-width: 1200px; }
     nav .logo { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; letter-spacing: .28em; }
-    nav .logo img { width: 24px; height: 24px; }
+    /* 站标：原先直接用 favicon.svg，那份 SVG 带满幅深色底板——纸色/白底下
+       会在导航里留一块突兀的深色方块。这里改为内联同一枚行星标记、去掉底板，
+       并让 CSS 能按主题给它上色（浅色主题下与旁边的墨色字标统一）。
+       favicon.svg 本身不动：标签页与添加到主屏的图标仍需要方形不透明底板。 */
+    nav .logo .logo-mark { width: 24px; height: 24px; display: block; flex: 0 0 auto; }
+    .logo-mark .lm-ring { fill: none; stroke: url(#lmRing); stroke-width: 5.5; }
+    .logo-mark .lm-ring-back { stroke-opacity: .5; }
+    .logo-mark .lm-ring-front { stroke-linecap: round; }
+    .logo-mark .lm-planet { fill: url(#lmPlanet); }
+    .logo-mark .lm-hi { fill: #ffffff; opacity: .3; }
     nav .logo .brand { padding-right: .06em; }
     nav .links { display: flex; align-items: center; gap: 28px; margin-left: auto; font-size: 14px; color: var(--dim); }
     nav .links a { white-space: nowrap; }
@@ -270,6 +279,7 @@
 html[data-theme="ft"] .grad-text, html[data-theme="paper"] .grad-text { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
 html[data-theme="ft"] .tape, html[data-theme="paper"] .tape { background: var(--panel2); }
 html[data-theme="ft"] nav, html[data-theme="paper"] nav { background: var(--sticky-bg); }
+html[data-theme="ft"] .logo-mark .lm-hi, html[data-theme="paper"] .logo-mark .lm-hi { fill: var(--ink); }
 html[data-theme="ft"] #music-toggle, html[data-theme="paper"] #music-toggle { background: var(--tint-1); }
 html[data-theme="ft"] #language-toggle, html[data-theme="paper"] #language-toggle { border: 1px solid var(--line-strong); background: var(--tint-1); }
 html[data-theme="ft"] .btn.g, html[data-theme="paper"] .btn.g { background: var(--tint-1); }
@@ -296,7 +306,7 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
 
   <nav>
     <div class="container">
-      <a class="logo" href="/"><img src="assets/favicon.svg" alt="" width="24" height="24"><span class="brand grad-text">OOGLEX</span></a>
+      <a class="logo" href="/"><svg class="logo-mark" viewBox="0 0 120 120" width="24" height="24" aria-hidden="true" focusable="false"><defs><linearGradient id="lmRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset=".28" stop-color="#4aa8ff"/><stop offset=".52" stop-color="#6c8cff"/><stop offset=".76" stop-color="#c86cff"/><stop offset="1" stop-color="#f472b6"/></linearGradient><radialGradient id="lmPlanet" cx=".35" cy=".28" r=".95"><stop offset="0" stop-color="#9ff3ff"/><stop offset=".38" stop-color="#6c8cff"/><stop offset=".72" stop-color="#9d4be0"/><stop offset="1" stop-color="#3a1a5c"/></radialGradient></defs><g transform="rotate(-24 60 60)"><ellipse class="lm-ring lm-ring-back" cx="60" cy="60" rx="50" ry="15"/></g><circle class="lm-planet" cx="60" cy="60" r="27"/><ellipse class="lm-hi" cx="50" cy="48" rx="10" ry="6"/><g transform="rotate(-24 60 60)"><path class="lm-ring lm-ring-front" d="M10,60 A50,15 0 0 0 110,60"/></g></svg><span class="brand grad-text">OOGLEX</span></a>
       <div class="links">
         <a href="#billionaires" data-i18n="nav.billionaires">富豪榜</a>
         <a href="#apps" data-i18n="nav.apps">应用</a>
