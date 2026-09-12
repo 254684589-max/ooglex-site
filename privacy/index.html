@@ -15,6 +15,10 @@
   <meta property="og:url" content="https://www.ooglex.com/privacy/">
   <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
   <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="/assets/theme.css">
+  <script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+  (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+  <script src="/assets/theme.js" defer></script>
   <style>
     :root{ --bg:#0f1220; --card:#181c30; --text:#e8eaf2; --dim:#9aa0b5; --accent:#6c8cff; --line:rgba(255,255,255,.08); }
     *{ margin:0; padding:0; box-sizing:border-box; }
@@ -31,7 +35,11 @@
     a{ color:var(--accent); }
     .card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 22px; margin-top:14px; }
     footer{ margin-top:48px; padding-top:20px; border-top:1px solid var(--line); color:var(--dim); font-size:.9rem; }
-  </style>
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] p, html[data-theme="paper"] p { color: #656d8c; }
+html[data-theme="ft"] li, html[data-theme="paper"] li { color: #656d8c; }
+/* ==== 浅色主题兜底 结束 ==== */
+</style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
 </head>
 <body>

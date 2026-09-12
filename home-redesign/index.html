@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>首页改版三方案对照 · Ooglex</title>
+<meta name="description" content="Ooglex 首页改版草案：研究通讯、专业终端、栅格档案三个版式方案的对照说明与去AI化改动清单。">
+<style>
+  :root{
+    --paper:#fbfaf8; --card:#fff; --ink:#14171a; --ink2:#3c4348; --dim:#6a7278; --faint:#99a0a6;
+    --rule:#e0dfda; --rule2:#c8c7c1; --accent:#8a2b22; --ok:#186a4c; --warn:#8a6a12;
+    --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Segoe UI",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+  .cap{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+
+  header{border-bottom:1px solid var(--ink);padding:34px 0 18px}
+  header h1{font-size:30px;font-weight:600;letter-spacing:-.01em}
+  header p{margin-top:10px;font-size:15px;color:var(--ink2);max-width:74ch}
+  header .meta{margin-top:14px;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--dim)}
+
+  section{padding:34px 0 0}
+  h2{font-size:19px;font-weight:600;padding-bottom:8px;border-bottom:1px solid var(--rule2);display:flex;align-items:baseline;gap:12px}
+  h2 .r{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--faint);font-weight:400}
+
+  .opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:18px}
+  .opt{background:var(--card);border:1px solid var(--rule);display:flex;flex-direction:column}
+  .opt .swatch{height:112px;border-bottom:1px solid var(--rule);position:relative;overflow:hidden}
+  .opt .swatch span{position:absolute;left:14px;bottom:10px;font-family:var(--mono);font-size:10px;letter-spacing:.16em}
+  .sw-a{background:#f5f3ee}
+  .sw-a span{color:#8a2b22}
+  .sw-a::before{content:"";position:absolute;left:14px;right:14px;top:26px;height:1px;background:#2a2d31}
+  .sw-a::after{content:"52";position:absolute;left:14px;top:36px;font-family:"Songti SC",serif;font-size:34px;line-height:1.1;color:#17191c}
+  .sw-b{background:#0a0c0f}
+  .sw-b span{color:#b9873c}
+  .sw-b::before{content:"";position:absolute;left:0;right:0;top:0;height:22px;background:#0d1116;border-bottom:1px solid #1e252e}
+  .sw-b::after{content:"52";position:absolute;left:14px;top:36px;font-family:var(--mono);font-size:34px;line-height:1.1;font-weight:700;color:#c19a3e}
+  .sw-c{background:#fff}
+  .sw-c span{color:#6e7276}
+  .sw-c::before{content:"";position:absolute;left:14px;right:14px;top:28px;height:1px;background:#0e0e0f}
+  .sw-c::after{content:"52";position:absolute;left:14px;top:36px;font-family:var(--mono);font-size:34px;line-height:1.1;font-weight:600;color:#0e0e0f}
+  .opt .bd{padding:16px 16px 18px;display:flex;flex-direction:column;flex:1}
+  .opt h3{font-size:17px;font-weight:600}
+  .opt h3 em{font-style:normal;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--faint);display:block;margin-top:3px}
+  .opt p{margin-top:9px;font-size:13px;color:var(--ink2);line-height:1.75}
+  .opt ul{margin:10px 0 0;padding:0;list-style:none;font-size:12.5px;color:var(--dim)}
+  .opt ul li{padding:3px 0 3px 13px;position:relative;line-height:1.6}
+  .opt ul li::before{content:"—";position:absolute;left:0;color:var(--rule2)}
+  .opt .go{margin-top:14px;padding-top:12px;border-top:1px solid var(--rule);display:flex;align-items:baseline;gap:14px;font-size:13.5px}
+  .opt .go a.main{font-weight:600;border-bottom:1px solid var(--ink);padding-bottom:2px}
+  .opt .go a.main:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .opt .go .fit{margin-left:auto;font-size:11.5px;color:var(--faint);text-align:right}
+
+  table{width:100%;border-collapse:collapse;margin-top:6px}
+  th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--faint);font-weight:400;padding:9px 14px 9px 0;border-bottom:1px solid var(--rule2)}
+  td{padding:11px 14px 11px 0;border-bottom:1px solid var(--rule);font-size:13.5px;color:var(--ink2);vertical-align:top}
+  td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
+  td .m{display:block;font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:2px}
+  .del{color:var(--accent)} .add{color:var(--ok)}
+  .kept{color:var(--dim)}
+
+  .facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:16px}
+  .facts div{background:var(--card);padding:13px 15px}
+  .facts .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
+  .facts .v{font-size:14px;margin-top:4px;color:var(--ink)}
+
+  footer{margin-top:44px;border-top:1px solid var(--ink);padding:16px 0 50px;font-size:12px;color:var(--dim)}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:6px 24px}
+  footer a{border-bottom:1px solid var(--rule)}
+  footer .r{margin-left:auto}
+
+  @media (max-width:900px){ .opts{grid-template-columns:1fr} .facts{grid-template-columns:repeat(2,minmax(0,1fr))} }
+  @media (max-width:560px){
+    .wrap{padding:0 16px}
+    header h1{font-size:24px}
+    .facts{grid-template-columns:1fr}
+    table,thead,tbody,th,td,tr{display:block}
+    thead{display:none}
+    td{padding:6px 0;border-bottom:0}
+    tr{display:block;padding:12px 0;border-bottom:1px solid var(--rule)}
+    footer .r{margin-left:0}
+  }
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <span class="cap">Draft · 未上线 · 仅供评审</span>
+  <h1>首页改版：三个版式方案</h1>
+  <p>三份草案都按同一条口径重做：去掉容易显出“AI 生成感”的视觉元素，改成金融机构与专业媒体常用的排版秩序；数据全部取站内既有 <code style="font-family:var(--mono);font-size:13px">data.json</code>，无新增依赖、无后端、无第三方脚本。现有首页、所有应用 URL 与数据管道均未改动。</p>
+  <div class="meta">草案目录 /home-redesign/ · 均已加 noindex，不参与搜索收录 · 选定一版后再合并到站点根目录</div>
+</div></header>
+
+<div class="wrap">
+
+  <section>
+    <h2>三个方案<span class="r">Options</span></h2>
+    <div class="opts">
+
+      <article class="opt">
+        <div class="swatch sw-a"><span>PAPER · SERIF · RED</span></div>
+        <div class="bd">
+          <h3>方案A 研究通讯<em>Gazette</em></h3>
+          <p>报刊／券商研究所日报的版式：纸质浅底、宋体报头、细分隔线、两栏编号目录。头条位置放当日机制读数与七类信号明细表。</p>
+          <ul>
+            <li>观感最“正规”，像一份每天出刊的研究简报</li>
+            <li>文字承载力最强，适合把口径与说明写清楚</li>
+            <li>与站内其他深色页面反差较大，需统一或分层处理</li>
+          </ul>
+          <div class="go"><a class="main" href="a-gazette.html">打开方案A →</a><span class="fit">适合：内容权威感优先</span></div>
+        </div>
+      </article>
+
+      <article class="opt">
+        <div class="swatch sw-b"><span>DARK · MONO · AMBER</span></div>
+        <div class="bd">
+          <h3>方案B 专业终端<em>Terminal</em></h3>
+          <p>保留深色，但把“科技炫光”换成终端秩序：顶部数据状态栏、四类分组报价板、等宽表格化数字、单一琥珀色强调，目录改成带频率与状态列的表格。</p>
+          <ul>
+            <li>与现有深色应用页最连贯，改造成本最低</li>
+            <li>信息密度最高，首屏就能看到 18 个标的的日/周/年初</li>
+            <li>深色配色对文字对比度要求高，需逐项核对</li>
+          </ul>
+          <div class="go"><a class="main" href="b-terminal.html">打开方案B →</a><span class="fit">适合：与现有站点衔接</span></div>
+        </div>
+      </article>
+
+      <article class="opt">
+        <div class="swatch sw-c"><span>WHITE · GRID · INK</span></div>
+        <div class="bd">
+          <h3>方案C 栅格档案<em>Grid</em></h3>
+          <p>瑞士栅格式近单色排版：大字号事实陈述、四联读数、全宽机制读数周频长序列（2006 年至今），目录做成纯排版的编号档案。</p>
+          <ul>
+            <li>最克制、最不像模板，长期看最耐看</li>
+            <li>把“来源与日期”做成脚注体系，学术报告的处理方式</li>
+            <li>留白大、首屏信息少，偏展示型而非速查型</li>
+          </ul>
+          <div class="go"><a class="main" href="c-grid.html">打开方案C →</a><span class="fit">适合：品牌调性优先</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>去 AI 化：具体改了什么<span class="r">Changes</span></h2>
+    <table>
+      <thead><tr><th>项目</th><th>现在的首页</th><th>三份草案</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>标题配色</td>
+          <td>青→蓝→紫→粉四色渐变字（<code style="font-family:var(--mono)">.grad-text</code>）<span class="m">AI 站点最常见的特征之一</span></td>
+          <td class="add">纯墨色标题，单一强调色（朱红／琥珀／墨黑各一版）</td>
+        </tr>
+        <tr>
+          <td>图标</td>
+          <td>目录每项一个表情符号：📈🔥📡📊🌐🏘️💼📰…<span class="m">共 21 个</span></td>
+          <td class="add">全部移除，改用两位编号 + 英文栏目名 + 频率标签</td>
+        </tr>
+        <tr>
+          <td>“LIVE” 标记</td>
+          <td>日频数据标为 <code style="font-family:var(--mono)">● LIVE</code> 并配闪烁圆点</td>
+          <td class="add">改为真实频率：日频／周频／年度／按申报更新，并列出数据日期<span class="m">同时修正了仓库规则第 7 条「不得把日频数据标成实时」</span></td>
+        </tr>
+        <tr>
+          <td>按钮与卡片</td>
+          <td>发光投影、悬停上浮、毛玻璃、16px 圆角</td>
+          <td class="add">细线分隔、0–2px 圆角、无投影、悬停仅极淡底色</td>
+        </tr>
+        <tr>
+          <td>首屏文案</td>
+          <td>“更简单、更快、更智能”<span class="m">营销式排比</span></td>
+          <td class="add">改为事实陈述：数据来源、更新方式、不提供什么</td>
+        </tr>
+        <tr>
+          <td>背景音乐</td>
+          <td>Web Audio 合成氛围音，导航栏常驻开关</td>
+          <td class="add">移除（金融数据站点保留此功能会明显减损专业感）</td>
+        </tr>
+        <tr>
+          <td>数字排版</td>
+          <td>等宽字体，未启用表格数字对齐</td>
+          <td class="add">统一 <code style="font-family:var(--mono)">tabular-nums</code>，列右对齐，涨跌同时用 ▲▼ 与颜色标注</td>
+        </tr>
+        <tr>
+          <td>来源与状态</td>
+          <td>页脚一句“数据仅供研究”</td>
+          <td class="add">独立「数据来源与状态」表：来源、频率、数据日期、更新时间、状态逐项列出</td>
+        </tr>
+        <tr>
+          <td>目录编号</td>
+          <td>01–21，其中 02 重复、缺 FT 序号</td>
+          <td class="add">01–22 连续编号，数据应用 16 项 + 工具 6 项</td>
+        </tr>
+        <tr>
+          <td class="kept">保留未动</td>
+          <td colspan="2" class="kept">所有应用 URL、<code style="font-family:var(--mono)">data.json</code> 读取路径、栏目构成、隐私政策与 GitHub 链接、免责声明；现有 <code style="font-family:var(--mono)">/index.html</code> 一行未改。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>三份草案的共同事实<span class="r">Common</span></h2>
+    <div class="facts">
+      <div><span class="k">数据来源</span><span class="v">站内既有 data.json：宏观雷达、大类资产、恐慌贪婪、经济日历、要闻聚合</span></div>
+      <div><span class="k">新增依赖</span><span class="v">无。纯静态 HTML + 原生 JS，无第三方脚本</span></div>
+      <div><span class="k">响应式</span><span class="v">已按 360 / 768 / 1280px 三档核对</span></div>
+      <div><span class="k">失败状态</span><span class="v">读取失败、字段缺失均有可见提示，不以零值静默覆盖</span></div>
+      <div><span class="k">中英切换</span><span class="v">草案为中文版式定稿；选定后再接现有 i18n 字典</span></div>
+      <div><span class="k">上线状态</span><span class="v">未部署。仅供评审，noindex</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>下一步<span class="r">Next</span></h2>
+    <table>
+      <tbody>
+        <tr><td>1</td><td>三版各开一遍（建议手机 + 电脑都看），定一版，或指出要从哪版取哪部分</td></tr>
+        <tr><td>2</td><td>把选定版接上现有中英切换字典与 SEO 标签（canonical、og:image、sitemap 保持不变）</td></tr>
+        <tr><td>3</td><td>替换站点根目录 <code style="font-family:var(--mono)">/index.html</code>，把数据路径前缀由 <code style="font-family:var(--mono)">"../"</code> 改为 <code style="font-family:var(--mono)">""</code>；旧首页留一份备份便于回退</td></tr>
+        <tr><td>4</td><td>需要的话，再按选定版把导航与页脚样式同步到各应用页</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:14px;font-size:13.5px;color:var(--ink2)">
+      现行首页仍在线：<a href="../" style="border-bottom:1px solid var(--rule2)">打开当前首页 →</a>
+    </p>
+  </section>
+
+</div>
+
+<footer><div class="wrap">
+  <span>© 2026 Ooglex · 首页改版草案</span>
+  <a href="../privacy/">隐私政策</a>
+  <span class="r">数据仅供研究参考，不构成投资建议</span>
+</div></footer>
+
+</body>
+</html>

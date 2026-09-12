@@ -9,6 +9,10 @@
   <link rel="apple-touch-icon" href="/assets/favicon.svg">
   <meta name="theme-color" content="#070a0f">
   <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="/assets/theme.css">
+  <script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+  (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+  <script src="/assets/theme.js" defer></script>
   <style>
     :root {
       color-scheme: dark;
@@ -262,7 +266,16 @@
       .quote-range { flex: 1 1 auto; }
       .quote-grain { flex: 1 1 auto; }
     }
-  </style>
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] .quote-chip-stale, html[data-theme="paper"] .quote-chip-stale { border-color: #b8821e; }
+html[data-theme="ft"] .quote-panel, html[data-theme="paper"] .quote-panel { background: linear-gradient(180deg, var(--panel2), var(--panel2)); }
+html[data-theme="ft"] .quote-grain, html[data-theme="paper"] .quote-grain { background: var(--tint-3); }
+html[data-theme="ft"] .quote-range, html[data-theme="paper"] .quote-range { background: var(--tint-3); }
+html[data-theme="ft"] .quote-grid line, html[data-theme="paper"] .quote-grid line { stroke: rgba(113,138,174,0.14); }
+html[data-theme="ft"] .quote-cursor-dot, html[data-theme="paper"] .quote-cursor-dot { stroke: var(--line); }
+html[data-theme="ft"] .quote-stat, html[data-theme="paper"] .quote-stat { background: var(--panel2); }
+/* ==== 浅色主题兜底 结束 ==== */
+</style>
 </head>
 <body>
   <div class="wrap">

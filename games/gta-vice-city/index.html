@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme-lock="dark">
 <head>
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
     <link rel="apple-touch-icon" href="/assets/favicon.svg">
@@ -13,6 +13,10 @@
     <meta property="og:description" content="无需下载，浏览器直接畅玩罪恶都市。支持全屏、强制横屏，手机电脑都能玩。">
     <meta property="og:url" content="https://www.ooglex.com/games/gta-vice-city/">
     <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+    <link rel="stylesheet" href="/assets/theme.css">
+    <script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+    (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+    <script src="/assets/theme.js" defer></script>
     <style>
         * {
             margin: 0;

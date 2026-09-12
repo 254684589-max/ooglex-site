@@ -15,6 +15,10 @@
   <meta property="og:url" content="https://www.ooglex.com/">
   <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
   <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="/assets/theme.css">
+  <script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+  (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+  <script src="/assets/theme.js" defer></script>
   <style>
     :root {
       --bg: #0b0e13; --panel: #10141b; --panel2: #141924;
@@ -210,7 +214,19 @@
       #language-toggle { position: absolute; top: 9px; right: 28px; padding: 0 8px; font-size: 12.5px; }
       html[data-lang="en"] .row .name { flex: 1 1 calc(100% - 40px); min-width: 0; overflow-wrap: anywhere; }
     }
-  </style>
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] .grad-text, html[data-theme="paper"] .grad-text { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
+html[data-theme="ft"] .tape, html[data-theme="paper"] .tape { background: var(--panel2); }
+html[data-theme="ft"] nav, html[data-theme="paper"] nav { background: var(--sticky-bg); }
+html[data-theme="ft"] #music-toggle, html[data-theme="paper"] #music-toggle { background: var(--tint-1); }
+html[data-theme="ft"] #language-toggle, html[data-theme="paper"] #language-toggle { border: 1px solid var(--line-strong); background: var(--tint-1); }
+html[data-theme="ft"] .btn.g, html[data-theme="paper"] .btn.g { background: var(--tint-1); }
+html[data-theme="ft"] .radar-card, html[data-theme="paper"] .radar-card { box-shadow: 0 30px 80px rgba(120,92,64,0.20); }
+html[data-theme="ft"] .sig, html[data-theme="paper"] .sig { background: var(--tint-1); }
+html[data-theme="ft"] .idx, html[data-theme="paper"] .idx { border-top: 1px solid var(--line-strong); }
+html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { background: var(--tint-1); }
+/* ==== 浅色主题兜底 结束 ==== */
+</style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
 </head>
 <body>

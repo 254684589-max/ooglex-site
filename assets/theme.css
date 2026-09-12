@@ -1,0 +1,258 @@
+/* ===========================================================================
+   Ooglex 主题层 —— 全站共享调色板
+   ---------------------------------------------------------------------------
+   设计约束：
+   1. 深色是默认主题。本文件在深色下**不改动任何现有取值**——新增令牌的深色值
+      与各页原本写死的字面量逐一对齐，因此接入前后深色页面应当一致。
+   2. 各页 <style> 里的 :root 变量命名不统一（--bg/--text/--ink/--card/--panel…），
+      浅色主题通过 html[data-theme="…"] 一次性覆盖这些常见命名。
+      属性选择器 (0,1,1) 高于 :root (0,1,0)，与引入顺序无关。
+   3. 语义色在浅色底上取深值，但**保持色相可区分**（涨/跌/中性/各榜单分色不塌成一色）。
+   4. 画面由 canvas 主导的页面（3D 地球、游戏、仿真）在 <html> 上标
+      data-theme-lock="dark"，固定深色；主题选择仍全站记住。
+   =========================================================================== */
+
+/* ── 新增共享令牌：默认（深色）取值 = 各页原硬编码字面量 ───────────────── */
+:root {
+  --tint-1: rgba(255,255,255,.03);      /* 极淡面板底 */
+  --tint-2: rgba(255,255,255,.05);      /* 淡面板底 */
+  --tint-3: rgba(255,255,255,.08);      /* 稍强面板底 / 悬停 */
+  --tint-line: rgba(255,255,255,.12);   /* 淡描边 */
+  --shade-1: rgba(0,0,0,.28);
+  --shade-2: rgba(0,0,0,.5);
+  --ink-strong: #fff;                   /* 需要“最亮”的文字 */
+  --overlay-bg: rgba(0,0,0,.85);        /* tooltip / 浮层底 */
+  --overlay-ink: #fff;
+  --sticky-bg: rgba(11,14,19,.92);      /* 吸顶条半透明底 */
+  --shadow-1: 0 10px 30px rgba(0,0,0,.35);
+  --shadow-2: 0 24px 60px rgba(0,0,0,.5);
+  --theme-name: "dark";
+}
+/* 深色主题不声明 color-scheme：Chromium 会给色彩方案不匹配的跨域 iframe 铺一层
+   不透明白底（游戏页的整屏画面会被刷白）。站点原本没有这个声明，保持原样。 */
+
+/* ── 主题一：FT 纸色（Financial Times 的米粉色纸底 + 青绿强调）───────────── */
+html[data-theme="ft"] {
+  color-scheme: light;
+  --theme-name: "ft";
+
+  /* 结构色 */
+  --bg: #fff1e5;  --paper: #fff1e5;  --sheet: #fffdfa;
+  --panel: #fffaf3; --panel2: #f7e7d6; --panel-strong: #f2dcc7;
+  --card: #fffaf3; --mist: #f3e5d6;  --head: #f7e7d6;
+  --ink: #1a1613; --text: #241f1b;  --ink-strong: #000;
+  --dim: #5e5650; --faint: #70675f; --muted: #5e5650;
+  --line: #ddcec0; --line-strong: #c2b1a0; --line2: #c2b1a0;
+  --track: #eeddcc; --rule: #ddcec0;
+
+  /* 语义色：纸底上取深值，色相保持可区分 */
+  --up: #0b6b47;   --green: #0b6b47; --bull: #0b6b47; --mint: #0b6b47;
+  --mint2: #0e8058; --up-soft: rgba(11,107,71,.14); --calm: #0b6b47; --jade: #0b6b47;
+  --down: #b3242b; --dn: #b3242b;  --red: #b3242b;  --bear: #b3242b;
+  --stress: #b3242b; --down-soft: rgba(179,36,43,.14); --hot: #b3242b;
+  --accent: #0d7680; --accent2: #990f3d; --cyan: #0d7680; --teal: #0d7680;
+  --aqua: #0d7680; --cyan-soft: rgba(13,118,128,.14);
+  --blue: #1f5f9e; --link: #0d7680; --brand: #0d7680; --brand2: #990f3d;
+  --ac: #0d7680;  --ac2: #990f3d;
+  --amber: #8a6100; --amber2: #a97b12; --amber-soft: rgba(138,97,0,.14);
+  --gold: #8a6100; --gold2: #a97b12; --gold-dim: #9b8455;
+  --warn: #8a6100; --neutral: #8a6100; --neu: #8a6100; --med: #8a6100;
+  --purple: #5b3fa6; --violet: #5b3fa6;
+  --high: #b3242b; --low: #5e5650; --act: #0d7680; --hol: #8b8077;
+  --fear: #b3242b; --fear2: #c8552f; --greed: #0b6b47; --greed2: #0e8058;
+  --nodata: #cfc0b1;
+
+  /* 覆盖层与阴影 */
+  --tint-1: rgba(26,22,19,.035);
+  --tint-2: rgba(26,22,19,.055);
+  --tint-3: rgba(26,22,19,.085);
+  --tint-line: rgba(26,22,19,.14);
+  --shade-1: rgba(26,22,19,.06);
+  --shade-2: rgba(26,22,19,.12);
+  --overlay-bg: #241f1b; --overlay-ink: #fff1e5;
+  --on-accent: #fffaf3;   /* 铺了强调色的按钮/徽标上的文字 */
+  --sticky-bg: rgba(255,241,229,.94);
+  --shadow-1: 0 8px 24px rgba(120,92,64,.14);
+  --shadow-2: 0 18px 44px rgba(120,92,64,.18);
+}
+
+/* ── 主题二：亮白（中性纸白 + 深蓝强调）─────────────────────────────────── */
+html[data-theme="paper"] {
+  color-scheme: light;
+  --theme-name: "paper";
+
+  --bg: #ffffff;  --paper: #ffffff;  --sheet: #ffffff;
+  --panel: #fafaf9; --panel2: #f2f2f0; --panel-strong: #ebebe8;
+  --card: #fafaf9; --mist: #f2f2f0;  --head: #f2f2f0;
+  --ink: #111214; --text: #1c1e21;  --ink-strong: #000;
+  --dim: #5b6167; --faint: #686e75; --muted: #5b6167;
+  --line: #e2e2e0; --line-strong: #c9c9c6; --line2: #c9c9c6;
+  --track: #ededea; --rule: #e2e2e0;
+
+  --up: #0d6b45;   --green: #0d6b45; --bull: #0d6b45; --mint: #0d6b45;
+  --mint2: #0f7d51; --up-soft: rgba(13,107,69,.12); --calm: #0d6b45; --jade: #0d6b45;
+  --down: #b3201f; --dn: #b3201f;  --red: #b3201f;  --bear: #b3201f;
+  --stress: #b3201f; --down-soft: rgba(179,32,31,.12); --hot: #b3201f;
+  --accent: #1a5fb4; --accent2: #8a1a52; --cyan: #0f6f7a; --teal: #0f6f7a;
+  --aqua: #0f6f7a; --cyan-soft: rgba(15,111,122,.12);
+  --blue: #1a5fb4; --link: #1a5fb4; --brand: #1a5fb4; --brand2: #8a1a52;
+  --ac: #1a5fb4;  --ac2: #8a1a52;
+  --amber: #8a5d00; --amber2: #a5751a; --amber-soft: rgba(138,93,0,.12);
+  --gold: #8a5d00; --gold2: #a5751a; --gold-dim: #96855f;
+  --warn: #8a5d00; --neutral: #8a5d00; --neu: #8a5d00; --med: #8a5d00;
+  --purple: #5636a3; --violet: #5636a3;
+  --high: #b3201f; --low: #5b6167; --act: #1a5fb4; --hol: #878d94;
+  --fear: #b3201f; --fear2: #c1512c; --greed: #0d6b45; --greed2: #0f7d51;
+  --nodata: #cdcdca;
+
+  --tint-1: rgba(17,18,20,.03);
+  --tint-2: rgba(17,18,20,.05);
+  --tint-3: rgba(17,18,20,.08);
+  --tint-line: rgba(17,18,20,.13);
+  --shade-1: rgba(17,18,20,.055);
+  --shade-2: rgba(17,18,20,.11);
+  --overlay-bg: #1c1e21; --overlay-ink: #ffffff;
+  --on-accent: #ffffff;   /* 铺了强调色的按钮/徽标上的文字 */
+  --sticky-bg: rgba(255,255,255,.94);
+  --shadow-1: 0 8px 24px rgba(20,24,32,.10);
+  --shadow-2: 0 18px 44px rgba(20,24,32,.14);
+}
+
+/* ===========================================================================
+   浅色模式兜底：各页把部分结构色写死了，这里按共性统一接管。
+   只在浅色主题下生效，深色一律不碰。
+   =========================================================================== */
+html[data-theme="ft"] body,
+html[data-theme="paper"] body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* 彩虹字标（22 页 .ogx-wm，另有几页写成内联色）在纸底上改为单色墨字。
+   内联样式需要 !important 才能覆盖。 */
+html[data-theme="ft"] .ogx-wm > span,
+html[data-theme="paper"] .ogx-wm > span,
+html[data-theme="ft"] span[style*="color:#22d3ee"],
+html[data-theme="ft"] span[style*="color:#4aa8ff"],
+html[data-theme="ft"] span[style*="color:#6c8cff"],
+html[data-theme="ft"] span[style*="color:#9d6cff"],
+html[data-theme="ft"] span[style*="color:#c86cff"],
+html[data-theme="ft"] span[style*="color:#f472b6"],
+html[data-theme="paper"] span[style*="color:#22d3ee"],
+html[data-theme="paper"] span[style*="color:#4aa8ff"],
+html[data-theme="paper"] span[style*="color:#6c8cff"],
+html[data-theme="paper"] span[style*="color:#9d6cff"],
+html[data-theme="paper"] span[style*="color:#c86cff"],
+html[data-theme="paper"] span[style*="color:#f472b6"] {
+  color: var(--ink) !important;
+}
+
+/* 首页品牌渐变字：浅色下取消裁剪填充，回落为墨色 */
+html[data-theme="ft"] .grad-text,
+html[data-theme="paper"] .grad-text {
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: currentColor;
+  color: var(--ink);
+}
+
+/* 滚动条与选中态 */
+html[data-theme="ft"] ::selection,
+html[data-theme="paper"] ::selection { background: var(--tint-3); color: var(--ink); }
+
+/* ===========================================================================
+   主题选择器控件
+   =========================================================================== */
+.ogx-theme {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  z-index: 40;
+}
+.ogx-theme.is-float {
+  position: fixed;
+  top: 10px;
+  right: 12px;
+  z-index: 2147483000;   /* 整屏 canvas / 灯箱之上 */
+}
+.ogx-theme__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 0 11px;
+  border: 1px solid var(--line, rgba(255,255,255,.16));
+  border-radius: 999px;
+  background: var(--tint-1);
+  color: var(--dim, #98a2b3);
+  font: inherit;
+  font-size: 12.5px;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.ogx-theme__btn:hover { color: var(--ink, #eef2f7); border-color: var(--line-strong, rgba(255,255,255,.3)); }
+.ogx-theme__btn:focus-visible { outline: 2px solid var(--accent, #3987e5); outline-offset: 2px; }
+.ogx-theme__swatch {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 1px solid var(--tint-line);
+  flex: 0 0 auto;
+}
+.ogx-theme__menu {
+  position: absolute;
+  top: calc(100% + 7px);
+  right: 0;
+  min-width: 178px;
+  padding: 5px;
+  border: 1px solid var(--line, rgba(255,255,255,.16));
+  border-radius: 10px;
+  background: var(--panel, #10141b);
+  box-shadow: var(--shadow-1);
+  display: none;
+}
+.ogx-theme__menu[data-open="1"] { display: block; }
+.ogx-theme__opt {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: var(--ink, #eef2f7);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+.ogx-theme__opt:hover { background: var(--tint-2); }
+.ogx-theme__opt:focus-visible { outline: 2px solid var(--accent, #3987e5); outline-offset: -2px; }
+.ogx-theme__opt[aria-checked="true"] { color: var(--accent, #3987e5); font-weight: 600; }
+.ogx-theme__opt[aria-checked="true"]::after { content: "✓"; margin-left: auto; }
+.ogx-theme__opt .ogx-theme__swatch { width: 14px; height: 14px; }
+.ogx-theme__note {
+  padding: 7px 10px 5px;
+  margin-top: 3px;
+  border-top: 1px solid var(--line, rgba(255,255,255,.12));
+  color: var(--faint, #5b6472);
+  font-size: 11.5px;
+  line-height: 1.6;
+}
+/* 色板预览（与上面三套主题的页面底色一致）*/
+.ogx-sw-dark  { background: #0b0e13; }
+.ogx-sw-ft    { background: #fff1e5; }
+.ogx-sw-paper { background: #ffffff; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .ogx-theme__btn { transition: color .18s, border-color .18s, background .18s; }
+  .ogx-theme__opt { transition: background .14s; }
+}
+@media (max-width: 520px) {
+  .ogx-theme__btn { font-size: 12px; padding: 0 9px; min-height: 30px; }
+  .ogx-theme__btn .ogx-theme__label { display: none; }
+  .ogx-theme__menu { min-width: 168px; }
+}

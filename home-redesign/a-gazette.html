@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>方案A 研究通讯 · Ooglex 首页改版草案</title>
+<meta name="description" content="Ooglex 首页改版方案A：研究通讯（报刊式）版式草案，浅色纸质底、宋体报头、编号目录，数据取自站内真实 data.json。">
+<style>
+  :root{
+    --paper:#f5f3ee; --sheet:#fffdf8; --ink:#17191c; --ink2:#3d434a; --dim:#6a7178; --faint:#8e959c;
+    --rule:#d5d0c4; --rule-strong:#2a2d31; --accent:#8a2b22; --up:#1a6349; --dn:#9c2f26; --mark:#b8860b;
+    --serif:"Songti SC","Source Han Serif SC","Noto Serif SC","Times New Roman",Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Segoe UI",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+  .up{color:var(--up)} .dn{color:var(--dn)}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.01em}
+
+  /* 草案提示条 */
+  .draft{background:#1d2024;color:#e7e3d9;font-size:12.5px;letter-spacing:.04em}
+  .draft .wrap{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;padding:7px 24px}
+  .draft b{font-weight:600;color:#fff}
+  .draft a{color:#c9b98f;border-bottom:1px solid rgba(201,185,143,.45)}
+
+  /* 报头 */
+  .masthead{border-bottom:2px solid var(--rule-strong);background:var(--sheet)}
+  .mh-top{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 26px;padding:20px 0 14px}
+  .mh-brand{font-family:var(--serif);font-size:33px;font-weight:600;letter-spacing:.3em;line-height:1}
+  .mh-brand span{letter-spacing:0;font-size:15px;display:block;margin-top:9px;font-family:var(--sans);color:var(--dim);letter-spacing:.16em}
+  .mh-meta{margin-left:auto;text-align:right;font-size:12.5px;color:var(--dim);line-height:1.8}
+  .mh-meta b{color:var(--ink2);font-weight:600}
+  .mh-rule{border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;align-items:center;gap:0 26px;min-height:44px;font-size:14px}
+  .mh-rule nav{display:flex;flex-wrap:wrap;gap:0 24px}
+  .mh-rule nav a{padding:11px 0;color:var(--ink2);border-bottom:2px solid transparent}
+  .mh-rule nav a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .langbtn{margin-left:auto;font:inherit;font-size:12.5px;background:none;border:1px solid var(--rule);color:var(--ink2);padding:5px 12px;cursor:pointer}
+  .langbtn:hover{border-color:var(--ink2)}
+  .langbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* 头条 */
+  .lead{padding:26px 0 8px;display:grid;grid-template-columns:minmax(0,1fr) 348px;gap:0 34px}
+  .lead-main{min-width:0;padding-right:34px;border-right:1px solid var(--rule)}
+  .kicker{font-size:12px;letter-spacing:.2em;color:var(--accent);border-bottom:1px solid var(--rule-strong);display:inline-block;padding-bottom:4px;margin-bottom:14px}
+  .lead h1{font-size:40px;line-height:1.25;letter-spacing:-.01em}
+  .lead h1 .score{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:700}
+  .standfirst{margin-top:14px;font-size:16px;line-height:1.9;color:var(--ink2);font-family:var(--serif)}
+  .byline{margin-top:12px;font-size:12.5px;color:var(--faint);letter-spacing:.02em}
+  .byline b{color:var(--dim);font-weight:600}
+
+  /* 信号表 */
+  table{width:100%;border-collapse:collapse}
+  .tbl{margin-top:20px;font-size:13.5px}
+  .tbl caption{text-align:left;font-size:12px;letter-spacing:.16em;color:var(--dim);padding-bottom:7px;border-bottom:1px solid var(--rule-strong)}
+  .tbl th{text-align:left;font-weight:600;font-size:11.5px;letter-spacing:.1em;color:var(--faint);padding:8px 8px 8px 0;border-bottom:1px solid var(--rule);white-space:nowrap}
+  .tbl td{padding:9px 8px 9px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+  .tbl td:first-child{font-weight:600;white-space:nowrap}
+  .tbl .r{text-align:right;padding-right:14px}
+  .tbl .note{color:var(--dim);font-size:12.5px;line-height:1.6}
+  .bar{display:inline-block;width:62px;height:7px;background:#e6e1d6;vertical-align:middle;position:relative}
+  .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--ink2)}
+  .stat{font-size:11.5px;letter-spacing:.06em;color:var(--dim);white-space:nowrap}
+
+  /* 侧栏 */
+  .aside{min-width:0;display:flex;flex-direction:column;gap:22px}
+  .box h2{font-size:15px;letter-spacing:.04em;padding-bottom:6px;border-bottom:1px solid var(--rule-strong);display:flex;align-items:baseline;gap:8px}
+  .box h2 em{font-style:normal;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--faint);margin-left:auto}
+  .quotes{font-size:13.5px}
+  .quotes tr{border-bottom:1px solid var(--rule)}
+  .quotes td{padding:7px 0}
+  .quotes td:nth-child(2){text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .quotes td:nth-child(3){text-align:right;width:78px;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12.5px}
+  .fg{display:flex;align-items:flex-end;gap:12px;padding:12px 0 8px;border-bottom:1px solid var(--rule)}
+  .fg .v{font-family:var(--mono);font-size:40px;line-height:.95;font-weight:700}
+  .fg .l{font-size:14px;font-weight:600;padding-bottom:4px}
+  .fg .s{margin-left:auto;text-align:right;font-size:11.5px;color:var(--dim);line-height:1.7}
+  .refs{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);margin-top:1px}
+  .refs div{background:var(--sheet);padding:7px 6px;text-align:center}
+  .refs span{display:block;font-size:10.5px;color:var(--faint)}
+  .refs b{display:block;font-family:var(--mono);font-size:15px;font-variant-numeric:tabular-nums}
+  .src{margin-top:9px;font-size:11.5px;color:var(--faint);line-height:1.65}
+
+  /* 异动 */
+  .band{margin-top:30px;border-top:2px solid var(--rule-strong);border-bottom:1px solid var(--rule);padding:16px 0}
+  .band h2{font-size:15px;margin-bottom:12px}
+  .muts{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:1px;background:var(--rule)}
+  .muts article{background:var(--sheet);padding:12px 14px}
+  .muts .t{display:flex;align-items:baseline;gap:8px;font-size:13px;font-weight:600}
+  .muts .t i{font-style:normal;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:1px 5px;border:1px solid currentColor}
+  .muts p{margin-top:6px;font-size:12.5px;color:var(--ink2);line-height:1.7}
+
+  /* 目录 */
+  section.idx{padding:34px 0 0}
+  .sec-hd{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;border-bottom:2px solid var(--rule-strong);padding-bottom:8px}
+  .sec-hd h2{font-size:21px}
+  .sec-hd em{font-style:normal;font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--faint)}
+  .sec-hd .cnt{margin-left:auto;font-size:12px;color:var(--dim)}
+  .list{columns:2;column-gap:40px;margin-top:4px}
+  .list a,.list .item{display:block;break-inside:avoid;padding:14px 0;border-bottom:1px solid var(--rule)}
+  .list .hd{display:flex;align-items:baseline;gap:9px}
+  .list .no{font-family:var(--mono);font-size:11.5px;color:var(--faint);width:22px;flex:0 0 auto}
+  .list .nm{font-family:var(--serif);font-size:17px;font-weight:600}
+  .list .en{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase}
+  .list .fq{margin-left:auto;font-size:11px;letter-spacing:.06em;color:var(--dim);border:1px solid var(--rule);padding:1px 6px;white-space:nowrap}
+  .list .fq.beta{color:var(--mark);border-color:var(--mark)}
+  .list p{margin:5px 0 0 31px;font-size:12.5px;color:var(--dim);line-height:1.7}
+  .list a:hover .nm{color:var(--accent)}
+  .list a:hover{background:linear-gradient(90deg,rgba(138,43,34,.045),rgba(138,43,34,0))}
+
+  /* 来源与页脚 */
+  .sources{margin-top:34px;border-top:2px solid var(--rule-strong);padding-top:14px}
+  .sources h2{font-size:15px;margin-bottom:10px}
+  .srctbl{font-size:12.5px}
+  .srctbl th{text-align:left;font-size:11px;letter-spacing:.1em;color:var(--faint);font-weight:600;padding:6px 12px 6px 0;border-bottom:1px solid var(--rule)}
+  .srctbl td{padding:8px 12px 8px 0;border-bottom:1px solid var(--rule);color:var(--ink2);vertical-align:top}
+  .srctbl td:first-child{font-weight:600;color:var(--ink);white-space:nowrap}
+  .contact{display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:14px;font-size:13px;color:var(--ink2)}
+  .contact span,.contact a{font-family:var(--mono);font-size:12.5px}
+  .contact a{border-bottom:1px solid var(--rule)}
+  footer{margin-top:30px;border-top:1px solid var(--rule);padding:16px 0 44px;font-size:12px;color:var(--faint)}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:6px 22px}
+  footer a{border-bottom:1px solid var(--rule)}
+  footer .r{margin-left:auto}
+
+  @media (max-width:920px){
+    .lead{grid-template-columns:1fr;gap:26px}
+    .lead-main{padding-right:0;border-right:0}
+    .lead h1{font-size:31px}
+    .list{columns:1}
+    .mh-meta{margin-left:0;text-align:left}
+  }
+  @media (max-width:560px){
+    body{font-size:14.5px}
+    .wrap{padding:0 16px}
+    .draft .wrap{padding:7px 16px}
+    .mh-brand{font-size:25px;letter-spacing:.2em}
+    .lead h1{font-size:26px}
+    .refs{grid-template-columns:repeat(2,1fr)}
+    .tbl .note,.tbl .note-h{display:none}
+    footer .r{margin-left:0}
+  }
+</style>
+</head>
+<body>
+
+<div class="draft"><div class="wrap">
+  <b>首页改版草案 · 方案A「研究通讯」</b>
+  <span>浅色纸质底 · 宋体报头 · 编号目录 · 无表情符号、无渐变、无发光</span>
+  <a href="./">返回三方案对照</a>
+</div></div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="mh-top">
+      <div class="mh-brand">OOGLEX<span>全球市场数据与研究工具</span></div>
+      <div class="mh-meta">
+        <div><b id="mh-date">—</b> · 每日 06:20（北京时间）自动更新</div>
+        <div>数据日期 <b class="num" id="mh-asof">—</b> · 最近更新 <b class="num" id="mh-upd">—</b> · 状态 <b id="mh-status">—</b></div>
+      </div>
+    </div>
+    <div class="mh-rule">
+      <nav>
+        <a href="#markets">市场</a>
+        <a href="#macro">宏观</a>
+        <a href="#data">数据应用</a>
+        <a href="#tools">工具</a>
+        <a href="#sources">数据来源</a>
+        <a href="#contact">联系</a>
+      </nav>
+      <button class="langbtn" type="button" disabled title="选定方案后接入现有中英切换">中文 / English</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="lead" id="macro">
+    <div class="lead-main">
+      <span class="kicker">今日机制读数 · MACRO REGIME</span>
+      <h1>市场机制 <span class="score" id="rg-score">—</span> 分，<span id="rg-label">读取中</span></h1>
+      <p class="standfirst" id="rg-desc">正在读取宏观雷达数据。</p>
+      <p class="byline">来源 <b id="rg-src">FRED · EIA · 交易所行情</b> · 数据日期 <b class="num" id="rg-asof">—</b> · 频率 <b>日频</b> · 口径 0–100 相对分位，越高越偏「宽松·支持」</p>
+
+      <table class="tbl">
+        <caption>七类信号加权明细</caption>
+        <thead><tr><th>信号</th><th class="r">读数</th><th>强弱</th><th>状态</th><th class="note-h">说明</th></tr></thead>
+        <tbody id="sig-body"><tr><td colspan="5" class="note">读取中…</td></tr></tbody>
+      </table>
+      <p class="byline">完整口径、权重与 2006 年至今的历史回放见 <a href="../apps/macro-radar/" style="border-bottom:1px solid var(--accent);color:var(--accent)">宏观雷达</a>。</p>
+    </div>
+
+    <div class="aside">
+      <div class="box" id="markets">
+        <h2>市场速览<em>MARKETS</em></h2>
+        <table class="quotes"><tbody id="q-body"><tr><td colspan="3" class="note" style="color:var(--dim);font-size:12.5px">读取中…</td></tr></tbody></table>
+        <p class="src">来源 Yahoo Finance 公开行情（日频、收盘价，非实时报价）· 数据日期 <span class="num" id="q-asof">—</span>。涨跌栏同时以 ▲▼ 与颜色标注。</p>
+      </div>
+
+      <div class="box">
+        <h2>恐慌与贪婪<em>FEAR &amp; GREED</em></h2>
+        <div class="fg">
+          <span class="v num" id="fg-v">—</span>
+          <span class="l" id="fg-l">读取中</span>
+          <span class="s">0 = 极度恐惧<br>100 = 极度贪婪</span>
+        </div>
+        <div class="refs" id="fg-refs"></div>
+        <p class="src">来源 CNN Business Fear &amp; Greed Index · 由 7 项情绪指标合成 · 数据日期 <span class="num" id="fg-asof">—</span> · 日频。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="band">
+    <h2>今日市场异动<span style="font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--faint);margin-left:10px" id="mut-cnt"></span></h2>
+    <div class="muts" id="mut-body"></div>
+    <p class="src" id="mut-sum" style="margin-top:10px"></p>
+  </div>
+
+  <section class="idx" id="data">
+    <div class="sec-hd"><h2>数据应用</h2><em>DATA APPLICATIONS</em><span class="cnt">共 16 项 · 均标注来源与数据日期</span></div>
+    <div class="list" id="list-data"></div>
+  </section>
+
+  <section class="idx" id="tools">
+    <div class="sec-hd"><h2>工具与休闲</h2><em>TOOLS</em><span class="cnt">共 6 项</span></div>
+    <div class="list" id="list-tools"></div>
+  </section>
+
+  <section class="sources" id="sources">
+    <h2>数据来源与更新口径</h2>
+    <table class="srctbl">
+      <thead><tr><th>数据集</th><th>来源</th><th>频率</th><th>数据日期</th><th>状态</th></tr></thead>
+      <tbody id="src-body"></tbody>
+    </table>
+    <p class="src">本站不提供交易所级实时行情；标注为日频、周频或年度的数据不按实时刷新。代理指标（如以 ETF 代理债券、以期货代理现货金属）在各应用内逐条说明。</p>
+  </section>
+
+  <section class="idx" id="contact">
+    <div class="sec-hd"><h2>联系</h2><em>CONTACT</em></div>
+    <div class="contact">
+      <span>zlq6600e@outlook.com</span>
+      <a href="https://github.com/254684589-max" target="_blank" rel="noopener">github.com/254684589-max</a>
+    </div>
+  </section>
+
+</div>
+
+<footer><div class="wrap">
+  <span>© 2026 Ooglex</span>
+  <a href="../privacy/">隐私政策</a>
+  <a href="https://github.com/254684589-max" target="_blank" rel="noopener">源码 GitHub</a>
+  <span class="r">数据仅供研究参考，不构成投资建议</span>
+</div></footer>
+
+<script>
+/* 方案A 数据装配：全部取站内既有 data.json，无后端、无第三方脚本。
+   预览页位于 /home-redesign/，故前缀 "../"；若本方案被采用并落到站点根目录，把 BASE 改为 "" 即可。 */
+(function () {
+  var BASE = "../";
+  var CATALOG = {
+    data: [
+      { href:"apps/finance-terminal/", zh:"Ooglex金融终端", en:"Finance Terminal", freq:"公测", beta:1, desc:"全球股指、利率、美元、黄金、原油、比特币一页查看；4 项站内真实数据、2 项免费 ETF 代理，逐项标注来源。" },
+      { href:"apps/markets/", zh:"全球市场行情", en:"Global Markets", freq:"日频", desc:"商品、指数、公司、外汇、加密、债券六大品类逐项报价，每项可看 1 个月至全部区间走势。" },
+      { href:"apps/heatmap/", zh:"标普500热力图", en:"S&P 500 Heatmap", freq:"日频", desc:"成分股按行业分块、按市值定面积、按当日涨跌上色，逐块标注涨跌幅，另附完整数据表。" },
+      { href:"apps/macro-radar/", zh:"宏观雷达", en:"Macro Radar", freq:"日频", desc:"市场机制读数与七类信号加权明细，可回放 2006 年至今每一轮危机的机制变化。" },
+      { href:"apps/data-hub/", zh:"数据中心", en:"Data Hub", freq:"日频", desc:"资产市值榜、大类资产收益率、富豪榜、公司市值、恐慌贪婪与经济日历集中入口。" },
+      { href:"apps/asset-ranking/", zh:"全球资产市值榜", en:"Asset Ranking", freq:"日频", desc:"不限品类只看市值：房产、国债、黄金、货币、公司、加密同台排列前 250 位。" },
+      { href:"apps/house-prices/", zh:"全球房价走势", en:"House Prices", freq:"周频", desc:"主要国家房价名义与实际同比，可查看近 20 年走势曲线。" },
+      { href:"apps/superinvestors/", zh:"超级投资者", en:"Superinvestors", freq:"周频", desc:"知名机构 13F 持仓与美国国会交易披露，另有 AAII 投资者情绪。" },
+      { href:"apps/whats-latest/", zh:"最新消息", en:"What's Latest", freq:"日内多次", desc:"权威媒体要闻聚合与市场快照，每条新闻均链接回原文。" },
+      { href:"apps/finance-column/", zh:"金融知识架构", en:"Finance Column", freq:"静态", desc:"金融知识图谱：8 层级、48 模块、560 余条中英双语术语。" },
+      { href:"apps/movies/", zh:"全球电影榜", en:"Movies", freq:"日频", desc:"Top 250 与全球新上映，含评分与海报。" },
+      { href:"apps/ai-rankings/", zh:"全球大模型评测榜", en:"AI Rankings", freq:"日频", desc:"LMArena Elo、LiveBench、智能指数三榜合一，中外模型同台比较。" },
+      { href:"apps/university-rankings/", zh:"全球大学排名 300 强", en:"University Rankings", freq:"年度", desc:"QS、泰晤士、软科、U.S. News 四榜按平均位次综合排序。" },
+      { href:"apps/major-rankings/", zh:"全球专业与就业前景榜", en:"Major Rankings", freq:"年度", desc:"专业薪资、就业率、毕业起薪与未来十年前景四榜合一。" },
+      { href:"apps/ofr-monitor/", zh:"美国金融风险监测", en:"OFR Monitor", freq:"日频", desc:"OFR 五项监测：金融压力指数、SOFR 短期融资、货币基金规模、对冲基金与银行系统性风险。" },
+      { href:"apps/supply-chain/", zh:"全球产业链", en:"Global Supply Chain", freq:"按申报更新", desc:"12 个价值链环节 × 27 条产业链两维定位，链间上下游 77 条标出供给关系；环节判定依据 SEC 官方 SIC 行业码，逐家可查。" }
+    ],
+    tools: [
+      { href:"games/hub/", zh:"游戏中心", en:"Games", freq:"休闲", desc:"GTA 罪恶都市、红色警戒 2 网页版，无需下载，浏览器直接运行。" },
+      { href:"apps/calculators/", zh:"万象算集", en:"Calculators", freq:"工具", desc:"70 余款计算器：房贷、复利、个税、BMI、方程、进制转换，支持搜索。" },
+      { href:"apps/radio/", zh:"环球 Music", en:"Global Music", freq:"工具", desc:"转动三维地球收听全球电台，可安装到手机主屏。" },
+      { href:"apps/tv/", zh:"环球 TV", en:"Global TV", freq:"工具", desc:"转动三维地球观看全球电视直播，华语频道直连优先。" },
+      { href:"apps/ai-chat/", zh:"万象智聊", en:"AI Chat", freq:"工具", desc:"接入 DeepSeek、GLM、Kimi、通义，多会话与 Markdown 渲染。" },
+      { href:"apps/name-fortune/", zh:"知命阁", en:"Name Fortune", freq:"娱乐", desc:"姓名生辰与五行运势解读，水墨画风，仅供娱乐。" }
+    ]
+  };
+
+  function $(id) { return document.getElementById(id); }
+  function isNum(x) { return typeof x === "number" && isFinite(x); }
+  function pad(n) { return n < 10 ? "0" + n : String(n); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]; }); }
+  function getJSON(p) { return fetch(BASE + p).then(function (r) { if (!r.ok) throw new Error(p); return r.json(); }); }
+  function fmtPx(x) {
+    if (!isNum(x)) return "—";
+    return x >= 1000 ? x.toLocaleString("en-US", { maximumFractionDigits: 0 }) : x >= 100 ? x.toFixed(1) : x.toFixed(2);
+  }
+  function pct(p) {
+    if (!isNum(p)) return '<span style="color:var(--faint)">—</span>';
+    var cls = p >= 0 ? "up" : "dn", mark = p >= 0 ? "▲" : "▼";
+    return '<span class="' + cls + '">' + mark + " " + Math.abs(p).toFixed(2) + "%</span>";
+  }
+  function statusZh(s) {
+    return { ok:"正常", partial:"部分缺失", stale:"数据过期", error:"读取失败" }[s] || (s || "—");
+  }
+
+  /* 报头日期 */
+  (function () {
+    var d = new Date(), wk = ["日","一","二","三","四","五","六"][d.getDay()];
+    $("mh-date").textContent = d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日 星期" + wk;
+  })();
+
+  /* 目录 */
+  function renderList(box, rows, offset) {
+    box.innerHTML = rows.map(function (it, i) {
+      return '<a href="' + BASE + it.href + '">' +
+        '<span class="hd"><span class="no">' + pad(offset + i + 1) + "</span>" +
+        '<span class="nm">' + esc(it.zh) + "</span>" +
+        '<span class="en">' + esc(it.en) + "</span>" +
+        '<span class="fq' + (it.beta ? " beta" : "") + '">' + esc(it.freq) + "</span></span>" +
+        "<p>" + esc(it.desc) + "</p></a>";
+    }).join("");
+  }
+  renderList($("list-data"), CATALOG.data, 0);
+  renderList($("list-tools"), CATALOG.tools, CATALOG.data.length);
+
+  /* 数据来源表 */
+  var srcRows = {};
+  function srcRow(key, label, source, freq, asOf, status) {
+    srcRows[key] = { label: label, source: source, freq: freq, asOf: asOf, status: status };
+    var order = ["macro","asset","fear","calendar"];
+    $("src-body").innerHTML = order.filter(function (k) { return srcRows[k]; }).map(function (k) {
+      var r = srcRows[k];
+      return "<tr><td>" + esc(r.label) + "</td><td>" + esc(r.source) + "</td><td>" + esc(r.freq) +
+        '</td><td class="num">' + esc(r.asOf) + "</td><td>" + esc(r.status) + "</td></tr>";
+    }).join("");
+  }
+
+  /* 宏观雷达 */
+  getJSON("apps/macro-radar/data.json").then(function (d) {
+    var rg = d.regime || {}, sc = rg.score;
+    $("rg-score").textContent = isNum(sc) ? sc : "—";
+    $("rg-label").textContent = rg.labelZh || "—";
+    if (rg.desc) $("rg-desc").textContent = rg.desc;
+    $("rg-src").textContent = d.source || "—";
+    $("rg-asof").textContent = d.asOf || "—";
+    $("mh-asof").textContent = d.asOf || "—";
+    $("mh-upd").textContent = d.asOfSh || (d.updatedAt || "").replace("T", " ").replace("Z", " UTC");
+    $("mh-status").textContent = statusZh(d.status || "ok");
+    srcRow("macro", "宏观雷达 · 机制读数", d.source || "—", "日频", d.asOf || "—", statusZh(d.status || "ok"));
+
+    $("sig-body").innerHTML = (d.signals || []).map(function (s) {
+      var v = isNum(s.score) ? s.score : null;
+      return "<tr><td>" + esc(s.zh || s.key) + '</td><td class="r num">' + (v == null ? "—" : v) +
+        '</td><td><span class="bar"><i style="width:' + (v == null ? 0 : v) + '%"></i></span>' +
+        '</td><td class="stat">' + esc(s.statusZh || "—") + '</td><td class="note">' + esc(s.desc || "") + "</td></tr>";
+    }).join("") || '<tr><td colspan="5" class="note">暂无信号数据</td></tr>';
+
+    var muts = (d.mutations || []).slice(0, 4);
+    $("mut-cnt").textContent = muts.length ? "共 " + (d.mutations || []).length + " 条" : "";
+    $("mut-body").innerHTML = muts.map(function (m) {
+      var col = m.status === "red" ? "var(--dn)" : m.status === "green" ? "var(--up)" : "var(--mark)";
+      var tag = m.status === "red" ? "偏紧" : m.status === "green" ? "偏松" : "中性";
+      return '<article><div class="t"><span>' + esc(m.sig || "") + '</span><i style="color:' + col + '">' + tag + "</i></div><p>" + esc(m.text || "") + "</p></article>";
+    }).join("") || '<article><p style="color:var(--dim)">今日无显著异动。</p></article>';
+    if (d.mutSummary) $("mut-sum").textContent = d.mutSummary + "（来源：宏观雷达，数据日期 " + (d.asOf || "—") + "）";
+  }).catch(function () {
+    $("rg-label").textContent = "读取失败";
+    $("rg-label").style.color = "var(--dn)";
+    $("rg-desc").textContent = "宏观雷达数据暂时无法读取，请前往应用页查看。";
+    $("sig-body").innerHTML = '<tr><td colspan="5" class="note">数据读取失败</td></tr>';
+    $("mut-body").innerHTML = '<article><p style="color:var(--dn)">异动数据读取失败。</p></article>';
+    $("mh-status").textContent = "读取失败";
+    $("mh-status").style.color = "var(--dn)";
+  });
+
+  /* 市场速览 */
+  var WANT = [["标普500","标普500"],["日经225","日经225"],["恒生指数","恒生指数"],["沪深300","沪深300"],
+              ["德国DAX","德国DAX"],["COMEX黄金","黄金"],["NYMEX WTI原油","WTI 原油"],["ICE布油","布伦特原油"],["美元指数","美元指数"]];
+  getJSON("apps/asset-tracker/data.json").then(function (d) {
+    var by = {};
+    (d.assets || []).forEach(function (a) { by[a.name] = a; });
+    var rows = WANT.map(function (w) {
+      var a = by[w[0]];
+      if (!a || !isNum(a.price)) return "";
+      return "<tr><td>" + esc(w[1]) + '</td><td class="num">' + fmtPx(a.price) + "</td><td>" + pct((a.returns || {}).d1) + "</td></tr>";
+    }).filter(Boolean);
+    if (d.bdi && isNum(d.bdi.price)) {
+      rows.push('<tr><td>波罗的海干散货指数</td><td class="num">' + fmtPx(d.bdi.price) + "</td><td>" + pct(d.bdi.changePct) + "</td></tr>");
+    }
+    $("q-body").innerHTML = rows.join("") || '<tr><td colspan="3">暂无行情</td></tr>';
+    $("q-asof").textContent = d.asOf || "—";
+    srcRow("asset", "大类资产行情", d.source || "Yahoo Finance", "日频（收盘）", d.asOf || "—", statusZh(d.status || "ok"));
+  }).catch(function () {
+    $("q-body").innerHTML = '<tr><td colspan="3" style="color:var(--dn)">行情数据读取失败</td></tr>';
+  });
+
+  /* 恐慌贪婪 */
+  getJSON("apps/fear-greed/data.json").then(function (d) {
+    var s = d.score;
+    var col = !isNum(s) ? "var(--dim)" : s < 45 ? "var(--dn)" : s <= 55 ? "var(--mark)" : "var(--up)";
+    $("fg-v").textContent = isNum(s) ? s : "—";
+    $("fg-v").style.color = col;
+    $("fg-l").textContent = d.ratingZh || "—";
+    $("fg-l").style.color = col;
+    $("fg-asof").textContent = d.asOf || "—";
+    var refs = d.refs || {}, map = [["close","上一交易日"],["week","一周前"],["month","一月前"],["year","一年前"]];
+    $("fg-refs").innerHTML = map.map(function (m) {
+      var r = refs[m[0]] || {};
+      return "<div><span>" + m[1] + "</span><b>" + (isNum(r.score) ? r.score : "—") + "</b><span>" + esc(r.ratingZh || "") + "</span></div>";
+    }).join("");
+    srcRow("fear", "恐慌与贪婪指数", d.source || "CNN Business", "日频", d.asOf || "—", "正常");
+  }).catch(function () { $("fg-l").textContent = "读取失败"; });
+
+  /* 经济日历（只取来源行，供来源表完整） */
+  getJSON("apps/econ-calendar/data.json").then(function (d) {
+    srcRow("calendar", "经济日历", d.source || "—", "周历（每日刷新）", d.asOf || "—", "正常");
+  }).catch(function () {});
+})();
+</script>
+</body>
+</html>

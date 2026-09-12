@@ -18,6 +18,10 @@
   <!-- 品类行情板样式与独立的「全球市场行情」页共用一份；放在内联样式之前，
        让本页原有的断点覆盖仍然生效。 -->
   <link rel="stylesheet" href="terminal-board.css?v=f51cac2d">
+  <link rel="stylesheet" href="/assets/theme.css">
+  <script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+  (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+  <script src="/assets/theme.js" defer></script>
   <style>
     :root {
       color-scheme: dark;
@@ -1332,7 +1336,56 @@
       .status-chip, .period-tab, .back-link, .skip-link, .section-nav a, .operation-action, .operation-readiness-link { forced-color-adjust: auto; }
       .asset-card::after, .risk-card::after, .research-card::after, .information-card::after, .operation-card::after { background: CanvasText; }
     }
-  </style>
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] .skip-link, html[data-theme="paper"] .skip-link { color: var(--on-accent); }
+html[data-theme="ft"] .brand-mark, html[data-theme="paper"] .brand-mark { border: 1px solid #1e95b8; }
+html[data-theme="ft"] .data-banner, html[data-theme="paper"] .data-banner { border: 1px solid #1e95b8; color: #31778b; }
+html[data-theme="ft"] .data-banner.status-stale, html[data-theme="paper"] .data-banner.status-stale { border-color: #b8821e; color: #8d681a; }
+html[data-theme="ft"] .data-banner.status-error, html[data-theme="paper"] .data-banner.status-error { color: #b84a53; }
+html[data-theme="ft"] .data-label, html[data-theme="paper"] .data-label { color: var(--on-accent); }
+html[data-theme="ft"] .status-stale .data-label, html[data-theme="paper"] .status-stale .data-label { color: var(--on-accent); }
+html[data-theme="ft"] .status-error .data-label, html[data-theme="paper"] .status-error .data-label { color: var(--on-accent); }
+html[data-theme="ft"] .data-note, html[data-theme="paper"] .data-note { color: rgba(49,119,139,0.68); }
+html[data-theme="ft"] .status-stale .data-note, html[data-theme="paper"] .status-stale .data-note { color: rgba(141,104,26,0.72); }
+html[data-theme="ft"] .status-error .data-note, html[data-theme="paper"] .status-error .data-note { color: rgba(184,74,83,0.72); }
+html[data-theme="ft"] .license-notice, html[data-theme="paper"] .license-notice { background: var(--panel); }
+html[data-theme="ft"] .license-notice.status-quoted, html[data-theme="paper"] .license-notice.status-quoted { border-color: #b8821e; }
+html[data-theme="ft"] .license-label, html[data-theme="paper"] .license-label { border: 1px solid #1e95b8; }
+html[data-theme="ft"] .status-quoted .license-label, html[data-theme="paper"] .status-quoted .license-label { border-color: #b8821e; }
+html[data-theme="ft"] .section-nav, html[data-theme="paper"] .section-nav { background: var(--panel2); box-shadow: 0 10px 28px rgba(120,92,64,0.10); }
+html[data-theme="ft"] .meta-item, html[data-theme="paper"] .meta-item { background: var(--tint-3); }
+html[data-theme="ft"] .asset-card, html[data-theme="paper"] .asset-card { background: linear-gradient(150deg, var(--panel2), var(--panel)); }
+html[data-theme="ft"] .asset-card:hover, html[data-theme="paper"] .asset-card:hover { background: linear-gradient(150deg, var(--panel2), var(--panel2)); }
+html[data-theme="ft"] .official-note, html[data-theme="paper"] .official-note { border: 1px solid #1e95b8; }
+html[data-theme="ft"] .status-stale .official-note, html[data-theme="paper"] .status-stale .official-note { border-color: #b8821e; color: #8b681e; }
+html[data-theme="ft"] .status-error .official-note, html[data-theme="paper"] .status-error .official-note { color: #bc464f; }
+html[data-theme="ft"] .provider-widget-shell, html[data-theme="paper"] .provider-widget-shell { background: var(--tint-3); }
+html[data-theme="ft"] .source-link, html[data-theme="paper"] .source-link { color: #177892; color: rgba(23,120,146,0.35); }
+html[data-theme="ft"] .load-error, html[data-theme="paper"] .load-error { color: #b84a53; }
+html[data-theme="ft"] .risk-card, html[data-theme="paper"] .risk-card { background: linear-gradient(150deg, var(--panel2), var(--panel)); }
+html[data-theme="ft"] .detail-link, html[data-theme="paper"] .detail-link { color: rgba(17,119,150,0.35); }
+html[data-theme="ft"] .research-card, html[data-theme="paper"] .research-card { background: linear-gradient(150deg, var(--panel2), var(--panel)); }
+html[data-theme="ft"] .period-tab:hover, html[data-theme="paper"] .period-tab:hover { border-color: #1e95b8; }
+html[data-theme="ft"] .period-tab.active, html[data-theme="paper"] .period-tab.active { border-color: #1e95b8; }
+html[data-theme="ft"] .period-tab[aria-selected="true"], html[data-theme="paper"] .period-tab[aria-selected="true"] { border-color: #1e95b8; }
+html[data-theme="ft"] .proxy-badge, html[data-theme="paper"] .proxy-badge { border: 1px solid #1e95b8; }
+html[data-theme="ft"] .information-card, html[data-theme="paper"] .information-card { background: linear-gradient(150deg, var(--panel2), var(--panel)); }
+html[data-theme="ft"] .operation-action:hover, html[data-theme="paper"] .operation-action:hover { border-color: #1e95b8; }
+html[data-theme="ft"] .operation-card, html[data-theme="paper"] .operation-card { background: linear-gradient(150deg, var(--panel2), var(--panel)); }
+html[data-theme="ft"] .operation-readiness, html[data-theme="paper"] .operation-readiness { border: 1px solid #1e95b8; }
+html[data-theme="ft"] .operation-readiness.evidence-qualified, html[data-theme="paper"] .operation-readiness.evidence-qualified { border-color: #1eb878; }
+html[data-theme="ft"] .operation-readiness.evidence-blocked, html[data-theme="paper"] .operation-readiness.evidence-blocked { border-color: #b8831e; }
+html[data-theme="ft"] .operation-readiness.evidence-stale, html[data-theme="paper"] .operation-readiness.evidence-stale { border-color: #b8831e; }
+html[data-theme="ft"] .method a, html[data-theme="paper"] .method a { color: rgba(17,119,150,0.35); }
+html[data-theme="ft"] .geo-risk, html[data-theme="paper"] .geo-risk { background: radial-gradient(120% 90% at 50% 0%, rgba(242, 189, 92, 0.09), transparent 62%),
+        linear-gradient(180deg, var(--panel2), var(--panel2)); }
+html[data-theme="ft"] .geo-risk-level-high, html[data-theme="paper"] .geo-risk-level-high { color: #a75a13; }
+html[data-theme="ft"] .geo-risk-step, html[data-theme="paper"] .geo-risk-step { stroke: rgba(113,138,174,0.18); }
+html[data-theme="ft"] .geo-risk-step-high.is-active, html[data-theme="paper"] .geo-risk-step-high.is-active { stroke: #ce6f17; color: #a75a13; }
+html[data-theme="ft"] .geo-gauge-marker, html[data-theme="paper"] .geo-gauge-marker { stroke: var(--line); }
+html[data-theme="ft"] .section-fold-summary, html[data-theme="paper"] .section-fold-summary { background: var(--tint-3); }
+/* ==== 浅色主题兜底 结束 ==== */
+</style>
   <link rel="stylesheet" href="terminal-vision.css?v=a9f53986">
   <link rel="stylesheet" href="terminal-command-center.css?v=a8f1ae62">
   <link rel="stylesheet" href="terminal-visual-fidelity.css?v=9bf0a7a7">

@@ -15,6 +15,10 @@
 <meta property="og:url" content="https://www.ooglex.com/apps/asset-tracker/">
 <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/assets/theme.css">
+<script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js" defer></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -168,6 +172,21 @@
     .row .name { font-size:0.78rem; }
     .val { font-size:0.75rem; }
   }
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] .title h1, html[data-theme="paper"] .title h1 { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
+html[data-theme="ft"] .status, html[data-theme="paper"] .status { background: var(--tint-1); }
+html[data-theme="ft"] .status.live, html[data-theme="paper"] .status.live { color: #147d5c; }
+html[data-theme="ft"] .status.demo, html[data-theme="paper"] .status.demo { color: #926610; }
+html[data-theme="ft"] .legend .chip:hover, html[data-theme="paper"] .legend .chip:hover { border-color: var(--line-strong); }
+html[data-theme="ft"] .glass, html[data-theme="paper"] .glass { background: linear-gradient(180deg, var(--panel2), var(--panel2)); box-shadow: 0 26px 60px -34px rgba(120,92,64,0.20), inset 0 1px 0 rgba(255,255,255,.05); }
+html[data-theme="ft"] .row:hover .name, html[data-theme="paper"] .row:hover .name { color: var(--ink); }
+html[data-theme="ft"] .zero, html[data-theme="paper"] .zero { background: var(--tint-line); }
+html[data-theme="ft"] .bar::before, html[data-theme="paper"] .bar::before { background: linear-gradient(180deg, var(--tint-line), var(--tint-1) 52%, var(--tint-1)); }
+html[data-theme="ft"] .val, html[data-theme="paper"] .val { text-shadow: 0 1px 3px rgba(120,92,64,0.20); }
+html[data-theme="ft"] tbody tr, html[data-theme="paper"] tbody tr { border-bottom: 1px solid var(--line); }
+html[data-theme="ft"] tbody tr:hover, html[data-theme="paper"] tbody tr:hover { background: var(--tint-1); }
+html[data-theme="ft"] .proxy-tag, html[data-theme="paper"] .proxy-tag { color: #0f7987; }
+/* ==== 浅色主题兜底 结束 ==== */
 </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9541418754131934" crossorigin="anonymous"></script>
 </head>

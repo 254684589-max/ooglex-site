@@ -678,3 +678,39 @@
   .gateway-enter,
   .gateway-secondary { forced-color-adjust: auto; }
 }
+
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"], html[data-theme="paper"] { --aurora-cyan: #107892; --aurora-blue: #176ecc; --aurora-amber: #946510; --aurora-green: #177d59; --aurora-line: rgba(17,119,156,0.28); --aurora-line-strong: rgba(17,120,149,0.62); }
+html[data-theme="ft"] .brand-lockup strong, html[data-theme="paper"] .brand-lockup strong { color: var(--ink); }
+html[data-theme="ft"] .terminal-mode-switch, html[data-theme="paper"] .terminal-mode-switch { background: var(--panel); }
+html[data-theme="ft"] #page-title > span, html[data-theme="paper"] #page-title > span { color: #5c7087; }
+html[data-theme="ft"] .aurora-evidence, html[data-theme="paper"] .aurora-evidence { background: var(--tint-3); }
+html[data-theme="ft"] .aurora-evidence strong, html[data-theme="paper"] .aurora-evidence strong { color: #3a7684; }
+html[data-theme="ft"] .aurora-hud small, html[data-theme="paper"] .aurora-hud small { color: #5a7089; }
+html[data-theme="ft"] .aurora-gateway, html[data-theme="paper"] .aurora-gateway { background: radial-gradient(300px 120px at 50% 0, color-mix(in srgb, var(--gateway-color) 10%, transparent), transparent 72%),
+    linear-gradient(145deg, var(--panel2), var(--panel2)); }
+html[data-theme="ft"] .aurora-gateway-preview, html[data-theme="paper"] .aurora-gateway-preview { background: linear-gradient(color-mix(in srgb, var(--gateway-color) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--gateway-color) 5%, transparent) 1px, transparent 1px),
+    var(--tint-3); }
+html[data-theme="ft"] .gateway-secondary, html[data-theme="paper"] .gateway-secondary { color: #41758a; }
+html[data-theme="ft"] .aurora-statusbar, html[data-theme="paper"] .aurora-statusbar { background: var(--panel); }
+html[data-theme="ft"] .aurora-statusbar b, html[data-theme="paper"] .aurora-statusbar b { color: #5b7084; }
+html[data-theme="ft"] .aurora-statusbar i, html[data-theme="paper"] .aurora-statusbar i { color: #55718b; }
+html[data-theme="ft"] .aurora-statusbar time, html[data-theme="paper"] .aurora-statusbar time { color: #55718b; }
+@media (max-width: 1040px) {
+  html[data-theme="ft"] .aurora-hud, html[data-theme="paper"] .aurora-hud { background: var(--tint-3); }
+}
+@media (min-width: 1041px) {
+  html[data-theme="ft"] body[data-terminal-view="overview"] .section-nav a, html[data-theme="paper"] body[data-terminal-view="overview"] .section-nav a { color: #5d7085; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .section-nav a[aria-current="page"], html[data-theme="paper"] body[data-terminal-view="overview"] .section-nav a[aria-current="page"] { color: var(--ink); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .orbit-panel, html[data-theme="paper"] body[data-terminal-view="overview"] .orbit-panel { background: radial-gradient(520px 270px at 58% 55%, rgba(27, 150, 217, 0.22), transparent 72%),
+      linear-gradient(125deg, var(--bg), var(--bg)); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .orbit-copy .hero-copy, html[data-theme="paper"] body[data-terminal-view="overview"] .orbit-copy .hero-copy { color: #587187; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .risk-radar-panel, html[data-theme="paper"] body[data-terminal-view="overview"] .risk-radar-panel { background: linear-gradient(180deg, var(--bg), var(--bg)); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] #market-section::before, html[data-theme="paper"] body[data-terminal-view="overview"] #market-section::before { border-top: 1px solid #1e92b8; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] #market-section::after, html[data-theme="paper"] body[data-terminal-view="overview"] #market-section::after { border-bottom: 1px solid #1e92b8; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .market-grid, html[data-theme="paper"] body[data-terminal-view="overview"] .market-grid { background: var(--panel); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] #market-grid .asset-card, html[data-theme="paper"] body[data-terminal-view="overview"] #market-grid .asset-card { background: linear-gradient(180deg, var(--bg), var(--bg)); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] #market-grid .skeleton, html[data-theme="paper"] body[data-terminal-view="overview"] #market-grid .skeleton { background: linear-gradient(180deg, var(--bg), var(--bg)); }
+}
+/* ==== 浅色主题兜底 结束 ==== */

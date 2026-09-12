@@ -744,3 +744,39 @@ body[data-terminal-view="overview"] {
   .aurora-macro-preview,
   .aurora-events-preview { min-height: 112px; }
 }
+
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] .orbit-copy .hero-copy > strong, html[data-theme="paper"] .orbit-copy .hero-copy > strong { color: #5e7082; }
+html[data-theme="ft"] .aurora-evidence > [data-evidence-icon]:nth-child(3)::before, html[data-theme="paper"] .aurora-evidence > [data-evidence-icon]:nth-child(3)::before { color: #1374ae; }
+html[data-theme="ft"] .preview-event-list b, html[data-theme="paper"] .preview-event-list b { color: #537285; }
+html[data-theme="ft"] body[data-terminal-view="overview"], html[data-theme="paper"] body[data-terminal-view="overview"] { background: radial-gradient(circle at 10% 18%, rgba(103, 196, 255, .22) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 86% 12%, rgba(206, 224, 255, .18) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 72% 44%, rgba(104, 200, 255, .12) 0 1px, transparent 1.4px),
+    radial-gradient(900px 520px at 58% 25%, rgba(8, 91, 151, .15), transparent 67%),
+    linear-gradient(180deg, var(--bg) 0, var(--bg) 50%, var(--bg) 100%); }
+@media (min-width: 1041px) {
+  html[data-theme="ft"] body[data-terminal-view="overview"] .brand-lockup small, html[data-theme="paper"] body[data-terminal-view="overview"] .brand-lockup small { color: #61707e; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .orbit-panel, html[data-theme="paper"] body[data-terminal-view="overview"] .orbit-panel { background: radial-gradient(ellipse at 62% 50%, rgba(28, 141, 214, .24), transparent 49%),
+      radial-gradient(ellipse at 53% 48%, rgba(31, 94, 180, .11), transparent 72%),
+      linear-gradient(90deg, var(--bg), var(--tint-2) 55%, var(--tint-1)); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] #page-title > span, html[data-theme="paper"] body[data-terminal-view="overview"] #page-title > span { color: #5b7088; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .orbit-copy .hero-copy > strong, html[data-theme="paper"] body[data-terminal-view="overview"] .orbit-copy .hero-copy > strong { color: #5d7085; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .aurora-evidence, html[data-theme="paper"] body[data-terminal-view="overview"] .aurora-evidence { background: var(--tint-3); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .orbit-grid path, html[data-theme="paper"] body[data-terminal-view="overview"] .orbit-grid path { stroke: rgba(38,145,198,0.12); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .orbit-clock, html[data-theme="paper"] body[data-terminal-view="overview"] .orbit-clock { color: #587189; text-shadow: 0 0 8px rgba(120,92,64,0.20); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .orbit-clock::before, html[data-theme="paper"] body[data-terminal-view="overview"] .orbit-clock::before { border: 2px solid #1e97b8; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .orbit-clock b, html[data-theme="paper"] body[data-terminal-view="overview"] .orbit-clock b { color: #5a7182; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .market-grid, html[data-theme="paper"] body[data-terminal-view="overview"] .market-grid { background: radial-gradient(ellipse at 50% 0, rgba(23, 116, 172, .14), transparent 70%),
+      var(--panel); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] #market-grid .asset-card, html[data-theme="paper"] body[data-terminal-view="overview"] #market-grid .asset-card { background: linear-gradient(180deg, var(--panel), var(--panel)); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] #market-grid .skeleton, html[data-theme="paper"] body[data-terminal-view="overview"] #market-grid .skeleton { background: linear-gradient(180deg, var(--panel), var(--panel)); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] #market-grid .asset-card::before, html[data-theme="paper"] body[data-terminal-view="overview"] #market-grid .asset-card::before { border: 1px solid #1e90b8; color: #4f747e; background: radial-gradient(circle, rgba(69, 201, 255, .2), var(--panel)); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] #market-grid .asset-card:nth-child(1)::before, html[data-theme="paper"] body[data-terminal-view="overview"] #market-grid .asset-card:nth-child(1)::before { color: #da181f; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] #market-grid .asset-card:nth-child(4)::before, html[data-theme="paper"] body[data-terminal-view="overview"] #market-grid .asset-card:nth-child(4)::before { color: #946510; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] #market-grid .asset-card:nth-child(6)::before, html[data-theme="paper"] body[data-terminal-view="overview"] #market-grid .asset-card:nth-child(6)::before { color: #a15e12; }
+  html[data-theme="ft"] body[data-terminal-view="overview"] #market-grid .provider-widget-shell, html[data-theme="paper"] body[data-terminal-view="overview"] #market-grid .provider-widget-shell { background: var(--tint-3); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .aurora-gateway-preview, html[data-theme="paper"] body[data-terminal-view="overview"] .aurora-gateway-preview { background: linear-gradient(color-mix(in srgb, var(--gateway-color) 5%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--gateway-color) 5%, transparent) 1px, transparent 1px),
+      var(--tint-3); }
+}
+/* ==== 浅色主题兜底 结束 ==== */

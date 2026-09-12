@@ -8,6 +8,10 @@
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <link rel="canonical" href="https://www.ooglex.com/apps/radio/download/">
 <meta name="theme-color" content="#05070f">
+<link rel="stylesheet" href="/assets/theme.css">
+<script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js" defer></script>
 <style>
   *{ margin:0; padding:0; box-sizing:border-box; }
   :root{
@@ -62,6 +66,16 @@
   .ios a{ color:var(--blue); text-decoration:none; }
   .foot{ margin-top:22px; }
   .foot a{ color:var(--blue); text-decoration:none; font-size:0.9rem; }
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] body, html[data-theme="paper"] body { background: var(--bg); background: radial-gradient(1000px 700px at 74% 12%, rgba(91,140,255,0.16), transparent 60%),
+      radial-gradient(800px 600px at 18% 88%, rgba(157,108,255,0.14), transparent 60%),
+      radial-gradient(circle at 50% 30%, var(--bg) 0%, var(--bg) 72%, var(--bg) 100%); }
+html[data-theme="ft"] .card, html[data-theme="paper"] .card { box-shadow: 0 20px 60px rgba(120,92,64,0.20); }
+html[data-theme="ft"] .icon, html[data-theme="paper"] .icon { box-shadow: 0 12px 34px rgba(120,92,64,0.20); }
+html[data-theme="ft"] h1, html[data-theme="paper"] h1 { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
+html[data-theme="ft"] .dl, html[data-theme="paper"] .dl { color: var(--on-accent); }
+html[data-theme="ft"] .qr .q, html[data-theme="paper"] .qr .q { background: var(--panel); }
+/* ==== 浅色主题兜底 结束 ==== */
 </style>
 </head>
 <body>

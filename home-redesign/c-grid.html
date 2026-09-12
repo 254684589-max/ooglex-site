@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>方案C 栅格档案 · Ooglex 首页改版草案</title>
+<meta name="description" content="Ooglex 首页改版方案C：瑞士栅格式版式草案，近单色排版、编号档案目录、机制读数长周期折线，数据取自站内真实 data.json。">
+<style>
+  :root{
+    --paper:#ffffff; --paper2:#f4f4f2; --ink:#0e0e0f; --ink2:#3a3c3f; --dim:#6e7276; --faint:#9a9ea2;
+    --rule:#e2e2df; --rule2:#c9c9c5;
+    --up:#12664c; --dn:#b02a20; --mark:#8a6a12;
+    --sans:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 40px}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+  .up{color:var(--up)} .dn{color:var(--dn)}
+  .cap{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+  hr{border:0;border-top:1px solid var(--rule)}
+  .hr-strong{border-top:1px solid var(--ink)}
+
+  .draft{border-bottom:1px solid var(--rule);background:var(--paper2);font-size:12.5px;color:var(--ink2)}
+  .draft .wrap{display:flex;flex-wrap:wrap;gap:5px 18px;align-items:center;padding:8px 40px}
+  .draft b{font-weight:600;color:var(--ink)}
+  .draft a{border-bottom:1px solid var(--rule2)}
+
+  /* 顶栏 */
+  header.top{border-bottom:1px solid var(--ink)}
+  header.top .wrap{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 34px;padding-top:26px;padding-bottom:14px}
+  .brand{font-size:19px;font-weight:700;letter-spacing:.34em}
+  header.top nav{display:flex;flex-wrap:wrap;gap:0 26px;font-size:13.5px;color:var(--ink2)}
+  header.top nav a{padding-bottom:2px;border-bottom:1px solid transparent}
+  header.top nav a:hover{border-bottom-color:var(--ink)}
+  .stamp{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--dim);text-align:right;line-height:1.9}
+  .stamp b{color:var(--ink);font-weight:600}
+
+  /* 首屏陈述 */
+  .statement{padding:70px 0 54px;display:grid;grid-template-columns:minmax(0,7fr) minmax(0,4fr);gap:0 60px;align-items:end}
+  .statement h1{font-size:58px;line-height:1.1;font-weight:600;letter-spacing:-.025em}
+  .statement h1 small{display:block;font-size:15px;font-weight:400;letter-spacing:.02em;color:var(--dim);margin-top:22px;line-height:1.8;max-width:40ch}
+  .statement .side{font-size:13.5px;color:var(--ink2);line-height:1.85;border-left:1px solid var(--rule);padding-left:26px}
+  .statement .side .cap{display:block}
+  .statement .side dl{margin-top:12px}
+  .statement .side dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--faint);margin-top:11px}
+  .statement .side dd{font-size:13.5px}
+  .acts{display:flex;flex-wrap:wrap;gap:0 26px;margin-top:30px;font-size:14px}
+  .acts a{border-bottom:1px solid var(--ink);padding-bottom:3px}
+  .acts a:hover{color:var(--dim);border-bottom-color:var(--dim)}
+  .acts a.secondary{border-bottom-color:var(--rule2);color:var(--ink2)}
+
+  /* 四联读数 */
+  .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--ink);border-bottom:1px solid var(--rule)}
+  .kpis > div{padding:22px 26px 20px;border-right:1px solid var(--rule);min-width:0}
+  .kpis > div:last-child{border-right:0}
+  .kpis .k,.kpis .v,.kpis .n{display:block}
+  .kpis .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+  .kpis .v{font-family:var(--mono);font-size:44px;line-height:1.05;font-weight:600;letter-spacing:-.03em;margin-top:10px;font-variant-numeric:tabular-nums}
+  .kpis .v small{font-size:15px;font-family:var(--sans);font-weight:500;letter-spacing:0;margin-left:8px}
+  .kpis .n{margin-top:7px;font-size:12px;color:var(--dim);line-height:1.65}
+
+  /* 长周期折线 */
+  .series{padding:34px 0 10px}
+  .series .hd{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px}
+  .series h2{font-size:17px;font-weight:600}
+  .series .hd .r{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--faint)}
+  .chart{margin-top:14px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:0}
+  .chart svg{display:block;width:100%;height:auto}
+  .axis{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--faint);padding:6px 0 0}
+  .series .note{margin-top:8px;font-size:12px;color:var(--dim);line-height:1.7}
+
+  /* 行情 + 异动两栏 */
+  .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 60px;padding:34px 0 0}
+  .two > section{min-width:0}
+  .two h2{font-size:17px;font-weight:600;padding-bottom:9px;border-bottom:1px solid var(--ink);display:flex;align-items:baseline;gap:10px}
+  .two h2 .r{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--faint);font-weight:400}
+  table{width:100%;border-collapse:collapse}
+  .qt{font-size:14px}
+  .qt td{padding:9px 0;border-bottom:1px solid var(--rule)}
+  .qt td:nth-child(2),.qt td:nth-child(3){text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .qt td:nth-child(3){width:96px;font-size:13px}
+  .qt .sub{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--faint)}
+  .sig{font-size:13.5px}
+  .sig td{padding:9px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+  .sig td:first-child{font-weight:500;white-space:nowrap;padding-right:14px}
+  .sig td:nth-child(2){width:74px}
+  .sig td:last-child{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+  .sig .d{display:block;font-size:12px;color:var(--dim);line-height:1.6;font-weight:400;white-space:normal}
+  .meter{display:block;height:3px;background:var(--rule);position:relative}
+  .meter i{position:absolute;left:0;top:0;bottom:0;background:var(--ink)}
+  .srcline{margin-top:10px;font-size:11.5px;color:var(--faint);line-height:1.7}
+
+  /* 编号档案 */
+  .archive{padding:52px 0 0}
+  .ar-hd{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;border-bottom:1px solid var(--ink);padding-bottom:9px}
+  .ar-hd h2{font-size:26px;font-weight:600;letter-spacing:-.01em}
+  .ar-hd .r{margin-left:auto;font-size:12.5px;color:var(--dim)}
+  .ar-row{display:grid;grid-template-columns:52px minmax(180px,2.1fr) minmax(0,3fr) 104px 26px;gap:0 20px;
+    align-items:baseline;padding:17px 0;border-bottom:1px solid var(--rule)}
+  .ar-row:hover{background:var(--paper2)}
+  .ar-row .no{font-family:var(--mono);font-size:12px;color:var(--faint);letter-spacing:.06em}
+  .ar-row .nm{font-size:19px;font-weight:600;letter-spacing:-.01em}
+  .ar-row .nm em{display:block;font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:400;margin-top:4px}
+  .ar-row .ds{font-size:13px;color:var(--ink2);line-height:1.7}
+  .ar-row .fq{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--dim);text-align:right}
+  .ar-row .fq.beta{color:var(--mark)}
+  .ar-row .go{text-align:right;color:var(--faint);font-family:var(--mono)}
+  .ar-row:hover .go{color:var(--ink)}
+
+  /* 来源脚注 */
+  .notes{padding:48px 0 0}
+  .notes h2{font-size:17px;font-weight:600;padding-bottom:9px;border-bottom:1px solid var(--ink)}
+  .nt{display:grid;grid-template-columns:26px minmax(0,1fr);gap:0 14px;padding:12px 0;border-bottom:1px solid var(--rule);font-size:13px;color:var(--ink2);line-height:1.75}
+  .nt .i{font-family:var(--mono);font-size:11px;color:var(--faint)}
+  .nt b{font-weight:600;color:var(--ink)}
+  .nt .m{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--dim);margin-top:3px}
+  .contact{display:flex;flex-wrap:wrap;gap:8px 30px;padding:16px 0 0;font-family:var(--mono);font-size:13px;color:var(--ink2)}
+  .contact a{border-bottom:1px solid var(--rule2)}
+  footer{margin-top:46px;border-top:1px solid var(--ink);padding:16px 0 54px;font-size:12px;color:var(--dim)}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:6px 26px}
+  footer a{border-bottom:1px solid var(--rule)}
+  footer .r{margin-left:auto}
+
+  @media (max-width:1000px){
+    .wrap{padding:0 26px}
+    .draft .wrap{padding-left:26px;padding-right:26px}
+    .statement{grid-template-columns:1fr;gap:34px;padding:48px 0 40px}
+    .statement h1{font-size:40px}
+    .statement .side{border-left:0;padding-left:0;border-top:1px solid var(--rule);padding-top:18px}
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .kpis > div:nth-child(2){border-right:0}
+    .kpis > div:nth-child(1),.kpis > div:nth-child(2){border-bottom:1px solid var(--rule)}
+    .two{grid-template-columns:1fr;gap:38px}
+    .ar-row{grid-template-columns:40px minmax(0,1fr) 96px;gap:0 14px}
+    .ar-row .ds{grid-column:2 / 4;margin-top:6px}
+    .ar-row .go{display:none}
+  }
+  @media (max-width:560px){
+    body{font-size:14.5px}
+    .wrap{padding:0 16px}
+    .draft .wrap{padding-left:16px;padding-right:16px}
+    .statement h1{font-size:31px}
+    .kpis > div{padding:16px 14px}
+    .kpis .v{font-size:34px}
+    .stamp{margin-left:0;text-align:left}
+    .ar-row{grid-template-columns:34px minmax(0,1fr);gap:0 12px}
+    .ar-row .fq{grid-column:2;text-align:left;margin-top:6px}
+    .ar-row .ds{grid-column:2}
+    footer .r{margin-left:0}
+  }
+</style>
+</head>
+<body>
+
+<div class="draft"><div class="wrap">
+  <b>首页改版草案 · 方案C「栅格档案」</b>
+  <span>近单色排版 · 12 栏栅格 · 编号档案目录 · 无表情符号、无渐变、无发光</span>
+  <a href="./">返回三方案对照</a>
+</div></div>
+
+<header class="top"><div class="wrap">
+  <a class="brand" href="../">OOGLEX</a>
+  <nav>
+    <a href="#regime">宏观</a>
+    <a href="#markets">行情</a>
+    <a href="#archive">数据应用</a>
+    <a href="#tools">工具</a>
+    <a href="#notes">数据来源</a>
+  </nav>
+  <div class="stamp">
+    数据日期 <b class="num" id="st-asof">—</b><br>
+    最近更新 <b class="num" id="st-upd">—</b> · 状态 <b id="st-status">—</b>
+  </div>
+</div></header>
+
+<div class="wrap">
+
+  <div class="statement">
+    <div>
+      <h1>公开数据，<br>按来源与日期逐项列明。
+        <small>Ooglex 把公开的宏观、行情、榜单数据整理成 22 个可直接打开的静态页面。每一项都标注来源、数据日期与更新频率；日频数据不标作实时。</small>
+      </h1>
+      <div class="acts">
+        <a href="../apps/macro-radar/">宏观雷达</a>
+        <a href="../apps/finance-terminal/">金融终端（公测）</a>
+        <a class="secondary" href="#archive">全部 22 项</a>
+      </div>
+    </div>
+    <div class="side">
+      <span class="cap">编制口径</span>
+      <dl>
+        <dt>数据来源</dt><dd id="sd-src">FRED · EIA · Yahoo Finance · CNN · Forex Factory 等公开来源</dd>
+        <dt>更新方式</dt><dd>GitHub Actions 定时抓取，生成静态 JSON；每日 06:20（北京时间）</dd>
+        <dt>不提供</dt><dd>交易所级实时报价、交易执行、投资建议</dd>
+        <dt>失败处理</dt><dd>抓取失败时保留上一份有效数据，并在页面标注过期状态</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="kpis" id="regime">
+    <div>
+      <span class="k">机制读数 Regime</span>
+      <span class="v" id="k-regime">—<small id="k-regime-l">读取中</small></span>
+      <span class="n">七类信号加权，0–100 相对分位；越高越偏「宽松·支持」<sup>1</sup></span>
+    </div>
+    <div>
+      <span class="k">恐慌与贪婪 Fear &amp; Greed</span>
+      <span class="v" id="k-fear">—<small id="k-fear-l">读取中</small></span>
+      <span class="n">7 项情绪指标合成，0 极度恐惧 / 100 极度贪婪<sup>2</sup></span>
+    </div>
+    <div>
+      <span class="k">跟踪标的 Instruments</span>
+      <span class="v" id="k-assets">—</span>
+      <span class="n">股票指数、商品、外汇、债券四大类，日频收盘价<sup>3</sup></span>
+    </div>
+    <div>
+      <span class="k">历史区间 History</span>
+      <span class="v" id="k-span">—</span>
+      <span class="n">机制读数周频序列，可回放每一轮危机<sup>1</sup></span>
+    </div>
+  </div>
+
+  <section class="series">
+    <div class="hd">
+      <h2>机制读数 · 周频历史序列</h2>
+      <span class="cap">Macro Regime, weekly</span>
+      <span class="r" id="sr-range">—</span>
+    </div>
+    <div class="chart">
+      <svg id="sr-svg" viewBox="0 0 1160 190" preserveAspectRatio="none" role="img" aria-label="宏观机制读数周频历史折线图，纵轴 0 至 100"></svg>
+    </div>
+    <div class="axis" id="sr-axis"></div>
+    <p class="note">纵轴 0–100（虚线为 50 中性线）。标注点为参考时点，非事件预测。数据来源见文末脚注 1。</p>
+  </section>
+
+  <div class="two">
+    <section id="markets">
+      <h2>市场速览<span class="cap">Markets</span><span class="r" id="q-asof">—</span></h2>
+      <table class="qt"><tbody id="q-body"><tr><td colspan="3" style="color:var(--dim)">读取中…</td></tr></tbody></table>
+      <p class="srcline">来源 Yahoo Finance 公开行情，日频收盘价，非实时报价<sup>3</sup>。涨跌同时以 ▲▼ 与颜色标注。</p>
+    </section>
+
+    <section>
+      <h2>信号明细<span class="cap">Signals</span><span class="r">0–100</span></h2>
+      <table class="sig"><tbody id="sig-body"><tr><td colspan="3" style="color:var(--dim)">读取中…</td></tr></tbody></table>
+      <p class="srcline">来源 宏观雷达<sup>1</sup>。信号为相对分位读数，非绝对水平；完整权重与方法见应用页。</p>
+    </section>
+  </div>
+
+  <section class="archive" id="archive">
+    <div class="ar-hd"><h2>数据应用</h2><span class="cap">Data applications</span><span class="r">16 项</span></div>
+    <div id="ar-data"></div>
+  </section>
+
+  <section class="archive" id="tools">
+    <div class="ar-hd"><h2>工具与休闲</h2><span class="cap">Tools</span><span class="r">6 项</span></div>
+    <div id="ar-tools"></div>
+  </section>
+
+  <section class="notes" id="notes">
+    <h2>数据来源与更新状态</h2>
+    <div id="nt-body"></div>
+    <div class="contact">
+      <span>zlq6600e@outlook.com</span>
+      <a href="https://github.com/254684589-max" target="_blank" rel="noopener">github.com/254684589-max</a>
+    </div>
+  </section>
+
+</div>
+
+<footer><div class="wrap">
+  <span>© 2026 Ooglex</span>
+  <a href="../privacy/">隐私政策</a>
+  <a href="https://github.com/254684589-max" target="_blank" rel="noopener">源码 GitHub</a>
+  <span class="r">数据仅供研究参考，不构成投资建议</span>
+</div></footer>
+
+<script>
+/* 方案C 数据装配：全部取站内既有 data.json，无后端、无第三方脚本。
+   预览页位于 /home-redesign/，故前缀 "../"；若本方案被采用并落到站点根目录，把 BASE 改为 "" 即可。 */
+(function () {
+  var BASE = "../";
+  var WANT = [["标普500","标普500","^GSPC"],["纳斯达克综合","纳斯达克综合","^IXIC"],["欧洲STOXX600","欧洲 STOXX 600",""],
+              ["日经225","日经225",""],["沪深300","沪深300",""],["恒生指数","恒生指数",""],
+              ["COMEX黄金","COMEX 黄金",""],["NYMEX WTI原油","NYMEX WTI 原油",""],["美元指数","美元指数",""]];
+  var CATALOG = {
+    data: [
+      { href:"apps/finance-terminal/", zh:"Ooglex金融终端", en:"Finance Terminal", freq:"公测 · 日频", beta:1, desc:"全球股指、利率、美元、黄金、原油、比特币一页查看；4 项站内真实数据、2 项免费 ETF 代理" },
+      { href:"apps/markets/", zh:"全球市场行情", en:"Global Markets", freq:"日频", desc:"六大品类 133 个标的逐项报价，每项可看 1 个月至全部区间走势" },
+      { href:"apps/heatmap/", zh:"标普500热力图", en:"S&P 500 Heatmap", freq:"日频", desc:"成分股按行业分块、按市值定面积、按当日涨跌上色，另附完整数据表" },
+      { href:"apps/macro-radar/", zh:"宏观雷达", en:"Macro Radar", freq:"日频", desc:"机制读数与七类信号加权明细，可回放 2006 年至今每一轮危机" },
+      { href:"apps/data-hub/", zh:"数据中心", en:"Data Hub", freq:"日频", desc:"资产市值榜、大类资产收益率、富豪榜、公司市值、恐慌贪婪、经济日历集中入口" },
+      { href:"apps/asset-ranking/", zh:"全球资产市值榜", en:"Asset Ranking", freq:"日频", desc:"房产、国债、黄金、货币、公司、加密同台排列前 250 位" },
+      { href:"apps/house-prices/", zh:"全球房价走势", en:"House Prices", freq:"周频", desc:"主要国家房价名义与实际同比，近 20 年走势" },
+      { href:"apps/superinvestors/", zh:"超级投资者", en:"Superinvestors", freq:"周频", desc:"机构 13F 持仓、美国国会交易披露与 AAII 投资者情绪" },
+      { href:"apps/whats-latest/", zh:"最新消息", en:"What's Latest", freq:"日内多次", desc:"权威媒体要闻聚合与市场快照，每条链接回原文" },
+      { href:"apps/finance-column/", zh:"金融知识架构", en:"Finance Column", freq:"静态", desc:"8 层级、48 模块、560 余条中英双语术语" },
+      { href:"apps/movies/", zh:"全球电影榜", en:"Movies", freq:"日频", desc:"Top 250 与全球新上映，含评分与海报" },
+      { href:"apps/ai-rankings/", zh:"全球大模型评测榜", en:"AI Rankings", freq:"日频", desc:"LMArena Elo、LiveBench、智能指数三榜合一" },
+      { href:"apps/university-rankings/", zh:"全球大学排名 300 强", en:"University Rankings", freq:"年度", desc:"QS、泰晤士、软科、U.S. News 四榜按平均位次综合排序" },
+      { href:"apps/major-rankings/", zh:"全球专业与就业前景榜", en:"Major Rankings", freq:"年度", desc:"专业薪资、就业率、毕业起薪与未来十年前景四榜合一" },
+      { href:"apps/ofr-monitor/", zh:"美国金融风险监测", en:"OFR Monitor", freq:"日频", desc:"金融压力指数、SOFR 短期融资、货币基金、对冲基金与银行系统性风险" },
+      { href:"apps/supply-chain/", zh:"全球产业链", en:"Global Supply Chain", freq:"按申报更新", desc:"12 个价值链环节 × 27 条产业链两维定位，链间上下游 77 条；判定依据 SEC 官方 SIC 行业码" }
+    ],
+    tools: [
+      { href:"games/hub/", zh:"游戏中心", en:"Games", freq:"休闲", desc:"GTA 罪恶都市、红色警戒 2 网页版，浏览器直接运行" },
+      { href:"apps/calculators/", zh:"万象算集", en:"Calculators", freq:"工具", desc:"70 余款计算器：房贷、复利、个税、BMI、方程、进制转换" },
+      { href:"apps/radio/", zh:"环球 Music", en:"Global Music", freq:"工具", desc:"三维地球收听全球电台，可安装到手机主屏" },
+      { href:"apps/tv/", zh:"环球 TV", en:"Global TV", freq:"工具", desc:"三维地球观看全球电视直播，华语频道直连优先" },
+      { href:"apps/ai-chat/", zh:"万象智聊", en:"AI Chat", freq:"工具", desc:"接入 DeepSeek、GLM、Kimi、通义，多会话与 Markdown" },
+      { href:"apps/name-fortune/", zh:"知命阁", en:"Name Fortune", freq:"娱乐", desc:"姓名生辰与五行运势解读，仅供娱乐" }
+    ]
+  };
+
+  function $(id) { return document.getElementById(id); }
+  function isNum(x) { return typeof x === "number" && isFinite(x); }
+  function pad(n) { return n < 10 ? "0" + n : String(n); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]; }); }
+  function getJSON(p) { return fetch(BASE + p).then(function (r) { if (!r.ok) throw new Error(p); return r.json(); }); }
+  function fmtPx(x) {
+    if (!isNum(x)) return "—";
+    return x >= 1000 ? x.toLocaleString("en-US", { maximumFractionDigits: 0 }) : x >= 100 ? x.toFixed(1) : x.toFixed(2);
+  }
+  function pct(p) {
+    if (!isNum(p)) return '<span style="color:var(--faint)">—</span>';
+    return '<span class="' + (p >= 0 ? "up" : "dn") + '">' + (p >= 0 ? "▲" : "▼") + " " + Math.abs(p).toFixed(2) + "%</span>";
+  }
+  function statusZh(s) { return { ok:"正常", partial:"部分缺失", stale:"数据过期", error:"读取失败" }[s] || (s || "—"); }
+  function utc(s) { return String(s || "").replace("T", " ").replace("Z", "Z"); }
+
+  /* 档案目录 */
+  function renderArchive(box, rows, offset) {
+    box.innerHTML = rows.map(function (it, i) {
+      return '<a class="ar-row" href="' + BASE + it.href + '">' +
+        '<span class="no">' + pad(offset + i + 1) + "</span>" +
+        '<span class="nm">' + esc(it.zh) + "<em>" + esc(it.en) + "</em></span>" +
+        '<span class="ds">' + esc(it.desc) + "</span>" +
+        '<span class="fq' + (it.beta ? " beta" : "") + '">' + esc(it.freq) + "</span>" +
+        '<span class="go">→</span></a>';
+    }).join("");
+  }
+  renderArchive($("ar-data"), CATALOG.data, 0);
+  renderArchive($("ar-tools"), CATALOG.tools, CATALOG.data.length);
+
+  /* 脚注：来源与状态 */
+  var NOTE_ORDER = ["macro","fear","asset","calendar","news"], notes = {};
+  function note(key, o) {
+    notes[key] = o;
+    $("nt-body").innerHTML = NOTE_ORDER.filter(function (k) { return notes[k]; }).map(function (k, i) {
+      var r = notes[k];
+      return '<div class="nt"><span class="i">' + (i + 1) + "</span><span><b>" + esc(r.label) + "</b>　" + esc(r.source) +
+        '<span class="m">频率 ' + esc(r.freq) + " · 数据日期 " + esc(r.asOf) + " · 更新 " + esc(r.upd || "—") + " · 状态 " + esc(r.status) + "</span></span></div>";
+    }).join("");
+  }
+
+  /* 宏观雷达 */
+  getJSON("apps/macro-radar/data.json").then(function (d) {
+    var rg = d.regime || {}, sc = rg.score;
+    $("k-regime").innerHTML = (isNum(sc) ? sc : "—") + '<small>' + esc(rg.labelZh || "—") + "</small>";
+    $("st-asof").textContent = d.asOf || "—";
+    $("st-upd").textContent = d.asOfSh || utc(d.updatedAt);
+    $("st-status").textContent = statusZh(d.status || "ok");
+    if (d.source) $("sd-src").textContent = d.source + " 等公开来源";
+
+    $("sig-body").innerHTML = (d.signals || []).map(function (s) {
+      var v = isNum(s.score) ? s.score : null;
+      return "<tr><td>" + esc(s.zh || s.key) + '<span class="d">' + esc(s.statusZh || "") + "</span></td>" +
+        '<td><span class="meter"><i style="width:' + (v == null ? 0 : v) + '%"></i></span></td>' +
+        "<td>" + (v == null ? "—" : v) + "</td></tr>";
+    }).join("") || '<tr><td colspan="3">暂无信号数据</td></tr>';
+
+    note("macro", { label:"宏观机制读数与七类信号", source:d.source || "—", freq:"日频", asOf:d.asOf || "—", upd:utc(d.updatedAt), status:statusZh(d.status || "ok") });
+  }).catch(function () {
+    $("k-regime").innerHTML = '—<small>读取失败</small>';
+    $("st-status").textContent = "读取失败";
+    $("sig-body").innerHTML = '<tr><td colspan="3" class="dn">信号数据读取失败</td></tr>';
+  });
+
+  /* 机制历史折线 */
+  getJSON("apps/macro-radar/history.json").then(function (h) {
+    var R = h.regime || [], D = h.dates || [];
+    var pts = [], i;
+    for (i = 0; i < R.length; i++) if (isNum(R[i])) pts.push({ i: i, v: R[i], d: D[i] || "" });
+    if (pts.length < 24) return;
+    var W = 1160, H = 190, T = 10, B = 10;
+    function X(i) { return W * i / (R.length - 1); }
+    function Y(v) { return T + (H - T - B) * (100 - v) / 100; }
+    var line = pts.map(function (p) { return X(p.i).toFixed(1) + "," + Y(p.v).toFixed(1); }).join(" ");
+    var svg = $("sr-svg"), ns = "http://www.w3.org/2000/svg";
+    function add(tag, attrs) {
+      var e = document.createElementNS(ns, tag);
+      Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+      svg.appendChild(e); return e;
+    }
+    [25, 50, 75].forEach(function (g) {
+      add("line", { x1:0, y1:Y(g), x2:W, y2:Y(g), stroke:"#e2e2df", "stroke-width":1,
+                    "stroke-dasharray": g === 50 ? "4 4" : "0", "vector-effect":"non-scaling-stroke" });
+    });
+    add("polyline", { points:line, fill:"none", stroke:"#0e0e0f", "stroke-width":1.1, "stroke-linejoin":"round", "vector-effect":"non-scaling-stroke" });
+    /* 参考时点：按日期定位，仅作时间标尺，不预测事件 */
+    [["2008-09", "2008"], ["2020-03", "2020"]].forEach(function (m) {
+      var k = -1;
+      for (i = 0; i < pts.length; i++) if ((pts[i].d || "").indexOf(m[0]) === 0) { k = i; break; }
+      if (k < 0) return;
+      add("line", { x1:X(pts[k].i), y1:T, x2:X(pts[k].i), y2:H - B, stroke:"#c9c9c5", "stroke-width":1, "vector-effect":"non-scaling-stroke" });
+    });
+    var last = pts[pts.length - 1];
+    add("circle", { cx:X(last.i), cy:Y(last.v), r:3, fill:"#0e0e0f" });
+    $("sr-range").textContent = (pts[0].d || "") + " → " + (last.d || "") + " · " + pts.length + " 周";
+    $("k-span").textContent = String(pts[0].d || "").slice(0, 4) + "→今";
+    var years = [pts[0].d, "2010", "2014", "2018", "2022", last.d];
+    $("sr-axis").innerHTML = years.map(function (y, idx) {
+      return "<span>" + esc(idx === 0 || idx === years.length - 1 ? String(y).slice(0, 7) : y) + "</span>";
+    }).join("");
+  }).catch(function () { $("k-span").textContent = "—"; });
+
+  /* 行情 */
+  getJSON("apps/asset-tracker/data.json").then(function (d) {
+    var by = {};
+    (d.assets || []).forEach(function (a) { by[a.name] = a; });
+    var rows = WANT.map(function (w) {
+      var a = by[w[0]];
+      if (!a || !isNum(a.price)) return "";
+      return "<tr><td>" + esc(w[1]) + '<span class="sub">' + esc(a.symbol || "") + '</span></td><td>' +
+        fmtPx(a.price) + "</td><td>" + pct((a.returns || {}).d1) + "</td></tr>";
+    }).filter(Boolean);
+    if (d.bdi && isNum(d.bdi.price)) {
+      rows.push('<tr><td>波罗的海干散货指数<span class="sub">' + esc(d.bdi.symbol || "") + '</span></td><td>' +
+        fmtPx(d.bdi.price) + "</td><td>" + pct(d.bdi.changePct) + "</td></tr>");
+    }
+    $("q-body").innerHTML = rows.join("") || '<tr><td colspan="3">暂无行情</td></tr>';
+    $("q-asof").textContent = d.asOf || "—";
+    $("k-assets").textContent = (d.dataQuality || {}).total || (d.assets || []).length;
+    note("asset", { label:"大类资产行情（收盘）", source:d.source || "Yahoo Finance", freq:"日频", asOf:d.asOf || "—", upd:utc(d.updatedAt), status:statusZh(d.status || "ok") });
+  }).catch(function () {
+    $("q-body").innerHTML = '<tr><td colspan="3" class="dn">行情数据读取失败</td></tr>';
+  });
+
+  /* 恐慌贪婪 */
+  getJSON("apps/fear-greed/data.json").then(function (d) {
+    $("k-fear").innerHTML = (isNum(d.score) ? d.score : "—") + "<small>" + esc(d.ratingZh || "—") + "</small>";
+    note("fear", { label:"恐慌与贪婪指数", source:d.source || "CNN Business", freq:"日频", asOf:d.asOf || "—", upd:utc(d.updatedAt), status:"正常" });
+  }).catch(function () { $("k-fear").innerHTML = '—<small>读取失败</small>'; });
+
+  getJSON("apps/econ-calendar/data.json").then(function (d) {
+    note("calendar", { label:"经济日历", source:d.source || "—", freq:"周历（每日刷新）", asOf:d.asOf || "—", upd:utc(d.updatedAt), status:"正常" });
+  }).catch(function () {});
+  getJSON("apps/whats-latest/data.json").then(function (d) {
+    note("news", { label:"财经要闻聚合", source:d.source || "—", freq:"日内多次", asOf:d.asOf || "—", upd:utc(d.updatedAt), status:"正常" });
+  }).catch(function () {});
+})();
+</script>
+</body>
+</html>

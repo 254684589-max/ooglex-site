@@ -485,3 +485,12 @@
     grid-column: 2;
   }
 }
+
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+@media (min-width: 1041px) {
+  html[data-theme="ft"] body[data-terminal-view="overview"] .orbit-grid path, html[data-theme="paper"] body[data-terminal-view="overview"] .orbit-grid path { stroke: rgba(38,145,198,0.1); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .market-grid, html[data-theme="paper"] body[data-terminal-view="overview"] .market-grid { background: linear-gradient(180deg, var(--panel), var(--panel)); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] #market-grid .provider-widget-shell[data-provider-state="mounted"]::after, html[data-theme="paper"] body[data-terminal-view="overview"] #market-grid .provider-widget-shell[data-provider-state="mounted"]::after { background: var(--tint-1); box-shadow: inset 0 0 16px rgba(120,92,64,0.20); }
+  html[data-theme="ft"] body[data-terminal-view="overview"] .preview-impact-table i::before, html[data-theme="paper"] body[data-terminal-view="overview"] .preview-impact-table i::before { color: #517382; }
+}
+/* ==== 浅色主题兜底 结束 ==== */

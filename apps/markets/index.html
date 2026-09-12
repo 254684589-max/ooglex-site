@@ -16,6 +16,10 @@
   <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="../finance-terminal/terminal-board.css">
+  <link rel="stylesheet" href="/assets/theme.css">
+  <script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+  (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+  <script src="/assets/theme.js" defer></script>
   <style>
     :root {
       color-scheme: dark;
@@ -175,7 +179,11 @@
       .board-cell-period, .board-cell-asof { display: none; }
       .board-tab { flex: 1 1 auto; justify-content: center; }
     }
-  </style>
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"] .stat, html[data-theme="paper"] .stat { background: var(--panel2); }
+html[data-theme="ft"] .watch-filter, html[data-theme="paper"] .watch-filter { background: var(--tint-3); }
+/* ==== 浅色主题兜底 结束 ==== */
+</style>
 </head>
 <body>
   <div class="wrap">
