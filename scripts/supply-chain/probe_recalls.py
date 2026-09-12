@@ -346,12 +346,27 @@ def main() -> int:
     per_source: dict[str, list[int]] = {}
     hits: list[tuple[str, str, str, bool, str]] = []
     no_second: list[str] = []
+    raw_text: list[str] = []
 
-    for label, rows in alive:
-        stat = per_source.setdefault(label, [0, 0, 0])
-        for row in rows:
-            if seen >= SAMPLE:
-                break
+    # **轮转取样。** 上一跑按源顺序吃全局上限，nhtsa+device+food+drug 正好 200，
+    # cpsc 一条都没轮到（per-source 配额只管「一个源最多取多少」，管不住
+    # 「前面的源把总额吃光」）。轮转之后每个源都进得来。
+    queues = [(label, list(rows)) for label, rows in alive]
+    for label, _ in queues:
+        per_source.setdefault(label, [0, 0, 0])
+    order: list[tuple[str, dict]] = []
+    index = 0
+    while any(q for _, q in queues) and len(order) < SAMPLE:
+        for label, queue in queues:
+            if index < len(queue) and len(order) < SAMPLE:
+                order.append((label, queue[index]))
+        index += 1
+        if index > max((len(q) for _, q in queues), default=0):
+            break
+
+    for label, row in order:
+        stat = per_source[label]
+        if True:
             seen += 1
             stat[0] += 1
             firm = firm_of(row)
@@ -366,6 +381,13 @@ def main() -> int:
             if not found:
                 if len(no_second) < 10 and firm:
                     no_second.append(f"{label}/{firm[:30]}")
+                # **把原文打出来给人看。** 前两跑我一直在数「点到几条」，
+                # 却一次没看过召回正文长什么样——而这个项目最老的一条教训就是
+                # 「结论由人看数据得出，不由脚本的计数决定」。
+                # 只打召回方在池内的那些：它们才是这条源真正要回答的对象。
+                if pool.get(norm(firm)) and len(raw_text) < 6:
+                    body = " ".join((narrative(row) or "").split())
+                    raw_text.append(f"[{label}] {firm[:26]}：{body[:300]}")
                 continue
             named += 1
             stat[2] += 1
@@ -393,6 +415,11 @@ def main() -> int:
     if no_second:
         print("\n点不到第二家的样例（判断是不是这类公告本来不写供应商）：")
         for line in no_second:
+            print(f"   {line}")
+    if raw_text:
+        print("\n召回方在池内、但点不到第二家的那些，**原文照打**"
+              "（判断是这类公告本来不写供应商，还是我的线索词没覆盖它的说法）：")
+        for line in raw_text:
             print(f"   {line}")
     if hits:
         print("\n点到第二家的，逐条列出（**人工核对用，别只看计数**）：")
