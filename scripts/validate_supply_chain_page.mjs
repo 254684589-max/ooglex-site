@@ -2542,12 +2542,12 @@ async function main() {
         setTimeout(poll, 150);
       })();
     })`);
-    check(`总览页把六条路说成已实测否决`, () => {
+    check(`总览页把七条路说成已实测否决`, () => {
       assert.match(t1ov.text, /已逐条实测否决/,
         `声明里没说是实测否决：${t1ov.text.slice(0, 260)}`);
-      for (const key of ["附件 10", "联邦采购", "FCC"]) {
+      for (const key of ["附件 10", "联邦采购", "FCC", "召回"]) {
         assert.ok(t1ov.text.indexOf(key) >= 0,
-          `六条路没列全（缺「${key}」）：${t1ov.text.slice(0, 300)}`);
+          `七条路没列全（缺「${key}」）：${t1ov.text.slice(0, 300)}`);
       }
     });
     check(`总览页不再用「仍无数据源」这种待办口气`, () => {
@@ -2580,10 +2580,10 @@ async function main() {
         setTimeout(poll, 150);
       })();
     })`);
-    check(`公司页逐条列出六条已否决的路`, () => {
+    check(`公司页逐条列出七条已否决的路`, () => {
       assert.ok(t1co.seen, "一级供应商的出处框没有布局盒");
       for (const key of ["客户集中度", "全文反查", "附件 21", "附件 10",
-                         "USAspending", "FCC 设备认证"]) {
+                         "USAspending", "FCC 设备认证", "政府召回公告"]) {
         assert.ok(t1co.src.indexOf(key) >= 0,
           `没列到「${key}」：${t1co.src.slice(0, 300)}`);
       }

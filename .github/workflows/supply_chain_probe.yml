@@ -53,6 +53,10 @@ on:
         description: 阶段4 抽样家数（默认 120）
         required: false
         default: '120'
+      recall_sample:
+        description: 阶段5 抽样召回条数（默认 200）
+        required: false
+        default: '200'
       backfill_sample:
         description: 阶段1 抽样家数（默认 120）
         required: false
@@ -90,7 +94,7 @@ on:
         required: false
         default: '40'
       only:
-        description: '只跑哪些 job（fcc/uei/ex10/backfill/ex21/sdhistory/graph/supplier/usaspending/nolist/body/extract/flow/foreign/foreignfetch/ceiling；留空跑全部）'
+        description: '只跑哪些 job（recall/fcc/uei/ex10/backfill/ex21/sdhistory/graph/supplier/usaspending/nolist/body/extract/flow/foreign/foreignfetch/ceiling；留空跑全部）'
         required: false
         default: ''
 
@@ -271,6 +275,40 @@ jobs:
           SEC_CONTACT: ${{ vars.SEC_CONTACT }}
           EX10_SAMPLE: ${{ inputs.ex10_sample }}
         run: python scripts/supply-chain/probe_ex10_contracts.py
+
+  recall:
+    name: 补名单工程 阶段5 · 政府召回公告能不能点名零部件供应商
+    if: ${{ inputs.only == '' || contains(inputs.only, 'recall') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate extraction rules (offline)
+        run: python scripts/validate_supply_chain_extraction.py
+
+      # 召回公告里常写「某零件由 X 公司制造」，那是真实的零部件供应关系、
+      # 政府文件出处、许可干净。但这条源**自带一个必须说在明处的偏向**：
+      # 只有出过问题的供应关系才被记录——它是事故清单，不是供应商名单。
+      #
+      # 判据写死在脚本文件头（规划原话一字未动）：抽样 200 条，
+      # 能点名对方的 ≥20 条才建。而「点名」的口径是**被明说为供应方**
+      # （manufactured/supplied/produced by…），不是在正文里出现过——
+      # 按后者抓，车型名、产品名、政府机构全都会被当成供应商。
+      #
+      # 三家机构各试几个候选端点，把状态与字段名打出来；全都不活就报
+      # 「结论无效」并非零退出。
+      - name: Probe government recall notices
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+          RECALL_SAMPLE: ${{ inputs.recall_sample }}
+        run: python scripts/supply-chain/probe_recalls.py
 
   fcc:
     name: 补名单工程 阶段4 · FCC 设备认证能不能给出品牌↔代工关系
