@@ -27,6 +27,20 @@
   --shadow-1: 0 10px 30px rgba(0,0,0,.35);
   --shadow-2: 0 24px 60px rgba(0,0,0,.5);
   --theme-name: "dark";
+
+  /* 主题选择器自己的配色：不继承各页调色板（各页 --line/--dim 差异很大，
+     继承会让同一个控件在 43 个页面上深浅不一，深色下尤其容易看不见）。 */
+  --ogx-chip-bg: rgba(255,255,255,.07);
+  --ogx-chip-bg-hover: rgba(255,255,255,.13);
+  --ogx-chip-line: rgba(255,255,255,.32);
+  --ogx-chip-line-hover: rgba(255,255,255,.55);
+  --ogx-chip-ink: #e9eef5;
+  --ogx-menu-bg: #161b22;
+  --ogx-menu-line: rgba(255,255,255,.18);
+  --ogx-menu-ink: #e9eef5;
+  --ogx-menu-hover: rgba(255,255,255,.09);
+  --ogx-menu-accent: #79b8ff;
+  --ogx-focus: #79b8ff;
 }
 /* 深色主题不声明 color-scheme：Chromium 会给色彩方案不匹配的跨域 iframe 铺一层
    不透明白底（游戏页的整屏画面会被刷白）。站点原本没有这个声明，保持原样。 */
@@ -71,6 +85,18 @@ html[data-theme="ft"] {
   --shade-2: rgba(26,22,19,.12);
   --overlay-bg: #241f1b; --overlay-ink: #fff1e5;
   --on-accent: #fffaf3;   /* 铺了强调色的按钮/徽标上的文字 */
+
+  --ogx-chip-bg: rgba(26,22,19,.05);
+  --ogx-chip-bg-hover: rgba(26,22,19,.10);
+  --ogx-chip-line: rgba(26,22,19,.26);
+  --ogx-chip-line-hover: rgba(26,22,19,.46);
+  --ogx-chip-ink: var(--ink);
+  --ogx-menu-bg: var(--panel);
+  --ogx-menu-line: var(--line-strong);
+  --ogx-menu-ink: var(--ink);
+  --ogx-menu-hover: rgba(26,22,19,.06);
+  --ogx-menu-accent: var(--accent);
+  --ogx-focus: var(--accent);
   --sticky-bg: rgba(255,241,229,.94);
   --shadow-1: 0 8px 24px rgba(120,92,64,.14);
   --shadow-2: 0 18px 44px rgba(120,92,64,.18);
@@ -113,6 +139,18 @@ html[data-theme="paper"] {
   --shade-2: rgba(17,18,20,.11);
   --overlay-bg: #1c1e21; --overlay-ink: #ffffff;
   --on-accent: #ffffff;   /* 铺了强调色的按钮/徽标上的文字 */
+
+  --ogx-chip-bg: rgba(17,18,20,.05);
+  --ogx-chip-bg-hover: rgba(17,18,20,.10);
+  --ogx-chip-line: rgba(17,18,20,.26);
+  --ogx-chip-line-hover: rgba(17,18,20,.46);
+  --ogx-chip-ink: var(--ink);
+  --ogx-menu-bg: var(--panel);
+  --ogx-menu-line: var(--line-strong);
+  --ogx-menu-ink: var(--ink);
+  --ogx-menu-hover: rgba(17,18,20,.06);
+  --ogx-menu-accent: var(--accent);
+  --ogx-focus: var(--accent);
   --sticky-bg: rgba(255,255,255,.94);
   --shadow-1: 0 8px 24px rgba(20,24,32,.10);
   --shadow-2: 0 18px 44px rgba(20,24,32,.14);
@@ -183,22 +221,23 @@ html[data-theme="paper"] ::selection { background: var(--tint-3); color: var(--i
   align-items: center;
   gap: 7px;
   min-height: 32px;
-  padding: 0 11px;
-  border: 1px solid var(--line, rgba(255,255,255,.16));
+  padding: 0 12px;
+  border: 1px solid var(--ogx-chip-line);
   border-radius: 999px;
-  background: var(--tint-1);
-  color: var(--dim, #98a2b3);
+  background: var(--ogx-chip-bg);
+  color: var(--ogx-chip-ink);
   font: inherit;
   font-size: 12.5px;
+  font-weight: 500;
   line-height: 1;
   white-space: nowrap;
   cursor: pointer;
 }
-.ogx-theme__btn:hover { color: var(--ink, #eef2f7); border-color: var(--line-strong, rgba(255,255,255,.3)); }
-.ogx-theme__btn:focus-visible { outline: 2px solid var(--accent, #3987e5); outline-offset: 2px; }
+.ogx-theme__btn:hover { background: var(--ogx-chip-bg-hover); border-color: var(--ogx-chip-line-hover); }
+.ogx-theme__btn:focus-visible { outline: 2px solid var(--ogx-focus); outline-offset: 2px; }
 .ogx-theme__swatch {
-  width: 12px; height: 12px; border-radius: 50%;
-  border: 1px solid var(--tint-line);
+  width: 13px; height: 13px; border-radius: 50%;
+  border: 1px solid transparent;
   flex: 0 0 auto;
 }
 .ogx-theme__menu {
@@ -207,9 +246,9 @@ html[data-theme="paper"] ::selection { background: var(--tint-3); color: var(--i
   right: 0;
   min-width: 178px;
   padding: 5px;
-  border: 1px solid var(--line, rgba(255,255,255,.16));
+  border: 1px solid var(--ogx-menu-line);
   border-radius: 10px;
-  background: var(--panel, #10141b);
+  background: var(--ogx-menu-bg);
   box-shadow: var(--shadow-1);
   display: none;
 }
@@ -223,29 +262,32 @@ html[data-theme="paper"] ::selection { background: var(--tint-3); color: var(--i
   border: 0;
   border-radius: 7px;
   background: none;
-  color: var(--ink, #eef2f7);
+  color: var(--ogx-menu-ink);
   font: inherit;
   font-size: 13px;
   text-align: left;
   cursor: pointer;
 }
-.ogx-theme__opt:hover { background: var(--tint-2); }
-.ogx-theme__opt:focus-visible { outline: 2px solid var(--accent, #3987e5); outline-offset: -2px; }
-.ogx-theme__opt[aria-checked="true"] { color: var(--accent, #3987e5); font-weight: 600; }
+.ogx-theme__opt:hover { background: var(--ogx-menu-hover); }
+.ogx-theme__opt:focus-visible { outline: 2px solid var(--ogx-focus); outline-offset: -2px; }
+.ogx-theme__opt[aria-checked="true"] { color: var(--ogx-menu-accent); font-weight: 600; }
 .ogx-theme__opt[aria-checked="true"]::after { content: "✓"; margin-left: auto; }
 .ogx-theme__opt .ogx-theme__swatch { width: 14px; height: 14px; }
 .ogx-theme__note {
   padding: 7px 10px 5px;
   margin-top: 3px;
-  border-top: 1px solid var(--line, rgba(255,255,255,.12));
-  color: var(--faint, #5b6472);
+  border-top: 1px solid var(--ogx-menu-line);
+  color: var(--ogx-menu-ink);
+  opacity: .72;
   font-size: 11.5px;
   line-height: 1.6;
 }
-/* 色板预览（与上面三套主题的页面底色一致）*/
-.ogx-sw-dark  { background: #0b0e13; }
-.ogx-sw-ft    { background: #fff1e5; }
-.ogx-sw-paper { background: #ffffff; }
+/* 色板圆点：填充是该主题的页面底色，描边按**自身填充**取反。
+   深色圆点在深色页面上原本几乎与底色同色（看起来像个空洞），
+   给它一道亮描边即可；浅色圆点在浅色页面上同理需要暗描边。 */
+.ogx-sw-dark  { background: #0b0e13; border-color: rgba(255,255,255,.66); }
+.ogx-sw-ft    { background: #fff1e5; border-color: rgba(26,22,19,.42); }
+.ogx-sw-paper { background: #ffffff; border-color: rgba(17,18,20,.42); }
 
 @media (prefers-reduced-motion: no-preference) {
   .ogx-theme__btn { transition: color .18s, border-color .18s, background .18s; }
