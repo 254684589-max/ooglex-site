@@ -83,7 +83,7 @@
       chip: "未见申报",
       text: "我们在 EDGAR 上没有查到这家公司的任何 Form SD 申报。"
           + "Rule 13p-1 只覆盖产品中含锡／钽／钨／金的发行人，"
-          + "池内没有申报记录的 4,697 家里绝大多数在金融、服务与平台环节，"
+          + "池内没有申报记录的{n}里绝大多数在金融、服务与平台环节，"
           + "结构上不该有冶炼厂。但「没查到申报」本身只说明没有记录——"
           + "它不等于已经确认这家公司不适用该规则。"
     },
@@ -121,7 +121,15 @@
     // 状态写着 listed 而这里一条都没有 = 抽取器与发布路径不一致，是缺陷。
     // 节点构建那一侧（build_chain_nodes.py）就是这么归档的，两边口径要一致。
     if (st === "listed") st = "failed";
-    return T3_EMPTY[st] || T3_EMPTY[""];
+    var row = T3_EMPTY[st] || T3_EMPTY[""];
+    // 文案里的家数**必须从发布数据里取**，不能写死。我第一版写的是 4,697，
+    // 而同一轮 nodes.json 里已经是 4,698——写死的数字会悄悄变成错的。
+    if (row.text.indexOf("{n}") < 0) return row;
+    var sd = ((state.data || {}).coverage || {}).formSd || {};
+    var n = sd.companiesNoFiling;
+    // 取不到就说「公司」，句子照样通顺——**宁可少一个数，不要印一个错的数**。
+    return { chip: row.chip, text: row.text.replace("{n}",
+      n != null ? Number(n).toLocaleString("en-US") + " 家" : "公司") };
   }
 
   var state = { data: null, node: null, view: "tier", tierSel: 2,
