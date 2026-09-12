@@ -152,6 +152,43 @@
     .radar-card .ft { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; font-size: 12px; color: var(--faint); }
     .radar-card .ft .go { color: var(--blue); }
 
+    /* ── 全球富豪榜（首页模块） ── */
+    .bil { display: grid; grid-template-columns: 268px 1fr; gap: 22px; margin-top: 14px; align-items: start; }
+    .bil > * { min-width: 0; }
+    .bil-side { display: flex; flex-direction: column; gap: 11px; }
+    .bil-kpi {
+      display: block; padding: 16px 18px 14px; border: 1px solid var(--line); border-radius: 12px;
+      background: linear-gradient(180deg, var(--panel2), var(--panel));
+      transition: border-color .2s;
+    }
+    .bil-kpi:hover { border-color: rgba(57,135,229,.42); }
+    .bil-kpi .k { display: block; font-family: var(--mono); font-size: 10.5px; letter-spacing: .18em; color: var(--faint); text-transform: uppercase; }
+    .bil-kpi .v { display: block; font-family: var(--mono); font-size: 32px; font-weight: 700; line-height: 1.1; margin-top: 7px; letter-spacing: -.02em; }
+    .bil-kpi .n { display: block; font-size: 12.5px; color: var(--dim); margin-top: 5px; line-height: 1.6; }
+    .bil-mv { display: grid; gap: 8px; }
+    .bil-mv .mv { display: flex; align-items: baseline; gap: 8px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 9px; background: rgba(255,255,255,.02); }
+    .bil-mv .t { font-size: 11.5px; color: var(--faint); flex: 0 0 auto; }
+    .bil-mv .who { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bil-mv .d { margin-left: auto; font-size: 12.5px; font-weight: 600; flex: 0 0 auto; }
+    .bil-mv .mv.up .d { color: var(--up); } .bil-mv .mv.dn .d { color: var(--dn); }
+    .bil-src { font-size: 11.5px; color: var(--faint); line-height: 1.65; }
+
+    .bil-list { list-style: none; border-top: 1px solid var(--line); }
+    .bil-list li { display: flex; align-items: baseline; gap: 14px; padding: 11px 6px; border-bottom: 1px solid var(--line); }
+    .bil-list li:hover { background: rgba(255,255,255,.025); }
+    .bil-list .r { font-family: var(--mono); font-size: 12px; color: var(--faint); width: 22px; flex: 0 0 auto; }
+    .bil-list .nm { font-size: 15px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bil-list .co { font-size: 12px; color: var(--faint); flex: 0 0 auto; }
+    .bil-list .biz { font-size: 12px; color: var(--dim); flex: 0 0 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 24%; }
+    .bil-list .w { margin-left: auto; font-family: var(--mono); font-size: 14.5px; font-weight: 700; flex: 0 0 auto; }
+    .bil-list .c { font-family: var(--mono); font-size: 12.5px; width: 74px; text-align: right; flex: 0 0 auto; color: var(--faint); }
+    /* 首页原有的 .u/.d 只作用在 .tape 内，这里单独给榜单上色；
+       涨跌同时用 ▲▼ 与颜色标注，颜色不是唯一编码。 */
+    .bil-list .c.u { color: var(--up); }
+    .bil-list .c.d { color: var(--dn); }
+    .bil-more { display: inline-block; margin-top: 14px; font-size: 13.5px; color: var(--blue); }
+    .bil-more:hover { text-decoration: underline; }
+
     /* ── 目录索引 ── */
     section { padding: 46px 0 10px; }
     .idx-hd { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px; margin-bottom: 6px; }
@@ -195,6 +232,9 @@
 
     /* ── 移动端 ── */
     @media (max-width: 960px) {
+      .bil { grid-template-columns: 1fr; gap: 18px; }
+      .bil-side { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: start; }
+      .bil-src { grid-column: 1 / -1; }
       nav .logo { letter-spacing: .16em; font-size: 15px; gap: 8px; }
       nav .links { gap: 15px; font-size: 13px; }
       .hero { padding: 46px 0 40px; }
@@ -206,6 +246,18 @@
       .row .arr { margin-left: auto; }
       .row .name { font-size: 17px; }
       .tape .tail { display: none; }
+    }
+    @media (max-width: 640px) {
+      .bil-side { grid-template-columns: 1fr; }
+      /* 榜单行在窄屏拆成两行：① 名次 姓名 身价 ② 国别 当日变动 */
+      .bil-list li { display: grid; grid-template-columns: 22px minmax(0,1fr) auto; gap: 2px 10px; align-items: baseline; }
+      .bil-list .r { grid-row: 1; }
+      .bil-list .nm { grid-column: 2; grid-row: 1; }
+      .bil-list .w { grid-column: 3; grid-row: 1; margin-left: 0; }
+      .bil-list .co { grid-column: 2; grid-row: 2; font-size: 11.5px; }
+      .bil-list .c { grid-column: 3; grid-row: 2; width: auto; }
+      .bil-list .biz { display: none; }
+      .bil-kpi .v { font-size: 28px; }
     }
     @media (max-width: 520px) {
       nav .container { position: relative; height: auto; min-height: 62px; flex-wrap: wrap; padding-top: 9px; padding-bottom: 9px; }
@@ -223,6 +275,8 @@ html[data-theme="ft"] #language-toggle, html[data-theme="paper"] #language-toggl
 html[data-theme="ft"] .btn.g, html[data-theme="paper"] .btn.g { background: var(--tint-1); }
 html[data-theme="ft"] .radar-card, html[data-theme="paper"] .radar-card { box-shadow: 0 30px 80px rgba(120,92,64,0.20); }
 html[data-theme="ft"] .sig, html[data-theme="paper"] .sig { background: var(--tint-1); }
+html[data-theme="ft"] .bil-mv .mv, html[data-theme="paper"] .bil-mv .mv { background: var(--tint-1); }
+html[data-theme="ft"] .bil-list li:hover, html[data-theme="paper"] .bil-list li:hover { background: var(--tint-1); }
 html[data-theme="ft"] .idx, html[data-theme="paper"] .idx { border-top: 1px solid var(--line-strong); }
 html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { background: var(--tint-1); }
 /* ==== 浅色主题兜底 结束 ==== */
@@ -244,6 +298,7 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
     <div class="container">
       <a class="logo" href="/"><img src="assets/favicon.svg" alt="" width="24" height="24"><span class="brand grad-text">OOGLEX</span></a>
       <div class="links">
+        <a href="#billionaires" data-i18n="nav.billionaires">富豪榜</a>
         <a href="#apps" data-i18n="nav.apps">应用</a>
         <a href="#tools" data-i18n="nav.tools">工具</a>
         <a href="games/hub/" data-i18n="nav.games">游戏</a>
@@ -296,6 +351,32 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
       </a>
     </div>
   </header>
+
+  <section id="billionaires">
+    <div class="container">
+      <div class="idx-hd">
+        <h2 data-i18n="section.billionaires">全球富豪榜</h2>
+        <span class="en">BILLIONAIRES</span>
+        <span class="cnt" id="bil-stamp"></span>
+      </div>
+      <div class="bil">
+        <div class="bil-side">
+          <a class="bil-kpi" href="apps/billionaires/">
+            <span class="k" data-i18n="bil.totalLabel">在榜总身价</span>
+            <span class="v" id="bil-total">—</span>
+            <span class="n" id="bil-count" data-i18n="bil.loading">加载中</span>
+          </a>
+          <div class="bil-mv">
+            <div class="mv up"><span class="t" data-i18n="bil.gainer">今日领涨</span><span class="who" id="bil-up">—</span><span class="d" id="bil-upv">—</span></div>
+            <div class="mv dn"><span class="t" data-i18n="bil.loser">今日领跌</span><span class="who" id="bil-dn">—</span><span class="d" id="bil-dnv">—</span></div>
+          </div>
+          <p class="bil-src" id="bil-src"></p>
+        </div>
+        <ol class="bil-list" id="bil-list"></ol>
+      </div>
+      <a class="bil-more" href="apps/billionaires/" id="bil-more" data-i18n="bil.more">查看完整榜单 →</a>
+    </div>
+  </section>
 
   <section id="apps">
     <div class="container">
@@ -430,6 +511,7 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
     var STORAGE_KEY = "ooglex.language";
     var EN = {
       "tape.fallback": "Global financial data · Updated daily at 06:20",
+      "nav.billionaires": "Billionaires",
       "nav.apps": "Apps", "nav.tools": "Tools", "nav.games": "Games", "nav.contact": "Contact",
       "hero.over": "MARKET INTELLIGENCE — UPDATED DAILY AT 06:20",
       "hero.title": "Real-time global market data,<br>simpler, faster, smarter.",
@@ -484,6 +566,11 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
       "item.fortune.desc": "An ink-wash interpretation of names, birth data, the Five Elements, and personal fortune (for entertainment only)",
       "item.idea.name": "<span class=\"emoji\">💡</span>Your Idea",
       "item.idea.desc": "Whatever you want to make can start here",
+      "section.billionaires": "Global Billionaires",
+      "bil.totalLabel": "Total net worth on the list",
+      "bil.loading": "Loading",
+      "bil.gainer": "Top gain today", "bil.loser": "Top drop today",
+      "bil.more": "See the full ranking →",
       "footer.privacy": "Privacy Policy", "footer.github": "Source on GitHub",
       "footer.disclaimer": "For research only. Not investment advice."
     };
@@ -665,6 +752,89 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
       renderTape(items);
     }
 
+    /* ── 全球富豪榜模块 ── */
+    var bilData = null;
+    function fmtWorth(b) {                     /* 单位是十亿美元 */
+      if (!isNum(b)) return "—";
+      return "$" + (b >= 100 ? b.toFixed(1) : b.toFixed(2)) + "B";
+    }
+    function fmtTotal(b) {
+      if (!isNum(b)) return "—";
+      return isEnglish() ? "$" + (b / 1000).toFixed(1) + "T"
+                         : "$" + (b / 1000).toFixed(1) + " 万亿";
+    }
+    function fmtChange(b) {
+      if (!isNum(b)) return "—";
+      var sign = b >= 0 ? "+" : "−";
+      return sign + "$" + Math.abs(b).toFixed(1) + "B";
+    }
+    function bilName(p) { return isEnglish() ? (p.nameEn || p.name || "") : (p.name || p.nameEn || ""); }
+
+    function renderBillionaires() {
+      if (!bilData) return;
+      var d = bilData, people = d.people || [];
+      var stamp = document.getElementById("bil-stamp");
+      if (stamp) stamp.textContent = (isEnglish() ? "AS OF " : "数据日期 ") + (d.asOf || "—");
+
+      document.getElementById("bil-total").textContent = fmtTotal(d.totalWorth);
+      var n = isNum(d.count) ? d.count : people.length;
+      document.getElementById("bil-count").textContent = isEnglish()
+        ? n.toLocaleString("en-US") + " billionaires · updated daily"
+        : n.toLocaleString("en-US") + " 位亿万富豪 · 每日更新";
+
+      /* 今日领涨/领跌：按当日身价变动（十亿美元）取极值 */
+      var moved = people.filter(function (p) { return isNum(p.change); });
+      var up = null, dn = null;
+      moved.forEach(function (p) {
+        if (!up || p.change > up.change) up = p;
+        if (!dn || p.change < dn.change) dn = p;
+      });
+      document.getElementById("bil-up").textContent = up ? bilName(up) : "—";
+      document.getElementById("bil-upv").textContent = up ? fmtChange(up.change) : "—";
+      document.getElementById("bil-dn").textContent = dn ? bilName(dn) : "—";
+      document.getElementById("bil-dnv").textContent = dn ? fmtChange(dn.change) : "—";
+
+      /* 前 8 位 */
+      var top = people.slice(0, 8);
+      document.getElementById("bil-list").innerHTML = top.map(function (p) {
+        var pct = p.changePct;
+        var cls = isNum(pct) ? (pct >= 0 ? "u" : "d") : "";
+        var mark = isNum(pct) ? (pct >= 0 ? "▲" : "▼") + " " : "";
+        var ch = isNum(pct) ? mark + Math.abs(pct).toFixed(2) + "%" : "—";
+        return "<li><span class='r'>" + (isNum(p.rank) ? p.rank : "—") + "</span>" +
+          "<span class='nm'>" + esc(bilName(p)) + "</span>" +
+          "<span class='co'>" + esc((p.flag || "") + (isEnglish() ? "" : " " + (p.country || ""))) + "</span>" +
+          "<span class='biz'>" + esc(p.source || "") + "</span>" +
+          "<span class='w num'>" + fmtWorth(p.worth) + "</span>" +
+          "<span class='c num " + cls + "'>" + ch + "</span></li>";
+      }).join("");
+
+      document.getElementById("bil-more").textContent = isEnglish()
+        ? "See all " + n.toLocaleString("en-US") + " billionaires →"
+        : "查看全部 " + n.toLocaleString("en-US") + " 位亿万富豪 →";
+
+      var st = { ok: isEnglish() ? "OK" : "正常", partial: isEnglish() ? "Partial" : "部分缺失",
+                 stale: isEnglish() ? "Stale" : "数据过期", error: isEnglish() ? "Error" : "读取失败" };
+      document.getElementById("bil-src").textContent = isEnglish()
+        ? "Source " + (d.source || "—") + " · as of " + (d.asOf || "—") + " · daily · status " + (st[d.status] || d.status || "—") +
+          ". Net worth in USD billions; daily change is an estimate against the previous reference point. Not investment advice."
+        : "来源 " + (d.source || "—") + " · 数据日期 " + (d.asOf || "—") + " · 每日更新 · 状态 " + (st[d.status] || d.status || "—") +
+          "。身价单位为十亿美元（B），当日变动为较上一参考时点的估算；非实时行情，不构成投资建议。";
+    }
+
+    getJSON("apps/billionaires/data.json").then(function (d) {
+      bilData = d;
+      renderBillionaires();
+    }).catch(function () {
+      var c = document.getElementById("bil-count");
+      if (c) c.textContent = window.OoglexI18n && window.OoglexI18n.getLanguage() === "en"
+        ? "Ranking data unavailable" : "榜单数据读取失败";
+      var src = document.getElementById("bil-src");
+      if (src) src.textContent = window.OoglexI18n && window.OoglexI18n.getLanguage() === "en"
+        ? "Could not load the billionaires snapshot; open the app page instead."
+        : "富豪榜快照暂时无法读取，请前往应用页查看。";
+    });
+
     /* 行情：大类资产 */
     getJSON("apps/asset-tracker/data.json").then(function (d) { assetData = d; renderLocalizedData(); }).catch(function () {});
 
@@ -675,6 +845,7 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
     getJSON("apps/macro-radar/data.json").then(function (d) { macroData = d; renderLocalizedData(); }).catch(function () { macroFailed = true; renderLocalizedData(); });
 
     document.addEventListener("ooglex:languagechange", renderLocalizedData);
+    document.addEventListener("ooglex:languagechange", renderBillionaires);
 
     /* 雷达卡迷你走势：history.json 最近 3 年 */
     getJSON("apps/macro-radar/history.json").then(function (h) {
