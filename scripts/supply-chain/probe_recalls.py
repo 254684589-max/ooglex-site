@@ -255,10 +255,14 @@ def flat_names(value) -> list[str]:
 
 
 def firm_of(row: dict) -> str:
+    # **召回方也要 clean_name。** 只洗候选那一侧会造出自环：
+    # firm = "Dreams Bedding Technology PTE. Ltd, of Singapore"、
+    # 候选 = "Dreams Bedding Technology PTE. Ltd"，地址没切掉就判成两家公司，
+    # 一条自环被当成了关系（run 51 实测）。**两侧必须同一套洗法。**
     for key in FIRM_KEYS:
         names = flat_names(row.get(key))
         if names:
-            return names[0]
+            return clean_name(names[0])
     return ""
 
 

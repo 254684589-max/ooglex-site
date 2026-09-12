@@ -1981,6 +1981,18 @@ def main() -> int:
     recall_cases.append((_rc.structured_party(
         {"Retailers": [{"Name": "Walmart Inc."}]}, "Acme Toys Inc", {}) is None,
         "只有零售方时不算关系"))
+    # **两侧必须同一套洗法。** run 51 实测到一条自环：召回方带着地址、候选不带，
+    # 地址没切掉就判成两家公司。firm_of 现在也走 clean_name。
+    recall_cases.append((
+        _rc.firm_of({"Manufacturers": ["Dreams Bedding Technology PTE. Ltd, of Singapore"]})
+        == "Dreams Bedding Technology PTE. Ltd",
+        "召回方一侧也去地址尾巴（否则同一家公司变成两家，自环当成关系）"))
+    recall_cases.append((_rc.structured_party(
+        {"Manufacturers": ["Dreams Bedding Technology PTE. Ltd, of Singapore",
+                           "Dreams Bedding Technology PTE. Ltd"]},
+        _rc.firm_of({"Manufacturers": ["Dreams Bedding Technology PTE. Ltd, of Singapore"]}),
+        {}) is None,
+        "洗过之后那条自环不再算关系"))
     _pool2 = {_names.norm("Mattel Inc"): "MAT", _names.norm("Target Corporation"): "TGT"}
     for _row, _firm, _want2, _whyrow in [
         ({"Manufacturers": [{"Name": "Foxconn Technology Co"}]}, "Mattel Inc",
