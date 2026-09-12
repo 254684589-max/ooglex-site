@@ -1397,6 +1397,33 @@ def build() -> None:
         state = filing_status.get(node["symbol"])
         if state:
             node["formSdStatus"] = state
+    # 「未申报」那 4,697 家按价值链环节拆开。**这一栏是为了拦住一句话**：
+    # 规划文档里曾写「其中 4,651 家落在金融/服务/平台环节，结构上就不该有
+    # 冶炼厂」，而真数一拆就知道那是错的——最大一档是金融与专业服务 1,365 家
+    # （29%），第二大档是**整机与品牌 1,095 家（23%）**，那一档的产品里完全
+    # 可能含 3TG。把「未申报」一律解释成「结构上不适用」是替申报人下结论。
+    #
+    # 这里只数事实，不判「该不该申报」——与 sector_coverage() 同一条纪律：
+    # 某家公司为什么不申报是它自己的判断，本脚本无从得知。
+    stage_labels = {s["id"]: s["label"] for s in STAGES}
+    no_filing_by_stage: dict[str, int] = {}
+    for node in nodes:
+        if filing_status.get(node["symbol"]) != "no-filing":
+            continue
+        key = node.get("stage") or "未判定"
+        no_filing_by_stage[key] = no_filing_by_stage.get(key, 0) + 1
+    if form_sd_coverage is not None:
+        form_sd_coverage["noFilingByStage"] = [
+            {"stage": sid, "label": stage_labels.get(sid, sid), "companies": count}
+            for sid, count in sorted(no_filing_by_stage.items(),
+                                     key=lambda kv: (-kv[1], kv[0]))
+        ]
+        # **两个分母必须都发出去，不能只发一个。** companiesNoFiling 数的是
+        # 抽取器**扫过**的公司（5,898 家），本栏数的是**进了节点表**的公司
+        # （5,897 家）——差的那一家是 AFCG，SEC 给的 SIC 是 0，没有行业码就
+        # 放不到价值链轴上，因此不进节点表，也就不在任何环节里。
+        # 只发一个分母的话，逐档相加永远比总数少一，读者只会以为漏算了。
+        form_sd_coverage["noFilingInNodes"] = sum(no_filing_by_stage.values())
     # 两个池分开统计。标普那池按 GICS 板块（读者熟悉的口径，也是缺口成因最能
     # 讲清楚的维度：金融 0/70 是制度上限，科技 34/84 是还没抓到）；外国发行人
     # 那池没有站内板块分类，按国别拆——全塞进「未分类」就是一个 147 家的黑箱。

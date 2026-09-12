@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""补名单工程 阶段 3：USAspending 分包能不能给出一级供应关系（UEI 锚点版）。
+"""补名单工程 阶段 3：USAspending 分包能不能给出一级供应关系（实体锚点版）。
+
+**先校正一个名字。** 规划里写的是「UEI 锚点」，但实测（run 43）打出的
+`/search/spending_by_award/` 返回键名里**没有 UEI**：
+
+    Award Amount、Award ID、Awarding Agency、Recipient Name、Start Date、
+    agency_slug、awarding_agency_id、generated_internal_id、internal_id、recipient_id
+
+所以锚的是 `recipient_id`——USAspending 自己的实体 id，不是 UEI。这不影响
+锚点的作用（它一样是唯一实体标识），但**名字要照实说**：叫它 UEI 锚点就是
+在写没有核验过的东西。
 
 ## 为什么重探，以及上一轮留下的是什么尾巴
 
@@ -155,6 +165,25 @@ def post(path: str, payload: dict) -> tuple[dict | None, str]:
         time.sleep(GAP)
 
 
+def core_query(name: str) -> str:
+    """搜索用的核心名：去掉法律后缀与领头的 the，保留原始大小写与空格。
+
+    `recipient_search_text` 是**子串**搜索，串越长越严。第一轮拿完整法定名
+    （「Advanced Flower Capital Inc.」）去搜，100 家里只有 11 家返回候选——
+    分不清是这家公司真没有联邦合同，还是名字太长搜不到。**偏差方向是假阴性。**
+
+    改搜核心名只会让候选变多，不会放松判定：锚点那一步仍然要求
+    `norm(候选原名) == norm(池内公司名)` 严格相等。
+    """
+    text = LEADING_THE.sub("", str(name or "").strip())
+    words = [w for w in text.split()
+             if not LEGAL_SUFFIX.fullmatch(w.strip(".,"))]
+    # 后缀去掉之后，它前面那个词常常还挂着逗号（「Leidos Holdings, Inc.」→
+    # 「Leidos Holdings,」）。逗号留在搜索串里等于多要求一个字符匹配。
+    kept = " ".join(w.rstrip(",") for w in words).strip()
+    return re.sub(r"[,\s]+$", "", kept) or text
+
+
 def award_rows(name: str, subawards: bool, fields: list[str],
                limit: int = 10) -> tuple[list, str]:
     return_rows, note = post("/search/spending_by_award/", {
@@ -243,6 +272,8 @@ def main() -> int:
     ambiguous: list[tuple[str, str]] = []
     no_exact: list[tuple[str, str]] = []
     mismatched: list[tuple[str, str, str]] = []
+    direction_misses: list[tuple[str, str, str]] = []
+    dropped_non_company: list[tuple[str, str]] = []
     edges: list[tuple[str, str, str, str]] = []
     id_key_seen: str | None = None
     keys_printed = {"prime": False, "sub": False}
@@ -251,7 +282,8 @@ def main() -> int:
     for index, node in enumerate(sample, 1):
         symbol = node.get("symbol") or "?"
         name = node.get("name") or ""
-        rows, note = award_rows(name, False, PRIME_FIELDS)
+        query = core_query(name)
+        rows, note = award_rows(query, False, PRIME_FIELDS)
         if not rows:
             if "HTTP 200" not in note and "请求预算" not in note:
                 failed += 1
@@ -277,7 +309,7 @@ def main() -> int:
             mismatched.append((symbol, name, matched_name))
             continue
         got_prime += 1
-        subs, _note2 = award_rows(name, True, SUB_FIELDS)
+        subs, _note2 = award_rows(query, True, SUB_FIELDS)
         if not subs:
             continue
         got_sub += 1
@@ -285,25 +317,41 @@ def main() -> int:
             keys_printed["sub"] = True
             print("分包记录的原始键名：")
             print("   " + "、".join(sorted(subs[0].keys())) + "\n")
-        # 只收**总包方严格同名**的那些分包，否则搜出来的分包可能属于别人。
-        mine = [r for r in subs
-                if norm(r.get("Prime Recipient Name")) == norm(name)]
+        # **方向不许假设。** 第一版只收「总包方严格同名」的那些分包，于是
+        # 查到分包记录的 2 家全被自己过滤掉了，Gate B 报 0 ——那不是数据，
+        # 是我假设了 recipient_search_text 匹配总包方。它也可能匹配分包方，
+        # 那时我们这家公司是**分包方**，对方是总包方，关系方向正好反过来，
+        # 而那仍然是一条真实的一级供应关系。
+        #
+        # 所以两侧都认，并把**我们这家公司出现在哪一侧**记下来。
+        mine_name = norm(name)
         parties = []
-        for r in mine:
+        for r in subs:
+            prime = (r.get("Prime Recipient Name") or "").strip()
             sub_name = (r.get("Sub-Awardee Name") or "").strip()
-            if not sub_name or NOT_A_COMPANY.search(sub_name):
+            if norm(prime) == mine_name:
+                other, side = sub_name, "我方是总包"
+            elif norm(sub_name) == mine_name:
+                other, side = prime, "我方是分包"
+            else:
+                direction_misses.append((symbol, prime[:34], sub_name[:34]))
                 continue
-            parties.append((sub_name, r.get("Sub-Award ID") or "",
-                            r.get("Sub-Award Date") or ""))
+            if not other:
+                continue
+            if NOT_A_COMPANY.search(other):
+                dropped_non_company.append((symbol, other[:40]))
+                continue
+            parties.append((other, side, r.get("Sub-Award Date")
+                            or r.get("Sub-Award ID") or ""))
         if not parties:
             continue
         named += 1
-        inside = [p for p in parties if norm(p[0]) in in_pool]
+        inside = [p for p in parties if norm(p[0]) in in_pool]  # 对方也在池内
         if inside:
             both_sides += 1
-        for sub_name, award_id, date in parties[:2]:
-            edges.append((symbol, sub_name,
-                          in_pool.get(norm(sub_name)) or "—", date or award_id))
+        for other, side, token in parties[:2]:
+            edges.append((symbol, other + "  [" + side + "]",
+                          in_pool.get(norm(other)) or "—", token))
         if index % 20 == 0 or index == len(sample):
             print(f"     … 已处理 {index}/{len(sample)}，"
                   f"锚定 {anchored} 家、具名分包 {named} 家，"
@@ -343,6 +391,14 @@ def main() -> int:
         print("\n锚到非企业实体的，全部列出（**Gate A 就是看这一档**）：")
         for symbol, want, got in mismatched:
             print(f"   {symbol}：池内「{want}」→ 匹配到「{got}」")
+    if direction_misses:
+        print("\n分包记录里两侧都不是这家公司（说明搜到的是第三方的记录）：")
+        for symbol, prime, sub_name in direction_misses[:8]:
+            print(f"   {symbol}：总包「{prime}」→ 分包「{sub_name}」")
+    if dropped_non_company:
+        print("\n对方是非企业实体、不计入的：")
+        for symbol, other in dropped_non_company[:6]:
+            print(f"   {symbol} → {other}")
     if edges:
         print("\n解出的分包关系，全部列出（**人工核对用，别只看计数**）：")
         for symbol, sub_name, inside, token in edges:

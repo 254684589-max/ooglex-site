@@ -81,11 +81,17 @@
     },
     "no-filing": {
       chip: "未见申报",
+      // 这段话上一轮写成了「没有申报记录的 4,697 家里**绝大多数**在金融、
+      // 服务与平台环节，结构上不该有冶炼厂」。按环节拆开之后，那句是错的：
+      // 最大一档确实是金融与专业服务（29%），但**第二大档是整机与品牌
+      // （23%）**——那一档的产品里完全可能含 3TG。两档加起来也不到一半。
+      // 所以改成印真实分布（{d} 由数据填），并且不替申报人下「不适用」的结论。
       text: "我们在 EDGAR 上没有查到这家公司的任何 Form SD 申报。"
-          + "Rule 13p-1 只覆盖产品中含锡／钽／钨／金的发行人，"
-          + "池内没有申报记录的{n}里绝大多数在金融、服务与平台环节，"
-          + "结构上不该有冶炼厂。但「没查到申报」本身只说明没有记录——"
-          + "它不等于已经确认这家公司不适用该规则。"
+          + "Rule 13p-1 只覆盖产品中含锡／钽／钨／金的发行人。"
+          + "池内没有申报记录的{n}按价值链环节拆开是：{d}。"
+          + "「未申报」不能一律解释成「结构上不适用」——"
+          + "制造与品牌环节也有大量公司没有申报记录，"
+          + "而一家公司为什么不申报是它自己的判断，公开记录里查不到。"
     },
     "resource-extraction": {
       chip: "申报属另一类",
@@ -126,10 +132,33 @@
     // 而同一轮 nodes.json 里已经是 4,698——写死的数字会悄悄变成错的。
     if (row.text.indexOf("{n}") < 0) return row;
     var sd = ((state.data || {}).coverage || {}).formSd || {};
-    var n = sd.companiesNoFiling;
+    // **这句话说的是「池内」，所以分母要用节点表口径。** companiesNoFiling
+    // 数的是抽取器扫过的 4,698 家，其中有一家（SEC 没给行业码）不在池内；
+    // 拿它当分母，下面那些占比加起来就不是 100%，而「池内」二字也不准确。
+    var n = sd.noFilingInNodes != null ? sd.noFilingInNodes
+                                       : sd.companiesNoFiling;
     // 取不到就说「公司」，句子照样通顺——**宁可少一个数，不要印一个错的数**。
-    return { chip: row.chip, text: row.text.replace("{n}",
-      n != null ? Number(n).toLocaleString("en-US") + " 家" : "公司") };
+    var text = row.text.replace("{n}",
+      n != null ? Number(n).toLocaleString("en-US") + " 家" : "公司");
+    if (text.indexOf("{d}") >= 0) {
+      // 按环节的真实分布。印前三档 + 其余合并，每档都带占比——只说「最大一档
+      // 是金融」会让读者以为其余都是金融类，而第二大档是整机与品牌。
+      var rows = sd.noFilingByStage || [];
+      var base = sd.noFilingInNodes || rows.reduce(function (a, r) {
+        return a + (r.companies || 0); }, 0);
+      var parts = rows.slice(0, 3).map(function (r) {
+        return r.label + " " + Number(r.companies).toLocaleString("en-US") + " 家"
+          + (base ? "（" + Math.round(r.companies / base * 100) + "%）" : "");
+      });
+      var restN = rows.slice(3).reduce(function (a, r) {
+        return a + (r.companies || 0); }, 0);
+      if (restN) {
+        parts.push("其余 " + (rows.length - 3) + " 个环节合计 "
+          + restN.toLocaleString("en-US") + " 家");
+      }
+      text = text.replace("{d}", parts.length ? parts.join("、") : "数据未发布");
+    }
+    return { chip: row.chip, text: text };
   }
 
   var state = { data: null, node: null, view: "tier", tierSel: 2,
