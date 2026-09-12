@@ -73,13 +73,21 @@ PAIR_FLOOR = int(os.environ.get("FCC_PAIR_FLOOR", "15"))
 CONTACT = os.environ.get("SEC_CONTACT", "contact via https://www.ooglex.com")
 UA = f"Ooglex Supply Chain Research/1.0 ({CONTACT})"
 
-# 候选接口。**逐个试、把真实响应打出来**，不预设哪个能用。
-# FCC 的设备认证数据历史上有几种出口，本探针不替它们的现状下结论。
-CANDIDATES = [
-    ("opendata-eas", "https://opendata.fcc.gov/resource/7k2h-3mqt.json"),
-    ("opendata-eas-alt", "https://opendata.fcc.gov/resource/9kxw-xxbx.json"),
-    ("apps-eas-oet", "https://apps.fcc.gov/oetcf/eas/reports/GenericSearchResult.cfm"),
-]
+# **数据集 id 不准写死。** 第一版我凭记忆填了两个 Socrata id，实测两个都
+# 返回 `dataset.missing`（run 45）——那就是「凭记忆写标识符等于在编数据」，
+# 探针自己的守门人把它拦成了「结论无效」。
+#
+# 改成**先查目录再取数**：Socrata 的发现 API 按关键词列出这个域上真实存在的
+# 数据集，id 从目录里来，不从我的记忆里来。目录查不到就报结论无效，
+# 仍然不下判决。
+CATALOG = "http://api.us.socrata.com/api/catalog/v1"
+CATALOG_DOMAIN = "opendata.fcc.gov"
+# 关键词按「设备认证」这件事的官方叫法列，多给几个同义说法，命中哪个打出来。
+CATALOG_TERMS = ["equipment authorization", "grantee", "equipment authorization grantee",
+                 "FCC ID", "OET equipment"]
+# 目录之外再留一个已知的 HTML 出口，**只为把它的真实状态打出来**，不指望解析它。
+HTML_FALLBACK = ("apps-eas-oet",
+                 "https://apps.fcc.gov/oetcf/eas/reports/GenericSearchResult.cfm")
 # 一条记录里可能出现的「当事方」字段名。**全部当候选，按真实返回里有的用。**
 PARTY_KEYS = ("grantee_name", "applicant_name", "grantee", "applicant",
               "company", "company_name", "name", "grantee_code_name",
@@ -128,26 +136,56 @@ def get(url: str) -> tuple[object | None, str]:
         time.sleep(GAP)
 
 
+def catalog_lookup() -> list[tuple[str, str]]:
+    """按关键词查 Socrata 目录，返回 [(数据集 id, 名称)]。**id 来自目录，不来自记忆。**"""
+    found: dict[str, str] = {}
+    for term in CATALOG_TERMS:
+        url = CATALOG + "?" + parse.urlencode(
+            {"domains": CATALOG_DOMAIN, "q": term, "limit": 12})
+        data, note = get(url)
+        results = (data or {}).get("results") if isinstance(data, dict) else None
+        if not results:
+            print(f"  [--] 目录查「{term}」：{note}")
+            continue
+        hits = []
+        for item in results:
+            res = item.get("resource") or {}
+            ident, name = res.get("id"), res.get("name") or ""
+            if ident and ident not in found:
+                found[ident] = name
+                hits.append(f"{ident} {name[:46]}")
+        print(f"  [OK] 目录查「{term}」：{note}，新增 {len(hits)} 个数据集")
+        for line in hits[:6]:
+            print(f"         {line}")
+    return list(found.items())
+
+
 def discover() -> tuple[str | None, str | None, list[str]]:
     """探接口。返回 (可用的 base, 当事方字段名, 全部字段名)。"""
-    print("── 〇、先探接口与字段（不猜，把真实返回打出来）────────────────────")
-    for label, base in CANDIDATES:
-        probe_url = base + ("&" if "?" in base else "?") + parse.urlencode({"$limit": 1})
-        data, note = get(probe_url)
+    print("── 〇、先查目录，再探字段（id 不凭记忆写）──────────────────────────")
+    datasets = catalog_lookup()
+    if not datasets:
+        print("  [!!] 目录一个数据集都没返回")
+    for ident, name in datasets:
+        base = f"https://{CATALOG_DOMAIN}/resource/{ident}.json"
+        data, note = get(base + "?" + parse.urlencode({"$limit": 1}))
         if not isinstance(data, list) or not data:
-            print(f"  [--] {label:<18} {note}"
-                  + ("（返回不是非空数组）" if data is not None else ""))
+            print(f"  [--] {ident} {name[:34]:<36} {note}")
             continue
         keys = sorted(data[0].keys())
-        print(f"  [OK] {label:<18} {note}")
-        print(f"       字段名：{'、'.join(keys)}")
         party = next((k for k in PARTY_KEYS if k in data[0]), None)
+        print(f"  [OK] {ident} {name[:34]:<36} {note}")
+        print(f"       字段名：{'、'.join(keys)}")
         if party is None:
-            print("       [!!] 这些字段里没有任何可当「当事方」的名字字段，"
-                  "锚点无从做起")
+            print("       [--] 这些字段里没有可当「当事方」的名字字段，跳过")
             continue
         print(f"       当事方字段用：{party}")
         return base, party, keys
+    # 目录这条路走不通时，把那个 HTML 出口的真实状态也打出来——不解析它，
+    # 只是让下一个人知道它当时返回什么。
+    label, url = HTML_FALLBACK
+    _data, note = get(url)
+    print(f"  [--] {label:<18} {note}（HTML 出口，本探针不解析）")
     return None, None, []
 
 
@@ -197,7 +235,10 @@ def main() -> int:
               "字段——**结论无效**，不输出判据。")
         print("     这是取数／接口问题，不是业务事实（拿取数失败冒充业务事实"
               "是禁止的）。先确认 FCC 的数据出口再重跑。")
-        print(f"     试过的候选：{'、'.join(label for label, _ in CANDIDATES)}")
+        print(f"     查目录用的关键词：{'、'.join(CATALOG_TERMS)}")
+        print("     **第一版凭记忆写死了两个数据集 id，两个都是 dataset.missing**"
+              "——所以这一版改成从目录里取 id。若目录也查不到，"
+              "说明这条源的公开出口要人工确认，不是探针能自己绕过去的。")
         return 1
 
     # 这条源只覆盖电子。按环节分层取样会把大半预算花在金融／服务上，
