@@ -2648,6 +2648,17 @@ async function main() {
         assert.match(sd.src, spec.want,
           `${sym} 的出处框没写这一档的原因：${sd.src.slice(0, 260)}`);
       });
+      if (st === "no-filing") {
+        // 页面上印的每个数字都必须来自 nodes.json。第一版我把家数写死成
+        // 4,697，而同一轮数据里已经是 4,698——写死的数字会悄悄变成错的。
+        const want = ((NODES.coverage || {}).formSd || {}).companiesNoFiling;
+        check(`no-filing：家数取自 nodes.json，不是写死的`, () => {
+          assert.ok(typeof want === "number" && want > 0,
+            `nodes.json 里没有 companiesNoFiling，断言无从比对：${want}`);
+          assert.ok(sd.src.indexOf(want.toLocaleString("en-US") + " 家") >= 0,
+            `页面没印 ${want.toLocaleString("en-US")} 家：${sd.src.slice(0, 260)}`);
+        });
+      }
       if (st !== "filed-no-list") {
         check(`${st}：不许说成「提交了 Form SD 但没名单」`, () => {
           assert.ok(!/提交了 Form SD，但申报正文里没有/.test(sd.src),
