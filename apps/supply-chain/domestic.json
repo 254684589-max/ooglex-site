@@ -2211,6 +2211,31 @@
         "AEMD"
       ]
     },
+    "AENT": {
+      "annualForm": "10-K",
+      "cik": 1823584,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-10",
+      "name": "ALLIANCE ENTERTAINMENT HOLDING CORP",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "FL",
+      "region": null,
+      "sic": 5099,
+      "sicDescription": "Wholesale-Durable Goods, NEC",
+      "symbol": "AENT",
+      "tickers": [
+        "AENT",
+        "AENTW"
+      ]
+    },
     "AEO": {
       "annualForm": "10-K",
       "cik": 919012,
@@ -3219,7 +3244,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "NYSE",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-02-27",
       "name": "American Integrity Insurance Group, Inc.",
@@ -4482,30 +4507,6 @@
         "ALNY"
       ]
     },
-    "ALOT": {
-      "annualForm": "10-K",
-      "cik": 8146,
-      "country": null,
-      "countryBasis": null,
-      "countryCode": null,
-      "entityType": "operating",
-      "exchange": "Nasdaq",
-      "filerCategory": "Accelerated filer<br>Smaller reporting company",
-      "filesFormSd": true,
-      "lastAnnual": "2026-06-01",
-      "name": "AstroNova, Inc.",
-      "offshoreIncorporation": false,
-      "operatingBasis": "business-address",
-      "operatingCountry": "United States",
-      "operatingRegion": "RI",
-      "region": null,
-      "sic": 3577,
-      "sicDescription": "Computer Peripheral Equipment, NEC",
-      "symbol": "ALOT",
-      "tickers": [
-        "ALOT"
-      ]
-    },
     "ALOY": {
       "annualForm": "10-K",
       "cik": 1567900,
@@ -4855,7 +4856,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "<br>Emerging growth company",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-07-22",
       "name": "Alzamend Neuro, Inc.",
@@ -6774,7 +6775,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "OTC",
-      "filerCategory": "<br>Emerging growth company",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-06-12",
       "name": "ADAPTIN BIO, INC.",
@@ -7149,31 +7150,6 @@
       "symbol": "AREC",
       "tickers": [
         "AREC"
-      ]
-    },
-    "AREN": {
-      "annualForm": "10-K",
-      "cik": 894871,
-      "country": null,
-      "countryBasis": null,
-      "countryCode": null,
-      "entityType": "operating",
-      "exchange": "NYSE",
-      "filerCategory": "Accelerated filer<br>Smaller reporting company",
-      "filesFormSd": false,
-      "lastAnnual": "2026-04-30",
-      "name": "Arena Group Holdings, Inc.",
-      "offshoreIncorporation": false,
-      "operatingBasis": "business-address",
-      "operatingCountry": "United States",
-      "operatingRegion": "NY",
-      "region": null,
-      "sic": 4841,
-      "sicDescription": "Cable & Other Pay Television Services",
-      "symbol": "AREN",
-      "tickers": [
-        "AREN",
-        "PAAI"
       ]
     },
     "ARES-PB": {
@@ -7667,7 +7643,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-30",
       "name": "Artiva Biotherapeutics, Inc.",
@@ -9236,6 +9212,30 @@
       "symbol": "AURX",
       "tickers": [
         "AURX"
+      ]
+    },
+    "AUSI": {
+      "annualForm": "10-K",
+      "cik": 826253,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "OTC",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-10",
+      "name": "AURA SYSTEMS INC",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "CA",
+      "region": null,
+      "sic": 3690,
+      "sicDescription": "Miscellaneous Electrical Machinery, Equipment & Supplies",
+      "symbol": "AUSI",
+      "tickers": [
+        "AUSI"
       ]
     },
     "AUTL": {
@@ -10831,7 +10831,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-05",
       "name": "BridgeBio Oncology Therapeutics, Inc.",
@@ -10975,7 +10975,7 @@
       "countryBasis": null,
       "countryCode": null,
       "entityType": "operating",
-      "exchange": "Nasdaq",
+      "exchange": "OTC",
       "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-29",
@@ -11014,31 +11014,6 @@
       "symbol": "BCAL",
       "tickers": [
         "BCAL"
-      ]
-    },
-    "BCARU": {
-      "annualForm": "10-K",
-      "cik": 2065779,
-      "country": null,
-      "countryBasis": null,
-      "countryCode": null,
-      "entityType": "operating",
-      "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
-      "filesFormSd": false,
-      "lastAnnual": "2026-03-16",
-      "name": "D. Boral ARC Acquisition I Corp.",
-      "offshoreIncorporation": false,
-      "operatingBasis": "business-address",
-      "operatingCountry": "United States",
-      "operatingRegion": "NY",
-      "region": null,
-      "sic": 7372,
-      "sicDescription": "Services-Prepackaged Software",
-      "symbol": "BCARU",
-      "tickers": [
-        "BCARU",
-        "BCARW"
       ]
     },
     "BCAX": {
@@ -13120,7 +13095,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "NYSE",
-      "filerCategory": "Accelerated filer<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-08-19",
       "name": "BKV Corp",
@@ -13302,31 +13277,6 @@
       "symbol": "BLIN",
       "tickers": [
         "BLIN"
-      ]
-    },
-    "BLIS": {
-      "annualForm": "10-K",
-      "cik": 1703625,
-      "country": null,
-      "countryBasis": null,
-      "countryCode": null,
-      "entityType": "operating",
-      "exchange": "OTC",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
-      "filesFormSd": false,
-      "lastAnnual": "2026-08-21",
-      "name": "NAPC Defense, Inc.",
-      "offshoreIncorporation": false,
-      "operatingBasis": "business-address",
-      "operatingCountry": "United States",
-      "operatingRegion": "FL",
-      "region": null,
-      "sic": 7310,
-      "sicDescription": "Services-Advertising",
-      "symbol": "BLIS",
-      "tickers": [
-        "BLIS",
-        "NAPD"
       ]
     },
     "BLKB": {
@@ -15872,6 +15822,7 @@
       "symbol": "BURU",
       "tickers": [
         "BURU",
+        "BURUD",
         "BURUW"
       ]
     },
@@ -16174,7 +16125,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "NYSE",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-20",
       "name": "Bitwise Dogecoin ETF",
@@ -16682,7 +16633,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-12",
       "name": "Candel Therapeutics, Inc.",
@@ -17114,7 +17065,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-02-25",
       "name": "CARLSMED, INC.",
@@ -17464,6 +17415,30 @@
       "symbol": "CBK",
       "tickers": [
         "CBK"
+      ]
+    },
+    "CBKM": {
+      "annualForm": "10-K",
+      "cik": 1006830,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "OTC",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-10",
+      "name": "CONSUMERS BANCORP INC /OH/",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "OH",
+      "region": null,
+      "sic": 6021,
+      "sicDescription": "National Commercial Banks",
+      "symbol": "CBKM",
+      "tickers": [
+        "CBKM"
       ]
     },
     "CBL": {
@@ -18215,6 +18190,30 @@
         "CDNA"
       ]
     },
+    "CDNL": {
+      "annualForm": "10-K",
+      "cik": 2079999,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-03-23",
+      "name": "Cardinal Infrastructure Group Inc.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "NC",
+      "region": null,
+      "sic": 1600,
+      "sicDescription": "Heavy Construction Other Than Bldg Const - Contractors",
+      "symbol": "CDNL",
+      "tickers": [
+        "CDNL"
+      ]
+    },
     "CDP": {
       "annualForm": "10-K",
       "cik": 860546,
@@ -18296,7 +18295,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "<br>Emerging growth company",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-15",
       "name": "CDT Equity Inc.",
@@ -19163,6 +19162,33 @@
         "CGTX"
       ]
     },
+    "CHAD": {
+      "annualForm": "10-K",
+      "cik": 1805526,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-03-30",
+      "name": "DeFi Development Corp.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "FL",
+      "region": null,
+      "sic": 6199,
+      "sicDescription": "Finance Services",
+      "symbol": "CHAD",
+      "tickers": [
+        "CHAD",
+        "DFDV",
+        "DFDVW",
+        "DFUKF"
+      ]
+    },
     "CHCI": {
       "annualForm": "10-K",
       "cik": 1299969,
@@ -19847,8 +19873,7 @@
       "sicDescription": "Services-Help Supply Services",
       "symbol": "CIRC",
       "tickers": [
-        "CIRC",
-        "CIRCW"
+        "CIRC"
       ]
     },
     "CIRX": {
@@ -20910,35 +20935,6 @@
         "CMCT"
       ]
     },
-    "CMII": {
-      "annualForm": "10-K",
-      "cik": 2088805,
-      "country": "Cayman Islands",
-      "countryBasis": "state-of-incorporation",
-      "countryCode": "E9",
-      "entityType": "operating",
-      "exchange": "Nasdaq",
-      "filerCategory": "<br>Emerging growth company",
-      "filesFormSd": false,
-      "lastAnnual": "2026-03-30",
-      "name": "Inflection Point Acquisition Corp. VII",
-      "offshoreIncorporation": true,
-      "operatingBasis": "business-address",
-      "operatingCountry": "United States",
-      "operatingRegion": "NY",
-      "region": null,
-      "sic": 7373,
-      "sicDescription": "Services-Computer Integrated Systems Design",
-      "symbol": "CMII",
-      "tickers": [
-        "CMII",
-        "CMIIU",
-        "CMIIW",
-        "IPXG",
-        "IPXGU",
-        "IPXGW"
-      ]
-    },
     "CMLSQ": {
       "annualForm": "10-K",
       "cik": 1058623,
@@ -21902,7 +21898,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "OTC",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-31",
       "name": "Chilean Cobalt Corp.",
@@ -22051,7 +22047,7 @@
       "entityType": "operating",
       "exchange": "OTC",
       "filerCategory": "Accelerated filer<br>Smaller reporting company",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-03-03",
       "name": "Coronado Global Resources Inc.",
       "offshoreIncorporation": false,
@@ -22659,7 +22655,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-06-18",
       "name": "Central Plains Bancshares, Inc.",
@@ -24432,31 +24428,6 @@
         "CTHH"
       ]
     },
-    "CTGL": {
-      "annualForm": "10-K",
-      "cik": 1498067,
-      "country": null,
-      "countryBasis": null,
-      "countryCode": null,
-      "entityType": "operating",
-      "exchange": "OTC",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
-      "filesFormSd": false,
-      "lastAnnual": "2026-04-15",
-      "name": "SKYTECH ORION GLOBAL CORP.",
-      "offshoreIncorporation": false,
-      "operatingBasis": "business-address",
-      "operatingCountry": "United States",
-      "operatingRegion": "MD",
-      "region": null,
-      "sic": 7372,
-      "sicDescription": "Services-Prepackaged Software",
-      "symbol": "CTGL",
-      "tickers": [
-        "CTGL",
-        "SKTG"
-      ]
-    },
     "CTGO": {
       "annualForm": "10-K",
       "cik": 1502377,
@@ -24936,7 +24907,8 @@
       "sicDescription": "Wholesale-Groceries & Related Products",
       "symbol": "CUEN",
       "tickers": [
-        "CUEN"
+        "CUEN",
+        "CUENW"
       ]
     },
     "CULP": {
@@ -25887,7 +25859,7 @@
       "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-30",
-      "name": "Cyclerion Therapeutics, Inc.",
+      "name": "Korsana Biosciences, Inc.",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
       "operatingCountry": "United States",
@@ -25897,7 +25869,8 @@
       "sicDescription": "Pharmaceutical Preparations",
       "symbol": "CYCN",
       "tickers": [
-        "CYCN"
+        "CYCN",
+        "KRSA"
       ]
     },
     "CYCU": {
@@ -27040,32 +27013,6 @@
         "DEVSF"
       ]
     },
-    "DFDV": {
-      "annualForm": "10-K",
-      "cik": 1805526,
-      "country": null,
-      "countryBasis": null,
-      "countryCode": null,
-      "entityType": "operating",
-      "exchange": "Nasdaq",
-      "filerCategory": "<br>Emerging growth company",
-      "filesFormSd": false,
-      "lastAnnual": "2026-03-30",
-      "name": "DeFi Development Corp.",
-      "offshoreIncorporation": false,
-      "operatingBasis": "business-address",
-      "operatingCountry": "United States",
-      "operatingRegion": "FL",
-      "region": null,
-      "sic": 6199,
-      "sicDescription": "Finance Services",
-      "symbol": "DFDV",
-      "tickers": [
-        "DFDV",
-        "DFDVW",
-        "DFUKF"
-      ]
-    },
     "DFH": {
       "annualForm": "10-K",
       "cik": 1825088,
@@ -27147,7 +27094,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-09",
       "name": "T3 Defense Inc.",
@@ -29293,6 +29240,31 @@
         "EAI"
       ]
     },
+    "EAIQ": {
+      "annualForm": "10-K",
+      "cik": 1807689,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "OTC",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-03-31",
+      "name": "FAST CASUAL CONCEPTS, INC.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "WY",
+      "region": null,
+      "sic": 5810,
+      "sicDescription": "Retail-Eating & Drinking Places",
+      "symbol": "EAIQ",
+      "tickers": [
+        "EAIQ",
+        "FCCI"
+      ]
+    },
     "EAT": {
       "annualForm": "10-K",
       "cik": 703351,
@@ -29945,6 +29917,30 @@
       "symbol": "EFSI",
       "tickers": [
         "EFSI"
+      ]
+    },
+    "EGAN": {
+      "annualForm": "10-K",
+      "cik": 1066194,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-10",
+      "name": "EGAIN Corp",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "CA",
+      "region": null,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "symbol": "EGAN",
+      "tickers": [
+        "EGAN"
       ]
     },
     "EGBN": {
@@ -30834,7 +30830,7 @@
       "countryCode": "Z4",
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "<br>Emerging growth company",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-02-19",
       "name": "enGene Therapeutics Inc.",
@@ -32607,7 +32603,7 @@
       "exchange": "NYSE",
       "filerCategory": "Accelerated filer<br>Smaller reporting company",
       "filesFormSd": false,
-      "lastAnnual": "2025-10-24",
+      "lastAnnual": "2026-09-08",
       "name": "EVI INDUSTRIES, INC.",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
@@ -32653,7 +32649,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "NYSE",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-05",
       "name": "Evommune, Inc.",
@@ -33589,30 +33585,6 @@
         "FBRT-PE"
       ]
     },
-    "FBRX": {
-      "annualForm": "10-K",
-      "cik": 1419041,
-      "country": null,
-      "countryBasis": null,
-      "countryCode": null,
-      "entityType": "operating",
-      "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
-      "filesFormSd": false,
-      "lastAnnual": "2026-03-31",
-      "name": "Forte Biosciences, Inc.",
-      "offshoreIncorporation": false,
-      "operatingBasis": "business-address",
-      "operatingCountry": "United States",
-      "operatingRegion": "TX",
-      "region": null,
-      "sic": 2834,
-      "sicDescription": "Pharmaceutical Preparations",
-      "symbol": "FBRX",
-      "tickers": [
-        "FBRX"
-      ]
-    },
     "FBTC": {
       "annualForm": "10-K",
       "cik": 1852317,
@@ -33733,31 +33705,6 @@
       "symbol": "FCBC",
       "tickers": [
         "FCBC"
-      ]
-    },
-    "FCCI": {
-      "annualForm": "10-K",
-      "cik": 1807689,
-      "country": null,
-      "countryBasis": null,
-      "countryCode": null,
-      "entityType": "operating",
-      "exchange": "OTC",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
-      "filesFormSd": false,
-      "lastAnnual": "2026-03-31",
-      "name": "FAST CASUAL CONCEPTS, INC.",
-      "offshoreIncorporation": false,
-      "operatingBasis": "business-address",
-      "operatingCountry": "United States",
-      "operatingRegion": "WY",
-      "region": null,
-      "sic": 5810,
-      "sicDescription": "Retail-Eating & Drinking Places",
-      "symbol": "FCCI",
-      "tickers": [
-        "EAIQ",
-        "FCCI"
       ]
     },
     "FCCN": {
@@ -36717,7 +36664,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Accelerated filer<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-02-27",
       "name": "FIVE STAR BANCORP",
@@ -38116,7 +38063,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "OTC",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-15",
       "name": "SELECTIS HEALTH, INC.",
@@ -38260,7 +38207,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "OTC",
-      "filerCategory": "<br>Emerging growth company",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-15",
       "name": "GIVBUX, INC.",
@@ -38322,6 +38269,30 @@
       "symbol": "GCAN",
       "tickers": [
         "GCAN"
+      ]
+    },
+    "GCBC": {
+      "annualForm": "10-K",
+      "cik": 1070524,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-09",
+      "name": "GREENE COUNTY BANCORP INC",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "NY",
+      "region": null,
+      "sic": 6036,
+      "sicDescription": "Savings Institutions, Not Federally Chartered",
+      "symbol": "GCBC",
+      "tickers": [
+        "GCBC"
       ]
     },
     "GCGJ": {
@@ -39683,7 +39654,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "<br>Emerging growth company",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-15",
       "name": "Gloo Holdings, Inc.",
@@ -39816,7 +39787,6 @@
       "sicDescription": "Telephone Communications (No Radiotelephone)",
       "symbol": "GLTKD",
       "tickers": [
-        "GLTK",
         "GLTKD"
       ]
     },
@@ -39852,7 +39822,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-17",
       "name": "Monte Rosa Therapeutics, Inc.",
@@ -40305,6 +40275,30 @@
         "GOGO"
       ]
     },
+    "GOLD": {
+      "annualForm": "10-K",
+      "cik": 1591588,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "NYSE",
+      "filerCategory": "Accelerated filer",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-10",
+      "name": "Gold.com, Inc.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "CA",
+      "region": null,
+      "sic": 5094,
+      "sicDescription": "Wholesale-Jewelry, Watches, Precious Stones & Metals",
+      "symbol": "GOLD",
+      "tickers": [
+        "GOLD"
+      ]
+    },
     "GOLF": {
       "annualForm": "10-K",
       "cik": 1672013,
@@ -40655,7 +40649,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "OTC",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-08-11",
       "name": "GPO Plus, Inc.",
@@ -40921,7 +40915,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-01-30",
       "name": "GRI Bio, Inc.",
@@ -42761,7 +42755,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-16",
       "name": "Healthcare Triangle, Inc.",
@@ -42785,7 +42779,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-31",
       "name": "HCW Biologics Inc.",
@@ -44972,8 +44966,7 @@
       "sicDescription": "Biological Products, (No Diagnostic Substances)",
       "symbol": "HUMA",
       "tickers": [
-        "HUMA",
-        "HUMAW"
+        "HUMA"
       ]
     },
     "HUN": {
@@ -45749,6 +45742,30 @@
       "symbol": "IBCP",
       "tickers": [
         "IBCP"
+      ]
+    },
+    "IBEX": {
+      "annualForm": "10-K",
+      "cik": 1720420,
+      "country": "Bermuda",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "D0",
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Accelerated filer",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-10",
+      "name": "IBEX Ltd",
+      "offshoreIncorporation": true,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "DC",
+      "region": null,
+      "sic": 7374,
+      "sicDescription": "Services-Computer Processing & Data Preparation",
+      "symbol": "IBEX",
+      "tickers": [
+        "IBEX"
       ]
     },
     "IBIO": {
@@ -47407,7 +47424,7 @@
       "exchange": "Nasdaq",
       "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
       "filesFormSd": false,
-      "lastAnnual": "2025-10-24",
+      "lastAnnual": "2026-09-09",
       "name": "InMed Pharmaceuticals Inc.",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
@@ -47469,6 +47486,30 @@
         "INN",
         "INN-PE",
         "INN-PF"
+      ]
+    },
+    "INNV": {
+      "annualForm": "10-K",
+      "cik": 1834376,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-09",
+      "name": "InnovAge Holding Corp.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "CO",
+      "region": null,
+      "sic": 8000,
+      "sicDescription": "Services-Health Services",
+      "symbol": "INNV",
+      "tickers": [
+        "INNV"
       ]
     },
     "INO": {
@@ -48384,6 +48425,32 @@
       "symbol": "IPWR",
       "tickers": [
         "IPWR"
+      ]
+    },
+    "IPXG": {
+      "annualForm": "10-K",
+      "cik": 2088805,
+      "country": "Cayman Islands",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "E9",
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-03-30",
+      "name": "Inflection Point Acquisition Corp. VII",
+      "offshoreIncorporation": true,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "NY",
+      "region": null,
+      "sic": 7373,
+      "sicDescription": "Services-Computer Integrated Systems Design",
+      "symbol": "IPXG",
+      "tickers": [
+        "IPXG",
+        "IPXGU",
+        "IPXGW"
       ]
     },
     "IQST": {
@@ -51155,7 +51222,7 @@
       "countryCode": "D0",
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-07-14",
       "name": "KESTRA MEDICAL TECHNOLOGIES, LTD.",
@@ -53269,7 +53336,10 @@
     },
     "LEG": {
       "annualForm": "10-K",
+      "carriedFrom": "2026-09-09T01:49:44Z",
+      "carryBasis": "has-published-filing-evidence",
       "cik": 58492,
+      "confirmedThisScan": false,
       "country": null,
       "countryBasis": null,
       "countryCode": null,
@@ -53728,6 +53798,30 @@
         "LGNXZ",
         "LGNYZ",
         "LGNZZ"
+      ]
+    },
+    "LGSP": {
+      "annualForm": "10-K",
+      "cik": 1970129,
+      "country": "Armenia",
+      "countryBasis": "business-address",
+      "countryCode": "1B",
+      "entityType": "operating",
+      "exchange": "OTC",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-08-14",
+      "name": "LEGEND SPICES, INC.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Armenia",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 2030,
+      "sicDescription": "Canned, Frozen & Preservd Fruit, Veg & Food Specialties",
+      "symbol": "LGSP",
+      "tickers": [
+        "LGSP"
       ]
     },
     "LGVN": {
@@ -55218,7 +55312,7 @@
       "exchange": "Nasdaq",
       "filerCategory": "Accelerated filer",
       "filesFormSd": false,
-      "lastAnnual": "2026-02-04",
+      "lastAnnual": "2026-09-09",
       "name": "LESAKA TECHNOLOGIES INC",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
@@ -57067,6 +57161,30 @@
         "MCBS"
       ]
     },
+    "MCFT": {
+      "annualForm": "10-K",
+      "cik": 1638290,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Accelerated filer",
+      "filesFormSd": true,
+      "lastAnnual": "2026-09-10",
+      "name": "MasterCraft Boat Holdings, Inc.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "TN",
+      "region": null,
+      "sic": 3730,
+      "sicDescription": "Ship & Boat Building & Repairing",
+      "symbol": "MCFT",
+      "tickers": [
+        "MCFT"
+      ]
+    },
     "MCGA": {
       "annualForm": "10-K",
       "cik": 2064658,
@@ -57978,7 +58096,7 @@
       "countryBasis": null,
       "countryCode": null,
       "entityType": "operating",
-      "exchange": "OTC",
+      "exchange": "",
       "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-31",
@@ -61660,6 +61778,30 @@
         "NAMSW"
       ]
     },
+    "NAPD": {
+      "annualForm": "10-K",
+      "cik": 1703625,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "OTC",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-08-21",
+      "name": "NAPC Defense, Inc.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "FL",
+      "region": null,
+      "sic": 7310,
+      "sicDescription": "Services-Advertising",
+      "symbol": "NAPD",
+      "tickers": [
+        "NAPD"
+      ]
+    },
     "NATH": {
       "annualForm": "10-K",
       "cik": 69733,
@@ -61764,7 +61906,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "<br>Emerging growth company",
+      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-02",
       "name": "Navan, Inc.",
@@ -65703,7 +65845,6 @@
       "sicDescription": "Retail-Catalog & Mail-Order Houses",
       "symbol": "NXH",
       "tickers": [
-        "BBBY",
         "BBBYW",
         "NXH"
       ]
@@ -66750,7 +66891,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "NYSE",
-      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-17",
       "name": "Oklo Inc.",
@@ -67561,8 +67702,7 @@
       "sicDescription": "Real Estate Agents & Managers (For Others)",
       "symbol": "OPAD",
       "tickers": [
-        "OPAD",
-        "OPADW"
+        "OPAD"
       ]
     },
     "OPAL": {
@@ -69060,6 +69200,31 @@
       "tickers": [
         "PAA",
         "PAAPU"
+      ]
+    },
+    "PAAI": {
+      "annualForm": "10-K",
+      "cik": 894871,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "NYSE",
+      "filerCategory": "Accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-04-30",
+      "name": "Paradium.AI, Inc.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "NY",
+      "region": null,
+      "sic": 4841,
+      "sicDescription": "Cable & Other Pay Television Services",
+      "symbol": "PAAI",
+      "tickers": [
+        "AREN",
+        "PAAI"
       ]
     },
     "PACB": {
@@ -71096,10 +71261,11 @@
       "operatingCountry": "United States",
       "operatingRegion": "DE",
       "region": null,
-      "sic": 2836,
-      "sicDescription": "Biological Products, (No Diagnostic Substances)",
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
       "symbol": "PHGE",
       "tickers": [
+        "HLSQ",
         "PHGE"
       ]
     },
@@ -71970,6 +72136,30 @@
       "symbol": "PLUG",
       "tickers": [
         "PLUG"
+      ]
+    },
+    "PLUR": {
+      "annualForm": "10-K",
+      "cik": 1158780,
+      "country": "Israel",
+      "countryBasis": "business-address",
+      "countryCode": "L3",
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-10",
+      "name": "Pluri Inc.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Israel",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 2836,
+      "sicDescription": "Biological Products, (No Diagnostic Substances)",
+      "symbol": "PLUR",
+      "tickers": [
+        "PLUR"
       ]
     },
     "PLUS": {
@@ -75039,7 +75229,7 @@
       "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-26",
-      "name": "Quoin Pharmaceuticals, Ltd.",
+      "name": "Quoin Pharmaceuticals Ltd.",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
       "operatingCountry": "United States",
@@ -75241,7 +75431,6 @@
       "sicDescription": "Measuring & Controlling Devices, NEC",
       "symbol": "QSI",
       "tickers": [
-        "CAPA",
         "QSI"
       ]
     },
@@ -75387,7 +75576,6 @@
       "sicDescription": "Pharmaceutical Preparations",
       "symbol": "QTTB",
       "tickers": [
-        "FIXX",
         "QTTB"
       ]
     },
@@ -75561,7 +75749,10 @@
     },
     "QVCAQ": {
       "annualForm": "10-K",
+      "carriedFrom": "2026-09-09T01:49:44Z",
+      "carryBasis": "has-published-filing-evidence",
       "cik": 1355096,
+      "confirmedThisScan": false,
       "country": null,
       "countryBasis": null,
       "countryCode": null,
@@ -76850,7 +77041,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "<br>Emerging growth company",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-14",
       "name": "Rent the Runway, Inc.",
@@ -78051,7 +78242,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-16",
       "name": "Rallybio Corp",
@@ -78089,30 +78280,6 @@
       "symbol": "RM",
       "tickers": [
         "RM"
-      ]
-    },
-    "RMAX": {
-      "annualForm": "10-K",
-      "cik": 1581091,
-      "country": null,
-      "countryBasis": null,
-      "countryCode": null,
-      "entityType": "operating",
-      "exchange": "NYSE",
-      "filerCategory": "Accelerated filer",
-      "filesFormSd": false,
-      "lastAnnual": "2026-04-30",
-      "name": "RE/MAX Holdings, Inc.",
-      "offshoreIncorporation": false,
-      "operatingBasis": "business-address",
-      "operatingCountry": "United States",
-      "operatingRegion": "CO",
-      "region": null,
-      "sic": 6531,
-      "sicDescription": "Real Estate Agents & Managers (For Others)",
-      "symbol": "RMAX",
-      "tickers": [
-        "RMAX"
       ]
     },
     "RMBI": {
@@ -78388,7 +78555,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-30",
       "name": "Transcode Therapeutics, Inc.",
@@ -79435,8 +79602,8 @@
       "operatingCountry": "United States",
       "operatingRegion": "CA",
       "region": null,
-      "sic": 3690,
-      "sicDescription": "Miscellaneous Electrical Machinery, Equipment & Supplies",
+      "sic": 1700,
+      "sicDescription": "Construction - Special Trade Contractors",
       "symbol": "RUN",
       "tickers": [
         "RUN"
@@ -79644,7 +79811,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "OTC",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-31",
       "name": "TAP REAL ESTATE TECHNOLOGIES, INC.",
@@ -80304,7 +80471,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-03",
       "name": "Sana Biotechnology, Inc.",
@@ -81178,7 +81345,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "OTC",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-05-28",
       "name": "SDR Drone, Inc.",
@@ -82413,7 +82580,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "OTC",
-      "filerCategory": "<br>Emerging growth company",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-24",
       "name": "Strategic Storage Trust VI, Inc.",
@@ -83344,6 +83511,30 @@
       "symbol": "SKT",
       "tickers": [
         "SKT"
+      ]
+    },
+    "SKTG": {
+      "annualForm": "10-K",
+      "cik": 1498067,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "OTC",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-04-15",
+      "name": "SKYTECH ORION GLOBAL CORP.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "MD",
+      "region": null,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "symbol": "SKTG",
+      "tickers": [
+        "SKTG"
       ]
     },
     "SKVI": {
@@ -84997,7 +85188,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "OTC",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-24",
       "name": "Summit Networks Inc.",
@@ -88340,7 +88531,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-30",
       "name": "60 DEGREES PHARMACEUTICALS, INC.",
@@ -91272,7 +91463,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "NYSE",
-      "filerCategory": "<br>Emerging growth company",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-01-20",
       "name": "Trio Petroleum Corp",
@@ -91802,7 +91993,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "OTC",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-05-22",
       "name": "TRANSUITE.ORG INC.",
@@ -92189,7 +92380,7 @@
       "exchange": "Nasdaq",
       "filerCategory": "Large accelerated filer",
       "filesFormSd": false,
-      "lastAnnual": "2026-03-25",
+      "lastAnnual": "2026-09-08",
       "name": "ServiceTitan, Inc.",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
@@ -92936,7 +93127,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-02",
       "name": "Tyra Biosciences, Inc.",
@@ -95155,7 +95346,6 @@
       "sicDescription": "Services-Auto Rental & Leasing (No Drivers)",
       "symbol": "VAI",
       "tickers": [
-        "AIHS",
         "VAI"
       ]
     },
@@ -96204,7 +96394,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-15",
       "name": "Vivakor, Inc.",
@@ -97078,7 +97268,7 @@
       "countryCode": "A1",
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-15",
       "name": "Versus Systems Inc.",
@@ -98438,7 +98628,7 @@
       "exchange": "Nasdaq",
       "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
       "filesFormSd": false,
-      "lastAnnual": "2026-04-06",
+      "lastAnnual": "2026-09-09",
       "name": "Where Food Comes From, Inc.",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
@@ -99160,7 +99350,7 @@
       "countryBasis": null,
       "countryCode": null,
       "entityType": "operating",
-      "exchange": "",
+      "exchange": "OTC",
       "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
       "filesFormSd": false,
       "lastAnnual": "2026-05-08",
@@ -99249,7 +99439,7 @@
         "WOR"
       ]
     },
-    "WORXD": {
+    "WORX": {
       "annualForm": "10-K",
       "cik": 1674227,
       "country": null,
@@ -99268,7 +99458,7 @@
       "region": null,
       "sic": 7374,
       "sicDescription": "Services-Computer Processing & Data Preparation",
-      "symbol": "WORXD",
+      "symbol": "WORX",
       "tickers": [
         "WORX",
         "WORXD"
@@ -100423,9 +100613,9 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "<br>Emerging growth company",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
       "filesFormSd": false,
-      "lastAnnual": "2026-03-18",
+      "lastAnnual": "2026-09-10",
       "name": "TEN Holdings, Inc.",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
@@ -100711,7 +100901,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "NYSE",
-      "filerCategory": "Accelerated filer<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-04",
       "name": "Xponential Fitness, Inc.",
@@ -102084,42 +102274,47 @@
   "contractVersion": 1,
   "coverage": {
     "alreadyInPool": 1,
-    "annualFilers": 6467,
-    "attempted": 4468,
-    "droppedBlankCheck": 203,
-    "droppedNoSic": 55,
-    "published": 4210,
-    "publishedFilesFormSd": 650,
-    "skippedNoTicker": 1583,
-    "skippedTickerCollision": 415,
+    "annualFilers": 6479,
+    "attempted": 4472,
+    "carriedForward": 2,
+    "carriedForwardSymbols": [
+      "LEG",
+      "QVCAQ"
+    ],
+    "droppedBlankCheck": 202,
+    "droppedNoSic": 54,
+    "published": 4218,
+    "publishedFilesFormSd": 649,
+    "skippedNoTicker": 1589,
+    "skippedTickerCollision": 417,
     "submissionsFailed": 0
   },
   "dataset": "supply-chain-domestic-filers",
   "note": "报 10-K 的美国本土发行人中，标普 500 之外的那些。标普那批本来就是这一批的子集，已在池中、且有站内报价，按 CIK 与代码双重跳过，绝不覆盖。排除 SIC 6770 空白支票公司（定义上不是经营实体）与没有 SIC 的（环节与产业链判不出来，接不进模型）。**这一池只增加节点、不增加关系边**——Form SD 是冶炼厂边的唯一来源，逐家由 filesFormSd 标出；公司家数变多不表示关系覆盖变好。",
   "quarters": [
     {
-      "bytes": 2978360,
+      "bytes": 3109095,
       "gzip": true,
       "quarter": "2026QTR3",
-      "rows": 236914,
+      "rows": 248146,
       "unparsed": 7
     },
     {
-      "bytes": 4269898,
+      "bytes": 4272410,
       "gzip": true,
       "quarter": "2026QTR2",
       "rows": 353168,
       "unparsed": 7
     },
     {
-      "bytes": 4439464,
+      "bytes": 4439767,
       "gzip": true,
       "quarter": "2026QTR1",
       "rows": 370055,
       "unparsed": 7
     },
     {
-      "bytes": 3399479,
+      "bytes": 3399984,
       "gzip": true,
       "quarter": "2025QTR4",
       "rows": 276466,
@@ -102127,5 +102322,5 @@
     }
   ],
   "source": "SEC EDGAR 季度全量索引 + submissions（公共领域）",
-  "updatedAt": "2026-09-09T01:49:44Z"
+  "updatedAt": "2026-09-12T01:53:37Z"
 }

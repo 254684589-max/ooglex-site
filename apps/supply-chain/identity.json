@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-identity",
-  "updatedAt": "2026-09-09T01:14:21Z",
+  "updatedAt": "2026-09-12T01:22:03Z",
   "source": "SEC EDGAR company_tickers.json + data.sec.gov/submissions",
   "sourceUrl": "https://www.sec.gov/os/accessing-edgar-data",
   "expected": 495,
@@ -143,12 +143,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Mastercard Inc"
     },
-    "ORCL": {
-      "cik": 1341439,
-      "sic": 7372,
-      "sicDescription": "Services-Prepackaged Software",
+    "ABBV": {
+      "cik": 1551152,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
       "filerCategory": "Large accelerated filer",
-      "secName": "ORACLE CORP"
+      "secName": "AbbVie Inc."
     },
     "BAC": {
       "cik": 70858,
@@ -157,19 +157,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "BANK OF AMERICA CORP /DE/"
     },
-    "ABBV": {
-      "cik": 1551152,
-      "sic": 2834,
-      "sicDescription": "Pharmaceutical Preparations",
-      "filerCategory": "Large accelerated filer",
-      "secName": "AbbVie Inc."
-    },
     "CSCO": {
       "cik": 858877,
       "sic": 3576,
       "sicDescription": "Computer Communications Equipment",
       "filerCategory": "Large accelerated filer",
       "secName": "CISCO SYSTEMS, INC."
+    },
+    "ORCL": {
+      "cik": 1341439,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "filerCategory": "Large accelerated filer",
+      "secName": "ORACLE CORP"
     },
     "CVX": {
       "cik": 93410,
@@ -184,13 +184,6 @@
       "sicDescription": "Retail-Variety Stores",
       "filerCategory": "Large accelerated filer",
       "secName": "COSTCO WHOLESALE CORP /NEW"
-    },
-    "LRCX": {
-      "cik": 707549,
-      "sic": 3559,
-      "sicDescription": "Special Industry Machinery, NEC",
-      "filerCategory": "Large accelerated filer",
-      "secName": "LAM RESEARCH CORP"
     },
     "PLTR": {
       "cik": 1321655,
@@ -213,6 +206,20 @@
       "filerCategory": "Large accelerated filer",
       "secName": "CATERPILLAR INC"
     },
+    "DELL": {
+      "cik": 1571996,
+      "sic": 3571,
+      "sicDescription": "Electronic Computers",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Dell Technologies Inc."
+    },
+    "LRCX": {
+      "cik": 707549,
+      "sic": 3559,
+      "sicDescription": "Special Industry Machinery, NEC",
+      "filerCategory": "Large accelerated filer",
+      "secName": "LAM RESEARCH CORP"
+    },
     "AMAT": {
       "cik": 6951,
       "sic": 3674,
@@ -234,12 +241,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "UNITEDHEALTH GROUP INC"
     },
-    "DELL": {
-      "cik": 1571996,
-      "sic": 3571,
-      "sicDescription": "Electronic Computers",
+    "PG": {
+      "cik": 80424,
+      "sic": 2840,
+      "sicDescription": "Soap, Detergents, Cleang Preparations, Perfumes, Cosmetics",
       "filerCategory": "Large accelerated filer",
-      "secName": "Dell Technologies Inc."
+      "secName": "PROCTER & GAMBLE Co"
     },
     "GE": {
       "cik": 40545,
@@ -254,13 +261,6 @@
       "sicDescription": "Security Brokers, Dealers & Flotation Companies",
       "filerCategory": "Large accelerated filer",
       "secName": "MORGAN STANLEY"
-    },
-    "PG": {
-      "cik": 80424,
-      "sic": 2840,
-      "sicDescription": "Soap, Detergents, Cleang Preparations, Perfumes, Cosmetics",
-      "filerCategory": "Large accelerated filer",
-      "secName": "PROCTER & GAMBLE Co"
     },
     "NFLX": {
       "cik": 1065280,
@@ -311,20 +311,6 @@
       "filerCategory": "Large accelerated filer",
       "secName": "GE Vernova Inc."
     },
-    "SNDK": {
-      "cik": 2023554,
-      "sic": 3572,
-      "sicDescription": "Computer Storage Devices",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Sandisk Corp"
-    },
-    "KLAC": {
-      "cik": 319201,
-      "sic": 3827,
-      "sicDescription": "Optical Instruments & Lenses",
-      "filerCategory": "Large accelerated filer",
-      "secName": "KLA CORP"
-    },
     "ANET": {
       "cik": 1596532,
       "sic": 3576,
@@ -339,6 +325,13 @@
       "filerCategory": "Large accelerated filer",
       "secName": "TEXAS INSTRUMENTS INC"
     },
+    "SNDK": {
+      "cik": 2023554,
+      "sic": 3572,
+      "sicDescription": "Computer Storage Devices",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Sandisk Corp"
+    },
     "C": {
       "cik": 831001,
       "sic": 6021,
@@ -346,26 +339,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "CITIGROUP INC"
     },
-    "PANW": {
-      "cik": 1327567,
-      "sic": 3577,
-      "sicDescription": "Computer Peripheral Equipment, NEC",
+    "KLAC": {
+      "cik": 319201,
+      "sic": 3827,
+      "sicDescription": "Optical Instruments & Lenses",
       "filerCategory": "Large accelerated filer",
-      "secName": "Palo Alto Networks Inc"
-    },
-    "TMO": {
-      "cik": 97745,
-      "sic": 3829,
-      "sicDescription": "Measuring & Controlling Devices, NEC",
-      "filerCategory": "Large accelerated filer",
-      "secName": "THERMO FISHER SCIENTIFIC INC."
-    },
-    "AXP": {
-      "cik": 4962,
-      "sic": 6199,
-      "sicDescription": "Finance Services",
-      "filerCategory": "Large accelerated filer",
-      "secName": "AMERICAN EXPRESS CO"
+      "secName": "KLA CORP"
     },
     "IBM": {
       "cik": 51143,
@@ -374,19 +353,33 @@
       "filerCategory": "Large accelerated filer",
       "secName": "INTERNATIONAL BUSINESS MACHINES CORP"
     },
+    "TMO": {
+      "cik": 97745,
+      "sic": 3829,
+      "sicDescription": "Measuring & Controlling Devices, NEC",
+      "filerCategory": "Large accelerated filer",
+      "secName": "THERMO FISHER SCIENTIFIC INC."
+    },
+    "PANW": {
+      "cik": 1327567,
+      "sic": 3577,
+      "sicDescription": "Computer Peripheral Equipment, NEC",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Palo Alto Networks Inc"
+    },
+    "AXP": {
+      "cik": 4962,
+      "sic": 6199,
+      "sicDescription": "Finance Services",
+      "filerCategory": "Large accelerated filer",
+      "secName": "AMERICAN EXPRESS CO"
+    },
     "LIN": {
       "cik": 1707925,
       "sic": 2810,
       "sicDescription": "Industrial Inorganic Chemicals",
       "filerCategory": "Large accelerated filer",
       "secName": "LINDE PLC"
-    },
-    "AMGN": {
-      "cik": 318154,
-      "sic": 2836,
-      "sicDescription": "Biological Products, (No Diagnostic Substances)",
-      "filerCategory": "Large accelerated filer",
-      "secName": "AMGEN INC"
     },
     "VZ": {
       "cik": 732712,
@@ -395,26 +388,26 @@
       "filerCategory": "Large accelerated filer",
       "secName": "VERIZON COMMUNICATIONS INC"
     },
-    "CRM": {
-      "cik": 1108524,
-      "sic": 7372,
-      "sicDescription": "Services-Prepackaged Software",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Salesforce, Inc."
-    },
-    "STX": {
-      "cik": 1137789,
-      "sic": 3572,
-      "sicDescription": "Computer Storage Devices",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Seagate Technology Holdings plc"
-    },
     "MRVL": {
       "cik": 1835632,
       "sic": 3674,
       "sicDescription": "Semiconductors & Related Devices",
       "filerCategory": "Large accelerated filer",
       "secName": "Marvell Technology, Inc."
+    },
+    "AMGN": {
+      "cik": 318154,
+      "sic": 2836,
+      "sicDescription": "Biological Products, (No Diagnostic Substances)",
+      "filerCategory": "Large accelerated filer",
+      "secName": "AMGEN INC"
+    },
+    "CRM": {
+      "cik": 1108524,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Salesforce, Inc."
     },
     "TMUS": {
       "cik": 1283699,
@@ -423,12 +416,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "T-Mobile US, Inc."
     },
-    "PEP": {
-      "cik": 77476,
-      "sic": 2080,
-      "sicDescription": "Beverages",
+    "QCOM": {
+      "cik": 804328,
+      "sic": 3663,
+      "sicDescription": "Radio & Tv Broadcasting & Communications Equipment",
       "filerCategory": "Large accelerated filer",
-      "secName": "PEPSICO INC"
+      "secName": "QUALCOMM INC/DE"
     },
     "SCHW": {
       "cik": 316709,
@@ -437,26 +430,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "SCHWAB CHARLES CORP"
     },
-    "ABT": {
-      "cik": 1800,
-      "sic": 2834,
-      "sicDescription": "Pharmaceutical Preparations",
+    "PEP": {
+      "cik": 77476,
+      "sic": 2080,
+      "sicDescription": "Beverages",
       "filerCategory": "Large accelerated filer",
-      "secName": "ABBOTT LABORATORIES"
+      "secName": "PEPSICO INC"
     },
-    "DE": {
-      "cik": 315189,
-      "sic": 3523,
-      "sicDescription": "Farm Machinery & Equipment",
+    "STX": {
+      "cik": 1137789,
+      "sic": 3572,
+      "sicDescription": "Computer Storage Devices",
       "filerCategory": "Large accelerated filer",
-      "secName": "DEERE & CO"
-    },
-    "QCOM": {
-      "cik": 804328,
-      "sic": 3663,
-      "sicDescription": "Radio & Tv Broadcasting & Communications Equipment",
-      "filerCategory": "Large accelerated filer",
-      "secName": "QUALCOMM INC/DE"
+      "secName": "Seagate Technology Holdings plc"
     },
     "DIS": {
       "cik": 1744489,
@@ -465,19 +451,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Walt Disney Co"
     },
-    "GILD": {
-      "cik": 882095,
-      "sic": 2836,
-      "sicDescription": "Biological Products, (No Diagnostic Substances)",
+    "ADI": {
+      "cik": 6281,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
       "filerCategory": "Large accelerated filer",
-      "secName": "GILEAD SCIENCES, INC."
+      "secName": "ANALOG DEVICES INC"
     },
-    "MCD": {
-      "cik": 63908,
-      "sic": 5812,
-      "sicDescription": "Retail-Eating  Places",
+    "DE": {
+      "cik": 315189,
+      "sic": 3523,
+      "sicDescription": "Farm Machinery & Equipment",
       "filerCategory": "Large accelerated filer",
-      "secName": "MCDONALDS CORP"
+      "secName": "DEERE & CO"
     },
     "T": {
       "cik": 732717,
@@ -486,12 +472,26 @@
       "filerCategory": "Large accelerated filer",
       "secName": "AT&T INC."
     },
-    "ADI": {
-      "cik": 6281,
-      "sic": 3674,
-      "sicDescription": "Semiconductors & Related Devices",
+    "MCD": {
+      "cik": 63908,
+      "sic": 5812,
+      "sicDescription": "Retail-Eating  Places",
       "filerCategory": "Large accelerated filer",
-      "secName": "ANALOG DEVICES INC"
+      "secName": "MCDONALDS CORP"
+    },
+    "GILD": {
+      "cik": 882095,
+      "sic": 2836,
+      "sicDescription": "Biological Products, (No Diagnostic Substances)",
+      "filerCategory": "Large accelerated filer",
+      "secName": "GILEAD SCIENCES, INC."
+    },
+    "ABT": {
+      "cik": 1800,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "filerCategory": "Large accelerated filer",
+      "secName": "ABBOTT LABORATORIES"
     },
     "NEE": {
       "cik": 753308,
@@ -514,6 +514,13 @@
       "filerCategory": "Large accelerated filer",
       "secName": "BlackRock, Inc."
     },
+    "COP": {
+      "cik": 1163165,
+      "sic": 2911,
+      "sicDescription": "Petroleum Refining",
+      "filerCategory": "Large accelerated filer",
+      "secName": "CONOCOPHILLIPS"
+    },
     "WELL": {
       "cik": 766704,
       "sic": 6798,
@@ -528,33 +535,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "BOEING CO"
     },
-    "WDC": {
-      "cik": 106040,
-      "sic": 3572,
-      "sicDescription": "Computer Storage Devices",
-      "filerCategory": "Large accelerated filer",
-      "secName": "WESTERN DIGITAL CORP"
-    },
-    "COP": {
-      "cik": 1163165,
-      "sic": 2911,
-      "sicDescription": "Petroleum Refining",
-      "filerCategory": "Large accelerated filer",
-      "secName": "CONOCOPHILLIPS"
-    },
     "ETN": {
       "cik": 1551182,
       "sic": 3590,
       "sicDescription": "Misc Industrial & Commercial Machinery & Equipment",
       "filerCategory": "Large accelerated filer",
       "secName": "Eaton Corp plc"
-    },
-    "BX": {
-      "cik": 1393818,
-      "sic": 6282,
-      "sicDescription": "Investment Advice",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Blackstone Inc."
     },
     "PFE": {
       "cik": 78003,
@@ -570,19 +556,26 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Interactive Brokers Group, Inc."
     },
+    "BX": {
+      "cik": 1393818,
+      "sic": 6282,
+      "sicDescription": "Investment Advice",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Blackstone Inc."
+    },
+    "WDC": {
+      "cik": 106040,
+      "sic": 3572,
+      "sicDescription": "Computer Storage Devices",
+      "filerCategory": "Large accelerated filer",
+      "secName": "WESTERN DIGITAL CORP"
+    },
     "UBER": {
       "cik": 1543151,
       "sic": 7389,
       "sicDescription": "Services-Business Services, NEC",
       "filerCategory": "Large accelerated filer",
       "secName": "Uber Technologies, Inc"
-    },
-    "DHR": {
-      "cik": 313616,
-      "sic": 3823,
-      "sicDescription": "Industrial Instruments For Measurement, Display, and Control",
-      "filerCategory": "Large accelerated filer",
-      "secName": "DANAHER CORP /DE/"
     },
     "GLW": {
       "cik": 24741,
@@ -591,19 +584,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "CORNING INC /NY"
     },
+    "DHR": {
+      "cik": 313616,
+      "sic": 3823,
+      "sicDescription": "Industrial Instruments For Measurement, Display, and Control",
+      "filerCategory": "Large accelerated filer",
+      "secName": "DANAHER CORP /DE/"
+    },
     "TJX": {
       "cik": 109198,
       "sic": 5651,
       "sicDescription": "Retail-Family Clothing Stores",
       "filerCategory": "Large accelerated filer",
       "secName": "TJX COMPANIES INC /DE/"
-    },
-    "BKNG": {
-      "cik": 1075531,
-      "sic": 4700,
-      "sicDescription": "Transportation Services",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Booking Holdings Inc."
     },
     "NOW": {
       "cik": 1373715,
@@ -619,12 +612,33 @@
       "filerCategory": "Large accelerated filer",
       "secName": "NEWMONT Corp /DE/"
     },
+    "BKNG": {
+      "cik": 1075531,
+      "sic": 4700,
+      "sicDescription": "Transportation Services",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Booking Holdings Inc."
+    },
+    "CB": {
+      "cik": 896159,
+      "sic": 6331,
+      "sicDescription": "Fire, Marine & Casualty Insurance",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Chubb Ltd"
+    },
     "VRTX": {
       "cik": 875320,
       "sic": 2834,
       "sicDescription": "Pharmaceutical Preparations",
       "filerCategory": "Large accelerated filer",
       "secName": "VERTEX PHARMACEUTICALS INC / MA"
+    },
+    "ISRG": {
+      "cik": 1035267,
+      "sic": 3842,
+      "sicDescription": "Orthopedic, Prosthetic & Surgical Appliances & Supplies",
+      "filerCategory": "Large accelerated filer",
+      "secName": "INTUITIVE SURGICAL INC"
     },
     "BMY": {
       "cik": 14272,
@@ -633,13 +647,6 @@
       "filerCategory": "Large accelerated filer",
       "secName": "BRISTOL MYERS SQUIBB CO"
     },
-    "HON": {
-      "cik": 773840,
-      "sic": 3724,
-      "sicDescription": "Aircraft Engines & Engine Parts",
-      "filerCategory": "Large accelerated filer",
-      "secName": "HONEYWELL INTERNATIONAL INC"
-    },
     "COF": {
       "cik": 927628,
       "sic": 6021,
@@ -647,12 +654,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "CAPITAL ONE FINANCIAL CORP"
     },
-    "CB": {
-      "cik": 896159,
+    "HON": {
+      "cik": 773840,
+      "sic": 3724,
+      "sicDescription": "Aircraft Engines & Engine Parts",
+      "filerCategory": "Large accelerated filer",
+      "secName": "HONEYWELL INTERNATIONAL INC"
+    },
+    "PGR": {
+      "cik": 80661,
       "sic": 6331,
       "sicDescription": "Fire, Marine & Casualty Insurance",
       "filerCategory": "Large accelerated filer",
-      "secName": "Chubb Ltd"
+      "secName": "PROGRESSIVE CORP/OH/"
     },
     "PLD": {
       "cik": 1045609,
@@ -667,20 +681,6 @@
       "sicDescription": "Services-Consumer Credit Reporting, Collection Agencies",
       "filerCategory": "Large accelerated filer",
       "secName": "S&P Global Inc."
-    },
-    "PGR": {
-      "cik": 80661,
-      "sic": 6331,
-      "sicDescription": "Fire, Marine & Casualty Insurance",
-      "filerCategory": "Large accelerated filer",
-      "secName": "PROGRESSIVE CORP/OH/"
-    },
-    "ISRG": {
-      "cik": 1035267,
-      "sic": 3842,
-      "sicDescription": "Orthopedic, Prosthetic & Surgical Appliances & Supplies",
-      "filerCategory": "Large accelerated filer",
-      "secName": "INTUITIVE SURGICAL INC"
     },
     "LMT": {
       "cik": 936468,
@@ -710,12 +710,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Medtronic plc"
     },
-    "SBUX": {
-      "cik": 829224,
-      "sic": 5810,
-      "sicDescription": "Retail-Eating & Drinking Places",
+    "VLO": {
+      "cik": 1035002,
+      "sic": 2911,
+      "sicDescription": "Petroleum Refining",
       "filerCategory": "Large accelerated filer",
-      "secName": "STARBUCKS CORP"
+      "secName": "VALERO ENERGY CORP/TX"
     },
     "MPC": {
       "cik": 1510295,
@@ -724,13 +724,6 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Marathon Petroleum Corp"
     },
-    "FTNT": {
-      "cik": 1262039,
-      "sic": 3577,
-      "sicDescription": "Computer Peripheral Equipment, NEC",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Fortinet, Inc."
-    },
     "MO": {
       "cik": 764180,
       "sic": 2111,
@@ -738,40 +731,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "ALTRIA GROUP, INC."
     },
-    "VLO": {
-      "cik": 1035002,
-      "sic": 2911,
-      "sicDescription": "Petroleum Refining",
+    "FTNT": {
+      "cik": 1262039,
+      "sic": 3577,
+      "sicDescription": "Computer Peripheral Equipment, NEC",
       "filerCategory": "Large accelerated filer",
-      "secName": "VALERO ENERGY CORP/TX"
-    },
-    "LOW": {
-      "cik": 60667,
-      "sic": 5211,
-      "sicDescription": "Retail-Lumber & Other Building Materials Dealers",
-      "filerCategory": "Large accelerated filer",
-      "secName": "LOWES COMPANIES INC"
-    },
-    "BNY": {
-      "cik": 1390777,
-      "sic": 6022,
-      "sicDescription": "State Commercial Banks",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Bank of New York Mellon Corp"
-    },
-    "VRT": {
-      "cik": 1674101,
-      "sic": 3679,
-      "sicDescription": "Electronic Components, NEC",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Vertiv Holdings Co"
-    },
-    "FCX": {
-      "cik": 831259,
-      "sic": 1000,
-      "sicDescription": "Metal Mining",
-      "filerCategory": "Large accelerated filer",
-      "secName": "FREEPORT-MCMORAN INC"
+      "secName": "Fortinet, Inc."
     },
     "ACN": {
       "cik": 1467373,
@@ -780,12 +745,33 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Accenture plc"
     },
-    "CEG": {
-      "cik": 1868275,
-      "sic": 4911,
-      "sicDescription": "Electric Services",
+    "SBUX": {
+      "cik": 829224,
+      "sic": 5810,
+      "sicDescription": "Retail-Eating & Drinking Places",
       "filerCategory": "Large accelerated filer",
-      "secName": "Constellation Energy Corp"
+      "secName": "STARBUCKS CORP"
+    },
+    "BNY": {
+      "cik": 1390777,
+      "sic": 6022,
+      "sicDescription": "State Commercial Banks",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Bank of New York Mellon Corp"
+    },
+    "LOW": {
+      "cik": 60667,
+      "sic": 5211,
+      "sicDescription": "Retail-Lumber & Other Building Materials Dealers",
+      "filerCategory": "Large accelerated filer",
+      "secName": "LOWES COMPANIES INC"
+    },
+    "APP": {
+      "cik": 1751008,
+      "sic": 7370,
+      "sicDescription": "Services-Computer Programming, Data Processing, Etc.",
+      "filerCategory": "Large accelerated filer",
+      "secName": "AppLovin Corp"
     },
     "ADP": {
       "cik": 8670,
@@ -801,19 +787,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "STRYKER CORP"
     },
-    "HOOD": {
-      "cik": 1783879,
-      "sic": 6211,
-      "sicDescription": "Security Brokers, Dealers & Flotation Companies",
+    "PSX": {
+      "cik": 1534701,
+      "sic": 2911,
+      "sicDescription": "Petroleum Refining",
       "filerCategory": "Large accelerated filer",
-      "secName": "Robinhood Markets, Inc."
+      "secName": "Phillips 66"
     },
-    "APP": {
-      "cik": 1751008,
-      "sic": 7370,
-      "sicDescription": "Services-Computer Programming, Data Processing, Etc.",
+    "APH": {
+      "cik": 820313,
+      "sic": 3678,
+      "sicDescription": "Electronic Connectors",
       "filerCategory": "Large accelerated filer",
-      "secName": "AppLovin Corp"
+      "secName": "AMPHENOL CORP /DE/"
     },
     "MCK": {
       "cik": 927653,
@@ -822,19 +808,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "MCKESSON CORP"
     },
-    "PSX": {
-      "cik": 1534701,
-      "sic": 2911,
-      "sicDescription": "Petroleum Refining",
+    "CEG": {
+      "cik": 1868275,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
       "filerCategory": "Large accelerated filer",
-      "secName": "Phillips 66"
-    },
-    "ABNB": {
-      "cik": 1559720,
-      "sic": 7340,
-      "sicDescription": "Services-To Dwellings & Other Buildings",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Airbnb, Inc."
+      "secName": "Constellation Energy Corp"
     },
     "EQIX": {
       "cik": 1101239,
@@ -842,6 +821,27 @@
       "sicDescription": "Real Estate Investment Trusts",
       "filerCategory": "Large accelerated filer",
       "secName": "EQUINIX INC"
+    },
+    "FCX": {
+      "cik": 831259,
+      "sic": 1000,
+      "sicDescription": "Metal Mining",
+      "filerCategory": "Large accelerated filer",
+      "secName": "FREEPORT-MCMORAN INC"
+    },
+    "HOOD": {
+      "cik": 1783879,
+      "sic": 6211,
+      "sicDescription": "Security Brokers, Dealers & Flotation Companies",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Robinhood Markets, Inc."
+    },
+    "ABNB": {
+      "cik": 1559720,
+      "sic": 7340,
+      "sicDescription": "Services-To Dwellings & Other Buildings",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Airbnb, Inc."
     },
     "ADBE": {
       "cik": 796343,
@@ -857,12 +857,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "CME GROUP INC."
     },
-    "APH": {
-      "cik": 820313,
-      "sic": 3678,
-      "sicDescription": "Electronic Connectors",
+    "VRT": {
+      "cik": 1674101,
+      "sic": 3679,
+      "sicDescription": "Electronic Components, NEC",
       "filerCategory": "Large accelerated filer",
-      "secName": "AMPHENOL CORP /DE/"
+      "secName": "Vertiv Holdings Co"
     },
     "SO": {
       "cik": 92122,
@@ -871,6 +871,13 @@
       "filerCategory": "Large accelerated filer",
       "secName": "SOUTHERN CO"
     },
+    "PNC": {
+      "cik": 713676,
+      "sic": 6021,
+      "sicDescription": "National Commercial Banks",
+      "filerCategory": "Large accelerated filer",
+      "secName": "PNC FINANCIAL SERVICES GROUP, INC."
+    },
     "TT": {
       "cik": 1466258,
       "sic": 3822,
@@ -878,12 +885,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Trane Technologies plc"
     },
-    "PNC": {
-      "cik": 713676,
-      "sic": 6021,
-      "sicDescription": "National Commercial Banks",
+    "PWR": {
+      "cik": 1050915,
+      "sic": 1731,
+      "sicDescription": "Electrical Work",
       "filerCategory": "Large accelerated filer",
-      "secName": "PNC FINANCIAL SERVICES GROUP, INC."
+      "secName": "QUANTA SERVICES, INC."
     },
     "USB": {
       "cik": 36104,
@@ -899,19 +906,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "GENERAL DYNAMICS CORP"
     },
-    "PWR": {
-      "cik": 1050915,
-      "sic": 1731,
-      "sicDescription": "Electrical Work",
+    "HCA": {
+      "cik": 860730,
+      "sic": 8062,
+      "sicDescription": "Services-General Medical & Surgical Hospitals, NEC",
       "filerCategory": "Large accelerated filer",
-      "secName": "QUANTA SERVICES, INC."
-    },
-    "KKR": {
-      "cik": 1404912,
-      "sic": 6282,
-      "sicDescription": "Investment Advice",
-      "filerCategory": "Large accelerated filer",
-      "secName": "KKR & Co. Inc."
+      "secName": "HCA Healthcare, Inc."
     },
     "DUK": {
       "cik": 1326160,
@@ -919,20 +919,6 @@
       "sicDescription": "Electric & Other Services Combined",
       "filerCategory": "Large accelerated filer",
       "secName": "Duke Energy CORP"
-    },
-    "CMCSA": {
-      "cik": 1166691,
-      "sic": 4841,
-      "sicDescription": "Cable & Other Pay Television Services",
-      "filerCategory": "Large accelerated filer",
-      "secName": "COMCAST CORP"
-    },
-    "WMB": {
-      "cik": 107263,
-      "sic": 4922,
-      "sicDescription": "Natural Gas Transmission",
-      "filerCategory": "Large accelerated filer",
-      "secName": "WILLIAMS COMPANIES, INC."
     },
     "HWM": {
       "cik": 4281,
@@ -948,6 +934,27 @@
       "filerCategory": "Large accelerated filer",
       "secName": "CSX CORP"
     },
+    "ELV": {
+      "cik": 1156039,
+      "sic": 6324,
+      "sicDescription": "Hospital & Medical Service Plans",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Elevance Health, Inc."
+    },
+    "KKR": {
+      "cik": 1404912,
+      "sic": 6282,
+      "sicDescription": "Investment Advice",
+      "filerCategory": "Large accelerated filer",
+      "secName": "KKR & Co. Inc."
+    },
+    "CMCSA": {
+      "cik": 1166691,
+      "sic": 4841,
+      "sicDescription": "Cable & Other Pay Television Services",
+      "filerCategory": "Large accelerated filer",
+      "secName": "COMCAST CORP"
+    },
     "JCI": {
       "cik": 833444,
       "sic": 3585,
@@ -955,12 +962,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Johnson Controls International plc"
     },
-    "HCA": {
-      "cik": 860730,
-      "sic": 8062,
-      "sicDescription": "Services-General Medical & Surgical Hospitals, NEC",
+    "WMB": {
+      "cik": 107263,
+      "sic": 4922,
+      "sicDescription": "Natural Gas Transmission",
       "filerCategory": "Large accelerated filer",
-      "secName": "HCA Healthcare, Inc."
+      "secName": "WILLIAMS COMPANIES, INC."
     },
     "ICE": {
       "cik": 1571949,
@@ -969,19 +976,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Intercontinental Exchange, Inc."
     },
-    "WM": {
-      "cik": 823768,
-      "sic": 4953,
-      "sicDescription": "Refuse Systems",
+    "MAR": {
+      "cik": 1048286,
+      "sic": 7011,
+      "sicDescription": "Hotels & Motels",
       "filerCategory": "Large accelerated filer",
-      "secName": "WASTE MANAGEMENT INC"
-    },
-    "MMM": {
-      "cik": 66740,
-      "sic": 3841,
-      "sicDescription": "Surgical & Medical Instruments & Apparatus",
-      "filerCategory": "Large accelerated filer",
-      "secName": "3M CO"
+      "secName": "MARRIOTT INTERNATIONAL INC /MD/"
     },
     "DASH": {
       "cik": 1792789,
@@ -990,13 +990,6 @@
       "filerCategory": "Large accelerated filer",
       "secName": "DoorDash, Inc."
     },
-    "ELV": {
-      "cik": 1156039,
-      "sic": 6324,
-      "sicDescription": "Hospital & Medical Service Plans",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Elevance Health, Inc."
-    },
     "INTU": {
       "cik": 896878,
       "sic": 7372,
@@ -1004,19 +997,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "INTUIT INC."
     },
-    "MRSH": {
-      "cik": 62709,
-      "sic": 6411,
-      "sicDescription": "Insurance Agents, Brokers & Service",
+    "MMM": {
+      "cik": 66740,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
       "filerCategory": "Large accelerated filer",
-      "secName": "MARSH & MCLENNAN COMPANIES, INC."
+      "secName": "3M CO"
     },
-    "MAR": {
-      "cik": 1048286,
-      "sic": 7011,
-      "sicDescription": "Hotels & Motels",
+    "WM": {
+      "cik": 823768,
+      "sic": 4953,
+      "sicDescription": "Refuse Systems",
       "filerCategory": "Large accelerated filer",
-      "secName": "MARRIOTT INTERNATIONAL INC /MD/"
+      "secName": "WASTE MANAGEMENT INC"
     },
     "UPS": {
       "cik": 1090727,
@@ -1025,12 +1018,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "UNITED PARCEL SERVICE INC"
     },
-    "SLB": {
-      "cik": 87347,
-      "sic": 1389,
-      "sicDescription": "Oil & Gas Field Services, NEC",
+    "MRSH": {
+      "cik": 62709,
+      "sic": 6411,
+      "sicDescription": "Insurance Agents, Brokers & Service",
       "filerCategory": "Large accelerated filer",
-      "secName": "SLB LIMITED/NV"
+      "secName": "MARSH & MCLENNAN COMPANIES, INC."
     },
     "EMR": {
       "cik": 32604,
@@ -1039,26 +1032,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "EMERSON ELECTRIC CO"
     },
+    "SLB": {
+      "cik": 87347,
+      "sic": 1389,
+      "sicDescription": "Oil & Gas Field Services, NEC",
+      "filerCategory": "Large accelerated filer",
+      "secName": "SLB LIMITED/NV"
+    },
     "MCO": {
       "cik": 1059556,
       "sic": 7320,
       "sicDescription": "Services-Consumer Credit Reporting, Collection Agencies",
       "filerCategory": "Large accelerated filer",
       "secName": "MOODYS CORP /DE/"
-    },
-    "REGN": {
-      "cik": 872589,
-      "sic": 2834,
-      "sicDescription": "Pharmaceutical Preparations",
-      "filerCategory": "Large accelerated filer",
-      "secName": "REGENERON PHARMACEUTICALS, INC."
-    },
-    "CVNA": {
-      "cik": 1690820,
-      "sic": 5500,
-      "sicDescription": "Retail-Auto Dealers & Gasoline Stations",
-      "filerCategory": "Large accelerated filer",
-      "secName": "CARVANA CO."
     },
     "AMT": {
       "cik": 1053507,
@@ -1067,12 +1053,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "AMERICAN TOWER CORP /MA/"
     },
-    "SHW": {
-      "cik": 89800,
-      "sic": 5200,
-      "sicDescription": "Retail-Building Materials, Hardware, Garden Supply",
+    "HPE": {
+      "cik": 1645590,
+      "sic": 3570,
+      "sicDescription": "Computer & office Equipment",
       "filerCategory": "Large accelerated filer",
-      "secName": "SHERWIN WILLIAMS CO"
+      "secName": "Hewlett Packard Enterprise Co"
     },
     "CTAS": {
       "cik": 723254,
@@ -1080,6 +1066,13 @@
       "sicDescription": "Men's & Boys' Furnishgs, Work Clothg, & Allied Garments",
       "filerCategory": "Large accelerated filer",
       "secName": "CINTAS CORP"
+    },
+    "REGN": {
+      "cik": 872589,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "filerCategory": "Large accelerated filer",
+      "secName": "REGENERON PHARMACEUTICALS, INC."
     },
     "MDLZ": {
       "cik": 1103982,
@@ -1095,13 +1088,6 @@
       "filerCategory": "Large accelerated filer",
       "secName": "CADENCE DESIGN SYSTEMS INC"
     },
-    "ECL": {
-      "cik": 31462,
-      "sic": 2840,
-      "sicDescription": "Soap, Detergents, Cleang Preparations, Perfumes, Cosmetics",
-      "filerCategory": "Large accelerated filer",
-      "secName": "ECOLAB INC."
-    },
     "TRV": {
       "cik": 86312,
       "sic": 6331,
@@ -1109,68 +1095,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "TRAVELERS COMPANIES, INC."
     },
-    "CMI": {
-      "cik": 26172,
-      "sic": 3510,
-      "sicDescription": "Engines & Turbines",
+    "SHW": {
+      "cik": 89800,
+      "sic": 5200,
+      "sicDescription": "Retail-Building Materials, Hardware, Garden Supply",
       "filerCategory": "Large accelerated filer",
-      "secName": "CUMMINS INC"
-    },
-    "GM": {
-      "cik": 1467858,
-      "sic": 3711,
-      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
-      "filerCategory": "Large accelerated filer",
-      "secName": "General Motors Co"
-    },
-    "EOG": {
-      "cik": 821189,
-      "sic": 1311,
-      "sicDescription": "Crude Petroleum & Natural Gas",
-      "filerCategory": "Large accelerated filer",
-      "secName": "EOG RESOURCES INC"
-    },
-    "ITW": {
-      "cik": 49826,
-      "sic": 3560,
-      "sicDescription": "General Industrial Machinery & Equipment",
-      "filerCategory": "Large accelerated filer",
-      "secName": "ILLINOIS TOOL WORKS INC"
-    },
-    "MSI": {
-      "cik": 68505,
-      "sic": 3663,
-      "sicDescription": "Radio & Tv Broadcasting & Communications Equipment",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Motorola Solutions, Inc."
-    },
-    "LITE": {
-      "cik": 1633978,
-      "sic": 3669,
-      "sicDescription": "Communications Equipment, NEC",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Lumentum Holdings Inc."
-    },
-    "APO": {
-      "cik": 1858681,
-      "sic": 6282,
-      "sicDescription": "Investment Advice",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Apollo Global Management, Inc."
-    },
-    "SNPS": {
-      "cik": 883241,
-      "sic": 7372,
-      "sicDescription": "Services-Prepackaged Software",
-      "filerCategory": "Large accelerated filer",
-      "secName": "SYNOPSYS INC"
-    },
-    "FDX": {
-      "cik": 1048911,
-      "sic": 4513,
-      "sicDescription": "Air Courier Services",
-      "filerCategory": "Large accelerated filer",
-      "secName": "FEDEX CORP"
+      "secName": "SHERWIN WILLIAMS CO"
     },
     "DDOG": {
       "cik": 1561550,
@@ -1179,40 +1109,75 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Datadog, Inc."
     },
-    "HPE": {
-      "cik": 1645590,
-      "sic": 3570,
-      "sicDescription": "Computer & office Equipment",
+    "EOG": {
+      "cik": 821189,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
       "filerCategory": "Large accelerated filer",
-      "secName": "Hewlett Packard Enterprise Co"
+      "secName": "EOG RESOURCES INC"
     },
-    "TGT": {
-      "cik": 27419,
-      "sic": 5331,
-      "sicDescription": "Retail-Variety Stores",
+    "ECL": {
+      "cik": 31462,
+      "sic": 2840,
+      "sicDescription": "Soap, Detergents, Cleang Preparations, Perfumes, Cosmetics",
       "filerCategory": "Large accelerated filer",
-      "secName": "TARGET CORP"
+      "secName": "ECOLAB INC."
     },
-    "NOC": {
-      "cik": 1133421,
-      "sic": 3812,
-      "sicDescription": "Search, Detection, Navigation, Guidance, Aeronautical Sys",
+    "MSI": {
+      "cik": 68505,
+      "sic": 3663,
+      "sicDescription": "Radio & Tv Broadcasting & Communications Equipment",
       "filerCategory": "Large accelerated filer",
-      "secName": "NORTHROP GRUMMAN CORP /DE/"
+      "secName": "Motorola Solutions, Inc."
     },
-    "ROST": {
-      "cik": 745732,
-      "sic": 5651,
-      "sicDescription": "Retail-Family Clothing Stores",
+    "GM": {
+      "cik": 1467858,
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
       "filerCategory": "Large accelerated filer",
-      "secName": "ROSS STORES, INC."
+      "secName": "General Motors Co"
     },
-    "NSC": {
-      "cik": 702165,
-      "sic": 4011,
-      "sicDescription": "Railroads, Line-Haul Operating",
+    "ITW": {
+      "cik": 49826,
+      "sic": 3560,
+      "sicDescription": "General Industrial Machinery & Equipment",
       "filerCategory": "Large accelerated filer",
-      "secName": "NORFOLK SOUTHERN CORP"
+      "secName": "ILLINOIS TOOL WORKS INC"
+    },
+    "CMI": {
+      "cik": 26172,
+      "sic": 3510,
+      "sicDescription": "Engines & Turbines",
+      "filerCategory": "Large accelerated filer",
+      "secName": "CUMMINS INC"
+    },
+    "SNPS": {
+      "cik": 883241,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "filerCategory": "Large accelerated filer",
+      "secName": "SYNOPSYS INC"
+    },
+    "CVNA": {
+      "cik": 1690820,
+      "sic": 5500,
+      "sicDescription": "Retail-Auto Dealers & Gasoline Stations",
+      "filerCategory": "Large accelerated filer",
+      "secName": "CARVANA CO."
+    },
+    "APO": {
+      "cik": 1858681,
+      "sic": 6282,
+      "sicDescription": "Investment Advice",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Apollo Global Management, Inc."
+    },
+    "FDX": {
+      "cik": 1048911,
+      "sic": 4513,
+      "sicDescription": "Air Courier Services",
+      "filerCategory": "Large accelerated filer",
+      "secName": "FEDEX CORP"
     },
     "CI": {
       "cik": 1739940,
@@ -1221,6 +1186,34 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Cigna Group"
     },
+    "ROST": {
+      "cik": 745732,
+      "sic": 5651,
+      "sicDescription": "Retail-Family Clothing Stores",
+      "filerCategory": "Large accelerated filer",
+      "secName": "ROSS STORES, INC."
+    },
+    "NOC": {
+      "cik": 1133421,
+      "sic": 3812,
+      "sicDescription": "Search, Detection, Navigation, Guidance, Aeronautical Sys",
+      "filerCategory": "Large accelerated filer",
+      "secName": "NORTHROP GRUMMAN CORP /DE/"
+    },
+    "LITE": {
+      "cik": 1633978,
+      "sic": 3669,
+      "sicDescription": "Communications Equipment, NEC",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Lumentum Holdings Inc."
+    },
+    "NSC": {
+      "cik": 702165,
+      "sic": 4011,
+      "sicDescription": "Railroads, Line-Haul Operating",
+      "filerCategory": "Large accelerated filer",
+      "secName": "NORFOLK SOUTHERN CORP"
+    },
     "ORLY": {
       "cik": 898173,
       "sic": 5531,
@@ -1228,26 +1221,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "O REILLY AUTOMOTIVE INC"
     },
-    "KMI": {
-      "cik": 1506307,
-      "sic": 4922,
-      "sicDescription": "Natural Gas Transmission",
+    "TGT": {
+      "cik": 27419,
+      "sic": 5331,
+      "sicDescription": "Retail-Variety Stores",
       "filerCategory": "Large accelerated filer",
-      "secName": "KINDER MORGAN, INC."
-    },
-    "RCL": {
-      "cik": 884887,
-      "sic": 4400,
-      "sicDescription": "Water Transportation",
-      "filerCategory": "Large accelerated filer",
-      "secName": "ROYAL CARIBBEAN CRUISES LTD"
-    },
-    "CL": {
-      "cik": 21665,
-      "sic": 2844,
-      "sicDescription": "Perfumes, Cosmetics & Other Toilet Preparations",
-      "filerCategory": "Large accelerated filer",
-      "secName": "COLGATE PALMOLIVE CO"
+      "secName": "TARGET CORP"
     },
     "WBD": {
       "cik": 1437107,
@@ -1256,6 +1235,13 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Warner Bros. Discovery, Inc."
     },
+    "RCL": {
+      "cik": 884887,
+      "sic": 4400,
+      "sicDescription": "Water Transportation",
+      "filerCategory": "Large accelerated filer",
+      "secName": "ROYAL CARIBBEAN CRUISES LTD"
+    },
     "HLT": {
       "cik": 1585689,
       "sic": 7011,
@@ -1263,12 +1249,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Hilton Worldwide Holdings Inc."
     },
-    "SPG": {
-      "cik": 1063761,
-      "sic": 6798,
-      "sicDescription": "Real Estate Investment Trusts",
+    "CL": {
+      "cik": 21665,
+      "sic": 2844,
+      "sicDescription": "Perfumes, Cosmetics & Other Toilet Preparations",
       "filerCategory": "Large accelerated filer",
-      "secName": "SIMON PROPERTY GROUP INC."
+      "secName": "COLGATE PALMOLIVE CO"
+    },
+    "KMI": {
+      "cik": 1506307,
+      "sic": 4922,
+      "sicDescription": "Natural Gas Transmission",
+      "filerCategory": "Large accelerated filer",
+      "secName": "KINDER MORGAN, INC."
     },
     "RSG": {
       "cik": 1060391,
@@ -1284,19 +1277,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "AMERICAN ELECTRIC POWER CO INC"
     },
-    "AON": {
-      "cik": 315293,
-      "sic": 6411,
-      "sicDescription": "Insurance Agents, Brokers & Service",
+    "SPG": {
+      "cik": 1063761,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
       "filerCategory": "Large accelerated filer",
-      "secName": "Aon plc"
-    },
-    "BSX": {
-      "cik": 885725,
-      "sic": 3841,
-      "sicDescription": "Surgical & Medical Instruments & Apparatus",
-      "filerCategory": "Large accelerated filer",
-      "secName": "BOSTON SCIENTIFIC CORP"
+      "secName": "SIMON PROPERTY GROUP INC."
     },
     "DLR": {
       "cik": 1297996,
@@ -1305,13 +1291,6 @@
       "filerCategory": "Large accelerated filer",
       "secName": "DIGITAL REALTY TRUST, INC."
     },
-    "APD": {
-      "cik": 2969,
-      "sic": 2810,
-      "sicDescription": "Industrial Inorganic Chemicals",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Air Products & Chemicals, Inc."
-    },
     "ALL": {
       "cik": 899051,
       "sic": 6331,
@@ -1319,19 +1298,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "ALLSTATE CORP"
     },
-    "BDX": {
-      "cik": 10795,
-      "sic": 3841,
-      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+    "APD": {
+      "cik": 2969,
+      "sic": 2810,
+      "sicDescription": "Industrial Inorganic Chemicals",
       "filerCategory": "Large accelerated filer",
-      "secName": "BECTON DICKINSON & CO"
+      "secName": "Air Products & Chemicals, Inc."
     },
-    "AJG": {
-      "cik": 354190,
+    "AON": {
+      "cik": 315293,
       "sic": 6411,
       "sicDescription": "Insurance Agents, Brokers & Service",
       "filerCategory": "Large accelerated filer",
-      "secName": "Arthur J. Gallagher & Co."
+      "secName": "Aon plc"
     },
     "PCAR": {
       "cik": 75362,
@@ -1340,40 +1319,26 @@
       "filerCategory": "Large accelerated filer",
       "secName": "PACCAR INC"
     },
+    "BDX": {
+      "cik": 10795,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+      "filerCategory": "Large accelerated filer",
+      "secName": "BECTON DICKINSON & CO"
+    },
+    "BSX": {
+      "cik": 885725,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+      "filerCategory": "Large accelerated filer",
+      "secName": "BOSTON SCIENTIFIC CORP"
+    },
     "TDG": {
       "cik": 1260221,
       "sic": 3728,
       "sicDescription": "Aircraft Parts & Auxiliary Equipment, NEC",
       "filerCategory": "Large accelerated filer",
       "secName": "TransDigm Group INC"
-    },
-    "URI": {
-      "cik": 1067701,
-      "sic": 7359,
-      "sicDescription": "Services-Equipment Rental & Leasing, NEC",
-      "filerCategory": "Large accelerated filer",
-      "secName": "UNITED RENTALS, INC."
-    },
-    "BKR": {
-      "cik": 1701605,
-      "sic": 3533,
-      "sicDescription": "Oil & Gas Field Machinery & Equipment",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Baker Hughes Co"
-    },
-    "TRGP": {
-      "cik": 1389170,
-      "sic": 4922,
-      "sicDescription": "Natural Gas Transmission",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Targa Resources Corp."
-    },
-    "COR": {
-      "cik": 1140859,
-      "sic": 5122,
-      "sicDescription": "Wholesale-Drugs, Proprietaries & Druggists' Sundries",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Cencora, Inc."
     },
     "TFC": {
       "cik": 92230,
@@ -1382,12 +1347,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "TRUIST FINANCIAL CORP"
     },
-    "OKE": {
-      "cik": 1039684,
-      "sic": 4923,
-      "sicDescription": "Natural Gas Transmisison & Distribution",
+    "COR": {
+      "cik": 1140859,
+      "sic": 5122,
+      "sicDescription": "Wholesale-Drugs, Proprietaries & Druggists' Sundries",
       "filerCategory": "Large accelerated filer",
-      "secName": "ONEOK INC /NEW/"
+      "secName": "Cencora, Inc."
     },
     "MET": {
       "cik": 1099219,
@@ -1396,33 +1361,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "METLIFE INC"
     },
-    "GWW": {
-      "cik": 277135,
-      "sic": 5000,
-      "sicDescription": "Wholesale-Durable Goods",
+    "TRGP": {
+      "cik": 1389170,
+      "sic": 4922,
+      "sicDescription": "Natural Gas Transmission",
       "filerCategory": "Large accelerated filer",
-      "secName": "W.W. GRAINGER, INC."
+      "secName": "Targa Resources Corp."
     },
-    "CRH": {
-      "cik": 849395,
-      "sic": 3241,
-      "sicDescription": "Cement, Hydraulic",
+    "URI": {
+      "cik": 1067701,
+      "sic": 7359,
+      "sicDescription": "Services-Equipment Rental & Leasing, NEC",
       "filerCategory": "Large accelerated filer",
-      "secName": "CRH PUBLIC LTD CO"
-    },
-    "OXY": {
-      "cik": 797468,
-      "sic": 1311,
-      "sicDescription": "Crude Petroleum & Natural Gas",
-      "filerCategory": "Large accelerated filer",
-      "secName": "OCCIDENTAL PETROLEUM CORP /DE/"
-    },
-    "MPWR": {
-      "cik": 1280452,
-      "sic": 3674,
-      "sicDescription": "Semiconductors & Related Devices",
-      "filerCategory": "Large accelerated filer",
-      "secName": "MONOLITHIC POWER SYSTEMS, INC."
+      "secName": "UNITED RENTALS, INC."
     },
     "TEL": {
       "cik": 1385157,
@@ -1431,68 +1382,40 @@
       "filerCategory": "Large accelerated filer",
       "secName": "TE Connectivity plc"
     },
-    "AFL": {
-      "cik": 4977,
-      "sic": 6321,
-      "sicDescription": "Accident & Health Insurance",
+    "AJG": {
+      "cik": 354190,
+      "sic": 6411,
+      "sicDescription": "Insurance Agents, Brokers & Service",
       "filerCategory": "Large accelerated filer",
-      "secName": "AFLAC INC"
+      "secName": "Arthur J. Gallagher & Co."
     },
-    "NUE": {
-      "cik": 73309,
-      "sic": 3312,
-      "sicDescription": "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)",
+    "OXY": {
+      "cik": 797468,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
       "filerCategory": "Large accelerated filer",
-      "secName": "NUCOR CORP"
+      "secName": "OCCIDENTAL PETROLEUM CORP /DE/"
     },
-    "TER": {
-      "cik": 97210,
-      "sic": 3825,
-      "sicDescription": "Instruments For Meas & Testing of  Electricity & Elec Signals",
+    "OKE": {
+      "cik": 1039684,
+      "sic": 4923,
+      "sicDescription": "Natural Gas Transmisison & Distribution",
       "filerCategory": "Large accelerated filer",
-      "secName": "TERADYNE, INC"
+      "secName": "ONEOK INC /NEW/"
     },
-    "D": {
-      "cik": 715957,
-      "sic": 4911,
-      "sicDescription": "Electric Services",
+    "MPWR": {
+      "cik": 1280452,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
       "filerCategory": "Large accelerated filer",
-      "secName": "DOMINION ENERGY, INC"
+      "secName": "MONOLITHIC POWER SYSTEMS, INC."
     },
-    "FIX": {
-      "cik": 1035983,
-      "sic": 1731,
-      "sicDescription": "Electrical Work",
+    "GWW": {
+      "cik": 277135,
+      "sic": 5000,
+      "sicDescription": "Wholesale-Durable Goods",
       "filerCategory": "Large accelerated filer",
-      "secName": "COMFORT SYSTEMS USA INC"
-    },
-    "CTVA": {
-      "cik": 1755672,
-      "sic": 100,
-      "sicDescription": "Agricultural Production-Crops",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Corteva, Inc."
-    },
-    "KEYS": {
-      "cik": 1601046,
-      "sic": 3823,
-      "sicDescription": "Industrial Instruments For Measurement, Display, and Control",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Keysight Technologies, Inc."
-    },
-    "O": {
-      "cik": 726728,
-      "sic": 6798,
-      "sicDescription": "Real Estate Investment Trusts",
-      "filerCategory": "Large accelerated filer",
-      "secName": "REALTY INCOME CORP"
-    },
-    "FAST": {
-      "cik": 815556,
-      "sic": 5200,
-      "sicDescription": "Retail-Building Materials, Hardware, Garden Supply",
-      "filerCategory": "Large accelerated filer",
-      "secName": "FASTENAL CO"
+      "secName": "W.W. GRAINGER, INC."
     },
     "NXPI": {
       "cik": 1413447,
@@ -1501,19 +1424,54 @@
       "filerCategory": "Large accelerated filer",
       "secName": "NXP Semiconductors N.V."
     },
-    "CAH": {
-      "cik": 721371,
-      "sic": 5122,
-      "sicDescription": "Wholesale-Drugs, Proprietaries & Druggists' Sundries",
+    "FIX": {
+      "cik": 1035983,
+      "sic": 1731,
+      "sicDescription": "Electrical Work",
       "filerCategory": "Large accelerated filer",
-      "secName": "CARDINAL HEALTH INC"
+      "secName": "COMFORT SYSTEMS USA INC"
     },
-    "NKE": {
-      "cik": 320187,
-      "sic": 3021,
-      "sicDescription": "Rubber & Plastics Footwear",
+    "TER": {
+      "cik": 97210,
+      "sic": 3825,
+      "sicDescription": "Instruments For Meas & Testing of  Electricity & Elec Signals",
       "filerCategory": "Large accelerated filer",
-      "secName": "NIKE, Inc."
+      "secName": "TERADYNE, INC"
+    },
+    "CRH": {
+      "cik": 849395,
+      "sic": 3241,
+      "sicDescription": "Cement, Hydraulic",
+      "filerCategory": "Large accelerated filer",
+      "secName": "CRH PUBLIC LTD CO"
+    },
+    "NUE": {
+      "cik": 73309,
+      "sic": 3312,
+      "sicDescription": "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)",
+      "filerCategory": "Large accelerated filer",
+      "secName": "NUCOR CORP"
+    },
+    "AFL": {
+      "cik": 4977,
+      "sic": 6321,
+      "sicDescription": "Accident & Health Insurance",
+      "filerCategory": "Large accelerated filer",
+      "secName": "AFLAC INC"
+    },
+    "BKR": {
+      "cik": 1701605,
+      "sic": 3533,
+      "sicDescription": "Oil & Gas Field Machinery & Equipment",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Baker Hughes Co"
+    },
+    "KEYS": {
+      "cik": 1601046,
+      "sic": 3823,
+      "sicDescription": "Industrial Instruments For Measurement, Display, and Control",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Keysight Technologies, Inc."
     },
     "FANG": {
       "cik": 1539838,
@@ -1522,13 +1480,6 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Diamondback Energy, Inc."
     },
-    "SRE": {
-      "cik": 1032208,
-      "sic": 4932,
-      "sicDescription": "Gas & Other Services Combined",
-      "filerCategory": "Large accelerated filer",
-      "secName": "SEMPRA"
-    },
     "MRNA": {
       "cik": 1682852,
       "sic": 2836,
@@ -1536,12 +1487,33 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Moderna, Inc."
     },
-    "F": {
-      "cik": 37996,
-      "sic": 3711,
-      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
+    "D": {
+      "cik": 715957,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
       "filerCategory": "Large accelerated filer",
-      "secName": "FORD MOTOR CO"
+      "secName": "DOMINION ENERGY, INC"
+    },
+    "FAST": {
+      "cik": 815556,
+      "sic": 5200,
+      "sicDescription": "Retail-Building Materials, Hardware, Garden Supply",
+      "filerCategory": "Large accelerated filer",
+      "secName": "FASTENAL CO"
+    },
+    "CTVA": {
+      "cik": 1755672,
+      "sic": 100,
+      "sicDescription": "Agricultural Production-Crops",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Corteva, Inc."
+    },
+    "O": {
+      "cik": 726728,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "filerCategory": "Large accelerated filer",
+      "secName": "REALTY INCOME CORP"
     },
     "AME": {
       "cik": 1037868,
@@ -1550,19 +1522,26 @@
       "filerCategory": "Large accelerated filer",
       "secName": "AMETEK INC/"
     },
-    "NDAQ": {
-      "cik": 1120193,
-      "sic": 6200,
-      "sicDescription": "Security & Commodity Brokers, Dealers, Exchanges & Services",
+    "CAH": {
+      "cik": 721371,
+      "sic": 5122,
+      "sicDescription": "Wholesale-Drugs, Proprietaries & Druggists' Sundries",
       "filerCategory": "Large accelerated filer",
-      "secName": "NASDAQ, INC."
+      "secName": "CARDINAL HEALTH INC"
     },
-    "CRWD": {
-      "cik": 1535527,
-      "sic": 7372,
-      "sicDescription": "Services-Prepackaged Software",
+    "F": {
+      "cik": 37996,
+      "sic": 3711,
+      "sicDescription": "Motor Vehicles & Passenger Car Bodies",
       "filerCategory": "Large accelerated filer",
-      "secName": "CrowdStrike Holdings, Inc."
+      "secName": "FORD MOTOR CO"
+    },
+    "SRE": {
+      "cik": 1032208,
+      "sic": 4932,
+      "sicDescription": "Gas & Other Services Combined",
+      "filerCategory": "Large accelerated filer",
+      "secName": "SEMPRA"
     },
     "GRMN": {
       "cik": 1121788,
@@ -1571,6 +1550,13 @@
       "filerCategory": "Large accelerated filer",
       "secName": "GARMIN LTD"
     },
+    "NKE": {
+      "cik": 320187,
+      "sic": 3021,
+      "sicDescription": "Rubber & Plastics Footwear",
+      "filerCategory": "Large accelerated filer",
+      "secName": "NIKE, Inc."
+    },
     "STT": {
       "cik": 93751,
       "sic": 6022,
@@ -1578,12 +1564,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "STATE STREET CORP"
     },
-    "PSA": {
-      "cik": 1393311,
-      "sic": 6798,
-      "sicDescription": "Real Estate Investment Trusts",
+    "CRWD": {
+      "cik": 1535527,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
       "filerCategory": "Large accelerated filer",
-      "secName": "Public Storage"
+      "secName": "CrowdStrike Holdings, Inc."
     },
     "DAL": {
       "cik": 27904,
@@ -1592,12 +1578,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "DELTA AIR LINES, INC."
     },
-    "VST": {
-      "cik": 1692819,
-      "sic": 4911,
-      "sicDescription": "Electric Services",
+    "PSA": {
+      "cik": 1393311,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
       "filerCategory": "Large accelerated filer",
-      "secName": "Vistra Corp."
+      "secName": "Public Storage"
+    },
+    "NDAQ": {
+      "cik": 1120193,
+      "sic": 6200,
+      "sicDescription": "Security & Commodity Brokers, Dealers, Exchanges & Services",
+      "filerCategory": "Large accelerated filer",
+      "secName": "NASDAQ, INC."
     },
     "AMP": {
       "cik": 820027,
@@ -1606,19 +1599,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "AMERIPRISE FINANCIAL INC"
     },
-    "EW": {
-      "cik": 1099800,
-      "sic": 3842,
-      "sicDescription": "Orthopedic, Prosthetic & Surgical Appliances & Supplies",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Edwards Lifesciences Corp"
-    },
-    "ETR": {
-      "cik": 65984,
+    "VST": {
+      "cik": 1692819,
       "sic": 4911,
       "sicDescription": "Electric Services",
       "filerCategory": "Large accelerated filer",
-      "secName": "ENTERGY CORP /DE/"
+      "secName": "Vistra Corp."
     },
     "FITB": {
       "cik": 35527,
@@ -1627,19 +1613,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "FIFTH THIRD BANCORP"
     },
-    "CARR": {
-      "cik": 1783180,
-      "sic": 3585,
-      "sicDescription": "Air-Cond & Warm Air Heatg Equip & Comm & Indl Refrig Equip",
+    "CIEN": {
+      "cik": 936395,
+      "sic": 3661,
+      "sicDescription": "Telephone & Telegraph Apparatus",
       "filerCategory": "Large accelerated filer",
-      "secName": "CARRIER GLOBAL Corp"
-    },
-    "WDAY": {
-      "cik": 1327811,
-      "sic": 7374,
-      "sicDescription": "Services-Computer Processing & Data Preparation",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Workday, Inc."
+      "secName": "CIENA CORP"
     },
     "HUM": {
       "cik": 49071,
@@ -1648,33 +1627,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "HUMANA INC"
     },
-    "CIEN": {
-      "cik": 936395,
-      "sic": 3661,
-      "sicDescription": "Telephone & Telegraph Apparatus",
+    "WDAY": {
+      "cik": 1327811,
+      "sic": 7374,
+      "sicDescription": "Services-Computer Processing & Data Preparation",
       "filerCategory": "Large accelerated filer",
-      "secName": "CIENA CORP"
+      "secName": "Workday, Inc."
     },
-    "WAB": {
-      "cik": 943452,
-      "sic": 3743,
-      "sicDescription": "Railroad Equipment",
+    "EW": {
+      "cik": 1099800,
+      "sic": 3842,
+      "sicDescription": "Orthopedic, Prosthetic & Surgical Appliances & Supplies",
       "filerCategory": "Large accelerated filer",
-      "secName": "WESTINGHOUSE AIR BRAKE TECHNOLOGIES CORP"
-    },
-    "AZO": {
-      "cik": 866787,
-      "sic": 5531,
-      "sicDescription": "Retail-Auto & Home Supply Stores",
-      "filerCategory": "Large accelerated filer",
-      "secName": "AUTOZONE INC"
-    },
-    "XEL": {
-      "cik": 72903,
-      "sic": 4931,
-      "sicDescription": "Electric & Other Services Combined",
-      "filerCategory": "Large accelerated filer",
-      "secName": "XCEL ENERGY INC"
+      "secName": "Edwards Lifesciences Corp"
     },
     "COHR": {
       "cik": 820318,
@@ -1683,12 +1648,47 @@
       "filerCategory": "Large accelerated filer",
       "secName": "COHERENT CORP."
     },
+    "ETR": {
+      "cik": 65984,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "filerCategory": "Large accelerated filer",
+      "secName": "ENTERGY CORP /DE/"
+    },
+    "WAB": {
+      "cik": 943452,
+      "sic": 3743,
+      "sicDescription": "Railroad Equipment",
+      "filerCategory": "Large accelerated filer",
+      "secName": "WESTINGHOUSE AIR BRAKE TECHNOLOGIES CORP"
+    },
+    "EBAY": {
+      "cik": 1065088,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "filerCategory": "Large accelerated filer",
+      "secName": "EBAY INC"
+    },
+    "CARR": {
+      "cik": 1783180,
+      "sic": 3585,
+      "sicDescription": "Air-Cond & Warm Air Heatg Equip & Comm & Indl Refrig Equip",
+      "filerCategory": "Large accelerated filer",
+      "secName": "CARRIER GLOBAL Corp"
+    },
     "ROK": {
       "cik": 1024478,
       "sic": 3829,
       "sicDescription": "Measuring & Controlling Devices, NEC",
       "filerCategory": "Large accelerated filer",
       "secName": "ROCKWELL AUTOMATION, INC"
+    },
+    "PYPL": {
+      "cik": 1633917,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "filerCategory": "Large accelerated filer",
+      "secName": "PayPal Holdings, Inc."
     },
     "XYZ": {
       "cik": 1512673,
@@ -1697,12 +1697,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Block, Inc."
     },
-    "LHX": {
-      "cik": 202058,
-      "sic": 3812,
-      "sicDescription": "Search, Detection, Navigation, Guidance, Aeronautical Sys",
+    "XEL": {
+      "cik": 72903,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
       "filerCategory": "Large accelerated filer",
-      "secName": "L3HARRIS TECHNOLOGIES, INC. /DE/"
+      "secName": "XCEL ENERGY INC"
+    },
+    "AZO": {
+      "cik": 866787,
+      "sic": 5531,
+      "sicDescription": "Retail-Auto & Home Supply Stores",
+      "filerCategory": "Large accelerated filer",
+      "secName": "AUTOZONE INC"
     },
     "CMG": {
       "cik": 1058090,
@@ -1718,33 +1725,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Coinbase Global, Inc."
     },
-    "PYPL": {
-      "cik": 1633917,
-      "sic": 7389,
-      "sicDescription": "Services-Business Services, NEC",
+    "LHX": {
+      "cik": 202058,
+      "sic": 3812,
+      "sicDescription": "Search, Detection, Navigation, Guidance, Aeronautical Sys",
       "filerCategory": "Large accelerated filer",
-      "secName": "PayPal Holdings, Inc."
-    },
-    "EBAY": {
-      "cik": 1065088,
-      "sic": 7389,
-      "sicDescription": "Services-Business Services, NEC",
-      "filerCategory": "Large accelerated filer",
-      "secName": "EBAY INC"
-    },
-    "ARES": {
-      "cik": 1176948,
-      "sic": 6282,
-      "sicDescription": "Investment Advice",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Ares Management Corp"
-    },
-    "EXC": {
-      "cik": 1109357,
-      "sic": 4931,
-      "sicDescription": "Electric & Other Services Combined",
-      "filerCategory": "Large accelerated filer",
-      "secName": "EXELON CORP"
+      "secName": "L3HARRIS TECHNOLOGIES, INC. /DE/"
     },
     "ADSK": {
       "cik": 769397,
@@ -1753,12 +1739,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Autodesk, Inc."
     },
-    "KDP": {
-      "cik": 1418135,
-      "sic": 2080,
-      "sicDescription": "Beverages",
+    "EXC": {
+      "cik": 1109357,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
       "filerCategory": "Large accelerated filer",
-      "secName": "Keurig Dr Pepper Inc."
+      "secName": "EXELON CORP"
     },
     "VTR": {
       "cik": 740260,
@@ -1774,19 +1760,26 @@
       "filerCategory": "Large accelerated filer",
       "secName": "IQVIA HOLDINGS INC."
     },
+    "ARES": {
+      "cik": 1176948,
+      "sic": 6282,
+      "sicDescription": "Investment Advice",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Ares Management Corp"
+    },
+    "KDP": {
+      "cik": 1418135,
+      "sic": 2080,
+      "sicDescription": "Beverages",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Keurig Dr Pepper Inc."
+    },
     "VEEV": {
       "cik": 1393052,
       "sic": 7372,
       "sicDescription": "Services-Prepackaged Software",
       "filerCategory": "Large accelerated filer",
       "secName": "VEEVA SYSTEMS INC"
-    },
-    "MNST": {
-      "cik": 865752,
-      "sic": 2086,
-      "sicDescription": "Bottled & Canned Soft Drinks & Carbonated Waters",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Monster Beverage Corp"
     },
     "FLEX": {
       "cik": 866374,
@@ -1795,54 +1788,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "FLEX LTD."
     },
-    "PAYX": {
-      "cik": 723531,
-      "sic": 8700,
-      "sicDescription": "Services-Engineering, Accounting, Research, Management",
+    "MNST": {
+      "cik": 865752,
+      "sic": 2086,
+      "sicDescription": "Bottled & Canned Soft Drinks & Carbonated Waters",
       "filerCategory": "Large accelerated filer",
-      "secName": "PAYCHEX INC"
-    },
-    "CBRE": {
-      "cik": 1138118,
-      "sic": 6500,
-      "sicDescription": "Real Estate",
-      "filerCategory": "Large accelerated filer",
-      "secName": "CBRE GROUP, INC."
-    },
-    "PRU": {
-      "cik": 1137774,
-      "sic": 6311,
-      "sicDescription": "Life Insurance",
-      "filerCategory": "Large accelerated filer",
-      "secName": "PRUDENTIAL FINANCIAL INC"
-    },
-    "A": {
-      "cik": 1090872,
-      "sic": 3826,
-      "sicDescription": "Laboratory Analytical Instruments",
-      "filerCategory": "Large accelerated filer",
-      "secName": "AGILENT TECHNOLOGIES, INC."
-    },
-    "YUM": {
-      "cik": 1041061,
-      "sic": 5812,
-      "sicDescription": "Retail-Eating  Places",
-      "filerCategory": "Large accelerated filer",
-      "secName": "YUM BRANDS INC"
-    },
-    "IDXX": {
-      "cik": 874716,
-      "sic": 2835,
-      "sicDescription": "In Vitro & In Vivo Diagnostic Substances",
-      "filerCategory": "Large accelerated filer",
-      "secName": "IDEXX LABORATORIES INC /DE"
-    },
-    "AXON": {
-      "cik": 1069183,
-      "sic": 3480,
-      "sicDescription": "Ordnance & Accessories, (No Vehicles/Guided Missiles)",
-      "filerCategory": "Large accelerated filer",
-      "secName": "AXON ENTERPRISE, INC."
+      "secName": "Monster Beverage Corp"
     },
     "ADM": {
       "cik": 7084,
@@ -1851,6 +1802,34 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Archer-Daniels-Midland Co"
     },
+    "A": {
+      "cik": 1090872,
+      "sic": 3826,
+      "sicDescription": "Laboratory Analytical Instruments",
+      "filerCategory": "Large accelerated filer",
+      "secName": "AGILENT TECHNOLOGIES, INC."
+    },
+    "PAYX": {
+      "cik": 723531,
+      "sic": 8700,
+      "sicDescription": "Services-Engineering, Accounting, Research, Management",
+      "filerCategory": "Large accelerated filer",
+      "secName": "PAYCHEX INC"
+    },
+    "PRU": {
+      "cik": 1137774,
+      "sic": 6311,
+      "sicDescription": "Life Insurance",
+      "filerCategory": "Large accelerated filer",
+      "secName": "PRUDENTIAL FINANCIAL INC"
+    },
+    "CBRE": {
+      "cik": 1138118,
+      "sic": 6500,
+      "sicDescription": "Real Estate",
+      "filerCategory": "Large accelerated filer",
+      "secName": "CBRE GROUP, INC."
+    },
     "MSCI": {
       "cik": 1408198,
       "sic": 7389,
@@ -1858,33 +1837,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "MSCI Inc."
     },
-    "ROP": {
-      "cik": 882835,
-      "sic": 3823,
-      "sicDescription": "Industrial Instruments For Measurement, Display, and Control",
-      "filerCategory": "Large accelerated filer",
-      "secName": "ROPER TECHNOLOGIES INC"
-    },
-    "ED": {
-      "cik": 1047862,
-      "sic": 4931,
-      "sicDescription": "Electric & Other Services Combined",
-      "filerCategory": "Large accelerated filer",
-      "secName": "CONSOLIDATED EDISON INC"
-    },
     "MCHP": {
       "cik": 827054,
       "sic": 3674,
       "sicDescription": "Semiconductors & Related Devices",
       "filerCategory": "Large accelerated filer",
       "secName": "MICROCHIP TECHNOLOGY INC"
-    },
-    "LYV": {
-      "cik": 1335258,
-      "sic": 7900,
-      "sicDescription": "Services-Amusement & Recreation Services",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Live Nation Entertainment, Inc."
     },
     "TTWO": {
       "cik": 946581,
@@ -1900,19 +1858,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "AMERICAN INTERNATIONAL GROUP, INC."
     },
-    "DHI": {
-      "cik": 882184,
-      "sic": 1531,
-      "sicDescription": "Operative Builders",
+    "IDXX": {
+      "cik": 874716,
+      "sic": 2835,
+      "sicDescription": "In Vitro & In Vivo Diagnostic Substances",
       "filerCategory": "Large accelerated filer",
-      "secName": "HORTON D R INC /DE/"
-    },
-    "ODFL": {
-      "cik": 878927,
-      "sic": 4213,
-      "sicDescription": "Trucking (No Local)",
-      "filerCategory": "Large accelerated filer",
-      "secName": "OLD DOMINION FREIGHT LINE, INC."
+      "secName": "IDEXX LABORATORIES INC /DE"
     },
     "SYY": {
       "cik": 96021,
@@ -1921,12 +1872,33 @@
       "filerCategory": "Large accelerated filer",
       "secName": "SYSCO CORP"
     },
-    "HIG": {
-      "cik": 874766,
-      "sic": 6331,
-      "sicDescription": "Fire, Marine & Casualty Insurance",
+    "LYV": {
+      "cik": 1335258,
+      "sic": 7900,
+      "sicDescription": "Services-Amusement & Recreation Services",
       "filerCategory": "Large accelerated filer",
-      "secName": "HARTFORD INSURANCE GROUP, INC."
+      "secName": "Live Nation Entertainment, Inc."
+    },
+    "ROP": {
+      "cik": 882835,
+      "sic": 3823,
+      "sicDescription": "Industrial Instruments For Measurement, Display, and Control",
+      "filerCategory": "Large accelerated filer",
+      "secName": "ROPER TECHNOLOGIES INC"
+    },
+    "ED": {
+      "cik": 1047862,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
+      "filerCategory": "Large accelerated filer",
+      "secName": "CONSOLIDATED EDISON INC"
+    },
+    "DHI": {
+      "cik": 882184,
+      "sic": 1531,
+      "sicDescription": "Operative Builders",
+      "filerCategory": "Large accelerated filer",
+      "secName": "HORTON D R INC /DE/"
     },
     "NTAP": {
       "cik": 1002047,
@@ -1935,26 +1907,33 @@
       "filerCategory": "Large accelerated filer",
       "secName": "NetApp, Inc."
     },
-    "PEG": {
-      "cik": 788784,
-      "sic": 4931,
-      "sicDescription": "Electric & Other Services Combined",
+    "YUM": {
+      "cik": 1041061,
+      "sic": 5812,
+      "sicDescription": "Retail-Eating  Places",
       "filerCategory": "Large accelerated filer",
-      "secName": "PUBLIC SERVICE ENTERPRISE GROUP INC"
+      "secName": "YUM BRANDS INC"
     },
-    "EL": {
-      "cik": 1001250,
-      "sic": 2844,
-      "sicDescription": "Perfumes, Cosmetics & Other Toilet Preparations",
+    "AXON": {
+      "cik": 1069183,
+      "sic": 3480,
+      "sicDescription": "Ordnance & Accessories, (No Vehicles/Guided Missiles)",
       "filerCategory": "Large accelerated filer",
-      "secName": "ESTEE LAUDER COMPANIES INC"
+      "secName": "AXON ENTERPRISE, INC."
     },
-    "KVUE": {
-      "cik": 1944048,
-      "sic": 2844,
-      "sicDescription": "Perfumes, Cosmetics & Other Toilet Preparations",
+    "ODFL": {
+      "cik": 878927,
+      "sic": 4213,
+      "sicDescription": "Trucking (No Local)",
       "filerCategory": "Large accelerated filer",
-      "secName": "Kenvue Inc."
+      "secName": "OLD DOMINION FREIGHT LINE, INC."
+    },
+    "HIG": {
+      "cik": 874766,
+      "sic": 6331,
+      "sicDescription": "Fire, Marine & Casualty Insurance",
+      "filerCategory": "Large accelerated filer",
+      "secName": "HARTFORD INSURANCE GROUP, INC."
     },
     "KR": {
       "cik": 56873,
@@ -1962,6 +1941,13 @@
       "sicDescription": "Retail-Grocery Stores",
       "filerCategory": "Large accelerated filer",
       "secName": "KROGER CO"
+    },
+    "PEG": {
+      "cik": 788784,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
+      "filerCategory": "Large accelerated filer",
+      "secName": "PUBLIC SERVICE ENTERPRISE GROUP INC"
     },
     "UAL": {
       "cik": 100517,
@@ -1977,12 +1963,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "HERSHEY CO"
     },
-    "WEC": {
-      "cik": 783325,
-      "sic": 4931,
-      "sicDescription": "Electric & Other Services Combined",
+    "EL": {
+      "cik": 1001250,
+      "sic": 2844,
+      "sicDescription": "Perfumes, Cosmetics & Other Toilet Preparations",
       "filerCategory": "Large accelerated filer",
-      "secName": "WEC ENERGY GROUP, INC."
+      "secName": "ESTEE LAUDER COMPANIES INC"
     },
     "MTB": {
       "cik": 36270,
@@ -1991,26 +1977,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "M&T BANK CORP"
     },
-    "STLD": {
-      "cik": 1022671,
-      "sic": 3312,
-      "sicDescription": "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)",
+    "NTRS": {
+      "cik": 73124,
+      "sic": 6022,
+      "sicDescription": "State Commercial Banks",
       "filerCategory": "Large accelerated filer",
-      "secName": "STEEL DYNAMICS INC"
-    },
-    "EQT": {
-      "cik": 33213,
-      "sic": 1311,
-      "sicDescription": "Crude Petroleum & Natural Gas",
-      "filerCategory": "Large accelerated filer",
-      "secName": "EQT Corp"
-    },
-    "IRM": {
-      "cik": 1020569,
-      "sic": 6798,
-      "sicDescription": "Real Estate Investment Trusts",
-      "filerCategory": "Large accelerated filer",
-      "secName": "IRON MOUNTAIN INC"
+      "secName": "NORTHERN TRUST CORP"
     },
     "EME": {
       "cik": 105634,
@@ -2019,26 +1991,26 @@
       "filerCategory": "Large accelerated filer",
       "secName": "EMCOR Group, Inc."
     },
-    "RJF": {
-      "cik": 720005,
-      "sic": 6211,
-      "sicDescription": "Security Brokers, Dealers & Flotation Companies",
+    "STLD": {
+      "cik": 1022671,
+      "sic": 3312,
+      "sicDescription": "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)",
       "filerCategory": "Large accelerated filer",
-      "secName": "RAYMOND JAMES FINANCIAL INC"
+      "secName": "STEEL DYNAMICS INC"
     },
-    "NTRS": {
-      "cik": 73124,
-      "sic": 6022,
-      "sicDescription": "State Commercial Banks",
+    "IRM": {
+      "cik": 1020569,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
       "filerCategory": "Large accelerated filer",
-      "secName": "NORTHERN TRUST CORP"
+      "secName": "IRON MOUNTAIN INC"
     },
-    "KMB": {
-      "cik": 55785,
-      "sic": 2670,
-      "sicDescription": "Converted Paper & Paperboard Prods (No Contaners/Boxes)",
+    "WEC": {
+      "cik": 783325,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
       "filerCategory": "Large accelerated filer",
-      "secName": "KIMBERLY CLARK CORP"
+      "secName": "WEC ENERGY GROUP, INC."
     },
     "HBAN": {
       "cik": 49196,
@@ -2047,12 +2019,33 @@
       "filerCategory": "Large accelerated filer",
       "secName": "HUNTINGTON BANCSHARES INC /MD/"
     },
-    "VMC": {
-      "cik": 1396009,
-      "sic": 1400,
-      "sicDescription": "Mining & Quarrying of  Nonmetallic Minerals (No Fuels)",
+    "KVUE": {
+      "cik": 1944048,
+      "sic": 2844,
+      "sicDescription": "Perfumes, Cosmetics & Other Toilet Preparations",
       "filerCategory": "Large accelerated filer",
-      "secName": "Vulcan Materials CO"
+      "secName": "Kenvue Inc."
+    },
+    "EQT": {
+      "cik": 33213,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "filerCategory": "Large accelerated filer",
+      "secName": "EQT Corp"
+    },
+    "RJF": {
+      "cik": 720005,
+      "sic": 6211,
+      "sicDescription": "Security Brokers, Dealers & Flotation Companies",
+      "filerCategory": "Large accelerated filer",
+      "secName": "RAYMOND JAMES FINANCIAL INC"
+    },
+    "JBL": {
+      "cik": 898293,
+      "sic": 3672,
+      "sicDescription": "Printed Circuit Boards",
+      "filerCategory": "Large accelerated filer",
+      "secName": "JABIL INC"
     },
     "ACGL": {
       "cik": 947484,
@@ -2068,34 +2061,6 @@
       "filerCategory": "Large accelerated filer",
       "secName": "CROWN CASTLE INC."
     },
-    "JBL": {
-      "cik": 898293,
-      "sic": 3672,
-      "sicDescription": "Printed Circuit Boards",
-      "filerCategory": "Large accelerated filer",
-      "secName": "JABIL INC"
-    },
-    "PCG": {
-      "cik": 1004980,
-      "sic": 4931,
-      "sicDescription": "Electric & Other Services Combined",
-      "filerCategory": "Large accelerated filer",
-      "secName": "PG&E Corp"
-    },
-    "DXCM": {
-      "cik": 1093557,
-      "sic": 3841,
-      "sicDescription": "Surgical & Medical Instruments & Apparatus",
-      "filerCategory": "Large accelerated filer",
-      "secName": "DEXCOM INC"
-    },
-    "RMD": {
-      "cik": 943819,
-      "sic": 3841,
-      "sicDescription": "Surgical & Medical Instruments & Apparatus",
-      "filerCategory": "Large accelerated filer",
-      "secName": "RESMED INC"
-    },
     "CNC": {
       "cik": 1071739,
       "sic": 6324,
@@ -2103,12 +2068,26 @@
       "filerCategory": "Large accelerated filer",
       "secName": "CENTENE CORP"
     },
-    "CCL": {
-      "cik": 815097,
-      "sic": 4400,
-      "sicDescription": "Water Transportation",
+    "VMC": {
+      "cik": 1396009,
+      "sic": 1400,
+      "sicDescription": "Mining & Quarrying of  Nonmetallic Minerals (No Fuels)",
       "filerCategory": "Large accelerated filer",
-      "secName": "Carnival Corp Ltd."
+      "secName": "Vulcan Materials CO"
+    },
+    "KMB": {
+      "cik": 55785,
+      "sic": 2670,
+      "sicDescription": "Converted Paper & Paperboard Prods (No Contaners/Boxes)",
+      "filerCategory": "Large accelerated filer",
+      "secName": "KIMBERLY CLARK CORP"
+    },
+    "HPQ": {
+      "cik": 47217,
+      "sic": 3570,
+      "sicDescription": "Computer & office Equipment",
+      "filerCategory": "Large accelerated filer",
+      "secName": "HP INC"
     },
     "EXPE": {
       "cik": 1324424,
@@ -2124,54 +2103,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "BIOGEN INC."
     },
-    "ZTS": {
-      "cik": 1555280,
-      "sic": 2834,
-      "sicDescription": "Pharmaceutical Preparations",
+    "DXCM": {
+      "cik": 1093557,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
       "filerCategory": "Large accelerated filer",
-      "secName": "Zoetis Inc."
+      "secName": "DEXCOM INC"
     },
-    "CBOE": {
-      "cik": 1374310,
-      "sic": 6200,
-      "sicDescription": "Security & Commodity Brokers, Dealers, Exchanges & Services",
+    "RMD": {
+      "cik": 943819,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
       "filerCategory": "Large accelerated filer",
-      "secName": "Cboe Global Markets, Inc."
-    },
-    "WTW": {
-      "cik": 1140536,
-      "sic": 6411,
-      "sicDescription": "Insurance Agents, Brokers & Service",
-      "filerCategory": "Large accelerated filer",
-      "secName": "WILLIS TOWERS WATSON PLC"
-    },
-    "MLM": {
-      "cik": 916076,
-      "sic": 1400,
-      "sicDescription": "Mining & Quarrying of  Nonmetallic Minerals (No Fuels)",
-      "filerCategory": "Large accelerated filer",
-      "secName": "MARTIN MARIETTA MATERIALS INC"
-    },
-    "HAL": {
-      "cik": 45012,
-      "sic": 1389,
-      "sicDescription": "Oil & Gas Field Services, NEC",
-      "filerCategory": "Large accelerated filer",
-      "secName": "HALLIBURTON CO"
-    },
-    "GEHC": {
-      "cik": 1932393,
-      "sic": 3844,
-      "sicDescription": "X-Ray Apparatus & Tubes & Related Irradiation Apparatus",
-      "filerCategory": "Large accelerated filer",
-      "secName": "GE HealthCare Technologies Inc."
-    },
-    "CPRT": {
-      "cik": 900075,
-      "sic": 5500,
-      "sicDescription": "Retail-Auto Dealers & Gasoline Stations",
-      "filerCategory": "Large accelerated filer",
-      "secName": "COPART INC"
+      "secName": "RESMED INC"
     },
     "DVN": {
       "cik": 1090012,
@@ -2180,12 +2124,68 @@
       "filerCategory": "Large accelerated filer",
       "secName": "DEVON ENERGY CORP/DE"
     },
+    "CCL": {
+      "cik": 815097,
+      "sic": 4400,
+      "sicDescription": "Water Transportation",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Carnival Corp Ltd."
+    },
+    "MLM": {
+      "cik": 916076,
+      "sic": 1400,
+      "sicDescription": "Mining & Quarrying of  Nonmetallic Minerals (No Fuels)",
+      "filerCategory": "Large accelerated filer",
+      "secName": "MARTIN MARIETTA MATERIALS INC"
+    },
+    "ZTS": {
+      "cik": 1555280,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Zoetis Inc."
+    },
+    "PCG": {
+      "cik": 1004980,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
+      "filerCategory": "Large accelerated filer",
+      "secName": "PG&E Corp"
+    },
+    "HAL": {
+      "cik": 45012,
+      "sic": 1389,
+      "sicDescription": "Oil & Gas Field Services, NEC",
+      "filerCategory": "Large accelerated filer",
+      "secName": "HALLIBURTON CO"
+    },
+    "ON": {
+      "cik": 1097864,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "filerCategory": "Large accelerated filer",
+      "secName": "ON SEMICONDUCTOR CORP"
+    },
     "CFG": {
       "cik": 759944,
       "sic": 6022,
       "sicDescription": "State Commercial Banks",
       "filerCategory": "Large accelerated filer",
       "secName": "CITIZENS FINANCIAL GROUP INC/RI"
+    },
+    "WTW": {
+      "cik": 1140536,
+      "sic": 6411,
+      "sicDescription": "Insurance Agents, Brokers & Service",
+      "filerCategory": "Large accelerated filer",
+      "secName": "WILLIS TOWERS WATSON PLC"
+    },
+    "CBOE": {
+      "cik": 1374310,
+      "sic": 6200,
+      "sicDescription": "Security & Commodity Brokers, Dealers, Exchanges & Services",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Cboe Global Markets, Inc."
     },
     "KHC": {
       "cik": 1637459,
@@ -2194,19 +2194,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Kraft Heinz Co"
     },
-    "AEE": {
-      "cik": 1002910,
-      "sic": 4931,
-      "sicDescription": "Electric & Other Services Combined",
+    "GEHC": {
+      "cik": 1932393,
+      "sic": 3844,
+      "sicDescription": "X-Ray Apparatus & Tubes & Related Irradiation Apparatus",
       "filerCategory": "Large accelerated filer",
-      "secName": "AMEREN CORP"
-    },
-    "IR": {
-      "cik": 1699150,
-      "sic": 3560,
-      "sicDescription": "General Industrial Machinery & Equipment",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Ingersoll Rand Inc."
+      "secName": "GE HealthCare Technologies Inc."
     },
     "EXR": {
       "cik": 1289490,
@@ -2215,12 +2208,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Extra Space Storage Inc."
     },
-    "LVS": {
-      "cik": 1300514,
-      "sic": 7011,
-      "sicDescription": "Hotels & Motels",
+    "AEE": {
+      "cik": 1002910,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
       "filerCategory": "Large accelerated filer",
-      "secName": "LAS VEGAS SANDS CORP"
+      "secName": "AMEREN CORP"
     },
     "FOXA": {
       "cik": 1754301,
@@ -2229,19 +2222,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Fox Corp"
     },
-    "DTE": {
-      "cik": 936340,
-      "sic": 4911,
-      "sicDescription": "Electric Services",
+    "IR": {
+      "cik": 1699150,
+      "sic": 3560,
+      "sicDescription": "General Industrial Machinery & Equipment",
       "filerCategory": "Large accelerated filer",
-      "secName": "DTE ENERGY CO"
+      "secName": "Ingersoll Rand Inc."
     },
-    "HPQ": {
-      "cik": 47217,
-      "sic": 3570,
-      "sicDescription": "Computer & office Equipment",
+    "LVS": {
+      "cik": 1300514,
+      "sic": 7011,
+      "sicDescription": "Hotels & Motels",
       "filerCategory": "Large accelerated filer",
-      "secName": "HP INC"
+      "secName": "LAS VEGAS SANDS CORP"
     },
     "CTSH": {
       "cik": 1058290,
@@ -2250,20 +2243,6 @@
       "filerCategory": "Large accelerated filer",
       "secName": "COGNIZANT TECHNOLOGY SOLUTIONS CORP"
     },
-    "DG": {
-      "cik": 29534,
-      "sic": 5331,
-      "sicDescription": "Retail-Variety Stores",
-      "filerCategory": "Large accelerated filer",
-      "secName": "DOLLAR GENERAL CORP"
-    },
-    "ATO": {
-      "cik": 731802,
-      "sic": 4924,
-      "sicDescription": "Natural Gas Distribution",
-      "filerCategory": "Large accelerated filer",
-      "secName": "ATMOS ENERGY CORP"
-    },
     "TDY": {
       "cik": 1094285,
       "sic": 3812,
@@ -2271,12 +2250,40 @@
       "filerCategory": "Large accelerated filer",
       "secName": "TELEDYNE TECHNOLOGIES INC"
     },
-    "ON": {
-      "cik": 1097864,
-      "sic": 3674,
-      "sicDescription": "Semiconductors & Related Devices",
+    "CPRT": {
+      "cik": 900075,
+      "sic": 5500,
+      "sicDescription": "Retail-Auto Dealers & Gasoline Stations",
       "filerCategory": "Large accelerated filer",
-      "secName": "ON SEMICONDUCTOR CORP"
+      "secName": "COPART INC"
+    },
+    "DTE": {
+      "cik": 936340,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "filerCategory": "Large accelerated filer",
+      "secName": "DTE ENERGY CO"
+    },
+    "DG": {
+      "cik": 29534,
+      "sic": 5331,
+      "sicDescription": "Retail-Variety Stores",
+      "filerCategory": "Large accelerated filer",
+      "secName": "DOLLAR GENERAL CORP"
+    },
+    "FISV": {
+      "cik": 798354,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "filerCategory": "Large accelerated filer",
+      "secName": "FISERV INC"
+    },
+    "ATO": {
+      "cik": 731802,
+      "sic": 4924,
+      "sicDescription": "Natural Gas Distribution",
+      "filerCategory": "Large accelerated filer",
+      "secName": "ATMOS ENERGY CORP"
     },
     "AWK": {
       "cik": 1410636,
@@ -2292,33 +2299,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "VICI PROPERTIES INC."
     },
-    "CASY": {
-      "cik": 726958,
-      "sic": 5500,
-      "sicDescription": "Retail-Auto Dealers & Gasoline Stations",
-      "filerCategory": "Large accelerated filer",
-      "secName": "CASEYS GENERAL STORES INC"
-    },
-    "FISV": {
-      "cik": 798354,
+    "CPAY": {
+      "cik": 1175454,
       "sic": 7389,
       "sicDescription": "Services-Business Services, NEC",
       "filerCategory": "Large accelerated filer",
-      "secName": "FISERV INC"
-    },
-    "OTIS": {
-      "cik": 1781335,
-      "sic": 3600,
-      "sicDescription": "Electronic & Other Electrical Equipment (No Computer Equip)",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Otis Worldwide Corp"
-    },
-    "ES": {
-      "cik": 72741,
-      "sic": 4911,
-      "sicDescription": "Electric Services",
-      "filerCategory": "Large accelerated filer",
-      "secName": "EVERSOURCE ENERGY"
+      "secName": "CORPAY, INC."
     },
     "FE": {
       "cik": 1031296,
@@ -2334,47 +2320,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "WILLIAMS SONOMA INC"
     },
-    "MTD": {
-      "cik": 1037646,
-      "sic": 3826,
-      "sicDescription": "Laboratory Analytical Instruments",
+    "VRSN": {
+      "cik": 1014473,
+      "sic": 7371,
+      "sicDescription": "Services-Computer Programming Services",
       "filerCategory": "Large accelerated filer",
-      "secName": "METTLER TOLEDO INTERNATIONAL INC/"
-    },
-    "CPAY": {
-      "cik": 1175454,
-      "sic": 7389,
-      "sicDescription": "Services-Business Services, NEC",
-      "filerCategory": "Large accelerated filer",
-      "secName": "CORPAY, INC."
-    },
-    "LH": {
-      "cik": 920148,
-      "sic": 8071,
-      "sicDescription": "Services-Medical Laboratories",
-      "filerCategory": "Large accelerated filer",
-      "secName": "LABCORP HOLDINGS INC."
-    },
-    "SYF": {
-      "cik": 1601712,
-      "sic": 6199,
-      "sicDescription": "Finance Services",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Synchrony Financial"
-    },
-    "PPL": {
-      "cik": 922224,
-      "sic": 4911,
-      "sicDescription": "Electric Services",
-      "filerCategory": "Large accelerated filer",
-      "secName": "PPL Corp"
-    },
-    "TPL": {
-      "cik": 1811074,
-      "sic": 6792,
-      "sicDescription": "Oil Royalty Traders",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Texas Pacific Land Corp"
+      "secName": "VERISIGN INC/CA"
     },
     "WAT": {
       "cik": 1000697,
@@ -2383,6 +2334,20 @@
       "filerCategory": "Large accelerated filer",
       "secName": "WATERS CORP /DE/"
     },
+    "Q": {
+      "cik": 2058873,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "filerCategory": "Non-accelerated filer",
+      "secName": "Qnity Electronics, Inc."
+    },
+    "OTIS": {
+      "cik": 1781335,
+      "sic": 3600,
+      "sicDescription": "Electronic & Other Electrical Equipment (No Computer Equip)",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Otis Worldwide Corp"
+    },
     "CINF": {
       "cik": 20286,
       "sic": 6331,
@@ -2390,19 +2355,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "CINCINNATI FINANCIAL CORP"
     },
-    "DOV": {
-      "cik": 29905,
-      "sic": 3530,
-      "sicDescription": "Construction, Mining & Materials Handling Machinery & Equip",
+    "MTD": {
+      "cik": 1037646,
+      "sic": 3826,
+      "sicDescription": "Laboratory Analytical Instruments",
       "filerCategory": "Large accelerated filer",
-      "secName": "DOVER Corp"
+      "secName": "METTLER TOLEDO INTERNATIONAL INC/"
     },
-    "CNP": {
-      "cik": 1130310,
-      "sic": 4911,
-      "sicDescription": "Electric Services",
+    "WRB": {
+      "cik": 11544,
+      "sic": 6331,
+      "sicDescription": "Fire, Marine & Casualty Insurance",
       "filerCategory": "Large accelerated filer",
-      "secName": "CENTERPOINT ENERGY INC"
+      "secName": "BERKLEY W R CORP"
     },
     "DGX": {
       "cik": 1022079,
@@ -2418,40 +2383,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Super Micro Computer, Inc."
     },
-    "WRB": {
-      "cik": 11544,
-      "sic": 6331,
-      "sicDescription": "Fire, Marine & Casualty Insurance",
+    "ES": {
+      "cik": 72741,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
       "filerCategory": "Large accelerated filer",
-      "secName": "BERKLEY W R CORP"
-    },
-    "JBHT": {
-      "cik": 728535,
-      "sic": 4213,
-      "sicDescription": "Trucking (No Local)",
-      "filerCategory": "Large accelerated filer",
-      "secName": "HUNT J B TRANSPORT SERVICES INC"
-    },
-    "XYL": {
-      "cik": 1524472,
-      "sic": 3561,
-      "sicDescription": "Pumps & Pumping Equipment",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Xylem Inc."
-    },
-    "Q": {
-      "cik": 2058873,
-      "sic": 3674,
-      "sicDescription": "Semiconductors & Related Devices",
-      "filerCategory": "Non-accelerated filer",
-      "secName": "Qnity Electronics, Inc."
-    },
-    "VRSN": {
-      "cik": 1014473,
-      "sic": 7371,
-      "sicDescription": "Services-Computer Programming Services",
-      "filerCategory": "Large accelerated filer",
-      "secName": "VERISIGN INC/CA"
+      "secName": "EVERSOURCE ENERGY"
     },
     "RF": {
       "cik": 1281761,
@@ -2460,47 +2397,61 @@
       "filerCategory": "Large accelerated filer",
       "secName": "REGIONS FINANCIAL CORP"
     },
-    "NRG": {
-      "cik": 1013871,
+    "SYF": {
+      "cik": 1601712,
+      "sic": 6199,
+      "sicDescription": "Finance Services",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Synchrony Financial"
+    },
+    "PPL": {
+      "cik": 922224,
       "sic": 4911,
       "sicDescription": "Electric Services",
       "filerCategory": "Large accelerated filer",
-      "secName": "NRG ENERGY, INC."
+      "secName": "PPL Corp"
     },
-    "INCY": {
-      "cik": 879169,
-      "sic": 8731,
-      "sicDescription": "Services-Commercial Physical & Biological Research",
+    "CNP": {
+      "cik": 1130310,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
       "filerCategory": "Large accelerated filer",
-      "secName": "INCYTE CORP"
+      "secName": "CENTERPOINT ENERGY INC"
     },
-    "PFG": {
-      "cik": 1126328,
-      "sic": 6321,
-      "sicDescription": "Accident & Health Insurance",
+    "TPL": {
+      "cik": 1811074,
+      "sic": 6792,
+      "sicDescription": "Oil Royalty Traders",
       "filerCategory": "Large accelerated filer",
-      "secName": "PRINCIPAL FINANCIAL GROUP INC"
+      "secName": "Texas Pacific Land Corp"
     },
-    "HUBB": {
-      "cik": 48898,
-      "sic": 3670,
-      "sicDescription": "Electronic Components & Accessories",
+    "JBHT": {
+      "cik": 728535,
+      "sic": 4213,
+      "sicDescription": "Trucking (No Local)",
       "filerCategory": "Large accelerated filer",
-      "secName": "HUBBELL INC"
+      "secName": "HUNT J B TRANSPORT SERVICES INC"
     },
-    "PPG": {
-      "cik": 79879,
-      "sic": 2851,
-      "sicDescription": "Paints, Varnishes, Lacquers, Enamels & Allied Prods",
+    "LH": {
+      "cik": 920148,
+      "sic": 8071,
+      "sicDescription": "Services-Medical Laboratories",
       "filerCategory": "Large accelerated filer",
-      "secName": "PPG INDUSTRIES INC"
+      "secName": "LABCORP HOLDINGS INC."
     },
-    "DRI": {
-      "cik": 940944,
-      "sic": 5812,
-      "sicDescription": "Retail-Eating  Places",
+    "DOV": {
+      "cik": 29905,
+      "sic": 3530,
+      "sicDescription": "Construction, Mining & Materials Handling Machinery & Equip",
       "filerCategory": "Large accelerated filer",
-      "secName": "DARDEN RESTAURANTS INC"
+      "secName": "DOVER Corp"
+    },
+    "XYL": {
+      "cik": 1524472,
+      "sic": 3561,
+      "sicDescription": "Pumps & Pumping Equipment",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Xylem Inc."
     },
     "EXPD": {
       "cik": 746515,
@@ -2509,12 +2460,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "EXPEDITORS INTERNATIONAL OF WASHINGTON INC"
     },
-    "BG": {
-      "cik": 1996862,
-      "sic": 2070,
-      "sicDescription": "Fats & Oils",
+    "PFG": {
+      "cik": 1126328,
+      "sic": 6321,
+      "sicDescription": "Accident & Health Insurance",
       "filerCategory": "Large accelerated filer",
-      "secName": "Bunge Global SA"
+      "secName": "PRINCIPAL FINANCIAL GROUP INC"
     },
     "WST": {
       "cik": 105770,
@@ -2523,12 +2474,33 @@
       "filerCategory": "Large accelerated filer",
       "secName": "WEST PHARMACEUTICAL SERVICES INC"
     },
-    "DLTR": {
-      "cik": 935703,
-      "sic": 5331,
-      "sicDescription": "Retail-Variety Stores",
+    "HUBB": {
+      "cik": 48898,
+      "sic": 3670,
+      "sicDescription": "Electronic Components & Accessories",
       "filerCategory": "Large accelerated filer",
-      "secName": "DOLLAR TREE, INC."
+      "secName": "HUBBELL INC"
+    },
+    "INCY": {
+      "cik": 879169,
+      "sic": 8731,
+      "sicDescription": "Services-Commercial Physical & Biological Research",
+      "filerCategory": "Large accelerated filer",
+      "secName": "INCYTE CORP"
+    },
+    "DRI": {
+      "cik": 940944,
+      "sic": 5812,
+      "sicDescription": "Retail-Eating  Places",
+      "filerCategory": "Large accelerated filer",
+      "secName": "DARDEN RESTAURANTS INC"
+    },
+    "NRG": {
+      "cik": 1013871,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "filerCategory": "Large accelerated filer",
+      "secName": "NRG ENERGY, INC."
     },
     "TPR": {
       "cik": 1116132,
@@ -2537,26 +2509,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "TAPESTRY, INC."
     },
-    "ULTA": {
-      "cik": 1403568,
-      "sic": 5990,
-      "sicDescription": "Retail-Retail Stores, NEC",
+    "BG": {
+      "cik": 1996862,
+      "sic": 2070,
+      "sicDescription": "Fats & Oils",
       "filerCategory": "Large accelerated filer",
-      "secName": "Ulta Beauty, Inc."
-    },
-    "EXE": {
-      "cik": 895126,
-      "sic": 1311,
-      "sicDescription": "Crude Petroleum & Natural Gas",
-      "filerCategory": "Large accelerated filer",
-      "secName": "EXPAND ENERGY Corp"
-    },
-    "VLTO": {
-      "cik": 1967680,
-      "sic": 3825,
-      "sicDescription": "Instruments For Meas & Testing of  Electricity & Elec Signals",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Veralto Corp"
+      "secName": "Bunge Global SA"
     },
     "KEY": {
       "cik": 91576,
@@ -2565,75 +2523,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "KEYCORP /NEW/"
     },
-    "TROW": {
-      "cik": 1113169,
-      "sic": 6282,
-      "sicDescription": "Investment Advice",
+    "ULTA": {
+      "cik": 1403568,
+      "sic": 5990,
+      "sicDescription": "Retail-Retail Stores, NEC",
       "filerCategory": "Large accelerated filer",
-      "secName": "PRICE T ROWE GROUP INC"
+      "secName": "Ulta Beauty, Inc."
     },
-    "SW": {
-      "cik": 2005951,
-      "sic": 2650,
-      "sicDescription": "Paperboard Containers & Boxes",
+    "PPG": {
+      "cik": 79879,
+      "sic": 2851,
+      "sicDescription": "Paints, Varnishes, Lacquers, Enamels & Allied Prods",
       "filerCategory": "Large accelerated filer",
-      "secName": "Smurfit Westrock plc"
-    },
-    "BRO": {
-      "cik": 79282,
-      "sic": 6411,
-      "sicDescription": "Insurance Agents, Brokers & Service",
-      "filerCategory": "Large accelerated filer",
-      "secName": "BROWN & BROWN, INC."
-    },
-    "OMC": {
-      "cik": 29989,
-      "sic": 7311,
-      "sicDescription": "Services-Advertising Agencies",
-      "filerCategory": "Large accelerated filer",
-      "secName": "OMNICOM GROUP INC."
-    },
-    "VRSK": {
-      "cik": 1442145,
-      "sic": 7374,
-      "sicDescription": "Services-Computer Processing & Data Preparation",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Verisk Analytics, Inc."
-    },
-    "FSLR": {
-      "cik": 1274494,
-      "sic": 3674,
-      "sicDescription": "Semiconductors & Related Devices",
-      "filerCategory": "Large accelerated filer",
-      "secName": "FIRST SOLAR, INC."
-    },
-    "CHD": {
-      "cik": 313927,
-      "sic": 2840,
-      "sicDescription": "Soap, Detergents, Cleang Preparations, Perfumes, Cosmetics",
-      "filerCategory": "Large accelerated filer",
-      "secName": "CHURCH & DWIGHT CO INC /DE/"
-    },
-    "PHM": {
-      "cik": 822416,
-      "sic": 1531,
-      "sicDescription": "Operative Builders",
-      "filerCategory": "Large accelerated filer",
-      "secName": "PULTEGROUP INC/MI/"
-    },
-    "EIX": {
-      "cik": 827052,
-      "sic": 4911,
-      "sicDescription": "Electric Services",
-      "filerCategory": "Large accelerated filer",
-      "secName": "EDISON INTERNATIONAL"
-    },
-    "L": {
-      "cik": 60086,
-      "sic": 6331,
-      "sicDescription": "Fire, Marine & Casualty Insurance",
-      "filerCategory": "Large accelerated filer",
-      "secName": "LOEWS CORP"
+      "secName": "PPG INDUSTRIES INC"
     },
     "FFIV": {
       "cik": 1048695,
@@ -2642,12 +2544,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "F5, INC."
     },
-    "IFF": {
-      "cik": 51253,
-      "sic": 2860,
-      "sicDescription": "Industrial Organic Chemicals",
+    "VLTO": {
+      "cik": 1967680,
+      "sic": 3825,
+      "sicDescription": "Instruments For Meas & Testing of  Electricity & Elec Signals",
       "filerCategory": "Large accelerated filer",
-      "secName": "INTERNATIONAL FLAVORS & FRAGRANCES INC"
+      "secName": "Veralto Corp"
+    },
+    "VRSK": {
+      "cik": 1442145,
+      "sic": 7374,
+      "sicDescription": "Services-Computer Processing & Data Preparation",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Verisk Analytics, Inc."
     },
     "FICO": {
       "cik": 814547,
@@ -2656,12 +2565,103 @@
       "filerCategory": "Large accelerated filer",
       "secName": "FAIR ISAAC CORP"
     },
-    "STE": {
-      "cik": 1757898,
-      "sic": 3842,
-      "sicDescription": "Orthopedic, Prosthetic & Surgical Appliances & Supplies",
+    "CASY": {
+      "cik": 726958,
+      "sic": 5500,
+      "sicDescription": "Retail-Auto Dealers & Gasoline Stations",
       "filerCategory": "Large accelerated filer",
-      "secName": "STERIS plc"
+      "secName": "CASEYS GENERAL STORES INC"
+    },
+    "TROW": {
+      "cik": 1113169,
+      "sic": 6282,
+      "sicDescription": "Investment Advice",
+      "filerCategory": "Large accelerated filer",
+      "secName": "PRICE T ROWE GROUP INC"
+    },
+    "EXE": {
+      "cik": 895126,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "filerCategory": "Large accelerated filer",
+      "secName": "EXPAND ENERGY Corp"
+    },
+    "SW": {
+      "cik": 2005951,
+      "sic": 2650,
+      "sicDescription": "Paperboard Containers & Boxes",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Smurfit Westrock plc"
+    },
+    "DLTR": {
+      "cik": 935703,
+      "sic": 5331,
+      "sicDescription": "Retail-Variety Stores",
+      "filerCategory": "Large accelerated filer",
+      "secName": "DOLLAR TREE, INC."
+    },
+    "FSLR": {
+      "cik": 1274494,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "filerCategory": "Large accelerated filer",
+      "secName": "FIRST SOLAR, INC."
+    },
+    "OMC": {
+      "cik": 29989,
+      "sic": 7311,
+      "sicDescription": "Services-Advertising Agencies",
+      "filerCategory": "Large accelerated filer",
+      "secName": "OMNICOM GROUP INC."
+    },
+    "PHM": {
+      "cik": 822416,
+      "sic": 1531,
+      "sicDescription": "Operative Builders",
+      "filerCategory": "Large accelerated filer",
+      "secName": "PULTEGROUP INC/MI/"
+    },
+    "BRO": {
+      "cik": 79282,
+      "sic": 6411,
+      "sicDescription": "Insurance Agents, Brokers & Service",
+      "filerCategory": "Large accelerated filer",
+      "secName": "BROWN & BROWN, INC."
+    },
+    "L": {
+      "cik": 60086,
+      "sic": 6331,
+      "sicDescription": "Fire, Marine & Casualty Insurance",
+      "filerCategory": "Large accelerated filer",
+      "secName": "LOEWS CORP"
+    },
+    "CHD": {
+      "cik": 313927,
+      "sic": 2840,
+      "sicDescription": "Soap, Detergents, Cleang Preparations, Perfumes, Cosmetics",
+      "filerCategory": "Large accelerated filer",
+      "secName": "CHURCH & DWIGHT CO INC /DE/"
+    },
+    "EIX": {
+      "cik": 827052,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
+      "filerCategory": "Large accelerated filer",
+      "secName": "EDISON INTERNATIONAL"
+    },
+    "IFF": {
+      "cik": 51253,
+      "sic": 2860,
+      "sicDescription": "Industrial Organic Chemicals",
+      "filerCategory": "Large accelerated filer",
+      "secName": "INTERNATIONAL FLAVORS & FRAGRANCES INC"
+    },
+    "STZ": {
+      "cik": 16918,
+      "sic": 2080,
+      "sicDescription": "Beverages",
+      "filerCategory": "Large accelerated filer",
+      "secName": "CONSTELLATION BRANDS, INC."
     },
     "DOW": {
       "cik": 1751788,
@@ -2670,12 +2670,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "DOW INC."
     },
-    "CMS": {
-      "cik": 811156,
-      "sic": 4931,
-      "sicDescription": "Electric & Other Services Combined",
+    "PKG": {
+      "cik": 75677,
+      "sic": 2650,
+      "sicDescription": "Paperboard Containers & Boxes",
       "filerCategory": "Large accelerated filer",
-      "secName": "CMS ENERGY CORP"
+      "secName": "PACKAGING CORP OF AMERICA"
     },
     "GPN": {
       "cik": 1123360,
@@ -2691,33 +2691,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "RALPH LAUREN CORP"
     },
-    "LYB": {
-      "cik": 1489393,
-      "sic": 2860,
-      "sicDescription": "Industrial Organic Chemicals",
+    "CMS": {
+      "cik": 811156,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
       "filerCategory": "Large accelerated filer",
-      "secName": "LyondellBasell Industries N.V."
-    },
-    "STZ": {
-      "cik": 16918,
-      "sic": 2080,
-      "sicDescription": "Beverages",
-      "filerCategory": "Large accelerated filer",
-      "secName": "CONSTELLATION BRANDS, INC."
-    },
-    "PKG": {
-      "cik": 75677,
-      "sic": 2650,
-      "sicDescription": "Paperboard Containers & Boxes",
-      "filerCategory": "Large accelerated filer",
-      "secName": "PACKAGING CORP OF AMERICA"
-    },
-    "EFX": {
-      "cik": 33185,
-      "sic": 7320,
-      "sicDescription": "Services-Consumer Credit Reporting, Collection Agencies",
-      "filerCategory": "Large accelerated filer",
-      "secName": "EQUIFAX INC"
+      "secName": "CMS ENERGY CORP"
     },
     "CHTR": {
       "cik": 1091667,
@@ -2726,6 +2705,20 @@
       "filerCategory": "Large accelerated filer",
       "secName": "CHARTER COMMUNICATIONS, INC. /MO/"
     },
+    "LYB": {
+      "cik": 1489393,
+      "sic": 2860,
+      "sicDescription": "Industrial Organic Chemicals",
+      "filerCategory": "Large accelerated filer",
+      "secName": "LyondellBasell Industries N.V."
+    },
+    "STE": {
+      "cik": 1757898,
+      "sic": 3842,
+      "sicDescription": "Orthopedic, Prosthetic & Surgical Appliances & Supplies",
+      "filerCategory": "Large accelerated filer",
+      "secName": "STERIS plc"
+    },
     "CF": {
       "cik": 1324404,
       "sic": 2870,
@@ -2733,19 +2726,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "CF Industries Holdings, Inc."
     },
-    "AMCR": {
-      "cik": 1748790,
-      "sic": 3990,
-      "sicDescription": "Miscellaneous Manufacturing Industries",
+    "EFX": {
+      "cik": 33185,
+      "sic": 7320,
+      "sicDescription": "Services-Consumer Credit Reporting, Collection Agencies",
       "filerCategory": "Large accelerated filer",
-      "secName": "Amcor plc"
-    },
-    "FIS": {
-      "cik": 1136893,
-      "sic": 7389,
-      "sicDescription": "Services-Business Services, NEC",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Fidelity National Information Services, Inc."
+      "secName": "EQUIFAX INC"
     },
     "NI": {
       "cik": 1111711,
@@ -2754,12 +2740,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "NISOURCE INC."
     },
-    "GIS": {
-      "cik": 40704,
-      "sic": 2040,
-      "sicDescription": "Grain Mill Products",
+    "LEN": {
+      "cik": 920760,
+      "sic": 1520,
+      "sicDescription": "General Bldg Contractors - Residential Bldgs",
       "filerCategory": "Large accelerated filer",
-      "secName": "GENERAL MILLS INC"
+      "secName": "LENNAR CORP /NEW/"
     },
     "SBAC": {
       "cik": 1034054,
@@ -2768,19 +2754,26 @@
       "filerCategory": "Large accelerated filer",
       "secName": "SBA COMMUNICATIONS CORP"
     },
-    "LEN": {
-      "cik": 920760,
-      "sic": 1520,
-      "sicDescription": "General Bldg Contractors - Residential Bldgs",
+    "FIS": {
+      "cik": 1136893,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
       "filerCategory": "Large accelerated filer",
-      "secName": "LENNAR CORP /NEW/"
+      "secName": "Fidelity National Information Services, Inc."
     },
-    "SNA": {
-      "cik": 91440,
-      "sic": 3420,
-      "sicDescription": "Cutlery, Handtools & General Hardware",
+    "CDW": {
+      "cik": 1402057,
+      "sic": 5961,
+      "sicDescription": "Retail-Catalog & Mail-Order Houses",
       "filerCategory": "Large accelerated filer",
-      "secName": "Snap-on Inc"
+      "secName": "CDW Corp"
+    },
+    "AMCR": {
+      "cik": 1748790,
+      "sic": 3990,
+      "sicDescription": "Miscellaneous Manufacturing Industries",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Amcor plc"
     },
     "BR": {
       "cik": 1383312,
@@ -2789,26 +2782,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "BROADRIDGE FINANCIAL SOLUTIONS, INC."
     },
+    "SNA": {
+      "cik": 91440,
+      "sic": 3420,
+      "sicDescription": "Cutlery, Handtools & General Hardware",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Snap-on Inc"
+    },
     "VTRS": {
       "cik": 1792044,
       "sic": 2834,
       "sicDescription": "Pharmaceutical Preparations",
       "filerCategory": "Large accelerated filer",
       "secName": "Viatris Inc"
-    },
-    "IP": {
-      "cik": 51434,
-      "sic": 2621,
-      "sicDescription": "Paper Mills",
-      "filerCategory": "Large accelerated filer",
-      "secName": "INTERNATIONAL PAPER CO /NEW/"
-    },
-    "EVRG": {
-      "cik": 1711269,
-      "sic": 4931,
-      "sicDescription": "Electric & Other Services Combined",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Evergy, Inc."
     },
     "LUV": {
       "cik": 92380,
@@ -2824,12 +2810,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "BEST BUY CO INC"
     },
-    "GPC": {
-      "cik": 40987,
-      "sic": 5013,
-      "sicDescription": "Wholesale-Motor Vehicle Supplies & New Parts",
+    "GIS": {
+      "cik": 40704,
+      "sic": 2040,
+      "sicDescription": "Grain Mill Products",
       "filerCategory": "Large accelerated filer",
-      "secName": "GENUINE PARTS CO"
+      "secName": "GENERAL MILLS INC"
     },
     "TSN": {
       "cik": 100493,
@@ -2838,26 +2824,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "TYSON FOODS, INC."
     },
-    "CDW": {
-      "cik": 1402057,
-      "sic": 5961,
-      "sicDescription": "Retail-Catalog & Mail-Order Houses",
+    "EVRG": {
+      "cik": 1711269,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
       "filerCategory": "Large accelerated filer",
-      "secName": "CDW Corp"
+      "secName": "Evergy, Inc."
     },
-    "TSCO": {
-      "cik": 916365,
-      "sic": 5200,
-      "sicDescription": "Retail-Building Materials, Hardware, Garden Supply",
+    "GPC": {
+      "cik": 40987,
+      "sic": 5013,
+      "sicDescription": "Wholesale-Motor Vehicle Supplies & New Parts",
       "filerCategory": "Large accelerated filer",
-      "secName": "TRACTOR SUPPLY CO /DE/"
-    },
-    "ZBH": {
-      "cik": 1136869,
-      "sic": 3842,
-      "sicDescription": "Orthopedic, Prosthetic & Surgical Appliances & Supplies",
-      "filerCategory": "Large accelerated filer",
-      "secName": "ZIMMER BIOMET HOLDINGS, INC."
+      "secName": "GENUINE PARTS CO"
     },
     "GEN": {
       "cik": 849399,
@@ -2866,40 +2845,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Gen Digital Inc."
     },
-    "BEN": {
-      "cik": 38777,
-      "sic": 6282,
-      "sicDescription": "Investment Advice",
+    "IP": {
+      "cik": 51434,
+      "sic": 2621,
+      "sicDescription": "Paper Mills",
       "filerCategory": "Large accelerated filer",
-      "secName": "FRANKLIN TEMPLETON INC"
+      "secName": "INTERNATIONAL PAPER CO /NEW/"
     },
-    "ESS": {
-      "cik": 920522,
-      "sic": 6798,
-      "sicDescription": "Real Estate Investment Trusts",
+    "ZBH": {
+      "cik": 1136869,
+      "sic": 3842,
+      "sicDescription": "Orthopedic, Prosthetic & Surgical Appliances & Supplies",
       "filerCategory": "Large accelerated filer",
-      "secName": "ESSEX PROPERTY TRUST, INC."
-    },
-    "NDSN": {
-      "cik": 72331,
-      "sic": 3569,
-      "sicDescription": "General Industrial Machinery & Equipment, NEC",
-      "filerCategory": "Large accelerated filer",
-      "secName": "NORDSON CORP"
-    },
-    "DD": {
-      "cik": 1666700,
-      "sic": 2821,
-      "sicDescription": "Plastic Materials, Synth Resins & Nonvulcan Elastomers",
-      "filerCategory": "Large accelerated filer",
-      "secName": "DuPont de Nemours, Inc."
-    },
-    "LNT": {
-      "cik": 352541,
-      "sic": 4931,
-      "sicDescription": "Electric & Other Services Combined",
-      "filerCategory": "Large accelerated filer",
-      "secName": "ALLIANT ENERGY CORP"
+      "secName": "ZIMMER BIOMET HOLDINGS, INC."
     },
     "CHRW": {
       "cik": 1043277,
@@ -2908,26 +2866,47 @@
       "filerCategory": "Large accelerated filer",
       "secName": "C. H. ROBINSON WORLDWIDE, INC."
     },
-    "FTV": {
-      "cik": 1659166,
-      "sic": 3823,
-      "sicDescription": "Industrial Instruments For Measurement, Display, and Control",
+    "NDSN": {
+      "cik": 72331,
+      "sic": 3569,
+      "sicDescription": "General Industrial Machinery & Equipment, NEC",
       "filerCategory": "Large accelerated filer",
-      "secName": "Fortive Corp"
+      "secName": "NORDSON CORP"
     },
-    "J": {
-      "cik": 52988,
-      "sic": 1600,
-      "sicDescription": "Heavy Construction Other Than Bldg Const - Contractors",
+    "ESS": {
+      "cik": 920522,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
       "filerCategory": "Large accelerated filer",
-      "secName": "JACOBS SOLUTIONS INC."
+      "secName": "ESSEX PROPERTY TRUST, INC."
     },
-    "INVH": {
-      "cik": 1687229,
-      "sic": 6510,
-      "sicDescription": "Real Estate Operators (No Developers) & Lessors",
+    "BEN": {
+      "cik": 38777,
+      "sic": 6282,
+      "sicDescription": "Investment Advice",
       "filerCategory": "Large accelerated filer",
-      "secName": "Invitation Homes Inc."
+      "secName": "FRANKLIN TEMPLETON INC"
+    },
+    "LNT": {
+      "cik": 352541,
+      "sic": 4931,
+      "sicDescription": "Electric & Other Services Combined",
+      "filerCategory": "Large accelerated filer",
+      "secName": "ALLIANT ENERGY CORP"
+    },
+    "TSCO": {
+      "cik": 916365,
+      "sic": 5200,
+      "sicDescription": "Retail-Building Materials, Hardware, Garden Supply",
+      "filerCategory": "Large accelerated filer",
+      "secName": "TRACTOR SUPPLY CO /DE/"
+    },
+    "DD": {
+      "cik": 1666700,
+      "sic": 2821,
+      "sicDescription": "Plastic Materials, Synth Resins & Nonvulcan Elastomers",
+      "filerCategory": "Large accelerated filer",
+      "secName": "DuPont de Nemours, Inc."
     },
     "ZBRA": {
       "cik": 877212,
@@ -2943,6 +2922,27 @@
       "filerCategory": "Large accelerated filer",
       "secName": "ROLLINS INC"
     },
+    "FTV": {
+      "cik": 1659166,
+      "sic": 3823,
+      "sicDescription": "Industrial Instruments For Measurement, Display, and Control",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Fortive Corp"
+    },
+    "J": {
+      "cik": 52988,
+      "sic": 1600,
+      "sicDescription": "Heavy Construction Other Than Bldg Const - Contractors",
+      "filerCategory": "Large accelerated filer",
+      "secName": "JACOBS SOLUTIONS INC."
+    },
+    "NVR": {
+      "cik": 906163,
+      "sic": 1531,
+      "sicDescription": "Operative Builders",
+      "filerCategory": "Large accelerated filer",
+      "secName": "NVR INC"
+    },
     "IEX": {
       "cik": 832101,
       "sic": 3561,
@@ -2957,19 +2957,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "NEWS CORP"
     },
-    "NVR": {
-      "cik": 906163,
-      "sic": 1531,
-      "sicDescription": "Operative Builders",
+    "INVH": {
+      "cik": 1687229,
+      "sic": 6510,
+      "sicDescription": "Real Estate Operators (No Developers) & Lessors",
       "filerCategory": "Large accelerated filer",
-      "secName": "NVR INC"
-    },
-    "WY": {
-      "cik": 106535,
-      "sic": 6798,
-      "sicDescription": "Real Estate Investment Trusts",
-      "filerCategory": "Large accelerated filer",
-      "secName": "WEYERHAEUSER CO"
+      "secName": "Invitation Homes Inc."
     },
     "FDXF": {
       "cik": 2082247,
@@ -2992,12 +2985,40 @@
       "filerCategory": "Large accelerated filer",
       "secName": "BALL Corp"
     },
+    "WY": {
+      "cik": 106535,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "filerCategory": "Large accelerated filer",
+      "secName": "WEYERHAEUSER CO"
+    },
+    "APA": {
+      "cik": 1841666,
+      "sic": 1311,
+      "sicDescription": "Crude Petroleum & Natural Gas",
+      "filerCategory": "Large accelerated filer",
+      "secName": "APA Corp"
+    },
     "KIM": {
       "cik": 879101,
       "sic": 6798,
       "sicDescription": "Real Estate Investment Trusts",
       "filerCategory": "Large accelerated filer",
       "secName": "KIMCO REALTY CORP"
+    },
+    "AKAM": {
+      "cik": 1086222,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "filerCategory": "Large accelerated filer",
+      "secName": "AKAMAI TECHNOLOGIES INC"
+    },
+    "HST": {
+      "cik": 1070750,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "filerCategory": "Large accelerated filer",
+      "secName": "HOST HOTELS & RESORTS, INC."
     },
     "SOLV": {
       "cik": 1964738,
@@ -3013,33 +3034,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "PTC INC."
     },
-    "AKAM": {
-      "cik": 1086222,
-      "sic": 7389,
-      "sicDescription": "Services-Business Services, NEC",
+    "EG": {
+      "cik": 1095073,
+      "sic": 6331,
+      "sicDescription": "Fire, Marine & Casualty Insurance",
       "filerCategory": "Large accelerated filer",
-      "secName": "AKAMAI TECHNOLOGIES INC"
-    },
-    "APA": {
-      "cik": 1841666,
-      "sic": 1311,
-      "sicDescription": "Crude Petroleum & Natural Gas",
-      "filerCategory": "Large accelerated filer",
-      "secName": "APA Corp"
-    },
-    "ALB": {
-      "cik": 915913,
-      "sic": 2821,
-      "sicDescription": "Plastic Materials, Synth Resins & Nonvulcan Elastomers",
-      "filerCategory": "Large accelerated filer",
-      "secName": "ALBEMARLE CORP"
-    },
-    "HST": {
-      "cik": 1070750,
-      "sic": 6798,
-      "sicDescription": "Real Estate Investment Trusts",
-      "filerCategory": "Large accelerated filer",
-      "secName": "HOST HOTELS & RESORTS, INC."
+      "secName": "EVEREST GROUP, LTD."
     },
     "MAA": {
       "cik": 912595,
@@ -3048,33 +3048,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "MID AMERICA APARTMENT COMMUNITIES INC."
     },
-    "TYL": {
-      "cik": 860731,
-      "sic": 7372,
-      "sicDescription": "Services-Prepackaged Software",
-      "filerCategory": "Large accelerated filer",
-      "secName": "TYLER TECHNOLOGIES INC"
-    },
     "TKO": {
       "cik": 1973266,
       "sic": 7900,
       "sicDescription": "Services-Amusement & Recreation Services",
       "filerCategory": "Large accelerated filer",
       "secName": "TKO Group Holdings, Inc."
-    },
-    "EG": {
-      "cik": 1095073,
-      "sic": 6331,
-      "sicDescription": "Fire, Marine & Casualty Insurance",
-      "filerCategory": "Large accelerated filer",
-      "secName": "EVEREST GROUP, LTD."
-    },
-    "SWK": {
-      "cik": 93556,
-      "sic": 3420,
-      "sicDescription": "Cutlery, Handtools & General Hardware",
-      "filerCategory": "Large accelerated filer",
-      "secName": "STANLEY BLACK & DECKER, INC."
     },
     "IVZ": {
       "cik": 914208,
@@ -3083,47 +3062,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Invesco Ltd."
     },
-    "MAS": {
-      "cik": 62996,
-      "sic": 3430,
-      "sicDescription": "Heating Equip, Except Elec & Warm Air; & Plumbing Fixtures",
+    "TYL": {
+      "cik": 860731,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
       "filerCategory": "Large accelerated filer",
-      "secName": "MASCO CORP /DE/"
-    },
-    "RVTY": {
-      "cik": 31791,
-      "sic": 3826,
-      "sicDescription": "Laboratory Analytical Instruments",
-      "filerCategory": "Large accelerated filer",
-      "secName": "REVVITY, INC."
-    },
-    "DOC": {
-      "cik": 765880,
-      "sic": 6798,
-      "sicDescription": "Real Estate Investment Trusts",
-      "filerCategory": "Large accelerated filer",
-      "secName": "HEALTHPEAK PROPERTIES, INC."
-    },
-    "MKC": {
-      "cik": 63754,
-      "sic": 2090,
-      "sicDescription": "Miscellaneous Food Preparations & Kindred Products",
-      "filerCategory": "Large accelerated filer",
-      "secName": "MCCORMICK & CO INC"
-    },
-    "REG": {
-      "cik": 910606,
-      "sic": 6798,
-      "sicDescription": "Real Estate Investment Trusts",
-      "filerCategory": "Large accelerated filer",
-      "secName": "REGENCY CENTERS CORP"
-    },
-    "AIZ": {
-      "cik": 1267238,
-      "sic": 6399,
-      "sicDescription": "Insurance Carriers, NEC",
-      "filerCategory": "Large accelerated filer",
-      "secName": "ASSURANT, INC."
+      "secName": "TYLER TECHNOLOGIES INC"
     },
     "TXT": {
       "cik": 217346,
@@ -3132,12 +3076,61 @@
       "filerCategory": "Large accelerated filer",
       "secName": "TEXTRON INC"
     },
-    "TRMB": {
-      "cik": 864749,
-      "sic": 3829,
-      "sicDescription": "Measuring & Controlling Devices, NEC",
+    "DOC": {
+      "cik": 765880,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
       "filerCategory": "Large accelerated filer",
-      "secName": "TRIMBLE INC."
+      "secName": "HEALTHPEAK PROPERTIES, INC."
+    },
+    "AIZ": {
+      "cik": 1267238,
+      "sic": 6399,
+      "sicDescription": "Insurance Carriers, NEC",
+      "filerCategory": "Large accelerated filer",
+      "secName": "ASSURANT, INC."
+    },
+    "ALB": {
+      "cik": 915913,
+      "sic": 2821,
+      "sicDescription": "Plastic Materials, Synth Resins & Nonvulcan Elastomers",
+      "filerCategory": "Large accelerated filer",
+      "secName": "ALBEMARLE CORP"
+    },
+    "RVTY": {
+      "cik": 31791,
+      "sic": 3826,
+      "sicDescription": "Laboratory Analytical Instruments",
+      "filerCategory": "Large accelerated filer",
+      "secName": "REVVITY, INC."
+    },
+    "SWK": {
+      "cik": 93556,
+      "sic": 3420,
+      "sicDescription": "Cutlery, Handtools & General Hardware",
+      "filerCategory": "Large accelerated filer",
+      "secName": "STANLEY BLACK & DECKER, INC."
+    },
+    "MKC": {
+      "cik": 63754,
+      "sic": 2090,
+      "sicDescription": "Miscellaneous Food Preparations & Kindred Products",
+      "filerCategory": "Large accelerated filer",
+      "secName": "MCCORMICK & CO INC"
+    },
+    "MAS": {
+      "cik": 62996,
+      "sic": 3430,
+      "sicDescription": "Heating Equip, Except Elec & Warm Air; & Plumbing Fixtures",
+      "filerCategory": "Large accelerated filer",
+      "secName": "MASCO CORP /DE/"
+    },
+    "REG": {
+      "cik": 910606,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
+      "filerCategory": "Large accelerated filer",
+      "secName": "REGENCY CENTERS CORP"
     },
     "CRL": {
       "cik": 1100682,
@@ -3146,26 +3139,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "CHARLES RIVER LABORATORIES INTERNATIONAL, INC."
     },
-    "LII": {
-      "cik": 1069202,
-      "sic": 3585,
-      "sicDescription": "Air-Cond & Warm Air Heatg Equip & Comm & Indl Refrig Equip",
+    "TRMB": {
+      "cik": 864749,
+      "sic": 3829,
+      "sicDescription": "Measuring & Controlling Devices, NEC",
       "filerCategory": "Large accelerated filer",
-      "secName": "LENNOX INTERNATIONAL INC"
+      "secName": "TRIMBLE INC."
     },
-    "ALLE": {
-      "cik": 1579241,
-      "sic": 7381,
-      "sicDescription": "Services-Detective, Guard & Armored Car Services",
+    "SWKS": {
+      "cik": 4127,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
       "filerCategory": "Large accelerated filer",
-      "secName": "Allegion plc"
-    },
-    "SJM": {
-      "cik": 91419,
-      "sic": 2033,
-      "sicDescription": "Canned, Fruits, Veg, Preserves, Jams & Jellies",
-      "filerCategory": "Large accelerated filer",
-      "secName": "J M SMUCKER Co"
+      "secName": "SKYWORKS SOLUTIONS, INC."
     },
     "GL": {
       "cik": 320335,
@@ -3174,12 +3160,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "GLOBE LIFE INC."
     },
-    "COO": {
-      "cik": 711404,
-      "sic": 3851,
-      "sicDescription": "Ophthalmic Goods",
+    "ALLE": {
+      "cik": 1579241,
+      "sic": 7381,
+      "sicDescription": "Services-Detective, Guard & Armored Car Services",
       "filerCategory": "Large accelerated filer",
-      "secName": "COOPER COMPANIES, INC."
+      "secName": "Allegion plc"
+    },
+    "GDDY": {
+      "cik": 1609711,
+      "sic": 7373,
+      "sicDescription": "Services-Computer Integrated Systems Design",
+      "filerCategory": "Large accelerated filer",
+      "secName": "GoDaddy Inc."
     },
     "AVY": {
       "cik": 8818,
@@ -3195,12 +3188,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "HASBRO, INC."
     },
-    "BAX": {
-      "cik": 10456,
-      "sic": 3841,
-      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+    "SJM": {
+      "cik": 91419,
+      "sic": 2033,
+      "sicDescription": "Canned, Fruits, Veg, Preserves, Jams & Jellies",
       "filerCategory": "Large accelerated filer",
-      "secName": "BAXTER INTERNATIONAL INC"
+      "secName": "J M SMUCKER Co"
+    },
+    "LII": {
+      "cik": 1069202,
+      "sic": 3585,
+      "sicDescription": "Air-Cond & Warm Air Heatg Equip & Comm & Indl Refrig Equip",
+      "filerCategory": "Large accelerated filer",
+      "secName": "LENNOX INTERNATIONAL INC"
     },
     "CSGP": {
       "cik": 1057352,
@@ -3209,12 +3209,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "COSTAR GROUP, INC."
     },
-    "GDDY": {
-      "cik": 1609711,
-      "sic": 7373,
-      "sicDescription": "Services-Computer Integrated Systems Design",
+    "BAX": {
+      "cik": 10456,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
       "filerCategory": "Large accelerated filer",
-      "secName": "GoDaddy Inc."
+      "secName": "BAXTER INTERNATIONAL INC"
     },
     "BF-B": {
       "cik": 14693,
@@ -3222,41 +3222,6 @@
       "sicDescription": "Beverages",
       "filerCategory": "Large accelerated filer",
       "secName": "BROWN FORMAN CORP"
-    },
-    "PNW": {
-      "cik": 764622,
-      "sic": 4911,
-      "sicDescription": "Electric Services",
-      "filerCategory": "Large accelerated filer",
-      "secName": "PINNACLE WEST CAPITAL CORP"
-    },
-    "LULU": {
-      "cik": 1397187,
-      "sic": 2300,
-      "sicDescription": "Apparel & Other Finishd Prods of  Fabrics & Similar Matl",
-      "filerCategory": "Large accelerated filer",
-      "secName": "lululemon athletica inc."
-    },
-    "UDR": {
-      "cik": 74208,
-      "sic": 6798,
-      "sicDescription": "Real Estate Investment Trusts",
-      "filerCategory": "Large accelerated filer",
-      "secName": "UDR, Inc."
-    },
-    "HRL": {
-      "cik": 48465,
-      "sic": 2011,
-      "sicDescription": "Meat Packing Plants",
-      "filerCategory": "Large accelerated filer",
-      "secName": "HORMEL FOODS CORP /DE/"
-    },
-    "PSKY": {
-      "cik": 2041610,
-      "sic": 4833,
-      "sicDescription": "Television Broadcasting Stations",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Paramount Skydance Corp"
     },
     "IT": {
       "cik": 749251,
@@ -3272,12 +3237,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "DAVITA INC."
     },
-    "DECK": {
-      "cik": 910521,
-      "sic": 3021,
-      "sicDescription": "Rubber & Plastics Footwear",
+    "PNW": {
+      "cik": 764622,
+      "sic": 4911,
+      "sicDescription": "Electric Services",
       "filerCategory": "Large accelerated filer",
-      "secName": "DECKERS OUTDOOR CORP"
+      "secName": "PINNACLE WEST CAPITAL CORP"
+    },
+    "PSKY": {
+      "cik": 2041610,
+      "sic": 4833,
+      "sicDescription": "Television Broadcasting Stations",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Paramount Skydance Corp"
     },
     "JKHY": {
       "cik": 779152,
@@ -3286,26 +3258,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "JACK HENRY & ASSOCIATES INC"
     },
-    "TECH": {
-      "cik": 842023,
-      "sic": 2836,
-      "sicDescription": "Biological Products, (No Diagnostic Substances)",
+    "UDR": {
+      "cik": 74208,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
       "filerCategory": "Large accelerated filer",
-      "secName": "BIO-TECHNE Corp"
-    },
-    "HII": {
-      "cik": 1501585,
-      "sic": 3730,
-      "sicDescription": "Ship & Boat Building & Repairing",
-      "filerCategory": "Large accelerated filer",
-      "secName": "HUNTINGTON INGALLS INDUSTRIES, INC."
-    },
-    "SWKS": {
-      "cik": 4127,
-      "sic": 3674,
-      "sicDescription": "Semiconductors & Related Devices",
-      "filerCategory": "Large accelerated filer",
-      "secName": "SKYWORKS SOLUTIONS, INC."
+      "secName": "UDR, Inc."
     },
     "ERIE": {
       "cik": 922621,
@@ -3314,6 +3272,34 @@
       "filerCategory": "Large accelerated filer",
       "secName": "ERIE INDEMNITY CO"
     },
+    "DECK": {
+      "cik": 910521,
+      "sic": 3021,
+      "sicDescription": "Rubber & Plastics Footwear",
+      "filerCategory": "Large accelerated filer",
+      "secName": "DECKERS OUTDOOR CORP"
+    },
+    "TECH": {
+      "cik": 842023,
+      "sic": 2836,
+      "sicDescription": "Biological Products, (No Diagnostic Substances)",
+      "filerCategory": "Large accelerated filer",
+      "secName": "BIO-TECHNE Corp"
+    },
+    "HRL": {
+      "cik": 48465,
+      "sic": 2011,
+      "sicDescription": "Meat Packing Plants",
+      "filerCategory": "Large accelerated filer",
+      "secName": "HORMEL FOODS CORP /DE/"
+    },
+    "LULU": {
+      "cik": 1397187,
+      "sic": 2300,
+      "sicDescription": "Apparel & Other Finishd Prods of  Fabrics & Similar Matl",
+      "filerCategory": "Large accelerated filer",
+      "secName": "lululemon athletica inc."
+    },
     "GNRC": {
       "cik": 1474735,
       "sic": 3621,
@@ -3321,19 +3307,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "GENERAC HOLDINGS INC."
     },
-    "DPZ": {
-      "cik": 1286681,
-      "sic": 5140,
-      "sicDescription": "Wholesale-Groceries & Related Products",
+    "HII": {
+      "cik": 1501585,
+      "sic": 3730,
+      "sicDescription": "Ship & Boat Building & Repairing",
       "filerCategory": "Large accelerated filer",
-      "secName": "DOMINOS PIZZA INC"
+      "secName": "HUNTINGTON INGALLS INDUSTRIES, INC."
     },
-    "CLX": {
-      "cik": 21076,
-      "sic": 2842,
-      "sicDescription": "Specialty Cleaning, Polishing and Sanitation Preparations",
+    "UHS": {
+      "cik": 352915,
+      "sic": 8062,
+      "sicDescription": "Services-General Medical & Surgical Hospitals, NEC",
       "filerCategory": "Large accelerated filer",
-      "secName": "CLOROX CO /DE/"
+      "secName": "UNIVERSAL HEALTH SERVICES INC"
     },
     "ALGN": {
       "cik": 1097149,
@@ -3342,12 +3328,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "ALIGN TECHNOLOGY INC"
     },
-    "UHS": {
-      "cik": 352915,
-      "sic": 8062,
-      "sicDescription": "Services-General Medical & Surgical Hospitals, NEC",
+    "CLX": {
+      "cik": 21076,
+      "sic": 2842,
+      "sicDescription": "Specialty Cleaning, Polishing and Sanitation Preparations",
       "filerCategory": "Large accelerated filer",
-      "secName": "UNIVERSAL HEALTH SERVICES INC"
+      "secName": "CLOROX CO /DE/"
+    },
+    "COO": {
+      "cik": 711404,
+      "sic": 3851,
+      "sicDescription": "Ophthalmic Goods",
+      "filerCategory": "Large accelerated filer",
+      "secName": "COOPER COMPANIES, INC."
     },
     "AES": {
       "cik": 874761,
@@ -3363,12 +3356,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "CAMDEN PROPERTY TRUST"
     },
-    "FDS": {
-      "cik": 1013237,
-      "sic": 7370,
-      "sicDescription": "Services-Computer Programming, Data Processing, Etc.",
+    "DPZ": {
+      "cik": 1286681,
+      "sic": 5140,
+      "sicDescription": "Wholesale-Groceries & Related Products",
       "filerCategory": "Large accelerated filer",
-      "secName": "FACTSET RESEARCH SYSTEMS INC"
+      "secName": "DOMINOS PIZZA INC"
     },
     "BXP": {
       "cik": 1037540,
@@ -3384,13 +3377,6 @@
       "filerCategory": "Large accelerated filer",
       "secName": "MGM Resorts International"
     },
-    "FRT": {
-      "cik": 34903,
-      "sic": 6798,
-      "sicDescription": "Real Estate Investment Trusts",
-      "filerCategory": "Large accelerated filer",
-      "secName": "FEDERAL REALTY INVESTMENT TRUST"
-    },
     "HSIC": {
       "cik": 1000228,
       "sic": 5047,
@@ -3398,12 +3384,12 @@
       "filerCategory": "Large accelerated filer",
       "secName": "HENRY SCHEIN INC"
     },
-    "PODD": {
-      "cik": 1145197,
-      "sic": 3841,
-      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+    "FRT": {
+      "cik": 34903,
+      "sic": 6798,
+      "sicDescription": "Real Estate Investment Trusts",
       "filerCategory": "Large accelerated filer",
-      "secName": "INSULET CORP"
+      "secName": "FEDERAL REALTY INVESTMENT TRUST"
     },
     "APTV": {
       "cik": 1521332,
@@ -3412,12 +3398,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Aptiv PLC"
     },
-    "WYNN": {
-      "cik": 1174922,
-      "sic": 7011,
-      "sicDescription": "Hotels & Motels",
+    "FDS": {
+      "cik": 1013237,
+      "sic": 7370,
+      "sicDescription": "Services-Computer Programming, Data Processing, Etc.",
       "filerCategory": "Large accelerated filer",
-      "secName": "WYNN RESORTS LTD"
+      "secName": "FACTSET RESEARCH SYSTEMS INC"
+    },
+    "PODD": {
+      "cik": 1145197,
+      "sic": 3841,
+      "sicDescription": "Surgical & Medical Instruments & Apparatus",
+      "filerCategory": "Large accelerated filer",
+      "secName": "INSULET CORP"
     },
     "PNR": {
       "cik": 77360,
@@ -3426,6 +3419,13 @@
       "filerCategory": "Large accelerated filer",
       "secName": "PENTAIR plc"
     },
+    "WYNN": {
+      "cik": 1174922,
+      "sic": 7011,
+      "sicDescription": "Hotels & Motels",
+      "filerCategory": "Large accelerated filer",
+      "secName": "WYNN RESORTS LTD"
+    },
     "ARE": {
       "cik": 1035443,
       "sic": 6798,
@@ -3433,19 +3433,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "ALEXANDRIA REAL ESTATE EQUITIES, INC."
     },
-    "MOS": {
-      "cik": 1285785,
-      "sic": 2870,
-      "sicDescription": "Agricultural Chemicals",
-      "filerCategory": "Large accelerated filer",
-      "secName": "MOSAIC CO"
-    },
     "AOS": {
       "cik": 91142,
       "sic": 3630,
       "sicDescription": "Household Appliances",
       "filerCategory": "Large accelerated filer",
       "secName": "SMITH A O CORP"
+    },
+    "MOS": {
+      "cik": 1285785,
+      "sic": 2870,
+      "sicDescription": "Agricultural Chemicals",
+      "filerCategory": "Large accelerated filer",
+      "secName": "MOSAIC CO"
     },
     "TAP": {
       "cik": 24545,
@@ -3461,19 +3461,19 @@
       "filerCategory": "Large accelerated filer",
       "secName": "Norwegian Cruise Line Holdings Ltd."
     },
-    "BLDR": {
-      "cik": 1316835,
-      "sic": 5211,
-      "sicDescription": "Retail-Lumber & Other Building Materials Dealers",
-      "filerCategory": "Large accelerated filer",
-      "secName": "Builders FirstSource, Inc."
-    },
     "TTD": {
       "cik": 1671933,
       "sic": 7370,
       "sicDescription": "Services-Computer Programming, Data Processing, Etc.",
       "filerCategory": "Large accelerated filer",
       "secName": "Trade Desk, Inc."
+    },
+    "BLDR": {
+      "cik": 1316835,
+      "sic": 5211,
+      "sicDescription": "Retail-Lumber & Other Building Materials Dealers",
+      "filerCategory": "Large accelerated filer",
+      "secName": "Builders FirstSource, Inc."
     }
   }
 }

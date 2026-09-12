@@ -388,7 +388,7 @@
       "entityType": "other",
       "exchange": "Nasdaq",
       "filerCategory": "<br>Emerging growth company",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-03-31",
       "name": "ANFIELD ENERGY INC.",
       "offshoreIncorporation": false,
@@ -3082,7 +3082,7 @@
         "BETRF"
       ]
     },
-    "BGI": {
+    "BGICF": {
       "annualForm": "20-F/40-F",
       "cik": 1179821,
       "country": "Canada",
@@ -3090,7 +3090,7 @@
       "countryCode": "A8",
       "countryRejected": null,
       "entityType": "other",
-      "exchange": "NYSE",
+      "exchange": "OTC",
       "filerCategory": "Non-accelerated filer",
       "filesFormSd": true,
       "lastAnnual": "2026-07-21",
@@ -3102,7 +3102,7 @@
       "region": "Quebec",
       "sic": 5944,
       "sicDescription": "Retail-Jewelry Stores",
-      "symbol": "BGI",
+      "symbol": "BGICF",
       "tickers": [
         "BGI",
         "BGICF"
@@ -3750,6 +3750,8 @@
         "BMO",
         "BNKD",
         "BNKU",
+        "BRZD",
+        "BRZL",
         "BULZ",
         "CARD",
         "CARU",
@@ -3766,8 +3768,11 @@
         "HYGU",
         "JETD",
         "JETU",
+        "JPND",
+        "JPNU",
         "LQDD",
         "LQDU",
+        "MNGU",
         "NRGD",
         "NRGU",
         "OILD",
@@ -3775,8 +3780,15 @@
         "SHNY",
         "SMHD",
         "SMHU",
+        "SPYU",
+        "TAWN",
+        "TPEI",
         "WTID",
-        "WTIU"
+        "WTIU",
+        "XLCD",
+        "XLCU",
+        "XLPD",
+        "XLPU"
       ]
     },
     "BMR": {
@@ -4448,7 +4460,8 @@
       "sicDescription": "Finance Services",
       "symbol": "BTOG",
       "tickers": [
-        "BTOG"
+        "BTOG",
+        "SGRX"
       ]
     },
     "BTQ": {
@@ -6151,7 +6164,7 @@
       "exchange": "Nasdaq",
       "filerCategory": "Non-accelerated filer<br>Emerging growth company",
       "filesFormSd": false,
-      "lastAnnual": "2026-01-30",
+      "lastAnnual": "2026-09-10",
       "name": "CN ENERGY GROUP. INC.",
       "offshoreIncorporation": true,
       "operatingBasis": "business-address",
@@ -8804,6 +8817,32 @@
         "ENLV"
       ]
     },
+    "EOCN": {
+      "annualForm": "20-F/40-F",
+      "cik": 1595353,
+      "country": "Israel",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "L3",
+      "countryRejected": null,
+      "entityType": "other",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer",
+      "filesFormSd": false,
+      "lastAnnual": "2026-03-31",
+      "name": "Galmed Pharmaceuticals Ltd.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Israel",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 2834,
+      "sicDescription": "Pharmaceutical Preparations",
+      "symbol": "EOCN",
+      "tickers": [
+        "EOCN",
+        "GLMD"
+      ]
+    },
     "EPOW": {
       "annualForm": "20-F/40-F",
       "cik": 1780731,
@@ -9223,7 +9262,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "Accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-04-13",
       "name": "ENDEAVOUR SILVER CORP",
       "offshoreIncorporation": false,
@@ -10273,8 +10312,7 @@
       "sicDescription": "Services-Computer Programming Services",
       "symbol": "GDEV",
       "tickers": [
-        "GDEV",
-        "GDEVW"
+        "GDEV"
       ]
     },
     "GDHG": {
@@ -10566,7 +10604,7 @@
       "countryRejected": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-07-16",
       "name": "General Fusion Group Ltd.",
@@ -10960,31 +10998,6 @@
       "symbol": "GLE",
       "tickers": [
         "GLE"
-      ]
-    },
-    "GLMD": {
-      "annualForm": "20-F/40-F",
-      "cik": 1595353,
-      "country": "Israel",
-      "countryBasis": "state-of-incorporation",
-      "countryCode": "L3",
-      "countryRejected": null,
-      "entityType": "other",
-      "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer",
-      "filesFormSd": false,
-      "lastAnnual": "2026-03-31",
-      "name": "Galmed Pharmaceuticals Ltd.",
-      "offshoreIncorporation": false,
-      "operatingBasis": "business-address",
-      "operatingCountry": "Israel",
-      "operatingRegion": null,
-      "region": null,
-      "sic": 2834,
-      "sicDescription": "Pharmaceutical Preparations",
-      "symbol": "GLMD",
-      "tickers": [
-        "GLMD"
       ]
     },
     "GLNG": {
@@ -13962,7 +13975,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "<br>Emerging growth company",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-03-25",
       "name": "Integra Resources Corp.",
       "offshoreIncorporation": false,
@@ -15200,7 +15213,7 @@
       "filerCategory": "Non-accelerated filer<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-05-15",
-      "name": "K Wave Media Ltd.",
+      "name": "Nexus Advanced Technologies Inc.",
       "offshoreIncorporation": true,
       "operatingBasis": "business-address",
       "operatingCountry": "Cayman Islands",
@@ -15211,7 +15224,9 @@
       "symbol": "KWM",
       "tickers": [
         "KWM",
-        "KWMWW"
+        "KWMWW",
+        "NXAT",
+        "NXATW"
       ]
     },
     "KXIN": {
@@ -16966,7 +16981,7 @@
       "filerCategory": "Non-accelerated filer",
       "filesFormSd": false,
       "lastAnnual": "2026-03-18",
-      "name": "Magnum Ice Cream Co B.V.",
+      "name": "Magnum Ice Cream Co N.V.",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
       "operatingCountry": "Netherlands",
@@ -19089,7 +19104,7 @@
       "countryCode": "L6",
       "countryRejected": null,
       "entityType": "other",
-      "exchange": "NYSE",
+      "exchange": "",
       "filerCategory": "Non-accelerated filer",
       "filesFormSd": false,
       "lastAnnual": "2026-05-15",
@@ -20917,7 +20932,7 @@
       "filerCategory": "Non-accelerated filer<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-08-17",
-      "name": "Ming Shing Group Holdings Ltd",
+      "name": "PMA Graphene Technology Group Inc.",
       "offshoreIncorporation": true,
       "operatingBasis": "business-address",
       "operatingCountry": "Hong Kong",
@@ -21837,6 +21852,7 @@
       "sicDescription": "Household Appliances",
       "symbol": "RAY",
       "tickers": [
+        "ATTT",
         "RAY"
       ]
     },
@@ -23108,6 +23124,31 @@
       "tickers": [
         "SDA",
         "SDAWW"
+      ]
+    },
+    "SE": {
+      "annualForm": "20-F/40-F",
+      "cik": 1703399,
+      "country": "Cayman Islands",
+      "countryBasis": "state-of-incorporation",
+      "countryCode": "E9",
+      "countryRejected": null,
+      "entityType": "other",
+      "exchange": "NYSE",
+      "filerCategory": "Large accelerated filer",
+      "filesFormSd": false,
+      "lastAnnual": "2026-04-17",
+      "name": "Sea Ltd",
+      "offshoreIncorporation": true,
+      "operatingBasis": "business-address",
+      "operatingCountry": "Singapore",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 7380,
+      "sicDescription": "Services-Miscellaneous Business Services",
+      "symbol": "SE",
+      "tickers": [
+        "SE"
       ]
     },
     "SEAL-PA": {
@@ -27363,7 +27404,7 @@
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
       "operatingCountry": "Canada",
-      "operatingRegion": "Ontario",
+      "operatingRegion": "ONTARIO",
       "region": null,
       "sic": 1000,
       "sicDescription": "Metal Mining",
@@ -28583,7 +28624,7 @@
         "WFG"
       ]
     },
-    "WILC": {
+    "WILCF": {
       "annualForm": "20-F/40-F",
       "cik": 1030997,
       "country": "Israel",
@@ -28591,7 +28632,7 @@
       "countryCode": "L3",
       "countryRejected": null,
       "entityType": "other",
-      "exchange": "Nasdaq",
+      "exchange": "OTC",
       "filerCategory": "Non-accelerated filer",
       "filesFormSd": false,
       "lastAnnual": "2026-03-24",
@@ -28603,9 +28644,8 @@
       "region": null,
       "sic": 5141,
       "sicDescription": "Wholesale-Groceries, General Line",
-      "symbol": "WILC",
+      "symbol": "WILCF",
       "tickers": [
-        "WILC",
         "WILCF"
       ]
     },
@@ -30273,25 +30313,25 @@
   },
   "contractVersion": 1,
   "coverage": {
-    "bothAnnualAndFormSd": 147,
-    "foreignAnnualFilers": 1222,
-    "formSdFilers": 1033,
-    "published": 1193,
-    "publishedFilesFormSd": 147,
+    "bothAnnualAndFormSd": 150,
+    "foreignAnnualFilers": 1223,
+    "formSdFilers": 1039,
+    "published": 1194,
+    "publishedFilesFormSd": 150,
     "skippedNoTicker": 29,
     "skippedTickerCollision": 0,
     "submissionsFailed": 0,
-    "withTicker": 1193,
+    "withTicker": 1194,
     "withoutSic": 0
   },
   "dataset": "supply-chain-foreign-issuers",
   "note": "在美上市的外国私人发行人（报 20-F／40-F）全体，不再限于同时报 Form SD 的那一批。**多收的这些只增加节点、不增加关系边**——Form SD 是冶炼厂边的唯一来源，不报 SD 的公司没有边是规则不适用，不是抽取失败，逐家由 filesFormSd 标出。因此公司家数变多不表示关系覆盖变好，页面必须把两者分开说。按 CIK 去重，主代码按交易所优先级选定，与标普池撞码的一律跳过而不是覆盖。",
   "quarters": [
     {
-      "bytes": 2979142,
+      "bytes": 3109095,
       "gzip": true,
       "quarter": "2026QTR3",
-      "rows": 236914,
+      "rows": 248146,
       "unparsed": 7
     },
     {
@@ -30302,14 +30342,14 @@
       "unparsed": 7
     },
     {
-      "bytes": 4439273,
+      "bytes": 4439767,
       "gzip": true,
       "quarter": "2026QTR1",
       "rows": 370055,
       "unparsed": 7
     },
     {
-      "bytes": 3399986,
+      "bytes": 3399984,
       "gzip": true,
       "quarter": "2025QTR4",
       "rows": 276466,
@@ -30634,5 +30674,5 @@
       "stateOfIncorporationDescription": ""
     }
   },
-  "updatedAt": "2026-09-09T01:21:40Z"
+  "updatedAt": "2026-09-12T01:28:35Z"
 }
