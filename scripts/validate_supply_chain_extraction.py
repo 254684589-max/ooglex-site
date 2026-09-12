@@ -1844,12 +1844,51 @@ def main() -> int:
             failures.append(f"国别：{why} 不成立")
         print(f"  [{'OK' if ok else 'XX'}] {why}")
 
+    print("\n── 接线：SEC 联系方式取的是仓库变量，不是密钥 ────────────────────")
+    # 这条是本轮自己踩的：两个新探针 job 写成 `secrets.SEC_CONTACT`，而仓库里
+    # 这个值**存在变量里**（supply_chain_probe.yml 自己的注释写着「项目所有者
+    # 可在仓库变量里设为申报用邮箱」）。取错作用域拿到的是空串，脚本退回
+    # 默认 UA——**SEC 收到的是匿名请求，而本地什么都不会报错**。
+    # 这类错只有专门查才看得见，所以钉一条断言。
+    _wf_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                           ".github", "workflows")
+
+    def _wf_text(name: str) -> str:
+        with open(os.path.join(_wf_dir, name), encoding="utf-8") as fh:
+            return fh.read()
+
+    def _contact_scopes(text: str) -> set[str]:
+        return set(re.findall(r"SEC_CONTACT:\s*\$\{\{\s*(\w+)\.SEC_CONTACT", text))
+
+    _wf_files = ["supply_chain.yml", "supply_chain_probe.yml"]
+    _wf_src = {name: _wf_text(name) for name in _wf_files}
+    _scopes = {name: _contact_scopes(src) for name, src in _wf_src.items()}
+    wire_cases = [
+        (all(s == {"vars"} for s in _scopes.values()),
+         "两个供应链工作流里的 SEC_CONTACT 全部取自 vars"
+         f"（实测 {({k: sorted(v) for k, v in _scopes.items()})}）"),
+        (all(len(re.findall(r"^\s*SEC_CONTACT:", src, re.M))
+             == len(re.findall(r"SEC_CONTACT:\s*\$\{\{\s*\w+\.SEC_CONTACT",
+                               src))
+             for src in _wf_src.values()),
+         "每一行 SEC_CONTACT 都被上一条的正则数到了"
+         f"（实测 { {k: len(re.findall(r'^[ ]*SEC_CONTACT:', v, re.M)) for k, v in _wf_src.items()} } 行）"
+         "——上一条比的是**集合**，14 行 vars 加 1 行漏掉的仍然等于 {'vars'}，"
+         "所以必须单独数行数，否则漏的那一行就藏在集合里"),
+        ("secrets.SEC_CONTACT" not in _wf_src["supply_chain_probe.yml"],
+         "探针工作流里一处 secrets.SEC_CONTACT 都没有"),
+    ]
+    for ok, why in wire_cases:
+        if not ok:
+            failures.append(f"接线：{why} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {why}")
+
     total = (len(pdf_cases) + 4 + len(kind_cases) + len(symbol_cases) + len(split_cases) + len(skip_cases) + len(CASES) * 2 + len(NEGATIVE) + len(CONTEXT_CASES) + len(SIC_CASES)
              + len(FORM_SD_CASES) + 6 + len(writes)
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
-             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases) + len(carry_cases) + len(hist_cases) + len(body_cases) + len(lic_cases)
+             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases) + len(carry_cases) + len(hist_cases) + len(wire_cases) + len(body_cases) + len(lic_cases)
              + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:
