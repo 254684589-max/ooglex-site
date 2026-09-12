@@ -49,6 +49,10 @@ on:
         description: 阶段3 抽样家数（默认 100）
         required: false
         default: '100'
+      fcc_sample:
+        description: 阶段4 抽样家数（默认 120）
+        required: false
+        default: '120'
       backfill_sample:
         description: 阶段1 抽样家数（默认 120）
         required: false
@@ -86,7 +90,7 @@ on:
         required: false
         default: '40'
       only:
-        description: '只跑哪些 job（uei/ex10/backfill/ex21/sdhistory/graph/supplier/usaspending/nolist/body/extract/flow/foreign/foreignfetch/ceiling；留空跑全部）'
+        description: '只跑哪些 job（fcc/uei/ex10/backfill/ex21/sdhistory/graph/supplier/usaspending/nolist/body/extract/flow/foreign/foreignfetch/ceiling；留空跑全部）'
         required: false
         default: ''
 
@@ -267,6 +271,37 @@ jobs:
           SEC_CONTACT: ${{ vars.SEC_CONTACT }}
           EX10_SAMPLE: ${{ inputs.ex10_sample }}
         run: python scripts/supply-chain/probe_ex10_contracts.py
+
+  fcc:
+    name: 补名单工程 阶段4 · FCC 设备认证能不能给出品牌↔代工关系
+    if: ${{ inputs.only == '' || contains(inputs.only, 'fcc') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate extraction rules (offline)
+        run: python scripts/validate_supply_chain_extraction.py
+
+      # 规划里写「一个品牌的设备由哪家 ODM 制造，grantee code 能看出」——
+      # **那句话只有前半句是确定的**。FCC ID 的前几位确实对应一个持证实体，
+      # 但持证的是品牌方还是代工方两种都存在；只有 grantee 一侧拿到的是
+      # 「这家公司做射频设备」，那不是一条关系。所以这个探针先探接口与字段。
+      #
+      # 判据写死在脚本文件头：Gate A 锚定 ≥30 家（规划里原话，一字未动）
+      # 加 Gate B 关系 ≥15 家（它本来就缺的另一半）。**加闸门不是放宽判据。**
+      # 接口不通或返回里没有当事方字段 → 报「结论无效」并非零退出。
+      - name: Probe FCC equipment authorization grantees
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+          FCC_SAMPLE: ${{ inputs.fcc_sample }}
+        run: python scripts/supply-chain/probe_fcc_grantee.py
 
   uei:
     name: 补名单工程 阶段3 · USAspending 分包能不能给出一级供应关系

@@ -84,6 +84,12 @@ import sys
 import time
 from urllib import error, request
 
+# **名字口径与阶段 4 共用一个模块，不各写一份。** 第二十六轮刚踩过「同一件事
+# 两个来源」的坑；这套规范化离线验过 27 条，复制一份出去就等于埋下第二份。
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from entity_names import (  # noqa: E402
+    LEADING_THE, LEGAL_SUFFIX, NOT_A_COMPANY, core_query, norm)
+
 API = "https://api.usaspending.gov/api/v2"
 NODES_PATH = "apps/supply-chain/nodes.json"
 TIMEOUT = 45
@@ -100,22 +106,6 @@ UA = f"Ooglex Supply Chain Research/1.0 ({CONTACT})"
 TIME_PERIOD = [{"start_date": "2022-10-01", "end_date": "2026-09-30"}]
 CONTRACT_CODES = ["A", "B", "C", "D"]
 
-# **只去法律形式后缀。** 业务描述词（holdings／group／technologies／
-# international／industries）一个都不去——去掉它们就等于自己制造同名碰撞。
-LEGAL_SUFFIX = re.compile(
-    r"\b(?:co|company|corp|corporation|inc|incorporated|ltd|limited|llc|"
-    r"l\.?l\.?c|lp|llp|plc|ag|nv|n\.?v|bv|b\.?v|sa|s\.?a|se|spa|srl|gmbh|"
-    r"kg|kgaa|kk|pte|pty|sdn|bhd|oyj|oy|ab|a\/s|as)\b\.?", re.I)
-# 领头的 the 要去掉：「THE BOEING COMPANY」与「Boeing Co」是同一家。
-# **只去领头的**——「Procter & Gamble ... the ...」里的 the 不能碰。
-LEADING_THE = re.compile(r"^the\s+", re.I)
-PUNCT = re.compile(r"[^0-9a-z ]+")
-# 政府与非企业实体：锚到这些上一律算错配，不算命中。
-NOT_A_COMPANY = re.compile(
-    r"\b(?:university|college|school\s+district|school|academy|"
-    r"city\s+of|county\s+of|town\s+of|state\s+of|"
-    r"department\s+of|board\s+of|authority|commission|district|"
-    r"regents|trustees|foundation|institute|hospital\s+district)\b", re.I)
 
 
 class Budget:
@@ -133,13 +123,6 @@ class Budget:
 BUDGET = Budget()
 
 
-def norm(name) -> str:
-    """严格规范化：转小写、去标点、去法律后缀、折空白。业务描述词保留。"""
-    text = str(name or "").lower()
-    text = PUNCT.sub(" ", text)
-    text = LEGAL_SUFFIX.sub(" ", text)
-    text = LEADING_THE.sub("", " ".join(text.split()))
-    return " ".join(text.split())
 
 
 def post(path: str, payload: dict) -> tuple[dict | None, str]:
@@ -165,23 +148,6 @@ def post(path: str, payload: dict) -> tuple[dict | None, str]:
         time.sleep(GAP)
 
 
-def core_query(name: str) -> str:
-    """搜索用的核心名：去掉法律后缀与领头的 the，保留原始大小写与空格。
-
-    `recipient_search_text` 是**子串**搜索，串越长越严。第一轮拿完整法定名
-    （「Advanced Flower Capital Inc.」）去搜，100 家里只有 11 家返回候选——
-    分不清是这家公司真没有联邦合同，还是名字太长搜不到。**偏差方向是假阴性。**
-
-    改搜核心名只会让候选变多，不会放松判定：锚点那一步仍然要求
-    `norm(候选原名) == norm(池内公司名)` 严格相等。
-    """
-    text = LEADING_THE.sub("", str(name or "").strip())
-    words = [w for w in text.split()
-             if not LEGAL_SUFFIX.fullmatch(w.strip(".,"))]
-    # 后缀去掉之后，它前面那个词常常还挂着逗号（「Leidos Holdings, Inc.」→
-    # 「Leidos Holdings,」）。逗号留在搜索串里等于多要求一个字符匹配。
-    kept = " ".join(w.rstrip(",") for w in words).strip()
-    return re.sub(r"[,\s]+$", "", kept) or text
 
 
 def award_rows(name: str, subawards: bool, fields: list[str],

@@ -1844,6 +1844,56 @@ def main() -> int:
             failures.append(f"国别：{why} 不成立")
         print(f"  [{'OK' if ok else 'XX'}] {why}")
 
+    print("\n── 公司名口径：一套规范化，两个探针共用（不准各写一份）────────────")
+    # 第二十六轮刚踩过「同一件事两个来源」的坑，所以阶段 3／4 的名字口径抽成了
+    # `entity_names.py`。这一段钉两件事：①那套规范化的行为（含历史上踩过的
+    # 两个真实错）；②**两个探针都得是 import 它，不准自己再写一份**——
+    # 复制一份出去，下一次改动就只改其中一份，而离线断言照旧全绿。
+    _names = _load(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                "supply-chain", "entity_names.py"),
+                   "entity_names")
+    name_pairs = [
+        # (a, b, 是否同一家, 为什么这条在这里)
+        ("3M Company", "3M CO", True,
+         "company 是法律形式，要去——第一版没去，把同一家判成了两家"),
+        ("The Boeing Company", "BOEING CO", True, "领头的 the 要去"),
+        ("Leidos Holdings, Inc.", "KALEIDOSCOPE LEARNING CENTER", False,
+         "上一轮那个真实假阳性：子串搜出来的噪声"),
+        ("Leidos Holdings, Inc.", "LEIDOS INC", False,
+         "Holdings 是业务描述词，**不许去**——去了就自己造假阳性"),
+        ("General Dynamics Corporation", "GENERAL DYNAMICS INFORMATION TECHNOLOGY INC",
+         False, "同上，technologies 不许折"),
+        ("Apple Inc.", "APPLE INC.", True, "大小写与标点不算差异"),
+        ("", "", False, "两个空串不算同一家——否则取不到名字的东西会互相匹配"),
+        ("Garmin Ltd.", "", False, "一侧空也不算"),
+    ]
+    name_cases = []
+    for a, b, expect, whyrow in name_pairs:
+        name_cases.append((_names.same_entity(a, b) == expect,
+                           f"严格同名 {a[:26]!r} vs {b[:26]!r} = {expect}（{whyrow}）"))
+    for raw, want in [("Advanced Flower Capital Inc.", "Advanced Flower Capital"),
+                      ("Leidos Holdings, Inc.", "Leidos Holdings"),
+                      ("The Boeing Company", "Boeing"),
+                      ("Inc.", "Inc.")]:
+        name_cases.append((_names.core_query(raw) == want,
+                           f"搜索串 {raw!r} → {want!r}"))
+    name_cases.append((bool(_names.NOT_A_COMPANY.search("BOARD OF REGENTS")),
+                       "非企业实体认得出（锚到这些一律算错配）"))
+    name_cases.append((not _names.NOT_A_COMPANY.search("HONEYWELL INTERNATIONAL INC"),
+                       "真公司不会被当成非企业实体"))
+    _probe_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "supply-chain")
+    for _fn in ("probe_usaspending_uei.py", "probe_fcc_grantee.py"):
+        with open(os.path.join(_probe_dir, _fn), encoding="utf-8") as fh:
+            _src = fh.read()
+        name_cases.append(("from entity_names import" in _src,
+                           f"{_fn} 是 import 共用模块"))
+        name_cases.append(("LEGAL_SUFFIX = re.compile" not in _src,
+                           f"{_fn} 里没有自己再写一份 LEGAL_SUFFIX"))
+    for ok, whytext in name_cases:
+        if not ok:
+            failures.append(f"公司名口径：{whytext} 不成立")
+        print(f"  [{'OK' if ok else 'XX'}] {whytext}")
+
     print("\n── 申报状态：每一档都得有页面文案，不能只躺在数据里 ────────────")
     # **这条不能靠数据驱动。** 浏览器契约那一段是按 nodes.json 里**真实出现的**
     # 状态取样的，而 index-says-filed 这一档生产数据里通常是 0 家——那样断言
@@ -1926,7 +1976,7 @@ def main() -> int:
              + len(zh_cases) + len(rank_cases) + len(threshold_cases) + 1
              + len(index_cases) + len(quarter_cases) + len(dir_cases)
              + len(chain_cases) + len(chain_self) + len(guard_cases)
-             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases) + len(carry_cases) + len(hist_cases) + len(wire_cases) + len(state_cases) + len(body_cases) + len(lic_cases)
+             + len(link_self) + len(loop_cases) + len(layer_self) + len(order_cases) + 1 + len(peer_cases) + 3 + len(pick_cases) + 1 + len(pay_cases) + len(withdraw_cases) + len(region_cases) + len(carry_cases) + len(hist_cases) + len(wire_cases) + len(state_cases) + len(name_cases) + len(body_cases) + len(lic_cases)
              + len(xbrl_cases) + len(xbrl_name_cases) + len(title_cases))
     print("\n" + "─" * 68)
     if failures:
