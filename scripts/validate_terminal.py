@@ -503,6 +503,34 @@ def main() -> int:
             "缺少跨资产月线")
     section("多标的比较的对齐与归一化")
 
+    # ── 15 持股结构：覆盖面必须说清，否则会被读成完整 13F ─────────────────
+    sec_p = pages["security"]
+    require("loadOwners" in lib["security.js"], "security.js 必须提供 13F 反查模型")
+    require('id="tbl-own"' in sec_p and 'id="pg-5"' in sec_p, "证券描述页必须有持股结构分页")
+    require("这里没出现，不等于该机构没持有" in sec_p,
+            "站内只收录前 10 大持仓，必须写明「没出现 ≠ 没持有」")
+    require("前 10 大持仓" in sec_p, "必须写明只收录前 10 大持仓")
+    require("declared" in lib["security.js"] and "只占" in sec_p,
+            "必须把站内收录量与机构申报总仓位对比出百分比")
+    require("没有代码" in sec_p or "noTk" in lib["security.js"],
+            "有相当比例的仓位解析不出代码，按代码反查覆盖不到，必须计入覆盖面")
+    require("只含美股多头" in sec_p and "不含空头" in sec_p,
+            "13F 只含美股多头，必须写明不含空头、债券与海外持仓")
+    require("滞后 45 天" in sec_p, "13F 最长滞后 45 天，必须写明")
+    require("不是它占本公司股本的比例" in sec_p,
+            "「占其组合」容易被读成占本公司股本，必须澄清")
+    require("不构成投资建议" in sec_p, "持股结构页脚必须带免责")
+    # 13F 源取不到不得影响本页其余部分，且不能静默
+    require(".catch(function (e)" in sec_p,
+            "持股结构那段必须显式收口：promise 里抛出会变成静默的 unhandledrejection")
+    sup = ROOT / "apps" / "superinvestors" / "data.json"
+    require(sup.is_file(), "缺少机构持仓数据 superinvestors/data.json")
+    if sup.is_file():
+        sd = json.loads(read(sup))
+        require(len(sd.get("investors") or []) >= 30, "机构数过少")
+        require("13F" in str(sd.get("source", "")), "机构持仓来源标注应指明 13F")
+    section("持股结构与 13F 覆盖面")
+
     return report()
 
 

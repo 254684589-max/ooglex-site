@@ -127,6 +127,57 @@
     });
   }
 
+  /* ── 13F 反查：站内收录的机构里，谁持有这只票 ──────────────────────────
+     覆盖面必须说清楚，否则会被读成完整 13F：
+       · 站内每家只收录**前 10 大持仓**（外加 8 条变动），主权基金同样前 10；
+       · 实测 564 条仓位里 261 条没有解析出代码（Chubb、Western Digital、
+         ETF 看跌期权等），按代码反查只能覆盖到有代码的那些；
+       · 这 59 家自己申报的总仓位是 47832 条 —— 站内这点是零头。
+     所以页面必须写明：**这里没出现，不等于没持有。**
+     再加上 13F 本身的口径（来自数据源的 note）：季度披露、最长滞后 45 天、
+     只有美股多头，不含空头、债券与海外持仓。 */
+  function loadOwners() {
+    return soft("superinvestors/data.json").then(function (d) {
+      if (!d || d.__error) {
+        return { ok:false, error:(d && d.__error) || "未加载", byTk:function () { return null; },
+                 src: meta("机构持仓 13F", d, "季度") };
+      }
+      var idx = {}, rows = 0, noTk = 0, firms = 0;
+      function absorb(list, kind) {
+        (list || []).forEach(function (inv) {
+          firms++;
+          (inv.holdings || []).forEach(function (h) {
+            rows++;
+            if (!h.ticker) { noTk++; return; }
+            var k = String(h.ticker).toUpperCase();
+            (idx[k] = idx[k] || []).push({
+              firm: inv.firmZh || inv.firm, firmEn: inv.firm, kind: kind,
+              period: inv.period, filed: inv.filed,
+              name: h.name, zh: h.zh, value: h.value, pct: h.pct,
+              chg: h.chg, chgPct: h.chgPct,
+              stocks: inv.stocks, total: inv.value
+            });
+          });
+        });
+      }
+      absorb(d.investors, "机构");
+      absorb(d.swfs, "主权基金");
+      var declared = (d.investors || []).reduce(function (a, i) { return a + (i.stocks || 0); }, 0);
+      return {
+        ok: true,
+        byTk: function (tk) {
+          var v = idx[String(tk || "").toUpperCase()];
+          return v && v.length ? v.slice().sort(function (a, b) { return (b.pct || 0) - (a.pct || 0); }) : null;
+        },
+        stats: { firms: firms, tickers: Object.keys(idx).length, rows: rows,
+                 withTk: rows - noTk, noTk: noTk, declared: declared },
+        topOwned: d.topOwned || [],
+        note: d.note || "",
+        src: meta("机构持仓 13F", d, "季度披露 · 最长滞后 45 天")
+      };
+    });
+  }
+
   /* ── 榜单趋势：公司榜 + 要闻 ───────────────────────────────────────── */
   function loadTrends() {
     return Promise.all([
@@ -267,6 +318,7 @@
 
   global.OOGLEX_SECURITY = {
     loadSecurity: loadSecurity, loadTrends: loadTrends, loadCompare: loadCompare,
+    loadOwners: loadOwners,
     fmt: fmt, isNum: isNum, srcLine: C.srcLine,
     UNAVAILABLE: C.UNAVAILABLE, UNAVAILABLE_NOTE: C.UNAVAILABLE_NOTE
   };

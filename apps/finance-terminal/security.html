@@ -133,7 +133,7 @@
     <div class="off"><i>16)</i> 信用评级</div>
     <div class="off"><i>17)</i> 现金流表</div>
     <div class="off"><i>18)</i> 期权链</div>
-    <div class="off"><i>19)</i> 持股结构</div>
+    <a href="#" data-page-go="4" data-num="19" data-num-label="持股结构"><i>19)</i> 持股结构</a>
     <div class="sep"></div>
     <div class="hd">Quick Links</div>
     <div class="two" id="qlinks"></div>
@@ -257,6 +257,22 @@
       </div>
     </section>
 
+    <!-- 19) 持股结构（13F 反查） -->
+    <section id="pg-5" hidden>
+      <div class="t-win t-scroll">
+        <header><h2>持股结构 OWNERSHIP</h2><span class="t-sub" id="ow-sub">站内收录的机构里谁持有</span></header>
+        <div class="t-body">
+          <p class="t-note warn" id="n-ow-cover"></p>
+          <table class="t-tbl" id="tbl-own"><thead><tr>
+            <th>机构</th><th class="t-col-x">类型</th><th>占其组合</th><th>市值</th>
+            <th class="t-col-x">本季变动</th><th class="t-col-x">申报期</th><th class="t-col-x">该机构持仓数</th>
+          </tr></thead><tbody></tbody></table>
+          <p class="t-note" id="n-own"></p>
+        </div>
+        <footer data-src="own">—</footer>
+      </div>
+    </section>
+
   </div>
 </main>
 
@@ -280,14 +296,14 @@
 <script src="/assets/terminal/registry.js?v=1d42d994"></script>
 <script src="/assets/terminal/chrome.js?v=04b6a585"></script>
 <script src="/assets/terminal/behavior.js?v=00335003"></script>
-<script src="/assets/terminal/security.js?v=090a8692"></script>
+<script src="/assets/terminal/security.js?v=5ba4bbc4"></script>
 <script src="/assets/terminal/render.js?v=2061083c"></script>
 <script>
 /* 证券描述页装配：外壳与口径都来自 /assets/terminal/。 */
 (function () {
   var K = window.OOGLEX_CHROME, D = window.OOGLEX_SECURITY, FN = window.OOGLEX_FN;
   var CORE = window.OOGLEX_CORE, R = window.OOGLEX_RENDER;
-  var $ = K.$, $$ = K.$$, esc = CORE.esc, fmt = CORE.fmt, isNum = CORE.isNum;
+  var $ = K.$, $$ = K.$$, esc = CORE.esc, fmt = CORE.fmt, isNum = CORE.isNum, set = R.set;
 
   K.init({
     current: "DESC",
@@ -327,7 +343,8 @@
     { sel:"#pg-1", title:"证券描述 · 基本信息" },
     { sel:"#pg-2", title:"证券描述 · 收益与同业" },
     { sel:"#pg-3", title:"证券描述 · 价格走势" },
-    { sel:"#pg-4", title:"证券描述 · 标识与口径" }
+    { sel:"#pg-4", title:"证券描述 · 标识与口径" },
+    { sel:"#pg-5", title:"证券描述 · 持股结构" }
   ]});
 
   var line = R.priceLine, rows = R.fields;
@@ -340,6 +357,9 @@
     $("#q-nm").style.color = "var(--t-dn)";
     $("#q-meta").textContent = msg;
   }
+
+  /* 13F 反查另取一份数据；取不到不影响本页其余部分 */
+  var OWN = null, ownPending = D.loadOwners().then(function (O) { OWN = O; return O; });
 
   D.loadSecurity().then(function (M) {
     if (!M.pool.length) { fail("公司榜读取失败，本页无可显示证券：" + (M.raw.d && M.raw.d.__error || "未知原因")); return; }
@@ -608,6 +628,60 @@
           '<td style="text-align:left;font-family:var(--t-sans);color:var(--t-dim);white-space:normal">' +
           esc(u.why) + "</td></tr>";
       }).join("");
+      /* ── 页 5 持股结构：谁持有这只票 ── */
+      ownPending.then(function (O) {
+        var tb = $("#tbl-own tbody");
+        if (!O || !O.ok) {
+          set("#n-ow-cover", "机构持仓读取失败：" + ((O && O.error) || "未加载") + "，本页不给持股结构。");
+          tb.innerHTML = '<tr><td colspan="7" class="t-na" style="text-align:left">读取失败</td></tr>';
+          set('[data-src="own"]', "读取失败");
+          return;
+        }
+        var st = O.stats;
+        var pct = (st.withTk / st.declared * 100).toFixed(2);
+        /* 这段是本页最要紧的话：站内这点是零头，没出现不等于没持有 */
+        set("#n-ow-cover",
+          "覆盖面：站内每家只收录前 10 大持仓，共 " + st.firms + " 家（机构 + 主权基金）、" +
+          st.rows + " 条仓位，其中 " + st.withTk + " 条能解析出代码（另 " + st.noTk +
+          " 条没有代码，按代码反查覆盖不到）。而这些机构自己申报的总仓位是 " +
+          st.declared.toLocaleString("en-US") + " 条 —— 站内这点只占 " + pct +
+          "%。所以：这里没出现，不等于该机构没持有。");
+        var hold = O.byTk(s.tk);
+        if (!hold) {
+          tb.innerHTML = '<tr><td colspan="7" class="t-na" style="text-align:left">' +
+            esc(s.tk + " 不在站内收录的这 " + st.firms + " 家的前 10 大持仓里。这不代表没有机构持有它 —— 见上方覆盖面说明。") +
+            "</td></tr>";
+          set("#ow-sub", "站内前 10 大持仓里未出现");
+        } else {
+          tb.innerHTML = hold.map(function (h) {
+            var dir = h.chg === "add" ? "t-up" : h.chg === "reduce" ? "t-dn" : "t-flat";
+            var dirTxt = h.chg === "add" ? "加仓" : h.chg === "reduce" ? "减仓" : h.chg === "new" ? "新建" : "未标注";
+            return '<tr data-tk="' + esc(h.firmEn || h.firm) + '"><th scope="row" class="t-rownum">' +
+              esc(h.firm) + '<span class="sub">' + esc(h.firmEn || "") + "</span></th>" +
+              '<td class="t-col-x">' + esc(h.kind) + "</td>" +
+              '<td class="t-last">' + (isNum(h.pct) ? h.pct.toFixed(2) + "%" : "—") + "</td>" +
+              "<td>" + (isNum(h.value) ? "$" + fmt.cap(h.value) : "—") + "</td>" +
+              '<td class="t-col-x ' + dir + '">' + esc(dirTxt) +
+                (isNum(h.chgPct) ? " " + fmt.pct(h.chgPct, 0) : "") + "</td>" +
+              '<td class="t-col-x">' + esc(h.period || "—") + "</td>" +
+              '<td class="t-col-x">' + (isNum(h.stocks) ? h.stocks.toLocaleString("en-US") : "—") + "</td></tr>";
+          }).join("");
+          set("#ow-sub", hold.length + " 家收录在册");
+        }
+        set("#n-own",
+          "「占其组合」是该仓位在这家机构申报组合里的权重，不是它占本公司股本的比例。" +
+          "本季变动是数据源给的加/减/新建标记，未标注的留空不猜。" +
+          "13F 的口径：季度披露、最长滞后 45 天、只含美股多头 —— 不含空头、债券与海外持仓，" +
+          "所以它看不出这家机构的真实净敞口。");
+        set('[data-src="own"]', CORE.srcLine(O.src) +
+          " · 机构自身申报，非本站测算 · 仅供研究参考，不构成投资建议");
+      }).catch(function (e) {
+        /* promise 里抛出会变成静默的 unhandledrejection，页面看起来只是空着。
+           所以这里显式收口，把错误摆到页面上。 */
+        set("#n-ow-cover", "持股结构渲染失败：" + (e && e.message || e));
+        set('[data-src="own"]', "渲染失败");
+      });
+
       $("#tbl-src tbody").innerHTML = [M.src.quote, M.src.intra, M.src.hist].map(function (x, i) {
         return '<tr><td class="t-rownum"><i>' + (i + 1) + ")</i>" + esc(x.label) + "</td>" +
           '<td style="text-align:left;font-family:var(--t-sans)">' + esc(x.error ? "—" : (x.source || "—")) + "</td>" +
