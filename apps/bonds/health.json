@@ -1,13 +1,13 @@
 {
   "contractVersion": 1,
   "dataset": "bonds",
-  "generatedAt": "2026-09-12T21:22:37Z",
+  "generatedAt": "2026-09-13T21:36:49Z",
   "status": "degraded",
   "historyStatus": "tracked",
-  "lastAttemptAt": "2026-09-12T21:22:37Z",
-  "lastSuccessfulAt": "2026-09-12T21:22:37Z",
+  "lastAttemptAt": "2026-09-13T21:36:49Z",
+  "lastSuccessfulAt": "2026-09-13T21:36:49Z",
   "consecutiveFailures": 0,
-  "publishedSnapshotAt": "2026-09-12T21:22:37Z",
+  "publishedSnapshotAt": "2026-09-13T21:36:49Z",
   "snapshotPreserved": false,
   "failureReason": null,
   "coverage": {
@@ -15,14 +15,14 @@
     "publishedRecords": 35,
     "dynamicRecords": 35,
     "counts": {
-      "market": 25,
-      "fallback": 10,
+      "market": 26,
+      "fallback": 9,
       "estimate": 0,
       "unknown": 0,
       "unavailable": 0
     },
     "publishedCoveragePct": 100.0,
-    "freshCoveragePct": 71.43,
+    "freshCoveragePct": 74.29,
     "verifiedCoveragePct": 100.0,
     "availableCoveragePct": 100.0
   },
@@ -31,8 +31,8 @@
     "published": true,
     "producedRecords": 35,
     "counts": {
-      "market": 25,
-      "fallback": 10,
+      "market": 26,
+      "fallback": 9,
       "estimate": 0,
       "unknown": 0,
       "unavailable": 0
@@ -46,13 +46,13 @@
       "status": "degraded",
       "records": 32,
       "counts": {
-        "market": 22,
-        "fallback": 10,
+        "market": 23,
+        "fallback": 9,
         "estimate": 0,
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-09-12T21:22:37Z"
+      "lastSuccessAt": "2026-09-13T21:36:49Z"
     },
     {
       "id": "ecb-data-portal",
@@ -67,7 +67,7 @@
         "unknown": 0,
         "unavailable": 0
       },
-      "lastSuccessAt": "2026-09-12T21:22:37Z"
+      "lastSuccessAt": "2026-09-13T21:36:49Z"
     }
   ],
   "recovery": {
