@@ -196,6 +196,70 @@
     return { values:out, base:base, baseAt:baseAt, valid:valid, n:out.length, last:lastVal };
   }
 
+  /* ── 日收益率：只在「相邻两个交易日都有收盘」时才算 ───────────────────
+     返回的数组与输入同长、同下标（out[i] = 第 i 天相对第 i−1 天的收益），
+     这样多条序列做两两统计时直接按下标取交集就行。
+     某天缺收盘，它前后那两个收益都不算 —— 跨着缺口算出来的不是「日」收益。 */
+  function dailyReturns(values) {
+    var out = [];
+    for (var i = 0; i < (values || []).length; i++) out.push(null);
+    for (var j = 1; j < (values || []).length; j++) {
+      var a0 = values[j - 1], a1 = values[j];
+      if (isNum(a0) && isNum(a1) && a0 !== 0) out[j] = a1 / a0 - 1;
+    }
+    return out;
+  }
+
+  /* 两条收益序列的皮尔逊相关。只取两边同一天都有收益的样本；
+     样本不足就返回 r:null 并带上 n —— 三十天的相关系数是噪声，不该给数。 */
+  var MIN_PAIRS = 60;
+  function pairCorr(ra, rb, minN) {
+    var need = minN || MIN_PAIRS, xs = [], ys = [];
+    var len = Math.min((ra || []).length, (rb || []).length);
+    for (var i = 0; i < len; i++) {
+      if (isNum(ra[i]) && isNum(rb[i])) { xs.push(ra[i]); ys.push(rb[i]); }
+    }
+    var n = xs.length;
+    if (n < need) return { r: null, n: n, need: need };
+    var mx = 0, my = 0, i2;
+    for (i2 = 0; i2 < n; i2++) { mx += xs[i2]; my += ys[i2]; }
+    mx /= n; my /= n;
+    var sxy = 0, sxx = 0, syy = 0;
+    for (i2 = 0; i2 < n; i2++) {
+      var dx = xs[i2] - mx, dy = ys[i2] - my;
+      sxy += dx * dy; sxx += dx * dx; syy += dy * dy;
+    }
+    if (sxx <= 0 || syy <= 0) return { r: null, n: n, need: need, flat: true };
+    return { r: sxy / Math.sqrt(sxx * syy), n: n, need: need };
+  }
+
+  /* 对基准的最小二乘回归：y = alpha + beta·x（都是日简单收益）。
+     alpha 按 252 个交易日折年，但没有扣无风险利率 —— 站内没有这条序列，
+     所以它是「相对 beta·基准的超额」，不是 Jensen alpha，页面必须这么写。 */
+  function regress(ry, rx, minN) {
+    var need = minN || MIN_PAIRS, xs = [], ys = [];
+    var len = Math.min((ry || []).length, (rx || []).length);
+    for (var i = 0; i < len; i++) {
+      if (isNum(ry[i]) && isNum(rx[i])) { xs.push(rx[i]); ys.push(ry[i]); }
+    }
+    var n = xs.length;
+    if (n < need) return { beta: null, n: n, need: need };
+    var mx = 0, my = 0, k;
+    for (k = 0; k < n; k++) { mx += xs[k]; my += ys[k]; }
+    mx /= n; my /= n;
+    var sxy = 0, sxx = 0, syy = 0;
+    for (k = 0; k < n; k++) {
+      var dx = xs[k] - mx, dy = ys[k] - my;
+      sxy += dx * dy; sxx += dx * dx; syy += dy * dy;
+    }
+    if (sxx <= 0) return { beta: null, n: n, need: need, flat: true };
+    var beta = sxy / sxx;
+    var alpha = my - beta * mx;
+    var r2 = syy > 0 ? (sxy * sxy) / (sxx * syy) : null;
+    return { beta: beta, alphaDaily: alpha, alphaAnn: alpha * 252 * 100,
+             r2: r2, n: n, need: need };
+  }
+
   /* ── 统计：Z-Score 与分位（需要足够样本才给数）────────────────────── */
   function zscore(values, win) {
     var v = (values || []).filter(isNum);
@@ -322,6 +386,7 @@
   global.OOGLEX_CORE = {
     BASE: BASE, isNum: isNum, getJSON: getJSON, soft: soft, fmt: fmt, esc: esc,
     shardPath: shardPath, alignSeries: alignSeries,
+    dailyReturns: dailyReturns, pairCorr: pairCorr, regress: regress, MIN_PAIRS: MIN_PAIRS,
     compareWindow: compareWindow, rebase: rebase,
     meta: meta, srcLine: srcLine, zscore: zscore,
     quoteHref: quoteHref, securityHref: securityHref, detailHref: detailHref,

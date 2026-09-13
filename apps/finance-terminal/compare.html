@@ -18,7 +18,7 @@
 <script>/* 主题首屏防闪：终端锁深色（专业终端本身是深色语言），选择器会显示锁定说明 */
 (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
 <script src="/assets/theme.js?v=7bf48c7c" defer></script>
-<link rel="stylesheet" href="/assets/terminal/terminal.css?v=410b85e5">
+<link rel="stylesheet" href="/assets/terminal/terminal.css?v=9c4b2a71">
 <style>
   /* 比较页专属：左编号菜单 + 右主区 */
   .g-wrap{display:grid;grid-template-columns:206px minmax(0,1fr);gap:9px;padding:9px 10px 0}
@@ -109,8 +109,8 @@
     <a href="#" data-page-go="1" data-num="12" data-num-label="价差与比值"><i>12)</i> 价差与比值</a>
     <a href="#" data-page-go="2" data-num="13" data-num-label="回撤"><i>13)</i> 回撤</a>
     <a href="#" data-page-go="3" data-num="14" data-num-label="区间总回报"><i>14)</i> 区间总回报</a>
-    <div class="off"><i>15)</i> 相关性矩阵</div>
-    <div class="off"><i>16)</i> 贝塔与回归</div>
+    <a href="#" data-page-go="4" data-num="15" data-num-label="相关性矩阵"><i>15)</i> 相关性矩阵</a>
+    <a href="#" data-page-go="5" data-num="16" data-num-label="贝塔与回归"><i>16)</i> 贝塔与回归</a>
     <div class="off"><i>17)</i> 季节性</div>
     <div class="sep"></div>
     <div class="hd">Quick Links</div>
@@ -175,6 +175,36 @@
       </div>
     </section>
 
+    <!-- 15) 相关性矩阵 -->
+    <section id="pg-5" hidden>
+      <div class="t-win t-scroll">
+        <header><h2>相关性矩阵 CORRELATION</h2><span class="t-sub" id="cr-sub">日收益率，皮尔逊</span></header>
+        <div class="t-body">
+          <div id="tbl-corr"></div>
+          <p class="t-note" id="n-corr"></p>
+        </div>
+        <footer data-src="corr">—</footer>
+      </div>
+    </section>
+
+    <!-- 16) 贝塔与回归 -->
+    <section id="pg-6" hidden>
+      <div class="t-win t-scroll">
+        <header><h2>贝塔与回归 BETA / REGRESSION</h2><span class="t-sub" id="bt-sub">对基准的最小二乘</span></header>
+        <div class="t-body">
+          <div class="t-filter">
+            <select id="bt-bench" aria-label="基准标的" style="flex:1 1 auto"></select>
+          </div>
+          <table class="t-tbl" id="tbl-beta"><thead><tr>
+            <th>标的</th><th>Beta</th><th class="t-col-x">年化 Alpha</th><th>R²</th>
+            <th class="t-col-x">日波动(年化)</th><th>重叠样本</th>
+          </tr></thead><tbody></tbody></table>
+          <p class="t-note" id="n-beta"></p>
+        </div>
+        <footer data-src="beta">—</footer>
+      </div>
+    </section>
+
     <!-- 14) 区间总回报 -->
     <section id="pg-4" hidden>
       <div class="t-win t-scroll">
@@ -216,12 +246,12 @@
   <span class="t-right">数据仅供研究参考，不构成投资建议</span>
 </div>
 
-<script src="/assets/terminal/core.js?v=450c168f"></script>
+<script src="/assets/terminal/core.js?v=98001503"></script>
 <script src="/assets/terminal/registry.js?v=1d42d994"></script>
 <script src="/assets/terminal/chrome.js?v=04b6a585"></script>
 <script src="/assets/terminal/behavior.js?v=00335003"></script>
 <script src="/assets/terminal/security.js?v=c2723160"></script>
-<script src="/assets/terminal/render.js?v=ed29a2a3"></script>
+<script src="/assets/terminal/render.js?v=b920107a"></script>
 <script>
 /* 多标的比较页装配：口径（日期对齐、共同窗口、重基）全部来自 core.js，
    这一页只负责「选了哪几个」与把结果摆出来。 */
@@ -266,7 +296,9 @@
     { sel:"#pg-1", title:"多标的比较 · 叠加比较" },
     { sel:"#pg-2", title:"多标的比较 · 价差与比值" },
     { sel:"#pg-3", title:"多标的比较 · 回撤" },
-    { sel:"#pg-4", title:"多标的比较 · 区间总回报" }
+    { sel:"#pg-4", title:"多标的比较 · 区间总回报" },
+    { sel:"#pg-5", title:"多标的比较 · 相关性矩阵" },
+    { sel:"#pg-6", title:"多标的比较 · 贝塔与回归" }
   ]});
 
   /* 失败措辞与站内其余页保持一致（读取失败 / 未加载）—— 同一种事在不同页
@@ -417,7 +449,7 @@
               : { ok:false, reason:"可比较的序列不足两条" };
 
         function footers(txt) {
-          ["cmp", "sp", "dd", "ret"].forEach(function (k) { set('[data-src="' + k + '"]', txt); });
+          ["cmp", "sp", "dd", "ret", "corr", "beta"].forEach(function (k) { set('[data-src="' + k + '"]', txt); });
         }
 
         if (!w.ok) {
@@ -567,6 +599,78 @@
           "年化按 252 个交易日折算，窗口不足一季不给年化；日波动率需要 20 个以上相邻交易日对，不足不给。");
         set('[data-src="ret"]', C.srcLine(M.src.comp) + "；" + C.srcLine(M.src.asset));
 
+        /* ── 15) 相关性矩阵 ── */
+        var withRet = items.filter(function (it) { return it.st; }).map(function (it) {
+          return { tk: it.tk, returns: C.dailyReturns(it.values) };
+        });
+        var cm = R.corrMatrix("#tbl-corr", withRet);
+        set("#cr-sub", withRet.length + " × " + withRet.length + " · 日收益率");
+        set("#n-corr",
+          "用共同窗口内的日收益率算皮尔逊相关，只取两条同一天都有收益的样本；" +
+          "跨缺口的那两个收益都不算 —— 跨着缺口算出来的不是「日」收益。" +
+          "重叠样本不足 " + C.MIN_PAIRS + " 天就不给系数，格子里写 n=实际天数：" +
+          "三十天的相关系数是噪声。" +
+          "格子里一律印数字，染色只是辅助（正=同向绿、负=反向红、零不染色），颜色不是唯一编码。" +
+          (cm && cm.thin.length ? "　⚠ 样本不足的组合：" + cm.thin.join("、") : ""));
+        set('[data-src="corr"]', C.srcLine(M.src.comp) + "；" + C.srcLine(M.src.asset) +
+          " · 由站内收盘序列现算 · 相关性不等于因果，也不随窗口稳定");
+
+        /* ── 16) 贝塔与回归 ── */
+        var bench = $("#bt-bench");
+        var curBench = bench.value;
+        bench.innerHTML = items.map(function (it) {
+          return '<option value="' + esc(it.tk) + '">基准：' + esc(it.tk) + "</option>";
+        }).join("");
+        if (curBench && items.some(function (it) { return it.tk === curBench; })) bench.value = curBench;
+        else {
+          /* 默认拿标普当基准（它在池里就用），否则用第一条 */
+          var spx = items.filter(function (it) { return it.tk === "^GSPC"; })[0];
+          bench.value = spx ? spx.tk : items[0].tk;
+        }
+
+        function drawBeta() {
+          var bTk = bench.value;
+          var bIt = items.filter(function (it) { return it.tk === bTk; })[0];
+          if (!bIt) return;
+          var bRet = C.dailyReturns(bIt.values);
+          var thin = [];
+          $("#tbl-beta tbody").innerHTML = items.map(function (it) {
+            if (it.tk === bTk) {
+              return '<tr><th scope="row" class="t-rownum">' + esc(it.tk) +
+                '<span class="sub">基准自身</span></th>' +
+                '<td class="t-flat">1.00</td><td class="t-col-x t-flat">0.0%</td>' +
+                '<td class="t-flat">1.00</td><td>' +
+                (it.st && isNum(it.st.vol) ? it.st.vol.toFixed(1) + "%" : "—") +
+                '</td><td class="t-flat">—</td></tr>';
+            }
+            var g = C.regress(C.dailyReturns(it.values), bRet);
+            if (g.beta === null) {
+              thin.push(it.tk + "（重叠 " + g.n + " 天，需 " + g.need + "）");
+              return '<tr><th scope="row" class="t-rownum">' + esc(it.tk) +
+                '</th><td colspan="5" class="t-na" style="text-align:left">重叠样本 ' + g.n +
+                " 天，不足 " + g.need + " 天，不给回归</td></tr>";
+            }
+            return '<tr data-tk="' + esc(it.tk) + '"><th scope="row" class="t-rownum">' + esc(it.tk) +
+              '<span class="sub">' + esc(it.name || "") + "</span></th>" +
+              '<td class="t-last">' + g.beta.toFixed(2) + "</td>" +
+              '<td class="t-col-x ' + fmt.cls(g.alphaAnn) + '">' + fmt.pct(g.alphaAnn, 1) + "</td>" +
+              "<td>" + (isNum(g.r2) ? g.r2.toFixed(2) : "—") + "</td>" +
+              '<td class="t-col-x">' + (it.st && isNum(it.st.vol) ? it.st.vol.toFixed(1) + "%" : "—") + "</td>" +
+              "<td>" + g.n + "</td></tr>";
+          }).join("");
+          set("#bt-sub", "基准 " + bTk);
+          set("#n-beta",
+            "对 " + bTk + " 的日简单收益做最小二乘：y = alpha + beta·x。" +
+            "Beta 是相对这个基准的敏感度，R² 是被基准解释掉的比例（低 R² 意味着这个 beta 参考价值有限）。" +
+            "Alpha 没有扣无风险利率 —— 站内没有这条序列，所以它是「相对 beta×基准的超额」，不是 Jensen alpha。" +
+            "年化按 252 个交易日折算。重叠样本不足 " + C.MIN_PAIRS + " 天不给回归。" +
+            "各标的按本币计价，与基准币种不同的那些，beta 里混了汇率变动。" +
+            (thin.length ? "　⚠ 样本不足：" + thin.join("、") : ""));
+          set('[data-src="beta"]', C.srcLine(M.src.comp) + " · 由站内收盘序列现算，非官方 beta");
+        }
+        bench.onchange = drawBeta;
+        drawBeta();
+
         R.fields("#f-meta", [
           { k:"对齐方式", v:"按日期字符串对齐到并集轴（两条管道日期轴不同，按下标对齐会整体错位几天）", box:1 },
           { k:"共同窗口", v:"起点取各条首个有效点里最晚的，终点取各条最后有效点里最早的", mono:1 },
@@ -575,7 +679,10 @@
           { k:"币种",    v:"各标的按本币计价，未做汇率换算 —— 比较的是本币回报", na:0 },
           { k:"加密口径", v:"跨资产里的加密标的是 24 小时口径，与股票当日收盘口径不同", na:0 },
           { k:"成交量",  v:"站内无来源，不显示", na:1 },
-          { k:"分红调整", v:"站内序列为收盘价，未做分红再投资调整", na:1 }
+          { k:"分红调整", v:"站内序列为收盘价，未做分红再投资调整", na:1 },
+          { k:"相关/回归样本", v:"重叠日收益不足 " + C.MIN_PAIRS + " 天一律不给系数（短样本的相关系数是噪声）", mono:1 },
+          { k:"Alpha 口径", v:"未扣无风险利率 —— 站内无此序列，所以是相对 beta×基准的超额，不是 Jensen alpha", box:1 },
+          { k:"无风险利率", v:"站内无可直接用于扣减的日频无风险利率序列", na:1 }
         ]);
         set("[data-unavail]", C.UNAVAILABLE_NOTE);
         K.wireNumbers();

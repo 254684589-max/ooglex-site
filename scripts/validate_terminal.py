@@ -436,6 +436,35 @@ def main() -> int:
             "标的表取不到会让那一整类从选择器里消失，页面必须说明少了哪一类")
     require("读取失败" in cmp_,
             "失败措辞要与站内其余页一致（读取失败 / 未加载），别一页一个叫法")
+    # 相关性与回归：短样本不得给系数，口径必须写明
+    # 统计口径只能有一份：函数定义在 core，调用点可以在页面或 render 层
+    # （pairCorr 就是在 render.corrMatrix 里调的，那是对的位置）。
+    # 真正要拦的是「页面自己手写一遍皮尔逊或最小二乘」。
+    for fn in ("dailyReturns", "pairCorr", "regress"):
+        require(fn in core, f"core.js 必须提供 {fn}")
+        require(fn in cmp_ or fn in ren,
+                f"{fn} 没有任何调用点：口径函数写了却没用上")
+    for hand in ("Math.sqrt(sxx", "sxy / sxx", "sxy/sxx"):
+        require(hand not in cmp_,
+                f"比较页里出现手写统计（{hand}）：皮尔逊与最小二乘只能有 core 一份")
+    require("MIN_PAIRS" in core, "core.js 必须定义相关/回归的最小重叠样本")
+    m_min = re.search(r"var MIN_PAIRS = (\d+)", core)
+    require(m_min and int(m_min.group(1)) >= 60,
+            "最小重叠样本不得低于 60 天：短样本的相关系数是噪声")
+    require("corrMatrix" in ren, "相关性矩阵必须走 render 层")
+    cmx = ren[ren.index("function corrMatrix"):]
+    cmx = cmx[:cmx.index("\n  function ")]
+    require("toFixed(2)" in cmx, "相关性矩阵每格必须印数字，颜色不能是唯一编码")
+    require("n=" in cmx and "不足" in cmx, "样本不足的格子必须写出实际样本数")
+    require('scope="row"' in cmx and 'scope="col"' in cmx, "矩阵表头必须带 scope")
+    m_a = re.search(r"var CORR_ALPHA = ([0-9.]+)", ren)
+    require(m_a and float(m_a.group(1)) <= 0.65,
+            "染色透明度过高会压掉格内文字对比度（α=0.65 时绿底白字只剩 4.6:1）")
+    require("不是 Jensen alpha" in cmp_ and "无风险利率" in cmp_,
+            "Alpha 未扣无风险利率，必须写明它不是 Jensen alpha")
+    require("相关性不等于因果" in cmp_, "相关性矩阵必须写明相关不等于因果")
+    require("R²" in cmp_, "回归必须给出 R²：低 R² 时那个 beta 参考价值有限")
+    require("混了汇率" in cmp_, "跨币种的 beta 里混了汇率变动，必须写明")
     section("多标的比较的对齐与归一化")
 
     return report()

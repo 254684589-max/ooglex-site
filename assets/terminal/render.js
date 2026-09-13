@@ -626,6 +626,47 @@
     }).join("");
   }
 
+  /* ── 相关性矩阵 ────────────────────────────────────────────────────────
+     相关系数的正负本身就是「同向/反向」这个方向，正好落在本终端既有的
+     涨跌语义上，所以用涨绿/跌红的双极染色、零点不染色（中点是中性底，
+     不是第三种颜色）。**数字一律印在格子里**，颜色只是辅助不是唯一编码。
+     染色透明度上限 0.60：实测 α=0.65 时绿底上的白字只剩 4.6:1，0.60 留余量
+     （绿 5.8:1 / 红 6.8:1，都过 4.5）。 */
+  var CORR_ALPHA = 0.60;
+  function corrMatrix(hostSel, items, opt) {
+    opt = opt || {};
+    var host = typeof hostSel === "string" ? $(hostSel) : hostSel;
+    if (!host) return null;
+    var live = (items || []).filter(function (it) { return it && it.returns; });
+    if (live.length < 2) {
+      host.innerHTML = '<p class="t-note">至少要两条序列才能算相关性</p>';
+      return null;
+    }
+    var thin = [];
+    var head = '<tr><th scope="col"></th>' + live.map(function (it) {
+      return '<th scope="col">' + esc(it.tk) + "</th>";
+    }).join("") + "</tr>";
+    var body = live.map(function (a2) {
+      return '<tr><th scope="row">' + esc(a2.tk) + "</th>" + live.map(function (b2) {
+        if (a2 === b2) return '<td class="t-flat" title="自身相关恒为 1，不提供信息">1.00</td>';
+        var c = C.pairCorr(a2.returns, b2.returns);
+        if (c.r === null) {
+          thin.push(a2.tk + "↔" + b2.tk + "（重叠 " + c.n + " 天，需 " + c.need + "）");
+          return '<td class="t-na" title="重叠样本 ' + c.n + ' 天，不足 ' + c.need +
+                 ' 天，不给相关系数">n=' + c.n + "</td>";
+        }
+        var al = (Math.abs(c.r) * CORR_ALPHA).toFixed(3);
+        var tint = c.r >= 0 ? "0,184,107" : "255,77,77";
+        return '<td style="background:rgba(' + tint + "," + al + ')" title="' +
+               esc(a2.tk + " 与 " + b2.tk + "：相关 " + c.r.toFixed(2) + "，重叠样本 " + c.n + " 天") +
+               '">' + (c.r >= 0 ? "+" : "−") + Math.abs(c.r).toFixed(2) + "</td>";
+      }).join("") + "</tr>";
+    }).join("");
+    host.innerHTML = '<div class="t-scroll-x"><table class="t-tbl t-corr">' +
+      "<thead>" + head + "</thead><tbody>" + body + "</tbody></table></div>";
+    return { thin: thin, n: live.length };
+  }
+
   function fields(dl, list) {
     dl = typeof dl === "string" ? $(dl) : dl;
     if (!dl) return;
@@ -645,6 +686,7 @@
     ratesTable: ratesTable, macroMonitor: macroMonitor, MONITOR_METHOD: MONITOR_METHOD,
     macroBlock: macroBlock,
     priceLine: priceLine, multiLine: multiLine, smallMultiples: smallMultiples,
+    corrMatrix: corrMatrix,
     fields: fields, nameCell: nameCell,
     crossBars: crossBars, calendar: calendar, news: news, alerts: alerts, sources: sources,
     watchlist: watchlist, topStatus: topStatus
