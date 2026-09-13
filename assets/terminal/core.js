@@ -32,6 +32,15 @@
     return getJSON(p).catch(function (e) { return { __error: String(e.message || e) }; });
   }
 
+  /* 纯函数：按片号改写历史文件路径。公司完整历史按市值名次每 100 家一片，
+     第 1 片沿用原文件名，其余加 -N，与 apps/finance-terminal 的行情页和采集管道一致。
+     片号缺失或不是大于 1 的整数就退回第 1 片：宁可多取一片取不到，也不要拼出乱路径。 */
+  function shardPath(path, shard) {
+    var i = Number(shard);
+    if (!isFinite(i) || Math.floor(i) !== i || i <= 1) return path;
+    return path.replace(/\.json$/, "-" + i + ".json");
+  }
+
   /* ── 格式化（原来两边各一份，现在合成一份超集）────────────────────── */
   var fmt = {
     px: function (x) {
@@ -187,6 +196,38 @@
     return out;
   }
 
+  /* ── 详情页地址 ───────────────────────────────────────────────────────
+     站内的行情详情页 quote.html 支持七种 kind，各自的 symbol 键格式不同：
+
+       tracker   asset-tracker 的 symbol（^GSPC / BZ=F / DX-Y.NYB…）
+       company   companies 的 symbol（NVDA）
+       crypto    BTC / ETH
+       curve     美债期限的 id（DGS10 / DGS2…）
+       macro     macro-radar referenceSeries 的键，站内只有 DTWEXBGS 与 RWTC
+       commodity / bond   对应两个纯数据目录
+
+     个股例外：站内另有证券描述页，信息更全（发行人、标识、同业、收盘走势），
+     所以个股的行点进去走 security.html，那一页再链向 quote.html 看全区间。
+
+     拿不到 kind 或 symbol 时返回 null —— 宁可这一行不可点，也不给死链。 */
+  var QUOTE_KINDS = { tracker:1, company:1, crypto:1, curve:1, macro:1, commodity:1, bond:1 };
+
+  function quoteHref(kind, symbol) {
+    if (!QUOTE_KINDS[kind] || !symbol) return null;
+    return "/apps/finance-terminal/quote.html?kind=" + encodeURIComponent(kind) +
+           "&symbol=" + encodeURIComponent(symbol);
+  }
+  function securityHref(symbol) {
+    if (!symbol) return null;
+    return "/apps/finance-terminal/security.html?sym=" + encodeURIComponent(symbol);
+  }
+  /* 一行 → 它的详情页。detail 由模型层附上（模型才知道这一行是什么）。 */
+  function detailHref(detail) {
+    if (!detail || !detail.kind || !detail.symbol) return null;
+    if (detail.kind === "company") return securityHref(detail.symbol);
+    return quoteHref(detail.kind, detail.symbol);
+  }
+
   /* ── 转义（外部文本一律先转义再进 innerHTML）──────────────────────── */
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
@@ -196,7 +237,10 @@
 
   global.OOGLEX_CORE = {
     BASE: BASE, isNum: isNum, getJSON: getJSON, soft: soft, fmt: fmt, esc: esc,
+    shardPath: shardPath,
     meta: meta, srcLine: srcLine, zscore: zscore,
+    quoteHref: quoteHref, securityHref: securityHref, detailHref: detailHref,
+    QUOTE_KINDS: QUOTE_KINDS,
     signalFromPercentile: signalFromPercentile, signalFromZ: signalFromZ,
     MONITOR_METHOD: MONITOR_METHOD, marketStatus: marketStatus,
     UNAVAILABLE: UNAVAILABLE, UNAVAILABLE_NOTE: UNAVAILABLE_NOTE

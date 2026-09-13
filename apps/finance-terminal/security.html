@@ -107,6 +107,8 @@
   <button type="button" class="info" data-num="94" data-num-label="口径与不可得字段" data-act="meta"><i>94)</i> 口径说明</button>
   <button type="button" class="ok" data-num="95" data-num-label="导出本页 CSV" data-act="exp"><i>95)</i> 导出 CSV</button>
   <button type="button" data-num="96" data-num-label="加入自选" data-act="wl"><i>96)</i> 加入自选</button>
+  <a class="t-go" data-quote-link href="/apps/finance-terminal/quote.html?kind=company"
+     style="display:flex;align-items:center;gap:6px;padding:3px 14px;font-size:13px;border:1px solid var(--t-line2);background:#151515;color:var(--t-ink2)">97) 全区间走势 →</a>
   <span class="noorder">本站没有经纪或订单通道，因此这里没有买/卖键 —— 画一个就是假的。</span>
 </div>
 
@@ -347,7 +349,37 @@
     pick.innerHTML = choices.map(function (p) {
       return '<option value="' + esc(p.tk) + '">' + esc(p.tk) + " " + esc(p.zh || p.en) + "</option>";
     }).join("");
-    pick.onchange = function () { paint(pick.value); };
+    pick.onchange = function () { go(pick.value); };
+
+    /* 选到的标的可能落在第 2～5 片收盘历史里 —— 先把那一片补上再画，
+       否则页 3 会因为本地没有序列而说「站内没有该标的的收盘历史序列」，那是误报。
+       补片失败也照样画：报价头、发行人、同业都不依赖历史，页 3 会如实说取不到。 */
+    function go(sym) {
+      var s0 = M.pool.filter(function (p) { return p.tk === sym; })[0];
+      var need = s0 && s0.shard > 1;
+      if (need) $("#n-px").textContent = "正在取第 " + s0.shard + " 片收盘历史…";
+      M.ensureHist(sym).then(function () { paint(sym); },
+                             function () { paint(sym); });
+    }
+
+    /* ?sym= 决定初始标的 —— 别的页面的行点进来就靠这个参数。
+       参数不在池里（例如非上市公司、或已不在市值前列）就如实说明，不静默换一个。 */
+    function wanted() {
+      var q = "";
+      try { q = (new URLSearchParams(location.search).get("sym") || "").trim().toUpperCase(); } catch (e) {}
+      if (!q) return { tk: choices[0].tk, note: "" };
+      var hit = choices.filter(function (c) { return c.tk.toUpperCase() === q; })[0];
+      if (hit) return { tk: hit.tk, note: "" };
+      var inPool = M.pool.filter(function (c) { return c.tk.toUpperCase() === q; })[0];
+      if (inPool) {
+        /* 在公司榜里但没有收盘序列 —— 仍然显示它，走势页会说明缺序列 */
+        pick.insertAdjacentHTML("afterbegin",
+          '<option value="' + esc(inPool.tk) + '">' + esc(inPool.tk) + " " + esc(inPool.zh || inPool.en) + "</option>");
+        return { tk: inPool.tk, note: "" };
+      }
+      return { tk: choices[0].tk,
+               note: "地址里的 sym=" + q + " 不在站内公司榜里，已退回 " + choices[0].tk + "；未静默替换，特此说明。" };
+    }
 
     function sectorPeers(s, n) {
       return M.pool.filter(function (p) { return p.tk !== s.tk; })
@@ -385,6 +417,20 @@
         "状态 <b>" + esc(fmt.statusZh(s.meta.status || M.src.quote.status)) + "</b>　" +
         (s.stale ? '<b style="color:var(--t-dn)">本轮未取到新值，沿用上次快照</b>' : "") ;
       $("#cmd-key").textContent = s.tk + " " + (s.cur || "") + " Equity";
+      /* 地址与当前标的保持一致，这一页因此永远可分享、可回退 */
+      try {
+        var u = new URL(location.href);
+        if (u.searchParams.get("sym") !== s.tk) {
+          u.searchParams.set("sym", s.tk);
+          history.replaceState(null, "", u.pathname + "?" + u.searchParams.toString());
+        }
+      } catch (e) {}
+      /* 通往全区间走势：QUOT 那一页按 company kind 取同一个标的 */
+      var q = $("[data-quote-link]");
+      if (q) {
+        q.href = "/apps/finance-terminal/quote.html?kind=company&symbol=" + encodeURIComponent(s.tk);
+        q.textContent = "97) " + s.tk + " 全区间走势 →";
+      }
       $("#sec-name").textContent = s.tk;
       document.title = s.tk + " 证券描述 · Ooglex金融终端";
 
@@ -451,9 +497,9 @@
       $("#tbl-peer tbody").innerHTML = peers.length ? peers.map(function (p, i) {
         var pl = p.intraday && isNum(p.intraday.price) ? p.intraday.price : p.close;
         var pp = p.intraday && isNum(p.intraday.changePct) ? p.intraday.changePct : p.d1;
+        var pi = '<i>' + (i + 1) + ')</i>' + esc(p.tk) + '<span class="sub">' + esc(p.zh) + "</span>";
         return '<tr data-tk="' + esc(p.tk) + '" data-nm="' + esc(p.zh) + '">' +
-          '<td class="t-rownum"><i>' + (i + 1) + ')</i>' + esc(p.tk) +
-            '<span class="sub">' + esc(p.zh) + "</span></td>" +
+          '<td class="t-rownum">' + R.nameCell(pi, p.detail, "打开 " + p.tk + " 的走势详情") + "</td>" +
           '<td class="t-last">' + fmt.px(pl) + (p.cur !== "USD" ? '<span class="sub">' + esc(p.cur) + "</span>" : "") + "</td>" +
           '<td class="' + fmt.cls(pp) + '">' + fmt.pct(pp) + "</td>" +
           '<td class="' + fmt.cls(p.ytd) + '">' + fmt.pct(p.ytd) + "</td>" +
@@ -469,10 +515,11 @@
       var mix = sp.concat([mine]).sort(function (a, b) { return (b.marketCap || 0) - (a.marketCap || 0); }).slice(0, 10);
       $("#tbl-mini-peer tbody").innerHTML = mix.length > 1 ? mix.map(function (p, i) {
         var pp = p.intraday && isNum(p.intraday.changePct) ? p.intraday.changePct : p.d1;
+        var mi = '<i>' + (i + 1) + ')</i>' + esc(p.tk) + '<span class="sub">' + esc(p.zh) + "</span>";
         return '<tr data-tk="' + esc(p.tk) + '" data-nm="' + esc(p.zh) + '"' +
           (p.me ? ' style="outline:1px solid var(--t-cmd-line);outline-offset:-1px"' : "") + ">" +
-          '<td class="t-rownum"><i>' + (i + 1) + ')</i>' + esc(p.tk) +
-            '<span class="sub">' + esc(p.zh) + "</span></td>" +
+          /* 本标的那一行不链向自己（p.me 没有 detail），其余走共用包装 */
+          '<td class="t-rownum">' + (p.me ? mi : R.nameCell(mi, p.detail, "打开 " + p.tk + " 的走势详情")) + "</td>" +
           '<td class="' + fmt.cls(pp) + '">' + fmt.pct(pp) + "</td>" +
           '<td class="' + fmt.cls(p.ytd) + '">' + fmt.pct(p.ytd) + "</td>" +
           "<td>" + (isNum(p.marketCap) ? fmt.cap(p.marketCap) : "—") + "</td></tr>";
@@ -486,12 +533,21 @@
       if (h && h.length) {
         for (var i = 0; i < h.length; i++) if (isNum(h[i])) pts.push({ i: i, v: h[i], d: dates[i] });
       }
-      var stat = h && h.length ? line("#svg-px", "#lg-px", h, dates, { l:56, b:26,
-        empty: h ? "该标的收盘序列有效点不足，不画图" : "站内没有该标的的收盘历史序列" }) : null;
-      line("#svg-mini", "#lg-mini", h || [], dates || [], { tail:60, l:46, b:20, grid:3,
-        empty:"站内没有该标的的收盘历史序列" });
+      /* 无序列时也要调一次 —— 渲染器会把原因写进图框，
+         否则图框只是一片空白，读的人不知道是没数据还是页面坏了。 */
+      var noSeq = !(h && h.length);
+      /* 取数失败不能说成「站内没有」—— 站内有没有这条序列，这次根本没看到。 */
+      var whyPx = !noSeq ? "该标的有效收盘不足 5 个，不画图"
+        : s.histErr ? "这一片收盘历史没取回，暂时画不出（" + s.histErr + "）"
+        : "站内没有该标的的收盘历史序列";
+      var stat = line("#svg-px", "#lg-px", h || [], dates || [], { l:56, b:26, empty: whyPx });
+      line("#svg-mini", "#lg-mini", h || [], dates || [], { tail:60, l:46, b:20, grid:3, empty: whyPx });
       if (!stat) {
-        $("#n-px").textContent = "不画图比画一条插值出来的假曲线诚实。";
+        $("#n-px").textContent = whyPx +
+          (noSeq && !s.histErr
+            ? "（" + (s.histShard ? "已取第 " + s.histShard + " 片，片内没有这条序列" : "公司榜未标注所在分片") + "）"
+            : "") +
+          "。不画图比画一条插值出来的假曲线诚实。";
         rows($("#f-range"), [{ k:"状态", v:"无足够序列", na:1 }]);
         rows($("#f-vol"),   [{ k:"状态", v:"无足够序列", na:1 }]);
         rows($("#f-gap"),   [{ k:"状态", v:"无足够序列", na:1 }]);
@@ -612,7 +668,10 @@
       });
     }
 
-    paint(choices[0].tk);
+    var want = wanted();
+    pick.value = want.tk;
+    go(want.tk);
+    if (want.note) K.say(want.note, false);
   }).catch(function (e) { fail("数据层异常：" + (e && e.message || e)); });
 })();
 </script>

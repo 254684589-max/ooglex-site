@@ -169,7 +169,7 @@
 /* 榜单与趋势页装配：维度、筛选、排序都只在站内真有的字段上做。 */
 (function () {
   var K = window.OOGLEX_CHROME, D = window.OOGLEX_SECURITY, FN = window.OOGLEX_FN;
-  var CORE = window.OOGLEX_CORE;
+  var CORE = window.OOGLEX_CORE, R = window.OOGLEX_RENDER;
   var $ = K.$, $$ = K.$$, esc = CORE.esc, fmt = CORE.fmt, isNum = CORE.isNum;
 
   K.init({
@@ -267,6 +267,7 @@
       var nn = newsFor(c.name, c.nameEn, c.symbol);
       return {
         tk:c.symbol, zh:c.name, en:c.nameEn, sector:c.sector, country:c.country,
+        detail:{ kind:"company", symbol:c.symbol },
         close:c.price, cur:c.priceCur || "USD", d1:c.changePct,
         w1:rt.w1, m1:rt.m1, ytd:rt.ytd, y1:rt.y1, marketCap:c.marketCap,
         newsN:nn.length, news:nn, spark:T.spark[c.symbol] || null, stale:!!c.stale
@@ -275,6 +276,7 @@
     var assetRows = (T.assets || []).map(function (a) {
       var rt = a.returns || {};
       return { tk:a.symbol || a.name, zh:a.name, en:a.nameEn, sector:a.category || a.class || "大类资产",
+               detail: a.symbol ? { kind:"tracker", symbol:a.symbol } : null,
                country:"—", close:a.price, cur:"—", d1:rt.d1, w1:rt.w1, m1:rt.m1, ytd:rt.ytd,
                marketCap:null, newsN:0, news:[], spark:null, stale:!!a.stale };
     });
@@ -334,9 +336,9 @@
         var nsum = r.news.length
           ? esc(r.news[0].title) + (r.news.length > 1 ? '<span class="sub">+' + (r.news.length - 1) + " 条</span>" : "")
           : '<span class="t-na">站内要闻未提到</span>';
+        var ni = '<i>' + (i + 1) + ')</i>' + esc(r.tk) + '<span class="sub">' + esc(r.zh) + "</span>";
         return '<tr data-tk="' + esc(r.tk) + '" data-nm="' + esc(r.zh) + '">' +
-          '<td class="t-rownum"><i>' + (i + 1) + ')</i>' + esc(r.tk) +
-            '<span class="sub">' + esc(r.zh) + "</span></td>" +
+          '<td class="t-rownum">' + R.nameCell(ni, r.detail, "打开 " + r.tk + " 的走势详情") + "</td>" +
           '<td class="' + (pctDim ? fmt.cls(v) : "last") + '">' + val + "</td>" +
           '<td class="t-barc"><span class="t-bar" style="width:' + w.toFixed(1) + "%;background:" +
             (pctDim ? (v >= 0 ? "var(--t-up)" : "var(--t-dn)") : "var(--t-sel)") + '"></span></td>' +

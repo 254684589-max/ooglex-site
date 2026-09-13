@@ -19,6 +19,15 @@
   function html(sel, h) { var e = $(sel); if (e) e.innerHTML = h; }
 
   function cell(v, cls) { return '<td class="' + (cls || "") + '">' + v + "</td>"; }
+
+  /* 名称格：有真实详情页就做成链接，没有就保持纯文本。
+     detail 由模型层附上（模型才知道这一行是什么品种），地址由 core.detailHref 产出。
+     拿不到详情页的行不给死链，也不给假的手型光标。 */
+  function nameCell(inner, detail, title) {
+    var href = C.detailHref(detail);
+    if (!href) return inner;
+    return '<a class="t-go" href="' + href + '" title="' + esc(title || "打开走势详情") + '">' + inner + "</a>";
+  }
   function pctCell(p, extraCls, dp) {
     return '<td class="' + (extraCls ? extraCls + " " : "") + fmt.cls(p) + '">' + fmt.pct(p, dp) + "</td>";
   }
@@ -56,8 +65,9 @@
         return cell("—", "t-na");
       }).join("");
       var marks = (q.note ? "<sup>*</sup>" : "") + (q.proxy ? "<sup>P</sup>" : "");
+      var inner = '<span class="t-tk">' + esc(q.tk) + '</span><span class="t-nm">' + esc(q.name) + marks + "</span>";
       return '<tr data-tk="' + esc(q.tk) + '" data-nm="' + esc(q.name) + '">' +
-        '<td><span class="t-tk">' + esc(q.tk) + '</span><span class="t-nm">' + esc(q.name) + marks + "</span></td>" +
+        "<td>" + nameCell(inner, q.detail, "打开 " + q.tk + " 的走势详情") + "</td>" +
         tds + "</tr>";
     }).join("");
     body.innerHTML = rows || '<tr><td colspan="9" style="text-align:left" class="t-flat">无可用标的</td></tr>';
@@ -130,7 +140,8 @@
     var want = labels || ["2Y", "5Y", "10Y", "30Y"];
     body.innerHTML = rates.tenors.filter(function (t) { return want.indexOf(t.label) >= 0; }).map(function (t) {
       return '<tr data-tk="US' + esc(t.label) + '" data-nm="' + esc(t.label) + '期美债">' +
-        '<td><span class="t-tk">US' + esc(t.label) + "</span></td>" +
+        "<td>" + nameCell('<span class="t-tk">US' + esc(t.label) + "</span>", t.detail,
+          "打开 " + t.label + " 期美债收益率的走势详情") + "</td>" +
         cell(t.value.toFixed(2) + "%", "t-last") +
         '<td class="t-col-x t-flat">' + esc(t.asOf || rates.asOf || "—") + "</td></tr>";
     }).join("");
@@ -152,21 +163,38 @@
     var body = $(sel + " tbody");
     if (!body) return;
     var rows = [];
-    rows.push('<tr class="t-grp"><td colspan="6">风险信号 · 0–100 相对分位（滚动 2 年）</td></tr>');
+    rows.push('<tr class="t-grp"><td colspan="6">风险信号 · 0–100 相对分位（滚动 2 年）· 点名称看历史分位</td></tr>');
+    /* 8 条合成信号没有单指标行情页，但站内有它们的分位历史序列。
+       能画的就做成按钮，就地展开；画不出的保持纯文本 —— 不放点了没反应的假链接。 */
+    var sh = M.macro.signalHist;
+    function sigCell(s) {
+      var inner = '<span class="t-tk">' + esc(String(s.en || s.key).toUpperCase()) + '</span>' +
+                  '<span class="t-nm">' + esc(s.name) + "</span>";
+      var ser = sh && sh.series ? sh.series[s.key] : null;
+      var n = ser ? ser.filter(isNum).length : 0;
+      if (n < 5) return inner;
+      return '<button type="button" class="t-go" data-sig="' + esc(s.key) + '" aria-expanded="false"' +
+             ' title="就地展开 ' + esc(s.name) + ' 的历史分位（' + n + ' 点）">' + inner + "</button>";
+    }
     (M.macro.signals || []).forEach(function (s) {
       rows.push('<tr data-tk="' + esc(String(s.key).toUpperCase()) + '" data-nm="' + esc(s.name) + '">' +
-        '<td><span class="t-tk">' + esc(String(s.en || s.key).toUpperCase()) + '</span><span class="t-nm">' + esc(s.name) + "</span></td>" +
+        "<td>" + sigCell(s) + "</td>" +
         cell(isNum(s.score) ? s.score : "—", "t-last") +
         '<td class="t-flat">—</td>' +
         '<td class="t-col-x ' + fmt.cls(s.w1) + '">' + (isNum(s.w1) ? fmt.z(s.w1) : "—") + "</td>" +
         cell(isNum(s.score) ? s.score + "%ile" : "—") +
         "<td>" + sigTag(s.signal) + "</td></tr>");
     });
+    /* 这两条有真实详情页：10 年期走美债曲线的 DGS10，美元指数走宏观 referenceSeries
+       的 DTWEXBGS（站内 referenceSeries 只有 DTWEXBGS 与 RWTC 两个键）。 */
+    var Z_DETAIL = { "US10Y": { kind:"curve", symbol:"DGS10" },
+                     "DXY-FED": { kind:"macro", symbol:"DTWEXBGS" } };
     [["US10Y", "10 年期美债收益率"], ["DXY-FED", "美联储广义美元指数"]].forEach(function (p) {
       var z = M.z[p[0]];
       if (!z) return;
+      var zi = '<span class="t-tk">' + esc(p[0]) + '</span><span class="t-nm">' + esc(p[1]) + "</span>";
       rows.push('<tr data-tk="' + esc(p[0]) + '" data-nm="' + esc(p[1]) + '">' +
-        '<td><span class="t-tk">' + esc(p[0]) + '</span><span class="t-nm">' + esc(p[1]) + "</span></td>" +
+        "<td>" + nameCell(zi, Z_DETAIL[p[0]], "打开 " + p[1] + " 的走势详情") + "</td>" +
         cell(fmt.px(z.last), "t-last") + '<td class="t-flat">—</td><td class="t-col-x t-flat">—</td>' +
         cell("Z " + fmt.z(z.z)) + "<td>" + sigTag(z.signal) + "</td></tr>");
     });
@@ -219,7 +247,8 @@
     var mx = Math.max.apply(null, top.map(function (q) { return Math.abs(q.ytd); })) || 1;
     host.innerHTML = top.map(function (q) {
       var w = Math.abs(q.ytd) / mx * 50, left = q.ytd >= 0 ? 50 : 50 - w;
-      return '<div class="r" data-tk="' + esc(q.tk) + '" data-nm="' + esc(q.name) + '"><span class="nm">' + esc(q.name) + "</span>" +
+      var nm = nameCell(esc(q.name), q.detail, "打开 " + q.tk + " 的走势详情");
+      return '<div class="r" data-tk="' + esc(q.tk) + '" data-nm="' + esc(q.name) + '"><span class="nm">' + nm + "</span>" +
         '<span class="tr"><span class="z" style="left:50%"></span><i style="left:' + left + "%;width:" + w +
         "%;background:" + (q.ytd >= 0 ? "var(--t-up)" : "var(--t-dn)") + '"></i></span>' +
         '<span class="vv ' + fmt.cls(q.ytd) + '">' + fmt.pct(q.ytd, 1) + "</span></div>";
@@ -265,8 +294,13 @@
     host.innerHTML = items.slice(0, limit || 10).map(function (x) {
       var t = x.it.published ? new Date(x.it.published * 1000) : null;
       var tm = t ? p2(t.getUTCHours()) + ":" + p2(t.getUTCMinutes()) + "Z" : "—";
-      return '<li><span class="tm">' + tm + '</span><span class="tx"><a href="' + esc(x.it.link || "#") +
-        '" target="_blank" rel="noopener">' + esc(x.it.title || "") + '</a></span><span class="src">' +
+      /* 没有原文地址就不做成链接 —— href="#" 点了原地不动，比纯文本更糟。
+         地址来自外部源，只收 http(s)，别的协议一律当没有。 */
+      var u = String(x.it.link || "");
+      var tx = /^https?:\/\//i.test(u)
+        ? '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(x.it.title || "") + "</a>"
+        : esc(x.it.title || "");
+      return '<li><span class="tm">' + tm + '</span><span class="tx">' + tx + '</span><span class="src">' +
         esc(x.it.source || "") + "</span></li>";
     }).join("") || '<li><span class="tx">暂无要闻</span></li>';
   }
@@ -307,10 +341,14 @@
     ["indices", "fx", "commodities", "credit"].forEach(function (g) {
       (M.markets[g] || []).forEach(function (q) { if (!q.missing) pool[q.tk] = q; });
     });
-    (M.markets.crypto || []).forEach(function (c) { pool[c.tk] = { tk:c.tk, name:c.name, close:c.close, d1:c.d1, ytd:null }; });
-    (M.rates.tenors || []).forEach(function (t) {
-      pool["US" + t.label] = { tk:"US" + t.label, name:t.label + "期美债收益率", close:t.value, d1:null, ytd:null };
+    (M.markets.crypto || []).forEach(function (c) {
+      pool[c.tk] = { tk:c.tk, name:c.name, close:c.close, d1:c.d1, ytd:null, detail:c.detail };
     });
+    (M.rates.tenors || []).forEach(function (t) {
+      pool["US" + t.label] = { tk:"US" + t.label, name:t.label + "期美债收益率",
+                               close:t.value, d1:null, ytd:null, detail:t.detail };
+    });
+    (M.markets.stocks || []).forEach(function (q) { if (!pool[q.tk]) pool[q.tk] = q; });
 
     function read() {
       try {
@@ -328,8 +366,9 @@
             '<td class="t-na">—</td><td class="t-na">—</td><td class="t-na">—</td>' +
             '<td><button class="wl-del" data-del="' + esc(tk) + '" title="移出自选">×</button></td></tr>';
         }
-        return '<tr data-tk="' + esc(q.tk) + '" data-nm="' + esc(q.name) + '"><td><span class="t-tk">' + esc(q.tk) +
-          '</span><span class="t-nm">' + esc(q.name) + "</span></td>" +
+        var wi = '<span class="t-tk">' + esc(q.tk) + '</span><span class="t-nm">' + esc(q.name) + "</span>";
+        return '<tr data-tk="' + esc(q.tk) + '" data-nm="' + esc(q.name) + '">' +
+          "<td>" + nameCell(wi, q.detail, "打开 " + q.tk + " 的走势详情") + "</td>" +
           cell(fmt.px(lastPx(q)), "t-last") + pctCell(lastPct(q)) + pctCell(q.ytd) +
           '<td><button class="wl-del" data-del="' + esc(q.tk) + '" title="移出自选">×</button></td></tr>';
       }).join("") || '<tr><td colspan="5" style="text-align:left" class="t-flat">自选表为空</td></tr>');
@@ -398,6 +437,9 @@
     var lo = Math.min.apply(null, pts.map(function (p) { return p.v; }));
     var hi = Math.max.apply(null, pts.map(function (p) { return p.v; }));
     var pad = (hi - lo) * .08 || 1; lo -= pad; hi += pad;
+    /* 有定义域的序列（比如 0–100 分位）不要把坐标轴垫到域外：
+       轴上出现 −8 / 108 会让人以为分位能超界。 */
+    if (opt.clamp) { lo = Math.max(lo, opt.clamp[0]); hi = Math.min(hi, opt.clamp[1]); }
     var n = seg.length - 1;
     function X(i) { return L + (W - L - R) * (n ? i / n : 0); }
     function Y(v) { return T + (H - T - B) * (hi - v) / (hi - lo); }
@@ -406,7 +448,7 @@
       var vv = lo + (hi - lo) * k / steps, y = Y(vv);
       g += '<line x1="' + L + '" y1="' + y.toFixed(1) + '" x2="' + (W - R) + '" y2="' + y.toFixed(1) +
            '" stroke="#1f1f1f" stroke-width="1"/><text x="' + (L - 6) + '" y="' + (y + 3.5).toFixed(1) +
-           '" text-anchor="end" fill="#5e5e5e" font-family="monospace" font-size="9">' + fmt.px(vv) + "</text>";
+           '" text-anchor="end" fill="#5e5e5e" font-family="monospace" font-size="9">' + (opt.fmtv || fmt.px)(vv) + "</text>";
     }
     var d = "", pen = false;
     for (var j = 0; j < seg.length; j++) {
@@ -414,11 +456,17 @@
       d += (pen ? "L" : "M") + X(j).toFixed(1) + "," + Y(seg[j]).toFixed(1);
       pen = true;
     }
+    var fv = opt.fmtv || fmt.px;          /* 分位/得分序列不是价格，别用价格格式和「收盘」字样 */
+    var vl = opt.valLabel || "有效收盘";
     var rise = pts[pts.length - 1].v >= pts[0].v;
     var xt = "";
-    [0, Math.floor(n * .25), Math.floor(n * .5), Math.floor(n * .75), n].forEach(function (i) {
+    var ticks = [0, Math.floor(n * .25), Math.floor(n * .5), Math.floor(n * .75), n];
+    ticks.forEach(function (i, k) {
       if (!sd[i]) return;
-      xt += '<text x="' + X(i).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle" fill="#5e5e5e" ' +
+      /* 首末两个日期贴着绘图区边缘，居中会有一半悬在框外（窄屏上就是越出视口）
+         —— 两头改成内对齐，标签整体留在框内。 */
+      var anchor = k === 0 ? "start" : k === ticks.length - 1 ? "end" : "middle";
+      xt += '<text x="' + X(i).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="' + anchor + '" fill="#5e5e5e" ' +
             'font-family="monospace" font-size="9">' + esc(sd[i]) + "</text>";
     });
     svg.innerHTML = g + '<path d="' + d + '" fill="none" stroke="' + (rise ? "#00b86b" : "#ff4d4d") +
@@ -430,9 +478,11 @@
     };
     if (lg) {
       lg.innerHTML = "期间 <b>" + esc(sd[0] || "—") + " → " + esc(sd[n] || "—") +
-        "</b>　有效收盘 <b>" + pts.length + " / " + seg.length +
-        "</b>　区间 <b>" + fmt.px(stat.lo) + " – " + fmt.px(stat.hi) +
-        "</b>　变动 <b>" + fmt.pct((stat.last.v / stat.first.v - 1) * 100) + "</b>";
+        "</b>　" + esc(vl) + " <b>" + pts.length + " / " + seg.length +
+        "</b>　区间 <b>" + fv(stat.lo) + " – " + fv(stat.hi) + "</b>　" +
+        (opt.absChange
+          ? "变动 <b>" + fmt.chg(stat.last.v - stat.first.v) + "</b>"
+          : "变动 <b>" + fmt.pct((stat.last.v / stat.first.v - 1) * 100) + "</b>");
     }
     return stat;
   }
@@ -455,7 +505,7 @@
     quoteTable: quoteTable, curve: curve, spreadLegend: spreadLegend, spreadTable: spreadTable,
     ratesTable: ratesTable, macroMonitor: macroMonitor, MONITOR_METHOD: MONITOR_METHOD,
     macroBlock: macroBlock,
-    priceLine: priceLine, fields: fields,
+    priceLine: priceLine, fields: fields, nameCell: nameCell,
     crossBars: crossBars, calendar: calendar, news: news, alerts: alerts, sources: sources,
     watchlist: watchlist, topStatus: topStatus
   };

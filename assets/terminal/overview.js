@@ -95,6 +95,8 @@
         var iq = intraQ[a.symbol];
         return Object.assign({}, def, {
           symbol: a.symbol,
+          /* 详情页：站内 quote.html 的 tracker kind 按 asset-tracker 的 symbol 取 */
+          detail: a.symbol ? { kind:"tracker", symbol:a.symbol } : null,
           close: a.price,
           d1: rt.d1, w1: rt.w1, m1: rt.m1, ytd: rt.ytd, y1: rt.y1,
           intraday: iq && isNum(iq.price) ? { price: iq.price, changePct: iq.changePct, prevClose: iq.previousClose, asOf: iq.asOf } : null,
@@ -110,7 +112,9 @@
       if (crypto && !crypto.__error) {
         ["BTC", "ETH"].forEach(function (sym) {
           var c = (crypto.assets || []).find(function (x) { return x.symbol === sym; });
-          if (c) markets.crypto.push({ tk:sym, name:c.name, close:c.price, d1:c.changePct, marketCap:c.marketCap, meta:c.dataMeta || {} });
+          if (c) markets.crypto.push({ tk:sym, name:c.name, close:c.price, d1:c.changePct,
+            marketCap:c.marketCap, meta:c.dataMeta || {},
+            detail:{ kind:"crypto", symbol:c.symbol || c.id } });
         });
       }
 
@@ -126,6 +130,7 @@
             var rt = c.returns || {};
             return {
               tk: c.symbol, name: c.name || c.nameEn, close: c.price, d1: c.changePct,
+              detail: { kind:"company", symbol:c.symbol },
               w1: rt.w1, m1: rt.m1, ytd: rt.ytd, y1: rt.y1,
               marketCap: c.marketCap, sector: c.sector, cur: c.priceCur,
               stale: !!c.stale, meta: c.dataMeta || {}
@@ -136,7 +141,11 @@
       /* 利率：曲线 + 期限差（5s30s 由曲线现算） */
       var rates = { tenors: [], spreads: [], asOf: null, source: null, error: null };
       if (curve && !curve.__error) {
-        rates.tenors = (curve.tenors || []).filter(function (t) { return isNum(t.value); });
+        rates.tenors = (curve.tenors || []).filter(function (t) { return isNum(t.value); })
+          .map(function (t) {
+            /* 详情页：quote.html 的 curve kind 按期限的 id（DGS10 这类）取 */
+            return Object.assign({}, t, { detail: t.id ? { kind:"curve", symbol:t.id } : null });
+          });
         rates.asOf = curve.asOf; rates.source = curve.source; rates.note = curve.note;
         rates.spreads = (curve.spreads || []).map(function (s) {
           return { id:s.id, value:s.value, inverted:s.inverted, asOf:s.asOf, derived:false };
@@ -198,6 +207,12 @@
         macro: {
           regime: (macro && !macro.__error) ? (macro.regime || {}) : null,
           signals: signals,
+          /* 8 条合成信号的 0–100 分位逐日序列：站内确实有，共用 history.json 的日期轴。
+             不是价格，也没有单指标行情页，所以在监测面板里就地画，不伪造一个详情页。 */
+          signalHist: (hist && !hist.__error)
+            ? { dates: hist.dates || [], series: hist.signals || {}, freq: hist.freq || null,
+                updatedAt: hist.updatedAt || null, note: hist.note || null }
+            : null,
           mutations: (macro && !macro.__error) ? (macro.mutations || []) : [],
           mutSummary: (macro && !macro.__error) ? macro.mutSummary : null,
           tables: (macro && !macro.__error) ? (macro.macro || []) : [],

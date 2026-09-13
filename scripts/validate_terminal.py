@@ -49,8 +49,15 @@ def require(cond: bool, message: str) -> None:
         _failures.append(message)
 
 
+_marked = 0
+
+
 def section(name: str) -> None:
-    print(f"- {name}: {'FAIL' if _failures else 'PASS'}")
+    """本节结论只看本节新增的失败——否则第一处失败之后每节都写 FAIL，定位不了问题。"""
+    global _marked
+    new = _failures[_marked:]
+    _marked = len(_failures)
+    print(f"- {name}: {'FAIL' if new else 'PASS'}" + (f"（{len(new)} 条）" if new else ""))
 
 
 def read(p: Path) -> str:
@@ -243,6 +250,91 @@ def main() -> int:
     require("aria-" in mon, "监控页必须有 aria 标注")
     require("focus-visible" in css, "必须有可见焦点样式")
     section("无障碍")
+
+    # ── 12 标的详情链路：点得开、分片取得对、取不到要写明 ─────────────────
+    sec_js = lib["security.js"]
+    ren = lib["render.js"]
+    require("shardPath" in core, "core.js 必须提供 shardPath：公司历史按名次分片存放")
+    require("historyShard" in sec_js, "security.js 必须按 historyShard 取对应那一片收盘历史")
+    require("ensureHist" in sec_js and "ensureHist" in pages["security"],
+            "证券描述页必须先补齐该标的所在分片再画图")
+    require("loaded" in sec_js and "absorb" in sec_js,
+            "分片要缓存，同一片不得重复下载")
+    require("日期轴" in sec_js, "并片前必须核对日期轴，错轴不并")
+    # 分片文件必须都在，且共用同一条日期轴——security.js 靠这个前提并片
+    comp = ROOT / "apps" / "companies"
+    axis = None
+    shard_count = {}
+    for i in range(1, 6):
+        f = comp / ("history.json" if i == 1 else f"history-{i}.json")
+        require(f.is_file(), f"缺少公司历史分片 {f.name}")
+        if not f.is_file():
+            continue
+        d = json.loads(read(f))
+        dates = d.get("dates") or []
+        shard_count[i] = len(d.get("series") or {})
+        if axis is None:
+            axis = dates
+        else:
+            require(dates == axis, f"{f.name} 的日期轴与第 1 片不一致，不能并进同一张表")
+    # 公司榜里每个真实标的都要标出所在分片，且那一片确实存在
+    rows = json.loads(read(comp / "data.json")).get("companies") or []
+    listed = [r for r in rows if r.get("symbol") and r["symbol"] != "—"
+              and isinstance(r.get("price"), (int, float))]
+    require(len(listed) >= 400, f"公司榜可显示标的过少（{len(listed)}）")
+    missing = [r["symbol"] for r in listed if not r.get("historyShard")]
+    require(not missing, f"公司榜有 {len(missing)} 个标的没标分片：{missing[:5]}")
+    bad_shard = [r["symbol"] for r in listed
+                 if r.get("historyShard") and int(r["historyShard"]) not in shard_count]
+    require(not bad_shard, f"有标的指向不存在的分片：{bad_shard[:5]}")
+    # 行情页与终端资源层的分片规则必须是同一套，否则两处会取到不同的文件
+    qm = read(ROOT / "apps" / "finance-terminal" / "finance-terminal-quote.mjs")
+    require("shardPath" in qm, "行情页仍须保留自己的 shardPath（模块页不吃全局 IIFE）")
+    for src in (core, qm):
+        require("<= 1) return path" in src or "i <= 1) return path" in src,
+                "两处 shardPath 都必须把第 1 片映回原文件名")
+    # 取不到序列时，两个图框和页脚都要写明原因，不能留空白
+    require('empty: whyPx' in pages["security"] and 'empty: whyPx' in pages["security"],
+            "证券描述页无序列时两个图框都要写明原因")
+    require("没有该标的的收盘历史序列" in pages["security"], "无序列必须如实说明")
+    require("不插值" in pages["security"] or "假曲线" in pages["security"],
+            "不得插值补缺，且要说明")
+    # 行内名称链接由 core.detailHref 统一产出，各表都要用上
+    require("detailHref" in core and "nameCell" in ren,
+            "行内详情链接必须走 core.detailHref + render.nameCell")
+    require("nameCell: nameCell" in ren, "nameCell 必须导出，页面才不用各写一遍链接标记")
+    # 页面不得自己拼 a.t-go —— 只有 render.nameCell 产出这段标记，否则又是多套真源。
+    # 唯一例外是证券描述页那个静态的「全区间走势」按钮（它不是表格行，靠 JS 改 href）。
+    for k, page in pages.items():
+        for m in re.finditer(r'class="t-go"[^>]*', page):
+            require("data-quote-link" in m.group(0),
+                    f"{k} 自己拼了 a.t-go：{m.group(0)[:56]}——应改调 R.nameCell")
+        require("CORE.detailHref" not in page and "C.detailHref" not in page,
+                f"{k} 直接调了 detailHref 拼链接：链接标记只许由 render.nameCell 产出")
+    for tbl in ("quoteTable", "ratesTable", "crossBars", "watchlist", "macroMonitor"):
+        body = ren[ren.index("function " + tbl):]
+        body = body[:body.index("\n  function ") if "\n  function " in body else len(body)]
+        require("nameCell" in body or "data-sig" in body,
+                f"{tbl} 的名称列没有接上详情链接")
+    # 合成信号：有序列的就地展开，没有的保持不可点
+    require('data-sig' in ren and 'aria-expanded' in ren,
+            "合成信号要做成可展开按钮并带 aria-expanded")
+    require("signalHist" in lib["overview.js"] and "signalHist" in ren,
+            "合成信号的分位历史必须从模型层传到渲染层")
+    require('id="svg-sig"' in mon and 'id="sig-box"' in mon, "监控页必须有合成信号的图框")
+    require("周频" in mon and "回溯" in mon,
+            "合成信号序列是周频回溯算出来的，页面必须写明，不能当成当年读数")
+    require("valLabel" in ren and "fmtv" in ren,
+            "非价格序列不得沿用「有效收盘」与价格格式")
+    sig_hist = ROOT / "apps" / "macro-radar" / "history.json"
+    require(sig_hist.is_file(), "缺少合成信号历史序列 macro-radar/history.json")
+    if sig_hist.is_file():
+        sd = json.loads(read(sig_hist))
+        require(len(sd.get("dates") or []) > 100, "合成信号历史点数过少")
+        require(sd.get("freq") == "W", "合成信号序列频率标注变了，页面上的「周频」字样要跟着改")
+        for k, v in (sd.get("signals") or {}).items():
+            require(len(v) == len(sd["dates"]), f"信号 {k} 的序列长度与日期轴不符")
+    section("标的详情链路与历史分片")
 
     return report()
 

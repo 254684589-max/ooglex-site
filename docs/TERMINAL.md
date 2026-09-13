@@ -113,6 +113,61 @@ legacy 样式表里剥离（省 43.7KB）。页面上主题选择器仍在，会
 `PLANNED` 用另一组字段：`need`（缺什么）+ `blocked`（卡在哪）。
 这两条会原样显示在功能目录里 —— **缺数据源就写缺哪一条，不先画空壳**。
 
+### 行里的标的怎么点进走势
+
+表格里的名称列不要各自拼链接。`core.js` 里有一份映射，`render.js` 里有一个包装（**页面不要自己拼 `a.t-go`，契约会拦**）：
+
+```js
+C.detailHref({ kind: "tracker", symbol: "^GSPC" })   // → quote.html?kind=…&symbol=…
+C.detailHref({ kind: "company", symbol: "NVDA"  })   // → security.html?sym=NVDA
+nameCell(inner, detail, title)                        // 有地址才包成 a.t-go，没有就原样返回
+```
+
+七种 `kind`（`tracker` `company` `crypto` `curve` `macro` `commodity` `bond`）的符号
+键格式各不相同，所以**模型层负责在行上带好 `detail`**，渲染层只管包装。行上没有
+`detail` 就渲染成纯文本 —— **不放点了没反应的链接**。
+
+### 公司收盘历史是分片的
+
+450 家公司的完整历史按市值名次每 100 家一片：
+
+```
+apps/companies/history.json      第 1 片（第 1–100 名）
+apps/companies/history-2.json    第 2 片（第 101–200 名）… 直到 history-5.json
+```
+
+每行 `data.json` 里的 `historyShard` 指明在第几片。两处按片取数，语义必须一致：
+
+- `assets/terminal/core.js` 的 `shardPath()` —— 给 `security.js` 用（全局 IIFE）
+- `apps/finance-terminal/finance-terminal-quote.mjs` 的 `shardPath()` —— 给行情页用（ES 模块）
+
+两份都把第 1 片映回原文件名，片号缺失或不是大于 1 的整数就退回第 1 片。契约会核对
+两处同语义 —— **改一处必须改另一处**。
+
+`security.js` 首屏只取第 1 片（约 170KB），选到别片的标的时按需补那一片并缓存。
+五片共用同一条日期轴，所以各片 `series` 可以并进同一张表；**并片前先核对日期轴，
+对不上的整片不收** —— 错轴画出来的线是假的。
+
+取不到序列时分三种说法，不要混：
+
+| 情形 | 页面怎么说 |
+|---|---|
+| 这一片没取回 | 「这一片收盘历史没取回，暂时画不出（原因）」 |
+| 片里确实没有这条序列 | 「站内没有该标的的收盘历史序列（已取第 N 片，片内没有）」 |
+| 有序列但有效点不足 5 | 「该标的有效收盘不足 5 个，不画图」 |
+
+**「没取到」不等于「站内没有」**。两个图框和页脚都要写明，不能留空白图框。
+
+### 非价格序列
+
+`priceLine()` 默认按价格渲染（`fmt.px`、页脚写「有效收盘」、变动按百分比）。
+0–100 分位这类序列要传 `fmtv` / `valLabel` / `absChange` 改掉这三样 ——
+**分数不是价格，不能套价格的字样和格式**。
+
+宏观监测表的 8 条合成信号就是这种：站内有它们的分位历史（`macro-radar/history.json`），
+但那是**周频、按当前方法学回溯**算出来的，不是当年逐周发布的原始读数，图上和页脚
+必须写明。它们没有单指标行情页，所以**在面板里就地展开，不造一个假详情页**。
+
 ---
 
 ## 三、规划中的功能与各自卡点
@@ -176,8 +231,9 @@ legacy 样式表里剥离（省 43.7KB）。页面上主题选择器仍在，会
 node --check assets/terminal/*.js
 python3 -m py_compile scripts/validate_terminal.py
 
-# 新终端契约（255 条：出处规范、不伪造实时、不可得字段声明、无下单键、
-#              注册表完整性、代码层单一真源、迁入两块的专项、无孤儿引用、无障碍）
+# 新终端契约（306 条：出处规范、不伪造实时、不可得字段声明、无下单键、
+#              注册表完整性、代码层单一真源、迁入两块的专项、无孤儿引用、无障碍、
+#              标的详情链路与历史分片）
 python3 scripts/validate_terminal.py
 
 # legacy 页的旧契约（129 条页面断言 + 数据与适配器契约，一条未删）
@@ -196,5 +252,14 @@ THEME=paper NODE_PATH=... node scripts/theme/audit_theme.js
 node scripts/validate_finance_terminal_browser.mjs   # 指向 legacy.html
 ```
 
-响应式（三页 × 双密度 × 2560→360 九档）与失败态（全源阻断 + 单源隔离）
+响应式（三页 × 双密度 × 2560→360 九档）与失败态（全源阻断 + 单源隔离 + 分片阻断）
 用 Playwright 手动跑，结果记在 `CHANGELOG.md` 对应条目里。
+
+改了详情链路或分片取数，另外跑这三样（脚本在会话暂存区，不入库）：
+
+- **全标的核对**：把 `core.js` + `security.js` 装进 Node、用文件系统当 `fetch`，
+  对 450 个标的逐个取数，与站内五片逐点比对点数、轴长、片号标注。
+- **逐链接落地**：把三页上所有 `a.t-go` 的目标收集起来逐个打开，确认**真的画出折线**
+  —— 不是「链接拼对了」，而是目标页有图。
+- **分片阻断**：`page.route('**/companies/history-3.json', r => r.abort())`，
+  确认报价头与同业表照常、不画线、图框与来源表都写明读取失败。

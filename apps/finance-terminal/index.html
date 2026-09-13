@@ -119,6 +119,11 @@
   <section class="t-panel h2 w2" data-fn="MACR MACRO 宏观 RISK" id="p-macr">
     <header><span class="mn">MACR</span><h3>宏观风险监测 Macro / Risk Monitor</h3><span class="sub" data-sub="macro">—</span></header>
     <div class="bd">
+      <div id="sig-box" hidden>
+        <div class="t-chart"><svg id="svg-sig" viewBox="0 0 620 130" preserveAspectRatio="none" role="img" aria-label="风险信号历史分位"></svg></div>
+        <div class="t-legend" id="lg-sig"></div>
+        <p class="t-note" id="n-sig"></p>
+      </div>
       <table class="t-tbl" id="tbl-macro"><thead><tr><th>METRIC</th><th>CURRENT</th><th>1D</th><th class="t-col-x">1W</th><th>分位/Z</th><th>SIGNAL</th></tr></thead><tbody></tbody></table>
     </div>
     <footer data-src="macro">—</footer>
@@ -228,7 +233,7 @@
 (function () {
   var C = window.OOGLEX_CORE, K = window.OOGLEX_CHROME, FN = window.OOGLEX_FN;
   var O = window.OOGLEX_OVERVIEW, B = window.OOGLEX_BEHAVIOR, R = window.OOGLEX_RENDER;
-  var $ = K.$, $$ = K.$$, esc = C.esc, set = R.set, srcLine = C.srcLine, fmt = C.fmt;
+  var $ = K.$, $$ = K.$$, esc = C.esc, set = R.set, srcLine = C.srcLine, fmt = C.fmt, isNum = C.isNum;
 
   K.init({
     current: "MON",
@@ -291,7 +296,47 @@
     R.macroMonitor("#tbl-macro", M);
     set('[data-sub="macro"]', M.macro.asOf || "—");
     set('[data-src="macro"]', (M.macro.error ? ("读取失败：" + M.macro.error)
-      : "来源 " + (M.macro.source || "—")) + " · " + C.MONITOR_METHOD);
+      : "来源 " + (M.macro.source || "—")) + " · " + C.MONITOR_METHOD +
+      " · US10Y 与 DXY-FED 点进独立行情页（DGS10 / DTWEXBGS 两条逐日序列）；" +
+      "8 条合成信号点名称就地展开历史分位（周频回溯序列，没有单指标行情页，不做成假链接）；" +
+      "最后 9 条只有现值、站内无序列，因此不可点。完整指标页见宏观雷达。");
+
+    /* 合成信号的历史分位：就地展开。这条序列是周频、按当前方法学回溯算出来的，
+       不是当年逐周发布的原始读数，图上和页脚都得写明，不能当成历史实况。 */
+    (function () {
+      var box = $("#sig-box"), tb = $("#tbl-macro");
+      var sh = M.macro.signalHist;
+      if (!box || !tb) return;
+      var cur = null;
+      function score(x) { return isNum(x) ? String(Math.round(x)) : "—"; }
+      tb.addEventListener("click", function (ev) {
+        var btn = ev.target.closest ? ev.target.closest("button[data-sig]") : null;
+        if (!btn || !tb.contains(btn)) return;
+        var key = btn.getAttribute("data-sig");
+        var all = tb.querySelectorAll("button[data-sig]");
+        var i;
+        if (cur === key) {                       /* 再点一次收起 */
+          box.hidden = true; cur = null;
+          for (i = 0; i < all.length; i++) all[i].setAttribute("aria-expanded", "false");
+          return;
+        }
+        cur = key;
+        for (i = 0; i < all.length; i++) all[i].setAttribute("aria-expanded", all[i] === btn ? "true" : "false");
+        var ser = sh && sh.series ? (sh.series[key] || []) : [];
+        var dates = sh ? (sh.dates || []) : [];
+        var row = (M.macro.signals || []).filter(function (x) { return x.key === key; })[0] || {};
+        box.hidden = false;
+        var st = R.priceLine("#svg-sig", "#lg-sig", ser, dates, {
+          l: 34, b: 20, grid: 4, fmtv: score, valLabel: "有效点", absChange: true, clamp: [0, 100],
+          empty: "站内没有这条信号的分位序列"
+        });
+        set("#n-sig", (row.name || key) + "：0–100 相对分位，越低越紧。" +
+          "序列为" + (sh && sh.freq === "W" ? "周频" : (sh && sh.freq ? sh.freq + " 频" : "低频")) +
+          "、按当前方法学回溯计算，不是当年逐周发布的原始读数；" +
+          (st ? "共 " + st.pts.length + " 点，" + (dates[0] || "—") + " 起。" : "") +
+          (sh && sh.updatedAt ? " 更新于 " + sh.updatedAt + "。" : "") + " 仅供研究，非投资建议。");
+      });
+    })();
 
     R.curve("#svg-curve", M.rates.tenors, { w:620, h:160, l:44, b:20 });
     R.spreadLegend("#lg-spread", M.rates.spreads);
@@ -316,7 +361,8 @@
     set('[data-src="alerts"]', "来源 宏观雷达的异动判定 · 阈值与口径见 MACR");
 
     var creditRows = M.markets.credit.concat((M.markets.crypto || []).map(function (c) {
-      return { tk:c.tk, name:c.name + "（24h 口径）", close:c.close, d1:c.d1, ytd:null, meta:c.meta };
+      return { tk:c.tk, name:c.name + "（24h 口径）", close:c.close, d1:c.d1, ytd:null,
+               meta:c.meta, detail:c.detail };
     }));
     R.quoteTable("#tbl-credit", creditRows, ["last", "pct", "ytd"]);
     set('[data-sub="credit"]', eqSrc.asOf || "—");

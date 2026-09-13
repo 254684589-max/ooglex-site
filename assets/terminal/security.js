@@ -13,22 +13,71 @@
   var soft = C.soft, isNum = C.isNum, fmt = C.fmt, meta = C.meta;
 
   /* ── 单证券：公司榜 + 收盘历史 + 盘中快照 ──────────────────────────── */
+  /* 收盘历史按市值名次每 100 家一片存放，逐行的 historyShard 指明在第几片。
+     首屏只取第 1 片（约 170KB），选到别的片里的标的时再按需补那一片，
+     不为了让每个标的都有图而把 450 家的整份历史一次拉下来。
+     五片共用同一条日期轴（管道保证，validate_terminal.py 逐片核对），
+     所以各片的 series 可以并进同一张表，按共享日期轴对齐。 */
+  var HIST = "companies/history.json";
+
   function loadSecurity() {
     return Promise.all([
       soft("companies/data.json"),
-      soft("companies/history.json"),
+      soft(HIST),
       soft("companies/intraday.json"),
       soft("companies/health.json")
     ]).then(function (r) {
       var d = r[0], h = r[1], i = r[2], hl = r[3];
       var list = (d && !d.__error) ? (d.companies || []) : [];
-      var histSeries = (h && !h.__error) ? (h.series || {}) : {};
-      var histDates  = (h && !h.__error) ? (h.dates || []) : [];
       var quotes     = (i && !i.__error) ? (i.quotes || {}) : {};
 
-      /* 有收盘历史的标的排前面 —— 走势页才有东西可画 */
+      /* 并进来的各片 series；日期轴以第 1 片为准，后续片上轴不一致就整片不收 */
+      var histSeries = {}, histDates = [];
+      var loaded = {};            /* 片号 → 该片的取数结果（成功或失败都记，失败不重试到死） */
+      function absorb(shard, file) {
+        loaded[shard] = file;
+        if (!file || file.__error) return false;
+        var dates = file.dates || [];
+        if (!histDates.length) histDates = dates;
+        else if (dates.length !== histDates.length ||
+                 dates[0] !== histDates[0] || dates[dates.length - 1] !== histDates[histDates.length - 1]) {
+          /* 日期轴对不上就不并——错轴画出来的线是假的，宁可这一片没有图 */
+          loaded[shard] = { __error: "第 " + shard + " 片日期轴与第 1 片不一致，未采用" };
+          return false;
+        }
+        var ss = file.series || {};
+        for (var k in ss) if (ss.hasOwnProperty(k)) histSeries[k] = ss[k];
+        return true;
+      }
+      absorb(1, h);
+
+      var shardOf = {};
+      list.forEach(function (c) {
+        if (c.symbol) shardOf[c.symbol] = C.shardPath(HIST, c.historyShard) === HIST ? 1 : Number(c.historyShard);
+      });
+
       var pool = list.filter(function (c) { return c.symbol && isNum(c.price); })
         .sort(function (a, b) { return (b.marketCap || 0) - (a.marketCap || 0); });
+
+      function histMeta(shard) {
+        var f = loaded[shard];
+        var extra = shard > 1 ? "第 " + shard + " 片" : null;
+        var m = meta("收盘历史" + (extra ? "（" + extra + "）" : ""), f,
+                     (f && !f.__error && f.points ? f.points + " 个交易日" : "日频"));
+        return m;
+      }
+
+      /* 按需补齐某个标的所在的那一片。已在表里、片号不明、或这一片取过了都直接返回。
+         无论成败都把 src.hist 换成实际读到的那一片的来源行——出处必须对得上画出来的线。 */
+      function ensureHist(sym) {
+        var shard = shardOf[sym] || 1;
+        if (loaded.hasOwnProperty(shard)) { out.src.hist = histMeta(shard); return Promise.resolve(out); }
+        return soft(C.shardPath(HIST, shard)).then(function (f) {
+          absorb(shard, f);
+          out.src.hist = histMeta(shard);
+          return out;
+        });
+      }
 
       function sec(sym) {
         var c = pool.filter(function (x) { return x.symbol === sym; })[0];
@@ -38,27 +87,41 @@
         var rt = c.returns || {};
         return {
           tk: c.symbol, zh: c.name, en: c.nameEn, sector: c.sector, country: c.country,
+          detail: { kind:"company", symbol:c.symbol },
           domain: c.domain, cur: c.priceCur || "USD", rank: c.rank, sp500: !!c.sp500,
           close: c.price, d1: c.changePct, marketCap: c.marketCap,
           w1: rt.w1, m1: rt.m1, ytd: rt.ytd, y1: rt.y1,
           intraday: q && isNum(q.price) ? { price:q.price, prevClose:q.previousClose,
                                             changePct:q.changePct, asOf:q.asOf } : null,
-          hist: hs, dates: histDates, stale: !!c.stale, meta: c.dataMeta || {}
+          hist: hs, dates: hs ? histDates : [], histShard: shardOf[sym] || null,
+          /* 「站内没有这条序列」和「这一片这次没取到」是两回事，页面得分开说 */
+          histErr: (function () {
+            var f = loaded[shardOf[sym] || 1];
+            if (!f) return "该片收盘历史尚未取回";
+            return f.__error ? String(f.__error) : null;
+          })(),
+          stale: !!c.stale, meta: c.dataMeta || {}
         };
       }
-      return {
+
+      var out = {
         pool: pool.map(function (c) {
-          return { tk:c.symbol, zh:c.name, en:c.nameEn, hasHist: !!histSeries[c.symbol] };
+          /* hasHist 按管道写的片号报，不为了这一行去把五片全拉下来；
+             片号有而那一片里确实没有序列的（站内目前 1 家）走势页照实说没有序列，不画插值线。 */
+          return { tk:c.symbol, zh:c.name, en:c.nameEn,
+                   shard: shardOf[c.symbol] || null, hasHist: !!shardOf[c.symbol] };
         }),
         sec: sec,
+        ensureHist: ensureHist,
         src: {
           quote: meta("公司榜（收盘）", d, "日频收盘"),
           intra: meta("盘中快照", i, (i && i.cadenceMinutes ? "约" + i.cadenceMinutes + "分钟" : "约30分钟") + " · 非实时"),
-          hist:  meta("收盘历史", h, (h && h.points ? h.points + " 个交易日" : "日频")),
+          hist:  histMeta(1),
           health: (hl && !hl.__error) ? hl : null
         },
         raw: { d:d, h:h, i:i, health:hl }
       };
+      return out;
     });
   }
 

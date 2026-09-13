@@ -254,6 +254,15 @@ table{width:100%;border-collapse:collapse}
 }
 .t-tbl .t-grp:hover td{background:var(--t-bg2)}
 .t-tbl .t-na{color:var(--t-faint)}
+
+/* 标的名称上的详情页链接：终端里不用下划线（会把密排表格搅乱），
+   用悬停变琥珀 + 一条下边框表示可点；没有详情页的行保持纯文本，不给假手型。 */
+.t-go{color:inherit;text-decoration:none;display:inline-block;max-width:100%}
+.t-go:hover,.t-go:focus-visible{color:var(--t-cmd-line)}
+.t-go:hover .t-tk,.t-go:focus-visible .t-tk{color:var(--t-cmd-line);border-bottom:1px solid currentColor}
+.t-go:hover .t-nm,.t-go:focus-visible .t-nm{color:var(--t-ink)}
+.t-bars .r .nm .t-go:hover,.t-bars .r .nm .t-go:focus-visible{border-bottom:1px solid currentColor}
+.t-tbl tbody tr:hover td:first-child .t-go{color:var(--t-cmd-line)}
 /* 非美元报价的币种标记：价格数字后面跟一个小号币种，避免把本币价当美元读 */
 .t-tbl .t-cur{font-size:8px;color:var(--t-faint);letter-spacing:.06em;margin-left:3px;vertical-align:.15em}
 
