@@ -40,11 +40,16 @@ import os
 import re
 import sys
 
-ROOT_DIRS = ("apps",)
-# 只管与 HTML 同目录的资源；跨目录引用（/assets/...）匹配不到就是不管，
-# 不假装管住了。
+ROOT_DIRS = ("apps", "games", ".")
+# 两类引用都管：
+#   · 与 HTML 同目录的（company.js）——最初那次事故就出在这类；
+#   · 跨目录的根绝对路径（/assets/theme.js、/assets/terminal/core.js）。
+# 后者原先「匹配不到就是不管」，但规则 1 写的是全站硬性：theme.js 进了 44 个页面、
+# 终端代码层进了 3 个页面，都是「data.json 每次拉新 + JS 可能是旧的」同一个结构，
+# 不管它等于把同一类事故在这些页面上继续敞着。
 LOCAL_REF = re.compile(
-    r'(?P<attr>src|href)="(?P<file>[A-Za-z0-9._-]+\.(?:js|css))(?:\?v=(?P<ver>[^"]*))?"')
+    r'(?P<attr>src|href)="(?P<file>(?:/)?[A-Za-z0-9._/-]+\.(?:js|css))(?:\?v=(?P<ver>[^"]*))?"')
+SKIP_DIRS = {"node_modules", ".git", "__pycache__"}
 VERSION_LEN = 8
 HASH_VERSION = re.compile(r"^[0-9a-f]{8}$")
 
@@ -57,7 +62,13 @@ def content_version(path: str) -> str:
 def html_files() -> list[str]:
     found = []
     for root_dir in ROOT_DIRS:
+        if root_dir == ".":
+            # 站点根目录只取顶层页面，不递归（子目录各自在 ROOT_DIRS 里列）
+            found += [f for f in os.listdir(".") if f.endswith(".html")]
+            continue
         for root, _, files in os.walk(root_dir):
+            if any(part in SKIP_DIRS for part in root.split(os.sep)):
+                continue
             found += [os.path.join(root, f) for f in files if f.endswith(".html")]
     return sorted(found)
 
@@ -73,7 +84,12 @@ def scan(stamp: bool) -> int:
 
         for match in LOCAL_REF.finditer(html):
             asset = match.group("file")
-            asset_path = os.path.join(app_dir, asset)
+            if asset.startswith("/"):
+                asset_path = asset.lstrip("/")          # 根绝对路径 = 仓库根
+            elif "/" in asset:
+                continue                                 # 相对子路径不在本规则范围内
+            else:
+                asset_path = os.path.join(app_dir, asset)
             if not os.path.exists(asset_path):
                 problems.append(f"{name} 引用了不存在的 {asset}")
                 continue
@@ -108,7 +124,8 @@ def scan(stamp: bool) -> int:
         print(f"已校正 {fixed} 处引用（共检查 {checked} 处）")
         return 0
 
-    print(f"检查 {'、'.join(ROOT_DIRS)} 下 {checked} 处本地资源引用")
+    print(f"检查 {'、'.join(d for d in ROOT_DIRS if d != '.')} 与站点根目录下 "
+          f"{checked} 处本地资源引用（含 /assets/ 跨目录引用）")
     if problems:
         print(f"\n失败 {len(problems)} 项：")
         for item in problems:

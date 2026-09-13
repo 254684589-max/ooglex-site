@@ -87,7 +87,9 @@ def main() -> int:
         require("<html" in s and 'lang="zh-CN"' in s, f"{k} 必须声明中文")
         require('rel="canonical"' in s, f"{k} 缺少 canonical")
         require("data-theme-slot" in s, f"{k} 必须给主题选择器留插槽，否则它会浮在标签条上")
-        require('href="/assets/terminal/terminal.css"' in s, f"{k} 必须引入合并后的设计系统")
+        # 缓存指纹（?v=<hash>）由 validate_asset_versions.py 打，断言只认路径不认指纹
+        require(re.search(r'href="/assets/terminal/terminal\.css(?:\?v=[0-9a-f]{8})?"', s),
+                f"{k} 必须引入合并后的设计系统")
         # 三页互链 + 通往旧版与法律页
         for target in ("/apps/finance-terminal/", "/apps/finance-terminal/security.html",
                        "/apps/finance-terminal/trends.html", "/apps/finance-terminal/legacy.html",
@@ -202,7 +204,14 @@ def main() -> int:
 
     # ── 9 无孤儿引用 / 无外部脚本 / 无装饰动画 ───────────────────────────
     for k, s in pages.items():
-        for ref in set(re.findall(r'(?:src|href)="(/assets/[^"?]+)"', s)):
+        # 连查询串一起吃进来再剥掉：原先的 [^"?]+ 在资源加上 ?v= 指纹后一条都匹配不到，
+        # 27 条断言就这么静默消失了。能静默匹配到零条的检查不算检查，所以下面还要
+        # 断言「至少匹配到几条」——正则失效时要响，不要静。
+        refs = set()
+        for raw in re.findall(r'(?:src|href)="(/assets/[^"]+)"', s):
+            refs.add(raw.split("?", 1)[0])
+        require(len(refs) >= 2, f"{k} 只解析到 {len(refs)} 条 /assets/ 引用，正则可能已失效")
+        for ref in refs:
             require((ROOT / ref.lstrip("/")).is_file(), f"{k} 引用了不存在的资源 {ref}")
         ext = [u for u in re.findall(r'<script[^>]+src="(https?://[^"]+)"', s)]
         require(not ext, f"{k} 不得引入外部脚本：{ext}")
@@ -335,6 +344,55 @@ def main() -> int:
         for k, v in (sd.get("signals") or {}).items():
             require(len(v) == len(sd["dates"]), f"信号 {k} 的序列长度与日期轴不符")
     section("标的详情链路与历史分片")
+
+    # ── 13 类名不得撞名 ─────────────────────────────────────────────────────
+    # 合并那一版有三处撞名靠改名解决；后来 .t-go 又撞了一次——行内详情链接继承到
+    # 命令行 GO 键的琥珀块底，白字被压到 1.79:1。撞名不是样式偏好问题，是会改变
+    # 别处观感的隐蔽 bug，所以这里直接查：同一个裸单类不得在顶层定义两次。
+    # @media / @supports 块里的重复是正常的响应式覆盖，先剥掉再查。
+    def _strip_at_blocks(text: str) -> str:
+        out, i = [], 0
+        pat = re.compile(r"@(?:media|supports|container)[^{]*\{")
+        while i < len(text):
+            m = pat.search(text, i)
+            if not m:
+                out.append(text[i:])
+                break
+            out.append(text[i:m.start()])
+            depth, j = 1, m.end()
+            while j < len(text) and depth:
+                if text[j] == "{":
+                    depth += 1
+                elif text[j] == "}":
+                    depth -= 1
+                j += 1
+            out.append("\n" * text[m.start():j].count("\n"))
+            i = j
+        return "".join(out)
+
+    top = _strip_at_blocks(css)
+    seen: dict[str, list[int]] = {}
+    for m in re.finditer(r"(?m)^((?:\.[A-Za-z][\w-]*\s*,\s*)*\.[A-Za-z][\w-]*)\s*\{", top):
+        for sel in m.group(1).split(","):
+            sel = sel.strip()
+            if re.fullmatch(r"\.[A-Za-z][\w-]*", sel):
+                seen.setdefault(sel, []).append(top[:m.start()].count("\n") + 1)
+    for sel, lines in sorted(seen.items()):
+        require(len(lines) == 1,
+                f"terminal.css 里 {sel} 在顶层定义了 {len(lines)} 次（行 {lines}）："
+                "撞名靠后者覆盖不可靠，合成一条或改名")
+    # 详情链接必须显式归零背景与内边距——它的类名曾被别处的色块规则命中
+    go = top[top.index(".t-go{"):]
+    go = go[:go.index("}")]
+    for prop in ("background:none", "padding:0", "border:0"):
+        require(prop in go.replace(" ", ""), f".t-go 基础规则必须显式写 {prop}，别指望没人定义同名规则")
+    # 可点提示不能只有颜色一种编码
+    require("border-bottom:1px dotted" in css,
+            "行内详情链接必须有常态可见的虚线提示，「能点」不能只靠颜色或悬停")
+    # 密排表格里不给标的名称套色块：那会撑开行距并压低对比度
+    require(".t-go{" in top and "background:var(--t-amber);color:#000" not in go,
+            ".t-go 常态不得使用琥珀色块底（白字在琥珀上只有 1.79:1）")
+    section("类名不得撞名")
 
     return report()
 

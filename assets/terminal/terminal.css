@@ -146,10 +146,9 @@ table{width:100%;border-collapse:collapse}
 }
 .t-cmd::placeholder{color:var(--t-faint);letter-spacing:0}
 .t-cmd:focus{border-color:var(--t-amber-dim);background:#000}
-.t-go{
-  font-family:var(--t-mono);font-size:9.5px;font-weight:700;letter-spacing:.1em;
-  padding:3px 7px;background:var(--t-amber);color:#000;border:0;cursor:pointer;
-}
+/* 命令行的 GO 键用 .t-entry .go（见第 5 节）。这里原有一条同名 .t-go 的琥珀块规则，
+   与行内详情链接的 .t-go 撞名 —— 链接继承到琥珀底后白字只剩 1.79:1，已删除。
+   撞名的教训与合并时那三处一样：靠后者覆盖不可靠，重名就得有一方改名或删掉。 */
 
 .t-modes{display:flex;align-items:center;border-left:1px solid var(--t-line)}
 .t-modes button{
@@ -255,14 +254,37 @@ table{width:100%;border-collapse:collapse}
 .t-tbl .t-grp:hover td{background:var(--t-bg2)}
 .t-tbl .t-na{color:var(--t-faint)}
 
-/* 标的名称上的详情页链接：终端里不用下划线（会把密排表格搅乱），
-   用悬停变琥珀 + 一条下边框表示可点；没有详情页的行保持纯文本，不给假手型。 */
-.t-go{color:inherit;text-decoration:none;display:inline-block;max-width:100%}
-.t-go:hover,.t-go:focus-visible{color:var(--t-cmd-line)}
-.t-go:hover .t-tk,.t-go:focus-visible .t-tk{color:var(--t-cmd-line);border-bottom:1px solid currentColor}
+/* 标的名称上的详情页链接。
+   可点提示是代码下面一条虚线：不用色块也不用实心下划线 —— 色块会把密排表格的行距
+   撑开、并压掉文字对比度（上一版就是这么把白字压到 1.79:1 的）；虚线常态可见，所以
+   「能点」不必悬停才看得出来，也不只靠颜色编码。没有详情页的行保持纯文本。
+   这里显式清掉 background/border/padding/font：这个类名曾与命令行 GO 键撞名，
+   显式归零比指望别处不定义同名规则可靠。 */
+.t-go{
+  color:inherit;text-decoration:none;display:inline-block;max-width:100%;
+  background:none;padding:0;font:inherit;letter-spacing:inherit;text-align:inherit;
+  border:0;border-bottom:1px dotted var(--t-amber-dim);
+}
+/* 有代码块的行，虚线只压在代码下面；没有 .t-tk 的（同业表、榜单行是「1)NVDA英伟达」
+   这种整串文字）就压在整个链接下面 —— 每一行都要有常态提示，不能只有一部分表格有。
+   :has() 不支持时两处都会带线，多一条线而已，不会漏。 */
+.t-go:has(.t-tk){border-bottom:0}
+.t-go .t-tk{border-bottom:1px dotted var(--t-amber-dim);padding-bottom:1px}
+.t-go:hover,.t-go:focus-visible{color:var(--t-cmd-line);border-bottom-style:solid}
+.t-go:hover .t-tk,.t-go:focus-visible .t-tk{
+  color:var(--t-cmd-line);border-bottom-style:solid;border-bottom-color:currentColor;
+}
 .t-go:hover .t-nm,.t-go:focus-visible .t-nm{color:var(--t-ink)}
-.t-bars .r .nm .t-go:hover,.t-bars .r .nm .t-go:focus-visible{border-bottom:1px solid currentColor}
+/* 跨资产强弱条那边名称就是纯文字，没有 .t-tk 可挂，虚线直接给链接本身 */
+.t-bars .r .nm .t-go{border-bottom:1px dotted var(--t-amber-dim)}
+.t-bars .r .nm .t-go:hover,.t-bars .r .nm .t-go:focus-visible{border-bottom-style:solid}
 .t-tbl tbody tr:hover td:first-child .t-go{color:var(--t-cmd-line)}
+/* 合成信号：展开中的那一条给琥珀块＋深字（10.3:1），一眼看出图画的是哪一行。
+   这是「选中态」，与模式键 aria-pressed 的表达一致，不是链接的常态。 */
+.t-go[aria-expanded="true"] .t-tk{
+  background:var(--t-amber);color:#140d00;border-bottom-color:transparent;
+  padding:1px 5px;margin:-1px -1px -1px 0;
+}
 /* 非美元报价的币种标记：价格数字后面跟一个小号币种，避免把本币价当美元读 */
 .t-tbl .t-cur{font-size:8px;color:var(--t-faint);letter-spacing:.06em;margin-left:3px;vertical-align:.15em}
 

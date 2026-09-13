@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 from pathlib import Path
+import re
 import subprocess
 import sys
 import tempfile
@@ -268,9 +269,61 @@ def validate_cross_pipeline_contract() -> None:
     scheduler = SCHEDULER.read_text(encoding="utf-8")
     require('-f event=workflow_dispatch -f "branch=$GITHUB_REF_NAME" -f per_page=1' in scheduler,
             "调度器查询最近运行时必须按当前分支隔离，开发分支资格运行不得抑制main生产调度")
-    require("latest_dispatch companies.yml" in scheduler and 'c_concl" = "success"' in scheduler
-            and "workflows/asset_ranking.yml/dispatches" in scheduler,
-            "调度器必须在公司榜本窗口成功后才触发资产总榜")
+    # 第二梯队改成循环派发（workflows/$wf/dispatches）后，原先找字面
+    # "workflows/asset_ranking.yml/dispatches" 的断言就一直假失败。这里改成核对机制
+    # 本身，比原来更严：既要求 asset_ranking 在受闸的待派发清单里，又要求派发调用确实
+    # 落在「companies 本窗口 success」这个分支内，还要求它没被放进第一梯队的无闸循环。
+    require("latest_dispatch companies.yml" in scheduler and 'c_concl" = "success"' in scheduler,
+            "调度器必须先查公司榜本窗口的结论")
+    gated = scheduler[scheduler.index('c_concl" = "success"'):] if 'c_concl" = "success"' in scheduler else ""
+    gated = gated[:gated.index("else")] if "else" in gated else gated
+    require('workflows/$wf/dispatches' in gated or "workflows/asset_ranking.yml/dispatches" in gated,
+            "资产总榜的派发调用必须落在公司榜成功那个分支里")
+    # 按行扫出每个 `for wf in …; do … done` 块，用缩进配对找 done。
+    # 不能用 `for wf in ([^\n]*); do` 这种单行正则：第一梯队的清单是带反斜杠续行的，
+    # 单行正则匹配不到它，于是只认出一个派发循环，断言就跑偏了。
+    # 也不按「清单以 macro_radar 开头」去认：顺序一改就静默通过（最初漏的就是这个）。
+    lines = scheduler.split("\n")
+    loops = []
+    i = 0
+    while i < len(lines):
+        stripped = lines[i].strip()
+        if stripped.startswith("for wf in"):
+            indent = len(lines[i]) - len(lines[i].lstrip())
+            items, j = stripped, i
+            while items.endswith("\\") and j + 1 < len(lines):      # 吃掉续行
+                j += 1
+                items = items[:-1] + " " + lines[j].strip()
+            body, k = [], j + 1
+            while k < len(lines):
+                if lines[k].strip() == "done" and (len(lines[k]) - len(lines[k].lstrip())) == indent:
+                    break
+                body.append(lines[k])
+                k += 1
+            loops.append({"list": items, "body": "\n".join(body),
+                          "dispatches": "/dispatches" in "\n".join(body),
+                          "line": i + 1})
+            i = k
+        i += 1
+    require(loops, "调度器里找不到 `for wf in … do … done` 循环，解析可能已失效")
+    dispatchers = [x for x in loops if x["dispatches"]]
+    require(len(dispatchers) >= 2,
+            f"只认出 {len(dispatchers)} 个真正派发的循环（应有无闸的第一梯队与受闸的第二梯队），"
+            f"共扫到 {len(loops)} 个循环——解析可能已失效")
+    gate_line = scheduler[:scheduler.index('c_concl" = "success"')].count("\n") + 1
+    for loop in dispatchers:
+        if loop["line"] < gate_line:                  # 闸门之前就派发 = 无闸梯队
+            require("asset_ranking.yml" not in loop["list"],
+                    f"资产总榜出现在无闸的派发循环里（第 {loop['line']} 行）"
+                    "——那会绕过「公司榜本窗口成功」的前置条件")
+    require([x for x in dispatchers if x["line"] > gate_line],
+            "闸门之后没有任何派发循环——第二梯队根本不会被触发")
+    # 受闸的循环派发 $pending；asset_ranking 必须在组装 pending 的那个清单里
+    pending_lists = [x["list"] for x in loops if not x["dispatches"] and "pending=" in x["body"]]
+    require(any("asset_ranking.yml" in lst for lst in pending_lists),
+            f"受闸待派发清单里没有 asset_ranking.yml（当前：{pending_lists}）")
+    require("win_start" in gated or "win_start" in scheduler,
+            "公司榜的成功必须限定在本窗口内，否则昨天的成功会一直放行")
     workflow_texts = {name: path.read_text(encoding="utf-8") for name, path in WORKFLOWS.items()}
     groups = [f"market-data-{name}-${{{{ github.ref }}}}" for name in WORKFLOWS]
     require(len(groups) == len(set(groups)), "三条管道不得共享会替换等待任务的同一并发组")
