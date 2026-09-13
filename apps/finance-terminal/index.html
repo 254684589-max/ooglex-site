@@ -128,11 +128,17 @@
     </div>
     <footer data-src="macro">—</footer>
   </section>
-  <section class="t-panel w2" data-fn="CURVE 曲线" id="p-curve">
+  <section class="t-panel w2 h2" data-fn="CURVE 曲线" id="p-curve">
     <header><span class="mn">CURVE</span><h3>收益率曲线 Yield Curve</h3><span class="sub" data-sub="curve">—</span></header>
     <div class="bd">
+      <div class="t-subtabs" role="group" aria-label="曲线视图">
+        <button type="button" data-cv="now" aria-pressed="true">当前形态</button>
+        <button type="button" data-cv="time" aria-pressed="false">随时间</button>
+        <button type="button" data-cv="sprd" aria-pressed="false">期限价差历史</button>
+      </div>
       <div class="t-chart"><svg id="svg-curve" viewBox="0 0 620 160" preserveAspectRatio="none" role="img" aria-label="美债收益率曲线"></svg></div>
       <div class="t-legend" id="lg-spread"></div>
+      <p class="t-note" id="n-curve"></p>
     </div>
     <footer data-src="curve">—</footer>
   </section>
@@ -227,8 +233,8 @@
 <script src="/assets/terminal/registry.js?v=1d42d994"></script>
 <script src="/assets/terminal/chrome.js?v=04b6a585"></script>
 <script src="/assets/terminal/behavior.js?v=00335003"></script>
-<script src="/assets/terminal/overview.js?v=46bbd539"></script>
-<script src="/assets/terminal/render.js?v=2061083c"></script>
+<script src="/assets/terminal/overview.js?v=62d13bbf"></script>
+<script src="/assets/terminal/render.js?v=b3d867be"></script>
 <script>
 /* 终端监控首页装配：只声明「哪个面板用哪个渲染器」，口径与算法都在 /assets/terminal/。 */
 (function () {
@@ -340,11 +346,87 @@
       });
     })();
 
-    R.curve("#svg-curve", M.rates.tenors, { w:620, h:160, l:44, b:20 });
-    R.spreadLegend("#lg-spread", M.rates.spreads);
+    /* 曲线三视图：当前形态 / 随时间 / 期限价差历史。
+       历史数据本来就在 curve.json 里（11 个期限 × 260 天 + 两条利差的逐日序列），
+       之前模型层把它丢掉了，现在带上来。 */
+    (function () {
+      var H = M.rates.history, svg = $("#svg-curve");
+      var LB = M.rates.tenors.map(function (t) { return { label:t.label, id:t.id }; });
+      function snapAt(i) {
+        return LB.map(function (t) {
+          var col = H.values[t.id] || [];
+          return { label:t.label, value:isNum(col[i]) ? col[i] : null };
+        });
+      }
+      function drawNow() {
+        svg.setAttribute("viewBox", "0 0 620 160");
+        R.curve("#svg-curve", M.rates.tenors, { w:620, h:160, l:44, b:20 });
+        R.spreadLegend("#lg-spread", M.rates.spreads);
+        var inv = M.rates.spreads.filter(function (x) { return x.inverted; });
+        set("#n-curve", "十一个期限各取一条 FRED 官方序列、共享日期轴；某期限当日无观测即留空，" +
+          "不插值、不用相邻期限顶替。" +
+          (inv.length ? "当前倒挂：" + inv.map(function (x) { return x.id; }).join("、") + "。"
+                      : "当前这两条利差都不倒挂。") +
+          " 30Y-5Y 由曲线现算，其余为数据源直接给出。");
+      }
+      function drawTime() {
+        if (!H || !H.dates.length) { set("#n-curve", "曲线历史读取失败，无法按时间对比。"); return; }
+        var n = H.dates.length;
+        /* 取几个回看点：今天 / 约 1 月 / 3 月 / 6 月 / 一年前（按交易日近似） */
+        var picks = [[n - 1, "最新"], [n - 22, "1 月前"], [n - 64, "3 月前"], [n - 127, "6 月前"], [0, "一年前"]]
+          .filter(function (p) { return p[0] >= 0 && p[0] < n; });
+        var seen = {}, snaps = [];
+        picks.forEach(function (p, k) {
+          if (seen[p[0]]) return; seen[p[0]] = 1;
+          snaps.push({ label: p[1] + " " + H.dates[p[0]], points: snapAt(p[0]), focus: k === 0 });
+        });
+        svg.setAttribute("viewBox", "0 0 620 190");
+        R.curveSnapshots("#svg-curve", snaps, { l:38, r:104, b:22 });
+        set("#lg-spread", "");
+        set("#n-curve", "同一张图上是几个历史日期的曲线形态（回看点按交易日近似取，" +
+          "标签写的是实际日期）。身份靠线尾直接标日期，不靠颜色 —— 最新那条是琥珀，其余是灰。" +
+          "某期限当日无观测就在那一点断开，不插值。轴是期限不是时间。");
+      }
+      function drawSpread() {
+        var sp = (M.rates.spreads || []).filter(function (x) { return x.values && x.values.length; });
+        if (!sp.length) { set("#n-curve", "利差逐日序列不可用（数据源这一轮没给），只能看当前值。"); return; }
+        var items = sp.map(function (x, i) {
+          var vals = x.values.map(function (v) { return isNum(v) ? v : null; });
+          return { tk:x.id, values:vals, valid:vals.filter(isNum).length, n:vals.length,
+                   last:vals.filter(isNum).slice(-1)[0], focus:i === 0 };
+        });
+        svg.setAttribute("viewBox", "0 0 620 190");
+        /* 利差是绝对值（百分点），不是重基指数 —— 图例必须走 abs 口径，
+           否则会算成「末值 − 100」，显示出 −99.6% 这种无意义的数。 */
+        R.multiLine("#svg-curve", "#lg-spread", items, sp[0].dates,
+          { l:44, r:70, b:22, grid:4, legendMode:"abs", unit:"pp" });
+        /* 倒挂天数是个具体可核的数，比"曾经倒挂过"有用 */
+        var invCnt = sp.map(function (x) {
+          var neg = x.values.filter(function (v) { return isNum(v) && v < 0; }).length;
+          var tot = x.values.filter(isNum).length;
+          return x.id + " 倒挂 " + neg + " / " + tot + " 天";
+        });
+        set("#n-curve", "两条利差的逐日序列（" + (sp[0].dates[0] || "—") + " 起 " + sp[0].values.length + " 天）。" +
+          "单位是百分点，低于 0 即倒挂。本窗口内：" + invCnt.join("、") + "。" +
+          "利差只在两端同日都有观测时才算，任一端缺就留空、折线断开。" +
+          "注意这里是 260 个交易日的窗口，不是历史全区间。");
+      }
+      var views = { now: drawNow, time: drawTime, sprd: drawSpread };
+      $$("[data-cv]").forEach(function (b2) {
+        b2.onclick = function () {
+          $$("[data-cv]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b2)); });
+          b2.classList.add("on");
+          $$("[data-cv]").forEach(function (x) { x.classList.toggle("on", x === b2); });
+          (views[b2.getAttribute("data-cv")] || drawNow)();
+        };
+      });
+      $$("[data-cv]")[0].classList.add("on");
+      drawNow();
+    })();
     set('[data-sub="curve"]', M.rates.asOf || "—");
     set('[data-src="curve"]', M.rates.error ? ("读取失败：" + M.rates.error)
-      : "来源 " + (M.rates.source || "—") + " · 30Y-5Y 由曲线现算");
+      : "来源 " + (M.rates.source || "—") + " · 30Y-5Y 由曲线现算 · 历史窗口 " +
+        (M.rates.history ? M.rates.history.dates.length + " 个交易日" : "不可用"));
 
     R.crossBars("#bars-cross", M, 5);
     set('[data-sub="cross"]', "前五 / 后五");

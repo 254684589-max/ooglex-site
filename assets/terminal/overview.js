@@ -148,8 +148,14 @@
           });
         rates.asOf = curve.asOf; rates.source = curve.source; rates.note = curve.note;
         rates.spreads = (curve.spreads || []).map(function (s) {
-          return { id:s.id, value:s.value, inverted:s.inverted, asOf:s.asOf, derived:false };
+          /* 利差自带逐日序列（260 天），带上来才能画历史与数倒挂天数 */
+          return { id:s.id, value:s.value, inverted:s.inverted, asOf:s.asOf, derived:false,
+                   dates:s.dates || [], values:s.values || [] };
         });
+        /* 十一个期限的逐日序列，共享一条日期轴 —— 可以重建任意历史日期上的曲线形态 */
+        rates.history = (curve.history && curve.history.dates)
+          ? { dates: curve.history.dates || [], values: curve.history.values || {} }
+          : null;
         function ten(lbl) { var t = rates.tenors.find(function (x) { return x.label === lbl; }); return t ? t.value : null; }
         var y5 = ten("5Y"), y30 = ten("30Y");
         if (isNum(y5) && isNum(y30)) {

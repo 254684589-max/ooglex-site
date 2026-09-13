@@ -112,6 +112,70 @@
     });
   }
 
+  /* ── 曲线随时间：把若干历史日期上的曲线形态画在同一张图上 ────────────────
+     身份靠线尾直接标日期，不靠颜色（与叠加图同一条规矩）：最近那条抬到
+     --t-cmd-line，其余一律 --t-dim。某期限当日无观测就跳过那个点，不插值。 */
+  function curveSnapshots(sel, snaps, opt) {
+    opt = opt || {};
+    var svg = typeof sel === "string" ? $(sel) : sel;
+    if (!svg) return null;
+    var live = (snaps || []).filter(function (s) {
+      return s && s.points && s.points.filter(function (p) { return isNum(p.value); }).length >= 3;
+    });
+    if (!live.length) {
+      svg.innerHTML = '<text x="10" y="24" fill="#8a8a8a" font-family="monospace" font-size="12">' +
+        esc(opt.empty || "没有可用的历史曲线") + "</text>";
+      return null;
+    }
+    var vb = (svg.getAttribute("viewBox") || "0 0 620 200").split(/\s+/);
+    var W = +vb[2], H = +vb[3];
+    var L = opt.l != null ? opt.l : 38, R = opt.r != null ? opt.r : 52, T = 10, B = opt.b != null ? opt.b : 22;
+    var axis = live[0].points.map(function (p) { return p.label; });
+    var lo = Infinity, hi = -Infinity;
+    live.forEach(function (s) {
+      s.points.forEach(function (p) { if (isNum(p.value)) { if (p.value < lo) lo = p.value; if (p.value > hi) hi = p.value; } });
+    });
+    var pad = (hi - lo) * .12 || .2; lo -= pad; hi += pad;
+    function X(i) { return L + (W - L - R) * i / (axis.length - 1 || 1); }
+    function Y(v) { return T + (H - T - B) * (hi - v) / (hi - lo); }
+    var g = "";
+    for (var k = 0; k <= 3; k++) {
+      var vv = lo + (hi - lo) * k / 3, y = Y(vv);
+      g += '<line x1="' + L + '" y1="' + y.toFixed(1) + '" x2="' + (W - R) + '" y2="' + y.toFixed(1) +
+           '" stroke="#1f1f1f" stroke-width="1"/><text x="' + (L - 5) + '" y="' + (y + 3.5).toFixed(1) +
+           '" text-anchor="end" fill="#5e5e5e" font-family="monospace" font-size="9">' + vv.toFixed(2) + "</text>";
+    }
+    var lines = live.slice().reverse().map(function (s) {
+      var d = "", pen = false;
+      s.points.forEach(function (p, i) {
+        if (!isNum(p.value)) { pen = false; return; }        /* 该期限当日无观测，断开 */
+        d += (pen ? "L" : "M") + X(i).toFixed(1) + "," + Y(p.value).toFixed(1);
+        pen = true;
+      });
+      return '<path d="' + d + '" fill="none" stroke="' +
+        (s.focus ? "var(--t-cmd-line)" : "var(--t-dim)") + '" stroke-width="' + (s.focus ? 1.7 : 1) + '"/>';
+    }).join("");
+    var ends = live.map(function (s) {
+      var last = null, li = -1;
+      s.points.forEach(function (p, i) { if (isNum(p.value)) { last = p.value; li = i; } });
+      return { label: s.label, y: Y(last), x: X(li), focus: !!s.focus };
+    }).sort(function (a, b) { return a.y - b.y; });
+    for (var e = 1; e < ends.length; e++) {
+      if (ends[e].y - ends[e - 1].y < 10) ends[e].y = ends[e - 1].y + 10;
+    }
+    var labels = ends.map(function (pt) {
+      return '<text x="' + (W - R + 4) + '" y="' + (pt.y + 3.2).toFixed(1) + '" fill="' +
+        (pt.focus ? "var(--t-cmd-line)" : "var(--t-ink2)") +
+        '" font-family="monospace" font-size="9">' + esc(pt.label) + "</text>";
+    }).join("");
+    var xt = axis.map(function (lb, i) {
+      return '<text x="' + X(i).toFixed(1) + '" y="' + (H - 6) +
+        '" text-anchor="middle" fill="#5e5e5e" font-family="monospace" font-size="8.5">' + esc(lb) + "</text>";
+    }).join("");
+    svg.innerHTML = g + lines + labels + xt;
+    return { n: live.length };
+  }
+
   function spreadLegend(sel, spreads) {
     html(sel, (spreads || []).map(function (s) {
       var c = s.inverted ? "var(--t-dn)" : "var(--t-up)";
@@ -578,11 +642,28 @@
     svg.innerHTML = g + lines + labels + xt;
 
     if (lg) {
+      /* 图例默认按「重基到 100 的指数」读，所以变动 = 末值 − 100。
+         但这个渲染器也用来画绝对值序列（利差就是百分点，0.39 减 100 会变成
+         −99.6% 这种无意义的数）。所以给一个 legendMode:"abs"：
+         直接报首值→末值与绝对变动，单位由调用方给。 */
+      var absMode = opt.legendMode === "abs";
       lg.innerHTML = live.map(function (it) {
-        var chg = isNum(it.last) ? it.last - 100 : null;
+        var first = null, last = null, j;
+        for (j = 0; j < it.values.length; j++) if (isNum(it.values[j])) { first = it.values[j]; break; }
+        for (j = it.values.length - 1; j >= 0; j--) if (isNum(it.values[j])) { last = it.values[j]; break; }
+        var body;
+        if (absMode) {
+          var d = isNum(first) && isNum(last) ? last - first : null;
+          var u = opt.unit || "";
+          body = '<span>' + (isNum(first) ? first.toFixed(2) : "—") + " → " +
+            (isNum(last) ? last.toFixed(2) : "—") + u + "</span>" +
+            '<span class="' + fmt.cls(d) + '"> ' + (isNum(d) ? (d >= 0 ? "+" : "−") + Math.abs(d).toFixed(2) + u : "—") + "</span>";
+        } else {
+          var chg = isNum(it.last) ? it.last - 100 : null;
+          body = '<span class="' + fmt.cls(chg) + '">' + fmt.pct(chg, 1) + "</span>";
+        }
         return '<span><b' + (it.focus ? ' style="color:var(--t-cmd-line)"' : "") + ">" + esc(it.tk) + "</b> " +
-          '<span class="' + fmt.cls(chg) + '">' + fmt.pct(chg, 1) + "</span>" +
-          '<span style="color:var(--t-faint)"> 有效 ' + it.valid + "/" + it.n + "</span></span>";
+          body + '<span style="color:var(--t-faint)"> 有效 ' + it.valid + "/" + it.n + "</span></span>";
       }).join("");
     }
     return { lo: lo, hi: hi, n: n, items: live };
@@ -723,7 +804,7 @@
     ratesTable: ratesTable, macroMonitor: macroMonitor, MONITOR_METHOD: MONITOR_METHOD,
     macroBlock: macroBlock,
     priceLine: priceLine, multiLine: multiLine, smallMultiples: smallMultiples,
-    corrMatrix: corrMatrix, seasonGrid: seasonGrid,
+    corrMatrix: corrMatrix, seasonGrid: seasonGrid, curveSnapshots: curveSnapshots,
     fields: fields, nameCell: nameCell,
     crossBars: crossBars, calendar: calendar, news: news, alerts: alerts, sources: sources,
     watchlist: watchlist, topStatus: topStatus

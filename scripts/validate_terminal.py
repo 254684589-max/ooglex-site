@@ -531,6 +531,36 @@ def main() -> int:
         require("13F" in str(sd.get("source", "")), "机构持仓来源标注应指明 13F")
     section("持股结构与 13F 覆盖面")
 
+    # ── 16 曲线三视图 ─────────────────────────────────────────────────────
+    require("rates.history" in lib["overview.js"] or "curve.history" in lib["overview.js"],
+            "模型层必须带上曲线历史（curve.json 里本来就有 11 个期限 × 260 天）")
+    require("curveSnapshots" in ren, "曲线随时间必须走 render 层")
+    require('data-cv="now"' in mon and 'data-cv="time"' in mon and 'data-cv="sprd"' in mon,
+            "曲线面板必须有三个视图：当前形态 / 随时间 / 期限价差历史")
+    require('aria-pressed' in mon, "视图切换必须有 aria-pressed")
+    cs = ren[ren.index("function curveSnapshots"):]
+    cs = cs[:cs.index("\n  function ")]
+    require("var(--t-cmd-line)" in cs and "var(--t-dim)" in cs,
+            "曲线随时间只用「最近琥珀 + 其余灰」两色")
+    for bad in ("--t-up", "--t-dn"):
+        require(bad not in cs, f"曲线随时间不得用涨跌色 {bad} 编码「这是哪一天」")
+    require("esc(s.label)" in cs or "esc(pt.label)" in cs,
+            "曲线随时间必须在线尾直接标日期：身份不能只靠颜色")
+    require("轴是期限不是时间" in mon, "曲线随时间的横轴是期限，必须写明以免误读")
+    require("倒挂" in mon and "低于 0 即倒挂" in mon,
+            "利差倒挂必须有文字说明，不能只靠颜色")
+    require("不是历史全区间" in mon, "利差历史只有 260 个交易日，必须写明不是全区间")
+    # 绝对值序列不得套用「重基到 100」的图例口径
+    require('legendMode:"abs"' in mon or "legendMode: \"abs\"" in mon,
+            "利差是百分点而非重基指数，图例必须走 abs 口径"
+            "（否则会算成末值−100，显示出 −99.6% 这种无意义的数）")
+    require('legendMode === "abs"' in ren, "render 层必须实现 abs 图例口径")
+    cj = json.loads(read(ROOT / "apps" / "macro-radar" / "curve.json"))
+    require(len((cj.get("history") or {}).get("dates") or []) > 100, "曲线历史点数过少")
+    require(len(cj.get("tenors") or []) >= 8, "曲线期限数过少")
+    require("不插值" in str(cj.get("note", "")), "曲线数据源应声明不插值")
+    section("曲线三视图")
+
     return report()
 
 
