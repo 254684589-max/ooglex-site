@@ -4,15 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>金融终端改版三方案对照 · Ooglex</title>
-<meta name="description" content="Ooglex 金融终端改版草案：经典彭博、Eikon 工作台、机构研究台三个版式方案的对照说明与改动清单。">
+<title>金融终端改版方案对照 · Ooglex</title>
+<meta name="description" content="Ooglex 金融终端改版草案：第二轮机构终端三方案（指挥台／监控墙／研究台）与第一轮三方案的对照说明、规格逐条核对、目录结构与数据口径。">
 <style>
   :root{
-    --bg:#0f1216; --panel:#161a20; --panel2:#1b2028; --head:#0b0e12;
-    --line:#252c35; --line2:#39414c;
-    --ink:#e2e6eb; --ink2:#b0b8c2; --dim:#828a95; --faint:#5f6772;
-    --amber:#ffa028; --orange:#ff7a1a; --blue:#5b9bd5;
-    --up:#31b07c; --dn:#dd5a4f;
+    --bg:#0a0a0a; --panel:#121212; --panel2:#171717; --head:#0b0b0b;
+    --line:#222; --line2:#333;
+    --ink:#efefef; --ink2:#c2c2c2; --dim:#8a8a8a; --faint:#616161;
+    --amber:#ffa028; --orange:#ff7a1a; --blue:#4c9eea; --yellow:#ffd24a;
+    --up:#00b86b; --dn:#ff4d4d;
     --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Segoe UI",sans-serif;
     --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
   }
@@ -27,17 +27,80 @@
 
   header{border-bottom:1px solid var(--line2);padding:30px 0 20px}
   header h1{font-size:26px;font-weight:600;letter-spacing:-.01em;margin-top:4px}
-  header p{margin-top:10px;color:var(--ink2);max-width:76ch}
+  header p{margin-top:10px;color:var(--ink2);max-width:78ch}
   header .meta{margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--dim)}
 
   section{padding:30px 0 0}
-  h2{font-size:17px;font-weight:600;padding-bottom:8px;border-bottom:1px solid var(--line2);display:flex;align-items:baseline;gap:12px}
+  h2{font-size:17px;font-weight:600;padding-bottom:8px;border-bottom:1px solid var(--line2);display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
   h2 .r{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--faint);font-weight:400}
+  h2 .now{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:#050505;background:var(--amber);padding:2px 7px;font-weight:700}
+  .lede{margin-top:12px;color:var(--ink2);max-width:80ch;font-size:13px}
 
   .opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
   .opt{background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column}
-  .sw{height:104px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;padding:10px 12px;font-family:var(--mono);font-size:10px}
+  .opt.hot{border-color:var(--line2)}
+  .sw{height:112px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;padding:10px 12px;font-family:var(--mono);font-size:10px}
   .sw .tag{position:absolute;left:12px;bottom:9px;letter-spacing:.14em}
+
+  /* 第二轮草案缩览：都用机构终端的近黑底 + 琥珀标题 */
+  .sw-d,.sw-e,.sw-f{background:#050505}
+  .sw .hd{color:var(--amber);letter-spacing:.14em;font-weight:700;border-bottom:1px solid #1f1f1f;padding-bottom:4px;display:block}
+  .sw .row{display:flex;gap:8px;margin-top:4px;color:#c6c6c6;font-size:10px}
+  .sw .row b{color:#ffd24a;font-weight:400;margin-left:auto}
+  .sw .row i{font-style:normal;color:var(--up)}
+  .sw .row i.d{color:var(--dn)}
+  .sw-d .tag,.sw-e .tag,.sw-f .tag{color:var(--faint)}
+  .sw-d .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:6px}
+  .sw-d .grid span{height:13px;background:#101010;border:1px solid #1f1f1f}
+  .sw-d .grid span.w{grid-column:span 2}
+  .sw-e{display:flex;gap:4px}
+  .sw-e .rail{width:26px;background:#0b0b0b;border-right:1px solid #1f1f1f;flex:0 0 26px}
+  .sw-e .rail span{display:block;height:4px;margin:3px 3px 0;background:#1f1f1f}
+  .sw-e .rail span:first-child{background:var(--amber-dim,#8a5613)}
+  .sw-e .wall{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;flex:1;align-content:start}
+  .sw-e .wall span{height:24px;background:#101010;border:1px solid #1f1f1f}
+  .sw-f .read{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:5px}
+  .sw-f .read span{display:block;font-size:14px;color:#f0f0f0;font-weight:600;border-left:2px solid #2e2e2e;padding-left:5px;line-height:1.25}
+  .sw-f .read span em{display:block;font-style:normal;font-size:8px;color:#5e5e5e;letter-spacing:.08em}
+  .sw-f .cols{display:grid;grid-template-columns:2fr 1fr;gap:3px;margin-top:6px}
+  .sw-f .cols span{height:26px;background:#101010;border:1px solid #1f1f1f}
+
+  /* 第三轮缩览：外壳元素（功能键条 / 琥珀键 / 编号行 / 面板墙） */
+  .sw-g,.sw-h,.sw-i{background:#050505;padding:8px 10px}
+  .sw .fk{display:flex;gap:1px;flex-wrap:wrap;margin-bottom:5px}
+  .sw .fk i{
+    font-style:normal;font-family:var(--mono);font-size:7.5px;font-weight:700;letter-spacing:.03em;
+    padding:1px 4px;color:#fff;white-space:nowrap;
+  }
+  .sw-g .ky{
+    display:inline-block;background:#2a2000;border:1px solid #ffd24a;color:#ffd24a;
+    font-family:var(--mono);font-size:9px;font-weight:700;padding:1px 6px;margin-bottom:4px;
+  }
+  .sw-g .row{display:block;color:#c6c6c6;font-size:9px;line-height:1.65}
+  .sw-g .row b{color:#ffa028;font-weight:400;margin-right:4px}
+  .sw-g .row em{font-style:normal;color:#ffa028;margin:0 4px 0 8px}
+  .sw-g .row u{text-decoration:none;color:var(--up)}
+  .sw-h .fl2{
+    display:block;background:#ffd24a;color:#1a1400;font-family:var(--mono);font-size:7.5px;
+    padding:1px 5px;margin-bottom:4px;
+  }
+  .sw-h .row2{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;color:#c6c6c6;line-height:1.8}
+  .sw-h .row2 b{color:#ffa028;font-weight:400;flex:0 0 14px}
+  .sw-h .row2 .bb{height:6px;background:var(--up);flex:0 0 auto}
+  .sw-h .row2 u{text-decoration:none;color:var(--up);margin-left:auto}
+  .sw-i .pg{
+    display:grid;grid-template-columns:repeat(5,1fr);grid-auto-rows:21px;gap:2px;margin-top:2px;
+    grid-auto-flow:row dense;max-height:44px;overflow:hidden;   /* 不许压到底部标签上 */
+  }
+  .sw-i .pg i{
+    font-style:normal;font-family:var(--mono);font-size:6.5px;color:#8a8a8a;background:#101010;
+    border:1px solid #1f1f1f;padding:2px;text-align:center;letter-spacing:.02em;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .sw-i .pg i.w{grid-column:span 2;color:#ffa028;border-color:#2e2e2e}
+  .opt.g .go a,.opt.h .go a,.opt.i .go a{color:var(--amber)}
+
+  /* 第一轮缩览保持原样 */
   .sw-a{background:#000}
   .sw-a .strip{background:var(--amber);color:#000;font-weight:700;padding:1px 6px;display:inline-block;letter-spacing:.1em}
   .sw-a .tag{color:var(--amber)}
@@ -50,7 +113,7 @@
   .sw-c .k{color:#616a75;letter-spacing:.14em}
   .sw-c .tag{color:var(--blue)}
   .sw-c .n{color:var(--blue);font-size:22px;font-weight:700;margin-top:4px;display:block}
-  .sw-c .bar{height:7px;background:#1c212a;margin-top:9px;position:relative}
+  .sw-c .bar{height:7px;background:#1c212a;margin-top:9px;position:relative;display:block}
   .sw-c .bar i{position:absolute;left:0;top:0;bottom:0;width:62%;background:var(--up)}
 
   .opt .bd{padding:14px 14px 16px;display:flex;flex-direction:column;flex:1}
@@ -62,19 +125,35 @@
   .opt li::before{content:"—";position:absolute;left:0;color:var(--line2)}
   .opt .go{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);display:flex;align-items:baseline;gap:12px;font-size:13px}
   .opt .go a{font-weight:600;border-bottom:1px solid currentColor;padding-bottom:1px}
+  .opt.d .go a,.opt.e .go a,.opt.f .go a{color:var(--amber)}
   .opt.a .go a{color:var(--amber)} .opt.b .go a{color:var(--orange)} .opt.c .go a{color:var(--blue)}
   .opt .fit{margin-left:auto;font-size:11px;color:var(--faint);text-align:right}
 
-  th{text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--faint);font-weight:400;padding:9px 14px 9px 0;border-bottom:1px solid var(--line2)}
+  th{text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--faint);font-weight:400;padding:9px 14px 9px 0;border-bottom:1px solid var(--line2);vertical-align:bottom}
   td{padding:10px 14px 10px 0;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--ink2);vertical-align:top}
-  td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
+  td:first-child{color:var(--ink);font-weight:600}
   td .m{display:block;font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:2px}
   .del{color:var(--dn)} .add{color:var(--up)} .kept{color:var(--dim)}
+  .ok{color:var(--up);font-family:var(--mono);font-size:11px}
+  .no{color:var(--dn);font-family:var(--mono);font-size:11px}
+  .nowrap{white-space:nowrap}
+  .scrollx{overflow-x:auto;margin-top:16px}
+  .scrollx table{min-width:720px}
 
   .facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:16px}
   .facts div{background:var(--panel);padding:12px 14px}
   .facts .k{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
   .facts .v{display:block;font-size:12.5px;margin-top:4px;color:var(--ink)}
+
+  pre.tree{margin-top:16px;background:var(--panel);border:1px solid var(--line);padding:14px 16px;overflow-x:auto;font-family:var(--mono);font-size:11.5px;line-height:1.85;color:var(--ink2)}
+  pre.tree b{color:var(--amber);font-weight:400}
+  pre.tree i{font-style:normal;color:var(--faint)}
+  pre.tree s{text-decoration:none;color:var(--dim)}
+
+  .warn{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--amber);padding:13px 16px}
+  .warn h3{font-size:13.5px;font-weight:600;color:var(--ink)}
+  .warn p{margin-top:7px;font-size:12.5px;color:var(--ink2);line-height:1.75}
+  .warn code{color:var(--yellow)}
 
   footer{margin-top:36px;border-top:1px solid var(--line2);padding:14px 0 44px;font-size:11.5px;color:var(--dim)}
   footer .wrap{display:flex;flex-wrap:wrap;gap:5px 22px}
@@ -85,10 +164,15 @@
   @media (max-width:600px){
     .wrap{padding:0 14px}
     header h1{font-size:21px}
+    h2 .r{margin-left:0;flex-basis:100%}
     table,thead,tbody,th,td,tr{display:block}
     thead{display:none}
     td{padding:5px 0;border-bottom:0}
     tr{padding:11px 0;border-bottom:1px solid var(--line)}
+    .scrollx{overflow-x:visible}
+    .scrollx table{min-width:0}
+    /* 窄屏：表格折成堆叠行后，长代码串（如 positions[] = {...}）必须能断行 */
+    td,td code,.facts .v,.facts code{overflow-wrap:anywhere;word-break:break-word}
     footer .r{margin-left:0}
   }
 </style>
@@ -97,15 +181,303 @@
 
 <header><div class="wrap">
   <span class="cap">Draft · 未上线 · 仅供评审</span>
-  <h1>金融终端改版：三个彭博风格方案</h1>
-  <p>三份草案都按专业终端的口径重做：信息密度优先、装饰归零、数字表格化。数据全部取站内既有 <code>data.json</code>（9 个数据源），无新增依赖、无后端、无第三方脚本。现有终端 <code>/apps/finance-terminal/</code> 一行未改。</p>
-  <div class="meta">草案目录 /terminal-redesign/ · 均已加 noindex，不参与搜索收录 · 选定一版后再改造现有终端</div>
+  <h1>金融终端改版：三轮共九个方案</h1>
+  <p><b style="color:var(--amber)">第三轮（方案 G／H／I）</b>补上专业终端的<b style="color:var(--ink)">外壳</b>：助记符标签条、最上端那条彩色功能键条、面包屑、报价头、琥珀命令行、编号菜单与编号动作键、底部建议功能条。外壳由一张<b style="color:var(--ink)">功能注册表</b>生成 —— 往终端里加一个金融功能，就是往表里加一条记录。第二轮（D／E／F）定的是数字怎么算、口径怎么标；第一轮（A／B／C）先解决了去装饰。三轮都在线可看。数据全部取站内既有 JSON，无新增依赖、无后端改动；现有终端 <code>/apps/finance-terminal/</code> 一行未改。</p>
+  <div class="meta">草案目录 /terminal-redesign/ · 均已 noindex · 外壳 /chrome/ · 数据系统 /ds/ · 长期工程说明见 <a href="../docs/TERMINAL.md" style="color:var(--ink2);border-bottom:1px solid var(--line2)">docs/TERMINAL.md</a></div>
 </div></header>
 
 <div class="wrap">
 
   <section>
-    <h2>三个方案<span class="r">Options</span></h2>
+    <h2>第三轮 · 终端外壳三方案<span class="now">本轮新增</span><span class="r">Round 3 · Chrome</span></h2>
+    <p class="lede">这一轮做的是<b style="color:var(--ink)">外壳</b>，不是又一版排版：把专业终端那套导航语言补齐 —— 助记符标签条、<b style="color:var(--ink)">最上端的彩色功能键条</b>、面包屑（历史箭头／标的／功能／相关功能菜单）、报价头、琥珀命令行 + 暗红 Actions/Settings + 页码、编号菜单（<code>11)</code> <code>12)</code>…）、编号动作键（<code>94)</code> <code>95)</code> <code>96)</code>）、底部建议功能条。三个版对应三种页型，共用同一套 <code>chrome/</code>。</p>
+    <div class="opts">
+
+      <article class="opt g hot">
+        <div class="sw sw-g">
+          <span class="fk"><i style="background:#b5a01c;color:#0a0a0a">GMKT</i><i style="background:#b5a01c;color:#0a0a0a">EQTY</i><i style="background:#a32638">MACR</i><i style="background:#b8651e;color:#0a0a0a">NEWS</i><i style="background:#1d7a3c">DESC</i><i style="background:#1d5fa6">MCAP</i><i style="background:#9c2a86">CALC</i></span>
+          <span class="ky">NVDA USD Equity</span>
+          <span class="row"><b>发行人</b> 英伟达 <em>板块</em> 科技</span>
+          <span class="row"><b>市值</b> $5.29T <em>YTD</em> <u>+17.05%</u></span>
+          <span class="tag">TABS · FN BAR · CMD · 11) 12) 13)</span>
+        </div>
+        <div class="bd">
+          <h3>方案G 证券描述<em>Security Description</em></h3>
+          <p>单证券页：报价头 + 四个编号分页（基本信息／收益与同业／价格走势／标识与口径）+ 左侧编号菜单 + Quick Links。取站内公司榜的真实数据，含 260 个交易日的收盘序列。</p>
+          <ul>
+            <li>外壳元素最齐的一版，适合拿来核对「参考图里那些条都有没有」</li>
+            <li>标识符那块如实写「ISIN／FIGI／CUSIP 站内无来源」，没有编一个出来</li>
+            <li>走势图在序列缺口处断开，页脚写「有效收盘 49 / 60」</li>
+          </ul>
+          <div class="go"><a href="g-des.html">打开方案G →</a><span class="fit">适合：单标的深看</span></div>
+        </div>
+      </article>
+
+      <article class="opt h hot">
+        <div class="sw sw-h">
+          <span class="fk"><i style="background:#1d5fa6">公司</i><i style="background:#262626;color:#c6c6c6">大类资产</i><i style="background:#262626;color:#c6c6c6">要闻主题</i></span>
+          <span class="fl2">筛选：代码 / 名称 / 板块 / 国别</span>
+          <span class="row2"><b>1)</b> COHR <span class="bb" style="width:52%"></span> <u>+15.49%</u></span>
+          <span class="row2"><b>2)</b> HPE <span class="bb" style="width:47%"></span> <u>+14.05%</u></span>
+          <span class="row2"><b>3)</b> AMD <span class="bb" style="width:44%"></span> <u>+13.15%</u></span>
+          <span class="tag">SUB TABS · FILTER · 1) 2) 3)</span>
+        </div>
+        <div class="bd">
+          <h3>方案H 榜单与趋势<em>Ranking &amp; Trends</em></h3>
+          <p>趋势榜页：蓝色子标签（公司／大类资产／要闻主题）+ 橙色筛选条 + 编号行 + 相对强弱条 + 60 日迷你走势 + 站内要闻匹配。维度可切六档，都是站内真能算出来的。</p>
+          <ul>
+            <li>参考图里那五个维度（阅读热度、新闻情绪、社交情绪／量／速度）站内一条数据都没有，<b style="color:var(--ink)">所以这一版不做那几个标签</b>，并在侧栏逐条写明为什么</li>
+            <li>要闻列是标题文本匹配，会漏配，表头与脚注都写了「不做情绪判断」</li>
+            <li>密度最高，一屏 30 行 + 侧栏三块</li>
+          </ul>
+          <div class="go"><a href="h-tren.html">打开方案H →</a><span class="fit">适合：横向比、找异动</span></div>
+        </div>
+      </article>
+
+      <article class="opt i hot">
+        <div class="sw sw-i">
+          <span class="fk"><i style="background:#b5a01c;color:#0a0a0a">GMKT</i><i style="background:#a32638">MACR</i><i style="background:#1d7a3c">MON</i><i style="background:#1a7d6e">SCHN</i><i style="background:#4a4a4a;color:#e8e8e8">FDIR</i></span>
+          <span class="pg"><i>GMKT</i><i>CRVE</i><i>GMKT</i><i>CMDT</i><i class="w">MACR</i><i>WRET</i><i>ECAL</i><i>NEWS</i><i>RISK</i><i class="w">FDIR</i></span>
+          <span class="tag">PANEL WALL · MN CHIPS · REGISTRY</span>
+        </div>
+        <div class="bd">
+          <h3>方案I 多功能监控<em>Multi-Function Monitor</em></h3>
+          <p>一屏挂 13 个功能面板，每个面板标题带分类色助记符。外壳（<code>chrome/</code>）与第二轮设计系统（<code>ds/</code>）叠用 —— 数据与渲染器一行没重写，直接沿用第二轮的口径。</p>
+          <ul>
+            <li>证明两层能叠：外壳管导航，数据区继续走 <code>ds.css</code> 的严格控色与四级字号</li>
+            <li>专门有一个面板画出功能注册表本身：已接入 26 项可点、规划中 8 项划掉</li>
+            <li>时钟与市场状态沿用第二轮的真实夏令时与午休时段判定</li>
+          </ul>
+          <div class="go"><a href="i-mon.html">打开方案I →</a><span class="fit">适合：盯盘 + 看全貌</span></div>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="warn">
+      <h3>参照的是外壳惯例，不是照搬某个产品</h3>
+      <p>参考图里那条彩色功能键条上的 <code>CANCEL</code> <code>MSG</code> <code>GLMY</code> <code>DRQS</code> <code>HKSIG</code> 是那家产品自己的功能助记符，属于它的商标性内容 —— 这三版<b style="color:var(--ink)">一个都没有用</b>。这里的 <code>GMKT</code> <code>MACR</code> <code>CRVE</code> <code>SCHN</code> <code>FDIR</code> 全是 OOGLEX 自己的助记符，指向站内真实存在的页面。照搬的只有交互惯例（一格一功能的彩色快捷键、助记符标签、编号可键入、琥珀命令行），这类惯例是行业通用语言，不是谁的标识。品牌字标一律 OOGLEX，页面里没有任何第三方标识、截图或配色标识。</p>
+    </div>
+
+    <div class="warn">
+      <h3>加一个金融功能要动哪里：一处</h3>
+      <p>彩色功能键条、功能目录（<code>FDIR</code>）、命令行助记符解析、相关功能菜单、底部建议功能条、方案I 的注册表面板，<b style="color:var(--ink)">全部由 <code>chrome/registry.js</code> 一张表生成</b>，HTML 里没有写死任何功能名。加一个功能就是加一条记录（助记符、中英文名、分类、地址、状态、读哪几个数据文件、口径说明），加完这六处自动出现，只剩功能页本身要写。规划中的功能用另一组字段写「需要什么」「卡在哪」，只在功能目录里列出、<b style="color:var(--ink)">不做成可点按钮</b>，点了没反应比诚实地标「规划中」更糟。详见 <code>docs/TERMINAL.md</code>。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>第二轮 · 机构终端三方案<span class="r">Round 2 · Data System</span></h2>
+    <p class="lede">三版共用同一套设计系统与同一套数据口径（<code>ds/ds.css</code> + <code>ds/feed.js</code> + <code>ds/render.js</code>），差异只在版式与密度：D 是规格书的字面实现，E 把密度推到极限，F 把可读性和口径说明放在第一位。三版都带标准／专业双密度切换、命令行检索、窗口 MAX／SET／EXP 工具。</p>
+    <div class="opts">
+
+      <article class="opt d hot">
+        <div class="sw sw-d">
+          <span class="hd">GLOBAL EQUITIES</span>
+          <span class="row">S&amp;P 500 <b>6,842.31</b> <i>+0.42%</i></span>
+          <span class="row">US 10Y <b>4.187</b> <i class="d">-3.1bp</i></span>
+          <span class="grid"><span class="w"></span><span></span><span></span><span class="w"></span><span class="w"></span><span></span><span></span><span></span><span></span></span>
+          <span class="tag">12-COL GRID · CMD LINE · F1–F9</span>
+        </div>
+        <div class="bd">
+          <h3>方案D 指挥台<em>Command Desk</em></h3>
+          <p>规格书的字面实现：顶部功能栏＋命令行＋F1–F9 功能键＋状态条，主体是 12 栏四行监控网格，13 个等规格矩形窗口（每行栏宽恰好 12），每个窗口一个标题、一组工具键、一行口径脚注。</p>
+          <ul>
+            <li>与规格书逐条对应，最适合拿来核对「要求有没有做到」</li>
+            <li>四行依次是「股指｜利率｜外汇｜商品」「宏观风险｜收益率曲线｜跨资产」「日历｜要闻｜信用与加密」「个股｜自选与组合｜风险提示｜数据来源」</li>
+            <li>窗口多，1440px 以下要滚动两屏</li>
+          </ul>
+          <div class="go"><a href="d-command.html">打开方案D →</a><span class="fit">适合：规格对照、单屏总览</span></div>
+        </div>
+      </article>
+
+      <article class="opt e hot">
+        <div class="sw sw-e">
+          <span class="rail"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span>
+          <span class="wall"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span>
+          <span class="tag">LEFT RAIL · EQUAL TILES · PRO</span>
+        </div>
+        <div class="bd">
+          <h3>方案E 监控墙<em>Monitor Wall</em></h3>
+          <p>左栏常驻 12 个功能入口与自选列表，主区是等尺寸窗口平铺墙（1920 三列／≥2200 四列），底部一条静态可滚行情带。默认进专业模式，行高 19px。</p>
+          <ul>
+            <li>密度最高：同屏可读数字约为方案F 的两倍</li>
+            <li>左栏常驻，切换视图不丢自选；窗口等尺寸，扫视路径最稳定</li>
+            <li>字号最小（11px），长时间阅读最吃力；行情带不做滚动动画，靠手动横滚</li>
+          </ul>
+          <div class="go"><a href="e-wall.html">打开方案E →</a><span class="fit">适合：盯盘、多屏常驻</span></div>
+        </div>
+      </article>
+
+      <article class="opt f hot">
+        <div class="sw sw-f">
+          <span class="hd">MACRO / RISK MONITOR</span>
+          <span class="read">
+            <span>52<em>REGIME</em></span>
+            <span>4.19<em>US 10Y</em></span>
+            <span>18.4<em>VIX</em></span>
+            <span>+34<em>2S10S</em></span>
+          </span>
+          <span class="cols"><span></span><span></span><span></span><span></span></span>
+          <span class="tag">8/4 COLUMNS · METHOD NOTES · STD</span>
+        </div>
+        <div class="bd">
+          <h3>方案F 研究台<em>Research Desk</em></h3>
+          <p>以宏观风险监测表为中心的两列研究版式：左列宏观＋美债曲线＋跨资产＋利率流动性信用波动，右列行情汇总＋日历＋要闻＋异动＋来源。默认标准模式，字号放大一档，每块写清口径与阈值。</p>
+          <ul>
+            <li>最耐读，也是唯一把分位／Z 值的计算方法写在页面上的一版</li>
+            <li>顶部四联读数条替代圆形仪表盘，数字 23px，不做巨型数字</li>
+            <li>密度最低，窗口数最少，盯盘不如 D／E</li>
+          </ul>
+          <div class="go"><a href="f-desk.html">打开方案F →</a><span class="fit">适合：研究、对外解释口径</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>规格书逐条核对<span class="r">Spec Compliance</span></h2>
+    <div class="scrollx">
+    <table>
+      <thead><tr><th>规格要求</th><th>三版的实现</th><th class="nowrap">状态</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>去掉 3D 地球、HUD 光环、蓝色霓虹、科幻线条、玻璃拟态、大面积渐变、发光描边、装饰动画</td>
+          <td>草案不含 canvas／WebGL／<code>filter:blur</code>／<code>backdrop-filter</code>／<code>box-shadow</code>／<code>linear-gradient</code>；圆角一律 0–2px；全仓 <code>grep</code> 核对：三版与 <code>ds.css</code> 里 <code>transition</code>／<code>animation</code>／<code>@keyframes</code> 数量为 0，唯一的「动」是时钟每秒的文本更新</td>
+          <td class="ok">已做</td>
+        </tr>
+        <tr>
+          <td>近黑配色 #050505 / #080808 / #0B0B0B，次级 #101010 / #151515</td>
+          <td><code>ds/ds.css</code> 的 <code>--t-bg:#050505</code>、<code>--t-bg2:#080808</code>、<code>--t-head:#0b0b0b</code>、<code>--t-panel:#101010</code>、<code>--t-panel2:#151515</code>，与规格书同值</td>
+          <td class="ok">已做</td>
+        </tr>
+        <tr>
+          <td>琥珀／橙／黄功能色，绿涨红跌、蓝中性、灰次要，严格控制颜色数量</td>
+          <td>共 7 条功能色：琥珀 #ffa028（菜单／标题）、黄 #ffd24a（重点数据）、绿 #00b86b、红 #ff4d4d、橙 #ff8c1a（RISK 档）、蓝 #4c9eea（中性）、灰四级。颜色不做点缀</td>
+          <td class="ok">已做</td>
+        </tr>
+        <tr>
+          <td>终端式顶部功能栏：OOGLEX + GLOBAL MARKETS / LIVE / DATA、主导航、快捷功能键 HOME…NEWS</td>
+          <td>三版都有顶栏、命令行、F1–F9（HOME/MARKETS/EQUITIES/RATES/FX/COMMODITIES/CREDIT/MACRO/NEWS）与状态条。主导航：D／E 就是规格书那七项（全球总览｜品类行情｜宏观｜实时事件｜研究｜组合｜风险）；F 作为研究台以宏观开头、补了要闻与数据两项（宏观｜品类行情｜研究｜实时事件｜要闻｜组合｜风险｜数据），不设「全球总览」——它的入口就是宏观监测表</td>
+          <td class="ok">已做</td>
+        </tr>
+        <tr>
+          <td>命令行 / 搜索框，支持 NVDA、US10Y、DXY、WTI、VIX、MOVE</td>
+          <td><code>ds/terminal.js</code>：先匹配窗口功能词再匹配标的与指标名，命中即滚动并高亮。六个示例全部实测命中——NVDA→个股表、US10Y→利率与宏观、DXY→外汇与 Z 值行、WTI→商品（CL）、VIX／MOVE→宏观监测。<code>/</code> 聚焦，<code>Esc</code> 清空</td>
+          <td class="ok">已做</td>
+        </tr>
+        <tr>
+          <td>12 栏 Market Monitor Grid 替代地球：全球总览、利率（含 2s10s、5s30s 与迷你曲线）、外汇、商品、加密</td>
+          <td>D 是 12 栏网格本体；E 为等宽墙、F 为 8/4 两列，三版模块齐备。个股另有 24 家（市值前列，含 NVDA）：D 给它独立窗口，E／F 放在股指下面另起一块——它是收盘口径而股指是盘中快照，两种口径分开标注不混排。利差从站内美债曲线现算，2s10s／5s30s／30Y-5Y 标注为 derived</td>
+          <td class="ok">已做</td>
+        </tr>
+        <tr>
+          <td>宏观／风险监测表（VIX MOVE HY OAS IG OAS DXY US10Y 2s10s SOFR TGA RRP 金融状况 × 现值/1D/1W/Z/信号），用 NORMAL/WATCH/RISK/STRESS 替代圆形仪表</td>
+          <td>规格书点名的 11 项（VIX MOVE HY OAS IG OAS DXY US10Y 2s10s SOFR TGA RRP NFCI）全在表内，表格式呈现，四档信号带文字标签＋色块（颜色不是唯一编码）。共 19 行：10 行给判定（8 项滚动 2 年分位 + US10Y／DXY 的真实 Z 值），9 行只有现值与日变动，并单列一块写明「站内无历史序列，不给分位与判定」</td>
+          <td class="ok">已做</td>
+        </tr>
+        <tr>
+          <td>四行窗口布局、统一矩形窗口、窗口标题、MAX/SET/EXP 小按钮</td>
+          <td>D 为规格书的四行、每行栏宽恰好 12；三版窗口同一 <code>.t-win</code> 结构，标题如 GLOBAL EQUITIES／US SINGLE STOCKS／US RATES／MACRO MONITOR；MAX 跨满 12 栏、SET 折叠次要列、EXP 导出该窗口的全部表格为 CSV（表头带导出时间与该窗口脚注的来源／数据日期／频率／状态，导出件自带出处）</td>
+          <td class="ok">已做</td>
+        </tr>
+        <tr>
+          <td>无衬线＋等宽混排，数字等宽，标题大幅缩小，四级层级</td>
+          <td>四级字号 <code>--t-f1</code>…<code>--t-f4</code>（10.5／12／12.5／9.5px，专业模式降一档）；所有数字 <code>font-variant-numeric:tabular-nums</code> 右对齐；模块标题 10.5px 大写字距 .14em</td>
+          <td class="ok">已做</td>
+        </tr>
+        <tr>
+          <td>终端字段 LAST / CHG / %CHG / HIGH / LOW / VOL / BID / ASK / YTD</td>
+          <td>LAST／CHG／%CHG／1W／1M／YTD／1Y／MCAP 按真实数据渲染，指数与个股（NVDA 等市值前 24 家）都有。<b style="color:var(--ink)">BID／ASK／VOL／日内高低站内没有来源，因此不显示、也不用占位数字冒充</b>，并在页面与来源表里写明</td>
+          <td class="ok">部分：见下</td>
+        </tr>
+        <tr>
+          <td>世界时钟 NEW YORK / LONDON / TOKYO / SHANGHAI，Last Updated / Data Status / Market Status</td>
+          <td>四地时钟每秒走；市场状态按真实夏令时规则与午休时段计算 NYSE／NASDAQ／LSE／TSE／SSE 的 OPEN／CLOSED，不写死</td>
+          <td class="ok">已做</td>
+        </tr>
+        <tr>
+          <td>标准模式（中密度）／专业模式（极高密度、多窗口、拖拽、缩放、多图表、快捷键、跨资产联动）</td>
+          <td>双密度已做（行高 26px／19px，字号两档，专业模式多出一组次要列），选择持久化；快捷键、跨资产联动（命令行跨窗口定位）、多窗口已做。<b style="color:var(--ink)">窗口拖拽与自由缩放未做</b>——静态站无布局持久化后端，做成纯前端会话态意义有限，留待定版后决定</td>
+          <td class="no">部分：未做拖拽／缩放</td>
+        </tr>
+        <tr>
+          <td>主导航含「组合」「风险」两项</td>
+          <td>风险已做（RISK ALERTS 窗口 + 宏观风险监测表的四档信号）。组合需要账户与持仓数据，站内没有任何来源，因此该模块<b style="color:var(--ink)">不显示任何数字</b>，而是写清接入所需的最小契约（<code>positions[] = { symbol, qty, avgCost, currency, asOf }</code>、汇率需另接官方源、风险指标依赖持仓协方差与历史序列）。D 并进 WATCHLIST / PORTFOLIO 窗口，E 放在左栏自选下面，F 单列一个 PORTFOLIO 窗口——三版都只声明、不编数</td>
+          <td class="ok">已做（以声明代替编数）</td>
+        </tr>
+        <tr>
+          <td>保留 OOGLEX 品牌与现有核心功能，不照搬 Bloomberg Logo、商标或具体界面</td>
+          <td>品牌字标为 OOGLEX；无任何第三方商标、标识或截图；配色与栅格是通用终端惯例，未复制任一产品的具体界面</td>
+          <td class="ok">已做</td>
+        </tr>
+        <tr>
+          <td>不破坏现有数据接口、行情数据、宏观数据与功能逻辑，尽量保留现有后端／API</td>
+          <td>草案只读现有 12 个站内 JSON，零写入、零新接口、零新依赖；<code>/apps/finance-terminal/</code> 未改动</td>
+          <td class="ok">已做</td>
+        </tr>
+        <tr>
+          <td>桌面优先 1920×1080 与 2560×1440，兼容 MacBook，响应式</td>
+          <td>断点 2100／1400／1100／760px；三版 × 九档宽度（2560 → 360）核对无横向溢出、无 JS 报错</td>
+          <td class="ok">已做</td>
+        </tr>
+        <tr>
+          <td>直接输出完整可运行版本，多文件要给全部文件与目录结构</td>
+          <td>7 个新文件全部完整可运行（见下方目录结构），无需再打补丁；三版打开即取真实数据渲染</td>
+          <td class="ok">已做</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn">
+      <h3>关于 BID / ASK / VOL / 日内高低</h3>
+      <p>规格书要求这四组字段。站内 12 个数据文件里没有任何一个提供它们——现有数据是收盘价、日内快照与宏观序列，不含逐笔报价与成交量。因此三版草案的做法是：<b style="color:var(--ink)">不渲染这四列，并在来源表与页面脚注里逐条写明「无免费公开来源，本终端不显示」</b>。这不是漏做，是刻意不用占位数字冒充实时买卖盘——按仓库规则，任何字段都不得在没有来源的情况下显示为看似真实的数字。若要上这四列，需要接入付费行情源（层级报价 + 成交量），属于另一件事。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>目录结构<span class="r">Files</span></h2>
+    <pre class="tree">terminal-redesign/
+├── index.html            <i>本页：两轮方案对照</i>
+├── <b>chrome/</b>               <i>第三轮三版共用的终端外壳（新增）</i>
+│   ├── <b>chrome.css</b>        <i>24KB  外壳：标签条、彩色功能键条、面包屑、报价头、琥珀命令行、编号菜单与动作键、字段区、面板、底部建议条</i>
+│   ├── <b>registry.js</b>       <i>12KB  功能注册表：26 项已接入 + 8 项规划中；功能键条、目录、命令行、建议条全从这里生成</i>
+│   ├── <b>chrome.js</b>         <i>18KB  外壳行为：标签与功能键渲染、命令行（助记符／编号／代码）、编号跳转、弹层、分页、排序、迷你走势</i>
+│   └── <b>data.js</b>           <i>8KB   单证券与榜单的最小数据层，口径规则与 ds/feed.js 一致</i>
+├── <b>g-des.html</b>            <i>33KB  方案G 证券描述：报价头 + 四个编号分页 + 编号菜单（新增）</i>
+├── <b>h-tren.html</b>           <i>21KB  方案H 榜单与趋势：蓝色子标签 + 橙色筛选条 + 编号行（新增）</i>
+├── <b>i-mon.html</b>            <i>16KB  方案I 多功能监控：13 个功能面板 + 注册表面板（新增）</i>
+├── <b>ds/</b>                   <i>第二轮三版共用的设计系统与数据层</i>
+│   ├── <b>ds.css</b>            <i>18KB  设计系统：配色、四级字号、双密度、窗口／表格／信号组件、四档断点</i>
+│   ├── <b>feed.js</b>           <i>18KB  数据层：12 个站内 JSON 的加载与合并、代理标注、分位与 Z 值、真实交易时段</i>
+│   ├── <b>render.js</b>         <i>23KB  渲染器：报价表、个股、曲线、利差、宏观监测、跨资产、日历、要闻、异动、自选、来源</i>
+│   └── <b>terminal.js</b>       <i>9KB   终端行为：密度切换与持久化、时钟与市场状态、命令行、窗口 MAX/SET/EXP、排序</i>
+├── <b>d-command.html</b>        <i>19KB  方案D 指挥台：12 栏四行网格</i>
+├── <b>e-wall.html</b>           <i>19KB  方案E 监控墙：左栏＋等尺寸窗口墙＋行情带</i>
+├── <b>f-desk.html</b>           <i>17KB  方案F 研究台：8/4 两列研究版式</i>
+├── <s>a-classic.html</s>        <i>27KB  第一轮：经典彭博（保留备查）</i>
+├── <s>b-workbench.html</s>      <i>27KB  第一轮：Eikon 工作台（保留备查）</i>
+└── <s>c-desk.html</s>           <i>26KB  第一轮：机构研究台（保留备查）</i>
+
+<i>读取的数据：12 个文件、8 个站内应用（只读，未改动）</i>
+apps/asset-tracker/data.json       <i>大类资产收盘：股指、利率、外汇、商品、加密</i>
+apps/asset-tracker/intraday.json   <i>盘中快照（自带 realtime:false，约 30 分钟刷新）</i>
+apps/companies/data.json           <i>个股（NVDA 等）</i>
+apps/asset-ranking/crypto.json     <i>加密市值排行</i>
+apps/macro-radar/data.json         <i>宏观雷达：利率走廊、联储流动性、信用利差、波动率全景、融资压力</i>
+apps/macro-radar/curve.json        <i>美债曲线（2s10s、5s30s、30Y-5Y 由此现算）</i>
+apps/macro-radar/history.json      <i>历史序列（分位与 Z 值的输入）</i>
+apps/macro-radar/series.json       <i>指标时间序列</i>
+apps/fear-greed/data.json          <i>恐慌贪婪</i>
+apps/ofr-monitor/data.json         <i>OFR 金融压力</i>
+apps/econ-calendar/data.json       <i>经济日历</i>
+apps/whats-latest/data.json        <i>要闻</i></pre>
+    <p class="lede">第一轮的 A／B／C 各自单文件内联，不依赖 <code>ds/</code>；第二轮三版全部只引 <code>ds/</code> 四个文件，页面里只留「哪个窗口用哪个渲染器」的装配代码（D 78 行／E 69 行／F 99 行）。要统一其他页面的 Design System，改 <code>ds/ds.css</code> 一处即可。</p>
+  </section>
+
+  <section>
+    <h2>第一轮 · 三方案（保留备查）<span class="r">Round 1</span></h2>
+    <p class="lede">第一轮先解决「去掉科幻装饰、把数字表格化」；第二轮在此基础上按规格书补齐了命令行、12 栏网格、宏观风险监测表、双密度与窗口工具。两轮都在线可看，第一轮不再继续迭代。</p>
     <div class="opts">
 
       <article class="opt a">
@@ -116,13 +488,13 @@
         </div>
         <div class="bd">
           <h3>方案A 经典彭博<em>Bloomberg Classic</em></h3>
-          <p>最贴近真实彭博屏：纯黑底、琥珀键色、顶部命令行与 F1–F6 功能键行，面板标题是实色色条，全等宽字体 11px 密排。</p>
+          <p>纯黑底、琥珀键色、顶部命令行与 F1–F6 功能键行，面板标题是实色色条，全等宽字体 11px 密排。</p>
           <ul>
-            <li>观感最「专业终端」，一眼就知道是行情终端而非网站</li>
-            <li>信息密度最高，1440px 一屏放得下 7 个面板</li>
-            <li>字号最小，长时间阅读和手机上最吃力</li>
+            <li>第二轮的 D 由这一版发展而来，网格与窗口工具都更完整</li>
+            <li>信息密度高，1440px 一屏放得下 7 个面板</li>
+            <li>无双密度、无窗口工具、无宏观监测表</li>
           </ul>
-          <div class="go"><a href="a-classic.html">打开方案A →</a><span class="fit">适合：专业感优先</span></div>
+          <div class="go"><a href="a-classic.html">打开方案A →</a><span class="fit">已被方案D 取代</span></div>
         </div>
       </article>
 
@@ -134,13 +506,13 @@
         </div>
         <div class="bd">
           <h3>方案B 工作台<em>Eikon Workbench</em></h3>
-          <p>Refinitiv Eikon 的路子：左侧功能栏、主区是一张可点击表头排序的全量报价表（133 个标的，可按品类筛选、可检索），右侧一列分析模块。</p>
+          <p>左侧功能栏、主区是一张可点击表头排序的全量报价表（133 个标的，可按品类筛选、可检索），右侧一列分析模块。</p>
           <ul>
-            <li>唯一带真交互的一版：排序、筛选、检索都能用</li>
-            <li>一张表看全站所有标的，不用在页面之间跳</li>
-            <li>三列布局对窄屏不友好，已做断点但信息要折叠</li>
+            <li>全量单表是另五版没有的视图，查单个标的最快</li>
+            <li>第二轮的 E 继承了它的左栏常驻思路</li>
+            <li>底色偏蓝（#0d1013），不符合第二轮的近黑要求</li>
           </ul>
-          <div class="go"><a href="b-workbench.html">打开方案B →</a><span class="fit">适合：真实查数效率</span></div>
+          <div class="go"><a href="b-workbench.html">打开方案B →</a><span class="fit">全量报价表可单独取用</span></div>
         </div>
       </article>
 
@@ -153,13 +525,13 @@
         </div>
         <div class="bd">
           <h3>方案C 研究台<em>Research Desk</em></h3>
-          <p>机构研究台的组织方式：顶部六联读数条，主区是跨资产强弱排行（按年初至今排序的横向条），每个模块标题下直接写清来源与数据日期。</p>
+          <p>顶部六联读数条，主区是跨资产强弱排行（按年初至今排序的横向条），每个模块标题下直接写清来源与数据日期。</p>
           <ul>
-            <li>字号最大（13px）、混排字体，最耐读</li>
-            <li>强弱排行是另两版没有的分析视图，一眼看出谁强谁弱</li>
-            <li>密度最低，同屏信息量约为方案A 的六成</li>
+            <li>强弱排行已并入第二轮三版的 CROSS ASSET 窗口</li>
+            <li>字号最大、最耐读；第二轮的 F 由这一版发展而来</li>
+            <li>蓝色为主色，不符合第二轮的琥珀功能色要求</li>
           </ul>
-          <div class="go"><a href="c-desk.html">打开方案C →</a><span class="fit">适合：可读性与可解释性</span></div>
+          <div class="go"><a href="c-desk.html">打开方案C →</a><span class="fit">已被方案F 取代</span></div>
         </div>
       </article>
 
@@ -169,32 +541,52 @@
   <section>
     <h2>相对现有终端改了什么<span class="r">Changes</span></h2>
     <table>
-      <thead><tr><th>项目</th><th>现有终端</th><th>三份草案</th></tr></thead>
+      <thead><tr><th>项目</th><th>现有终端</th><th>第二轮草案</th></tr></thead>
       <tbody>
         <tr>
           <td>首屏主体</td>
           <td>3D 地球 + 卫星轨道 + 光晕环<span class="m">占掉约一屏高度，不承载数据</span></td>
-          <td class="add">报价表／报价板占主位，首屏即是可读数字</td>
+          <td class="add">12 栏监控网格占主位，首屏即是可读数字</td>
         </tr>
         <tr>
           <td>配色</td>
           <td>青蓝霓虹 + 多重发光描边</td>
-          <td class="add">单一强调色（琥珀／橙／蓝各一版），颜色只用于涨跌与分档</td>
+          <td class="add">近黑底 + 琥珀功能色；颜色只承载涨跌与风险分档，且都有文字标签并行</td>
         </tr>
         <tr>
           <td>装饰</td>
           <td>渐变环、光晕、毛玻璃、圆角卡片</td>
-          <td class="add">1px 分隔线、直角、无投影、无渐变</td>
+          <td class="add">1px 分隔线、直角、无投影、无渐变、无装饰动画</td>
+        </tr>
+        <tr>
+          <td>风险呈现</td>
+          <td>圆形仪表盘、巨型数字</td>
+          <td class="add">13 项风险指标的紧凑表格，四档文字信号 NORMAL／WATCH／RISK／STRESS</td>
         </tr>
         <tr>
           <td>字体</td>
           <td>无衬线为主，数字未表格化</td>
-          <td class="add">数字统一等宽 + <code>tabular-nums</code> 右对齐；方案A 全等宽，方案C 标签无衬线／数字等宽</td>
+          <td class="add">四级字号层级；数字统一等宽 + <code>tabular-nums</code> 右对齐</td>
+        </tr>
+        <tr>
+          <td>密度</td>
+          <td>单一密度，卡片大、留白多</td>
+          <td class="add">标准 26px 行高 / 专业 19px 行高双模式，选择持久化</td>
+        </tr>
+        <tr>
+          <td>个股</td>
+          <td>无个股报价<span class="m">只有指数与商品</span></td>
+          <td class="add">新增个股：市值前 24 家（NVDA／AAPL／2222.SR…），LAST/%CHG/1M/YTD/市值，命令行可直接检索代码；非美元报价在价格后标出币种（SAR／KRW），市值统一折美元</td>
+        </tr>
+        <tr>
+          <td>交互</td>
+          <td>无检索、无导出</td>
+          <td class="add">命令行跨窗口定位、表头排序、窗口 MAX／SET／EXP（CSV 带来源与时间表头）</td>
         </tr>
         <tr>
           <td>样式表</td>
           <td>12 个 CSS 文件同时加载，约 260KB<span class="m">aurora / vision / command-center / v2–v7 历次迭代都还在</span></td>
-          <td class="add">每份草案单文件内联，24–28KB</td>
+          <td class="add">一个 17KB 的 <code>ds/ds.css</code>，三版共用</td>
         </tr>
         <tr>
           <td>第三方脚本</td>
@@ -204,7 +596,7 @@
         <tr>
           <td>数据口径</td>
           <td>页脚统一说明</td>
-          <td class="add">每个面板／模块各自标注来源、数据日期、频率、状态；代理关系逐条上标</td>
+          <td class="add">每个窗口各自标注来源、数据日期、频率、状态；代理与现算逐条上标；缺源字段明确声明不显示</td>
         </tr>
         <tr>
           <td class="kept">保留未动</td>
@@ -215,13 +607,16 @@
   </section>
 
   <section>
-    <h2>三份草案的共同事实<span class="r">Common</span></h2>
+    <h2>九份草案的共同事实<span class="r">Common</span></h2>
     <div class="facts">
-      <div><span class="k">数据源</span><span class="v">9 个站内 JSON：大类资产、公司、商品、宏观雷达、美债曲线、恐慌贪婪、OFR、经济日历、要闻</span></div>
-      <div><span class="k">新增依赖</span><span class="v">无。单文件 HTML + 原生 JS</span></div>
-      <div><span class="k">响应式</span><span class="v">已按 360 / 768 / 1280 / 1440px 四档核对，无横向溢出</span></div>
-      <div><span class="k">失败状态</span><span class="v">每个模块独立捕获，单源失败不影响其余；提示可见，不以零值静默覆盖</span></div>
+      <div><span class="k">数据源</span><span class="v">站内 12 个 JSON、8 个应用：大类资产（含盘中快照）、个股（标普 500 榜）、加密排行、宏观雷达、美债曲线、历史序列、恐慌贪婪、OFR 压力、经济日历、要闻</span></div>
+      <div><span class="k">新增依赖</span><span class="v">无。原生 JS，无框架、无 CDN、无第三方脚本</span></div>
+      <div><span class="k">响应式</span><span class="v">第二、三轮各三版 × 双密度 × 九档宽度（2560 / 2200 / 1920 / 1600 / 1440 / 1280 / 1100 / 768 / 360）核对，无页面横滚、无元素越出视口、无 JS 报错</span></div>
+      <div><span class="k">失败状态</span><span class="v">每个源独立捕获，单源失败只影响对应窗口并显示读取失败；不以零值或占位数字静默覆盖</span></div>
+      <div><span class="k">数据频率</span><span class="v">按各源真实频率标注（日更／周更／月更／盘中快照）；没有实时源，页面不写「实时」</span></div>
       <div><span class="k">主题</span><span class="v">草案仅深色——专业终端本身是深色语言；选定后再决定是否接站内三套主题</span></div>
+      <div><span class="k">无障碍</span><span class="v">键盘可达＋可见焦点；涨跌与风险档位都有文字标签，颜色不是唯一编码；第三轮 8 种功能分类色的文字对比度实测最低 4.64，全部过 AA；零过渡零动画，并保留 <code>prefers-reduced-motion</code> 兜底约束</span></div>
+      <div><span class="k">现有终端</span><span class="v">未改动，仍在线</span></div>
       <div><span class="k">上线状态</span><span class="v">未部署。仅供评审，noindex</span></div>
     </div>
   </section>
@@ -230,10 +625,13 @@
     <h2>下一步<span class="r">Next</span></h2>
     <table>
       <tbody>
-        <tr><td>1</td><td>三版各开一遍（建议手机 + 电脑都看），定一版，或指出要从哪版取哪部分——例如「B 的报价表 + C 的强弱排行 + A 的功能键行」</td></tr>
-        <tr><td>2</td><td>定版后梳理现有终端的 12 个样式表与 30 余个模块：哪些视图保留、哪些并入、哪些下线（这一步才是真正的工作量）</td></tr>
-        <tr><td>3</td><td>逐块迁移，每迁一块跑一次仓库自带的终端契约（board / visuals / loader 三个校验器）</td></tr>
-        <tr><td>4</td><td>决定是否保留 TradingView 组件与 3D 地球（地球可以保留为独立视图，不占首屏）</td></tr>
+        <tr><td>1</td><td><b>定外壳</b>：第三轮 G／H／I 各开一遍，挑一个，或指出取舍 —— 例如「G 的报价头 + H 的筛选条 + I 的面板墙」</td></tr>
+        <tr><td>2</td><td><b>定数据系统</b>：第二轮 D／E／F 挑一个（它定的是数字怎么算、口径怎么标，和外壳是两件事）</td></tr>
+        <tr><td>3</td><td>两者定下来后把 <code>chrome/</code> 与 <code>ds/</code> 合并成一套 <code>terminal/</code></td></tr>
+        <tr><td>4</td><td>确认那几处「部分完成」：BID／ASK／VOL／日内高低是否要接付费行情源；窗口拖拽与缩放是否值得做（需要一处布局持久化）</td></tr>
+        <tr><td>5</td><td>迁移现有终端的 12 个样式表与 30 余个模块：哪些保留、哪些并入、哪些下线（这一步才是真正的工作量），每迁一块跑一次仓库自带的三个校验器</td></tr>
+        <tr><td>6</td><td>按注册表逐个加功能。优先级：<code>SCRN</code> 条件选股（只差一个财务字段源，价值最大）→ <code>ALRT</code> 条件告警（可先做「打开时评估」的弱版本并写清它不是后台告警）→ <code>PORT</code> 组合（要先有一处可写存储）→ 其余都要先解决数据授权</td></tr>
+        <tr><td>7</td><td>再把设计系统推广到其余页面，与站内三套主题的关系一并确定</td></tr>
       </tbody>
     </table>
     <p style="margin-top:14px;font-size:13px;color:var(--ink2)">

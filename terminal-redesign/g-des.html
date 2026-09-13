@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>方案G 证券描述 · OOGLEX 终端外壳草案</title>
+<meta name="description" content="OOGLEX 终端外壳草案方案G：单证券描述页，助记符标签条、彩色功能键条、琥珀命令行、编号菜单与编号动作键，数据取自站内真实公司榜。">
+<link rel="stylesheet" href="chrome/chrome.css">
+<style>
+  /* 方案G 专属：单证券页的两栏版式 */
+  .g-wrap{display:grid;grid-template-columns:206px minmax(0,1fr);gap:9px;padding:9px 10px 0}
+  .g-main{display:grid;gap:9px;min-width:0}
+  .g-2{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:9px;align-items:start}
+  .g-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;align-items:start}
+  .g-peer td.nm{max-width:140px}
+  @media (max-width:1400px){ .g-2{grid-template-columns:1fr} .g-3{grid-template-columns:repeat(2,minmax(0,1fr))} }
+  @media (max-width:900px){ .g-wrap{grid-template-columns:1fr} .g-3{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+
+<div class="c-draft">
+  <b>终端外壳草案 · 方案G「证券描述」</b>
+  <span>对标专业终端的单证券描述页：助记符标签条 + 彩色功能键条 + 琥珀命令行 + 编号菜单</span>
+  <a href="./" class="r">返回方案对照</a>
+</div>
+
+<!-- 1 标签条（由注册表生成） -->
+<div class="c-tabs" data-tabs></div>
+
+<!-- 2 彩色功能键条（用户点名的那一条，由注册表生成） -->
+<nav class="c-fnbar" data-fnbar aria-label="功能快捷键"></nav>
+
+<!-- 3 面包屑 -->
+<div class="c-crumb">
+  <span class="nav">
+    <button type="button" data-hist="back" aria-label="后退">‹</button>
+    <button type="button" data-hist="fwd" aria-label="前进">›</button>
+  </span>
+  <label class="fld" for="sec-pick">
+    <b id="sec-name">—</b><i>Equity</i>
+    <select id="sec-pick" aria-label="选择证券"
+      style="background:#000;border:1px solid #333;color:#f0f0f0;font-family:var(--c-mono);font-size:11px;padding:1px 4px"></select>
+  </label>
+  <span class="fld"><b>DESC</b><u>▾</u></span>
+  <a class="rel" href="#" data-open="related" data-cats="quote anly rank">Related Functions Menu ⌄</a>
+  <span class="right">
+    <button type="button" data-open="fdir">⌗ 功能目录</button>
+    <button type="button" data-act="exp" title="导出当前页（编号 95）">⇱ 导出</button>
+    <button type="button" class="help" data-open="help">?</button>
+  </span>
+</div>
+
+<!-- 4 报价头 -->
+<div class="c-quote" id="qhead">
+  <div class="l1">
+    <span class="tk" id="q-tk">—</span>
+    <span class="nm" id="q-nm">读取中…</span>
+    <span class="cur" id="q-cur"></span>
+    <span class="px" id="q-px">—</span>
+    <span class="chg" id="q-chg"></span>
+    <span class="grp"><em>PREV CLOSE</em><b id="q-prev">—</b></span>
+    <span class="grp"><em>MKT CAP</em><b id="q-cap">—</b></span>
+    <span class="grp"><em>YTD</em><b id="q-ytd">—</b></span>
+    <span class="grp"><em>BID / ASK</em><b class="na">无来源</b></span>
+    <span class="grp"><em>VOL</em><b class="na">无来源</b></span>
+  </div>
+  <div class="l2" id="q-meta">读取中…</div>
+</div>
+
+<!-- 5 琥珀命令行 -->
+<div class="c-cmd">
+  <span class="key" id="cmd-key">—</span>
+  <button class="act" type="button" data-open="related" data-cats="anly quote">Actions <u>▾</u></button>
+  <button class="act" type="button" data-open="help">Settings <u>▾</u></button>
+  <span class="pg">
+    <button type="button" data-page-step="-1" aria-label="上一页">‹</button>
+    <span data-page-ind>Page 1/4</span>
+    <button type="button" data-page-step="1" aria-label="下一页">›</button>
+    <span class="ttl" data-page-title>证券描述</span>
+  </span>
+</div>
+
+<!-- 6 命令行输入 -->
+<div class="c-entry">
+  <span class="caret">❭</span>
+  <input data-command type="text" aria-label="命令行"
+    placeholder="输入助记符 / 编号 / 代码后回车 —— 例：MACR 宏观雷达、11 基本信息、NVDA 定位（按 / 聚焦）">
+  <button class="go" type="button" data-command-go>GO</button>
+  <span class="hint" data-cmd-hint>HELP 看用法</span>
+</div>
+
+<!-- 7 编号动作键：本站无经纪通道，所以没有买卖键 -->
+<div class="c-acts">
+  <button type="button" class="info" data-num="94" data-num-label="口径与不可得字段" data-act="meta"><i>94)</i> 口径说明</button>
+  <button type="button" class="ok" data-num="95" data-num-label="导出本页 CSV" data-act="exp"><i>95)</i> 导出 CSV</button>
+  <button type="button" data-num="96" data-num-label="加入自选" data-act="wl"><i>96)</i> 加入自选</button>
+  <span class="noorder">本站没有经纪或订单通道，因此这里没有买/卖键 —— 画一个就是假的。</span>
+</div>
+
+<!-- 8 编号页签行 -->
+<div class="c-tabs2">
+  <button type="button" data-page-go="0" class="on">25) 证券描述</button>
+  <button type="button" data-page-go="3">26) 发行人与口径</button>
+  <button type="button" data-open="related" data-cats="quote anly">27) 相关功能</button>
+  <button type="button" data-open="fdir">28) 全部功能</button>
+</div>
+
+<main class="g-wrap">
+
+  <!-- 9 编号菜单 -->
+  <nav class="c-menu" aria-label="页面导航">
+    <div class="hd">Pages</div>
+    <a href="#" data-page-go="0" data-num="11" data-num-label="基本信息"><i>11)</i> 基本信息</a>
+    <a href="#" data-page-go="1" data-num="12" data-num-label="收益与同业"><i>12)</i> 收益与同业</a>
+    <a href="#" data-page-go="2" data-num="13" data-num-label="价格走势"><i>13)</i> 价格走势</a>
+    <a href="#" data-page-go="3" data-num="14" data-num-label="标识与口径"><i>14)</i> 标识与口径</a>
+    <div class="off"><i>15)</i> 财务报表</div>
+    <div class="off"><i>16)</i> 信用评级</div>
+    <div class="off"><i>17)</i> 现金流表</div>
+    <div class="off"><i>18)</i> 期权链</div>
+    <div class="off"><i>19)</i> 持股结构</div>
+    <div class="sep"></div>
+    <div class="hd">Quick Links</div>
+    <div class="two" id="qlinks"></div>
+  </nav>
+
+  <div class="g-main">
+
+    <!-- 页 1 基本信息 -->
+    <section id="pg-1">
+      <div class="g-2">
+        <div class="c-block">
+          <h2>发行人信息 <em>ISSUER INFORMATION</em></h2>
+          <dl class="c-fields" id="f-issuer"></dl>
+        </div>
+        <div class="c-block">
+          <h2>标识符 <em>IDENTIFIERS</em></h2>
+          <dl class="c-fields" id="f-ident"></dl>
+        </div>
+      </div>
+      <div class="g-2" style="margin-top:9px">
+        <div class="c-block">
+          <h2>证券信息 <em>SECURITY INFORMATION</em></h2>
+          <dl class="c-fields two" id="f-sec"></dl>
+        </div>
+        <div class="c-block">
+          <h2>数据状态 <em>DATA STATUS</em></h2>
+          <dl class="c-fields" id="f-status"></dl>
+          <p class="c-note warn" id="n-status"></p>
+        </div>
+      </div>
+      <div class="g-2" style="margin-top:9px">
+        <div class="c-block">
+          <h2>近 60 个交易日收盘 <em>RECENT CLOSE · 完整序列见 13) 价格走势</em></h2>
+          <div class="c-chart">
+            <svg id="svg-mini" viewBox="0 0 700 150" preserveAspectRatio="none" role="img" aria-label="近 60 个交易日收盘"></svg>
+            <div class="lg" id="lg-mini"></div>
+          </div>
+        </div>
+        <div class="c-block">
+          <h2>板块内位置 <em>SECTOR RANK · 按市值</em></h2>
+          <div class="c-scroll" style="max-height:196px">
+            <table class="c-tbl" id="tbl-mini-peer">
+              <thead><tr><th>标的</th><th>%CHG</th><th>YTD</th><th>市值</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="c-note" id="n-mini-peer"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 页 2 收益与同业 -->
+    <section id="pg-2" hidden>
+      <div class="g-2">
+        <div class="c-block">
+          <h2>区间收益 <em>TOTAL RETURN（价格变动，未含股息与汇率调整）</em></h2>
+          <div class="c-scroll">
+            <table class="c-tbl" id="tbl-ret">
+              <thead><tr><th>期间</th><th>变动</th><th>口径</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="c-note" id="n-ret"></p>
+        </div>
+        <div class="c-block">
+          <h2>同业对比 <em>PEERS · 同板块市值前列</em></h2>
+          <div class="c-scroll" style="max-height:330px">
+            <table class="c-tbl g-peer" id="tbl-peer">
+              <thead><tr><th>标的</th><th>LAST</th><th>%CHG</th><th>YTD</th><th>市值</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="c-note" id="n-peer"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 页 3 价格走势 -->
+    <section id="pg-3" hidden>
+      <div class="c-block">
+        <h2>收盘价走势 <em>PRICE HISTORY · 站内收盘序列</em></h2>
+        <div class="c-chart">
+          <svg id="svg-px" viewBox="0 0 980 300" preserveAspectRatio="none" role="img" aria-label="收盘价走势"></svg>
+          <div class="lg" id="lg-px"></div>
+        </div>
+        <p class="c-note" id="n-px"></p>
+      </div>
+      <div class="g-3" style="margin-top:9px">
+        <div class="c-block"><h2>区间统计 <em>RANGE</em></h2><dl class="c-fields" id="f-range"></dl></div>
+        <div class="c-block"><h2>波动 <em>VOLATILITY · 由收盘序列现算</em></h2><dl class="c-fields" id="f-vol"></dl></div>
+        <div class="c-block"><h2>缺口 <em>GAPS · 共享日期轴上的空值</em></h2><dl class="c-fields" id="f-gap"></dl>
+          <p class="c-note">共享日期轴上该标的当日无收盘即留空，<b>不做前向填充</b>，所以缺口数会如实显示。</p></div>
+      </div>
+    </section>
+
+    <!-- 页 4 标识与口径 -->
+    <section id="pg-4" hidden>
+      <div class="g-2">
+        <div class="c-block">
+          <h2>站内可得字段 <em>AVAILABLE</em></h2>
+          <dl class="c-fields" id="f-have"></dl>
+        </div>
+        <div class="c-block">
+          <h2>站内不可得字段 <em>NOT AVAILABLE · 不显示，也不用占位数字冒充</em></h2>
+          <div class="c-scroll">
+            <table class="c-tbl" id="tbl-una">
+              <thead><tr><th>字段</th><th style="text-align:left">为什么没有</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="c-block" style="margin-top:9px">
+        <h2>数据来源 <em>SOURCES</em></h2>
+        <div class="c-scroll">
+          <table class="c-tbl" id="tbl-src">
+            <thead><tr><th>数据集</th><th>来源</th><th>AS OF</th><th>频率</th><th>状态</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- 10 底部建议功能条 -->
+<div class="c-foot" id="foot"></div>
+
+<script src="chrome/registry.js"></script>
+<script src="chrome/chrome.js"></script>
+<script src="chrome/data.js"></script>
+<script>
+/* 方案G 装配：外壳来自 chrome/*，数据口径来自 chrome/data.js。 */
+(function () {
+  var C = window.OOGLEX_CHROME, D = window.OOGLEX_CDATA, FN = window.OOGLEX_FN;
+  var $ = C.$, $$ = C.$$, esc = C.esc, fmt = D.fmt, isNum = D.isNum;
+
+  C.init({
+    current: "DESC",
+    tabs: [
+      { mn:"GMKT", title:"全球市场行情", href:"../apps/markets/" },
+      { mn:"EQTY", title:"全球公司股价", href:"../apps/companies/" },
+      { mn:"MACR", title:"宏观雷达", href:"../apps/macro-radar/" },
+      { mn:"DESC", title:"证券描述 · 草案", href:"g-des.html" },
+      { mn:"TRND", title:"榜单与趋势 · 草案", href:"h-tren.html" },
+      { mn:"MON",  title:"多功能监控 · 草案", href:"i-mon.html" },
+      { mn:"FDIR", title:"功能目录", href:"#fdir" }
+    ]
+  });
+
+  /* Quick Links 也从注册表生成 */
+  var ql = $("#qlinks");
+  ql.innerHTML = ["GMKT","EQTY","MACR","CRVE","NEWS","MCAP","HEAT","TRND"].map(function (mn) {
+    var f = FN.byMn(mn); if (!f) return "";
+    var c = FN.catOf(f);
+    return '<a href="' + esc(f.href) + '" title="' + esc(f.zh) + '">' +
+      '<span class="mn" style="background:' + c.bg + ";color:" + c.ink + '">' + esc(f.mn) + "</span>" +
+      '<span class="lb">' + esc(f.zh) + "</span></a>";
+  }).join("");
+
+  /* 底部建议功能条 */
+  $("#foot").innerHTML = '<span class="lb">Suggested Functions</span>' +
+    ["EQTY","HEAT","MCAP","TRND"].map(function (mn) {
+      var f = FN.byMn(mn); if (!f) return "";
+      var c = FN.catOf(f);
+      return '<a href="' + esc(f.href) + '"><b style="background:' + c.bg + ";color:" + c.ink +
+        '">' + esc(f.mn) + '</b><span>' + esc(f.zh) + " · " + esc(f.note || "") + "</span></a>";
+    }).join("");
+
+  var pager = C.pager({ pages: [
+    { sel:"#pg-1", title:"证券描述 · 基本信息" },
+    { sel:"#pg-2", title:"证券描述 · 收益与同业" },
+    { sel:"#pg-3", title:"证券描述 · 价格走势" },
+    { sel:"#pg-4", title:"证券描述 · 标识与口径" }
+  ]});
+
+  /* 折线：共享日期轴上的空值处断开，绝不插值也不前向填充 */
+  function line(svgSel, hostSel, h, dates, opt) {
+    opt = opt || {};
+    var svg = $(svgSel), lg = hostSel ? $(hostSel) : null;
+    if (!svg) return null;
+    var from = opt.tail ? Math.max(0, h.length - opt.tail) : 0;
+    var seg = h.slice(from), sd = dates.slice(from);
+    var pts = [];
+    for (var i = 0; i < seg.length; i++) if (isNum(seg[i])) pts.push({ i:i, v:seg[i], d:sd[i] });
+    if (pts.length < 5) {
+      svg.innerHTML = '<text x="10" y="24" fill="#8a8a8a" font-family="monospace" font-size="12">' +
+        esc(opt.empty || "序列点数不足，不画图（不插值出一条假曲线）") + "</text>";
+      if (lg) lg.innerHTML = "";
+      return null;
+    }
+    var vb = (svg.getAttribute("viewBox") || "0 0 700 150").split(/\s+/);
+    var W = +vb[2], H = +vb[3];
+    var L = opt.l != null ? opt.l : 52, R = 10, T = 10, B = opt.b != null ? opt.b : 22;
+    var lo = Math.min.apply(null, pts.map(function (p) { return p.v; }));
+    var hi = Math.max.apply(null, pts.map(function (p) { return p.v; }));
+    var pad = (hi - lo) * .08 || 1; lo -= pad; hi += pad;
+    var n = seg.length - 1;
+    function X(i) { return L + (W - L - R) * (n ? i / n : 0); }
+    function Y(v) { return T + (H - T - B) * (hi - v) / (hi - lo); }
+    var g = "", steps = opt.grid != null ? opt.grid : 4;
+    for (var k = 0; k <= steps; k++) {
+      var vv = lo + (hi - lo) * k / steps, y = Y(vv);
+      g += '<line x1="' + L + '" y1="' + y.toFixed(1) + '" x2="' + (W - R) + '" y2="' + y.toFixed(1) +
+           '" stroke="#1f1f1f" stroke-width="1"/><text x="' + (L - 6) + '" y="' + (y + 3.5).toFixed(1) +
+           '" text-anchor="end" fill="#5e5e5e" font-family="monospace" font-size="9">' + fmt.px(vv) + "</text>";
+    }
+    var d = "", pen = false;
+    for (var j = 0; j < seg.length; j++) {
+      if (!isNum(seg[j])) { pen = false; continue; }
+      d += (pen ? "L" : "M") + X(j).toFixed(1) + "," + Y(seg[j]).toFixed(1);
+      pen = true;
+    }
+    var rise = pts[pts.length - 1].v >= pts[0].v;
+    var xt = "";
+    [0, Math.floor(n * .25), Math.floor(n * .5), Math.floor(n * .75), n].forEach(function (i) {
+      if (!sd[i]) return;
+      xt += '<text x="' + X(i).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle" fill="#5e5e5e" ' +
+            'font-family="monospace" font-size="9">' + esc(sd[i]) + "</text>";
+    });
+    svg.innerHTML = g + '<path d="' + d + '" fill="none" stroke="' + (rise ? "#00b86b" : "#ff4d4d") +
+      '" stroke-width="1.2"/>' + xt;
+    var stat = {
+      pts: pts, n: seg.length, lo: Math.min.apply(null, pts.map(function (p) { return p.v; })),
+      hi: Math.max.apply(null, pts.map(function (p) { return p.v; })),
+      first: pts[0], last: pts[pts.length - 1]
+    };
+    if (lg) {
+      lg.innerHTML = "期间 <b>" + esc(sd[0] || "—") + " → " + esc(sd[n] || "—") +
+        "</b>　有效收盘 <b>" + pts.length + " / " + seg.length +
+        "</b>　区间 <b>" + fmt.px(stat.lo) + " – " + fmt.px(stat.hi) +
+        "</b>　变动 <b>" + fmt.pct((stat.last.v / stat.first.v - 1) * 100) + "</b>";
+    }
+    return stat;
+  }
+
+  function rows(dl, list) {
+    dl.innerHTML = list.map(function (p) {
+      if (!p) return "";
+      var cls = p.na ? "na" : (p.mono ? "mono" : "");
+      if (p.box) cls += " box";
+      return "<dt>" + esc(p[0] !== undefined ? p[0] : p.k) + "</dt><dd class=\"" + cls + "\">" +
+        (p.html || esc(p.v == null ? "—" : p.v)) + (p.u ? '<span class="u">' + esc(p.u) + "</span>" : "") + "</dd>";
+    }).join("");
+  }
+  function fail(msg) {
+    ["#f-issuer","#f-ident","#f-sec","#f-status"].forEach(function (s) {
+      $(s).innerHTML = '<dt>状态</dt><dd class="na">' + esc(msg) + "</dd>";
+    });
+    $("#q-nm").textContent = "读取失败";
+    $("#q-nm").style.color = "var(--c-dn)";
+    $("#q-meta").textContent = msg;
+  }
+
+  D.loadSecurity().then(function (M) {
+    if (!M.pool.length) { fail("公司榜读取失败，本页无可显示证券：" + (M.raw.d && M.raw.d.__error || "未知原因")); return; }
+
+    /* 证券选择器：优先给有收盘历史的标的（走势页才画得出来） */
+    var pick = $("#sec-pick");
+    var withHist = M.pool.filter(function (p) { return p.hasHist; });
+    var choices = (withHist.length ? withHist : M.pool).slice(0, 40);
+    pick.innerHTML = choices.map(function (p) {
+      return '<option value="' + esc(p.tk) + '">' + esc(p.tk) + " " + esc(p.zh || p.en) + "</option>";
+    }).join("");
+    pick.onchange = function () { paint(pick.value); };
+
+    function sectorPeers(s, n) {
+      return M.pool.filter(function (p) { return p.tk !== s.tk; })
+        .map(function (p) { return M.sec(p.tk); })
+        .filter(function (x) { return x && x.sector === s.sector; })
+        .sort(function (a, b) { return (b.marketCap || 0) - (a.marketCap || 0); })
+        .slice(0, n || 12);
+    }
+
+    function paint(sym) {
+      var s = M.sec(sym);
+      if (!s) { fail("未找到该证券：" + sym); return; }
+
+      /* ── 报价头 ── */
+      var last = s.intraday && isNum(s.intraday.price) ? s.intraday.price : s.close;
+      var pct  = s.intraday && isNum(s.intraday.changePct) ? s.intraday.changePct : s.d1;
+      var prev = s.intraday && isNum(s.intraday.prevClose) ? s.intraday.prevClose
+               : (isNum(s.close) && isNum(s.d1) ? s.close / (1 + s.d1 / 100) : null);
+      var abs  = isNum(last) && isNum(prev) ? last - prev : null;
+      $("#q-tk").textContent = s.tk;
+      $("#q-nm").textContent = (s.zh || "") + (s.en ? "  " + s.en : "");
+      $("#q-nm").style.color = "";
+      $("#q-cur").textContent = s.cur;
+      $("#q-px").innerHTML = '<span class="ar ' + fmt.cls(pct) + '">' + fmt.arrow(pct) + "</span>" + fmt.px(last);
+      $("#q-px").className = "px " + fmt.cls(pct);
+      $("#q-chg").innerHTML = '<span class="' + fmt.cls(abs) + '">' + fmt.chg(abs) + "</span>　" +
+        '<span class="' + fmt.cls(pct) + '">' + fmt.pct(pct) + "</span>";
+      $("#q-prev").textContent = fmt.px(prev);
+      $("#q-cap").textContent = isNum(s.marketCap) ? "$" + fmt.cap(s.marketCap) : "—";
+      $("#q-ytd").innerHTML = '<span class="' + fmt.cls(s.ytd) + '">' + fmt.pct(s.ytd) + "</span>";
+      $("#q-meta").innerHTML =
+        "AS OF <b>" + esc(s.meta.asOf || M.src.quote.asOf || "—") + "</b>　" +
+        "SOURCE <b>" + esc(s.meta.source || M.src.quote.source || "—") + "</b>　" +
+        "LAST <b>" + (s.intraday ? "盘中快照 " + esc(M.src.intra.cadence) : "收盘") + "</b>　" +
+        "状态 <b>" + esc(fmt.statusZh(s.meta.status || M.src.quote.status)) + "</b>　" +
+        (s.stale ? '<b style="color:var(--c-dn)">本轮未取到新值，沿用上次快照</b>' : "") ;
+      $("#cmd-key").textContent = s.tk + " " + (s.cur || "") + " Equity";
+      $("#sec-name").textContent = s.tk;
+      document.title = "方案G " + s.tk + " 证券描述 · OOGLEX 终端外壳草案";
+
+      /* ── 页 1 ── */
+      rows($("#f-issuer"), [
+        { k:"名称",     v:s.zh, box:1 },
+        { k:"英文名",   v:s.en },
+        { k:"国别/地区", v:s.country },
+        { k:"板块",     v:s.sector },
+        { k:"主页",     v:s.domain, mono:1 },
+        { k:"榜内名次", v:isNum(s.rank) ? "#" + s.rank + "（按市值）" : "—" },
+        { k:"指数成分", v:s.sp500 ? "标普 500 成分" : "非标普 500 成分（或站内未标注）" }
+      ]);
+      rows($("#f-ident"), [
+        { k:"交易所代码", v:s.tk, mono:1, box:1 },
+        { k:"域名标识",   v:s.domain, mono:1 },
+        { k:"ISIN",  v:"站内无来源", na:1 },
+        { k:"FIGI",  v:"站内无来源", na:1 },
+        { k:"CUSIP", v:"站内无来源", na:1 },
+        { k:"交易所", v:"站内未记录挂牌交易所", na:1 }
+      ]);
+      rows($("#f-sec"), [
+        { k:"币种",     v:s.cur, mono:1 },
+        { k:"最新价",   v:fmt.px(last), mono:1 },
+        { k:"前收",     v:fmt.px(prev), mono:1 },
+        { k:"当日变动", v:fmt.chg(abs) + "　" + fmt.pct(pct), mono:1 },
+        { k:"市值",     v:isNum(s.marketCap) ? "$" + fmt.cap(s.marketCap) : "—", mono:1, u:"十亿美元折算" },
+        { k:"年初至今", v:fmt.pct(s.ytd), mono:1 },
+        { k:"近一周",   v:fmt.pct(s.w1), mono:1 },
+        { k:"近一月",   v:fmt.pct(s.m1), mono:1 },
+        { k:"近一年",   v:isNum(s.y1) ? fmt.pct(s.y1) : "站内该标的无一年期值", mono:isNum(s.y1), na:!isNum(s.y1) },
+        { k:"BID / ASK", v:"无来源 · 不显示", na:1 },
+        { k:"成交量",   v:"无来源 · 不显示", na:1 },
+        { k:"日内高/低", v:"无来源 · 不显示", na:1 }
+      ]);
+      var hl = M.src.health;
+      rows($("#f-status"), [
+        { k:"收盘数据", v:D.srcLine(M.src.quote), mono:1 },
+        { k:"盘中快照", v:M.src.intra.error ? ("读取失败：" + M.src.intra.error)
+            : (M.src.intra.realtime ? "提供方标为实时" : M.src.intra.cadence), mono:1 },
+        { k:"收盘历史", v:D.srcLine(M.src.hist), mono:1 },
+        hl ? { k:"采集健康", v:"状态 " + fmt.statusZh(hl.status) + " · 连续失败 " + (hl.consecutiveFailures || 0) +
+              " 次 · 最近成功 " + fmt.utc(hl.lastSuccessfulAt), mono:1 } : null
+      ]);
+      $("#n-status").textContent = D.UNAVAILABLE_NOTE;
+
+      /* ── 页 2 ── */
+      var rt = [
+        ["当日", pct, s.intraday ? "盘中快照相对上一交易日收盘" : "收盘相对上一交易日"],
+        ["近一周", s.w1, "收盘口径"],
+        ["近一月", s.m1, "收盘口径"],
+        ["年初至今", s.ytd, "收盘口径"],
+        ["近一年", s.y1, "收盘口径"]
+      ];
+      $("#tbl-ret tbody").innerHTML = rt.map(function (r) {
+        return "<tr><td class=\"nm\">" + esc(r[0]) + "</td><td class=\"" + fmt.cls(r[1]) + '">' +
+          (isNum(r[1]) ? fmt.pct(r[1]) : '<span class="na">站内无此值</span>') +
+          '</td><td style="text-align:left;font-family:var(--c-sans);color:var(--c-dim)">' + esc(r[2]) + "</td></tr>";
+      }).join("");
+      $("#n-ret").textContent = "全部为标的自身价格变动，未做股息再投资与汇率调整；" +
+        (s.cur !== "USD" ? "本标的以 " + s.cur + " 计价，收益率是本币口径。" : "本标的以美元计价。");
+
+      var peers = sectorPeers(s);
+      $("#tbl-peer tbody").innerHTML = peers.length ? peers.map(function (p, i) {
+        var pl = p.intraday && isNum(p.intraday.price) ? p.intraday.price : p.close;
+        var pp = p.intraday && isNum(p.intraday.changePct) ? p.intraday.changePct : p.d1;
+        return '<tr data-tk="' + esc(p.tk) + '" data-nm="' + esc(p.zh) + '">' +
+          '<td class="nm"><i>' + (i + 1) + ')</i>' + esc(p.tk) +
+            '<span class="sub">' + esc(p.zh) + "</span></td>" +
+          '<td class="last">' + fmt.px(pl) + (p.cur !== "USD" ? '<span class="sub">' + esc(p.cur) + "</span>" : "") + "</td>" +
+          '<td class="' + fmt.cls(pp) + '">' + fmt.pct(pp) + "</td>" +
+          '<td class="' + fmt.cls(p.ytd) + '">' + fmt.pct(p.ytd) + "</td>" +
+          "<td>" + (isNum(p.marketCap) ? fmt.cap(p.marketCap) : "—") + "</td></tr>";
+      }).join("") : '<tr><td colspan="5" class="na" style="text-align:left">站内同板块无其他标的</td></tr>';
+      $("#n-peer").textContent = "同板块（" + (s.sector || "未标注") + "）按市值取前 12；" +
+        "非美元报价在价格后标出币种，市值统一折美元。";
+
+      /* 页1 的板块内位置小表：同板块前列 + 本标的高亮 */
+      var sp = sectorPeers(s, 10);
+      var mine = { tk:s.tk, zh:s.zh, close:s.close, d1:s.d1, ytd:s.ytd, marketCap:s.marketCap,
+                   cur:s.cur, intraday:s.intraday, me:1 };
+      var mix = sp.concat([mine]).sort(function (a, b) { return (b.marketCap || 0) - (a.marketCap || 0); }).slice(0, 10);
+      $("#tbl-mini-peer tbody").innerHTML = mix.length > 1 ? mix.map(function (p, i) {
+        var pp = p.intraday && isNum(p.intraday.changePct) ? p.intraday.changePct : p.d1;
+        return '<tr data-tk="' + esc(p.tk) + '" data-nm="' + esc(p.zh) + '"' +
+          (p.me ? ' style="outline:1px solid var(--c-cmd-line);outline-offset:-1px"' : "") + ">" +
+          '<td class="nm"><i>' + (i + 1) + ')</i>' + esc(p.tk) +
+            '<span class="sub">' + esc(p.zh) + "</span></td>" +
+          '<td class="' + fmt.cls(pp) + '">' + fmt.pct(pp) + "</td>" +
+          '<td class="' + fmt.cls(p.ytd) + '">' + fmt.pct(p.ytd) + "</td>" +
+          "<td>" + (isNum(p.marketCap) ? fmt.cap(p.marketCap) : "—") + "</td></tr>";
+      }).join("") : '<tr><td colspan="4" class="na" style="text-align:left">站内同板块无其他标的</td></tr>';
+      $("#n-mini-peer").textContent = "板块「" + (s.sector || "未标注") + "」按市值排，琥珀描边那行是本标的。" +
+        " 完整同业表见 12) 收益与同业。";
+
+      /* ── 页 3 走势 ── */
+      var h = s.hist, dates = s.dates;
+      var pts = [];
+      if (h && h.length) {
+        for (var i = 0; i < h.length; i++) if (isNum(h[i])) pts.push({ i: i, v: h[i], d: dates[i] });
+      }
+      var stat = h && h.length ? line("#svg-px", "#lg-px", h, dates, { l:56, b:26,
+        empty: h ? "该标的收盘序列有效点不足，不画图" : "站内没有该标的的收盘历史序列" }) : null;
+      line("#svg-mini", "#lg-mini", h || [], dates || [], { tail:60, l:46, b:20, grid:3,
+        empty:"站内没有该标的的收盘历史序列" });
+      if (!stat) {
+        $("#n-px").textContent = "不画图比画一条插值出来的假曲线诚实。";
+        rows($("#f-range"), [{ k:"状态", v:"无足够序列", na:1 }]);
+        rows($("#f-vol"),   [{ k:"状态", v:"无足够序列", na:1 }]);
+        rows($("#f-gap"),   [{ k:"状态", v:"无足够序列", na:1 }]);
+      } else {
+        $("#n-px").textContent = D.srcLine(M.src.hist) +
+          " · 共享日期轴上该标的当日无收盘则留空，折线在缺口处断开，不插值也不前向填充。";
+        var v0 = stat.first.v, v1 = stat.last.v, mx = stat.hi, mn = stat.lo;
+        var mxp = pts.filter(function (p) { return p.v === mx; })[0] || stat.last;
+        var mnp = pts.filter(function (p) { return p.v === mn; })[0] || stat.first;
+        rows($("#f-range"), [
+          { k:"期间最高", v:fmt.px(mx) + "　" + (mxp.d || ""), mono:1 },
+          { k:"期间最低", v:fmt.px(mn) + "　" + (mnp.d || ""), mono:1 },
+          { k:"期间首末", v:fmt.px(v0) + " → " + fmt.px(v1), mono:1 },
+          { k:"期间变动", v:fmt.pct((v1 / v0 - 1) * 100), mono:1 },
+          { k:"距高点",   v:fmt.pct((v1 / mx - 1) * 100), mono:1 }
+        ]);
+        var rets = [];
+        for (var q = 1; q < pts.length; q++) {
+          if (pts[q].i - pts[q - 1].i === 1) rets.push(pts[q].v / pts[q - 1].v - 1);
+        }
+        if (rets.length > 20) {
+          var mu = rets.reduce(function (a, b) { return a + b; }, 0) / rets.length;
+          var sd = Math.sqrt(rets.reduce(function (a, b) { return a + (b - mu) * (b - mu); }, 0) / (rets.length - 1));
+          var dn = rets.filter(function (x) { return x < 0; });
+          var sdd = dn.length > 5 ? Math.sqrt(dn.reduce(function (a, b) { return a + b * b; }, 0) / dn.length) : null;
+          rows($("#f-vol"), [
+            { k:"日波动率", v:(sd * 100).toFixed(2) + "%", mono:1 },
+            { k:"年化",     v:(sd * Math.sqrt(252) * 100).toFixed(1) + "%", mono:1, u:"×√252" },
+            { k:"下行波动", v:sdd ? (sdd * Math.sqrt(252) * 100).toFixed(1) + "%" : "样本不足", mono:!!sdd, na:!sdd },
+            { k:"样本",     v:rets.length + " 个相邻交易日收益", mono:1 },
+            { k:"算法",     v:"相邻交易日对数前的简单收益标准差；跨缺口的日对不计入", mono:1 }
+          ]);
+        } else {
+          rows($("#f-vol"), [{ k:"状态", v:"相邻交易日样本不足 20 个，不给波动率", na:1 }]);
+        }
+        var gaps = h.length - pts.length;
+        rows($("#f-gap"), [
+          { k:"日期轴长度", v:h.length + " 个交易日", mono:1 },
+          { k:"有效收盘",   v:pts.length + " 个", mono:1 },
+          { k:"空值",       v:gaps + " 个（" + (gaps / h.length * 100).toFixed(1) + "%）", mono:1 },
+          { k:"处理",       v:"留空，不填充", mono:1 }
+        ]);
+      }
+
+      /* ── 页 4 ── */
+      rows($("#f-have"), [
+        { k:"价格",   v:"最新价（盘中快照或收盘）、前收、当日变动", mono:1 },
+        { k:"收益率", v:"当日 / 近一周 / 近一月 / 年初至今" + (isNum(s.y1) ? " / 近一年" : "（本标的无近一年值）"), mono:1 },
+        { k:"规模",   v:"市值（折美元，十亿）、榜内名次", mono:1 },
+        { k:"分类",   v:"国别、板块、是否标普 500 成分", mono:1 },
+        { k:"序列",   v:(s.hist ? "收盘历史 " + s.hist.length + " 个交易日" : "无收盘历史"), mono:1, na:!s.hist },
+        { k:"出处",   v:"来源、数据日期、更新时间、频率、状态、采集健康", mono:1 }
+      ]);
+      $("#tbl-una tbody").innerHTML = D.UNAVAILABLE.map(function (u, i) {
+        return '<tr><td class="nm"><i>' + (i + 1) + ")</i>" + esc(u.k) + "</td>" +
+          '<td style="text-align:left;font-family:var(--c-sans);color:var(--c-dim);white-space:normal">' +
+          esc(u.why) + "</td></tr>";
+      }).join("");
+      $("#tbl-src tbody").innerHTML = [M.src.quote, M.src.intra, M.src.hist].map(function (x, i) {
+        return '<tr><td class="nm"><i>' + (i + 1) + ")</i>" + esc(x.label) + "</td>" +
+          '<td style="text-align:left;font-family:var(--c-sans)">' + esc(x.error ? "—" : (x.source || "—")) + "</td>" +
+          "<td>" + esc(x.error ? "—" : (x.asOf || "—")) + "</td>" +
+          '<td style="text-align:left;font-family:var(--c-sans);color:var(--c-dim)">' + esc(x.cadence || "—") + "</td>" +
+          '<td class="' + (x.error ? "dn" : "") + '">' + esc(x.error ? "读取失败" : fmt.statusZh(x.status)) + "</td></tr>";
+      }).join("");
+
+      C.wireNumbers();
+      wireActs(s);
+    }
+
+    /* 编号动作键：导出 / 口径 / 自选，都是真动作 */
+    function wireActs(s) {
+      $$("[data-act='exp']").forEach(function (b) {
+        b.onclick = function () {
+          var tbls = $$("#pg-1 table, #pg-2 table, #pg-3 table, #pg-4 table")
+            .filter(function (t) { return !t.closest("section").hidden; });
+          var dls = $$("dl.c-fields").filter(function (d) { return !d.closest("section").hidden; });
+          var out = "# OOGLEX " + s.tk + " 证券描述 · 导出于 " + new Date().toISOString() + "\n" +
+                    "# " + D.srcLine(M.src.quote) + "\n" + "# " + D.UNAVAILABLE_NOTE + "\n";
+          dls.forEach(function (d) {
+            var ks = $$("dt", d), vs = $$("dd", d);
+            ks.forEach(function (k, i) {
+              out += '"' + k.textContent.replace(/"/g, '""') + '","' +
+                (vs[i] ? vs[i].innerText.replace(/\s+/g, " ").trim().replace(/"/g, '""') : "") + '"\n';
+            });
+          });
+          tbls.forEach(function (t) {
+            out += "\n";
+            $$("tr", t).forEach(function (tr) {
+              out += $$("th,td", tr).map(function (c) {
+                var x = (c.innerText || "").replace(/\s+/g, " ").trim().replace(/"/g, '""');
+                return /[",]/.test(x) ? '"' + x + '"' : x;
+              }).join(",") + "\n";
+            });
+          });
+          var blob = new Blob(["﻿" + out], { type: "text/csv;charset=utf-8" });
+          var a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "ooglex-" + s.tk.toLowerCase() + "-des.csv";
+          document.body.appendChild(a); a.click();
+          setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+          C.say("已导出 " + s.tk + " 当前页（含出处表头）", true);
+        };
+      });
+      $$("[data-act='meta']").forEach(function (b) {
+        b.onclick = function () { pager.set(3); C.say("94) 口径与不可得字段", true); };
+      });
+      $$("[data-act='wl']").forEach(function (b) {
+        b.onclick = function () {
+          try {
+            var K = "ooglex.terminal.watchlist";
+            var w = JSON.parse(localStorage.getItem(K) || "[]");
+            if (w.indexOf(s.tk) < 0) w.push(s.tk);
+            localStorage.setItem(K, JSON.stringify(w));
+            C.say("已加入自选（存本机，不上传）：" + w.join(" "), true);
+          } catch (e) { C.say("本机存储不可用，自选未保存", false); }
+        };
+      });
+    }
+
+    paint(choices[0].tk);
+  }).catch(function (e) { fail("数据层异常：" + (e && e.message || e)); });
+})();
+</script>
+</body>
+</html>

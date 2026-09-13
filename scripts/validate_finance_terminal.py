@@ -28,7 +28,10 @@ from finance_terminal_market_licenses import validate_market_source_readiness
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGE = ROOT / "apps" / "finance-terminal" / "index.html"
+# 终端改版后，这份契约描述的是改版前的那一页 —— 它已移到 legacy.html 并保留可用。
+# 129 条断言一条不删、一条不弱化，只是指向它本来描述的那个文件。
+# 新终端（index.html / security.html / trends.html）的契约在 scripts/validate_terminal.py。
+PAGE = ROOT / "apps" / "finance-terminal" / "legacy.html"
 APP = ROOT / "apps" / "finance-terminal" / "app.js"
 LOADER = ROOT / "apps" / "finance-terminal" / "finance-terminal-loader.mjs"
 TERMINAL_VISUALS = ROOT / "apps" / "finance-terminal" / "finance-terminal-visuals.mjs"
@@ -145,6 +148,22 @@ COMMON_ASSET_FIELDS = {
     "delayLabel", "price", "asOf", "updatedAt", "source", "spark",
 }
 
+
+def _refs_asset(page: str, attr: str, path: str) -> bool:
+    """页面是否以 attr="path" 引入了该资源（容忍 ?v= 缓存指纹）。
+
+    站内的 CSS / JS 引用带 ?v= 缓存指纹（见 3523bf0），字面比较必然失败，
+    而指纹与这些断言是同一个提交一起进来的。这里只放宽「字面」这一点，
+    断言的意图不变：该资源必须被本页以该属性独立引入。
+    """
+    pattern = r'%s="%s(?:\?v=[0-9a-f]+)?"' % (re.escape(attr), re.escape(path))
+    return re.search(pattern, page) is not None
+
+
+def _links_css(page: str, filename: str) -> bool:
+    """页面是否以 <link rel="stylesheet"> 引入了该样式表（容忍缓存指纹）。"""
+    pattern = r'<link rel="stylesheet" href="%s(?:\?v=[0-9a-f]+)?">' % re.escape(filename)
+    return re.search(pattern, page) is not None
 
 def require(condition: bool, message: str) -> None:
     if not condition:
@@ -3051,9 +3070,9 @@ def main() -> None:
             "两页都必须给盘中状态留出如实标注的位置")
     require(CHART_MODULE.stat().st_size <= 12_000, "走势图渲染模块超过12KB性能预算")
     require(QUOTE_PAGE.stat().st_size <= 14_000, "行情详情页超过14KB性能预算")
-    require('src="finance-terminal-quote.mjs"' in quote_page
+    require(_refs_asset(quote_page, "src", "finance-terminal-quote.mjs")
             and 'href="../markets/"' in quote_page
-            and 'href="index.html#board-section"' in quote_page
+            and 'href="legacy.html#board-section"' in quote_page
             and "terms.html" in quote_page and "privacy.html" in quote_page,
             "行情详情页必须挂载自己的脚本，并同时保留「全球市场行情」与金融终端两个返回入口")
     # 「全球市场行情」是同一块行情板的独立页面：数据层与视图都复用金融终端那一份，
@@ -3067,7 +3086,7 @@ def main() -> None:
     require(MARKETS_PAGE.stat().st_size <= 15_000 and MARKETS_MODULE.stat().st_size <= 5_000,
             "「全球市场行情」页面或脚本超过体积预算")
     require('data-quote-base="../finance-terminal/quote.html"' in markets_page
-            and 'href="../finance-terminal/terminal-board.css"' in markets_page
+            and _refs_asset(markets_page, "href", "../finance-terminal/terminal-board.css")
             and 'id="board-panel"' in markets_page and 'id="board-search"' in markets_page
             and 'id="board-pulse"' in markets_page and 'id="board-tabs"' in markets_page,
             "「全球市场行情」必须复用共享的行情板样式与同一套挂载点")
@@ -3098,7 +3117,7 @@ def main() -> None:
             and "SPARK_POINTS" in board_view_module and "distribution" in board_view_module
             and 'id="board-pulse"' in page and ".board-spark-line" in board_css,
             "品类行情板必须逐行画站内序列的迷你走势并给出涨跌分布脉冲条")
-    require('<link rel="stylesheet" href="terminal-board.css">' in page
+    require(_links_css(page, "terminal-board.css")
             and ".board-tab" in board_css and ".board-pulse-bar" in board_css
             and BOARD_CSS.stat().st_size <= 14_000,
             "行情板样式必须是两页共用的独立样式表，并保持在14KB以内")
@@ -3160,12 +3179,12 @@ def main() -> None:
             and "createOperationsView" in operations_view_module
             and "finance-terminal-operations-view.mjs" not in page,
             "稳定V1运行证据视图必须保持按需导入且不得在首屏预加载")
-    require('<link rel="stylesheet" href="terminal-reference-home-v2.css">' in page
-            and '<link rel="stylesheet" href="terminal-reference-home-v3.css">' in page
-            and '<link rel="stylesheet" href="terminal-reference-home-v4.css">' in page
-            and '<link rel="stylesheet" href="terminal-reference-home-v5.css">' in page
-            and '<link rel="stylesheet" href="terminal-reference-home-v6.css">' in page
-            and '<link rel="stylesheet" href="terminal-reference-home-v7.css">' in page
+    require(_links_css(page, "terminal-reference-home-v2.css")
+            and _links_css(page, "terminal-reference-home-v3.css")
+            and _links_css(page, "terminal-reference-home-v4.css")
+            and _links_css(page, "terminal-reference-home-v5.css")
+            and _links_css(page, "terminal-reference-home-v6.css")
+            and _links_css(page, "terminal-reference-home-v7.css")
             and 'body[data-terminal-view="overview"] .market-globe-shell' in reference_home_v4_css
             and 'html[data-finance-terminal-page]' in reference_home_v5_css
             and 'overflow-x: clip' in reference_home_v5_css
@@ -3179,12 +3198,12 @@ def main() -> None:
             and '@media (max-width: 620px)' in reference_home_v3_css
             and 'aria-hidden' in page,
             "参考首页精修层缺少样式引用、单屏地球定位或独立窄屏规则")
-    require('<link rel="stylesheet" href="terminal-vision.css">' in page
-            and '<link rel="stylesheet" href="terminal-command-center.css">' in page
-            and '<link rel="stylesheet" href="terminal-visual-fidelity.css">' in page
-            and '<link rel="stylesheet" href="terminal-reference-fidelity.css">' in page
-            and '<link rel="stylesheet" href="terminal-aurora-home.css">' in page
-            and 'src="finance-terminal-command-center.mjs"' in page
+    require(_links_css(page, "terminal-vision.css")
+            and _links_css(page, "terminal-command-center.css")
+            and _links_css(page, "terminal-visual-fidelity.css")
+            and _links_css(page, "terminal-reference-fidelity.css")
+            and _links_css(page, "terminal-aurora-home.css")
+            and _refs_asset(page, "src", "finance-terminal-command-center.mjs")
             and 'import("./finance-terminal-visuals.mjs")' in app
             and "createTerminalVisuals" in terminal_visuals,
             "科幻终端视觉层缺少本地样式或数据模块")
@@ -3522,7 +3541,7 @@ def main() -> None:
             and "normalizeOfficialObservations" in app and "RECENT OBSERVATIONS" in app
             and "最多8项" in page and "不以演示走势填充" in page,
             "页面未校验或展示三项官方行情最近观测趋势")
-    require('src="app.js"' in page, "页面未加载本地app.js")
+    require(_refs_asset(page, "src", "app.js"), "页面未加载本地app.js")
     require('rel="modulepreload" href="finance-terminal-loader.mjs"' in page
             and 'import("./finance-terminal-loader.mjs")' in app,
             "页面未预加载或动态导入原生分区加载模块")
@@ -3809,11 +3828,15 @@ def main() -> None:
     require("buildPageDataWithMacroError" in app and "unavailableDtwexbgs" in app and "unavailableRwtc" in app and 'status: "error"' in app, "app.js未覆盖官方数据文件失败状态")
     require("changeUnit" in app and '"bp"' in app, "app.js未按bp显示收益率变化")
     require("apps/finance-terminal/" in home, "首页缺少金融终端入口")
+    # 终端改版后入口文案按新终端的真实构成写（12 个站内源、4 项 ETF 代理、0 项演示）。
+    # 断言的意图不变：首页入口必须如实写清数据构成，且不得残留演示版文案。
     require("金融终端 Public Beta" in home
-            and "4项站内真实数据、2项免费ETF代理、0项演示" in home
+            and "12 个站内数据源" in home
+            and "4项 ETF 代理逐条标注、0项演示" in home
             and "Finance Terminal Public Beta" in home
-            and "4 first-party data cards, 2 free ETF proxies, 0 demo" in home,
-            "首页金融终端入口未同步Public Beta真实数据与免费代理口径")
+            and "12 first-party data sources" in home
+            and "4 ETF proxies each labelled, 0 demo" in home,
+            "首页金融终端入口未同步Public Beta真实数据与代理口径")
     require("金融终端（演示）" not in home
             and "4项演示数据" not in home
             and "Finance Terminal (Demo)" not in home
@@ -3825,7 +3848,9 @@ def main() -> None:
             "金融终端只能引入已登记的TradingView免费组件脚本")
     require("www.tradingview-widget.com" not in page and "www.tradingview-widget.com" not in app,
             "金融终端不得回退到会拒绝组件请求的旧www脚本主机")
-    require('type="module"' in page and page.index("tv-mini-chart.js") < page.index('src="app.js"'),
+    _app_js = re.search(r'src="app\.js(?:\?v=[0-9a-f]+)?"', page)
+    require('type="module"' in page and _app_js is not None
+            and page.index("tv-mini-chart.js") < _app_js.start(),
             "TradingView组件必须以模块脚本在本地应用前加载")
     build_script = MACRO_BUILD.read_text(encoding="utf-8")
     history_build_script = MACRO_HISTORY_BUILD.read_text(encoding="utf-8")

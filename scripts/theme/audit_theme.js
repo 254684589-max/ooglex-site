@@ -131,6 +131,13 @@ function contrast(a,b){ const L1=lum(a),L2=lum(b); return (Math.max(L1,L2)+0.05)
     // 只看主题选择器是否可见与有无报错。
     const darkMode = THEME === 'dark' || !!r.lock;
     const flag = ((darkMode ? 0 : r.darkBlocks.length + r.lowText.length) || !r.pickerVisible || r.errs.length) ? '  ←' : '';
+    // 有些页面刻意不接主题系统（例如法律条文页要求零脚本），此时 data-theme 为空
+    if (r.theme == null) {
+      console.log(r.rel.padEnd(40), '不接'.padEnd(7), '—'.padEnd(6), '—'.padEnd(6), '—'.padEnd(6),
+        r.errs.length, r.errs.length ? '  ←' : '');
+      if (r.errs.length) bad++;
+      continue;
+    }
     console.log(r.rel.padEnd(40), (r.lock?r.theme+'(锁)':r.theme).padEnd(7),
       (r.pickerVisible?'有':'缺').padEnd(6), String(r.darkBlocks.length).padEnd(6),
       String(r.lowText.length).padEnd(6), r.errs.length, flag);

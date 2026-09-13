@@ -1,0 +1,493 @@
+/* ===========================================================================
+   OOGLEX 终端外壳 · Terminal Chrome
+   ---------------------------------------------------------------------------
+   参照专业金融终端的外壳惯例重做：助记符标签条、彩色功能键条、面包屑、
+   报价头、琥珀命令行、编号菜单与编号动作键、底部建议功能条。
+
+   这里只做「外壳」，不碰数据区 —— 数据区继续用 ds/ds.css 的严格控色与四级字号。
+   两者的分工：
+     外壳   = 导航。颜色承载「功能属于哪一类」，所以允许多色。
+     数据区 = 数字。颜色只承载涨跌与风险档位，严格控色，且都有文字标签并行。
+
+   刻意不做的事
+     · 不用任何第三方的商标、标识、配色标识或它们自己的功能助记符
+     · 没有买卖下单键 —— 站内没有任何经纪或订单通道，画一个就是假的
+     · 无渐变、无发光、无玻璃拟态、无圆角（≤1px）、无装饰动画
+   =========================================================================== */
+
+:root{
+  /* 外壳底色：比数据区更浅一档，形成「窗框 / 内容」的层次 */
+  --c-chrome:#1c1c1c;      /* 标签条 */
+  --c-chrome2:#2b2b2b;     /* 激活标签 */
+  --c-bar:#0a0a0a;         /* 功能键条底 */
+  --c-crumb:#141414;       /* 面包屑 */
+  --c-quote:#000000;       /* 报价头 */
+  --c-band:#3a3a3a;        /* 分区色带 */
+  --c-cmd-bg:#5c1015;      /* 命令行底（暗红） */
+  --c-cmd-bg2:#6e1219;     /* 命令行按钮 */
+  --c-cmd-key:#2a2000;     /* 琥珀键底 */
+  --c-cmd-line:#ffd24a;    /* 琥珀键描边 */
+  --c-sel:#1d5fa6;         /* 选中行（蓝） */
+  --c-num:#ffa028;         /* 编号色 */
+  --c-ink:#f0f0f0;
+  --c-ink2:#c6c6c6;
+  --c-dim:#8a8a8a;
+  --c-faint:#5e5e5e;
+  --c-line:#1f1f1f;
+  --c-line2:#333333;
+  --c-up:#00b86b;
+  --c-dn:#ff4d4d;
+  --c-sans:-apple-system,BlinkMacSystemFont,"Helvetica Neue","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
+  --c-mono:ui-monospace,SFMono-Regular,"SF Mono","Cascadia Mono",Menlo,Consolas,"Liberation Mono",monospace;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:#000;color:var(--c-ink);font-family:var(--c-sans);font-size:13px;
+  -webkit-font-smoothing:antialiased;
+  font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
+  min-height:100vh;display:flex;flex-direction:column;
+}
+/* 主内容吃掉剩余高度，底部建议功能条贴在屏幕下沿（和专业终端一样） */
+body > main,body > .c-fill{flex:1 1 auto;min-height:0}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:1px solid var(--c-cmd-line);outline-offset:1px}
+
+/* ===========================================================================
+   1 标签条：助记符 + 说明，与专业终端一致的「一个标签一个功能」
+   =========================================================================== */
+.c-tabs{
+  display:flex;align-items:stretch;background:var(--c-chrome);
+  border-bottom:1px solid #000;min-height:30px;
+}
+.c-tabs .tab{
+  display:flex;align-items:center;gap:7px;padding:0 11px;min-width:0;
+  border-right:1px solid #000;color:var(--c-dim);flex:0 1 auto;max-width:180px;
+}
+.c-tabs .tab b{
+  font-family:var(--c-mono);font-size:10.5px;font-weight:700;letter-spacing:.06em;
+  color:var(--c-ink2);flex:0 0 auto;
+}
+.c-tabs .tab span{
+  font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;
+}
+.c-tabs .tab:hover{background:#242424;color:var(--c-ink2)}
+.c-tabs .tab.on{background:var(--c-chrome2);color:var(--c-ink)}
+.c-tabs .tab.on b{color:#fff}
+.c-tabs .tab.on span{color:#fff}
+.c-tabs .x{
+  font-family:var(--c-mono);font-size:12px;color:var(--c-dim);padding:0 1px;line-height:1;
+}
+.c-tabs .x:hover{color:var(--c-dn)}
+.c-tabs .add{
+  padding:0 11px;font-size:17px;line-height:1;color:var(--c-dim);border-right:1px solid #000;
+}
+.c-tabs .add:hover{color:var(--c-ink)}
+.c-tabs .sysr{margin-left:auto;display:flex;align-items:center;gap:2px;padding-right:6px;flex:0 0 auto}
+.c-tabs .sysr button,.c-tabs .sysr span{
+  padding:0 8px;color:var(--c-dim);font-size:12px;display:flex;align-items:center;height:100%;
+}
+.c-tabs .sysr button:hover{color:var(--c-ink)}
+.c-tabs .sysr .opt{font-size:12px;color:var(--c-ink2)}
+
+/* ===========================================================================
+   2 彩色功能键条 —— 用户明确点名的那一条
+   一格一个功能，颜色按分类，底色饱和、文字对比度全部过 AA。
+   数据由 chrome/registry.js 生成，HTML 里没有写死任何功能名。
+   =========================================================================== */
+.c-fnbar{
+  display:flex;flex-wrap:wrap;gap:1px;background:var(--c-bar);
+  padding:2px 3px;border-bottom:1px solid var(--c-line2);
+}
+.c-fnbar a,.c-fnbar button{
+  font-family:var(--c-mono);font-size:10.5px;font-weight:700;letter-spacing:.04em;
+  padding:2px 7px;line-height:1.5;white-space:nowrap;max-width:118px;overflow:hidden;
+  text-overflow:ellipsis;border:1px solid transparent;
+}
+.c-fnbar a:hover,.c-fnbar button:hover{border-color:#fff;filter:brightness(1.14)}
+.c-fnbar a.draft::after{content:"·";margin-left:4px;opacity:.75}
+.c-fnbar .gap{flex:0 0 7px}
+.c-fnbar .tools{margin-left:auto;display:flex;gap:1px;align-items:center}
+.c-fnbar .wrench{
+  background:none;color:var(--c-dim);font-size:12px;padding:2px 7px;border:1px solid transparent;
+}
+.c-fnbar .wrench:hover{color:var(--c-ink);border-color:var(--c-line2);filter:none}
+
+/* ===========================================================================
+   3 面包屑：历史箭头 / 标的 / 功能 / 相关功能菜单
+   =========================================================================== */
+.c-crumb{
+  display:flex;align-items:center;gap:0;background:var(--c-crumb);
+  border-bottom:1px solid var(--c-line2);min-height:27px;padding:0 6px;
+}
+.c-crumb .nav{display:flex;gap:2px;padding-right:8px;border-right:1px solid var(--c-line2);margin-right:9px}
+.c-crumb .nav button{color:var(--c-dim);padding:0 5px;font-size:14px;line-height:1}
+.c-crumb .nav button:hover{color:var(--c-ink)}
+.c-crumb .fld{
+  display:flex;align-items:baseline;gap:6px;padding:2px 8px;margin-right:6px;
+  border:1px solid transparent;
+}
+.c-crumb .fld:hover{border-color:var(--c-line2);background:#191919}
+.c-crumb .fld b{font-size:13px;color:var(--c-ink);font-weight:600}
+.c-crumb .fld i{font-style:normal;font-size:11.5px;color:var(--c-dim)}
+.c-crumb .fld u{text-decoration:none;color:var(--c-dim);font-size:9px}
+.c-crumb .rel{color:var(--c-ink2);font-size:12.5px;padding:2px 8px;border:1px solid transparent}
+.c-crumb .rel:hover{border-color:var(--c-line2);background:#191919}
+.c-crumb .right{margin-left:auto;display:flex;align-items:center;gap:3px}
+.c-crumb .right button{color:var(--c-ink2);font-size:12px;padding:2px 8px}
+.c-crumb .right button:hover{color:#fff}
+.c-crumb .help{
+  background:var(--c-cmd-line);color:#1a1400;font-family:var(--c-mono);font-weight:700;
+  font-size:11px;padding:1px 7px;
+}
+
+/* ===========================================================================
+   4 报价头：只在单证券页出现
+   =========================================================================== */
+.c-quote{background:var(--c-quote);padding:6px 12px 7px;border-bottom:1px solid var(--c-line2)}
+.c-quote .l1{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.c-quote .tk{font-family:var(--c-mono);font-size:21px;font-weight:700;letter-spacing:.01em}
+.c-quote .nm{font-size:13px;color:var(--c-ink2)}
+.c-quote .cur{font-size:14px;color:var(--c-dim)}
+.c-quote .px{font-family:var(--c-mono);font-size:21px;font-weight:700}
+.c-quote .px .ar{font-size:15px;margin-right:2px}
+.c-quote .chg{font-family:var(--c-mono);font-size:15px}
+.c-quote .grp{display:flex;flex-direction:column;gap:1px;font-family:var(--c-mono);font-size:12px}
+.c-quote .grp em{font-style:normal;color:var(--c-faint);font-size:9px;letter-spacing:.12em}
+.c-quote .grp b{font-weight:400;color:var(--c-ink2)}
+.c-quote .l2{
+  display:flex;gap:16px;flex-wrap:wrap;margin-top:4px;font-family:var(--c-mono);
+  font-size:10px;color:var(--c-faint);letter-spacing:.05em;
+}
+.c-quote .l2 b{color:var(--c-ink2);font-weight:400}
+.c-quote .up{color:var(--c-up)} .c-quote .dn{color:var(--c-dn)} .c-quote .fl{color:var(--c-dim)}
+.c-quote .na{color:var(--c-faint)}
+
+/* ===========================================================================
+   5 命令行：琥珀键 + 暗红条 + 页码，专业终端最标志性的一行
+   =========================================================================== */
+.c-cmd{
+  display:flex;align-items:stretch;background:var(--c-cmd-bg);min-height:30px;
+  border-bottom:1px solid #000;
+}
+.c-cmd .key{
+  display:flex;align-items:center;background:var(--c-cmd-key);border:1px solid var(--c-cmd-line);
+  margin:3px 0 3px 4px;padding:0 10px;font-family:var(--c-mono);font-size:13px;
+  color:var(--c-cmd-line);font-weight:700;white-space:nowrap;max-width:44vw;overflow:hidden;
+  text-overflow:ellipsis;
+}
+.c-cmd .act{
+  display:flex;align-items:center;gap:5px;padding:0 14px;color:#fff;font-size:13.5px;
+  border-right:1px solid rgba(255,255,255,.14);
+}
+.c-cmd .act:first-of-type{border-left:1px solid rgba(255,255,255,.14);margin-left:8px}
+.c-cmd .act:hover{background:var(--c-cmd-bg2)}
+.c-cmd .act u{text-decoration:none;font-size:9px;opacity:.8}
+.c-cmd .pg{
+  margin-left:auto;display:flex;align-items:center;gap:10px;padding:0 12px;
+  font-family:var(--c-mono);font-size:12px;color:#fff;
+}
+.c-cmd .pg button{color:#fff;padding:0 5px;font-size:13px;opacity:.8}
+.c-cmd .pg button:hover{opacity:1}
+.c-cmd .pg .ttl{font-family:var(--c-sans);font-size:14px}
+
+/* 命令行输入：一整行琥珀框，`)` 提示符用蓝色，和专业终端一致 */
+.c-entry{display:flex;align-items:center;background:#000;padding:3px 4px;border-bottom:1px solid var(--c-line2)}
+.c-entry .caret{
+  background:var(--c-sel);color:#fff;font-family:var(--c-mono);font-size:13px;font-weight:700;
+  padding:2px 7px;flex:0 0 auto;
+}
+.c-entry input{
+  flex:1 1 auto;min-width:0;background:#000;border:1px solid var(--c-sel);border-left:0;
+  color:var(--c-cmd-line);font-family:var(--c-mono);font-size:12.5px;padding:2px 8px;
+}
+.c-entry input::placeholder{color:#5a5a5a}
+.c-entry .go{
+  font-family:var(--c-mono);font-size:10.5px;font-weight:700;background:var(--c-cmd-line);
+  color:#1a1400;padding:3px 11px;margin-left:3px;flex:0 0 auto;
+}
+.c-entry .hint{font-family:var(--c-mono);font-size:9.5px;color:var(--c-faint);padding:0 8px;flex:0 0 auto}
+
+/* ===========================================================================
+   6 编号动作键：94) 95) 96) —— 编号是可键入的，不是装饰
+   本站没有下单通道，所以这里不做买卖键，只做真实可用的动作。
+   =========================================================================== */
+.c-acts{display:flex;justify-content:center;gap:7px;padding:7px 10px;background:#000;flex-wrap:wrap}
+.c-acts button{
+  display:flex;align-items:center;gap:6px;padding:3px 14px;font-size:13px;
+  border:1px solid var(--c-line2);background:#151515;color:var(--c-ink2);
+}
+.c-acts button i{font-style:normal;font-family:var(--c-mono);font-size:10.5px;color:var(--c-num)}
+.c-acts button:hover{border-color:var(--c-dim);color:#fff}
+.c-acts button.ok{background:#0d3f26;border-color:#1d7a3c;color:#dff5e8}
+.c-acts button.ok i{color:#8ce0b0}
+.c-acts button.info{background:#10304f;border-color:#1d5fa6;color:#dceaf8}
+.c-acts button.info i{color:#8fc4f0}
+.c-acts .noorder{
+  font-family:var(--c-mono);font-size:9.5px;color:var(--c-faint);align-self:center;
+  padding-left:6px;max-width:40ch;line-height:1.5;
+}
+
+/* ===========================================================================
+   7 编号菜单（左栏）：11) 12) 13)… 未接入的置灰且不可点
+   =========================================================================== */
+.c-menu{background:#101010;border:1px solid var(--c-line2);align-self:start;min-width:0}
+.c-menu .hd{
+  padding:4px 10px;font-size:12px;font-weight:600;color:var(--c-ink);
+  border-bottom:1px solid var(--c-line2);background:#161616;
+}
+.c-menu a,.c-menu .off{
+  display:flex;align-items:baseline;gap:8px;padding:3px 10px;font-size:12.5px;color:var(--c-ink2);
+}
+.c-menu a i,.c-menu .off i{
+  font-style:normal;font-family:var(--c-mono);font-size:10.5px;color:var(--c-num);
+  flex:0 0 22px;text-align:right;
+}
+.c-menu a:hover{background:#1c1c1c;color:#fff}
+.c-menu a.on{background:var(--c-sel);color:#fff}
+.c-menu a.on i{color:#fff}
+.c-menu .off{color:var(--c-faint)}
+.c-menu .off i{color:#6b5426}
+.c-menu .sep{height:1px;background:var(--c-line2);margin:4px 0}
+.c-menu .two{display:flex;flex-direction:column;padding:0 0 5px}
+.c-menu .two a{display:flex;align-items:baseline;gap:9px;padding:2px 10px}
+.c-menu .two a:hover{background:#1c1c1c}
+.c-menu .two a .mn{
+  font-family:var(--c-mono);font-size:10px;font-weight:700;color:#0a0a0a;
+  padding:0 4px;flex:0 0 40px;text-align:center;
+}
+.c-menu .two a .lb{
+  font-size:12px;color:var(--c-ink2);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.c-menu .two a:hover .lb{color:#fff}
+
+/* ===========================================================================
+   8 字段区：分区色带 + 琥珀标签 / 白值
+   =========================================================================== */
+.c-block{border:1px solid var(--c-line2);background:#0d0d0d;min-width:0}
+.c-block > h2{
+  background:var(--c-band);color:#fff;font-size:13px;font-weight:600;padding:3px 10px;
+  letter-spacing:.01em;
+}
+.c-block > h2 em{font-style:normal;font-family:var(--c-mono);font-size:9.5px;color:#d8d8d8;margin-left:8px}
+.c-fields{display:grid;grid-template-columns:auto 1fr;gap:0;padding:3px 0 5px}
+.c-fields.two{grid-template-columns:auto 1fr auto 1fr}
+.c-fields dt{
+  font-family:var(--c-sans);font-size:12.5px;color:var(--c-num);padding:2px 10px 2px 10px;
+  white-space:nowrap;
+}
+.c-fields dd{
+  font-size:12.5px;color:var(--c-ink);padding:2px 14px 2px 0;min-width:0;
+  overflow-wrap:anywhere;
+}
+.c-fields dd.mono{font-family:var(--c-mono);font-size:12px}
+.c-fields dd.box{border:1px dotted var(--c-line2);padding:1px 6px;display:inline-block;margin:1px 0}
+.c-fields dd.na{color:var(--c-faint);font-size:11.5px}
+.c-fields dd .u{color:var(--c-dim);font-size:10.5px;margin-left:5px}
+
+/* ===========================================================================
+   9 表格（编号行 + 迷你走势 + 涨跌）
+   =========================================================================== */
+.c-tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.c-tbl th{
+  position:sticky;top:0;z-index:2;background:var(--c-band);color:#fff;text-align:right;
+  font-family:var(--c-mono);font-size:9.5px;font-weight:600;letter-spacing:.1em;
+  padding:3px 8px;white-space:nowrap;
+}
+.c-tbl th:first-child,.c-tbl td:first-child{text-align:left}
+.c-tbl td{
+  padding:3px 8px;text-align:right;font-family:var(--c-mono);font-size:12px;
+  border-bottom:1px solid var(--c-line);white-space:nowrap;color:var(--c-ink2);
+}
+.c-tbl tbody tr:nth-child(even) td{background:#0c0c0c}
+.c-tbl tbody tr:hover td{background:#1a1a1a}
+.c-tbl td.nm{font-family:var(--c-sans);color:var(--c-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:210px}
+.c-tbl td.nm i{font-style:normal;font-family:var(--c-mono);font-size:10.5px;color:var(--c-num);margin-right:7px}
+.c-tbl td.nm .sub{color:var(--c-dim);font-size:10.5px;margin-left:6px}
+.c-tbl td.last{color:#fff;font-weight:700}
+.c-tbl td.sum{font-family:var(--c-sans);color:var(--c-num);text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:360px}
+.c-tbl .up{color:var(--c-up)} .c-tbl .dn{color:var(--c-dn)} .c-tbl .fl{color:var(--c-dim)}
+.c-tbl .na{color:var(--c-faint)}
+.c-tbl .bar{display:block;height:9px;background:var(--c-sel);min-width:1px}
+.c-tbl td.barc{width:120px;padding-right:10px}
+.c-tbl svg.spk{display:block;width:52px;height:15px}
+.c-tbl th[data-k]{cursor:pointer}
+.c-tbl th[data-k]:hover{color:var(--c-cmd-line)}
+.c-tbl th[aria-sort="ascending"]::after{content:" ▲";font-size:7px}
+.c-tbl th[aria-sort="descending"]::after{content:" ▼";font-size:7px}
+.c-scroll{overflow:auto}
+
+/* 子标签行：蓝色激活（专业终端惯例） */
+.c-subtabs{display:flex;gap:2px;background:#0a0a0a;padding:3px 4px 0;flex-wrap:wrap;align-items:center}
+.c-subtabs button{
+  padding:2px 12px;font-size:12px;background:#262626;color:var(--c-ink2);
+  border:1px solid #000;border-bottom:0;
+}
+.c-subtabs button.on{background:var(--c-sel);color:#fff}
+.c-subtabs button:hover{color:#fff}
+.c-subtabs .lbl{font-size:11.5px;color:var(--c-dim);padding:0 6px 0 12px}
+.c-subtabs .pick{
+  background:var(--c-cmd-key);border:1px solid var(--c-cmd-line);color:var(--c-cmd-line);
+  font-family:var(--c-mono);font-size:11px;padding:2px 8px;
+}
+.c-subtabs .sp{flex:1 1 auto}
+.c-tabs2{display:flex;gap:2px;background:#141414;padding:3px 4px;flex-wrap:wrap;border-bottom:1px solid var(--c-line2)}
+.c-tabs2 button{padding:2px 11px;font-size:11.5px;background:#1e1e1e;color:var(--c-dim);border:1px solid #000}
+.c-tabs2 button.on{background:#3a3a3a;color:#fff}
+.c-tabs2 button:hover{color:var(--c-ink)}
+
+/* 橙色筛选条（对标专业终端表头下那一条） */
+.c-filter{display:flex;gap:1px;background:var(--c-cmd-line);padding:1px;align-items:stretch}
+.c-filter input,.c-filter select{
+  background:#1a1400;border:0;color:var(--c-cmd-line);font-family:var(--c-mono);font-size:11px;
+  padding:2px 7px;min-width:0;
+}
+.c-filter input{flex:1 1 auto}
+
+/* ===========================================================================
+   10 面板（多功能监控页）
+   =========================================================================== */
+.c-panel{border:1px solid var(--c-line2);background:#0d0d0d;display:flex;flex-direction:column;min-width:0}
+.c-panel > header{
+  display:flex;align-items:center;gap:8px;background:var(--c-band);padding:2px 8px;min-height:20px;
+}
+.c-panel > header h3{
+  font-family:var(--c-mono);font-size:10px;font-weight:700;letter-spacing:.12em;color:#fff;
+  text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;
+}
+.c-panel > header .mn{
+  font-family:var(--c-mono);font-size:9px;font-weight:700;padding:0 5px;flex:0 0 auto;
+}
+.c-panel > header .sub{font-family:var(--c-mono);font-size:9px;color:#dcdcdc;margin-left:auto;flex:0 0 auto}
+.c-panel > .bd{flex:1 1 auto;min-height:0;overflow:auto}
+.c-panel > footer{
+  font-family:var(--c-mono);font-size:9px;color:var(--c-faint);padding:2px 8px;
+  border-top:1px solid var(--c-line);line-height:1.5;
+}
+
+/* ===========================================================================
+   11 图（GP 式价格走势）
+   =========================================================================== */
+.c-chart{background:#080808;border:1px solid var(--c-line2);padding:6px 8px 3px}
+.c-chart svg{display:block;width:100%;height:auto}
+.c-chart .lg{
+  display:flex;gap:14px;flex-wrap:wrap;font-family:var(--c-mono);font-size:9.5px;
+  color:var(--c-faint);padding-top:3px;letter-spacing:.06em;
+}
+.c-chart .lg b{color:var(--c-ink2);font-weight:400}
+
+/* ===========================================================================
+   12 底部建议功能条 + 草案横幅 + 说明块
+   =========================================================================== */
+.c-foot{
+  margin-top:auto;
+  display:flex;align-items:stretch;gap:0;background:#101010;border-top:1px solid var(--c-line2);
+  margin-top:10px;flex-wrap:wrap;
+}
+.c-foot .lb{
+  font-family:var(--c-mono);font-size:9.5px;color:var(--c-faint);padding:5px 12px;
+  letter-spacing:.12em;text-transform:uppercase;border-right:1px solid var(--c-line2);
+  display:flex;align-items:center;flex:0 0 auto;
+}
+.c-foot a{
+  display:flex;align-items:baseline;gap:8px;padding:5px 14px;font-size:12px;color:var(--c-ink2);
+  border-right:1px solid var(--c-line2);min-width:0;
+}
+.c-foot a b{font-family:var(--c-mono);font-size:10.5px;font-weight:700;flex:0 0 auto;padding:0 4px}
+.c-foot a span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.c-foot a:hover{background:#191919;color:#fff}
+
+.c-draft{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#1a1400;
+  border-bottom:1px solid #3a2e00;padding:4px 12px;font-size:11.5px;color:#d8c88a;
+}
+.c-draft b{color:var(--c-cmd-line);font-size:12px}
+.c-draft a{color:#ffd24a;border-bottom:1px solid currentColor}
+.c-draft .r{margin-left:auto}
+
+.c-note{
+  font-family:var(--c-mono);font-size:9.5px;color:var(--c-faint);line-height:1.6;padding:4px 10px;
+}
+.c-note.warn{color:#d8bf6a}
+.c-note b{color:var(--c-ink2);font-weight:400}
+.c-note code{color:var(--c-cmd-line);font-size:9px}
+
+/* 弹层：相关功能菜单 / 功能目录 / 帮助 */
+.c-pop{
+  position:fixed;z-index:60;background:#0d0d0d;border:1px solid var(--c-line2);
+  box-shadow:none;max-height:78vh;overflow:auto;min-width:260px;max-width:min(96vw,900px);
+}
+.c-pop > h3{
+  background:var(--c-band);color:#fff;font-size:12.5px;font-weight:600;padding:4px 10px;
+  display:flex;align-items:center;gap:10px;position:sticky;top:0;
+}
+.c-pop > h3 button{margin-left:auto;color:#ddd;font-family:var(--c-mono);font-size:12px}
+.c-pop .bd{padding:6px 0 8px}
+.c-pop .grp{
+  font-family:var(--c-mono);font-size:9.5px;letter-spacing:.12em;color:var(--c-faint);
+  padding:6px 10px 2px;text-transform:uppercase;
+}
+.c-pop .row{
+  display:grid;grid-template-columns:54px 1fr;gap:0 10px;padding:2px 10px;align-items:baseline;
+}
+.c-pop a.row:hover{background:#1a1a1a}
+.c-pop .row .mn{font-family:var(--c-mono);font-size:10.5px;font-weight:700;padding:1px 5px;text-align:center}
+.c-pop .row .tx{font-size:12px;color:var(--c-ink2);min-width:0}
+.c-pop .row .tx em{font-style:normal;color:var(--c-faint);font-size:10.5px;margin-left:7px}
+.c-pop .row .tx p{font-family:var(--c-mono);font-size:9.5px;color:var(--c-faint);line-height:1.55;margin-top:1px}
+.c-pop .row.dead .mn{opacity:.45}
+.c-pop .row.dead .tx{color:var(--c-faint)}
+.c-pop kbd{
+  font-family:var(--c-mono);font-size:10px;background:#1e1e1e;border:1px solid var(--c-line2);
+  padding:0 5px;color:var(--c-ink2);
+}
+.c-backdrop{position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.55)}
+
+/* 命中高亮（命令行定位到的窗口/行） */
+.c-hit{outline:1px solid var(--c-cmd-line);outline-offset:-1px}
+tr.c-hit td{background:#2a2000 !important}
+
+/* ===========================================================================
+   13 响应式：桌面优先 2560 / 1920，向下适配笔记本与窄屏
+   =========================================================================== */
+@media (max-width:1400px){
+  .c-tabs .tab{max-width:140px}
+  .c-fields.two{grid-template-columns:auto 1fr}
+}
+@media (max-width:1100px){
+  .c-quote .tk{font-size:18px} .c-quote .px{font-size:18px}
+  .c-tbl td.sum{max-width:220px}
+}
+@media (max-width:760px){
+  body{font-size:12.5px}
+  .c-tabs{overflow-x:auto}
+  .c-tabs .tab{max-width:126px;flex:0 0 auto}
+  .c-tabs .sysr{position:sticky;right:0;background:var(--c-chrome)}
+  .c-fnbar{max-height:64px;overflow-y:auto}
+  .c-crumb{flex-wrap:wrap;padding:3px 6px;gap:2px}
+  .c-crumb .right{margin-left:0;flex-basis:100%;flex-wrap:wrap;row-gap:2px}
+  /* 窄屏：右侧那组（时钟、功能目录、帮助）允许折行，否则一长串顶出视口 */
+  .c-crumb .right > *{min-width:0}
+  .c-crumb .right [data-clocks]{white-space:normal;line-height:1.7}
+  .c-cmd{flex-wrap:wrap}
+  .c-cmd .key{max-width:100%;flex:1 1 auto}
+  .c-cmd .pg{margin-left:0;flex-basis:100%;border-top:1px solid rgba(255,255,255,.12)}
+  .c-cmd .act:first-of-type{margin-left:0}
+  .c-acts{justify-content:flex-start}
+  .c-acts .noorder{max-width:100%;flex-basis:100%;padding-left:0}
+  .c-tbl td.nm{max-width:150px;white-space:normal;overflow-wrap:anywhere}
+  .c-tbl td.sum{max-width:none;white-space:normal;overflow-wrap:anywhere}
+  .c-fields{grid-template-columns:1fr}
+  .c-fields dt{padding-bottom:0;font-size:11.5px}
+  .c-fields dd{padding-left:10px;padding-bottom:3px}
+  .c-pop{left:2vw !important;right:2vw;min-width:0}
+}
+
+/* 本外壳不含任何过渡与动画；下面是向后约束 */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;scroll-behavior:auto !important;
+  }
+}

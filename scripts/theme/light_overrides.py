@@ -51,9 +51,37 @@ LOCKED = {
     "apps/mosquito-lab/index.html",
     "games/gta-vice-city/index.html",
     "games/red-alert/index.html",
+    # 金融终端四页：专业终端本身是深色语言，统一锁深色（页面上主题选择器会显示锁定说明）
+    "apps/finance-terminal/index.html",
+    "apps/finance-terminal/security.html",
+    "apps/finance-terminal/trends.html",
+    "apps/finance-terminal/legacy.html",
+    # 法律两页是纯静态条文，仓库契约要求零脚本，因此不接主题系统
+    "apps/finance-terminal/terms.html",
+    "apps/finance-terminal/privacy.html",
 }
 # 只被锁定页面引用的样式表，同样跳过
-LOCKED_CSS = {"apps/telescope/styles.css"}
+LOCKED_CSS = {
+    "apps/telescope/styles.css",
+    # 法律页样式：那两页不接主题系统，且 legal.css 自带全套令牌
+    "apps/finance-terminal/legal.css",
+    # 新终端设计系统：外壳与数据区都只做深色
+    "assets/terminal/terminal.css",
+    # terminal-board.css 两页共用且有 14KB 预算，兜底已挪到 assets/theme.css 手工维护
+    "apps/finance-terminal/terminal-board.css",
+    # 下面 11 个只被 legacy.html 引用
+    "apps/finance-terminal/terminal-aurora-home.css",
+    "apps/finance-terminal/terminal-command-center.css",
+    "apps/finance-terminal/terminal-reference-fidelity.css",
+    "apps/finance-terminal/terminal-reference-home-v2.css",
+    "apps/finance-terminal/terminal-reference-home-v3.css",
+    "apps/finance-terminal/terminal-reference-home-v4.css",
+    "apps/finance-terminal/terminal-reference-home-v5.css",
+    "apps/finance-terminal/terminal-reference-home-v6.css",
+    "apps/finance-terminal/terminal-reference-home-v7.css",
+    "apps/finance-terminal/terminal-vision.css",
+    "apps/finance-terminal/terminal-visual-fidelity.css",
+}
 
 # assets/theme.css 已经手工调过的变量名：生成器不再自动推导，避免覆盖调色决定
 THEME_OWNED = {
