@@ -1,3 +1,9 @@
+/* 地缘风险定价模型。
+   消费方有两个：
+     · 新版终端 /apps/finance-terminal/（用 buildGeoRisk() 的模型，自己渲染成表格）
+     · 旧版终端 legacy.html 的 finance-terminal-risk-view.mjs（另外用 renderGeoRisk() 画表盘）
+   契约：scripts/validate_finance_terminal_geo_risk.mjs（打分边界、缺值不当 0、窗口不足不给分位）
+   移动此文件要同时改：上面两个消费方 + 那个契约的路径。 */
 /* 地缘风险定价：读的是「市场为地缘风险付出的价格」，不统计也不解读地缘政治事件本身。
    四条轴全部来自站内已在日更的公开管道（跨资产行情、宏观雷达、OFR、无一例外），
    每条轴都给出原值、映射口径、来源与数据日，任一轴缺失即整卡不给等级——

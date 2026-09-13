@@ -212,7 +212,8 @@
         calendar: (cal && !cal.__error) ? cal : null,
         news: (news && !news.__error) ? news : null,
         companies: (comps && !comps.__error) ? comps : null,
-        raw: { assets: assets, intraday: intraday, curve: curve, fear: fear, ofr: ofr, cal: cal, news: news, crypto: crypto, comps: comps }
+        /* raw 保留各源的原始 json：地缘风险模型要的是原始形态（signals 数组、fsi.spark），不是归一化后的 */
+        raw: { assets: assets, intraday: intraday, macro: macro, curve: curve, fear: fear, ofr: ofr, cal: cal, news: news, crypto: crypto, comps: comps }
       };
       return model;
 
