@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-13T16:32:34Z",
+  "updatedAt": "2026-09-13T21:38:30Z",
   "asOf": "2026-09-13",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-09-13 ~ 2026-09-19",
@@ -64,18 +64,6 @@
       "impact": "low",
       "forecast": "0.1%",
       "previous": "0.1%",
-      "actual": null
-    },
-    {
-      "ts": "2026-09-14T06:02:00Z",
-      "ccy": "CNY",
-      "country": "中国",
-      "flag": "🇨🇳",
-      "title": "Foreign Direct Investment ytd/y",
-      "titleEn": "Foreign Direct Investment ytd/y",
-      "impact": "low",
-      "forecast": null,
-      "previous": "-6.2%",
       "actual": null
     },
     {
@@ -328,6 +316,18 @@
       "impact": "low",
       "forecast": "4.9%",
       "previous": "4.9%",
+      "actual": null
+    },
+    {
+      "ts": "2026-09-15T06:02:00Z",
+      "ccy": "CNY",
+      "country": "中国",
+      "flag": "🇨🇳",
+      "title": "Foreign Direct Investment ytd/y",
+      "titleEn": "Foreign Direct Investment ytd/y",
+      "impact": "low",
+      "forecast": null,
+      "previous": "-6.2%",
       "actual": null
     },
     {
@@ -722,7 +722,7 @@
       "title": "美联储利率决议",
       "titleEn": "Federal Funds Rate",
       "impact": "high",
-      "forecast": null,
+      "forecast": "3.75%",
       "previous": "3.75%",
       "actual": null
     },
