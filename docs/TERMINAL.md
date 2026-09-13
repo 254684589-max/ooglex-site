@@ -9,38 +9,76 @@
 ## 一、三层结构
 
 ```
-terminal-redesign/
-├── chrome/          外壳层（第三轮新增）—— 导航与交互，参照专业终端的外壳惯例
-│   ├── chrome.css   标签条 / 彩色功能键条 / 面包屑 / 报价头 / 琥珀命令行 /
-│   │                编号菜单 / 编号动作键 / 字段区 / 表格 / 面板 / 底部建议功能条
-│   ├── registry.js  功能注册表 —— 加一个功能就是加一条记录（本文件第二节）
-│   ├── chrome.js    外壳行为 —— 标签、功能键、命令行、编号跳转、弹层、分页、排序
-│   └── data.js      单证券与榜单的最小数据层（口径规则与 ds/feed.js 一致）
-├── ds/              数据系统层（第二轮）—— 数字怎么算、怎么标口径
-│   ├── ds.css       近黑配色、四级字号、标准/专业双密度、窗口与表格与信号组件
-│   ├── feed.js      12 个站内 JSON 的加载合并、代理与派生标注、分位与 Z 值、真实交易时段
-│   ├── render.js    报价表、个股、曲线、利差、宏观监测、跨资产、日历、要闻、异动、自选、来源
-│   └── terminal.js  密度切换与持久化、时钟与市场状态、窗口 MAX/SET/EXP
-└── *.html           页面层 —— 只做装配：哪个区域用哪个渲染器
+assets/terminal/            代码层（三个页型共用）
+├── core.js       10KB  公共口径：取数与单源失败隔离、格式化、出处行、Z 值与分位
+│                       阈值、真实交易时段、转义。全终端只有这一份口径。
+├── overview.js   10KB  横向模型：12 个站内 JSON → 跨品类总览（股指/利率/外汇/
+│                       商品/信用/加密/宏观/曲线/日历/要闻/异动）
+├── security.js    4KB  纵向模型：单标的的发行人、收盘历史、盘中快照、采集健康；
+│                       以及榜单页的全量公司 + 迷你走势 + 要闻
+├── render.js     24KB  渲染器：报价表、个股、曲线、利差、宏观监测、跨资产、日历、
+│                       要闻、异动、自选、来源、折线、字段表
+├── registry.js    9KB  功能注册表 —— 加一个功能就是加一条记录（见第二节）
+├── chrome.js     15KB  外壳行为：标签条与功能键条渲染、命令行、编号跳转、弹层、
+│                       分页、排序、迷你走势
+├── behavior.js    8KB  密度切换与持久化、时钟与市场状态、窗口 MAX/SET/EXP
+└── terminal.css  37KB  设计系统：外壳 + 数据区一套样式、四级字号、双密度、四档断点
+
+apps/finance-terminal/      页面层（只做装配：哪个区域用哪个渲染器）
+├── index.html         终端监控：13 个功能面板的等尺寸墙（首页）
+├── security.html      证券描述：报价头 + 四个编号分页 + 编号菜单
+├── trends.html        榜单与趋势：子标签 + 筛选条 + 编号行 + 相对强弱 + 迷你走势
+├── quote.html         行情详情：单标的完整走势（改版前就有，未动；markets 页依赖它）
+├── legacy.html        改版前的终端页，保留可用并 noindex
+├── terms.html         使用条款（纯静态、零脚本）
+├── privacy.html       隐私政策（纯静态、零脚本）
+├── app.js + 33 个 .mjs + terminal-*.css   legacy.html 在用，未动
+└── data.json / readiness.json / market-source-readiness.json   数据管道，未动
 ```
 
-**分层的意义**：口径只写一遍。改一处算法，所有页面同时生效。
+**分层的意义**：口径只写一遍。改一处算法，三个页型同时生效。
 页面里没有任何算数字的代码，也没有写死的功能名。
 
-### 配色语义的分工（这是外壳与数据区唯一要小心的地方）
+### 为什么是两个数据模型而不是一个
+
+`overview.js` 是横向的（跨品类、一屏总览），`security.js` 是纵向的（单标的的时间
+序列与明细）。两者读的源只有 3 个重叠，各自缺对方的一半 —— 合成一个大对象只会让
+监控页为了拿一张表去下载 260 天的收盘历史。**该合的是公共部分**：`soft` / `fmt` /
+`isNum` / `statusZh` / `UNAVAILABLE` / `srcLine` 原先在两个数据层里各写了一遍，
+现在只在 `core.js` 里有一份。
+
+### 配色语义的分工（外壳与数据区唯一要小心的地方）
 
 | | 颜色承载什么 | 允许几种 |
 |---|---|---|
-| 外壳（chrome） | **功能属于哪一类**（行情／宏观／分析／新闻／榜单／工具／产业链／系统） | 8 种分类色，每种文字对比度实测 ≥4.5 |
-| 数据区（ds） | **涨跌方向与风险档位** | 绿涨红跌 + 四档信号，且都有文字标签并行，颜色不是唯一编码 |
+| 外壳（`.t-tabs` `.t-fnbar` `.t-crumb` `.t-cmdbar` `.t-menu` `.t-sugg`） | **功能属于哪一类** | 8 种分类色，每种文字对比度实测 ≥4.5 |
+| 数据区（`.t-win` `.t-panel` `.t-tbl` `.t-sig` `.t-chart` `.t-bars`） | **涨跌方向与风险档位** | 绿涨红跌 + 四档信号，且都有文字标签并行 |
 
-彩色功能键条是导航，不是数据，所以它不受数据区「严格控色」那条规则约束 —— 但它也不许越界去表达涨跌。
+彩色功能键条是导航，不受数据区「严格控色」约束 —— 但也不许越界表达涨跌。
+
+### 命名只有一套
+
+全部 `.t-` 前缀。合并时撞名的三处已显式改名，不靠后者覆盖：
+
+| 冲突 | 处理 |
+|---|---|
+| 外壳的命令行**容器** vs 数据区的命令行**输入框** | 容器改 `.t-cmdbar`，`.t-cmd` 仍是输入框 |
+| 外壳的建议功能条 vs 数据区的页脚一行 | 建议条改 `.t-sugg`，`.t-foot` 仍是页脚 |
+| 外壳的通用横滚容器 vs 数据区的窗口修饰符 | 容器改 `.t-scroll-x`，`.t-scroll` 仍是窗口修饰符 |
+| 两套表格组件 | 只留 `.t-tbl`（带双密度与四级字号），外壳那套整块删除 |
+
+### 主题
+
+终端四页（含 legacy）**锁深色** —— 专业终端本身是深色语言，且浅色兜底已从 11 个
+legacy 样式表里剥离（省 43.7KB）。页面上主题选择器仍在，会显示锁定说明。
+`terminal-board.css` 例外：它与 `apps/markets/` 共用，那一页不锁主题，所以它的浅色
+兜底挪到了 `assets/theme.css` 手工维护（board.css 有 14KB 预算，放不进去）。
 
 ---
 
 ## 二、加一个金融功能：改一处
 
-在 `chrome/registry.js` 的 `FUNCTIONS` 里加一条：
+在 `assets/terminal/registry.js` 的 `FUNCTIONS` 里加一条：
 
 ```js
 { mn:"SCRN", zh:"条件选股", en:"Screener", cat:"anly", status:"live",
@@ -53,7 +91,7 @@ terminal-redesign/
 1. 彩色功能键条多一个键，底色按 `cat` 自动取
 2. 功能目录（`FDIR`）里多一行，带分类分组
 3. 命令行认这个助记符，输入 `SCRN` 直接跳
-4. 相关功能菜单、底部建议功能条、方案I 的注册表面板同步出现
+4. 相关功能菜单、底部建议功能条、监控页的注册表面板同步出现
 
 需要手写的只有那个功能页本身。
 
@@ -85,8 +123,9 @@ terminal-redesign/
 | `SCRN` | 条件选股 | 基本面字段（PE / PB / ROE / 营收增速） | 站内公司数据只有价格、市值与收益率，没有财务报表字段 |
 | `ALRT` | 条件告警 | 一处可写存储 + 定时评估 | 纯静态站无后端；浏览器本地只能在打开时评估 |
 | `CHAT` | 终端问答 | 把站内数据口径做成可检索结构 | 否则会答出站内根本没有的数字 |
+| `BOND` | 主权债收益率 | 一个展示页 | **数据已就绪**（`apps/bonds/data.json` 有 35 国 10 年期），只是 `apps/bonds/` 还没有 `index.html` —— 这是新终端契约跑出来的发现 |
 
-**优先级建议**：`SCRN`（只差一个财务字段源，价值最大）→ `ALRT`（可先做「打开时评估」的弱版本，写清它不是后台告警）→ `PORT`（要先有一处可写存储）→ 其余都要先解决数据授权。
+**优先级建议**：`BOND`（数据现成，只差一页，最便宜）→ `SCRN`（只差一个财务字段源，价值最大）→ `ALRT`（可先做「打开时评估」的弱版本，写清它不是后台告警）→ `PORT`（要先有一处可写存储）→ 其余都要先解决数据授权。
 
 ---
 
@@ -106,15 +145,23 @@ terminal-redesign/
 
 ---
 
-## 五、往下走的顺序
+## 五、已经做完的与还剩的
 
-1. **定外壳。** 三个参考版（G 单证券 / H 榜单趋势 / I 多功能监控）挑一个或指出取舍
-2. **定数据系统。** 第二轮三版（D 指挥台 / E 监控墙 / F 研究台）挑一个
-3. **合并成一套。** 外壳 + 数据系统定下来后，`chrome/` 与 `ds/` 合并为一套 `terminal/`
-4. **迁移现有终端。** 梳理 `/apps/finance-terminal/` 的 12 个样式表与 30 余个模块：
-   哪些视图保留、哪些并入、哪些下线（这一步才是真正的工作量），每迁一块跑一次仓库自带的三个校验器
-5. **按注册表逐个加功能。** 优先级见第三节
-6. **推广设计系统。** 把 `ds/ds.css` 的口径推到其余页面，与站内三套主题的关系一并确定
+已完成（本次）：
+
+1. 外壳与数据系统合并为一套 `assets/terminal/`，口径单一真源
+2. 三个页型上线到 `/apps/finance-terminal/`，取代改版前那一页
+3. 改版前那一页移到 `legacy.html` 并保留可用，它的 4000 行契约改指该文件后**全绿**
+4. 新终端有了自己的契约 `scripts/validate_terminal.py`（230 条）
+
+还剩：
+
+| 下一步 | 说明 |
+|---|---|
+| 迁入 legacy 独有的两块 | 品类看板（`board-*`，与 `apps/markets/` 共用一套样式）与地缘风险地图（`geo-risk`），是 legacy 页上新终端还没有的功能 |
+| 退役 legacy 与它的契约 | 两块迁完之后，`legacy.html` + `app.js` + 33 个 `.mjs` + 11 个样式表 + `validate_finance_terminal.py` 一起退役。**这是独立一件事**：退役一个 4000 行的契约要单独评审，不能搭在改版里 |
+| 按注册表逐个加功能 | 优先级见第三节 |
+| 推广设计系统 | 把 `terminal.css` 的口径推到其余页面 |
 
 ---
 
@@ -122,13 +169,28 @@ terminal-redesign/
 
 ```bash
 # 语法
-node --check terminal-redesign/chrome/*.js terminal-redesign/ds/*.js
+node --check assets/terminal/*.js
+python3 -m py_compile scripts/validate_terminal.py
 
-# 结构：标签闭合、重复 id、锚点、站内链接、资源路径、符号残留
-# 响应式：九档宽度（2560 → 360）无页面横滚、无元素越出视口、无 JS 报错
-# 功能：功能键条对比度 ≥4.5、命令行四类输入、编号跳转、弹层键盘可达
-# 失败态：全源阻断 + 单源阻断，看提示是否可见、是否有未捕获异常、是否以零值静默覆盖
-# 诚实性：不得出现买卖键、不得把快照标为实时、不可得字段必须显式声明
+# 新终端契约（230 条：出处规范、不伪造实时、不可得字段声明、无下单键、
+#              注册表完整性、代码层单一真源、无孤儿引用、无障碍）
+python3 scripts/validate_terminal.py
+
+# legacy 页的旧契约（129 条页面断言 + 数据与适配器契约，一条未删）
+python3 scripts/validate_finance_terminal.py
+node scripts/validate_finance_terminal_loader.mjs
+node scripts/validate_finance_terminal_board.mjs
+node scripts/validate_finance_terminal_visuals.mjs
+node scripts/validate_finance_terminal_geo_risk.mjs
+
+# 主题审计（43 页 × 三套主题；终端四页锁深色、法律两页不接主题）
+NODE_PATH=/opt/node22/lib/node_modules node scripts/theme/audit_theme.js
+THEME=dark  NODE_PATH=... node scripts/theme/audit_theme.js
+THEME=paper NODE_PATH=... node scripts/theme/audit_theme.js
+
+# 浏览器端（本容器跑不动 Chrome，CI 里跑）
+node scripts/validate_finance_terminal_browser.mjs   # 指向 legacy.html
 ```
 
-第三轮实测结果记在 `CHANGELOG.md` 对应条目里。
+响应式（三页 × 双密度 × 2560→360 九档）与失败态（全源阻断 + 单源隔离）
+用 Playwright 手动跑，结果记在 `CHANGELOG.md` 对应条目里。

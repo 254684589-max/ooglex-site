@@ -369,7 +369,7 @@ async function validateDeferredLoading(client, baseUrl, timeoutMs) {
   });
   const loaded = client.event("Page.loadEventFired");
   await client.send("Page.navigate", {
-    url: `${baseUrl}/apps/finance-terminal/?deferredProbe=1&run=${randomUUID()}`
+    url: `${baseUrl}/apps/finance-terminal/legacy.html?deferredProbe=1&run=${randomUUID()}`
   });
   await loaded;
   const critical = await waitForLoadState(client, (snapshot) => {
@@ -495,7 +495,7 @@ async function runWidth(client, baseUrl, artifacts, width, height, timeoutMs) {
   try {
     const loaded = client.event("Page.loadEventFired");
     await client.send("Page.navigate", {
-      url: `${baseUrl}/apps/finance-terminal/?regression=1&runtimeEvidence=1&width=${width}&run=${randomUUID()}`
+      url: `${baseUrl}/apps/finance-terminal/legacy.html?regression=1&runtimeEvidence=1&width=${width}&run=${randomUUID()}`
     });
     await loaded;
     result = await waitForRegression(client, timeoutMs);
