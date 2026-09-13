@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme-lock="dark" data-density="std" data-finance-terminal>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>多标的比较 · Ooglex金融终端</title>
+<meta name="description" content="Ooglex金融终端多标的比较页：把公司与跨资产标的的收盘序列按日期对齐、在共同窗口内归一化到 100 后叠加比较，另给价差与比值、回撤水下曲线与区间总回报；逐项标注来源、数据日期、频率与状态，缺口不插值。">
+<link rel="canonical" href="https://www.ooglex.com/apps/finance-terminal/compare.html">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="apple-touch-icon" href="/assets/favicon.svg">
+<meta name="theme-color" content="#050505">
+<meta property="og:type" content="website">
+<meta property="og:title" content="多标的比较 · Ooglex金融终端">
+<meta property="og:description" content="Ooglex金融终端多标的比较页：把公司与跨资产标的的收盘序列按日期对齐、在共同窗口内归一化到 100 后叠加比较，另给价差与比值、回撤水下曲线与区间总回报。">
+<meta property="og:url" content="https://www.ooglex.com/apps/finance-terminal/compare.html">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
+<script>/* 主题首屏防闪：终端锁深色（专业终端本身是深色语言），选择器会显示锁定说明 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js?v=7bf48c7c" defer></script>
+<link rel="stylesheet" href="/assets/terminal/terminal.css?v=410b85e5">
+<style>
+  /* 比较页专属：左编号菜单 + 右主区 */
+  .g-wrap{display:grid;grid-template-columns:206px minmax(0,1fr);gap:9px;padding:9px 10px 0}
+  .g-main{display:grid;gap:9px;min-width:0}
+  .g-2{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:9px;align-items:start}
+  @media (max-width:1400px){ .g-2{grid-template-columns:1fr} }
+  @media (max-width:900px){ .g-wrap{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+
+<div class="t-tabs" data-tabs></div>
+<nav class="t-fnbar" data-fnbar aria-label="功能快捷键"></nav>
+
+<div class="t-crumb">
+  <span class="nav">
+    <button type="button" data-hist="back" aria-label="后退">‹</button>
+    <button type="button" data-hist="fwd" aria-label="前进">›</button>
+  </span>
+  <label class="fld" for="cmp-add">
+    <b>加入标的</b>
+    <select id="cmp-add" aria-label="加入标的比较"
+      style="background:#000;border:1px solid #333;color:#f0f0f0;font-family:var(--t-mono);font-size:11px;padding:1px 4px;max-width:230px"></select>
+  </label>
+  <span class="fld"><b>COMP</b><u>▾</u></span>
+  <a class="rel" href="#" data-open="related" data-cats="quote anly rank">相关功能菜单 ⌄</a>
+  <span class="right">
+    <span class="t-modes">
+      <button type="button" data-mode-btn="std" aria-pressed="true">标准</button>
+      <button type="button" data-mode-btn="pro" aria-pressed="false">专业</button>
+    </span>
+    <span data-theme-slot></span>
+    <button type="button" data-open="fdir">⌗ 功能目录</button>
+    <button type="button" class="help" data-open="help">?</button>
+  </span>
+</div>
+
+<!-- 已选标的 -->
+<div class="t-quote" id="qhead">
+  <div class="l1" style="gap:10px">
+    <span class="tk" style="font-size:15px">COMP</span>
+    <span class="t-chips" id="cmp-chips"><span class="t-na">读取中…</span></span>
+    <span class="grp" style="margin-left:auto"><em>共同窗口</em><b id="q-win">—</b></span>
+    <span class="grp"><em>有效点</em><b id="q-pts">—</b></span>
+  </div>
+  <div class="l2" id="q-meta">读取中…</div>
+</div>
+
+<div class="t-cmdbar">
+  <span class="key" id="cmd-key">COMP Comparative Returns</span>
+  <button class="act" type="button" data-open="related" data-cats="anly quote">Actions <u>▾</u></button>
+  <button class="act" type="button" data-open="help">Settings <u>▾</u></button>
+  <span class="pg">
+    <button type="button" data-page-step="-1" aria-label="上一页">‹</button>
+    <span data-page-ind>Page 1/4</span>
+    <button type="button" data-page-step="1" aria-label="下一页">›</button>
+    <span class="ttl" data-page-title>多标的比较</span>
+  </span>
+</div>
+
+<div class="t-entry">
+  <span class="caret">❭</span>
+  <input data-command type="text" aria-label="命令行"
+    placeholder="输入助记符 / 编号 / 代码后回车 —— 例：11 叠加比较、NVDA 加入比较、MON 终端监控（按 / 聚焦）">
+  <button class="go" type="button" data-command-go>GO</button>
+  <span class="hint" data-cmd-hint>HELP 看用法</span>
+</div>
+
+<div class="t-acts">
+  <button type="button" class="info" data-num="94" data-num-label="口径与不可得字段" data-act="meta"><i>94)</i> 口径说明</button>
+  <button type="button" class="ok" data-num="95" data-num-label="导出本页 CSV" data-act="exp"><i>95)</i> 导出 CSV</button>
+  <button type="button" data-num="96" data-num-label="清空重选" id="cmp-clear"><i>96)</i> 清空重选</button>
+  <span class="noorder">本站没有经纪或订单通道，因此这里没有买/卖键 —— 画一个就是假的。</span>
+</div>
+
+<div class="t-tabs2">
+  <button type="button" data-page-go="0" class="on">25) 叠加比较</button>
+  <button type="button" data-page-go="3">26) 区间总回报</button>
+  <button type="button" data-open="related" data-cats="quote anly">27) 相关功能</button>
+  <button type="button" data-open="fdir">28) 全部功能</button>
+</div>
+
+<main class="g-wrap">
+
+  <nav class="t-menu" aria-label="页面导航">
+    <div class="hd">Pages</div>
+    <a href="#" data-page-go="0" data-num="11" data-num-label="叠加比较"><i>11)</i> 叠加比较</a>
+    <a href="#" data-page-go="1" data-num="12" data-num-label="价差与比值"><i>12)</i> 价差与比值</a>
+    <a href="#" data-page-go="2" data-num="13" data-num-label="回撤"><i>13)</i> 回撤</a>
+    <a href="#" data-page-go="3" data-num="14" data-num-label="区间总回报"><i>14)</i> 区间总回报</a>
+    <div class="off"><i>15)</i> 相关性矩阵</div>
+    <div class="off"><i>16)</i> 贝塔与回归</div>
+    <div class="off"><i>17)</i> 季节性</div>
+    <div class="sep"></div>
+    <div class="hd">Quick Links</div>
+    <div class="two" id="qlinks"></div>
+  </nav>
+
+  <div class="g-main">
+
+    <!-- 11) 叠加比较 -->
+    <section id="pg-1">
+      <div class="t-win t-scroll">
+        <header><h2>归一化叠加 NORMALIZED OVERLAY</h2><span class="t-sub">共同窗口内重基到 100</span></header>
+        <div class="t-body">
+          <div class="t-chart"><svg id="svg-cmp" viewBox="0 0 760 230" preserveAspectRatio="none" role="img" aria-label="多标的归一化叠加走势"></svg></div>
+          <div class="t-legend" id="lg-cmp"></div>
+          <p class="t-note" id="n-cmp"></p>
+        </div>
+        <footer data-src="cmp">—</footer>
+      </div>
+      <div class="t-win" style="margin-top:9px">
+        <header><h2>小倍数 SMALL MULTIPLES</h2><span class="t-sub">共用同一纵轴，逐个看清</span></header>
+        <div class="t-body">
+          <div class="t-smgrid" id="sm-cmp"></div>
+          <p class="t-note">六条线叠在一张图上谁也看不清，所以旁边总配这条小倍数带：每张图只有一条线，纵轴范围与叠加图一致，身份靠标题不靠颜色。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12) 价差与比值 -->
+    <section id="pg-2" hidden>
+      <div class="t-win">
+        <header><h2>价差与比值 SPREAD / RATIO</h2><span class="t-sub" id="sp-sub">选两个标的</span></header>
+        <div class="t-body">
+          <div class="t-filter">
+            <select id="sp-a" aria-label="分子标的" style="flex:1 1 auto"></select>
+            <select id="sp-b" aria-label="分母标的" style="flex:1 1 auto"></select>
+            <select id="sp-mode" aria-label="口径">
+              <option value="ratio">比值 A/B</option>
+              <option value="norm">归一化差 A−B（均重基 100）</option>
+            </select>
+          </div>
+          <div class="t-chart"><svg id="svg-sp" viewBox="0 0 760 190" preserveAspectRatio="none" role="img" aria-label="两标的价差或比值走势"></svg></div>
+          <div class="t-legend" id="lg-sp"></div>
+          <p class="t-note" id="n-sp"></p>
+        </div>
+        <footer data-src="sp">—</footer>
+      </div>
+    </section>
+
+    <!-- 13) 回撤 -->
+    <section id="pg-3" hidden>
+      <div class="t-win t-scroll">
+        <header><h2>回撤 DRAWDOWN</h2><span class="t-sub">距各自区间内前高的百分比</span></header>
+        <div class="t-body">
+          <div class="t-smgrid" id="sm-dd"></div>
+          <table class="t-tbl" id="tbl-dd"><thead><tr>
+            <th>标的</th><th>最大回撤</th><th class="t-col-x">谷底日</th><th>当前距前高</th><th class="t-col-x">有效点</th>
+          </tr></thead><tbody></tbody></table>
+          <p class="t-note" id="n-dd"></p>
+        </div>
+        <footer data-src="dd">—</footer>
+      </div>
+    </section>
+
+    <!-- 14) 区间总回报 -->
+    <section id="pg-4" hidden>
+      <div class="t-win t-scroll">
+        <header><h2>区间总回报 PERIOD RETURN</h2><span class="t-sub">同一共同窗口，逐条可比</span></header>
+        <div class="t-body">
+          <table class="t-tbl" id="tbl-ret"><thead><tr>
+            <th>标的</th><th>区间回报</th><th class="t-col-x">年化</th><th>日波动(年化)</th>
+            <th class="t-col-x">最大回撤</th><th class="t-col-x">基期</th><th>有效点</th>
+          </tr></thead><tbody></tbody></table>
+          <p class="t-note" id="n-ret"></p>
+        </div>
+        <footer data-src="ret">—</footer>
+      </div>
+      <div class="t-win" style="margin-top:9px">
+        <header><h2>口径与不可得字段 METHOD</h2></header>
+        <div class="t-body">
+          <dl class="t-fields" id="f-meta"></dl>
+          <p class="t-note" data-unavail></p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<div class="t-sugg" data-sugg></div>
+
+<div class="t-foot">
+  <span>© 2026 OOGLEX 金融终端</span>
+  <a href="/apps/finance-terminal/">监控</a>
+  <a href="/apps/finance-terminal/security.html">证券描述</a>
+  <a href="/apps/finance-terminal/trends.html">榜单与趋势</a>
+  <a href="/apps/finance-terminal/compare.html">多标的比较</a>
+  <a href="/apps/finance-terminal/quote.html">行情详情</a>
+  <a href="/apps/finance-terminal/legacy.html">旧版终端</a>
+  <a href="/apps/finance-terminal/terms.html">使用条款</a>
+  <a href="/apps/finance-terminal/privacy.html">隐私政策</a>
+  <a href="/">站点首页</a>
+  <span class="t-right">数据仅供研究参考，不构成投资建议</span>
+</div>
+
+<script src="/assets/terminal/core.js?v=450c168f"></script>
+<script src="/assets/terminal/registry.js?v=1d42d994"></script>
+<script src="/assets/terminal/chrome.js?v=04b6a585"></script>
+<script src="/assets/terminal/behavior.js?v=00335003"></script>
+<script src="/assets/terminal/security.js?v=c2723160"></script>
+<script src="/assets/terminal/render.js?v=ed29a2a3"></script>
+<script>
+/* 多标的比较页装配：口径（日期对齐、共同窗口、重基）全部来自 core.js，
+   这一页只负责「选了哪几个」与把结果摆出来。 */
+(function () {
+  var K = window.OOGLEX_CHROME, D = window.OOGLEX_SECURITY, FN = window.OOGLEX_FN;
+  var C = window.OOGLEX_CORE, R = window.OOGLEX_RENDER;
+  var $ = K.$, $$ = K.$$, esc = C.esc, fmt = C.fmt, isNum = C.isNum, set = R.set;
+
+  var MAX = 6;   /* 上限 6 条：再多小倍数也看不清，叠加图的线尾标签也挤不开 */
+
+  K.init({
+    current: "COMP",
+    tabs: [
+      { mn:"MON",  title:"终端监控", href:"/apps/finance-terminal/" },
+      { mn:"DESC", title:"证券描述", href:"/apps/finance-terminal/security.html" },
+      { mn:"TRND", title:"榜单与趋势", href:"/apps/finance-terminal/trends.html" },
+      { mn:"COMP", title:"多标的比较", href:"/apps/finance-terminal/compare.html" },
+      { mn:"QUOT", title:"行情详情", href:"/apps/finance-terminal/quote.html" },
+      { mn:"MACR", title:"宏观雷达", href:"/apps/macro-radar/" },
+      { mn:"FDIR", title:"功能目录", href:"#fdir" }
+    ]
+  });
+  window.OOGLEX_BEHAVIOR.init();
+
+  $("#qlinks").innerHTML = ["MON","DESC","TRND","QUOT","EQTY","GMKT","MACR","CRVE"].map(function (mn) {
+    var f = FN.byMn(mn); if (!f) return "";
+    var c = FN.catOf(f);
+    return '<a href="' + esc(f.href) + '" title="' + esc(f.zh) + '">' +
+      '<span class="mn" style="background:' + c.bg + ";color:" + c.ink + '">' + esc(f.mn) + "</span>" +
+      '<span class="lb">' + esc(f.zh) + "</span></a>";
+  }).join("");
+
+  $("[data-sugg]").innerHTML = '<span class="lb">建议功能 Suggested</span>' +
+    ["DESC","TRND","QUOT","HEAT"].map(function (mn) {
+      var f = FN.byMn(mn); if (!f) return "";
+      var c = FN.catOf(f);
+      return '<a href="' + esc(f.href) + '"><b style="background:' + c.bg + ";color:" + c.ink +
+        '">' + esc(f.mn) + '</b><span>' + esc(f.zh) + " · " + esc(f.note || "") + "</span></a>";
+    }).join("");
+
+  var pager = K.pager({ pages: [
+    { sel:"#pg-1", title:"多标的比较 · 叠加比较" },
+    { sel:"#pg-2", title:"多标的比较 · 价差与比值" },
+    { sel:"#pg-3", title:"多标的比较 · 回撤" },
+    { sel:"#pg-4", title:"多标的比较 · 区间总回报" }
+  ]});
+
+  /* 失败措辞与站内其余页保持一致（读取失败 / 未加载）—— 同一种事在不同页
+     叫不同名字，读的人和检查器都会漏掉。 */
+  function fail(msg) {
+    $$("[data-src]").forEach(function (f) { f.textContent = msg; f.style.color = "var(--t-dn)"; });
+    set("#n-cmp", msg);
+    set("#q-meta", msg);
+    set("#q-win", "读取失败"); set("#q-pts", "—");
+    $("#cmp-chips").innerHTML = '<span class="t-na">' + esc(msg) + "</span>";
+  }
+
+  D.loadCompare().then(function (M) {
+    if (!M.pool.length) { fail("公司榜与跨资产两条管道都读取失败，本页无可比较标的"); return; }
+
+    /* 选择器：按分组列出全部可选标的 */
+    var groups = {};
+    M.pool.forEach(function (p) { (groups[p.group] = groups[p.group] || []).push(p); });
+    $("#cmp-add").innerHTML = '<option value="">— 选一个加入比较 —</option>' +
+      Object.keys(groups).map(function (g) {
+        return '<optgroup label="' + esc(g) + '">' + groups[g].map(function (p) {
+          return '<option value="' + esc(p.tk) + '">' + esc(p.tk) + " " + esc(p.name || "") + "</option>";
+        }).join("") + "</optgroup>";
+      }).join("");
+
+    /* 选中集合：默认从地址里读，读不到就给一组有代表性的默认值 */
+    var sel = [];
+    function fromUrl() {
+      var q = "";
+      try { q = (new URLSearchParams(location.search).get("syms") || "").trim(); } catch (e) {}
+      if (!q) return { list: [], note: "" };
+      var want = q.split(",").map(function (x) { return x.trim(); }).filter(Boolean).slice(0, MAX);
+      var hit = [], miss = [];
+      want.forEach(function (t) {
+        var p = M.byTk(t) || M.byTk(t.toUpperCase());
+        if (p) hit.push(p); else miss.push(t);
+      });
+      return { list: hit,
+               note: miss.length ? "地址里的 " + miss.join("、") + " 不在站内可比较标的里，已忽略；未静默替换，特此说明。" : "" };
+    }
+    var urlPick = fromUrl();
+    if (urlPick.list.length >= 2) sel = urlPick.list;
+    else {
+      ["NVDA", "MSFT", "^GSPC"].forEach(function (t) { var p = M.byTk(t); if (p) sel.push(p); });
+      if (sel.length < 2) sel = M.pool.slice(0, 3);
+    }
+    if (urlPick.note) K.say(urlPick.note, false);
+
+    function syncUrl() {
+      try {
+        var u = new URL(location.href);
+        u.searchParams.set("syms", sel.map(function (p) { return p.tk; }).join(","));
+        history.replaceState(null, "", u.pathname + "?" + u.searchParams.toString());
+      } catch (e) {}
+    }
+
+    var focusTk = null;   /* 聚焦哪一条（点小牌子切换） */
+
+    function chips() {
+      $("#cmp-chips").innerHTML = sel.map(function (p) {
+        var on = p.tk === focusTk;
+        return '<span class="t-chip' + (on ? " on" : "") + '">' +
+          '<button type="button" data-focus="' + esc(p.tk) + '" title="聚焦 ' + esc(p.tk) +
+          '" style="color:inherit;padding:0 2px 0 0">' + esc(p.tk) + "</button>" +
+          '<button type="button" data-drop="' + esc(p.tk) + '" aria-label="移除 ' + esc(p.tk) + '">×</button></span>';
+      }).join("") + (sel.length < MAX ? "" : '<span class="t-na" style="font-size:9px">已达上限 ' + MAX + " 条</span>");
+      $$("#cmp-chips [data-drop]").forEach(function (b) {
+        b.onclick = function () {
+          if (sel.length <= 2) { K.say("至少要留两条才能比较", false); return; }
+          sel = sel.filter(function (p) { return p.tk !== b.getAttribute("data-drop"); });
+          if (focusTk === b.getAttribute("data-drop")) focusTk = null;
+          paint();
+        };
+      });
+      $$("#cmp-chips [data-focus]").forEach(function (b) {
+        b.onclick = function () {
+          var t = b.getAttribute("data-focus");
+          focusTk = focusTk === t ? null : t;
+          paint();
+        };
+      });
+    }
+
+    $("#cmp-add").onchange = function () {
+      var t = this.value; this.value = "";
+      if (!t) return;
+      if (sel.some(function (p) { return p.tk === t; })) { K.say(t + " 已在比较里", false); return; }
+      if (sel.length >= MAX) { K.say("最多比较 " + MAX + " 条，先摘掉一个", false); return; }
+      var p = M.byTk(t); if (!p) return;
+      sel.push(p); paint();
+    };
+    $("#cmp-clear").onclick = function () {
+      sel = M.pool.slice(0, 3); focusTk = null; paint();
+      K.say("已清空重选", true);
+    };
+
+    /* ── 逐条统计：区间回报、年化、波动、最大回撤 ───────────────────── */
+    function stats(vals) {
+      var pts = [];
+      for (var i = 0; i < vals.length; i++) if (isNum(vals[i])) pts.push({ i: i, v: vals[i] });
+      if (pts.length < 3) return null;
+      var first = pts[0].v, last = pts[pts.length - 1].v;
+      var rets = [];
+      for (var k = 1; k < pts.length; k++) {
+        if (pts[k].i - pts[k - 1].i === 1) rets.push(pts[k].v / pts[k - 1].v - 1);
+      }
+      var sd = null;
+      if (rets.length > 20) {
+        var mu = rets.reduce(function (a, b) { return a + b; }, 0) / rets.length;
+        sd = Math.sqrt(rets.reduce(function (a, b) { return a + (b - mu) * (b - mu); }, 0) / (rets.length - 1));
+      }
+      /* 回撤：距区间内前高。序列缺口不参与，前高只在有效点上滚动 */
+      var peak = -Infinity, maxDD = 0, troughAt = -1, dd = new Array(vals.length);
+      for (var j = 0; j < vals.length; j++) dd[j] = null;
+      pts.forEach(function (p) {
+        if (p.v > peak) peak = p.v;
+        var d = (p.v / peak - 1) * 100;
+        dd[p.i] = d;
+        if (d < maxDD) { maxDD = d; troughAt = p.i; }
+      });
+      var years = rets.length / 252;
+      return {
+        ret: (last / first - 1) * 100,
+        cagr: years > 0.25 ? (Math.pow(last / first, 1 / years) - 1) * 100 : null,
+        vol: sd !== null ? sd * Math.sqrt(252) * 100 : null,
+        maxDD: maxDD, troughAt: troughAt, dd: dd,
+        cur: (last / peak - 1) * 100,
+        valid: pts.length, n: vals.length, firstAt: pts[0].i, samples: rets.length
+      };
+    }
+
+    function paint() {
+      chips(); syncUrl();
+      if (sel.length < 2) { set("#n-cmp", "至少要两条序列才能比较"); return; }
+      set("#n-cmp", "正在取各标的的收盘序列…");
+
+      M.seriesFor(sel).then(function (raw) {
+        /* 单源隔离：某一条取不到序列，不该把整次比较拖死 —— 把它摘出来说明原因，
+           剩下的照比。摘掉谁、为什么，逐条写在图下面，不静默丢弃。 */
+        var usable = raw.filter(function (r) { return r.values.filter(isNum).length >= 2; });
+        var unusable = raw.filter(function (r) { return r.values.filter(isNum).length < 2; });
+        var noteMiss = unusable.map(function (r) {
+          return r.tk + " 已从本次比较摘出（" + (r.note || "站内没有可用序列") + "）";
+        });
+
+        var al = C.alignSeries(usable);
+        var w = usable.length >= 2 ? C.compareWindow(al.items)
+              : { ok:false, reason:"可比较的序列不足两条" };
+
+        function footers(txt) {
+          ["cmp", "sp", "dd", "ret"].forEach(function (k) { set('[data-src="' + k + '"]', txt); });
+        }
+
+        if (!w.ok) {
+          footers(C.srcLine(M.src.comp) + "；" + C.srcLine(M.src.asset) +
+                  " · 可选 " + M.counts.company + " 家公司 + " + M.counts.tracker + " 个跨资产标的");
+          ["#svg-cmp", "#svg-sp"].forEach(function (s) {
+            var n = $(s); if (n) n.innerHTML = '<text x="10" y="24" fill="#8a8a8a" font-family="monospace" font-size="12">' +
+              esc(w.reason) + "</text>";
+          });
+          $("#sm-cmp").innerHTML = ""; $("#sm-dd").innerHTML = "";
+          $("#tbl-dd tbody").innerHTML = $("#tbl-ret tbody").innerHTML =
+            '<tr><td colspan="7" class="t-na" style="text-align:left">' + esc(w.reason) + "</td></tr>";
+          set("#q-win", "无共同窗口"); set("#q-pts", "—");
+          set("#q-meta", w.reason + (noteMiss.length ? "　" + noteMiss.join("；") : ""));
+          set("#n-cmp", w.reason + (noteMiss.length ? "　⚠ " + noteMiss.join("；") : ""));
+          return;
+        }
+
+        var dates = al.dates.slice(w.start, w.end + 1);
+        var items = al.items.map(function (it) {
+          var rb = C.rebase(it.values, w.start, w.end);
+          var st = rb ? stats(rb.values) : null;
+          return Object.assign({ tk: it.tk, name: it.name, cur: it.cur,
+                                 focus: focusTk ? it.tk === focusTk : false },
+                               rb || { values: [], valid: 0, n: 0 }, { st: st });
+        });
+        /* 没指定聚焦时，默认聚焦第一条，图上才有一条读得清的主线 */
+        if (!focusTk && items.length) items[0].focus = true;
+
+        set("#q-win", (dates[0] || "—") + " → " + (dates[dates.length - 1] || "—"));
+        set("#q-pts", dates.length + " 个交易日");
+        set("#q-meta",
+          "共 " + sel.length + " 条 · 对齐后轴长 " + al.dates.length +
+          "（原并集 " + al.axisFull + " 天，去掉 " + al.dropped + " 天：这几条都没有观测的日子，公司榜的轴里含周日）" +
+          " · 窗口内 " + dates.length + " 个交易日 · 全部重基到 100 · 缺口不插值");
+        set("#cmd-key", "COMP " + sel.map(function (p) { return p.tk; }).join(" / "));
+        document.title = "比较 " + sel.map(function (p) { return p.tk; }).join(" / ") + " · Ooglex金融终端";
+
+        /* ── 11) 叠加 + 小倍数 ── */
+        R.multiLine("#svg-cmp", "#lg-cmp", items, dates, { l:46, r:66, b:24, grid:4 });
+        R.smallMultiples("#sm-cmp", items, dates);
+        var baseDates = items.map(function (it) { return al.dates[it.baseAt]; });
+        var sameBase = baseDates.every(function (d) { return d === baseDates[0]; });
+        set("#n-cmp",
+          "全部重基到 100，起点 " + (dates[0] || "—") + "。" +
+          (sameBase ? "各条基期相同。" : "各条基期不完全相同（" +
+            items.map(function (it, i) { return it.tk + " " + baseDates[i]; }).join("、") +
+            "）—— 休市日不同所致，未前向填充。") +
+          " 两条管道的日期轴不同（公司榜与跨资产），已按日期字符串对齐。" +
+          (al.dropped ? "并集轴上有 " + al.dropped + " 天这几条都没有观测（公司榜的轴里含周日，股票那天不开盘），" +
+            "这些整列已从图上去掉 —— 去空列不是补数据：某天只有部分标的有值时，没值的那条依然留空、折线依然断开。" : "") +
+          " 不插值，也不前向填充。" +
+          (noteMiss.length ? "　⚠ " + noteMiss.join("；") : ""));
+        /* 选择器里少了哪一类要明说 —— 标的表取不到时那一整类会静默消失 */
+        var poolNote = "可选 " + M.counts.company + " 家公司 + " + M.counts.tracker + " 个跨资产标的";
+        if (M.err.assetList) poolNote += "（跨资产标的表读取失败：" + M.err.assetList + "，这一类整类不可选）";
+        if (M.err.comp) poolNote += "（公司榜读取失败：" + M.err.comp + "，公司整类不可选）";
+        set('[data-src="cmp"]',
+          C.srcLine(M.src.comp) + "；" + C.srcLine(M.src.asset) + " · " + poolNote +
+          " · 各标的按本币计价，未做汇率换算，比较的是本币回报");
+
+        /* ── 12) 价差与比值 ── */
+        function fillPick(id) {
+          var cur = $(id).value;
+          $(id).innerHTML = items.map(function (it) {
+            return '<option value="' + esc(it.tk) + '">' + esc(it.tk) + "</option>";
+          }).join("");
+          if (cur && items.some(function (it) { return it.tk === cur; })) $(id).value = cur;
+        }
+        fillPick("#sp-a"); fillPick("#sp-b");
+        if ($("#sp-a").value === $("#sp-b").value && items.length > 1) $("#sp-b").value = items[1].tk;
+
+        function drawSpread() {
+          var a = items.filter(function (it) { return it.tk === $("#sp-a").value; })[0];
+          var b = items.filter(function (it) { return it.tk === $("#sp-b").value; })[0];
+          var mode = $("#sp-mode").value;
+          if (!a || !b || a === b) {
+            $("#svg-sp").innerHTML = '<text x="10" y="24" fill="#8a8a8a" font-family="monospace" font-size="12">选两个不同的标的</text>';
+            set("#lg-sp", ""); set("#n-sp", "分子与分母得是两个不同的标的。");
+            return;
+          }
+          var out = [], lab;
+          for (var i = 0; i < a.values.length; i++) {
+            if (!isNum(a.values[i]) || !isNum(b.values[i])) { out.push(null); continue; }
+            out.push(mode === "ratio" ? a.values[i] / b.values[i] * 100 : a.values[i] - b.values[i]);
+          }
+          lab = mode === "ratio"
+            ? a.tk + " / " + b.tk + "（两条均已重基到 100，所以比值起点也是 100）"
+            : a.tk + " − " + b.tk + "（两条归一化指数之差，单位是「指数点」，不是价格差）";
+          var st = R.priceLine("#svg-sp", "#lg-sp", out, dates, {
+            l:46, b:22, grid:4, valLabel:"有效点",
+            fmtv: function (x) { return isNum(x) ? x.toFixed(mode === "ratio" ? 1 : 1) : "—"; },
+            absChange: mode !== "ratio",
+            empty:"这两条在共同窗口内的重叠有效点不足，不画图"
+          });
+          set("#n-sp", lab + "。" +
+            (mode === "ratio"
+              ? " 比值高于 100 表示 " + a.tk + " 自基期以来跑赢 " + b.tk + "。"
+              : " 大于 0 表示 " + a.tk + " 自基期以来跑赢 " + b.tk + "。") +
+            " 只在两条同一天都有收盘时才计算，任一条缺就留空。" +
+            (st ? "" : " 当前重叠点不足。"));
+          set("#sp-sub", a.tk + " vs " + b.tk);
+          set('[data-src="sp"]', C.srcLine(M.src.comp) + " · 由归一化序列现算，非官方价差合约");
+        }
+        $("#sp-a").onchange = $("#sp-b").onchange = $("#sp-mode").onchange = drawSpread;
+        drawSpread();
+
+        /* ── 13) 回撤 ── */
+        var ddItems = items.filter(function (it) { return it.st; }).map(function (it) {
+          return { tk: it.tk, values: it.st.dd, valid: it.st.valid, n: it.st.n,
+                   last: isNum(it.st.cur) ? 100 + it.st.cur : null };
+        });
+        R.smallMultiples("#sm-dd", ddItems.map(function (d) {
+          /* 回撤是 0 到负数，借用同一个小倍数渲染器：把 0 摆在 100 的位置上读 */
+          return { tk: d.tk, values: d.values.map(function (x) { return isNum(x) ? 100 + x : null; }),
+                   valid: d.valid, n: d.n, last: d.last };
+        }), dates);
+        $("#tbl-dd tbody").innerHTML = items.map(function (it) {
+          if (!it.st) return '<tr><td class="t-rownum">' + esc(it.tk) +
+            '</td><td colspan="4" class="t-na" style="text-align:left">有效点不足，不给回撤</td></tr>';
+          return '<tr data-tk="' + esc(it.tk) + '"><td class="t-rownum">' + esc(it.tk) +
+            '<span class="sub">' + esc(it.name || "") + "</span></td>" +
+            '<td class="t-dn">' + fmt.pct(it.st.maxDD, 1) + "</td>" +
+            '<td class="t-col-x">' + esc(dates[it.st.troughAt] || "—") + "</td>" +
+            '<td class="' + (it.st.cur < -0.05 ? "t-dn" : "t-flat") + '">' + fmt.pct(it.st.cur, 1) + "</td>" +
+            '<td class="t-col-x">' + it.st.valid + "/" + it.st.n + "</td></tr>";
+        }).join("");
+        set("#n-dd", "回撤 = 当前值 ÷ 区间内前高 − 1，前高只在有效收盘上滚动（缺口不参与，也不前向填充）。" +
+          "口径是「本共同窗口内」的回撤，不是标的历史最大回撤 —— 窗口只有 " + dates.length + " 个交易日。");
+        set('[data-src="dd"]', C.srcLine(M.src.comp) + " · 由站内收盘序列现算");
+
+        /* ── 14) 区间总回报 ── */
+        $("#tbl-ret tbody").innerHTML = items.map(function (it, i) {
+          if (!it.st) return '<tr><td class="t-rownum">' + esc(it.tk) +
+            '</td><td colspan="6" class="t-na" style="text-align:left">有效点不足，不给统计</td></tr>';
+          return '<tr data-tk="' + esc(it.tk) + '"><td class="t-rownum">' + esc(it.tk) +
+            '<span class="sub">' + esc(it.name || "") + "</span></td>" +
+            '<td class="' + fmt.cls(it.st.ret) + '">' + fmt.pct(it.st.ret, 1) + "</td>" +
+            '<td class="t-col-x ' + fmt.cls(it.st.cagr) + '">' +
+              (isNum(it.st.cagr) ? fmt.pct(it.st.cagr, 1) : '<span class="t-na">窗口不足一季，不年化</span>') + "</td>" +
+            "<td>" + (isNum(it.st.vol) ? it.st.vol.toFixed(1) + "%" : '<span class="t-na">样本不足</span>') + "</td>" +
+            '<td class="t-col-x t-dn">' + fmt.pct(it.st.maxDD, 1) + "</td>" +
+            '<td class="t-col-x">' + esc(baseDates[i] || "—") + "</td>" +
+            "<td>" + it.st.valid + "/" + it.st.n + "</td></tr>";
+        }).join("");
+        set("#n-ret", "同一共同窗口内逐条计算，所以这几个数彼此可比。" +
+          "年化按 252 个交易日折算，窗口不足一季不给年化；日波动率需要 20 个以上相邻交易日对，不足不给。");
+        set('[data-src="ret"]', C.srcLine(M.src.comp) + "；" + C.srcLine(M.src.asset));
+
+        R.fields("#f-meta", [
+          { k:"对齐方式", v:"按日期字符串对齐到并集轴（两条管道日期轴不同，按下标对齐会整体错位几天）", box:1 },
+          { k:"共同窗口", v:"起点取各条首个有效点里最晚的，终点取各条最后有效点里最早的", mono:1 },
+          { k:"归一化",  v:"各条按自己在窗口内的第一个有效收盘重基到 100", mono:1 },
+          { k:"缺口处理", v:"某天无收盘即留空，折线断开；不插值、不前向填充", box:1 },
+          { k:"币种",    v:"各标的按本币计价，未做汇率换算 —— 比较的是本币回报", na:0 },
+          { k:"加密口径", v:"跨资产里的加密标的是 24 小时口径，与股票当日收盘口径不同", na:0 },
+          { k:"成交量",  v:"站内无来源，不显示", na:1 },
+          { k:"分红调整", v:"站内序列为收盘价，未做分红再投资调整", na:1 }
+        ]);
+        set("[data-unavail]", C.UNAVAILABLE_NOTE);
+        K.wireNumbers();
+      }).catch(function (e) {
+        fail("序列读取失败：" + (e && e.message || e));
+      });
+    }
+
+    paint();
+  }).catch(function (e) { fail("数据层读取失败：" + (e && e.message || e)); });
+})();
+</script>
+</body>
+</html>

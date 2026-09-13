@@ -487,6 +487,145 @@
     return stat;
   }
 
+  /* ── 多标的叠加（归一化到 100）──────────────────────────────────────────
+     身份靠「线尾直接标代码」，不靠颜色：本终端数据区的颜色只承载涨跌方向与
+     风险档位，再拿它编码「这是哪条标的」就把色彩语义搞乱了。而且文档调色板里
+     避开绿/红/琥珀/黄四族之后只剩两格能用（蓝与紫在色盲模拟下 ΔE 1.9 直接撞死），
+     六条线本来就不可能靠颜色分开。所以：上下文线一律 --t-dim，聚焦那条抬到
+     --t-cmd-line 并画在最上层，每条线尾都写代码。对比度已量：5.63:1 / 13.48:1。 */
+  function multiLine(svgSel, legendSel, items, dates, opt) {
+    opt = opt || {};
+    var svg = typeof svgSel === "string" ? $(svgSel) : svgSel;
+    var lg = legendSel ? $(legendSel) : null;
+    if (!svg) return null;
+    var live = (items || []).filter(function (it) { return it && it.values && it.values.filter(isNum).length >= 2; });
+    if (live.length < 2) {
+      svg.innerHTML = '<text x="10" y="24" fill="#8a8a8a" font-family="monospace" font-size="12">' +
+        esc(opt.empty || "可比较的序列不足两条，不画图") + "</text>";
+      if (lg) lg.innerHTML = "";
+      return null;
+    }
+    var vb = (svg.getAttribute("viewBox") || "0 0 700 220").split(/\s+/);
+    var W = +vb[2], H = +vb[3];
+    var L = opt.l != null ? opt.l : 46, R = opt.r != null ? opt.r : 62, T = 10, B = opt.b != null ? opt.b : 24;
+    var lo = Infinity, hi = -Infinity, n = 0;
+    live.forEach(function (it) {
+      n = Math.max(n, it.values.length);
+      it.values.forEach(function (v) { if (isNum(v)) { if (v < lo) lo = v; if (v > hi) hi = v; } });
+    });
+    var pad = (hi - lo) * .08 || 1; lo -= pad; hi += pad;
+    var span = n - 1 || 1;
+    function X(i) { return L + (W - L - R) * i / span; }
+    function Y(v) { return T + (H - T - B) * (hi - v) / (hi - lo); }
+
+    /* 网格：100 那条基线单独画实线——归一化图里它是「起点」这个事实本身 */
+    var g = "", steps = opt.grid != null ? opt.grid : 4;
+    for (var k = 0; k <= steps; k++) {
+      var vv = lo + (hi - lo) * k / steps, y = Y(vv);
+      g += '<line x1="' + L + '" y1="' + y.toFixed(1) + '" x2="' + (W - R) + '" y2="' + y.toFixed(1) +
+           '" stroke="#1f1f1f" stroke-width="1"/><text x="' + (L - 6) + '" y="' + (y + 3.5).toFixed(1) +
+           '" text-anchor="end" fill="#5e5e5e" font-family="monospace" font-size="9">' + vv.toFixed(0) + "</text>";
+    }
+    if (lo < 100 && hi > 100) {
+      g += '<line x1="' + L + '" y1="' + Y(100).toFixed(1) + '" x2="' + (W - R) + '" y2="' + Y(100).toFixed(1) +
+           '" stroke="#3d3d3d" stroke-width="1" stroke-dasharray="3 3"/>';
+    }
+
+    function path(vals) {
+      var d = "", pen = false;
+      for (var j = 0; j < vals.length; j++) {
+        if (!isNum(vals[j])) { pen = false; continue; }          /* 缺口断开，不插值 */
+        d += (pen ? "L" : "M") + X(j).toFixed(1) + "," + Y(vals[j]).toFixed(1);
+        pen = true;
+      }
+      return d;
+    }
+    /* 聚焦那条最后画，保证压在最上面 */
+    var ordered = live.filter(function (it) { return !it.focus; }).concat(live.filter(function (it) { return it.focus; }));
+    var lines = ordered.map(function (it) {
+      return '<path d="' + path(it.values) + '" fill="none" stroke="' +
+        (it.focus ? "var(--t-cmd-line)" : "var(--t-dim)") + '" stroke-width="' + (it.focus ? 1.7 : 1) + '"/>';
+    }).join("");
+
+    /* 线尾直接标代码。按末值排好后逐个往下推开，避免标签叠在一起看不清 */
+    var ends = live.map(function (it) {
+      var lastAt = -1;
+      for (var j = it.values.length - 1; j >= 0; j--) if (isNum(it.values[j])) { lastAt = j; break; }
+      return { tk: it.tk, y: Y(it.values[lastAt]), x: X(lastAt), focus: !!it.focus };
+    }).sort(function (a, b) { return a.y - b.y; });
+    var minGap = 10.5;
+    for (var e = 1; e < ends.length; e++) {
+      if (ends[e].y - ends[e - 1].y < minGap) ends[e].y = ends[e - 1].y + minGap;
+    }
+    var over = ends.length ? ends[ends.length - 1].y - (H - B) : 0;
+    if (over > 0) ends.forEach(function (p) { p.y -= over; });      /* 整组上移，别顶出下边界 */
+    var labels = ends.map(function (p) {
+      return '<line x1="' + (p.x + 1).toFixed(1) + '" y1="' + p.y.toFixed(1) + '" x2="' + (W - R + 3) +
+             '" y2="' + p.y.toFixed(1) + '" stroke="' + (p.focus ? "var(--t-cmd-line)" : "#2e2e2e") + '" stroke-width="1"/>' +
+             '<text x="' + (W - R + 6) + '" y="' + (p.y + 3.2).toFixed(1) + '" fill="' +
+             (p.focus ? "var(--t-cmd-line)" : "var(--t-ink2)") +
+             '" font-family="monospace" font-size="9.5" font-weight="700">' + esc(p.tk) + "</text>";
+    }).join("");
+
+    var xt = "";
+    var ticks = [0, Math.floor(span * .33), Math.floor(span * .66), span];
+    ticks.forEach(function (i, ti) {
+      if (!dates || !dates[i]) return;
+      var anchor = ti === 0 ? "start" : ti === ticks.length - 1 ? "end" : "middle";
+      xt += '<text x="' + X(i).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="' + anchor +
+            '" fill="#5e5e5e" font-family="monospace" font-size="9">' + esc(dates[i]) + "</text>";
+    });
+    svg.innerHTML = g + lines + labels + xt;
+
+    if (lg) {
+      lg.innerHTML = live.map(function (it) {
+        var chg = isNum(it.last) ? it.last - 100 : null;
+        return '<span><b' + (it.focus ? ' style="color:var(--t-cmd-line)"' : "") + ">" + esc(it.tk) + "</b> " +
+          '<span class="' + fmt.cls(chg) + '">' + fmt.pct(chg, 1) + "</span>" +
+          '<span style="color:var(--t-faint)"> 有效 ' + it.valid + "/" + it.n + "</span></span>";
+      }).join("");
+    }
+    return { lo: lo, hi: hi, n: n, items: live };
+  }
+
+  /* ── 小倍数：一条序列一张小图，共用同一个纵轴范围 ──────────────────────
+     六条线叠在一张图上谁也看不清；小倍数是「序列多到颜色分不开」时的正解。
+     每张图只有一条线，身份靠标题，完全不用颜色编码。 */
+  function smallMultiples(hostSel, items, dates, opt) {
+    opt = opt || {};
+    var host = typeof hostSel === "string" ? $(hostSel) : hostSel;
+    if (!host) return;
+    var live = (items || []).filter(function (it) { return it && it.values && it.values.filter(isNum).length >= 2; });
+    if (!live.length) { host.innerHTML = '<p class="t-note">没有可画的序列</p>'; return; }
+    var lo = Infinity, hi = -Infinity, n = 0;
+    live.forEach(function (it) {
+      n = Math.max(n, it.values.length);
+      it.values.forEach(function (v) { if (isNum(v)) { if (v < lo) lo = v; if (v > hi) hi = v; } });
+    });
+    var pad = (hi - lo) * .08 || 1; lo -= pad; hi += pad;
+    var W = 168, H = 52, span = n - 1 || 1;
+    host.innerHTML = live.map(function (it) {
+      var d = "", pen = false;
+      for (var j = 0; j < it.values.length; j++) {
+        if (!isNum(it.values[j])) { pen = false; continue; }
+        d += (pen ? "L" : "M") + (W * j / span).toFixed(1) + "," +
+             (H * (hi - it.values[j]) / (hi - lo)).toFixed(1);
+        pen = true;
+      }
+      var chg = isNum(it.last) ? it.last - 100 : null;
+      var y100 = H * (hi - 100) / (hi - lo);
+      return '<figure class="t-sm"><figcaption><b>' + esc(it.tk) + "</b>" +
+        '<span class="' + fmt.cls(chg) + '">' + fmt.pct(chg, 1) + "</span></figcaption>" +
+        '<svg viewBox="0 0 ' + W + " " + H + '" preserveAspectRatio="none" role="img" aria-label="' +
+        esc(it.tk + " 归一化走势 " + fmt.pct(chg, 1)) + '">' +
+        (y100 >= 0 && y100 <= H
+          ? '<line x1="0" y1="' + y100.toFixed(1) + '" x2="' + W + '" y2="' + y100.toFixed(1) +
+            '" stroke="#2e2e2e" stroke-width="1" stroke-dasharray="3 3"/>' : "") +
+        '<path d="' + d + '" fill="none" stroke="var(--t-ink2)" stroke-width="1.2"/></svg>' +
+        '<figcaption class="sub">有效 ' + it.valid + "/" + it.n + "</figcaption></figure>";
+    }).join("");
+  }
+
   function fields(dl, list) {
     dl = typeof dl === "string" ? $(dl) : dl;
     if (!dl) return;
@@ -505,7 +644,8 @@
     quoteTable: quoteTable, curve: curve, spreadLegend: spreadLegend, spreadTable: spreadTable,
     ratesTable: ratesTable, macroMonitor: macroMonitor, MONITOR_METHOD: MONITOR_METHOD,
     macroBlock: macroBlock,
-    priceLine: priceLine, fields: fields, nameCell: nameCell,
+    priceLine: priceLine, multiLine: multiLine, smallMultiples: smallMultiples,
+    fields: fields, nameCell: nameCell,
     crossBars: crossBars, calendar: calendar, news: news, alerts: alerts, sources: sources,
     watchlist: watchlist, topStatus: topStatus
   };

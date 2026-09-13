@@ -18,7 +18,7 @@
 <script>/* 主题首屏防闪：终端锁深色（专业终端本身是深色语言），选择器会显示锁定说明 */
 (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
 <script src="/assets/theme.js?v=7bf48c7c" defer></script>
-<link rel="stylesheet" href="/assets/terminal/terminal.css?v=ad09480e">
+<link rel="stylesheet" href="/assets/terminal/terminal.css?v=410b85e5">
 <style>
   /* 监控首页专属：等尺寸面板墙。1920 四列、≥2300 五列、≤1500 三列、≤1100 两列 */
   .mon{
@@ -213,6 +213,7 @@
   <a href="/apps/finance-terminal/">监控</a>
   <a href="/apps/finance-terminal/security.html">证券描述</a>
   <a href="/apps/finance-terminal/trends.html">榜单与趋势</a>
+  <a href="/apps/finance-terminal/compare.html">多标的比较</a>
   <a href="/apps/finance-terminal/quote.html">行情详情</a>
   <a href="/apps/finance-terminal/legacy.html">旧版终端</a>
   <a href="/apps/finance-terminal/terms.html">使用条款</a>
@@ -222,12 +223,12 @@
   <span class="t-right">数据仅供研究参考，不构成投资建议</span>
 </div>
 
-<script src="/assets/terminal/core.js?v=d58df4ae"></script>
-<script src="/assets/terminal/registry.js?v=aafd8c27"></script>
+<script src="/assets/terminal/core.js?v=450c168f"></script>
+<script src="/assets/terminal/registry.js?v=1d42d994"></script>
 <script src="/assets/terminal/chrome.js?v=04b6a585"></script>
 <script src="/assets/terminal/behavior.js?v=00335003"></script>
 <script src="/assets/terminal/overview.js?v=46bbd539"></script>
-<script src="/assets/terminal/render.js?v=1e75db27"></script>
+<script src="/assets/terminal/render.js?v=ed29a2a3"></script>
 <script>
 /* 终端监控首页装配：只声明「哪个面板用哪个渲染器」，口径与算法都在 /assets/terminal/。 */
 (function () {
@@ -241,6 +242,7 @@
       { mn:"MON",  title:"终端监控", href:"/apps/finance-terminal/" },
       { mn:"DESC", title:"证券描述", href:"/apps/finance-terminal/security.html" },
       { mn:"TRND", title:"榜单与趋势", href:"/apps/finance-terminal/trends.html" },
+      { mn:"COMP", title:"多标的比较", href:"/apps/finance-terminal/compare.html" },
       { mn:"QUOT", title:"行情详情", href:"/apps/finance-terminal/quote.html" },
       { mn:"MACR", title:"宏观雷达", href:"/apps/macro-radar/" },
       { mn:"GMKT", title:"全球市场行情", href:"/apps/markets/" },

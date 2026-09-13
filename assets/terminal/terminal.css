@@ -285,6 +285,25 @@ table{width:100%;border-collapse:collapse}
   background:var(--t-amber);color:#140d00;border-bottom-color:transparent;
   padding:1px 5px;margin:-1px -1px -1px 0;
 }
+/* 小倍数：一条序列一张小图，共用同一个纵轴。六条线叠一张图谁也看不清，
+   所以叠加图旁边总配一条小倍数带；每张图只有一条线，身份靠标题不靠颜色。 */
+.t-smgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:4px;padding:5px 8px 7px}
+.t-sm{border:1px solid var(--t-line);background:#0b0b0b;padding:3px 5px 4px;min-width:0}
+.t-sm figcaption{display:flex;gap:6px;align-items:baseline;font-family:var(--t-mono);font-size:9.5px}
+.t-sm figcaption b{color:var(--t-ink);font-size:10.5px;font-weight:700}
+.t-sm figcaption.sub{color:var(--t-faint);font-size:8.5px;margin-top:1px}
+.t-sm svg{display:block;width:100%;height:auto;margin:2px 0 1px}
+
+/* 已选标的的小牌子：比较页要能看清当前选了哪几个、并逐个摘掉 */
+.t-chips{display:flex;flex-wrap:wrap;gap:3px;align-items:center;min-width:0}
+.t-chip{
+  display:inline-flex;align-items:center;gap:4px;font-family:var(--t-mono);font-size:10px;
+  background:#1a1a1a;border:1px solid var(--t-line2);padding:1px 2px 1px 6px;color:var(--t-ink2);
+}
+.t-chip.on{border-color:var(--t-cmd-line);color:var(--t-cmd-line)}
+.t-chip button{color:var(--t-faint);font-size:11px;line-height:1;padding:0 3px}
+.t-chip button:hover{color:var(--t-dn)}
+
 /* 非美元报价的币种标记：价格数字后面跟一个小号币种，避免把本币价当美元读 */
 .t-tbl .t-cur{font-size:8px;color:var(--t-faint);letter-spacing:.06em;margin-left:3px;vertical-align:.15em}
 

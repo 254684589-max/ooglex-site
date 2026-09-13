@@ -34,6 +34,7 @@ PAGES = {
     "monitor": APP / "index.html",
     "security": APP / "security.html",
     "trends": APP / "trends.html",
+    "compare": APP / "compare.html",
 }
 LIB_FILES = ["core.js", "overview.js", "security.js", "render.js",
              "registry.js", "chrome.js", "behavior.js", "terminal.css"]
@@ -92,12 +93,13 @@ def main() -> int:
                 f"{k} 必须引入合并后的设计系统")
         # 三页互链 + 通往旧版与法律页
         for target in ("/apps/finance-terminal/", "/apps/finance-terminal/security.html",
-                       "/apps/finance-terminal/trends.html", "/apps/finance-terminal/legacy.html",
+                       "/apps/finance-terminal/trends.html", "/apps/finance-terminal/compare.html",
+                       "/apps/finance-terminal/legacy.html",
                        "/apps/finance-terminal/terms.html", "/apps/finance-terminal/privacy.html"):
             require(target in s, f"{k} 缺少通往 {target} 的链接")
     sm = read(ROOT / "sitemap.xml")
     for u in ("/apps/finance-terminal/", "/apps/finance-terminal/security.html",
-              "/apps/finance-terminal/trends.html"):
+              "/apps/finance-terminal/trends.html", "/apps/finance-terminal/compare.html"):
         require(f"https://www.ooglex.com{u}" in sm, f"sitemap 未收录 {u}")
     require("finance-terminal/legacy.html" not in sm, "旧版终端不应进 sitemap（它已 noindex）")
     require('name="robots"' in read(APP / "legacy.html"), "legacy.html 必须 noindex，避免与新终端争收录")
@@ -158,7 +160,7 @@ def main() -> int:
     reg = lib["registry.js"]
     mns = re.findall(r'\bmn:"([A-Z0-9]+)"', reg)
     require(len(mns) == len(set(mns)), f"注册表助记符重复：{[m for m in set(mns) if mns.count(m) > 1]}")
-    require(len(mns) >= 25, f"注册表功能数偏少（{len(mns)}）")
+    require(len(mns) >= 26, f"注册表功能数偏少（{len(mns)}）")
     # 已接入项的站内地址必须真实存在
     for href in re.findall(r'href:"(/apps/[^"]*)"', reg):
         path = href.split("#")[0].split("?")[0]          # 锚点与查询不参与文件定位
@@ -393,6 +395,48 @@ def main() -> int:
     require(".t-go{" in top and "background:var(--t-amber);color:#000" not in go,
             ".t-go 常态不得使用琥珀色块底（白字在琥珀上只有 1.79:1）")
     section("类名不得撞名")
+
+    # ── 14 多标的比较：对齐与归一化的口径必须写在页面上 ──────────────────
+    cmp_ = pages["compare"]
+    for fn in ("alignSeries", "compareWindow", "rebase"):
+        require(fn in core, f"core.js 必须提供 {fn}：比较页的对齐与归一化口径只能有一份")
+        require(fn in cmp_, f"比较页必须调用 core.{fn}，不得自己另写一套对齐")
+    require("multiLine" in ren and "smallMultiples" in ren,
+            "比较页的叠加图与小倍数必须走 render 层的共用渲染器")
+    # 两条管道的日期轴确实不同 —— 这是「必须按日期对齐」的事实依据，变了就得改口径说明
+    ch = json.loads(read(ROOT / "apps" / "companies" / "history.json"))
+    ah = json.loads(read(ROOT / "apps" / "asset-tracker" / "history.json"))
+    require(ch.get("dates") != ah.get("dates"),
+            "公司榜与跨资产的日期轴变成一样了：比较页「按日期对齐」的说明要跟着改")
+    require("按日期" in cmp_ and "对齐" in cmp_, "比较页必须写明按日期对齐，不是按下标")
+    require("不插值" in cmp_ and "不前向填充" in cmp_, "比较页必须写明不插值、不前向填充")
+    require("去空列不是补数据" in cmp_,
+            "去掉全空列这件事必须说清它不是补数据，否则读的人会以为缺口被填了")
+    require("未做汇率换算" in cmp_, "各标的按本币计价，必须写明未做汇率换算")
+    require("24 小时口径" in cmp_ or "24h" in cmp_, "加密标的口径与股票不同，必须写明")
+    require("分红" in cmp_, "收盘价未做分红再投资调整，必须写明")
+    require("不是标的历史最大回撤" in cmp_,
+            "回撤是本窗口内口径，必须写明不是历史最大回撤")
+    require("窗口不足一季不给年化" in cmp_ or "不年化" in cmp_,
+            "窗口太短不得给年化数")
+    # 归一化叠加不得用颜色编码身份：数据区颜色只承载涨跌与风险
+    ml = ren[ren.index("function multiLine"):]
+    ml = ml[:ml.index("function smallMultiples")]
+    require("var(--t-dim)" in ml and "var(--t-cmd-line)" in ml,
+            "叠加图只用「上下文灰 + 聚焦琥珀」两色")
+    for bad in ("--t-up", "--t-dn", "#00b86b", "#ff4d4d"):
+        require(bad not in ml,
+                f"叠加图不得用涨跌色 {bad} 编码「这是哪条标的」——那会把色彩语义搞乱")
+    require("esc(p.tk)" in ml, "叠加图必须在线尾直接标代码：身份不能只靠颜色")
+    require("minGap" in ml, "线尾标签必须做避让，否则几条挤在一起看不清")
+    # 单源隔离：一条取不到序列，不得把整次比较拖死；摘掉谁、为什么都要写出来
+    require("unusable" in cmp_ and "已从本次比较摘出" in cmp_,
+            "某条取不到序列时必须摘出并说明原因，剩下的照比，不得整页失败")
+    require("counts" in lib["security.js"] and "整类不可选" in cmp_,
+            "标的表取不到会让那一整类从选择器里消失，页面必须说明少了哪一类")
+    require("读取失败" in cmp_,
+            "失败措辞要与站内其余页一致（读取失败 / 未加载），别一页一个叫法")
+    section("多标的比较的对齐与归一化")
 
     return report()
 

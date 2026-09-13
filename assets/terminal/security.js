@@ -2,7 +2,9 @@
    OOGLEX 终端单标的与榜单模型 · Security & Trends Model
    ---------------------------------------------------------------------------
    纵向模型：单个标的的发行人、证券、标识、收盘历史、盘中快照、采集健康；
-   以及榜单页需要的全量公司 + 迷你走势 + 要闻。
+   榜单页需要的全量公司 + 迷你走势 + 要闻；以及多标的比较页要的序列取数。
+   「纵向」指的是时间轴 —— 比较页要的也是时间序列，所以归在这里，
+   不另开第五个模型文件。（横截面快照在 overview.js。）
    横向模型（跨品类总览、曲线、宏观、日历）在 overview.js。
 
    口径、格式化、统计全部来自 core.js —— 这里只做取数与归一化。
@@ -151,8 +153,85 @@
     });
   }
 
+  /* ── 比较页：公司（分片日线）＋ 跨资产（单文件日线）的序列取数 ─────────
+     两条管道的日期轴不同，所以这里只负责「按标的取回它自己的 dates+values」，
+     对齐交给 core.alignSeries —— 对齐规则只有一份，两边都不各写一遍。 */
+  function loadCompare() {
+    return Promise.all([
+      soft("companies/data.json"),
+      soft("asset-tracker/data.json"),
+      soft("asset-tracker/history.json")
+    ]).then(function (r) {
+      var cd = r[0], ad = r[1], ah = r[2];
+      var comps = (cd && !cd.__error) ? (cd.companies || []) : [];
+      var assets = (ad && !ad.__error) ? (ad.assets || []) : [];
+      var aHist = (ah && !ah.__error) ? ah : null;
+
+      var pool = [];
+      comps.filter(function (c) { return c.symbol && c.symbol !== "—" && isNum(c.price) && c.historyShard; })
+        .sort(function (a, b) { return (b.marketCap || 0) - (a.marketCap || 0); })
+        .forEach(function (c) {
+          pool.push({ tk:c.symbol, name:c.name, kind:"company", shard:Number(c.historyShard),
+                      cur:c.priceCur || "USD", group:"公司 " + (c.sector || "未标注"),
+                      detail:{ kind:"company", symbol:c.symbol } });
+        });
+      var ZH = { equity:"跨资产 股票", commodity:"跨资产 商品", fx:"跨资产 外汇", bond:"跨资产 债券" };
+      assets.filter(function (a) { return a.symbol && isNum(a.price); }).forEach(function (a) {
+        pool.push({ tk:a.symbol, name:a.name, kind:"tracker",
+                    cur:"—", group:ZH[a.category] || "跨资产 其他",
+                    detail:{ kind:"tracker", symbol:a.symbol } });
+      });
+
+      var shardCache = {};                      /* 片号 → 取数结果，取过就不再取 */
+      function companySeries(it) {
+        var shard = it.shard > 1 ? it.shard : 1;
+        var key = "s" + shard;
+        if (!shardCache[key]) shardCache[key] = soft(C.shardPath("companies/history.json", shard));
+        return shardCache[key].then(function (f) {
+          if (!f || f.__error) return { tk:it.tk, name:it.name, cur:it.cur, dates:[], values:[],
+                                        note:"第 " + shard + " 片收盘历史没取回（" + ((f && f.__error) || "未加载") + "）" };
+          var ser = (f.series || {})[it.tk];
+          if (!ser) return { tk:it.tk, name:it.name, cur:it.cur, dates:[], values:[],
+                             note:"站内第 " + shard + " 片里没有这条序列" };
+          return { tk:it.tk, name:it.name, cur:it.cur, dates:f.dates || [], values:ser, note:"" };
+        });
+      }
+      function trackerSeries(it) {
+        if (!aHist) return Promise.resolve({ tk:it.tk, name:it.name, cur:it.cur, dates:[], values:[],
+                                             note:"跨资产历史没取回" });
+        var ser = (aHist.series || {})[it.tk];
+        return Promise.resolve(ser
+          ? { tk:it.tk, name:it.name, cur:it.cur, dates:aHist.dates || [], values:ser, note:"" }
+          : { tk:it.tk, name:it.name, cur:it.cur, dates:[], values:[], note:"跨资产历史里没有这条序列" });
+      }
+      /* 取一组标的的序列。公司按需补片，跨资产直接从已加载的单文件里取。 */
+      function seriesFor(list) {
+        return Promise.all((list || []).map(function (it) {
+          return it.kind === "company" ? companySeries(it) : trackerSeries(it);
+        }));
+      }
+
+      return {
+        pool: pool,
+        byTk: function (tk) { return pool.filter(function (p) { return p.tk === tk; })[0] || null; },
+        seriesFor: seriesFor,
+        /* 「能选哪些标的」本身也会退化：标的表取不到，那一类就整类从选择器里消失。
+           所以标的表与历史序列分开报，页面才能说清少了哪一类、少了多少。 */
+        counts: { company: pool.filter(function (p) { return p.kind === "company"; }).length,
+                  tracker: pool.filter(function (p) { return p.kind === "tracker"; }).length },
+        src: {
+          comp: meta("公司榜收盘历史", cd, "日频收盘"),
+          compList: meta("公司榜标的表", cd, "日频"),
+          asset: meta("跨资产收盘历史", ah, (aHist && aHist.points ? aHist.points + " 个交易日" : "日频")),
+          assetList: meta("跨资产标的表", ad, "日频")
+        },
+        err: { comp: cd && cd.__error, asset: ah && ah.__error, assetList: ad && ad.__error }
+      };
+    });
+  }
+
   global.OOGLEX_SECURITY = {
-    loadSecurity: loadSecurity, loadTrends: loadTrends,
+    loadSecurity: loadSecurity, loadTrends: loadTrends, loadCompare: loadCompare,
     fmt: fmt, isNum: isNum, srcLine: C.srcLine,
     UNAVAILABLE: C.UNAVAILABLE, UNAVAILABLE_NOTE: C.UNAVAILABLE_NOTE
   };

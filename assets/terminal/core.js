@@ -112,6 +112,90 @@
       (extra ? " · " + extra : "");
   }
 
+  /* ── 多标的比较：先按日期对齐，再求共同窗口 ───────────────────────────
+     两条管道的日期轴并不相同：公司榜 2025-11-11→2026-09-11，跨资产
+     2025-11-14→2026-09-12，交集 257 天。所以绝不能按下标对齐 —— 按下标
+     叠出来的线整体错位几天，图是假的。这里按日期字符串对齐到并集轴上，
+     某条在某天没有观测就留 null，折线在那里断开，不插值也不前向填充。 */
+  function alignSeries(list) {
+    var axis = {}, items = (list || []).filter(function (x) { return x && x.dates && x.values; });
+    items.forEach(function (it) {
+      it.dates.forEach(function (d) { if (d) axis[d] = 1; });
+    });
+    var all = Object.keys(axis).sort();
+    var at0 = {};
+    all.forEach(function (d, i) { at0[d] = i; });
+    /* 先把每条摊到并集轴上，再把「这几条都没有观测」的那些天整列去掉。
+       公司榜的轴里含 41 个周日（股票那天本来就不开盘），留着的话每条股票线
+       每周断一次、看上去像虚线。去掉空列不是补数据：某天 A 有 B 没有时，
+       B 在那一天依然留空、依然断开。去掉了几列由 dropped 返回，页面要如实写出。 */
+    var raw = items.map(function (it) {
+      var out = new Array(all.length);
+      for (var i = 0; i < all.length; i++) out[i] = null;
+      for (var j = 0; j < it.dates.length; j++) {
+        var k = at0[it.dates[j]];
+        if (k !== undefined && isNum(it.values[j])) out[k] = it.values[j];
+      }
+      return out;
+    });
+    var keep = [];
+    for (var c = 0; c < all.length; c++) {
+      for (var s2 = 0; s2 < raw.length; s2++) {
+        if (isNum(raw[s2][c])) { keep.push(c); break; }
+      }
+    }
+    var dates = keep.map(function (c) { return all[c]; });
+    var at = {};
+    dates.forEach(function (d, i) { at[d] = i; });
+    return {
+      dates: dates,
+      dropped: all.length - dates.length,
+      axisFull: all.length,
+      items: items.map(function (it, idx) {
+        return { tk: it.tk, name: it.name, cur: it.cur, note: it.note,
+                 values: keep.map(function (c) { return raw[idx][c]; }) };
+      }),
+    };
+  }
+
+  /* ── 多标的比较：共同窗口与归一化 ─────────────────────────────────────
+     几条序列的有效覆盖不一样（站内典型 209/260，个别只有 27/260）。
+     各自按自己的起点归一化再画在一起，比出来的是假的 —— 所以先求共同窗口：
+       起点 = 各序列「首个有效点」里最晚的那个
+       终点 = 各序列「最后有效点」里最早的那个
+     再把每条按自己在窗口内的第一个有效值重基到 100。缺口一律留空，不插值。
+     各条的实际基期可能差几天（休市日不同），逐条返回 baseDate 供页面如实写出。 */
+  function compareWindow(list) {
+    var items = (list || []).filter(function (x) { return x && x.values && x.values.length; });
+    if (items.length < 2) return { ok:false, reason:"至少要两条序列才能比较" };
+    var firsts = [], lasts = [];
+    items.forEach(function (it) {
+      var f = -1, l = -1;
+      for (var i = 0; i < it.values.length; i++) if (isNum(it.values[i])) { if (f < 0) f = i; l = i; }
+      firsts.push(f); lasts.push(l);
+    });
+    if (firsts.some(function (f) { return f < 0; }))
+      return { ok:false, reason:"有序列一个有效点都没有" };
+    var start = Math.max.apply(null, firsts);
+    var end = Math.min.apply(null, lasts);
+    if (end - start < 5) return { ok:false, reason:"几条序列的共同窗口不足 6 个交易日，不做比较" };
+    return { ok:true, start:start, end:end };
+  }
+
+  /* 把一条序列在 [start,end] 窗口内重基到 100。base 取窗口内第一个有效值。 */
+  function rebase(values, start, end) {
+    var base = null, baseAt = -1, out = [];
+    for (var i = start; i <= end; i++) {
+      if (base === null && isNum(values[i])) { base = values[i]; baseAt = i; }
+      out.push(base !== null && isNum(values[i]) ? values[i] / base * 100 : null);
+    }
+    if (base === null) return null;
+    var valid = out.filter(isNum).length;
+    var lastVal = null;
+    for (var j = out.length - 1; j >= 0; j--) if (isNum(out[j])) { lastVal = out[j]; break; }
+    return { values:out, base:base, baseAt:baseAt, valid:valid, n:out.length, last:lastVal };
+  }
+
   /* ── 统计：Z-Score 与分位（需要足够样本才给数）────────────────────── */
   function zscore(values, win) {
     var v = (values || []).filter(isNum);
@@ -237,7 +321,8 @@
 
   global.OOGLEX_CORE = {
     BASE: BASE, isNum: isNum, getJSON: getJSON, soft: soft, fmt: fmt, esc: esc,
-    shardPath: shardPath,
+    shardPath: shardPath, alignSeries: alignSeries,
+    compareWindow: compareWindow, rebase: rebase,
     meta: meta, srcLine: srcLine, zscore: zscore,
     quoteHref: quoteHref, securityHref: securityHref, detailHref: detailHref,
     QUOTE_KINDS: QUOTE_KINDS,
