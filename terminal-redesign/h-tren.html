@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>方案H 榜单与趋势 · OOGLEX 终端外壳草案</title>
+<meta name="description" content="OOGLEX 终端外壳草案方案H：榜单与趋势页，蓝色子标签、橙色筛选条、编号行与迷你走势，维度只用站内真有的数据。">
+<link rel="stylesheet" href="chrome/chrome.css">
+<style>
+  /* 方案H 专属：主表满宽 + 右侧窄栏 */
+  .h-wrap{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:9px;padding:9px 10px 0;align-items:start}
+  .h-main{min-width:0}
+  .h-side{display:grid;gap:9px;min-width:0}
+  .h-tblbox{max-height:calc(100vh - 330px);min-height:340px;overflow:auto;border:1px solid var(--c-line2)}
+  .h-kpi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--c-line2)}
+  .h-kpi div{background:#0d0d0d;padding:5px 9px}
+  .h-kpi em{font-style:normal;display:block;font-family:var(--c-mono);font-size:9px;letter-spacing:.12em;color:var(--c-faint)}
+  .h-kpi b{display:block;font-family:var(--c-mono);font-size:17px;font-weight:700;margin-top:1px}
+  .h-kpi span{display:block;font-family:var(--c-mono);font-size:9px;color:var(--c-dim);margin-top:1px}
+  @media (max-width:1200px){ .h-wrap{grid-template-columns:1fr} .h-tblbox{max-height:none} }
+</style>
+</head>
+<body>
+
+<div class="c-draft">
+  <b>终端外壳草案 · 方案H「榜单与趋势」</b>
+  <span>对标专业终端的趋势榜页：蓝色子标签 + 橙色筛选条 + 编号行 + 迷你走势。维度只用站内真有的数据</span>
+  <a href="./" class="r">返回方案对照</a>
+</div>
+
+<div class="c-tabs" data-tabs></div>
+<nav class="c-fnbar" data-fnbar aria-label="功能快捷键"></nav>
+
+<div class="c-crumb">
+  <span class="nav">
+    <button type="button" data-hist="back" aria-label="后退">‹</button>
+    <button type="button" data-hist="fwd" aria-label="前进">›</button>
+  </span>
+  <span class="fld"><b>全球公司</b><i>Ranking</i><u>▾</u></span>
+  <span class="fld"><b>TRND</b><u>▾</u></span>
+  <a class="rel" href="#" data-open="related" data-cats="rank quote news">Related Functions Menu ⌄</a>
+  <span class="right">
+    <button type="button" data-open="fdir">⌗ 功能目录</button>
+    <button type="button" data-act="exp">⇱ 导出</button>
+    <button type="button" class="help" data-open="help">?</button>
+  </span>
+</div>
+
+<div class="c-cmd">
+  <span class="key">GLOBAL RANKING &amp; TRENDS</span>
+  <button class="act" type="button" data-open="related" data-cats="rank quote">Actions <u>▾</u></button>
+  <button class="act" type="button" data-open="help">Settings <u>▾</u></button>
+  <span class="pg">
+    <span data-page-ind>Page 1/1</span>
+    <span class="ttl" data-page-title>榜单与趋势</span>
+  </span>
+</div>
+
+<div class="c-entry">
+  <span class="caret">❭</span>
+  <input data-command type="text" aria-label="命令行"
+    placeholder="输入助记符 / 代码后回车 —— 例：NVDA 定位该行、MACR 宏观雷达、FDIR 功能目录（按 / 聚焦）">
+  <button class="go" type="button" data-command-go>GO</button>
+  <span class="hint" data-cmd-hint>HELP 看用法</span>
+</div>
+
+<!-- 一级子标签（蓝色激活，对标专业终端） -->
+<div class="c-subtabs">
+  <button type="button" class="on" data-scope="comp">公司</button>
+  <button type="button" data-scope="asset">大类资产</button>
+  <button type="button" data-scope="news">要闻主题</button>
+  <span class="lbl">地区</span>
+  <select class="pick" id="pick-region" aria-label="地区"></select>
+  <span class="lbl">板块</span>
+  <select class="pick" id="pick-sector" aria-label="板块"></select>
+  <span class="sp"></span>
+  <span class="lbl">排序口径</span>
+  <select class="pick" id="pick-top" aria-label="排序口径">
+    <option value="desc">涨幅最大</option>
+    <option value="asc">跌幅最大</option>
+    <option value="abs">变动最大（不论方向）</option>
+  </select>
+</div>
+
+<!-- 二级维度标签：只列站内真有的维度 -->
+<div class="c-tabs2" id="dims"></div>
+
+<!-- 橙色筛选条 -->
+<div class="c-filter">
+  <input id="q" type="text" placeholder="筛选：代码 / 名称 / 板块 / 国别" aria-label="筛选">
+  <select id="pick-n" aria-label="行数">
+    <option value="30">30 行</option><option value="60">60 行</option>
+    <option value="120">120 行</option><option value="500">全部</option>
+  </select>
+</div>
+
+<main class="h-wrap">
+  <div class="h-main">
+    <div class="h-tblbox">
+      <table class="c-tbl" id="tbl">
+        <thead><tr id="thead"></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="c-note" id="n-tbl">读取中…</p>
+  </div>
+
+  <div class="h-side">
+    <div class="c-block">
+      <h2>当前视图 <em>VIEW</em></h2>
+      <div class="h-kpi" id="kpi"></div>
+      <p class="c-note" id="n-kpi"></p>
+    </div>
+    <div class="c-block">
+      <h2>站内没有的趋势维度 <em>NOT AVAILABLE</em></h2>
+      <div class="c-scroll">
+        <table class="c-tbl" id="tbl-una">
+          <thead><tr><th>维度</th><th style="text-align:left">为什么没有</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="c-note warn">专业终端那几列（阅读热度、新闻情绪、社交情绪、社交量、社交速度）依赖阅读行为与社交数据，
+        站内一条都没有。<b>所以这一版不做这几个标签，也不用别的数字冒充</b>。</p>
+    </div>
+    <div class="c-block">
+      <h2>要闻 <em>NEWS</em></h2>
+      <div class="c-scroll" style="max-height:240px">
+        <table class="c-tbl" id="tbl-news"><tbody></tbody></table>
+      </div>
+      <p class="c-note" id="n-news"></p>
+    </div>
+  </div>
+</main>
+
+<div class="c-foot" id="foot"></div>
+
+<script src="chrome/registry.js"></script>
+<script src="chrome/chrome.js"></script>
+<script src="chrome/data.js"></script>
+<script>
+/* 方案H 装配：维度、筛选、排序都只在站内真有的字段上做。 */
+(function () {
+  var C = window.OOGLEX_CHROME, D = window.OOGLEX_CDATA, FN = window.OOGLEX_FN;
+  var $ = C.$, $$ = C.$$, esc = C.esc, fmt = D.fmt, isNum = D.isNum;
+
+  C.init({
+    current: "TRND",
+    tabs: [
+      { mn:"GMKT", title:"全球市场行情", href:"../apps/markets/" },
+      { mn:"EQTY", title:"全球公司股价", href:"../apps/companies/" },
+      { mn:"MCAP", title:"全球市值排行", href:"../apps/asset-ranking/" },
+      { mn:"DESC", title:"证券描述 · 草案", href:"g-des.html" },
+      { mn:"TRND", title:"榜单与趋势 · 草案", href:"h-tren.html" },
+      { mn:"MON",  title:"多功能监控 · 草案", href:"i-mon.html" },
+      { mn:"FDIR", title:"功能目录", href:"#fdir" }
+    ]
+  });
+  C.pager({ pages: [{ sel:"#tbl", title:"榜单与趋势" }] });
+
+  $("#foot").innerHTML = '<span class="lb">Suggested Functions</span>' +
+    ["MCAP","BILL","HEAT","NEWS"].map(function (mn) {
+      var f = FN.byMn(mn); if (!f) return "";
+      var c = FN.catOf(f);
+      return '<a href="' + esc(f.href) + '"><b style="background:' + c.bg + ";color:" + c.ink +
+        '">' + esc(f.mn) + '</b><span>' + esc(f.zh) + " · " + esc(f.note || "") + "</span></a>";
+    }).join("");
+
+  /* 只列站内真有的维度 —— 每一个都能从字段里算出来 */
+  var DIMS = [
+    { k:"d1",  zh:"当日涨跌",  fld:"d1",  unit:"%", note:"公司榜自带当日涨跌（收盘口径）" },
+    { k:"w1",  zh:"近一周",    fld:"w1",  unit:"%", note:"收盘口径" },
+    { k:"m1",  zh:"近一月",    fld:"m1",  unit:"%", note:"收盘口径" },
+    { k:"ytd", zh:"年初至今",  fld:"ytd", unit:"%", note:"收盘口径" },
+    { k:"cap", zh:"市值",      fld:"marketCap", unit:"B", note:"折美元，十亿" },
+    { k:"news",zh:"要闻覆盖",  fld:"newsN", unit:"条", note:"站内要闻标题里出现该公司中文名的条数；纯文本匹配，会漏配，且不做情绪判断" }
+  ];
+  var UNA = [
+    { k:"阅读热度 / Reader Activity", why:"需要终端自身的阅读行为日志，站内不采集任何用户行为数据" },
+    { k:"新闻情绪 / News Sentiment",  why:"需要带情绪标注的新闻语料与模型评分，站内只有标题与来源" },
+    { k:"社交情绪 / Social Sentiment",why:"无社交平台数据授权" },
+    { k:"社交量 / Social Volume",     why:"同上" },
+    { k:"社交速度 / Social Velocity", why:"同上" },
+    { k:"AVAT 成交量比",              why:"无成交量来源" }
+  ];
+  $("#tbl-una tbody").innerHTML = UNA.map(function (u, i) {
+    return '<tr><td class="nm"><i>' + (i + 1) + ')</i>' + esc(u.k) + "</td>" +
+      '<td style="text-align:left;font-family:var(--c-sans);color:var(--c-dim);white-space:normal">' +
+      esc(u.why) + "</td></tr>";
+  }).join("");
+
+  var state = { scope:"comp", dim:"d1", top:"desc", n:30, q:"", region:"", sector:"" };
+
+  $("#dims").innerHTML = DIMS.map(function (d) {
+    return '<button type="button" data-dim="' + d.k + '"' + (d.k === state.dim ? ' class="on"' : "") +
+      ' title="' + esc(d.note) + '">' + esc(d.zh) + "</button>";
+  }).join("");
+
+  D.loadTrends().then(function (T) {
+    if (T.err.comp) {
+      $("#n-tbl").innerHTML = '<span style="color:var(--c-dn)">公司榜读取失败：' + esc(T.err.comp) + "</span>";
+      $("#tbl tbody").innerHTML = '<tr><td class="na" style="text-align:left">无数据可显示</td></tr>';
+    }
+
+    /* 要闻标题 → 公司名的纯文本匹配（会漏配，如实写在脚注里） */
+    var headlines = [];
+    if (T.news) {
+      (T.news.categories || []).forEach(function (c) {
+        (c.items || []).forEach(function (it) {
+          headlines.push({ title: it.title || "", src: it.source || "", cat: c.name || "", ts: it.published });
+        });
+      });
+      if (T.news.highlight && T.news.highlight.title) {
+        headlines.unshift({ title:T.news.highlight.title, src:T.news.highlight.source || "", cat:"焦点" });
+      }
+    }
+    /* 纯文本匹配：中文名去掉通用后缀取前 4 字，再试英文名与交易所代码。
+       会漏配也会误配（同名词），所以表头与脚注都写明「标题匹配，不做情绪判断」。 */
+    function newsFor(zh, en, tk) {
+      var keys = [];
+      if (zh) {
+        var k = String(zh).replace(/(股份|有限|公司|集团|控股|株式会社|科技|国际)/g, "").slice(0, 4);
+        if (k.length >= 2) keys.push(k);
+      }
+      if (en && String(en).length >= 4) keys.push(String(en).split(/[\s,.]/)[0]);
+      if (tk && /^[A-Z]{2,5}$/.test(tk)) keys.push(tk);
+      if (!keys.length) return [];
+      return headlines.filter(function (h) {
+        var t = h.title, tu = t.toUpperCase();
+        return keys.some(function (k) {
+          return /^[A-Z]{2,5}$/.test(k) ? new RegExp("\\b" + k + "\\b").test(tu) : t.indexOf(k) >= 0;
+        });
+      });
+    }
+
+    var rowsAll = (T.companies || []).filter(function (c) { return c.symbol; }).map(function (c) {
+      var rt = c.returns || {};
+      var nn = newsFor(c.name, c.nameEn, c.symbol);
+      return {
+        tk:c.symbol, zh:c.name, en:c.nameEn, sector:c.sector, country:c.country,
+        close:c.price, cur:c.priceCur || "USD", d1:c.changePct,
+        w1:rt.w1, m1:rt.m1, ytd:rt.ytd, y1:rt.y1, marketCap:c.marketCap,
+        newsN:nn.length, news:nn, spark:T.spark[c.symbol] || null, stale:!!c.stale
+      };
+    });
+    var assetRows = (T.assets || []).map(function (a) {
+      var rt = a.returns || {};
+      return { tk:a.symbol || a.name, zh:a.name, en:a.nameEn, sector:a.category || a.class || "大类资产",
+               country:"—", close:a.price, cur:"—", d1:rt.d1, w1:rt.w1, m1:rt.m1, ytd:rt.ytd,
+               marketCap:null, newsN:0, news:[], spark:null, stale:!!a.stale };
+    });
+
+    function pool() { return state.scope === "asset" ? assetRows : rowsAll; }
+
+    function fillPicks() {
+      var p = pool();
+      function uniq(f) {
+        var m = {}; p.forEach(function (r) { if (r[f]) m[r[f]] = (m[r[f]] || 0) + 1; });
+        return Object.keys(m).sort(function (a, b) { return m[b] - m[a]; });
+      }
+      $("#pick-region").innerHTML = '<option value="">全部</option>' +
+        uniq("country").map(function (x) { return '<option>' + esc(x) + "</option>"; }).join("");
+      $("#pick-sector").innerHTML = '<option value="">全部</option>' +
+        uniq("sector").map(function (x) { return '<option>' + esc(x) + "</option>"; }).join("");
+      $("#pick-region").value = state.region; $("#pick-sector").value = state.sector;
+    }
+
+    function paint() {
+      var dim = DIMS.filter(function (d) { return d.k === state.dim; })[0];
+      var list = pool().filter(function (r) {
+        if (state.region && r.country !== state.region) return false;
+        if (state.sector && r.sector !== state.sector) return false;
+        if (state.q) {
+          var q = state.q.toLowerCase();
+          if ((r.tk + " " + r.zh + " " + (r.en || "") + " " + (r.sector || "") + " " + (r.country || ""))
+              .toLowerCase().indexOf(q) < 0) return false;
+        }
+        return isNum(r[dim.fld]);
+      });
+      list.sort(function (a, b) {
+        var x = a[dim.fld], y = b[dim.fld];
+        if (state.top === "asc") return x - y;
+        if (state.top === "abs") return Math.abs(y) - Math.abs(x);
+        return y - x;
+      });
+      var shown = list.slice(0, state.n);
+      var mx = Math.max.apply(null, shown.map(function (r) { return Math.abs(r[dim.fld]); }).concat([1]));
+
+      $("#thead").innerHTML =
+        '<th data-k="nm">标的</th>' +
+        '<th data-k="' + dim.k + '">' + esc(dim.zh) + "</th>" +
+        '<th class="barc">相对强弱</th>' +
+        "<th>走势</th>" +
+        '<th data-k="last">LAST</th>' +
+        '<th data-k="d1">%CHG</th>' +
+        '<th data-k="ytd">YTD</th>' +
+        '<th data-k="cap">市值</th>' +
+        '<th style="text-align:left">站内要闻（标题匹配，不做情绪判断）</th>';
+
+      $("#tbl tbody").innerHTML = shown.length ? shown.map(function (r, i) {
+        var v = r[dim.fld];
+        var w = Math.abs(v) / mx * 100;
+        var pctDim = dim.unit === "%";
+        var val = pctDim ? fmt.pct(v) : dim.unit === "B" ? fmt.cap(v) : v + " " + dim.unit;
+        var nsum = r.news.length
+          ? esc(r.news[0].title) + (r.news.length > 1 ? '<span class="sub">+' + (r.news.length - 1) + " 条</span>" : "")
+          : '<span class="na">站内要闻未提到</span>';
+        return '<tr data-tk="' + esc(r.tk) + '" data-nm="' + esc(r.zh) + '">' +
+          '<td class="nm"><i>' + (i + 1) + ')</i>' + esc(r.tk) +
+            '<span class="sub">' + esc(r.zh) + "</span></td>" +
+          '<td class="' + (pctDim ? fmt.cls(v) : "last") + '">' + val + "</td>" +
+          '<td class="barc"><span class="bar" style="width:' + w.toFixed(1) + "%;background:" +
+            (pctDim ? (v >= 0 ? "var(--c-up)" : "var(--c-dn)") : "var(--c-sel)") + '"></span></td>' +
+          "<td>" + (r.spark ? C.spark(r.spark) : '<span class="na">—</span>') + "</td>" +
+          '<td class="last">' + fmt.px(r.close) +
+            (r.cur && r.cur !== "USD" && r.cur !== "—" ? '<span class="sub">' + esc(r.cur) + "</span>" : "") + "</td>" +
+          '<td class="' + fmt.cls(r.d1) + '">' + fmt.pct(r.d1) + "</td>" +
+          '<td class="' + fmt.cls(r.ytd) + '">' + fmt.pct(r.ytd) + "</td>" +
+          "<td>" + (isNum(r.marketCap) ? fmt.cap(r.marketCap) : '<span class="na">—</span>') + "</td>" +
+          '<td class="sum">' + nsum + "</td></tr>";
+      }).join("") : '<tr><td colspan="9" class="na" style="text-align:left">当前筛选下没有符合条件的标的</td></tr>';
+
+      var src = state.scope === "asset" ? T.src.assets : T.src.comp;
+      $("#n-tbl").innerHTML = esc(D.srcLine(src)) + " · 维度「" + esc(dim.zh) + "」：" + esc(dim.note) +
+        " · 命中 " + list.length + " / 池内 " + pool().length + " · 显示前 " + shown.length +
+        " · 迷你走势为 " + (T.src.spark.error ? "读取失败" : (T.src.spark.cadence || "日频")) +
+        " · " + esc(D.UNAVAILABLE_NOTE);
+
+      var up = list.filter(function (r) { return isNum(r.d1) && r.d1 > 0; }).length;
+      var dn = list.filter(function (r) { return isNum(r.d1) && r.d1 < 0; }).length;
+      var withNews = list.filter(function (r) { return r.newsN > 0; }).length;
+      var med = (function () {
+        var a = list.map(function (r) { return r[dim.fld]; }).filter(isNum).sort(function (x, y) { return x - y; });
+        if (!a.length) return null;
+        return a.length % 2 ? a[(a.length - 1) / 2] : (a[a.length / 2 - 1] + a[a.length / 2]) / 2;
+      })();
+      $("#kpi").innerHTML =
+        '<div><em>命中标的</em><b>' + list.length + '</b><span>池内 ' + pool().length + "</span></div>" +
+        '<div><em>上涨 / 下跌</em><b><span style="color:var(--c-up)">' + up +
+          '</span><span style="color:var(--c-dim)"> / </span><span style="color:var(--c-dn)">' + dn +
+          "</span></b><span>按当日涨跌</span></div>" +
+        '<div><em>' + esc(dim.zh) + " 中位</em><b>" +
+          (med == null ? "—" : dim.unit === "%" ? fmt.pct(med) : dim.unit === "B" ? fmt.cap(med) : med + "") +
+          "</b><span>" + esc(dim.unit === "%" ? "百分比" : dim.unit === "B" ? "十亿美元" : dim.unit) + "</span></div>" +
+        '<div><em>站内要闻提到</em><b>' + withNews + "</b><span>标题文本匹配</span></div>";
+      $("#n-kpi").textContent = "地区「" + (state.region || "全部") + "」板块「" + (state.sector || "全部") +
+        "」排序「" + $("#pick-top").selectedOptions[0].textContent + "」。中位数在命中集合上算，不在显示的前 N 行上算。";
+
+      C.wireNumbers();
+    }
+
+    /* 要闻侧栏 */
+    $("#tbl-news tbody").innerHTML = headlines.length ? headlines.slice(0, 14).map(function (h, i) {
+      return '<tr><td class="nm" style="max-width:none;white-space:normal"><i>' + (i + 1) + ")</i>" +
+        esc(h.title) + '<span class="sub">' + esc(h.src) + (h.cat ? " · " + esc(h.cat) : "") + "</span></td></tr>";
+    }).join("") : '<tr><td class="na" style="text-align:left">' +
+      (T.err.news ? "要闻读取失败：" + esc(T.err.news) : "站内暂无要闻") + "</td></tr>";
+    $("#n-news").textContent = D.srcLine(T.src.news) + " · 只做标题匹配，不做情绪或影响判断。";
+
+    /* 交互 */
+    $$("#dims button").forEach(function (b) {
+      b.onclick = function () {
+        state.dim = b.getAttribute("data-dim");
+        $$("#dims button").forEach(function (o) { o.classList.toggle("on", o === b); });
+        paint();
+      };
+    });
+    $$(".c-subtabs button[data-scope]").forEach(function (b) {
+      b.onclick = function () {
+        state.scope = b.getAttribute("data-scope");
+        $$(".c-subtabs button[data-scope]").forEach(function (o) { o.classList.toggle("on", o === b); });
+        if (state.scope === "news") {
+          state.scope = "comp"; state.dim = "news";
+          $$("#dims button").forEach(function (o) { o.classList.toggle("on", o.getAttribute("data-dim") === "news"); });
+          b.classList.add("on");
+          $$(".c-subtabs button[data-scope]").forEach(function (o) { if (o !== b) o.classList.remove("on"); });
+        }
+        state.region = ""; state.sector = "";
+        fillPicks(); paint();
+      };
+    });
+    $("#pick-region").onchange = function () { state.region = this.value; paint(); };
+    $("#pick-sector").onchange = function () { state.sector = this.value; paint(); };
+    $("#pick-top").onchange    = function () { state.top = this.value; paint(); };
+    $("#pick-n").onchange      = function () { state.n = +this.value; paint(); };
+    $("#q").oninput            = function () { state.q = this.value.trim(); paint(); };
+
+    C.sortable($("#tbl"), function (k, dir) {
+      var map = { d1:"d1", ytd:"ytd", cap:"cap", last:"d1", nm:"d1" };
+      if (k === "nm") { state.top = "desc"; }
+      else if (map[k] && DIMS.filter(function (d) { return d.k === map[k]; })[0]) {
+        state.dim = map[k];
+        $$("#dims button").forEach(function (o) { o.classList.toggle("on", o.getAttribute("data-dim") === state.dim); });
+      }
+      state.top = dir === "asc" ? "asc" : "desc";
+      $("#pick-top").value = state.top === "asc" ? "asc" : "desc";
+      paint();
+    });
+
+    $$("[data-act='exp']").forEach(function (b) {
+      b.onclick = function () {
+        var t = $("#tbl");
+        var out = "# OOGLEX 榜单与趋势 · 导出于 " + new Date().toISOString() + "\n# " +
+          $("#n-tbl").innerText.replace(/\s+/g, " ").trim() + "\n";
+        $$("tr", t).forEach(function (tr) {
+          out += $$("th,td", tr).map(function (c) {
+            var x = (c.innerText || "").replace(/\s+/g, " ").trim().replace(/"/g, '""');
+            return /[",]/.test(x) ? '"' + x + '"' : x;
+          }).join(",") + "\n";
+        });
+        var blob = new Blob(["﻿" + out], { type:"text/csv;charset=utf-8" });
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob); a.download = "ooglex-trends.csv";
+        document.body.appendChild(a); a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+        C.say("已导出当前视图（含出处表头）", true);
+      };
+    });
+
+    fillPicks(); paint();
+  }).catch(function (e) {
+    $("#n-tbl").innerHTML = '<span style="color:var(--c-dn)">数据层异常：' + esc(e && e.message || e) + "</span>";
+  });
+})();
+</script>
+</body>
+</html>
