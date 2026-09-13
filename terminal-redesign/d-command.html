@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-density="std">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>方案D 指挥台 · OOGLEX 机构终端草案</title>
+<meta name="description" content="OOGLEX 金融终端改版方案D：机构指挥台——顶部功能栏与命令行、12 栏四行监控网格、宏观风险监测表，数据取自站内真实 data.json。">
+<link rel="stylesheet" href="ds/ds.css">
+<style>
+  /* 方案D 专属：四行监控网格的窗口高度节奏 */
+  .t-grid{padding:0}
+  .row1 .t-win{min-height:224px}
+  .row2 .t-win{min-height:268px}
+  .row3 .t-win{min-height:236px}
+  .row4 .t-win{min-height:212px}
+  .t-win.t-scroll > .t-body{max-height:none}
+  @media (min-width:1600px){
+    .row1 .t-win{min-height:252px}
+    .row2 .t-win{min-height:300px}
+  }
+  .wl-add{display:flex;gap:4px;padding:4px 8px;border-bottom:1px solid var(--t-line)}
+  .wl-add input{flex:1 1 auto;min-width:0;background:#000;border:1px solid var(--t-line2);color:var(--t-ink);
+    font-family:var(--t-mono);font-size:11px;padding:3px 6px}
+  .wl-add button{font-family:var(--t-mono);font-size:9.5px;letter-spacing:.08em;padding:3px 8px;
+    background:var(--t-panel2);border:1px solid var(--t-line2);color:var(--t-ink2);cursor:pointer}
+  .wl-add button:hover{border-color:var(--t-amber-dim);color:var(--t-amber)}
+  .wl-del{background:none;border:0;color:var(--t-faint);cursor:pointer;font-family:var(--t-mono);font-size:10px;padding:0 2px}
+  .wl-del:hover{color:var(--t-dn)}
+  .spec{padding:6px 8px;font-size:var(--t-f4);font-family:var(--t-mono);color:var(--t-dim);line-height:1.7}
+  .spec code{color:var(--t-blue)}
+  .spec b{color:var(--t-ink2)}
+</style>
+</head>
+<body>
+
+<div class="t-draft">
+  <b>终端草案 · 方案D「指挥台」</b>
+  <span>顶部功能栏 + 命令行 + 12 栏四行监控网格（13 窗口）· 标准/专业双模式 · 无地球、无 HUD、无霓虹</span>
+  <a href="./">返回方案对照</a>
+</div>
+
+<!-- ═══ 顶部功能栏 ═══ -->
+<div class="t-topbar">
+  <div class="t-row1">
+    <div class="t-brand">
+      <span class="t-wm">OOGLEX</span>
+      <span class="t-tags">
+        <span class="on">GLOBAL MARKETS</span><span data-feed-badge>DATA</span><span data-cadence-badge>—</span>
+      </span>
+    </div>
+    <nav class="t-nav">
+      <a class="on" href="#equities">全球总览</a>
+      <a href="#fx">品类行情</a>
+      <a href="#macro">宏观</a>
+      <a href="#events">实时事件</a>
+      <a href="#curve">研究</a>
+      <a href="#watchlist">组合</a>
+      <a href="#alerts">风险</a>
+    </nav>
+    <div class="t-cmdwrap">
+      <span class="t-caret">&gt;</span>
+      <input class="t-cmd" data-command type="text"
+             placeholder="Search security, function or command…   （SPX / US10Y / DXY / WTI / VIX / MACRO，按 / 聚焦）"
+             aria-label="命令行：检索标的或功能">
+      <button class="t-go" data-command-go type="button">GO</button>
+    </div>
+    <div class="t-modes">
+      <button type="button" data-mode-btn="std" aria-pressed="true">标准模式</button>
+      <button type="button" data-mode-btn="pro" aria-pressed="false">专业模式</button>
+    </div>
+  </div>
+
+  <nav class="t-fkeys">
+    <a href="#equities"><i>F1</i>HOME</a>
+    <a href="#equities"><i>F2</i>MARKETS</a>
+    <a href="#equities"><i>F3</i>EQUITIES</a>
+    <a href="#rates"><i>F4</i>RATES</a>
+    <a href="#fx"><i>F5</i>FX</a>
+    <a href="#cmdty"><i>F6</i>COMMODITIES</a>
+    <a href="#credit"><i>F7</i>CREDIT</a>
+    <a href="#macro"><i>F8</i>MACRO</a>
+    <a href="#news"><i>F9</i>NEWS</a>
+    <span class="t-right" data-command-hint></span>
+  </nav>
+
+  <div class="t-status">
+    <span data-clocks></span>
+    <span data-markets></span>
+    <span>DATA <b data-data-status>读取中</b></span>
+    <span>CLOSE <b class="t-num" data-asof>—</b></span>
+    <span>LAST UPDATED <b class="t-num" data-updated>—</b></span>
+    <span class="t-right">按常规交易时段推算，不含节假日与临时休市</span>
+  </div>
+</div>
+
+<!-- ═══ 监控网格 ═══ -->
+<main>
+
+  <div class="t-grid row1">
+    <section class="t-win c5 t-scroll" id="equities" data-fn="EQUITIES INDICES MARKETS HOME F1 F2 F3">
+      <header>
+        <h2>Global Equities</h2><span class="t-sub" data-sub="eq">—</span>
+        <span class="t-tools"><button type="button" data-act="max">MAX</button><button type="button" data-act="set">SET</button><button type="button" data-act="exp">EXP</button></span>
+      </header>
+      <div class="t-body">
+        <table class="t-tbl" id="tbl-eq">
+          <thead><tr>
+            <th>TICKER</th><th>LAST</th><th>CHG</th><th>%CHG</th>
+            <th class="t-col-x">1W</th><th class="t-col-x">1M</th><th>YTD</th><th class="t-col-pro t-hide">1Y</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <footer data-src="eq">—</footer>
+    </section>
+
+    <section class="t-win c3" id="rates" data-fn="RATES F4">
+      <header>
+        <h2>US Rates</h2><span class="t-sub" data-sub="rates">—</span>
+        <span class="t-tools"><button type="button" data-act="max">MAX</button><button type="button" data-act="exp">EXP</button></span>
+      </header>
+      <div class="t-body">
+        <table class="t-tbl" id="tbl-rates"><thead><tr><th>TENOR</th><th>YIELD</th><th class="t-col-x">AS OF</th></tr></thead><tbody></tbody></table>
+        <div class="t-chart"><svg id="svg-curve-mini" viewBox="0 0 320 74" preserveAspectRatio="none" role="img" aria-label="美债收益率曲线缩略"></svg></div>
+        <div class="t-legend" id="lg-spread"></div>
+      </div>
+      <footer data-src="rates">—</footer>
+    </section>
+
+    <section class="t-win c2" id="fx" data-fn="FX F5">
+      <header>
+        <h2>FX</h2><span class="t-sub" data-sub="fx">—</span>
+        <span class="t-tools"><button type="button" data-act="max">MAX</button><button type="button" data-act="exp">EXP</button></span>
+      </header>
+      <div class="t-body">
+        <table class="t-tbl" id="tbl-fx"><thead><tr><th>PAIR</th><th>LAST</th><th>%CHG</th><th class="t-col-pro t-hide">YTD</th></tr></thead><tbody></tbody></table>
+      </div>
+      <footer data-src="fx">—</footer>
+    </section>
+
+    <section class="t-win c2" id="cmdty" data-fn="COMMODITIES F6">
+      <header>
+        <h2>Commodities</h2><span class="t-sub" data-sub="cm">—</span>
+        <span class="t-tools"><button type="button" data-act="max">MAX</button><button type="button" data-act="exp">EXP</button></span>
+      </header>
+      <div class="t-body">
+        <table class="t-tbl" id="tbl-cm"><thead><tr><th>SYM</th><th>LAST</th><th>%CHG</th><th class="t-col-pro t-hide">YTD</th></tr></thead><tbody></tbody></table>
+      </div>
+      <footer data-src="cm">—</footer>
+    </section>
+  </div>
+
+  <div class="t-grid row2">
+    <section class="t-win c5 t-scroll" id="macro" data-fn="MACRO F8 MONITOR">
+      <header>
+        <h2>Macro / Risk Monitor</h2><span class="t-sub" data-sub="macro">—</span>
+        <span class="t-tools"><button type="button" data-act="max">MAX</button><button type="button" data-act="set">SET</button><button type="button" data-act="exp">EXP</button></span>
+      </header>
+      <div class="t-body">
+        <table class="t-tbl" id="tbl-macro">
+          <thead><tr>
+            <th>METRIC</th><th>CURRENT</th><th>1D</th><th class="t-col-x">1W</th><th>分位/Z</th><th>SIGNAL</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <footer data-src="macro">—</footer>
+    </section>
+
+    <section class="t-win c4" id="curve" data-fn="CURVE RESEARCH">
+      <header>
+        <h2>Yield Curve</h2><span class="t-sub" data-sub="curve">—</span>
+        <span class="t-tools"><button type="button" data-act="max">MAX</button><button type="button" data-act="exp">EXP</button></span>
+      </header>
+      <div class="t-body">
+        <div class="t-chart"><svg id="svg-curve" viewBox="0 0 460 190" preserveAspectRatio="none" role="img" aria-label="美国国债收益率曲线"></svg></div>
+        <div class="t-legend" id="lg-curve"></div>
+        <table class="t-tbl" id="tbl-spreads"><thead><tr><th>SPREAD</th><th>VALUE</th><th>STATE</th></tr></thead><tbody></tbody></table>
+      </div>
+      <footer data-src="curve2">—</footer>
+    </section>
+
+    <section class="t-win c3" id="cross" data-fn="CROSS ASSET">
+      <header>
+        <h2>Cross Asset · YTD</h2><span class="t-sub" data-sub="cross">—</span>
+        <span class="t-tools"><button type="button" data-act="max">MAX</button></span>
+      </header>
+      <div class="t-body t-bars" id="bars-cross"></div>
+      <footer data-src="cross">—</footer>
+    </section>
+  </div>
+
+  <div class="t-grid row3">
+    <section class="t-win c4 t-scroll" id="events" data-fn="CALENDAR EVENTS">
+      <header>
+        <h2>Event Calendar</h2><span class="t-sub" data-sub="cal">—</span>
+        <span class="t-tools"><button type="button" data-act="max">MAX</button><button type="button" data-act="exp">EXP</button></span>
+      </header>
+      <div class="t-body"><ul class="t-list" id="list-cal"></ul></div>
+      <footer data-src="cal">—</footer>
+    </section>
+
+    <section class="t-win c4 t-scroll" id="news" data-fn="NEWS F9">
+      <header>
+        <h2>News</h2><span class="t-sub" data-sub="news">—</span>
+        <span class="t-tools"><button type="button" data-act="max">MAX</button></span>
+      </header>
+      <div class="t-body"><ul class="t-list" id="list-news"></ul></div>
+      <footer data-src="news">—</footer>
+    </section>
+
+    <section class="t-win c4 t-scroll" id="credit" data-fn="CREDIT F7 CRYPTO">
+      <header>
+        <h2>Credit &amp; Crypto</h2><span class="t-sub" data-sub="credit">—</span>
+        <span class="t-tools"><button type="button" data-act="max">MAX</button><button type="button" data-act="exp">EXP</button></span>
+      </header>
+      <div class="t-body">
+        <table class="t-tbl" id="tbl-credit"><thead><tr><th>SYM</th><th>LAST</th><th>%CHG</th><th class="t-col-x">1M</th><th>YTD</th></tr></thead><tbody></tbody></table>
+      </div>
+      <footer data-src="credit">—</footer>
+    </section>
+  </div>
+
+  <div class="t-grid row4">
+    <section class="t-win c3 t-scroll" id="stocks" data-fn="EQUITIES STOCKS SINGLE NVDA F3">
+      <header>
+        <h2>US Single Stocks</h2><span class="t-sub" data-sub="stk">市值前 24</span>
+        <span class="t-tools"><button type="button" data-act="max">MAX</button><button type="button" data-act="set">SET</button><button type="button" data-act="exp">EXP</button></span>
+      </header>
+      <div class="t-body">
+        <table class="t-tbl" id="tbl-stocks">
+          <thead><tr>
+            <th>TICKER</th><th>LAST</th><th>%CHG</th>
+            <th class="t-col-x">1M</th><th>YTD</th><th class="t-col-pro t-hide">MCAP $B</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <footer data-src="stk">—</footer>
+    </section>
+
+    <section class="t-win c3 t-scroll" id="watchlist" data-fn="WATCHLIST PORTFOLIO POSITIONS">
+      <header>
+        <h2>Watchlist / Portfolio</h2><span class="t-sub" data-sub="wl">本地保存</span>
+        <span class="t-tools"><button type="button" data-act="max">MAX</button><button type="button" data-act="exp">EXP</button></span>
+      </header>
+      <div class="wl-add">
+        <input id="wl-input" type="text" placeholder="加入自选：SPX / 黄金 / DXY…" aria-label="加入自选">
+        <button type="button" id="wl-btn">ADD</button>
+      </div>
+      <div class="t-body">
+        <table class="t-tbl" id="tbl-wl"><thead><tr><th>TICKER</th><th>LAST</th><th>%CHG</th><th>YTD</th><th></th></tr></thead><tbody></tbody></table>
+      </div>
+      <p class="t-note warn">组合／持仓需要账户数据。站内没有任何账户或持仓来源，因此这里<b style="color:var(--t-ink)">不显示任何数字</b>。接入所需最小契约：<code>positions[] = { symbol, qty, avgCost, currency, asOf }</code>；市值与盈亏由 <code>asset-tracker</code> 收盘价现算，汇率需另接一条官方来源，风险指标依赖持仓协方差与历史序列。接入之前，空白比示例数字诚实。</p>
+      <footer>自选表存在本机 localStorage，不上传；报价口径与上方一致 · 组合无来源、无数据、待接入</footer>
+    </section>
+
+    <section class="t-win c3 t-scroll" id="alerts" data-fn="RISK ALERTS">
+      <header>
+        <h2>Risk Alerts</h2><span class="t-sub" data-sub="alerts">—</span>
+        <span class="t-tools"><button type="button" data-act="max">MAX</button></span>
+      </header>
+      <div class="t-body"><ul class="t-list" id="list-alerts"></ul></div>
+      <footer data-src="alerts">—</footer>
+    </section>
+
+    <section class="t-win c3 t-scroll" id="sources" data-fn="DATA SOURCES STATUS">
+      <header>
+        <h2>Data Sources</h2><span class="t-sub">来源 / 数据日期 / 频率 / 状态</span>
+        <span class="t-tools"><button type="button" data-act="max">MAX</button><button type="button" data-act="exp">EXP</button></span>
+      </header>
+      <div class="t-body">
+        <table class="t-tbl t-wrap" id="tbl-sources"><thead><tr><th>DATASET</th><th>AS OF</th><th>STATUS</th></tr></thead><tbody></tbody></table>
+      </div>
+      <footer>站内全部为公开来源的定时快照；任何一源失败只影响对应窗口。</footer>
+    </section>
+
+  </div>
+
+</main>
+
+<div class="t-foot">
+  <span>© 2026 OOGLEX · 机构终端草案 · 未上线</span>
+  <a href="../apps/finance-terminal/">当前终端</a>
+  <a href="../">站点首页</a>
+  <span data-unavail></span>
+  <span class="t-right">数据仅供研究参考，不构成投资建议</span>
+</div>
+
+<script src="ds/feed.js"></script>
+<script src="ds/render.js"></script>
+<script src="ds/terminal.js"></script>
+<script>
+/* ===========================================================================
+   方案D 装配：只声明「哪个窗口用哪个渲染器」，口径与算法都在 ds/render.js。
+   =========================================================================== */
+(function () {
+  var F = window.OOGLEX_FEED, T = window.OOGLEX_TERMINAL, R = window.OOGLEX_RENDER;
+  var set = R.set, srcLine = R.srcLine;
+
+  T.init();
+
+  F.load().then(function (M) {
+    var eqSrc = M.meta.sources[0];
+    R.topStatus(M);
+
+    /* 第一行：股指 / 利率 / 外汇 / 商品 */
+    R.quoteTable("#tbl-eq", M.markets.indices, ["last", "chg", "pct", "w1", "m1", "ytd", "y1"]);
+    set('[data-sub="eq"]', (M.meta.sources[1].error ? "收盘 " : "盘中 ") + (eqSrc.asOf || "—"));
+    set('[data-src="eq"]', srcLine(eqSrc,
+      "LAST 为盘中快照（约 30 分钟刷新、非实时），CHG/%CHG 相对上一交易日收盘；1W/1M/YTD 为收盘口径") +
+      " · " + F.UNAVAILABLE_NOTE);
+
+    /* 个股：另一个源（公司榜），单日收盘口径，与上面指数的盘中快照不同 —— 所以口径分开写 */
+    var stkSrc = M.meta.sources.filter(function (x) { return /个股/.test(x.label); })[0] || {};
+    R.quoteTable("#tbl-stocks", M.markets.stocks, ["last", "pct", "m1", "ytd", "mcap"]);
+    set('[data-sub="stk"]', "市值前 24 · " + (stkSrc.asOf || "—"));
+    set('[data-src="stk"]', srcLine(stkSrc) +
+      " · 收盘口径，非盘中；市值统一折美元（十亿），LAST 为各自上市地本币，非美元的在价格后标币种");
+
+    R.ratesTable("#tbl-rates", M.rates);
+    R.spreadLegend("#lg-spread", M.rates.spreads);
+    R.curve("#svg-curve-mini", M.rates.tenors, { w:320, h:74, l:26, r:6, t:4, b:12, thin:true, labelEvery:4 });
+    set('[data-sub="rates"]', M.rates.asOf || "—");
+    set('[data-src="rates"]', M.rates.error ? ("读取失败：" + M.rates.error)
+      : "来源 " + (M.rates.source || "—") + " · AS OF " + (M.rates.asOf || "—") +
+        " · 日频 · 30Y-5Y 由曲线现算；无观测的期限留空，不插值");
+
+    R.quoteTable("#tbl-fx", M.markets.fx, ["last", "pct", "y1"]);
+    set('[data-sub="fx"]', eqSrc.asOf || "—");
+    set('[data-src="fx"]', srcLine(eqSrc) + " · * 在岸 CNY，非离岸 CNH");
+
+    R.quoteTable("#tbl-cm", M.markets.commodities, ["last", "pct", "y1"]);
+    set('[data-sub="cm"]', eqSrc.asOf || "—");
+    set('[data-src="cm"]', srcLine(eqSrc) + " · 均为期货合约代理");
+
+    /* 第二行：宏观风险监测 / 曲线 / 跨资产 */
+    R.macroMonitor("#tbl-macro", M);
+    set('[data-sub="macro"]', M.macro.asOf || "—");
+    set('[data-src="macro"]', "来源 " + (M.macro.source || "—") + " · AS OF " + (M.macro.asOf || "—") +
+      " · 日频 · " + R.MONITOR_METHOD);
+
+    R.curve("#svg-curve", M.rates.tenors, { w:460, h:190 });
+    R.html("#lg-curve", "<span>期限数 <b>" + (M.rates.tenors || []).length +
+      "</b></span><span>AS OF <b>" + R.esc(M.rates.asOf || "—") + "</b></span>");
+    R.spreadTable("#tbl-spreads", M.rates.spreads);
+    set('[data-sub="curve"]', M.rates.asOf || "—");
+    set('[data-src="curve2"]', "来源 " + (M.rates.source || "—") +
+      " · 十一个期限各取一条官方序列，共享日期轴 · 倒挂判定 = 长端减短端为负");
+
+    R.crossBars("#bars-cross", M, 6);
+    set('[data-sub="cross"]', "前六 / 后六");
+    set('[data-src="cross"]', "来源 " + (eqSrc.source || "—") +
+      " · 年初至今，各标的自身价格变动，不做汇率或再投资调整");
+
+    /* 第三行：日历 / 要闻 / 信用与加密 */
+    R.calendar("#list-cal", M, 12);
+    set('[data-sub="cal"]', (M.calendar && M.calendar.weekOf) || "—");
+    set('[data-src="cal"]', srcLine(M.meta.sources[6], "仅列高/中影响 · 时间为 UTC · A=实际 F=预测"));
+
+    R.news("#list-news", M, 10);
+    set('[data-sub="news"]', (M.news && M.news.asOf) || "—");
+    set('[data-src="news"]', srcLine(M.meta.sources[7], "仅作信息聚合，每条链接回原文"));
+
+    var creditRows = M.markets.credit.concat((M.markets.crypto || []).map(function (c) {
+      return { tk:c.tk, name:c.name, close:c.close, d1:c.d1, m1:null, ytd:null };
+    }));
+    R.quoteTable("#tbl-credit", creditRows, ["last", "pct", "m1", "ytd"]);
+    set('[data-sub="credit"]', eqSrc.asOf || "—");
+    var cSrc = M.meta.sources[8];
+    set('[data-src="credit"]', srcLine(eqSrc) + " · P = ETF 代理 · 加密来源 " +
+      (cSrc.error ? "读取失败" : (cSrc.source || "—") + "（24 小时口径，与股票当日口径不同，YTD 未提供）"));
+
+    /* 第四行：个股 / 自选与组合 / 风险提示 / 数据来源 */
+    R.watchlist({ model:M, table:"#tbl-wl", input:"#wl-input", btn:"#wl-btn", count:'[data-sub="wl"]' });
+
+    R.alerts("#list-alerts", M);
+    set('[data-sub="alerts"]', ((M.macro.mutations || []).length) + " 条");
+    set('[data-src="alerts"]', (M.macro.mutSummary || "—") + "　来源 宏观雷达 · AS OF " + (M.macro.asOf || "—"));
+
+    R.sources("#tbl-sources", M);
+  }).catch(function (e) {
+    var s = document.querySelector("[data-data-status]");
+    if (s) { s.textContent = "读取失败"; s.style.color = "var(--t-dn)"; }
+    console.error(e);
+  });
+})();
+</script>
+</body>
+</html>
