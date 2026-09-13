@@ -204,6 +204,41 @@
           ? { tk:it.tk, name:it.name, cur:it.cur, dates:aHist.dates || [], values:ser, note:"" }
           : { tk:it.tk, name:it.name, cur:it.cur, dates:[], values:[], note:"跨资产历史里没有这条序列" });
       }
+      /* 月线：形状与日线不同（{start,closes} 而不是共享日期轴），
+         公司同样按片存放；跨资产月线是单文件。按需取，取过不再取。 */
+      var monCache = {}, assetMon = null;
+      function companyMonthly(it) {
+        var shard = it.shard > 1 ? it.shard : 1;
+        var key = "m" + shard;
+        if (!monCache[key]) monCache[key] = soft(C.shardPath("companies/history-monthly.json", shard));
+        return monCache[key].then(function (f) {
+          if (!f || f.__error) return { tk:it.tk, name:it.name, months:[], closes:[],
+                                        note:"第 " + shard + " 片月线读取失败（" + ((f && f.__error) || "未加载") + "）" };
+          var e = (f.series || {})[it.tk];
+          if (!e) return { tk:it.tk, name:it.name, months:[], closes:[],
+                           note:"站内第 " + shard + " 片月线里没有这条序列" };
+          var ms = C.monthlySeries(e);
+          return { tk:it.tk, name:it.name, months:ms.months, closes:ms.closes, note:"" };
+        });
+      }
+      function trackerMonthly(it) {
+        if (!assetMon) assetMon = soft("asset-tracker/history-monthly.json");
+        return assetMon.then(function (f) {
+          if (!f || f.__error) return { tk:it.tk, name:it.name, months:[], closes:[],
+                                        note:"跨资产月线读取失败（" + ((f && f.__error) || "未加载") + "）" };
+          var e = (f.series || {})[it.tk];
+          if (!e) return { tk:it.tk, name:it.name, months:[], closes:[],
+                           note:"跨资产月线里没有这条序列" };
+          var ms = C.monthlySeries(e);
+          return { tk:it.tk, name:it.name, months:ms.months, closes:ms.closes, note:"" };
+        });
+      }
+      function monthlyFor(list) {
+        return Promise.all((list || []).map(function (it) {
+          return it.kind === "company" ? companyMonthly(it) : trackerMonthly(it);
+        }));
+      }
+
       /* 取一组标的的序列。公司按需补片，跨资产直接从已加载的单文件里取。 */
       function seriesFor(list) {
         return Promise.all((list || []).map(function (it) {
@@ -214,7 +249,7 @@
       return {
         pool: pool,
         byTk: function (tk) { return pool.filter(function (p) { return p.tk === tk; })[0] || null; },
-        seriesFor: seriesFor,
+        seriesFor: seriesFor, monthlyFor: monthlyFor,
         /* 「能选哪些标的」本身也会退化：标的表取不到，那一类就整类从选择器里消失。
            所以标的表与历史序列分开报，页面才能说清少了哪一类、少了多少。 */
         counts: { company: pool.filter(function (p) { return p.kind === "company"; }).length,

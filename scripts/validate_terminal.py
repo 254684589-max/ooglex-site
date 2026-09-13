@@ -394,6 +394,12 @@ def main() -> int:
     # 密排表格里不给标的名称套色块：那会撑开行距并压低对比度
     require(".t-go{" in top and "background:var(--t-amber);color:#000" not in go,
             ".t-go 常态不得使用琥珀色块底（白字在琥珀上只有 1.79:1）")
+    # 页面文案走 textContent，markdown 记号会原样显示成字面量。
+    # 这个错犯过两次（口径说明里写了 **…**），所以做成检查。
+    for k, page in pages.items():
+        for m in re.finditer(r'"[^"\n]*\*\*[^"\n]*"', page):
+            require(False,
+                    f"{k} 的字符串里有 markdown 星号，textContent 会原样显示：{m.group(0)[:52]}")
     section("类名不得撞名")
 
     # ── 14 多标的比较：对齐与归一化的口径必须写在页面上 ──────────────────
@@ -465,6 +471,36 @@ def main() -> int:
     require("相关性不等于因果" in cmp_, "相关性矩阵必须写明相关不等于因果")
     require("R²" in cmp_, "回归必须给出 R²：低 R² 时那个 beta 参考价值有限")
     require("混了汇率" in cmp_, "跨币种的 beta 里混了汇率变动，必须写明")
+    # 季节性：月线是降采样的，跨季度的间隔绝不能算成月环比
+    for fn in ("monthlySeries", "monthOverMonth", "seasonality", "monthlyCoverage"):
+        require(fn in core, f"core.js 必须提供 {fn}")
+        require(fn in cmp_ or fn in ren or fn in lib["security.js"],
+                f"{fn} 没有任何调用点")
+    mom = core[core.index("function monthOverMonth"):]
+    mom = mom[:mom.index("\n  /*")] if "\n  /*" in mom else mom[:1200]
+    require("!== 1" in mom and "不是相邻月" in mom,
+            "monthOverMonth 必须只在日历上相邻的两个月都有值时才算："
+            "跨着降采样区间算出来的是季收益，不是月收益")
+    m_sy = re.search(r"var MIN_SEASON_YEARS = (\d+)", core)
+    require(m_sy and int(m_sy.group(1)) >= 8, "季节性每月样本下限不得低于 8 年")
+    require("seasonGrid" in ren, "季节性网格必须走 render 层")
+    sg = ren[ren.index("function seasonGrid"):]
+    sg = sg[:sg.index("\n  function ")]
+    require("median" in sg and "toFixed(1)" in sg,
+            "季节性格里印中位数：十来个观测里一次极端月能把平均拉得面目全非")
+    require("n=" in sg, "样本不足的格子必须写出实际样本数")
+    require("跨了多久，不等于月度样本有多少" in cmp_,
+            "必须点明「序列跨了多久 ≠ 月度样本有多少」——这是本页最容易误读的地方")
+    require("降采样" in cmp_ and "季度末" in cmp_, "必须写明月线降采样与季度末观测")
+    require("描述过去，不是对未来的预测" in cmp_, "季节性必须写明是描述过去不是预测")
+    require("活到今天" in cmp_, "长期季节性必须写明生存者偏差")
+    require('id="tbl-cov"' in cmp_, "必须逐条给出月线覆盖面表（区间/观测数/相邻月对/逐月起点/非相邻间隔）")
+    # 月线分片文件必须齐备
+    for i in range(1, 6):
+        f = ROOT / "apps" / "companies" / ("history-monthly.json" if i == 1 else f"history-monthly-{i}.json")
+        require(f.is_file(), f"缺少公司月线分片 {f.name}")
+    require((ROOT / "apps" / "asset-tracker" / "history-monthly.json").is_file(),
+            "缺少跨资产月线")
     section("多标的比较的对齐与归一化")
 
     return report()

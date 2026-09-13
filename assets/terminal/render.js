@@ -667,6 +667,43 @@
     return { thin: thin, n: live.length };
   }
 
+  /* ── 季节性网格：行=标的，列=1..12 月，格里是该月环比中位数 ──────────────
+     用中位数而不是平均：十来个观测里一次极端月能把平均拉得面目全非。
+     染色按 ±SEASON_CAP 归一（超过就到顶），透明度上限与相关矩阵同为 0.60。
+     数字一律印在格子里；样本不足的格子只写 n=，不给数。 */
+  var SEASON_CAP = 5;          /* 月环比 ±5% 视为满色 */
+  function seasonGrid(hostSel, rows) {
+    var host = typeof hostSel === "string" ? $(hostSel) : hostSel;
+    if (!host) return null;
+    var live = (rows || []).filter(function (r) { return r && r.season; });
+    if (!live.length) { host.innerHTML = '<p class="t-note">没有可用的月线序列</p>'; return null; }
+    var MON = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+    var head = '<tr><th scope="col">标的</th>' + MON.map(function (m) {
+      return '<th scope="col">' + m + "</th>";
+    }).join("") + '<th scope="col">月样本</th></tr>';
+    var body = live.map(function (r) {
+      var cells = r.season.map(function (x) {
+        if (x.median === null) {
+          return '<td class="t-na" title="该月样本 ' + x.n + " 年，不足 " + x.need +
+                 ' 年，不给数">n=' + x.n + "</td>";
+        }
+        var mag = Math.min(Math.abs(x.median) / SEASON_CAP, 1);
+        var al = (mag * CORR_ALPHA).toFixed(3);
+        var tint = x.median >= 0 ? "0,184,107" : "255,77,77";
+        return '<td style="background:rgba(' + tint + "," + al + ')" title="' +
+          esc(x.month + " 月：中位 " + x.median.toFixed(2) + "%、平均 " + x.mean.toFixed(2) +
+              "%、正收益 " + x.pos.toFixed(0) + "%、样本 " + x.n + " 年") + '">' +
+          (x.median >= 0 ? "+" : "−") + Math.abs(x.median).toFixed(1) + "</td>";
+      }).join("");
+      var ns = r.season.map(function (x) { return x.n; });
+      return '<tr><th scope="row">' + esc(r.tk) + "</th>" + cells +
+             '<td class="t-flat">' + Math.min.apply(null, ns) + "–" + Math.max.apply(null, ns) + "</td></tr>";
+    }).join("");
+    host.innerHTML = '<div class="t-scroll-x"><table class="t-tbl t-corr">' +
+      "<thead>" + head + "</thead><tbody>" + body + "</tbody></table></div>";
+    return { n: live.length };
+  }
+
   function fields(dl, list) {
     dl = typeof dl === "string" ? $(dl) : dl;
     if (!dl) return;
@@ -686,7 +723,7 @@
     ratesTable: ratesTable, macroMonitor: macroMonitor, MONITOR_METHOD: MONITOR_METHOD,
     macroBlock: macroBlock,
     priceLine: priceLine, multiLine: multiLine, smallMultiples: smallMultiples,
-    corrMatrix: corrMatrix,
+    corrMatrix: corrMatrix, seasonGrid: seasonGrid,
     fields: fields, nameCell: nameCell,
     crossBars: crossBars, calendar: calendar, news: news, alerts: alerts, sources: sources,
     watchlist: watchlist, topStatus: topStatus

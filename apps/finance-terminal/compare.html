@@ -111,7 +111,7 @@
     <a href="#" data-page-go="3" data-num="14" data-num-label="区间总回报"><i>14)</i> 区间总回报</a>
     <a href="#" data-page-go="4" data-num="15" data-num-label="相关性矩阵"><i>15)</i> 相关性矩阵</a>
     <a href="#" data-page-go="5" data-num="16" data-num-label="贝塔与回归"><i>16)</i> 贝塔与回归</a>
-    <div class="off"><i>17)</i> 季节性</div>
+    <a href="#" data-page-go="6" data-num="17" data-num-label="季节性"><i>17)</i> 季节性</a>
     <div class="sep"></div>
     <div class="hd">Quick Links</div>
     <div class="two" id="qlinks"></div>
@@ -205,6 +205,23 @@
       </div>
     </section>
 
+    <!-- 17) 季节性 -->
+    <section id="pg-7" hidden>
+      <div class="t-win t-scroll">
+        <header><h2>季节性 SEASONALITY</h2><span class="t-sub" id="se-sub">月线环比，按日历月</span></header>
+        <div class="t-body">
+          <div id="tbl-season"></div>
+          <p class="t-note" id="n-season"></p>
+          <div class="t-sect">逐条的月线覆盖面 <em>跨了多久 ≠ 月度样本有多少</em></div>
+          <table class="t-tbl" id="tbl-cov"><thead><tr>
+            <th>标的</th><th class="t-col-x">序列区间</th><th>观测数</th>
+            <th>相邻月对</th><th class="t-col-x">逐月观测起于</th><th class="t-col-x">非相邻间隔</th>
+          </tr></thead><tbody></tbody></table>
+        </div>
+        <footer data-src="season">—</footer>
+      </div>
+    </section>
+
     <!-- 14) 区间总回报 -->
     <section id="pg-4" hidden>
       <div class="t-win t-scroll">
@@ -246,12 +263,12 @@
   <span class="t-right">数据仅供研究参考，不构成投资建议</span>
 </div>
 
-<script src="/assets/terminal/core.js?v=98001503"></script>
+<script src="/assets/terminal/core.js?v=652990ff"></script>
 <script src="/assets/terminal/registry.js?v=1d42d994"></script>
 <script src="/assets/terminal/chrome.js?v=04b6a585"></script>
 <script src="/assets/terminal/behavior.js?v=00335003"></script>
-<script src="/assets/terminal/security.js?v=c2723160"></script>
-<script src="/assets/terminal/render.js?v=b920107a"></script>
+<script src="/assets/terminal/security.js?v=090a8692"></script>
+<script src="/assets/terminal/render.js?v=2061083c"></script>
 <script>
 /* 多标的比较页装配：口径（日期对齐、共同窗口、重基）全部来自 core.js，
    这一页只负责「选了哪几个」与把结果摆出来。 */
@@ -298,7 +315,8 @@
     { sel:"#pg-3", title:"多标的比较 · 回撤" },
     { sel:"#pg-4", title:"多标的比较 · 区间总回报" },
     { sel:"#pg-5", title:"多标的比较 · 相关性矩阵" },
-    { sel:"#pg-6", title:"多标的比较 · 贝塔与回归" }
+    { sel:"#pg-6", title:"多标的比较 · 贝塔与回归" },
+    { sel:"#pg-7", title:"多标的比较 · 季节性" }
   ]});
 
   /* 失败措辞与站内其余页保持一致（读取失败 / 未加载）—— 同一种事在不同页
@@ -449,7 +467,7 @@
               : { ok:false, reason:"可比较的序列不足两条" };
 
         function footers(txt) {
-          ["cmp", "sp", "dd", "ret", "corr", "beta"].forEach(function (k) { set('[data-src="' + k + '"]', txt); });
+          ["cmp", "sp", "dd", "ret", "corr", "beta", "season"].forEach(function (k) { set('[data-src="' + k + '"]', txt); });
         }
 
         if (!w.ok) {
@@ -671,6 +689,53 @@
         bench.onchange = drawBeta;
         drawBeta();
 
+        /* ── 17) 季节性：另取月线（形状与日线不同，按需取片）── */
+        M.monthlyFor(sel).then(function (mon) {
+          var rows = mon.map(function (r) {
+            var cov = C.monthlyCoverage(r.months, r.closes);
+            var rets = C.monthOverMonth(r.months, r.closes);
+            return { tk: r.tk, name: r.name, cov: cov, note: r.note,
+                     season: cov.mom >= C.MIN_SEASON_YEARS ? C.seasonality(r.months, rets) : null };
+          });
+          var usable = rows.filter(function (r) { return r.season; });
+          R.seasonGrid("#tbl-season", usable);
+          set("#se-sub", usable.length + " 条可用 · 月环比中位数");
+          $("#tbl-cov tbody").innerHTML = rows.map(function (r) {
+            var c = r.cov;
+            if (!c.obs) return '<tr><th scope="row" class="t-rownum">' + esc(r.tk) +
+              '</th><td colspan="5" class="t-na" style="text-align:left">' +
+              esc(r.note || "站内没有这条月线序列") + "</td></tr>";
+            var yrs = (c.mom / 12).toFixed(1);
+            return '<tr><th scope="row" class="t-rownum">' + esc(r.tk) +
+              '<span class="sub">' + esc(r.name || "") + "</span></th>" +
+              '<td class="t-col-x">' + esc(c.from + " → " + c.to) + "</td>" +
+              "<td>" + c.obs + "</td>" +
+              '<td class="t-last">' + c.mom + "<span class=\"sub\">≈" + yrs + " 年</span></td>" +
+              '<td class="t-col-x">' + esc(c.momFrom || "—") + "</td>" +
+              '<td class="t-col-x ' + (c.quarterly ? "t-na" : "t-flat") + '">' + c.quarterly + "</td></tr>";
+          }).join("");
+          /* 这一段是本页最要紧的一句话：跨了多久 ≠ 月度样本有多少 */
+          var worst = rows.filter(function (r) { return r.cov.obs; })
+            .sort(function (a, b) { return a.cov.mom - b.cov.mom; })[0];
+          set("#n-season",
+            "按日历月汇总月线环比，格里是中位数（十来个观测里一次极端月能把平均拉得面目全非，所以不用平均）；" +
+            "悬停看平均、正收益占比与样本年数。样本不足 " + C.MIN_SEASON_YEARS + " 年的月份只写 n=，不给数。" +
+            "　⚠ 最要紧的一点：序列跨了多久，不等于月度样本有多少。" +
+            "站内月线对超长区间是降采样的 —— 早年往往只有季度末观测，" +
+            "而跨着季度算出来的不是月环比，所以那些间隔一律不计入。" +
+            (worst ? "本次选中里覆盖最薄的是 " + worst.tk + "：序列从 " + worst.cov.from +
+              " 起共 " + worst.cov.obs + " 个观测，但相邻月只有 " + worst.cov.mom +
+              " 对（≈" + (worst.cov.mom / 12).toFixed(1) + " 年，逐月观测起于 " +
+              (worst.cov.momFrom || "—") + "，另有 " + worst.cov.quarterly + " 个非相邻间隔）。" : "") +
+            " 另外：可选池是今天按市值排前列的公司，长期季节性天然带着「活到今天」这个条件，" +
+            "这是描述过去，不是对未来的预测。");
+          set('[data-src="season"]', C.srcLine(M.src.comp) +
+            " · 月线另存（companies/history-monthly*.json 与 asset-tracker/history-monthly.json），按需取片");
+        }, function () {
+          set("#n-season", "月线读取失败，本页不给季节性。");
+          set('[data-src="season"]', "月线读取失败");
+        });
+
         R.fields("#f-meta", [
           { k:"对齐方式", v:"按日期字符串对齐到并集轴（两条管道日期轴不同，按下标对齐会整体错位几天）", box:1 },
           { k:"共同窗口", v:"起点取各条首个有效点里最晚的，终点取各条最后有效点里最早的", mono:1 },
@@ -682,7 +747,9 @@
           { k:"分红调整", v:"站内序列为收盘价，未做分红再投资调整", na:1 },
           { k:"相关/回归样本", v:"重叠日收益不足 " + C.MIN_PAIRS + " 天一律不给系数（短样本的相关系数是噪声）", mono:1 },
           { k:"Alpha 口径", v:"未扣无风险利率 —— 站内无此序列，所以是相对 beta×基准的超额，不是 Jensen alpha", box:1 },
-          { k:"无风险利率", v:"站内无可直接用于扣减的日频无风险利率序列", na:1 }
+          { k:"无风险利率", v:"站内无可直接用于扣减的日频无风险利率序列", na:1 },
+          { k:"月线降采样", v:"站内月线对超长区间会降采样，早年常只有季度末观测；跨季度的间隔不算月环比，所以「序列跨了多久」远大于「月度样本有多少」", box:1 },
+          { k:"季节性性质", v:"描述过去，不是预测；可选池是今天市值前列的公司，长期统计天然带「活到今天」这个条件", box:1 }
         ]);
         set("[data-unavail]", C.UNAVAILABLE_NOTE);
         K.wireNumbers();

@@ -260,6 +260,85 @@
              r2: r2, n: n, need: need };
   }
 
+  /* ── 月线：{start:"1999-02", closes:[…]} 展开成显式月份标签 ─────────────
+     月线文件的自述里写了一件要命的事：「数据源对超长区间会自行降采样，部分公司
+     的早年只有季度末观测，缺月一律留空」。所以**不能把相邻两个有值的观测当成
+     相邻两个月**——跨着降采样区间算出来的不是月收益，是季收益。
+     monthOverMonth 因此只在「日历上真正相邻的两个月都有收盘」时才算。 */
+  function monthLabels(start, n) {
+    var out = [], m = /^(\d{4})-(\d{2})$/.exec(String(start || ""));
+    if (!m) return out;
+    var y = +m[1], mo = +m[2];
+    for (var i = 0; i < n; i++) {
+      out.push(y + "-" + (mo < 10 ? "0" + mo : mo));
+      mo++; if (mo > 12) { mo = 1; y++; }
+    }
+    return out;
+  }
+  function monthlySeries(entry) {
+    if (!entry || !entry.closes) return { months: [], closes: [] };
+    return { months: monthLabels(entry.start, entry.closes.length), closes: entry.closes };
+  }
+  /* 月度环比收益，与 closes 同下标；只有日历上相邻的两个月都有值才给数 */
+  function monthOverMonth(months, closes) {
+    var out = [];
+    for (var i = 0; i < closes.length; i++) out.push(null);
+    for (var j = 1; j < closes.length; j++) {
+      if (!isNum(closes[j]) || !isNum(closes[j - 1]) || closes[j - 1] === 0) continue;
+      var a0 = months[j - 1], a1 = months[j];
+      if (!a0 || !a1) continue;
+      var y0 = +a0.slice(0, 4), m0 = +a0.slice(5), y1 = +a1.slice(0, 4), m1 = +a1.slice(5);
+      if ((y1 - y0) * 12 + (m1 - m0) !== 1) continue;     /* 不是相邻月，不算 */
+      out[j] = closes[j] / closes[j - 1] - 1;
+    }
+    return out;
+  }
+  /* 覆盖面自述：整条序列跨多久、有多少观测、其中多少是真正相邻的月，
+     以及「逐月观测」从哪个月开始。实测 MMM 从 1962-01 起共 339 个观测，
+     但其中 219 个间隔是 3 个月（季度末），逐月只从 2016-10 开始、119 对。
+     所以页面必须把「跨 64 年」和「月度样本只有 10 年」分开讲，否则读的人
+     会以为那个季节性是六十年的证据。 */
+  function monthlyCoverage(months, closes) {
+    var obs = [], i;
+    for (i = 0; i < closes.length; i++) if (isNum(closes[i]) && months[i]) obs.push(months[i]);
+    if (!obs.length) return { obs: 0, from: null, to: null, mom: 0, momFrom: null, quarterly: 0 };
+    var mom = 0, quarterly = 0, momFrom = null;
+    for (i = 1; i < obs.length; i++) {
+      var a0 = obs[i - 1], a1 = obs[i];
+      var d = (+a1.slice(0, 4) - +a0.slice(0, 4)) * 12 + (+a1.slice(5) - +a0.slice(5));
+      if (d === 1) { mom++; if (!momFrom) momFrom = a0; }
+      else if (d >= 2) quarterly++;
+    }
+    return { obs: obs.length, from: obs[0], to: obs[obs.length - 1],
+             mom: mom, momFrom: momFrom, quarterly: quarterly };
+  }
+
+  /* 按日历月汇总：每个月的平均/中位环比、正收益占比、样本年数。
+     样本不足 minN 年就不给数 —— 五个观测的「季节性」是巧合不是规律。 */
+  var MIN_SEASON_YEARS = 8;
+  function seasonality(months, rets, minN) {
+    var need = minN || MIN_SEASON_YEARS, buckets = [];
+    for (var m = 0; m < 12; m++) buckets.push([]);
+    for (var i = 0; i < rets.length; i++) {
+      if (!isNum(rets[i]) || !months[i]) continue;
+      buckets[+months[i].slice(5) - 1].push(rets[i]);
+    }
+    return buckets.map(function (v, idx) {
+      var n = v.length;
+      if (n < need) return { month: idx + 1, n: n, need: need, mean: null, median: null, pos: null };
+      var sorted = v.slice().sort(function (a, b) { return a - b; });
+      var mid = sorted.length % 2
+        ? sorted[(sorted.length - 1) / 2]
+        : (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2;
+      return {
+        month: idx + 1, n: n, need: need,
+        mean: v.reduce(function (a, b) { return a + b; }, 0) / n * 100,
+        median: mid * 100,
+        pos: v.filter(function (x) { return x > 0; }).length / n * 100
+      };
+    });
+  }
+
   /* ── 统计：Z-Score 与分位（需要足够样本才给数）────────────────────── */
   function zscore(values, win) {
     var v = (values || []).filter(isNum);
@@ -387,6 +466,8 @@
     BASE: BASE, isNum: isNum, getJSON: getJSON, soft: soft, fmt: fmt, esc: esc,
     shardPath: shardPath, alignSeries: alignSeries,
     dailyReturns: dailyReturns, pairCorr: pairCorr, regress: regress, MIN_PAIRS: MIN_PAIRS,
+    monthLabels: monthLabels, monthlySeries: monthlySeries, monthOverMonth: monthOverMonth,
+    seasonality: seasonality, monthlyCoverage: monthlyCoverage, MIN_SEASON_YEARS: MIN_SEASON_YEARS,
     compareWindow: compareWindow, rebase: rebase,
     meta: meta, srcLine: srcLine, zscore: zscore,
     quoteHref: quoteHref, securityHref: securityHref, detailHref: detailHref,
