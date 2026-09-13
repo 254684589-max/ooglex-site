@@ -131,6 +131,27 @@
     </div>
     <footer data-src="curve">—</footer>
   </section>
+  <section class="t-panel w2" data-fn="GEO 地缘风险 RISK" id="p-geo">
+    <header><span class="mn">RISK</span><h3>地缘风险定价 Geopolitical Risk</h3><span class="sub" data-sub="geo">—</span></header>
+    <div class="bd">
+      <table class="t-tbl" id="tbl-geo"><thead><tr>
+        <th>轴</th><th>分数</th><th class="t-col-x">读数</th><th>信号</th>
+      </tr></thead><tbody></tbody></table>
+      <p class="t-note" id="n-geo"></p>
+    </div>
+    <footer data-src="geo">—</footer>
+  </section>
+
+  <section class="t-panel" data-fn="BOARD 品类分布 CATEGORIES" id="p-cat">
+    <header><span class="mn">GMKT</span><h3>品类分布 Categories</h3><span class="sub" data-sub="cat">—</span></header>
+    <div class="bd">
+      <table class="t-tbl" id="tbl-cat"><thead><tr>
+        <th>品类</th><th>只数</th><th>涨</th><th>跌</th><th class="t-col-x">无值</th><th>中位当日</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+    <footer data-src="cat">—</footer>
+  </section>
+
   <section class="t-panel" data-fn="WRET CROSS 跨资产" id="p-wret">
     <header><span class="mn">WRET</span><h3>跨资产强弱 Cross Asset · YTD</h3><span class="sub" data-sub="cross">—</span></header>
     <div class="bd">
@@ -207,7 +228,7 @@
 (function () {
   var C = window.OOGLEX_CORE, K = window.OOGLEX_CHROME, FN = window.OOGLEX_FN;
   var O = window.OOGLEX_OVERVIEW, B = window.OOGLEX_BEHAVIOR, R = window.OOGLEX_RENDER;
-  var $ = K.$, $$ = K.$$, esc = C.esc, set = R.set, srcLine = C.srcLine;
+  var $ = K.$, $$ = K.$$, esc = C.esc, set = R.set, srcLine = C.srcLine, fmt = C.fmt;
 
   K.init({
     current: "MON",
@@ -301,9 +322,72 @@
     set('[data-sub="credit"]', eqSrc.asOf || "—");
     set('[data-src="credit"]', srcLine(eqSrc) + " · P = ETF 代理 · 加密为 24h 口径，与股票当日口径不同");
 
+    /* 品类分布：按站内跨资产管道的四个品类汇总只数与涨跌宽度。
+       完整的 133 标的可搜索看板在 /apps/markets/ —— 那一页就是看板本体，
+       这里只做汇总并链过去，不在终端里复制第二份看板。 */
+    (function () {
+      var raw = (M.raw.assets && !M.raw.assets.__error) ? (M.raw.assets.assets || []) : null;
+      var body = document.querySelector("#tbl-cat tbody");
+      if (!raw) {
+        body.innerHTML = '<tr><td colspan="6" class="t-na" style="text-align:left">跨资产管道读取失败，无法汇总品类</td></tr>';
+        set('[data-sub="cat"]', "读取失败");
+        set('[data-src="cat"]', "读取失败：" + ((M.raw.assets && M.raw.assets.__error) || "未知原因"));
+        return;
+      }
+      var ZH = { equity:"股票 EQUITY", commodity:"商品 COMMODITY", fx:"外汇 FX", bond:"债券 BOND" };
+      var groups = {};
+      raw.forEach(function (a) {
+        var k = a.category || "other";
+        (groups[k] = groups[k] || []).push(a);
+      });
+      var order = ["equity", "commodity", "fx", "bond"];
+      Object.keys(groups).forEach(function (k) { if (order.indexOf(k) < 0) order.push(k); });
+      var rows = order.filter(function (k) { return groups[k]; }).map(function (k) {
+        var list = groups[k];
+        var d1 = list.map(function (a) { return (a.returns || {}).d1; })
+                     .filter(function (x) { return C.isNum(x); });
+        var up = d1.filter(function (x) { return x > 0; }).length;
+        var dn = d1.filter(function (x) { return x < 0; }).length;
+        var na = list.length - d1.length;
+        var sorted = d1.slice().sort(function (a, b) { return a - b; });
+        var med = sorted.length
+          ? (sorted.length % 2 ? sorted[(sorted.length - 1) / 2]
+             : (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2)
+          : null;
+        return '<tr data-tk="' + esc(k.toUpperCase()) + '" data-nm="' + esc(ZH[k] || k) + '">' +
+          '<td class="t-rownum">' + esc(ZH[k] || k) + "</td>" +
+          "<td>" + list.length + "</td>" +
+          '<td class="t-up">' + up + "</td>" +
+          '<td class="t-dn">' + dn + "</td>" +
+          '<td class="t-col-x ' + (na ? "t-na" : "t-flat") + '">' + na + "</td>" +
+          '<td class="' + fmt.cls(med) + '">' + fmt.pct(med) + "</td></tr>";
+      }).join("");
+      var allD1 = raw.map(function (a) { return (a.returns || {}).d1; }).filter(function (x) { return C.isNum(x); });
+      rows += '<tr class="t-grp"><td colspan="6">合计 ' + raw.length + " 个标的 · 有当日值 " +
+        allD1.length + " 个 · 涨 " + allD1.filter(function (x) { return x > 0; }).length +
+        " / 跌 " + allD1.filter(function (x) { return x < 0; }).length + "</td></tr>";
+      body.innerHTML = rows;
+      set('[data-sub="cat"]', raw.length + " 个标的 · " + (eqSrc.asOf || "—"));
+      set('[data-src="cat"]', srcLine(eqSrc) +
+        " · 只数与涨跌宽度按跨资产管道的 category 字段汇总 · 完整的可搜索看板见 /apps/markets/");
+    })();
+
     R.sources("#tbl-sources", M);
     set('[data-src="sources"]', "站内全部为公开来源的定时快照；任何一源失败只影响对应面板，不以零值静默覆盖");
     set("[data-unavail]", C.UNAVAILABLE_NOTE);
+
+    /* 地缘风险：复用 finance-terminal-geo-risk.mjs 的 buildGeoRisk()（四条轴等权、
+       缺任何一条就不给等级，有独立契约 validate_finance_terminal_geo_risk.mjs）。
+       模型交给页尾的 module 脚本渲染 —— 那边才能 import ES 模块。 */
+    window.__OOGLEX_GEO_INPUT = {
+      assetTracker: { data: (M.raw.assets && !M.raw.assets.__error) ? M.raw.assets : null,
+                      error: M.raw.assets && M.raw.assets.__error },
+      macro:        { data: (M.raw.macro  && !M.raw.macro.__error)  ? M.raw.macro  : null,
+                      error: M.raw.macro && M.raw.macro.__error },
+      ofr:          { data: (M.raw.ofr    && !M.raw.ofr.__error)    ? M.raw.ofr    : null,
+                      error: M.raw.ofr && M.raw.ofr.__error }
+    };
+    document.dispatchEvent(new CustomEvent("ooglex:geo-input"));
 
     $$("[data-fn]").forEach(function (p) {
       if (!p.getAttribute("data-nm")) p.setAttribute("data-nm", p.getAttribute("data-fn"));
@@ -316,6 +400,60 @@
     });
   });
 })();
+</script>
+
+<script type="module">
+/* 地缘风险面板：模型复用旧模块（单一真源，不另写一份打分逻辑），渲染用新终端的
+   表格与四档信号 —— 旧模块自带的圆形表盘不搬过来，规格书要求用表格替代仪表盘。 */
+import { buildGeoRisk, GEO_LEVELS } from "/apps/finance-terminal/finance-terminal-geo-risk.mjs";
+
+const C = window.OOGLEX_CORE, R = window.OOGLEX_RENDER;
+const esc = C.esc, set = R.set;
+
+/* 五档等级 → 四档信号色。等级中文标签照原样显示，颜色不是唯一编码。 */
+const TONE = { low:"normal", mild:"normal", mid:"watch", high:"risk", severe:"stress" };
+
+function render() {
+  const input = window.__OOGLEX_GEO_INPUT;
+  const body = document.querySelector("#tbl-geo tbody");
+  if (!input || !body) return;
+  const m = buildGeoRisk(input);
+
+  const rows = (m.axes || []).map((axis) => {
+    const ok = axis.available;
+    const tone = ok ? TONE[(GEO_LEVELS.filter((l) => axis.score >= l.floor).pop() || {}).key] || "watch" : "na";
+    const label = ok ? (GEO_LEVELS.filter((l) => axis.score >= l.floor).pop() || {}).label : "无数据";
+    return '<tr data-nm="' + esc(axis.label) + '">' +
+      '<td class="t-rownum">' + esc(axis.label) +
+        '<span class="sub">权重 ' + axis.weight + "%</span></td>" +
+      '<td class="t-last">' + (ok ? axis.score.toFixed(0) : '<span class="t-na">—</span>') + "</td>" +
+      '<td class="t-col-x" style="text-align:left;font-family:var(--t-sans);color:var(--t-dim);white-space:normal">' +
+        esc(ok ? (axis.rawText + " · " + axis.method) : axis.reason) + "</td>" +
+      '<td><span class="t-sig ' + tone + '">' + esc(label) + "</span></td></tr>";
+  }).join("");
+
+  const head = m.available
+    ? '<tr class="t-grp"><td colspan="4">综合 ' + m.score.toFixed(0) + " / 100 · 等级「" +
+        esc(m.level.label) + "」· 四条轴等权 · AS OF " + esc(m.asOf || "—") +
+        (m.stale ? " · 上游标记为过期" : "") + "</td></tr>"
+    : '<tr class="t-grp"><td colspan="4">不给等级：' + esc((m.missing || []).join("；")) + "</td></tr>";
+
+  body.innerHTML = head + rows;
+  set('[data-sub="geo"]', m.available ? (m.score.toFixed(0) + " / 100 · " + m.level.label) : "缺轴，不给等级");
+  set('[data-src="geo"]', m.available
+    ? ("来源 " + (m.sources || []).join(" · ") + " · AS OF " + (m.asOf || "—") +
+       " · 四条轴各 25% 等权，任一条缺失即不给等级")
+    : "四条轴有缺失，按模型约定不给等级");
+  const note = document.querySelector("#n-geo");
+  if (note) {
+    note.textContent = "本模型读的是市场为地缘风险付出的价格：能源溢价、避险需求、波动率制度、" +
+      "金融压力四条轴等权，全部由站内已在日更的公开管道逐日复算。" +
+      "它不统计、不解读地缘政治事件本身，也不使用任何 AI 生成的文本作为数据来源。";
+  }
+}
+
+if (window.__OOGLEX_GEO_INPUT) render();
+document.addEventListener("ooglex:geo-input", render);
 </script>
 </body>
 </html>

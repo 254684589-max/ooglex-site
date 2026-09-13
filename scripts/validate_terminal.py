@@ -211,6 +211,32 @@ def main() -> int:
         require("prefers-reduced-motion" in src, "样式表必须保留 reduced-motion 兜底约束")
     section("无孤儿引用与装饰")
 
+    # ── 10 从旧终端迁入的两块 ────────────────────────────────────────────
+    geo_mod = ROOT / "apps" / "finance-terminal" / "finance-terminal-geo-risk.mjs"
+    require(geo_mod.is_file(), "地缘风险模型文件缺失（新旧两个终端都在用它）")
+    geo_src = read(geo_mod)
+    require("消费方有两个" in geo_src, "地缘风险模型必须写明它有两个消费方，避免被误删")
+    require("buildGeoRisk" in geo_src and "export function buildGeoRisk" in geo_src,
+            "地缘风险模型必须导出 buildGeoRisk")
+    # 新终端只复用模型，不复制打分逻辑
+    require('/apps/finance-terminal/finance-terminal-geo-risk.mjs' in mon,
+            "监控页必须 import 地缘风险模型，而不是另写一份打分")
+    for token in ("GEO_LEVELS", "buildGeoRisk"):
+        require(token in mon, f"监控页缺少 {token}")
+    for bad in ("energyAxis", "havenAxis", "linearScore", "percentileScore"):
+        require(bad not in mon, f"监控页不得复制打分实现 {bad}（单一真源在那个模块里）")
+    require('id="tbl-geo"' in mon and 'data-src="geo"' in mon, "监控页缺少地缘风险面板")
+    require("四条轴等权" in mon, "地缘风险面板必须写明四条轴等权")
+    require("不使用任何 AI 生成的文本作为数据来源" in mon,
+            "地缘风险面板必须声明不以 AI 文本为数据源")
+    # 品类分布：只做汇总并链向看板本体，不在终端里复制第二份看板
+    require('id="tbl-cat"' in mon and 'data-src="cat"' in mon, "监控页缺少品类分布面板")
+    require("/apps/markets/" in mon, "品类分布必须链向看板本体所在的页面")
+    for bad in ('id="board-tabs"', 'id="board-panel"', 'id="board-live"'):
+        require(bad not in mon, f"监控页不得复制品类看板的 {bad}（看板本体在 /apps/markets/）")
+    require("category" in mon, "品类分布必须按跨资产管道的 category 字段汇总")
+    section("迁入的地缘风险与品类分布")
+
     # ── 10 无障碍：涨跌不能只靠颜色 ───────────────────────────────────────
     require(".t-sig" in css and "NORMAL" in lib["render.js"],
             "风险档位必须带文字标签，颜色不是唯一编码")

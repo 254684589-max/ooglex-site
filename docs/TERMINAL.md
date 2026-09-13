@@ -32,7 +32,11 @@ apps/finance-terminal/      页面层（只做装配：哪个区域用哪个渲�
 ├── legacy.html        改版前的终端页，保留可用并 noindex
 ├── terms.html         使用条款（纯静态、零脚本）
 ├── privacy.html       隐私政策（纯静态、零脚本）
-├── app.js + 33 个 .mjs + terminal-*.css   legacy.html 在用，未动
+├── finance-terminal-geo-risk.mjs      地缘风险定价模型：新旧两个终端共用（新终端用
+│                                      buildGeoRisk() 模型自己渲染成表格，legacy 用
+│                                      renderGeoRisk() 画表盘）。契约：
+│                                      validate_finance_terminal_geo_risk.mjs
+├── app.js + 32 个其余 .mjs + terminal-*.css   legacy.html 在用，未动
 └── data.json / readiness.json / market-source-readiness.json   数据管道，未动
 ```
 
@@ -158,8 +162,8 @@ legacy 样式表里剥离（省 43.7KB）。页面上主题选择器仍在，会
 
 | 下一步 | 说明 |
 |---|---|
-| 迁入 legacy 独有的两块 | 品类看板（`board-*`，与 `apps/markets/` 共用一套样式）与地缘风险地图（`geo-risk`），是 legacy 页上新终端还没有的功能 |
-| 退役 legacy 与它的契约 | 两块迁完之后，`legacy.html` + `app.js` + 33 个 `.mjs` + 11 个样式表 + `validate_finance_terminal.py` 一起退役。**这是独立一件事**：退役一个 4000 行的契约要单独评审，不能搭在改版里 |
+| ~~迁入 legacy 独有的两块~~ | **已完成**。地缘风险定价迁入（复用 `finance-terminal-geo-risk.mjs` 的模型，表格渲染）；品类看板核对后发现 `apps/markets/` 就是看板本体（8 个 board id 与 legacy 相同），改为在监控页加品类分布汇总面板并链过去，不复制第二份 |
+| ~~退役 legacy 与它的契约~~ | **决定不做**。`validate_finance_terminal.py` 除页面断言外还覆盖数据管道与适配器（7 个源的取数、健康度、失败保留、单源隔离），而那正是新终端读的数据 —— 删掉它等于连新终端的数据覆盖一起删。legacy 已 noindex、不在导航与 sitemap，留着成本是零 |
 | 按注册表逐个加功能 | 优先级见第三节 |
 | 推广设计系统 | 把 `terminal.css` 的口径推到其余页面 |
 
@@ -172,8 +176,8 @@ legacy 样式表里剥离（省 43.7KB）。页面上主题选择器仍在，会
 node --check assets/terminal/*.js
 python3 -m py_compile scripts/validate_terminal.py
 
-# 新终端契约（230 条：出处规范、不伪造实时、不可得字段声明、无下单键、
-#              注册表完整性、代码层单一真源、无孤儿引用、无障碍）
+# 新终端契约（255 条：出处规范、不伪造实时、不可得字段声明、无下单键、
+#              注册表完整性、代码层单一真源、迁入两块的专项、无孤儿引用、无障碍）
 python3 scripts/validate_terminal.py
 
 # legacy 页的旧契约（129 条页面断言 + 数据与适配器契约，一条未删）
