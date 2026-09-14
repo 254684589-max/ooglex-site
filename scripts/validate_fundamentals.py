@@ -307,12 +307,20 @@ def main() -> int:
             if not r.get("statementEnd"):
                 mismatch.append(f"{sym} 缺 statementEnd")
 
-        # 现算的必须能复算：ROE = 净利 / 权益
-        if num(raw.get("netIncome")) and num(raw.get("equity")) and raw["equity"] > 0 \
-                and num(r.get("roe")):
-            want = raw["netIncome"] / raw["equity"] * 100
+        # 现算的必须能复算：ROE = 净利 / **同财年末**权益（不是最新那一期）
+        if num(raw.get("netIncome")) and num(raw.get("equityAligned")) \
+                and raw["equityAligned"] > 0 and num(r.get("roe")):
+            want = raw["netIncome"] / raw["equityAligned"] * 100
             if abs(want - r["roe"]) > 0.01:
                 mismatch.append(f"{sym} ROE 复算不符：{r['roe']:.4f} vs {want:.4f}")
+        # 反过来钉住：ROE 不得用最新那一期权益（跨期）算出来
+        if num(raw.get("netIncome")) and num(r.get("roe")) and num(raw.get("equity")) \
+                and num(raw.get("equityAligned")) and raw["equity"] > 0 \
+                and abs(raw["equity"] - raw["equityAligned"]) > 1:
+            wrong = raw["netIncome"] / raw["equity"] * 100
+            if abs(wrong - r["roe"]) < 0.01:
+                mismatch.append(
+                    f"{sym} ROE 是用最新一期权益算的（跨期）—— 分母必须与分子同财年")
 
     require(not zero_filled,
             f"有 {len(zero_filled)} 处把缺值写成了 0（0 是有意义的值，缺应为 null）：{zero_filled[:5]}")
@@ -365,6 +373,19 @@ def main() -> int:
             "同类必须同期，否则利润率是两个年度拼的")
     require(len(inst) <= 1,
             f"时点类（权益／资产／负债）取了多个期间 {sorted(inst)} —— 同类必须同期")
+    # 利润表与资产负债表可能挑到不同财年（实测 CY2024 vs CY2025Q4I）。这不是错，
+    # 但 ROE 必须另取同财年的权益当分母，所以那一期要在册。
+    if dur and inst and pu.get("_equityAligned"):
+        yr = sorted(dur)[0][2:6]
+        require(pu["_equityAligned"] == f"CY{yr}Q4I",
+                f"ROE 用的权益期 {pu['_equityAligned']} 与利润表期 {sorted(dur)[0]} 不同财年")
+    has_roe = any(r.get("roe") is not None for r in rows if isinstance(r, dict))
+    require(not has_roe or pu.get("_equityAligned"),
+            "给出了 ROE 却没记录同期权益取自哪一期 —— 分母口径必须可核")
+    require(("同财年" in str(m.get("roe", ""))) if isinstance(m, dict) else False,
+            "method 段必须写明 ROE 的分母是同财年末权益，不是最新那一期")
+    require("分母口径不同" in note or "各自写明" in note,
+            "PB 用最新一期权益、ROE 用同期权益，两者分母不同，note 必须说明")
     require(d.get("withRatio") == with_ratio,
             f"withRatio 与逐行统计不符：{d.get('withRatio')} vs {with_ratio}")
     require(d.get("count") == len(rows),

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme-lock="dark" data-density="std" data-finance-terminal>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>条件选股与相对估值 · Ooglex金融终端</title>
+<meta name="description" content="Ooglex金融终端条件选股页：用 PE / PB / PS / ROE / 净利率 / 负债率 六项比率筛选与排序，比率由本站按写明的公式从公司向 SEC 递交的 XBRL 报表项现算；逐条带报表期末与价格日期两个日期，分母非正不给比率，缺的字段是 null 而不是 0。">
+<link rel="canonical" href="https://www.ooglex.com/apps/finance-terminal/screen.html">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="apple-touch-icon" href="/assets/favicon.svg">
+<meta name="theme-color" content="#050505">
+<meta property="og:type" content="website">
+<meta property="og:title" content="条件选股与相对估值 · Ooglex金融终端">
+<meta property="og:description" content="用六项基本面比率筛选与排序；比率由本站从 SEC XBRL 报表项现算，逐条带报表期末与价格日期。">
+<meta property="og:url" content="https://www.ooglex.com/apps/finance-terminal/screen.html">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
+<script>/* 主题首屏防闪：终端锁深色（专业终端本身是深色语言），选择器会显示锁定说明 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js?v=7bf48c7c" defer></script>
+<link rel="stylesheet" href="/assets/terminal/terminal.css?v=9c4b2a71">
+<style>
+  /* 选股页专属：左编号菜单 + 右主区（与比较页同一套骨架） */
+  .s-wrap{display:grid;grid-template-columns:206px minmax(0,1fr);gap:9px;padding:9px 10px 0}
+  .s-main{display:grid;gap:9px;min-width:0}
+  /* 单列时也要 minmax(0,1fr)：写 1fr 等于 minmax(auto,1fr)，轨道会被内容的
+     min-content 宽度顶出去 —— 实测 360px 下整页横向溢出 3px 就是这么来的。 */
+  @media (max-width:900px){ .s-wrap{grid-template-columns:minmax(0,1fr)} }
+  /* 阈值条：每项一个「最小/最大」对，留空即不限。
+     窄屏把下限降到 0：写死 186px 时窄屏那一列撑不下就会把整页顶宽。 */
+  .s-thr{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(186px,100%),1fr));gap:6px}
+  /* 筛选条允许换行：三个下拉在 360px 排不下一行，硬挤会溢出 */
+  .s-wrap .t-filter{flex-wrap:wrap}
+  .s-wrap .t-filter select{min-width:0;max-width:100%}
+  .s-thr label{display:block;font-family:var(--t-mono);font-size:10px;color:var(--t-dim)}
+  .s-thr .pair{display:flex;gap:3px;margin-top:2px}
+  .s-thr input{
+    flex:1 1 0;min-width:0;background:#000;border:1px solid #333;color:#f0f0f0;
+    font-family:var(--t-mono);font-size:11px;padding:2px 5px;
+  }
+  .s-thr input:focus{outline:2px solid var(--t-cmd-line);outline-offset:1px}
+</style>
+</head>
+<body>
+
+<div class="t-tabs" data-tabs></div>
+<nav class="t-fnbar" data-fnbar aria-label="功能快捷键"></nav>
+
+<div class="t-crumb">
+  <span class="nav">
+    <button type="button" data-hist="back" aria-label="后退">‹</button>
+    <button type="button" data-hist="fwd" aria-label="前进">›</button>
+  </span>
+  <span class="fld"><b>SCRN</b><u>▾</u></span>
+  <a class="rel" href="#" data-open="related" data-cats="anly quote rank">相关功能菜单 ⌄</a>
+  <span class="right">
+    <span class="t-modes">
+      <button type="button" data-mode-btn="std" aria-pressed="true">标准</button>
+      <button type="button" data-mode-btn="pro" aria-pressed="false">专业</button>
+    </span>
+    <span data-theme-slot></span>
+    <button type="button" data-open="fdir">⌗ 功能目录</button>
+    <button type="button" class="help" data-open="help">?</button>
+  </span>
+</div>
+
+<div class="t-quote" id="qhead">
+  <div class="l1" style="gap:10px">
+    <span class="tk" style="font-size:15px">SCRN</span>
+    <span class="nm" id="q-nm">条件选股与相对估值</span>
+    <span class="grp" style="margin-left:auto"><em>命中</em><b id="q-hit">—</b></span>
+    <span class="grp"><em>可算比率</em><b id="q-cov">—</b></span>
+    <span class="grp"><em>报表期末</em><b id="q-end">—</b></span>
+  </div>
+  <div class="l2" id="q-meta">读取中…</div>
+</div>
+
+<div class="t-cmdbar">
+  <span class="key" id="cmd-key">SCRN Equity Screening</span>
+  <button class="act" type="button" data-open="related" data-cats="anly quote">Actions <u>▾</u></button>
+  <button class="act" type="button" data-open="help">Settings <u>▾</u></button>
+  <span class="pg">
+    <button type="button" data-page-step="-1" aria-label="上一页">‹</button>
+    <span data-page-ind>Page 1/4</span>
+    <button type="button" data-page-step="1" aria-label="下一页">›</button>
+    <span class="ttl" data-page-title>条件选股</span>
+  </span>
+</div>
+
+<div class="t-entry">
+  <span class="caret">❭</span>
+  <input data-command type="text" aria-label="命令行"
+    placeholder="输入助记符 / 编号后回车 —— 例：21 条件选股、23 板块分布、DESC 证券描述（按 / 聚焦）">
+  <button class="go" type="button" data-command-go>GO</button>
+  <span class="hint" data-cmd-hint>HELP 看用法</span>
+</div>
+
+<div class="t-acts">
+  <button type="button" class="info" data-num="94" data-num-label="口径与不可得字段" data-act="meta"><i>94)</i> 口径说明</button>
+  <button type="button" class="ok" data-num="95" data-num-label="导出本页 CSV" data-act="exp"><i>95)</i> 导出 CSV</button>
+  <button type="button" data-num="96" data-num-label="清空全部条件" id="s-clear"><i>96)</i> 清空条件</button>
+  <span class="noorder">本站没有经纪或订单通道，因此这里没有买/卖键 —— 画一个就是假的。</span>
+</div>
+
+<div class="t-tabs2">
+  <button type="button" data-page-go="0" class="on">25) 条件选股</button>
+  <button type="button" data-page-go="2">26) 板块分布</button>
+  <button type="button" data-open="related" data-cats="quote anly">27) 相关功能</button>
+  <button type="button" data-open="fdir">28) 全部功能</button>
+</div>
+
+<main class="s-wrap">
+
+  <nav class="t-menu" aria-label="页面导航">
+    <div class="hd">Pages</div>
+    <a href="#" data-page-go="0" data-num="21" data-num-label="条件选股"><i>21)</i> 条件选股</a>
+    <a href="#" data-page-go="1" data-num="22" data-num-label="同业对比"><i>22)</i> 同业对比</a>
+    <a href="#" data-page-go="2" data-num="23" data-num-label="板块分布"><i>23)</i> 板块分布</a>
+    <a href="#" data-page-go="3" data-num="24" data-num-label="覆盖面与口径"><i>24)</i> 覆盖面与口径</a>
+    <div class="sep"></div>
+    <div class="hd">Quick Links</div>
+    <div class="two" id="qlinks"></div>
+  </nav>
+
+  <div class="s-main">
+
+    <!-- 21) 条件选股 -->
+    <section id="pg-1">
+      <div class="t-win">
+        <header><h2>筛选条件 SCREEN CRITERIA</h2><span class="t-sub" id="s-sub">留空即不限</span></header>
+        <div class="t-body">
+          <div class="t-filter">
+            <select id="s-sector" aria-label="板块" style="flex:1 1 auto"></select>
+            <select id="s-country" aria-label="国别" style="flex:1 1 auto"></select>
+            <select id="s-has" aria-label="完整度">
+              <option value="any">任一比率可算即可</option>
+              <option value="all">六项全齐</option>
+            </select>
+          </div>
+          <div class="s-thr" id="s-thr"></div>
+          <p class="t-note" id="n-thr"></p>
+        </div>
+      </div>
+      <div class="t-win t-scroll" style="margin-top:9px">
+        <header><h2>命中结果 RESULTS</h2><span class="t-sub" id="s-cnt">—</span></header>
+        <div class="t-body">
+          <table class="t-tbl" id="tbl-scrn"><thead><tr>
+            <th data-k="name">公司</th>
+            <th data-k="sector" class="t-col-x">板块</th>
+            <th data-k="pe">PE</th>
+            <th data-k="pb">PB</th>
+            <th data-k="ps" class="t-col-x">PS</th>
+            <th data-k="roe">ROE%</th>
+            <th data-k="netMargin">净利率%</th>
+            <th data-k="debtToAssets" class="t-col-x">负债率%</th>
+            <th data-k="statementEnd" class="t-col-x">报表期末</th>
+          </tr></thead><tbody></tbody></table>
+          <p class="t-note" id="n-scrn"></p>
+        </div>
+        <footer data-src="scrn">—</footer>
+      </div>
+    </section>
+
+    <!-- 22) 同业对比 -->
+    <section id="pg-2" hidden>
+      <div class="t-win t-scroll">
+        <header><h2>同业对比 PEER COMPARISON</h2><span class="t-sub" id="p-sub">相对本板块中位</span></header>
+        <div class="t-body">
+          <div class="t-filter">
+            <select id="p-sector" aria-label="板块" style="flex:1 1 auto"></select>
+          </div>
+          <table class="t-tbl" id="tbl-peer"><thead><tr>
+            <th>公司</th><th>PE</th><th>相对中位</th><th>PB</th><th>相对中位</th>
+            <th class="t-col-x">净利率%</th><th class="t-col-x">相对中位</th>
+          </tr></thead><tbody></tbody></table>
+          <p class="t-note" id="n-peer"></p>
+        </div>
+        <footer data-src="peer">—</footer>
+      </div>
+    </section>
+
+    <!-- 23) 板块分布 -->
+    <section id="pg-3" hidden>
+      <div class="t-win t-scroll">
+        <header><h2>板块分布 SECTOR MEDIANS</h2><span class="t-sub" id="sec-sub">逐板块的中位与样本数</span></header>
+        <div class="t-body">
+          <table class="t-tbl" id="tbl-sect"><thead><tr>
+            <th>板块</th><th>家数</th><th>PE</th><th>PB</th><th class="t-col-x">PS</th>
+            <th>ROE%</th><th>净利率%</th><th class="t-col-x">负债率%</th>
+          </tr></thead><tbody></tbody></table>
+          <p class="t-note" id="n-sect"></p>
+        </div>
+        <footer data-src="sect">—</footer>
+      </div>
+    </section>
+
+    <!-- 24) 覆盖面与口径 -->
+    <section id="pg-4" hidden>
+      <div class="t-win t-scroll">
+        <header><h2>覆盖面 COVERAGE</h2><span class="t-sub">每一项能算多少家，以及为什么算不了</span></header>
+        <div class="t-body">
+          <table class="t-tbl" id="tbl-cov"><thead><tr>
+            <th>项</th><th>可算家数</th><th>占可用</th><th>说明</th>
+          </tr></thead><tbody></tbody></table>
+          <p class="t-note" id="n-cov"></p>
+        </div>
+        <footer data-src="cov">—</footer>
+      </div>
+      <div class="t-win" style="margin-top:9px">
+        <header><h2>口径 METHOD</h2><span class="t-sub">随数据一起给出，不是页面上另写的</span></header>
+        <div class="t-body">
+          <div id="f-meta"></div>
+          <p class="t-note" data-unavail></p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<div class="t-sugg" data-sugg></div>
+
+<div class="t-foot">
+  <span>© 2026 OOGLEX 金融终端</span>
+  <a href="/apps/finance-terminal/">监控</a>
+  <a href="/apps/finance-terminal/security.html">证券描述</a>
+  <a href="/apps/finance-terminal/trends.html">榜单与趋势</a>
+  <a href="/apps/finance-terminal/compare.html">多标的比较</a>
+  <a href="/apps/finance-terminal/screen.html">条件选股</a>
+  <a href="/apps/finance-terminal/quote.html">行情详情</a>
+  <a href="/apps/finance-terminal/terms.html">使用条款</a>
+  <a href="/apps/finance-terminal/privacy.html">隐私政策</a>
+  <a href="/">站点首页</a>
+  <span class="t-right">数据仅供研究参考，不构成投资建议</span>
+</div>
+
+<script src="/assets/terminal/core.js?v=0"></script>
+<script src="/assets/terminal/registry.js?v=0"></script>
+<script src="/assets/terminal/chrome.js?v=0"></script>
+<script src="/assets/terminal/behavior.js?v=0"></script>
+<script src="/assets/terminal/render.js?v=0"></script>
+<script src="/assets/terminal/security.js?v=0"></script>
+<script>
+/* 条件选股页装配。
+
+   这一页是 SCRN 与 RV 两个助记符的同一张表：筛选是「加阈值」，相对估值是
+   「和同业中位比」，用同一份数据、同一套口径，不为了多一个入口再造一张表。
+
+   比率一个都不在这里算 —— 全部随 fundamentals.json 来，它的 method 段就是
+   口径本体。这一页只做三件事：筛、排、把口径与覆盖面照实摆出来。 */
+(function () {
+  var K = window.OOGLEX_CHROME, D = window.OOGLEX_SECURITY, FN = window.OOGLEX_FN;
+  var C = window.OOGLEX_CORE, R = window.OOGLEX_RENDER;
+  var $ = K.$, $$ = K.$$, esc = C.esc, fmt = C.fmt, isNum = C.isNum, set = R.set;
+
+  var RATIOS = D.RATIOS;
+  var LABEL = { pe:"PE 市盈率", pb:"PB 市净率", ps:"PS 市销率",
+                roe:"ROE %", netMargin:"净利率 %", debtToAssets:"负债率 %" };
+
+  K.init({
+    current: "SCRN",
+    tabs: [
+      { mn:"MON",  title:"终端监控", href:"/apps/finance-terminal/" },
+      { mn:"DESC", title:"证券描述", href:"/apps/finance-terminal/security.html" },
+      { mn:"TRND", title:"榜单与趋势", href:"/apps/finance-terminal/trends.html" },
+      { mn:"COMP", title:"多标的比较", href:"/apps/finance-terminal/compare.html" },
+      { mn:"SCRN", title:"条件选股", href:"/apps/finance-terminal/screen.html" },
+      { mn:"QUOT", title:"行情详情", href:"/apps/finance-terminal/quote.html" },
+      { mn:"FDIR", title:"功能目录", href:"#fdir" }
+    ]
+  });
+  window.OOGLEX_BEHAVIOR.init();
+
+  $("#qlinks").innerHTML = ["MON","DESC","TRND","COMP","EQTY","QUOT","GMKT","FDIR"].map(function (mn) {
+    var f = FN.byMn(mn); if (!f || !f.href) return "";
+    var c = FN.catOf(f);
+    return '<a href="' + esc(f.href) + '" title="' + esc(f.zh) + '">' +
+      '<span class="mn" style="background:' + c.bg + ";color:" + c.ink + '">' + esc(f.mn) + "</span>" +
+      '<span class="lb">' + esc(f.zh) + "</span></a>";
+  }).join("");
+  $("[data-sugg]").innerHTML = '<span class="lb">建议功能 Suggested</span>' +
+    ["DESC","COMP","EQTY","HEAT"].map(function (mn) {
+      var f = FN.byMn(mn); if (!f || !f.href) return "";
+      return '<a href="' + esc(f.href) + '">' + esc(f.mn) + " " + esc(f.zh) + "</a>";
+    }).join("");
+
+  K.pager({ pages: [
+    { sel:"#pg-1", title:"条件选股 · 筛选与排序" },
+    { sel:"#pg-2", title:"条件选股 · 同业对比" },
+    { sel:"#pg-3", title:"条件选股 · 板块分布" },
+    { sel:"#pg-4", title:"条件选股 · 覆盖面与口径" }
+  ]});
+
+  function fail(msg) {
+    set("#q-meta", msg);
+    set("#n-scrn", msg);
+    set('[data-src="scrn"]', msg);
+  }
+
+  D.loadFundamentals().then(function (M) {
+    if (M.err.fund || M.err.companies) {
+      var why = M.err.fund
+        ? "基本面数据未加载：" + M.err.fund
+          + "。这份数据由手动触发的管道生成（Fundamentals 工作流），"
+          + "还没有产出时这一页就没有可筛的字段 —— 不用估算或占位数字顶替。"
+        : "公司数据读取失败：" + M.err.companies;
+      fail(why);
+      set("#q-hit", "未加载"); set("#q-cov", "—"); set("#q-end", "—");
+      set("#n-cov", why); set("#n-peer", why); set("#n-sect", why);
+      set('[data-src="cov"]', why); set('[data-src="peer"]', why); set('[data-src="sect"]', why);
+      return;
+    }
+
+    var live = M.rows.filter(function (x) { return x.available; });
+
+    /* ── 筛选条件 ─────────────────────────────────────────────────────── */
+    var sel = $("#s-sector"), selC = $("#s-country"), selH = $("#s-has");
+    sel.innerHTML = '<option value="">全部板块（' + M.counts.available + '）</option>' +
+      M.sectors.map(function (s) {
+        return '<option value="' + esc(s.name) + '">' + esc(s.name) + "（" + s.n + "）</option>";
+      }).join("");
+    selC.innerHTML = '<option value="">全部国别</option>' +
+      M.countries.map(function (s) {
+        return '<option value="' + esc(s.name) + '">' + esc(s.name) + "（" + s.n + "）</option>";
+      }).join("");
+
+    $("#s-thr").innerHTML = RATIOS.map(function (k) {
+      return '<label>' + esc(LABEL[k]) +
+        '<span class="pair">' +
+        '<input type="number" step="any" data-min="' + k + '" aria-label="' + esc(LABEL[k]) + ' 最小值" placeholder="最小">' +
+        '<input type="number" step="any" data-max="' + k + '" aria-label="' + esc(LABEL[k]) + ' 最大值" placeholder="最大">' +
+        "</span></label>";
+    }).join("");
+
+    set("#n-thr", "留空即不限。阈值只筛「这一项算得出来」的行：某公司该项是 null（分母非正"
+      + "或报表里没这一项）时，一旦你给了这项阈值，它就不参与比较、直接落选 —— "
+      + "而不是当成 0 混进来。缺的字段是 null 不是 0，这条贯穿整份数据。");
+
+    function thresholds() {
+      var out = {};
+      RATIOS.forEach(function (k) {
+        var lo = parseFloat(($('[data-min="' + k + '"]') || {}).value);
+        var hi = parseFloat(($('[data-max="' + k + '"]') || {}).value);
+        if (isNum(lo) || isNum(hi)) out[k] = { lo: isNum(lo) ? lo : null, hi: isNum(hi) ? hi : null };
+      });
+      return out;
+    }
+
+    function match() {
+      var thr = thresholds(), s = sel.value, c = selC.value, need = selH.value === "all";
+      return live.filter(function (x) {
+        if (s && x.sector !== s) return false;
+        if (c && x.country !== c) return false;
+        if (need && RATIOS.some(function (k) { return x[k] === null; })) return false;
+        var keys = Object.keys(thr);
+        for (var i = 0; i < keys.length; i++) {
+          var k = keys[i], v = x[k], t = thr[k];
+          if (v === null) return false;                  /* 给了阈值就必须算得出来 */
+          if (t.lo !== null && v < t.lo) return false;
+          if (t.hi !== null && v > t.hi) return false;
+        }
+        return true;
+      });
+    }
+
+    var sortK = "pe", sortDir = 1;
+
+    function num(v, dp) { return v === null ? "—" : v.toFixed(dp == null ? 2 : dp); }
+
+    function paintScreen() {
+      var hit = match().slice();
+      hit.sort(function (a, b) {
+        var x = a[sortK], y = b[sortK];
+        if (sortK === "name" || sortK === "sector" || sortK === "statementEnd") {
+          return String(a[sortK] || "").localeCompare(String(b[sortK] || ""), "zh") * sortDir;
+        }
+        /* null 一律排在最后，不论升降 —— 它不是「很小的值」 */
+        if (x === null && y === null) return 0;
+        if (x === null) return 1;
+        if (y === null) return -1;
+        return (x - y) * sortDir;
+      });
+      var CAP = 200;
+      $("#tbl-scrn tbody").innerHTML = hit.slice(0, CAP).map(function (x) {
+        return "<tr><th>" + R.nameCell(esc(x.name), x.detail, x.name + " 证券描述") + "</th>"
+          + '<td class="t-col-x">' + esc(x.sector) + "</td>"
+          + "<td>" + esc(num(x.pe)) + "</td>"
+          + "<td>" + esc(num(x.pb)) + "</td>"
+          + '<td class="t-col-x">' + esc(num(x.ps)) + "</td>"
+          + '<td class="' + fmt.cls(x.roe) + '">' + esc(num(x.roe, 1)) + "</td>"
+          + '<td class="' + fmt.cls(x.netMargin) + '">' + esc(num(x.netMargin, 1)) + "</td>"
+          + '<td class="t-col-x">' + esc(num(x.debtToAssets, 1)) + "</td>"
+          + '<td class="t-col-x">' + esc(x.statementEnd || "—") + "</td></tr>";
+      }).join("");
+      set("#s-cnt", hit.length + " 家" + (hit.length > CAP ? "（列出前 " + CAP + "）" : ""));
+      set("#q-hit", String(hit.length));
+      var dates = {};
+      hit.forEach(function (x) { if (x.statementEnd) dates[x.statementEnd] = 1; });
+      var dl = Object.keys(dates).sort();
+      set("#n-scrn", "共 " + hit.length + " 家命中"
+        + (hit.length > CAP ? "，表里列出前 " + CAP + " 家（按当前排序）" : "")
+        + "。点公司名进证券描述页。"
+        + "比率是「今天的价格 ÷ 上一期报表」：价格日期 "
+        + String((live[0] && live[0].priceAsOf) || "—").slice(0, 10)
+        + "，命中这批的报表期末有 " + dl.length + " 个不同日期"
+        + (dl.length ? "（" + dl[0] + " 至 " + dl[dl.length - 1] + "）" : "")
+        + " —— 各公司财年不同，所以不是同一天，表里逐行给出。"
+        + "排序里 — 的行一律排在最后：它不是「很小的值」，是算不出来。");
+    }
+
+    R.set('[data-src="scrn"]', M.src.fund + " · " + M.src.comp);
+
+    window.OOGLEX_BEHAVIOR.makeSortable($("#tbl-scrn"), function (k) {
+      if (sortK === k) sortDir = -sortDir; else { sortK = k; sortDir = (k === "name" || k === "sector" || k === "statementEnd") ? 1 : 1; }
+      $$("#tbl-scrn thead th").forEach(function (th) {
+        th.classList.toggle("sorted", th.getAttribute("data-k") === k);
+      });
+      paintScreen();
+    });
+    [sel, selC, selH].forEach(function (el) { el.onchange = paintScreen; });
+    $("#s-thr").addEventListener("input", paintScreen);
+    $("#s-clear").onclick = function () {
+      $$("#s-thr input").forEach(function (i) { i.value = ""; });
+      sel.value = ""; selC.value = ""; selH.value = "any";
+      paintScreen();
+    };
+
+    /* ── 同业对比 ─────────────────────────────────────────────────────── */
+    var pSel = $("#p-sector");
+    pSel.innerHTML = M.sectors.map(function (s) {
+      return '<option value="' + esc(s.name) + '">' + esc(s.name) + "（" + s.n + "）</option>";
+    }).join("");
+
+    function rel(v, m) {
+      if (v === null || m === null || m === 0) return "—";
+      var d = (v / m - 1) * 100;
+      return (d >= 0 ? "+" : "−") + Math.abs(d).toFixed(0) + "% " + (d > 0 ? "高" : d < 0 ? "低" : "平");
+    }
+
+    function paintPeer() {
+      var s = pSel.value, box = M.peer[s] || {};
+      var rows = live.filter(function (x) { return x.sector === s; })
+        .sort(function (a, b) {
+          if (a.pe === null) return 1;
+          if (b.pe === null) return -1;
+          return a.pe - b.pe;
+        });
+      $("#tbl-peer tbody").innerHTML = rows.map(function (x) {
+        return "<tr><th>" + R.nameCell(esc(x.name), x.detail, x.name + " 证券描述") + "</th>"
+          + "<td>" + esc(num(x.pe)) + "</td>"
+          + '<td class="' + (x.pe !== null && box.pe ? fmt.cls(x.pe - box.pe) : "") + '">' + esc(rel(x.pe, box.pe)) + "</td>"
+          + "<td>" + esc(num(x.pb)) + "</td>"
+          + '<td class="' + (x.pb !== null && box.pb ? fmt.cls(x.pb - box.pb) : "") + '">' + esc(rel(x.pb, box.pb)) + "</td>"
+          + '<td class="t-col-x">' + esc(num(x.netMargin, 1)) + "</td>"
+          + '<td class="t-col-x ' + (x.netMargin !== null && box.netMargin ? fmt.cls(x.netMargin - box.netMargin) : "") + '">'
+          + esc(rel(x.netMargin, box.netMargin)) + "</td></tr>";
+      }).join("");
+      var miss = RATIOS.filter(function (k) { return box[k] === null; });
+      set("#p-sub", s + " · 中位为基准");
+      set("#n-peer", "「相对中位」是本公司该项 ÷ 本板块中位 − 1。基准是这 " + box.n
+        + " 家的中位数，不是全市场，也不是行业标准值。"
+        + "用中位而不是平均：一家极端估值不该带偏整组。"
+        + "样本不足 " + D.PEER_MIN + " 家的项不给中位"
+        + (miss.length ? "（本板块有 " + miss.length + " 项不给：" + miss.map(function (k) {
+            return LABEL[k] + " 只有 " + box[k + "_n"] + " 家";
+          }).join("、") + "）" : "，本板块六项都够")
+        + "。板块标签取自公司数据自带的 sector 字段，未标注的归入「未标注」，不猜。"
+        + "PE 为 — 的行排在最后。");
+      set('[data-src="peer"]', M.src.fund);
+    }
+    pSel.onchange = paintPeer;
+
+    /* ── 板块分布 ─────────────────────────────────────────────────────── */
+    function paintSectors() {
+      var all = M.peerAll;
+      function row(nm, box, strong) {
+        return "<tr" + (strong ? ' style="outline:1px solid var(--t-amber-dim)"' : "") + ">"
+          + "<th>" + esc(nm) + "</th><td>" + box.n + "</td>"
+          + "<td>" + esc(num(box.pe)) + "</td><td>" + esc(num(box.pb)) + "</td>"
+          + '<td class="t-col-x">' + esc(num(box.ps)) + "</td>"
+          + "<td>" + esc(num(box.roe, 1)) + "</td><td>" + esc(num(box.netMargin, 1)) + "</td>"
+          + '<td class="t-col-x">' + esc(num(box.debtToAssets, 1)) + "</td></tr>";
+      }
+      $("#tbl-sect tbody").innerHTML = row("全部（池内）", all, true)
+        + M.sectors.map(function (s) { return row(s.name, M.peer[s.name]); }).join("");
+      set("#n-sect", "每格是该板块的中位数，样本不足 " + D.PEER_MIN + " 家不给（显示 —）。"
+        + "池子是站内收录的 " + M.counts.total + " 家里有 SEC 申报的 " + M.counts.available + " 家，"
+        + "不是全市场，也不是各板块的全部公司 —— 占比与中位都在这个池子内部算。"
+        + "第一行带琥珀描边的是池内全体中位，供对照。"
+        + "各板块财年不同，报表期末不是同一天。");
+      set('[data-src="sect"]', M.src.fund);
+    }
+
+    /* ── 覆盖面与口径 ─────────────────────────────────────────────────── */
+    function paintCoverage() {
+      var av = M.counts.available || 1;
+      var why = {
+        pe: "价格 ÷ 稀释每股收益。EPS 非正不给（" + M.counts.negEps + " 家）—— 亏损公司的 PE 不是「便宜」",
+        pb: "市值 ÷ 最新一期股东权益。权益非正不给（" + M.counts.negEquity + " 家）",
+        ps: "市值 ÷ 营收。两个营收标签取到哪个用哪个（不同公司用法不同）",
+        roe: "净利 ÷ 同财年末股东权益 —— 分母与分子同期，不用最新那一期",
+        netMargin: "净利 ÷ 营收，同一期",
+        debtToAssets: "负债 ÷ 资产，同一期"
+      };
+      $("#tbl-cov tbody").innerHTML =
+        "<tr><th>站内收录</th><td>" + M.counts.total + "</td><td>—</td>"
+        + "<td>公司榜全部标的</td></tr>"
+        + "<tr><th>有 SEC 申报</th><td>" + M.counts.available + "</td><td>"
+        + (M.counts.available / M.counts.total * 100).toFixed(0) + "%</td>"
+        + "<td>其余 " + M.counts.unavailable + " 家是非美申报人或只发 ADR，SEC 没有它们的 XBRL</td></tr>"
+        + RATIOS.map(function (k) {
+            return "<tr><th>" + esc(LABEL[k]) + "</th><td>" + M.counts[k] + "</td><td>"
+              + (M.counts[k] / av * 100).toFixed(0) + "%</td><td>" + esc(why[k]) + "</td></tr>";
+          }).join("");
+      var pu = M.periodsUsed || {};
+      var durP = pu.NetIncomeLoss || "—", instP = pu.Assets || "—", alignP = pu._equityAligned || "—";
+      set("#n-cov", "覆盖面本身就是要显示的事实，不是脚注。"
+        + "利润表这一期取的是 " + durP + "，资产负债表取的是 " + instP
+        + "，ROE 的分母另取同财年的 " + alignP + "。"
+        + "两类各自按覆盖面挑期，可能不是同一财年 —— 所以 PB 的分母（最新一期权益）"
+        + "与 ROE 的分母（同财年末权益）不是同一个数，这两项的口径逐条写在下面。"
+        + "缺的字段一律是 null 而不是 0：0 是一个有意义的值。");
+      set('[data-src="cov"]', M.src.fund);
+
+      var m = M.method || {};
+      R.fields("#f-meta", [
+        { k:"数据源", v:(M.source || "—") + "（公司自己向 SEC 递交的 XBRL 披露）", box:1 },
+        { k:"比率由谁算", v:"本站按下面的公式从报表项现算，非任何第三方的计算结果", box:1 },
+        { k:"PE", v:m.pe || "—", mono:1 },
+        { k:"PB", v:m.pb || "—", mono:1 },
+        { k:"PS", v:m.ps || "—", mono:1 },
+        { k:"ROE", v:m.roe || "—", mono:1 },
+        { k:"净利率", v:m.netMargin || "—", mono:1 },
+        { k:"负债率", v:m.debtToAssets || "—", mono:1 },
+        { k:"分母非正", v:m.nonPositiveDenominator || "—", box:1 },
+        { k:"两个日期", v:"逐行带 statementEnd（报表期末）与 priceAsOf（价格日期）"
+             + " —— 比率是「今天的价格 ÷ 上一期报表」，只看一个日期会读成当期值", box:1 },
+        { k:"实际取的期间", v:JSON.stringify(M.periodsUsed || {}), mono:1 },
+        { k:"频率与滞后", v:"报表是季/年频，最长滞后数月；价格是日频收盘", mono:1 },
+        { k:"覆盖面", v:"只有美国申报人。非美申报人或只发 ADR 的公司 available=false 并写出原因", box:1 },
+        { k:"非美元报价", v:"报价不是美元的公司不算 PE —— 站内价格记的是上市地本币，与美元 EPS 不可相除", na:0 },
+        { k:"缺值", v:"一律 null，绝不写 0", box:1 },
+        { k:"前瞻数据", v:"站内没有分析师一致预期，因此没有前瞻 PE、没有盈利预测", na:1 },
+        { k:"EV/EBITDA", v:"需要现金与债务明细，当前取数未覆盖，不给", na:1 },
+        { k:"股息", v:"每股股息与除息日站内无来源，不显示", na:1 },
+        { k:"现金流", v:"当前取数未覆盖经营现金流，不给", na:1 },
+        { k:"性质", v:"仅供研究参考，不构成投资建议", box:1 }
+      ]);
+      set("[data-unavail]", C.UNAVAILABLE_NOTE);
+      K.wireNumbers();
+    }
+
+    set("#q-cov", M.counts.available + " / " + M.counts.total);
+    set("#q-end", M.asOf || "—");
+    set("#q-meta", (M.note || "").slice(0, 260) + ((M.note || "").length > 260 ? "…（全文见 24) 口径）" : ""));
+
+    paintScreen();
+    paintPeer();
+    paintSectors();
+    paintCoverage();
+  }).catch(function (e) {
+    fail("数据层读取失败：" + (e && e.message || e));
+  });
+})();
+</script>
+</body>
+</html>

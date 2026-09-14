@@ -80,6 +80,20 @@
       note:"央行决议 / CPI / 非农；逐条标注是否已回填实际值" },
 
     /* ── 分析研究 ──────────────────────────────────────────────────────── */
+    { mn:"SCRN", zh:"条件选股", en:"Screener", cat:"anly", status:"live",
+      href:"/apps/finance-terminal/screen.html",
+      data:["companies/fundamentals.json","companies/data.json"],
+      note:"六项比率（PE/PB/PS/ROE/净利率/负债率）筛选与排序，外加同业对比、板块分布与覆盖面。"
+        + "比率由本站按写明的公式从 SEC XBRL 报表项现算；逐条带报表期末与价格日期两个日期；"
+        + "分母非正不给比率，缺的字段是 null 不是 0" },
+    { mn:"RV", zh:"相对估值", en:"Relative Valuation", cat:"anly", status:"live",
+      href:"/apps/finance-terminal/screen.html", data:["companies/fundamentals.json"],
+      note:"与 SCRN 同一张表的另一种用法：筛选是加阈值，相对估值是和同业中位比。"
+        + "板块中位用中位数而非平均，样本不足 5 家不给中位。不另开一页重复同一份数据" },
+    { mn:"FA", zh:"财务分析", en:"Financial Analysis", cat:"anly", status:"live",
+      href:"/apps/finance-terminal/security.html", data:["companies/fundamentals.json"],
+      note:"证券描述页 15) 分页：该公司的报表原始项（营收/净利/EPS/权益/资产/负债）与六项比率，"
+        + "并与本板块中位对比。现金流表、信用评级、期权链仍无来源，菜单里保持置灰" },
     { mn:"SOVR", zh:"主权利差", en:"Sovereign Spreads", cat:"anly", status:"live",
       href:"/apps/finance-terminal/#p-sovr", data:["bonds/data.json","bonds/history.json"],
       note:"各国十年期相对任选基准国的利差（基点），外加当前利差最宽四国的月频利差历史（400 期）。"
@@ -151,9 +165,6 @@
       need:"期权链快照（行权价、到期、隐含波动率）", blocked:"无来源" },
     { mn:"FLOW", zh:"资金流向", en:"Fund Flows", cat:"macro",
       need:"基金流向周报（EPFR/ICI 一类）", blocked:"无免费公开来源" },
-    { mn:"SCRN", zh:"条件选股", en:"Screener", cat:"anly",
-      need:"基本面字段（PE / PB / ROE / 营收增速）",
-      blocked:"站内公司数据只有价格、市值与收益率，没有财务报表字段" },
     { mn:"ALRT", zh:"条件告警", en:"Alerts", cat:"tool",
       need:"一处可写存储 + 定时评估", blocked:"纯静态站无后端；浏览器本地只能在打开时评估" },
     { mn:"CHAT", zh:"终端问答", en:"Terminal Q&A", cat:"tool",

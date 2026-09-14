@@ -230,7 +230,11 @@ def main() -> int:
         cap_usd = cap * MARKET_CAP_UNIT if num(cap) else None
         pb = ratio(cap_usd, f.get("equity"))
         ps = ratio(cap_usd, f.get("revenue"))
-        roe = ratio(f.get("netIncome"), f.get("equity"))
+        # ROE 的分母用「与利润表同财年」的权益，不是最新那一期 —— 否则是
+        # 2024 年的净利除 2025 年末的权益，混了两个时点。取不到就不给 ROE。
+        roe = ratio(f.get("netIncome"), f.get("equityAligned"))
+        if f.get("netIncome") is not None and f.get("equityAligned") is None:
+            skip("无同期权益，不给 ROE（不拿跨期的权益当分母）")
         margin = ratio(f.get("netIncome"), f.get("revenue"))
         debt = ratio(f.get("liabilities"), f.get("assets"))
 
@@ -257,6 +261,7 @@ def main() -> int:
                 "revenue": f.get("revenue"), "netIncome": f.get("netIncome"),
                 "equity": f.get("equity"), "assets": f.get("assets"),
                 "liabilities": f.get("liabilities"), "epsDiluted": f.get("epsDiluted"),
+                "equityAligned": f.get("equityAligned"),
             },
             "statementEnd": as_of,
             "priceAsOf": (c.get("dataMeta") or {}).get("asOf"),
@@ -290,9 +295,10 @@ def main() -> int:
         "tagCoverage": got.get("coverage") or {},
         "method": {
             "pe": "价格 ÷ 稀释每股收益（报表期，非前瞻）",
-            "pb": "市值 ÷ 股东权益（市值已由站内的十亿美元换算成美元）",
+            "pb": "市值 ÷ 最新一期股东权益（市值已由站内的十亿美元换算成美元；"
+                  "市价是今天的，所以账面取最近一期，与 ROE 的分母口径不同，各自写明）",
             "ps": "市值 ÷ 营收（同上）",
-            "roe": "净利 ÷ 股东权益",
+            "roe": "净利 ÷ 同财年末股东权益（分母与分子同期，不用最新那一期）",
             "netMargin": "净利 ÷ 营收",
             "debtToAssets": "负债 ÷ 资产",
             "nonPositiveDenominator": "分母非正时不给数 —— 负权益的 PB、负 EPS 的 PE 不是「便宜」",
@@ -304,6 +310,9 @@ def main() -> int:
                  "缺的字段是 null 而不是 0。比率全部由本站按 method 段的公式现算，"
                  "非任何第三方计算结果。同类报表项统一取同一个期间（periodsUsed），"
                  "避免营收来自一个年度、净利来自另一个年度拼出假的利润率。"
+                 "利润表与资产负债表各自按覆盖面挑期，可能不是同一财年（见 periodsUsed）；"
+                 "因此 ROE 另取「与利润表同财年」的权益当分母，而 PB 用最新一期权益 —— "
+                 "两者分母口径不同，method 段逐条写明。"
                  "报价非美元的公司不算 PE（站内价格记的是上市地本币，与美元 EPS 不可相除）。"
                  "仅供研究参考，不构成投资建议。"),
         "dataQuality": summarize_data_quality(out_rows),

@@ -683,6 +683,95 @@ def main() -> int:
     require('mn:"SOVR"' in reg, "主权利差必须登记进功能注册表")
     section("主权利差")
 
+    # ── 20 基本面前端：SCRN / RV / FA ──────────────────────────────────────
+    # 这一族页面最容易犯的错是「把一个比率摆出来却不说它是拿哪两个数、哪两个
+    # 日期算的」。所以这里盯四件事：两个日期都在、分母口径逐项写明、缺值是
+    # null 不是 0、以及仍然没有的东西（现金流/评级/前瞻）必须继续说没有。
+    scr = (ROOT / "apps" / "finance-terminal" / "screen.html")
+    require(scr.is_file(), "缺少条件选股页 apps/finance-terminal/screen.html")
+    if scr.is_file():
+        sc = read(scr)
+        require("loadFundamentals" in sc, "选股页必须走模型层的 loadFundamentals，不自己取数")
+        for frag in ("pe", "pb", "ps", "roe", "netMargin", "debtToAssets"):
+            require(frag in sc, f"选股页缺少 {frag} 这一项")
+        require("今天的价格 ÷ 上一期报表" in sc,
+                "比率是「今天的价格 ÷ 上一期报表」，这句必须写在页面上 —— 只给一个数会被读成当期值")
+        require("statementEnd" in sc and "priceAsOf" in sc,
+                "两个日期（报表期末与价格日期）都必须出现在页面上")
+        require("null 不是 0" in sc or "null 而不是 0" in sc,
+                "缺值是 null 不是 0，这条必须写明")
+        require("分母非正" in sc, "分母非正不给比率，必须写明")
+        require("不是全市场" in sc, "池子是站内收录的这批，必须写明不是全市场")
+        require("中位而不是平均" in sc, "同业基准用中位数，必须写明理由")
+        require("不构成投资建议" in sc, "缺少免责声明")
+        require("不是行业标准值" in sc,
+                "板块中位是本池子这几家的中位，不是行业标准值，必须写明")
+        # 仍然没有的东西要继续说没有，不能因为接了基本面就默认「都有了」。
+        # 不能只查「页面里出现过这两个字」—— 它在 meta 描述、公式文本里都会出现，
+        # 所以逐条钉住那一行不可得字段，并要求它标了 na:1（页面据此渲染成不可得）。
+        for gone in ("前瞻数据", "股息", "现金流", "EV/EBITDA"):
+            require(f'k:"{gone}"' in sc,
+                    f"口径表里必须有「{gone}」这一行，声明它仍无来源")
+        na_block = sc[sc.index('R.fields("#f-meta"'):] if 'R.fields("#f-meta"' in sc else ""
+        require(na_block.count("na:1") >= 4,
+                f"不可得字段必须标 na:1（页面据此渲染），当前只有 {na_block.count('na:1')} 处")
+        require("最新一期" in sc and "同财年" in sc,
+                "PB 与 ROE 的分母不是同一个数，两者口径必须分别写明")
+        require(sc.count("R.nameCell(") >= 2,
+                f"两张表的公司名都应由 render.nameCell 产出，当前只有 {sc.count('R.nameCell(')} 处")
+        # 只管**建标的行**那两段：导航快捷链接由注册表生成、每个终端页都这么写，
+        # nameCell 管的是标的行不是导航，一竿子禁掉会误伤（实测误伤过一次）。
+        for fn in ("function paintScreen", "function paintPeer"):
+            require(fn in sc, f"选股页缺少 {fn}")
+            if fn in sc:
+                blk = sc[sc.index(fn):]
+                blk = blk[:blk.index("\n    }")] if "\n    }" in blk else blk
+                require("<a href" not in blk,
+                        f"{fn} 里手拼了 <a href —— 标的行的链接只许由 render.nameCell 产出")
+                require("R.nameCell(" in blk, f"{fn} 必须用 render.nameCell 产链接")
+        require("localeCompare" in sc, "文本列排序应按语言规则，不按码位")
+        require("排在最后" in sc,
+                "— 的行排序时排在最后，必须写明它不是「很小的值」")
+        require("数据由手动触发" in sc or "手动触发的" in sc,
+                "这份数据由手动触发的管道生成，未产出时页面必须说清，而不是空着")
+        require("t-filter" in sc, "筛选条应使用站内既有的 .t-filter，不另造一套")
+    # 证券页的 15) 财务报表：菜单里原本置灰，点亮后 16/17/18 必须仍置灰
+    require('data-num-label="财务报表"' in sec,
+            "证券页菜单里的 15) 财务报表应已点亮（数据到了）")
+    require('<div class="off"><i>16)</i> 信用评级</div>' in sec
+            and '<div class="off"><i>17)</i> 现金流表</div>' in sec
+            and '<div class="off"><i>18)</i> 期权链</div>' in sec,
+            "16/17/18 仍无来源，必须继续置灰 —— 不能因为接了基本面就一起点亮")
+    require("us-gaap 分类里一项报表数据都没有" in sec,
+            "有 CIK 但 us-gaap 下无数据（外国私人发行人递 20-F）与「SEC 无此申报人」"
+            "不是一回事，页面必须分开说")
+    require("20-F" in sec, "必须点明 20-F / IFRS 这条常见原因")
+    require("loadFundamentals" in sec, "证券页的财务报表分页必须走模型层")
+    require('data-src="fa"' in sec, "财务报表分页缺少出处脚注")
+    require("faPending.then" in sec, "证券页必须异步补取基本面（faPending）")
+    if "faPending.then" in sec:
+        fa_block = sec[sec.index("faPending.then"):]
+        fa_block = fa_block[:fa_block.index('$("#tbl-src tbody")')] if '$("#tbl-src tbody")' in fa_block else fa_block
+        require(".catch(" in fa_block,
+                "基本面那一段必须显式收口：promise 里抛出会变成静默的 "
+                "unhandledrejection，页面只是空着、pageerror 也抓不到")
+        require("渲染失败" in fa_block, "收口时必须把失败摆到页面上，不是只吞掉")
+    # 模型层：口径与阈值不许散落在页面
+    require("loadFundamentals" in lib["security.js"], "模型层必须提供 loadFundamentals")
+    require("var PEER_MIN = " in lib["security.js"],
+            "同业中位的样本下限必须在模型层**声明为常量**（var PEER_MIN = …），"
+            "不在页面里写死 —— 只查名字出现过会被用处满足")
+    require("PEER_MIN: PEER_MIN" in lib["security.js"],
+            "PEER_MIN 必须导出，页面才能照同一个数说明「样本不足几家不给」")
+    require("PEER_MIN" in read(ROOT / "apps" / "finance-terminal" / "screen.html"),
+            "页面上的「样本不足 N 家」必须引模型层的常量，不另写一个数")
+    require("registry.js" and 'mn:"SCRN"' in lib["registry.js"], "SCRN 必须登记")
+    require('mn:"RV"' in lib["registry.js"] and 'mn:"FA"' in lib["registry.js"],
+            "RV 与 FA 必须登记进注册表")
+    require("站内公司数据只有价格、市值与收益率，没有财务报表字段" not in lib["registry.js"],
+            "SCRN 的旧卡点已不成立（基本面已接上），不得再出现")
+    section("基本面前端 SCRN/RV/FA")
+
     return report()
 
 

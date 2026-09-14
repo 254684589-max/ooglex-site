@@ -316,9 +316,123 @@
     });
   }
 
+  /* ── 基本面：把 fundamentals.json 与公司榜按代码接起来 ────────────────────
+     口径全部随数据一起来（method / periodsUsed / note），这里只做连接与汇总，
+     不在页面里另立一套。三件事必须一路带到页面上：
+
+       1. **两个日期**：statementEnd（报表期末）与 priceAsOf（价格日期）。
+          PE/PB/PS 是「今天的价格 ÷ 上一期报表」，只标一个日期会被读成当期值。
+       2. **利润表与资产负债表可能不是同一财年**（periodsUsed 里看得见）。
+          所以 ROE 的分母是「同财年末权益」、PB 的分母是「最新一期权益」——
+          两者口径不同，页面逐条写明，不含糊成一句「股东权益」。
+       3. **分母非正不给比率**：负权益的 PB、负 EPS 的 PE 不是「便宜」。
+          这些行的比率是 null，不是 0，页面按「不适用」显示并给出原因。 */
+  var PEER_MIN = 5;          /* 少于 5 家不给同业中位 —— 一两家决定不了「同业」 */
+
+  function median(list) {
+    var s = list.slice().sort(function (a, b) { return a - b; });
+    if (!s.length) return null;
+    return s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2;
+  }
+
+  var RATIOS = ["pe", "pb", "ps", "roe", "netMargin", "debtToAssets"];
+
+  function loadFundamentals() {
+    return Promise.all([
+      soft("companies/data.json"),
+      soft("companies/fundamentals.json")
+    ]).then(function (r) {
+      var cd = r[0], fd = r[1];
+      var out = { rows: [], err: {}, src: {}, method: null, periodsUsed: null,
+                  note: null, asOf: null, updatedAt: null, source: null, sourceUrl: null,
+                  dataQuality: null, counts: {}, sectors: [], countries: [], peer: {} };
+      if (!cd || cd.__error) { out.err.companies = (cd && cd.__error) || "读取失败"; return out; }
+      if (!fd || fd.__error) { out.err.fund = (fd && fd.__error) || "读取失败"; return out; }
+
+      var byc = {};
+      (cd.companies || []).forEach(function (c) { if (c.symbol) byc[c.symbol] = c; });
+
+      out.method = fd.method || null;
+      out.periodsUsed = fd.periodsUsed || null;
+      out.note = fd.note || null;
+      out.asOf = fd.asOf || null;
+      out.updatedAt = fd.updatedAt || null;
+      out.source = fd.source || null;
+      out.sourceUrl = fd.sourceUrl || null;
+      out.dataQuality = fd.dataQuality || null;
+      out.src.fund = C.srcLine(C.meta("基本面（报表项现算）", fd, "季/年频"));
+      out.src.comp = C.srcLine(C.meta("价格与市值", cd, "日频收盘"));
+
+      (fd.rows || []).forEach(function (f) {
+        var c = byc[f.symbol] || {};
+        var row = {
+          tk: f.symbol, name: c.name || f.symbol, nameEn: c.nameEn || "",
+          sector: c.sector || "未标注", country: c.country || "未标注",
+          price: c.price, priceCur: c.priceCur || "USD", marketCap: c.marketCap,
+          available: !!f.available, reason: f.reason || "",
+          statementEnd: f.statementEnd || null, priceAsOf: f.priceAsOf || null,
+          raw: f.raw || {}, meta: f.dataMeta || {},
+          detail: { kind: "company", symbol: f.symbol }
+        };
+        RATIOS.forEach(function (k) { row[k] = isNum(f[k]) ? f[k] : null; });
+        out.rows.push(row);
+      });
+
+      /* 覆盖面逐项统计 —— 「有多少家能算」本身就是要显示的事实 */
+      out.counts.total = out.rows.length;
+      out.counts.available = out.rows.filter(function (x) { return x.available; }).length;
+      out.counts.unavailable = out.counts.total - out.counts.available;
+      RATIOS.forEach(function (k) {
+        out.counts[k] = out.rows.filter(function (x) { return x[k] !== null; }).length;
+      });
+      /* 分母非正而被拒的行：可核的原因，不是「没数据」 */
+      out.counts.negEps = out.rows.filter(function (x) {
+        return x.available && isNum(x.raw.epsDiluted) && x.raw.epsDiluted <= 0;
+      }).length;
+      out.counts.negEquity = out.rows.filter(function (x) {
+        return x.available && isNum(x.raw.equity) && x.raw.equity <= 0;
+      }).length;
+
+      var seenS = {}, seenC = {};
+      out.rows.forEach(function (x) {
+        if (!x.available) return;
+        seenS[x.sector] = (seenS[x.sector] || 0) + 1;
+        seenC[x.country] = (seenC[x.country] || 0) + 1;
+      });
+      out.sectors = Object.keys(seenS).sort(function (a, b) { return seenS[b] - seenS[a]; })
+        .map(function (s) { return { name: s, n: seenS[s] }; });
+      out.countries = Object.keys(seenC).sort(function (a, b) { return seenC[b] - seenC[a]; })
+        .map(function (s) { return { name: s, n: seenC[s] }; });
+
+      /* 板块中位：同业对比的基准。样本不足 PEER_MIN 就不给，并记下为什么不给。 */
+      out.sectors.forEach(function (s) {
+        var box = { n: s.n, need: PEER_MIN };
+        RATIOS.forEach(function (k) {
+          var vals = out.rows.filter(function (x) {
+            return x.available && x.sector === s.name && x[k] !== null;
+          }).map(function (x) { return x[k]; });
+          box[k] = vals.length >= PEER_MIN ? median(vals) : null;
+          box[k + "_n"] = vals.length;
+        });
+        out.peer[s.name] = box;
+      });
+      out.peerAll = (function () {
+        var box = { n: out.counts.available, need: PEER_MIN };
+        RATIOS.forEach(function (k) {
+          var vals = out.rows.filter(function (x) { return x[k] !== null; }).map(function (x) { return x[k]; });
+          box[k] = vals.length >= PEER_MIN ? median(vals) : null;
+          box[k + "_n"] = vals.length;
+        });
+        return box;
+      })();
+      return out;
+    });
+  }
+
   global.OOGLEX_SECURITY = {
     loadSecurity: loadSecurity, loadTrends: loadTrends, loadCompare: loadCompare,
-    loadOwners: loadOwners,
+    loadOwners: loadOwners, loadFundamentals: loadFundamentals,
+    RATIOS: RATIOS, PEER_MIN: PEER_MIN, median: median,
     fmt: fmt, isNum: isNum, srcLine: C.srcLine,
     UNAVAILABLE: C.UNAVAILABLE, UNAVAILABLE_NOTE: C.UNAVAILABLE_NOTE
   };

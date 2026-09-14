@@ -317,6 +317,40 @@ def fetch(symbols: list[str], *, year: int, log=print) -> dict[str, dict[str, An
             used_periods[tag] = period
             coverage[tag] = n
 
+    # ── ROE 的分母必须和分子同期 ────────────────────────────────────────────
+    # 期间类与时点类各自按覆盖面挑期，结果可能不是同一个财年：实测利润表挑到
+    # CY2024（净利覆盖 366 家最好）、资产负债表挑到 CY2025Q4I（资产覆盖 391 家）。
+    # 那么 ROE = 2024 年净利 ÷ 2025 年末权益，**混了两个时点**。
+    #
+    # PB 用最新账面价值是对的（市价是今天的，账面取最近一期），所以时点期不改；
+    # 这里另取一次「与利润表同财年」的权益，专门给 ROE 当分母。多一次请求，
+    # 换一个口径自洽的 ROE。取不到就让 ROE 为 None —— 不拿跨期的数凑一个。
+    dur_period = used_periods.get(PROBE["duration"])
+    if dur_period and dur_period.startswith("CY"):
+        try:
+            dur_year = int(dur_period[2:6])
+        except ValueError:
+            dur_year = None
+        if dur_year is not None:
+            aligned = f"CY{dur_year}Q4I"
+            if aligned == used_periods.get("StockholdersEquity"):
+                for cik in by_cik:                     # 已经同期，直接复用
+                    by_cik[cik]["_equityAligned"] = by_cik[cik].get("StockholdersEquity")
+                used_periods["_equityAligned"] = aligned
+            else:
+                try:
+                    frame = _frame("StockholdersEquity", "USD", aligned)
+                    n = sum(1 for c in by_cik if c in frame)
+                    log(f"  与利润表同期的权益 {aligned}：覆盖站内 {n}（专供 ROE 当分母）")
+                    for cik in by_cik:
+                        row = frame.get(cik)
+                        by_cik[cik]["_equityAligned"] = row["val"] if row else None
+                    used_periods["_equityAligned"] = aligned
+                    coverage["_equityAligned"] = n
+                except AdapterError as exc:
+                    log(f"  与利润表同期的权益 {aligned}：{exc} —— ROE 将为 None，"
+                        "不拿跨期的权益当分母")
+
     if not used_periods:
         raise AdapterError("所有标签所有期间都没取到数据 —— 不写任何东西")
 
@@ -336,6 +370,8 @@ def fetch(symbols: list[str], *, year: int, log=print) -> dict[str, dict[str, An
             "assets": f.get("Assets"),
             "liabilities": f.get("Liabilities"),
             "epsDiluted": f.get("EarningsPerShareDiluted"),
+            # 与利润表同财年的权益，只给 ROE 当分母；PB 仍用最新那一期
+            "equityAligned": f.get("_equityAligned"),
             "ends": ends,
         }
     return {"rows": out, "periods": used_periods, "coverage": coverage,

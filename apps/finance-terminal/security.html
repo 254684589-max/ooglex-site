@@ -129,7 +129,7 @@
     <a href="#" data-page-go="1" data-num="12" data-num-label="收益与同业"><i>12)</i> 收益与同业</a>
     <a href="#" data-page-go="2" data-num="13" data-num-label="价格走势"><i>13)</i> 价格走势</a>
     <a href="#" data-page-go="3" data-num="14" data-num-label="标识与口径"><i>14)</i> 标识与口径</a>
-    <div class="off"><i>15)</i> 财务报表</div>
+    <a href="#" data-page-go="5" data-num="15" data-num-label="财务报表"><i>15)</i> 财务报表</a>
     <div class="off"><i>16)</i> 信用评级</div>
     <div class="off"><i>17)</i> 现金流表</div>
     <div class="off"><i>18)</i> 期权链</div>
@@ -258,6 +258,30 @@
     </section>
 
     <!-- 19) 持股结构（13F 反查） -->
+    <!-- 页 6（菜单里的 15）财务报表与比率 -->
+    <section id="pg-6" hidden>
+      <div class="t-win t-scroll">
+        <header><h2>报表项 STATEMENT ITEMS</h2><span class="t-sub" id="fa-sub">公司自己递交给 SEC 的 XBRL</span></header>
+        <div class="t-body">
+          <p class="t-note warn" id="n-fa-cover"></p>
+          <table class="t-tbl" id="tbl-fa-raw"><thead><tr>
+            <th>项</th><th>值</th><th class="t-col-x">期间</th><th>说明</th>
+          </tr></thead><tbody></tbody></table>
+        </div>
+        <footer data-src="fa">—</footer>
+      </div>
+      <div class="t-win t-scroll" style="margin-top:9px">
+        <header><h2>比率与同业 RATIOS VS PEERS</h2><span class="t-sub" id="fa-peer-sub">相对本板块中位</span></header>
+        <div class="t-body">
+          <table class="t-tbl" id="tbl-fa-rat"><thead><tr>
+            <th>比率</th><th>本公司</th><th>板块中位</th><th>相对</th><th class="t-col-x">公式</th>
+          </tr></thead><tbody></tbody></table>
+          <p class="t-note" id="n-fa"></p>
+        </div>
+        <footer data-src="fa2">—</footer>
+      </div>
+    </section>
+
     <section id="pg-5" hidden>
       <div class="t-win t-scroll">
         <header><h2>持股结构 OWNERSHIP</h2><span class="t-sub" id="ow-sub">站内收录的机构里谁持有</span></header>
@@ -293,10 +317,10 @@
 </div>
 
 <script src="/assets/terminal/core.js?v=261b5761"></script>
-<script src="/assets/terminal/registry.js?v=34eda813"></script>
+<script src="/assets/terminal/registry.js?v=057ba5ad"></script>
 <script src="/assets/terminal/chrome.js?v=04b6a585"></script>
 <script src="/assets/terminal/behavior.js?v=00335003"></script>
-<script src="/assets/terminal/security.js?v=5ba4bbc4"></script>
+<script src="/assets/terminal/security.js?v=0ce1d9a0"></script>
 <script src="/assets/terminal/render.js?v=24fdb399"></script>
 <script>
 /* 证券描述页装配：外壳与口径都来自 /assets/terminal/。 */
@@ -344,7 +368,8 @@
     { sel:"#pg-2", title:"证券描述 · 收益与同业" },
     { sel:"#pg-3", title:"证券描述 · 价格走势" },
     { sel:"#pg-4", title:"证券描述 · 标识与口径" },
-    { sel:"#pg-5", title:"证券描述 · 持股结构" }
+    { sel:"#pg-5", title:"证券描述 · 持股结构" },
+    { sel:"#pg-6", title:"证券描述 · 财务报表" }
   ]});
 
   var line = R.priceLine, rows = R.fields;
@@ -360,6 +385,10 @@
 
   /* 13F 反查另取一份数据；取不到不影响本页其余部分 */
   var OWN = null, ownPending = D.loadOwners().then(function (O) { OWN = O; return O; });
+  /* 基本面与持股结构同一种写法：异步补取，取不到只让这一块说读取失败，
+     不拖累整页。fundamentals.json 由手动触发的管道生成，可能还不存在。 */
+  var faPending = D.loadFundamentals().then(function (F) { return F; },
+                                           function (e) { return { err:{ fund: (e && e.message) || e } }; });
 
   D.loadSecurity().then(function (M) {
     if (!M.pool.length) { fail("公司榜读取失败，本页无可显示证券：" + (M.raw.d && M.raw.d.__error || "未知原因")); return; }
@@ -680,6 +709,114 @@
            所以这里显式收口，把错误摆到页面上。 */
         set("#n-ow-cover", "持股结构渲染失败：" + (e && e.message || e));
         set('[data-src="own"]', "渲染失败");
+      });
+
+      /* ── 15) 财务报表与比率 ────────────────────────────────────────────
+         这一格在菜单里原本是置灰的「无来源」。现在有了，就把它点亮 ——
+         但只点亮真有数据的那部分：现金流表、评级、期权链仍然置灰。 */
+      faPending.then(function (F) {
+        var rawTb = $("#tbl-fa-raw tbody"), ratTb = $("#tbl-fa-rat tbody");
+        function dead(why) {
+          set("#n-fa-cover", why);
+          rawTb.innerHTML = '<tr><td colspan="4" class="t-na" style="text-align:left">' + esc(why) + "</td></tr>";
+          ratTb.innerHTML = '<tr><td colspan="5" class="t-na" style="text-align:left">同上</td></tr>';
+          set('[data-src="fa"]', "未加载");
+          set('[data-src="fa2"]', "未加载");
+        }
+        if (!F || (F.err && (F.err.fund || F.err.companies))) {
+          dead("基本面数据未加载：" + ((F && F.err && (F.err.fund || F.err.companies)) || "未知原因")
+             + "。这份数据由手动触发的 Fundamentals 工作流生成，没有产出时这一格就是空的 ——"
+             + "不用估算或占位数字顶替。");
+          return;
+        }
+        var row = F.rows.filter(function (x) { return x.tk === s.tk; })[0];
+        if (!row) { dead("这只标的不在基本面数据里。"); return; }
+        if (!row.available) {
+          dead("站内无此公司的 SEC 申报：" + (row.reason || "非美申报人或只发 ADR")
+             + "。SEC 只有向它申报的公司，缺就是缺。");
+          return;
+        }
+        /* 有 CIK 但一项报表数据都没有 —— 和「SEC 无此申报人」不是一回事，
+           别混成一句「没数据」。外国私人发行人多按 IFRS 递交 20-F，
+           而本站取的是 us-gaap 分类的 frames，所以那一类命中 CIK 也取不到值。 */
+        var anyRaw = ["revenue", "netIncome", "epsDiluted", "equity", "assets", "liabilities"]
+          .some(function (k) { return isNum(row.raw[k]); });
+        if (!anyRaw) {
+          dead("这家公司在 SEC 有登记（CIK " + (row.raw.cik || "已命中")
+             + "），但本站取的 us-gaap 分类里一项报表数据都没有。"
+             + "常见原因：外国私人发行人按 IFRS 递交 20-F，不在 us-gaap 分类下 —— "
+             + "这与「SEC 无此申报人」不是一回事，所以单独说明，而不是含糊成一句「没数据」。");
+          return;
+        }
+        var pu = F.periodsUsed || {}, m = F.method || {};
+        var durP = pu.NetIncomeLoss || "—", instP = pu.Assets || "—", alignP = pu._equityAligned || "—";
+        var RAW = [
+          ["营收",       row.raw.revenue,    durP,  "两个常用标签取到哪个用哪个（不同公司用法不同）"],
+          ["净利",       row.raw.netIncome,  durP,  "NetIncomeLoss"],
+          ["稀释每股收益", row.raw.epsDiluted, durP,  "EarningsPerShareDiluted（单位：美元/股）"],
+          ["股东权益（最新）", row.raw.equity, instP, "PB 的分母"],
+          ["股东权益（同财年末）", row.raw.equityAligned, alignP, "ROE 的分母 —— 与净利同期"],
+          ["总资产",     row.raw.assets,     instP, "Assets"],
+          ["总负债",     row.raw.liabilities, instP, "Liabilities"]
+        ];
+        function money(v) {
+          if (!isNum(v)) return "—";
+          var a = Math.abs(v);
+          if (a >= 1e9) return (v / 1e9).toFixed(2) + " 十亿";
+          if (a >= 1e6) return (v / 1e6).toFixed(2) + " 百万";
+          return v.toFixed(2);
+        }
+        rawTb.innerHTML = RAW.map(function (r) {
+          var isEps = r[0] === "稀释每股收益";
+          return "<tr><th>" + esc(r[0]) + "</th>"
+            + '<td class="' + (isNum(r[1]) ? "" : "t-na") + '">'
+            + esc(isEps ? (isNum(r[1]) ? r[1].toFixed(2) : "—") : money(r[1])) + "</td>"
+            + '<td class="t-col-x">' + esc(r[2]) + "</td>"
+            + '<td style="text-align:left;font-family:var(--t-sans);color:var(--t-dim)">' + esc(r[3]) + "</td></tr>";
+        }).join("");
+        set("#fa-sub", "报表期末 " + (row.statementEnd || "—"));
+        set("#n-fa-cover", "报表项是公司自己递交给 SEC 的原始披露，本站不加工。"
+          + "利润表这一期取 " + durP + "，资产负债表取 " + instP
+          + "，ROE 的分母另取同财年的 " + alignP
+          + " —— 两类各自按覆盖面挑期，可能不是同一财年，所以权益给了两行，"
+          + "哪一行给哪个比率当分母写在最后一列。");
+        set('[data-src="fa"]', F.src.fund);
+
+        var LB = { pe:"PE 市盈率", pb:"PB 市净率", ps:"PS 市销率",
+                   roe:"ROE %", netMargin:"净利率 %", debtToAssets:"负债率 %" };
+        var peer = F.peer[row.sector] || {};
+        ratTb.innerHTML = D.RATIOS.map(function (k) {
+          var v = row[k], med = peer[k];
+          var relTxt = "—";
+          if (isNum(v) && isNum(med) && med !== 0) {
+            var dd = (v / med - 1) * 100;
+            relTxt = (dd >= 0 ? "+" : "−") + Math.abs(dd).toFixed(0) + "% " + (dd > 0 ? "高" : dd < 0 ? "低" : "平");
+          }
+          var dp = (k === "pe" || k === "pb" || k === "ps") ? 2 : 1;
+          return "<tr><th>" + esc(LB[k]) + "</th>"
+            + '<td class="' + (isNum(v) ? "" : "t-na") + '">' + esc(isNum(v) ? v.toFixed(dp) : "—") + "</td>"
+            + '<td class="' + (isNum(med) ? "" : "t-na") + '">' + esc(isNum(med) ? med.toFixed(dp) : "—") + "</td>"
+            + '<td class="' + (isNum(v) && isNum(med) ? fmt.cls(v - med) : "") + '">' + esc(relTxt) + "</td>"
+            + '<td class="t-col-x" style="text-align:left;font-family:var(--t-sans);color:var(--t-dim)">'
+            + esc(m[k] || "—") + "</td></tr>";
+        }).join("");
+        set("#fa-peer-sub", row.sector + "（" + (peer.n || 0) + " 家）中位");
+        var gone = D.RATIOS.filter(function (k) { return row[k] === null; });
+        set("#n-fa", "比率由本站按最后一列的公式从上表的报表项现算，非任何第三方的计算结果。"
+          + "板块中位是本板块这 " + (peer.n || 0) + " 家的中位数，样本不足 " + D.PEER_MIN
+          + " 家的项不给中位；它不是行业标准值，也不是全市场。"
+          + (gone.length ? "本公司有 " + gone.length + " 项算不出来（"
+              + gone.map(function (k) { return LB[k]; }).join("、")
+              + "）—— 分母非正或报表里没这一项，一律是 null 不是 0。" : "六项都算得出来。")
+          + "比率是「今天的价格 ÷ 上一期报表」：价格日期 "
+          + String(row.priceAsOf || "—").slice(0, 10) + "，报表期末 " + (row.statementEnd || "—")
+          + " —— 两个日期都给出，别读成当期值。"
+          + "现金流表、信用评级、期权链、股息与分析师预期站内仍无来源，菜单里保持置灰，不画空壳。");
+        set('[data-src="fa2"]', F.src.fund + " · 比率为本站现算 · 仅供研究参考，不构成投资建议");
+      }).catch(function (e) {
+        set("#n-fa-cover", "财务报表渲染失败：" + (e && e.message || e));
+        set('[data-src="fa"]', "渲染失败");
+        set('[data-src="fa2"]', "渲染失败");
       });
 
       $("#tbl-src tbody").innerHTML = [M.src.quote, M.src.intra, M.src.hist].map(function (x, i) {
