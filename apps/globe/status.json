@@ -1,9 +1,8 @@
 {
-  "updatedAt": null,
+  "updatedAt": "2026-09-14T14:49:36Z",
   "frequency": "daily",
-  "status": "pending",
+  "status": "ok",
   "demo": false,
-  "note": "静态数据快照尚未生成。首次由 .github/workflows/globe_space_data.yml 运行后写入（每日 05:20 UTC，也可在 Actions 页面手动触发）。在此之前卫星与航天任务图层没有数据。",
   "sources": {
     "celestrak": {
       "name": "CelesTrak",
@@ -18,5 +17,34 @@
       "attribution": "Launch Library 2 — The Space Devs"
     }
   },
-  "items": {}
+  "items": {
+    "celestrak/stations": {
+      "ok": true,
+      "detail": "20 颗"
+    },
+    "celestrak/visual": {
+      "ok": true,
+      "detail": "157 颗"
+    },
+    "celestrak/gps-ops": {
+      "ok": true,
+      "detail": "32 颗"
+    },
+    "celestrak/glo-ops": {
+      "ok": true,
+      "detail": "28 颗"
+    },
+    "celestrak/galileo": {
+      "ok": true,
+      "detail": "32 颗"
+    },
+    "celestrak/geo": {
+      "ok": true,
+      "detail": "567 颗"
+    },
+    "launches": {
+      "ok": true,
+      "detail": "25 条发射记录"
+    }
+  }
 }
