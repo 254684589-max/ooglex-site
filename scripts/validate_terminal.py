@@ -584,6 +584,27 @@ def main() -> int:
     require("站内直盘" in mon, "凡站内有直盘的格子必须给出对账差值")
     section("横截面汇总与交叉汇率")
 
+    # ── 18 自定义篮子：再平衡口径与缺成分处理必须写明 ──────────────────────
+    require("basketIndex" in core, "core.js 必须提供 basketIndex")
+    require("basketIndex" in cmp_, "篮子必须走 core.basketIndex，页面不得自己加权")
+    bi = core[core.index("function basketIndex"):]
+    bi = bi[:bi.index("\n  /*")] if "\n  /*" in bi else bi[:2600]
+    require("不再平衡" in core, "篮子必须声明固定权重、不再平衡")
+    require("重新归一化" in core, "缺成分时不得按剩余权重重新归一化，必须写明理由")
+    require("固定权重、不再平衡" in cmp_, "页面必须写明固定权重不再平衡")
+    require("与每日或每月再平衡的结果不同" in cmp_,
+            "必须写明与再平衡的结果不同，否则会被当成可比的指数")
+    require("只在全部成分当天都有值时才给点" in cmp_, "必须写明缺成分留空")
+    require("悄悄换成另一只篮子" in cmp_, "必须写明为什么不重新归一化")
+    require("不上传" in cmp_, "权重存 localStorage，必须写明只存本机不上传")
+    require("不含交易成本" in cmp_, "篮子必须写明不含交易成本、税费与分红再投资")
+    require("非任何指数或产品" in cmp_, "篮子必须声明它不是任何指数或产品")
+    # localStorage 读写必须 try/catch，禁用存储时页面要照常能用
+    for frag in ("try {", "catch (e) { return {}; }"):
+        require(frag in cmp_, f"localStorage 读写必须 try/catch（缺 {frag!r}）")
+    require("存储不可用" in cmp_, "存储不可用时必须在页面上说明改动只在本次会话有效")
+    section("自定义篮子")
+
     return report()
 
 

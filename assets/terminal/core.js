@@ -339,6 +339,45 @@
     });
   }
 
+  /* ── 自定义篮子指数 ────────────────────────────────────────────────────
+     输入是已经重基到 100 的成分序列 + 一组权重，输出还是一条重基到 100 的序列。
+     两条必须说清的口径：
+       1) **固定权重、不再平衡** —— 权重在基期一次性施加，之后各成分自行涨跌。
+          这等于「基期按这些权重买入后一直持有」，与「每日/每月再平衡」结果不同。
+       2) **只在全部成分当天都有值时才给点** —— 少一个成分就留空、折线断开。
+          缺成分时按剩下的权重重新归一化会悄悄改变篮子构成，那是另一只篮子。 */
+  function basketIndex(items, weights) {
+    var live = (items || []).filter(function (it) { return it && it.values && it.values.length; });
+    if (live.length < 2) return { values: [], reason: "至少要两个成分" };
+    var n = Math.max.apply(null, live.map(function (it) { return it.values.length; }));
+    var w = live.map(function (it, i) {
+      var x = weights && isNum(weights[i]) ? weights[i] : 0;
+      return x > 0 ? x : 0;
+    });
+    var sum = w.reduce(function (a, b) { return a + b; }, 0);
+    if (sum <= 0) return { values: [], reason: "权重合计必须大于 0" };
+    w = w.map(function (x) { return x / sum; });
+    var out = [], full = 0, partial = 0;
+    for (var t = 0; t < n; t++) {
+      var ok = true, v = 0;
+      for (var k = 0; k < live.length; k++) {
+        var x2 = live[k].values[t];
+        if (!isNum(x2)) { ok = false; break; }
+        v += w[k] * x2;
+      }
+      if (ok) { out.push(v); full++; } else { out.push(null); partial++; }
+    }
+    /* 再重基一次：第一个有效点归到 100，篮子和成分才同起点可比 */
+    var base = null;
+    for (var j = 0; j < out.length; j++) if (isNum(out[j])) { base = out[j]; break; }
+    if (base === null || base === 0) return { values: [], reason: "没有全部成分都有值的日子" };
+    var last = null;
+    var idx = out.map(function (x3) { return isNum(x3) ? x3 / base * 100 : null; });
+    for (var q = idx.length - 1; q >= 0; q--) if (isNum(idx[q])) { last = idx[q]; break; }
+    return { values: idx, weights: w, full: full, skipped: partial, n: n, last: last,
+             valid: idx.filter(isNum).length };
+  }
+
   /* ── 统计：Z-Score 与分位（需要足够样本才给数）────────────────────── */
   function zscore(values, win) {
     var v = (values || []).filter(isNum);
@@ -468,7 +507,7 @@
     dailyReturns: dailyReturns, pairCorr: pairCorr, regress: regress, MIN_PAIRS: MIN_PAIRS,
     monthLabels: monthLabels, monthlySeries: monthlySeries, monthOverMonth: monthOverMonth,
     seasonality: seasonality, monthlyCoverage: monthlyCoverage, MIN_SEASON_YEARS: MIN_SEASON_YEARS,
-    compareWindow: compareWindow, rebase: rebase,
+    compareWindow: compareWindow, rebase: rebase, basketIndex: basketIndex,
     meta: meta, srcLine: srcLine, zscore: zscore,
     quoteHref: quoteHref, securityHref: securityHref, detailHref: detailHref,
     QUOTE_KINDS: QUOTE_KINDS,

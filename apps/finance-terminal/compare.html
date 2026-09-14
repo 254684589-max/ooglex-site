@@ -112,6 +112,7 @@
     <a href="#" data-page-go="4" data-num="15" data-num-label="相关性矩阵"><i>15)</i> 相关性矩阵</a>
     <a href="#" data-page-go="5" data-num="16" data-num-label="贝塔与回归"><i>16)</i> 贝塔与回归</a>
     <a href="#" data-page-go="6" data-num="17" data-num-label="季节性"><i>17)</i> 季节性</a>
+    <a href="#" data-page-go="7" data-num="18" data-num-label="自定义篮子"><i>18)</i> 自定义篮子</a>
     <div class="sep"></div>
     <div class="hd">Quick Links</div>
     <div class="two" id="qlinks"></div>
@@ -222,6 +223,29 @@
       </div>
     </section>
 
+    <!-- 18) 自定义篮子 -->
+    <section id="pg-8" hidden>
+      <div class="t-win t-scroll">
+        <header><h2>自定义篮子 CUSTOM BASKET</h2><span class="t-sub" id="bk-sub">固定权重，不再平衡</span></header>
+        <div class="t-body">
+          <div class="t-filter">
+            <span class="t-note" style="padding:2px 6px;color:var(--t-cmd-line)">权重（相对值，自动归一化）</span>
+            <button type="button" id="bk-eq" style="background:#1a1400;color:var(--t-cmd-line);padding:2px 8px;font-family:var(--t-mono);font-size:11px">等权</button>
+            <button type="button" id="bk-cap" style="background:#1a1400;color:var(--t-cmd-line);padding:2px 8px;font-family:var(--t-mono);font-size:11px">清空重置</button>
+          </div>
+          <div id="bk-weights" class="t-smgrid" style="grid-template-columns:repeat(auto-fill,minmax(132px,1fr))"></div>
+          <div class="t-chart"><svg id="svg-bk" viewBox="0 0 760 210" preserveAspectRatio="none" role="img" aria-label="自定义篮子与成分走势"></svg></div>
+          <div class="t-legend" id="lg-bk"></div>
+          <table class="t-tbl" id="tbl-bk"><thead><tr>
+            <th>序列</th><th>区间回报</th><th class="t-col-x">年化</th><th>日波动(年化)</th>
+            <th class="t-col-x">最大回撤</th><th>有效点</th>
+          </tr></thead><tbody></tbody></table>
+          <p class="t-note" id="n-bk"></p>
+        </div>
+        <footer data-src="bk">—</footer>
+      </div>
+    </section>
+
     <!-- 14) 区间总回报 -->
     <section id="pg-4" hidden>
       <div class="t-win t-scroll">
@@ -263,7 +287,7 @@
   <span class="t-right">数据仅供研究参考，不构成投资建议</span>
 </div>
 
-<script src="/assets/terminal/core.js?v=652990ff"></script>
+<script src="/assets/terminal/core.js?v=423af4b7"></script>
 <script src="/assets/terminal/registry.js?v=1d42d994"></script>
 <script src="/assets/terminal/chrome.js?v=04b6a585"></script>
 <script src="/assets/terminal/behavior.js?v=00335003"></script>
@@ -316,7 +340,8 @@
     { sel:"#pg-4", title:"多标的比较 · 区间总回报" },
     { sel:"#pg-5", title:"多标的比较 · 相关性矩阵" },
     { sel:"#pg-6", title:"多标的比较 · 贝塔与回归" },
-    { sel:"#pg-7", title:"多标的比较 · 季节性" }
+    { sel:"#pg-7", title:"多标的比较 · 季节性" },
+    { sel:"#pg-8", title:"多标的比较 · 自定义篮子" }
   ]});
 
   /* 失败措辞与站内其余页保持一致（读取失败 / 未加载）—— 同一种事在不同页
@@ -467,7 +492,7 @@
               : { ok:false, reason:"可比较的序列不足两条" };
 
         function footers(txt) {
-          ["cmp", "sp", "dd", "ret", "corr", "beta", "season"].forEach(function (k) { set('[data-src="' + k + '"]', txt); });
+          ["cmp", "sp", "dd", "ret", "corr", "beta", "season", "bk"].forEach(function (k) { set('[data-src="' + k + '"]', txt); });
         }
 
         if (!w.ok) {
@@ -735,6 +760,96 @@
           set("#n-season", "月线读取失败，本页不给季节性。");
           set('[data-src="season"]', "月线读取失败");
         });
+
+        /* ── 18) 自定义篮子 ────────────────────────────────────────────────
+           权重存 localStorage：只存这台浏览器、不上传。存储可能被禁用或清空，
+           读写一律 try/catch，取不到就退回等权，页面照常能用。 */
+        var BK_KEY = "ooglex.terminal.basket";
+        function loadW() {
+          try {
+            var raw = JSON.parse(localStorage.getItem(BK_KEY) || "{}");
+            return raw && typeof raw === "object" ? raw : {};
+          } catch (e) { return {}; }
+        }
+        function saveW(map) {
+          try { localStorage.setItem(BK_KEY, JSON.stringify(map)); return true; }
+          catch (e) { return false; }
+        }
+        var wMap = loadW(), storeOK = true;
+
+        function drawBasket() {
+          var host = $("#bk-weights");
+          host.innerHTML = items.map(function (it) {
+            var v = isNum(wMap[it.tk]) ? wMap[it.tk] : 1;
+            return '<label class="t-sm" style="display:block"><span style="font-family:var(--t-mono);font-size:10px;color:var(--t-ink)">' +
+              esc(it.tk) + '</span><input type="number" min="0" step="0.5" value="' + v +
+              '" data-bw="' + esc(it.tk) + '" aria-label="' + esc(it.tk + " 权重") +
+              '" style="width:100%;background:#000;border:1px solid var(--t-line2);color:var(--t-cmd-line);font-family:var(--t-mono);font-size:11px;padding:1px 4px;margin-top:2px"></label>';
+          }).join("");
+          $$("[data-bw]").forEach(function (inp) {
+            inp.onchange = function () {
+              var v = parseFloat(inp.value);
+              wMap[inp.getAttribute("data-bw")] = isNum(v) && v >= 0 ? v : 0;
+              storeOK = saveW(wMap);
+              drawBasket();
+            };
+          });
+
+          var ws = items.map(function (it) { return isNum(wMap[it.tk]) ? wMap[it.tk] : 1; });
+          var bk = C.basketIndex(items, ws);
+          if (!bk.values.length) {
+            $("#svg-bk").innerHTML = '<text x="10" y="24" fill="#8a8a8a" font-family="monospace" font-size="12">' +
+              esc(bk.reason || "无法计算篮子") + "</text>";
+            set("#lg-bk", ""); $("#tbl-bk tbody").innerHTML = "";
+            set("#n-bk", (bk.reason || "无法计算篮子") + "。");
+            return;
+          }
+          var bkItem = { tk:"篮子", values:bk.values, valid:bk.valid, n:bk.n, last:bk.last, focus:true };
+          R.multiLine("#svg-bk", "#lg-bk",
+            [bkItem].concat(items.map(function (it) {
+              return { tk:it.tk, values:it.values, valid:it.valid, n:it.n, last:it.last, focus:false };
+            })), dates, { l:46, r:70, b:24, grid:4 });
+
+          var bs = stats(bk.values);
+          var allRows = [{ tk:"篮子（" + items.length + " 成分）", st:bs }]
+            .concat(items.map(function (it) { return { tk:it.tk, st:it.st }; }));
+          $("#tbl-bk tbody").innerHTML = allRows.map(function (r, i) {
+            if (!r.st) return '<tr><th scope="row" class="t-rownum">' + esc(r.tk) +
+              '</th><td colspan="5" class="t-na" style="text-align:left">有效点不足</td></tr>';
+            return "<tr" + (i === 0 ? ' style="outline:1px solid var(--t-cmd-line);outline-offset:-1px"' : "") +
+              '><th scope="row" class="t-rownum">' + esc(r.tk) + "</th>" +
+              '<td class="' + fmt.cls(r.st.ret) + '">' + fmt.pct(r.st.ret, 1) + "</td>" +
+              '<td class="t-col-x ' + fmt.cls(r.st.cagr) + '">' +
+                (isNum(r.st.cagr) ? fmt.pct(r.st.cagr, 1) : '<span class="t-na">窗口不足一季</span>') + "</td>" +
+              "<td>" + (isNum(r.st.vol) ? r.st.vol.toFixed(1) + "%" : '<span class="t-na">样本不足</span>') + "</td>" +
+              '<td class="t-col-x t-dn">' + fmt.pct(r.st.maxDD, 1) + "</td>" +
+              "<td>" + r.st.valid + "/" + r.st.n + "</td></tr>";
+          }).join("");
+
+          var wTxt = items.map(function (it, i) {
+            return it.tk + " " + (bk.weights[i] * 100).toFixed(1) + "%";
+          }).join("、");
+          set("#bk-sub", "固定权重 · " + items.length + " 成分");
+          set("#n-bk",
+            "归一化后的权重：" + wTxt + "。" +
+            "口径两条：一是固定权重、不再平衡 —— 权重在基期一次性施加，之后各成分自行涨跌，" +
+            "等于「基期按这些权重买入后一直持有」，与每日或每月再平衡的结果不同；" +
+            "二是只在全部成分当天都有值时才给点 —— 本窗口内有 " + bk.skipped +
+            " 天因为缺成分而留空、折线在那里断开。缺成分时按剩下的权重重新归一化会悄悄换成另一只篮子，所以不做。" +
+            " 权重存在这台浏览器本机（localStorage），不上传" +
+            (storeOK ? "" : "；当前浏览器存储不可用，改动只在本次会话有效") + "。" +
+            " 篮子不含交易成本、税费与分红再投资。");
+          set('[data-src="bk"]', C.srcLine(M.src.comp) + " · 篮子由站内归一化序列现算，非任何指数或产品");
+        }
+        $("#bk-eq").onclick = function () {
+          items.forEach(function (it) { wMap[it.tk] = 1; });
+          storeOK = saveW(wMap); drawBasket(); K.say("已设为等权", true);
+        };
+        $("#bk-cap").onclick = function () {
+          wMap = {}; try { localStorage.removeItem(BK_KEY); } catch (e) {}
+          drawBasket(); K.say("已清空权重（回到等权）", true);
+        };
+        drawBasket();
 
         R.fields("#f-meta", [
           { k:"对齐方式", v:"按日期字符串对齐到并集轴（两条管道日期轴不同，按下标对齐会整体错位几天）", box:1 },
