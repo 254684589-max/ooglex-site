@@ -1,8 +1,8 @@
 {
   "contractVersion": 1,
   "dataset": "supply-chain-graph",
-  "updatedAt": "2026-09-12T01:53:44Z",
-  "asOf": "2026-09-11",
+  "updatedAt": "2026-09-14T00:08:22Z",
+  "asOf": "2026-09-13",
   "frequency": "daily",
   "status": "ok",
   "source": "站内 apps/companies/sp500.json",
@@ -167,7 +167,7 @@
       "id": "semiconductor",
       "label": "半导体",
       "labelEn": "Semiconductors",
-      "count": 134,
+      "count": 135,
       "edgeCount": 10933,
       "layer": 5
     },
@@ -199,7 +199,7 @@
       "id": "software-cloud",
       "label": "软件与云服务",
       "labelEn": "Software & Cloud",
-      "count": 534,
+      "count": 535,
       "edgeCount": 3451,
       "layer": 8
     },
@@ -215,7 +215,7 @@
       "id": "automotive",
       "label": "汽车",
       "labelEn": "Automotive",
-      "count": 114,
+      "count": 115,
       "edgeCount": 7786,
       "layer": 6
     },
@@ -263,7 +263,7 @@
       "id": "retail-distribution",
       "label": "零售与分销",
       "labelEn": "Retail & Distribution",
-      "count": 381,
+      "count": 382,
       "edgeCount": 3836,
       "layer": 8
     },
@@ -294,7 +294,7 @@
       "id": "financial-services",
       "label": "金融服务",
       "labelEn": "Financial Services",
-      "count": 952,
+      "count": 953,
       "edgeCount": 584
     },
     {
@@ -308,7 +308,7 @@
       "id": "business-services",
       "label": "商业与专业服务",
       "labelEn": "Business & Professional Services",
-      "count": 397,
+      "count": 398,
       "edgeCount": 1462
     },
     {
@@ -30275,7 +30275,7 @@
         "country": "中国",
         "smelters": 782,
         "inPool": 0,
-        "poolCompanies": 263
+        "poolCompanies": 264
       },
       {
         "country": "美国",
@@ -135287,9 +135287,9 @@
       "countryEn": null,
       "region": null,
       "countryBasis": null,
-      "filerCategory": "Non-accelerated filer · Smaller reporting company · Emerging growth company",
-      "filerTier": "非加速申报人",
-      "smallerReporting": true,
+      "filerCategory": "Emerging growth company",
+      "filerTier": "未标注档位",
+      "smallerReporting": false,
       "emergingGrowth": true,
       "offshoreIncorporation": false,
       "operatingCountry": "美国",
@@ -147185,9 +147185,9 @@
       "countryEn": null,
       "region": null,
       "countryBasis": null,
-      "filerCategory": "Non-accelerated filer · Smaller reporting company · Emerging growth company",
-      "filerTier": "非加速申报人",
-      "smallerReporting": true,
+      "filerCategory": "Emerging growth company",
+      "filerTier": "未标注档位",
+      "smallerReporting": false,
       "emergingGrowth": true,
       "offshoreIncorporation": false,
       "operatingCountry": "美国",
@@ -156683,8 +156683,8 @@
       "countryEn": null,
       "region": null,
       "countryBasis": null,
-      "filerCategory": "Non-accelerated filer · Emerging growth company",
-      "filerTier": "非加速申报人",
+      "filerCategory": "Emerging growth company",
+      "filerTier": "未标注档位",
       "smallerReporting": false,
       "emergingGrowth": true,
       "offshoreIncorporation": false,
@@ -160290,9 +160290,9 @@
       "countryEn": null,
       "region": null,
       "countryBasis": null,
-      "filerCategory": "Non-accelerated filer · Smaller reporting company · Emerging growth company",
-      "filerTier": "非加速申报人",
-      "smallerReporting": true,
+      "filerCategory": "Emerging growth company",
+      "filerTier": "未标注档位",
+      "smallerReporting": false,
       "emergingGrowth": true,
       "offshoreIncorporation": false,
       "operatingCountry": "美国",
@@ -181625,6 +181625,58 @@
       "formSdStatus": "filed-no-list"
     },
     {
+      "id": "ECXJ",
+      "symbol": "ECXJ",
+      "name": "CXJ GROUP CO., Ltd",
+      "nameEn": "CXJ GROUP CO., Ltd",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-domestic-filer",
+      "country": "中国",
+      "countryEn": "China",
+      "region": null,
+      "countryBasis": "business-address",
+      "filerCategory": "Non-accelerated filer · Smaller reporting company",
+      "filerTier": "非加速申报人",
+      "smallerReporting": true,
+      "emergingGrowth": false,
+      "offshoreIncorporation": false,
+      "operatingCountry": "中国",
+      "operatingCountryEn": "China",
+      "operatingRegion": null,
+      "operatingBasis": "business-address",
+      "geoCountry": "中国",
+      "exchange": "OTC",
+      "cik": 1823635,
+      "sic": 3714,
+      "sicDescription": "Motor Vehicle Parts & Accessories",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "报 10-K 的美国本土发行人（非标普成分股），站内无板块分类；环节由 SEC 行业码判定",
+      "sicMajor": "37",
+      "sicMajorLabel": "运输设备",
+      "sicMajorLabelEn": "Transportation Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001823635.json",
+        "sic": 3714,
+        "match": "sic-exact"
+      },
+      "chains": [
+        "automotive"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "汽车整车；汽车零部件",
+      "edgeCount": 0
+    },
+    {
       "id": "EDBL",
       "symbol": "EDBL",
       "name": "Edible Garden AG Inc",
@@ -194100,6 +194152,58 @@
       "chainNote": "电子元器件",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
+    },
+    {
+      "id": "FLWS",
+      "symbol": "FLWS",
+      "name": "1 800 FLOWERS COM INC",
+      "nameEn": "1 800 FLOWERS COM INC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-domestic-filer",
+      "country": null,
+      "countryEn": null,
+      "region": null,
+      "countryBasis": null,
+      "filerCategory": "Accelerated filer · Smaller reporting company",
+      "filerTier": "加速申报人",
+      "smallerReporting": true,
+      "emergingGrowth": false,
+      "offshoreIncorporation": false,
+      "operatingCountry": "美国",
+      "operatingCountryEn": "United States",
+      "operatingRegion": "NY",
+      "operatingBasis": "business-address",
+      "geoCountry": null,
+      "exchange": "Nasdaq",
+      "cik": 1084869,
+      "sic": 5990,
+      "sicDescription": "Retail-Retail Stores, NEC",
+      "stage": "distribution",
+      "stageCandidates": [
+        "distribution"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "报 10-K 的美国本土发行人（非标普成分股），站内无板块分类；环节由 SEC 行业码判定",
+      "sicMajor": "59",
+      "sicMajorLabel": "其他零售",
+      "sicMajorLabelEn": "Miscellaneous Retail",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001084869.json",
+        "sic": 5990,
+        "match": "sic-range"
+      },
+      "chains": [
+        "retail-distribution"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "零售贸易",
+      "edgeCount": 0
     },
     {
       "id": "FLXS",
@@ -208494,9 +208598,9 @@
       "countryEn": null,
       "region": null,
       "countryBasis": null,
-      "filerCategory": "Non-accelerated filer · Smaller reporting company · Emerging growth company",
-      "filerTier": "非加速申报人",
-      "smallerReporting": true,
+      "filerCategory": "Emerging growth company",
+      "filerTier": "未标注档位",
+      "smallerReporting": false,
       "emergingGrowth": true,
       "offshoreIncorporation": false,
       "operatingCountry": "美国",
@@ -208743,6 +208847,58 @@
       "chainNote": "食品饮料",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
+    },
+    {
+      "id": "GWRE",
+      "symbol": "GWRE",
+      "name": "Guidewire Software, Inc.",
+      "nameEn": "Guidewire Software, Inc.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-domestic-filer",
+      "country": null,
+      "countryEn": null,
+      "region": null,
+      "countryBasis": null,
+      "filerCategory": "Large accelerated filer",
+      "filerTier": "大型加速申报人",
+      "smallerReporting": false,
+      "emergingGrowth": false,
+      "offshoreIncorporation": false,
+      "operatingCountry": "美国",
+      "operatingCountryEn": "United States",
+      "operatingRegion": "CA",
+      "operatingBasis": "business-address",
+      "geoCountry": null,
+      "exchange": "NYSE",
+      "cik": 1528396,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "stage": "technology",
+      "stageCandidates": [
+        "technology"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "报 10-K 的美国本土发行人（非标普成分股），站内无板块分类；环节由 SEC 行业码判定",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001528396.json",
+        "sic": 7372,
+        "match": "sic-range"
+      },
+      "chains": [
+        "software-cloud"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "预打包软件",
+      "edgeCount": 0
     },
     {
       "id": "GWRS",
@@ -237573,6 +237729,58 @@
       "chainNote": "预打包软件",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
+    },
+    {
+      "id": "LPTH",
+      "symbol": "LPTH",
+      "name": "LIGHTPATH TECHNOLOGIES INC",
+      "nameEn": "LIGHTPATH TECHNOLOGIES INC",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-domestic-filer",
+      "country": null,
+      "countryEn": null,
+      "region": null,
+      "countryBasis": null,
+      "filerCategory": "Non-accelerated filer · Smaller reporting company",
+      "filerTier": "非加速申报人",
+      "smallerReporting": true,
+      "emergingGrowth": false,
+      "offshoreIncorporation": false,
+      "operatingCountry": "美国",
+      "operatingCountryEn": "United States",
+      "operatingRegion": "FL",
+      "operatingBasis": "business-address",
+      "geoCountry": null,
+      "exchange": "Nasdaq",
+      "cik": 889971,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "stage": "component",
+      "stageCandidates": [
+        "component"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "报 10-K 的美国本土发行人（非标普成分股），站内无板块分类；环节由 SEC 行业码判定",
+      "sicMajor": "36",
+      "sicMajorLabel": "电子与电气设备",
+      "sicMajorLabelEn": "Electronic & Electrical Equipment",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000889971.json",
+        "sic": 3674,
+        "match": "sic-range"
+      },
+      "chains": [
+        "semiconductor"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "半导体与相关器件",
+      "edgeCount": 0
     },
     {
       "id": "LPX",
@@ -290887,6 +291095,58 @@
       "formSdStatus": "no-filing"
     },
     {
+      "id": "RSSS",
+      "symbol": "RSSS",
+      "name": "Research Solutions, Inc.",
+      "nameEn": "Research Solutions, Inc.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-domestic-filer",
+      "country": null,
+      "countryEn": null,
+      "region": null,
+      "countryBasis": null,
+      "filerCategory": "Non-accelerated filer · Smaller reporting company",
+      "filerTier": "非加速申报人",
+      "smallerReporting": true,
+      "emergingGrowth": false,
+      "offshoreIncorporation": false,
+      "operatingCountry": "美国",
+      "operatingCountryEn": "United States",
+      "operatingRegion": "NV",
+      "operatingBasis": "business-address",
+      "geoCountry": null,
+      "exchange": "Nasdaq",
+      "cik": 1386301,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "stage": "technology",
+      "stageCandidates": [
+        "technology"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "报 10-K 的美国本土发行人（非标普成分股），站内无板块分类；环节由 SEC 行业码判定",
+      "sicMajor": "73",
+      "sicMajorLabel": "商业服务",
+      "sicMajorLabelEn": "Business Services",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0001386301.json",
+        "sic": 7389,
+        "match": "sic-range"
+      },
+      "chains": [
+        "business-services"
+      ],
+      "chainBasis": "sic-exact",
+      "chainNote": "商业服务 NEC：这一码本身就是杂项，不硬派链",
+      "edgeCount": 0
+    },
+    {
       "id": "RSTRF",
       "symbol": "RSTRF",
       "name": "Restaurant Brands International Limited Partnership",
@@ -301506,6 +301766,58 @@
       "chainNote": "房地产投资信托：持有物业的载体，归地产不归泛金融",
       "edgeCount": 0,
       "formSdStatus": "no-filing"
+    },
+    {
+      "id": "SMBC",
+      "symbol": "SMBC",
+      "name": "SOUTHERN MISSOURI BANCORP, INC.",
+      "nameEn": "SOUTHERN MISSOURI BANCORP, INC.",
+      "sector": null,
+      "sectorEn": null,
+      "marketCap": null,
+      "logo": null,
+      "listed": true,
+      "pool": "sec-domestic-filer",
+      "country": null,
+      "countryEn": null,
+      "region": null,
+      "countryBasis": null,
+      "filerCategory": "Accelerated filer",
+      "filerTier": "加速申报人",
+      "smallerReporting": false,
+      "emergingGrowth": false,
+      "offshoreIncorporation": false,
+      "operatingCountry": "美国",
+      "operatingCountryEn": "United States",
+      "operatingRegion": "MO",
+      "operatingBasis": "business-address",
+      "geoCountry": null,
+      "exchange": "Nasdaq",
+      "cik": 916907,
+      "sic": 6036,
+      "sicDescription": "Savings Institutions, Not Federally Chartered",
+      "stage": "financial",
+      "stageCandidates": [
+        "financial"
+      ],
+      "stageBasis": "sic-refined",
+      "stageAmbiguous": false,
+      "stageNote": "报 10-K 的美国本土发行人（非标普成分股），站内无板块分类；环节由 SEC 行业码判定",
+      "sicMajor": "60",
+      "sicMajorLabel": "银行与存款机构",
+      "sicMajorLabelEn": "Depository Institutions",
+      "stageEvidence": {
+        "sourceType": "sec-submissions-sic",
+        "url": "https://data.sec.gov/submissions/CIK0000916907.json",
+        "sic": 6036,
+        "match": "sic-range"
+      },
+      "chains": [
+        "financial-services"
+      ],
+      "chainBasis": "sic-range",
+      "chainNote": "银行、券商与保险",
+      "edgeCount": 0
     },
     {
       "id": "SMBK",
@@ -343492,7 +343804,7 @@
     }
   },
   "stagePerformance": {
-    "asOf": "2026-09-11",
+    "asOf": "2026-09-13",
     "source": "站内 apps/companies/sp500.json",
     "method": "按价值链环节汇总当日涨跌；等权与市值加权并列给出，不互相冒充。行情值沿用站内成分股文件，未重算。",
     "stages": [
@@ -343791,14 +344103,14 @@
     "chainDepth": 10,
     "poolSp500": 495,
     "poolForeignIssuer": 1194,
-    "poolDomesticFiler": 4217,
+    "poolDomesticFiler": 4223,
     "poolForeignSkippedCollision": 0,
-    "nodesWithoutQuote": 5411,
+    "nodesWithoutQuote": 5417,
     "upstreamPairs": 32928,
     "upstreamConcentrationTotal": 1693,
     "chainCounterflow": 6,
     "chainMulti": 683,
-    "nodesTotal": 5906,
+    "nodesTotal": 5912,
     "nodesWithEdges": 369,
     "edgesTotal": 86220,
     "edgesBySource": {
@@ -349751,7 +350063,7 @@
         "symbols": [
           "AEC"
         ],
-        "indexFlagged": 150
+        "indexFlagged": 151
       },
       "noFilingByStage": [
         {
@@ -350606,24 +350918,24 @@
       {
         "sector": "商业服务",
         "sectorEn": null,
-        "companies": 506,
+        "companies": 508,
         "withEdges": 14,
         "filedNoList": 26,
         "noFiling": 460,
         "resourceExtraction": 0,
         "failed": 0,
-        "unscanned": 6
+        "unscanned": 8
       },
       {
         "sector": "银行与存款机构",
         "sectorEn": null,
-        "companies": 319,
+        "companies": 320,
         "withEdges": 0,
         "filedNoList": 0,
         "noFiling": 317,
         "resourceExtraction": 0,
         "failed": 0,
-        "unscanned": 2
+        "unscanned": 3
       },
       {
         "sector": "仪器仪表与医疗器械",
@@ -350650,13 +350962,13 @@
       {
         "sector": "电子与电气设备",
         "sectorEn": null,
-        "companies": 198,
+        "companies": 199,
         "withEdges": 48,
         "filedNoList": 82,
         "noFiling": 67,
         "resourceExtraction": 0,
         "failed": 0,
-        "unscanned": 1
+        "unscanned": 2
       },
       {
         "sector": "证券与商品经纪",
@@ -350716,13 +351028,13 @@
       {
         "sector": "运输设备",
         "sectorEn": null,
-        "companies": 98,
+        "companies": 99,
         "withEdges": 26,
         "filedNoList": 31,
         "noFiling": 40,
         "resourceExtraction": 0,
         "failed": 0,
-        "unscanned": 1
+        "unscanned": 2
       },
       {
         "sector": "保险公司",
@@ -350769,6 +351081,17 @@
         "unscanned": 1
       },
       {
+        "sector": "其他零售",
+        "sectorEn": null,
+        "companies": 64,
+        "withEdges": 3,
+        "filedNoList": 6,
+        "noFiling": 54,
+        "resourceExtraction": 0,
+        "failed": 0,
+        "unscanned": 1
+      },
+      {
         "sector": "房地产",
         "sectorEn": null,
         "companies": 64,
@@ -350789,17 +351112,6 @@
         "resourceExtraction": 0,
         "failed": 0,
         "unscanned": 1
-      },
-      {
-        "sector": "其他零售",
-        "sectorEn": null,
-        "companies": 63,
-        "withEdges": 3,
-        "filedNoList": 6,
-        "noFiling": 54,
-        "resourceExtraction": 0,
-        "failed": 0,
-        "unscanned": 0
       },
       {
         "sector": "金属矿采选",
@@ -351323,46 +351635,46 @@
       {
         "sector": "大型加速申报人",
         "sectorEn": null,
-        "companies": 2312,
+        "companies": 2313,
         "withEdges": 276,
         "filedNoList": 436,
         "noFiling": 1508,
         "resourceExtraction": 91,
         "failed": 0,
-        "unscanned": 1
+        "unscanned": 2
       },
       {
         "sector": "非加速申报人",
         "sectorEn": null,
-        "companies": 2197,
+        "companies": 2195,
         "withEdges": 40,
         "filedNoList": 105,
-        "noFiling": 2030,
+        "noFiling": 2026,
         "resourceExtraction": 8,
         "failed": 0,
-        "unscanned": 14
+        "unscanned": 16
       },
       {
         "sector": "加速申报人",
         "sectorEn": null,
-        "companies": 790,
+        "companies": 792,
         "withEdges": 47,
         "filedNoList": 110,
         "noFiling": 608,
         "resourceExtraction": 19,
         "failed": 0,
-        "unscanned": 6
+        "unscanned": 8
       },
       {
         "sector": "未标注档位",
         "sectorEn": null,
-        "companies": 504,
+        "companies": 509,
         "withEdges": 4,
         "filedNoList": 11,
-        "noFiling": 462,
+        "noFiling": 466,
         "resourceExtraction": 25,
         "failed": 0,
-        "unscanned": 2
+        "unscanned": 3
       },
       {
         "sector": "未分类",
@@ -351449,22 +351761,22 @@
       "oldestYear": "2016"
     },
     "stageByBasis": {
-      "sic-refined": 5906
+      "sic-refined": 5912
     },
-    "stageResolvedNodes": 5906,
+    "stageResolvedNodes": 5912,
     "stageAmbiguousNodes": 0,
     "note": "本图谱只收录有公开出处的关系，不是完整供应链。当前 86220 条边全部来自 Form SD 冲突矿产申报，语义是「该冶炼厂出现在申报人的供应链中」——间接、不含份额、不含层级，不等于直接供货关系。"
   },
   "dataQuality": {
     "contractVersion": 1,
     "status": "ok",
-    "total": 5906,
+    "total": 5912,
     "byStage": {
-      "component": 487,
+      "component": 489,
       "finished-goods": 1395,
-      "technology": 915,
-      "distribution": 381,
-      "financial": 1388,
+      "technology": 917,
+      "distribution": 382,
+      "financial": 1389,
       "material-processing": 263,
       "capital-equipment": 139,
       "end-service": 330,
@@ -351473,7 +351785,7 @@
       "raw-material": 363,
       "circular": 19
     },
-    "resolvedStage": 5906,
+    "resolvedStage": 5912,
     "ambiguousStage": 0,
     "unknownStage": 0
   }

@@ -8418,7 +8418,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "OTC",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-11",
       "name": "Athena Technology Acquisition Corp. II",
@@ -13867,7 +13867,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-31",
       "name": "BONK, INC.",
@@ -18198,7 +18198,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-23",
       "name": "Cardinal Infrastructure Group Inc.",
@@ -19860,7 +19860,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-04-15",
       "name": "CIRCLE8 GROUP INC",
@@ -29578,6 +29578,30 @@
         "ECVT"
       ]
     },
+    "ECXJ": {
+      "annualForm": "10-K",
+      "cik": 1823635,
+      "country": "China",
+      "countryBasis": "business-address",
+      "countryCode": "F4",
+      "entityType": "operating",
+      "exchange": "OTC",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-11",
+      "name": "CXJ GROUP CO., Ltd",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "China",
+      "operatingRegion": null,
+      "region": null,
+      "sic": 3714,
+      "sicDescription": "Motor Vehicle Parts & Accessories",
+      "symbol": "ECXJ",
+      "tickers": [
+        "ECXJ"
+      ]
+    },
     "EDBL": {
       "annualForm": "10-K",
       "cik": 1809750,
@@ -35288,6 +35312,30 @@
       "symbol": "FLUX",
       "tickers": [
         "FLUX"
+      ]
+    },
+    "FLWS": {
+      "annualForm": "10-K",
+      "cik": 1084869,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-11",
+      "name": "1 800 FLOWERS COM INC",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "NY",
+      "region": null,
+      "sic": 5990,
+      "sicDescription": "Retail-Retail Stores, NEC",
+      "symbol": "FLWS",
+      "tickers": [
+        "FLWS"
       ]
     },
     "FLXS": {
@@ -41883,7 +41931,7 @@
       "countryCode": null,
       "entityType": "operating",
       "exchange": "Nasdaq",
-      "filerCategory": "Non-accelerated filer<br>Smaller reporting company<br>Emerging growth company",
+      "filerCategory": "<br>Emerging growth company",
       "filesFormSd": false,
       "lastAnnual": "2026-03-24",
       "name": "FRACTYL HEALTH, INC.",
@@ -41994,6 +42042,30 @@
       "symbol": "GWLL",
       "tickers": [
         "GWLL"
+      ]
+    },
+    "GWRE": {
+      "annualForm": "10-K",
+      "cik": 1528396,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "NYSE",
+      "filerCategory": "Large accelerated filer",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-11",
+      "name": "Guidewire Software, Inc.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "CA",
+      "region": null,
+      "sic": 7372,
+      "sicDescription": "Services-Prepackaged Software",
+      "symbol": "GWRE",
+      "tickers": [
+        "GWRE"
       ]
     },
     "GWRS": {
@@ -45223,7 +45295,7 @@
       "exchange": "OTC",
       "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
       "filesFormSd": false,
-      "lastAnnual": "2025-10-15",
+      "lastAnnual": "2026-09-11",
       "name": "Hawkeye Digital, Inc.",
       "offshoreIncorporation": false,
       "operatingBasis": "business-address",
@@ -53336,7 +53408,7 @@
     },
     "LEG": {
       "annualForm": "10-K",
-      "carriedFrom": "2026-09-09T01:49:44Z",
+      "carriedFrom": "2026-09-12T01:53:37Z",
       "carryBasis": "has-published-filing-evidence",
       "cik": 58492,
       "confirmedThisScan": false,
@@ -55132,6 +55204,30 @@
       "symbol": "LPSN",
       "tickers": [
         "LPSN"
+      ]
+    },
+    "LPTH": {
+      "annualForm": "10-K",
+      "cik": 889971,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": true,
+      "lastAnnual": "2026-09-11",
+      "name": "LIGHTPATH TECHNOLOGIES INC",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "FL",
+      "region": null,
+      "sic": 3674,
+      "sicDescription": "Semiconductors & Related Devices",
+      "symbol": "LPTH",
+      "tickers": [
+        "LPTH"
       ]
     },
     "LPX": {
@@ -75749,7 +75845,7 @@
     },
     "QVCAQ": {
       "annualForm": "10-K",
-      "carriedFrom": "2026-09-09T01:49:44Z",
+      "carriedFrom": "2026-09-12T01:53:37Z",
       "carryBasis": "has-published-filing-evidence",
       "cik": 1355096,
       "confirmedThisScan": false,
@@ -79461,6 +79557,30 @@
       "symbol": "RSRV",
       "tickers": [
         "RSRV"
+      ]
+    },
+    "RSSS": {
+      "annualForm": "10-K",
+      "cik": 1386301,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Non-accelerated filer<br>Smaller reporting company",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-11",
+      "name": "Research Solutions, Inc.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "NV",
+      "region": null,
+      "sic": 7389,
+      "sicDescription": "Services-Business Services, NEC",
+      "symbol": "RSSS",
+      "tickers": [
+        "RSSS"
       ]
     },
     "RSTRF": {
@@ -84312,6 +84432,30 @@
       "symbol": "SMA",
       "tickers": [
         "SMA"
+      ]
+    },
+    "SMBC": {
+      "annualForm": "10-K",
+      "cik": 916907,
+      "country": null,
+      "countryBasis": null,
+      "countryCode": null,
+      "entityType": "operating",
+      "exchange": "Nasdaq",
+      "filerCategory": "Accelerated filer",
+      "filesFormSd": false,
+      "lastAnnual": "2026-09-11",
+      "name": "SOUTHERN MISSOURI BANCORP, INC.",
+      "offshoreIncorporation": false,
+      "operatingBasis": "business-address",
+      "operatingCountry": "United States",
+      "operatingRegion": "MO",
+      "region": null,
+      "sic": 6036,
+      "sicDescription": "Savings Institutions, Not Federally Chartered",
+      "symbol": "SMBC",
+      "tickers": [
+        "SMBC"
       ]
     },
     "SMBK": {
@@ -102274,8 +102418,8 @@
   "contractVersion": 1,
   "coverage": {
     "alreadyInPool": 1,
-    "annualFilers": 6479,
-    "attempted": 4472,
+    "annualFilers": 6485,
+    "attempted": 4478,
     "carriedForward": 2,
     "carriedForwardSymbols": [
       "LEG",
@@ -102283,8 +102427,8 @@
     ],
     "droppedBlankCheck": 202,
     "droppedNoSic": 54,
-    "published": 4218,
-    "publishedFilesFormSd": 649,
+    "published": 4224,
+    "publishedFilesFormSd": 650,
     "skippedNoTicker": 1589,
     "skippedTickerCollision": 417,
     "submissionsFailed": 0
@@ -102293,34 +102437,34 @@
   "note": "报 10-K 的美国本土发行人中，标普 500 之外的那些。标普那批本来就是这一批的子集，已在池中、且有站内报价，按 CIK 与代码双重跳过，绝不覆盖。排除 SIC 6770 空白支票公司（定义上不是经营实体）与没有 SIC 的（环节与产业链判不出来，接不进模型）。**这一池只增加节点、不增加关系边**——Form SD 是冶炼厂边的唯一来源，逐家由 filesFormSd 标出；公司家数变多不表示关系覆盖变好。",
   "quarters": [
     {
-      "bytes": 3109095,
+      "bytes": 3151882,
       "gzip": true,
       "quarter": "2026QTR3",
-      "rows": 248146,
+      "rows": 251817,
       "unparsed": 7
     },
     {
-      "bytes": 4272410,
+      "bytes": 4270413,
       "gzip": true,
       "quarter": "2026QTR2",
-      "rows": 353168,
+      "rows": 353223,
       "unparsed": 7
     },
     {
-      "bytes": 4439767,
+      "bytes": 4440155,
       "gzip": true,
       "quarter": "2026QTR1",
-      "rows": 370055,
+      "rows": 370082,
       "unparsed": 7
     },
     {
-      "bytes": 3399984,
+      "bytes": 3400632,
       "gzip": true,
       "quarter": "2025QTR4",
-      "rows": 276466,
+      "rows": 276542,
       "unparsed": 7
     }
   ],
   "source": "SEC EDGAR 季度全量索引 + submissions（公共领域）",
-  "updatedAt": "2026-09-12T01:53:37Z"
+  "updatedAt": "2026-09-14T00:08:14Z"
 }
