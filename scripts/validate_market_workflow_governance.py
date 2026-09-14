@@ -37,6 +37,10 @@ WORKFLOWS = {
     "ofr-monitor": ROOT / ".github" / "workflows" / "ofr_monitor.yml",
     "econ-calendar": ROOT / ".github" / "workflows" / "econ_calendar.yml",
     "whats-latest": ROOT / ".github" / "workflows" / "whats_latest.yml",
+    # 基本面比率：与公司榜共用 apps/companies/ 目录、可写范围只有 fundamentals.json。
+    # 它只有 workflow_dispatch（刻意未进 scheduler.yml 轮转），但治理要求一条不减——
+    # 会推回仓库的管道就得受同一套守卫，手动触发不是例外。
+    "fundamentals": ROOT / ".github" / "workflows" / "fundamentals.yml",
 }
 SCHEDULER = ROOT / ".github" / "workflows" / "scheduler.yml"
 GOVERNANCE_DOC = ROOT / "docs" / "AGGREGATE_SOURCE_HEALTH.md"
@@ -127,6 +131,61 @@ def test_git_contract(module) -> None:
         require(staged == ["apps/asset-tracker/data.json"], "只应暂存跨资产data改动")
         git(repo, "commit", "-qm", "data")
         require(module.stage_owned("asset-tracker", repo) == [], "无变化时必须返回空暂存集")
+
+
+def test_fundamentals_path_contract(module) -> None:
+    """基本面与公司榜共用 apps/companies/ 目录，所有权必须两个方向都钉住。"""
+    require(module.owns_path("fundamentals", "apps/companies/fundamentals.json"),
+            "基本面fundamentals.json未授权")
+    for path in ("apps/companies/data.json", "apps/companies/sp500.json",
+                 "apps/companies/history.json", "apps/companies/intraday.json",
+                 "apps/companies/logos/AAPL.png", "apps/companies/index.html"):
+        require(not module.owns_path("fundamentals", path),
+                f"基本面管道不得授权公司榜的 {path}")
+    require(not module.owns_path("companies", "apps/companies/fundamentals.json"),
+            "公司榜不得授权基本面的fundamentals.json")
+    require(not module.owns_path("companies-intraday", "apps/companies/fundamentals.json"),
+            "盘中层不得授权基本面的fundamentals.json")
+
+    # 再用真实仓库验一遍暂存动作本身。test_git_contract 那一组里越权文件是 index.html
+    # （同目录、不同后缀），这里两个都是同目录下的 .json 数据文件 —— 形状不同，
+    # 而这正是未来最容易被悄悄改错的一处，所以单独钉住。
+    with tempfile.TemporaryDirectory() as temp:
+        repo = Path(temp)
+        git(repo, "init", "-q")
+        git(repo, "config", "user.name", "workflow-test")
+        git(repo, "config", "user.email", "workflow-test@example.invalid")
+        holder = repo / "apps" / "companies"
+        holder.mkdir(parents=True)
+        (holder / "data.json").write_text('{"companies": []}\n', encoding="utf-8")
+        (holder / "fundamentals.json").write_text('{"rows": []}\n', encoding="utf-8")
+        git(repo, "add", ".")
+        git(repo, "commit", "-qm", "baseline")
+
+        (holder / "fundamentals.json").write_text('{"rows": [1]}\n', encoding="utf-8")
+        (holder / "data.json").write_text('{"companies": [1]}\n', encoding="utf-8")
+        try:
+            module.stage_owned("fundamentals", repo)
+        except module.GovernanceError:
+            pass
+        else:
+            raise AssertionError("基本面管道改动公司榜data.json未被阻断")
+        require(not module.staged_paths(repo), "越权失败后不应留下暂存文件")
+
+        git(repo, "restore", "apps/companies/data.json")
+        require(module.stage_owned("fundamentals", repo) == ["apps/companies/fundamentals.json"],
+                "只应暂存基本面自己的文件")
+        git(repo, "commit", "-qm", "fundamentals")
+        require(module.stage_owned("fundamentals", repo) == [], "无变化时必须返回空暂存集")
+
+        # 反向同样要拦：公司榜管道动不了基本面的文件
+        (holder / "fundamentals.json").write_text('{"rows": [2]}\n', encoding="utf-8")
+        try:
+            module.stage_owned("companies", repo)
+        except module.GovernanceError:
+            pass
+        else:
+            raise AssertionError("公司榜管道改动fundamentals.json未被阻断")
 
 
 def test_company_logo_contract(module) -> None:
@@ -341,6 +400,7 @@ def validate_cross_pipeline_contract() -> None:
         "ofr-monitor": "python scripts/ofr-monitor/build_ofr.py",
         "econ-calendar": "python scripts/econ-calendar/build_calendar.py",
         "whats-latest": "python scripts/whats-latest/build_news.py",
+        "fundamentals": "python scripts/fundamentals/build_fundamentals.py",
     }
     for name, text in workflow_texts.items():
         require(text.index("Sync target branch before generation") < text.index(build_markers[name]),
@@ -364,6 +424,7 @@ def main() -> None:
     module = load_governance()
     test_path_contract(module)
     test_git_contract(module)
+    test_fundamentals_path_contract(module)
     test_company_logo_contract(module)
     test_macro_git_contract(module)
     test_supporting_git_contract(module)

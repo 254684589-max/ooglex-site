@@ -64,11 +64,14 @@ Beta上线门禁会复用同一72小时时效和交叉校验：健康报告过�
 | `asset-tracker-hourly` | `apps/asset-tracker/hourly.json` |
 | `companies` | `apps/companies/data.json`、`health.json`、`logos/`根目录下的PNG |
 | `asset-ranking` | `apps/asset-ranking/data.json`、`health.json` |
+| `fundamentals` | `apps/companies/fundamentals.json` |
 
 - 跨资产的三层时间粒度各是一条独立管道：收盘口径的`asset-tracker`（日更）、盘中层`asset-tracker-intraday`（约30分钟）、4小时线`asset-tracker-hourly`（每4小时）。三者各有各的工作流、并发组与可写路径，互相写不到对方的文件。4小时线的标的清单横跨跨资产、公司榜与加密三份已发布快照，但一个上游都不允许回写。
 - 4小时线由本站把上游的1小时行情按UTC对齐聚合而成，**不是交易所原生的4小时K线**；聚合是确定性运算，可由同一份小时线复现，文件里逐条标注`aggregated: true`，页面照实显示。源头没有小时观测的标的（FRED商品现货与官方指数、美债收益率曲线）不进这份文件，页面也不提供该粒度——插值出来的4小时线属于伪造。
 - 每条管道使用独立的`market-data-<dataset>-${{ github.ref }}`并发组，阻止同一任务重叠运行。三条任务不共用一个并发组，避免GitHub Actions在同组已有等待任务时用新任务替换旧等待任务。
 - 工作流只接受分支引用，并在生成前以远端`FETCH_HEAD`快进本地分支；`asset-ranking`因此会读取调度器已确认成功、且刚同步到本地的`companies`快照。
+- `fundamentals`与`companies`共用`apps/companies/`这个目录，但所有权互不重叠：基本面只能动`fundamentals.json`，公司榜的`data.json`、`sp500.json`、历史分片与标志图一个都动不了；反过来公司榜也动不了`fundamentals.json`。同目录、不同所有权正是守卫存在的理由，契约用真实仓库把两个方向都验过。
+- `fundamentals`只有`workflow_dispatch`，**刻意未加入`scheduler.yml`的每日轮转**——第一次真实运行需要人看着跑完并确认产出。但治理要求一条不减：会推回仓库的管道就受同一套守卫，手动触发不是例外。它读的是仓库变量`vars.SEC_CONTACT`（SEC要求在User-Agent里声明联系方式），不是Secret，因为那个值本身要发给SEC、不是密钥；契约仍然禁止这条管道读取任何Secret。
 - `scripts/market_workflow_governance.py`在暂存前扫描已跟踪、已暂存与未跟踪文件。发现越权路径即失败，不能用宽范围`git add`夹带页面或脚本。
 - 守卫通过GitHub步骤输出明确区分有差异与无差异；文件完全一致时跳过提交和推送。`health.json`中真实的最近尝试或状态变化仍属于有效差异，不会为了减少提交而隐瞒管道运行状态。
 - 每次运行的来源健康与路径诊断只保留为14天GitHub Actions Artifact，不把逐次诊断历史、截图或报告文件提交进仓库。仓库只保存页面需要的最新数据与最新健康快照。

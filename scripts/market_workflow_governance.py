@@ -133,6 +133,13 @@ DATASET_RULES = {
         "apps/whats-latest/data.json",
         "apps/whats-latest/health.json",
     )),
+    # 基本面比率：SEC EDGAR XBRL 报表项 + 站内价格现算。它与公司榜共用
+    # apps/companies/ 这个目录，但可写范围只有 fundamentals.json 这一个文件——
+    # 公司榜的 data.json / sp500.json / 历史分片 / 标志图一个都不在范围内。
+    # 反过来公司榜也动不了这个文件。目录相同、所有权不同，正是需要守卫的情形。
+    "fundamentals": DatasetRule((
+        "apps/companies/fundamentals.json",
+    )),
 }
 
 
