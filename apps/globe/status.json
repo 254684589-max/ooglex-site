@@ -1,0 +1,22 @@
+{
+  "updatedAt": null,
+  "frequency": "daily",
+  "status": "pending",
+  "demo": false,
+  "note": "静态数据快照尚未生成。首次由 .github/workflows/globe_space_data.yml 运行后写入（每日 05:20 UTC，也可在 Actions 页面手动触发）。在此之前卫星与航天任务图层没有数据。",
+  "sources": {
+    "celestrak": {
+      "name": "CelesTrak",
+      "url": "https://celestrak.org",
+      "note": "卫星两行根数（TLE）；轨道位置由前端按 SGP4 实时推算，所以每日刷新一次不影响星点实时移动",
+      "attribution": "CelesTrak (celestrak.org), Dr. T.S. Kelso"
+    },
+    "launches": {
+      "name": "Launch Library 2 — The Space Devs",
+      "url": "https://ll.thespacedevs.com",
+      "note": "近 30 天发射记录",
+      "attribution": "Launch Library 2 — The Space Devs"
+    }
+  },
+  "items": {}
+}

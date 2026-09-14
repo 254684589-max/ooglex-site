@@ -145,6 +145,7 @@
   <h1>全球态势地球</h1>
   <span class="en">Global Situational Globe</span>
   <span class="sp"></span>
+  <button type="button" id="btn-lang" aria-pressed="false" title="切换界面语言（应用内文案）">中 / EN</button>
   <button type="button" id="btn-src" aria-expanded="false" aria-controls="sheet">数据来源</button>
 </div>
 
@@ -158,9 +159,14 @@
         全部数据源与许可在「数据来源」里逐条列出。
       </p>
       <p>
-        这是一个纯静态部署，<strong>没有服务端</strong>，因此依赖后端代理的图层
-        （航班、船舶、卫星、交通摄像头、电台等）在本站不可用，打开后会显示为
-        不可用状态，这是预期行为而非故障。
+        这是一个纯静态部署，<strong>没有服务端</strong>。卫星与航天任务通过每日定时生成的
+        同源静态快照供数据（星点位置由前端实时推算）；而实时航班、船舶、交通摄像头、
+        电台等图层依赖后端代理，在本站不可用，打开后会显示为不可用状态，
+        这是预期行为而非故障。具体哪些可用见「数据来源」。
+      </p>
+      <p>
+        应用界面已做中文化（顶栏「中 / EN」可切回英文原版）。
+        <strong>数据来源署名按许可要求保留原文</strong>，地图上的坐标、呼号、机型等读数同样不翻译。
       </p>
       <button class="go" type="button" id="btn-go">进入地球</button>
       <div class="meta" id="gate-meta">
@@ -188,12 +194,21 @@
     <span class="l">ODbL 1.0 · © OpenStreetMap contributors，另据 Open Infrastructure Map · 署名与相同方式共享</span></div>
   <div class="src"><span class="tag on">可用</span><span class="n">Natural Earth 命名地理区域</span><br>
     <span class="l">1046 处陆地 + 292 处海域名称 · 公有领域 · Made with Natural Earth</span></div>
+  <div class="src"><span class="tag on">可用</span><span class="n">CelesTrak 卫星星历（约 840 颗，六个分组）</span><br>
+    <span class="l">美国政府来源数据，无许可限制，请求署名 · CelesTrak (celestrak.org), Dr. T.S. Kelso ·
+    每日抓取 TLE 存为同源静态快照；<strong>轨道位置由前端按 SGP4 实时推算</strong>，所以星点是实时移动的</span>
+    <span class="l" data-status="celestrak">更新时间：读取中…</span></div>
+  <div class="src"><span class="tag on">可用</span><span class="n">航天任务（近 30 天发射记录）</span><br>
+    <span class="l">Launch Library 2 — The Space Devs · 数据可任意形式使用与分享 · 每日刷新
+    · 提供发射事件与时间，不含连续上升段遥测或实时在轨状态</span>
+    <span class="l" data-status="launches">更新时间：读取中…</span></div>
   <div class="src"><span class="tag nc">非商业</span><span class="n">TeleGeography 海底电缆（712 条 + 1917 个登陆点）</span><br>
     <span class="l">CC BY-NC-SA 3.0 · © TeleGeography — submarinecablemap.com · 仅限非商业用途；本站若转作商业用途必须移除该数据集</span></div>
 
   <h3>本站不可用（需服务端代理）</h3>
-  <div class="src"><span class="tag off">不可用</span><span class="n">航班 · 船舶 · 卫星 · 火箭发射 · 活跃火点</span><br>
-    <span class="l">这些图层需要服务端代理转发上游接口并承载缓存与限流，纯静态托管无法提供</span></div>
+  <div class="src"><span class="tag off">不可用</span><span class="n">实时航班 · 船舶（AIS）· 活跃火点</span><br>
+    <span class="l">航班与船舶是秒级实时位置，无法用定时静态快照替代；船舶还需常驻 WebSocket 与私有密钥，
+    火点需要 NASA FIRMS 密钥。三者都需要一个与应用同源的后端</span></div>
   <div class="src"><span class="tag off">不可用</span><span class="n">交通流 · 公共自行车 · 交通摄像头 · 网络电台 · 区域新闻</span><br>
     <span class="l">同上；其中部分上游还要求密钥，而密钥不会写入前端</span></div>
   <div class="src"><span class="tag off">不可用</span><span class="n">Google 真实感三维瓦片 · 地点搜索 · 语音控制</span><br>
@@ -206,6 +221,11 @@
 (function () {
   'use strict';
   var APP_URL = '/apps/globe/app/';
+  var LANG_KEY = 'ooglex.globe.lang';   // appUrl() 依赖它，必须在此处初始化
+  /** 应用地址；英文原版通过 ?lang=en 让中文化层自行短路。 */
+  function appUrl() {
+    return APP_URL + (readLang() === 'en' ? '?lang=en' : '');
+  }
   var stage = document.getElementById('stage');
   var gate = document.getElementById('gate');
   var meta = document.getElementById('gate-meta');
@@ -244,7 +264,7 @@
     }
     loaded = true;
     var f = document.createElement('iframe');
-    f.src = APP_URL;
+    f.src = appUrl();
     f.title = '全球态势地球（三维）';
     f.allow = 'geolocation; microphone; fullscreen';
     f.setAttribute('allowfullscreen', '');
@@ -252,7 +272,30 @@
     gate.hidden = true;
   }
 
-  document.getElementById('btn-go').addEventListener('click', load);
+  document.getElementById('btn-go').addEventListener('click', function () { load(); });
+
+  // ---------------------------------------------------------------- 语言切换
+  // 中文化层是运行时 DOM 文案映射，切回英文只需带上 ?lang=en 重载应用；
+  // 比在页面里维护一份「原文备份」可靠得多。
+  var btnLang = document.getElementById('btn-lang');
+  function readLang() {
+    try { return localStorage.getItem(LANG_KEY) === 'en' ? 'en' : 'zh'; }
+    catch (e) { return 'zh'; }
+  }
+  function paintLang() {
+    var en = readLang() === 'en';
+    btnLang.textContent = en ? 'EN / 中' : '中 / EN';
+    btnLang.setAttribute('aria-pressed', en ? 'true' : 'false');
+    btnLang.title = en ? '当前为英文原版，点击切回中文' : '当前为中文界面，点击切回英文原版';
+  }
+  btnLang.addEventListener('click', function () {
+    var next = readLang() === 'en' ? 'zh' : 'en';
+    try { localStorage.setItem(LANG_KEY, next); } catch (e) { /* 不影响本次切换 */ }
+    paintLang();
+    var f = document.querySelector('.stage iframe');
+    if (f) f.src = appUrl();          // 换 src 即重载，语言随之生效
+  });
+  paintLang();
 
   // 窄屏或用户开了省流量/慢速网络时，先显示说明与体积，由用户决定是否下载；
   // 宽屏直接进入，满足「打开即用」。
@@ -266,6 +309,41 @@
   } else if (!narrow) {
     load();
   }
+
+  // -------------------------------------------------- 静态数据快照的更新时间
+  // 定时工作流（.github/workflows/globe_space_data.yml）生成 status.json。
+  // 仓库规则第 6 条：数据必须显示来源与更新时间。取不到就明确说取不到，不留空白。
+  (function loadStatus() {
+    var slots = document.querySelectorAll('[data-status]');
+    if (!slots.length) return;
+    function paint(text) {
+      for (var i = 0; i < slots.length; i++) slots[i].textContent = text;
+    }
+    fetch('/apps/globe/status.json', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (d) {
+        if (d.status === 'pending' || !d.updatedAt) {
+          paint('更新时间：静态数据快照尚未生成（定时任务首次运行后写入），此前这两个图层没有数据');
+          return;
+        }
+        var when = String(d.updatedAt || '').replace('T', ' ').replace('Z', ' UTC');
+        for (var i = 0; i < slots.length; i++) {
+          var key = slots[i].getAttribute('data-status');
+          var item = (d.items || {});
+          // 卫星有六个分组，任一失败都算「部分」
+          var rows = Object.keys(item).filter(function (k) { return k.indexOf(key) === 0; });
+          var bad = rows.filter(function (k) { return !item[k].ok; });
+          var note = rows.length === 0 ? '无记录'
+            : bad.length === 0 ? '正常'
+            : bad.length === rows.length ? '抓取失败，显示的是上一份有效数据'
+            : '部分失败（' + bad.length + '/' + rows.length + '），其余为上一份有效数据';
+          slots[i].textContent = '更新时间：' + (when || '未知') + ' · 每日刷新 · ' + note;
+        }
+      })
+      .catch(function () {
+        paint('更新时间：读取失败（status.json 不可用，数据快照可能尚未生成）');
+      });
+  })();
 
   // ------------------------------------------------------------ 数据来源面板
   var sheet = document.getElementById('sheet');

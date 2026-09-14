@@ -1,0 +1,67 @@
+name: Globe Space Data
+
+# 为「全球态势地球」生成卫星与航天任务的静态数据快照：
+# 抓取 CelesTrak 六个分组的 TLE（约 840 颗）+ Launch Library 2 近 30 天发射记录，
+# 写到 apps/globe/app/api/ 下客户端已经在请求的路径上，因此不需要改任何客户端代码。
+#
+# 为什么必须走静态快照：站点是 GitHub Pages 纯静态托管，没有服务端，而 CelesTrak
+# 不发 CORS 头，浏览器无法直连（上游源码注释明确写了这一点）。卫星位置由前端
+# satellite.js 按 TLE 用 SGP4 实时推算，所以每日刷新一次，星点在图上依然实时移动。
+#
+# 数据源免密钥。可选 Secret：LL2_API_TOKEN（Launch Library 2 更高额度，不配也能用）。
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 5 * * *'   # 每天 05:20 UTC 刷新
+
+permissions:
+  contents: write
+
+concurrency:
+  group: globe-space-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Test validation logic
+        # 校验逻辑坏了就别去打扰上游 API，也别冒险覆盖已有快照
+        run: python scripts/globe/test_fetch_space_data.py
+
+      - name: Fetch space data
+        env:
+          LL2_API_TOKEN: ${{ secrets.LL2_API_TOKEN }}
+        run: python scripts/globe/fetch_space_data.py
+
+      - name: Commit data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add apps/globe/app/api apps/globe/status.json
+          if git diff --cached --quiet; then
+            echo "数据无变化，跳过提交"
+            exit 0
+          fi
+          git commit -m "data: refresh globe space data"
+          # 数据文件由本工作流独占生成。推送遇远端新提交时 rebase 重试，冲突以本次生成的版本为准
+          # （rebase 中 ours/theirs 语义互换，-X theirs 才是本地工作分支一侧）。
+          for i in 1 2 3 4 5; do
+            if git push origin "HEAD:$GITHUB_REF_NAME"; then
+              echo "已推送"; exit 0
+            fi
+            echo "推送被拒，拉取远端后重试（$i）"
+            git fetch origin "$GITHUB_REF_NAME" || true
+            git rebase -X theirs "origin/$GITHUB_REF_NAME" || git rebase --abort
+            sleep $((i * 3))
+          done
+          echo "推送多次失败"; exit 1

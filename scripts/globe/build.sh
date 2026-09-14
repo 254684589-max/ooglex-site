@@ -74,6 +74,22 @@ log "构建（base=$BASE，不注入密钥）"
 (cd "$SRC_DIR" && GOOGLE_MAPS_API_KEY= CESIUM_ION_TOKEN= \
   npx vite build --base="$BASE" --outDir dist-ooglex)
 
+# ------------------------------------------------------- 4b. 注入中文化层
+# 上游无国际化层，界面文案散落在模板与 JS 里。运行时做一层 DOM 文案映射，
+# 避免分叉源码导致每次同步上游都要重做。实现与三条安全约束见该文件头部注释。
+log "注入界面中文化层"
+cp "$REPO_ROOT/scripts/globe/i18n-zh.js" "$DIST/i18n-zh.js"
+python3 - "$DIST/index.html" "$BASE" <<'PYEOF'
+import sys, pathlib
+page, base = pathlib.Path(sys.argv[1]), sys.argv[2]
+html = page.read_text(encoding='utf-8')
+tag = f'<script src="{base}i18n-zh.js" defer></script>'
+assert tag not in html, '中文化层已注入过'
+assert '</body>' in html, '产物 index.html 缺少 </body>，无法注入'
+page.write_text(html.replace('</body>', f'  {tag}\n</body>', 1), encoding='utf-8')
+print(f'已注入 {tag}')
+PYEOF
+
 # ------------------------------------------- 5. 修正 vite-plugin-cesium 的目录
 # vite-plugin-cesium 把 Cesium 静态资源拷到 <outDir>/<base>/cesium，
 # 而 index.html 引用的是 <base>cesium/。产物根目录下必须是 cesium/。
@@ -102,7 +118,8 @@ bad_dist=$(grep -rhoE "['\"\`=](/models/|/api/|/(logo|pin|mic|location|visual-pr
 [ -z "$bad_dist" ] || { echo "$bad_dist" >&2; die "产物残留写死的根路径引用，子路径下会 404。"; }
 
 # 6c. 关键静态资源必须真实存在于 base 对应位置
-for f in cesium/Cesium.js logo.svg pin.svg mic.svg models/airplane.glb; do
+grep -q 'i18n-zh.js' "$DIST/index.html" || die "index.html 未引用中文化层。"
+for f in cesium/Cesium.js logo.svg pin.svg mic.svg models/airplane.glb i18n-zh.js; do
   [ -f "$DIST/$f" ] || die "产物缺少被引用的资源 $f。"
 done
 
@@ -115,9 +132,22 @@ echo "通过。大小 $(du -sh "$DIST" | cut -f1)，文件数 $(find "$DIST" -ty
 
 # ------------------------------------------------------------ 7. 输出到仓库
 log "写入 $OUT_DIR"
+# api/ 下是由 .github/workflows/globe_space_data.yml 定时生成的静态数据快照
+# （卫星 TLE、航天任务），不属于构建产物，重建时必须保住。
+API_KEEP=""
+if [ -d "$OUT_DIR/api" ]; then
+  API_KEEP="$WORK_DIR/api-keep"
+  rm -rf "$API_KEEP"
+  cp -r "$OUT_DIR/api" "$API_KEEP"
+  echo "已暂存现有静态数据 api/（$(find "$API_KEEP" -type f | wc -l) 个文件）"
+fi
 rm -rf "$OUT_DIR"
 mkdir -p "$OUT_DIR"
 cp -r "$DIST"/. "$OUT_DIR"/
+if [ -n "$API_KEEP" ]; then
+  cp -r "$API_KEEP" "$OUT_DIR/api"
+  echo "已恢复静态数据 api/"
+fi
 cat > "$OUT_DIR/BUILD_INFO.json" <<INFO
 {
   "upstream": "$UPSTREAM_URL",

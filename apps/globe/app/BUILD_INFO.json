@@ -3,7 +3,7 @@
   "upstreamRef": "844c25212c06cfa26ff6c0f3cb82bc9c325f4a85",
   "base": "/apps/globe/app/",
   "commercialMode": 0,
-  "builtAt": "2026-09-14T11:31:58Z",
+  "builtAt": "2026-09-14T14:38:21Z",
   "keysInjected": false,
   "note": "由 scripts/globe/build.sh 生成，勿手改。数据来源与许可见 docs/GLOBE_INTEGRATION.md。"
 }
