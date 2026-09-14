@@ -39,10 +39,16 @@ jobs:
         run: |
           if [ -z "$SEC_CONTACT" ]; then
             echo "::error::未设置仓库变量 SEC_CONTACT。SEC 要求自动化访问在 User-Agent 里声明联系方式。"
-            echo "::error::设置位置：Settings → Secrets and variables → Actions → Variables 页"
-            echo "::error::  → 下半部分【Repository variables】那一栏的绿色按钮 New repository variable。"
-            echo "::error::注意不是上半部分的【Environment variables】：本工作流没有声明 environment:，"
-            echo "::error::读的是 vars.SEC_CONTACT，只认仓库级变量，填进环境变量那一栏这里读不到。"
+            echo "::error::直接打开这个地址（别靠侧边栏点，四个子项长得一样）："
+            echo "::error::  https://github.com/$GITHUB_REPOSITORY/settings/variables/actions"
+            echo "::error::两处最容易点错，都确认一下："
+            echo "::error::  1) 必须是 Secrets and variables 下的【Actions】那一项。"
+            echo "::error::     同一个子菜单里的 Agents / Codespaces / Dependabot 是四个互不相通的"
+            echo "::error::     变量仓库 —— Agents 那个是给 Copilot 编码代理用的，工作流读不到。"
+            echo "::error::     认页面标题：要的是 Actions secrets and variables，"
+            echo "::error::     写着 Agents secrets and variables 或 for the Copilot cloud agent 的就是走错了。"
+            echo "::error::  2) 在那一页里填【Repository variables】那一栏，不是上面的 Environment variables"
+            echo "::error::     —— 本工作流没声明 environment:，读的是 vars.SEC_CONTACT，只认仓库级变量。"
             echo "::error::Name 必须正好是 SEC_CONTACT（全大写加下划线）；Value 填你愿意对 SEC 公开的联系邮箱。"
             echo "::error::它是明文变量而不是 Secret —— 因为这个值本来就要发给 SEC，不是密钥。"
             exit 1

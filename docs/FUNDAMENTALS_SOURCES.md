@@ -216,8 +216,13 @@ rebase 重试、诊断留 14 天。**可写范围只有 `apps/companies/fundamen
 
 ### 三件需要你做的事
 
-1. **设一个仓库变量 `SEC_CONTACT`。** Settings → Secrets and variables →
-   Actions → Variables，**下半部分「Repository variables」那一栏**（不是上半部分的
+1. **设一个仓库变量 `SEC_CONTACT`。** 直接开
+   `https://github.com/<owner>/<repo>/settings/variables/actions`，**别靠侧边栏点** ——
+   `Secrets and variables` 下面的 Actions / Agents / Codespaces / Dependabot 是**四个
+   互不相通的变量仓库**，长得一模一样。只有 **Actions** 那一个工作流读得到；Agents
+   那个是给 Copilot 编码代理用的（页面标题会写 `Agents secrets and variables`，
+   或者 `for the Copilot cloud agent`，看到这两句就是走错了）。
+   然后在那一页填 **下半部分「Repository variables」那一栏**（不是上半部分的
    「Environment variables」—— 本工作流没声明 `environment:`，读的是 `vars.SEC_CONTACT`，
    只认仓库级变量）。值填你愿意对 SEC 公开的联系邮箱。**它是明文变量而不是 Secret，
    因为这个值本来就要发给 SEC、不是密钥**；有协作者权限的人都看得到，所以要是不想
