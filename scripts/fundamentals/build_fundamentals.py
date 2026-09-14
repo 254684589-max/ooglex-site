@@ -78,6 +78,25 @@ def ratio(numer, denom, *, positive_denom_only=True):
     return v
 
 
+def bail(reason: str, prev) -> int:
+    """闸门统一出口：说清原因、保留上一份、给出正确的退出码。
+
+    原因同时用 `::error::` 打出来 —— 否则它只在步骤日志里，GitHub 的运行摘要
+    只显示一句「Process completed with exit code 1」，等于把真正的原因藏起来。
+    """
+    print(f"::error::{reason}")
+    print(reason, file=sys.stderr)
+    if prev:
+        msg = "保留上一份 fundamentals.json 不覆盖（宁可数据旧，不用半份数据洗掉好数据）"
+        print(f"::error::{msg}")
+        print(msg, file=sys.stderr)
+        return 0
+    msg = "且没有上一份可保留 —— 不写任何文件"
+    print(f"::error::{msg}")
+    print(msg, file=sys.stderr)
+    return 1
+
+
 def main() -> int:
     comp = load_json(COMPANIES)
     if not comp or not isinstance(comp.get("companies"), list):
@@ -95,22 +114,18 @@ def main() -> int:
     try:
         got = adapter_fetch(symbols, year=year, log=print)
     except AdapterError as exc:
-        print(f"取数失败：{exc}", file=sys.stderr)
-        if prev:
-            print("保留上一份 fundamentals.json 不覆盖", file=sys.stderr)
-            return 0
-        print("且没有上一份可保留 —— 不写任何文件", file=sys.stderr)
-        return 1
+        return bail(f"取数失败：{exc}", prev)
+    except Exception as exc:
+        # 兜底：adapter 本该把一切收敛成 AdapterError，但万一漏了一个异常型，
+        # 这里也不能让它带着 traceback 崩掉 —— 那样就绕过了「保留上一份」这条
+        # 保护路径。第一版的 UnicodeDecodeError 正是这样漏出去的。
+        return bail(f"取数时抛出未预期的 {type(exc).__name__}：{exc}", prev)
 
     facts = got["rows"]
     rate = got["matched"] / max(got["requested"], 1)
     print(f"CIK 命中率 {rate:.1%}（{got['matched']}/{got['requested']}）")
     if rate < MIN_MATCH_RATE:
-        print(f"命中率低于 {MIN_MATCH_RATE:.0%}，疑似限流或结构变化", file=sys.stderr)
-        if prev:
-            print("保留上一份不覆盖", file=sys.stderr)
-            return 0
-        return 1
+        return bail(f"CIK 命中率 {rate:.1%} 低于下限 {MIN_MATCH_RATE:.0%}，疑似限流或结构变化", prev)
 
     out_rows, with_ratio, skipped = [], 0, {}
 
@@ -178,11 +193,7 @@ def main() -> int:
 
     print(f"算出至少一个比率的 {with_ratio} 家；跳过原因：{skipped}")
     if with_ratio < MIN_RATIO_ROWS:
-        print(f"能算出比率的公司不足 {MIN_RATIO_ROWS} 家", file=sys.stderr)
-        if prev:
-            print("保留上一份不覆盖", file=sys.stderr)
-            return 0
-        return 1
+        return bail(f"能算出比率的只有 {with_ratio} 家，不足下限 {MIN_RATIO_ROWS} 家", prev)
 
     payload = {
         "updatedAt": now.isoformat(timespec="seconds"),

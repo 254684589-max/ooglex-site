@@ -18,6 +18,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -81,8 +82,160 @@ def check_source_record():
                     f"{f.name} 里出现了具体邮箱——联系方式必须由 SEC_CONTACT 提供，不写进仓库")
 
 
+def check_adapter_decoding():
+    """适配器的解码与异常收敛 —— 用桩把 urlopen 换掉，不需要外网。
+
+    这一节是为一次真实事故加的：第一版在请求头里发了
+    `Accept-Encoding: gzip, deflate` 却没写解压（`urllib` 不像 requests
+    那样自动解压），SEC 照头返回 gzip 字节流，`json.loads` 抛
+    `UnicodeDecodeError: 'utf-8' codec can't decode byte 0x8b in position 1`。
+
+    两条教训各对应一组断言：
+      1. **别发自己没实现的头。** 现在只声明 gzip（deflate 有两种封装要猜），
+         并且除了看 Content-Encoding 还嗅一次魔数（过代理时头可能被剥掉）。
+      2. **一切失败必须收敛成 AdapterError。** 上层只捕获 AdapterError 才会走
+         「保留上一份 JSON 不覆盖」那条路；漏出别的异常型，脚本会带 traceback
+         崩掉，那条保护路径就被绕过了 —— 当时正是这样绕过去的。
+
+    这类 bug 在没有外网的开发容器里对所有既有检查都是隐形的，所以必须用桩钉住。
+    """
+    import gzip as _gzip
+    import importlib.util
+    import json as _json
+
+    ad = ROOT / "scripts" / "fundamentals" / "adapter_sec.py"
+    require(ad.is_file(), "缺少 scripts/fundamentals/adapter_sec.py")
+    if not ad.is_file():
+        return
+    src = ad.read_text(encoding="utf-8")
+    # 只看 Accept-Encoding 这一行的**值**：整文件搜 "deflate" 会被注释里
+    # 「为什么去掉 deflate」那句话误伤 —— 实测就误报过一次。
+    hdr = re.search(r'"Accept-Encoding"\s*:\s*"([^"]*)"', src)
+    require(hdr is not None, "adapter 里找不到 Accept-Encoding 头，解析可能已失效")
+    if hdr:
+        require("deflate" not in hdr.group(1),
+                f"请求头声明了 deflate（实际 {hdr.group(1)!r}）—— 它有 zlib 包装与裸流"
+                "两种封装，而解压只实现了 gzip。只声明自己处理得了的编码")
+    require("gzip.decompress" in src, "必须真的解压 gzip，不能只在头里声明")
+    require("GZIP_MAGIC" in src or "x1f" in src,
+            "除了 Content-Encoding 还要嗅魔数：过代理时头可能被剥掉而正文仍是压缩的")
+
+    spec = importlib.util.spec_from_file_location("adapter_sec_probe", ad)
+    m = importlib.util.module_from_spec(spec)
+    sys.modules["adapter_sec_probe"] = m
+    import os as _os
+    keep = _os.environ.get("SEC_CONTACT")
+    _os.environ["SEC_CONTACT"] = "contract-test@example.invalid"
+    try:
+        spec.loader.exec_module(m)
+        m.MIN_INTERVAL = 0
+
+        class _Resp:
+            def __init__(self, body, headers):
+                self._b, self.headers = body, headers
+            def read(self):
+                return self._b
+            def __enter__(self):
+                return self
+            def __exit__(self, *a):
+                return False
+
+        def stub(body, headers):
+            m.urlopen = lambda req, timeout=None: _Resp(body, headers)
+
+        URL = "https://data.sec.gov/contract-probe.json"
+        want = {"0": {"cik_str": 320193, "ticker": "AAPL", "title": "Apple Inc."}}
+        plain = _json.dumps(want).encode()
+        gz = _gzip.compress(plain)
+
+        def decodes(body, headers, label):
+            stub(body, headers)
+            try:
+                require(m._get(URL) == want, f"{label}：解出的内容不对")
+            except Exception as exc:
+                require(False, f"{label}：抛了 {type(exc).__name__}: {exc}")
+
+        decodes(gz, {"Content-Encoding": "gzip"}, "gzip 正文 + gzip 头（SEC 实际返回的情形）")
+        decodes(gz, {}, "gzip 正文但头被剥掉，须靠魔数救回")
+        decodes(plain, {}, "未压缩正文不得被误当成压缩流")
+
+        def is_adapter_error(body, headers, label):
+            stub(body, headers)
+            try:
+                m._get(URL)
+                require(False, f"{label}：该抛却没抛")
+            except m.AdapterError:
+                require(True, "")
+            except Exception as exc:
+                require(False, f"{label}：漏出了 {type(exc).__name__}，"
+                               "非 AdapterError 会绕过「保留上一份」的保护路径")
+
+        is_adapter_error(b"\x1f\x8b" + b"garbage", {"Content-Encoding": "gzip"},
+                         "声明 gzip 但正文坏掉")
+        is_adapter_error(b"\xff\xfe\x00bad", {}, "非 UTF-8 的非压缩垃圾")
+
+        # 上面两条都命中了显式的 handler（gzip 解不开 / UnicodeDecodeError），
+        # 打不到最后那个 `except Exception` 兜底。这一条专打兜底：让解析阶段
+        # 抛一个谁都没预料到的异常型，它也必须变成 AdapterError。
+        # 兜底漏一个异常型，「保留上一份 JSON」那条保护路径就会被绕过。
+        import types as _types
+        real_json = m.json
+        m.json = _types.SimpleNamespace(
+            loads=lambda b: (_ for _ in ()).throw(RuntimeError("模拟未预期的解析异常")),
+            JSONDecodeError=real_json.JSONDecodeError)
+        try:
+            is_adapter_error(plain, {}, "解析阶段抛出未预期的异常型（专打兜底分支）")
+        finally:
+            m.json = real_json
+
+        seen = {}
+        m.urlopen = lambda req, timeout=None: (seen.update(req.headers), _Resp(plain, {}))[1]
+        m._get(URL)
+        require(seen.get("Accept-encoding") == "gzip",
+                f"Accept-Encoding 应只声明 gzip，实际 {seen.get('Accept-encoding')!r}")
+        require("contract-test@example.invalid" in seen.get("User-agent", ""),
+                "User-Agent 必须带 SEC_CONTACT 提供的联系方式")
+
+        # 没设 SEC_CONTACT 就不许发请求
+        _os.environ.pop("SEC_CONTACT", None)
+        try:
+            m._contact()
+            require(False, "没设 SEC_CONTACT 时 _contact() 应当拒绝")
+        except m.AdapterError:
+            require(True, "")
+    finally:
+        if keep is None:
+            _os.environ.pop("SEC_CONTACT", None)
+        else:
+            _os.environ["SEC_CONTACT"] = keep
+
+
+def check_bail_path():
+    """三处闸门必须走同一个出口，且把原因写进运行摘要。"""
+    b = ROOT / "scripts" / "fundamentals" / "build_fundamentals.py"
+    require(b.is_file(), "缺少 build_fundamentals.py")
+    if not b.is_file():
+        return
+    src = b.read_text(encoding="utf-8")
+    require("def bail(" in src, "三处闸门应收敛到一个 bail() 出口")
+    require(src.count("bail(") >= 4, f"闸门没有全部走 bail()（只找到 {src.count('bail(')} 处）")
+    # 不能只查「文件里出现过 ::error::」—— bail() 里有三处，删掉报原因那一处
+    # 其余两处仍在，子串还在，断言就假通过了（这种松断言今天已踩过三次）。
+    require('print(f"::error::{reason}")' in src,
+            "闸门的 reason 必须自己用 ::error:: 打出来 —— 否则 GitHub 运行摘要里只有"
+            "「Process completed with exit code 1」，等于把真正的原因藏起来")
+    require(src.count("::error::") >= 3,
+            f"bail() 三条输出（原因／保留上一份／没有上一份）都应进运行摘要，"
+            f"当前只有 {src.count('::error::')} 处")
+    require("except Exception as exc" in src,
+            "adapter 之外万一漏出别的异常型，也不能带 traceback 崩掉、"
+            "绕过「保留上一份」的保护路径")
+
+
 def main() -> int:
     check_source_record()
+    check_adapter_decoding()
+    check_bail_path()
     if not PATH.is_file():
         print("apps/companies/fundamentals.json 还不存在 —— 管道是手动触发的，"
               "owner 尚未跑第一次。数据部分跳过（不算失败），选源记录仍已校验。")

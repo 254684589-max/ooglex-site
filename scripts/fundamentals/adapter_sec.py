@@ -39,6 +39,7 @@ SEC 只有向它申报的公司。台积电、三星这类非美申报人（或�
 """
 from __future__ import annotations
 
+import gzip
 import json
 import os
 import time
@@ -92,29 +93,78 @@ def _contact() -> str:
 _last_call = [0.0]
 
 
+GZIP_MAGIC = b"\x1f\x8b"
+
+
+def _decompress(raw: bytes, encoding: str) -> bytes:
+    """按 Content-Encoding 解压。
+
+    **这里踩过一次真坑，记下来。** 第一版在请求头里发了
+    `Accept-Encoding: gzip, deflate`，却没写解压 —— 而 `urllib` **不会**自动解压
+    （`requests` 会，`urllib` 不会）。SEC 照着这个头返回了 gzip 字节流，
+    `json.loads` 拿到 `\x1f\x8b...` 当场抛 UnicodeDecodeError：
+    `'utf-8' codec can't decode byte 0x8b in position 1`。
+    **发了一个自己没实现的头，就是在要求对方给你处理不了的东西。**
+
+    两处稳妥做法：
+      1. 只声明 gzip，不声明 deflate —— deflate 有 zlib 包装与裸流两种，
+         服务器给哪种要猜，而 gzip 只有一种，没有歧义。
+      2. 除了看 Content-Encoding，**再嗅一次魔数**：经过代理或某些网关时
+         头可能被剥掉而正文仍是压缩的。两条任一命中就解压。
+    """
+    if "gzip" in encoding or raw[:2] == GZIP_MAGIC:
+        try:
+            return gzip.decompress(raw)
+        except (OSError, EOFError) as exc:
+            raise AdapterError(f"响应声明是 gzip 但解不开：{exc}") from exc
+    return raw
+
+
 def _get(url: str) -> Any:
-    """带 User-Agent 与限速的 GET。非 2xx、超时、JSON 解析失败都抛 AdapterError。"""
+    """带 User-Agent 与限速的 GET。
+
+    任何取数或解码失败都收敛成 AdapterError —— 这一点是硬要求：上层只捕获
+    AdapterError 才会走「保留上一份 JSON 不覆盖」那条路。漏出去一个别的异常型，
+    整个脚本会带着 traceback 崩掉，**那条保护路径就被绕过了**（第一版的
+    UnicodeDecodeError 正是这样漏出去的）。所以这里兜底捕获 Exception。
+    """
     wait = MIN_INTERVAL - (time.monotonic() - _last_call[0])
     if wait > 0:
         time.sleep(wait)
-    req = Request(url, headers={
-        "User-Agent": f"ooglex.com fundamentals pipeline ({_contact()})",
-        "Accept": "application/json",
-        "Accept-Encoding": "gzip, deflate",
-    })
     try:
+        req = Request(url, headers={
+            "User-Agent": f"ooglex.com fundamentals pipeline ({_contact()})",
+            "Accept": "application/json",
+            # 只声明 gzip：frames 的响应有几 MB，压缩值得留着；deflate 去掉是因为
+            # 它有两种封装、要猜，而下面的 _decompress 只保证 gzip 这一种。
+            "Accept-Encoding": "gzip",
+        })
         with urlopen(req, timeout=TIMEOUT) as resp:
             raw = resp.read()
+            enc = (resp.headers.get("Content-Encoding") or "").lower()
     except HTTPError as exc:
         raise AdapterError(f"{url} 返回 HTTP {exc.code}") from exc
     except URLError as exc:
         raise AdapterError(f"{url} 请求失败：{exc.reason}") from exc
+    except Exception as exc:            # 连 Request() 构造在内，一律不许漏出去
+        raise AdapterError(f"{url} 请求阶段出错（{type(exc).__name__}）：{exc}") from exc
     finally:
         _last_call[0] = time.monotonic()
+
     try:
+        raw = _decompress(raw, enc)
         return json.loads(raw)
+    except AdapterError:
+        raise                                     # 已经是想要的类型，原样上抛
     except json.JSONDecodeError as exc:
         raise AdapterError(f"{url} 返回的不是合法 JSON：{exc}") from exc
+    except UnicodeDecodeError as exc:
+        raise AdapterError(
+            f"{url} 的响应不是 UTF-8 文本（前两字节 {raw[:2]!r}，"
+            f"Content-Encoding={enc or '空'}）——可能是没解开的压缩流：{exc}"
+        ) from exc
+    except Exception as exc:                      # 兜底：绝不让非 AdapterError 漏出去
+        raise AdapterError(f"{url} 解析响应时出错（{type(exc).__name__}）：{exc}") from exc
 
 
 def ticker_to_cik() -> dict[str, int]:

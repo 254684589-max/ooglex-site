@@ -243,6 +243,33 @@ rebase 重试、诊断留 14 天。**可写范围只有 `apps/companies/fundamen
 因为这个容器没有外网。契约里有一条专门盯着这个字段：**谁把它改成 `verified`，
 校验就失败**，除非真的去核过并同步更新记录。
 
+### 第一次真实运行踩到的坑（记下来，换源时同样适用）
+
+第三次触发才过了 `SEC_CONTACT` 这一关，然后崩在
+`UnicodeDecodeError: 'utf-8' codec can't decode byte 0x8b in position 1`。
+
+`0x8b` 在第 1 位就是 gzip 的魔数。原因是请求头里发了
+`Accept-Encoding: gzip, deflate` 却没写解压 —— **`urllib` 不像 `requests`
+那样自动解压**。**发了一个自己没实现的头，就是在要求对方给你处理不了的东西。**
+
+这次失败反而证明最关键的一环是通的：**SEC 真的返回了 200 和真实数据**，
+User-Agent 格式被接受、没被限流、没有 403。卡的只是本地解码。
+
+两条修法都选了「不猜」的那个：只声明 `gzip`（deflate 有 zlib 包装与裸流两种，
+要猜；gzip 只有一种），并且除了读 `Content-Encoding` **再嗅一次魔数**（过代理时
+头可能被剥掉而正文仍是压缩的）。
+
+**更该记住的是第二个问题**：`UnicodeDecodeError` 不是 `AdapterError`，
+所以它绕过了「保留上一份 JSON 不覆盖」那条保护路径，直接崩掉。
+**上层只捕获 `AdapterError`，适配器就必须把一切失败都收敛成 `AdapterError`** ——
+漏一个异常型，保护闸就形同不存在。换源时这条比 gzip 那条更要紧。
+
+闸门原因现在一律用 `::error::` 打出来：只写 stderr 的话，GitHub 运行摘要里
+只剩「Process completed with exit code 1」，等于把原因藏起来。
+
+这类 bug 在没有外网的开发容器里对所有校验器都是隐形的，所以
+`validate_fundamentals.py` 里加了**用桩替换 `urlopen`** 的离线契约把它钉住。
+
 ### 前端还没接
 
 `fundamentals.json` 还不存在（管道没跑过），所以 FA / RV / EQS 那几页**一个都没
