@@ -18317,7 +18317,7 @@
       "entityType": "other",
       "exchange": "NYSE",
       "filerCategory": "Accelerated filer",
-      "filesFormSd": false,
+      "filesFormSd": true,
       "lastAnnual": "2026-03-26",
       "name": "Nexa Resources S.A.",
       "offshoreIncorporation": false,
@@ -30313,11 +30313,11 @@
   },
   "contractVersion": 1,
   "coverage": {
-    "bothAnnualAndFormSd": 150,
+    "bothAnnualAndFormSd": 151,
     "foreignAnnualFilers": 1223,
-    "formSdFilers": 1039,
+    "formSdFilers": 1042,
     "published": 1194,
-    "publishedFilesFormSd": 150,
+    "publishedFilesFormSd": 151,
     "skippedNoTicker": 29,
     "skippedTickerCollision": 0,
     "submissionsFailed": 0,
@@ -30328,31 +30328,31 @@
   "note": "在美上市的外国私人发行人（报 20-F／40-F）全体，不再限于同时报 Form SD 的那一批。**多收的这些只增加节点、不增加关系边**——Form SD 是冶炼厂边的唯一来源，不报 SD 的公司没有边是规则不适用，不是抽取失败，逐家由 filesFormSd 标出。因此公司家数变多不表示关系覆盖变好，页面必须把两者分开说。按 CIK 去重，主代码按交易所优先级选定，与标普池撞码的一律跳过而不是覆盖。",
   "quarters": [
     {
-      "bytes": 3109095,
+      "bytes": 3151882,
       "gzip": true,
       "quarter": "2026QTR3",
-      "rows": 248146,
+      "rows": 251817,
       "unparsed": 7
     },
     {
-      "bytes": 4272410,
+      "bytes": 4272368,
       "gzip": true,
       "quarter": "2026QTR2",
-      "rows": 353168,
+      "rows": 353223,
       "unparsed": 7
     },
     {
-      "bytes": 4439767,
+      "bytes": 4439917,
       "gzip": true,
       "quarter": "2026QTR1",
-      "rows": 370055,
+      "rows": 370082,
       "unparsed": 7
     },
     {
-      "bytes": 3399984,
+      "bytes": 3400063,
       "gzip": true,
       "quarter": "2025QTR4",
-      "rows": 276466,
+      "rows": 276542,
       "unparsed": 7
     }
   ],
@@ -30674,5 +30674,5 @@
       "stateOfIncorporationDescription": ""
     }
   },
-  "updatedAt": "2026-09-12T01:28:35Z"
+  "updatedAt": "2026-09-13T23:38:26Z"
 }

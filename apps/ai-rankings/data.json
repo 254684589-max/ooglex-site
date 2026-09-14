@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-09-12T21:24:42Z",
-  "asOf": "2026-09-12",
+  "updatedAt": "2026-09-13T21:38:58Z",
+  "asOf": "2026-09-13",
   "seed": false,
   "note": "数据每日自动抓取自 LMArena / LiveBench / Artificial Analysis 公开榜单；各榜口径不同，不能跨榜直接比较绝对值。仅供参考。",
   "sources": {
@@ -55,6 +55,19 @@
       "aa": 59.9,
       "ctx": "1M",
       "price": 20.0
+    },
+    {
+      "id": "muse-spark-1-3",
+      "name": "Muse Spark 1.3",
+      "org": "Meta",
+      "orgCn": "Meta",
+      "flag": "🇺🇸",
+      "open": false,
+      "arena": 1496,
+      "livebench": 82.4,
+      "aa": null,
+      "ctx": null,
+      "price": null
     },
     {
       "id": "gpt-6-astra",
@@ -549,19 +562,6 @@
       "aa": 44.0,
       "ctx": "200K",
       "price": 2.0
-    },
-    {
-      "id": "claude-fable-5-1-effort",
-      "name": "Claude Fable 5.1 Max Effort",
-      "org": "Anthropic",
-      "orgCn": "Anthropic",
-      "flag": "🇺🇸",
-      "open": false,
-      "arena": null,
-      "livebench": 83.8,
-      "aa": null,
-      "ctx": null,
-      "price": null
     }
   ]
 }
