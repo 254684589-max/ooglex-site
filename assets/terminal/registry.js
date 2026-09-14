@@ -47,10 +47,12 @@
     { mn:"CMDT", zh:"商品行情", en:"Commodities", cat:"quote", status:"live",
       href:"/apps/markets/", data:["asset-tracker/data.json","commodities/data.json"],
       note:"商品报价在全球市场行情页的六大品类里（品类切换是页内筛选，没有独立锚点）；apps/commodities/ 目前只有数据文件，还没有独立页面" },
-    { mn:"BOND", zh:"主权债收益率", en:"Sovereign Yields", cat:"quote", status:"planned",
-      href:null, data:["bonds/data.json"],
-      need:"一个展示页（数据已就绪：apps/bonds/data.json 有 35 国 10 年期）",
-      blocked:"apps/bonds/ 目前只有数据文件，没有 index.html —— 数据在、页面没建" },
+    { mn:"BOND", zh:"主权债收益率", en:"Sovereign Yields", cat:"quote", status:"live",
+      href:"/apps/markets/", data:["bonds/data.json","bonds/history.json"],
+      note:"35 国 10 年期在全球市场行情页的债券品类里，按地区分组（美洲4/欧洲25/亚洲3/大洋洲2/非洲1），"
+        + "每行可点进自己的历史图；34 条月频、1 条日频，涨跌是「较前一观测」的基点变化不是当日。"
+        + "apps/bonds/ 目前只有数据文件，还没有独立页面 —— 品类切换是页内筛选，没有独立锚点。"
+        + "国与国之间的利差在监控页 SOVR 面板" },
     { mn:"HEAT", zh:"标普热力图", en:"S&P Heatmap", cat:"quote", status:"live",
       href:"/apps/heatmap/", data:["companies/sp500.json"], note:"按板块与市值分块着色" },
 
@@ -78,6 +80,10 @@
       note:"央行决议 / CPI / 非农；逐条标注是否已回填实际值" },
 
     /* ── 分析研究 ──────────────────────────────────────────────────────── */
+    { mn:"SOVR", zh:"主权利差", en:"Sovereign Spreads", cat:"anly", status:"live",
+      href:"/apps/finance-terminal/#p-sovr", data:["bonds/data.json","bonds/history.json"],
+      note:"各国十年期相对任选基准国的利差（基点），外加当前利差最宽四国的月频利差历史（400 期）。"
+        + "只在与基准同一个数据日的国家之间算，跨期的逐条摘出；收益率是水平值，差值只报基点不报百分比" },
     { mn:"MON",  zh:"终端监控", en:"Monitor", cat:"anly", status:"live",
       href:"/apps/finance-terminal/", data:["站内 12 个 JSON"],
       note:"终端首页：一屏挂 13 个功能面板，跨品类总览" },

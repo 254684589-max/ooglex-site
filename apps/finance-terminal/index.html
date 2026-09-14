@@ -148,6 +148,29 @@
     </div>
     <footer data-src="curve">—</footer>
   </section>
+  <section class="t-panel w2 h2" data-fn="SOVR 主权利差 SOVEREIGN SPREADS" id="p-sovr">
+    <header><span class="mn">SOVR</span><h3>主权利差 Sovereign Spreads</h3><span class="sub" data-sub="sovr">—</span></header>
+    <div class="bd">
+      <div class="t-subtabs" role="group" aria-label="主权利差视图">
+        <button type="button" data-sv="cs" aria-pressed="true">相对基准</button>
+        <button type="button" data-sv="hist" aria-pressed="false">利差历史</button>
+      </div>
+      <div class="t-filter">
+        <select id="sovr-bench" aria-label="基准国" style="flex:1 1 auto"></select>
+      </div>
+      <div id="sovr-cs">
+        <table class="t-tbl" id="tbl-sovr"><thead><tr>
+          <th>国家</th><th>收益率</th><th>利差</th><th class="t-col-x">较前一观测</th><th class="t-col-x">数据日</th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+      <div id="sovr-hist" hidden>
+        <div class="t-chart"><svg id="svg-sovr" viewBox="0 0 620 190" preserveAspectRatio="none" role="img" aria-label="主权利差历史"></svg></div>
+        <div class="t-legend" id="lg-sovr"></div>
+      </div>
+      <p class="t-note" id="n-sovr"></p>
+    </div>
+    <footer data-src="sovr">—</footer>
+  </section>
   <section class="t-panel w2" data-fn="GEO 地缘风险 RISK" id="p-geo">
     <header><span class="mn">RISK</span><h3>地缘风险定价 Geopolitical Risk</h3><span class="sub" data-sub="geo">—</span></header>
     <div class="bd">
@@ -243,12 +266,12 @@
   <span class="t-right">数据仅供研究参考，不构成投资建议</span>
 </div>
 
-<script src="/assets/terminal/core.js?v=423af4b7"></script>
-<script src="/assets/terminal/registry.js?v=1d42d994"></script>
+<script src="/assets/terminal/core.js?v=261b5761"></script>
+<script src="/assets/terminal/registry.js?v=34eda813"></script>
 <script src="/assets/terminal/chrome.js?v=04b6a585"></script>
 <script src="/assets/terminal/behavior.js?v=00335003"></script>
-<script src="/assets/terminal/overview.js?v=62d13bbf"></script>
-<script src="/assets/terminal/render.js?v=09660159"></script>
+<script src="/assets/terminal/overview.js?v=c9d69bdc"></script>
+<script src="/assets/terminal/render.js?v=24fdb399"></script>
 <script>
 /* 终端监控首页装配：只声明「哪个面板用哪个渲染器」，口径与算法都在 /assets/terminal/。 */
 (function () {
@@ -479,6 +502,148 @@
     set('[data-src="curve"]', M.rates.error ? ("读取失败：" + M.rates.error)
       : "来源 " + (M.rates.source || "—") + " · 30Y-5Y 由曲线现算 · 历史窗口 " +
         (M.rates.history ? M.rates.history.dates.length + " 个交易日" : "不可用"));
+
+    /* 主权利差两视图：相对基准的横截面 / 利差历史。
+       站内那 35 条收益率早就在「全球市场行情」债券品类里按地区列全了，每行还能点进
+       自己的历史图 —— 这里**不重复那张水平表**，只补站内确实没有的一件事：国与国
+       之间的利差。口径由 core.spreadCrossSection / spreadSeries 给，页面不另算。 */
+    (function () {
+      var S = M.sovereign || {}, rows = S.rows || [];
+      var selBench = $("#sovr-bench"), svg = $("#svg-sovr");
+      if (S.error || !rows.length) {
+        set("#n-sovr", S.error ? ("各国主权债收益率读取失败：" + S.error + "。不用旧值或估算顶替。")
+                              : "这一轮没有可用的主权债收益率行。");
+        set('[data-sub="sovr"]', "未加载");
+        set('[data-src="sovr"]', S.error ? ("读取失败：" + S.error) : "无可用行");
+        return;
+      }
+      /* 基准默认德国：欧元区定价基准，且月频历史 398 期无内部空洞。取不到就退到第一条。 */
+      var DEFAULT_BENCH = "IRLTLT01DEM156N";
+      var has = rows.some(function (r) { return r.id === DEFAULT_BENCH; });
+      var benchId = has ? DEFAULT_BENCH : rows[0].id;
+      rows.slice().sort(function (a, b) { return (a.name || "").localeCompare(b.name || "", "zh"); })
+        .forEach(function (r) {
+          var o = document.createElement("option");
+          o.value = r.id;
+          o.textContent = "基准 " + r.name + (r.asOf ? "（" + r.asOf + "）" : "");
+          selBench.appendChild(o);
+        });
+      selBench.value = benchId;
+
+      function csRows() { return C.spreadCrossSection(rows, selBench.value); }
+
+      function drawCS() {
+        var cs = csRows();
+        var tb = $("#tbl-sovr tbody");
+        tb.textContent = "";
+        if (!cs.ok) { set("#n-sovr", cs.reason + "。换一个基准再看。"); return; }
+        /* 链接标记一律由 render.nameCell 产出（契约拦着不许在页面里手拼 <a>），
+           数据来的文本全部过 esc —— 国名来自站内 data.json，仍按不可信文本处理。 */
+        tb.innerHTML = cs.rows.map(function (x) {
+          var r = x.row;
+          var badge = r.stale
+            ? '<span class="t-chip" title="本轮取数失败，这一行是上一轮的值（上游标 stale）">沿用上次</span>'
+            : "";
+          /* 利差带方向文字（高／低），不只靠正负号与颜色 */
+          var dir = x.bp > 0 ? "高" : x.bp < 0 ? "低" : "平";
+          var sp = (x.bp >= 0 ? "+" : "−") + Math.abs(x.bp).toFixed(0) + "bp " + dir;
+          return "<tr><th>" + R.nameCell(esc(r.name), r.detail, r.name + " 收益率历史") + badge + "</th>"
+            + "<td>" + (isNum(r.price) ? esc(r.price.toFixed(2)) + "%" : "—") + "</td>"
+            + '<td class="' + fmt.cls(x.bp) + '">' + esc(sp) + "</td>"
+            + '<td class="t-col-x ' + fmt.cls(r.changeBp) + '">' + esc(fmt.bp(r.changeBp)) + "</td>"
+            + '<td class="t-col-x">' + esc(r.asOf || "—") + "</td></tr>";
+        }).join("");
+        var moved = [];
+        if (cs.offDate.length) {
+          moved.push("数据日与基准不同、已摘出 " + cs.offDate.length + " 条（"
+            + cs.offDate.map(function (r) { return r.name + " " + (r.asOf || "无日期"); }).join("、") + "）");
+        }
+        if (cs.noValue.length) {
+          moved.push("无有效读数 " + cs.noValue.length + " 条（"
+            + cs.noValue.map(function (r) { return r.name; }).join("、") + "）");
+        }
+        var staleN = cs.rows.filter(function (x) { return x.row.stale; }).length;
+        set("#n-sovr", "以 " + cs.bench.name + " 为基准，单位基点（1bp = 0.01 个百分点）。"
+          + "只在与基准同一个数据日（" + cs.asOf + "）的国家之间算 —— 基准取这个月的观测、"
+          + "对手取另一个月的观测，两者之差不是利差，是两个时点的混合。"
+          + (moved.length ? moved.join("；") + "。" : "这一轮所有国家都与基准同期。")
+          + (staleN ? " 其中 " + staleN + " 条本轮取数失败、沿用上次，已在行上标出。" : "")
+          + " 收益率是水平值不是价格：差值只报基点，不报百分比。");
+      }
+
+      function drawHist() {
+        var H = S.hist;
+        if (!H || !H.dates.length) {
+          set("#n-sovr", "主权债观测历史读取失败，只能看当前横截面。不用当前值倒推历史。");
+          return;
+        }
+        var cs = csRows();
+        if (!cs.ok) { set("#n-sovr", cs.reason + "。换一个基准再看。"); return; }
+        var bench = H.series[selBench.value];
+        if (!bench) {
+          set("#n-sovr", cs.bench.name + " 在这份月频历史里没有序列，画不出以它为基准的利差。");
+          return;
+        }
+        /* 画谁：当前利差最宽的四个。数据驱动，不写死一组「常看的国家」。 */
+        var picks = cs.rows.slice(0, 4).filter(function (x) { return H.series[x.row.id]; });
+        if (!picks.length) {
+          set("#n-sovr", "当前利差最宽的几个国家在月频历史里都没有序列，画不出来。");
+          return;
+        }
+        var items = picks.map(function (x, i) {
+          var sp = C.spreadSeries(H.dates, H.series[x.row.id], bench);
+          return { tk: x.row.name, values: sp.values, valid: sp.pairs, n: sp.values.length,
+                   last: sp.last, focus: i === 0, _gaps: sp.gaps };
+        });
+        svg.setAttribute("viewBox", "0 0 620 190");
+        /* 利差是绝对值（基点），不是重基指数 —— 必须走 abs 图例口径 */
+        R.multiLine("#svg-sovr", "#lg-sovr", items, H.dates,
+          { l:48, r:86, b:22, grid:4, legendMode:"abs", unit:"bp" });
+        var freqNote = S.monthlyFreqLabelBug
+          ? "（上游这份历史把月频桶的 frequency 字段写成了 daily，日期轴实测是逐月的；"
+            + "这里按日期轴判定为月频，并把这处不一致照实说出来，不跟着错标）"
+          : "";
+        var gapNote = items.filter(function (it) { return it._gaps; })
+          .map(function (it) { return it.tk + " 缺 " + it._gaps + " 期"; });
+        set("#n-sovr", "以 " + cs.bench.name + " 为基准，画的是当前利差最宽的 "
+          + picks.length + " 个国家（数据驱动，不是写死的一组）。"
+          + "月频 " + H.dates.length + " 期，" + H.dates[0] + " 起" + freqNote + "。"
+          + "单位基点。利差只在两端同一个月都有观测时才算，缺一边就留空、折线断开 —— "
+          + "不做前向填充，也不用邻月顶替。"
+          + (gapNote.length ? "本窗口内：" + gapNote.join("、") + "。" : "")
+          + (cs.offDate.length ? " 横截面里因数据日不同被摘出的 " + cs.offDate.length
+              + " 个国家在这里也排不进来 —— 它们没有可比的当期利差，无法参与「最宽」的排序；"
+              + "它们各自的收益率历史仍可在自己的行情详情页看。" : "")
+          + " 身份靠线尾直接标国名，不靠颜色。");
+      }
+
+      var views = { cs: drawCS, hist: drawHist };
+      var cur = "cs";
+      function show(k) {
+        cur = k;
+        $("#sovr-cs").hidden = k !== "cs";
+        $("#sovr-hist").hidden = k !== "hist";
+        (views[k] || drawCS)();
+      }
+      $$("[data-sv]").forEach(function (b2) {
+        b2.onclick = function () {
+          $$("[data-sv]").forEach(function (x) {
+            x.setAttribute("aria-pressed", String(x === b2));
+            x.classList.toggle("on", x === b2);
+          });
+          show(b2.getAttribute("data-sv"));
+        };
+      });
+      $$("[data-sv]")[0].classList.add("on");
+      selBench.onchange = function () { show(cur); };
+      show("cs");
+
+      var bench0 = rows.filter(function (r) { return r.id === benchId; })[0] || {};
+      set('[data-sub="sovr"]', (bench0.asOf || S.asOf || "—"));
+      set('[data-src="sovr"]', "来源 " + (S.source || "—")
+        + " · 34 条月频 + 1 条日频，涨跌一律「较前一观测」不是当日"
+        + " · 水平表在「全球市场行情」债券品类，这里只做利差");
+    })();
 
     R.crossBars("#bars-cross", M, 5);
     set('[data-sub="cross"]', "前五 / 后五");

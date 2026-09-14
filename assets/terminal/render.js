@@ -590,8 +590,14 @@
            '" stroke="#1f1f1f" stroke-width="1"/><text x="' + (L - 6) + '" y="' + (y + 3.5).toFixed(1) +
            '" text-anchor="end" fill="#5e5e5e" font-family="monospace" font-size="9">' + vv.toFixed(0) + "</text>";
     }
-    if (lo < 100 && hi > 100) {
-      g += '<line x1="' + L + '" y1="' + Y(100).toFixed(1) + '" x2="' + (W - R) + '" y2="' + Y(100).toFixed(1) +
+    /* 虚线基线画在「有意义的那条」上，而不是写死 100：
+         · 重基指数（默认口径）：100 就是起点，那条线本身是个事实；
+         · 绝对值序列（legendMode:"abs"，利差、价差之类）：**0 才是分界** ——
+           利差为负就是收益率低于基准、期限价差为负就是倒挂。在这种图上画 100
+           那条线没有任何含义，画错基线比不画更糟。 */
+    var baseAt = opt.legendMode === "abs" ? 0 : 100;
+    if (lo < baseAt && hi > baseAt) {
+      g += '<line x1="' + L + '" y1="' + Y(baseAt).toFixed(1) + '" x2="' + (W - R) + '" y2="' + Y(baseAt).toFixed(1) +
            '" stroke="#3d3d3d" stroke-width="1" stroke-dasharray="3 3"/>';
     }
 

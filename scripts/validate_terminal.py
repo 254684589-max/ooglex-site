@@ -605,6 +605,84 @@ def main() -> int:
     require("存储不可用" in cmp_, "存储不可用时必须在页面上说明改动只在本次会话有效")
     section("自定义篮子")
 
+    # ── 19 主权利差：收益率是水平值，不是价格 ──────────────────────────────
+    # 这一节盯的是同一类误读：把收益率当价格处理。收益率 2% → 3% 是「上行 100bp」，
+    # 重基到 100 再报变动率会写成「+50%」；两个不同月份的观测相减不是利差；
+    # 「利差」这个词本身也要求单位是基点而不是百分比。
+    for fn in ("spreadSeries", "spreadCrossSection"):
+        require(f"function {fn}(" in lib["core.js"],
+                f"core.js 里必须定义 {fn}（主权利差口径不得散落在页面里）")
+        require(f"{fn}: {fn}" in lib["core.js"],
+                f"{fn} 必须从 core.js 导出，否则页面拿不到、只会各写一套")
+    require("spreadCrossSection" in mon, "监控页必须调 core 的横截面利差，不在页面里手算")
+    # 页面里不得再手搓「两条收益率相减 ×100」：口径只能有一处，否则改了 core 也没用
+    sovr = mon[mon.index('var S = M.sovereign'):]
+    sovr = sovr[:sovr.index("R.crossBars")]
+    for bad in (".price - bench", "price - b.price", "- benchPrice", ") * 100"):
+        require(bad not in sovr,
+                f"主权利差面板里出现了手搓的利差算式 {bad!r} —— 口径必须只在 core 里一处")
+    require('data-sv="cs"' in mon and 'data-sv="hist"' in mon,
+            "主权利差面板必须有两个视图：相对基准 / 利差历史")
+    require('id="p-sovr"' in mon, "缺少主权利差面板")
+    require("SOVR" in mon, "主权利差面板必须可由命令行点名（data-fn 里带 SOVR）")
+    # 横截面的核心约束：跨期不得相减
+    require("同一个数据日" in mon, "横截面利差必须写明只在与基准同一个数据日的国家之间算")
+    require("两个时点的混合" in mon,
+            "必须写明跨期相减得到的不是利差 —— 这是这张表最容易被误读的地方")
+    require("已摘出" in mon, "数据日与基准不同的国家必须逐条摘出并写明，不能悄悄算进去")
+    require("不报百分比" in mon or "只报基点" in mon,
+            "收益率是水平值，差值必须只报基点，不得报成百分比")
+    require("1bp = 0.01 个百分点" in mon, "必须写明基点的定义")
+    # 沿用上次的行必须标出来
+    require('class="t-chip" title="本轮取数失败' in mon,
+            "本轮取数失败的行必须在表里带一枚可见标记（只在说明文字里提一句不算："
+            "读者看的是行，不是脚注）")
+    require("r.stale" in mon, "必须逐行读上游的 stale 标记")
+    require("沿用上次" in mon, "标记文字必须说清是沿用上次，不是刚取到的")
+    # 历史视图：缺一边留空，且选的是谁必须说清
+    require("两端同一个月都有观测时才算" in mon,
+            "利差只在两端同月都有观测时才算，必须写明这个前提")
+    require("缺一边就留空、折线断开" in mon, "必须写明缺一边留空且折线断开")
+    require("不做前向填充" in mon, "必须写明不做前向填充")
+    require("数据驱动，不是写死的一组" in mon,
+            "历史视图画哪几个国家必须说明选取规则")
+    require("排不进来" in mon,
+            "被摘出的国家在历史视图里也排不进来，必须说明，不能让人以为漏了")
+    # 绝对值序列的图例与基线口径
+    require(mon.count('legendMode:"abs"') >= 2,
+            "利差与期限价差都是绝对值序列，两处都必须走 abs 图例口径")
+    require('opt.legendMode === "abs" ? 0 : 100' in ren,
+            "虚线基线必须按口径选：重基指数画 100，绝对值序列画 0"
+            "（利差为负就是低于基准、期限价差为负就是倒挂）")
+    # 频率：34 条月频，涨跌不是当日
+    require("较前一观测" in mon, "月频序列的涨跌必须写「较前一观测」，不得写成当日")
+    require("月频" in mon, "必须写明这批序列是月频")
+    # 上游月频桶把 frequency 错标成 daily，页面必须如实指出而不是跟着错标
+    require("monthlyFreqLabelBug" in lib["overview.js"],
+            "上游月频桶的 frequency 字段与日期轴不一致，模型层必须识别出来")
+    require("frequency 字段写成了 daily" in mon,
+            "这处上游不一致必须如实写在页面上，不跟着错标也不装看不见")
+    # 不重复已有的那张水平表
+    require("水平表在" in mon or "不重复" in mon,
+            "35 条收益率已在全球市场行情的债券品类里列全，面板必须说明自己只做利差")
+    bj = json.loads(read(ROOT / "apps" / "bonds" / "data.json"))
+    require(len(bj.get("series") or []) >= 30, "主权债收益率条数过少")
+    require("基点" in str(bj.get("note", "")), "主权债数据源应声明涨跌口径是基点")
+    require("不是当日" in str(bj.get("note", "")) or "不是当日变动" in str(bj.get("note", "")),
+            "主权债数据源应声明涨跌不是当日变动")
+    hj = json.loads(read(ROOT / "apps" / "bonds" / "history.json"))
+    mhist = (hj.get("monthly") or {})
+    require(len(mhist.get("dates") or []) >= 300, "主权债月频历史点数过少")
+    require(len(mhist.get("series") or {}) >= 30, "主权债月频历史序列数过少")
+    require("不做前向填充" in str(hj.get("note", "")),
+            "主权债历史数据源应声明不做前向填充")
+    # registry 里 BOND 不得再说「数据在、页面没建」—— 那句已经不成立
+    reg = lib["registry.js"]
+    require("数据在、页面没建" not in reg,
+            "BOND 的卡点说明已过时：35 条收益率在全球市场行情的债券品类里已经列全了")
+    require('mn:"SOVR"' in reg, "主权利差必须登记进功能注册表")
+    section("主权利差")
+
     return report()
 
 

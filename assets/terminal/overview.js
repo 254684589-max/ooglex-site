@@ -78,10 +78,13 @@
       soft("econ-calendar/data.json"),
       soft("whats-latest/data.json"),
       soft("asset-ranking/crypto.json"),
-      soft("companies/data.json")
+      soft("companies/data.json"),
+      soft("bonds/data.json"),
+      soft("bonds/history.json")
     ]).then(function (r) {
       var assets = r[0], intraday = r[1], macro = r[2], curve = r[3], hist = r[4],
-          series = r[5], fear = r[6], ofr = r[7], cal = r[8], news = r[9], crypto = r[10], comps = r[11];
+          series = r[5], fear = r[6], ofr = r[7], cal = r[8], news = r[9], crypto = r[10], comps = r[11],
+          bonds = r[12], bondHist = r[13];
 
       /* 收盘与盘中合并：收盘为准，盘中作为「最新」另列 */
       var byName = {}, bySym = {};
@@ -192,6 +195,55 @@
         });
       }
 
+      /* ── 各国主权债：收益率水平 + 相对基准的利差 ──────────────────────────
+         站内 bonds/data.json 的 35 条收益率早就在「全球市场行情」的债券品类里
+         按地区列出来了，每行还能点进自己的历史图 —— 这里**不重复那张水平表**，
+         只补站内确实没有的一件事：**国与国之间的利差**。
+
+         四条口径写在模型层，页面照着显示，不在页面上另算一套：
+           · 利差单位是基点，由 core.spreadSeries / spreadCrossSection 算，
+             收益率绝不重基到 100（那会把「上行 100bp」写成「+50%」）。
+           · 横截面只在与基准**同一个数据日**的国家之间算，跨期的逐条摘出。
+           · 34 条是月频（OECD 有滞后），涨跌一律「较前一观测」，不是当日。
+           · 本轮取数失败沿用上次的行带 stale，页面必须标出来。 */
+      var sovereign = { rows: [], error: null, hist: null, asOf: null, source: null,
+                        note: null, monthlyFreqLabelBug: false };
+      if (bonds && !bonds.__error) {
+        sovereign.rows = (bonds.series || []).filter(function (b) { return b && b.id; })
+          .map(function (b) {
+            var m = b.dataMeta || {};
+            return {
+              id: b.id, name: b.name, nameEn: b.nameEn || "", region: b.region || "",
+              price: b.price, changeBp: b.changeBp, previousAsOf: b.previousAsOf || "",
+              frequency: b.frequency || m.frequency || "", stale: !!b.stale,
+              asOf: m.asOf || null, status: m.status || "", mode: m.mode || "",
+              source: m.source || bonds.source || "", note: b.note || m.note || "",
+              detail: { kind: "bond", symbol: b.id }
+            };
+          });
+        sovereign.asOf = bonds.asOf || null;
+        sovereign.source = bonds.source || null;
+        sovereign.note = bonds.note || null;
+      } else {
+        sovereign.error = (bonds && bonds.__error) || "读取失败";
+      }
+      if (bondHist && !bondHist.__error) {
+        var mb = bondHist.monthly || {};
+        /* 上游把月频桶的 frequency 写成了 "daily"（dates 实测是逐月的 1993-05…2026-08）。
+           这里按**日期轴本身**判定频率，并把这处不一致如实带出来，页面注明，
+           不跟着错标，也不假装没看见。 */
+        var md = mb.dates || [];
+        var looksMonthly = md.length > 2 && /^\d{4}-\d{2}-01$/.test(md[md.length - 1] || "");
+        sovereign.monthlyFreqLabelBug = looksMonthly && mb.frequency === "daily";
+        sovereign.hist = {
+          dates: md, series: mb.series || {},
+          declaredFreq: mb.frequency || null,
+          freq: looksMonthly ? "monthly" : (mb.frequency || null),
+          asOf: mb.asOf || null, source: mb.source || bondHist.source || null,
+          note: bondHist.note || null
+        };
+      }
+
       var model = {
         meta: {
           generatedAt: new Date().toISOString(),
@@ -205,7 +257,9 @@
             src("经济日历", cal, "周历 · 每日刷新"),
             src("要闻", news, "日内多次"),
             src("加密（CoinGecko）", crypto, "日频 · 24h 口径"),
-            src("公司（个股）", comps, "日频收盘")
+            src("公司（个股）", comps, "日频收盘"),
+            src("各国主权债收益率", bonds, "34条月频 + 1条日频"),
+            src("主权债观测历史", bondHist, "月频 400 期")
           ]
         },
         markets: markets,
@@ -233,8 +287,9 @@
         calendar: (cal && !cal.__error) ? cal : null,
         news: (news && !news.__error) ? news : null,
         companies: (comps && !comps.__error) ? comps : null,
+        sovereign: sovereign,
         /* raw 保留各源的原始 json：地缘风险模型要的是原始形态（signals 数组、fsi.spark），不是归一化后的 */
-        raw: { assets: assets, intraday: intraday, macro: macro, curve: curve, fear: fear, ofr: ofr, cal: cal, news: news, crypto: crypto, comps: comps }
+        raw: { assets: assets, intraday: intraday, macro: macro, curve: curve, fear: fear, ofr: ofr, cal: cal, news: news, crypto: crypto, comps: comps, bonds: bonds, bondHist: bondHist }
       };
       return model;
 

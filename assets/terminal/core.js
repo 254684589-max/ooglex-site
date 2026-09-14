@@ -378,6 +378,59 @@
              valid: idx.filter(isNum).length };
   }
 
+  /* ── 主权利差：两条收益率序列之差，单位基点 ─────────────────────────────
+     收益率是**水平值**（年化百分数），不是价格。由此三条口径不能含糊：
+
+       1) 两条之差叫「利差」，单位是**基点**（1bp = 0.01 个百分点），不是百分比。
+       2) **绝不把收益率重基到 100 再报变动率。** 2% → 3% 是「上行 100 个基点」；
+          重基后会写成「+50%」，读者会当成价格涨了一半 —— 那是另一回事。
+          所以这类序列一律走 legendMode:"abs"，图例报绝对值与绝对变动并带单位。
+       3) **只在同一个日期两边都有观测时才给点。** 月频各国末期不同（OECD 有滞后，
+          站内实测 31 国止于 6 月、两国止于 8 月、墨西哥止于 5 月），缺一边就留空、
+          折线断开，不做前向填充，也不用邻月顶替。 */
+  function spreadSeries(dates, a, b) {
+    var d = dates || [], sa = a || [], sb = b || [];
+    var n = Math.min(d.length, sa.length, sb.length);
+    var out = { dates: [], values: [], pairs: 0, gaps: 0, first: null, last: null };
+    for (var i = 0; i < n; i++) {
+      out.dates.push(d[i]);
+      if (isNum(sa[i]) && isNum(sb[i])) {
+        var v = (sa[i] - sb[i]) * 100;      /* 百分点 → 基点 */
+        out.values.push(v);
+        out.pairs++;
+        if (out.first === null) out.first = v;
+        out.last = v;
+      } else {
+        out.values.push(null);
+        out.gaps++;
+      }
+    }
+    return out;
+  }
+
+  /* 横截面利差：各国相对基准国，**只在与基准同一个数据日的国家之间算**。
+     基准取 6 月的观测、对手取 8 月的观测，两者之差不是利差，是两个时点的混合。
+     数据日不一致的逐条摘出并带上它自己的日期，不悄悄算进去 —— 这是本函数
+     存在的全部理由，否则一句 map 就够了。 */
+  function spreadCrossSection(rows, benchId) {
+    var list = (rows || []).filter(function (r) { return r && r.id; });
+    var bench = null;
+    for (var i = 0; i < list.length; i++) if (list[i].id === benchId) { bench = list[i]; break; }
+    if (!bench) return { ok: false, reason: "选中的基准不在这份数据里" };
+    if (!isNum(bench.price)) return { ok: false, reason: "基准本身没有有效收益率读数" };
+    if (!bench.asOf) return { ok: false, reason: "基准没有数据日，无法判断谁与它同期" };
+    var usable = [], offDate = [], noValue = [];
+    list.forEach(function (r) {
+      if (r.id === benchId) return;
+      if (!isNum(r.price)) { noValue.push(r); return; }
+      if (r.asOf !== bench.asOf) { offDate.push(r); return; }
+      usable.push({ row: r, bp: (r.price - bench.price) * 100 });
+    });
+    usable.sort(function (x, y) { return y.bp - x.bp; });
+    return { ok: true, bench: bench, asOf: bench.asOf, rows: usable,
+             offDate: offDate, noValue: noValue };
+  }
+
   /* ── 统计：Z-Score 与分位（需要足够样本才给数）────────────────────── */
   function zscore(values, win) {
     var v = (values || []).filter(isNum);
@@ -508,6 +561,7 @@
     monthLabels: monthLabels, monthlySeries: monthlySeries, monthOverMonth: monthOverMonth,
     seasonality: seasonality, monthlyCoverage: monthlyCoverage, MIN_SEASON_YEARS: MIN_SEASON_YEARS,
     compareWindow: compareWindow, rebase: rebase, basketIndex: basketIndex,
+    spreadSeries: spreadSeries, spreadCrossSection: spreadCrossSection,
     meta: meta, srcLine: srcLine, zscore: zscore,
     quoteHref: quoteHref, securityHref: securityHref, detailHref: detailHref,
     QUOTE_KINDS: QUOTE_KINDS,
