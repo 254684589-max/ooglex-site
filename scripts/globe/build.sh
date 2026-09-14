@@ -104,6 +104,10 @@ if [ -d "$NESTED" ]; then
 fi
 [ -f "$DIST/cesium/Cesium.js" ] || die "未找到 dist/cesium/Cesium.js，Cesium 目录修正失败。"
 
+# ------------------------------------------------------- 5b. 同源启动与地图回退
+log "应用同源启动策略"
+node "$REPO_ROOT/scripts/globe/patch-network.mjs" "$DIST" "$BASE"
+
 # ------------------------------------------------------------ 6. 产物自检
 log "产物自检"
 [ -f "$DIST/index.html" ] || die "产物缺少 index.html。"
