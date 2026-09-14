@@ -173,6 +173,19 @@
     'just now': '刚刚',
     'stale': '数据过期',
     'Data provided by:': '数据来源：',
+    'Clear selected data layers': '清除已选数据图层',
+    'Available Space Missions': '可选航天任务',
+    'Aircraft cockpit view': '航空器驾驶舱视角',
+    'CCTV camera': '监控摄像头',
+    'Bloom intensity': '泛光强度',
+    'Cancel replay': '取消回放',
+    'Cockpit Radio volume': '驾驶舱电台音量',
+    'Cockpit display options': '驾驶舱显示选项',
+    'Cockpit vision style': '驾驶舱视觉风格',
+    'Camera pose — click a value to type': '相机姿态 —— 点击数值可直接输入',
+    'CONTACTS': '目标',
+    'CYCLE OFF': '循环关闭',
+    'Contact panel': '目标面板',
   };
 
   /* 组合状态串：图层面板的副标题是 `${来源} · ${详情}` 拼出来的
@@ -190,14 +203,31 @@
     [/^(.*) · stale$/, '$1 · 数据过期'],
     [/^(.*) · rate limited$/, '$1 · 被限流'],
     [/^(.*) · unavailable$/, '$1 · 不可用'],
+    // 图层开关的 aria-label：`${图层名}: ON|OFF`
+    [/^(.+): (ON|OFF)$/, function (_m, name, st) {
+      return lookup(name) + '：' + (st === 'ON' ? '开' : '关');
+    }],
+    // 面板披露控件
+    [/^Collapse (.+) panel$/, function (_m, n) { return '折叠' + lookup(n) + '面板'; }],
+    [/^Expand (.+) panel$/, function (_m, n) { return '展开' + lookup(n) + '面板'; }],
+    [/^Close (.+)$/, function (_m, n) { return '关闭' + lookup(n); }],
+    [/^Open (.+)$/, function (_m, n) { return '打开' + lookup(n); }],
   ];
 
-  /** 字典未命中时，尝试锚定正则；都不中就原样返回 null。 */
+  /** 字典未命中时，尝试锚定正则；都不中就原样返回 null。
+      替换目标可以是字符串（用 $1 引用捕获组）或函数（用于需要再查字典的场合）。 */
   function translateComposite(key) {
     for (var i = 0; i < PATTERNS.length; i++) {
-      if (PATTERNS[i][0].test(key)) return key.replace(PATTERNS[i][0], PATTERNS[i][1]);
+      var re = PATTERNS[i][0], to = PATTERNS[i][1];
+      if (!re.test(key)) continue;
+      return typeof to === 'function' ? key.replace(re, to) : key.replace(re, to);
     }
     return null;
+  }
+
+  /** 查字典，查不到就原样返回 —— 用于组合串里嵌的图层名/面板名。 */
+  function lookup(name) {
+    return Object.prototype.hasOwnProperty.call(DICT, name) ? DICT[name] : name;
   }
 
   /** 同名映射也用于这些属性。 */
@@ -213,15 +243,20 @@
     return false;
   }
 
-  /** 只在整段文字完整命中字典时替换，并保留原有首尾空白。 */
+  /** 统一查找：先查字典（整串精确），再试锚定正则。查不到返回 null。
+      文本节点与属性必须走同一条路径 —— 否则新增规则容易只接进一半。 */
+  function translate(key) {
+    if (Object.prototype.hasOwnProperty.call(DICT, key)) return DICT[key];
+    return translateComposite(key);
+  }
+
+  /** 只在整段文字完整命中时替换，并保留原有首尾空白。 */
   function translateTextNode(node) {
     var raw = node.nodeValue;
     if (!raw) return;
     var key = raw.trim();
     if (!key) return;
-    var hit = Object.prototype.hasOwnProperty.call(DICT, key)
-      ? DICT[key]
-      : translateComposite(key);
+    var hit = translate(key);
     if (hit === null || hit === undefined || hit === key) return;
     if (inSkippedSubtree(node)) return;
     var lead = raw.slice(0, raw.indexOf(key));
@@ -235,7 +270,9 @@
       var a = ATTRS[i];
       if (!el.hasAttribute || !el.hasAttribute(a)) continue;
       var v = el.getAttribute(a).trim();
-      if (Object.prototype.hasOwnProperty.call(DICT, v)) el.setAttribute(a, DICT[v]);
+      var hit = translate(v);
+      // 命中且确有变化才写回；相等时写回会让 MutationObserver 无谓地再跑一轮
+      if (hit !== null && hit !== undefined && hit !== v) el.setAttribute(a, hit);
     }
   }
 

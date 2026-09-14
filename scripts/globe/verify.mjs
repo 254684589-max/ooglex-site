@@ -80,6 +80,12 @@ async function suite(label, vp, full) {
       panelTitleZh: all.includes('数据图层'),
       cesium: typeof f.contentWindow.Cesium!=='undefined',
       zhChars: (panel.match(/[\u4e00-\u9fa5]/g)||[]).length,
+      // 无障碍标签由 JS 动态拼接（`${图层名}: ON|OFF`），走的是属性路径。
+      // 曾经漏接过：正则规则只加在文本节点上，属性仍是英文。
+      ariaEn: Array.from(d.querySelectorAll('button.data-toggle-btn'))
+        .map(b=>b.getAttribute('aria-label')||'').filter(v=>/: (ON|OFF)$/.test(v)),
+      ariaZh: Array.from(d.querySelectorAll('button.data-toggle-btn'))
+        .map(b=>b.getAttribute('aria-label')||'').filter(v=>/：(开|关)$/.test(v)),
     };
   });
   ck('Cesium 初始化', r.cesium);
@@ -97,6 +103,8 @@ async function suite(label, vp, full) {
   ck('署名行保持英文原文', r.creditEn);
   ck('面板标题中文化', r.panelTitleZh);
   const of = await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+1);
+  if (full) ck(`开关 aria-label 中文化 ${r.ariaZh.length} 项，英文残留 ${r.ariaEn.length} 项`,
+              r.ariaZh.length>0 && r.ariaEn.length===0);
   ck('无横向溢出', !of);
   ck('无站内非 api 的 404', bad.length===0); if(bad.length) console.log('    '+bad.join('\n    '));
   ck('无 JS 异常', errs.length===0); if(errs.length) console.log('    '+errs.slice(0,2).join(' | '));

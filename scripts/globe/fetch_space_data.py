@@ -71,8 +71,12 @@ def valid_tle(text: str) -> tuple[bool, str]:
     return True, f"{len(lines) // 3} 颗"
 
 
-def write_if_valid(path: Path, data: bytes, check) -> tuple[bool, str]:
-    """校验通过才落盘；失败则保留磁盘上已有的那份（规则第 13 条）。"""
+def write_if_valid(path: Path, data: bytes, check, reformat=None) -> tuple[bool, str]:
+    """校验通过才落盘；失败则保留磁盘上已有的那份（规则第 13 条）。
+
+    `reformat` 可选，在**校验通过之后**对字节做一次等价重排（例如展开 JSON 便于
+    git 增量存储）。放在校验之后是刻意的：校验始终针对上游原始响应。
+    """
     try:
         ok, detail = check(data)
     except Exception as exc:                      # 解析本身异常也算校验失败
@@ -80,6 +84,11 @@ def write_if_valid(path: Path, data: bytes, check) -> tuple[bool, str]:
     if not ok:
         kept = "保留上一份" if path.exists() else "此前也无数据"
         return False, f"{detail}；{kept}"
+    if reformat is not None:
+        try:
+            data = reformat(data)
+        except Exception as exc:                  # 重排失败就写原始字节，不因格式丢数据
+            detail = f"{detail}（重排失败，按原始字节写入: {exc}）"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(data)
     return True, detail
@@ -122,9 +131,26 @@ def main() -> int:
             return False, "响应缺少 results 数组"
         return True, f"{len(rows)} 条发射记录"
 
+    def reformat_launches(b: bytes) -> bytes:
+        """按行展开再落盘，纯粹为了 git 的增量存储。
+
+        LL2 的 detailed 响应是**紧凑单行** JSON，约 1MB。单行文件每天换一次，
+        git 做不了行级 delta，每次都要存一个全新的 1MB blob —— 相比本仓库其他
+        数据文件（多为 1 行级改动）重得多。展开成多行后，每天真正变化的只有少数
+        记录对应的那些行，打包时 delta 效果好得多。
+
+        客户端走 response.json()，空白与它无关；HTTP 层有 gzip，展开带来的体积
+        增长在传输上基本抵消。刻意不改用 mode=normal 来省空间 —— 那会丢掉载荷与
+        箭体回收等细节，是拿功能换空间。
+        """
+        return (
+            json.dumps(json.loads(b.decode("utf-8")), ensure_ascii=False, indent=1)
+            + "\n"
+        ).encode("utf-8")
+
     try:
         raw = fetch(url, token=os.environ.get("LL2_API_TOKEN") or None)
-        ok, detail = write_if_valid(target, raw, check_launches)
+        ok, detail = write_if_valid(target, raw, check_launches, reformat_launches)
     except Exception as exc:
         ok, detail = False, f"抓取失败: {exc}；" + (
             "保留上一份" if target.exists() else "此前也无数据"
