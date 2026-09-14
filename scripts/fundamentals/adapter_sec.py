@@ -60,15 +60,29 @@ TIMEOUT = 30
 
 # 需要的报表项。每项都可能缺 —— 不同公司用的标签不完全一样，缺了就是 None。
 # duration = 期间数（营收、净利），instant = 时点数（权益、股数）。
+# 单位串是 URL 路径的一段，**斜杠会把路径切断**。frames 的约定是把 `/` 写成
+# `-per-`，所以每股收益是 `USD-per-shares` 而不是 `USD/shares`。第一版写了斜杠，
+# 结果每个期间都 404、这个标签一条数据都没取到，PE 因此全是 None —— 而当时的
+# 闸门只问「至少有一个比率」，就把 PE 全空的文件放过去了。
 WANT: list[tuple[str, str, str]] = [
     ("Revenues", "USD", "duration"),
     ("RevenueFromContractWithCustomerExcludingAssessedTax", "USD", "duration"),
     ("NetIncomeLoss", "USD", "duration"),
+    ("EarningsPerShareDiluted", "USD-per-shares", "duration"),
     ("StockholdersEquity", "USD", "instant"),
     ("Assets", "USD", "instant"),
     ("Liabilities", "USD", "instant"),
-    ("EarningsPerShareDiluted", "USD/shares", "duration"),
 ]
+
+# 选期间用的探针标签：先用它在候选期间里挑出覆盖最好的那一期，同类的其余标签
+# 都取同一期。这样同类标签之间口径一致 —— 否则营收可能来自 CY2024、净利来自
+# CY2025，算出来的净利率是两个年度的拼接。
+PROBE = {"duration": "NetIncomeLoss", "instant": "Assets"}
+
+# 一期至少要覆盖站内多少比例的标的才算可用。第一版是「覆盖到任何一个就用」，
+# 结果在 9 月被少数非日历财年的早报公司劫持：CY2026 只覆盖十几家，却因为
+# 「有覆盖」就停下，把能覆盖几百家的 CY2025 整整跳过。
+MIN_TAG_COVERAGE = 0.25
 
 
 class AdapterError(RuntimeError):
@@ -218,7 +232,9 @@ def _frame(tag: str, unit: str, period: str) -> dict[int, dict[str, Any]]:
 def _periods(kind: str, year: int, back: int = 3) -> list[str]:
     """生成候选期间标识，从新到旧。frames 的期间写法：
        duration 年报 CY2025；instant 时点 CY2025Q4I。
-       最近一期常常还没归档，所以往回多试几年，取到就停。
+
+       **不是「取到就停」** —— 见 MIN_TAG_COVERAGE 那段注释。这里只负责给出候选，
+       挑哪一期由 _pick_period 按覆盖面决定。
     """
     if kind == "instant":
         return [f"CY{year - i}Q4I" for i in range(back)]
@@ -240,27 +256,66 @@ def fetch(symbols: list[str], *, year: int, log=print) -> dict[str, dict[str, An
 
     by_cik: dict[int, dict[str, Any]] = {c: {} for c in hit.values()}
     used_periods: dict[str, str] = {}
+    coverage: dict[str, int] = {}
+    need = max(1, int(len(hit) * MIN_TAG_COVERAGE))
 
-    for tag, unit, kind in WANT:
-        got = {}
-        for period in _periods(kind, year):
-            try:
-                frame = _frame(tag, unit, period)
-            except AdapterError as exc:
-                log(f"  {tag} {period}：{exc}")
-                continue
-            # 只要这一期覆盖到了站内一部分标的就用它，并记下实际用的是哪一期
-            covered = sum(1 for c in by_cik if c in frame)
-            log(f"  {tag} {period}：{len(frame)} 家申报，覆盖站内 {covered}")
-            if covered:
-                got = frame
-                used_periods[tag] = period
-                break
+    def absorb(tag: str, frame: dict[int, dict[str, Any]]) -> None:
         for cik in by_cik:
-            row = got.get(cik)
+            row = frame.get(cik)
             by_cik[cik][tag] = row["val"] if row else None
             if row and row.get("end"):
                 by_cik[cik].setdefault("_ends", {})[tag] = row["end"]
+
+    def _pick_period(kind: str) -> tuple[str | None, dict[int, dict[str, Any]]]:
+        """用探针标签在候选期间里挑覆盖最好的一期。
+
+        **挑最好的，不是挑第一个有覆盖的。** 现在是 9 月，只有少数非日历财年的
+        公司报了本年度年报；「第一个有覆盖」会选中 CY2026（十几家），把能覆盖
+        几百家的 CY2025 整整跳过 —— 第一版就是这么坏的。
+        """
+        probe, best, best_frame, best_n = PROBE[kind], None, {}, -1
+        for period in _periods(kind, year):
+            try:
+                frame = _frame(probe, "USD", period)
+            except AdapterError as exc:
+                log(f"  探针 {probe} {period}：{exc}")
+                continue
+            n = sum(1 for c in by_cik if c in frame)
+            log(f"  探针 {probe} {period}：{len(frame)} 家申报，覆盖站内 {n}")
+            if n > best_n:
+                best, best_frame, best_n = period, frame, n
+        if best is None or best_n < need:
+            log(f"  {kind} 类：最好的一期只覆盖 {max(best_n, 0)} 家，"
+                f"低于下限 {need}（{MIN_TAG_COVERAGE:.0%}）—— 这一类整体不取")
+            return None, {}
+        log(f"  {kind} 类定为 {best}（覆盖 {best_n} 家），同类标签都取这一期")
+        return best, best_frame
+
+    for kind in ("duration", "instant"):
+        period, probe_frame = _pick_period(kind)
+        probe = PROBE[kind]
+        if period is None:
+            for tag, _u, k in WANT:
+                if k == kind:
+                    absorb(tag, {})
+            continue
+        absorb(probe, probe_frame)
+        used_periods[probe] = period
+        coverage[probe] = sum(1 for c in by_cik if c in probe_frame)
+        for tag, unit, k in WANT:
+            if k != kind or tag == probe:
+                continue
+            try:
+                frame = _frame(tag, unit, period)
+            except AdapterError as exc:
+                log(f"  {tag} {period}：{exc} —— 该项按缺失处理（None，不写 0）")
+                absorb(tag, {})
+                continue
+            n = sum(1 for c in by_cik if c in frame)
+            log(f"  {tag} {period}：{len(frame)} 家申报，覆盖站内 {n}")
+            absorb(tag, frame)
+            used_periods[tag] = period
+            coverage[tag] = n
 
     if not used_periods:
         raise AdapterError("所有标签所有期间都没取到数据 —— 不写任何东西")
@@ -283,6 +338,6 @@ def fetch(symbols: list[str], *, year: int, log=print) -> dict[str, dict[str, An
             "epsDiluted": f.get("EarningsPerShareDiluted"),
             "ends": ends,
         }
-    return {"rows": out, "periods": used_periods,
+    return {"rows": out, "periods": used_periods, "coverage": coverage,
             "source": SOURCE_NAME, "docUrl": DOC_URL,
             "matched": len(hit), "requested": len(want)}

@@ -326,6 +326,45 @@ def main() -> int:
     require(not mismatch, f"复算或日期不符 {len(mismatch)} 处：{mismatch[:5]}")
     require(with_ratio >= 50,
             f"能算出比率的只有 {with_ratio} 家 —— 低于 50 家说明取数出了问题")
+
+    # ── 「像不像真的」：直接复用 build 里的那套常量与函数，不在这里抄第二份 ──
+    # 抄一份的话，两边迟早对不上，而对不上的时候没人知道该信哪个。
+    import importlib.util as _ilu
+    bf = ROOT / "scripts" / "fundamentals" / "build_fundamentals.py"
+    require(bf.is_file(), "缺少 build_fundamentals.py")
+    if bf.is_file():
+        _spec = _ilu.spec_from_file_location("build_fundamentals_probe", bf)
+        _m = _ilu.module_from_spec(_spec)
+        sys.modules["build_fundamentals_probe"] = _m
+        _spec.loader.exec_module(_m)
+        require(hasattr(_m, "sanity_check") and hasattr(_m, "SANE_MEDIAN"),
+                "build 端必须暴露 sanity_check 与 SANE_MEDIAN，契约要复用同一套口径")
+        if hasattr(_m, "sanity_check"):
+            for bad_msg in _m.sanity_check(rows):
+                require(False, "合理性检查：" + bad_msg)
+        require(getattr(_m, "MARKET_CAP_UNIT", None) == 1e9,
+                "站内 marketCap 是十亿美元（build_companies.py 写的是 cap_usd/1e9），"
+                "换算常量必须是 1e9 —— 这个假设没写在 JSON 里，只能在这里钉住")
+        # 反过来也钉一次：换算若被去掉，PB 会掉到 1e-9 量级
+        pbs = [r["pb"] for r in rows if isinstance(r.get("pb"), (int, float))]
+        if pbs:
+            mid = sorted(pbs)[len(pbs) // 2]
+            require(mid > 0.01,
+                    f"PB 中位数 {mid:.4g} 小得不像真的 —— 站内市值是十亿美元、"
+                    "SEC 权益是原始美元，忘了换算就会差 1e9 个量级")
+
+    # 同类报表项必须取同一个期间：营收来自一个年度、净利来自另一个年度，
+    # 拼出来的利润率是假的。
+    pu = d.get("periodsUsed") or {}
+    require(isinstance(pu, dict) and pu, "必须记录实际用了哪些期间（periodsUsed）")
+    dur = {pu.get(k) for k in ("Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax",
+                               "NetIncomeLoss", "EarningsPerShareDiluted") if pu.get(k)}
+    inst = {pu.get(k) for k in ("StockholdersEquity", "Assets", "Liabilities") if pu.get(k)}
+    require(len(dur) <= 1,
+            f"期间类（营收／净利／每股收益）取了多个期间 {sorted(dur)} —— "
+            "同类必须同期，否则利润率是两个年度拼的")
+    require(len(inst) <= 1,
+            f"时点类（权益／资产／负债）取了多个期间 {sorted(inst)} —— 同类必须同期")
     require(d.get("withRatio") == with_ratio,
             f"withRatio 与逐行统计不符：{d.get('withRatio')} vs {with_ratio}")
     require(d.get("count") == len(rows),
