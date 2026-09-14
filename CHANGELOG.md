@@ -13,6 +13,23 @@
 
 ### 新增
 
+- 2026-09-14，**全球态势地球上线（`/apps/globe/`，首页第 21 条）**，把开源项目 God's Eye View 的三维地球集成进站内，纯静态、无服务端、无密钥。**已部署。**
+  - **定性先钉住：个人学习、非商业使用。** 上游代码是 MIT，但**MIT 不覆盖数据** —— 内置的 TeleGeography 海底电缆（712 条 + 1917 个登陆点）是 **CC BY-NC-SA 3.0**，商业不可用。因此包装页与应用子树**都不加载广告脚本**（仓库根有 `ads.txt`、首页含 AdSense），`robots.txt` 另加 `Disallow: /apps/globe/app/`。商业化红线共 5 条逐条写进 `docs/GLOBE_INTEGRATION.md`，并做成构建开关：`GLOBE_COMMERCIAL=1` 一键删除非商业数据集。
+  - **不标 `LIVE`。** 本站启用的是 Esri 卫星底图、OSM 降级底图、USGS 地震、约 4300 处数据中心、704 座大坝、Natural Earth 命名区域（1046 陆地 + 292 海域）、海底电缆 —— 除地震外都是随包内置的静态数据，**标成实时就是假的**。
+  - **不追求全功能，且把不可用的部分明确摆在页面上。** 上游有约 20 个服务端代理（`server/providers/local.js`），客户端写死同源 `/api/*` 调用**共 84 处、跨 31 个文件**；纯静态托管没有服务端，所以航班、船舶、卫星、火箭发射、火点、交通流、公共自行车、交通摄像头、电台、区域新闻、Google 真实感三维瓦片与语音控制**全部不可用**。包装页的「数据来源」面板分「本站可用 / 本站不可用（需服务端代理）」两栏列出，逐条给原因，不含糊成一句「暂未开放」。
+  - **这些 404 是上游设计的生产路径，所以刻意不加静态 JSON 桩。** 依据是上游 `src/keySetup.js` 的注释：取不到 `/api/setup/status` 时密钥设置入口会自我移除（"a prod build (no endpoint) ... both the chip and the dialog are removed outright"）。加桩会把一个**写不了任何东西**的设置面板复活，比 404 更糟。
+  - **构建不注入任何密钥。** 上游是 by design 把 `GOOGLE_MAPS_API_KEY` 与 `CESIUM_ION_TOKEN` 打进浏览器包的（`build/vite.js` 的 `define`，README 明说 devtools 可见）。构建脚本把两者置空，应用按无密钥模式启动（Esri World Imagery，失败自动降级 OSM），满足仓库规则第 5 条；自检另有一条正则扫描产物、检出疑似密钥就中止输出。
+  - **上游假定自己在站点根目录，所以必须打子路径补丁。** 三类写死 `/` 开头的路径：`public/` 根级文件（`/logo.svg`、`/pin.svg`）、飞机模型 `/models/*.glb`、接口前缀 `/api/`。其中**模型路径同时用作查表键**（`src/data/modelVisualAnchor.js`），必须全局一致替换否则锚点匹配不上。`scripts/globe/patch-base.mjs` 从 `public/` 实际内容推导资产清单（上游新增文件不会漏），本次改写 **40 个文件（JS 37、HTML 3）**，并自检源码内再无残留。**刻意不碰上游入口 `index.html`** —— 其中 `/src/main.js` 与 `/style.css` 由 Vite 按 `base` 自行重写，手工替换会破坏构建。
+  - **第一版补丁漏了 HTML 模板，是产物自检抓出来的。** 只扫了 `*.js`，而 `src/ui/templates/scene-chrome.html`、`hud-loading.html` 里还有 `/logo.svg` ×4 与 `/pin.svg` ×2。补丁范围扩到 `*.html` 后重跑通过。另外原先的 bash + sed 嵌套引号方案太脆，改写成独立 Node 脚本。
+  - **`vite-plugin-cesium` 有个目录行为要修正**：它把 Cesium 静态资源拷到 `<outDir>/<base>/cesium`，而 `index.html` 引用的是 `<base>cesium/`。构建后须把该目录上移到产物根，脚本已处理并加断言（`dist/cesium/Cesium.js` 不存在即中止）。
+  - **修掉一个 `hidden` 失效的真 bug，是截图看出来的，程序化断言没查出来。** 「进入地球」卡加载后仍浮在应用上面 —— `.gate` 自带 `display:flex`，**覆盖了 UA 样式表里 `[hidden]` 的 `display:none`**。补 `.gate[hidden]{display:none}`。测试当时只读了 `element.hidden` 属性（返回 `true`，看着是对的），**改成断言计算样式** `getComputedStyle(g).display === 'none'` 才真正覆盖住，验证口径已写进文档。
+  - **「打开就能使用」分设备处理。** 桌面与平板（≥768px）自动加载，零点击；窄屏或浏览器报告省流量/慢速网络（`navigator.connection.saveData`、`effectiveType` 为 2g/3g）时先显示说明卡，**把 2.2 MB 首屏体积写在卡上**由用户决定 —— 不在移动数据上静默下载三维引擎。另有 WebGL 预探测，不支持时给中文说明而不是黑屏。
+  - **三视口浏览器实测通过**（360 / 768 / 1280）：iframe 内 Cesium 初始化成功、canvas 分别 300×150 → 768×980 → 1280×756、进入卡计算样式为 `display:none`、无横向溢出、无 JS 异常、站内除预期的 `/api/*` 外无 404。数据来源面板 9 条来源、键盘可达、Esc 可关、`prefers-reduced-motion` 下不做过渡。
+  - **体积与代价说清楚**：产物 **28MB / 417 个文件**（Cesium 14MB、内置数据与分包 12MB、飞机模型 3.2MB），首屏阻塞下载约 **2.2MB gzip**（Cesium.js 1.65MB + 主包 496KB + CSS 39KB）。产物入库使仓库从约 27.8MB 增至约 56MB；**升级上游会再加一份**，所以上游版本固定在 `844c252` 并要求升级时重跑四项验证。
+  - **首页只动了必要的一处**：新条目插在「知命阁」之后，「你的想法」编号由 21 顺延为 22，其余 20 条未改；同步补了 `item.globe.*` 英文词条与 `sitemap.xml`。（另注意到首页原本就有两条都编号 `02`（标普500热力图、宏观雷达），**属既有问题，本次未夹带修改**。）
+  - **有一项没能实测**：开发容器的出网策略禁止访问 `services.arcgisonline.com`、`earthquake.usgs.gov`、`api.adsb.lol` 等数据源域名（代理返回 `connect_rejected`），因此**底图瓦片与地震数据在容器内无法验证**，只验证到「应用正常启动、图层按失败路径优雅降级」。需在真实浏览器打开线上页面确认。
+  - **第二阶段（活数据）已留好口径未实施**：需与应用同源的后端；主站 `www.ooglex.com` 与 apex 当前是 Cloudflare **灰云（仅 DNS）**、解析到 GitHub Pages 的 `185.199.108-111.153`，流量不过 Cloudflare，**所以 Worker Routes 挂 `www.ooglex.com/api/*` 不会触发**。可行路径与移植成本最低的五个图层（adsb.lol 航班 / Overpass 军事设施 / CelesTrak 卫星 / Launch Library 2 发射 / NASA FIRMS 火点，合计约 920 行上游参考代码，许可均可商用）记在 `docs/GLOBE_INTEGRATION.md`。**航班明确用 adsb.lol（ODbL）而非 OpenSky** —— 后者非商业授权，且上游注明在 live product 中调用其 REST API 可能需要事先书面协议。
+
 - 2026-09-14，**B 档前端上线：SCRN 条件选股 / RV 相对估值 / FA 财务分析**，六项比率从真实的 SEC 报表项现算，436 家可筛可排可比。
   - **两个入口共用一张表，不重复造**：`screen.html` 同时是 `SCRN`（筛选=加阈值）与 `RV`（相对估值=和同业中位比）。四个分页：条件选股 / 同业对比 / 板块分布 / 覆盖面与口径。实测 436 家；PE 10–25 且净利率≥15 筛出 **54 家**，再加板块=金融剩 **21 家**，抽查各行都满足阈值。
   - **证券页那一格本来就留着**：菜单里 `15) 财务报表` 一直是置灰的「无来源」，数据到了就**点亮它，而不是另加第 20 页**。含报表原始项（营收/净利/EPS/权益两行/资产/负债）、六项比率与板块中位对比、两个日期。`16) 信用评级`、`17) 现金流表`、`18) 期权链` 仍无来源，**继续置灰** —— 接了基本面不等于都有了。
