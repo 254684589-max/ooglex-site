@@ -102,10 +102,16 @@
     </div>
     <footer data-src="rates">—</footer>
   </section>
-  <section class="t-panel" data-fn="FX 外汇" id="p-fx">
+  <section class="t-panel w2" data-fn="FX 外汇" id="p-fx">
     <header><span class="mn">FX</span><h3>外汇 FX</h3><span class="sub" data-sub="fx">—</span></header>
     <div class="bd">
+      <div class="t-subtabs" role="group" aria-label="外汇视图">
+        <button type="button" data-fxv="quote" aria-pressed="true" class="on">报价</button>
+        <button type="button" data-fxv="cross" aria-pressed="false">交叉汇率</button>
+      </div>
       <table class="t-tbl" id="tbl-fx"><thead><tr><th>PAIR</th><th>LAST</th><th>%CHG</th><th class="t-col-x">YTD</th></tr></thead><tbody></tbody></table>
+      <div id="fx-cross" hidden></div>
+      <p class="t-note" id="n-fx"></p>
     </div>
     <footer data-src="fx">—</footer>
   </section>
@@ -153,12 +159,20 @@
     <footer data-src="geo">—</footer>
   </section>
 
-  <section class="t-panel" data-fn="BOARD 品类分布 CATEGORIES" id="p-cat">
-    <header><span class="mn">GMKT</span><h3>品类分布 Categories</h3><span class="sub" data-sub="cat">—</span></header>
+  <section class="t-panel w2" data-fn="BOARD 品类分布 CATEGORIES" id="p-cat">
+    <header><span class="mn">GMKT</span><h3>横截面汇总 Cross-Section</h3><span class="sub" data-sub="cat">—</span></header>
     <div class="bd">
+      <div class="t-subtabs" role="group" aria-label="汇总视图">
+        <button type="button" data-agg="cat" aria-pressed="true" class="on">品类</button>
+        <button type="button" data-agg="mov" aria-pressed="false">指数贡献</button>
+        <button type="button" data-agg="ctry" aria-pressed="false">国别与板块</button>
+      </div>
       <table class="t-tbl" id="tbl-cat"><thead><tr>
         <th>品类</th><th>只数</th><th>涨</th><th>跌</th><th class="t-col-x">无值</th><th>中位当日</th>
       </tr></thead><tbody></tbody></table>
+      <div id="agg-mov" hidden></div>
+      <div id="agg-ctry" hidden></div>
+      <p class="t-note" id="n-agg"></p>
     </div>
     <footer data-src="cat">—</footer>
   </section>
@@ -234,7 +248,7 @@
 <script src="/assets/terminal/chrome.js?v=04b6a585"></script>
 <script src="/assets/terminal/behavior.js?v=00335003"></script>
 <script src="/assets/terminal/overview.js?v=62d13bbf"></script>
-<script src="/assets/terminal/render.js?v=b3d867be"></script>
+<script src="/assets/terminal/render.js?v=09660159"></script>
 <script>
 /* 终端监控首页装配：只声明「哪个面板用哪个渲染器」，口径与算法都在 /assets/terminal/。 */
 (function () {
@@ -296,6 +310,44 @@
     R.quoteTable("#tbl-fx", M.markets.fx, ["last", "pct", "ytd"]);
     set('[data-sub="fx"]', eqSrc.asOf || "—");
     set('[data-src="fx"]', srcLine(eqSrc) + " · * 在岸 CNY，非离岸 CNH");
+    /* 交叉汇率：站内只有 EURJPY / EURGBP 两条真直盘，其余格子都是两条美元腿推导的。
+       推导值不是可成交报价，而且两条腿快照时点不同，和直盘会差出零点几个百分点 ——
+       凡是能对账的都把差值摆出来。 */
+    (function () {
+      var raw = (M.raw.assets && !M.raw.assets.__error) ? (M.raw.assets.assets || []) : [];
+      var fxRaw = raw.filter(function (x) { return x.category === "fx"; });
+      function show(v) {
+        var isQ = v === "quote";
+        $("#tbl-fx").hidden = !isQ;
+        $("#fx-cross").hidden = isQ;
+        $$("[data-fxv]").forEach(function (b3) {
+          var on = b3.getAttribute("data-fxv") === v;
+          b3.setAttribute("aria-pressed", String(on));
+          b3.classList.toggle("on", on);
+        });
+        if (isQ) {
+          set("#n-fx", "报价为数据源直接给出的对美元或对欧元的盘中快照（约 30 分钟刷新、非实时）。" +
+            "CNY 是在岸价，不是离岸 CNH。");
+          return;
+        }
+        var r = R.fxCross("#fx-cross", fxRaw);
+        if (!r) { set("#n-fx", "可用的美元腿不足，画不出交叉矩阵。"); return; }
+        var chk = (r.checks || []).map(function (c) {
+          return c.pair + " 推导 " + c.derived.toFixed(4) + " / 站内直盘 " + c.direct +
+                 "，差 " + (c.gap >= 0 ? "+" : "") + c.gap.toFixed(2) + "%";
+        });
+        set("#n-fx", "读法：行是 1 单位，列是折成多少。" +
+          "只有美元那一行一列是数据源直接给的，其余格子都是由两条美元腿推导的 —— " +
+          "推导汇率不是可成交报价，而且两条腿的快照时点不一样。" +
+          "带 * 的格子站内另有直盘可以对账：" + (chk.length ? chk.join("；") : "无") +
+          "。这个差就是时点不同造成的，不是哪一边算错了。");
+        set('[data-src="fx"]', srcLine(eqSrc) + " · 交叉汇率由美元腿现算，非可成交报价");
+      }
+      $$("[data-fxv]").forEach(function (b3) {
+        b3.onclick = function () { show(b3.getAttribute("data-fxv")); };
+      });
+      show("quote");
+    })();
 
     R.quoteTable("#tbl-cm", M.markets.commodities, ["last", "pct", "ytd"]);
     set('[data-sub="cm"]', eqSrc.asOf || "—");
@@ -500,6 +552,125 @@
       set('[data-sub="cat"]', raw.length + " 个标的 · " + (eqSrc.asOf || "—"));
       set('[data-src="cat"]', srcLine(eqSrc) +
         " · 只数与涨跌宽度按跨资产管道的 category 字段汇总 · 完整的可搜索看板见 /apps/markets/");
+
+      /* ── 指数贡献与国别／板块汇总 ────────────────────────────────────────
+         指数贡献必须说清它是近似：站内只有 383 家标普成分（实际 500 家），
+         而且没有官方指数除数，权重是在这 383 家内部算的 —— 所以它是
+         「站内这批的市值加权贡献」，不是官方指数贡献。 */
+      var comps = (M.raw.comps && !M.raw.comps.__error) ? (M.raw.comps.companies || []) : [];
+      function movView() {
+        var sp = comps.filter(function (c) {
+          return c.sp500 && isNum(c.marketCap) && isNum(c.changePct) && c.symbol && c.symbol !== "—";
+        });
+        var host = $("#agg-mov");
+        if (sp.length < 20) {
+          host.innerHTML = '<p class="t-note">标普成分标记或市值缺失，无法汇总贡献</p>';
+          set("#n-agg", "公司榜读取失败或缺少 sp500 标记，本视图不给数。");
+          return;
+        }
+        var tot = sp.reduce(function (a2, c) { return a2 + c.marketCap; }, 0);
+        var rows = sp.map(function (c) {
+          return { tk:c.symbol, zh:c.name, w:c.marketCap / tot * 100,
+                   pct:c.changePct, contrib:c.marketCap / tot * c.changePct,
+                   detail:{ kind:"company", symbol:c.symbol } };
+        }).sort(function (a2, b2) { return b2.contrib - a2.contrib; });
+        var top = rows.slice(0, 8), bot = rows.slice(-8).reverse();
+        var sum = rows.reduce(function (a2, r) { return a2 + r.contrib; }, 0);
+        function block(title, list) {
+          return '<tr class="t-grp"><td colspan="5">' + esc(title) + "</td></tr>" +
+            list.map(function (r, i) {
+              var ni = '<i>' + (i + 1) + ')</i>' + esc(r.tk) + '<span class="sub">' + esc(r.zh || "") + "</span>";
+              return '<tr data-tk="' + esc(r.tk) + '"><td class="t-rownum">' +
+                R.nameCell(ni, r.detail, "打开 " + r.tk + " 的走势详情") + "</td>" +
+                '<td class="' + fmt.cls(r.contrib) + ' t-last">' +
+                  (r.contrib >= 0 ? "+" : "−") + Math.abs(r.contrib).toFixed(3) + "</td>" +
+                '<td class="' + fmt.cls(r.pct) + '">' + fmt.pct(r.pct) + "</td>" +
+                "<td>" + r.w.toFixed(2) + "%</td>" +
+                '<td class="t-col-x">$' + fmt.cap(r.w / 100 * tot) + "</td></tr>";
+            }).join("");
+        }
+        host.innerHTML = '<div class="t-scroll-x"><table class="t-tbl"><thead><tr>' +
+          "<th>标的</th><th>贡献(pp)</th><th>当日</th><th>权重</th><th class=\"t-col-x\">市值</th>" +
+          "</tr></thead><tbody>" + block("推动最大 TOP", top) + block("拖累最大 BOTTOM", bot) +
+          '<tr class="t-grp"><td colspan="5">这 ' + sp.length + " 家加权合计 " +
+          (sum >= 0 ? "+" : "−") + Math.abs(sum).toFixed(3) + " pp</td></tr>" +
+          "</tbody></table></div>";
+        set("#n-agg",
+          "贡献 = 该股在这批里的市值权重 × 它的当日涨跌，单位百分点。" +
+          "口径必须看清：站内有 sp500 标记且市值与当日涨跌齐全的只有 " + sp.length +
+          " 家，而标普 500 实际是 500 家；权重是在这 " + sp.length +
+          " 家内部算的（合计 100%），站内也没有官方指数除数。" +
+          "所以这是「站内这批的市值加权近似」，不是官方指数贡献 —— 加权合计 " +
+          (sum >= 0 ? "+" : "−") + Math.abs(sum).toFixed(3) + " pp 也只能这么读。" +
+          " 自由流通股本调整、指数委员会的成分与权重调整都未考虑。");
+      }
+      function ctryView() {
+        var host = $("#agg-ctry");
+        var pool = comps.filter(function (c) {
+          return c.symbol && c.symbol !== "—" && isNum(c.marketCap);
+        });
+        if (!pool.length) {
+          host.innerHTML = '<p class="t-note">公司榜读取失败，无法汇总</p>';
+          set("#n-agg", "公司榜读取失败，本视图不给数。"); return;
+        }
+        function agg(keyFn, label) {
+          var g = {};
+          pool.forEach(function (c) {
+            var k = keyFn(c) || "未标注";
+            var b2 = g[k] = g[k] || { n:0, cap:0, d1:[] };
+            b2.n++; b2.cap += c.marketCap;
+            if (isNum(c.changePct)) b2.d1.push(c.changePct);
+          });
+          var capAll = pool.reduce(function (a2, c) { return a2 + c.marketCap; }, 0);
+          var list = Object.keys(g).map(function (k) {
+            var b2 = g[k], sorted = b2.d1.slice().sort(function (x, y) { return x - y; });
+            var med = sorted.length ? (sorted.length % 2 ? sorted[(sorted.length - 1) / 2]
+              : (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2) : null;
+            return { k:k, n:b2.n, cap:b2.cap, share:b2.cap / capAll * 100, med:med,
+                     up:b2.d1.filter(function (x) { return x > 0; }).length,
+                     dn:b2.d1.filter(function (x) { return x < 0; }).length,
+                     na:b2.n - b2.d1.length };
+          }).sort(function (a2, b2) { return b2.cap - a2.cap; });
+          return '<tr class="t-grp"><td colspan="7">' + esc(label) + "</td></tr>" +
+            list.slice(0, 12).map(function (r) {
+              return '<tr data-nm="' + esc(r.k) + '"><td class="t-rownum">' + esc(r.k) + "</td>" +
+                "<td>" + r.n + "</td><td>$" + fmt.cap(r.cap) + "</td>" +
+                "<td>" + r.share.toFixed(1) + "%</td>" +
+                '<td class="t-up">' + r.up + '</td><td class="t-dn">' + r.dn + "</td>" +
+                '<td class="' + fmt.cls(r.med) + '">' + fmt.pct(r.med) + "</td></tr>";
+            }).join("");
+        }
+        host.innerHTML = '<div class="t-scroll-x"><table class="t-tbl"><thead><tr>' +
+          "<th>分组</th><th>只数</th><th>市值</th><th>市值占比</th><th>涨</th><th>跌</th><th>中位当日</th>" +
+          "</tr></thead><tbody>" +
+          agg(function (c) { return c.country; }, "按国别／地区（前 12，按市值）") +
+          agg(function (c) { return c.sector; }, "按板块（前 12，按市值）") +
+          "</tbody></table></div>";
+        set("#n-agg", "按公司榜每行自带的 country / sector 字段汇总，池子是站内 " + pool.length +
+          " 家（今天按市值排前列的上市公司），不是全市场。" +
+          "市值占比是在这个池子内部算的，中位当日用中位数而不是平均 —— 一家极端波动不该带偏整组。" +
+          "未标注的归入「未标注」，不猜。");
+      }
+      var aggViews = { cat: null, mov: movView, ctry: ctryView };
+      function showAgg(v) {
+        $("#tbl-cat").hidden = v !== "cat";
+        $("#agg-mov").hidden = v !== "mov";
+        $("#agg-ctry").hidden = v !== "ctry";
+        $$("[data-agg]").forEach(function (b2) {
+          var on = b2.getAttribute("data-agg") === v;
+          b2.setAttribute("aria-pressed", String(on));
+          b2.classList.toggle("on", on);
+        });
+        if (v === "cat") {
+          set("#n-agg", "按跨资产管道的 category 字段汇总只数与涨跌宽度，" +
+            "完整的可搜索看板见 /apps/markets/ —— 这里不复制第二份看板。");
+        } else if (aggViews[v]) aggViews[v]();
+        K.wireNumbers();
+      }
+      $$("[data-agg]").forEach(function (b2) {
+        b2.onclick = function () { showAgg(b2.getAttribute("data-agg")); };
+      });
+      showAgg("cat");
     })();
 
     R.sources("#tbl-sources", M);

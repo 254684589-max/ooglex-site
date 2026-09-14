@@ -561,6 +561,29 @@ def main() -> int:
     require("不插值" in str(cj.get("note", "")), "曲线数据源应声明不插值")
     section("曲线三视图")
 
+    # ── 17 横截面汇总与交叉汇率：近似口径必须写明 ──────────────────────────
+    require('data-agg="mov"' in mon and 'data-agg="ctry"' in mon,
+            "横截面汇总面板必须有指数贡献与国别板块两个视图")
+    require("不是官方指数贡献" in mon,
+            "指数贡献是站内子集的市值加权近似，必须写明不是官方指数贡献")
+    require("没有官方指数除数" in mon, "必须写明站内没有官方指数除数")
+    require("自由流通股本调整" in mon, "必须写明未做自由流通股本调整")
+    require("实际是 500 家" in mon, "必须写明站内标普成分覆盖不全")
+    require("不是全市场" in mon, "国别／板块汇总的池子不是全市场，必须写明")
+    require("中位数而不是平均" in mon, "横截面汇总用中位数，必须写明理由")
+    require("fxCross" in ren, "交叉汇率必须走 render 层")
+    require('data-fxv="cross"' in mon, "外汇面板必须有交叉汇率视图")
+    fxc = ren[ren.index("function fxCross"):]
+    fxc = fxc[:fxc.index("\n  function ")]
+    require("非可成交报价" in fxc, "推导汇率必须标明不是可成交报价")
+    require("usdPer" in fxc and "direct" in fxc,
+            "交叉汇率必须区分美元腿推导与站内直盘")
+    require("不是可成交报价" in mon, "交叉汇率页面说明必须写明非可成交")
+    require("不是哪一边算错了" in mon,
+            "推导值与直盘的差是快照时点造成的，必须说清不是算错")
+    require("站内直盘" in mon, "凡站内有直盘的格子必须给出对账差值")
+    section("横截面汇总与交叉汇率")
+
     return report()
 
 

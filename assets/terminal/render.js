@@ -785,6 +785,53 @@
     return { n: live.length };
   }
 
+  /* ── 交叉汇率矩阵 ──────────────────────────────────────────────────────
+     站内 22 条外汇里绝大多数是美元腿（USDxxx 或 xxxUSD），只有 EURJPY、
+     EURGBP 两条是直盘。所以矩阵里除美元行列之外**几乎全是由两条美元腿推导的**，
+     必须标出来：推导汇率不是可成交报价，而且两条腿的快照时点不同，
+     和直盘能差出零点几个百分点（实测 EURJPY 推导 178.14 / 直盘 177.25，差 +0.50%）。
+     凡是站内同时有直盘的格子，都把这个差值显示出来。 */
+  function fxCross(hostSel, pairs, opt) {
+    opt = opt || {};
+    var host = typeof hostSel === "string" ? $(hostSel) : hostSel;
+    if (!host) return null;
+    var usdPer = { USD: 1 }, direct = {};
+    (pairs || []).forEach(function (x) {
+      var m = /^([A-Z]{3})([A-Z]{3})=X$/.exec(String(x.symbol || ""));
+      if (!m || !isNum(x.price) || x.price <= 0) return;
+      var A = m[1], B = m[2];
+      if (A === "USD") usdPer[B] = x.price;              /* 1 USD = price B */
+      else if (B === "USD") usdPer[A] = 1 / x.price;     /* 1 A = price USD */
+      else direct[A + B] = x.price;                       /* 真直盘，留着对账 */
+    });
+    var want = (opt.order || ["USD", "EUR", "JPY", "GBP", "CHF", "CAD", "AUD", "CNY"])
+      .filter(function (c) { return isNum(usdPer[c]); });
+    if (want.length < 3) { host.innerHTML = '<p class="t-note">可用的美元腿不足，画不出交叉矩阵</p>'; return null; }
+    var checks = [];
+    var head = '<tr><th scope="col">1 ↓ =</th>' + want.map(function (c) {
+      return '<th scope="col">' + esc(c) + "</th>";
+    }).join("") + "</tr>";
+    var body = want.map(function (A) {
+      return '<tr><th scope="row">' + esc(A) + "</th>" + want.map(function (B) {
+        if (A === B) return '<td class="t-flat">1</td>';
+        var v = usdPer[B] / usdPer[A];                    /* 1 A = v B */
+        var isDirect = A === "USD" || B === "USD";
+        var d = direct[A + B];
+        var gap = null;
+        if (isNum(d)) { gap = (v / d - 1) * 100; checks.push({ pair: A + B, derived: v, direct: d, gap: gap }); }
+        var dp = v >= 100 ? 2 : v >= 1 ? 4 : 5;
+        return "<td" + (isDirect ? "" : ' class="t-na"') + ' title="' +
+          esc("1 " + A + " = " + v.toFixed(dp) + " " + B +
+              (isDirect ? "（美元腿，数据源直接给出）" : "（由两条美元腿推导，非可成交报价）") +
+              (isNum(gap) ? "；站内直盘 " + d + "，推导值差 " + (gap >= 0 ? "+" : "") + gap.toFixed(2) + "%" : "")) +
+          '">' + v.toFixed(dp) + (isNum(gap) ? "<sup>*</sup>" : "") + "</td>";
+      }).join("") + "</tr>";
+    }).join("");
+    host.innerHTML = '<div class="t-scroll-x"><table class="t-tbl t-corr">' +
+      "<thead>" + head + "</thead><tbody>" + body + "</tbody></table></div>";
+    return { ccy: want, checks: checks };
+  }
+
   function fields(dl, list) {
     dl = typeof dl === "string" ? $(dl) : dl;
     if (!dl) return;
@@ -805,6 +852,7 @@
     macroBlock: macroBlock,
     priceLine: priceLine, multiLine: multiLine, smallMultiples: smallMultiples,
     corrMatrix: corrMatrix, seasonGrid: seasonGrid, curveSnapshots: curveSnapshots,
+    fxCross: fxCross,
     fields: fields, nameCell: nameCell,
     crossBars: crossBars, calendar: calendar, news: news, alerts: alerts, sources: sources,
     watchlist: watchlist, topStatus: topStatus

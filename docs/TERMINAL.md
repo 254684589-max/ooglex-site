@@ -329,7 +329,7 @@ python3 -m py_compile scripts/validate_terminal.py
 # 资源版本号（全站硬性：回访用户不能拿旧代码配新数据）
 python3 scripts/validate_asset_versions.py            # --stamp 自动补哈希
 
-# 新终端契约（535 条：出处规范、不伪造实时、不可得字段声明、无下单键、
+# 新终端契约（555 条：出处规范、不伪造实时、不可得字段声明、无下单键、
 #              注册表完整性、代码层单一真源、迁入两块的专项、无孤儿引用、无障碍、
 #              标的详情链路与历史分片、类名不得撞名、多标的比较的对齐与归一化）
 python3 scripts/validate_terminal.py
