@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-14T18:08:02Z",
+  "updatedAt": "2026-09-14T22:44:52Z",
   "asOf": "2026-09-14",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-09-13 ~ 2026-09-19",
-  "count": 103,
+  "count": 104,
   "highCount": 16,
   "events": [
     {
@@ -218,7 +218,7 @@
       "title": "Fixed Asset Investment ytd/y",
       "titleEn": "Fixed Asset Investment ytd/y",
       "impact": "low",
-      "forecast": "-7.0%",
+      "forecast": "-7.1%",
       "previous": "-6.7%",
       "actual": null
     },
@@ -254,7 +254,7 @@
       "title": "零售销售 同比",
       "titleEn": "Retail Sales y/y",
       "impact": "low",
-      "forecast": "0.8%",
+      "forecast": "0.7%",
       "previous": "0.6%",
       "actual": null
     },
@@ -326,7 +326,7 @@
       "title": "失业率",
       "titleEn": "Unemployment Rate",
       "impact": "low",
-      "forecast": "4.9%",
+      "forecast": "5.0%",
       "previous": "4.9%",
       "actual": null
     },
@@ -386,7 +386,7 @@
       "title": "German ZEW Economic Sentiment",
       "titleEn": "German ZEW Economic Sentiment",
       "impact": "low",
-      "forecast": "42.7",
+      "forecast": "39.8",
       "previous": "34.2",
       "actual": null
     },
@@ -398,7 +398,7 @@
       "title": "ZEW Economic Sentiment",
       "titleEn": "ZEW Economic Sentiment",
       "impact": "low",
-      "forecast": "39.9",
+      "forecast": "39.2",
       "previous": "31.4",
       "actual": null
     },
@@ -434,7 +434,7 @@
       "title": "纽约联储制造业指数",
       "titleEn": "Empire State Manufacturing Index",
       "impact": "low",
-      "forecast": "14.1",
+      "forecast": "14.8",
       "previous": "20.6",
       "actual": null
     },
@@ -482,7 +482,7 @@
       "title": "经常账户",
       "titleEn": "Current Account",
       "impact": "low",
-      "forecast": "-2.37B",
+      "forecast": "-2.57B",
       "previous": "-1.01B",
       "actual": null
     },
@@ -494,7 +494,7 @@
       "title": "Core Machinery Orders m/m",
       "titleEn": "Core Machinery Orders m/m",
       "impact": "low",
-      "forecast": "-1.1%",
+      "forecast": "-1.2%",
       "previous": "9.7%",
       "actual": null
     },
@@ -506,7 +506,7 @@
       "title": "贸易帐",
       "titleEn": "Trade Balance",
       "impact": "low",
-      "forecast": "-0.98T",
+      "forecast": "-1.00T",
       "previous": "-0.69T",
       "actual": null
     },
@@ -554,7 +554,7 @@
       "title": "PPI（生产者物价指数） 环比",
       "titleEn": "PPI Input m/m",
       "impact": "low",
-      "forecast": "-0.6%",
+      "forecast": "0.6%",
       "previous": "-1.7%",
       "actual": null
     },
@@ -566,7 +566,7 @@
       "title": "PPI（生产者物价指数） 环比",
       "titleEn": "PPI Output m/m",
       "impact": "low",
-      "forecast": "0.1%",
+      "forecast": "0.5%",
       "previous": "0.2%",
       "actual": null
     },
@@ -602,7 +602,7 @@
       "title": "工业产出 环比",
       "titleEn": "Industrial Production m/m",
       "impact": "low",
-      "forecast": "-0.5%",
+      "forecast": "-0.2%",
       "previous": "0.0%",
       "actual": null
     },
@@ -626,7 +626,7 @@
       "title": "新屋开工",
       "titleEn": "Housing Starts",
       "impact": "low",
-      "forecast": "239K",
+      "forecast": "243K",
       "previous": "229K",
       "actual": null
     },
@@ -638,7 +638,7 @@
       "title": "营建许可 环比",
       "titleEn": "Building Permits m/m",
       "impact": "low",
-      "forecast": "-5.8%",
+      "forecast": "-4.5%",
       "previous": "18.5%",
       "actual": null
     },
@@ -674,7 +674,7 @@
       "title": "进口物价 环比",
       "titleEn": "Import Prices m/m",
       "impact": "low",
-      "forecast": "0.0%",
+      "forecast": "0.4%",
       "previous": "-0.4%",
       "actual": null
     },
@@ -686,7 +686,7 @@
       "title": "Business Inventories m/m",
       "titleEn": "Business Inventories m/m",
       "impact": "low",
-      "forecast": "0.3%",
+      "forecast": "0.6%",
       "previous": "0.0%",
       "actual": null
     },
@@ -712,6 +712,18 @@
       "impact": "low",
       "forecast": null,
       "previous": "-0.4M",
+      "actual": null
+    },
+    {
+      "ts": "2026-09-16T16:00:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "德央行行长讲话",
+      "titleEn": "German Buba President Nagel Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
@@ -902,7 +914,7 @@
       "title": "PPI（生产者物价指数） 环比",
       "titleEn": "IPPI m/m",
       "impact": "low",
-      "forecast": "0.3%",
+      "forecast": "0.0%",
       "previous": "0.6%",
       "actual": null
     },
@@ -914,7 +926,7 @@
       "title": "RMPI m/m",
       "titleEn": "RMPI m/m",
       "impact": "low",
-      "forecast": "-0.8%",
+      "forecast": "0.7%",
       "previous": "-2.2%",
       "actual": null
     },
@@ -926,7 +938,7 @@
       "title": "Philly Fed Manufacturing Index",
       "titleEn": "Philly Fed Manufacturing Index",
       "impact": "medium",
-      "forecast": "28.9",
+      "forecast": "31.3",
       "previous": "47.4",
       "actual": null
     },
@@ -938,7 +950,7 @@
       "title": "申请失业金人数",
       "titleEn": "Unemployment Claims",
       "impact": "medium",
-      "forecast": "209K",
+      "forecast": "208K",
       "previous": "206K",
       "actual": null
     },
@@ -962,7 +974,7 @@
       "title": "新屋开工",
       "titleEn": "Housing Starts",
       "impact": "low",
-      "forecast": "1.32M",
+      "forecast": "1.31M",
       "previous": "1.24M",
       "actual": null
     },
@@ -974,7 +986,7 @@
       "title": "成屋签约销售 环比",
       "titleEn": "Pending Home Sales m/m",
       "impact": "low",
-      "forecast": "0.3%",
+      "forecast": "-0.2%",
       "previous": "-2.3%",
       "actual": null
     },
@@ -1022,7 +1034,7 @@
       "title": "贸易帐",
       "titleEn": "Trade Balance",
       "impact": "low",
-      "forecast": "-1275M",
+      "forecast": "-1775M",
       "previous": "-1949M",
       "actual": null
     },
@@ -1190,7 +1202,7 @@
       "title": "工业产出 环比",
       "titleEn": "Industrial Production m/m",
       "impact": "low",
-      "forecast": "0.1%",
+      "forecast": "0.3%",
       "previous": "0.2%",
       "actual": null
     },
@@ -1214,7 +1226,7 @@
       "title": "CB Leading Index m/m",
       "titleEn": "CB Leading Index m/m",
       "impact": "low",
-      "forecast": "0.2%",
+      "forecast": "0.1%",
       "previous": "0.2%",
       "actual": null
     },
