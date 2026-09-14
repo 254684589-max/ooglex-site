@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-13T21:38:30Z",
-  "asOf": "2026-09-13",
+  "updatedAt": "2026-09-14T18:08:02Z",
+  "asOf": "2026-09-14",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-09-13 ~ 2026-09-19",
-  "count": 97,
+  "count": 103,
   "highCount": 16,
   "events": [
     {
@@ -79,7 +79,7 @@
       "actual": null
     },
     {
-      "ts": "2026-09-14T08:03:00Z",
+      "ts": "2026-09-14T09:01:00Z",
       "ccy": "CNY",
       "country": "中国",
       "flag": "🇨🇳",
@@ -91,7 +91,7 @@
       "actual": null
     },
     {
-      "ts": "2026-09-14T08:03:00Z",
+      "ts": "2026-09-14T09:01:00Z",
       "ccy": "CNY",
       "country": "中国",
       "flag": "🇨🇳",
@@ -184,6 +184,18 @@
       "impact": "low",
       "forecast": null,
       "previous": "-0.4%",
+      "actual": null
+    },
+    {
+      "ts": "2026-09-14T15:15:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "欧央行行长讲话",
+      "titleEn": "ECB President Lagarde Speaks",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
       "actual": null
     },
     {
@@ -722,7 +734,7 @@
       "title": "美联储利率决议",
       "titleEn": "Federal Funds Rate",
       "impact": "high",
-      "forecast": "3.75%",
+      "forecast": "4.00%",
       "previous": "3.75%",
       "actual": null
     },
@@ -1123,6 +1135,42 @@
       "actual": null
     },
     {
+      "ts": "2026-09-18T10:15:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "Eurogroup Meetings",
+      "titleEn": "Eurogroup Meetings",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-09-18T10:15:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "ECOFIN Meetings",
+      "titleEn": "ECOFIN Meetings",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-09-18T10:30:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "欧央行行长讲话",
+      "titleEn": "ECB President Lagarde Speaks",
+      "impact": "medium",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
       "ts": "2026-09-18T13:15:00Z",
       "ccy": "USD",
       "country": "美国",
@@ -1168,6 +1216,30 @@
       "impact": "low",
       "forecast": "0.2%",
       "previous": "0.2%",
+      "actual": null
+    },
+    {
+      "ts": "2026-09-18T15:45:00Z",
+      "ccy": "USD",
+      "country": "美国",
+      "flag": "🇺🇸",
+      "title": "美联储官员讲话",
+      "titleEn": "FOMC Member Schmid Speaks",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
+      "actual": null
+    },
+    {
+      "ts": "2026-09-19T10:15:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "ECOFIN Meetings",
+      "titleEn": "ECOFIN Meetings",
+      "impact": "low",
+      "forecast": null,
+      "previous": null,
       "actual": null
     }
   ],
