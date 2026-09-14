@@ -31,6 +31,24 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      # 放在最前面：它只读一个环境变量，不需要仓库内容。没设就该立刻报错，
+      # 而不是白跑完 checkout / 同步分支 / 装 Python 再失败（实测那样要 17 秒）。
+      - name: Check SEC_CONTACT is set
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+        run: |
+          if [ -z "$SEC_CONTACT" ]; then
+            echo "::error::未设置仓库变量 SEC_CONTACT。SEC 要求自动化访问在 User-Agent 里声明联系方式。"
+            echo "::error::设置位置：Settings → Secrets and variables → Actions → Variables 页"
+            echo "::error::  → 下半部分【Repository variables】那一栏的绿色按钮 New repository variable。"
+            echo "::error::注意不是上半部分的【Environment variables】：本工作流没有声明 environment:，"
+            echo "::error::读的是 vars.SEC_CONTACT，只认仓库级变量，填进环境变量那一栏这里读不到。"
+            echo "::error::Name 必须正好是 SEC_CONTACT（全大写加下划线）；Value 填你愿意对 SEC 公开的联系邮箱。"
+            echo "::error::它是明文变量而不是 Secret —— 因为这个值本来就要发给 SEC，不是密钥。"
+            exit 1
+          fi
+          echo "SEC_CONTACT 已设置（值不回显）"
+
       - name: Checkout Code
         uses: actions/checkout@v6
         with:
@@ -49,17 +67,6 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-
-      - name: Check SEC_CONTACT is set
-        env:
-          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
-        run: |
-          if [ -z "$SEC_CONTACT" ]; then
-            echo "::error::未设置仓库变量 SEC_CONTACT。SEC 要求自动化访问声明联系方式。"
-            echo "::error::设置位置：Settings → Secrets and variables → Actions → Variables。"
-            exit 1
-          fi
-          echo "SEC_CONTACT 已设置（值不回显）"
 
       - name: Build fundamentals
         env:

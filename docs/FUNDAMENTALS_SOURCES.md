@@ -217,7 +217,11 @@ rebase 重试、诊断留 14 天。**可写范围只有 `apps/companies/fundamen
 ### 三件需要你做的事
 
 1. **设一个仓库变量 `SEC_CONTACT`。** Settings → Secrets and variables →
-   Actions → Variables，值填你愿意对 SEC 公开的联系邮箱。SEC 要求自动化访问在
+   Actions → Variables，**下半部分「Repository variables」那一栏**（不是上半部分的
+   「Environment variables」—— 本工作流没声明 `environment:`，读的是 `vars.SEC_CONTACT`，
+   只认仓库级变量）。值填你愿意对 SEC 公开的联系邮箱。**它是明文变量而不是 Secret，
+   因为这个值本来就要发给 SEC、不是密钥**；有协作者权限的人都看得到，所以要是不想
+   暴露主邮箱就换一个收技术通知的地址，SEC 不校验是哪个。SEC 要求自动化访问在
    User-Agent 里声明联系方式 —— **那是你的个人信息，我没有把它写进仓库**，
    也不会替你发给第三方服务。没设这个变量脚本会直接失败并说明，不会用默认值去撞
    SEC 的限流策略。
