@@ -260,8 +260,13 @@
   function webglOk() {
     try {
       var c = document.createElement('canvas');
-      return !!(window.WebGLRenderingContext &&
-        (c.getContext('webgl2') || c.getContext('webgl')));
+      var gl = window.WebGLRenderingContext &&
+        (c.getContext('webgl2') || c.getContext('webgl'));
+      if (!gl) return false;
+      // A capability probe must not retain a GPU context on every reload.
+      var release = gl.getExtension('WEBGL_lose_context');
+      if (release) release.loseContext();
+      return true;
     } catch (e) { return false; }
   }
 

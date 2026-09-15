@@ -126,17 +126,27 @@ try {
   await run('language switch preserves local startup', async () => {
     const s = await open(1280);
     try {
+      await s.page.waitForFunction(() => document.getElementById('gate').hidden && !document.getElementById('btn-map').disabled);
       await s.page.click('#btn-lang');
       await s.page.waitForFunction(() => {
         const f = document.querySelector('.stage iframe');
         return f?.src.includes('lang=en') && f.contentDocument?.documentElement.dataset.globeState === 'ready';
       }, { timeout: 30000 });
       assert.equal(await s.page.$eval('.stage iframe', f => f.contentDocument.documentElement.dataset.globeMap), 'local-earth');
+      await s.page.waitForFunction(() => document.getElementById('gate').hidden && !document.getElementById('btn-map').disabled);
       await s.page.click('#btn-lang');
       await s.page.waitForFunction(() => {
         const f = document.querySelector('.stage iframe');
         return f && !f.src.includes('lang=en') && f.contentDocument?.documentElement.dataset.globeState === 'ready';
       }, { timeout: 30000 });
+    } catch (error) {
+      console.error('LANGUAGE DIAGNOSTICS ' + JSON.stringify(await s.page.evaluate(() => {
+        const f = document.querySelector('.stage iframe');
+        return {src: f?.src, state: f?.contentDocument?.documentElement.dataset, gate: document.getElementById('gate').textContent, status: document.getElementById('load-status').textContent};
+      })));
+      console.error('LANGUAGE NETWORK ' + JSON.stringify({errors: s.errors, bad: s.bad, external: s.external.map(r => r.url())}));
+      await s.page.screenshot({path: 'artifacts/globe/language-failure.png'}).catch(() => {});
+      throw error;
     } finally { await s.context.close(); }
   });
   await run('missing entry script shows retry instead of an endless loader', async () => {
