@@ -104,6 +104,7 @@
     if (ready) return;
     clearTimeout(bootTimer);
     report('error', message);
+    document.getElementById('loading-screen')?.classList.remove('hidden');
     var status = document.querySelector('#loading-screen .loader-status');
     if (status) status.textContent = message;
     var host = document.querySelector('#loading-screen .loader-content');
@@ -125,7 +126,7 @@
         var remove = scene.viewer.scene.postRender.addEventListener(function () {
           var screen = document.getElementById('loading-screen');
           var canvas = scene.viewer.canvas;
-          if (!tileCount || !scene.viewer.scene.globe.tilesLoaded || !canvas.width || !canvas.height ||
+          if (!tileCount || !canvas.width || !canvas.height ||
               (screen && !screen.classList.contains('hidden'))) return;
           remove();
           clearTimeout(timer);

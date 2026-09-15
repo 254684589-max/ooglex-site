@@ -70,7 +70,7 @@ async function basic(width, mode = 'hang', path = '/apps/globe/') {
       await document.fonts.ready;
       const doc = document.documentElement;
       const canvas = document.querySelector('.cesium-widget canvas');
-      const icon = document.querySelector('.material-symbols-outlined');
+      const icon = [...document.querySelectorAll('.material-symbols-outlined')].find(el => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0; });
       return { ready: doc.dataset.globeState, map: doc.dataset.globeMap,
         tiles: Number(doc.dataset.globeTiles), width: canvas?.width, height: canvas?.height,
         overflow: doc.scrollWidth > innerWidth + 1,
