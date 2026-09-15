@@ -80,11 +80,11 @@ async function verifyVisibleEarth(page, frame) {
     return { colors: colors.size, oceanFraction: blue / samples, landFraction: land / samples };
   }, 'data:image/png;base64,' + screenshot);
   console.log('EARTH PIXELS ' + JSON.stringify(stats));
-  assert(stats.colors > 35 && stats.oceanFraction > .03 && stats.landFraction > .03,
-    'The center must contain textured continents and oceans, not a uniform green surface');
-  if (process.env.GLOBE_VERIFY_PREVIEW) {
+  const visible = stats.colors > 35 && stats.oceanFraction > .03 && stats.landFraction > .03;
+  if (process.env.GLOBE_VERIFY_PREVIEW || !visible) {
     console.log('GLOBE_PREVIEW ' + await page.screenshot({ type: 'jpeg', quality: 35, encoding: 'base64' }));
   }
+  assert(visible, 'The center must contain textured continents and oceans, not a uniform green surface');
 }
 async function basic(width, mode = 'hang', path = '/apps/globe/') {
   const state = await open(width, mode, path);
