@@ -1,25 +1,25 @@
 {
-  "updatedAt": "2026-09-14T22:43:56Z",
-  "asOf": "2026-09-14",
+  "updatedAt": "2026-09-15T23:09:01Z",
+  "asOf": "2026-09-15",
   "source": "CNN Business Fear & Greed Index",
-  "score": 31,
+  "score": 29,
   "rating": "fear",
   "ratingZh": "恐惧",
   "refs": {
     "now": {
-      "score": 31,
+      "score": 29,
       "rating": "fear",
       "ratingZh": "恐惧"
     },
     "close": {
-      "score": 33,
+      "score": 31,
       "rating": "fear",
       "ratingZh": "恐惧"
     },
     "week": {
-      "score": 45,
-      "rating": "neutral",
-      "ratingZh": "中性"
+      "score": 39,
+      "rating": "fear",
+      "ratingZh": "恐惧"
     },
     "month": {
       "score": 64,
@@ -27,22 +27,22 @@
       "ratingZh": "贪婪"
     },
     "year": {
-      "score": 61,
+      "score": 64,
       "rating": "greed",
       "ratingZh": "贪婪"
     }
   },
   "indicators": [
     {
-      "score": 25,
-      "rating": "fear",
-      "ratingZh": "恐惧",
+      "score": 23,
+      "rating": "extreme fear",
+      "ratingZh": "极度恐惧",
       "key": "market_momentum_sp500",
       "name": "市场动能",
       "desc": "标普500 相对125日均线"
     },
     {
-      "score": 4,
+      "score": 1,
       "rating": "extreme fear",
       "ratingZh": "极度恐惧",
       "key": "stock_price_strength",
@@ -50,7 +50,7 @@
       "desc": "创52周新高 vs 新低个股"
     },
     {
-      "score": 9,
+      "score": 5,
       "rating": "extreme fear",
       "ratingZh": "极度恐惧",
       "key": "stock_price_breadth",
@@ -58,7 +58,7 @@
       "desc": "麦克莱伦成交量总和指数"
     },
     {
-      "score": 36,
+      "score": 32,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "put_call_options",
@@ -74,7 +74,7 @@
       "desc": "VIX 及其50日均线"
     },
     {
-      "score": 29,
+      "score": 31,
       "rating": "fear",
       "ratingZh": "恐惧",
       "key": "safe_haven_demand",
@@ -82,7 +82,7 @@
       "desc": "股票 vs 国债 20日收益差"
     },
     {
-      "score": 65,
+      "score": 59,
       "rating": "greed",
       "ratingZh": "贪婪",
       "key": "junk_bond_demand",
