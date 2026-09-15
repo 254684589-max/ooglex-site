@@ -12,7 +12,7 @@
     if (!document.documentElement) return;
     document.documentElement.dataset.globeState = type;
     if (window.parent !== window) window.parent.postMessage(
-      { type: 'ooglex:globe', url: location.href, state: type, detail: detail || '' }, location.origin);
+      { type: 'ooglex:globe', url: location.href.split('#')[0], state: type, detail: detail || '' }, location.origin);
   }
   // Keep late completions owned by this request; never switch a map from here.
   function deadline(promise, ms, signal, onLate) {
