@@ -1,11 +1,12 @@
 export function patchBundle(input) {
-  if (input.includes('window.OoglexGlobeNetwork.registry(')) return input;
+  let code = input;
   function once(code, pattern, replacement, label) {
     const matches = [...code.matchAll(new RegExp(pattern.source, 'g'))];
     if (matches.length !== 1) throw new Error(label + ': expected one upstream anchor, got ' + matches.length);
     return code.replace(pattern, replacement);
   }
-  let code = once(input, /return\{defaultId:[\s\S]*?sources:[\s\S]*?\}\)\}\}/,
+  if (!code.includes('window.OoglexGlobeNetwork.registry(')) {
+  code = once(code, /return\{defaultId:[\s\S]*?sources:[\s\S]*?\}\)\}\}/,
     (match) => 'return window.OoglexGlobeNetwork.registry(' + match.slice(6, -1) + ')}', 'map registry');
   code = once(code, /initialStack:(\w+)\?"photoreal":"esri-imagery"/,
     'initialStack:$1?"photoreal":"local-earth"', 'initial map');
@@ -18,6 +19,12 @@ export function patchBundle(input) {
   code = once(code, /(\w+)\.start\(\)\.catch\((\w+)=>\{console\.error\("God's Eye View initialization failed:"/,
     'window.OoglexGlobeNetwork.start($1).catch($2=>{console.error("God\'s Eye View initialization failed:"',
     'application ready bridge');
+  }
+  if (!code.includes('window.OoglexGlobeNetwork.initialView(')) {
+    code = once(code,
+      /function (\w+)\((\w+)\)\{\2\.camera\.setView\(\{destination:Cesium\.Cartesian3\.fromDegrees\(-97\.7431,30\.2672,25e3\)[\s\S]*?return\(\)=>\{clearTimeout\(\w+\),\2\.isDestroyed\(\)\|\|\2\.camera\.cancelFlight\(\)\}\}/,
+      'function $1($2){return window.OoglexGlobeNetwork.initialView($2)}', 'default overview camera');
+  }
   return code;
 }
 export function patchHtml(input, base) {
@@ -31,7 +38,8 @@ export function patchHtml(input, base) {
   if (!html.includes('network.css')) {
     html = html.replace('</head>', '  <link rel="stylesheet" href="' + base + 'network.css?v=1">\n</head>');
   }
-  html = html.replace(/(assets\/index-[^"?]+\.js)(?:\?[^"]*)?"/, '$1?network=1"');
+  html = html.replace(/network-policy\.js\?v=\d+/g, 'network-policy.js?v=2');
+  html = html.replace(/(assets\/index-[^"?]+\.js)(?:\?[^"]*)?"/, '$1?network=2"');
   return html;
 }
 

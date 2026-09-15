@@ -50,12 +50,14 @@ jobs:
           for file in apps/globe/app/assets/index-*.js; do node --check "$file"; done
           python3 scripts/globe/test_fetch_space_data.py
       - name: Verify committed site with all external requests stalled
+        # Includes the rendered globe-pixel smoke check, not only network/DOM readiness.
         run: node scripts/globe/verify-network.mjs
       - name: Rebuild from pinned upstream with the same policy
         run: bash scripts/globe/build.sh
       - name: Verify rebuilt artifact startup
         env:
           GLOBE_VERIFY_QUICK: '1'
+          GLOBE_VERIFY_PREVIEW: '1'
         run: node scripts/globe/verify-network.mjs
       - name: Existing Chinese UI and accessibility regression
         run: |
