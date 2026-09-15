@@ -40,7 +40,7 @@ async function open(width, mode = 'hang', path = '/apps/globe/') {
     if (mode === 'fail') void req.abort('failed');
     // In hang mode leave the request unanswered: a block is not always a fast HTTP error.
   });
-  page.on('pageerror', error => errors.push(String(error)));
+  page.on('pageerror', error => errors.push(error.stack || String(error)));
   page.on('response', response => {
     if (response.url().includes('/NaturalEarthII/') && response.url().includes('.jpg') && response.status() === 200) images.push(response.url());
     if (response.url().startsWith(origin) && response.status() >= 400 && !response.url().includes('/api/')) bad.push(response.url());
@@ -130,14 +130,14 @@ try {
       await s.page.click('#btn-lang');
       await s.page.waitForFunction(() => {
         const f = document.querySelector('.stage iframe');
-        return f?.src.includes('lang=en') && f.contentDocument?.documentElement.dataset.globeState === 'ready';
+        return f?.src.includes('lang=en') && f.contentDocument?.documentElement?.dataset.globeState === 'ready';
       }, { timeout: 30000 });
       assert.equal(await s.page.$eval('.stage iframe', f => f.contentDocument.documentElement.dataset.globeMap), 'local-earth');
       await s.page.waitForFunction(() => document.getElementById('gate').hidden && !document.getElementById('btn-map').disabled);
       await s.page.click('#btn-lang');
       await s.page.waitForFunction(() => {
         const f = document.querySelector('.stage iframe');
-        return f && !f.src.includes('lang=en') && f.contentDocument?.documentElement.dataset.globeState === 'ready';
+        return f && !f.src.includes('lang=en') && f.contentDocument?.documentElement?.dataset.globeState === 'ready';
       }, { timeout: 30000 });
     } catch (error) {
       console.error('LANGUAGE DIAGNOSTICS ' + JSON.stringify(await s.page.evaluate(() => {

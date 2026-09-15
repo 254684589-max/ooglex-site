@@ -295,18 +295,17 @@
     }
     loaded = true;
     clearTimeout(bootTimer);
-    if (frame) frame.remove();
     gate.innerHTML = initialGate; gate.hidden = false;
     meta = document.getElementById('gate-meta');
     var go = document.getElementById('btn-go');
     go.disabled = true; go.textContent = '正在加载…';
     meta.textContent = '正在加载三维引擎和基础底图，首次访问可能需要稍候。';
     loadStatus.textContent = '正在加载基础地球…'; mapButton.disabled = true;
-    frame = document.createElement('iframe');
+    if (!frame) frame = document.createElement('iframe');
     frame.src = appUrl(); frame.title = '全球态势地球（三维）';
     frame.allow = 'geolocation; microphone; fullscreen';
     frame.setAttribute('allowfullscreen', '');
-    stage.appendChild(frame);
+    if (!frame.isConnected) stage.appendChild(frame);
     bootTimer = setTimeout(function () {
       showError('地球加载超时', '站内资源未能完成加载，请检查网络后重试。');
     }, 45000);
@@ -317,7 +316,7 @@
   window.addEventListener('message', function (event) {
     if (!frame || event.source !== frame.contentWindow || event.origin !== location.origin) return;
     var message = event.data;
-    if (!message || message.type !== 'ooglex:globe') return;
+    if (!message || message.type !== 'ooglex:globe' || message.url !== frame.src) return;
     if (message.state === 'error') {
       showError('地球未能完成加载', typeof message.detail === 'string' ? message.detail : '请重试。');
       return;

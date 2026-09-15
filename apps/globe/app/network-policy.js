@@ -9,9 +9,10 @@
   var localId = 'local-earth';
   function words(zh, en) { return english ? en : zh; }
   function report(type, detail) {
+    if (!document.documentElement) return;
     document.documentElement.dataset.globeState = type;
     if (window.parent !== window) window.parent.postMessage(
-      { type: 'ooglex:globe', state: type, detail: detail || '' }, location.origin);
+      { type: 'ooglex:globe', url: location.href, state: type, detail: detail || '' }, location.origin);
   }
   // Keep late completions owned by this request; never switch a map from here.
   function deadline(promise, ms, signal, onLate) {
@@ -48,7 +49,7 @@
       // Cesium returns undefined when its scheduler is saturated: preserve that contract.
       return result === undefined ? undefined : deadline(result, 8000).then(function (image) {
         tileCount++;
-        document.documentElement.dataset.globeTiles = String(tileCount);
+        if (document.documentElement) document.documentElement.dataset.globeTiles = String(tileCount);
         return image;
       });
     };
@@ -92,7 +93,7 @@
     return registry;
   }
   function sourceState(state) {
-    if (!state) return;
+    if (!state || !document.documentElement) return;
     var id = state.activeId;
     document.documentElement.dataset.globeMap = id || localId;
     report(ready ? 'ready' : 'loading', {
