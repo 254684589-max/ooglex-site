@@ -71,7 +71,7 @@ async function suite(label, vp, full) {
       neverZh: panel.includes('从未更新'), neverEn: panel.includes('· never'),
       srcKept:['OpenSky','adsb.lol','USGS','CelesTrak','Launch Library 2','OpenStreetMap'].filter(s=>panel.includes(s)),
       icons:['arrow_forward','chevron_left','public','radar'].filter(s=>d.body.innerHTML.includes('>'+s+'<')),
-      creditEn: cred ? /Esri|Google|attribution|Data/i.test(cred.textContent||'') : false,
+      creditEn: cred ? /Made with Natural Earth/i.test(cred.textContent||'') : false,
       gateGone: getComputedStyle(document.getElementById('gate')).display==='none',
       panelTitleZh: all.includes('数据图层'),
       cesium: typeof f.contentWindow.Cesium!=='undefined',

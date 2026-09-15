@@ -70,7 +70,7 @@ log "安装依赖"
 log "构建（base=$BASE，不注入密钥）"
 # GOOGLE_MAPS_API_KEY / CESIUM_ION_TOKEN 留空：上游会把这两个值打进浏览器包，
 # 留空即满足仓库规则「密钥绝不写入前端」。应用按无密钥模式启动
-# （Esri World Imagery，失败自动降级 OSM）。
+# （构建后应用同源基础地球策略，Esri/OSM 按需切换）。
 (cd "$SRC_DIR" && GOOGLE_MAPS_API_KEY= CESIUM_ION_TOKEN= \
   npx vite build --base="$BASE" --outDir dist-ooglex)
 
