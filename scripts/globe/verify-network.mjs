@@ -61,7 +61,7 @@ async function open(width, mode = 'hang', path = '/apps/globe/') {
 async function verifyVisibleEarth(page, frame) {
   // Sample the rendered center, not HTTP responses: a 600 m view of low-res land is one solid color.
   const canvas = await frame.$('.cesium-widget canvas');
-  const screenshot = await canvas.screenshot({ type: 'png' });
+  const screenshot = await canvas.screenshot({ type: 'png', encoding: 'base64' });
   const stats = await page.evaluate(async src => {
     const img = new Image(); img.src = src; await img.decode();
     const buffer = document.createElement('canvas');
@@ -78,7 +78,7 @@ async function verifyVisibleEarth(page, frame) {
       }
     }
     return { colors: colors.size, oceanFraction: blue / samples, landFraction: land / samples };
-  }, 'data:image/png;base64,' + screenshot.toString('base64'));
+  }, 'data:image/png;base64,' + screenshot);
   console.log('EARTH PIXELS ' + JSON.stringify(stats));
   assert(stats.colors > 35 && stats.oceanFraction > .03 && stats.landFraction > .03,
     'The center must contain textured continents and oceans, not a uniform green surface');
