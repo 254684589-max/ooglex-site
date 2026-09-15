@@ -1,8 +1,0 @@
-Local Material icon fonts
-Source: https://github.com/google/material-design-icons
-License: Apache-2.0 (LICENSE.txt).
-MaterialIconsOutlined-Regular.otf: Git blob 9dad12bcf1a538c2ec3b0dc88edddab2f0de2c3d.
-MaterialIconsRound-Regular.otf: Git blob dacf094b51c5037c3ecdfd2f0dbabc073a38d652.
-The outlined font supplies existing Material Symbols ligatures; the two newer
-right_panel_open/right_panel_close controls use locally authored SVGs.
-Text uses system fonts. No Google Fonts request is made by the page.

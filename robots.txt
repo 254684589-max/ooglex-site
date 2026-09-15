@@ -1,7 +1,0 @@
-User-agent: *
-Allow: /
-# 三维引擎产物（约 28MB 静态资源），无检索价值且浪费抓取预算；
-# 中文包装页 /apps/globe/ 正常收录。
-Disallow: /apps/globe/app/
-
-Sitemap: https://ooglex.com/sitemap.xml
