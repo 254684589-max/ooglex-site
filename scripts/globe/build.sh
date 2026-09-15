@@ -70,7 +70,7 @@ log "安装依赖"
 log "构建（base=$BASE，不注入密钥）"
 # GOOGLE_MAPS_API_KEY / CESIUM_ION_TOKEN 留空：上游会把这两个值打进浏览器包，
 # 留空即满足仓库规则「密钥绝不写入前端」。应用按无密钥模式启动
-# （Esri World Imagery，失败自动降级 OSM）。
+# （构建后应用同源基础地球策略，Esri/OSM 按需切换）。
 (cd "$SRC_DIR" && GOOGLE_MAPS_API_KEY= CESIUM_ION_TOKEN= \
   npx vite build --base="$BASE" --outDir dist-ooglex)
 
@@ -103,6 +103,10 @@ if [ -d "$NESTED" ]; then
   rm -rf "$DIST/$(echo "$BASE_NO_SLASH" | cut -d/ -f2)"   # 清掉 base 造成的空壳目录
 fi
 [ -f "$DIST/cesium/Cesium.js" ] || die "未找到 dist/cesium/Cesium.js，Cesium 目录修正失败。"
+
+# ------------------------------------------------------- 5b. 同源启动与地图回退
+log "应用同源启动策略"
+node "$REPO_ROOT/scripts/globe/patch-network.mjs" "$DIST" "$BASE"
 
 # ------------------------------------------------------------ 6. 产物自检
 log "产物自检"

@@ -106,8 +106,8 @@ aria-label 覆盖的是主要交互控件与常用独立标签，**不是全量*
 
 | 数据 | 许可 | 署名要求 |
 |---|---|---|
-| Esri World Imagery（默认卫星底图） | Esri 主协议下的公开 World Imagery 服务 | Powered by Esri — Source: Esri, Maxar, Earthstar Geographics 及 GIS 用户社区 |
-| OpenStreetMap 底图（降级备选） | ODbL 1.0 | © OpenStreetMap contributors |
+| Esri World Imagery（可选卫星底图） | Esri 主协议下的公开 World Imagery 服务 | Powered by Esri — Source: Esri, Maxar, Earthstar Geographics 及 GIS 用户社区 |
+| OpenStreetMap 底图（可选） | ODbL 1.0 | © OpenStreetMap contributors |
 | USGS 全球地震目录 | 公有领域（美国地质调查局） | 建议署名 |
 | 数据中心约 4300 处 · 大坝 704 座 | **ODbL 1.0** | © OpenStreetMap contributors；大坝另据 Open Infrastructure Map。**署名 + 相同方式共享** |
 | Natural Earth 命名地理区域 | 公有领域 | Made with Natural Earth（礼节性） |
@@ -272,3 +272,39 @@ Worker Routes 在 `www.ooglex.com/api/*` 上挂代理 —— 路由不会触发�
 - **`fetch_space_data.py` 的实际抓取无法在容器内验证**，只能跑它的校验逻辑自测。
   真实抓取由 GitHub Actions 运行器执行（出网无限制），可在 Actions 页面手动触发
   `Globe Space Data` 工作流并看日志确认。
+
+## 7. 大陆直连启动修复（2026-09-14，未部署）
+
+此前启动链存在三个无上限的外部等待：Google Fonts 样式会阻塞入口模块，
+Esri 元数据请求和 Re:Earth 地形请求没有应用超时；Esri 失败后改用的 OSM
+也需要外网。原包装页插入 iframe 后立即隐藏加载卡，无法识别应用是否真正就绪。
+
+现在由构建后处理器 `scripts/globe/patch-network.mjs` 应用同一份启动策略：
+- 删除 Google Fonts 和预连接，文字使用系统字体，图标使用站内 Material 字体。
+  字体及 Apache-2.0 许可在 `scripts/globe/fonts/`，两个新图标使用本地 SVG。
+- 默认地图为 `local-earth`：直接复用已随 Cesium 发布的 NaturalEarthII JPG
+  瓦片（最高 2 级）和椭球表面。它是低分辨率基础地图，不是高清影像或真实地形。
+- 保留 Esri 与 OSM，用户可在包装页切换高清影像，也可用原应用的地图菜单。
+  元数据超时 6 秒、瓦片超时 8 秒；失败通过原控制器返回基础地图。
+  超时后的迟到响应不负责切图，也不把失败缓存成永久回退。
+- 无密钥地图不再请求 Re:Earth 地形。已配置密钥的上游功能没有借此接入本站。
+- 父页面只接受同源且来源为当前 iframe 的消息；至少一张真实瓦片完成加载、
+  Cesium 渲染完成且原加载屏隐藏后才报告就绪。加载失败有中文重试入口。
+- 原始数据图层、署名、API 快照和定时工作流保持兼容。
+  地震及可选高清影像仍取决于外部数据服务的实际可达性。
+
+实现文件：`network-policy.js`（同源地图与启动协议）、`network.css`（本地图标与
+字体）、`patch-network.mjs`（幂等产物处理器）及包装页。处理器对上游压缩代码的
+固定结构逐项断言，锚点变化即构建失败；不静默发布未应用策略的新上游。
+现有产物也由同一纯函数处理，入口 URL 增加缓存版本。
+未来升级上游应重新检查地图菜单、地图类型清单和启动工厂的这几个锚点。
+
+验证：新增 `verify-network.mjs`，在真正的 Chromium 中让所有第三方请求悬挂，
+检查 360/768/1280 视口、真实本地瓦片、字体、无溢出、来源面板与重试，
+并覆盖直接访问内页、高清影像超时与再次尝试、中英文切换、入口脚本失败。
+只读工作流 `Globe Network Quality` 使用上游已有的 Puppeteer 依赖和运行器
+Chrome，先验证已提交产物，再重建并检查新产物和原有中文界面。
+该工作流不写仓库、不部署、不读取 Secrets。截图保留 7 天。
+
+网络模拟只能证明外部依赖不再阻塞启动；并不等于已在大陆运营商线路实测。
+如果 `www.ooglex.com` 主站本身无法连通，页面内的修复不能替代托管网络的调整。

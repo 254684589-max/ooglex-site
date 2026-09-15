@@ -18,13 +18,9 @@
  * 另外：断言前必须摘掉署名子树（#cesium-credits、.cesium-credit-lightbox 等）。
  * 那里的英文是许可要求的原文，本就不该翻译，留着会让「无残留英文」误报。
  */
-const { default: puppeteer } = await import('/home/user/bilawalsidhu/gods-eye-view/node_modules/puppeteer/lib/puppeteer/puppeteer.js');
+import { launchGlobeBrowser } from './browser.mjs';
 const B = process.env.GLOBE_VERIFY_URL || 'http://127.0.0.1:8902';
-const browser = await puppeteer.launch({
-  executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
-  headless: true,
-  args: ['--no-sandbox','--enable-unsafe-swiftshader','--use-gl=angle','--use-angle=swiftshader'],
-});
+const browser = await launchGlobeBrowser();
 let fails = 0;
 const ck = (l,c)=>{ if(!c) fails++; console.log(`  ${c?'✅':'❌'} ${l}`); };
 
@@ -75,7 +71,7 @@ async function suite(label, vp, full) {
       neverZh: panel.includes('从未更新'), neverEn: panel.includes('· never'),
       srcKept:['OpenSky','adsb.lol','USGS','CelesTrak','Launch Library 2','OpenStreetMap'].filter(s=>panel.includes(s)),
       icons:['arrow_forward','chevron_left','public','radar'].filter(s=>d.body.innerHTML.includes('>'+s+'<')),
-      creditEn: cred ? /Esri|Google|attribution|Data/i.test(cred.textContent||'') : false,
+      creditEn: cred ? /Made with Natural Earth/i.test(cred.textContent||'') : false,
       gateGone: getComputedStyle(document.getElementById('gate')).display==='none',
       panelTitleZh: all.includes('数据图层'),
       cesium: typeof f.contentWindow.Cesium!=='undefined',

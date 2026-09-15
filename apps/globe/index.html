@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>全球态势地球 · 三维卫星影像与公开地理数据</title>
-<meta name="description" content="在浏览器里转动三维地球，叠加公开地理数据：全球地震、4300 处数据中心、704 座大坝、海底电缆与命名地理区域。底图为 Esri 卫星影像，数据源与许可逐条标注。个人学习用途，不作商业使用。">
+<meta name="description" content="在浏览器里转动三维地球，叠加公开地理数据：全球地震、4300 处数据中心、704 座大坝、海底电缆与命名地理区域。默认使用站内基础底图，可选高清卫星影像，数据源与许可逐条标注。个人学习用途，不作商业使用。">
 <link rel="canonical" href="https://www.ooglex.com/apps/globe/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="全球态势地球 · 三维卫星影像与公开地理数据">
@@ -136,6 +136,17 @@
     .bar h1 { font-size:13px; }
     .sheet { inset:var(--bar) 0 0 0; width:100%; border-left:0; }
   }
+
+  .network-strip {
+    position:fixed; top:var(--bar); left:0; right:0; height:44px; z-index:3;
+    display:flex; align-items:center; gap:8px; padding:0 12px;
+    background:var(--panel); border-bottom:1px solid var(--line);
+  }
+  #load-status { flex:1; min-width:0; font-size:12px; color:var(--dim); line-height:1.3; }
+  #btn-map { flex:none; min-height:44px; padding:0 10px; border:0; background:transparent;
+    color:var(--accent); font:inherit; font-size:12px; cursor:pointer; }
+  #btn-map:disabled { opacity:.5; cursor:wait; }
+  .stage, .sheet { top:calc(var(--bar) + 44px); }
 </style>
 </head>
 <body>
@@ -149,20 +160,27 @@
   <button type="button" id="btn-src" aria-expanded="false" aria-controls="sheet">数据来源</button>
 </div>
 
+<div class="network-strip">
+  <span id="load-status" role="status" aria-live="polite">准备加载基础地球</span>
+  <button id="btn-map" type="button" disabled>切换高清影像</button>
+</div>
 <div class="stage" id="stage">
   <div class="gate" id="gate">
     <div class="card">
       <h2>三维地球 · 公开地理数据叠加</h2>
       <p>
-        在浏览器里转动一颗真实卫星影像的地球，叠加公开地理数据：全球地震、
+        在浏览器里转动三维地球，叠加公开地理数据：全球地震、
         4300 处数据中心、704 座大坝、海底电缆与命名地理区域。
         全部数据源与许可在「数据来源」里逐条列出。
       </p>
       <p>
-        这是一个纯静态部署，<strong>没有服务端</strong>。卫星与航天任务通过每日定时生成的
-        同源静态快照供数据（星点位置由前端实时推算）；而实时航班、船舶、交通摄像头、
-        电台等图层依赖后端代理，在本站不可用，打开后会显示为不可用状态，
-        这是预期行为而非故障。具体哪些可用见「数据来源」。
+        默认使用<strong>基础地球</strong>，可查看全球轮廓和数据图层；它是低分辨率底图，
+        不提供街区细节或地形起伏。需要细节时可点击「切换高清影像」；
+        影像连接失败会自动返回基础地球。
+      </p>
+      <p>
+        卫星和航天任务每日更新，卫星位置按星历推算。
+        实时航班、船舶等尚未接入，完整范围见「数据来源」。
       </p>
       <p>
         应用界面已做中文化（顶栏「中 / EN」可切回英文原版）。
@@ -170,7 +188,7 @@
       </p>
       <button class="go" type="button" id="btn-go">进入地球</button>
       <div class="meta" id="gate-meta">
-        首屏约需下载 2.2 MB（三维引擎），需要支持 WebGL 的浏览器 · 个人学习用途，非商业使用
+        首次加载需下载三维引擎和基础底图，需要支持 WebGL 的浏览器 · 个人学习用途，非商业使用
       </div>
     </div>
   </div>
@@ -184,10 +202,12 @@
   </div>
 
   <h3>本站可用</h3>
-  <div class="src"><span class="tag on">可用</span><span class="n">Esri World Imagery</span><br>
-    <span class="l">默认卫星底图 · Powered by Esri — Source: Esri, Maxar, Earthstar Geographics 及 GIS 用户社区</span></div>
-  <div class="src"><span class="tag on">可用</span><span class="n">OpenStreetMap 底图</span><br>
-    <span class="l">底图降级备选 · ODbL 1.0 · © OpenStreetMap contributors</span></div>
+  <div class="src"><span class="tag on">默认</span><span class="n">Natural Earth 基础地球</span><br>
+    <span class="l">站内低分辨率底图 · Made with Natural Earth · 公有领域 · 椭球表面，不含地形高程</span></div>
+  <div class="src"><span class="tag off">可选</span><span class="n">Esri World Imagery</span><br>
+    <span class="l">需连接外部影像服务，失败时返回基础地球 · Powered by Esri — Source: Esri, Maxar, Earthstar Geographics 及 GIS 用户社区</span></div>
+  <div class="src"><span class="tag off">可选</span><span class="n">OpenStreetMap 底图</span><br>
+    <span class="l">需连接外部地图服务，失败时返回基础地球 · ODbL 1.0 · © OpenStreetMap contributors</span></div>
   <div class="src"><span class="tag on">可用</span><span class="n">USGS 全球地震目录</span><br>
     <span class="l">近 24 小时地震摘要 · 美国地质调查局，公有领域 · 由浏览器直接请求，刷新频率取决于该源</span></div>
   <div class="src"><span class="tag on">可用</span><span class="n">数据中心（约 4300 处）· 大坝（704 座）</span><br>
@@ -224,55 +244,102 @@
   var LANG_KEY = 'ooglex.globe.lang';   // appUrl() 依赖它，必须在此处初始化
   /** 应用地址；英文原版通过 ?lang=en 让中文化层自行短路。 */
   function appUrl() {
-    return APP_URL + (readLang() === 'en' ? '?lang=en' : '');
+    return APP_URL + '?map=local-earth' + (readLang() === 'en' ? '&lang=en' : '');
   }
   var stage = document.getElementById('stage');
   var gate = document.getElementById('gate');
   var meta = document.getElementById('gate-meta');
   var loaded = false;
+  var initialGate = gate.innerHTML;
+  var frame = null, bootTimer = null;
+  var loadStatus = document.getElementById('load-status');
+  var mapButton = document.getElementById('btn-map');
+  var activeMap = 'local-earth';
 
   /** 用一次性探测判断浏览器是否真的能跑 WebGL，避免加载后只看到黑屏。 */
   function webglOk() {
     try {
       var c = document.createElement('canvas');
-      return !!(window.WebGLRenderingContext &&
-        (c.getContext('webgl2') || c.getContext('webgl')));
+      var gl = window.WebGLRenderingContext &&
+        (c.getContext('webgl2') || c.getContext('webgl'));
+      if (!gl) return false;
+      // A capability probe must not retain a GPU context on every reload.
+      var release = gl.getExtension('WEBGL_lose_context');
+      if (release) release.loseContext();
+      return true;
     } catch (e) { return false; }
   }
 
   function showError(title, body) {
+    clearTimeout(bootTimer);
+    loaded = false;
+    if (frame) { frame.remove(); frame = null; }
     gate.innerHTML = '';
     var card = document.createElement('div');
     card.className = 'card err';
-    var h = document.createElement('h2');
-    h.textContent = title;
-    var p = document.createElement('p');
-    p.textContent = body;
-    card.appendChild(h);
-    card.appendChild(p);
-    gate.appendChild(card);
-    gate.hidden = false;
+    var h = document.createElement('h2'); h.textContent = title;
+    var p = document.createElement('p'); p.textContent = body;
+    var retry = document.createElement('button');
+    retry.type = 'button'; retry.className = 'go'; retry.id = 'btn-go';
+    retry.textContent = '重新加载';
+    card.append(h, p, retry); gate.appendChild(card); gate.hidden = false;
+    loadStatus.textContent = title; mapButton.disabled = true;
   }
 
   function load() {
     if (loaded) return;
     if (!webglOk()) {
       showError('当前浏览器无法运行三维地球',
-        '未能创建 WebGL 画布。请改用较新版本的 Chrome、Edge、Firefox 或 Safari，' +
-        '并确认未关闭硬件加速；部分浏览器的省电模式也会禁用 WebGL。');
+        '未能创建 WebGL 画布。请使用支持 WebGL 的浏览器，并确认已开启硬件加速。');
       return;
     }
     loaded = true;
-    var f = document.createElement('iframe');
-    f.src = appUrl();
-    f.title = '全球态势地球（三维）';
-    f.allow = 'geolocation; microphone; fullscreen';
-    f.setAttribute('allowfullscreen', '');
-    stage.appendChild(f);
-    gate.hidden = true;
+    clearTimeout(bootTimer);
+    gate.innerHTML = initialGate; gate.hidden = false;
+    meta = document.getElementById('gate-meta');
+    var go = document.getElementById('btn-go');
+    go.disabled = true; go.textContent = '正在加载…';
+    meta.textContent = '正在加载三维引擎和基础底图，首次访问可能需要稍候。';
+    loadStatus.textContent = '正在加载基础地球…'; mapButton.disabled = true;
+    if (!frame) frame = document.createElement('iframe');
+    frame.src = appUrl(); frame.title = '全球态势地球（三维）';
+    frame.allow = 'geolocation; microphone; fullscreen';
+    frame.setAttribute('allowfullscreen', '');
+    if (!frame.isConnected) stage.appendChild(frame);
+    bootTimer = setTimeout(function () {
+      showError('地球加载超时', '站内资源未能完成加载，请检查网络后重试。');
+    }, 45000);
   }
-
-  document.getElementById('btn-go').addEventListener('click', function () { load(); });
+  gate.addEventListener('click', function (event) {
+    if (event.target.id === 'btn-go') load();
+  });
+  window.addEventListener('message', function (event) {
+    if (!frame || event.source !== frame.contentWindow || event.origin !== location.origin) return;
+    var message = event.data;
+    if (!message || message.type !== 'ooglex:globe' || message.url !== frame.src) return;
+    if (message.state === 'error') {
+      showError('地球未能完成加载', typeof message.detail === 'string' ? message.detail : '请重试。');
+      return;
+    }
+    if (message.state !== 'ready') return;
+    clearTimeout(bootTimer);
+    gate.hidden = true;
+    var detail = message.detail || {};
+    activeMap = detail.map || 'local-earth';
+    // Keep a route back to Basic Earth available even during a slow remote switch.
+    mapButton.disabled = false;
+    mapButton.textContent = activeMap === 'local-earth' && !detail.switching ? '切换高清影像' : '返回基础地球';
+    loadStatus.textContent = detail.switching ? '正在连接影像服务…'
+      : detail.note ? '影像不可用 · 已返回基础地球'
+      : activeMap === 'local-earth' ? '基础地球 · 低分辨率底图'
+      : activeMap === 'osm' ? 'OpenStreetMap 底图' : 'Esri 高清影像';
+    loadStatus.title = typeof detail.note === 'string' ? detail.note : '';
+  });
+  mapButton.addEventListener('click', function () {
+    if (!frame) return;
+    var map = mapButton.textContent === '返回基础地球' ? 'local-earth' : 'esri-imagery';
+    frame.contentWindow.postMessage({ type: 'ooglex:set-map', map: map }, location.origin);
+  });
 
   // ---------------------------------------------------------------- 语言切换
   // 中文化层是运行时 DOM 文案映射，切回英文只需带上 ?lang=en 重载应用；
@@ -293,7 +360,7 @@
     try { localStorage.setItem(LANG_KEY, next); } catch (e) { /* 不影响本次切换 */ }
     paintLang();
     var f = document.querySelector('.stage iframe');
-    if (f) f.src = appUrl();          // 换 src 即重载，语言随之生效
+    if (f) { loaded = false; load(); } // 重载并等待新的首帧确认
   });
   paintLang();
 
@@ -304,7 +371,7 @@
     /^(slow-2g|2g|3g)$/.test(conn.effectiveType || '')));
   var narrow = window.matchMedia('(max-width: 767px)').matches;
   if (thrifty) {
-    meta.textContent = '检测到省流量模式或较慢网络。首屏约需下载 2.2 MB（三维引擎），' +
+    meta.textContent = '检测到省流量模式或较慢网络。首次加载需下载三维引擎和基础底图，' +
       '确认后再加载 · 个人学习用途，非商业使用';
   } else if (!narrow) {
     load();
