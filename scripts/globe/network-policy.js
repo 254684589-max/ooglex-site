@@ -6,7 +6,27 @@
   var C = window.Cesium;
   var scene = null, ready = false, bootTimer = null, tileCount = 0;
   var english = new URLSearchParams(location.search).get('lang') === 'en';
-  var localId = 'local-earth';
+  var localId = 'local-earth', previousMap = null;
+  var overviewHeight = 22000000;
+  function overview(viewer, keepCenter) {
+    var position = viewer.camera.positionCartographic;
+    var lon = keepCenter ? C.Math.toDegrees(position.longitude) : 105;
+    var lat = keepCenter ? C.Math.toDegrees(position.latitude) : 20;
+    viewer.camera.cancelFlight();
+    viewer.trackedEntity = undefined;
+    viewer.camera.lookAtTransform(C.Matrix4.IDENTITY);
+    viewer.camera.setView({
+      destination: C.Cartesian3.fromDegrees(lon, lat, overviewHeight),
+      orientation: { heading: 0, pitch: -C.Math.PI_OVER_TWO, roll: 0 }
+    });
+    viewer.scene.requestRender();
+  }
+  function initialView(viewer) {
+    var status = document.querySelector('#loading-screen .loader-status');
+    if (status) status.textContent = words('正在显示全球地球…', 'Preparing global view...');
+    overview(viewer, false);
+    return function () { if (!viewer.isDestroyed()) viewer.camera.cancelFlight(); };
+  }
   function words(zh, en) { return english ? en : zh; }
   function report(type, detail) {
     if (!document.documentElement) return;
@@ -95,6 +115,9 @@
   function sourceState(state) {
     if (!state || !document.documentElement) return;
     var id = state.activeId;
+    if (scene && id === localId && (previousMap !== localId || state.lastError) &&
+        scene.viewer.camera.positionCartographic.height < 10000000) overview(scene.viewer, true);
+    previousMap = id;
     document.documentElement.dataset.globeMap = id || localId;
     report(ready ? 'ready' : 'loading', {
       map: id, switching: state.status === 'switching',
@@ -121,6 +144,8 @@
   function start(app) {
     return app.start().then(function (components) {
       scene = components.scene;
+      if (scene.mapStackController.getState().activeId === localId &&
+          scene.viewer.camera.positionCartographic.height < 10000000) overview(scene.viewer, true);
       // A defined Cesium global or iframe load event does not prove a rendered globe.
       return new Promise(function (resolve, reject) {
         var timer, renderTick;
@@ -154,6 +179,7 @@
   window.addEventListener('message', function (event) {
     if (event.origin !== location.origin || event.source !== window.parent || !scene || !ready) return;
     var data = event.data;
+    if (data && data.type === 'ooglex:overview') { overview(scene.viewer, false); return; }
     if (!data || data.type !== 'ooglex:set-map' || ![localId, 'esri-imagery', 'osm'].includes(data.map)) return;
     scene.mapStackController.setStack(data.map).catch(function () {
       sourceState(scene.mapStackController.getState());
@@ -178,5 +204,6 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
   else install();
-  window.OoglexGlobeNetwork = Object.freeze({ registry: makeRegistry, start: start });
+  window.OoglexGlobeNetwork = Object.freeze({ registry: makeRegistry, start: start, initialView: initialView,
+    viewState: function () { return scene ? { height: scene.viewer.camera.positionCartographic.height, map: scene.mapStackController.getState().activeId } : null; } });
 })();
