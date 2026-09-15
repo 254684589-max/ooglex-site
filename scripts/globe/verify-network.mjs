@@ -58,6 +58,34 @@ async function open(width, mode = 'hang', path = '/apps/globe/') {
     throw error;
   }
 }
+async function verifyVisibleEarth(page, frame) {
+  // Sample the rendered center, not HTTP responses: a 600 m view of low-res land is one solid color.
+  const canvas = await frame.$('.cesium-widget canvas');
+  const screenshot = await canvas.screenshot({ type: 'png' });
+  const stats = await page.evaluate(async src => {
+    const img = new Image(); img.src = src; await img.decode();
+    const buffer = document.createElement('canvas');
+    buffer.width = img.width; buffer.height = img.height;
+    const ctx = buffer.getContext('2d'); ctx.drawImage(img, 0, 0);
+    const { data } = ctx.getImageData(0, 0, img.width, img.height);
+    const colors = new Set(); let samples = 0, blue = 0, land = 0;
+    for (let y = Math.floor(img.height * .3); y < img.height * .7; y += 3) {
+      for (let x = Math.floor(img.width * .38); x < img.width * .62; x += 3) {
+        const i = (y * img.width + x) * 4, r = data[i], g = data[i+1], b = data[i+2];
+        colors.add((r >> 4) * 256 + (g >> 4) * 16 + (b >> 4)); samples++;
+        if (b > r * 1.15 && b > g * 1.05 && b > 35) blue++;
+        if (g > b * 1.08 && g > 40) land++;
+      }
+    }
+    return { colors: colors.size, oceanFraction: blue / samples, landFraction: land / samples };
+  }, 'data:image/png;base64,' + screenshot.toString('base64'));
+  console.log('EARTH PIXELS ' + JSON.stringify(stats));
+  assert(stats.colors > 35 && stats.oceanFraction > .03 && stats.landFraction > .03,
+    'The center must contain textured continents and oceans, not a uniform green surface');
+  if (process.env.GLOBE_VERIFY_PREVIEW) {
+    console.log('GLOBE_PREVIEW ' + await page.screenshot({ type: 'jpeg', quality: 35, encoding: 'base64' }));
+  }
+}
 async function basic(width, mode = 'hang', path = '/apps/globe/') {
   const state = await open(width, mode, path);
   try {
@@ -80,6 +108,8 @@ async function basic(width, mode = 'hang', path = '/apps/globe/') {
         loaderHidden: document.querySelector('#loading-screen').classList.contains('hidden') };
     });
     assert.equal(outcome.map, 'local-earth');
+    assert((await frame.evaluate(() => window.OoglexGlobeNetwork.viewState().height)) > 10000000, 'The initial camera must show the globe, not 600 m street level');
+    if (width === 1280) await verifyVisibleEarth(page, frame);
     assert(outcome.tiles > 0 && images.length > 0, 'A real local JPEG tile must have loaded');
     assert(outcome.width > 0 && outcome.height > 0 && outcome.loaderHidden, 'Rendered canvas and completed startup required');
     assert(outcome.outlined && outcome.round, 'Local icon fonts must load');
@@ -96,6 +126,9 @@ async function basic(width, mode = 'hang', path = '/apps/globe/') {
       await page.keyboard.press('Escape');
       assert(await page.$eval('#sheet', el => el.hidden));
       assert(await page.$eval('#btn-map', el => !el.disabled));
+      assert(await page.$eval('#btn-overview', el => !el.disabled));
+      await page.click('#btn-overview');
+      assert((await frame.evaluate(() => window.OoglexGlobeNetwork.viewState().height)) > 20000000);
     }
     await page.screenshot({ path: 'artifacts/globe/' + width + '-' + mode + (path.endsWith('/app/') ? '-direct' : '') + '.png' });
   } finally { await state.context.close(); }

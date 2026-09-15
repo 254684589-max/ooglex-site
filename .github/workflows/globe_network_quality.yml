@@ -56,6 +56,7 @@ jobs:
       - name: Verify rebuilt artifact startup
         env:
           GLOBE_VERIFY_QUICK: '1'
+          GLOBE_VERIFY_PREVIEW: '1'
         run: node scripts/globe/verify-network.mjs
       - name: Existing Chinese UI and accessibility regression
         run: |

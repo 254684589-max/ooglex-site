@@ -143,9 +143,9 @@
     background:var(--panel); border-bottom:1px solid var(--line);
   }
   #load-status { flex:1; min-width:0; font-size:12px; color:var(--dim); line-height:1.3; }
-  #btn-map { flex:none; min-height:44px; padding:0 10px; border:0; background:transparent;
+  #btn-map, #btn-overview { flex:none; min-height:44px; padding:0 10px; border:0; background:transparent;
     color:var(--accent); font:inherit; font-size:12px; cursor:pointer; }
-  #btn-map:disabled { opacity:.5; cursor:wait; }
+  #btn-map:disabled, #btn-overview:disabled { opacity:.5; cursor:wait; }
   .stage, .sheet { top:calc(var(--bar) + 44px); }
 </style>
 </head>
@@ -162,6 +162,7 @@
 
 <div class="network-strip">
   <span id="load-status" role="status" aria-live="polite">准备加载基础地球</span>
+  <button id="btn-overview" type="button" disabled>全球视角</button>
   <button id="btn-map" type="button" disabled>切换高清影像</button>
 </div>
 <div class="stage" id="stage">
@@ -244,7 +245,7 @@
   var LANG_KEY = 'ooglex.globe.lang';   // appUrl() 依赖它，必须在此处初始化
   /** 应用地址；英文原版通过 ?lang=en 让中文化层自行短路。 */
   function appUrl() {
-    return APP_URL + '?map=local-earth' + (readLang() === 'en' ? '&lang=en' : '');
+    return APP_URL + '?map=local-earth&view=2' + (readLang() === 'en' ? '&lang=en' : '');
   }
   var stage = document.getElementById('stage');
   var gate = document.getElementById('gate');
@@ -254,6 +255,7 @@
   var frame = null, bootTimer = null;
   var loadStatus = document.getElementById('load-status');
   var mapButton = document.getElementById('btn-map');
+  var overviewButton = document.getElementById('btn-overview');
   var activeMap = 'local-earth';
 
   /** 用一次性探测判断浏览器是否真的能跑 WebGL，避免加载后只看到黑屏。 */
@@ -283,7 +285,7 @@
     retry.type = 'button'; retry.className = 'go'; retry.id = 'btn-go';
     retry.textContent = '重新加载';
     card.append(h, p, retry); gate.appendChild(card); gate.hidden = false;
-    loadStatus.textContent = title; mapButton.disabled = true;
+    loadStatus.textContent = title; mapButton.disabled = true; overviewButton.disabled = true;
   }
 
   function load() {
@@ -300,7 +302,7 @@
     var go = document.getElementById('btn-go');
     go.disabled = true; go.textContent = '正在加载…';
     meta.textContent = '正在加载三维引擎和基础底图，首次访问可能需要稍候。';
-    loadStatus.textContent = '正在加载基础地球…'; mapButton.disabled = true;
+    loadStatus.textContent = '正在加载基础地球…'; mapButton.disabled = true; overviewButton.disabled = true;
     if (!frame) frame = document.createElement('iframe');
     frame.src = appUrl(); frame.title = '全球态势地球（三维）';
     frame.allow = 'geolocation; microphone; fullscreen';
@@ -327,13 +329,16 @@
     var detail = message.detail || {};
     activeMap = detail.map || 'local-earth';
     // Keep a route back to Basic Earth available even during a slow remote switch.
-    mapButton.disabled = false;
+    mapButton.disabled = false; overviewButton.disabled = false;
     mapButton.textContent = activeMap === 'local-earth' && !detail.switching ? '切换高清影像' : '返回基础地球';
     loadStatus.textContent = detail.switching ? '正在连接影像服务…'
       : detail.note ? '影像不可用 · 已返回基础地球'
       : activeMap === 'local-earth' ? '基础地球 · 低分辨率底图'
       : activeMap === 'osm' ? 'OpenStreetMap 底图' : 'Esri 高清影像';
     loadStatus.title = typeof detail.note === 'string' ? detail.note : '';
+  });
+  overviewButton.addEventListener('click', function () {
+    if (frame) frame.contentWindow.postMessage({ type: 'ooglex:overview' }, location.origin);
   });
   mapButton.addEventListener('click', function () {
     if (!frame) return;
