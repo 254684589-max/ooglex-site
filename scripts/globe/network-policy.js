@@ -65,7 +65,7 @@
       imagery: function (request) {
         return deadline(C.TileMapServiceImageryProvider.fromUrl(
           base + 'cesium/Assets/Textures/NaturalEarthII',
-          { fileExtension: 'jpg', maximumLevel: 2, credit: 'Made with Natural Earth' }
+          { fileExtension: 'jpg', maximumLevel: 2, credit: new C.Credit('Made with Natural Earth', true) }
         ), 12000, request && request.signal, dispose).then(boundedTiles);
       },
       terrain: flat
