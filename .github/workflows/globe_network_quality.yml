@@ -20,8 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      GLOBE_WORK_DIR: ${{ runner.temp }}/ooglex-globe-build
-      GLOBE_UPSTREAM_DIR: ${{ runner.temp }}/ooglex-globe-build/src
+      GLOBE_WORK_DIR: /tmp/ooglex-globe-build
+      GLOBE_UPSTREAM_DIR: /tmp/ooglex-globe-build/src
       PUPPETEER_SKIP_DOWNLOAD: 'true'
     steps:
       - uses: actions/checkout@v6
