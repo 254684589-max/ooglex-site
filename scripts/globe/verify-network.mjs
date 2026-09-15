@@ -45,11 +45,18 @@ async function open(width, mode = 'hang', path = '/apps/globe/') {
     if (response.url().includes('/NaturalEarthII/') && response.url().includes('.jpg') && response.status() === 200) images.push(response.url());
     if (response.url().startsWith(origin) && response.status() >= 400 && !response.url().includes('/api/')) bad.push(response.url());
   });
+  try {
   await page.goto(origin + path, { waitUntil: 'domcontentloaded', timeout: 30000 });
   if (path === '/apps/globe/' && !(await page.$('.stage iframe'))) await page.click('#btn-go');
   const frame = path === '/apps/globe/' ? await (await page.$('.stage iframe')).contentFrame() : page.mainFrame();
   await frame.waitForFunction(() => document.documentElement.dataset.globeState === 'ready', { timeout: 30000 });
   return { context, page, frame, external, errors, images, bad };
+  } catch (error) {
+    console.error('STARTUP DIAGNOSTICS ' + JSON.stringify({width, path, errors, bad, images: images.length, external: external.map(req => req.url())}));
+    await page.screenshot({path: 'artifacts/globe/startup-failure-' + width + '.png'}).catch(() => {});
+    await context.close();
+    throw error;
+  }
 }
 async function basic(width, mode = 'hang', path = '/apps/globe/') {
   const state = await open(width, mode, path);
@@ -95,7 +102,7 @@ async function basic(width, mode = 'hang', path = '/apps/globe/') {
 }
 try {
   for (const width of (process.env.GLOBE_VERIFY_QUICK ? [1280] : [360, 768, 1280])) await run('same-origin startup, all third parties stalled, ' + width, () => basic(width));
-  if (!process.env.GLOBE_VERIFY_QUICK) {
+  if (!process.env.GLOBE_VERIFY_QUICK && !failures) {
   await run('direct inner URL, third parties fail', () => basic(1280, 'fail', '/apps/globe/app/'));
   await run('remote imagery timeout, retry and late completion isolation', async () => {
     const s = await open(1280);
