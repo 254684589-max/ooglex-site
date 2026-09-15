@@ -1,9 +1,6 @@
 name: Globe Network Quality
 
 on:
-  push:
-    branches: ['codex/globe-*']
-    paths: ['apps/globe/**', 'scripts/globe/**', '.github/workflows/globe_network_quality.yml']
   pull_request:
     paths: ['apps/globe/**', 'scripts/globe/**', '.github/workflows/globe_network_quality.yml']
   workflow_dispatch:
@@ -50,7 +47,7 @@ jobs:
           node --check scripts/globe/patch-network.mjs
           node --check scripts/globe/verify-network.mjs
           node --check scripts/globe/browser.mjs
-          node --check apps/globe/app/assets/index-B3EcAr3J.js
+          for file in apps/globe/app/assets/index-*.js; do node --check "$file"; done
           python3 scripts/globe/test_fetch_space_data.py
       - name: Verify committed site with all external requests stalled
         run: node scripts/globe/verify-network.mjs

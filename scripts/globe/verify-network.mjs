@@ -108,6 +108,7 @@ try {
     const s = await open(1280);
     try {
       await s.page.click('#btn-map');
+      await s.page.waitForFunction(() => document.getElementById('load-status').textContent.includes('正在连接'), { timeout: 5000 });
       await s.page.waitForFunction(() => document.getElementById('load-status').textContent.includes('影像不可用'), { timeout: 18000 });
       assert.equal(await s.frame.evaluate(() => document.documentElement.dataset.globeMap), 'local-earth');
       const firstCount = s.external.length;
@@ -115,6 +116,7 @@ try {
       // Late network failure must not overwrite the recovered map or cause an unhandled rejection.
       await Promise.all(s.external.map(req => req.abort('failed').catch(() => {})));
       await s.page.click('#btn-map');
+      await s.page.waitForFunction(() => document.getElementById('load-status').textContent.includes('正在连接'), { timeout: 5000 });
       await s.page.waitForFunction(() => document.getElementById('load-status').textContent.includes('影像不可用'), { timeout: 18000 });
       assert(s.external.length > firstCount, 'Retry must not reuse a cached failure');
       assert.equal(await s.frame.evaluate(() => document.documentElement.dataset.globeMap), 'local-earth');
@@ -158,7 +160,7 @@ try {
   }
 } finally {
   const { writeFile } = await import('node:fs/promises');
-  await writeFile('artifacts/globe/network-results.json', JSON.stringify(results, null, 2) + '\n');
+  await writeFile('artifacts/globe/network-results' + (process.env.GLOBE_VERIFY_QUICK ? '-rebuilt' : '') + '.json', JSON.stringify(results, null, 2) + '\n');
   await browser.close();
   await new Promise(resolve => server.close(resolve));
 }

@@ -106,8 +106,8 @@ aria-label 覆盖的是主要交互控件与常用独立标签，**不是全量*
 
 | 数据 | 许可 | 署名要求 |
 |---|---|---|
-| Esri World Imagery（默认卫星底图） | Esri 主协议下的公开 World Imagery 服务 | Powered by Esri — Source: Esri, Maxar, Earthstar Geographics 及 GIS 用户社区 |
-| OpenStreetMap 底图（降级备选） | ODbL 1.0 | © OpenStreetMap contributors |
+| Esri World Imagery（可选卫星底图） | Esri 主协议下的公开 World Imagery 服务 | Powered by Esri — Source: Esri, Maxar, Earthstar Geographics 及 GIS 用户社区 |
+| OpenStreetMap 底图（可选） | ODbL 1.0 | © OpenStreetMap contributors |
 | USGS 全球地震目录 | 公有领域（美国地质调查局） | 建议署名 |
 | 数据中心约 4300 处 · 大坝 704 座 | **ODbL 1.0** | © OpenStreetMap contributors；大坝另据 Open Infrastructure Map。**署名 + 相同方式共享** |
 | Natural Earth 命名地理区域 | 公有领域 | Made with Natural Earth（礼节性） |
