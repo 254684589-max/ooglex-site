@@ -97,15 +97,6 @@
     nav .links { display: flex; align-items: center; gap: 28px; margin-left: auto; font-size: 14px; color: var(--dim); }
     nav .links a { white-space: nowrap; }
     nav .links a:hover { color: var(--ink); }
-    #music-toggle {
-      width: 32px; height: 32px; border-radius: 50%;
-      border: 1px solid var(--line); background: rgba(255,255,255,.03);
-      color: var(--dim); font-size: 14px; line-height: 1; cursor: pointer;
-      display: inline-flex; align-items: center; justify-content: center;
-      transition: transform .2s, border-color .2s, color .2s;
-    }
-    #music-toggle:hover { color: var(--ink); border-color: rgba(57,135,229,.5); transform: translateY(-1px); }
-    #music-toggle.playing { color: var(--blue); border-color: rgba(57,135,229,.6); box-shadow: 0 0 12px rgba(57,135,229,.3); }
     #language-toggle {
       min-height: 36px; padding: 0 15px; border-radius: 999px;
       border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.03);
@@ -113,7 +104,7 @@
       cursor: pointer; transition: transform .2s, border-color .2s, background .2s;
     }
     #language-toggle:hover { border-color: rgba(57,135,229,.55); background: rgba(57,135,229,.08); transform: translateY(-1px); }
-    #language-toggle:focus-visible, #music-toggle:focus-visible {
+    #language-toggle:focus-visible {
       outline: 2px solid var(--blue); outline-offset: 3px;
     }
     html[data-lang="en"] .hero .en,
@@ -313,7 +304,6 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
         <a href="#tools" data-i18n="nav.tools">工具</a>
         <a href="games/hub/" data-i18n="nav.games">游戏</a>
         <a href="#contact" data-i18n="nav.contact">联系</a>
-        <button id="music-toggle" type="button" aria-label="播放背景音乐" title="背景音乐 · 点击播放/静音">🔇</button>
         <button id="language-toggle" type="button" aria-label="Switch to English" title="Switch to English"><span lang="en">English</span> / <span lang="zh-CN">中文</span></button>
       </div>
     </div>
@@ -898,72 +888,5 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
     }).catch(function () {});
   })();
   </script>
-
-  <script>
-  /* 背景音乐：用 Web Audio API 现场合成一段免版权的舒缓氛围循环（无音频文件、无版权问题）。
-     浏览器禁止带声音自动播放，故默认静音，由访客点击 🔊 开关用一次手势启动。 */
-  (function () {
-    var btn = document.getElementById('music-toggle');
-    if (!btn || !(window.AudioContext || window.webkitAudioContext)) { if (btn) btn.style.display = 'none'; return; }
-    var ctx, master, padGain, bellIn, started = false, playing = false, bellTimer;
-    function audioText(key, fallback) { return window.OoglexI18n ? window.OoglexI18n.t(key) : fallback; }
-    var PAD = [110, 164.81, 220, 277.18, 329.63];            // A2 E3 A3 C#4 E4 —— 温暖的 A 大调铺底
-    var SHIMMER = [440, 554.37, 659.25, 880, 1108.73];       // A4 C#5 E5 A5 C#6 —— 五声点缀
-    function build() {
-      ctx = new (window.AudioContext || window.webkitAudioContext)();
-      master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
-      var filt = ctx.createBiquadFilter(); filt.type = 'lowpass'; filt.frequency.value = 950; filt.Q.value = 0.5;
-      padGain = ctx.createGain(); padGain.gain.value = 0.6;
-      filt.connect(padGain); padGain.connect(master);
-      PAD.forEach(function (f, i) {
-        [-7, 7].forEach(function (det) {
-          var o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = f; o.detune.value = det + i;
-          var g = ctx.createGain(); g.gain.value = 0.11 / PAD.length;
-          o.connect(g); g.connect(filt); o.start();
-        });
-      });
-      var lfo = ctx.createOscillator(); lfo.frequency.value = 0.06;   // 极慢「呼吸」
-      var lg = ctx.createGain(); lg.gain.value = 0.18;
-      lfo.connect(lg); lg.connect(padGain.gain); lfo.start();
-      var dl = ctx.createDelay(); dl.delayTime.value = 0.42;          // 空间回声
-      var fb = ctx.createGain(); fb.gain.value = 0.34;
-      dl.connect(fb); fb.connect(dl); dl.connect(master);
-      bellIn = ctx.createGain(); bellIn.connect(dl); bellIn.connect(master);
-      started = true;
-    }
-    function shimmer() {
-      if (!playing) return;
-      var f = SHIMMER[Math.floor(Math.random() * SHIMMER.length)];
-      var o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = f;
-      var g = ctx.createGain(); g.gain.value = 0.0001;
-      o.connect(g); g.connect(bellIn);
-      var t = ctx.currentTime;
-      g.gain.linearRampToValueAtTime(0.05, t + 0.7);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 4.5);
-      o.start(t); o.stop(t + 5);
-      bellTimer = setTimeout(shimmer, 5000 + Math.random() * 7000);
-    }
-    function play() {
-      if (!started) build();
-      ctx.resume();
-      playing = true;
-      master.gain.cancelScheduledValues(ctx.currentTime);
-      master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
-      master.gain.linearRampToValueAtTime(0.14, ctx.currentTime + 2.5);
-      btn.textContent = '🔊'; btn.classList.add('playing'); btn.setAttribute('aria-label', audioText('audio.mute', '静音背景音乐'));
-      bellTimer = setTimeout(shimmer, 3500);
-    }
-    function mute() {
-      playing = false; clearTimeout(bellTimer);
-      master.gain.cancelScheduledValues(ctx.currentTime);
-      master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
-      master.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.2);
-      setTimeout(function () { if (!playing && ctx) ctx.suspend(); }, 1400);
-      btn.textContent = '🔇'; btn.classList.remove('playing'); btn.setAttribute('aria-label', audioText('audio.play', '播放背景音乐'));
-    }
-    btn.addEventListener('click', function () { playing ? mute() : play(); });
-  })();
-  </script>
-
 </body>
 </html>
