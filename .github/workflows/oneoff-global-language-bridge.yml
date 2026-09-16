@@ -1,0 +1,114 @@
+name: One-off global language bridge
+
+on:
+  push:
+    paths:
+      - '.github/workflows/oneoff-global-language-bridge.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Add shared language state and bridge globe language
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          theme = Path('assets/theme.js')
+          text = theme.read_text(encoding='utf-8')
+          marker = 'OOGLEX_GLOBAL_LANGUAGE_BRIDGE_V1'
+          if marker not in text:
+              bridge = r'''
+
+/* OOGLEX_GLOBAL_LANGUAGE_BRIDGE_V1
+   全站语言状态桥：复用首页 localStorage["ooglex.language"]。
+   theme.js 已被绝大多数页面加载，因此用户在首页选择 English 后，
+   进入子页面仍保持 data-lang/en 与 html lang=en；页面可监听 ooglex:languagechange
+   或调用 window.OoglexLanguage 接入自己的中英文字典。 */
+(function () {
+  "use strict";
+  var KEY = "ooglex.language";
+  var root = document.documentElement;
+
+  function normalize(v) { return v === "en" ? "en" : "zh"; }
+  function read() {
+    try { return normalize(localStorage.getItem(KEY)); }
+    catch (e) { return "zh"; }
+  }
+  function write(lang) {
+    try { localStorage.setItem(KEY, normalize(lang)); } catch (e) {}
+  }
+  function apply(lang, persist) {
+    lang = normalize(lang);
+    if (persist) write(lang);
+    root.setAttribute("data-lang", lang);
+    root.setAttribute("lang", lang === "en" ? "en" : "zh-CN");
+    try {
+      document.dispatchEvent(new CustomEvent("ooglex:languagechange", {
+        detail: { language: lang }
+      }));
+    } catch (e) {}
+    return lang;
+  }
+
+  var current = apply(read(), false);
+  window.OoglexLanguage = {
+    get: function () { return normalize(root.getAttribute("data-lang") || current); },
+    set: function (lang) { current = apply(lang, true); return current; },
+    toggle: function () { return this.set(this.get() === "en" ? "zh" : "en"); }
+  };
+
+  window.addEventListener("storage", function (ev) {
+    if (ev.key !== KEY) return;
+    current = apply(ev.newValue, false);
+  });
+})();
+'''
+              theme.write_text(text.rstrip() + bridge + '\n', encoding='utf-8')
+
+          globe = Path('apps/globe/index.html')
+          g = globe.read_text(encoding='utf-8')
+          old_key = "  var LANG_KEY = 'ooglex.globe.lang';   // appUrl() 依赖它，必须在此处初始化\n"
+          new_key = old_key + "  var GLOBAL_LANG_KEY = 'ooglex.language'; // 与首页/全站语言选择保持一致\n"
+          if "GLOBAL_LANG_KEY = 'ooglex.language'" not in g:
+              if old_key not in g:
+                  raise SystemExit('globe LANG_KEY anchor not found')
+              g = g.replace(old_key, new_key, 1)
+
+          old_read = "  function readLang() {\n    try { return localStorage.getItem(LANG_KEY) === 'en' ? 'en' : 'zh'; }\n    catch (e) { return 'zh'; }\n  }"
+          new_read = "  function readLang() {\n    try {\n      var globalLang = localStorage.getItem(GLOBAL_LANG_KEY);\n      if (globalLang === 'en' || globalLang === 'zh') return globalLang;\n      return localStorage.getItem(LANG_KEY) === 'en' ? 'en' : 'zh';\n    } catch (e) { return 'zh'; }\n  }"
+          if old_read in g:
+              g = g.replace(old_read, new_read, 1)
+          elif "var globalLang = localStorage.getItem(GLOBAL_LANG_KEY);" not in g:
+              raise SystemExit('globe readLang anchor not found')
+
+          old_write = "    try { localStorage.setItem(LANG_KEY, next); } catch (e) { /* 不影响本次切换 */ }"
+          new_write = "    try {\n      localStorage.setItem(LANG_KEY, next);\n      localStorage.setItem(GLOBAL_LANG_KEY, next);\n    } catch (e) { /* 不影响本次切换 */ }"
+          if old_write in g:
+              g = g.replace(old_write, new_write, 1)
+          elif "localStorage.setItem(GLOBAL_LANG_KEY, next);" not in g:
+              raise SystemExit('globe language write anchor not found')
+
+          globe.write_text(g, encoding='utf-8')
+          PY
+      - name: Validate
+        run: |
+          grep -q 'OOGLEX_GLOBAL_LANGUAGE_BRIDGE_V1' assets/theme.js
+          grep -q "GLOBAL_LANG_KEY = 'ooglex.language'" apps/globe/index.html
+          grep -q "localStorage.setItem(GLOBAL_LANG_KEY, next)" apps/globe/index.html
+          git diff --check
+      - name: Commit changes and remove one-off workflow
+        run: |
+          rm .github/workflows/oneoff-global-language-bridge.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/theme.js apps/globe/index.html .github/workflows/oneoff-global-language-bridge.yml
+          git commit -m "feat(i18n): persist language across site"
+          git push origin HEAD:main
