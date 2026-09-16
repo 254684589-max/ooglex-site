@@ -261,7 +261,28 @@
   }
   function label(m) { return isEnglish() ? m.en : m.zh; }
 
+  function buildHomepageAccountLink() {
+    var p = window.location.pathname || "/";
+    if (p !== "/" && p !== "/index.html") return;
+    var links = document.querySelector("nav .links");
+    if (!links || links.querySelector('a[href="/account/"]')) return;
+    var a = document.createElement("a");
+    a.href = "/account/";
+    a.id = "account-nav-link";
+    function syncAccountLabel() {
+      var en = isEnglish();
+      a.textContent = en ? "Sign in / Register" : "登录 / 注册";
+      a.setAttribute("aria-label", en ? "Sign in or register" : "登录或注册账户");
+      a.title = en ? "Ooglex Account" : "Ooglex 账户";
+    }
+    var before = document.getElementById("music-toggle") || document.getElementById("language-toggle");
+    links.insertBefore(a, before || null);
+    document.addEventListener("ooglex:languagechange", syncAccountLabel);
+    syncAccountLabel();
+  }
+
   function build() {
+    buildHomepageAccountLink();
     var slot = findSlot();
     var box = document.createElement("div");
     box.className = "ogx-theme" + (slot ? "" : " is-float");
