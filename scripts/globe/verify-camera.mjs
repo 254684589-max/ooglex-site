@@ -18,6 +18,11 @@ export async function verifyCameraNavigation({ open, verifyVisibleEarth, run }) 
       await frame.evaluate(() => {
         const viewer = window.__globeTestViewer;
         window.__cameraEvidence = { min: Infinity, frames: 0 };
+        const rotate = viewer.camera.rotate;
+        viewer.camera.rotate = function (axis, angle) {
+          if (Cesium.Cartesian3.magnitudeSquared(axis) < 1e-20) console.log('ZOOM DEGENERATE AXIS ' + JSON.stringify({ axis, angle, height: this.positionCartographic.height }));
+          return rotate.apply(this, arguments);
+        };
         viewer.scene.postRender.addEventListener(() => {
           const record = window.__cameraEvidence;
           record.min = Math.min(record.min, viewer.camera.positionCartographic.height);
@@ -72,11 +77,17 @@ export async function verifyCameraNavigation({ open, verifyVisibleEarth, run }) 
       assert(Math.abs(api.originalHeight - 600) < .01, 'Caller-owned destinations must remain unchanged');
       assert.equal(api.completed, 1, 'Flight completion must fire exactly once');
       assert.equal(api.cancelled, 1, 'Flight cancellation must fire exactly once');
+      console.log('CAMERA API ' + JSON.stringify(api));
       const canvas = await frame.$('.cesium-widget canvas'), rect = await canvas.boundingBox();
       await page.mouse.move(rect.x + rect.width / 2, rect.y + rect.height / 2);
       for (let i = 0; i < 12; i++) {
         await page.mouse.wheel({ deltaY: -800 });
         await new Promise(resolve => setTimeout(resolve, 100));
+        const zoom = await frame.evaluate(() => {
+          const c = window.__globeTestViewer.camera;
+          return { height: c.positionCartographic.height, position: c.positionWC, direction: c.directionWC, up: c.upWC, transform: Cesium.Matrix4.toArray(c.transform) };
+        });
+        if (!Number.isFinite(zoom.height)) { console.log('INVALID ZOOM ' + JSON.stringify({ i, zoom })); throw new Error('Non-finite camera during zoom'); }
       }
       await verifyVisibleEarth(page, frame, 'after-zoom');
       const evidence = await frame.evaluate(() => window.__cameraEvidence);

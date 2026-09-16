@@ -59,6 +59,7 @@ async function open(width, mode = 'hang', path = '/apps/globe/', project = null)
     // In hang mode leave the request unanswered: a block is not always a fast HTTP error.
   });
   page.on('pageerror', error => errors.push(error.stack || String(error)));
+  page.on('console', message => { if (message.text().startsWith('ZOOM DEGENERATE')) console.log(message.text()); });
   page.on('response', response => {
     if (response.url().includes('/NaturalEarthII/') && response.url().includes('.jpg') && response.status() === 200) images.push(response.url());
     if (response.url().startsWith(origin) && response.status() >= 400 && !response.url().includes('/api/')) bad.push(response.url());
