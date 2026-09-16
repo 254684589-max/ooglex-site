@@ -15,53 +15,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-      - name: Make account nav reflect login state
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          import re
-
-          path = Path('assets/theme.js')
-          text = path.read_text(encoding='utf-8')
-          pattern = r'  function buildHomepageAccountLink\(\) \{.*?\n  \}\n\n  function build\(\) \{'
-          replacement = r'''  function buildHomepageAccountLink() {
-    var p = window.location.pathname || "/";
-    if (p !== "/" && p !== "/index.html") return;
-    var links = document.querySelector("nav .links");
-    if (!links || links.querySelector('a[href="/account/"]')) return;
-    var a = document.createElement("a");
-    a.href = "/account/";
-    a.id = "account-nav-link";
-
-    /* Supabase 会把同源登录会话保存在这个 localStorage key。
-       首页只读取“是否有会话”，不读取密码、不读取 access token 内容，也不发额外网络请求。 */
-    var AUTH_KEY = "sb-nwthqkpkvbtilafqpjlf-auth-token";
-    function signedIn() {
-      try {
-        var raw = localStorage.getItem(AUTH_KEY);
-        return !!raw && raw !== "null" && raw !== "undefined";
-      } catch (e) { return false; }
-    }
-    function syncAccountLabel() {
-      var en = isEnglish(), active = signedIn();
-      a.textContent = active ? (en ? "Account" : "账户") : (en ? "Sign in / Register" : "登录 / 注册");
-      a.setAttribute("aria-label", active ? (en ? "Open account center" : "打开账户中心") : (en ? "Sign in or register" : "登录或注册账户"));
-      a.title = active ? (en ? "Ooglex Account" : "Ooglex 账户中心") : (en ? "Sign in / Register" : "登录 / 注册");
-    }
-    var before = document.getElementById("music-toggle") || document.getElementById("language-toggle");
-    links.insertBefore(a, before || null);
-    document.addEventListener("ooglex:languagechange", syncAccountLabel);
-    window.addEventListener("storage", function (e) { if (e.key === AUTH_KEY) syncAccountLabel(); });
-    window.addEventListener("pageshow", syncAccountLabel);
-    syncAccountLabel();
-  }
-
-  function build() {'''
-          updated, count = re.subn(pattern, replacement, text, count=1, flags=re.S)
-          if count != 1:
-              raise SystemExit(f'Expected one homepage account nav function, replaced {count}')
-          path.write_text(updated, encoding='utf-8')
-          PY
+      - name: Patch homepage account nav state
+        run: python scripts/oneoff_patch_account_nav.py
       - name: Commit patch
         run: |
           git diff --check
