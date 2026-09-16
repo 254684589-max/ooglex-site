@@ -1,0 +1,113 @@
+name: One-off i18n wave2 rollout
+
+on:
+  push:
+    paths:
+      - .github/workflows/oneoff-i18n-wave2.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Inject second-wave i18n scripts
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib, re
+
+          core = Path('assets/i18n.js')
+          extra = Path('assets/i18n-pages.js')
+          core_ver = hashlib.sha256(core.read_bytes()).hexdigest()[:8]
+          extra_ver = hashlib.sha256(extra.read_bytes()).hexdigest()[:8]
+          core_tag = f'<script src="/assets/i18n.js?v={core_ver}" defer></script>'
+          extra_tag = f'<script src="/assets/i18n-pages.js?v={extra_ver}" defer></script>'
+
+          targets = [
+              Path('apps/asset-tracker/index.html'),
+              Path('apps/companies/index.html'),
+              Path('apps/ai-rankings/index.html'),
+              Path('apps/university-rankings/index.html'),
+              Path('apps/econ-calendar/index.html'),
+              Path('apps/fear-greed/index.html'),
+              Path('apps/data-hub/index.html'),
+          ]
+
+          changed = []
+          for p in targets:
+              s = p.read_text(encoding='utf-8')
+              original = s
+
+              # Refresh an existing core i18n version, or add it after the shared theme script.
+              if re.search(r'<script src="/assets/i18n\.js\?v=[^"]+" defer></script>', s):
+                  s = re.sub(r'<script src="/assets/i18n\.js\?v=[^"]+" defer></script>', core_tag, s, count=1)
+              else:
+                  m = re.search(r'(<script src="/assets/theme\.js\?v=[^"]+" defer></script>)', s)
+                  if m:
+                      s = s[:m.end()] + '\n' + core_tag + s[m.end():]
+                  elif '</head>' in s:
+                      s = s.replace('</head>', core_tag + '\n</head>', 1)
+                  else:
+                      raise SystemExit(f'no injection anchor for {p}')
+
+              # Add/refresh second-wave translations directly after core i18n.
+              if re.search(r'<script src="/assets/i18n-pages\.js\?v=[^"]+" defer></script>', s):
+                  s = re.sub(r'<script src="/assets/i18n-pages\.js\?v=[^"]+" defer></script>', extra_tag, s, count=1)
+              else:
+                  m = re.search(r'(<script src="/assets/i18n\.js\?v=[^"]+" defer></script>)', s)
+                  if not m:
+                      raise SystemExit(f'core i18n missing after injection for {p}')
+                  s = s[:m.end()] + '\n' + extra_tag + s[m.end():]
+
+              if s != original:
+                  p.write_text(s, encoding='utf-8')
+                  changed.append(str(p))
+
+          print('core i18n', core_ver)
+          print('wave2 i18n', extra_ver)
+          print('changed', len(changed))
+          for p in changed:
+              print(p)
+          PY
+
+      - name: Validate rollout
+        run: |
+          node --check assets/i18n-pages.js
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          cv = hashlib.sha256(Path('assets/i18n.js').read_bytes()).hexdigest()[:8]
+          ev = hashlib.sha256(Path('assets/i18n-pages.js').read_bytes()).hexdigest()[:8]
+          targets = [
+              Path('apps/asset-tracker/index.html'),
+              Path('apps/companies/index.html'),
+              Path('apps/ai-rankings/index.html'),
+              Path('apps/university-rankings/index.html'),
+              Path('apps/econ-calendar/index.html'),
+              Path('apps/fear-greed/index.html'),
+              Path('apps/data-hub/index.html'),
+          ]
+          for p in targets:
+              s = p.read_text(encoding='utf-8')
+              assert f'/assets/i18n.js?v={cv}' in s, p
+              assert f'/assets/i18n-pages.js?v={ev}' in s, p
+          print('validated', len(targets), 'pages')
+          PY
+          git diff --check
+
+      - name: Commit rollout and remove one-off workflow
+        run: |
+          rm .github/workflows/oneoff-i18n-wave2.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/i18n-pages.js apps/asset-tracker/index.html apps/companies/index.html apps/ai-rankings/index.html apps/university-rankings/index.html apps/econ-calendar/index.html apps/fear-greed/index.html apps/data-hub/index.html .github/workflows/oneoff-i18n-wave2.yml
+          git commit -m "feat(i18n): translate second-wave data pages"
+          git push origin HEAD:main
