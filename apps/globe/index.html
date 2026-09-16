@@ -243,6 +243,7 @@
   'use strict';
   var APP_URL = '/apps/globe/app/';
   var LANG_KEY = 'ooglex.globe.lang';   // appUrl() 依赖它，必须在此处初始化
+  var GLOBAL_LANG_KEY = 'ooglex.language'; // 与首页/全站语言选择保持一致
   /** 应用地址；英文原版通过 ?lang=en 让中文化层自行短路。 */
   function appUrl() {
     return APP_URL + '?map=local-earth&view=2' + (readLang() === 'en' ? '&lang=en' : '');
@@ -351,8 +352,11 @@
   // 比在页面里维护一份「原文备份」可靠得多。
   var btnLang = document.getElementById('btn-lang');
   function readLang() {
-    try { return localStorage.getItem(LANG_KEY) === 'en' ? 'en' : 'zh'; }
-    catch (e) { return 'zh'; }
+    try {
+      var globalLang = localStorage.getItem(GLOBAL_LANG_KEY);
+      if (globalLang === 'en' || globalLang === 'zh') return globalLang;
+      return localStorage.getItem(LANG_KEY) === 'en' ? 'en' : 'zh';
+    } catch (e) { return 'zh'; }
   }
   function paintLang() {
     var en = readLang() === 'en';
@@ -362,7 +366,10 @@
   }
   btnLang.addEventListener('click', function () {
     var next = readLang() === 'en' ? 'zh' : 'en';
-    try { localStorage.setItem(LANG_KEY, next); } catch (e) { /* 不影响本次切换 */ }
+    try {
+      localStorage.setItem(LANG_KEY, next);
+      localStorage.setItem(GLOBAL_LANG_KEY, next);
+    } catch (e) { /* 不影响本次切换 */ }
     paintLang();
     var f = document.querySelector('.stage iframe');
     if (f) { loaded = false; load(); } // 重载并等待新的首帧确认

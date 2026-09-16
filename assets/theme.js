@@ -421,3 +421,47 @@
     build();
   }
 })();
+
+/* OOGLEX_GLOBAL_LANGUAGE_BRIDGE_V1
+   全站语言状态桥：复用首页 localStorage["ooglex.language"]。
+   theme.js 已被绝大多数页面加载使用，因此用户在首页选择 English 后，
+   进入藏快后的效进合數 data-lang 和 html lang=en；页面可监含 ooglex:languagechange
+   或调用 window.OoglexLanguage 接入自己的中英文加典。 */
+(function () {
+  "use strict";
+  var KEY = "ooglex.language";
+  var root = document.documentElement;
+
+  function normalize(v) { return v === "en" ? "en" : "zh"; }
+  function read() {
+    try { return normalize(localStorage.getItem(KEY)); }
+    catch (e) { return "zh"; }
+  }
+  function write(lang) {
+    try { localStorage.setItem(KEY, normalize(lang )); } catch (e) {}
+  }
+  function apply(lang, persist) {
+    lang = normalize(lang);
+    if (persist) write(lang);
+    root.setAttribute("data-lang", lang);
+    root.setAttribute("lang", lang === "en" ? "en" : "zh-CN");
+    try {
+      document.dispatchEvent(new CustomEvent("ooglex:languagechange", {
+        detail: { language: lang }
+      }));
+    } catch (e) {}
+    return lang;
+  }
+
+  var current = apply(read(), false);
+  window.OoglexLanguage = {
+    get: function () { return normalize(root.getAttribute("data-lang") || current); },
+    set: function (lang) { current = apply(lang, true); return current; },
+    toggle: function () { return this.set(this.get() === "en" ? "zh" : "en"); }
+  };
+
+  window.addEventListener("storage", function (ev) {
+    if (ev.key !== KEY) return;
+    current = apply(ev.newValue, false);
+  });
+})();
