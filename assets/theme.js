@@ -269,15 +269,27 @@
     var a = document.createElement("a");
     a.href = "/account/";
     a.id = "account-nav-link";
+
+    /* Supabase stores the same-origin login session under this localStorage key.
+       The homepage only checks whether a session exists; it never reads passwords or sends extra requests. */
+    var AUTH_KEY = "sb-nwthqkpkvbtilafqpjlf-auth-token";
+    function signedIn() {
+      try {
+        var raw = localStorage.getItem(AUTH_KEY);
+        return !!raw && raw !== "null" && raw !== "undefined";
+      } catch (e) { return false; }
+    }
     function syncAccountLabel() {
-      var en = isEnglish();
-      a.textContent = en ? "Sign in / Register" : "登录 / 注册";
-      a.setAttribute("aria-label", en ? "Sign in or register" : "登录或注册账户");
-      a.title = en ? "Ooglex Account" : "Ooglex 账户";
+      var en = isEnglish(), active = signedIn();
+      a.textContent = active ? (en ? "Account" : "账户") : (en ? "Sign in / Register" : "登录 / 注册");
+      a.setAttribute("aria-label", active ? (en ? "Open account center" : "打开账户中心") : (en ? "Sign in or register" : "登录或注册账户"));
+      a.title = active ? (en ? "Ooglex Account" : "Ooglex 账户中心") : (en ? "Sign in / Register" : "登录 / 注册");
     }
     var before = document.getElementById("music-toggle") || document.getElementById("language-toggle");
     links.insertBefore(a, before || null);
     document.addEventListener("ooglex:languagechange", syncAccountLabel);
+    window.addEventListener("storage", function (e) { if (e.key === AUTH_KEY) syncAccountLabel(); });
+    window.addEventListener("pageshow", syncAccountLabel);
     syncAccountLabel();
   }
 
