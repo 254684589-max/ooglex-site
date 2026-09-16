@@ -20,58 +20,15 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import base64
 
           theme = Path('assets/theme.js')
           text = theme.read_text(encoding='utf-8')
           marker = 'OOGLEX_GLOBAL_LANGUAGE_BRIDGE_V1'
+          bridge_b64 = 'LyogT09HTEVYX0dMT0JBTF9MQU5HVUFHRV9CUklER0VfVjEKICAg5YWo56uZ6K+t6KiA54q25oCB5qGl77ya5aSN55So6aaW6aG1IGxvY2FsU3RvcmFnZVsib29nbGV4Lmxhbmd1YWdlIl3jgIIKICAgdGhlbWUuanMg5bey6KKr57ud5aSn5aSa5pWw6aG16Z2i5Yqg6L295L2/55So77yM5Zug5q2k55So5oi35Zyo6aaW6aG16YCJ5oupIEVuZ2xpc2gg5ZCO77yMCiAgIOi/m+WFpeiXj+W/q+WQjueahOaViOi/m+WQiOaVuCBkYXRhLWxhbmcg5ZKMIGh0bWwgbGFuZz1lbu+8m+mhtemdouWPr+ebkeWQqyBvb2dsZXg6bGFuZ3VhZ2VjaGFuZ2UKICAg5oiW6LCD55SoIHdpbmRvdy5Pb2dsZXhMYW5ndWFnZSDmjqXlhaXoh6rlt7HnmoTkuK3oi7HmlofliqDlhbjjgIIgKi8KKGZ1bmN0aW9uICgpIHsKICAidXNlIHN0cmljdCI7CiAgdmFyIEtFWSA9ICJvb2dsZXgubGFuZ3VhZ2UiOwogIHZhciByb290ID0gZG9jdW1lbnQuZG9jdW1lbnRFbGVtZW50OwoKICBmdW5jdGlvbiBub3JtYWxpemUodikgeyByZXR1cm4gdiA9PT0gImVuIiA/ICJlbiIgOiAiemgiOyB9CiAgZnVuY3Rpb24gcmVhZCgpIHsKICAgIHRyeSB7IHJldHVybiBub3JtYWxpemUobG9jYWxTdG9yYWdlLmdldEl0ZW0oS0VZKSk7IH0KICAgIGNhdGNoIChlKSB7IHJldHVybiAiemgiOyB9CiAgfQogIGZ1bmN0aW9uIHdyaXRlKGxhbmcpIHsKICAgIHRyeSB7IGxvY2FsU3RvcmFnZS5zZXRJdGVtKEtFWSwgbm9ybWFsaXplKGxhbmcgKSk7IH0gY2F0Y2ggKGUpIHt9CiAgfQogIGZ1bmN0aW9uIGFwcGx5KGxhbmcsIHBlcnNpc3QpIHsKICAgIGxhbmcgPSBub3JtYWxpemUobGFuZyk7CiAgICBpZiAocGVyc2lzdCkgd3JpdGUobGFuZyk7CiAgICByb290LnNldEF0dHJpYnV0ZSgiZGF0YS1sYW5nIiwgbGFuZyk7CiAgICByb290LnNldEF0dHJpYnV0ZSgibGFuZyIsIGxhbmcgPT09ICJlbiIgPyAiZW4iIDogInpoLUNO Iik7CiAgICB0cnkgewogICAgICBkb2N1bWVudC5kaXNwYXRjaEV2ZW50KG5ldyBDdXN0b21FdmVudCgib29nbGV4Omxhbmd1YWdlY2hhbmdlIiwgewogICAgICAgIGRldGFpbDogeyBsYW5ndWFnZTogbGFuZyB9CiAgICAgIH0pKTsKICAgIH0gY2F0Y2ggKGUpIHt9CiAgICByZXR1cm4gbGFuZzsKICB9CgogIHZhciBjdXJyZW50ID0gYXBwbHkocmVhZCgpLCBmYWxzZSk7CiAgd2luZG93Lk9vZ2xleExhbmd1YWdlID0gewogICAgZ2V0OiBmdW5jdGlvbiAoKSB7IHJldHVybiBub3JtYWxpemUocm9vdC5nZXRBdHRyaWJ1dGUoImRhdGEtbGFuZyIpIHx8IGN1cnJlbnQpOyB9LAogICAgc2V0OiBmdW5jdGlvbiAobGFuZykgeyBjdXJyZW50ID0gYXBwbHkobGFuZywgdHJ1ZSk7IHJldHVybiBjdXJyZW50OyB9LAogICAgdG9nZ2xlOiBmdW5jdGlvbiAoKSB7IHJldHVybiB0aGlzLnNldCh0aGlzLmdldCgpID09PSAiZW4iID8gInpoIiA6ICJlbiIpOyB9CiAgfTsKCiAgd2luZG93LmFkZEV2ZW50TGlzdGVuZXIoInN0b3JhZ2UiLCBmdW5jdGlvbiAoZXYpIHsKICAgIGlmIChldi5rZXkgIT09IEtFWSkgcmV0dXJuOwogICAgY3VycmVudCA9IGFwcGx5KGV2Lm5ld1ZhbHVlLCBmYWxzZSk7CiAgfSk7Cn0pKCk7Cg=='
           if marker not in text:
-              bridge = r'''
-
-/* OOGLEX_GLOBAL_LANGUAGE_BRIDGE_V1
-   全站语言状态桥：复用首页 localStorage["ooglex.language"]。
-   theme.js 已被绝大多数页面加载，因此用户在首页选择 English 后，
-   进入子页面仍保持 data-lang/en 与 html lang=en；页面可监听 ooglex:languagechange
-   或调用 window.OoglexLanguage 接入自己的中英文字典。 */
-(function () {
-  "use strict";
-  var KEY = "ooglex.language";
-  var root = document.documentElement;
-
-  function normalize(v) { return v === "en" ? "en" : "zh"; }
-  function read() {
-    try { return normalize(localStorage.getItem(KEY)); }
-    catch (e) { return "zh"; }
-  }
-  function write(lang) {
-    try { localStorage.setItem(KEY, normalize(lang)); } catch (e) {}
-  }
-  function apply(lang, persist) {
-    lang = normalize(lang);
-    if (persist) write(lang);
-    root.setAttribute("data-lang", lang);
-    root.setAttribute("lang", lang === "en" ? "en" : "zh-CN");
-    try {
-      document.dispatchEvent(new CustomEvent("ooglex:languagechange", {
-        detail: { language: lang }
-      }));
-    } catch (e) {}
-    return lang;
-  }
-
-  var current = apply(read(), false);
-  window.OoglexLanguage = {
-    get: function () { return normalize(root.getAttribute("data-lang") || current); },
-    set: function (lang) { current = apply(lang, true); return current; },
-    toggle: function () { return this.set(this.get() === "en" ? "zh" : "en"); }
-  };
-
-  window.addEventListener("storage", function (ev) {
-    if (ev.key !== KEY) return;
-    current = apply(ev.newValue, false);
-  });
-})();
-'''
-              theme.write_text(text.rstrip() + bridge + '\n', encoding='utf-8')
+              bridge = base64.b64decode(bridge_b64).decode('utf-8')
+              theme.write_text(text.rstrip() + '\n\n' + bridge, encoding='utf-8')
 
           globe = Path('apps/globe/index.html')
           g = globe.read_text(encoding='utf-8')
