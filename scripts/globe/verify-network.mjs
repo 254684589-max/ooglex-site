@@ -39,7 +39,12 @@ async function open(width, mode = 'hang', path = '/apps/globe/', project = null)
     let policy;
     Object.defineProperty(window, 'OoglexGlobeNetwork', {
       configurable: true, get: () => policy,
-      set: value => { policy = { ...value, initialView(viewer) {
+      set: value => { policy = { ...value, start(app) {
+        return value.start(app).then(components => {
+          window.__globeTestViewer = components.scene.viewer;
+          return components;
+        });
+      }, initialView(viewer) {
         window.__globeTestViewer = viewer;
         return value.initialView(viewer);
       } }; }
@@ -66,7 +71,10 @@ async function open(width, mode = 'hang', path = '/apps/globe/', project = null)
   // First-run UI used to cover the screenshot's sample area and falsely pass.
   if (await frame.$eval('#first-run-launcher', el => !el.hidden)) {
     await frame.click('[data-first-run-choice="explore"]');
-    await frame.waitForFunction(() => getComputedStyle(document.getElementById('first-run-launcher')).display === 'none');
+    await frame.waitForFunction(() => {
+      const dialog = document.getElementById('first-run-launcher');
+      return !dialog || getComputedStyle(dialog).display === 'none';
+    });
   }
   return { context, page, frame, external, errors, images, bad };
   } catch (error) {

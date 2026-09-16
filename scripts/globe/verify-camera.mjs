@@ -83,10 +83,31 @@ export async function verifyCameraNavigation({ open, verifyVisibleEarth, run }) 
       assert(evidence.frames > 20 && evidence.min >= minimum - 1, 'No rendered frame may return to street level in Basic Earth: ' + JSON.stringify(evidence));
       console.log('CAMERA NAVIGATION ' + JSON.stringify({ shot, api, evidence }));
       assert.deepEqual(s.errors, []);
+    } catch (error) {
+      console.log('CAMERA FAILURE ' + JSON.stringify(await s.frame.evaluate(() => ({
+        status: document.getElementById('scene-status')?.textContent,
+        view: window.OoglexGlobeNetwork.viewState(), evidence: window.__cameraEvidence,
+        running: document.getElementById('scene-start-btn')?.disabled
+      }))));
+      console.log('GLOBE_PREVIEW ' + await s.page.screenshot({ type: 'jpeg', quality: 35, encoding: 'base64' }));
+      throw error;
     } finally { await s.context.close(); }
   });
 
   if (process.env.GLOBE_VERIFY_QUICK) return;
+  await run('shared street-level view restores as a local regional map', async () => {
+    const s = await open(1280, 'hang', '/apps/globe/app/#lat=35.7&lon=139.7&alt=626&heading=0&pitch=-35&style=normal&map=local-earth');
+    try {
+      await s.frame.waitForFunction(() => Number(new URLSearchParams(location.hash.slice(1)).get('alt')) >= 4999999, { timeout: 15000 });
+      const c = await s.frame.evaluate(() => {
+        const camera = window.__globeTestViewer.camera.positionCartographic;
+        return { lon: Cesium.Math.toDegrees(camera.longitude), lat: Cesium.Math.toDegrees(camera.latitude), height: camera.height };
+      });
+      assert(Math.abs(c.lon - 139.7) < .01 && Math.abs(c.lat - 35.7) < .01 && c.height >= minimum - 1);
+      await verifyVisibleEarth(s.page, s.frame, 'shared-view');
+      assert.deepEqual(s.errors, []);
+    } finally { await s.context.close(); }
+  });
   await run('remote maps restore close zoom; failed tiles return to a safe local view', async () => {
     const s = await open(1280);
     try {
