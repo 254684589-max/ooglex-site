@@ -3,6 +3,7 @@ import { createServer } from 'node:http';
 import { readFile, stat, mkdir } from 'node:fs/promises';
 import { resolve, extname, sep } from 'node:path';
 import { launchGlobeBrowser } from './browser.mjs';
+import { verifyCameraNavigation } from './verify-camera.mjs';
 
 const root = resolve('.');
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css',
@@ -28,10 +29,22 @@ async function run(name, fn) {
   try { await fn(); console.log('PASS ' + name); results.push({ name, status: 'pass' }); }
   catch (error) { failures++; console.error('FAIL ' + name + ': ' + error.stack); results.push({ name, status: 'fail', error: error.message }); }
 }
-async function open(width, mode = 'hang', path = '/apps/globe/') {
+async function open(width, mode = 'hang', path = '/apps/globe/', project = null) {
   const context = await browser.createBrowserContext();
   const page = await context.newPage();
   await page.setViewport({ width, height: width === 360 ? 800 : 950 });
+  // Capture the real viewer through the existing startup seam, only in tests.
+  await page.evaluateOnNewDocument(project => {
+    if (project) localStorage.setItem('godsEyeView.sceneProject.v2', JSON.stringify(project));
+    let policy;
+    Object.defineProperty(window, 'OoglexGlobeNetwork', {
+      configurable: true, get: () => policy,
+      set: value => { policy = { ...value, initialView(viewer) {
+        window.__globeTestViewer = viewer;
+        return value.initialView(viewer);
+      } }; }
+    });
+  }, project);
   const external = [], errors = [], images = [], bad = [];
   await page.setRequestInterception(true);
   page.on('request', req => {
@@ -50,6 +63,11 @@ async function open(width, mode = 'hang', path = '/apps/globe/') {
   if (path === '/apps/globe/' && !(await page.$('.stage iframe'))) await page.click('#btn-go');
   const frame = path === '/apps/globe/' ? await (await page.$('.stage iframe')).contentFrame() : page.mainFrame();
   await frame.waitForFunction(() => document.documentElement.dataset.globeState === 'ready', { timeout: 30000 });
+  // First-run UI used to cover the screenshot's sample area and falsely pass.
+  if (await frame.$eval('#first-run-launcher', el => !el.hidden)) {
+    await frame.click('[data-first-run-choice="explore"]');
+    await frame.waitForFunction(() => getComputedStyle(document.getElementById('first-run-launcher')).display === 'none');
+  }
   return { context, page, frame, external, errors, images, bad };
   } catch (error) {
     console.error('STARTUP DIAGNOSTICS ' + JSON.stringify({width, path, errors, bad, images: images.length, external: external.map(req => req.url())}));
@@ -58,10 +76,16 @@ async function open(width, mode = 'hang', path = '/apps/globe/') {
     throw error;
   }
 }
-async function verifyVisibleEarth(page, frame) {
-  // Sample the rendered center, not HTTP responses: a 600 m view of low-res land is one solid color.
-  const canvas = await frame.$('.cesium-widget canvas');
-  const screenshot = await canvas.screenshot({ type: 'png', encoding: 'base64' });
+async function verifyVisibleEarth(page, frame, label = 'overview') {
+  await frame.waitForFunction(() => window.__globeTestViewer.scene.globe.tilesLoaded, { timeout: 20000 });
+  // Read the WebGL canvas itself: DOM dialogs/panels cannot count as land/ocean.
+  const screenshot = await frame.evaluate(() => new Promise(resolve => {
+    const viewer = window.__globeTestViewer;
+    const remove = viewer.scene.postRender.addEventListener(() => {
+      remove(); resolve(viewer.canvas.toDataURL('image/png'));
+    });
+    viewer.scene.requestRender();
+  }));
   const stats = await page.evaluate(async src => {
     const img = new Image(); img.src = src; await img.decode();
     const buffer = document.createElement('canvas');
@@ -69,8 +93,8 @@ async function verifyVisibleEarth(page, frame) {
     const ctx = buffer.getContext('2d'); ctx.drawImage(img, 0, 0);
     const { data } = ctx.getImageData(0, 0, img.width, img.height);
     const colors = new Set(); let samples = 0, blue = 0, land = 0;
-    for (let y = Math.floor(img.height * .3); y < img.height * .7; y += 3) {
-      for (let x = Math.floor(img.width * .38); x < img.width * .62; x += 3) {
+    for (let y = Math.floor(img.height * .22); y < img.height * .78; y += 3) {
+      for (let x = Math.floor(img.width * .22); x < img.width * .78; x += 3) {
         const i = (y * img.width + x) * 4, r = data[i], g = data[i+1], b = data[i+2];
         colors.add((r >> 4) * 256 + (g >> 4) * 16 + (b >> 4)); samples++;
         if (b > r * 1.15 && b > g * 1.05 && b > 35) blue++;
@@ -78,16 +102,14 @@ async function verifyVisibleEarth(page, frame) {
       }
     }
     return { colors: colors.size, oceanFraction: blue / samples, landFraction: land / samples };
-  }, 'data:image/png;base64,' + screenshot);
-  console.log('EARTH PIXELS ' + JSON.stringify(stats));
-  // The camera is deliberately centred over the Pacific, so the sampled centre
-  // can contain ocean only.  Texture diversity plus a meaningful ocean share is
-  // enough to distinguish a rendered globe from the old solid-green close-up.
-  const visible = stats.colors > 35 && stats.oceanFraction > .03;
+  }, screenshot);
+  console.log('EARTH PIXELS ' + label + ' ' + JSON.stringify(stats));
+  const visible = stats.colors > 35 && stats.oceanFraction > .03 && stats.landFraction > .03;
   if (process.env.GLOBE_VERIFY_PREVIEW || !visible) {
     console.log('GLOBE_PREVIEW ' + await page.screenshot({ type: 'jpeg', quality: 35, encoding: 'base64' }));
   }
   assert(visible, 'The center must contain textured continents and oceans, not a uniform green surface');
+  await page.screenshot({ path: 'artifacts/globe/map-' + label + '.png' });
 }
 async function basic(width, mode = 'hang', path = '/apps/globe/') {
   const state = await open(width, mode, path);
@@ -138,6 +160,7 @@ async function basic(width, mode = 'hang', path = '/apps/globe/') {
 }
 try {
   for (const width of (process.env.GLOBE_VERIFY_QUICK ? [1280] : [360, 768, 1280])) await run('same-origin startup, all third parties stalled, ' + width, () => basic(width));
+  if (!failures) await verifyCameraNavigation({ open, verifyVisibleEarth, run });
   if (!process.env.GLOBE_VERIFY_QUICK && !failures) {
   await run('direct inner URL, third parties fail', () => basic(1280, 'fail', '/apps/globe/app/'));
   await run('remote imagery timeout, retry and late completion isolation', async () => {
