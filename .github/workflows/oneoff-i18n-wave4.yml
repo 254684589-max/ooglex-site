@@ -1,0 +1,159 @@
+name: One-off i18n wave4 rollout
+
+on:
+  push:
+    branches:
+      - feature/i18n-wave4
+    paths:
+      - .github/workflows/oneoff-i18n-wave4.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/i18n-wave4
+          fetch-depth: 0
+
+      - name: Inject fourth-wave i18n scripts and homepage bindings
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib, re
+
+          base = Path('assets/i18n.js')
+          wave = Path('assets/i18n-wave4.js')
+          versions = {
+              'i18n.js': hashlib.sha256(base.read_bytes()).hexdigest()[:8],
+              'i18n-wave4.js': hashlib.sha256(wave.read_bytes()).hexdigest()[:8],
+          }
+          block = '\n'.join([
+              f'<script src="/assets/i18n.js?v={versions["i18n.js"]}" defer></script>',
+              f'<script src="/assets/i18n-wave4.js?v={versions["i18n-wave4.js"]}" defer></script>',
+          ])
+
+          targets = [
+              Path('apps/heatmap/index.html'),
+              Path('apps/ofr-monitor/index.html'),
+              Path('apps/finance-column/index.html'),
+              Path('apps/finance-column/layer.html'),
+              Path('apps/finance-column/diagrams.html'),
+              Path('apps/movies/index.html'),
+              Path('apps/ai-chat/index.html'),
+              Path('apps/calculators/index.html'),
+              Path('apps/radio/index.html'),
+              Path('apps/radio/download/index.html'),
+              Path('apps/tv/index.html'),
+              Path('apps/globe/index.html'),
+              Path('apps/name-fortune/index.html'),
+              Path('games/hub/index.html'),
+              Path('games/gta-vice-city/index.html'),
+              Path('games/red-alert/index.html'),
+              Path('privacy/index.html'),
+          ]
+
+          for p in targets:
+              if not p.exists():
+                  raise SystemExit(f'missing target: {p}')
+              s = p.read_text(encoding='utf-8')
+              for name in ('i18n.js', 'i18n-wave4.js'):
+                  s = re.sub(r'\n?\s*<script src="/assets/' + re.escape(name) + r'\?v=[^"]+" defer></script>', '', s)
+                  s = re.sub(r'\n?\s*<script src="/assets/' + re.escape(name) + r'" defer></script>', '', s)
+              m = re.search(r'(<script src="/assets/theme\.js(?:\?v=[^"]+)?" defer></script>)', s)
+              if m:
+                  s = s[:m.end()] + '\n' + block + s[m.end():]
+              elif '</head>' in s:
+                  s = s.replace('</head>', block + '\n</head>', 1)
+              else:
+                  raise SystemExit(f'no injection anchor: {p}')
+              p.write_text(s, encoding='utf-8')
+
+          # Homepage: the S&P 500 Heatmap and Supply Chain cards were the two
+          # remaining core rows without data-i18n bindings.
+          home = Path('index.html')
+          s = home.read_text(encoding='utf-8')
+          old = '<span class="no">02</span><span class="name"><span class="emoji">🔥</span>标普500热力图</span><span class="en">S&amp;P 500 Heatmap</span><span class="livedot">● LIVE</span>\n          <span class="desc">标普500成分股按行业分块、按市值定面积、按当日涨跌上色，逐块标注涨跌数字，另有完整数据表</span>'
+          new = '<span class="no">02</span><span class="name" data-i18n-html="item.heatmap.name"><span class="emoji">🔥</span>标普500热力图</span><span class="en">S&amp;P 500 Heatmap</span><span class="livedot">● LIVE</span>\n          <span class="desc" data-i18n="item.heatmap.desc">标普500成分股按行业分块、按市值定面积、按当日涨跌上色，逐块标注涨跌数字，另有完整数据表</span>'
+          if old not in s:
+              raise SystemExit('homepage heatmap row anchor not found')
+          s = s.replace(old, new, 1)
+
+          old = '<span class="no">14</span><span class="name"><span class="emoji">⛓</span>全球产业链</span><span class="en">Global Supply Chain</span><span class="livedot">● LIVE</span>\n          <span class="desc">按<span data-sc="stages">12</span>个价值链环节×<span data-sc="chains">27</span>条产业链两维定位，链间上下游<span data-sc="chainLinks">77</span>条标出谁供给谁（含回收逆向）；环节与产业链均由SEC官方SIC行业码判定，逐家可查依据，另有带原始申报出处的冶炼厂关系与上游重叠</span>'
+          new = '<span class="no">14</span><span class="name" data-i18n-html="item.supply.name"><span class="emoji">⛓</span>全球产业链</span><span class="en">Global Supply Chain</span><span class="livedot">● LIVE</span>\n          <span class="desc" data-i18n-html="item.supply.desc">按<span data-sc="stages">12</span>个价值链环节×<span data-sc="chains">27</span>条产业链两维定位，链间上下游<span data-sc="chainLinks">77</span>条标出谁供给谁（含回收逆向）；环节与产业链均由SEC官方SIC行业码判定，逐家可查依据，另有带原始申报出处的冶炼厂关系与上游重叠</span>'
+          if old not in s:
+              raise SystemExit('homepage supply-chain row anchor not found')
+          s = s.replace(old, new, 1)
+
+          anchor = '      "item.markets.desc": "Commodities · Indices · Companies · FX · Crypto · Bonds — per-instrument quotes across six categories, each with a full chart from one month to its entire history, updated daily",\n'
+          extra = (
+              '      "item.heatmap.name": "<span class=\\"emoji\\">🔥</span>S&P 500 Heatmap",\n'
+              '      "item.heatmap.desc": "S&P 500 constituents grouped by sector, sized by market cap and colored by daily move, with explicit percentages and a full data table",\n'
+          )
+          if '"item.heatmap.name"' not in s:
+              if anchor not in s: raise SystemExit('homepage heatmap dictionary anchor not found')
+              s = s.replace(anchor, anchor + extra, 1)
+
+          anchor2 = '      "item.ofr.desc": "Five OFR monitors: Financial Stress Index · SOFR short-term funding · Money market funds · Hedge funds · Systemic banking risk, updated daily",\n'
+          extra2 = (
+              '      "item.supply.name": "<span class=\\"emoji\\">⛓</span>Global Supply Chain",\n'
+              '      "item.supply.desc": "Mapped across <span data-sc=\\"stages\\">12</span> value-chain stages × <span data-sc=\\"chains\\">27</span> industry chains, with <span data-sc=\\"chainLinks\\">77</span> upstream/downstream links; stage and chain assignments use official SEC SIC codes, with source-backed smelter relationships and upstream overlap",\n'
+          )
+          if '"item.supply.name"' not in s:
+              if anchor2 not in s: raise SystemExit('homepage supply dictionary anchor not found')
+              s = s.replace(anchor2, anchor2 + extra2, 1)
+
+          home.write_text(s, encoding='utf-8')
+          print('versions', versions)
+          print('patched', len(targets), 'subpages + homepage')
+          PY
+
+      - name: Validate rollout
+        run: |
+          node --check assets/i18n-wave4.js
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          versions = {
+              'i18n.js': hashlib.sha256(Path('assets/i18n.js').read_bytes()).hexdigest()[:8],
+              'i18n-wave4.js': hashlib.sha256(Path('assets/i18n-wave4.js').read_bytes()).hexdigest()[:8],
+          }
+          targets = [
+              'apps/heatmap/index.html','apps/ofr-monitor/index.html',
+              'apps/finance-column/index.html','apps/finance-column/layer.html','apps/finance-column/diagrams.html',
+              'apps/movies/index.html','apps/ai-chat/index.html','apps/calculators/index.html',
+              'apps/radio/index.html','apps/radio/download/index.html','apps/tv/index.html','apps/globe/index.html',
+              'apps/name-fortune/index.html','games/hub/index.html','games/gta-vice-city/index.html',
+              'games/red-alert/index.html','privacy/index.html'
+          ]
+          for p in targets:
+              s = Path(p).read_text(encoding='utf-8')
+              for n, v in versions.items():
+                  needle = f'/assets/{n}?v={v}'
+                  assert s.count(needle) == 1, (p, needle, s.count(needle))
+          h = Path('index.html').read_text(encoding='utf-8')
+          for needle in ('data-i18n-html="item.heatmap.name"','data-i18n="item.heatmap.desc"',
+                         'data-i18n-html="item.supply.name"','data-i18n-html="item.supply.desc"',
+                         '"item.heatmap.name"','"item.supply.name"'):
+              assert needle in h, needle
+          print('validated', len(targets), 'subpages + homepage')
+          PY
+          git diff --check
+
+      - name: Commit rollout and remove one-off workflow
+        run: |
+          rm .github/workflows/oneoff-i18n-wave4.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/i18n-wave4.js index.html apps/heatmap/index.html apps/ofr-monitor/index.html \
+            apps/finance-column/index.html apps/finance-column/layer.html apps/finance-column/diagrams.html \
+            apps/movies/index.html apps/ai-chat/index.html apps/calculators/index.html \
+            apps/radio/index.html apps/radio/download/index.html apps/tv/index.html apps/globe/index.html \
+            apps/name-fortune/index.html games/hub/index.html games/gta-vice-city/index.html \
+            games/red-alert/index.html privacy/index.html .github/workflows/oneoff-i18n-wave4.yml
+          git commit -m "feat(i18n): translate fourth-wave public pages"
+          git pull --rebase origin feature/i18n-wave4
+          git push origin HEAD:feature/i18n-wave4
