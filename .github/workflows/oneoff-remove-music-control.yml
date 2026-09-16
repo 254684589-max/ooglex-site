@@ -26,7 +26,6 @@ jobs:
           text = path.read_text(encoding='utf-8')
           original = text
 
-          # 1) Remove the visible mute/play button from the homepage nav.
           text, n_button = re.subn(
               r'^\s*<button id="music-toggle"[^\n]*</button>\s*\n',
               '',
@@ -35,7 +34,6 @@ jobs:
               flags=re.M,
           )
 
-          # 2) Remove homepage-only music button styling.
           text, n_css = re.subn(
               r'\n\s*#music-toggle \{.*?\n\s*#music-toggle\.playing \{.*?\}\n',
               '\n',
@@ -43,12 +41,12 @@ jobs:
               count=1,
               flags=re.S,
           )
+
           text = text.replace(
               '#language-toggle:focus-visible, #music-toggle:focus-visible {',
               '#language-toggle:focus-visible {'
           )
 
-          # 3) Remove the inline Web Audio background-music implementation.
           text, n_audio = re.subn(
               r'\n\s*<script>\s*\n\s*/\* 背景音乐：.*?</script>\s*\n(?=\s*</body>)',
               '\n',
@@ -57,7 +55,7 @@ jobs:
               flags=re.S,
           )
 
-          if (n_button != 1:
+          if n_button != 1:
               raise SystemExit(f'Expected 1 music button, removed {n_button}')
           if n_css != 1:
               raise SystemExit(f'Expected 1 music CSS block, removed {n_css}')
