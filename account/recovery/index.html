@@ -5,17 +5,18 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="referrer" content="no-referrer">
+  <meta name="google" content="notranslate">
   <title>继续重置密码 · Ooglex</title>
   <link rel="stylesheet" href="../auth.css">
 </head>
-<body>
+<body class="notranslate" translate="no">
   <header class="topbar">
-    <a class="brand" href="/">OOGLEX</a>
+    <a class="brand notranslate" translate="no" href="/">OOGLEX</a>
     <a class="back" href="/account/" id="back-link">返回账户</a>
   </header>
   <main class="shell">
     <section class="intro">
-      <p class="eyebrow">OOGLEX ACCOUNT SECURITY</p>
+      <p class="eyebrow notranslate" translate="no">OOGLEX ACCOUNT SECURITY</p>
       <h1 id="hero-title">确认后再继续重置密码</h1>
       <p id="hero-copy">为了避免邮件安全扫描器提前消耗一次性重置链接，只有你点击右侧按钮后才会真正验证链接。</p>
     </section>
@@ -58,6 +59,7 @@
       }
 
       document.documentElement.lang = en ? 'en' : 'zh-CN';
+      document.documentElement.setAttribute('data-lang', en ? 'en' : 'zh');
       text('back-link', '返回账户', 'Back to account');
       text('hero-title', '确认后再继续重置密码', 'Confirm before resetting your password');
       text('hero-copy', '为了避免邮件安全扫描器提前消耗一次性重置链接，只有你点击右侧按钮后才会真正验证链接。', 'To prevent email security scanners from consuming a one-time reset link, verification only happens after you click the button.');
