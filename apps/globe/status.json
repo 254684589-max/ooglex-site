@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-16T10:04:08Z",
+  "updatedAt": "2026-09-17T10:07:11Z",
   "frequency": "daily",
   "status": "ok",
   "demo": false,
@@ -44,7 +44,7 @@
     },
     "launches": {
       "ok": true,
-      "detail": "24 条发射记录"
+      "detail": "28 条发射记录"
     }
   }
 }
