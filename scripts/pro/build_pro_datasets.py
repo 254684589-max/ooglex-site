@@ -13,6 +13,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / ".pro-build"
 
+SUPPLY_CHAIN_PREVIEW_COMPANIES = 10
+SUPPLY_CHAIN_PREVIEW_COVERAGE_KEYS = (
+    "claimComplete",
+    "chainsTotal",
+    "chainUnclassified",
+    "chainLinksTotal",
+    "chainDepth",
+    "nodesTotal",
+    "nodesWithEdges",
+    "edgesTotal",
+)
+
 
 def load(path: str):
     return json.loads((ROOT / path).read_text(encoding="utf-8"))
@@ -34,6 +46,22 @@ def node_summary(node: dict) -> dict:
     return {k: node.get(k) for k in keys if k in node}
 
 
+def coverage_summary(coverage: object) -> dict:
+    """Return only aggregate coverage metrics safe for the public preview.
+
+    In particular, do not expose per-symbol filingStatus maps, source-level edge
+    distributions, pool membership maps, or other bulk lookup structures in the
+    FREE payload. Those remain available only in the full private dataset.
+    """
+    if not isinstance(coverage, dict):
+        return {}
+    return {
+        key: coverage.get(key)
+        for key in SUPPLY_CHAIN_PREVIEW_COVERAGE_KEYS
+        if key in coverage
+    }
+
+
 def build_supply_chain() -> None:
     nodes = load("apps/supply-chain/nodes.json")
     rows = nodes.get("nodes") or []
@@ -41,7 +69,7 @@ def build_supply_chain() -> None:
         (x for x in rows if isinstance(x, dict)),
         key=lambda x: (x.get("marketCap") is not None, x.get("marketCap") or 0),
         reverse=True,
-    )[:40]
+    )[:SUPPLY_CHAIN_PREVIEW_COMPANIES]
 
     preview = {
         "schemaVersion": 1,
@@ -49,15 +77,12 @@ def build_supply_chain() -> None:
         "mode": "preview",
         "updatedAt": nodes.get("updatedAt"),
         "asOf": nodes.get("asOf"),
-        "coverage": nodes.get("coverage"),
-        "stages": nodes.get("stages") or [],
-        "chains": nodes.get("chains") or [],
-        "chainLinks": nodes.get("chainLinks") or [],
-        "chainCrossCutting": nodes.get("chainCrossCutting") or {},
+        "coverage": coverage_summary(nodes.get("coverage")),
         "sampleNodes": [node_summary(x) for x in sample],
         "limits": {
             "sampleCompanies": len(sample),
             "fullCompanyData": False,
+            "fullChainMap": False,
             "deepRelationshipData": False,
         },
     }
