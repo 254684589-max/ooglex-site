@@ -8,9 +8,49 @@
     : null;
   if (!product || !window.OoglexPro) return;
 
-  var accessPromise = window.OoglexPro.getAccess(product).catch(function () {
-    return { authenticated: false, plan: "free", access_level: "preview" };
-  });
+  // 这两个页面的预览数据是同源静态文件，会员校验却要访问跨域的 Worker。
+  // 某些网络下该域名不可达且不会快速失败（请求一直挂住），所以权限结果
+  // 绝不能成为静态数据的前置条件 —— 否则页面只剩一个空壳，连“加载失败”
+  // 都显示不出来（app.js 的 catch 也等不到）。
+  var ACCESS_GATE_MS = 4000;
+  var BRIDGE_TIMEOUT_MS = 8000;
+
+  function previewAccess(degraded) {
+    var access = { authenticated: false, plan: "free", access_level: "preview" };
+    if (degraded) access.degraded = degraded;
+    return access;
+  }
+
+  function hasSession() {
+    try { return !!(window.OoglexPro.getSession && window.OoglexPro.getSession()); }
+    catch (_) { return false; }
+  }
+
+  function withGate(promise) {
+    return new Promise(function (resolve) {
+      var done = false;
+      var timer = setTimeout(function () {
+        if (done) return;
+        done = true;
+        resolve(previewAccess("timeout"));
+      }, ACCESS_GATE_MS);
+      promise.then(function (access) {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        resolve(access && access.access_level ? access : previewAccess("empty"));
+      });
+    });
+  }
+
+  // 没有登录态就不可能拿到 full 权限：Worker 对无 token 的请求同样只返回
+  // preview，所以这里直接按预览处理，连这次跨域请求都不发。
+  var accessPromise = hasSession()
+    ? withGate(window.OoglexPro.getAccess(product).catch(function () {
+        return previewAccess("unreachable");
+      }))
+    : Promise.resolve(previewAccess());
+
   var fullPromise = accessPromise.then(function (access) {
     if (access.access_level !== "full") return null;
     return window.OoglexPro.getData(product, "full");
@@ -73,9 +113,11 @@
       title.style.cssText = "font-size:27px;font-weight:760;letter-spacing:-.3px;margin:1px 0 8px";
 
       var sub = document.createElement("div");
-      sub.textContent = access && access.authenticated
-        ? "当前为 FREE 预览。升级 PRO 后继续使用同一原版页面查看全部数据。"
-        : "当前展示原版页面预览。登录 PRO 后可继续查看完整数据。";
+      sub.textContent = access && access.degraded
+        ? "当前网络连不上会员服务，已按预览显示本页原版数据。恢复连接后可查看完整数据。"
+        : access && access.authenticated
+          ? "当前为 FREE 预览。升级 PRO 后继续使用同一原版页面查看全部数据。"
+          : "当前展示原版页面预览。登录 PRO 后可继续查看完整数据。";
       sub.style.cssText = "font-size:14px;line-height:1.6;color:#c8c8c8;margin:0 auto 17px;max-width:720px";
 
       var button = document.createElement("a");
@@ -159,10 +201,23 @@
     }
     var safe = rel.split("/").map(encodeURIComponent).join("/");
     var url = "https://raw.githubusercontent.com/254684589-max/ooglex-site/main/apps/supply-chain/" + safe;
-    return nativeFetch(url, { cache: "no-store" }).then(function (res) {
-      if (!res.ok) return null;
-      return res.json().then(jsonResponse).catch(function () { return null; });
-    }).catch(function () { return null; });
+    // 同样是跨域兜底源，同样可能在某些网络下挂住：必须能自己放弃。
+    var init = { cache: "no-store" };
+    var timer = null;
+    if (typeof AbortController === "function") {
+      var ctrl = new AbortController();
+      init.signal = ctrl.signal;
+      timer = setTimeout(function () { try { ctrl.abort(); } catch (_) {} }, BRIDGE_TIMEOUT_MS);
+    }
+    function settle(value) {
+      if (timer) clearTimeout(timer);
+      return value;
+    }
+    return nativeFetch(url, init).then(function (res) {
+      if (!res.ok) return settle(null);
+      return res.json().then(function (body) { return settle(jsonResponse(body)); })
+        .catch(function () { return settle(null); });
+    }).catch(function () { return settle(null); });
   }
 
   window.fetch = function (input, init) {

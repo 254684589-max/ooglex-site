@@ -28,6 +28,11 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
       - name: Build FREE/PRO payload split
         run: python scripts/pro/build_pro_datasets.py
 
@@ -45,6 +50,20 @@ jobs:
 
       - name: Verify no PRO-only data leaked into artifact
         run: python scripts/validate_pro_public_cutover.py
+
+      # 会员校验走跨域 Worker，大陆直连时该域名会「挂住」。这道闸门确保权限校验
+      # 永远不会成为同源静态数据的前置条件，否则不开 VPN 的用户只能看到空壳页面。
+      - name: Verify previews load without the entitlement worker
+        run: |
+          set +e
+          node scripts/macro-radar/verify-cn.mjs
+          code=$?
+          set -e
+          if [ "$code" = "2" ]; then
+            echo "::warning::未找到 Chrome，本次跳过大陆网络验证"
+            exit 0
+          fi
+          exit $code
 
       - name: Configure GitHub Pages
         if: github.event_name != 'pull_request'

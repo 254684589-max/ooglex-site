@@ -13,6 +13,18 @@
 
 ### 修复
 
+- 2026-09-17，**修复「不开 VPN 时宏观风险监测只剩空壳」**。**未部署**（合并到 `main` 后由 `Deploy Protected Ooglex Pages` 上线）。
+  - **症状**：不开 VPN 打开 `/apps/macro-radar/`，标题、区块标题、页脚都在，但机制总览、8 张制度信号卡、市场异动全空，页脚永远是「数据更新 · —」；开 VPN 后一切正常。
+  - **根因是把同源静态数据排在了跨域权限校验的后面。** 构建时注入的 `assets/pro-rich-data.js` 改写了 `window.fetch`：凡是 `data.json`、`history.json` 这些受保护路径，都要先 `await` 一次 `getAccess()`，而 `getAccess()` 打的是 `ooglex-pro-api.zlq6600e.workers.dev`。`*.workers.dev` 在大陆直连时**挂住而不是快速失败**（`workers/tv-proxy/README.md` 里早写过这条），加上 `assets/pro-access.js` 当时没有任何超时，那个 Promise 永远不会 settle —— `data.json` 于是一次都没发出去。**连「数据加载中或暂不可用」都显示不出来**，因为 `app.js` 的 `catch` 等的正是同一个 Promise。页面看起来像坏了，其实是在无限等权限。
+  - **做了一组对照实验把真凶钉死**：同样是旧代码，把外域请求改成**快速失败**而不是挂住，页面 104 毫秒就正常出数据。所以问题不是「连不上会员服务」，是「连不上而且不肯放弃」。
+  - **三处改动**：① **访客不再发这次跨域请求** —— 没有登录态就不可能拿到 `full`（Worker 对无 token 的请求同样只返回 `preview`），直接按预览渲染，等于把整条阻塞链从访客身上摘掉；② **已登录用户保留校验，但加 4 秒闸门**，超时按预览降级，付费墙文案如实写「当前网络连不上会员服务」，不假装成正常的 FREE 预览；③ **`pro-access.js` 给每次会员 API 请求加 7 秒 `AbortController` 超时**，产业链那条 `raw.githubusercontent.com` 兜底源也补了 8 秒超时 —— 同一类挂死风险，不能只堵一处。
+  - **权限一点没放松。** 完整数据仍然只在 Worker 返回 `full` 时经拦截通道注入，公开构建里依旧只有 10% 预览数据；闸门降级的方向永远是「更少」，不是「更多」。
+  - **新增 CI 闸门 `scripts/macro-radar/verify-cn.mjs`（4 个场景）**，接进 `Deploy Protected Ooglex Pages`。沿用仓库既有做法：**直连 Chrome DevTools 协议，不引入 puppeteer/playwright 依赖**；拦截外域请求时刻意**挂住**而不是拒绝，因为挂住才是最伤页面的那种。场景分别是：访客+外域挂住、已登录+会员 API 挂住、PRO+会员 API 可达、产业链页+外域挂住。
+  - **实测**：修复前 8 条失败（访客场景 20 秒内 0 张卡、页脚 `—`、付费墙不出现）；修复后 4 个场景全过 —— 访客 **177ms** 出 8 张卡且**一次都没请求会员 API**，已登录用户 **4161ms** 降级出数据，PRO 仍是 `PRO · FULL`、无付费墙、完整数据哨兵值正常渲染，产业链页 324ms 出状态行。
+  - **顺带把注入的脚本版本号推进一格**（`pro-access.js?v=4→5`、`pro-rich-data.js?v=3→4`），否则手机浏览器会继续用缓存里的旧适配器，改了也白改。
+  - **还差一步，需要所有者操作**：把这个 Worker 绑到 `pro-api.ooglex.com` 这类自有域名（`docs/OOGLEX_PRO_V01.md` 本来就是这么写的）。本次只保证「会员服务连不上时页面照常出数据」，**大陆用户的登录/会员态本身仍然需要可达的域名**。
+  - **已知遗留、与本次无关**：`scripts/validate_asset_versions.py` 在 `main` 上本来就失败 125 项（`theme.js`、`i18n.js` 等哈希版本号没跟着更新），本次没有顺手改，以免夹带无关改动。
+
 - 2026-09-17，**修复手机端界面**：窄屏自动切精简 HUD，去掉重复标题块，补齐残留英文。**已部署。**
   - **先澄清一件事**：用户手机截图里那条「正在连接高清影像 / 全球视角 / 切换高清影像」状态栏，**线上代码里已经是 0 处引用**（`git show origin/main:apps/globe/index.html` 核对过），看到的是**微信内置浏览器缓存的旧版**。判断方法写进文档了：旧版顶栏下面多一条状态栏，新版只有一条顶栏。
   - **手机端真正的问题是 HUD 用了桌面布局。** 上游自己有移动布局（`max-width: 720px` 下切 `layoutMode='mobile'`），但 HUD 仍是桌面的 `tactical`。实测 390px 下有 **4 处文字冲出视口**：`TOP SECRET // SI-TK // NOFORN`、`KH11-… OPS-…`、`常规 GLOBAL SECTOR …` 都延伸到 x=459，超出 69px。换成上游自带的 `minimal` 后只剩署名链接超 4px。现在窄屏启动时自动切 `minimal`，用的是应用自己的 `#hud-layout-select`（tactical / operator / minimal），**不改上游 CSS**；阈值 720px 与上游判定移动布局的断点一致，避免两套标准打架；只在启动时设一次，用户之后自己改不再干预。
