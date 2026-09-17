@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-09-16T22:52:51Z",
-  "asOf": "2026-09-16",
+  "updatedAt": "2026-09-17T17:11:34Z",
+  "asOf": "2026-09-17",
   "source": "Forex Factory 经济日历",
   "weekOf": "2026-09-13 ~ 2026-09-19",
   "count": 105,
@@ -823,6 +823,18 @@
       "actual": null
     },
     {
+      "ts": "2026-09-17T08:37:00Z",
+      "ccy": "EUR",
+      "country": "欧元区",
+      "flag": "🇪🇺",
+      "title": "10 年期国债拍卖",
+      "titleEn": "Spanish 10-y Bond Auction",
+      "impact": "low",
+      "forecast": null,
+      "previous": "3.74|2.3",
+      "actual": null
+    },
+    {
       "ts": "2026-09-17T09:00:00Z",
       "ccy": "EUR",
       "country": "欧元区",
@@ -844,18 +856,6 @@
       "impact": "low",
       "forecast": "3.3%",
       "previous": "3.3%",
-      "actual": null
-    },
-    {
-      "ts": "2026-09-17T09:03:00Z",
-      "ccy": "EUR",
-      "country": "欧元区",
-      "flag": "🇪🇺",
-      "title": "10 年期国债拍卖",
-      "titleEn": "Spanish 10-y Bond Auction",
-      "impact": "low",
-      "forecast": null,
-      "previous": "3.74|2.3",
       "actual": null
     },
     {
