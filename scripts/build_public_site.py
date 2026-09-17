@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 """Build the deployable Ooglex public site into .site/.
 
-Production builds are protected by default: complete Supply Chain and Macro Risk
-payloads are excluded from the static site. Full data remains in the private R2
-bucket and is served only through the entitlement Worker.
-
-For local research only, --include-pro-private can recreate the old unprotected
-layout. Never use that flag for production deployment.
+Production keeps the original rich Supply Chain and Macro Risk interfaces. Guest
+and FREE users receive same-schema ~10% preview datasets at the legacy paths;
+OWNER/PRO requests are intercepted in-browser and fulfilled through the protected
+Worker/private R2 full bundle.
 """
 from __future__ import annotations
 
@@ -17,6 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / ".site"
 PRO_BUILD = ROOT / ".pro-build"
+RICH_PREVIEW = PRO_BUILD / "rich-preview"
 
 EXCLUDED_DIR_NAMES = {
     ".git", ".github", ".claude", ".pro-build", ".site", "scripts", "docs",
@@ -34,8 +33,9 @@ EXCLUDED_FILES = {
     "README.md",
 }
 
-# These paths may remain in the research repository for the existing generation
-# pipeline, but must never be copied into the public deployment artifact.
+# Full source datasets may remain in the research checkout for the generation
+# pipeline, but production never copies them directly. Selected paths are later
+# replaced with explicitly generated 10% previews.
 PRO_PRIVATE_PATHS = {
     "apps/supply-chain/nodes.json",
     "apps/supply-chain/identity.json",
@@ -53,6 +53,16 @@ PRO_PRIVATE_PATHS = {
     "apps/macro-radar/curve-monthly.json",
 }
 
+PREVIEW_REPLACEMENTS = {
+    "apps/supply-chain/nodes.json",
+    "apps/supply-chain/peers.json",
+    "apps/supply-chain/history.json",
+    "apps/supply-chain/names-zh.json",
+    "apps/supply-chain/edges",
+    "apps/macro-radar/data.json",
+    "apps/macro-radar/history.json",
+}
+
 
 def rel(path: Path) -> str:
     return path.relative_to(ROOT).as_posix()
@@ -61,6 +71,14 @@ def rel(path: Path) -> str:
 def under_private_path(path: Path) -> bool:
     r = rel(path)
     for item in PRO_PRIVATE_PATHS:
+        if r == item or r.startswith(item.rstrip("/") + "/"):
+            return True
+    return False
+
+
+def is_preview_replacement(path: Path) -> bool:
+    r = path.relative_to(OUT).as_posix()
+    for item in PREVIEW_REPLACEMENTS:
         if r == item or r.startswith(item.rstrip("/") + "/"):
             return True
     return False
@@ -78,23 +96,44 @@ def should_skip(path: Path, protect_pro: bool) -> bool:
     return False
 
 
-def install_public_compatibility_preview() -> None:
-    """Keep legacy public macro consumers alive without exposing full data.
-
-    The homepage and some public terminal views still read
-    apps/macro-radar/data.json. During the cutover we replace that file in the
-    deployment artifact with the same FREE preview payload served by the Pro API.
-    The repository source file is not modified.
-    """
-    src = PRO_BUILD / "macro-risk" / "preview.json"
+def copy_tree(src: Path, dst: Path) -> None:
     if not src.exists():
-        raise SystemExit(
-            "missing .pro-build/macro-risk/preview.json; run "
-            "python scripts/pro/build_pro_datasets.py before the public build"
-        )
-    dst = OUT / "apps" / "macro-radar" / "data.json"
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(src, dst)
+        raise SystemExit(f"missing rich preview source: {src.relative_to(ROOT)}")
+    for p in src.rglob("*"):
+        if not p.is_file():
+            continue
+        target = dst / p.relative_to(src)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(p, target)
+
+
+def install_rich_public_previews() -> None:
+    """Install the public 10% data under the original legacy filenames."""
+    copy_tree(RICH_PREVIEW / "supply-chain", OUT / "apps" / "supply-chain")
+    copy_tree(RICH_PREVIEW / "macro-risk", OUT / "apps" / "macro-radar")
+
+
+def inject_rich_access_adapter() -> None:
+    """Keep original HTML/UI and add only the entitlement-aware data layer."""
+    snippet = (
+        '\n<meta name="ooglex-pro-api" content="https://ooglex-pro-api.zlq6600e.workers.dev">\n'
+        '<script src="/assets/pro-access.js?v=3" defer></script>\n'
+        '<script src="/assets/pro-rich-data.js?v=1" defer></script>\n'
+    )
+    for relpath in (
+        "apps/supply-chain/index.html",
+        "apps/supply-chain/company.html",
+        "apps/macro-radar/index.html",
+    ):
+        p = OUT / relpath
+        if not p.exists():
+            raise SystemExit(f"rich legacy page missing: {relpath}")
+        text = p.read_text(encoding="utf-8")
+        if "/assets/pro-rich-data.js" not in text:
+            if "</head>" not in text:
+                raise SystemExit(f"cannot inject rich access adapter: {relpath}")
+            text = text.replace("</head>", snippet + "</head>", 1)
+            p.write_text(text, encoding="utf-8")
 
 
 def build(protect_pro: bool) -> None:
@@ -117,24 +156,25 @@ def build(protect_pro: bool) -> None:
         shutil.copy2(src, dst)
         copied += 1
 
-    # Pages does not need the old GitHub Pages CNAME file in an artifact build.
     cname = OUT / "CNAME"
     if cname.exists():
         cname.unlink()
 
-    # Never allow the server-side account schema into the static output.
     schema = OUT / "account" / "schema.sql"
     if schema.exists():
         raise SystemExit("account/schema.sql leaked into public build")
 
     if protect_pro:
-        install_public_compatibility_preview()
-        leaked = [
-            p for p in OUT.rglob("*")
-            if p.is_file()
-            and under_private_path(ROOT / p.relative_to(OUT))
-            and p.as_posix() != (OUT / "apps/macro-radar/data.json").as_posix()
-        ]
+        install_rich_public_previews()
+        inject_rich_access_adapter()
+
+        leaked = []
+        for p in OUT.rglob("*"):
+            if not p.is_file():
+                continue
+            source_equivalent = ROOT / p.relative_to(OUT)
+            if under_private_path(source_equivalent) and not is_preview_replacement(p):
+                leaked.append(p)
         if leaked:
             raise SystemExit(
                 "PRO private data leaked into public build: "
@@ -145,12 +185,11 @@ def build(protect_pro: bool) -> None:
         raise SystemExit("index.html missing from public build")
 
     print(f"Public site ready: {copied} files copied, {skipped} paths skipped")
-    print(f"PRO protection: {'ON' if protect_pro else 'OFF (LOCAL ONLY)'}")
+    print(f"PRO protection: {'ON — original rich UI + 10% preview' if protect_pro else 'OFF (LOCAL ONLY)'}")
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    # Kept for compatibility with commands already used during the V0.1 rollout.
     ap.add_argument(
         "--pro-cutover", action="store_true",
         help="deprecated compatibility flag; protected mode is now the default",

@@ -47,12 +47,7 @@ def node_summary(node: dict) -> dict:
 
 
 def coverage_summary(coverage: object) -> dict:
-    """Return only aggregate coverage metrics safe for the public preview.
-
-    In particular, do not expose per-symbol filingStatus maps, source-level edge
-    distributions, pool membership maps, or other bulk lookup structures in the
-    FREE payload. Those remain available only in the full private dataset.
-    """
+    """Return only aggregate coverage metrics safe for the compact public preview."""
     if not isinstance(coverage, dict):
         return {}
     return {
@@ -93,13 +88,31 @@ def build_supply_chain() -> None:
         if p.exists():
             supplemental[name] = json.loads(p.read_text(encoding="utf-8"))
 
+    names_zh = ROOT / "apps/supply-chain/names-zh.json"
+    if names_zh.exists():
+        supplemental["namesZh"] = json.loads(names_zh.read_text(encoding="utf-8"))
+
+    # The original company detail page loads one edge shard per company. Embed
+    # them in the private bundle so OWNER/PRO can use the original page without
+    # exposing those shards as public static files.
+    edges = {}
+    edge_dir = ROOT / "apps/supply-chain/edges"
+    if edge_dir.exists():
+        for p in sorted(edge_dir.glob("*.json")):
+            rel = f"edges/{p.name}"
+            try:
+                edges[rel] = json.loads(p.read_text(encoding="utf-8"))
+            except Exception as exc:
+                raise SystemExit(f"failed to read {p}: {exc}") from exc
+    supplemental["edges"] = edges
+
     full = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "product": "supply_chain",
         "mode": "full",
         "primary": nodes,
         "supplemental": supplemental,
-        "note": "Company edge shards remain separate migration resources and are not embedded in this bundle.",
+        "note": "Original rich Supply Chain page contract, including company edge shards, is embedded for protected OWNER/PRO access.",
     }
 
     write("supply-chain/preview.json", preview)
