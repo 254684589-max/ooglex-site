@@ -61,18 +61,74 @@
 @media (prefers-reduced-motion: reduce) { #ooglex-globe-toast { transition: none; } }
 
 /* ---------------------------------------------------------------- 窄屏修正
- * 上游的手机布局（≤720px 走 layoutMode='mobile'）有两处在中文下会破相，
- * 都只在窄屏覆盖，不动桌面。
+ * 上游有自己的手机布局（≤720px 走 layoutMode='mobile'），但它是照着英文文案排的。
+ * 中文标签**字数少、字宽大**，再加上上游给全大写拉丁字母设计的字间距，几乎每处
+ * 定宽标签都差那么几像素 —— 屏幕上就是「定位」只剩「定亻」这类半个字。
+ * 下面每条都只在窄屏覆盖，**不动桌面**；每条后面的数字都是 390px 实测值。
+ * 回归由 verify-network.mjs 的 "narrow screens must not clip or overflow UI text"
+ * 守住（360 / 390px，两种裁法都查）。
  */
 @media (max-width: 720px) {
-  /* 1) 底部指令栏里两个折叠面板是 flex: 0 0 52px 固定宽，装不下「视觉预设」
-   *    这样的四字中文标签，实测被截成「觉预设」。指令栏总宽 244px、上限 374px，
-   *    加宽 20px 有充裕余量。 */
+  /* 1) 指令栏两侧的折叠面板是 flex: 0 0 52px 定宽，装不下中文标签。
+   *    只加宽外层不够 —— 真正裁字的是标签自己的 max-width：`.location-toolbar-label`
+   *    需要 45px 却只给 36.8px，超出部分被 text-overflow: ellipsis 吃掉。
+   *    所以三层一起放开：面板宽 → 按钮宽 → 标签 max-width。
+   *    指令栏实测占 53..337px，两侧各有 ~50px 余量，加宽是安全的。 */
   #command-dock > #location-bar,
-  #command-dock > #control-panel { flex: 0 0 72px !important; }
+  #command-dock > #control-panel { flex: 0 0 96px !important; }
+  #command-dock #location-bar-toggle,
+  #command-dock #control-panel-toggle,
+  #command-dock .location-toolbar { width: auto !important; }
+  #command-dock .location-toolbar-label,
+  #command-dock .panel-title { max-width: none !important; }
 
-  /* 2) 应用自身的 #title-bar（「全球态势 / 地球 / 无处不可见」）与包装页顶栏的
-   *    标题重复，且在 390px 下横向压住旁边那组圆形按钮。窄屏隐藏它，标题由
-   *    包装页负责 —— 不是删功能，只是去掉一处重复。 */
+  /* 2) 上游给这些标签加的字间距（约 0.16em）是为全大写拉丁字母做的排版，中文用不上，
+   *    却按字宽叠加 —— 两个汉字凭空多占 4px，正好是装不下的那几像素。 */
+  #command-dock .location-toolbar-label,
+  #command-dock .panel-title { letter-spacing: 0.02em !important; }
+
+  /* 3) 语音抬头那一行塞了三块：「AI 助手」(需 34px) + 状态 + 「STD ~$0.00」(53px)，
+   *    可用宽度只有 73px，于是「AI 助手」被压到 2px。费用预估是给配了语音服务的
+   *    部署看的，本站没配（首启提示里就写着「本站未配置语音服务」）——
+   *    窄屏下它是纯噪声，隐藏它正好让出 53px。 */
+  #gev-voice-control .gev-voice-cost { display: none !important; }
+
+  /* 4) 右侧那枚圆形电台开关 28px 见方，装不下「电台」两个字（需 36px），文字溢出到
+   *    圆外。让它按内容撑成一枚胶囊。 */
+  #context-radio-toggle-btn {
+    width: auto !important;
+    min-width: 28px !important;
+    padding-inline: 6px !important;
+  }
+
+  /* 5) HUD 底部有两处一模一样的坐标读数：`.hud-bottom-bar`（整行 366px，
+   *    MGRS + 经纬度）和 `.hud-corner`（带「└」括号的战术角标，同样内容）。
+   *    宽屏上一个横贯底部、一个待在角上，互不打扰；390px 下两者上下叠着显示同样的
+   *    数字，纯属重复，还占掉署名行唯一的空带。隐藏角标那份，保留可读性更好的整行。 */
+  #intel-hud .hud-corner { display: none !important; }
+
+  /* 6) 署名行（Cesium 标志 + Natural Earth + Data attribution）是许可要求，必须
+   *    完整可见，而窄屏下它被挤出右边界：360px 少 34px、390px 少 4px —— 屏幕边上
+   *    只剩半个「ion」。
+   *    让它换行行不通：换行后整块长到 143×60，而 #cesium-credits（fixed、距底 96px）
+   *    与 HUD 读数（.hud-corner，absolute、距底 102px）锚在同一条带上，一变高就
+   *    压住读数，实测两者叠成一团糊字。
+   *    所以反过来做：保持单行，把标志与字号压到 360px 也装得下（138px 标志 + 10px
+   *    字号共需 382px → 96px + 9px 约 283px），再把整块下移到读数与指令栏之间那条
+   *    空带。标志缩小但依旧清晰可辨 —— 比被裁掉一半更符合署名要求。 */
+  #cesium-credits { bottom: 100px !important; max-width: calc(100vw - 24px) !important; }
+  .cesium-widget-credits {
+    max-width: calc(100vw - 24px) !important;
+    white-space: nowrap !important;
+    font-size: 9px !important;
+  }
+  .cesium-widget-credits .cesium-credit-logoContainer img {
+    width: 96px !important;
+    height: auto !important;
+  }
+
+  /* 7) 应用自身的 #title-bar（「全球态势 / 地球 / 无处不可见」）与包装页顶栏的标题
+   *    重复，且在 390px 下横向压住旁边那组圆形按钮。窄屏隐藏它，标题由包装页负责
+   *    —— 不是删功能，只是去掉一处重复。 */
   #title-bar { display: none !important; }
 }

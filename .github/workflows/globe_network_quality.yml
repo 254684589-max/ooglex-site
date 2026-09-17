@@ -46,6 +46,7 @@ jobs:
           node --check scripts/globe/network-policy.js
           node --check scripts/globe/patch-network.mjs
           node --check scripts/globe/verify-network.mjs
+          node --check scripts/globe/verify-i18n-coverage.mjs
           node --check scripts/globe/browser.mjs
           for file in apps/globe/app/assets/index-*.js; do node --check "$file"; done
           python3 scripts/globe/test_fetch_space_data.py
@@ -59,6 +60,10 @@ jobs:
           GLOBE_VERIFY_QUICK: '1'
           GLOBE_VERIFY_PREVIEW: '1'
         run: node scripts/globe/verify-network.mjs
+      - name: Every authored UI string must have a Chinese translation
+        # 静态抽取构建产物 index.html 里作者写死的文案，逐条问活着的 i18n 层
+        # 「查得到中文吗」——「某个面板里还有英文」从此不用靠截图发现。
+        run: node scripts/globe/verify-i18n-coverage.mjs
       - name: Existing Chinese UI and accessibility regression
         run: |
           python3 -m http.server 8902 --bind 127.0.0.1 > "$RUNNER_TEMP/globe-http.log" 2>&1 &

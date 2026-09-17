@@ -82,17 +82,32 @@ async function verifyVisibleEarth(page, frame) {
         if (g > b * 1.08 && g > 40) land++;
       }
     }
-    return { colors: colors.size, oceanFraction: blue / samples, landFraction: land / samples };
+    /* 边缘能量 = 相邻像素亮度差的均值。颜色数分不出「有细节」和「一团糊」——
+       糊掉的渐变同样有上百种颜色（实测 500 km 高度一片糊也有 88 色）。
+       概览视角下本地底图**是能给出细节的**（本函数只在 1280px 跑，实测 2.0–3.2），
+       所以这里可以拿锐度当回归闸门：底图掉了或渲染坏了，它会掉到 0 附近。
+       阈值取 >1，离实测下沿还有一倍余量，不至于被单帧抖动误伤。 */
+    let sum = 0, pairs = 0;
+    const lum = i => 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
+    for (let y = Math.floor(img.height * .3); y < img.height * .7; y += 1) {
+      for (let x = Math.floor(img.width * .38); x < img.width * .62 - 1; x += 1) {
+        const i = (y * img.width + x) * 4;
+        sum += Math.abs(lum(i) - lum(i + 4)); pairs += 1;
+      }
+    }
+    return { colors: colors.size, oceanFraction: blue / samples, landFraction: land / samples,
+      edge: pairs ? Number((sum / pairs).toFixed(2)) : 0 };
   }, 'data:image/png;base64,' + screenshot);
   console.log('EARTH PIXELS ' + JSON.stringify(stats));
   // The camera is deliberately centred over the Pacific, so the sampled centre
   // can contain ocean only.  Texture diversity plus a meaningful ocean share is
   // enough to distinguish a rendered globe from the old solid-green close-up.
-  const visible = stats.colors > 35 && stats.oceanFraction > .03;
+  const visible = stats.colors > 35 && stats.oceanFraction > .03 && stats.edge > 1;
   if (process.env.GLOBE_VERIFY_PREVIEW || !visible) {
     console.log('GLOBE_PREVIEW ' + await page.screenshot({ type: 'jpeg', quality: 35, encoding: 'base64' }));
   }
-  assert(visible, 'The center must contain textured continents and oceans, not a uniform green surface');
+  assert(visible, '概览视角的画面中心必须有大陆与海洋的纹理，不能是一片纯色，也不能糊成一团：'
+    + JSON.stringify(stats));
 }
 
 /** 按 URL 解析**完整应用**所在的 frame（第二层 iframe）。
@@ -240,7 +255,14 @@ try {
       // 一路滚到底也不能低于下限（留 10% 余量吸收单帧抖动）
       assert(last.h > 450000,
         '相机降到了基础底图无法显示的高度：' + Math.round(last.h) + ' m（下限 500 km）');
-      // 触底后再滚几轮，画面必须始终有内容 —— 不能是一片纯色
+      /* 触底后再滚几轮，画面必须始终**有内容** —— 不能是一片纯色。
+       * 这里刻意只判「有没有内容」，不判「清不清晰」：本地底图是 Cesium 自带的
+       * NaturalEarthII，maximumLevel 只有 2，实测（390px，屏幕真实像素的边缘能量）
+       *     22000 km → 1.42    3000 km → 0.69    1000 km → 0.25    500 km → 0.14
+       * 也就是说 8000 km 以下就没有清晰可言了。要「永不发糊」，下限得抬到
+       * 8000 公里往上 —— 那等于禁止放大，比发糊糟得多。
+       * 糊是数据的性质，**一片纯色才是坏了**，闸门守后者。想要细节就在应用的
+       * 底图菜单里切高清影像（触到下限时会自动试一次）。 */
       for (let i = 0; i < 3; i += 1) {
         const now = await probe();
         assert(now.colors >= 20,
@@ -267,7 +289,7 @@ try {
         '场景把相机留在了基础底图无法显示的高度：' + Math.round(after.h) + ' m');
       assert(after.shown && /[\u4e00-\u9fa5]/.test(after.text),
         '抬回高度时必须给出中文说明，实际：' + JSON.stringify(after.text));
-      // 画面必须有内容，不能是一片纯色
+      // 画面必须有内容，不能是一片纯色（同上：只判有无内容，不判锐度）
       await new Promise(r => setTimeout(r, 2500));
       const colors = await s.frame.evaluate(() => {
         const c = document.querySelector('.cesium-widget canvas');
@@ -283,30 +305,62 @@ try {
       assert(colors >= 20, '抬回后画面仍是一片纯色（只有 ' + colors + ' 种颜色）');
     } finally { await s.context.close(); }
   });
-  // 手机上默认的 tactical HUD 是桌面驾驶舱：390px 下实测有 4 处文字冲出视口
-  // （TOP SECRET // SI-TK // NOFORN 等，最远到 x=459，超出 69px）。
-  // 现在窄屏自动切上游自带的 minimal，这条闸门守住「窄屏不得有文字冲出视口」。
-  await run('narrow screens must not push HUD text past the viewport', async () => {
-    const s = await open(390);
-    try {
-      await new Promise(r => setTimeout(r, 3000));
-      const r = await s.frame.evaluate(() => {
-        const bad = [];
-        document.querySelectorAll('*').forEach((e) => {
-          if (e.children.length) return;
-          const t = (e.textContent || '').trim();
-          if (!t || t.length < 3) return;
-          const b = e.getBoundingClientRect();
-          if (b.width < 4 || b.height < 4) return;
-          // 署名链接是许可要求的原文，允许贴边几像素
-          if (/Data attribution|Natural Earth|Cesium/i.test(t)) return;
-          if (b.right > innerWidth + 2 || b.left < -2) bad.push(t.slice(0, 32) + '@' + Math.round(b.left) + '..' + Math.round(b.right));
+  /* 手机上默认的 tactical HUD 是桌面驾驶舱：390px 下实测有 4 处文字冲出视口
+   * （TOP SECRET // SI-TK // NOFORN 等，最远到 x=459，超出 69px）。
+   * 现在窄屏自动切上游自带的 minimal，这条闸门守两件事：
+   *   a) 没有文字冲出视口；
+   *   b) 没有文字被裁掉半个字 —— 中文标签比原来的英文短，但**字宽大得多**，
+   *      上游给标签定的 max-width 装不下：实测 `.location-toolbar-label`
+   *      需要 45px 只给 36.8px，「定位」被 ellipsis 吃成「定亻」，用户截图里
+   *      就是「定1」。b) 这一条必须同时看两种裁法：元素自己溢出
+   *      （scrollWidth > clientWidth），以及被某一层祖先的 overflow:hidden 切掉
+   *      （元素自己的 scrollWidth 完全正常 —— 第一版只查了前者，正好漏掉它）。
+   *      也不能只看叶子节点：真正被裁的往往是「图标 + 文字」那一层。 */
+  await run('narrow screens must not clip or overflow UI text', async () => {
+    for (const width of [360, 390]) {
+      const s = await open(width);
+      try {
+        await new Promise(r => setTimeout(r, 3000));
+        const r = await s.frame.evaluate(() => {
+          const over = [], cut = [];
+          const skip = (t) => {
+            if (/Data attribution|Natural Earth|Cesium/i.test(t)) return true;   // 署名原文，另有闸门
+            // 图标是 Material Symbols 的**连字名**当内容（arrow_forward 这类），
+            // 字体把整串合成一个字形，scrollWidth 会比 clientWidth 大几个像素
+            // （实测 3px）—— 那是字体度量，不是被裁。
+            return /^[a-z][a-z0-9_]*$/.test(t);
+          };
+          document.querySelectorAll('body *').forEach((e) => {
+            const t = (e.textContent || '').trim();
+            if (!t || t.length > 40 || skip(t)) return;
+            const cs = getComputedStyle(e);
+            if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0) return;
+            const b = e.getBoundingClientRect();
+            if (b.width < 4 || b.height < 4) return;
+            if (b.bottom < 0 || b.top > innerHeight) return;
+            if (b.right > innerWidth + 2 || b.left < -2) {
+              over.push(t.slice(0, 24) + '@' + Math.round(b.left) + '..' + Math.round(b.right));
+              return;
+            }
+            let short = e.scrollWidth - e.clientWidth, by = 'self';
+            for (let a = e.parentElement; a; a = a.parentElement) {
+              const acs = getComputedStyle(a);
+              if (acs.overflowX === 'visible' && acs.overflowY === 'visible') continue;
+              const ar = a.getBoundingClientRect();
+              const shown = Math.min(b.right, ar.right) - Math.max(b.left, ar.left);
+              const lost = Math.round(b.width - Math.max(0, shown));
+              if (lost > short) { short = lost; by = a.id ? '#' + a.id : a.tagName.toLowerCase(); }
+            }
+            if (short > 2) cut.push(t.slice(0, 24) + ' 少' + short + 'px(' + by + ')');
+          });
+          return { hud: document.getElementById('hud-layout-select')?.value,
+            over: over.slice(0, 6), cut: cut.slice(0, 6), overN: over.length, cutN: cut.length };
         });
-        return { hud: document.getElementById('hud-layout-select')?.value, bad: bad.slice(0, 6), count: bad.length };
-      });
-      assert.equal(r.hud, 'minimal', '窄屏应自动切到 minimal HUD，实际 ' + r.hud);
-      assert.equal(r.count, 0, '有 ' + r.count + ' 处文字冲出 390px 视口：' + JSON.stringify(r.bad));
-    } finally { await s.context.close(); }
+        if (width === 390) assert.equal(r.hud, 'minimal', '窄屏应自动切到 minimal HUD，实际 ' + r.hud);
+        assert.equal(r.overN, 0, width + 'px 下有 ' + r.overN + ' 处文字冲出视口：' + JSON.stringify(r.over));
+        assert.equal(r.cutN, 0, width + 'px 下有 ' + r.cutN + ' 处文字被裁：' + JSON.stringify(r.cut));
+      } finally { await s.context.close(); }
+    }
   });
   await run('language switch preserves local startup', async () => {
     const s = await open(1280);

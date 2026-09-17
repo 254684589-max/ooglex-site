@@ -51,7 +51,7 @@ echo "上游版本：$(git -C "$SRC_DIR" rev-parse --short HEAD)"
 # 产物里，任何人跑一次本脚本就会被静默还原。这里在动手前先拦住。
 log "检查产物与源文件是否一致"
 drifted=0
-for f in network-policy.js network.css; do
+for f in network-policy.js network.css i18n-zh.js; do
   src="$REPO_ROOT/scripts/globe/$f"
   built="$OUT_DIR/$f"
   [ -f "$src" ] && [ -f "$built" ] || continue

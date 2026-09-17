@@ -20,3 +20,6 @@ client_secret.json
 
 # Cloudflare Pages build output.
 .site/
+
+# 验证脚本写的浏览器取证（CI 里单独上传为 artifact，不入库）
+artifacts/

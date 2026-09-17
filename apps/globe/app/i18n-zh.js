@@ -210,7 +210,6 @@
     'SPACE MISSIONS — launches & orbital assets': '航天任务 —— 发射记录与在轨目标',
     'Context mode': '关注内容',
     'Contact Context actions': '目标相关操作',
-    'Global Context': '全球周边情况',
     'loading...': '加载中…',
     'just now': '刚刚',
     'stale': '数据过期',
@@ -228,7 +227,223 @@
     'CONTACTS': '目标',
     'CYCLE OFF': '循环关闭',
     'Contact panel': '目标面板',
+
+    // ------------------------------------------------------- 顶部地球操作按钮
+    'Visible map targets': '地图上可见的目标',
+    'Globe actions': '地球操作',
+    'Turn off all selected data layers': '关闭所有已选数据图层',
+    'Copy share link': '复制分享链接',
+    'Reset camera and return to full globe view': '相机复位，回到全球视角',
+    'Reset to full globe view': '复位到全球视角',
+    'Power up the globe': '启动地球',
+    'POWER UP': '启动',
+    'GROUND STATION · PROVIDER SETTINGS': '地面站 · 服务商设置',
+    'SAVE KEYS': '保存密钥',
+    'ESC to close': '按 ESC 关闭',
+    'The Google Maps key buys the photorealistic planet — everything else stacks on top.':
+      'Google Maps 密钥换来的是照片级真实地球 —— 其他图层都叠在它上面。',
+    'Initializing photorealistic world...': '正在初始化照片级地球…',
+
+    // ---------------------------------------------------------- 驾驶舱 HUD
+    'COCKPIT': '驾驶舱',
+    'Estimated destination direction': '预计目标方向',
+    'Previous vision style': '上一个视觉风格',
+    'Previous cockpit vision style': '上一个驾驶舱视觉风格',
+    'Next vision style': '下一个视觉风格',
+    'Next cockpit vision style': '下一个驾驶舱视觉风格',
+    'Current aircraft heading': '当前航向',
+    'Contact cockpit summary': '目标驾驶舱摘要',
+    'Contact navigation': '目标切换',
+    'Previous — prior visited contact in the 250 km window': '上一个 —— 250 公里内上一个看过的目标',
+    'Next — nearest unvisited contact in the 250 km window': '下一个 —— 250 公里内最近的未看过目标',
+    'Nearby cohort counts': '周边各类目标数量',
+    'Enable cockpit weather effects': '开启驾驶舱天气效果',
+    'Cockpit briefing carousel': '驾驶舱简报轮播',
+    // 与上面可见文案的 'ESTIMATED FLIGHT PLAN' 用同一句 —— 同一内容不要两种译法
+    'Estimated flight plan': '推算航路（非实际航迹）',
+    'LIVE SIGNALS': '实时信号',
+    'Live signals': '实时信号',
+    'Cockpit briefing controls': '驾驶舱简报控制',
+    'Cockpit briefing pages': '驾驶舱简报分页',
+    'Previous briefing page': '上一页简报',
+    'Next briefing page': '下一页简报',
+    'Cycle briefing pages automatically every 9 seconds (Signals → News → Local). Pauses while you hover or focus the panel. Live signal data refreshes continuously either way.':
+      '每 9 秒自动翻页（信号 → 新闻 → 本地）。鼠标悬停或面板获得焦点时暂停。无论是否翻页，实时信号数据都持续刷新。',
+    'Latest regional news': '本地最新报道',
+    'ACQUIRING REGIONAL NEWS': '正在获取本地报道',
+    'Location-based information': '按位置的周边信息',
+    'RESOLVING REGION': '正在确定所在区域',
+    'SOURCE-BACKED EVENTS · NO SYNTHETIC NEWS': '均为有出处的事件 · 不生成虚构新闻',
+    'Show Live Signals': '显示实时信号',
+    'Show Regional News': '显示本地报道',
+    'Show Local Info': '显示本地信息',
+    'SIG': '信号', 'NEWS': '新闻', 'LOCAL': '本地',
+    // 出处标识只翻连接词，服务名与域名原样保留 —— 署名照旧，界面不留英文句子
+    'Weather data by Open-Meteo.com': '天气数据来自 Open-Meteo.com',
+    'TEMP': '气温', 'WIND': '风', 'SKY': '天空', 'PRECIP': '降水', 'MM': '毫米',
+    'Cockpit display and Radio controls': '驾驶舱显示与电台控制',
+    'Expand Cockpit display options': '展开驾驶舱显示选项',
+    'Expand Cockpit Radio controls': '展开驾驶舱电台控制',
+    'Cockpit compact Radio controls': '驾驶舱精简电台控制',
+    'Previous filtered radio station': '上一个筛选电台',
+    'Play selected radio station': '播放所选电台',
+    'Next filtered radio station': '下一个筛选电台',
+    'ESC EXIT': 'ESC 退出',
+    'C TOGGLE': 'C 切换',
+    'View switcher': '视角切换',
+    'Exit cockpit and return to full globe view': '退出驾驶舱，回到全球视角',
+    'Reset cockpit to full globe view': '驾驶舱复位到全球视角',
+    'RESET': '复位',
+    'Exit cockpit view': '退出驾驶舱视角',
+    'EXIT COCKPIT': '退出驾驶舱',
+    'Cycles the nearest contacts of whatever type you select — planes, vessels, installations. Satellites track independently.':
+      '在你选的类型里按由近到远轮换目标 —— 飞机、船舶、设施。卫星单独跟踪。',
+
+    // -------------------------------------------------- 显示控制（识别叠加层）
+    'Collapse panel': '收起面板',
+    'Expand panel': '展开面板',
+    'Intelligence HUD (H)': '情报 HUD（H）',
+    'Layout': '布局',
+    'Detection Overlay (D)': '识别叠加层（D）',
+    'Detection overlay': '识别叠加层',
+    'DETECT': '识别',
+    'Detection label density': '识别标签密度',
+    'Detection label allocation': '识别标签分配方式',
+    'World-overlay fade distance outside the keyhole as a percentage of its radius':
+      '叠加层在取景圈外的淡出距离，按圈半径的百分比计',
+    'Detection fade distance': '识别淡出距离',
+    'World-overlay label and card opacity beyond the fade distance':
+      '超出淡出距离后叠加层标签与卡片的不透明度',
+    'Detection opacity outside the keyhole': '取景圈外识别层的不透明度',
+    'PARAMETERS': '参数',
+    '3D aircraft — flat icons zoomed out, 3D models up close':
+      '三维飞机 —— 远看是平面图标，近看是三维模型',
+    '3D model coverage': '三维模型覆盖范围',
+    'Scope — the circular viewport mask': '视域 —— 圆形取景遮罩',
+    'Scope edge feather as a percentage of the keyhole radius': '视域边缘羽化，按取景圈半径的百分比计',
+    'Scope edge feather': '视域边缘羽化',
+    'Celestial ring — reveal the full globe': '星空环 —— 显示完整地球',
+    'Hide UI chrome': '隐藏界面外框',
+    'Bloom / Glow': '泛光 / 光晕',
+    'Sharpening': '锐化', 'Sharpen': '锐化', 'Sharpen intensity': '锐化强度',
+    'Return UI controls': '恢复界面控件',
+    'EXIT CLEAN VIEW': '退出隐藏界面',
+
+    // ------------------------------------------------------------ 视觉预设
+    'Navigation, voice, and visual preset controls': '导航、语音与视觉预设控制',
+    'Expand Visual Presets': '展开视觉预设',
+    'Keep visual presets open': '保持视觉预设展开',
+    'Pin visual presets': '固定视觉预设',
+    'Show the globe without a visual filter.': '不加任何视觉滤镜显示地球。',
+    'Emulate a green phosphor CRT with scanlines and screen curvature.':
+      '模拟绿色荧光 CRT 显示器，带扫描线与屏幕曲率。',
+    'Simulate night-vision goggles with green intensification and a tube vignette.':
+      '模拟夜视仪的绿色增强与镜筒暗角。',
+    'NVG': '夜视',
+    'Simulate FLIR-style thermal contrast. Turn up Ironbow for color.':
+      '模拟 FLIR 热成像的明暗对比。想要伪彩就调高 Ironbow。',
+    'FLIR': '热成像',
+    'Apply bright cel-shaded color and illustrated outlines.': '套用明亮的赛璐璐上色与插画描边。',
+    'Anime': '动画',
+    'Apply high-contrast monochrome film-noir grading.': '套用高对比黑白电影的调色。',
+    'Noir': '黑白',
+    'Add a cold, snowy whiteout treatment to the scene.': '给画面加上冷色调的风雪白化效果。',
+    'Snow': '风雪',
+    'Map source': '底图来源',
+    'Style': '风格',
+
+    // ------------------------------------------------------------ 定位面板
+    'Keep location tray open': '保持定位栏展开',
+    'Pin location tray': '固定定位栏',
+    'Search any location': '搜索任意地点',
+    'Search location by name or coordinates': '按名称或坐标搜索地点',
+    'Search any location...': '搜索任意地点…',
+
+    // -------------------------------------------------------- 监控摄像头面板
+    'CCTV feed frame': '监控画面框',
+    'SOURCE · UNKNOWN': '来源 · 未知',
+    'Enable CCTV to load camera intersections': '开启监控摄像头后加载路口画面',
+    'CCTV OFF': '监控已关闭',
+    'NEAREST': '最近', 'FOCUS': '聚焦',
+    'COVERAGE OFF': '覆盖范围已关闭',
+    'AUTO HOP OFF': '自动跳转已关闭',
+    'PROJECTION ON': '地面投影已开启',
+    'CALIBRATION': '标定', 'ADJUST': '调整',
+    'Drag the camera in the world: rings rotate, arrows move, handles set range/FOV':
+      '在地图上拖动摄像头：圆环旋转，箭头平移，手柄设置距离与视场角',
+    'Heading (compass °) — click to type': '航向（罗盘度）—— 点击可直接输入',
+    'Pitch (° up/down) — click to type': '俯仰（上下度数）—— 点击可直接输入',
+    'Horizontal FOV (°) — click to type': '水平视场角（度）—— 点击可直接输入',
+    'Range / monitor-plane distance (m) — click to type': '距离 / 监视面距离（米）—— 点击可直接输入',
+    'Mount height above ground (m) — click to type': '离地安装高度（米）—— 点击可直接输入',
+    'North offset from catalog position (m) — click to type': '相对编目位置的北向偏移（米）—— 点击可直接输入',
+    'East offset from catalog position (m) — click to type': '相对编目位置的东向偏移（米）—— 点击可直接输入',
+    'SAVE CAL': '保存标定', 'RESET CAL': '重置标定',
+    'SCENE SUMMARY': '画面摘要',
+    'Enable CCTV to start camera-linked intelligence summaries.': '开启监控摄像头后开始生成画面情报摘要。',
+    'Scene recipe': '场景配方',
+    'EXPORT PRESETS': '导出预设', 'IMPORT': '导入', 'RUN LOG': '运行日志', 'Ready': '就绪',
+
+    // ---------------------------------------------------------------- 电台
+    'Internet radio companion': '网络电台',
+    'Expand Radio': '展开电台',
+    'Expand Radio section': '展开电台面板',
+    'Compact Radio controls': '精简电台控制',
+    'Compact Radio volume': '精简电台音量',
+    'RADIO READY': '电台就绪',
+    'STATION TAG': '电台标签',
+    'Filter stations by station tag': '按标签筛选电台',
+    'NO STATION SELECTED': '未选择电台',
+    'Enable Radio, then choose a globe marker or use next.': '先开启电台，再点地图上的标记或按「下一个」。',
+    'DIRECTORY BAND': '目录频段',
+    'DRAG TO TUNE': '拖动调频',
+    'Tune available internet radio stations': '在可用的网络电台里调频',
+    'ALL · DRAG THE NEEDLE': '全部 · 拖动指针',
+    'SNAPS TO AVAILABLE STATIONS': '自动吸附到可用电台',
+    'Radio playback': '电台播放',
+    'Previous station': '上一个电台', 'Next station': '下一个电台',
+    'Previous filtered station': '上一个筛选电台', 'Next filtered station': '下一个筛选电台',
+    'Play': '播放', 'Play selected station': '播放所选电台',
+    'Stop radio playback': '停止电台播放',
+    'Radio volume': '电台音量', 'Radio off': '电台已关闭',
+    'STATION SITE': '电台网站',
+    // 目录服务名（Radio Browser）是出处标识，原样保留
+    'DIRECTORY: RADIO BROWSER': '目录：Radio Browser',
+    'Audio connects directly to the broadcaster after you press play. Your IP is visible to that broadcaster.':
+      '按下播放后音频直连广播方，对方能看到你的 IP。',
+
+    // ------------------------------------------------------ 目标周边 / 航天任务
+    'SEARCH NEARBY SITES': '搜索附近设施',
+    'Reclassify as TR-3B': '重新标记为 TR-3B',
+    'Reclassify tracked contact as TR-3B': '把跟踪目标重新标记为 TR-3B',
+    'CONTACTS CONTEXT OFF': '目标周边情况已关闭',
+    'SELECT CONTACTS TO LOAD OBSERVED / MAPPED PROXIMITY': '选择目标以加载观测 / 已标注的周边情况',
+    'AVAILABLE MISSIONS': '可选航天任务',
+    'SELECT A MISSION TO INSPECT': '选一个任务查看',
+    'LOADING 30-DAY MISSION INDEX': '正在加载近 30 天任务索引',
+    'TAB PREVIEWS · ENTER / SPACE SELECTS': 'Tab 预览 · 回车 / 空格 选择',
   };
+
+  /* CSS 的 text-transform: uppercase 会让截图上显示 MODELS、DOM 里其实是
+     `Models` —— 照着截图把键写成大写，运行时就永远命中不了。这一类漏翻曾经栽了
+     一整片：Density / Allocation / Models / Proximity / Scope / Feather /
+     Celestial / Bloom / Normal / Layout / Style…
+     所以在精确匹配之后补一层**折叠大小写**的查找。
+
+     它不放松文件头第 1 条安全约束：依旧是「整串命中白名单」，不做子串替换；
+     图标连字（`arrow_forward`、`chevron_left` 这类）任何大小写形式都不在 DICT
+     里，折叠也命不中。两个键折叠后同名但译文不同时，两个都不进折叠表 ——
+     宁可漏翻，也不能翻错。 */
+  var FOLDED = (function () {
+    var map = Object.create(null), clash = Object.create(null);
+    Object.keys(DICT).forEach(function (k) {
+      var f = k.toLowerCase();
+      if (f in map) { if (map[f] !== DICT[k]) clash[f] = 1; return; }
+      map[f] = DICT[k];
+    });
+    Object.keys(clash).forEach(function (f) { delete map[f]; });
+    return map;
+  })();
 
   /* 组合状态串：图层面板的副标题是 `${来源} · ${详情}` 拼出来的
      （上游 src/ui/layerPanel.js 的 _statusLine/_timeAgo），整串不可能进字典。
@@ -254,6 +469,27 @@
     [/^Expand (.+) panel$/, function (_m, n) { return '展开' + lookup(n) + '面板'; }],
     [/^Close (.+)$/, function (_m, n) { return '关闭' + lookup(n); }],
     [/^Open (.+)$/, function (_m, n) { return '打开' + lookup(n); }],
+    /* 读数占位：值可能是 `--`、数字或角度，标签要翻、值要原样留下。
+       这些在字典里也有「光标签」的条目（HDG/FOV/RANGE…），字典先命中，
+       带值的形式落到这里。 */
+    [/^DEST (.+)$/, '目标 $1'],
+    [/^HDG (.+)$/, '航向 $1'],
+    [/^PITCH (.+)$/, '俯仰 $1'],
+    [/^FOV (.+)$/, '视场角 $1'],
+    [/^RANGE (.+)$/, '距离 $1'],
+    [/^HGT (.+)$/, '高度 $1'],
+    [/^CAL · (.*)$/, '标定 · $1'],
+    [/^📍 Location: (.*)$/, '📍 定位：$1'],
+    [/^Landmark: (.*)$/, '地标：$1'],
+    // 视觉风格切换按钮的提示，中间嵌着风格名 —— 风格名再查一次字典
+    [/^Current style: (.+) — click for next$/,
+      function (_m, n) { return '当前风格：' + lookup(n) + ' —— 点击切换下一个'; }],
+    [/^Current cockpit vision style: (.+)\. Activate for next style\.$/,
+      function (_m, n) { return '当前驾驶舱视觉风格：' + lookup(n) + '。按一下切换下一个。'; }],
+    /* 披露控件的宽版本。必须排在上面带 `panel` 的两条**后面** —— 先匹配者胜，
+       否则 `Expand Radio panel` 会被这条吃掉，翻成「展开Radio panel」。 */
+    [/^Expand (.+)$/, function (_m, n) { return '展开' + lookup(n); }],
+    [/^Collapse (.+)$/, function (_m, n) { return '折叠' + lookup(n); }],
   ];
 
   /** 字典未命中时，尝试锚定正则；都不中就原样返回 null。
@@ -267,9 +503,11 @@
     return null;
   }
 
-  /** 查字典，查不到就原样返回 —— 用于组合串里嵌的图层名/面板名。 */
+  /** 查字典（含折叠大小写），查不到就原样返回 —— 用于组合串里嵌的图层名/面板名。 */
   function lookup(name) {
-    return Object.prototype.hasOwnProperty.call(DICT, name) ? DICT[name] : name;
+    if (Object.prototype.hasOwnProperty.call(DICT, name)) return DICT[name];
+    var f = String(name).toLowerCase();
+    return f in FOLDED ? FOLDED[f] : name;
   }
 
   /** 同名映射也用于这些属性。 */
@@ -289,21 +527,30 @@
       文本节点与属性必须走同一条路径 —— 否则新增规则容易只接进一半。 */
   function translate(key) {
     if (Object.prototype.hasOwnProperty.call(DICT, key)) return DICT[key];
+    var f = key.toLowerCase();
+    if (f in FOLDED) return FOLDED[f];
     return translateComposite(key);
+  }
+
+  /** 查表用的键：去首尾空白，再把内部连续空白折成一个空格。
+      HTML 本来就这么折叠空白 —— 屏幕上看到的是折叠后的那一串，所以字典按
+      折叠后的形式写。不折叠的话，模板里换行缩进的文案（`<span>\n  FOO\n</span>`）
+      会因为键里带换行而永远查不到。 */
+  function normalizeKey(raw) {
+    return raw.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
   }
 
   /** 只在整段文字完整命中时替换，并保留原有首尾空白。 */
   function translateTextNode(node) {
     var raw = node.nodeValue;
     if (!raw) return;
-    var key = raw.trim();
+    var key = normalizeKey(raw);
     if (!key) return;
     var hit = translate(key);
     if (hit === null || hit === undefined || hit === key) return;
     if (inSkippedSubtree(node)) return;
-    var lead = raw.slice(0, raw.indexOf(key));
-    var tail = raw.slice(raw.indexOf(key) + key.length);
-    node.nodeValue = lead + hit + tail;
+    var edges = /^(\s*)[\s\S]*?(\s*)$/.exec(raw);
+    node.nodeValue = edges[1] + hit + edges[2];
   }
 
   function translateAttrs(el) {
@@ -311,7 +558,7 @@
     for (var i = 0; i < ATTRS.length; i++) {
       var a = ATTRS[i];
       if (!el.hasAttribute || !el.hasAttribute(a)) continue;
-      var v = el.getAttribute(a).trim();
+      var v = normalizeKey(el.getAttribute(a));
       var hit = translate(v);
       // 命中且确有变化才写回；相等时写回会让 MutationObserver 无谓地再跑一轮
       if (hit !== null && hit !== undefined && hit !== v) el.setAttribute(a, hit);
@@ -346,6 +593,11 @@
       attributes: true, attributeFilter: ATTRS,
     });
   }
+
+  /* 覆盖率闸门用的钩子：verify-i18n-coverage.mjs 会把构建产物 index.html 里所有
+   * 作者写死的界面文案抽出来，逐条问这里「查得到中文吗」。这样「面板里还有英文」
+   * 不再靠截图发现 —— 它是 CI 里一条确定性的断言。 */
+  window.OoglexGlobeI18n = Object.freeze({ translate: translate, size: Object.keys(DICT).length });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', start);
