@@ -284,6 +284,7 @@
     applyZoomFloor(id);
     remoteEnabled = id && id !== localId;
     document.documentElement.dataset.globeMap = id || localId;
+    if (ready) narrowHudLayout();
     report(ready ? 'ready' : 'loading', {
       map: id, switching: state.status === 'switching',
       note: state.lastError || ''
@@ -353,6 +354,26 @@
       sourceState(scene.mapStackController.getState());
     });
   });
+  /* 窄屏默认切到上游自带的 minimal HUD。
+   *
+   * 默认的 tactical 布局是桌面驾驶舱：390px 下实测有 4 处文字冲出视口
+   * （TOP SECRET // SI-TK // NOFORN、KH11-… OPS-…、常规 GLOBAL SECTOR … 都到 x=459，
+   * 超出 69px）；换成 minimal 后只剩署名链接超 4px。
+   * 用应用自己的 <select>（tactical / operator / minimal）来切，不改上游 CSS。
+   * 720px 这个阈值与上游 leftPanelRail/rightPanelRail 判定 layoutMode='mobile'
+   * 的断点一致，避免两套标准打架。
+   * 只在启动时设一次：用户之后自己改，我们不再干预。 */
+  var hudAdjusted = false;
+  function narrowHudLayout() {
+    if (hudAdjusted) return;
+    if (!window.matchMedia('(max-width: 720px)').matches) return;
+    var sel = document.getElementById('hud-layout-select');
+    if (!sel) return;
+    hudAdjusted = true;
+    if (sel.value === 'minimal') return;
+    sel.value = 'minimal';
+    sel.dispatchEvent(new Event('change', { bubbles: true }));
+  }
   function markIcons() {
     document.querySelectorAll('.material-symbols-outlined').forEach(function (node) {
       var name = node.textContent.trim();

@@ -283,6 +283,31 @@ try {
       assert(colors >= 20, '抬回后画面仍是一片纯色（只有 ' + colors + ' 种颜色）');
     } finally { await s.context.close(); }
   });
+  // 手机上默认的 tactical HUD 是桌面驾驶舱：390px 下实测有 4 处文字冲出视口
+  // （TOP SECRET // SI-TK // NOFORN 等，最远到 x=459，超出 69px）。
+  // 现在窄屏自动切上游自带的 minimal，这条闸门守住「窄屏不得有文字冲出视口」。
+  await run('narrow screens must not push HUD text past the viewport', async () => {
+    const s = await open(390);
+    try {
+      await new Promise(r => setTimeout(r, 3000));
+      const r = await s.frame.evaluate(() => {
+        const bad = [];
+        document.querySelectorAll('*').forEach((e) => {
+          if (e.children.length) return;
+          const t = (e.textContent || '').trim();
+          if (!t || t.length < 3) return;
+          const b = e.getBoundingClientRect();
+          if (b.width < 4 || b.height < 4) return;
+          // 署名链接是许可要求的原文，允许贴边几像素
+          if (/Data attribution|Natural Earth|Cesium/i.test(t)) return;
+          if (b.right > innerWidth + 2 || b.left < -2) bad.push(t.slice(0, 32) + '@' + Math.round(b.left) + '..' + Math.round(b.right));
+        });
+        return { hud: document.getElementById('hud-layout-select')?.value, bad: bad.slice(0, 6), count: bad.length };
+      });
+      assert.equal(r.hud, 'minimal', '窄屏应自动切到 minimal HUD，实际 ' + r.hud);
+      assert.equal(r.count, 0, '有 ' + r.count + ' 处文字冲出 390px 视口：' + JSON.stringify(r.bad));
+    } finally { await s.context.close(); }
+  });
   await run('language switch preserves local startup', async () => {
     const s = await open(1280);
     try {

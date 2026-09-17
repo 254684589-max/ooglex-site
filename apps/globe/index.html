@@ -136,6 +136,13 @@
     .bar h1 { font-size:13px; }
     .sheet { inset:var(--bar) 0 0 0; width:100%; border-left:0; }
   }
+  /* 420px 以下顶栏一共要放五个控件（返回 / 标题 / 中EN / 数据来源 / 主题），
+     不收紧的话主题按钮会被挤到贴边甚至切掉。只压间距与字号，不隐藏功能。 */
+  @media (max-width: 420px) {
+    .bar { gap:6px; padding:0 8px; padding-left:max(8px, env(safe-area-inset-left)); }
+    .bar a.back, .bar button { padding:5px 7px; font-size:12px; }
+    .bar h1 { font-size:12.5px; }
+  }
 </style>
 </head>
 <body>

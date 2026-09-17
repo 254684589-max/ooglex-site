@@ -59,3 +59,20 @@
 }
 #ooglex-globe-toast[data-show] { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { #ooglex-globe-toast { transition: none; } }
+
+/* ---------------------------------------------------------------- 窄屏修正
+ * 上游的手机布局（≤720px 走 layoutMode='mobile'）有两处在中文下会破相，
+ * 都只在窄屏覆盖，不动桌面。
+ */
+@media (max-width: 720px) {
+  /* 1) 底部指令栏里两个折叠面板是 flex: 0 0 52px 固定宽，装不下「视觉预设」
+   *    这样的四字中文标签，实测被截成「觉预设」。指令栏总宽 244px、上限 374px，
+   *    加宽 20px 有充裕余量。 */
+  #command-dock > #location-bar,
+  #command-dock > #control-panel { flex: 0 0 72px !important; }
+
+  /* 2) 应用自身的 #title-bar（「全球态势 / 地球 / 无处不可见」）与包装页顶栏的
+   *    标题重复，且在 390px 下横向压住旁边那组圆形按钮。窄屏隐藏它，标题由
+   *    包装页负责 —— 不是删功能，只是去掉一处重复。 */
+  #title-bar { display: none !important; }
+}

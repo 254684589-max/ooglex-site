@@ -47,7 +47,8 @@
     'DATA LAYERS': '数据图层',
     'SCENES': '场景',
     'DISPLAY': '显示',
-    'VISUAL PRESETS': '视觉预设',
+    // 指令栏折叠态的标签宽度有限（实测四个字会被截成「觉预设」），用两个字保证装得下
+    'VISUAL PRESETS': '预设',
     'LOCATION': '定位',
     'CONTEXT': '周边情况',
     'MISSION CONTROL': '任务控制',
@@ -187,6 +188,22 @@
     'NEW': '新建', 'DEL': '删除', 'LOAD': '载入',
     'CAPTURE SHOT': '记录镜头', 'UPDATE SHOT': '更新镜头',
     'RETRO': '回溯',
+    // 显示面板与语音条（手机上这几处最显眼）
+    'HUD': '平显', 'LAYOUT': '布局', 'DENSITY': '密度',
+    'Tactical': '战术', 'Operator': '操作员', 'Minimal': '精简',
+    'HUD layout': '平显布局',
+    'VOICE CONTROL': '语音控制',
+    // 原文用的是间隔号 · 不是逗号 —— 整串精确匹配，写错一个字符就不生效
+    'Hold Space to speak · tap Space to activate focused controls':
+      '按住空格说话 · 轻点空格激活当前控件（本站未配置语音服务）',
+    'Hold Space to talk': '按住空格说话',
+    // 目标检测密度档位
+    'DENSE': '密集', 'SPARSE': '稀疏', 'BALANCED': '均衡',
+    // 图层取数失败的提示
+    'OVERPASS TEMPORARILY UNAVAILABLE': 'OVERPASS 暂时不可用',
+    'RETRYING': '正在重试',
+    'RETRYING…': '正在重试…',
+    'TEMPORARILY UNAVAILABLE': '暂时不可用',
     // 周边情况面板：这两条是 <br> 拆开的两个文本节点，整串不在字典里就会留英文
     'SELECT CONTEXT': '选择关注内容',
     'CONTACTS — nearest planes · vessels · sites': '实时目标 —— 最近的飞机 · 船舶 · 设施',
