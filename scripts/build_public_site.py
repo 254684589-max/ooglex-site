@@ -114,11 +114,18 @@ def install_rich_public_previews() -> None:
 
 
 def inject_rich_access_adapter() -> None:
-    """Keep original HTML/UI and add only the entitlement-aware data layer."""
+    """Keep original HTML/UI and install entitlement interception before app.js.
+
+    These scripts must execute synchronously while the document is still parsing.
+    The original rich pages load app.js synchronously at the end of <body>; using
+    defer here lets app.js issue its first fetch against the public 10% preview
+    before the adapter has replaced window.fetch. That race made OWNER/PRO users
+    look like FREE users even though their entitlement was FULL.
+    """
     snippet = (
         '\n<meta name="ooglex-pro-api" content="https://ooglex-pro-api.zlq6600e.workers.dev">\n'
-        '<script src="/assets/pro-access.js?v=3" defer></script>\n'
-        '<script src="/assets/pro-rich-data.js?v=1" defer></script>\n'
+        '<script src="/assets/pro-access.js?v=4"></script>\n'
+        '<script src="/assets/pro-rich-data.js?v=2"></script>\n'
     )
     for relpath in (
         "apps/supply-chain/index.html",
