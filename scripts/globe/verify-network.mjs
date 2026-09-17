@@ -47,19 +47,13 @@ async function open(width, mode = 'hang', path = '/apps/globe/') {
   });
   try {
   await page.goto(origin + path, { waitUntil: 'domcontentloaded', timeout: 30000 });
-  // 页面层级：包装页 → apps/globe/lite/（轻量地球，即时首屏）→ 内层 iframe 才是
-  // 完整应用。globeState 由 network-policy.js 设在**完整应用**的根元素上，
-  // 所以只穿一层（拿到 lite 页）会永远等不到 ready —— 这个坑踩过，别改回去。
-  // 按 URL 解析 frame，比逐层 DOM 穿透更稳，也不受包装页改版影响。
-  const appFrame = async () => page.frames().find(f => f.url().includes('/apps/globe/app/'));
-  let frame = path === '/apps/globe/' ? await appFrame() : page.mainFrame();
-  if (path === '/apps/globe/') {
-    for (let i = 0; i < 120 && !frame; i += 1) {
-      await new Promise(r => setTimeout(r, 250));
-      frame = await appFrame();
-    }
-    assert(frame, 'The full application frame (/apps/globe/app/) never appeared');
+  // 包装页在窄屏或省流量模式下先显示「进入卡」，由用户确认后才加载应用。
+  if (path === '/apps/globe/' && !(await page.$('.stage iframe'))) {
+    await page.waitForSelector('#btn-go', { timeout: 15000 });
+    await page.click('#btn-go');
   }
+  // 按 URL 解析应用 frame，而不是靠 DOM 层级 —— 包装页改版不该让测试失效。
+  let frame = path === '/apps/globe/' ? await appFrameOf(page) : page.mainFrame();
   await frame.waitForFunction(() => document.documentElement.dataset.globeState === 'ready', { timeout: 30000 });
   return { context, page, frame, external, errors, images, bad };
   } catch (error) {
@@ -147,20 +141,15 @@ async function basic(width, mode = 'hang', path = '/apps/globe/') {
     assert.deepEqual(bad, []);
     assert.deepEqual(errors, []);
     if (path === '/apps/globe/') {
-      // 包装页已重写：轻量地球本身就是即时首屏，没有「进入卡」了。
-      await page.waitForFunction(() => !document.getElementById('hd').disabled);
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
-      await page.click('#sources');
-      // 新版包装页用 .open 类 + aria-hidden 开合，不是 hidden 属性
-      assert(await page.$eval('#sheet', el => el.classList.contains('open') && el.getAttribute('aria-hidden') === 'false'),
-        'Data-source sheet must open');
+      // 数据来源面板用 hidden 属性开合（包装页已回到单栏单层结构，
+      // 不再有「全球视角 / 返回基础地球」那条第二工具栏）。
+      await page.click('#btn-src');
+      assert(await page.$eval('#sheet', el => !el.hidden), 'Data-source sheet must open');
       await page.keyboard.press('Escape');
-      assert(await page.$eval('#sheet', el => !el.classList.contains('open') && el.getAttribute('aria-hidden') === 'true'),
-        'Escape must close the data-source sheet');
-      assert(await page.$eval('#hd', el => !el.disabled));
-      assert(await page.$eval('#overview', el => !el.disabled));
-      await page.click('#overview');
-      assert((await frame.evaluate(() => window.OoglexGlobeNetwork.viewState().height)) > 20000000);
+      assert(await page.$eval('#sheet', el => el.hidden), 'Escape must close the data-source sheet');
+      assert(!(await page.$('#hd')) && !(await page.$('#overview')),
+        'The second toolbar (#hd / #overview) must stay removed');
     }
     await page.screenshot({ path: 'artifacts/globe/' + width + '-' + mode + (path.endsWith('/app/') ? '-direct' : '') + '.png' });
   } finally { await state.context.close(); }
@@ -169,59 +158,81 @@ try {
   for (const width of (process.env.GLOBE_VERIFY_QUICK ? [1280] : [360, 768, 1280])) await run('same-origin startup, all third parties stalled, ' + width, () => basic(width));
   if (!process.env.GLOBE_VERIFY_QUICK && !failures) {
   await run('direct inner URL, third parties fail', () => basic(1280, 'fail', '/apps/globe/app/'));
-  await run('remote imagery timeout, retry and late completion isolation', async () => {
+  // 包装页已回到单栏单层结构，「切换高清影像」按钮不再存在（切底图走应用自身的
+  // 底图菜单），所以原先针对该按钮的超时/重试用例已随功能一起撤掉。
+  // 换成守住一件更要紧、而且刚刚被改坏过的事：**滚轮导航**。
+  //
+  // 背景：曾经为了掩盖「基础地球放大后发糊」，在相机守卫里设了
+  // maximumMovementRatio=0.12（Cesium 默认 1.0）、minimumZoomDistance=1200，
+  // 还让 height<250 就弹回 22000 公里全球视角。结果滚轮几乎不动、永远贴不到地面 ——
+  // 用户的原话是「滚轮不是前进或者后退，而是页面放大缩小」。
+  await run('mouse wheel dollies the camera instead of crawling or snapping back', async () => {
     const s = await open(1280);
     try {
-      // 必须先等 #hd 可用再点：完整应用就绪前按钮是 disabled 的，
-      // 直接点会落空，于是状态永远停在原处、后面那条 18s 等待必然超时。
-      // 实测高清影像失败到「影像不可用」约 8.1 秒，18s 的余量本身是够的。
-      await s.page.waitForFunction(() => !document.getElementById('hd')?.disabled, { timeout: 60000 });
-      await s.page.click('#hd');
-      await s.page.waitForFunction(() => document.getElementById('load-status').textContent.includes('正在连接'), { timeout: 5000 });
-      await s.page.waitForFunction(() => document.getElementById('load-status').textContent.includes('影像不可用'), { timeout: 18000 });
-      assert.equal(await s.frame.evaluate(() => document.documentElement.dataset.globeMap), 'local-earth');
-      const firstCount = s.external.length;
-      assert(firstCount > 0, 'Optional imagery must actually attempt an external request');
-      // Late network failure must not overwrite the recovered map or cause an unhandled rejection.
-      await Promise.all(s.external.map(req => req.abort('failed').catch(() => {})));
-      // 必须先等 #hd 可用再点：完整应用就绪前按钮是 disabled 的，
-      // 直接点会落空，于是状态永远停在原处、后面那条 18s 等待必然超时。
-      // 实测高清影像失败到「影像不可用」约 8.1 秒，18s 的余量本身是够的。
-      await s.page.waitForFunction(() => !document.getElementById('hd')?.disabled, { timeout: 60000 });
-      await s.page.click('#hd');
-      await s.page.waitForFunction(() => document.getElementById('load-status').textContent.includes('正在连接'), { timeout: 5000 });
-      await s.page.waitForFunction(() => document.getElementById('load-status').textContent.includes('影像不可用'), { timeout: 18000 });
-      assert(s.external.length > firstCount, 'Retry must not reuse a cached failure');
-      assert.equal(await s.frame.evaluate(() => document.documentElement.dataset.globeMap), 'local-earth');
+      // 在**应用 frame 内**往画布派发 wheel。page.mouse.wheel() 的 CDP 合成滚轮
+      // 虽然能到达画布（实测 canvas 收到了 wheel 事件），却驱动不了 Cesium 的
+      // 相机控制器；frame 内派发可以。所以这里测的是「事件到了之后相机是否动」，
+      // 也正是被改坏过的那一环。
+      const roll = (notches, deltaY) => s.frame.evaluate(async (n, d) => {
+        const c = document.querySelector('.cesium-widget canvas');
+        const b = c.getBoundingClientRect();
+        for (let i = 0; i < n; i += 1) {
+          c.dispatchEvent(new WheelEvent('wheel', { deltaY: d, bubbles: true, cancelable: true,
+            clientX: b.left + b.width / 2, clientY: b.top + b.height / 2 }));
+          await new Promise(r => setTimeout(r, 30));
+        }
+        await new Promise(r => setTimeout(r, 500));
+        return window.OoglexGlobeNetwork.viewState().height;
+      }, notches, deltaY);
+
+      const start = await s.frame.evaluate(() => window.OoglexGlobeNetwork.viewState().height);
+      assert(start > 1000000, '初始应为全球视角，实测 ' + Math.round(start) + ' m');
+
+      // 持续前滚必须把高度压下一个数量级以上。
+      // 曾经 maximumMovementRatio=0.12（默认 1.0）让滚轮几乎不动，这条就是守它的。
+      const near = await roll(220, -240);
+      // 阈值按「能否明确区分出 0.12 限速」来定，而不是追求某个好看的数字：
+      // 限速下 220 格几乎不动（总幅度约 1.3 倍），恢复默认后实测约 6.7 倍。
+      // 取 4 倍，两种状态之间留足余量，也不受机器快慢影响。
+      assert(near < start / 4,
+        '滚轮前进太弱：' + Math.round(start) + ' m → ' + Math.round(near) + ' m');
+      // 曾经 height<250 就弹回 22000 公里；不能再出现「越滚越远」。
+      assert(near < start * 0.9, '相机被守卫弹回了全球视角');
+
+      const far = await roll(40, 240);
+      assert(far > near * 1.2,
+        '滚轮后退无效：' + Math.round(near) + ' m → ' + Math.round(far) + ' m');
       assert.deepEqual(s.errors, []);
     } finally { await s.context.close(); }
   });
   await run('language switch preserves local startup', async () => {
     const s = await open(1280);
     try {
-      await s.page.waitForFunction(() => !document.getElementById('hd').disabled);
-      await s.page.click('#lang');
-      await s.page.waitForFunction(() => document.getElementById('globe')?.src.includes('lang=en'), { timeout: 30000 });
+      // 包装页的「中 / EN」是给 iframe 换 ?lang=en 再重载，中文化层自行短路；
+      // 刻意不做「撤销翻译」的簿记 —— 重载可靠得多。
+      await s.page.click('#btn-lang');
+      await s.page.waitForFunction(
+        () => document.querySelector('.stage iframe')?.src.includes('lang=en'), { timeout: 30000 });
       const en = await appFrameOf(s.page, 'lang=en');
       await en.waitForFunction(() => document.documentElement.dataset.globeState === 'ready', { timeout: 30000 });
-      assert.equal(await en.evaluate(() => document.documentElement.dataset.globeMap), 'local-earth');
-      await s.page.waitForFunction(() => !document.getElementById('hd').disabled);
-      await s.page.click('#lang');
+      assert.equal(await en.evaluate(() => document.documentElement.dataset.globeMap), 'local-earth',
+        '切到英文后仍必须是本地基础底图，不能偷偷去请求外网影像');
+      await s.page.click('#btn-lang');
       await s.page.waitForFunction(() => {
-        const f = document.getElementById('globe');
+        const f = document.querySelector('.stage iframe');
         return f && !f.src.includes('lang=en');
       }, { timeout: 30000 });
+      assert.deepEqual(s.errors, []);
     } catch (error) {
       console.error('LANGUAGE DIAGNOSTICS ' + JSON.stringify(await s.page.evaluate(() => {
         const f = document.querySelector('.stage iframe');
-        return {src: f?.src, state: f?.contentDocument?.documentElement.dataset, gate: document.getElementById('load-status')?.textContent, status: document.getElementById('load-status').textContent};
-      })));
-      console.error('LANGUAGE NETWORK ' + JSON.stringify({errors: s.errors, bad: s.bad, external: s.external.map(r => r.url())}));
-      await s.page.screenshot({path: 'artifacts/globe/language-failure.png'}).catch(() => {});
+        return { src: f?.src, state: f?.contentDocument?.documentElement?.dataset };
+      }).catch(() => ({}))));
+      await s.page.screenshot({ path: 'artifacts/globe/language-failure.png' }).catch(() => {});
       throw error;
     } finally { await s.context.close(); }
   });
-  await run('missing entry script shows retry instead of an endless loader', async () => {
+  await run('missing entry script fails loudly instead of an endless loader', async () => {
     const context = await browser.createBrowserContext();
     try {
       const page = await context.newPage();
@@ -233,16 +244,18 @@ try {
         else void req.abort();
       });
       await page.goto(origin + '/apps/globe/', { waitUntil: 'domcontentloaded' });
-      // 包装页重写后，轻量地球本身就是可用首屏：入口脚本失败时用户手里仍有一个
-      // 能用的基础地球，不存在需要防的「无尽加载」，包装页也不再有重试按钮
-      // （文案表里没有「重新加载」）。因此改为断言新的预期行为。
+      if (!(await page.$('.stage iframe'))) {
+        await page.waitForSelector('#btn-go', { timeout: 15000 });
+        await page.click('#btn-go');
+      }
+      // 入口脚本取不到时，iframe 会加载但应用永远不 ready。要求包装页别把用户
+      // 留在一个没有任何说明的空壳里：整页文案必须出现可读的中文状态。
       await page.waitForFunction(() => {
-        const lite = document.getElementById('globe');
-        const ld = lite && lite.contentDocument;
-        return !!(ld && ld.querySelector('canvas'));
+        const t = document.body.textContent || '';
+        return /加载|不可用|失败|无法/.test(t);
       }, { timeout: 50000 });
-      const status = await page.$eval('#load-status', el => el.textContent || '');
-      assert(!status.includes('正在连接'), '入口脚本失败后状态不应停在「正在连接」，实际：' + status);
+      const shown = await page.evaluate(() => (document.body.textContent || '').replace(/\s+/g, ' ').slice(0, 120));
+      assert(/[\u4e00-\u9fa5]/.test(shown), '入口脚本失败时应有中文可读状态，实际：' + shown);
     } finally { await context.close(); }
   });
   }

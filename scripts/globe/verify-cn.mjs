@@ -51,25 +51,20 @@ async function run(label, blockExternal) {
     if(ok){ firstPaint = Date.now()-t0; break; }
     await new Promise(r=>setTimeout(r,250));
   }
-  // 完整应用就绪。注意层级：包装页 → lite 轻量地球 → 内层 iframe 才是完整应用。
-  // 只穿一层会把 lite 页当成应用，断言会全部落空（踩过）。
+  // 应用就绪（包装页已回到单栏单层结构：包装页 → 应用 iframe）
   for(let i=0;i<120;i++){
     const ok = await page.evaluate(()=>{
-      const lite=document.querySelector('.stage iframe');
-      const ld=lite&&lite.contentDocument;
-      const full=ld&&ld.querySelector('#full');
-      const fd=full&&full.contentDocument;
-      return !!(fd && (fd.body.textContent||'').includes('数据图层'));
+      const f=document.querySelector('.stage iframe');
+      const d=f&&f.contentDocument;
+      return !!(d && (d.body.textContent||'').includes('数据图层'));
     }).catch(()=>false);
     if(ok){ uiReady = Date.now()-t0; break; }
     await new Promise(r=>setTimeout(r,500));
   }
   const st = await page.evaluate(()=>{
-    const lite=document.querySelector('.stage iframe');
-    const ld=lite&&lite.contentDocument;
-    const full=ld&&ld.querySelector('#full');
-    const d=full&&full.contentDocument;
-    if(!d) return {noApp:true, liteText:(ld?.body?.textContent||'').replace(/\s+/g,' ').slice(0,60)};
+    const f=document.querySelector('.stage iframe');
+    const d=f&&f.contentDocument;
+    if(!d) return {noApp:true};
     // 图标是否用上了本地字体（连字被渲染成单字形时宽度远小于文字宽度）
     const icons=Array.from(d.querySelectorAll('.material-symbols-outlined'))
       .filter(e=>(e.textContent||'').trim().length>3 && e.getBoundingClientRect().width>0);

@@ -1,66 +1,373 @@
 <!DOCTYPE html>
 <html lang="zh-CN" data-theme-lock="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>全球态势地球 · 三维卫星影像与公开地理数据</title>
-<meta name="description" content="站内优先显示本地基础三维地球，并在后台加载完整态势地球。可选高清影像及公开地理数据图层。">
-<link rel="canonical" href="https://www.ooglex.com/apps/globe/">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>全球态势地球 · 三维卫星影像与公开地理数据</title>
+<meta name="description" content="在浏览器里转动三维地球，叠加公开地理数据：全球地震、4300 处数据中心、704 座大坝、海底电缆与命名地理区域。底图为 Esri 卫星影像，数据源与许可逐条标注。个人学习用途，不作商业使用。">
+<link rel="canonical" href="https://www.ooglex.com/apps/globe/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="全球态势地球 · 三维卫星影像与公开地理数据">
+<meta property="og:description" content="浏览器内的三维地球，叠加地震、数据中心、大坝、海底电缆等公开地理数据，来源与许可逐条标注。">
+<meta property="og:url" content="https://www.ooglex.com/apps/globe/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
 <meta name="theme-color" content="#080b10">
+<script>/* 主题首屏防闪：与站内其他 canvas 主导页一致，本页由 data-theme-lock 固定深色，
+   但用户的主题选择照样记住并对其余页面生效 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js?v=7bf48c7c" defer></script>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080b10;color:#eaf0f3;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif}
-:root{--bar:48px;--status:44px;--panel:#111821;--line:rgba(255,255,255,.1);--dim:#94a1b2;--accent:#4a90d9}
-.bar{position:fixed;inset:0 0 auto 0;height:var(--bar);z-index:5;display:flex;align-items:center;gap:10px;padding:0 14px;background:rgba(6,9,13,.95);border-bottom:1px solid var(--line)}
-.bar a,.bar button,.sheet button{appearance:none;border:1px solid var(--line);border-radius:7px;background:transparent;color:#eaf0f3;padding:6px 10px;font:12px inherit;text-decoration:none;cursor:pointer}
-.bar h1{font-size:14px;margin:0;white-space:nowrap}.bar .en{font:10px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;color:#6f7b8a}.sp{flex:1}
-.status{position:fixed;top:var(--bar);left:0;right:0;height:var(--status);z-index:4;display:flex;align-items:center;gap:8px;padding:0 14px;background:#111821;border-bottom:1px solid var(--line)}
-#load-status{flex:1;min-width:0;font-size:12px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.status button{appearance:none;border:0;background:transparent;color:var(--accent);font:12px inherit;padding:0 10px;height:100%;cursor:pointer}.status button:disabled{opacity:.45;cursor:wait}
-.stage{position:fixed;top:calc(var(--bar) + var(--status));left:0;right:0;bottom:0;background:#000}.stage iframe{width:100%;height:100%;display:block;border:0;background:#000}
-.sheet{position:fixed;z-index:8;top:var(--bar);right:0;bottom:0;width:min(430px,100%);padding:18px;background:#111821;border-left:1px solid var(--line);overflow:auto;transform:translateX(100%);transition:transform .2s ease}.sheet.open{transform:none}.sheet h2{margin:0 0 8px;font-size:16px}.sheet h3{margin:18px 0 7px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#758190}.sheet p,.src{font-size:12.5px;line-height:1.65;color:#9ca8b8}.src{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}.src b{color:#eaf0f3}.tag{display:inline-block;margin-right:6px;padding:1px 5px;border:1px solid currentColor;border-radius:4px;font:10px ui-monospace,SFMono-Regular,Menlo,monospace;color:#4db58a}.tag.opt{color:#c49a3b}
-@media(max-width:640px){.bar .en{display:none}.bar h1{font-size:13px}.bar{padding:0 8px}.status{padding:0 8px}.status button{padding:0 6px}}
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#080b10; --panel:#121821; --line:rgba(255,255,255,0.10);
+    --text:#eaf0f3; --dim:#93a0b2; --faint:#66717f; --accent:#4a90d9;
+    --ok:#3fae7d; --off:#8a94a2; --warn:#e4b53d;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    --bar:44px;
+  }
+  html, body { height:100%; }
+  body {
+    background:var(--bg); color:var(--text); overflow:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    line-height:1.55;
+  }
+  a { color:var(--accent); }
+  :focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+
+  /* ---------------------------------------------------------------- 顶栏 */
+  .bar {
+    position:fixed; inset:0 0 auto 0; height:var(--bar); z-index:3;
+    display:flex; align-items:center; gap:10px;
+    padding:0 12px; padding-left:max(12px, env(safe-area-inset-left));
+    background:rgba(8,11,16,0.92); border-bottom:1px solid var(--line);
+    backdrop-filter:blur(8px);
+  }
+  .bar a.back, .bar button {
+    appearance:none; background:transparent; border:1px solid var(--line);
+    color:var(--text); border-radius:6px; padding:5px 10px;
+    font-size:12.5px; cursor:pointer; white-space:nowrap;
+    font-family:inherit; text-decoration:none;
+  }
+  .bar a.back:hover, .bar button:hover { border-color:var(--accent); color:#fff; }
+  .bar h1 {
+    font-size:14px; font-weight:600; letter-spacing:0.01em;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .bar .en {
+    font-family:var(--mono); font-size:10.5px; color:var(--faint);
+    letter-spacing:0.14em; text-transform:uppercase;
+  }
+  .bar .sp { flex:1 1 auto; min-width:4px; }
+
+  /* -------------------------------------------------------------- 舞台 */
+  .stage { position:fixed; inset:var(--bar) 0 0 0; z-index:1; }
+  .stage iframe { width:100%; height:100%; border:0; display:block; background:#000; }
+
+  /* 进入卡 / 错误卡 共用容器。
+     注意：.gate 设了 display:flex，会覆盖 UA 样式表中 [hidden] 的 display:none，
+     必须显式补一条，否则 hidden=true 之后卡片仍然可见。 */
+  .gate[hidden] { display:none; }
+  .gate {
+    position:absolute; inset:0; z-index:2; overflow-y:auto;
+    display:flex; align-items:center; justify-content:center;
+    padding:24px 16px; padding-bottom:max(24px, env(safe-area-inset-bottom));
+  }
+  .card {
+    width:100%; max-width:560px; background:var(--panel);
+    border:1px solid var(--line); border-radius:12px; padding:22px;
+  }
+  .card h2 { font-size:17px; margin-bottom:10px; }
+  .card p { font-size:13.5px; color:var(--dim); margin-bottom:12px; }
+  .card .meta {
+    font-family:var(--mono); font-size:11.5px; color:var(--faint);
+    border-top:1px solid var(--line); padding-top:12px; margin-top:4px;
+  }
+  .card .go {
+    appearance:none; font-family:inherit; font-size:14px; font-weight:600;
+    background:var(--accent); color:#fff; border:0; border-radius:8px;
+    padding:11px 20px; cursor:pointer; margin-top:6px;
+  }
+  .card .go:hover { filter:brightness(1.1); }
+  .card.err { border-color:rgba(228,181,61,0.5); }
+
+  /* ------------------------------------------------------- 数据来源面板 */
+  .sheet {
+    position:fixed; inset:var(--bar) 0 0 auto; width:min(420px, 100%); z-index:4;
+    background:var(--panel); border-left:1px solid var(--line);
+    overflow-y:auto; padding:18px;
+    padding-bottom:max(18px, env(safe-area-inset-bottom));
+    transform:translateX(100%); transition:transform .22s ease;
+  }
+  .sheet[data-open] { transform:none; }
+  @media (prefers-reduced-motion: reduce) { .sheet { transition:none; } }
+  .sheet h2 { font-size:15px; margin-bottom:4px; }
+  .sheet .lead { font-size:12.5px; color:var(--dim); margin-bottom:16px; }
+  .sheet h3 {
+    font-family:var(--mono); font-size:10.5px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--faint);
+    margin:18px 0 8px; padding-bottom:5px; border-bottom:1px solid var(--line);
+  }
+  .src { font-size:12.5px; padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+  .src .n { color:var(--text); }
+  .src .l { color:var(--faint); font-size:11.5px; }
+  /* 状态不只靠颜色：同时给出文字标记 */
+  .tag {
+    display:inline-block; font-family:var(--mono); font-size:10px;
+    border:1px solid currentColor; border-radius:3px;
+    padding:0 4px; margin-right:6px; vertical-align:1px;
+  }
+  .tag.on { color:var(--ok); }
+  .tag.off { color:var(--off); }
+  .tag.nc { color:var(--warn); }
+  .sheet .close { margin-top:18px; width:100%; }
+  .sheet .close button {
+    width:100%; appearance:none; font-family:inherit; font-size:13px;
+    background:transparent; color:var(--text);
+    border:1px solid var(--line); border-radius:6px; padding:9px; cursor:pointer;
+  }
+
+  @media (max-width: 560px) {
+    .bar .en { display:none; }
+    .bar h1 { font-size:13px; }
+    .sheet { inset:var(--bar) 0 0 0; width:100%; border-left:0; }
+  }
 </style>
 </head>
 <body>
-<header class="bar">
-<a href="/" id="back">← 返回</a><h1 id="title">全球态势地球</h1><span class="en">GLOBAL SITUATIONAL GLOBE</span><span class="sp"></span>
-<button id="lang" type="button">中 / EN</button><button id="sources" type="button">数据来源</button>
-</header>
-<div class="status"><span id="load-status">基础地球 · 本地快速模式</span><button id="overview" type="button" disabled>全球视角</button><button id="hd" type="button" disabled>切换高清影像</button></div>
-<main class="stage"><iframe id="globe" title="全球态势地球" allow="geolocation; microphone; fullscreen" allowfullscreen></iframe></main>
-<aside class="sheet" id="sheet" aria-hidden="true">
-<h2 id="sheet-title">数据来源与许可</h2>
-<p id="sheet-lead">默认基础地球只读取本站资源，因此在不开 VPN 时也能先显示。完整三维应用在后台加载，成功后自动接管。</p>
-<h3>本站可用</h3>
-<div class="src"><span class="tag">默认</span><b>Natural Earth 基础地球</b><br>站内静态底图 · 公有领域 · 不依赖外部地图服务。</div>
-<div class="src"><span class="tag">可用</span><b>数据中心 / 大坝 / 海底电缆 / 命名区域</b><br>站内静态快照或内置数据；来源与原项目许可要求保持一致。</div>
-<div class="src"><span class="tag">可用</span><b>卫星与航天任务快照</b><br>由站点定时任务更新后保存为站内数据。</div>
-<h3>可选外部服务</h3>
-<div class="src"><span class="tag opt">可选</span><b>Esri World Imagery</b><br>高清影像需连接外部服务；大陆网络不可达时保持基础地球，不阻塞页面。</div>
-<div class="src"><span class="tag opt">可选</span><b>OpenStreetMap / USGS 等</b><br>仅在相关功能被使用时连接外部数据源。</div>
-<h3>开源项目</h3>
-<p>完整界面基于 God's Eye View（MIT 许可，仅覆盖代码）。本站部署为个人学习用途，不作商业使用。</p>
-<button id="close" type="button">关闭</button>
+
+<div class="bar">
+  <a class="back" href="/">← 返回</a>
+  <h1>全球态势地球</h1>
+  <span class="en">Global Situational Globe</span>
+  <span class="sp"></span>
+  <button type="button" id="btn-lang" aria-pressed="false" title="切换界面语言（应用内文案）">中 / EN</button>
+  <button type="button" id="btn-src" aria-expanded="false" aria-controls="sheet">数据来源</button>
+</div>
+
+<div class="stage" id="stage">
+  <div class="gate" id="gate">
+    <div class="card">
+      <h2>三维地球 · 公开地理数据叠加</h2>
+      <p>
+        在浏览器里转动一颗真实卫星影像的地球，叠加公开地理数据：全球地震、
+        4300 处数据中心、704 座大坝、海底电缆与命名地理区域。
+        全部数据源与许可在「数据来源」里逐条列出。
+      </p>
+      <p>
+        这是一个纯静态部署，<strong>没有服务端</strong>。卫星与航天任务通过每日定时生成的
+        同源静态快照供数据（星点位置由前端实时推算）；而实时航班、船舶、交通摄像头、
+        电台等图层依赖后端代理，在本站不可用，打开后会显示为不可用状态，
+        这是预期行为而非故障。具体哪些可用见「数据来源」。
+      </p>
+      <p>
+        应用界面已做中文化（顶栏「中 / EN」可切回英文原版）。
+        <strong>数据来源署名按许可要求保留原文</strong>，地图上的坐标、呼号、机型等读数同样不翻译。
+      </p>
+      <button class="go" type="button" id="btn-go">进入地球</button>
+      <div class="meta" id="gate-meta">
+        首屏约需下载 2.2 MB（三维引擎），需要支持 WebGL 的浏览器 · 个人学习用途，非商业使用
+      </div>
+    </div>
+  </div>
+</div>
+
+<aside class="sheet" id="sheet" hidden aria-labelledby="sheet-title">
+  <h2 id="sheet-title">数据来源与许可</h2>
+  <div class="lead">
+    界面程序来自开源项目 <a href="https://github.com/bilawalsidhu/gods-eye-view" target="_blank" rel="noopener">God's Eye View</a>（MIT 许可，仅覆盖代码）。
+    下列数据各自独立授权，与该许可无关。本站按个人学习用途部署，不作商业使用。
+  </div>
+
+  <h3>本站可用</h3>
+  <div class="src"><span class="tag on">可用</span><span class="n">Natural Earth II 基础底图（默认）</span><br>
+    <span class="l">随 Cesium 一同发布的本地瓦片，<strong>不请求外网</strong>，因此不开 VPN 也能直接显示 ·
+    公有领域 · Made with Natural Earth · 层级上限 2，<strong>放大后会发糊</strong>，
+    这是数据分辨率所限，需要细节请在应用内底图菜单切到高清影像</span></div>
+  <div class="src"><span class="tag on">可选</span><span class="n">Esri World Imagery 高清影像</span><br>
+    <span class="l">在应用内底图菜单切换 · Powered by Esri — Source: Esri, Maxar, Earthstar Geographics 及 GIS 用户社区 ·
+    该服务在中国大陆不一定可达，取不到时自动退回基础底图</span></div>
+  <div class="src"><span class="tag on">可选</span><span class="n">OpenStreetMap 底图</span><br>
+    <span class="l">同样在底图菜单切换 · ODbL 1.0 · © OpenStreetMap contributors</span></div>
+  <div class="src"><span class="tag on">可用</span><span class="n">USGS 全球地震目录</span><br>
+    <span class="l">近 24 小时地震摘要 · 美国地质调查局，公有领域 · 由浏览器直接请求，刷新频率取决于该源</span></div>
+  <div class="src"><span class="tag on">可用</span><span class="n">数据中心（约 4300 处）· 大坝（704 座）</span><br>
+    <span class="l">ODbL 1.0 · © OpenStreetMap contributors，另据 Open Infrastructure Map · 署名与相同方式共享</span></div>
+  <div class="src"><span class="tag on">可用</span><span class="n">Natural Earth 命名地理区域</span><br>
+    <span class="l">1046 处陆地 + 292 处海域名称 · 公有领域 · Made with Natural Earth</span></div>
+  <div class="src"><span class="tag on">可用</span><span class="n">CelesTrak 卫星星历（约 840 颗，六个分组）</span><br>
+    <span class="l">美国政府来源数据，无许可限制，请求署名 · CelesTrak (celestrak.org), Dr. T.S. Kelso ·
+    每日抓取 TLE 存为同源静态快照；<strong>轨道位置由前端按 SGP4 实时推算</strong>，所以星点是实时移动的</span>
+    <span class="l" data-status="celestrak">更新时间：读取中…</span></div>
+  <div class="src"><span class="tag on">可用</span><span class="n">航天任务（近 30 天发射记录）</span><br>
+    <span class="l">Launch Library 2 — The Space Devs · 数据可任意形式使用与分享 · 每日刷新
+    · 提供发射事件与时间，不含连续上升段遥测或实时在轨状态</span>
+    <span class="l" data-status="launches">更新时间：读取中…</span></div>
+  <div class="src"><span class="tag nc">非商业</span><span class="n">TeleGeography 海底电缆（712 条 + 1917 个登陆点）</span><br>
+    <span class="l">CC BY-NC-SA 3.0 · © TeleGeography — submarinecablemap.com · 仅限非商业用途；本站若转作商业用途必须移除该数据集</span></div>
+
+  <h3>本站不可用（需服务端代理）</h3>
+  <div class="src"><span class="tag off">不可用</span><span class="n">实时航班 · 船舶（AIS）· 活跃火点</span><br>
+    <span class="l">航班与船舶是秒级实时位置，无法用定时静态快照替代；船舶还需常驻 WebSocket 与私有密钥，
+    火点需要 NASA FIRMS 密钥。三者都需要一个与应用同源的后端</span></div>
+  <div class="src"><span class="tag off">不可用</span><span class="n">交通流 · 公共自行车 · 交通摄像头 · 网络电台 · 区域新闻</span><br>
+    <span class="l">同上；其中部分上游还要求密钥，而密钥不会写入前端</span></div>
+  <div class="src"><span class="tag off">不可用</span><span class="n">Google 真实感三维瓦片 · 地点搜索 · 语音控制</span><br>
+    <span class="l">需要按量计费的第三方密钥，本站未配置</span></div>
+
+  <div class="close"><button type="button" id="btn-close">关闭</button></div>
 </aside>
+
 <script>
-(function(){
-'use strict';
-var f=document.getElementById('globe'),status=document.getElementById('load-status'),overview=document.getElementById('overview'),hd=document.getElementById('hd'),lang=document.getElementById('lang'),sheet=document.getElementById('sheet');
-var key='ooglex.language',language='zh',activeMap='local-earth',frameReady=false;
-try{var x=localStorage.getItem(key);if(x==='en'||x==='zh')language=x}catch(e){}
-var dict={zh:{back:'← 返回',title:'全球态势地球',sources:'数据来源',overview:'全球视角',hd:'切换高清影像',basic:'基础地球 · 本地快速模式',connecting:'正在连接高清影像…',full:'完整三维地球 · 已加载',esri:'Esri 高清影像',osm:'OpenStreetMap 底图',fallback:'影像不可用 · 保持基础地球',close:'关闭',lead:'默认基础地球只读取本站资源，因此在不开 VPN 时也能先显示。完整三维应用在后台加载，成功后自动接管。'},en:{back:'← Back',title:'Global Situational Globe',sources:'Data Sources',overview:'Global View',hd:'Switch to HD Imagery',basic:'Basic Earth · Local Fast Mode',connecting:'Connecting to HD imagery…',full:'Full 3D Globe · Loaded',esri:'Esri HD Imagery',osm:'OpenStreetMap',fallback:'Imagery unavailable · Basic Earth kept',close:'Close',lead:'The basic globe uses only same-origin assets, so it can render first without a VPN. The full 3D app loads in the background and takes over when ready.'}};
-function t(){return dict[language]}
-function paint(){document.documentElement.lang=language==='en'?'en':'zh';document.getElementById('back').textContent=t().back;document.getElementById('title').textContent=t().title;document.getElementById('sources').textContent=t().sources;overview.textContent=t().overview;hd.textContent=activeMap==='local-earth'?t().hd:(language==='en'?'Back to Basic Earth':'返回基础地球');document.getElementById('close').textContent=t().close;document.getElementById('sheet-lead').textContent=t().lead;lang.textContent=language==='en'?'EN / 中':'中 / EN'}
-function src(){return '/apps/globe/lite/?v=5'+(language==='en'?'&lang=en':'')}
-function load(){frameReady=false;overview.disabled=true;hd.disabled=true;activeMap='local-earth';status.textContent=t().basic;f.src=src()}
-window.addEventListener('message',function(e){if(e.origin!==location.origin||e.source!==f.contentWindow)return;var m=e.data;if(!m||m.type!=='ooglex:globe'||m.url!==f.src)return;if(m.state==='error'){status.textContent=t().basic;return}if(m.state!=='ready')return;frameReady=true;overview.disabled=false;hd.disabled=false;var d=m.detail||{};activeMap=d.map||'local-earth';if(d.switching)status.textContent=t().connecting;else if(d.note)status.textContent=t().fallback;else if(activeMap==='esri-imagery')status.textContent=t().esri;else if(activeMap==='osm')status.textContent=t().osm;else status.textContent=d.mode==='full'?t().full:t().basic;paint()});
-overview.addEventListener('click',function(){if(frameReady)f.contentWindow.postMessage({type:'ooglex:overview'},location.origin)});
-hd.addEventListener('click',function(){if(!frameReady)return;var map=activeMap==='local-earth'?'esri-imagery':'local-earth';f.contentWindow.postMessage({type:'ooglex:set-map',map:map},location.origin);if(map!=='local-earth')status.textContent=t().connecting});
-lang.addEventListener('click',function(){language=language==='en'?'zh':'en';try{localStorage.setItem(key,language)}catch(e){}paint();load()});
-document.getElementById('sources').addEventListener('click',function(){sheet.classList.add('open');sheet.setAttribute('aria-hidden','false')});document.getElementById('close').addEventListener('click',function(){sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true')});document.addEventListener('keydown',function(e){if(e.key==='Escape'){sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true')}});
-paint();load();
+(function () {
+  'use strict';
+  var APP_URL = '/apps/globe/app/';
+  var LANG_KEY = 'ooglex.globe.lang';   // appUrl() 依赖它，必须在此处初始化
+  /** 应用地址；英文原版通过 ?lang=en 让中文化层自行短路。 */
+  function appUrl() {
+    return APP_URL + (readLang() === 'en' ? '?lang=en' : '');
+  }
+  var stage = document.getElementById('stage');
+  var gate = document.getElementById('gate');
+  var meta = document.getElementById('gate-meta');
+  var loaded = false;
+
+  /** 用一次性探测判断浏览器是否真的能跑 WebGL，避免加载后只看到黑屏。 */
+  function webglOk() {
+    try {
+      var c = document.createElement('canvas');
+      return !!(window.WebGLRenderingContext &&
+        (c.getContext('webgl2') || c.getContext('webgl')));
+    } catch (e) { return false; }
+  }
+
+  function showError(title, body) {
+    gate.innerHTML = '';
+    var card = document.createElement('div');
+    card.className = 'card err';
+    var h = document.createElement('h2');
+    h.textContent = title;
+    var p = document.createElement('p');
+    p.textContent = body;
+    card.appendChild(h);
+    card.appendChild(p);
+    gate.appendChild(card);
+    gate.hidden = false;
+  }
+
+  function load() {
+    if (loaded) return;
+    if (!webglOk()) {
+      showError('当前浏览器无法运行三维地球',
+        '未能创建 WebGL 画布。请改用较新版本的 Chrome、Edge、Firefox 或 Safari，' +
+        '并确认未关闭硬件加速；部分浏览器的省电模式也会禁用 WebGL。');
+      return;
+    }
+    loaded = true;
+    var f = document.createElement('iframe');
+    f.src = appUrl();
+    f.title = '全球态势地球（三维）';
+    f.allow = 'geolocation; microphone; fullscreen';
+    f.setAttribute('allowfullscreen', '');
+    stage.appendChild(f);
+    gate.hidden = true;
+  }
+
+  document.getElementById('btn-go').addEventListener('click', function () { load(); });
+
+  // ---------------------------------------------------------------- 语言切换
+  // 中文化层是运行时 DOM 文案映射，切回英文只需带上 ?lang=en 重载应用；
+  // 比在页面里维护一份「原文备份」可靠得多。
+  var btnLang = document.getElementById('btn-lang');
+  function readLang() {
+    try { return localStorage.getItem(LANG_KEY) === 'en' ? 'en' : 'zh'; }
+    catch (e) { return 'zh'; }
+  }
+  function paintLang() {
+    var en = readLang() === 'en';
+    btnLang.textContent = en ? 'EN / 中' : '中 / EN';
+    btnLang.setAttribute('aria-pressed', en ? 'true' : 'false');
+    btnLang.title = en ? '当前为英文原版，点击切回中文' : '当前为中文界面，点击切回英文原版';
+  }
+  btnLang.addEventListener('click', function () {
+    var next = readLang() === 'en' ? 'zh' : 'en';
+    try { localStorage.setItem(LANG_KEY, next); } catch (e) { /* 不影响本次切换 */ }
+    paintLang();
+    var f = document.querySelector('.stage iframe');
+    if (f) f.src = appUrl();          // 换 src 即重载，语言随之生效
+  });
+  paintLang();
+
+  // 窄屏或用户开了省流量/慢速网络时，先显示说明与体积，由用户决定是否下载；
+  // 宽屏直接进入，满足「打开即用」。
+  var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  var thrifty = !!(conn && (conn.saveData === true ||
+    /^(slow-2g|2g|3g)$/.test(conn.effectiveType || '')));
+  var narrow = window.matchMedia('(max-width: 767px)').matches;
+  if (thrifty) {
+    meta.textContent = '检测到省流量模式或较慢网络。首屏约需下载 2.2 MB（三维引擎），' +
+      '确认后再加载 · 个人学习用途，非商业使用';
+  } else if (!narrow) {
+    load();
+  }
+
+  // -------------------------------------------------- 静态数据快照的更新时间
+  // 定时工作流（.github/workflows/globe_space_data.yml）生成 status.json。
+  // 仓库规则第 6 条：数据必须显示来源与更新时间。取不到就明确说取不到，不留空白。
+  (function loadStatus() {
+    var slots = document.querySelectorAll('[data-status]');
+    if (!slots.length) return;
+    function paint(text) {
+      for (var i = 0; i < slots.length; i++) slots[i].textContent = text;
+    }
+    fetch('/apps/globe/status.json', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (d) {
+        if (d.status === 'pending' || !d.updatedAt) {
+          paint('更新时间：静态数据快照尚未生成（定时任务首次运行后写入），此前这两个图层没有数据');
+          return;
+        }
+        var when = String(d.updatedAt || '').replace('T', ' ').replace('Z', ' UTC');
+        for (var i = 0; i < slots.length; i++) {
+          var key = slots[i].getAttribute('data-status');
+          var item = (d.items || {});
+          // 卫星有六个分组，任一失败都算「部分」
+          var rows = Object.keys(item).filter(function (k) { return k.indexOf(key) === 0; });
+          var bad = rows.filter(function (k) { return !item[k].ok; });
+          var note = rows.length === 0 ? '无记录'
+            : bad.length === 0 ? '正常'
+            : bad.length === rows.length ? '抓取失败，显示的是上一份有效数据'
+            : '部分失败（' + bad.length + '/' + rows.length + '），其余为上一份有效数据';
+          slots[i].textContent = '更新时间：' + (when || '未知') + ' · 每日刷新 · ' + note;
+        }
+      })
+      .catch(function () {
+        paint('更新时间：读取失败（status.json 不可用，数据快照可能尚未生成）');
+      });
+  })();
+
+  // ------------------------------------------------------------ 数据来源面板
+  var sheet = document.getElementById('sheet');
+  var btnSrc = document.getElementById('btn-src');
+  function setSheet(open) {
+    sheet.hidden = !open;
+    if (open) sheet.setAttribute('data-open', ''); else sheet.removeAttribute('data-open');
+    btnSrc.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) sheet.focus({ preventScroll: true });
+  }
+  sheet.tabIndex = -1;
+  btnSrc.addEventListener('click', function () { setSheet(sheet.hidden); });
+  document.getElementById('btn-close').addEventListener('click', function () {
+    setSheet(false);
+    btnSrc.focus();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !sheet.hidden) { setSheet(false); btnSrc.focus(); }
+  });
 })();
 </script>
 </body>

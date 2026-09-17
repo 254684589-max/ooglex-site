@@ -110,20 +110,30 @@
     });
     viewer.scene.requestRender();
   }
+  /* 相机守卫**只**负责一件事：把非有限（NaN/Infinity）的相机状态救回来。
+   *
+   * 早先这里还做了三件事，全部撤掉了 —— 它们为了掩盖「基础地球放大后发糊」
+   * 而把导航打残，代价远大于收益：
+   *   · maximumMovementRatio = 0.12（Cesium 默认 1.0）：每次滚轮只走到地表距离的
+   *     12%，滚轮手感几乎是死的，用户的感受是「滚轮不是前进后退」。
+   *   · minimumZoomDistance = 1200：最近只能到 1200 米，永远贴不到地面 ——
+   *     而街景视角、驾驶舱、CCTV 地面投影恰恰是这个应用的看点。
+   *   · height < 250 就弹回 22000 公里全球视角：任何一次接近地面都会被甩回太空。
+   *
+   * 「基础地球放大后发糊」是数据本身的性质：本地底图是 Cesium 自带的
+   * NaturalEarthII，maximumLevel 只有 2。**糊是诚实的，弹回不是。** 需要细节就在
+   * 应用自身的底图菜单里切到高清影像。
+   */
   function installCameraGuard(viewer) {
-    var controller = viewer.scene.screenSpaceCameraController;
-    controller.minimumZoomDistance = 1200;
-    controller.maximumZoomDistance = 65000000;
-    controller.maximumMovementRatio = 0.12;
+    // 只保留一个上限，防止相机飞到地月之间；下限交给上游自己的设置。
+    viewer.scene.screenSpaceCameraController.maximumZoomDistance = 65000000;
     var repairing = false;
     viewer.camera.changed.addEventListener(function () {
       if (repairing || viewer.isDestroyed()) return;
-      var p = viewer.camera.positionCartographic;
-      if (!cameraFinite(viewer) || p.height < 250 || p.height > 100000000) {
-        repairing = true;
-        try { overview(viewer, cameraFinite(viewer)); }
-        finally { setTimeout(function () { repairing = false; }, 0); }
-      }
+      if (cameraFinite(viewer)) return;        // 正常状态一律不干预
+      repairing = true;
+      try { overview(viewer, false); }
+      finally { setTimeout(function () { repairing = false; }, 0); }
     });
   }
   function initialView(viewer) {

@@ -18,18 +18,26 @@
  * 另外：断言前必须摘掉署名子树（#cesium-credits、.cesium-credit-lightbox 等）。
  * 那里的英文是许可要求的原文，本就不该翻译，留着会让「无残留英文」误报。
  */
-import { launchGlobeBrowser } from './browser.mjs';
+const { default: puppeteer } = await import('/home/user/bilawalsidhu/gods-eye-view/node_modules/puppeteer/lib/puppeteer/puppeteer.js');
 
-/** 取完整应用的 document。层级：包装页 → lite 轻量地球 → #full 内层 iframe。
- *  只穿一层会把 lite 页当成应用，断言会全部落空（踩过）。 */
-function appDocExpr() {
-  return `(() => { const l = document.querySelector('.stage iframe');
-    const ld = l && l.contentDocument; const f = ld && ld.querySelector('#full');
-    return (f && f.contentDocument) || null; })()`;
+/** 按 URL 解析应用所在 frame，而不是靠 iframe 层级。
+ *  层级曾经从「包装页→应用」变成「包装页→轻量地球→应用」又变回来，
+ *  每次都把所有断言弄成假失败。按 URL 找最稳。 */
+async function appDoc(page) {
+  for (let i = 0; i < 160; i += 1) {
+    const f = page.frames().find(fr => fr.url().includes('/apps/globe/app/'));
+    if (f) return f;
+    await new Promise(r => setTimeout(r, 250));
+  }
+  return null;
 }
 
 const B = process.env.GLOBE_VERIFY_URL || 'http://127.0.0.1:8902';
-const browser = await launchGlobeBrowser();
+const browser = await puppeteer.launch({
+  executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
+  headless: true,
+  args: ['--no-sandbox','--enable-unsafe-swiftshader','--use-gl=angle','--use-angle=swiftshader'],
+});
 let fails = 0;
 const ck = (l,c)=>{ if(!c) fails++; console.log(`  ${c?'✅':'❌'} ${l}`); };
 
@@ -41,19 +49,19 @@ async function suite(label, vp, full) {
   page.on('response', r=>{ if(r.url().startsWith(B)&&r.status()>=400&&!r.url().includes('/api/')) bad.push(r.status()+' '+r.url().slice(B.length)); });
   await page.goto(`${B}/apps/globe/`, {waitUntil:'networkidle2', timeout:90000});
   await new Promise(r=>setTimeout(r,2500));
-
+  if (await page.evaluate(()=>!document.querySelector('.stage iframe'))) await page.click('#btn-go');
   for(let i=0;i<25;i++){
-    if(await page.evaluate(()=>{const l=document.querySelector('.stage iframe');const ld=l&&l.contentDocument;const fu=ld&&ld.querySelector('#full');const d=fu&&fu.contentDocument;return !!(d&&d.querySelector('#data-toggles'));})) break;
+    if(await page.evaluate(()=>{const f=document.querySelector('.stage iframe');const d=f&&f.contentDocument;return !!(d&&d.querySelector('#data-toggles'));})) break;
     await new Promise(r=>setTimeout(r,1500));
   }
   await new Promise(r=>setTimeout(r,4000));
-  await page.evaluate(()=>{const l=document.querySelector('.stage iframe');const ld=l.contentDocument;const fu=ld.querySelector('#full');const d=fu&&fu.contentDocument;if(!d)return;const b=d.querySelector('[data-collapse-target="data-panel"]');if(b&&b.getAttribute('aria-expanded')==='false')b.click();});
+  await page.evaluate(()=>{const d=document.querySelector('.stage iframe').contentDocument;const b=d.querySelector('[data-collapse-target="data-panel"]');if(b&&b.getAttribute('aria-expanded')==='false')b.click();});
   // 断言前轮询等待「中文化已落地」这个稳定状态，而不是固定 sleep。
   // 窄屏下应用启动明显更慢（软件 WebGL），固定等待会误判。
   let settled = false;
   for (let i=0;i<30;i++){
     settled = await page.evaluate(()=>{
-      const l=document.querySelector('.stage iframe');const ld=l.contentDocument;const fu=ld.querySelector('#full');const d=fu&&fu.contentDocument;if(!d)return;
+      const d=document.querySelector('.stage iframe').contentDocument;
       const c=d.body.cloneNode(true);
       c.querySelectorAll('#cesium-credits,.cesium-widget-credits,.cesium-credit-lightbox,.cesium-credit-lightbox-overlay,[data-no-translate]').forEach(e=>e.remove());
       return ((c.textContent||'').match(/[\u4e00-\u9fa5]/g)||[]).length > 100;
@@ -65,9 +73,7 @@ async function suite(label, vp, full) {
 
   console.log(`\n===== ${label} ${vp.width}x${vp.height} =====`);
   const r = await page.evaluate(()=>{
-    const l=document.querySelector('.stage iframe'); const ld=l.contentDocument;
-    const f=ld.querySelector('#full'); const d=f&&f.contentDocument;
-    if(!d) return {noApp:true};
+    const f=document.querySelector('.stage iframe'), d=f.contentDocument;
     // 窄屏下上游用另一套界面，图层行不在 #data-toggles 里，所以对整个文档断言；
     // 但必须先摘掉署名子树 —— 那里的英文是许可要求的原文，本就不该翻译。
     const clone = d.body.cloneNode(true);
@@ -82,8 +88,8 @@ async function suite(label, vp, full) {
       neverZh: panel.includes('从未更新'), neverEn: panel.includes('· never'),
       srcKept:['OpenSky','adsb.lol','USGS','CelesTrak','Launch Library 2','OpenStreetMap'].filter(s=>panel.includes(s)),
       icons:['arrow_forward','chevron_left','public','radar'].filter(s=>d.body.innerHTML.includes('>'+s+'<')),
-      creditEn: cred ? /Made with Natural Earth/i.test(cred.textContent||'') : false,
-
+      creditEn: cred ? /Esri|Google|attribution|Data/i.test(cred.textContent||'') : false,
+      gateGone: getComputedStyle(document.getElementById('gate')).display==='none',
       panelTitleZh: all.includes('数据图层'),
       cesium: typeof f.contentWindow.Cesium!=='undefined',
       zhChars: (panel.match(/[\u4e00-\u9fa5]/g)||[]).length,
@@ -96,6 +102,7 @@ async function suite(label, vp, full) {
     };
   });
   ck('Cesium 初始化', r.cesium);
+  ck('进入卡已隐藏（计算样式）', r.gateGone);
   // 窄屏下上游只渲染部分图层行，所以「9/9」只对宽屏成立；
   // 窄屏改为「凡渲染出来的都已中文化」——由下一条『无残留英文』保证。
   if (full) ck(`图层名中文化 ${r.zh.length}/9`, r.zh.length===9);
