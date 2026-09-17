@@ -178,6 +178,15 @@
       '提示：指令栏的语音按钮可以直接对地图说话（本站未配置语音服务）。',
     'ESC TO DISMISS': '按 ESC 关闭',
     'SUMMARY': '摘要',
+    // 场景面板的预设与控件
+    'Global Flights Radar': '全球航班雷达',
+    'Orbital Watch': '在轨监视',
+    'Thermal Threat Board': '热源态势板',
+    'City Overload': '城市细节',
+    'Omniscience Pullback': '全景拉远',
+    'NEW': '新建', 'DEL': '删除', 'LOAD': '载入',
+    'CAPTURE SHOT': '记录镜头', 'UPDATE SHOT': '更新镜头',
+    'RETRO': '回溯',
     // 周边情况面板：这两条是 <br> 拆开的两个文本节点，整串不在字典里就会留英文
     'SELECT CONTEXT': '选择关注内容',
     'CONTACTS — nearest planes · vessels · sites': '实时目标 —— 最近的飞机 · 船舶 · 设施',

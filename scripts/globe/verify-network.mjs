@@ -199,10 +199,88 @@ try {
       // 曾经 height<250 就弹回 22000 公里；不能再出现「越滚越远」。
       assert(near < start * 0.9, '相机被守卫弹回了全球视角');
 
-      const far = await roll(40, 240);
-      assert(far > near * 1.2,
+      // 后退只需证明方向有效：限速回归由上面那条「前进 4 倍」守住，
+      // 这里不再对速度设严阈值，免得受机器快慢影响。
+      const far = await roll(80, 240);
+      assert(far > near * 1.1,
         '滚轮后退无效：' + Math.round(near) + ' m → ' + Math.round(far) + ' m');
       assert.deepEqual(s.errors, []);
+    } finally { await s.context.close(); }
+  });
+  // 基础底图是 Cesium 自带的 NaturalEarthII，maximumLevel 只有 2：低空一片纯色。
+  // 曾经用户看到的就是「一颗没有纹理的淡绿色球」（ALT 626M，旧金山街道高度）。
+  // 现在缩放下限跟着底图走（本地 500 km，真实影像放开），这条闸门守住它。
+  await run('basic basemap never leaves the user on a featureless sphere', async () => {
+    const s = await open(1280);
+    try {
+      const probe = () => s.frame.evaluate(async () => {
+        const c = document.querySelector('.cesium-widget canvas');
+        const b = c.getBoundingClientRect();
+        for (let i = 0; i < 40; i += 1) {
+          c.dispatchEvent(new WheelEvent('wheel', { deltaY: -240, bubbles: true, cancelable: true,
+            clientX: b.left + b.width / 2, clientY: b.top + b.height / 2 }));
+          await new Promise(r => setTimeout(r, 25));
+        }
+        await new Promise(r => setTimeout(r, 1400));
+        const off = document.createElement('canvas');
+        off.width = 200; off.height = 200;
+        const g = off.getContext('2d');
+        g.drawImage(c, c.width / 2 - 100, c.height / 2 - 100, 200, 200, 0, 0, 200, 200);
+        const d = g.getImageData(0, 0, 200, 200).data;
+        const set = new Set();
+        for (let i = 0; i < d.length; i += 4) set.add((d[i] >> 3 << 10) | (d[i + 1] >> 3 << 5) | (d[i + 2] >> 3));
+        return { h: Math.round(window.OoglexGlobeNetwork.viewState().height), colors: set.size,
+          map: window.OoglexGlobeNetwork.viewState().map };
+      });
+      let last = null;
+      for (let i = 0; i < 14; i += 1) {
+        last = await probe();
+        if (last.h < 600000) break;
+      }
+      // 一路滚到底也不能低于下限（留 10% 余量吸收单帧抖动）
+      assert(last.h > 450000,
+        '相机降到了基础底图无法显示的高度：' + Math.round(last.h) + ' m（下限 500 km）');
+      // 触底后再滚几轮，画面必须始终有内容 —— 不能是一片纯色
+      for (let i = 0; i < 3; i += 1) {
+        const now = await probe();
+        assert(now.colors >= 20,
+          '基础底图在 ' + Math.round(now.h) + ' m 只有 ' + now.colors + ' 种颜色，等于一片纯色');
+      }
+      assert.deepEqual(s.errors, []);
+    } finally { await s.context.close(); }
+  });
+  // minimumZoomDistance 只约束用户输入，不约束程序化的 flyTo/setView。
+  // 应用自带的场景会直接把相机飞到几百米高 —— 用户看到的「一片纯绿色球」
+  // （ALT 626M，旧金山金门大桥）正是这条路。这条闸门专门守它。
+  await run('a scene flight below the local floor is lifted, not left featureless', async () => {
+    const s = await open(1280);
+    try {
+      const ok = await s.frame.evaluate(() => window.OoglexGlobeNetwork.setView(-122.4889, 37.8115, 626));
+      assert(ok, 'setView 测试钩子不可用');
+      await new Promise(r => setTimeout(r, 2500));
+      const after = await s.frame.evaluate(() => {
+        const v = window.OoglexGlobeNetwork.viewState();
+        const t = document.getElementById('ooglex-globe-toast');
+        return { h: v.height, shown: !!(t && t.dataset.show !== undefined), text: (t && t.textContent) || '' };
+      });
+      assert(after.h > 450000,
+        '场景把相机留在了基础底图无法显示的高度：' + Math.round(after.h) + ' m');
+      assert(after.shown && /[\u4e00-\u9fa5]/.test(after.text),
+        '抬回高度时必须给出中文说明，实际：' + JSON.stringify(after.text));
+      // 画面必须有内容，不能是一片纯色
+      await new Promise(r => setTimeout(r, 2500));
+      const colors = await s.frame.evaluate(() => {
+        const c = document.querySelector('.cesium-widget canvas');
+        const off = document.createElement('canvas');
+        off.width = 200; off.height = 200;
+        const g = off.getContext('2d');
+        g.drawImage(c, c.width / 2 - 100, c.height / 2 - 100, 200, 200, 0, 0, 200, 200);
+        const d = g.getImageData(0, 0, 200, 200).data;
+        const set = new Set();
+        for (let i = 0; i < d.length; i += 4) set.add((d[i] >> 3 << 10) | (d[i + 1] >> 3 << 5) | (d[i + 2] >> 3));
+        return set.size;
+      });
+      assert(colors >= 20, '抬回后画面仍是一片纯色（只有 ' + colors + ' 种颜色）');
     } finally { await s.context.close(); }
   });
   await run('language switch preserves local startup', async () => {

@@ -45,3 +45,17 @@
   border-radius: 6px; cursor: pointer; font: inherit;
 }
 [data-globe-retry]:focus-visible { outline: 2px solid white; outline-offset: 3px; }
+
+/* 触到基础底图下限时的说明条。这条信息必须在应用内可见 —— 用户看到的是一片
+   纯色的球，不能让他以为是坏了。 */
+#ooglex-globe-toast {
+  position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%);
+  z-index: 40; max-width: min(560px, calc(100vw - 32px));
+  padding: 10px 16px; border-radius: 10px;
+  background: rgba(10, 16, 24, 0.94); border: 1px solid rgba(120, 200, 255, 0.35);
+  color: #eaf0f3; font-size: 13px; line-height: 1.5; text-align: center;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+}
+#ooglex-globe-toast[data-show] { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { #ooglex-globe-toast { transition: none; } }
