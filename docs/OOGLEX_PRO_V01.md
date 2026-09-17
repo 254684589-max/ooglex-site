@@ -13,7 +13,7 @@
 
 Supabase 是身份与会员状态唯一事实来源：
 
-- `profiles.plan`: `free | pro | pro+`
+- `profiles.plan`: `free | pro | pro_plus`（界面显示为 FREE / PRO / PRO+）
 - `profiles.status`: 只有 `active` 才能获得有效权限
 - `plan_entitlements`: 决定每个套餐对产品是 `preview` 还是 `full`
 - `subscriptions`: 为未来 Paddle / Stripe webhook 保存订阅状态；浏览器无写权限
