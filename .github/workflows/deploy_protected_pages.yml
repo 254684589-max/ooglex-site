@@ -34,8 +34,14 @@ jobs:
       - name: Build original-page 10 percent previews
         run: python scripts/pro/build_rich_previews.py
 
+      - name: Build Billionaires Top 10 preview and full payload
+        run: python scripts/pro/build_billionaires_pro.py
+
       - name: Build protected public site
         run: python scripts/build_public_site.py --pro-cutover
+
+      - name: Apply Billionaires PRO cutover
+        run: python scripts/pro/apply_billionaires_cutover.py
 
       - name: Verify no PRO-only data leaked into artifact
         run: python scripts/validate_pro_public_cutover.py
