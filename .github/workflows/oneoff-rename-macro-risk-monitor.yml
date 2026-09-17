@@ -1,0 +1,96 @@
+name: One-off rename macro risk monitor
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/oneoff-rename-macro-risk-monitor.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Rename user-facing macro product
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          roots = [Path('apps'), Path('assets'), Path('home-redesign'), Path('terminal-redesign')]
+          files = [Path('index.html')]
+          for root in roots:
+              if not root.exists():
+                  continue
+              for p in root.rglob('*'):
+                  if p.is_file() and p.suffix.lower() in {'.html', '.js', '.mjs'}:
+                      files.append(p)
+
+          replacements = [
+              ('MACRO RADAR', 'MACRO RISK MONITOR'),
+              ('Macro Radar', 'Macro Risk Monitor'),
+              ('宏观雷达', '宏观风险监测'),
+          ]
+
+          changed = []
+          for p in files:
+              try:
+                  text = p.read_text(encoding='utf-8')
+              except UnicodeDecodeError:
+                  continue
+              new = text
+              for old, repl in replacements:
+                  new = new.replace(old, repl)
+              if new != text:
+                  p.write_text(new, encoding='utf-8')
+                  changed.append(str(p))
+
+          print('Changed files:')
+          for p in changed:
+              print(' -', p)
+
+          must_have = {
+              Path('apps/macro-radar/index.html'): ['宏观风险监测', 'MACRO RISK MONITOR'],
+              Path('index.html'): ['宏观风险监测'],
+              Path('apps/data-hub/app.js'): ['宏观风险监测'],
+              Path('assets/i18n.js'): ['宏观风险监测', 'MACRO RISK MONITOR'],
+          }
+          for p, needles in must_have.items():
+              text = p.read_text(encoding='utf-8')
+              for needle in needles:
+                  if needle not in text:
+                      raise SystemExit(f'Missing {needle!r} in {p}')
+
+          # No old public-facing label should remain in the edited frontend surface.
+          leftovers = []
+          for p in files:
+              try:
+                  text = p.read_text(encoding='utf-8')
+              except UnicodeDecodeError:
+                  continue
+              if '宏观雷达' in text or 'Macro Radar' in text or 'MACRO RADAR' in text:
+                  leftovers.append(str(p))
+          if leftovers:
+              raise SystemExit('Old label remains in: ' + ', '.join(leftovers))
+          PY
+      - name: Validate JS syntax for changed JavaScript files
+        run: |
+          git diff --name-only -- '*.js' '*.mjs' | while read f; do
+            [ -z "$f" ] || node --check "$f"
+          done
+          git diff --check
+      - name: Commit rename
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html apps assets home-redesign terminal-redesign
+          git commit -m 'refactor(ui): rename Macro Radar to Macro Risk Monitor'
+          git push origin HEAD:main
