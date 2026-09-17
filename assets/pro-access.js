@@ -51,7 +51,11 @@
   }
 
   window.OoglexPro = Object.freeze({
-    products: Object.freeze({ supplyChain: "supply_chain", macroRisk: "macro_risk" }),
+    products: Object.freeze({
+      supplyChain: "supply_chain",
+      macroRisk: "macro_risk",
+      billionaires: "billionaires"
+    }),
     getSession: session,
     getAccess: getAccess,
     getData: getData
