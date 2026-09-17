@@ -1,14 +1,795 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="robots" content="noindex,follow">
-  <meta http-equiv="refresh" content="0;url=/pro/supply-chain/">
-  <link rel="canonical" href="https://www.ooglex.com/pro/supply-chain/">
-  <title>全球产业链 · Ooglex Pro</title>
-  <script>location.replace('/pro/supply-chain/');</script>
-  <style>body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#0b0e13;color:#eef2f7;margin:0;display:grid;place-items:center;min-height:100vh}.box{max-width:560px;padding:32px;text-align:center}.box a{color:#6ea8ff}</style>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全球产业链 · 12 个价值链环节 × 27 条产业链</title>
+<meta name="description" content="标普500成分股与在美上市外国私人发行人按价值链环节与产业链两维定位：12 个环节 × 27 条一级产业链，链间上下游标出谁供给谁。环节与产业链由 SEC 官方 SIC 行业码判定，逐家可查依据；冶炼厂关系逐条附原始申报出处。">
+<link rel="canonical" href="https://www.ooglex.com/apps/supply-chain/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="全球产业链 · 12 个价值链环节 × 27 条产业链">
+<meta property="og:description" content="标普500成分股与在美上市外国私人发行人按价值链环节与产业链两维定位，判定依据与关系出处逐条可查。">
+<meta property="og:url" content="https://www.ooglex.com/apps/supply-chain/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
+<script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js?v=7bf48c7c" defer></script>
+<script src="/assets/i18n.js?v=72e8d1ca" defer></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#0a0d13; --card:#141922; --line:rgba(255,255,255,0.09);
+    --text:#eaf0f3; --dim:#93a0b2; --faint:#5f6c7e; --accent:#4a90d9;
+    --up:#3fae7d; --down:#e0554f; --warn:#e4b53d;
+    /* 实物链八段：从矿土到消费者的一条暖→冷渐变，顺序本身就是信息。
+       使能层四段用低饱和色，视觉上退到后面——它们横跨整条链，不参与流转。 */
+    --s1:#b0763f; --s2:#c9924b; --s3:#4a90d9; --s4:#6f7fd6;
+    --s5:#9b6fd1; --s6:#3aa8b8; --s7:#3fae7d; --s8:#66b06a;
+    --e1:#d9a63c; --e2:#7d93c4; --e3:#6b7a8d; --e4:#7f9c72;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  body {
+    min-height:100vh; color:var(--text);
+    background:
+      radial-gradient(820px 420px at 10% -8%, rgba(201,139,75,0.12), transparent 60%),
+      radial-gradient(760px 400px at 92% 4%, rgba(74,144,217,0.10), transparent 60%),
+      var(--bg);
+    background-attachment:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    line-height:1.55; overflow-x:hidden;
+  }
+  /* 细分条成为主体后需要更多横向空间；与站内首页同宽，不是随手加的数。 */
+  .page { max-width:1180px; margin:0 auto; padding:18px 16px 72px; }
+  header { display:flex; align-items:center; margin-bottom:12px; }
+  header a { color:var(--accent); text-decoration:none; font-size:0.95rem;
+    min-height:44px; display:inline-flex; align-items:center; padding-right:12px; }
+  header a:hover { opacity:.78; }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline:2px solid var(--accent); outline-offset:3px; border-radius:6px; }
+
+  .title { text-align:center; margin-bottom:14px; }
+  .title h1 { font-size:1.8rem; letter-spacing:1px; font-weight:800;
+    background:linear-gradient(92deg,#e0a96a,#4a90d9 55%,#3fae7d);
+    -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .title p { color:var(--dim); margin-top:6px; font-size:0.88rem; }
+  .statusrow { display:flex; justify-content:center; gap:9px; margin-top:10px; flex-wrap:wrap; }
+  /* 公司查找 */
+  .lookup { position:relative; max-width:520px; margin:12px auto 0; }
+  .lookup input { width:100%; font:inherit; font-size:.84rem; color:var(--text);
+    background:rgba(255,255,255,.04); border:1px solid var(--line);
+    border-radius:11px; padding:11px 14px; min-height:44px; }
+  .lookup input::placeholder { color:var(--faint); }
+  .lookup input:focus { outline:none; border-color:rgba(74,144,217,.55);
+    background:rgba(74,144,217,.07); }
+  .qlist { position:absolute; left:0; right:0; top:calc(100% + 5px); z-index:20;
+    max-height:min(58vh,380px); overflow-y:auto; border-radius:12px;
+    border:1px solid var(--line); background:#141922;
+    box-shadow:0 24px 60px -20px rgba(0,0,0,.9); }
+  .qlist a, .qlist .qnone { display:block; padding:9px 13px; text-decoration:none;
+    color:var(--text); font-size:.8rem; border-bottom:1px solid var(--line); }
+  .qlist a:last-child { border-bottom:0; }
+  .qlist a:hover, .qlist a.on { background:rgba(74,144,217,.16); }
+  .qlist .qs { font-family:var(--mono); font-size:.72rem; color:var(--accent);
+    margin-right:8px; }
+  .qlist .qm { font-size:.68rem; color:var(--faint); margin-left:7px; }
+  .qlist .qnone { color:var(--dim); }
+  .status { display:inline-flex; align-items:center; gap:7px; font-size:0.78rem; padding:4px 13px;
+    border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,0.03); color:var(--dim); }
+  .status b { color:var(--text); font-weight:600; font-variant-numeric:tabular-nums; }
+  /* 频率那格里的次要说明。**必须显式去掉删除线**——<s> 默认带 line-through，
+     「行情每日」被划掉，读者会以为这一项作废了，意思正好反过来。 */
+  .status s { text-decoration:none; color:var(--faint); font-size:0.72rem; }
+  .status.freq { cursor:help; }
+
+  .glass { background:linear-gradient(180deg, rgba(22,27,37,.94), rgba(16,20,28,.94));
+    border:1px solid var(--line); border-radius:18px;
+    box-shadow:0 24px 60px -34px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.05); }
+
+  /* ── 覆盖率声明：必须一眼看到，不能藏在页脚 ── */
+  .notice { padding:14px 16px; margin-bottom:16px; border-left:3px solid var(--warn); }
+  .notice h2 { font-size:0.92rem; font-weight:700; color:#f0cf85; margin-bottom:5px; }
+  .notice p { font-size:0.82rem; color:var(--dim); }
+  .notice p + p { margin-top:5px; }
+  .notice code { font-family:var(--mono); font-size:0.78rem; color:var(--text); }
+
+  /* ── 按板块的覆盖情况 ── */
+  .cov { padding:0; margin-bottom:16px; }
+  /* 折叠头：与页尾「方法」那个面板同一套视觉，读者一眼看得出「这里可以点开」。
+     summary 里除了标题还印一行关键数字——**收起不等于藏起来**。 */
+  .cov > summary { padding:13px 16px; cursor:pointer; list-style:none;
+    display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .cov > summary::-webkit-details-marker { display:none; }
+  .cov > summary::before { content:"▸"; color:var(--accent); transition:transform .18s;
+    align-self:center; }
+  .cov[open] > summary::before { transform:rotate(90deg); }
+  .cov > summary:hover { background:rgba(255,255,255,.03); }
+  .cov > summary h2 { font-size:0.92rem; font-weight:700; margin:0; }
+  .cov #cov-sum { font-size:0.78rem; color:var(--dim); }
+  /* 名单年龄。收在覆盖缺口面板里，但它管的是**下面所有面板**的口径，
+     所以字号与正文同级、不压成脚注。 */
+  .covage { margin:10px 0 0; padding:9px 11px; font-size:.76rem; line-height:1.65;
+            color:var(--dim); border-left:2px solid var(--warn);
+            background:rgba(255,255,255,.02); border-radius:0 5px 5px 0; }
+  .cov #cov-sum b { color:var(--text); font-variant-numeric:tabular-nums; }
+  .cov > p, .cov > div { margin-left:16px; margin-right:16px; }
+  .cov > p { font-size:0.82rem; color:var(--dim); }
+  .cov > p + div { margin-top:11px; }
+  .cov > div + p { margin-top:11px; }
+  .cov > p:last-child { padding-bottom:15px; }
+  .cov > div:last-child { padding-bottom:15px; }
+  .covrow { display:grid; grid-template-columns:6.2em 1fr 8.5em; gap:9px;
+    align-items:center; padding:3px 0; font-size:0.78rem; }
+  .covrow .s { color:var(--text); font-weight:600; min-width:0;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .covrow .t { height:7px; border-radius:4px; background:rgba(255,255,255,.07);
+    overflow:hidden; display:flex; min-width:0; }
+  .covrow .t i { display:block; height:100%; }
+  .covrow .n { color:var(--faint); font-variant-numeric:tabular-nums;
+    text-align:right; font-family:var(--mono); font-size:0.72rem; }
+  .cov-sub { font-size:0.8rem; color:var(--dim); margin:14px 0 8px;
+    padding-top:11px; border-top:1px solid var(--line); }
+  .covkey { display:flex; flex-wrap:wrap; gap:5px 13px; margin-top:9px;
+    font-size:0.72rem; color:var(--faint); }
+  .covkey span { display:inline-flex; align-items:center; gap:5px; }
+  .covkey i { width:9px; height:9px; border-radius:2px; flex:none; }
+  @media (max-width:520px) {
+    .covrow { grid-template-columns:5.2em 1fr; row-gap:2px; }
+    .covrow .n { grid-column:2; text-align:left; }
+  }
+
+  /* 吸顶的区块导航。横向可滚，**自身滚动不撑宽页面**——页面级横向溢出是
+     这一页反复钉住的一条契约。 */
+  .secnav { position:sticky; top:0; z-index:30; display:flex; gap:6px;
+    overflow-x:auto; overflow-y:hidden; scrollbar-width:none;
+    padding:8px 2px; margin:0 0 4px;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line); }
+  .secnav::-webkit-scrollbar { display:none; }
+  .secnav a { flex:0 0 auto; font-size:.72rem; padding:5px 11px; border-radius:999px;
+    text-decoration:none; color:var(--dim); border:1px solid var(--line);
+    white-space:nowrap; transition:color .15s, border-color .15s; }
+  .secnav a:hover { color:var(--text); border-color:var(--dim); }
+  .secnav a.on { color:var(--text); border-color:var(--accent);
+    background:color-mix(in srgb, var(--accent) 14%, transparent); }
+  /* 锚点跳转时把吸顶条的高度让出来，否则标题会被压在导航底下。 */
+  .sec-h, .sechead, .notice { scroll-margin-top:52px; }
+  @media (max-width:560px) {
+    .secnav { padding:7px 2px; gap:5px; }
+    .secnav a { font-size:.68rem; padding:4px 9px; }
+  }
+  .sec-h { display:flex; align-items:baseline; gap:10px; margin:22px 2px 10px; flex-wrap:wrap; }
+  .sec-h h2 { font-size:1.05rem; font-weight:800; }
+  .sec-h span { font-size:0.76rem; color:var(--faint); }
+
+  /* ── 环节带：细分构成是主体，不藏在点击后面 ────────────────────────
+     上一版把 SIC 细分放在展开面板里，不点开就只看得到六个数字，
+     「中间制造 142 家」还是说不出这 142 家是什么。现在每个环节的构成默认铺开，
+     整页从上到下读下来就是一张细分产业链图。
+
+     链的顺序没有丢：实物四段之间保留向下的箭头，链外两段用虚线另起一组。
+     箭头细、无标注、不按粗细编码——站内没有环节到环节的关系数据。 */
+  .bands { display:flex; flex-direction:column; gap:0; }
+  .band { border:1px solid var(--line); border-radius:16px; overflow:hidden;
+    background:linear-gradient(180deg, rgba(22,27,37,.94), rgba(16,20,28,.94)); }
+  .band + .band { margin-top:10px; }
+  .band.open { border-color:var(--accent); }
+  .bandhd { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+    width:100%; text-align:left; cursor:pointer; color:inherit; font:inherit;
+    background:none; border:0; border-left:3px solid transparent;
+    padding:13px 15px 11px; min-height:44px; }
+  .bandhd:hover { background:rgba(255,255,255,0.03); }
+  .bandhd .nm { font-weight:700; font-size:1.02rem; letter-spacing:-0.01em;
+    white-space:nowrap; }
+  .bandhd .en { font-family:var(--mono); font-size:0.66rem; color:var(--faint);
+    letter-spacing:0.04em; }
+  .bandhd .spacer { flex:1; min-width:12px; }
+  .bandhd .n { font-family:var(--mono); font-size:1.12rem; font-weight:600;
+    font-variant-numeric:tabular-nums; }
+  .bandhd .n s { text-decoration:none; font-size:0.72rem; color:var(--faint);
+    margin-left:2px; }
+  .bandhd .mc { font-family:var(--mono); font-size:0.74rem; color:var(--faint);
+    font-variant-numeric:tabular-nums; }
+  /* 市值合计不含无站内报价的公司时打个星，鼠标悬停说明差在哪几家 */
+  .bandhd .mc s { text-decoration:none; color:var(--warn); margin-left:1px; }
+  /* 这一段有多少家带出处关系。绿色=有，灰色=一家都没有——**不同的 0 要看得出
+     是不同的 0**，具体成因在 title 里逐档写清。 */
+  .bandhd .bandcov { font-family:var(--mono); font-size:0.74rem; margin-left:9px;
+    white-space:nowrap; cursor:help; }
+  .bandhd .bandcov b { color:var(--up); font-weight:600; }
+  .bandhd .bandcov s { text-decoration:none; color:var(--faint); }
+  .bandhd .bandcov.zero b { color:var(--faint); }
+  .bandhd .pc { font-family:var(--mono); font-size:0.82rem; font-weight:700;
+    font-variant-numeric:tabular-nums; }
+  .banddesc { padding:0 15px 11px; font-size:0.74rem; color:var(--dim);
+    margin-top:-4px; }
+  /* 「为什么这一段没覆盖」。必须**看得见**——此前只在 hover 提示里，
+     手机上根本读不到。左侧一道竖线把它与环节说明区分开：上一行说这一段
+     是什么，这一行说这一段的数据到哪儿为止。 */
+  .bandwhy { margin:0 15px 12px; padding:7px 10px; font-size:0.72rem;
+    line-height:1.65; color:var(--dim); border-left:2px solid var(--faint);
+    background:rgba(255,255,255,.025); border-radius:0 5px 5px 0; }
+
+  /* 环节之间的顺序箭头。只在实物链四段之间画。 */
+  .link { display:flex; justify-content:center; align-items:center;
+    height:22px; color:var(--faint); }
+  .link::before { content:""; width:1px; height:11px; background:currentColor; }
+  .link::after { content:""; width:5px; height:5px; margin-top:-3px;
+    border-right:1.2px solid currentColor; border-bottom:1.2px solid currentColor;
+    transform:rotate(45deg); }
+  .chain-note { font-size:0.74rem; color:var(--faint); margin:0 2px 12px;
+    line-height:1.55; }
+
+/* 横轴选择条。每个 chip 一行三段：链名／家数／已抽到的关系条数——
+   最后一段是这条链现在有多少真数据，没有就不显示，不用 0 占位假装有。 */
+.chainpick { margin:0 0 14px; }
+.chainpick .picktop {
+  display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;
+}
+.chainpick .pickhint { font-size:11px; color:var(--faint); }
+/* 一层一行：左边层号，右边这一层的链。越靠上越上游，这是整页最直接的一句话。 */
+.chainpick .picklv { display:flex; align-items:flex-start; gap:10px; padding:3px 0; }
+.chainpick .picklv + .picklv { border-top:1px solid rgba(127,127,127,0.10); }
+.chainpick .picklv.cross { border-top:1px dashed var(--line); margin-top:4px; padding-top:7px; }
+.chainpick .lv {
+  flex:none; width:52px; padding-top:7px; font-size:11px; color:var(--faint);
+  font-variant-numeric:tabular-nums; line-height:1.3;
+}
+.chainpick .lv s { display:block; text-decoration:none; font-size:9px; opacity:.8; }
+.chainpick .lvchips { display:flex; flex-wrap:wrap; gap:6px; flex:1 1 auto; min-width:0; }
+.chainpick .chip {
+  display:flex; align-items:baseline; gap:6px; cursor:pointer;
+  padding:6px 10px; border-radius:999px; font:inherit; text-align:left;
+  border:1px solid var(--line); background:transparent; color:inherit;
+  transition:border-color .15s, background .15s;
+}
+.chainpick .chip:hover { border-color:var(--text); }
+.chainpick .chip.on { background:rgba(127,127,127,0.16); border-color:currentColor; }
+.chainpick .chip .cl { font-size:13px; }
+.chainpick .chip .cc { font-size:11px; color:var(--dim); }
+.chainpick .chip .ce { font-size:11px; color:var(--faint); }
+
+/* 链间上下游。刻意做成**虚线框**：与实测数据的实线卡片一眼分得开。
+   右上角那枚「产业结构框架」标签不是装饰，是这一块的身份声明。 */
+.chainflow {
+  border:1px dashed var(--line); border-radius:10px;
+  padding:12px 14px; margin:0 0 16px;
+}
+.chainflow .cfhd { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+
+/* 完整路径。此前只画一跳，读者看得到「化工 → 半导体」，看不到
+   「石油 → 化工 → 半导体」这条路径本身——而横轴的价值恰恰在路径上。
+   宽表在自身容器里横向滚动，页面 body 绝不横向溢出。 */
+.chainflow .lineage { margin:2px 0 12px; }
+.chainflow .lncap { font-size:.7rem; color:var(--dim); line-height:1.55; margin-bottom:9px; }
+.chainflow .lnstrip { display:flex; gap:9px; align-items:flex-start;
+  overflow-x:auto; padding-bottom:6px; }
+.chainflow .lncol { display:flex; flex-direction:column; gap:4px; flex:0 0 auto;
+  min-width:96px; max-width:190px; padding:7px 8px; border-radius:9px;
+  border:1px dashed var(--line); }
+.chainflow .lncol.self { border-style:solid; border-color:rgba(74,144,217,.5);
+  background:rgba(74,144,217,.08); }
+/* 使能层单列一格：它们不参与分层（横跨所有层），但入边是真的，不能丢。 */
+.chainflow .lncol.cross { border-color:rgba(228,181,61,.35); }
+.chainflow .lncol.cross .lv { color:var(--warn); }
+.chainflow .lncol .lv { font-family:var(--mono); font-size:.6rem; color:var(--faint);
+  letter-spacing:.4px; }
+.chainflow .lnchip { display:flex; align-items:baseline; gap:5px; text-decoration:none;
+  font-size:.72rem; color:var(--text); padding:3px 5px; border-radius:5px;
+  background:rgba(255,255,255,.03); }
+a.lnchip:hover { background:rgba(74,144,217,.16); }
+.chainflow .lnchip.me { font-weight:700; background:transparent; }
+.chainflow .lnchip s { text-decoration:none; font-size:.62rem; color:var(--faint);
+  font-family:var(--mono); margin-left:auto; }
+.chainflow .cfhd b { font-size:14px; }
+.chainflow .cfhd .tag {
+  font-size:11px; color:var(--faint);
+  border:1px dashed var(--line); border-radius:999px; padding:1px 7px;
+}
+.chainflow .cfcol { margin:8px 0 0; }
+.chainflow .cfcap { font-size:11px; color:var(--dim); margin-bottom:4px; }
+.chainflow .flowlink {
+  display:flex; align-items:baseline; gap:8px; width:100%;
+  padding:4px 6px; border:0; background:transparent; color:inherit;
+  font:inherit; text-align:left; cursor:pointer; border-radius:6px;
+}
+.chainflow .flowlink:hover { background:rgba(127,127,127,0.12); }
+.chainflow .flowlink .ar { color:var(--faint); flex:none; }
+.chainflow .flowlink .nm { font-size:13px; flex:none; }
+.chainflow .flowlink .fl { font-size:11px; color:var(--dim); }
+/* 逆向边：回收料返上游、设备与芯片互供。标出来，否则读者以为分层排错了。 */
+.chainflow .flowlink .bk {
+  font-size:10px; color:var(--warn); border:1px solid currentColor;
+  border-radius:999px; padding:0 5px; flex:none;
+}
+.chainflow .flowlink.back .ar { color:var(--warn); }
+.chainflow .cfnote { font-size:11px; color:var(--dim); margin:4px 0; }
+.chainflow .cfwarn {
+  font-size:11px; color:var(--faint); line-height:1.6;
+  margin-top:10px; padding-top:8px; border-top:1px dashed var(--line);
+}
+
+/* 上游集中度。条的长度就是家数，与「真实流向」同一套语义：宽度有实测含义。 */
+.concsec { padding:14px 16px; margin:0 0 18px; }
+/* 国别暴露：与集中度那块同一套读法，读者不必学两种界面。
+   两条数值列——左边是暴露家数（宽度按它画），右边是关系条数。 */
+.expsec { padding:14px 16px; margin:0 0 18px; }
+.expsec .lead { font-size:13px; margin-bottom:10px; }
+.exprow { display:flex; align-items:center; gap:8px; padding:3px 0; }
+.exprow .rk { width:22px; flex:none; font-size:11px; color:var(--faint);
+  font-family:var(--mono); text-align:right; }
+.exprow .nm { flex:0 1 26%; min-width:0; font-size:12px; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap; }
+/* 条用 flex-basis 画比例，**必须允许收缩**（flex-shrink 不为 0），
+   否则各列固定宽度加起来比容器宽，整页横向溢出 4px。 */
+.exprow .bar { flex:1 1 20px; height:9px; border-radius:3px; min-width:12px;
+  background:linear-gradient(90deg, rgba(74,144,217,.85), rgba(74,144,217,.45)); }
+.exprow .n { flex:0 1 auto; min-width:78px; text-align:right; font-family:var(--mono);
+  font-size:11px; color:var(--text); white-space:nowrap; }
+.exprow .n s { text-decoration:none; color:var(--faint); }
+.exprow .ed { flex:0 1 auto; min-width:66px; text-align:right; font-family:var(--mono);
+  font-size:11px; color:var(--dim); white-space:nowrap; }
+/* 「这张图在哪儿断掉」：该国有多少冶炼厂、其中几家点得进去。
+   与上面几列同样**允许收缩**——固定宽度加起来撑破容器是这一行栽过的跟头。 */
+.exprow .rch { flex:0 1 auto; min-width:96px; text-align:right; font-family:var(--mono);
+  font-size:11px; color:var(--faint); white-space:nowrap; }
+.exprow .rch s { text-decoration:none; }
+/* 受涵盖国家的标记。**这一格不是装饰**：它说明该行为什么值得看第二眼。
+   用文字而不是纯色块——颜色对色觉障碍读者与灰度打印都会消失。 */
+/* 名单变动行。新增用涨色、消失用跌色——与站内行情同一套语义，读者不必
+   学第二套配色。数字右对齐、等宽，方便竖着比。 */
+.hrow { display:flex; align-items:center; gap:8px; padding:6px 0;
+  border-bottom:1px solid var(--line); }
+.hrow:last-child { border-bottom:0; }
+.hrow .nm { flex:0 1 26%; min-width:0; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap; }
+.hrow .yr { flex:0 0 auto; font-size:10px; color:var(--faint);
+  font-family:var(--mono); white-space:nowrap; }
+.hrow .ad, .hrow .dr, .hrow .rt { flex:0 1 auto; min-width:74px; text-align:right;
+  font-family:var(--mono); font-size:11px; white-space:nowrap; }
+.hrow .ad { color:var(--up); }
+.hrow .dr { color:var(--down); }
+.hrow .rt { color:var(--dim); }
+.hrow s { text-decoration:none; color:var(--faint); }
+@media (max-width:560px) {
+  .hrow { flex-wrap:wrap; gap:5px; }
+  .hrow .nm { flex:0 1 34%; font-size:11px; }
+  .hrow .ad, .hrow .dr, .hrow .rt { min-width:56px; font-size:10px; }
+}
+/* 矿种行。四行而已，但每行要并排放几个读数，窄屏靠缩字号与换行，
+   不隐藏——隐藏了断言就会读到读者看不见的数。 */
+.mrow { display:flex; align-items:center; gap:8px; padding:6px 0;
+  border-bottom:1px solid var(--line); }
+.mrow:last-child { border-bottom:0; }
+.mrow .nm { flex:0 0 auto; min-width:44px; font-weight:600; }
+.mrow .bar { flex:1 1 auto; height:6px; border-radius:3px; background:var(--line);
+  position:relative; overflow:hidden; min-width:24px; }
+.mrow .bar i { position:absolute; left:0; top:0; bottom:0; border-radius:3px;
+  background:var(--accent); display:block; }
+.mrow .n, .mrow .hh, .mrow .cc2 { flex:0 1 auto; min-width:88px; text-align:right;
+  font-family:var(--mono); font-size:11px; color:var(--dim); white-space:nowrap; }
+.mrow .cc2 { color:var(--warn); }
+.mrow s { text-decoration:none; color:var(--faint); }
+.simnote { margin:10px 0 0; padding:9px 11px; border-radius:8px;
+  background:rgba(228,181,61,.08); border:1px solid rgba(228,181,61,.22);
+  font-size:12px; line-height:1.65; color:var(--dim); }
+@media (max-width:560px) {
+  .mrow { flex-wrap:wrap; gap:6px; }
+  .mrow .nm { flex:0 0 40px; font-size:12px; }
+  .mrow .bar { flex:1 1 60px; }
+  .mrow .n, .mrow .hh, .mrow .cc2 { min-width:64px; font-size:10px; }
+}
+.exprow .cv, .cvrow .cv { flex:0 0 auto; font-size:10px; padding:1px 5px;
+  border-radius:4px; background:rgba(228,181,61,.15);
+  color:var(--warn); white-space:nowrap; }
+.cvrow { display:flex; align-items:center; gap:8px; padding:5px 0;
+  border-bottom:1px solid var(--line); }
+.cvrow:last-child { border-bottom:0; }
+.cvrow .nm { flex:0 1 26%; min-width:0; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap; }
+.cvrow .n, .cvrow .ed, .cvrow .sm { flex:0 1 auto; min-width:78px; text-align:right;
+  font-family:var(--mono); font-size:11px; color:var(--dim); white-space:nowrap; }
+.cvrow .sm { color:var(--faint); }
+.cvrow s { text-decoration:none; color:var(--faint); }
+@media (max-width:560px) {
+  .cvrow .nm { flex:0 1 30%; font-size:11px; }
+  .cvrow .n, .cvrow .ed, .cvrow .sm { min-width:58px; font-size:10px; }
+  .exprow .cv, .cvrow .cv { font-size:9px; padding:1px 3px; }
+}
+@media (max-width:560px) {
+  /* 窄屏收窄各列，**但不隐藏「条数」**。
+     隐藏它会让断言读到读者看不见的数（textContent 对 display:none 照样返回），
+     那种断言等于没有——这一页的规矩是「画的是不是那个数」，
+     前提是它真的画出来了。 */
+  .exprow .nm { flex:0 1 30%; font-size:11px; }
+  .exprow .n { min-width:62px; font-size:10px; }
+  .exprow .ed { min-width:52px; font-size:10px; }
+  /* 同样只缩字号、不隐藏——隐藏了断言就会读到读者看不见的数。 */
+  .exprow .rch { min-width:74px; font-size:10px; }
+  .exprow .rk { display:none; }
+}
+.concsec .lead { font-size:13px; margin-bottom:10px; }
+.concrow { display:flex; align-items:center; gap:8px; padding:3px 0; }
+/* 咽喉点反查：点开看是哪 N 家申报人。语义仍止于「共同列入」。 */
+.concrow .expand { appearance:none; font:inherit; font-size:11px; cursor:pointer;
+  color:var(--accent); background:transparent; border:0; padding:4px 6px;
+  min-height:30px; white-space:nowrap; flex:none; }
+.concrow .expand:hover { text-decoration:underline; }
+.concfilers { margin:2px 0 10px 26px; padding:9px 11px; border-radius:9px;
+  border:1px solid var(--line); background:rgba(255,255,255,.02); }
+.concfilers .cf-cap { font-size:11px; color:var(--dim); line-height:1.55;
+  margin-bottom:8px; }
+.concfilers .cf-chips { display:flex; flex-wrap:wrap; gap:5px; }
+.concfilers .cf-chip { display:inline-flex; align-items:baseline; gap:5px;
+  text-decoration:none; font-size:12px; color:var(--text);
+  background:rgba(255,255,255,.04); border-radius:6px; padding:3px 8px; }
+.concfilers .cf-chip:hover { background:rgba(74,144,217,.18); }
+.concfilers .cf-chip s { text-decoration:none; font-family:var(--mono);
+  font-size:10px; color:var(--faint); }
+.concrow .rk { width:22px; flex:none; font-size:11px; color:var(--faint);
+  text-align:right; font-variant-numeric:tabular-nums; }
+.concrow .nm { flex:0 0 34%; min-width:0; font-size:12px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+/* 同名两条的标记。不合并是登记表的规矩，但要让读者看得出为什么有两行。 */
+.concrow .nm s { text-decoration:none; font-size:9px; color:var(--warn);
+  border:1px solid currentColor; border-radius:999px; padding:0 5px; margin-left:6px; }
+.concrow .ct { flex:none; font-size:11px; color:var(--dim); width:74px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.concrow .bar { flex:1 1 auto; height:9px; border-radius:3px; min-width:20px;
+  background:linear-gradient(90deg, var(--s3), var(--s2)); }
+.concrow .n { flex:none; font-size:11px; width:52px; text-align:right;
+  font-variant-numeric:tabular-nums; }
+.concsec .foot2 { font-size:11px; color:var(--faint); line-height:1.6;
+  margin-top:10px; padding-top:9px; border-top:1px solid var(--line); }
+@media (max-width:560px) {
+  .concrow { flex-wrap:wrap; gap:2px 6px; }
+  .concrow .nm { flex:1 1 auto; }
+  .concrow .ct { width:auto; }
+  .concrow .bar { flex-basis:100%; order:9; }
+}
+@media (max-width:560px) {
+  .chainpick .picklv { flex-wrap:wrap; gap:2px; }
+  .chainpick .lv { width:auto; padding-top:2px; }
+  .chainpick .lv s { display:inline; margin-left:5px; }
+  .chainpick .lvchips { flex-basis:100%; }
+}
+@media (max-width:640px) {
+  .chainflow .flowlink { flex-wrap:wrap; gap:2px 8px; }
+  .chainflow .flowlink .fl { flex-basis:100%; padding-left:18px; }
+}
+/* 筛链之后没覆盖到的环节：画出来但压暗。藏起来会让人以为这条链就这么短。 */
+.band.empty { opacity:.42; }
+.band.empty .bandhd { cursor:default; }
+  .offlabel { display:flex; align-items:center; gap:9px; margin:16px 2px 11px;
+    font-family:var(--mono); font-size:0.68rem; color:var(--faint);
+    letter-spacing:0.1em; }
+  .offlabel::after { content:""; flex:1; height:1px;
+    border-top:1px dashed rgba(255,255,255,0.16); }
+  .up { color:var(--up); } .down { color:var(--down); } .flat { color:var(--dim); }
+
+  /* ── 环节的细分构成：SIC 两位大类 ──────────────────────────────
+     「中间制造 142 家」说不出这 142 家是什么。按 SEC 官方 SIC 行业码展开，
+     宽度即家数，同一环节内部的轻重立刻分得开。点一格筛出该组公司。
+     分组只是把 SEC 的码换成中文名，不改归属，逐家可核验。 */
+  .segwrap { padding:0 15px 14px; }
+  .segrow { display:flex; gap:3px; }
+  /* 宽度按家数，但给一个下限：最小的那几格按比例只有几十像素，标签会被切成
+     「金…」「造…」，切掉的字是缺陷。比例略被压缩只是取整误差，
+     而且每格都写着确切家数，数字本身从不含糊。 */
+  .seg { border-radius:7px; padding:9px 10px 10px; min-width:112px; overflow:hidden;
+    border:1px solid transparent; cursor:pointer; text-align:left;
+    color:inherit; font:inherit; min-height:44px;
+    transition:border-color .16s, background-color .16s; }
+  .seg:hover { border-color:rgba(255,255,255,0.28); }
+  .seg[aria-pressed="true"] { border-color:var(--accent); }
+  .seg .sn { font-size:0.78rem; font-weight:600; white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis; display:block; }
+  .seg .sc { font-family:var(--mono); font-size:0.68rem; opacity:0.75;
+    font-variant-numeric:tabular-nums; display:block; margin-top:2px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .segwrap .rest { font-size:0.72rem; color:var(--faint); margin-top:9px; }
+  .segwrap .perf2 { display:flex; gap:16px; flex-wrap:wrap; margin-top:11px;
+    font-size:0.72rem; color:var(--faint); }
+  .segwrap .perf2 b { font-family:var(--mono); font-size:0.86rem; font-weight:700;
+    font-variant-numeric:tabular-nums; margin-left:5px; }
+  /* 宽度不够时所有格子都会被压到 min-width，比例编码**完全失效**——
+     六个等宽的条形什么都没说，长标签还被切。与其留一张失真的图，
+     不如换成可读的两列，让每格里的家数文字承担量级。
+     阈值取 860px：六格 × 112px 下限 + 间距，再加面板内边距，
+     低于这个宽度就排不下一条还算得上比例的条。 */
+  @media (max-width:860px) {
+    .segrow { flex-wrap:wrap; }
+    .seg { flex:1 1 44% !important; }
+  }
+
+  /* ── 展开的公司表：开在它所属的那个环节里面 ──────────────────────
+     上一版所有环节共用页面底部一块面板，点了哪个都跳到同一处；
+     现在表直接开在那一格下面，视线不用来回跑。 */
+  .panel { padding:0; overflow:hidden; border-top:1px solid var(--line); }
+  .panel[hidden] { display:none !important; }
+  .panel .cap { padding:11px 15px; border-bottom:1px solid var(--line);
+    font-size:0.8rem; color:var(--dim); }
+  .panel .cap b { color:var(--text); }
+  .tablewrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  table { width:100%; border-collapse:collapse; font-size:0.83rem; }
+  th, td { padding:9px 12px; text-align:left; white-space:nowrap; }
+  th { color:var(--faint); font-weight:600; font-size:0.72rem; letter-spacing:.4px;
+    border-bottom:1px solid var(--line); position:sticky; top:0;
+    background:rgba(18,23,32,.98); }
+  tbody tr { border-bottom:1px solid rgba(255,255,255,0.045); }
+  tbody tr:last-child { border-bottom:none; }
+  td.num { font-family:var(--mono); font-variant-numeric:tabular-nums; text-align:right; }
+  td.nm { white-space:normal; min-width:150px; }
+  td.nm a.colink { color:var(--text); text-decoration:none;
+    display:inline-block; min-height:24px; }
+  td.nm a.colink:hover { color:var(--accent); text-decoration:underline; }
+  td.nm small { color:var(--faint); display:block; font-size:0.72rem; }
+  td.basis { white-space:normal; color:var(--dim); font-size:0.74rem; min-width:200px; max-width:340px; }
+  td.basis a { color:var(--accent); text-decoration:none; }
+  td.basis a:hover { text-decoration:underline; }
+  .more { padding:11px 15px; color:var(--faint); font-size:0.78rem; border-top:1px solid var(--line); }
+
+  /* ── 真实流向：环节 → 冶炼厂所在国别 ──────────────────────────
+     **全站唯一一张带子宽度有实测含义的图。** 价值链那条链是定义顺序，
+     没有环节到环节的关系数据；真正逐条挂着申报出处的只有「公司 → 冶炼厂」，
+     所以能画成流量的只有这一层。 */
+  .flowsec { padding:16px 18px 18px; margin-top:10px; }
+  .flowsec .lead { font-size:0.8rem; color:var(--dim); margin-bottom:4px; }
+  .flowsec .sub2 { font-size:0.74rem; color:var(--faint); margin-bottom:14px; }
+  .flowscroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .flowscroll svg { display:block; min-width:640px; }
+  .flowkey { display:flex; gap:8px 18px; flex-wrap:wrap; margin-top:12px;
+    font-size:0.72rem; color:var(--faint); }
+  .flowkey span { display:inline-flex; align-items:center; gap:6px; }
+  .flowkey i { width:9px; height:9px; border-radius:2px; flex:none;
+    background:#2b3441; }
+
+  /* ── 方法与来源 ── */
+  details.meth { margin-top:18px; padding:0; }
+  details.meth summary { padding:13px 16px; cursor:pointer; font-weight:700; font-size:0.92rem;
+    list-style:none; min-height:44px; display:flex; align-items:center; gap:8px; }
+  details.meth summary::-webkit-details-marker { display:none; }
+  details.meth summary::before { content:"▸"; color:var(--accent); transition:transform .18s; }
+  details.meth[open] summary::before { transform:rotate(90deg); }
+  details.meth .body { padding:0 16px 15px; font-size:0.82rem; color:var(--dim); }
+  details.meth .body p + p { margin-top:8px; }
+  details.meth .body b { color:var(--text); }
+  details.meth .body ul { margin:7px 0 0 18px; }
+  details.meth .body li { margin-bottom:4px; }
+
+  .state { padding:26px 16px; text-align:center; color:var(--dim); font-size:0.9rem; }
+  .state.err { color:#f3a49f; }
+
+  footer { margin-top:26px; text-align:center; color:var(--faint); font-size:0.75rem; line-height:1.7; }
+  footer a { color:var(--dim); text-decoration:none; }
+
+  @media (max-width:900px) { .chain { grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px) {
+    .page { padding:14px 12px 60px; }
+    .title h1 { font-size:1.42rem; }
+    th, td { padding:8px 10px; }
+    td.basis { max-width:none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation:none !important; transition:none !important; }
+  }
+  @media (prefers-contrast: more) {
+    :root { --line:rgba(255,255,255,0.28); --dim:#c2ccd8; --faint:#93a0b2; }
+  }
+/* ==== 浅色主题兜底（自动生成 · scripts/theme/light_overrides.py · 勿手改）==== */
+html[data-theme="ft"], html[data-theme="paper"] { --s1: #946435; --s2: #92652c; --s3: #2770bc; --s4: #5265ce; --s5: #8853c8; --s6: #297884; --s7: #2d7c59; --s8: #3f7b43; --e1: #8d681b; --e2: #4f6dae; --e3: #626f81; --e4: #5d7552; }
+html[data-theme="ft"] .title h1, html[data-theme="paper"] .title h1 { background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; color: var(--ink); }
+html[data-theme="ft"] .lookup input, html[data-theme="paper"] .lookup input { background: var(--tint-2); }
+html[data-theme="ft"] .qlist, html[data-theme="paper"] .qlist { background: var(--panel2); box-shadow: 0 24px 60px -20px rgba(120,92,64,0.20); }
+html[data-theme="ft"] .status, html[data-theme="paper"] .status { background: var(--tint-1); }
+html[data-theme="ft"] .glass, html[data-theme="paper"] .glass { background: linear-gradient(180deg, var(--panel2), var(--panel2)); box-shadow: 0 24px 60px -34px rgba(120,92,64,0.20), inset 0 1px 0 rgba(255,255,255,.05); }
+html[data-theme="ft"] .notice h2, html[data-theme="paper"] .notice h2 { color: #8e6813; }
+html[data-theme="ft"] .cov > summary:hover, html[data-theme="paper"] .cov > summary:hover { background: var(--tint-1); }
+html[data-theme="ft"] .covage, html[data-theme="paper"] .covage { background: var(--tint-1); }
+html[data-theme="ft"] .covrow .t, html[data-theme="paper"] .covrow .t { background: var(--tint-3); }
+html[data-theme="ft"] .band, html[data-theme="paper"] .band { background: linear-gradient(180deg, var(--panel2), var(--panel2)); }
+html[data-theme="ft"] .bandhd:hover, html[data-theme="paper"] .bandhd:hover { background: var(--tint-1); }
+html[data-theme="ft"] .bandwhy, html[data-theme="paper"] .bandwhy { background: var(--tint-1); }
+html[data-theme="ft"] .chainflow .lnchip, html[data-theme="paper"] .chainflow .lnchip { background: var(--tint-1); }
+html[data-theme="ft"] .concfilers, html[data-theme="paper"] .concfilers { background: var(--tint-1); }
+html[data-theme="ft"] .concfilers .cf-chip, html[data-theme="paper"] .concfilers .cf-chip { background: var(--tint-2); }
+html[data-theme="ft"] .offlabel::after, html[data-theme="paper"] .offlabel::after { border-top: 1px dashed var(--line-strong); }
+html[data-theme="ft"] .seg:hover, html[data-theme="paper"] .seg:hover { border-color: var(--line-strong); }
+html[data-theme="ft"] th, html[data-theme="paper"] th { background: var(--panel2); }
+html[data-theme="ft"] tbody tr, html[data-theme="paper"] tbody tr { border-bottom: 1px solid var(--line); }
+html[data-theme="ft"] .flowkey i, html[data-theme="paper"] .flowkey i { background: var(--panel2); }
+html[data-theme="ft"] .state.err, html[data-theme="paper"] .state.err { color: #c83b32; }
+/* ==== 浅色主题兜底 结束 ==== */
+</style>
 </head>
-<body><main class="box"><h1>全球产业链已迁移至 Ooglex Pro</h1><p>正在进入权限版。FREE 可查看预览，PRO 登录后读取完整私有数据。</p><p><a href="/pro/supply-chain/">立即进入</a></p></main></body>
+<body>
+<div class="page">
+  <header><a href="/">← 返回首页</a></header>
+
+  <div class="title">
+    <h1>全球产业链</h1>
+    <p id="subtitle">Global Supply Chain</p>
+    <div class="statusrow" id="statusrow"></div>
+    <!-- 公司查找。642 家而页面上零个输入框，要打开某一家得先猜它在 12 个环节的
+         哪一个、展开后在几十家里翻——专业终端都有代码／名称查找，这是硬伤。 -->
+    <div class="lookup">
+      <input id="q" type="search" autocomplete="off" spellcheck="false"
+             placeholder="查公司：代码、中文名或英文名（如 TSM / 台积电 / Apple）"
+             aria-label="查找公司" aria-controls="qlist" aria-expanded="false"
+             role="combobox">
+      <div id="qlist" class="qlist" role="listbox" hidden></div>
+    </div>
+  </div>
+
+  <!-- **区块导航。** 实测：手机上这一页 15.2 屏，产业链骨架占 1~9.1 屏，
+       五个分析面板全在它后面——读者要滚过 8 屏目录才看得到第一个风险读数，
+       而「受涵盖国家」（这套数据的法定理由）落在 14.3 屏处，等于不存在。
+       这几轮我一直在往下面加面板，等于一直往读者看不见的地方加东西。
+       清单按**渲染后实际可见的区块**现生成，不写死——写死的清单在区块增减时
+       会指向空处，与首屏副标题栽的是同一类跟头。 -->
+  <nav class="secnav" id="secnav" hidden aria-label="页内区块导航"></nav>
+
+  <section class="glass notice" aria-label="数据范围声明">
+    <h2 data-nav="数据范围">关于本页数据范围</h2>
+    <p id="notice-coverage">本板块只收录有公开出处的信息，<b>不是完整供应链</b>。</p>
+    <p id="notice-edges"></p>
+    <p id="notice-basis"></p>
+  </section>
+
+  <!-- 按板块拆开的覆盖情况。缺口的成因必须按板块讲清楚：金融 0/70 与科技 34/84
+       是两种不同的 0，前者是数据源的适用范围决定的，后者是还没抓到。 -->
+  <!-- 覆盖率明细收进可展开面板。此前它占 1,329px（全页 20%）且排在**所有**
+       产业链内容之前，读者要滚过两屏才看得到这个板块真正的产品——专业终端的
+       口径是数据在前、方法与口径按需展开。
+       **收起不等于藏起来**：summary 那一行照实印关键数字，「不是完整供应链」
+       那句声明留在上面的 notice 里始终可见（那是真实性要求，不是版式偏好），
+       每个环节卡片上也就地写了自己那一段的覆盖。 -->
+  <details class="glass cov" id="cov" hidden aria-label="按板块的覆盖情况">
+    <summary><h2 data-nav="覆盖缺口">为什么有的公司有数据、有的没有</h2><span id="cov-sum"></span></summary>
+      <p id="cov-age" class="covage" hidden></p>
+    <p id="cov-lead"></p>
+    <div id="cov-rows"></div>
+    <!-- 第二个池按国别拆。它们没有站内板块分类，全塞进「未分类」等于一个
+         147 家的黑箱；按国别拆至少看得出这批公司来自哪里、哪一档缺得多。 -->
+    <p class="cov-sub" id="cov-country-lead" hidden></p>
+    <div id="cov-country-rows"></div>
+    <!-- 第三个池：报 10-K 的美国本土发行人。板块与国别两样都没有——
+         站内公司榜只收标普成分股，而它们又几乎全是美国公司，按国别拆只会
+         得到一行「美国 N 家」。按 SIC 大类拆：那是它们唯一有的分类轴，
+         也是本板块全程在用的那一套。不单列的话这几千家会掉进上面那栏的
+         「未分类」，成为一个比 147 家大得多的黑箱。 -->
+    <p class="cov-sub" id="cov-sic-lead" hidden></p>
+    <div id="cov-sic-rows"></div>
+    <!-- 规模轴。上面三栏是把全池切成互不重叠的三份；这一栏是**同一批公司
+         换一把尺子量**，它自己就覆盖全池。站内报价只有标普那 495 家（8%），
+         而 SEC 的申报人分档 100% 覆盖，是这个板块唯一能横跨三池比较的规模轴。 -->
+    <p class="cov-sub" id="cov-cat-lead" hidden></p>
+    <div id="cov-cat-rows"></div>
+    <p id="cov-foot"></p>
+  </details>
+
+  <div class="sec-h">
+    <h2>细分产业链</h2>
+    <span id="chain-sub">按 SEC 行业码（SIC）展开，宽度即家数 · 点一格只看该组公司</span>
+  </div>
+  <!-- 横轴。纵向的 12 个环节回答「在链上的哪一层」，这一行回答「在哪条链上」。
+       只分层不分链的话，半导体设备和农机会落在同一格里看着像邻居，
+       其实一辈子不发生关系。归属来自公司申报的 SIC 码，不按公司名分派。 -->
+  <div class="chainpick" id="chainpick" hidden aria-label="按一级产业链筛选"></div>
+  <!-- 同一个 SIC 大类会在多个环节里出现（化工既有工业气体也有成药），
+       这不是重复，是行业本身跨链。不说明的话读者会当成 bug。 -->
+  <p class="chain-note" id="chain-note"></p>
+  <!-- 链间上下游。单独一块、单独的样式、单独一句说明：它是产业结构框架，
+       与那两万条能点开原始申报的关系不在同一个视觉层里，也不许被读成同一类。 -->
+  <div class="chainflow" id="chainflow" hidden aria-label="本链的上下游"></div>
+  <div class="bands" id="chain"></div>
+
+  <div class="offlabel">链外环节 · 不在实物流转链条上</div>
+  <div class="bands" id="offchain"></div>
+
+  <div class="sec-h">
+    <h2>真实流向</h2>
+    <span>各环节的公司 → 全球冶炼厂所在国别 · 带子宽度是实测关系条数</span>
+  </div>
+  <section class="glass flowsec" id="flowsec" hidden aria-label="关系流向">
+    <p class="lead" id="flow-lead"></p>
+    <p class="sub2" id="flow-sub"></p>
+    <div class="flowscroll" id="flow-chart"></div>
+    <div class="flowkey" id="flow-key"></div>
+  </section>
+
+  <div class="sec-h">
+    <h2>上游集中度</h2>
+    <span id="conc-sub">同一家冶炼厂被多少家申报人共同列入 · 全部来自申报名单，不含推断</span>
+  </div>
+  <!-- 这是本板块少见的、完全不需要推断的风险读数：名单里数出来的。
+       但分母必须说清是 90 家有名单的公司，不是 495 家。 -->
+  <section class="glass concsec" id="concsec" hidden aria-label="上游集中度">
+    <p class="lead" id="conc-lead"></p>
+    <div id="conc-rows"></div>
+    <p class="foot2" id="conc-foot"></p>
+    <!-- **读懂上面那份榜单的前提。** 「被 56 家共同列入」听着像强信号，
+         实测不是：这些名单本身高度雷同（中位 Jaccard 0.89），重叠大是常态。 -->
+    <p class="simnote" id="sim-note" hidden></p>
+</section>
+
+  <!-- 名单变动。**存量名单只说明现状，变动才说明方向**——华尔街看供应链
+       先看的就是这个。数据来自历年 Form SD（EDGAR 留着历年申报，免费、
+       公共领域）。
+       口径上只有一条要紧：**跨年身份只认 RMI 编号**。七成条目只有名字，
+       按名字比对一个拼写差异就同时造出一条假新增和一条假消失——探针第一版
+       就是这么得出「相邻年换掉整份名单」的。所以页面必须同时印出
+       「追得动的占多少」，否则 17% 会被当成整份名单的换厂率。 -->
+  <div class="sec-h">
+    <h2 data-nav="名单变动">名单变动（历年）</h2>
+    <span id="hist-sub">今年新进了哪座厂、砍掉了哪座 · 跨年只认 RMI 编号</span>
+  </div>
+  <section class="glass histsec" id="histsec" hidden aria-label="历年名单变动">
+    <p class="lead" id="hist-lead"></p>
+    <div id="hist-rows"></div>
+    <p class="foot2" id="hist-foot"></p>
+  </section>
+
+  <!-- 矿种。**§1502 点名的就是这四种矿**（钽锡钨金，业内叫 3TG），
+       而页面此前只在一处 hover 里提过它们。四种矿的上游结构差得很远：
+       按国别看是「中国最大」，按矿种才看得出钨和钽的中国集中度是金的三倍，
+       而冲突地区暴露反而走的是锡和金——两件事在合并的国别榜上都看不出来。 -->
+  <div class="sec-h">
+    <h2>按矿种</h2>
+    <span id="mineral-sub">钽 · 锡 · 钨 · 金 —— §1502 点名的四种矿，结构各不相同</span>
+  </div>
+  <section class="glass minsec" id="minsec" hidden aria-label="按矿种的上游结构">
+    <p class="lead" id="mineral-lead"></p>
+    <div id="mineral-rows"></div>
+    <p class="foot2" id="mineral-foot"></p>
+  </section>
+
+  <div class="sec-h">
+    <h2>国别暴露</h2>
+    <span id="expo-sub">同一个国别被多少家申报人的名单碰到 · 与「条数」是两个不同的读数</span>
+  </div>
+  <!-- **条数与暴露家数经常排出完全不同的名次，只印一个会把风险读反。**
+       印度尼西亚按条数排第 4（6.6%），按暴露家数却排第 1——几乎每一家有名单
+       的公司都沾到印尼的锡。Sankey 画的是环节 → 国别的流量，回答不了
+       「多少家公司沾到某国」，所以单列这一份。 -->
+  <section class="glass expsec" id="expsec" hidden aria-label="按国别的上游暴露">
+    <p class="lead" id="expo-lead"></p>
+    <div id="expo-rows"></div>
+    <p class="foot2" id="expo-foot"></p>
+  </section>
+
+  <!-- **这套数据存在的法定理由。** 没有多德-弗兰克 §1502 就没有 Form SD，
+       也就没有这张图。页面此前一个字没提，读者看到「卢旺达 10 家厂」
+       不知道那正是这套制度盯着的地方。
+       同样要紧的是别把它读成指控：一座厂出现在名单里，说明的是该公司的
+       尽责调查覆盖到了它——那是制度在运转。 -->
+  <div class="sechead">
+    <h2>受涵盖国家</h2>
+    <span id="cov1502-sub">多德-弗兰克 §1502 界定的十国 · 这份披露制度就是为它们立的</span>
+  </div>
+  <section class="glass cov1502" id="cov1502" hidden aria-label="受涵盖国家暴露">
+    <p class="lead" id="cov1502-lead"></p>
+    <div id="cov1502-rows"></div>
+    <p class="foot2" id="cov1502-foot"></p>
+  </section>
+
+  <details class="glass meth">
+    <summary>数据方法与来源</summary>
+    <div class="body" id="method"></div>
+  </details>
+
+  <div class="state" id="state">正在加载产业链数据…</div>
+
+  <footer>
+    <p>数据仅供研究参考，不构成投资建议。</p>
+    <p><a href="/privacy/">隐私政策</a> · <a href="/">Ooglex</a></p>
+  </footer>
+</div>
+<script src="app.js?v=b66af0a8" defer></script>
+</body>
 </html>
