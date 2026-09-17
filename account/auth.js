@@ -32,6 +32,18 @@ function tr(zh, en) {
   return isEnglish() ? en : zh;
 }
 
+function protectFromTranslation(element) {
+  if (!element) return;
+  element.setAttribute('translate', 'no');
+  element.classList.add('notranslate');
+}
+
+function syncDocumentLanguage() {
+  const en = isEnglish();
+  document.documentElement.lang = en ? 'en' : 'zh-CN';
+  document.documentElement.setAttribute('data-lang', en ? 'en' : 'zh');
+}
+
 function tab(login) {
   $('tab-login').classList.toggle('active', login);
   $('tab-signup').classList.toggle('active', !login);
@@ -102,6 +114,8 @@ function applyRecoveryCopy() {
   });
 }
 
+syncDocumentLanguage();
+['user-email', 'user-name', 'user-plan', 'user-status'].forEach((id) => protectFromTranslation($(id)));
 $('tab-login').onclick = () => tab(true);
 $('tab-signup').onclick = () => tab(false);
 applyRecoveryCopy();
@@ -142,10 +156,16 @@ async function boot() {
         if (!result.error) profile = result.data;
       } catch (_) {}
 
-      $('user-email').textContent = user.email || '—';
-      $('user-name').textContent = profile?.display_name || user.user_metadata?.display_name || tr('未设置', 'Not set');
-      $('user-plan').textContent = (profile?.plan || 'free').toUpperCase();
-      $('user-status').textContent = (profile?.status || 'active').toUpperCase();
+      const emailEl = $('user-email');
+      const nameEl = $('user-name');
+      const planEl = $('user-plan');
+      const statusEl = $('user-status');
+      [emailEl, nameEl, planEl, statusEl].forEach(protectFromTranslation);
+
+      emailEl.textContent = user.email || '—';
+      nameEl.textContent = profile?.display_name || user.user_metadata?.display_name || tr('未设置', 'Not set');
+      planEl.textContent = String(profile?.plan || 'free').toUpperCase();
+      statusEl.textContent = String(profile?.status || 'active').toUpperCase();
       show($('user-state'));
     }
 
