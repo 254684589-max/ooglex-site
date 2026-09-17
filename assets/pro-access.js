@@ -3,7 +3,7 @@
 
   var PROJECT_REF = "nwthqkpkvbtilafqpjlf";
   var STORAGE_KEY = "sb-" + PROJECT_REF + "-auth-token";
-  var DEFAULT_API_BASE = "https://pro-api.ooglex.com";
+  var DEFAULT_API_BASE = "https://ooglex-pro-api.zlq6600e.workers.dev";
 
   function apiBase() {
     var meta = document.querySelector('meta[name="ooglex-pro-api"]');
