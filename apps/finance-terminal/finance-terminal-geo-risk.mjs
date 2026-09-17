@@ -5,7 +5,7 @@
    契约：scripts/validate_finance_terminal_geo_risk.mjs（打分边界、缺值不当 0、窗口不足不给分位）
    移动此文件要同时改：上面两个消费方 + 那个契约的路径。 */
 /* 地缘风险定价：读的是「市场为地缘风险付出的价格」，不统计也不解读地缘政治事件本身。
-   四条轴全部来自站内已在日更的公开管道（跨资产行情、宏观雷达、OFR、无一例外），
+   四条轴全部来自站内已在日更的公开管道（跨资产行情、宏观风险监测、OFR、无一例外），
    每条轴都给出原值、映射口径、来源与数据日，任一轴缺失即整卡不给等级——
    不用三条轴的平均去顶替四条轴的结论，也不引入任何AI生成文本作为数据来源。 */
 
@@ -131,19 +131,19 @@ function havenAxis(tracker) {
   };
 }
 
-/* 波动率制度：直接取宏观雷达已经算好的波动率信号分（高=支持风险偏好），
+/* 波动率制度：直接取宏观风险监测已经算好的波动率信号分（高=支持风险偏好），
    风险方向为 100 减该分数——与首屏风险雷达的取向完全一致，不另起一套算法。 */
 function volatilityAxis(macro) {
   const signals = macro && Array.isArray(macro.signals) ? macro.signals : [];
   const signal = signals.filter((item) => item && item.key === "volatility")[0];
   if (!signal || !isNumber(signal.score)) {
-    return { key: "volatility", available: false, reason: "宏观雷达里没有可用的波动率制度信号" };
+    return { key: "volatility", available: false, reason: "宏观风险监测里没有可用的波动率制度信号" };
   }
   return {
     key: "volatility",
     available: true,
     score: clampScore(100 - signal.score),
-    rawText: `宏观雷达波动率信号 ${signal.score}/100（${signal.statusZh || signal.status || "—"}）`,
+    rawText: `宏观风险监测波动率信号 ${signal.score}/100（${signal.statusZh || signal.status || "—"}）`,
     shortText: `波动率信号 ${signal.score}/100`,
     method: "风险方向 = 100 − 信号分，与首屏风险雷达同一取向",
     sourceName: macro.source || "",

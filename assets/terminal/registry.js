@@ -57,7 +57,7 @@
       href:"/apps/heatmap/", data:["companies/sp500.json"], note:"按板块与市值分块着色" },
 
     /* ── 宏观风险 ──────────────────────────────────────────────────────── */
-    { mn:"MACR", zh:"宏观雷达", en:"Macro Radar", cat:"macro", status:"live",
+    { mn:"MACR", zh:"宏观风险监测", en:"Macro Risk Monitor", cat:"macro", status:"live",
       href:"/apps/macro-radar/", data:["macro-radar/data.json","macro-radar/series.json"],
       note:"机制读数 + 七类信号 + 五组官方序列" },
     { mn:"CRVE", zh:"美债收益率曲线", en:"Treasury Curve", cat:"macro", status:"live",

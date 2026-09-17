@@ -214,7 +214,7 @@
     current: "MON",
     tabs: [
       { mn:"GMKT", title:"全球市场行情", href:"../apps/markets/" },
-      { mn:"MACR", title:"宏观雷达", href:"../apps/macro-radar/" },
+      { mn:"MACR", title:"宏观风险监测", href:"../apps/macro-radar/" },
       { mn:"EQTY", title:"全球公司股价", href:"../apps/companies/" },
       { mn:"DESC", title:"证券描述 · 草案", href:"g-des.html" },
       { mn:"TRND", title:"榜单与趋势 · 草案", href:"h-tren.html" },
@@ -297,7 +297,7 @@
 
     R.alerts("#list-alerts", M, 6);
     set('[data-sub="alerts"]', M.macro.mutations ? M.macro.mutations.length + " 条" : "—");
-    set('[data-src="alerts"]', "来源 宏观雷达的异动判定 · 阈值与口径见 MACR");
+    set('[data-src="alerts"]', "来源 宏观风险监测的异动判定 · 阈值与口径见 MACR");
 
     var creditRows = M.markets.credit.concat((M.markets.crypto || []).map(function (c) {
       return { tk:c.tk, name:c.name + "（24h 口径）", close:c.close, d1:c.d1, ytd:null, meta:c.meta };

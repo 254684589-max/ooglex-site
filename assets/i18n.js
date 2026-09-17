@@ -59,7 +59,7 @@
 
   var MACRO = {
     "黄河浮桥远航基金 · VOYAGER FUND": "VOYAGER FUND",
-    "宏观雷达": "MACRO RADAR",
+    "宏观风险监测": "MACRO RISK MONITOR",
     "制度信号": "Regime Signals",
     "Regime 时光机": "Regime Time Machine",
     "◂ 拖动时间轴 · 点击下方危机事件自动重放 ▸": "◂ Drag the timeline · click a crisis below to replay ▸",
@@ -328,7 +328,7 @@
     }
     var titles = {
       "/apps/billionaires/": "Global Billionaires · Live Net Worth Ranking",
-      "/apps/macro-radar/": "Macro Radar · Daily Market Regime Dashboard",
+      "/apps/macro-radar/": "Macro Risk Monitor · Daily Market Regime Dashboard",
       "/apps/finance-terminal/": "Ooglex Financial Terminal · Global Market Monitor",
       "/apps/supply-chain/": "Global Supply Chain · Industry Chain Map",
       "/account/": "Account · Ooglex"

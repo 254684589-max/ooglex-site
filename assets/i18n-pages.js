@@ -214,7 +214,7 @@
     "市场": "Markets",
     "，一页读尽": ", at a glance",
     "15 个自动更新的实时数据应用 ·": "15 auto-updating data apps ·",
-    "宏观雷达": "Macro Radar",
+    "宏观风险监测": "Macro Risk Monitor",
     "市场机制 · 7 大制度信号 · 跨资产": "Market regime · 7 signals · Cross-asset",
     "标普500热力图": "S&P 500 Heatmap",
     "按行业分块 · 按市值定面积 · 按当日涨跌上色": "Sector blocks · Sized by market cap · Colored by daily move",

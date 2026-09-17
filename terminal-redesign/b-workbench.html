@@ -176,7 +176,7 @@
     <a href="#events"><i>05</i>经济日历</a>
     <div class="grp">站内应用</div>
     <a href="../apps/markets/"><i>→</i>全球行情</a>
-    <a href="../apps/macro-radar/"><i>→</i>宏观雷达</a>
+    <a href="../apps/macro-radar/"><i>→</i>宏观风险监测</a>
     <a href="../apps/heatmap/"><i>→</i>标普热力图</a>
     <p class="note">草案演示：功能栏为锚点与站内跳转，未实现工作区保存。</p>
   </nav>
@@ -216,7 +216,7 @@
         <div class="read"><b id="rg-score">—</b><span id="rg-label">读取中</span></div>
         <div class="bar"><i id="rg-mark" style="left:0"></i></div>
         <div class="ax"><span>0 收紧</span><span>50 中性</span><span>100 宽松</span></div>
-        <p id="rg-desc">正在读取宏观雷达数据。</p>
+        <p id="rg-desc">正在读取宏观风险监测数据。</p>
       </div>
       <table class="mini"><tbody id="sig-body"></tbody></table>
       <p class="src" id="rg-src">来源 —</p>
@@ -376,7 +376,7 @@
           '</td><td class="num" style="color:' + c + '">' + (v == null ? "—" : v) + "</td></tr>";
       }).join("");
   }).catch(function () {
-    $("rg-desc").textContent = "宏观雷达数据读取失败。";
+    $("rg-desc").textContent = "宏观风险监测数据读取失败。";
     $("rg-label").textContent = "读取失败"; $("rg-label").style.color = "var(--dn)";
   });
 

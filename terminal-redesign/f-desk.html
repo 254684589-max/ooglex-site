@@ -105,7 +105,7 @@
       <section class="t-win" id="macro" data-fn="MACRO F8 MONITOR">
         <header><h2>Macro / Risk Monitor</h2><span class="t-sub" data-sub="macro">—</span>
           <span class="t-tools"><button type="button" data-act="max">MAX</button><button type="button" data-act="set">SET</button><button type="button" data-act="exp">EXP</button></span></header>
-        <p class="narrative" id="rg-desc">正在读取宏观雷达数据。</p>
+        <p class="narrative" id="rg-desc">正在读取宏观风险监测数据。</p>
         <div class="t-body"><table class="t-tbl" id="tbl-macro"><thead><tr>
           <th>METRIC</th><th>CURRENT</th><th>1D</th><th class="t-col-x">1W</th><th>分位/Z</th><th>SIGNAL</th>
         </tr></thead><tbody></tbody></table></div>
@@ -303,7 +303,7 @@
 
     R.alerts("#list-alerts", M);
     set('[data-sub="alerts"]', ((M.macro.mutations || []).length) + " 条");
-    set('[data-src="alerts"]', (M.macro.mutSummary || "—") + "　来源 宏观雷达 · AS OF " + (M.macro.asOf || "—"));
+    set('[data-src="alerts"]', (M.macro.mutSummary || "—") + "　来源 宏观风险监测 · AS OF " + (M.macro.asOf || "—"));
 
     /* 利率走廊 / 联储流动性 / 信用利差 / 波动率全景：官方序列原样呈现 */
     R.macroBlock("#tbl-liq", M, ["利率走廊", "联储流动性", "信用利差", "波动率全景", "融资压力"]);

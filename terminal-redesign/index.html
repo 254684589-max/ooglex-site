@@ -464,7 +464,7 @@ apps/asset-tracker/data.json       <i>大类资产收盘：股指、利率、外
 apps/asset-tracker/intraday.json   <i>盘中快照（自带 realtime:false，约 30 分钟刷新）</i>
 apps/companies/data.json           <i>个股（NVDA 等）</i>
 apps/asset-ranking/crypto.json     <i>加密市值排行</i>
-apps/macro-radar/data.json         <i>宏观雷达：利率走廊、联储流动性、信用利差、波动率全景、融资压力</i>
+apps/macro-radar/data.json         <i>宏观风险监测：利率走廊、联储流动性、信用利差、波动率全景、融资压力</i>
 apps/macro-radar/curve.json        <i>美债曲线（2s10s、5s30s、30Y-5Y 由此现算）</i>
 apps/macro-radar/history.json      <i>历史序列（分位与 Z 值的输入）</i>
 apps/macro-radar/series.json       <i>指标时间序列</i>
@@ -609,7 +609,7 @@ apps/whats-latest/data.json        <i>要闻</i></pre>
   <section>
     <h2>九份草案的共同事实<span class="r">Common</span></h2>
     <div class="facts">
-      <div><span class="k">数据源</span><span class="v">站内 12 个 JSON、8 个应用：大类资产（含盘中快照）、个股（标普 500 榜）、加密排行、宏观雷达、美债曲线、历史序列、恐慌贪婪、OFR 压力、经济日历、要闻</span></div>
+      <div><span class="k">数据源</span><span class="v">站内 12 个 JSON、8 个应用：大类资产（含盘中快照）、个股（标普 500 榜）、加密排行、宏观风险监测、美债曲线、历史序列、恐慌贪婪、OFR 压力、经济日历、要闻</span></div>
       <div><span class="k">新增依赖</span><span class="v">无。原生 JS，无框架、无 CDN、无第三方脚本</span></div>
       <div><span class="k">响应式</span><span class="v">第二、三轮各三版 × 双密度 × 九档宽度（2560 / 2200 / 1920 / 1600 / 1440 / 1280 / 1100 / 768 / 360）核对，无页面横滚、无元素越出视口、无 JS 报错</span></div>
       <div><span class="k">失败状态</span><span class="v">每个源独立捕获，单源失败只影响对应窗口并显示读取失败；不以零值或占位数字静默覆盖</span></div>

@@ -377,7 +377,7 @@
 
     R.alerts("#list-alerts", M);
     set('[data-sub="alerts"]', ((M.macro.mutations || []).length) + " 条");
-    set('[data-src="alerts"]', (M.macro.mutSummary || "—") + "　来源 宏观雷达 · AS OF " + (M.macro.asOf || "—"));
+    set('[data-src="alerts"]', (M.macro.mutSummary || "—") + "　来源 宏观风险监测 · AS OF " + (M.macro.asOf || "—"));
 
     R.sources("#tbl-sources", M);
   }).catch(function (e) {

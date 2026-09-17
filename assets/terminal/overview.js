@@ -250,7 +250,7 @@
           sources: [
             src("行情（收盘）", assets, "日频收盘"),
             src("行情（盘中快照）", intraday, "约30分钟 · 非实时"),
-            src("宏观雷达", macro, "日频"),
+            src("宏观风险监测", macro, "日频"),
             src("美债曲线", curve, "日频"),
             src("恐慌贪婪", fear, "日频"),
             src("OFR 金融风险", ofr, "日频"),

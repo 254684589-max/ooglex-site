@@ -787,7 +787,7 @@
 
   function adaptDgs10(template, macroData, now) {
     var match = findDgs10Row(macroData);
-    if (!match) throw new Error("宏观雷达未提供DGS10记录");
+    if (!match) throw new Error("宏观风险监测未提供DGS10记录");
     if (String(match.category.src || "").toUpperCase() !== "FRED") {
       throw new Error("DGS10来源不是FRED");
     }
@@ -860,7 +860,7 @@
       updatedAt: null,
       demo: false,
       status: "error",
-      note: "无法读取宏观雷达中的DGS10数据。" + (error && error.message ? " " + error.message : ""),
+      note: "无法读取宏观风险监测中的DGS10数据。" + (error && error.message ? " " + error.message : ""),
       spark: []
     });
   }
@@ -883,7 +883,7 @@
       throw new Error("美元卡片代码不是DTWEXBGS");
     }
     if (!record || record.id !== "DTWEXBGS") {
-      throw new Error("宏观雷达未提供DTWEXBGS自动更新记录");
+      throw new Error("宏观风险监测未提供DTWEXBGS自动更新记录");
     }
     if (record.status !== "ok" && record.status !== "stale") {
       throw new Error("DTWEXBGS自动更新记录不可用");
@@ -943,7 +943,7 @@
       updatedAt: null,
       demo: false,
       status: "error",
-      note: "无法读取宏观雷达中的DTWEXBGS自动更新数据。" + (error && error.message ? " " + error.message : ""),
+      note: "无法读取宏观风险监测中的DTWEXBGS自动更新数据。" + (error && error.message ? " " + error.message : ""),
       spark: []
     });
   }
@@ -966,7 +966,7 @@
       throw new Error("原油卡片代码不是WTI");
     }
     if (!record || record.id !== "RWTC") {
-      throw new Error("宏观雷达未提供EIA RWTC自动更新记录");
+      throw new Error("宏观风险监测未提供EIA RWTC自动更新记录");
     }
     if (record.status !== "ok" && record.status !== "stale") {
       throw new Error("RWTC自动更新记录不可用");
@@ -1029,7 +1029,7 @@
       updatedAt: null,
       demo: false,
       status: "error",
-      note: "无法读取宏观雷达中的EIA RWTC自动更新数据。" + (error && error.message ? " " + error.message : ""),
+      note: "无法读取宏观风险监测中的EIA RWTC自动更新数据。" + (error && error.message ? " " + error.message : ""),
       spark: []
     });
   }
@@ -1057,7 +1057,7 @@
     var stale = macroData.live !== true || age > MACRO_REGIME_MAX_BUSINESS_DAYS;
     var note = regime.desc;
     if (macroData.live !== true) {
-      note = "本轮底层行情命中不足，保留宏观雷达最后有效制度信号。";
+      note = "本轮底层行情命中不足，保留宏观风险监测最后有效制度信号。";
     } else if (age > MACRO_REGIME_MAX_BUSINESS_DAYS) {
       note = "宏观状态已超过2个美国工作日未更新，当前保留最后有效读数。";
     }
@@ -1116,14 +1116,14 @@
       suffix: " / 100",
       assessment: "数据不可用",
       changeText: "未显示无效或缺失的制度信号",
-      note: "无法读取宏观雷达状态。" + (error && error.message ? " " + error.message : ""),
+      note: "无法读取宏观风险监测状态。" + (error && error.message ? " " + error.message : ""),
       meterPercent: null,
       meterLabels: ["承压", "中性", "支持"],
       asOf: null,
       updatedAt: null,
       frequency: "日频",
       status: "error",
-      source: { name: "Ooglex宏观雷达", url: "../macro-radar/" },
+      source: { name: "Ooglex宏观风险监测", url: "../macro-radar/" },
       detailUrl: "../macro-radar/"
     };
   }
@@ -2661,7 +2661,7 @@
     startBoardLive();
   }
 
-  /* 地缘风险定价要读的是原始的分区资源（跨资产、宏观雷达、OFR），
+  /* 地缘风险定价要读的是原始的分区资源（跨资产、宏观风险监测、OFR），
      不是适配后的卡片；这里只留住本轮 risk 分区拿到的那一份，不另发请求。 */
   var riskSources = null;
 

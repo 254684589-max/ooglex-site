@@ -184,7 +184,7 @@
     <div class="lead-main">
       <span class="kicker">今日机制读数 · MACRO REGIME</span>
       <h1>市场机制 <span class="score" id="rg-score">—</span> 分，<span id="rg-label">读取中</span></h1>
-      <p class="standfirst" id="rg-desc">正在读取宏观雷达数据。</p>
+      <p class="standfirst" id="rg-desc">正在读取宏观风险监测数据。</p>
       <p class="byline">来源 <b id="rg-src">FRED · EIA · 交易所行情</b> · 数据日期 <b class="num" id="rg-asof">—</b> · 频率 <b>日频</b> · 口径 0–100 相对分位，越高越偏「宽松·支持」</p>
 
       <table class="tbl">
@@ -192,7 +192,7 @@
         <thead><tr><th>信号</th><th class="r">读数</th><th>强弱</th><th>状态</th><th class="note-h">说明</th></tr></thead>
         <tbody id="sig-body"><tr><td colspan="5" class="note">读取中…</td></tr></tbody>
       </table>
-      <p class="byline">完整口径、权重与 2006 年至今的历史回放见 <a href="../apps/macro-radar/" style="border-bottom:1px solid var(--accent);color:var(--accent)">宏观雷达</a>。</p>
+      <p class="byline">完整口径、权重与 2006 年至今的历史回放见 <a href="../apps/macro-radar/" style="border-bottom:1px solid var(--accent);color:var(--accent)">宏观风险监测</a>。</p>
     </div>
 
     <div class="aside">
@@ -267,7 +267,7 @@
       { href:"apps/finance-terminal/", zh:"Ooglex金融终端", en:"Finance Terminal", freq:"公测", beta:1, desc:"全球股指、利率、美元、黄金、原油、比特币一页查看；4 项站内真实数据、2 项免费 ETF 代理，逐项标注来源。" },
       { href:"apps/markets/", zh:"全球市场行情", en:"Global Markets", freq:"日频", desc:"商品、指数、公司、外汇、加密、债券六大品类逐项报价，每项可看 1 个月至全部区间走势。" },
       { href:"apps/heatmap/", zh:"标普500热力图", en:"S&P 500 Heatmap", freq:"日频", desc:"成分股按行业分块、按市值定面积、按当日涨跌上色，逐块标注涨跌幅，另附完整数据表。" },
-      { href:"apps/macro-radar/", zh:"宏观雷达", en:"Macro Radar", freq:"日频", desc:"市场机制读数与七类信号加权明细，可回放 2006 年至今每一轮危机的机制变化。" },
+      { href:"apps/macro-radar/", zh:"宏观风险监测", en:"Macro Risk Monitor", freq:"日频", desc:"市场机制读数与七类信号加权明细，可回放 2006 年至今每一轮危机的机制变化。" },
       { href:"apps/data-hub/", zh:"数据中心", en:"Data Hub", freq:"日频", desc:"资产市值榜、大类资产收益率、富豪榜、公司市值、恐慌贪婪与经济日历集中入口。" },
       { href:"apps/asset-ranking/", zh:"全球资产市值榜", en:"Asset Ranking", freq:"日频", desc:"不限品类只看市值：房产、国债、黄金、货币、公司、加密同台排列前 250 位。" },
       { href:"apps/house-prices/", zh:"全球房价走势", en:"House Prices", freq:"周频", desc:"主要国家房价名义与实际同比，可查看近 20 年走势曲线。" },
@@ -341,7 +341,7 @@
     }).join("");
   }
 
-  /* 宏观雷达 */
+  /* 宏观风险监测 */
   getJSON("apps/macro-radar/data.json").then(function (d) {
     var rg = d.regime || {}, sc = rg.score;
     $("rg-score").textContent = isNum(sc) ? sc : "—";
@@ -352,7 +352,7 @@
     $("mh-asof").textContent = d.asOf || "—";
     $("mh-upd").textContent = d.asOfSh || (d.updatedAt || "").replace("T", " ").replace("Z", " UTC");
     $("mh-status").textContent = statusZh(d.status || "ok");
-    srcRow("macro", "宏观雷达 · 机制读数", d.source || "—", "日频", d.asOf || "—", statusZh(d.status || "ok"));
+    srcRow("macro", "宏观风险监测 · 机制读数", d.source || "—", "日频", d.asOf || "—", statusZh(d.status || "ok"));
 
     $("sig-body").innerHTML = (d.signals || []).map(function (s) {
       var v = isNum(s.score) ? s.score : null;
@@ -368,11 +368,11 @@
       var tag = m.status === "red" ? "偏紧" : m.status === "green" ? "偏松" : "中性";
       return '<article><div class="t"><span>' + esc(m.sig || "") + '</span><i style="color:' + col + '">' + tag + "</i></div><p>" + esc(m.text || "") + "</p></article>";
     }).join("") || '<article><p style="color:var(--dim)">今日无显著异动。</p></article>';
-    if (d.mutSummary) $("mut-sum").textContent = d.mutSummary + "（来源：宏观雷达，数据日期 " + (d.asOf || "—") + "）";
+    if (d.mutSummary) $("mut-sum").textContent = d.mutSummary + "（来源：宏观风险监测，数据日期 " + (d.asOf || "—") + "）";
   }).catch(function () {
     $("rg-label").textContent = "读取失败";
     $("rg-label").style.color = "var(--dn)";
-    $("rg-desc").textContent = "宏观雷达数据暂时无法读取，请前往应用页查看。";
+    $("rg-desc").textContent = "宏观风险监测数据暂时无法读取，请前往应用页查看。";
     $("sig-body").innerHTML = '<tr><td colspan="5" class="note">数据读取失败</td></tr>';
     $("mut-body").innerHTML = '<article><p style="color:var(--dn)">异动数据读取失败。</p></article>';
     $("mh-status").textContent = "读取失败";

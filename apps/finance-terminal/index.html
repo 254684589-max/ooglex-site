@@ -289,7 +289,7 @@
       { mn:"TRND", title:"榜单与趋势", href:"/apps/finance-terminal/trends.html" },
       { mn:"COMP", title:"多标的比较", href:"/apps/finance-terminal/compare.html" },
       { mn:"QUOT", title:"行情详情", href:"/apps/finance-terminal/quote.html" },
-      { mn:"MACR", title:"宏观雷达", href:"/apps/macro-radar/" },
+      { mn:"MACR", title:"宏观风险监测", href:"/apps/macro-radar/" },
       { mn:"GMKT", title:"全球市场行情", href:"/apps/markets/" },
       { mn:"FDIR", title:"功能目录", href:"#fdir" }
     ]
@@ -384,7 +384,7 @@
       : "来源 " + (M.macro.source || "—")) + " · " + C.MONITOR_METHOD +
       " · US10Y 与 DXY-FED 点进独立行情页（DGS10 / DTWEXBGS 两条逐日序列）；" +
       "8 条合成信号点名称就地展开历史分位（周频回溯序列，没有单指标行情页，不做成假链接）；" +
-      "最后 9 条只有现值、站内无序列，因此不可点。完整指标页见宏观雷达。");
+      "最后 9 条只有现值、站内无序列，因此不可点。完整指标页见宏观风险监测。");
 
     /* 合成信号的历史分位：就地展开。这条序列是周频、按当前方法学回溯算出来的，
        不是当年逐周发布的原始读数，图上和页脚都得写明，不能当成历史实况。 */
@@ -661,7 +661,7 @@
 
     R.alerts("#list-alerts", M, 6);
     set('[data-sub="alerts"]', M.macro.mutations ? M.macro.mutations.length + " 条" : "—");
-    set('[data-src="alerts"]', "来源 宏观雷达的异动判定 · 阈值与口径见 MACR");
+    set('[data-src="alerts"]', "来源 宏观风险监测的异动判定 · 阈值与口径见 MACR");
 
     var creditRows = M.markets.credit.concat((M.markets.crypto || []).map(function (c) {
       return { tk:c.tk, name:c.name + "（24h 口径）", close:c.close, d1:c.d1, ytd:null,

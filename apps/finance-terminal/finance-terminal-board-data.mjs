@@ -348,7 +348,7 @@ function trackerAssets(assetTracker, category) {
     && !(asset.price === null && asset.dataMeta && asset.dataMeta.mode === "unavailable"));
 }
 
-/* 宏观雷达参考序列（FRED 广义美元指数、EIA 库欣WTI现货）→ 行情行。 */
+/* 宏观风险监测参考序列（FRED 广义美元指数、EIA 库欣WTI现货）→ 行情行。 */
 function referenceRow(series, categoryKey, options = {}) {
   if (!series || !series.id) return null;
   const change = formatChange(series.changePct, "pct");
@@ -739,7 +739,7 @@ export function buildBoard(group = {}) {
     assetTracker: pick("assetTracker", "跨资产管道"),
     companies: pick("companies", "公司榜"),
     assetRanking: pick("assetRanking", "资产榜"),
-    macro: pick("macro", "宏观雷达"),
+    macro: pick("macro", "宏观风险监测"),
     curve: pick("macroCurve", "美债收益率曲线"),
     cryptoBoard: pickOptional("assetRankingCrypto"),
     /* 商品现货管道是后补的可选文件：首轮日更跑完前它可能不存在，

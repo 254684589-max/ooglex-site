@@ -193,7 +193,7 @@
       <div class="big"><b id="rg-score">—</b><span id="rg-label">读取中</span></div>
       <div class="scale"><i id="rg-mark" style="left:0"></i></div>
       <div class="ax"><span>0 收紧</span><span>50 中性</span><span>100 宽松</span></div>
-      <p id="rg-desc">正在读取宏观雷达数据。</p>
+      <p id="rg-desc">正在读取宏观风险监测数据。</p>
       <table class="sig"><tbody id="sig-body"></tbody></table>
     </div>
     <p class="foot" id="rg-src">来源 —</p>
@@ -359,7 +359,7 @@
         '</td><td style="color:' + c + '">' + (v == null ? "—" : v) + "</td></tr>";
     }).join("");
   }).catch(function () {
-    $("rg-desc").textContent = "宏观雷达数据读取失败。";
+    $("rg-desc").textContent = "宏观风险监测数据读取失败。";
     $("rg-label").textContent = "读取失败"; $("rg-label").style.color = "var(--dn)";
   });
 

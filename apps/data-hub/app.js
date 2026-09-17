@@ -24,7 +24,7 @@
   }
 
   var APPS = [
-    { folder: "macro-radar", en: "Regime", name: "宏观雷达", tag: "市场机制 · 7 大制度信号 · 跨资产",
+    { folder: "macro-radar", en: "Regime", name: "宏观风险监测", tag: "市场机制 · 7 大制度信号 · 跨资产",
       render: function (d) {
         var r = d.regime || {}; if (!isNum(r.score)) return "<div class='loading'>暂无数据</div>";
         var col = radarColor(r.score);

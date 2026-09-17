@@ -1,4 +1,4 @@
-/* 宏观雷达 · Macro Radar · 前端渲染
+/* 宏观风险监测 · Macro Risk Monitor · 前端渲染
  * 读取同目录 data.json（由 scripts/macro-radar/build_radar.py 每日生成），
  * 渲染：机制总览红绿灯 + 8 大制度信号 + 跨资产热力图 + 异动流。纯原生 JS。 */
 (function () {

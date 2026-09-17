@@ -77,7 +77,7 @@ export function openRadar(document, cards) {
   const link = document.createElement("a");
   link.className = "detail-news";
   link.href = "../macro-radar/";
-  link.textContent = "查看宏观雷达完整方法学 →";
+  link.textContent = "查看宏观风险监测完整方法学 →";
   meta.appendChild(link);
   note(document, meta, "轴名描述的是该信号刻画的风险类型；分数为各自序列在近两年窗口内的"
     + "分位，不是对后市的预测。");

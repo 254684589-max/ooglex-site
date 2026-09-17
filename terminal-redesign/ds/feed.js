@@ -78,7 +78,7 @@
     return { z: (last - mean) / sd, n: v.length, mean: mean, sd: sd, last: last };
   }
 
-  /* 信号判定：沿用站内宏观雷达既有的 0–100 分位分档，收敛为四级 */
+  /* 信号判定：沿用站内宏观风险监测既有的 0–100 分位分档，收敛为四级 */
   function signalFromPercentile(p) {
     if (!isNum(p)) return { k:"na", label:"—" };
     if (p < 35) return { k:"stress", label:"STRESS" };
@@ -313,7 +313,7 @@
           sources: [
             src("行情（收盘）", assets, "日频收盘"),
             src("行情（盘中快照）", intraday, "约30分钟 · 非实时"),
-            src("宏观雷达", macro, "日频"),
+            src("宏观风险监测", macro, "日频"),
             src("美债曲线", curve, "日频"),
             src("恐慌贪婪", fear, "日频"),
             src("OFR 金融风险", ofr, "日频"),
