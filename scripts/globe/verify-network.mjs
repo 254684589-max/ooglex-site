@@ -47,9 +47,14 @@ async function open(width, mode = 'hang', path = '/apps/globe/') {
   });
   try {
   await page.goto(origin + path, { waitUntil: 'domcontentloaded', timeout: 30000 });
-  if (path === '/apps/globe/' && !(await page.$('.stage iframe'))) await page.click('#btn-go');
+  if (path === '/apps/globe/' && !(await page.$('.stage iframe'))) {
+    await page.waitForFunction(() => document.getElementById('lite-earth').dataset.state === 'ready');
+    if (!(await page.$('.stage iframe'))) await page.click('#btn-go');
+  }
   const frame = path === '/apps/globe/' ? await (await page.$('.stage iframe')).contentFrame() : page.mainFrame();
   await frame.waitForFunction(() => document.documentElement.dataset.globeState === 'ready', { timeout: 30000 });
+  if (path === '/apps/globe/') await page.waitForFunction(() =>
+    document.getElementById('lite-earth').hidden && !document.getElementById('btn-map').disabled);
   return { context, page, frame, external, errors, images, bad };
   } catch (error) {
     console.error('STARTUP DIAGNOSTICS ' + JSON.stringify({width, path, errors, bad, images: images.length, external: external.map(req => req.url())}));
@@ -157,6 +162,15 @@ try {
       assert(s.external.length > firstCount, 'Retry must not reuse a cached failure');
       assert.equal(await s.frame.evaluate(() => document.documentElement.dataset.globeMap), 'local-earth');
       assert.deepEqual(s.errors, []);
+    } catch (error) {
+      console.error('MAP SWITCH DIAGNOSTICS ' + JSON.stringify(await s.page.evaluate(() => ({
+        status: document.getElementById('load-status').textContent,
+        disabled: document.getElementById('btn-map').disabled,
+        lite: document.getElementById('lite-earth').hidden,
+        map: document.querySelector('.stage iframe')?.contentDocument?.documentElement.dataset.globeMap
+      }))));
+      console.error('MAP REQUESTS ' + JSON.stringify({errors:s.errors, urls:s.external.map(r=>r.url())}));
+      throw error;
     } finally { await s.context.close(); }
   });
   await run('language switch preserves local startup', async () => {
@@ -185,7 +199,7 @@ try {
       throw error;
     } finally { await s.context.close(); }
   });
-  await run('missing entry script shows retry instead of an endless loader', async () => {
+  await run('missing entry script preserves the lightweight map and retry', async () => {
     const context = await browser.createBrowserContext();
     try {
       const page = await context.newPage();
@@ -198,10 +212,114 @@ try {
       });
       await page.goto(origin + '/apps/globe/', { waitUntil: 'domcontentloaded' });
       await page.waitForFunction(() => {
-        const gate = document.getElementById('gate');
-        return getComputedStyle(gate).display !== 'none' && gate.textContent.includes('重新加载');
+        const map = document.getElementById('lite-earth');
+        return !map.hidden && map.dataset.state === 'ready' &&
+          !document.getElementById('btn-go').disabled && document.getElementById('btn-go').textContent.includes('重试');
       }, { timeout: 50000 });
     } finally { await context.close(); }
+  });
+  await run('slow first-party engine survives the old 45-second cutoff', async () => {
+    const context = await browser.createBrowserContext();
+    const held = [], external = [], errors = [];
+    try {
+      const page = await context.newPage();
+      await page.setViewport({ width: 1280, height: 900 });
+      await page.setRequestInterception(true);
+      page.on('request', req => {
+        if (req.url().includes('/cesium/Cesium.js')) held.push(req);
+        else if (req.url().startsWith(origin) || /^(data:|blob:)/.test(req.url())) void req.continue();
+        else { external.push(req.url()); void req.abort(); }
+      });
+      page.on('pageerror', e => errors.push(String(e)));
+      const started = Date.now();
+      await page.goto(origin + '/apps/globe/', { waitUntil: 'domcontentloaded' });
+      await page.waitForFunction(() => document.getElementById('lite-earth').dataset.state === 'ready');
+      assert(Date.now() - started < 10000, 'Small map must not wait for the engine');
+      const longitude = await page.$eval('#lite-canvas', e => e.dataset.longitude);
+      await page.focus('#lite-canvas'); await page.keyboard.press('ArrowLeft');
+      await page.waitForFunction(before => document.getElementById('lite-canvas').dataset.longitude !== before, {}, longitude);
+      await page.waitForSelector('.stage iframe');
+      const originalSrc = await page.$eval('.stage iframe', f => f.src);
+      await page.screenshot({path:'artifacts/globe/lite-slow-engine.png'});
+      await new Promise(resolve => setTimeout(resolve, 47000));
+      assert.equal(await page.$eval('.stage iframe', f => f.src), originalSrc, 'Do not discard a slow in-progress download');
+      assert(await page.$eval('#lite-earth', e => !e.hidden && e.dataset.state === 'ready'));
+      assert.equal(held.length, 1, 'No background retry loop or duplicate engine downloads');
+      await held[0].continue();
+      await page.waitForFunction(() => document.getElementById('lite-earth').hidden, {timeout:45000});
+      assert.deepEqual(external, []); assert.deepEqual(errors, []);
+    } finally { await context.close(); }
+  });
+  await run('no WebGL retains a textured interactive map at phone, tablet and desktop widths', async () => {
+    for (const width of [360, 768, 1280]) {
+      const context = await browser.createBrowserContext();
+      try {
+        const page = await context.newPage();
+        await page.setViewport({width, height:800});
+        await page.evaluateOnNewDocument(() => {
+          const get = HTMLCanvasElement.prototype.getContext;
+          HTMLCanvasElement.prototype.getContext = function (type, ...args) {
+            return /webgl/.test(type) ? null : get.call(this, type, ...args);
+          };
+        });
+        const requests = [];
+        page.on('request', r => requests.push(r.url()));
+        await page.goto(origin + '/apps/globe/', {waitUntil:'domcontentloaded'});
+        await page.waitForFunction(() => document.getElementById('lite-earth').dataset.state === 'ready');
+        await page.click('#btn-go');
+        assert.equal(await page.$('.stage iframe'), null);
+        assert(await page.$eval('#lite-earth', e => !e.hidden));
+        const colors = await page.$eval('#lite-canvas', c => {
+          const data = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+          const set = new Set(); for (let i=0;i<data.length;i+=64) set.add(data[i]+','+data[i+1]+','+data[i+2]); return set.size;
+        });
+        assert(colors > 100, 'No-WebGL fallback must display actual textured geography');
+        await page.click('#lite-in');
+        await page.waitForFunction(() => Number(document.getElementById('lite-canvas').dataset.zoom) > 1);
+        await page.click('#btn-overview');
+        await page.waitForFunction(() => document.getElementById('lite-canvas').dataset.zoom === '1');
+        assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth+1));
+        assert(!requests.some(url => /Cesium\.js|arcgisonline|googleapis/.test(url)));
+        await page.screenshot({path:'artifacts/globe/lite-no-webgl-'+width+'.png'});
+      } finally { await context.close(); }
+    }
+  });
+  await run('repeated extreme zoom remains finite and continues drawing', async () => {
+    const s = await open(1280);
+    try {
+      await s.page.waitForFunction(() => document.getElementById('lite-earth').hidden);
+      const box = await (await s.frame.$('.cesium-widget canvas')).boundingBox();
+      await s.page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      const heights = [];
+      for (const deltaY of [10000, -10000, 10000, -10000]) {
+        for (let i=0;i<12;i++) { await s.page.mouse.wheel({deltaY}); await new Promise(r=>setTimeout(r,50)); }
+        const camera = await s.frame.evaluate(() => window.OoglexGlobeNetwork.viewState());
+        assert(Number.isFinite(camera.height), 'Each zoom phase must preserve valid camera coordinates');
+        heights.push(Math.round(camera.height));
+      }
+      assert(new Set(heights).size > 1, 'Wheel events must actually move the camera');
+      console.log('ZOOM HEIGHTS ' + JSON.stringify(heights));
+      await s.page.click('#btn-overview');
+      const state = await s.frame.evaluate(() => window.OoglexGlobeNetwork.viewState());
+      assert(Number.isFinite(state.height) && state.height > 20000000 && state.height < 51000000);
+      assert(state.rendererRunning);
+      await s.page.mouse.wheel({deltaY:-80});
+      await s.frame.waitForFunction(before => window.OoglexGlobeNetwork.viewState().renderedFrames > before, {}, state.renderedFrames);
+      assert.deepEqual(s.errors, []);
+    } finally { await s.context.close(); }
+  });
+  await run('WebGL context loss returns to the lightweight map and allows retry', async () => {
+    const s = await open(1280);
+    try {
+      await s.page.waitForFunction(() => document.getElementById('lite-earth').hidden);
+      await s.frame.$eval('.cesium-widget canvas', canvas => {
+        const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+        gl.getExtension('WEBGL_lose_context').loseContext();
+      });
+      await s.page.waitForFunction(() => !document.getElementById('lite-earth').hidden && !document.getElementById('btn-go').disabled);
+      await s.page.click('#btn-go');
+      await s.page.waitForFunction(() => document.getElementById('lite-earth').hidden, {timeout:45000});
+    } finally { await s.context.close(); }
   });
   }
 } finally {

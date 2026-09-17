@@ -7,11 +7,31 @@
   var scene = null, ready = false, bootTimer = null, tileCount = 0;
   var english = new URLSearchParams(location.search).get('lang') === 'en';
   var localId = 'local-earth', previousMap = null;
-  var overviewHeight = 22000000;
+  var overviewHeight = 22000000, guarded = new WeakSet(), renderedFrames = 0;
+  function guardCamera(viewer) {
+    if (guarded.has(viewer)) return;
+    guarded.add(viewer);
+    var controller = viewer.scene.screenSpaceCameraController;
+    // Bound inertial outward zoom before it can invalidate camera coordinates.
+    controller.maximumZoomDistance = 50000000;
+    controller.minimumZoomDistance = 250;
+    controller.inertiaZoom = 0;
+    viewer.scene.postRender.addEventListener(function () { renderedFrames++; });
+    viewer.scene.renderError.addEventListener(function () {
+      ready = false;
+      fail(words('三维绘图已停止，可使用轻量地图或重试。', '3D rendering stopped. Use the lightweight map or retry.'));
+    });
+    viewer.canvas.addEventListener('webglcontextlost', function () {
+      ready = false;
+      fail(words('三维绘图连接已中断，可使用轻量地图或重试。', '3D graphics were interrupted. Use the lightweight map or retry.'));
+    });
+    viewer.useBrowserRecommendedResolution = true;
+    viewer.scene.msaaSamples = 1;
+  }
   function overview(viewer, keepCenter) {
     var position = viewer.camera.positionCartographic;
-    var lon = keepCenter ? C.Math.toDegrees(position.longitude) : 105;
-    var lat = keepCenter ? C.Math.toDegrees(position.latitude) : 20;
+    var lon = keepCenter && position && Number.isFinite(position.longitude) ? C.Math.toDegrees(position.longitude) : 105;
+    var lat = keepCenter && position && Number.isFinite(position.latitude) ? C.Math.toDegrees(position.latitude) : 20;
     viewer.camera.cancelFlight();
     viewer.trackedEntity = undefined;
     viewer.camera.lookAtTransform(C.Matrix4.IDENTITY);
@@ -22,6 +42,7 @@
     viewer.scene.requestRender();
   }
   function initialView(viewer) {
+    guardCamera(viewer);
     var status = document.querySelector('#loading-screen .loader-status');
     if (status) status.textContent = words('正在显示全球地球…', 'Preparing global view...');
     overview(viewer, false);
@@ -62,12 +83,12 @@
   function dispose(value) {
     if (value && typeof value.destroy === 'function' && !value.isDestroyed?.()) value.destroy();
   }
-  function boundedTiles(provider) {
+  function boundedTiles(provider, timeout) {
     var original = provider.requestImage;
     provider.requestImage = function () {
       var result = original.apply(provider, arguments);
       // Cesium returns undefined when its scheduler is saturated: preserve that contract.
-      return result === undefined ? undefined : deadline(result, 8000).then(function (image) {
+      return result === undefined ? undefined : deadline(result, timeout || 8000).then(function (image) {
         tileCount++;
         if (document.documentElement) document.documentElement.dataset.globeTiles = String(tileCount);
         return image;
@@ -87,7 +108,7 @@
         return deadline(C.TileMapServiceImageryProvider.fromUrl(
           base + 'cesium/Assets/Textures/NaturalEarthII',
           { fileExtension: 'jpg', maximumLevel: 2, credit: new C.Credit('Made with Natural Earth', true) }
-        ), 12000, request && request.signal, dispose).then(boundedTiles);
+        ), 25000, request && request.signal, dispose).then(function (provider) { return boundedTiles(provider, 25000); });
       },
       terrain: flat
     };
@@ -144,6 +165,7 @@
   function start(app) {
     return app.start().then(function (components) {
       scene = components.scene;
+      guardCamera(scene.viewer);
       if (scene.mapStackController.getState().activeId === localId &&
           scene.viewer.camera.positionCartographic.height < 10000000) overview(scene.viewer, true);
       // A defined Cesium global or iframe load event does not prove a rendered globe.
@@ -166,7 +188,7 @@
           remove();
           clearInterval(renderTick);
           reject(new Error(words('基础地球加载超时，请重试', 'Basic Earth timed out; please retry')));
-        }, 25000);
+        }, 60000);
         renderTick = setInterval(function () { scene.viewer.scene.requestRender(); }, 100);
         scene.viewer.scene.requestRender();
       });
@@ -200,10 +222,19 @@
     report('loading');
     bootTimer = setTimeout(function () {
       fail(words('加载时间过长，请检查网络后重试。', 'Loading is taking too long. Check your connection and retry.'));
-    }, 35000);
+    }, 120000);
   }
+  window.addEventListener('error', function (event) {
+    var target = event.target;
+    if (target && target.tagName === 'SCRIPT' && /(?:cesium\/Cesium\.js|\/assets\/index-[^/]+\.js)/.test(target.src)) {
+      ready = false;
+      fail(words('三维资源下载失败，可重试。', '3D resources could not download. Please retry.'));
+    }
+  }, true);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
   else install();
   window.OoglexGlobeNetwork = Object.freeze({ registry: makeRegistry, start: start, initialView: initialView,
-    viewState: function () { return scene ? { height: scene.viewer.camera.positionCartographic.height, map: scene.mapStackController.getState().activeId } : null; } });
+    viewState: function () { return scene ? { height: scene.viewer.camera.positionCartographic?.height,
+      map: scene.mapStackController.getState().activeId, renderedFrames: renderedFrames,
+      rendererRunning: scene.viewer.useDefaultRenderLoop } : null; } });
 })();
