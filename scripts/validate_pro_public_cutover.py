@@ -49,8 +49,6 @@ def main() -> None:
     if leaked:
         fail("full-only paths present: " + ", ".join(leaked))
 
-    # Supply Chain: same original schema, but only <=10% of companies and only
-    # edge shards referenced by those visible companies.
     nodes = read_json("apps/supply-chain/nodes.json")
     assert_preview_marker(nodes, "apps/supply-chain/nodes.json")
     marker = nodes["ooglexAccess"]
@@ -69,14 +67,25 @@ def main() -> None:
     }
     edge_dir = SITE / "apps/supply-chain/edges"
     if edge_dir.exists():
-        actual_edges = {
-            "edges/" + p.name
-            for p in edge_dir.glob("*.json")
-            if p.is_file()
-        }
+        actual_paths = [p for p in edge_dir.glob("*.json") if p.is_file()]
+        actual_edges = {"edges/" + p.name for p in actual_paths}
         unexpected = sorted(actual_edges - allowed_edges)
         if unexpected:
             fail("preview contains edge shards outside visible sample: " + ", ".join(unexpected[:5]))
+        for p in actual_paths:
+            rel = "apps/supply-chain/edges/" + p.name
+            obj = json.loads(p.read_text(encoding="utf-8"))
+            assert_preview_marker(obj, rel)
+            mark = obj.get("ooglexAccess") or {}
+            vis = int(mark.get("visibleEdges") or 0)
+            total = int(mark.get("fullEdges") or 0)
+            rows = len(obj.get("edges") or [])
+            if total <= 0:
+                fail(rel + " missing full edge count")
+            if vis != rows:
+                fail(rel + " visible edge marker does not match payload")
+            if vis > max(1, math.ceil(total * RATIO)):
+                fail(f"{rel} exposes {vis}/{total} edges")
 
     for rel in (
         "apps/supply-chain/history.json",
@@ -87,10 +96,15 @@ def main() -> None:
         if p.exists():
             assert_preview_marker(read_json(rel), rel)
 
+    # The eight headline regime cards are part of the visible preview UX. The
+    # lower research layer remains restricted and the paywall blocks continuation.
     macro = read_json("apps/macro-radar/data.json")
     assert_preview_marker(macro, "apps/macro-radar/data.json")
-    if len(macro.get("signals") or []) > 1:
-        fail("Macro Risk FREE preview exposes more than 10% of eight core signals")
+    source_macro = json.loads((ROOT / "apps/macro-radar/data.json").read_text(encoding="utf-8"))
+    expected_signals = len(source_macro.get("signals") or [])
+    actual_signals = len(macro.get("signals") or [])
+    if actual_signals != expected_signals:
+        fail(f"Macro Risk headline cards incomplete: {actual_signals}/{expected_signals}")
 
     macro_hist = read_json("apps/macro-radar/history.json")
     assert_preview_marker(macro_hist, "apps/macro-radar/history.json")
@@ -104,7 +118,7 @@ def main() -> None:
         "apps/macro-radar/index.html": "app.js",
     }
     sync_access = '<script src="/assets/pro-access.js?v=4"></script>'
-    sync_adapter = '<script src="/assets/pro-rich-data.js?v=2"></script>'
+    sync_adapter = '<script src="/assets/pro-rich-data.js?v=3"></script>'
     for rel, legacy_app in rich_pages.items():
         p = SITE / rel
         if not p.exists():
@@ -119,6 +133,11 @@ def main() -> None:
             fail("rich access adapter must run before legacy app boot: " + rel)
         if "location.replace('/pro/" in text or 'location.replace("/pro/' in text:
             fail("legacy page still redirects away from original UI: " + rel)
+
+    adapter = (SITE / "assets/pro-rich-data.js").read_text(encoding="utf-8")
+    for token in ("ooglex-preview-wall", "继续查看完整数据", "fullEdges"):
+        if token not in adapter and token != "fullEdges":
+            fail("FREE preview paywall missing token: " + token)
 
     aliases = {
         "pro/supply-chain/index.html": "/apps/supply-chain/",
@@ -141,10 +160,11 @@ def main() -> None:
             fail("protected frontend asset missing: " + required)
 
     print("PRO rich-page validation: PASS")
-    print("- original Supply Chain and Macro Risk interfaces are restored")
-    print("- FREE/guest static payloads are capped at 10%")
+    print("- original Supply Chain and Macro Risk interfaces are preserved")
+    print("- Macro FREE preview keeps all headline regime cards")
+    print("- company edge shards are capped at 10%, including NVDA")
+    print("- FREE/guest gets a page-level paywall while full data stays private")
     print("- OWNER/PRO adapter runs before legacy app fetches")
-    print("- full-only static datasets remain absent from Pages")
 
 
 if __name__ == "__main__":
