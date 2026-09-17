@@ -1,11 +1,11 @@
-/* Dependency-free Natural Earth globe. A usable map while the full viewer loads.
+/* Dependency-free Natural Earth globe. A usable map before the full viewer is requested.
    Texture: the same public-domain NaturalEarthII tiles shipped with Cesium. */
 (function () {
   'use strict';
   var canvas = document.getElementById('lite-canvas');
   var host = document.getElementById('lite-earth');
   var status = document.getElementById('lite-status');
-  var ctx = canvas.getContext('2d', { alpha: false });
+  var ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
   var lon = 105 * Math.PI / 180, lat = 20 * Math.PI / 180, zoom = 1;
   var texture, frame = 0, dragging = null, visible = true, loading = false;
   var width = 0, height = 0, rays = [], pixels;
@@ -19,8 +19,10 @@
   function resize() {
     var box = canvas.getBoundingClientRect();
     if (!box.width || !box.height) return;
-    // Bound CPU work on phones and high-DPI screens; no idle animation loop.
-    var scale = Math.min(1, (dragging ? 260 : 420) / Math.min(box.width, box.height));
+    // The canvas is CSS-upscaled. Keep the raster small enough for smooth CPU-only dragging,
+    // especially on phones, while preserving a sharper resting image.
+    var target = dragging ? 220 : 360;
+    var scale = Math.min(1, target / Math.min(box.width, box.height));
     var w = Math.max(1, Math.round(box.width * scale)), h = Math.max(1, Math.round(box.height * scale));
     if (w === width && h === height && pixels) return;
     width = canvas.width = w; height = canvas.height = h;
@@ -72,7 +74,7 @@
     loading = true; notify('loading');
     Promise.all([imageAt('0/0.jpg'), imageAt('1/0.jpg')]).then(function (images) {
       var atlas = document.createElement('canvas'); atlas.width = 512; atlas.height = 256;
-      var painter = atlas.getContext('2d');
+      var painter = atlas.getContext('2d', { alpha: false });
       images.forEach(function (img, i) { painter.drawImage(img, i * 256, 0, 256, 256); });
       texture = painter.getImageData(0, 0, 512, 256); schedule();
     }).catch(function () {
@@ -85,7 +87,7 @@
   canvas.addEventListener('pointerdown', function (e) {
     if (dragging || e.button > 0) return;
     dragging = { id: e.pointerId, x: e.clientX, y: e.clientY };
-    canvas.setPointerCapture(e.pointerId); canvas.focus({ preventScroll: true }); schedule();
+    canvas.setPointerCapture(e.pointerId); canvas.focus({ preventScroll: true }); pixels = null; schedule();
   });
   canvas.addEventListener('pointermove', function (e) {
     if (!dragging || e.pointerId !== dragging.id) return;
@@ -94,7 +96,7 @@
     lat = Math.max(-1.45, Math.min(1.45, lat + (e.clientY - dragging.y) * .007 / zoom));
     dragging.x = e.clientX; dragging.y = e.clientY; schedule();
   });
-  function release(e) { if (dragging && dragging.id === e.pointerId) { dragging = null; schedule(); } }
+  function release(e) { if (dragging && dragging.id === e.pointerId) { dragging = null; pixels = null; schedule(); } }
   canvas.addEventListener('pointerup', release);
   canvas.addEventListener('pointercancel', release);
   canvas.addEventListener('lostpointercapture', release);
@@ -111,7 +113,7 @@
   document.getElementById('lite-in').addEventListener('click', function () { zoomBy(1.2); });
   document.getElementById('lite-out').addEventListener('click', function () { zoomBy(1 / 1.2); });
   document.getElementById('lite-retry').addEventListener('click', function () { this.hidden = true; load(); });
-  window.addEventListener('resize', schedule);
+  window.addEventListener('resize', function () { pixels = null; schedule(); });
   document.addEventListener('visibilitychange', function () { visible = !document.hidden && !host.hidden; if (visible) schedule(); });
   window.OoglexLiteGlobe = Object.freeze({ home: home, setVisible: function (value) {
     host.hidden = !value; visible = value && !document.hidden; if (visible) schedule();
