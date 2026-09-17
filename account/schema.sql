@@ -160,3 +160,44 @@ $$;
 
 revoke all on function public.my_product_access(text) from public;
 grant execute on function public.my_product_access(text) to authenticated;
+
+-- Subscription rows are the future webhook input. This trigger is the only
+-- automatic path that converts active/trialing subscription state into a
+-- profile access tier; canceled/expired/paused subscriptions fall back to FREE.
+create or replace function public.sync_profile_plan_from_subscriptions()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  target_user uuid;
+  next_plan text;
+begin
+  target_user := coalesce(new.user_id, old.user_id);
+
+  select s.plan
+  into next_plan
+  from public.subscriptions s
+  where s.user_id = target_user
+    and s.status in ('active','trialing')
+    and (s.current_period_end is null or s.current_period_end > now())
+  order by case s.plan when 'pro_plus' then 2 when 'pro' then 1 else 0 end desc,
+           s.current_period_end desc nulls first,
+           s.updated_at desc
+  limit 1;
+
+  update public.profiles
+  set plan = coalesce(next_plan, 'free'), updated_at = now()
+  where id = target_user;
+
+  return coalesce(new, old);
+end;
+$$;
+
+revoke all on function public.sync_profile_plan_from_subscriptions() from public, anon, authenticated;
+
+drop trigger if exists sync_profile_plan_after_subscription on public.subscriptions;
+create trigger sync_profile_plan_after_subscription
+after insert or update or delete on public.subscriptions
+for each row execute procedure public.sync_profile_plan_from_subscriptions();
