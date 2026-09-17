@@ -1,0 +1,50 @@
+name: Deploy Protected Ooglex Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Build FREE/PRO payload split
+        run: python scripts/pro/build_pro_datasets.py
+
+      - name: Build protected public site
+        run: python scripts/build_public_site.py --pro-cutover
+
+      - name: Verify no PRO-only data leaked into artifact
+        run: python scripts/validate_pro_public_cutover.py
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload protected Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .site
+
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
