@@ -23,26 +23,90 @@
     return "FREE · 10% PREVIEW";
   }
 
+  function onReady(fn) {
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn, { once: true });
+    else fn();
+  }
+
   function installBadge(access) {
-    function add() {
+    onReady(function () {
       if (document.getElementById("ooglex-rich-access")) return;
       var chip = document.createElement("div");
       chip.id = "ooglex-rich-access";
       chip.textContent = accessLabel(access);
       chip.style.cssText = [
-        "position:fixed","right:14px","bottom:14px","z-index:9999",
+        "position:fixed","right:14px","bottom:14px","z-index:10001",
         "padding:7px 11px","border-radius:999px","font:600 11px/1.2 -apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif",
         "letter-spacing:.4px","color:#dfe7ec","background:rgba(10,14,20,.88)",
         "border:1px solid rgba(255,255,255,.14)","backdrop-filter:blur(8px)",
         "box-shadow:0 8px 24px rgba(0,0,0,.28)"
       ].join(";");
       document.body.appendChild(chip);
-    }
-    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", add, { once: true });
-    else add();
+    });
   }
 
-  accessPromise.then(installBadge);
+  function installPreviewWall(access) {
+    if (access && access.access_level === "full") return;
+    onReady(function () {
+      if (document.getElementById("ooglex-preview-wall")) return;
+
+      var fade = document.createElement("div");
+      fade.id = "ooglex-preview-fade";
+      fade.style.cssText = [
+        "position:fixed","left:0","right:0","bottom:218px","height:110px","z-index:9998",
+        "pointer-events:none",
+        "background:linear-gradient(to bottom,rgba(0,0,0,0),rgba(10,10,10,.72))"
+      ].join(";");
+
+      var wall = document.createElement("div");
+      wall.id = "ooglex-preview-wall";
+      wall.style.cssText = [
+        "position:fixed","left:0","right:0","bottom:0","z-index:9999","min-height:218px",
+        "box-sizing:border-box","padding:24px 20px 22px","text-align:center",
+        "background:#171717","color:#f5f5f5","border-top:1px solid rgba(255,255,255,.10)",
+        "box-shadow:0 -18px 50px rgba(0,0,0,.30)",
+        "font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif"
+      ].join(";");
+
+      var title = document.createElement("div");
+      title.textContent = "继续查看完整数据";
+      title.style.cssText = "font-size:27px;font-weight:760;letter-spacing:-.3px;margin:1px 0 8px";
+
+      var sub = document.createElement("div");
+      sub.textContent = access && access.authenticated
+        ? "当前为 FREE 预览。升级 PRO 后继续使用同一原版页面查看全部数据。"
+        : "当前展示原版页面预览。登录 PRO 后可继续查看完整数据。";
+      sub.style.cssText = "font-size:14px;line-height:1.6;color:#c8c8c8;margin:0 auto 17px;max-width:720px";
+
+      var button = document.createElement("a");
+      button.href = "/account/";
+      button.textContent = access && access.authenticated ? "查看会员权限" : "登录 / 注册";
+      button.style.cssText = [
+        "display:inline-flex","align-items:center","justify-content:center","min-width:270px","height:44px",
+        "padding:0 22px","border-radius:4px","background:#fff","color:#111","text-decoration:none",
+        "font-size:15px","font-weight:720","box-shadow:none"
+      ].join(";");
+
+      var note = document.createElement("div");
+      note.textContent = "完整数据不会发送给 FREE 浏览器；页面下方仅保留受限预览。";
+      note.style.cssText = "font-size:11px;color:#8f8f8f;margin-top:14px";
+
+      wall.appendChild(title);
+      wall.appendChild(sub);
+      wall.appendChild(button);
+      wall.appendChild(note);
+      document.body.appendChild(fade);
+      document.body.appendChild(wall);
+
+      var chip = document.getElementById("ooglex-rich-access");
+      if (chip) chip.style.bottom = "232px";
+    });
+  }
+
+  accessPromise.then(function (access) {
+    installBadge(access);
+    installPreviewWall(access);
+  });
 
   function relPath(url) {
     var u;
@@ -113,7 +177,7 @@
 
     return accessPromise.then(function (access) {
       if (!access || access.access_level !== "full") {
-        return nativeFetch(input, init); // public site contains only the same-page 10% preview artifact
+        return nativeFetch(input, init);
       }
       return fullPromise.then(function (bundle) {
         var payload = product === "supply_chain"
@@ -121,12 +185,6 @@
           : macroPayload(rel, bundle);
         if (payload !== undefined && payload !== null) return jsonResponse(payload);
 
-        // Transitional compatibility bridge: the currently uploaded private R2
-        // Supply Chain bundle predates edge-shard embedding. The source repository
-        // is still public today, so authenticated FULL users may read a missing
-        // legacy component from the same canonical source instead of receiving 503.
-        // Remove this bridge after the regenerated full.json is uploaded to R2 and
-        // before the full source datasets are removed from the public repository.
         return legacyFullBridge(rel).then(function (bridged) {
           if (bridged) return bridged;
           return new Response(JSON.stringify({ error: "full_payload_component_not_ready", path: rel }), {
