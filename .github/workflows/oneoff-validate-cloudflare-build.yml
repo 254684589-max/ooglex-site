@@ -1,0 +1,40 @@
+name: One-off validate Cloudflare Pages build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/oneoff-validate-cloudflare-build.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate migration build
+        run: |
+          python3 scripts/build_public_site.py
+          test -f .site/index.html
+          test -f .site/apps/supply-chain/nodes.json
+          test -f .site/apps/macro-radar/data.json
+          test ! -e .site/account/schema.sql
+          test ! -e .site/.github
+          test ! -e .site/scripts
+      - name: Validate PRO cutover build
+        run: |
+          python3 scripts/build_public_site.py --pro-cutover
+          test -f .site/index.html
+          test ! -e .site/apps/supply-chain/nodes.json
+          test ! -e .site/apps/supply-chain/edges
+          test ! -e .site/apps/macro-radar/data.json
+          test ! -e .site/apps/macro-radar/history.json
+          test ! -e .site/account/schema.sql
+      - name: Static checks
+        run: |
+          python3 -m py_compile scripts/build_public_site.py scripts/pro/build_pro_datasets.py
+          node --check cloudflare/pro-api/worker.js
+          node --check assets/pro-access.js
+          git diff --check
