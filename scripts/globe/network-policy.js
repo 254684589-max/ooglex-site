@@ -8,6 +8,57 @@
   var english = new URLSearchParams(location.search).get('lang') === 'en';
   var localId = 'local-earth', previousMap = null;
   var overviewHeight = 22000000;
+  // Natural Earth stops at level 2: city/street views have no usable detail.
+  var basicMinimumHeight = 5000000, cameraGuard = null;
+  function installCameraGuard(viewer) {
+    if (cameraGuard) return cameraGuard;
+    var camera = viewer.camera, controller = viewer.scene.screenSpaceCameraController;
+    var originalMinimum = controller.minimumZoomDistance;
+    var originals = { setView: camera.setView, flyTo: camera.flyTo };
+    function basic() {
+      return (scene ? scene.mapStackController.getState().activeId : previousMap || localId) === localId;
+    }
+    function safeOptions(options) {
+      if (!basic() || viewer.scene.mode !== C.SceneMode.SCENE3D) return options;
+      var destination = options && options.destination;
+      if (destination && destination.west !== undefined) destination = camera.getRectangleCameraCoordinates(destination);
+      var position = C.Cartographic.fromCartesian(destination || camera.positionWC);
+      if (!position || position.height >= basicMinimumHeight) return options;
+      // Keep the requested place and callbacks, without rewriting saved shots.
+      // Cesium destinations are world coordinates, even with an endTransform.
+      return Object.assign({}, options, {
+        destination: C.Cartesian3.fromRadians(position.longitude, position.latitude, basicMinimumHeight),
+        orientation: { heading: options?.orientation?.heading || 0, pitch: -C.Math.PI_OVER_TWO, roll: 0 },
+        endTransform: C.Matrix4.IDENTITY
+      });
+    }
+    var wrappers = {};
+    Object.keys(originals).forEach(function (method) {
+      wrappers[method] = function (options) { return originals[method].call(this, safeOptions(options)); };
+      camera[method] = wrappers[method];
+    });
+    function sync() {
+      controller.minimumZoomDistance = basic() ? Math.max(originalMinimum, basicMinimumHeight) : originalMinimum;
+    }
+    // Wheel/pinch, tracked entities and lookAt can bypass flyTo/setView. Guard
+    // before drawing as well; do not cancel flights or lose scene completion.
+    var remove = viewer.scene.preRender.addEventListener(function () {
+      sync();
+      if (!basic() || viewer.scene.mode !== C.SceneMode.SCENE3D ||
+          camera.positionCartographic.height >= basicMinimumHeight - 1) return;
+      originals.setView.call(camera, safeOptions({ destination: camera.positionWC }));
+    });
+    sync();
+    cameraGuard = { sync: sync, dispose: function () {
+      remove();
+      Object.keys(originals).forEach(function (method) {
+        if (camera[method] === wrappers[method]) camera[method] = originals[method];
+      });
+      controller.minimumZoomDistance = originalMinimum;
+      cameraGuard = null;
+    }};
+    return cameraGuard;
+  }
   function overview(viewer, keepCenter) {
     var position = viewer.camera.positionCartographic;
     var lon = keepCenter ? C.Math.toDegrees(position.longitude) : 105;
@@ -22,10 +73,14 @@
     viewer.scene.requestRender();
   }
   function initialView(viewer) {
+    var guard = installCameraGuard(viewer);
     var status = document.querySelector('#loading-screen .loader-status');
     if (status) status.textContent = words('正在显示全球地球…', 'Preparing global view...');
     overview(viewer, false);
-    return function () { if (!viewer.isDestroyed()) viewer.camera.cancelFlight(); };
+    return function () {
+      guard.dispose();
+      if (!viewer.isDestroyed()) viewer.camera.cancelFlight();
+    };
   }
   function words(zh, en) { return english ? en : zh; }
   function report(type, detail) {
@@ -118,6 +173,7 @@
     if (scene && id === localId && (previousMap !== localId || state.lastError) &&
         scene.viewer.camera.positionCartographic.height < 10000000) overview(scene.viewer, true);
     previousMap = id;
+    if (cameraGuard) cameraGuard.sync();
     document.documentElement.dataset.globeMap = id || localId;
     report(ready ? 'ready' : 'loading', {
       map: id, switching: state.status === 'switching',
@@ -144,6 +200,7 @@
   function start(app) {
     return app.start().then(function (components) {
       scene = components.scene;
+      installCameraGuard(scene.viewer);
       if (scene.mapStackController.getState().activeId === localId &&
           scene.viewer.camera.positionCartographic.height < 10000000) overview(scene.viewer, true);
       // A defined Cesium global or iframe load event does not prove a rendered globe.

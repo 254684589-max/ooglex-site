@@ -46,6 +46,7 @@ jobs:
           node --check scripts/globe/network-policy.js
           node --check scripts/globe/patch-network.mjs
           node --check scripts/globe/verify-network.mjs
+          node --check scripts/globe/verify-camera.mjs
           node --check scripts/globe/browser.mjs
           for file in apps/globe/app/assets/index-*.js; do node --check "$file"; done
           python3 scripts/globe/test_fetch_space_data.py

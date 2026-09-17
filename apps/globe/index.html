@@ -178,7 +178,7 @@
       </p>
       <p>
         默认使用<strong>基础地球</strong>，可查看全球轮廓和数据图层；它是低分辨率底图，
-        不提供街区细节或地形起伏。需要细节时可点击「切换高清影像」；
+        缩放和预设镜头会保持区域概览，不提供街区细节或地形起伏。需要细节时可点击「切换高清影像」；
         影像连接失败会自动返回基础地球。
       </p>
       <p>
@@ -248,7 +248,7 @@
   var GLOBAL_LANG_KEY = 'ooglex.language'; // 与首页/全站语言选择保持一致
   /** 应用地址；英文原版通过 ?lang=en 让中文化层自行短路。 */
   function appUrl() {
-    return APP_URL + '?map=local-earth&view=2' + (readLang() === 'en' ? '&lang=en' : '');
+    return APP_URL + '?map=local-earth&view=3' + (readLang() === 'en' ? '&lang=en' : '');
   }
   var stage = document.getElementById('stage');
   var gate = document.getElementById('gate');
@@ -336,7 +336,7 @@
     mapButton.textContent = activeMap === 'local-earth' && !detail.switching ? '切换高清影像' : '返回基础地球';
     loadStatus.textContent = detail.switching ? '正在连接影像服务…'
       : detail.note ? '影像不可用 · 已返回基础地球'
-      : activeMap === 'local-earth' ? '基础地球 · 低分辨率底图'
+      : activeMap === 'local-earth' ? '基础地球 · 区域概览'
       : activeMap === 'osm' ? 'OpenStreetMap 底图' : 'Esri 高清影像';
     loadStatus.title = typeof detail.note === 'string' ? detail.note : '';
   });
