@@ -6,7 +6,7 @@
   <meta name="google" content="notranslate">
   <meta name="robots" content="noindex,follow">
   <title>Ooglex Pro · 研究工具内测</title>
-  <meta name="description" content="Ooglex Pro 内测：全球产业链与宏观风险监测高级功能。当前仅搭建权限与私有数据架构，不进行真实收费。">
+  <meta name="description" content="Ooglex Pro 内测：全球产业链与宏观风险监测高级功能。FREE 返回受控预览，PRO 经权限验证后读取私有数据。">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="stylesheet" href="/pro/pro.css?v=1">
 </head>
@@ -20,11 +20,11 @@
       <div class="bar"><span class="pill pro">PRIVATE R2</span><span class="pill pro">SUPABASE AUTH</span><span class="pill">暂不收费</span></div>
     </section>
     <section class="grid">
-      <article class="card half"><div class="k">SUPPLY CHAIN INTELLIGENCE</div><div class="v">全球产业链</div><p class="small">FREE：规模、覆盖与样本公司。PRO：完整公司节点、补充数据集与深层关系数据。</p><div class="actions"><a class="btn primary" href="/pro/supply-chain/">进入权限版</a><a class="btn" href="/apps/supply-chain/">旧公开页</a></div></article>
-      <article class="card half"><div class="k">MACRO RISK MONITOR</div><div class="v">宏观风险监测</div><p class="small">FREE：风险总分、当前状态、前三项信号。PRO：完整信号、历史回放、底层序列与期限结构。</p><div class="actions"><a class="btn primary" href="/pro/macro-risk/">进入权限版</a><a class="btn" href="/apps/macro-radar/">旧公开页</a></div></article>
+      <article class="card half"><div class="k">SUPPLY CHAIN INTELLIGENCE</div><div class="v">全球产业链</div><p class="small">FREE：规模、覆盖与样本公司。PRO：完整公司节点、补充数据集与深层关系数据。</p><div class="actions"><a class="btn primary" href="/pro/supply-chain/">进入全球产业链</a></div></article>
+      <article class="card half"><div class="k">MACRO RISK MONITOR</div><div class="v">宏观风险监测</div><p class="small">FREE：风险总分、当前状态、前三项信号。PRO：完整信号、历史回放、底层序列与期限结构。</p><div class="actions"><a class="btn primary" href="/pro/macro-risk/">进入宏观风险监测</a></div></article>
     </section>
-    <div class="notice"><strong>当前处于安全切换阶段。</strong> 新的权限版已经走私有 R2；旧公开页面仍保留用于对照，下一步再切换正式入口并停止部署旧的完整 JSON。</div>
-    <footer class="foot">Ooglex Pro V0.1 · 完整 PRO 数据不会把 R2 凭据或服务端密钥暴露给浏览器。</footer>
+    <div class="notice"><strong>PRO 数据已切换到受保护访问。</strong> 旧公开入口仅保留兼容跳转；生产部署不再包含完整产业链与宏观风险 JSON。</div>
+    <footer class="foot">Ooglex Pro V0.1 · 完整 PRO 数据仅通过受保护 Worker 返回，R2 凭据和服务端密钥不会暴露给浏览器。</footer>
   </main>
 </body>
 </html>
