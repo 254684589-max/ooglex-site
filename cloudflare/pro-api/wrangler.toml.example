@@ -1,0 +1,16 @@
+name = "ooglex-pro-api"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+# Bind a private R2 bucket that contains only server-side datasets.
+[[r2_buckets]]
+binding = "PRO_DATA"
+bucket_name = "ooglex-pro-data"
+
+[vars]
+SUPABASE_URL = "https://nwthqkpkvbtilafqpjlf.supabase.co"
+SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Vf8spXXXksPHKvfxp2XPcw_1dfaIR6r"
+ALLOWED_ORIGINS = "https://www.ooglex.com,https://ooglex.com"
+
+# Recommended route after the Worker is connected:
+# pro-api.ooglex.com/*
