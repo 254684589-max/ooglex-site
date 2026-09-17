@@ -1,0 +1,49 @@
+name: One-off validate Ooglex Pro V0.1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/oneoff-validate-pro-v01.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build private payloads locally
+        run: |
+          python3 scripts/pro/build_pro_datasets.py
+          test -s .pro-build/supply-chain/preview.json
+          test -s .pro-build/supply-chain/full.json
+          test -s .pro-build/macro-risk/preview.json
+          test -s .pro-build/macro-risk/full.json
+      - name: Validate payload contracts
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('.pro-build')
+          cases = [
+              ('supply-chain/preview.json', 'supply_chain', 'preview'),
+              ('supply-chain/full.json', 'supply_chain', 'full'),
+              ('macro-risk/preview.json', 'macro_risk', 'preview'),
+              ('macro-risk/full.json', 'macro_risk', 'full'),
+          ]
+          for rel, product, mode in cases:
+              d = json.loads((root/rel).read_text())
+              assert d['product'] == product, (rel, d.get('product'))
+              assert d['mode'] == mode, (rel, d.get('mode'))
+          assert len(json.loads((root/'supply-chain/preview.json').read_text()).get('sampleNodes', [])) <= 40
+          assert len(json.loads((root/'macro-risk/preview.json').read_text()).get('signals', [])) <= 3
+          print('PRO dataset contracts OK')
+          PY
+      - name: Verify private build output is ignored
+        run: |
+          test -z "$(git status --porcelain -- .pro-build)"
+          node --check cloudflare/pro-api/worker.js
+          node --check assets/pro-access.js
+          git diff --check
