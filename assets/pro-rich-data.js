@@ -88,6 +88,19 @@
     return undefined;
   }
 
+  function legacyFullBridge(rel) {
+    if (product !== "supply_chain") return Promise.resolve(null);
+    if (!(rel === "history.json" || rel === "peers.json" || rel === "names-zh.json" || rel.indexOf("edges/") === 0)) {
+      return Promise.resolve(null);
+    }
+    var safe = rel.split("/").map(encodeURIComponent).join("/");
+    var url = "https://raw.githubusercontent.com/254684589-max/ooglex-site/main/apps/supply-chain/" + safe;
+    return nativeFetch(url, { cache: "no-store" }).then(function (res) {
+      if (!res.ok) return null;
+      return res.json().then(jsonResponse).catch(function () { return null; });
+    }).catch(function () { return null; });
+  }
+
   window.fetch = function (input, init) {
     var raw = typeof input === "string" ? input : (input && input.url ? input.url : "");
     var rel = relPath(raw);
@@ -100,19 +113,27 @@
 
     return accessPromise.then(function (access) {
       if (!access || access.access_level !== "full") {
-        return nativeFetch(input, init); // static legacy path contains only the 10% preview artifact
+        return nativeFetch(input, init); // public site contains only the same-page 10% preview artifact
       }
       return fullPromise.then(function (bundle) {
         var payload = product === "supply_chain"
           ? supplyPayload(rel, bundle)
           : macroPayload(rel, bundle);
-        if (payload === undefined || payload === null) {
+        if (payload !== undefined && payload !== null) return jsonResponse(payload);
+
+        // Transitional compatibility bridge: the currently uploaded private R2
+        // Supply Chain bundle predates edge-shard embedding. The source repository
+        // is still public today, so authenticated FULL users may read a missing
+        // legacy component from the same canonical source instead of receiving 503.
+        // Remove this bridge after the regenerated full.json is uploaded to R2 and
+        // before the full source datasets are removed from the public repository.
+        return legacyFullBridge(rel).then(function (bridged) {
+          if (bridged) return bridged;
           return new Response(JSON.stringify({ error: "full_payload_component_not_ready", path: rel }), {
             status: 503,
             headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" }
           });
-        }
-        return jsonResponse(payload);
+        });
       });
     });
   };
