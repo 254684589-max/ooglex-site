@@ -45,6 +45,11 @@ function displayPlan(value) {
   return 'FREE';
 }
 
+function displayMembership(plan, role) {
+  if (String(role || '').toLowerCase() === 'owner') return 'OWNER';
+  return displayPlan(plan);
+}
+
 function syncDocumentLanguage() {
   const en = isEnglish();
   document.documentElement.lang = en ? 'en' : 'zh-CN';
@@ -157,7 +162,7 @@ async function boot() {
       try {
         const result = await sb
           .from('profiles')
-          .select('display_name,plan,status')
+          .select('display_name,plan,status,role')
           .eq('id', user.id)
           .maybeSingle();
         if (!result.error) profile = result.data;
@@ -171,7 +176,7 @@ async function boot() {
 
       emailEl.textContent = user.email || '—';
       nameEl.textContent = profile?.display_name || user.user_metadata?.display_name || tr('未设置', 'Not set');
-      planEl.textContent = displayPlan(profile?.plan);
+      planEl.textContent = displayMembership(profile?.plan, profile?.role);
       statusEl.textContent = String(profile?.status || 'active').toUpperCase();
       show($('user-state'));
     }
