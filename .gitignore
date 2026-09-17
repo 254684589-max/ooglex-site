@@ -17,3 +17,6 @@ client_secret.json
 
 # Ooglex Pro private packaging output. Never commit full PRO datasets.
 .pro-build/
+
+# Cloudflare Pages build output.
+.site/
