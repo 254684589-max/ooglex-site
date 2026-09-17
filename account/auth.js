@@ -268,7 +268,7 @@ async function boot() {
 
     $('recovery-form').onsubmit = async (event) => {
       event.preventDefault();
-      const password = $('new-password').value;
+      const password = $('recovery-password').value;
       if (!password || password.length < 6) {
         return say(tr('新密码至少需要 6 位。', 'The new password must be at least 6 characters.'), 'error');
       }
@@ -282,7 +282,7 @@ async function boot() {
       await render(current.data.user || null);
     };
 
-    $('signout-button').onclick = async () => {
+    $('logout-button').onclick = async () => {
       await sb.auth.signOut();
       say(tr('已退出。', 'Signed out.'), 'ok');
       tab(true);
