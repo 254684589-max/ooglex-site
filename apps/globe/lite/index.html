@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ooglex Basic Earth</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02050a;color:#dbe7f4;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+#globe{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab;background:radial-gradient(circle at 50% 45%,#0b1722 0,#03070d 42%,#000 78%)}
+#globe:active{cursor:grabbing}
+.badge{position:fixed;left:14px;bottom:12px;padding:6px 9px;border:1px solid rgba(255,255,255,.12);border-radius:6px;background:rgba(5,11,17,.72);backdrop-filter:blur(6px);font:11px ui-monospace,SFMono-Regular,Menlo,monospace;color:#8fa3b8;pointer-events:none}
+#full{position:fixed;inset:0;width:100%;height:100%;border:0;opacity:0;pointer-events:none;transition:opacity .18s ease;background:#000}
+#full.ready{opacity:1;pointer-events:auto}
+</style>
+</head>
+<body>
+<canvas id="globe" aria-label="本地基础三维地球"></canvas>
+<div class="badge" id="badge">BASIC EARTH · LOCAL</div>
+<script>
+(function(){
+'use strict';
+var canvas=document.getElementById('globe'),badge=document.getElementById('badge');
+var gl=canvas.getContext('webgl',{antialias:true,alpha:false,powerPreference:'high-performance'})||canvas.getContext('experimental-webgl');
+var yaw=-1.15,pitch=.23,zoom=3.05,drag=false,lastX=0,lastY=0,lastT=0,vx=0,vy=0,full=null,fullReady=false,pendingMap=null,booted=false;
+var params=new URLSearchParams(location.search),english=params.get('lang')==='en';
+function post(state,detail){if(window.parent!==window)window.parent.postMessage({type:'ooglex:globe',url:location.href.split('#')[0],state:state,detail:detail||''},location.origin)}
+function ready(){if(booted)return;booted=true;post('ready',{map:'local-earth',mode:'lite'});setTimeout(function(){ensureFull(false)},900)}
+function fail(){badge.textContent=english?'BASIC EARTH · LOCAL FALLBACK':'基础地球 · 本地兜底';ready()}
+if(!gl){fail();return}
+var vs='attribute vec3 p;attribute vec2 t;uniform float y;uniform float x;uniform float z;uniform float a;varying vec2 v;varying vec3 n;void main(){float cy=cos(y),sy=sin(y),cx=cos(x),sx=sin(x);vec3 q=vec3(cy*p.x+sy*p.z,p.y,-sy*p.x+cy*p.z);q=vec3(q.x,cx*q.y-sx*q.z,sx*q.y+cx*q.z);vec3 nn=q;float d=z-q.z;gl_Position=vec4(q.x*2.25/a,q.y*2.25,d-1.0,d);v=t;n=nn;}';
+var fs='precision mediump float;uniform sampler2D m;varying vec2 v;varying vec3 n;void main(){vec3 c=texture2D(m,v).rgb;float l=.46+.54*max(dot(normalize(n),normalize(vec3(-.3,.55,.8))),0.0);float rim=pow(1.0-max(n.z,0.0),2.0)*.18;gl_FragColor=vec4(c*l+vec3(0.02,0.07,0.12)*rim,1.0);}';
+function shader(type,src){var s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);return s}
+var prog=gl.createProgram();gl.attachShader(prog,shader(gl.VERTEX_SHADER,vs));gl.attachShader(prog,shader(gl.FRAGMENT_SHADER,fs));gl.linkProgram(prog);gl.useProgram(prog);
+var segX=72,segY=36,pos=[],uv=[],idx=[];
+for(var j=0;j<=segY;j++){var vv=j/segY,lat=Math.PI*(.5-vv),cl=Math.cos(lat),sl=Math.sin(lat);for(var i=0;i<=segX;i++){var uu=i/segX,lon=(uu-.5)*Math.PI*2;pos.push(cl*Math.sin(lon),sl,cl*Math.cos(lon));uv.push(uu,1-vv)}}
+for(var yy=0;yy<segY;yy++)for(var xx=0;xx<segX;xx++){var k=yy*(segX+1)+xx;idx.push(k,k+segX+1,k+1,k+1,k+segX+1,k+segX+2)}
+function buf(data,attr,size){var b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);var l=gl.getAttribLocation(prog,attr);gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,size,gl.FLOAT,false,0,0)}
+buf(pos,'p',3);buf(uv,'t',2);var ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(idx),gl.STATIC_DRAW);
+var uy=gl.getUniformLocation(prog,'y'),ux=gl.getUniformLocation(prog,'x'),uz=gl.getUniformLocation(prog,'z'),ua=gl.getUniformLocation(prog,'a');
+var tex=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,tex);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.REPEAT);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+function loadImg(src){return new Promise(function(res,rej){var im=new Image();im.onload=function(){res(im)};im.onerror=rej;im.src=src})}
+Promise.all([loadImg('/apps/globe/app/cesium/Assets/Textures/NaturalEarthII/0/0/0.jpg?v=1'),loadImg('/apps/globe/app/cesium/Assets/Textures/NaturalEarthII/0/1/0.jpg?v=1')]).then(function(img){var c=document.createElement('canvas');c.width=512;c.height=256;var q=c.getContext('2d');q.drawImage(img[0],0,0,256,256);q.drawImage(img[1],256,0,256,256);gl.bindTexture(gl.TEXTURE_2D,tex);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,gl.RGB,gl.UNSIGNED_BYTE,c);ready()}).catch(function(){var px=new Uint8Array([18,56,82,18,56,82,32,91,105,32,91,105]);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,2,2,0,gl.RGB,gl.UNSIGNED_BYTE,px);fail()});
+function resize(){var d=Math.min(devicePixelRatio||1,1.5),w=Math.max(1,Math.floor(innerWidth*d)),h=Math.max(1,Math.floor(innerHeight*d));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}gl.viewport(0,0,w,h)}
+function draw(){resize();if(!drag){yaw+=vx;pitch+=vy;vx*=.94;vy*=.94;if(Math.abs(vx)<.00002)vx=.00055;if(Math.abs(vy)<.00002)vy=0}pitch=Math.max(-1.22,Math.min(1.22,pitch));gl.clearColor(0,0,.01,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);gl.uniform1f(uy,yaw);gl.uniform1f(ux,pitch);gl.uniform1f(uz,zoom);gl.uniform1f(ua,canvas.width/canvas.height);gl.drawElements(gl.TRIANGLES,idx.length,gl.UNSIGNED_SHORT,0);requestAnimationFrame(draw)}requestAnimationFrame(draw);
+canvas.addEventListener('pointerdown',function(e){drag=true;lastX=e.clientX;lastY=e.clientY;lastT=performance.now();vx=vy=0;canvas.setPointerCapture(e.pointerId)});
+canvas.addEventListener('pointermove',function(e){if(!drag)return;var now=performance.now(),dt=Math.max(8,now-lastT),dx=e.clientX-lastX,dy=e.clientY-lastY;yaw+=dx*.006;pitch+=dy*.006;vx=dx*.006*16/dt;vy=dy*.006*16/dt;lastX=e.clientX;lastY=e.clientY;lastT=now});
+canvas.addEventListener('pointerup',function(){drag=false});canvas.addEventListener('pointercancel',function(){drag=false});
+canvas.addEventListener('wheel',function(e){e.preventDefault();zoom=Math.max(2.15,Math.min(5.4,zoom+Math.sign(e.deltaY)*.18))},{passive:false});
+function ensureFull(force){if(full)return;full=document.createElement('iframe');full.id='full';full.title='完整三维态势地球';full.allow='geolocation; microphone; fullscreen';full.setAttribute('allowfullscreen','');var q='?map=local-earth&view=4&network=4'+(english?'&lang=en':'');full.src='/apps/globe/app/'+q;document.body.appendChild(full);if(force)badge.textContent=english?'LOADING HD ENGINE…':'正在加载高清引擎…'}
+window.addEventListener('message',function(e){
+ if(e.origin!==location.origin)return;
+ if(full&&e.source===full.contentWindow){var m=e.data;if(!m||m.type!=='ooglex:globe')return;if(m.state==='ready'){fullReady=true;full.classList.add('ready');badge.style.display='none';if(pendingMap){full.contentWindow.postMessage({type:'ooglex:set-map',map:pendingMap},location.origin);pendingMap=null}post('ready',Object.assign({},m.detail||{},{mode:'full'}))}else if(m.state==='error'){full.remove();full=null;fullReady=false;post('ready',{map:'local-earth',mode:'lite',note:''})}return}
+ if(e.source!==window.parent)return;var d=e.data;if(!d)return;if(d.type==='ooglex:overview'){if(fullReady)full.contentWindow.postMessage(d,location.origin);else{yaw=-1.15;pitch=.23;zoom=3.05}return}if(d.type==='ooglex:set-map'){if(d.map==='local-earth'&&!fullReady){pendingMap=null;post('ready',{map:'local-earth',mode:'lite'});return}pendingMap=d.map;ensureFull(true);post('ready',{map:'local-earth',mode:'lite',switching:true})}
+});
+})();
+</script>
+</body>
+</html>
