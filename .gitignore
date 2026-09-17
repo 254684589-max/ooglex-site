@@ -14,3 +14,6 @@ short_meta.json
 slide_*.png
 client_secret.json
 .theme-audit-*.json
+
+# Ooglex Pro private packaging output. Never commit full PRO datasets.
+.pro-build/
