@@ -97,7 +97,7 @@ def main() -> None:
             assert_preview_marker(read_json(rel), rel)
 
     # The eight headline regime cards are part of the visible preview UX. The
-    # lower research layer remains restricted and the paywall blocks continuation.
+    # lower research layer remains restricted and the hard-stop blocks continuation.
     macro = read_json("apps/macro-radar/data.json")
     assert_preview_marker(macro, "apps/macro-radar/data.json")
     source_macro = json.loads((ROOT / "apps/macro-radar/data.json").read_text(encoding="utf-8"))
@@ -119,25 +119,38 @@ def main() -> None:
     }
     sync_access = '<script src="/assets/pro-access.js?v=4"></script>'
     sync_adapter = '<script src="/assets/pro-rich-data.js?v=3"></script>'
+    hard_stop = '<script src="/assets/pro-preview-gate.js?v=1"></script>'
     for rel, legacy_app in rich_pages.items():
         p = SITE / rel
         if not p.exists():
             fail("original rich page missing: " + rel)
         text = p.read_text(encoding="utf-8")
-        if sync_access not in text or sync_adapter not in text:
-            fail("synchronous rich access adapter missing from: " + rel)
+        if sync_access not in text or sync_adapter not in text or hard_stop not in text:
+            fail("rich access or hard-stop adapter missing from: " + rel)
         if text.index(sync_access) > text.index(sync_adapter):
             fail("pro-access must load before pro-rich-data: " + rel)
+        if text.index(sync_adapter) > text.index(hard_stop):
+            fail("pro-rich-data must load before preview hard-stop: " + rel)
         legacy_pos = text.rfind(legacy_app)
-        if legacy_pos < 0 or text.index(sync_adapter) > legacy_pos:
-            fail("rich access adapter must run before legacy app boot: " + rel)
+        if legacy_pos < 0 or text.index(hard_stop) > legacy_pos:
+            fail("preview hard-stop must run before legacy app boot: " + rel)
         if "location.replace('/pro/" in text or 'location.replace("/pro/' in text:
             fail("legacy page still redirects away from original UI: " + rel)
 
     adapter = (SITE / "assets/pro-rich-data.js").read_text(encoding="utf-8")
-    for token in ("ooglex-preview-wall", "继续查看完整数据", "fullEdges"):
-        if token not in adapter and token != "fullEdges":
+    for token in ("ooglex-preview-wall", "继续查看完整数据"):
+        if token not in adapter:
             fail("FREE preview paywall missing token: " + token)
+
+    gate = (SITE / "assets/pro-preview-gate.js").read_text(encoding="utf-8")
+    for token in (
+        "data-ooglex-preview-clipped",
+        "data-ooglex-preview-hard-stop",
+        'root.style.overflow = "hidden"',
+        "preferredCutoff",
+    ):
+        if token not in gate:
+            fail("FREE preview hard-stop missing token: " + token)
 
     aliases = {
         "pro/supply-chain/index.html": "/apps/supply-chain/",
@@ -154,6 +167,7 @@ def main() -> None:
     for required in (
         "assets/pro-access.js",
         "assets/pro-rich-data.js",
+        "assets/pro-preview-gate.js",
         "pro/index.html",
     ):
         if not (SITE / required).exists():
@@ -163,8 +177,8 @@ def main() -> None:
     print("- original Supply Chain and Macro Risk interfaces are preserved")
     print("- Macro FREE preview keeps all headline regime cards")
     print("- company edge shards are capped at 10%, including NVDA")
-    print("- FREE/guest gets a page-level paywall while full data stays private")
-    print("- OWNER/PRO adapter runs before legacy app fetches")
+    print("- FREE/guest preview is clipped at a hard stop; hidden lower sections cannot extend scrolling")
+    print("- OWNER/PRO remains unclipped and receives full entitlement data")
 
 
 if __name__ == "__main__":
