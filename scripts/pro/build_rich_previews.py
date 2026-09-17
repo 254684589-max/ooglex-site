@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Build same-schema 10% previews for the original rich Supply Chain and Macro pages.
+"""Build safe previews for the original rich Supply Chain and Macro pages.
 
-These outputs are intended for the public Pages artifact. They preserve the original
-UI/data contracts while exposing only a deterministic subset. Full data continues
-to live behind the entitlement Worker and private R2.
+The FREE experience keeps the original page/UI. It is *not* implemented by shipping
+full data and hiding it with CSS. Public payloads remain reduced, while the page uses
+a Bloomberg-style paywall treatment after the visible preview area.
 """
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ import copy
 import json
 import math
 import shutil
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -54,6 +55,41 @@ def filter_symbol_map(value, symbols: set[str]):
     return {k: v for k, v in value.items() if str(k).upper() in symbols}
 
 
+def preview_edge_payload(obj: dict) -> dict:
+    """Keep <=10% of a company edge shard; never copy a full shard to Pages."""
+    out = copy.deepcopy(obj)
+    full_rows = [x for x in (obj.get("edges") or []) if isinstance(x, dict)]
+    keep = count10(len(full_rows))
+    rows = full_rows[:keep]
+    out["edges"] = rows
+
+    by_country = Counter()
+    by_mineral = Counter()
+    for row in rows:
+        country = row.get("country")
+        if country:
+            by_country[str(country)] += 1
+        for mineral in row.get("minerals") or []:
+            if mineral:
+                by_mineral[str(mineral)] += 1
+    out["byCountry"] = dict(by_country)
+    out["byMineral"] = dict(by_mineral)
+
+    parse = copy.deepcopy(out.get("parse") or {})
+    parse["unique"] = len(rows)
+    parse["nameOnly"] = sum(1 for r in rows if r.get("idType") == "name-only")
+    parse["rowsScanned"] = len(rows)
+    parse["rowsWithCid"] = sum(1 for r in rows if r.get("idType") == "rmi-cid")
+    out["parse"] = parse
+    out["ooglexAccess"] = {
+        "mode": "preview",
+        "ratio": RATIO,
+        "visibleEdges": len(rows),
+        "fullEdges": len(full_rows),
+    }
+    return out
+
+
 def build_supply_chain() -> None:
     src = load("apps/supply-chain/nodes.json")
     selected = top_market_cap_nodes(src.get("nodes") or [])
@@ -77,13 +113,11 @@ def build_supply_chain() -> None:
         cov["previewRatio"] = RATIO
         cov["previewCompanies"] = len(selected)
         cov["fullNodesTotal"] = (src.get("coverage") or {}).get("nodesTotal", len(src.get("nodes") or []))
-        # filingStatus is a per-symbol map and must not expose the other 90%.
         if isinstance(cov.get("filingStatus"), dict):
             cov["filingStatus"] = filter_symbol_map(cov["filingStatus"], symbols)
 
     write("supply-chain/nodes.json", preview)
 
-    # History/peers preserve their original schema, filtering per-company maps where present.
     for name in ("history", "peers"):
         p = ROOT / "apps" / "supply-chain" / f"{name}.json"
         if not p.exists():
@@ -105,9 +139,11 @@ def build_supply_chain() -> None:
             names["ooglexAccess"] = {"mode": "preview", "ratio": RATIO}
         write("supply-chain/names-zh.json", names)
 
-    # Publish edge shards only for the visible 10% sample companies.
+    # Only visible sample companies get an edge shard, and every shard is itself
+    # reduced to <=10%. This fixes the previous NVDA leak where 239/239 smelters
+    # were public simply because NVDA happened to be in the company preview set.
     edge_index = src.get("edgeIndex") or {}
-    copied = 0
+    written = 0
     for sym in sorted(symbols):
         meta = edge_index.get(sym) or edge_index.get(sym.upper())
         if not isinstance(meta, dict):
@@ -118,11 +154,10 @@ def build_supply_chain() -> None:
         src_path = ROOT / "apps" / "supply-chain" / rel
         if not src_path.exists() or not src_path.is_file():
             continue
-        dst = OUT / "supply-chain" / rel
-        dst.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(src_path, dst)
-        copied += 1
-    print(f"copied {copied} preview edge shards")
+        obj = json.loads(src_path.read_text(encoding="utf-8"))
+        write(f"supply-chain/{rel}", preview_edge_payload(obj))
+        written += 1
+    print(f"wrote {written} reduced preview edge shards")
 
 
 def trim_series(value, start: int, total: int):
@@ -137,9 +172,12 @@ def build_macro_risk() -> None:
     data = load("apps/macro-radar/data.json")
     preview = copy.deepcopy(data)
 
+    # All eight top-level regime cards remain visible in the original UI. The
+    # paywall is applied to the page/deeper research layer, not by deleting seven
+    # of eight headline cards. Detailed lower-page collections remain reduced.
     sigs = preview.get("signals") or []
     if isinstance(sigs, list):
-        preview["signals"] = sigs[:count10(len(sigs))]
+        preview["signals"] = sigs
 
     muts = preview.get("mutations") or []
     if isinstance(muts, list):
@@ -158,7 +196,12 @@ def build_macro_risk() -> None:
             reduced.append(c)
         preview["macro"] = reduced
 
-    preview["ooglexAccess"] = {"mode": "preview", "ratio": RATIO}
+    preview["ooglexAccess"] = {
+        "mode": "preview",
+        "ratio": RATIO,
+        "presentation": "page-paywall",
+        "headlineSignalsVisible": len(preview.get("signals") or []),
+    }
     write("macro-risk/data.json", preview)
 
     history = load("apps/macro-radar/history.json")
