@@ -6,6 +6,10 @@ const PRODUCTS = Object.freeze({
   macro_risk: {
     previewKey: "macro-risk/preview.json",
     fullKey: "macro-risk/full.json"
+  },
+  billionaires: {
+    previewKey: "billionaires/preview.json",
+    fullKey: "billionaires/full.json"
   }
 });
 
