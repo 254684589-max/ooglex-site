@@ -53,6 +53,8 @@ async function open(width, mode = 'hang', path = '/apps/globe/') {
   }
   const frame = path === '/apps/globe/' ? await (await page.$('.stage iframe')).contentFrame() : page.mainFrame();
   await frame.waitForFunction(() => document.documentElement.dataset.globeState === 'ready', { timeout: 30000 });
+  if (path === '/apps/globe/') await page.waitForFunction(() =>
+    document.getElementById('lite-earth').hidden && !document.getElementById('btn-map').disabled);
   return { context, page, frame, external, errors, images, bad };
   } catch (error) {
     console.error('STARTUP DIAGNOSTICS ' + JSON.stringify({width, path, errors, bad, images: images.length, external: external.map(req => req.url())}));
@@ -160,6 +162,15 @@ try {
       assert(s.external.length > firstCount, 'Retry must not reuse a cached failure');
       assert.equal(await s.frame.evaluate(() => document.documentElement.dataset.globeMap), 'local-earth');
       assert.deepEqual(s.errors, []);
+    } catch (error) {
+      console.error('MAP SWITCH DIAGNOSTICS ' + JSON.stringify(await s.page.evaluate(() => ({
+        status: document.getElementById('load-status').textContent,
+        disabled: document.getElementById('btn-map').disabled,
+        lite: document.getElementById('lite-earth').hidden,
+        map: document.querySelector('.stage iframe')?.contentDocument?.documentElement.dataset.globeMap
+      }))));
+      console.error('MAP REQUESTS ' + JSON.stringify({errors:s.errors, urls:s.external.map(r=>r.url())}));
+      throw error;
     } finally { await s.context.close(); }
   });
   await run('language switch preserves local startup', async () => {
@@ -279,9 +290,15 @@ try {
       await s.page.waitForFunction(() => document.getElementById('lite-earth').hidden);
       const box = await (await s.frame.$('.cesium-widget canvas')).boundingBox();
       await s.page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      const heights = [];
       for (const deltaY of [10000, -10000, 10000, -10000]) {
         for (let i=0;i<12;i++) { await s.page.mouse.wheel({deltaY}); await new Promise(r=>setTimeout(r,50)); }
+        const camera = await s.frame.evaluate(() => window.OoglexGlobeNetwork.viewState());
+        assert(Number.isFinite(camera.height), 'Each zoom phase must preserve valid camera coordinates');
+        heights.push(Math.round(camera.height));
       }
+      assert(new Set(heights).size > 1, 'Wheel events must actually move the camera');
+      console.log('ZOOM HEIGHTS ' + JSON.stringify(heights));
       await s.page.click('#btn-overview');
       const state = await s.frame.evaluate(() => window.OoglexGlobeNetwork.viewState());
       assert(Number.isFinite(state.height) && state.height > 20000000 && state.height < 51000000);

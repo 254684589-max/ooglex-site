@@ -319,7 +319,7 @@
     if (!frame.isConnected) stage.appendChild(frame);
     bootTimer = setTimeout(function () {
       // Slow same-origin downloads may still succeed. Keep their progress and map.
-      go.disabled = false; go.textContent = '重新尝试完整三维';
+      go.disabled = false; go.textContent = '重试完整三维';
       meta.textContent = '完整三维下载较慢，仍在继续；基础地图可正常操作。';
       loadStatus.textContent = '基础地球 · 完整三维仍在加载';
     }, 12000);
