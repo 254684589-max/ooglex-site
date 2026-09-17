@@ -33,9 +33,6 @@ EXCLUDED_FILES = {
     "README.md",
 }
 
-# Full source datasets may remain in the research checkout for the generation
-# pipeline, but production never copies them directly. Selected paths are later
-# replaced with explicitly generated 10% previews.
 PRO_PRIVATE_PATHS = {
     "apps/supply-chain/nodes.json",
     "apps/supply-chain/identity.json",
@@ -108,24 +105,16 @@ def copy_tree(src: Path, dst: Path) -> None:
 
 
 def install_rich_public_previews() -> None:
-    """Install the public 10% data under the original legacy filenames."""
     copy_tree(RICH_PREVIEW / "supply-chain", OUT / "apps" / "supply-chain")
     copy_tree(RICH_PREVIEW / "macro-risk", OUT / "apps" / "macro-radar")
 
 
 def inject_rich_access_adapter() -> None:
-    """Keep original HTML/UI and install entitlement interception before app.js.
-
-    These scripts must execute synchronously while the document is still parsing.
-    The original rich pages load app.js synchronously at the end of <body>; using
-    defer here lets app.js issue its first fetch against the public 10% preview
-    before the adapter has replaced window.fetch. That race made OWNER/PRO users
-    look like FREE users even though their entitlement was FULL.
-    """
+    """Keep original HTML/UI and install entitlement interception before app.js."""
     snippet = (
         '\n<meta name="ooglex-pro-api" content="https://ooglex-pro-api.zlq6600e.workers.dev">\n'
         '<script src="/assets/pro-access.js?v=4"></script>\n'
-        '<script src="/assets/pro-rich-data.js?v=2"></script>\n'
+        '<script src="/assets/pro-rich-data.js?v=3"></script>\n'
     )
     for relpath in (
         "apps/supply-chain/index.html",
@@ -197,14 +186,8 @@ def build(protect_pro: bool) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument(
-        "--pro-cutover", action="store_true",
-        help="deprecated compatibility flag; protected mode is now the default",
-    )
-    ap.add_argument(
-        "--include-pro-private", action="store_true",
-        help="LOCAL ONLY: include legacy full PRO datasets in .site",
-    )
+    ap.add_argument("--pro-cutover", action="store_true", help="deprecated compatibility flag; protected mode is now the default")
+    ap.add_argument("--include-pro-private", action="store_true", help="LOCAL ONLY: include legacy full PRO datasets in .site")
     args = ap.parse_args()
     build(protect_pro=not args.include_pro_private)
 
