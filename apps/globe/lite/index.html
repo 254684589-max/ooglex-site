@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Ooglex Basic Earth</title>
+<title>Ooglex 基础地球</title>
 <style>
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02050a;color:#dbe7f4;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 #globe{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab;background:radial-gradient(circle at 50% 45%,#0b1722 0,#03070d 42%,#000 78%)}
@@ -15,7 +15,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02050a;col
 </head>
 <body>
 <canvas id="globe" aria-label="本地基础三维地球"></canvas>
-<div class="badge" id="badge">BASIC EARTH · LOCAL</div>
+<div class="badge" id="badge">基础地球 · 本地数据</div>
 <script>
 (function(){
 'use strict';
@@ -25,7 +25,7 @@ var yaw=-1.15,pitch=.23,zoom=3.05,drag=false,lastX=0,lastY=0,lastT=0,vx=0,vy=0,f
 var params=new URLSearchParams(location.search),english=params.get('lang')==='en';
 function post(state,detail){if(window.parent!==window)window.parent.postMessage({type:'ooglex:globe',url:location.href.split('#')[0],state:state,detail:detail||''},location.origin)}
 function ready(){if(booted)return;booted=true;post('ready',{map:'local-earth',mode:'lite'});setTimeout(function(){ensureFull(false)},900)}
-function fail(){badge.textContent=english?'BASIC EARTH · LOCAL FALLBACK':'基础地球 · 本地兜底';ready()}
+function fail(){badge.textContent=english?'基础地球 · 本地兜底':'基础地球 · 本地兜底';ready()}
 if(!gl){fail();return}
 var vs='attribute vec3 p;attribute vec2 t;uniform float y;uniform float x;uniform float z;uniform float a;varying vec2 v;varying vec3 n;void main(){float cy=cos(y),sy=sin(y),cx=cos(x),sx=sin(x);vec3 q=vec3(cy*p.x+sy*p.z,p.y,-sy*p.x+cy*p.z);q=vec3(q.x,cx*q.y-sx*q.z,sx*q.y+cx*q.z);vec3 nn=q;float d=z-q.z;gl_Position=vec4(q.x*2.25/a,q.y*2.25,d-1.0,d);v=t;n=nn;}';
 var fs='precision mediump float;uniform sampler2D m;varying vec2 v;varying vec3 n;void main(){vec3 c=texture2D(m,v).rgb;float l=.46+.54*max(dot(normalize(n),normalize(vec3(-.3,.55,.8))),0.0);float rim=pow(1.0-max(n.z,0.0),2.0)*.18;gl_FragColor=vec4(c*l+vec3(0.02,0.07,0.12)*rim,1.0);}';
@@ -50,7 +50,12 @@ function ensureFull(force){if(full)return;full=document.createElement('iframe');
 window.addEventListener('message',function(e){
  if(e.origin!==location.origin)return;
  if(full&&e.source===full.contentWindow){var m=e.data;if(!m||m.type!=='ooglex:globe')return;if(m.state==='ready'){fullReady=true;full.classList.add('ready');badge.style.display='none';if(pendingMap){full.contentWindow.postMessage({type:'ooglex:set-map',map:pendingMap},location.origin);pendingMap=null}post('ready',Object.assign({},m.detail||{},{mode:'full'}))}else if(m.state==='error'){full.remove();full=null;fullReady=false;post('ready',{map:'local-earth',mode:'lite',note:''})}return}
- if(e.source!==window.parent)return;var d=e.data;if(!d)return;if(d.type==='ooglex:overview'){if(fullReady)full.contentWindow.postMessage(d,location.origin);else{yaw=-1.15;pitch=.23;zoom=3.05}return}if(d.type==='ooglex:set-map'){if(d.map==='local-earth'&&!fullReady){pendingMap=null;post('ready',{map:'local-earth',mode:'lite'});return}pendingMap=d.map;ensureFull(true);post('ready',{map:'local-earth',mode:'lite',switching:true})}
+ if(e.source!==window.parent)return;var d=e.data;if(!d)return;if(d.type==='ooglex:overview'){if(fullReady)full.contentWindow.postMessage(d,location.origin);else{yaw=-1.15;pitch=.23;zoom=3.05}return}if(d.type==='ooglex:set-map'){if(d.map==='local-earth'&&!fullReady){pendingMap=null;post('ready',{map:'local-earth',mode:'lite'});return}pendingMap=d.map;ensureFull(true);
+/* 完整应用已经就绪时必须**立即转发**：原先只在收到 ready 的那个分支里转发
+   pendingMap，于是「加载完之后再点切换高清影像」这条最常见的路径消息只被存下、
+   永不转发，状态永远停在「正在连接高清影像…」，既不成功也不超时。 */
+if(fullReady&&full&&full.contentWindow){full.contentWindow.postMessage({type:'ooglex:set-map',map:pendingMap},location.origin);pendingMap=null}
+post('ready',{map:'local-earth',mode:'lite',switching:true})}
 });
 })();
 </script>

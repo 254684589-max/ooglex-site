@@ -45,6 +45,42 @@ else
 fi
 echo "上游版本：$(git -C "$SRC_DIR" rev-parse --short HEAD)"
 
+# ------------------------------------- 1b. 防漂移：产物不得比源文件更新
+# scripts/globe/ 下这些文件是源，由 patch-network.mjs 复制进产物。曾经发生过
+# 一次 119 行的 no-VPN 启动修复只写进产物、没回写源文件 —— 那份修复只活在构建
+# 产物里，任何人跑一次本脚本就会被静默还原。这里在动手前先拦住。
+log "检查产物与源文件是否一致"
+drifted=0
+for f in network-policy.js network.css; do
+  src="$REPO_ROOT/scripts/globe/$f"
+  built="$OUT_DIR/$f"
+  [ -f "$src" ] && [ -f "$built" ] || continue
+  if ! cmp -s "$src" "$built"; then
+    echo "  ✗ $f：产物与源文件不一致（差异 $(diff "$src" "$built" | grep -c '^[<>]') 行）" >&2
+    drifted=1
+  fi
+done
+for d in fonts icons; do
+  src="$REPO_ROOT/scripts/globe/$d"
+  built="$OUT_DIR/$d"
+  [ -d "$src" ] && [ -d "$built" ] || continue
+  if ! diff -rq "$src" "$built" >/dev/null 2>&1; then
+    echo "  ✗ $d/：产物与源文件不一致" >&2
+    drifted=1
+  fi
+done
+if [ "$drifted" = 1 ]; then
+  if [ "${GLOBE_ACCEPT_DRIFT:-0}" = "1" ]; then
+    echo "  已按 GLOBE_ACCEPT_DRIFT=1 放行：以 scripts/globe/ 下的源文件为准覆盖产物。"
+  else
+    die "产物里的这些文件与源文件不一致 —— 通常是有人直接改了 apps/globe/app/ 下的副本。
+       请先把改动回写到 scripts/globe/ 下的源文件，再重新构建；否则本次构建会静默还原它们。
+       确认源文件才是最新的（例如刚刚回写过），用 GLOBE_ACCEPT_DRIFT=1 放行本次构建。"
+  fi
+else
+  echo "一致（或尚无产物）"
+fi
+
 # ------------------------------------------------------- 2. 许可裁剪（可选）
 # TeleGeography 海底电缆为 CC BY-NC-SA 3.0：非商业可用，商业必须删除。
 # 依据：上游 DATA_SOURCES.md「TeleGeography is bundled but NonCommercial」。

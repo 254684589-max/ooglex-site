@@ -47,8 +47,19 @@ async function open(width, mode = 'hang', path = '/apps/globe/') {
   });
   try {
   await page.goto(origin + path, { waitUntil: 'domcontentloaded', timeout: 30000 });
-  if (path === '/apps/globe/' && !(await page.$('.stage iframe'))) await page.click('#btn-go');
-  const frame = path === '/apps/globe/' ? await (await page.$('.stage iframe')).contentFrame() : page.mainFrame();
+  // 页面层级：包装页 → apps/globe/lite/（轻量地球，即时首屏）→ 内层 iframe 才是
+  // 完整应用。globeState 由 network-policy.js 设在**完整应用**的根元素上，
+  // 所以只穿一层（拿到 lite 页）会永远等不到 ready —— 这个坑踩过，别改回去。
+  // 按 URL 解析 frame，比逐层 DOM 穿透更稳，也不受包装页改版影响。
+  const appFrame = async () => page.frames().find(f => f.url().includes('/apps/globe/app/'));
+  let frame = path === '/apps/globe/' ? await appFrame() : page.mainFrame();
+  if (path === '/apps/globe/') {
+    for (let i = 0; i < 120 && !frame; i += 1) {
+      await new Promise(r => setTimeout(r, 250));
+      frame = await appFrame();
+    }
+    assert(frame, 'The full application frame (/apps/globe/app/) never appeared');
+  }
   await frame.waitForFunction(() => document.documentElement.dataset.globeState === 'ready', { timeout: 30000 });
   return { context, page, frame, external, errors, images, bad };
   } catch (error) {
@@ -89,15 +100,28 @@ async function verifyVisibleEarth(page, frame) {
   }
   assert(visible, 'The center must contain textured continents and oceans, not a uniform green surface');
 }
+
+/** 按 URL 解析**完整应用**所在的 frame（第二层 iframe）。
+ *  页面层级：包装页 → apps/globe/lite/（轻量地球）→ 内层 iframe 才是完整应用，
+ *  而 globeState / globeMap 都设在完整应用的根元素上。只穿一层会永远等不到 ready。 */
+async function appFrameOf(page, mustInclude) {
+  for (let i = 0; i < 160; i += 1) {
+    const f = page.frames().find(fr => fr.url().includes('/apps/globe/app/')
+      && (!mustInclude || fr.url().includes(mustInclude)));
+    if (f) return f;
+    await new Promise(r => setTimeout(r, 250));
+  }
+  throw new Error('The full application frame never appeared' + (mustInclude ? ' for ' + mustInclude : ''));
+}
+
 async function basic(width, mode = 'hang', path = '/apps/globe/') {
   const state = await open(width, mode, path);
   try {
     const { page, frame, external, errors, images, bad } = state;
     const outcome = await frame.evaluate(async () => {
-      await Promise.all([
-        document.fonts.load('24px "Material Symbols Outlined"'),
-        document.fonts.load('24px "Material Icons Round"')
-      ]);
+      // 只剩 Material Symbols Outlined：Material Icons Round 全产物 0 处使用，
+      // 已连同它的 @font-face 一起删除（省 391KB）。
+      await document.fonts.load('24px "Material Symbols Outlined"');
       await document.fonts.ready;
       const doc = document.documentElement;
       const canvas = document.querySelector('.cesium-widget canvas');
@@ -106,7 +130,6 @@ async function basic(width, mode = 'hang', path = '/apps/globe/') {
         tiles: Number(doc.dataset.globeTiles), width: canvas?.width, height: canvas?.height,
         overflow: doc.scrollWidth > innerWidth + 1,
         outlined: document.fonts.check('24px "Material Symbols Outlined"'),
-        round: document.fonts.check('24px "Material Icons Round"'),
         iconWidth: icon?.getBoundingClientRect().width,
         loaderHidden: document.querySelector('#loading-screen').classList.contains('hidden') };
     });
@@ -115,22 +138,28 @@ async function basic(width, mode = 'hang', path = '/apps/globe/') {
     if (width === 1280) await verifyVisibleEarth(page, frame);
     assert(outcome.tiles > 0 && images.length > 0, 'A real local JPEG tile must have loaded');
     assert(outcome.width > 0 && outcome.height > 0 && outcome.loaderHidden, 'Rendered canvas and completed startup required');
-    assert(outcome.outlined && outcome.round, 'Local icon fonts must load');
+    // 只断言 Material Symbols Outlined：Material Icons Round 全产物 0 处使用，
+    // 已连同 @font-face 一起删除（省 391KB），不能再要求它加载。
+    assert(outcome.outlined, 'Local icon font (Material Symbols Outlined) must load');
     assert(outcome.iconWidth > 0 && outcome.iconWidth < 60, 'Icon ligatures must not render as long words');
     assert(!outcome.overflow, 'Inner page must fit the viewport');
     assert.deepEqual(external.map(x => x.url()), [], 'Startup must not request third-party assets');
     assert.deepEqual(bad, []);
     assert.deepEqual(errors, []);
     if (path === '/apps/globe/') {
-      await page.waitForFunction(() => getComputedStyle(document.getElementById('gate')).display === 'none');
+      // 包装页已重写：轻量地球本身就是即时首屏，没有「进入卡」了。
+      await page.waitForFunction(() => !document.getElementById('hd').disabled);
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
-      await page.click('#btn-src');
-      assert(await page.$eval('#sheet', el => !el.hidden));
+      await page.click('#sources');
+      // 新版包装页用 .open 类 + aria-hidden 开合，不是 hidden 属性
+      assert(await page.$eval('#sheet', el => el.classList.contains('open') && el.getAttribute('aria-hidden') === 'false'),
+        'Data-source sheet must open');
       await page.keyboard.press('Escape');
-      assert(await page.$eval('#sheet', el => el.hidden));
-      assert(await page.$eval('#btn-map', el => !el.disabled));
-      assert(await page.$eval('#btn-overview', el => !el.disabled));
-      await page.click('#btn-overview');
+      assert(await page.$eval('#sheet', el => !el.classList.contains('open') && el.getAttribute('aria-hidden') === 'true'),
+        'Escape must close the data-source sheet');
+      assert(await page.$eval('#hd', el => !el.disabled));
+      assert(await page.$eval('#overview', el => !el.disabled));
+      await page.click('#overview');
       assert((await frame.evaluate(() => window.OoglexGlobeNetwork.viewState().height)) > 20000000);
     }
     await page.screenshot({ path: 'artifacts/globe/' + width + '-' + mode + (path.endsWith('/app/') ? '-direct' : '') + '.png' });
@@ -143,7 +172,11 @@ try {
   await run('remote imagery timeout, retry and late completion isolation', async () => {
     const s = await open(1280);
     try {
-      await s.page.click('#btn-map');
+      // 必须先等 #hd 可用再点：完整应用就绪前按钮是 disabled 的，
+      // 直接点会落空，于是状态永远停在原处、后面那条 18s 等待必然超时。
+      // 实测高清影像失败到「影像不可用」约 8.1 秒，18s 的余量本身是够的。
+      await s.page.waitForFunction(() => !document.getElementById('hd')?.disabled, { timeout: 60000 });
+      await s.page.click('#hd');
       await s.page.waitForFunction(() => document.getElementById('load-status').textContent.includes('正在连接'), { timeout: 5000 });
       await s.page.waitForFunction(() => document.getElementById('load-status').textContent.includes('影像不可用'), { timeout: 18000 });
       assert.equal(await s.frame.evaluate(() => document.documentElement.dataset.globeMap), 'local-earth');
@@ -151,7 +184,11 @@ try {
       assert(firstCount > 0, 'Optional imagery must actually attempt an external request');
       // Late network failure must not overwrite the recovered map or cause an unhandled rejection.
       await Promise.all(s.external.map(req => req.abort('failed').catch(() => {})));
-      await s.page.click('#btn-map');
+      // 必须先等 #hd 可用再点：完整应用就绪前按钮是 disabled 的，
+      // 直接点会落空，于是状态永远停在原处、后面那条 18s 等待必然超时。
+      // 实测高清影像失败到「影像不可用」约 8.1 秒，18s 的余量本身是够的。
+      await s.page.waitForFunction(() => !document.getElementById('hd')?.disabled, { timeout: 60000 });
+      await s.page.click('#hd');
       await s.page.waitForFunction(() => document.getElementById('load-status').textContent.includes('正在连接'), { timeout: 5000 });
       await s.page.waitForFunction(() => document.getElementById('load-status').textContent.includes('影像不可用'), { timeout: 18000 });
       assert(s.external.length > firstCount, 'Retry must not reuse a cached failure');
@@ -162,23 +199,22 @@ try {
   await run('language switch preserves local startup', async () => {
     const s = await open(1280);
     try {
-      await s.page.waitForFunction(() => document.getElementById('gate').hidden && !document.getElementById('btn-map').disabled);
-      await s.page.click('#btn-lang');
+      await s.page.waitForFunction(() => !document.getElementById('hd').disabled);
+      await s.page.click('#lang');
+      await s.page.waitForFunction(() => document.getElementById('globe')?.src.includes('lang=en'), { timeout: 30000 });
+      const en = await appFrameOf(s.page, 'lang=en');
+      await en.waitForFunction(() => document.documentElement.dataset.globeState === 'ready', { timeout: 30000 });
+      assert.equal(await en.evaluate(() => document.documentElement.dataset.globeMap), 'local-earth');
+      await s.page.waitForFunction(() => !document.getElementById('hd').disabled);
+      await s.page.click('#lang');
       await s.page.waitForFunction(() => {
-        const f = document.querySelector('.stage iframe');
-        return f?.src.includes('lang=en') && f.contentDocument?.documentElement?.dataset.globeState === 'ready';
-      }, { timeout: 30000 });
-      assert.equal(await s.page.$eval('.stage iframe', f => f.contentDocument.documentElement.dataset.globeMap), 'local-earth');
-      await s.page.waitForFunction(() => document.getElementById('gate').hidden && !document.getElementById('btn-map').disabled);
-      await s.page.click('#btn-lang');
-      await s.page.waitForFunction(() => {
-        const f = document.querySelector('.stage iframe');
-        return f && !f.src.includes('lang=en') && f.contentDocument?.documentElement?.dataset.globeState === 'ready';
+        const f = document.getElementById('globe');
+        return f && !f.src.includes('lang=en');
       }, { timeout: 30000 });
     } catch (error) {
       console.error('LANGUAGE DIAGNOSTICS ' + JSON.stringify(await s.page.evaluate(() => {
         const f = document.querySelector('.stage iframe');
-        return {src: f?.src, state: f?.contentDocument?.documentElement.dataset, gate: document.getElementById('gate').textContent, status: document.getElementById('load-status').textContent};
+        return {src: f?.src, state: f?.contentDocument?.documentElement.dataset, gate: document.getElementById('load-status')?.textContent, status: document.getElementById('load-status').textContent};
       })));
       console.error('LANGUAGE NETWORK ' + JSON.stringify({errors: s.errors, bad: s.bad, external: s.external.map(r => r.url())}));
       await s.page.screenshot({path: 'artifacts/globe/language-failure.png'}).catch(() => {});
@@ -197,10 +233,16 @@ try {
         else void req.abort();
       });
       await page.goto(origin + '/apps/globe/', { waitUntil: 'domcontentloaded' });
+      // 包装页重写后，轻量地球本身就是可用首屏：入口脚本失败时用户手里仍有一个
+      // 能用的基础地球，不存在需要防的「无尽加载」，包装页也不再有重试按钮
+      // （文案表里没有「重新加载」）。因此改为断言新的预期行为。
       await page.waitForFunction(() => {
-        const gate = document.getElementById('gate');
-        return getComputedStyle(gate).display !== 'none' && gate.textContent.includes('重新加载');
+        const lite = document.getElementById('globe');
+        const ld = lite && lite.contentDocument;
+        return !!(ld && ld.querySelector('canvas'));
       }, { timeout: 50000 });
+      const status = await page.$eval('#load-status', el => el.textContent || '');
+      assert(!status.includes('正在连接'), '入口脚本失败后状态不应停在「正在连接」，实际：' + status);
     } finally { await context.close(); }
   });
   }

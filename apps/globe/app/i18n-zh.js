@@ -161,6 +161,16 @@
 
     // ------------------------------------------------------------ 首次启动
     'Choose your first view': '选择第一个视角',
+    // 首次启动对话框的四个入口 —— 用户打开页面第一眼看到的就是这些
+    'LIVE CONTACTS': '实时目标',
+    'Aircraft, vessels and nearby intelligence': '航班、船舶与周边情况（本站需服务端的图层不可用）',
+    'SPACE MISSIONS': '航天任务',
+    'Launches, spacecraft and orbital context': '发射记录、航天器与在轨情况',
+    'ENVIRONMENTAL': '环境监测',
+    'Live earthquakes and active fires, from USGS and NASA': '来自 USGS 的实时地震与 NASA 的活跃火点',
+    'EXPLORE MANUALLY': '自由浏览',
+    'Begin with a clean globe': '从一个干净的地球开始',
+    'ESC to dismiss': '按 ESC 关闭',
     "It feels like a forbidden cockpit—then you realize the sources are public and the data is real.":
       '像是坐进了不该进的驾驶舱 —— 然后你发现这些数据源全是公开的，数据也都是真的。',
     "Don't show this again": '不再显示',
@@ -168,6 +178,12 @@
       '提示：指令栏的语音按钮可以直接对地图说话（本站未配置语音服务）。',
     'ESC TO DISMISS': '按 ESC 关闭',
     'SUMMARY': '摘要',
+    // 周边情况面板：这两条是 <br> 拆开的两个文本节点，整串不在字典里就会留英文
+    'SELECT CONTEXT': '选择关注内容',
+    'CONTACTS — nearest planes · vessels · sites': '实时目标 —— 最近的飞机 · 船舶 · 设施',
+    'SPACE MISSIONS — launches & orbital assets': '航天任务 —— 发射记录与在轨目标',
+    'Context mode': '关注内容',
+    'Contact Context actions': '目标相关操作',
     'Global Context': '全球周边情况',
     'loading...': '加载中…',
     'just now': '刚刚',

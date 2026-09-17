@@ -1,4 +1,11 @@
-/* Ooglex globe: same-origin startup policy. Installed by patch-network.mjs. */
+/* Ooglex globe: same-origin startup policy + mainland fast path.
+ *
+ * 这是**源文件**，由 scripts/globe/patch-network.mjs 复制进构建产物
+ * （apps/globe/app/network-policy.js）。**只改这里，不要改产物里的那份** ——
+ * 曾经发生过：一次 119 行的 no-VPN 启动修复只写进了产物、没回写源文件，
+ * 于是那份修复只活在构建产物里，任何人跑一次 build.sh 就会被静默还原。
+ * build.sh 现在有一道自检会拦住这种漂移。
+ */
 (function () {
   'use strict';
   var script = document.currentScript;
@@ -8,33 +15,41 @@
   var english = new URLSearchParams(location.search).get('lang') === 'en';
   var localId = 'local-earth', previousMap = null;
   var overviewHeight = 22000000;
-  function overview(viewer, keepCenter) {
-    var position = viewer.camera.positionCartographic;
-    var lon = keepCenter ? C.Math.toDegrees(position.longitude) : 105;
-    var lat = keepCenter ? C.Math.toDegrees(position.latitude) : 20;
-    viewer.camera.cancelFlight();
-    viewer.trackedEntity = undefined;
-    viewer.camera.lookAtTransform(C.Matrix4.IDENTITY);
-    viewer.camera.setView({
-      destination: C.Cartesian3.fromDegrees(lon, lat, overviewHeight),
-      orientation: { heading: 0, pitch: -C.Math.PI_OVER_TWO, roll: 0 }
-    });
-    viewer.scene.requestRender();
-  }
-  function initialView(viewer) {
-    var status = document.querySelector('#loading-screen .loader-status');
-    if (status) status.textContent = words('正在显示全球地球…', 'Preparing global view...');
-    overview(viewer, false);
-    return function () { if (!viewer.isDestroyed()) viewer.camera.cancelFlight(); };
-  }
+  var remoteEnabled = false;
+  var nativeFetch = window.fetch ? window.fetch.bind(window) : null;
+  var REMOTE_HOSTS = /(^|\.)(earthquake\.usgs\.gov|api\.adsb\.lol|overpass-api\.de|celestrak\.org|www\.celestrak\.org|ll\.thespacedevs\.com|services\.arcgisonline\.com|tile\.openstreetmap\.org)$/i;
+
   function words(zh, en) { return english ? en : zh; }
+  function sameOrigin(input) {
+    try {
+      var u = new URL(typeof input === 'string' ? input : input.url, location.href);
+      return u.origin === location.origin;
+    } catch (_) { return true; }
+  }
+  function blockedRemote(input) {
+    try {
+      var u = new URL(typeof input === 'string' ? input : input.url, location.href);
+      return u.origin !== location.origin && REMOTE_HOSTS.test(u.hostname);
+    } catch (_) { return false; }
+  }
+  // Critical for mainland/no-VPN startup: known optional remote APIs must fail fast instead of
+  // occupying browser connection slots for tens of seconds. Explicit map switching temporarily
+  // enables remote traffic; local snapshots and every same-origin asset are always allowed.
+  if (nativeFetch) {
+    window.fetch = function (input, init) {
+      if (!remoteEnabled && blockedRemote(input)) {
+        return Promise.reject(new TypeError('Ooglex startup fast-path blocked optional remote request'));
+      }
+      return nativeFetch(input, init);
+    };
+  }
+
   function report(type, detail) {
     if (!document.documentElement) return;
     document.documentElement.dataset.globeState = type;
     if (window.parent !== window) window.parent.postMessage(
       { type: 'ooglex:globe', url: location.href.split('#')[0], state: type, detail: detail || '' }, location.origin);
   }
-  // Keep late completions owned by this request; never switch a map from here.
   function deadline(promise, ms, signal, onLate) {
     return new Promise(function (resolve, reject) {
       var done = false;
@@ -66,8 +81,7 @@
     var original = provider.requestImage;
     provider.requestImage = function () {
       var result = original.apply(provider, arguments);
-      // Cesium returns undefined when its scheduler is saturated: preserve that contract.
-      return result === undefined ? undefined : deadline(result, 8000).then(function (image) {
+      return result === undefined ? undefined : deadline(result, 6500).then(function (image) {
         tileCount++;
         if (document.documentElement) document.documentElement.dataset.globeTiles = String(tileCount);
         return image;
@@ -75,6 +89,51 @@
     };
     return provider;
   }
+
+  function cameraFinite(viewer) {
+    var p = viewer.camera.positionCartographic;
+    return p && Number.isFinite(p.longitude) && Number.isFinite(p.latitude) && Number.isFinite(p.height);
+  }
+  function overview(viewer, keepCenter) {
+    var position = viewer.camera.positionCartographic;
+    var safe = cameraFinite(viewer);
+    var lon = keepCenter && safe ? C.Math.toDegrees(position.longitude) : 105;
+    var lat = keepCenter && safe ? C.Math.toDegrees(position.latitude) : 20;
+    if (!Number.isFinite(lon) || Math.abs(lon) > 180) lon = 105;
+    if (!Number.isFinite(lat) || Math.abs(lat) > 89) lat = 20;
+    viewer.camera.cancelFlight();
+    viewer.trackedEntity = undefined;
+    viewer.camera.lookAtTransform(C.Matrix4.IDENTITY);
+    viewer.camera.setView({
+      destination: C.Cartesian3.fromDegrees(lon, lat, overviewHeight),
+      orientation: { heading: 0, pitch: -C.Math.PI_OVER_TWO, roll: 0 }
+    });
+    viewer.scene.requestRender();
+  }
+  function installCameraGuard(viewer) {
+    var controller = viewer.scene.screenSpaceCameraController;
+    controller.minimumZoomDistance = 1200;
+    controller.maximumZoomDistance = 65000000;
+    controller.maximumMovementRatio = 0.12;
+    var repairing = false;
+    viewer.camera.changed.addEventListener(function () {
+      if (repairing || viewer.isDestroyed()) return;
+      var p = viewer.camera.positionCartographic;
+      if (!cameraFinite(viewer) || p.height < 250 || p.height > 100000000) {
+        repairing = true;
+        try { overview(viewer, cameraFinite(viewer)); }
+        finally { setTimeout(function () { repairing = false; }, 0); }
+      }
+    });
+  }
+  function initialView(viewer) {
+    var status = document.querySelector('#loading-screen .loader-status');
+    if (status) status.textContent = words('正在显示全球地球…', 'Preparing global view...');
+    installCameraGuard(viewer);
+    overview(viewer, false);
+    return function () { if (!viewer.isDestroyed()) viewer.camera.cancelFlight(); };
+  }
+
   function makeRegistry(registry) {
     var flat = { id: 'ooglex-ellipsoid', create: function () {
       return { provider: new C.EllipsoidTerrainProvider() };
@@ -87,7 +146,7 @@
         return deadline(C.TileMapServiceImageryProvider.fromUrl(
           base + 'cesium/Assets/Textures/NaturalEarthII',
           { fileExtension: 'jpg', maximumLevel: 2, credit: new C.Credit('Made with Natural Earth', true) }
-        ), 12000, request && request.signal, dispose).then(boundedTiles);
+        ), 9000, request && request.signal, dispose).then(boundedTiles);
       },
       terrain: flat
     };
@@ -96,15 +155,15 @@
     registry.recoveryId = localId;
     registry.sources.forEach(function (source) {
       if (!source.imagery) return;
-      // No keyless external terrain endpoint participates in startup or map switches.
       if (!registry.state.hasCesiumIonToken) source.terrain = flat;
       var original = source.imagery;
       source.imagery = function (request) {
+        remoteEnabled = true;
         return deadline(Promise.resolve().then(function () { return original(request); }),
-          6000, request && request.signal, dispose).then(boundedTiles);
+          5500, request && request.signal, dispose).then(boundedTiles).finally(function () {
+            setTimeout(function () { remoteEnabled = false; }, 500);
+          });
       };
-      // Controller recoveryId handles construction errors and evicts failed cache entries.
-      // A cached constructionFallback would make a later retry reuse the failed resolution.
       delete source.constructionFallback;
       source.tileFailureFallback = { id: localId, threshold: 2,
         message: words('影像瓦片加载失败，已返回基础地球', 'Imagery tiles unavailable; using Basic Earth') };
@@ -118,6 +177,7 @@
     if (scene && id === localId && (previousMap !== localId || state.lastError) &&
         scene.viewer.camera.positionCartographic.height < 10000000) overview(scene.viewer, true);
     previousMap = id;
+    remoteEnabled = id && id !== localId;
     document.documentElement.dataset.globeMap = id || localId;
     report(ready ? 'ready' : 'loading', {
       map: id, switching: state.status === 'switching',
@@ -142,11 +202,12 @@
     }
   }
   function start(app) {
+    remoteEnabled = false;
     return app.start().then(function (components) {
       scene = components.scene;
+      installCameraGuard(scene.viewer);
       if (scene.mapStackController.getState().activeId === localId &&
           scene.viewer.camera.positionCartographic.height < 10000000) overview(scene.viewer, true);
-      // A defined Cesium global or iframe load event does not prove a rendered globe.
       return new Promise(function (resolve, reject) {
         var timer, renderTick;
         var remove = scene.viewer.scene.postRender.addEventListener(function () {
@@ -166,8 +227,8 @@
           remove();
           clearInterval(renderTick);
           reject(new Error(words('基础地球加载超时，请重试', 'Basic Earth timed out; please retry')));
-        }, 25000);
-        renderTick = setInterval(function () { scene.viewer.scene.requestRender(); }, 100);
+        }, 18000);
+        renderTick = setInterval(function () { scene.viewer.scene.requestRender(); }, 120);
         scene.viewer.scene.requestRender();
       });
     }).catch(function (error) {
@@ -181,11 +242,12 @@
     var data = event.data;
     if (data && data.type === 'ooglex:overview') { overview(scene.viewer, false); return; }
     if (!data || data.type !== 'ooglex:set-map' || ![localId, 'esri-imagery', 'osm'].includes(data.map)) return;
+    remoteEnabled = data.map !== localId;
     scene.mapStackController.setStack(data.map).catch(function () {
+      remoteEnabled = false;
       sourceState(scene.mapStackController.getState());
     });
   });
-  // The two newer Symbols ligatures are rendered by local SVGs; keep their text intact.
   function markIcons() {
     document.querySelectorAll('.material-symbols-outlined').forEach(function (node) {
       var name = node.textContent.trim();
@@ -200,7 +262,7 @@
     report('loading');
     bootTimer = setTimeout(function () {
       fail(words('加载时间过长，请检查网络后重试。', 'Loading is taking too long. Check your connection and retry.'));
-    }, 35000);
+    }, 26000);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
   else install();

@@ -1,4 +1,11 @@
-/* Ooglex globe: same-origin startup policy + mainland fast path. */
+/* Ooglex globe: same-origin startup policy + mainland fast path.
+ *
+ * 这是**源文件**，由 scripts/globe/patch-network.mjs 复制进构建产物
+ * （apps/globe/app/network-policy.js）。**只改这里，不要改产物里的那份** ——
+ * 曾经发生过：一次 119 行的 no-VPN 启动修复只写进了产物、没回写源文件，
+ * 于是那份修复只活在构建产物里，任何人跑一次 build.sh 就会被静默还原。
+ * build.sh 现在有一道自检会拦住这种漂移。
+ */
 (function () {
   'use strict';
   var script = document.currentScript;
