@@ -1,0 +1,19 @@
+name: Check recovery hardening
+on:
+  push:
+    branches: [feature/recovery-hardening]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check auth.js syntax
+        run: node --check account/auth.js
+      - name: Check recovery page contract
+        run: |
+          grep -q 'token_hash' account/recovery/index.html
+          grep -q '/auth/v1/verify' account/recovery/index.html
+          grep -q 'recovery-error-state' account/index.html
+          grep -q 'PASSWORD_RECOVERY' account/auth.js
+      - name: Check whitespace
+        run: git diff --check HEAD~1 HEAD
