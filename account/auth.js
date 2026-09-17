@@ -38,6 +38,13 @@ function protectFromTranslation(element) {
   element.classList.add('notranslate');
 }
 
+function displayPlan(value) {
+  const plan = String(value || 'free').toLowerCase();
+  if (plan === 'pro_plus') return 'PRO+';
+  if (plan === 'pro') return 'PRO';
+  return 'FREE';
+}
+
 function syncDocumentLanguage() {
   const en = isEnglish();
   document.documentElement.lang = en ? 'en' : 'zh-CN';
@@ -164,7 +171,7 @@ async function boot() {
 
       emailEl.textContent = user.email || '—';
       nameEl.textContent = profile?.display_name || user.user_metadata?.display_name || tr('未设置', 'Not set');
-      planEl.textContent = String(profile?.plan || 'free').toUpperCase();
+      planEl.textContent = displayPlan(profile?.plan);
       statusEl.textContent = String(profile?.status || 'active').toUpperCase();
       show($('user-state'));
     }
@@ -259,34 +266,29 @@ async function boot() {
       await sendRecovery(email);
     };
 
-    $('back-account-button').onclick = async () => {
-      authError = null;
-      recoveryMode = false;
-      cleanAuthUrl();
-      say('');
-      const current = await sb.auth.getSession();
-      await render(current.data.session?.user || null);
-    };
-
     $('recovery-form').onsubmit = async (event) => {
       event.preventDefault();
-      const result = await sb.auth.updateUser({
-        password: $('recovery-password').value
-      });
+      const password = $('new-password').value;
+      if (!password || password.length < 6) {
+        return say(tr('新密码至少需要 6 位。', 'The new password must be at least 6 characters.'), 'error');
+      }
+      say(tr('正在更新密码…', 'Updating password…'));
+      const result = await sb.auth.updateUser({ password });
       if (result.error) return say(friendlyError(result.error), 'error');
       recoveryMode = false;
       cleanAuthUrl();
       say(tr('密码已更新。', 'Password updated.'), 'ok');
-      const userResult = await sb.auth.getUser();
-      await render(userResult.data.user);
+      const current = await sb.auth.getUser();
+      await render(current.data.user || null);
     };
 
-    $('logout-button').onclick = async () => {
-      const result = await sb.auth.signOut();
-      if (result.error) say(friendlyError(result.error), 'error');
+    $('signout-button').onclick = async () => {
+      await sb.auth.signOut();
+      say(tr('已退出。', 'Signed out.'), 'ok');
+      tab(true);
     };
   } catch (error) {
     show($('setup-state'));
-    say(tr('账户模块加载失败：', 'Account module failed to load: ') + error.message, 'error');
+    say(friendlyError(error), 'error');
   }
 }
