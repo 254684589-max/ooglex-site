@@ -115,6 +115,7 @@ def inject_rich_access_adapter() -> None:
         '\n<meta name="ooglex-pro-api" content="https://ooglex-pro-api.zlq6600e.workers.dev">\n'
         '<script src="/assets/pro-access.js?v=4"></script>\n'
         '<script src="/assets/pro-rich-data.js?v=3"></script>\n'
+        '<script src="/assets/pro-preview-gate.js?v=1"></script>\n'
     )
     for relpath in (
         "apps/supply-chain/index.html",
