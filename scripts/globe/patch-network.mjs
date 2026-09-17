@@ -38,8 +38,11 @@ export function patchHtml(input, base) {
   if (!html.includes('network.css')) {
     html = html.replace('</head>', '  <link rel="stylesheet" href="' + base + 'network.css?v=1">\n</head>');
   }
-  html = html.replace(/network-policy\.js\?v=\d+/g, 'network-policy.js?v=2');
-  html = html.replace(/(assets\/index-[^"?]+\.js)(?:\?[^"]*)?"/, '$1?network=2"');
+  // Preserve execution order without blocking HTML parsing behind the engine.
+  html = html.replace(/<script (?:defer )?src="([^"\n]*(?:cesium\/Cesium\.js|network-policy\.js\?v=\d+))"><\/script>/g,
+    '<script defer src="$1"></script>');
+  html = html.replace(/network-policy\.js\?v=\d+/g, 'network-policy.js?v=3');
+  html = html.replace(/(assets\/index-[^"?]+\.js)(?:\?[^"]*)?"/, '$1?network=3"');
   return html;
 }
 

@@ -47,6 +47,7 @@ jobs:
           node --check scripts/globe/patch-network.mjs
           node --check scripts/globe/verify-network.mjs
           node --check scripts/globe/browser.mjs
+          node --check apps/globe/lite-globe.js
           for file in apps/globe/app/assets/index-*.js; do node --check "$file"; done
           python3 scripts/globe/test_fetch_space_data.py
       - name: Verify committed site with all external requests stalled
