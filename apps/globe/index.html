@@ -226,6 +226,27 @@
   <div class="src"><span class="tag off">不可用</span><span class="n">Google 真实感三维瓦片 · 地点搜索 · 语音控制</span><br>
     <span class="l">需要按量计费的第三方密钥，本站未配置</span></div>
 
+  <h3>随应用一起分发的三维模型</h3>
+  <!-- CC BY 4.0 要求保留署名、链接许可、并说明改动。上游把这些写在
+       apps/globe/app/models/README.md 里，但站点构建（scripts/build_public_site.py）
+       会剔除所有 .md —— 模型文件照样发布出去，署名却发不出去。所以在这里补上：
+       这是站内唯一能被访问者找到的署名位置。 -->
+  <div class="src"><span class="tag nc">署名</span><span class="n">飞机 / 直升机 / 无人机 / 货轮 三维模型</span><br>
+    <span class="l">位于 <code>/apps/globe/app/models/</code>，非本仓库 MIT 源码的一部分，各自采用
+    <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>。
+    <b>均已修改</b>：上游 God&#39;s Eye View 做过几何与材质精简、贴图缩小到 256px WebP，
+    并把朝向与比例烘焙进网格（glTF +Y 朝上、机头朝 −X、包围盒中心归零）。<br>
+    <code>airplane.glb</code> —— “<a href="https://sketchfab.com/3d-models/boeing-747-9b16672038ba48f98e6d80a159044ed9" target="_blank" rel="noopener">boeing 747</a>” by <a href="https://sketchfab.com/zairiq-123" target="_blank" rel="noopener">zairiq-123</a><br>
+    <code>jet.glb</code> —— “<a href="https://sketchfab.com/3d-models/private-jet-cbdd1de6ced9461e950eafaa302cc82b" target="_blank" rel="noopener">Private Jet</a>” by <a href="https://sketchfab.com/Nick_The_Name" target="_blank" rel="noopener">Nick the Name</a><br>
+    <code>ship.glb</code> —— “<a href="https://sketchfab.com/3d-models/low-poly-cargo-ship-4c22cbaf01c1427f8ab60b3a07b1b32c" target="_blank" rel="noopener">Low Poly Cargo Ship</a>” by <a href="https://sketchfab.com/Javier.Fernandez" target="_blank" rel="noopener">Javier_Fernandez</a><br>
+    <code>bell206.glb</code> —— “<a href="https://sketchfab.com/3d-models/bell-206-jetranger-d2f7ba1d671549d4b26aaf834139a1dd" target="_blank" rel="noopener">Bell 206 JetRanger</a>” by <a href="https://sketchfab.com/terran4627" target="_blank" rel="noopener">terran4627</a><br>
+    <code>c172.glb</code> —— “<a href="https://sketchfab.com/3d-models/cessna-172-64cddaee5aff470682659a8c08525046" target="_blank" rel="noopener">Cessna 172</a>” by <a href="https://sketchfab.com/e0057537" target="_blank" rel="noopener">e737</a><br>
+    <code>citation2.glb</code> —— “<a href="https://sketchfab.com/3d-models/1990-cessna-citation-texture-detailed-exterior-a78839624fe64900a8352cb23462350a" target="_blank" rel="noopener">1990 Cessna Citation, Texture Detailed, Exterior</a>” by <a href="https://sketchfab.com/aboodgoudagad" target="_blank" rel="noopener">BlenderCommunityHead</a><br>
+    <code>mq9.glb</code> —— “<a href="https://sketchfab.com/3d-models/mq-9-fabe963feb354c5584b51f9c470c3f7e" target="_blank" rel="noopener">MQ-9</a>” by <a href="https://sketchfab.com/IProZenoN" target="_blank" rel="noopener">IProZenoN</a><br>
+    <code>b789.glb</code> —— “<a href="https://sketchfab.com/3d-models/boeing-787-9-b6711e2e698e4e469675c1154a50b7a3" target="_blank" rel="noopener">Boeing 787-9</a>” by <a href="https://sketchfab.com/nobilishornet2" target="_blank" rel="noopener">Nobilis 2</a><br>
+    <code>atr72.glb</code> —— “<a href="https://sketchfab.com/3d-models/atr-72-600-1e1a7186f7444d288675262fcee44744" target="_blank" rel="noopener">ATR 72 - 600</a>” by <a href="https://sketchfab.com/oyan3D" target="_blank" rel="noopener">Oyan3D</a><br>
+    署名按 CC BY 4.0 保留，不代表原作者对本站的认可。</span></div>
+
   <div class="close"><button type="button" id="btn-close">关闭</button></div>
 </aside>
 

@@ -302,6 +302,21 @@ Cesium/数据署名行。**不要移除任何一处。**
 脚本**，这是维持非商业定性的前提之一；`robots.txt` 另已 `Disallow: /apps/globe/app/`
 （28MB 引擎产物无检索价值，也避免浪费抓取预算）。
 
+### 踩过的坑：站点构建会剔掉署名文件
+
+三维模型（`apps/globe/app/models/*.glb`，飞机 / 直升机 / 无人机 / 货轮）不在本仓库
+MIT 源码范围内，各自是 **CC BY 4.0**，要求保留署名、链接许可、并说明改动。上游把这
+些写在 `apps/globe/app/models/README.md` 里。
+
+而站点构建 `scripts/build_public_site.py` 的 `EXCLUDED_SUFFIXES` 含 `.md` ——
+**模型文件照样发布出去，署名文件发不出去**。应用自带的 Data attribution 弹层只列
+数据源（Open-Meteo、OSM、TeleGeography…），不含模型，于是线上找不到任何署名。
+
+修法：把署名补进包装页的「数据来源」面板（`apps/globe/index.html`）—— 那是站内
+唯一访问者能找到的署名位置，九个模型的作品名、作者、Sketchfab 链接、CC BY 4.0
+许可链接与「均已修改」说明都在里面。**以后往 `apps/globe/` 加任何带署名要求的
+第三方素材，都要记得线上署名不能只靠 `.md`。**
+
 ## 5. 图层可用性
 
 上游有约 20 个服务端代理（`server/providers/local.js`），以 Vite 中间件形式运行；
