@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <title>继续重置密码 · Ooglex</title>
+  <link rel="stylesheet" href="../auth.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">OOGLEX</a>
+    <a class="back" href="/account/" id="back-link">返回账户</a>
+  </header>
+  <main class="shell">
+    <section class="intro">
+      <p class="eyebrow">OOGLEX ACCOUNT SECURITY</p>
+      <h1 id="hero-title">确认后再继续重置密码</h1>
+      <p id="hero-copy">为了避免邮件安全扫描器提前消耗一次性重置链接，只有你点击右侧按钮后才会真正验证链接。</p>
+    </section>
+    <section class="card" aria-live="polite">
+      <div id="ready-state" class="hidden">
+        <span class="badge success" id="ready-badge">链接已准备</span>
+        <h2 id="ready-title">继续重置密码</h2>
+        <p class="muted" id="ready-help">点击下面按钮后，你将进入 Ooglex 的密码设置页面。该验证链接只能使用一次。</p>
+        <button id="continue-button" class="primary" type="button">继续重置密码</button>
+      </div>
+      <div id="invalid-state" class="hidden">
+        <span class="badge" id="invalid-badge">链接无效</span>
+        <h2 id="invalid-title">无法继续</h2>
+        <p class="muted" id="invalid-help">这封邮件没有携带有效的恢复令牌。请返回账户页重新申请密码重置邮件。</p>
+        <a class="secondary" href="/account/" id="request-link">返回账户页</a>
+      </div>
+      <p id="message" class="message"></p>
+    </section>
+  </main>
+  <footer>Ooglex Account Security</footer>
+  <script src="../config.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var cfg = window.OOGLEX_AUTH_CONFIG || {};
+      var params = new URLSearchParams(location.search || '');
+      var tokenHash = params.get('token_hash') || '';
+      var type = params.get('type') || 'recovery';
+      var en = false;
+      try { en = localStorage.getItem('ooglex.language') === 'en'; } catch (_) {}
+
+      function text(id, zh, english) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = en ? english : zh;
+      }
+      function show(id) {
+        document.getElementById('ready-state').classList.add('hidden');
+        document.getElementById('invalid-state').classList.add('hidden');
+        document.getElementById(id).classList.remove('hidden');
+      }
+
+      document.documentElement.lang = en ? 'en' : 'zh-CN';
+      text('back-link', '返回账户', 'Back to account');
+      text('hero-title', '确认后再继续重置密码', 'Confirm before resetting your password');
+      text('hero-copy', '为了避免邮件安全扫描器提前消耗一次性重置链接，只有你点击右侧按钮后才会真正验证链接。', 'To prevent email security scanners from consuming a one-time reset link, verification only happens after you click the button.');
+      text('ready-badge', '链接已准备', 'Link ready');
+      text('ready-title', '继续重置密码', 'Continue password reset');
+      text('ready-help', '点击下面按钮后，你将进入 Ooglex 的密码设置页面。该验证链接只能使用一次。', 'After you click below, you will enter the Ooglex password setup page. This verification link can only be used once.');
+      text('continue-button', '继续重置密码', 'Continue password reset');
+      text('invalid-badge', '链接无效', 'Invalid link');
+      text('invalid-title', '无法继续', 'Cannot continue');
+      text('invalid-help', '这封邮件没有携带有效的恢复令牌。请返回账户页重新申请密码重置邮件。', 'This email did not include a valid recovery token. Return to the account page and request a new reset email.');
+      text('request-link', '返回账户页', 'Back to account');
+      document.title = en ? 'Continue password reset · Ooglex' : '继续重置密码 · Ooglex';
+
+      // Keep the one-time token in memory, not browser history or referrers.
+      if (tokenHash) {
+        try { history.replaceState({}, document.title, location.pathname); } catch (_) {}
+      }
+
+      if (!tokenHash || type !== 'recovery' || !cfg.supabaseUrl || !cfg.redirectUrl) {
+        show('invalid-state');
+        return;
+      }
+
+      show('ready-state');
+      document.getElementById('continue-button').addEventListener('click', function () {
+        var verify = new URL('/auth/v1/verify', cfg.supabaseUrl);
+        verify.searchParams.set('token', tokenHash);
+        verify.searchParams.set('type', 'recovery');
+        verify.searchParams.set('redirect_to', cfg.redirectUrl);
+        location.assign(verify.toString());
+      });
+    })();
+  </script>
+</body>
+</html>
