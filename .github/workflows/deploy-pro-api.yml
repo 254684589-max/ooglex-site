@@ -1,0 +1,66 @@
+name: Deploy PRO API and Billionaires Data
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'cloudflare/pro-api/**'
+      - 'assets/pro-access.js'
+      - 'assets/pro-billionaires.js'
+      - 'scripts/pro/build_billionaires_pro.py'
+      - 'apps/billionaires/data.json'
+      - '.github/workflows/deploy-pro-api.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Check Cloudflare token
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN is not configured"
+            exit 1
+          fi
+
+      - name: Build Billionaires protected payloads
+        run: python scripts/pro/build_billionaires_pro.py
+
+      - name: Deploy Ooglex PRO API Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          workingDirectory: cloudflare/pro-api
+          command: deploy
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Upload Billionaires FREE preview to private R2
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: r2 object put ooglex-pro-data/billionaires/preview.json --file .pro-build/billionaires/preview.json --remote
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Upload Billionaires full dataset to private R2
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: r2 object put ooglex-pro-data/billionaires/full.json --file .pro-build/billionaires/full.json --remote
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
