@@ -98,18 +98,25 @@ def main() -> None:
     if int(hmark.get("visiblePoints") or 0) > max(1, math.ceil(int(hmark.get("fullPoints") or 0) * RATIO)):
         fail("Macro Risk history preview exceeds 10%")
 
-    rich_pages = (
-        "apps/supply-chain/index.html",
-        "apps/supply-chain/company.html",
-        "apps/macro-radar/index.html",
-    )
-    for rel in rich_pages:
+    rich_pages = {
+        "apps/supply-chain/index.html": "app.js",
+        "apps/supply-chain/company.html": "company.js",
+        "apps/macro-radar/index.html": "app.js",
+    }
+    sync_access = '<script src="/assets/pro-access.js?v=4"></script>'
+    sync_adapter = '<script src="/assets/pro-rich-data.js?v=2"></script>'
+    for rel, legacy_app in rich_pages.items():
         p = SITE / rel
         if not p.exists():
             fail("original rich page missing: " + rel)
         text = p.read_text(encoding="utf-8")
-        if "/assets/pro-rich-data.js" not in text or "/assets/pro-access.js" not in text:
-            fail("rich access adapter missing from: " + rel)
+        if sync_access not in text or sync_adapter not in text:
+            fail("synchronous rich access adapter missing from: " + rel)
+        if text.index(sync_access) > text.index(sync_adapter):
+            fail("pro-access must load before pro-rich-data: " + rel)
+        legacy_pos = text.rfind(legacy_app)
+        if legacy_pos < 0 or text.index(sync_adapter) > legacy_pos:
+            fail("rich access adapter must run before legacy app boot: " + rel)
         if "location.replace('/pro/" in text or 'location.replace("/pro/' in text:
             fail("legacy page still redirects away from original UI: " + rel)
 
@@ -136,7 +143,7 @@ def main() -> None:
     print("PRO rich-page validation: PASS")
     print("- original Supply Chain and Macro Risk interfaces are restored")
     print("- FREE/guest static payloads are capped at 10%")
-    print("- OWNER/PRO adapter is installed for private Worker/R2 full data")
+    print("- OWNER/PRO adapter runs before legacy app fetches")
     print("- full-only static datasets remain absent from Pages")
 
 
