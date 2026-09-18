@@ -19,11 +19,11 @@ Leader metadata is stored in:
 
 `apps/tech-leaders/leaders.json`
 
-The catalog schema has a capacity of 100 profiles. The page reads this file and supports search across name, Chinese name, handle, company/role and tags.
+The catalog schema has a capacity of 100 profiles. The first production cohort now contains 30 curated technology leaders/accounts. The page reads this file and supports search across name, Chinese name, handle, company/role and tags.
 
 To add another Free-mode profile, append one object to `leaders.json`. No page JavaScript change is required.
 
-The current catalog contains six verified/curated entries. Jensen Huang continues to use the NVIDIA official account until a separately verified personal account is intentionally selected.
+The current catalog contains 30 curated entries spanning AI labs, hyperscalers, semiconductors, consumer platforms, enterprise software, fintech, venture capital and defense technology. Jensen Huang continues to use the NVIDIA official account until a separately verified personal account is intentionally selected.
 
 ## Free mode
 
