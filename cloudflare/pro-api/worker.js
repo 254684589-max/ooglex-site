@@ -20,11 +20,12 @@ const PRODUCTS = Object.freeze({
 
 const TECH_LEADERS = Object.freeze({
   musk: { id: "musk", handle: "elonmusk", name: "Elon Musk" },
-  huang: { id: "huang", handle: "nvidia", name: "Jensen Huang / NVIDIA" },
+  huang: { id: "huang", handle: "JensenHuang", name: "Jensen Huang" },
   altman: { id: "altman", handle: "sama", name: "Sam Altman" },
   su: { id: "su", handle: "LisaSu", name: "Lisa Su" },
   pichai: { id: "pichai", handle: "sundarpichai", name: "Sundar Pichai" },
-  nadella: { id: "nadella", handle: "satyanadella", name: "Satya Nadella" }
+  nadella: { id: "nadella", handle: "satyanadella", name: "Satya Nadella" },
+  "adena-friedman": { id: "adena-friedman", handle: "adenatfriedman", name: "Adena Friedman" }
 });
 
 const TECH_FEED_TTL_MS = 15 * 60 * 1000;
