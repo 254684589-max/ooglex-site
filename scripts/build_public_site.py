@@ -4,7 +4,8 @@
 Production keeps the original rich Supply Chain and Macro Risk interfaces. Guest
 and FREE users receive same-schema ~10% preview datasets at the legacy paths;
 OWNER/PRO requests are intercepted in-browser and fulfilled through the protected
-Worker/private R2 full bundle.
+Worker/private R2 full bundle. Finance Column terms and causal maps use the same
+preview/full split.
 """
 from __future__ import annotations
 
@@ -48,6 +49,8 @@ PRO_PRIVATE_PATHS = {
     "apps/macro-radar/series.json",
     "apps/macro-radar/curve.json",
     "apps/macro-radar/curve-monthly.json",
+    "apps/finance-column/arch.js",
+    "apps/finance-column/diagrams.js",
 }
 
 PREVIEW_REPLACEMENTS = {
@@ -58,6 +61,8 @@ PREVIEW_REPLACEMENTS = {
     "apps/supply-chain/edges",
     "apps/macro-radar/data.json",
     "apps/macro-radar/history.json",
+    "apps/finance-column/arch.js",
+    "apps/finance-column/diagrams.js",
 }
 
 
@@ -107,6 +112,7 @@ def copy_tree(src: Path, dst: Path) -> None:
 def install_rich_public_previews() -> None:
     copy_tree(RICH_PREVIEW / "supply-chain", OUT / "apps" / "supply-chain")
     copy_tree(RICH_PREVIEW / "macro-risk", OUT / "apps" / "macro-radar")
+    copy_tree(RICH_PREVIEW / "finance-column", OUT / "apps" / "finance-column")
 
 
 def inject_rich_access_adapter() -> None:
@@ -130,6 +136,26 @@ def inject_rich_access_adapter() -> None:
             if "</head>" not in text:
                 raise SystemExit(f"cannot inject rich access adapter: {relpath}")
             text = text.replace("</head>", snippet + "</head>", 1)
+            p.write_text(text, encoding="utf-8")
+
+    finance_snippet = (
+        '\n<meta name="ooglex-pro-api" content="https://pro-api.ooglex.com">\n'
+        '<script src="/assets/pro-access.js?v=6"></script>\n'
+        '<script src="/assets/pro-finance-column.js?v=1"></script>\n'
+    )
+    for relpath in (
+        "apps/finance-column/index.html",
+        "apps/finance-column/layer.html",
+        "apps/finance-column/diagrams.html",
+    ):
+        p = OUT / relpath
+        if not p.exists():
+            raise SystemExit(f"Finance Column page missing: {relpath}")
+        text = p.read_text(encoding="utf-8")
+        if "/assets/pro-finance-column.js" not in text:
+            if "</head>" not in text:
+                raise SystemExit(f"cannot inject Finance Column access adapter: {relpath}")
+            text = text.replace("</head>", finance_snippet + "</head>", 1)
             p.write_text(text, encoding="utf-8")
 
 
