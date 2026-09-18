@@ -10,6 +10,10 @@ const PRODUCTS = Object.freeze({
   billionaires: {
     previewKey: "billionaires/preview.json",
     fullKey: "billionaires/full.json"
+  },
+  finance_column: {
+    previewKey: "finance-column/preview.json",
+    fullKey: "finance-column/full.json"
   }
 });
 
