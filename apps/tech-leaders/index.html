@@ -60,13 +60,23 @@
     .chip{padding:5px 8px;border-radius:7px;border:1px solid var(--line);font:10.5px/1.2 var(--mono);color:var(--dim)}
     .openx{display:flex;align-items:center;justify-content:center;height:42px;margin-top:18px;border-radius:8px;background:#f2f4f7;color:#111;font-size:13px;font-weight:700}
     .note{margin-top:14px;font-size:11.5px;color:var(--faint);line-height:1.65}
-    .feed{min-height:760px;overflow:hidden}
+    .feed{overflow:hidden}
     .feed-hd{display:flex;align-items:center;gap:8px;padding:13px 16px;border-bottom:1px solid var(--line);font:11px/1.2 var(--mono);letter-spacing:.1em;color:var(--faint)}
     .dot{width:7px;height:7px;border-radius:50%;background:var(--up);box-shadow:0 0 8px rgba(47,181,131,.75)}
-    #timeline{min-height:700px;background:var(--panel)}
-    .loading,.fallback{padding:64px 26px;text-align:center;color:var(--dim)}
+    #timeline{min-height:0;background:var(--panel);transition:min-height .2s ease}
+    #timeline[data-state="loading"]{min-height:210px}
+    #timeline[data-state="ready"]{min-height:720px}
+    #timeline[data-state="fallback"]{min-height:0}
+    .loading,.fallback{padding:48px 26px;text-align:center;color:var(--dim)}
     .loading b,.fallback b{display:block;color:var(--ink);font-size:18px;margin-bottom:8px}
-    .fallback a{display:inline-flex;margin-top:16px;padding:10px 18px;border-radius:8px;background:#f2f4f7;color:#111;font-weight:700;font-size:13px}
+    .spinner{width:22px;height:22px;margin:0 auto 14px;border:2px solid var(--line);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .fallback-actions{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:18px}
+    .fallback a,.fallback button{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:9px 16px;border-radius:8px;font:700 13px/1.2 inherit;cursor:pointer}
+    .fallback a{background:#f2f4f7;color:#111}
+    .fallback button{border:1px solid var(--line);background:transparent;color:var(--ink)}
+    .fallback small{display:block;margin-top:12px;color:var(--faint);font-size:11px}
+    .x-embed-anchor{display:block;height:1px;overflow:hidden;opacity:0;pointer-events:none}
     .about{margin-top:20px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}
     .about b{color:var(--dim)}
     footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint)}
@@ -80,8 +90,7 @@
       h1{font-size:32px}
       .leaders{grid-template-columns:repeat(2,minmax(0,1fr))}
       .hero{padding-top:36px}
-      .feed{min-height:680px}
-      #timeline{min-height:620px}
+      #timeline[data-state="ready"]{min-height:620px}
     }
     html[data-theme="ft"] body,html[data-theme="paper"] body{background:var(--bg);color:var(--ink)}
     html[data-theme="ft"] .leader,html[data-theme="paper"] .leader,
@@ -178,6 +187,7 @@
   var timeline = document.getElementById("timeline");
   var current = people[0];
   var loadToken = 0;
+  var WIDGET_TIMEOUT_MS = 6500;
 
   leaders.innerHTML = people.map(function(p,i){
     return '<button class="leader'+(i===0?' on':'')+'" type="button" data-id="'+p.id+'">'+
@@ -198,7 +208,7 @@
         var timer = setInterval(function(){
           poll += 1;
           if (window.twttr && window.twttr.widgets) { clearInterval(timer); resolve(window.twttr); }
-          else if (poll > 30) { clearInterval(timer); reject(new Error("x_widget_timeout")); }
+          else if (poll > 14) { clearInterval(timer); reject(new Error("x_widget_timeout")); }
         },250);
         return;
       }
@@ -211,7 +221,7 @@
         var timer = setInterval(function(){
           waited += 1;
           if (window.twttr && window.twttr.widgets) { clearInterval(timer); resolve(window.twttr); }
-          else if (waited > 20) { clearInterval(timer); reject(new Error("x_widget_unavailable")); }
+          else if (waited > 10) { clearInterval(timer); reject(new Error("x_widget_unavailable")); }
         },200);
       };
       s.onerror = function(){ reject(new Error("x_widget_blocked")); };
@@ -222,9 +232,14 @@
   function showFallback(p, reason){
     timeline.innerHTML =
       '<div class="fallback"><b>当前网络无法加载 X 时间线</b>'+
-      '<div>这通常是 X 嵌入资源在当前网络不可达，并非 Ooglex 页面故障。</div>'+
-      '<a href="https://x.com/'+p.handle+'" target="_blank" rel="noopener noreferrer">打开 @'+p.handle+' ↗</a></div>';
-    timeline.setAttribute("data-state", reason || "fallback");
+      '<div>Ooglex 页面正常，但 X 官方嵌入资源在当前网络没有成功返回。</div>'+
+      '<div class="fallback-actions">'+
+        '<button type="button" data-retry-x="1">重新加载</button>'+
+        '<a href="https://x.com/'+p.handle+'" target="_blank" rel="noopener noreferrer">打开 @'+p.handle+' ↗</a>'+
+      '</div>'+
+      '<small>切换网络或使用能够访问 X 的网络环境后，可直接重新加载。</small></div>';
+    timeline.setAttribute("data-state","fallback");
+    timeline.setAttribute("data-reason", reason || "unavailable");
   }
 
   function updateProfile(p){
@@ -244,29 +259,56 @@
     Array.prototype.forEach.call(leaders.querySelectorAll(".leader"),function(btn){
       btn.classList.toggle("on",btn.getAttribute("data-id")===p.id);
     });
-    timeline.innerHTML = '<div class="loading"><b>正在连接 X 官方时间线…</b><div>@'+p.handle+' · 原文由 X 官方组件加载</div></div>';
+    timeline.innerHTML = '<div class="loading"><div class="spinner" aria-hidden="true"></div><b>正在连接 X 官方时间线…</b><div>@'+p.handle+' · 最多等待约 6 秒</div></div>';
     timeline.setAttribute("data-state","loading");
+    timeline.removeAttribute("data-reason");
 
     ensureWidgets().then(function(twttr){
       if (token !== loadToken) return;
       timeline.innerHTML = "";
-      var a = document.createElement("a");
-      a.className = "twitter-timeline";
-      a.href = "https://x.com/"+p.handle;
-      a.setAttribute("data-height","760");
-      a.setAttribute("data-theme",widgetTheme());
-      a.setAttribute("data-chrome","noheader nofooter noborders transparent");
-      a.textContent = "Posts by @"+p.handle;
-      timeline.appendChild(a);
 
-      try { twttr.widgets.load(timeline); }
-      catch(e) { showFallback(p,"render_error"); return; }
+      var mount = document.createElement("div");
+      timeline.appendChild(mount);
+      var usedDirectApi = false;
+
+      if (twttr.widgets && typeof twttr.widgets.createTimeline === "function") {
+        usedDirectApi = true;
+        try {
+          Promise.resolve(twttr.widgets.createTimeline(
+            {sourceType:"profile",screenName:p.handle},
+            mount,
+            {height:760,theme:widgetTheme(),chrome:"noheader nofooter noborders transparent"}
+          )).then(function(frame){
+            if (token !== loadToken) return;
+            if (frame || timeline.querySelector("iframe")) timeline.setAttribute("data-state","ready");
+          }).catch(function(){
+            if (token === loadToken) showFallback(p,"create_timeline_failed");
+          });
+        } catch(e) {
+          usedDirectApi = false;
+        }
+      }
+
+      if (!usedDirectApi) {
+        timeline.innerHTML = "";
+        var a = document.createElement("a");
+        a.className = "twitter-timeline x-embed-anchor";
+        a.href = "https://x.com/"+p.handle;
+        a.setAttribute("data-height","760");
+        a.setAttribute("data-theme",widgetTheme());
+        a.setAttribute("data-chrome","noheader nofooter noborders transparent");
+        a.setAttribute("aria-label","X timeline for @"+p.handle);
+        a.textContent = "X";
+        timeline.appendChild(a);
+        try { twttr.widgets.load(timeline); }
+        catch(e) { showFallback(p,"render_error"); return; }
+      }
 
       setTimeout(function(){
         if (token !== loadToken) return;
-        if (!timeline.querySelector("iframe")) showFallback(p,"embed_timeout");
-        else timeline.setAttribute("data-state","ready");
-      },9000);
+        if (timeline.querySelector("iframe")) timeline.setAttribute("data-state","ready");
+        else if (timeline.getAttribute("data-state") !== "fallback") showFallback(p,"embed_timeout");
+      },WIDGET_TIMEOUT_MS);
     }).catch(function(){
       if (token === loadToken) showFallback(p,"script_unavailable");
     });
@@ -278,6 +320,11 @@
     var id = btn.getAttribute("data-id");
     var p = people.find(function(x){return x.id===id;});
     if (p) render(p);
+  });
+
+  timeline.addEventListener("click",function(e){
+    var retry = e.target.closest("[data-retry-x]");
+    if (retry) render(current);
   });
 
   render(current);
