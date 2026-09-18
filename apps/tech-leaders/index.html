@@ -67,12 +67,12 @@
     .leader.on{border-color:rgba(57,135,229,.72);background:rgba(57,135,229,.09);box-shadow:0 0 0 1px rgba(57,135,229,.14) inset}
     .leader-head{display:flex;align-items:center;gap:10px;min-width:0}
     .leader-avatar-shell,.profile-avatar-shell{position:relative;display:grid;place-items:center;overflow:visible;border-radius:50%;flex:0 0 auto;border:1px solid var(--line);background:linear-gradient(145deg,rgba(57,135,229,.18),rgba(255,255,255,.035))}
-    .verified-badge{position:absolute;z-index:4;right:-4px;bottom:-3px;display:block;width:16px;height:16px;pointer-events:none;filter:drop-shadow(0 1px 1px rgba(0,0,0,.12))}
+    .verified-badge{display:inline-block;flex:0 0 auto;width:17px;height:17px;vertical-align:-3px;pointer-events:none;filter:drop-shadow(0 1px 1px rgba(0,0,0,.10))}
     .verified-badge svg{display:block;width:100%;height:100%}
-    .profile-avatar-shell .verified-badge{width:19px;height:19px;right:-5px;bottom:-4px}
-    .post-name-line{display:flex;align-items:center;gap:4px;min-width:0}
-    .post-name-line b{display:block;min-width:0}
-    .post-verified{position:static;display:inline-block;flex:0 0 auto;width:15px;height:15px;filter:none}
+    .leader-name-line,.profile-name-line,.post-name-line{display:flex;align-items:center;gap:5px;min-width:0}
+    .leader-name-line b,.profile-name-line h2,.post-name-line b{min-width:0}
+    .profile-name-line .verified-badge{width:20px;height:20px}
+    .post-verified{width:16px;height:16px;filter:none}
     .leader-avatar-shell{width:34px;height:34px}
     .profile-avatar-shell{width:58px;height:58px}
     .leader-avatar,.profile-avatar{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;background:var(--panel)}
@@ -178,9 +178,9 @@
       <aside class="profile">
         <div class="eyebrow">SELECTED PROFILE</div>
         <div class="profile-id">
-          <span class="profile-avatar-shell"><span class="avatar-fallback" id="profile-avatar-fallback">EM</span><img class="profile-avatar" id="profile-avatar" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span class="verified-badge" title="公开账号已核验" aria-label="公开账号已核验"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#1d9bf0" d="M23 12l-2.44-2.79.39-3.68-3.61-.82L15.45 1.5 12 2.96 8.55 1.5 6.66 4.69l-3.61.81.39 3.68L1 12l2.44 2.79-.39 3.69 3.61.81 1.89 3.2L12 21.03l3.45 1.46 1.89-3.19 3.61-.82-.39-3.68L23 12z"/><path fill="#fff" d="M10.09 16.72 6.29 12.91l1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z"/></svg></span></span>
+          <span class="profile-avatar-shell"><span class="avatar-fallback" id="profile-avatar-fallback">EM</span><img class="profile-avatar" id="profile-avatar" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></span>
           <div class="profile-copy">
-            <h2 id="profile-name">马斯克</h2>
+            <div class="profile-name-line"><h2 id="profile-name">马斯克</h2><span id="profile-verified"></span></div>
             <div class="profile-en" id="profile-name-en">Elon Musk</div>
             <div class="handle" id="profile-handle">@elonmusk</div>
           </div>
@@ -273,7 +273,7 @@
     return raw.slice(0,2).toUpperCase();
   }
   function verifiedBadgeMarkup(extraClass){
-    return '<span class="verified-badge '+(extraClass||'')+'" title="公开账号已核验" aria-label="公开账号已核验"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#1d9bf0" d="M23 12l-2.44-2.79.39-3.68-3.61-.82L15.45 1.5 12 2.96 8.55 1.5 6.66 4.69l-3.61.81.39 3.68L1 12l2.44 2.79-.39 3.69 3.61.81 1.89 3.2L12 21.03l3.45 1.46 1.89-3.19 3.61-.82-.39-3.68L23 12z"/><path fill="#fff" d="M10.09 16.72 6.29 12.91l1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z"/></svg></span>';
+    return '<span class="verified-badge '+(extraClass||'')+'" title="公开账号已核验" aria-label="公开账号已核验"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#1d9bf0" d="M23 12l-2.44-2.79.39-3.68-3.61-.82L15.45 1.5 12 2.96 8.55 1.5 6.66 4.69l-3.61.81.39 3.68L1 12l2.44 2.79-.39 3.69 3.61.81 1.89 3.2L12 21.03l3.45 1.46 1.89-3.19 3.61-.82-.39-3.68L23 12z"/><path d="M7.35 12.15l2.85 2.9 6.55-6.6" fill="none" stroke="#fff" stroke-width="2.45" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
   }
   function setModeUi(){
     freeBtn.classList.toggle("on",MODE==="free");
@@ -282,6 +282,7 @@
   }
   function updateProfile(p){
     document.getElementById("profile-name").textContent=p.name_zh||p.zh||p.name;
+    document.getElementById("profile-verified").innerHTML=verifiedBadgeMarkup("profile-verified");
     profileNameEn.textContent=p.name_en||p.name||"";
     document.getElementById("profile-handle").textContent="@"+p.handle;
     profileCompany.textContent=(p.company_zh||"")+(p.company_en&&p.company_en!==p.company_zh?" · "+p.company_en:"");
@@ -337,8 +338,8 @@
       var role=[company,p.position_zh||""].filter(Boolean).join(" · ");
       return '<button class="leader'+(current&&p.id===current.id?' on':'')+'" type="button" data-id="'+escapeHtml(p.id)+'">'+
         '<div class="leader-head"><span class="leader-avatar-shell"><span class="avatar-fallback">'+escapeHtml(initialsFor(p))+'</span>'+
-        '<img class="leader-avatar" data-avatar="1" loading="lazy" decoding="async" referrerpolicy="no-referrer" alt="'+escapeHtml(cn+" 头像")+'" src="'+escapeHtml(avatarUrl(p))+'">'+verifiedBadgeMarkup("")+'</span>'+
-        '<div class="leader-identity"><b>'+escapeHtml(cn)+'</b><span class="leader-en">'+escapeHtml(en)+'</span></div></div>'+
+        '<img class="leader-avatar" data-avatar="1" loading="lazy" decoding="async" referrerpolicy="no-referrer" alt="'+escapeHtml(cn+" 头像")+'" src="'+escapeHtml(avatarUrl(p))+'"></span>'+
+        '<div class="leader-identity"><div class="leader-name-line"><b>'+escapeHtml(cn)+'</b>'+verifiedBadgeMarkup("")+'</div><span class="leader-en">'+escapeHtml(en)+'</span></div></div>'+
         '<div class="leader-role"><strong>'+escapeHtml(role)+'</strong></div></button>';
     }).join("");
   }
