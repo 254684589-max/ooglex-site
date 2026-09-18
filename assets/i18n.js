@@ -58,6 +58,77 @@
   };
 
   var MACRO = {
+    /* 宏观管道的指标名（FRED 系列，data.json 里只有中文名和 series id，没有 nameEn），
+       一律用各系列的通行英文名，不自创译法。 */
+    "联邦基金有效利率": "Effective Federal Funds Rate",
+    "SOFR 担保隔夜融资利率": "SOFR (Secured Overnight Financing Rate)",
+    "准备金利率 (IORB)": "Interest on Reserve Balances (IORB)",
+    "联邦基金目标上限": "Fed Funds Target Range · Upper Limit",
+    "联邦基金目标下限": "Fed Funds Target Range · Lower Limit",
+    "贴现窗口一级信贷利率": "Discount Window Primary Credit Rate",
+    "美联储总资产": "Federal Reserve Total Assets",
+    "准备金余额": "Reserve Balances",
+    "财政部一般账户 (TGA)": "Treasury General Account (TGA)",
+    "隔夜逆回购用量 (RRP)": "Overnight Reverse Repo Volume (RRP)",
+    "10 年期美债收益率": "10-Year Treasury Yield",
+    "5 年期 TIPS 实际收益率": "5-Year TIPS Real Yield",
+    "10 年期 TIPS 实际收益率": "10-Year TIPS Real Yield",
+    "10 年盈亏平衡通胀预期": "10-Year Breakeven Inflation Rate",
+    "5 年盈亏平衡通胀预期": "5-Year Breakeven Inflation Rate",
+    "5 年 5 年远期通胀预期": "5-Year, 5-Year Forward Inflation Expectation Rate",
+    "2 年期美债收益率": "2-Year Treasury Yield",
+    "30 年期美债收益率": "30-Year Treasury Yield",
+    "10Y−2Y 期限利差": "10Y−2Y Term Spread",
+    "10Y−3M 期限利差": "10Y−3M Term Spread",
+    "10Y 期限溢价 (ACM/KW)": "10Y Term Premium (ACM/KW)",
+    "芝加哥联储金融状况指数": "Chicago Fed National Financial Conditions Index",
+    "调整后金融状况指数": "Adjusted National Financial Conditions Index",
+    "圣路易斯联储金融压力指数": "St. Louis Fed Financial Stress Index",
+    "高收益债 OAS": "High-Yield OAS",
+    "BBB 级公司债 OAS": "BBB Corporate OAS",
+    "投资级债 OAS": "Investment-Grade OAS",
+    "Baa 公司债–10Y 利差": "Baa Corporate − 10Y Spread",
+    "铜/金 ×1000 (工业 vs 避险)": "Copper/Gold ×1000 (industrial vs. safe haven)",
+    "金/银": "Gold/Silver",
+    "油/铜": "Oil/Copper",
+    "油/金 ×100": "Oil/Gold ×100",
+    "MOVE 债券波动率": "MOVE Bond Volatility",
+    "SKEW 偏度": "SKEW Index",
+    "VVIX 波动之波动": "VVIX (volatility of volatility)",
+    /* 时光机上的危机事件标签 */
+    "2008 全球金融危机": "2008 Global Financial Crisis",
+    "2011 欧债·美债降级": "2011 Euro Debt Crisis · U.S. Downgrade",
+    "2013 缩减恐慌": "2013 Taper Tantrum",
+    "2015 人民币冲击": "2015 Renminbi Shock",
+    "2018 联储双紧": "2018 Fed Double Tightening",
+    "2019 回购危机": "2019 Repo Crisis",
+    "2020 新冠崩盘": "2020 COVID Crash",
+    "2022 通胀紧缩": "2022 Inflation Tightening",
+    "2023 硅谷银行": "2023 Silicon Valley Bank",
+    "2024 套息平仓": "2024 Carry-Trade Unwind",
+    /* 信号卡的状态词与指标说明 */
+    "支持": "Supportive",
+    "承压": "Under pressure",
+    "VIX 水平与期限结构": "VIX level and term structure",
+    "增长动能综合：铜金比 · 半导体/大盘(SOX) · 周期/防御(XLY/XLP)":
+      "Growth momentum composite: copper/gold · semis vs. market (SOX) · cyclicals vs. defensives (XLY/XLP)",
+    "等权/市值加权广度：存量近两年 9% 分位，近 13 周更集中":
+      "Equal- vs. cap-weighted breadth: at the 9th percentile of the past two years, and more concentrated over the last 13 weeks",
+    "FRED · EIA · Yahoo Finance · 交易所行情": "FRED · EIA · Yahoo Finance · exchange quotes",
+    "· 仅供研究，非投资建议": "· For research only, not investment advice",
+    "收益率曲线周环比": "Yield curve, week over week",
+    "（走平）": " (flattening)",
+    "（陡峭化）": " (steepening)",
+    "利率": "rates",
+    "（加息定价升温、边际收紧）": " (more tightening priced in; marginally tighter)",
+    "（降息定价升温、边际宽松）": " (more easing priced in; marginally looser)",
+    "（贴现率急升、压制久期资产）": " (discount rates jumping; pressure on long-duration assets)",
+    "（贴现率回落、利好久期资产）": " (discount rates falling; supportive for long-duration assets)",
+    "广度代理处于近两年": "The breadth proxy sits at the ",
+    "分位，涨势集中": " percentile of the past two years, with gains concentrated",
+    "高收益/投资级比价周环比": "High-yield vs. investment-grade ratio, week over week",
+    "，信用走弱": " — credit weakening",
+    "，信用改善": " — credit improving",
     "黄河浮桥远航基金 · VOYAGER FUND": "VOYAGER FUND",
     "宏观风险监测": "MACRO RISK MONITOR",
     "制度信号": "Regime Signals",
@@ -222,6 +293,68 @@
     }
     if (path.indexOf("/apps/macro-radar/") === 0) {
       if ((m = /^数据更新 · (.+)$/.exec(s))) return "Updated · " + m[1];
+      /* 信号卡的判语是 scripts/macro-radar/build_radar.py 按模板拼出来的，
+         整串永远进不了字典。下面逐个模板写两端锚定的规则，数字与单位原样带回；
+         拼进去的词（信号名、松紧判断）统一走 SIGNAL/TONE 两张小表，
+         查不到就回退原文，绝不臆造。 */
+      var SIGNAL = { "流动性": "Liquidity", "波动率": "Volatility", "期限溢价": "Term premium",
+        "实际利率": "Real rates", "信用": "Credit", "美元": "Dollar", "广度": "Breadth",
+        "市场广度": "Market breadth", "信用利差": "Credit spreads" };
+      var TONE = { "回升": "rebounding", "收缩": "contracting", "充裕": "ample", "趋紧": "tightening",
+        "政策偏松": "policy leaning easy", "政策偏紧": "policy leaning tight",
+        "牛陡偏松": "bull steepening, easier", "熊陡偏紧": "bear steepening, tighter",
+        "曲线陡峭": "curve steep", "曲线倒挂": "curve inverted",
+        "紧缩驱动": "tightening-driven", "增长驱动": "growth-driven",
+        "利差温和": "spreads contained", "利差走阔": "spreads widening",
+        "风险偏好回升": "risk appetite recovering", "信用边际走弱": "credit weakening at the margin",
+        "走强偏紧": "stronger, tighter", "走弱偏松": "weaker, easier",
+        "抬升": "rising", "回落": "easing",
+        "倒挂 (backwardation)": "backwardation", "正向 (contango)": "contango",
+        "尚未进入系统性压力区": "not yet in systemic stress territory",
+        "已进入压力区": "already in stress territory",
+        "风险偏好占优、结构偏支持": "risk appetite dominates and the structure is supportive",
+        "避险情绪升温、结构偏承压": "risk-off is building and the structure is under pressure",
+        "多空交织、结构中性分化": "mixed, with a neutral and divided structure",
+        "收紧 · 风险": "Tight · Risk", "中性偏紧": "Neutral-tight", "中性": "Neutral",
+        "中性偏松": "Neutral-easy", "宽松 · 支持": "Supportive" };
+      function sig(x) { return x.split("、").map(function (k) { return SIGNAL[k] || k; }).join(" and "); }
+      function tone(x) { return TONE[x] || x; }
+
+      if ((m = /^净流动性 (\S+?)T，近 13 周 (\S+?)B（(.+?)）(?:；SOFR−IORB (\S+?)bp（(.+?)）)?$/.exec(s))) {
+        return "Net liquidity " + m[1] + "T, " + m[2] + "B over 13 weeks (" + tone(m[3]) + ")" +
+          (m[4] ? "; SOFR−IORB " + m[4] + "bp (" + tone(m[5]) + ")" : "");
+      }
+      if ((m = /^3M 短端利率 (\S+?)%，(.+)$/.exec(s))) return "3M short rate " + m[1] + "%, " + tone(m[2]);
+      if ((m = /^VIX (抬升|回落)，期限结构(.+)$/.exec(s))) return "VIX " + tone(m[1]) + ", term structure in " + tone(m[2]);
+      if ((m = /^10Y−3M (\S+?)bp，期限溢价 (\S+?)%（(.+?)）$/.exec(s))) {
+        return "10Y−3M " + m[1] + "bp, term premium " + m[2] + "% (" + tone(m[3]) + ")";
+      }
+      if ((m = /^收益率曲线 10Y−3M (\S+?)bp，(.+)$/.exec(s))) return "Yield curve 10Y−3M " + m[1] + "bp, " + tone(m[2]);
+      if ((m = /^5Y 实际利率 (\S+?)%，近 13 周 (\S+?)bp(?:（(.+?)）)?$/.exec(s))) {
+        return "5Y real rate " + m[1] + "%, " + m[2] + "bp over 13 weeks" + (m[3] ? " (" + tone(m[3]) + ")" : "");
+      }
+      if ((m = /^高收益债 OAS (\S+?)bp，(.+)$/.exec(s))) return "High-yield OAS " + m[1] + "bp, " + tone(m[2]);
+      if ((m = /^高收益\/投资级比价 \(HYG÷LQD\)，(.+)$/.exec(s))) return "High-yield vs. investment-grade (HYG÷LQD), " + tone(m[1]);
+      if ((m = /^美元指数 (\S+?)（(.+?)）(?:，离岸-在岸基差 (\S+?)pips)?$/.exec(s))) {
+        return "Dollar index " + m[1] + " (" + tone(m[2]) + ")" +
+          (m[3] ? ", CNH−CNY basis " + m[3] + " pips" : "");
+      }
+      if ((m = /^等权\/市值加权广度：存量近两年 (\S+?)% 分位，近 13 周(.+)$/.exec(s))) {
+        return "Equal- vs. cap-weighted breadth: " + m[1] + "th percentile of the past two years, " + m[2] + " over 13 weeks";
+      }
+      if ((m = /^(.+?)走弱压制风险偏好；(.+?)相对稳健，(.+?)。$/.exec(s))) {
+        return sig(m[1]) + " weakening weighs on risk appetite, while " + sig(m[2]) +
+          " hold up; " + tone(m[3]) + ".";
+      }
+      if (s === "多资产制度信号综合读数。") return "Composite reading across multi-asset regime signals.";
+      if (s === "今日无显著市场异动，跨资产结构平稳。") return "No notable market moves today; the cross-asset structure is stable.";
+      if ((m = /^今日 (\d+) 条市场异动，(.+?)；与机制读数 (\d+)（(.+?)）方向一致。$/.exec(s))) {
+        return m[1] + " notable market moves today: " + tone(m[2]) + "; consistent with the regime reading of " +
+          m[3] + " (" + tone(m[4]) + ").";
+      }
+      // 「3M 短端利率周环比」这类被 <b> 切成了「3」「M 短端利率周环比」两段
+      if ((m = /^M 短端利率周环比$/.exec(s))) return "M short-rate change, week over week";
+      if ((m = /^Y 实际利率周环比$/.exec(s))) return "Y real-rate change, week over week";
     }
     return null;
   }
@@ -300,12 +433,17 @@
     if (!base) return;
     if (base.nodeType === 3) { translateText(base); return; }
     if (base.nodeType === 1) translateAttrs(base);
+    /* specialEnglish 必须跑在逐节点翻译**之前**。它对整块元素做 innerHTML 备份
+       （富豪榜的 .nm、宏观风险监测的 .sig h3 / .mcat b），如果先让 translateText
+       把里面的文本翻成英文，它备份下来的「原文」就已经是英文了，切回中文时
+       h3 会停在 "Liquidity" 而不是「流动性」。它接管的那几块本来就由它整体改写，
+       提前跑不会漏翻。 */
+    specialEnglish(base);
     var w = document.createTreeWalker(base, NodeFilter.SHOW_TEXT, null);
     var n;
     while ((n = w.nextNode())) translateText(n);
     var els = base.querySelectorAll ? base.querySelectorAll("[placeholder],[aria-label],[title]") : [];
     for (var i = 0; i < els.length; i++) translateAttrs(els[i]);
-    specialEnglish(base);
   }
 
   function restore() {
@@ -347,24 +485,43 @@
     if (titles[path]) document.title = titles[path];
   }
   function restoreMeta() { if (metaOriginal) document.title = metaOriginal.title; }
+  /* pending 原本是「本帧已排过队就直接 return」——但 return 掉的那一批 records
+     **就此丢了**，不会被后面的 rAF 处理。数据枢纽这类一屏拉十几个 data.json、
+     逐卡渲染的页面，一帧里能来好几批 mutation，于是「领涨」「今日上涨」这些
+     字典里明明有的词条永远翻不到。改成先把 records 攒起来再统一处理：
+     既保留按帧合并的原意，又一条都不丢。 */
 
-  var observer = null, pending = false;
+  var observer = null, pending = false, queued = [];
   function watch() {
     if (observer || typeof MutationObserver === "undefined") return;
     observer = new MutationObserver(function (recs) {
-      if (current !== "en" || pending) return;
+      if (current !== "en") return;
+
+      queued = queued.concat(Array.prototype.slice.call(recs));
+
+      if (pending) return;
       pending = true;
       requestAnimationFrame(function () {
         pending = false;
-        for (var i = 0; i < recs.length; i++) {
-          var r = recs[i];
-          if (r.type === "characterData") translateText(r.target);
+        /* rAF 排队期间用户可能已经切回中文：那时 restore() 已经跑完，
+           这一帧再去翻译（尤其是末尾无条件调用的 specialEnglish）会把刚还原的
+           标题、样式又改回英文态——宏观风险监测的中文大标题就是这么丢的。 */
+        if (current !== "en") { queued = []; return; }
+        var batch = queued; queued = [];
+        for (var i = 0; i < batch.length; i++) {
+          var r = batch[i];
+          if (r.type === "attributes") translateAttrs(r.target);
+          else if (r.type === "characterData") translateText(r.target);
           else for (var j = 0; j < r.addedNodes.length; j++) walk(r.addedNodes[j]);
         }
         specialEnglish(document);
       });
     });
-    observer.observe(document.documentElement, { subtree:true, childList:true, characterData:true });
+    /* 也盯 ATTRS 里那几个属性：原先只盯 childList/characterData，
+       于是「就地改写已有元素的 aria-label/title」这类更新永远翻不到
+       （行情板的「当前显示 73 项：上涨 25…」就是这么漏的）。
+       改写属性本身会再触发一次 mutation，但英文串查不到词条，第二轮是空转，不会循环。 */
+    observer.observe(document.documentElement, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ATTRS });
   }
 
   function apply(lang, persist) {

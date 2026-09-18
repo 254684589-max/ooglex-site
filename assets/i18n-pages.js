@@ -106,7 +106,31 @@
     "阿里巴巴": "Alibaba",
     "月之暗面": "Moonshot AI",
     "智谱AI": "Zhipu AI",
-    "字节跳动": "ByteDance"
+    "字节跳动": "ByteDance",
+    "深度求索": "DeepSeek",
+    "智谱": "Zhipu AI",
+    /* KPI 行被 <b> 拆开：「覆盖 <b>N</b> 个模型」「中国模型 <b>N</b> 个」 */
+    "覆盖": "Coverage",
+    "个模型": "models",
+    "中国模型": "China-based models",
+    "个": "models",
+    "LMArena（竞技场 Elo） ↗": "LMArena (Arena Elo) ↗",
+    "数百万用户匿名对战投票的 Elo 排名": "Elo ranking from millions of anonymous head-to-head votes",
+    "定期换题的客观评测：数学 · 推理 · 编程 · 数据分析 · 指令遵循":
+      "Objective benchmarks with rotating questions: maths · reasoning · coding · data analysis · instruction following",
+    "Artificial Analysis 智能指数 ↗": "Artificial Analysis Intelligence Index ↗",
+    "综合多项基准的智能指数，兼看速度与价格":
+      "An intelligence index across several benchmarks, alongside speed and price",
+    "每小时更新的模型热度与采用率趋势": "Hourly model popularity and adoption trends",
+    "开源模型评测榜（已归档，供参考）": "Open-source model leaderboard (archived, for reference)",
+    "HELM（斯坦福） ↗": "HELM (Stanford) ↗",
+    "强调公平可重复的学术评测平台": "An academic evaluation platform built for fairness and reproducibility",
+    "数据每日自动更新一次（北京时间 07:00 前抓取 LMArena / LiveBench 最新榜单）；":
+      "Data refreshes once a day (the latest LMArena and LiveBench boards are fetched before 07:00 Beijing time);",
+    "各榜单口径不同（Elo 为相对对战胜率、LiveBench 为客观题得分、智能指数为综合基准），跨榜绝对值不可直接比较；":
+      "the rankings measure different things (Elo is a relative head-to-head win rate, LiveBench is an objective test score, and the Intelligence Index is a composite benchmark), so absolute values are not comparable across them;",
+    "「综合」列为本站将三榜归一化后的加权参考分，仅用于粗略排序。数据仅供参考，不构成任何建议。":
+      "the “Overall” column is this site's weighted reference score after normalising the three rankings, and is only meant for rough ordering. For reference only; not advice."
   };
 
   var UNIVERSITY = {
@@ -150,8 +174,66 @@
     "新西兰": "New Zealand",
     "印度": "India",
     "巴西": "Brazil",
-    "以色列": "Israel"
+    "以色列": "Israel",
+    "沙特": "Saudi Arabia",
+    "南非": "South Africa",
+    "俄罗斯": "Russia",
+    "葡萄牙": "Portugal",
+    "马来西亚": "Malaysia",
+    "捷克": "Czech Republic",
+    "波兰": "Poland",
+    "阿根廷": "Argentina",
+    "墨西哥": "Mexico",
+    "希腊": "Greece",
+    "智利": "Chile",
+    "卡塔尔": "Qatar",
+    "阿联酋": "United Arab Emirates",
+    "泰国": "Thailand",
+    /* KPI 行是「覆盖 <b>300</b> 所」这种，<b> 把它拆成两个文本节点，整串进不了字典 */
+    "覆盖": "Coverage",
+    "所": "universities",
+    "上榜": "Listed in",
+    "个国家/地区": "countries/regions",
+    "中国高校": "China-based universities",
+    "QS 世界大学排名 ↗": "QS World University Rankings ↗",
+    "QS 世界大学排名": "QS World University Rankings",
+    "Quacquarelli Symonds，侧重学术声誉、雇主声誉与国际化":
+      "Quacquarelli Symonds — weighted toward academic reputation, employer reputation and internationalisation",
+    "THE 泰晤士高等教育世界大学排名 ↗": "THE Times Higher Education World University Rankings ↗",
+    "THE 泰晤士高等教育世界大学排名": "THE Times Higher Education World University Rankings",
+    "18 项指标，覆盖教学、研究、引用、产业与国际展望":
+      "18 indicators spanning teaching, research, citations, industry and international outlook",
+    "ARWU 软科世界大学学术排名 ↗": "ARWU Academic Ranking of World Universities ↗",
+    "ARWU 软科世界大学学术排名": "ARWU Academic Ranking of World Universities",
+    "上海交大发起，重科研产出与顶级奖项（诺奖/菲尔兹/高被引）":
+      "Started by Shanghai Jiao Tong University — weighted toward research output and top prizes (Nobel, Fields, highly cited researchers)",
+    "上海交大发起，重科研产出与顶级奖项":
+      "Started by Shanghai Jiao Tong University — weighted toward research output and top prizes",
+    "U.S. News 全球最佳大学 ↗": "U.S. News Best Global Universities ↗",
+    "U.S. News 全球最佳大学": "U.S. News Best Global Universities",
+    "以全球研究声誉与文献计量表现为主": "Driven mainly by global research reputation and bibliometrics",
+    "本榜为": "This table is an ",
+    "年度权威数据整理": "annual compilation of authoritative data",
+    "：综合 QS / THE / ARWU / U.S. News 四大权威世界大学排名近一期公开位次；":
+      ": it combines the most recent published positions from QS, THE, ARWU and U.S. News;",
+    "「综合」列为各校在四大榜单位次的平均值（ARTU 式聚合排名，至少命中两个榜才计入），位次越小越靠前；":
+      "the “Overall” column is each university's average position across the four rankings (an ARTU-style aggregate, counted only when a university appears in at least two), and a lower number ranks higher;",
+    "各榜评价口径不同（声誉、科研产出、引用、国际化侧重各异），跨榜绝对位次不可直接比较，数据以各榜官方公布为准，仅供参考。":
+      "each ranking measures different things (reputation, research output, citations and internationalisation carry different weights), so absolute positions are not directly comparable across them. The publishers' official releases govern; this table is for reference only.",
+    "关于全球大学排名 300 强": "About the Global University Rankings Top 300",
+    "本榜把四大权威世界大学排名合为一张表：": "This table merges four authoritative world university rankings: ",
+    "（侧重学术声誉、雇主声誉与国际化）、": " (academic reputation, employer reputation and internationalisation), ",
+    "（18 项指标覆盖教学/研究/引用/产业/国际展望）、":
+      " (18 indicators across teaching, research, citations, industry and international outlook), ",
+    "（上海交大发起，重科研产出与顶级奖项）、":
+      " (started by Shanghai Jiao Tong University, weighted toward research output and top prizes), and ",
+    "（以全球研究声誉与文献计量为主）。": " (driven mainly by global research reputation and bibliometrics).",
+    "「综合」排名采用 ARTU 式聚合法，取每所大学在各榜位次的平均值排序（至少命中两个榜才计入综合），可切换查看任一单榜，并按国家/地区筛选、中英文搜索。本榜为四大榜单近一期公开位次的年度权威整理，数据以各榜官方公布为准，仅供参考，不构成升学建议。":
+      "The “Overall” ranking uses an ARTU-style aggregate: each university's positions are averaged across the rankings it appears in (at least two are required). You can switch to any single ranking, filter by country or region, and search in Chinese or English. The table is an annual compilation of the most recent published positions; the publishers' official releases govern. For reference only; not admissions advice."
   };
+
+  /* 长键在前：供上面的子串替换使用，避免短键截胡长键（见 specialEnglish 里的注释）。 */
+  var UNIVERSITY_KEYS_BY_LENGTH = Object.keys(UNIVERSITY).sort(function (a, b) { return b.length - a.length; });
 
   var CALENDAR = {
     /* 国别是筛选标签，属界面；事件名与数值不翻 */
@@ -271,6 +353,47 @@
     "全球经济日历": "Global Economic Calendar",
     "央行决议 · CPI · 非农": "Central banks · CPI · payrolls",
     "偏弱信号": "Weakest signals",
+    /* 首屏导语被 <b> 拆成若干节点；标的名、人名、公司名按既有口径保持原文。 */
+    "市场情绪 · Fear & Greed": "Market sentiment · Fear & Greed",
+    "市场处于": "The market is in ",
+    "恐惧": "Fear",
+    "极度恐惧": "Extreme Fear",
+    "中性": "Neutral",
+    "贪婪": "Greed",
+    "极度贪婪": "Extreme Greed",
+    "区间。年初至今": " territory. Year to date, ",
+    "领涨全球，": " leads globally and ",
+    "领跌。": " lags.",
+    "全球首富": "Richest person",
+    "市值 #1": "Largest by market cap",
+    "资产总市值": "Total asset market cap",
+    "前 250 · 含房产/国债/黄金": "Top 250 · incl. property, sovereign debt and gold",
+    "家成分股（共 503 个成分代码）": "constituents (503 tickers in total)",
+    "项跨资产标的（另有公司榜、加密与美债曲线）":
+      "cross-asset instruments (plus the company board, crypto and the Treasury curve)",
+    "前 250 总市值": "Top 250 total market cap",
+    "涨幅居首": "Biggest gain",
+    "跌幅居首": "Biggest decline",
+    "前 500 总市值": "Top 500 total market cap",
+    "12 项指标 · 约 180 国/地区": "12 indicators · about 180 countries/regions",
+    "央行基准利率": "Central bank policy rate",
+    "AAII 情绪": "AAII sentiment",
+    "综合第一": "Overall #1",
+    "开源第一": "Top open-source",
+    "QS/THE/ARWU/USN 平均位次": "Average rank across QS/THE/ARWU/USN",
+    "薪资第一": "Highest pay",
+    "AI 前景第一": "Best AI-era outlook",
+    "人工智能与机器学习": "Artificial intelligence & machine learning",
+    "美国金融风险监测": "U.S. Financial Risk Monitor",
+    "金融压力 · 低于平均压力": "Financial stress · below average",
+    "金融压力 · 高于平均压力": "Financial stress · above average",
+    "金融压力 · 接近平均水平": "Financial stress · near average",
+    "SOFR 隔夜利率": "SOFR overnight rate",
+    "货币基金规模": "Money market fund assets",
+    "各应用数据每日自动更新（来源 Yahoo Finance · CoinGecko · OECD · BIS · OFR · Forbes · CNN · Google News · World Bank · Forex Factory · QS · THE · ARWU · U.S. News · PayScale · NACE · BLS · WEF）。仅供参考，不构成建议。":
+      "Every app refreshes daily (sources: Yahoo Finance · CoinGecko · OECD · BIS · OFR · Forbes · CNN · Google News · World Bank · Forex Factory · QS · THE · ARWU · U.S. News · PayScale · NACE · BLS · WEF). For reference only; not advice.",
+    "数据中心是 Ooglex 所有实时数据应用的统一入口，把全球市场行情、大类资产收益率、福布斯亿万富翁实时排行榜、恐慌贪婪指数、全球经济图谱、经济日历等聚合在一页，每张卡片带实时小预览，数据每日自动更新，点击任意卡片进入完整页面。所有数据均来自公开第三方来源，仅供参考，不构成投资建议。":
+      "The Data Center is the single entry point to every live-data app on Ooglex, gathering global markets, asset-class returns, the Forbes real-time billionaire ranking, the Fear & Greed Index, the world economy map and the economic calendar onto one page. Each card carries a live mini preview, the data refreshes daily, and clicking a card opens the full page. All data comes from public third-party sources and is for reference only; it is not investment advice.",
     "今日上涨": "Advancing today",
     "领涨": "Top gainer",
     "年初至今领涨": "YTD leader",
@@ -345,6 +468,13 @@
       if ((m = /^▼ 今日领跌 (.+)$/.exec(s))) return "▼ Top decliner today " + m[1];
     }
     if (path.indexOf("/apps/ai-rankings/") === 0) {
+      // 厂商行是「🇨🇳 月之暗面 · 上下文 1M」：国旗与上下文长度原样带回，只查厂商名。
+      if ((m = /^(\S+)\s+(.+?) · 上下文 (\S+)$/.exec(s))) {
+        return m[1] + " " + (dict[m[2]] || m[2]) + " · Context " + m[3];
+      }
+      if ((m = /^Live data · Updated (\d+) 小时前$/.exec(s))) return "Live data · Updated " + m[1] + " hr ago";
+      if ((m = /^Live data · Updated (\d+) 分钟前$/.exec(s))) return "Live data · Updated " + m[1] + " min ago";
+      if ((m = /^Live data · Updated (\d+) 天前$/.exec(s))) return "Live data · Updated " + m[1] + " d ago";
       if ((m = /^综合 · 基于 (\d+) 榜$/.exec(s))) return "Composite · " + m[1] + " rankings";
       if ((m = /^覆盖 (\d+) 个模型$/.exec(s))) return "Coverage · " + m[1] + " models";
       if ((m = /^中国模型 (\d+) 个$/.exec(s))) return "China-based models · " + m[1];
@@ -352,6 +482,10 @@
       if ((m = /^(\d+) 小时前$/.exec(s))) return m[1] + " hr ago";
     }
     if (path.indexOf("/apps/university-rankings/") === 0) {
+      // 国家/地区快捷筛选条：「🇺🇸 美国 50」。国旗与计数原样带回，只查国名。
+      if ((m = /^(\S+)\s+([^\s\d]+)(?:\s+(\d+))?$/.exec(s)) && dict[m[2]]) {
+        return m[1] + " " + dict[m[2]] + (m[3] ? " " + m[3] : "");
+      }
       if ((m = /^均位 · (\d+) 榜$/.exec(s))) return "Average · " + m[1] + " rankings";
       if ((m = /^四大榜单权威整理 · (\d{4}) 版$/.exec(s))) return "Four-source ranking · " + m[1] + " edition";
       if ((m = /^覆盖 (\d+) 所$/.exec(s))) return "Coverage · " + m[1] + " universities";
@@ -369,6 +503,20 @@
       if ((m = /^(\d+) 天后$/.exec(s))) return "in " + m[1] + " d";
       if ((m = /^(\d+)月(\d+)日 (周[日一二三四五六])( · 今天)?$/.exec(s))) return m[1] + "/" + m[2] + " " + (dict[m[3]] || m[3]) + (m[4] ? " · Today" : "");
       if ((m = /^(高|中|低|假日)影响$/.exec(s))) return ({"高":"High impact","中":"Medium impact","低":"Low impact","假日":"Holiday"})[m[1]];
+    }
+    if (path.indexOf("/apps/data-hub/") === 0) {
+      // 预览卡里的组合串：人名/公司名/标的名与数字原样带回，只翻固定部分。
+      if ((m = /^(\d+) 位富豪总财富$/.exec(s))) return "Combined wealth of " + m[1] + " billionaires";
+      if ((m = /^综合前 (\d+)$/.exec(s))) return "Overall top " + m[1];
+      if ((m = /^看涨 (\S+)$/.exec(s))) return "Bullish " + m[1];
+      if ((m = /^(\S+) · (\d+) 只持仓$/.exec(s))) return m[1] + " \u00B7 " + m[2] + " holdings";
+      if ((m = /^看跌 (\S+)$/.exec(s))) return "Bearish " + m[1];
+      if ((m = /^实际利率 (\S+) · 市场广度 (\S+)$/.exec(s))) return "Real rates " + m[1] + " \u00B7 Breadth " + m[2];
+      if ((m = /^预测 (\S+) · 前值 (\S+) · 本周 (\d+) 项$/.exec(s))) {
+        return "Forecast " + m[1] + " \u00B7 Previous " + m[2] + " \u00B7 " + m[3] + " events this week";
+      }
+      if ((m = /^(.+) 环比$/.exec(s))) return m[1] + " MoM";
+      if ((m = /^(.+) 同比$/.exec(s))) return m[1] + " YoY";
     }
     if (path.indexOf("/apps/fear-greed/") === 0) {
       if ((m = /^综合读数（0–100）· 数据日期 (.+)$/.exec(s))) return "Composite reading (0–100) · Date " + m[1];
@@ -428,6 +576,7 @@
       });
     }
     if (path.indexOf("/apps/university-rankings/") === 0) {
+      var zhToEnName = {};
       document.querySelectorAll(".rowcard").forEach(function (card) {
         var nm = card.querySelector(".nm"), meta = card.querySelector(".meta");
         if (!nm || !meta) return;
@@ -436,12 +585,23 @@
         var enName = parts[parts.length - 1].trim();
         if (!/[A-Za-z]/.test(enName)) return;
         rememberHtml(nm); rememberHtml(meta);
+        zhToEnName[nm.textContent.trim()] = enName;
         nm.textContent = enName;
         var left = parts[0].trim();
-        Object.keys(UNIVERSITY).forEach(function (zh) {
+        /* 这里是子串替换，必须长键优先：按插入序走的话「中国」会先命中「中国香港」，
+           替出「China香港」这种半中半英的地名（实测过）。长键先替就不会被短键截胡。 */
+        UNIVERSITY_KEYS_BY_LENGTH.forEach(function (zh) {
           if (left.indexOf(zh) >= 0 && UNIVERSITY[zh]) left = left.replace(zh, UNIVERSITY[zh]);
         });
         meta.textContent = left;
+      });
+      /* 「综合第一」KPI 里只有学校中文名，没有英文兄弟节点；借上面行卡片建的
+         中→英映射把它换掉，换不到就保持原文，不臆造校名。 */
+      document.querySelectorAll("#summary b").forEach(function (b) {
+        var en = zhToEnName[b.textContent.trim()];
+        if (!en) return;
+        rememberHtml(b);
+        b.textContent = en;
       });
     }
     if (path.indexOf("/apps/econ-calendar/") === 0) {
@@ -487,23 +647,42 @@
     "/apps/fear-greed/": "Market Fear & Greed Index",
     "/apps/data-hub/": "Data Center · Live Data Apps"
   };
+  /* pending 原本是「本帧已排过队就直接 return」——但 return 掉的那一批 records
+     **就此丢了**，不会被后面的 rAF 处理。数据枢纽这类一屏拉十几个 data.json、
+     逐卡渲染的页面，一帧里能来好几批 mutation，于是「领涨」「今日上涨」这些
+     字典里明明有的词条永远翻不到。改成先把 records 攒起来再统一处理：
+     既保留按帧合并的原意，又一条都不丢。 */
 
-  var observer = null, pending = false;
+  var observer = null, pending = false, queued = [];
   function watch() {
     if (observer || typeof MutationObserver === "undefined") return;
     observer = new MutationObserver(function (recs) {
-      if (current !== "en" || pending) return;
+      if (current !== "en") return;
+
+      queued = queued.concat(Array.prototype.slice.call(recs));
+
+      if (pending) return;
       pending = true;
       requestAnimationFrame(function () {
         pending = false;
-        recs.forEach(function (r) {
-          if (r.type === "characterData") translateText(r.target);
+        /* rAF 排队期间用户可能已经切回中文：那时 restore() 已经跑完，
+           这一帧再去翻译（尤其是末尾无条件调用的 specialEnglish）会把刚还原的
+           标题、样式又改回英文态——宏观风险监测的中文大标题就是这么丢的。 */
+        if (current !== "en") { queued = []; return; }
+        var batch = queued; queued = [];
+        batch.forEach(function (r) {
+          if (r.type === "attributes") translateAttrs(r.target);
+          else if (r.type === "characterData") translateText(r.target);
           else Array.prototype.forEach.call(r.addedNodes || [], function (n) { walk(n); });
         });
         specialEnglish();
       });
     });
-    observer.observe(document.documentElement, { subtree:true, childList:true, characterData:true });
+    /* 也盯 ATTRS 里那几个属性：原先只盯 childList/characterData，
+       于是「就地改写已有元素的 aria-label/title」这类更新永远翻不到
+       （行情板的「当前显示 73 项：上涨 25…」就是这么漏的）。
+       改写属性本身会再触发一次 mutation，但英文串查不到词条，第二轮是空转，不会循环。 */
+    observer.observe(document.documentElement, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ATTRS });
   }
 
   function apply(lang) {

@@ -1003,23 +1003,42 @@
     var ogt = document.querySelector('meta[property="og:title"]'); if (ogt && metaOrig.ogTitle != null) ogt.content = metaOrig.ogTitle;
     var ogd = document.querySelector('meta[property="og:description"]'); if (ogd && metaOrig.ogDesc != null) ogd.content = metaOrig.ogDesc;
   }
+  /* pending 原本是「本帧已排过队就直接 return」——但 return 掉的那一批 records
+     **就此丢了**，不会被后面的 rAF 处理。数据枢纽这类一屏拉十几个 data.json、
+     逐卡渲染的页面，一帧里能来好几批 mutation，于是「领涨」「今日上涨」这些
+     字典里明明有的词条永远翻不到。改成先把 records 攒起来再统一处理：
+     既保留按帧合并的原意，又一条都不丢。 */
 
-  var observer = null, pending = false;
+  var observer = null, pending = false, queued = [];
   function watch() {
     if (observer || typeof MutationObserver === "undefined") return;
     observer = new MutationObserver(function (records) {
-      if (current !== "en" || pending) return;
+      if (current !== "en") return;
+
+      queued = queued.concat(Array.prototype.slice.call(records));
+
+      if (pending) return;
       pending = true;
       requestAnimationFrame(function () {
         pending = false;
-        records.forEach(function (r) {
-          if (r.type === "characterData") translateText(r.target);
+        /* rAF 排队期间用户可能已经切回中文：那时 restore() 已经跑完，
+           这一帧再去翻译（尤其是末尾无条件调用的 specialEnglish）会把刚还原的
+           标题、样式又改回英文态——宏观风险监测的中文大标题就是这么丢的。 */
+        if (current !== "en") { queued = []; return; }
+        var batch = queued; queued = [];
+        batch.forEach(function (r) {
+          if (r.type === "attributes") translateAttrs(r.target);
+          else if (r.type === "characterData") translateText(r.target);
           else Array.prototype.forEach.call(r.addedNodes || [], function (n) { walk(n); });
         });
         specialEnglish();
       });
     });
-    observer.observe(document.documentElement, { subtree:true, childList:true, characterData:true });
+    /* 也盯 ATTRS 里那几个属性：原先只盯 childList/characterData，
+       于是「就地改写已有元素的 aria-label/title」这类更新永远翻不到
+       （行情板的「当前显示 73 项：上涨 25…」就是这么漏的）。
+       改写属性本身会再触发一次 mutation，但英文串查不到词条，第二轮是空转，不会循环。 */
+    observer.observe(document.documentElement, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ATTRS });
   }
 
   function apply(lang) {

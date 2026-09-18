@@ -20,9 +20,9 @@
 <script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
 (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
 <script src="/assets/theme.js?v=2ae26043" defer></script>
-<script src="/assets/i18n.js?v=c869828c" defer></script>
-<script src="/assets/i18n-pages.js?v=73fc4fd3" defer></script>
-<script src="/assets/i18n-wave3.js?v=56d7c5dd" defer></script>
+<script src="/assets/i18n.js?v=aa986ad1" defer></script>
+<script src="/assets/i18n-pages.js?v=91cf19d8" defer></script>
+<script src="/assets/i18n-wave3.js?v=d54b189b" defer></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -70,6 +70,11 @@
     background:var(--card); border:1px solid var(--line); white-space:nowrap; color:var(--dim);
   }
   .summary b { color:var(--text); }
+  /* 窄屏放开换行：英文条目（如 "Top AI-era outlook Artificial Intelligence & Machine Learning"）
+     比中文长一倍多，nowrap 会把整条顶出视口。中文条目短，这条规则对它不产生可见变化。 */
+  @media (max-width: 560px) {
+    .summary span { white-space:normal; max-width:100%; text-align:center; }
+  }
 
   .controls { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
   .chips { display:flex; flex-wrap:wrap; gap:7px; justify-content:center; }
@@ -117,6 +122,8 @@
   .info { min-width:0; }
   .nm { font-weight:700; font-size:0.97rem; }
   .meta { color:var(--dim); font-size:0.72rem; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  /* .meta 就是专业的英文名；切到英文后 .nm 本身已是英文，再显示一遍就是重复 */
+  html[data-lang="en"] .rowcard .meta { display:none; }
   .tags { font-size:0.68rem; margin-top:3px; color:var(--dim); display:flex; flex-wrap:wrap; align-items:center; gap:2px; }
   .tags .gw { color:#8fd0a6; } .tags .gw.dn { color:#f0857d; }
   .ait { padding:0 6px; border-radius:999px; border:1px solid currentColor; font-weight:600; }
