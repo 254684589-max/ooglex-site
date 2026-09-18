@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "capacity": 100,
+  "leaders": [
+    {
+      "id": "musk",
+      "name": "Elon Musk",
+      "zh": "马斯克",
+      "handle": "elonmusk",
+      "role": "Tesla · SpaceX · xAI · X",
+      "chips": [
+        "TSLA",
+        "SpaceX",
+        "xAI",
+        "AI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ELON MUSK · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "huang",
+      "name": "Jensen Huang / NVIDIA",
+      "zh": "黄仁勋 / NVIDIA",
+      "handle": "nvidia",
+      "role": "NVIDIA 官方账号 · 黄仁勋相关动态",
+      "chips": [
+        "NVDA",
+        "AI",
+        "GPU",
+        "Data Center"
+      ],
+      "note": "为避免误收录未核验个人账号，本页暂以 NVIDIA 官方 X 账号作为黄仁勋相关动态入口。",
+      "title": "JENSEN HUANG / NVIDIA · OFFICIAL X"
+    },
+    {
+      "id": "altman",
+      "name": "Sam Altman",
+      "zh": "Sam Altman",
+      "handle": "sama",
+      "role": "OpenAI",
+      "chips": [
+        "OpenAI",
+        "AI",
+        "Models"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "SAM ALTMAN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "su",
+      "name": "Lisa Su",
+      "zh": "苏姿丰",
+      "handle": "LisaSu",
+      "role": "AMD Chair & CEO",
+      "chips": [
+        "AMD",
+        "AI",
+        "CPU",
+        "GPU"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "LISA SU · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "pichai",
+      "name": "Sundar Pichai",
+      "zh": "桑达尔·皮查伊",
+      "handle": "sundarpichai",
+      "role": "Google · Alphabet",
+      "chips": [
+        "GOOGL",
+        "Google",
+        "Gemini",
+        "AI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "SUNDAR PICHAI · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "nadella",
+      "name": "Satya Nadella",
+      "zh": "萨提亚·纳德拉",
+      "handle": "satyanadella",
+      "role": "Microsoft",
+      "chips": [
+        "MSFT",
+        "Microsoft",
+        "Copilot",
+        "AI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "SATYA NADELLA · OFFICIAL X TIMELINE"
+    }
+  ]
+}
