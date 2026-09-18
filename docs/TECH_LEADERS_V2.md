@@ -1,4 +1,4 @@
-# Tech Leaders Free V2
+# Tech Leaders Free V3
 
 ## Default architecture
 
@@ -19,7 +19,7 @@ Leader metadata is stored in:
 
 `apps/tech-leaders/leaders.json`
 
-The catalog schema has a capacity of 100 profiles, and the production catalog is now complete at 100 curated technology leaders/accounts. The page reads this file and supports search across name, Chinese name, handle, company/role, tags and primary category.
+The catalog schema is now V4 with capacity for 180 profiles. The production catalog currently contains 108 curated leaders/accounts. The page supports name/handle/company/ticker search, multi-category membership, and a dedicated S&P 500 CEO layer.
 
 To replace or maintain a Free-mode profile, edit one object in `leaders.json`. Each entry now includes a primary `category`, and the top-level catalog includes the nine supported categories. No page JavaScript change is required for ordinary catalog maintenance.
 
@@ -67,14 +67,19 @@ Current data-mode backend whitelist remains the original six profiles. Expanding
 
 The public page includes these primary filters:
 
+- 标普500 CEO
 - AI
 - 芯片
 - 云计算
-- 机器人
-- 航天
-- 消费科技
+- 网络安全
 - 软件
-- 金融科技
+- 汽车
+- 工业
+- 消费零售
+- 金融
+- 医疗
+- 能源
+- 航空航天
 - VC
 
 The selected category is reflected in the URL via the `category` query parameter and combines with text search. The category filter is purely client-side and does not call the paid X API.
@@ -94,3 +99,29 @@ Each leader card now shows:
 Avatar images are requested lazily from Unavatar's X avatar endpoint and use `referrerpolicy="no-referrer"`. This does not consume Ooglex X API credits. Unavatar attribution is included in the Tech Leaders footer, and the privacy page discloses the third-party avatar request.
 
 The selected-profile panel also displays the same avatar/fallback and company/title descriptor.
+
+
+## V3 S&P 500 CEO layer
+
+V3 adds a quality-gated public-company CEO layer. The admission rule is intentionally strict:
+
+1. current CEO
+2. identifiable personal public X account
+3. real posting history / usable public activity
+
+The first verified V3 cohort adds eight new leaders:
+
+- Jim Farley — Ford — @jimfarley98
+- Chuck Robbins — Cisco — @ChuckRobbins
+- Bill McDermott — ServiceNow — @BillRMcDermott
+- Marvin Ellison — Lowe's — @MarvinREllison
+- George Kurtz — CrowdStrike — @George_Kurtz
+- Nikesh Arora — Palo Alto Networks — @nikesharora
+- Albert Bourla — Pfizer — @AlbertBourla
+- Mary Barra — General Motors — @mtbarra
+
+After de-duplicating against the existing catalog and tagging existing qualifying entries, the 标普500 CEO layer currently contains 21 profiles.
+
+Each qualifying entry can include ticker, sp500_ceo=true, index_tags, verified_personal_x=true, verified_at, and categories[].
+
+The Free Embed path remains the default. Expanding this catalog does not itself increase X API cost.
