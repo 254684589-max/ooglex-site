@@ -58,26 +58,25 @@
     .catalog-actions{display:flex;align-items:center;gap:9px}
     .fold-btn{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--dim);padding:7px 11px;border-radius:8px;cursor:pointer;font:10.5px/1 var(--mono);white-space:nowrap}
     .fold-btn:hover{border-color:rgba(57,135,229,.45);color:var(--ink)}
-    .leaders{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 18px}
+    .leaders{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 12px}
     .leader{
       appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);
-      padding:12px;border-radius:12px;cursor:pointer;text-align:left;min-width:0;transition:.18s ease;
+      padding:10px 11px;border-radius:11px;cursor:pointer;text-align:left;min-width:0;transition:.18s ease;
     }
     .leader:hover{transform:translateY(-1px);border-color:rgba(57,135,229,.45)}
     .leader.on{border-color:rgba(57,135,229,.72);background:rgba(57,135,229,.09);box-shadow:0 0 0 1px rgba(57,135,229,.14) inset}
     .leader-head{display:flex;align-items:center;gap:10px;min-width:0}
     .leader-avatar-shell,.profile-avatar-shell{position:relative;display:grid;place-items:center;overflow:hidden;border-radius:50%;flex:0 0 auto;border:1px solid var(--line);background:linear-gradient(145deg,rgba(57,135,229,.18),rgba(255,255,255,.035))}
-    .leader-avatar-shell{width:38px;height:38px}
+    .leader-avatar-shell{width:34px;height:34px}
     .profile-avatar-shell{width:58px;height:58px}
     .leader-avatar,.profile-avatar{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;background:var(--panel)}
     .avatar-fallback{font:700 11px/1 var(--mono);letter-spacing:.03em;color:var(--dim)}
     .profile-avatar-shell .avatar-fallback{font-size:15px}
     .leader-identity{min-width:0;flex:1}
     .leader b{display:block;font-size:13px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .leader-handle{display:block;margin-top:3px;font:10.5px/1.25 var(--mono);color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .leader-role{margin-top:10px;padding-top:9px;border-top:1px solid var(--line);min-height:46px}
-    .leader-role span{display:block;font:9px/1.2 var(--mono);letter-spacing:.08em;color:var(--faint);text-transform:uppercase}
-    .leader-role strong{display:-webkit-box;margin-top:4px;font-size:10.5px;line-height:1.35;font-weight:600;color:var(--dim);overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+    .leader-en{display:block;margin-top:2px;font:10px/1.2 var(--mono);color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .leader-role{margin-top:8px;padding-top:7px;border-top:1px solid var(--line);min-height:0}
+    .leader-role strong{display:block;font-size:10.5px;line-height:1.35;font-weight:600;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .empty-search{grid-column:1/-1;padding:24px;border:1px dashed var(--line);border-radius:12px;text-align:center;color:var(--faint);font-size:13px}
     .panel{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;align-items:start}
     .profile,.feed{border:1px solid var(--line);background:linear-gradient(180deg,var(--panel2),var(--panel));border-radius:16px}
@@ -87,8 +86,10 @@
     .profile-copy{min-width:0}
     .profile h2{margin:0 0 1px;font-size:24px;line-height:1.2}
     .handle{font:12px/1.4 var(--mono);color:var(--blue)}
-    .role{margin-top:15px;padding-top:12px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
-    .role-label{display:block;margin-bottom:5px;font:9px/1.2 var(--mono);letter-spacing:.1em;color:var(--faint);text-transform:uppercase}
+    .profile-en{margin-top:2px;font:11px/1.35 var(--mono);color:var(--faint)}
+    .role{margin-top:13px;padding-top:10px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
+    .company-line{font-weight:700;color:var(--ink)}
+    .position-line{margin-top:2px;color:var(--dim)}
     .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:15px}
     .chip{padding:5px 8px;border-radius:7px;border:1px solid var(--line);font:10.5px/1.2 var(--mono);color:var(--dim)}
     .openx{display:flex;align-items:center;justify-content:center;height:42px;margin-top:18px;border-radius:8px;background:#f2f4f7;color:#111;font-size:13px;font-weight:700}
@@ -173,11 +174,12 @@
         <div class="profile-id">
           <span class="profile-avatar-shell"><span class="avatar-fallback" id="profile-avatar-fallback">EM</span><img class="profile-avatar" id="profile-avatar" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></span>
           <div class="profile-copy">
-            <h2 id="profile-name">Elon Musk</h2>
+            <h2 id="profile-name">马斯克</h2>
+            <div class="profile-en" id="profile-name-en">Elon Musk</div>
             <div class="handle" id="profile-handle">@elonmusk</div>
           </div>
         </div>
-        <div class="role"><span class="role-label">公司 / 机构 · 头衔</span><span id="profile-role">Tesla · SpaceX · xAI · X</span></div>
+        <div class="role"><div class="company-line" id="profile-company">特斯拉 / SpaceX / xAI / X</div><div class="position-line" id="profile-position">创始人 / CEO</div></div>
         <div class="chips" id="profile-chips"></div>
         <a class="openx" id="open-x" href="https://x.com/elonmusk" target="_blank" rel="noopener noreferrer">在 X 打开原主页 ↗</a>
         <p class="note" id="profile-note"></p>
@@ -229,6 +231,9 @@
   var foldBtn=document.getElementById("leader-fold");
   var profileAvatar=document.getElementById("profile-avatar");
   var profileAvatarFallback=document.getElementById("profile-avatar-fallback");
+  var profileNameEn=document.getElementById("profile-name-en");
+  var profileCompany=document.getElementById("profile-company");
+  var profilePosition=document.getElementById("profile-position");
   var freeBtn=document.getElementById("mode-free");
   var apiBtn=document.getElementById("mode-api");
   var params=new URLSearchParams(location.search);
@@ -237,7 +242,7 @@
   var MODE=params.get("mode")==="api"?"api":"free";
   var DEBUG=params.get("debug")==="1";
   var EMBED_TIMEOUT_MS=25000;
-  var COLLAPSED_LIMIT=18;
+  var COLLAPSED_LIMIT=4;
   var isExpanded=false;
   var activeTimeout=null;
   var activeObserver=null;
@@ -267,20 +272,22 @@
     sourceBadge.textContent=MODE==="free"?"X 官方 Embed · $0 API":"Ooglex 后端 · X API";
   }
   function updateProfile(p){
-    document.getElementById("profile-name").textContent=p.zh||p.name;
+    document.getElementById("profile-name").textContent=p.name_zh||p.zh||p.name;
+    profileNameEn.textContent=p.name_en||p.name||"";
     document.getElementById("profile-handle").textContent="@"+p.handle;
-    document.getElementById("profile-role").textContent=p.role||"—";
+    profileCompany.textContent=(p.company_zh||"")+(p.company_en&&p.company_en!==p.company_zh?" · "+p.company_en:"");
+    profilePosition.textContent=p.position_zh||"";
     document.getElementById("profile-chips").innerHTML=(p.chips||[]).map(function(x){return '<span class="chip">'+escapeHtml(x)+'</span>';}).join("");
     document.getElementById("open-x").href="https://x.com/"+encodeURIComponent(p.handle);
     document.getElementById("profile-note").textContent=p.note||"公开 X 账号。";
     document.getElementById("feed-title").textContent=p.title||((p.name||p.handle).toUpperCase()+" · OFFICIAL X TIMELINE");
     profileAvatarFallback.textContent=initialsFor(p);
     profileAvatar.hidden=false;
-    profileAvatar.alt=(p.zh||p.name)+" 头像";
+    profileAvatar.alt=(p.name_zh||p.zh||p.name)+" 头像";
     profileAvatar.src=avatarUrl(p);
   }
   function searchableText(p){
-    return [p.id,p.name,p.zh,p.handle,p.role,p.category].concat(p.chips||[]).join(" ").toLowerCase();
+    return [p.id,p.name,p.zh,p.name_zh,p.name_en,p.handle,p.role,p.company_zh,p.company_en,p.position_zh,p.category].concat(p.chips||[]).join(" ").toLowerCase();
   }
   function renderCategories(){
     var order=["AI","芯片","云计算","机器人","航天","消费科技","软件","金融科技","VC"];
@@ -299,27 +306,31 @@
       var searchOk=!q||searchableText(p).indexOf(q)!==-1;
       return categoryOk&&searchOk;
     });
-    var canFold=!q&&activeCategory==="全部"&&filtered.length>COLLAPSED_LIMIT;
+    var canFold=filtered.length>COLLAPSED_LIMIT;
     var visible=filtered;
     if(canFold&&!isExpanded){
       visible=filtered.slice(0,COLLAPSED_LIMIT);
-      if(current&&!visible.some(function(p){return p.id===current.id;})){
+      if(current&&filtered.some(function(p){return p.id===current.id;})&&!visible.some(function(p){return p.id===current.id;})){
         visible=visible.slice(0,COLLAPSED_LIMIT-1).concat([current]);
       }
     }
     count.textContent="已收录 "+people.length+" / "+capacity+" 位 · "+(activeCategory==="全部"?"全部分类":activeCategory)+" · 当前显示 "+visible.length+(visible.length!==filtered.length?" / "+filtered.length:"")+" 位";
     foldBtn.hidden=!canFold;
-    if(canFold)foldBtn.textContent=isExpanded?"收起至 "+COLLAPSED_LIMIT+" 位 ↑":"展开全部 "+filtered.length+" 位 ↓";
+    if(canFold)foldBtn.textContent=isExpanded?"收起 ↑":"展开 "+filtered.length+" 位 ↓";
     if(!filtered.length){
       leaders.innerHTML='<div class="empty-search">没有匹配的人物。</div>';
       return;
     }
     leaders.innerHTML=visible.map(function(p){
+      var cn=p.name_zh||p.zh||p.name;
+      var en=p.name_en||p.name||"";
+      var company=(p.company_zh||"")+(p.company_en&&p.company_en!==p.company_zh?" · "+p.company_en:"");
+      var role=[company,p.position_zh||""].filter(Boolean).join(" · ");
       return '<button class="leader'+(current&&p.id===current.id?' on':'')+'" type="button" data-id="'+escapeHtml(p.id)+'">'+
         '<div class="leader-head"><span class="leader-avatar-shell"><span class="avatar-fallback">'+escapeHtml(initialsFor(p))+'</span>'+
-        '<img class="leader-avatar" data-avatar="1" loading="lazy" decoding="async" referrerpolicy="no-referrer" alt="'+escapeHtml((p.zh||p.name)+" 头像")+'" src="'+escapeHtml(avatarUrl(p))+'"></span>'+
-        '<div class="leader-identity"><b>'+escapeHtml(p.zh||p.name)+'</b><span class="leader-handle">@'+escapeHtml(p.handle)+'</span></div></div>'+
-        '<div class="leader-role"><span>公司 / 机构 · 头衔</span><strong>'+escapeHtml(p.role||"—")+'</strong></div></button>';
+        '<img class="leader-avatar" data-avatar="1" loading="lazy" decoding="async" referrerpolicy="no-referrer" alt="'+escapeHtml(cn+" 头像")+'" src="'+escapeHtml(avatarUrl(p))+'"></span>'+
+        '<div class="leader-identity"><b>'+escapeHtml(cn)+'</b><span class="leader-en">'+escapeHtml(en)+'</span></div></div>'+
+        '<div class="leader-role"><strong>'+escapeHtml(role)+'</strong></div></button>';
     }).join("");
   }
   async function loadCatalog(){
@@ -542,7 +553,7 @@
   leaders.addEventListener("error",function(e){if(e.target&&e.target.matches&&e.target.matches("img[data-avatar]"))e.target.hidden=true;},true);
   profileAvatar.addEventListener("error",function(){profileAvatar.hidden=true;});
   foldBtn.addEventListener("click",function(){isExpanded=!isExpanded;renderLeaderButtons(search.value);});
-  search.addEventListener("input",function(){if(search.value.trim())isExpanded=false;renderLeaderButtons(search.value);});
+  search.addEventListener("input",function(){isExpanded=false;renderLeaderButtons(search.value);});
   categoryBar.addEventListener("click",function(e){
     var btn=e.target.closest("[data-category]");if(!btn)return;
     activeCategory=btn.getAttribute("data-category")||"全部";
