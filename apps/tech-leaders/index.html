@@ -77,6 +77,11 @@
     .fallback button{border:1px solid var(--line);background:transparent;color:var(--ink)}
     .fallback small{display:block;margin-top:12px;color:var(--faint);font-size:11px}
     .x-embed-anchor{display:block;height:1px;overflow:hidden;opacity:0;pointer-events:none}
+    .xdiag{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;border-bottom:1px solid var(--line);background:rgba(57,135,229,.045);font:10px/1.25 var(--mono);color:var(--faint)}
+    .xdiag b{color:var(--dim);font-weight:600}
+    .xdiag .ok{color:var(--up)}
+    .xdiag .bad{color:#e66767}
+    .xdiag .wait{color:#e0a750}
     .about{margin-top:20px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}
     .about b{color:var(--dim)}
     footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint)}
@@ -133,6 +138,7 @@
 
       <section class="feed">
         <div class="feed-hd"><span class="dot"></span><span id="feed-title">ELON MUSK · OFFICIAL X TIMELINE</span></div>
+        <div class="xdiag" id="xdiag" hidden aria-live="polite"></div>
         <div id="timeline" aria-live="polite"></div>
       </section>
     </section>
@@ -185,9 +191,82 @@
 
   var leaders = document.getElementById("leaders");
   var timeline = document.getElementById("timeline");
+  var xdiag = document.getElementById("xdiag");
   var current = people[0];
   var loadToken = 0;
-  var WIDGET_TIMEOUT_MS = 6500;
+  var WIDGET_TIMEOUT_MS = 8500;
+  var DEBUG = new URLSearchParams(location.search).get("debug") === "1";
+  var eventsBound = false;
+  var activeTimeout = null;
+  var activeFramePoll = null;
+  var activeToken = 0;
+  var renderedConfirmed = false;
+  var diagState = {PAGE:"✓",SCRIPT:"…",WIDGET:"…",IFRAME:"…",RENDER:"…"};
+
+  function diagClass(v){
+    if (v === "✓") return "ok";
+    if (v === "✕") return "bad";
+    return "wait";
+  }
+
+  function drawDiag(){
+    if (!DEBUG || !xdiag) return;
+    xdiag.hidden = false;
+    xdiag.innerHTML = Object.keys(diagState).map(function(k){
+      var v = diagState[k];
+      return '<span><b>'+k+'</b> <span class="'+diagClass(v)+'">'+v+'</span></span>';
+    }).join('<span>→</span>');
+  }
+
+  function setDiag(key,value){
+    diagState[key] = value;
+    drawDiag();
+  }
+
+  function resetDiag(){
+    diagState = {PAGE:"✓",SCRIPT:"…",WIDGET:"…",IFRAME:"…",RENDER:"…"};
+    drawDiag();
+  }
+
+  function clearWatchers(){
+    if (activeTimeout) { clearTimeout(activeTimeout); activeTimeout = null; }
+    if (activeFramePoll) { clearInterval(activeFramePoll); activeFramePoll = null; }
+  }
+
+  function eventBelongsToCurrentTimeline(event){
+    if (!event) return false;
+    if (event.target && timeline.contains(event.target)) return true;
+    var widgets = event.widgets;
+    if (widgets && typeof widgets.length === "number") {
+      for (var i=0;i<widgets.length;i++) {
+        if (widgets[i] && timeline.contains(widgets[i])) return true;
+      }
+    }
+    return false;
+  }
+
+  function confirmRendered(kind,event){
+    if (activeToken !== loadToken || renderedConfirmed) return;
+    if (!eventBelongsToCurrentTimeline(event)) return;
+    renderedConfirmed = true;
+    setDiag("IFRAME", timeline.querySelector("iframe") ? "✓" : "…");
+    setDiag("RENDER","✓");
+    timeline.setAttribute("data-state","ready");
+    timeline.setAttribute("data-render-signal",kind);
+    clearWatchers();
+  }
+
+  function bindWidgetEvents(twttr){
+    if (eventsBound || !twttr || !twttr.events || typeof twttr.events.bind !== "function") return;
+    eventsBound = true;
+    twttr.events.bind("rendered",function(event){ confirmRendered("rendered",event); });
+    twttr.events.bind("loaded",function(event){ confirmRendered("loaded",event); });
+    twttr.events.bind("resize",function(event){
+      if (eventBelongsToCurrentTimeline(event)) setDiag("IFRAME","✓");
+    });
+  }
+
+  resetDiag();
 
   leaders.innerHTML = people.map(function(p,i){
     return '<button class="leader'+(i===0?' on':'')+'" type="button" data-id="'+p.id+'">'+
@@ -201,14 +280,29 @@
 
   function ensureWidgets(){
     return new Promise(function(resolve,reject){
-      if (window.twttr && window.twttr.widgets) { resolve(window.twttr); return; }
+      if (window.twttr && window.twttr.widgets) {
+        setDiag("SCRIPT","✓");
+        setDiag("WIDGET","✓");
+        resolve(window.twttr);
+        return;
+      }
       var old = document.getElementById("x-widgets-js");
       if (old) {
         var poll = 0;
         var timer = setInterval(function(){
           poll += 1;
-          if (window.twttr && window.twttr.widgets) { clearInterval(timer); resolve(window.twttr); }
-          else if (poll > 14) { clearInterval(timer); reject(new Error("x_widget_timeout")); }
+          if (window.twttr && window.twttr.widgets) {
+            clearInterval(timer);
+            setDiag("SCRIPT","✓");
+            setDiag("WIDGET","✓");
+            resolve(window.twttr);
+          }
+          else if (poll > 14) {
+            clearInterval(timer);
+            setDiag("SCRIPT","✕");
+            setDiag("WIDGET","✕");
+            reject(new Error("x_widget_timeout"));
+          }
         },250);
         return;
       }
@@ -217,19 +311,37 @@
       s.async = true;
       s.src = "https://platform.twitter.com/widgets.js";
       s.onload = function(){
+        setDiag("SCRIPT","✓");
         var waited = 0;
         var timer = setInterval(function(){
           waited += 1;
-          if (window.twttr && window.twttr.widgets) { clearInterval(timer); resolve(window.twttr); }
-          else if (waited > 10) { clearInterval(timer); reject(new Error("x_widget_unavailable")); }
+          if (window.twttr && window.twttr.widgets) {
+            clearInterval(timer);
+            setDiag("WIDGET","✓");
+            resolve(window.twttr);
+          }
+          else if (waited > 10) {
+            clearInterval(timer);
+            setDiag("WIDGET","✕");
+            reject(new Error("x_widget_unavailable"));
+          }
         },200);
       };
-      s.onerror = function(){ reject(new Error("x_widget_blocked")); };
+      s.onerror = function(){
+        setDiag("SCRIPT","✕");
+        setDiag("WIDGET","✕");
+        reject(new Error("x_widget_blocked"));
+      };
       document.head.appendChild(s);
     });
   }
 
   function showFallback(p, reason){
+    clearWatchers();
+    renderedConfirmed = false;
+    if (timeline.querySelector("iframe")) setDiag("IFRAME","✓");
+    else if (diagState.IFRAME !== "✓") setDiag("IFRAME","✕");
+    setDiag("RENDER","✕");
     timeline.innerHTML =
       '<div class="fallback"><b>当前网络无法加载 X 时间线</b>'+
       '<div>Ooglex 页面正常，但 X 官方嵌入资源在当前网络没有成功返回。</div>'+
@@ -253,18 +365,23 @@
   }
 
   function render(p){
+    clearWatchers();
     current = p;
     var token = ++loadToken;
+    activeToken = token;
+    renderedConfirmed = false;
+    resetDiag();
     updateProfile(p);
     Array.prototype.forEach.call(leaders.querySelectorAll(".leader"),function(btn){
       btn.classList.toggle("on",btn.getAttribute("data-id")===p.id);
     });
-    timeline.innerHTML = '<div class="loading"><div class="spinner" aria-hidden="true"></div><b>正在连接 X 官方时间线…</b><div>@'+p.handle+' · 最多等待约 6 秒</div></div>';
+    timeline.innerHTML = '<div class="loading"><div class="spinner" aria-hidden="true"></div><b>正在连接 X 官方时间线…</b><div>@'+p.handle+' · 等待 X 真正完成渲染，最多约 9 秒</div></div>';
     timeline.setAttribute("data-state","loading");
     timeline.removeAttribute("data-reason");
 
     ensureWidgets().then(function(twttr){
       if (token !== loadToken) return;
+      bindWidgetEvents(twttr);
       timeline.innerHTML = "";
 
       var mount = document.createElement("div");
@@ -280,7 +397,7 @@
             {height:760,theme:widgetTheme(),chrome:"noheader nofooter noborders transparent"}
           )).then(function(frame){
             if (token !== loadToken) return;
-            if (frame || timeline.querySelector("iframe")) timeline.setAttribute("data-state","ready");
+            if (frame || timeline.querySelector("iframe")) setDiag("IFRAME","✓");
           }).catch(function(){
             if (token === loadToken) showFallback(p,"create_timeline_failed");
           });
@@ -304,10 +421,15 @@
         catch(e) { showFallback(p,"render_error"); return; }
       }
 
-      setTimeout(function(){
-        if (token !== loadToken) return;
-        if (timeline.querySelector("iframe")) timeline.setAttribute("data-state","ready");
-        else if (timeline.getAttribute("data-state") !== "fallback") showFallback(p,"embed_timeout");
+      activeFramePoll = setInterval(function(){
+        if (token !== loadToken) { clearWatchers(); return; }
+        if (timeline.querySelector("iframe")) setDiag("IFRAME","✓");
+      },250);
+
+      activeTimeout = setTimeout(function(){
+        if (token !== loadToken || renderedConfirmed) return;
+        if (timeline.querySelector("iframe")) setDiag("IFRAME","✓");
+        if (timeline.getAttribute("data-state") !== "fallback") showFallback(p,"render_signal_timeout");
       },WIDGET_TIMEOUT_MS);
     }).catch(function(){
       if (token === loadToken) showFallback(p,"script_unavailable");
