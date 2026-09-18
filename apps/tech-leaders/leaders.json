@@ -90,6 +90,366 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "SATYA NADELLA · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "cook",
+      "name": "Tim Cook",
+      "zh": "蒂姆·库克",
+      "handle": "tim_cook",
+      "role": "Apple CEO",
+      "chips": [
+        "AAPL",
+        "Apple",
+        "iPhone",
+        "AI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "TIM COOK · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "bezos",
+      "name": "Jeff Bezos",
+      "zh": "杰夫·贝索斯",
+      "handle": "JeffBezos",
+      "role": "Amazon Founder · Blue Origin",
+      "chips": [
+        "AMZN",
+        "Amazon",
+        "Blue Origin",
+        "Space"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "JEFF BEZOS · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "jassy",
+      "name": "Andy Jassy",
+      "zh": "安迪·贾西",
+      "handle": "ajassy",
+      "role": "Amazon CEO",
+      "chips": [
+        "AMZN",
+        "Amazon",
+        "AWS",
+        "Cloud"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ANDY JASSY · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "hassabis",
+      "name": "Demis Hassabis",
+      "zh": "德米斯·哈萨比斯",
+      "handle": "demishassabis",
+      "role": "Google DeepMind Co-Founder & CEO",
+      "chips": [
+        "GOOGL",
+        "DeepMind",
+        "Gemini",
+        "AGI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "DEMIS HASSABIS · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "amodei",
+      "name": "Dario Amodei",
+      "zh": "达里奥·阿莫代",
+      "handle": "DarioAmodei",
+      "role": "Anthropic Co-Founder & CEO",
+      "chips": [
+        "Anthropic",
+        "Claude",
+        "AI",
+        "Safety"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "DARIO AMODEI · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "suleyman",
+      "name": "Mustafa Suleyman",
+      "zh": "穆斯塔法·苏莱曼",
+      "handle": "mustafasuleyman",
+      "role": "Microsoft AI CEO",
+      "chips": [
+        "MSFT",
+        "Microsoft AI",
+        "Copilot",
+        "AI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "MUSTAFA SULEYMAN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "lecun",
+      "name": "Yann LeCun",
+      "zh": "杨立昆",
+      "handle": "ylecun",
+      "role": "AI Researcher · NYU",
+      "chips": [
+        "AI",
+        "Deep Learning",
+        "Research",
+        "NYU"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "YANN LECUN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "andrew-ng",
+      "name": "Andrew Ng",
+      "zh": "吴恩达",
+      "handle": "AndrewYNg",
+      "role": "DeepLearning.AI · AI Fund",
+      "chips": [
+        "AI",
+        "DeepLearning.AI",
+        "Education",
+        "Startups"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ANDREW NG · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "fei-fei-li",
+      "name": "Fei-Fei Li",
+      "zh": "李飞飞",
+      "handle": "drfeifei",
+      "role": "World Labs Co-Founder & CEO · Stanford",
+      "chips": [
+        "AI",
+        "World Models",
+        "Stanford",
+        "Robotics"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "FEI-FEI LI · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "sutskever",
+      "name": "Ilya Sutskever",
+      "zh": "Ilya Sutskever",
+      "handle": "ilyasut",
+      "role": "Safe Superintelligence Inc. Co-Founder",
+      "chips": [
+        "SSI",
+        "AI",
+        "Alignment",
+        "Research"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ILYA SUTSKEVER · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "murati",
+      "name": "Mira Murati",
+      "zh": "Mira Murati",
+      "handle": "miramurati",
+      "role": "Thinking Machines Lab Founder & CEO",
+      "chips": [
+        "Thinking Machines",
+        "AI",
+        "Models",
+        "Research"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "MIRA MURATI · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "brockman",
+      "name": "Greg Brockman",
+      "zh": "Greg Brockman",
+      "handle": "gdb",
+      "role": "OpenAI President & Co-Founder",
+      "chips": [
+        "OpenAI",
+        "AI",
+        "Models",
+        "Infrastructure"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "GREG BROCKMAN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "srinivas",
+      "name": "Aravind Srinivas",
+      "zh": "Aravind Srinivas",
+      "handle": "AravSrinivas",
+      "role": "Perplexity Co-Founder & CEO",
+      "chips": [
+        "Perplexity",
+        "AI",
+        "Search",
+        "Agents"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ARAVIND SRINIVAS · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "karpathy",
+      "name": "Andrej Karpathy",
+      "zh": "Andrej Karpathy",
+      "handle": "karpathy",
+      "role": "AI Researcher · Eureka Labs",
+      "chips": [
+        "AI",
+        "Deep Learning",
+        "LLM",
+        "Education"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ANDREJ KARPATHY · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "field",
+      "name": "Dylan Field",
+      "zh": "Dylan Field",
+      "handle": "zoink",
+      "role": "Figma Co-Founder & CEO",
+      "chips": [
+        "Figma",
+        "Design",
+        "Software",
+        "Collaboration"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "DYLAN FIELD · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "patrick-collison",
+      "name": "Patrick Collison",
+      "zh": "Patrick Collison",
+      "handle": "patrickc",
+      "role": "Stripe Co-Founder & CEO",
+      "chips": [
+        "Stripe",
+        "Fintech",
+        "Payments",
+        "Startups"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "PATRICK COLLISON · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "chesky",
+      "name": "Brian Chesky",
+      "zh": "Brian Chesky",
+      "handle": "bchesky",
+      "role": "Airbnb Co-Founder & CEO",
+      "chips": [
+        "ABNB",
+        "Airbnb",
+        "Travel",
+        "Product"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "BRIAN CHESKY · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "mohan",
+      "name": "Neal Mohan",
+      "zh": "Neal Mohan",
+      "handle": "nealmohan",
+      "role": "YouTube CEO",
+      "chips": [
+        "GOOGL",
+        "YouTube",
+        "Video",
+        "Creators"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "NEAL MOHAN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "ek",
+      "name": "Daniel Ek",
+      "zh": "Daniel Ek",
+      "handle": "eldsjal",
+      "role": "Spotify Founder · Prima Materia",
+      "chips": [
+        "SPOT",
+        "Spotify",
+        "Audio",
+        "Health Tech"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "DANIEL EK · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "benioff",
+      "name": "Marc Benioff",
+      "zh": "Marc Benioff",
+      "handle": "Benioff",
+      "role": "Salesforce Chair & CEO",
+      "chips": [
+        "CRM",
+        "Salesforce",
+        "Agentforce",
+        "Enterprise AI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "MARC BENIOFF · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "dell",
+      "name": "Michael Dell",
+      "zh": "迈克尔·戴尔",
+      "handle": "MichaelDell",
+      "role": "Dell Technologies Chair & CEO",
+      "chips": [
+        "DELL",
+        "AI Infrastructure",
+        "Servers",
+        "Enterprise"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "MICHAEL DELL · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "andreessen",
+      "name": "Marc Andreessen",
+      "zh": "Marc Andreessen",
+      "handle": "pmarca",
+      "role": "Andreessen Horowitz Co-Founder",
+      "chips": [
+        "a16z",
+        "VC",
+        "AI",
+        "Startups"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "MARC ANDREESSEN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "luckey",
+      "name": "Palmer Luckey",
+      "zh": "帕尔默·拉奇",
+      "handle": "PalmerLuckey",
+      "role": "Anduril Founder",
+      "chips": [
+        "Anduril",
+        "Defense Tech",
+        "AI",
+        "Autonomy"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "PALMER LUCKEY · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "lutke",
+      "name": "Tobias Lütke",
+      "zh": "Tobias Lütke",
+      "handle": "tobi",
+      "role": "Shopify Co-Founder & CEO",
+      "chips": [
+        "SHOP",
+        "Shopify",
+        "Commerce",
+        "AI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "TOBIAS LÜTKE · OFFICIAL X TIMELINE"
     }
   ]
 }
