@@ -435,7 +435,7 @@
 
   var PRIVACY = {
     "隐私政策": "Privacy Policy",
-    "适用于 Ooglex（ooglex.com） · 最近更新：2026-06-30": "Applies to Ooglex (ooglex.com) · Last updated: 2026-06-30",
+    "适用于 Ooglex（ooglex.com） · 最近更新：2026-09-18": "Applies to Ooglex (ooglex.com) · Last updated: 2026-09-18",
     "感谢你使用 Ooglex（以下简称\"本站\"）。本政策说明本站如何处理与你相关的信息，以及第三方广告与 Cookie 的使用情况。使用本站即表示你已阅读并理解本政策。": "Thank you for using Ooglex (the “Site”). This policy explains how the Site handles information related to you, including third-party advertising and cookies. By using the Site, you acknowledge that you have read and understood this policy.",
     "1. 本站的性质": "1. Nature of the Site",
     "本站是一个托管于 GitHub Pages 的静态网站，聚合实时金融数据、实用工具与网页小游戏。本站不设注册或账户系统，通常不会主动向你索取姓名、电话等个人身份信息。": "The Site is a static website hosted on GitHub Pages that aggregates financial data, utilities and browser games. The Site generally does not proactively request personal identity information such as your name or phone number.",
@@ -443,6 +443,8 @@
     "本地保存的数据：": "Locally stored data:",
     "访问日志与分析：": "Access logs and analytics:",
     "第三方数据展示：": "Third-party data display:",
+    "X 第三方嵌入：": "X third-party embeds:",
+    "「科技领袖 X 动态」使用 X 官方网页嵌入组件直接展示公开时间线。加载该组件时，X 可能接收你访问的网页、IP 地址、浏览器类型、操作系统及 Cookie 等信息；相关处理受 X 自身隐私政策与 X for Websites 规则约束。若当前网络无法连接 X，本页会降级为原主页跳转入口。": "Tech Leaders on X uses X's official web embed to display public timelines directly. When the component loads, X may receive the page you visited, IP address, browser type, operating system and cookie information. That processing is governed by X's own privacy policy and X for Websites rules. If X is unreachable on the current network, the page falls back to a direct profile link.",
     "3. 广告与 Cookie（Google AdSense）": "3. Advertising and Cookies (Google AdSense)",
     "4. 你的选择": "4. Your Choices",
     "你可以通过浏览器设置管理或清除 Cookie 与本地存储，也可以使用上述链接停用个性化广告。停用后你仍会看到广告，但其相关性可能降低。": "You can manage or clear cookies and local storage through your browser settings, and you can use the links above to disable personalized advertising. You may still see ads afterward, but they may be less relevant.",

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>科技领袖 X 动态 · Ooglex</title>
+  <meta name="description" content="聚合马斯克、黄仁勋相关 NVIDIA 官方账号、Sam Altman、Lisa Su、Sundar Pichai、Satya Nadella 等科技领袖与公司的 X 官方公开动态。免费版直接使用 X 官方嵌入时间线展示原文。">
+  <link rel="canonical" href="https://www.ooglex.com/apps/tech-leaders/">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="科技领袖 X 动态 · Ooglex">
+  <meta property="og:description" content="马斯克、黄仁勋相关 NVIDIA 官方账号、Sam Altman、Lisa Su、Sundar Pichai、Satya Nadella 等公开 X 原文动态。">
+  <meta property="og:url" content="https://www.ooglex.com/apps/tech-leaders/">
+  <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
+  <script>
+  (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();
+  </script>
+  <script src="/assets/theme.js?v=7bf48c7c" defer></script>
+  <style>
+    :root{
+      --bg:#0b0e13;--panel:#10141b;--panel2:#141924;--line:rgba(255,255,255,.08);
+      --ink:#eef2f7;--dim:#98a2b3;--faint:#667080;--blue:#3987e5;--up:#2fb583;
+      --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif}
+    body{line-height:1.65;-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    .page{max-width:1120px;margin:0 auto;padding:0 24px 56px}
+    .top{height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+    .back{color:var(--dim);font-size:14px}.back:hover{color:var(--ink)}
+    .tag{font:11px/1 var(--mono);letter-spacing:.16em;color:var(--faint)}
+    .hero{padding:54px 0 30px}
+    .kicker{font:12px/1.4 var(--mono);letter-spacing:.18em;color:var(--blue);text-transform:uppercase}
+    h1{margin:12px 0 8px;font-size:42px;line-height:1.18;letter-spacing:-.02em}
+    .lead{max-width:820px;margin:0;color:var(--dim);font-size:15px}
+    .facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+    .fact{padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.025);font:11px/1.2 var(--mono);color:var(--dim)}
+    .fact.live{color:var(--up)}
+    .leaders{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:22px 0 18px}
+    .leader{
+      appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);
+      padding:12px 10px;border-radius:12px;cursor:pointer;text-align:left;min-width:0;transition:.18s ease;
+    }
+    .leader:hover{transform:translateY(-1px);border-color:rgba(57,135,229,.45)}
+    .leader.on{border-color:rgba(57,135,229,.72);background:rgba(57,135,229,.09);box-shadow:0 0 0 1px rgba(57,135,229,.14) inset}
+    .leader b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .leader span{display:block;margin-top:2px;font:10.5px/1.35 var(--mono);color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .panel{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;align-items:start}
+    .profile,.feed{border:1px solid var(--line);background:linear-gradient(180deg,var(--panel2),var(--panel));border-radius:16px}
+    .profile{padding:20px;position:sticky;top:18px}
+    .eyebrow{font:10.5px/1.3 var(--mono);letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
+    .profile h2{margin:8px 0 1px;font-size:24px;line-height:1.2}
+    .handle{font:12px/1.4 var(--mono);color:var(--blue)}
+    .role{margin-top:13px;color:var(--dim);font-size:13px}
+    .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:15px}
+    .chip{padding:5px 8px;border-radius:7px;border:1px solid var(--line);font:10.5px/1.2 var(--mono);color:var(--dim)}
+    .openx{display:flex;align-items:center;justify-content:center;height:42px;margin-top:18px;border-radius:8px;background:#f2f4f7;color:#111;font-size:13px;font-weight:700}
+    .note{margin-top:14px;font-size:11.5px;color:var(--faint);line-height:1.65}
+    .feed{min-height:760px;overflow:hidden}
+    .feed-hd{display:flex;align-items:center;gap:8px;padding:13px 16px;border-bottom:1px solid var(--line);font:11px/1.2 var(--mono);letter-spacing:.1em;color:var(--faint)}
+    .dot{width:7px;height:7px;border-radius:50%;background:var(--up);box-shadow:0 0 8px rgba(47,181,131,.75)}
+    #timeline{min-height:700px;background:var(--panel)}
+    .loading,.fallback{padding:64px 26px;text-align:center;color:var(--dim)}
+    .loading b,.fallback b{display:block;color:var(--ink);font-size:18px;margin-bottom:8px}
+    .fallback a{display:inline-flex;margin-top:16px;padding:10px 18px;border-radius:8px;background:#f2f4f7;color:#111;font-weight:700;font-size:13px}
+    .about{margin-top:20px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}
+    .about b{color:var(--dim)}
+    footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint)}
+    @media(max-width:900px){
+      .leaders{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .panel{grid-template-columns:1fr}
+      .profile{position:static}
+    }
+    @media(max-width:560px){
+      .page{padding:0 14px 36px}
+      h1{font-size:32px}
+      .leaders{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .hero{padding-top:36px}
+      .feed{min-height:680px}
+      #timeline{min-height:620px}
+    }
+    html[data-theme="ft"] body,html[data-theme="paper"] body{background:var(--bg);color:var(--ink)}
+    html[data-theme="ft"] .leader,html[data-theme="paper"] .leader,
+    html[data-theme="ft"] .profile,html[data-theme="paper"] .profile,
+    html[data-theme="ft"] .feed,html[data-theme="paper"] .feed{background:var(--panel)}
+    html[data-theme="ft"] .about,html[data-theme="paper"] .about{background:var(--tint-1)}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <a class="back" href="../../">← Ooglex</a>
+      <span class="tag">TECH LEADERS · X</span>
+    </header>
+
+    <section class="hero">
+      <span class="kicker">Official X Embedded Timelines · Free V1</span>
+      <h1>科技领袖 X 动态</h1>
+      <p class="lead">直接查看全球科技领袖及其公司的公开 X 原文。当前版本不调用付费 X API，不抓取或复制完整 X 数据库，时间线由 X 官方网页组件直接加载。</p>
+      <div class="facts">
+        <span class="fact live">● 最新公开动态</span>
+        <span class="fact">X 官方嵌入</span>
+        <span class="fact">$0 API 成本</span>
+        <span class="fact">原文优先</span>
+      </div>
+    </section>
+
+    <div class="leaders" id="leaders"></div>
+
+    <section class="panel">
+      <aside class="profile">
+        <div class="eyebrow">SELECTED PROFILE</div>
+        <h2 id="profile-name">Elon Musk</h2>
+        <div class="handle" id="profile-handle">@elonmusk</div>
+        <div class="role" id="profile-role">Tesla · SpaceX · xAI · X</div>
+        <div class="chips" id="profile-chips"></div>
+        <a class="openx" id="open-x" href="https://x.com/elonmusk" target="_blank" rel="noopener noreferrer">在 X 打开原主页 ↗</a>
+        <p class="note" id="profile-note"></p>
+      </aside>
+
+      <section class="feed">
+        <div class="feed-hd"><span class="dot"></span><span id="feed-title">ELON MUSK · OFFICIAL X TIMELINE</span></div>
+        <div id="timeline" aria-live="polite"></div>
+      </section>
+    </section>
+
+    <div class="about">
+      <b>说明：</b>本页只接入可核验的公开官方账号。黄仁勋目前在本页使用 <b>NVIDIA 官方 X 账号 @nvidia</b> 作为相关动态入口，避免收录同名或未核验个人账号。X 嵌入组件由第三方直接加载；在无法访问 X 的网络环境下，时间线可能无法显示，此时页面会保留原主页跳转入口。
+    </div>
+
+    <footer>
+      © 2026 Ooglex · X 内容版权及账户资料归原发布者与 X 平台所有 · 本页仅作公开内容导航与嵌入展示
+    </footer>
+  </main>
+
+<script>
+(function(){
+  "use strict";
+
+  var people = [
+    {
+      id:"musk", name:"Elon Musk", zh:"马斯克", handle:"elonmusk",
+      role:"Tesla · SpaceX · xAI · X", chips:["TSLA","SpaceX","xAI","AI"],
+      note:"个人公开 X 账号。", title:"ELON MUSK · OFFICIAL X TIMELINE"
+    },
+    {
+      id:"huang", name:"Jensen Huang / NVIDIA", zh:"黄仁勋 / NVIDIA", handle:"nvidia",
+      role:"NVIDIA 官方账号 · 黄仁勋相关动态", chips:["NVDA","AI","GPU","Data Center"],
+      note:"为避免误收录未核验个人账号，本页暂以 NVIDIA 官方 X 账号作为黄仁勋相关动态入口。", title:"JENSEN HUANG / NVIDIA · OFFICIAL X"
+    },
+    {
+      id:"altman", name:"Sam Altman", zh:"Sam Altman", handle:"sama",
+      role:"OpenAI", chips:["OpenAI","AI","Models"],
+      note:"个人公开 X 账号。", title:"SAM ALTMAN · OFFICIAL X TIMELINE"
+    },
+    {
+      id:"su", name:"Lisa Su", zh:"苏姿丰", handle:"LisaSu",
+      role:"AMD Chair & CEO", chips:["AMD","AI","CPU","GPU"],
+      note:"个人公开 X 账号。", title:"LISA SU · OFFICIAL X TIMELINE"
+    },
+    {
+      id:"pichai", name:"Sundar Pichai", zh:"桑达尔·皮查伊", handle:"sundarpichai",
+      role:"Google · Alphabet", chips:["GOOGL","Google","Gemini","AI"],
+      note:"个人公开 X 账号。", title:"SUNDAR PICHAI · OFFICIAL X TIMELINE"
+    },
+    {
+      id:"nadella", name:"Satya Nadella", zh:"萨提亚·纳德拉", handle:"satyanadella",
+      role:"Microsoft", chips:["MSFT","Microsoft","Copilot","AI"],
+      note:"个人公开 X 账号。", title:"SATYA NADELLA · OFFICIAL X TIMELINE"
+    }
+  ];
+
+  var leaders = document.getElementById("leaders");
+  var timeline = document.getElementById("timeline");
+  var current = people[0];
+  var loadToken = 0;
+
+  leaders.innerHTML = people.map(function(p,i){
+    return '<button class="leader'+(i===0?' on':'')+'" type="button" data-id="'+p.id+'">'+
+      '<b>'+p.zh+'</b><span>@'+p.handle+'</span></button>';
+  }).join("");
+
+  function widgetTheme(){
+    var t = document.documentElement.getAttribute("data-theme");
+    return (t === "paper" || t === "ft") ? "light" : "dark";
+  }
+
+  function ensureWidgets(){
+    return new Promise(function(resolve,reject){
+      if (window.twttr && window.twttr.widgets) { resolve(window.twttr); return; }
+      var old = document.getElementById("x-widgets-js");
+      if (old) {
+        var poll = 0;
+        var timer = setInterval(function(){
+          poll += 1;
+          if (window.twttr && window.twttr.widgets) { clearInterval(timer); resolve(window.twttr); }
+          else if (poll > 30) { clearInterval(timer); reject(new Error("x_widget_timeout")); }
+        },250);
+        return;
+      }
+      var s = document.createElement("script");
+      s.id = "x-widgets-js";
+      s.async = true;
+      s.src = "https://platform.twitter.com/widgets.js";
+      s.onload = function(){
+        var waited = 0;
+        var timer = setInterval(function(){
+          waited += 1;
+          if (window.twttr && window.twttr.widgets) { clearInterval(timer); resolve(window.twttr); }
+          else if (waited > 20) { clearInterval(timer); reject(new Error("x_widget_unavailable")); }
+        },200);
+      };
+      s.onerror = function(){ reject(new Error("x_widget_blocked")); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function showFallback(p, reason){
+    timeline.innerHTML =
+      '<div class="fallback"><b>当前网络无法加载 X 时间线</b>'+
+      '<div>这通常是 X 嵌入资源在当前网络不可达，并非 Ooglex 页面故障。</div>'+
+      '<a href="https://x.com/'+p.handle+'" target="_blank" rel="noopener noreferrer">打开 @'+p.handle+' ↗</a></div>';
+    timeline.setAttribute("data-state", reason || "fallback");
+  }
+
+  function updateProfile(p){
+    document.getElementById("profile-name").textContent = p.zh;
+    document.getElementById("profile-handle").textContent = "@"+p.handle;
+    document.getElementById("profile-role").textContent = p.role;
+    document.getElementById("profile-chips").innerHTML = p.chips.map(function(x){return '<span class="chip">'+x+'</span>';}).join("");
+    document.getElementById("open-x").href = "https://x.com/"+p.handle;
+    document.getElementById("profile-note").textContent = p.note;
+    document.getElementById("feed-title").textContent = p.title;
+  }
+
+  function render(p){
+    current = p;
+    var token = ++loadToken;
+    updateProfile(p);
+    Array.prototype.forEach.call(leaders.querySelectorAll(".leader"),function(btn){
+      btn.classList.toggle("on",btn.getAttribute("data-id")===p.id);
+    });
+    timeline.innerHTML = '<div class="loading"><b>正在连接 X 官方时间线…</b><div>@'+p.handle+' · 原文由 X 官方组件加载</div></div>';
+    timeline.setAttribute("data-state","loading");
+
+    ensureWidgets().then(function(twttr){
+      if (token !== loadToken) return;
+      timeline.innerHTML = "";
+      var a = document.createElement("a");
+      a.className = "twitter-timeline";
+      a.href = "https://x.com/"+p.handle;
+      a.setAttribute("data-height","760");
+      a.setAttribute("data-theme",widgetTheme());
+      a.setAttribute("data-chrome","noheader nofooter noborders transparent");
+      a.textContent = "Posts by @"+p.handle;
+      timeline.appendChild(a);
+
+      try { twttr.widgets.load(timeline); }
+      catch(e) { showFallback(p,"render_error"); return; }
+
+      setTimeout(function(){
+        if (token !== loadToken) return;
+        if (!timeline.querySelector("iframe")) showFallback(p,"embed_timeout");
+        else timeline.setAttribute("data-state","ready");
+      },9000);
+    }).catch(function(){
+      if (token === loadToken) showFallback(p,"script_unavailable");
+    });
+  }
+
+  leaders.addEventListener("click",function(e){
+    var btn = e.target.closest(".leader");
+    if (!btn) return;
+    var id = btn.getAttribute("data-id");
+    var p = people.find(function(x){return x.id===id;});
+    if (p) render(p);
+  });
+
+  render(current);
+})();
+</script>
+</body>
+</html>
