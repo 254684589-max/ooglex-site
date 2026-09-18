@@ -226,7 +226,7 @@
     "不限品类 · 前 250 · 房产/国债/黄金/公司/加密": "All asset classes · Top 250 · property/Treasuries/gold/companies/crypto",
     "全球房价走势": "Global Home Prices",
     "主要国家 · 名义/实际同比 · 季度走势": "Major economies · Nominal/real YoY · Quarterly trends",
-    "全球富豪实时榜": "Global Billionaires",
+    "福布斯亿万富翁实时排行榜": "Forbes Real-Time Billionaires",
     "亿万富豪全榜 · 身价": "All billionaires · Net worth",
     "全球公司市值榜": "Global Companies by Market Cap",
     "全球 500 强 · 市值 · 股价": "Global top 500 · Market cap · Prices",

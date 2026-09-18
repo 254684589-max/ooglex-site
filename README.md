@@ -31,7 +31,7 @@ ZLQ6600E/
 │   ├── asset-ranking/      # 🌐 全球资产市值排行榜（不限品类·前 250·房产/国债/黄金/公司/加密，每日更新）
 │   ├── house-prices/       # 🏘️ 全球主要国家房价走势（名义/实际同比·季度走势，每日更新）
 │   ├── asset-tracker/      # 🌍 全球大类资产收益率（每日更新的行情追踪）
-│   ├── billionaires/       # 🏆 全球富豪实时榜（前 250 富豪身价，每日更新）
+│   ├── billionaires/       # 🏆 福布斯亿万富翁实时排行榜（前 250 富豪身价，每日更新）
 │   ├── companies/          # 🏢 全球公司市值榜（全球 500 强 · 市值 · 股价，每日更新）
 │   ├── fear-greed/         # 😱 恐慌与贪婪指数（CNN Fear & Greed，每日更新）
 │   ├── whats-latest/       # 📰 最新消息是什么？（权威要闻聚合 + 市场快照）
@@ -67,7 +67,7 @@ ZLQ6600E/
 │   │   └── countries.py         # 国家清单/区域 + 种子数据（首次/兜底）
 │   ├── asset-tracker/      # 全球大类资产收益率取数脚本
 │   │   └── build_assets.py      # 取 Yahoo 行情 → 算各周期涨跌 → 写 data.json
-│   ├── billionaires/       # 全球富豪实时榜取数脚本
+│   ├── billionaires/       # 福布斯亿万富翁实时排行榜取数脚本
 │   │   └── build_billionaires.py # 取 Forbes 实时富豪榜 → 算身价/当日变动 → 写 data.json
 │   ├── companies/          # 全球公司市值榜取数脚本
 │   │   ├── build_companies.py    # 取 Yahoo 行情按清单算市值 → 上市 450 + 非上市 50 → 写 data.json
@@ -193,7 +193,7 @@ GPT、Claude、Gemini、Grok、DeepSeek、Qwen、Kimi、GLM 等中外模型同�
 > 首次合并前，`data.json` 内置的是示例图的 2024 全年快照（来源 Wind），页面即开即用；定时任务首次运行后
 > 会自动替换为实时「年初至今」数据并补全其余周期。要手动触发：仓库 Actions → **Asset Tracker** → Run workflow。
 
-## 全球富豪实时榜
+## 福布斯亿万富翁实时排行榜
 
 `apps/billionaires/` 是一个「世界前 250 大富豪身价」看板：每人一张卡片，含头像、身价、当日变动、
 净值条、国家与行业，并提供领涨领跌摘要、按身价 / 今日涨跌排序与姓名搜索（中英皆可）。

@@ -43,7 +43,7 @@
   };
 
   var BILLIONAIRES = {
-    "🏆 全球富豪实时榜": "🏆 Global Billionaires",
+    "🏆 福布斯亿万富翁实时排行榜": "🏆 Forbes Real-Time Billionaires",
     "全球全部亿万富豪 · 身价与当日变动 · 每日自动更新": "All global billionaires · Net worth and daily moves · Updated daily",
     "按身价": "Net Worth",
     "今日涨幅": "Top Gainers",
@@ -327,7 +327,7 @@
       };
     }
     var titles = {
-      "/apps/billionaires/": "Global Billionaires · Live Net Worth Ranking",
+      "/apps/billionaires/": "Forbes Real-Time Billionaires · Live Net Worth Ranking",
       "/apps/macro-radar/": "Macro Risk Monitor · Daily Market Regime Dashboard",
       "/apps/finance-terminal/": "Ooglex Financial Terminal · Global Market Monitor",
       "/apps/supply-chain/": "Global Supply Chain · Industry Chain Map",

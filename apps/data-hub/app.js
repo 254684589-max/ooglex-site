@@ -86,7 +86,7 @@
         return row("涨幅居首", esc(t.name) + " " + pct(t.yoyNominal), "up") +
           row("跌幅居首", esc(b.name) + " " + pct(b.yoyNominal), "down");
       } },
-    { folder: "billionaires", en: "Billionaires", name: "全球富豪实时榜", tag: "亿万富豪全榜 · 身价",
+    { folder: "billionaires", en: "Billionaires", name: "福布斯亿万富翁实时排行榜", tag: "亿万富豪全榜 · 身价",
       render: function (d) {
         var p = (d.people || [])[0]; if (!p) return "<div class='loading'>暂无数据</div>";
         var n = d.count || (d.people || []).length;
