@@ -30,7 +30,7 @@
     body{line-height:1.65;-webkit-font-smoothing:antialiased}
     a{color:inherit;text-decoration:none}
     button,input{font:inherit}
-    .page{max-width:1120px;margin:0 auto;padding:0 24px 56px}
+    .page{max-width:1180px;margin:0 auto;padding:0 24px 56px}
     .top{height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
     .back{color:var(--dim);font-size:14px}.back:hover{color:var(--ink)}
     .tag{font:11px/1 var(--mono);letter-spacing:.16em;color:var(--faint)}
@@ -54,24 +54,41 @@
     .category-btn:hover{border-color:rgba(57,135,229,.45);color:var(--ink)}
     .category-btn.on{border-color:rgba(57,135,229,.70);background:rgba(57,135,229,.12);color:var(--ink)}
     .category-btn span{margin-left:5px;color:var(--faint)}
-    .catalog-meta{display:flex;justify-content:space-between;gap:12px;margin-bottom:10px;color:var(--faint);font:10.5px/1.4 var(--mono)}
-    .leaders{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:0 0 18px}
+    .catalog-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;color:var(--faint);font:10.5px/1.4 var(--mono)}
+    .catalog-actions{display:flex;align-items:center;gap:9px}
+    .fold-btn{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--dim);padding:7px 11px;border-radius:8px;cursor:pointer;font:10.5px/1 var(--mono);white-space:nowrap}
+    .fold-btn:hover{border-color:rgba(57,135,229,.45);color:var(--ink)}
+    .leaders{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 18px}
     .leader{
       appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);
-      padding:12px 10px;border-radius:12px;cursor:pointer;text-align:left;min-width:0;transition:.18s ease;
+      padding:12px;border-radius:12px;cursor:pointer;text-align:left;min-width:0;transition:.18s ease;
     }
     .leader:hover{transform:translateY(-1px);border-color:rgba(57,135,229,.45)}
     .leader.on{border-color:rgba(57,135,229,.72);background:rgba(57,135,229,.09);box-shadow:0 0 0 1px rgba(57,135,229,.14) inset}
-    .leader b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .leader span{display:block;margin-top:2px;font:10.5px/1.35 var(--mono);color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .leader-head{display:flex;align-items:center;gap:10px;min-width:0}
+    .leader-avatar-shell,.profile-avatar-shell{position:relative;display:grid;place-items:center;overflow:hidden;border-radius:50%;flex:0 0 auto;border:1px solid var(--line);background:linear-gradient(145deg,rgba(57,135,229,.18),rgba(255,255,255,.035))}
+    .leader-avatar-shell{width:38px;height:38px}
+    .profile-avatar-shell{width:58px;height:58px}
+    .leader-avatar,.profile-avatar{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;background:var(--panel)}
+    .avatar-fallback{font:700 11px/1 var(--mono);letter-spacing:.03em;color:var(--dim)}
+    .profile-avatar-shell .avatar-fallback{font-size:15px}
+    .leader-identity{min-width:0;flex:1}
+    .leader b{display:block;font-size:13px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .leader-handle{display:block;margin-top:3px;font:10.5px/1.25 var(--mono);color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .leader-role{margin-top:10px;padding-top:9px;border-top:1px solid var(--line);min-height:46px}
+    .leader-role span{display:block;font:9px/1.2 var(--mono);letter-spacing:.08em;color:var(--faint);text-transform:uppercase}
+    .leader-role strong{display:-webkit-box;margin-top:4px;font-size:10.5px;line-height:1.35;font-weight:600;color:var(--dim);overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical}
     .empty-search{grid-column:1/-1;padding:24px;border:1px dashed var(--line);border-radius:12px;text-align:center;color:var(--faint);font-size:13px}
     .panel{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;align-items:start}
     .profile,.feed{border:1px solid var(--line);background:linear-gradient(180deg,var(--panel2),var(--panel));border-radius:16px}
     .profile{padding:20px;position:sticky;top:18px}
     .eyebrow{font:10.5px/1.3 var(--mono);letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
-    .profile h2{margin:8px 0 1px;font-size:24px;line-height:1.2}
+    .profile-id{display:flex;align-items:center;gap:13px;margin-top:10px}
+    .profile-copy{min-width:0}
+    .profile h2{margin:0 0 1px;font-size:24px;line-height:1.2}
     .handle{font:12px/1.4 var(--mono);color:var(--blue)}
-    .role{margin-top:13px;color:var(--dim);font-size:13px}
+    .role{margin-top:15px;padding-top:12px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
+    .role-label{display:block;margin-bottom:5px;font:9px/1.2 var(--mono);letter-spacing:.1em;color:var(--faint);text-transform:uppercase}
     .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:15px}
     .chip{padding:5px 8px;border-radius:7px;border:1px solid var(--line);font:10.5px/1.2 var(--mono);color:var(--dim)}
     .openx{display:flex;align-items:center;justify-content:center;height:42px;margin-top:18px;border-radius:8px;background:#f2f4f7;color:#111;font-size:13px;font-weight:700}
@@ -106,9 +123,9 @@
     .about{margin-top:20px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}
     .about b{color:var(--dim)}
     footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint)}
-    @media(max-width:900px){.leaders{grid-template-columns:repeat(3,minmax(0,1fr))}.panel{grid-template-columns:1fr}.profile{position:static}}
-    @media(max-width:650px){.controls{grid-template-columns:1fr}.modes{height:42px}.mode{flex:1}.catalog-meta{flex-direction:column;gap:2px}}
-    @media(max-width:560px){.page{padding:0 14px 36px}h1{font-size:32px}.leaders{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{padding-top:34px}#timeline[data-state="ready"]{min-height:620px}}
+    @media(max-width:980px){.leaders{grid-template-columns:repeat(3,minmax(0,1fr))}.panel{grid-template-columns:1fr}.profile{position:static}}
+    @media(max-width:700px){.controls{grid-template-columns:1fr}.modes{height:42px}.mode{flex:1}.catalog-meta{align-items:flex-start;flex-direction:column}.catalog-actions{width:100%;justify-content:space-between}}
+    @media(max-width:560px){.page{padding:0 14px 36px}h1{font-size:32px}.leaders{grid-template-columns:1fr}.hero{padding-top:34px}#timeline[data-state="ready"]{min-height:620px}.leader-role{min-height:0}}
     html[data-theme="ft"] body,html[data-theme="paper"] body{background:var(--bg);color:var(--ink)}
     html[data-theme="ft"] .leader,html[data-theme="paper"] .leader,html[data-theme="ft"] .profile,html[data-theme="paper"] .profile,html[data-theme="ft"] .feed,html[data-theme="paper"] .feed,html[data-theme="ft"] .search,html[data-theme="paper"] .search,html[data-theme="ft"] .modes,html[data-theme="paper"] .modes{background:var(--panel)}
     html[data-theme="ft"] .about,html[data-theme="paper"] .about{background:var(--tint-1)}
@@ -143,16 +160,24 @@
     <div class="category-bar" id="category-bar" aria-label="科技领袖分类筛选"></div>
     <div class="catalog-meta">
       <span id="catalog-count">正在加载人物目录…</span>
-      <span>分类与人物目录由 leaders.json 驱动</span>
+      <div class="catalog-actions">
+        <span>分类与人物目录由 leaders.json 驱动</span>
+        <button class="fold-btn" id="leader-fold" type="button" hidden>展开全部</button>
+      </div>
     </div>
     <div class="leaders" id="leaders"></div>
 
     <section class="panel">
       <aside class="profile">
         <div class="eyebrow">SELECTED PROFILE</div>
-        <h2 id="profile-name">Elon Musk</h2>
-        <div class="handle" id="profile-handle">@elonmusk</div>
-        <div class="role" id="profile-role">Tesla · SpaceX · xAI · X</div>
+        <div class="profile-id">
+          <span class="profile-avatar-shell"><span class="avatar-fallback" id="profile-avatar-fallback">EM</span><img class="profile-avatar" id="profile-avatar" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></span>
+          <div class="profile-copy">
+            <h2 id="profile-name">Elon Musk</h2>
+            <div class="handle" id="profile-handle">@elonmusk</div>
+          </div>
+        </div>
+        <div class="role"><span class="role-label">公司 / 机构 · 头衔</span><span id="profile-role">Tesla · SpaceX · xAI · X</span></div>
         <div class="chips" id="profile-chips"></div>
         <a class="openx" id="open-x" href="https://x.com/elonmusk" target="_blank" rel="noopener noreferrer">在 X 打开原主页 ↗</a>
         <p class="note" id="profile-note"></p>
@@ -167,11 +192,12 @@
 
     <div class="about">
       <b>免费模式：</b>由 X 官方 Embed 在浏览器中直接展示公开时间线，Ooglex 不调用 X API，因此不消耗你的 X API Credits；能否显示仍取决于访问者网络是否能正常连接 X。<br>
-      <b>数据模式：</b>仅在你手动切换后调用现有 Cloudflare + X API 后端，可用于 Ooglex 自主渲染、后续翻译、摘要和结构化分析，会消耗 X API Credits。
+      <b>数据模式：</b>仅在你手动切换后调用现有 Cloudflare + X API 后端，可用于 Ooglex 自主渲染、后续翻译、摘要和结构化分析，会消耗 X API Credits。<br>
+      <b>头像：</b>优先读取公开 X 头像；若第三方头像服务不可用，会自动回退为姓名首字母头像，不影响名单与时间线使用。
     </div>
 
     <footer>
-      © 2026 Ooglex · X 内容版权及账户资料归原发布者与 X 平台所有 · 本页仅作公开内容导航与官方嵌入展示
+      © 2026 Ooglex · X 内容版权及账户资料归原发布者与 X 平台所有 · 本页仅作公开内容导航与官方嵌入展示 · <a href="https://unavatar.io">Avatars provided by Unavatar</a>
     </footer>
   </main>
 
@@ -200,6 +226,9 @@
   var search=document.getElementById("leader-search");
   var count=document.getElementById("catalog-count");
   var categoryBar=document.getElementById("category-bar");
+  var foldBtn=document.getElementById("leader-fold");
+  var profileAvatar=document.getElementById("profile-avatar");
+  var profileAvatarFallback=document.getElementById("profile-avatar-fallback");
   var freeBtn=document.getElementById("mode-free");
   var apiBtn=document.getElementById("mode-api");
   var params=new URLSearchParams(location.search);
@@ -208,6 +237,8 @@
   var MODE=params.get("mode")==="api"?"api":"free";
   var DEBUG=params.get("debug")==="1";
   var EMBED_TIMEOUT_MS=25000;
+  var COLLAPSED_LIMIT=18;
+  var isExpanded=false;
   var activeTimeout=null;
   var activeObserver=null;
   var activeIframe=null;
@@ -221,6 +252,15 @@
   function currentFromCatalog(){
     return people.find(function(p){return p.id===requested;})||people[0];
   }
+  function avatarUrl(p){
+    return "https://unavatar.io/x/"+encodeURIComponent(p.handle)+"?fallback=false";
+  }
+  function initialsFor(p){
+    var raw=String(p.zh||p.name||p.handle||"?").replace(/\s*\/.*$/,"").trim();
+    var latin=raw.split(/\s+/).filter(Boolean);
+    if(/[A-Za-z]/.test(raw)&&latin.length>1)return (latin[0][0]+latin[latin.length-1][0]).toUpperCase();
+    return raw.slice(0,2).toUpperCase();
+  }
   function setModeUi(){
     freeBtn.classList.toggle("on",MODE==="free");
     apiBtn.classList.toggle("on",MODE==="api");
@@ -229,11 +269,15 @@
   function updateProfile(p){
     document.getElementById("profile-name").textContent=p.zh||p.name;
     document.getElementById("profile-handle").textContent="@"+p.handle;
-    document.getElementById("profile-role").textContent=p.role||"";
+    document.getElementById("profile-role").textContent=p.role||"—";
     document.getElementById("profile-chips").innerHTML=(p.chips||[]).map(function(x){return '<span class="chip">'+escapeHtml(x)+'</span>';}).join("");
     document.getElementById("open-x").href="https://x.com/"+encodeURIComponent(p.handle);
     document.getElementById("profile-note").textContent=p.note||"公开 X 账号。";
     document.getElementById("feed-title").textContent=p.title||((p.name||p.handle).toUpperCase()+" · OFFICIAL X TIMELINE");
+    profileAvatarFallback.textContent=initialsFor(p);
+    profileAvatar.hidden=false;
+    profileAvatar.alt=(p.zh||p.name)+" 头像";
+    profileAvatar.src=avatarUrl(p);
   }
   function searchableText(p){
     return [p.id,p.name,p.zh,p.handle,p.role,p.category].concat(p.chips||[]).join(" ").toLowerCase();
@@ -255,13 +299,27 @@
       var searchOk=!q||searchableText(p).indexOf(q)!==-1;
       return categoryOk&&searchOk;
     });
-    count.textContent="已收录 "+people.length+" / "+capacity+" 位 · "+(activeCategory==="全部"?"全部分类":activeCategory)+" · 当前显示 "+filtered.length+" 位";
+    var canFold=!q&&activeCategory==="全部"&&filtered.length>COLLAPSED_LIMIT;
+    var visible=filtered;
+    if(canFold&&!isExpanded){
+      visible=filtered.slice(0,COLLAPSED_LIMIT);
+      if(current&&!visible.some(function(p){return p.id===current.id;})){
+        visible=visible.slice(0,COLLAPSED_LIMIT-1).concat([current]);
+      }
+    }
+    count.textContent="已收录 "+people.length+" / "+capacity+" 位 · "+(activeCategory==="全部"?"全部分类":activeCategory)+" · 当前显示 "+visible.length+(visible.length!==filtered.length?" / "+filtered.length:"")+" 位";
+    foldBtn.hidden=!canFold;
+    if(canFold)foldBtn.textContent=isExpanded?"收起至 "+COLLAPSED_LIMIT+" 位 ↑":"展开全部 "+filtered.length+" 位 ↓";
     if(!filtered.length){
       leaders.innerHTML='<div class="empty-search">没有匹配的人物。</div>';
       return;
     }
-    leaders.innerHTML=filtered.map(function(p){
-      return '<button class="leader'+(current&&p.id===current.id?' on':'')+'" type="button" data-id="'+escapeHtml(p.id)+'"><b>'+escapeHtml(p.zh||p.name)+'</b><span>@'+escapeHtml(p.handle)+'</span></button>';
+    leaders.innerHTML=visible.map(function(p){
+      return '<button class="leader'+(current&&p.id===current.id?' on':'')+'" type="button" data-id="'+escapeHtml(p.id)+'">'+
+        '<div class="leader-head"><span class="leader-avatar-shell"><span class="avatar-fallback">'+escapeHtml(initialsFor(p))+'</span>'+
+        '<img class="leader-avatar" data-avatar="1" loading="lazy" decoding="async" referrerpolicy="no-referrer" alt="'+escapeHtml((p.zh||p.name)+" 头像")+'" src="'+escapeHtml(avatarUrl(p))+'"></span>'+
+        '<div class="leader-identity"><b>'+escapeHtml(p.zh||p.name)+'</b><span class="leader-handle">@'+escapeHtml(p.handle)+'</span></div></div>'+
+        '<div class="leader-role"><span>公司 / 机构 · 头衔</span><strong>'+escapeHtml(p.role||"—")+'</strong></div></button>';
     }).join("");
   }
   async function loadCatalog(){
@@ -481,10 +539,14 @@
   }
 
   leaders.addEventListener("click",function(e){var btn=e.target.closest(".leader");if(!btn)return;var id=btn.getAttribute("data-id");if(!current||id!==current.id)navigateLeader(id);});
-  search.addEventListener("input",function(){renderLeaderButtons(search.value);});
+  leaders.addEventListener("error",function(e){if(e.target&&e.target.matches&&e.target.matches("img[data-avatar]"))e.target.hidden=true;},true);
+  profileAvatar.addEventListener("error",function(){profileAvatar.hidden=true;});
+  foldBtn.addEventListener("click",function(){isExpanded=!isExpanded;renderLeaderButtons(search.value);});
+  search.addEventListener("input",function(){if(search.value.trim())isExpanded=false;renderLeaderButtons(search.value);});
   categoryBar.addEventListener("click",function(e){
     var btn=e.target.closest("[data-category]");if(!btn)return;
     activeCategory=btn.getAttribute("data-category")||"全部";
+    isExpanded=false;
     var next=new URL(location.href);
     if(activeCategory==="全部")next.searchParams.delete("category");else next.searchParams.set("category",activeCategory);
     history.replaceState(null,"",next.toString());
