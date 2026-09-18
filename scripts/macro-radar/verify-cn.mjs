@@ -3,7 +3,7 @@
  * 模拟「不开 VPN 的大陆网络」验证 /apps/macro-radar/、/apps/supply-chain/、/apps/billionaires/ 的可用性。
  *
  * 背景：这两个页面在构建时会被注入会员校验适配器（pro-access.js / pro-rich-data.js）。
- * 适配器要访问跨域的 ooglex-pro-api.*.workers.dev。该域名在大陆直连时**挂住而不是
+ * 适配器访问 Ooglex 自有域名的会员 API。测试仍刻意把该域名模拟成**挂住而不是
  * 快速失败** —— 一旦权限结果成为同源静态数据的前置条件，整页就只剩空壳：卡片、
  * 制度信号、页脚时间全空，连 app.js 自己的「数据加载中或暂不可用」都显示不出来
  * （它的 catch 同样在等那个永远不 settle 的 Promise）。
@@ -35,7 +35,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const SITE = path.join(ROOT, ".site");
-const PRO_API_HOST = "ooglex-pro-api.zlq6600e.workers.dev";
+const PRO_API_HOST = "pro-api.ooglex.com";
 // 与 assets/pro-rich-data.js 的 ACCESS_GATE_MS 对齐，再留出渲染余量。
 const ACCESS_GATE_MS = 4000;
 const GUEST_BUDGET_MS = 3000;

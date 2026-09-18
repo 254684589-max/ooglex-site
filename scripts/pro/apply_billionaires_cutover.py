@@ -13,8 +13,8 @@ TARGET = SITE / "apps" / "billionaires" / "data.json"
 HTML = SITE / "apps" / "billionaires" / "index.html"
 
 SNIPPET = """
-<meta name="ooglex-pro-api" content="https://ooglex-pro-api.zlq6600e.workers.dev">
-<script src="/assets/pro-access.js?v=5"></script>
+<meta name="ooglex-pro-api" content="https://pro-api.ooglex.com">
+<script src="/assets/pro-access.js?v=6"></script>
 <script src="/assets/pro-billionaires.js?v=2"></script>
 """
 

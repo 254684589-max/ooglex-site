@@ -3,10 +3,9 @@
 
   var PROJECT_REF = "nwthqkpkvbtilafqpjlf";
   var STORAGE_KEY = "sb-" + PROJECT_REF + "-auth-token";
-  var DEFAULT_API_BASE = "https://ooglex-pro-api.zlq6600e.workers.dev";
-  // 会员 API 在跨域的 Worker 上。某些网络（例如中国大陆直连 *.workers.dev）
-  // 既连不上也不会快速失败，请求会一直挂住。没有超时的话，调用方拿到的
-  // Promise 永远不会 settle，页面就卡在“等权限”这一步。
+  var DEFAULT_API_BASE = "https://pro-api.ooglex.com";
+  // 会员 API 使用 Ooglex 自有域名的 Cloudflare Worker，避免浏览器直接依赖 workers.dev。
+  // 仍保留超时保护：任何网络异常都只能降级为预览，不能把原版页面卡死。
   var REQUEST_TIMEOUT_MS = 7000;
 
   function apiBase() {

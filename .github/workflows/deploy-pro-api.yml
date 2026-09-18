@@ -49,6 +49,25 @@ jobs:
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
+      - name: Verify PRO API custom domain
+        run: |
+          set -e
+          ok=0
+          for i in $(seq 1 24); do
+            body="$(curl -fsS --connect-timeout 5 --max-time 12 https://pro-api.ooglex.com/health 2>/dev/null || true)"
+            if echo "$body" | grep -q '"ok":true'; then
+              echo "PRO API custom domain is ready: $body"
+              ok=1
+              break
+            fi
+            echo "Waiting for pro-api.ooglex.com ($i/24)..."
+            sleep 5
+          done
+          if [ "$ok" != "1" ]; then
+            echo "::error::pro-api.ooglex.com health check failed"
+            exit 1
+          fi
+
       - name: Upload Billionaires FREE preview to private R2
         uses: cloudflare/wrangler-action@v3
         with:

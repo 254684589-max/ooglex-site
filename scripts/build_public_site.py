@@ -112,8 +112,8 @@ def install_rich_public_previews() -> None:
 def inject_rich_access_adapter() -> None:
     """Keep original HTML/UI and install entitlement interception before app.js."""
     snippet = (
-        '\n<meta name="ooglex-pro-api" content="https://ooglex-pro-api.zlq6600e.workers.dev">\n'
-        '<script src="/assets/pro-access.js?v=5"></script>\n'
+        '\n<meta name="ooglex-pro-api" content="https://pro-api.ooglex.com">\n'
+        '<script src="/assets/pro-access.js?v=6"></script>\n'
         '<script src="/assets/pro-rich-data.js?v=4"></script>\n'
         '<script src="/assets/pro-preview-gate.js?v=1"></script>\n'
     )
