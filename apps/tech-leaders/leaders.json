@@ -2806,6 +2806,38 @@
       ],
       "verified_personal_x": true,
       "verified_at": "2026-09-19"
+    },
+    {
+      "id": "mary-barra",
+      "name": "Mary Barra",
+      "zh": "玛丽·博拉",
+      "handle": "mtbarra",
+      "role": "General Motors Chair & CEO",
+      "chips": [
+        "GM",
+        "General Motors",
+        "EV",
+        "Auto"
+      ],
+      "note": "现任 General Motors 董事长兼 CEO，本人公开 X 账号。",
+      "title": "MARY BARRA · OFFICIAL X TIMELINE",
+      "category": "汽车",
+      "categories": [
+        "汽车",
+        "工业"
+      ],
+      "name_zh": "玛丽·博拉",
+      "name_en": "Mary Barra",
+      "company_zh": "通用汽车",
+      "company_en": "General Motors",
+      "position_zh": "董事长兼 CEO",
+      "ticker": "GM",
+      "sp500_ceo": true,
+      "index_tags": [
+        "S&P 500 CEO"
+      ],
+      "verified_personal_x": true,
+      "verified_at": "2026-09-19"
     }
   ],
   "categories": [
