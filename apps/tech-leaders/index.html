@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>科技领袖 X 动态 · Ooglex</title>
-  <meta name="description" content="聚合马斯克、黄仁勋相关 NVIDIA 官方账号、Sam Altman、Lisa Su、Sundar Pichai、Satya Nadella 等科技领袖与公司的 X 官方公开动态。免费版直接使用 X 官方嵌入时间线展示原文。">
+  <meta name="description" content="免费浏览科技领袖公开 X 时间线。默认使用 X 官方 Embed，不调用 Ooglex X API；可手动切换数据模式。">
   <link rel="canonical" href="https://www.ooglex.com/apps/tech-leaders/">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:title" content="科技领袖 X 动态 · Ooglex">
-  <meta property="og:description" content="马斯克、黄仁勋相关 NVIDIA 官方账号、Sam Altman、Lisa Su、Sundar Pichai、Satya Nadella 等公开 X 原文动态。">
+  <meta property="og:description" content="单人物官方 X 时间线，默认零 X API Credits；目录架构可扩展至 100 位科技领袖。">
   <meta property="og:url" content="https://www.ooglex.com/apps/tech-leaders/">
   <meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -22,25 +22,35 @@
   <style>
     :root{
       --bg:#0b0e13;--panel:#10141b;--panel2:#141924;--line:rgba(255,255,255,.08);
-      --ink:#eef2f7;--dim:#98a2b3;--faint:#667080;--blue:#3987e5;--up:#2fb583;
+      --ink:#eef2f7;--dim:#98a2b3;--faint:#667080;--blue:#3987e5;--up:#2fb583;--warn:#e0a750;
       --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
     }
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif}
     body{line-height:1.65;-webkit-font-smoothing:antialiased}
     a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
     .page{max-width:1120px;margin:0 auto;padding:0 24px 56px}
     .top{height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
     .back{color:var(--dim);font-size:14px}.back:hover{color:var(--ink)}
     .tag{font:11px/1 var(--mono);letter-spacing:.16em;color:var(--faint)}
-    .hero{padding:54px 0 30px}
+    .hero{padding:50px 0 26px}
     .kicker{font:12px/1.4 var(--mono);letter-spacing:.18em;color:var(--blue);text-transform:uppercase}
     h1{margin:12px 0 8px;font-size:42px;line-height:1.18;letter-spacing:-.02em}
-    .lead{max-width:820px;margin:0;color:var(--dim);font-size:15px}
-    .facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+    .lead{max-width:850px;margin:0;color:var(--dim);font-size:15px}
+    .facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
     .fact{padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.025);font:11px/1.2 var(--mono);color:var(--dim)}
     .fact.live{color:var(--up)}
-    .leaders{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:22px 0 18px}
+    .controls{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;margin:20px 0 12px}
+    .search{height:44px;width:100%;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);padding:0 14px;outline:none}
+    .search:focus{border-color:rgba(57,135,229,.65);box-shadow:0 0 0 2px rgba(57,135,229,.10)}
+    .modes{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel)}
+    .mode{appearance:none;border:0;border-right:1px solid var(--line);background:transparent;color:var(--dim);padding:0 13px;cursor:pointer;font-size:12px;white-space:nowrap}
+    .mode:last-child{border-right:0}
+    .mode.on{background:rgba(57,135,229,.12);color:var(--ink)}
+    .mode.api{color:var(--warn)}
+    .catalog-meta{display:flex;justify-content:space-between;gap:12px;margin-bottom:10px;color:var(--faint);font:10.5px/1.4 var(--mono)}
+    .leaders{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:0 0 18px}
     .leader{
       appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);
       padding:12px 10px;border-radius:12px;cursor:pointer;text-align:left;min-width:0;transition:.18s ease;
@@ -49,6 +59,7 @@
     .leader.on{border-color:rgba(57,135,229,.72);background:rgba(57,135,229,.09);box-shadow:0 0 0 1px rgba(57,135,229,.14) inset}
     .leader b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .leader span{display:block;margin-top:2px;font:10.5px/1.35 var(--mono);color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .empty-search{grid-column:1/-1;padding:24px;border:1px dashed var(--line);border-radius:12px;text-align:center;color:var(--faint);font-size:13px}
     .panel{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;align-items:start}
     .profile,.feed{border:1px solid var(--line);background:linear-gradient(180deg,var(--panel2),var(--panel));border-radius:16px}
     .profile{padding:20px;position:sticky;top:18px}
@@ -67,62 +78,34 @@
     #timeline[data-state="loading"]{min-height:210px}
     #timeline[data-state="ready"]{min-height:720px}
     #timeline[data-state="fallback"]{min-height:0}
-    .loading,.fallback{padding:48px 26px;text-align:center;color:var(--dim)}
-    .loading b,.fallback b{display:block;color:var(--ink);font-size:18px;margin-bottom:8px}
-    .spinner{width:22px;height:22px;margin:0 auto 14px;border:2px solid var(--line);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
+    .loading,.fallback,.api-state{padding:48px 26px;text-align:center;color:var(--dim)}
+    .loading b,.fallback b,.api-state b{display:block;color:var(--ink);font-size:18px;margin-bottom:8px}
     .fallback-actions{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:18px}
     .fallback a,.fallback button{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:9px 16px;border-radius:8px;font:700 13px/1.2 inherit;cursor:pointer}
     .fallback a{background:#f2f4f7;color:#111}
     .fallback button{border:1px solid var(--line);background:transparent;color:var(--ink)}
-    .fallback small{display:block;margin-top:12px;color:var(--faint);font-size:11px}
-    .x-embed-anchor{display:block;height:1px;overflow:hidden;opacity:0;pointer-events:none}
+    .fallback small,.api-state small{display:block;margin-top:12px;color:var(--faint);font-size:11px}
     .xdiag{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;border-bottom:1px solid var(--line);background:rgba(57,135,229,.045);font:10px/1.25 var(--mono);color:var(--faint)}
-    .xdiag b{color:var(--dim);font-weight:600}
-    .xdiag .ok{color:var(--up)}
-    .xdiag .bad{color:#e66767}
-    .xdiag .wait{color:#e0a750}
+    .xdiag b{color:var(--dim);font-weight:600}.xdiag .ok{color:var(--up)}.xdiag .bad{color:#e66767}.xdiag .wait{color:var(--warn)}
     .fallback-diag{margin:16px auto 0;max-width:560px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:rgba(255,255,255,.018);text-align:left;font:10px/1.55 var(--mono);color:var(--faint)}
-    .fallback-diag span{display:inline-block;margin:2px 8px 2px 0}
-    .fallback-diag .ok{color:var(--up)}
-    .fallback-diag .bad{color:#e66767}
-    .fallback-diag .wait{color:#e0a750}
+    .fallback-diag span{display:inline-block;margin:2px 8px 2px 0}.fallback-diag .ok{color:var(--up)}.fallback-diag .bad{color:#e66767}.fallback-diag .wait{color:var(--warn)}
     .api-feed{padding:4px 0}
-    .post-card{padding:18px 18px 16px;border-bottom:1px solid var(--line)}
-    .post-card:last-child{border-bottom:0}
+    .post-card{padding:18px 18px 16px;border-bottom:1px solid var(--line)}.post-card:last-child{border-bottom:0}
     .post-head{display:flex;gap:11px;align-items:center;margin-bottom:12px}
     .post-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;background:rgba(255,255,255,.06);border:1px solid var(--line)}
-    .post-who{min-width:0}
-    .post-who b{display:block;font-size:13px;line-height:1.25}
-    .post-who span{display:block;margin-top:2px;font:10.5px/1.25 var(--mono);color:var(--faint)}
+    .post-who{min-width:0}.post-who b{display:block;font-size:13px;line-height:1.25}.post-who span{display:block;margin-top:2px;font:10.5px/1.25 var(--mono);color:var(--faint)}
     .post-time{margin-left:auto;white-space:nowrap;font:10.5px/1.3 var(--mono);color:var(--faint)}
     .post-text{white-space:pre-wrap;word-break:break-word;font-size:14px;line-height:1.72}
-    .post-media{display:grid;gap:8px;margin-top:12px}
-    .post-media img{display:block;width:100%;max-height:420px;object-fit:cover;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03)}
-    .post-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:13px;font:10.5px/1.25 var(--mono);color:var(--faint)}
-    .post-foot a{margin-left:auto;color:var(--blue)}
-    .api-state{padding:54px 24px;text-align:center;color:var(--dim)}
-    .api-state b{display:block;color:var(--ink);font-size:17px;margin-bottom:8px}
-    .api-state small{display:block;margin-top:8px;color:var(--faint)}
+    .post-media{display:grid;gap:8px;margin-top:12px}.post-media img{display:block;width:100%;max-height:420px;object-fit:cover;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03)}
+    .post-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:13px;font:10.5px/1.25 var(--mono);color:var(--faint)}.post-foot a{margin-left:auto;color:var(--blue)}
     .about{margin-top:20px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--faint)}
     .about b{color:var(--dim)}
     footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint)}
-    @media(max-width:900px){
-      .leaders{grid-template-columns:repeat(3,minmax(0,1fr))}
-      .panel{grid-template-columns:1fr}
-      .profile{position:static}
-    }
-    @media(max-width:560px){
-      .page{padding:0 14px 36px}
-      h1{font-size:32px}
-      .leaders{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .hero{padding-top:36px}
-      #timeline[data-state="ready"]{min-height:620px}
-    }
+    @media(max-width:900px){.leaders{grid-template-columns:repeat(3,minmax(0,1fr))}.panel{grid-template-columns:1fr}.profile{position:static}}
+    @media(max-width:650px){.controls{grid-template-columns:1fr}.modes{height:42px}.mode{flex:1}.catalog-meta{flex-direction:column;gap:2px}}
+    @media(max-width:560px){.page{padding:0 14px 36px}h1{font-size:32px}.leaders{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{padding-top:34px}#timeline[data-state="ready"]{min-height:620px}}
     html[data-theme="ft"] body,html[data-theme="paper"] body{background:var(--bg);color:var(--ink)}
-    html[data-theme="ft"] .leader,html[data-theme="paper"] .leader,
-    html[data-theme="ft"] .profile,html[data-theme="paper"] .profile,
-    html[data-theme="ft"] .feed,html[data-theme="paper"] .feed{background:var(--panel)}
+    html[data-theme="ft"] .leader,html[data-theme="paper"] .leader,html[data-theme="ft"] .profile,html[data-theme="paper"] .profile,html[data-theme="ft"] .feed,html[data-theme="paper"] .feed,html[data-theme="ft"] .search,html[data-theme="paper"] .search,html[data-theme="ft"] .modes,html[data-theme="paper"] .modes{background:var(--panel)}
     html[data-theme="ft"] .about,html[data-theme="paper"] .about{background:var(--tint-1)}
   </style>
 </head>
@@ -134,17 +117,28 @@
     </header>
 
     <section class="hero">
-      <span class="kicker">Ooglex Backend Feed · V2 Hybrid</span>
+      <span class="kicker">Official X Embed · Free V2</span>
       <h1>科技领袖 X 动态</h1>
-      <p class="lead">优先通过 Ooglex Cloudflare 后端读取科技领袖公开 X 原文并由本站自主渲染；X API 尚未配置时自动退回官方嵌入模式，不影响现有页面。</p>
+      <p class="lead">默认使用 X 官方单人物时间线，按需加载当前选中的一个账号，不调用 Ooglex X API，因此不会消耗 X API Credits。现有 API 后端保留为手动数据模式。</p>
       <div class="facts">
-        <span class="fact live">● 最新公开动态</span>
-        <span class="fact" id="source-badge">数据源检测中</span>
-        <span class="fact">15 分钟缓存</span>
-        <span class="fact">原文优先</span>
+        <span class="fact live">● 免费模式默认开启</span>
+        <span class="fact" id="source-badge">X 官方 Embed · $0 API</span>
+        <span class="fact">单账号按需加载</span>
+        <span class="fact">目录容量 100 人</span>
       </div>
     </section>
 
+    <section class="controls" aria-label="科技领袖筛选与数据模式">
+      <input class="search" id="leader-search" type="search" placeholder="搜索姓名、@账号、公司或股票代码…" autocomplete="off">
+      <div class="modes">
+        <button class="mode" id="mode-free" type="button">免费模式</button>
+        <button class="mode api" id="mode-api" type="button">数据模式 · Credits</button>
+      </div>
+    </section>
+    <div class="catalog-meta">
+      <span id="catalog-count">正在加载人物目录…</span>
+      <span>新增人物只需维护 leaders.json，无需改页面逻辑</span>
+    </div>
     <div class="leaders" id="leaders"></div>
 
     <section class="panel">
@@ -166,11 +160,12 @@
     </section>
 
     <div class="about">
-      <b>说明：</b>本页只接入可核验的公开官方账号。黄仁勋目前在本页使用 <b>NVIDIA 官方 X 账号 @nvidia</b> 作为相关动态入口，避免收录同名或未核验个人账号。X 嵌入组件由第三方直接加载；在无法访问 X 的网络环境下，时间线可能无法显示，此时页面会保留原主页跳转入口。
+      <b>免费模式：</b>由 X 官方 Embed 在浏览器中直接展示公开时间线，Ooglex 不调用 X API，因此不消耗你的 X API Credits；能否显示仍取决于访问者网络是否能正常连接 X。<br>
+      <b>数据模式：</b>仅在你手动切换后调用现有 Cloudflare + X API 后端，可用于 Ooglex 自主渲染、后续翻译、摘要和结构化分析，会消耗 X API Credits。
     </div>
 
     <footer>
-      © 2026 Ooglex · X 内容版权及账户资料归原发布者与 X 平台所有 · 本页仅作公开内容导航与嵌入展示
+      © 2026 Ooglex · X 内容版权及账户资料归原发布者与 X 平台所有 · 本页仅作公开内容导航与官方嵌入展示
     </footer>
   </main>
 
@@ -179,22 +174,30 @@
   "use strict";
 
   var API_BASE="https://pro-api.ooglex.com";
-  var people=[
-    {id:"musk",name:"Elon Musk",zh:"马斯克",handle:"elonmusk",role:"Tesla · SpaceX · xAI · X",chips:["TSLA","SpaceX","xAI","AI"],note:"个人公开 X 账号。",title:"ELON MUSK · X FEED"},
-    {id:"huang",name:"Jensen Huang / NVIDIA",zh:"黄仁勋 / NVIDIA",handle:"nvidia",role:"NVIDIA 官方账号 · 黄仁勋相关动态",chips:["NVDA","AI","GPU","Data Center"],note:"为避免误收录未核验个人账号，本页暂以 NVIDIA 官方 X 账号作为黄仁勋相关动态入口。",title:"JENSEN HUANG / NVIDIA · X FEED"},
-    {id:"altman",name:"Sam Altman",zh:"Sam Altman",handle:"sama",role:"OpenAI",chips:["OpenAI","AI","Models"],note:"个人公开 X 账号。",title:"SAM ALTMAN · X FEED"},
-    {id:"su",name:"Lisa Su",zh:"苏姿丰",handle:"LisaSu",role:"AMD Chair & CEO",chips:["AMD","AI","CPU","GPU"],note:"个人公开 X 账号。",title:"LISA SU · X FEED"},
-    {id:"pichai",name:"Sundar Pichai",zh:"桑达尔·皮查伊",handle:"sundarpichai",role:"Google · Alphabet",chips:["GOOGL","Google","Gemini","AI"],note:"个人公开 X 账号。",title:"SUNDAR PICHAI · X FEED"},
-    {id:"nadella",name:"Satya Nadella",zh:"萨提亚·纳德拉",handle:"satyanadella",role:"Microsoft",chips:["MSFT","Microsoft","Copilot","AI"],note:"个人公开 X 账号。",title:"SATYA NADELLA · X FEED"}
+  var CATALOG_URL="./leaders.json";
+  var FALLBACK_PEOPLE=[
+    {id:"musk",name:"Elon Musk",zh:"马斯克",handle:"elonmusk",role:"Tesla · SpaceX · xAI · X",chips:["TSLA","SpaceX","xAI","AI"],note:"个人公开 X 账号。",title:"ELON MUSK · OFFICIAL X TIMELINE"},
+    {id:"huang",name:"Jensen Huang / NVIDIA",zh:"黄仁勋 / NVIDIA",handle:"nvidia",role:"NVIDIA 官方账号 · 黄仁勋相关动态",chips:["NVDA","AI","GPU","Data Center"],note:"为避免误收录未核验个人账号，本页暂以 NVIDIA 官方 X 账号作为黄仁勋相关动态入口。",title:"JENSEN HUANG / NVIDIA · OFFICIAL X"},
+    {id:"altman",name:"Sam Altman",zh:"Sam Altman",handle:"sama",role:"OpenAI",chips:["OpenAI","AI","Models"],note:"个人公开 X 账号。",title:"SAM ALTMAN · OFFICIAL X TIMELINE"},
+    {id:"su",name:"Lisa Su",zh:"苏姿丰",handle:"LisaSu",role:"AMD Chair & CEO",chips:["AMD","AI","CPU","GPU"],note:"个人公开 X 账号。",title:"LISA SU · OFFICIAL X TIMELINE"},
+    {id:"pichai",name:"Sundar Pichai",zh:"桑达尔·皮查伊",handle:"sundarpichai",role:"Google · Alphabet",chips:["GOOGL","Google","Gemini","AI"],note:"个人公开 X 账号。",title:"SUNDAR PICHAI · OFFICIAL X TIMELINE"},
+    {id:"nadella",name:"Satya Nadella",zh:"萨提亚·纳德拉",handle:"satyanadella",role:"Microsoft",chips:["MSFT","Microsoft","Copilot","AI"],note:"个人公开 X 账号。",title:"SATYA NADELLA · OFFICIAL X TIMELINE"}
   ];
 
+  var people=FALLBACK_PEOPLE.slice();
+  var capacity=100;
+  var current=null;
   var leaders=document.getElementById("leaders");
   var timeline=document.getElementById("timeline");
   var xdiag=document.getElementById("xdiag");
   var sourceBadge=document.getElementById("source-badge");
+  var search=document.getElementById("leader-search");
+  var count=document.getElementById("catalog-count");
+  var freeBtn=document.getElementById("mode-free");
+  var apiBtn=document.getElementById("mode-api");
   var params=new URLSearchParams(location.search);
   var requested=params.get("leader");
-  var current=people.find(function(p){return p.id===requested;})||people[0];
+  var MODE=params.get("mode")==="api"?"api":"free";
   var DEBUG=params.get("debug")==="1";
   var EMBED_TIMEOUT_MS=25000;
   var activeTimeout=null;
@@ -204,6 +207,59 @@
   var eventsBound=false;
   var diagState={PAGE:"✓",SCRIPT:"…",WIDGET:"…",SYNDICATION:"…",IFRAME:"…","FRAME LOAD":"…",RENDER:"…"};
 
+  function escapeHtml(value){
+    return String(value==null?"":value).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});
+  }
+  function currentFromCatalog(){
+    return people.find(function(p){return p.id===requested;})||people[0];
+  }
+  function setModeUi(){
+    freeBtn.classList.toggle("on",MODE==="free");
+    apiBtn.classList.toggle("on",MODE==="api");
+    sourceBadge.textContent=MODE==="free"?"X 官方 Embed · $0 API":"Ooglex 后端 · X API";
+  }
+  function updateProfile(p){
+    document.getElementById("profile-name").textContent=p.zh||p.name;
+    document.getElementById("profile-handle").textContent="@"+p.handle;
+    document.getElementById("profile-role").textContent=p.role||"";
+    document.getElementById("profile-chips").innerHTML=(p.chips||[]).map(function(x){return '<span class="chip">'+escapeHtml(x)+'</span>';}).join("");
+    document.getElementById("open-x").href="https://x.com/"+encodeURIComponent(p.handle);
+    document.getElementById("profile-note").textContent=p.note||"公开 X 账号。";
+    document.getElementById("feed-title").textContent=p.title||((p.name||p.handle).toUpperCase()+" · OFFICIAL X TIMELINE");
+  }
+  function searchableText(p){
+    return [p.id,p.name,p.zh,p.handle,p.role].concat(p.chips||[]).join(" ").toLowerCase();
+  }
+  function renderLeaderButtons(query){
+    var q=String(query||"").trim().toLowerCase();
+    var filtered=q?people.filter(function(p){return searchableText(p).indexOf(q)!==-1;}):people;
+    count.textContent="已收录 "+people.length+" / "+capacity+" 位 · 当前显示 "+filtered.length+" 位";
+    if(!filtered.length){
+      leaders.innerHTML='<div class="empty-search">没有匹配的人物。</div>';
+      return;
+    }
+    leaders.innerHTML=filtered.map(function(p){
+      return '<button class="leader'+(current&&p.id===current.id?' on':'')+'" type="button" data-id="'+escapeHtml(p.id)+'"><b>'+escapeHtml(p.zh||p.name)+'</b><span>@'+escapeHtml(p.handle)+'</span></button>';
+    }).join("");
+  }
+  async function loadCatalog(){
+    try{
+      var res=await fetch(CATALOG_URL,{cache:"no-store"});
+      if(!res.ok)throw new Error("catalog_http_"+res.status);
+      var data=await res.json();
+      if(data&&Array.isArray(data.leaders)&&data.leaders.length){
+        people=data.leaders.slice(0,100);
+        capacity=Math.min(100,Number(data.capacity)||100);
+      }
+    }catch(e){
+      people=FALLBACK_PEOPLE.slice();
+      capacity=100;
+    }
+    current=currentFromCatalog();
+    updateProfile(current);
+    renderLeaderButtons("");
+  }
+
   function diagClass(v){return v==="✓"?"ok":v==="✕"?"bad":"wait";}
   function diagHtml(){
     return Object.keys(diagState).map(function(k){
@@ -211,11 +267,7 @@
       return '<span><b>'+k+'</b> <span class="'+diagClass(v)+'">'+v+'</span></span>';
     }).join("");
   }
-  function drawDiag(){
-    if(!DEBUG||!xdiag)return;
-    xdiag.hidden=false;
-    xdiag.innerHTML=diagHtml();
-  }
+  function drawDiag(){if(!DEBUG||!xdiag)return;xdiag.hidden=false;xdiag.innerHTML=diagHtml();}
   function setDiag(k,v){diagState[k]=v;drawDiag();}
   function clearWatchers(){
     if(activeTimeout){clearTimeout(activeTimeout);activeTimeout=null;}
@@ -225,124 +277,8 @@
     var t=document.documentElement.getAttribute("data-theme");
     return (t==="paper"||t==="ft")?"light":"dark";
   }
-  function updateProfile(p){
-    document.getElementById("profile-name").textContent=p.zh;
-    document.getElementById("profile-handle").textContent="@"+p.handle;
-    document.getElementById("profile-role").textContent=p.role;
-    document.getElementById("profile-chips").innerHTML=p.chips.map(function(x){return '<span class="chip">'+x+'</span>';}).join("");
-    document.getElementById("open-x").href="https://x.com/"+p.handle;
-    document.getElementById("profile-note").textContent=p.note;
-    document.getElementById("feed-title").textContent=p.title;
-  }
-  function renderLeaderButtons(){
-    leaders.innerHTML=people.map(function(p){
-      return '<button class="leader'+(p.id===current.id?' on':'')+'" type="button" data-id="'+p.id+'"><b>'+p.zh+'</b><span>@'+p.handle+'</span></button>';
-    }).join("");
-  }
-  function fmtTime(value){
-    if(!value)return "";
-    var d=new Date(value);
-    if(Number.isNaN(d.getTime()))return "";
-    return new Intl.DateTimeFormat("zh-CN",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}).format(d);
-  }
-  function metric(n){
-    n=Number(n||0);
-    if(n>=1000000)return (n/1000000).toFixed(n>=10000000?0:1)+"M";
-    if(n>=1000)return (n/1000).toFixed(n>=10000?0:1)+"K";
-    return String(n);
-  }
-  function appendTextWithUrls(box,post){
-    var text=String(post.text||"");
-    var urls=(post.entities&&Array.isArray(post.entities.urls)?post.entities.urls:[]).slice().sort(function(a,b){return (b.start||0)-(a.start||0);});
-    var parts=[{start:0,end:text.length,text:text}];
-    if(!urls.length){box.textContent=text;return;}
-    var cursor=0;
-    urls.slice().sort(function(a,b){return (a.start||0)-(b.start||0);}).forEach(function(u){
-      var st=Number(u.start),en=Number(u.end);
-      if(!Number.isFinite(st)||!Number.isFinite(en)||st<cursor||en>text.length)return;
-      box.appendChild(document.createTextNode(text.slice(cursor,st)));
-      var a=document.createElement("a");
-      a.href=u.expanded_url||u.url||"#";
-      a.target="_blank";a.rel="noopener noreferrer";
-      a.style.color="var(--blue)";
-      a.textContent=u.display_url||u.expanded_url||u.url||text.slice(st,en);
-      box.appendChild(a);
-      cursor=en;
-    });
-    box.appendChild(document.createTextNode(text.slice(cursor)));
-  }
-  function renderApiFeed(feed){
-    clearWatchers();
-    rendered=true;
-    xdiag.hidden=true;
-    sourceBadge.textContent="Ooglex 后端 · X API";
-    timeline.setAttribute("data-state","ready");
-    timeline.innerHTML="";
-    var wrap=document.createElement("div");
-    wrap.className="api-feed";
-    var posts=Array.isArray(feed.posts)?feed.posts:[];
-    if(!posts.length){
-      wrap.innerHTML='<div class="api-state"><b>暂无新公开动态</b><div>后端连接正常，但当前没有返回可展示的原创帖子。</div></div>';
-      timeline.appendChild(wrap);return;
-    }
-    posts.forEach(function(post){
-      var card=document.createElement("article");card.className="post-card";
-      var head=document.createElement("div");head.className="post-head";
-      if(feed.leader&&feed.leader.profile_image_url){
-        var img=document.createElement("img");img.className="post-avatar";img.loading="lazy";img.alt="";
-        img.src=feed.leader.profile_image_url;head.appendChild(img);
-      }
-      var who=document.createElement("div");who.className="post-who";
-      var b=document.createElement("b");b.textContent=current.zh;
-      var h=document.createElement("span");h.textContent="@"+current.handle;
-      who.appendChild(b);who.appendChild(h);head.appendChild(who);
-      var time=document.createElement("div");time.className="post-time";time.textContent=fmtTime(post.created_at);head.appendChild(time);
-      card.appendChild(head);
-
-      var body=document.createElement("div");body.className="post-text";appendTextWithUrls(body,post);card.appendChild(body);
-
-      if(Array.isArray(post.media)&&post.media.length){
-        var media=document.createElement("div");media.className="post-media";
-        post.media.forEach(function(m){
-          var src=m.url||m.preview_image_url;if(!src)return;
-          var im=document.createElement("img");im.loading="lazy";im.alt=m.type||"media";im.src=src;media.appendChild(im);
-        });
-        if(media.childNodes.length)card.appendChild(media);
-      }
-
-      var foot=document.createElement("div");foot.className="post-foot";
-      var pm=post.metrics||{};
-      ["回复 "+metric(pm.reply_count),"转发 "+metric(pm.repost_count||pm.retweet_count),"喜欢 "+metric(pm.like_count)].forEach(function(t){
-        var span=document.createElement("span");span.textContent=t;foot.appendChild(span);
-      });
-      var link=document.createElement("a");link.href=post.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="查看原文 ↗";foot.appendChild(link);
-      card.appendChild(foot);wrap.appendChild(card);
-    });
-    timeline.appendChild(wrap);
-  }
-  function apiState(title,detail){
-    timeline.setAttribute("data-state","loading");
-    timeline.innerHTML='<div class="api-state"><b>'+title+'</b><div>'+detail+'</div></div>';
-  }
-  async function loadApiFeed(){
-    apiState("正在读取 Ooglex 后端","由 Cloudflare 后端请求 X 数据，浏览器不再直接依赖 X iframe。");
-    var ctl=new AbortController();
-    var timer=setTimeout(function(){ctl.abort();},15000);
-    try{
-      var res=await fetch(API_BASE+"/v1/tech-leaders/feed?leader="+encodeURIComponent(current.id)+"&limit=8",{signal:ctl.signal,cache:"no-store"});
-      var data=await res.json().catch(function(){return {};});
-      if(!res.ok)throw new Error(data.error||("http_"+res.status));
-      renderApiFeed(data);
-      return true;
-    }catch(e){
-      return false;
-    }finally{
-      clearTimeout(timer);
-    }
-  }
-
-  function probeSyndication(p){
-    fetch("https://syndication.twitter.com/srv/timeline-profile/screen-name/"+p.handle,{mode:"no-cors",cache:"no-store"})
+  function probeSyndication(){
+    fetch("https://syndication.twitter.com/srv/timeline-profile/screen-name/"+encodeURIComponent(current.handle),{mode:"no-cors",cache:"no-store"})
       .then(function(){setDiag("SYNDICATION","✓");})
       .catch(function(){setDiag("SYNDICATION","✕");});
   }
@@ -375,14 +311,10 @@
     activeIframe=frame;setDiag("IFRAME","✓");
     frame.addEventListener("load",function(){
       setDiag("FRAME LOAD","✓");
-      setTimeout(function(){
-        if(rendered)return;
-        if(frame.getBoundingClientRect().height>120)markRendered("iframe-height");
-      },1200);
+      setTimeout(function(){if(!rendered&&frame.getBoundingClientRect().height>120)markRendered("iframe-height");},1200);
     },{once:true});
     setTimeout(function(){
-      if(rendered)return;
-      if(frame.getBoundingClientRect().height>120){setDiag("FRAME LOAD","✓");markRendered("iframe-height-late");}
+      if(!rendered&&frame.getBoundingClientRect().height>120){setDiag("FRAME LOAD","✓");markRendered("iframe-height-late");}
     },2200);
   }
   function embedFallback(reason){
@@ -392,68 +324,153 @@
     if(diagState["FRAME LOAD"]!=="✓")setDiag("FRAME LOAD","✕");
     setDiag("RENDER","✕");
     timeline.innerHTML=
-      '<div class="fallback"><b>当前无法显示 X 时间线</b>'+
-      '<div>Ooglex 后端尚未启用 X API，官方嵌入在当前网络/浏览器也没有完成渲染。</div>'+
+      '<div class="fallback"><b>当前网络无法完成 X 官方时间线渲染</b>'+
+      '<div>免费模式本身没有产生 X API 费用。可以重试，或直接打开该账号的 X 原主页。</div>'+
       '<div class="fallback-actions"><button type="button" data-retry-x="1">重新加载</button>'+
-      '<a href="https://x.com/'+current.handle+'" target="_blank" rel="noopener noreferrer">打开 @'+current.handle+' ↗</a></div>'+
+      '<a href="https://x.com/'+escapeHtml(current.handle)+'" target="_blank" rel="noopener noreferrer">打开 @'+escapeHtml(current.handle)+' ↗</a></div>'+
       '<div class="fallback-diag">'+diagHtml()+'</div>'+
-      '<small>诊断码：'+reason+'</small></div>';
+      '<small>诊断码：'+escapeHtml(reason)+' · 免费 Embed 依赖访问者网络连接 X。</small></div>';
     timeline.setAttribute("data-state","fallback");
   }
   function buildOfficialAnchor(){
     timeline.innerHTML="";
-    var a=document.createElement("a");a.className="twitter-timeline";
+    var a=document.createElement("a");
+    a.className="twitter-timeline";
     a.href="https://twitter.com/"+current.handle+"?ref_src=twsrc%5Etfw";
-    a.setAttribute("data-height","760");a.setAttribute("data-theme",widgetTheme());
-    a.setAttribute("data-chrome","noheader nofooter noborders transparent");a.setAttribute("data-dnt","true");
-    a.textContent="Posts by @"+current.handle;timeline.appendChild(a);
+    a.setAttribute("data-height","760");
+    a.setAttribute("data-theme",widgetTheme());
+    a.setAttribute("data-chrome","noheader nofooter noborders transparent");
+    a.setAttribute("data-dnt","true");
+    a.textContent="Posts by @"+current.handle;
+    timeline.appendChild(a);
   }
   function bootEmbed(){
     rendered=false;
-    sourceBadge.textContent="X 官方嵌入 · 备用";
-    drawDiag();probeSyndication(current);buildOfficialAnchor();
+    activeIframe=null;
+    sourceBadge.textContent="X 官方 Embed · $0 API";
+    drawDiag();probeSyndication();buildOfficialAnchor();
     timeline.setAttribute("data-state","loading");
     activeObserver=new MutationObserver(function(){var frame=timeline.querySelector("iframe");if(frame)attachIframe(frame);});
     activeObserver.observe(timeline,{childList:true,subtree:true});
 
     var existing=document.getElementById("x-widgets-js");
     if(existing)existing.remove();
-    var script=document.createElement("script");script.id="x-widgets-js";script.async=true;script.charset="utf-8";script.src="https://platform.twitter.com/widgets.js";
+    var script=document.createElement("script");
+    script.id="x-widgets-js";script.async=true;script.charset="utf-8";script.src="https://platform.twitter.com/widgets.js";
     script.onload=function(){
       setDiag("SCRIPT","✓");
       var n=0,t=setInterval(function(){
         n++;
-        if(window.twttr&&window.twttr.widgets){clearInterval(t);setDiag("WIDGET","✓");bindEvents();var f=timeline.querySelector("iframe");if(f)attachIframe(f);}
-        else if(n>20){clearInterval(t);setDiag("WIDGET","✕");}
+        if(window.twttr&&window.twttr.widgets){
+          clearInterval(t);setDiag("WIDGET","✓");bindEvents();
+          if(typeof window.twttr.widgets.load==="function")window.twttr.widgets.load(timeline);
+          var f=timeline.querySelector("iframe");if(f)attachIframe(f);
+        }else if(n>20){clearInterval(t);setDiag("WIDGET","✕");}
       },200);
     };
     script.onerror=function(){setDiag("SCRIPT","✕");setDiag("WIDGET","✕");embedFallback("widgets_script_unavailable");};
     timeline.parentNode.insertBefore(script,timeline.nextSibling);
-    activeTimeout=setTimeout(function(){if(!rendered)embedFallback("official_boot_timeout");},EMBED_TIMEOUT_MS);
+    activeTimeout=setTimeout(function(){if(!rendered)embedFallback("official_embed_timeout");},EMBED_TIMEOUT_MS);
   }
 
-  async function start(){
-    updateProfile(current);renderLeaderButtons();
-    apiState("正在检测 Ooglex 后端数据源","若 X API 尚未配置，将自动退回现有官方嵌入模式。");
-    try{
-      var res=await fetch(API_BASE+"/v1/tech-leaders/status",{cache:"no-store"});
-      var status=await res.json();
-      if(res.ok&&status&&status.configured){
-        sourceBadge.textContent="Ooglex 后端 · X API";
-        var ok=await loadApiFeed();
-        if(ok)return;
+  function metric(n){
+    n=Number(n||0);
+    if(n>=1000000)return (n/1000000).toFixed(n>=10000000?0:1)+"M";
+    if(n>=1000)return (n/1000).toFixed(n>=10000?0:1)+"K";
+    return String(n);
+  }
+  function fmtTime(value){
+    var d=new Date(value);
+    if(!value||Number.isNaN(d.getTime()))return "";
+    return new Intl.DateTimeFormat("zh-CN",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}).format(d);
+  }
+  function appendTextWithUrls(box,post){
+    var text=String(post.text||"");
+    var urls=post.entities&&Array.isArray(post.entities.urls)?post.entities.urls.slice():[];
+    if(!urls.length){box.textContent=text;return;}
+    urls.sort(function(a,b){return Number(a.start||0)-Number(b.start||0);});
+    var cursor=0;
+    urls.forEach(function(u){
+      var st=Number(u.start),en=Number(u.end);
+      if(!Number.isFinite(st)||!Number.isFinite(en)||st<cursor||en>text.length)return;
+      box.appendChild(document.createTextNode(text.slice(cursor,st)));
+      var a=document.createElement("a");a.href=u.expanded_url||u.url||"#";a.target="_blank";a.rel="noopener noreferrer";a.style.color="var(--blue)";
+      a.textContent=u.display_url||u.expanded_url||u.url||text.slice(st,en);box.appendChild(a);cursor=en;
+    });
+    box.appendChild(document.createTextNode(text.slice(cursor)));
+  }
+  function renderApiFeed(feed){
+    clearWatchers();rendered=true;xdiag.hidden=true;sourceBadge.textContent="Ooglex 后端 · X API";
+    timeline.setAttribute("data-state","ready");timeline.innerHTML="";
+    var wrap=document.createElement("div");wrap.className="api-feed";
+    var posts=Array.isArray(feed.posts)?feed.posts:[];
+    if(!posts.length){wrap.innerHTML='<div class="api-state"><b>暂无新公开动态</b><div>后端连接正常，但当前没有返回可展示的原创帖子。</div></div>';timeline.appendChild(wrap);return;}
+    posts.forEach(function(post){
+      var card=document.createElement("article");card.className="post-card";
+      var head=document.createElement("div");head.className="post-head";
+      if(feed.leader&&feed.leader.profile_image_url){var img=document.createElement("img");img.className="post-avatar";img.loading="lazy";img.alt="";img.src=feed.leader.profile_image_url;head.appendChild(img);}
+      var who=document.createElement("div");who.className="post-who";
+      var b=document.createElement("b");b.textContent=current.zh||current.name;
+      var h=document.createElement("span");h.textContent="@"+current.handle;who.appendChild(b);who.appendChild(h);head.appendChild(who);
+      var time=document.createElement("div");time.className="post-time";time.textContent=fmtTime(post.created_at);head.appendChild(time);card.appendChild(head);
+      var body=document.createElement("div");body.className="post-text";appendTextWithUrls(body,post);card.appendChild(body);
+      if(Array.isArray(post.media)&&post.media.length){
+        var media=document.createElement("div");media.className="post-media";
+        post.media.forEach(function(m){var src=m.url||m.preview_image_url;if(!src)return;var im=document.createElement("img");im.loading="lazy";im.alt=m.type||"media";im.src=src;media.appendChild(im);});
+        if(media.childNodes.length)card.appendChild(media);
       }
-    }catch(e){}
-    bootEmbed();
+      var foot=document.createElement("div");foot.className="post-foot";var pm=post.metrics||{};
+      ["回复 "+metric(pm.reply_count),"转发 "+metric(pm.repost_count||pm.retweet_count),"喜欢 "+metric(pm.like_count)].forEach(function(t){var span=document.createElement("span");span.textContent=t;foot.appendChild(span);});
+      var link=document.createElement("a");link.href=post.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="查看原文 ↗";foot.appendChild(link);card.appendChild(foot);wrap.appendChild(card);
+    });
+    timeline.appendChild(wrap);
+  }
+  function apiState(title,detail){
+    timeline.setAttribute("data-state","loading");
+    timeline.innerHTML='<div class="api-state"><b>'+escapeHtml(title)+'</b><div>'+escapeHtml(detail)+'</div><small>数据模式会调用 X API，并可能消耗 Credits。</small></div>';
+  }
+  async function bootApi(){
+    apiState("正在读取 Ooglex 数据模式","只在手动选择数据模式时才会调用 X API。");
+    try{
+      var statusRes=await fetch(API_BASE+"/v1/tech-leaders/status",{cache:"no-store"});
+      var status=await statusRes.json();
+      if(!statusRes.ok||!status||!status.configured)throw new Error("api_not_configured");
+      var ctl=new AbortController();
+      var timer=setTimeout(function(){ctl.abort();},15000);
+      try{
+        var res=await fetch(API_BASE+"/v1/tech-leaders/feed?leader="+encodeURIComponent(current.id)+"&limit=8",{signal:ctl.signal,cache:"no-store"});
+        var data=await res.json().catch(function(){return {};});
+        if(!res.ok)throw new Error(data.error||("http_"+res.status));
+        renderApiFeed(data);
+      }finally{clearTimeout(timer);}
+    }catch(e){
+      timeline.innerHTML='<div class="fallback"><b>数据模式暂不可用</b><div>未继续调用更多接口。你可以返回免费模式，不消耗 X API Credits。</div><div class="fallback-actions"><button type="button" data-free-mode="1">返回免费模式</button></div><small>'+escapeHtml(e&&e.message?e.message:"api_unavailable")+'</small></div>';
+      timeline.setAttribute("data-state","fallback");
+    }
+  }
+  function navigateMode(mode){
+    var next=new URL(location.href);
+    if(mode==="api")next.searchParams.set("mode","api");else next.searchParams.delete("mode");
+    location.href=next.toString();
+  }
+  function navigateLeader(id){
+    var next=new URL(location.href);next.searchParams.set("leader",id);location.href=next.toString();
   }
 
-  leaders.addEventListener("click",function(e){
-    var btn=e.target.closest(".leader");if(!btn)return;
-    var id=btn.getAttribute("data-id");if(id===current.id)return;
-    var next=new URL(location.href);next.searchParams.set("leader",id);if(DEBUG)next.searchParams.set("debug","1");location.href=next.toString();
+  leaders.addEventListener("click",function(e){var btn=e.target.closest(".leader");if(!btn)return;var id=btn.getAttribute("data-id");if(!current||id!==current.id)navigateLeader(id);});
+  search.addEventListener("input",function(){renderLeaderButtons(search.value);});
+  freeBtn.addEventListener("click",function(){if(MODE!=="free")navigateMode("free");});
+  apiBtn.addEventListener("click",function(){if(MODE!=="api")navigateMode("api");});
+  timeline.addEventListener("click",function(e){
+    if(e.target.closest("[data-retry-x]"))location.reload();
+    if(e.target.closest("[data-free-mode]"))navigateMode("free");
   });
-  timeline.addEventListener("click",function(e){if(e.target.closest("[data-retry-x]"))location.reload();});
-  start();
+
+  (async function start(){
+    setModeUi();
+    await loadCatalog();
+    if(MODE==="api")bootApi();else bootEmbed();
+  })();
 })();
 </script>
 </body>
