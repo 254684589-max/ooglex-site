@@ -15,7 +15,7 @@ HTML = SITE / "apps" / "billionaires" / "index.html"
 SNIPPET = """
 <meta name="ooglex-pro-api" content="https://ooglex-pro-api.zlq6600e.workers.dev">
 <script src="/assets/pro-access.js?v=5"></script>
-<script src="/assets/pro-billionaires.js?v=1"></script>
+<script src="/assets/pro-billionaires.js?v=2"></script>
 """
 
 

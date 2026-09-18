@@ -5,9 +5,48 @@
 
   var nativeFetch = window.fetch.bind(window);
   var product = "billionaires";
-  var accessPromise = window.OoglexPro.getAccess(product).catch(function () {
-    return { authenticated: false, plan: "free", access_level: "preview" };
-  });
+
+  // 与 pro-rich-data.js 同一条规矩：本页的 Top 10 预览是同源静态文件，
+  // 会员校验却要访问跨域的 Worker。该域名在某些网络下挂住而不是快速失败，
+  // 所以权限结果绝不能成为静态数据的前置条件 —— 否则整页只剩空壳。
+  var ACCESS_GATE_MS = 4000;
+
+  function previewAccess(degraded) {
+    var access = { authenticated: false, plan: "free", access_level: "preview" };
+    if (degraded) access.degraded = degraded;
+    return access;
+  }
+
+  function hasSession() {
+    try { return !!(window.OoglexPro.getSession && window.OoglexPro.getSession()); }
+    catch (_) { return false; }
+  }
+
+  function withGate(promise) {
+    return new Promise(function (resolve) {
+      var done = false;
+      var timer = setTimeout(function () {
+        if (done) return;
+        done = true;
+        resolve(previewAccess("timeout"));
+      }, ACCESS_GATE_MS);
+      promise.then(function (access) {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        resolve(access && access.access_level ? access : previewAccess("empty"));
+      });
+    });
+  }
+
+  // 没有登录态就不可能拿到 full（Worker 对无 token 的请求同样只返回 preview），
+  // 直接按预览处理，连这次跨域请求都不发。
+  var accessPromise = hasSession()
+    ? withGate(window.OoglexPro.getAccess(product).catch(function () {
+        return previewAccess("unreachable");
+      }))
+    : Promise.resolve(previewAccess());
+
   var fullPromise = accessPromise.then(function (access) {
     if (!access || access.access_level !== "full") return null;
     return window.OoglexPro.getData(product, "full");
@@ -110,9 +149,11 @@
     title.style.cssText = "font-size:27px;font-weight:760;letter-spacing:-.3px;margin:1px 0 8px";
 
     var sub = document.createElement("div");
-    sub.textContent = access && access.authenticated
-      ? "当前为 FREE 预览，仅展示 Top 10。升级 PRO 后可查看完整榜单、搜索与排序。"
-      : "当前仅展示 Top 10 预览。登录 PRO 后可查看完整榜单、搜索与排序。";
+    sub.textContent = access && access.degraded
+      ? "当前网络连不上会员服务，已按 Top 10 预览显示。恢复连接后可查看完整榜单。"
+      : access && access.authenticated
+        ? "当前为 FREE 预览，仅展示 Top 10。升级 PRO 后可查看完整榜单、搜索与排序。"
+        : "当前仅展示 Top 10 预览。登录 PRO 后可查看完整榜单、搜索与排序。";
     sub.style.cssText = "font-size:14px;line-height:1.7;color:#c8c8c8;margin:0 auto 18px;max-width:720px";
 
     var button = document.createElement("a");

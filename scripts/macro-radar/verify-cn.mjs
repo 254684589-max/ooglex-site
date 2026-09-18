@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * 模拟「不开 VPN 的大陆网络」验证 /apps/macro-radar/ 与 /apps/supply-chain/ 的可用性。
+ * 模拟「不开 VPN 的大陆网络」验证 /apps/macro-radar/、/apps/supply-chain/、/apps/billionaires/ 的可用性。
  *
  * 背景：这两个页面在构建时会被注入会员校验适配器（pro-access.js / pro-rich-data.js）。
  * 适配器要访问跨域的 ooglex-pro-api.*.workers.dev。该域名在大陆直连时**挂住而不是
@@ -10,11 +10,12 @@
  *
  * 因此这里刻意用「挂住」而不是「快速失败」来拦截外域请求 —— 挂住才是最伤页面的那种。
  *
- * 四个场景：
+ * 五个场景：
  *   1) 访客 + 外域挂住   → 必须照常出数据，且**一次都不许**请求会员 API（访客不可能是 PRO）
  *   2) 已登录 + 外域挂住 → 允许发请求，但必须在闸门时限内降级为预览，不得无限等待
  *   3) PRO + 会员 API 可达 → 完整数据仍必须走拦截通道注入，且不出现付费墙
  *   4) 产业链页 + 外域挂住 → 同一适配器也注入该页，同样不能被会员校验卡住
+ *   5) 富豪榜页 + 外域挂住 → 它用的是另一个适配器（pro-billionaires.js），同一条规矩
  *
  * 跑法（先构建 .site）：
  *   python3 scripts/pro/build_pro_datasets.py
@@ -191,6 +192,22 @@ const SUPPLY_PROBE = `(function () {
   var badge = document.getElementById("ooglex-rich-access");
   return {
     signals: status ? status.children.length : 0,
+    regime: "",
+    foot: status ? status.textContent.replace(/\\s+/g, " ").trim() : "",
+    wall: !!wall,
+    wallText: wall ? wall.textContent : "",
+    badge: badge ? badge.textContent : ""
+  };
+})()`;
+
+// 富豪榜页用榜单行数判断“数据到了没有”。
+const BILLIONAIRES_PROBE = `(function () {
+  var list = document.getElementById("list");
+  var status = document.getElementById("status");
+  var wall = document.getElementById("ooglex-preview-wall");
+  var badge = document.getElementById("ooglex-rich-access");
+  return {
+    signals: list ? list.children.length : 0,
     regime: "",
     foot: status ? status.textContent.replace(/\\s+/g, " ").trim() : "",
     wall: !!wall,
@@ -384,6 +401,22 @@ async function main() {
       failures.push(`场景4：数据出现耗时 ${supply.readyAt === null ? "超时" : supply.readyAt + "ms"}，超过 ${SUPPLY_BUDGET_MS}ms 预算`);
     }
     if (supply.requested.includes(PRO_API_HOST)) failures.push("场景4：产业链页访客仍然请求了会员 API");
+
+    // 富豪榜页走的是另一个适配器（pro-billionaires.js），必须单独守。
+    const rich = await runScenario(browserPath, base, {
+      expectWall: true,
+      path: "/apps/billionaires/",
+      probe: BILLIONAIRES_PROBE
+    });
+    console.log("\n=== 场景 5 · 富豪榜页 · 访客 + 外域全部挂住 ===");
+    console.log(`  榜单行数: ${rich.state.signals}　出现耗时: ${rich.readyAt === null ? "从未出现" : rich.readyAt + "ms"}`);
+    console.log(`  状态: ${rich.state.foot.slice(0, 60)}　付费墙: ${rich.state.wall}　角标: ${rich.state.badge.trim()}`);
+    if (rich.state.signals <= 0) failures.push("场景5：富豪榜页在外域挂住时没有加载出数据");
+    if (rich.readyAt === null || rich.readyAt > GUEST_BUDGET_MS) {
+      failures.push(`场景5：数据出现耗时 ${rich.readyAt === null ? "超时" : rich.readyAt + "ms"}，超过 ${GUEST_BUDGET_MS}ms 预算`);
+    }
+    if (!rich.state.wall) failures.push("场景5：Top 10 预览付费墙没有出现");
+    if (rich.requested.includes(PRO_API_HOST)) failures.push("场景5：富豪榜页访客仍然请求了会员 API");
   } finally {
     server.close();
   }
