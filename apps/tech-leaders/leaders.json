@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "capacity": 100,
   "leaders": [
     {
@@ -15,7 +15,8 @@
         "AI"
       ],
       "note": "个人公开 X 账号。",
-      "title": "ELON MUSK · OFFICIAL X TIMELINE"
+      "title": "ELON MUSK · OFFICIAL X TIMELINE",
+      "category": "航天"
     },
     {
       "id": "huang",
@@ -30,7 +31,8 @@
         "Data Center"
       ],
       "note": "为避免误收录未核验个人账号，本页暂以 NVIDIA 官方 X 账号作为黄仁勋相关动态入口。",
-      "title": "JENSEN HUANG / NVIDIA · OFFICIAL X"
+      "title": "JENSEN HUANG / NVIDIA · OFFICIAL X",
+      "category": "芯片"
     },
     {
       "id": "altman",
@@ -44,7 +46,8 @@
         "Models"
       ],
       "note": "个人公开 X 账号。",
-      "title": "SAM ALTMAN · OFFICIAL X TIMELINE"
+      "title": "SAM ALTMAN · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "su",
@@ -59,7 +62,8 @@
         "GPU"
       ],
       "note": "个人公开 X 账号。",
-      "title": "LISA SU · OFFICIAL X TIMELINE"
+      "title": "LISA SU · OFFICIAL X TIMELINE",
+      "category": "芯片"
     },
     {
       "id": "pichai",
@@ -74,7 +78,8 @@
         "AI"
       ],
       "note": "个人公开 X 账号。",
-      "title": "SUNDAR PICHAI · OFFICIAL X TIMELINE"
+      "title": "SUNDAR PICHAI · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "nadella",
@@ -89,7 +94,8 @@
         "AI"
       ],
       "note": "个人公开 X 账号。",
-      "title": "SATYA NADELLA · OFFICIAL X TIMELINE"
+      "title": "SATYA NADELLA · OFFICIAL X TIMELINE",
+      "category": "云计算"
     },
     {
       "id": "cook",
@@ -104,7 +110,8 @@
         "AI"
       ],
       "note": "个人公开 X 账号。",
-      "title": "TIM COOK · OFFICIAL X TIMELINE"
+      "title": "TIM COOK · OFFICIAL X TIMELINE",
+      "category": "消费科技"
     },
     {
       "id": "bezos",
@@ -119,7 +126,8 @@
         "Space"
       ],
       "note": "个人公开 X 账号。",
-      "title": "JEFF BEZOS · OFFICIAL X TIMELINE"
+      "title": "JEFF BEZOS · OFFICIAL X TIMELINE",
+      "category": "航天"
     },
     {
       "id": "jassy",
@@ -134,7 +142,8 @@
         "Cloud"
       ],
       "note": "个人公开 X 账号。",
-      "title": "ANDY JASSY · OFFICIAL X TIMELINE"
+      "title": "ANDY JASSY · OFFICIAL X TIMELINE",
+      "category": "云计算"
     },
     {
       "id": "hassabis",
@@ -149,7 +158,8 @@
         "AGI"
       ],
       "note": "个人公开 X 账号。",
-      "title": "DEMIS HASSABIS · OFFICIAL X TIMELINE"
+      "title": "DEMIS HASSABIS · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "amodei",
@@ -164,7 +174,8 @@
         "Safety"
       ],
       "note": "个人公开 X 账号。",
-      "title": "DARIO AMODEI · OFFICIAL X TIMELINE"
+      "title": "DARIO AMODEI · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "suleyman",
@@ -179,7 +190,8 @@
         "AI"
       ],
       "note": "个人公开 X 账号。",
-      "title": "MUSTAFA SULEYMAN · OFFICIAL X TIMELINE"
+      "title": "MUSTAFA SULEYMAN · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "lecun",
@@ -194,7 +206,8 @@
         "NYU"
       ],
       "note": "个人公开 X 账号。",
-      "title": "YANN LECUN · OFFICIAL X TIMELINE"
+      "title": "YANN LECUN · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "andrew-ng",
@@ -209,7 +222,8 @@
         "Startups"
       ],
       "note": "个人公开 X 账号。",
-      "title": "ANDREW NG · OFFICIAL X TIMELINE"
+      "title": "ANDREW NG · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "fei-fei-li",
@@ -224,7 +238,8 @@
         "Robotics"
       ],
       "note": "个人公开 X 账号。",
-      "title": "FEI-FEI LI · OFFICIAL X TIMELINE"
+      "title": "FEI-FEI LI · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "sutskever",
@@ -239,7 +254,8 @@
         "Research"
       ],
       "note": "个人公开 X 账号。",
-      "title": "ILYA SUTSKEVER · OFFICIAL X TIMELINE"
+      "title": "ILYA SUTSKEVER · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "murati",
@@ -254,7 +270,8 @@
         "Research"
       ],
       "note": "个人公开 X 账号。",
-      "title": "MIRA MURATI · OFFICIAL X TIMELINE"
+      "title": "MIRA MURATI · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "brockman",
@@ -269,7 +286,8 @@
         "Infrastructure"
       ],
       "note": "个人公开 X 账号。",
-      "title": "GREG BROCKMAN · OFFICIAL X TIMELINE"
+      "title": "GREG BROCKMAN · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "srinivas",
@@ -284,7 +302,8 @@
         "Agents"
       ],
       "note": "个人公开 X 账号。",
-      "title": "ARAVIND SRINIVAS · OFFICIAL X TIMELINE"
+      "title": "ARAVIND SRINIVAS · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "karpathy",
@@ -299,7 +318,8 @@
         "Education"
       ],
       "note": "个人公开 X 账号。",
-      "title": "ANDREJ KARPATHY · OFFICIAL X TIMELINE"
+      "title": "ANDREJ KARPATHY · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "field",
@@ -314,7 +334,8 @@
         "Collaboration"
       ],
       "note": "个人公开 X 账号。",
-      "title": "DYLAN FIELD · OFFICIAL X TIMELINE"
+      "title": "DYLAN FIELD · OFFICIAL X TIMELINE",
+      "category": "软件"
     },
     {
       "id": "patrick-collison",
@@ -329,7 +350,8 @@
         "Startups"
       ],
       "note": "个人公开 X 账号。",
-      "title": "PATRICK COLLISON · OFFICIAL X TIMELINE"
+      "title": "PATRICK COLLISON · OFFICIAL X TIMELINE",
+      "category": "金融科技"
     },
     {
       "id": "chesky",
@@ -344,7 +366,8 @@
         "Product"
       ],
       "note": "个人公开 X 账号。",
-      "title": "BRIAN CHESKY · OFFICIAL X TIMELINE"
+      "title": "BRIAN CHESKY · OFFICIAL X TIMELINE",
+      "category": "消费科技"
     },
     {
       "id": "mohan",
@@ -359,7 +382,8 @@
         "Creators"
       ],
       "note": "个人公开 X 账号。",
-      "title": "NEAL MOHAN · OFFICIAL X TIMELINE"
+      "title": "NEAL MOHAN · OFFICIAL X TIMELINE",
+      "category": "消费科技"
     },
     {
       "id": "ek",
@@ -374,7 +398,8 @@
         "Health Tech"
       ],
       "note": "个人公开 X 账号。",
-      "title": "DANIEL EK · OFFICIAL X TIMELINE"
+      "title": "DANIEL EK · OFFICIAL X TIMELINE",
+      "category": "消费科技"
     },
     {
       "id": "benioff",
@@ -389,7 +414,8 @@
         "Enterprise AI"
       ],
       "note": "个人公开 X 账号。",
-      "title": "MARC BENIOFF · OFFICIAL X TIMELINE"
+      "title": "MARC BENIOFF · OFFICIAL X TIMELINE",
+      "category": "软件"
     },
     {
       "id": "dell",
@@ -404,7 +430,8 @@
         "Enterprise"
       ],
       "note": "个人公开 X 账号。",
-      "title": "MICHAEL DELL · OFFICIAL X TIMELINE"
+      "title": "MICHAEL DELL · OFFICIAL X TIMELINE",
+      "category": "云计算"
     },
     {
       "id": "andreessen",
@@ -419,7 +446,8 @@
         "Startups"
       ],
       "note": "个人公开 X 账号。",
-      "title": "MARC ANDREESSEN · OFFICIAL X TIMELINE"
+      "title": "MARC ANDREESSEN · OFFICIAL X TIMELINE",
+      "category": "VC"
     },
     {
       "id": "luckey",
@@ -434,7 +462,8 @@
         "Autonomy"
       ],
       "note": "个人公开 X 账号。",
-      "title": "PALMER LUCKEY · OFFICIAL X TIMELINE"
+      "title": "PALMER LUCKEY · OFFICIAL X TIMELINE",
+      "category": "机器人"
     },
     {
       "id": "lutke",
@@ -449,7 +478,8 @@
         "AI"
       ],
       "note": "个人公开 X 账号。",
-      "title": "TOBIAS LÜTKE · OFFICIAL X TIMELINE"
+      "title": "TOBIAS LÜTKE · OFFICIAL X TIMELINE",
+      "category": "软件"
     },
     {
       "id": "hoffman",
@@ -464,7 +494,8 @@
         "VC"
       ],
       "note": "个人公开 X 账号。",
-      "title": "REID HOFFMAN · OFFICIAL X TIMELINE"
+      "title": "REID HOFFMAN · OFFICIAL X TIMELINE",
+      "category": "VC"
     },
     {
       "id": "khosla",
@@ -479,7 +510,8 @@
         "Climate Tech"
       ],
       "note": "个人公开 X 账号。",
-      "title": "VINOD KHOSLA · OFFICIAL X TIMELINE"
+      "title": "VINOD KHOSLA · OFFICIAL X TIMELINE",
+      "category": "VC"
     },
     {
       "id": "levie",
@@ -494,7 +526,8 @@
         "Cloud"
       ],
       "note": "个人公开 X 账号。",
-      "title": "AARON LEVIE · OFFICIAL X TIMELINE"
+      "title": "AARON LEVIE · OFFICIAL X TIMELINE",
+      "category": "软件"
     },
     {
       "id": "dorsey",
@@ -509,7 +542,8 @@
         "Payments"
       ],
       "note": "个人公开 X 账号。",
-      "title": "JACK DORSEY · OFFICIAL X TIMELINE"
+      "title": "JACK DORSEY · OFFICIAL X TIMELINE",
+      "category": "金融科技"
     },
     {
       "id": "paul-graham",
@@ -524,7 +558,8 @@
         "Software"
       ],
       "note": "个人公开 X 账号。",
-      "title": "PAUL GRAHAM · OFFICIAL X TIMELINE"
+      "title": "PAUL GRAHAM · OFFICIAL X TIMELINE",
+      "category": "VC"
     },
     {
       "id": "garry-tan",
@@ -539,7 +574,8 @@
         "VC"
       ],
       "note": "个人公开 X 账号。",
-      "title": "GARRY TAN · OFFICIAL X TIMELINE"
+      "title": "GARRY TAN · OFFICIAL X TIMELINE",
+      "category": "VC"
     },
     {
       "id": "alexandr-wang",
@@ -554,7 +590,8 @@
         "Models"
       ],
       "note": "个人公开 X 账号。",
-      "title": "ALEXANDR WANG · OFFICIAL X TIMELINE"
+      "title": "ALEXANDR WANG · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "delangue",
@@ -569,7 +606,8 @@
         "Models"
       ],
       "note": "个人公开 X 账号。",
-      "title": "CLEMENT DELANGUE · OFFICIAL X TIMELINE"
+      "title": "CLEMENT DELANGUE · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "jeff-dean",
@@ -584,7 +622,8 @@
         "Research"
       ],
       "note": "个人公开 X 账号。",
-      "title": "JEFF DEAN · OFFICIAL X TIMELINE"
+      "title": "JEFF DEAN · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "gomez",
@@ -599,7 +638,8 @@
         "Enterprise"
       ],
       "note": "个人公开 X 账号。",
-      "title": "AIDAN GOMEZ · OFFICIAL X TIMELINE"
+      "title": "AIDAN GOMEZ · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "bret-taylor",
@@ -614,7 +654,8 @@
         "OpenAI"
       ],
       "note": "个人公开 X 账号。",
-      "title": "BRET TAYLOR · OFFICIAL X TIMELINE"
+      "title": "BRET TAYLOR · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "masad",
@@ -629,7 +670,8 @@
         "Developer Tools"
       ],
       "note": "个人公开 X 账号。",
-      "title": "AMJAD MASAD · OFFICIAL X TIMELINE"
+      "title": "AMJAD MASAD · OFFICIAL X TIMELINE",
+      "category": "软件"
     },
     {
       "id": "rauch",
@@ -644,7 +686,8 @@
         "Developer Tools"
       ],
       "note": "个人公开 X 账号。",
-      "title": "GUILLERMO RAUCH · OFFICIAL X TIMELINE"
+      "title": "GUILLERMO RAUCH · OFFICIAL X TIMELINE",
+      "category": "软件"
     },
     {
       "id": "friedman",
@@ -659,7 +702,8 @@
         "Research"
       ],
       "note": "个人公开 X 账号。",
-      "title": "NAT FRIEDMAN · OFFICIAL X TIMELINE"
+      "title": "NAT FRIEDMAN · OFFICIAL X TIMELINE",
+      "category": "VC"
     },
     {
       "id": "krishna",
@@ -674,7 +718,8 @@
         "Quantum"
       ],
       "note": "个人公开 X 账号。",
-      "title": "ARVIND KRISHNA · OFFICIAL X TIMELINE"
+      "title": "ARVIND KRISHNA · OFFICIAL X TIMELINE",
+      "category": "云计算"
     },
     {
       "id": "amon",
@@ -689,7 +734,8 @@
         "Mobile"
       ],
       "note": "个人公开 X 账号。",
-      "title": "CRISTIANO AMON · OFFICIAL X TIMELINE"
+      "title": "CRISTIANO AMON · OFFICIAL X TIMELINE",
+      "category": "芯片"
     },
     {
       "id": "peter-beck",
@@ -704,7 +750,8 @@
         "Launch"
       ],
       "note": "个人公开 X 账号。",
-      "title": "PETER BECK · OFFICIAL X TIMELINE"
+      "title": "PETER BECK · OFFICIAL X TIMELINE",
+      "category": "航天"
     },
     {
       "id": "adcock",
@@ -719,7 +766,8 @@
         "AI"
       ],
       "note": "个人公开 X 账号。",
-      "title": "BRETT ADCOCK · OFFICIAL X TIMELINE"
+      "title": "BRETT ADCOCK · OFFICIAL X TIMELINE",
+      "category": "机器人"
     },
     {
       "id": "jim-keller",
@@ -734,7 +782,8 @@
         "RISC-V"
       ],
       "note": "个人公开 X 账号。",
-      "title": "JIM KELLER · OFFICIAL X TIMELINE"
+      "title": "JIM KELLER · OFFICIAL X TIMELINE",
+      "category": "芯片"
     },
     {
       "id": "koduri",
@@ -749,7 +798,8 @@
         "Compute"
       ],
       "note": "个人公开 X 账号。",
-      "title": "RAJA KODURI · OFFICIAL X TIMELINE"
+      "title": "RAJA KODURI · OFFICIAL X TIMELINE",
+      "category": "芯片"
     },
     {
       "id": "dhh",
@@ -764,7 +814,8 @@
         "Cloud"
       ],
       "note": "个人公开 X 账号。",
-      "title": "DHH · OFFICIAL X TIMELINE"
+      "title": "DHH · OFFICIAL X TIMELINE",
+      "category": "软件"
     },
     {
       "id": "mullenweg",
@@ -779,7 +830,8 @@
         "Web"
       ],
       "note": "个人公开 X 账号。",
-      "title": "MATT MULLENWEG · OFFICIAL X TIMELINE"
+      "title": "MATT MULLENWEG · OFFICIAL X TIMELINE",
+      "category": "软件"
     },
     {
       "id": "houston",
@@ -794,7 +846,8 @@
         "Productivity"
       ],
       "note": "个人公开 X 账号。",
-      "title": "DREW HOUSTON · OFFICIAL X TIMELINE"
+      "title": "DREW HOUSTON · OFFICIAL X TIMELINE",
+      "category": "软件"
     },
     {
       "id": "armstrong",
@@ -809,7 +862,8 @@
         "Payments"
       ],
       "note": "个人公开 X 账号。",
-      "title": "BRIAN ARMSTRONG · OFFICIAL X TIMELINE"
+      "title": "BRIAN ARMSTRONG · OFFICIAL X TIMELINE",
+      "category": "金融科技"
     },
     {
       "id": "buterin",
@@ -824,7 +878,8 @@
         "Web3"
       ],
       "note": "个人公开 X 账号。",
-      "title": "VITALIK BUTERIN · OFFICIAL X TIMELINE"
+      "title": "VITALIK BUTERIN · OFFICIAL X TIMELINE",
+      "category": "金融科技"
     },
     {
       "id": "son",
@@ -839,7 +894,8 @@
         "VC"
       ],
       "note": "个人公开 X 账号。",
-      "title": "MASAYOSHI SON · OFFICIAL X TIMELINE"
+      "title": "MASAYOSHI SON · OFFICIAL X TIMELINE",
+      "category": "VC"
     },
     {
       "id": "schmidt",
@@ -854,7 +910,8 @@
         "Research"
       ],
       "note": "个人公开 X 账号。",
-      "title": "ERIC SCHMIDT · OFFICIAL X TIMELINE"
+      "title": "ERIC SCHMIDT · OFFICIAL X TIMELINE",
+      "category": "AI"
     },
     {
       "id": "durov",
@@ -869,7 +926,8 @@
         "Privacy"
       ],
       "note": "个人公开 X 账号。",
-      "title": "PAVEL DUROV · OFFICIAL X TIMELINE"
+      "title": "PAVEL DUROV · OFFICIAL X TIMELINE",
+      "category": "消费科技"
     },
     {
       "id": "lei-jun",
@@ -884,7 +942,8 @@
         "AIoT"
       ],
       "note": "个人公开 X 账号。",
-      "title": "LEI JUN · OFFICIAL X TIMELINE"
+      "title": "LEI JUN · OFFICIAL X TIMELINE",
+      "category": "消费科技"
     },
     {
       "id": "fadell",
@@ -899,7 +958,659 @@
         "Product"
       ],
       "note": "个人公开 X 账号。",
-      "title": "TONY FADELL · OFFICIAL X TIMELINE"
+      "title": "TONY FADELL · OFFICIAL X TIMELINE",
+      "category": "消费科技"
+    },
+    {
+      "id": "zuckerberg",
+      "name": "Mark Zuckerberg",
+      "zh": "马克·扎克伯格",
+      "handle": "finkd",
+      "role": "Meta Founder & CEO",
+      "chips": [
+        "META",
+        "Meta",
+        "AI",
+        "Social"
+      ],
+      "category": "消费科技",
+      "note": "个人公开 X 账号。",
+      "title": "MARK ZUCKERBERG · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "mosseri",
+      "name": "Adam Mosseri",
+      "zh": "Adam Mosseri",
+      "handle": "mosseri",
+      "role": "Instagram Head",
+      "chips": [
+        "META",
+        "Instagram",
+        "Social",
+        "Creators"
+      ],
+      "category": "消费科技",
+      "note": "个人公开 X 账号。",
+      "title": "ADAM MOSSERI · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "boz",
+      "name": "Andrew Bosworth",
+      "zh": "Andrew Bosworth",
+      "handle": "boztank",
+      "role": "Meta CTO",
+      "chips": [
+        "META",
+        "Reality Labs",
+        "AI",
+        "XR"
+      ],
+      "category": "AI",
+      "note": "个人公开 X 账号。",
+      "title": "ANDREW BOSWORTH · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "prince",
+      "name": "Matthew Prince",
+      "zh": "Matthew Prince",
+      "handle": "eastdakota",
+      "role": "Cloudflare Co-Founder & CEO",
+      "chips": [
+        "NET",
+        "Cloudflare",
+        "Cloud",
+        "Security"
+      ],
+      "category": "云计算",
+      "note": "个人公开 X 账号。",
+      "title": "MATTHEW PRINCE · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "zatlyn",
+      "name": "Michelle Zatlyn",
+      "zh": "Michelle Zatlyn",
+      "handle": "zatlyn",
+      "role": "Cloudflare Co-Founder & President",
+      "chips": [
+        "NET",
+        "Cloudflare",
+        "Cloud",
+        "Security"
+      ],
+      "category": "云计算",
+      "note": "个人公开 X 账号。",
+      "title": "MICHELLE ZATLYN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "vogels",
+      "name": "Werner Vogels",
+      "zh": "Werner Vogels",
+      "handle": "Werner",
+      "role": "Amazon CTO",
+      "chips": [
+        "AMZN",
+        "AWS",
+        "Cloud",
+        "Distributed Systems"
+      ],
+      "category": "云计算",
+      "note": "个人公开 X 账号。",
+      "title": "WERNER VOGELS · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "selipsky",
+      "name": "Adam Selipsky",
+      "zh": "Adam Selipsky",
+      "handle": "aselipsky",
+      "role": "Cloud & Enterprise Technology Executive",
+      "chips": [
+        "AWS",
+        "Cloud",
+        "Enterprise",
+        "AI"
+      ],
+      "category": "云计算",
+      "note": "个人公开 X 账号。",
+      "title": "ADAM SELIPSKY · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "gelsinger",
+      "name": "Pat Gelsinger",
+      "zh": "帕特·基辛格",
+      "handle": "PGelsinger",
+      "role": "Semiconductor & Technology Executive",
+      "chips": [
+        "INTC",
+        "Semiconductors",
+        "Foundry",
+        "AI"
+      ],
+      "category": "芯片",
+      "note": "个人公开 X 账号。",
+      "title": "PAT GELSINGER · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "rene-haas",
+      "name": "Rene Haas",
+      "zh": "Rene Haas",
+      "handle": "renehaas237",
+      "role": "Arm CEO",
+      "chips": [
+        "ARM",
+        "Arm",
+        "CPU",
+        "Semiconductors"
+      ],
+      "category": "芯片",
+      "note": "个人公开 X 账号。",
+      "title": "RENE HAAS · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "lip-bu-tan",
+      "name": "Lip-Bu Tan / Intel",
+      "zh": "陈立武 / Intel",
+      "handle": "intel",
+      "role": "Intel CEO · Intel 官方账号",
+      "chips": [
+        "INTC",
+        "Intel",
+        "Foundry",
+        "AI Chips"
+      ],
+      "category": "芯片",
+      "note": "本页以 Intel 官方 X 账号作为陈立武相关动态入口。",
+      "title": "LIP-BU TAN / INTEL · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "hock-tan",
+      "name": "Hock Tan / Broadcom",
+      "zh": "陈福阳 / Broadcom",
+      "handle": "Broadcom",
+      "role": "Broadcom CEO · Broadcom 官方账号",
+      "chips": [
+        "AVGO",
+        "Broadcom",
+        "Networking",
+        "AI Chips"
+      ],
+      "category": "芯片",
+      "note": "本页以 Broadcom 官方 X 账号作为陈福阳相关动态入口。",
+      "title": "HOCK TAN / BROADCOM · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "fouquet",
+      "name": "Christophe Fouquet / ASML",
+      "zh": "Christophe Fouquet / ASML",
+      "handle": "ASMLcompany",
+      "role": "ASML CEO · ASML 官方账号",
+      "chips": [
+        "ASML",
+        "Lithography",
+        "EUV",
+        "Semiconductors"
+      ],
+      "category": "芯片",
+      "note": "本页以 ASML 官方 X 账号作为 CEO 相关动态入口。",
+      "title": "CHRISTOPHE FOUQUET / ASML · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "mehrotra",
+      "name": "Sanjay Mehrotra / Micron",
+      "zh": "Sanjay Mehrotra / Micron",
+      "handle": "MicronTech",
+      "role": "Micron CEO · Micron 官方账号",
+      "chips": [
+        "MU",
+        "Micron",
+        "Memory",
+        "HBM"
+      ],
+      "category": "芯片",
+      "note": "本页以 Micron 官方 X 账号作为 Sanjay Mehrotra 相关动态入口。",
+      "title": "SANJAY MEHROTRA / MICRON · OFFICIAL X"
+    },
+    {
+      "id": "pabbeel",
+      "name": "Pieter Abbeel",
+      "zh": "Pieter Abbeel",
+      "handle": "pabbeel",
+      "role": "Robotics & AI Researcher · Covariant",
+      "chips": [
+        "Robotics",
+        "AI",
+        "Embodied AI",
+        "Research"
+      ],
+      "category": "机器人",
+      "note": "个人公开 X 账号。",
+      "title": "PIETER ABBEEL · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "rodney-brooks",
+      "name": "Rodney Brooks",
+      "zh": "Rodney Brooks",
+      "handle": "rodneyabrooks",
+      "role": "Robotics Entrepreneur & Researcher",
+      "chips": [
+        "Robotics",
+        "AI",
+        "Rethink Robotics",
+        "Research"
+      ],
+      "category": "机器人",
+      "note": "个人公开 X 账号。",
+      "title": "RODNEY BROOKS · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "sergey-levine",
+      "name": "Sergey Levine",
+      "zh": "Sergey Levine",
+      "handle": "svlevine",
+      "role": "Robotics & AI Researcher · UC Berkeley",
+      "chips": [
+        "Robotics",
+        "AI",
+        "Reinforcement Learning",
+        "Research"
+      ],
+      "category": "机器人",
+      "note": "个人公开 X 账号。",
+      "title": "SERGEY LEVINE · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "chelsea-finn",
+      "name": "Chelsea Finn",
+      "zh": "Chelsea Finn",
+      "handle": "chelseabfinn",
+      "role": "AI & Robotics Researcher · Stanford",
+      "chips": [
+        "Robotics",
+        "AI",
+        "Foundation Models",
+        "Research"
+      ],
+      "category": "机器人",
+      "note": "个人公开 X 账号。",
+      "title": "CHELSEA FINN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "boston-dynamics",
+      "name": "Boston Dynamics",
+      "zh": "Boston Dynamics",
+      "handle": "BostonDynamics",
+      "role": "Robotics Company · Official Account",
+      "chips": [
+        "Robotics",
+        "Humanoid",
+        "Atlas",
+        "Automation"
+      ],
+      "category": "机器人",
+      "note": "官方 X 账号，用于跟踪 Boston Dynamics 机器人动态。",
+      "title": "BOSTON DYNAMICS · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "tory-bruno",
+      "name": "Tory Bruno",
+      "zh": "Tory Bruno",
+      "handle": "torybruno",
+      "role": "United Launch Alliance CEO",
+      "chips": [
+        "ULA",
+        "Space",
+        "Launch",
+        "Vulcan"
+      ],
+      "category": "航天",
+      "note": "个人公开 X 账号。",
+      "title": "TORY BRUNO · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "tim-ellis",
+      "name": "Tim Ellis",
+      "zh": "Tim Ellis",
+      "handle": "thetimellis",
+      "role": "Relativity Space Co-Founder",
+      "chips": [
+        "Relativity Space",
+        "Space",
+        "Launch",
+        "Manufacturing"
+      ],
+      "category": "航天",
+      "note": "个人公开 X 账号。",
+      "title": "TIM ELLIS · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "isaacman",
+      "name": "Jared Isaacman",
+      "zh": "Jared Isaacman",
+      "handle": "rookisaacman",
+      "role": "Space Entrepreneur",
+      "chips": [
+        "Space",
+        "Polaris",
+        "Commercial Spaceflight",
+        "Aerospace"
+      ],
+      "category": "航天",
+      "note": "个人公开 X 账号。",
+      "title": "JARED ISAACMAN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "stewart",
+      "name": "Stewart Butterfield",
+      "zh": "Stewart Butterfield",
+      "handle": "stewart",
+      "role": "Slack Co-Founder",
+      "chips": [
+        "Slack",
+        "Software",
+        "Collaboration",
+        "SaaS"
+      ],
+      "category": "软件",
+      "note": "个人公开 X 账号。",
+      "title": "STEWART BUTTERFIELD · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "perkins",
+      "name": "Melanie Perkins",
+      "zh": "Melanie Perkins",
+      "handle": "MelanieCanva",
+      "role": "Canva Co-Founder & CEO",
+      "chips": [
+        "Canva",
+        "Design",
+        "Software",
+        "AI"
+      ],
+      "category": "软件",
+      "note": "个人公开 X 账号。",
+      "title": "MELANIE PERKINS · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "yuan",
+      "name": "Eric Yuan",
+      "zh": "袁征",
+      "handle": "ericsyuan",
+      "role": "Zoom Founder & CEO",
+      "chips": [
+        "ZM",
+        "Zoom",
+        "Collaboration",
+        "AI"
+      ],
+      "category": "软件",
+      "note": "个人公开 X 账号。",
+      "title": "ERIC YUAN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "dara",
+      "name": "Dara Khosrowshahi",
+      "zh": "达拉·科斯罗萨西",
+      "handle": "dkhos",
+      "role": "Uber CEO",
+      "chips": [
+        "UBER",
+        "Uber",
+        "Mobility",
+        "Platform"
+      ],
+      "category": "消费科技",
+      "note": "个人公开 X 账号。",
+      "title": "DARA KHOSROWSHAHI · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "kevin-rose",
+      "name": "Kevin Rose",
+      "zh": "Kevin Rose",
+      "handle": "kevinrose",
+      "role": "Technology Founder & Investor",
+      "chips": [
+        "Digg",
+        "Startups",
+        "Product",
+        "VC"
+      ],
+      "category": "VC",
+      "note": "个人公开 X 账号。",
+      "title": "KEVIN ROSE · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "ohanian",
+      "name": "Alexis Ohanian",
+      "zh": "Alexis Ohanian",
+      "handle": "alexisohanian",
+      "role": "Reddit Co-Founder · Seven Seven Six",
+      "chips": [
+        "Reddit",
+        "776",
+        "VC",
+        "Startups"
+      ],
+      "category": "VC",
+      "note": "个人公开 X 账号。",
+      "title": "ALEXIS OHANIAN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "evan-you",
+      "name": "Evan You",
+      "zh": "尤雨溪",
+      "handle": "youyuxi",
+      "role": "Vue.js Creator",
+      "chips": [
+        "Vue",
+        "JavaScript",
+        "Open Source",
+        "Web"
+      ],
+      "category": "软件",
+      "note": "个人公开 X 账号。",
+      "title": "EVAN YOU · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "hashimoto",
+      "name": "Mitchell Hashimoto",
+      "zh": "Mitchell Hashimoto",
+      "handle": "mitchellh",
+      "role": "HashiCorp Co-Founder · Ghostty",
+      "chips": [
+        "HashiCorp",
+        "Developer Tools",
+        "Cloud",
+        "Open Source"
+      ],
+      "category": "软件",
+      "note": "个人公开 X 账号。",
+      "title": "MITCHELL HASHIMOTO · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "sijbrandij",
+      "name": "Sid Sijbrandij",
+      "zh": "Sid Sijbrandij",
+      "handle": "sytses",
+      "role": "GitLab Co-Founder",
+      "chips": [
+        "GitLab",
+        "DevOps",
+        "Software",
+        "Open Source"
+      ],
+      "category": "软件",
+      "note": "个人公开 X 账号。",
+      "title": "SID SIJBRANDIJ · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "preston-werner",
+      "name": "Tom Preston-Werner",
+      "zh": "Tom Preston-Werner",
+      "handle": "mojombo",
+      "role": "GitHub Co-Founder",
+      "chips": [
+        "GitHub",
+        "Open Source",
+        "Developer Tools",
+        "Software"
+      ],
+      "category": "软件",
+      "note": "个人公开 X 账号。",
+      "title": "TOM PRESTON-WERNER · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "wanstrath",
+      "name": "Chris Wanstrath",
+      "zh": "Chris Wanstrath",
+      "handle": "defunkt",
+      "role": "GitHub Co-Founder",
+      "chips": [
+        "GitHub",
+        "Software",
+        "Developer Tools",
+        "Startups"
+      ],
+      "category": "软件",
+      "note": "个人公开 X 账号。",
+      "title": "CHRIS WANSTRATH · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "levchin",
+      "name": "Max Levchin",
+      "zh": "Max Levchin",
+      "handle": "mlevchin",
+      "role": "Affirm Founder & CEO",
+      "chips": [
+        "AFRM",
+        "Affirm",
+        "Payments",
+        "Fintech"
+      ],
+      "category": "金融科技",
+      "note": "个人公开 X 账号。",
+      "title": "MAX LEVCHIN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "tenev",
+      "name": "Vlad Tenev",
+      "zh": "Vlad Tenev",
+      "handle": "vladtenev",
+      "role": "Robinhood Co-Founder & CEO",
+      "chips": [
+        "HOOD",
+        "Robinhood",
+        "Brokerage",
+        "Fintech"
+      ],
+      "category": "金融科技",
+      "note": "个人公开 X 账号。",
+      "title": "VLAD TENEV · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "david-marcus",
+      "name": "David Marcus",
+      "zh": "David Marcus",
+      "handle": "davidmarcus",
+      "role": "Lightspark Co-Founder & CEO",
+      "chips": [
+        "Lightspark",
+        "Bitcoin",
+        "Payments",
+        "Fintech"
+      ],
+      "category": "金融科技",
+      "note": "个人公开 X 账号。",
+      "title": "DAVID MARCUS · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "naval",
+      "name": "Naval Ravikant",
+      "zh": "Naval Ravikant",
+      "handle": "naval",
+      "role": "AngelList Co-Founder · Technology Investor",
+      "chips": [
+        "AngelList",
+        "VC",
+        "Startups",
+        "Technology"
+      ],
+      "category": "VC",
+      "note": "个人公开 X 账号。",
+      "title": "NAVAL RAVIKANT · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "gurley",
+      "name": "Bill Gurley",
+      "zh": "Bill Gurley",
+      "handle": "bgurley",
+      "role": "Technology Investor",
+      "chips": [
+        "Benchmark",
+        "VC",
+        "Startups",
+        "Software"
+      ],
+      "category": "VC",
+      "note": "个人公开 X 账号。",
+      "title": "BILL GURLEY · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "chamath",
+      "name": "Chamath Palihapitiya",
+      "zh": "Chamath Palihapitiya",
+      "handle": "chamath",
+      "role": "Social Capital Founder & CEO",
+      "chips": [
+        "Social Capital",
+        "VC",
+        "AI",
+        "Startups"
+      ],
+      "category": "VC",
+      "note": "个人公开 X 账号。",
+      "title": "CHAMATH PALIHAPITIYA · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "fred-wilson",
+      "name": "Fred Wilson",
+      "zh": "Fred Wilson",
+      "handle": "fredwilson",
+      "role": "Union Square Ventures Co-Founder",
+      "chips": [
+        "USV",
+        "VC",
+        "Startups",
+        "Technology"
+      ],
+      "category": "VC",
+      "note": "个人公开 X 账号。",
+      "title": "FRED WILSON · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "gerstner",
+      "name": "Brad Gerstner",
+      "zh": "Brad Gerstner",
+      "handle": "altcap",
+      "role": "Altimeter Founder & CEO",
+      "chips": [
+        "Altimeter",
+        "VC",
+        "Cloud",
+        "AI"
+      ],
+      "category": "VC",
+      "note": "个人公开 X 账号。",
+      "title": "BRAD GERSTNER · OFFICIAL X TIMELINE"
     }
+  ],
+  "categories": [
+    "AI",
+    "芯片",
+    "云计算",
+    "机器人",
+    "航天",
+    "消费科技",
+    "软件",
+    "金融科技",
+    "VC"
   ]
 }
