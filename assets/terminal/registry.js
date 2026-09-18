@@ -128,7 +128,7 @@
     { mn:"MCAP", zh:"全球市值排行", en:"Market Cap Rank", cat:"rank", status:"live",
       href:"/apps/asset-ranking/", data:["asset-ranking/data.json","asset-ranking/crypto.json"],
       note:"不限品类前 250" },
-    { mn:"BILL", zh:"全球富豪榜", en:"Billionaires", cat:"rank", status:"live",
+    { mn:"BILL", zh:"福布斯亿万富翁实时排行榜", en:"Billionaires", cat:"rank", status:"live",
       href:"/apps/billionaires/", data:["billionaires/data.json"], note:"Forbes，日频" },
     { mn:"DHUB", zh:"数据中心", en:"Data Hub", cat:"rank", status:"live",
       href:"/apps/data-hub/", data:["站内各应用"], note:"全部数据应用的聚合入口" },

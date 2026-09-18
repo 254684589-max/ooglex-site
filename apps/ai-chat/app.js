@@ -498,7 +498,7 @@ const TOOLS = [
         { k: ['电影', '影片', 'movie'], name: '🎬 全球电影榜', link: '../movies/', desc: '高分 Top 250 + 最新上映' },
         { k: ['大学', '院校', 'university'], name: '🎓 全球大学排名', link: '../university-rankings/', desc: '四大权威榜合一' },
         { k: ['专业', '就业', '薪资', 'major'], name: '🚀 专业与就业前景榜', link: '../major-rankings/', desc: '薪资/就业率/AI 前景' },
-        { k: ['富豪', '首富', '有钱', 'billionaire'], name: '🏆 全球富豪榜', link: '../billionaires/', desc: '前 250 富豪身价' },
+        { k: ['富豪', '首富', '有钱', 'billionaire'], name: '🏆 福布斯亿万富翁实时排行榜', link: '../billionaires/', desc: '前 250 富豪身价' },
         { k: ['市值', '公司', '股价', 'company'], name: '🏢 全球公司市值榜', link: '../companies/', desc: '全球 500 强市值' },
         { k: ['资产', '排行', '黄金', '加密', '比特币'], name: '🌐 全球资产市值榜', link: '../asset-ranking/', desc: '不限品类前 250' },
         { k: ['房价', '楼市', 'house'], name: '🏘️ 全球房价走势', link: '../house-prices/', desc: '各国房价同比' },

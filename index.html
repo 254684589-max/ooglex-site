@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ooglex · 实时金融数据 · 实用工具 · 网页小游戏</title>
-  <meta name="description" content="Ooglex 聚合实时金融数据（宏观风险监测、大类资产收益率、全球富豪榜、恐慌贪婪指数、经济日历）、几十款打开即用的在线工具与原创网页小游戏，数据每日自动更新，免注册、免下载。">
+  <meta name="description" content="Ooglex 聚合实时金融数据（宏观风险监测、大类资产收益率、福布斯亿万富翁实时排行榜、恐慌贪婪指数、经济日历）、几十款打开即用的在线工具与原创网页小游戏，数据每日自动更新，免注册、免下载。">
   <link rel="canonical" href="https://www.ooglex.com/">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/favicon.svg">
@@ -152,7 +152,7 @@
     .radar-card .ft { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; font-size: 12px; color: var(--faint); }
     .radar-card .ft .go { color: var(--blue); }
 
-    /* ── 全球富豪榜（首页模块） ── */
+    /* ── 福布斯亿万富翁实时排行榜（首页模块） ── */
     .bil { display: grid; grid-template-columns: 268px 1fr; gap: 22px; margin-top: 14px; align-items: start; }
     .bil > * { min-width: 0; }
     .bil-side { display: flex; flex-direction: column; gap: 11px; }
@@ -355,8 +355,8 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
   <section id="billionaires">
     <div class="container">
       <div class="idx-hd">
-        <h2 data-i18n="section.billionaires">全球富豪榜</h2>
-        <span class="en">BILLIONAIRES</span>
+        <h2 data-i18n="section.billionaires">福布斯亿万富翁实时排行榜</h2>
+        <span class="en">FORBES REAL-TIME BILLIONAIRES</span>
         <span class="cnt" id="bil-stamp"></span>
       </div>
       <div class="bil">
@@ -572,7 +572,7 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
       "item.globe.desc": "Spin a photorealistic 3D globe layered with open geospatial data: worldwide earthquakes · 4,300 data centres · 704 dams · submarine cables · named geographic regions—every source and licence listed",
       "item.idea.name": "<span class=\"emoji\">💡</span>Your Idea",
       "item.idea.desc": "Whatever you want to make can start here",
-      "section.billionaires": "Global Billionaires",
+      "section.billionaires": "Forbes Real-Time Billionaires",
       "bil.totalLabel": "Total net worth on the list",
       "bil.loading": "Loading",
       "bil.gainer": "Top gain today", "bil.loser": "Top drop today",
@@ -758,7 +758,7 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
       renderTape(items);
     }
 
-    /* ── 全球富豪榜模块 ── */
+    /* ── 福布斯亿万富翁实时排行榜模块 ── */
     var bilData = null;
     function fmtWorth(b) {                     /* 单位是十亿美元 */
       if (!isNum(b)) return "—";
