@@ -353,6 +353,52 @@ def main() -> int:
         s.case("alice 能删自己的", dele % t1, "authenticated", ALICE, "ok", contains="1")
         s.case("站主能删任何人的", dele % t2, "authenticated", OWNER, "ok", contains="1")
 
+        s.section("改昵称回填历史帖子")
+        s.reset()
+        # 用真实 insert 造帖，让 author_name 走一遍 before_insert 的归一化
+        s.case("alice 发一条", "insert into public.thoughts(body) values ('改名前发的');",
+               "authenticated", ALICE, "ok")
+        s.case("落库名是 Alice", "select author_name from public.thoughts;",
+               "authenticated", ALICE, "ok", contains="Alice")
+        pg.apply_sql("update public.profiles set display_name='阿丽丝' where id='%s';" % ALICE)
+        s.case("改昵称后旧帖跟着改", "select author_name from public.thoughts;",
+               "authenticated", ALICE, "ok", contains="阿丽丝")
+        pg.apply_sql("update public.profiles set display_name='   ' where id='%s';" % ALICE)
+        s.case("昵称清空则回落「匿名用户」", "select author_name from public.thoughts;",
+               "authenticated", ALICE, "ok", contains="匿名用户")
+        pg.apply_sql("update public.profiles set display_name=repeat('长',60) where id='%s';" % ALICE)
+        s.case("超长昵称截到 40 字（与发帖归一化一致）",
+               "select char_length(author_name) from public.thoughts;",
+               "authenticated", ALICE, "ok", contains="40")
+        # 上面几条是以 postgres 身份改昵称的。真实路径是浏览器带 JWT 调 PostgREST，
+        # 所以这里再以 authenticated 身份走一遍 —— 列权限只开了 display_name，
+        # 触发器是 security definer，因此客户端改昵称也能回填历史帖子。
+        s.case("客户端自己改昵称（authenticated 身份）",
+               "update public.profiles set display_name='Alice 改的' where id='%s';" % ALICE,
+               "authenticated", ALICE, "ok")
+        s.case("客户端改完旧帖也跟着变", "select author_name from public.thoughts;",
+               "authenticated", ALICE, "ok", contains="Alice 改的")
+        s.case("客户端改不动别人的昵称",
+               "with x as (update public.profiles set display_name='篡改' where id='%s' returning 1) "
+               "select count(*) from x;" % BOB,
+               "authenticated", ALICE, "ok", contains="0")
+        s.case("客户端改不动自己的 plan",
+               "update public.profiles set plan='pro' where id='%s';" % ALICE,
+               "authenticated", ALICE, "fail", contains="permission denied")
+        s.case("客户端改不动自己的 role",
+               "update public.profiles set role='owner' where id='%s';" % ALICE,
+               "authenticated", ALICE, "fail", contains="permission denied")
+        s.case("客户端仍然改不动 author_name",
+               "update public.thoughts set author_name='冒充' where author_id='%s';" % ALICE,
+               "authenticated", ALICE, "fail", contains="permission denied")
+        s.case("正文仍然不可改（回归）",
+               "update public.thoughts set body='改写' where author_id='%s';" % ALICE,
+               None, OWNER, "fail", contains="只能改可见性")
+        s.case("发布时间仍然不可改（回归）",
+               "update public.thoughts set created_at=now() where author_id='%s';" % ALICE,
+               None, OWNER, "fail", contains="只能改可见性")
+        pg.apply_sql("update public.profiles set display_name='Alice' where id='%s';" % ALICE)
+
         s.section("举报")
         s.reset()
         rid = s.seed(ALICE, "会被举报的帖")

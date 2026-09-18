@@ -75,9 +75,24 @@
   #form-msg { margin-top:10px; }
   [hidden] { display:none !important; }
 
+  /* 头像：纯生成，无图片请求。配色全部通过白字 AA 对比度（最低 5.47:1）。
+     颜色只是辅助识别，昵称文字始终同时显示，不把颜色当唯一信息来源。 */
+  .avatar {
+    flex:0 0 auto; width:38px; height:38px; border-radius:50%;
+    display:inline-flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:700; font-size:1.05rem; line-height:1;
+    -webkit-user-select:none; user-select:none;
+  }
+  .avatar.sm { width:22px; height:22px; font-size:0.72rem; }
+
   /* 信息流 */
   .feed { display:flex; flex-direction:column; gap:12px; margin-top:6px; }
-  .item { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:13px 14px; }
+  .item {
+    background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:13px 14px;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  /* min-width:0 是必须的：flex 子项默认不肯缩到内容宽度以下，长串会把卡片顶出去 */
+  .item .col { flex:1 1 auto; min-width:0; }
   .item.is-hidden { border-style:dashed; opacity:.72; }
   .item .meta { display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; font-size:0.82rem; color:var(--faint); }
   .item .who { color:var(--text); font-weight:700; font-size:0.95rem; }
@@ -131,6 +146,7 @@
       <div class="row2">
         <span class="counter" id="counter">0 / 500</span>
         <span style="display:flex;gap:8px;align-items:center">
+          <span id="who-avatar" style="display:inline-flex"></span>
           <span class="tag" id="who-tag"></span>
           <button type="submit" class="btn-primary" id="submit-btn">发布</button>
         </span>
@@ -160,6 +176,6 @@
   </footer>
 </div>
 
-<script src="./app.js?v=a14ae1e7" defer></script>
+<script src="./app.js?v=9d067264" defer></script>
 </body>
 </html>

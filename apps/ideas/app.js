@@ -28,6 +28,7 @@
     counter: $("counter"),
     submit: $("submit-btn"),
     whoTag: $("who-tag"),
+    whoAvatar: $("who-avatar"),
     formMsg: $("form-msg"),
     ownerTools: $("owner-tools"),
     loadReports: $("load-reports"),
@@ -108,6 +109,49 @@
 
   // --- 渲染 -----------------------------------------------------------------
 
+  /* 头像：完全由 author_name 推导（首字 + 按名字稳定取色）。
+     不读数据库、不存任何文件 —— author_name 是未登录访客本来就能读的列，
+     所以这个功能零新增授权、零存储、零审核负担。
+     同一个昵称必然得到同一个颜色；换了昵称，数据库的同步触发器会把历史帖子
+     的 author_name 一起改掉，头像也就跟着变了。 */
+  var AVATAR_COLORS = [
+    "#b3471f", "#b03a5b", "#8e3b6e", "#6b3fa0", "#4a4fa8",
+    "#1f5f8b", "#116b73", "#136b52", "#4a6b1f", "#8a5a1b"
+  ];
+
+  /* 取首个「字」而不是首个码点：emoji 和带变体选择符的字符切一半会变乱码。 */
+  function firstGrapheme(str) {
+    if (!str) return "";
+    try {
+      if (typeof Intl !== "undefined" && Intl.Segmenter) {
+        var it = new Intl.Segmenter(undefined, { granularity: "grapheme" })
+          .segment(str)[Symbol.iterator]().next();
+        if (!it.done) return it.value.segment;
+      }
+    } catch (e) { /* 老浏览器回落到按码点切 */ }
+    return Array.from(str)[0] || "";
+  }
+
+  function avatarFor(name) {
+    var n = (name || "").trim();
+    var ch = firstGrapheme(n) || "\u00b7";
+    if (/^[a-z]$/.test(ch)) ch = ch.toUpperCase();      // 拉丁小写统一大写显示
+    var h = 0;
+    for (var i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) >>> 0;
+    return { text: ch, color: AVATAR_COLORS[h % AVATAR_COLORS.length] };
+  }
+
+  function avatarNode(name, small) {
+    var a = avatarFor(name);
+    var el = document.createElement("span");
+    el.className = "avatar" + (small ? " sm" : "");
+    el.style.background = a.color;
+    el.textContent = a.text;                            // textContent，昵称是用户输入
+    // 名字紧跟在头像后面，读屏不需要把首字再念一遍；颜色也不是唯一信息来源
+    el.setAttribute("aria-hidden", "true");
+    return el;
+  }
+
   function makeButton(label, cls, onClick) {
     var b = document.createElement("button");
     b.type = "button";
@@ -124,6 +168,11 @@
 
     var item = document.createElement("article");
     item.className = "item" + (hidden ? " is-hidden" : "");
+    item.appendChild(avatarNode(row.author_name, false));
+
+    var col = document.createElement("div");
+    col.className = "col";
+    item.appendChild(col);
 
     var meta = document.createElement("div");
     meta.className = "meta";
@@ -150,12 +199,12 @@
         ? t("已被隐藏", "HIDDEN") : t("已撤下", "REMOVED");
       meta.appendChild(hTag);
     }
-    item.appendChild(meta);
+    col.appendChild(meta);
 
     var body = document.createElement("div");
     body.className = "body";
     body.textContent = row.body || "";                                 // textContent
-    item.appendChild(body);
+    col.appendChild(body);
 
     var acts = document.createElement("div");
     acts.className = "acts";
@@ -183,7 +232,7 @@
       }));
     }
 
-    if (acts.childNodes.length) item.appendChild(acts);
+    if (acts.childNodes.length) col.appendChild(acts);
     return item;
   }
 
@@ -328,6 +377,11 @@
       var box = document.createElement("div");
       box.className = "item" + (row.status !== "visible" ? " is-hidden" : "");
 
+      box.appendChild(avatarNode(row.author_name, false));
+      var rcol = document.createElement("div");
+      rcol.className = "col";
+      box.appendChild(rcol);
+
       var meta = document.createElement("div");
       meta.className = "meta";
       var n = document.createElement("span");
@@ -337,19 +391,19 @@
       var w = document.createElement("span");
       w.textContent = (row.author_name || "") + " · " + whenText(row.created_at);
       meta.appendChild(w);
-      box.appendChild(meta);
+      rcol.appendChild(meta);
 
       var b = document.createElement("div");
       b.className = "body";
       b.textContent = row.body || "";                              // textContent
-      box.appendChild(b);
+      rcol.appendChild(b);
 
       if (row.last_reason) {
         var r = document.createElement("div");
         r.className = "sub";
         r.style.marginTop = "6px";
         r.textContent = t("最近一条理由：", "Latest reason: ") + row.last_reason;   // textContent
-        box.appendChild(r);
+        rcol.appendChild(r);
       }
 
       var acts = document.createElement("div");
@@ -370,7 +424,7 @@
         removeThought(row.id, null);
         loadReports();
       }));
-      box.appendChild(acts);
+      rcol.appendChild(acts);
       el.reportsBox.appendChild(box);
     });
   }
@@ -412,9 +466,14 @@
     show(el.authSuspended, false);
     show(el.form, true);
     var name = (profile && (profile.display_name || "").trim()) || "";
+    var shown = name || "匿名用户";
     el.whoTag.textContent = name
       ? t("以 " + name + " 发布", "as " + name)
       : t("以 匿名用户 发布", "as Anonymous");
+    if (el.whoAvatar) {
+      el.whoAvatar.textContent = "";
+      el.whoAvatar.appendChild(avatarNode(shown, true));
+    }
     show(el.ownerTools, !!(profile && profile.role === "owner"));
     updateCounter();
   }

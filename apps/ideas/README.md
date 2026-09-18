@@ -45,6 +45,7 @@ update public.profiles set role = 'owner' where email = '你的邮箱';
 | 未登录读不到 `profiles` | 沿用 `profiles` 原有 RLS，公开信息流完全不 join 这张表 |
 | 只有站主能隐藏 | `thoughts_update_owner` 策略 + `is_site_owner()` |
 | 发布后正文与时间不可改 | `thoughts_before_update` 触发器（连表属主改都拦） |
+| 改昵称回填历史帖子 | `sync_thoughts_author_name` 触发器；客户端无 `author_name` 的 update 权限，只有这个 security definer 触发器能改 |
 | 作者可删自己的，站主可删任何人的 | `thoughts_delete_own_or_owner` 策略 |
 | 同一人对同一条只能举报一次 | `thought_reports_once` 唯一约束 |
 | 举报内容只有站主可读 | `thought_reports_select_owner` 策略 |
@@ -56,8 +57,24 @@ python3 scripts/validate_thoughts_rls.py
 ```
 
 它自己起一个临时 PostgreSQL、打桩 `auth` schema、按顺序应用 `account/schema.sql`
-与 `account/migrations/*.sql`，跑 45 个用例后销毁实例。纯离线，不碰线上库。
+与 `account/migrations/*.sql`，跑 58 个用例后销毁实例。纯离线，不碰线上库。
 找不到 PostgreSQL 服务端时退出码 2（跳过，不算失败）。
+
+## 头像
+
+**生成的，不是上传的。** 首字取自 `author_name`，配色按昵称做稳定哈希后从 10 色
+调色板里取 —— 纯前端推导，**不读数据库、不存任何文件、零新增授权**（`author_name`
+本来就是未登录访客可读的列）。因此也没有头像审核、没有存储额度消耗。
+
+- 首字用 `Intl.Segmenter` 按「字」切，不按码点切：否则 emoji 昵称会被切成乱码
+  （实测 `🦊 狐狸` 显示为完整的 🦊）。老浏览器回落到 `Array.from`。
+- 拉丁小写统一大写显示；中日韩与 emoji 原样。
+- 10 个配色全部通过白字 AA 对比度，最低 5.47:1（脚本计算，非目测）。
+- 颜色只是辅助识别，**昵称文字始终同时显示**，不把颜色当唯一信息来源（仓库规则）。
+- 头像挂 `aria-hidden="true"`：名字紧跟其后，读屏不必把首字再念一遍。
+
+想换成上传头像的话，要额外解决：Storage 桶与 RLS、尺寸与 MIME 限制、客户端
+EXIF 剥离（手机照片带 GPS）、以及**头像本身也是图片 UGC，你要能审**。
 
 ## XSS
 
@@ -67,9 +84,13 @@ python3 scripts/validate_thoughts_rls.py
 
 ## 三个已知取舍
 
-1. **改昵称不回溯旧帖。** `author_name` 是发布时的快照。原因是 `public.profiles`
-   只允许本人读取，公开信息流 join 不到它；反范式换来的是公开读完全不碰
-   `profiles`，邮箱之类的字段没有任何泄露路径。
+1. **`author_name` 仍是反范式的快照列**，但**改昵称会回填历史帖子**
+   （`20260918_sync_thoughts_author_name.sql`）。保留反范式的原因不变：
+   `public.profiles` 只允许本人读取，公开信息流 join 不到它，而不 join 换来的是
+   公开读完全不碰 `profiles`，邮箱之类的字段没有任何泄露路径。
+   曾考虑过加一张公开可读的 profiles 投影表来支持 join，否决了：join 需要给
+   `anon` 开 `author_id` 的读权限（白扩大暴露面），改用视图则会在 Supabase
+   Advisor 里留一条 `security_definer_view` 告警。
 2. **发布后不能编辑，只能删。** 少一套编辑历史，也少一类「改完再骗人」的问题。
 3. **删帖不会删掉发帖流水。** `thought_post_log` 只留 `author_id`、正文 md5 和时间，不留正文。这是限流的唯一依据——如果删帖能清掉它，删帖就等于重置限额。
 
@@ -78,5 +99,8 @@ python3 scripts/validate_thoughts_rls.py
 - **没有自动内容审核。** 违规内容靠访客举报 + 你手动隐藏。公开 UGC 在中文站点
   有实际的内容合规责任，量大起来之后建议再评估关键词过滤或先审后发
   （数据库已经预留 `status`，改成先审后发只需改策略，不用动表结构）。
-- **没有图片、没有回复、没有点赞。** 只有纯文本时间线。
+- **帖子里不能插图。** 只有纯文本时间线 + 生成头像。刻意没做：图片审核比文字难得多，
+  手机照片带 GPS（EXIF 要剥离），公开图床很吃免费档的存储与流量额度，而且注册一个号
+  就能当免费图床用。数据库没有为此预留列，将来要加得新开一次迁移。
+- **没有回复、没有点赞。**
 - **没有接入邮件通知。**

@@ -178,7 +178,45 @@ async function boot() {
       nameEl.textContent = profile?.display_name || user.user_metadata?.display_name || tr('未设置', 'Not set');
       planEl.textContent = displayMembership(profile?.plan, profile?.role);
       statusEl.textContent = String(profile?.status || 'active').toUpperCase();
+
+      const nameInput = $('name-input');
+      if (nameInput) {
+        nameInput.value = profile?.display_name || user.user_metadata?.display_name || '';
+      }
       show($('user-state'));
+    }
+
+    // 昵称是唯一由用户自己控制的公开身份：它决定想法流里显示的名字，也决定
+    // 生成头像的首字与配色。列权限只开放了 display_name（plan/status/role 由
+    // 服务端管理，客户端改不了），改完由数据库触发器回填历史帖子。
+    async function saveDisplayName(event) {
+      event.preventDefault();
+      const current = await sb.auth.getUser();
+      const user = current?.data?.user;
+      if (!user) {
+        say(tr('登录状态已过期，请重新登录。', 'Your session expired; please sign in again.'), 'error');
+        return;
+      }
+      const button = $('name-save');
+      const next = ($('name-input').value || '').trim().slice(0, 40);
+      if (button) button.disabled = true;
+      const result = await sb
+        .from('profiles')
+        .update({ display_name: next })
+        .eq('id', user.id);
+      if (button) button.disabled = false;
+      if (result.error) {
+        say(friendlyError(result.error), 'error');
+        return;
+      }
+      say(
+        next
+          ? tr('昵称已更新为 ' + next + '。', 'Nickname updated to ' + next + '.')
+          : tr('昵称已清空，想法流里会显示为「匿名用户」。',
+               'Nickname cleared; you will appear as Anonymous in the thought feed.'),
+        'ok'
+      );
+      await render(user);
     }
 
     async function sendRecovery(email) {
@@ -286,6 +324,9 @@ async function boot() {
       const current = await sb.auth.getUser();
       await render(current.data.user || null);
     };
+
+    const nameForm = $('name-form');
+    if (nameForm) nameForm.onsubmit = saveDisplayName;
 
     $('logout-button').onclick = async () => {
       await sb.auth.signOut();
