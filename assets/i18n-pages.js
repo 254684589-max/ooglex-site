@@ -154,6 +154,22 @@
   };
 
   var CALENDAR = {
+    /* 国别是筛选标签，属界面；事件名与数值不翻 */
+    "全球": "Global",
+    "美国": "United States",
+    "欧元区": "Euro Area",
+    "英国": "United Kingdom",
+    "日本": "Japan",
+    "中国": "China",
+    "加拿大": "Canada",
+    "澳大利亚": "Australia",
+    "新西兰": "New Zealand",
+    "瑞士": "Switzerland",
+    "Forex Factory 经济日历": "Forex Factory Economic Calendar",
+    "经济日历来自 Forex Factory 公开周历（免登录），含央行利率决议、CPI、非农、PMI、GDP 等重要事件的预测值与前值；时间为 UTC，事件公布后会回填实际值。仅供参考，不构成投资建议。":
+      "The calendar comes from Forex Factory's public weekly schedule (no login required) and carries forecasts and previous readings for central-bank rate decisions, CPI, non-farm payrolls, PMI, GDP and other major events. Times are UTC, and actual values are backfilled once released. For reference only; not investment advice.",
+    "本页汇总本周全球重要经济事件——央行利率决议、CPI、非农就业、PMI、GDP 等，并列出市场预测值与前值，按你所在时区显示，数据来源 Forex Factory，每日自动更新。实际公布值与预测之间的差异，往往是行情波动的触发点。事件时间偶有调整，请以官方公布为准。":
+      "This page collects the week's major global economic events — central-bank rate decisions, CPI, non-farm payrolls, PMI, GDP and more — with market forecasts and previous readings, shown in your own time zone. Data comes from Forex Factory and is updated daily. The gap between the released figure and the forecast is often what moves the market. Event times are occasionally revised; the official announcement governs.",
     "全球经济日历": "Global Economic Calendar",
     "央行利率决议 · CPI · 非农 · PMI · GDP —— 含预测值与前值，按你的本地时区显示": "Central-bank decisions · CPI · payrolls · PMI · GDP — forecasts and previous values, shown in your local time zone",
     "高影响": "High impact",
@@ -192,6 +208,16 @@
     "一月前": "1 Month Ago",
     "一年前": "1 Year Ago",
     "暂无指标数据": "No indicator data",
+    /* 主读数是「中文 · ENGLISH」并列，英文下并列就成了 Fear · FEAR 的重复，只留一个 */
+    "极度恐惧 · EXTREME FEAR": "Extreme Fear",
+    "恐惧 · FEAR": "Fear",
+    "中性 · NEUTRAL": "Neutral",
+    "贪婪 · GREED": "Greed",
+    "极度贪婪 · EXTREME GREED": "Extreme Greed",
+    "数据来自 CNN 恐慌与贪婪指数：0 = 极度恐惧，100 = 极度贪婪，由 7 个市场情绪指标综合而成，每日自动更新。仅供参考，不构成建议。":
+      "Data comes from the CNN Fear & Greed Index: 0 = extreme fear, 100 = extreme greed, composited from seven market-sentiment indicators and updated daily. For reference only; not advice.",
+    "本页追踪 CNN 市场恐慌与贪婪指数（Fear & Greed Index），用 0–100 衡量市场情绪：越低越恐慌、越高越贪婪，并拆解 7 个驱动指标与历史曲线，每日自动更新。它是情绪参考而非买卖信号——极端恐慌或贪婪常被当作反向观察线索，但不应单独作为决策依据。":
+      "This page tracks the CNN Fear & Greed Index, which scores market sentiment from 0 to 100 — lower is more fearful, higher is more greedy — and breaks out its seven drivers plus the historical curve, updated daily. It is a sentiment reference, not a buy or sell signal: extreme fear or greed is often read as a contrarian cue, but should never be the sole basis for a decision.",
     "市场动能": "Market Momentum",
     "标普500 相对125日均线": "S&P 500 vs. 125-day moving average",
     "股价强度": "Stock Price Strength",
@@ -274,7 +300,13 @@
     "加载中…": "Loading…",
     "加载更多": "Load more",
     "隐私政策": "Privacy Policy",
-    "← 返回 Ooglex": "← Back to Ooglex"
+    "← 返回 Ooglex": "← Back to Ooglex",
+    "想法流任何人都能看，但发布需要登录。": "Anyone can read the feed, but posting requires signing in.",
+    "前往登录或注册 →": "Sign in or register →",
+    /* 页脚这一条的文本节点末尾连着分隔符「·」（后面才是隐私政策链接），
+       整个节点必须逐字节入典，只写句子是匹配不到的。 */
+    "想法由发布者本人负责，不代表 Ooglex 立场。看到违规内容请点「举报」。\n    ·":
+      "Posts are the responsibility of whoever wrote them and do not represent Ooglex. Use “Report” if you see something that breaks the rules.\n    ·"
   };
 
   function add(dst, src) { Object.keys(src).forEach(function (k) { dst[k] = src[k]; }); }
@@ -296,6 +328,10 @@
     if ((m = /^更新于 (\d+) 分钟前$/.exec(s))) return "Updated " + m[1] + " min ago";
     if ((m = /^更新于 (\d+) 小时前$/.exec(s))) return "Updated " + m[1] + " hr ago";
     if ((m = /^更新于 (\d+) 天前$/.exec(s))) return "Updated " + m[1] + " d ago";
+    // 来源行是「数据来源 <b>源名</b> · 数据日期 <b>日期</b> · 更新于 时间戳」，
+    // <b> 把它切成好几个文本节点，整串的规则匹配不到，分隔符那两段要单独配。
+    if (s === "· 数据日期") return "· Date";
+    if ((m = /^· 更新于 (.+)$/.exec(s))) return "· Updated " + m[1];
 
     if (path.indexOf("/apps/asset-tracker/") === 0) {
       if ((m = /^(.+) · (\d+) 项$/.exec(s))) return (dict[m[1]] || m[1]) + " · " + m[2] + " assets";
@@ -336,6 +372,7 @@
     }
     if (path.indexOf("/apps/fear-greed/") === 0) {
       if ((m = /^综合读数（0–100）· 数据日期 (.+)$/.exec(s))) return "Composite reading (0–100) · Date " + m[1];
+      if ((m = /^(\d+) · (极度恐惧|恐惧|中性|贪婪|极度贪婪)$/.exec(s))) return m[1] + " · " + (dict[m[2]] || m[2]);
     }
     return null;
   }

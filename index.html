@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
   <script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
   (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
-  <script src="/assets/theme.js?v=7bf48c7c" defer></script>
+  <script src="/assets/theme.js?v=2ae26043" defer></script>
   <style>
     :root {
       --bg: #0b0e13; --panel: #10141b; --panel2: #141924;
@@ -541,6 +541,8 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
       "item.terminal.desc": "12 first-party data sources, 13 panels on one screen, command line (4 ETF proxies each labelled, 0 demo)",
       "item.markets.name": "<span class=\"emoji\">📈</span>Global Markets",
       "item.markets.desc": "Commodities · Indices · Companies · FX · Crypto · Bonds — per-instrument quotes across six categories, each with a full chart from one month to its entire history, updated daily",
+      "item.heatmap.name": "<span class=\"emoji\">🔥</span>S&amp;P 500 Heatmap",
+      "item.heatmap.desc": "S&P 500 constituents tiled by sector, sized by market cap and coloured by the day’s move, with the percentage printed on every tile and a full data table alongside",
       "item.macro.name": "<span class=\"emoji\">📡</span>Macro Risk Monitor",
       "item.macro.desc": "Market regime traffic light · Seven weighted signals · Replay every crisis since 2006",
       "item.dataHub.name": "<span class=\"emoji\">📊</span>Data Hub",
@@ -567,6 +569,8 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
       "item.majors.desc": "Salary · Employment rate · Starting pay · The most promising majors for the next 10 years of AI—four rankings in one",
       "item.ofr.name": "<span class=\"emoji\">🏛️</span>U.S. Financial Risk Monitor",
       "item.ofr.desc": "Five OFR monitors: Financial Stress Index · SOFR short-term funding · Money market funds · Hedge funds · Systemic banking risk, updated daily",
+      "item.supply.name": "<span class=\"emoji\">⛓</span>Global Supply Chain",
+      "item.supply.desc": "Companies placed on two axes — <span data-sc=\"stages\">12</span> value-chain stages × <span data-sc=\"chains\">27</span> industry chains — with <span data-sc=\"chainLinks\">77</span> inter-chain links marking who supplies whom (recycling flows included); stages and chains are assigned from official SEC SIC industry codes and every company’s basis is auditable, alongside smelter relationships and upstream overlap traced to the original filings",
       "item.games.name": "<span class=\"emoji\">🎮</span>Game Center",
       "item.games.desc": "GTA: Vice City · Red Alert 2 in your browser—no download required",
       "item.calculators.name": "<span class=\"emoji\">🧮</span>Calculator Collection",

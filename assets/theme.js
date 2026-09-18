@@ -256,8 +256,15 @@
     return null;
   }
 
+  /* 语言判定有三级回退：优先问页面自己的 i18n 层，其次问本文件末尾的全站语言桥，
+     最后读 <html data-lang>。只接第一级的话，没有引入 /assets/i18n.js 的页面
+     （态势地球、科技领袖、望远镜等）即使已切到英文，主题控件仍会显示中文。 */
   function isEnglish() {
-    try { return !!(window.OoglexI18n && window.OoglexI18n.getLanguage() === "en"); } catch (e) { return false; }
+    try {
+      if (window.OoglexI18n && window.OoglexI18n.getLanguage) return window.OoglexI18n.getLanguage() === "en";
+      if (window.OoglexLanguage && window.OoglexLanguage.get) return window.OoglexLanguage.get() === "en";
+      return document.documentElement.getAttribute("data-lang") === "en";
+    } catch (e) { return false; }
   }
   function label(m) { return isEnglish() ? m.en : m.zh; }
 

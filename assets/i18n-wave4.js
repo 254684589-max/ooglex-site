@@ -86,6 +86,40 @@
   };
 
   var OFR = {
+    /* 五个子指标标签、G-SIB 银行名与页尾说明；说明段在 DOM 里被 <b> 拆开，按节点各配一条。
+       银行名用各行官方英文名，不音译。 */
+    "信用": "Credit",
+    "股票估值": "Equity valuation",
+    "融资": "Funding",
+    "避险资产": "Safe assets",
+    "波动率": "Volatility",
+    "银行系统性风险": "Systemic banking risk",
+    "家美国 G-SIB · 系统性资本附加": "U.S. G-SIBs · systemic capital surcharge",
+    "摩根大通": "JPMorgan Chase",
+    "花旗集团": "Citigroup",
+    "高盛": "Goldman Sachs",
+    "美国银行": "Bank of America",
+    "摩根士丹利": "Morgan Stanley",
+    "富国银行": "Wells Fargo",
+    "纽约梅隆银行": "BNY Mellon",
+    "道富银行": "State Street",
+    "适用 2025 年 · 美联储据 2023 年末数据核定":
+      "Applies to 2025 · Set by the Federal Reserve from year-end 2023 data",
+    "数据来源：": "Source: ",
+    "· 金融研究办公室，美国财政部下属机构 · 公开数据，仅供参考，不构成投资建议。":
+      " · Office of Financial Research, an agency of the U.S. Treasury · Public data, for reference only; not investment advice.",
+    "本页汇集美国财政部下属「金融研究办公室」（Office of Financial Research，OFR）的五大监测工具：":
+      "This page collects the five monitors published by the Office of Financial Research (OFR), an agency of the U.S. Treasury: ",
+    "（每日，0 为历史平均压力，正值高于平均、负值低于平均）、":
+      " (daily; 0 is the historical average level of stress, positive is above average and negative below), ",
+    "（每日，SOFR/EFFR 等隔夜利率与成交量）、":
+      " (daily; overnight rates and volumes such as SOFR and EFFR), ",
+    "货币市场基金规模": "money market fund assets",
+    "（每月）、": " (monthly), ",
+    "（每季度，SEC Form PF 汇总的总资产/净资产/杠杆）与":
+      " (quarterly; gross assets, net assets and leverage aggregated from SEC Form PF), and ",
+    "（美国 8 家 G-SIB 系统性资本附加，美联储约年度核定，反映各行系统重要性）。数据来源为 OFR 公开数据接口（金融压力指数 CSV、短期融资监测 STFM API、对冲基金监测 HFM API）及美联储 G-SIB 附加资本核定，在服务端定时抓取后静态托管。所有数据仅供参考，不构成投资建议。":
+      " (the systemic capital surcharge for the eight U.S. G-SIBs, set by the Federal Reserve roughly annually and reflecting each bank's systemic importance). Data comes from the OFR's public interfaces (the Financial Stress Index CSV, the STFM short-term funding API and the HFM hedge fund API) plus the Federal Reserve's G-SIB surcharge determinations, fetched on a schedule server-side and hosted statically. All data is for reference only and is not investment advice.",
     "🏛️ 美国金融风险监测": "🏛️ U.S. Financial Risk Monitor",
     "OFR 五大监测 · 金融压力 · 短期融资 · 货币基金 · 对冲基金 · 银行系统性风险": "Five OFR monitors · Financial stress · Short-term funding · Money market funds · Hedge funds · Systemic banking risk",
     "四类细分市场监测": "Four Market Monitors",
@@ -124,6 +158,33 @@
   };
 
   var FINANCE = {
+    /* 首屏导语、八层标签与页脚：这几条此前漏在外面，英文下整页只有标题是英文 */
+    "一套自下而上、层层递进的金融认知地图——从数学基础到专业纵深与监管合规，覆盖华尔街前台 / 中台 / 后台、危机机制与认知元层的完整知识体系。":
+      "A bottom-up, layer-by-layer map of financial knowledge — from mathematical foundations through specialist depth to regulation and compliance, covering Wall Street's front, middle and back office, crisis mechanics and the meta layer of cognition.",
+    "本框架从数学基础出发，逐层构建至专业纵深与监管合规，覆盖华尔街从业者所需的完整知识体系——前台 / 中台 / 后台、危机机制、认知元层与专业纵深无所不包。八个层级层层依赖：L1 数理工具 → L2 市场机制 → L3 衍生品定价 → L4 组合与风险 → L5 另类与结构化 → L6 宏观与行为 → L7 专业纵深 → L8 监管与合规。校验坐标：CFA × FRM × SOA 精算 × 顶级商学院 × Bloomberg × ISDA/BIS/IOSCO × 投行培训 × Pozsar / Mehrling / Brunnermeier / Gatheral 学术与实务。":
+      "The framework starts from mathematical foundations and builds layer by layer to specialist depth, regulation and compliance, covering what a Wall Street practitioner needs across front, middle and back office, crisis mechanics, the meta layer of cognition and vertical specialisms. The eight layers build on one another: L1 Mathematical Tools → L2 Market Mechanics → L3 Derivatives Pricing → L4 Portfolio & Risk → L5 Alternatives & Structured Products → L6 Macro & Behaviour → L7 Specialist Depth → L8 Regulation & Compliance. Calibrated against CFA, FRM, SOA actuarial, top business-school curricula, Bloomberg, ISDA/BIS/IOSCO, investment-bank training programmes, and the academic and practitioner work of Pozsar, Mehrling, Brunnermeier and Gatheral.",
+    "金融工程的数学根基——从线性代数到随机微积分，涵盖定价与风控所需的全部数学工具。":
+      "The mathematical bedrock of financial engineering — from linear algebra to stochastic calculus, covering every mathematical tool pricing and risk management needs.",
+    "展开 →": "Expand →",
+    "从订单簿到暗池——理解价格如何形成、流动性如何流转、交易如何执行与清算。":
+      "From the order book to dark pools — how prices form, how liquidity moves, and how trades are executed and cleared.",
+    "从 Black-Scholes 到粗糙波动率——覆盖全谱系衍生品定价理论与数值方法。":
+      "From Black-Scholes to rough volatility — the full spectrum of derivatives pricing theory and numerical methods.",
+    "从 Markowitz 到气候 VaR——资产配置、因子投资、风险度量与绩效归因的全面框架。":
+      "From Markowitz to climate VaR — a complete framework for asset allocation, factor investing, risk measurement and performance attribution.",
+    "从 CLO 到私募信贷——另类投资、结构化产品与大宗商品的完整知识图谱。":
+      "From CLOs to private credit — a full knowledge graph of alternatives, structured products and commodities.",
+    "从 Eurodollar 体系到行为偏差——理解驱动市场的宏观力量与人类认知局限。":
+      "From the Eurodollar system to behavioural bias — the macro forces that drive markets and the limits of human cognition.",
+    "保险精算、贸易融资、ESG、房地产、主权债务、量化架构与金融科技——垂直领域的专业深度。":
+      "Actuarial science, trade finance, ESG, real estate, sovereign debt, quantitative architecture and fintech — depth in the vertical specialisms.",
+    "全新层级——从 Basel III/IV 到反洗钱，覆盖全球金融监管体系与合规科技。":
+      "A new layer — from Basel III/IV to anti-money-laundering, covering global financial regulation and compliance technology.",
+    "· 内容长期更新中": "· Continuously updated",
+    "校验坐标：CFA × FRM × SOA 精算 × 商学院 × Bloomberg × ISDA/BIS/IOSCO":
+      "Calibrated against: CFA × FRM × SOA actuarial × business-school curricula × Bloomberg × ISDA/BIS/IOSCO",
+    "© 2026 ooglex.com · 仅供学习交流，不构成任何投资建议":
+      "© 2026 ooglex.com · For study and discussion only; not investment advice",
     "金融专栏 · 终极架构": "Finance Column · Ultimate Architecture",
     "金融知识终极架构": "Ultimate Financial Knowledge Architecture",
     "层级 Layers": "Layers",
@@ -191,6 +252,38 @@
   };
 
   var AI_CHAT = {
+    /* 首屏欢迎语与提示条整段入过典，但 DOM 里被 <b> 拆成短节点，整段永远匹配不到。
+       模型代号沿用 wave5 已定的译名：大聪明 = Cloud AI、离线小智 = Offline Mini AI。 */
+    "（云端）走海外线路，网络环境受限时可能连不上，可换用 WiFi/电脑，或直接改用下方国内模型；":
+      " (cloud) routes overseas and may not connect on a restricted network — try Wi-Fi or a computer, or switch to one of the mainland models below;",
+    "（本机模型）需": " (on-device) needs ",
+    "电脑版 Chrome / Edge": "desktop Chrome or Edge",
+    "，手机用不了，下载模型请在 ⚙️ 设置把「下载源」切成镜像；\n    断网可用":
+      ", does not work on phones, and to download the model open ⚙️ Settings and switch the download source to the mirror;\n    it works offline",
+    "。有 API 密钥可在设置选「自定义接口」填智谱 / DeepSeek 等国内模型，":
+      ". With an API key you can pick “Custom endpoint” in Settings and plug in Zhipu, DeepSeek or another mainland model for a ",
+    "连接更稳定": "more stable connection",
+    "你好呀，我是万象智聊 ✨": "Hi, I'm Ooglex AI Chat ✨",
+    "默认用": "By default it runs ",
+    "大聪明": "Cloud AI",
+    "小机灵": "Local AI",
+    "（云端模型），打开就能聊。": " (a cloud model) — just open it and start talking.",
+    "⚠️ 提示：大聪明走海外线路，": "⚠️ Note: Cloud AI routes overseas, so it ",
+    "网络环境受限时可能连不上": "may not connect on a restricted network",
+    "，可换用 WiFi / 电脑，或直接改用下方国内模型；断网可用":
+      ". Try Wi-Fi or a computer, or switch to one of the mainland models below; offline, use ",
+    "离线小智": "Offline Mini AI",
+    "；有 API 密钥可在 ⚙️ 设置选「自定义接口」填智谱 / DeepSeek，":
+      ". With an API key, open ⚙️ Settings, choose “Custom endpoint” and plug in Zhipu or DeepSeek,",
+    "有什么想聊的，直接说 😄": "Whatever you want to talk about, just say it 😄",
+    "⧉ 复制": "⧉ Copy",
+    "新对话": "New chat",
+    "默认「大聪明」云端模型，": "Runs the “Cloud AI” model by default — ",
+    "打开就能聊，不用填任何东西": "open it and start talking, nothing to fill in",
+    "。想更私密可换「小机灵」（模型跑在你电脑上）。":
+      ". For more privacy, switch to “Local AI”, which runs the model on your own computer.",
+    "知道了": "Got it",
+    "删除对话": "Delete chat",
     "✨ 万象智聊": "✨ Ooglex AI Chat",
     "💬 对话": "💬 Chats",
     "⚙️ 设置": "⚙️ Settings",
@@ -253,6 +346,48 @@
   };
 
   var RADIO = {
+    /* 安装引导与提示条整段都写过，但 DOM 里被 <b> 拆成了一串短节点，
+       整段那几条永远匹配不到。下面按拆开后的节点各配一条。 */
+    "在浏览器打开": "Open in browser",
+    "🤖 安卓（Chrome / Edge / 三星等浏览器）": "🤖 Android (Chrome / Edge / Samsung Internet)",
+    "点浏览器右上角菜单": "Open the browser menu at the top right",
+    "选择": "choose ",
+    "「安装应用」": "“Install app”",
+    "或": " or ",
+    "「添加到主屏幕」": "“Add to Home screen”",
+    "🍎 iPhone / iPad（用 Safari 打开）": "🍎 iPhone / iPad (open in Safari)",
+    "点底部的": "Tap the ",
+    "分享按钮 ⬆️": "Share button ⬆️",
+    "向下滑动，选择": "Scroll down and choose ",
+    "点右上角": "Tap ",
+    "「添加」": "“Add”",
+    "，主屏即出现 App 图标": " at the top right and the app icon appears on your Home screen",
+    "💬 微信 / QQ / 其它内置浏览器": "💬 WeChat / QQ / other in-app browsers",
+    "内置浏览器": "In-app browsers ",
+    "「在浏览器打开」": "“Open in browser”",
+    "（或用系统 Safari / Chrome 打开本页）": " (or open this page in Safari or Chrome directly)",
+    "再按上面对应系统的步骤安装": "then follow the steps for your platform above",
+    "拖动地球": "Drag the globe",
+    "中间的圆圈": "the circle in the middle",
+    "🔍 顶部": "🔍 The search box at the top takes a ",
+    "🎲 随机一台 · 🏠 回到中国上空 · ↻ 自转": "🎲 Random station · 🏠 Back over China · ↻ Auto-rotate",
+    "收藏 / 取消收藏": "Add to or remove from favourites",
+    "确认后，桌面会出现「环球电波」图标": "Once confirmed, a “Global Radio” icon appears on your home screen",
+    "或 ⬇️ 直接下载 APK 安装（无需商店）": "or ⬇️ download the APK directly (no app store needed)",
+    "无法直接安装": "cannot install it directly — use ",
+    "转动地球，绿点是一座座正在广播的电台。点亮任意一个，就能实时收听当地的声音。":
+      "Spin the globe: each green dot is a station on air. Light one up and you hear that place live.",
+    "，把想听的地方转进": ", bring the place you want into ",
+    "，松手即自动收听": ", and let go to start listening",
+    "🟢 也可直接": "🟢 Or just ",
+    "点击任意绿点": "click any green dot",
+    "收听该台": " to listen to that station",
+    "城市 / 国家 / 电台名": "city, country or station name",
+    "说明：仅收录 HTTPS 直连电台，国内及多数亚洲电台可直接收听。":
+      "Note: only stations reachable over direct HTTPS are listed, so mainland-China and most Asian stations play directly.",
+    "连不上的台会自动跳到附近可用电台": "A station that will not connect is skipped for a working one nearby",
+    "；部分欧美电台服务器在墙外，国内需代理才行，属正常现象。":
+      "; some European and American servers sit outside the mainland-China network and need a proxy there, which is expected.",
     "环球电波": "Global Radio",
     "RADIO · 转动地球听世界": "RADIO · Spin the globe, hear the world",
     "拖动地球，把电台转进圈内即可收听": "Drag the globe and move a station into the reticle to listen",
@@ -293,6 +428,62 @@
   };
 
   var TV = {
+    /* 安装引导与提示条整段都写过，但 DOM 里被 <b> 拆成了一串短节点，
+       整段那几条永远匹配不到。下面按拆开后的节点各配一条。 */
+    "在浏览器打开": "Open in browser",
+    "🤖 安卓（Chrome / Edge / 三星等浏览器）": "🤖 Android (Chrome / Edge / Samsung Internet)",
+    "点浏览器右上角菜单": "Open the browser menu at the top right",
+    "选择": "choose ",
+    "「安装应用」": "“Install app”",
+    "或": " or ",
+    "「添加到主屏幕」": "“Add to Home screen”",
+    "🍎 iPhone / iPad（用 Safari 打开）": "🍎 iPhone / iPad (open in Safari)",
+    "点底部的": "Tap the ",
+    "分享按钮 ⬆️": "Share button ⬆️",
+    "向下滑动，选择": "Scroll down and choose ",
+    "点右上角": "Tap ",
+    "「添加」": "“Add”",
+    "，主屏即出现 App 图标": " at the top right and the app icon appears on your Home screen",
+    "💬 微信 / QQ / 其它内置浏览器": "💬 WeChat / QQ / other in-app browsers",
+    "内置浏览器": "In-app browsers ",
+    "「在浏览器打开」": "“Open in browser”",
+    "（或用系统 Safari / Chrome 打开本页）": " (or open this page in Safari or Chrome directly)",
+    "再按上面对应系统的步骤安装": "then follow the steps for your platform above",
+    "拖动地球": "Drag the globe",
+    "中间的圆圈": "the circle in the middle",
+    "🔍 顶部": "🔍 The search box at the top takes a ",
+    "🎲 随机一台 · 🏠 回到中国上空 · ↻ 自转": "🎲 Random station · 🏠 Back over China · ↻ Auto-rotate",
+    "收藏 / 取消收藏": "Add to or remove from favourites",
+    "确认后，桌面会出现「环球TV」图标": "Once confirmed, a “Global TV” icon appears on your home screen",
+    "把「环球TV」装到主屏，像 App 一样全屏打开，无需应用商店。":
+      "Install Global TV to your home screen and it opens full-screen like a native app — no app store required.",
+    "可能无法播放视频": "may not be able to play video — use ",
+    "📺 环球TV": "📺 Global TV",
+    "华语频道直连优先 · 无需登录": "Chinese-language channels prioritised for direct connection · No sign-in",
+    "转动地球，蓝点是一座座正在直播的电视台。点亮任意一个，就能实时观看当地的画面。":
+      "Spin the globe: each blue dot is a channel broadcasting live. Light one up and you watch that place in real time.",
+    "，把想看的地方转进": ", bring the place you want into ",
+    "，松手即自动观看": ", and let go to start watching",
+    "🔵 也可直接": "🔵 Or just ",
+    "点击任意蓝点": "click any blue dot",
+    "观看该台": " to watch that channel",
+    "城市 / 国家 / 频道名": "city, country or channel name",
+    "说明：仅收录 HTTPS 直连的公开直播源，华语区及多数亚洲频道可直接观看。":
+      "Note: only public live streams reachable over direct HTTPS are listed, so Chinese-language and most Asian channels play directly.",
+    "连不上的台会自动跳到附近可用频道": "A channel that will not connect is skipped for a working one nearby",
+    "；部分欧美频道服务器在墙外，国内需代理才行，属正常现象。":
+      "; some European and American servers sit outside the mainland-China network and need a proxy there, which is expected.",
+    "进入 · 开始观看": "Enter · Start watching",
+    "📲 安装到手机 · 查看安装方法": "📲 Install on your phone · See how",
+    "▾ 收起": "▾ Collapse",
+    "展开或收起面板": "Expand or collapse the panel",
+    "上一台": "Previous channel",
+    "下一台": "Next channel",
+    "音量": "Volume",
+    "全屏沉浸模式：隐藏浏览器地址栏": "Immersive fullscreen: hides the browser address bar",
+    "安装到手机": "Install on your phone",
+    "回到中国上空": "Back over China",
+    "开始/停止自转": "Start or stop auto-rotation",
     "无权访问": "Access Restricted",
     "因相关法律法规等原因，您暂无权访问本页面。": "Access to this page is restricted for legal or regulatory reasons.",
     "如已获授权，请输入访问密码后进入。": "If you are authorized, enter the access password to continue.",
@@ -324,7 +515,6 @@
   var GLOBE = {
     "全球态势地球": "Global Situational Globe",
     "切换界面语言（应用内文案）": "Switch interface language",
-    "中 / EN": "EN / 中",
     "数据来源": "Data Sources",
     "准备加载基础地球": "Ready to load Basic Earth",
     "全球视角": "Global View",
@@ -361,7 +551,56 @@
     "影像不可用 · 已返回基础地球": "Imagery unavailable · Returned to Basic Earth",
     "基础地球 · 低分辨率底图": "Basic Earth · Low-resolution base map",
     "OpenStreetMap 底图": "OpenStreetMap base map",
-    "Esri 高清影像": "Esri HD imagery"
+    "Esri 高清影像": "Esri HD imagery",
+    "三维地球 · 公开地理数据叠加": "3D Globe · Public Geospatial Data Overlays",
+    "在浏览器里转动一颗真实卫星影像的地球，叠加公开地理数据：全球地震、\n        4300 处数据中心、704 座大坝、海底电缆与命名地理区域。\n        全部数据源与许可在「数据来源」里逐条列出。": "Spin a satellite-imagery globe in your browser with public geospatial data layered on top: global earthquakes,\n        about 4,300 data centres, 704 dams, submarine cables and named geographic regions.\n        Every source and its licence is listed item by item under “Data Sources”.",
+    "这是一个纯静态部署，": "This is a purely static deployment with ",
+    "没有服务端": "no server side",
+    "。卫星与航天任务通过每日定时生成的\n        同源静态快照供数据（星点位置由前端实时推算）；而实时航班、船舶、交通摄像头、\n        电台等图层依赖后端代理，在本站不可用，打开后会显示为不可用状态，\n        这是预期行为而非故障。具体哪些可用见「数据来源」。": ". Satellites and space missions are fed by same-origin static snapshots rebuilt daily\n        (the points themselves are propagated live in the browser); layers such as live flights, ships,\n        traffic cameras and radio need a backend proxy and are therefore unavailable here — they open\n        in an unavailable state, which is expected behaviour, not a fault. See “Data Sources” for what works.",
+    "应用界面已做中文化（顶栏「中 / EN」可切回英文原版）。": "The embedded app ships a Chinese localisation layer; the 中 / EN button in the top bar switches it back to the English original.",
+    "数据来源署名按许可要求保留原文": "Source attributions stay in their original wording as the licences require",
+    "，地图上的坐标、呼号、机型等读数同样不翻译。": ", and readouts on the map such as coordinates, call signs and aircraft types are left untranslated too.",
+    "首屏约需下载 2.2 MB（三维引擎），需要支持 WebGL 的浏览器 · 个人学习用途，非商业使用": "The first screen downloads about 2.2 MB (the 3D engine) and needs a WebGL-capable browser · Personal learning use, non-commercial",
+    "界面程序来自开源项目": "The interface code comes from the open-source project ",
+    "（MIT 许可，仅覆盖代码）。\n    下列数据各自独立授权，与该许可无关。本站按个人学习用途部署，不作商业使用。": " (MIT licence, which covers the code only).\n    The datasets below are licensed independently of it. This site is deployed for personal learning use, not commercially.",
+    "随应用一起分发的三维模型": "3D Models Shipped With the App",
+    "署名": "Attribution",
+    "Natural Earth II 基础底图（默认）": "Natural Earth II base map (default)",
+    "随 Cesium 一同发布的本地瓦片，": "Local tiles shipped with Cesium — ",
+    "不请求外网": "no outbound requests",
+    "，因此不开 VPN 也能直接显示 ·\n    公有领域 · Made with Natural Earth · 层级上限 2，": " — so it renders without a VPN ·\n    Public domain · Made with Natural Earth · Zoom capped at level 2, so it ",
+    "放大后会发糊": "blurs when zoomed in",
+    "，\n    这是数据分辨率所限，需要细节请在应用内底图菜单切到高清影像": ".\n    That is the resolution of the data; for detail, switch to HD imagery in the app’s base-map menu",
+    "Esri World Imagery 高清影像": "Esri World Imagery (HD)",
+    "在应用内底图菜单切换 · Powered by Esri — Source: Esri, Maxar, Earthstar Geographics 及 GIS 用户社区 ·\n    该服务在中国大陆不一定可达，取不到时自动退回基础底图": "Switch to it in the app’s base-map menu · Powered by Esri — Source: Esri, Maxar, Earthstar Geographics and the GIS User Community ·\n    The service is not always reachable from mainland China; when it fails the globe falls back to the basic base map",
+    "OpenStreetMap 底图": "OpenStreetMap base map",
+    "同样在底图菜单切换 · ODbL 1.0 · © OpenStreetMap contributors": "Also switchable in the base-map menu · ODbL 1.0 · © OpenStreetMap contributors",
+    "近 24 小时地震摘要 · 美国地质调查局，公有领域 · 由浏览器直接请求，刷新频率取决于该源": "Past-24-hour earthquake summary · U.S. Geological Survey, public domain · Requested directly by the browser; refresh rate follows the source",
+    "ODbL 1.0 · © OpenStreetMap contributors，另据 Open Infrastructure Map · 署名与相同方式共享": "ODbL 1.0 · © OpenStreetMap contributors, also via Open Infrastructure Map · Attribution and share-alike required",
+    "1046 处陆地 + 292 处海域名称 · 公有领域 · Made with Natural Earth": "1,046 land features + 292 marine names · Public domain · Made with Natural Earth",
+    "美国政府来源数据，无许可限制，请求署名 · CelesTrak (celestrak.org), Dr. T.S. Kelso ·\n    每日抓取 TLE 存为同源静态快照；": "U.S. government source data, no licence restrictions, attribution requested · CelesTrak (celestrak.org), Dr. T.S. Kelso ·\n    TLEs are fetched daily into a same-origin static snapshot; ",
+    "轨道位置由前端按 SGP4 实时推算": "orbital positions are propagated live in the browser with SGP4",
+    "，所以星点是实时移动的": ", so the points really do move in real time",
+    "Launch Library 2 — The Space Devs · 数据可任意形式使用与分享 · 每日刷新\n    · 提供发射事件与时间，不含连续上升段遥测或实时在轨状态": "Launch Library 2 — The Space Devs · Free to use and share in any form · Refreshed daily\n    · Provides launch events and times, not continuous ascent telemetry or live on-orbit status",
+    "TeleGeography 海底电缆（712 条 + 1917 个登陆点）": "TeleGeography submarine cables (712 cables + 1,917 landing points)",
+    "CC BY-NC-SA 3.0 · © TeleGeography — submarinecablemap.com · 仅限非商业用途；本站若转作商业用途必须移除该数据集": "CC BY-NC-SA 3.0 · © TeleGeography — submarinecablemap.com · Non-commercial use only; this dataset must be removed if the site ever turns commercial",
+    "航班与船舶是秒级实时位置，无法用定时静态快照替代；船舶还需常驻 WebSocket 与私有密钥，\n    火点需要 NASA FIRMS 密钥。三者都需要一个与应用同源的后端": "Flights and ships are second-by-second live positions that a scheduled static snapshot cannot stand in for; ships also need a persistent WebSocket and a private key,\n    and fire hotspots need a NASA FIRMS key. All three require a backend on the same origin as the app",
+    "同上；其中部分上游还要求密钥，而密钥不会写入前端": "Same as above; some of these upstreams also require keys, and keys are never written into the front end",
+    "需要按量计费的第三方密钥，本站未配置": "Requires a metered third-party key, which this site does not configure",
+    "飞机 / 直升机 / 无人机 / 货轮 三维模型": "Aircraft / helicopter / drone / cargo-ship 3D models",
+    "位于": "Located under ",
+    "，非本仓库 MIT 源码的一部分，各自采用": ", not part of this repository’s MIT-licensed source; each carries its own licence. ",
+    "均已修改": "All have been modified",
+    "：上游 God's Eye View 做过几何与材质精简、贴图缩小到 256px WebP，\n    并把朝向与比例烘焙进网格（glTF +Y 朝上、机头朝 −X、包围盒中心归零）。": ": upstream God's Eye View simplified the geometry and materials and shrank textures to 256px WebP,\n    then baked orientation and scale into the mesh (glTF +Y up, nose toward −X, bounding box centred on zero).",
+    "署名按 CC BY 4.0 保留，不代表原作者对本站的认可。": "Attribution is retained under CC BY 4.0 and does not imply the original authors endorse this site.",
+    "当前为中文界面，点击切回英文原版": "App is in Chinese · Click to switch back to the English original",
+    "当前为英文原版，点击切回中文": "App is in the English original · Click to switch back to Chinese",
+    "全球态势地球（三维）": "Global Situational Globe (3D)",
+    "未能创建 WebGL 画布。请改用较新版本的 Chrome、Edge、Firefox 或 Safari，并确认未关闭硬件加速；部分浏览器的省电模式也会禁用 WebGL。": "A WebGL canvas could not be created. Use a recent version of Chrome, Edge, Firefox or Safari and make sure hardware acceleration is on; some browsers also disable WebGL in battery-saver mode.",
+    "检测到省流量模式或较慢网络。首屏约需下载 2.2 MB（三维引擎），确认后再加载 · 个人学习用途，非商业使用": "Data-saver mode or a slow network was detected. The first screen downloads about 2.2 MB (the 3D engine) — confirm before loading · Personal learning use, non-commercial",
+    "更新时间：读取中…": "Updated: loading…",
+    "更新时间：静态数据快照尚未生成（定时任务首次运行后写入），此前这两个图层没有数据": "Updated: the static snapshot has not been generated yet (written after the scheduled job first runs); until then these two layers have no data",
+    "更新时间：读取失败（status.json 不可用，数据快照可能尚未生成）": "Updated: read failed (status.json unavailable; the snapshot may not exist yet)",
   };
 
   var FORTUNE = {
@@ -374,6 +613,18 @@
     "出生日期（选填，填写后可排生辰八字）": "Birth date (optional; enables BaZi calculation)",
     "出生时辰（选填）": "Birth hour (optional)",
     "不清楚": "Unknown",
+    "子时 23:00–01:00": "Zi (Rat) 23:00–01:00",
+    "丑时 01:00–03:00": "Chou (Ox) 01:00–03:00",
+    "寅时 03:00–05:00": "Yin (Tiger) 03:00–05:00",
+    "卯时 05:00–07:00": "Mao (Rabbit) 05:00–07:00",
+    "辰时 07:00–09:00": "Chen (Dragon) 07:00–09:00",
+    "巳时 09:00–11:00": "Si (Snake) 09:00–11:00",
+    "午时 11:00–13:00": "Wu (Horse) 11:00–13:00",
+    "未时 13:00–15:00": "Wei (Goat) 13:00–15:00",
+    "申时 15:00–17:00": "Shen (Monkey) 15:00–17:00",
+    "酉时 17:00–19:00": "You (Rooster) 17:00–19:00",
+    "戌时 19:00–21:00": "Xu (Dog) 19:00–21:00",
+    "亥时 21:00–23:00": "Hai (Pig) 21:00–23:00",
     "开 始 测 算": "START READING",
     "推演天干地支…": "Calculating the Heavenly Stems and Earthly Branches…",
     "✦ 本页面内容由程序生成，仅供娱乐，不构成任何现实建议 ✦": "✦ Program-generated content for entertainment only; not real-world advice ✦",
@@ -415,6 +666,23 @@
     "清除游戏缓存并重新加载": "Clear game cache and reload",
     "执行": "Run",
     "💡 提示：按 F3 显示/隐藏作弊菜单": "💡 Tip: press F3 to show/hide the cheat menu",
+    /* 下面几条是「整串已入典、但 DOM 里被 <kbd>/<span>/<b> 拆开」的补丁：
+       整串那条永远匹配不到，必须按拆开后的节点各配一条。 */
+    "💡 提示：按": "💡 Tip: press",
+    "显示/隐藏作弊菜单": "to show/hide the cheat menu",
+    "⚙️ 设置": "⚙️ Settings",
+    "黑底页面、不用害怕——直接点中间的红色按钮": "A black page is nothing to worry about — just click the red button in the middle,",
+    "点此自动导入": "Click here to auto-import",
+    "，游戏素材会自动下载导入，别的什么都不用填。": ", and the game assets download and import themselves. Nothing else to fill in.",
+    "资源包几百 MB，建议连 Wi-Fi。只有第一次需要，之后素材缓存在浏览器里，打开秒进。":
+      "The asset pack is a few hundred MB, so Wi-Fi is recommended. Only the first run needs it — after that the assets are cached in the browser and it opens instantly.",
+    "单人战役 / 遭遇战 / 多人联机随便选。手机请": "Campaign, skirmish or multiplayer — take your pick. On a phone, switch to ",
+    "横屏": "landscape",
+    "并点右上角 ⛶ 全屏，电脑体验最佳。": " and tap ⛶ at the top right for fullscreen. Desktop gives the best experience.",
+    "我知道了，开始加载 →": "Got it — start loading →",
+    "跳过引导": "Skip the guide",
+    "🎖️ 首次进入请在导入页点「点此自动导入」· 支持战役/联机/共辉 MOD":
+      "🎖️ On first entry, click “Click here to auto-import” on the import page · Campaign, multiplayer and the Republic's Glory mod are supported",
     "🔄 刷新": "🔄 Refresh",
     "💡 提示": "💡 Tips",
     "正在加载 红色警戒 2 网页版": "Loading Red Alert 2 Browser Edition",
@@ -446,6 +714,34 @@
     "X 第三方嵌入：": "X third-party embeds:",
     "「科技领袖 X 动态」使用 X 官方网页嵌入组件直接展示公开时间线。加载该组件时，X 可能接收你访问的网页、IP 地址、浏览器类型、操作系统及 Cookie 等信息；相关处理受 X 自身隐私政策与 X for Websites 规则约束。若当前网络无法连接 X，本页会降级为原主页跳转入口。": "Tech Leaders on X uses X's official web embed to display public timelines directly. When the component loads, X may receive the page you visited, IP address, browser type, operating system and cookie information. That processing is governed by X's own privacy policy and X for Websites rules. If X is unreachable on the current network, the page falls back to a direct profile link.",
     "3. 广告与 Cookie（Google AdSense）": "3. Advertising and Cookies (Google AdSense)",
+    /* 整段那几条只在段里没有 <strong>/<a> 时成立；实际 DOM 是拆开的，按节点各配一条。 */
+    "本站是一个托管于 GitHub Pages 的静态网站，聚合实时金融数据、实用工具与网页小游戏。本站":
+      "The Site is a static website hosted on GitHub Pages that aggregates real-time financial data, utilities and browser games. It ",
+    "不设注册或账户系统": "has no registration or account system",
+    "，通常不会主动向你索取姓名、电话等个人身份信息。":
+      " and generally does not proactively ask you for personal identity information such as your name or phone number.",
+    "部分工具（如 AI 对话、计算器、设置项）会将你输入的内容或偏好（例如你自带的 API 密钥）":
+      "Some tools (AI chat, calculators, preference settings) keep what you enter or prefer — your own API key, for example — ",
+    "仅保存在你本地浏览器（localStorage）中": "only in your local browser storage (localStorage)",
+    "，不会上传到本站服务器。清除浏览器数据即可删除。":
+      ". Nothing is uploaded to the Site's servers, and clearing your browser data deletes it.",
+    "本站可能使用 Google Analytics、Google Search Console 等工具，以汇总、匿名的方式了解访问量与使用情况，用于改进网站。":
+      "The Site may use Google Analytics, Google Search Console and similar tools to understand traffic and usage in aggregate, anonymous form, in order to improve the site.",
+    "本站展示来自 Yahoo Finance、Forbes、TMDB、CNN、Financial Modeling Prep、Forex Factory 等公开来源的数据，相关版权归原始来源所有，本站仅作聚合呈现。":
+      "The Site displays data from public sources including Yahoo Finance, Forbes, TMDB, CNN, Financial Modeling Prep and Forex Factory. Copyright remains with the original sources; the Site only aggregates and presents it.",
+    "本站使用": "The Site uses ",
+    "等第三方广告服务来展示广告。": " and other third-party advertising services to display ads.",
+    "第三方供应商（包括 Google）会使用": "Third-party vendors, including Google, use ",
+    "，根据你过去对本站及其他网站的访问情况来投放广告。":
+      " to serve ads based on your prior visits to this site and other sites.",
+    "Google 使用广告 Cookie，使其及其合作伙伴能够基于你的访问情况向你投放广告。":
+      "Google uses advertising cookies so that it and its partners can serve you ads based on your visits.",
+    "你可以前往": "You can visit ",
+    "Google 广告设置": "Google Ads Settings",
+    "停用个性化广告；也可访问": " to turn off personalized advertising, or visit ",
+    "停用部分第三方供应商的 Cookie。": " to opt out of some third-party vendors' cookies.",
+    "更多关于 Google 如何使用数据的信息，请见": "For more on how Google uses data, see ",
+    "Google 合作伙伴网站隐私说明": "How Google uses information from partner sites",
     "4. 你的选择": "4. Your Choices",
     "你可以通过浏览器设置管理或清除 Cookie 与本地存储，也可以使用上述链接停用个性化广告。停用后你仍会看到广告，但其相关性可能降低。": "You can manage or clear cookies and local storage through your browser settings, and you can use the links above to disable personalized advertising. You may still see ads afterward, but they may be less relevant.",
     "5. 儿童隐私": "5. Children's Privacy",
@@ -479,6 +775,9 @@
     if ((m = /^截至 (.+)$/.exec(s))) return "As of " + m[1];
     if ((m = /^(\d+) 个计算器 →$/.exec(s))) return m[1] + " calculators →";
     if ((m = /^共 (\d+) 个计算器 · 分为 (\d+) 大类，点分类进入或直接搜索$/.exec(s))) return m[1] + " calculators across " + m[2] + " categories · choose a category or search directly";
+    // 上面那条只在整串没被标签拆开时成立；实际 DOM 里 <b> 把它切成「共」「70」「个计算器…」三段。
+    if (s === "共") return "Total";
+    if ((m = /^个计算器 · 分为 (\d+) 大类，点分类进入或直接搜索$/.exec(s))) return "calculators across " + m[1] + " categories · choose a category or search directly";
     if ((m = /^搜索“(.+)” 的结果$/.exec(s))) return "Results for “" + m[1] + "”";
     if ((m = /^(\d+)票$/.exec(s))) return m[1] + " votes";
     if ((m = /^命中 (\d+) 条，显示前 40 条$/.exec(s))) return m[1] + " matches · showing first 40";
@@ -489,6 +788,41 @@
     if ((m = /^(\d+) 术语$/.exec(s))) return m[1] + " terms";
     if ((m = /^(\d+) 项$/.exec(s))) return m[1] + " items";
     if ((m = /^第 (\d+) 页$/.exec(s))) return "Page " + m[1];
+    // 态势地球的数据快照状态行是拼出来的（更新时间 + 刷新频率 + 状态），整串进不了字典；
+    // 两端锚定只翻固定部分，时间戳原样保留。
+    if ((m = /^更新时间：(.+?) · 每日刷新 · (.+)$/.exec(s))) {
+      var note = { "正常": "OK", "无记录": "no records",
+        "抓取失败，显示的是上一份有效数据": "fetch failed — showing the last valid data" }[m[2]];
+      if (!note) {
+        var part = /^部分失败（(\d+)\/(\d+)），其余为上一份有效数据$/.exec(m[2]);
+        note = part ? "partial failure (" + part[1] + "/" + part[2] + "); the rest is the last valid data" : m[2];
+      }
+      return "Updated: " + m[1] + " · refreshed daily · " + note;
+    }
+    // 环球电波 / 环球TV 的运行时状态串：台名与国名原样带回，只翻固定部分。
+    if ((m = /^松手收听：(.+)$/.exec(s))) return "Release to listen: " + m[1];
+    if ((m = /^松手观看：(.+)$/.exec(s))) return "Release to watch: " + m[1];
+    if ((m = /^(.+) · (\d+) 台$/.exec(s))) return m[1] + " · " + m[2] + (m[2] === "1" ? " station" : " stations");
+    if ((m = /^已就绪 · (\d+) 个频道（含华语区 (\d+) 个）$/.exec(s))) {
+      return "Ready · " + m[1] + " channels (" + m[2] + " Chinese-language)";
+    }
+    if ((m = /^已就绪 · (\d+) 个电台（含中国 (\d+) 个）$/.exec(s))) {
+      return "Ready · " + m[1] + " stations (" + m[2] + " in China)";
+    }
+    if ((m = /^已就绪 · (\d+) 个电台（含华语区 (\d+) 个）$/.exec(s))) {
+      return "Ready · " + m[1] + " stations (" + m[2] + " Chinese-language)";
+    }
+    // 美国金融风险监测的状态行与频率角标：数字与日期原样带回。
+    if ((m = /^更新于 (\d+) 小时前 · 截至 (.+)$/.exec(s))) return "Updated " + m[1] + " hr ago · as of " + m[2];
+    if ((m = /^更新于 (\d+) 天前 · 截至 (.+)$/.exec(s))) return "Updated " + m[1] + " d ago · as of " + m[2];
+    if ((m = /^更新于 (\d+) 分钟前 · 截至 (.+)$/.exec(s))) return "Updated " + m[1] + " min ago · as of " + m[2];
+    if ((m = /^(.+) · 每日$/.exec(s))) return m[1] + " · daily";
+    if ((m = /^(.+) · 每月$/.exec(s))) return m[1] + " · monthly";
+    if ((m = /^(.+) · 季度$/.exec(s))) return m[1] + " · quarterly";
+    if ((m = /^(.+) · 年度$/.exec(s))) return m[1] + " · annual";
+    if ((m = /^([▲▼]) (\S+) 较前值$/.exec(s))) return m[1] + " " + m[2] + " vs. prior";
+    if ((m = /^近一年 · 一年前 (\S+)$/.exec(s))) return "Past year · one year ago " + m[1];
+    if ((m = /^([+\-−]?[\d.,]+) 万亿$/.exec(s))) return m[1] + "T";
     if (s === "刚刚") return "Just now";
     return null;
   }
@@ -592,10 +926,9 @@
 
   function specialEnglish() {
     financeSpecial();
-    if (path.indexOf("/apps/globe/") === 0) {
-      var b = document.getElementById("btn-lang");
-      if (b) { b.textContent = "EN / 中"; b.setAttribute("aria-pressed", "true"); }
-    }
+    /* 这里原本硬把态势地球的 #btn-lang 写成「EN / 中」并置 aria-pressed=true。
+       那个按钮说的是「应用内」的语言，不是站内语言，硬改会让按钮对不上实际状态，
+       而且切回中文时不还原。页面自己的 paintLang() 已经跟随站内语言，这段去掉。 */
   }
 
   function walk(scope) {

@@ -179,7 +179,18 @@
     "账户中心": "Account Center",
     "未设置": "Not set",
     "退出登录": "Sign out",
-    "账户系统 Beta · Ooglex": "Account System Beta · Ooglex"
+    "账户系统 Beta · Ooglex": "Account System Beta · Ooglex",
+    /* 2026-09-18 新增的昵称编辑区，当时没跟着补英文 */
+    "修改昵称": "Change display name",
+    "保存昵称": "Save display name",
+    "留空则显示为「匿名用户」": "Leave empty to appear as “Anonymous”",
+    "昵称会显示在": "Your display name appears in ",
+    "想法流": "Your Thoughts",
+    "里，并决定你的头像首字与配色；改了之后你已发布的想法会一起更新.":
+      " and decides the initial and colour of your avatar. Changing it also updates the posts you have already published.",
+    "里，并决定你的头像首字与配色；改了之后你已发布的想法会一起更新。":
+      " and decides the initial and colour of your avatar. Changing it also updates the posts you have already published.",
+    "返回首页": "Back to Home"
   };
 
   function copy(dst, src) {

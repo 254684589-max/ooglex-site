@@ -20,7 +20,9 @@
 <script>/* 主题首屏防闪：与站内其他 canvas 主导页一致，本页由 data-theme-lock 固定深色，
    但用户的主题选择照样记住并对其余页面生效 */
 (function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
-<script src="/assets/theme.js?v=7bf48c7c" defer></script>
+<script src="/assets/theme.js?v=2ae26043" defer></script>
+<script src="/assets/i18n.js?v=c869828c" defer></script>
+<script src="/assets/i18n-wave4.js?v=73554a40" defer></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -62,6 +64,7 @@
     font-family:var(--mono); font-size:10.5px; color:var(--faint);
     letter-spacing:0.14em; text-transform:uppercase;
   }
+  html[data-lang="en"] .bar .en { display:none; }  /* 英文下 h1 本身已是英文，副标题会重复 */
   .bar .sp { flex:1 1 auto; min-width:4px; }
 
   /* -------------------------------------------------------------- 舞台 */
@@ -312,8 +315,12 @@
   // 比在页面里维护一份「原文备份」可靠得多。
   var btnLang = document.getElementById('btn-lang');
   function readLang() {
-    try { return localStorage.getItem(LANG_KEY) === 'en' ? 'en' : 'zh'; }
-    catch (e) { return 'zh'; }
+    try {
+      var v = localStorage.getItem(LANG_KEY);
+      if (v === 'en' || v === 'zh') return v;     // 用户在本页显式选过，尊重它
+      // 没选过就跟随站内语言：英文访客不该开出一个中文界面的地球
+      return localStorage.getItem('ooglex.language') === 'en' ? 'en' : 'zh';
+    } catch (e) { return 'zh'; }
   }
   function paintLang() {
     var en = readLang() === 'en';
@@ -329,6 +336,17 @@
     if (f) f.src = appUrl();          // 换 src 即重载，语言随之生效
   });
   paintLang();
+
+  // 站内切中英时，若用户没在本页显式选过应用内语言，就跟着一起换（含已加载的 iframe）。
+  // 显式选过的一律不动——那是用户对这一页的决定。
+  document.addEventListener('ooglex:languagechange', function () {
+    var explicit = false;
+    try { var v = localStorage.getItem(LANG_KEY); explicit = (v === 'en' || v === 'zh'); } catch (e) {}
+    if (explicit) return;
+    paintLang();
+    var f = document.querySelector('.stage iframe');
+    if (f) f.src = appUrl();
+  });
 
   // 窄屏或用户开了省流量/慢速网络时，先显示说明与体积，由用户决定是否下载；
   // 宽屏直接进入，满足「打开即用」。
