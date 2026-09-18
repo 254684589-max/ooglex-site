@@ -258,6 +258,25 @@
     "等待首次数据更新": "Waiting for first data update"
   };
 
+  var IDEAS = {
+    "你的想法": "Your Thoughts",
+    "登录后随时发布，发出即公开。任何人都能浏览。":
+      "Post any time once signed in. Everything posted is public, and anyone can read it.",
+    "正在确认登录状态…": "Checking your sign-in status…",
+    "这个账户已被停用，无法发布。": "This account is suspended and cannot post.",
+    "此刻在想什么？最多 500 字。": "What are you thinking? 500 characters max.",
+    "想法正文": "Thought text",
+    "发布": "Post",
+    "站主工具": "Owner tools",
+    "被举报且仍然公开的想法会列在这里。": "Thoughts that were reported and are still public are listed here.",
+    "查看被举报的想法": "Review reported thoughts",
+    "最新想法": "Latest thoughts",
+    "加载中…": "Loading…",
+    "加载更多": "Load more",
+    "隐私政策": "Privacy Policy",
+    "← 返回 Ooglex": "← Back to Ooglex"
+  };
+
   function add(dst, src) { Object.keys(src).forEach(function (k) { dst[k] = src[k]; }); }
   var dict = {};
   add(dict, COMMON);
@@ -268,6 +287,7 @@
   if (path.indexOf("/apps/econ-calendar/") === 0) add(dict, CALENDAR);
   if (path.indexOf("/apps/fear-greed/") === 0) add(dict, FEAR);
   if (path.indexOf("/apps/data-hub/") === 0) add(dict, HUB);
+  if (path.indexOf("/apps/ideas/") === 0) add(dict, IDEAS);
 
   function regexTranslate(s) {
     var m;

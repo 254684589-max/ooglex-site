@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>你的想法 · Ooglex 想法流</title>
+<meta name="description" content="Ooglex 站内公开想法流。登录后可随时发布想法，未登录也能浏览。发出即公开，支持举报，站主可隐藏违规内容。">
+<link rel="canonical" href="https://www.ooglex.com/apps/ideas/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="你的想法 · Ooglex 想法流">
+<meta property="og:description" content="登录后随时发布想法，未登录也能浏览。发出即公开。">
+<meta property="og:url" content="https://www.ooglex.com/apps/ideas/">
+<meta property="og:image" content="https://www.ooglex.com/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/assets/theme.css?v=0d16e197">
+<script>/* 主题首屏防闪：渲染前先把已选主题打到 <html> 上 */
+(function(){try{var d=document.documentElement,l=d.getAttribute("data-theme-lock"),t=localStorage.getItem("ooglex.theme");if(t!=="ft"&&t!=="paper"&&t!=="dark")t=null;d.setAttribute("data-theme",l||t||"dark");if(t)d.setAttribute("data-theme-choice",t);}catch(e){}})();</script>
+<script src="/assets/theme.js?v=87033141" defer></script>
+<script src="/assets/i18n.js?v=99279c77" defer></script>
+<script src="/assets/i18n-pages.js?v=6823daf9" defer></script>
+<script src="/account/config.js?v=2b7ebf57" defer></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#0a0c11; --panel:#11141c; --panel2:#161a23; --line:rgba(255,255,255,0.08);
+    --text:#eceef3; --dim:#969db0; --faint:#6b7386;
+    --amber:#e8a33d; --amber2:#f0b860; --danger:#ff5f6d; --ok:#27c498; --link:#7fb6ff;
+  }
+  body {
+    min-height:100vh; color:var(--text); background:var(--bg);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    line-height:1.5;
+  }
+  .topbar { height:4px; background:linear-gradient(90deg,var(--amber),#c0392b 50%,var(--amber)); }
+  .page { max-width:760px; margin:0 auto; padding:14px 16px 64px; }
+
+  .head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+  .head .back { color:var(--amber); text-decoration:none; font-size:0.9rem; }
+  .head .back:hover { opacity:.8; }
+  h1 { font-size:1.45rem; letter-spacing:.01em; }
+  .sub { color:var(--dim); font-size:0.88rem; margin-top:4px; }
+
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px; }
+
+  /* 发布框 */
+  .composer { margin-bottom:18px; }
+  .composer textarea {
+    width:100%; min-height:92px; resize:vertical; padding:11px 12px;
+    background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:9px;
+    font:inherit; line-height:1.6;
+  }
+  .composer textarea:focus { outline:2px solid var(--amber); outline-offset:1px; }
+  .composer .row2 { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px; flex-wrap:wrap; }
+  .counter { font-size:0.8rem; color:var(--faint); font-variant-numeric:tabular-nums; }
+  .counter.over { color:var(--danger); }
+  button {
+    font:inherit; cursor:pointer; border-radius:8px; border:1px solid var(--line);
+    background:var(--panel2); color:var(--text); padding:8px 15px;
+  }
+  button:hover:not(:disabled) { border-color:var(--amber); }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  button:focus-visible { outline:2px solid var(--amber); outline-offset:2px; }
+  .btn-primary { background:var(--amber); color:#151007; border-color:var(--amber); font-weight:700; }
+  .btn-primary:hover:not(:disabled) { background:var(--amber2); }
+
+  /* 提示条 */
+  .notice { border-radius:10px; padding:11px 13px; font-size:0.9rem; border:1px solid var(--line); background:var(--panel2); }
+  .notice a { color:var(--link); }
+  .notice.warn { border-color:rgba(232,163,61,.5); }
+  .notice.err { border-color:rgba(255,95,109,.5); }
+  .notice.ok { border-color:rgba(39,196,152,.5); }
+  #form-msg { margin-top:10px; }
+  [hidden] { display:none !important; }
+
+  /* 信息流 */
+  .feed { display:flex; flex-direction:column; gap:12px; margin-top:6px; }
+  .item { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:13px 14px; }
+  .item.is-hidden { border-style:dashed; opacity:.72; }
+  .item .meta { display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; font-size:0.82rem; color:var(--faint); }
+  .item .who { color:var(--text); font-weight:700; font-size:0.95rem; }
+  .item .body { margin-top:7px; white-space:pre-wrap; overflow-wrap:anywhere; }
+  .item .acts { display:flex; gap:8px; margin-top:11px; flex-wrap:wrap; }
+  .item .acts button { padding:4px 11px; font-size:0.82rem; }
+  .tag { font-size:0.72rem; letter-spacing:.1em; padding:1px 7px; border-radius:20px; border:1px solid var(--line); color:var(--dim); }
+  .tag.mine { border-color:rgba(39,196,152,.5); color:var(--ok); }
+  .tag.hidden { border-color:rgba(232,163,61,.55); color:var(--amber); }
+
+  .more { margin-top:16px; text-align:center; }
+  .state { color:var(--dim); font-size:0.9rem; padding:22px 4px; text-align:center; }
+
+  footer { margin-top:30px; padding-top:14px; border-top:1px solid var(--line); color:var(--faint); font-size:0.8rem; }
+  footer a { color:var(--link); }
+
+  @media (max-width:520px) {
+    h1 { font-size:1.25rem; }
+    .page { padding:12px 14px 56px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; } }
+</style>
+</head>
+<body>
+<div class="topbar"></div>
+<div class="page">
+
+  <div class="head">
+    <div>
+      <h1>你的想法</h1>
+      <div class="sub">登录后随时发布，发出即公开。任何人都能浏览。</div>
+    </div>
+    <a class="back" href="/">← 返回 Ooglex</a>
+  </div>
+
+  <!-- 发布区：三种互斥状态 -->
+  <section class="composer">
+    <div id="auth-loading" class="notice">正在确认登录状态…</div>
+
+    <div id="auth-anon" class="notice warn" hidden>
+      想法流任何人都能看，但发布需要登录。<a href="/account/">前往登录或注册 →</a>
+    </div>
+
+    <div id="auth-suspended" class="notice err" hidden>
+      这个账户已被停用，无法发布。
+    </div>
+
+    <form id="composer-form" class="card" hidden>
+      <label for="body" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)">想法正文</label>
+      <textarea id="body" maxlength="500" placeholder="此刻在想什么？最多 500 字。" required></textarea>
+      <div class="row2">
+        <span class="counter" id="counter">0 / 500</span>
+        <span style="display:flex;gap:8px;align-items:center">
+          <span class="tag" id="who-tag"></span>
+          <button type="submit" class="btn-primary" id="submit-btn">发布</button>
+        </span>
+      </div>
+      <div id="form-msg" class="notice" hidden></div>
+    </form>
+  </section>
+
+  <!-- 站主工具 -->
+  <section id="owner-tools" class="card" style="margin-bottom:18px" hidden>
+    <strong style="font-size:0.95rem">站主工具</strong>
+    <div class="sub" style="margin-top:2px">被举报且仍然公开的想法会列在这里。</div>
+    <div class="item acts" style="border:0;padding:0;margin-top:10px">
+      <button type="button" id="load-reports">查看被举报的想法</button>
+    </div>
+    <div id="reports-box" style="margin-top:10px"></div>
+  </section>
+
+  <h2 style="font-size:1rem;color:var(--dim);letter-spacing:.06em">最新想法</h2>
+  <div class="feed" id="feed"></div>
+  <div class="state" id="feed-state">加载中…</div>
+  <div class="more"><button type="button" id="load-more" hidden>加载更多</button></div>
+
+  <footer>
+    想法由发布者本人负责，不代表 Ooglex 立场。看到违规内容请点「举报」。
+    · <a href="/privacy/">隐私政策</a>
+  </footer>
+</div>
+
+<script src="./app.js?v=a14ae1e7" defer></script>
+</body>
+</html>
