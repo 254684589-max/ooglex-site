@@ -200,10 +200,10 @@
   var search=document.getElementById("leader-search");
   var count=document.getElementById("catalog-count");
   var categoryBar=document.getElementById("category-bar");
-  var activeCategory=params.get("category")||"全部";
   var freeBtn=document.getElementById("mode-free");
   var apiBtn=document.getElementById("mode-api");
   var params=new URLSearchParams(location.search);
+  var activeCategory=params.get("category")||"全部";
   var requested=params.get("leader");
   var MODE=params.get("mode")==="api"?"api":"free";
   var DEBUG=params.get("debug")==="1";
