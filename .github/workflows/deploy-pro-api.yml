@@ -1,4 +1,4 @@
-name: Deploy PRO API and Billionaires Data
+name: Deploy PRO API and Protected Data
 
 on:
   workflow_dispatch:
@@ -8,8 +8,11 @@ on:
       - 'cloudflare/pro-api/**'
       - 'assets/pro-access.js'
       - 'assets/pro-billionaires.js'
+      - 'scripts/pro/build_pro_datasets.py'
       - 'scripts/pro/build_billionaires_pro.py'
       - 'apps/billionaires/data.json'
+      - 'apps/macro-radar/**'
+      - 'apps/supply-chain/**'
       - '.github/workflows/deploy-pro-api.yml'
 
 permissions:
@@ -18,7 +21,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -37,8 +40,10 @@ jobs:
             exit 1
           fi
 
-      - name: Build Billionaires protected payloads
-        run: python scripts/pro/build_billionaires_pro.py
+      - name: Build protected payloads
+        run: |
+          python scripts/pro/build_pro_datasets.py
+          python scripts/pro/build_billionaires_pro.py
 
       - name: Deploy Ooglex PRO API Worker
         uses: cloudflare/wrangler-action@v3
@@ -68,18 +73,25 @@ jobs:
             exit 1
           fi
 
-      - name: Upload Billionaires FREE preview to private R2
+      - name: Upload protected R2 datasets
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          command: r2 object put ooglex-pro-data/billionaires/preview.json --file .pro-build/billionaires/preview.json --remote
+          command: |
+            r2 object put ooglex-pro-data/supply-chain/preview.json --file .pro-build/supply-chain/preview.json
+            r2 object put ooglex-pro-data/supply-chain/full.json --file .pro-build/supply-chain/full.json
+            r2 object put ooglex-pro-data/macro-risk/preview.json --file .pro-build/macro-risk/preview.json
+            r2 object put ooglex-pro-data/macro-risk/full.json --file .pro-build/macro-risk/full.json
+            r2 object put ooglex-pro-data/billionaires/preview.json --file .pro-build/billionaires/preview.json
+            r2 object put ooglex-pro-data/billionaires/full.json --file .pro-build/billionaires/full.json
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      - name: Upload Billionaires full dataset to private R2
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          command: r2 object put ooglex-pro-data/billionaires/full.json --file .pro-build/billionaires/full.json --remote
-        env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Verify public preview endpoints
+        run: |
+          set -e
+          for product in supply_chain macro_risk billionaires; do
+            body="$(curl -fsS --connect-timeout 5 --max-time 20 "https://pro-api.ooglex.com/v1/data/$product?mode=preview")"
+            test -n "$body"
+            echo "$product preview ready"
+          done
