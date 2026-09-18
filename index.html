@@ -205,9 +205,10 @@
     .row .name { font-size: 19px; font-weight: 700; flex: 0 0 auto; }
     .row .name .emoji { margin-right: 9px; }
     .row .en { font-family: var(--mono); font-size: 10.5px; letter-spacing: .16em; color: var(--faint); text-transform: uppercase; flex: 0 0 auto; }
-    .row .livedot, .row .demodot { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; flex: 0 0 auto; }
+    .row .livedot, .row .demodot, .row .extdot { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; flex: 0 0 auto; }
     .row .livedot { color: var(--dn); }
     .row .demodot { color: var(--amber); }
+    .row .extdot { color: var(--faint); }
     .row .desc { margin-left: auto; font-size: 13px; color: var(--dim); text-align: right; max-width: 46%; line-height: 1.6; }
     .row .arr { font-size: 17px; color: var(--faint); flex: 0 0 auto; transition: transform .15s, color .15s; }
     .row:hover .arr { transform: translateX(4px); color: var(--ink); }
@@ -482,8 +483,12 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
           <span class="no">21</span><span class="name" data-i18n-html="item.globe.name"><span class="emoji">🛰</span>全球态势地球</span><span class="en">Situational Globe</span>
           <span class="desc" data-i18n="item.globe.desc">转动三维卫星影像地球，叠加公开地理数据：全球地震 · 4300 处数据中心 · 704 座大坝 · 海底电缆 · 命名地理区域；每条数据的来源与许可逐项标注</span><span class="arr">→</span>
         </a>
+        <a class="row" href="https://www.worldmonitor.app/" target="_blank" rel="noopener">
+          <span class="no">22</span><span class="name" data-i18n-html="item.worldMonitor.name"><span class="emoji">🧭</span>世界监测</span><span class="en">World Monitor</span><span class="extdot" data-i18n="badge.external">● 第三方</span>
+          <span class="desc" data-i18n="item.worldMonitor.desc">开源全球态势看板：武装冲突 · 地震 · 天气 · 航运要道；由第三方开源项目 koala73/worldmonitor 开发并托管（AGPL-3.0），非 Ooglex 站内数据</span><span class="arr">↗</span>
+        </a>
         <span class="row plain">
-          <span class="no">22</span><span class="name" data-i18n-html="item.idea.name"><span class="emoji">💡</span>你的想法</span><span class="en">Your Idea</span>
+          <span class="no">23</span><span class="name" data-i18n-html="item.idea.name"><span class="emoji">💡</span>你的想法</span><span class="en">Your Idea</span>
           <span class="desc" data-i18n="item.idea.desc">有什么想做的，都可以从这里开始</span><span class="arr">·</span>
         </span>
       </div>
@@ -570,6 +575,9 @@ html[data-theme="ft"] .row:hover, html[data-theme="paper"] .row:hover { backgrou
       "item.fortune.desc": "An ink-wash interpretation of names, birth data, the Five Elements, and personal fortune (for entertainment only)",
       "item.globe.name": "<span class=\"emoji\">🛰</span>Situational Globe",
       "item.globe.desc": "Spin a photorealistic 3D globe layered with open geospatial data: worldwide earthquakes · 4,300 data centres · 704 dams · submarine cables · named geographic regions—every source and licence listed",
+      "item.worldMonitor.name": "<span class=\"emoji\">🧭</span>World Monitor",
+      "item.worldMonitor.desc": "An open-source global situational-awareness dashboard: armed conflicts · earthquakes · weather · shipping chokepoints—built and hosted by the third-party project koala73/worldmonitor (AGPL-3.0); not Ooglex in-house data",
+      "badge.external": "● EXTERNAL",
       "item.idea.name": "<span class=\"emoji\">💡</span>Your Idea",
       "item.idea.desc": "Whatever you want to make can start here",
       "section.billionaires": "Forbes Real-Time Billionaires",

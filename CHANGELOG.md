@@ -11,6 +11,15 @@
 
 ## [未发布]
 
+### 新增
+
+- 2026-09-18，**首页工具栏新增「世界监测 World Monitor」外链入口**。**未部署**（合并到 `main` 后由 `Deploy Protected Ooglex Pages` 上线）。
+  - **只加一行入口，不引入任何第三方脚本、iframe 或依赖。** 位置在 `#tools`「工具与游戏」区块，序号 22，指向 `https://www.worldmonitor.app/`（`target="_blank" rel="noopener"`，沿用页内联系区与页脚既有外链写法）；原「你的想法」顺延为 23。
+  - **明确标成第三方，不冒充站内数据。** 新增 `.row .extdot` 角标（`● 第三方` / `● EXTERNAL`，复用 `.livedot`/`.demodot` 的排版，配色取 `var(--faint)`，三套主题通用），箭头用 `↗` 区别于内链的 `→`，描述里写明「由第三方开源项目 koala73/worldmonitor 开发并托管（AGPL-3.0），非 Ooglex 站内数据」。**刻意不给 `● LIVE`**：上游免费嵌入档是每小时刷新，按规则 7 不能标实时。
+  - **为什么不下载 GitHub Release 的安装包。** 那些是 Tauri 打的桌面安装包（`.dmg`/`.msi`/`-setup.exe`/`.AppImage`，以及自动更新用的 `.app.tar.gz`），网站用不到；单个最大 212MB，超过 GitHub 单文件 100MB 上限，本仓库根本提交不进去。
+  - **为什么不自托管。** 实测上游 `SELF_HOSTING.md`：需要 Docker/Podman + Redis + relay 容器 + Node 22，且必须先生成 `RELAY_SHARED_SECRET`、`REDIS_PASSWORD`、`REDIS_TOKEN`、`WM_SESSION_SECRET` 四个密钥才能启动，还要跑 seeder 灌数据 —— GitHub Pages 是纯静态，跑不了；也撞规则 4（不无明确需求就增服务）与规则 5（密钥不进前端）。另：上游 `vercel.json` 给 `/dashboard` 设了 `X-Frame-Options: SAMEORIGIN` 与 `frame-ancestors 'self' https://*.worldmonitor.app`，完整看板**不能**被 ooglex.com iframe；官方只在 `/embed`、`/embed.html`、`/embed.js` 上放开 `frame-ancestors *`（免费档 3 图层、每小时刷新、须保留回链）。站内嵌入页作为独立模块留待后续。
+  - **实测**：`index.html` 标签配平无误；83 个 `data-i18n` key 中本次新增的 3 条（`item.worldMonitor.name`、`item.worldMonitor.desc`、`badge.external`）均有英文词条（`item.heatmap.*`、`item.supply.*` 共 4 条缺口是改动前就存在，本次未夹带修改）；Chromium 实渲染 1280/768/360 三视口横向溢出均为 0、无 JS 报错，`↗` 与相邻内链行箭头同在 x=1189；中英切换两个方向均正常。
+
 ### 修复
 
 - 2026-09-17，**修复「不开 VPN 时宏观风险监测只剩空壳」**。**未部署**（合并到 `main` 后由 `Deploy Protected Ooglex Pages` 上线）。
