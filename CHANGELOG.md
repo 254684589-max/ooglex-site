@@ -13,7 +13,7 @@
 
 ### 新增
 
-- 2026-09-18，**首页工具栏新增「世界监测 World Monitor」外链入口**。**未部署**（合并到 `main` 后由 `Deploy Protected Ooglex Pages` 上线）。
+- 2026-09-18，**首页工具栏新增「世界监测 World Monitor」外链入口**。**已部署**（提交 `e805977` 经 `Deploy Protected Ooglex Pages` run #37 于 2026-09-18 04:53 UTC 发布至 https://www.ooglex.com/ ；build 与 deploy 两个 job 均成功，含 PRO 泄露闸门与大陆网络 5 场景闸门）。
   - **只加一行入口，不引入任何第三方脚本、iframe 或依赖。** 位置在 `#tools`「工具与游戏」区块，序号 22，指向 `https://www.worldmonitor.app/`（`target="_blank" rel="noopener"`，沿用页内联系区与页脚既有外链写法）；原「你的想法」顺延为 23。
   - **明确标成第三方，不冒充站内数据。** 新增 `.row .extdot` 角标（`● 第三方` / `● EXTERNAL`，复用 `.livedot`/`.demodot` 的排版，配色取 `var(--faint)`，三套主题通用），箭头用 `↗` 区别于内链的 `→`，描述里写明「由第三方开源项目 koala73/worldmonitor 开发并托管（AGPL-3.0），非 Ooglex 站内数据」。**刻意不给 `● LIVE`**：上游免费嵌入档是每小时刷新，按规则 7 不能标实时。
   - **为什么不下载 GitHub Release 的安装包。** 那些是 Tauri 打的桌面安装包（`.dmg`/`.msi`/`-setup.exe`/`.AppImage`，以及自动更新用的 `.app.tar.gz`），网站用不到；单个最大 212MB，超过 GitHub 单文件 100MB 上限，本仓库根本提交不进去。
