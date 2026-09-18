@@ -112,6 +112,34 @@ def main() -> None:
     if int(hmark.get("visiblePoints") or 0) > max(1, math.ceil(int(hmark.get("fullPoints") or 0) * RATIO)):
         fail("Macro Risk history preview exceeds 10%")
 
+    # Finance Column: public Pages must receive generated ~10% JS previews,
+    # never the authoring-time full arch.js / diagrams.js.
+    finance_arch = (SITE / "apps/finance-column/arch.js").read_text(encoding="utf-8")
+    finance_diagrams = (SITE / "apps/finance-column/diagrams.js").read_text(encoding="utf-8")
+    for label, source in (("arch", finance_arch), ("diagrams", finance_diagrams)):
+        if '"mode":"preview"' not in source or '"ratio":0.1' not in source:
+            fail(f"Finance Column {label} is not a 10% generated preview")
+        if "Generated safe Finance Column" not in source:
+            fail(f"Finance Column {label} preview generator marker missing")
+
+    finance_adapter = (SITE / "assets/pro-finance-column.js").read_text(encoding="utf-8")
+    for token in ("finance_column", "FREE · 10% PREVIEW", "继续查看完整金融知识架构", "ooglex:finance-full-ready"):
+        if token not in finance_adapter:
+            fail("Finance Column access adapter missing token: " + token)
+
+    for rel in (
+        "apps/finance-column/index.html",
+        "apps/finance-column/layer.html",
+        "apps/finance-column/diagrams.html",
+    ):
+        text = (SITE / rel).read_text(encoding="utf-8")
+        if '<script src="/assets/pro-access.js?v=6"></script>' not in text:
+            fail("Finance Column pro-access missing from: " + rel)
+        if '<script src="/assets/pro-finance-column.js?v=1"></script>' not in text:
+            fail("Finance Column adapter missing from: " + rel)
+        if "ooglex:finance-full-ready" not in text:
+            fail("Finance Column full-data rerender hook missing from: " + rel)
+
     rich_pages = {
         "apps/supply-chain/index.html": "app.js",
         "apps/supply-chain/company.html": "company.js",
@@ -168,13 +196,15 @@ def main() -> None:
         "assets/pro-access.js",
         "assets/pro-rich-data.js",
         "assets/pro-preview-gate.js",
+        "assets/pro-finance-column.js",
         "pro/index.html",
     ):
         if not (SITE / required).exists():
             fail("protected frontend asset missing: " + required)
 
     print("PRO rich-page validation: PASS")
-    print("- original Supply Chain and Macro Risk interfaces are preserved")
+    print("- original Supply Chain, Macro Risk and Finance Column interfaces are preserved")
+    print("- Finance Column exposes only ~10% terms and causal maps to FREE/guest")
     print("- Macro FREE preview keeps all headline regime cards")
     print("- company edge shards are capped at 10%, including NVDA")
     print("- FREE/guest preview is clipped at a hard stop; hidden lower sections cannot extend scrolling")

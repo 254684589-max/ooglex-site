@@ -42,6 +42,9 @@ jobs:
       - name: Build Billionaires Top 10 preview and full payload
         run: python scripts/pro/build_billionaires_pro.py
 
+      - name: Build Finance Column 10 percent preview and full payload
+        run: node scripts/pro/build_finance_column_pro.mjs
+
       - name: Build protected public site
         run: python scripts/build_public_site.py --pro-cutover
 

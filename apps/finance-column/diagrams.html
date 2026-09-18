@@ -96,11 +96,16 @@
         <g>${edges}</g><g>${nodes}</g></svg>`;
     }
 
-    document.getElementById("lead").textContent = DIAGRAMS.intro;
-    document.getElementById("st-count").textContent = DIAGRAMS.count();
+    function renderFinanceDiagrams() {
+      const D = window.DIAGRAMS;
+      if (!D || !Array.isArray(D.groups)) return;
+      const preview = D.ooglexAccess && D.ooglexAccess.mode === "preview";
+      FID = 0;
+    document.getElementById("lead").textContent = D.intro;
+    document.getElementById("st-count").textContent = D.count();
 
     const ACCENT = "#8aa6ff";
-    document.getElementById("groups").innerHTML = DIAGRAMS.groups.map((g) => {
+    document.getElementById("groups").innerHTML = D.groups.map((g) => {
       const cards = g.items.map((it) => {
         const tags = (it.nodes || []).map((n) => `<span class="dg-node">${esc(n)}</span>`).join("");
         const svg = it.flow ? renderFlow(it.flow, ACCENT) : "";
@@ -124,6 +129,14 @@
         <div class="dg-grid">${cards}</div>
       </section>`;
     }).join("");
+
+      if (preview) {
+        const count = D.ooglexAccess && D.ooglexAccess.fullDiagrams;
+        document.getElementById("st-count").textContent = D.count() + (count ? " / " + count : "");
+      }
+    }
+    renderFinanceDiagrams();
+    window.addEventListener("ooglex:finance-full-ready", renderFinanceDiagrams);
 
     /* ---- 灯箱：点击放大同一张 SVG ---- */
     const lb = document.getElementById("lightbox");
