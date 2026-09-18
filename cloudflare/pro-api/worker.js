@@ -216,9 +216,15 @@ function normalizeTechFeed(profile, user, payload) {
   };
 }
 
+function techCacheMatchesProfile(profile, cached) {
+  if (!profile || !cached || !cached.leader) return false;
+  return String(cached.leader.handle || "").toLowerCase() === String(profile.handle || "").toLowerCase();
+}
+
 async function fetchTechLeaderFeed(profile, env, cached = null) {
+  const cachedMatchesProfile = techCacheMatchesProfile(profile, cached);
   let user = null;
-  if (cached && cached.leader && cached.leader.user_id) {
+  if (cachedMatchesProfile && cached.leader && cached.leader.user_id) {
     user = {
       id: cached.leader.user_id,
       profile_image_url: cached.leader.profile_image_url || null,
@@ -250,7 +256,7 @@ async function fetchTechLeaderFeed(profile, env, cached = null) {
     "media.fields": "media_key,type,url,preview_image_url,width,height"
   });
 
-  const cachedPosts = cached && Array.isArray(cached.posts) ? cached.posts : [];
+  const cachedPosts = cachedMatchesProfile && Array.isArray(cached.posts) ? cached.posts : [];
   const newestId = cachedPosts[0] && cachedPosts[0].id ? String(cachedPosts[0].id) : "";
   if (newestId) params.set("since_id", newestId);
 
@@ -285,7 +291,9 @@ async function getTechLeaderFeed(profile, limit, env) {
   const cachedAt = cached && cached.fetched_at ? Date.parse(cached.fetched_at) : NaN;
   const age = Number.isFinite(cachedAt) ? now - cachedAt : Infinity;
 
-  if (cached && age <= TECH_FEED_TTL_MS) {
+  const cachedMatchesProfile = techCacheMatchesProfile(profile, cached);
+
+  if (cachedMatchesProfile && age <= TECH_FEED_TTL_MS) {
     return {
       ...cached,
       posts: Array.isArray(cached.posts) ? cached.posts.slice(0, limit) : [],
@@ -294,7 +302,7 @@ async function getTechLeaderFeed(profile, limit, env) {
   }
 
   if (!env.X_BEARER_TOKEN) {
-    if (cached && age <= TECH_FEED_MAX_STALE_MS) {
+    if (cachedMatchesProfile && age <= TECH_FEED_MAX_STALE_MS) {
       return {
         ...cached,
         posts: Array.isArray(cached.posts) ? cached.posts.slice(0, limit) : [],
@@ -316,7 +324,7 @@ async function getTechLeaderFeed(profile, limit, env) {
       cache: { status: "refreshed", age_ms: 0 }
     };
   } catch (err) {
-    if (cached && age <= TECH_FEED_MAX_STALE_MS) {
+    if (cachedMatchesProfile && age <= TECH_FEED_MAX_STALE_MS) {
       return {
         ...cached,
         posts: Array.isArray(cached.posts) ? cached.posts.slice(0, limit) : [],
