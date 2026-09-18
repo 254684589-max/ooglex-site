@@ -1,7 +1,9 @@
-name: Deploy Ooglex Pages
+name: Deploy Protected Ooglex Pages
 
 on:
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 
@@ -11,7 +13,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -26,37 +28,55 @@ jobs:
         with:
           python-version: '3.12'
 
-      # 恢复收费改造前的公开访问方式：
-      # 直接部署仓库里的原版完整页面与数据，不注入 FREE/PRO 权限适配器，
-      # 浏览器访问研究页面时不再依赖 Supabase / workers.dev。
-      # 账户、Supabase、PRO Worker/R2 代码仍保留在仓库中，未来收费时可重新启用。
-      - name: Build original full public site
-        run: python scripts/build_public_site.py --include-pro-private
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
 
-      - name: Verify legacy public access
+      - name: Build FREE/PRO payload split
+        run: python scripts/pro/build_pro_datasets.py
+
+      - name: Build original-page 10 percent previews
+        run: python scripts/pro/build_rich_previews.py
+
+      - name: Build Billionaires Top 10 preview and full payload
+        run: python scripts/pro/build_billionaires_pro.py
+
+      - name: Build protected public site
+        run: python scripts/build_public_site.py --pro-cutover
+
+      - name: Apply Billionaires PRO cutover
+        run: python scripts/pro/apply_billionaires_cutover.py
+
+      - name: Verify no PRO-only data leaked into artifact
+        run: python scripts/validate_pro_public_cutover.py
+
+      # 会员校验走跨域 Worker，大陆直连时该域名会「挂住」。这道闸门确保权限校验
+      # 永远不会成为同源静态数据的前置条件，否则不开 VPN 的用户只能看到空壳页面。
+      - name: Verify previews load without the entitlement worker
         run: |
-          test -f .site/index.html
-          test -f .site/apps/macro-radar/data.json
-          test -f .site/apps/supply-chain/nodes.json
-          test -f .site/apps/billionaires/data.json
-          if grep -R "ooglex-pro-api" .site/apps/macro-radar .site/apps/supply-chain .site/apps/billionaires >/dev/null 2>&1; then
-            echo "::error::PRO network adapter was injected into public research pages"
-            exit 1
+          set +e
+          node scripts/macro-radar/verify-cn.mjs
+          code=$?
+          set -e
+          if [ "$code" = "2" ]; then
+            echo "::warning::未找到 Chrome，本次跳过大陆网络验证"
+            exit 0
           fi
-          if test -f .site/account/schema.sql; then
-            echo "::error::account/schema.sql must not be published"
-            exit 1
-          fi
+          exit $code
 
       - name: Configure GitHub Pages
+        if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v5
 
-      - name: Upload Pages artifact
+      - name: Upload protected Pages artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4
         with:
           path: .site
 
   deploy:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     needs: build
     environment:
