@@ -78,7 +78,8 @@
     products: Object.freeze({
       supplyChain: "supply_chain",
       macroRisk: "macro_risk",
-      billionaires: "billionaires"
+      billionaires: "billionaires",
+      financeColumn: "finance_column"
     }),
     requestTimeoutMs: REQUEST_TIMEOUT_MS,
     getSession: session,
