@@ -215,20 +215,32 @@ function normalizeTechFeed(profile, user, payload) {
   };
 }
 
-async function fetchTechLeaderFeed(profile, env) {
-  const username = encodeURIComponent(profile.handle);
-  const userPayload = await xApiGet(
-    `/2/users/by/username/${username}?user.fields=profile_image_url,verified,public_metrics,description`,
-    env
-  );
-  if (!userPayload || !userPayload.data || !userPayload.data.id) {
-    const err = new Error("x_user_not_found");
-    err.code = "x_user_not_found";
-    err.status = 502;
-    throw err;
+async function fetchTechLeaderFeed(profile, env, cached = null) {
+  let user = null;
+  if (cached && cached.leader && cached.leader.user_id) {
+    user = {
+      id: cached.leader.user_id,
+      profile_image_url: cached.leader.profile_image_url || null,
+      verified: Boolean(cached.leader.verified),
+      public_metrics: cached.leader.public_metrics || {}
+    };
   }
 
-  const user = userPayload.data;
+  if (!user) {
+    const username = encodeURIComponent(profile.handle);
+    const userPayload = await xApiGet(
+      `/2/users/by/username/${username}?user.fields=profile_image_url,verified,public_metrics,description`,
+      env
+    );
+    if (!userPayload || !userPayload.data || !userPayload.data.id) {
+      const err = new Error("x_user_not_found");
+      err.code = "x_user_not_found";
+      err.status = 502;
+      throw err;
+    }
+    user = userPayload.data;
+  }
+
   const params = new URLSearchParams({
     max_results: String(TECH_FEED_FETCH_SIZE),
     exclude: "replies,retweets",
@@ -237,8 +249,32 @@ async function fetchTechLeaderFeed(profile, env) {
     "media.fields": "media_key,type,url,preview_image_url,width,height"
   });
 
+  const cachedPosts = cached && Array.isArray(cached.posts) ? cached.posts : [];
+  const newestId = cachedPosts[0] && cachedPosts[0].id ? String(cachedPosts[0].id) : "";
+  if (newestId) params.set("since_id", newestId);
+
   const postsPayload = await xApiGet(`/2/users/${encodeURIComponent(user.id)}/tweets?${params.toString()}`, env);
-  return normalizeTechFeed(profile, user, postsPayload);
+  const incoming = normalizeTechFeed(profile, user, postsPayload);
+
+  if (!cachedPosts.length) return incoming;
+
+  const merged = [];
+  const seen = new Set();
+  for (const post of [...incoming.posts, ...cachedPosts]) {
+    if (!post || !post.id || seen.has(post.id)) continue;
+    seen.add(post.id);
+    merged.push(post);
+  }
+  merged.sort((a, b) => {
+    const ta = Date.parse(a.created_at || "") || 0;
+    const tb = Date.parse(b.created_at || "") || 0;
+    return tb - ta;
+  });
+
+  return {
+    ...incoming,
+    posts: merged.slice(0, TECH_FEED_FETCH_SIZE)
+  };
 }
 
 async function getTechLeaderFeed(profile, limit, env) {
@@ -271,7 +307,7 @@ async function getTechLeaderFeed(profile, limit, env) {
   }
 
   try {
-    const fresh = await fetchTechLeaderFeed(profile, env);
+    const fresh = await fetchTechLeaderFeed(profile, env, cached);
     await writeJson(env.PRO_DATA, key, fresh);
     return {
       ...fresh,
