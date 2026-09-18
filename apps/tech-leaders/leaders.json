@@ -450,6 +450,456 @@
       ],
       "note": "个人公开 X 账号。",
       "title": "TOBIAS LÜTKE · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "hoffman",
+      "name": "Reid Hoffman",
+      "zh": "里德·霍夫曼",
+      "handle": "reidhoffman",
+      "role": "LinkedIn Co-Founder · Greylock",
+      "chips": [
+        "LinkedIn",
+        "Greylock",
+        "AI",
+        "VC"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "REID HOFFMAN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "khosla",
+      "name": "Vinod Khosla",
+      "zh": "维诺德·科斯拉",
+      "handle": "vkhosla",
+      "role": "Khosla Ventures Founder",
+      "chips": [
+        "Khosla Ventures",
+        "VC",
+        "AI",
+        "Climate Tech"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "VINOD KHOSLA · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "levie",
+      "name": "Aaron Levie",
+      "zh": "Aaron Levie",
+      "handle": "levie",
+      "role": "Box Co-Founder & CEO",
+      "chips": [
+        "BOX",
+        "Box",
+        "Enterprise AI",
+        "Cloud"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "AARON LEVIE · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "dorsey",
+      "name": "Jack Dorsey",
+      "zh": "杰克·多西",
+      "handle": "jack",
+      "role": "Block Co-Founder · Twitter Co-Founder",
+      "chips": [
+        "XYZ",
+        "Block",
+        "Bitcoin",
+        "Payments"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "JACK DORSEY · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "paul-graham",
+      "name": "Paul Graham",
+      "zh": "Paul Graham",
+      "handle": "paulg",
+      "role": "Y Combinator Co-Founder",
+      "chips": [
+        "YC",
+        "Startups",
+        "Founders",
+        "Software"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "PAUL GRAHAM · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "garry-tan",
+      "name": "Garry Tan",
+      "zh": "Garry Tan",
+      "handle": "garrytan",
+      "role": "Y Combinator President & CEO",
+      "chips": [
+        "YC",
+        "Startups",
+        "AI",
+        "VC"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "GARRY TAN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "alexandr-wang",
+      "name": "Alexandr Wang",
+      "zh": "Alexandr Wang",
+      "handle": "alexandr_wang",
+      "role": "AI Entrepreneur · Meta Superintelligence",
+      "chips": [
+        "META",
+        "Scale AI",
+        "AI",
+        "Models"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ALEXANDR WANG · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "delangue",
+      "name": "Clément Delangue",
+      "zh": "Clément Delangue",
+      "handle": "ClemDelangue",
+      "role": "Hugging Face Co-Founder & CEO",
+      "chips": [
+        "Hugging Face",
+        "Open Source",
+        "AI",
+        "Models"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "CLEMENT DELANGUE · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "jeff-dean",
+      "name": "Jeff Dean",
+      "zh": "Jeff Dean",
+      "handle": "JeffDean",
+      "role": "Google · AI Research",
+      "chips": [
+        "GOOGL",
+        "Google",
+        "AI",
+        "Research"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "JEFF DEAN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "gomez",
+      "name": "Aidan Gomez",
+      "zh": "Aidan Gomez",
+      "handle": "aidangomez",
+      "role": "Cohere Co-Founder & CEO",
+      "chips": [
+        "Cohere",
+        "AI",
+        "LLM",
+        "Enterprise"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "AIDAN GOMEZ · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "bret-taylor",
+      "name": "Bret Taylor",
+      "zh": "Bret Taylor",
+      "handle": "btaylor",
+      "role": "Sierra Co-Founder & CEO · OpenAI Board",
+      "chips": [
+        "Sierra",
+        "AI Agents",
+        "Enterprise",
+        "OpenAI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "BRET TAYLOR · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "masad",
+      "name": "Amjad Masad",
+      "zh": "Amjad Masad",
+      "handle": "amasad",
+      "role": "Replit Founder & CEO",
+      "chips": [
+        "Replit",
+        "AI Coding",
+        "Agents",
+        "Developer Tools"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "AMJAD MASAD · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "rauch",
+      "name": "Guillermo Rauch",
+      "zh": "Guillermo Rauch",
+      "handle": "rauchg",
+      "role": "Vercel Founder & CEO",
+      "chips": [
+        "Vercel",
+        "Web",
+        "AI",
+        "Developer Tools"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "GUILLERMO RAUCH · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "friedman",
+      "name": "Nat Friedman",
+      "zh": "Nat Friedman",
+      "handle": "natfriedman",
+      "role": "AI Investor · Former GitHub CEO",
+      "chips": [
+        "GitHub",
+        "AI",
+        "Startups",
+        "Research"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "NAT FRIEDMAN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "krishna",
+      "name": "Arvind Krishna",
+      "zh": "Arvind Krishna",
+      "handle": "ArvindKrishna",
+      "role": "IBM Chair & CEO",
+      "chips": [
+        "IBM",
+        "Enterprise AI",
+        "Cloud",
+        "Quantum"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ARVIND KRISHNA · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "amon",
+      "name": "Cristiano Amon",
+      "zh": "Cristiano Amon",
+      "handle": "cristianoamon",
+      "role": "Qualcomm President & CEO",
+      "chips": [
+        "QCOM",
+        "Qualcomm",
+        "AI PC",
+        "Mobile"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "CRISTIANO AMON · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "peter-beck",
+      "name": "Peter Beck",
+      "zh": "彼得·贝克",
+      "handle": "Peter_J_Beck",
+      "role": "Rocket Lab Founder & CEO",
+      "chips": [
+        "RKLB",
+        "Rocket Lab",
+        "Space",
+        "Launch"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "PETER BECK · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "adcock",
+      "name": "Brett Adcock",
+      "zh": "Brett Adcock",
+      "handle": "adcock_brett",
+      "role": "Figure AI Founder & CEO",
+      "chips": [
+        "Figure AI",
+        "Robotics",
+        "Humanoid",
+        "AI"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "BRETT ADCOCK · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "jim-keller",
+      "name": "Jim Keller",
+      "zh": "Jim Keller",
+      "handle": "jimkxa",
+      "role": "Tenstorrent CEO · Chip Architect",
+      "chips": [
+        "Tenstorrent",
+        "Semiconductors",
+        "AI Chips",
+        "RISC-V"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "JIM KELLER · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "koduri",
+      "name": "Raja Koduri",
+      "zh": "Raja Koduri",
+      "handle": "RajaXg",
+      "role": "Semiconductor Architect · AI Hardware",
+      "chips": [
+        "Semiconductors",
+        "GPU",
+        "AI Hardware",
+        "Compute"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "RAJA KODURI · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "dhh",
+      "name": "David Heinemeier Hansson",
+      "zh": "DHH",
+      "handle": "dhh",
+      "role": "37signals Co-Owner · Ruby on Rails Creator",
+      "chips": [
+        "37signals",
+        "Rails",
+        "Software",
+        "Cloud"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "DHH · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "mullenweg",
+      "name": "Matt Mullenweg",
+      "zh": "Matt Mullenweg",
+      "handle": "photomatt",
+      "role": "Automattic CEO · WordPress Co-Founder",
+      "chips": [
+        "WordPress",
+        "Automattic",
+        "Open Source",
+        "Web"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "MATT MULLENWEG · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "houston",
+      "name": "Drew Houston",
+      "zh": "Drew Houston",
+      "handle": "drewhouston",
+      "role": "Dropbox Co-Founder & CEO",
+      "chips": [
+        "DBX",
+        "Dropbox",
+        "Cloud",
+        "Productivity"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "DREW HOUSTON · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "armstrong",
+      "name": "Brian Armstrong",
+      "zh": "Brian Armstrong",
+      "handle": "brian_armstrong",
+      "role": "Coinbase Co-Founder & CEO",
+      "chips": [
+        "COIN",
+        "Coinbase",
+        "Crypto",
+        "Payments"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "BRIAN ARMSTRONG · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "buterin",
+      "name": "Vitalik Buterin",
+      "zh": "Vitalik Buterin",
+      "handle": "VitalikButerin",
+      "role": "Ethereum Co-Founder",
+      "chips": [
+        "Ethereum",
+        "Crypto",
+        "Blockchain",
+        "Web3"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "VITALIK BUTERIN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "son",
+      "name": "Masayoshi Son",
+      "zh": "孙正义",
+      "handle": "masason",
+      "role": "SoftBank Group Chair & CEO",
+      "chips": [
+        "SoftBank",
+        "AI",
+        "ARM",
+        "VC"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "MASAYOSHI SON · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "schmidt",
+      "name": "Eric Schmidt",
+      "zh": "埃里克·施密特",
+      "handle": "ericschmidt",
+      "role": "Former Google CEO · Technology Investor",
+      "chips": [
+        "Google",
+        "AI",
+        "Defense Tech",
+        "Research"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "ERIC SCHMIDT · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "durov",
+      "name": "Pavel Durov",
+      "zh": "帕维尔·杜罗夫",
+      "handle": "durov",
+      "role": "Telegram Founder & CEO",
+      "chips": [
+        "Telegram",
+        "Messaging",
+        "TON",
+        "Privacy"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "PAVEL DUROV · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "lei-jun",
+      "name": "Lei Jun",
+      "zh": "雷军",
+      "handle": "leijun",
+      "role": "Xiaomi Founder & CEO",
+      "chips": [
+        "Xiaomi",
+        "EV",
+        "Smartphone",
+        "AIoT"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "LEI JUN · OFFICIAL X TIMELINE"
+    },
+    {
+      "id": "fadell",
+      "name": "Tony Fadell",
+      "zh": "Tony Fadell",
+      "handle": "tfadell",
+      "role": "Nest Founder · Product & Hardware Entrepreneur",
+      "chips": [
+        "Nest",
+        "Hardware",
+        "IoT",
+        "Product"
+      ],
+      "note": "个人公开 X 账号。",
+      "title": "TONY FADELL · OFFICIAL X TIMELINE"
     }
   ]
 }
