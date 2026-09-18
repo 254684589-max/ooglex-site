@@ -66,7 +66,10 @@
     .leader:hover{transform:translateY(-1px);border-color:rgba(57,135,229,.45)}
     .leader.on{border-color:rgba(57,135,229,.72);background:rgba(57,135,229,.09);box-shadow:0 0 0 1px rgba(57,135,229,.14) inset}
     .leader-head{display:flex;align-items:center;gap:10px;min-width:0}
-    .leader-avatar-shell,.profile-avatar-shell{position:relative;display:grid;place-items:center;overflow:hidden;border-radius:50%;flex:0 0 auto;border:1px solid var(--line);background:linear-gradient(145deg,rgba(57,135,229,.18),rgba(255,255,255,.035))}
+    .leader-avatar-shell,.profile-avatar-shell{position:relative;display:grid;place-items:center;overflow:visible;border-radius:50%;flex:0 0 auto;border:1px solid var(--line);background:linear-gradient(145deg,rgba(57,135,229,.18),rgba(255,255,255,.035))}
+    .verified-badge{position:absolute;z-index:4;right:-4px;bottom:-3px;display:grid;place-items:center;width:14px;height:14px;border-radius:50%;background:#1d9bf0;color:#fff;border:2px solid var(--panel);font:800 9px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;box-shadow:0 1px 3px rgba(0,0,0,.22);pointer-events:none}
+    .profile-avatar-shell .verified-badge{width:17px;height:17px;right:-4px;bottom:-3px;font-size:11px}
+    html[data-theme="ft"] .verified-badge,html[data-theme="paper"] .verified-badge{border-color:var(--panel)}
     .leader-avatar-shell{width:34px;height:34px}
     .profile-avatar-shell{width:58px;height:58px}
     .leader-avatar,.profile-avatar{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;background:var(--panel)}
@@ -78,9 +81,9 @@
     .leader-role{margin-top:8px;padding-top:7px;border-top:1px solid var(--line);min-height:0}
     .leader-role strong{display:block;font-size:10.5px;line-height:1.35;font-weight:600;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .empty-search{grid-column:1/-1;padding:24px;border:1px dashed var(--line);border-radius:12px;text-align:center;color:var(--faint);font-size:13px}
-    .panel{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;align-items:start}
+    .panel{display:grid;grid-template-columns:calc((100% - 24px)/4) minmax(0,1fr);gap:8px;align-items:start;width:100%;margin:0}
     .profile,.feed{border:1px solid var(--line);background:linear-gradient(180deg,var(--panel2),var(--panel));border-radius:16px}
-    .profile{padding:20px;position:sticky;top:18px}
+    .profile{padding:16px;position:sticky;top:18px}
     .eyebrow{font:10.5px/1.3 var(--mono);letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
     .profile-id{display:flex;align-items:center;gap:13px;margin-top:10px}
     .profile-copy{min-width:0}
@@ -95,7 +98,7 @@
     .openx{display:flex;align-items:center;justify-content:center;height:42px;margin-top:18px;border-radius:8px;background:#f2f4f7;color:#111;font-size:13px;font-weight:700}
     .note{margin-top:14px;font-size:11.5px;color:var(--faint);line-height:1.65}
     .feed{overflow:hidden}
-    .feed-hd{display:flex;align-items:center;gap:8px;padding:13px 16px;border-bottom:1px solid var(--line);font:11px/1.2 var(--mono);letter-spacing:.1em;color:var(--faint)}
+    .feed-hd{display:flex;align-items:center;gap:8px;padding:13px 14px;border-bottom:1px solid var(--line);font:11px/1.2 var(--mono);letter-spacing:.1em;color:var(--faint)}
     .dot{width:7px;height:7px;border-radius:50%;background:var(--up);box-shadow:0 0 8px rgba(47,181,131,.75)}
     #timeline{min-height:0;background:var(--panel);transition:min-height .2s ease}
     #timeline[data-state="loading"]{min-height:210px}
@@ -172,7 +175,7 @@
       <aside class="profile">
         <div class="eyebrow">SELECTED PROFILE</div>
         <div class="profile-id">
-          <span class="profile-avatar-shell"><span class="avatar-fallback" id="profile-avatar-fallback">EM</span><img class="profile-avatar" id="profile-avatar" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></span>
+          <span class="profile-avatar-shell"><span class="avatar-fallback" id="profile-avatar-fallback">EM</span><img class="profile-avatar" id="profile-avatar" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span class="verified-badge" title="Ooglex 已核验" aria-label="Ooglex 已核验">✓</span></span>
           <div class="profile-copy">
             <h2 id="profile-name">马斯克</h2>
             <div class="profile-en" id="profile-name-en">Elon Musk</div>
@@ -328,7 +331,7 @@
       var role=[company,p.position_zh||""].filter(Boolean).join(" · ");
       return '<button class="leader'+(current&&p.id===current.id?' on':'')+'" type="button" data-id="'+escapeHtml(p.id)+'">'+
         '<div class="leader-head"><span class="leader-avatar-shell"><span class="avatar-fallback">'+escapeHtml(initialsFor(p))+'</span>'+
-        '<img class="leader-avatar" data-avatar="1" loading="lazy" decoding="async" referrerpolicy="no-referrer" alt="'+escapeHtml(cn+" 头像")+'" src="'+escapeHtml(avatarUrl(p))+'"></span>'+
+        '<img class="leader-avatar" data-avatar="1" loading="lazy" decoding="async" referrerpolicy="no-referrer" alt="'+escapeHtml(cn+" 头像")+'" src="'+escapeHtml(avatarUrl(p))+'"><span class="verified-badge" title="Ooglex 已核验" aria-label="Ooglex 已核验">✓</span></span>'+
         '<div class="leader-identity"><b>'+escapeHtml(cn)+'</b><span class="leader-en">'+escapeHtml(en)+'</span></div></div>'+
         '<div class="leader-role"><strong>'+escapeHtml(role)+'</strong></div></button>';
     }).join("");
