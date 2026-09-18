@@ -16,6 +16,7 @@ on:
       - 'apps/macro-radar/**'
       - 'apps/supply-chain/**'
       - 'apps/finance-column/**'
+      - 'apps/tech-leaders/**'
       - '.github/workflows/deploy-pro-api.yml'
 
 permissions:
@@ -106,3 +107,10 @@ jobs:
             test -n "$body"
             echo "$product preview ready"
           done
+
+      - name: Verify Tech Leaders backend
+        run: |
+          set -e
+          body="$(curl -fsS --connect-timeout 5 --max-time 20 "https://pro-api.ooglex.com/v1/tech-leaders/status")"
+          echo "$body" | grep -q '"service":"tech-leaders"'
+          echo "Tech Leaders backend ready: $body"
