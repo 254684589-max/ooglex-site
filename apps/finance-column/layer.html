@@ -42,21 +42,29 @@
     const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) =>
       ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
+    function renderFinanceLayer() {
+      const A = window.ARCH;
+      if (!A || !Array.isArray(A.layers)) return;
+      const preview = A.ooglexAccess && A.ooglexAccess.mode === "preview";
+
     const id = new URLSearchParams(location.search).get("id") || "L1";
-    const layer = ARCH.findLayer(id) || ARCH.layers[0];
-    const idx = ARCH.layers.indexOf(layer);
+    const layer = A.findLayer(id) || A.layers[0];
+    const idx = A.layers.indexOf(layer);
     document.title = `${layer.cn} · 金融知识终极架构`;
     document.documentElement.style.setProperty("--mc", layer.accent);
 
     // 层级导航条
-    document.getElementById("lnav").innerHTML = ARCH.layers.map((l) =>
+    document.getElementById("lnav").innerHTML = A.layers.map((l) =>
       `<a href="layer.html?id=${l.id}" class="lpill${l.id === layer.id ? " on" : ""}" style="--mc:${l.accent}">
         <b>${l.id}</b><span>${esc(l.cn)}</span></a>`).join("");
 
     // 主体
-    const terms = ARCH.layerTermCount(layer);
+    const terms = A.layerTermCount(layer);
+    const fullLayerTerms = Number(layer.ooglexFullTerms || terms);
     const modulesHtml = layer.modules.map((m, i) => {
       const no = String(i + 1).padStart(2, "0");
+      const fullModuleTerms = Number(m.ooglexFullTerms || m.terms.length);
+      const countLabel = preview && fullModuleTerms > m.terms.length ? `${m.terms.length} / ${fullModuleTerms} 项` : `${m.terms.length} 项`;
       const items = m.terms.map((t) =>
         `<div class="term">
           <div class="t-cn">${esc(t[0])}</div>
@@ -67,15 +75,15 @@
         <div class="ms-head">
           <span class="ms-no">${m.id}</span>
           <h3>${esc(m.cn)}${m.isNew ? ` <span class="new-badge">v4.0 新增</span>` : ""}</h3>
-          <span class="ms-cnt">${m.terms.length} 项</span>
+          <span class="ms-cnt">${countLabel}</span>
         </div>
         <div class="ms-en">${esc(m.en)}</div>
         <div class="term-grid">${items}</div>
       </section>`;
     }).join("");
 
-    const prev = idx > 0 ? ARCH.layers[idx - 1] : null;
-    const next = idx < ARCH.layers.length - 1 ? ARCH.layers[idx + 1] : null;
+    const prev = idx > 0 ? A.layers[idx - 1] : null;
+    const next = idx < A.layers.length - 1 ? A.layers[idx + 1] : null;
     const pager = `<div class="pager">
       ${prev ? `<a class="prev" href="layer.html?id=${prev.id}"><span>← 上一层</span><b>${prev.id} ${esc(prev.cn)}</b></a>` : `<div class="empty"></div>`}
       ${next ? `<a class="next" href="layer.html?id=${next.id}"><span>下一层 →</span><b>${next.id} ${esc(next.cn)}</b></a>` : `<div class="empty"></div>`}
@@ -85,11 +93,11 @@
       <section class="layer-hero" style="--mc:${layer.accent}">
         <div class="lh-ic">${layer.icon}</div>
         <div class="lh-body">
-          <div class="lh-id">LAYER ${layer.id}</div>
+          <div class="lh-id">LAYER ${layer.id}${preview ? " · FREE 10% PREVIEW" : ""}</div>
           <h1>${esc(layer.cn)}</h1>
           <div class="lh-en">${esc(layer.en)}</div>
           <p>${esc(layer.tag)}</p>
-          <div class="lh-stats"><span>${layer.modules.length} 模块</span><span>${terms} 术语</span></div>
+          <div class="lh-stats"><span>${layer.modules.length} 模块</span><span>${preview && fullLayerTerms > terms ? `${terms} / ${fullLayerTerms} 术语` : `${terms} 术语`}</span></div>
         </div>
       </section>
       ${modulesHtml}
@@ -101,6 +109,9 @@
       const el = document.querySelector(location.hash);
       if (el) { el.scrollIntoView({ behavior: "smooth", block: "start" }); el.classList.add("flash"); }
     }
+    }
+    renderFinanceLayer();
+    window.addEventListener("ooglex:finance-full-ready", renderFinanceLayer);
   </script>
   <script src="../../assets/particles.js"></script>
   <script src="../../assets/ambient.js"></script>
