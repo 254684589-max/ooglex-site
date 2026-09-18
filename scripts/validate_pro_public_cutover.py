@@ -117,7 +117,7 @@ def main() -> None:
         "apps/supply-chain/company.html": "company.js",
         "apps/macro-radar/index.html": "app.js",
     }
-    sync_access = '<script src="/assets/pro-access.js?v=5"></script>'
+    sync_access = '<script src="/assets/pro-access.js?v=6"></script>'
     sync_adapter = '<script src="/assets/pro-rich-data.js?v=4"></script>'
     hard_stop = '<script src="/assets/pro-preview-gate.js?v=1"></script>'
     for rel, legacy_app in rich_pages.items():
