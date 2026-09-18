@@ -19,11 +19,11 @@ Leader metadata is stored in:
 
 `apps/tech-leaders/leaders.json`
 
-The catalog schema has a capacity of 100 profiles. The production catalog now contains 60 curated technology leaders/accounts. The page reads this file and supports search across name, Chinese name, handle, company/role and tags.
+The catalog schema has a capacity of 100 profiles, and the production catalog is now complete at 100 curated technology leaders/accounts. The page reads this file and supports search across name, Chinese name, handle, company/role, tags and primary category.
 
-To add another Free-mode profile, append one object to `leaders.json`. No page JavaScript change is required.
+To replace or maintain a Free-mode profile, edit one object in `leaders.json`. Each entry now includes a primary `category`, and the top-level catalog includes the nine supported categories. No page JavaScript change is required for ordinary catalog maintenance.
 
-The current catalog contains 60 curated entries spanning AI labs, hyperscalers, semiconductors, robotics, space, consumer platforms, enterprise software, fintech, crypto infrastructure, venture capital and defense technology. Jensen Huang continues to use the NVIDIA official account until a separately verified personal account is intentionally selected.
+The current catalog contains 100 curated entries across nine primary filters: AI, semiconductors, cloud, robotics, space, consumer technology, software, fintech and venture capital. The UI exposes these as client-side category filters with counts. Jensen Huang continues to use NVIDIA's official account; selected leaders without a stable public personal account may similarly use the related company's official X account.
 
 ## Free mode
 
@@ -62,3 +62,19 @@ Current data-mode backend whitelist remains the original six profiles. Expanding
 - Free mode: no Ooglex X API calls, so no X API Credits consumed by normal page browsing.
 - Data mode: uses the existing 15-minute R2 cache and incremental `since_id` refresh logic.
 - The X API secret can remain configured in Cloudflare. It is not used merely because it exists; the frontend must be explicitly opened in `mode=api` before the page calls the paid backend.
+
+## Category filters
+
+The public page includes these primary filters:
+
+- AI
+- 芯片
+- 云计算
+- 机器人
+- 航天
+- 消费科技
+- 软件
+- 金融科技
+- VC
+
+The selected category is reflected in the URL via the `category` query parameter and combines with text search. The category filter is purely client-side and does not call the paid X API.
