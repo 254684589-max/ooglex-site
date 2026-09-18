@@ -1,4 +1,4 @@
-# Tech Leaders Free V3
+# Tech Leaders Free V4.1
 
 ## Default architecture
 
@@ -142,3 +142,14 @@ V4 changes the index layer from a CEO-only boolean into a decision-maker model w
 - Audit policy: role review every 90 days; downgrade after 180 days without substantive X activity; archive from the default flow after 365 days of inactivity.
 - The frontend S&P filter is now “标普500 决策者” and distinguishes CEO vs Founder badges.
 - Data mode checks the Worker-supported leader list before making a feed request, preventing an avoidable paid X API call for unprovisioned profiles.
+
+
+## V4.1 avatar asset standardization — 2026-09-19
+
+All 109 production leaders now have explicit avatar metadata: avatar_url, avatar_source, avatar_status, avatar_fallback and avatar_updated_at.
+
+Source priority: explicit official portrait; public X profile avatar via Unavatar; local initials/silhouette SVG generated in the browser.
+
+The frontend no longer hides a broken avatar image. If the remote avatar fails, the image is replaced with a local data-URI fallback, so cards, selected profile and API timeline always retain a visible avatar.
+
+The roster UI includes an avatar audit control showing configured/total avatars and a 待补 filter. Expected configured count in this release: 109/109.
